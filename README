@@ -1,0 +1,4 @@
+Please see the README file in the devel/ directory for more info.
+
+The archive/ directory contains snapshots of released versions
+of singletons. All active development takes place in devel/.

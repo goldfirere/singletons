@@ -1,0 +1,35 @@
+Changelog for singletons project
+================================
+
+0.8.3
+-----
+
+Update to work with latest version of GHC (7.7.20121031).
+
+Removed use of Any to simulate kind classes; now using KindOf and OfKind
+from GHC.TypeLits.
+
+Made compatible with GHC.TypeLits.
+
+0.8.2
+-----
+
+Added this changelog
+
+Update to work with latest version of GHC (7.6.1). (There was a change to
+Template Haskell).
+
+Moved library into Data.Singletons.
+
+0.8.1
+-----
+
+Update to work with latest version of GHC. (There was a change to
+Template Haskell).
+
+Updated dependencies in cabal to include the newer version of TH.
+
+0.8
+---
+
+Initial public release

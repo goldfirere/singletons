@@ -1,0 +1,37 @@
+name:           singletons
+version:        0.8.2
+cabal-version:  >= 1.8
+synopsis:       A framework for generating singleton types
+homepage:       http://www.cis.upenn.edu/~eir/packages/singletons
+category:       Dependent Types
+author:         Richard Eisenberg <eir@cis.upenn.edu>
+maintainer:     Richard Eisenberg <eir@cis.upenn.edu>
+stability:      experimental
+extra-source-files: README, CHANGES
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+description:
+    This library generates singleton types, promoted functions, and singleton
+    functions using Template Haskell. It is useful for programmers who wish
+    to use dependently typed programming techniques. The library was originally
+    presented in /Dependently Typed Programming with Singletons/, published
+    at the Haskell Symposium, 2012.
+    (<http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>)
+
+    As of this release date, Haddock was not able to properly process the code
+    and produce documentation. Hence, all of the documentation is in the
+    README file distributed with the package. This README is also accessible
+    from the project home page.
+
+library
+  build-depends:      
+      base >= 4 && < 5,
+      mtl >= 2.1.1,
+      template-haskell >= 2.8,
+      containers >= 0.5,
+      syb >= 0.3
+  exposed-modules:    Data.Singletons, Data.Singletons.CustomStar,
+                      Data.Singletons.TypeRepStar
+  other-modules:      Data.Singletons.Promote, Data.Singletons.Singletons,
+                      Data.Singletons.Util
