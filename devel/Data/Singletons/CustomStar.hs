@@ -27,12 +27,11 @@ singletonStar names = do
   let repDecl = DataD [] repName [] ctors
                       [mkName "Eq", mkName "Show", mkName "Read"]
   fakeCtors <- zipWithM (mkCtor False) names kinds
-  eqTypeInstances <- mapM mkEqTypeInstance [ (c1, c2) | c1 <- fakeCtors,
-                                                        c2 <- fakeCtors ]
+  eqTypeInstance <- mkEqTypeInstance fakeCtors
   singletonDecls <- singDataD True [] repName [] fakeCtors
                               [mkName "Eq", mkName "Show", mkName "Read"]
   return $ repDecl :
-           eqTypeInstances ++
+           eqTypeInstance :
            singletonDecls
   where -- get the kinds of the arguments to the tycon with the given name
         getKind :: Name -> Q [Kind]

@@ -12,11 +12,8 @@ Users of the package should not need to consult this file.
 module Data.Singletons.Util where
 
 import Language.Haskell.TH
-import Language.Haskell.TH.Syntax
 import Data.Char
-import Data.Maybe
 import Data.Data
-import Data.List
 import Control.Monad
 import Control.Monad.Writer
 import qualified Data.Map as Map

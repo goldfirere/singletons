@@ -269,7 +269,7 @@ singDec (DataInstD cxt name tys ctors derivings) =
   fail "Singling of data instances not yet supported"
 singDec (NewtypeInstD cxt name tys ctor derivings) =
   fail "Singling of newtype instances not yet supported"
-singDec (TySynInstD name tys ty) =
+singDec (TySynInstD name eqns) =
   fail "Singling of type family instances not yet supported"
 
 -- the first parameter is True when we're refining the special case "Rep"
@@ -312,10 +312,12 @@ singDataD rep cxt name tvbs ctors derivings = do
   let singEInst =
         InstanceD []
                   (AppT (ConT forgettableName) (kindParam k))
-                  [TySynInstD demoteName [kindParam k]
-                     (foldType (ConT name)
-                        (map (\kv -> AppT demote (kindParam (VarT kv)))
-                             tvbNames)),
+                  [TySynInstD demoteName
+                     [TySynEqn
+                       [kindParam k]
+                       (foldType (ConT name)
+                          (map (\kv -> AppT demote (kindParam (VarT kv)))
+                               tvbNames))],
                    FunD forgetName
                         forgetClauses]
 

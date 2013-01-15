@@ -124,10 +124,21 @@ sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
 sIf STrue b c = b
 sIf SFalse b c = c
 
+#if __GLASGOW_HASKELL__ >= 707
+
+type instance where
+  '[] :==: '[] = True
+  (h1 ': t1) :==: (h2 ': t2) = (h1 :==: h2) :&&: (t1 :==: t2)
+  list1 :==: list2 = False
+
+#else
+
 type instance '[] :==: '[] = True
 type instance '[] :==: (h ': t) = False
 type instance (h ': t) :==: '[] = False
 type instance (h ': t) :==: (h' ': t') = (h :==: h') :&&: (t :==: t')
+
+#endif
 
 instance SEq (KindParam :: OfKind k) => SEq (KindParam :: OfKind [k]) where
   SNil %==% SNil = STrue

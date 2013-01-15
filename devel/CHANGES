@@ -1,6 +1,16 @@
 Changelog for singletons project
 ================================
 
+0.8.4
+-----
+
+Update to work with latest version of GHC (7.7.20130114).
+
+Now use branched type family instances to allow for promotion of functions
+with overlapping patterns.
+
+Permit promotion of functions with constraints by omitting constraints.
+
 0.8.3
 -----
 

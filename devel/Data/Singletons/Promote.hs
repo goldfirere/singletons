@@ -177,33 +177,30 @@ promoteDecs decls = do
         noTypeSigs
   return (newDecls' ++ moreNewDecls, noTypeSigs)
 
--- produce the type instance for (:==:) for the given pair of constructors
-mkEqTypeInstance :: (Con, Con) -> Q Dec
-mkEqTypeInstance (c1, c2) =
-  if c1 == c2
-  then do
-    let (name, numArgs) = extractNameArgs c1
-    lnames <- replicateM numArgs (newName "a")
-    rnames <- replicateM numArgs (newName "b")
-    let lvars = map VarT lnames
-        rvars = map VarT rnames
-    return $ TySynInstD
-      tyEqName
-      [foldType (PromotedT name) lvars,
-       foldType (PromotedT name) rvars]
-      (tyAll (zipWith (\l r -> foldType (ConT tyEqName) [l, r])
-                      lvars rvars))
-  else do
-    let (lname, lNumArgs) = extractNameArgs c1
-        (rname, rNumArgs) = extractNameArgs c2
-    lnames <- replicateM lNumArgs (newName "a")
-    rnames <- replicateM rNumArgs (newName "b")
-    return $ TySynInstD
-      tyEqName
-      [foldType (PromotedT lname) (map VarT lnames),
-       foldType (PromotedT rname) (map VarT rnames)]
-      falseTy
-  where tyAll :: [Type] -> Type -- "all" at the type level
+-- produce the branched type instance for (:==:) over the given list of ctors
+mkEqTypeInstance :: [Con] -> Q Dec
+mkEqTypeInstance cons = do
+  tySynInstD tyEqName (map mk_branch cons ++ [false_case])
+  where mk_branch :: Con -> Q TySynEqn
+        mk_branch con = do
+          let (name, numArgs) = extractNameArgs con
+          lnames <- replicateM numArgs (newName "a")
+          rnames <- replicateM numArgs (newName "b")
+          let lvars = map VarT lnames
+              rvars = map VarT rnames
+              ltype = foldType (PromotedT name) lvars
+              rtype = foldType (PromotedT name) rvars
+              results = zipWith (\l r -> foldType (ConT tyEqName) [l, r]) lvars rvars
+              result = tyAll results
+          return $ TySynEqn [ltype, rtype] result
+
+        false_case :: Q TySynEqn
+        false_case = do
+          lvar <- newName "a"
+          rvar <- newName "b"
+          return $ TySynEqn [VarT lvar, VarT rvar] falseTy
+
+        tyAll :: [Type] -> Type -- "all" at the type level
         tyAll [] = trueTy
         tyAll [one] = one
         tyAll (h:t) = foldType andTy [h, (tyAll t)]
@@ -223,9 +220,10 @@ promoteDec vars (FunD name clauses) = do
       vars' = Map.insert name (promoteVal name) vars
       numArgs = getNumPats (head clauses) -- count the parameters
       -- Haskell requires all clauses to have the same number of parameters
-  instDecls <- lift $ mapM (promoteClause vars' proName) clauses
+  (eqns, instDecls) <- lift $ evalForPair $
+                       mapM (promoteClause vars') clauses
   addBinding name numArgs -- remember the number of parameters
-  return $ concat instDecls
+  return $ (TySynInstD proName eqns) : instDecls
   where getNumPats :: Clause -> Int
         getNumPats (Clause pats _ _) = length pats
 promoteDec vars (ValD pat body decs) = do
@@ -238,7 +236,7 @@ promoteDec vars (ValD pat body decs) = do
   if any (flip containsName rhs) (map lhsName lhss)
     then do -- definition is recursive. use type families & require ty sigs
       mapM (flip addBinding 0) (map lhsRawName lhss)
-      return $ (map (\(LHS _ nm hole) -> TySynInstD nm [] (hole rhs)) lhss) ++
+      return $ (map (\(LHS _ nm hole) -> TySynInstD nm [TySynEqn [] (hole rhs)]) lhss) ++
                decls ++ decls'
     else do -- definition is not recursive; just use "type" decls
       mapM (flip addBinding typeSynonymFlag) (map lhsRawName lhss)
@@ -268,8 +266,8 @@ promoteDec vars (DataInstD cxt name tys ctors derivings) =
   fail "Promotion of data instances not yet supported"
 promoteDec vars (NewtypeInstD cxt name tys ctors derivings) =
   fail "Promotion of newtype instances not yet supported"
-promoteDec vars (TySynInstD name tys ty) =
-  fail "Promotion of type synonym instances not yet supported)"
+promoteDec vars (TySynInstD name eqns) =
+  fail "Promotion of type synonym instances not yet supported"
 
 -- only need to check if the datatype derives Eq. The rest is automatic.
 promoteDataD :: TypeTable -> Cxt -> Name -> [TyVarBndr] -> [Con] ->
@@ -277,8 +275,8 @@ promoteDataD :: TypeTable -> Cxt -> Name -> [TyVarBndr] -> [Con] ->
 promoteDataD vars cxt name tvbs ctors derivings =
   if any (\n -> (nameBase n) == "Eq") derivings
     then do
-      let pairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
-      lift $ mapM mkEqTypeInstance pairs
+      inst <- lift $ mkEqTypeInstance ctors
+      return [inst]
     else return [] -- the actual promotion is automatic
 
 -- second pass through declarations to deal with type signatures
@@ -313,15 +311,15 @@ promoteDec' nat (SigD name ty) = case Map.lookup name nat of
             return $ (AppT (AppT ArrowT h) k)
 promoteDec' _ _ = return ([], [])
 
-promoteClause :: TypeTable -> Name -> Clause -> Q [Dec]
-promoteClause vars name (Clause pats body []) = do
+promoteClause :: TypeTable -> Clause -> QWithDecs TySynEqn
+promoteClause vars (Clause pats body []) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  (types, vartbl) <- evalForPair $ mapM promotePat pats
+  (types, vartbl) <- lift $ evalForPair $ mapM promotePat pats
   let vars' = Map.union vars vartbl
-  (ty, decls) <- evalForPair $ promoteBody vars' body
-  return $ decls ++ [TySynInstD name types ty]
-promoteClause _ _ (Clause _ _ (_:_)) =
+  ty <- promoteBody vars' body
+  return $ TySynEqn types ty
+promoteClause _ (Clause _ _ (_:_)) =
   fail "A <<where>> clause in a function definition is not yet supported"
 
 -- the LHS of a top-level expression is a name and "type with hole"
@@ -369,9 +367,10 @@ promoteTopLevelPat (ConP name pats) = do
   componentNames <- lift $ replicateM (length pats) (newName "a")
   zipWithM (\extractorName componentName ->
     addElement $ TySynInstD extractorName
-                            [foldType (promoteDataCon name)
+                            [TySynEqn
+                              [foldType (promoteDataCon name)
                                       (map VarT componentNames)]
-                            (VarT componentName))
+                              (VarT componentName)])
     extractorNames componentNames
 
   -- now we have the extractor families. Use the appropriate families
