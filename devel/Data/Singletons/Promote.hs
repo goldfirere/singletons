@@ -178,8 +178,8 @@ promoteDecs decls = do
   return (newDecls' ++ moreNewDecls, noTypeSigs)
 
 -- produce the branched type instance for (:==:) over the given list of ctors
-mkEqTypeInstance :: [Con] -> Q Dec
-mkEqTypeInstance cons = do
+mkEqTypeInstance :: Kind -> [Con] -> Q Dec
+mkEqTypeInstance kind cons = do
   tySynInstD tyEqName (map mk_branch cons ++ [false_case])
   where mk_branch :: Con -> Q TySynEqn
         mk_branch con = do
@@ -198,7 +198,7 @@ mkEqTypeInstance cons = do
         false_case = do
           lvar <- newName "a"
           rvar <- newName "b"
-          return $ TySynEqn [VarT lvar, VarT rvar] falseTy
+          return $ TySynEqn [SigT (VarT lvar) kind, SigT (VarT rvar) kind] falseTy
 
         tyAll :: [Type] -> Type -- "all" at the type level
         tyAll [] = trueTy
@@ -275,7 +275,8 @@ promoteDataD :: TypeTable -> Cxt -> Name -> [TyVarBndr] -> [Con] ->
 promoteDataD vars cxt name tvbs ctors derivings =
   if any (\n -> (nameBase n) == "Eq") derivings
     then do
-      inst <- lift $ mkEqTypeInstance ctors
+      kvs <- replicateM (length tvbs) (lift $ newName "k")
+      inst <- lift $ mkEqTypeInstance (foldType (ConT name) (map VarT kvs)) ctors
       return [inst]
     else return [] -- the actual promotion is automatic
 

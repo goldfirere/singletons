@@ -129,7 +129,7 @@ sIf SFalse b c = c
 type instance where
   '[] :==: '[] = True
   (h1 ': t1) :==: (h2 ': t2) = (h1 :==: h2) :&&: (t1 :==: t2)
-  list1 :==: list2 = False
+  (list1 :: [k]) :==: (list2 :: [k]) = False
 
 #else
 

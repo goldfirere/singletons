@@ -8,7 +8,7 @@ singleton from a list of types. The promoted version of Rep is kind * and the
 Haskell types themselves. This is still very experimental, so expect unusual
 results!
 -} 
-
+{-# LANGUAGE DataKinds, TypeFamilies, KindSignatures #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.CustomStar where
@@ -17,6 +17,7 @@ import Language.Haskell.TH
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Singletons
+import Data.Singletons ((:==:))
 import Control.Monad
 
 -- Produce a representation and singleton for the collection of types given
@@ -27,11 +28,11 @@ singletonStar names = do
   let repDecl = DataD [] repName [] ctors
                       [mkName "Eq", mkName "Show", mkName "Read"]
   fakeCtors <- zipWithM (mkCtor False) names kinds
-  eqTypeInstance <- mkEqTypeInstance fakeCtors
+  eqInstance <- mkEqTypeInstance StarT fakeCtors
   singletonDecls <- singDataD True [] repName [] fakeCtors
                               [mkName "Eq", mkName "Show", mkName "Read"]
   return $ repDecl :
-           eqTypeInstance :
+           eqInstance :
            singletonDecls
   where -- get the kinds of the arguments to the tycon with the given name
         getKind :: Name -> Q [Kind]
