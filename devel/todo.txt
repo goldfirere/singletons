@@ -2,8 +2,6 @@ TODO for singletons project:
 
 Ord instance
 
-Eq instances for singletons generated in Data.Singletons
-
 Consider moving some Prelude-style def'ns into another module
 
 Promote Eq a constraint

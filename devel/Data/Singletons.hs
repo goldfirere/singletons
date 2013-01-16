@@ -32,7 +32,7 @@ module Data.Singletons (
   sNil, sCons, SList, (:++), (%:++), Head, Tail,
   cases, bugInGHC,
   genSingletons, singletons, genPromotions, promote,
-  promoteEqInstances, promoteEqInstance
+  promoteEqInstances, promoteEqInstance, singEqInstance, singEqInstances
   ) where
 
 import Prelude hiding ((++))
@@ -42,7 +42,6 @@ import Data.Singletons.Exports
 import Language.Haskell.TH
 import Data.Singletons.Util
 import GHC.Exts (Any)
-
 
 -- provide a few useful singletons...
 $(genSingletons [''Bool, ''Maybe, ''Either, ''[]])
@@ -63,20 +62,11 @@ $(singletons [d|
   True  || _ = True
   |])
 
--- singleton conditional
-sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
-sIf STrue b _ = b
-sIf SFalse _ c = c
-
 type family (a :: k) :==: (b :: k) :: Bool
 type a :== b = a :==: b -- :== and :==: are synonyms
 
 type a :/=: b = Not (a :==: b)
 type a :/= b = a :/=: b
-
--- symmetric syntax synonyms
-type a :&&: b = a :&& b
-type a :||: b = a :|| b
 
 -- the singleton analogue of @Eq@
 class (kparam ~ KindParam) => SEq (kparam :: OfKind k) where
@@ -92,27 +82,17 @@ class (kparam ~ KindParam) => SEq (kparam :: OfKind k) where
        => Sing a -> Sing b -> Sing (a :/=: b)
 (%:/=) = (%/=%)
 
-#if __GLASGOW_HASKELL__ >= 707
+$(singEqInstances [''Bool, ''Maybe, ''Either, ''[]])
+$(singEqInstances [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)])
 
-type instance where
-  '[] :==: '[] = True
-  (h1 ': t1) :==: (h2 ': t2) = (h1 :==: h2) :&&: (t1 :==: t2)
-  (list1 :: [k]) :==: (list2 :: [k]) = False
+-- singleton conditional
+sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
+sIf STrue b _ = b
+sIf SFalse _ c = c
 
-#else
-
-type instance '[] :==: '[] = True
-type instance '[] :==: (h ': t) = False
-type instance (h ': t) :==: '[] = False
-type instance (h ': t) :==: (h' ': t') = (h :==: h') :&&: (t :==: t')
-
-#endif
-
-instance SEq (KindParam :: OfKind k) => SEq (KindParam :: OfKind [k]) where
-  SNil %==% SNil = STrue
-  SNil %==% (SCons _ _) = SFalse
-  (SCons _ _) %==% SNil = SFalse
-  (SCons a b) %==% (SCons a' b') = (a %==% a') %:&& (b %==% b')
+-- symmetric syntax synonyms
+type a :&&: b = a :&& b
+type a :||: b = a :|| b
 
 $(singletons [d|
   (++) :: [a] -> [a] -> [a]

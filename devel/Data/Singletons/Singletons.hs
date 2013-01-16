@@ -280,26 +280,15 @@ singEqInstances :: [Name] -> Q [Dec]
 singEqInstances = concatMapM singEqInstance
 
 -- create instance of SEq for the given *singleton* type
--- doesn't work because of GHC Trac #7477. Argh.
 singEqInstance :: Name -> Q [Dec]
 singEqInstance name = do
   promotion <- promoteEqInstance name
-  (tvbs, _) <- getDataD "I cannot make an instance of SEq for it." name
+  (tvbs, cons) <- getDataD "I cannot make an instance of SEq for it." name
   let tyvars = map (VarT . extractTvbName) tvbs
       kind = foldType (ConT name) tyvars
   aName <- newName "a"
   let aVar = VarT aName
-  inst_decs <- reifyInstances singFamilyName [SigT aVar kind]
-  scons <- case inst_decs of
-    [DataInstD [] _sing _tyvars scons _derivings] -> return scons
-    [] -> fail $ "No singleton associated with " ++ (show name) ++ " was found. " ++
-                 "If you made this singleton in the same Template Haskell " ++
-                 "splice, try starting a new splice."
-    (_:_:_) -> fail $ "Multiple singleton instances found. Please report this " ++
-                      "error to Richard Eisenberg at eir@cis.upenn.edu."
-    _ -> fail $ "Found something strange (" ++ (show inst_decs) ++ ") when " ++
-                "looking for the singleton associated with " ++ (show name) ++
-                ". Please report to Richard Eisenberg at eir@cis.upenn.edu."
+  scons <- mapM (evalWithoutAux . singCtor aVar) cons
   dec <- mkSingEqInstance kind scons
   return $ dec : promotion
 
