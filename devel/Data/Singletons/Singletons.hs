@@ -93,6 +93,9 @@ singTyConName name | nameBase name == "[]" = mkName "SList"
                    | isTupleName name = mkTupleName (tupleDegree $ nameBase name)
                    | otherwise        = prefixUCName "S" ":%" name
 
+singClassName :: Name -> Name
+singClassName = singTyConName
+
 singDataCon :: Name -> Exp
 singDataCon = ConE . singDataConName
 
@@ -440,12 +443,14 @@ singType = singTypeRec []
 -- the first parameter is the list of types the current type is applied to
 -- the second parameter is whether or not this type occurs in a positive position
 singTypeRec :: TypeContext -> Bool -> Type -> Q TypeFn
-singTypeRec _ctx _pos (ForallT _tvbs (_:_) _ty) =
-  fail "Singling of constrained functions not yet supported"
 singTypeRec (_:_) _pos (ForallT _ _ _) =
   fail "I thought this was impossible in Haskell. Email me at eir@cis.upenn.edu with your code if you see this message."
 singTypeRec [] pos (ForallT _ [] ty) = -- Sing makes handling foralls automatic
   singTypeRec [] pos ty
+singTypeRec ctx pos (ForallT _tvbs cxt innerty) = do
+  cxt' <- singContext cxt
+  innerty' <- singTypeRec ctx pos innerty
+  return $ \ty -> ForallT [] cxt' (innerty' ty)
 singTypeRec (_:_) _pos (VarT _) =
   fail "Singling of type variables of arrow kinds not yet supported"
 singTypeRec [] _pos (VarT _name) = 
@@ -491,6 +496,18 @@ singTypeRec _ctx _pos PromotedNilT = fail "Singling of promoted nil not yet supp
 singTypeRec _ctx _pos PromotedConsT = fail "Singling of type-level cons not yet supported"
 singTypeRec _ctx _pos StarT = fail "* used as type"
 singTypeRec _ctx _pos ConstraintT = fail "Constraint used as type"
+
+-- refine a constraint context
+singContext :: Cxt -> Q Cxt
+singContext = mapM singPred
+
+singPred :: Pred -> Q Pred
+singPred (ClassP name tys) = do
+  kis <- mapM promoteType tys
+  let sName = singClassName name
+  return $ ClassP sName (map kindParam kis)
+singPred (EqualP _ty1 _ty2) =
+  fail "Singling of type equality constraints not yet supported"
 
 singClause :: ExpTable -> Clause -> Q Clause
 singClause vars (Clause pats (NormalB exp) []) = do

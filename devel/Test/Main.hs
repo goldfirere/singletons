@@ -10,16 +10,14 @@ compile with a warning that declarations containing badPlus are omitted.
 
 {-# LANGUAGE GADTs, TypeFamilies, TemplateHaskell, UndecidableInstances,
              RankNTypes, TypeOperators, KindSignatures, FlexibleInstances,
-             PolyKinds, DataKinds, FlexibleContexts, ConstraintKinds
+             PolyKinds, DataKinds, FlexibleContexts
  #-}
 
-module Test.Main where
-
-import Language.Haskell.TH hiding (Pred)
+module Main where
 
 import Prelude hiding (print, Left, Right, (+), Maybe, Just, Nothing)
-import Singletons.Lib hiding (SLeft, SRight, SJust, SNothing, sLeft, sRight, sJust, sNothing)
-import Singletons.CustomStar
+import Data.Singletons hiding (SLeft, SRight, SJust, SNothing, sLeft, sRight, sJust, sNothing)
+import Data.Singletons.CustomStar
 
 $(singletons [d| 
   data Nat where
@@ -32,13 +30,13 @@ $(singletons [d|
     Left :: Nat -> NatBinTree -> NatBinTree
     Right :: Nat -> NatBinTree -> NatBinTree
     Parent :: Nat -> NatBinTree -> NatBinTree -> NatBinTree
-    deriving Eq
+    deriving (Eq, Show)
 
   data Foo where
     FLeaf :: Foo
     (:+:) :: Foo -> Foo -> Foo
 
-  data Maybe a = Nothing | Just a deriving Eq
+  data Maybe a = Nothing | Just a deriving (Eq, Show)
 
   data Box a = FBox a
   unBox :: Box a -> a
@@ -64,7 +62,7 @@ $(singletons [d|
   (Succ n) + m = Succ (n + m)
 
   mult :: Nat -> Nat -> Nat
-  mult Zero m = Zero
+  mult Zero _ = Zero
   mult (Succ n) m = plus m (mult n m)
   
   treePlus :: Nat -> NatBinTree -> NatBinTree
@@ -95,7 +93,11 @@ $(singletons [d|
   map _ [] = []
   map f (h:t) = (f h) : (map f t)
 
-  data Pair a b = Pair a b
+  contains :: Eq a => a -> [a] -> Bool
+  contains _ [] = False
+  contains elt (h:t) = (elt == h) || (contains elt t)
+
+  data Pair a b = Pair a b deriving Show
   |])
 
 $(singletons [d|
@@ -131,16 +133,7 @@ data Vec :: * -> Nat -> * where
 
 $(singletonStar [''Nat, ''Int, ''String, ''Maybe, ''Vec])
 
-instance Show (Sing (a :: Nat)) where
-  show SZero = "SZero"
-  show (SSucc n) = "(SSucc " ++ (show n) ++ ")"
-
-instance Show (Sing (a :: NatBinTree)) where
-  show (SLeaf a) = "(SLeaf " ++ (show a) ++ ")"
-  show (SLeft a l) = "(SLeft " ++ (show a) ++ " " ++ (show l) ++ ")"
-  show (SRight a r) = "(SRight " ++ (show a) ++ " " ++ (show r) ++ ")"
-  show (SParent a l r) = "(SParent " ++ (show a) ++ " " ++ (show l) ++
-                         " " ++ (show r) ++ ")"
+$(singEqInstances [''Foo])
 
 one = SSucc SZero
 two = SSucc one

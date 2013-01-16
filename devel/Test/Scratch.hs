@@ -1,10 +1,12 @@
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE TemplateHaskell, PolyKinds, DataKinds, TypeFamilies,
+             UndecidableInstances, FlexibleContexts, RankNTypes #-}
 
 module Test.Scratch where
 
-import Singletons.Lib
+import Data.Singletons
 
--- foo :: Sing a -> ()
-foo a = case a of
-  SNil -> ()
-  SCons _ _ -> ()
+$(singletons [d|
+  contains :: Eq a => a -> [a] -> Bool
+  contains _ [] = False
+  contains elt (h:t) = (elt == h) || (contains elt t)
+  |])

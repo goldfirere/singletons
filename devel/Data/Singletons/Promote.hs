@@ -93,8 +93,11 @@ promoteVal :: Name -> Type
 promoteVal = ConT . promoteValName
 
 promoteType :: Type -> Q Kind
-promoteType (ForallT _tvbs [] ty) = promoteType ty -- ForallKinds
-promoteType (ForallT _ (_:_) _) = fail "Cannot promote type with constrained variables"
+-- We don't need to worry about constraints: they are used to express
+-- static guarantees at runtime. But, because we don't need to do
+-- anything special to keep static guarantees at compile time, we don't
+-- need to promote them.
+promoteType (ForallT _tvbs _ ty) = promoteType ty -- ForallKinds
 promoteType (VarT name) = return $ VarT name
 promoteType (ConT name) = return $ if (nameBase name) == "TypeRep" ||
                                       (nameBase name) == (nameBase repName)
