@@ -32,6 +32,7 @@ module Data.Singletons (
   sNil, sCons, SList, (:++), (%:++), Head, Tail,
   cases, bugInGHC,
   genSingletons, singletons, genPromotions, promote,
+  promoteEqInstances, promoteEqInstance
   ) where
 
 import Prelude hiding ((++))

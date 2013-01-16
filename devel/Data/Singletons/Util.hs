@@ -24,7 +24,7 @@ reifyWithWarning :: Name -> Q Info
 reifyWithWarning name = recover
   (fail $ "Looking up " ++ (show name) ++ " in the list of available " ++
         "declarations failed.\nThis lookup fails if the declaration " ++
-        "referenced was made in same Template\nHaskell splice as the use " ++
+        "referenced was made in the same Template\nHaskell splice as the use " ++
         "of the declaration. If this is the case, put\nthe reference to " ++
         "the declaration in a new splice.")
   (reify name)
@@ -159,4 +159,26 @@ addElement elt = tell [elt]
 -- does a TH structure contain a name?
 containsName :: Data a => Name -> a -> Bool
 containsName n = everything (||) (mkQ False (== n))
+
+-- lift concatMap into a monad
+concatMapM :: Monad m => (a -> m [b]) -> [a] -> m [b]
+concatMapM fn list = do
+  bss <- mapM fn list
+  return $ concat bss
+
+-- extract the tyvars and constructors from a name of a type,
+-- printing out the string upon failure
+getDataD :: String -> Name -> Q ([TyVarBndr], [Con])
+getDataD error name = do
+  info <- reifyWithWarning name
+  dec <- case info of
+           TyConI dec -> return dec
+           _ -> badDeclaration
+  case dec of
+    DataD _cxt _name tvbs cons _derivings -> return (tvbs, cons)
+    NewtypeD _cxt _name tvbs con _derivings -> return (tvbs, [con])
+    _ -> badDeclaration
+  where badDeclaration =
+          fail $ "The name (" ++ (show name) ++ ") refers to something " ++
+                 "other than a datatype. " ++ error
 

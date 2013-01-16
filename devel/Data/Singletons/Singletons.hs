@@ -275,6 +275,82 @@ singDec (NewtypeInstD _cxt _name _tys _ctor _derivings) =
 singDec (TySynInstD _name _eqns) =
   fail "Singling of type family instances not yet supported"
 
+-- create instances of SEq for each type in the list
+singEqInstances :: [Name] -> Q [Dec]
+singEqInstances = concatMapM singEqInstance
+
+-- create instance of SEq for the given *singleton* type
+-- doesn't work because of GHC Trac #7477. Argh.
+singEqInstance :: Name -> Q [Dec]
+singEqInstance name = do
+  promotion <- promoteEqInstance name
+  (tvbs, _) <- getDataD "I cannot make an instance of SEq for it." name
+  let tyvars = map (VarT . extractTvbName) tvbs
+      kind = foldType (ConT name) tyvars
+  aName <- newName "a"
+  let aVar = VarT aName
+  inst_decs <- reifyInstances singFamilyName [SigT aVar kind]
+  scons <- case inst_decs of
+    [DataInstD [] _sing _tyvars scons _derivings] -> return scons
+    [] -> fail $ "No singleton associated with " ++ (show name) ++ " was found. " ++
+                 "If you made this singleton in the same Template Haskell " ++
+                 "splice, try starting a new splice."
+    (_:_:_) -> fail $ "Multiple singleton instances found. Please report this " ++
+                      "error to Richard Eisenberg at eir@cis.upenn.edu."
+    _ -> fail $ "Found something strange (" ++ (show inst_decs) ++ ") when " ++
+                "looking for the singleton associated with " ++ (show name) ++
+                ". Please report to Richard Eisenberg at eir@cis.upenn.edu."
+  dec <- mkSingEqInstance kind scons
+  return $ dec : promotion
+
+-- create an SEq instance for singletons of the given kind,
+-- with the given *singleton* constructors 
+mkSingEqInstance :: Kind -> [Con] -> Q Dec
+mkSingEqInstance k ctors = do
+  let ctorPairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
+  sEqMethClauses <- mapM mkEqMethClause ctorPairs
+  return $ InstanceD (map (\k -> ClassP sEqClassName [kindParam k])
+                          (getBareKinds ctors))
+                     (AppT (ConT sEqClassName)
+                           (kindParam k))
+                     [FunD sEqMethName sEqMethClauses]
+  where mkEqMethClause :: (Con, Con) -> Q Clause
+        mkEqMethClause (c1, c2) =
+          if c1 == c2
+          then do
+            let (name, numArgs) = extractNameArgs c1
+            lnames <- replicateM numArgs (newName "a")
+            rnames <- replicateM numArgs (newName "b")
+            let lpats = map VarP lnames
+                rpats = map VarP rnames
+                lvars = map VarE lnames
+                rvars = map VarE rnames
+            return $ Clause
+              [ConP name lpats, ConP name rpats]
+              (NormalB $
+                allExp (zipWith (\l r -> foldExp (VarE sEqMethName) [l, r])
+                                lvars rvars))
+              []
+          else do
+            let (lname, lNumArgs) = extractNameArgs c1
+                (rname, rNumArgs) = extractNameArgs c2
+            return $ Clause
+              [ConP lname (replicate lNumArgs WildP),
+               ConP rname (replicate rNumArgs WildP)]
+              (NormalB (singDataCon falseName))
+              []
+
+        getBareKinds :: [Con] -> [Kind]
+        getBareKinds = foldl (\res -> ctorCases
+          (\_ _ -> res) -- must be a constant constructor
+          (\tvbs _ _ -> union res (filter isVarK $ map extractTvbKind tvbs)))
+          []
+
+        allExp :: [Exp] -> Exp
+        allExp [] = singDataCon trueName
+        allExp [one] = one
+        allExp (h:t) = AppE (AppE (singVal andName) h) (allExp t)
+
 -- the first parameter is True when we're refining the special case "Rep"
 -- and false otherwise. We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
@@ -297,14 +373,7 @@ singDataD rep cxt name tvbs ctors derivings
                         (map mkSingInstanceClause ctors')]
   
   -- SEq instance
-  let ctorPairs = [ (c1, c2) | c1 <- ctors', c2 <- ctors' ]
-  sEqMethClauses <- mapM mkEqMethClause ctorPairs
-  let sEqInst =
-        InstanceD (map (\k -> ClassP sEqClassName [kindParam k])
-                       (getBareKinds ctors'))
-                  (AppT (ConT sEqClassName)
-                        (kindParam k))
-                  [FunD sEqMethName sEqMethClauses]
+  sEqInst <- mkSingEqInstance k ctors'
   
   -- e.g. type SNat (a :: Nat) = Sing a
   let kindedSynInst =
@@ -340,32 +409,6 @@ singDataD rep cxt name tvbs ctors derivings
             Clause [ConP nm (replicate (length tys) WildP)]
                    (NormalB singInstanceDataCon) [])
 
-        mkEqMethClause :: (Con, Con) -> Q Clause
-        mkEqMethClause (c1, c2) =
-          if c1 == c2
-          then do
-            let (name, numArgs) = extractNameArgs c1
-            lnames <- replicateM numArgs (newName "a")
-            rnames <- replicateM numArgs (newName "b")
-            let lpats = map VarP lnames
-                rpats = map VarP rnames
-                lvars = map VarE lnames
-                rvars = map VarE rnames
-            return $ Clause
-              [ConP name lpats, ConP name rpats]
-              (NormalB $
-                allExp (zipWith (\l r -> foldExp (VarE sEqMethName) [l, r])
-                                lvars rvars))
-              []
-          else do
-            let (lname, lNumArgs) = extractNameArgs c1
-                (rname, rNumArgs) = extractNameArgs c2
-            return $ Clause
-              [ConP lname (replicate lNumArgs WildP),
-               ConP rname (replicate rNumArgs WildP)]
-              (NormalB (singDataCon falseName))
-              []
-
         mkForgetClause :: Con -> Q Clause
         mkForgetClause c = do
           let (name, numArgs) = extractNameArgs c
@@ -375,17 +418,6 @@ singDataD rep cxt name tvbs ctors derivings
                              (ConE $ (if rep then reinterpret else id) name)
                              (map (AppE (VarE forgetName) . VarE) varNames))
                           []
-
-        getBareKinds :: [Con] -> [Kind]
-        getBareKinds = foldl (\res -> ctorCases
-          (\_ _ -> res) -- must be a constant constructor
-          (\tvbs _ _ -> union res (filter isVarK $ map extractTvbKind tvbs)))
-          []
-
-        allExp :: [Exp] -> Exp
-        allExp [] = singDataCon trueName
-        allExp [one] = one
-        allExp (h:t) = AppE (AppE (singVal andName) h) (allExp t)
 
 singKind :: Kind -> Q (Kind -> Kind)
 singKind (ForallT _ _ _) =

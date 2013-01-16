@@ -179,6 +179,20 @@ promoteDecs decls = do
         noTypeSigs
   return (newDecls' ++ moreNewDecls, noTypeSigs)
 
+-- produce instances for (:==:) from the given types
+promoteEqInstances :: [Name] -> Q [Dec]
+promoteEqInstances = concatMapM promoteEqInstance
+
+-- produce instance for (:==:) from the given type
+promoteEqInstance :: Name -> Q [Dec]
+promoteEqInstance name = do
+  (tvbs, cons) <- getDataD "I cannot make an instance of (:==:) for it." name
+  vars <- replicateM (length tvbs) (newName "k")
+  let tyvars = map VarT vars
+      kind = foldType (ConT name) tyvars
+  inst <- mkEqTypeInstance kind cons
+  return [inst]
+
 -- produce the branched type instance for (:==:) over the given list of ctors
 mkEqTypeInstance :: Kind -> [Con] -> Q Dec
 mkEqTypeInstance kind cons = do
