@@ -4,4 +4,3 @@ Ord instance
 
 Consider moving some Prelude-style def'ns into another module
 
-Promote Eq a constraint

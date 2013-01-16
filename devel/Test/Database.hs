@@ -22,10 +22,9 @@ presented in /Dependently typed programming with singletons/
 
 module Test.Database where
 
-import Singletons.Lib
+import Data.Singletons
 import Control.Monad
 import Data.List
-import Data.Maybe
 import Control.Monad.Error
 
 $(singletons [d|
@@ -87,12 +86,12 @@ $(singletons [d|
   -- predicate to check if a name occurs in a schema
   occurs :: [AChar] -> Schema -> Bool
   occurs _ (Sch []) = False
-  occurs name (Sch ((Attr name' u) : attrs)) =
+  occurs name (Sch ((Attr name' _) : attrs)) =
     name == name' || occurs name (Sch attrs)
 
   -- looks up an element type from a schema
   lookup :: [AChar] -> Schema -> U
-  lookup name (Sch []) = undefined
+  lookup _ (Sch []) = undefined
   lookup name (Sch ((Attr name' u) : attrs)) =
     if name == name' then u else lookup name (Sch attrs)
   |])
@@ -165,7 +164,7 @@ elUShowInstance :: Sing u -> ElUShowInstance u
 elUShowInstance SBOOL = ElUShowInstance
 elUShowInstance SSTRING = ElUShowInstance
 elUShowInstance SNAT  = ElUShowInstance
-elUShowInstance (SVEC u n) = case elUShowInstance u of
+elUShowInstance (SVEC u _) = case elUShowInstance u of
   ElUShowInstance -> ElUShowInstance
 
 showAttrProof :: Sing (Attr nm u) -> ElUShowInstance u
@@ -181,7 +180,7 @@ instance Show (Row (Sch '[])) where
   show (EmptyRow n) = "(id=" ++ (show n) ++ ")"
 instance (Show (El u), Show (Row (Sch attrs))) =>
            Show (Row (Sch ((Attr name u) ': attrs))) where 
-  show row@(ConsRow h t) = case t of
+  show (ConsRow h t) = case t of
         EmptyRow n -> (show h) ++ " (id=" ++ (show n) ++ ")"
         t -> (show h) ++ ", " ++ (show t)
 
@@ -212,7 +211,7 @@ type ErrorM = Either String
 readRow :: Int -> SSchema s -> [String] -> ErrorM (Row s, [String])
 readRow id (SSch SNil) strs =
   return (EmptyRow [id], strs)
-readRow id (SSch (SCons _ _)) [] =
+readRow _ (SSch (SCons _ _)) [] =
   throwError "Ran out of data while processing row"
 readRow id (SSch (SCons (SAttr _ u) at)) (sh:st) = do
   (rowTail, strTail) <- readRow id (SSch at) st
@@ -451,7 +450,7 @@ query (Project sch ra) = do
         -- the output to type-check, as it is indexed by the input schema.
 
         -- We use explicit quantification to get access to scoped type variables.
-        projectRow :: forall (s :: Schema) (s' :: Schema) (a' :: [Attribute]).
+        projectRow :: forall (s :: Schema) (s' :: Schema).
                         SubsetC s s' => SSchema s -> Row s' -> Row s
 
         -- Base case: empty schema
@@ -461,7 +460,7 @@ query (Project sch ra) = do
         -- the provided schema is a subset of the provided RA. We extract this
         -- proof (of type SubsetProof s s') from the SubsetC instance using the
         -- subset method.
-        projectRow s@(SSch (SCons attr tail)) r =
+        projectRow (SSch (SCons attr tail)) r =
           case subset :: SubsetProof s s' of
 
             -- Because we know that the schema is non-empty, the only possibility
@@ -489,11 +488,11 @@ query (Project sch ra) = do
                         Sing (Attr nm u) -> Row sch -> El u
         extractElt attr r = case inProof :: InProof (Attr nm u) sch of
           InElt -> case r of
-            ConsRow h t -> h
+            ConsRow h _ -> h
             -- EmptyRow _ -> undefined <== IMPOSSIBLE
             _ -> error "Type checking failed"
           InTail  -> case r of
-            ConsRow h t -> extractElt attr t
+            ConsRow _ t -> extractElt attr t
             -- EmptyRow _ -> undefined <== IMPOSSBLE
             _ -> error "Type checking failed"
 
@@ -503,7 +502,7 @@ query (Select expr r) = do
   return $ choose vals rows
   where -- Evaluates an expression
         eval :: forall s' u. SingI s' => Expr s' u -> Row s' -> El u
-        eval (Element s (name :: Sing name)) row =
+        eval (Element _ (name :: Sing name)) row =
           case row of
             -- EmptyRow _ -> undefined <== IMPOSSIBLE
             ConsRow h t -> case row of
@@ -530,4 +529,4 @@ query (Select expr r) = do
               v2 = eval e2 row in
           v1 < v2
 
-        eval (LiteralNat x) row = toNat x
+        eval (LiteralNat x) _ = toNat x

@@ -8,11 +8,11 @@ some basic queries on it.
 
 -}
 
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DataKinds #-}
 
 module Test.GradingClient where
 
-import Singletons.Lib
+import Data.Singletons
 import Test.Database
 
 $(singletons [d|

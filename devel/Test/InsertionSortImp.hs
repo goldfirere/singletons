@@ -35,7 +35,7 @@ unambiguous.
 
 module Test.InsertionSortImp where
 
-import Singletons.Lib
+import Data.Singletons
 
 -- We use the Dict data type from Edward Kmett's constraints package to be
 -- able to return dictionaries from functions
@@ -148,7 +148,7 @@ insert_ascending n lst =
     AscEmpty -> Dict -- If lst is empty, then we're done
     AscOne -> case lst of -- If lst has one element...
       -- SNil -> undefined <== IMPOSSIBLE
-      SCons h t -> case sLeq n h of -- then check if n is <= h
+      SCons h _ -> case sLeq n h of -- then check if n is <= h
         STrue -> case sLeq_true__le n h of Dict -> Dict -- if so, we're done
         SFalse -> case sLeq_false__nle n h of Dict -> Dict -- if not, we're done
       _ -> error "type checking failed"
@@ -159,7 +159,7 @@ insert_ascending n lst =
         SFalse -> case sLeq_false__nle n h of -- if not, things are harder...
           Dict -> case t of -- destruct t: lst is (h : h2 : t2)
             -- SNil -> undefined <== IMPOSSIBLE
-            SCons h2 t2 -> case sLeq n h2 of -- is n <= h2?
+            SCons h2 _ -> case sLeq n h2 of -- is n <= h2?
               STrue -> -- if so, we're done
                 case sLeq_true__le n h2 of Dict -> Dict
               SFalse -> -- otherwise, show that (Insert n t) is sorted
