@@ -1,6 +1,6 @@
 {- Data/Singletons/Promote.hs
 
-(c) Richard Eisenberg 2012
+(c) Richard Eisenberg 2013
 eir@cis.upenn.edu
 
 This file contains functions to promote term-level constructs to the

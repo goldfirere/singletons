@@ -1,6 +1,6 @@
 {- Data/Singletons/TypeRepStar.hs
 
-(c) Richard Eisenberg 2012
+(c) Richard Eisenberg 2013
 eir@cis.upenn.edu
 
 This file contains the definitions for considering TypeRep to be the demotion

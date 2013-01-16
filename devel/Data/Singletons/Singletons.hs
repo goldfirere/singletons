@@ -1,6 +1,6 @@
 {- Data/Singletons/Singletons.hs
 
-(c) Richard Eisenberg 2012
+(c) Richard Eisenberg 2013
 eir@cis.upenn.edu
 
 This file contains functions to refine constructs to work with singleton

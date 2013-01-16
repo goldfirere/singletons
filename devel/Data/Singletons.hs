@@ -1,6 +1,6 @@
 {- Data/Singletons.hs
 
-(c) Richard Eisenberg 2012
+(c) Richard Eisenberg 2013
 eir@cis.upenn.edu
 
 This is the public interface file to the singletons library. Please

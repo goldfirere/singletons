@@ -1,6 +1,6 @@
 {- Data/Singletons/CustomStar.hs
 
-(c) Richard Eisenbeg 2012
+(c) Richard Eisenbeg 2013
 eir@cis.upenn.edu
 
 This file implements singletonStar, which generates a datatype Rep and associated
