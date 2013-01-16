@@ -7,30 +7,33 @@ This file contains functions to promote term-level constructs to the
 type level. It is an internal module to the singletons package.
 -}
 
+{-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Promote where
 
 import Language.Haskell.TH
 import Data.Singletons.Util
+import Data.Singletons.Exports
+import GHC.Exts (Any)
 import Prelude hiding (exp)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import Control.Monad
-import Control.Monad.Writer
+import Control.Monad.Writer hiding (Any)
 import Data.List
 
 anyTypeName, falseName, trueName, andName, tyEqName, repName, ifName,
   headName, tailName :: Name
-anyTypeName = mkName "Any"
-falseName = mkName "False"
-trueName = mkName "True"
+anyTypeName = ''Any
+falseName = 'False
+trueName = 'True
 andName = mkName "&&"
 tyEqName = mkName ":==:"
 repName = mkName "Rep"
-ifName = mkName "If"
-headName = mkName "Head"
-tailName = mkName "Tail"
+ifName = ''If
+headName = ''Head
+tailName = ''Tail
 
 falseTy :: Type
 falseTy = promoteDataCon falseName

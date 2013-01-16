@@ -34,4 +34,4 @@ library
   exposed-modules:    Data.Singletons, Data.Singletons.CustomStar,
                       Data.Singletons.TypeRepStar
   other-modules:      Data.Singletons.Promote, Data.Singletons.Singletons,
-                      Data.Singletons.Util
+                      Data.Singletons.Util, Data.Singletons.Exports

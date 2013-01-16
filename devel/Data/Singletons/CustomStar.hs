@@ -17,7 +17,6 @@ import Language.Haskell.TH
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Singletons
-import Data.Singletons ((:==:))
 import Control.Monad
 
 -- Produce a representation and singleton for the collection of types given

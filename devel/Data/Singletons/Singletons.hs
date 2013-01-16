@@ -6,12 +6,13 @@ eir@cis.upenn.edu
 This file contains functions to refine constructs to work with singleton
 types. It is an internal module to the singletons package.
 -}
-{-# LANGUAGE PatternGuards #-}
+{-# LANGUAGE PatternGuards, TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Singletons where
 
 import Language.Haskell.TH
+import Data.Singletons.Exports
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import qualified Data.Map as Map
@@ -30,19 +31,21 @@ type TypeFn = Type -> Type
 type TypeContext = [Type]
 
 singFamilyName, isSingletonName, forgettableName, comboClassName, witnessName,
-  demoteName, singKindClassName, singInstanceMethName, singInstanceName,
-  sEqClassName, sEqMethName, sconsName, snilName, smartSconsName,
-  smartSnilName, sIfName, undefinedName, kindParamName, ofKindName :: Name
-singFamilyName = mkName "Sing"
-isSingletonName = mkName "SingI"
-forgettableName = mkName "SingE"
-comboClassName = mkName "SingRep"
-witnessName = mkName "sing"
-forgetName = mkName "fromSing"
-demoteName = mkName "DemoteRep"
-singKindClassName = mkName "SingKind"
-singInstanceMethName = mkName "singInstance"
-singInstanceName = mkName "SingInstance"
+  demoteName, singKindClassName, singInstanceMethName, singInstanceTyConName,
+  singInstanceDataConName, sEqClassName, sEqMethName, sconsName, snilName,
+  smartSconsName, smartSnilName, sIfName, undefinedName, kindParamName,
+  ofKindName :: Name
+singFamilyName = ''Sing
+isSingletonName = ''SingI
+forgettableName = ''SingE
+comboClassName = ''SingRep
+witnessName = 'sing
+forgetName = 'fromSing
+demoteName = ''DemoteRep
+singKindClassName = ''SingKind
+singInstanceMethName = 'singInstance
+singInstanceTyConName = ''SingInstance
+singInstanceDataConName = 'SingInstance
 sEqClassName = mkName "SEq"
 sEqMethName = mkName "%==%"
 sconsName = mkName "SCons"
@@ -50,9 +53,9 @@ snilName = mkName "SNil"
 smartSconsName = mkName "sCons"
 smartSnilName = mkName "sNil"
 sIfName = mkName "sIf"
-undefinedName = mkName "undefined"
-kindParamName = mkName "KindParam"
-ofKindName = mkName "OfKind"
+undefinedName = 'undefined
+kindParamName = 'KindParam
+ofKindName = ''OfKind
 
 mkTupleName :: Int -> Name
 mkTupleName n = mkName $ "STuple" ++ (show n)
@@ -67,13 +70,13 @@ singInstanceMeth :: Exp
 singInstanceMeth = VarE singInstanceMethName
 
 singInstanceTyCon :: Type
-singInstanceTyCon = ConT singInstanceName
+singInstanceTyCon = ConT singInstanceTyConName
 
 singInstanceDataCon :: Exp
-singInstanceDataCon = ConE singInstanceName
+singInstanceDataCon = ConE singInstanceDataConName
 
 singInstancePat :: Pat
-singInstancePat = ConP singInstanceName []
+singInstancePat = ConP singInstanceDataConName []
 
 demote :: Type
 demote = ConT demoteName

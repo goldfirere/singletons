@@ -15,7 +15,8 @@ available at <http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>
              FlexibleContexts, RankNTypes, UndecidableInstances,
              FlexibleInstances, ScopedTypeVariables, CPP
  #-}
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+{-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-unused-binds #-}
+-- We make unused bindings for (||), (&&), and not.
 
 module Data.Singletons (
   OfKind(..), Sing(..), SingI(..), SingE(..), SingRep, KindOf, Demote,
@@ -26,7 +27,7 @@ module Data.Singletons (
   sTuple0, sTuple2, sTuple3, sTuple4, sTuple5, sTuple6, sTuple7,
   STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
   Not, sNot, (:&&), (%:&&), (:||), (%:||), (:&&:), (:||:), (:/=), (:/=:),
-  SEq((%==%), (%/=%), (%:==), (%:/=)),
+  SEq((%==%), (%/=%)), (%:==), (%:/=),
   If, sIf, 
   sNil, sCons, SList, (:++), (%:++), Head, Tail,
   cases, bugInGHC,
@@ -36,47 +37,11 @@ module Data.Singletons (
 import Prelude hiding ((++))
 import Data.Singletons.Singletons
 import Data.Singletons.Promote
+import Data.Singletons.Exports
 import Language.Haskell.TH
 import Data.Singletons.Util
 import GHC.Exts (Any)
 
-#if __GLASGOW_HASKELL__ >= 707
-
-import GHC.TypeLits ( OfKind(..), Sing(..), SingI(..), SingE(..),
-                      SingRep, KindOf, Demote )
-
-#else
-
--- Kind-level proxy
-data OfKind (k :: *) = KindParam
-
--- Access the kind of a type variable
-type KindOf (a :: k) = (KindParam :: OfKind k)
-
--- Declarations of singleton structures
-data family Sing (a :: k)
-class SingI (a :: k) where
-  sing :: Sing a
-class (kparam ~ KindParam) => SingE (kparam :: OfKind k) where
-  type DemoteRep kparam :: *
-  fromSing :: Sing (a :: k) -> DemoteRep kparam
-
--- SingRep is a synonym for (SingI, SingE)
-class    (SingI a, SingE (KindOf a)) => SingRep (a :: k)
-instance (SingI a, SingE (KindOf a)) => SingRep (a :: k)
-
--- Abbreviation for DemoteRep
-type Demote (a :: k) = DemoteRep (KindParam :: OfKind k)
-
-#endif
-
-type family (a :: k) :==: (b :: k) :: Bool
-type a :== b = a :==: b -- :== and :==: are synonyms
-
-data SingInstance (a :: k) where
-  SingInstance :: SingRep a => SingInstance a
-class (kparam ~ KindParam) => SingKind (kparam :: OfKind k) where
-  singInstance :: forall (a :: k). Sing a -> SingInstance a
 
 -- provide a few useful singletons...
 $(genSingletons [''Bool, ''Maybe, ''Either, ''[]])
@@ -89,40 +54,42 @@ $(singletons [d|
   not True  = False
 
   (&&) :: Bool -> Bool -> Bool
-  False && a = False
+  False && _ = False
   True  && a = a
 
   (||) :: Bool -> Bool -> Bool
   False || a = a
-  True  || a = True
+  True  || _ = True
   |])
+
+-- singleton conditional
+sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
+sIf STrue b _ = b
+sIf SFalse _ c = c
+
+type family (a :: k) :==: (b :: k) :: Bool
+type a :== b = a :==: b -- :== and :==: are synonyms
+
+type a :/=: b = Not (a :==: b)
+type a :/= b = a :/=: b
 
 -- symmetric syntax synonyms
 type a :&&: b = a :&& b
 type a :||: b = a :|| b
 
-type a :/=: b = Not (a :==: b)
-type a :/= b = a :/=: b
-
 -- the singleton analogue of @Eq@
 class (kparam ~ KindParam) => SEq (kparam :: OfKind k) where
   (%==%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :==: b)
-  (%:==) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :==: b)
-  (%:==) = (%==%)
-  (%:/=) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :/=: b)
-  a %:/= b = sNot (a %==% b)
   (%/=%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :/=: b)
-  (%/=%) = (%:/=)
+  a %/=% b = sNot (a %==% b)
 
--- type-level conditional
-type family If (a :: Bool) (b :: k) (c :: k) :: k
-type instance If 'True b c = b
-type instance If 'False b c = c
+(%:==) :: forall (a :: k) (b :: k). SEq (KindParam :: OfKind k)
+       => Sing a -> Sing b -> Sing (a :==: b)
+(%:==) = (%==%)
 
--- singleton conditional
-sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
-sIf STrue b c = b
-sIf SFalse b c = c
+(%:/=) :: forall (a :: k) (b :: k). SEq (KindParam :: OfKind k)
+       => Sing a -> Sing b -> Sing (a :/=: b)
+(%:/=) = (%/=%)
 
 #if __GLASGOW_HASKELL__ >= 707
 
@@ -145,12 +112,6 @@ instance SEq (KindParam :: OfKind k) => SEq (KindParam :: OfKind [k]) where
   SNil %==% (SCons _ _) = SFalse
   (SCons _ _) %==% SNil = SFalse
   (SCons a b) %==% (SCons a' b') = (a %==% a') %:&& (b %==% b')
-
-type family Head (a :: [k]) :: k
-type instance Head (h ': t) = h
-
-type family Tail (a :: [k]) :: [k]
-type instance Tail (h ': t) = t
 
 $(singletons [d|
   (++) :: [a] -> [a] -> [a]
