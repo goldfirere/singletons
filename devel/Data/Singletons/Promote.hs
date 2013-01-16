@@ -17,7 +17,6 @@ import Prelude hiding (exp)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import Control.Monad
-import Data.Maybe
 import Control.Monad.Writer
 import Data.List
 
@@ -59,21 +58,21 @@ genPromotions names = do
   return $ concat decls
 
 promoteInfo :: Info -> Q [Dec]
-promoteInfo (ClassI dec instances) =
+promoteInfo (ClassI _dec _instances) =
   fail "Promotion of class info not supported"
-promoteInfo (ClassOpI name ty className fixity) =
+promoteInfo (ClassOpI _name _ty _className _fixity) =
   fail "Promotion of class members info not supported"
 promoteInfo (TyConI dec) = evalWithoutAux $ promoteDec Map.empty dec
-promoteInfo (FamilyI dec instances) =
+promoteInfo (FamilyI _dec _instances) =
   fail "Promotion of type family info not yet supported" -- KindFams
-promoteInfo (PrimTyConI name numArgs unlifted) =
+promoteInfo (PrimTyConI _name _numArgs _unlifted) =
   fail "Promotion of primitive type constructors not supported"
-promoteInfo (DataConI name ty tyname fixity) =
+promoteInfo (DataConI _name _ty _tyname _fixity) =
   fail $ "Promotion of individual constructors not supported; " ++
          "promote the type instead"
-promoteInfo (VarI name ty mdec fixity) =
+promoteInfo (VarI _name _ty _mdec _fixity) =
   fail "Promotion of value info not supported"
-promoteInfo (TyVarI name ty) =
+promoteInfo (TyVarI _name _ty) =
   fail "Promotion of type variable info not supported"
 
 promoteDataCon :: Name -> Type
@@ -91,14 +90,14 @@ promoteVal :: Name -> Type
 promoteVal = ConT . promoteValName
 
 promoteType :: Type -> Q Kind
-promoteType (ForallT tvbs [] ty) = promoteType ty -- ForallKinds
+promoteType (ForallT _tvbs [] ty) = promoteType ty -- ForallKinds
 promoteType (ForallT _ (_:_) _) = fail "Cannot promote type with constrained variables"
 promoteType (VarT name) = return $ VarT name
 promoteType (ConT name) = return $ if (nameBase name) == "TypeRep" ||
                                       (nameBase name) == (nameBase repName)
                                      then StarT else ConT name
 promoteType (TupleT n) = return $ TupleT n
-promoteType (UnboxedTupleT n) = fail "Promotion of unboxed tuples not supported"
+promoteType (UnboxedTupleT _n) = fail "Promotion of unboxed tuples not supported"
 promoteType ArrowT = return ArrowT
 promoteType ListT = return ListT
 promoteType (AppT (AppT ArrowT (ForallT (_:_) _ _)) _) =
@@ -107,7 +106,7 @@ promoteType (AppT ty1 ty2) = do
   k1 <- promoteType ty1
   k2 <- promoteType ty2
   return $ AppT k1 k2
-promoteType (SigT ty _) = fail "Cannot promote type of kind other than *"
+promoteType (SigT _ty _) = fail "Cannot promote type of kind other than *"
 promoteType (LitT _) = fail "Cannot promote a type-level literal"
 promoteType (PromotedT _) = fail "Cannot promote a promoted data constructor"
 promoteType (PromotedTupleT _) = fail "Cannot promote tuples that are already promoted"
@@ -246,33 +245,33 @@ promoteDec vars (DataD cxt name tvbs ctors derivings) =
   promoteDataD vars cxt name tvbs ctors derivings
 promoteDec vars (NewtypeD cxt name tvbs ctor derivings) =
   promoteDataD vars cxt name tvbs [ctor] derivings
-promoteDec vars (TySynD name tvbs ty) =
+promoteDec _vars (TySynD _name _tvbs _ty) =
   fail "Promotion of type synonym declaration not yet supported"
-promoteDec vars (ClassD cxt name tvbs fundeps decs) =
+promoteDec _vars (ClassD _cxt _name _tvbs _fundeps _decs) =
   fail "Promotion of class declaration not yet supported"
-promoteDec vars (InstanceD cxt ty decs) =
+promoteDec _vars (InstanceD _cxt _ty _decs) =
   fail "Promotion of instance declaration not yet supported"
-promoteDec vars (SigD name ty) = return [] -- handle in promoteDec'
-promoteDec vars (ForeignD fgn) =
+promoteDec _vars (SigD _name _ty) = return [] -- handle in promoteDec'
+promoteDec _vars (ForeignD _fgn) =
   fail "Promotion of foreign function declaration not yet supported"
-promoteDec vars (InfixD fixity name)
+promoteDec _vars (InfixD fixity name)
   | isUpcase name = return [] -- automatic: promoting a type or data ctor
   | otherwise     = return [InfixD fixity (promoteValName name)] -- value
-promoteDec vars (PragmaD prag) =
+promoteDec _vars (PragmaD _prag) =
   fail "Promotion of pragmas not yet supported"
-promoteDec vars (FamilyD flavour name tvbs mkind) =
+promoteDec _vars (FamilyD _flavour _name _tvbs _mkind) =
   fail "Promotion of type and data families not yet supported"
-promoteDec vars (DataInstD cxt name tys ctors derivings) =
+promoteDec _vars (DataInstD _cxt _name _tys _ctors _derivings) =
   fail "Promotion of data instances not yet supported"
-promoteDec vars (NewtypeInstD cxt name tys ctors derivings) =
+promoteDec _vars (NewtypeInstD _cxt _name _tys _ctors _derivings) =
   fail "Promotion of newtype instances not yet supported"
-promoteDec vars (TySynInstD name eqns) =
+promoteDec _vars (TySynInstD _name _eqns) =
   fail "Promotion of type synonym instances not yet supported"
 
 -- only need to check if the datatype derives Eq. The rest is automatic.
 promoteDataD :: TypeTable -> Cxt -> Name -> [TyVarBndr] -> [Con] ->
                 [Name] -> NumArgsQ [Dec]
-promoteDataD vars cxt name tvbs ctors derivings =
+promoteDataD _vars _cxt name tvbs ctors derivings =
   if any (\n -> (nameBase n) == "Eq") derivings
     then do
       kvs <- replicateM (length tvbs) (lift $ newName "k")
@@ -417,7 +416,7 @@ promoteTopLevelPat (TildeP pat) = do
 promoteTopLevelPat (BangP pat) = do
   lift $ reportWarning "Strict pattern converted into regular pattern in promotion"
   promoteTopLevelPat pat
-promoteTopLevelPat (AsP name pat) =
+promoteTopLevelPat (AsP _name _pat) =
   fail "Promotion of aliased patterns at top level not yet supported"
 promoteTopLevelPat WildP = return []
 promoteTopLevelPat (RecP _ _) =
@@ -491,15 +490,15 @@ type QWithDecs = QWithAux [Dec]
 
 promoteBody :: TypeTable -> Body -> QWithDecs Type
 promoteBody vars (NormalB exp) = promoteExp vars exp
-promoteBody vars (GuardedB _) =
+promoteBody _vars (GuardedB _) =
   fail "Promoting guards in patterns not yet supported"
 
 promoteExp :: TypeTable -> Exp -> QWithDecs Type
 promoteExp vars (VarE name) = case Map.lookup name vars of
   Just ty -> return ty
   Nothing -> return $ promoteVal name
-promoteExp vars (ConE name) = return $ promoteDataCon name
-promoteExp vars (LitE lit) = fail "Promotion of literal expressions not supported"
+promoteExp _vars (ConE name) = return $ promoteDataCon name
+promoteExp _vars (LitE _lit) = fail "Promotion of literal expressions not supported"
 promoteExp vars (AppE exp1 exp2) = do
   ty1 <- promoteExp vars exp1
   ty2 <- promoteExp vars exp2
@@ -508,41 +507,41 @@ promoteExp vars (InfixE mexp1 exp mexp2) =
   case (mexp1, mexp2) of
     (Nothing, Nothing) -> promoteExp vars exp
     (Just exp1, Nothing) -> promoteExp vars (AppE exp exp1)
-    (Nothing, Just exp2) ->
+    (Nothing, Just _exp2) ->
       fail "Promotion of right-only sections not yet supported"
     (Just exp1, Just exp2) -> promoteExp vars (AppE (AppE exp exp1) exp2)
-promoteExp vars (UInfixE _ _ _) =
+promoteExp _vars (UInfixE _ _ _) =
   fail "Promotion of unresolved infix operators not supported"
-promoteExp vars (ParensE _) = fail "Promotion of unresolved parens not supported"
-promoteExp vars (LamE pats exp) =
+promoteExp _vars (ParensE _) = fail "Promotion of unresolved parens not supported"
+promoteExp _vars (LamE _pats _exp) =
   fail "Promotion of lambda expressions not yet supported"
-promoteExp vars (LamCaseE alts) =
+promoteExp _vars (LamCaseE _alts) =
   fail "Promotion of lambda-case expressions not yet supported"
 promoteExp vars (TupE exps) = do
   tys <- mapM (promoteExp vars) exps
   let tuple = PromotedTupleT (length tys)
       tup = foldType tuple tys
   return tup
-promoteExp vars (UnboxedTupE _) = fail "Promotion of unboxed tuples not supported"
+promoteExp _vars (UnboxedTupE _) = fail "Promotion of unboxed tuples not supported"
 promoteExp vars (CondE bexp texp fexp) = do
   tys <- mapM (promoteExp vars) [bexp, texp, fexp]
   return $ foldType ifTyFam tys
-promoteExp vars (MultiIfE alts) =
+promoteExp _vars (MultiIfE _alts) =
   fail "Promotion of multi-way if not yet supported"
-promoteExp vars (LetE decs exp) =
+promoteExp _vars (LetE _decs _exp) =
   fail "Promotion of let statements not yet supported"
-promoteExp vars (CaseE exp matches) =
+promoteExp _vars (CaseE _exp _matches) =
   fail "Promotion of case statements not yet supported"
-promoteExp vars (DoE stmts) = fail "Promotion of do statements not supported"
-promoteExp vars (CompE stmts) =
+promoteExp _vars (DoE _stmts) = fail "Promotion of do statements not supported"
+promoteExp _vars (CompE _stmts) =
   fail "Promotion of list comprehensions not yet supported"
-promoteExp vars (ArithSeqE _) = fail "Promotion of ranges not supported"
+promoteExp _vars (ArithSeqE _) = fail "Promotion of ranges not supported"
 promoteExp vars (ListE exps) = do
   tys <- mapM (promoteExp vars) exps
   return $ foldr (\ty lst -> AppT (AppT PromotedConsT ty) lst) PromotedNilT tys
-promoteExp vars (SigE exp ty) =
+promoteExp _vars (SigE _exp _ty) =
   fail "Promotion of explicit type annotations not yet supported"
-promoteExp vars (RecConE name fields) =
+promoteExp _vars (RecConE _name _fields) =
   fail "Promotion of record construction not yet supported"
-promoteExp vars (RecUpdE exp fields) =
+promoteExp _vars (RecUpdE _exp _fields) =
   fail "Promotion of record updates not yet supported"

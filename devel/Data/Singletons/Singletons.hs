@@ -6,7 +6,7 @@ eir@cis.upenn.edu
 This file contains functions to refine constructs to work with singleton
 types. It is an internal module to the singletons package.
 -}
-
+{-# LANGUAGE PatternGuards #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Singletons where
@@ -119,21 +119,21 @@ genSingletons names = do
   return $ concat decls
 
 singInfo :: Info -> Q [Dec]
-singInfo (ClassI dec instances) =
+singInfo (ClassI _dec _instances) =
   fail "Singling of class info not supported"
-singInfo (ClassOpI name ty className fixity) =
+singInfo (ClassOpI _name _ty _className _fixity) =
   fail "Singling of class members info not supported"
 singInfo (TyConI dec) = singDec dec
-singInfo (FamilyI dec instances) =
+singInfo (FamilyI _dec _instances) =
   fail "Singling of type family info not yet supported" -- KindFams
-singInfo (PrimTyConI name numArgs unlifted) =
+singInfo (PrimTyConI _name _numArgs _unlifted) =
   fail "Singling of primitive type constructors not supported"
-singInfo (DataConI name ty tyname fixity) =
+singInfo (DataConI _name _ty _tyname _fixity) =
   fail $ "Singling of individual constructors not supported; " ++
          "single the type instead"
-singInfo (VarI name ty mdec fixity) =
+singInfo (VarI _name _ty _mdec _fixity) =
   fail "Singling of value info not supported"
-singInfo (TyVarI name ty) =
+singInfo (TyVarI _name _ty) =
   fail "Singling of type variable info not supported"
 
 -- refine a constructor. the first parameter is the type variable that
@@ -180,7 +180,7 @@ singCtor a = ctorCases
                        (map (ClassP comboClassName . return) indices) ++
                        (map singKindConstraint bareKindVars))
                      (NormalC sName $ map (\ty -> (NotStrict,ty)) args))
-  (\tvbs cxt ctor -> case cxt of
+  (\_tvbs cxt ctor -> case cxt of
     _:_ -> fail "Singling of constrained constructors not yet supported"
     [] -> singCtor a ctor)
   where buildArgTypes :: [Type] -> [Type] -> Q [Type]
@@ -240,11 +240,11 @@ singDec (DataD cxt name tvbs ctors derivings) =
   singDataD False cxt name tvbs ctors derivings
 singDec (NewtypeD cxt name tvbs ctor derivings) =
   singDataD False cxt name tvbs [ctor] derivings
-singDec (TySynD name tvbs ty) =
+singDec (TySynD _name _tvbs _ty) =
   fail "Singling of type synonyms not yet supported"
-singDec (ClassD cxt name tvbs fundeps decs) =
+singDec (ClassD _cxt _name _tvbs _fundeps _decs) =
   fail "Singling of class declaration not yet supported"
-singDec (InstanceD cxt ty decs) =
+singDec (InstanceD _cxt _ty _decs) =
   fail "Singling of class instance not yet supported"
 singDec (SigD name ty) = do
   tyTrans <- singType True ty
@@ -260,23 +260,25 @@ singDec (ForeignD fgn) =
 singDec (InfixD fixity name)
   | isUpcase name = return [InfixD fixity (singDataConName name)]
   | otherwise     = return [InfixD fixity (singValName name)]
-singDec (PragmaD prag) = do
+singDec (PragmaD _prag) = do
     reportWarning "Singling of pragmas not supported"
     return []
-singDec (FamilyD flavour name tvbs mkind) =
+singDec (FamilyD _flavour _name _tvbs _mkind) =
   fail "Singling of type and data families not yet supported"
-singDec (DataInstD cxt name tys ctors derivings) = 
+singDec (DataInstD _cxt _name _tys _ctors _derivings) = 
   fail "Singling of data instances not yet supported"
-singDec (NewtypeInstD cxt name tys ctor derivings) =
+singDec (NewtypeInstD _cxt _name _tys _ctor _derivings) =
   fail "Singling of newtype instances not yet supported"
-singDec (TySynInstD name eqns) =
+singDec (TySynInstD _name _eqns) =
   fail "Singling of type family instances not yet supported"
 
 -- the first parameter is True when we're refining the special case "Rep"
 -- and false otherwise. We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
 singDataD :: Bool -> Cxt -> Name -> [TyVarBndr] -> [Con] -> [Name] -> Q [Dec]
-singDataD rep cxt name tvbs ctors derivings = do
+singDataD rep cxt name tvbs ctors derivings
+  | (_:_) <- cxt = fail "Singling of constrained datatypes is not supported"
+  | otherwise    = do
   aName <- newName "a"
   let a = VarT aName
   let tvbNames = map extractTvbName tvbs
@@ -414,21 +416,21 @@ singType = singTypeRec []
 -- the first parameter is the list of types the current type is applied to
 -- the second parameter is whether or not this type occurs in a positive position
 singTypeRec :: TypeContext -> Bool -> Type -> Q TypeFn
-singTypeRec ctx pos (ForallT tvbs (_:_) ty) =
+singTypeRec _ctx _pos (ForallT _tvbs (_:_) _ty) =
   fail "Singling of constrained functions not yet supported"
-singTypeRec (_:_) pos (ForallT _ _ _) =
+singTypeRec (_:_) _pos (ForallT _ _ _) =
   fail "I thought this was impossible in Haskell. Email me at eir@cis.upenn.edu with your code if you see this message."
 singTypeRec [] pos (ForallT _ [] ty) = -- Sing makes handling foralls automatic
   singTypeRec [] pos ty
-singTypeRec (_:_) pos (VarT _) =
+singTypeRec (_:_) _pos (VarT _) =
   fail "Singling of type variables of arrow kinds not yet supported"
-singTypeRec [] pos (VarT name) = 
+singTypeRec [] _pos (VarT _name) = 
   return $ \ty -> AppT singFamily ty
-singTypeRec ctx pos (ConT name) = -- we don't need to process the context with Sing
+singTypeRec _ctx _pos (ConT _name) = -- we don't need to process the context with Sing
   return $ \ty -> AppT singFamily ty
-singTypeRec ctx pos (TupleT n) = -- just like ConT
+singTypeRec _ctx _pos (TupleT _n) = -- just like ConT
   return $ \ty -> AppT singFamily ty
-singTypeRec ctx pos (UnboxedTupleT n) =
+singTypeRec _ctx _pos (UnboxedTupleT _n) =
   fail "Singling of unboxed tuple types not yet supported"
 singTypeRec ctx pos ArrowT = case ctx of
   [ty1, ty2] -> do
@@ -450,21 +452,21 @@ singTypeRec ctx pos ArrowT = case ctx of
           extractPolyKinds False (VarT k) = [VarT k]
           extractPolyKinds _ _ = []
   _ -> fail "Internal error in Sing: converting ArrowT with improper context"
-singTypeRec ctx pos ListT =
+singTypeRec _ctx _pos ListT =
   return $ \ty -> AppT singFamily ty
 singTypeRec ctx pos (AppT ty1 ty2) =
   singTypeRec (ty2 : ctx) pos ty1 -- recur with the ty2 in the applied context
-singTypeRec ctx pos (SigT ty knd) =
+singTypeRec _ctx _pos (SigT _ty _knd) =
   fail "Singling of types with explicit kinds not yet supported"
-singTypeRec ctx pos (LitT _) = fail "Singling of type-level literals not yet supported"
-singTypeRec ctx pos (PromotedT _) =
+singTypeRec _ctx _pos (LitT _) = fail "Singling of type-level literals not yet supported"
+singTypeRec _ctx _pos (PromotedT _) =
   fail "Singling of promoted data constructors not yet supported"
-singTypeRec ctx pos (PromotedTupleT _) =
+singTypeRec _ctx _pos (PromotedTupleT _) =
   fail "Singling of type-level tuples not yet supported"
-singTypeRec ctx pos PromotedNilT = fail "Singling of promoted nil not yet supported"
-singTypeRec ctx pos PromotedConsT = fail "Singling of type-level cons not yet supported"
-singTypeRec ctx pos StarT = fail "* used as type"
-singTypeRec ctx pos ConstraintT = fail "Constraint used as type"
+singTypeRec _ctx _pos PromotedNilT = fail "Singling of promoted nil not yet supported"
+singTypeRec _ctx _pos PromotedConsT = fail "Singling of type-level cons not yet supported"
+singTypeRec _ctx _pos StarT = fail "* used as type"
+singTypeRec _ctx _pos ConstraintT = fail "Constraint used as type"
 
 singClause :: ExpTable -> Clause -> Q Clause
 singClause vars (Clause pats (NormalB exp) []) = do
@@ -498,7 +500,7 @@ checkIfBrainWillExplode _ =
 
 -- convert a pattern, building up the lexical scope as we go
 singPat :: PatternContext -> Pat -> ExpsQ Pat
-singPat patCxt (LitP lit) =
+singPat _patCxt (LitP _lit) =
   fail "Singling of literal patterns not yet supported"
 singPat patCxt (VarP name) =
   let newName = if patCxt == TopLevel then singValName name else name in do
@@ -506,16 +508,16 @@ singPat patCxt (VarP name) =
     return $ VarP newName
 singPat patCxt (TupP pats) =
   singPat patCxt (ConP (tupleDataName (length pats)) pats)
-singPat patCxt (UnboxedTupP pats) =
+singPat _patCxt (UnboxedTupP _pats) =
   fail "Singling of unboxed tuples not supported"
 singPat patCxt (ConP name pats) = do
   checkIfBrainWillExplode patCxt
   pats' <- mapM (singPat patCxt) pats
   return $ ConP (singDataConName name) pats'
 singPat patCxt (InfixP pat1 name pat2) = singPat patCxt (ConP name [pat1, pat2])
-singPat patCxt (UInfixP _ _ _) =
+singPat _patCxt (UInfixP _ _ _) =
   fail "Singling of unresolved infix patterns not supported"
-singPat patCxt (ParensP _) =
+singPat _patCxt (ParensP _) =
   fail "Singling of unresolved paren patterns not supported"
 singPat patCxt (TildeP pat) = do
   pat' <- singPat patCxt pat
@@ -528,24 +530,24 @@ singPat patCxt (AsP name pat) = do
     pat' <- singPat patCxt pat
     addBinding name (VarE newName)
     return $ AsP name pat'
-singPat patCxt WildP = return WildP
-singPat patCxt (RecP name fields) =
+singPat _patCxt WildP = return WildP
+singPat _patCxt (RecP _name _fields) =
   fail "Singling of record patterns not yet supported"
 singPat patCxt (ListP pats) = do
   checkIfBrainWillExplode patCxt
   sPats <- mapM (singPat patCxt) pats
   return $ foldr (\elt lst -> ConP sconsName [elt, lst]) (ConP snilName []) sPats
-singPat patCxt (SigP pat ty) =
+singPat _patCxt (SigP _pat _ty) =
   fail "Singling of annotated patterns not yet supported"
-singPat patCxt (ViewP exp pat) =
+singPat _patCxt (ViewP _exp _pat) =
   fail "Singling of view patterns not yet supported"
 
 singExp :: ExpTable -> Exp -> Q Exp
 singExp vars (VarE name) = case Map.lookup name vars of
   Just exp -> return exp
   Nothing -> return (singVal name)
-singExp vars (ConE name) = return $ smartCon name
-singExp vars (LitE lit) =
+singExp _vars (ConE name) = return $ smartCon name
+singExp _vars (LitE _lit) =
   fail "Singling of literal expressions not yet supported"
 singExp vars (AppE exp1 exp2) = do
   exp1' <- singExp vars exp1
@@ -555,47 +557,48 @@ singExp vars (InfixE mexp1 exp mexp2) =
   case (mexp1, mexp2) of
     (Nothing, Nothing) -> singExp vars exp
     (Just exp1, Nothing) -> singExp vars (AppE exp exp1)
-    (Nothing, Just exp2) ->
+    (Nothing, Just _exp2) ->
       fail "Singling of right-only sections not yet supported"
     (Just exp1, Just exp2) -> singExp vars (AppE (AppE exp exp1) exp2)
-singExp vars (UInfixE _ _ _) =
+singExp _vars (UInfixE _ _ _) =
   fail "Singling of unresolved infix expressions not supported"
-singExp vars (ParensE _) =
+singExp _vars (ParensE _) =
   fail "Singling of unresolved paren expressions not supported"
 singExp vars (LamE pats exp) = do
   (pats', vartbl) <- evalForPair $ mapM (singPat Parameter) pats
   let vars' = Map.union vartbl vars -- order matters; union is left-biased
-  singExp vars' exp
-singExp vars (LamCaseE matches) = 
+  exp' <- singExp vars' exp
+  return $ LamE pats' exp'
+singExp _vars (LamCaseE _matches) = 
   fail "Singling of case expressions not yet supported"
 singExp vars (TupE exps) = do
   sExps <- mapM (singExp vars) exps
   sTuple <- singExp vars (ConE (tupleDataName (length exps)))
   return $ foldExp sTuple sExps
-singExp vars (UnboxedTupE exps) =
+singExp _vars (UnboxedTupE _exps) =
   fail "Singling of unboxed tuple not supported"
 singExp vars (CondE bexp texp fexp) = do
   exps <- mapM (singExp vars) [bexp, texp, fexp]
   return $ foldExp (VarE sIfName) exps
-singExp vars (MultiIfE alts) =
+singExp _vars (MultiIfE _alts) =
   fail "Singling of multi-way if statements not yet supported"
-singExp vars (LetE decs exp) =
+singExp _vars (LetE _decs _exp) =
   fail "Singling of let expressions not yet supported"
-singExp vars (CaseE exp matches) =
+singExp _vars (CaseE _exp _matches) =
   fail "Singling of case expressions not yet supported"
-singExp vars (DoE stmts) =
+singExp _vars (DoE _stmts) =
   fail "Singling of do expressions not yet supported"
-singExp vars (CompE stmts) =
+singExp _vars (CompE _stmts) =
   fail "Singling of list comprehensions not yet supported"
-singExp vars (ArithSeqE range) =
+singExp _vars (ArithSeqE _range) =
   fail "Singling of ranges not yet supported"
 singExp vars (ListE exps) = do
   sExps <- mapM (singExp vars) exps
   return $ foldr (\x -> (AppE (AppE (VarE smartSconsName) x)))
                  (VarE smartSnilName) sExps
-singExp vars (SigE exp ty) =
+singExp _vars (SigE _exp _ty) =
   fail "Singling of annotated expressions not yet supported"
-singExp vars (RecConE name fields) =
+singExp _vars (RecConE _name _fields) =
   fail "Singling of record construction not yet supported"
-singExp vars (RecUpdE exp fields) =
+singExp _vars (RecUpdE _exp _fields) =
   fail "Singling of record updates not yet supported"
