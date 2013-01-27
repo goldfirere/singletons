@@ -1,11 +1,12 @@
 name:           singletons
-version:        0.8.4
+version:        0.8.5
 cabal-version:  >= 1.8
 synopsis:       A framework for generating singleton types
 homepage:       http://www.cis.upenn.edu/~eir/packages/singletons
 category:       Dependent Types
 author:         Richard Eisenberg <eir@cis.upenn.edu>
 maintainer:     Richard Eisenberg <eir@cis.upenn.edu>
+bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
 extra-source-files: README, CHANGES
 license:        BSD3
@@ -23,6 +24,12 @@ description:
     and produce documentation. Hence, all of the documentation is in the
     README file distributed with the package. This README is also accessible
     from the project home page.
+
+source-repository this
+  type:     git
+  location: https://github.com/goldfirere/singletons.git
+  tag:      v0.8.5
+  subdir:   devel
 
 library
   build-depends:      

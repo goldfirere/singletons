@@ -7,8 +7,9 @@ This file contains the fundamental datatype definitions for the singletons
 package. These are all re-exported in Data/Singletons.hs
 -}
 
-{-# LANGUAGE DataKinds, PolyKinds, TypeFamilies, RankNTypes, 
-             TypeOperators, GADTs, CPP #-}
+{-# LANGUAGE DataKinds, PolyKinds, TypeFamilies, RankNTypes, FlexibleContexts,
+             FlexibleInstances, UndecidableInstances, TypeOperators, GADTs,
+             CPP #-}
 
 module Data.Singletons.Exports (
   OfKind(..), Sing, SingI(..), SingE(..), SingRep, KindOf, Demote,

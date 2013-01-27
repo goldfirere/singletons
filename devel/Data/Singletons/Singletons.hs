@@ -6,7 +6,7 @@ eir@cis.upenn.edu
 This file contains functions to refine constructs to work with singleton
 types. It is an internal module to the singletons package.
 -}
-{-# LANGUAGE PatternGuards, TemplateHaskell #-}
+{-# LANGUAGE PatternGuards, TemplateHaskell, CPP #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Singletons where
@@ -275,7 +275,11 @@ singDec (DataInstD _cxt _name _tys _ctors _derivings) =
   fail "Singling of data instances not yet supported"
 singDec (NewtypeInstD _cxt _name _tys _ctor _derivings) =
   fail "Singling of newtype instances not yet supported"
+#if __GLASGOW_HASKELL__ >= 707
 singDec (TySynInstD _name _eqns) =
+#else
+singDec (TySynInstD _name _lhs _rhs) =
+#endif
   fail "Singling of type family instances not yet supported"
 
 -- create instances of SEq for each type in the list
@@ -378,12 +382,11 @@ singDataD rep cxt name tvbs ctors derivings
   let singEInst =
         InstanceD []
                   (AppT (ConT forgettableName) (kindParam k))
-                  [TySynInstD demoteName
-                     [TySynEqn
-                       [kindParam k]
-                       (foldType (ConT name)
-                          (map (\kv -> AppT demote (kindParam (VarT kv)))
-                               tvbNames))],
+                  [mkTyFamInst demoteName
+                    [kindParam k]
+                    (foldType (ConT name)
+                      (map (\kv -> AppT demote (kindParam (VarT kv)))
+                           tvbNames)),
                    FunD forgetName
                         forgetClauses]
 

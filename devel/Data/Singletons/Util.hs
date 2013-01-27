@@ -7,6 +7,7 @@ This file contains helper functions internal to the singletons package.
 Users of the package should not need to consult this file.
 -}
 
+{-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Util where
@@ -18,6 +19,14 @@ import Control.Monad
 import Control.Monad.Writer
 import qualified Data.Map as Map
 import Data.Generics
+
+mkTyFamInst :: Name -> [Type] -> Type -> Dec
+mkTyFamInst name lhs rhs =
+#if __GLASGOW_HASKELL__ >= 707
+  TySynInstD name [TySynEqn lhs rhs]
+#else
+  TySynInstD name lhs rhs
+#endif
 
 -- reify a declaration, warning the user about splices if the reify fails
 reifyWithWarning :: Name -> Q Info

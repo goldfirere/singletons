@@ -7,7 +7,7 @@ This file contains functions to promote term-level constructs to the
 type level. It is an internal module to the singletons package.
 -}
 
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, CPP #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Promote where
@@ -189,12 +189,19 @@ promoteEqInstances = concatMapM promoteEqInstance
 -- produce instance for (:==:) from the given type
 promoteEqInstance :: Name -> Q [Dec]
 promoteEqInstance name = do
-  (tvbs, cons) <- getDataD "I cannot make an instance of (:==:) for it." name
-  vars <- replicateM (length tvbs) (newName "k")
+  (_tvbs, cons) <- getDataD "I cannot make an instance of (:==:) for it." name
+#if __GLASGOW_HASKELL__ >= 707
+  vars <- replicateM (length _tvbs) (newName "k")
   let tyvars = map VarT vars
       kind = foldType (ConT name) tyvars
   inst <- mkEqTypeInstance kind cons
   return [inst]
+#else
+  let pairs = [(c1, c2) | c1 <- cons, c2 <- cons]
+  mapM mkEqTypeInstance pairs
+#endif
+
+#if __GLASGOW_HASKELL__ >= 707
 
 -- produce the branched type instance for (:==:) over the given list of ctors
 mkEqTypeInstance :: Kind -> [Con] -> Q Dec
@@ -224,6 +231,41 @@ mkEqTypeInstance kind cons = do
         tyAll [one] = one
         tyAll (h:t) = foldType andTy [h, (tyAll t)]
 
+#else
+
+-- produce the type instance for (:==:) for the given pair of constructors
+mkEqTypeInstance :: (Con, Con) -> Q Dec
+mkEqTypeInstance (c1, c2) =
+  if c1 == c2
+  then do
+    let (name, numArgs) = extractNameArgs c1
+    lnames <- replicateM numArgs (newName "a")
+    rnames <- replicateM numArgs (newName "b")
+    let lvars = map VarT lnames
+        rvars = map VarT rnames
+    return $ TySynInstD
+      tyEqName
+      [foldType (PromotedT name) lvars,
+       foldType (PromotedT name) rvars]
+      (tyAll (zipWith (\l r -> foldType (ConT tyEqName) [l, r])
+                      lvars rvars))
+  else do
+    let (lname, lNumArgs) = extractNameArgs c1
+        (rname, rNumArgs) = extractNameArgs c2
+    lnames <- replicateM lNumArgs (newName "a")
+    rnames <- replicateM rNumArgs (newName "b")
+    return $ TySynInstD
+      tyEqName
+      [foldType (PromotedT lname) (map VarT lnames),
+       foldType (PromotedT rname) (map VarT rnames)]
+      falseTy
+  where tyAll :: [Type] -> Type -- "all" at the type level
+        tyAll [] = trueTy
+        tyAll [one] = one
+        tyAll (h:t) = foldType andTy [h, (tyAll t)]
+
+#endif
+
 -- keeps track of the number of non-uniform parameters to promoted values
 type NumArgsTable = Map.Map Name Int
 type NumArgsQ = QWithAux NumArgsTable
@@ -240,9 +282,13 @@ promoteDec vars (FunD name clauses) = do
       numArgs = getNumPats (head clauses) -- count the parameters
       -- Haskell requires all clauses to have the same number of parameters
   (eqns, instDecls) <- lift $ evalForPair $
-                       mapM (promoteClause vars') clauses
+                       mapM (promoteClause vars' proName) clauses
   addBinding name numArgs -- remember the number of parameters
+#if __GLASGOW_HASKELL__ >= 707
   return $ (TySynInstD proName eqns) : instDecls
+#else
+  return $ eqns ++ instDecls
+#endif
   where getNumPats :: Clause -> Int
         getNumPats (Clause pats _ _) = length pats
 promoteDec vars (ValD pat body decs) = do
@@ -255,7 +301,7 @@ promoteDec vars (ValD pat body decs) = do
   if any (flip containsName rhs) (map lhsName lhss)
     then do -- definition is recursive. use type families & require ty sigs
       mapM (flip addBinding 0) (map lhsRawName lhss)
-      return $ (map (\(LHS _ nm hole) -> TySynInstD nm [TySynEqn [] (hole rhs)]) lhss) ++
+      return $ (map (\(LHS _ nm hole) -> mkTyFamInst nm [] (hole rhs)) lhss) ++
                decls ++ decls'
     else do -- definition is not recursive; just use "type" decls
       mapM (flip addBinding typeSynonymFlag) (map lhsRawName lhss)
@@ -285,7 +331,11 @@ promoteDec _vars (DataInstD _cxt _name _tys _ctors _derivings) =
   fail "Promotion of data instances not yet supported"
 promoteDec _vars (NewtypeInstD _cxt _name _tys _ctors _derivings) =
   fail "Promotion of newtype instances not yet supported"
+#if __GLASGOW_HASKELL__ >= 707
 promoteDec _vars (TySynInstD _name _eqns) =
+#else
+promoteDec _vars (TySynInstD _name _lhs _rhs) =
+#endif
   fail "Promotion of type synonym instances not yet supported"
 
 -- only need to check if the datatype derives Eq. The rest is automatic.
@@ -294,9 +344,14 @@ promoteDataD :: TypeTable -> Cxt -> Name -> [TyVarBndr] -> [Con] ->
 promoteDataD _vars _cxt name tvbs ctors derivings =
   if any (\n -> (nameBase n) == "Eq") derivings
     then do
+#if __GLASGOW_HASKELL__ >= 707
       kvs <- replicateM (length tvbs) (lift $ newName "k")
       inst <- lift $ mkEqTypeInstance (foldType (ConT name) (map VarT kvs)) ctors
       return [inst]
+#else
+      let pairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
+      lift $ mapM mkEqTypeInstance pairs
+#endif
     else return [] -- the actual promotion is automatic
 
 -- second pass through declarations to deal with type signatures
@@ -331,15 +386,23 @@ promoteDec' nat (SigD name ty) = case Map.lookup name nat of
             return $ (AppT (AppT ArrowT h) k)
 promoteDec' _ _ = return ([], [])
 
-promoteClause :: TypeTable -> Clause -> QWithDecs TySynEqn
-promoteClause vars (Clause pats body []) = do
+#if __GLASGOW_HASKELL__ >= 707
+promoteClause :: TypeTable -> Name -> Clause -> QWithDecs TySynEqn
+#else
+promoteClause :: TypeTable -> Name -> Clause -> QWithDecs Dec
+#endif
+promoteClause vars _name (Clause pats body []) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
   (types, vartbl) <- lift $ evalForPair $ mapM promotePat pats
   let vars' = Map.union vars vartbl
   ty <- promoteBody vars' body
+#if __GLASGOW_HASKELL__ >= 707
   return $ TySynEqn types ty
-promoteClause _ (Clause _ _ (_:_)) =
+#else
+  return $ TySynInstD _name types ty
+#endif
+promoteClause _ _ (Clause _ _ (_:_)) =
   fail "A <<where>> clause in a function definition is not yet supported"
 
 -- the LHS of a top-level expression is a name and "type with hole"
@@ -386,11 +449,10 @@ promoteTopLevelPat (ConP name pats) = do
            extractorNames argKinds
   componentNames <- lift $ replicateM (length pats) (newName "a")
   zipWithM (\extractorName componentName ->
-    addElement $ TySynInstD extractorName
-                            [TySynEqn
-                              [foldType (promoteDataCon name)
-                                      (map VarT componentNames)]
-                              (VarT componentName)])
+    addElement $ mkTyFamInst extractorName
+                             [foldType (promoteDataCon name)
+                                       (map VarT componentNames)]
+                             (VarT componentName))
     extractorNames componentNames
 
   -- now we have the extractor families. Use the appropriate families

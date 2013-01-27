@@ -1,6 +1,13 @@
 Changelog for singletons project
 ================================
 
+0.8.5
+-----
+
+Bug fix to make singletons compatible with GHC 7.6.1.
+
+Added git info to cabal file.
+
 0.8.4
 -----
 
