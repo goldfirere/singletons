@@ -23,10 +23,18 @@ import Data.Generics
 mkTyFamInst :: Name -> [Type] -> Type -> Dec
 mkTyFamInst name lhs rhs =
 #if __GLASGOW_HASKELL__ >= 707
-  TySynInstD name [TySynEqn lhs rhs]
+  TySynInstD name (TySynEqn lhs rhs)
 #else
   TySynInstD name lhs rhs
 #endif
+
+-- like newName, but even more unique (unique across different splices)
+-- TH doesn't allow "newName"s to work at the top-level, so we have to
+-- do this trick to ensure the Extract functions are unique
+newUniqueName :: String -> Q Name
+newUniqueName str = do
+  n <- newName str
+  return $ mkName $ show n
 
 -- reify a declaration, warning the user about splices if the reify fails
 reifyWithWarning :: Name -> Q Info

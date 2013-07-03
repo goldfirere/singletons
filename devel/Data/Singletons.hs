@@ -69,16 +69,16 @@ type a :/=: b = Not (a :==: b)
 type a :/= b = a :/=: b
 
 -- the singleton analogue of @Eq@
-class (kparam ~ KindParam) => SEq (kparam :: OfKind k) where
+class (kparam ~ KindParam) => SEq (kparam :: KindIs k) where
   (%==%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :==: b)
   (%/=%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :/=: b)
   a %/=% b = sNot (a %==% b)
 
-(%:==) :: forall (a :: k) (b :: k). SEq (KindParam :: OfKind k)
+(%:==) :: forall (a :: k) (b :: k). SEq (KindParam :: KindIs k)
        => Sing a -> Sing b -> Sing (a :==: b)
 (%:==) = (%==%)
 
-(%:/=) :: forall (a :: k) (b :: k). SEq (KindParam :: OfKind k)
+(%:/=) :: forall (a :: k) (b :: k). SEq (KindParam :: KindIs k)
        => Sing a -> Sing b -> Sing (a :/=: b)
 (%:/=) = (%/=%)
 

@@ -23,11 +23,12 @@ import Control.Monad
 import Control.Monad.Writer hiding (Any)
 import Data.List
 
-anyTypeName, falseName, trueName, andName, tyEqName, repName, ifName,
+anyTypeName, falseName, trueName, boolName, andName, tyEqName, repName, ifName,
   headName, tailName :: Name
 anyTypeName = ''Any
 falseName = 'False
 trueName = 'True
+boolName = ''Bool
 andName = mkName "&&"
 tyEqName = mkName ":==:"
 repName = mkName "Rep"
@@ -40,6 +41,9 @@ falseTy = promoteDataCon falseName
 
 trueTy :: Type
 trueTy = promoteDataCon trueName
+
+boolTy :: Type
+boolTy = ConT boolName
 
 andTy :: Type
 andTy = promoteVal andName
@@ -166,12 +170,12 @@ promoteDecs :: [Dec] -> Q ([Dec], [Name])
 promoteDecs decls = do
   checkForRepInDecls decls
   let vartbl = Map.empty
-  (newDecls, numArgsTable) <- evalForPair $ mapM (promoteDec vartbl) decls
-  (declss, namess) <- mapAndUnzipM (promoteDec' numArgsTable) decls
+  (newDecls, table) <- evalForPair $ mapM (promoteDec vartbl) decls
+  (declss, namess) <- mapAndUnzipM (promoteDec' table) decls
   let moreNewDecls = concat declss
       names = concat namess
       noTypeSigs = Set.toList $ Set.difference (Map.keysSet $
-                                                  Map.filter (>= 0) numArgsTable)
+                                                  Map.filter ((>= 0) . fst) table)
                                                (Set.fromList names)
       noTypeSigsPro = map promoteValName noTypeSigs
       newDecls' = foldl (\decls name ->
@@ -194,8 +198,8 @@ promoteEqInstance name = do
   vars <- replicateM (length _tvbs) (newName "k")
   let tyvars = map VarT vars
       kind = foldType (ConT name) tyvars
-  inst <- mkEqTypeInstance kind cons
-  return [inst]
+  inst_decs <- mkEqTypeInstance kind cons
+  return inst_decs
 #else
   let pairs = [(c1, c2) | c1 <- cons, c2 <- cons]
   mapM mkEqTypeInstance pairs
@@ -203,10 +207,24 @@ promoteEqInstance name = do
 
 #if __GLASGOW_HASKELL__ >= 707
 
--- produce the branched type instance for (:==:) over the given list of ctors
-mkEqTypeInstance :: Kind -> [Con] -> Q Dec
+-- produce a closed type family helper and the instance
+-- for (:==:) over the given list of ctors
+mkEqTypeInstance :: Kind -> [Con] -> Q [Dec]
 mkEqTypeInstance kind cons = do
-  tySynInstD tyEqName (map mk_branch cons ++ [false_case])
+  helperName <- newUniqueName "Equals"
+  aName <- newName "a"
+  bName <- newName "b"
+  closedFam <- closedTypeFamilyKindD helperName
+                                     [ KindedTV aName kind
+                                     , KindedTV bName kind ]
+                                     boolTy
+                                     (map mk_branch cons ++ [false_case])
+  let eqInst = TySynInstD tyEqName (TySynEqn [ SigT (VarT aName) kind
+                                             , SigT (VarT bName) kind ]
+                                             (foldType (ConT helperName)
+                                                       [VarT aName, VarT bName]))
+  return [closedFam, eqInst]
+
   where mk_branch :: Con -> Q TySynEqn
         mk_branch con = do
           let (name, numArgs) = extractNameArgs con
@@ -267,15 +285,16 @@ mkEqTypeInstance (c1, c2) =
 #endif
 
 -- keeps track of the number of non-uniform parameters to promoted values
-type NumArgsTable = Map.Map Name Int
-type NumArgsQ = QWithAux NumArgsTable
+-- and all of the instance equations for those values
+type PromoteTable = Map.Map Name (Int, [TySynEqn])
+type PromoteQ = QWithAux PromoteTable
 
 -- used when a type is declared as a type synonym, not a type family
 -- no need to declare "type family ..." for these
 typeSynonymFlag :: Int
 typeSynonymFlag = -1
 
-promoteDec :: TypeTable -> Dec -> NumArgsQ [Dec]
+promoteDec :: TypeTable -> Dec -> PromoteQ [Dec]
 promoteDec vars (FunD name clauses) = do
   let proName = promoteValName name
       vars' = Map.insert name (promoteVal name) vars
@@ -283,11 +302,11 @@ promoteDec vars (FunD name clauses) = do
       -- Haskell requires all clauses to have the same number of parameters
   (eqns, instDecls) <- lift $ evalForPair $
                        mapM (promoteClause vars' proName) clauses
-  addBinding name numArgs -- remember the number of parameters
+  addBinding name (numArgs, eqns) -- remember the number of parameters and the eqns
 #if __GLASGOW_HASKELL__ >= 707
-  return $ (TySynInstD proName eqns) : instDecls
+  return instDecls
 #else
-  return $ eqns ++ instDecls
+  return $ (map (TySynInstD proName) eqns) ++ instDecls
 #endif
   where getNumPats :: Clause -> Int
         getNumPats (Clause pats _ _) = length pats
@@ -299,12 +318,10 @@ promoteDec vars (ValD pat body decs) = do
   (rhs, decls) <- lift $ evalForPair $ promoteBody vars body
   (lhss, decls') <- lift $ evalForPair $ promoteTopLevelPat pat
   if any (flip containsName rhs) (map lhsName lhss)
-    then do -- definition is recursive. use type families & require ty sigs
-      mapM (flip addBinding 0) (map lhsRawName lhss)
-      return $ (map (\(LHS _ nm hole) -> mkTyFamInst nm [] (hole rhs)) lhss) ++
-               decls ++ decls'
+    then -- definition is recursive. This means an infinite value.
+      fail "Promotion of infinite terms not yet supported"
     else do -- definition is not recursive; just use "type" decls
-      mapM (flip addBinding typeSynonymFlag) (map lhsRawName lhss)
+      mapM (flip addBinding (typeSynonymFlag, [])) (map lhsRawName lhss)
       return $ (map (\(LHS _ nm hole) -> TySynD nm [] (hole rhs)) lhss) ++
                decls ++ decls'
 promoteDec vars (DataD cxt name tvbs ctors derivings) = 
@@ -332,7 +349,9 @@ promoteDec _vars (DataInstD _cxt _name _tys _ctors _derivings) =
 promoteDec _vars (NewtypeInstD _cxt _name _tys _ctors _derivings) =
   fail "Promotion of newtype instances not yet supported"
 #if __GLASGOW_HASKELL__ >= 707
-promoteDec _vars (TySynInstD _name _eqns) =
+promoteDec _vars (ClosedTypeFamilyD _name _tvs _mkind _eqns) =
+  fail "Promotion of closed type families not yet supported"
+promoteDec _vars (TySynInstD _name _eqn) =
 #else
 promoteDec _vars (TySynInstD _name _lhs _rhs) =
 #endif
@@ -340,14 +359,14 @@ promoteDec _vars (TySynInstD _name _lhs _rhs) =
 
 -- only need to check if the datatype derives Eq. The rest is automatic.
 promoteDataD :: TypeTable -> Cxt -> Name -> [TyVarBndr] -> [Con] ->
-                [Name] -> NumArgsQ [Dec]
+                [Name] -> PromoteQ [Dec]
 promoteDataD _vars _cxt name tvbs ctors derivings =
   if any (\n -> (nameBase n) == "Eq") derivings
     then do
 #if __GLASGOW_HASKELL__ >= 707
       kvs <- replicateM (length tvbs) (lift $ newName "k")
-      inst <- lift $ mkEqTypeInstance (foldType (ConT name) (map VarT kvs)) ctors
-      return [inst]
+      inst_decs <- lift $ mkEqTypeInstance (foldType (ConT name) (map VarT kvs)) ctors
+      return inst_decs
 #else
       let pairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
       lift $ mapM mkEqTypeInstance pairs
@@ -357,10 +376,10 @@ promoteDataD _vars _cxt name tvbs ctors derivings =
 -- second pass through declarations to deal with type signatures
 -- returns the new declarations and the list of names that have been
 -- processed
-promoteDec' :: NumArgsTable -> Dec -> Q ([Dec], [Name])
-promoteDec' nat (SigD name ty) = case Map.lookup name nat of
+promoteDec' :: PromoteTable -> Dec -> Q ([Dec], [Name])
+promoteDec' tab (SigD name ty) = case Map.lookup name tab of
   Nothing -> fail $ "Type declaration is missing its binding: " ++ (show name)
-  Just numArgs -> 
+  Just (numArgs, _eqns) -> 
     -- if there are no args, then use a type synonym, not a type family
     -- in the type synonym case, we ignore the type signature
     if numArgs == typeSynonymFlag then return $ ([], [name]) else do 
@@ -369,10 +388,17 @@ promoteDec' nat (SigD name ty) = case Map.lookup name nat of
           (argKs, resultKs) = splitAt numArgs ks -- divide by uniformity
       resultK <- ravel resultKs -- rebuild the arrow kind
       tyvarNames <- mapM newName (replicate (length argKs) "a")
+#if __GLASGOW_HASKELL__ >= 707
+      return ([ClosedTypeFamilyD (promoteValName name)
+                                 (zipWith KindedTV tyvarNames argKs)
+                                 (Just resultK)
+                                 _eqns], [name])
+#else
       return ([FamilyD TypeFam
                        (promoteValName name)
                        (zipWith KindedTV tyvarNames argKs)
                        (Just resultK)], [name])
+#endif
     where unravel :: Kind -> [Kind] -- get argument kinds from an arrow kind
           unravel (AppT (AppT ArrowT k1) k2) =
             let ks = unravel k2 in k1 : ks
@@ -436,11 +462,8 @@ promoteTopLevelPat (ConP name pats) = do
            (show pats)
   kind <- lift $ promoteType ctorType
   argKinds <- lift $ mapM promoteType argTypes
-  extractorNamesRaw <- lift $ replicateM (length pats) (newName "Extract")
+  extractorNames <- lift $ replicateM (length pats) (newUniqueName "Extract")
 
-  -- TH doesn't allow "newName"s to work at the top-level, so we have to
-  -- do this trick to ensure the Extract functions are unique
-  let extractorNames = map (mkName . show) extractorNamesRaw
   varName <- lift $ newName "a"
   zipWithM (\nm arg -> addElement $ FamilyD TypeFam
                                             nm

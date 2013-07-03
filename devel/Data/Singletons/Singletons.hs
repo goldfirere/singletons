@@ -55,7 +55,7 @@ smartSnilName = mkName "sNil"
 sIfName = mkName "sIf"
 undefinedName = 'undefined
 kindParamName = 'KindParam
-ofKindName = ''OfKind
+ofKindName = ''KindIs
 
 mkTupleName :: Int -> Name
 mkTupleName n = mkName $ "STuple" ++ (show n)
@@ -276,6 +276,8 @@ singDec (DataInstD _cxt _name _tys _ctors _derivings) =
 singDec (NewtypeInstD _cxt _name _tys _ctor _derivings) =
   fail "Singling of newtype instances not yet supported"
 #if __GLASGOW_HASKELL__ >= 707
+singDec (ClosedTypeFamilyD _name _tvs _mkind _eqns) =
+  fail "Singling of closed type families not yet supported"
 singDec (TySynInstD _name _eqns) =
 #else
 singDec (TySynInstD _name _lhs _rhs) =

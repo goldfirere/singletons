@@ -1,6 +1,13 @@
 TODO for singletons project:
 
+add version number to README
+
 Ord instance
 
 Consider moving some Prelude-style def'ns into another module
 
+deal with empty data defns
+
+infix decls
+
+generate connection between :==: and :~: / generate :~: equalities.

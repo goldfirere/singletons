@@ -12,29 +12,29 @@ package. These are all re-exported in Data/Singletons.hs
              CPP #-}
 
 module Data.Singletons.Exports (
-  OfKind(..), Sing, SingI(..), SingE(..), SingRep, KindOf, Demote,
+  KindIs(..), Sing, SingI(..), SingE(..), SingRep, KindOf, Demote,
 
   SingInstance(..), SingKind(..), If, Head, Tail
   ) where
 
 #if __GLASGOW_HASKELL__ >= 707
 
-import GHC.TypeLits ( OfKind(..), Sing, SingI(..), SingE(..),
+import GHC.TypeLits ( KindIs(..), Sing, SingI(..), SingE(..),
                       SingRep, KindOf, Demote )
 
 #else
 
 -- Kind-level proxy
-data OfKind (k :: *) = KindParam
+data KindIs (k :: *) = KindParam
 
 -- Access the kind of a type variable
-type KindOf (a :: k) = (KindParam :: OfKind k)
+type KindOf (a :: k) = (KindParam :: KindIs k)
 
 -- Declarations of singleton structures
 data family Sing (a :: k)
 class SingI (a :: k) where
   sing :: Sing a
-class (kparam ~ KindParam) => SingE (kparam :: OfKind k) where
+class (kparam ~ KindParam) => SingE (kparam :: KindIs k) where
   type DemoteRep kparam :: *
   fromSing :: Sing (a :: k) -> DemoteRep kparam
 
@@ -43,13 +43,13 @@ class    (SingI a, SingE (KindOf a)) => SingRep (a :: k)
 instance (SingI a, SingE (KindOf a)) => SingRep (a :: k)
 
 -- Abbreviation for DemoteRep
-type Demote (a :: k) = DemoteRep (KindParam :: OfKind k)
+type Demote (a :: k) = DemoteRep (KindParam :: KindIs k)
 
 #endif
 
 data SingInstance (a :: k) where
   SingInstance :: SingRep a => SingInstance a
-class (kparam ~ KindParam) => SingKind (kparam :: OfKind k) where
+class (kparam ~ KindParam) => SingKind (kparam :: KindIs k) where
   singInstance :: forall (a :: k). Sing a -> SingInstance a
 
 -- type-level conditional
