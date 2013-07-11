@@ -24,8 +24,8 @@ sTypeRep = STypeRep
 
 instance Typeable a => SingI (a :: *) where
   sing = STypeRep
-instance SingE (KindParam :: OfKind *) where
-  type DemoteRep (KindParam :: OfKind *) = TypeRep
+instance SingE (KindParam :: KindIs *) where
+  type DemoteRep (KindParam :: KindIs *) = TypeRep
   fromSing (STypeRep :: Sing a) = typeOf (undefined :: a)
-instance SingKind (KindParam :: OfKind *) where
+instance SingKind (KindParam :: KindIs *) where
   singInstance STypeRep = SingInstance

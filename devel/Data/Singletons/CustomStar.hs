@@ -28,8 +28,7 @@ singletonStar names = do
                       [mkName "Eq", mkName "Show", mkName "Read"]
   fakeCtors <- zipWithM (mkCtor False) names kinds
 #if __GLASGOW_HASKELL__ >= 707
-  eqInstance <- mkEqTypeInstance StarT fakeCtors
-  let eqInstances = [eqInstance]
+  eqInstances <- mkEqTypeInstance StarT fakeCtors
 #else
   eqInstances <- mapM mkEqTypeInstance
                       [(c1, c2) | c1 <- fakeCtors, c2 <- fakeCtors]
