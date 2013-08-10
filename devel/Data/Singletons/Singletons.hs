@@ -171,7 +171,7 @@ singCtor a = ctorCases
     -- smart constructor type signature
     smartConType <- lift $ conTypesToFunType indexNames args kinds
                                       (AppT singFamily (foldType pCon indices))
-    addElement $ SigD (smartConName name) smartConType
+    addElement $ SigD (smartConName name) (liftOutForalls smartConType)
      
     -- smart constructor
     let vars = map VarE indexNames
@@ -444,12 +444,13 @@ singKind ConstraintT = fail "Singling of constraint kinds not yet supported"
 -- the first parameter is whether or not this type occurs in a positive position
 singType :: Bool -> Type -> Q TypeFn
 singType pos ty = do   -- replace with singTypeRec [] pos ty after GHC bug #??? is fixed
-  -- the current code lifts all foralls to the top-level
   sTypeFn <- singTypeRec [] pos ty
-  return $ \inner_ty ->
-    let built_ty = sTypeFn inner_ty in
-    go [] [] [] built_ty
+  return $ \inner_ty -> liftOutForalls $ sTypeFn inner_ty
 
+  -- the lifts all foralls to the top-level
+liftOutForalls :: Type -> Type
+liftOutForalls =
+  go [] [] []
   where
     go tyvars cxt args (ForallT tyvars1 cxt1 t1)
       = go (reverse tyvars1 ++ tyvars) (reverse cxt1 ++ cxt) args t1

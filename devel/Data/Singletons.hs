@@ -19,7 +19,7 @@ available at <http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>
 -- We make unused bindings for (||), (&&), and not.
 
 module Data.Singletons (
-  OfKind(..), Sing(..), SingI(..), SingE(..), SingRep, KindOf, Demote,
+  KindIs(..), Sing(..), SingI(..), SingE(..), SingRep, KindOf, Demote,
   Any,
   (:==), (:==:),
   SingInstance(..), SingKind(singInstance),
