@@ -19,23 +19,23 @@ available at <http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>
 -- We make unused bindings for (||), (&&), and not.
 
 module Data.Singletons (
-  KindIs(..), Sing(..), SingI(..), SingE(..), SingRep, KindOf, Demote,
+  OfKind(..), Sing(..), SingI(..), SingE(..), SingRep, KindOf, Demote,
   Any,
   (:==), (:==:),
   SingInstance(..), SingKind(singInstance),
-  sTrue, sFalse, SBool, -- sNothing, sJust, SMaybe, sLeft, sRight, SEither,
-  -- sTuple0, sTuple2, sTuple3, sTuple4, sTuple5, sTuple6, sTuple7,
-  -- STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
+  sTrue, sFalse, SBool, sNothing, sJust, SMaybe, sLeft, sRight, SEither,
+  sTuple0, sTuple2, sTuple3, sTuple4, sTuple5, sTuple6, sTuple7,
+  STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
   Not, sNot, (:&&), (%:&&), (:||), (%:||), (:&&:), (:||:), (:/=), (:/=:),
   SEq((%==%), (%/=%)), (%:==), (%:/=),
   If, sIf, 
-  -- sNil, sCons, SList, (:++), (%:++), Head, Tail,
+  sNil, sCons, SList, (:++), (%:++), Head, Tail,
   cases, bugInGHC,
   genSingletons, singletons, genPromotions, promote,
   promoteEqInstances, promoteEqInstance, singEqInstance, singEqInstances
   ) where
 
--- import Prelude hiding ((++))
+import Prelude hiding ((++))
 import Data.Singletons.Singletons
 import Data.Singletons.Promote
 import Data.Singletons.Exports
@@ -44,10 +44,8 @@ import Data.Singletons.Util
 import GHC.Exts (Any)
 
 -- provide a few useful singletons...
-
--- $(genSingletons [''Bool, ''Maybe, ''Either, ''[]])
--- $(genSingletons [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)])
-$(genSingletons [''Bool])
+$(genSingletons [''Bool, ''Maybe, ''Either, ''[]])
+$(genSingletons [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)])
 
 -- ... with some functions over Booleans
 $(singletons [d|
@@ -84,8 +82,8 @@ class (kparam ~ KindParam) => SEq (kparam :: KindIs k) where
        => Sing a -> Sing b -> Sing (a :/=: b)
 (%:/=) = (%/=%)
 
--- $(singEqInstances [''Bool, ''Maybe, ''Either, ''[]])
--- $(singEqInstances [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)])
+$(singEqInstances [''Bool, ''Maybe, ''Either, ''[]])
+$(singEqInstances [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)])
 
 -- singleton conditional
 sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
@@ -96,13 +94,11 @@ sIf SFalse _ c = c
 type a :&&: b = a :&& b
 type a :||: b = a :|| b
 
-{-
 $(singletons [d|
   (++) :: [a] -> [a] -> [a]
   [] ++ a = a
   (h:t) ++ a = h:(t ++ a)
   |])
--}
 
 -- allows for automatic checking of all constructors in a GADT for instance
 -- inference
