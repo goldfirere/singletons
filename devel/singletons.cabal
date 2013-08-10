@@ -1,5 +1,5 @@
 name:           singletons
-version:        0.8.5
+version:        0.8.6
 cabal-version:  >= 1.8
 synopsis:       A framework for generating singleton types
 homepage:       http://www.cis.upenn.edu/~eir/packages/singletons
@@ -28,7 +28,7 @@ description:
 source-repository this
   type:     git
   location: https://github.com/goldfirere/singletons.git
-  tag:      v0.8.5
+  tag:      v0.8.6
   subdir:   devel
 
 library

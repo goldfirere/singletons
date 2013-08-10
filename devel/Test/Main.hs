@@ -13,7 +13,7 @@ compile with a warning that declarations containing badPlus are omitted.
              PolyKinds, DataKinds, FlexibleContexts
  #-}
 
-module Main where
+module Test.Main where
 
 import Prelude hiding (print, Left, Right, (+), Maybe, Just, Nothing)
 import Data.Singletons hiding (SLeft, SRight, SJust, SNothing, sLeft, sRight, sJust, sNothing)
@@ -116,9 +116,6 @@ $(promote [d|
   Pair (Pair jz zz) fls = complex
   (tf, tjz, tt) = tuple
   [_, lsz, (Succ blimy)] = aList
-
-  infinite :: [Bool]
-  infinite = (False : infinite)
   |])
 
 $(singletons [d|

@@ -175,7 +175,11 @@ promoteDecs decls = do
   let moreNewDecls = concat declss
       names = concat namess
       noTypeSigs = Set.toList $ Set.difference (Map.keysSet $
+#if __GLASGOW_HASKELL__ >= 707
                                                   Map.filter ((>= 0) . fst) table)
+#else
+                                                  Map.filter (>= 0) table)
+#endif
                                                (Set.fromList names)
       noTypeSigsPro = map promoteValName noTypeSigs
       newDecls' = foldl (\decls name ->
@@ -286,7 +290,11 @@ mkEqTypeInstance (c1, c2) =
 
 -- keeps track of the number of non-uniform parameters to promoted values
 -- and all of the instance equations for those values
+#if __GLASGOW_HASKELL__ >= 707
 type PromoteTable = Map.Map Name (Int, [TySynEqn])
+#else
+type PromoteTable = Map.Map Name Int
+#endif
 type PromoteQ = QWithAux PromoteTable
 
 -- used when a type is declared as a type synonym, not a type family
@@ -302,11 +310,12 @@ promoteDec vars (FunD name clauses) = do
       -- Haskell requires all clauses to have the same number of parameters
   (eqns, instDecls) <- lift $ evalForPair $
                        mapM (promoteClause vars' proName) clauses
-  addBinding name (numArgs, eqns) -- remember the number of parameters and the eqns
 #if __GLASGOW_HASKELL__ >= 707
+  addBinding name (numArgs, eqns) -- remember the number of parameters and the eqns
   return instDecls
 #else
-  return $ (map (TySynInstD proName) eqns) ++ instDecls
+  addBinding name numArgs -- remember the number of parameters
+  return $ eqns ++ instDecls
 #endif
   where getNumPats :: Clause -> Int
         getNumPats (Clause pats _ _) = length pats
@@ -321,7 +330,11 @@ promoteDec vars (ValD pat body decs) = do
     then -- definition is recursive. This means an infinite value.
       fail "Promotion of infinite terms not yet supported"
     else do -- definition is not recursive; just use "type" decls
+#if __GLASGOW_HASKELL__ >= 707
       mapM (flip addBinding (typeSynonymFlag, [])) (map lhsRawName lhss)
+#else
+      mapM (flip addBinding typeSynonymFlag) (map lhsRawName lhss)
+#endif
       return $ (map (\(LHS _ nm hole) -> TySynD nm [] (hole rhs)) lhss) ++
                decls ++ decls'
 promoteDec vars (DataD cxt name tvbs ctors derivings) = 
@@ -360,12 +373,12 @@ promoteDec _vars (TySynInstD _name _lhs _rhs) =
 -- only need to check if the datatype derives Eq. The rest is automatic.
 promoteDataD :: TypeTable -> Cxt -> Name -> [TyVarBndr] -> [Con] ->
                 [Name] -> PromoteQ [Dec]
-promoteDataD _vars _cxt name tvbs ctors derivings =
+promoteDataD _vars _cxt _name _tvbs ctors derivings =
   if any (\n -> (nameBase n) == "Eq") derivings
     then do
 #if __GLASGOW_HASKELL__ >= 707
-      kvs <- replicateM (length tvbs) (lift $ newName "k")
-      inst_decs <- lift $ mkEqTypeInstance (foldType (ConT name) (map VarT kvs)) ctors
+      kvs <- replicateM (length _tvbs) (lift $ newName "k")
+      inst_decs <- lift $ mkEqTypeInstance (foldType (ConT _name) (map VarT kvs)) ctors
       return inst_decs
 #else
       let pairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
@@ -379,7 +392,11 @@ promoteDataD _vars _cxt name tvbs ctors derivings =
 promoteDec' :: PromoteTable -> Dec -> Q ([Dec], [Name])
 promoteDec' tab (SigD name ty) = case Map.lookup name tab of
   Nothing -> fail $ "Type declaration is missing its binding: " ++ (show name)
-  Just (numArgs, _eqns) -> 
+#if __GLASGOW_HASKELL__ >= 707
+  Just (numArgs, eqns) -> 
+#else
+  Just numArgs ->
+#endif
     -- if there are no args, then use a type synonym, not a type family
     -- in the type synonym case, we ignore the type signature
     if numArgs == typeSynonymFlag then return $ ([], [name]) else do 
@@ -392,7 +409,7 @@ promoteDec' tab (SigD name ty) = case Map.lookup name tab of
       return ([ClosedTypeFamilyD (promoteValName name)
                                  (zipWith KindedTV tyvarNames argKs)
                                  (Just resultK)
-                                 _eqns], [name])
+                                 eqns], [name])
 #else
       return ([FamilyD TypeFam
                        (promoteValName name)

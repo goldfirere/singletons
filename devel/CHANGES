@@ -1,6 +1,11 @@
 Changelog for singletons project
 ================================
 
+0.8.6
+-----
+
+Make compatible with GHC HEAD, but HEAD reports core lint errors sometimes.
+
 0.8.5
 -----
 
