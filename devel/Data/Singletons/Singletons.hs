@@ -443,7 +443,27 @@ singKind ConstraintT = fail "Singling of constraint kinds not yet supported"
 
 -- the first parameter is whether or not this type occurs in a positive position
 singType :: Bool -> Type -> Q TypeFn
-singType = singTypeRec []
+singType pos ty = do   -- replace with singTypeRec [] pos ty after GHC bug #??? is fixed
+  -- the current code lifts all foralls to the top-level
+  sTypeFn <- singTypeRec [] pos ty
+  return $ \inner_ty ->
+    let built_ty = sTypeFn inner_ty in
+    go [] [] [] built_ty
+
+  where
+    go tyvars cxt args (ForallT tyvars1 cxt1 t1)
+      = go (reverse tyvars1 ++ tyvars) (reverse cxt1 ++ cxt) args t1
+    go tyvars cxt args (SigT t1 _kind)  -- ignore these kind annotations, which have to be *
+      = go tyvars cxt args t1
+    go tyvars cxt args (AppT (AppT ArrowT arg1) res1)
+      = go tyvars cxt (arg1 : args) res1
+    go [] [] args t1
+      = mk_fun_ty (reverse args) t1
+    go tyvars cxt args t1
+      = ForallT (reverse tyvars) (reverse cxt) (mk_fun_ty (reverse args) t1)
+
+    mk_fun_ty [] res = res
+    mk_fun_ty (arg1:args) res = AppT (AppT ArrowT arg1) (mk_fun_ty args res)
 
 -- the first parameter is the list of types the current type is applied to
 -- the second parameter is whether or not this type occurs in a positive position

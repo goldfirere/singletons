@@ -130,11 +130,19 @@ prefixLCName pre tyPre n =
 extractTvbName :: TyVarBndr -> Name
 extractTvbName (PlainTV n) = n
 extractTvbName (KindedTV n _) = n
+#if __GLASGOW_HASKELL__ >= 707
+extractTvbName (RoledTV n _) = n
+extractTvbName (KindedRoledTV n _ _) = n
+#endif
 
 -- extract the kind from a TyVarBndr. Returns '*' by default.
 extractTvbKind :: TyVarBndr -> Kind
 extractTvbKind (PlainTV _) = StarT -- FIXME: This seems wrong.
 extractTvbKind (KindedTV _ k) = k
+#if __GLASGOW_HASKELL__ >= 707
+extractTvbKind (RoledTV _ _) = StarT -- FIXME: This seems wrong.
+extractTvbKind (KindedRoledTV _ k _) = k
+#endif
 
 -- apply a type to a list of types
 foldType :: Type -> [Type] -> Type
