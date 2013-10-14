@@ -10,11 +10,17 @@ Users of the package should not need to consult this file.
 {-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
-module Data.Singletons.Util where
+module Data.Singletons.Util (
+  module Data.Singletons.Util,
+  module Language.Haskell.TH.Desugar )
+  where
 
 import Language.Haskell.TH
+import Language.Haskell.TH.Syntax
+import Language.Haskell.TH.Desugar ( reifyWithWarning, getDataD )
 import Data.Char
 import Data.Data
+import Data.List
 import Control.Monad
 import Control.Monad.Writer
 import qualified Data.Map as Map
@@ -36,32 +42,23 @@ newUniqueName str = do
   n <- newName str
   return $ mkName $ show n
 
--- reify a declaration, warning the user about splices if the reify fails
-reifyWithWarning :: Name -> Q Info
-reifyWithWarning name = recover
-  (fail $ "Looking up " ++ (show name) ++ " in the list of available " ++
-        "declarations failed.\nThis lookup fails if the declaration " ++
-        "referenced was made in the same Template\nHaskell splice as the use " ++
-        "of the declaration. If this is the case, put\nthe reference to " ++
-        "the declaration in a new splice.")
-  (reify name)
-
--- check if a string is the name of a tuple
-isTupleString :: String -> Bool
-isTupleString s =
-  (length s > 1) &&
-  (head s == '(') &&
-  (last s == ')') &&
-  ((length (takeWhile (== ',') (tail s))) == ((length s) - 2))
-
--- check if a name is a tuple name
-isTupleName :: Name -> Bool
-isTupleName = isTupleString . nameBase
+-- like mkName, but in the Data.Singletons module
+mkSingName :: String -> Name
+mkSingName = mkName . ("Data.Singletons." ++)
 
 -- extract the degree of a tuple
-tupleDegree :: String -> Int
-tupleDegree "()" = 0
-tupleDegree s = length s - 1
+tupleDegree_maybe :: String -> Maybe Int
+tupleDegree_maybe s = do
+  '(' : s1 <- return s 
+  (commas, ")") <- return $ span (== ',') s1
+  let degree
+        | "" <- commas = 0
+        | otherwise    = length commas + 1
+  return degree
+
+-- extract the degree of a tuple name
+tupleNameDegree_maybe :: Name -> Maybe Int
+tupleNameDegree_maybe = tupleDegree_maybe . nameBase
 
 -- reduce the four cases of a 'Con' to just two: monomorphic and polymorphic
 -- and convert 'StrictType' to 'Type'
@@ -126,23 +123,15 @@ prefixLCName pre tyPre n =
      then mkName (pre ++ str)
      else mkName (tyPre ++ str)
 
--- extract the name from a TyVarBndr
-extractTvbName :: TyVarBndr -> Name
-extractTvbName (PlainTV n) = n
-extractTvbName (KindedTV n _) = n
-#if __GLASGOW_HASKELL__ >= 707
-extractTvbName (RoledTV n _) = n
-extractTvbName (KindedRoledTV n _ _) = n
-#endif
-
 -- extract the kind from a TyVarBndr. Returns '*' by default.
 extractTvbKind :: TyVarBndr -> Kind
 extractTvbKind (PlainTV _) = StarT -- FIXME: This seems wrong.
 extractTvbKind (KindedTV _ k) = k
-#if __GLASGOW_HASKELL__ >= 707
-extractTvbKind (RoledTV _ _) = StarT -- FIXME: This seems wrong.
-extractTvbKind (KindedRoledTV _ k _) = k
-#endif
+
+-- extract the name from a TyVarBndr.
+extractTvbName :: TyVarBndr -> Name
+extractTvbName (PlainTV n) = n
+extractTvbName (KindedTV n _) = n
 
 -- apply a type to a list of types
 foldType :: Type -> [Type] -> Type
@@ -190,20 +179,4 @@ concatMapM :: Monad m => (a -> m [b]) -> [a] -> m [b]
 concatMapM fn list = do
   bss <- mapM fn list
   return $ concat bss
-
--- extract the tyvars and constructors from a name of a type,
--- printing out the string upon failure
-getDataD :: String -> Name -> Q ([TyVarBndr], [Con])
-getDataD error name = do
-  info <- reifyWithWarning name
-  dec <- case info of
-           TyConI dec -> return dec
-           _ -> badDeclaration
-  case dec of
-    DataD _cxt _name tvbs cons _derivings -> return (tvbs, cons)
-    NewtypeD _cxt _name tvbs con _derivings -> return (tvbs, [con])
-    _ -> badDeclaration
-  where badDeclaration =
-          fail $ "The name (" ++ (show name) ++ ") refers to something " ++
-                 "other than a datatype. " ++ error
 

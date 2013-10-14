@@ -19,7 +19,7 @@ available at <http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>
 -- We make unused bindings for (||), (&&), and not.
 
 module Data.Singletons (
-  KindIs(..), Sing(..), SingI(..), SingE(..), SingRep, KindOf, Demote,
+  KProxy(..), Sing(..), SingI(..), SingE(..), SingRep, KindOf, Demote,
   Any,
   (:==), (:==:),
   SingInstance(..), SingKind(singInstance),
@@ -38,12 +38,50 @@ module Data.Singletons (
 import Prelude hiding ((++))
 import Data.Singletons.Singletons
 import Data.Singletons.Promote
-import Data.Singletons.Exports
+import Data.Singletons.List
 import Language.Haskell.TH
 import Data.Singletons.Util
-import GHC.Exts (Any)
+import GHC.Exts
+import GHC.TypeLits
 
--- provide a few useful singletons...
+#if __GLASGOW_HASKELL__ >= 707
+
+import Data.Proxy (KProxy(KProxy))
+
+#else
+
+data KProxy (a :: *) = KProxy
+
+#endif
+
+-- Access the kind of a type variable
+type KindOf (a :: k) = ('KProxy :: KProxy k)
+
+-- Declarations of singleton structures
+data family Sing (a :: k)
+class SingI (a :: k) where
+  sing :: Sing a
+class (kparam ~ 'KProxy) => SingE (kparam :: KProxy k) where
+  type DemoteRep kparam :: *
+  fromSing :: Sing (a :: k) -> DemoteRep kparam
+
+-- SingRep is a synonym for (SingI, SingE)
+class    (SingI a, SingE (KindOf a)) => SingRep (a :: k)
+instance (SingI a, SingE (KindOf a)) => SingRep (a :: k)
+
+-- Abbreviation for DemoteRep
+type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)
+
+data SingInstance (a :: k) where
+  SingInstance :: SingRep a => SingInstance a
+class (kparam ~ 'KProxy) => SingKind (kparam :: KProxy k) where
+  singInstance :: forall (a :: k). Sing a -> SingInstance a
+
+-- type-level conditional
+type family If (a :: Bool) (b :: k) (c :: k) :: k
+type instance If 'True b c = b
+type instance If 'False b c = c
+
 $(genSingletons [''Bool, ''Maybe, ''Either, ''[]])
 $(genSingletons [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)])
 
@@ -69,16 +107,16 @@ type a :/=: b = Not (a :==: b)
 type a :/= b = a :/=: b
 
 -- the singleton analogue of @Eq@
-class (kparam ~ KindParam) => SEq (kparam :: KindIs k) where
+class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
   (%==%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :==: b)
   (%/=%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :/=: b)
   a %/=% b = sNot (a %==% b)
 
-(%:==) :: forall (a :: k) (b :: k). SEq (KindParam :: KindIs k)
+(%:==) :: forall (a :: k) (b :: k). SEq ('KProxy :: KProxy k)
        => Sing a -> Sing b -> Sing (a :==: b)
 (%:==) = (%==%)
 
-(%:/=) :: forall (a :: k) (b :: k). SEq (KindParam :: KindIs k)
+(%:/=) :: forall (a :: k) (b :: k). SEq ('KProxy :: KProxy k)
        => Sing a -> Sing b -> Sing (a :/=: b)
 (%:/=) = (%/=%)
 

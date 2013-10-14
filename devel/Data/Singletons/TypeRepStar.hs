@@ -24,8 +24,8 @@ sTypeRep = STypeRep
 
 instance Typeable a => SingI (a :: *) where
   sing = STypeRep
-instance SingE (KindParam :: KindIs *) where
-  type DemoteRep (KindParam :: KindIs *) = TypeRep
+instance SingE ('KProxy :: KProxy *) where
+  type DemoteRep ('KProxy :: KProxy *) = TypeRep
   fromSing (STypeRep :: Sing a) = typeOf (undefined :: a)
-instance SingKind (KindParam :: KindIs *) where
+instance SingKind ('KProxy :: KProxy *) where
   singInstance STypeRep = SingInstance

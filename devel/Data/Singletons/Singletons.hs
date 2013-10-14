@@ -12,13 +12,17 @@ types. It is an internal module to the singletons package.
 module Data.Singletons.Singletons where
 
 import Language.Haskell.TH
-import Data.Singletons.Exports
+import Language.Haskell.TH.Syntax (falseName, trueName)
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import qualified Data.Map as Map
 import Control.Monad
 import Control.Monad.Writer
 import Data.List
+
+#if __GLASGOW_HASKELL__ >= 707
+import Data.Proxy
+#endif
 
 -- map to track bound variables
 type ExpTable = Map.Map Name Exp
@@ -30,32 +34,39 @@ type TypeFn = Type -> Type
 -- a list of argument types extracted from a type application
 type TypeContext = [Type]
 
-singFamilyName, isSingletonName, forgettableName, comboClassName, witnessName,
-  demoteName, singKindClassName, singInstanceMethName, singInstanceTyConName,
+singFamilyName, singIName, singEName, singRepName, singMethName,
+  demoteRepName, singKindClassName, singInstanceMethName, singInstanceTyConName,
   singInstanceDataConName, sEqClassName, sEqMethName, sconsName, snilName,
-  smartSconsName, smartSnilName, sIfName, undefinedName, kindParamName,
-  ofKindName :: Name
-singFamilyName = ''Sing
-isSingletonName = ''SingI
-forgettableName = ''SingE
-comboClassName = ''SingRep
-witnessName = 'sing
-forgetName = 'fromSing
-demoteName = ''DemoteRep
-singKindClassName = ''SingKind
-singInstanceMethName = 'singInstance
-singInstanceTyConName = ''SingInstance
-singInstanceDataConName = 'SingInstance
-sEqClassName = mkName "SEq"
+  smartSconsName, smartSnilName, sIfName, undefinedName, kProxyDataName,
+  kProxyTypeName :: Name
+-- some of these are "mkName", because they are used in *binding* positions
+singFamilyName = mkSingName "Sing"
+singIName = mkSingName "SingI"
+singEName = mkSingName "SingE"
+singRepName = mkSingName "SingRep"
+singMethName = mkName "sing"
+fromSingName = mkName "fromSing"
+demoteRepName = mkName "DemoteRep"
+singKindClassName = mkSingName "SingKind"
+singInstanceMethName = mkName "singInstance"
+singInstanceTyConName = mkSingName "SingInstance"
+singInstanceDataConName = mkSingName "SingInstance"
+sEqClassName = mkSingName "SEq"
 sEqMethName = mkName "%==%"
+sIfName = mkSingName "sIf"
+undefinedName = 'undefined
 sconsName = mkName "SCons"
-snilName = mkName "SNil"
+snilName = mkName "SNil"  
 smartSconsName = mkName "sCons"
 smartSnilName = mkName "sNil"
-sIfName = mkName "sIf"
-undefinedName = 'undefined
-kindParamName = 'KindParam
-ofKindName = ''KindIs
+
+#if __GLASGOW_HASKELL__ >= 707
+kProxyDataName = 'KProxy
+kProxyTypeName = ''KProxy
+#else
+kProxyDataName = mkSingName "KProxy"
+kProxyTypeName = mkSingName "KProxy"
+#endif
 
 mkTupleName :: Int -> Name
 mkTupleName n = mkName $ "STuple" ++ (show n)
@@ -79,18 +90,18 @@ singInstancePat :: Pat
 singInstancePat = ConP singInstanceDataConName []
 
 demote :: Type
-demote = ConT demoteName
+demote = ConT demoteRepName
 
 singDataConName :: Name -> Name
 singDataConName nm = case nameBase nm of
   "[]" -> snilName
   ":"  -> sconsName
-  tuple | isTupleString tuple -> mkTupleName (tupleDegree tuple)
+  tuple | Just degree <- tupleDegree_maybe tuple -> mkTupleName degree
   _ -> prefixUCName "S" ":%" nm
 
 singTyConName :: Name -> Name
 singTyConName name | nameBase name == "[]" = mkName "SList"
-                   | isTupleName name = mkTupleName (tupleDegree $ nameBase name)
+                   | Just degree <- tupleNameDegree_maybe name = mkTupleName degree
                    | otherwise        = prefixUCName "S" ":%" name
 
 singClassName :: Name -> Name
@@ -114,7 +125,7 @@ singVal :: Name -> Exp
 singVal = VarE . singValName
 
 kindParam :: Kind -> Type
-kindParam k = SigT (ConT kindParamName) (AppT (ConT ofKindName) k)
+kindParam k = SigT (ConT kProxyDataName) (AppT (ConT kProxyTypeName) k)
 
 -- generate singleton definitions from an ADT
 genSingletons :: [Name] -> Q [Dec]
@@ -160,12 +171,12 @@ singCtor a = ctorCases
 
     -- SingI instance
     addElement $ InstanceD ((map singKindConstraint bareKindVars) ++
-                            (map (ClassP comboClassName . return) indices))
-                           (AppT (ConT isSingletonName)
+                            (map (ClassP singRepName . return) indices))
+                           (AppT (ConT singIName)
                                  (foldType pCon (zipWith SigT indices kinds)))
-                           [ValD (VarP witnessName)
+                           [ValD (VarP singMethName)
                                  (NormalB $ foldExp sCon (replicate (length types)
-                                                           (VarE witnessName)))
+                                                           (VarE singMethName)))
                                  []]
 
     -- smart constructor type signature
@@ -183,7 +194,7 @@ singCtor a = ctorCases
 
     return $ ForallC tvbs
                      ((EqualP a (foldType (promoteDataCon name) indices)) :
-                       (map (ClassP comboClassName . return) indices) ++
+                       (map (ClassP singRepName . return) indices) ++
                        (map singKindConstraint bareKindVars))
                      (NormalC sName $ map (\ty -> (NotStrict,ty)) args))
   (\_tvbs cxt ctor -> case cxt of
@@ -276,6 +287,8 @@ singDec (DataInstD _cxt _name _tys _ctors _derivings) =
 singDec (NewtypeInstD _cxt _name _tys _ctor _derivings) =
   fail "Singling of newtype instances not yet supported"
 #if __GLASGOW_HASKELL__ >= 707
+singDec (RoleAnnotD _name _roles) =
+  return [] -- silently ignore role annotations, as they're harmless
 singDec (ClosedTypeFamilyD _name _tvs _mkind _eqns) =
   fail "Singling of closed type families not yet supported"
 singDec (TySynInstD _name _eqns) =
@@ -383,13 +396,13 @@ singDataD rep cxt name tvbs ctors derivings
   forgetClauses <- mapM mkForgetClause ctors
   let singEInst =
         InstanceD []
-                  (AppT (ConT forgettableName) (kindParam k))
-                  [mkTyFamInst demoteName
+                  (AppT (ConT singEName) (kindParam k))
+                  [mkTyFamInst demoteRepName
                     [kindParam k]
                     (foldType (ConT name)
                       (map (\kv -> AppT demote (kindParam (VarT kv)))
                            tvbNames)),
-                   FunD forgetName
+                   FunD fromSingName
                         forgetClauses]
 
   return $ (if (any (\n -> (nameBase n) == "Eq") derivings)
@@ -413,7 +426,7 @@ singDataD rep cxt name tvbs ctors derivings
           return $ Clause [ConP (singDataConName name) (map VarP varNames)]
                           (NormalB $ foldExp
                              (ConE $ (if rep then reinterpret else id) name)
-                             (map (AppE (VarE forgetName) . VarE) varNames))
+                             (map (AppE (VarE fromSingName) . VarE) varNames))
                           []
 
 singKind :: Kind -> Q (Kind -> Kind)

@@ -12,9 +12,10 @@ type level. It is an internal module to the singletons package.
 
 module Data.Singletons.Promote where
 
+import Data.Singletons.List
 import Language.Haskell.TH
+import Language.Haskell.TH.Syntax (falseName, trueName)
 import Data.Singletons.Util
-import Data.Singletons.Exports
 import GHC.Exts (Any)
 import Prelude hiding (exp)
 import qualified Data.Map as Map
@@ -23,18 +24,16 @@ import Control.Monad
 import Control.Monad.Writer hiding (Any)
 import Data.List
 
-anyTypeName, falseName, trueName, boolName, andName, tyEqName, repName, ifName,
+anyTypeName, boolName, andName, tyEqName, repName, ifName,
   headName, tailName :: Name
 anyTypeName = ''Any
-falseName = 'False
-trueName = 'True
 boolName = ''Bool
-andName = mkName "&&"
-tyEqName = mkName ":==:"
-repName = mkName "Rep"
-ifName = ''If
-headName = ''Head
-tailName = ''Tail
+andName = mkSingName "&&"
+tyEqName = mkSingName ":==:"
+repName = mkName "Rep"   -- note: NOT mkSingName!
+ifName = mkSingName "If"
+headName = mkSingName "Data.Singletons.List.Head"
+tailName = mkSingName "Data.Singletons.List.Tail"
 
 falseTy :: Type
 falseTy = promoteDataCon falseName
@@ -83,10 +82,12 @@ promoteInfo (TyVarI _name _ty) =
   fail "Promotion of type variable info not supported"
 
 promoteDataCon :: Name -> Type
-promoteDataCon name =
-  if isTupleName name
-    then PromotedTupleT (tupleDegree $ nameBase name)
-    else PromotedT name
+promoteDataCon name
+  | Just degree <- tupleNameDegree_maybe name
+  = PromotedTupleT degree
+
+  | otherwise
+  = PromotedT name
 
 promoteValName :: Name -> Name
 promoteValName n
@@ -362,6 +363,8 @@ promoteDec _vars (DataInstD _cxt _name _tys _ctors _derivings) =
 promoteDec _vars (NewtypeInstD _cxt _name _tys _ctors _derivings) =
   fail "Promotion of newtype instances not yet supported"
 #if __GLASGOW_HASKELL__ >= 707
+promoteDec _vars (RoleAnnotD _name _roles) =
+  return [] -- silently ignore role annotations, as they're harmless here
 promoteDec _vars (ClosedTypeFamilyD _name _tvs _mkind _eqns) =
   fail "Promotion of closed type families not yet supported"
 promoteDec _vars (TySynInstD _name _eqn) =

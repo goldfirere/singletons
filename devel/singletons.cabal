@@ -1,5 +1,5 @@
 name:           singletons
-version:        0.8.6
+version:        0.9.0
 cabal-version:  >= 1.8
 synopsis:       A framework for generating singleton types
 homepage:       http://www.cis.upenn.edu/~eir/packages/singletons
@@ -37,8 +37,9 @@ library
       mtl >= 2.1.1,
       template-haskell,
       containers >= 0.5,
-      syb >= 0.3
+      syb >= 0.3,
+      th-desugar >= 1.1
   exposed-modules:    Data.Singletons, Data.Singletons.CustomStar,
-                      Data.Singletons.TypeRepStar
+                      Data.Singletons.TypeRepStar, Data.Singletons.List
   other-modules:      Data.Singletons.Promote, Data.Singletons.Singletons,
-                      Data.Singletons.Util, Data.Singletons.Exports
+                      Data.Singletons.Util
