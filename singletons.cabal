@@ -29,7 +29,6 @@ source-repository this
   type:     git
   location: https://github.com/goldfirere/singletons.git
   tag:      v0.8.6
-  subdir:   devel
 
 library
   build-depends:      
