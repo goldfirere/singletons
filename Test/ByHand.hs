@@ -14,15 +14,17 @@ This file is a great way to understand the singleton encoding better.
              FunctionalDependencies, ScopedTypeVariables, CPP
  #-}
 
-module ByHand where
+module Test.ByHand where
 
 import Prelude hiding (Maybe, Just, Nothing, Either, Left, Right, map,
                        Bool, False, True, (+), (-))
+import Unsafe.Coerce
 
 #if __GLASGOW_HASKELL__ >= 707
-
-import GHC.TypeLits ( KindIs(..), Sing, SingI(..), SingE(..), SingRep )
-
+import Data.Proxy
+#else
+import Data.Singletons.Legacy
+data Proxy a = Proxy
 #endif
 
 -----------------------------------
@@ -65,67 +67,74 @@ data Either :: * -> * -> * where
 -----------------------------------
 
 -- Type-level boolean equality
-type family (a :: k) :==: (b :: k) :: Bool
+type family (a :: k) == (b :: k) :: Bool
 
 -- Singleton type equality type class
-class (t ~ KindParam) => SEq (t :: KindIs k) where
-  (%==%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :==: b)
-
--- Singleton existential (still experimental)
-data Existential (kparam :: KindIs k) =
-  forall (a :: k). SingRep a => Exists (Sing a)
+class (t ~ 'KProxy) => SEq (t :: KProxy k) where
+  (%==%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a == b)
 
 -- A way to store instances of SingRep at runtime
 data SingInstance :: k -> * where 
-  SingInstance :: SingRep a => SingInstance a
+  SingInstance :: SingI a => SingInstance a
 
 -- A "kind class" marking those kinds that are considered in our
 -- universe. Any type of a kind that has a SingKind instance can
 -- be made into a singleton.
-class (kparam ~ KindParam) => SingKind (kparam :: KindIs k) where
-  singInstance :: forall (a :: k). Sing a -> SingInstance a
-
--- A class for the generation of singleton existentials (experimental)
-class ( SingKind (kparam :: KindIs k)
-      , a ~ DemoteRep (KindParam :: KindIs k)
-      , kparam ~ KindParam ) =>
-      HasSingleton a (kparam :: KindIs k) | a -> kparam where
-  exists :: a -> Existential kparam
-
-#if __GLASGOW_HASKELL__ < 707
-
--- These definitions are all copies of the definitions in an up-to-date GHC.TypeLits
-
--- Kind-level proxy
-data KindIs (k :: *) = KindParam
+class (kparam ~ 'KProxy) => SingKind (kparam :: KProxy k) where
+  type DemoteRep kparam :: *
+  fromSing :: Sing (a :: k) -> DemoteRep kparam
+  toSing :: DemoteRep kparam -> SomeSing kparam
 
 -- The Sing family
 data family Sing (a :: k)
 
--- Introduction and elimination type classes
+-- Implicit singletons
 class SingI (a :: k) where
   sing :: Sing a
-class (kparam ~ KindParam) => SingE (kparam :: KindIs k) where
-  type DemoteRep kparam :: *
-  fromSing :: Sing (a :: k) -> DemoteRep kparam
 
 -- Convenient abbreviations
-type KindOf (a :: k) = (KindParam :: KindIs k)
-type Demote (a :: k) = DemoteRep (KindParam :: KindIs k)
+type KindOf (a :: k) = ('KProxy :: KProxy k)
+type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)
 
--- SingRep is a synonym for a combination of SingI and SingE
-class    (SingI a, SingE (KindOf a)) => SingRep (a :: k)
-instance (SingI a, SingE (KindOf a)) => SingRep (a :: k)
+-- Wraps up a singleton
+data SomeSing :: KProxy k -> * where
+  SomeSing :: forall (a :: k). (SingKind ('KProxy :: KProxy k))
+           => Sing a -> SomeSing ('KProxy :: KProxy k)
 
-#endif
-
-type family If (a :: Bool) (b :: k) (c :: k) :: k where
+#if __GLASGOW_HASKELL__ >= 707
+type family If a b c where
   If True b c = b
   If False b c = c
+#else
+type family If (a :: Bool) (b :: k) (c :: k) :: k
+type instance If True b c = b
+type instance If False b c = c
+#endif
 
 sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
 sIf STrue b _ = b
 sIf SFalse _ c = c
+
+withSomeSing :: SingKind ('KProxy :: KProxy k)
+             => DemoteRep ('KProxy :: KProxy k)
+             -> (forall (a :: k). Sing a -> r)
+             -> r
+withSomeSing x f =
+  case toSing x of
+    SomeSing x' -> f x'
+
+newtype DontInstantiate a = MkDI { unDI :: SingI a => SingInstance a }
+
+singInstance :: forall (a :: k). Sing a -> SingInstance a
+singInstance s = with_sing_i s SingInstance
+  where
+    with_sing_i :: Sing a -> (SingI a => SingInstance a) -> SingInstance a
+    with_sing_i s si = unsafeCoerce (MkDI si) s
+
+withSingI :: Sing n -> (SingI n => r) -> r
+withSingI sn r =
+  case singInstance sn of
+    SingInstance -> r 
 
 -----------------------------------
 -- Auto-generated code ------------
@@ -135,64 +144,47 @@ sIf SFalse _ c = c
 
 data instance Sing (a :: Nat) where
   SZero :: Sing Zero
-  SSucc :: SingRep n => Sing n -> Sing (Succ n)
+  SSucc :: Sing n -> Sing (Succ n)
 
 #if __GLASGOW_HASKELL__ >= 707
 
 type family EqualsNat (a :: Nat) (b :: Nat) where
   EqualsNat Zero Zero = True
-  EqualsNat (Succ a) (Succ b) = a :==: b
+  EqualsNat (Succ a) (Succ b) = a == b
   EqualsNat (n1 :: Nat) (n2 :: Nat) = False
-type instance (a :: Nat) :==: (b :: Nat) = EqualsNat a b
+type instance (a :: Nat) == (b :: Nat) = EqualsNat a b
 
 #else
 
-type instance Zero :==: Zero = True
-type instance Zero :==: (Succ n) = False
-type instance (Succ n) :==: Zero = False
-type instance (Succ n) :==: (Succ n') = n :==: n'
+type instance Zero == Zero = True
+type instance Zero == (Succ n) = False
+type instance (Succ n) == Zero = False
+type instance (Succ n) == (Succ n') = n == n'
 
 #endif
 
-instance SEq (KindParam :: KindIs Nat) where
+instance SEq ('KProxy :: KProxy Nat) where
   SZero %==% SZero = STrue
   SZero %==% (SSucc _) = SFalse
   (SSucc _) %==% SZero = SFalse
   (SSucc n) %==% (SSucc n') = n %==% n'
 
-sZero :: Sing Zero
-sZero = SZero
-
-sSucc :: Sing n -> Sing (Succ n)
-sSucc n = case singInstance n of
-  SingInstance -> SSucc n
-
 instance SingI Zero where
   sing = SZero
-instance SingRep n => SingI (Succ n) where
+instance SingI n => SingI (Succ n) where
   sing = SSucc sing
-instance SingE (KindParam :: KindIs Nat) where
-  type DemoteRep (KindParam:: KindIs Nat) = Nat
+instance SingKind ('KProxy :: KProxy Nat) where
+  type DemoteRep ('KProxy:: KProxy Nat) = Nat
   fromSing SZero = Zero
   fromSing (SSucc n) = Succ (fromSing n)
-instance HasSingleton Nat (KindParam :: KindIs Nat) where
-  exists Zero = Exists SZero
-  exists (Succ n) = case exists n of Exists n' -> Exists (SSucc n')
-instance SingKind (KindParam :: KindIs Nat) where
-  singInstance SZero = SingInstance
-  singInstance (SSucc _) = SingInstance
+  toSing Zero = SomeSing SZero
+  toSing (Succ n) = withSomeSing n (\n' -> SomeSing $ SSucc n')
 
 -- Bool
 
 data instance Sing (a :: Bool) where
   SFalse :: Sing False
   STrue :: Sing True
-
-sFalse :: Sing False
-sFalse = SFalse
-
-sTrue :: Sing True
-sTrue = STrue
 
 (%:&&) :: forall (a :: Bool) (b :: Bool). Sing a -> Sing b -> Sing (a :&& b)
 SFalse %:&& SFalse = SFalse
@@ -204,164 +196,127 @@ instance SingI False where
   sing = SFalse
 instance SingI True where
   sing = STrue
-instance SingE (KindParam :: KindIs Bool) where
-  type DemoteRep (KindParam :: KindIs Bool) = Bool
+instance SingKind ('KProxy :: KProxy Bool) where
+  type DemoteRep ('KProxy :: KProxy Bool) = Bool
   fromSing SFalse = False
   fromSing STrue = True
-instance HasSingleton Bool (KindParam :: KindIs Bool) where
-  exists False = Exists SFalse
-  exists True = Exists STrue
-instance SingKind (KindParam :: KindIs Bool) where
-  singInstance SFalse = SingInstance
-  singInstance STrue = SingInstance
+  toSing False = SomeSing SFalse
+  toSing True  = SomeSing STrue
 
 
 -- Maybe
 
 data instance Sing (a :: Maybe k) where
   SNothing :: Sing Nothing
-  SJust :: forall (a :: k). (SingKind (KindParam :: KindIs k), SingRep a) =>
+  SJust :: forall (a :: k). (SingKind ('KProxy :: KProxy k)) =>
              Sing a -> Sing (Just a)
 
 #if __GLASGOW_HASKELL__ >= 707
 
 type family EqualsMaybe (a :: Maybe k) (b :: Maybe k) where
   EqualsMaybe Nothing Nothing = True
-  EqualsMaybe (Just a) (Just a') = a :==: a'
+  EqualsMaybe (Just a) (Just a') = a == a'
   EqualsMaybe (x :: Maybe k) (y :: Maybe k) = False
-type instance (a :: Maybe k) :==: (b :: Maybe k) = EqualsMaybe a b
+type instance (a :: Maybe k) == (b :: Maybe k) = EqualsMaybe a b
 
 #else
 
-type instance Nothing :==: Nothing = True
-type instance Nothing :==: (Just a) = False
-type instance (Just a) :==: Nothing = False
-type instance (Just a) :==: (Just a') = a :==: a'
+type instance Nothing == Nothing = True
+type instance Nothing == (Just a) = False
+type instance (Just a) == Nothing = False
+type instance (Just a) == (Just a') = a == a'
 
 #endif
 
-instance SEq (KindParam :: KindIs k) => SEq (KindParam :: KindIs (Maybe k)) where
+instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (Maybe k)) where
   SNothing %==% SNothing = STrue
   SNothing %==% (SJust _) = SFalse
   (SJust _) %==% SNothing = SFalse
   (SJust a) %==% (SJust a') = a %==% a'
 
-sNothing :: Sing (Nothing :: Maybe k)
-sNothing = SNothing
-
-sJust :: forall (a :: k). SingKind (KindParam :: KindIs k) => Sing a -> Sing (Just a)
-sJust a = case singInstance a of
-  SingInstance -> SJust a
-
 instance SingI (Nothing :: Maybe k) where
   sing = SNothing
-instance (SingKind (KindParam :: KindIs k), SingRep a) => SingI (Just (a :: k)) where
+instance (SingKind ('KProxy :: KProxy k), SingI a) => SingI (Just (a :: k)) where
   sing = SJust sing
-instance SingE (KindParam :: KindIs (Maybe k)) where
-  type DemoteRep (KindParam :: KindIs (Maybe k)) = Maybe (DemoteRep (KindParam :: KindIs k))
+instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (Maybe k)) where
+  type DemoteRep ('KProxy :: KProxy (Maybe k)) = Maybe (DemoteRep ('KProxy :: KProxy k))
   fromSing SNothing = Nothing
   fromSing (SJust a) = Just (fromSing a)
-instance HasSingleton a (KindParam :: KindIs k) =>
-           HasSingleton (Maybe a) (KindParam :: KindIs (Maybe k)) where
-  exists Nothing = Exists SNothing
-  exists (Just a) = case exists a of Exists a' -> Exists (SJust a')
-instance SingKind (KindParam :: KindIs (Maybe k)) where
-  singInstance SNothing = SingInstance
-  singInstance (SJust _) = SingInstance
+  toSing Nothing = SomeSing SNothing
+  toSing (Just x) =
+    case toSing x :: SomeSing ('KProxy :: KProxy k) of
+      SomeSing x' -> SomeSing $ SJust x'
 
 -- List
 
 data instance Sing (a :: List k) where
   SNil :: Sing Nil
   SCons :: forall (h :: k) (t :: List k).
-             (SingKind (KindParam :: KindIs k), SingKind (KindParam :: KindIs (List k)),
-              SingRep h, SingRep t) =>
+             (SingKind ('KProxy :: KProxy k)) =>
              Sing h -> Sing t -> Sing (Cons h t)
 
 #if __GLASGOW_HASKELL__ >= 707
 
 type family EqualsList (a :: List k) (b :: List k) where
   EqualsList Nil Nil = True
-  EqualsList (Cons a b) (Cons a' b') = (a :==: a') :&& (b :==: b')
+  EqualsList (Cons a b) (Cons a' b') = (a == a') :&& (b == b')
   EqualsList (x :: List k) (y :: List k) = False
-type instance (a :: List k) :==: (b :: List k) = EqualsList a b
+type instance (a :: List k) == (b :: List k) = EqualsList a b
 
 #else
 
-type instance Nil :==: Nil = True
-type instance Nil :==: (Cons a b) = False
-type instance (Cons a b) :==: Nil = False
-type instance (Cons a b) :==: (Cons a' b') = (a :==: a') :&& (b :==: b')
+type instance Nil == Nil = True
+type instance Nil == (Cons a b) = False
+type instance (Cons a b) == Nil = False
+type instance (Cons a b) == (Cons a' b') = (a == a') :&& (b == b')
 
 #endif
 
-instance SEq (KindParam :: KindIs k) => SEq (KindParam :: KindIs (List k)) where
+instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (List k)) where
   SNil %==% SNil = STrue
   SNil %==% (SCons _ _) = SFalse
   (SCons _ _) %==% SNil = SFalse
   (SCons a b) %==% (SCons a' b') = (a %==% a') %:&& (b %==% b')
 
-sNil :: Sing Nil
-sNil = SNil
-
-sCons :: forall (h :: k) (t :: List k).
-           SingKind (KindParam :: KindIs k) =>
-           Sing h -> Sing t -> Sing (Cons h t)
-sCons h t = case (singInstance h, singInstance t) of
-  (SingInstance, SingInstance) -> SCons h t
-
 instance SingI Nil where
   sing = SNil
-instance (SingKind (KindParam :: KindIs k), SingRep h, SingRep t) =>
+instance (SingKind ('KProxy :: KProxy k), SingI h, SingI t) =>
            SingI (Cons (h :: k) (t :: List k)) where
   sing = SCons sing sing
-instance SingE (KindParam :: KindIs (List k)) where
-  type DemoteRep (KindParam :: KindIs (List k)) = List (DemoteRep (KindParam :: KindIs k))
+instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (List k)) where
+  type DemoteRep ('KProxy :: KProxy (List k)) = List (DemoteRep ('KProxy :: KProxy k))
   fromSing SNil = Nil
   fromSing (SCons h t) = Cons (fromSing h) (fromSing t)
-instance HasSingleton a (KindParam :: KindIs k) =>
-           HasSingleton (List a) (KindParam :: KindIs (List k)) where
-  exists Nil = Exists SNil
-  exists (Cons h t) =
-    case exists h of
-      Exists h' -> case exists t of
-        Exists t' -> Exists (SCons h' t')
-instance SingKind (KindParam :: KindIs (List k)) where
-  singInstance SNil = SingInstance
-  singInstance (SCons _ _) = SingInstance
+  toSing Nil = SomeSing SNil
+  toSing (Cons h t) =
+    case ( toSing h :: SomeSing ('KProxy :: KProxy k)
+         , toSing t :: SomeSing ('KProxy :: KProxy (List k)) ) of
+      (SomeSing h', SomeSing t') -> SomeSing $ SCons h' t'
 
 -- Either
 
 data instance Sing (a :: Either k1 k2) where
   SLeft :: forall (a :: k).
-             (SingKind (KindParam :: KindIs k), SingRep a) => Sing a -> Sing (Left a)
+             (SingKind ('KProxy :: KProxy k)) => Sing a -> Sing (Left a)
   SRight :: forall (b :: k).
-             (SingKind (KindParam :: KindIs k), SingRep b) => Sing b -> Sing (Right b)
+             (SingKind ('KProxy :: KProxy k)) => Sing b -> Sing (Right b)
 
-sLeft :: forall (a :: k). SingKind (KindParam :: KindIs k) => Sing a -> Sing (Left a)
-sLeft x = case singInstance x of
-  SingInstance -> SLeft x
-
-sRight :: forall (a :: k). SingKind (KindParam :: KindIs k) => Sing a -> Sing (Right a)
-sRight x = case singInstance x of
-  SingInstance -> SRight x 
-
-instance (SingKind (KindParam :: KindIs k), SingRep a) => SingI (Left (a :: k)) where
+instance (SingKind ('KProxy :: KProxy k), SingI a) => SingI (Left (a :: k)) where
   sing = SLeft sing
-instance (SingKind (KindParam :: KindIs k), SingRep b) => SingI (Right (b :: k)) where
+instance (SingKind ('KProxy :: KProxy k), SingI b) => SingI (Right (b :: k)) where
   sing = SRight sing
-instance SingE (KindParam :: KindIs (Either k1 k2)) where
-  type DemoteRep (KindParam :: KindIs (Either k1 k2)) =
-    Either (DemoteRep (KindParam :: KindIs k1)) (DemoteRep (KindParam :: KindIs k2))
+instance (SingKind ('KProxy :: KProxy k1), SingKind ('KProxy :: KProxy k2))
+           => SingKind ('KProxy :: KProxy (Either k1 k2)) where
+  type DemoteRep ('KProxy :: KProxy (Either k1 k2)) =
+    Either (DemoteRep ('KProxy :: KProxy k1)) (DemoteRep ('KProxy :: KProxy k2))
   fromSing (SLeft x) = Left (fromSing x)
   fromSing (SRight x) = Right (fromSing x)
-instance (HasSingleton a (KindParam :: KindIs ak), HasSingleton b (KindParam :: KindIs bk)) =>
-           HasSingleton (Either a b) (KindParam :: KindIs (Either ak bk)) where
-  exists (Left x) = case exists x of Exists x' -> Exists (SLeft x')
-  exists (Right x) = case exists x of Exists x' -> Exists (SRight x')
-instance SingKind (KindParam :: KindIs (Either k1 k2)) where
-  singInstance (SLeft _) = SingInstance
-  singInstance (SRight _) = SingInstance
+  toSing (Left x) =
+    case toSing x :: SomeSing ('KProxy :: KProxy k1) of
+      SomeSing x' -> SomeSing $ SLeft x'
+  toSing (Right x) =
+    case toSing x :: SomeSing ('KProxy :: KProxy k2) of
+      SomeSing x' -> SomeSing $ SRight x'
 
 -----------------------------------
 -- Some example functions ---------
@@ -376,8 +331,8 @@ type instance IsJust Nothing = False
 type instance IsJust (Just a) = True
 
 sIsJust :: Sing a -> Sing (IsJust a)
-sIsJust SNothing = sFalse
-sIsJust (SJust _) = sTrue
+sIsJust SNothing = SFalse
+sIsJust (SJust _) = STrue
 
 map :: (a -> b) -> List a -> List b
 map _ Nil = Nil
@@ -388,13 +343,13 @@ type instance Map f Nil = Nil
 type instance Map f (Cons h t) = Cons (f h) (Map f t)
 
 sMap :: forall (a :: List k1) (f :: k1 -> k2).
-          SingKind (KindParam :: KindIs k2) =>
+          SingKind ('KProxy :: KProxy k2) =>
           (forall b. Sing b -> Sing (f b)) -> Sing a -> Sing (Map f a)
-sMap _ SNil = sNil
-sMap f (SCons h t) = sCons (f h) (sMap f t)
+sMap _ SNil = SNil
+sMap f (SCons h t) = SCons (f h) (sMap f t)
 
 -- test sMap
-foo = sMap sSucc (SCons (SSucc SZero) (SCons SZero SNil))
+foo = sMap SSucc (SCons (SSucc SZero) (SCons SZero SNil))
 
 either :: (a -> c) -> (b -> c) -> Either a b -> c
 either l _ (Left x) = l x
@@ -431,47 +386,65 @@ type instance LiftMaybe f Nothing = Nothing
 type instance LiftMaybe f (Just a) = Just (f a)
 
 sLiftMaybe :: forall (f :: a -> b) (x :: Maybe a).
-                SingKind (KindParam :: KindIs b) =>
+                SingKind ('KProxy :: KProxy b) =>
                 (forall (y :: a). Sing y -> Sing (f y)) ->
                 Sing x -> Sing (LiftMaybe f x)
 sLiftMaybe _ SNothing = SNothing
-sLiftMaybe f (SJust a) = sJust (f a)
+sLiftMaybe f (SJust a) = SJust (f a)
 
 (+) :: Nat -> Nat -> Nat
 Zero + x = x
 (Succ x) + y = Succ (x + y)
 
+#if __GLASGOW_HASKELL__ >= 707
 type family (:+) (m :: Nat) (n :: Nat) :: Nat where
   Zero :+ x = x
   (Succ x) :+ y = Succ (x :+ y)
+#else
+type family (:+) (m :: Nat) (n :: Nat) :: Nat
+type instance Zero :+ x = x
+type instance (Succ x) :+ y = Succ (x :+ y)
+#endif
 
 (%:+) :: Sing m -> Sing n -> Sing (m :+ n)
 SZero %:+ x = x
-(SSucc x) %:+ y = sSucc (x %:+ y)
+(SSucc x) %:+ y = SSucc (x %:+ y)
 
 (-) :: Nat -> Nat -> Nat
 Zero - _ = Zero
 (Succ x) - Zero = Succ x
 (Succ x) - (Succ y) = x - y
 
+#if __GLASGOW_HASKELL__ >= 707
 type family (:-) (m :: Nat) (n :: Nat) :: Nat where
   Zero :- x = Zero
   (Succ x) :- Zero = Succ x
   (Succ x) :- (Succ y) = x :- y
+#else
+type family (:-) (m :: Nat) (n :: Nat) :: Nat
+type instance Zero :- x = Zero
+type instance (Succ x) :- Zero = Succ x
+type instance (Succ x) :- (Succ y) = x :- y
+#endif
 
 (%:-) :: Sing m -> Sing n -> Sing (m :- n)
 SZero %:- _ = SZero
-(SSucc x) %:- SZero = sSucc x
+(SSucc x) %:- SZero = SSucc x
 (SSucc x) %:- (SSucc y) = x %:- y
 
 isZero :: Nat -> Bool
 isZero n = if n == Zero then True else False
 
+#if __GLASGOW_HASKELL__ >= 707
 type family IsZero (n :: Nat) :: Bool where
-  IsZero n = If (n :==: Zero) True False
+  IsZero n = If (n == Zero) True False
+#else
+type family IsZero (n :: Nat) :: Bool
+type instance IsZero n = If (n == Zero) True False
+#endif
 
 sIsZero :: Sing n -> Sing (IsZero n)
-sIsZero n = sIf (n %==% sZero) sTrue sFalse
+sIsZero n = sIf (n %==% SZero) STrue SFalse
 
 {-
 (||) :: Bool -> Bool -> Bool
@@ -479,13 +452,19 @@ False || x = x
 True || _ = True
 -}
 
+#if __GLASGOW_HASKELL__ >= 707
 type family (a :: Bool) :|| (b :: Bool) :: Bool where
   False :|| x = x
   True :|| x = True
+#else
+type family (a :: Bool) :|| (b :: Bool) :: Bool
+type instance False :|| x = x
+type instance True :|| x = True
+#endif
 
 (%:||) :: Sing a -> Sing b -> Sing (a :|| b)
 SFalse %:|| x = x
-STrue %:|| _ = sTrue
+STrue %:|| _ = STrue
 
 {-
 contains :: Eq a => a -> List a -> Bool
@@ -493,12 +472,28 @@ contains _ Nil = False
 contains elt (Cons h t) = (elt == h) || contains elt t
 -}
 
+#if __GLASGOW_HASKELL__ >= 707
 type family Contains (a :: k) (b :: List k) :: Bool where
   Contains elt Nil = False
-  Contains elt (Cons h t) = (elt :==: h) :|| (Contains elt t)
+  Contains elt (Cons h t) = (elt == h) :|| (Contains elt t)
+#else
+type family Contains (a :: k) (b :: List k) :: Bool
+type instance Contains elt Nil = False
+type instance Contains elt (Cons h t) = (elt == h) :|| (Contains elt t)
+#endif
 
-sContains :: forall. SEq (KindParam :: KindIs k) => 
+sContains :: forall. SEq ('KProxy :: KProxy k) => 
              forall (a :: k). Sing a ->
              forall (list :: List k). Sing list -> Sing (Contains a list)
-sContains _ SNil = sFalse
+sContains _ SNil = SFalse
 sContains elt (SCons h t) = (elt %==% h) %:|| (sContains elt t)
+
+impNat :: forall m n. SingI n => Proxy n -> Sing m -> Sing (n :+ m)
+impNat _ sm = (sing :: Sing n) %:+ sm
+
+callImpNat :: forall n m. Sing n -> Sing m -> Sing (n :+ m)
+callImpNat sn sm = withSingI sn (impNat (Proxy :: Proxy n) sm)
+
+instance Show (Sing (n :: Nat)) where
+  show SZero = "SZero"
+  show (SSucc n) = "SSucc (" ++ (show n) ++ ")"

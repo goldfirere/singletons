@@ -29,29 +29,23 @@ module Data.Singletons (
   Not, sNot, (:&&), (%:&&), (:||), (%:||), (:&&:), (:||:), (:/=), (:/=:),
   SEq((%==%), (%/=%)), (%:==), (%:/=),
   If, sIf, 
-  sNil, sCons, SList, (:++), (%:++), Head, Tail,
+  sNil, sCons, SList, Head, Tail,
   cases, bugInGHC,
   genSingletons, singletons, genPromotions, promote,
   promoteEqInstances, promoteEqInstance, singEqInstance, singEqInstances
   ) where
 
-import Prelude hiding ((++))
 import Data.Singletons.Singletons
 import Data.Singletons.Promote
-import Data.Singletons.List
 import Language.Haskell.TH
 import Data.Singletons.Util
 import GHC.Exts
 import GHC.TypeLits
 
 #if __GLASGOW_HASKELL__ >= 707
-
-import Data.Proxy (KProxy(KProxy))
-
+import Data.Proxy
 #else
-
-data KProxy (a :: *) = KProxy
-
+import Data.Singletons.Legacy
 #endif
 
 -- Access the kind of a type variable
@@ -82,6 +76,7 @@ type family If (a :: Bool) (b :: k) (c :: k) :: k
 type instance If 'True b c = b
 type instance If 'False b c = c
 
+-- some useful singletons
 $(genSingletons [''Bool, ''Maybe, ''Either, ''[]])
 $(genSingletons [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)])
 
@@ -132,11 +127,54 @@ sIf SFalse _ c = c
 type a :&&: b = a :&& b
 type a :||: b = a :|| b
 
-$(singletons [d|
-  (++) :: [a] -> [a] -> [a]
-  [] ++ a = a
-  (h:t) ++ a = h:(t ++ a)
-  |])
+#if __GLASGOW_HASKELL__ >= 707
+
+-- operator on type-level lists
+type family Head a where
+  Head (h ': t) = h
+type family Tail a where
+  Tail (h ': t) = t
+
+#else
+    
+-- operate on type-level lists
+type family Head (a :: [k]) :: k
+type instance Head (h ': t) = h
+
+type family Tail (a :: [k]) :: [k]
+type instance Tail (h ': t) = t
+
+#endif
+
+#if __GLASGOW_HASKELL__ >= 707
+
+-- define singletons for TypeLits
+
+data instance Sing (n :: Nat) where
+  SNat :: forall (n :: Nat). SingRep n => Integer -> Sing n
+instance KnownNat n => SingI n where
+  sing = SNat (natVal (Proxy :: Proxy n))
+instance SingE ('KProxy :: KProxy Nat) where
+  type DemoteRep ('KProxy :: KProxy Nat) = Integer
+  fromSing (SNat n) = n
+instance SingKind ('KProxy :: KProxy Nat) where
+  singInstance (SNat _) = SingInstance
+
+data instance Sing (n :: Symbol) where
+  SSym :: forall (n :: Symbol). SingRep n => String -> Sing n
+instance KnownSymbol n => SingI n where
+  sing = SSym (symbolVal (Proxy :: Proxy n))
+instance SingE ('KProxy :: KProxy Symbol) where
+  type DemoteRep ('KProxy :: KProxy Symbol) = String
+  fromSing (SSym n) = n
+instance SingKind ('KProxy :: KProxy Symbol) where
+  singInstance (SSym _) = SingInstance
+  
+#endif
+
+-- allows creation of a singleton when a proxy is at hand
+singByProxy :: SingI a => proxy a -> Sing a
+singByProxy _ = sing
 
 -- allows for automatic checking of all constructors in a GADT for instance
 -- inference

@@ -12,7 +12,6 @@ type level. It is an internal module to the singletons package.
 
 module Data.Singletons.Promote where
 
-import Data.Singletons.List
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax (falseName, trueName)
 import Data.Singletons.Util

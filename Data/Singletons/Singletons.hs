@@ -22,6 +22,8 @@ import Data.List
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Proxy
+#else
+import Data.Singletons.Legacy
 #endif
 
 -- map to track bound variables
@@ -59,14 +61,8 @@ sconsName = mkName "SCons"
 snilName = mkName "SNil"  
 smartSconsName = mkName "sCons"
 smartSnilName = mkName "sNil"
-
-#if __GLASGOW_HASKELL__ >= 707
 kProxyDataName = 'KProxy
 kProxyTypeName = ''KProxy
-#else
-kProxyDataName = mkSingName "KProxy"
-kProxyTypeName = mkSingName "KProxy"
-#endif
 
 mkTupleName :: Int -> Name
 mkTupleName n = mkName $ "STuple" ++ (show n)
