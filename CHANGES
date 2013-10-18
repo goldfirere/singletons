@@ -4,8 +4,39 @@ Changelog for singletons project
 0.9.0
 -----
 
-Make compatible with GHC HEAD.
+Make compatible with GHC HEAD, but HEAD reports core lint errors sometimes.
 
+Change module structure significantly. If you want to derive your own
+singletons, you should import `Data.Singletons.TH`. The module
+`Data.Singletons` now exports functions only for the *use* of singletons.
+
+New modules `Data.Singletons.Bool`, `...Maybe`, `...Either`, and `...List`
+are just like their equivalents from `Data.`, except for `List`, which is
+quite lacking in features.
+
+For singleton equality, use `Data.Singletons.Eq`.
+
+New module `Data.Singletons.Prelude` is meant to mirror the Haskell Prelude,
+but with singleton definitions.
+
+Streamline representation of singletons, resulting in *exponential* speedup
+at execution. (This has not been rigorously measured, but the data structures
+are now *exponentially* smaller.)
+
+Add internal support for TypeLits, because the TypeLits module no longer
+exports singleton definitions.
+
+Add support for existential singletons, through the `toSing` method of
+`SingKind`.
+
+Remove the `SingE` class, bundling its functionality into `SingKind`.
+Thus, the `SingRep` synonym has also been removed.
+
+Name change: `KindIs` becomes `KProxy`.
+
+Add support for singletonizing calls to `error`.
+
+Add support for singletonizing empty data definitions.
 
 0.8.6
 -----

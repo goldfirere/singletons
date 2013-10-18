@@ -10,13 +10,15 @@ compile with a warning that declarations containing badPlus are omitted.
 
 {-# LANGUAGE GADTs, TypeFamilies, TemplateHaskell, UndecidableInstances,
              RankNTypes, TypeOperators, KindSignatures, FlexibleInstances,
-             PolyKinds, DataKinds, FlexibleContexts
+             PolyKinds, DataKinds, FlexibleContexts, ScopedTypeVariables,
+             EmptyCase
  #-}
 
 module Test.Main where
 
 import Prelude hiding (print, Left, Right, (+), Maybe, Just, Nothing)
-import Data.Singletons hiding (SLeft, SRight, SJust, SNothing, sLeft, sRight, sJust, sNothing)
+import Data.Singletons.TH
+import Data.Singletons.Prelude hiding (SLeft, SRight, SJust, SNothing)
 import Data.Singletons.CustomStar
 
 $(singletons [d| 
@@ -98,6 +100,8 @@ $(singletons [d|
   contains elt (h:t) = (elt == h) || (contains elt t)
 
   data Pair a b = Pair a b deriving Show
+
+  data Empty
   |])
 
 $(singletons [d|
@@ -130,7 +134,7 @@ data Vec :: * -> Nat -> * where
 
 $(singletonStar [''Nat, ''Int, ''String, ''Maybe, ''Vec])
 
-$(singEqInstances [''Foo])
+$(singEqInstances [''Foo, ''Empty])
 
 one = SSucc SZero
 two = SSucc one
@@ -138,3 +142,9 @@ three = SSucc two
 four = SSucc three
 
 tree = SParent one (SLeft two (SLeaf three)) (SLeaf four)
+
+frob :: SNat a -> SNat b -> SNat a
+frob a b =
+  case a %~ b of
+    Proved Refl -> b
+    Disproved _ -> a

@@ -3,7 +3,8 @@
 
 module Test.Scratch where
 
-import Data.Singletons
+import Data.Singletons.TH
+import Data.Singletons.Prelude
 
 $(singletons [d|
   contains :: Eq a => a -> [a] -> Bool

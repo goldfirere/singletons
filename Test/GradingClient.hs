@@ -12,7 +12,8 @@ some basic queries on it.
 
 module Test.GradingClient where
 
-import Data.Singletons
+import Data.Singletons.TH
+import Data.Singletons.List
 import Test.Database
 
 $(singletons [d|

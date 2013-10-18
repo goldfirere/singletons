@@ -22,7 +22,8 @@ presented in /Dependently typed programming with singletons/
 
 module Test.Database where
 
-import Data.Singletons
+import Data.Singletons.TH
+import Data.Singletons.Prelude
 import Control.Monad
 import Data.List
 import Control.Monad.Error
@@ -400,6 +401,9 @@ eqAttr (Attr nm _) (Attr nm' _) = nm == nm'
 -- code blocks to prevent the possibility of circular dependencies.
 -- In this case, if the $(singletons ...) blocks above were in a different
 -- module, the "cases" operation would be applicable here.
+
+$( return [] )
+
 rowAppend :: Row s -> Row s' -> Row (Append s s')
 rowAppend (EmptyRow n) r = $(cases ''Row [| r |]
                                    [| changeId (n ++ (getId r)) r |])
@@ -509,10 +513,10 @@ query (Select expr r) = do
               (ConsRow _ _ :: Row (Sch ((Attr name' u') ': attrs))) ->
                 case sing :: Sing s' of
                   -- SSch SNil -> undefined <== IMPOSSIBLE
-                  SSch (SCons (SAttr _ _) stail) ->
-                    case name %==% (sing :: Sing name') of
+                  SSch (SCons (SAttr name' _) stail) ->
+                    case name %==% name' of
                       STrue -> h
-                      SFalse -> eval (Element (SSch stail) name) t
+                      SFalse -> withSingI stail (eval (Element (SSch stail) name) t)
                   _ -> bugInGHC
             _ -> bugInGHC
 

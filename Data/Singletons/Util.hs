@@ -7,7 +7,8 @@ This file contains helper functions internal to the singletons package.
 Users of the package should not need to consult this file.
 -}
 
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP, TypeSynonymInstances, FlexibleInstances, RankNTypes,
+             PatternGuards, TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Util (
@@ -15,12 +16,11 @@ module Data.Singletons.Util (
   module Language.Haskell.TH.Desugar )
   where
 
-import Language.Haskell.TH
-import Language.Haskell.TH.Syntax
+import Language.Haskell.TH hiding ( Q )
+import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Language.Haskell.TH.Desugar ( reifyWithWarning, getDataD )
 import Data.Char
 import Data.Data
-import Data.List
 import Control.Monad
 import Control.Monad.Writer
 import qualified Data.Map as Map
@@ -37,14 +37,14 @@ mkTyFamInst name lhs rhs =
 -- like newName, but even more unique (unique across different splices)
 -- TH doesn't allow "newName"s to work at the top-level, so we have to
 -- do this trick to ensure the Extract functions are unique
-newUniqueName :: String -> Q Name
+newUniqueName :: Quasi q => String -> q Name
 newUniqueName str = do
-  n <- newName str
+  n <- qNewName str
   return $ mkName $ show n
 
--- like mkName, but in the Data.Singletons module
-mkSingName :: String -> Name
-mkSingName = mkName . ("Data.Singletons." ++)
+-- like reportWarning, but generalized to any Quasi
+qReportWarning :: Quasi q => String -> q ()
+qReportWarning = qReport False
 
 -- extract the degree of a tuple
 tupleDegree_maybe :: String -> Maybe Int
@@ -146,28 +146,90 @@ isVarK :: Kind -> Bool
 isVarK (VarT _) = True
 isVarK _ = False
 
+-- tuple up a list of expressions
+mkTupleExp :: [Exp] -> Exp
+mkTupleExp [x] = x
+mkTupleExp xs  = TupE xs
+
+-- tuple up a list of patterns
+mkTuplePat :: [Pat] -> Pat
+mkTuplePat [x] = x
+mkTuplePat xs  = TupP xs
+
+-- choose the first non-empty list
+orIfEmpty :: [a] -> [a] -> [a]
+orIfEmpty [] x = x
+orIfEmpty x  _ = x
+
+-- an empty list of matches, compatible with GHC 7.6.3
+emptyMatches :: [Match]
+#if __GLASGOW_HASKELL__ >= 707
+emptyMatches = []
+#else
+emptyMatches = [Match WildP (NormalB (AppE (VarE 'error) (LitE (StringL errStr)))) []]
+  where errStr = "Empty case reached -- this should be impossible"
+#endif
+
+-- build a pattern match over several expressions, each with only one pattern
+multiCase :: [Exp] -> [Pat] -> Exp -> Exp
+multiCase [] [] body = body
+multiCase scruts pats body =
+  CaseE (mkTupleExp scruts)
+        [Match (mkTuplePat pats) (NormalB body) []]
+
 -- a monad transformer for writing a monoid alongside returning a Q
-type QWithAux m = WriterT m Q
+type QWithAux q m = WriterT m q
+
+-- make a Quasi instance for easy lifting
+instance (Quasi q, Monoid m) => Quasi (QWithAux q m) where
+  qNewName          = lift `comp1` qNewName
+  qReport           = lift `comp2` qReport
+  qLookupName       = lift `comp2` qLookupName
+  qReify            = lift `comp1` qReify
+  qReifyInstances   = lift `comp2` qReifyInstances
+  qLocation         = lift qLocation
+  qRunIO            = lift `comp1` qRunIO
+  qAddDependentFile = lift `comp1` qAddDependentFile
+#if __GLASGOW_HASKELL__ >= 707
+  qReifyRoles       = lift `comp1` qReifyRoles
+  qReifyAnnotations = lift `comp1` qReifyAnnotations
+  qAddTopDecls      = lift `comp1` qAddTopDecls
+  qAddModFinalizer  = lift `comp1` qAddModFinalizer
+  qGetQ             = lift qGetQ
+  qPutQ             = lift `comp1` qPutQ
+#endif                      
+  
+  qRecover exp handler = do
+    (result, aux) <- lift $ qRecover (evalForPair exp) (evalForPair handler)
+    tell aux
+    return result
+
+-- helper functions for composition
+comp1 :: (b -> c) -> (a -> b) -> a -> c
+comp1 = (.)
+
+comp2 :: (c -> d) -> (a -> b -> c) -> a -> b -> d
+comp2 f g a b = f (g a b)
 
 -- run a computation with an auxiliary monoid, discarding the monoid result
-evalWithoutAux :: QWithAux m a -> Q a
+evalWithoutAux :: Quasi q => QWithAux q m a -> q a
 evalWithoutAux = liftM fst . runWriterT
 
 -- run a computation with an auxiliary monoid, returning only the monoid result
-evalForAux :: QWithAux m a -> Q m
+evalForAux :: Quasi q => QWithAux q m a -> q m
 evalForAux = execWriterT
 
 -- run a computation with an auxiliary monoid, return both the result
 -- of the computation and the monoid result
-evalForPair :: QWithAux m a -> Q (a, m)
+evalForPair :: Quasi q => QWithAux q m a -> q (a, m)
 evalForPair = runWriterT
 
 -- in a computation with an auxiliary map, add a binding to the map
-addBinding :: Ord k => k -> v -> QWithAux (Map.Map k v) ()
+addBinding :: (Quasi q, Ord k) => k -> v -> QWithAux q (Map.Map k v) ()
 addBinding k v = tell (Map.singleton k v)
 
 -- in a computation with an auxiliar list, add an element to the list
-addElement :: elt -> QWithAux [elt] ()
+addElement :: Quasi q => elt -> QWithAux q [elt] ()
 addElement elt = tell [elt]
 
 -- does a TH structure contain a name?
@@ -180,3 +242,6 @@ concatMapM fn list = do
   bss <- mapM fn list
   return $ concat bss
 
+-- make a one-element list
+listify :: a -> [a]
+listify = return

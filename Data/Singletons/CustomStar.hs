@@ -8,12 +8,13 @@ singleton from a list of types. The promoted version of Rep is kind * and the
 Haskell types themselves. This is still very experimental, so expect unusual
 results!
 -} 
-{-# LANGUAGE DataKinds, TypeFamilies, KindSignatures, CPP #-}
+{-# LANGUAGE DataKinds, TypeFamilies, KindSignatures, CPP, TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
-module Data.Singletons.CustomStar where
+module Data.Singletons.CustomStar ( singletonStar ) where
 
 import Language.Haskell.TH
+import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Singletons
@@ -25,7 +26,7 @@ singletonStar names = do
   kinds <- mapM getKind names
   ctors <- zipWithM (mkCtor True) names kinds
   let repDecl = DataD [] repName [] ctors
-                      [mkName "Eq", mkName "Show", mkName "Read"]
+                      [''Eq, ''Show, ''Read]
   fakeCtors <- zipWithM (mkCtor False) names kinds
 #if __GLASGOW_HASKELL__ >= 707
   eqInstances <- mkEqTypeInstance StarT fakeCtors
@@ -34,12 +35,12 @@ singletonStar names = do
                       [(c1, c2) | c1 <- fakeCtors, c2 <- fakeCtors]
 #endif
   singletonDecls <- singDataD True [] repName [] fakeCtors
-                              [mkName "Eq", mkName "Show", mkName "Read"]
+                              [''Eq, ''Show, ''Read]
   return $ repDecl :
            eqInstances ++
            singletonDecls
   where -- get the kinds of the arguments to the tycon with the given name
-        getKind :: Name -> Q [Kind]
+        getKind :: Quasi q => Name -> q [Kind]
         getKind name = do
           info <- reifyWithWarning name
           case info of
@@ -69,7 +70,7 @@ singletonStar names = do
             else return ctor
 
         -- demote a kind back to a type, accumulating any unbound parameters
-        kindToType :: Kind -> QWithAux [Name] Type
+        kindToType :: Quasi q => Kind -> QWithAux q [Name] Type
         kindToType (ForallT _ _ _) = fail "Explicit forall encountered in kind"
         kindToType (AppT k1 k2) = do
           t1 <- kindToType k1

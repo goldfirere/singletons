@@ -10,190 +10,78 @@ is all in the README file and /Dependently typed programming with singletons/,
 available at <http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>
 -}
 
-{-# LANGUAGE TypeFamilies, GADTs, KindSignatures, TemplateHaskell,
-             DataKinds, PolyKinds, TypeOperators, MultiParamTypeClasses,
-             FlexibleContexts, RankNTypes, UndecidableInstances,
-             FlexibleInstances, ScopedTypeVariables, CPP
- #-}
+{-# LANGUAGE MagicHash, RankNTypes, PolyKinds, GADTs, DataKinds,
+             FlexibleContexts, CPP, TypeFamilies #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-unused-binds #-}
 -- We make unused bindings for (||), (&&), and not.
 
 module Data.Singletons (
-  KProxy(..), Sing(..), SingI(..), SingE(..), SingRep, KindOf, Demote,
-  Any,
-  (:==), (:==:),
-  SingInstance(..), SingKind(singInstance),
-  sTrue, sFalse, SBool, sNothing, sJust, SMaybe, sLeft, sRight, SEither,
-  sTuple0, sTuple2, sTuple3, sTuple4, sTuple5, sTuple6, sTuple7,
-  STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
-  Not, sNot, (:&&), (%:&&), (:||), (%:||), (:&&:), (:||:), (:/=), (:/=:),
-  SEq((%==%), (%/=%)), (%:==), (%:/=),
-  If, sIf, 
-  sNil, sCons, SList, Head, Tail,
-  cases, bugInGHC,
-  genSingletons, singletons, genPromotions, promote,
-  promoteEqInstances, promoteEqInstance, singEqInstance, singEqInstances
+  KProxy(..), Proxy(..),
+  Sing, SingI(..), SingKind(..), KindOf, Demote,
+  SingInstance(..), SomeSing(..),
+  singInstance, withSingI, withSomeSing, singByProxy,
+#if __GLASGOW_HASKELL__ >= 707
+  singByProxy#,
+#endif
+  withSing,
+  bugInGHC, Error, sError
   ) where
 
-import Data.Singletons.Singletons
-import Data.Singletons.Promote
-import Language.Haskell.TH
-import Data.Singletons.Util
+import Data.Singletons.Types
+import Data.Singletons.Core
 import GHC.Exts
-import GHC.TypeLits
+import Unsafe.Coerce
+import GHC.TypeLits (Symbol)
 
-#if __GLASGOW_HASKELL__ >= 707
-import Data.Proxy
-#else
-import Data.Singletons.Legacy
-#endif
+-- support for converting an explicit singleton to an implicit one
+data SingInstance :: k -> * where
+  SingInstance :: SingI a => SingInstance a
 
--- Access the kind of a type variable
-type KindOf (a :: k) = ('KProxy :: KProxy k)
+-- dirty implementation of explicit-to-implicit conversion
+newtype Don'tInstantiate a = MkDI (SingI a => SingInstance a)
+singInstance :: forall (a :: k). Sing a -> SingInstance a
+singInstance s = with_sing_i s SingInstance
+  where
+    with_sing_i :: Sing a -> (SingI a => SingInstance a) -> SingInstance a
+    with_sing_i s si = unsafeCoerce (MkDI si) s
 
--- Declarations of singleton structures
-data family Sing (a :: k)
-class SingI (a :: k) where
-  sing :: Sing a
-class (kparam ~ 'KProxy) => SingE (kparam :: KProxy k) where
-  type DemoteRep kparam :: *
-  fromSing :: Sing (a :: k) -> DemoteRep kparam
+-- easy use of implicit instances
+withSingI :: Sing n -> (SingI n => r) -> r
+withSingI sn r =
+  case singInstance sn of
+    SingInstance -> r
 
--- SingRep is a synonym for (SingI, SingE)
-class    (SingI a, SingE (KindOf a)) => SingRep (a :: k)
-instance (SingI a, SingE (KindOf a)) => SingRep (a :: k)
+-- refine a datatype to a singleton locally
+withSomeSing :: SingKind ('KProxy :: KProxy k)
+             => DemoteRep ('KProxy :: KProxy k)
+             -> (forall (a :: k). Sing a -> r)
+             -> r
+withSomeSing x f =
+  case toSing x of
+    SomeSing x' -> f x'
 
--- Abbreviation for DemoteRep
-type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)
-
-data SingInstance (a :: k) where
-  SingInstance :: SingRep a => SingInstance a
-class (kparam ~ 'KProxy) => SingKind (kparam :: KProxy k) where
-  singInstance :: forall (a :: k). Sing a -> SingInstance a
-
--- type-level conditional
-type family If (a :: Bool) (b :: k) (c :: k) :: k
-type instance If 'True b c = b
-type instance If 'False b c = c
-
--- some useful singletons
-$(genSingletons [''Bool, ''Maybe, ''Either, ''[]])
-$(genSingletons [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)])
-
--- ... with some functions over Booleans
-$(singletons [d|
-  not :: Bool -> Bool
-  not False = True
-  not True  = False
-
-  (&&) :: Bool -> Bool -> Bool
-  False && _ = False
-  True  && a = a
-
-  (||) :: Bool -> Bool -> Bool
-  False || a = a
-  True  || _ = True
-  |])
-
-type family (a :: k) :==: (b :: k) :: Bool
-type a :== b = a :==: b -- :== and :==: are synonyms
-
-type a :/=: b = Not (a :==: b)
-type a :/= b = a :/=: b
-
--- the singleton analogue of @Eq@
-class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
-  (%==%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :==: b)
-  (%/=%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :/=: b)
-  a %/=% b = sNot (a %==% b)
-
-(%:==) :: forall (a :: k) (b :: k). SEq ('KProxy :: KProxy k)
-       => Sing a -> Sing b -> Sing (a :==: b)
-(%:==) = (%==%)
-
-(%:/=) :: forall (a :: k) (b :: k). SEq ('KProxy :: KProxy k)
-       => Sing a -> Sing b -> Sing (a :/=: b)
-(%:/=) = (%/=%)
-
-$(singEqInstances [''Bool, ''Maybe, ''Either, ''[]])
-$(singEqInstances [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)])
-
--- singleton conditional
-sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
-sIf STrue b _ = b
-sIf SFalse _ c = c
-
--- symmetric syntax synonyms
-type a :&&: b = a :&& b
-type a :||: b = a :|| b
-
-#if __GLASGOW_HASKELL__ >= 707
-
--- operator on type-level lists
-type family Head a where
-  Head (h ': t) = h
-type family Tail a where
-  Tail (h ': t) = t
-
-#else
-    
--- operate on type-level lists
-type family Head (a :: [k]) :: k
-type instance Head (h ': t) = h
-
-type family Tail (a :: [k]) :: [k]
-type instance Tail (h ': t) = t
-
-#endif
-
-#if __GLASGOW_HASKELL__ >= 707
-
--- define singletons for TypeLits
-
-data instance Sing (n :: Nat) where
-  SNat :: forall (n :: Nat). SingRep n => Integer -> Sing n
-instance KnownNat n => SingI n where
-  sing = SNat (natVal (Proxy :: Proxy n))
-instance SingE ('KProxy :: KProxy Nat) where
-  type DemoteRep ('KProxy :: KProxy Nat) = Integer
-  fromSing (SNat n) = n
-instance SingKind ('KProxy :: KProxy Nat) where
-  singInstance (SNat _) = SingInstance
-
-data instance Sing (n :: Symbol) where
-  SSym :: forall (n :: Symbol). SingRep n => String -> Sing n
-instance KnownSymbol n => SingI n where
-  sing = SSym (symbolVal (Proxy :: Proxy n))
-instance SingE ('KProxy :: KProxy Symbol) where
-  type DemoteRep ('KProxy :: KProxy Symbol) = String
-  fromSing (SSym n) = n
-instance SingKind ('KProxy :: KProxy Symbol) where
-  singInstance (SSym _) = SingInstance
-  
-#endif
+{- | A convenience function useful when we need to name a singleton value
+multiple times.  Without this function, each use of 'sing' could potentially
+refer to a different singleton, and one has to use type signatures to
+ensure that they are the same. -}
+withSing :: SingI a => (Sing a -> b) -> b
+withSing f = f sing
 
 -- allows creation of a singleton when a proxy is at hand
 singByProxy :: SingI a => proxy a -> Sing a
 singByProxy _ = sing
 
--- allows for automatic checking of all constructors in a GADT for instance
--- inference
-cases :: Name -> Q Exp -> Q Exp -> Q Exp
-cases tyName expq bodyq = do
-  info <- reifyWithWarning tyName
-  case info of
-    TyConI (DataD _ _ _ ctors _) -> buildCases ctors
-    TyConI (NewtypeD _ _ _ ctor _) -> buildCases [ctor]
-    _ -> fail $ "Using <<cases>> with something other than a type constructor: "
-                ++ (show tyName)
-  where buildCases :: [Con] -> Q Exp
-        buildCases ctors =
-          caseE expq (map ((flip (flip match (normalB bodyq)) []) . conToPat) ctors)
-
-        conToPat :: Con -> Q Pat
-        conToPat = ctor1Case
-          (\name tys -> conP name (replicate (length tys) wildP))
+#if __GLASGOW_HASKELL__ >= 707
+singByProxy# :: SingI a => Proxy# a -> Sing a
+singByProxy# _ = sing
+#endif
 
 -- useful when suppressing GHC's warnings about incomplete pattern matches
 bugInGHC :: forall a. a
 bugInGHC = error "Bug encountered in GHC -- this should never happen"
+
+-- for promotion of `error`
+type family Error (str :: Symbol) :: k
+
+sError :: Sing (str :: Symbol) -> a
+sError sstr = error (fromSing sstr)

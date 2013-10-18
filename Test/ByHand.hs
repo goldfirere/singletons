@@ -11,7 +11,8 @@ This file is a great way to understand the singleton encoding better.
 {-# LANGUAGE PolyKinds, DataKinds, TypeFamilies, KindSignatures, GADTs,
              FlexibleInstances, FlexibleContexts, UndecidableInstances,
              RankNTypes, TypeOperators, MultiParamTypeClasses,
-             FunctionalDependencies, ScopedTypeVariables, CPP
+             FunctionalDependencies, ScopedTypeVariables, CPP,
+             EmptyCase, LambdaCase
  #-}
 
 module Test.ByHand where
@@ -20,12 +21,8 @@ import Prelude hiding (Maybe, Just, Nothing, Either, Left, Right, map,
                        Bool, False, True, (+), (-))
 import Unsafe.Coerce
 
-#if __GLASGOW_HASKELL__ >= 707
-import Data.Proxy
-#else
-import Data.Singletons.Legacy
-data Proxy a = Proxy
-#endif
+import Data.Singletons.Types
+import Data.Void
 
 -----------------------------------
 -- Original ADTs ------------------
@@ -134,7 +131,10 @@ singInstance s = with_sing_i s SingInstance
 withSingI :: Sing n -> (SingI n => r) -> r
 withSingI sn r =
   case singInstance sn of
-    SingInstance -> r 
+    SingInstance -> r
+
+class (kparam ~ 'KProxy) => SDecide (kparam :: KProxy k) where
+  (%~) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Decision (a :~: b)
 
 -----------------------------------
 -- Auto-generated code ------------
@@ -168,6 +168,15 @@ instance SEq ('KProxy :: KProxy Nat) where
   SZero %==% (SSucc _) = SFalse
   (SSucc _) %==% SZero = SFalse
   (SSucc n) %==% (SSucc n') = n %==% n'
+
+instance SDecide ('KProxy :: KProxy Nat) where
+  SZero %~ SZero = Proved Refl
+  (SSucc m) %~ (SSucc n) =
+    case m %~ n of
+      Proved Refl -> Proved Refl
+      Disproved contra -> Disproved (\Refl -> contra Refl)
+  SZero %~ (SSucc _) = Disproved (\case {})
+  (SSucc _) %~ SZero = Disproved (\case {})
 
 instance SingI Zero where
   sing = SZero
@@ -208,8 +217,7 @@ instance SingKind ('KProxy :: KProxy Bool) where
 
 data instance Sing (a :: Maybe k) where
   SNothing :: Sing Nothing
-  SJust :: forall (a :: k). (SingKind ('KProxy :: KProxy k)) =>
-             Sing a -> Sing (Just a)
+  SJust :: forall (a :: k). Sing a -> Sing (Just a)
 
 #if __GLASGOW_HASKELL__ >= 707
 
@@ -228,6 +236,15 @@ type instance (Just a) == (Just a') = a == a'
 
 #endif
 
+instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (Maybe k)) where
+  SNothing %~ SNothing = Proved Refl
+  (SJust x) %~ (SJust y) =
+    case x %~ y of
+      Proved Refl -> Proved Refl
+      Disproved contra -> Disproved (\Refl -> contra Refl)
+  SNothing %~ (SJust _) = Disproved (\case {})
+  (SJust _) %~ SNothing = Disproved (\case {})
+
 instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (Maybe k)) where
   SNothing %==% SNothing = STrue
   SNothing %==% (SJust _) = SFalse
@@ -236,7 +253,7 @@ instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (Maybe k)) where
 
 instance SingI (Nothing :: Maybe k) where
   sing = SNothing
-instance (SingKind ('KProxy :: KProxy k), SingI a) => SingI (Just (a :: k)) where
+instance SingI a => SingI (Just (a :: k)) where
   sing = SJust sing
 instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (Maybe k)) where
   type DemoteRep ('KProxy :: KProxy (Maybe k)) = Maybe (DemoteRep ('KProxy :: KProxy k))
@@ -251,9 +268,7 @@ instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (Maybe k)
 
 data instance Sing (a :: List k) where
   SNil :: Sing Nil
-  SCons :: forall (h :: k) (t :: List k).
-             (SingKind ('KProxy :: KProxy k)) =>
-             Sing h -> Sing t -> Sing (Cons h t)
+  SCons :: forall (h :: k) (t :: List k). Sing h -> Sing t -> Sing (Cons h t)
 
 #if __GLASGOW_HASKELL__ >= 707
 
@@ -278,9 +293,19 @@ instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (List k)) where
   (SCons _ _) %==% SNil = SFalse
   (SCons a b) %==% (SCons a' b') = (a %==% a') %:&& (b %==% b')
 
+instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (List k)) where
+  SNil %~ SNil = Proved Refl
+  (SCons h1 t1) %~ (SCons h2 t2) =
+    case (h1 %~ h2, t1 %~ t2) of
+      (Proved Refl, Proved Refl) -> Proved Refl
+      (Disproved contra, _) -> Disproved (\Refl -> contra Refl)
+      (_, Disproved contra) -> Disproved (\Refl -> contra Refl)
+  SNil %~ (SCons _ _) = Disproved (\case {})
+  (SCons _ _) %~ SNil = Disproved (\case {})
+
 instance SingI Nil where
   sing = SNil
-instance (SingKind ('KProxy :: KProxy k), SingI h, SingI t) =>
+instance (SingI h, SingI t) =>
            SingI (Cons (h :: k) (t :: List k)) where
   sing = SCons sing sing
 instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (List k)) where
@@ -296,14 +321,12 @@ instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (List k))
 -- Either
 
 data instance Sing (a :: Either k1 k2) where
-  SLeft :: forall (a :: k).
-             (SingKind ('KProxy :: KProxy k)) => Sing a -> Sing (Left a)
-  SRight :: forall (b :: k).
-             (SingKind ('KProxy :: KProxy k)) => Sing b -> Sing (Right b)
+  SLeft :: forall (a :: k). Sing a -> Sing (Left a)
+  SRight :: forall (b :: k). Sing b -> Sing (Right b)
 
-instance (SingKind ('KProxy :: KProxy k), SingI a) => SingI (Left (a :: k)) where
+instance (SingI a) => SingI (Left (a :: k)) where
   sing = SLeft sing
-instance (SingKind ('KProxy :: KProxy k), SingI b) => SingI (Right (b :: k)) where
+instance (SingI b) => SingI (Right (b :: k)) where
   sing = SRight sing
 instance (SingKind ('KProxy :: KProxy k1), SingKind ('KProxy :: KProxy k2))
            => SingKind ('KProxy :: KProxy (Either k1 k2)) where
@@ -317,6 +340,52 @@ instance (SingKind ('KProxy :: KProxy k1), SingKind ('KProxy :: KProxy k2))
   toSing (Right x) =
     case toSing x :: SomeSing ('KProxy :: KProxy k2) of
       SomeSing x' -> SomeSing $ SRight x'
+
+instance (SDecide ('KProxy :: KProxy k1), SDecide ('KProxy :: KProxy k2)) => SDecide ('KProxy :: KProxy (Either k1 k2)) where
+  (SLeft x) %~ (SLeft y) =
+    case x %~ y of
+      Proved Refl -> Proved Refl
+      Disproved contra -> Disproved (\Refl -> contra Refl)
+  (SRight x) %~ (SRight y) =
+    case x %~ y of
+      Proved Refl -> Proved Refl
+      Disproved contra -> Disproved (\Refl -> contra Refl)
+  (SLeft _) %~ (SRight _) = Disproved (\case {})
+  (SRight _) %~ (SLeft _) = Disproved (\case {})
+
+-- Composite
+
+data Composite :: * -> * -> * where
+  MkComp :: Either (Maybe a) b -> Composite a b
+
+data instance Sing (a :: Composite k1 k2) where
+  SMkComp :: forall (a :: Either (Maybe k1) k2). Sing a -> Sing (MkComp a)
+
+instance SingI a => SingI (MkComp (a :: Either (Maybe k1) k2)) where
+  sing = SMkComp sing
+instance (SingKind ('KProxy :: KProxy k1), SingKind ('KProxy :: KProxy k2))
+           => SingKind ('KProxy :: KProxy (Composite k1 k2)) where
+  type DemoteRep ('KProxy :: KProxy (Composite k1 k2)) =
+    Composite (DemoteRep ('KProxy :: KProxy k1)) (DemoteRep ('KProxy :: KProxy k2))
+  fromSing (SMkComp x) = MkComp (fromSing x)
+  toSing (MkComp x) =
+    case toSing x :: SomeSing ('KProxy :: KProxy (Either (Maybe k1) k2)) of
+      SomeSing x' -> SomeSing $ SMkComp x'
+
+instance (SDecide ('KProxy :: KProxy k1), SDecide ('KProxy :: KProxy k2)) => SDecide ('KProxy :: KProxy (Composite k1 k2)) where
+  (SMkComp x) %~ (SMkComp y) =
+    case x %~ y of
+      Proved Refl -> Proved Refl
+      Disproved contra -> Disproved (\Refl -> contra Refl)
+
+-- Empty
+
+data Empty
+data instance Sing (a :: Empty)
+instance SingKind ('KProxy :: KProxy Empty) where
+  type DemoteRep ('KProxy :: KProxy Empty) = Empty
+  fromSing x = case x of {}
+  toSing x = case x of {}
 
 -----------------------------------
 -- Some example functions ---------
@@ -386,7 +455,7 @@ type instance LiftMaybe f Nothing = Nothing
 type instance LiftMaybe f (Just a) = Just (f a)
 
 sLiftMaybe :: forall (f :: a -> b) (x :: Maybe a).
-                SingKind ('KProxy :: KProxy b) =>
+                {- SingKind ('KProxy :: KProxy b) => -}
                 (forall (y :: a). Sing y -> Sing (f y)) ->
                 Sing x -> Sing (LiftMaybe f x)
 sLiftMaybe _ SNothing = SNothing
