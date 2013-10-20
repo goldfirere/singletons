@@ -6,7 +6,7 @@ eir@cis.upenn.edu
 Defines functions and datatypes relating to the singleton for Either.
 -}
 
-{-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies,
+{-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies, GADTs,
              DataKinds, PolyKinds, RankNTypes, UndecidableInstances #-}
 
 module Data.Singletons.Either (

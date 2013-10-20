@@ -7,7 +7,7 @@ Defines functions and datatypes relating to the singleton for Tuples.
 -}
 
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, DataKinds, PolyKinds,
-             RankNTypes, TypeFamilies #-}
+             RankNTypes, TypeFamilies, GADTs #-}
 
 module Data.Singletons.Tuple (
   STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,

@@ -6,7 +6,7 @@ eir@cis.upenn.edu
 This file contains functions to refine constructs to work with singleton
 types. It is an internal module to the singletons package.
 -}
-{-# LANGUAGE PatternGuards, TemplateHaskell, CPP, TupleSections #-}
+{-# LANGUAGE TemplateHaskell, CPP, TupleSections #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Singletons where

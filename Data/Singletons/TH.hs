@@ -19,9 +19,7 @@ module Data.Singletons.TH (
   singletons, singletonsOnly, genSingletons,
   promote, promoteOnly, genPromotions,
   promoteEqInstances, promoteEqInstance, singEqInstances, singEqInstance,
-#if __GLASGOW_HASKELL__ >= 707
   singDecideInstances, singDecideInstance,
-#endif
   cases ) where
 
 import Data.Singletons.Singletons

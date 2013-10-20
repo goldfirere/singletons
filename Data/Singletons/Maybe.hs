@@ -7,7 +7,7 @@ Defines functions and datatypes relating to the singleton for Maybe.
 -}
 
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies,
-             DataKinds, PolyKinds, UndecidableInstances,
+             DataKinds, PolyKinds, UndecidableInstances, GADTs,
              RankNTypes #-}
 
 module Data.Singletons.Maybe (

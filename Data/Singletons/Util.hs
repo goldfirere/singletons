@@ -8,7 +8,7 @@ Users of the package should not need to consult this file.
 -}
 
 {-# LANGUAGE CPP, TypeSynonymInstances, FlexibleInstances, RankNTypes,
-             PatternGuards, TemplateHaskell #-}
+             TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Util (

@@ -1,6 +1,6 @@
 name:           singletons
 version:        0.9.0
-cabal-version:  >= 1.8
+cabal-version:  >= 1.10
 synopsis:       A framework for generating singleton types
 homepage:       http://www.cis.upenn.edu/~eir/packages/singletons
 category:       Dependent Types
@@ -39,6 +39,7 @@ library
       syb >= 0.3,
       th-desugar >= 1.2,
       void >= 0.6
+  default-language:   Haskell2010
   exposed-modules:    Data.Singletons, Data.Singletons.CustomStar,
                       Data.Singletons.TypeRepStar, Data.Singletons.List,
                       Data.Singletons.Bool, Data.Singletons.Maybe,

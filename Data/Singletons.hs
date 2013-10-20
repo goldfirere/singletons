@@ -67,6 +67,14 @@ ensure that they are the same. -}
 withSing :: SingI a => (Sing a -> b) -> b
 withSing f = f sing
 
+{- | A convenience function that names a singleton satisfying a certain
+property.  If the singleton does not satisfy the property, then the function
+returns 'Nothing'. The property is expressed in terms of the underlying
+representation of the singleton. -}
+singThat :: forall (a :: k). (SingKind ('KProxy :: KProxy k), SingI a)
+         => (Demote a -> Bool) -> Maybe (Sing a)
+singThat p = withSing $ \x -> if p (fromSing x) then Just x else Nothing
+
 -- allows creation of a singleton when a proxy is at hand
 singByProxy :: SingI a => proxy a -> Sing a
 singByProxy _ = sing
