@@ -6,15 +6,16 @@ eir@cis.upenn.edu
 This file contains definitions of types useful within singletons.
 -}
 
-{-# LANGUAGE PolyKinds, TypeOperators, GADTs, RankNTypes, CPP #-}
+{-# LANGUAGE PolyKinds, TypeOperators, GADTs, RankNTypes, TypeFamilies,
+             CPP, DataKinds #-}
 
 module Data.Singletons.Types (
   KProxy(..), Proxy(..),
-  (:~:)(..), gcastWith, EqualityT(..),
+  (:~:)(..), gcastWith, TestEquality(..),
   Void, Refuted, Decision(..)
   ) where
 
-import Data.Void
+import Data.Singletons.Void
 
 #if __GLASGOW_HASKELL__ >= 707
 
@@ -31,13 +32,13 @@ data Proxy a = Proxy
 data a :~: b where
   Refl :: a :~: a
 
-class EqualityT (f :: k -> *) where
-  equalsT :: f a -> f b -> Maybe (a :~: b)
-
-#endif
-
 gcastWith :: (a :~: b) -> ((a ~ b) => r) -> r
 gcastWith Refl x = x
+
+class TestEquality (f :: k -> *) where
+  testEquality :: f a -> f b -> Maybe (a :~: b)
+
+#endif
 
 type Refuted a = (a -> Void)
 data Decision a = Proved a | Disproved (Refuted a)

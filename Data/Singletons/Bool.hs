@@ -7,11 +7,11 @@ Defines functions and datatypes relating to the singleton for Bool.
 -}
 
 {-# LANGUAGE TemplateHaskell, DataKinds, PolyKinds, TypeFamilies, TypeOperators,
-             GADTs #-}
+             GADTs, CPP #-}
 
 module Data.Singletons.Bool (
   If, sIf,
-  Not, sNot, (:&&), (:&&:), (:||), (:||:), (%:&&), (%:||),
+  Not, sNot, (:&&), (:||), (%:&&), (%:||),
   Bool_, sBool_, Otherwise, sOtherwise,
   Sing(SFalse, STrue), SBool
   ) where
@@ -19,17 +19,27 @@ module Data.Singletons.Bool (
 import Data.Singletons.Core
 import Data.Singletons.Singletons
 
--- type-level conditional
-type family If (a :: Bool) (b :: k) (c :: k) :: k
-type instance If 'True b c = b
-type instance If 'False b c = c
+#if __GLASGOW_HASKELL__ >= 707
+import Data.Type.Bool
 
--- singleton conditional
-sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
-sIf STrue b _ = b
-sIf SFalse _ c = c
+-- we need these imports from Data.Type.Bool to conform to singletons' naming
+type a :&& b = a && b
+type a :|| b = a || b
 
--- ... with some functions over Booleans
+sNot :: SBool a -> SBool (Not a)
+sNot SFalse = STrue
+sNot STrue  = SFalse
+
+(%:&&) :: SBool a -> SBool b -> SBool (a :&& b)
+SFalse %:&& _ = SFalse
+STrue  %:&& a = a
+
+(%:||) :: SBool a -> SBool b -> SBool (a :|| b)
+SFalse %:|| a = a
+STrue  %:|| _ = STrue
+
+#else
+
 $(singletonsOnly [d|
   not :: Bool -> Bool
   not False = True
@@ -37,12 +47,28 @@ $(singletonsOnly [d|
 
   (&&) :: Bool -> Bool -> Bool
   False && _ = False
-  True  && a = a
+  True  && x = x
 
   (||) :: Bool -> Bool -> Bool
-  False || a = a
+  False || x = x
   True  || _ = True
+  |])
 
+-- type-level conditional
+type family If (a :: Bool) (b :: k) (c :: k) :: k
+type instance If 'True b c = b
+type instance If 'False b c = c
+
+#endif
+
+-- singleton conditional
+sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
+sIf STrue b _ = b
+sIf SFalse _ c = c
+
+
+-- ... with some functions over Booleans
+$(singletonsOnly [d|
   bool_ :: a -> a -> Bool -> a
   bool_ fls _tru False = fls
   bool_ _fls tru True  = tru
@@ -51,6 +77,3 @@ $(singletonsOnly [d|
   otherwise = True
   |])
 
--- symmetric syntax synonyms
-type a :&&: b = a :&& b
-type a :||: b = a :|| b

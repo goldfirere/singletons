@@ -14,7 +14,7 @@ module Data.Singletons.Prelude (
        STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7),
   SBool, SList, SMaybe, SEither,
   STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
-  If, sIf, Not, sNot, (:&&), (:&&:), (:||), (:||:), (%:&&), (%:||),
+  If, sIf, Not, sNot, (:&&), (:||), (%:&&), (%:||),
   Head, Tail, (:++), (%:++),
   module Data.Singletons.Eq,
   Maybe_, sMaybe_,

@@ -19,6 +19,7 @@ module Data.Singletons.TH (
   singletons, singletonsOnly, genSingletons,
   promote, promoteOnly, genPromotions,
   promoteEqInstances, promoteEqInstance, singEqInstances, singEqInstance,
+  singEqInstancesOnly, singEqInstanceOnly,
   singDecideInstances, singDecideInstance,
   cases ) where
 

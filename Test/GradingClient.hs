@@ -17,18 +17,21 @@ import Data.Singletons.List
 import Test.Database
 
 $(singletons [d|
+  lastName, firstName, yearName, gradeName, majorName :: [AChar]
   lastName = [CL, CA, CS, CT]
   firstName = [CF, CI, CR, CS, CT]
   yearName = [CY, CE, CA, CR]
   gradeName = [CG, CR, CA, CD, CE]
   majorName = [CM, CA, CJ, CO, CR]
 
+  gradingSchema :: Schema
   gradingSchema = Sch [Attr lastName STRING,
                        Attr firstName STRING,
                        Attr yearName NAT,
                        Attr gradeName NAT,
                        Attr majorName BOOL]
 
+  names :: Schema
   names = Sch [Attr firstName STRING,
                Attr lastName STRING]
   |])

@@ -20,22 +20,48 @@ import Data.Singletons.Promote
 import Data.Singletons.Singletons
 import Control.Monad
 
+#if __GLASGOW_HASKELL__ >= 707
+import Data.Singletons.Core
+import Data.Singletons.Types
+import Data.Singletons.Eq
+import Unsafe.Coerce
+#endif
+
+{-
+The SEq instance here is tricky.
+The problem is that, in GHC 7.8+, the instance of type-level (==) for *
+is not recursive. Thus, it's impossible, say, to get (Maybe a == Maybe b) ~ False
+from (a == b) ~ False.
+
+There are a few ways forward:
+  1) Define SEq to use our own Boolean (==) operator, instead of the built-in one.
+     This would work, but feels wrong.
+  2) Use unsafeCoerce.
+We do #2.
+
+Also to note: because these problems don't exist in GHC 7.6, the generation of
+Eq and Decide for 7.6 is entirely normal.
+
+Note that mkCustomEqInstances makes the SDecide and SEq instances in GHC 7.8+,
+but the type-level (==) instance in GHC 7.6. This is perhaps poor design, but
+it reduces the amount of CPP noise.
+-}
+
 -- Produce a representation and singleton for the collection of types given
-singletonStar :: [Name] -> Q [Dec]
+singletonStar :: Quasi q => [Name] -> q [Dec]
 singletonStar names = do
   kinds <- mapM getKind names
   ctors <- zipWithM (mkCtor True) names kinds
   let repDecl = DataD [] repName [] ctors
                       [''Eq, ''Show, ''Read]
   fakeCtors <- zipWithM (mkCtor False) names kinds
-#if __GLASGOW_HASKELL__ >= 707
-  eqInstances <- mkEqTypeInstance StarT fakeCtors
-#else
-  eqInstances <- mapM mkEqTypeInstance
-                      [(c1, c2) | c1 <- fakeCtors, c2 <- fakeCtors]
-#endif
+  eqInstances <- mkCustomEqInstances fakeCtors
   singletonDecls <- singDataD True [] repName [] fakeCtors
-                              [''Eq, ''Show, ''Read]
+                              [''Show, ''Read
+#if __GLASGOW_HASKELL__ < 707
+                              , ''Eq
+#endif
+                              ]
   return $ repDecl :
            eqInstances ++
            singletonDecls
@@ -60,7 +86,7 @@ singletonStar names = do
         
         -- first parameter is whether this is a real ctor (with a fresh name)
         -- or a fake ctor (when the name is actually a Haskell type)
-        mkCtor :: Bool -> Name -> [Kind] -> Q Con
+        mkCtor :: Quasi q => Bool -> Name -> [Kind] -> q Con
         mkCtor real name args = do
           (types, vars) <- evalForPair $ mapM kindToType args
           let ctor = NormalC ((if real then reinterpret else id) name)
@@ -70,7 +96,7 @@ singletonStar names = do
             else return ctor
 
         -- demote a kind back to a type, accumulating any unbound parameters
-        kindToType :: Quasi q => Kind -> QWithAux q [Name] Type
+        kindToType :: Quasi q => Kind -> QWithAux [Name] q Type
         kindToType (ForallT _ _ _) = fail "Explicit forall encountered in kind"
         kindToType (AppT k1 k2) = do
           t1 <- kindToType k1
@@ -94,3 +120,31 @@ singletonStar names = do
           fail $ "Cannot make a representation of a type that has " ++
                  "an argument of kind Constraint"
         kindToType (LitT _) = fail "Literal encountered at the kind level"
+
+
+mkCustomEqInstances :: Quasi q => [Con] -> q [Dec]
+mkCustomEqInstances ctors = do
+#if __GLASGOW_HASKELL__ >= 707
+  let ctorVar = error "Internal error: Equality instance inspected ctor var"
+  sCtors <- evalWithoutAux $ mapM (singCtor ctorVar) ctors
+  decideInst <- mkEqualityInstance StarT sCtors sDecideClassDesc
+
+  a <- newUniqueName "a"
+  b <- newUniqueName "b"
+  let eqInst = InstanceD
+                 []
+                 (AppT (ConT ''SEq) (kindParam StarT))
+                 [FunD '(%:==)
+                       [Clause [VarP a, VarP b]
+                               (NormalB $
+                                CaseE (foldExp (VarE '(%~)) [VarE a, VarE b])
+                                      [ Match (ConP 'Proved [ConP 'Refl []])
+                                              (NormalB $ ConE 'STrue) []
+                                      , Match (ConP 'Disproved [WildP])
+                                              (NormalB $ AppE (VarE 'unsafeCoerce)
+                                                              (ConE 'SFalse)) []
+                                      ]) []]]
+  return [decideInst, eqInst]
+#else
+  mapM mkEqTypeInstance [(c1, c2) | c1 <- ctors, c2 <- ctors]
+#endif

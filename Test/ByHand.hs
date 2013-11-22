@@ -18,11 +18,15 @@ This file is a great way to understand the singleton encoding better.
 module Test.ByHand where
 
 import Prelude hiding (Maybe, Just, Nothing, Either, Left, Right, map,
-                       Bool, False, True, (+), (-))
+                       (+), (-))
 import Unsafe.Coerce
 
 import Data.Singletons.Types
-import Data.Void
+import Data.Singletons.Void
+
+#if __GLASGOW_HASKELL__ >= 707
+import Data.Type.Bool
+#endif
 
 -----------------------------------
 -- Original ADTs ------------------
@@ -33,16 +37,16 @@ data Nat :: * where
   Succ :: Nat -> Nat
   deriving Eq
 
-data Bool :: * where
-  False :: Bool
-  True :: Bool
-
--- This is necessary for defining boolean equality at the type level
+#if __GLASGOW_HASKELL__ >= 707
+type a :&& b = a && b
+#else
+    -- This is necessary for defining boolean equality at the type level
 type family (a :: Bool) :&& (b :: Bool) :: Bool
 type instance False :&& False = False
 type instance False :&& True = False
 type instance True :&& False = False
 type instance True :&& True = True
+#endif
 
 data Maybe :: * -> * where
   Nothing :: Maybe a
@@ -63,8 +67,10 @@ data Either :: * -> * -> * where
 -- One-time definitions -----------
 -----------------------------------
 
+#if __GLASGOW_HASKELL__ < 707
 -- Type-level boolean equality
 type family (a :: k) == (b :: k) :: Bool
+#endif
 
 -- Singleton type equality type class
 class (t ~ 'KProxy) => SEq (t :: KProxy k) where
@@ -386,6 +392,66 @@ instance SingKind ('KProxy :: KProxy Empty) where
   type DemoteRep ('KProxy :: KProxy Empty) = Empty
   fromSing x = case x of {}
   toSing x = case x of {}
+
+-- *
+
+data Vec :: * -> Nat -> * where
+  VNil :: Vec a Zero
+  VCons :: a -> Vec a n -> Vec a (Succ n)
+
+data Rep = Nat | Maybe Rep | Vec Rep Nat
+
+data instance Sing (a :: *) where
+  SNat :: Sing Nat
+  SMaybe :: Sing a -> Sing (Maybe a)
+  SVec :: Sing a -> Sing n -> Sing (Vec a n)
+
+instance SingI Nat where
+  sing = SNat
+instance SingI a => SingI (Maybe a) where
+  sing = SMaybe sing
+instance (SingI a, SingI n) => SingI (Vec a n) where
+  sing = SVec sing sing
+
+instance SingKind ('KProxy :: KProxy *) where
+  type DemoteRep ('KProxy :: KProxy *) = Rep
+
+  fromSing SNat = Nat
+  fromSing (SMaybe a) = Maybe (fromSing a)
+  fromSing (SVec a n) = Vec (fromSing a) (fromSing n)
+  
+  toSing Nat = SomeSing SNat
+  toSing (Maybe a) =
+    case toSing a :: SomeSing ('KProxy :: KProxy *) of
+      SomeSing a' -> SomeSing $ SMaybe a'
+  toSing (Vec a n) =
+    case ( toSing a :: SomeSing ('KProxy :: KProxy *)
+         , toSing n :: SomeSing ('KProxy :: KProxy Nat)) of
+      (SomeSing a', SomeSing n') -> SomeSing $ SVec a' n'
+
+instance SDecide ('KProxy :: KProxy *) where
+  SNat %~ SNat = Proved Refl
+  SNat %~ (SMaybe {}) = Disproved (\case {})
+  SNat %~ (SVec {}) = Disproved (\case {})
+  (SMaybe {}) %~ SNat = Disproved (\case {})
+  (SMaybe a) %~ (SMaybe b) =
+    case a %~ b of
+      Proved Refl -> Proved Refl
+      Disproved contra -> Disproved (\Refl -> contra Refl)
+  (SMaybe {}) %~ (SVec {}) = Disproved (\case {})
+  (SVec {}) %~ SNat = Disproved (\case {})
+  (SVec {}) %~ (SMaybe {}) = Disproved (\case {})
+  (SVec a1 n1) %~ (SVec a2 n2) =
+    case (a1 %~ a2, n1 %~ n2) of
+      (Proved Refl, Proved Refl) -> Proved Refl
+      (Disproved contra, _) -> Disproved (\Refl -> contra Refl)
+      (_, Disproved contra) -> Disproved (\Refl -> contra Refl)
+
+instance SEq ('KProxy :: KProxy *) where
+  a %==% b =
+    case a %~ b of
+      Proved Refl -> STrue
+      Disproved _ -> unsafeCoerce SFalse
 
 -----------------------------------
 -- Some example functions ---------

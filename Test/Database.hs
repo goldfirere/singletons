@@ -9,10 +9,13 @@ presented in /Dependently typed programming with singletons/
 -}
 
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
-{-# Language PolyKinds, DataKinds, TemplateHaskell, TypeFamilies,
+{-# LANGUAGE PolyKinds, DataKinds, TemplateHaskell, TypeFamilies,
     GADTs, TypeOperators, RankNTypes, FlexibleContexts, UndecidableInstances,
     FlexibleInstances, ScopedTypeVariables, MultiParamTypeClasses,
-    OverlappingInstances, ConstraintKinds #-}
+    OverlappingInstances, ConstraintKinds, CPP #-}
+#if __GLASGOW_HASKELL__ >= 707
+{-# LANGUAGE EmptyCase #-}
+#endif
 
 -- The OverlappingInstances is needed only to allow the InC and SubsetC classes.
 -- This is simply a convenience so that GHC can infer the necessary proofs of
@@ -22,10 +25,11 @@ presented in /Dependently typed programming with singletons/
 
 module Test.Database where
 
+import Prelude hiding ( tail, id )
 import Data.Singletons.TH
 import Data.Singletons.Prelude
 import Control.Monad
-import Data.List
+import Data.List hiding ( tail )
 import Control.Monad.Error
 
 $(singletons [d|
@@ -183,7 +187,7 @@ instance (Show (El u), Show (Row (Sch attrs))) =>
            Show (Row (Sch ((Attr name u) ': attrs))) where 
   show (ConsRow h t) = case t of
         EmptyRow n -> (show h) ++ " (id=" ++ (show n) ++ ")"
-        t -> (show h) ++ ", " ++ (show t)
+        _ -> (show h) ++ ", " ++ (show t)
 
 -- A Handle in our system is an abstract handle to a loaded table.
 -- The constructor is not exported. In our simplistic case, we
@@ -454,8 +458,8 @@ query (Project sch ra) = do
         -- the output to type-check, as it is indexed by the input schema.
 
         -- We use explicit quantification to get access to scoped type variables.
-        projectRow :: forall (s :: Schema) (s' :: Schema).
-                        SubsetC s s' => SSchema s -> Row s' -> Row s
+        projectRow :: forall (sch :: Schema) (s' :: Schema).
+                        SubsetC sch s' => SSchema sch -> Row s' -> Row sch
 
         -- Base case: empty schema
         projectRow (SSch SNil) r = EmptyRow (getId r)
@@ -465,7 +469,7 @@ query (Project sch ra) = do
         -- proof (of type SubsetProof s s') from the SubsetC instance using the
         -- subset method.
         projectRow (SSch (SCons attr tail)) r =
-          case subset :: SubsetProof s s' of
+          case subset :: SubsetProof sch s' of
 
             -- Because we know that the schema is non-empty, the only possibility
             -- here is SubsetCons:
@@ -514,7 +518,7 @@ query (Select expr r) = do
                 case sing :: Sing s' of
                   -- SSch SNil -> undefined <== IMPOSSIBLE
                   SSch (SCons (SAttr name' _) stail) ->
-                    case name %==% name' of
+                    case name %:== name' of
                       STrue -> h
                       SFalse -> withSingI stail (eval (Element (SSch stail) name) t)
                   _ -> bugInGHC

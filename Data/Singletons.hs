@@ -29,21 +29,24 @@ module Data.Singletons (
 
 import Data.Singletons.Types
 import Data.Singletons.Core
-import GHC.Exts
 import Unsafe.Coerce
 import GHC.TypeLits (Symbol)
+
+#if __GLASGOW_HASKELL__ >= 707
+import GHC.Exts ( Proxy# )
+#endif
 
 -- support for converting an explicit singleton to an implicit one
 data SingInstance :: k -> * where
   SingInstance :: SingI a => SingInstance a
 
 -- dirty implementation of explicit-to-implicit conversion
-newtype Don'tInstantiate a = MkDI (SingI a => SingInstance a)
+newtype DI a = Don'tInstantiate (SingI a => SingInstance a)
 singInstance :: forall (a :: k). Sing a -> SingInstance a
-singInstance s = with_sing_i s SingInstance
+singInstance s = with_sing_i SingInstance
   where
-    with_sing_i :: Sing a -> (SingI a => SingInstance a) -> SingInstance a
-    with_sing_i s si = unsafeCoerce (MkDI si) s
+    with_sing_i :: (SingI a => SingInstance a) -> SingInstance a
+    with_sing_i si = unsafeCoerce (Don'tInstantiate si) s
 
 -- easy use of implicit instances
 withSingI :: Sing n -> (SingI n => r) -> r

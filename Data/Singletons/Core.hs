@@ -13,12 +13,14 @@ re-exported from various places.
              UndecidableInstances, TypeOperators, FlexibleInstances #-}
 #if __GLASGOW_HASKELL__ >= 707
 {-# LANGUAGE EmptyCase #-}
-#endif
+#else
   -- optimizing instances of SDecide cause GHC to die (#8467)
 {-# OPTIONS_GHC -O0 #-}
+#endif
 
 module Data.Singletons.Core where
 
+import Data.Singletons.Util
 import Data.Singletons.Singletons
 import GHC.TypeLits (Nat, Symbol)
 #if __GLASGOW_HASKELL__ < 707
@@ -52,8 +54,7 @@ data SomeSing :: KProxy k -> * where
            => Sing a -> SomeSing ('KProxy :: KProxy k)
                                   
 -- some useful singletons
-$(genSingletons [''Bool, ''Maybe, ''Either,  ''[]])
-$(genSingletons [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)])
+$(genSingletons basicTypes)
 
 -- define singletons for TypeLits
 
@@ -90,8 +91,7 @@ instance SingKind ('KProxy :: KProxy Symbol) where
 class (kparam ~ 'KProxy) => SDecide (kparam :: KProxy k) where
   (%~) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Decision (a :~: b)
 
-$(singDecideInstances [''Bool, ''Maybe, ''Either, ''[]])
-$(singDecideInstances [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)])
+$(singDecideInstances basicTypes)
 
 -- We need SDecide instances for the TypeLits singletons
 instance SDecide ('KProxy :: KProxy Nat) where
@@ -106,8 +106,8 @@ instance SDecide ('KProxy :: KProxy Symbol) where
     | otherwise = Disproved (\_ -> error errStr)
     where errStr = "Broken Symbol singletons"
 
-instance SDecide ('KProxy :: KProxy k) => EqualityT (Sing :: k -> *) where
-  equalsT a b =
+instance SDecide ('KProxy :: KProxy k) => TestEquality (Sing :: k -> *) where
+  testEquality a b =
     case a %~ b of
       Proved Refl -> Just Refl
       Disproved _ -> Nothing

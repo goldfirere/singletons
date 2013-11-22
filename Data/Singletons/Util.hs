@@ -8,7 +8,8 @@ Users of the package should not need to consult this file.
 -}
 
 {-# LANGUAGE CPP, TypeSynonymInstances, FlexibleInstances, RankNTypes,
-             TemplateHaskell #-}
+             TemplateHaskell, GeneralizedNewtypeDeriving,
+             MultiParamTypeClasses #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Util (
@@ -16,12 +17,14 @@ module Data.Singletons.Util (
   module Language.Haskell.TH.Desugar )
   where
 
+import Prelude hiding ( exp )
 import Language.Haskell.TH hiding ( Q )
 import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Language.Haskell.TH.Desugar ( reifyWithWarning, getDataD )
 import Data.Char
 import Data.Data
 import Control.Monad
+import Control.Applicative
 import Control.Monad.Writer
 import qualified Data.Map as Map
 import Data.Generics
@@ -33,6 +36,22 @@ mkTyFamInst name lhs rhs =
 #else
   TySynInstD name lhs rhs
 #endif
+
+-- The list of types that singletons processes by default
+basicTypes :: [Name]
+basicTypes = [ ''Bool
+             , ''Maybe
+             , ''Either
+             , ''Ordering
+             , ''[]
+             , ''()
+             , ''(,)
+             , ''(,,)
+             , ''(,,,)
+             , ''(,,,,)
+             , ''(,,,,,)
+             , ''(,,,,,,)
+             ]
 
 -- like newName, but even more unique (unique across different splices)
 -- TH doesn't allow "newName"s to work at the top-level, so we have to
@@ -178,10 +197,16 @@ multiCase scruts pats body =
         [Match (mkTuplePat pats) (NormalB body) []]
 
 -- a monad transformer for writing a monoid alongside returning a Q
-type QWithAux q m = WriterT m q
+newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
+  deriving (Functor, Applicative, Monad, MonadTrans)
+instance (Monoid m, Monad q) => MonadWriter m (QWithAux m q) where
+  writer = QWA . writer
+  tell   = QWA . tell
+  listen = QWA . listen . runQWA
+  pass   = QWA . pass . runQWA
 
 -- make a Quasi instance for easy lifting
-instance (Quasi q, Monoid m) => Quasi (QWithAux q m) where
+instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
   qNewName          = lift `comp1` qNewName
   qReport           = lift `comp2` qReport
   qLookupName       = lift `comp2` qLookupName
@@ -212,24 +237,24 @@ comp2 :: (c -> d) -> (a -> b -> c) -> a -> b -> d
 comp2 f g a b = f (g a b)
 
 -- run a computation with an auxiliary monoid, discarding the monoid result
-evalWithoutAux :: Quasi q => QWithAux q m a -> q a
-evalWithoutAux = liftM fst . runWriterT
+evalWithoutAux :: Quasi q => QWithAux m q a -> q a
+evalWithoutAux = liftM fst . runWriterT . runQWA
 
 -- run a computation with an auxiliary monoid, returning only the monoid result
-evalForAux :: Quasi q => QWithAux q m a -> q m
-evalForAux = execWriterT
+evalForAux :: Quasi q => QWithAux m q a -> q m
+evalForAux = execWriterT . runQWA
 
 -- run a computation with an auxiliary monoid, return both the result
 -- of the computation and the monoid result
-evalForPair :: Quasi q => QWithAux q m a -> q (a, m)
-evalForPair = runWriterT
+evalForPair :: Quasi q => QWithAux m q a -> q (a, m)
+evalForPair = runWriterT . runQWA
 
 -- in a computation with an auxiliary map, add a binding to the map
-addBinding :: (Quasi q, Ord k) => k -> v -> QWithAux q (Map.Map k v) ()
+addBinding :: (Quasi q, Ord k) => k -> v -> QWithAux (Map.Map k v) q ()
 addBinding k v = tell (Map.singleton k v)
 
 -- in a computation with an auxiliar list, add an element to the list
-addElement :: Quasi q => elt -> QWithAux q [elt] ()
+addElement :: Quasi q => elt -> QWithAux [elt] q ()
 addElement elt = tell [elt]
 
 -- does a TH structure contain a name?

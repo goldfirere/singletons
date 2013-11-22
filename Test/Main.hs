@@ -8,11 +8,14 @@ compile with a warning that declarations containing badPlus are omitted.
 
 -}
 
-{-# LANGUAGE GADTs, TypeFamilies, TemplateHaskell, UndecidableInstances,
+{-# LANGUAGE CPP, GADTs, TypeFamilies, TemplateHaskell, UndecidableInstances,
              RankNTypes, TypeOperators, KindSignatures, FlexibleInstances,
-             PolyKinds, DataKinds, FlexibleContexts, ScopedTypeVariables,
-             EmptyCase
- #-}
+             PolyKinds, DataKinds, FlexibleContexts, ScopedTypeVariables #-}
+#if __GLASGOW_HASKELL__ >= 707
+{-# LANGUAGE EmptyCase #-}
+#endif
+
+{-# OPTIONS_GHC -fno-warn-missing-signatures -fno-warn-orphans #-}
 
 module Test.Main where
 
@@ -20,6 +23,8 @@ import Prelude hiding (print, Left, Right, (+), Maybe, Just, Nothing)
 import Data.Singletons.TH
 import Data.Singletons.Prelude hiding (SLeft, SRight, SJust, SNothing)
 import Data.Singletons.CustomStar
+import qualified Test.GradingClient as GC
+import Test.InsertionSortImp () -- force compilation, though we don't use it
 
 $(singletons [d| 
   data Nat where
@@ -148,3 +153,5 @@ frob a b =
   case a %~ b of
     Proved Refl -> b
     Disproved _ -> a
+
+main = GC.main

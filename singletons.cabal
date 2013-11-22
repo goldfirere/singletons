@@ -37,16 +37,41 @@ library
       template-haskell,
       containers >= 0.5,
       syb >= 0.3,
-      th-desugar >= 1.2,
-      void >= 0.6
+      th-desugar >= 1.2
   default-language:   Haskell2010
-  exposed-modules:    Data.Singletons, Data.Singletons.CustomStar,
-                      Data.Singletons.TypeRepStar, Data.Singletons.List,
-                      Data.Singletons.Bool, Data.Singletons.Maybe,
-                      Data.Singletons.Either, Data.Singletons.Tuple
-                      Data.Singletons.TH, Data.Singletons.Eq,
-                      Data.Singletons.Prelude, Data.Singletons.Types,
-                      Data.Singletons.Decide
-  other-modules:      Data.Singletons.Promote, Data.Singletons.Singletons,
-                      Data.Singletons.Util, Data.Singletons.Core
+  exposed-modules:    Data.Singletons,
+                      Data.Singletons.CustomStar,
+                      Data.Singletons.TypeRepStar,
+                      Data.Singletons.List,
+                      Data.Singletons.Bool,
+                      Data.Singletons.Maybe,
+                      Data.Singletons.Either,
+                      Data.Singletons.Tuple
+                      Data.Singletons.TH,
+                      Data.Singletons.Eq,
+                      Data.Singletons.Prelude,
+                      Data.Singletons.Types,
+                      Data.Singletons.Decide,
+                      Data.Singletons.Void
 
+  other-modules:      Data.Singletons.Promote,
+                      Data.Singletons.Singletons,
+                      Data.Singletons.Util,
+                      Data.Singletons.Core
+
+-- This DOES NOT WORK with GHC HEAD because of -dynamic-too problems
+-- test-suite compile
+--   type:               exitcode-stdio-1.0
+--   ghc-options:        -Wall -Werror -main-is Test.Main
+--   default-language:   Haskell2010
+--   main-is:            Test/Main.hs
+
+--   build-depends:
+--       base >= 4.6 && < 5,
+--       constraints >= 0.3,
+--       containers >= 0.5,
+--       syb >= 0.3,
+--       mtl >= 2.1.1,
+--       th-desugar >= 1.2,
+--       template-haskell
+      

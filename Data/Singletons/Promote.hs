@@ -12,7 +12,7 @@ type level. It is an internal module to the singletons package.
 
 module Data.Singletons.Promote where
 
-import Language.Haskell.TH hiding ( Q )
+import Language.Haskell.TH hiding ( Q, cxt )
 import Language.Haskell.TH.Syntax ( falseName, trueName, Quasi(..) )
 import Data.Singletons.Util
 import GHC.Exts (Any)
@@ -27,7 +27,11 @@ anyTypeName, boolName, andName, tyEqName, repName, ifName,
 anyTypeName = ''Any
 boolName = ''Bool
 andName = mkName "&&"
-tyEqName = mkName ":==:"
+#if __GLASGOW_HASKELL__ >= 707
+tyEqName = mkName "=="
+#else
+tyEqName = mkName ":=="
+#endif
 repName = mkName "Rep"
 ifName = mkName "If"
 headName = mkName "Head"
@@ -188,24 +192,24 @@ promoteDecs decls = do
 #endif
                                                (Set.fromList names)
       noTypeSigsPro = map promoteValName noTypeSigs
-      newDecls' = foldl (\decls name ->
-                          filter (not . (containsName name)) decls)
+      newDecls' = foldl (\bad_decls name ->
+                          filter (not . (containsName name)) bad_decls)
                         (concat newDecls) (noTypeSigs ++ noTypeSigsPro)
   mapM_ (\n -> qReportWarning $ "No type binding for " ++ (show (nameBase n)) ++
                                 "; removing all declarations including it")
         noTypeSigs
   return (newDecls' ++ moreNewDecls, noTypeSigs)
 
--- produce instances for (:==:) from the given types
+-- produce instances for (:==) from the given types
 promoteEqInstances :: Quasi q => [Name] -> q [Dec]
 promoteEqInstances = concatMapM promoteEqInstance
 
--- produce instance for (:==:) from the given type
+-- produce instance for (:==) from the given type
 promoteEqInstance :: Quasi q => Name -> q [Dec]
 promoteEqInstance name = do
   (_tvbs, cons) <- getDataD "I cannot make an instance of (:==:) for it." name
 #if __GLASGOW_HASKELL__ >= 707
-  vars <- replicateM (length _tvbs) (qNewName "k")
+  vars <- replicateM (length _tvbs) (newUniqueName "k")
   let tyvars = map VarT vars
       kind = foldType (ConT name) tyvars
   inst_decs <- mkEqTypeInstance kind cons
@@ -218,12 +222,12 @@ promoteEqInstance name = do
 #if __GLASGOW_HASKELL__ >= 707
 
 -- produce a closed type family helper and the instance
--- for (:==:) over the given list of ctors
+-- for (:==) over the given list of ctors
 mkEqTypeInstance :: Quasi q => Kind -> [Con] -> q [Dec]
 mkEqTypeInstance kind cons = do
   helperName <- newUniqueName "Equals"
-  aName <- qNewName "a"
-  bName <- qNewName "b"
+  aName <- newUniqueName "a"
+  bName <- newUniqueName "b"
   true_branches <- mapM mk_branch cons
   false_branch  <- false_case
   let closedFam = ClosedTypeFamilyD helperName
@@ -240,8 +244,8 @@ mkEqTypeInstance kind cons = do
   where mk_branch :: Quasi q => Con -> q TySynEqn
         mk_branch con = do
           let (name, numArgs) = extractNameArgs con
-          lnames <- replicateM numArgs (qNewName "a")
-          rnames <- replicateM numArgs (qNewName "b")
+          lnames <- replicateM numArgs (newUniqueName "a")
+          rnames <- replicateM numArgs (newUniqueName "b")
           let lvars = map VarT lnames
               rvars = map VarT rnames
               ltype = foldType (PromotedT name) lvars
@@ -252,8 +256,8 @@ mkEqTypeInstance kind cons = do
 
         false_case :: Quasi q => q TySynEqn
         false_case = do
-          lvar <- qNewName "a"
-          rvar <- qNewName "b"
+          lvar <- newUniqueName "a"
+          rvar <- newUniqueName "b"
           return $ TySynEqn [SigT (VarT lvar) kind, SigT (VarT rvar) kind] falseTy
 
         tyAll :: [Type] -> Type -- "all" at the type level
@@ -263,14 +267,14 @@ mkEqTypeInstance kind cons = do
 
 #else
 
--- produce the type instance for (:==:) for the given pair of constructors
+-- produce the type instance for (:==) for the given pair of constructors
 mkEqTypeInstance :: Quasi q => (Con, Con) -> q Dec
 mkEqTypeInstance (c1, c2) =
   if c1 == c2
   then do
     let (name, numArgs) = extractNameArgs c1
-    lnames <- replicateM numArgs (qNewName "a")
-    rnames <- replicateM numArgs (qNewName "b")
+    lnames <- replicateM numArgs (newUniqueName "a")
+    rnames <- replicateM numArgs (newUniqueName "b")
     let lvars = map VarT lnames
         rvars = map VarT rnames
     return $ TySynInstD
@@ -282,8 +286,8 @@ mkEqTypeInstance (c1, c2) =
   else do
     let (lname, lNumArgs) = extractNameArgs c1
         (rname, rNumArgs) = extractNameArgs c2
-    lnames <- replicateM lNumArgs (qNewName "a")
-    rnames <- replicateM rNumArgs (qNewName "b")
+    lnames <- replicateM lNumArgs (newUniqueName "a")
+    rnames <- replicateM rNumArgs (newUniqueName "b")
     return $ TySynInstD
       tyEqName
       [foldType (PromotedT lname) (map VarT lnames),
@@ -303,7 +307,7 @@ type PromoteTable = Map.Map Name (Int, [TySynEqn])
 #else
 type PromoteTable = Map.Map Name Int
 #endif
-type PromoteQ q = QWithAux q PromoteTable
+type PromoteQ q = QWithAux PromoteTable q
 
 -- used when a type is declared as a type synonym, not a type family
 -- no need to declare "type family ..." for these
@@ -339,9 +343,9 @@ promoteDec vars (ValD pat body decs) = do
       fail "Promotion of infinite terms not yet supported"
     else do -- definition is not recursive; just use "type" decls
 #if __GLASGOW_HASKELL__ >= 707
-      mapM (flip addBinding (typeSynonymFlag, [])) (map lhsRawName lhss)
+      mapM_ (flip addBinding (typeSynonymFlag, [])) (map lhsRawName lhss)
 #else
-      mapM (flip addBinding typeSynonymFlag) (map lhsRawName lhss)
+      mapM_ (flip addBinding typeSynonymFlag) (map lhsRawName lhss)
 #endif
       return $ (map (\(LHS _ nm hole) -> TySynD nm [] (hole rhs)) lhss) ++
                decls ++ decls'
@@ -387,7 +391,7 @@ promoteDataD _vars _cxt _name _tvbs ctors derivings =
   if any (\n -> (nameBase n) == "Eq") derivings
     then do
 #if __GLASGOW_HASKELL__ >= 707
-      kvs <- replicateM (length _tvbs) (qNewName "k")
+      kvs <- replicateM (length _tvbs) (newUniqueName "k")
       inst_decs <- mkEqTypeInstance (foldType (ConT _name) (map VarT kvs)) ctors
       return inst_decs
 #else
@@ -414,7 +418,7 @@ promoteDec' tab (SigD name ty) = case Map.lookup name tab of
       let ks = unravel k
           (argKs, resultKs) = splitAt numArgs ks -- divide by uniformity
       resultK <- ravel resultKs -- rebuild the arrow kind
-      tyvarNames <- mapM qNewName (replicate (length argKs) "a")
+      tyvarNames <- mapM newUniqueName (replicate (length argKs) "a")
 #if __GLASGOW_HASKELL__ >= 707
       return ([ClosedTypeFamilyD (promoteValName name)
                                  (zipWith KindedTV tyvarNames argKs)
@@ -491,14 +495,14 @@ promoteTopLevelPat (ConP name pats) = do
   argKinds <- mapM promoteType argTypes
   extractorNames <- replicateM (length pats) (newUniqueName "Extract")
 
-  varName <- qNewName "a"
-  zipWithM (\nm arg -> addElement $ FamilyD TypeFam
+  varName <- newUniqueName "a"
+  zipWithM_ (\nm arg -> addElement $ FamilyD TypeFam
                                             nm
                                             [KindedTV varName kind]
                                             (Just arg))
-           extractorNames argKinds
-  componentNames <- replicateM (length pats) (qNewName "a")
-  zipWithM (\extractorName componentName ->
+            extractorNames argKinds
+  componentNames <- replicateM (length pats) (newUniqueName "a")
+  zipWithM_ (\extractorName componentName ->
     addElement $ mkTyFamInst extractorName
                              [foldType (promoteDataCon name)
                                        (map VarT componentNames)]
@@ -571,14 +575,14 @@ promoteTopLevelPat (SigP pat _) = do
 promoteTopLevelPat (ViewP _ _) =
   fail "Promotion of view patterns not yet supported"
 
-type TypesQ q = QWithAux q TypeTable
+type TypesQ q = QWithAux TypeTable q
 
 -- promotes a term pattern into a type pattern, accumulating variable
 -- binding in the auxiliary TypeTable
 promotePat :: Quasi q => Pat -> TypesQ q Type
 promotePat (LitP lit) = promoteLit lit
 promotePat (VarP name) = do
-  tyVar <- qNewName (nameBase name)
+  tyVar <- newUniqueName (nameBase name)
   addBinding name (VarT tyVar)
   return $ VarT tyVar
 promotePat (TupP pats) = do
@@ -605,7 +609,7 @@ promotePat (AsP name pat) = do
   addBinding name ty
   return ty
 promotePat WildP = do
-  name <- qNewName "z"
+  name <- newUniqueName "z"
   return $ VarT name
 promotePat (RecP _ _) = fail "Promotion of record patterns not yet supported"
 promotePat (ListP pats) = do
@@ -618,7 +622,7 @@ promotePat (SigP pat _) = do
 promotePat (ViewP _ _) = fail "View patterns not yet supported"
 
 -- promoting a body may produce auxiliary declarations. Accumulate these.
-type QWithDecs q = QWithAux q [Dec]
+type QWithDecs q = QWithAux [Dec] q
 
 promoteBody :: Quasi q => TypeTable -> Body -> QWithDecs q Type
 promoteBody vars (NormalB exp) = promoteExp vars exp
