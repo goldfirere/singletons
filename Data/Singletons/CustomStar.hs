@@ -1,15 +1,20 @@
-{- Data/Singletons/CustomStar.hs
-
-(c) Richard Eisenbeg 2013
-eir@cis.upenn.edu
-
-This file implements singletonStar, which generates a datatype Rep and associated
-singleton from a list of types. The promoted version of Rep is kind * and the
-Haskell types themselves. This is still very experimental, so expect unusual
-results!
--} 
 {-# LANGUAGE DataKinds, TypeFamilies, KindSignatures, CPP, TemplateHaskell #-}
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Data.Singletons.CustomStar
+-- Copyright   :  (C) 2013 Richard Eisenberg
+-- License     :  BSD-style (see LICENSE)
+-- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
+-- Stability   :  experimental
+-- Portability :  non-portable
+--
+-- This file implements 'singletonStar', which generates a datatype @Rep@ and associated
+-- singleton from a list of types. The promoted version of @Rep@ is kind @*@ and the
+-- Haskell types themselves. This is still very experimental, so expect unusual
+-- results!
+--
+----------------------------------------------------------------------------
 
 module Data.Singletons.CustomStar ( singletonStar ) where
 
@@ -25,6 +30,7 @@ import Data.Singletons.Core
 import Data.Singletons.Types
 import Data.Singletons.Eq
 import Unsafe.Coerce
+import Data.Type.Equality
 #endif
 
 {-
@@ -47,8 +53,35 @@ but the type-level (==) instance in GHC 7.6. This is perhaps poor design, but
 it reduces the amount of CPP noise.
 -}
 
--- Produce a representation and singleton for the collection of types given
-singletonStar :: Quasi q => [Name] -> q [Dec]
+-- | Produce a representation and singleton for the collection of types given.
+--
+-- A datatype @Rep@ is created, with one constructor per type in the declared
+-- universe. When this type is promoted by the singletons library, the
+-- constructors become full types in @*@, not just promoted data constructors.
+-- 
+-- For example,
+-- 
+-- > $(singletonStar [''Nat, ''Bool, ''Maybe])
+-- 
+-- generates the following:
+-- 
+-- > data Rep = Nat | Bool | Maybe Rep deriving (Eq, Show, Read)
+-- 
+-- and its singleton. However, because @Rep@ is promoted to @*@, the singleton
+-- is perhaps slightly unexpected:
+-- 
+-- > data instance Sing (a :: *) where
+-- >   SNat :: Sing Nat
+-- >   SBool :: Sing Bool
+-- >   SMaybe :: SingRep a => Sing a -> Sing (Maybe a)
+-- 
+-- The unexpected part is that @Nat@, @Bool@, and @Maybe@ above are the real @Nat@,
+-- @Bool@, and @Maybe@, not just promoted data constructors.
+-- 
+-- Please note that this function is /very/ experimental. Use at your own risk.
+singletonStar :: Quasi q
+              => [Name]        -- ^ A list of Template Haskell @Name@s for types
+              -> q [Dec]
 singletonStar names = do
   kinds <- mapM getKind names
   ctors <- zipWithM (mkCtor True) names kinds
@@ -121,7 +154,6 @@ singletonStar names = do
                  "an argument of kind Constraint"
         kindToType (LitT _) = fail "Literal encountered at the kind level"
 
-
 mkCustomEqInstances :: Quasi q => [Con] -> q [Dec]
 mkCustomEqInstances ctors = do
 #if __GLASGOW_HASKELL__ >= 707
@@ -129,8 +161,8 @@ mkCustomEqInstances ctors = do
   sCtors <- evalWithoutAux $ mapM (singCtor ctorVar) ctors
   decideInst <- mkEqualityInstance StarT sCtors sDecideClassDesc
 
-  a <- newUniqueName "a"
-  b <- newUniqueName "b"
+  a <- qNewName "a"
+  b <- qNewName "b"
   let eqInst = InstanceD
                  []
                  (AppT (ConT ''SEq) (kindParam StarT))

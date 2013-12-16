@@ -10,8 +10,10 @@
 -----------------------------------------------------------------------------
 -- |
 -- Copyright   :  (C) 2008-2013 Edward Kmett
--- License     :  BSD-style
+-- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
+-- Stability   :  experimental
+-- Portability :  non-portable
 --
 -- This module is a reimplementation of Edward Kmett's @void@ package.
 -- It is included within singletons to avoid depending on @void@ and all the

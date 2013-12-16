@@ -1,17 +1,50 @@
-{- Data/Singletons/Either.hs
-
-(c) Richard Eisenberg 2013
-eir@cis.upenn.edu
-
-Defines functions and datatypes relating to the singleton for Either.
--}
-
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies, GADTs,
-             DataKinds, PolyKinds, RankNTypes, UndecidableInstances #-}
+             DataKinds, PolyKinds, RankNTypes, UndecidableInstances, CPP #-}
+
+#if __GLASGOW_HASKELL__ < 707
+{-# OPTIONS_GHC -fno-warn-name-shadowing #-}
+#endif
+
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Data.Singletons.Either
+-- Copyright   :  (C) 2013 Richard Eisenberg
+-- License     :  BSD-style (see LICENSE)
+-- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
+-- Stability   :  experimental
+-- Portability :  non-portable
+--
+-- Defines functions and datatypes relating to the singleton for 'Either',
+-- including a singletons version of all the definitions in @Data.Either@.
+--
+-- Because many of these definitions are produced by Template Haskell,
+-- it is not possible to create proper Haddock documentation. Please look
+-- up the corresponding operation in @Data.Either@. Also, please excuse
+-- the apparent repeated variable names. This is due to an interaction
+-- between Template Haskell and Haddock.
+--
+----------------------------------------------------------------------------
 
 module Data.Singletons.Either (
-  SEither, Sing(SLeft, SRight),
-  Either_, sEither_, Lefts, sLefts, Rights, sRights,
+  -- * The 'Either' singleton
+  Sing(SLeft, SRight),
+  -- | Though Haddock doesn't show it, the 'Sing' instance above declares
+  -- constructors
+  --
+  -- > SLeft  :: Sing a -> Sing (Left a)
+  -- > SRight :: Sing b -> Sing (Right b)
+  
+  SEither,
+  -- | 'SEither' is a kind-restricted synonym for 'Sing':
+  -- @type SEither (a :: Either x y) = Sing a@
+
+  -- * Singletons from @Data.Either@
+  Either_, sEither_,
+  -- | The preceding two definitions are derived from the function 'either' in
+  -- @Data.Either@. The extra underscore is to avoid name clashes with the type
+  -- 'Either'.
+  
+  Lefts, sLefts, Rights, sRights,
   PartitionEithers, sPartitionEithers, IsLeft, sIsLeft, IsRight, sIsRight
   ) where
 

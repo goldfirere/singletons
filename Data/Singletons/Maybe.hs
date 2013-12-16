@@ -1,18 +1,53 @@
-{- Data/Singletons/Bool.hs
-
-(c) Richard Eisenberg 2013
-eir@cis.upenn.edu
-
-Defines functions and datatypes relating to the singleton for Maybe.
--}
-
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies,
              DataKinds, PolyKinds, UndecidableInstances, GADTs,
-             RankNTypes #-}
+             RankNTypes, CPP #-}
+
+#if __GLASGOW_HASKELL__ < 707
+{-# OPTIONS_GHC -fno-warn-name-shadowing #-}
+#endif
+
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Data.Singletons.Maybe
+-- Copyright   :  (C) 2013 Richard Eisenberg
+-- License     :  BSD-style (see LICENSE)
+-- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
+-- Stability   :  experimental
+-- Portability :  non-portable
+--
+-- Defines functions and datatypes relating to the singleton for 'Maybe',
+-- including a singletons version of all the definitions in @Data.Maybe@.
+--
+-- Because many of these definitions are produced by Template Haskell,
+-- it is not possible to create proper Haddock documentation. Please look
+-- up the corresponding operation in @Data.Maybe@. Also, please excuse
+-- the apparent repeated variable names. This is due to an interaction
+-- between Template Haskell and Haddock.
+--
+----------------------------------------------------------------------------
+
 
 module Data.Singletons.Maybe (
-  SMaybe, Sing(SNothing, SJust),
-  Maybe_, sMaybe_, IsJust, sIsJust, IsNothing, sIsNothing,
+  -- The 'Maybe' singleton
+  
+  Sing(SNothing, SJust),
+  -- | Though Haddock doesn't show it, the 'Sing' instance above declares
+  -- constructors
+  --
+  -- > SNothing :: Sing Nothing
+  -- > SJust    :: Sing a -> Sing (Just a)
+
+  SMaybe,
+  -- | 'SBool' is a kind-restricted synonym for 'Sing': @type SMaybe (a :: Maybe k) = Sing a@
+
+  -- * Singletons from @Data.Maybe@
+
+  Maybe_, sMaybe_,
+  -- | The preceding two definitions are derived from the function 'maybe' in
+  -- @Data.Maybe@. The extra underscore is to avoid name clashes with the type
+  -- 'Maybe'.
+  
+  IsJust, sIsJust, IsNothing, sIsNothing,
   FromJust, sFromJust, FromMaybe, sFromMaybe, MaybeToList, sMaybeToList,
   ListToMaybe, sListToMaybe, CatMaybes, sCatMaybes, MapMaybe, sMapMaybe
   ) where

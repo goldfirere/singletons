@@ -26,6 +26,7 @@ import Data.Singletons.Void
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Type.Bool
+import Data.Type.Equality
 #endif
 
 -----------------------------------
@@ -101,14 +102,9 @@ type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)
 
 -- Wraps up a singleton
 data SomeSing :: KProxy k -> * where
-  SomeSing :: forall (a :: k). (SingKind ('KProxy :: KProxy k))
-           => Sing a -> SomeSing ('KProxy :: KProxy k)
+  SomeSing :: Sing (a :: k) -> SomeSing ('KProxy :: KProxy k)
 
-#if __GLASGOW_HASKELL__ >= 707
-type family If a b c where
-  If True b c = b
-  If False b c = c
-#else
+#if __GLASGOW_HASKELL__ < 707
 type family If (a :: Bool) (b :: k) (c :: k) :: k
 type instance If True b c = b
 type instance If False b c = c
@@ -122,7 +118,7 @@ withSomeSing :: SingKind ('KProxy :: KProxy k)
              => DemoteRep ('KProxy :: KProxy k)
              -> (forall (a :: k). Sing a -> r)
              -> r
-withSomeSing x f =
+withSomeSing x f = 
   case toSing x of
     SomeSing x' -> f x'
 

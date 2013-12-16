@@ -199,6 +199,7 @@ multiCase scruts pats body =
 -- a monad transformer for writing a monoid alongside returning a Q
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
   deriving (Functor, Applicative, Monad, MonadTrans)
+
 instance (Monoid m, Monad q) => MonadWriter m (QWithAux m q) where
   writer = QWA . writer
   tell   = QWA . tell
@@ -218,6 +219,7 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
 #if __GLASGOW_HASKELL__ >= 707
   qReifyRoles       = lift `comp1` qReifyRoles
   qReifyAnnotations = lift `comp1` qReifyAnnotations
+  qReifyModule      = lift `comp1` qReifyModule
   qAddTopDecls      = lift `comp1` qAddTopDecls
   qAddModFinalizer  = lift `comp1` qAddModFinalizer
   qGetQ             = lift qGetQ

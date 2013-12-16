@@ -1,19 +1,33 @@
-{- Data/Singletons/TypeRepStar.hs
-
-(c) Richard Eisenberg 2013
-eir@cis.upenn.edu
-
-This file contains the definitions for considering TypeRep to be the demotion
-of *. This is still highly experimental, so expect unusual results!
-
--}
-
 {-# LANGUAGE RankNTypes, TypeFamilies, KindSignatures, FlexibleInstances,
              GADTs, UndecidableInstances, ScopedTypeVariables, DataKinds,
              MagicHash, CPP, TypeOperators #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Data.Singletons.TypeRepStar ( Sing(STypeRep) ) where
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Data.Singletons.TypeRepStar
+-- Copyright   :  (C) 2013 Richard Eisenberg
+-- License     :  BSD-style (see LICENSE)
+-- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
+-- Stability   :  experimental
+-- Portability :  non-portable
+--
+-- This module defines singleton instances making 'Typeable' the singleton for
+-- the kind @*@. The definitions don't fully line up with what is expected
+-- within the singletons library, so expect unusual results!
+--
+----------------------------------------------------------------------------
+
+module Data.Singletons.TypeRepStar (
+  Sing(STypeRep)
+  -- | Here is the definition of the singleton for @*@:
+  --
+  -- > data instance Sing (a :: *) where
+  -- >   STypeRep :: Typeable a => Sing a
+  --
+  -- Instances for 'SingI', 'SingKind', 'SEq', 'SDecide', and 'TestCoercion' are
+  -- also supplied.
+  ) where
 
 import Data.Singletons.Core
 import Data.Singletons.Types
@@ -24,6 +38,7 @@ import Unsafe.Coerce
 #if __GLASGOW_HASKELL__ >= 707
 import GHC.Exts ( Proxy# )
 import Data.Type.Coercion
+import Data.Proxy
 #else
 
 eqT :: (Typeable a, Typeable b) => Maybe (a :~: b)

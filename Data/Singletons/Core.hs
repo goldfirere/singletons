@@ -23,35 +23,62 @@ module Data.Singletons.Core where
 import Data.Singletons.Util
 import Data.Singletons.Singletons
 import GHC.TypeLits (Nat, Symbol)
-#if __GLASGOW_HASKELL__ < 707
-import qualified GHC.TypeLits as TypeLits
-#endif
 import Data.Singletons.Types
 import Unsafe.Coerce
 
 #if __GLASGOW_HASKELL__ >= 707
 import GHC.TypeLits (KnownNat, KnownSymbol, natVal, symbolVal)
+import Data.Proxy
+import Data.Type.Equality
+#else
+import qualified GHC.TypeLits as TypeLits
 #endif
 
--- Access the kind of a type variable
+-- | Convenient synonym to refer to the kind of a type variable:
+-- @type KindOf (a :: k) = ('KProxy :: KProxy k)@
 type KindOf (a :: k) = ('KProxy :: KProxy k)
 
--- Declarations of singleton structures
+-- | The singleton kind-indexed data family.
 data family Sing (a :: k)
+
+-- | A 'SingI' constraint is essentially an implicitly-passed singleton.
+-- If you need to satisfy this constraint with an explicit singleton, please
+-- see 'withSingI'.
 class SingI (a :: k) where
+  -- | Produce the singleton explicitly. You will likely need the @ScopedTypeVariables@
+  -- extension to use this method the way you want.
   sing :: Sing a
+
+-- | The 'SingKind' class is essentially a /kind/ class. It classifies all kinds
+-- for which singletons are defined. The class supports converting between a singleton
+-- type and the base (unrefined) type which it is built from.
 class (kparam ~ 'KProxy) => SingKind (kparam :: KProxy k) where
+  -- | Get a base type from a proxy for the promoted kind. For example,
+  -- @DemoteRep ('KProxy :: KProxy Bool)@ will be the type @Bool@.
   type DemoteRep kparam :: *
+
+  -- | Convert a singleton to its unrefined version.
   fromSing :: Sing (a :: k) -> DemoteRep kparam
+
+  -- | Convert an unrefined type to an existentially-quantified singleton type.
   toSing   :: DemoteRep kparam -> SomeSing kparam
 
--- Abbreviation for DemoteRep
+-- | Convenient abbreviation for 'DemoteRep':
+-- @type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)@
 type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)
 
--- Wraps up a singleton
-data SomeSing :: KProxy k -> * where
-  SomeSing :: forall (a :: k). SingKind ('KProxy :: KProxy k)
-           => Sing a -> SomeSing ('KProxy :: KProxy k)
+-- | An /existentially-quantified/ singleton. This type is useful when you want a
+-- singleton type, but there is no way of knowing, at compile-time, what the type
+-- index will be. To make use of this type, you will generally have to use a
+-- pattern-match:
+--
+-- > foo :: Bool -> ...
+-- > foo b = case toSing b of
+-- >           SomeSing sb -> {- fancy dependently-typed code with sb -}
+--
+-- An example like the one above may be easier to write using 'withSomeSing'.
+data SomeSing (kproxy :: KProxy k) where
+  SomeSing :: Sing (a :: k) -> SomeSing ('KProxy :: KProxy k)
                                   
 -- some useful singletons
 $(genSingletons basicTypes)
@@ -87,8 +114,11 @@ instance SingKind ('KProxy :: KProxy Symbol) where
 -- we need to decare SDecide and its instances here to avoid making
 -- the EqualityT instance an orphan
 
--- allows equality decisions over singletons
+-- | Members of the 'SDecide' "kind" class support decidable equality. Instances
+-- of this class are generated alongside singleton definitions for datatypes that
+-- derive an 'Eq' instance.
 class (kparam ~ 'KProxy) => SDecide (kparam :: KProxy k) where
+  -- | Compute a proof or disproof of equality, given two singletons.
   (%~) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Decision (a :~: b)
 
 $(singDecideInstances basicTypes)

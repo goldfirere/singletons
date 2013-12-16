@@ -16,6 +16,7 @@ import Language.Haskell.TH hiding ( Q, cxt )
 import Language.Haskell.TH.Syntax ( falseName, trueName, Quasi(..) )
 import Data.Singletons.Util
 import GHC.Exts (Any)
+import GHC.TypeLits (Symbol)
 import Prelude hiding (exp)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
@@ -23,7 +24,7 @@ import Control.Monad
 import Data.List
 
 anyTypeName, boolName, andName, tyEqName, repName, ifName,
-  headName, tailName :: Name
+  headName, tailName, symbolName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = mkName "&&"
@@ -36,6 +37,7 @@ repName = mkName "Rep"
 ifName = mkName "If"
 headName = mkName "Head"
 tailName = mkName "Tail"
+symbolName = ''Symbol
 
 falseTy :: Type
 falseTy = promoteDataCon falseName
@@ -57,13 +59,6 @@ headTyFam = ConT headName
 
 tailTyFam :: Type
 tailTyFam = ConT tailName
-
-genPromotions :: Quasi q => [Name] -> q [Dec]
-genPromotions names = do
-  checkForRep names
-  infos <- mapM reifyWithWarning names
-  decls <- mapM promoteInfo infos
-  return $ concat decls
 
 promoteInfo :: Quasi q => Info -> q [Dec]
 promoteInfo (ClassI _dec _instances) =
@@ -106,9 +101,12 @@ promoteType :: Quasi q => Type -> q Kind
 -- need to promote them.
 promoteType (ForallT _tvbs _ ty) = promoteType ty -- ForallKinds
 promoteType (VarT name) = return $ VarT name
-promoteType (ConT name) = return $ if (nameBase name) == "TypeRep" ||
-                                      (nameBase name) == (nameBase repName)
-                                     then StarT else ConT name
+promoteType (ConT name) = return $
+  case nameBase name of
+    "TypeRep"                 -> StarT
+    "String"                  -> ConT symbolName
+    x | x == nameBase repName -> StarT
+      | otherwise             -> ConT name
 promoteType (TupleT n) = return $ TupleT n
 promoteType (UnboxedTupleT _n) = fail "Promotion of unboxed tuples not supported"
 promoteType ArrowT = return ArrowT
@@ -131,14 +129,14 @@ promoteType ConstraintT = fail "Constraint used as a type"
 -- a table to keep track of variable->type mappings
 type TypeTable = Map.Map Name Type
 
--- Promote each declaration in a splice
+-- | Promote every declaration given to the type level, retaining the originals.
 promote :: Quasi q => q [Dec] -> q [Dec]
 promote qdec = do
   decls <- qdec
   (promDecls, _) <- promoteDecs decls
   return $ decls ++ promDecls
 
--- Promote each declaration, discarding originals
+-- | Promote each declaration, discarding the originals.
 promoteOnly :: Quasi q => q [Dec] -> q [Dec]
 promoteOnly qdec = do
   decls <- qdec
@@ -200,16 +198,16 @@ promoteDecs decls = do
         noTypeSigs
   return (newDecls' ++ moreNewDecls, noTypeSigs)
 
--- produce instances for (:==) from the given types
+-- | Produce instances for '(:==)' (type-level equality) from the given types
 promoteEqInstances :: Quasi q => [Name] -> q [Dec]
 promoteEqInstances = concatMapM promoteEqInstance
 
--- produce instance for (:==) from the given type
+-- | Produce an instance for '(:==)' (type-level equality) from the given type
 promoteEqInstance :: Quasi q => Name -> q [Dec]
 promoteEqInstance name = do
   (_tvbs, cons) <- getDataD "I cannot make an instance of (:==:) for it." name
 #if __GLASGOW_HASKELL__ >= 707
-  vars <- replicateM (length _tvbs) (newUniqueName "k")
+  vars <- replicateM (length _tvbs) (qNewName "k")
   let tyvars = map VarT vars
       kind = foldType (ConT name) tyvars
   inst_decs <- mkEqTypeInstance kind cons
@@ -225,9 +223,9 @@ promoteEqInstance name = do
 -- for (:==) over the given list of ctors
 mkEqTypeInstance :: Quasi q => Kind -> [Con] -> q [Dec]
 mkEqTypeInstance kind cons = do
-  helperName <- newUniqueName "Equals"
-  aName <- newUniqueName "a"
-  bName <- newUniqueName "b"
+  helperName <- qNewName "Equals"
+  aName <- qNewName "a"
+  bName <- qNewName "b"
   true_branches <- mapM mk_branch cons
   false_branch  <- false_case
   let closedFam = ClosedTypeFamilyD helperName
@@ -244,8 +242,8 @@ mkEqTypeInstance kind cons = do
   where mk_branch :: Quasi q => Con -> q TySynEqn
         mk_branch con = do
           let (name, numArgs) = extractNameArgs con
-          lnames <- replicateM numArgs (newUniqueName "a")
-          rnames <- replicateM numArgs (newUniqueName "b")
+          lnames <- replicateM numArgs (qNewName "a")
+          rnames <- replicateM numArgs (qNewName "b")
           let lvars = map VarT lnames
               rvars = map VarT rnames
               ltype = foldType (PromotedT name) lvars
@@ -256,8 +254,8 @@ mkEqTypeInstance kind cons = do
 
         false_case :: Quasi q => q TySynEqn
         false_case = do
-          lvar <- newUniqueName "a"
-          rvar <- newUniqueName "b"
+          lvar <- qNewName "a"
+          rvar <- qNewName "b"
           return $ TySynEqn [SigT (VarT lvar) kind, SigT (VarT rvar) kind] falseTy
 
         tyAll :: [Type] -> Type -- "all" at the type level
@@ -273,8 +271,8 @@ mkEqTypeInstance (c1, c2) =
   if c1 == c2
   then do
     let (name, numArgs) = extractNameArgs c1
-    lnames <- replicateM numArgs (newUniqueName "a")
-    rnames <- replicateM numArgs (newUniqueName "b")
+    lnames <- replicateM numArgs (qNewName "a")
+    rnames <- replicateM numArgs (qNewName "b")
     let lvars = map VarT lnames
         rvars = map VarT rnames
     return $ TySynInstD
@@ -286,8 +284,8 @@ mkEqTypeInstance (c1, c2) =
   else do
     let (lname, lNumArgs) = extractNameArgs c1
         (rname, rNumArgs) = extractNameArgs c2
-    lnames <- replicateM lNumArgs (newUniqueName "a")
-    rnames <- replicateM rNumArgs (newUniqueName "b")
+    lnames <- replicateM lNumArgs (qNewName "a")
+    rnames <- replicateM rNumArgs (qNewName "b")
     return $ TySynInstD
       tyEqName
       [foldType (PromotedT lname) (map VarT lnames),
@@ -391,7 +389,7 @@ promoteDataD _vars _cxt _name _tvbs ctors derivings =
   if any (\n -> (nameBase n) == "Eq") derivings
     then do
 #if __GLASGOW_HASKELL__ >= 707
-      kvs <- replicateM (length _tvbs) (newUniqueName "k")
+      kvs <- replicateM (length _tvbs) (qNewName "k")
       inst_decs <- mkEqTypeInstance (foldType (ConT _name) (map VarT kvs)) ctors
       return inst_decs
 #else
@@ -418,7 +416,7 @@ promoteDec' tab (SigD name ty) = case Map.lookup name tab of
       let ks = unravel k
           (argKs, resultKs) = splitAt numArgs ks -- divide by uniformity
       resultK <- ravel resultKs -- rebuild the arrow kind
-      tyvarNames <- mapM newUniqueName (replicate (length argKs) "a")
+      tyvarNames <- mapM qNewName (replicate (length argKs) "a")
 #if __GLASGOW_HASKELL__ >= 707
       return ([ClosedTypeFamilyD (promoteValName name)
                                  (zipWith KindedTV tyvarNames argKs)
@@ -495,13 +493,13 @@ promoteTopLevelPat (ConP name pats) = do
   argKinds <- mapM promoteType argTypes
   extractorNames <- replicateM (length pats) (newUniqueName "Extract")
 
-  varName <- newUniqueName "a"
+  varName <- qNewName "a"
   zipWithM_ (\nm arg -> addElement $ FamilyD TypeFam
                                             nm
                                             [KindedTV varName kind]
                                             (Just arg))
             extractorNames argKinds
-  componentNames <- replicateM (length pats) (newUniqueName "a")
+  componentNames <- replicateM (length pats) (qNewName "a")
   zipWithM_ (\extractorName componentName ->
     addElement $ mkTyFamInst extractorName
                              [foldType (promoteDataCon name)
@@ -582,7 +580,7 @@ type TypesQ q = QWithAux TypeTable q
 promotePat :: Quasi q => Pat -> TypesQ q Type
 promotePat (LitP lit) = promoteLit lit
 promotePat (VarP name) = do
-  tyVar <- newUniqueName (nameBase name)
+  tyVar <- qNewName (nameBase name)
   addBinding name (VarT tyVar)
   return $ VarT tyVar
 promotePat (TupP pats) = do
@@ -609,7 +607,7 @@ promotePat (AsP name pat) = do
   addBinding name ty
   return ty
 promotePat WildP = do
-  name <- newUniqueName "z"
+  name <- qNewName "z"
   return $ VarT name
 promotePat (RecP _ _) = fail "Promotion of record patterns not yet supported"
 promotePat (ListP pats) = do

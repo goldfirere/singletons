@@ -1,17 +1,37 @@
-{- Data/Singletons/Tuple.hs
-
-(c) Richard Eisenberg 2013
-eir@cis.upenn.edu
-
-Defines functions and datatypes relating to the singleton for Tuples.
--}
-
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, DataKinds, PolyKinds,
-             RankNTypes, TypeFamilies, GADTs #-}
+             RankNTypes, TypeFamilies, GADTs, CPP #-}
+
+#if __GLASGOW_HASKELL__ < 707
+{-# OPTIONS_GHC -fno-warn-name-shadowing #-}
+#endif
+
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Data.Singletons.Tuple
+-- Copyright   :  (C) 2013 Richard Eisenberg
+-- License     :  BSD-style (see LICENSE)
+-- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
+-- Stability   :  experimental
+-- Portability :  non-portable
+--
+-- Defines functions and datatypes relating to the singleton for tuples,
+-- including a singletons version of all the definitions in @Data.Tuple@.
+--
+-- Because many of these definitions are produced by Template Haskell,
+-- it is not possible to create proper Haddock documentation. Please look
+-- up the corresponding operation in @Data.Tuple@. Also, please excuse
+-- the apparent repeated variable names. This is due to an interaction
+-- between Template Haskell and Haddock.
+--
+----------------------------------------------------------------------------
 
 module Data.Singletons.Tuple (
-  STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
+  -- * Singleton definitions
+  -- | See 'Data.Singletons.Prelude.Sing' for more info.
   Sing(STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7),
+  STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
+
+  -- * Singletons from @Data.Tuple@
   Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry, Swap, sSwap
   ) where
 

@@ -2,4 +2,8 @@ TODO for singletons project:
 
 Ord instance
 
-generate connection between :==: and :~: / generate :~: equalities.
+generate connection between :==: and :~:
+
+type W p = forall a. (p => a) -> a
+natFold :: natFold :: forall p n. Sing n -> W (p Zero) -> (forall m. W (p m) -> W (p (Succ m))) -> W (p n)
+
