@@ -20,10 +20,9 @@ description:
     at the Haskell Symposium, 2012.
     (<http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>)
 
-    As of this release date, Haddock was not able to properly process the code
-    and produce documentation. Hence, all of the documentation is in the
-    README file distributed with the package. This README is also accessible
-    from the project home page.
+    The Haddock documentation does not build with the Haddock distributed with
+    GHC 7.6.x, but it does build with HEAD. Please see links from the project
+    homepage to find the built documentation.
 
 source-repository this
   type:     git

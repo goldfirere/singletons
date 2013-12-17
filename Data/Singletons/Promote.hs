@@ -223,7 +223,7 @@ promoteEqInstance name = do
 -- for (:==) over the given list of ctors
 mkEqTypeInstance :: Quasi q => Kind -> [Con] -> q [Dec]
 mkEqTypeInstance kind cons = do
-  helperName <- qNewName "Equals"
+  helperName <- newUniqueName "Equals"
   aName <- qNewName "a"
   bName <- qNewName "b"
   true_branches <- mapM mk_branch cons
