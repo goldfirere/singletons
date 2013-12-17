@@ -158,29 +158,29 @@ On names
 The singletons library has to produce new names for the new constructs it
 generates. Here are some examples showing how this is done:
 
-original datatype: `Nat`
-promoted kind: `Nat`
-singleton type: `SNat` (which is really a synonym for `Sing`)
+original datatype: `Nat`  
+promoted kind: `Nat`  
+singleton type: `SNat` (which is really a synonym for `Sing`)  
 
-original datatype: `:/\:`
-promoted kind: `:/\:`
-singleton type: `:%/\:`
+original datatype: `:/\:`  
+promoted kind: `:/\:`  
+singleton type: `:%/\:`  
 
-original constructor: `Zero`
-promoted type: `'Zero` (you can use `Zero` when unambiguous)
-singleton constructor: `SZero`
+original constructor: `Zero`  
+promoted type: `'Zero` (you can use `Zero` when unambiguous)  
+singleton constructor: `SZero`  
 
-original constructor: `:+:`
-promoted type: `':+:`
-singleton constructor: `:%+:`
+original constructor: `:+:`  
+promoted type: `':+:`  
+singleton constructor: `:%+:`  
 
-original value: `pred`
-promoted type: `Pred`
-singleton value: `sPred`
+original value: `pred`  
+promoted type: `Pred`  
+singleton value: `sPred`  
 
-original value: `+`
-promoted type: `:+`
-singleton value: `%:+`
+original value: `+`  
+promoted type: `:+`  
+singleton value: `%:+`  
 
 
 Special names
@@ -188,25 +188,25 @@ Special names
 
 There are some special cases:
 
-original datatype: `[]`
+original datatype: `[]`  
 singleton type: `SList`
 
-original constructor: `[]`
+original constructor: `[]`  
 singleton constructor: `SNil`
 
-original constructor: `:`
+original constructor: `:`  
 singleton constructor: `SCons`
 
-original datatype: `(,)`
+original datatype: `(,)`  
 singleton type: `STuple2`
 
-original constructor: `(,)`
+original constructor: `(,)`  
 singleton constructor: `STuple2`
 
 All tuples (including the 0-tuple, unit) are treated similarly.
 
-original value: `undefined`
-promoted type: `Any`
+original value: `undefined`  
+promoted type: `Any`  
 singleton value: `undefined`
 
 
