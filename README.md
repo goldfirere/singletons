@@ -1,4 +1,4 @@
-singletons 0.9.0
+singletons 0.9.1
 ================
 
 This is the README file for the singletons library. This file contains all the
