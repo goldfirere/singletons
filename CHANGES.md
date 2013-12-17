@@ -1,6 +1,11 @@
 Changelog for singletons project
 ================================
 
+0.9.2
+-----
+
+Fix export list of Data.Singletons.TH, again.
+
 0.9.1
 -----
 
