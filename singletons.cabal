@@ -8,7 +8,7 @@ author:         Richard Eisenberg <eir@cis.upenn.edu>
 maintainer:     Richard Eisenberg <eir@cis.upenn.edu>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-extra-source-files: README, CHANGES
+extra-source-files: README.md, CHANGES.md
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple

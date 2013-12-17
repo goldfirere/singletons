@@ -16,6 +16,8 @@ quite lacking in features.
 
 For singleton equality, use `Data.Singletons.Eq`.
 
+For propositional singleton equality, use `Data.Singletons.Decide`.
+
 New module `Data.Singletons.Prelude` is meant to mirror the Haskell Prelude,
 but with singleton definitions.
 
