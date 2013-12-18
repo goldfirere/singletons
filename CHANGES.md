@@ -1,6 +1,13 @@
 Changelog for singletons project
 ================================
 
+0.9.3
+-----
+
+Fix export list of Data.Singletons.TH, again again.
+
+Add `SEq` instances for `Nat` and `Symbol`.
+
 0.9.2
 -----
 

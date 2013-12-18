@@ -112,7 +112,7 @@ instance SingKind ('KProxy :: KProxy Symbol) where
   toSing s = SomeSing (SSym s)
   
 -- we need to decare SDecide and its instances here to avoid making
--- the EqualityT instance an orphan
+-- the TestEquality instance an orphan
 
 -- | Members of the 'SDecide' "kind" class support decidable equality. Instances
 -- of this class are generated alongside singleton definitions for datatypes that

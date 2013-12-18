@@ -24,8 +24,11 @@ import Data.Singletons.Util
 import Data.Singletons.Bool
 import Data.Singletons.Singletons
 import Data.Singletons.Core
+import GHC.TypeLits ( Nat, Symbol )
+import Unsafe.Coerce   -- for TypeLits instances
 
 #if __GLASGOW_HASKELL__ >= 707
+
 import Data.Proxy
 import Data.Type.Equality
 
@@ -55,7 +58,18 @@ class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
   a %:/= b = sNot (a %:== b)
 
 #if __GLASGOW_HASKELL__ < 707
-$(promoteEqInstances basicTypes)
+$(promoteEqInstances basicTypes)   -- these instances are in Data.Type.Equality
 #endif
        
 $(singEqInstancesOnly basicTypes)
+
+-- need instances for TypeLits kinds
+instance SEq ('KProxy :: KProxy Nat) where
+  (SNat a) %:== (SNat b)
+    | a == b    = unsafeCoerce STrue
+    | otherwise = unsafeCoerce SFalse
+
+instance SEq ('KProxy :: KProxy Symbol) where
+  (SSym a) %:== (SSym b)
+    | a == b    = unsafeCoerce STrue
+    | otherwise = unsafeCoerce SFalse
