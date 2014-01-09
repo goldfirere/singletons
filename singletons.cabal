@@ -57,7 +57,8 @@ library
                       Data.Singletons.Singletons,
                       Data.Singletons.Util,
                       Data.Singletons.Core
-
+  ghc-options:        -dynamic-too
+  
 -- This DOES NOT WORK with GHC HEAD because of -dynamic-too problems
 -- test-suite compile
 --   type:               exitcode-stdio-1.0
