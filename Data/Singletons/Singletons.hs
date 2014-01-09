@@ -284,11 +284,19 @@ singEqInstancesOnly = concatMapM singEqInstanceOnly
 singEqInstanceOnly :: Quasi q => Name -> q [Dec]
 singEqInstanceOnly name = listify <$> singEqualityInstance sEqClassDesc name
 
--- | Create instances of 'SDecide' for each type in the list
+-- | Create instances of 'SDecide' for each type in the list.
+--
+-- Note that, due to a bug in GHC 7.6.3 (and lower) optimizing instances
+-- for SDecide can make GHC hang. You may want to put
+-- @{-# OPTIONS_GHC -O0 #-}@ in your file.
 singDecideInstances :: Quasi q => [Name] -> q [Dec]
 singDecideInstances = concatMapM singDecideInstance
 
--- | Create instance of SDecide for the given type
+-- | Create instance of 'SDecide' for the given type.
+--
+-- Note that, due to a bug in GHC 7.6.3 (and lower) optimizing instances
+-- for SDecide can make GHC hang. You may want to put
+-- @{-# OPTIONS_GHC -O0 #-}@ in your file.
 singDecideInstance :: Quasi q => Name -> q [Dec]
 singDecideInstance name = listify <$> singEqualityInstance sDecideClassDesc name
 
