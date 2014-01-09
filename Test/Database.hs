@@ -148,7 +148,7 @@ instance Show a => Show (Vec a n) where
 -- We need to be able to Read and Show elements of our database, so
 -- we must know that any type of the form (El u) for some (u :: U)
 -- has a Read and Show instance. Because we can't declare this instance
--- directly (as, in general, declaraing an instance of a type family
+-- directly (as, in general, declaring an instance of a type family
 -- would be unsound), we provide inductive proofs that these instances
 -- exist:
 data ElUReadInstance u where
