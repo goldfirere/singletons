@@ -217,8 +217,6 @@ singDec (ValD pat (NormalB exp) []) = do
   (sPat, vartbl) <- evalForPair $ singPat TopLevel pat
   sExp <- singExp vartbl exp
   return [ValD sPat (NormalB sExp) []]
-singDec (DataD (_:_) _ _ _ _) =
-  fail "Singling of constrained datatypes not supported"
 singDec (DataD cxt name tvbs ctors derivings) =
   singDataD False cxt name tvbs ctors derivings
 singDec (NewtypeD cxt name tvbs ctor derivings) =
