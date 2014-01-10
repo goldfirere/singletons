@@ -68,7 +68,7 @@ qReportWarning = qReport False
 -- extract the degree of a tuple
 tupleDegree_maybe :: String -> Maybe Int
 tupleDegree_maybe s = do
-  '(' : s1 <- return s 
+  '(' : s1 <- return s
   (commas, ")") <- return $ span (== ',') s1
   let degree
         | "" <- commas = 0
@@ -87,7 +87,7 @@ ctorCases genFun forallFun ctor = case ctor of
   RecC name vstypes -> genFun name (map (\(_,_,ty) -> ty) vstypes)
   InfixC (_,ty1) name (_,ty2) -> genFun name [ty1, ty2]
   ForallC [] [] ctor' -> ctorCases genFun forallFun ctor'
-  ForallC tvbs cx ctor' -> forallFun tvbs cx ctor' 
+  ForallC tvbs cx ctor' -> forallFun tvbs cx ctor'
 
 -- reduce the four cases of a 'Con' to just 1: a polymorphic Con is treated
 -- as a monomorphic one
@@ -110,7 +110,7 @@ isUpcase n = let first = head (nameBase n) in isUpper first || first == ':'
 -- make an identifier uppercase
 upcase :: Name -> Name
 upcase n =
-  let str = nameBase n 
+  let str = nameBase n
       first = head str in
     if isLetter first
      then mkName ((toUpper first) : tail str)
@@ -224,8 +224,8 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
   qAddModFinalizer  = lift `comp1` qAddModFinalizer
   qGetQ             = lift qGetQ
   qPutQ             = lift `comp1` qPutQ
-#endif                      
-  
+#endif
+
   qRecover exp handler = do
     (result, aux) <- lift $ qRecover (evalForPair exp) (evalForPair handler)
     tell aux

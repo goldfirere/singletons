@@ -36,7 +36,7 @@ type TypeFn = Type -> Type
 -- a list of argument types extracted from a type application
 type TypeContext = [Type]
 
-singFamilyName, singIName, singMethName, demoteRepName, singKindClassName, 
+singFamilyName, singIName, singMethName, demoteRepName, singKindClassName,
   sEqClassName, sEqMethName, sconsName, snilName, sIfName, undefinedName,
   kProxyDataName, kProxyTypeName, someSingTypeName, someSingDataName,
   nilName, consName, sListName, eqName, sDecideClassName, sDecideMethName,
@@ -53,7 +53,7 @@ sEqMethName = mkName "%:=="
 sIfName = mkName "sIf"
 undefinedName = 'undefined
 sconsName = mkName "SCons"
-snilName = mkName "SNil"  
+snilName = mkName "SNil"
 kProxyDataName = 'KProxy
 kProxyTypeName = ''KProxy
 someSingTypeName = mkName "SomeSing"
@@ -143,7 +143,7 @@ singInfo (TyVarI _name _ty) =
 -- refine a constructor. the first parameter is the type variable that
 -- the singleton GADT is parameterized by
 -- runs in the QWithDecs monad because auxiliary declarations are produced
-singCtor :: Quasi q => Type -> Con -> QWithDecs q Con 
+singCtor :: Quasi q => Type -> Con -> QWithDecs q Con
 singCtor a = ctorCases
   -- monomorphic case
   (\name types -> do
@@ -246,7 +246,7 @@ singDec (PragmaD _prag) = do
     return []
 singDec (FamilyD _flavour _name _tvbs _mkind) =
   fail "Singling of type and data families not yet supported"
-singDec (DataInstD _cxt _name _tys _ctors _derivings) = 
+singDec (DataInstD _cxt _name _tys _ctors _derivings) =
   fail "Singling of data instances not yet supported"
 singDec (NewtypeInstD _cxt _name _tys _ctor _derivings) =
   fail "Singling of newtype instances not yet supported"
@@ -374,7 +374,7 @@ mkEqMethClause (c1, c2)
 
 mkDecideMethClause :: Quasi q => (Con, Con) -> q Clause
 mkDecideMethClause (c1, c2)
-  | lname == rname = 
+  | lname == rname =
     if lNumArgs == 0
     then return $ Clause [ConP lname [], ConP rname []]
                          (NormalB (AppE (ConE provedName) (ConE reflName))) []
@@ -405,7 +405,7 @@ mkDecideMethClause (c1, c2)
                                                    (ConE reflName))))
                        [] | i <- [0..lNumArgs-1] ]))
         []
-    
+
   | otherwise =
     return $ Clause
       [ConP lname (replicate lNumArgs WildP),
@@ -429,7 +429,7 @@ singDataD rep cxt name tvbs ctors derivings
   let tvbNames = map extractTvbName tvbs
   k <- promoteType (foldType (ConT name) (map VarT tvbNames))
   (ctors', ctorInstDecls) <- evalForPair $ mapM (singCtor a) ctors
-  
+
   -- instance for SingKind
   fromSingClauses <- mapM mkFromSingClause ctors
   toSingClauses   <- mapM mkToSingClause ctors
@@ -443,12 +443,12 @@ singDataD rep cxt name tvbs ctors derivings
                        (map (AppT demote . kindParam . VarT) tvbNames))
                   , FunD fromSingName (fromSingClauses `orIfEmpty` emptyMethod aName)
                   , FunD toSingName   (toSingClauses   `orIfEmpty` emptyMethod aName) ]
-  
+
   -- SEq instance
   sEqInsts <- if elem eqName derivings
               then mapM (mkEqualityInstance k ctors') [sEqClassDesc, sDecideClassDesc]
               else return []
-  
+
   -- e.g. type SNat (a :: Nat) = Sing a
   let kindedSynInst =
         TySynD (singTyConName name)
@@ -561,7 +561,7 @@ singTypeRec ctx (ForallT _tvbs cxt innerty) = do
   return $ \ty -> ForallT [] cxt' (innerty' ty)
 singTypeRec (_:_) (VarT _) =
   fail "Singling of type variables of arrow kinds not yet supported"
-singTypeRec [] (VarT _name) = 
+singTypeRec [] (VarT _name) =
   return $ \ty -> AppT singFamily ty
 singTypeRec _ctx (ConT _name) = -- we don't need to process the context with Sing
   return $ \ty -> AppT singFamily ty
@@ -708,7 +708,7 @@ singExp vars (LamE pats exp) = do
   let vars' = Map.union vartbl vars -- order matters; union is left-biased
   exp' <- singExp vars' exp
   return $ LamE pats' exp'
-singExp _vars (LamCaseE _matches) = 
+singExp _vars (LamCaseE _matches) =
   fail "Singling of case expressions not yet supported"
 singExp vars (TupE exps) = do
   sExps <- mapM (singExp vars) exps

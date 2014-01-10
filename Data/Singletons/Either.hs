@@ -33,7 +33,7 @@ module Data.Singletons.Either (
   --
   -- > SLeft  :: Sing a -> Sing (Left a)
   -- > SRight :: Sing b -> Sing (Right b)
-  
+
   SEither,
   -- | 'SEither' is a kind-restricted synonym for 'Sing':
   -- @type SEither (a :: Either x y) = Sing a@
@@ -43,7 +43,7 @@ module Data.Singletons.Either (
   -- | The preceding two definitions are derived from the function 'either' in
   -- @Data.Either@. The extra underscore is to avoid name clashes with the type
   -- 'Either'.
-  
+
   Lefts, sLefts, Rights, sRights,
   PartitionEithers, sPartitionEithers, IsLeft, sIsLeft, IsRight, sIsRight
   ) where

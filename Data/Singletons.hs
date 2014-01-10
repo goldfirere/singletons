@@ -23,10 +23,10 @@
 
 module Data.Singletons (
   -- * Main singleton definitions
-  
+
   Sing,
   -- | See also 'Data.Singletons.Prelude.Sing' for exported constructors
-  
+
   SingI(..), SingKind(..),
 
   -- * Working with singletons

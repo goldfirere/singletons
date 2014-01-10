@@ -347,7 +347,7 @@ promoteDec vars (ValD pat body decs) = do
 #endif
       return $ (map (\(LHS _ nm hole) -> TySynD nm [] (hole rhs)) lhss) ++
                decls ++ decls'
-promoteDec vars (DataD cxt name tvbs ctors derivings) = 
+promoteDec vars (DataD cxt name tvbs ctors derivings) =
   promoteDataD vars cxt name tvbs ctors derivings
 promoteDec vars (NewtypeD cxt name tvbs ctor derivings) =
   promoteDataD vars cxt name tvbs [ctor] derivings
@@ -405,13 +405,13 @@ promoteDec' :: Quasi q => PromoteTable -> Dec -> q ([Dec], [Name])
 promoteDec' tab (SigD name ty) = case Map.lookup name tab of
   Nothing -> fail $ "Type declaration is missing its binding: " ++ (show name)
 #if __GLASGOW_HASKELL__ >= 707
-  Just (numArgs, eqns) -> 
+  Just (numArgs, eqns) ->
 #else
   Just numArgs ->
 #endif
     -- if there are no args, then use a type synonym, not a type family
     -- in the type synonym case, we ignore the type signature
-    if numArgs == typeSynonymFlag then return $ ([], [name]) else do 
+    if numArgs == typeSynonymFlag then return $ ([], [name]) else do
       k <- promoteType ty
       let ks = unravel k
           (argKs, resultKs) = splitAt numArgs ks -- divide by uniformity
@@ -432,7 +432,7 @@ promoteDec' tab (SigD name ty) = case Map.lookup name tab of
           unravel (AppT (AppT ArrowT k1) k2) =
             let ks = unravel k2 in k1 : ks
           unravel k = [k]
-          
+
           ravel :: Quasi q => [Kind] -> q Kind
           ravel [] = fail "Internal error: raveling nil"
           ravel [k] = return k
@@ -521,7 +521,7 @@ promoteTopLevelPat (ConP name pats) = do
           tyinfo <- reifyWithWarning tyname
           extractTypesHelper datacon tyinfo
         extractTypes _ = fail "Internal error: unexpected Info in extractTypes"
- 
+
         extractTypesHelper :: Quasi q => Name -> Info -> q (Type, [Type])
         extractTypesHelper datacon
                            (TyConI (DataD _cxt tyname tvbs cons _derivs)) =
@@ -542,7 +542,7 @@ promoteTopLevelPat (ConP name pats) = do
 promoteTopLevelPat (InfixP l name r) = promoteTopLevelPat (ConP name [l, r])
 promoteTopLevelPat (UInfixP _ _ _) =
   fail "Unresolved infix constructors not supported"
-promoteTopLevelPat (ParensP _) = 
+promoteTopLevelPat (ParensP _) =
   fail "Unresolved infix constructors not supported"
 promoteTopLevelPat (TildeP pat) = do
   qReportWarning "Lazy pattern converted into regular pattern in promotion"

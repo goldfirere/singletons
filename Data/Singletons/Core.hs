@@ -79,7 +79,7 @@ type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)
 -- An example like the one above may be easier to write using 'withSomeSing'.
 data SomeSing (kproxy :: KProxy k) where
   SomeSing :: Sing (a :: k) -> SomeSing ('KProxy :: KProxy k)
-                                  
+
 -- some useful singletons
 $(genSingletons basicTypes)
 
@@ -110,7 +110,7 @@ instance SingKind ('KProxy :: KProxy Symbol) where
   type DemoteRep ('KProxy :: KProxy Symbol) = String
   fromSing (SSym n) = n
   toSing s = SomeSing (SSym s)
-  
+
 -- we need to decare SDecide and its instances here to avoid making
 -- the TestEquality instance an orphan
 
@@ -129,7 +129,7 @@ instance SDecide ('KProxy :: KProxy Nat) where
     | n == m    = Proved $ unsafeCoerce Refl
     | otherwise = Disproved (\_ -> error errStr)
     where errStr = "Broken Nat singletons"
-                  
+
 instance SDecide ('KProxy :: KProxy Symbol) where
   (SSym n) %~ (SSym m)
     | n == m    = Proved $ unsafeCoerce Refl
@@ -141,4 +141,3 @@ instance SDecide ('KProxy :: KProxy k) => TestEquality (Sing :: k -> *) where
     case a %~ b of
       Proved Refl -> Just Refl
       Disproved _ -> Nothing
-

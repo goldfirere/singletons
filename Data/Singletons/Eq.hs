@@ -60,7 +60,7 @@ class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
 #if __GLASGOW_HASKELL__ < 707
 $(promoteEqInstances basicTypes)   -- these instances are in Data.Type.Equality
 #endif
-       
+
 $(singEqInstancesOnly basicTypes)
 
 -- need instances for TypeLits kinds
