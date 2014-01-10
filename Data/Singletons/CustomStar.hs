@@ -58,26 +58,26 @@ it reduces the amount of CPP noise.
 -- A datatype @Rep@ is created, with one constructor per type in the declared
 -- universe. When this type is promoted by the singletons library, the
 -- constructors become full types in @*@, not just promoted data constructors.
--- 
+--
 -- For example,
--- 
+--
 -- > $(singletonStar [''Nat, ''Bool, ''Maybe])
--- 
+--
 -- generates the following:
--- 
+--
 -- > data Rep = Nat | Bool | Maybe Rep deriving (Eq, Show, Read)
--- 
+--
 -- and its singleton. However, because @Rep@ is promoted to @*@, the singleton
 -- is perhaps slightly unexpected:
--- 
+--
 -- > data instance Sing (a :: *) where
 -- >   SNat :: Sing Nat
 -- >   SBool :: Sing Bool
 -- >   SMaybe :: SingRep a => Sing a -> Sing (Maybe a)
--- 
+--
 -- The unexpected part is that @Nat@, @Bool@, and @Maybe@ above are the real @Nat@,
 -- @Bool@, and @Maybe@, not just promoted data constructors.
--- 
+--
 -- Please note that this function is /very/ experimental. Use at your own risk.
 singletonStar :: Quasi q
               => [Name]        -- ^ A list of Template Haskell @Name@s for types
@@ -116,7 +116,7 @@ singletonStar names = do
             PrimTyConI _ n _ ->
                return $ replicate n StarT
             _ -> fail $ "Invalid thing for representation: " ++ (show name)
-        
+
         -- first parameter is whether this is a real ctor (with a fresh name)
         -- or a fake ctor (when the name is actually a Haskell type)
         mkCtor :: Quasi q => Bool -> Name -> [Kind] -> q Con

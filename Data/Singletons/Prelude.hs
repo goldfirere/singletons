@@ -20,7 +20,7 @@
 module Data.Singletons.Prelude (
   -- * Basic singleton definitions
   module Data.Singletons,
-  
+
   Sing(SFalse, STrue, SNil, SCons, SJust, SNothing, SLeft, SRight, SLT, SEQ, SGT,
        STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7),
   -- | Though Haddock doesn't show it, the 'Sing' instance above includes

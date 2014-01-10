@@ -82,7 +82,7 @@ instance TestCoercion Sing where
 #endif
 
 -- everything below here is private and dirty. Don't look!
-  
+
 newtype DI = Don'tInstantiate (Typeable a => Sing a)
 dirty_mk_STypeRep :: TypeRep -> SomeSing ('KProxy :: KProxy *)
 dirty_mk_STypeRep rep =

@@ -1,0 +1,6 @@
+# Cabal's distribution directory
+dist
+
+# Emacs tags files
+TAGS
+tags

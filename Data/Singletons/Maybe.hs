@@ -29,7 +29,7 @@
 
 module Data.Singletons.Maybe (
   -- The 'Maybe' singleton
-  
+
   Sing(SNothing, SJust),
   -- | Though Haddock doesn't show it, the 'Sing' instance above declares
   -- constructors
@@ -46,7 +46,7 @@ module Data.Singletons.Maybe (
   -- | The preceding two definitions are derived from the function 'maybe' in
   -- @Data.Maybe@. The extra underscore is to avoid name clashes with the type
   -- 'Maybe'.
-  
+
   IsJust, sIsJust, IsNothing, sIsNothing,
   FromJust, sFromJust, FromMaybe, sFromMaybe, MaybeToList, sMaybeToList,
   ListToMaybe, sListToMaybe, CatMaybes, sCatMaybes, MapMaybe, sMapMaybe
@@ -103,7 +103,7 @@ $(singletonsOnly [d|
   listToMaybe (a:_)     =  Just a
 
   -- | The 'catMaybes' function takes a list of 'Maybe's and returns
-  -- a list of all the 'Just' values. 
+  -- a list of all the 'Just' values.
   catMaybes              :: [Maybe a] -> [a]
   catMaybes []             = []
   catMaybes (Just x  : xs) = x : catMaybes xs
