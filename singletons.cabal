@@ -30,7 +30,7 @@ source-repository this
   tag:      v0.9.3
 
 library
-  build-depends:      
+  build-depends:
       base >= 4.6 && < 5,
       mtl >= 2.1.1,
       template-haskell,
@@ -57,8 +57,9 @@ library
                       Data.Singletons.Singletons,
                       Data.Singletons.Util,
                       Data.Singletons.Core
-  ghc-options:        -dynamic-too
-  
+  if impl(ghc >= 7.7)
+    ghc-options:      -dynamic-too
+
 -- This DOES NOT WORK with GHC HEAD because of -dynamic-too problems
 -- test-suite compile
 --   type:               exitcode-stdio-1.0
@@ -74,4 +75,3 @@ library
 --       mtl >= 2.1.1,
 --       th-desugar >= 1.2,
 --       template-haskell
-      
