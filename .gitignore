@@ -1,3 +1,6 @@
+# Interface files
+*.hi
+
 # Cabal's distribution directory
 dist
 
