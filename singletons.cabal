@@ -1,5 +1,6 @@
 name:           singletons
 version:        0.9.3
+                -- Remember to bump version in the Makefile as well
 cabal-version:  >= 1.10
 synopsis:       A framework for generating singleton types
 homepage:       http://www.cis.upenn.edu/~eir/packages/singletons
