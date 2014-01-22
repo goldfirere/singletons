@@ -530,7 +530,8 @@ singType ty = do   -- replace with singTypeRec [] ty after GHC bug #??? is fixed
   sTypeFn <- singTypeRec [] ty
   return $ \inner_ty -> liftOutForalls $ sTypeFn inner_ty
 
-  -- the lifts all foralls to the top-level
+-- Lifts all foralls to the top-level. This is a workaround for bug #8031 on GHC
+-- Trac
 liftOutForalls :: Type -> Type
 liftOutForalls =
   go [] [] []
