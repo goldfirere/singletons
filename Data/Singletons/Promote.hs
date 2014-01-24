@@ -8,7 +8,6 @@ type level. It is an internal module to the singletons package.
 -}
 
 {-# LANGUAGE TemplateHaskell, CPP #-}
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Promote where
 

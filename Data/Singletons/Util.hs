@@ -10,7 +10,6 @@ Users of the package should not need to consult this file.
 {-# LANGUAGE CPP, TypeSynonymInstances, FlexibleInstances, RankNTypes,
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses #-}
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Util (
   module Data.Singletons.Util,
