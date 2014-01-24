@@ -59,7 +59,7 @@ library
                       Data.Singletons.Util,
                       Data.Singletons.Core
   if impl(ghc >= 7.7)
-    ghc-options:      -dynamic-too
+    ghc-options:      -dynamic-too -fPIC
 
   ghc-options:        -Wall
 

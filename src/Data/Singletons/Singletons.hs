@@ -19,6 +19,7 @@ import qualified Data.Map as Map
 import Control.Monad
 import Control.Applicative
 import Data.Singletons.Types
+import Data.List (find)
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Proxy
@@ -37,7 +38,7 @@ type TypeContext = [Type]
 
 singFamilyName, singIName, singMethName, demoteRepName, singKindClassName,
   sEqClassName, sEqMethName, sconsName, snilName, sIfName, undefinedName,
-  kProxyDataName, kProxyTypeName, someSingTypeName, someSingDataName,
+  kProxyDataName, kProxyTypeName, proxyName, someSingTypeName, someSingDataName,
   nilName, consName, sListName, eqName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName, listName :: Name
 singFamilyName = mkName "Sing"
@@ -55,6 +56,7 @@ sconsName = mkName "SCons"
 snilName = mkName "SNil"
 kProxyDataName = 'KProxy
 kProxyTypeName = ''KProxy
+proxyName = mkName "Proxy"
 someSingTypeName = mkName "SomeSing"
 someSingDataName = mkName "SomeSing"
 nilName = '[]
@@ -126,7 +128,10 @@ singInfo (ClassI _dec _instances) =
   fail "Singling of class info not supported"
 singInfo (ClassOpI _name _ty _className _fixity) =
   fail "Singling of class members info not supported"
-singInfo (TyConI dec) = singDec dec
+singInfo (TyConI dec) = do
+  (newDecls, binds)  <- evalForPair $ singDec dec --rename binds
+  newDecls' <- mapM (singDec' binds) newDecls
+  return newDecls'
 singInfo (FamilyI _dec _instances) =
   fail "Singling of type family info not yet supported" -- KindFams
 singInfo (PrimTyConI _name _numArgs _unlifted) =
@@ -178,7 +183,7 @@ singCtor a = ctorCases
   where buildArgTypes :: Quasi q => [Type] -> [Type] -> q [Type]
         buildArgTypes types indices = do
           typeFns <- mapM singType types
-          return $ zipWith id typeFns indices
+          return $ map fst $ zipWith id typeFns indices
 
 -- | Make promoted and singleton versions of all declarations given, retaining
 -- the original declarations.
@@ -192,29 +197,50 @@ singletons = (>>= singDecs True)
 singletonsOnly :: Quasi q => q [Dec] -> q [Dec]
 singletonsOnly = (>>= singDecs False)
 
+-- Note [Creating singleton functions in two stages]
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+-- Creating a singletons from declaration is conducted in two stages:
+--
+--  1) Singletonize everything except function bodies. When
+--     singletonizing type signature for a function it might happen
+--     that parameters that are functions will receive extra 'Proxy t'
+--     arguments. We record information about number of Proxy
+--     arguments required by each function argument.
+--  2) Singletonize function bodies. We use information acquired in
+--     step one to introduce extra Proxy arguments in the function body.
+
 -- first parameter says whether or not to include original decls
 singDecs :: Quasi q => Bool -> [Dec] -> q [Dec]
 singDecs originals decls = do
   (promDecls, badNames) <- promoteDecs decls
   -- need to remove the bad names returned from promoteDecs
-  newDecls <- mapM singDec
+  (newDecls, proxyTable) <- evalForPair $ mapM singDec
                    (filter (\dec ->
                      not $ or (map (\f -> f dec)
                               (map containsName badNames))) decls)
-  return $ (if originals then (decls ++) else id) $ promDecls ++ (concat newDecls)
+  newDecls' <- mapM (singDec' proxyTable) (concat newDecls)
+  return $ (if originals then (decls ++) else id) $ promDecls ++ newDecls'
 
-singDec :: Quasi q => Dec -> q [Dec]
-singDec (FunD name clauses) = do
-  let sName = singValName name
-      vars = Map.singleton name (VarE sName)
-  listify <$> FunD sName <$> (mapM (singClause vars) clauses)
+-- ProxyTable stores a mapping between function name and a list of
+-- extra Proxy parameters required by this function's arguments. For
+-- example if ProxyTable stores mapping "foo -> [0,1,0]" it means that
+-- foo accepts three parameters and that second parameter is a
+-- function that requires one extra Proxy passed as argument when foo
+-- is applied in the body of foo.
+type ProxyTable = Map.Map Name [Int]
+type SingletonQ q = QWithAux ProxyTable q
+
+singDec :: Quasi q => Dec -> SingletonQ q [Dec]
+singDec (FunD name clauses) =   -- handled by singDec'. See Note [Creating
+    return [FunD name clauses]  -- singleton functions in two stages]
 singDec (ValD _ (GuardedB _) _) =
   fail "Singling of definitions of values with a pattern guard not yet supported"
 singDec (ValD _ _ (_:_)) =
   fail "Singling of definitions of values with a <<where>> clause not yet supported"
 singDec (ValD pat (NormalB exp) []) = do
   (sPat, vartbl) <- evalForPair $ singPat TopLevel pat
-  sExp <- singExp vartbl exp
+  sExp <- singExp [] vartbl exp
   return [ValD sPat (NormalB sExp) []]
 singDec (DataD cxt name tvbs ctors derivings) =
   singDataD False cxt name tvbs ctors derivings
@@ -228,7 +254,9 @@ singDec (InstanceD _cxt _ty _decs) =
   fail "Singling of class instance not yet supported"
 singDec (SigD name ty) = do
   tyTrans <- singType ty
-  return [SigD (singValName name) (tyTrans (promoteVal name))]
+  let (typeSig, proxyTable) = tyTrans (promoteVal name)
+  addBinding name proxyTable -- assign proxy table to function name
+  return [SigD (singValName name) typeSig]
 singDec (ForeignD fgn) =
   let name = extractName fgn in do
     qReportWarning $ "Singling of foreign functions not supported -- " ++
@@ -259,6 +287,15 @@ singDec (TySynInstD _name _eqns) =
 singDec (TySynInstD _name _lhs _rhs) =
 #endif
   fail "Singling of type family instances not yet supported"
+
+singDec' :: Quasi q => ProxyTable -> Dec -> q Dec
+singDec' proxyTable (FunD name clauses) = do
+  let sName = singValName name
+      vars = Map.singleton name (VarE sName)
+  case Map.lookup name proxyTable of
+    Nothing -> fail "Function declaration is missing its Proxy table entry"
+    Just proxyCount -> FunD sName <$> (mapM (singClause vars proxyCount) clauses)
+singDec' _ dec = return dec
 
 -- | Create instances of 'SEq' and type-level '(:==)' for each type in the list
 singEqInstances :: Quasi q => [Name] -> q [Dec]
@@ -524,14 +561,144 @@ singKind PromotedConsT = fail "Promoted cons used as kind"
 singKind StarT = return $ \k -> AppT (AppT ArrowT k) StarT
 singKind ConstraintT = fail "Singling of constraint kinds not yet supported"
 
-singType :: Quasi q => Type -> q TypeFn
-singType ty = do   -- replace with singTypeRec [] ty after GHC bug #??? is fixed
-  sTypeFn <- singTypeRec [] ty
-  return $ \inner_ty -> liftOutForalls $ sTypeFn inner_ty
+-- Note [Singletonizing type signature]
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+-- Proces of singletonizing a type signature is conducted in two steps:
+--
+--  1. Prepare a singletonized (but not defunctionalized) type
+--     signature. The result is returned as a function that expects
+--     one type parameter. That parameter is the name of a type-level
+--     equivalent (ie. a type family) of a function being promoted.
+--     This is done by singTypeRep. Most of the implementation is
+--     straightforward. The most interesting part is the promotion of
+--     arrows (ArrowT clause). When we reach an arrow we expect that
+--     both its parameters are placed within the context (this is done
+--     by AppT clause). We promote the type of first parameter to a
+--     kind and introduce it via kind-annotated type variable in a
+--     forall. At this point arguments that are functions are
+--     converted to TyFun representation. This is important for
+--     defunctionalization.
+--
+--  2. Lift out foralls accumulates separate foralls at the beginning
+--     of type signature. So this:
+--
+--      forall (a :: k). Proxy a -> forall (b :: [k]). Proxy b -> SList (a ': b)
+--
+--     becomes:
+--
+--      forall (a :: k) (b :: [k]). Proxy a -> Proxy b -> SList (a ': b)
+--
+--     This was originally a workaround for #8031 but later this was
+--     used as a part of defunctionalization algorithm. Lifting
+--     foralls produces new type signature and a list of type
+--     variables that represent type level functions (TyFun kind).
+--
+--  3. Introduce Apply and Proxy. Using the list of type variables
+--     that are type level functions (see step 2) we convert each
+--     application of such variable into application of Apply type
+--     family. Also, for each type variable that was converted to
+--     Apply we introduce a Proxy parameter. For example this
+--     signature:
+--
+--       sEither_ ::
+--         forall (t1 :: TyFun k1 k3 -> *)
+--                (t2 :: TyFun k2 k3 -> *)
+--                (t3 :: Either k1 k2).
+--                (forall (t4 :: k1). Sing t4 -> Sing (t1 t4))
+--             -> (forall (t5 :: k2). Sing t5 -> Sing (t2 t5))
+--             -> Sing t3 -> Sing (Either_ t1 t2 t3)
+--
+--     is converted to:
+--
+--       sEither_ ::
+--         forall (t1 :: TyFun k1 k3 -> *)
+--                (t2 :: TyFun k2 k3 -> *)
+--                (t3 :: Either k1 k2).
+--                (forall (t4 :: k1). Proxy t1 -> Sing t4 -> Sing (Apply t1 t4))
+--             -> (forall (t5 :: k2). Proxy t2 -> Sing t5 -> Sing (Apply t2 t5))
+--             -> Sing t3 -> Sing (Either_ t1 t2 t3)
+--
+--     Note that Proxy parameters were introduced only for arguments
+--     that are functions. This will require us to add extra Proxy
+--     arguments when calling these functions in the function body
+--     (see Note [Creating singleton functions in two stages]).
+--
+--  4. Steps 2 and 3 are mutually recursive, ie. we introduce Apply and Proxy
+--     for each parameter in the function signature we are singletonizing. Why?
+--     Because a higher order function may accept parameters that are themselves
+--     higher order functions:
+--
+--       foo :: ((a -> b) -> a -> b) -> (a -> b)  -> a -> b
+--       foo f g a = f g a
+--
+--     Here 'foo' is a higher order function for which we must introduce Apply
+--     and Proxy, but so is 'f'. Hence the mutually recursive calls between
+--     introduceApplyAndProxy and introduceApplyAndProxyWorker. Singletonized
+--     foo looks like this:
+--
+--       sFoo :: forall (k1 :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
+--                      (k2 :: TyFun a b -> *)
+--                      (k3 :: a).
+--               (forall (t1 :: TyFun a b -> *).
+--                       Proxy k1 ->
+--                       (forall (t2 :: a). Proxy t1 -> Sing t2 -> Sing (Apply t1 t2))
+--               -> forall (t3 :: a). Sing t3 -> Sing (Apply (Apply k1 t1) t3))
+--               -> (forall (t4 :: a). Proxy k2 -> Sing t4 -> Sing (Apply k2 t4))
+--               -> Sing k3 -> Sing (Foo k1 k2 k3)
+--       sFoo f g a = (f Proxy g) a
+--
+--     Luckily for us the Proxies we introduce for the higher-order parameter
+--     are not reflected in the body of sFoo - it is assumed that 'f' will
+--     handle passing Proxy paramters to 'g' internally. This allows us to
+--     discard the Proxy count returned by introduceApplyAndProxy in the body of
+--     introduceApplyAndProxyWorker.
 
--- Lifts all foralls to the top-level. This is a workaround for bug #8031 on GHC
--- Trac
-liftOutForalls :: Type -> Type
+
+-- The return type of singType is:
+--
+--   Type -> (Type, [Int])
+--
+-- where first Type is the type that will be substituted in the
+-- signature (see Note [Singletonizing type signature]). The result is
+-- a tuple containing the final type signature with its proxy table.
+singType :: Quasi q => Type -> q (Type -> (Type, [Int]))
+singType ty = do
+  sTypeFn <- singTypeRec [] ty
+  return $ \inner_ty -> introduceApplyAndProxy (sTypeFn inner_ty)
+
+introduceApplyAndProxy :: Type -> (Type, [Int])
+introduceApplyAndProxy t =
+    let (singFunType, tyFunNames) = liftOutForalls t
+        inputCount     = length (unravel singFunType) - 1 -- number of arguments
+        initProxyCount = replicate inputCount 0
+    in foldr introduceApplyAndProxyWorker (singFunType, initProxyCount) tyFunNames
+
+introduceApplyAndProxyWorker :: (Name, Int) -> (Type, [Int]) -> (Type, [Int])
+introduceApplyAndProxyWorker tyFun@(tyFunTyVar, _) ((ForallT tyvars ctx ty), proxyCount) =
+    (ForallT tyvars ctx (ravel tysWithProxy), proxyCount')
+    where tys          = map (fst . introduceApplyAndProxy) $ unravel ty
+                       -- t1 -> t2 -> t3  ==>  [t1, t2, t3]
+          tysWithApply = map (introduceApply tyFun) tys
+                       -- each type has a flag that says whether Apply was
+                       -- introduced in that type
+          proxyCount'  = zipWith incProxyCount tysWithApply proxyCount
+                       -- update the proxy count that was passed as input
+          tysWithProxy = map introduceProxy tysWithApply
+                       -- introduce Proxy if necessary, discard flags
+          incProxyCount  (_, flag) n = if flag then n + 1                 else n
+          introduceProxy (t, flag)   = if flag then addProxy tyFunTyVar t else t
+introduceApplyAndProxyWorker _ t = t
+
+-- Takes a name of type variable and introduces it via Proxy type
+addProxy :: Name -> Type -> Type
+addProxy tyVar (ForallT tyvars ctx ty) =
+    ForallT tyvars ctx (addProxy tyVar ty)
+addProxy tyVar funTy =
+    AppT (AppT ArrowT (AppT (ConT proxyName) (VarT tyVar))) funTy
+
+-- Lifts free-standing foralls to the top-level.
+liftOutForalls :: Type -> (Type, [(Name, Int)])
 liftOutForalls =
   go [] [] []
   where
@@ -542,12 +709,22 @@ liftOutForalls =
     go tyvars cxt args (AppT (AppT ArrowT arg1) res1)
       = go tyvars cxt (arg1 : args) res1
     go [] [] args t1
-      = mk_fun_ty (reverse args) t1
+      = (mk_fun_ty (reverse args) t1, [])
     go tyvars cxt args t1
-      = ForallT (reverse tyvars) (reverse cxt) (mk_fun_ty (reverse args) t1)
+      = (ForallT (reverse tyvars) (reverse cxt) (mk_fun_ty (reverse args) t1),
+         getTyFunNames tyvars)
 
     mk_fun_ty [] res = res
     mk_fun_ty (arg1:args) res = AppT (AppT ArrowT arg1) (mk_fun_ty args res)
+
+    -- Takes a list of type variable bindings and returns names of
+    -- variables that are type functions together with their arity
+    getTyFunNames :: [TyVarBndr] -> [(Name, Int)]
+    getTyFunNames [] = []
+    getTyFunNames (PlainTV _ : tys) = getTyFunNames tys
+    getTyFunNames (KindedTV name kind : tys)
+                  | isTyFun kind = (name, tyFunArity kind) : getTyFunNames tys
+                  | otherwise    = getTyFunNames tys
 
 -- the first parameter is the list of types the current type is applied to
 singTypeRec :: Quasi q => TypeContext -> Type -> q TypeFn
@@ -571,10 +748,10 @@ singTypeRec _ctx (UnboxedTupleT _n) =
   fail "Singling of unboxed tuple types not yet supported"
 singTypeRec ctx ArrowT = case ctx of
   [ty1, ty2] -> do
-    t <- qNewName "t"
+    t    <- qNewName "t"
     sty1 <- singTypeRec [] ty1
     sty2 <- singTypeRec [] ty2
-    k1 <- promoteType ty1
+    k1   <- promoteType' ty1
     return (\f -> ForallT [KindedTV t k1]
                           []
                           (AppT (AppT ArrowT (sty1 (VarT t)))
@@ -608,15 +785,23 @@ singPred (ClassP name tys) = do
 singPred (EqualP _ty1 _ty2) =
   fail "Singling of type equality constraints not yet supported"
 
-singClause :: Quasi q => ExpTable -> Clause -> q Clause
-singClause vars (Clause pats (NormalB exp) []) = do
+singClause :: Quasi q => ExpTable -> [Int] -> Clause -> q Clause
+singClause vars proxyCount (Clause pats (NormalB exp) []) = do
   (sPats, vartbl) <- evalForPair $ mapM (singPat Parameter) pats
   let vars' = Map.union vartbl vars
-  sBody <- NormalB <$> singExp vars' exp
+      patProxyMap = zip sPats proxyCount
+                  -- assign proxy count to each pattern
+      requiresProxy (p, n) = n > 0 && case p of {VarP _ -> True; _ -> False }
+                  -- does a pattern represent variable that needs a Proxy ?
+      onlyProxies = filter requiresProxy patProxyMap
+                  -- filter out patterns that don't need a Proxy parameter
+      proxyTable  = map (\(VarP name, n) -> (name, n)) onlyProxies
+                  -- extract names of patterns
+  sBody <- NormalB <$> singExp proxyTable vars' exp
   return $ Clause sPats sBody []
-singClause _ (Clause _ (GuardedB _) _) =
+singClause _ _ (Clause _ (GuardedB _) _) =
   fail "Singling of guarded patterns not yet supported"
-singClause _ (Clause _ _ (_:_)) =
+singClause _ _ (Clause _ _ (_:_)) =
   fail "Singling of <<where>> declarations not yet supported"
 
 type ExpsQ q = QWithAux ExpTable q
@@ -682,64 +867,75 @@ singPat _patCxt (SigP _pat _ty) =
 singPat _patCxt (ViewP _exp _pat) =
   fail "Singling of view patterns not yet supported"
 
-singExp :: Quasi q => ExpTable -> Exp -> q Exp
-singExp vars (VarE name) = case Map.lookup name vars of
+singExp :: Quasi q => [(Name, Int)] -> ExpTable -> Exp -> q Exp
+singExp _ vars (VarE name) = case Map.lookup name vars of
   Just exp -> return exp
   Nothing -> return (singVal name)
-singExp _vars (ConE name) = return $ singDataCon name
-singExp _vars (LitE lit) = singLit lit
-singExp vars (AppE exp1 exp2) = do
-  exp1' <- singExp vars exp1
-  exp2' <- singExp vars exp2
+singExp _ _vars (ConE name) = return $ singDataCon name
+singExp _ _vars (LitE lit) = singLit lit
+singExp proxyTable vars (AppE exp1@(VarE var) exp2) = do
+  let needsProxy = find (\(name, _) -> name == var) proxyTable
+      -- check if this variable needs extra Proxy parameter
+  exp1' <- singExp proxyTable vars exp1
+  exp2' <- singExp proxyTable vars exp2
+  case needsProxy of
+    Nothing     -> return $ AppE exp1' exp2'
+    Just (_, n) -> return $ AppE (loop n addProxyParam exp1') exp2'
+      where addProxyParam exp = AppE exp (ConE proxyName)
+            loop 0 _ a = a
+            loop m f a = loop (m - 1) f (f a)
+singExp proxyTable vars (AppE exp1 exp2) = do
+  exp1' <- singExp proxyTable vars exp1
+  exp2' <- singExp proxyTable vars exp2
   return $ AppE exp1' exp2'
-singExp vars (InfixE mexp1 exp mexp2) =
+singExp proxyTable vars (InfixE mexp1 exp mexp2) =
   case (mexp1, mexp2) of
-    (Nothing, Nothing) -> singExp vars exp
-    (Just exp1, Nothing) -> singExp vars (AppE exp exp1)
+    (Nothing, Nothing) -> singExp proxyTable vars exp
+    (Just exp1, Nothing) -> singExp proxyTable vars (AppE exp exp1)
     (Nothing, Just _exp2) ->
       fail "Singling of right-only sections not yet supported"
-    (Just exp1, Just exp2) -> singExp vars (AppE (AppE exp exp1) exp2)
-singExp _vars (UInfixE _ _ _) =
+    (Just exp1, Just exp2) -> singExp proxyTable vars (AppE (AppE exp exp1) exp2)
+singExp _ _vars (UInfixE _ _ _) =
   fail "Singling of unresolved infix expressions not supported"
-singExp _vars (ParensE _) =
+singExp _ _vars (ParensE _) =
   fail "Singling of unresolved paren expressions not supported"
-singExp vars (LamE pats exp) = do
+singExp proxyTable vars (LamE pats exp) = do
   (pats', vartbl) <- evalForPair $ mapM (singPat Parameter) pats
   let vars' = Map.union vartbl vars -- order matters; union is left-biased
-  exp' <- singExp vars' exp
+  exp' <- singExp proxyTable vars' exp
   return $ LamE pats' exp'
-singExp _vars (LamCaseE _matches) =
+singExp _ _vars (LamCaseE _matches) =
   fail "Singling of case expressions not yet supported"
-singExp vars (TupE exps) = do
-  sExps <- mapM (singExp vars) exps
-  sTuple <- singExp vars (ConE (tupleDataName (length exps)))
+singExp proxyTable vars (TupE exps) = do
+  sExps <- mapM (singExp proxyTable vars) exps
+  sTuple <- singExp proxyTable vars (ConE (tupleDataName (length exps)))
   return $ foldExp sTuple sExps
-singExp _vars (UnboxedTupE _exps) =
+singExp _ _vars (UnboxedTupE _exps) =
   fail "Singling of unboxed tuple not supported"
-singExp vars (CondE bexp texp fexp) = do
-  exps <- mapM (singExp vars) [bexp, texp, fexp]
+singExp proxyTable vars (CondE bexp texp fexp) = do
+  exps <- mapM (singExp proxyTable vars) [bexp, texp, fexp]
   return $ foldExp (VarE sIfName) exps
-singExp _vars (MultiIfE _alts) =
+singExp _ _vars (MultiIfE _alts) =
   fail "Singling of multi-way if statements not yet supported"
-singExp _vars (LetE _decs _exp) =
+singExp _ _vars (LetE _decs _exp) =
   fail "Singling of let expressions not yet supported"
-singExp _vars (CaseE _exp _matches) =
+singExp _ _vars (CaseE _exp _matches) =
   fail "Singling of case expressions not yet supported"
-singExp _vars (DoE _stmts) =
+singExp _ _vars (DoE _stmts) =
   fail "Singling of do expressions not yet supported"
-singExp _vars (CompE _stmts) =
+singExp _ _vars (CompE _stmts) =
   fail "Singling of list comprehensions not yet supported"
-singExp _vars (ArithSeqE _range) =
+singExp _ _vars (ArithSeqE _range) =
   fail "Singling of ranges not yet supported"
-singExp vars (ListE exps) = do
-  sExps <- mapM (singExp vars) exps
+singExp proxyTable vars (ListE exps) = do
+  sExps <- mapM (singExp proxyTable vars) exps
   return $ foldr (\x -> (AppE (AppE (ConE sconsName) x)))
                  (ConE snilName) sExps
-singExp _vars (SigE _exp _ty) =
+singExp _ _vars (SigE _exp _ty) =
   fail "Singling of annotated expressions not yet supported"
-singExp _vars (RecConE _name _fields) =
+singExp _ _vars (RecConE _name _fields) =
   fail "Singling of record construction not yet supported"
-singExp _vars (RecUpdE _exp _fields) =
+singExp _ _vars (RecUpdE _exp _fields) =
   fail "Singling of record updates not yet supported"
 
 singLit :: Quasi q => Lit -> q Exp

@@ -20,8 +20,10 @@ import Prelude hiding (exp)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import Control.Monad
+import Data.Char (isSymbol)
 import Data.List
 import Data.Maybe
+import Debug.Trace
 
 anyTypeName, boolName, andName, tyEqName, repName, ifName,
   headName, tailName, tyFunName, applyName, symbolName :: Name
@@ -107,7 +109,7 @@ promoteVal = ConT . promoteValName
 -- at the type level.
 
 promoteType :: Quasi q => Type -> q Kind
-promoteType t = mapM promoteType' (unravel t) >>= ravel
+promoteType t = mapM promoteType' (unravel t) >>= (return . ravel)
 
 promoteType' :: Quasi q => Type -> q Kind
 -- We don't need to worry about constraints: they are used to express
@@ -453,7 +455,7 @@ promoteDec' tab (SigD name ty) = case Map.lookup name tab of
       k <- promoteType ty
       let ks = unravel k
           (argKs, resultKs) = splitAt numArgs ks -- divide by uniformity
-      resultK    <- ravel resultKs -- rebuild the arrow kind
+          resultK = ravel resultKs -- rebuild the arrow kind
       tyvarNames <- mapM qNewName (replicate (length argKs) "a")
       (dataDefs, dataNames) <- buildSymDecs name argKs resultK
       applyInstances <- buildApplyInstances (zipWith (,) dataNames
@@ -482,19 +484,32 @@ promoteDec' _ _ = return ([], [])
 #if __GLASGOW_HASKELL__ >= 707
 promoteApply :: [TySynEqn] -> [Kind] -> [TySynEqn]
 promoteApply [] _ = []
-promoteApply ((TySynEqn tys t):eqns) ks =
+promoteApply ((TySynEqn tys ty):eqns) ks =
     let patNames = catMaybes (map getTyName_maybe tys)
-        newEqn   = foldr introduceApply t patNames
+        patArity = map tyFunArity ks
+        patData  = filter (\(_, a) -> a > 0) $ zip patNames patArity
+        newEqn   = foldr (\d t -> fst (introduceApply d t)) ty patData
     in (TySynEqn tys newEqn) : promoteApply eqns ks
 #else
 promoteApply :: [Dec] -> [Kind] -> [Dec]
 promoteApply [] _ = []
-promoteApply ((TySynInstD name tys t):eqns) ks =
+promoteApply ((TySynInstD name tys ty):eqns) ks =
     let patNames = catMaybes (map getTyName_maybe tys)
-        newEqn   = foldr introduceApply t patNames
+        patArity = map tyFunArity ks
+        patData  = filter (\(_, a) -> a > 0) $ zip patNames patArity
+        newEqn   = foldr (\d t -> fst (introduceApply d t)) ty patData
     in (TySynInstD name tys newEqn) : promoteApply eqns ks
 promoteApply _ _ = error "Error when promoting function applications."
 #endif
+
+-- Counts the arity of type level function represented with TyFun constructors
+-- TODO: this and isTuFun looks like a good place to use PatternSynonyms
+tyFunArity :: Kind -> Int
+tyFunArity (AppT (AppT ArrowT (AppT (AppT (ConT tyFunNm) _) b)) StarT) =
+    if tyFunName == tyFunNm
+    then 1 + tyFunArity b
+    else 0
+tyFunArity _ = 0
 
 -- Extracts names of type variables. This is intended to extract names
 -- of patterns in a promoted clause so that we can later inspect which
@@ -506,17 +521,58 @@ getTyName_maybe :: Type -> Maybe Name
 getTyName_maybe (VarT name) = Just name
 getTyName_maybe _           = Nothing
 
--- Takes a name of a type variable that represents a function and
+-- Takes a name of a function together with its arity and
 -- converts all normal applications of that variable into usage of
--- Apply type family.
-introduceApply :: Name -> Type -> Type
-introduceApply funName (AppT (VarT name) ty) =
-    if funName == name -- if we found our type variable then use Apply
-    then AppT (AppT (ConT applyName) (VarT name)) (introduceApply funName ty)
-    else AppT                        (VarT name)  (introduceApply funName ty)
-introduceApply funName (AppT ty1 ty2) = AppT (introduceApply funName ty1)
-                                             (introduceApply funName ty2)
-introduceApply _    ty = ty
+-- Apply type family. Returns a type and a Bool that says whether
+-- Apply was introduced or not. This extra flag is used when
+-- singletonizing type signature.
+
+-- The algorithm here is actually a bit tricky because it has to deal
+-- with cases when function has arity larger than 1. For example this
+-- body:
+--
+--   f a b
+--
+-- must be promoted to
+--
+--  Apply (Apply f a) b
+--
+-- Algorithm can be viewed as having two passes:
+--
+--  1. A top-down pass recurses to the bottom of abstract syntax tree
+--     and inserts first application of Apply whenever it encounters a
+--     variable that represents a function. So in the above example
+--     upon reaching application (f a) it would generate (Apply f a)
+--     and recurse on b. This is done by the second case of "go"
+--     helper function.
+--
+--  2. Inserting Apply triggers a bottom-up pass that adds additional
+--     Applys if required by function arity. Second case of "go"
+--     helper function inspects third parameter returned by recursive
+--     call to go for ty1. If it is greater than 0 it means we have to
+--     add additional Apply.
+introduceApply :: (Name, Int) -> Type -> (Type, Bool)
+introduceApply funData' typeT =
+    case go funData' typeT of
+      (t, f, _ ) -> (t, f)
+    where
+      go funData (ForallT tyvars ctx ty) =
+          let (ty', isApplyAdded, n) = go funData ty
+          in (ForallT tyvars ctx ty', isApplyAdded, n)
+      go (funName, funArity) (AppT (VarT name) ty) =
+          let (ty', isApplyAdded, _) = go (funName, funArity) ty
+          in if funName == name -- if we found our type variable then use Apply
+             then (AppT (AppT (ConT applyName) (VarT name)) ty'
+                  , True, funArity - 1)
+             else (AppT                        (VarT name)  ty'
+                  , isApplyAdded, 0)
+      go funData (AppT ty1 ty2) =
+          let (ty1', isApplyAdded1, n) = go funData ty1
+              (ty2', isApplyAdded2, _) = go funData ty2
+          in if n > 0 -- do we need to insert more Applies because arity > 1?
+             then (AppT (AppT (ConT applyName) ty1') ty2', True  , n - 1)
+             else (AppT ty1' ty2', isApplyAdded1 || isApplyAdded2, n    )
+      go _ ty = (ty, False, 0)
 
 -- Get argument kinds from an arrow kind. Removing ForallT is an
 -- important preprocessing step required by promoteType.
@@ -527,12 +583,16 @@ unravel (AppT (AppT ArrowT k1) k2) =
 unravel k = [k]
 
 -- Reconstruct arrow kind from the list of kinds
-ravel :: Quasi q => [Kind] -> q Kind
-ravel []    = fail "Internal error: raveling nil"
-ravel [k]   = return k
-ravel (h:t) = do
-  k <- ravel t
-  return $ (AppT (AppT ArrowT h) k)
+ravel :: [Kind] -> Kind
+ravel []    = error "Internal error: raveling nil"
+ravel [k]   = k
+ravel (h:t) = (AppT (AppT ArrowT h) (ravel t))
+
+-- Checks if type is (TyFun a b -> *)
+isTyFun :: Type -> Bool
+isTyFun (AppT (AppT ArrowT (AppT (AppT (ConT tyFunNm) _) _)) StarT) =
+    tyFunName == tyFunNm
+isTyFun _ = False
 
 -- Generate data declarations required for defunctionalization.
 -- For a type family:
@@ -560,14 +620,14 @@ buildSymDecs name argKs resultK = go tailArgK (buildTyFun lastArgK resultK)
     where (lastArgK : tailArgK) = reverse argKs
           go :: Quasi q => [Kind] -> Type -> Int -> q ([Dec], [Name])
           go [] acc l = do
-            let dataName0 = mkName ((toUpcaseStr name) ++ "Sym" ++ (show l))
+            let dataName0 = createSymbolName l
             typeVarName <- qNewName "a"
             return ([DataD [] dataName0 [KindedTV typeVarName acc] [] []],
                     [dataName0])
           go (k:ks) acc l = do
             (defs, names) <- go ks (buildTyFun k (addStar acc)) (l - 1)
             tyvarNames <- mapM qNewName (replicate (l + 1) "a")
-            let dataName = mkName ((toUpcaseStr name) ++ "Sym" ++ (show l))
+            let dataName = createSymbolName l
                 params   = zipWith KindedTV tyvarNames (reverse (acc:k:ks))
                 newDef   = DataD [] dataName params [] []
             return (newDef : defs, dataName : names)
@@ -575,6 +635,13 @@ buildSymDecs name argKs resultK = go tailArgK (buildTyFun lastArgK resultK)
           buildTyFun k1 k2 = (AppT (AppT (ConT tyFunName) k1) k2)
           addStar :: Type -> Type
           addStar t = AppT (AppT ArrowT t) StarT
+          createSymbolName :: Int -> Name
+          createSymbolName ar
+              | all (\c -> isSymbol c) (nameBase name) =
+                  mkName (':' : (nameBase name) ++ (replicate (ar + 1) '$'))
+                  -- ':' : mimics behaviour of toUpcaseStr
+              | otherwise =
+                  mkName ((toUpcaseStr name) ++ "Sym" ++ (show ar))
 
 -- Generate instances of Apply for data declarations generated by buildSymDecs.
 -- Invariant: The list of tuples has the form:
@@ -804,8 +871,8 @@ promoteExp vars (InfixE mexp1 exp mexp2) =
 promoteExp _vars (UInfixE _ _ _) =
   fail "Promotion of unresolved infix operators not supported"
 promoteExp _vars (ParensE _) = fail "Promotion of unresolved parens not supported"
-promoteExp _vars (LamE _pats _exp) =
-  fail "Promotion of lambda expressions not yet supported"
+promoteExp vars (LamE _pats _exp) =
+  trace ("Lambda vars: " ++ show vars) $ fail "Promotion of lambda expressions not yet supported"
 promoteExp _vars (LamCaseE _alts) =
   fail "Promotion of lambda-case expressions not yet supported"
 promoteExp vars (TupE exps) = do
