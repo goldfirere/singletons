@@ -8,7 +8,6 @@ presented in /Dependently typed programming with singletons/
 
 -}
 
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 {-# LANGUAGE PolyKinds, DataKinds, TemplateHaskell, TypeFamilies,
     GADTs, TypeOperators, RankNTypes, FlexibleContexts, UndecidableInstances,
     FlexibleInstances, ScopedTypeVariables, MultiParamTypeClasses,

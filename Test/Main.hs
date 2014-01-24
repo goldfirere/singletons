@@ -15,7 +15,7 @@ compile with a warning that declarations containing badPlus are omitted.
 {-# LANGUAGE EmptyCase #-}
 #endif
 
-{-# OPTIONS_GHC -fno-warn-missing-signatures -fno-warn-orphans #-}
+{-# OPTIONS_GHC -fno-warn-missing-signatures -fno-warn-name-shadowing -fno-warn-orphans #-}
 
 module Test.Main where
 
