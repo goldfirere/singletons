@@ -197,7 +197,7 @@ insertionSort_permutes lst = case lst of
   -- otherwise, we wish to use PermIns. We must know that t is a permutation of
   -- the insertion sort of t and that inserting h into the insertion sort of t
   -- works correctly:
-  SCons h t -> 
+  SCons h t ->
     case insert_insertion h (sInsertionSort t) of
       Dict -> PermIns (insertionSort_permutes t)
 

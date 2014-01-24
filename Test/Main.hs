@@ -26,7 +26,7 @@ import Data.Singletons.CustomStar
 import qualified Test.GradingClient as GC
 import Test.InsertionSortImp () -- force compilation, though we don't use it
 
-$(singletons [d| 
+$(singletons [d|
   data Nat where
     Zero :: Nat
     Succ :: Nat -> Nat
@@ -71,7 +71,7 @@ $(singletons [d|
   mult :: Nat -> Nat -> Nat
   mult Zero _ = Zero
   mult (Succ n) m = plus m (mult n m)
-  
+
   treePlus :: Nat -> NatBinTree -> NatBinTree
   treePlus n (Leaf a) = Leaf (plus n a)
   treePlus n (Left a l) = Left (plus n a) (treePlus n l)
@@ -117,7 +117,7 @@ $(singletons [d|
   tuple = (False, Just Zero, True)
 
   aList = [Zero, Succ Zero, Succ (Succ Zero)]
- 
+
   |])
 
 $(promote [d|
