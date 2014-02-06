@@ -84,7 +84,7 @@ class (t ~ 'KProxy) => SEq (t :: KProxy k) where
   (%==%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a == b)
 
 -- A way to store instances of SingRep at runtime
-data SingInstance :: k -> * where 
+data SingInstance :: k -> * where
   SingInstance :: SingI a => SingInstance a
 
 -- A "kind class" marking those kinds that are considered in our
@@ -124,7 +124,7 @@ withSomeSing :: SingKind ('KProxy :: KProxy k)
              => DemoteRep ('KProxy :: KProxy k)
              -> (forall (a :: k). Sing a -> r)
              -> r
-withSomeSing x f = 
+withSomeSing x f =
   case toSing x of
     SomeSing x' -> f x'
 
@@ -421,7 +421,7 @@ instance SingKind ('KProxy :: KProxy *) where
   fromSing SNat = Nat
   fromSing (SMaybe a) = Maybe (fromSing a)
   fromSing (SVec a n) = Vec (fromSing a) (fromSing n)
-  
+
   toSing Nat = SomeSing SNat
   toSing (Maybe a) =
     case toSing a :: SomeSing ('KProxy :: KProxy *) of
@@ -623,7 +623,7 @@ type instance Contains elt Nil = False
 type instance Contains elt (Cons h t) = (elt == h) :|| (Contains elt t)
 #endif
 
-sContains :: forall. SEq ('KProxy :: KProxy k) => 
+sContains :: forall. SEq ('KProxy :: KProxy k) =>
              forall (a :: k). Sing a ->
              forall (list :: List k). Sing list -> Sing (Contains a list)
 sContains _ SNil = SFalse

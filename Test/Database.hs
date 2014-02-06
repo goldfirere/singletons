@@ -8,7 +8,6 @@ presented in /Dependently typed programming with singletons/
 
 -}
 
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 {-# LANGUAGE PolyKinds, DataKinds, TemplateHaskell, TypeFamilies,
     GADTs, TypeOperators, RankNTypes, FlexibleContexts, UndecidableInstances,
     FlexibleInstances, ScopedTypeVariables, MultiParamTypeClasses,
@@ -184,7 +183,7 @@ data Row :: Schema -> * where
 instance Show (Row (Sch '[])) where
   show (EmptyRow n) = "(id=" ++ (show n) ++ ")"
 instance (Show (El u), Show (Row (Sch attrs))) =>
-           Show (Row (Sch ((Attr name u) ': attrs))) where 
+           Show (Row (Sch ((Attr name u) ': attrs))) where
   show (ConsRow h t) = case t of
         EmptyRow n -> (show h) ++ " (id=" ++ (show n) ++ ")"
         _ -> (show h) ++ ", " ++ (show t)
@@ -244,7 +243,7 @@ connect name schema = do
   schString <- readFile (name ++ ".schema")
   let schEntries = lines schString
       usFound = map read schEntries -- load schema just using "read"
-      (Sch attrs) = fromSing schema 
+      (Sch attrs) = fromSing schema
       usExpected = map (\(Attr _ u) -> u) attrs
   unless (usFound == usExpected) -- compare found schema with expected
     (fail "Expected schema does not match found schema")
@@ -329,7 +328,7 @@ data RA :: Schema -> * where
                SSchema s' -> RA s -> RA s'
 
   -- The RA contains only those rows of the provided RA for which
-  -- the provided expression evaluates to True. Note that the 
+  -- the provided expression evaluates to True. Note that the
   -- schema of the provided RA and the resultant RA are the same
   -- because the columns of data are the same. Also note that
   -- the expression must return a Bool for this to type-check.
@@ -416,7 +415,7 @@ rowAppend (ConsRow h t) r = case r of
     case rowAppend t r of
       EmptyRow _ -> ConsRow h (rowAppend t r)
       ConsRow _ _ -> ConsRow h (rowAppend t r)
-  ConsRow _ _ ->  
+  ConsRow _ _ ->
     case rowAppend t r of
       EmptyRow _ -> ConsRow h (rowAppend t r)
       ConsRow _ _ -> ConsRow h (rowAppend t r)

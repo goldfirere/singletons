@@ -7,7 +7,6 @@ This file contains functions to refine constructs to work with singleton
 types. It is an internal module to the singletons package.
 -}
 {-# LANGUAGE TemplateHaskell, CPP, TupleSections #-}
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Singletons where
 
@@ -530,7 +529,8 @@ singType ty = do   -- replace with singTypeRec [] ty after GHC bug #??? is fixed
   sTypeFn <- singTypeRec [] ty
   return $ \inner_ty -> liftOutForalls $ sTypeFn inner_ty
 
-  -- the lifts all foralls to the top-level
+-- Lifts all foralls to the top-level. This is a workaround for bug #8031 on GHC
+-- Trac
 liftOutForalls :: Type -> Type
 liftOutForalls =
   go [] [] []

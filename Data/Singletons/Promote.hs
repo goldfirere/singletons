@@ -8,7 +8,6 @@ type level. It is an internal module to the singletons package.
 -}
 
 {-# LANGUAGE TemplateHaskell, CPP #-}
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 
 module Data.Singletons.Promote where
 
@@ -160,24 +159,51 @@ checkForRepInDecls decls =
         extractNameFromDec (FamilyD _ name _ _) = name
         extractNameFromDec _ = mkName "NotRep"
 
+-- Note [Promoting declarations in two stages]
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+-- Promoting declarations proceeds in two stages:
+-- 1) Promote everything except type signatures
+-- 2) Promote type signatures. This must be done in a second pass
+--    because a function type signature gets promoted to a type family
+--    declaration.  Although function signatures do not differentiate
+--    between uniform parameters and non-uniform parameters, type
+--    family declarations do. We need to process a function's
+--    definition to get the count of non-uniform parameters before
+--    producing the type family declaration.  At this point, any
+--    function written without a type signature is rejected and
+--    removed.
+--
+-- Consider this example:
+--
+--   foo :: Int -> Bool -> Bool
+--   foo 0 = id
+--   foo _ = not
+--
+-- Here the first parameter to foo is non-uniform, because it is
+-- inspected in a pattern and can be different in each defining
+-- equation of foo. The second parameter to foo, specified in the type
+-- signature as Bool, is a uniform parameter - it is not inspected and
+-- each defining equation of foo uses it the same way. The foo
+-- function will be promoted to a type familty Foo like this:
+--
+--   type family Foo (n :: Int) :: Bool -> Bool where
+--      Foo 0 = Id
+--      Foo a = Not
+--
+-- To generate type signature for Foo type family we must first learn
+-- what is the actual number of patterns used in defining cequations
+-- of foo. In this case there is only one so we declare Foo to take
+-- one argument and have return type of Bool -> Bool.
+
 -- Promote a list of declarations; returns the promoted declarations
 -- and a list of names of declarations without accompanying type signatures.
 -- (This list is needed by singletons to strike such definitions.)
-
--- Promoting declarations proceeds in two stages:
--- 1) Promote everything except type signatures
--- 2) Promote type signatures. This must be done in a second pass because
---    a function type signature gets promoted to a type family declaration.
---    Although function signatures do not differentiate between uniform parameters
---    and non-uniform parameters, type family declarations do. We need
---    to process a function's definition to get the count of non-uniform
---    parameters before producing the type family declaration.
---    At this point, any function written without a type signature is rejected
---    and removed.
 promoteDecs :: Quasi q => [Dec] -> q ([Dec], [Name])
 promoteDecs decls = do
   checkForRepInDecls decls
   let vartbl = Map.empty
+  -- See Note [Promoting declarations in two stages]
   (newDecls, table) <- evalForPair $ mapM (promoteDec vartbl) decls
   (declss, namess) <- mapAndUnzipM (promoteDec' table) decls
   let moreNewDecls = concat declss

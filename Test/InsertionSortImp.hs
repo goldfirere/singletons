@@ -27,7 +27,6 @@ unambiguous.
 
 -}
 
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 {-# LANGUAGE TemplateHaskell, TypeOperators, KindSignatures, DataKinds,
              MultiParamTypeClasses, GADTs, TypeFamilies, FlexibleInstances,
              UndecidableInstances, RankNTypes, ScopedTypeVariables,
@@ -83,7 +82,7 @@ instance (a :<=: b, AscendingC (b ': rest)) => AscendingC (a ': b ': rest) where
 
 -- A proof term asserting that l2 is the list produced when x is inserted
 -- (anywhere) into list l1
-data InsertionProof x l1 l2 where -- No kind signature possible due to bug #6049
+data InsertionProof (x :: k) (l1 :: [k]) (l2 :: [k]) where
   InsHere :: InsertionProof x l (x ': l)
   InsLater :: InsertionC x l1 l2 => InsertionProof x (y ': l1) (y ': l2)
 
@@ -97,7 +96,7 @@ instance InsertionC x l1 l2 => InsertionC x (y ': l1) (y ': l2) where
   insertionProof = InsLater
 
 -- A proof term asserting that l1 and l2 are permutations of each other
-data PermutationProof l1 l2 where -- No kind signature due to bug #6049
+data PermutationProof (l1 :: [k]) (l2 :: [k]) where
   PermId :: PermutationProof l l
   PermIns :: InsertionC x l2 l2' => PermutationProof l1 l2 ->
                PermutationProof (x ': l1) l2'
@@ -198,7 +197,7 @@ insertionSort_permutes lst = case lst of
   -- otherwise, we wish to use PermIns. We must know that t is a permutation of
   -- the insertion sort of t and that inserting h into the insertion sort of t
   -- works correctly:
-  SCons h t -> 
+  SCons h t ->
     case insert_insertion h (sInsertionSort t) of
       Dict -> PermIns (insertionSort_permutes t)
 
