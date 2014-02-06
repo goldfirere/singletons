@@ -12,14 +12,19 @@ This file is a great way to understand the singleton encoding better.
              FlexibleInstances, FlexibleContexts, UndecidableInstances,
              RankNTypes, TypeOperators, MultiParamTypeClasses,
              FunctionalDependencies, ScopedTypeVariables, CPP,
-             EmptyCase, LambdaCase
+             LambdaCase, TemplateHaskell
  #-}
+
+#if __GLASGOW_HASKELL__ >= 707
+{-# LANGUAGE EmptyCase #-}
+#endif
 
 module Test.ByHand where
 
 import Prelude hiding (Maybe, Just, Nothing, Either, Left, Right, map,
                        (+), (-))
 import Unsafe.Coerce
+import Test.ByHandAux
 
 import Data.Singletons.Types
 import Data.Singletons.Void
@@ -27,6 +32,7 @@ import Data.Singletons.Void
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Type.Bool
 import Data.Type.Equality
+import Data.Proxy
 #endif
 
 -----------------------------------
@@ -177,8 +183,8 @@ instance SDecide ('KProxy :: KProxy Nat) where
     case m %~ n of
       Proved Refl -> Proved Refl
       Disproved contra -> Disproved (\Refl -> contra Refl)
-  SZero %~ (SSucc _) = Disproved (\case {})
-  (SSucc _) %~ SZero = Disproved (\case {})
+  SZero %~ (SSucc _) = Disproved ($emptyLamCase)
+  (SSucc _) %~ SZero = Disproved ($emptyLamCase)
 
 instance SingI Zero where
   sing = SZero
@@ -244,8 +250,8 @@ instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (Maybe k)) 
     case x %~ y of
       Proved Refl -> Proved Refl
       Disproved contra -> Disproved (\Refl -> contra Refl)
-  SNothing %~ (SJust _) = Disproved (\case {})
-  (SJust _) %~ SNothing = Disproved (\case {})
+  SNothing %~ (SJust _) = Disproved ($emptyLamCase)
+  (SJust _) %~ SNothing = Disproved ($emptyLamCase)
 
 instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (Maybe k)) where
   SNothing %==% SNothing = STrue
@@ -302,8 +308,8 @@ instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (List k)) w
       (Proved Refl, Proved Refl) -> Proved Refl
       (Disproved contra, _) -> Disproved (\Refl -> contra Refl)
       (_, Disproved contra) -> Disproved (\Refl -> contra Refl)
-  SNil %~ (SCons _ _) = Disproved (\case {})
-  (SCons _ _) %~ SNil = Disproved (\case {})
+  SNil %~ (SCons _ _) = Disproved ($emptyLamCase)
+  (SCons _ _) %~ SNil = Disproved ($emptyLamCase)
 
 instance SingI Nil where
   sing = SNil
@@ -352,8 +358,8 @@ instance (SDecide ('KProxy :: KProxy k1), SDecide ('KProxy :: KProxy k2)) => SDe
     case x %~ y of
       Proved Refl -> Proved Refl
       Disproved contra -> Disproved (\Refl -> contra Refl)
-  (SLeft _) %~ (SRight _) = Disproved (\case {})
-  (SRight _) %~ (SLeft _) = Disproved (\case {})
+  (SLeft _) %~ (SRight _) = Disproved ($emptyLamCase)
+  (SRight _) %~ (SLeft _) = Disproved ($emptyLamCase)
 
 -- Composite
 
@@ -386,8 +392,8 @@ data Empty
 data instance Sing (a :: Empty)
 instance SingKind ('KProxy :: KProxy Empty) where
   type DemoteRep ('KProxy :: KProxy Empty) = Empty
-  fromSing x = case x of {}
-  toSing x = case x of {}
+  fromSing = $emptyLamCase
+  toSing = $emptyLamCase
 
 -- *
 
@@ -427,22 +433,26 @@ instance SingKind ('KProxy :: KProxy *) where
 
 instance SDecide ('KProxy :: KProxy *) where
   SNat %~ SNat = Proved Refl
-  SNat %~ (SMaybe {}) = Disproved (\case {})
-  SNat %~ (SVec {}) = Disproved (\case {})
-  (SMaybe {}) %~ SNat = Disproved (\case {})
+  SNat %~ (SMaybe {}) = Disproved ($emptyLamCase)
+  SNat %~ (SVec {}) = Disproved ($emptyLamCase)
+  (SMaybe {}) %~ SNat = Disproved ($emptyLamCase)
   (SMaybe a) %~ (SMaybe b) =
     case a %~ b of
       Proved Refl -> Proved Refl
       Disproved contra -> Disproved (\Refl -> contra Refl)
-  (SMaybe {}) %~ (SVec {}) = Disproved (\case {})
-  (SVec {}) %~ SNat = Disproved (\case {})
-  (SVec {}) %~ (SMaybe {}) = Disproved (\case {})
+  (SMaybe {}) %~ (SVec {}) = Disproved ($emptyLamCase)
+  (SVec {}) %~ SNat = Disproved ($emptyLamCase)
+  (SVec {}) %~ (SMaybe {}) = Disproved ($emptyLamCase)
   (SVec a1 n1) %~ (SVec a2 n2) =
     case (a1 %~ a2, n1 %~ n2) of
       (Proved Refl, Proved Refl) -> Proved Refl
       (Disproved contra, _) -> Disproved (\Refl -> contra Refl)
       (_, Disproved contra) -> Disproved (\Refl -> contra Refl)
 
+#if __GLASGOW_HASKELL__ < 707
+type instance (a :: *) == (a :: *) = True
+#endif
+                  
 instance SEq ('KProxy :: KProxy *) where
   a %==% b =
     case a %~ b of
