@@ -21,9 +21,10 @@ import qualified Data.Map as Map
 import qualified Data.Set as Set
 import Control.Monad
 import Data.List
+import Data.Maybe
 
 anyTypeName, boolName, andName, tyEqName, repName, ifName,
-  headName, tailName, symbolName :: Name
+  headName, tailName, tyFunName, applyName, symbolName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = mkName "&&"
@@ -36,6 +37,8 @@ repName = mkName "Rep"
 ifName = mkName "If"
 headName = mkName "Head"
 tailName = mkName "Tail"
+tyFunName = mkName "TyFun"
+applyName = mkName "Apply"
 symbolName = ''Symbol
 
 falseTy :: Type
@@ -93,37 +96,54 @@ promoteValName n
 promoteVal :: Name -> Type
 promoteVal = ConT . promoteValName
 
+-- Note [Type promotion]
+-- ~~~~~~~~~~~~~~~~~~~~~
+--
+-- To promote a type we first extract individual types from an arrow
+-- type. Then we promote each of extracted types to a kind and
+-- reconstruct the arrow kind. The reason for this two stage approach
+-- is that we promote nested ordinary arrows to type level arrows
+-- (TyFun data constructor) so that we can have higher order functions
+-- at the type level.
+
 promoteType :: Quasi q => Type -> q Kind
+promoteType t = mapM promoteType' (unravel t) >>= ravel
+
+promoteType' :: Quasi q => Type -> q Kind
 -- We don't need to worry about constraints: they are used to express
 -- static guarantees at runtime. But, because we don't need to do
 -- anything special to keep static guarantees at compile time, we don't
 -- need to promote them.
-promoteType (ForallT _tvbs _ ty) = promoteType ty -- ForallKinds
-promoteType (VarT name) = return $ VarT name
-promoteType (ConT name) = return $
+promoteType' (ForallT _tvbs _ ty) = promoteType' ty
+promoteType' (VarT name) = return $ VarT name
+promoteType' (ConT name) = return $
   case nameBase name of
     "TypeRep"                 -> StarT
     "String"                  -> ConT symbolName
     x | x == nameBase repName -> StarT
       | otherwise             -> ConT name
-promoteType (TupleT n) = return $ TupleT n
-promoteType (UnboxedTupleT _n) = fail "Promotion of unboxed tuples not supported"
-promoteType ArrowT = return ArrowT
-promoteType ListT = return ListT
-promoteType (AppT (AppT ArrowT (ForallT (_:_) _ _)) _) =
+promoteType' (TupleT n) = return $ TupleT n
+promoteType' (UnboxedTupleT _n) = fail "Promotion of unboxed tuples not supported"
+promoteType' ArrowT = fail "Promoting of arrow type should not happen."
+promoteType' ListT = return ListT
+promoteType' (AppT (AppT ArrowT (ForallT (_:_) _ _)) _) =
   fail "Cannot promote types of rank above 1."
-promoteType (AppT ty1 ty2) = do
-  k1 <- promoteType ty1
-  k2 <- promoteType ty2
+promoteType' (AppT (AppT ArrowT ty1) ty2) = do
+  k1 <- promoteType' ty1
+  k2 <- promoteType' ty2
+  return $ (AppT (AppT ArrowT (AppT (AppT (ConT tyFunName) k1) k2)) StarT)
+promoteType' (AppT ty1 ty2) = do
+  k1 <- promoteType' ty1
+  k2 <- promoteType' ty2
   return $ AppT k1 k2
-promoteType (SigT _ty _) = fail "Cannot promote type of kind other than *"
-promoteType (LitT _) = fail "Cannot promote a type-level literal"
-promoteType (PromotedT _) = fail "Cannot promote a promoted data constructor"
-promoteType (PromotedTupleT _) = fail "Cannot promote tuples that are already promoted"
-promoteType PromotedNilT = fail "Cannot promote a nil that is already promoted"
-promoteType PromotedConsT = fail "Cannot promote a cons that is already promoted"
-promoteType StarT = fail "* used as a type"
-promoteType ConstraintT = fail "Constraint used as a type"
+promoteType' (SigT _ty _) = fail "Cannot promote type of kind other than *"
+promoteType' (LitT _) = fail "Cannot promote a type-level literal"
+promoteType' (PromotedT _) = fail "Cannot promote a promoted data constructor"
+promoteType' (PromotedTupleT _) = fail "Cannot promote tuples that are already promoted"
+promoteType' PromotedNilT = fail "Cannot promote a nil that is already promoted"
+promoteType' PromotedConsT = fail "Cannot promote a cons that is already promoted"
+promoteType' StarT = fail "* used as a type"
+promoteType' ConstraintT = fail "Constraint used as a type"
 
 -- a table to keep track of variable->type mappings
 type TypeTable = Map.Map Name Type
@@ -209,11 +229,7 @@ promoteDecs decls = do
   let moreNewDecls = concat declss
       names = concat namess
       noTypeSigs = Set.toList $ Set.difference (Map.keysSet $
-#if __GLASGOW_HASKELL__ >= 707
-                                                  Map.filter ((>= 0) . fst) table)
-#else
-                                                  Map.filter (>= 0) table)
-#endif
+                                                Map.filter ((>= 0) . fst) table)
                                                (Set.fromList names)
       noTypeSigsPro = map promoteValName noTypeSigs
       newDecls' = foldl (\bad_decls name ->
@@ -329,7 +345,7 @@ mkEqTypeInstance (c1, c2) =
 #if __GLASGOW_HASKELL__ >= 707
 type PromoteTable = Map.Map Name (Int, [TySynEqn])
 #else
-type PromoteTable = Map.Map Name Int
+type PromoteTable = Map.Map Name (Int, [([Type],Type)])
 #endif
 type PromoteQ q = QWithAux PromoteTable q
 
@@ -348,11 +364,11 @@ promoteDec vars (FunD name clauses) = do
                        mapM (promoteClause vars' proName) clauses
 #if __GLASGOW_HASKELL__ >= 707
   addBinding name (numArgs, eqns) -- remember the number of parameters and the eqns
-  return instDecls
 #else
-  addBinding name numArgs -- remember the number of parameters
-  return $ eqns ++ instDecls
+  let tys = foldr (\(TySynInstD _ tys' ty') acc -> (tys',ty'):acc) [] eqns
+  addBinding name (numArgs, tys) -- remember the number of parameters
 #endif
+  return instDecls
   where getNumPats :: Clause -> Int
         getNumPats (Clause pats _ _) = length pats
 promoteDec vars (ValD pat body decs) = do
@@ -366,11 +382,7 @@ promoteDec vars (ValD pat body decs) = do
     then -- definition is recursive. This means an infinite value.
       fail "Promotion of infinite terms not yet supported"
     else do -- definition is not recursive; just use "type" decls
-#if __GLASGOW_HASKELL__ >= 707
       mapM_ (flip addBinding (typeSynonymFlag, [])) (map lhsRawName lhss)
-#else
-      mapM_ (flip addBinding typeSynonymFlag) (map lhsRawName lhss)
-#endif
       return $ (map (\(LHS _ nm hole) -> TySynD nm [] (hole rhs)) lhss) ++
                decls ++ decls'
 promoteDec vars (DataD cxt name tvbs ctors derivings) =
@@ -433,7 +445,7 @@ promoteDec' tab (SigD name ty) = case Map.lookup name tab of
 #if __GLASGOW_HASKELL__ >= 707
   Just (numArgs, eqns) ->
 #else
-  Just numArgs ->
+  Just (numArgs, tys) ->
 #endif
     -- if there are no args, then use a type synonym, not a type family
     -- in the type synonym case, we ignore the type signature
@@ -441,31 +453,150 @@ promoteDec' tab (SigD name ty) = case Map.lookup name tab of
       k <- promoteType ty
       let ks = unravel k
           (argKs, resultKs) = splitAt numArgs ks -- divide by uniformity
-      resultK <- ravel resultKs -- rebuild the arrow kind
+      resultK    <- ravel resultKs -- rebuild the arrow kind
       tyvarNames <- mapM qNewName (replicate (length argKs) "a")
+      (dataDefs, dataNames) <- buildSymDecs name argKs resultK
+      applyInstances <- buildApplyInstances (zipWith (,) dataNames
+                                                         (upcase name : dataNames))
 #if __GLASGOW_HASKELL__ >= 707
-      return ([ClosedTypeFamilyD (promoteValName name)
+      return ((ClosedTypeFamilyD (promoteValName name)
                                  (zipWith KindedTV tyvarNames argKs)
                                  (Just resultK)
-                                 eqns], [name])
+                                 (promoteApply eqns argKs)) :
+              dataDefs ++ applyInstances, [name])
 #else
-      return ([FamilyD TypeFam
+      let upcaseName = promoteValName name
+          eqns = map (\(tys', ty') -> TySynInstD upcaseName tys' ty') tys
+      return ((FamilyD TypeFam
                        (promoteValName name)
                        (zipWith KindedTV tyvarNames argKs)
-                       (Just resultK)], [name])
+                       (Just resultK)) :
+              (promoteApply eqns argKs) ++ dataDefs ++ applyInstances, [name])
 #endif
-    where unravel :: Kind -> [Kind] -- get argument kinds from an arrow kind
-          unravel (AppT (AppT ArrowT k1) k2) =
-            let ks = unravel k2 in k1 : ks
-          unravel k = [k]
-
-          ravel :: Quasi q => [Kind] -> q Kind
-          ravel [] = fail "Internal error: raveling nil"
-          ravel [k] = return k
-          ravel (h:t) = do
-            k <- ravel t
-            return $ (AppT (AppT ArrowT h) k)
 promoteDec' _ _ = return ([], [])
+
+-- Takes list of equations for a type family, kinds of arguments used
+-- as parameters and if any of the parameter is a type level function
+-- it converts its implicit appliation to explicit usage of Apply type
+-- family.
+#if __GLASGOW_HASKELL__ >= 707
+promoteApply :: [TySynEqn] -> [Kind] -> [TySynEqn]
+promoteApply [] _ = []
+promoteApply ((TySynEqn tys t):eqns) ks =
+    let patNames = catMaybes (map getTyName_maybe tys)
+        newEqn   = foldr introduceApply t patNames
+    in (TySynEqn tys newEqn) : promoteApply eqns ks
+#else
+promoteApply :: [Dec] -> [Kind] -> [Dec]
+promoteApply [] _ = []
+promoteApply ((TySynInstD name tys t):eqns) ks =
+    let patNames = catMaybes (map getTyName_maybe tys)
+        newEqn   = foldr introduceApply t patNames
+    in (TySynInstD name tys newEqn) : promoteApply eqns ks
+promoteApply _ _ = error "Error when promoting function applications."
+#endif
+
+-- Extracts names of type variables. This is intended to extract names
+-- of patterns in a promoted clause so that we can later inspect which
+-- of these names correspond to functions.
+-- TODO: this currently recognizes only type variables. I need to investigate
+-- what happens if I pass in things that are not type variables, but for example
+-- data constructors. See: https://github.com/jstolarek/singletons/issues/1
+getTyName_maybe :: Type -> Maybe Name
+getTyName_maybe (VarT name) = Just name
+getTyName_maybe _           = Nothing
+
+-- Takes a name of a type variable that represents a function and
+-- converts all normal applications of that variable into usage of
+-- Apply type family.
+introduceApply :: Name -> Type -> Type
+introduceApply funName (AppT (VarT name) ty) =
+    if funName == name -- if we found our type variable then use Apply
+    then AppT (AppT (ConT applyName) (VarT name)) (introduceApply funName ty)
+    else AppT                        (VarT name)  (introduceApply funName ty)
+introduceApply funName (AppT ty1 ty2) = AppT (introduceApply funName ty1)
+                                             (introduceApply funName ty2)
+introduceApply _    ty = ty
+
+-- Get argument kinds from an arrow kind. Removing ForallT is an
+-- important preprocessing step required by promoteType.
+unravel :: Kind -> [Kind]
+unravel (ForallT _ _ ty) = unravel ty
+unravel (AppT (AppT ArrowT k1) k2) =
+    let ks = unravel k2 in k1 : ks
+unravel k = [k]
+
+-- Reconstruct arrow kind from the list of kinds
+ravel :: Quasi q => [Kind] -> q Kind
+ravel []    = fail "Internal error: raveling nil"
+ravel [k]   = return k
+ravel (h:t) = do
+  k <- ravel t
+  return $ (AppT (AppT ArrowT h) k)
+
+-- Generate data declarations required for defunctionalization.
+-- For a type family:
+--
+-- type family Foo (m :: Nat) (n :: Nat) (l :: Nat) :: Nat
+--
+-- we generate data declarations that allow us to talk about partial
+-- application at the type level:
+--
+-- data FooSym2 :: Nat -> Nat -> (TyFun Nat Nat) -> *
+-- data FooSym1 :: Nat -> (TyFun Nat (TyFun Nat Nat -> *)) -> *
+-- data FooSym0 :: TyFun Nat (TyFun Nat (TyFun Nat Nat -> *) -> *) -> *
+--
+-- buildSymDecs takes list of kinds of the type family parameters and
+-- kind of the result.
+--
+-- Invariants:
+--   * list of TF parameters cannot be empty (if it is we generate
+--     type synonym).
+--   * result contains declarations and their names ordered by arity
+--     (highest first).
+buildSymDecs :: Quasi q => Name -> [Kind] -> Kind -> q ([Dec], [Name])
+buildSymDecs name argKs resultK = go tailArgK (buildTyFun lastArgK resultK)
+                                  (length tailArgK)
+    where (lastArgK : tailArgK) = reverse argKs
+          go :: Quasi q => [Kind] -> Type -> Int -> q ([Dec], [Name])
+          go [] acc l = do
+            let dataName0 = mkName ((toUpcaseStr name) ++ "Sym" ++ (show l))
+            typeVarName <- qNewName "a"
+            return ([DataD [] dataName0 [KindedTV typeVarName acc] [] []],
+                    [dataName0])
+          go (k:ks) acc l = do
+            (defs, names) <- go ks (buildTyFun k (addStar acc)) (l - 1)
+            tyvarNames <- mapM qNewName (replicate (l + 1) "a")
+            let dataName = mkName ((toUpcaseStr name) ++ "Sym" ++ (show l))
+                params   = zipWith KindedTV tyvarNames (reverse (acc:k:ks))
+                newDef   = DataD [] dataName params [] []
+            return (newDef : defs, dataName : names)
+          buildTyFun :: Kind -> Kind -> Type
+          buildTyFun k1 k2 = (AppT (AppT (ConT tyFunName) k1) k2)
+          addStar :: Type -> Type
+          addStar t = AppT (AppT ArrowT t) StarT
+
+-- Generate instances of Apply for data declarations generated by buildSymDecs.
+-- Invariant: The list of tuples has the form:
+--
+--  [(FooSymN, Foo), (FooSym(N-1), FooSymN) ,..., (FooSym0, FooSym1)]
+buildApplyInstances :: Quasi q => [(Name, Name)] -> q ([Dec])
+buildApplyInstances names = go names (length names - 1)
+    where go :: Quasi q => [(Name, Name)] -> Int -> q ([Dec])
+          go []     _ = return []
+          go ((symName, rhsName):ds) l = do
+            defs    <- go ds (l-1)
+            tyVars  <- mapM (liftM VarT . qNewName) (replicate l "a")
+            paramTy <- liftM VarT . qNewName $ "a"
+            let def = TySynInstD applyName
+#if __GLASGOW_HASKELL__ >= 707
+                      (TySynEqn [      foldType (ConT symName) tyVars, paramTy]
+                                (AppT (foldType (ConT rhsName) tyVars) paramTy))
+#else
+                                [      foldType (ConT symName) tyVars, paramTy]
+                                (AppT (foldType (ConT rhsName) tyVars) paramTy)
+#endif
+            return (def : defs)
 
 #if __GLASGOW_HASKELL__ >= 707
 promoteClause :: Quasi q => TypeTable -> Name -> Clause -> QWithDecs q TySynEqn

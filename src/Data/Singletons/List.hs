@@ -42,8 +42,8 @@ module Data.Singletons.List (
   Reverse, sReverse
   ) where
 
-import Data.Singletons.Core
 import Data.Singletons
+import Data.Singletons.Core
 import Data.Singletons.Singletons
 
 $(singletonsOnly [d|

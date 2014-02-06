@@ -115,6 +115,15 @@ upcase n =
      then mkName ((toUpper first) : tail str)
      else mkName (':' : str)
 
+-- make an identifier uppercase and return it as a String
+toUpcaseStr :: Name -> String
+toUpcaseStr n =
+  let str   = nameBase n
+      first = head str
+  in if isLetter first
+     then (toUpper first) : tail str
+     else ':' : str
+
 -- make an identifier lowercase
 locase :: Name -> Name
 locase n =
@@ -163,6 +172,12 @@ foldExp = foldl AppE
 isVarK :: Kind -> Bool
 isVarK (VarT _) = True
 isVarK _ = False
+
+-- is a function type?
+isFunTy :: Type -> Bool
+isFunTy (AppT (AppT ArrowT _) _) = True
+isFunTy (ForallT _ _ _)          = True
+isFunTy _                        = False
 
 -- tuple up a list of expressions
 mkTupleExp :: [Exp] -> Exp

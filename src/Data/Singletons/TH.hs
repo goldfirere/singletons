@@ -27,6 +27,9 @@ module Data.Singletons.TH (
   singEqInstancesOnly, singEqInstanceOnly,
   singDecideInstances, singDecideInstance,
 
+  -- ** defunctionalization
+  TyFun, TyCon, Apply,
+
   -- ** Utility function
   cases,
 
@@ -54,7 +57,6 @@ import Data.Singletons.Void
 import GHC.Exts
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax ( Quasi(..) )
-import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
 import Control.Applicative
 

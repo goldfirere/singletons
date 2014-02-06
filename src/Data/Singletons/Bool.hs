@@ -51,6 +51,7 @@ module Data.Singletons.Bool (
 
 import Data.Singletons.Core
 import Data.Singletons.Singletons
+import Data.Singletons.Types
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Type.Bool

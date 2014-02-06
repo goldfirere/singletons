@@ -18,6 +18,7 @@
 
 module Data.Singletons.Types (
   Refuted, Decision(..),
+  TyFun, TyCon, Apply,
 #if __GLASGOW_HASKELL__ < 707
   KProxy(..), Proxy(..),
   (:~:)(..), gcastWith, TestEquality(..)
@@ -43,6 +44,30 @@ class TestEquality (f :: k -> *) where
   testEquality :: f a -> f b -> Maybe (a :~: b)
 
 #endif
+
+-- | Representation of a type-level function. The difference between
+-- term-level arrows and this type-level arrow is that at the term
+-- level applications can be unsaturated, whereas at the type level
+-- all applications have to be fully saturated.
+data TyFun :: * -> * -> *
+
+-- | Wrapper for converting term level arrows into type level
+-- arrows. TyCon is designed to allow usage of term-level functions
+-- where type-level function is expected. For example given:
+--
+-- > data Nat = Zero | Succ Nat
+-- > type family Map (a :: TyFun a b -> *) (a :: [a]) :: [b]
+-- >   Map f '[] = '[]
+-- >   Map f (x ': xs) = Apply f x ': Map f xs
+--
+-- We can write:
+--
+-- > Map (TyCon Succ) [Zero, Succ Zero]
+data TyCon :: (k1 -> k2) -> (TyFun k1 k2) -> *
+
+-- | Type level function application
+type family Apply (f :: TyFun k1 k2 -> *) (x :: k1) :: k2
+type instance Apply (TyCon f) x = f x
 
 -- | Because we can never create a value of type 'Void', a function that type-checks
 -- at @a -> Void@ shows that objects of type @a@ can never exist. Thus, we say that

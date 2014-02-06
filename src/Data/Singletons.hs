@@ -39,6 +39,9 @@ module Data.Singletons (
 #endif
   withSing, singThat,
 
+  -- ** defunctionalization
+  TyFun, TyCon, Apply,
+
   -- * Auxiliary functions
   bugInGHC, Error, sError,
   KProxy(..), Proxy(..)
@@ -51,9 +54,8 @@ import GHC.TypeLits (Symbol)
 #if __GLASGOW_HASKELL__ >= 707
 import GHC.Exts ( Proxy# )
 import Data.Proxy
-#else
-import Data.Singletons.Types
 #endif
+import Data.Singletons.Types
 
 -- | A 'SingInstance' wraps up a 'SingI' instance for explicit handling.
 data SingInstance (a :: k) where
