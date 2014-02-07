@@ -27,7 +27,6 @@ import Unsafe.Coerce
 import Test.ByHandAux
 
 import Data.Singletons.Types
-import Data.Singletons.Void
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Type.Bool
@@ -45,15 +44,22 @@ data Nat :: * where
   deriving Eq
 
 #if __GLASGOW_HASKELL__ >= 707
+-- Kind-level synonyms following singletons naming convention
 type a :&& b = a && b
+type a :== b = a == b
 #else
-    -- This is necessary for defining boolean equality at the type level
+-- Type-level boolean equality
+type family (a :: k) == (b :: k) :: Bool
+-- Kind-level synonym
+type a :== b = a == b
+-- This is necessary for defining boolean equality at the type level
 type family (a :: Bool) :&& (b :: Bool) :: Bool
 type instance False :&& False = False
 type instance False :&& True = False
 type instance True :&& False = False
 type instance True :&& True = True
 #endif
+
 
 data Maybe :: * -> * where
   Nothing :: Maybe a
@@ -74,14 +80,10 @@ data Either :: * -> * -> * where
 -- One-time definitions -----------
 -----------------------------------
 
-#if __GLASGOW_HASKELL__ < 707
--- Type-level boolean equality
-type family (a :: k) == (b :: k) :: Bool
-#endif
-
 -- Singleton type equality type class
-class (t ~ 'KProxy) => SEq (t :: KProxy k) where
-  (%==%) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a == b)
+class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
+  (%:==) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :== b)
+  -- omitting definition of %:/=
 
 -- A way to store instances of SingRep at runtime
 data SingInstance :: k -> * where
@@ -134,7 +136,7 @@ singInstance :: forall (a :: k). Sing a -> SingInstance a
 singInstance s = with_sing_i s SingInstance
   where
     with_sing_i :: Sing a -> (SingI a => SingInstance a) -> SingInstance a
-    with_sing_i s si = unsafeCoerce (MkDI si) s
+    with_sing_i s' si = unsafeCoerce (MkDI si) s'
 
 withSingI :: Sing n -> (SingI n => r) -> r
 withSingI sn r =
@@ -172,10 +174,10 @@ type instance (Succ n) == (Succ n') = n == n'
 #endif
 
 instance SEq ('KProxy :: KProxy Nat) where
-  SZero %==% SZero = STrue
-  SZero %==% (SSucc _) = SFalse
-  (SSucc _) %==% SZero = SFalse
-  (SSucc n) %==% (SSucc n') = n %==% n'
+  SZero %:== SZero = STrue
+  SZero %:== (SSucc _) = SFalse
+  (SSucc _) %:== SZero = SFalse
+  (SSucc n) %:== (SSucc n') = n %:== n'
 
 instance SDecide ('KProxy :: KProxy Nat) where
   SZero %~ SZero = Proved Refl
@@ -254,10 +256,10 @@ instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (Maybe k)) 
   (SJust _) %~ SNothing = Disproved ($emptyLamCase)
 
 instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (Maybe k)) where
-  SNothing %==% SNothing = STrue
-  SNothing %==% (SJust _) = SFalse
-  (SJust _) %==% SNothing = SFalse
-  (SJust a) %==% (SJust a') = a %==% a'
+  SNothing %:== SNothing = STrue
+  SNothing %:== (SJust _) = SFalse
+  (SJust _) %:== SNothing = SFalse
+  (SJust a) %:== (SJust a') = a %:== a'
 
 instance SingI (Nothing :: Maybe k) where
   sing = SNothing
@@ -296,10 +298,10 @@ type instance (Cons a b) == (Cons a' b') = (a == a') :&& (b == b')
 #endif
 
 instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (List k)) where
-  SNil %==% SNil = STrue
-  SNil %==% (SCons _ _) = SFalse
-  (SCons _ _) %==% SNil = SFalse
-  (SCons a b) %==% (SCons a' b') = (a %==% a') %:&& (b %==% b')
+  SNil %:== SNil = STrue
+  SNil %:== (SCons _ _) = SFalse
+  (SCons _ _) %:== SNil = SFalse
+  (SCons a b) %:== (SCons a' b') = (a %:== a') %:&& (b %:== b')
 
 instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (List k)) where
   SNil %~ SNil = Proved Refl
@@ -329,8 +331,8 @@ instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (List k))
 -- Either
 
 data instance Sing (a :: Either k1 k2) where
-  SLeft :: forall (a :: k). Sing a -> Sing (Left a)
-  SRight :: forall (b :: k). Sing b -> Sing (Right b)
+  SLeft :: forall (a :: k1). Sing a -> Sing (Left a)
+  SRight :: forall (b :: k2). Sing b -> Sing (Right b)
 
 instance (SingI a) => SingI (Left (a :: k)) where
   sing = SLeft sing
@@ -452,9 +454,9 @@ instance SDecide ('KProxy :: KProxy *) where
 #if __GLASGOW_HASKELL__ < 707
 type instance (a :: *) == (a :: *) = True
 #endif
-                  
+
 instance SEq ('KProxy :: KProxy *) where
-  a %==% b =
+  a %:== b =
     case a %~ b of
       Proved Refl -> STrue
       Disproved _ -> unsafeCoerce SFalse
@@ -467,9 +469,15 @@ isJust :: Maybe a -> Bool
 isJust Nothing = False
 isJust (Just _) = True
 
+#if __GLASGOW_HASKELL__ >= 707
+type family IsJust (a :: Maybe k) :: Bool where
+    IsJust Nothing = False
+    IsJust (Just a) = True
+#else
 type family IsJust (a :: Maybe k) :: Bool
 type instance IsJust Nothing = False
 type instance IsJust (Just a) = True
+#endif
 
 sIsJust :: Sing a -> Sing (IsJust a)
 sIsJust SNothing = SFalse
@@ -479,26 +487,38 @@ map :: (a -> b) -> List a -> List b
 map _ Nil = Nil
 map f (Cons h t) = Cons (f h) (map f t)
 
+#if __GLASGOW_HASKELL__ >= 707
+type family Map (f :: k1 -> k2) (l :: List k1) :: List k2 where
+    Map f Nil = Nil
+    Map f (Cons h t) = Cons (f h) (Map f t)
+#else
 type family Map (f :: k1 -> k2) (l :: List k1) :: List k2
 type instance Map f Nil = Nil
 type instance Map f (Cons h t) = Cons (f h) (Map f t)
+#endif
 
 sMap :: forall (a :: List k1) (f :: k1 -> k2).
-          SingKind ('KProxy :: KProxy k2) =>
-          (forall b. Sing b -> Sing (f b)) -> Sing a -> Sing (Map f a)
+       (forall b. Sing b -> Sing (f b)) -> Sing a -> Sing (Map f a)
 sMap _ SNil = SNil
 sMap f (SCons h t) = SCons (f h) (sMap f t)
 
 -- test sMap
+foo :: Sing (Cons (Succ (Succ Zero)) (Cons (Succ Zero) Nil))
 foo = sMap SSucc (SCons (SSucc SZero) (SCons SZero SNil))
 
 either :: (a -> c) -> (b -> c) -> Either a b -> c
 either l _ (Left x) = l x
 either _ r (Right x) = r x
 
+#if __GLASGOW_HASKELL__ >= 707
+type family EEither (l :: a -> c) (r :: b -> c) (e :: Either a b) :: c where
+    EEither l r (Left x) = l x
+    EEither l r (Right x) = r x
+#else
 type family EEither (l :: a -> c) (r :: b -> c) (e :: Either a b) :: c
 type instance EEither l r (Left x) = l x
 type instance EEither l r (Right x) = r x
+#endif
 
 sEither :: (forall a. Sing a -> Sing (l a)) ->
            (forall a. Sing a -> Sing (r a)) ->
@@ -510,9 +530,15 @@ eitherToNat :: Either Nat Nat -> Nat
 eitherToNat (Left x) = x
 eitherToNat (Right x) = x
 
+#if __GLASGOW_HASKELL__ >= 707
+type family EitherToNat (e :: Either Nat Nat) :: Nat where
+    EitherToNat (Left x) = x
+    EitherToNat (Right x) = x
+#else
 type family EitherToNat (e :: Either Nat Nat) :: Nat
 type instance EitherToNat (Left x) = x
 type instance EitherToNat (Right x) = x
+#endif
 
 sEitherToNat :: Sing a -> Sing (EitherToNat a)
 sEitherToNat (SLeft x) = x
@@ -522,12 +548,17 @@ liftMaybe :: (a -> b) -> Maybe a -> Maybe b
 liftMaybe _ Nothing = Nothing
 liftMaybe f (Just a) = Just (f a)
 
+#if __GLASGOW_HASKELL__ >= 707
+type family LiftMaybe (f :: a -> b) (x :: Maybe a) :: Maybe b where
+    LiftMaybe f Nothing = Nothing
+    LiftMaybe f (Just a) = Just (f a)
+#else
 type family LiftMaybe (f :: a -> b) (x :: Maybe a) :: Maybe b
 type instance LiftMaybe f Nothing = Nothing
 type instance LiftMaybe f (Just a) = Just (f a)
+#endif
 
 sLiftMaybe :: forall (f :: a -> b) (x :: Maybe a).
-                {- SingKind ('KProxy :: KProxy b) => -}
                 (forall (y :: a). Sing y -> Sing (f y)) ->
                 Sing x -> Sing (LiftMaybe f x)
 sLiftMaybe _ SNothing = SNothing
@@ -585,7 +616,7 @@ type instance IsZero n = If (n == Zero) True False
 #endif
 
 sIsZero :: Sing n -> Sing (IsZero n)
-sIsZero n = sIf (n %==% SZero) STrue SFalse
+sIsZero n = sIf (n %:== SZero) STrue SFalse
 
 {-
 (||) :: Bool -> Bool -> Bool
@@ -627,7 +658,7 @@ sContains :: forall. SEq ('KProxy :: KProxy k) =>
              forall (a :: k). Sing a ->
              forall (list :: List k). Sing list -> Sing (Contains a list)
 sContains _ SNil = SFalse
-sContains elt (SCons h t) = (elt %==% h) %:|| (sContains elt t)
+sContains elt (SCons h t) = (elt %:== h) %:|| (sContains elt t)
 
 impNat :: forall m n. SingI n => Proxy n -> Sing m -> Sing (n :+ m)
 impNat _ sm = (sing :: Sing n) %:+ sm
