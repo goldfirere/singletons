@@ -34,6 +34,10 @@ dist/test/singletons-0.9.3-compile.log: dist/tests-enabled.dummy dist/build/comp
 clean:
 	cabal clean
 	find Data -name "*.hi" | xargs rm -f
+	find Data -name "*.dyn_hi" | xargs rm -f
 	find Data -name "*.o"  | xargs rm -f
+	find Data -name "*.dyn_o"  | xargs rm -f
 	find Test -name "*.hi" | xargs rm -f
+	find Test -name "*.dyn_hi" | xargs rm -f
 	find Test -name "*.o"  | xargs rm -f
+	find Test -name "*.dyn_o"  | xargs rm -f
