@@ -41,7 +41,7 @@ module Data.Singletons.Maybe (
   -- | 'SBool' is a kind-restricted synonym for 'Sing': @type SMaybe (a :: Maybe k) = Sing a@
 
   -- * Singletons from @Data.Maybe@
-
+{-
   Maybe_, sMaybe_,
   -- | The preceding two definitions are derived from the function 'maybe' in
   -- @Data.Maybe@. The extra underscore is to avoid name clashes with the type
@@ -50,6 +50,7 @@ module Data.Singletons.Maybe (
   IsJust, sIsJust, IsNothing, sIsNothing,
   FromJust, sFromJust, FromMaybe, sFromMaybe, MaybeToList, sMaybeToList,
   ListToMaybe, sListToMaybe, CatMaybes, sCatMaybes, MapMaybe, sMapMaybe
+-}
   ) where
 
 import Data.Singletons.Core
@@ -57,6 +58,7 @@ import Data.Singletons
 import Data.Singletons.TH
 import Data.Singletons.List
 
+{-
 $(singletonsOnly [d|
   -- | The 'maybe' function takes a default value, a function, and a 'Maybe'
   -- value.  If the 'Maybe' value is 'Nothing', the function returns the
@@ -118,3 +120,4 @@ $(singletonsOnly [d|
   mapMaybe _ []     = []
   mapMaybe f (x:xs) = maybeToList (f x) ++ (mapMaybe f xs)
   |])
+-}

@@ -39,6 +39,7 @@ module Data.Singletons.Either (
   -- @type SEither (a :: Either x y) = Sing a@
 
   -- * Singletons from @Data.Either@
+{-
   Either_, sEither_,
   -- | The preceding two definitions are derived from the function 'either' in
   -- @Data.Either@. The extra underscore is to avoid name clashes with the type
@@ -46,6 +47,7 @@ module Data.Singletons.Either (
 
   Lefts, sLefts, Rights, sRights,
   PartitionEithers, sPartitionEithers, IsLeft, sIsLeft, IsRight, sIsRight
+-}
   ) where
 
 import Data.Singletons.Core
@@ -57,6 +59,7 @@ import Data.Singletons.Types
 import Data.Proxy
 #endif
 
+{-
 $(singletonsOnly [d|
   -- | Case analysis for the 'Either' type.
   -- If the value is @'Left' a@, apply the first function to @a@;
@@ -110,3 +113,4 @@ $(singletonsOnly [d|
   isRight (Left  _) = False
   isRight (Right _) = True
   |])
+-}

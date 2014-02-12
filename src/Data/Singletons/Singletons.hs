@@ -20,6 +20,7 @@ import Control.Monad
 import Control.Applicative
 import Data.Singletons.Types
 import Data.List (find)
+import Debug.Trace
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Proxy
@@ -466,6 +467,10 @@ singDataD rep cxt name tvbs ctors derivings
   k <- promoteType (foldType (ConT name) (map VarT tvbNames))
   (ctors', ctorInstDecls) <- evalForPair $ mapM (singCtor a) ctors
 
+  promotedDataDecs <- promoteDataD cxt name tvbs ctors derivings
+
+  trace ("Data decs promoted in singDataD: " ++ show promotedDataDecs) $ return ()
+
   -- instance for SingKind
   fromSingClauses <- mapM mkFromSingClause ctors
   toSingClauses   <- mapM mkToSingClause ctors
@@ -494,6 +499,7 @@ singDataD rep cxt name tvbs ctors derivings
   return $ (DataInstD [] singFamilyName [SigT a k] ctors' []) :
            kindedSynInst :
            singKindInst :
+           promotedDataDecs ++
            sEqInsts ++
            ctorInstDecls
   where -- in the Rep case, the names of the constructors are in the wrong scope

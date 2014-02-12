@@ -19,12 +19,12 @@ This file is a great way to understand the singleton encoding better.
 {-# LANGUAGE EmptyCase #-}
 #endif
 
-module Test.ByHand where
+module ByHand where
 
 import Prelude hiding (Maybe, Just, Nothing, Either, Left, Right, map, zipWith,
                        (+), (-))
 import Unsafe.Coerce
-import Test.ByHandAux
+import ByHandAux
 
 import Data.Singletons.Types
 

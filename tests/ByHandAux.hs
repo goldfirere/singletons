@@ -14,7 +14,7 @@ lack of empty case in GHC 7.6.3 palatable.
 {-# LANGUAGE EmptyCase #-}
 #endif
 
-module Test.ByHandAux where
+module ByHandAux where
 
 import Language.Haskell.TH
 

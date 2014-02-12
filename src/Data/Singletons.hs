@@ -43,7 +43,7 @@ module Data.Singletons (
   TyFun, TyCon, Apply,
 
   -- * Auxiliary functions
-  bugInGHC, Error, sError,
+  bugInGHC, Error, ErrorSym0, sError,
   KProxy(..), Proxy(..)
   ) where
 
@@ -123,6 +123,8 @@ bugInGHC = error "Bug encountered in GHC -- this should never happen"
 
 -- | The promotion of 'error'
 type family Error (str :: Symbol) :: k
+data ErrorSym0 (t1 :: TyFun k1 k2)
+type instance Apply ErrorSym0 a = Error a
 
 -- | The singleton for 'error'
 sError :: Sing (str :: Symbol) -> a

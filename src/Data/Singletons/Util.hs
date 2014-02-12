@@ -42,6 +42,7 @@ basicTypes = [ ''Bool
              , ''Maybe
              , ''Either
              , ''Ordering
+{-
              , ''[]
              , ''()
              , ''(,)
@@ -50,6 +51,7 @@ basicTypes = [ ''Bool
              , ''(,,,,)
              , ''(,,,,,)
              , ''(,,,,,,)
+-}
              ]
 
 -- like newName, but even more unique (unique across different splices)

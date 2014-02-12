@@ -37,15 +37,18 @@ module Data.Singletons.List (
   SList,
   -- | 'SList' is a kind-restricted synonym for 'Sing': @type SList (a :: [k]) = Sing a@
 
+{-
   Head, Tail, sHead, sTail,
   (:++), (%:++),
   Reverse, sReverse
+-}
   ) where
 
 import Data.Singletons
 import Data.Singletons.Core
 import Data.Singletons.Singletons
 
+{-
 $(singletonsOnly [d|
   (++) :: [a] -> [a] -> [a]
   [] ++ a = a
@@ -66,3 +69,4 @@ $(singletonsOnly [d|
   reverse_aux acc []      = acc
   reverse_aux acc (h : t) = reverse_aux (h : acc) t
   |])
+-}

@@ -81,6 +81,7 @@ module Data.Singletons.Prelude (
   If, sIf, Not, sNot, (:&&), (:||), (%:&&), (%:||),
 
   -- * Functions working with lists
+{-
   Head, Tail, (:++), (%:++),
 
   -- * Singleton equality
@@ -90,6 +91,7 @@ module Data.Singletons.Prelude (
   Maybe_, sMaybe_,
   Either_, sEither_,
   Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry
+-}
   ) where
 
 import Data.Singletons
