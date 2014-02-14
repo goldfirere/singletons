@@ -1,0 +1,6 @@
+Names of all students: ["Nadine", "Klein" (id=[4]),"John", "Smythe" (id=[3]),"Laksh", "Gupta" (id=[2]),"Lisa", "Hwang" (id=[1]),"George", "Takei" (id=[0])]
+
+Students in major: ["Klein", "Nadine", 2016, 86, True (id=[4]),"Gupta", "Laksh", 2016, 94, True (id=[2]),"Takei", "George", 2015, 92, True (id=[0])]
+
+Names of students with grade < 90: ["Nadine", "Klein" (id=[4]),"John", "Smythe" (id=[3])]
+

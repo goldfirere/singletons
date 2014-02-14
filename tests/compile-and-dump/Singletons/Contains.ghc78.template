@@ -1,0 +1,18 @@
+Singletons/Contains.hs:0:0: Splicing declarations
+    singletons
+      [d| contains :: Eq a => a -> [a] -> Bool
+          contains _ [] = False
+          contains elt (h : t) = (elt == h) || (contains elt t) |]
+  ======>
+    Singletons/Contains.hs:(0,0)-(0,0)
+    contains :: forall a. Eq a => a -> [a] -> Bool
+    contains _ GHC.Types.[] = False
+    contains elt (h GHC.Types.: t) = ((elt == h) || (contains elt t))
+    type family Contains (a :: a) (a :: [a]) :: Bool where
+         Contains z GHC.Types.[] = False
+         Contains elt ((GHC.Types.:) h t) = (:||) ((:==) elt h) (Contains elt t)
+    sContains ::
+      forall (t :: a) (t :: [a]). SEq (KProxy :: KProxy a) =>
+      Sing t -> Sing t -> Sing (Contains t t)
+    sContains _ SNil = SFalse
+    sContains elt (SCons h t) = (%:||) ((%:==) elt h) (sContains elt t)

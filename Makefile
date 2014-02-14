@@ -1,8 +1,8 @@
 version=0.9.3
-source=Data/Singletons.hs Data/Singletons/*.hs
-test-source=Test/*.hs
+source=src/Data/Singletons.hs src/Data/Singletons/*.hs
+test-source=tests/SingletonsTestSuite.hs tests/SingletonsTestSuiteUtils.hs
 
-.PHONY: build clean configure install tests
+.PHONY: build clean clean-tests configure install tests
 
 configure: dist/setup-config
 
@@ -31,13 +31,18 @@ dist/build/compile/compile: dist/tests-enabled.dummy $(source) $(test-source)
 dist/test/singletons-0.9.3-compile.log: dist/tests-enabled.dummy dist/build/compile/compile
 	cabal test
 
-clean:
+clean: clean-tests
 	cabal clean
-	find Data -name "*.hi" | xargs rm -f
-	find Data -name "*.dyn_hi" | xargs rm -f
-	find Data -name "*.o"  | xargs rm -f
-	find Data -name "*.dyn_o"  | xargs rm -f
-	find Test -name "*.hi" | xargs rm -f
-	find Test -name "*.dyn_hi" | xargs rm -f
-	find Test -name "*.o"  | xargs rm -f
-	find Test -name "*.dyn_o"  | xargs rm -f
+	find src   -name "*.hi"     | xargs rm -f
+	find src   -name "*.dyn_hi" | xargs rm -f
+	find src   -name "*.o"      | xargs rm -f
+	find src   -name "*.dyn_o"  | xargs rm -f
+
+clean-tests:
+	find tests -name "*.hi"     | xargs rm -f
+	find tests -name "*.dyn_hi" | xargs rm -f
+	find tests -name "*.o"      | xargs rm -f
+	find tests -name "*.dyn_o"  | xargs rm -f
+	find tests -name "*.actual" | xargs rm -f
+	find tests -name "*.golden" | xargs rm -f
+	rm -f tests/compile-and-dump/GradingClient/Main

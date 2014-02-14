@@ -1,5 +1,8 @@
 # Interface files
 *.hi
+*.o
+*.dyn_hi
+*.dyn_o
 
 # Cabal's distribution directory
 dist
@@ -7,3 +10,8 @@ dist
 # Emacs tags files
 TAGS
 tags
+
+# Other files
+*.actual
+*.golden
+Main

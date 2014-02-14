@@ -1,0 +1,27 @@
+Singletons/BoxUnBox.hs:0:0: Splicing declarations
+    singletons
+      [d| unBox :: Box a -> a
+          unBox (FBox a) = a
+
+          data Box a = FBox a |]
+  ======>
+    Singletons/BoxUnBox.hs:(0,0)-(0,0)
+    data Box a = FBox a
+    unBox :: forall a. Box a -> a
+    unBox (FBox a) = a
+    type family UnBox (a :: Box a) :: a where
+         UnBox (FBox a) = a
+    data instance Sing (z :: Box a)
+      = forall (n :: a). z ~ FBox n => SFBox (Sing n)
+    type SBox (z :: Box a) = Sing z
+    instance SingKind (KProxy :: KProxy a) =>
+             SingKind (KProxy :: KProxy (Box a)) where
+      type DemoteRep (KProxy :: KProxy (Box a)) = Box (DemoteRep (KProxy :: KProxy a))
+      fromSing (SFBox b) = FBox (fromSing b)
+      toSing (FBox b)
+        = case toSing b :: SomeSing (KProxy :: KProxy a) of {
+            SomeSing c -> SomeSing (SFBox c) }
+    instance SingI n => SingI (FBox (n :: a)) where
+      sing = SFBox sing
+    sUnBox :: forall (t :: Box a). Sing t -> Sing (UnBox t)
+    sUnBox (SFBox a) = a

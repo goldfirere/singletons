@@ -27,12 +27,7 @@ unambiguous.
 
 -}
 
-{-# LANGUAGE TemplateHaskell, TypeOperators, KindSignatures, DataKinds,
-             MultiParamTypeClasses, GADTs, TypeFamilies, FlexibleInstances,
-             UndecidableInstances, RankNTypes, ScopedTypeVariables,
-             PolyKinds, FlexibleContexts, IncoherentInstances #-}
-
-module Test.InsertionSortImp where
+module InsertionSort.InsertionSortImp where
 
 import Data.Singletons.TH
 import Data.Singletons.Prelude

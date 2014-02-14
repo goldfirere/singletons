@@ -1,0 +1,12 @@
+INSERT tests/compile-and-dump/Singletons/Nat.ghc78.template
+Singletons/BadPlus.hs:0:0: Splicing declarations
+    singletons
+      [d| badPlus Zero m = m
+          badPlus (Succ n) m = Succ (plus n m) |]
+  ======>
+    Singletons/BadPlus.hs:(0,0)-(0,0)
+    badPlus Zero m = m
+    badPlus (Succ n) m = Succ (plus n m)
+
+Singletons/BadPlus.hs:0:0: Warning:
+    No type binding for "badPlus"; removing all declarations including it

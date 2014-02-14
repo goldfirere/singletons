@@ -1,0 +1,17 @@
+INSERT tests/compile-and-dump/Singletons/Nat.ghc78.template
+Singletons/AtPattern.hs:0:0: Splicing declarations
+    singletons
+      [d| maybePlus :: Maybe Nat -> Maybe Nat
+          maybePlus (Just n) = Just (plus (Succ Zero) n)
+          maybePlus foo@Nothing = foo |]
+  ======>
+    Singletons/AtPattern.hs:(0,0)-(0,0)
+    maybePlus :: Maybe Nat -> Maybe Nat
+    maybePlus (Just n) = Just (plus (Succ Zero) n)
+    maybePlus foo@Nothing = foo
+    type family MaybePlus (a :: Maybe Nat) :: Maybe Nat where
+         MaybePlus (Just n) = Just (Plus (Succ Zero) n)
+         MaybePlus Nothing = Nothing
+    sMaybePlus :: forall (t :: Maybe Nat). Sing t -> Sing (MaybePlus t)
+    sMaybePlus (SJust n) = SJust (sPlus (SSucc SZero) n)
+    sMaybePlus foo@SNothing = foo

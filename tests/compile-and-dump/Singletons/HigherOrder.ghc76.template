@@ -1,0 +1,33 @@
+Singletons/HigherOrder.hs:0:0: Splicing declarations
+    singletons
+      [d| map :: (a -> b) -> [a] -> [b]
+          map _ [] = []
+          map f (h : t) = (f h) : (map f t)
+          liftMaybe :: (a -> b) -> Maybe a -> Maybe b
+          liftMaybe f (Just x) = Just (f x)
+          liftMaybe _ Nothing = Nothing |]
+  ======>
+    Singletons/HigherOrder.hs:(0,0)-(0,0)
+    map :: forall a b. (a -> b) -> [a] -> [b]
+    map _ GHC.Types.[] = GHC.Types.[]
+    map f (h GHC.Types.: t) = ((f h) GHC.Types.: (map f t))
+    liftMaybe :: forall a b. (a -> b) -> Maybe a -> Maybe b
+    liftMaybe f (Just x) = Just (f x)
+    liftMaybe _ Nothing = Nothing
+    type instance Map z GHC.Types.[] = GHC.Types.[]
+    type instance Map f (GHC.Types.: h t) = GHC.Types.: (f h) (Map f t)
+    type instance LiftMaybe f (Just x) = Just (f x)
+    type instance LiftMaybe z Nothing = Nothing
+    type family Map (a :: a -> b) (a :: [a]) :: [b]
+    type family LiftMaybe (a :: a -> b) (a :: Maybe a) :: Maybe b
+    sMap ::
+      forall (t :: a -> b) (t :: [a]).
+      (forall (t :: a). Sing t -> Sing (t t)) -> Sing t -> Sing (Map t t)
+    sMap _ SNil = SNil
+    sMap f (SCons h t) = SCons (f h) (sMap f t)
+    sLiftMaybe ::
+      forall (t :: a -> b) (t :: Maybe a).
+      (forall (t :: a). Sing t -> Sing (t t))
+      -> Sing t -> Sing (LiftMaybe t t)
+    sLiftMaybe f (SJust x) = SJust (f x)
+    sLiftMaybe _ SNothing = SNothing

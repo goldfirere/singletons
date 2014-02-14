@@ -1,0 +1,23 @@
+INSERT tests/compile-and-dump/Singletons/Nat.ghc78.template
+INSERT tests/compile-and-dump/Singletons/Operators.ghc78.template
+INSERT tests/compile-and-dump/Singletons/Empty.ghc78.template
+Singletons/EqInstances.hs:0:0: Splicing declarations
+    singEqInstances [''Foo, ''Empty]
+  ======>
+    Singletons/EqInstances.hs:0:0:
+    instance SEq (KProxy :: KProxy Foo) where
+      (%:==) SFLeaf SFLeaf = STrue
+      (%:==) SFLeaf ((:%+:) _ _) = SFalse
+      (%:==) ((:%+:) _ _) SFLeaf = SFalse
+      (%:==) ((:%+:) a a) ((:%+:) b b) = (%:&&) ((%:==) a b) ((%:==) a b)
+    type family Equals_0123456789 (a :: Foo) (b :: Foo) :: Bool where
+      Equals_0123456789 FLeaf FLeaf = True
+      Equals_0123456789 ((:+:) a a) ((:+:) b b) = (:&&) ((==) a b) ((==) a b)
+      Equals_0123456789 (a :: Foo) (b :: Foo) = False
+    type instance (==) (a :: Foo) (b :: Foo) = Equals_0123456789 a b
+    instance SEq (KProxy :: KProxy Empty) where
+      (%:==) a _ = case a of { }
+    type family Equals_0123456789 (a :: Empty)
+                                  (b :: Empty) :: Bool where
+      Equals_0123456789 (a :: Empty) (b :: Empty) = False
+    type instance (==) (a :: Empty) (b :: Empty) = Equals_0123456789 a b

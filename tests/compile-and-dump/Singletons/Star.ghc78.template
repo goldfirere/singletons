@@ -1,0 +1,83 @@
+INSERT tests/compile-and-dump/Singletons/Nat.ghc78.template
+Singletons/Star.hs:0:0: Splicing declarations
+    singletonStar [''Nat, ''Int, ''String, ''Maybe, ''Vec]
+  ======>
+    Singletons/Star.hs:0:0:
+    data Rep
+      = Nat | Int | String | Maybe Rep | Vec Rep Nat
+      deriving (Eq, Show, Read)
+    instance SDecide (KProxy :: KProxy *) where
+      (%~) SNat SNat = Proved Refl
+      (%~) SNat SInt = Disproved (\case { })
+      (%~) SNat SString = Disproved (\case { })
+      (%~) SNat (SMaybe _) = Disproved (\case { })
+      (%~) SNat (SVec _ _) = Disproved (\case { })
+      (%~) SInt SNat = Disproved (\case { })
+      (%~) SInt SInt = Proved Refl
+      (%~) SInt SString = Disproved (\case { })
+      (%~) SInt (SMaybe _) = Disproved (\case { })
+      (%~) SInt (SVec _ _) = Disproved (\case { })
+      (%~) SString SNat = Disproved (\case { })
+      (%~) SString SInt = Disproved (\case { })
+      (%~) SString SString = Proved Refl
+      (%~) SString (SMaybe _) = Disproved (\case { })
+      (%~) SString (SVec _ _) = Disproved (\case { })
+      (%~) (SMaybe _) SNat = Disproved (\case { })
+      (%~) (SMaybe _) SInt = Disproved (\case { })
+      (%~) (SMaybe _) SString = Disproved (\case { })
+      (%~) (SMaybe a) (SMaybe b)
+        = case (%~) a b of {
+            Proved Refl -> Proved Refl
+            Disproved contra -> Disproved (\ Refl -> contra Refl) }
+      (%~) (SMaybe _) (SVec _ _) = Disproved (\case { })
+      (%~) (SVec _ _) SNat = Disproved (\case { })
+      (%~) (SVec _ _) SInt = Disproved (\case { })
+      (%~) (SVec _ _) SString = Disproved (\case { })
+      (%~) (SVec _ _) (SMaybe _) = Disproved (\case { })
+      (%~) (SVec a a) (SVec b b)
+        = case ((%~) a b, (%~) a b) of {
+            (Proved Refl, Proved Refl) -> Proved Refl
+            (Disproved contra, _) -> Disproved (\ Refl -> contra Refl)
+            (_, Disproved contra) -> Disproved (\ Refl -> contra Refl) }
+    instance SEq (KProxy :: KProxy *) where
+      (%:==) a b
+        = case (%~) a b of {
+            Proved Refl -> STrue
+            Disproved _ -> Unsafe.Coerce.unsafeCoerce SFalse }
+    data instance Sing (z :: *)
+      = z ~ Nat => SNat |
+        z ~ Int => SInt |
+        z ~ String => SString |
+        forall (n :: *). z ~ Maybe n => SMaybe (Sing n) |
+        forall (n :: *) (n :: Nat). z ~ Vec n n => SVec (Sing n) (Sing n)
+    type SRep (z :: *) = Sing z
+    instance SingKind (KProxy :: KProxy *) where
+      type DemoteRep (KProxy :: KProxy *) = Rep
+      fromSing SNat = Nat
+      fromSing SInt = Int
+      fromSing SString = String
+      fromSing (SMaybe b) = Maybe (fromSing b)
+      fromSing (SVec b b) = Vec (fromSing b) (fromSing b)
+      toSing Nat = SomeSing SNat
+      toSing Int = SomeSing SInt
+      toSing String = SomeSing SString
+      toSing (Maybe b)
+        = case toSing b :: SomeSing (KProxy :: KProxy *) of {
+            SomeSing c -> SomeSing (SMaybe c) }
+      toSing (Vec b b)
+        = case
+              (toSing b :: SomeSing (KProxy :: KProxy *),
+               toSing b :: SomeSing (KProxy :: KProxy Nat))
+          of {
+            (SomeSing c, SomeSing c) -> SomeSing (SVec c c) }
+    instance SingI Nat where
+      sing = SNat
+    instance SingI Int where
+      sing = SInt
+    instance SingI String where
+      sing = SString
+    instance SingI n => SingI (Maybe (n :: *)) where
+      sing = SMaybe sing
+    instance (SingI n, SingI n) =>
+             SingI (Vec (n :: *) (n :: Nat)) where
+      sing = SVec sing sing

@@ -1,0 +1,57 @@
+INSERT tests/compile-and-dump/Singletons/Nat.ghc78.template
+Singletons/Operators.hs:0:0: Splicing declarations
+    singletons
+      [d| child :: Foo -> Foo
+          child FLeaf = FLeaf
+          child (a :+: _) = a
+          (+) :: Nat -> Nat -> Nat
+          Zero + m = m
+          (Succ n) + m = Succ (n + m)
+
+          data Foo
+            where
+              FLeaf :: Foo
+              :+: :: Foo -> Foo -> Foo |]
+  ======>
+    Singletons/Operators.hs:(0,0)-(0,0)
+    data Foo = FLeaf | (:+:) Foo Foo
+    child :: Foo -> Foo
+    child FLeaf = FLeaf
+    child (a :+: _) = a
+    (+) :: Nat -> Nat -> Nat
+    (+) Zero m = m
+    (+) (Succ n) m = Succ (n + m)
+    type family Child (a :: Foo) :: Foo where
+      Child FLeaf = FLeaf
+      Child ((:+:) a z) = a
+    type family (:+) (a :: Nat) (a :: Nat) :: Nat where
+      (:+) Zero m = m
+      (:+) (Succ n) m = Succ ((:+) n m)
+    data instance Sing (z :: Foo)
+      = z ~ FLeaf => SFLeaf |
+        forall (n :: Foo) (n :: Foo). z ~ (:+:) n n =>
+        (:%+:) (Sing n) (Sing n)
+    type SFoo (z :: Foo) = Sing z
+    instance SingKind (KProxy :: KProxy Foo) where
+      type DemoteRep (KProxy :: KProxy Foo) = Foo
+      fromSing SFLeaf = FLeaf
+      fromSing ((:%+:) b b) = (:+:) (fromSing b) (fromSing b)
+      toSing FLeaf = SomeSing SFLeaf
+      toSing ((:+:) b b)
+        = case
+              (toSing b :: SomeSing (KProxy :: KProxy Foo),
+               toSing b :: SomeSing (KProxy :: KProxy Foo))
+          of {
+            (SomeSing c, SomeSing c) -> SomeSing ((:%+:) c c) }
+    instance SingI FLeaf where
+      sing = SFLeaf
+    instance (SingI n, SingI n) =>
+             SingI ((:+:) (n :: Foo) (n :: Foo)) where
+      sing = (:%+:) sing sing
+    sChild :: forall (t :: Foo). Sing t -> Sing (Child t)
+    sChild SFLeaf = SFLeaf
+    sChild ((:%+:) a _) = a
+    (%:+) ::
+      forall (t :: Nat) (t :: Nat). Sing t -> Sing t -> Sing ((:+) t t)
+    (%:+) SZero m = m
+    (%:+) (SSucc n) m = SSucc ((%:+) n m)

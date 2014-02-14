@@ -10,11 +10,11 @@ some basic queries on it.
 
 {-# LANGUAGE TemplateHaskell, DataKinds #-}
 
-module Test.GradingClient where
+module Main where
 
 import Data.Singletons.TH
 import Data.Singletons.List
-import Test.Database
+import GradingClient.Database
 
 $(singletons [d|
   lastName, firstName, yearName, gradeName, majorName :: [AChar]
@@ -38,7 +38,7 @@ $(singletons [d|
 
 main :: IO ()
 main = do
-  h <- connect "Test/data/grades" sGradingSchema
+  h <- connect "grades" sGradingSchema
   let ra = Read h
 
   allStudents <- query $ Project sNames ra

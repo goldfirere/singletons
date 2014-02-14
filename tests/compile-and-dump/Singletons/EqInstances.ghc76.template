@@ -1,0 +1,20 @@
+INSERT tests/compile-and-dump/Singletons/Nat.ghc76.template
+INSERT tests/compile-and-dump/Singletons/Operators.ghc76.template
+INSERT tests/compile-and-dump/Singletons/Empty.ghc76.template
+Singletons/EqInstances.hs:0:0: Splicing declarations
+    singEqInstances [''Foo, ''Empty]
+  ======>
+    Singletons/EqInstances.hs:0:0:
+    instance SEq (KProxy :: KProxy Foo) where
+      %:== SFLeaf SFLeaf = STrue
+      %:== SFLeaf (:%+: _ _) = SFalse
+      %:== (:%+: _ _) SFLeaf = SFalse
+      %:== (:%+: a a) (:%+: b b) = (%:&&) ((%:==) a b) ((%:==) a b)
+    type instance (:==) FLeaf FLeaf = True
+    type instance (:==) FLeaf (:+: b b) = False
+    type instance (:==) (:+: a a) FLeaf = False
+    type instance (:==) (:+: a a) (:+: b b) = :&& (:== a b) (:== a b)
+    instance SEq (KProxy :: KProxy Empty) where
+      %:== a _
+        = case a of {
+            _ -> error "Empty case reached -- this should be impossible" }

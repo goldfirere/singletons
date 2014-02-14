@@ -22,7 +22,7 @@ presented in /Dependently typed programming with singletons/
 -- but it would require a client to explicity build proof terms from
 -- InProof and Subset.
 
-module Test.Database where
+module GradingClient.Database where
 
 import Prelude hiding ( tail, id )
 import Data.Singletons.TH

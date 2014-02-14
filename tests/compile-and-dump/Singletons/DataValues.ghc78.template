@@ -1,0 +1,46 @@
+INSERT tests/compile-and-dump/Singletons/Nat.ghc78.template
+Singletons/DataValues.hs:0:0: Splicing declarations
+    singletons
+      [d| pr = Pair (Succ Zero) ([Zero])
+          complex = Pair (Pair (Just Zero) Zero) False
+          tuple = (False, Just Zero, True)
+          aList = [Zero, Succ Zero, Succ (Succ Zero)]
+
+          data Pair a b
+            = Pair a b
+            deriving (Show) |]
+  ======>
+    Singletons/DataValues.hs:(0,0)-(0,0)
+    data Pair a b
+      = Pair a b
+      deriving (Show)
+    pr = Pair (Succ Zero) [Zero]
+    complex = Pair (Pair (Just Zero) Zero) False
+    tuple = (False, Just Zero, True)
+    aList = [Zero, Succ Zero, Succ (Succ Zero)]
+    type Pr = Pair (Succ Zero) '[Zero]
+    type Complex = Pair (Pair (Just Zero) Zero) False
+    type Tuple = '(False, Just Zero, True)
+    type AList = '[Zero, Succ Zero, Succ (Succ Zero)]
+    data instance Sing (z :: Pair a b)
+      = forall (n :: a) (n :: b). z ~ Pair n n => SPair (Sing n) (Sing n)
+    type SPair (z :: Pair a b) = Sing z
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b)) =>
+             SingKind (KProxy :: KProxy (Pair a b)) where
+      type DemoteRep (KProxy :: KProxy (Pair a b)) =  Pair (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b))
+      fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
+      toSing (Pair b b)
+        = case
+              (toSing b :: SomeSing (KProxy :: KProxy a),
+               toSing b :: SomeSing (KProxy :: KProxy b))
+          of {
+            (SomeSing c, SomeSing c) -> SomeSing (SPair c c) }
+    instance (SingI n, SingI n) => SingI (Pair (n :: a) (n :: b)) where
+      sing = SPair sing sing
+    sPr = SPair (SSucc SZero) (SCons SZero SNil)
+    sComplex = SPair (SPair (SJust SZero) SZero) SFalse
+    sTuple = STuple3 SFalse (SJust SZero) STrue
+    sAList
+      = SCons
+          SZero (SCons (SSucc SZero) (SCons (SSucc (SSucc SZero)) SNil))

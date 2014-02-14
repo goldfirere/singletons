@@ -1,0 +1,11 @@
+INSERT tests/compile-and-dump/Singletons/Nat.ghc76.template
+Promote/NumArgs.hs:0:0: Splicing declarations
+    promote
+      [d| returnFunc :: Nat -> Nat -> Nat
+          returnFunc _ = Succ |]
+  ======>
+    Promote/NumArgs.hs:(0,0)-(0,0)
+    returnFunc :: Nat -> Nat -> Nat
+    returnFunc _ = Succ
+    type instance ReturnFunc z = Succ
+    type family ReturnFunc (a :: Nat) :: Nat -> Nat

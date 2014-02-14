@@ -1,0 +1,48 @@
+Singletons/Maybe.hs:0:0: Splicing declarations
+    singletons
+      [d| data Maybe a
+            = Nothing | Just a
+            deriving (Eq, Show) |]
+  ======>
+    Singletons/Maybe.hs:(0,0)-(0,0)
+    data Maybe a
+      = Nothing | Just a
+      deriving (Eq, Show)
+    type family Equals_0123456789 (a :: Maybe k)
+                                  (b :: Maybe k) :: Bool where
+      Equals_0123456789 Nothing Nothing = True
+      Equals_0123456789 (Just a) (Just b) = (==) a b
+      Equals_0123456789 (a :: Maybe k) (b :: Maybe k) = False
+    type instance (==) (a :: Maybe k) (b :: Maybe k) = Equals_0123456789 a b
+    data instance Sing (z :: Maybe a)
+      = z ~ Nothing => SNothing |
+        forall (n :: a). z ~ Just n => SJust (Sing n)
+    type SMaybe (z :: Maybe a) = Sing z
+    instance SingKind (KProxy :: KProxy a) =>
+             SingKind (KProxy :: KProxy (Maybe a)) where
+      type DemoteRep (KProxy :: KProxy (Maybe a)) = Maybe (DemoteRep (KProxy :: KProxy a))
+      fromSing SNothing = Nothing
+      fromSing (SJust b) = Just (fromSing b)
+      toSing Nothing = SomeSing SNothing
+      toSing (Just b)
+        = case toSing b :: SomeSing (KProxy :: KProxy a) of {
+            SomeSing c -> SomeSing (SJust c) }
+    instance SEq (KProxy :: KProxy a) =>
+             SEq (KProxy :: KProxy (Maybe a)) where
+      (%:==) SNothing SNothing = STrue
+      (%:==) SNothing (SJust _) = SFalse
+      (%:==) (SJust _) SNothing = SFalse
+      (%:==) (SJust a) (SJust b) = (%:==) a b
+    instance SDecide (KProxy :: KProxy a) =>
+             SDecide (KProxy :: KProxy (Maybe a)) where
+      (%~) SNothing SNothing = Proved Refl
+      (%~) SNothing (SJust _) = Disproved (\case {})
+      (%~) (SJust _) SNothing = Disproved (\case {})
+      (%~) (SJust a) (SJust b)
+        = case (%~) a b of {
+            Proved Refl -> Proved Refl
+            Disproved contra -> Disproved (\ Refl -> contra Refl) }
+    instance SingI Nothing where
+      sing = SNothing
+    instance SingI n => SingI (Just (n :: a)) where
+      sing = SJust sing

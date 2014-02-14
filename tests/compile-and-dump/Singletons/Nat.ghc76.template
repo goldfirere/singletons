@@ -1,0 +1,79 @@
+Singletons/Nat.hs:0:0: Splicing declarations
+     singletons
+
+       [d| plus :: Nat -> Nat -> Nat
+           plus Zero m = m
+           plus (Succ n) m = Succ (plus n m)
+
+           pred :: Nat -> Nat
+           pred Zero = Zero
+           pred (Succ n) = n
+
+           data Nat
+             where
+               Zero :: Nat
+               Succ :: Nat -> Nat
+             deriving (Eq, Show, Read) |]
+   ======>
+     Singletons/Nat.hs:(0,0)-(0,0)
+     data Nat
+       = Zero | Succ Nat
+       deriving (Eq, Show, Read)
+     plus :: Nat -> Nat -> Nat
+     plus Zero m = m
+     plus (Succ n) m = Succ (plus n m)
+     pred :: Nat -> Nat
+     pred Zero = Zero
+     pred (Succ n) = n
+     type instance (:==) Zero Zero = True
+     type instance (:==) Zero (Succ b) = False
+     type instance (:==) (Succ a) Zero = False
+     type instance (:==) (Succ a) (Succ b) = :== a b
+     type instance Plus Zero m = m
+     type instance Plus (Succ n) m = Succ (Plus n m)
+     type instance Pred Zero = Zero
+     type instance Pred (Succ n) = n
+     type family Plus (a :: Nat) (a :: Nat) :: Nat
+     type family Pred (a :: Nat) :: Nat
+     data instance Sing (z :: Nat)
+       = z ~ Zero => SZero |
+         forall (n :: Nat). z ~ Succ n => SSucc (Sing n)
+     type SNat (z :: Nat) = Sing z
+     instance SingKind (KProxy :: KProxy Nat) where
+       type instance DemoteRep (KProxy :: KProxy Nat) = Nat
+       fromSing SZero = Zero
+       fromSing (SSucc b) = Succ (fromSing b)
+       toSing Zero = SomeSing SZero
+       toSing (Succ b)
+         = case toSing b :: SomeSing (KProxy :: KProxy Nat) of {
+             SomeSing c -> SomeSing (SSucc c) }
+     instance SEq (KProxy :: KProxy Nat) where
+       %:== SZero SZero = STrue
+       %:== SZero (SSucc _) = SFalse
+       %:== (SSucc _) SZero = SFalse
+       %:== (SSucc a) (SSucc b) = (%:==) a b
+     instance SDecide (KProxy :: KProxy Nat) where
+       %~ SZero SZero = Proved Refl
+       %~ SZero (SSucc _)
+         = Disproved
+             (\case {
+                _ -> error "Empty case reached -- this should be impossible" })
+       %~ (SSucc _) SZero
+         = Disproved
+             (\case {
+                _ -> error "Empty case reached -- this should be impossible" })
+       %~ (SSucc a) (SSucc b)
+         = case (%~) a b of {
+             Proved Refl -> Proved Refl
+             Disproved contra -> Disproved (\ Refl -> contra Refl) }
+     instance SingI Zero where
+       sing = SZero
+     instance SingI n => SingI (Succ (n :: Nat)) where
+       sing = SSucc sing
+     sPlus ::
+       forall (t :: Nat) (t :: Nat). Sing t -> Sing t -> Sing (Plus t t)
+     sPlus SZero m = m
+     sPlus (SSucc n) m = SSucc (sPlus n m)
+     sPred :: forall (t :: Nat). Sing t -> Sing (Pred t)
+     sPred SZero = SZero
+     sPred (SSucc n) = n
