@@ -11,6 +11,8 @@ Singletons/BoxUnBox.hs:0:0: Splicing declarations
     unBox (FBox a) = a
     type family UnBox (a :: Box a) :: a where
          UnBox (FBox a) = a
+    data UnBoxSym0 (a :: TyFun (Box a) a)
+    type instance Apply UnBoxSym0 a = UnBox a
     data instance Sing (z :: Box a)
       = forall (n :: a). z ~ FBox n => SFBox (Sing n)
     type SBox (z :: Box a) = Sing z

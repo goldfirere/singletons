@@ -9,3 +9,5 @@ Promote/NumArgs.hs:0:0: Splicing declarations
     returnFunc _ = Succ
     type family ReturnFunc (a :: Nat) :: Nat -> Nat where
          ReturnFunc z = Succ
+    data ReturnFuncSym0 (a :: TyFun Nat (Nat -> Nat))
+    type instance Apply ReturnFuncSym0 a = ReturnFunc a

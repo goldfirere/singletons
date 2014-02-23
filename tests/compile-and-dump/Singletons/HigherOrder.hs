@@ -3,6 +3,7 @@ module Singletons.HigherOrder where
 import Data.Singletons.TH
 import Data.Singletons.List
 import Data.Singletons.Maybe
+import Data.Proxy
 
 $(singletons [d|
   map :: (a -> b) -> [a] -> [b]

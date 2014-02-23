@@ -7,5 +7,7 @@ Promote/NumArgs.hs:0:0: Splicing declarations
     Promote/NumArgs.hs:(0,0)-(0,0)
     returnFunc :: Nat -> Nat -> Nat
     returnFunc _ = Succ
-    type instance ReturnFunc z = Succ
     type family ReturnFunc (a :: Nat) :: Nat -> Nat
+    type instance ReturnFunc z = Succ
+    data ReturnFuncSym0 (a :: TyFun Nat (Nat -> Nat))
+    type instance Apply ReturnFuncSym0 a = ReturnFunc a

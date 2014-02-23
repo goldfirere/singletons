@@ -52,12 +52,22 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
       Leq Zero z = True
       Leq (Succ z) Zero = False
       Leq (Succ a) (Succ b) = Leq a b
+    data LeqSym1 (a :: Nat) (a :: TyFun Nat Bool)
+    data LeqSym0 (a :: TyFun Nat (TyFun Nat Bool -> *))
+    type instance Apply (LeqSym1 a) a = Leq a a
+    type instance Apply LeqSym0 a = LeqSym1 a
     type family Insert (a :: Nat) (a :: [Nat]) :: [Nat] where
       Insert n GHC.Types.[] = '[n]
       Insert n ((GHC.Types.:) h t) = If (Leq n h) ((GHC.Types.:) n ((GHC.Types.:) h t)) ((GHC.Types.:) h (Insert n t))
+    data InsertSym1 (a :: Nat) (a :: TyFun [Nat] [Nat])
+    data InsertSym0 (a :: TyFun Nat (TyFun [Nat] [Nat] -> *))
+    type instance Apply (InsertSym1 a) a = Insert a a
+    type instance Apply InsertSym0 a = InsertSym1 a
     type family InsertionSort (a :: [Nat]) :: [Nat] where
       InsertionSort GHC.Types.[] = '[]
       InsertionSort ((GHC.Types.:) h t) = Insert h (InsertionSort t)
+    data InsertionSortSym0 (a :: TyFun [Nat] [Nat])
+    type instance Apply InsertionSortSym0 a = InsertionSort a
     sLeq ::
       forall (t :: Nat) (t :: Nat). Sing t -> Sing t -> Sing (Leq t t)
     sLeq SZero _ = STrue
