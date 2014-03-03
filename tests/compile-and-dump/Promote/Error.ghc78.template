@@ -10,6 +10,6 @@ Promote/Error.hs:0:0: Splicing declarations
     head GHC.Types.[] = error "Data.Singletons.List.head: empty list"
     type family Head (a :: [a]) :: a where
       Head ((GHC.Types.:) a z) = a
-      Head GHC.Types.[] = Error "Data.Singletons.List.head: empty list"
+      Head GHC.Types.[] = Apply ErrorSym0 "Data.Singletons.List.head: empty list"
     data HeadSym0 (a :: TyFun [a] a)
     type instance Apply HeadSym0 a = Head a

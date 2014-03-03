@@ -17,13 +17,14 @@
 
 module Data.Singletons.Eq (
   SEq(..),
-  type (==), (:==), (:/=)
+  type (==), (:==), (:/=), (:==$), (:==$$), (:/=$), (:/=$$)
   ) where
 
-import Data.Singletons.Util
 import Data.Singletons.Bool
-import Data.Singletons.Singletons
 import Data.Singletons.Core
+import Data.Singletons.Singletons
+import Data.Singletons.Types
+import Data.Singletons.Util
 import GHC.TypeLits ( Nat, Symbol )
 import Unsafe.Coerce   -- for TypeLits instances
 
@@ -36,6 +37,11 @@ import Data.Type.Equality
 -- convention.
 type a :== b = a == b
 
+data (:==$$) (a :: k1) (b :: TyFun k1 Bool)
+data (:==$) (a :: TyFun k1 (TyFun k1 Bool -> *))
+type instance Apply ((:==$$) a) b = a :== b
+type instance Apply  (:==$)     a = (:==$$) a
+
 #else
 import Data.Singletons.Types
 import Data.Singletons.Promote
@@ -46,6 +52,10 @@ type a == b = a :== b
 #endif
 
 type a :/= b = Not (a :== b)
+data (:/=$$) (a :: k1) (b :: TyFun k1 Bool)
+data (:/=$) (a :: TyFun k1 (TyFun k1 Bool -> *))
+type instance Apply ((:/=$$) a) b = a :/= b
+type instance Apply  (:/=$)     a = (:/=$$) a
 
 -- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
 -- that instances define a body for '(%:==)'. You may also supply a body for '(%:/=)'.

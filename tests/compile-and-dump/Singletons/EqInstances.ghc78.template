@@ -11,13 +11,13 @@ Singletons/EqInstances.hs:0:0: Splicing declarations
       (%:==) ((:%+:) _ _) SFLeaf = SFalse
       (%:==) ((:%+:) a a) ((:%+:) b b) = (%:&&) ((%:==) a b) ((%:==) a b)
     type family Equals_0123456789 (a :: Foo) (b :: Foo) :: Bool where
-      Equals_0123456789 FLeaf FLeaf = True
+      Equals_0123456789 FLeaf FLeaf = TrueSym0
       Equals_0123456789 ((:+:) a a) ((:+:) b b) = (:&&) ((==) a b) ((==) a b)
-      Equals_0123456789 (a :: Foo) (b :: Foo) = False
+      Equals_0123456789 (a :: Foo) (b :: Foo) = FalseSym0
     type instance (==) (a :: Foo) (b :: Foo) = Equals_0123456789 a b
     instance SEq (KProxy :: KProxy Empty) where
       (%:==) a _ = case a of { }
     type family Equals_0123456789 (a :: Empty)
                                   (b :: Empty) :: Bool where
-      Equals_0123456789 (a :: Empty) (b :: Empty) = False
+      Equals_0123456789 (a :: Empty) (b :: Empty) = FalseSym0
     type instance (==) (a :: Empty) (b :: Empty) = Equals_0123456789 a b

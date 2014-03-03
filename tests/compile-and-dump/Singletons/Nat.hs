@@ -1,6 +1,7 @@
 module Singletons.Nat where
 
 import Data.Singletons.TH
+import Data.Singletons.Prelude
 
 $(singletons [d|
   data Nat where

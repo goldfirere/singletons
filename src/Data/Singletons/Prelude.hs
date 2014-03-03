@@ -17,6 +17,7 @@
 --
 ----------------------------------------------------------------------------
 
+{-# LANGUAGE CPP #-}
 module Data.Singletons.Prelude (
   -- * Basic singleton definitions
   module Data.Singletons,
@@ -81,7 +82,6 @@ module Data.Singletons.Prelude (
   If, sIf, Not, sNot, (:&&), (:||), (%:&&), (%:||),
 
   -- * Functions working with lists
-{-
   Head, Tail, (:++), (%:++),
 
   -- * Singleton equality
@@ -90,8 +90,45 @@ module Data.Singletons.Prelude (
   -- * Other datatypes
   Maybe_, sMaybe_,
   Either_, sEither_,
-  Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry
--}
+  Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry,
+
+  -- * Other functions
+  either_, -- reimplementation either to be used with singletons library
+
+  -- * Defunctionalization symbols
+  TrueSym0, FalseSym0,
+  (::$), (::$$), -- Missing symbol for [] - See #21
+  NothingSym0, JustSym0,
+  LeftSym0, RightSym0,
+  Tuple0Sym0,
+  Tuple2Sym0, Tuple2Sym1,
+  Tuple3Sym0, Tuple3Sym1, Tuple3Sym2,
+  Tuple4Sym0, Tuple4Sym1, Tuple4Sym2, Tuple4Sym3,
+  Tuple5Sym0, Tuple5Sym1, Tuple5Sym2, Tuple5Sym3, Tuple5Sym4,
+  Tuple6Sym0, Tuple6Sym1, Tuple6Sym2, Tuple6Sym3, Tuple6Sym4, Tuple6Sym5,
+  Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6,
+
+  NotSym0, (:&&$), (:||$), (:&&$$), (:||$$),
+  Bool_Sym0, Bool_Sym1, Bool_Sym2, OtherwiseSym0,
+
+  (:++$$), (:++$),
+  HeadSym0, TailSym0,
+  MapSym0, MapSym1,
+  ReverseSym0, Reverse_auxSym0, Reverse_auxSym1,
+
+  Maybe_Sym0, Maybe_Sym1, Maybe_Sym2,
+  IsJustSym0, IsNothingSym0, FromJustSym0,
+  FromMaybeSym0, FromMaybeSym1, MaybeToListSym0, ListToMaybeSym0,
+  CatMaybesSym0, MapMaybeSym0, MapMaybeSym1,
+
+  Either_Sym0, Either_Sym1, Either_Sym2,
+  LeftsSym0, RightsSym0,
+  PartitionEithersSym0, PartitionEithers_auxSym0, PartitionEithers_auxSym1,
+  IsLeftSym0, IsRightSym0,
+
+  FstSym0, SndSym0,
+  CurrySym0, CurrySym1, CurrySym2, UncurrySym0, UncurrySym1,
+  SwapSym0
   ) where
 
 import Data.Singletons

@@ -9,8 +9,8 @@ Singletons/Contains.hs:0:0: Splicing declarations
     contains _ GHC.Types.[] = False
     contains elt (h GHC.Types.: t) = ((elt == h) || (contains elt t))
     type family Contains (a :: a) (a :: [a]) :: Bool where
-         Contains z GHC.Types.[] = False
-         Contains elt ((GHC.Types.:) h t) = (:||) ((:==) elt h) (Contains elt t)
+         Contains z GHC.Types.[] = FalseSym0
+         Contains elt ((GHC.Types.:) h t) = Apply (Apply (:||$) (Apply (Apply (:==$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
     data ContainsSym1 (a :: a) (a :: TyFun [a] Bool)
     data ContainsSym0 (a :: TyFun a (TyFun [a] Bool -> *))
     type instance Apply (ContainsSym1 a) a = Contains a a

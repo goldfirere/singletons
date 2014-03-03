@@ -20,7 +20,6 @@ import Control.Monad
 import Control.Applicative
 import Data.Singletons.Types
 import Data.List (find)
-import Debug.Trace
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Proxy
@@ -40,8 +39,8 @@ type TypeContext = [Type]
 singFamilyName, singIName, singMethName, demoteRepName, singKindClassName,
   sEqClassName, sEqMethName, sconsName, snilName, sIfName, undefinedName,
   kProxyDataName, kProxyTypeName, proxyName, someSingTypeName, someSingDataName,
-  nilName, consName, sListName, eqName, sDecideClassName, sDecideMethName,
-  provedName, disprovedName, reflName, toSingName, fromSingName, listName :: Name
+  sListName, eqName, sDecideClassName, sDecideMethName,
+  provedName, disprovedName, reflName, toSingName, fromSingName :: Name
 singFamilyName = mkName "Sing"
 singIName = mkName "SingI"
 singMethName = mkName "sing"
@@ -60,9 +59,6 @@ kProxyTypeName = ''KProxy
 proxyName = mkName "Proxy"
 someSingTypeName = mkName "SomeSing"
 someSingDataName = mkName "SomeSing"
-nilName = '[]
-consName = '(:)
-listName = ''[]
 sListName = mkName "SList"
 eqName = ''Eq
 sDecideClassName = mkName "SDecide"
@@ -129,6 +125,11 @@ singInfo (ClassI _dec _instances) =
   fail "Singling of class info not supported"
 singInfo (ClassOpI _name _ty _className _fixity) =
   fail "Singling of class members info not supported"
+singInfo (TyConI dec@(DataD cxt name tvbs ctors derivings)) = do -- TODO: document this special case
+  (newDecls, binds)  <- evalForPair $ singDec dec --rename binds
+  newDecls' <- mapM (singDec' binds) newDecls
+  promotedDataDecs <- promoteDataD cxt name tvbs ctors derivings
+  return $ promotedDataDecs ++ newDecls'
 singInfo (TyConI dec) = do
   (newDecls, binds)  <- evalForPair $ singDec dec --rename binds
   newDecls' <- mapM (singDec' binds) newDecls
@@ -467,10 +468,6 @@ singDataD rep cxt name tvbs ctors derivings
   k <- promoteType (foldType (ConT name) (map VarT tvbNames))
   (ctors', ctorInstDecls) <- evalForPair $ mapM (singCtor a) ctors
 
-  promotedDataDecs <- promoteDataD cxt name tvbs ctors derivings
-
-  trace ("Data decs promoted in singDataD: " ++ show promotedDataDecs) $ return ()
-
   -- instance for SingKind
   fromSingClauses <- mapM mkFromSingClause ctors
   toSingClauses   <- mapM mkToSingClause ctors
@@ -499,7 +496,6 @@ singDataD rep cxt name tvbs ctors derivings
   return $ (DataInstD [] singFamilyName [SigT a k] ctors' []) :
            kindedSynInst :
            singKindInst :
-           promotedDataDecs ++
            sEqInsts ++
            ctorInstDecls
   where -- in the Rep case, the names of the constructors are in the wrong scope

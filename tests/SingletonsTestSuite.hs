@@ -27,16 +27,19 @@ tests = testGroup "Testsuite" $ [
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "PatternMatching"
-    , compileAndDumpStdTest "NumArgs" -- remove once we have eta-expansion
+    , compileAndDumpStdTest "NumArgs"
     , compileAndDumpStdTest "Error"
-    ]{-,
+    , compileAndDumpStdTest "Constructors"
+    , compileAndDumpStdTest "Lambdas"
+    , compileAndDumpStdTest "LambdasComprehensive"
+    ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Main" ghcOpts
     , runProgramTest     "GradingClient/Main" [] -- see Note [No test dependencies]
     ],
     testCompileAndDumpGroup "InsertionSort"
     [ compileAndDumpStdTest "InsertionSortImp"
-    ]-}
+    ]
   ]
 
 -- Note [No test dependencies]

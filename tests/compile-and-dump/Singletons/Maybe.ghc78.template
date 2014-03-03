@@ -10,10 +10,13 @@ Singletons/Maybe.hs:0:0: Splicing declarations
       deriving (Eq, Show)
     type family Equals_0123456789 (a :: Maybe k)
                                   (b :: Maybe k) :: Bool where
-      Equals_0123456789 Nothing Nothing = True
+      Equals_0123456789 Nothing Nothing = TrueSym0
       Equals_0123456789 (Just a) (Just b) = (==) a b
-      Equals_0123456789 (a :: Maybe k) (b :: Maybe k) = False
+      Equals_0123456789 (a :: Maybe k) (b :: Maybe k) = FalseSym0
     type instance (==) (a :: Maybe k) (b :: Maybe k) = Equals_0123456789 a b
+    type NothingSym0 = Nothing
+    data JustSym0 (a :: TyFun a (Maybe a))
+    type instance Apply JustSym0 a = Just a
     data instance Sing (z :: Maybe a)
       = z ~ Nothing => SNothing |
         forall (n :: a). z ~ Just n => SJust (Sing n)

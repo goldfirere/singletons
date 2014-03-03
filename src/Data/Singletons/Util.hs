@@ -42,7 +42,6 @@ basicTypes = [ ''Bool
              , ''Maybe
              , ''Either
              , ''Ordering
-{-
              , ''[]
              , ''()
              , ''(,)
@@ -51,10 +50,9 @@ basicTypes = [ ''Bool
              , ''(,,,,)
              , ''(,,,,,)
              , ''(,,,,,,)
--}
              ]
 
--- like newName, but even more unique (unique across different splices)
+-- Like newName, but even more unique (unique across different splices)
 -- TH doesn't allow "newName"s to work at the top-level, so we have to
 -- do this trick to ensure the Extract functions are unique
 newUniqueName :: Quasi q => String -> q Name
