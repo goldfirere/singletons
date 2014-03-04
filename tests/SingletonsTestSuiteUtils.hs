@@ -8,6 +8,7 @@ module SingletonsTestSuiteUtils (
  ) where
 
 import Control.Exception  ( Exception, throw                           )
+import Data.List          ( intercalate                                )
 import Data.Typeable      ( Typeable                                   )
 import System.Exit        ( ExitCode(..)                               )
 import System.FilePath    ( takeDirectory, takeBaseName, pathSeparator )
@@ -191,11 +192,11 @@ runProgramTest testName opts =
 
 filterWithSed :: FilePath -> IO ()
 filterWithSed file = runProcessWithOpts CreatePipe "sed"
-  [ "-i"
-  , "-e s/([0-9]*,[0-9]*)-([0-9]*,[0-9]*)/(0,0)-(0,0)/g"
-  , "-e s/:[0-9][0-9]*:[0-9][0-9]*/:0:0/g"
-  , "-e s/:[0-9]*:[0-9]*-[0-9]*/:0:0:/g"
-  , "-e s/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/0123456789/g"
+  [ "-e 's/([0-9]*,[0-9]*)-([0-9]*,[0-9]*)/(0,0)-(0,0)/g'"
+  , "-e 's/:[0-9][0-9]*:[0-9][0-9]*/:0:0/g'"
+  , "-e 's/:[0-9]*:[0-9]*-[0-9]*/:0:0:/g'"
+  , "-e 's/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/0123456789/g'"
+  , "-i"
   , file
   ]
 
@@ -209,9 +210,10 @@ buildGoldenFile templateFilePath goldenFilePath = do
 
 runProcessWithOpts :: StdStream -> String -> [String] -> IO ()
 runProcessWithOpts stdout program opts = do
-  (_, _, Just serr, pid) <- createProcess (proc program opts)
-                                              { std_out = stdout
-                                              , std_err = CreatePipe }
+  (_, _, Just serr, pid) <-
+      createProcess (proc "bash" ["-c", (intercalate " " (program : opts))])
+                    { std_out = stdout
+                    , std_err = CreatePipe }
   ecode <- waitForProcess pid
   case ecode of
     ExitSuccess   -> return ()
