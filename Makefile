@@ -1,4 +1,4 @@
-version=0.9.3
+version=0.9.4
 source=src/Data/Singletons.hs src/Data/Singletons/*.hs
 test-source=tests/SingletonsTestSuite.hs tests/SingletonsTestSuiteUtils.hs
 
@@ -8,7 +8,7 @@ configure: dist/setup-config
 
 build: dist/setup-config dist/build/libHSsingletons-$(version).a
 
-tests: dist/tests-enabled.dummy dist/build/compile/compile dist/test/singletons-0.9.3-compile.log
+tests: dist/tests-enabled.dummy dist/build/compile/compile dist/test/singletons-$(version)-compile.log
 
 install: dist/setup-config dist/build/libHSsingletons-$(version).a
 	cabal install
@@ -28,7 +28,7 @@ dist/build/libHSsingletons-$(version).a: $(source)
 dist/build/compile/compile: dist/tests-enabled.dummy $(source) $(test-source)
 	cabal build
 
-dist/test/singletons-0.9.3-compile.log: dist/tests-enabled.dummy dist/build/compile/compile
+dist/test/singletons-$(version)-compile.log: dist/tests-enabled.dummy dist/build/compile/compile
 	cabal test
 
 clean: clean-tests

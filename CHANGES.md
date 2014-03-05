@@ -1,6 +1,12 @@
 Changelog for singletons project
 ================================
 
+0.9.4
+-----
+
+Minor changes, such as documentation, ensuring greater compatibility
+with GHC versions.
+
 0.9.3
 -----
 

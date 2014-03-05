@@ -2,7 +2,11 @@ TODO for singletons project:
 
 Ord instance
 
-generate connection between :==: and :~:
+SNat, SSymbol in a new Data.Singletons.TypeLits
+
+lift :: (forall a. Sing (a :: ka) -> Sing (f a :: kb)) -> SomeSing ('KProxy :: KProxy ka) -> SomeSing ('KProxy :: KProxy kb)
+lift f (SomeSing s) = SomeSing (f s)
+
 
 type W p = forall a. (p => a) -> a
 natFold :: natFold :: forall p n. Sing n -> W (p Zero) -> (forall m. W (p m) -> W (p (Succ m))) -> W (p n)
