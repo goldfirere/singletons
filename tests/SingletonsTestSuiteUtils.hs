@@ -192,11 +192,11 @@ runProgramTest testName opts =
 
 filterWithSed :: FilePath -> IO ()
 filterWithSed file = runProcessWithOpts CreatePipe "sed"
-  [ "-e 's/([0-9]*,[0-9]*)-([0-9]*,[0-9]*)/(0,0)-(0,0)/g'"
-  , "-e 's/:[0-9][0-9]*:[0-9][0-9]*/:0:0/g'"
-  , "-e 's/:[0-9]*:[0-9]*-[0-9]*/:0:0:/g'"
-  , "-e 's/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/0123456789/g'"
-  , "-i"
+  [ "-i", "''"
+  , "-e", "'s/([0-9]*,[0-9]*)-([0-9]*,[0-9]*)/(0,0)-(0,0)/g'"
+  , "-e", "'s/:[0-9][0-9]*:[0-9][0-9]*/:0:0/g'"
+  , "-e", "'s/:[0-9]*:[0-9]*-[0-9]*/:0:0:/g'"
+  , "-e", "'s/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/0123456789/g'"
   , file
   ]
 
@@ -204,7 +204,7 @@ buildGoldenFile :: FilePath -> FilePath -> IO ()
 buildGoldenFile templateFilePath goldenFilePath = do
   hGoldenFile <- openFile goldenFilePath WriteMode
   runProcessWithOpts (UseHandle hGoldenFile) "awk"
-            [ "-ftests/compile-and-dump/buildGoldenFiles.awk"
+            [ "-f", "tests/compile-and-dump/buildGoldenFiles.awk"
             , templateFilePath
             ]
 
