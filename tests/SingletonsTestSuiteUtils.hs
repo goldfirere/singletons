@@ -139,7 +139,7 @@ runProgramTest testName opts =
       runProgram
   where
     testDirectory    = goldenPath ++ takeDirectory testName
-    testBaseName     = "./" ++ takeBaseName testName
+    program          = "./" ++ takeBaseName testName
     templateFilePath = goldenPath ++ testName ++ ".run.template"
     goldenFilePath   = goldenPath ++ testName ++ ".run.golden"
     actualFilePath   = goldenPath ++ testName ++ ".run.actual"
@@ -147,10 +147,11 @@ runProgramTest testName opts =
     runProgram :: IO ()
     runProgram = do
       hActualFile <- openFile actualFilePath WriteMode
-      (_, _, _, pid) <- createProcess (proc testBaseName opts)
-                                              { std_out = UseHandle hActualFile
-                                              , std_err = UseHandle hActualFile
-                                              , cwd     = Just testDirectory }
+      (_, _, _, pid) <-
+          createProcess (proc "bash" ["-c", (intercalate " " (program : opts))])
+                        { std_out = UseHandle hActualFile
+                        , std_err = UseHandle hActualFile
+                        , cwd     = Just testDirectory }
       _ <- waitForProcess pid -- see Note [Ignore exit code]
       buildGoldenFile templateFilePath goldenFilePath
       return ()
@@ -192,7 +193,11 @@ runProgramTest testName opts =
 
 filterWithSed :: FilePath -> IO ()
 filterWithSed file = runProcessWithOpts CreatePipe "sed"
+#ifdef darwin_HOST_OS
   [ "-i", "''"
+#else
+  [ "-i"
+#endif
   , "-e", "'s/([0-9]*,[0-9]*)-([0-9]*,[0-9]*)/(0,0)-(0,0)/g'"
   , "-e", "'s/:[0-9][0-9]*:[0-9][0-9]*/:0:0/g'"
   , "-e", "'s/:[0-9]*:[0-9]*-[0-9]*/:0:0:/g'"
