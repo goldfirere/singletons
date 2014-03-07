@@ -15,7 +15,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
     type instance (==) (a :: Nat) (b :: Nat) = Equals_0123456789 a b
     type ZeroSym0 = Zero
     data SuccSym0 (k :: TyFun Nat Nat)
-    type instance Apply SuccSym0 a = Succ a
+    type instance (@@) SuccSym0 a = Succ a
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
         forall (n :: Nat). z ~ Succ n => SSucc (Sing n)
@@ -163,8 +163,8 @@ GradingClient/Database.hs:0:0: Splicing declarations
     type NATSym0 = NAT
     data VECSym1 (l :: U) (l :: TyFun Nat U)
     data VECSym0 (k :: TyFun U (TyFun Nat U -> *))
-    type instance Apply (VECSym1 a) a = VEC a a
-    type instance Apply VECSym0 a = VECSym1 a
+    type instance (@@) (VECSym1 a) a = VEC a a
+    type instance (@@) VECSym0 a = VECSym1 a
     type family Equals_0123456789 (a :: AChar)
                                   (b :: AChar) :: Bool where
       Equals_0123456789 CA CA = TrueSym0
@@ -223,44 +223,44 @@ GradingClient/Database.hs:0:0: Splicing declarations
     type CZSym0 = CZ
     data AttrSym1 (l :: [AChar]) (l :: TyFun U Attribute)
     data AttrSym0 (k :: TyFun [AChar] (TyFun U Attribute -> *))
-    type instance Apply (AttrSym1 a) a = Attr a a
-    type instance Apply AttrSym0 a = AttrSym1 a
+    type instance (@@) (AttrSym1 a) a = Attr a a
+    type instance (@@) AttrSym0 a = AttrSym1 a
     data SchSym0 (k :: TyFun [Attribute] Schema)
-    type instance Apply SchSym0 a = Sch a
+    type instance (@@) SchSym0 a = Sch a
     type family Append (a :: Schema) (a :: Schema) :: Schema where
-      Append (Sch s1) (Sch s2) = Apply SchSym0 (Apply (Apply (:++$) s1) s2)
+      Append (Sch s1) (Sch s2) = (@@) SchSym0 ((@@) ((@@) (:++$) s1) s2)
     data AppendSym1 (l :: Schema) (l :: TyFun Schema Schema)
     data AppendSym0 (k :: TyFun Schema (TyFun Schema Schema -> *))
-    type instance Apply (AppendSym1 a) a = Append a a
-    type instance Apply AppendSym0 a = AppendSym1 a
+    type instance (@@) (AppendSym1 a) a = Append a a
+    type instance (@@) AppendSym0 a = AppendSym1 a
     type family AttrNotIn (a :: Attribute) (a :: Schema) :: Bool where
       AttrNotIn z (Sch GHC.Types.[]) = TrueSym0
-      AttrNotIn (Attr name u) (Sch ((GHC.Types.:) (Attr name' z) t)) = Apply (Apply (:&&$) (Apply (Apply (:/=$) name) name')) (Apply (Apply AttrNotInSym0 (Apply (Apply AttrSym0 name) u)) (Apply SchSym0 t))
+      AttrNotIn (Attr name u) (Sch ((GHC.Types.:) (Attr name' z) t)) = (@@) ((@@) (:&&$) ((@@) ((@@) (:/=$) name) name')) ((@@) ((@@) AttrNotInSym0 ((@@) ((@@) AttrSym0 name) u)) ((@@) SchSym0 t))
     data AttrNotInSym1 (l :: Attribute) (l :: TyFun Schema Bool)
     data AttrNotInSym0 (k :: TyFun Attribute (TyFun Schema Bool -> *))
-    type instance Apply (AttrNotInSym1 a) a = AttrNotIn a a
-    type instance Apply AttrNotInSym0 a = AttrNotInSym1 a
+    type instance (@@) (AttrNotInSym1 a) a = AttrNotIn a a
+    type instance (@@) AttrNotInSym0 a = AttrNotInSym1 a
     type family Disjoint (a :: Schema) (a :: Schema) :: Bool where
       Disjoint (Sch GHC.Types.[]) z = TrueSym0
-      Disjoint (Sch ((GHC.Types.:) h t)) s = Apply (Apply (:&&$) (Apply (Apply AttrNotInSym0 h) s)) (Apply (Apply DisjointSym0 (Apply SchSym0 t)) s)
+      Disjoint (Sch ((GHC.Types.:) h t)) s = (@@) ((@@) (:&&$) ((@@) ((@@) AttrNotInSym0 h) s)) ((@@) ((@@) DisjointSym0 ((@@) SchSym0 t)) s)
     data DisjointSym1 (l :: Schema) (l :: TyFun Schema Bool)
     data DisjointSym0 (k :: TyFun Schema (TyFun Schema Bool -> *))
-    type instance Apply (DisjointSym1 a) a = Disjoint a a
-    type instance Apply DisjointSym0 a = DisjointSym1 a
+    type instance (@@) (DisjointSym1 a) a = Disjoint a a
+    type instance (@@) DisjointSym0 a = DisjointSym1 a
     type family Occurs (a :: [AChar]) (a :: Schema) :: Bool where
       Occurs z (Sch GHC.Types.[]) = FalseSym0
-      Occurs name (Sch ((GHC.Types.:) (Attr name' z) attrs)) = Apply (Apply (:||$) (Apply (Apply (:==$) name) name')) (Apply (Apply OccursSym0 name) (Apply SchSym0 attrs))
+      Occurs name (Sch ((GHC.Types.:) (Attr name' z) attrs)) = (@@) ((@@) (:||$) ((@@) ((@@) (:==$) name) name')) ((@@) ((@@) OccursSym0 name) ((@@) SchSym0 attrs))
     data OccursSym1 (l :: [AChar]) (l :: TyFun Schema Bool)
     data OccursSym0 (k :: TyFun [AChar] (TyFun Schema Bool -> *))
-    type instance Apply (OccursSym1 a) a = Occurs a a
-    type instance Apply OccursSym0 a = OccursSym1 a
+    type instance (@@) (OccursSym1 a) a = Occurs a a
+    type instance (@@) OccursSym0 a = OccursSym1 a
     type family Lookup (a :: [AChar]) (a :: Schema) :: U where
       Lookup z (Sch GHC.Types.[]) = Any
-      Lookup name (Sch ((GHC.Types.:) (Attr name' u) attrs)) = If (Apply (Apply (:==$) name) name') u (Apply (Apply LookupSym0 name) (Apply SchSym0 attrs))
+      Lookup name (Sch ((GHC.Types.:) (Attr name' u) attrs)) = If ((@@) ((@@) (:==$) name) name') u ((@@) ((@@) LookupSym0 name) ((@@) SchSym0 attrs))
     data LookupSym1 (l :: [AChar]) (l :: TyFun Schema U)
     data LookupSym0 (k :: TyFun [AChar] (TyFun Schema U -> *))
-    type instance Apply (LookupSym1 a) a = Lookup a a
-    type instance Apply LookupSym0 a = LookupSym1 a
+    type instance (@@) (LookupSym1 a) a = Lookup a a
+    type instance (@@) LookupSym0 a = LookupSym1 a
     data instance Sing (z :: U)
       = z ~ BOOL => SBOOL |
         z ~ STRING => SSTRING |
@@ -1925,23 +1925,23 @@ GradingClient/Main.hs:0:0: Splicing declarations
     type MajorName = '[CMSym0, CASym0, CJSym0, COSym0, CRSym0]
     type MajorNameSym0 = '[CMSym0, CASym0, CJSym0, COSym0, CRSym0]
     type GradingSchema =
-        Apply SchSym0 '[Apply (Apply AttrSym0 LastNameSym0) STRINGSym0,
-                        Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
-                        Apply (Apply AttrSym0 YearNameSym0) NATSym0,
-                        Apply (Apply AttrSym0 GradeNameSym0) NATSym0,
-                        Apply (Apply AttrSym0 MajorNameSym0) BOOLSym0]
+        (@@) SchSym0 '[(@@) ((@@) AttrSym0 LastNameSym0) STRINGSym0,
+                        (@@) ((@@) AttrSym0 FirstNameSym0) STRINGSym0,
+                        (@@) ((@@) AttrSym0 YearNameSym0) NATSym0,
+                        (@@) ((@@) AttrSym0 GradeNameSym0) NATSym0,
+                        (@@) ((@@) AttrSym0 MajorNameSym0) BOOLSym0]
     type GradingSchemaSym0 =
-        Apply SchSym0 '[Apply (Apply AttrSym0 LastNameSym0) STRINGSym0,
-                        Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
-                        Apply (Apply AttrSym0 YearNameSym0) NATSym0,
-                        Apply (Apply AttrSym0 GradeNameSym0) NATSym0,
-                        Apply (Apply AttrSym0 MajorNameSym0) BOOLSym0]
+        (@@) SchSym0 '[(@@) ((@@) AttrSym0 LastNameSym0) STRINGSym0,
+                        (@@) ((@@) AttrSym0 FirstNameSym0) STRINGSym0,
+                        (@@) ((@@) AttrSym0 YearNameSym0) NATSym0,
+                        (@@) ((@@) AttrSym0 GradeNameSym0) NATSym0,
+                        (@@) ((@@) AttrSym0 MajorNameSym0) BOOLSym0]
     type Names =
-        Apply SchSym0 '[Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
-                        Apply (Apply AttrSym0 LastNameSym0) STRINGSym0]
+        (@@) SchSym0 '[(@@) ((@@) AttrSym0 FirstNameSym0) STRINGSym0,
+                        (@@) ((@@) AttrSym0 LastNameSym0) STRINGSym0]
     type NamesSym0 =
-        Apply SchSym0 '[Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
-                        Apply (Apply AttrSym0 LastNameSym0) STRINGSym0]
+        (@@) SchSym0 '[(@@) ((@@) AttrSym0 FirstNameSym0) STRINGSym0,
+                        (@@) ((@@) AttrSym0 LastNameSym0) STRINGSym0]
     sLastName :: Sing LastName
     sMajorName :: Sing MajorName
     sGradeName :: Sing GradeName

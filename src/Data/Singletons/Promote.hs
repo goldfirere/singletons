@@ -14,6 +14,7 @@ module Data.Singletons.Promote where
 import Language.Haskell.TH hiding ( Q, cxt )
 import Language.Haskell.TH.Syntax ( falseName, trueName, Quasi(..) )
 import Data.Singletons.Util
+import Data.Singletons.Types
 import GHC.Exts (Any)
 import GHC.TypeLits (Symbol)
 import Prelude hiding (exp)
@@ -43,7 +44,7 @@ listName = ''[]
 headName = mkName "Head"
 tailName = mkName "Tail"
 tyFunName = mkName "TyFun"
-applyName = mkName "Apply"
+applyName = ''(@@)
 symbolName = ''Symbol
 
 falseTy :: Type

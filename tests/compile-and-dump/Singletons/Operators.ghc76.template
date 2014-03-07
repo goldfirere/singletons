@@ -24,21 +24,21 @@ Singletons/Operators.hs:0:0: Splicing declarations
     type FLeafSym0 = FLeaf
     data (::+:$$) (l :: Foo) (l :: TyFun Foo Foo)
     data (::+:$) (k :: TyFun Foo (TyFun Foo Foo -> *))
-    type instance Apply (::+:$$ a) a = :+: a a
-    type instance Apply ::+:$ a = ::+:$$ a
+    type instance (@@) (::+:$$ a) a = :+: a a
+    type instance (@@) ::+:$ a = ::+:$$ a
     type family Child (a :: Foo) :: Foo
     type instance Child FLeaf = FLeafSym0
     type instance Child (:+: a z) = a
     data ChildSym0 (k :: TyFun Foo Foo)
-    type instance Apply ChildSym0 a = Child a
+    type instance (@@) ChildSym0 a = Child a
     type family (:+) (a :: Nat) (a :: Nat) :: Nat
     type instance (:+) Zero m = m
     type instance (:+) (Succ n) m =
-        Apply SuccSym0 (Apply (Apply :+$ n) m)
+        (@@) SuccSym0 ((@@) ((@@) :+$ n) m)
     data (:+$$) (l :: Nat) (l :: TyFun Nat Nat)
     data (:+$) (k :: TyFun Nat (TyFun Nat Nat -> *))
-    type instance Apply (:+$$ a) a = :+ a a
-    type instance Apply :+$ a = :+$$ a
+    type instance (@@) (:+$$ a) a = :+ a a
+    type instance (@@) :+$ a = :+$$ a
     data instance Sing (z :: Foo)
       = z ~ FLeaf => SFLeaf |
         forall (n :: Foo) (n :: Foo). z ~ :+: n n =>

@@ -849,40 +849,40 @@ GradingClient/Database.hs:0:0: Splicing declarations
     type instance Append (Sch s1) (Sch s2) = Sch (:++ s1 s2)
     data AppendSym1 (a :: Schema) (a :: TyFun Schema Schema)
     data AppendSym0 (a :: TyFun Schema (TyFun Schema Schema -> *))
-    type instance Apply (AppendSym1 a) a = Append a a
-    type instance Apply AppendSym0 a = AppendSym1 a
+    type instance (@@) (AppendSym1 a) a = Append a a
+    type instance (@@) AppendSym0 a = AppendSym1 a
     type family AttrNotIn (a :: Attribute) (a :: Schema) :: Bool
     type instance AttrNotIn z (Sch GHC.Types.[]) = True
     type instance AttrNotIn (Attr name u) (Sch (GHC.Types.: (Attr name' z) t)) =
         :&& (:/= name name') (AttrNotIn (Attr name u) (Sch t))
     data AttrNotInSym1 (a :: Attribute) (a :: TyFun Schema Bool)
     data AttrNotInSym0 (a :: TyFun Attribute (TyFun Schema Bool -> *))
-    type instance Apply (AttrNotInSym1 a) a = AttrNotIn a a
-    type instance Apply AttrNotInSym0 a = AttrNotInSym1 a
+    type instance (@@) (AttrNotInSym1 a) a = AttrNotIn a a
+    type instance (@@) AttrNotInSym0 a = AttrNotInSym1 a
     type family Disjoint (a :: Schema) (a :: Schema) :: Bool
     type instance Disjoint (Sch GHC.Types.[]) z = True
     type instance Disjoint (Sch (GHC.Types.: h t)) s =
         :&& (AttrNotIn h s) (Disjoint (Sch t) s)
     data DisjointSym1 (a :: Schema) (a :: TyFun Schema Bool)
     data DisjointSym0 (a :: TyFun Schema (TyFun Schema Bool -> *))
-    type instance Apply (DisjointSym1 a) a = Disjoint a a
-    type instance Apply DisjointSym0 a = DisjointSym1 a
+    type instance (@@) (DisjointSym1 a) a = Disjoint a a
+    type instance (@@) DisjointSym0 a = DisjointSym1 a
     type family Occurs (a :: [AChar]) (a :: Schema) :: Bool
     type instance Occurs z (Sch GHC.Types.[]) = False
     type instance Occurs name (Sch (GHC.Types.: (Attr name' z) attrs)) =
         :|| (:== name name') (Occurs name (Sch attrs))
     data OccursSym1 (a :: [AChar]) (a :: TyFun Schema Bool)
     data OccursSym0 (a :: TyFun [AChar] (TyFun Schema Bool -> *))
-    type instance Apply (OccursSym1 a) a = Occurs a a
-    type instance Apply OccursSym0 a = OccursSym1 a
+    type instance (@@) (OccursSym1 a) a = Occurs a a
+    type instance (@@) OccursSym0 a = OccursSym1 a
     type family Lookup (a :: [AChar]) (a :: Schema) :: U
     type instance Lookup z (Sch GHC.Types.[]) = Any
     type instance Lookup name (Sch (GHC.Types.: (Attr name' u) attrs)) =
         If (:== name name') u (Lookup name (Sch attrs))
     data LookupSym1 (a :: [AChar]) (a :: TyFun Schema U)
     data LookupSym0 (a :: TyFun [AChar] (TyFun Schema U -> *))
-    type instance Apply (LookupSym1 a) a = Lookup a a
-    type instance Apply LookupSym0 a = LookupSym1 a
+    type instance (@@) (LookupSym1 a) a = Lookup a a
+    type instance (@@) LookupSym0 a = LookupSym1 a
     data instance Sing (z :: U)
       = z ~ BOOL => SBOOL |
         z ~ STRING => SSTRING |

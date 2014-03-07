@@ -14,7 +14,7 @@ Singletons/Maybe.hs:0:0: Splicing declarations
     type instance (:==) (Just a) (Just b) = :== a b
     type NothingSym0 = Nothing
     data JustSym0 (k :: TyFun a (Maybe a))
-    type instance Apply JustSym0 a = Just a
+    type instance (@@) JustSym0 a = Just a
     data instance Sing (z :: Maybe a)
       = z ~ Nothing => SNothing |
         forall (n :: a). z ~ Just n => SJust (Sing n)

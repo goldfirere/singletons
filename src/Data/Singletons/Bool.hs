@@ -70,7 +70,7 @@ sNot SFalse = STrue
 sNot STrue  = SFalse
 
 data NotSym0 (t :: TyFun Bool Bool)
-type instance Apply NotSym0 a = Not a
+type instance NotSym0 @@ a = Not a
 
 (%:&&) :: SBool a -> SBool b -> SBool (a :&& b)
 SFalse %:&& _ = SFalse
@@ -78,8 +78,8 @@ STrue  %:&& a = a
 
 data (:&&$$) (a :: Bool) (b :: TyFun Bool Bool)
 data (:&&$)  (a :: TyFun Bool (TyFun Bool Bool -> *))
-type instance Apply ((:&&$$) a) b = a :&& b
-type instance Apply  (:&&$)     a = (:&&$$) a
+type instance ((:&&$$) a) @@ b = a :&& b
+type instance (:&&$)      @@ a = (:&&$$) a
 
 (%:||) :: SBool a -> SBool b -> SBool (a :|| b)
 SFalse %:|| a = a
@@ -87,8 +87,8 @@ STrue  %:|| _ = STrue
 
 data (:||$$) (a :: Bool) (b :: TyFun Bool Bool)
 data (:||$)  (a :: TyFun Bool (TyFun Bool Bool -> *))
-type instance Apply ((:||$$) a) b = a :|| b
-type instance Apply  (:||$)     a = (:||$$) a
+type instance ((:||$$) a) @@ b = a :|| b
+type instance (:||$)      @@ a = (:||$$) a
 
 #else
 

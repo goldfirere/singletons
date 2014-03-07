@@ -28,7 +28,7 @@ module Data.Singletons.TH (
   singDecideInstances, singDecideInstance,
 
   -- ** defunctionalization
-  TyFun, TyCon, Apply,
+  TyFun, TyCon, type (@@),
 
   -- ** Utility function
   cases,

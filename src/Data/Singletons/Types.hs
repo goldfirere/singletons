@@ -18,7 +18,7 @@
 
 module Data.Singletons.Types (
   Refuted, Decision(..),
-  TyFun, TyCon, Apply,
+  TyFun, TyCon, type (@@),
 #if __GLASGOW_HASKELL__ < 707
   KProxy(..), Proxy(..),
   (:~:)(..), gcastWith, TestEquality(..)
@@ -66,8 +66,9 @@ data TyFun :: * -> * -> *
 data TyCon :: (k1 -> k2) -> (TyFun k1 k2) -> *
 
 -- | Type level function application
-type family Apply (f :: TyFun k1 k2 -> *) (x :: k1) :: k2
-type instance Apply (TyCon f) x = f x
+type family (f :: TyFun k1 k2 -> *) @@ (x :: k1) :: k2
+type instance (TyCon f) @@ x = f x
+infixl 9 @@
 
 -- | Because we can never create a value of type 'Void', a function that type-checks
 -- at @a -> Void@ shows that objects of type @a@ can never exist. Thus, we say that

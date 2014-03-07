@@ -18,12 +18,12 @@ Promote/NumArgs.hs:0:0: Splicing declarations
     type family ReturnFunc (a :: Nat) :: TyFun Nat Nat -> * where
          ReturnFunc z = SuccSym0
     data ReturnFuncSym0 (k :: TyFun Nat (TyFun Nat Nat -> *))
-    type instance Apply ReturnFuncSym0 a = ReturnFunc a
+    type instance (@@) ReturnFuncSym0 a = ReturnFunc a
     type family Id (a :: a) :: a where
       Id x = x
     data IdSym0 (k :: TyFun a a)
-    type instance Apply IdSym0 a = Id a
+    type instance (@@) IdSym0 a = Id a
     type family IdFoo (a :: c) :: TyFun a a -> * where
       IdFoo x = IdSym0
     data IdFooSym0 (k :: TyFun c (TyFun a a -> *))
-    type instance Apply IdFooSym0 a = IdFoo a
+    type instance (@@) IdFooSym0 a = IdFoo a

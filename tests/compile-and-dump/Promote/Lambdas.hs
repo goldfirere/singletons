@@ -38,7 +38,7 @@ $(promote [d|
   foo7 x y = (\(a, b) -> b) (x, y)
  |])
 
-foo1a :: Proxy (Apply (Foo1 Int) Char)
+foo1a :: Proxy ((@@) (Foo1 Int) Char)
 foo1a = Proxy
 
 foo1b :: Proxy Int

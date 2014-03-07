@@ -9,8 +9,8 @@ Promote/Constructors.hs:0:0: Splicing declarations
     type FooSym0 = Foo
     data (::+$$) (l :: Foo) (l :: TyFun Foo Foo)
     data (::+$) (k :: TyFun Foo (TyFun Foo Foo -> *))
-    type instance Apply (::+$$ a) a = :+ a a
-    type instance Apply ::+$ a = ::+$$ a
+    type instance (@@) (::+$$ a) a = :+ a a
+    type instance (@@) ::+$ a = ::+$$ a
     data BarSym4 (l :: Bar)
                  (l :: Bar)
                  (l :: Bar)
@@ -31,8 +31,8 @@ Promote/Constructors.hs:0:0: Splicing declarations
                                                         -> *)
                                              -> *)
                                   -> *))
-    type instance Apply (BarSym4 a a a a) a = Bar a a a a a
-    type instance Apply (BarSym3 a a a) a = BarSym4 a a a a
-    type instance Apply (BarSym2 a a) a = BarSym3 a a a
-    type instance Apply (BarSym1 a) a = BarSym2 a a
-    type instance Apply BarSym0 a = BarSym1 a
+    type instance (@@) (BarSym4 a a a a) a = Bar a a a a a
+    type instance (@@) (BarSym3 a a a) a = BarSym4 a a a a
+    type instance (@@) (BarSym2 a a) a = BarSym3 a a a
+    type instance (@@) (BarSym1 a) a = BarSym2 a a
+    type instance (@@) BarSym0 a = BarSym1 a

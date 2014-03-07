@@ -47,14 +47,14 @@ type a == b = a :== b
 
 data (:==$$) (a :: k1) (b :: TyFun k1 Bool)
 data (:==$) (a :: TyFun k1 (TyFun k1 Bool -> *))
-type instance Apply ((:==$$) a) b = a :== b
-type instance Apply  (:==$)     a = (:==$$) a
+type instance ((:==$$) a) @@ b = a :== b
+type instance (:==$)      @@ a = (:==$$) a
 
 type a :/= b = Not (a :== b)
 data (:/=$$) (a :: k1) (b :: TyFun k1 Bool)
 data (:/=$) (a :: TyFun k1 (TyFun k1 Bool -> *))
-type instance Apply ((:/=$$) a) b = a :/= b
-type instance Apply  (:/=$)     a = (:/=$$) a
+type instance ((:/=$$) a) @@ b = a :/= b
+type instance (:/=$)      @@ a = (:/=$$) a
 
 -- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
 -- that instances define a body for '(%:==)'. You may also supply a body for '(%:/=)'.

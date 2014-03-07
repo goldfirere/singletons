@@ -10,10 +10,10 @@ Singletons/AtPattern.hs:0:0: Splicing declarations
     maybePlus (Just n) = Just (plus (Succ Zero) n)
     maybePlus foo@Nothing = foo
     type family MaybePlus (a :: Maybe Nat) :: Maybe Nat where
-         MaybePlus (Just n) = Apply JustSym0 (Apply (Apply PlusSym0 (Apply SuccSym0 ZeroSym0)) n)
+         MaybePlus (Just n) = (@@) JustSym0 ((@@) ((@@) PlusSym0 ((@@) SuccSym0 ZeroSym0)) n)
          MaybePlus Nothing = NothingSym0 -- BUG #20
     data MaybePlusSym0 (k :: TyFun (Maybe Nat) (Maybe Nat))
-    type instance Apply MaybePlusSym0 a = MaybePlus a
+    type instance (@@) MaybePlusSym0 a = MaybePlus a
     sMaybePlus :: forall (t :: Maybe Nat). Sing t -> Sing (MaybePlus t)
     sMaybePlus (SJust n) = SJust (sPlus (SSucc SZero) n)
     sMaybePlus foo@SNothing = foo
