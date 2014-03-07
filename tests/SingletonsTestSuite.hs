@@ -2,15 +2,17 @@ module Main (
     main
  ) where
 
-import Test.Tasty               ( TestTree, defaultMain, testGroup          )
+import Test.Tasty               ( TestTree, defaultMain, testGroup                       )
 import SingletonsTestSuiteUtils ( compileAndDumpStdTest, compileAndDumpTest
-                                , runProgramTest, testCompileAndDumpGroup, ghcOpts       )
+                                , runProgramTest, testCompileAndDumpGroup, ghcOpts
+                                , singletonsVersion                                      )
 
 main :: IO ()
 main = defaultMain tests
 
 tests :: TestTree
-tests = testGroup "Testsuite" $ [
+tests =
+    testGroup "Testsuite" $ [
     testCompileAndDumpGroup "Singletons"
     [ compileAndDumpStdTest "Nat"
     , compileAndDumpStdTest "Empty"
@@ -30,7 +32,9 @@ tests = testGroup "Testsuite" $ [
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Main" ghcOpts
-    , runProgramTest     "GradingClient/Main" [] -- see Note [No test dependencies]
+    , runProgramTest     "GradingClient/Main"
+                         ["-package-name singletons-" ++ singletonsVersion]
+                                            -- see Note [No test dependencies]
     ],
     testCompileAndDumpGroup "InsertionSort"
     [ compileAndDumpStdTest "InsertionSortImp"
