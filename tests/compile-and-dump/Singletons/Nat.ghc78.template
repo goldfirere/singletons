@@ -31,19 +31,19 @@ Singletons/Nat.hs:0:0: Splicing declarations
        Equals_0123456789 (a :: Nat) (b :: Nat) = FalseSym0
      type instance (==) (a :: Nat) (b :: Nat) = Equals_0123456789 a b
      type ZeroSym0 = Zero
-     data SuccSym0 (a :: TyFun Nat Nat)
+     data SuccSym0 (k :: TyFun Nat Nat)
      type instance Apply SuccSym0 a = Succ a
      type family Plus (a :: Nat) (a :: Nat) :: Nat where
           Plus Zero m = m
           Plus (Succ n) m = Apply SuccSym0 (Apply (Apply PlusSym0 n) m)
-     data PlusSym1 (a :: Nat) (a :: TyFun Nat Nat)
-     data PlusSym0 (a :: TyFun Nat (TyFun Nat Nat -> *))
+     data PlusSym1 (l :: Nat) (l :: TyFun Nat Nat)
+     data PlusSym0 (k :: TyFun Nat (TyFun Nat Nat -> *))
      type instance Apply (PlusSym1 a) a = Plus a a
      type instance Apply PlusSym0 a = PlusSym1 a
      type family Pred (a :: Nat) :: Nat where
           Pred Zero = ZeroSym0
           Pred (Succ n) = n
-     data PredSym0 (a :: TyFun Nat Nat)
+     data PredSym0 (k :: TyFun Nat Nat)
      type instance Apply PredSym0 a = Pred a
      data instance Sing (z :: Nat)
        = z ~ Zero => SZero |

@@ -28,17 +28,17 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
     type family Map (a :: TyFun a b -> *) (a :: [a]) :: [b] where
          Map z GHC.Types.[] = '[]
          Map f ((GHC.Types.:) h t) = Apply (Apply (::$) (Apply f h)) (Apply (Apply MapSym0 f) t)
-    data MapSym1 (a :: TyFun a b -> *) (a :: TyFun [a] [b])
-    data MapSym0 (a :: TyFun (TyFun a b -> *) (TyFun [a] [b] -> *))
+    data MapSym1 (l :: TyFun a b -> *) (l :: TyFun [a] [b])
+    data MapSym0 (k :: TyFun (TyFun a b -> *) (TyFun [a] [b] -> *))
     type instance Apply (MapSym1 a) a = Map a a
     type instance Apply MapSym0 a = MapSym1 a
     type family LiftMaybe (a :: TyFun a b -> *)
                           (a :: Maybe a) :: Maybe b where
          LiftMaybe f (Just x) = Apply JustSym0 (Apply f x)
          LiftMaybe z Nothing = NothingSym0
-    data LiftMaybeSym1 (a :: TyFun a b -> *)
-                       (a :: TyFun (Maybe a) (Maybe b))
-    data LiftMaybeSym0 (a :: TyFun (TyFun a b
+    data LiftMaybeSym1 (l :: TyFun a b -> *)
+                       (l :: TyFun (Maybe a) (Maybe b))
+    data LiftMaybeSym0 (k :: TyFun (TyFun a b
                                     -> *) (TyFun (Maybe a) (Maybe b) -> *))
     type instance Apply (LiftMaybeSym1 a) a = LiftMaybe a a
     type instance Apply LiftMaybeSym0 a = LiftMaybeSym1 a
@@ -47,12 +47,12 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
                         (a :: [b]) :: [c] where
       ZipWith f ((GHC.Types.:) x xs) ((GHC.Types.:) y ys) = Apply (Apply (::$) (Apply (Apply f x) y)) (Apply (Apply (Apply ZipWithSym0 f) xs) ys)
       ZipWith z GHC.Types.[] GHC.Types.[] = '[]
-    data ZipWithSym2 (a :: TyFun a (TyFun b c -> *) -> *)
-                     (a :: [a])
-                     (a :: TyFun [b] [c])
-    data ZipWithSym1 (a :: TyFun a (TyFun b c -> *) -> *)
-                     (a :: TyFun [a] (TyFun [b] [c] -> *))
-    data ZipWithSym0 (a :: TyFun (TyFun a (TyFun b c -> *)
+    data ZipWithSym2 (l :: TyFun a (TyFun b c -> *) -> *)
+                     (l :: [a])
+                     (l :: TyFun [b] [c])
+    data ZipWithSym1 (l :: TyFun a (TyFun b c -> *) -> *)
+                     (l :: TyFun [a] (TyFun [b] [c] -> *))
+    data ZipWithSym0 (k :: TyFun (TyFun a (TyFun b c -> *)
                                   -> *) (TyFun [a] (TyFun [b] [c] -> *) -> *))
     type instance Apply (ZipWithSym2 a a) a = ZipWith a a a
     type instance Apply (ZipWithSym1 a) a = ZipWithSym2 a a
@@ -61,12 +61,12 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
                     (a :: TyFun a b -> *)
                     (a :: a) :: b where
       Foo f g a = Apply (Apply f g) a
-    data FooSym2 (a :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
-                 (a :: TyFun a b -> *)
-                 (a :: TyFun a b)
-    data FooSym1 (a :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
-                 (a :: TyFun (TyFun a b -> *) (TyFun a b -> *))
-    data FooSym0 (a :: TyFun (TyFun (TyFun a b -> *) (TyFun a b -> *)
+    data FooSym2 (l :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
+                 (l :: TyFun a b -> *)
+                 (l :: TyFun a b)
+    data FooSym1 (l :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
+                 (l :: TyFun (TyFun a b -> *) (TyFun a b -> *))
+    data FooSym0 (k :: TyFun (TyFun (TyFun a b -> *) (TyFun a b -> *)
                               -> *) (TyFun (TyFun a b -> *) (TyFun a b -> *) -> *))
     type instance Apply (FooSym2 a a) a = Foo a a a
     type instance Apply (FooSym1 a) a = FooSym2 a a

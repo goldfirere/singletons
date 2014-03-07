@@ -9,8 +9,8 @@ Promote/Constructors.hs:0:0: Splicing declarations
     type FooSym0 = Foo
     data (::+$$) (l :: Foo) (l :: TyFun Foo Foo)
     data (::+$) (k :: TyFun Foo (TyFun Foo Foo -> *))
-    type instance Apply ((::+$$) a) a = (:+) a a
-    type instance Apply (::+$) a = (::+$$) a
+    type instance Apply (::+$$ a) a = :+ a a
+    type instance Apply ::+$ a = ::+$$ a
     data BarSym4 (l :: Bar)
                  (l :: Bar)
                  (l :: Bar)

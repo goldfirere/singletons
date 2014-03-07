@@ -23,8 +23,8 @@ module Data.Singletons.Eq (
 import Data.Singletons.Bool
 import Data.Singletons.Core
 import Data.Singletons.Singletons
-import Data.Singletons.Types
 import Data.Singletons.Util
+import Data.Singletons.Types
 import GHC.TypeLits ( Nat, Symbol )
 import Unsafe.Coerce   -- for TypeLits instances
 
@@ -37,19 +37,18 @@ import Data.Type.Equality
 -- convention.
 type a :== b = a == b
 
-data (:==$$) (a :: k1) (b :: TyFun k1 Bool)
-data (:==$) (a :: TyFun k1 (TyFun k1 Bool -> *))
-type instance Apply ((:==$$) a) b = a :== b
-type instance Apply  (:==$)     a = (:==$$) a
-
 #else
-import Data.Singletons.Types
 import Data.Singletons.Promote
 
 type family (a :: k) :== (b :: k) :: Bool
 type a == b = a :== b
 
 #endif
+
+data (:==$$) (a :: k1) (b :: TyFun k1 Bool)
+data (:==$) (a :: TyFun k1 (TyFun k1 Bool -> *))
+type instance Apply ((:==$$) a) b = a :== b
+type instance Apply  (:==$)     a = (:==$$) a
 
 type a :/= b = Not (a :== b)
 data (:/=$$) (a :: k1) (b :: TyFun k1 Bool)

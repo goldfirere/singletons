@@ -546,7 +546,6 @@ promoteDec' tab (SigD name ty) = case Map.lookup name tab of
               (promoteApply eqns argKs) ++ dataSyms ++ applyInstances, [name])
 #endif
 promoteDec' _ _ = return ([], [])
-
 -- Takes list of equations for a type family, kinds of arguments used
 -- as parameters and if any of the parameter is a type level function
 -- it converts its implicit appliation to explicit usage of Apply type
@@ -867,7 +866,12 @@ promoteExp vars (LamE pats exp) = do
       inScopeTypes = map snd inScopeBnds
       eqnParams    = inScopeTypes ++ types
       resultK      = VarT resultKVarName
+#if __GLASGOW_HASKELL__ >= 707
   addElement (ClosedTypeFamilyD lambdaName tyFamSig Nothing [TySynEqn eqnParams rhs]) -- GHC >= 7.7
+#else
+  addElement (FamilyD TypeFam lambdaName tyFamSig Nothing)
+  addElement (TySynInstD lambdaName eqnParams rhs)
+#endif
   (dataSyms, dataNames) <- buildSymDecs lambdaName (inScopeTypes ++ tyFamLamKinds) resultK
   applyInstances <- buildApplyInstances (zipWith (,) dataNames
                                                     (lambdaName : dataNames))
@@ -942,12 +946,12 @@ buildSymDecs name argKs resultK = go tailArgK (buildTyFun lastArgK resultK)
           go :: Quasi q => [Kind] -> Type -> Int -> q ([Dec], [Name])
           go [] acc l = do
             let dataName0 = promoteTySym name l
-            typeVarName <- qNewName "a"
+            typeVarName <- qNewName "k"
             return ([DataD [] dataName0 [KindedTV typeVarName acc] [] []],
                     [dataName0])
           go (k:ks) acc l = do
             (defs, names) <- go ks (buildTyFun k (addStar acc)) (l - 1)
-            tyvarNames <- mapM qNewName (replicate (l + 1) "a")
+            tyvarNames <- mapM qNewName (replicate (l + 1) "l")
             let dataName = promoteTySym name l
                 params   = zipWith KindedTV tyvarNames (reverse (acc:k:ks))
                 newDef   = DataD [] dataName params [] []
