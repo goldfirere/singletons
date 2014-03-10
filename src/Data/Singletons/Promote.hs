@@ -40,10 +40,10 @@ tailName = mkName "Tail"
 symbolName = ''Symbol
 
 falseTy :: Type
-falseTy = promoteDataCon falseName
+falseTy = PromotedT falseName
 
 trueTy :: Type
-trueTy = promoteDataCon trueName
+trueTy = PromotedT trueName
 
 boolTy :: Type
 boolTy = ConT boolName
@@ -77,14 +77,6 @@ promoteInfo (VarI _name _ty _mdec _fixity) =
   fail "Promotion of value info not supported"
 promoteInfo (TyVarI _name _ty) =
   fail "Promotion of type variable info not supported"
-
-promoteDataCon :: Name -> Type
-promoteDataCon name
-  | Just degree <- tupleNameDegree_maybe name
-  = PromotedTupleT degree
-
-  | otherwise
-  = PromotedT name
 
 promoteValName :: Name -> Name
 promoteValName n
@@ -520,7 +512,7 @@ promoteTopLevelPat (ConP name pats) = do
   componentNames <- replicateM (length pats) (qNewName "a")
   zipWithM_ (\extractorName componentName ->
     addElement $ mkTyFamInst extractorName
-                             [foldType (promoteDataCon name)
+                             [foldType (PromotedT name)
                                        (map VarT componentNames)]
                              (VarT componentName))
     extractorNames componentNames
@@ -609,7 +601,7 @@ promotePat (TupP pats) = do
 promotePat (UnboxedTupP _) = fail "Unboxed tuples not supported"
 promotePat (ConP name pats) = do
   types <- mapM promotePat pats
-  let tyCon = foldType (promoteDataCon name) types
+  let tyCon = foldType (PromotedT name) types
   return tyCon
 promotePat (InfixP pat1 name pat2) = promotePat (ConP name [pat1, pat2])
 promotePat (UInfixP _ _ _) = fail "Unresolved infix constructions not supported"
@@ -649,7 +641,7 @@ promoteExp :: Quasi q => TypeTable -> Exp -> QWithDecs q Type
 promoteExp vars (VarE name) = case Map.lookup name vars of
   Just ty -> return ty
   Nothing -> return $ promoteVal name
-promoteExp _vars (ConE name) = return $ promoteDataCon name
+promoteExp _vars (ConE name) = return $ PromotedT name
 promoteExp _vars (LitE lit) = promoteLit lit
 promoteExp vars (AppE exp1 exp2) = do
   ty1 <- promoteExp vars exp1
