@@ -216,14 +216,10 @@ promoteDecs decls = do
                                                   Map.filter (>= 0) table)
 #endif
                                                (Set.fromList names)
-      noTypeSigsPro = map promoteValName noTypeSigs
-      newDecls' = foldl (\bad_decls name ->
-                          filter (not . (containsName name)) bad_decls)
-                        (concat newDecls) (noTypeSigs ++ noTypeSigsPro)
-  mapM_ (\n -> qReportWarning $ "No type binding for " ++ (show (nameBase n)) ++
-                                "; removing all declarations including it")
+  mapM_ (\n -> qReportError $ "No type signature for " ++ (show (nameBase n)) ++
+                              "; cannot promote or make singletons.")
         noTypeSigs
-  return (newDecls' ++ moreNewDecls, noTypeSigs)
+  return (concat newDecls ++ moreNewDecls, noTypeSigs)
 
 -- | Produce instances for '(:==)' (type-level equality) from the given types
 promoteEqInstances :: Quasi q => [Name] -> q [Dec]

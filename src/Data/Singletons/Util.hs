@@ -64,6 +64,10 @@ newUniqueName str = do
 qReportWarning :: Quasi q => String -> q ()
 qReportWarning = qReport False
 
+-- like reportError, but generalized to any Quasi
+qReportError :: Quasi q => String -> q ()
+qReportError = qReport True
+
 -- extract the degree of a tuple
 tupleDegree_maybe :: String -> Maybe Int
 tupleDegree_maybe s = do

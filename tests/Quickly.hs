@@ -2,13 +2,14 @@
    that the TH code singletons produces compiles. Run `make` in the
    `tests` directory to compile this file. -}
 
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
+
 module Quickly where
 
 import Promote.NumArgs
 import Promote.PatternMatching
 
 import Singletons.AtPattern
-import Singletons.BadPlus
 import Singletons.BoxUnBox
 import Singletons.Contains
 import Singletons.DataValues
