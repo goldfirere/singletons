@@ -21,12 +21,10 @@ import Language.Haskell.TH hiding ( Q )
 import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Language.Haskell.TH.Desugar ( reifyWithWarning, getDataD )
 import Data.Char
-import Data.Data
 import Control.Monad
 import Control.Applicative
 import Control.Monad.Writer
 import qualified Data.Map as Map
-import Data.Generics
 
 mkTyFamInst :: Name -> [Type] -> Type -> Dec
 mkTyFamInst name lhs rhs =
@@ -261,10 +259,6 @@ addBinding k v = tell (Map.singleton k v)
 -- in a computation with an auxiliar list, add an element to the list
 addElement :: Quasi q => elt -> QWithAux [elt] q ()
 addElement elt = tell [elt]
-
--- does a TH structure contain a name?
-containsName :: Data a => Name -> a -> Bool
-containsName n = everything (||) (mkQ False (== n))
 
 -- lift concatMap into a monad
 concatMapM :: Monad m => (a -> m [b]) -> [a] -> m [b]

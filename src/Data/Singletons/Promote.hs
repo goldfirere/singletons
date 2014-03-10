@@ -133,14 +133,14 @@ type TypeTable = Map.Map Name Type
 promote :: Quasi q => q [Dec] -> q [Dec]
 promote qdec = do
   decls <- qdec
-  (promDecls, _) <- promoteDecs decls
+  promDecls <- promoteDecs decls
   return $ decls ++ promDecls
 
 -- | Promote each declaration, discarding the originals.
 promoteOnly :: Quasi q => q [Dec] -> q [Dec]
 promoteOnly qdec = do
   decls <- qdec
-  (promDecls, _) <- promoteDecs decls
+  promDecls <- promoteDecs decls
   return promDecls
 
 checkForRep :: Quasi q => [Name] -> q ()
@@ -197,10 +197,8 @@ checkForRepInDecls decls =
 -- of foo. In this case there is only one so we declare Foo to take
 -- one argument and have return type of Bool -> Bool.
 
--- Promote a list of declarations; returns the promoted declarations
--- and a list of names of declarations without accompanying type signatures.
--- (This list is needed by singletons to strike such definitions.)
-promoteDecs :: Quasi q => [Dec] -> q ([Dec], [Name])
+-- Promote a list of declarations.
+promoteDecs :: Quasi q => [Dec] -> q [Dec]
 promoteDecs decls = do
   checkForRepInDecls decls
   let vartbl = Map.empty
@@ -219,7 +217,7 @@ promoteDecs decls = do
   mapM_ (\n -> qReportError $ "No type signature for " ++ (show (nameBase n)) ++
                               "; cannot promote or make singletons.")
         noTypeSigs
-  return (concat newDecls ++ moreNewDecls, noTypeSigs)
+  return (concat newDecls ++ moreNewDecls)
 
 -- | Produce instances for '(:==)' (type-level equality) from the given types
 promoteEqInstances :: Quasi q => [Name] -> q [Dec]
@@ -359,17 +357,14 @@ promoteDec vars (ValD pat body decs) = do
                 "not yet supported")
   (rhs, decls) <- evalForPair $ promoteBody vars body
   (lhss, decls') <- evalForPair $ promoteTopLevelPat pat
-  if any (flip containsName rhs) (map lhsName lhss)
-    then -- definition is recursive. This means an infinite value.
-      fail "Promotion of infinite terms not yet supported"
-    else do -- definition is not recursive; just use "type" decls
+  -- just use "type" decls
 #if __GLASGOW_HASKELL__ >= 707
-      mapM_ (flip addBinding (typeSynonymFlag, [])) (map lhsRawName lhss)
+  mapM_ (flip addBinding (typeSynonymFlag, [])) (map lhsRawName lhss)
 #else
-      mapM_ (flip addBinding typeSynonymFlag) (map lhsRawName lhss)
+  mapM_ (flip addBinding typeSynonymFlag) (map lhsRawName lhss)
 #endif
-      return $ (map (\(LHS _ nm hole) -> TySynD nm [] (hole rhs)) lhss) ++
-               decls ++ decls'
+  return $ (map (\(LHS _ nm hole) -> TySynD nm [] (hole rhs)) lhss) ++
+           decls ++ decls'
 promoteDec vars (DataD cxt name tvbs ctors derivings) =
   promoteDataD vars cxt name tvbs ctors derivings
 promoteDec vars (NewtypeD cxt name tvbs ctor derivings) =

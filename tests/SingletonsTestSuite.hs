@@ -17,7 +17,6 @@ tests = testGroup "Testsuite" $ [
     , compileAndDumpStdTest "Maybe"
     , compileAndDumpStdTest "BoxUnBox"
     , compileAndDumpStdTest "Operators"
-    , compileAndDumpStdTest "BadPlus"
     , compileAndDumpStdTest "HigherOrder"
     , compileAndDumpStdTest "Contains"
     , compileAndDumpStdTest "AtPattern"

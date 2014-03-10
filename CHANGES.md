@@ -7,6 +7,14 @@ Changelog for singletons project
 Minor changes, such as documentation, ensuring greater compatibility
 with GHC versions.
 
+Template Haskell names are now more hygienic. In other words, `singletons`
+won't try to gobble up something happened to be named `Sing` in your project.
+(Note that the Template Haskell names are not *completely* hygienic; names
+generated during singleton generation can still cause conflicts.)
+
+If a function to be promoted or singletonized is missing a type signature,
+that is now an *error*, not a warning.
+
 0.9.3
 -----
 

@@ -191,12 +191,8 @@ singletonsOnly = (>>= singDecs False)
 -- first parameter says whether or not to include original decls
 singDecs :: Quasi q => Bool -> [Dec] -> q [Dec]
 singDecs originals decls = do
-  (promDecls, badNames) <- promoteDecs decls
-  -- need to remove the bad names returned from promoteDecs
-  newDecls <- mapM singDec
-                   (filter (\dec ->
-                     not $ or (map (\f -> f dec)
-                              (map containsName badNames))) decls)
+  promDecls <- promoteDecs decls
+  newDecls <- mapM singDec decls
   return $ (if originals then (decls ++) else id) $ promDecls ++ (concat newDecls)
 
 singDec :: Quasi q => Dec -> q [Dec]
