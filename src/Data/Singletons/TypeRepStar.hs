@@ -30,6 +30,7 @@ module Data.Singletons.TypeRepStar (
   ) where
 
 import Data.Singletons.Core
+import Data.Singletons.Exports
 import Data.Singletons.Types
 import Data.Singletons.Eq
 import Data.Typeable
@@ -38,7 +39,6 @@ import Unsafe.Coerce
 #if __GLASGOW_HASKELL__ >= 707
 import GHC.Exts ( Proxy# )
 import Data.Type.Coercion
-import Data.Proxy
 #else
 
 eqT :: (Typeable a, Typeable b) => Maybe (a :~: b)

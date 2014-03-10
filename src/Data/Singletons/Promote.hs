@@ -14,6 +14,7 @@ module Data.Singletons.Promote where
 import Language.Haskell.TH hiding ( Q, cxt )
 import Language.Haskell.TH.Syntax ( falseName, trueName, Quasi(..) )
 import Data.Singletons.Util
+import Data.Singletons.Types
 import GHC.Exts (Any)
 import GHC.TypeLits (Symbol)
 import Prelude hiding (exp)
@@ -26,15 +27,15 @@ anyTypeName, boolName, andName, tyEqName, repName, ifName,
   headName, tailName, symbolName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
-andName = mkName "&&"
+andName = '(&&)
 #if __GLASGOW_HASKELL__ >= 707
-tyEqName = mkName "=="
+tyEqName = ''(==)
 #else
-tyEqName = mkName ":=="
+tyEqName = ''(:==)
 #endif
 repName = mkName "Rep"
-ifName = mkName "If"
-headName = mkName "Head"
+ifName = ''If
+headName = mkName "Head"  -- these will go away with the th-desugar change
 tailName = mkName "Tail"
 symbolName = ''Symbol
 

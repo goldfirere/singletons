@@ -43,6 +43,7 @@ module Data.Singletons.TH (
   KProxy(..), SomeSing(..)
  ) where
 
+import Data.Singletons.Exports
 import Data.Singletons.Singletons
 import Data.Singletons.Promote
 import Data.Singletons.Core
@@ -57,11 +58,6 @@ import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
 import Control.Applicative
-
-#if __GLASGOW_HASKELL__ >= 707
-import Data.Type.Equality
-import Data.Proxy
-#endif
 
 -- | The function 'cases' generates a case expression where each right-hand side
 -- is identical. This may be useful if the type-checker requires knowledge of which

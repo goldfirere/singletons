@@ -22,31 +22,15 @@ module Data.Singletons.Eq (
 
 import Data.Singletons.Util
 import Data.Singletons.Bool
+import Data.Singletons.Exports
 import Data.Singletons.Singletons
 import Data.Singletons.Core
 import GHC.TypeLits ( Nat, Symbol )
 import Unsafe.Coerce   -- for TypeLits instances
-
-#if __GLASGOW_HASKELL__ >= 707
-
-import Data.Proxy
-import Data.Type.Equality
-
--- | A re-export of the type-level @(==)@ that conforms to the singletons naming
--- convention.
-type a :== b = a == b
-
-#else
 import Data.Singletons.Types
-import Data.Singletons.Promote
-
-type family (a :: k) :== (b :: k) :: Bool
-type a == b = a :== b
-
-#endif
 
 type a :/= b = Not (a :== b)
-
+               
 -- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
 -- that instances define a body for '(%:==)'. You may also supply a body for '(%:/=)'.
 class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
@@ -56,6 +40,7 @@ class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
   -- | Boolean disequality on singletons
   (%:/=) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :/= b)
   a %:/= b = sNot (a %:== b)
+
 
 #if __GLASGOW_HASKELL__ < 707
 $(promoteEqInstances basicTypes)   -- these instances are in Data.Type.Equality

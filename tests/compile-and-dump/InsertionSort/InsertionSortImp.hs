@@ -27,6 +27,8 @@ unambiguous.
 
 -}
 
+{-# LANGUAGE IncoherentInstances #-}
+
 module InsertionSort.InsertionSortImp where
 
 import Data.Singletons.TH

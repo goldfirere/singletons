@@ -57,16 +57,15 @@ library
   other-modules:      Data.Singletons.Promote,
                       Data.Singletons.Singletons,
                       Data.Singletons.Util,
-                      Data.Singletons.Core
-  if impl(ghc >= 7.7)
-    ghc-options:      -dynamic-too
+                      Data.Singletons.Core,
+                      Data.Singletons.Exports
 
   ghc-options:        -Wall
 
 test-suite singletons-test-suite
   type:               exitcode-stdio-1.0
   hs-source-dirs:     src, tests
-  ghc-options:        -Wall -Werror
+  ghc-options:        -Wall
   default-language:   Haskell2010
   main-is:            SingletonsTestSuite.hs
 

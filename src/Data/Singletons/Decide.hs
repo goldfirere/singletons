@@ -21,10 +21,7 @@ module Data.Singletons.Decide (
   (:~:)(..), Void, Refuted, Decision(..)
   ) where
 
+import Data.Singletons.Exports
 import Data.Singletons.Types
-import Data.Singletons.Core
 import Data.Singletons.Void
 
-#if __GLASGOW_HASKELL__ >= 707
-import Data.Type.Equality
-#endif

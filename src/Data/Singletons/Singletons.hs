@@ -15,15 +15,11 @@ import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (falseName, trueName, Quasi(..))
 import Data.Singletons.Util
 import Data.Singletons.Promote
+import Data.Singletons.Exports
 import qualified Data.Map as Map
 import Control.Monad
 import Control.Applicative
 import Data.Singletons.Types
-
-#if __GLASGOW_HASKELL__ >= 707
-import Data.Proxy
-import Data.Type.Equality
-#endif
 
 -- map to track bound variables
 type ExpTable = Map.Map Name Exp
@@ -40,13 +36,13 @@ singFamilyName, singIName, singMethName, demoteRepName, singKindClassName,
   kProxyDataName, kProxyTypeName, someSingTypeName, someSingDataName,
   nilName, consName, sListName, eqName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName, listName :: Name
-singFamilyName = mkName "Sing"
-singIName = mkName "SingI"
-singMethName = mkName "sing"
-toSingName = mkName "toSing"
-fromSingName = mkName "fromSing"
-demoteRepName = mkName "DemoteRep"
-singKindClassName = mkName "SingKind"
+singFamilyName = ''Sing
+singIName = ''SingI
+singMethName = 'sing
+toSingName = 'toSing
+fromSingName = 'fromSing
+demoteRepName = ''DemoteRep
+singKindClassName = ''SingKind
 sEqClassName = mkName "SEq"
 sEqMethName = mkName "%:=="
 sIfName = mkName "sIf"
@@ -55,15 +51,15 @@ sconsName = mkName "SCons"
 snilName = mkName "SNil"
 kProxyDataName = 'KProxy
 kProxyTypeName = ''KProxy
-someSingTypeName = mkName "SomeSing"
-someSingDataName = mkName "SomeSing"
+someSingTypeName = ''SomeSing
+someSingDataName = 'SomeSing
 nilName = '[]
 consName = '(:)
 listName = ''[]
 sListName = mkName "SList"
 eqName = ''Eq
-sDecideClassName = mkName "SDecide"
-sDecideMethName = mkName "%~"
+sDecideClassName = ''SDecide
+sDecideMethName = '(%~)
 provedName = 'Proved
 disprovedName = 'Disproved
 reflName = 'Refl
@@ -494,7 +490,7 @@ singDataD rep cxt name tvbs ctors derivings
         mkRecursiveCall :: Name -> Kind -> Exp
         mkRecursiveCall var_name ki =
           SigE (AppE (VarE toSingName) (VarE var_name))
-               (AppT (ConT someSingDataName) (kindParam ki))
+               (AppT (ConT someSingTypeName) (kindParam ki))
 
         emptyMethod :: Name -> [Clause]
         emptyMethod n = [Clause [VarP n] (NormalB $ CaseE (VarE n) emptyMatches) []]
