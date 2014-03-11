@@ -144,7 +144,7 @@ singCtor a = ctorCases
   (\name types -> do
     let sName = singDataConName name
         sCon = singDataCon name
-        pCon = promoteDataCon name
+        pCon = PromotedT name
     indexNames <- replicateM (length types) (qNewName "n")
     let indices = map VarT indexNames
     kinds <- mapM promoteType types

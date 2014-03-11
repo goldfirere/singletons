@@ -57,9 +57,9 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
     type family Extract_0123456789 (a :: GHC.Tuple.(,,) a b c) :: a
     type family Extract_0123456789 (a :: GHC.Tuple.(,,) a b c) :: b
     type family Extract_0123456789 (a :: GHC.Tuple.(,,) a b c) :: c
-    type instance Extract_0123456789 '(a, a, a) = a
-    type instance Extract_0123456789 '(a, a, a) = a
-    type instance Extract_0123456789 '(a, a, a) = a
+    type instance Extract_0123456789 (GHC.Tuple.(,,) a a a) = a
+    type instance Extract_0123456789 (GHC.Tuple.(,,) a a a) = a
+    type instance Extract_0123456789 (GHC.Tuple.(,,) a a a) = a
     type Lsz = Head (Tail AList)
     type Blimy = Extract_0123456789 (Head (Tail (Tail AList)))
     type family Extract_0123456789 (a :: Nat) :: Nat
