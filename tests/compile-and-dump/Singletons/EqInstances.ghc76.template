@@ -1,6 +1,3 @@
-INSERT tests/compile-and-dump/Singletons/Nat.ghc76.template
-INSERT tests/compile-and-dump/Singletons/Operators.ghc76.template
-INSERT tests/compile-and-dump/Singletons/Empty.ghc76.template
 Singletons/EqInstances.hs:0:0: Splicing declarations
     singEqInstances [''Foo, ''Empty]
   ======>

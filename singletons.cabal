@@ -59,7 +59,7 @@ library
                       Data.Singletons.Core,
                       Data.Singletons.Exports
 
-  ghc-options:        -Wall
+  ghc-options:        -Wall -Werror
 
 test-suite singletons-test-suite
   type:               exitcode-stdio-1.0
@@ -72,6 +72,6 @@ test-suite singletons-test-suite
                       constraints,
                       filepath >= 1.3,
                       process >= 1.1,
-                      singletons,
                       tasty >= 0.6,
-                      tasty-golden >= 2.2
+                      tasty-golden >= 2.2,
+                      Cabal >= 1.16

@@ -5,6 +5,7 @@ module SingletonsTestSuiteUtils (
  , testCompileAndDumpGroup
  , runProgramTest
  , ghcOpts
+ , singletonsVersion
  ) where
 
 import Control.Exception  ( Exception, throw                           )
@@ -17,6 +18,14 @@ import System.Process     ( CreateProcess(..), StdStream(..)
                           , createProcess, proc, waitForProcess        )
 import Test.Tasty         ( TestTree, testGroup                        )
 import Test.Tasty.Golden  ( goldenVsFileDiff                           )
+
+import Distribution.PackageDescription.Parse         ( readPackageDescription    )
+import Distribution.PackageDescription.Configuration ( flattenPackageDescription )
+import Distribution.PackageDescription               ( PackageDescription(..)    )
+import Distribution.Verbosity                        ( silent                    )
+import Distribution.Package                          ( PackageIdentifier(..)     )
+import Data.Version                                  ( showVersion               )
+import System.IO.Unsafe                              ( unsafePerformIO           )
 
 -- Some infractructure for handling external process errors
 data ProcessException = ProcessException String deriving (Typeable)
@@ -34,6 +43,11 @@ ghcPath = "ghc"
 goldenPath :: FilePath
 goldenPath = "tests/compile-and-dump/"
 
+-- path containing compiled *.hi files. Relative to goldenPath.
+-- See Note [-package-name hack]
+includePath :: FilePath
+includePath = "../../dist/build"
+
 ghcVersion :: String
 #if __GLASGOW_HASKELL__ <  706
 ghcVersion = error "testsuite requires GHC 7.6 or newer"
@@ -45,13 +59,23 @@ ghcVersion = ".ghc78"
 #endif
 #endif
 
+-- the version number of "singletons"
+singletonsVersion :: String
+singletonsVersion = unsafePerformIO $ do
+  gpd <- readPackageDescription silent "singletons.cabal"
+  let pd = flattenPackageDescription gpd
+  return $ showVersion $ pkgVersion $ package pd
+
 -- GHC options used when running the tests
 ghcOpts :: [String]
 ghcOpts = [
     "-v0"
+  , "-c"
+  , "-package-name singletons-" ++ singletonsVersion -- See Note [-package-name hack]
   , "-ddump-splices"
   , "-dsuppress-uniques"
   , "-fforce-recomp"
+  , "-i" ++ includePath
   , "-XTemplateHaskell"
   , "-XDataKinds"
   , "-XKindSignatures"
@@ -75,6 +99,18 @@ ghcOpts = [
   , "-XEmptyCase"
 #endif
   ]
+
+-- Note [-package-name hack]
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+-- We want to avoid installing singletons package before running the
+-- testsuite, because in this way we prevent double compilation of the
+-- library. To do this we pass -package-name option to GHC to convince
+-- it that the test files are actually part of the current
+-- package. This means that library doesn't have to be installed
+-- globally and interface files generated during library compilation
+-- can be used when compiling test cases. We use "-i" option to point
+-- GHC to directory containing compiled interface files.
 
 -- Compile a test using specified GHC options. Save output to file, filter with
 -- sed and compare it with golden file. This function also builds golden file
@@ -190,6 +226,9 @@ runProgramTest testName opts =
 --
 -- This allows to insert comments into test file without the need to modify the
 -- golden file to adjust line numbers.
+--
+-- Note that GNU sed (on Linux) and BSD sed (on MacOS) are slightly different.
+-- We use conditional compilation to deal with this.
 
 filterWithSed :: FilePath -> IO ()
 filterWithSed file = runProcessWithOpts CreatePipe "sed"

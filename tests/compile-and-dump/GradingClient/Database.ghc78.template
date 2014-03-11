@@ -9,13 +9,10 @@ GradingClient/Database.hs:0:0: Splicing declarations
       = Zero | Succ Nat
       deriving (Eq, Ord)
     type family Equals_0123456789 (a :: Nat) (b :: Nat) :: Bool where
-      Equals_0123456789 Zero Zero = TrueSym0
+      Equals_0123456789 Zero Zero = True
       Equals_0123456789 (Succ a) (Succ b) = (==) a b
-      Equals_0123456789 (a :: Nat) (b :: Nat) = FalseSym0
+      Equals_0123456789 (a :: Nat) (b :: Nat) = False
     type instance (==) (a :: Nat) (b :: Nat) = Equals_0123456789 a b
-    type ZeroSym0 = Zero
-    data SuccSym0 (k :: TyFun Nat Nat)
-    type instance (@@) SuccSym0 a = Succ a
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
         forall (n :: Nat). z ~ Succ n => SSucc (Sing n)
@@ -64,7 +61,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
           lookup _ (Sch []) = undefined
           lookup name (Sch ((Attr name' u) : attrs))
             = if name == name' then u else lookup name (Sch attrs)
-
+          
           data U
             = BOOL | STRING | NAT | VEC U Nat
             deriving (Read, Eq, Show)
@@ -152,115 +149,56 @@ GradingClient/Database.hs:0:0: Splicing declarations
     lookup name (Sch ((Attr name' u) GHC.Types.: attrs))
       = if (name == name') then u else lookup name (Sch attrs)
     type family Equals_0123456789 (a :: U) (b :: U) :: Bool where
-      Equals_0123456789 BOOL BOOL = TrueSym0
-      Equals_0123456789 STRING STRING = TrueSym0
-      Equals_0123456789 NAT NAT = TrueSym0
+      Equals_0123456789 BOOL BOOL = True
+      Equals_0123456789 STRING STRING = True
+      Equals_0123456789 NAT NAT = True
       Equals_0123456789 (VEC a a) (VEC b b) = (:&&) ((==) a b) ((==) a b)
-      Equals_0123456789 (a :: U) (b :: U) = FalseSym0
+      Equals_0123456789 (a :: U) (b :: U) = False
     type instance (==) (a :: U) (b :: U) = Equals_0123456789 a b
-    type BOOLSym0 = BOOL
-    type STRINGSym0 = STRING
-    type NATSym0 = NAT
-    data VECSym1 (l :: U) (l :: TyFun Nat U)
-    data VECSym0 (k :: TyFun U (TyFun Nat U -> *))
-    type instance (@@) (VECSym1 a) a = VEC a a
-    type instance (@@) VECSym0 a = VECSym1 a
     type family Equals_0123456789 (a :: AChar)
                                   (b :: AChar) :: Bool where
-      Equals_0123456789 CA CA = TrueSym0
-      Equals_0123456789 CB CB = TrueSym0
-      Equals_0123456789 CC CC = TrueSym0
-      Equals_0123456789 CD CD = TrueSym0
-      Equals_0123456789 CE CE = TrueSym0
-      Equals_0123456789 CF CF = TrueSym0
-      Equals_0123456789 CG CG = TrueSym0
-      Equals_0123456789 CH CH = TrueSym0
-      Equals_0123456789 CI CI = TrueSym0
-      Equals_0123456789 CJ CJ = TrueSym0
-      Equals_0123456789 CK CK = TrueSym0
-      Equals_0123456789 CL CL = TrueSym0
-      Equals_0123456789 CM CM = TrueSym0
-      Equals_0123456789 CN CN = TrueSym0
-      Equals_0123456789 CO CO = TrueSym0
-      Equals_0123456789 CP CP = TrueSym0
-      Equals_0123456789 CQ CQ = TrueSym0
-      Equals_0123456789 CR CR = TrueSym0
-      Equals_0123456789 CS CS = TrueSym0
-      Equals_0123456789 CT CT = TrueSym0
-      Equals_0123456789 CU CU = TrueSym0
-      Equals_0123456789 CV CV = TrueSym0
-      Equals_0123456789 CW CW = TrueSym0
-      Equals_0123456789 CX CX = TrueSym0
-      Equals_0123456789 CY CY = TrueSym0
-      Equals_0123456789 CZ CZ = TrueSym0
-      Equals_0123456789 (a :: AChar) (b :: AChar) = FalseSym0
+      Equals_0123456789 CA CA = True
+      Equals_0123456789 CB CB = True
+      Equals_0123456789 CC CC = True
+      Equals_0123456789 CD CD = True
+      Equals_0123456789 CE CE = True
+      Equals_0123456789 CF CF = True
+      Equals_0123456789 CG CG = True
+      Equals_0123456789 CH CH = True
+      Equals_0123456789 CI CI = True
+      Equals_0123456789 CJ CJ = True
+      Equals_0123456789 CK CK = True
+      Equals_0123456789 CL CL = True
+      Equals_0123456789 CM CM = True
+      Equals_0123456789 CN CN = True
+      Equals_0123456789 CO CO = True
+      Equals_0123456789 CP CP = True
+      Equals_0123456789 CQ CQ = True
+      Equals_0123456789 CR CR = True
+      Equals_0123456789 CS CS = True
+      Equals_0123456789 CT CT = True
+      Equals_0123456789 CU CU = True
+      Equals_0123456789 CV CV = True
+      Equals_0123456789 CW CW = True
+      Equals_0123456789 CX CX = True
+      Equals_0123456789 CY CY = True
+      Equals_0123456789 CZ CZ = True
+      Equals_0123456789 (a :: AChar) (b :: AChar) = False
     type instance (==) (a :: AChar) (b :: AChar) = Equals_0123456789 a b
-    type CASym0 = CA
-    type CBSym0 = CB
-    type CCSym0 = CC
-    type CDSym0 = CD
-    type CESym0 = CE
-    type CFSym0 = CF
-    type CGSym0 = CG
-    type CHSym0 = CH
-    type CISym0 = CI
-    type CJSym0 = CJ
-    type CKSym0 = CK
-    type CLSym0 = CL
-    type CMSym0 = CM
-    type CNSym0 = CN
-    type COSym0 = CO
-    type CPSym0 = CP
-    type CQSym0 = CQ
-    type CRSym0 = CR
-    type CSSym0 = CS
-    type CTSym0 = CT
-    type CUSym0 = CU
-    type CVSym0 = CV
-    type CWSym0 = CW
-    type CXSym0 = CX
-    type CYSym0 = CY
-    type CZSym0 = CZ
-    data AttrSym1 (l :: [AChar]) (l :: TyFun U Attribute)
-    data AttrSym0 (k :: TyFun [AChar] (TyFun U Attribute -> *))
-    type instance (@@) (AttrSym1 a) a = Attr a a
-    type instance (@@) AttrSym0 a = AttrSym1 a
-    data SchSym0 (k :: TyFun [Attribute] Schema)
-    type instance (@@) SchSym0 a = Sch a
     type family Append (a :: Schema) (a :: Schema) :: Schema where
-      Append (Sch s1) (Sch s2) = (@@) SchSym0 ((@@) ((@@) (:++$) s1) s2)
-    data AppendSym1 (l :: Schema) (l :: TyFun Schema Schema)
-    data AppendSym0 (k :: TyFun Schema (TyFun Schema Schema -> *))
-    type instance (@@) (AppendSym1 a) a = Append a a
-    type instance (@@) AppendSym0 a = AppendSym1 a
+      Append (Sch s1) (Sch s2) = Sch ((:++) s1 s2)
     type family AttrNotIn (a :: Attribute) (a :: Schema) :: Bool where
-      AttrNotIn z (Sch GHC.Types.[]) = TrueSym0
-      AttrNotIn (Attr name u) (Sch ((GHC.Types.:) (Attr name' z) t)) = (@@) ((@@) (:&&$) ((@@) ((@@) (:/=$) name) name')) ((@@) ((@@) AttrNotInSym0 ((@@) ((@@) AttrSym0 name) u)) ((@@) SchSym0 t))
-    data AttrNotInSym1 (l :: Attribute) (l :: TyFun Schema Bool)
-    data AttrNotInSym0 (k :: TyFun Attribute (TyFun Schema Bool -> *))
-    type instance (@@) (AttrNotInSym1 a) a = AttrNotIn a a
-    type instance (@@) AttrNotInSym0 a = AttrNotInSym1 a
+      AttrNotIn z (Sch GHC.Types.[]) = True
+      AttrNotIn (Attr name u) (Sch ((GHC.Types.:) (Attr name' z) t)) = (:&&) ((:/=) name name') (AttrNotIn (Attr name u) (Sch t))
     type family Disjoint (a :: Schema) (a :: Schema) :: Bool where
-      Disjoint (Sch GHC.Types.[]) z = TrueSym0
-      Disjoint (Sch ((GHC.Types.:) h t)) s = (@@) ((@@) (:&&$) ((@@) ((@@) AttrNotInSym0 h) s)) ((@@) ((@@) DisjointSym0 ((@@) SchSym0 t)) s)
-    data DisjointSym1 (l :: Schema) (l :: TyFun Schema Bool)
-    data DisjointSym0 (k :: TyFun Schema (TyFun Schema Bool -> *))
-    type instance (@@) (DisjointSym1 a) a = Disjoint a a
-    type instance (@@) DisjointSym0 a = DisjointSym1 a
+      Disjoint (Sch GHC.Types.[]) z = True
+      Disjoint (Sch ((GHC.Types.:) h t)) s = (:&&) (AttrNotIn h s) (Disjoint (Sch t) s)
     type family Occurs (a :: [AChar]) (a :: Schema) :: Bool where
-      Occurs z (Sch GHC.Types.[]) = FalseSym0
-      Occurs name (Sch ((GHC.Types.:) (Attr name' z) attrs)) = (@@) ((@@) (:||$) ((@@) ((@@) (:==$) name) name')) ((@@) ((@@) OccursSym0 name) ((@@) SchSym0 attrs))
-    data OccursSym1 (l :: [AChar]) (l :: TyFun Schema Bool)
-    data OccursSym0 (k :: TyFun [AChar] (TyFun Schema Bool -> *))
-    type instance (@@) (OccursSym1 a) a = Occurs a a
-    type instance (@@) OccursSym0 a = OccursSym1 a
+      Occurs z (Sch GHC.Types.[]) = False
+      Occurs name (Sch ((GHC.Types.:) (Attr name' z) attrs)) = (:||) ((:==) name name') (Occurs name (Sch attrs))
     type family Lookup (a :: [AChar]) (a :: Schema) :: U where
       Lookup z (Sch GHC.Types.[]) = Any
-      Lookup name (Sch ((GHC.Types.:) (Attr name' u) attrs)) = If ((@@) ((@@) (:==$) name) name') u ((@@) ((@@) LookupSym0 name) ((@@) SchSym0 attrs))
-    data LookupSym1 (l :: [AChar]) (l :: TyFun Schema U)
-    data LookupSym0 (k :: TyFun [AChar] (TyFun Schema U -> *))
-    type instance (@@) (LookupSym1 a) a = Lookup a a
-    type instance (@@) LookupSym0 a = LookupSym1 a
+      Lookup name (Sch ((GHC.Types.:) (Attr name' u) attrs)) = If ((:==) name name') u (Lookup name (Sch attrs))
     data instance Sing (z :: U)
       = z ~ BOOL => SBOOL |
         z ~ STRING => SSTRING |
@@ -278,7 +216,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
       toSing NAT = SomeSing SNAT
       toSing (VEC b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy U),
+              (toSing b :: SomeSing (KProxy :: KProxy U), 
                toSing b :: SomeSing (KProxy :: KProxy Nat))
           of {
             (SomeSing c, SomeSing c) -> SomeSing (SVEC c c) }
@@ -1826,7 +1764,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
       fromSing (SAttr b b) = Attr (fromSing b) (fromSing b)
       toSing (Attr b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy [AChar]),
+              (toSing b :: SomeSing (KProxy :: KProxy [AChar]), 
                toSing b :: SomeSing (KProxy :: KProxy U))
           of {
             (SomeSing c, SomeSing c) -> SomeSing (SAttr c c) }

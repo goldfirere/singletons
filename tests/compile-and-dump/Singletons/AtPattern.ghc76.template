@@ -1,4 +1,3 @@
-INSERT tests/compile-and-dump/Singletons/Nat.ghc76.template
 Singletons/AtPattern.hs:0:0: Splicing declarations
     singletons
       [d| maybePlus :: Maybe Nat -> Maybe Nat

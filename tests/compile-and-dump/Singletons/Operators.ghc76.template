@@ -1,4 +1,3 @@
-INSERT tests/compile-and-dump/Singletons/Nat.ghc76.template
 Singletons/Operators.hs:0:0: Splicing declarations
     singletons
       [d| child :: Foo -> Foo

@@ -66,7 +66,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
           lookup _ (Sch []) = undefined
           lookup name (Sch ((Attr name' u) : attrs))
             = if name == name' then u else lookup name (Sch attrs)
-
+          
           data U
             = BOOL | STRING | NAT | VEC U Nat
             deriving (Read, Eq, Show)
@@ -845,44 +845,24 @@ GradingClient/Database.hs:0:0: Splicing declarations
     type instance (:==) CZ CX = False
     type instance (:==) CZ CY = False
     type instance (:==) CZ CZ = True
-    type family Append (a :: Schema) (a :: Schema) :: Schema
     type instance Append (Sch s1) (Sch s2) = Sch (:++ s1 s2)
-    data AppendSym1 (a :: Schema) (a :: TyFun Schema Schema)
-    data AppendSym0 (a :: TyFun Schema (TyFun Schema Schema -> *))
-    type instance (@@) (AppendSym1 a) a = Append a a
-    type instance (@@) AppendSym0 a = AppendSym1 a
-    type family AttrNotIn (a :: Attribute) (a :: Schema) :: Bool
     type instance AttrNotIn z (Sch GHC.Types.[]) = True
     type instance AttrNotIn (Attr name u) (Sch (GHC.Types.: (Attr name' z) t)) =
         :&& (:/= name name') (AttrNotIn (Attr name u) (Sch t))
-    data AttrNotInSym1 (a :: Attribute) (a :: TyFun Schema Bool)
-    data AttrNotInSym0 (a :: TyFun Attribute (TyFun Schema Bool -> *))
-    type instance (@@) (AttrNotInSym1 a) a = AttrNotIn a a
-    type instance (@@) AttrNotInSym0 a = AttrNotInSym1 a
-    type family Disjoint (a :: Schema) (a :: Schema) :: Bool
     type instance Disjoint (Sch GHC.Types.[]) z = True
     type instance Disjoint (Sch (GHC.Types.: h t)) s =
         :&& (AttrNotIn h s) (Disjoint (Sch t) s)
-    data DisjointSym1 (a :: Schema) (a :: TyFun Schema Bool)
-    data DisjointSym0 (a :: TyFun Schema (TyFun Schema Bool -> *))
-    type instance (@@) (DisjointSym1 a) a = Disjoint a a
-    type instance (@@) DisjointSym0 a = DisjointSym1 a
-    type family Occurs (a :: [AChar]) (a :: Schema) :: Bool
     type instance Occurs z (Sch GHC.Types.[]) = False
     type instance Occurs name (Sch (GHC.Types.: (Attr name' z) attrs)) =
         :|| (:== name name') (Occurs name (Sch attrs))
-    data OccursSym1 (a :: [AChar]) (a :: TyFun Schema Bool)
-    data OccursSym0 (a :: TyFun [AChar] (TyFun Schema Bool -> *))
-    type instance (@@) (OccursSym1 a) a = Occurs a a
-    type instance (@@) OccursSym0 a = OccursSym1 a
-    type family Lookup (a :: [AChar]) (a :: Schema) :: U
     type instance Lookup z (Sch GHC.Types.[]) = Any
     type instance Lookup name (Sch (GHC.Types.: (Attr name' u) attrs)) =
         If (:== name name') u (Lookup name (Sch attrs))
-    data LookupSym1 (a :: [AChar]) (a :: TyFun Schema U)
-    data LookupSym0 (a :: TyFun [AChar] (TyFun Schema U -> *))
-    type instance (@@) (LookupSym1 a) a = Lookup a a
-    type instance (@@) LookupSym0 a = LookupSym1 a
+    type family Append (a :: Schema) (a :: Schema) :: Schema
+    type family AttrNotIn (a :: Attribute) (a :: Schema) :: Bool
+    type family Disjoint (a :: Schema) (a :: Schema) :: Bool
+    type family Occurs (a :: [AChar]) (a :: Schema) :: Bool
+    type family Lookup (a :: [AChar]) (a :: Schema) :: U
     data instance Sing (z :: U)
       = z ~ BOOL => SBOOL |
         z ~ STRING => SSTRING |
@@ -900,7 +880,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
       toSing NAT = SomeSing SNAT
       toSing (VEC b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy U),
+              (toSing b :: SomeSing (KProxy :: KProxy U), 
                toSing b :: SomeSing (KProxy :: KProxy Nat))
           of {
             (SomeSing c, SomeSing c) -> SomeSing (SVEC c c) }
@@ -4434,7 +4414,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
       fromSing (SAttr b b) = Attr (fromSing b) (fromSing b)
       toSing (Attr b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy [AChar]),
+              (toSing b :: SomeSing (KProxy :: KProxy [AChar]), 
                toSing b :: SomeSing (KProxy :: KProxy U))
           of {
             (SomeSing c, SomeSing c) -> SomeSing (SAttr c c) }

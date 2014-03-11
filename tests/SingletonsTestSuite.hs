@@ -4,19 +4,22 @@ module Main (
 
 import Test.Tasty               ( TestTree, defaultMain, testGroup          )
 import SingletonsTestSuiteUtils ( compileAndDumpStdTest, compileAndDumpTest
-                                , runProgramTest, testCompileAndDumpGroup, ghcOpts       )
+                                , runProgramTest, testCompileAndDumpGroup
+                                , ghcOpts                                   )
 
 main :: IO ()
 main = defaultMain tests
 
 tests :: TestTree
-tests = testGroup "Testsuite" $ [
+tests =
+    testGroup "Testsuite" $ [
     testCompileAndDumpGroup "Singletons"
     [ compileAndDumpStdTest "Nat"
     , compileAndDumpStdTest "Empty"
     , compileAndDumpStdTest "Maybe"
     , compileAndDumpStdTest "BoxUnBox"
     , compileAndDumpStdTest "Operators"
+    , compileAndDumpStdTest "BadPlus"
     , compileAndDumpStdTest "HigherOrder"
     , compileAndDumpStdTest "Contains"
     , compileAndDumpStdTest "AtPattern"
@@ -33,8 +36,9 @@ tests = testGroup "Testsuite" $ [
     , compileAndDumpStdTest "LambdasComprehensive"
     ],
     testGroup "Database client"
-    [ compileAndDumpTest "GradingClient/Main" ghcOpts
-    , runProgramTest     "GradingClient/Main" [] -- see Note [No test dependencies]
+    [ compileAndDumpTest "GradingClient/Database" ghcOpts
+    , compileAndDumpTest "GradingClient/Main"     ghcOpts
+    , runProgramTest     "GradingClient/Main"     [] -- see Note [No test dependencies]
     ],
     testCompileAndDumpGroup "InsertionSort"
     [ compileAndDumpStdTest "InsertionSortImp"
@@ -44,8 +48,8 @@ tests = testGroup "Testsuite" $ [
 -- Note [No test dependencies]
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --
--- We should have a dependency between the two Database client tests - if
--- compilations of the program fails then there is no point in trying to run
+-- We should have a dependency between the Database client tests - if
+-- compilation of the program fails then there is no point in trying to run
 -- it. This is not possible to implement at the moment because tasty does not
 -- support test dependencies. See link below for more detail:
 --
