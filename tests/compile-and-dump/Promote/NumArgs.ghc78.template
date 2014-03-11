@@ -1,4 +1,3 @@
-INSERT tests/compile-and-dump/Singletons/Nat.ghc78.template
 Promote/NumArgs.hs:0:0: Splicing declarations
     promote
       [d| returnFunc :: Nat -> Nat -> Nat

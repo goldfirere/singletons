@@ -1,4 +1,3 @@
-INSERT tests/compile-and-dump/Singletons/Nat.ghc78.template
 Singletons/Star.hs:0:0: Splicing declarations
     singletonStar [''Nat, ''Int, ''String, ''Maybe, ''Vec]
   ======>

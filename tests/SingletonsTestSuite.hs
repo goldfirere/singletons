@@ -2,10 +2,10 @@ module Main (
     main
  ) where
 
-import Test.Tasty               ( TestTree, defaultMain, testGroup                       )
+import Test.Tasty               ( TestTree, defaultMain, testGroup          )
 import SingletonsTestSuiteUtils ( compileAndDumpStdTest, compileAndDumpTest
-                                , runProgramTest, testCompileAndDumpGroup, ghcOpts
-                                , singletonsVersion                                      )
+                                , runProgramTest, testCompileAndDumpGroup
+                                , ghcOpts                                   )
 
 main :: IO ()
 main = defaultMain tests
@@ -31,10 +31,9 @@ tests =
     , compileAndDumpStdTest "NumArgs" -- remove once we have eta-expansion
     ],
     testGroup "Database client"
-    [ compileAndDumpTest "GradingClient/Main" ghcOpts
-    , runProgramTest     "GradingClient/Main"
-                         ["-package-name singletons-" ++ singletonsVersion]
-                                            -- see Note [No test dependencies]
+    [ compileAndDumpTest "GradingClient/Database" ghcOpts
+    , compileAndDumpTest "GradingClient/Main"     ghcOpts
+    , runProgramTest     "GradingClient/Main"     [] -- see Note [No test dependencies]
     ],
     testCompileAndDumpGroup "InsertionSort"
     [ compileAndDumpStdTest "InsertionSortImp"
@@ -44,8 +43,8 @@ tests =
 -- Note [No test dependencies]
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --
--- We should have a dependency between the two Database client tests - if
--- compilations of the program fails then there is no point in trying to run
+-- We should have a dependency between the Database client tests - if
+-- compilation of the program fails then there is no point in trying to run
 -- it. This is not possible to implement at the moment because tasty does not
 -- support test dependencies. See link below for more detail:
 --

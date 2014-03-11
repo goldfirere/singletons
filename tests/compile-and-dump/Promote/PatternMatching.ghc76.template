@@ -1,4 +1,3 @@
-INSERT tests/compile-and-dump/Singletons/Nat.ghc76.template
 Promote/PatternMatching.hs:0:0: Splicing declarations
     promote
       [d| pr = Pair (Succ Zero) ([Zero])
