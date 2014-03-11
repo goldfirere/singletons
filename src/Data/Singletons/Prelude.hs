@@ -97,7 +97,7 @@ module Data.Singletons.Prelude (
 
   -- * Defunctionalization symbols
   TrueSym0, FalseSym0,
-  (::$), (::$$), -- Missing symbol for [] - See #21
+  (:$), (:$$), -- Missing symbol for [] - See #21
   NothingSym0, JustSym0,
   LeftSym0, RightSym0,
   Tuple0Sym0,

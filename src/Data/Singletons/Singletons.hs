@@ -33,10 +33,10 @@ type TypeFn = Type -> Type
 type TypeContext = [Type]
 
 singFamilyName, singIName, singMethName, demoteRepName, singKindClassName,
-  sEqClassName, sEqMethName, sconsName, snilName, sIfName, undefinedName,
+  sEqClassName, sEqMethName, sconsName, snilName, sIfName,
   kProxyDataName, kProxyTypeName, proxyTypeName, proxyDataName,
   someSingTypeName, someSingDataName,
-  sListName, eqName, sDecideClassName, sDecideMethName,
+  sListName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName :: Name
 singFamilyName = ''Sing
 singIName = ''SingI
@@ -48,7 +48,6 @@ singKindClassName = ''SingKind
 sEqClassName = mkName "SEq"
 sEqMethName = mkName "%:=="
 sIfName = mkName "sIf"
-undefinedName = 'undefined
 sconsName = mkName "SCons"
 snilName = mkName "SNil"
 kProxyDataName = 'KProxy
@@ -58,7 +57,6 @@ someSingDataName = 'SomeSing
 proxyTypeName = ''Proxy
 proxyDataName = 'Proxy
 sListName = mkName "SList"
-eqName = ''Eq
 sDecideClassName = ''SDecide
 sDecideMethName = '(%~)
 provedName = 'Proved
@@ -153,7 +151,7 @@ singCtor a = ctorCases
   (\name types -> do
     let sName = singDataConName name
         sCon = singDataCon name
-        pCon = promoteDataCon name
+        pCon = PromotedT name
     indexNames <- replicateM (length types) (qNewName "n")
     let indices = map VarT indexNames
     kinds <- mapM promoteType types
@@ -250,7 +248,8 @@ singDec (InstanceD _cxt _ty _decs) =
   fail "Singling of class instance not yet supported"
 singDec (SigD name ty) = do
   tyTrans <- singType ty
-  let (typeSig, proxyTable) = tyTrans (promoteVal name)
+  let (typeSig, proxyTable) = tyTrans (ConT $ promoteValNameLhs name)
+                               -- TODO: the above line is fishy.
   addBinding name proxyTable -- assign proxy table to function name
   return [SigD (singValName name) typeSig]
 singDec (ForeignD fgn) =

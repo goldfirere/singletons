@@ -43,7 +43,7 @@ module Data.Singletons.List (
   Reverse, sReverse,
 
   -- * Defunctionalization symbols
-  (::$), (::$$), -- Missing symbol for [] - See #21
+  (:$), (:$$), -- Missing symbol for [] - See #21
 
   (:++$$), (:++$),
   HeadSym0, TailSym0,

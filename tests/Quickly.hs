@@ -8,6 +8,10 @@ module Quickly where
 
 import Promote.NumArgs
 import Promote.PatternMatching
+import Promote.Constructors
+import Promote.Error
+import Promote.Lambdas
+import Promote.LambdasComprehensive
 
 import Singletons.AtPattern
 import Singletons.BoxUnBox

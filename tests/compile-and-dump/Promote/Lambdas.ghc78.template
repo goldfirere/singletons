@@ -1,35 +1,35 @@
 Promote/Lambdas.hs:0:0: Splicing declarations
     promote
       [d| foo1 :: a -> b -> a
-          foo1 x = (\ z -> x)
+          foo1 x = (\ _ -> x)
           foo2 :: a -> b -> a
-          foo2 x y = (\ z -> x) y
+          foo2 x y = (\ _ -> x) y
           foo3 :: a -> a
           foo3 x = (\ y -> y) x
           foo4 :: a -> b -> c -> a
-          foo4 x y z = (\ k l -> x) y z
+          foo4 x y z = (\ _ _ -> x) y z
           foo5 :: a -> b -> b
-          foo5 x y = (\ x -> x) y
+          foo5 _ y = (\ x -> x) y
           foo6 :: a -> b -> a
-          foo6 a b = (\ x -> \ y -> x) a b
+          foo6 a b = (\ x -> \ _ -> x) a b
           foo7 :: a -> b -> b
-          foo7 x y = (\ (a, b) -> b) (x, y) |]
+          foo7 x y = (\ (_, b) -> b) (x, y) |]
   ======>
     Promote/Lambdas.hs:(0,0)-(0,0)
     foo1 :: forall a b. a -> b -> a
-    foo1 x = \ z -> x
+    foo1 x = \ _ -> x
     foo2 :: forall a b. a -> b -> a
-    foo2 x y = \ z -> x y
+    foo2 x y = \ _ -> x y
     foo3 :: forall a. a -> a
     foo3 x = \ y -> y x
     foo4 :: forall a b c. a -> b -> c -> a
-    foo4 x y z = \ k l -> x y z
+    foo4 x y z = \ _ _ -> x y z
     foo5 :: forall a b. a -> b -> b
-    foo5 x y = \ x -> x y
+    foo5 _ y = \ x -> x y
     foo6 :: forall a b. a -> b -> a
-    foo6 a b = \ x -> \ y -> x a b
+    foo6 a b = \ x -> \ _ -> x a b
     foo7 :: forall a b. a -> b -> b
-    foo7 x y = \ (a, b) -> b (x, y)
+    foo7 x y = \ (_, b) -> b (x, y)
     type family Lambda_0123456789 (x :: x) (t :: k) where
       Lambda_0123456789 x z = x
     data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
@@ -56,7 +56,7 @@ Promote/Lambdas.hs:0:0: Splicing declarations
                                   (z :: z)
                                   (t :: k)
                                   (t :: k) where
-      Lambda_0123456789 x y z k l = x
+      Lambda_0123456789 x y z z z = x
     data Lambda_0123456789Sym4 (l :: x)
                                (l :: y)
                                (l :: z)
@@ -94,7 +94,7 @@ Promote/Lambdas.hs:0:0: Splicing declarations
                                   (b :: b)
                                   (x :: x)
                                   (t :: k) where
-      Lambda_0123456789 a b x y = x
+      Lambda_0123456789 a b x z = x
     data Lambda_0123456789Sym3 (l :: a)
                                (l :: b)
                                (l :: x)
@@ -122,7 +122,7 @@ Promote/Lambdas.hs:0:0: Splicing declarations
     type instance (@@) (Lambda_0123456789Sym1 a) a = Lambda_0123456789Sym2 a a
     type instance (@@) Lambda_0123456789Sym0 a = Lambda_0123456789Sym1 a
     type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) where
-      Lambda_0123456789 x y '(a, b) = b
+      Lambda_0123456789 x y '(z, b) = b
     data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
     data Lambda_0123456789Sym1 (l :: x) (l :: TyFun y (TyFun k r -> *))
     data Lambda_0123456789Sym0 (k :: TyFun x (TyFun y (TyFun k r -> *)

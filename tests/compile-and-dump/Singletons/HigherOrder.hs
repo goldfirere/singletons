@@ -1,9 +1,8 @@
 module Singletons.HigherOrder where
 
 import Data.Singletons.TH
-import Data.Singletons.List hiding (map, sMap, Map, MapSym0, MapSym1)
+import Data.Singletons.List hiding (sMap, Map, MapSym0, MapSym1)
 import Data.Singletons.Maybe
-import Data.Proxy
 
 $(singletons [d|
   map :: (a -> b) -> [a] -> [b]
@@ -17,6 +16,8 @@ $(singletons [d|
   zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
   zipWith f (x:xs) (y:ys) = f x y : zipWith f xs ys
   zipWith _ [] []         = []
+  zipWith _ (_:_) []      = []
+  zipWith _ [] (_:_)      = []
 
   -- higher order function that accepts higher order function
   foo :: ((a -> b) -> a -> b) -> (a -> b)  -> a -> b

@@ -7,18 +7,18 @@ data Proxy a = Proxy
 $(promote [d|
   -- eta-reduced function
   foo1 :: a -> b -> a
-  foo1 x = (\z -> x)
+  foo1 x = (\_ -> x)
 
   -- same as before, but without eta-reduction
   foo2 :: a -> b -> a
-  foo2 x y = (\z -> x) y
+  foo2 x y = (\_ -> x) y
 
   foo3 :: a -> a
   foo3 x = (\y -> y) x
 
   -- more lambda parameters + returning in-scope variable
   foo4 :: a -> b -> c -> a
-  foo4 x y z = (\k l -> x) y z
+  foo4 x y z = (\_ _ -> x) y z
 
   -- name shadowing
   -- Note: due to -dsuppress-uniques output of this test does not really
@@ -27,15 +27,15 @@ $(promote [d|
   -- returns its last parameter (ie. y passed in a call) rather than the
   -- first one (ie. x that is shadowed by the binder in a lambda).
   foo5 :: a -> b -> b
-  foo5 x y = (\x -> x) y
+  foo5 _ y = (\x -> x) y
 
   -- nested lambdas
   foo6 :: a -> b -> a
-  foo6 a b = (\x -> \y -> x) a b
+  foo6 a b = (\x -> \_ -> x) a b
 
   -- tuple patterns
   foo7 :: a -> b -> b
-  foo7 x y = (\(a, b) -> b) (x, y)
+  foo7 x y = (\(_, b) -> b) (x, y)
  |])
 
 foo1a :: Proxy ((@@) (Foo1 Int) Char)

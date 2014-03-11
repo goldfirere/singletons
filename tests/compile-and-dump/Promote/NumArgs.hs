@@ -17,5 +17,5 @@ $(promote [d|
   id x = x
 
   idFoo :: c -> a -> a
-  idFoo x = id
+  idFoo _ = id
   |])

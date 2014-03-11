@@ -50,11 +50,6 @@ module Data.Singletons.Tuple (
 
 import Data.Singletons.Core
 import Data.Singletons.TH
-#if __GLASGOW_HASKELL__ < 707
-import Data.Singletons.Types
-#else
-import Data.Proxy
-#endif
 
 $(singletonsOnly [d|
   -- | Extract the first component of a pair.

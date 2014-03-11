@@ -1,7 +1,7 @@
 module Promote.Error where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude hiding (head, Head, HeadSym0)
+import Data.Singletons.Prelude hiding (Head, HeadSym0)
 
 $(promote [d|
   head :: [a] -> a

@@ -59,11 +59,6 @@ module Data.Singletons.Either (
 import Data.Singletons.Core
 import Data.Singletons.TH
 import Data.Singletons.List
-#if __GLASGOW_HASKELL__ < 707
-import Data.Singletons.Types
-#else
-import Data.Proxy
-#endif
 
 $(singletons [d|
   -- | Case analysis for the 'Either' type.

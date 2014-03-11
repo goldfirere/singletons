@@ -6,7 +6,7 @@ Promote/NumArgs.hs:0:0: Splicing declarations
           id :: a -> a
           id x = x
           idFoo :: c -> a -> a
-          idFoo x = id |]
+          idFoo _ = id |]
   ======>
     Promote/NumArgs.hs:(0,0)-(0,0)
     returnFunc :: Nat -> Nat -> Nat
@@ -14,7 +14,7 @@ Promote/NumArgs.hs:0:0: Splicing declarations
     id :: forall a. a -> a
     id x = x
     idFoo :: forall c a. c -> a -> a
-    idFoo x = id
+    idFoo _ = id
     type family ReturnFunc (a :: Nat) :: TyFun Nat Nat -> * where
          ReturnFunc z = SuccSym0
     data ReturnFuncSym0 (k :: TyFun Nat (TyFun Nat Nat -> *))
@@ -24,6 +24,6 @@ Promote/NumArgs.hs:0:0: Splicing declarations
     data IdSym0 (k :: TyFun a a)
     type instance (@@) IdSym0 a = Id a
     type family IdFoo (a :: c) :: TyFun a a -> * where
-      IdFoo x = IdSym0
+      IdFoo z = IdSym0
     data IdFooSym0 (k :: TyFun c (TyFun a a -> *))
     type instance (@@) IdFooSym0 a = IdFoo a

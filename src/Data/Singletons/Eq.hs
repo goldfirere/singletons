@@ -24,9 +24,7 @@ import Data.Singletons.Bool
 import Data.Singletons.Exports
 import Data.Singletons.Singletons
 import Data.Singletons.Core
-import Data.Singletons.Singletons
 import Data.Singletons.Util
-import Data.Singletons.Types
 import GHC.TypeLits ( Nat, Symbol )
 import Unsafe.Coerce   -- for TypeLits instances
 import Data.Singletons.Types

@@ -61,7 +61,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
     type instance (@@) LeqSym0 a = LeqSym1 a
     type family Insert (a :: Nat) (a :: [Nat]) :: [Nat] where
       Insert n GHC.Types.[] = '[n]
-      Insert n ((GHC.Types.:) h t) = If ((@@) ((@@) LeqSym0 n) h) ((@@) ((@@) (::$) n) ((@@) ((@@) (::$) h) t)) ((@@) ((@@) (::$) h) ((@@) ((@@) InsertSym0 n) t))
+      Insert n ((GHC.Types.:) h t) = If ((@@) ((@@) LeqSym0 n) h) ((@@) ((@@) (:$) n) ((@@) ((@@) (:$) h) t)) ((@@) ((@@) (:$) h) ((@@) ((@@) InsertSym0 n) t))
     data InsertSym1 (l :: Nat) (l :: TyFun [Nat] [Nat])
     data InsertSym0 (k :: TyFun Nat (TyFun [Nat] [Nat] -> *))
     type instance (@@) (InsertSym1 a) a = Insert a a
