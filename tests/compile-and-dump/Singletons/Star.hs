@@ -1,8 +1,10 @@
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
+
 module Singletons.Star where
 
-import Data.Singletons.CustomStar
 import Data.Singletons.Prelude
-import Data.Singletons.TH
+import Data.Singletons.Decide
+import Data.Singletons.CustomStar
 import Singletons.Nat
 
 data Vec :: * -> Nat -> * where

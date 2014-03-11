@@ -55,6 +55,7 @@ module Data.Singletons.Bool (
   Bool_Sym0, Bool_Sym1, Bool_Sym2, OtherwiseSym0
   ) where
 
+import Data.Singletons.Exports
 import Data.Singletons.Core
 import Data.Singletons.Singletons
 import Data.Singletons.Types
@@ -64,13 +65,6 @@ import Data.Type.Bool
 
 type a :&& b = a && b
 type a :|| b = a || b
-
-sNot :: SBool a -> SBool (Not a)
-sNot SFalse = STrue
-sNot STrue  = SFalse
-
-data NotSym0 (t :: TyFun Bool Bool)
-type instance NotSym0 @@ a = Not a
 
 (%:&&) :: SBool a -> SBool b -> SBool (a :&& b)
 SFalse %:&& _ = SFalse
@@ -106,18 +100,19 @@ $(singletonsOnly [d|
   True  || _ = True
   |])
 
--- | Type-level "If". @If True a b@ ==> @a@; @If False a b@ ==> @b@
-type family If (a :: Bool) (b :: k) (c :: k) :: k
-type instance If 'True b c = b
-type instance If 'False b c = c
-
 #endif
+
+sNot :: SBool a -> SBool (Not a)
+sNot SFalse = STrue
+sNot STrue  = SFalse
+
+data NotSym0 (t :: TyFun Bool Bool)
+type instance NotSym0 @@ a = Not a
 
 -- | Conditional over singletons
 sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
 sIf STrue b _ = b
 sIf SFalse _ c = c
-
 
 -- ... with some functions over Booleans
 $(singletonsOnly [d|

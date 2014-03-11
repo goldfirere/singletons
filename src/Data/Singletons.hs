@@ -47,7 +47,7 @@ module Data.Singletons (
   KProxy(..), Proxy(..)
   ) where
 
-import Data.Singletons.Core
+import Data.Singletons.Exports
 import Unsafe.Coerce
 import GHC.TypeLits (Symbol)
 

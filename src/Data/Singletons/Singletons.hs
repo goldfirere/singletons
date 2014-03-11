@@ -15,16 +15,12 @@ import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (falseName, trueName, Quasi(..))
 import Data.Singletons.Util
 import Data.Singletons.Promote
+import Data.Singletons.Exports
 import qualified Data.Map as Map
 import Control.Monad
 import Control.Applicative
 import Data.Singletons.Types
 import Data.List (find)
-
-#if __GLASGOW_HASKELL__ >= 707
-import Data.Proxy
-import Data.Type.Equality
-#endif
 
 -- map to track bound variables
 type ExpTable = Map.Map Name Exp
@@ -38,16 +34,17 @@ type TypeContext = [Type]
 
 singFamilyName, singIName, singMethName, demoteRepName, singKindClassName,
   sEqClassName, sEqMethName, sconsName, snilName, sIfName, undefinedName,
-  kProxyDataName, kProxyTypeName, proxyName, someSingTypeName, someSingDataName,
+  kProxyDataName, kProxyTypeName, proxyTypeName, proxyDataName,
+  someSingTypeName, someSingDataName,
   sListName, eqName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName :: Name
-singFamilyName = mkName "Sing"
-singIName = mkName "SingI"
-singMethName = mkName "sing"
-toSingName = mkName "toSing"
-fromSingName = mkName "fromSing"
-demoteRepName = mkName "DemoteRep"
-singKindClassName = mkName "SingKind"
+singFamilyName = ''Sing
+singIName = ''SingI
+singMethName = 'sing
+toSingName = 'toSing
+fromSingName = 'fromSing
+demoteRepName = ''DemoteRep
+singKindClassName = ''SingKind
 sEqClassName = mkName "SEq"
 sEqMethName = mkName "%:=="
 sIfName = mkName "sIf"
@@ -56,13 +53,14 @@ sconsName = mkName "SCons"
 snilName = mkName "SNil"
 kProxyDataName = 'KProxy
 kProxyTypeName = ''KProxy
-proxyName = mkName "Proxy"
-someSingTypeName = mkName "SomeSing"
-someSingDataName = mkName "SomeSing"
+someSingTypeName = ''SomeSing
+someSingDataName = 'SomeSing
+proxyTypeName = ''Proxy
+proxyDataName = 'Proxy
 sListName = mkName "SList"
 eqName = ''Eq
-sDecideClassName = mkName "SDecide"
-sDecideMethName = mkName "%~"
+sDecideClassName = ''SDecide
+sDecideMethName = '(%~)
 provedName = 'Proved
 disprovedName = 'Disproved
 reflName = 'Refl
@@ -215,12 +213,8 @@ singletonsOnly = (>>= singDecs False)
 -- first parameter says whether or not to include original decls
 singDecs :: Quasi q => Bool -> [Dec] -> q [Dec]
 singDecs originals decls = do
-  (promDecls, badNames) <- promoteDecs decls
-  -- need to remove the bad names returned from promoteDecs
-  (newDecls, proxyTable) <- evalForPair $ mapM singDec
-                   (filter (\dec ->
-                     not $ or (map (\f -> f dec)
-                              (map containsName badNames))) decls)
+  promDecls <- promoteDecs decls
+  (newDecls, proxyTable) <- evalForPair $ mapM singDec decls
   newDecls' <- mapM (singDec' proxyTable) (concat newDecls)
   return $ (if originals then (decls ++) else id) $ promDecls ++ newDecls'
 
@@ -533,7 +527,7 @@ singDataD rep cxt name tvbs ctors derivings
         mkRecursiveCall :: Name -> Kind -> Exp
         mkRecursiveCall var_name ki =
           SigE (AppE (VarE toSingName) (VarE var_name))
-               (AppT (ConT someSingDataName) (kindParam ki))
+               (AppT (ConT someSingTypeName) (kindParam ki))
 
         emptyMethod :: Name -> [Clause]
         emptyMethod n = [Clause [VarP n] (NormalB $ CaseE (VarE n) emptyMatches) []]
@@ -697,7 +691,7 @@ addProxy :: Name -> Type -> Type
 addProxy tyVar (ForallT tyvars ctx ty) =
     ForallT tyvars ctx (addProxy tyVar ty)
 addProxy tyVar funTy =
-    AppT (AppT ArrowT (AppT (ConT proxyName) (VarT tyVar))) funTy
+    AppT (AppT ArrowT (AppT (ConT proxyTypeName) (VarT tyVar))) funTy
 
 -- Lifts free-standing foralls to the top-level.
 liftOutForalls :: Type -> (Type, [(Name, Int)])
@@ -883,7 +877,7 @@ singExp proxyTable vars (AppE exp1@(VarE var) exp2) = do
   case needsProxy of
     Nothing     -> return $ AppE exp1' exp2'
     Just (_, n) -> return $ AppE (loop n addProxyParam exp1') exp2'
-      where addProxyParam exp = AppE exp (ConE proxyName)
+      where addProxyParam exp = AppE exp (ConE proxyDataName)
             loop 0 _ a = a
             loop m f a = loop (m - 1) f (f a)
 singExp proxyTable vars (AppE exp1 exp2) = do

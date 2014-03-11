@@ -21,12 +21,10 @@ import Language.Haskell.TH hiding ( Q )
 import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Language.Haskell.TH.Desugar ( reifyWithWarning, getDataD )
 import Data.Char
-import Data.Data
 import Control.Monad
 import Control.Applicative
 import Control.Monad.Writer
 import qualified Data.Map as Map
-import Data.Generics
 
 mkTyFamInst :: Name -> [Type] -> Type -> Dec
 mkTyFamInst name lhs rhs =
@@ -63,6 +61,10 @@ newUniqueName str = do
 -- like reportWarning, but generalized to any Quasi
 qReportWarning :: Quasi q => String -> q ()
 qReportWarning = qReport False
+
+-- like reportError, but generalized to any Quasi
+qReportError :: Quasi q => String -> q ()
+qReportError = qReport True
 
 -- extract the degree of a tuple
 tupleDegree_maybe :: String -> Maybe Int
@@ -108,21 +110,20 @@ isUpcase n = let first = head (nameBase n) in isUpper first || first == ':'
 
 -- make an identifier uppercase
 upcase :: Name -> Name
-upcase n =
-  let str = nameBase n
-      first = head str in
-    if isLetter first
-     then mkName ((toUpper first) : tail str)
-     else mkName (':' : str)
+upcase = mkName . toUpcaseStr
 
 -- make an identifier uppercase and return it as a String
 toUpcaseStr :: Name -> String
-toUpcaseStr n =
-  let str   = nameBase n
-      first = head str
-  in if isLetter first
-     then (toUpper first) : tail str
-     else ':' : str
+toUpcaseStr n
+  | isUpcase n
+  = nameBase n
+
+  | otherwise
+  = let str   = nameBase n
+        first = head str
+    in if isLetter first
+       then (toUpper first) : tail str
+       else ':' : str
 
 -- make an identifier lowercase
 locase :: Name -> Name
@@ -272,10 +273,6 @@ addBinding k v = tell (Map.singleton k v)
 -- in a computation with an auxiliar list, add an element to the list
 addElement :: Quasi q => elt -> QWithAux [elt] q ()
 addElement elt = tell [elt]
-
--- does a TH structure contain a name?
-containsName :: Data a => Name -> a -> Bool
-containsName n = everything (||) (mkQ False (== n))
 
 -- lift concatMap into a monad
 concatMapM :: Monad m => (a -> m [b]) -> [a] -> m [b]
