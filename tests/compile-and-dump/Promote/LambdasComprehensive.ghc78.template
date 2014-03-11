@@ -6,6 +6,8 @@ Promote/LambdasComprehensive.hs:0:0: Splicing declarations
           foo :: [Nat]
           foo
             = map (\ x -> either_ pred Succ x) [Left Zero, Right (Succ Zero)]
+          bar :: [Nat]
+          bar = map (either_ pred Succ) [Left Zero, Right (Succ Zero)]
 
           data Nat = Zero | Succ Nat |]
   ======>
@@ -17,6 +19,8 @@ Promote/LambdasComprehensive.hs:0:0: Splicing declarations
     foo :: [Nat]
     foo
       = map (\ x -> either_ pred Succ x) [Left Zero, Right (Succ Zero)]
+    bar :: [Nat]
+    bar = map (either_ pred Succ) [Left Zero, Right (Succ Zero)]
     type ZeroSym0 = Zero
     data SuccSym0 (k :: TyFun Nat Nat)
     type instance (@@) SuccSym0 a = Succ a
@@ -30,6 +34,12 @@ Promote/LambdasComprehensive.hs:0:0: Splicing declarations
       Lambda_0123456789 x = (@@) ((@@) ((@@) Either_Sym0 PredSym0) SuccSym0) x
     data Lambda_0123456789Sym0 (k :: TyFun k r)
     type instance (@@) Lambda_0123456789Sym0 a = Lambda_0123456789 a
+    type Bar =
+        (@@) ((@@) MapSym0 ((@@) ((@@) Either_Sym0 PredSym0) SuccSym0)) '[(@@) LeftSym0 ZeroSym0,
+                                                                              (@@) RightSym0 ((@@) SuccSym0 ZeroSym0)]
+    type BarSym0 =
+        (@@) ((@@) MapSym0 ((@@) ((@@) Either_Sym0 PredSym0) SuccSym0)) '[(@@) LeftSym0 ZeroSym0,
+                                                                              (@@) RightSym0 ((@@) SuccSym0 ZeroSym0)]
     type family Pred (a :: Nat) :: Nat where
       Pred Zero = ZeroSym0
       Pred (Succ n) = n
