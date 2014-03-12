@@ -26,6 +26,7 @@ tests =
     , compileAndDumpStdTest "DataValues"
     , compileAndDumpStdTest "EqInstances"
     , compileAndDumpStdTest "Star"
+    , compileAndDumpStdTest "Tuples"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "PatternMatching"

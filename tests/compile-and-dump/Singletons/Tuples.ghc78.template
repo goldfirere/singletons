@@ -1,0 +1,369 @@
+Singletons/Tuples.hs:0:0: Splicing declarations
+    genSingletons
+      [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)]
+  ======>
+    Singletons/Tuples.hs:(0,0)-(0,0)
+    type Tuple0Sym0 = GHC.Tuple.()
+    data instance Sing (z :: GHC.Tuple.())
+      = z ~ GHC.Tuple.() => STuple0
+    type STuple0 (z :: GHC.Tuple.()) = Sing z
+    instance SingKind (KProxy :: KProxy GHC.Tuple.()) where
+      type DemoteRep (KProxy :: KProxy GHC.Tuple.()) = GHC.Tuple.()
+      fromSing STuple0 = GHC.Tuple.()
+      toSing GHC.Tuple.() = SomeSing STuple0
+    instance SingI GHC.Tuple.() where
+      sing = STuple0
+    data Tuple2Sym1 (l :: a) (l :: TyFun b (GHC.Tuple.(,) a b))
+    data Tuple2Sym0 (k :: TyFun a (TyFun b (GHC.Tuple.(,) a b) -> *))
+    type instance (@@) (Tuple2Sym1 a) a = GHC.Tuple.(,) a a
+    type instance (@@) Tuple2Sym0 a = Tuple2Sym1 a
+    data instance Sing (z :: GHC.Tuple.(,) a b)
+      = forall (n :: a) (n :: b). z ~ GHC.Tuple.(,) n n =>
+        STuple2 (Sing n) (Sing n)
+    type STuple2 (z :: GHC.Tuple.(,) a b) = Sing z
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b)) =>
+             SingKind (KProxy :: KProxy (GHC.Tuple.(,) a b)) where
+      type DemoteRep (KProxy :: KProxy (GHC.Tuple.(,) a b)) = GHC.Tuple.(,) (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b))
+      fromSing (STuple2 b b) = GHC.Tuple.(,) (fromSing b) (fromSing b)
+      toSing (GHC.Tuple.(,) b b)
+        = case
+              (toSing b :: SomeSing (KProxy :: KProxy a),
+               toSing b :: SomeSing (KProxy :: KProxy b))
+          of {
+            (SomeSing c, SomeSing c) -> SomeSing (STuple2 c c) }
+    instance (SingI n, SingI n) =>
+             SingI (GHC.Tuple.(,) (n :: a) (n :: b)) where
+      sing = STuple2 sing sing
+    data Tuple3Sym2 (l :: a)
+                    (l :: b)
+                    (l :: TyFun c (GHC.Tuple.(,,) a b c))
+    data Tuple3Sym1 (l :: a)
+                    (l :: TyFun b (TyFun c (GHC.Tuple.(,,) a b c) -> *))
+    data Tuple3Sym0 (k :: TyFun a (TyFun b (TyFun c (GHC.Tuple.(,,) a b c)
+                                            -> *)
+                                   -> *))
+    type instance (@@) (Tuple3Sym2 a a) a = GHC.Tuple.(,,) a a a
+    type instance (@@) (Tuple3Sym1 a) a = Tuple3Sym2 a a
+    type instance (@@) Tuple3Sym0 a = Tuple3Sym1 a
+    data instance Sing (z :: GHC.Tuple.(,,) a b c)
+      = forall (n :: a) (n :: b) (n :: c). z ~ GHC.Tuple.(,,) n n n =>
+        STuple3 (Sing n) (Sing n) (Sing n)
+    type STuple3 (z :: GHC.Tuple.(,,) a b c) = Sing z
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b),
+              SingKind (KProxy :: KProxy c)) =>
+             SingKind (KProxy :: KProxy (GHC.Tuple.(,,) a b c)) where
+      type DemoteRep (KProxy :: KProxy (GHC.Tuple.(,,) a b c)) = GHC.Tuple.(,,) (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b)) (DemoteRep (KProxy :: KProxy c))
+      fromSing (STuple3 b b b)
+        = GHC.Tuple.(,,) (fromSing b) (fromSing b) (fromSing b)
+      toSing (GHC.Tuple.(,,) b b b)
+        = case
+              (toSing b :: SomeSing (KProxy :: KProxy a),
+               toSing b :: SomeSing (KProxy :: KProxy b),
+               toSing b :: SomeSing (KProxy :: KProxy c))
+          of {
+            (SomeSing c, SomeSing c, SomeSing c) -> SomeSing (STuple3 c c c) }
+    instance (SingI n, SingI n, SingI n) =>
+             SingI (GHC.Tuple.(,,) (n :: a) (n :: b) (n :: c)) where
+      sing = STuple3 sing sing sing
+    data Tuple4Sym3 (l :: a)
+                    (l :: b)
+                    (l :: c)
+                    (l :: TyFun d (GHC.Tuple.(,,,) a b c d))
+    data Tuple4Sym2 (l :: a)
+                    (l :: b)
+                    (l :: TyFun c (TyFun d (GHC.Tuple.(,,,) a b c d) -> *))
+    data Tuple4Sym1 (l :: a)
+                    (l :: TyFun b (TyFun c (TyFun d (GHC.Tuple.(,,,) a b c d) -> *)
+                                   -> *))
+    data Tuple4Sym0 (k :: TyFun a (TyFun b (TyFun c (TyFun d (GHC.Tuple.(,,,) a b c d)
+                                                     -> *)
+                                            -> *)
+                                   -> *))
+    type instance (@@) (Tuple4Sym3 a a a) a = GHC.Tuple.(,,,) a a a a
+    type instance (@@) (Tuple4Sym2 a a) a = Tuple4Sym3 a a a
+    type instance (@@) (Tuple4Sym1 a) a = Tuple4Sym2 a a
+    type instance (@@) Tuple4Sym0 a = Tuple4Sym1 a
+    data instance Sing (z :: GHC.Tuple.(,,,) a b c d)
+      = forall (n :: a)
+               (n :: b)
+               (n :: c)
+               (n :: d). z ~ GHC.Tuple.(,,,) n n n n =>
+        STuple4 (Sing n) (Sing n) (Sing n) (Sing n)
+    type STuple4 (z :: GHC.Tuple.(,,,) a b c d) = Sing z
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b),
+              SingKind (KProxy :: KProxy c),
+              SingKind (KProxy :: KProxy d)) =>
+             SingKind (KProxy :: KProxy (GHC.Tuple.(,,,) a b c d)) where
+      type DemoteRep (KProxy :: KProxy (GHC.Tuple.(,,,) a b c d)) = GHC.Tuple.(,,,) (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b)) (DemoteRep (KProxy :: KProxy c)) (DemoteRep (KProxy :: KProxy d))
+      fromSing (STuple4 b b b b)
+        = GHC.Tuple.(,,,)
+            (fromSing b) (fromSing b) (fromSing b) (fromSing b)
+      toSing (GHC.Tuple.(,,,) b b b b)
+        = case
+              (toSing b :: SomeSing (KProxy :: KProxy a),
+               toSing b :: SomeSing (KProxy :: KProxy b),
+               toSing b :: SomeSing (KProxy :: KProxy c),
+               toSing b :: SomeSing (KProxy :: KProxy d))
+          of {
+            (SomeSing c, SomeSing c, SomeSing c, SomeSing c)
+              -> SomeSing (STuple4 c c c c) }
+    instance (SingI n, SingI n, SingI n, SingI n) =>
+             SingI (GHC.Tuple.(,,,) (n :: a) (n :: b) (n :: c) (n :: d)) where
+      sing = STuple4 sing sing sing sing
+    data Tuple5Sym4 (l :: a)
+                    (l :: b)
+                    (l :: c)
+                    (l :: d)
+                    (l :: TyFun e (GHC.Tuple.(,,,,) a b c d e))
+    data Tuple5Sym3 (l :: a)
+                    (l :: b)
+                    (l :: c)
+                    (l :: TyFun d (TyFun e (GHC.Tuple.(,,,,) a b c d e) -> *))
+    data Tuple5Sym2 (l :: a)
+                    (l :: b)
+                    (l :: TyFun c (TyFun d (TyFun e (GHC.Tuple.(,,,,) a b c d e) -> *)
+                                   -> *))
+    data Tuple5Sym1 (l :: a)
+                    (l :: TyFun b (TyFun c (TyFun d (TyFun e (GHC.Tuple.(,,,,) a b c d e)
+                                                     -> *)
+                                            -> *)
+                                   -> *))
+    data Tuple5Sym0 (k :: TyFun a (TyFun b (TyFun c (TyFun d (TyFun e (GHC.Tuple.(,,,,) a b c d e)
+                                                              -> *)
+                                                     -> *)
+                                            -> *)
+                                   -> *))
+    type instance (@@) (Tuple5Sym4 a a a a) a = GHC.Tuple.(,,,,) a a a a a
+    type instance (@@) (Tuple5Sym3 a a a) a = Tuple5Sym4 a a a a
+    type instance (@@) (Tuple5Sym2 a a) a = Tuple5Sym3 a a a
+    type instance (@@) (Tuple5Sym1 a) a = Tuple5Sym2 a a
+    type instance (@@) Tuple5Sym0 a = Tuple5Sym1 a
+    data instance Sing (z :: GHC.Tuple.(,,,,) a b c d e)
+      = forall (n :: a)
+               (n :: b)
+               (n :: c)
+               (n :: d)
+               (n :: e). z ~ GHC.Tuple.(,,,,) n n n n n =>
+        STuple5 (Sing n) (Sing n) (Sing n) (Sing n) (Sing n)
+    type STuple5 (z :: GHC.Tuple.(,,,,) a b c d e) = Sing z
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b),
+              SingKind (KProxy :: KProxy c),
+              SingKind (KProxy :: KProxy d),
+              SingKind (KProxy :: KProxy e)) =>
+             SingKind (KProxy :: KProxy (GHC.Tuple.(,,,,) a b c d e)) where
+      type DemoteRep (KProxy :: KProxy (GHC.Tuple.(,,,,) a b c d e)) = GHC.Tuple.(,,,,) (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b)) (DemoteRep (KProxy :: KProxy c)) (DemoteRep (KProxy :: KProxy d)) (DemoteRep (KProxy :: KProxy e))
+      fromSing (STuple5 b b b b b)
+        = GHC.Tuple.(,,,,)
+            (fromSing b) (fromSing b) (fromSing b) (fromSing b) (fromSing b)
+      toSing (GHC.Tuple.(,,,,) b b b b b)
+        = case
+              (toSing b :: SomeSing (KProxy :: KProxy a),
+               toSing b :: SomeSing (KProxy :: KProxy b),
+               toSing b :: SomeSing (KProxy :: KProxy c),
+               toSing b :: SomeSing (KProxy :: KProxy d),
+               toSing b :: SomeSing (KProxy :: KProxy e))
+          of {
+            (SomeSing c, SomeSing c, SomeSing c, SomeSing c, SomeSing c)
+              -> SomeSing (STuple5 c c c c c) }
+    instance (SingI n, SingI n, SingI n, SingI n, SingI n) =>
+             SingI (GHC.Tuple.(,,,,) (n :: a) (n :: b) (n :: c) (n :: d) (n :: e)) where
+      sing = STuple5 sing sing sing sing sing
+    data Tuple6Sym5 (l :: a)
+                    (l :: b)
+                    (l :: c)
+                    (l :: d)
+                    (l :: e)
+                    (l :: TyFun f (GHC.Tuple.(,,,,,) a b c d e f))
+    data Tuple6Sym4 (l :: a)
+                    (l :: b)
+                    (l :: c)
+                    (l :: d)
+                    (l :: TyFun e (TyFun f (GHC.Tuple.(,,,,,) a b c d e f) -> *))
+    data Tuple6Sym3 (l :: a)
+                    (l :: b)
+                    (l :: c)
+                    (l :: TyFun d (TyFun e (TyFun f (GHC.Tuple.(,,,,,) a b c d e f)
+                                            -> *)
+                                   -> *))
+    data Tuple6Sym2 (l :: a)
+                    (l :: b)
+                    (l :: TyFun c (TyFun d (TyFun e (TyFun f (GHC.Tuple.(,,,,,) a b c d e f)
+                                                     -> *)
+                                            -> *)
+                                   -> *))
+    data Tuple6Sym1 (l :: a)
+                    (l :: TyFun b (TyFun c (TyFun d (TyFun e (TyFun f (GHC.Tuple.(,,,,,) a b c d e f)
+                                                              -> *)
+                                                     -> *)
+                                            -> *)
+                                   -> *))
+    data Tuple6Sym0 (k :: TyFun a (TyFun b (TyFun c (TyFun d (TyFun e (TyFun f (GHC.Tuple.(,,,,,) a b c d e f)
+                                                                       -> *)
+                                                              -> *)
+                                                     -> *)
+                                            -> *)
+                                   -> *))
+    type instance (@@) (Tuple6Sym5 a a a a a) a = GHC.Tuple.(,,,,,) a a a a a a
+    type instance (@@) (Tuple6Sym4 a a a a) a = Tuple6Sym5 a a a a a
+    type instance (@@) (Tuple6Sym3 a a a) a = Tuple6Sym4 a a a a
+    type instance (@@) (Tuple6Sym2 a a) a = Tuple6Sym3 a a a
+    type instance (@@) (Tuple6Sym1 a) a = Tuple6Sym2 a a
+    type instance (@@) Tuple6Sym0 a = Tuple6Sym1 a
+    data instance Sing (z :: GHC.Tuple.(,,,,,) a b c d e f)
+      = forall (n :: a)
+               (n :: b)
+               (n :: c)
+               (n :: d)
+               (n :: e)
+               (n :: f). z ~ GHC.Tuple.(,,,,,) n n n n n n =>
+        STuple6 (Sing n) (Sing n) (Sing n) (Sing n) (Sing n) (Sing n)
+    type STuple6 (z :: GHC.Tuple.(,,,,,) a b c d e f) = Sing z
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b),
+              SingKind (KProxy :: KProxy c),
+              SingKind (KProxy :: KProxy d),
+              SingKind (KProxy :: KProxy e),
+              SingKind (KProxy :: KProxy f)) =>
+             SingKind (KProxy :: KProxy (GHC.Tuple.(,,,,,) a b c d e f)) where
+      type DemoteRep (KProxy :: KProxy (GHC.Tuple.(,,,,,) a b c d e f)) = GHC.Tuple.(,,,,,) (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b)) (DemoteRep (KProxy :: KProxy c)) (DemoteRep (KProxy :: KProxy d)) (DemoteRep (KProxy :: KProxy e)) (DemoteRep (KProxy :: KProxy f))
+      fromSing (STuple6 b b b b b b)
+        = GHC.Tuple.(,,,,,)
+            (fromSing b)
+            (fromSing b)
+            (fromSing b)
+            (fromSing b)
+            (fromSing b)
+            (fromSing b)
+      toSing (GHC.Tuple.(,,,,,) b b b b b b)
+        = case
+              (toSing b :: SomeSing (KProxy :: KProxy a),
+               toSing b :: SomeSing (KProxy :: KProxy b),
+               toSing b :: SomeSing (KProxy :: KProxy c),
+               toSing b :: SomeSing (KProxy :: KProxy d),
+               toSing b :: SomeSing (KProxy :: KProxy e),
+               toSing b :: SomeSing (KProxy :: KProxy f))
+          of {
+            (SomeSing c,
+             SomeSing c,
+             SomeSing c,
+             SomeSing c,
+             SomeSing c,
+             SomeSing c)
+              -> SomeSing (STuple6 c c c c c c) }
+    instance (SingI n, SingI n, SingI n, SingI n, SingI n, SingI n) =>
+             SingI (GHC.Tuple.(,,,,,) (n :: a) (n :: b) (n :: c) (n :: d) (n :: e) (n :: f)) where
+      sing = STuple6 sing sing sing sing sing sing
+    data Tuple7Sym6 (l :: a)
+                    (l :: b)
+                    (l :: c)
+                    (l :: d)
+                    (l :: e)
+                    (l :: f)
+                    (l :: TyFun g (GHC.Tuple.(,,,,,,) a b c d e f g))
+    data Tuple7Sym5 (l :: a)
+                    (l :: b)
+                    (l :: c)
+                    (l :: d)
+                    (l :: e)
+                    (l :: TyFun f (TyFun g (GHC.Tuple.(,,,,,,) a b c d e f g) -> *))
+    data Tuple7Sym4 (l :: a)
+                    (l :: b)
+                    (l :: c)
+                    (l :: d)
+                    (l :: TyFun e (TyFun f (TyFun g (GHC.Tuple.(,,,,,,) a b c d e f g)
+                                            -> *)
+                                   -> *))
+    data Tuple7Sym3 (l :: a)
+                    (l :: b)
+                    (l :: c)
+                    (l :: TyFun d (TyFun e (TyFun f (TyFun g (GHC.Tuple.(,,,,,,) a b c d e f g)
+                                                     -> *)
+                                            -> *)
+                                   -> *))
+    data Tuple7Sym2 (l :: a)
+                    (l :: b)
+                    (l :: TyFun c (TyFun d (TyFun e (TyFun f (TyFun g (GHC.Tuple.(,,,,,,) a b c d e f g)
+                                                              -> *)
+                                                     -> *)
+                                            -> *)
+                                   -> *))
+    data Tuple7Sym1 (l :: a)
+                    (l :: TyFun b (TyFun c (TyFun d (TyFun e (TyFun f (TyFun g (GHC.Tuple.(,,,,,,) a b c d e f g)
+                                                                       -> *)
+                                                              -> *)
+                                                     -> *)
+                                            -> *)
+                                   -> *))
+    data Tuple7Sym0 (k :: TyFun a (TyFun b (TyFun c (TyFun d (TyFun e (TyFun f (TyFun g (GHC.Tuple.(,,,,,,) a b c d e f g)
+                                                                                -> *)
+                                                                       -> *)
+                                                              -> *)
+                                                     -> *)
+                                            -> *)
+                                   -> *))
+    type instance (@@) (Tuple7Sym6 a a a a a a) a = GHC.Tuple.(,,,,,,) a a a a a a a
+    type instance (@@) (Tuple7Sym5 a a a a a) a = Tuple7Sym6 a a a a a a
+    type instance (@@) (Tuple7Sym4 a a a a) a = Tuple7Sym5 a a a a a
+    type instance (@@) (Tuple7Sym3 a a a) a = Tuple7Sym4 a a a a
+    type instance (@@) (Tuple7Sym2 a a) a = Tuple7Sym3 a a a
+    type instance (@@) (Tuple7Sym1 a) a = Tuple7Sym2 a a
+    type instance (@@) Tuple7Sym0 a = Tuple7Sym1 a
+    data instance Sing (z :: GHC.Tuple.(,,,,,,) a b c d e f g)
+      = forall (n :: a)
+               (n :: b)
+               (n :: c)
+               (n :: d)
+               (n :: e)
+               (n :: f)
+               (n :: g). z ~ GHC.Tuple.(,,,,,,) n n n n n n n =>
+        STuple7 (Sing n) (Sing n) (Sing n) (Sing n) (Sing n) (Sing n) (Sing n)
+    type STuple7 (z :: GHC.Tuple.(,,,,,,) a b c d e f g) = Sing z
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b),
+              SingKind (KProxy :: KProxy c),
+              SingKind (KProxy :: KProxy d),
+              SingKind (KProxy :: KProxy e),
+              SingKind (KProxy :: KProxy f),
+              SingKind (KProxy :: KProxy g)) =>
+             SingKind (KProxy :: KProxy (GHC.Tuple.(,,,,,,) a b c d e f g)) where
+      type DemoteRep (KProxy :: KProxy (GHC.Tuple.(,,,,,,) a b c d e f g)) = GHC.Tuple.(,,,,,,) (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b)) (DemoteRep (KProxy :: KProxy c)) (DemoteRep (KProxy :: KProxy d)) (DemoteRep (KProxy :: KProxy e)) (DemoteRep (KProxy :: KProxy f)) (DemoteRep (KProxy :: KProxy g))
+      fromSing (STuple7 b b b b b b b)
+        = GHC.Tuple.(,,,,,,)
+            (fromSing b)
+            (fromSing b)
+            (fromSing b)
+            (fromSing b)
+            (fromSing b)
+            (fromSing b)
+            (fromSing b)
+      toSing (GHC.Tuple.(,,,,,,) b b b b b b b)
+        = case
+              (toSing b :: SomeSing (KProxy :: KProxy a),
+               toSing b :: SomeSing (KProxy :: KProxy b),
+               toSing b :: SomeSing (KProxy :: KProxy c),
+               toSing b :: SomeSing (KProxy :: KProxy d),
+               toSing b :: SomeSing (KProxy :: KProxy e),
+               toSing b :: SomeSing (KProxy :: KProxy f),
+               toSing b :: SomeSing (KProxy :: KProxy g))
+          of {
+            (SomeSing c,
+             SomeSing c,
+             SomeSing c,
+             SomeSing c,
+             SomeSing c,
+             SomeSing c,
+             SomeSing c)
+              -> SomeSing (STuple7 c c c c c c c) }
+    instance (SingI n,
+              SingI n,
+              SingI n,
+              SingI n,
+              SingI n,
+              SingI n,
+              SingI n) =>
+             SingI (GHC.Tuple.(,,,,,,) (n :: a) (n :: b) (n :: c) (n :: d) (n :: e) (n :: f) (n :: g)) where
+      sing = STuple7 sing sing sing sing sing sing sing

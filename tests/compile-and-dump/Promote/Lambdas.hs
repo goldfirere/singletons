@@ -27,7 +27,7 @@ $(promote [d|
   -- returns its last parameter (ie. y passed in a call) rather than the
   -- first one (ie. x that is shadowed by the binder in a lambda).
   foo5 :: a -> b -> b
-  foo5 _ y = (\x -> x) y
+  foo5 x y = (\x -> x) y
 
   -- nested lambdas
   foo6 :: a -> b -> a

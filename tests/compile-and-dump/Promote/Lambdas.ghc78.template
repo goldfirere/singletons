@@ -9,7 +9,7 @@ Promote/Lambdas.hs:0:0: Splicing declarations
           foo4 :: a -> b -> c -> a
           foo4 x y z = (\ _ _ -> x) y z
           foo5 :: a -> b -> b
-          foo5 _ y = (\ x -> x) y
+          foo5 x y = (\ x -> x) y
           foo6 :: a -> b -> a
           foo6 a b = (\ x -> \ _ -> x) a b
           foo7 :: a -> b -> b
@@ -25,7 +25,7 @@ Promote/Lambdas.hs:0:0: Splicing declarations
     foo4 :: forall a b c. a -> b -> c -> a
     foo4 x y z = \ _ _ -> x y z
     foo5 :: forall a b. a -> b -> b
-    foo5 _ y = \ x -> x y
+    foo5 x y = \ x -> x y
     foo6 :: forall a b. a -> b -> a
     foo6 a b = \ x -> \ _ -> x a b
     foo7 :: forall a b. a -> b -> b
