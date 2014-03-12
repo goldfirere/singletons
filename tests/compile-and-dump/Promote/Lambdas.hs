@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-unused-matches -fno-warn-name-shadowing #-}
+-- We expect unused binds and name shadowing in foo5 test.
 module Promote.Lambdas where
 
 import Data.Singletons.TH

@@ -1,6 +1,6 @@
 INCLUDES = ../src ../dist/build compile-and-dump
 OUTPUT = ../dist/build/quickly
-OPTS = -Wall -Werror -fno-warn-orphans -fno-warn-missing-signatures
+OPTS = -O0 -Wall -Werror -fno-warn-orphans -fno-warn-missing-signatures
 EXTS = TemplateHaskell DataKinds PolyKinds ScopedTypeVariables FlexibleContexts \
        FlexibleInstances GADTs TypeFamilies RankNTypes UndecidableInstances \
        TypeOperators MultiParamTypeClasses

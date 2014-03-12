@@ -24,6 +24,8 @@ import Singletons.Maybe
 import Singletons.Nat
 import Singletons.Operators
 import Singletons.Star
+-- Can't import tuples test due to duplicate instances
+--import Singletons.Tuples ()
 
 import GradingClient.Database
 
