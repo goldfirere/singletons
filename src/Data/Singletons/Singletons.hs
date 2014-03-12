@@ -21,6 +21,7 @@ import Control.Monad
 import Control.Applicative
 import Data.Singletons.Types
 import Data.List (find)
+import Data.Maybe (catMaybes)
 
 -- map to track bound variables
 type ExpTable = Map.Map Name Exp
@@ -123,12 +124,12 @@ singInfo (ClassOpI _name _ty _className _fixity) =
   fail "Singling of class members info not supported"
 singInfo (TyConI dec@(DataD cxt name tvbs ctors derivings)) = do -- TODO: document this special case
   (newDecls, binds)  <- evalForPair $ singDec dec --rename binds
-  newDecls' <- mapM (singDec' binds) newDecls
+  newDecls' <- fmap catMaybes $ mapM (singDec' binds) newDecls
   promotedDataDecs <- promoteDataD cxt name tvbs ctors derivings
   return $ promotedDataDecs ++ newDecls'
 singInfo (TyConI dec) = do
   (newDecls, binds)  <- evalForPair $ singDec dec --rename binds
-  newDecls' <- mapM (singDec' binds) newDecls
+  newDecls' <- fmap catMaybes $ mapM (singDec' binds) newDecls
   return newDecls'
 singInfo (FamilyI _dec _instances) =
   fail "Singling of type family info not yet supported" -- KindFams
@@ -213,7 +214,7 @@ singDecs :: Quasi q => Bool -> [Dec] -> q [Dec]
 singDecs originals decls = do
   promDecls <- promoteDecs decls
   (newDecls, proxyTable) <- evalForPair $ mapM singDec decls
-  newDecls' <- mapM (singDec' proxyTable) (concat newDecls)
+  newDecls' <- fmap catMaybes $ mapM (singDec' proxyTable) (concat newDecls)
   return $ (if originals then (decls ++) else id) $ promDecls ++ newDecls'
 
 -- ProxyTable stores a mapping between function name and a list of
@@ -283,14 +284,33 @@ singDec (TySynInstD _name _lhs _rhs) =
 #endif
   fail "Singling of type family instances not yet supported"
 
-singDec' :: Quasi q => ProxyTable -> Dec -> q Dec
+singDec' :: Quasi q => ProxyTable -> Dec -> q (Maybe Dec)
 singDec' proxyTable (FunD name clauses) = do
   let sName = singValName name
       vars = Map.singleton name (VarE sName)
   case Map.lookup name proxyTable of
-    Nothing -> fail "Function declaration is missing its Proxy table entry"
-    Just proxyCount -> FunD sName <$> (mapM (singClause vars proxyCount) clauses)
-singDec' _ dec = return dec
+    Nothing -> return Nothing -- see Note [No type signature = no proxy table]
+    Just proxyCount -> (Just . FunD sName) <$> (mapM (singClause vars proxyCount) clauses)
+singDec' _ dec = return (Just dec)
+
+-- Note [No type signature = no proxy table]
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+-- In the first phase of singleton generation (see Note [Creating
+-- singleton functions in two stages]) for each type signature of a
+-- function we genrate a proxy table that stores information about
+-- number of extra Proxy parameters needed for singletonized functions
+-- (see Note [Singletonizing type signature]). It might happen that
+-- user request singletonization of a function but provides no type
+-- signature for it. We consider this incorrect and report an error at
+-- the end of singletonization process. However, we don't drop that
+-- definition. This means that later in the proceess we will attempt
+-- to singletonize the definition without type signature and since
+-- there was no type signature we have no proxy table. As a result we
+-- don't generate singletonized definition of a function and drop it
+-- instead (by returning Nothing). A side-effect of this is that other
+-- singletonized functions might refer to the removed function. This
+-- is not a big problem since we fail with an error anyway.
 
 -- | Create instances of 'SEq' and type-level '(:==)' for each type in the list
 singEqInstances :: Quasi q => [Name] -> q [Dec]
