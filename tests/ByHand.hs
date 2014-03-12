@@ -595,13 +595,12 @@ type instance (@@) (ZipWithSym2 f xs) ys = ZipWith f xs ys
 type instance (@@) (ZipWithSym1 f)    xs = ZipWithSym2 f xs
 type instance (@@)  ZipWithSym0 f        = ZipWithSym1 f
 
-{-
+
 sZipWith :: forall (k1 :: TyFun a (TyFun b c -> *) -> *) (k2 :: List a) (k3 :: List b).
   (forall (t1 :: a). Proxy k1 -> Sing t1 -> forall (t2 :: b). Sing t2 -> Sing ((@@) ((@@) k1 t1) t2))
   -> Sing k2 -> Sing k3 -> Sing (ZipWith k1 k2 k3)
 sZipWith f (SCons x xs) (SCons y ys) = SCons (f Proxy x y) (sZipWith f xs ys)
-sZipWith _ _ _                       = SNil
--}
+sZipWith _ SNil SNil                 = SNil
 
 either :: (a -> c) -> (b -> c) -> Either a b -> c
 either l _ (Left x) = l x
