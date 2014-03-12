@@ -1,21 +1,3 @@
-Singletons/BadPlus.hs:0:0: Splicing declarations
-    singletons
-      [d| badPlus Zero m = m
-          badPlus (Succ n) m = Succ (plus n m)
-          inc :: Nat -> Nat
-          inc x = badPlus x (Succ Zero) |]
- ======>
-    Singletons/BadPlus.hs:(0,0)-(0,0)
-    badPlus Zero m = m
-    badPlus (Succ n) m = Succ (plus n m)
-    inc :: Nat -> Nat
-    inc x = badPlus x (Succ Zero)
-    type family Inc (a :: Nat) :: Nat where
-    Inc x = (@@) ((@@) BadPlusSym0 x) ((@@) SuccSym0 ZeroSym0)
-    data IncSym0 (k :: TyFun Nat Nat)
-    type instance (@@) IncSym0 a = Inc a
-    sInc :: forall (t :: Nat). Sing t -> Sing (Inc t)
-    sInc x = sBadPlus x (SSucc SZero)
 
 Singletons/BadPlus.hs:0:0:
-    No type signature for "badPlus"; cannot promote or make singletons.
+    No type signature for functions: "badPlus"; cannot promote or make singletons.

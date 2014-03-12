@@ -247,12 +247,12 @@ promoteDecs decls = do
   (declss, namess) <- mapAndUnzipM (promoteDec' table) decls
   let moreNewDecls = concat declss
       names = concat namess
-      noTypeSigs = Set.toList $ Set.difference (Map.keysSet $
-                                                Map.filter ((>= 0) . fst) table)
-                                               (Set.fromList names)
-  mapM_ (\n -> qReportError $ "No type signature for " ++ (show (nameBase n)) ++
-                              "; cannot promote or make singletons.")
-        noTypeSigs
+      noTypeSigs = Set.toList $ Set.difference
+                         (Map.keysSet $ Map.filter ((>= 0) . fst) table)
+                         (Set.fromList names)
+  when (not . null $ noTypeSigs) $ fail ("No type signature for functions: "
+    ++ intercalate ", " (map (show . nameBase) noTypeSigs)
+    ++ "; cannot promote or make singletons.")
   return (concat newDecls ++ moreNewDecls)
 
 -- | Produce instances for '(:==)' (type-level equality) from the given types
