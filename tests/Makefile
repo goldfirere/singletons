@@ -5,10 +5,18 @@ EXTS = TemplateHaskell DataKinds PolyKinds ScopedTypeVariables FlexibleContexts 
        FlexibleInstances GADTs TypeFamilies RankNTypes UndecidableInstances \
        TypeOperators MultiParamTypeClasses
 
-GHCVERSIONSTR := $(shell ghc --numeric-version)
-ifneq "$(GHCVERSIONSTR)" "7.6.3"
-EXTS += EmptyCase
+ifndef THREADS
+THREADS = 1
 endif
+
+GHCVERSIONSTR := $(shell ghc --numeric-version)
+ifeq "$(GHCVERSIONSTR)" "7.6.3"
+OPTS += -fno-warn-name-shadowing
+else
+EXTS += EmptyCase
+OPTS += -j$(THREADS)
+endif
+
 
 RUNGHC = ghc $(INCLUDES:%=-i%) -outputdir $(OUTPUT) Quickly.hs $(EXTS:%=-X%) $(OPTS)
 
