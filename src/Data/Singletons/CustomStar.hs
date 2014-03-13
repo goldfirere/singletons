@@ -24,9 +24,9 @@ import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Singletons
 import Control.Monad
-import Data.Singletons.Exports
 
 #if __GLASGOW_HASKELL__ >= 707
+import Data.Singletons.Exports
 import Data.Singletons.Core
 import Data.Singletons.Types
 import Data.Singletons.Eq

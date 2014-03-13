@@ -52,6 +52,7 @@ module Data.Singletons.Bool (
 import Data.Singletons.Exports
 import Data.Singletons.Core
 import Data.Singletons.Singletons
+import Data.Singletons.Types
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Type.Bool
@@ -70,10 +71,6 @@ STrue  %:|| _ = STrue
 #else
 
 $(singletonsOnly [d|
-  not :: Bool -> Bool
-  not False = True
-  not True  = False
-
   (&&) :: Bool -> Bool -> Bool
   False && _ = False
   True  && x = x

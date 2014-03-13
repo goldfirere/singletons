@@ -28,6 +28,9 @@ import Data.Singletons.Core
 import GHC.TypeLits ( Nat, Symbol )
 import Unsafe.Coerce   -- for TypeLits instances
 import Data.Singletons.Types
+#if __GLASGOW_HASKELL__ < 707
+import Data.Singletons.Promote ( promoteEqInstances )
+#endif
 
 type a :/= b = Not (a :== b)
                

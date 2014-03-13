@@ -19,7 +19,12 @@ This module contains the main non-generated definitions for singletons.
 module Data.Singletons.Exports where
 
 import Data.Singletons.Types
+#if __GLASGOW_HASKELL__ >= 707
 import GHC.TypeLits
+#else
+import GHC.TypeLits (Nat, Symbol)
+import qualified GHC.TypeLits as TypeLits
+#endif
 import Unsafe.Coerce
 
 -- | Convenient synonym to refer to the kind of a type variable:
