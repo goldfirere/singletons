@@ -34,6 +34,7 @@ tests =
     , compileAndDumpStdTest "Constructors"
     , compileAndDumpStdTest "Lambdas"
     , compileAndDumpStdTest "LambdasComprehensive"
+    , compileAndDumpStdTest "GenDefunSymbols"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts
@@ -43,4 +44,3 @@ tests =
     [ compileAndDumpStdTest "InsertionSortImp"
     ]
   ]
-

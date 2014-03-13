@@ -7,7 +7,7 @@ This file contains functions to promote term-level constructs to the
 type level. It is an internal module to the singletons package.
 -}
 
-{-# LANGUAGE TemplateHaskell, CPP, MultiWayIf #-}
+{-# LANGUAGE TemplateHaskell, CPP, MultiWayIf, LambdaCase #-}
 
 module Data.Singletons.Promote where
 
@@ -182,6 +182,45 @@ promoteOnly qdec = do
   decls <- qdec
   promDecls <- promoteDecs decls
   return promDecls
+
+-- | Generate defunctionalization symbols for existing type family
+genDefunSymbols :: Quasi q => [Name] -> q [Dec]
+genDefunSymbols names = do
+  checkForRep names -- is that correct? Copied from genSingletons
+  concatMapM (defunInfo <=< reifyWithWarning) names
+
+defunInfo :: Quasi q => Info -> q [Dec]
+defunInfo (ClassI _dec _instances) =
+  fail "Building defunctionalization symbols of class info not supported"
+defunInfo (ClassOpI _name _ty _className _fixity) =
+  fail "Building defunctionalization symbols of class members info not supported"
+defunInfo (TyConI dec) = do
+  buildDefunSyms dec
+defunInfo (FamilyI dec _instances) =
+  buildDefunSyms dec
+defunInfo (PrimTyConI _name _numArgs _unlifted) =
+  fail "Building defunctionalization symbols of primitive type constructors not supported"
+defunInfo (DataConI _name _ty _tyname _fixity) =
+  fail $ "Building defunctionalization symbols of individual constructors not supported; "
+      ++ "Build symbols for entire type instead"
+defunInfo (VarI _name _ty _mdec _fixity) =
+  fail "Building defunctionalization symbols of value info not supported"
+defunInfo (TyVarI _name _ty) =
+  fail "Building defunctionalization symbols of type variable info not supported"
+
+buildDefunSyms :: Quasi q => Dec -> q [Dec]
+buildDefunSyms (ClosedTypeFamilyD name tyVars returnKs_maybe _) = do
+  let returnKs = fromMaybe StarT returnKs_maybe
+      returnK  = last $ unravel returnKs
+  (dataSyms, dataNames) <- buildSymDecs name types returnK
+  applyInstances <- buildApplyInstances (zipWith (,) dataNames
+                                                     (name : dataNames))
+  return $ dataSyms ++ applyInstances
+      where types = map (\case {PlainTV _ -> StarT; KindedTV _ k -> k}) tyVars
+buildDefunSyms (DataD _cxt tyName tvbs ctors _derivings) =
+  buildDefunSymsDataD tyName tvbs ctors
+buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
+                          "type families and data declarations"
 
 checkForRep :: Quasi q => [Name] -> q ()
 checkForRep names =
@@ -476,10 +515,15 @@ promoteDataD _cxt tyName tvbs ctors derivings = do
           mapM mkEqTypeInstance pairs
 #endif
         else return []
+  ctorSyms <- buildDefunSymsDataD tyName tvbs ctors
+  return $ eq ++ ctorSyms
+
+buildDefunSymsDataD :: Quasi q => Name -> [TyVarBndr] -> [Con] -> q [Dec]
+buildDefunSymsDataD tyName tvbs ctors = do
   let tyVarNames = getTyVarNames tvbs
   promotedKind <- promoteType $ foldType (ConT tyName) tyVarNames
   promotedCtorSyms <- mapM (promoteCtor promotedKind) ctors
-  return $ eq ++ concat promotedCtorSyms
+  return $ concat promotedCtorSyms
       where
         ctorNameAndTypes :: Con -> (Name, [Type])
         ctorNameAndTypes (NormalC name tys)    = (name, map snd tys)

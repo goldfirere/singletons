@@ -19,7 +19,7 @@
 module Data.Singletons.TH (
   -- * Primary Template Haskell generation functions
   singletons, singletonsOnly, genSingletons,
-  promote, promoteOnly,
+  promote, promoteOnly, genDefunSymbols,
 
   -- ** Functions to generate equality instances
   promoteEqInstances, promoteEqInstance,

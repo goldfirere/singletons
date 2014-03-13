@@ -12,6 +12,7 @@ import Promote.Constructors
 import Promote.Error
 import Promote.Lambdas
 import Promote.LambdasComprehensive
+import Promote.GenDefunSymbols
 
 import Singletons.AtPattern
 import Singletons.BoxUnBox

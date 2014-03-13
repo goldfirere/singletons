@@ -3,7 +3,7 @@ OUTPUT = ../dist/build/quickly
 OPTS = -O0 -Wall -Werror -fno-warn-orphans -fno-warn-missing-signatures
 EXTS = TemplateHaskell DataKinds PolyKinds ScopedTypeVariables FlexibleContexts \
        FlexibleInstances GADTs TypeFamilies RankNTypes UndecidableInstances \
-       TypeOperators MultiParamTypeClasses
+       TypeOperators MultiParamTypeClasses CPP
 
 GHCVERSIONSTR := $(shell ghc --numeric-version)
 ifneq "$(GHCVERSIONSTR)" "7.6.3"
