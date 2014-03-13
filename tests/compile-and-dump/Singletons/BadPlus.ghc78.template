@@ -1,13 +1,2 @@
-Singletons/BadPlus.hs:0:0: Splicing declarations
-    singletons
-      [d| badPlus Zero m = m
-          badPlus (Succ n) m = Succ (plus n m) |]
-  ======>
-    Singletons/BadPlus.hs:(0,0)-(0,0)
-    badPlus Zero m = m
-    badPlus (Succ n) m = Succ (plus n m)
-    sBadPlus SZero m = m
-    sBadPlus (SSucc n) m = SSucc (sPlus n m)
-
 Singletons/BadPlus.hs:0:0:
-    No type signature for "badPlus"; cannot promote or make singletons.
+    No type signature for functions: "badPlus"; cannot promote or make singletons.

@@ -206,9 +206,9 @@ promoteDecs decls = do
                                                   Map.filter (>= 0) table)
 #endif
                                                (Set.fromList names)
-  mapM_ (\n -> qReportError $ "No type signature for " ++ (show (nameBase n)) ++
-                              "; cannot promote or make singletons.")
-        noTypeSigs
+  when (not . null $ noTypeSigs) $ fail ("No type signature for functions: "
+    ++ intercalate ", " (map (show . nameBase) noTypeSigs)
+    ++ "; cannot promote or make singletons.")         
   return (concat newDecls ++ moreNewDecls)
 
 -- | Produce instances for '(:==)' (type-level equality) from the given types
