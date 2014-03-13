@@ -28,6 +28,9 @@ import Data.Singletons.Util
 import GHC.TypeLits ( Nat, Symbol )
 import Unsafe.Coerce   -- for TypeLits instances
 import Data.Singletons.Types
+#if __GLASGOW_HASKELL__ < 707
+import Data.Singletons.Promote ( promoteEqInstances )
+#endif
 
 data (:==$$) (a :: k1) (b :: TyFun k1 Bool)
 data (:==$) (a :: TyFun k1 (TyFun k1 Bool -> *))
