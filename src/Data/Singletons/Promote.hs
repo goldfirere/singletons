@@ -209,7 +209,11 @@ defunInfo (TyVarI _name _ty) =
   fail "Building defunctionalization symbols of type variable info not supported"
 
 buildDefunSyms :: Quasi q => Dec -> q [Dec]
+#if __GLASGOW_HASKELL__ >= 707
 buildDefunSyms (ClosedTypeFamilyD name tyVars returnKs_maybe _) = do
+#else
+buildDefunSyms (FamilyD TypeFam name tyVars returnKs_maybe _) = do
+#endif
   let returnKs = fromMaybe StarT returnKs_maybe
       returnK  = last $ unravel returnKs
   (dataSyms, dataNames) <- buildSymDecs name types returnK
