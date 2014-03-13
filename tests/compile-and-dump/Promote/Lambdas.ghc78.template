@@ -33,24 +33,15 @@ Promote/Lambdas.hs:0:0: Splicing declarations
     type family Lambda_0123456789 (x :: x) (t :: k) where
       Lambda_0123456789 x z = x
     data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
-    data Lambda_0123456789Sym0 (k :: TyFun x (TyFun k r -> *))
     type instance (@@) (Lambda_0123456789Sym1 a) a = Lambda_0123456789 a a
-    type instance (@@) Lambda_0123456789Sym0 a = Lambda_0123456789Sym1 a
     type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) where
       Lambda_0123456789 x y z = x
     data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
-    data Lambda_0123456789Sym1 (l :: x) (l :: TyFun y (TyFun k r -> *))
-    data Lambda_0123456789Sym0 (k :: TyFun x (TyFun y (TyFun k r -> *)
-                                              -> *))
     type instance (@@) (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a
-    type instance (@@) (Lambda_0123456789Sym1 a) a = Lambda_0123456789Sym2 a a
-    type instance (@@) Lambda_0123456789Sym0 a = Lambda_0123456789Sym1 a
     type family Lambda_0123456789 (x :: x) (t :: k) where
       Lambda_0123456789 x y = y
     data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
-    data Lambda_0123456789Sym0 (k :: TyFun x (TyFun k r -> *))
     type instance (@@) (Lambda_0123456789Sym1 a) a = Lambda_0123456789 a a
-    type instance (@@) Lambda_0123456789Sym0 a = Lambda_0123456789Sym1 a
     type family Lambda_0123456789 (x :: x)
                                   (y :: y)
                                   (z :: z)
@@ -66,30 +57,12 @@ Promote/Lambdas.hs:0:0: Splicing declarations
                                (l :: y)
                                (l :: z)
                                (l :: TyFun k (TyFun k r -> *))
-    data Lambda_0123456789Sym2 (l :: x)
-                               (l :: y)
-                               (l :: TyFun z (TyFun k (TyFun k r -> *) -> *))
-    data Lambda_0123456789Sym1 (l :: x)
-                               (l :: TyFun y (TyFun z (TyFun k (TyFun k r -> *) -> *) -> *))
-    data Lambda_0123456789Sym0 (k :: TyFun x (TyFun y (TyFun z (TyFun k (TyFun k r
-                                                                         -> *)
-                                                                -> *)
-                                                       -> *)
-                                              -> *))
     type instance (@@) (Lambda_0123456789Sym4 a a a a) a = Lambda_0123456789 a a a a a
     type instance (@@) (Lambda_0123456789Sym3 a a a) a = Lambda_0123456789Sym4 a a a a
-    type instance (@@) (Lambda_0123456789Sym2 a a) a = Lambda_0123456789Sym3 a a a
-    type instance (@@) (Lambda_0123456789Sym1 a) a = Lambda_0123456789Sym2 a a
-    type instance (@@) Lambda_0123456789Sym0 a = Lambda_0123456789Sym1 a
     type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) where
       Lambda_0123456789 x y x = x
     data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
-    data Lambda_0123456789Sym1 (l :: x) (l :: TyFun y (TyFun k r -> *))
-    data Lambda_0123456789Sym0 (k :: TyFun x (TyFun y (TyFun k r -> *)
-                                              -> *))
     type instance (@@) (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a
-    type instance (@@) (Lambda_0123456789Sym1 a) a = Lambda_0123456789Sym2 a a
-    type instance (@@) Lambda_0123456789Sym0 a = Lambda_0123456789Sym1 a
     type family Lambda_0123456789 (a :: a)
                                   (b :: b)
                                   (x :: x)
@@ -99,37 +72,15 @@ Promote/Lambdas.hs:0:0: Splicing declarations
                                (l :: b)
                                (l :: x)
                                (l :: TyFun k r)
-    data Lambda_0123456789Sym2 (l :: a)
-                               (l :: b)
-                               (l :: TyFun x (TyFun k r -> *))
-    data Lambda_0123456789Sym1 (l :: a)
-                               (l :: TyFun b (TyFun x (TyFun k r -> *) -> *))
-    data Lambda_0123456789Sym0 (k :: TyFun a (TyFun b (TyFun x (TyFun k r
-                                                                -> *)
-                                                       -> *)
-                                              -> *))
     type instance (@@) (Lambda_0123456789Sym3 a a a) a = Lambda_0123456789 a a a a
-    type instance (@@) (Lambda_0123456789Sym2 a a) a = Lambda_0123456789Sym3 a a a
-    type instance (@@) (Lambda_0123456789Sym1 a) a = Lambda_0123456789Sym2 a a
-    type instance (@@) Lambda_0123456789Sym0 a = Lambda_0123456789Sym1 a
     type family Lambda_0123456789 (a :: a) (b :: b) (t :: k) where
       Lambda_0123456789 a b x = Lambda_0123456789Sym3 a b x
     data Lambda_0123456789Sym2 (l :: a) (l :: b) (l :: TyFun k r)
-    data Lambda_0123456789Sym1 (l :: a) (l :: TyFun b (TyFun k r -> *))
-    data Lambda_0123456789Sym0 (k :: TyFun a (TyFun b (TyFun k r -> *)
-                                              -> *))
     type instance (@@) (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a
-    type instance (@@) (Lambda_0123456789Sym1 a) a = Lambda_0123456789Sym2 a a
-    type instance (@@) Lambda_0123456789Sym0 a = Lambda_0123456789Sym1 a
     type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) where
       Lambda_0123456789 x y '(z, b) = b
     data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
-    data Lambda_0123456789Sym1 (l :: x) (l :: TyFun y (TyFun k r -> *))
-    data Lambda_0123456789Sym0 (k :: TyFun x (TyFun y (TyFun k r -> *)
-                                              -> *))
     type instance (@@) (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a
-    type instance (@@) (Lambda_0123456789Sym1 a) a = Lambda_0123456789Sym2 a a
-    type instance (@@) Lambda_0123456789Sym0 a = Lambda_0123456789Sym1 a
     type family Foo1 (a :: a) :: TyFun a b -> * where
       Foo1 x = Lambda_0123456789Sym1 x
     data Foo1Sym0 (k :: TyFun a (TyFun a b -> *))

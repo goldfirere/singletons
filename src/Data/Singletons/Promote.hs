@@ -898,13 +898,14 @@ promoteExp vars (LamE pats exp) = do
   rhs <- promoteExp (Map.union vartbl vars) exp
   tyFamLamTypes <- replicateM (length pats) (qNewName "t")
   tyFamLamKinds <- fmap (map VarT) $ replicateM (length pats) (qNewName "k")
-  let isBndrVarT b = case b of {(_, VarT _) -> True; _ -> False}
-      inScopeBnds  = filter isBndrVarT (Map.toList vars)
-      tyFamParams  = inScopeBnds ++ (zip tyFamLamTypes tyFamLamKinds)
-      tyFamSig     = map (\(nm, ty) -> KindedTV nm ty) tyFamParams
-      inScopeTypes = map snd inScopeBnds
-      eqnParams    = inScopeTypes ++ types
-      resultK      = VarT resultKVarName
+  let isBndrVarT b  = case b of {(_, VarT _) -> True; _ -> False}
+      inScopeBnds   = filter isBndrVarT (Map.toList vars)
+      inScopeBndsNo = length inScopeBnds
+      tyFamParams   = inScopeBnds ++ (zip tyFamLamTypes tyFamLamKinds)
+      tyFamSig      = map (\(nm, ty) -> KindedTV nm ty) tyFamParams
+      inScopeTypes  = map snd inScopeBnds
+      eqnParams     = inScopeTypes ++ types
+      resultK       = VarT resultKVarName
 #if __GLASGOW_HASKELL__ >= 707
   addElement (ClosedTypeFamilyD lambdaName tyFamSig Nothing [TySynEqn eqnParams rhs]) -- GHC >= 7.7
 #else
@@ -914,8 +915,12 @@ promoteExp vars (LamE pats exp) = do
   (dataSyms, dataNames) <- buildSymDecs lambdaName (inScopeTypes ++ tyFamLamKinds) resultK
   applyInstances <- buildApplyInstances (zipWith (,) dataNames
                                                     (lambdaName : dataNames))
-  mapM_ addElement dataSyms
-  mapM_ addElement applyInstances
+  -- drop symbols and instances that are never used
+  let dataSymsNo      = length dataSyms
+      dataSyms'       = take (dataSymsNo - inScopeBndsNo) dataSyms
+      applyInstances' = take (dataSymsNo - inScopeBndsNo) applyInstances
+  mapM_ addElement dataSyms'
+  mapM_ addElement applyInstances'
   let callName = (reverse dataNames) !! (length inScopeBnds)
   return $ foldType (ConT callName) (map snd inScopeBnds)
 promoteExp _vars (LamCaseE _alts) =
