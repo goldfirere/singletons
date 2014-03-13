@@ -215,7 +215,7 @@ buildDefunSyms (ClosedTypeFamilyD name tyVars returnKs_maybe _) = do
 buildDefunSyms (FamilyD TypeFam name tyVars returnKs_maybe _) = do
 #endif
   let returnKs = fromMaybe StarT returnKs_maybe
-      returnK  = last $ unravel returnKs
+      returnK  = last $ unravel returnKs -- workaround for #8884
   (dataSyms, dataNames) <- buildSymDecs name types returnK
   applyInstances <- buildApplyInstances (zipWith (,) dataNames
                                                      (name : dataNames))
