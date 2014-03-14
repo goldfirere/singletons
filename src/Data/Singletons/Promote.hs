@@ -114,7 +114,7 @@ promoteTySym name sat
     | name == undefinedName
     = anyTypeName
 
-    | Just degree <- tupleNameDegree_maybe name -- BUG #14 ?
+    | Just degree <- tupleNameDegree_maybe name
     = mkName $ "Tuple" ++ show degree ++ "Sym" ++ (show sat)
 
     | otherwise
@@ -849,10 +849,7 @@ promotePat (BangP pat) = do
   promotePat pat
 promotePat (AsP name pat) = do
   ty <- promotePat pat
-  --exp <- patToExp pat
-  --(pexp, _) <- evalForPair $ promoteExp (Map.fromList ty) exp
-  --addBinding name pexp
-  addBinding name ty
+  addBinding name (promotedPatternToRHS ty)
   return ty
 promotePat WildP = do
   name <- qNewName "z"
@@ -867,30 +864,16 @@ promotePat (SigP pat _) = do
   promotePat pat
 promotePat (ViewP _ _) = fail "View patterns not yet supported"
 
-patToExp :: Quasi q => Pat -> q Exp
-patToExp (LitP lit)  = return $ LitE lit
-patToExp (VarP name) = return $ VarE name
-patToExp (TupP pats) = do
-  exps <- mapM patToExp pats
-  return $ TupE exps
-patToExp (ConP name pats) = do
-  exps <- mapM patToExp pats
-  return $ foldExp (ConE name) exps
-patToExp (TildeP pat) = patToExp pat
-patToExp (BangP pat)  = patToExp pat
-patToExp (AsP _ pat)  = patToExp pat
-patToExp (InfixP pat1 name pat2) = do
-  exp1 <- patToExp pat1
-  exp2 <- patToExp pat2
-  return $ InfixE (Just exp1) (VarE name) (Just exp2)
-patToExp WildP = do
-  name <- qNewName "z"
-  return $ VarE name
-patToExp (ListP pats) = do
-  exps <- mapM patToExp pats
-  return $ ListE exps
-patToExp (SigP pat _) = patToExp pat
-patToExp p = fail $ "Can't convert pattern to expression: " ++ show p
+promotedPatternToRHS :: Type -> Type
+promotedPatternToRHS (AppT exp1 exp2) =
+  AppT (AppT (ConT applyName) (promotedPatternToRHS exp1)) (promotedPatternToRHS exp2)
+promotedPatternToRHS (ConT name) = promoteValRhs name
+promotedPatternToRHS (PromotedT name) = promoteValRhs name
+promotedPatternToRHS (PromotedTupleT degree) = -- hack, because tuple is not represented as Name here
+  ConT $ mkName $ "Tuple" ++ show degree ++ "Sym0"
+promotedPatternToRHS PromotedNilT  = promoteValRhs nilName
+promotedPatternToRHS PromotedConsT = promoteValRhs consName
+promotedPatternToRHS t = t
 
 -- promoting a body may produce auxiliary declarations. Accumulate these.
 type QWithDecs q = QWithAux [Dec] q
@@ -1046,7 +1029,7 @@ buildSymDecs name argKs resultK = go tailArgK (buildTyFun lastArgK resultK)
 -- type instance Apply SuccSym0 k1 = Succ k1
 buildEmptySymDec :: Quasi q => Name -> q [Dec]
 buildEmptySymDec name =
-    let promotedName = promoteTySym name 0 -- TODO: TUPLES NOT SUPPORTED!
+    let promotedName = promoteTySym name 0
     in return [TySynD promotedName [] (PromotedT name)]
 
 -- Counts the arity of type level function represented with TyFun constructors

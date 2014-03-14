@@ -2,17 +2,99 @@ Singletons/AtPattern.hs:0:0: Splicing declarations
     singletons
       [d| maybePlus :: Maybe Nat -> Maybe Nat
           maybePlus (Just n) = Just (plus (Succ Zero) n)
-          maybePlus foo@Nothing = foo |]
+          maybePlus foo@Nothing = foo
+          bar :: Maybe Nat -> Maybe Nat
+          bar x@(Just y) = x
+          bar Nothing = Nothing
+          baz_ :: Maybe Baz -> Maybe Baz
+          baz_ p@Nothing = p
+          baz_ p@(Just (Baz a b c)) = p
+          tup :: (Nat, Nat) -> (Nat, Nat)
+          tup p@(x, y) = p
+          foo :: [Nat] -> [Nat]
+          foo f@[] = f
+          foo g@[x] = g
+          foo b@(x : xs) = b
+
+          data Baz = Baz Nat Nat Nat |]
   ======>
     Singletons/AtPattern.hs:(0,0)-(0,0)
     maybePlus :: Maybe Nat -> Maybe Nat
     maybePlus (Just n) = Just (plus (Succ Zero) n)
     maybePlus foo@Nothing = foo
+    bar :: Maybe Nat -> Maybe Nat
+    bar x@(Just y) = x
+    bar Nothing = Nothing
+    data Baz = Baz Nat Nat Nat
+    baz_ :: Maybe Baz -> Maybe Baz
+    baz_ p@Nothing = p
+    baz_ p@(Just (Baz a b c)) = p
+    tup :: (Nat, Nat) -> (Nat, Nat)
+    tup p@(x, y) = p
+    foo :: [Nat] -> [Nat]
+    foo f@GHC.Types.[] = f
+    foo g@[x] = g
+    foo b@(x GHC.Types.: xs) = b
+    data BazSym2 (l :: Nat) (l :: Nat) (l :: TyFun Nat Baz)
+    data BazSym1 (l :: Nat) (l :: TyFun Nat (TyFun Nat Baz -> *))
+    data BazSym0 (k :: TyFun Nat (TyFun Nat (TyFun Nat Baz -> *) -> *))
+    type instance Apply (BazSym2 a a) a = Baz a a a
+    type instance Apply (BazSym1 a) a = BazSym2 a a
+    type instance Apply BazSym0 a = BazSym1 a
     type family MaybePlus (a :: Maybe Nat) :: Maybe Nat where
-         MaybePlus (Just n) = Apply JustSym0 (Apply (Apply PlusSym0 (Apply SuccSym0 ZeroSym0)) n)
-         MaybePlus Nothing = NothingSym0 -- BUG #20
+      MaybePlus (Just n) = Apply JustSym0 (Apply (Apply PlusSym0 (Apply SuccSym0 ZeroSym0)) n)
+      MaybePlus Nothing = NothingSym0
     data MaybePlusSym0 (k :: TyFun (Maybe Nat) (Maybe Nat))
     type instance Apply MaybePlusSym0 a = MaybePlus a
+    type family Bar (a :: Maybe Nat) :: Maybe Nat where
+      Bar (Just y) = Apply JustSym0 y
+      Bar Nothing = NothingSym0
+    data BarSym0 (k :: TyFun (Maybe Nat) (Maybe Nat))
+    type instance Apply BarSym0 a = Bar a
+    type family Baz_ (a :: Maybe Baz) :: Maybe Baz where
+      Baz_ Nothing = NothingSym0
+      Baz_ (Just (Baz a b c)) = Apply JustSym0 (Apply (Apply (Apply BazSym0 a) b) c)
+    data Baz_Sym0 (k :: TyFun (Maybe Baz) (Maybe Baz))
+    type instance Apply Baz_Sym0 a = Baz_ a
+    type family Tup (a :: (Nat, Nat)) :: (Nat, Nat) where
+      Tup '(x, y) = Apply (Apply Tuple2Sym0 x) y
+    data TupSym0 (k :: TyFun (Nat, Nat) (Nat, Nat))
+    type instance Apply TupSym0 a = Tup a
+    type family Foo (a :: [Nat]) :: [Nat] where
+      Foo GHC.Types.[] = GHC.Types.[]
+      Foo '[x] = Apply (Apply (:$) x) GHC.Types.[]
+      Foo ((GHC.Types.:) x xs) = Apply (Apply (:$) x) xs
+    data FooSym0 (k :: TyFun [Nat] [Nat])
+    type instance Apply FooSym0 a = Foo a
     sMaybePlus :: forall (t :: Maybe Nat). Sing t -> Sing (MaybePlus t)
     sMaybePlus (SJust n) = SJust (sPlus (SSucc SZero) n)
     sMaybePlus foo@SNothing = foo
+    sBar :: forall (t :: Maybe Nat). Sing t -> Sing (Bar t)
+    sBar x@(SJust y) = x
+    sBar SNothing = SNothing
+    data instance Sing (z :: Baz)
+      = forall (n :: Nat) (n :: Nat) (n :: Nat). z ~ Baz n n n =>
+        SBaz (Sing n) (Sing n) (Sing n)
+    type SBaz (z :: Baz) = Sing z
+    instance SingKind (KProxy :: KProxy Baz) where
+      type DemoteRep (KProxy :: KProxy Baz) = Baz
+      fromSing (SBaz b b b) = Baz (fromSing b) (fromSing b) (fromSing b)
+      toSing (Baz b b b)
+        = case
+              (toSing b :: SomeSing (KProxy :: KProxy Nat),
+               toSing b :: SomeSing (KProxy :: KProxy Nat),
+               toSing b :: SomeSing (KProxy :: KProxy Nat))
+          of {
+            (SomeSing c, SomeSing c, SomeSing c) -> SomeSing (SBaz c c c) }
+    instance (SingI n, SingI n, SingI n) =>
+             SingI (Baz (n :: Nat) (n :: Nat) (n :: Nat)) where
+      sing = SBaz sing sing sing
+    sBaz_ :: forall (t :: Maybe Baz). Sing t -> Sing (Baz_ t)
+    sBaz_ p@SNothing = p
+    sBaz_ p@(SJust (SBaz a b c)) = p
+    sTup :: forall (t :: (Nat, Nat)). Sing t -> Sing (Tup t)
+    sTup p@(STuple2 x y) = p
+    sFoo :: forall (t :: [Nat]). Sing t -> Sing (Foo t)
+    sFoo f@SNil = f
+    sFoo g@(SCons x SNil) = g
+    sFoo b@(SCons x xs) = b
