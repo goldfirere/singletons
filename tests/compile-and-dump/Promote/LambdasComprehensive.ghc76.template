@@ -30,7 +30,7 @@ Promote/LambdasComprehensive.hs:0:0: Splicing declarations
     type FooSym0 =
         Apply (Apply MapSym0 Lambda_0123456789Sym0) '[Apply LeftSym0 ZeroSym0,
                                                       Apply RightSym0 (Apply SuccSym0 ZeroSym0)]
-    type family Lambda_0123456789 (t :: k) :: Nat
+    type family Lambda_0123456789 (t :: k) :: r
     type instance Lambda_0123456789 x =
         Apply (Apply (Apply Either_Sym0 PredSym0) SuccSym0) x
     data Lambda_0123456789Sym0 (k :: TyFun k r)

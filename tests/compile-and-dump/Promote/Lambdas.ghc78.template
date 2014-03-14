@@ -30,15 +30,15 @@ Promote/Lambdas.hs:0:0: Splicing declarations
     foo6 a b = \ x -> \ _ -> x a b
     foo7 :: forall a b. a -> b -> b
     foo7 x y = \ (_, b) -> b (x, y)
-    type family Lambda_0123456789 (x :: x) (t :: k) where
+    type family Lambda_0123456789 (x :: x) (t :: k) :: r where
       Lambda_0123456789 x z = x
     data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
     type instance Apply (Lambda_0123456789Sym1 a) a = Lambda_0123456789 a a
-    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) where
+    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) :: r where
       Lambda_0123456789 x y z = x
     data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
     type instance Apply (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a
-    type family Lambda_0123456789 (x :: x) (t :: k) where
+    type family Lambda_0123456789 (x :: x) (t :: k) :: r where
       Lambda_0123456789 x y = y
     data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
     type instance Apply (Lambda_0123456789Sym1 a) a = Lambda_0123456789 a a
@@ -46,7 +46,7 @@ Promote/Lambdas.hs:0:0: Splicing declarations
                                   (y :: y)
                                   (z :: z)
                                   (t :: k)
-                                  (t :: k) where
+                                  (t :: k) :: r where
       Lambda_0123456789 x y z z z = x
     data Lambda_0123456789Sym4 (l :: x)
                                (l :: y)
@@ -59,25 +59,25 @@ Promote/Lambdas.hs:0:0: Splicing declarations
                                (l :: TyFun k (TyFun k r -> *))
     type instance Apply (Lambda_0123456789Sym4 a a a a) a = Lambda_0123456789 a a a a a
     type instance Apply (Lambda_0123456789Sym3 a a a) a = Lambda_0123456789Sym4 a a a a
-    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) where
+    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) :: r where
       Lambda_0123456789 x y x = x
     data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
     type instance Apply (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a
     type family Lambda_0123456789 (a :: a)
                                   (b :: b)
                                   (x :: x)
-                                  (t :: k) where
+                                  (t :: k) :: r where
       Lambda_0123456789 a b x z = x
     data Lambda_0123456789Sym3 (l :: a)
                                (l :: b)
                                (l :: x)
                                (l :: TyFun k r)
     type instance Apply (Lambda_0123456789Sym3 a a a) a = Lambda_0123456789 a a a a
-    type family Lambda_0123456789 (a :: a) (b :: b) (t :: k) where
+    type family Lambda_0123456789 (a :: a) (b :: b) (t :: k) :: r where
       Lambda_0123456789 a b x = Lambda_0123456789Sym3 a b x
     data Lambda_0123456789Sym2 (l :: a) (l :: b) (l :: TyFun k r)
     type instance Apply (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a
-    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) where
+    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) :: r where
       Lambda_0123456789 x y '(z, b) = b
     data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
     type instance Apply (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a

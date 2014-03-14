@@ -44,13 +44,17 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
       [d| Pair sz lz = pr
           Pair (Pair jz zz) fls = complex
           (tf, tjz, tt) = tuple
-          [_, lsz, (Succ blimy)] = aList |]
+          [_, lsz, (Succ blimy)] = aList
+          foo8 :: (a, b) -> a
+          foo8 (x, y) = (\ _ -> x) y |]
   ======>
     Promote/PatternMatching.hs:(0,0)-(0,0)
     Pair sz lz = pr
     Pair (Pair jz zz) fls = complex
     (tf, tjz, tt) = tuple
     [_, lsz, Succ blimy] = aList
+    foo8 :: forall a b. (a, b) -> a
+    foo8 (x, y) = \ _ -> x y
     type Sz = Extract_0123456789 PrSym0
     type SzSym0 = Extract_0123456789 PrSym0
     type Lz = Extract_0123456789 PrSym0
@@ -91,3 +95,12 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
     type BlimySym0 = Extract_0123456789 (Head (Tail (Tail AListSym0)))
     type family Extract_0123456789 (a :: Nat) :: Nat
     type instance Extract_0123456789 (Succ a) = a
+    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) :: r
+    type instance Lambda_0123456789 x y z = x
+    data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym2 a a) a =
+        Lambda_0123456789 a a a
+    type family Foo8 (a :: (a, b)) :: a
+    type instance  Foo8 '(x, y) = Apply (Lambda_0123456789Sym2 x y) y
+    data Foo8Sym0 (k :: TyFun (a, b) a)
+    type instance Apply Foo8Sym0 a = Foo8 a

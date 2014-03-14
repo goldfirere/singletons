@@ -935,9 +935,9 @@ promoteExp vars (LamE pats exp) = do
       eqnParams     = inScopeTypes ++ types
       resultK       = VarT resultKVarName
 #if __GLASGOW_HASKELL__ >= 707
-  addElement (ClosedTypeFamilyD lambdaName tyFamSig Nothing [TySynEqn eqnParams rhs]) -- GHC >= 7.7
+  addElement (ClosedTypeFamilyD lambdaName tyFamSig (Just resultK) [TySynEqn eqnParams rhs]) -- GHC >= 7.7
 #else
-  addElement (FamilyD TypeFam lambdaName tyFamSig Nothing)
+  addElement (FamilyD TypeFam lambdaName tyFamSig (Just resultK))
   addElement (TySynInstD lambdaName eqnParams rhs)
 #endif
   (dataSyms, dataNames) <- buildSymDecs lambdaName (inScopeTypes ++ tyFamLamKinds) resultK

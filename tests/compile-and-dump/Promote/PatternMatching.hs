@@ -17,4 +17,13 @@ $(promote [d|
   Pair (Pair jz zz) fls = complex
   (tf, tjz, tt) = tuple
   [_, lsz, (Succ blimy)] = aList
+
+  foo8 :: (a, b) -> a
+  foo8 (x, y) = (\_ -> x) y
   |])
+
+foo8a :: Proxy (Foo8 '(Int, Char))
+foo8a = Proxy
+
+foo8b :: Proxy Int
+foo8b = foo8a

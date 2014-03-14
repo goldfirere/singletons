@@ -23,7 +23,7 @@ $(singletons [d|
   data Baz = Baz Nat Nat Nat
 
   baz_ :: Maybe Baz -> Maybe Baz
-  baz_ p@Nothing           = p
+  baz_ p@Nothing            = p
   baz_ p@(Just (Baz a b c)) = p
 -}
  |])
