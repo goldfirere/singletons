@@ -2,39 +2,39 @@ Singletons/AtPattern.hs:0:0: Splicing declarations
     singletons
       [d| maybePlus :: Maybe Nat -> Maybe Nat
           maybePlus (Just n) = Just (plus (Succ Zero) n)
-          maybePlus foo@Nothing = foo
+          maybePlus p@Nothing = p
           bar :: Maybe Nat -> Maybe Nat
-          bar x@(Just y) = x
+          bar x@(Just _) = x
           bar Nothing = Nothing
           baz_ :: Maybe Baz -> Maybe Baz
           baz_ p@Nothing = p
-          baz_ p@(Just (Baz a b c)) = p
+          baz_ p@(Just (Baz _ _ _)) = p
           tup :: (Nat, Nat) -> (Nat, Nat)
-          tup p@(x, y) = p
+          tup p@(_, _) = p
           foo :: [Nat] -> [Nat]
-          foo f@[] = f
-          foo g@[x] = g
-          foo b@(x : xs) = b
+          foo p@[] = p
+          foo p@[_] = p
+          foo p@(_ : _) = p
 
           data Baz = Baz Nat Nat Nat |]
   ======>
     Singletons/AtPattern.hs:(0,0)-(0,0)
     maybePlus :: Maybe Nat -> Maybe Nat
     maybePlus (Just n) = Just (plus (Succ Zero) n)
-    maybePlus foo@Nothing = foo
+    maybePlus p@Nothing = p
     bar :: Maybe Nat -> Maybe Nat
-    bar x@(Just y) = x
+    bar x@(Just _) = x
     bar Nothing = Nothing
     data Baz = Baz Nat Nat Nat
     baz_ :: Maybe Baz -> Maybe Baz
     baz_ p@Nothing = p
-    baz_ p@(Just (Baz a b c)) = p
+    baz_ p@(Just (Baz _ _ _)) = p
     tup :: (Nat, Nat) -> (Nat, Nat)
-    tup p@(x, y) = p
+    tup p@(_, _) = p
     foo :: [Nat] -> [Nat]
-    foo f@GHC.Types.[] = f
-    foo g@[x] = g
-    foo b@(x GHC.Types.: xs) = b
+    foo p@GHC.Types.[] = p
+    foo p@[_] = p
+    foo p@(_ GHC.Types.: _) = p
     data BazSym2 (l :: Nat) (l :: Nat) (l :: TyFun Nat Baz)
     data BazSym1 (l :: Nat) (l :: TyFun Nat (TyFun Nat Baz -> *))
     data BazSym0 (k :: TyFun Nat (TyFun Nat (TyFun Nat Baz -> *) -> *))
@@ -47,30 +47,30 @@ Singletons/AtPattern.hs:0:0: Splicing declarations
     data MaybePlusSym0 (k :: TyFun (Maybe Nat) (Maybe Nat))
     type instance Apply MaybePlusSym0 a = MaybePlus a
     type family Bar (a :: Maybe Nat) :: Maybe Nat where
-      Bar (Just y) = Apply JustSym0 y
+      Bar (Just z) = Apply JustSym0 z
       Bar Nothing = NothingSym0
     data BarSym0 (k :: TyFun (Maybe Nat) (Maybe Nat))
     type instance Apply BarSym0 a = Bar a
     type family Baz_ (a :: Maybe Baz) :: Maybe Baz where
       Baz_ Nothing = NothingSym0
-      Baz_ (Just (Baz a b c)) = Apply JustSym0 (Apply (Apply (Apply BazSym0 a) b) c)
+      Baz_ (Just (Baz z z z)) = Apply JustSym0 (Apply (Apply (Apply BazSym0 z) z) z)
     data Baz_Sym0 (k :: TyFun (Maybe Baz) (Maybe Baz))
     type instance Apply Baz_Sym0 a = Baz_ a
     type family Tup (a :: (Nat, Nat)) :: (Nat, Nat) where
-      Tup '(x, y) = Apply (Apply Tuple2Sym0 x) y
+      Tup '(z, z) = Apply (Apply Tuple2Sym0 z) z
     data TupSym0 (k :: TyFun (Nat, Nat) (Nat, Nat))
     type instance Apply TupSym0 a = Tup a
     type family Foo (a :: [Nat]) :: [Nat] where
       Foo GHC.Types.[] = GHC.Types.[]
-      Foo '[x] = Apply (Apply (:$) x) GHC.Types.[]
-      Foo ((GHC.Types.:) x xs) = Apply (Apply (:$) x) xs
+      Foo '[z] = Apply (Apply (:$) z) GHC.Types.[]
+      Foo ((GHC.Types.:) z z) = Apply (Apply (:$) z) z
     data FooSym0 (k :: TyFun [Nat] [Nat])
     type instance Apply FooSym0 a = Foo a
     sMaybePlus :: forall (t :: Maybe Nat). Sing t -> Sing (MaybePlus t)
     sMaybePlus (SJust n) = SJust (sPlus (SSucc SZero) n)
-    sMaybePlus foo@SNothing = foo
+    sMaybePlus p@SNothing = p
     sBar :: forall (t :: Maybe Nat). Sing t -> Sing (Bar t)
-    sBar x@(SJust y) = x
+    sBar x@(SJust _) = x
     sBar SNothing = SNothing
     data instance Sing (z :: Baz)
       = forall (n :: Nat) (n :: Nat) (n :: Nat). z ~ Baz n n n =>
@@ -91,10 +91,10 @@ Singletons/AtPattern.hs:0:0: Splicing declarations
       sing = SBaz sing sing sing
     sBaz_ :: forall (t :: Maybe Baz). Sing t -> Sing (Baz_ t)
     sBaz_ p@SNothing = p
-    sBaz_ p@(SJust (SBaz a b c)) = p
+    sBaz_ p@(SJust (SBaz _ _ _)) = p
     sTup :: forall (t :: (Nat, Nat)). Sing t -> Sing (Tup t)
-    sTup p@(STuple2 x y) = p
+    sTup p@(STuple2 _ _) = p
     sFoo :: forall (t :: [Nat]). Sing t -> Sing (Foo t)
-    sFoo f@SNil = f
-    sFoo g@(SCons x SNil) = g
-    sFoo b@(SCons x xs) = b
+    sFoo p@SNil = p
+    sFoo p@(SCons _ SNil) = p
+    sFoo p@(SCons _ _) = p

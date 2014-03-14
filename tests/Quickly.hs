@@ -12,6 +12,7 @@ import Promote.Constructors
 import Promote.Error
 import Promote.Lambdas
 import Promote.LambdasComprehensive
+import Promote.Newtypes
 import Promote.GenDefunSymbols
 
 import Singletons.AtPattern
@@ -25,7 +26,6 @@ import Singletons.Maybe
 import Singletons.Nat
 import Singletons.Operators
 import Singletons.Star
-import Singletons.Newtypes
 -- Can't import tuples test due to duplicate instances
 --import Singletons.Tuples ()
 

@@ -575,50 +575,17 @@ promoteDec' tab (SigD name ty) = case Map.lookup name tab of
       return ((ClosedTypeFamilyD proName
                                  (zipWith KindedTV tyvarNames argKs)
                                  (Just resultK)
-                                 (promoteApply eqns argKs)) :
+                                 eqns) :
               dataSyms ++ applyInstances, [name])
 #else
-      --let eqns = map (\(tys', ty') -> TySynInstD proName tys' ty') tys
       return ((FamilyD TypeFam
                        proName
                        (zipWith KindedTV tyvarNames argKs)
                        (Just resultK)) :
-              (promoteApply eqns argKs) ++ dataSyms ++ applyInstances, [name])
+              eqns ++ dataSyms ++ applyInstances, [name])
 #endif
 promoteDec' _ _ = return ([], [])
 
--- Takes list of equations for a type family, kinds of arguments used
--- as parameters and if any of the parameter is a type level function
--- it converts its implicit appliation to explicit usage of Apply type
--- family.
-#if __GLASGOW_HASKELL__ >= 707
-promoteApply :: [TySynEqn] -> [Kind] -> [TySynEqn]
-promoteApply [] _ = []
-promoteApply ((TySynEqn tys ty):eqns) ks =
-    let patNames = catMaybes (map getTyName_maybe tys)
-        patArity = map tyFunArity ks
-        patData  = filter (\(_, a) -> a > 0) $ zip patNames patArity
-        newEqn   = foldr (\d t -> fst (introduceApply d t)) ty patData
-    in (TySynEqn tys newEqn) : promoteApply eqns ks
-#else
-promoteApply :: [Dec] -> [Kind] -> [Dec]
-promoteApply [] _ = []
-promoteApply ((TySynInstD name tys ty):eqns) ks =
-    let patNames = catMaybes (map getTyName_maybe tys)
-        patArity = map tyFunArity ks
-        patData  = filter (\(_, a) -> a > 0) $ zip patNames patArity
-        newEqn   = foldr (\d t -> fst (introduceApply d t)) ty patData
-    in (TySynInstD name tys newEqn) : promoteApply eqns ks
-promoteApply _ _ = error "Error when promoting function applications."
-#endif
-
--- Takes a name of a function together with its arity and
--- converts all normal applications of that variable into usage of
--- Apply type family. Returns a type and a Bool that says whether
--- Apply was introduced or not. This extra flag is used when
--- singletonizing type signature.
-
--- The algorithm here is actually a bit tricky because it has to deal
 -- with cases when function has arity larger than 1. For example this
 -- body:
 --
@@ -1075,13 +1042,3 @@ isTyFun :: Type -> Bool
 isTyFun (AppT (AppT ArrowT (AppT (AppT (ConT tyFunNm) _) _)) StarT) =
     tyFunName == tyFunNm
 isTyFun _ = False
-
--- Extracts names of type variables. This is intended to extract names
--- of patterns in a promoted clause so that we can later inspect which
--- of these names correspond to functions.
--- TODO: this currently recognizes only type variables. I need to investigate
--- what happens if I pass in things that are not type variables, but for example
--- data constructors. See: https://github.com/jstolarek/singletons/issues/1
-getTyName_maybe :: Type -> Maybe Name
-getTyName_maybe (VarT name) = Just name
-getTyName_maybe _           = Nothing
