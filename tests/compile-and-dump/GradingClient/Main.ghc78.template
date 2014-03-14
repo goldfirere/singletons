@@ -43,23 +43,23 @@ GradingClient/Main.hs:0:0: Splicing declarations
     type MajorName = '[CMSym0, CASym0, CJSym0, COSym0, CRSym0]
     type MajorNameSym0 = '[CMSym0, CASym0, CJSym0, COSym0, CRSym0]
     type GradingSchema =
-        (@@) SchSym0 '[(@@) ((@@) AttrSym0 LastNameSym0) STRINGSym0,
-                       (@@) ((@@) AttrSym0 FirstNameSym0) STRINGSym0,
-                       (@@) ((@@) AttrSym0 YearNameSym0) NATSym0,
-                       (@@) ((@@) AttrSym0 GradeNameSym0) NATSym0,
-                       (@@) ((@@) AttrSym0 MajorNameSym0) BOOLSym0]
+        Apply SchSym0 '[Apply (Apply AttrSym0 LastNameSym0) STRINGSym0,
+                       Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
+                       Apply (Apply AttrSym0 YearNameSym0) NATSym0,
+                       Apply (Apply AttrSym0 GradeNameSym0) NATSym0,
+                       Apply (Apply AttrSym0 MajorNameSym0) BOOLSym0]
     type GradingSchemaSym0 =
-        (@@) SchSym0 '[(@@) ((@@) AttrSym0 LastNameSym0) STRINGSym0,
-                       (@@) ((@@) AttrSym0 FirstNameSym0) STRINGSym0,
-                       (@@) ((@@) AttrSym0 YearNameSym0) NATSym0,
-                       (@@) ((@@) AttrSym0 GradeNameSym0) NATSym0,
-                       (@@) ((@@) AttrSym0 MajorNameSym0) BOOLSym0]
+        Apply SchSym0 '[Apply (Apply AttrSym0 LastNameSym0) STRINGSym0,
+                       Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
+                       Apply (Apply AttrSym0 YearNameSym0) NATSym0,
+                       Apply (Apply AttrSym0 GradeNameSym0) NATSym0,
+                       Apply (Apply AttrSym0 MajorNameSym0) BOOLSym0]
     type Names =
-        (@@) SchSym0 '[(@@) ((@@) AttrSym0 FirstNameSym0) STRINGSym0,
-                       (@@) ((@@) AttrSym0 LastNameSym0) STRINGSym0]
+        Apply SchSym0 '[Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
+                       Apply (Apply AttrSym0 LastNameSym0) STRINGSym0]
     type NamesSym0 =
-        (@@) SchSym0 '[(@@) ((@@) AttrSym0 FirstNameSym0) STRINGSym0,
-                       (@@) ((@@) AttrSym0 LastNameSym0) STRINGSym0]
+        Apply SchSym0 '[Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
+                       Apply (Apply AttrSym0 LastNameSym0) STRINGSym0]
     sLastName :: Sing LastName
     sMajorName :: Sing MajorName
     sGradeName :: Sing GradeName

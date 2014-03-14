@@ -14,8 +14,8 @@ Singletons/Contains.hs:0:0: Splicing declarations
         :|| (:== elt h) (Contains elt t)
     data ContainsSym1 (a :: a) (a :: TyFun [a] Bool)
     data ContainsSym0 (a :: TyFun a (TyFun [a] Bool -> *))
-    type instance (@@) (ContainsSym1 a) a = Contains a a
-    type instance (@@) ContainsSym0 a = ContainsSym1 a
+    type instance Apply (ContainsSym1 a) a = Contains a a
+    type instance Apply ContainsSym0 a = ContainsSym1 a
     sContains ::
       forall (t :: a) (t :: [a]). SEq (KProxy :: KProxy a) =>
       Sing t -> Sing t -> Sing (Contains t t)

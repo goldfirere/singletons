@@ -45,7 +45,7 @@ listName = ''[]
 headName = mkName "Head"  -- these will go away with the th-desugar change
 tailName = mkName "Tail"
 tyFunName = ''TyFun
-applyName = ''(@@)
+applyName = ''Apply
 symbolName = ''Symbol
 undefinedName = 'undefined
 typeRepName = ''TypeRep
@@ -99,7 +99,12 @@ promoteValNameLhs n = upcase n
 -- used when a value name appears in an expression context
 -- works for both variables and datacons
 promoteValRhs :: Name -> Type
-promoteValRhs name = ConT $ promoteTySym name 0
+promoteValRhs name
+  | name == nilName
+  = PromotedT nilName   -- workaround for #21
+
+  | otherwise
+  = ConT $ promoteTySym name 0
 
 -- generates type-level symbol for a given name. Int parameter represents
 -- saturation: 0 - no parameters passed to the symbol, 1 - one parameter
@@ -212,7 +217,7 @@ buildDefunSyms :: Quasi q => Dec -> q [Dec]
 #if __GLASGOW_HASKELL__ >= 707
 buildDefunSyms (ClosedTypeFamilyD name tyVars returnKs_maybe _) = do
 #else
-buildDefunSyms (FamilyD TypeFam name tyVars returnKs_maybe _) = do
+buildDefunSyms (FamilyD TypeFam name tyVars returnKs_maybe) = do
 #endif
   let returnKs = fromMaybe StarT returnKs_maybe
       returnK  = last $ unravel returnKs -- workaround for #8884
@@ -392,11 +397,11 @@ mkEqTypeInstance (c1, c2) =
       tyEqName
       [foldType (PromotedT lname) (map VarT lnames),
        foldType (PromotedT rname) (map VarT rnames)]
-      falseTy
+      falseTySym
   where tyAll :: [Type] -> Type -- "all" at the type level
-        tyAll [] = trueTy
+        tyAll [] = trueTySym
         tyAll [one] = one
-        tyAll (h:t) = foldType andTy [h, (tyAll t)]
+        tyAll (h:t) = foldType (ConT $ promoteValNameLhs andName) [h, (tyAll t)]
 
 #endif
 

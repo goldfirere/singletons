@@ -19,25 +19,26 @@ Singletons/DataValues.hs:0:0: Splicing declarations
     aList = [Zero, Succ Zero, Succ (Succ Zero)]
     data PairSym1 (l :: a) (l :: TyFun b (Pair a b))
     data PairSym0 (k :: TyFun a (TyFun b (Pair a b) -> *))
-    type instance (@@) (PairSym1 a) a = Pair a a
-    type instance (@@) PairSym0 a = PairSym1 a
-    type Pr = (@@) ((@@) PairSym0 ((@@) SuccSym0 ZeroSym0)) '[ZeroSym0]
+    type instance Apply (PairSym1 a) a = Pair a a
+    type instance Apply PairSym0 a = PairSym1 a
+    type Pr =
+        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) '[ZeroSym0]
     type PrSym0 =
-        (@@) ((@@) PairSym0 ((@@) SuccSym0 ZeroSym0)) '[ZeroSym0]
+        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) '[ZeroSym0]
     type Complex =
-        (@@) ((@@) PairSym0 ((@@) ((@@) PairSym0 ((@@) JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
+        Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
     type ComplexSym0 =
-        (@@) ((@@) PairSym0 ((@@) ((@@) PairSym0 ((@@) JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
-    type Tuple = '(FalseSym0, (@@) JustSym0 ZeroSym0, TrueSym0)
-    type TupleSym0 = '(FalseSym0, (@@) JustSym0 ZeroSym0, TrueSym0)
+        Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
+    type Tuple = '(FalseSym0, Apply JustSym0 ZeroSym0, TrueSym0)
+    type TupleSym0 = '(FalseSym0, Apply JustSym0 ZeroSym0, TrueSym0)
     type AList =
         '[ZeroSym0,
-          (@@) SuccSym0 ZeroSym0,
-          (@@) SuccSym0 ((@@) SuccSym0 ZeroSym0)]
+          Apply SuccSym0 ZeroSym0,
+          Apply SuccSym0 (Apply SuccSym0 ZeroSym0)]
     type AListSym0 =
         '[ZeroSym0,
-          (@@) SuccSym0 ZeroSym0,
-          (@@) SuccSym0 ((@@) SuccSym0 ZeroSym0)]
+          Apply SuccSym0 ZeroSym0,
+          Apply SuccSym0 (Apply SuccSym0 ZeroSym0)]
     data instance Sing (z :: Pair a b)
       = forall (n :: a) (n :: b). z ~ Pair n n => SPair (Sing n) (Sing n)
     type SPair (z :: Pair a b) = Sing z

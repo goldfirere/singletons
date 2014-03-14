@@ -40,7 +40,7 @@ module Data.Singletons (
   withSing, singThat,
 
   -- ** defunctionalization
-  TyFun, TyCon, type (@@),
+  TyFun, TyCon, Apply, type (@@),
 
   -- * Auxiliary functions
   bugInGHC, Error, ErrorSym0, sError,
@@ -124,7 +124,7 @@ bugInGHC = error "Bug encountered in GHC -- this should never happen"
 -- | The promotion of 'error'
 type family Error (str :: Symbol) :: k
 data ErrorSym0 (t1 :: TyFun k1 k2)
-type instance ErrorSym0 @@ a = Error a
+type instance Apply ErrorSym0 a = Error a
 
 -- | The singleton for 'error'
 sError :: Sing (str :: Symbol) -> a

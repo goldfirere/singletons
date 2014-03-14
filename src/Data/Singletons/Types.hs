@@ -18,7 +18,7 @@
 
 module Data.Singletons.Types (
   Refuted, Decision(..),
-  TyFun, TyCon, type (@@),
+  TyFun, TyCon, Apply, type (@@),
   KProxy(..), Proxy(..),
   (:~:)(..), gcastWith, TestEquality(..),
   Not, If, type (==), (:==)
@@ -88,8 +88,12 @@ data TyFun :: * -> * -> *
 data TyCon :: (k1 -> k2) -> (TyFun k1 k2) -> *
 
 -- | Type level function application
-type family (f :: TyFun k1 k2 -> *) @@ (x :: k1) :: k2
-type instance (TyCon f) @@ x = f x
+type family Apply (f :: TyFun k1 k2 -> *) (x :: k1) :: k2
+type instance Apply (TyCon f) x = f x
+
+-- | An infix synonym for `Apply`
+type a @@ b = Apply a b
+
 infixl 9 @@
 
 -- | Because we can never create a value of type 'Void', a function that type-checks

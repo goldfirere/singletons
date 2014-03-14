@@ -15,8 +15,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
       sing = STuple0
     data Tuple2Sym1 (l :: a) (l :: TyFun b (GHC.Tuple.(,) a b))
     data Tuple2Sym0 (k :: TyFun a (TyFun b (GHC.Tuple.(,) a b) -> *))
-    type instance (@@) (Tuple2Sym1 a) a = GHC.Tuple.(,) a a
-    type instance (@@) Tuple2Sym0 a = Tuple2Sym1 a
+    type instance Apply (Tuple2Sym1 a) a = GHC.Tuple.(,) a a
+    type instance Apply Tuple2Sym0 a = Tuple2Sym1 a
     data instance Sing (z :: GHC.Tuple.(,) a b)
       = forall (n :: a) (n :: b). z ~ GHC.Tuple.(,) n n =>
         STuple2 (Sing n) (Sing n)
@@ -43,9 +43,9 @@ Singletons/Tuples.hs:0:0: Splicing declarations
     data Tuple3Sym0 (k :: TyFun a (TyFun b (TyFun c (GHC.Tuple.(,,) a b c)
                                             -> *)
                                    -> *))
-    type instance (@@) (Tuple3Sym2 a a) a = GHC.Tuple.(,,) a a a
-    type instance (@@) (Tuple3Sym1 a) a = Tuple3Sym2 a a
-    type instance (@@) Tuple3Sym0 a = Tuple3Sym1 a
+    type instance Apply (Tuple3Sym2 a a) a = GHC.Tuple.(,,) a a a
+    type instance Apply (Tuple3Sym1 a) a = Tuple3Sym2 a a
+    type instance Apply Tuple3Sym0 a = Tuple3Sym1 a
     data instance Sing (z :: GHC.Tuple.(,,) a b c)
       = forall (n :: a) (n :: b) (n :: c). z ~ GHC.Tuple.(,,) n n n =>
         STuple3 (Sing n) (Sing n) (Sing n)
@@ -81,10 +81,10 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-    type instance (@@) (Tuple4Sym3 a a a) a = GHC.Tuple.(,,,) a a a a
-    type instance (@@) (Tuple4Sym2 a a) a = Tuple4Sym3 a a a
-    type instance (@@) (Tuple4Sym1 a) a = Tuple4Sym2 a a
-    type instance (@@) Tuple4Sym0 a = Tuple4Sym1 a
+    type instance Apply (Tuple4Sym3 a a a) a = GHC.Tuple.(,,,) a a a a
+    type instance Apply (Tuple4Sym2 a a) a = Tuple4Sym3 a a a
+    type instance Apply (Tuple4Sym1 a) a = Tuple4Sym2 a a
+    type instance Apply Tuple4Sym0 a = Tuple4Sym1 a
     data instance Sing (z :: GHC.Tuple.(,,,) a b c d)
       = forall (n :: a)
                (n :: b)
@@ -136,11 +136,11 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-    type instance (@@) (Tuple5Sym4 a a a a) a = GHC.Tuple.(,,,,) a a a a a
-    type instance (@@) (Tuple5Sym3 a a a) a = Tuple5Sym4 a a a a
-    type instance (@@) (Tuple5Sym2 a a) a = Tuple5Sym3 a a a
-    type instance (@@) (Tuple5Sym1 a) a = Tuple5Sym2 a a
-    type instance (@@) Tuple5Sym0 a = Tuple5Sym1 a
+    type instance Apply (Tuple5Sym4 a a a a) a = GHC.Tuple.(,,,,) a a a a a
+    type instance Apply (Tuple5Sym3 a a a) a = Tuple5Sym4 a a a a
+    type instance Apply (Tuple5Sym2 a a) a = Tuple5Sym3 a a a
+    type instance Apply (Tuple5Sym1 a) a = Tuple5Sym2 a a
+    type instance Apply Tuple5Sym0 a = Tuple5Sym1 a
     data instance Sing (z :: GHC.Tuple.(,,,,) a b c d e)
       = forall (n :: a)
                (n :: b)
@@ -207,12 +207,12 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-    type instance (@@) (Tuple6Sym5 a a a a a) a = GHC.Tuple.(,,,,,) a a a a a a
-    type instance (@@) (Tuple6Sym4 a a a a) a = Tuple6Sym5 a a a a a
-    type instance (@@) (Tuple6Sym3 a a a) a = Tuple6Sym4 a a a a
-    type instance (@@) (Tuple6Sym2 a a) a = Tuple6Sym3 a a a
-    type instance (@@) (Tuple6Sym1 a) a = Tuple6Sym2 a a
-    type instance (@@) Tuple6Sym0 a = Tuple6Sym1 a
+    type instance Apply (Tuple6Sym5 a a a a a) a = GHC.Tuple.(,,,,,) a a a a a a
+    type instance Apply (Tuple6Sym4 a a a a) a = Tuple6Sym5 a a a a a
+    type instance Apply (Tuple6Sym3 a a a) a = Tuple6Sym4 a a a a
+    type instance Apply (Tuple6Sym2 a a) a = Tuple6Sym3 a a a
+    type instance Apply (Tuple6Sym1 a) a = Tuple6Sym2 a a
+    type instance Apply Tuple6Sym0 a = Tuple6Sym1 a
     data instance Sing (z :: GHC.Tuple.(,,,,,) a b c d e f)
       = forall (n :: a)
                (n :: b)
@@ -305,13 +305,13 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-    type instance (@@) (Tuple7Sym6 a a a a a a) a = GHC.Tuple.(,,,,,,) a a a a a a a
-    type instance (@@) (Tuple7Sym5 a a a a a) a = Tuple7Sym6 a a a a a a
-    type instance (@@) (Tuple7Sym4 a a a a) a = Tuple7Sym5 a a a a a
-    type instance (@@) (Tuple7Sym3 a a a) a = Tuple7Sym4 a a a a
-    type instance (@@) (Tuple7Sym2 a a) a = Tuple7Sym3 a a a
-    type instance (@@) (Tuple7Sym1 a) a = Tuple7Sym2 a a
-    type instance (@@) Tuple7Sym0 a = Tuple7Sym1 a
+    type instance Apply (Tuple7Sym6 a a a a a a) a = GHC.Tuple.(,,,,,,) a a a a a a a
+    type instance Apply (Tuple7Sym5 a a a a a) a = Tuple7Sym6 a a a a a a
+    type instance Apply (Tuple7Sym4 a a a a) a = Tuple7Sym5 a a a a a
+    type instance Apply (Tuple7Sym3 a a a) a = Tuple7Sym4 a a a a
+    type instance Apply (Tuple7Sym2 a a) a = Tuple7Sym3 a a a
+    type instance Apply (Tuple7Sym1 a) a = Tuple7Sym2 a a
+    type instance Apply Tuple7Sym0 a = Tuple7Sym1 a
     data instance Sing (z :: GHC.Tuple.(,,,,,,) a b c d e f g)
       = forall (n :: a)
                (n :: b)
