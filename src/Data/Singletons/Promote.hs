@@ -410,7 +410,7 @@ mkEqTypeInstance (c1, c2) =
 #if __GLASGOW_HASKELL__ >= 707
 type PromoteTable = Map.Map Name (Int, [TySynEqn])
 #else
-type PromoteTable = Map.Map Name (Int, [([Type],Type)])
+type PromoteTable = Map.Map Name (Int, [Dec])
 #endif
 type PromoteQ q = QWithAux PromoteTable q
 
@@ -438,12 +438,7 @@ promoteDec vars (FunD name clauses) = do
       -- Haskell requires all clauses to have the same number of parameters
   (eqns, instDecls) <- evalForPair $
                        mapM (promoteClause vars proName) clauses
-#if __GLASGOW_HASKELL__ >= 707
   addBinding name (numArgs, eqns) -- remember the number of parameters and the eqns
-#else
-  let tys = map (\(TySynInstD _ tys' ty') -> (tys',ty')) eqns
-  addBinding name (numArgs, tys) -- remember the number of parameters
-#endif
   return instDecls
   where getNumPats :: Clause -> Int
         getNumPats (Clause pats _ _) = length pats
@@ -563,11 +558,7 @@ buildDefunSymsDataD tyName tvbs ctors = do
 promoteDec' :: Quasi q => PromoteTable -> Dec -> q ([Dec], [Name])
 promoteDec' tab (SigD name ty) = case Map.lookup name tab of
   Nothing -> fail $ "Type declaration is missing its binding: " ++ (show name)
-#if __GLASGOW_HASKELL__ >= 707
   Just (numArgs, eqns) ->
-#else
-  Just (numArgs, tys) ->
-#endif
     -- if there are no args, then use a type synonym, not a type family
     -- in the type synonym case, we ignore the type signature
     if numArgs == typeSynonymFlag then return $ ([], [name]) else do
@@ -586,7 +577,7 @@ promoteDec' tab (SigD name ty) = case Map.lookup name tab of
                                  (promoteApply eqns argKs)) :
               dataSyms ++ applyInstances, [name])
 #else
-      let eqns = map (\(tys', ty') -> TySynInstD proName tys' ty') tys
+      --let eqns = map (\(tys', ty') -> TySynInstD proName tys' ty') tys
       return ((FamilyD TypeFam
                        proName
                        (zipWith KindedTV tyvarNames argKs)
