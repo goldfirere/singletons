@@ -529,10 +529,10 @@ buildDefunSymsDataD tyName tvbs ctors = do
   promotedCtorSyms <- mapM (promoteCtor promotedKind) ctors
   return $ concat promotedCtorSyms
       where
-        ctorNameAndTypes :: Con -> (Name, [Type])
-        ctorNameAndTypes (NormalC name tys)    = (name, map snd tys)
-        ctorNameAndTypes (RecC    name tys)    = (name, map (\(_,_,t) -> t) tys)
-        ctorNameAndTypes (InfixC ty1 name ty2) = (name, [snd ty1, snd ty2])
+        ctorNameAndTypes :: Con -> [(Name, [Type])]
+        ctorNameAndTypes (NormalC name tys)    = [(name, map snd tys)]
+        ctorNameAndTypes (RecC    name tys)    = [(name, map (\(_,_,t) -> t) tys)]
+        ctorNameAndTypes (InfixC ty1 name ty2) = [(name, [snd ty1, snd ty2])]
         ctorNameAndTypes (ForallC _ _ ctor)    = ctorNameAndTypes ctor
 
         getTyVarNames :: [TyVarBndr] -> [Type]
@@ -542,15 +542,16 @@ buildDefunSymsDataD tyName tvbs ctors = do
 
         promoteCtor :: Quasi q => Kind -> Con -> q [Dec]
         promoteCtor promotedKind ctor =
-          let (name, types) = ctorNameAndTypes ctor
-          in if length types > 0
-             then do
-               (dataSyms, dataNames) <- buildSymDecs name types promotedKind
-               applyInstances <- buildApplyInstances (zipWith (,) dataNames
-                                                     (name : dataNames))
-               return $ dataSyms ++ applyInstances
-             else
-               buildEmptySymDec name
+            concatMapM (buildCtorSyms promotedKind) (ctorNameAndTypes ctor)
+
+        buildCtorSyms :: Quasi q => Kind -> (Name, [Type]) -> q [Dec]
+        buildCtorSyms promotedKind (name, types)
+            | length types > 0 = do
+                 (dataSyms, dataNames) <- buildSymDecs name types promotedKind
+                 applyInstances <- buildApplyInstances (zipWith (,) dataNames
+                                                       (name : dataNames))
+                 return $ dataSyms ++ applyInstances
+            | otherwise = buildEmptySymDec name
 
 -- second pass through declarations to deal with type signatures
 -- returns the new declarations and the list of names that have been
@@ -935,7 +936,10 @@ promoteExp vars (LamE pats exp) = do
       eqnParams     = inScopeTypes ++ types
       resultK       = VarT resultKVarName
 #if __GLASGOW_HASKELL__ >= 707
-  addElement (ClosedTypeFamilyD lambdaName tyFamSig (Just resultK) [TySynEqn eqnParams rhs]) -- GHC >= 7.7
+  addElement (ClosedTypeFamilyD lambdaName
+                                tyFamSig
+                                (Just resultK)
+                                [TySynEqn eqnParams rhs])
 #else
   addElement (FamilyD TypeFam lambdaName tyFamSig (Just resultK))
   addElement (TySynInstD lambdaName eqnParams rhs)

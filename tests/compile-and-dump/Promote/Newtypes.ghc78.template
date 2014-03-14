@@ -1,0 +1,34 @@
+Promote/Newtypes.hs:0:0: Splicing declarations
+    promote
+      [d| data Nat
+            = Zero | Succ Nat
+            deriving (Eq)
+          newtype Foo
+            = Foo Nat
+            deriving (Eq)
+          newtype Bar = Bar {unBar :: Nat} |]
+  ======>
+    Promote/Newtypes.hs:(0,0)-(0,0)
+    data Nat
+      = Zero | Succ Nat
+      deriving (Eq)
+    newtype Foo
+      = Foo Nat
+      deriving (Eq)
+    newtype Bar = Bar {unBar :: Nat}
+    type family Equals_0123456789 (a :: Nat) (b :: Nat) :: Bool where
+      Equals_0123456789 Zero Zero = TrueSym0
+      Equals_0123456789 (Succ a) (Succ b) = (==) a b
+      Equals_0123456789 (a :: Nat) (b :: Nat) = FalseSym0
+    type instance (==) (a :: Nat) (b :: Nat) = Equals_0123456789 a b
+    type ZeroSym0 = Zero
+    data SuccSym0 (k :: TyFun Nat Nat)
+    type instance Apply SuccSym0 a = Succ a
+    type family Equals_0123456789 (a :: Foo) (b :: Foo) :: Bool where
+      Equals_0123456789 (Foo a) (Foo b) = (==) a b
+      Equals_0123456789 (a :: Foo) (b :: Foo) = FalseSym0
+    type instance (==) (a :: Foo) (b :: Foo) = Equals_0123456789 a b
+    data FooSym0 (k :: TyFun Nat Foo)
+    type instance Apply FooSym0 a = Foo a
+    data BarSym0 (k :: TyFun Nat Bar)
+    type instance Apply BarSym0 a = Bar a
