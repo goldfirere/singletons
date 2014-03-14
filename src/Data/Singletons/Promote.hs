@@ -532,6 +532,8 @@ buildDefunSymsDataD tyName tvbs ctors = do
         ctorNameAndTypes :: Con -> [(Name, [Type])]
         ctorNameAndTypes (NormalC name tys)    = [(name, map snd tys)]
         ctorNameAndTypes (RecC    name tys)    = [(name, map (\(_,_,t) -> t) tys)]
+             -- see js/#36
+             -- : map (\(n,_,t) -> (promoteValNameLhs n, [t, ConT tyName]) ) tys
         ctorNameAndTypes (InfixC ty1 name ty2) = [(name, [snd ty1, snd ty2])]
         ctorNameAndTypes (ForallC _ _ ctor)    = ctorNameAndTypes ctor
 

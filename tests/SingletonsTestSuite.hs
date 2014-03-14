@@ -35,7 +35,7 @@ tests =
     , compileAndDumpStdTest "Lambdas"
     , compileAndDumpStdTest "LambdasComprehensive"
     , compileAndDumpStdTest "GenDefunSymbols"
---    , compileAndDumpStdTest "Newtypes"
+    , compileAndDumpStdTest "Newtypes"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts
