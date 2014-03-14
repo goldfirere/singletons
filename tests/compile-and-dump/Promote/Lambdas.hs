@@ -38,9 +38,10 @@ $(promote [d|
   -- tuple patterns
   foo7 :: a -> b -> b
   foo7 x y = (\(_, b) -> b) (x, y)
+
  |])
 
-foo1a :: Proxy ((@@) (Foo1 Int) Char)
+foo1a :: Proxy (Apply (Foo1 Int) Char)
 foo1a = Proxy
 
 foo1b :: Proxy Int

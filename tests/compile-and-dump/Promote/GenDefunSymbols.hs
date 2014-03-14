@@ -1,16 +1,16 @@
 module Promote.GenDefunSymbols where
 
 import Data.Singletons.Promote
-import Data.Singletons (Apply, type (@@), TyFun)
+import Data.Singletons (Apply, TyFun)
 
 #if __GLASGOW_HASKELL__ >= 707
 type family LiftMaybe (f :: TyFun a b -> *) (x :: Maybe a) :: Maybe b where
     LiftMaybe f Nothing = Nothing
-    LiftMaybe f (Just a) = Just ((@@) f a)
+    LiftMaybe f (Just a) = Just (Apply f a)
 #else
 type family LiftMaybe (f :: TyFun a b -> *) (x :: Maybe a) :: Maybe b
 type instance LiftMaybe f Nothing = Nothing
-type instance LiftMaybe f (Just a) = Just ((@@) f a)
+type instance LiftMaybe f (Just a) = Just (Apply f a)
 #endif
 
 data Nat = Zero | Succ Nat

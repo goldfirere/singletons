@@ -5,30 +5,30 @@ Singletons/Star.hs:0:0: Splicing declarations
     data Rep
       = Nat | Int | String | Maybe Rep | Vec Rep Nat
       deriving (Eq, Show, Read)
-    type instance (:==) Nat Nat = True
-    type instance (:==) Nat Int = False
-    type instance (:==) Nat String = False
-    type instance (:==) Nat (Maybe b) = False
-    type instance (:==) Nat (Vec b b) = False
-    type instance (:==) Int Nat = False
-    type instance (:==) Int Int = True
-    type instance (:==) Int String = False
-    type instance (:==) Int (Maybe b) = False
-    type instance (:==) Int (Vec b b) = False
-    type instance (:==) String Nat = False
-    type instance (:==) String Int = False
-    type instance (:==) String String = True
-    type instance (:==) String (Maybe b) = False
-    type instance (:==) String (Vec b b) = False
-    type instance (:==) (Maybe a) Nat = False
-    type instance (:==) (Maybe a) Int = False
-    type instance (:==) (Maybe a) String = False
+    type instance (:==) Nat Nat = TrueSym0
+    type instance (:==) Nat Int = FalseSym0
+    type instance (:==) Nat String = FalseSym0
+    type instance (:==) Nat (Maybe b) = FalseSym0
+    type instance (:==) Nat (Vec b b) = FalseSym0
+    type instance (:==) Int Nat = FalseSym0
+    type instance (:==) Int Int = TrueSym0
+    type instance (:==) Int String = FalseSym0
+    type instance (:==) Int (Maybe b) = FalseSym0
+    type instance (:==) Int (Vec b b) = FalseSym0
+    type instance (:==) String Nat = FalseSym0
+    type instance (:==) String Int = FalseSym0
+    type instance (:==) String String = TrueSym0
+    type instance (:==) String (Maybe b) = FalseSym0
+    type instance (:==) String (Vec b b) = FalseSym0
+    type instance (:==) (Maybe a) Nat = FalseSym0
+    type instance (:==) (Maybe a) Int = FalseSym0
+    type instance (:==) (Maybe a) String = FalseSym0
     type instance (:==) (Maybe a) (Maybe b) = :== a b
-    type instance (:==) (Maybe a) (Vec b b) = False
-    type instance (:==) (Vec a a) Nat = False
-    type instance (:==) (Vec a a) Int = False
-    type instance (:==) (Vec a a) String = False
-    type instance (:==) (Vec a a) (Maybe b) = False
+    type instance (:==) (Maybe a) (Vec b b) = FalseSym0
+    type instance (:==) (Vec a a) Nat = FalseSym0
+    type instance (:==) (Vec a a) Int = FalseSym0
+    type instance (:==) (Vec a a) String = FalseSym0
+    type instance (:==) (Vec a a) (Maybe b) = FalseSym0
     type instance (:==) (Vec a a) (Vec b b) = :&& (:== a b) (:== a b)
     data instance Sing (z :: *)
       = z ~ Nat => SNat |
