@@ -848,6 +848,9 @@ promotePat (BangP pat) = do
   promotePat pat
 promotePat (AsP name pat) = do
   ty <- promotePat pat
+  --exp <- patToExp pat
+  --(pexp, _) <- evalForPair $ promoteExp (Map.fromList ty) exp
+  --addBinding name pexp
   addBinding name ty
   return ty
 promotePat WildP = do
@@ -862,6 +865,31 @@ promotePat (SigP pat _) = do
                          "not yet supported"
   promotePat pat
 promotePat (ViewP _ _) = fail "View patterns not yet supported"
+
+patToExp :: Quasi q => Pat -> q Exp
+patToExp (LitP lit)  = return $ LitE lit
+patToExp (VarP name) = return $ VarE name
+patToExp (TupP pats) = do
+  exps <- mapM patToExp pats
+  return $ TupE exps
+patToExp (ConP name pats) = do
+  exps <- mapM patToExp pats
+  return $ foldExp (ConE name) exps
+patToExp (TildeP pat) = patToExp pat
+patToExp (BangP pat)  = patToExp pat
+patToExp (AsP _ pat)  = patToExp pat
+patToExp (InfixP pat1 name pat2) = do
+  exp1 <- patToExp pat1
+  exp2 <- patToExp pat2
+  return $ InfixE (Just exp1) (VarE name) (Just exp2)
+patToExp WildP = do
+  name <- qNewName "z"
+  return $ VarE name
+patToExp (ListP pats) = do
+  exps <- mapM patToExp pats
+  return $ ListE exps
+patToExp (SigP pat _) = patToExp pat
+patToExp p = fail $ "Can't convert pattern to expression: " ++ show p
 
 -- promoting a body may produce auxiliary declarations. Accumulate these.
 type QWithDecs q = QWithAux [Dec] q
