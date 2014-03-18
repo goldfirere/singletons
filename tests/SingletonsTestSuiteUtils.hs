@@ -94,6 +94,7 @@ ghcOpts = [
   , "-XFlexibleContexts"
   , "-XIncoherentInstances"
   , "-XCPP"
+  , "-XLambdaCase"
 #if __GLASGOW_HASKELL__ > 706
   , "-XEmptyCase"
 #endif

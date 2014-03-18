@@ -928,8 +928,11 @@ promoteExp vars (LamE pats exp) = do
   mapM_ addElement applyInstances'
   let callName = (reverse dataNames) !! (length inScopeBnds)
   return $ foldType (ConT callName) inScopeTypes
-promoteExp _vars (LamCaseE _alts) =
-  fail "Promotion of lambda-case expressions not yet supported"
+promoteExp vars (LamCaseE alts) = do
+  scrutinee <- qNewName "e"
+  let exp = VarE scrutinee
+      pat = VarP scrutinee
+  promoteExp vars (LamE [pat] (CaseE exp alts))
 promoteExp vars (TupE exps) = do
   tys <- mapM (promoteExp vars) exps
   let tuple = PromotedTupleT (length tys)
