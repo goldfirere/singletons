@@ -6,7 +6,7 @@ import Prelude hiding (Bool(..))
 
 $(promote [d|
   data Bool = False | True
-  data Foo = Bar (Bool -> Bool) (Bool -> Bool)
+  data Foo = Bar Bool Bool
  |])
 
 $(promote [d|
@@ -20,12 +20,15 @@ $(promote [d|
   not True  = False
   not False = True
 
-  f,g :: Bool
-  [f,g] = [otherwise, otherwise]
+  f,g :: Bool -> Bool
+  [f,g] = [not, id]
 
   h,i :: Bool -> Bool
   (h,i) = (not, id)
 
-  j,k :: Bool -> Bool
-  (Bar j k) = Bar not id
+  j,k :: Bool
+  (Bar j k) = Bar True False
+
+  l,m :: Bool
+  [l,m] = [not True, id False]
  |])
