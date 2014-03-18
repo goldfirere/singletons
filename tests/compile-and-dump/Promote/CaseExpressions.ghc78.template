@@ -6,7 +6,7 @@ Promote/CaseExpressions.hs:0:0: Splicing declarations
                 Just y -> y
                 Nothing -> d }
           foo2 :: a -> Maybe a -> a
-          foo2 d x
+          foo2 d _
             = case (Just d) of {
                 Just y -> y
                 Nothing -> d }
@@ -20,7 +20,7 @@ Promote/CaseExpressions.hs:0:0: Splicing declarations
           Just y -> y
           Nothing -> d }
     foo2 :: forall a. a -> Maybe a -> a
-    foo2 d x
+    foo2 d _
       = case Just d of {
           Just y -> y
           Nothing -> d }
@@ -29,9 +29,9 @@ Promote/CaseExpressions.hs:0:0: Splicing declarations
     type family Case_0123456789 (t :: k) (d :: d) (x :: x) :: r where
       Case_0123456789 (Just y) d x = y
       Case_0123456789 Nothing d x = d
-    type family Case_0123456789 (t :: k) (d :: d) (x :: x) :: r where
-      Case_0123456789 (Just y) d x = y
-      Case_0123456789 Nothing d x = d
+    type family Case_0123456789 (t :: k) (d :: d) :: r where
+      Case_0123456789 (Just y) d = y
+      Case_0123456789 Nothing d = d
     type family Case_0123456789 (t :: k) (a :: a) (b :: b) :: r where
       Case_0123456789 '(p, z) a b = p
     type family Foo1 (a :: a) (a :: Maybe a) :: a where
@@ -41,7 +41,7 @@ Promote/CaseExpressions.hs:0:0: Splicing declarations
     type instance Apply (Foo1Sym1 a) a = Foo1 a a
     type instance Apply Foo1Sym0 a = Foo1Sym1 a
     type family Foo2 (a :: a) (a :: Maybe a) :: a where
-      Foo2 d x = Case_0123456789 (Apply JustSym0 d) d x
+      Foo2 d z = Case_0123456789 (Apply JustSym0 d) d
     data Foo2Sym1 (l :: a) (l :: TyFun (Maybe a) a)
     data Foo2Sym0 (k :: TyFun a (TyFun (Maybe a) a -> *))
     type instance Apply (Foo2Sym1 a) a = Foo2 a a

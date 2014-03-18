@@ -12,8 +12,12 @@ import Promote.Constructors
 import Promote.Error
 import Promote.Lambdas
 import Promote.LambdasComprehensive
+#if __GLASGOW_HASKELL__ >= 707
 import Promote.Newtypes
+#endif
 import Promote.GenDefunSymbols
+import Promote.CaseExpressions
+import Promote.LambdaCase
 
 import Singletons.AtPattern
 import Singletons.BoxUnBox

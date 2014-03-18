@@ -1,4 +1,4 @@
-module Promote.CaseExpressions where
+module Promote.LambdaCase where
 
 import Data.Singletons.TH
 import Data.Singletons.Maybe
@@ -10,7 +10,7 @@ $(promote [d|
                Nothing -> d) x
 
   foo2 :: a -> Maybe a -> a
-  foo2 d x = (\case
+  foo2 d _ = (\case
                Just y  -> y
                Nothing -> d) (Just d)
 

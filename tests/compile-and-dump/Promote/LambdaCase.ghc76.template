@@ -7,7 +7,7 @@ Promote/LambdaCase.hs:0:0: Splicing declarations
                  Nothing -> d })
                 x
           foo2 :: a -> Maybe a -> a
-          foo2 d x
+          foo2 d _
             = (\case {
                  Just y -> y
                  Nothing -> d })
@@ -23,7 +23,7 @@ Promote/LambdaCase.hs:0:0: Splicing declarations
           Nothing -> d }
           x
     foo2 :: forall a. a -> Maybe a -> a
-    foo2 d x
+    foo2 d _
       = \case {
           Just y -> y
           Nothing -> d }
@@ -41,17 +41,14 @@ Promote/LambdaCase.hs:0:0: Splicing declarations
     data Lambda_0123456789Sym2 (l :: d) (l :: x) (l :: TyFun k r)
     type instance Apply (Lambda_0123456789Sym2 a a) a =
         Lambda_0123456789 a a a
-    type family Case_0123456789 (t :: k)
-                                (d :: d)
-                                (x :: x)
-                                (e :: e) :: r
-    type instance Case_0123456789 (Just y) d x e = y
-    type instance Case_0123456789 Nothing d x e = d
-    type family Lambda_0123456789 (d :: d) (x :: x) (t :: k) :: r
-    type instance Lambda_0123456789 d x e = Case_0123456789 e d x e
-    data Lambda_0123456789Sym2 (l :: d) (l :: x) (l :: TyFun k r)
-    type instance Apply (Lambda_0123456789Sym2 a a) a =
-        Lambda_0123456789 a a a
+    type family Case_0123456789 (t :: k) (d :: d) (e :: e) :: r
+    type instance Case_0123456789 (Just y) d e = y
+    type instance Case_0123456789 Nothing d e = d
+    type family Lambda_0123456789 (d :: d) (t :: k) :: r
+    type instance Lambda_0123456789 d e = Case_0123456789 e d e
+    data Lambda_0123456789Sym1 (l :: d) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym1 a) a =
+        Lambda_0123456789 a a
     type family Case_0123456789 (t :: k)
                                 (a :: a)
                                 (b :: b)
@@ -69,8 +66,8 @@ Promote/LambdaCase.hs:0:0: Splicing declarations
     type instance Apply (Foo1Sym1 a) a = Foo1 a a
     type instance Apply Foo1Sym0 a = Foo1Sym1 a
     type family Foo2 (a :: a) (a :: Maybe a) :: a
-    type instance Foo2 d x =
-        Apply (Lambda_0123456789Sym2 d x) (Apply JustSym0 d)
+    type instance Foo2 d z =
+        Apply (Lambda_0123456789Sym1 d) (Apply JustSym0 d)
     data Foo2Sym1 (l :: a) (l :: TyFun (Maybe a) a)
     data Foo2Sym0 (k :: TyFun a (TyFun (Maybe a) a -> *))
     type instance Apply (Foo2Sym1 a) a = Foo2 a a

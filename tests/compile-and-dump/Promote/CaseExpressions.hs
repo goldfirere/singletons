@@ -10,7 +10,7 @@ $(promote [d|
                Nothing -> d
 
   foo2 :: a -> Maybe a -> a
-  foo2 d x = case (Just d) of
+  foo2 d _ = case (Just d) of
                Just y  -> y
                Nothing -> d
 
