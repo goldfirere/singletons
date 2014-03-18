@@ -38,6 +38,11 @@ $(promote [d|
   -- tuple patterns
   foo7 :: a -> b -> b
   foo7 x y = (\(_, b) -> b) (x, y)
+
+  -- constructor patters=ns
+  data Foo a b = Foo a b
+  foo8 :: Foo a b -> a
+  foo8 x = (\(Foo a b) -> a) x
  |])
 
 foo1a :: Proxy (Apply (Foo1 Int) Char)

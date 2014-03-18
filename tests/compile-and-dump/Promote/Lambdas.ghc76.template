@@ -13,7 +13,11 @@ Promote/Lambdas.hs:0:0: Splicing declarations
           foo6 :: a -> b -> a
           foo6 a b = (\ x -> \ _ -> x) a b
           foo7 :: a -> b -> b
-          foo7 x y = (\ (_, b) -> b) (x, y) |]
+          foo7 x y = (\ (_, b) -> b) (x, y)
+          foo8 :: Foo a b -> a
+          foo8 x = (\ (Foo a b) -> a) x
+          
+          data Foo a b = Foo a b |]
   ======>
     Promote/Lambdas.hs:(0,0)-(0,0)
     foo1 :: forall a b. a -> b -> a
@@ -30,6 +34,9 @@ Promote/Lambdas.hs:0:0: Splicing declarations
     foo6 a b = \ x -> \ _ -> x a b
     foo7 :: forall a b. a -> b -> b
     foo7 x y = \ (_, b) -> b (x, y)
+    data Foo a b = Foo a b
+    foo8 :: forall a b. Foo a b -> a
+    foo8 x = \ (Foo a b) -> a x
     type family Lambda_0123456789 (x :: x) (t :: k) :: r
     type instance Lambda_0123456789 x z = x
     data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
@@ -90,6 +97,15 @@ Promote/Lambdas.hs:0:0: Splicing declarations
     data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
     type instance Apply (Lambda_0123456789Sym2 a a) a =
         Lambda_0123456789 a a a
+    data FooSym1 (l :: a) (l :: TyFun b (Foo a b))
+    data FooSym0 (k :: TyFun a (TyFun b (Foo a b) -> *))
+    type instance Apply (FooSym1 a) a = Foo a a
+    type instance Apply FooSym0 a = FooSym1 a
+    type family Lambda_0123456789 (x :: x) (t :: k) :: r
+    type instance Lambda_0123456789 x (Foo a b) = a
+    data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym1 a) a =
+        Lambda_0123456789 a a
     type family Foo1 (a :: a) :: TyFun a b -> *
     type instance Foo1 x = Lambda_0123456789Sym1 x
     data Foo1Sym0 (k :: TyFun a (TyFun a b -> *))
@@ -132,3 +148,7 @@ Promote/Lambdas.hs:0:0: Splicing declarations
     data Foo7Sym0 (k :: TyFun a (TyFun b b -> *))
     type instance Apply (Foo7Sym1 a) a = Foo7 a a
     type instance Apply Foo7Sym0 a = Foo7Sym1 a
+    type family Foo8 (a :: Foo a b) :: a
+    type instance Foo8 x = Apply (Lambda_0123456789Sym1 x) x
+    data Foo8Sym0 (k :: TyFun (Foo a b) a)
+    type instance Apply Foo8Sym0 a = Foo8 a
