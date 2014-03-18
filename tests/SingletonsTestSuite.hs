@@ -38,6 +38,7 @@ tests =
     , compileAndDumpStdTest "Newtypes"
     , compileAndDumpStdTest "CaseExpressions"
     , compileAndDumpStdTest "LambdaCase"
+    , compileAndDumpStdTest "TopLevelPatterns"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts
