@@ -1,0 +1,54 @@
+Promote/CaseExpressions.hs:0:0: Splicing declarations
+    promote
+      [d| foo1 :: a -> Maybe a -> a
+          foo1 d x
+            = case x of {
+                Just y -> y
+                Nothing -> d }
+          foo2 :: a -> Maybe a -> a
+          foo2 d x
+            = case (Just d) of {
+                Just y -> y
+                Nothing -> d }
+          foo3 :: a -> b -> a
+          foo3 a b = case (a, b) of { (p, _) -> p } |]
+  ======>
+    Promote/CaseExpressions.hs:(0,0)-(0,0)
+    foo1 :: forall a. a -> Maybe a -> a
+    foo1 d x
+      = case x of {
+          Just y -> y
+          Nothing -> d }
+    foo2 :: forall a. a -> Maybe a -> a
+    foo2 d x
+      = case Just d of {
+          Just y -> y
+          Nothing -> d }
+    foo3 :: forall a b. a -> b -> a
+    foo3 a b = case (a, b) of { (p, _) -> p }
+    type family Case_0123456789 (t :: k) (d :: d) (x :: x) :: r
+    type instance Case_0123456789 (Just y) d x = y
+    type instance Case_0123456789 Nothing d x = d
+    type family Case_0123456789 (t :: k) (d :: d) (x :: x) :: r
+    type instance Case_0123456789 (Just y) d x = y
+    type instance Case_0123456789 Nothing d x = d
+    type family Case_0123456789 (t :: k) (a :: a) (b :: b) :: r
+    type instance Case_0123456789 '(p, z) a b = p
+    type family Foo1 (a :: a) (a :: Maybe a) :: a
+    type instance Foo1 d x = Case_0123456789 x d x
+    data Foo1Sym1 (l :: a) (l :: TyFun (Maybe a) a)
+    data Foo1Sym0 (k :: TyFun a (TyFun (Maybe a) a -> *))
+    type instance Apply (Foo1Sym1 a) a = Foo1 a a
+    type instance Apply Foo1Sym0 a = Foo1Sym1 a
+    type family Foo2 (a :: a) (a :: Maybe a) :: a
+    type instance Foo2 d x = Case_0123456789 (Apply JustSym0 d) d x
+    data Foo2Sym1 (l :: a) (l :: TyFun (Maybe a) a)
+    data Foo2Sym0 (k :: TyFun a (TyFun (Maybe a) a -> *))
+    type instance Apply (Foo2Sym1 a) a = Foo2 a a
+    type instance Apply Foo2Sym0 a = Foo2Sym1 a
+    type family Foo3 (a :: a) (a :: b) :: a
+    type instance Foo3 a b = Case_0123456789 '(a, b) a b
+    data Foo3Sym1 (l :: a) (l :: TyFun b a)
+    data Foo3Sym0 (k :: TyFun a (TyFun b a -> *))
+    type instance Apply (Foo3Sym1 a) a = Foo3 a a
+    type instance Apply Foo3Sym0 a = Foo3Sym1 a

@@ -675,6 +675,28 @@ promoteClause vars _name (Clause pats body []) = do
 promoteClause _ _ (Clause _ _ (_:_)) =
   fail "A <<where>> clause in a function definition is not yet supported"
 
+#if __GLASGOW_HASKELL__ >= 707
+promoteMatch :: Quasi q => TypeTable -> Name -> Match -> QWithDecs q TySynEqn
+#else
+promoteMatch :: Quasi q => TypeTable -> Name -> Match -> QWithDecs q Dec
+#endif
+promoteMatch vars _name (Match pat body []) = do
+  -- promoting the patterns creates variable bindings. These are passed
+  -- to the function promoted the RHS
+  (types, vartbl) <- evalForPair $ promotePat pat
+  let vars' = Map.union vartbl vars
+  rhs <- promoteBody vars' body
+  let inScopeTypes  = map snd . filter isBndrVarT $ Map.toList vars
+      eqnParams     = types : inScopeTypes
+#if __GLASGOW_HASKELL__ >= 707
+  return $ TySynEqn eqnParams rhs
+#else
+  return $ TySynInstD _name eqnParams rhs
+#endif
+promoteMatch _ _ (Match _ _ (_:_)) =
+  fail "A <<where>> clause in a case expression is not yet supported"
+
+
 -- the LHS of a top-level expression is a name and "type with hole"
 -- the hole is filled in by the RHS
 data TopLevelLHS = LHS { lhsRawName :: Name -- the unpromoted name
@@ -874,13 +896,12 @@ promoteExp _vars (UInfixE _ _ _) =
 promoteExp _vars (ParensE _) = fail "Promotion of unresolved parens not supported"
 promoteExp vars (LamE pats exp) = do
   lambdaName <- newUniqueName "Lambda"
-  resultKVarName <- qNewName "r"
+  resultKVarName  <- qNewName "r"
   (types, vartbl) <- evalForPair $ mapM promotePat pats
   rhs <- promoteExp (Map.union vartbl vars) exp
   tyFamLamTypes <- replicateM (length pats) (qNewName "t")
   tyFamLamKinds <- fmap (map VarT) $ replicateM (length pats) (qNewName "k")
-  let isBndrVarT b  = case b of {(_, VarT _) -> True; _ -> False}
-      inScopeBnds   = filter isBndrVarT (Map.toList vars)
+  let inScopeBnds   = filter isBndrVarT (Map.toList vars)
       inScopeBndsNo = length inScopeBnds
       tyFamParams   = inScopeBnds ++ (zip tyFamLamTypes tyFamLamKinds)
       tyFamSig      = map (\(nm, ty) -> KindedTV nm ty) tyFamParams
@@ -906,7 +927,7 @@ promoteExp vars (LamE pats exp) = do
   mapM_ addElement dataSyms'
   mapM_ addElement applyInstances'
   let callName = (reverse dataNames) !! (length inScopeBnds)
-  return $ foldType (ConT callName) (map snd inScopeBnds)
+  return $ foldType (ConT callName) inScopeTypes
 promoteExp _vars (LamCaseE _alts) =
   fail "Promotion of lambda-case expressions not yet supported"
 promoteExp vars (TupE exps) = do
@@ -922,8 +943,24 @@ promoteExp _vars (MultiIfE _alts) =
   fail "Promotion of multi-way if not yet supported"
 promoteExp _vars (LetE _decs _exp) =
   fail "Promotion of let statements not yet supported"
-promoteExp _vars (CaseE _exp _matches) =
-  fail "Promotion of case statements not yet supported"
+promoteExp vars (CaseE exp matches) = do
+  caseTFName <- newUniqueName "Case"
+  (exp', _)  <- evalForPair $ promoteExp vars exp
+  (eqns, _)  <- evalForPair $ mapM (promoteMatch vars caseTFName) matches
+  tyvarName  <- qNewName "t"
+  kindVar    <- fmap VarT $ qNewName "k"
+  resultK    <- fmap VarT $ qNewName "r"
+  let inScopeBnds   = filter isBndrVarT (Map.toList vars)
+      tyFamParams   = (tyvarName, kindVar) : inScopeBnds
+      tyFamSig      = map (\(nm, ty) -> KindedTV nm ty) tyFamParams
+      inScopeTypes  = map snd inScopeBnds
+#if __GLASGOW_HASKELL__ >= 707
+  addElement (ClosedTypeFamilyD caseTFName tyFamSig (Just resultK) eqns)
+#else
+  addElement (FamilyD TypeFam caseTFName tyFamSig (Just resultK))
+  mapM_ addElement eqns
+#endif
+  return $ foldType (ConT caseTFName) (exp' : inScopeTypes)
 promoteExp _vars (DoE _stmts) = fail "Promotion of do statements not supported"
 promoteExp _vars (CompE _stmts) =
   fail "Promotion of list comprehensions not yet supported"
@@ -1044,3 +1081,6 @@ isTyFun :: Type -> Bool
 isTyFun (AppT (AppT ArrowT (AppT (AppT (ConT tyFunNm) _) _)) StarT) =
     tyFunName == tyFunNm
 isTyFun _ = False
+
+isBndrVarT :: (Name ,Type) -> Bool
+isBndrVarT b  = case b of {(_, VarT _) -> True; _ -> False}
