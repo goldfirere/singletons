@@ -1,0 +1,2 @@
+Promote/Newtypes.hs:0:0:
+    Newtypes don't promote under GHC 7.6. Use <<data>> instead or upgrade GHC.

@@ -459,8 +459,12 @@ promoteDec vars (ValD pat body decs) = do
   return $ (concatMap lhsToDecs lhss) ++ decls ++ decls'
 promoteDec _vars (DataD cxt name tvbs ctors derivings) =
   promoteDataD cxt name tvbs ctors derivings
-promoteDec _vars (NewtypeD cxt name tvbs ctor derivings) =
-  promoteDataD cxt name tvbs [ctor] derivings
+promoteDec _vars (NewtypeD _cxt _name _tvbs _ctor _derivings) =
+#if __GLASGOW_HASKELL__ >= 707
+  promoteDataD _cxt _name _tvbs [_ctor] _derivings
+#else
+  fail "Newtypes don't promote under GHC 7.6. Use <<data>> instead or upgrade GHC."
+#endif
 promoteDec _vars (TySynD _name _tvbs _ty) =
   fail "Promotion of type synonym declaration not yet supported"
 promoteDec _vars (ClassD _cxt _name _tvbs _fundeps _decs) =
