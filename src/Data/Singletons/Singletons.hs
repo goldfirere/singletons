@@ -576,7 +576,7 @@ singKind ConstraintT = fail "Singling of constraint kinds not yet supported"
 --     converted to TyFun representation. This is important for
 --     defunctionalization.
 --
---  2. Lift out foralls accumulates separate foralls at the beginning
+--  2. Lift out foralls: accumulate separate foralls at the beginning
 --     of type signature. So this:
 --
 --      forall (a :: k). Proxy a -> forall (b :: [k]). Proxy b -> SList (a ': b)
