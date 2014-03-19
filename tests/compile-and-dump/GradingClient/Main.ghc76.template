@@ -33,33 +33,26 @@ GradingClient/Main.hs:0:0: Splicing declarations
     names :: Schema
     names = Sch [Attr firstName STRING, Attr lastName STRING]
     type LastName = '[CLSym0, CASym0, CSSym0, CTSym0]
-    type LastNameSym0 = '[CLSym0, CASym0, CSSym0, CTSym0]
+    type LastNameSym0 = LastName
     type FirstName = '[CFSym0, CISym0, CRSym0, CSSym0, CTSym0]
-    type FirstNameSym0 = '[CFSym0, CISym0, CRSym0, CSSym0, CTSym0]
+    type FirstNameSym0 = FirstName
     type YearName = '[CYSym0, CESym0, CASym0, CRSym0]
-    type YearNameSym0 = '[CYSym0, CESym0, CASym0, CRSym0]
+    type YearNameSym0 = YearName
     type GradeName = '[CGSym0, CRSym0, CASym0, CDSym0, CESym0]
-    type GradeNameSym0 = '[CGSym0, CRSym0, CASym0, CDSym0, CESym0]
+    type GradeNameSym0 = GradeName
     type MajorName = '[CMSym0, CASym0, CJSym0, COSym0, CRSym0]
-    type MajorNameSym0 = '[CMSym0, CASym0, CJSym0, COSym0, CRSym0]
+    type MajorNameSym0 = MajorName
     type GradingSchema =
         Apply SchSym0 '[Apply (Apply AttrSym0 LastNameSym0) STRINGSym0,
                         Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
                         Apply (Apply AttrSym0 YearNameSym0) NATSym0,
                         Apply (Apply AttrSym0 GradeNameSym0) NATSym0,
                         Apply (Apply AttrSym0 MajorNameSym0) BOOLSym0]
-    type GradingSchemaSym0 =
-        Apply SchSym0 '[Apply (Apply AttrSym0 LastNameSym0) STRINGSym0,
-                        Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
-                        Apply (Apply AttrSym0 YearNameSym0) NATSym0,
-                        Apply (Apply AttrSym0 GradeNameSym0) NATSym0,
-                        Apply (Apply AttrSym0 MajorNameSym0) BOOLSym0]
+    type GradingSchemaSym0 = GradingSchema
     type Names =
         Apply SchSym0 '[Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
                         Apply (Apply AttrSym0 LastNameSym0) STRINGSym0]
-    type NamesSym0 =
-        Apply SchSym0 '[Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0,
-                        Apply (Apply AttrSym0 LastNameSym0) STRINGSym0]
+    type NamesSym0 = Names
     sLastName :: Sing LastName
     sMajorName :: Sing MajorName
     sGradeName :: Sing GradeName

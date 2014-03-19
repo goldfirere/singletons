@@ -1,24 +1,90 @@
 Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     promote
-      [d| otherwise :: Bool
-          otherwise = True
-          f, g :: Bool
-          [f, g] = [otherwise, otherwise]
-
-          data Bool = False | True |]
+      [d| data Bool = False | True
+          data Foo = Bar Bool Bool |]
   ======>
     Promote/TopLevelPatterns.hs:(0,0)-(0,0)
     data Bool = False | True
-    otherwise :: Bool
-    otherwise = True
-    f :: Bool
-    g :: Bool
-    [f, g] = [otherwise, otherwise]
+    data Foo = Bar Bool Bool
     type FalseSym0 = False
     type TrueSym0 = True
+    data BarSym1 (l :: Bool) (l :: TyFun Bool Foo)
+    data BarSym0 (k :: TyFun Bool (TyFun Bool Foo -> *))
+    type instance Apply (BarSym1 a) a = Bar a a
+    type instance Apply BarSym0 a = BarSym1 a
+Promote/TopLevelPatterns.hs:0:0: Splicing declarations
+    promote
+      [d| otherwise :: Bool
+          otherwise = True
+          id :: a -> a
+          id x = x
+          not :: Bool -> Bool
+          not True = False
+          not False = True
+          f, g :: Bool -> Bool
+          [f, g] = [not, id]
+          h, i :: Bool -> Bool
+          (h, i) = (f, g)
+          j, k :: Bool
+          (Bar j k) = Bar True (h False)
+          l, m :: Bool
+          [l, m] = [not True, id False] |]
+  ======>
+    Promote/TopLevelPatterns.hs:(0,0)-(0,0)
+    otherwise :: Bool
+    otherwise = True
+    id :: forall a. a -> a
+    id x = x
+    not :: Bool -> Bool
+    not True = False
+    not False = True
+    f :: Bool -> Bool
+    g :: Bool -> Bool
+    [f, g] = [not, id]
+    h :: Bool -> Bool
+    i :: Bool -> Bool
+    (h, i) = (f, g)
+    j :: Bool
+    k :: Bool
+    Bar j k = Bar True (h False)
+    l :: Bool
+    m :: Bool
+    [l, m] = [not True, id False]
     type Otherwise = TrueSym0
-    type OtherwiseSym0 = TrueSym0
-    type F = Head '[OtherwiseSym0, OtherwiseSym0]
-    type FSym0 = Head '[OtherwiseSym0, OtherwiseSym0]
-    type G = Head (Tail '[OtherwiseSym0, OtherwiseSym0])
-    type GSym0 = Head (Tail '[OtherwiseSym0, OtherwiseSym0])
+    type OtherwiseSym0 = Otherwise
+    type F = Head '[NotSym0, IdSym0]
+    type FSym0 = F
+    type G = Head (Tail '[NotSym0, IdSym0])
+    type GSym0 = G
+    type H = Extract_0123456789 '(FSym0, GSym0)
+    type HSym0 = H
+    type I = Extract_0123456789 '(FSym0, GSym0)
+    type ISym0 = I
+    type family Extract_0123456789 (a :: GHC.Tuple.(,) a b) :: a
+    type family Extract_0123456789 (a :: GHC.Tuple.(,) a b) :: b
+    type instance Extract_0123456789 (GHC.Tuple.(,) a a) = a
+    type instance Extract_0123456789 (GHC.Tuple.(,) a a) = a
+    type J =
+        Extract_0123456789 (Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0))
+    type JSym0 = J
+    type K =
+        Extract_0123456789 (Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0))
+    type KSym0 = K
+    type family Extract_0123456789 (a :: Foo) :: Bool
+    type family Extract_0123456789 (a :: Foo) :: Bool
+    type instance Extract_0123456789 (Bar a a) = a
+    type instance Extract_0123456789 (Bar a a) = a
+    type L = Head '[Apply NotSym0 TrueSym0, Apply IdSym0 FalseSym0]
+    type LSym0 = L
+    type M =
+        Head (Tail '[Apply NotSym0 TrueSym0, Apply IdSym0 FalseSym0])
+    type MSym0 = M
+    type family Id (a :: a) :: a where
+      Id x = x
+    data IdSym0 (k :: TyFun a a)
+    type instance Apply IdSym0 a = Id a
+    type family Not (a :: Bool) :: Bool where
+      Not True = FalseSym0
+      Not False = TrueSym0
+    data NotSym0 (k :: TyFun Bool Bool)
+    type instance Apply NotSym0 a = Not a

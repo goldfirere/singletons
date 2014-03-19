@@ -23,22 +23,17 @@ Singletons/DataValues.hs:0:0: Splicing declarations
     type instance Apply PairSym0 a = PairSym1 a
     type Pr =
         Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) '[ZeroSym0]
-    type PrSym0 =
-        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) '[ZeroSym0]
+    type PrSym0 = Pr
     type Complex =
         Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
-    type ComplexSym0 =
-        Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
+    type ComplexSym0 = Complex
     type Tuple = '(FalseSym0, Apply JustSym0 ZeroSym0, TrueSym0)
-    type TupleSym0 = '(FalseSym0, Apply JustSym0 ZeroSym0, TrueSym0)
+    type TupleSym0 = Tuple
     type AList =
         '[ZeroSym0,
           Apply SuccSym0 ZeroSym0,
           Apply SuccSym0 (Apply SuccSym0 ZeroSym0)]
-    type AListSym0 =
-        '[ZeroSym0,
-          Apply SuccSym0 ZeroSym0,
-          Apply SuccSym0 (Apply SuccSym0 ZeroSym0)]
+    type AListSym0 = AList
     data instance Sing (z :: Pair a b)
       = forall (n :: a) (n :: b). z ~ Pair n n => SPair (Sing n) (Sing n)
     type SPair (z :: Pair a b) = Sing z

@@ -24,10 +24,10 @@ $(promote [d|
   [f,g] = [not, id]
 
   h,i :: Bool -> Bool
-  (h,i) = (not, id)
+  (h,i) = (f, g)
 
   j,k :: Bool
-  (Bar j k) = Bar True False
+  (Bar j k) = Bar True (h False)
 
   l,m :: Bool
   [l,m] = [not True, id False]

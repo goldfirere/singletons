@@ -23,22 +23,17 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
     type instance Apply PairSym0 a = PairSym1 a
     type Pr =
         Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) '[ZeroSym0]
-    type PrSym0 =
-        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) '[ZeroSym0]
+    type PrSym0 = Pr
     type Complex =
         Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
-    type ComplexSym0 =
-        Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
+    type ComplexSym0 = Complex
     type Tuple = '(FalseSym0, Apply JustSym0 ZeroSym0, TrueSym0)
-    type TupleSym0 = '(FalseSym0, Apply JustSym0 ZeroSym0, TrueSym0)
+    type TupleSym0 = Tuple
     type AList =
         '[ZeroSym0,
           Apply SuccSym0 ZeroSym0,
           Apply SuccSym0 (Apply SuccSym0 ZeroSym0)]
-    type AListSym0 =
-        '[ZeroSym0,
-          Apply SuccSym0 ZeroSym0,
-          Apply SuccSym0 (Apply SuccSym0 ZeroSym0)]
+    type AListSym0 = AList
 Promote/PatternMatching.hs:0:0: Splicing declarations
     promote
       [d| Pair sz lz = pr
@@ -56,19 +51,19 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
     foo8 :: forall a b. (a, b) -> a
     foo8 (x, y) = \ _ -> x y
     type Sz = Extract_0123456789 PrSym0
-    type SzSym0 = Extract_0123456789 PrSym0
+    type SzSym0 = Sz
     type Lz = Extract_0123456789 PrSym0
-    type LzSym0 = Extract_0123456789 PrSym0
+    type LzSym0 = Lz
     type family Extract_0123456789 (a :: Pair a b) :: a
     type family Extract_0123456789 (a :: Pair a b) :: b
     type instance Extract_0123456789 (Pair a a) = a
     type instance Extract_0123456789 (Pair a a) = a
     type Jz = Extract_0123456789 (Extract_0123456789 ComplexSym0)
-    type JzSym0 = Extract_0123456789 (Extract_0123456789 ComplexSym0)
+    type JzSym0 = Jz
     type Zz = Extract_0123456789 (Extract_0123456789 ComplexSym0)
-    type ZzSym0 = Extract_0123456789 (Extract_0123456789 ComplexSym0)
+    type ZzSym0 = Zz
     type Fls = Extract_0123456789 ComplexSym0
-    type FlsSym0 = Extract_0123456789 ComplexSym0
+    type FlsSym0 = Fls
     type family Extract_0123456789 (a :: Pair a b) :: a
     type family Extract_0123456789 (a :: Pair a b) :: b
     type instance Extract_0123456789 (Pair a a) = a
@@ -78,11 +73,11 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
     type instance Extract_0123456789 (Pair a a) = a
     type instance Extract_0123456789 (Pair a a) = a
     type Tf = Extract_0123456789 TupleSym0
-    type TfSym0 = Extract_0123456789 TupleSym0
+    type TfSym0 = Tf
     type Tjz = Extract_0123456789 TupleSym0
-    type TjzSym0 = Extract_0123456789 TupleSym0
+    type TjzSym0 = Tjz
     type Tt = Extract_0123456789 TupleSym0
-    type TtSym0 = Extract_0123456789 TupleSym0
+    type TtSym0 = Tt
     type family Extract_0123456789 (a :: GHC.Tuple.(,,) a b c) :: a
     type family Extract_0123456789 (a :: GHC.Tuple.(,,) a b c) :: b
     type family Extract_0123456789 (a :: GHC.Tuple.(,,) a b c) :: c
@@ -90,9 +85,9 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
     type instance Extract_0123456789 (GHC.Tuple.(,,) a a a) = a
     type instance Extract_0123456789 (GHC.Tuple.(,,) a a a) = a
     type Lsz = Head (Tail AListSym0)
-    type LszSym0 = Head (Tail AListSym0)
+    type LszSym0 = Lsz
     type Blimy = Extract_0123456789 (Head (Tail (Tail AListSym0)))
-    type BlimySym0 = Extract_0123456789 (Head (Tail (Tail AListSym0)))
+    type BlimySym0 = Blimy
     type family Extract_0123456789 (a :: Nat) :: Nat
     type instance Extract_0123456789 (Succ a) = a
     type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) :: r

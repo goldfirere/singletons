@@ -455,7 +455,7 @@ promoteDec vars (ValD pat body decs) = do
   let lhsToDecs :: TopLevelLHS -> [Dec]
       lhsToDecs (LHS unprom nm hole) =
         [ TySynD nm [] (hole rhs)
-        , TySynD (promoteTySym unprom 0) [] (hole rhs) ]
+        , TySynD (promoteTySym unprom 0) [] (ConT nm) ]
   return $ (concatMap lhsToDecs lhss) ++ decls ++ decls'
 promoteDec _vars (DataD cxt name tvbs ctors derivings) =
   promoteDataD cxt name tvbs ctors derivings
