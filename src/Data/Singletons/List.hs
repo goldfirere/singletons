@@ -43,7 +43,8 @@ module Data.Singletons.List (
   Reverse, sReverse,
 
   -- * Defunctionalization symbols
-  (:$), (:$$), -- Missing symbol for [] - See #21
+  (:$), (:$$),
+  ConsSym0, ConsSym1, NilSym0,
 
   (:++$$), (:++$),
   HeadSym0, TailSym0,
@@ -79,3 +80,7 @@ $(singletonsOnly [d|
   reverse_aux acc []      = acc
   reverse_aux acc (h : t) = reverse_aux (h : acc) t
   |])
+
+type ConsSym0 = (:$)
+type ConsSym1 = (:$$)
+type NilSym0  = '[]

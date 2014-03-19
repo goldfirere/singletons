@@ -93,11 +93,12 @@ module Data.Singletons.Prelude (
   Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry,
 
   -- * Other functions
-  either_, -- reimplementation either to be used with singletons library
+  either_, -- reimplementation of either to be used with singletons library
 
   -- * Defunctionalization symbols
   TrueSym0, FalseSym0,
-  (:$), (:$$), -- Missing symbol for [] - See #21
+  (:$), (:$$),
+  ConsSym0, ConsSym1, NilSym0,
   NothingSym0, JustSym0,
   LeftSym0, RightSym0,
   Tuple0Sym0,
