@@ -3,7 +3,6 @@ module SingletonsTestSuiteUtils (
    compileAndDumpTest
  , compileAndDumpStdTest
  , testCompileAndDumpGroup
- , runProgramTest
  , ghcOpts
  , singletonsVersion
  ) where
@@ -161,36 +160,6 @@ compileAndDumpStdTest testName testPath =
 testCompileAndDumpGroup :: FilePath -> [FilePath -> TestTree] -> TestTree
 testCompileAndDumpGroup testDir tests =
     testGroup testDir $ map ($ testDir) tests
-
--- Run a program with specified command line options. Save output to file and
--- compare it with golden file. This function builds golden file from a template
--- file.
-runProgramTest :: FilePath -> [String] -> TestTree
-runProgramTest testName opts =
-    goldenVsFileDiff
-      testName
-      (\ref new -> ["diff", "-w", "-B", ref, new]) -- see Note [Diff options]
-      goldenFilePath
-      actualFilePath
-      runProgram
-  where
-    testDirectory    = goldenPath ++ takeDirectory testName
-    program          = "./" ++ takeBaseName testName
-    templateFilePath = goldenPath ++ testName ++ ".run.template"
-    goldenFilePath   = goldenPath ++ testName ++ ".run.golden"
-    actualFilePath   = goldenPath ++ testName ++ ".run.actual"
-
-    runProgram :: IO ()
-    runProgram = do
-      hActualFile <- openFile actualFilePath WriteMode
-      (_, _, _, pid) <-
-          createProcess (proc "bash" ["-c", (intercalate " " (program : opts))])
-                        { std_out = UseHandle hActualFile
-                        , std_err = UseHandle hActualFile
-                        , cwd     = Just testDirectory }
-      _ <- waitForProcess pid -- see Note [Ignore exit code]
-      buildGoldenFile templateFilePath goldenFilePath
-      return ()
 
 -- Note [Ignore exit code]
 -- ~~~~~~~~~~~~~~~~~~~~~~~
