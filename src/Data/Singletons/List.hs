@@ -42,9 +42,10 @@ module Data.Singletons.List (
   Reverse, sReverse
   ) where
 
-import Data.Singletons.Core
+import Data.Singletons.Instances
 import Data.Singletons
 import Data.Singletons.Singletons
+import Data.Singletons.TypeLits
 
 $(singletonsOnly [d|
   (++) :: [a] -> [a] -> [a]

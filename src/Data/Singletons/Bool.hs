@@ -49,8 +49,8 @@ module Data.Singletons.Bool (
   Bool_, sBool_, Otherwise, sOtherwise
   ) where
 
-import Data.Singletons.Exports
-import Data.Singletons.Core
+import Data.Singletons
+import Data.Singletons.Instances
 import Data.Singletons.Singletons
 import Data.Singletons.Types
 

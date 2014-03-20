@@ -1,4 +1,4 @@
-{- Data/Singletons/Core.hs
+{- Data/Singletons/Instances.hs
 
 (c) Richard Eisenberg 2013
 eir@cis.upenn.edu
@@ -20,7 +20,7 @@ re-exported from various places.
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Data.Singletons.Core where
+module Data.Singletons.Instances where
 
 import Data.Singletons.Singletons
 import Data.Singletons.Util

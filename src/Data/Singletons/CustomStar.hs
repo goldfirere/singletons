@@ -26,8 +26,8 @@ import Data.Singletons.Singletons
 import Control.Monad
 
 #if __GLASGOW_HASKELL__ >= 707
-import Data.Singletons.Exports
-import Data.Singletons.Core
+import Data.Singletons
+import Data.Singletons.Instances
 import Data.Singletons.Types
 import Data.Singletons.Eq
 import Unsafe.Coerce

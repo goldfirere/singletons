@@ -83,6 +83,9 @@ module Data.Singletons.Prelude (
   -- * Functions working with lists
   Head, Tail, (:++), (%:++),
 
+  -- * Error reporting
+  Error, sError,
+
   -- * Singleton equality
   module Data.Singletons.Eq,
 
@@ -99,4 +102,5 @@ import Data.Singletons.Maybe
 import Data.Singletons.Either
 import Data.Singletons.Tuple
 import Data.Singletons.Eq
-import Data.Singletons.Core
+import Data.Singletons.Instances
+import Data.Singletons.TypeLits

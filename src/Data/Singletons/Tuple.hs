@@ -35,7 +35,7 @@ module Data.Singletons.Tuple (
   Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry, Swap, sSwap
   ) where
 
-import Data.Singletons.Core
+import Data.Singletons.Instances
 import Data.Singletons.TH
 
 $(singletonsOnly [d|

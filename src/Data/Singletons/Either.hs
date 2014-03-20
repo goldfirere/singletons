@@ -48,7 +48,7 @@ module Data.Singletons.Either (
   PartitionEithers, sPartitionEithers, IsLeft, sIsLeft, IsRight, sIsRight
   ) where
 
-import Data.Singletons.Core
+import Data.Singletons.Instances
 import Data.Singletons.TH
 import Data.Singletons.List
 

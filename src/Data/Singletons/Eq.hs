@@ -22,9 +22,9 @@ module Data.Singletons.Eq (
 
 import Data.Singletons.Util
 import Data.Singletons.Bool
-import Data.Singletons.Exports
+import Data.Singletons
 import Data.Singletons.Singletons
-import Data.Singletons.Core
+import Data.Singletons.Instances
 import GHC.TypeLits ( Nat, Symbol )
 import Unsafe.Coerce   -- for TypeLits instances
 import Data.Singletons.Types
@@ -32,6 +32,7 @@ import Data.Singletons.Types
 import Data.Singletons.Promote ( promoteEqInstances )
 #endif
 
+-- | A type synonym conforming to singletons naming conventions
 type a :/= b = Not (a :== b)
                
 -- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
@@ -50,14 +51,3 @@ $(promoteEqInstances basicTypes)   -- these instances are in Data.Type.Equality
 #endif
 
 $(singEqInstancesOnly basicTypes)
-
--- need instances for TypeLits kinds
-instance SEq ('KProxy :: KProxy Nat) where
-  (SNat a) %:== (SNat b)
-    | a == b    = unsafeCoerce STrue
-    | otherwise = unsafeCoerce SFalse
-
-instance SEq ('KProxy :: KProxy Symbol) where
-  (SSym a) %:== (SSym b)
-    | a == b    = unsafeCoerce STrue
-    | otherwise = unsafeCoerce SFalse

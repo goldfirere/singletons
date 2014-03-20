@@ -21,6 +21,11 @@
 --
 ----------------------------------------------------------------------------
 
+#if __GLASGOW_HASKELL__ < 707
+  -- optimizing instances of SDecide cause GHC to die (#8467)
+{-# OPTIONS_GHC -O0 #-}
+#endif
+
 module Data.Singletons (
   -- * Main singleton definitions
 
@@ -40,11 +45,10 @@ module Data.Singletons (
   withSing, singThat,
 
   -- * Auxiliary functions
-  bugInGHC, Error, sError,
+  bugInGHC,
   KProxy(..), Proxy(..)
   ) where
 
-import Data.Singletons.Exports
 import Unsafe.Coerce
 import GHC.TypeLits (Symbol)
 
@@ -55,6 +59,60 @@ import Data.Proxy
 import Data.Singletons.Types
 #endif
 
+-- | Convenient synonym to refer to the kind of a type variable:
+-- @type KindOf (a :: k) = ('KProxy :: KProxy k)@
+type KindOf (a :: k) = ('KProxy :: KProxy k)
+
+----------------------------------------------------------------------
+---- Sing & friends --------------------------------------------------
+----------------------------------------------------------------------
+                        
+-- | The singleton kind-indexed data family.
+data family Sing (a :: k)
+
+-- | A 'SingI' constraint is essentially an implicitly-passed singleton.
+-- If you need to satisfy this constraint with an explicit singleton, please
+-- see 'withSingI'.
+class SingI (a :: k) where
+  -- | Produce the singleton explicitly. You will likely need the @ScopedTypeVariables@
+  -- extension to use this method the way you want.
+  sing :: Sing a
+
+-- | The 'SingKind' class is essentially a /kind/ class. It classifies all kinds
+-- for which singletons are defined. The class supports converting between a singleton
+-- type and the base (unrefined) type which it is built from.
+class (kparam ~ 'KProxy) => SingKind (kparam :: KProxy k) where
+  -- | Get a base type from a proxy for the promoted kind. For example,
+  -- @DemoteRep ('KProxy :: KProxy Bool)@ will be the type @Bool@.
+  type DemoteRep kparam :: *
+
+  -- | Convert a singleton to its unrefined version.
+  fromSing :: Sing (a :: k) -> DemoteRep kparam
+
+  -- | Convert an unrefined type to an existentially-quantified singleton type.
+  toSing   :: DemoteRep kparam -> SomeSing kparam
+
+-- | Convenient abbreviation for 'DemoteRep':
+-- @type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)@
+type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)
+
+-- | An /existentially-quantified/ singleton. This type is useful when you want a
+-- singleton type, but there is no way of knowing, at compile-time, what the type
+-- index will be. To make use of this type, you will generally have to use a
+-- pattern-match:
+--
+-- > foo :: Bool -> ...
+-- > foo b = case toSing b of
+-- >           SomeSing sb -> {- fancy dependently-typed code with sb -}
+--
+-- An example like the one above may be easier to write using 'withSomeSing'.
+data SomeSing (kproxy :: KProxy k) where
+  SomeSing :: Sing (a :: k) -> SomeSing ('KProxy :: KProxy k)
+
+----------------------------------------------------------------------
+---- SingInstance ----------------------------------------------------
+----------------------------------------------------------------------
+                  
 -- | A 'SingInstance' wraps up a 'SingI' instance for explicit handling.
 data SingInstance (a :: k) where
   SingInstance :: SingI a => SingInstance a
@@ -68,6 +126,10 @@ singInstance s = with_sing_i SingInstance
   where
     with_sing_i :: (SingI a => SingInstance a) -> SingInstance a
     with_sing_i si = unsafeCoerce (Don'tInstantiate si) s
+
+----------------------------------------------------------------------
+---- Convenience -----------------------------------------------------
+----------------------------------------------------------------------
 
 -- | Convenience function for creating a context with an implicit singleton
 -- available.
@@ -119,9 +181,3 @@ singByProxy# _ = sing
 bugInGHC :: forall a. a
 bugInGHC = error "Bug encountered in GHC -- this should never happen"
 
--- | The promotion of 'error'
-type family Error (str :: Symbol) :: k
-
--- | The singleton for 'error'
-sError :: Sing (str :: Symbol) -> a
-sError sstr = error (fromSing sstr)

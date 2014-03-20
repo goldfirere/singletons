@@ -50,14 +50,14 @@ library
                       Data.Singletons.Eq,
                       Data.Singletons.Prelude,
                       Data.Singletons.Types,
+		      Data.Singletons.TypeLits,
                       Data.Singletons.Decide,
                       Data.Singletons.Void
 
   other-modules:      Data.Singletons.Promote,
                       Data.Singletons.Singletons,
                       Data.Singletons.Util,
-                      Data.Singletons.Core,
-                      Data.Singletons.Exports
+                      Data.Singletons.Instances
 
   ghc-options:        -Wall -Werror
 

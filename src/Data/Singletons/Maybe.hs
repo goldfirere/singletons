@@ -52,10 +52,11 @@ module Data.Singletons.Maybe (
   ListToMaybe, sListToMaybe, CatMaybes, sCatMaybes, MapMaybe, sMapMaybe
   ) where
 
-import Data.Singletons.Core
+import Data.Singletons.Instances
 import Data.Singletons
 import Data.Singletons.TH
 import Data.Singletons.List
+import Data.Singletons.TypeLits
 
 $(singletonsOnly [d|
   -- | The 'maybe' function takes a default value, a function, and a 'Maybe'

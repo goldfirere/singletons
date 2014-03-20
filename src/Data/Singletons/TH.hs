@@ -43,14 +43,15 @@ module Data.Singletons.TH (
   KProxy(..), SomeSing(..)
  ) where
 
-import Data.Singletons.Exports
+import Data.Singletons
 import Data.Singletons.Singletons
 import Data.Singletons.Promote
-import Data.Singletons.Core
+import Data.Singletons.Instances
 import Data.Singletons.Bool
 import Data.Singletons.Eq
 import Data.Singletons.Types
 import Data.Singletons.Void
+import Data.Singletons.Decide
 
 import GHC.Exts
 import Language.Haskell.TH

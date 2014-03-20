@@ -29,8 +29,8 @@ module Data.Singletons.TypeRepStar (
   -- also supplied.
   ) where
 
-import Data.Singletons.Core
-import Data.Singletons.Exports
+import Data.Singletons.Instances
+import Data.Singletons
 import Data.Singletons.Types
 import Data.Singletons.Eq
 import Data.Typeable

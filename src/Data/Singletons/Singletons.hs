@@ -15,7 +15,8 @@ import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (falseName, trueName, Quasi(..))
 import Data.Singletons.Util
 import Data.Singletons.Promote
-import Data.Singletons.Exports
+import Data.Singletons
+import Data.Singletons.Decide
 import qualified Data.Map as Map
 import Control.Monad
 import Control.Applicative

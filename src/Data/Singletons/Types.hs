@@ -17,7 +17,6 @@
 
 
 module Data.Singletons.Types (
-  Refuted, Decision(..),
   KProxy(..), Proxy(..),
   (:~:)(..), gcastWith, TestEquality(..),
   Not, If, type (==), (:==)
@@ -65,13 +64,3 @@ import Data.Type.Bool
 type a :== b = a == b
 
 #endif
-
--- | Because we can never create a value of type 'Void', a function that type-checks
--- at @a -> Void@ shows that objects of type @a@ can never exist. Thus, we say that
--- @a@ is 'Refuted'
-type Refuted a = (a -> Void)
-
--- | A 'Decision' about a type @a@ is either a proof of existence or a proof that @a@
--- cannot exist.
-data Decision a = Proved a               -- ^ Witness for @a@
-                | Disproved (Refuted a)  -- ^ Proof that no @a@ exists
