@@ -94,9 +94,6 @@ ghcOpts = [
   , "-XFlexibleContexts"
   , "-XIncoherentInstances"
   , "-XCPP"
-#if __GLASGOW_HASKELL__ > 706
-  , "-XEmptyCase"
-#endif
   ]
 
 -- Note [-package-name hack]

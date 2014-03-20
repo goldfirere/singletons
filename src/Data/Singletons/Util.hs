@@ -183,12 +183,8 @@ orIfEmpty x  _ = x
 
 -- an empty list of matches, compatible with GHC 7.6.3
 emptyMatches :: [Match]
-#if __GLASGOW_HASKELL__ >= 707
-emptyMatches = []
-#else
 emptyMatches = [Match WildP (NormalB (AppE (VarE 'error) (LitE (StringL errStr)))) []]
   where errStr = "Empty case reached -- this should be impossible"
-#endif
 
 -- build a pattern match over several expressions, each with only one pattern
 multiCase :: [Exp] -> [Pat] -> Exp -> Exp

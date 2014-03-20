@@ -1,5 +1,5 @@
-singletons 0.9.3
-================
+singletons 0.10
+===============
 
 This is the README file for the singletons library. This file contains all the
 documentation for the definitions and functions in the library.
@@ -36,7 +36,6 @@ is not necessarily limited to, the following:
 * `RankNTypes`
 * `UndecidableInstances`
 * `FlexibleInstances`
-* `EmptyCase` (for GHC 7.8)
 
 
 Functions to generate singletons

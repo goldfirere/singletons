@@ -15,10 +15,6 @@ This file is a great way to understand the singleton encoding better.
              LambdaCase, TemplateHaskell
  #-}
 
-#if __GLASGOW_HASKELL__ >= 707
-{-# LANGUAGE EmptyCase #-}
-#endif
-
 module Test.ByHand where
 
 import Prelude hiding (Maybe, Just, Nothing, Either, Left, Right, map,

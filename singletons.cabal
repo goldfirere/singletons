@@ -1,5 +1,5 @@
 name:           singletons
-version:        0.9.4
+version:        0.10.0
                 -- Remember to bump version in the Makefile as well
 cabal-version:  >= 1.10
 synopsis:       A framework for generating singleton types
@@ -9,7 +9,21 @@ author:         Richard Eisenberg <eir@cis.upenn.edu>
 maintainer:     Richard Eisenberg <eir@cis.upenn.edu>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-extra-source-files: README.md, CHANGES.md tests/compileAndRun/*.hs.golden
+tested-with:    GHC ==7.6.3, GHC ==7.8.*
+extra-source-files: README.md, CHANGES.md,
+                    tests/compile-and-dump/buildGoldenFiles.awk,
+                    tests/compile-and-dump/GradingClient/*.hs,
+                    tests/compile-and-dump/InsertionSort/*.hs,
+                    tests/compile-and-dump/Promote/*.hs,
+                    tests/compile-and-dump/Singletons/*.hs
+                    tests/compile-and-dump/GradingClient/*.ghc76.template,
+                    tests/compile-and-dump/InsertionSort/*.ghc76.template,
+                    tests/compile-and-dump/Promote/*.ghc76.template,
+                    tests/compile-and-dump/Singletons/*.ghc76.template,
+                    tests/compile-and-dump/GradingClient/*.ghc78.template,
+                    tests/compile-and-dump/InsertionSort/*.ghc78.template,
+                    tests/compile-and-dump/Promote/*.ghc78.template,
+                    tests/compile-and-dump/Singletons/*.ghc78.template
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -22,13 +36,13 @@ description:
     (<http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>)
 
     The Haddock documentation does not build with the Haddock distributed with
-    GHC 7.6.x, but it does build with HEAD. Please see links from the project
+    GHC 7.6.x, but it does build with 7.8.1. Please see links from the project
     homepage to find the built documentation.
 
 source-repository this
   type:     git
   location: https://github.com/goldfirere/singletons.git
-  tag:      v0.9.4
+  tag:      v0.10.0
 
 library
   hs-source-dirs:     src
@@ -67,6 +81,7 @@ test-suite singletons-test-suite
   ghc-options:        -Wall
   default-language:   Haskell2010
   main-is:            SingletonsTestSuite.hs
+  other-modules:      SingletonsTestSuiteUtils
 
   build-depends:      base >= 4.6 && < 5,
                       constraints,

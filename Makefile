@@ -1,4 +1,4 @@
-version=0.9.4
+version=0.10.0
 source=src/Data/Singletons.hs src/Data/Singletons/*.hs
 test-source=tests/SingletonsTestSuite.hs tests/SingletonsTestSuiteUtils.hs
 
