@@ -53,10 +53,9 @@ module Data.Singletons (
   ) where
 
 import Unsafe.Coerce
-
+import Data.Singletons.Types
 #if __GLASGOW_HASKELL__ >= 707
 import GHC.Exts ( Proxy# )
-import Data.Proxy
 #endif
 
 -- | Convenient synonym to refer to the kind of a type variable:
