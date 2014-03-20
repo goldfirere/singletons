@@ -17,10 +17,9 @@
 
 module Data.Singletons.Eq (
   SEq(..),
-  type (==), (:==), (:/=)
+  type (==), (:==), (:/=), (:==$), (:==$$), (:/=$), (:/=$$)
   ) where
 
-import Data.Singletons.Util
 import Data.Singletons.Bool
 import Data.Singletons
 import Data.Singletons.Singletons
@@ -32,7 +31,12 @@ import Data.Singletons.Promote ( promoteEqInstances )
 
 -- | A type synonym conforming to singletons naming conventions
 type a :/= b = Not (a :== b)
-               
+
+data (:/=$$) (a :: k1) (b :: TyFun k1 Bool)
+data (:/=$) (a :: TyFun k1 (TyFun k1 Bool -> *))
+type instance Apply ((:/=$$) a) b = a :/= b
+type instance Apply (:/=$)      a = (:/=$$) a
+
 -- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
 -- that instances define a body for '(%:==)'. You may also supply a body for '(%:/=)'.
 class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where

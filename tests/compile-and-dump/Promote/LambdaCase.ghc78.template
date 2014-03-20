@@ -1,0 +1,76 @@
+Promote/LambdaCase.hs:0:0: Splicing declarations
+    promote
+      [d| foo1 :: a -> Maybe a -> a
+          foo1 d x
+            = (\case {
+                 Just y -> y
+                 Nothing -> d })
+                x
+          foo2 :: a -> Maybe a -> a
+          foo2 d _
+            = (\case {
+                 Just y -> y
+                 Nothing -> d })
+                (Just d)
+          foo3 :: a -> b -> a
+          foo3 a b = (\case { (p, _) -> p }) (a, b) |]
+  ======>
+    Promote/LambdaCase.hs:(0,0)-(0,0)
+    foo1 :: forall a. a -> Maybe a -> a
+    foo1 d x
+      = \case {
+          Just y -> y
+          Nothing -> d }
+          x
+    foo2 :: forall a. a -> Maybe a -> a
+    foo2 d _
+      = \case {
+          Just y -> y
+          Nothing -> d }
+          (Just d)
+    foo3 :: forall a b. a -> b -> a
+    foo3 a b = \case { (p, _) -> p } (a, b)
+    type family Case_0123456789 (t :: k)
+                                (d :: d)
+                                (x :: x)
+                                (e :: e) :: r where
+      Case_0123456789 (Just y) d x e = y
+      Case_0123456789 Nothing d x e = d
+    type family Lambda_0123456789 (d :: d) (x :: x) (t :: k) :: r where
+      Lambda_0123456789 d x e = Case_0123456789 e d x e
+    data Lambda_0123456789Sym2 (l :: d) (l :: x) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a
+    type family Case_0123456789 (t :: k) (d :: d) (e :: e) :: r where
+      Case_0123456789 (Just y) d e = y
+      Case_0123456789 Nothing d e = d
+    type family Lambda_0123456789 (d :: d) (t :: k) :: r where
+      Lambda_0123456789 d e = Case_0123456789 e d e
+    data Lambda_0123456789Sym1 (l :: d) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym1 a) a = Lambda_0123456789 a a
+    type family Case_0123456789 (t :: k)
+                                (a :: a)
+                                (b :: b)
+                                (e :: e) :: r where
+      Case_0123456789 '(p, z) a b e = p
+    type family Lambda_0123456789 (a :: a) (b :: b) (t :: k) :: r where
+      Lambda_0123456789 a b e = Case_0123456789 e a b e
+    data Lambda_0123456789Sym2 (l :: a) (l :: b) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a
+    type family Foo1 (a :: a) (a :: Maybe a) :: a where
+      Foo1 d x = Apply (Lambda_0123456789Sym2 d x) x
+    data Foo1Sym1 (l :: a) (l :: TyFun (Maybe a) a)
+    data Foo1Sym0 (k :: TyFun a (TyFun (Maybe a) a -> *))
+    type instance Apply (Foo1Sym1 a) a = Foo1 a a
+    type instance Apply Foo1Sym0 a = Foo1Sym1 a
+    type family Foo2 (a :: a) (a :: Maybe a) :: a where
+      Foo2 d z = Apply (Lambda_0123456789Sym1 d) (Apply JustSym0 d)
+    data Foo2Sym1 (l :: a) (l :: TyFun (Maybe a) a)
+    data Foo2Sym0 (k :: TyFun a (TyFun (Maybe a) a -> *))
+    type instance Apply (Foo2Sym1 a) a = Foo2 a a
+    type instance Apply Foo2Sym0 a = Foo2Sym1 a
+    type family Foo3 (a :: a) (a :: b) :: a where
+      Foo3 a b = Apply (Lambda_0123456789Sym2 a b) '(a, b)
+    data Foo3Sym1 (l :: a) (l :: TyFun b a)
+    data Foo3Sym0 (k :: TyFun a (TyFun b a -> *))
+    type instance Apply (Foo3Sym1 a) a = Foo3 a a
+    type instance Apply Foo3Sym0 a = Foo3Sym1 a

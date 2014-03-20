@@ -1,2 +1,3 @@
+
 Singletons/BadPlus.hs:0:0:
     No type signature for functions: "badPlus"; cannot promote or make singletons.

@@ -1,0 +1,44 @@
+Promote/LambdasComprehensive.hs:0:0: Splicing declarations
+    promote
+      [d| pred :: Nat -> Nat
+          pred Zero = Zero
+          pred (Succ n) = n
+          foo :: [Nat]
+          foo
+            = map (\ x -> either_ pred Succ x) [Left Zero, Right (Succ Zero)]
+          bar :: [Nat]
+          bar = map (either_ pred Succ) [Left Zero, Right (Succ Zero)]
+
+          data Nat = Zero | Succ Nat |]
+  ======>
+    Promote/LambdasComprehensive.hs:(0,0)-(0,0)
+    data Nat = Zero | Succ Nat
+    pred :: Nat -> Nat
+    pred Zero = Zero
+    pred (Succ n) = n
+    foo :: [Nat]
+    foo
+      = map (\ x -> either_ pred Succ x) [Left Zero, Right (Succ Zero)]
+    bar :: [Nat]
+    bar = map (either_ pred Succ) [Left Zero, Right (Succ Zero)]
+    type ZeroSym0 = Zero
+    data SuccSym0 (k :: TyFun Nat Nat)
+    type instance Apply SuccSym0 a = Succ a
+    type Foo =
+        Apply (Apply MapSym0 Lambda_0123456789Sym0) '[Apply LeftSym0 ZeroSym0,
+                                                      Apply RightSym0 (Apply SuccSym0 ZeroSym0)]
+    type FooSym0 = Foo
+    type family Lambda_0123456789 (t :: k) :: r
+    type instance Lambda_0123456789 x =
+        Apply (Apply (Apply Either_Sym0 PredSym0) SuccSym0) x
+    data Lambda_0123456789Sym0 (k :: TyFun k r)
+    type instance Apply Lambda_0123456789Sym0 a = Lambda_0123456789 a
+    type Bar =
+        Apply (Apply MapSym0 (Apply (Apply Either_Sym0 PredSym0) SuccSym0)) '[Apply LeftSym0 ZeroSym0,
+                                                                              Apply RightSym0 (Apply SuccSym0 ZeroSym0)]
+    type BarSym0 = Bar
+    type family Pred (a :: Nat) :: Nat
+    type instance Pred Zero = ZeroSym0
+    type instance Pred (Succ n) = n
+    data PredSym0 (k :: TyFun Nat Nat)
+    type instance Apply PredSym0 a = Pred a

@@ -19,13 +19,16 @@
 module Data.Singletons.TH (
   -- * Primary Template Haskell generation functions
   singletons, singletonsOnly, genSingletons,
-  promote, promoteOnly,
+  promote, promoteOnly, genDefunSymbols,
 
   -- ** Functions to generate equality instances
   promoteEqInstances, promoteEqInstance,
   singEqInstances, singEqInstance,
   singEqInstancesOnly, singEqInstanceOnly,
   singDecideInstances, singDecideInstance,
+
+  -- ** defunctionalization
+  TyFun, TyCon, Apply, type (@@),
 
   -- ** Utility function
   cases,
@@ -56,7 +59,6 @@ import Data.Singletons.Decide
 import GHC.Exts
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax ( Quasi(..) )
-import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
 import Control.Applicative
 

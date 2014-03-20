@@ -44,6 +44,9 @@ module Data.Singletons (
 #endif
   withSing, singThat,
 
+  -- ** Defunctionalization
+  TyFun, TyCon, Apply, type (@@),
+
   -- * Auxiliary functions
   bugInGHC,
   KProxy(..), Proxy(..)
@@ -54,9 +57,8 @@ import Unsafe.Coerce
 #if __GLASGOW_HASKELL__ >= 707
 import GHC.Exts ( Proxy# )
 import Data.Proxy
-#else
-import Data.Singletons.Types
 #endif
+import Data.Singletons.Types
 
 -- | Convenient synonym to refer to the kind of a type variable:
 -- @type KindOf (a :: k) = ('KProxy :: KProxy k)@
@@ -125,6 +127,39 @@ singInstance s = with_sing_i SingInstance
   where
     with_sing_i :: (SingI a => SingInstance a) -> SingInstance a
     with_sing_i si = unsafeCoerce (Don'tInstantiate si) s
+
+----------------------------------------------------------------------
+---- Defunctionalization ---------------------------------------------
+----------------------------------------------------------------------
+
+-- | Representation of the kind of a type-level function. The difference
+-- between term-level arrows and this type-level arrow is that at the term
+-- level applications can be unsaturated, whereas at the type level all
+-- applications have to be fully saturated.
+data TyFun :: * -> * -> *
+
+-- | Wrapper for converting term level arrows into type level
+-- arrows. TyCon is designed to allow usage of term-level functions
+-- where type-level function is expected. For example given:
+--
+-- > data Nat = Zero | Succ Nat
+-- > type family Map (a :: TyFun a b -> *) (a :: [a]) :: [b]
+-- >   Map f '[] = '[]
+-- >   Map f (x ': xs) = Apply f x ': Map f xs
+--
+-- We can write:
+--
+-- > Map (TyCon Succ) [Zero, Succ Zero]
+data TyCon :: (k1 -> k2) -> (TyFun k1 k2) -> *
+
+-- | Type level function application
+type family Apply (f :: TyFun k1 k2 -> *) (x :: k1) :: k2
+type instance Apply (TyCon f) x = f x
+
+-- | An infix synonym for `Apply`
+type a @@ b = Apply a b
+
+infixl 9 @@
 
 ----------------------------------------------------------------------
 ---- Convenience -----------------------------------------------------

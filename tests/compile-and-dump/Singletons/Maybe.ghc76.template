@@ -8,10 +8,13 @@ Singletons/Maybe.hs:0:0: Splicing declarations
     data Maybe a
       = Nothing | Just a
       deriving (Eq, Show)
-    type instance (:==) Nothing Nothing = True
-    type instance (:==) Nothing (Just b) = False
-    type instance (:==) (Just a) Nothing = False
+    type instance (:==) Nothing Nothing = TrueSym0
+    type instance (:==) Nothing (Just b) = FalseSym0
+    type instance (:==) (Just a) Nothing = FalseSym0
     type instance (:==) (Just a) (Just b) = :== a b
+    type NothingSym0 = Nothing
+    data JustSym0 (k :: TyFun a (Maybe a))
+    type instance Apply JustSym0 a = Just a
     data instance Sing (z :: Maybe a)
       = z ~ Nothing => SNothing |
         forall (n :: a). z ~ Just n => SJust (Sing n)

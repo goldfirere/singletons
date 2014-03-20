@@ -1,0 +1,154 @@
+Promote/Lambdas.hs:0:0: Splicing declarations
+    promote
+      [d| foo1 :: a -> b -> a
+          foo1 x = (\ _ -> x)
+          foo2 :: a -> b -> a
+          foo2 x y = (\ _ -> x) y
+          foo3 :: a -> a
+          foo3 x = (\ y -> y) x
+          foo4 :: a -> b -> c -> a
+          foo4 x y z = (\ _ _ -> x) y z
+          foo5 :: a -> b -> b
+          foo5 x y = (\ x -> x) y
+          foo6 :: a -> b -> a
+          foo6 a b = (\ x -> \ _ -> x) a b
+          foo7 :: a -> b -> b
+          foo7 x y = (\ (_, b) -> b) (x, y)
+          foo8 :: Foo a b -> a
+          foo8 x = (\ (Foo a b) -> a) x
+          
+          data Foo a b = Foo a b |]
+  ======>
+    Promote/Lambdas.hs:(0,0)-(0,0)
+    foo1 :: forall a b. a -> b -> a
+    foo1 x = \ _ -> x
+    foo2 :: forall a b. a -> b -> a
+    foo2 x y = \ _ -> x y
+    foo3 :: forall a. a -> a
+    foo3 x = \ y -> y x
+    foo4 :: forall a b c. a -> b -> c -> a
+    foo4 x y z = \ _ _ -> x y z
+    foo5 :: forall a b. a -> b -> b
+    foo5 x y = \ x -> x y
+    foo6 :: forall a b. a -> b -> a
+    foo6 a b = \ x -> \ _ -> x a b
+    foo7 :: forall a b. a -> b -> b
+    foo7 x y = \ (_, b) -> b (x, y)
+    data Foo a b = Foo a b
+    foo8 :: forall a b. Foo a b -> a
+    foo8 x = \ (Foo a b) -> a x
+    type family Lambda_0123456789 (x :: x) (t :: k) :: r
+    type instance Lambda_0123456789 x z = x
+    data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym1 a) a =
+        Lambda_0123456789 a a
+    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) :: r
+    type instance Lambda_0123456789 x y z = x
+    data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym2 a a) a =
+        Lambda_0123456789 a a a
+    type family Lambda_0123456789 (x :: x) (t :: k) :: r
+    type instance Lambda_0123456789 x y = y
+    data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym1 a) a =
+        Lambda_0123456789 a a
+    type family Lambda_0123456789 (x :: x)
+                                  (y :: y)
+                                  (z :: z)
+                                  (t :: k)
+                                  (t :: k) :: r
+    type instance Lambda_0123456789 x y z z z = x
+    data Lambda_0123456789Sym4 (l :: x)
+                               (l :: y)
+                               (l :: z)
+                               (l :: k)
+                               (l :: TyFun k r)
+    data Lambda_0123456789Sym3 (l :: x)
+                               (l :: y)
+                               (l :: z)
+                               (l :: TyFun k (TyFun k r -> *))
+    type instance Apply (Lambda_0123456789Sym4 a a a a) a =
+        Lambda_0123456789 a a a a a
+    type instance Apply (Lambda_0123456789Sym3 a a a) a =
+        Lambda_0123456789Sym4 a a a a
+    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) :: r
+    type instance Lambda_0123456789 x y x = x
+    data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym2 a a) a =
+        Lambda_0123456789 a a a
+    type family Lambda_0123456789 (a :: a)
+                                  (b :: b)
+                                  (x :: x)
+                                  (t :: k) :: r
+    type instance Lambda_0123456789 a b x z = x
+    data Lambda_0123456789Sym3 (l :: a)
+                               (l :: b)
+                               (l :: x)
+                               (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym3 a a a) a =
+        Lambda_0123456789 a a a a
+    type family Lambda_0123456789 (a :: a) (b :: b) (t :: k) :: r
+    type instance Lambda_0123456789 a b x = Lambda_0123456789Sym3 a b x
+    data Lambda_0123456789Sym2 (l :: a) (l :: b) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym2 a a) a =
+        Lambda_0123456789 a a a
+    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) :: r
+    type instance Lambda_0123456789 x y '(z, b) = b
+    data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym2 a a) a =
+        Lambda_0123456789 a a a
+    data FooSym1 (l :: a) (l :: TyFun b (Foo a b))
+    data FooSym0 (k :: TyFun a (TyFun b (Foo a b) -> *))
+    type instance Apply (FooSym1 a) a = Foo a a
+    type instance Apply FooSym0 a = FooSym1 a
+    type family Lambda_0123456789 (x :: x) (t :: k) :: r
+    type instance Lambda_0123456789 x (Foo a b) = a
+    data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym1 a) a =
+        Lambda_0123456789 a a
+    type family Foo1 (a :: a) :: TyFun a b -> *
+    type instance Foo1 x = Lambda_0123456789Sym1 x
+    data Foo1Sym0 (k :: TyFun a (TyFun a b -> *))
+    type instance Apply Foo1Sym0 a = Foo1 a
+    type family Foo2 (a :: a) (a :: b) :: a
+    type instance Foo2 x y = Apply (Lambda_0123456789Sym2 x y) y
+    data Foo2Sym1 (l :: a) (l :: TyFun b a)
+    data Foo2Sym0 (k :: TyFun a (TyFun b a -> *))
+    type instance Apply (Foo2Sym1 a) a = Foo2 a a
+    type instance Apply Foo2Sym0 a = Foo2Sym1 a
+    type family Foo3 (a :: a) :: a
+    type instance Foo3 x = Apply (Lambda_0123456789Sym1 x) x
+    data Foo3Sym0 (k :: TyFun a a)
+    type instance Apply Foo3Sym0 a = Foo3 a
+    type family Foo4 (a :: a) (a :: b) (a :: c) :: a
+    type instance Foo4 x y z =
+        Apply (Apply (Lambda_0123456789Sym3 x y z) y) z
+    data Foo4Sym2 (l :: a) (l :: b) (l :: TyFun c a)
+    data Foo4Sym1 (l :: a) (l :: TyFun b (TyFun c a -> *))
+    data Foo4Sym0 (k :: TyFun a (TyFun b (TyFun c a -> *) -> *))
+    type instance Apply (Foo4Sym2 a a) a = Foo4 a a a
+    type instance Apply (Foo4Sym1 a) a = Foo4Sym2 a a
+    type instance Apply Foo4Sym0 a = Foo4Sym1 a
+    type family Foo5 (a :: a) (a :: b) :: b
+    type instance Foo5 x y = Apply (Lambda_0123456789Sym2 x y) y
+    data Foo5Sym1 (l :: a) (l :: TyFun b b)
+    data Foo5Sym0 (k :: TyFun a (TyFun b b -> *))
+    type instance Apply (Foo5Sym1 a) a = Foo5 a a
+    type instance Apply Foo5Sym0 a = Foo5Sym1 a
+    type family Foo6 (a :: a) (a :: b) :: a
+    type instance Foo6 a b =
+        Apply (Apply (Lambda_0123456789Sym2 a b) a) b
+    data Foo6Sym1 (l :: a) (l :: TyFun b a)
+    data Foo6Sym0 (k :: TyFun a (TyFun b a -> *))
+    type instance Apply (Foo6Sym1 a) a = Foo6 a a
+    type instance Apply Foo6Sym0 a = Foo6Sym1 a
+    type family Foo7 (a :: a) (a :: b) :: b
+    type instance Foo7 x y = Apply (Lambda_0123456789Sym2 x y) '(x, y)
+    data Foo7Sym1 (l :: a) (l :: TyFun b b)
+    data Foo7Sym0 (k :: TyFun a (TyFun b b -> *))
+    type instance Apply (Foo7Sym1 a) a = Foo7 a a
+    type instance Apply Foo7Sym0 a = Foo7Sym1 a
+    type family Foo8 (a :: Foo a b) :: a
+    type instance Foo8 x = Apply (Lambda_0123456789Sym1 x) x
+    data Foo8Sym0 (k :: TyFun (Foo a b) a)
+    type instance Apply Foo8Sym0 a = Foo8 a

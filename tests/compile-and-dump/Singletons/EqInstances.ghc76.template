@@ -7,9 +7,9 @@ Singletons/EqInstances.hs:0:0: Splicing declarations
       %:== SFLeaf (:%+: _ _) = SFalse
       %:== (:%+: _ _) SFLeaf = SFalse
       %:== (:%+: a a) (:%+: b b) = (%:&&) ((%:==) a b) ((%:==) a b)
-    type instance (:==) FLeaf FLeaf = True
-    type instance (:==) FLeaf (:+: b b) = False
-    type instance (:==) (:+: a a) FLeaf = False
+    type instance (:==) FLeaf FLeaf = TrueSym0
+    type instance (:==) FLeaf (:+: b b) = FalseSym0
+    type instance (:==) (:+: a a) FLeaf = FalseSym0
     type instance (:==) (:+: a a) (:+: b b) = :&& (:== a b) (:== a b)
     instance SEq (KProxy :: KProxy Empty) where
       %:== a _

@@ -1,5 +1,5 @@
 {-# LANGUAGE CPP, TypeOperators, DataKinds, PolyKinds, TypeFamilies,
-             TemplateHaskell, GADTs, UndecidableInstances #-}
+             TemplateHaskell, GADTs, UndecidableInstances, RankNTypes #-}
 
 #if __GLASGOW_HASKELL__ < 707
 {-# OPTIONS_GHC -fno-warn-name-shadowing #-}
@@ -37,13 +37,23 @@ module Data.Singletons.List (
   SList,
   -- | 'SList' is a kind-restricted synonym for 'Sing': @type SList (a :: [k]) = Sing a@
 
-  Head, Tail, sHead, sTail,
   (:++), (%:++),
-  Reverse, sReverse
+  Head, Tail, sHead, sTail,
+  Map, sMap,
+  Reverse, sReverse,
+
+  -- * Defunctionalization symbols
+  (:$), (:$$),
+  ConsSym0, ConsSym1, NilSym0,
+
+  (:++$$), (:++$),
+  HeadSym0, TailSym0,
+  MapSym0, MapSym1,
+  ReverseSym0, Reverse_auxSym0, Reverse_auxSym1
   ) where
 
-import Data.Singletons.Instances
 import Data.Singletons
+import Data.Singletons.Instances
 import Data.Singletons.Singletons
 import Data.Singletons.TypeLits
 
@@ -60,6 +70,10 @@ $(singletonsOnly [d|
   tail (_ : t) = t
   tail []      = error "Data.Singletons.List.tail: empty list"
 
+  map :: (a -> b) -> [a] -> [b]
+  map _ [] = []
+  map f (x:xs) = f x : map f xs
+
   reverse :: [a] -> [a]
   reverse list = reverse_aux [] list
 
@@ -67,3 +81,7 @@ $(singletonsOnly [d|
   reverse_aux acc []      = acc
   reverse_aux acc (h : t) = reverse_aux (h : acc) t
   |])
+
+type ConsSym0 = (:$)
+type ConsSym1 = (:$$)
+type NilSym0  = '[]

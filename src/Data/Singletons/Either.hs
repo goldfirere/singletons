@@ -39,27 +39,37 @@ module Data.Singletons.Either (
   -- @type SEither (a :: Either x y) = Sing a@
 
   -- * Singletons from @Data.Either@
-  Either_, sEither_,
+  either_, Either_, sEither_,
   -- | The preceding two definitions are derived from the function 'either' in
   -- @Data.Either@. The extra underscore is to avoid name clashes with the type
   -- 'Either'.
 
   Lefts, sLefts, Rights, sRights,
-  PartitionEithers, sPartitionEithers, IsLeft, sIsLeft, IsRight, sIsRight
+  PartitionEithers, sPartitionEithers, IsLeft, sIsLeft, IsRight, sIsRight,
+
+  -- * Defunctionalization symbols
+  LeftSym0, RightSym0,
+
+  Either_Sym0, Either_Sym1, Either_Sym2,
+  LeftsSym0, RightsSym0,
+  PartitionEithersSym0, PartitionEithers_auxSym0, PartitionEithers_auxSym1,
+  IsLeftSym0, IsRightSym0
   ) where
 
 import Data.Singletons.Instances
 import Data.Singletons.TH
 import Data.Singletons.List
 
-$(singletonsOnly [d|
+$(singletons [d|
   -- | Case analysis for the 'Either' type.
   -- If the value is @'Left' a@, apply the first function to @a@;
   -- if it is @'Right' b@, apply the second function to @b@.
   either_                  :: (a -> c) -> (b -> c) -> Either a b -> c
   either_ f _ (Left x)     =  f x
   either_ _ g (Right y)    =  g y
+ |])
 
+$(singletonsOnly [d|
   -- | Extracts from a list of 'Either' all the 'Left' elements
   -- All the 'Left' elements are extracted in order.
 

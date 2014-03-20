@@ -8,10 +8,14 @@ Singletons/Contains.hs:0:0: Splicing declarations
     contains :: forall a. Eq a => a -> [a] -> Bool
     contains _ GHC.Types.[] = False
     contains elt (h GHC.Types.: t) = ((elt == h) || (contains elt t))
-    type instance Contains z GHC.Types.[] = False
-    type instance Contains elt (GHC.Types.: h t) =
-        :|| (:== elt h) (Contains elt t)
     type family Contains (a :: a) (a :: [a]) :: Bool
+    type instance Contains z GHC.Types.[] = FalseSym0
+    type instance Contains elt (GHC.Types.: h t) =
+        Apply (Apply :||$ (Apply (Apply :==$ elt) h)) (Apply (Apply ContainsSym0 elt) t)
+    data ContainsSym1 (l :: a) (l :: TyFun [a] Bool)
+    data ContainsSym0 (k :: TyFun a (TyFun [a] Bool -> *))
+    type instance Apply (ContainsSym1 a) a = Contains a a
+    type instance Apply ContainsSym0 a = ContainsSym1 a
     sContains ::
       forall (t :: a) (t :: [a]). SEq (KProxy :: KProxy a) =>
       Sing t -> Sing t -> Sing (Contains t t)

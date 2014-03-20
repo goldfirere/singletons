@@ -25,10 +25,20 @@ tests =
     , compileAndDumpStdTest "DataValues"
     , compileAndDumpStdTest "EqInstances"
     , compileAndDumpStdTest "Star"
+    , compileAndDumpStdTest "Tuples"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "PatternMatching"
-    , compileAndDumpStdTest "NumArgs" -- remove once we have eta-expansion
+    , compileAndDumpStdTest "NumArgs"
+    , compileAndDumpStdTest "Error"
+    , compileAndDumpStdTest "Constructors"
+    , compileAndDumpStdTest "Lambdas"
+    , compileAndDumpStdTest "LambdasComprehensive"
+    , compileAndDumpStdTest "GenDefunSymbols"
+    , compileAndDumpStdTest "Newtypes"
+    , compileAndDumpStdTest "CaseExpressions"
+    , compileAndDumpStdTest "LambdaCase"
+    , compileAndDumpStdTest "TopLevelPatterns"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts

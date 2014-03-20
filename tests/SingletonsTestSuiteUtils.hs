@@ -7,16 +7,16 @@ module SingletonsTestSuiteUtils (
  , singletonsVersion
  ) where
 
-import Control.Exception  ( Exception, throw                           )
-import Data.List          ( intercalate                                )
-import Data.Typeable      ( Typeable                                   )
-import System.Exit        ( ExitCode(..)                               )
-import System.FilePath    ( takeBaseName, pathSeparator                )
-import System.IO          ( IOMode(..), hGetContents, openFile         )
+import Control.Exception  ( Exception, throw                    )
+import Data.List          ( intercalate                         )
+import Data.Typeable      ( Typeable                            )
+import System.Exit        ( ExitCode(..)                        )
+import System.FilePath    ( takeBaseName, pathSeparator         )
+import System.IO          ( IOMode(..), hGetContents, openFile  )
 import System.Process     ( CreateProcess(..), StdStream(..)
-                          , createProcess, proc, waitForProcess        )
-import Test.Tasty         ( TestTree, testGroup                        )
-import Test.Tasty.Golden  ( goldenVsFileDiff                           )
+                          , createProcess, proc, waitForProcess )
+import Test.Tasty         ( TestTree, testGroup                 )
+import Test.Tasty.Golden  ( goldenVsFileDiff                    )
 
 import Distribution.PackageDescription.Parse         ( readPackageDescription    )
 import Distribution.PackageDescription.Configuration ( flattenPackageDescription )
@@ -94,6 +94,7 @@ ghcOpts = [
   , "-XFlexibleContexts"
   , "-XIncoherentInstances"
   , "-XCPP"
+  , "-XLambdaCase"
   ]
 
 -- Note [-package-name hack]
@@ -160,8 +161,7 @@ testCompileAndDumpGroup testDir tests =
 
 -- Note [Ignore exit code]
 -- ~~~~~~~~~~~~~~~~~~~~~~~
---
--- It may happen that compilation of a source file fails. We could find out
+---- It may happen that compilation of a source file fails. We could find out
 -- whether that happened by inspecting the exit code of GHC process. But it
 -- would be tricky to get a helpful message from the failing test: we would need
 -- to display stderr which we just wrote into a file. Luckliy we don't have to

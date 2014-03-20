@@ -46,7 +46,13 @@ module Data.Singletons.Bool (
 
   -- | The following are derived from the function 'bool' in @Data.Bool@. The extra
   -- underscore is to avoid name clashes with the type 'Bool'.
-  Bool_, sBool_, Otherwise, sOtherwise
+  Bool_, sBool_, Otherwise, sOtherwise,
+
+  -- * Defunctionalization symbols
+  TrueSym0, FalseSym0,
+
+  NotSym0, (:&&$), (:&&$$), (:||$), (:||$$),
+  Bool_Sym0, Bool_Sym1, Bool_Sym2, OtherwiseSym0
   ) where
 
 import Data.Singletons
@@ -64,9 +70,19 @@ type a :|| b = a || b
 SFalse %:&& _ = SFalse
 STrue  %:&& a = a
 
+data (:&&$$) (a :: Bool) (b :: TyFun Bool Bool)
+data (:&&$)  (a :: TyFun Bool (TyFun Bool Bool -> *))
+type instance Apply ((:&&$$) a) b = a :&& b
+type instance Apply (:&&$)      a = (:&&$$) a
+
 (%:||) :: SBool a -> SBool b -> SBool (a :|| b)
 SFalse %:|| a = a
 STrue  %:|| _ = STrue
+
+data (:||$$) (a :: Bool) (b :: TyFun Bool Bool)
+data (:||$)  (a :: TyFun Bool (TyFun Bool Bool -> *))
+type instance Apply ((:||$$) a) b = a :|| b
+type instance Apply (:||$)      a = (:||$$) a
 
 #else
 
@@ -85,6 +101,9 @@ $(singletonsOnly [d|
 sNot :: SBool a -> SBool (Not a)
 sNot SFalse = STrue
 sNot STrue  = SFalse
+
+data NotSym0 (t :: TyFun Bool Bool)
+type instance Apply NotSym0 a = Not a
 
 -- | Conditional over singletons
 sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)

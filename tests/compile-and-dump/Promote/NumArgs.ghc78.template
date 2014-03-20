@@ -1,10 +1,28 @@
 Promote/NumArgs.hs:0:0: Splicing declarations
     promote
       [d| returnFunc :: Nat -> Nat -> Nat
-          returnFunc _ = Succ |]
+          returnFunc _ = Succ
+          id :: a -> a
+          id x = x
+          idFoo :: c -> a -> a
+          idFoo _ = id |]
   ======>
     Promote/NumArgs.hs:(0,0)-(0,0)
     returnFunc :: Nat -> Nat -> Nat
     returnFunc _ = Succ
-    type family ReturnFunc (a :: Nat) :: Nat -> Nat where
-         ReturnFunc z = Succ
+    id :: forall a. a -> a
+    id x = x
+    idFoo :: forall c a. c -> a -> a
+    idFoo _ = id
+    type family ReturnFunc (a :: Nat) :: TyFun Nat Nat -> * where
+         ReturnFunc z = SuccSym0
+    data ReturnFuncSym0 (k :: TyFun Nat (TyFun Nat Nat -> *))
+    type instance Apply ReturnFuncSym0 a = ReturnFunc a
+    type family Id (a :: a) :: a where
+      Id x = x
+    data IdSym0 (k :: TyFun a a)
+    type instance Apply IdSym0 a = Id a
+    type family IdFoo (a :: c) :: TyFun a a -> * where
+      IdFoo z = IdSym0
+    data IdFooSym0 (k :: TyFun c (TyFun a a -> *))
+    type instance Apply IdFooSym0 a = IdFoo a

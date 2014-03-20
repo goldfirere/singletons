@@ -50,7 +50,7 @@ basicTypes = [ ''Bool
              , ''(,,,,,,)
              ]
 
--- like newName, but even more unique (unique across different splices)
+-- Like newName, but even more unique (unique across different splices)
 -- TH doesn't allow "newName"s to work at the top-level, so we have to
 -- do this trick to ensure the Extract functions are unique
 newUniqueName :: Quasi q => String -> q Name
@@ -110,12 +110,20 @@ isUpcase n = let first = head (nameBase n) in isUpper first || first == ':'
 
 -- make an identifier uppercase
 upcase :: Name -> Name
-upcase n =
-  let str = nameBase n
-      first = head str in
-    if isLetter first
-     then mkName ((toUpper first) : tail str)
-     else mkName (':' : str)
+upcase = mkName . toUpcaseStr
+
+-- make an identifier uppercase and return it as a String
+toUpcaseStr :: Name -> String
+toUpcaseStr n
+  | isUpcase n
+  = nameBase n
+
+  | otherwise
+  = let str   = nameBase n
+        first = head str
+    in if isLetter first
+       then (toUpper first) : tail str
+       else ':' : str
 
 -- make an identifier lowercase
 locase :: Name -> Name
@@ -165,6 +173,12 @@ foldExp = foldl AppE
 isVarK :: Kind -> Bool
 isVarK (VarT _) = True
 isVarK _ = False
+
+-- is a function type?
+isFunTy :: Type -> Bool
+isFunTy (AppT (AppT ArrowT _) _) = True
+isFunTy (ForallT _ _ _)          = True
+isFunTy _                        = False
 
 -- tuple up a list of expressions
 mkTupleExp :: [Exp] -> Exp

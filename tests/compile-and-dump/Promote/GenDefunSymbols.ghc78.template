@@ -1,0 +1,13 @@
+Promote/GenDefunSymbols.hs:0:0: Splicing declarations
+    genDefunSymbols [''LiftMaybe, ''Nat]
+  ======>
+    Promote/GenDefunSymbols.hs:0:0:
+    data LiftMaybeSym1 (l :: TyFun a b -> *)
+                       (l :: TyFun (Maybe a) (Maybe b))
+    data LiftMaybeSym0 (k :: TyFun (TyFun a b
+                                    -> *) (TyFun (Maybe a) (Maybe b) -> *))
+    type instance Apply (LiftMaybeSym1 a) a = LiftMaybe a a
+    type instance Apply LiftMaybeSym0 a = LiftMaybeSym1 a
+    type ZeroSym0 = Zero
+    data SuccSym0 (k :: TyFun Nat Nat)
+    type instance Apply SuccSym0 a = Succ a

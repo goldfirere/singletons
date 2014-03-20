@@ -1,0 +1,38 @@
+Promote/Constructors.hs:0:0: Splicing declarations
+    promote
+      [d| data Foo = Foo | Foo :+ Foo
+          data Bar = Bar Bar Bar Bar Bar Foo |]
+  ======>
+    Promote/Constructors.hs:(0,0)-(0,0)
+    data Foo = Foo | Foo :+ Foo
+    data Bar = Bar Bar Bar Bar Bar Foo
+    type FooSym0 = Foo
+    data (:+$$) (l :: Foo) (l :: TyFun Foo Foo)
+    data (:+$) (k :: TyFun Foo (TyFun Foo Foo -> *))
+    type instance Apply ((:+$$) a) a = (:+) a a
+    type instance Apply (:+$) a = (:+$$) a
+    data BarSym4 (l :: Bar)
+                 (l :: Bar)
+                 (l :: Bar)
+                 (l :: Bar)
+                 (l :: TyFun Foo Bar)
+    data BarSym3 (l :: Bar)
+                 (l :: Bar)
+                 (l :: Bar)
+                 (l :: TyFun Bar (TyFun Foo Bar -> *))
+    data BarSym2 (l :: Bar)
+                 (l :: Bar)
+                 (l :: TyFun Bar (TyFun Bar (TyFun Foo Bar -> *) -> *))
+    data BarSym1 (l :: Bar)
+                 (l :: TyFun Bar (TyFun Bar (TyFun Bar (TyFun Foo Bar -> *) -> *)
+                                  -> *))
+    data BarSym0 (k :: TyFun Bar (TyFun Bar (TyFun Bar (TyFun Bar (TyFun Foo Bar
+                                                                   -> *)
+                                                        -> *)
+                                             -> *)
+                                  -> *))
+    type instance Apply (BarSym4 a a a a) a = Bar a a a a a
+    type instance Apply (BarSym3 a a a) a = BarSym4 a a a a
+    type instance Apply (BarSym2 a a) a = BarSym3 a a a
+    type instance Apply (BarSym1 a) a = BarSym2 a a
+    type instance Apply BarSym0 a = BarSym1 a

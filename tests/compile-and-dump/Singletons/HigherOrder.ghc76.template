@@ -5,7 +5,14 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
           map f (h : t) = (f h) : (map f t)
           liftMaybe :: (a -> b) -> Maybe a -> Maybe b
           liftMaybe f (Just x) = Just (f x)
-          liftMaybe _ Nothing = Nothing |]
+          liftMaybe _ Nothing = Nothing
+          zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+          zipWith f (x : xs) (y : ys) = f x y : zipWith f xs ys
+          zipWith _ [] [] = []
+          zipWith _ (_ : _) [] = []
+          zipWith _ [] (_ : _) = []
+          foo :: ((a -> b) -> a -> b) -> (a -> b) -> a -> b
+          foo f g a = f g a |]
   ======>
     Singletons/HigherOrder.hs:(0,0)-(0,0)
     map :: forall a b. (a -> b) -> [a] -> [b]
@@ -14,20 +21,102 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
     liftMaybe :: forall a b. (a -> b) -> Maybe a -> Maybe b
     liftMaybe f (Just x) = Just (f x)
     liftMaybe _ Nothing = Nothing
+    zipWith :: forall a b c. (a -> b -> c) -> [a] -> [b] -> [c]
+    zipWith f (x GHC.Types.: xs) (y GHC.Types.: ys)
+      = ((f x y) GHC.Types.: (zipWith f xs ys))
+    zipWith _ GHC.Types.[] GHC.Types.[] = GHC.Types.[]
+    zipWith _ (_ GHC.Types.: _) GHC.Types.[] = GHC.Types.[]
+    zipWith _ GHC.Types.[] (_ GHC.Types.: _) = GHC.Types.[]
+    foo :: forall a b. ((a -> b) -> a -> b) -> (a -> b) -> a -> b
+    foo f g a = f g a
+    type family Map (a :: TyFun a b -> *) (a :: [a]) :: [b]
     type instance Map z GHC.Types.[] = GHC.Types.[]
-    type instance Map f (GHC.Types.: h t) = GHC.Types.: (f h) (Map f t)
-    type instance LiftMaybe f (Just x) = Just (f x)
-    type instance LiftMaybe z Nothing = Nothing
-    type family Map (a :: a -> b) (a :: [a]) :: [b]
-    type family LiftMaybe (a :: a -> b) (a :: Maybe a) :: Maybe b
+    type instance Map f (GHC.Types.: h t) =
+        Apply (Apply :$ (Apply f h)) (Apply (Apply MapSym0 f) t)
+    data MapSym1 (l :: TyFun a b -> *) (l :: TyFun [a] [b])
+    data MapSym0 (k :: TyFun (TyFun a b -> *) (TyFun [a] [b] -> *))
+    type instance Apply (MapSym1 a) a = Map a a
+    type instance Apply MapSym0 a = MapSym1 a
+    type family LiftMaybe (a :: TyFun a b -> *)
+                          (a :: Maybe a) :: Maybe b
+    type instance LiftMaybe f (Just x) = Apply JustSym0 (Apply f x)
+    type instance LiftMaybe z Nothing = NothingSym0
+    data LiftMaybeSym1 (l :: TyFun a b -> *)
+                       (l :: TyFun (Maybe a) (Maybe b))
+    data LiftMaybeSym0 (k :: TyFun (TyFun a b
+                                    -> *) (TyFun (Maybe a) (Maybe b) -> *))
+    type instance Apply (LiftMaybeSym1 a) a = LiftMaybe a a
+    type instance Apply LiftMaybeSym0 a = LiftMaybeSym1 a
+    type family ZipWith (a :: TyFun a (TyFun b c -> *) -> *)
+                        (a :: [a])
+                        (a :: [b]) :: [c]
+    type instance ZipWith f (GHC.Types.: x xs) (GHC.Types.: y ys) =
+        Apply (Apply :$ (Apply (Apply f x) y)) (Apply (Apply (Apply ZipWithSym0 f) xs) ys)
+    type instance ZipWith z GHC.Types.[] GHC.Types.[] = GHC.Types.[]
+    type instance ZipWith z (GHC.Types.: z z) GHC.Types.[] =
+        GHC.Types.[]
+    type instance ZipWith z GHC.Types.[] (GHC.Types.: z z) =
+        GHC.Types.[]
+    data ZipWithSym2 (l :: TyFun a (TyFun b c -> *) -> *)
+                     (l :: [a])
+                     (l :: TyFun [b] [c])
+    data ZipWithSym1 (l :: TyFun a (TyFun b c -> *) -> *)
+                     (l :: TyFun [a] (TyFun [b] [c] -> *))
+    data ZipWithSym0 (k :: TyFun (TyFun a (TyFun b c -> *)
+                                  -> *) (TyFun [a] (TyFun [b] [c] -> *) -> *))
+    type instance Apply (ZipWithSym2 a a) a = ZipWith a a a
+    type instance Apply (ZipWithSym1 a) a = ZipWithSym2 a a
+    type instance Apply ZipWithSym0 a = ZipWithSym1 a
+    type family Foo (a :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
+                    (a :: TyFun a b -> *)
+                    (a :: a) :: b
+    type instance Foo f g a = Apply (Apply f g) a
+    data FooSym2 (l :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
+                 (l :: TyFun a b -> *)
+                 (l :: TyFun a b)
+    data FooSym1 (l :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
+                 (l :: TyFun (TyFun a b -> *) (TyFun a b -> *))
+    data FooSym0 (k :: TyFun (TyFun (TyFun a b -> *) (TyFun a b -> *)
+                              -> *) (TyFun (TyFun a b -> *) (TyFun a b -> *) -> *))
+    type instance Apply (FooSym2 a a) a = Foo a a a
+    type instance Apply (FooSym1 a) a = FooSym2 a a
+    type instance Apply FooSym0 a = FooSym1 a
     sMap ::
-      forall (t :: a -> b) (t :: [a]).
-      (forall (t :: a). Sing t -> Sing (t t)) -> Sing t -> Sing (Map t t)
+      forall (t :: TyFun a b -> *) (t :: [a]).
+      (forall (t :: a).
+       Data.Singletons.Types.Proxy t -> Sing t -> Sing (Apply t t))
+      -> Sing t -> Sing (Map t t)
     sMap _ SNil = SNil
-    sMap f (SCons h t) = SCons (f h) (sMap f t)
+    sMap f (SCons h t)
+      = SCons (f Data.Singletons.Types.Proxy h) (sMap f t)
     sLiftMaybe ::
-      forall (t :: a -> b) (t :: Maybe a).
-      (forall (t :: a). Sing t -> Sing (t t))
+      forall (t :: TyFun a b -> *) (t :: Maybe a).
+      (forall (t :: a).
+       Data.Singletons.Types.Proxy t -> Sing t -> Sing (Apply t t))
       -> Sing t -> Sing (LiftMaybe t t)
-    sLiftMaybe f (SJust x) = SJust (f x)
+    sLiftMaybe f (SJust x) = SJust (f Data.Singletons.Types.Proxy x)
     sLiftMaybe _ SNothing = SNothing
+    sZipWith ::
+      forall (t :: TyFun a (TyFun b c -> *) -> *) (t :: [a]) (t :: [b]).
+      (forall (t :: a) (t :: b).
+       Data.Singletons.Types.Proxy t
+       -> Sing t -> Sing t -> Sing (Apply (Apply t t) t))
+      -> Sing t -> Sing t -> Sing (ZipWith t t t)
+    sZipWith f (SCons x xs) (SCons y ys)
+      = SCons (f Data.Singletons.Types.Proxy x y) (sZipWith f xs ys)
+    sZipWith _ SNil SNil = SNil
+    sZipWith _ (SCons _ _) SNil = SNil
+    sZipWith _ SNil (SCons _ _) = SNil
+    sFoo ::
+      forall (t :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
+             (t :: TyFun a b -> *)
+             (t :: a).
+      (forall (t :: TyFun a b -> *) (t :: a).
+       Data.Singletons.Types.Proxy t
+       -> (forall (t :: a).
+           Data.Singletons.Types.Proxy t -> Sing t -> Sing (Apply t t))
+          -> Sing t -> Sing (Apply (Apply t t) t))
+      -> (forall (t :: a).
+          Data.Singletons.Types.Proxy t -> Sing t -> Sing (Apply t t))
+         -> Sing t -> Sing (Foo t t t)
+    sFoo f g a = f Data.Singletons.Types.Proxy g a

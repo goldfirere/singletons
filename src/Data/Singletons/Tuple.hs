@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, DataKinds, PolyKinds,
-             RankNTypes, TypeFamilies, GADTs, CPP #-}
+             RankNTypes, TypeFamilies, GADTs, CPP, UndecidableInstances #-}
 
 #if __GLASGOW_HASKELL__ < 707
 {-# OPTIONS_GHC -fno-warn-name-shadowing #-}
@@ -28,11 +28,24 @@
 module Data.Singletons.Tuple (
   -- * Singleton definitions
   -- | See 'Data.Singletons.Prelude.Sing' for more info.
+
   Sing(STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7),
   STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
-
   -- * Singletons from @Data.Tuple@
-  Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry, Swap, sSwap
+  Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry, Swap, sSwap,
+
+  -- * Defunctionalization symbols
+  Tuple0Sym0,
+  Tuple2Sym0, Tuple2Sym1,
+  Tuple3Sym0, Tuple3Sym1, Tuple3Sym2,
+  Tuple4Sym0, Tuple4Sym1, Tuple4Sym2, Tuple4Sym3,
+  Tuple5Sym0, Tuple5Sym1, Tuple5Sym2, Tuple5Sym3, Tuple5Sym4,
+  Tuple6Sym0, Tuple6Sym1, Tuple6Sym2, Tuple6Sym3, Tuple6Sym4, Tuple6Sym5,
+  Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6,
+
+  FstSym0, SndSym0,
+  CurrySym0, CurrySym1, CurrySym2, UncurrySym0, UncurrySym1,
+  SwapSym0
   ) where
 
 import Data.Singletons.Instances
