@@ -13,7 +13,9 @@ Singletons/EqInstances.hs:0:0: Splicing declarations
       Equals_0123456789 (a :: Foo) (b :: Foo) = False
     type instance (==) (a :: Foo) (b :: Foo) = Equals_0123456789 a b
     instance SEq (KProxy :: KProxy Empty) where
-      (%:==) a _ = case a of { }
+      (%:==) a _
+        = case a of {
+            _ -> error "Empty case reached -- this should be impossible" }
     type family Equals_0123456789 (a :: Empty)
                                   (b :: Empty) :: Bool where
       Equals_0123456789 (a :: Empty) (b :: Empty) = False

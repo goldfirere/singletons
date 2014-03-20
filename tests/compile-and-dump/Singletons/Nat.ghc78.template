@@ -55,8 +55,14 @@ Singletons/Nat.hs:0:0: Splicing declarations
        (%:==) (SSucc a) (SSucc b) = (%:==) a b
      instance SDecide (KProxy :: KProxy Nat) where
        (%~) SZero SZero = Proved Refl
-       (%~) SZero (SSucc _) = Disproved (\case {})
-       (%~) (SSucc _) SZero = Disproved (\case {})
+       (%~) SZero (SSucc _)
+         = Disproved
+             (\case {
+                _ -> error "Empty case reached -- this should be impossible" })
+       (%~) (SSucc _) SZero
+         = Disproved
+             (\case {
+                _ -> error "Empty case reached -- this should be impossible" })
        (%~) (SSucc a) (SSucc b)
          = case (%~) a b of {
              Proved Refl -> Proved Refl

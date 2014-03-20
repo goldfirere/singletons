@@ -36,8 +36,14 @@ Singletons/Maybe.hs:0:0: Splicing declarations
     instance SDecide (KProxy :: KProxy a) =>
              SDecide (KProxy :: KProxy (Maybe a)) where
       (%~) SNothing SNothing = Proved Refl
-      (%~) SNothing (SJust _) = Disproved (\case {})
-      (%~) (SJust _) SNothing = Disproved (\case {})
+      (%~) SNothing (SJust _)
+        = Disproved
+            (\case {
+               _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SJust _) SNothing
+        = Disproved
+            (\case {
+               _ -> error "Empty case reached -- this should be impossible" })
       (%~) (SJust a) (SJust b)
         = case (%~) a b of {
             Proved Refl -> Proved Refl
