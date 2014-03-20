@@ -1,6 +1,8 @@
 singletons 0.10
 ===============
 
+[![Build Status](https://travis-ci.org/goldfirere/singletons.svg?branch=master)](https://travis-ci.org/goldfirere/singletons)
+
 This is the README file for the singletons library. This file contains all the
 documentation for the definitions and functions in the library.
 
@@ -37,6 +39,40 @@ is not necessarily limited to, the following:
 * `UndecidableInstances`
 * `FlexibleInstances`
 
+Modules
+-------
+
+`Data.Singletons` exports all the basic singletons definitions. Import this
+module if you are not using Template Haskell and wish only to define your
+own singletons.
+
+`Data.Singletons.TH` exports all the definitions needed to use the Template
+Haskell code to generate new singletons.
+
+`Data.Singletons.Prelude` re-exports `Data.Singletons` along with singleton
+definitions for various Prelude types. This module is intended to export
+those definitions that are exported by the real `Prelude`.
+
+There are several modules that echo standard modules. For example,
+`Data.Singletons.Maybe` exports singleton definitions for `Data.Maybe`.
+These modules are: `List` (many definitions are missing), `Bool`,
+`Maybe`, `Either`, `Tuple`.
+
+`Data.Singletons.Eq` and `Data.Singletons.Decide` export type classes for
+Boolean and propositional equality, respectively.
+
+`Data.Singletons.TypeLits` exports definitions for working with `GHC.TypeLits`.
+In GHC 7.6.3, `Data.Singletons.TypeLits` defines and exports `KnownNat` and
+`KnownSymbol`, which are part of `GHC.TypeLits` in GHC 7.8. This makes cross-version
+support a little easier.
+
+`Data.Singletons.Void` exports a `Void` type, shamelessly copied from
+Edward Kmett's `void` package, but without the great many package dependencies
+in `void`.
+
+`Data.Singletons.Types` exports a few type-level definitions that are in
+`base` for GHC 7.8, but not in GHC 7.6.3. By importing this package, users
+of both GHC versions can access these definitions.
 
 Functions to generate singletons
 --------------------------------

@@ -18,8 +18,6 @@ singletons for GHC.TypeLits. Some convenience functions are also provided.
 The extension `EmptyCase` is no longer needed. This caused pain when trying
 to support both GHC 7.6.3 and 7.8.
 
-
-
 0.9.3
 -----
 
