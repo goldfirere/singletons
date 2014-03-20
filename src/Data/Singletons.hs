@@ -1,5 +1,5 @@
 {-# LANGUAGE MagicHash, RankNTypes, PolyKinds, GADTs, DataKinds,
-             FlexibleContexts, CPP, TypeFamilies #-}
+             FlexibleContexts, CPP, TypeFamilies, TypeOperators #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -58,7 +58,6 @@ import Unsafe.Coerce
 import GHC.Exts ( Proxy# )
 import Data.Proxy
 #endif
-import Data.Singletons.Types
 
 -- | Convenient synonym to refer to the kind of a type variable:
 -- @type KindOf (a :: k) = ('KProxy :: KProxy k)@

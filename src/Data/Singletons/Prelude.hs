@@ -85,7 +85,7 @@ module Data.Singletons.Prelude (
   Head, Tail, (:++), (%:++),
 
   -- * Error reporting
-  Error, sError,
+  Error, ErrorSym0, sError,
 
   -- * Singleton equality
   module Data.Singletons.Eq,

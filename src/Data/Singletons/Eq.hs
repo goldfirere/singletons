@@ -25,12 +25,18 @@ import Data.Singletons
 import Data.Singletons.Singletons
 import Data.Singletons.Instances
 import Data.Singletons.Types
+import Data.Singletons.Util
 #if __GLASGOW_HASKELL__ < 707
 import Data.Singletons.Promote ( promoteEqInstances )
 #endif
 
 -- | A type synonym conforming to singletons naming conventions
 type a :/= b = Not (a :== b)
+
+data (:==$$) (a :: k1) (b :: TyFun k1 Bool)
+data (:==$) (a :: TyFun k1 (TyFun k1 Bool -> *))
+type instance Apply ((:==$$) a) b = a :== b
+type instance Apply (:==$)      a = (:==$$) a
 
 data (:/=$$) (a :: k1) (b :: TyFun k1 Bool)
 data (:/=$) (a :: TyFun k1 (TyFun k1 Bool -> *))

@@ -15,6 +15,7 @@ import Language.Haskell.TH hiding ( Q, cxt )
 import Language.Haskell.TH.Syntax ( falseName, trueName, Quasi(..) )
 import Data.Singletons.Util
 import Data.Singletons.Types
+import Data.Singletons
 import GHC.Exts (Any)
 import GHC.TypeLits (Symbol)
 import Prelude hiding (exp)
