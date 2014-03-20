@@ -59,7 +59,7 @@ library
                       Data.Singletons.Util,
                       Data.Singletons.Instances
 
-  ghc-options:        -Wall -Werror
+  ghc-options:        -Wall
 
 test-suite singletons-test-suite
   type:               exitcode-stdio-1.0
