@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP, RankNTypes, PolyKinds, DataKinds, TypeOperators,
-             TypeFamilies, FlexibleContexts, UndecidableInstances #-}
+             TypeFamilies, FlexibleContexts, UndecidableInstances, GADTs #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 -----------------------------------------------------------------------------
 -- |

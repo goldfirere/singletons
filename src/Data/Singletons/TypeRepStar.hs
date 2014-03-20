@@ -35,6 +35,7 @@ import Data.Singletons.Types
 import Data.Singletons.Eq
 import Data.Typeable
 import Unsafe.Coerce
+import Data.Singletons.Decide
 
 #if __GLASGOW_HASKELL__ >= 707
 import GHC.Exts ( Proxy# )

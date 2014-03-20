@@ -25,8 +25,6 @@ import Data.Singletons.Bool
 import Data.Singletons
 import Data.Singletons.Singletons
 import Data.Singletons.Instances
-import GHC.TypeLits ( Nat, Symbol )
-import Unsafe.Coerce   -- for TypeLits instances
 import Data.Singletons.Types
 #if __GLASGOW_HASKELL__ < 707
 import Data.Singletons.Promote ( promoteEqInstances )

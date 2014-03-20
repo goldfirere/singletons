@@ -50,7 +50,6 @@ module Data.Singletons (
   ) where
 
 import Unsafe.Coerce
-import GHC.TypeLits (Symbol)
 
 #if __GLASGOW_HASKELL__ >= 707
 import GHC.Exts ( Proxy# )

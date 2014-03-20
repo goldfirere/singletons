@@ -6,11 +6,11 @@ Singletons/Operators.hs:0:0: Splicing declarations
           + :: Nat -> Nat -> Nat
           Zero + m = m
           (Succ n) + m = Succ (n + m)
+
           data Foo
             where
               FLeaf :: Foo
               :+: :: Foo -> Foo -> Foo |]
-
   ======>
     Singletons/Operators.hs:(0,0)-(0,0)
     data Foo = FLeaf | (:+:) Foo Foo

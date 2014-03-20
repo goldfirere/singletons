@@ -20,7 +20,6 @@ import Data.Singletons.Decide
 import qualified Data.Map as Map
 import Control.Monad
 import Control.Applicative
-import Data.Singletons.Types
 
 -- map to track bound variables
 type ExpTable = Map.Map Name Exp

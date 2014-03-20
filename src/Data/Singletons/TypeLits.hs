@@ -13,11 +13,18 @@
 
 {-# LANGUAGE CPP, PolyKinds, DataKinds, TypeFamilies, FlexibleInstances,
              UndecidableInstances, ScopedTypeVariables, RankNTypes,
-             GADTs #-}
+             GADTs, FlexibleContexts #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
+#if __GLASGOW_HASKELL__ < 707
+{-# OPTIONS_GHC -O0 #-}   -- don't optimize SDecide instances in 7.6!
+#endif
 
 module Data.Singletons.TypeLits (
+  Nat, Symbol,
   SNat, SSymbol, withKnownNat, withKnownSymbol,
-  Error, sError
+  Error, sError,
+  KnownNat, natVal, KnownSymbol, symbolVal
   ) where
 
 import Data.Singletons
@@ -29,7 +36,7 @@ import Data.Singletons.Bool
 import GHC.TypeLits
 #else
 import GHC.TypeLits (Nat, Symbol)
-import qualified GHC.TypeLits as TypeLits
+import qualified GHC.TypeLits as TL
 #endif
 import Unsafe.Coerce
 
@@ -39,12 +46,10 @@ import Unsafe.Coerce
 
 #if __GLASGOW_HASKELL__ >= 707
 data instance Sing (n :: Nat) = KnownNat n => SNat
+
 instance KnownNat n => SingI n where
   sing = SNat
-#else
-instance TypeLits.SingRep n Integer => SingI (n :: Nat) where
-  sing = SNat (TypeLits.fromSing (TypeLits.sing :: TypeLits.Sing n))
-#endif
+
 instance SingKind ('KProxy :: KProxy Nat) where
   type DemoteRep ('KProxy :: KProxy Nat) = Integer
   fromSing (SNat :: Sing n) = natVal (Proxy :: Proxy n)
@@ -52,21 +57,77 @@ instance SingKind ('KProxy :: KProxy Nat) where
                Just (SomeNat (_ :: Proxy n)) -> SomeSing (SNat :: Sing n)
                Nothing -> error "Negative singleton nat"
 
-#if __GLASGOW_HASKELL__ >= 707
 data instance Sing (n :: Symbol) = KnownSymbol n => SSym
+
 instance KnownSymbol n => SingI n where
   sing = SSym
-#else
-instance TypeLits.SingRep n String => SingI (n :: Symbol) where
-  sing = SSym (TypeLits.fromSing (TypeLits.sing :: TypeLits.Sing n))
-#endif
+
 instance SingKind ('KProxy :: KProxy Symbol) where
   type DemoteRep ('KProxy :: KProxy Symbol) = String
   fromSing (SSym :: Sing n) = symbolVal (Proxy :: Proxy n)
   toSing s = case someSymbolVal s of
                SomeSymbol (_ :: Proxy n) -> SomeSing (SSym :: Sing n)
+                  
+#else
 
--- We need SDecide instances for the TypeLits singletons
+data TLSingInstance (a :: k) where
+  TLSingInstance :: TL.SingI a => TLSingInstance a
+
+newtype DI a = Don'tInstantiate (TL.SingI a => TLSingInstance a)
+
+tlSingInstance :: forall (a :: k). TL.Sing a -> TLSingInstance a
+tlSingInstance s = with_sing_i TLSingInstance
+  where
+    with_sing_i :: (TL.SingI a => TLSingInstance a) -> TLSingInstance a
+    with_sing_i si = unsafeCoerce (Don'tInstantiate si) s
+
+withTLSingI :: TL.Sing n -> (TL.SingI n => r) -> r
+withTLSingI sn r =
+  case tlSingInstance sn of
+    TLSingInstance -> r
+
+data instance Sing (n :: Nat) = TL.SingRep n Integer => SNat
+
+instance TL.SingRep n Integer => SingI (n :: Nat) where 
+  sing = SNat
+
+instance SingKind ('KProxy :: KProxy Nat) where
+  type DemoteRep ('KProxy :: KProxy Nat) = Integer
+  fromSing (SNat :: Sing n) = TL.fromSing (TL.sing :: TL.Sing n)
+  toSing n
+    | n >= 0 = case TL.unsafeSingNat n of
+                 (tlsing :: TL.Sing n) ->
+                   withTLSingI tlsing (SomeSing (SNat :: Sing n))
+    | otherwise = error "Negative singleton nat"
+
+data instance Sing (n :: Symbol) = TL.SingRep n String => SSym
+
+instance TL.SingRep n String => SingI (n :: Symbol) where
+  sing = SSym
+
+instance SingKind ('KProxy :: KProxy Symbol) where
+  type DemoteRep ('KProxy :: KProxy Symbol) = String
+  fromSing (SSym :: Sing n) = TL.fromSing (TL.sing :: TL.Sing n)
+  toSing n = case TL.unsafeSingSymbol n of
+               (tlsing :: TL.Sing n) ->
+                 withTLSingI tlsing (SomeSing (SSym :: Sing n))
+
+-- create 7.8-style TypeLits definitions:
+class KnownNat (n :: Nat) where
+  natVal :: proxy n -> Integer
+
+class KnownSymbol (n :: Symbol) where
+  symbolVal :: proxy n -> String
+
+instance TL.SingI n => KnownNat n where
+  natVal _ = TL.fromSing (TL.sing :: TL.Sing n)
+
+instance TL.SingI n => KnownSymbol n where
+  symbolVal _ = TL.fromSing (TL.sing :: TL.Sing n)
+
+#endif
+
+-- SDecide instances:
 instance SDecide ('KProxy :: KProxy Nat) where
   (SNat :: Sing n) %~ (SNat :: Sing m)
     | natVal (Proxy :: Proxy n) == natVal (Proxy :: Proxy m)
@@ -82,7 +143,7 @@ instance SDecide ('KProxy :: KProxy Symbol) where
     | otherwise
     = Disproved (\_ -> error errStr)
     where errStr = "Broken Symbol singletons"
-
+                  
 -- need SEq instances for TypeLits kinds
 instance SEq ('KProxy :: KProxy Nat) where
   a %:== b

@@ -22,8 +22,6 @@ module Data.Singletons.Types (
   Not, If, type (==), (:==)
   ) where
 
-import Data.Singletons.Void
-
 #if __GLASGOW_HASKELL__ < 707
 
 -- now in Data.Proxy

@@ -50,7 +50,7 @@ library
                       Data.Singletons.Eq,
                       Data.Singletons.Prelude,
                       Data.Singletons.Types,
-		      Data.Singletons.TypeLits,
+                      Data.Singletons.TypeLits,
                       Data.Singletons.Decide,
                       Data.Singletons.Void
 
