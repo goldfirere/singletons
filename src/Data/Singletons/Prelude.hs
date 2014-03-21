@@ -79,11 +79,10 @@ module Data.Singletons.Prelude (
   STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
 
   -- * Functions working with 'Bool'
-  If, sIf, Not, sNot, (:&&), (:||), (%:&&), (%:||),
+  If, sIf, Not, sNot, (:&&), (:||), (%:&&), (%:||), Otherwise, sOtherwise,
 
   -- * Functions working with lists
-  Head, sHead, Tail, sTail, (:++), (%:++),
-  Map, sMap,
+  Head, sHead, Tail, sTail, (:++), (%:++), Reverse, sReverse, Map, sMap,
 
   -- * Error reporting
   Error, ErrorSym0, sError,
@@ -113,27 +112,13 @@ module Data.Singletons.Prelude (
   Tuple6Sym0, Tuple6Sym1, Tuple6Sym2, Tuple6Sym3, Tuple6Sym4, Tuple6Sym5,
   Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6,
 
-  NotSym0, (:&&$), (:||$), (:&&$$), (:||$$),
-  Bool_Sym0, Bool_Sym1, Bool_Sym2, OtherwiseSym0,
+  NotSym0, (:&&$), (:&&$$), (:||$), (:||$$), OtherwiseSym0,
 
-  (:++$$), (:++$),
-  HeadSym0, TailSym0,
-  MapSym0, MapSym1,
-  ReverseSym0, Reverse_auxSym0, Reverse_auxSym1,
+  HeadSym0, TailSym0, (:++$), (:++$$), ReverseSym0, MapSym0, MapSym1,
 
   Maybe_Sym0, Maybe_Sym1, Maybe_Sym2,
-  IsJustSym0, IsNothingSym0, FromJustSym0,
-  FromMaybeSym0, FromMaybeSym1, MaybeToListSym0, ListToMaybeSym0,
-  CatMaybesSym0, MapMaybeSym0, MapMaybeSym1,
-
   Either_Sym0, Either_Sym1, Either_Sym2,
-  LeftsSym0, RightsSym0,
-  PartitionEithersSym0, PartitionEithers_auxSym0, PartitionEithers_auxSym1,
-  IsLeftSym0, IsRightSym0,
-
-  FstSym0, SndSym0,
-  CurrySym0, CurrySym1, CurrySym2, UncurrySym0, UncurrySym1,
-  SwapSym0
+  FstSym0, SndSym0, CurrySym0, CurrySym1, CurrySym2, UncurrySym0, UncurrySym1
   ) where
 
 import Data.Singletons
