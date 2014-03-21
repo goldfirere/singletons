@@ -104,6 +104,9 @@ extractNameArgs = ctor1Case (\name tys -> (name, length tys))
 reinterpret :: Name -> Name
 reinterpret = mkName . nameBase
 
+catNames :: Name -> Name -> Name
+catNames n1 n2 = mkName (nameBase n1 ++ nameBase n2)
+
 -- is an identifier uppercase?
 isUpcase :: Name -> Bool
 isUpcase n = let first = head (nameBase n) in isUpper first || first == ':'

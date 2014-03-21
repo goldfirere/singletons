@@ -20,6 +20,8 @@ $(promote [d|
   not True  = False
   not False = True
 
+  false_ = False
+
   f,g :: Bool -> Bool
   [f,g] = [not, id]
 

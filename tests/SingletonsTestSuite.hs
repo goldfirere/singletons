@@ -41,6 +41,7 @@ tests =
     , compileAndDumpStdTest "CaseExpressions"
     , compileAndDumpStdTest "LambdaCase"
     , compileAndDumpStdTest "TopLevelPatterns"
+    , compileAndDumpStdTest "LetStatements"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts
@@ -50,4 +51,3 @@ tests =
     [ compileAndDumpStdTest "InsertionSortImp"
     ]
   ]
-

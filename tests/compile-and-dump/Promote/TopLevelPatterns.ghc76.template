@@ -21,6 +21,7 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
           not :: Bool -> Bool
           not True = False
           not False = True
+          false_ = False
           f, g :: Bool -> Bool
           [f, g] = [not, id]
           h, i :: Bool -> Bool
@@ -38,6 +39,7 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     not :: Bool -> Bool
     not True = False
     not False = True
+    false_ = False
     f :: Bool -> Bool
     g :: Bool -> Bool
     [f, g] = [not, id]
@@ -52,6 +54,8 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     [l, m] = [not True, id False]
     type Otherwise = TrueSym0
     type OtherwiseSym0 = Otherwise
+    type False_ = FalseSym0
+    type False_Sym0 = False_
     type F = Head '[NotSym0, IdSym0]
     type FSym0 = F
     type G = Head (Tail '[NotSym0, IdSym0])

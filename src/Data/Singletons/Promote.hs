@@ -79,7 +79,7 @@ promoteInfo (ClassI _dec _instances) =
   fail "Promotion of class info not supported"
 promoteInfo (ClassOpI _name _ty _className _fixity) =
   fail "Promotion of class members info not supported"
-promoteInfo (TyConI dec) = evalWithoutAux $ promoteDec Map.empty dec
+promoteInfo (TyConI dec) = evalWithoutAux $ promoteDec Map.empty Map.empty dec
 promoteInfo (FamilyI _dec _instances) =
   fail "Promotion of type family info not yet supported" -- KindFams
 promoteInfo (PrimTyConI _name _numArgs _unlifted) =
@@ -179,14 +179,14 @@ type TypeTable = Map.Map Name Type
 promote :: Quasi q => q [Dec] -> q [Dec]
 promote qdec = do
   decls <- qdec
-  promDecls <- promoteDecs decls
+  promDecls <- promoteDecs Map.empty decls
   return $ decls ++ promDecls
 
 -- | Promote each declaration, discarding the originals.
 promoteOnly :: Quasi q => q [Dec] -> q [Dec]
 promoteOnly qdec = do
   decls <- qdec
-  promDecls <- promoteDecs decls
+  promDecls <- promoteDecs Map.empty decls
   return promDecls
 
 -- | Generate defunctionalization symbols for existing type family
@@ -287,13 +287,13 @@ checkForRepInDecls decls =
 -- one argument and have return type of Bool -> Bool.
 
 -- Promote a list of declarations.
-promoteDecs :: Quasi q => [Dec] -> q [Dec]
-promoteDecs decls = do
+promoteDecs :: Quasi q => TypeTable -> [Dec] -> q [Dec]
+promoteDecs ctx decls = do
   checkForRepInDecls decls
   let vartbl = Map.empty
   -- See Note [Promoting declarations in two stages]
-  (newDecls, table) <- evalForPair $ mapM (promoteDec vartbl) decls
-  (declss, namess) <- mapAndUnzipM (promoteDec' table) decls
+  (newDecls, table) <- evalForPair $ mapM (promoteDec ctx vartbl) decls
+  (declss, namess) <- mapAndUnzipM (promoteDec' ctx table) decls
   let moreNewDecls = concat declss
       names = concat namess
       noTypeSigs = Set.toList $ Set.difference
@@ -432,68 +432,71 @@ a defunctionalized way. So, it all works out.
 
 ---------------------------------------------------------------------}
 
-promoteDec :: Quasi q => TypeTable -> Dec -> PromoteQ q [Dec]
-promoteDec vars (FunD name clauses) = do
+promoteDec :: Quasi q => TypeTable -> TypeTable -> Dec -> PromoteQ q [Dec]
+promoteDec ctx vars (FunD name clauses) = do
   let proName = promoteValNameLhs name
-      numArgs = getNumPats (head clauses) -- count the parameters
+      numArgs = Map.size ctx + getNumPats (head clauses) -- count the parameters
       -- Haskell requires all clauses to have the same number of parameters
   (eqns, instDecls) <- evalForPair $
-                       mapM (promoteClause vars proName) clauses
+                       mapM (promoteClause ctx vars proName) clauses
   addBinding name (numArgs, eqns) -- remember the number of parameters and the eqns
   return instDecls
   where getNumPats :: Clause -> Int
         getNumPats (Clause pats _ _) = length pats
-promoteDec vars (ValD pat body decs) = do
-  -- see also the comment for promoteTopLevelPat
-  when (length decs > 0)
-    (fail $ "Promotion of global variable with <<where>> clause " ++
-                "not yet supported")
-  (rhs, decls) <- evalForPair $ promoteBody vars body
-  (lhss, decls') <- evalForPair $ promoteTopLevelPat pat
-  -- just use "type" decls
-  mapM_ (flip addBinding (typeSynonymFlag, [])) (map lhsRawName lhss)
-    -- see Note [Why lhsToDecs works]
-  let lhsToDecs :: TopLevelLHS -> [Dec]
-      lhsToDecs (LHS unprom nm hole) =
-        [ TySynD nm [] (hole rhs)
-        , TySynD (promoteTySym unprom 0) [] (ConT nm) ]
-  return $ (concatMap lhsToDecs lhss) ++ decls ++ decls'
-promoteDec _vars (DataD cxt name tvbs ctors derivings) =
+promoteDec ctx vars (ValD pat body decs)
+  | Map.size ctx == 0 = do
+      -- see also the comment for promoteTopLevelPat
+      when (length decs > 0)
+               (fail $ "Promotion of global variable with <<where>> clause " ++
+                       "not yet supported")
+      (rhs, decls) <- evalForPair $ promoteBody vars body
+      (lhss, decls') <- evalForPair $ promoteTopLevelPat pat
+      -- just use "type" decls
+      mapM_ (flip addBinding (typeSynonymFlag, [])) (map lhsRawName lhss)
+      -- see Note [Why lhsToDecs works]
+      let lhsToDecs :: TopLevelLHS -> [Dec]
+          lhsToDecs (LHS unprom nm hole) =
+            [ TySynD nm [] (hole rhs)
+            , TySynD (promoteTySym unprom 0) [] (ConT nm) ]
+      return $ (concatMap lhsToDecs lhss) ++ decls ++ decls'
+  | VarP name <- pat = promoteDec ctx vars (FunD name [Clause [] body decs])
+  | otherwise = fail "Promotion of complex patterns in let declarations not supported."
+promoteDec _ctx _vars (DataD cxt name tvbs ctors derivings) =
   promoteDataD cxt name tvbs ctors derivings
-promoteDec _vars (NewtypeD _cxt _name _tvbs _ctor _derivings) =
+promoteDec _ctx _vars (NewtypeD _cxt _name _tvbs _ctor _derivings) =
 #if __GLASGOW_HASKELL__ >= 707
   promoteDataD _cxt _name _tvbs [_ctor] _derivings
 #else
   fail "Newtypes don't promote under GHC 7.6. Use <<data>> instead or upgrade GHC."
 #endif
-promoteDec _vars (TySynD _name _tvbs _ty) =
+promoteDec _ctx _vars (TySynD _name _tvbs _ty) =
   fail "Promotion of type synonym declaration not yet supported"
-promoteDec _vars (ClassD _cxt _name _tvbs _fundeps _decs) =
+promoteDec _ctx _vars (ClassD _cxt _name _tvbs _fundeps _decs) =
   fail "Promotion of class declaration not yet supported"
-promoteDec _vars (InstanceD _cxt _ty _decs) =
+promoteDec _ctx _vars (InstanceD _cxt _ty _decs) =
   fail "Promotion of instance declaration not yet supported"
-promoteDec _vars (SigD _name _ty) = return [] -- handle in promoteDec'
-promoteDec _vars (ForeignD _fgn) =
+promoteDec _ctx _vars (SigD _name _ty) = return [] -- handle in promoteDec'
+promoteDec _ctx _vars (ForeignD _fgn) =
   fail "Promotion of foreign function declaration not yet supported"
-promoteDec _vars (InfixD fixity name)
+promoteDec _ctx _vars (InfixD fixity name)
   | isUpcase name = return [] -- automatic: promoting a type or data ctor
   | otherwise     = return [InfixD fixity (promoteValNameLhs name)] -- value
-promoteDec _vars (PragmaD _prag) =
+promoteDec _ctx _vars (PragmaD _prag) =
   fail "Promotion of pragmas not yet supported"
-promoteDec _vars (FamilyD _flavour _name _tvbs _mkind) =
+promoteDec _ctx _vars (FamilyD _flavour _name _tvbs _mkind) =
   fail "Promotion of type and data families not yet supported"
-promoteDec _vars (DataInstD _cxt _name _tys _ctors _derivings) =
+promoteDec _ctx _vars (DataInstD _cxt _name _tys _ctors _derivings) =
   fail "Promotion of data instances not yet supported"
-promoteDec _vars (NewtypeInstD _cxt _name _tys _ctors _derivings) =
+promoteDec _ctx _vars (NewtypeInstD _cxt _name _tys _ctors _derivings) =
   fail "Promotion of newtype instances not yet supported"
 #if __GLASGOW_HASKELL__ >= 707
-promoteDec _vars (RoleAnnotD _name _roles) =
+promoteDec _ctx _vars (RoleAnnotD _name _roles) =
   return [] -- silently ignore role annotations, as they're harmless here
-promoteDec _vars (ClosedTypeFamilyD _name _tvs _mkind _eqns) =
+promoteDec _ctx _vars (ClosedTypeFamilyD _name _tvs _mkind _eqns) =
   fail "Promotion of closed type families not yet supported"
-promoteDec _vars (TySynInstD _name _eqn) =
+promoteDec _ctx _vars (TySynInstD _name _eqn) =
 #else
-promoteDec _vars (TySynInstD _name _lhs _rhs) =
+promoteDec _ctx _vars (TySynInstD _name _lhs _rhs) =
 #endif
   fail "Promotion of type synonym instances not yet supported"
 
@@ -563,14 +566,15 @@ buildDefunSymsDataD tyName tvbs ctors = do
 -- second pass through declarations to deal with type signatures
 -- returns the new declarations and the list of names that have been
 -- processed
-promoteDec' :: Quasi q => PromoteTable -> Dec -> q ([Dec], [Name])
-promoteDec' tab (SigD name ty) = case Map.lookup name tab of
+promoteDec' :: Quasi q => TypeTable -> PromoteTable -> Dec -> q ([Dec], [Name])
+promoteDec' ctx tab (SigD name ty) = case Map.lookup name tab of
   Nothing -> fail $ "Type declaration is missing its binding: " ++ (show name)
   Just (numArgs, eqns) ->
     -- if there are no args, then use a type synonym, not a type family
     -- in the type synonym case, we ignore the type signature
     if numArgs == typeSynonymFlag then return $ ([], [name]) else do
-      k <- promoteType ty
+      let ty' = ravel (Map.elems ctx ++ (unravel ty))
+      k <- promoteType ty'
       let proName = promoteValNameLhs name
           ks = unravel k
           (argKs, resultKs) = splitAt numArgs ks -- divide by uniformity
@@ -591,7 +595,7 @@ promoteDec' tab (SigD name ty) = case Map.lookup name tab of
                        (Just resultK)) :
               eqns ++ dataSyms ++ applyInstances, [name])
 #endif
-promoteDec' _ _ = return ([], [])
+promoteDec' _ _ _ = return ([], [])
 
 -- with cases when function has arity larger than 1. For example this
 -- body:
@@ -662,22 +666,22 @@ buildApplyInstances names = go names (length names - 1)
             return (def : defs)
 
 #if __GLASGOW_HASKELL__ >= 707
-promoteClause :: Quasi q => TypeTable -> Name -> Clause -> QWithDecs q TySynEqn
+promoteClause :: Quasi q => TypeTable -> TypeTable -> Name -> Clause -> QWithDecs q TySynEqn
 #else
-promoteClause :: Quasi q => TypeTable -> Name -> Clause -> QWithDecs q Dec
+promoteClause :: Quasi q => TypeTable -> TypeTable -> Name -> Clause -> QWithDecs q Dec
 #endif
-promoteClause vars _name (Clause pats body []) = do
+promoteClause ctx vars _name (Clause pats body []) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
   (types, vartbl) <- evalForPair $ mapM promotePat pats
-  let vars' = Map.union vartbl vars
+  let vars' = Map.union ctx (Map.union vartbl vars)
   ty <- promoteBody vars' body
 #if __GLASGOW_HASKELL__ >= 707
-  return $ TySynEqn types ty
+  return $ TySynEqn (Map.elems ctx ++ types) ty
 #else
-  return $ TySynInstD _name types ty
+  return $ TySynInstD _name (Map.elems ctx ++ types) ty
 #endif
-promoteClause _ _ (Clause _ _ (_:_)) =
+promoteClause _ _ _ (Clause _ _ (_:_)) =
   fail "A <<where>> clause in a function definition is not yet supported"
 
 #if __GLASGOW_HASKELL__ >= 707
@@ -949,8 +953,18 @@ promoteExp vars (CondE bexp texp fexp) = do
   return $ foldType ifTyFam tys
 promoteExp _vars (MultiIfE _alts) =
   fail "Promotion of multi-way if not yet supported"
-promoteExp _vars (LetE _decs _exp) =
-  fail "Promotion of let statements not yet supported"
+promoteExp vars (LetE decs exp) = do
+  letPrefix <- newUniqueName "Let"
+  let definedNames     = concatMap extractDefinedNames decs
+      nameMapping name = (name, catNames letPrefix name)
+      nameMap          = Map.fromList $ map nameMapping definedNames
+      renamer name     = Map.findWithDefault name name nameMap
+      ctxVars name     = foldExp name (map VarE $ Map.keys vars)
+      decs'            = map (renameInDec renamer . insertArgsFromCtxInDec ctxVars definedNames) decs
+      exp'             = renameInExp renamer . insertArgsFromCtxInExp ctxVars definedNames $ exp
+  pDecs <- promoteDecs vars decs'
+  mapM_ addElement pDecs
+  promoteExp vars exp'
 promoteExp vars (CaseE exp matches) = do
   caseTFName <- newUniqueName "Case"
   (exp', _)  <- evalForPair $ promoteExp vars exp
@@ -982,6 +996,170 @@ promoteExp _vars (RecConE _name _fields) =
   fail "Promotion of record construction not yet supported"
 promoteExp _vars (RecUpdE _exp _fields) =
   fail "Promotion of record updates not yet supported"
+
+insertArgsFromCtxInDec :: (Exp -> Exp) -> [Name] -> Dec -> Dec
+insertArgsFromCtxInDec f names (FunD name clauses) =
+    FunD name (map (insertArgsFromCtxInClause f names) clauses)
+insertArgsFromCtxInDec f names (ValD pat body decs) =
+    ValD pat
+         (insertArgsFromCtxInBody f names body)
+         (map (insertArgsFromCtxInDec f names) decs)
+insertArgsFromCtxInDec _ _ dec = dec
+
+renameInDec :: (Name -> Name) -> Dec -> Dec
+renameInDec f (FunD name clauses) =
+    FunD (f name) (map (renameInClause f) clauses)
+renameInDec f (ValD pat body decs) =
+    ValD (renameInPat f pat) (renameInBody f body) (map (renameInDec f) decs)
+renameInDec f (DataD cxt name tyvars ctors derivings) =
+    DataD cxt (f name) tyvars (map (renameInCtor f) ctors) derivings
+renameInDec f (NewtypeD cxt name tyvars ctor derivings) =
+    NewtypeD cxt (f name) tyvars (renameInCtor f ctor) derivings
+renameInDec f (SigD name ty) =
+    SigD (f name) ty
+renameInDec _ dec = dec
+
+insertArgsFromCtxInClause :: (Exp -> Exp) -> [Name] -> Clause -> Clause
+insertArgsFromCtxInClause f names (Clause pats body decs) =
+    Clause pats
+           (insertArgsFromCtxInBody f names body)
+           (map (insertArgsFromCtxInDec f names) decs)
+
+renameInClause :: (Name -> Name) -> Clause -> Clause
+renameInClause f (Clause pats body decs) =
+    Clause (map (renameInPat f) pats)
+           (renameInBody f body)
+           (map (renameInDec f) decs)
+
+renameInPat :: (Name -> Name) -> Pat -> Pat
+renameInPat f (VarP name) =
+    VarP (f name)
+renameInPat f (TupP pats) =
+    TupP (map (renameInPat f) pats)
+renameInPat f (ConP name pats) =
+    ConP name (map (renameInPat f) pats)
+renameInPat f (InfixP p1 name p2) =
+    InfixP (renameInPat f p1) name (renameInPat f p2)
+renameInPat f (TildeP pat) =
+    renameInPat f pat
+renameInPat f (ListP pats) =
+    ListP (map (renameInPat f) pats)
+renameInPat f (BangP pat) =
+    renameInPat f pat
+renameInPat f (SigP pat _) =
+    renameInPat f pat
+renameInPat _ pat = pat
+
+insertArgsFromCtxInBody :: (Exp -> Exp) -> [Name] -> Body -> Body
+insertArgsFromCtxInBody f names (NormalB exp)
+    = NormalB (insertArgsFromCtxInExp f names exp)
+insertArgsFromCtxInBody _ _ body = body
+
+renameInBody :: (Name -> Name) -> Body -> Body
+renameInBody f (NormalB exp) = NormalB (renameInExp f exp)
+renameInBody _ body = body -- guarded body. We don't promote that anyway, so
+                           -- let's just ignore it during renaming
+
+renameInCtor :: (Name -> Name) -> Con -> Con
+renameInCtor f (NormalC name types) =
+    NormalC (f name) types
+renameInCtor f (RecC name types) =
+    RecC (f name) types
+renameInCtor f (InfixC t1 name t2) =
+    InfixC t1 (f name) t2
+renameInCtor f (ForallC tyvars cxt ctor) =
+    ForallC tyvars cxt (renameInCtor f ctor)
+
+insertArgsFromCtxInExp :: (Exp -> Exp) -> [Name] -> Exp -> Exp
+insertArgsFromCtxInExp f names var@(VarE name) =
+    if name `elem` names
+    then f var
+    else var
+insertArgsFromCtxInExp f names (AppE exp1 exp2) =
+    AppE (insertArgsFromCtxInExp f names exp1)
+         (insertArgsFromCtxInExp f names exp2)
+insertArgsFromCtxInExp f names (InfixE mexp1 exp mexp2) =
+    InfixE (fmap (insertArgsFromCtxInExp f names) mexp1)
+           (insertArgsFromCtxInExp f names exp)
+           (fmap (insertArgsFromCtxInExp f names) mexp2)
+insertArgsFromCtxInExp f names (LamE pats exp) =
+    LamE pats (insertArgsFromCtxInExp f names exp)
+insertArgsFromCtxInExp f names (LamCaseE alts) =
+    LamCaseE (map (insertArgsFromCtxInMatch f names) alts)
+insertArgsFromCtxInExp f names (TupE exps) =
+    TupE (map (insertArgsFromCtxInExp f names) exps)
+insertArgsFromCtxInExp f names (CondE bexp texp fexp) =
+    CondE (insertArgsFromCtxInExp f names bexp)
+          (insertArgsFromCtxInExp f names texp)
+          (insertArgsFromCtxInExp f names fexp)
+insertArgsFromCtxInExp f names (LetE decs exp) =
+    LetE (map (insertArgsFromCtxInDec f names) decs)
+         (insertArgsFromCtxInExp f names exp)
+insertArgsFromCtxInExp f names (CaseE exp matches) =
+    CaseE (insertArgsFromCtxInExp f names exp)
+          (map (insertArgsFromCtxInMatch f names) matches)
+insertArgsFromCtxInExp f names (ListE exps) =
+    ListE (map (insertArgsFromCtxInExp f names) exps)
+insertArgsFromCtxInExp _ _ exp = exp
+
+renameInExp :: (Name -> Name) -> Exp -> Exp
+renameInExp f (VarE name) =
+    VarE (f name)
+renameInExp f (ConE name) =
+    ConE (f name)
+renameInExp f (AppE exp1 exp2) =
+    AppE (renameInExp f exp1) (renameInExp f exp2)
+renameInExp f (InfixE mexp1 exp mexp2) =
+    InfixE (fmap (renameInExp f) mexp1) (renameInExp f exp) (fmap (renameInExp f) mexp2)
+renameInExp f (LamE pats exp) =
+    LamE (map (renameInPat f) pats) (renameInExp f exp)
+renameInExp f (LamCaseE alts) =
+    LamCaseE (map (renameInMatch f) alts)
+renameInExp f (TupE exps) =
+    TupE (map (renameInExp f) exps)
+renameInExp f (CondE bexp texp fexp) =
+    CondE (renameInExp f bexp) (renameInExp f texp) (renameInExp f fexp)
+renameInExp f (LetE decs exp) =
+    LetE (map (renameInDec f) decs) (renameInExp f exp)
+renameInExp f (CaseE exp matches) =
+    CaseE (renameInExp f exp) (map (renameInMatch f) matches)
+renameInExp f (ListE exps) =
+    ListE (map (renameInExp f) exps)
+renameInExp _ exp = exp
+
+insertArgsFromCtxInMatch :: (Exp -> Exp) -> [Name] -> Match -> Match
+insertArgsFromCtxInMatch f names (Match pat body decs) =
+    Match pat
+          (insertArgsFromCtxInBody f names body)
+          (map (insertArgsFromCtxInDec f names) decs)
+
+renameInMatch :: (Name -> Name) -> Match -> Match
+renameInMatch f (Match pat body decs) =
+    Match (renameInPat f pat)
+          (renameInBody f body)
+          (map (renameInDec f) decs)
+
+extractDefinedNames :: Dec -> [Name]
+extractDefinedNames (FunD name _)           = [name]
+extractDefinedNames (ValD pat _ _)          = extractNamesFromPat pat
+extractDefinedNames (DataD    _ name _ _ _) = [name]
+extractDefinedNames (NewtypeD _ name _ _ _) = [name]
+extractDefinedNames _                       = [] -- ignore other things - they don't promote anyway
+
+-- I need to test scoping, ie. I need to make sure that all of the returned
+-- names are actually visible within whole let-statement. This function is
+-- written analogously to promoteTopLevelPattern, so all should be fine.
+extractNamesFromPat :: Pat -> [Name]
+extractNamesFromPat (VarP name)      = [name]
+extractNamesFromPat (TupP pats)      = concatMap extractNamesFromPat pats
+extractNamesFromPat (ConP _ pats)    = concatMap extractNamesFromPat pats
+extractNamesFromPat (InfixP p1 _ p2) = extractNamesFromPat p1 ++
+                                       extractNamesFromPat p2
+extractNamesFromPat (TildeP pat)     = extractNamesFromPat pat
+extractNamesFromPat (BangP pat)      = extractNamesFromPat pat
+extractNamesFromPat (ListP pats)     = concatMap extractNamesFromPat pats
+extractNamesFromPat (SigP pat _)     = extractNamesFromPat pat
+extractNamesFromPat _                = []
 
 promoteLit :: Monad m => Lit -> m Type
 promoteLit (IntegerL n)

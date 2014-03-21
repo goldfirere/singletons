@@ -7,6 +7,10 @@ import Data.Singletons.TH
 data Proxy a = Proxy
 
 $(promote [d|
+  -- nothing in scope
+  foo0 :: a -> b -> a
+  foo0 = (\x y -> x)
+
   -- eta-reduced function
   foo1 :: a -> b -> a
   foo1 x = (\_ -> x)

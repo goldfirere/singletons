@@ -211,7 +211,7 @@ singletonsOnly = (>>= singDecs False)
 -- first parameter says whether or not to include original decls
 singDecs :: Quasi q => Bool -> [Dec] -> q [Dec]
 singDecs originals decls = do
-  promDecls <- promoteDecs decls
+  promDecls <- promoteDecs Map.empty decls
   (newDecls, proxyTable) <- evalForPair $ mapM singDec decls
   newDecls' <- mapM (singDec' proxyTable) (concat newDecls)
   return $ (if originals then (decls ++) else id) $ promDecls ++ newDecls'
