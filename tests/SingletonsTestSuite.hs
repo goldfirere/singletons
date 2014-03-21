@@ -26,6 +26,8 @@ tests =
     , compileAndDumpStdTest "EqInstances"
     , compileAndDumpStdTest "Star"
     , compileAndDumpStdTest "Tuples"
+    , compileAndDumpStdTest "ReturnFunc"
+    , compileAndDumpStdTest "ZipWith"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "PatternMatching"
