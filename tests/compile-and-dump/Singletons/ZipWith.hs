@@ -5,7 +5,7 @@ import Data.Singletons.Prelude
 
 $(singletons [d|
   data Nat = Zero | Succ Nat
-              
+
   zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
   zipWith f (a:as) (b:bs) = f a b : zipWith f as bs
   zipWith _ []     []     = []
