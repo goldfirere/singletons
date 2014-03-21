@@ -82,7 +82,8 @@ module Data.Singletons.Prelude (
   If, sIf, Not, sNot, (:&&), (:||), (%:&&), (%:||),
 
   -- * Functions working with lists
-  Head, Tail, (:++), (%:++),
+  Head, sHead, Tail, sTail, (:++), (%:++),
+  Map, sMap,
 
   -- * Error reporting
   Error, ErrorSym0, sError,
