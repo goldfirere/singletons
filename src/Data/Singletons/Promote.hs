@@ -959,9 +959,11 @@ promoteExp vars (LetE decs exp) = do
       nameMapping name = (name, catNames letPrefix name)
       nameMap          = Map.fromList $ map nameMapping definedNames
       renamer name     = Map.findWithDefault name name nameMap
-      ctxVars name     = foldExp name (map VarE $ Map.keys vars)
-      decs'            = map (renameInDec renamer . insertArgsFromCtxInDec ctxVars definedNames) decs
-      exp'             = renameInExp renamer . insertArgsFromCtxInExp ctxVars definedNames $ exp
+      insCtxVars name  = if name `elem` definedNames
+                         then foldExp (VarE name) (map VarE $ Map.keys vars)
+                         else VarE name
+      decs'            = map (renameInDec renamer . insertArgsFromCtxInDec insCtxVars) decs
+      exp'             = renameInExp renamer . insertArgsFromCtxInExp insCtxVars $ exp
   pDecs <- promoteDecs vars decs'
   mapM_ addElement pDecs
   promoteExp vars exp'
@@ -997,14 +999,14 @@ promoteExp _vars (RecConE _name _fields) =
 promoteExp _vars (RecUpdE _exp _fields) =
   fail "Promotion of record updates not yet supported"
 
-insertArgsFromCtxInDec :: (Exp -> Exp) -> [Name] -> Dec -> Dec
-insertArgsFromCtxInDec f names (FunD name clauses) =
-    FunD name (map (insertArgsFromCtxInClause f names) clauses)
-insertArgsFromCtxInDec f names (ValD pat body decs) =
+insertArgsFromCtxInDec :: (Name -> Exp) -> Dec -> Dec
+insertArgsFromCtxInDec f (FunD name clauses) =
+    FunD name (map (insertArgsFromCtxInClause f) clauses)
+insertArgsFromCtxInDec f (ValD pat body decs) =
     ValD pat
-         (insertArgsFromCtxInBody f names body)
-         (map (insertArgsFromCtxInDec f names) decs)
-insertArgsFromCtxInDec _ _ dec = dec
+         (insertArgsFromCtxInBody f body)
+         (map (insertArgsFromCtxInDec f) decs)
+insertArgsFromCtxInDec _ dec = dec
 
 renameInDec :: (Name -> Name) -> Dec -> Dec
 renameInDec f (FunD name clauses) =
@@ -1019,11 +1021,11 @@ renameInDec f (SigD name ty) =
     SigD (f name) ty
 renameInDec _ dec = dec
 
-insertArgsFromCtxInClause :: (Exp -> Exp) -> [Name] -> Clause -> Clause
-insertArgsFromCtxInClause f names (Clause pats body decs) =
+insertArgsFromCtxInClause :: (Name -> Exp) -> Clause -> Clause
+insertArgsFromCtxInClause f (Clause pats body decs) =
     Clause pats
-           (insertArgsFromCtxInBody f names body)
-           (map (insertArgsFromCtxInDec f names) decs)
+           (insertArgsFromCtxInBody f body)
+           (map (insertArgsFromCtxInDec f) decs)
 
 renameInClause :: (Name -> Name) -> Clause -> Clause
 renameInClause f (Clause pats body decs) =
@@ -1050,10 +1052,10 @@ renameInPat f (SigP pat _) =
     renameInPat f pat
 renameInPat _ pat = pat
 
-insertArgsFromCtxInBody :: (Exp -> Exp) -> [Name] -> Body -> Body
-insertArgsFromCtxInBody f names (NormalB exp)
-    = NormalB (insertArgsFromCtxInExp f names exp)
-insertArgsFromCtxInBody _ _ body = body
+insertArgsFromCtxInBody :: (Name -> Exp) -> Body -> Body
+insertArgsFromCtxInBody f (NormalB exp)
+    = NormalB (insertArgsFromCtxInExp f exp)
+insertArgsFromCtxInBody _ body = body
 
 renameInBody :: (Name -> Name) -> Body -> Body
 renameInBody f (NormalB exp) = NormalB (renameInExp f exp)
@@ -1070,37 +1072,35 @@ renameInCtor f (InfixC t1 name t2) =
 renameInCtor f (ForallC tyvars cxt ctor) =
     ForallC tyvars cxt (renameInCtor f ctor)
 
-insertArgsFromCtxInExp :: (Exp -> Exp) -> [Name] -> Exp -> Exp
-insertArgsFromCtxInExp f names var@(VarE name) =
-    if name `elem` names
-    then f var
-    else var
-insertArgsFromCtxInExp f names (AppE exp1 exp2) =
-    AppE (insertArgsFromCtxInExp f names exp1)
-         (insertArgsFromCtxInExp f names exp2)
-insertArgsFromCtxInExp f names (InfixE mexp1 exp mexp2) =
-    InfixE (fmap (insertArgsFromCtxInExp f names) mexp1)
-           (insertArgsFromCtxInExp f names exp)
-           (fmap (insertArgsFromCtxInExp f names) mexp2)
-insertArgsFromCtxInExp f names (LamE pats exp) =
-    LamE pats (insertArgsFromCtxInExp f names exp)
-insertArgsFromCtxInExp f names (LamCaseE alts) =
-    LamCaseE (map (insertArgsFromCtxInMatch f names) alts)
-insertArgsFromCtxInExp f names (TupE exps) =
-    TupE (map (insertArgsFromCtxInExp f names) exps)
-insertArgsFromCtxInExp f names (CondE bexp texp fexp) =
-    CondE (insertArgsFromCtxInExp f names bexp)
-          (insertArgsFromCtxInExp f names texp)
-          (insertArgsFromCtxInExp f names fexp)
-insertArgsFromCtxInExp f names (LetE decs exp) =
-    LetE (map (insertArgsFromCtxInDec f names) decs)
-         (insertArgsFromCtxInExp f names exp)
-insertArgsFromCtxInExp f names (CaseE exp matches) =
-    CaseE (insertArgsFromCtxInExp f names exp)
-          (map (insertArgsFromCtxInMatch f names) matches)
-insertArgsFromCtxInExp f names (ListE exps) =
-    ListE (map (insertArgsFromCtxInExp f names) exps)
-insertArgsFromCtxInExp _ _ exp = exp
+insertArgsFromCtxInExp :: (Name -> Exp) -> Exp -> Exp
+insertArgsFromCtxInExp f (VarE name) =
+    f name
+insertArgsFromCtxInExp f (AppE exp1 exp2) =
+    AppE (insertArgsFromCtxInExp f exp1)
+         (insertArgsFromCtxInExp f exp2)
+insertArgsFromCtxInExp f (InfixE mexp1 exp mexp2) =
+    InfixE (fmap (insertArgsFromCtxInExp f) mexp1)
+           (insertArgsFromCtxInExp f exp)
+           (fmap (insertArgsFromCtxInExp f) mexp2)
+insertArgsFromCtxInExp f (LamE pats exp) =
+    LamE pats (insertArgsFromCtxInExp f exp)
+insertArgsFromCtxInExp f (LamCaseE alts) =
+    LamCaseE (map (insertArgsFromCtxInMatch f) alts)
+insertArgsFromCtxInExp f (TupE exps) =
+    TupE (map (insertArgsFromCtxInExp f) exps)
+insertArgsFromCtxInExp f (CondE bexp texp fexp) =
+    CondE (insertArgsFromCtxInExp f bexp)
+          (insertArgsFromCtxInExp f texp)
+          (insertArgsFromCtxInExp f fexp)
+insertArgsFromCtxInExp f (LetE decs exp) =
+    LetE (map (insertArgsFromCtxInDec f) decs)
+         (insertArgsFromCtxInExp f exp)
+insertArgsFromCtxInExp f (CaseE exp matches) =
+    CaseE (insertArgsFromCtxInExp f exp)
+          (map (insertArgsFromCtxInMatch f) matches)
+insertArgsFromCtxInExp f (ListE exps) =
+    ListE (map (insertArgsFromCtxInExp f) exps)
+insertArgsFromCtxInExp _ exp = exp
 
 renameInExp :: (Name -> Name) -> Exp -> Exp
 renameInExp f (VarE name) =
@@ -1127,11 +1127,11 @@ renameInExp f (ListE exps) =
     ListE (map (renameInExp f) exps)
 renameInExp _ exp = exp
 
-insertArgsFromCtxInMatch :: (Exp -> Exp) -> [Name] -> Match -> Match
-insertArgsFromCtxInMatch f names (Match pat body decs) =
+insertArgsFromCtxInMatch :: (Name -> Exp) -> Match -> Match
+insertArgsFromCtxInMatch f (Match pat body decs) =
     Match pat
-          (insertArgsFromCtxInBody f names body)
-          (map (insertArgsFromCtxInDec f names) decs)
+          (insertArgsFromCtxInBody f body)
+          (map (insertArgsFromCtxInDec f) decs)
 
 renameInMatch :: (Name -> Name) -> Match -> Match
 renameInMatch f (Match pat body decs) =
