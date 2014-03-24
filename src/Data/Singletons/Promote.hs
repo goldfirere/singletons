@@ -597,6 +597,13 @@ promoteDec' ctx tab (SigD name ty) = case Map.lookup name tab of
 #endif
 promoteDec' _ _ _ = return ([], [])
 
+-- Takes a name of a function together with its arity and
+-- converts all normal applications of that variable into usage of
+-- Apply type family. Returns a type and a Bool that says whether
+-- Apply was introduced or not. This extra flag is used when
+-- singletonizing type signature.
+
+-- The algorithm here is actually a bit tricky because it has to deal
 -- with cases when function has arity larger than 1. For example this
 -- body:
 --
