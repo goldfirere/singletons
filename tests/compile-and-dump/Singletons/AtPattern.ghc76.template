@@ -15,7 +15,7 @@ Singletons/AtPattern.hs:0:0: Splicing declarations
           foo p@[] = p
           foo p@[_] = p
           foo p@(_ : _) = p
-
+          
           data Baz = Baz Nat Nat Nat |]
   ======>
     Singletons/AtPattern.hs:(0,0)-(0,0)
@@ -35,6 +35,8 @@ Singletons/AtPattern.hs:0:0: Splicing declarations
     foo p@GHC.Types.[] = p
     foo p@[_] = p
     foo p@(_ GHC.Types.: _) = p
+    type BazTyCtor = Baz
+    type BazTyCtorSym0 = BazTyCtor
     data BazSym2 (l :: Nat) (l :: Nat) (l :: TyFun Nat Baz)
     data BazSym1 (l :: Nat) (l :: TyFun Nat (TyFun Nat Baz -> *))
     data BazSym0 (k :: TyFun Nat (TyFun Nat (TyFun Nat Baz -> *) -> *))
@@ -83,8 +85,8 @@ Singletons/AtPattern.hs:0:0: Splicing declarations
       fromSing (SBaz b b b) = Baz (fromSing b) (fromSing b) (fromSing b)
       toSing (Baz b b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy Nat),
-               toSing b :: SomeSing (KProxy :: KProxy Nat),
+              (toSing b :: SomeSing (KProxy :: KProxy Nat), 
+               toSing b :: SomeSing (KProxy :: KProxy Nat), 
                toSing b :: SomeSing (KProxy :: KProxy Nat))
           of {
             (SomeSing c, SomeSing c, SomeSing c) -> SomeSing (SBaz c c c) }

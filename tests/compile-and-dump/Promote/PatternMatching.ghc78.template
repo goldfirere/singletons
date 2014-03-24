@@ -17,6 +17,11 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
     complex = Pair (Pair (Just Zero) Zero) False
     tuple = (False, Just Zero, True)
     aList = [Zero, Succ Zero, Succ (Succ Zero)]
+    type PairTyCtor = Pair
+    data PairTyCtorSym1 (l :: *) (l :: TyFun * *)
+    data PairTyCtorSym0 (k :: TyFun * (TyFun * * -> *))
+    type instance Apply (PairTyCtorSym1 a) a = PairTyCtor a a
+    type instance Apply PairTyCtorSym0 a = PairTyCtorSym1 a
     data PairSym1 (l :: a) (l :: TyFun b (Pair a b))
     data PairSym0 (k :: TyFun a (TyFun b (Pair a b) -> *))
     type instance Apply (PairSym1 a) a = Pair a a

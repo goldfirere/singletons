@@ -3,6 +3,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
       [''(), ''(,), ''(,,), ''(,,,), ''(,,,,), ''(,,,,,), ''(,,,,,,)]
   ======>
     Singletons/Tuples.hs:(0,0)-(0,0)
+    type TupleTyCtor0 = GHC.Tuple.()
+    type TupleTyCtor0Sym0 = TupleTyCtor0
     type Tuple0Sym0 = GHC.Tuple.()
     data instance Sing (z :: GHC.Tuple.())
       = z ~ GHC.Tuple.() => STuple0
@@ -13,6 +15,11 @@ Singletons/Tuples.hs:0:0: Splicing declarations
       toSing GHC.Tuple.() = SomeSing STuple0
     instance SingI GHC.Tuple.() where
       sing = STuple0
+    type TupleTyCtor2 = GHC.Tuple.(,)
+    data TupleTyCtor2Sym1 (l :: *) (l :: TyFun * *)
+    data TupleTyCtor2Sym0 (k :: TyFun * (TyFun * * -> *))
+    type instance Apply (TupleTyCtor2Sym1 a) a = TupleTyCtor2 a a
+    type instance Apply TupleTyCtor2Sym0 a = TupleTyCtor2Sym1 a
     data Tuple2Sym1 (l :: a) (l :: TyFun b (GHC.Tuple.(,) a b))
     data Tuple2Sym0 (k :: TyFun a (TyFun b (GHC.Tuple.(,) a b) -> *))
     type instance Apply (Tuple2Sym1 a) a = GHC.Tuple.(,) a a
@@ -28,13 +35,21 @@ Singletons/Tuples.hs:0:0: Splicing declarations
       fromSing (STuple2 b b) = GHC.Tuple.(,) (fromSing b) (fromSing b)
       toSing (GHC.Tuple.(,) b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy a),
+              (toSing b :: SomeSing (KProxy :: KProxy a), 
                toSing b :: SomeSing (KProxy :: KProxy b))
           of {
             (SomeSing c, SomeSing c) -> SomeSing (STuple2 c c) }
     instance (SingI n, SingI n) =>
              SingI (GHC.Tuple.(,) (n :: a) (n :: b)) where
       sing = STuple2 sing sing
+    type TupleTyCtor3 = GHC.Tuple.(,,)
+    data TupleTyCtor3Sym2 (l :: *) (l :: *) (l :: TyFun * *)
+    data TupleTyCtor3Sym1 (l :: *) (l :: TyFun * (TyFun * * -> *))
+    data TupleTyCtor3Sym0 (k :: TyFun * (TyFun * (TyFun * * -> *)
+                                         -> *))
+    type instance Apply (TupleTyCtor3Sym2 a a) a = TupleTyCtor3 a a a
+    type instance Apply (TupleTyCtor3Sym1 a) a = TupleTyCtor3Sym2 a a
+    type instance Apply TupleTyCtor3Sym0 a = TupleTyCtor3Sym1 a
     data Tuple3Sym2 (l :: a)
                     (l :: b)
                     (l :: TyFun c (GHC.Tuple.(,,) a b c))
@@ -59,14 +74,29 @@ Singletons/Tuples.hs:0:0: Splicing declarations
         = GHC.Tuple.(,,) (fromSing b) (fromSing b) (fromSing b)
       toSing (GHC.Tuple.(,,) b b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy a),
-               toSing b :: SomeSing (KProxy :: KProxy b),
+              (toSing b :: SomeSing (KProxy :: KProxy a), 
+               toSing b :: SomeSing (KProxy :: KProxy b), 
                toSing b :: SomeSing (KProxy :: KProxy c))
           of {
             (SomeSing c, SomeSing c, SomeSing c) -> SomeSing (STuple3 c c c) }
     instance (SingI n, SingI n, SingI n) =>
              SingI (GHC.Tuple.(,,) (n :: a) (n :: b) (n :: c)) where
       sing = STuple3 sing sing sing
+    type TupleTyCtor4 = GHC.Tuple.(,,,)
+    data TupleTyCtor4Sym3 (l :: *) (l :: *) (l :: *) (l :: TyFun * *)
+    data TupleTyCtor4Sym2 (l :: *)
+                          (l :: *)
+                          (l :: TyFun * (TyFun * * -> *))
+    data TupleTyCtor4Sym1 (l :: *)
+                          (l :: TyFun * (TyFun * (TyFun * * -> *) -> *))
+    data TupleTyCtor4Sym0 (k :: TyFun * (TyFun * (TyFun * (TyFun * *
+                                                           -> *)
+                                                  -> *)
+                                         -> *))
+    type instance Apply (TupleTyCtor4Sym3 a a a) a = TupleTyCtor4 a a a a
+    type instance Apply (TupleTyCtor4Sym2 a a) a = TupleTyCtor4Sym3 a a a
+    type instance Apply (TupleTyCtor4Sym1 a) a = TupleTyCtor4Sym2 a a
+    type instance Apply TupleTyCtor4Sym0 a = TupleTyCtor4Sym1 a
     data Tuple4Sym3 (l :: a)
                     (l :: b)
                     (l :: c)
@@ -103,9 +133,9 @@ Singletons/Tuples.hs:0:0: Splicing declarations
             (fromSing b) (fromSing b) (fromSing b) (fromSing b)
       toSing (GHC.Tuple.(,,,) b b b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy a),
-               toSing b :: SomeSing (KProxy :: KProxy b),
-               toSing b :: SomeSing (KProxy :: KProxy c),
+              (toSing b :: SomeSing (KProxy :: KProxy a), 
+               toSing b :: SomeSing (KProxy :: KProxy b), 
+               toSing b :: SomeSing (KProxy :: KProxy c), 
                toSing b :: SomeSing (KProxy :: KProxy d))
           of {
             (SomeSing c, SomeSing c, SomeSing c, SomeSing c)
@@ -113,6 +143,31 @@ Singletons/Tuples.hs:0:0: Splicing declarations
     instance (SingI n, SingI n, SingI n, SingI n) =>
              SingI (GHC.Tuple.(,,,) (n :: a) (n :: b) (n :: c) (n :: d)) where
       sing = STuple4 sing sing sing sing
+    type TupleTyCtor5 = GHC.Tuple.(,,,,)
+    data TupleTyCtor5Sym4 (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: TyFun * *)
+    data TupleTyCtor5Sym3 (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: TyFun * (TyFun * * -> *))
+    data TupleTyCtor5Sym2 (l :: *)
+                          (l :: *)
+                          (l :: TyFun * (TyFun * (TyFun * * -> *) -> *))
+    data TupleTyCtor5Sym1 (l :: *)
+                          (l :: TyFun * (TyFun * (TyFun * (TyFun * * -> *) -> *) -> *))
+    data TupleTyCtor5Sym0 (k :: TyFun * (TyFun * (TyFun * (TyFun * (TyFun * *
+                                                                    -> *)
+                                                           -> *)
+                                                  -> *)
+                                         -> *))
+    type instance Apply (TupleTyCtor5Sym4 a a a a) a = TupleTyCtor5 a a a a a
+    type instance Apply (TupleTyCtor5Sym3 a a a) a = TupleTyCtor5Sym4 a a a a
+    type instance Apply (TupleTyCtor5Sym2 a a) a = TupleTyCtor5Sym3 a a a
+    type instance Apply (TupleTyCtor5Sym1 a) a = TupleTyCtor5Sym2 a a
+    type instance Apply TupleTyCtor5Sym0 a = TupleTyCtor5Sym1 a
     data Tuple5Sym4 (l :: a)
                     (l :: b)
                     (l :: c)
@@ -161,10 +216,10 @@ Singletons/Tuples.hs:0:0: Splicing declarations
             (fromSing b) (fromSing b) (fromSing b) (fromSing b) (fromSing b)
       toSing (GHC.Tuple.(,,,,) b b b b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy a),
-               toSing b :: SomeSing (KProxy :: KProxy b),
-               toSing b :: SomeSing (KProxy :: KProxy c),
-               toSing b :: SomeSing (KProxy :: KProxy d),
+              (toSing b :: SomeSing (KProxy :: KProxy a), 
+               toSing b :: SomeSing (KProxy :: KProxy b), 
+               toSing b :: SomeSing (KProxy :: KProxy c), 
+               toSing b :: SomeSing (KProxy :: KProxy d), 
                toSing b :: SomeSing (KProxy :: KProxy e))
           of {
             (SomeSing c, SomeSing c, SomeSing c, SomeSing c, SomeSing c)
@@ -172,6 +227,41 @@ Singletons/Tuples.hs:0:0: Splicing declarations
     instance (SingI n, SingI n, SingI n, SingI n, SingI n) =>
              SingI (GHC.Tuple.(,,,,) (n :: a) (n :: b) (n :: c) (n :: d) (n :: e)) where
       sing = STuple5 sing sing sing sing sing
+    type TupleTyCtor6 = GHC.Tuple.(,,,,,)
+    data TupleTyCtor6Sym5 (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: TyFun * *)
+    data TupleTyCtor6Sym4 (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: TyFun * (TyFun * * -> *))
+    data TupleTyCtor6Sym3 (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: TyFun * (TyFun * (TyFun * * -> *) -> *))
+    data TupleTyCtor6Sym2 (l :: *)
+                          (l :: *)
+                          (l :: TyFun * (TyFun * (TyFun * (TyFun * * -> *) -> *) -> *))
+    data TupleTyCtor6Sym1 (l :: *)
+                          (l :: TyFun * (TyFun * (TyFun * (TyFun * (TyFun * * -> *) -> *)
+                                                  -> *)
+                                         -> *))
+    data TupleTyCtor6Sym0 (k :: TyFun * (TyFun * (TyFun * (TyFun * (TyFun * (TyFun * *
+                                                                             -> *)
+                                                                    -> *)
+                                                           -> *)
+                                                  -> *)
+                                         -> *))
+    type instance Apply (TupleTyCtor6Sym5 a a a a a) a = TupleTyCtor6 a a a a a a
+    type instance Apply (TupleTyCtor6Sym4 a a a a) a = TupleTyCtor6Sym5 a a a a a
+    type instance Apply (TupleTyCtor6Sym3 a a a) a = TupleTyCtor6Sym4 a a a a
+    type instance Apply (TupleTyCtor6Sym2 a a) a = TupleTyCtor6Sym3 a a a
+    type instance Apply (TupleTyCtor6Sym1 a) a = TupleTyCtor6Sym2 a a
+    type instance Apply TupleTyCtor6Sym0 a = TupleTyCtor6Sym1 a
     data Tuple6Sym5 (l :: a)
                     (l :: b)
                     (l :: c)
@@ -240,11 +330,11 @@ Singletons/Tuples.hs:0:0: Splicing declarations
             (fromSing b)
       toSing (GHC.Tuple.(,,,,,) b b b b b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy a),
-               toSing b :: SomeSing (KProxy :: KProxy b),
-               toSing b :: SomeSing (KProxy :: KProxy c),
-               toSing b :: SomeSing (KProxy :: KProxy d),
-               toSing b :: SomeSing (KProxy :: KProxy e),
+              (toSing b :: SomeSing (KProxy :: KProxy a), 
+               toSing b :: SomeSing (KProxy :: KProxy b), 
+               toSing b :: SomeSing (KProxy :: KProxy c), 
+               toSing b :: SomeSing (KProxy :: KProxy d), 
+               toSing b :: SomeSing (KProxy :: KProxy e), 
                toSing b :: SomeSing (KProxy :: KProxy f))
           of {
             (SomeSing c,
@@ -257,6 +347,54 @@ Singletons/Tuples.hs:0:0: Splicing declarations
     instance (SingI n, SingI n, SingI n, SingI n, SingI n, SingI n) =>
              SingI (GHC.Tuple.(,,,,,) (n :: a) (n :: b) (n :: c) (n :: d) (n :: e) (n :: f)) where
       sing = STuple6 sing sing sing sing sing sing
+    type TupleTyCtor7 = GHC.Tuple.(,,,,,,)
+    data TupleTyCtor7Sym6 (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: TyFun * *)
+    data TupleTyCtor7Sym5 (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: TyFun * (TyFun * * -> *))
+    data TupleTyCtor7Sym4 (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: TyFun * (TyFun * (TyFun * * -> *) -> *))
+    data TupleTyCtor7Sym3 (l :: *)
+                          (l :: *)
+                          (l :: *)
+                          (l :: TyFun * (TyFun * (TyFun * (TyFun * * -> *) -> *) -> *))
+    data TupleTyCtor7Sym2 (l :: *)
+                          (l :: *)
+                          (l :: TyFun * (TyFun * (TyFun * (TyFun * (TyFun * * -> *) -> *)
+                                                  -> *)
+                                         -> *))
+    data TupleTyCtor7Sym1 (l :: *)
+                          (l :: TyFun * (TyFun * (TyFun * (TyFun * (TyFun * (TyFun * * -> *)
+                                                                    -> *)
+                                                           -> *)
+                                                  -> *)
+                                         -> *))
+    data TupleTyCtor7Sym0 (k :: TyFun * (TyFun * (TyFun * (TyFun * (TyFun * (TyFun * (TyFun * *
+                                                                                      -> *)
+                                                                             -> *)
+                                                                    -> *)
+                                                           -> *)
+                                                  -> *)
+                                         -> *))
+    type instance Apply (TupleTyCtor7Sym6 a a a a a a) a = TupleTyCtor7 a a a a a a a
+    type instance Apply (TupleTyCtor7Sym5 a a a a a) a = TupleTyCtor7Sym6 a a a a a a
+    type instance Apply (TupleTyCtor7Sym4 a a a a) a = TupleTyCtor7Sym5 a a a a a
+    type instance Apply (TupleTyCtor7Sym3 a a a) a = TupleTyCtor7Sym4 a a a a
+    type instance Apply (TupleTyCtor7Sym2 a a) a = TupleTyCtor7Sym3 a a a
+    type instance Apply (TupleTyCtor7Sym1 a) a = TupleTyCtor7Sym2 a a
+    type instance Apply TupleTyCtor7Sym0 a = TupleTyCtor7Sym1 a
     data Tuple7Sym6 (l :: a)
                     (l :: b)
                     (l :: c)
@@ -342,12 +480,12 @@ Singletons/Tuples.hs:0:0: Splicing declarations
             (fromSing b)
       toSing (GHC.Tuple.(,,,,,,) b b b b b b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy a),
-               toSing b :: SomeSing (KProxy :: KProxy b),
-               toSing b :: SomeSing (KProxy :: KProxy c),
-               toSing b :: SomeSing (KProxy :: KProxy d),
-               toSing b :: SomeSing (KProxy :: KProxy e),
-               toSing b :: SomeSing (KProxy :: KProxy f),
+              (toSing b :: SomeSing (KProxy :: KProxy a), 
+               toSing b :: SomeSing (KProxy :: KProxy b), 
+               toSing b :: SomeSing (KProxy :: KProxy c), 
+               toSing b :: SomeSing (KProxy :: KProxy d), 
+               toSing b :: SomeSing (KProxy :: KProxy e), 
+               toSing b :: SomeSing (KProxy :: KProxy f), 
                toSing b :: SomeSing (KProxy :: KProxy g))
           of {
             (SomeSing c,

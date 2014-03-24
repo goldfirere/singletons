@@ -535,14 +535,14 @@ buildDefunSymsDataD tyName tvbs ctors = do
   let tyVarNames = getTyVarNames tvbs
   promotedKind <- promoteType $ foldType (ConT tyName) tyVarNames
   promotedCtorSyms <- mapM (promoteCtor promotedKind) ctors
-  return $ concat promotedCtorSyms
+  let (tyCtorBaseName, tyCtorTySym) = tyCtorName tyName
+  tyConSyms <- buildCtorSyms StarT (tyCtorBaseName, replicate (length tvbs) StarT)
+  return $ concat (tyCtorTySym : tyConSyms : promotedCtorSyms)
       where
-        ctorNameAndTypes :: Con -> [(Name, [Type])]
-        ctorNameAndTypes (NormalC name tys)    = [(name, map snd tys)]
-        ctorNameAndTypes (RecC    name tys)    = [(name, map (\(_,_,t) -> t) tys)]
-             -- see js/#36
-             -- : map (\(n,_,t) -> (promoteValNameLhs n, [t, ConT tyName]) ) tys
-        ctorNameAndTypes (InfixC ty1 name ty2) = [(name, [snd ty1, snd ty2])]
+        ctorNameAndTypes :: Con -> (Name, [Type])
+        ctorNameAndTypes (NormalC name tys)    = (name, map snd tys)
+        ctorNameAndTypes (RecC    name tys)    = (name, map (\(_,_,t) -> t) tys)
+        ctorNameAndTypes (InfixC ty1 name ty2) = (name, [snd ty1, snd ty2])
         ctorNameAndTypes (ForallC _ _ ctor)    = ctorNameAndTypes ctor
 
         getTyVarNames :: [TyVarBndr] -> [Type]
@@ -552,7 +552,7 @@ buildDefunSymsDataD tyName tvbs ctors = do
 
         promoteCtor :: Quasi q => Kind -> Con -> q [Dec]
         promoteCtor promotedKind ctor =
-            concatMapM (buildCtorSyms promotedKind) (ctorNameAndTypes ctor)
+            buildCtorSyms promotedKind (ctorNameAndTypes ctor)
 
         buildCtorSyms :: Quasi q => Kind -> (Name, [Type]) -> q [Dec]
         buildCtorSyms promotedKind (name, types)
@@ -562,6 +562,14 @@ buildDefunSymsDataD tyName tvbs ctors = do
                                                        (name : dataNames))
                  return $ dataSyms ++ applyInstances
             | otherwise = buildEmptySymDec name
+
+        tyCtorName :: Name -> (Name, [Dec])
+        tyCtorName name = ( tySymName, [TySynD tySymName [] (ConT name)] )
+            where tySymName
+                      | Just degree <- tupleDegree_maybe (nameBase name) =
+                          mkName ("TupleTyCtor" ++ show degree)
+                      | name == listName = mkName "ListTyCtor"
+                      | otherwise        = mkName (nameBase name ++ "TyCtor")
 
 -- second pass through declarations to deal with type signatures
 -- returns the new declarations and the list of names that have been
@@ -645,7 +653,7 @@ introduceApply funData' typeT =
       go funData (AppT ty1 ty2) =
           let (ty1', isApplyAdded1, n) = go funData ty1
               (ty2', isApplyAdded2, _) = go funData ty2
-          in if n > 0 -- do we need to insert more Applies because arity > 1?
+          in if n /= 0 -- do we need to insert more Applies because arity > 1?
              then (AppT (AppT (ConT applyName) ty1') ty2', True  , n - 1)
              else (AppT ty1' ty2', isApplyAdded1 || isApplyAdded2, n    )
       go _ ty = (ty, False, 0)
@@ -1235,7 +1243,7 @@ buildSymDecs name argKs resultK = go tailArgK (buildTyFun lastArgK resultK)
 buildEmptySymDec :: Quasi q => Name -> q [Dec]
 buildEmptySymDec name =
     let promotedName = promoteTySym name 0
-    in return [TySynD promotedName [] (PromotedT name)]
+    in return [TySynD promotedName [] (ConT name)]
 
 -- Counts the arity of type level function represented with TyFun constructors
 -- TODO: this and isTuFun looks like a good place to use PatternSynonyms

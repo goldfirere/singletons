@@ -6,8 +6,12 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     Promote/TopLevelPatterns.hs:(0,0)-(0,0)
     data Bool = False | True
     data Foo = Bar Bool Bool
+    type BoolTyCtor = Bool
+    type BoolTyCtorSym0 = BoolTyCtor
     type FalseSym0 = False
     type TrueSym0 = True
+    type FooTyCtor = Foo
+    type FooTyCtorSym0 = FooTyCtor
     data BarSym1 (l :: Bool) (l :: TyFun Bool Foo)
     data BarSym0 (k :: TyFun Bool (TyFun Bool Foo -> *))
     type instance Apply (BarSym1 a) a = Bar a a

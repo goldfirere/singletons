@@ -1,9 +1,9 @@
 module Promote.LetStatements where
 
 import Data.Singletons.TH
+import Singletons.Nat
 
 $(promote [d|
-  data Nat = Zero | Succ Nat
   -- type signature required for a constant
   foo1 :: Nat -> Nat
   foo1 x = let y :: Nat

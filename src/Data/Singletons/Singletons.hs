@@ -122,7 +122,7 @@ singInfo (ClassI _dec _instances) =
 singInfo (ClassOpI _name _ty _className _fixity) =
   fail "Singling of class members info not supported"
 singInfo (TyConI dec@(DataD cxt name tvbs ctors derivings)) = do -- TODO: document this special case
-  (newDecls, binds)  <- evalForPair $ singDec dec --rename binds
+  (newDecls, binds) <- evalForPair $ singDec dec --rename binds
   newDecls' <- mapM (singDec' binds) newDecls
   promotedDataDecs <- promoteDataD cxt name tvbs ctors derivings
   return $ promotedDataDecs ++ newDecls'

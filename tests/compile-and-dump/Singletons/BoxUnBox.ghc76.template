@@ -2,13 +2,16 @@ Singletons/BoxUnBox.hs:0:0: Splicing declarations
     singletons
       [d| unBox :: Box a -> a
           unBox (FBox a) = a
-
+          
           data Box a = FBox a |]
   ======>
     Singletons/BoxUnBox.hs:(0,0)-(0,0)
     data Box a = FBox a
     unBox :: forall a. Box a -> a
     unBox (FBox a) = a
+    type BoxTyCtor = Box
+    data BoxTyCtorSym0 (k :: TyFun * *)
+    type instance Apply BoxTyCtorSym0 a = BoxTyCtor a
     data FBoxSym0 (k :: TyFun a (Box a))
     type instance Apply FBoxSym0 a = FBox a
     type family UnBox (a :: Box a) :: a

@@ -11,10 +11,13 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
           zipWith _ [] [] = []
           zipWith _ (_ : _) [] = []
           zipWith _ [] (_ : _) = []
-          foo :: ((a -> b) -> a -> b) -> (a -> b) -> a -> b
-          foo f g a = f g a |]
+          foo_ :: ((a -> b) -> a -> b) -> (a -> b) -> a -> b
+          foo_ f g a = f g a
+
+          data Either a b = Left a | Right b |]
   ======>
     Singletons/HigherOrder.hs:(0,0)-(0,0)
+    data Either a b = Left a | Right b
     map :: forall a b. (a -> b) -> [a] -> [b]
     map _ GHC.Types.[] = []
     map f (h GHC.Types.: t) = ((f h) GHC.Types.: (map f t))
@@ -27,19 +30,28 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
     zipWith _ GHC.Types.[] GHC.Types.[] = []
     zipWith _ (_ GHC.Types.: _) GHC.Types.[] = []
     zipWith _ GHC.Types.[] (_ GHC.Types.: _) = []
-    foo :: forall a b. ((a -> b) -> a -> b) -> (a -> b) -> a -> b
-    foo f g a = f g a
+    foo_ :: forall a b. ((a -> b) -> a -> b) -> (a -> b) -> a -> b
+    foo_ f g a = f g a
+    type EitherTyCtor = Either
+    data EitherTyCtorSym1 (l :: *) (l :: TyFun * *)
+    data EitherTyCtorSym0 (k :: TyFun * (TyFun * * -> *))
+    type instance Apply (EitherTyCtorSym1 a) a = EitherTyCtor a a
+    type instance Apply EitherTyCtorSym0 a = EitherTyCtorSym1 a
+    data LeftSym0 (k :: TyFun a (Either a b))
+    type instance Apply LeftSym0 a = Left a
+    data RightSym0 (k :: TyFun b (Either a b))
+    type instance Apply RightSym0 a = Right a
     type family Map (a :: TyFun a b -> *) (a :: [a]) :: [b] where
-         Map z GHC.Types.[] = '[]
-         Map f ((GHC.Types.:) h t) = Apply (Apply (:$) (Apply f h)) (Apply (Apply MapSym0 f) t)
+      Map z GHC.Types.[] = '[]
+      Map f ((GHC.Types.:) h t) = Apply (Apply (:$) (Apply f h)) (Apply (Apply MapSym0 f) t)
     data MapSym1 (l :: TyFun a b -> *) (l :: TyFun [a] [b])
     data MapSym0 (k :: TyFun (TyFun a b -> *) (TyFun [a] [b] -> *))
     type instance Apply (MapSym1 a) a = Map a a
     type instance Apply MapSym0 a = MapSym1 a
     type family LiftMaybe (a :: TyFun a b -> *)
                           (a :: Maybe a) :: Maybe b where
-         LiftMaybe f (Just x) = Apply JustSym0 (Apply f x)
-         LiftMaybe z Nothing = NothingSym0
+      LiftMaybe f (Just x) = Apply JustSym0 (Apply f x)
+      LiftMaybe z Nothing = NothingSym0
     data LiftMaybeSym1 (l :: TyFun a b -> *)
                        (l :: TyFun (Maybe a) (Maybe b))
     data LiftMaybeSym0 (k :: TyFun (TyFun a b
@@ -63,20 +75,41 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
     type instance Apply (ZipWithSym2 a a) a = ZipWith a a a
     type instance Apply (ZipWithSym1 a) a = ZipWithSym2 a a
     type instance Apply ZipWithSym0 a = ZipWithSym1 a
-    type family Foo (a :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
-                    (a :: TyFun a b -> *)
-                    (a :: a) :: b where
-      Foo f g a = Apply (Apply f g) a
-    data FooSym2 (l :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
-                 (l :: TyFun a b -> *)
-                 (l :: TyFun a b)
-    data FooSym1 (l :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
-                 (l :: TyFun (TyFun a b -> *) (TyFun a b -> *))
-    data FooSym0 (k :: TyFun (TyFun (TyFun a b -> *) (TyFun a b -> *)
-                              -> *) (TyFun (TyFun a b -> *) (TyFun a b -> *) -> *))
-    type instance Apply (FooSym2 a a) a = Foo a a a
-    type instance Apply (FooSym1 a) a = FooSym2 a a
-    type instance Apply FooSym0 a = FooSym1 a
+    type family Foo_ (a :: TyFun (TyFun a b -> *) (TyFun a b -> *)
+                           -> *)
+                     (a :: TyFun a b -> *)
+                     (a :: a) :: b where
+      Foo_ f g a = Apply (Apply f g) a
+    data Foo_Sym2 (l :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
+                  (l :: TyFun a b -> *)
+                  (l :: TyFun a b)
+    data Foo_Sym1 (l :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
+                  (l :: TyFun (TyFun a b -> *) (TyFun a b -> *))
+    data Foo_Sym0 (k :: TyFun (TyFun (TyFun a b -> *) (TyFun a b -> *)
+                               -> *) (TyFun (TyFun a b -> *) (TyFun a b -> *) -> *))
+    type instance Apply (Foo_Sym2 a a) a = Foo_ a a a
+    type instance Apply (Foo_Sym1 a) a = Foo_Sym2 a a
+    type instance Apply Foo_Sym0 a = Foo_Sym1 a
+    data instance Sing (z :: Either a b)
+      = forall (n :: a). z ~ Left n => SLeft (Sing n) |
+        forall (n :: b). z ~ Right n => SRight (Sing n)
+    type SEither (z :: Either a b) = Sing z
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b)) =>
+             SingKind (KProxy :: KProxy (Either a b)) where
+      type DemoteRep (KProxy :: KProxy (Either a b)) = Either (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b))
+      fromSing (SLeft b) = Left (fromSing b)
+      fromSing (SRight b) = Right (fromSing b)
+      toSing (Left b)
+        = case toSing b :: SomeSing (KProxy :: KProxy a) of {
+            SomeSing c -> SomeSing (SLeft c) }
+      toSing (Right b)
+        = case toSing b :: SomeSing (KProxy :: KProxy b) of {
+            SomeSing c -> SomeSing (SRight c) }
+    instance SingI n => SingI (Left (n :: a)) where
+      sing = SLeft sing
+    instance SingI n => SingI (Right (n :: b)) where
+      sing = SRight sing
     sMap ::
       forall (t :: TyFun a b -> *) (t :: [a]).
       (forall (t :: a). Data.Proxy.Proxy t -> Sing t -> Sing (Apply t t))
@@ -100,7 +133,7 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
     sZipWith _ SNil SNil = SNil
     sZipWith _ (SCons _ _) SNil = SNil
     sZipWith _ SNil (SCons _ _) = SNil
-    sFoo ::
+    sFoo_ ::
       forall (t :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
              (t :: TyFun a b -> *)
              (t :: a).
@@ -111,5 +144,5 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
           -> Sing t -> Sing (Apply (Apply t t) t))
       -> (forall (t :: a).
           Data.Proxy.Proxy t -> Sing t -> Sing (Apply t t))
-         -> Sing t -> Sing (Foo t t t)
-    sFoo f g a = f Data.Proxy.Proxy g a
+         -> Sing t -> Sing (Foo_ t t t)
+    sFoo_ f g a = f Data.Proxy.Proxy g a

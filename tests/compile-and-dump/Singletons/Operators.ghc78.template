@@ -6,7 +6,7 @@ Singletons/Operators.hs:0:0: Splicing declarations
           (+) :: Nat -> Nat -> Nat
           Zero + m = m
           (Succ n) + m = Succ (n + m)
-
+          
           data Foo
             where
               FLeaf :: Foo
@@ -20,6 +20,8 @@ Singletons/Operators.hs:0:0: Splicing declarations
     (+) :: Nat -> Nat -> Nat
     (+) Zero m = m
     (+) (Succ n) m = Succ (n + m)
+    type FooTyCtor = Foo
+    type FooTyCtorSym0 = FooTyCtor
     type FLeafSym0 = FLeaf
     data (:+:$$) (l :: Foo) (l :: TyFun Foo Foo)
     data (:+:$) (k :: TyFun Foo (TyFun Foo Foo -> *))
@@ -49,7 +51,7 @@ Singletons/Operators.hs:0:0: Splicing declarations
       toSing FLeaf = SomeSing SFLeaf
       toSing ((:+:) b b)
         = case
-              (toSing b :: SomeSing (KProxy :: KProxy Foo),
+              (toSing b :: SomeSing (KProxy :: KProxy Foo), 
                toSing b :: SomeSing (KProxy :: KProxy Foo))
           of {
             (SomeSing c, SomeSing c) -> SomeSing ((:%+:) c c) }

@@ -6,8 +6,11 @@ import Data.Singletons.List hiding (
            ZipWithSym1, ZipWithSym2 )
 import Data.Singletons.Maybe
 import Singletons.Nat
+import Prelude hiding (Either(..))
 
 $(singletons [d|
+  data Either a b = Left a | Right b
+
   map :: (a -> b) -> [a] -> [b]
   map _ [] = []
   map f (h:t) = (f h) : (map f t)
@@ -32,3 +35,17 @@ $(singletons [d|
   etad :: [Nat] -> [Bool] -> [Nat]
   etad = zipWith (\n b -> if b then Succ (Succ n) else n)
  |])
+
+data Proxy a = Proxy
+
+foo1a :: Proxy (ZipWith EitherTyCtorSym0 '[Int, Bool] '[Char, Double])
+foo1a = Proxy
+
+foo1b :: Proxy ('[Either Int Char, Either Bool Double])
+foo1b = foo1a
+
+foo2a :: Proxy (Map (EitherTyCtorSym1 Int) '[Bool, Double])
+foo2a = Proxy
+
+foo2b :: Proxy ('[Either Int Bool, Either Int Double])
+foo2b = foo2a

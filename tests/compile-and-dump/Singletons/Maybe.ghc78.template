@@ -14,6 +14,9 @@ Singletons/Maybe.hs:0:0: Splicing declarations
       Equals_0123456789 (Just a) (Just b) = (==) a b
       Equals_0123456789 (a :: Maybe k) (b :: Maybe k) = FalseSym0
     type instance (==) (a :: Maybe k) (b :: Maybe k) = Equals_0123456789 a b
+    type MaybeTyCtor = Maybe
+    data MaybeTyCtorSym0 (k :: TyFun * *)
+    type instance Apply MaybeTyCtorSym0 a = MaybeTyCtor a
     type NothingSym0 = Nothing
     data JustSym0 (k :: TyFun a (Maybe a))
     type instance Apply JustSym0 a = Just a

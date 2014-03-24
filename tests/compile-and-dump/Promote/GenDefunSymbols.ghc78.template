@@ -8,6 +8,8 @@ Promote/GenDefunSymbols.hs:0:0: Splicing declarations
                                     -> *) (TyFun (Maybe a) (Maybe b) -> *))
     type instance Apply (LiftMaybeSym1 a) a = LiftMaybe a a
     type instance Apply LiftMaybeSym0 a = LiftMaybeSym1 a
+    type NatTyCtor = Nat
+    type NatTyCtorSym0 = NatTyCtor
     type ZeroSym0 = Zero
     data SuccSym0 (k :: TyFun Nat Nat)
     type instance Apply SuccSym0 a = Succ a

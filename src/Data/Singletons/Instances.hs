@@ -26,4 +26,3 @@ import Data.Singletons.Util
 -- some useful singletons
 $(genSingletons basicTypes)
 $(singDecideInstances basicTypes)
-

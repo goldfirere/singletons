@@ -83,12 +83,9 @@ Promote/LetStatements.hs:0:0: Splicing declarations
                 (+) :: Nat -> Nat -> Nat
                 Zero + m = m
                 (Succ n) + m = Succ (n + x)
-              in x + (Succ (Succ Zero))
-          
-          data Nat = Zero | Succ Nat |]
+              in x + (Succ (Succ Zero)) |]
   ======>
     Promote/LetStatements.hs:(0,0)-(0,0)
-    data Nat = Zero | Succ Nat
     foo1 :: Nat -> Nat
     foo1 x
       = let
@@ -173,9 +170,6 @@ Promote/LetStatements.hs:0:0: Splicing declarations
           (+) Zero m = m
           (+) (Succ n) m = Succ (n + x)
         in (x + (Succ (Succ Zero)))
-    type ZeroSym0 = Zero
-    data SuccSym0 (k :: TyFun Nat Nat)
-    type instance Apply SuccSym0 a = Succ a
     type family Let_0123456789y (a :: x) :: Nat where
       Let_0123456789y x = Apply SuccSym0 ZeroSym0
     data Let_0123456789ySym0 (k :: TyFun x Nat)

@@ -6,11 +6,15 @@ Promote/Constructors.hs:0:0: Splicing declarations
     Promote/Constructors.hs:(0,0)-(0,0)
     data Foo = Foo | Foo :+ Foo
     data Bar = Bar Bar Bar Bar Bar Foo
+    type FooTyCtor = Foo
+    type FooTyCtorSym0 = FooTyCtor
     type FooSym0 = Foo
     data (:+$$) (l :: Foo) (l :: TyFun Foo Foo)
     data (:+$) (k :: TyFun Foo (TyFun Foo Foo -> *))
     type instance Apply ((:+$$) a) a = (:+) a a
     type instance Apply (:+$) a = (:+$$) a
+    type BarTyCtor = Bar
+    type BarTyCtorSym0 = BarTyCtor
     data BarSym4 (l :: Bar)
                  (l :: Bar)
                  (l :: Bar)
