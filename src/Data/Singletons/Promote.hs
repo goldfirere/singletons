@@ -150,7 +150,7 @@ promoteType' (ConT name) = return $
      | nameBase name == nameBase repName -> StarT
      | otherwise                         -> ConT name
 promoteType' (TupleT n) = return $ TupleT n
-promoteType' (UnboxedTupleT _n) = fail "Promotion of unboxed tuples not supported"
+promoteType' (UnboxedTupleT n) = return $ TupleT n
 promoteType' ArrowT = fail "Promoting of arrow type should not happen."
 promoteType' ListT = return ListT
 promoteType' (AppT (AppT ArrowT (ForallT (_:_) _ _)) _) =
@@ -731,8 +731,8 @@ promoteTopLevelPat (TupP pats) = case length pats of
   0 -> return [] -- unit as LHS of pattern... ignore
   1 -> fail "1-tuple encountered during top-level pattern promotion"
   n -> promoteTopLevelPat (ConP (tupleDataName n) pats)
-promoteTopLevelPat (UnboxedTupP _) =
-  fail "Promotion of unboxed tuples not supported"
+promoteTopLevelPat (UnboxedTupP pats) =
+  promoteTopLevelPat (TupP pats)
 
 -- to promote a constructor pattern, we need to create extraction type
 -- families to pull out the individual arguments of the constructor
@@ -841,7 +841,8 @@ promotePat (TupP pats) = do
   let baseTup = PromotedTupleT (length types)
       tup = foldType baseTup types
   return tup
-promotePat (UnboxedTupP _) = fail "Unboxed tuples not supported"
+promotePat (UnboxedTupP pats) =
+  promotePat (TupP pats)
 promotePat (ConP name pats) = do
   types <- mapM promotePat pats
   return $ foldType (PromotedT name) types
@@ -954,7 +955,8 @@ promoteExp vars (TupE exps) = do
   let tuple = PromotedTupleT (length tys)
       tup = foldType tuple tys
   return tup
-promoteExp _vars (UnboxedTupE _) = fail "Promotion of unboxed tuples not supported"
+promoteExp vars (UnboxedTupE exps) =
+  promoteExp vars (TupE exps)
 promoteExp vars (CondE bexp texp fexp) = do
   tys <- mapM (promoteExp vars) [bexp, texp, fexp]
   return $ foldType ifTyFam tys
