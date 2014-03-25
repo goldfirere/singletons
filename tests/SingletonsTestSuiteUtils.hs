@@ -95,6 +95,7 @@ ghcOpts = [
   , "-XIncoherentInstances"
   , "-XCPP"
   , "-XLambdaCase"
+  , "-XUnboxedTuples"
   ]
 
 -- Note [-package-name hack]

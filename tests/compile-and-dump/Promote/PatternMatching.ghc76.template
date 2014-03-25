@@ -4,7 +4,7 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
           complex = Pair (Pair (Just Zero) Zero) False
           tuple = (False, Just Zero, True)
           aList = [Zero, Succ Zero, Succ (Succ Zero)]
-
+          
           data Pair a b
             = Pair a b
             deriving (Show) |]
@@ -40,16 +40,20 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
           Pair (Pair jz zz) fls = complex
           (tf, tjz, tt) = tuple
           [_, lsz, (Succ blimy)] = aList
-          foo8 :: (a, b) -> a
-          foo8 (x, y) = (\ _ -> x) y |]
+          foo1 :: (a, b) -> a
+          foo1 (x, y) = (\ _ -> x) y
+          foo2 :: (# a, b #) -> a
+          foo2 t@(# x, y #) = case t of { (# a, b #) -> (\ _ -> a) b } |]
   ======>
     Promote/PatternMatching.hs:(0,0)-(0,0)
     Pair sz lz = pr
     Pair (Pair jz zz) fls = complex
     (tf, tjz, tt) = tuple
     [_, lsz, Succ blimy] = aList
-    foo8 :: forall a b. (a, b) -> a
-    foo8 (x, y) = \ _ -> x y
+    foo1 :: forall a b. (a, b) -> a
+    foo1 (x, y) = \ _ -> x y
+    foo2 :: forall a b. (# a, b #) -> a
+    foo2 t@(# x, y #) = case t of { (# a, b #) -> \ _ -> a b }
     type Sz = Extract_0123456789 PrSym0
     type SzSym0 = Sz
     type Lz = Extract_0123456789 PrSym0
@@ -95,7 +99,28 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
     data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
     type instance Apply (Lambda_0123456789Sym2 a a) a =
         Lambda_0123456789 a a a
-    type family Foo8 (a :: (a, b)) :: a
-    type instance  Foo8 '(x, y) = Apply (Lambda_0123456789Sym2 x y) y
-    data Foo8Sym0 (k :: TyFun (a, b) a)
-    type instance Apply Foo8Sym0 a = Foo8 a
+    type family Lambda_0123456789 (x :: x)
+                                  (y :: y)
+                                  (a :: a)
+                                  (b :: b)
+                                  (t :: k) :: r
+    type instance Lambda_0123456789 x y a b z = a
+    data Lambda_0123456789Sym4 (l :: x)
+                               (l :: y)
+                               (l :: a)
+                               (l :: b)
+                               (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym4 a a a a) a =
+        Lambda_0123456789 a a a a a
+    type family Case_0123456789 (t :: k) (x :: x) (y :: y) :: r
+    type instance Case_0123456789 '(a, b) x y =
+        Apply (Lambda_0123456789Sym4 x y a b) b
+    type family Foo1 (a :: (a, b)) :: a
+    type instance Foo1 '(x, y) = Apply (Lambda_0123456789Sym2 x y) y
+    data Foo1Sym0 (k :: TyFun (a, b) a)
+    type instance Apply Foo1Sym0 a = Foo1 a
+    type family Foo2 (a :: (a, b)) :: a
+    type instance Foo2 '(x, y) =
+        Case_0123456789 (Apply (Apply Tuple2Sym0 x) y) x y
+    data Foo2Sym0 (k :: TyFun (a, b) a)
+    type instance Apply Foo2Sym0 a = Foo2 a

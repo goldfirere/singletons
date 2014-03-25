@@ -701,7 +701,8 @@ promoteMatch vars _name (Match pat body []) = do
   -- to the function promoted the RHS
   (types, vartbl) <- evalForPair $ promotePat pat
   let vars' = Map.union vartbl vars
-  rhs <- promoteBody vars' body
+  (rhs, decls) <- evalForPair $ promoteBody vars' body
+  mapM_ addElement decls
   let inScopeTypes  = map snd . filter isBndrVarT $ Map.toList vars
       eqnParams     = types : inScopeTypes
 #if __GLASGOW_HASKELL__ >= 707
@@ -979,7 +980,7 @@ promoteExp vars (LetE decs exp) = do
 promoteExp vars (CaseE exp matches) = do
   caseTFName <- newUniqueName "Case"
   (exp', _)  <- evalForPair $ promoteExp vars exp
-  (eqns, _)  <- evalForPair $ mapM (promoteMatch vars caseTFName) matches
+  (eqns, decls) <- evalForPair $ mapM (promoteMatch vars caseTFName) matches
   tyvarName  <- qNewName "t"
   kindVar    <- fmap VarT $ qNewName "k"
   resultK    <- fmap VarT $ qNewName "r"
@@ -987,6 +988,7 @@ promoteExp vars (CaseE exp matches) = do
       tyFamParams   = (tyvarName, kindVar) : inScopeBnds
       tyFamSig      = map (\(nm, ty) -> KindedTV nm ty) tyFamParams
       inScopeTypes  = map snd inScopeBnds
+  mapM_ addElement decls
 #if __GLASGOW_HASKELL__ >= 707
   addElement (ClosedTypeFamilyD caseTFName tyFamSig (Just resultK) eqns)
 #else

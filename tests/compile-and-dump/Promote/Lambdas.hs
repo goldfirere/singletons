@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-unused-matches -fno-warn-name-shadowing #-}
+{-# LANGUAGE UnboxedTuples #-}
 -- We expect unused binds and name shadowing in foo5 test.
 module Promote.Lambdas where
 
@@ -46,7 +47,7 @@ $(promote [d|
   -- constructor patters=ns
   data Foo a b = Foo a b
   foo8 :: Foo a b -> a
-  foo8 x = (\(Foo a b) -> a) x
+  foo8 x = (\(Foo a _) -> a) x
  |])
 
 foo1a :: Proxy (Apply (Foo1 Int) Char)

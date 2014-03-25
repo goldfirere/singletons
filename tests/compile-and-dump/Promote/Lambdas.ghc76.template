@@ -17,8 +17,8 @@ Promote/Lambdas.hs:0:0: Splicing declarations
           foo7 :: a -> b -> b
           foo7 x y = (\ (_, b) -> b) (x, y)
           foo8 :: Foo a b -> a
-          foo8 x = (\ (Foo a b) -> a) x
-
+          foo8 x = (\ (Foo a _) -> a) x
+          
           data Foo a b = Foo a b |]
   ======>
     Promote/Lambdas.hs:(0,0)-(0,0)
@@ -40,7 +40,7 @@ Promote/Lambdas.hs:0:0: Splicing declarations
     foo7 x y = \ (_, b) -> b (x, y)
     data Foo a b = Foo a b
     foo8 :: forall a b. Foo a b -> a
-    foo8 x = \ (Foo a b) -> a x
+    foo8 x = \ (Foo a _) -> a x
     type Foo0 = Lambda_0123456789Sym0
     type Foo0Sym0 = Foo0
     type family Lambda_0123456789 (t :: k) (t :: k) :: r
@@ -116,7 +116,7 @@ Promote/Lambdas.hs:0:0: Splicing declarations
     type instance Apply (FooSym1 a) a = Foo a a
     type instance Apply FooSym0 a = FooSym1 a
     type family Lambda_0123456789 (x :: x) (t :: k) :: r
-    type instance Lambda_0123456789 x (Foo a b) = a
+    type instance Lambda_0123456789 x (Foo a z) = a
     data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
     type instance Apply (Lambda_0123456789Sym1 a) a =
         Lambda_0123456789 a a

@@ -18,12 +18,22 @@ $(promote [d|
   (tf, tjz, tt) = tuple
   [_, lsz, (Succ blimy)] = aList
 
-  foo8 :: (a, b) -> a
-  foo8 (x, y) = (\_ -> x) y
+  foo1 :: (a, b) -> a
+  foo1 (x, y) = (\_ -> x) y
+
+  foo2 :: (# a, b #) -> a
+  foo2 t@(# x, y #) = case t of
+                        (# a, b #) -> (\_ -> a) b
   |])
 
-foo8a :: Proxy (Foo8 '(Int, Char))
-foo8a = Proxy
+foo1a :: Proxy (Foo1 '(Int, Char))
+foo1a = Proxy
 
-foo8b :: Proxy Int
-foo8b = foo8a
+foo1b :: Proxy Int
+foo1b = foo1a
+
+foo2a :: Proxy (Foo2 '(Int, Char))
+foo2a = Proxy
+
+foo2b :: Proxy Int
+foo2b = foo2a

@@ -11,7 +11,16 @@ Promote/CaseExpressions.hs:0:0: Splicing declarations
                 Just y -> y
                 Nothing -> d }
           foo3 :: a -> b -> a
-          foo3 a b = case (a, b) of { (p, _) -> p } |]
+          foo3 a b = case (a, b) of { (p, _) -> p }
+          foo4 :: forall a. a -> a
+          foo4 x
+            = case x of {
+                y -> let
+                       z :: a
+                       z = y
+                     in z }
+          foo5 :: a -> a
+          foo5 x = case x of { y -> (\ _ -> x) y } |]
   ======>
     Promote/CaseExpressions.hs:(0,0)-(0,0)
     foo1 :: forall a. a -> Maybe a -> a
@@ -26,6 +35,15 @@ Promote/CaseExpressions.hs:0:0: Splicing declarations
           Nothing -> d }
     foo3 :: forall a b. a -> b -> a
     foo3 a b = case (a, b) of { (p, _) -> p }
+    foo4 :: forall a. a -> a
+    foo4 x
+      = case x of {
+          y -> let
+                 z :: a
+                 z = y
+               in z }
+    foo5 :: forall a. a -> a
+    foo5 x = case x of { y -> \ _ -> x y }
     type family Case_0123456789 (t :: k) (d :: d) (x :: x) :: r
     type instance Case_0123456789 (Just y) d x = y
     type instance Case_0123456789 Nothing d x = d
@@ -34,6 +52,23 @@ Promote/CaseExpressions.hs:0:0: Splicing declarations
     type instance Case_0123456789 Nothing d = d
     type family Case_0123456789 (t :: k) (a :: a) (b :: b) :: r
     type instance Case_0123456789 '(p, z) a b = p
+    type family Let_0123456789z (a :: x) (a :: y) :: a
+    type instance Let_0123456789z x y = y
+    data Let_0123456789zSym1 (l :: x) (l :: TyFun y a)
+    data Let_0123456789zSym0 (k :: TyFun x (TyFun y a -> *))
+    type instance Apply (Let_0123456789zSym1 a) a = Let_0123456789z a a
+    type instance Apply Let_0123456789zSym0 a = Let_0123456789zSym1 a
+    type family Case_0123456789 (t :: k) (x :: x) :: r
+    type instance Case_0123456789 y x =
+        Apply (Apply Let_0123456789zSym0 x) y
+    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) :: r
+    type instance Lambda_0123456789 x y z = x
+    data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym2 a a) a =
+        Lambda_0123456789 a a a
+    type family Case_0123456789 (t :: k) (x :: x) :: r
+    type instance Case_0123456789 y x =
+        Apply (Lambda_0123456789Sym2 x y) y
     type family Foo1 (a :: a) (a :: Maybe a) :: a
     type instance Foo1 d x = Case_0123456789 x d x
     data Foo1Sym1 (l :: a) (l :: TyFun (Maybe a) a)
@@ -52,3 +87,11 @@ Promote/CaseExpressions.hs:0:0: Splicing declarations
     data Foo3Sym0 (k :: TyFun a (TyFun b a -> *))
     type instance Apply (Foo3Sym1 a) a = Foo3 a a
     type instance Apply Foo3Sym0 a = Foo3Sym1 a
+    type family Foo4 (a :: a) :: a
+    type instance Foo4 x = Case_0123456789 x x
+    data Foo4Sym0 (k :: TyFun a a)
+    type instance Apply Foo4Sym0 a = Foo4 a
+    type family Foo5 (a :: a) :: a
+    type instance Foo5 x = Case_0123456789 x x
+    data Foo5Sym0 (k :: TyFun a a)
+    type instance Apply Foo5Sym0 a = Foo5 a
