@@ -40,6 +40,8 @@ module Data.Singletons.List (
   (:++), (%:++),
   Head, Tail, sHead, sTail,
   Map, sMap,
+  Zip, sZip,
+  ZipWith, sZipWith,
   Reverse, sReverse,
 
   -- * Defunctionalization symbols
@@ -49,6 +51,7 @@ module Data.Singletons.List (
   (:++$$), (:++$),
   HeadSym0, TailSym0,
   MapSym0, MapSym1,
+  ZipSym0, ZipSym1, ZipWithSym0, ZipWithSym1, ZipWithSym2,
   ReverseSym0, Reverse_auxSym0, Reverse_auxSym1
   ) where
 
@@ -73,6 +76,18 @@ $(singletonsOnly [d|
   map :: (a -> b) -> [a] -> [b]
   map _ [] = []
   map f (x:xs) = f x : map f xs
+
+  zip :: [a] -> [b] -> [(a,b)]
+  zip (x:xs) (y:ys) = (x,y) : zip xs ys
+  zip [] []         = []
+  zip (_:_) []      = []
+  zip [] (_:_)      = []
+
+  zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+  zipWith f (x:xs) (y:ys) = f x y : zipWith f xs ys
+  zipWith _ [] []         = []
+  zipWith _ (_:_) []      = []
+  zipWith _ [] (_:_)      = []
 
   reverse :: [a] -> [a]
   reverse list = reverse_aux [] list

@@ -83,6 +83,7 @@ module Data.Singletons.Prelude (
 
   -- * Functions working with lists
   Head, sHead, Tail, sTail, (:++), (%:++), Reverse, sReverse, Map, sMap,
+  Zip, sZip, ZipWith, sZipWith,
 
   -- * Error reporting
   Error, ErrorSym0, sError,
@@ -115,6 +116,7 @@ module Data.Singletons.Prelude (
   NotSym0, (:&&$), (:&&$$), (:||$), (:||$$), OtherwiseSym0,
 
   HeadSym0, TailSym0, (:++$), (:++$$), ReverseSym0, MapSym0, MapSym1,
+  ZipSym0, ZipSym1, ZipWithSym0, ZipWithSym1, ZipWithSym2,
 
   Maybe_Sym0, Maybe_Sym1, Maybe_Sym2,
   Either_Sym0, Either_Sym1, Either_Sym2,
