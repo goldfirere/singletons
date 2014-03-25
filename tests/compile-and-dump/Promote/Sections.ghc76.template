@@ -8,12 +8,9 @@ Promote/Sections.hs:0:0: Splicing declarations
           foo2 :: [Nat]
           foo2 = map (+ (Succ Zero)) [Zero, Succ Zero]
           foo3 :: [Nat]
-          foo3 = zipWith (+) [Succ Zero, Succ Zero] [Zero, Succ Zero]
-          
-          data Nat = Zero | Succ Nat |]
+          foo3 = zipWith (+) [Succ Zero, Succ Zero] [Zero, Succ Zero] |]
   ======>
     Promote/Sections.hs:(0,0)-(0,0)
-    data Nat = Zero | Succ Nat
     + :: Nat -> Nat -> Nat
     + Zero m = m
     + (Succ n) m = Succ (n + m)
@@ -23,9 +20,6 @@ Promote/Sections.hs:0:0: Splicing declarations
     foo2 = map (+ Succ Zero) [Zero, Succ Zero]
     foo3 :: [Nat]
     foo3 = zipWith (+) [Succ Zero, Succ Zero] [Zero, Succ Zero]
-    type ZeroSym0 = Zero
-    data SuccSym0 (k :: TyFun Nat Nat)
-    type instance Apply SuccSym0 a = Succ a
     type Foo1 =
         Apply (Apply MapSym0 (Apply :+$ (Apply SuccSym0 ZeroSym0))) '[ZeroSym0,
                                                                       Apply SuccSym0 ZeroSym0]

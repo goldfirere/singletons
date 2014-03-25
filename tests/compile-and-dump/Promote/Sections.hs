@@ -1,11 +1,10 @@
-module Prmote.Sections where
+module Promote.Sections where
 
 import Data.Singletons.TH
 import Data.Singletons.List
+import Singletons.Nat
 
 $(promote [d|
-  data Nat = Zero | Succ Nat
-
   (+) :: Nat -> Nat -> Nat
   Zero + m = m
   (Succ n) + m = Succ (n + m)

@@ -27,11 +27,9 @@ tests =
     , compileAndDumpStdTest "Star"
     , compileAndDumpStdTest "Tuples"
     , compileAndDumpStdTest "ReturnFunc"
-    , compileAndDumpStdTest "ZipWith"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "PatternMatching"
-    , compileAndDumpStdTest "NumArgs"
     , compileAndDumpStdTest "Error"
     , compileAndDumpStdTest "Constructors"
     , compileAndDumpStdTest "Lambdas"

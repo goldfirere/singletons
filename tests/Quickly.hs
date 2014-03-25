@@ -6,7 +6,6 @@
 
 module Quickly where
 
-import Promote.NumArgs
 import Promote.PatternMatching
 import Promote.Constructors
 import Promote.Error
@@ -35,7 +34,6 @@ import Singletons.Star
 -- Can't import tuples test due to duplicate instances
 --import Singletons.Tuples ()
 import Singletons.ReturnFunc
-import Singletons.ZipWith
 
 import GradingClient.Database
 

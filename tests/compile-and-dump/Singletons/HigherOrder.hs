@@ -1,10 +1,11 @@
 module Singletons.HigherOrder where
 
 import Data.Singletons.TH
-import Data.Singletons.List hiding (sMap, Map, MapSym0, MapSym1, zipWith,
-                                    ZipWith, sZipWith, ZipWithSym0,
-                                    ZipWithSym1, ZipWithSym2 )
+import Data.Singletons.List hiding (
+           sMap, Map, MapSym0, MapSym1, zipWith, ZipWith, sZipWith, ZipWithSym0,
+           ZipWithSym1, ZipWithSym2 )
 import Data.Singletons.Maybe
+import Singletons.Nat
 
 $(singletons [d|
   map :: (a -> b) -> [a] -> [b]
@@ -24,4 +25,10 @@ $(singletons [d|
   -- higher order function that accepts higher order function
   foo :: ((a -> b) -> a -> b) -> (a -> b)  -> a -> b
   foo f g a = f g a
+
+  splunge :: [Nat] -> [Bool] -> [Nat]
+  splunge ns bs = zipWith (\n b -> if b then Succ (Succ n) else n) ns bs
+
+  etad :: [Nat] -> [Bool] -> [Nat]
+  etad = zipWith (\n b -> if b then Succ (Succ n) else n)
  |])
