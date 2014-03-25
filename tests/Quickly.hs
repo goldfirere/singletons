@@ -18,6 +18,8 @@ import Promote.Newtypes
 import Promote.GenDefunSymbols
 import Promote.CaseExpressions
 import Promote.LambdaCase
+import Promote.LetStatements
+import Promote.Sections
 
 import Singletons.AtPattern
 import Singletons.BoxUnBox

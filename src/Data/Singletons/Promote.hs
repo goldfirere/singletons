@@ -906,8 +906,10 @@ promoteExp vars (InfixE mexp1 exp mexp2) =
   case (mexp1, mexp2) of
     (Nothing, Nothing) -> promoteExp vars exp
     (Just exp1, Nothing) -> promoteExp vars (AppE exp exp1)
-    (Nothing, Just _exp2) ->
-      fail "Promotion of right-only sections not yet supported"
+    (Nothing, Just exp2) -> do
+      binder <- qNewName "x"
+      let lambdaExp = LamE [VarP binder] ((AppE (AppE exp (VarE binder)) exp2))
+      promoteExp vars lambdaExp
     (Just exp1, Just exp2) -> promoteExp vars (AppE (AppE exp exp1) exp2)
 promoteExp _vars (UInfixE _ _ _) =
   fail "Promotion of unresolved infix operators not supported"

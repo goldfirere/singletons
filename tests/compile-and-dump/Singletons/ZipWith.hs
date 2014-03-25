@@ -1,7 +1,8 @@
 module Singletons.ZipWith where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude
+import Data.Singletons.Prelude hiding (zipWith, ZipWith, sZipWith, ZipWithSym0,
+                                       ZipWithSym1, ZipWithSym2 )
 
 $(singletons [d|
   data Nat = Zero | Succ Nat

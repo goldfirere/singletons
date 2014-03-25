@@ -1,7 +1,9 @@
 module Singletons.HigherOrder where
 
 import Data.Singletons.TH
-import Data.Singletons.List hiding (sMap, Map, MapSym0, MapSym1)
+import Data.Singletons.List hiding (sMap, Map, MapSym0, MapSym1, zipWith,
+                                    ZipWith, sZipWith, ZipWithSym0,
+                                    ZipWithSym1, ZipWithSym2 )
 import Data.Singletons.Maybe
 
 $(singletons [d|

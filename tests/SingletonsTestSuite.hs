@@ -42,6 +42,7 @@ tests =
     , compileAndDumpStdTest "LambdaCase"
     , compileAndDumpStdTest "TopLevelPatterns"
     , compileAndDumpStdTest "LetStatements"
+    , compileAndDumpStdTest "Sections"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts
