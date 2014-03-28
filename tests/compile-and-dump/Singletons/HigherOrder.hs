@@ -49,3 +49,9 @@ foo2a = Proxy
 
 foo2b :: Proxy ('[Either Int Bool, Either Int Double])
 foo2b = foo2a
+
+foo3a :: Proxy (Map PredSym0 '[Succ Zero, Succ (Succ Zero)])
+foo3a = Proxy
+
+foo3b :: Proxy ('[Succ(Succ Zero), Succ(Succ (Succ Zero))])
+foo3b = foo3a
