@@ -83,7 +83,15 @@ Promote/LetStatements.hs:0:0: Splicing declarations
                 (+) :: Nat -> Nat -> Nat
                 Zero + m = m
                 (Succ n) + m = Succ (n + x)
-              in x + (Succ (Succ Zero)) |]
+              in x + (Succ (Succ Zero))
+          foo13 :: forall a. a -> a
+          foo13 x
+            = let
+                bar :: a
+                bar = x
+              in foo13b bar
+          foo13b :: a -> a
+          foo13b y = y |]
   ======>
     Promote/LetStatements.hs:(0,0)-(0,0)
     foo1 :: Nat -> Nat
@@ -170,6 +178,14 @@ Promote/LetStatements.hs:0:0: Splicing declarations
           (+) Zero m = m
           (+) (Succ n) m = Succ (n + x)
         in (x + (Succ (Succ Zero)))
+    foo13 :: forall a. a -> a
+    foo13 x
+      = let
+          bar :: a
+          bar = x
+        in foo13b bar
+    foo13b :: forall a. a -> a
+    foo13b y = y
     type family Let_0123456789y (a :: x) :: Nat where
       Let_0123456789y x = Apply SuccSym0 ZeroSym0
     data Let_0123456789ySym0 (k :: TyFun x Nat)
@@ -278,6 +294,10 @@ Promote/LetStatements.hs:0:0: Splicing declarations
     type instance Apply (Let_0123456789+Sym2 a a) a = Let_0123456789+ a a a
     type instance Apply (Let_0123456789+Sym1 a) a = Let_0123456789+Sym2 a a
     type instance Apply Let_0123456789+Sym0 a = Let_0123456789+Sym1 a
+    type family Let_0123456789bar (a :: x) :: a where
+      Let_0123456789bar x = x
+    data Let_0123456789barSym0 (k :: TyFun x a)
+    type instance Apply Let_0123456789barSym0 a = Let_0123456789bar a
     type family Foo1 (a :: Nat) :: Nat where
       Foo1 x = Apply Let_0123456789ySym0 x
     data Foo1Sym0 (k :: TyFun Nat Nat)
@@ -322,3 +342,11 @@ Promote/LetStatements.hs:0:0: Splicing declarations
       Foo12 x = Apply (Apply (Apply Let_0123456789+Sym0 x) x) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))
     data Foo12Sym0 (k :: TyFun Nat Nat)
     type instance Apply Foo12Sym0 a = Foo12 a
+    type family Foo13 (a :: a) :: a where
+      Foo13 x = Apply Foo13bSym0 (Apply Let_0123456789barSym0 x)
+    data Foo13Sym0 (k :: TyFun a a)
+    type instance Apply Foo13Sym0 a = Foo13 a
+    type family Foo13b (a :: a) :: a where
+      Foo13b y = y
+    data Foo13bSym0 (k :: TyFun a a)
+    type instance Apply Foo13bSym0 a = Foo13b a

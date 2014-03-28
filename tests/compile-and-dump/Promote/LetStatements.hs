@@ -85,6 +85,16 @@ $(promote [d|
                 Zero     + m = m
                 (Succ n) + m = Succ (n + x)
             in x + (Succ (Succ Zero))
+
+  -- make sure that calls to functions declared outside of let don't receive
+  -- extra parameters with in-scope bindings. See #18.
+  foo13 :: forall a. a -> a
+  foo13 x = let bar :: a
+                bar = x
+            in foo13b bar
+
+  foo13b :: a -> a
+  foo13b y = y
  |])
 
 data Proxy a = Proxy
