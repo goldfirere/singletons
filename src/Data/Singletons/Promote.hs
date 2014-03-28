@@ -1242,6 +1242,9 @@ buildSymDecs name argKs resultK = go tailArgK (buildTyFun lastArgK resultK)
 -- type instance Apply SuccSym0 k1 = Succ k1
 buildEmptySymDec :: Quasi q => Name -> q [Dec]
 buildEmptySymDec name =
+    -- When calling ConT here we assume that the name includes
+    -- a baked-in namespace. If this is not the case this code
+    -- will fail. See https://github.com/goldfirere/singletons/issues/10
     let promotedName = promoteTySym name 0
     in return [TySynD promotedName [] (ConT name)]
 
