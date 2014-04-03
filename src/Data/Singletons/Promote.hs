@@ -13,6 +13,12 @@ module Data.Singletons.Promote where
 
 import Language.Haskell.TH hiding ( Q, cxt )
 import Language.Haskell.TH.Syntax ( falseName, trueName, Quasi(..) )
+import Language.Haskell.TH.Desugar
+import Language.Haskell.TH.Desugar.Sweeten
+import Data.Singletons.Names
+import Data.Singletons.Promote.Monad
+import Data.Singletons.Promote.Util
+import Data.Singletons.Promote.Equality
 import Data.Singletons.Util
 import Data.Singletons.Types
 import Data.Singletons
@@ -21,239 +27,77 @@ import GHC.TypeLits (Symbol)
 import Prelude hiding (exp)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
+import Data.Map ( Map )
+import Data.Set ( Set )
 import Control.Monad
+import Control.Monad.Trans
+import Control.Applicative
 import Data.List
 import Data.Maybe
 import Data.Typeable ( TypeRep )
-
-anyTypeName, boolName, andName, tyEqName, repName, ifName,
-  nilName, consName, listName, headName, tailName, tyFunName,
-  applyName, symbolName, undefinedName, typeRepName, stringName,
-  eqName :: Name
-anyTypeName = ''Any
-boolName = ''Bool
-andName = '(&&)
-#if __GLASGOW_HASKELL__ >= 707
-tyEqName = ''(==)
-#else
-tyEqName = ''(:==)
-#endif
-repName = mkName "Rep"
-ifName = ''If
-nilName = '[]
-consName = '(:)
-listName = ''[]
-headName = mkName "Head"  -- these will go away with the th-desugar change
-tailName = mkName "Tail"
-tyFunName = ''TyFun
-applyName = ''Apply
-symbolName = ''Symbol
-undefinedName = 'undefined
-typeRepName = ''TypeRep
-stringName = ''String
-eqName = ''Eq
-
-falseTySym :: Type
-falseTySym = promoteValRhs falseName
-
-trueTySym :: Type
-trueTySym = promoteValRhs trueName
-
-boolTy :: Type
-boolTy = ConT boolName
-
-andTySym :: Type
-andTySym = promoteValRhs andName
-
-ifTyFam :: Type
-ifTyFam = ConT ifName
-
-headTyFam :: Type
-headTyFam = ConT headName
-
-tailTyFam :: Type
-tailTyFam = ConT tailName
-
-promoteInfo :: Quasi q => Info -> q [Dec]
-promoteInfo (ClassI _dec _instances) =
-  fail "Promotion of class info not supported"
-promoteInfo (ClassOpI _name _ty _className _fixity) =
-  fail "Promotion of class members info not supported"
-promoteInfo (TyConI dec) = evalWithoutAux $ promoteDec Map.empty Map.empty dec
-promoteInfo (FamilyI _dec _instances) =
-  fail "Promotion of type family info not yet supported" -- KindFams
-promoteInfo (PrimTyConI _name _numArgs _unlifted) =
-  fail "Promotion of primitive type constructors not supported"
-promoteInfo (DataConI _name _ty _tyname _fixity) =
-  fail $ "Promotion of individual constructors not supported; " ++
-         "promote the type instead"
-promoteInfo (VarI _name _ty _mdec _fixity) =
-  fail "Promotion of value info not supported"
-promoteInfo (TyVarI _name _ty) =
-  fail "Promotion of type variable info not supported"
-
--- used when a value name appears in a pattern context
--- works only for proper variables (lower-case names)
-promoteValNameLhs :: Name -> Name
-promoteValNameLhs n = upcase n
-
--- used when a value name appears in an expression context
--- works for both variables and datacons
-promoteValRhs :: Name -> Type
-promoteValRhs name
-  | name == nilName
-  = PromotedT nilName   -- workaround for #21
-
-  | otherwise
-  = ConT $ promoteTySym name 0
-
--- generates type-level symbol for a given name. Int parameter represents
--- saturation: 0 - no parameters passed to the symbol, 1 - one parameter
--- passed to the symbol, and so on
-promoteTySym :: Name -> Int -> Name
-promoteTySym name sat
-    | name == undefinedName
-    = anyTypeName
-
-    | Just degree <- tupleNameDegree_maybe name
-    = mkName $ "Tuple" ++ show degree ++ "Sym" ++ (show sat)
-
-    | otherwise
-    = let capped = toUpcaseStr name in
-      if head capped == ':'
-      then mkName (capped ++ (replicate (sat + 1) '$'))
-      else mkName (capped ++ "Sym" ++ (show sat))
-
--- Note [Type promotion]
--- ~~~~~~~~~~~~~~~~~~~~~
---
--- To promote a type we first extract individual types from an arrow
--- type. Then we promote each of extracted types to a kind and
--- reconstruct the arrow kind. The reason for this two stage approach
--- is that we promote nested ordinary arrows to type level arrows
--- (TyFun data constructor) so that we can have higher order functions
--- at the type level.
-
-promoteType :: Quasi q => Type -> q Kind
-promoteType t = mapM promoteType' (unravel t) >>= (return . ravel)
-
-promoteType' :: Quasi q => Type -> q Kind
--- We don't need to worry about constraints: they are used to express
--- static guarantees at runtime. But, because we don't need to do
--- anything special to keep static guarantees at compile time, we don't
--- need to promote them.
-promoteType' (ForallT _tvbs _ ty) = promoteType' ty
-promoteType' (VarT name) = return $ VarT name
-promoteType' (ConT name) = return $
-  if | name == typeRepName               -> StarT
-     | name == stringName                -> ConT symbolName
-     | nameBase name == nameBase repName -> StarT
-     | otherwise                         -> ConT name
-promoteType' (TupleT n) = return $ TupleT n
-promoteType' (UnboxedTupleT n) = return $ TupleT n
-promoteType' ArrowT = fail "Promoting of arrow type should not happen."
-promoteType' ListT = return ListT
-promoteType' (AppT (AppT ArrowT (ForallT (_:_) _ _)) _) =
-  fail "Cannot promote types of rank above 1."
-promoteType' (AppT (AppT ArrowT ty1) ty2) = do
-  k1 <- promoteType' ty1
-  k2 <- promoteType' ty2
-  return $ (AppT (AppT ArrowT (AppT (AppT (ConT tyFunName) k1) k2)) StarT)
-promoteType' (AppT ty1 ty2) = do
-  k1 <- promoteType' ty1
-  k2 <- promoteType' ty2
-  return $ AppT k1 k2
-promoteType' (SigT _ty _) = fail "Cannot promote type of kind other than *"
-promoteType' (LitT _) = fail "Cannot promote a type-level literal"
-promoteType' (PromotedT _) = fail "Cannot promote a promoted data constructor"
-promoteType' (PromotedTupleT _) = fail "Cannot promote tuples that are already promoted"
-promoteType' PromotedNilT = fail "Cannot promote a nil that is already promoted"
-promoteType' PromotedConsT = fail "Cannot promote a cons that is already promoted"
-promoteType' StarT = fail "* used as a type"
-promoteType' ConstraintT = fail "Constraint used as a type"
-
--- a table to keep track of variable->type mappings
-type TypeTable = Map.Map Name Type
 
 -- | Promote every declaration given to the type level, retaining the originals.
 promote :: Quasi q => q [Dec] -> q [Dec]
 promote qdec = do
   decls <- qdec
-  promDecls <- promoteDecs Map.empty decls
-  return $ decls ++ promDecls
+  ddecls <- dsDecs decls
+  promDecls <- promoteMDecs $ promoteDecs ddecls
+  return $ decls ++ decsToTH promDecls
 
 -- | Promote each declaration, discarding the originals.
 promoteOnly :: Quasi q => q [Dec] -> q [Dec]
 promoteOnly qdec = do
-  decls <- qdec
-  promDecls <- promoteDecs Map.empty decls
-  return promDecls
+  decls  <- qdec
+  ddecls <- dsDecs decls
+  promDecls <- promoteMDecs $ promoteDecs ddecls
+  return $ decsToTH promDecls
 
 -- | Generate defunctionalization symbols for existing type family
 genDefunSymbols :: Quasi q => [Name] -> q [Dec]
 genDefunSymbols names = do
-  checkForRep names -- is that correct? Copied from genSingletons
-  concatMapM (defunInfo <=< reifyWithWarning) names
+  checkForRep names
+  infos <- mapM (dsInfo <=< reifyWithWarning) names
+  decs <- promoteMDecs $ concatMapM defunInfo infos
+  return $ decsToTH decs
 
-defunInfo :: Quasi q => Info -> q [Dec]
-defunInfo (ClassI _dec _instances) =
-  fail "Building defunctionalization symbols of class info not supported"
-defunInfo (ClassOpI _name _ty _className _fixity) =
-  fail "Building defunctionalization symbols of class members info not supported"
-defunInfo (TyConI dec) = do
-  buildDefunSyms dec
-defunInfo (FamilyI dec _instances) =
-  buildDefunSyms dec
-defunInfo (PrimTyConI _name _numArgs _unlifted) =
-  fail "Building defunctionalization symbols of primitive type constructors not supported"
-defunInfo (DataConI _name _ty _tyname _fixity) =
-  fail $ "Building defunctionalization symbols of individual constructors not supported; "
-      ++ "Build symbols for entire type instead"
-defunInfo (VarI _name _ty _mdec _fixity) =
-  fail "Building defunctionalization symbols of value info not supported"
-defunInfo (TyVarI _name _ty) =
-  fail "Building defunctionalization symbols of type variable info not supported"
+-- | Produce instances for '(:==)' (type-level equality) from the given types
+promoteEqInstances :: Quasi q => [Name] -> q [Dec]
+promoteEqInstances = concatMapM promoteEqInstance
 
-buildDefunSyms :: Quasi q => Dec -> q [Dec]
+-- | Produce an instance for '(:==)' (type-level equality) from the given type
+promoteEqInstance :: Quasi q => Name -> q [Dec]
+promoteEqInstance name = do
+  (_tvbs, cons) <- getDataD "I cannot make an instance of (:==) for it." name
+  cons' <- mapM dsCon cons
 #if __GLASGOW_HASKELL__ >= 707
-buildDefunSyms (ClosedTypeFamilyD name tyVars returnKs_maybe _) = do
+  vars <- replicateM (length _tvbs) (qNewName "k")
+  let tyvars = map DVarK vars
+      kind = DConK name tyvars
+  inst_decs <- mkEqTypeInstance kind cons'
+  return $ decsToTH inst_decs
 #else
-buildDefunSyms (FamilyD TypeFam name tyVars returnKs_maybe) = do
+  let pairs = [(c1, c2) | c1 <- cons, c2 <- cons]
+  mapM (fmap decsToTH . mkEqTypeInstance) pairs
 #endif
-  let returnKs = fromMaybe StarT returnKs_maybe
-      returnK  = last $ unravel returnKs -- workaround for #8884
-  (dataSyms, dataNames) <- buildSymDecs name types returnK
-  applyInstances <- buildApplyInstances (zipWith (,) dataNames
-                                                     (name : dataNames))
-  return $ dataSyms ++ applyInstances
-      where types = map (\case {PlainTV _ -> StarT; KindedTV _ k -> k}) tyVars
-buildDefunSyms (DataD _cxt tyName tvbs ctors _derivings) =
-  buildDefunSymsDataD tyName tvbs ctors
-buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
-                          "type families and data declarations"
 
-checkForRep :: Quasi q => [Name] -> q ()
-checkForRep names =
-  when (any ((== nameBase repName) . nameBase) names)
-    (fail $ "A data type named <<Rep>> is a special case.\n" ++
-            "Promoting it will not work as expected.\n" ++
-            "Please choose another name for your data type.")
-
-checkForRepInDecls :: Quasi q => [Dec] -> q ()
-checkForRepInDecls decls =
-  checkForRep (map extractNameFromDec decls)
-  where extractNameFromDec :: Dec -> Name
-        extractNameFromDec (DataD _ name _ _ _) = name
-        extractNameFromDec (NewtypeD _ name _ _ _) = name
-        extractNameFromDec (TySynD name _ _) = name
-        extractNameFromDec (FamilyD _ name _ _) = name
-        extractNameFromDec _ = mkName "NotRep"
+promoteInfo :: DInfo -> PrM [DDec]
+promoteInfo (DTyConI dec _instances) = promoteDecs [dec]
+promoteInfo (DPrimTyConI _name _numArgs _unlifted) =
+  fail "Promotion of primitive type constructors not supported"
+promoteInfo (DVarI _name _ty _mdec _fixity) =
+  fail "Promotion of individual values not supported"
+promoteInfo (DTyVarI _name _ty) =
+  fail "Promotion of individual type variables not supported"
 
 -- Note [Promoting declarations in two stages]
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --
 -- Promoting declarations proceeds in two stages:
--- 1) Promote everything except type signatures
+-- 1) Promote everything except type signatures.
+--    Function and value declarations don't get promoted yet, but the key
+--    information (either the function clauses or the value RHS) get stored
+--    in a LetDecEnv.
+
 -- 2) Promote type signatures. This must be done in a second pass
 --    because a function type signature gets promoted to a type family
 --    declaration.  Although function signatures do not differentiate
@@ -286,139 +130,32 @@ checkForRepInDecls decls =
 -- of foo. In this case there is only one so we declare Foo to take
 -- one argument and have return type of Bool -> Bool.
 
--- Promote a list of declarations.
-promoteDecs :: Quasi q => TypeTable -> [Dec] -> q [Dec]
-promoteDecs ctx decls = do
+-- Promote a list of top-level declarations.
+promoteDecs :: [DDec] -> PrM [DDec]
+promoteDecs decls = do
   checkForRepInDecls decls
-  let vartbl = Map.empty
   -- See Note [Promoting declarations in two stages]
-  (newDecls, table) <- evalForPair $ mapM (promoteDec ctx vartbl) decls
-  (declss, namess) <- mapAndUnzipM (promoteDec' ctx table) decls
-  let moreNewDecls = concat declss
-      names = concat namess
-      noTypeSigs = Set.toList $ Set.difference
-                         (Map.keysSet $ Map.filter ((>= 0) . fst) table)
-                         (Set.fromList names)
-  when (not . null $ noTypeSigs) $ fail ("No type signature for functions: "
-    ++ intercalate ", " (map (show . nameBase) noTypeSigs)
-    ++ "; cannot promote or make singletons.")
-  return (concat newDecls ++ moreNewDecls)
+  let (let_decs, other_decs) = partitionWith (\case DLetDec ld -> Left ld
+                                                    dec        -> Right dec) decls
+      -- promoteLetDecs returns LetBinds, which we don't need
+  _ <- promoteLetDecs noPrefix let_decs
+  prom_decs <- concatMapM promoteDec other_decs
+  return prom_decs
 
--- | Produce instances for '(:==)' (type-level equality) from the given types
-promoteEqInstances :: Quasi q => [Name] -> q [Dec]
-promoteEqInstances = concatMapM promoteEqInstance
+promoteLetDecs :: String -- prefix to use on all new definitions
+               -> [DLetDec] -> PrM [LetBind]
+promoteLetDecs prefix decls = do
+  let_dec_env <- concatMapM promoteLetDec decls
+  all_locals <- allLocals
+  let binds = [ (name, foldType (DConT sym) (map DVarT all_locals))
+              | name <- Map.keys $ fst let_dec_env
+              , let proName = promoteValNameLhsPrefix prefix name
+                    sym = promoteTySym proName (length all_locals) ]
+  emitDecsM $ letBind binds $ promoteLetDecEnv prefix let_dec_env
+  return binds
 
--- | Produce an instance for '(:==)' (type-level equality) from the given type
-promoteEqInstance :: Quasi q => Name -> q [Dec]
-promoteEqInstance name = do
-  (_tvbs, cons) <- getDataD "I cannot make an instance of (:==:) for it." name
-#if __GLASGOW_HASKELL__ >= 707
-  vars <- replicateM (length _tvbs) (qNewName "k")
-  let tyvars = map VarT vars
-      kind = foldType (ConT name) tyvars
-  inst_decs <- mkEqTypeInstance kind cons
-  return inst_decs
-#else
-  let pairs = [(c1, c2) | c1 <- cons, c2 <- cons]
-  mapM mkEqTypeInstance pairs
-#endif
-
-#if __GLASGOW_HASKELL__ >= 707
-
--- produce a closed type family helper and the instance
--- for (:==) over the given list of ctors
-mkEqTypeInstance :: Quasi q => Kind -> [Con] -> q [Dec]
-mkEqTypeInstance kind cons = do
-  helperName <- newUniqueName "Equals"
-  aName <- qNewName "a"
-  bName <- qNewName "b"
-  true_branches <- mapM mk_branch cons
-  false_branch  <- false_case
-  let closedFam = ClosedTypeFamilyD helperName
-                                    [ KindedTV aName kind
-                                    , KindedTV bName kind ]
-                                    (Just boolTy)
-                                    (true_branches ++ [false_branch])
-      eqInst = TySynInstD tyEqName (TySynEqn [ SigT (VarT aName) kind
-                                             , SigT (VarT bName) kind ]
-                                             (foldType (ConT helperName)
-                                                       [VarT aName, VarT bName]))
-  return [closedFam, eqInst]
-
-  where mk_branch :: Quasi q => Con -> q TySynEqn
-        mk_branch con = do
-          let (name, numArgs) = extractNameArgs con
-          lnames <- replicateM numArgs (qNewName "a")
-          rnames <- replicateM numArgs (qNewName "b")
-          let lvars = map VarT lnames
-              rvars = map VarT rnames
-              ltype = foldType (PromotedT name) lvars
-              rtype = foldType (PromotedT name) rvars
-              results = zipWith (\l r -> foldType (ConT tyEqName) [l, r]) lvars rvars
-              result = tyAll results
-          return $ TySynEqn [ltype, rtype] result
-
-        false_case :: Quasi q => q TySynEqn
-        false_case = do
-          lvar <- qNewName "a"
-          rvar <- qNewName "b"
-          return $ TySynEqn [SigT (VarT lvar) kind, SigT (VarT rvar) kind]
-                            (promoteValRhs falseName)
-
-        tyAll :: [Type] -> Type -- "all" at the type level
-        tyAll [] = (promoteValRhs trueName)
-        tyAll [one] = one
-        tyAll (h:t) = foldType (ConT $ promoteValNameLhs andName) [h, (tyAll t)]
-           -- I could use the Apply nonsense here, but there's no reason to
-
-#else
-
--- produce the type instance for (:==) for the given pair of constructors
-mkEqTypeInstance :: Quasi q => (Con, Con) -> q Dec
-mkEqTypeInstance (c1, c2) =
-  if c1 == c2
-  then do
-    let (name, numArgs) = extractNameArgs c1
-    lnames <- replicateM numArgs (qNewName "a")
-    rnames <- replicateM numArgs (qNewName "b")
-    let lvars = map VarT lnames
-        rvars = map VarT rnames
-    return $ TySynInstD
-      tyEqName
-      [foldType (PromotedT name) lvars,
-       foldType (PromotedT name) rvars]
-      (tyAll (zipWith (\l r -> foldType (ConT tyEqName) [l, r])
-                      lvars rvars))
-  else do
-    let (lname, lNumArgs) = extractNameArgs c1
-        (rname, rNumArgs) = extractNameArgs c2
-    lnames <- replicateM lNumArgs (qNewName "a")
-    rnames <- replicateM rNumArgs (qNewName "b")
-    return $ TySynInstD
-      tyEqName
-      [foldType (PromotedT lname) (map VarT lnames),
-       foldType (PromotedT rname) (map VarT rnames)]
-      falseTySym
-  where tyAll :: [Type] -> Type -- "all" at the type level
-        tyAll [] = trueTySym
-        tyAll [one] = one
-        tyAll (h:t) = foldType (ConT $ promoteValNameLhs andName) [h, (tyAll t)]
-
-#endif
-
--- keeps track of the number of non-uniform parameters to promoted values
--- and all of the instance equations for those values
-#if __GLASGOW_HASKELL__ >= 707
-type PromoteTable = Map.Map Name (Int, [TySynEqn])
-#else
-type PromoteTable = Map.Map Name (Int, [Dec])
-#endif
-type PromoteQ q = QWithAux PromoteTable q
-
--- used when a type is declared as a type synonym, not a type family
--- no need to declare "type family ..." for these
-typeSynonymFlag :: Int
-typeSynonymFlag = -1
+noPrefix :: String
+noPrefix = ""
 
 {---------------------------------------------------------------------
 
@@ -432,73 +169,9 @@ a defunctionalized way. So, it all works out.
 
 ---------------------------------------------------------------------}
 
-promoteDec :: Quasi q => TypeTable -> TypeTable -> Dec -> PromoteQ q [Dec]
-promoteDec ctx vars (FunD name clauses) = do
-  let proName = promoteValNameLhs name
-      numArgs = Map.size ctx + getNumPats (head clauses) -- count the parameters
-      -- Haskell requires all clauses to have the same number of parameters
-  (eqns, instDecls) <- evalForPair $
-                       mapM (promoteClause ctx vars proName) clauses
-  addBinding name (numArgs, eqns) -- remember the number of parameters and the eqns
-  return instDecls
-  where getNumPats :: Clause -> Int
-        getNumPats (Clause pats _ _) = length pats
-promoteDec ctx vars (ValD pat body decs)
-  | Map.size ctx == 0 = do
-      -- see also the comment for promoteTopLevelPat
-      when (length decs > 0)
-               (fail $ "Promotion of global variable with <<where>> clause " ++
-                       "not yet supported")
-      (rhs, decls) <- evalForPair $ promoteBody vars body
-      (lhss, decls') <- evalForPair $ promoteTopLevelPat pat
-      -- just use "type" decls
-      mapM_ (flip addBinding (typeSynonymFlag, [])) (map lhsRawName lhss)
-      -- see Note [Why lhsToDecs works]
-      let lhsToDecs :: TopLevelLHS -> [Dec]
-          lhsToDecs (LHS unprom nm hole) =
-            [ TySynD nm [] (hole rhs)
-            , TySynD (promoteTySym unprom 0) [] (ConT nm) ]
-      return $ (concatMap lhsToDecs lhss) ++ decls ++ decls'
-  | VarP name <- pat = promoteDec ctx vars (FunD name [Clause [] body decs])
-  | otherwise = fail "Promotion of complex patterns in let declarations not supported."
-promoteDec _ctx _vars (DataD cxt name tvbs ctors derivings) =
-  promoteDataD cxt name tvbs ctors derivings
-promoteDec _ctx _vars (NewtypeD _cxt _name _tvbs _ctor _derivings) =
-#if __GLASGOW_HASKELL__ >= 707
-  promoteDataD _cxt _name _tvbs [_ctor] _derivings
-#else
-  fail "Newtypes don't promote under GHC 7.6. Use <<data>> instead or upgrade GHC."
-#endif
-promoteDec _ctx _vars (TySynD _name _tvbs _ty) =
-  fail "Promotion of type synonym declaration not yet supported"
-promoteDec _ctx _vars (ClassD _cxt _name _tvbs _fundeps _decs) =
-  fail "Promotion of class declaration not yet supported"
-promoteDec _ctx _vars (InstanceD _cxt _ty _decs) =
-  fail "Promotion of instance declaration not yet supported"
-promoteDec _ctx _vars (SigD _name _ty) = return [] -- handle in promoteDec'
-promoteDec _ctx _vars (ForeignD _fgn) =
-  fail "Promotion of foreign function declaration not yet supported"
-promoteDec _ctx _vars (InfixD fixity name)
-  | isUpcase name = return [] -- automatic: promoting a type or data ctor
-  | otherwise     = return [InfixD fixity (promoteValNameLhs name)] -- value
-promoteDec _ctx _vars (PragmaD _prag) =
-  fail "Promotion of pragmas not yet supported"
-promoteDec _ctx _vars (FamilyD _flavour _name _tvbs _mkind) =
-  fail "Promotion of type and data families not yet supported"
-promoteDec _ctx _vars (DataInstD _cxt _name _tys _ctors _derivings) =
-  fail "Promotion of data instances not yet supported"
-promoteDec _ctx _vars (NewtypeInstD _cxt _name _tys _ctors _derivings) =
-  fail "Promotion of newtype instances not yet supported"
-#if __GLASGOW_HASKELL__ >= 707
-promoteDec _ctx _vars (RoleAnnotD _name _roles) =
-  return [] -- silently ignore role annotations, as they're harmless here
-promoteDec _ctx _vars (ClosedTypeFamilyD _name _tvs _mkind _eqns) =
-  fail "Promotion of closed type families not yet supported"
-promoteDec _ctx _vars (TySynInstD _name _eqn) =
-#else
-promoteDec _ctx _vars (TySynInstD _name _lhs _rhs) =
-#endif
-  fail "Promotion of type synonym instances not yet supported"
+promoteDec :: DDec -> PrM [DDec]
+promoteDec (DLetDec letdec) = fail $ "Internal error! Let-declarations should " ++
+                                     "not be seen in promoteDec: " ++ show letdec
 
 -- Promotion of data types to kinds is automatic (see "Ginving Haskell a
 -- Promotion" paper for more details). Here we "plug into" the promotion
@@ -513,98 +186,136 @@ promoteDec _ctx _vars (TySynInstD _name _lhs _rhs) =
 --    type level in the same way they can be used uniformly at the type level.
 --
 --  * for each nullary data constructor we generate a type synonym
-promoteDataD :: Quasi q => Cxt -> Name -> [TyVarBndr] -> [Con] ->
-                [Name] -> q [Dec]
-promoteDataD _cxt tyName tvbs ctors derivings = do
-  eq <- if elem eqName derivings
-        then do
-#if __GLASGOW_HASKELL__ >= 707
-          kvs <- replicateM (length tvbs) (qNewName "k")
-          inst_decs <- mkEqTypeInstance (foldType (ConT tyName) (map VarT kvs)) ctors
-          return inst_decs
-#else
-          let pairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
-          mapM mkEqTypeInstance pairs
+promoteDec (DDataD _nd _cxt name tvbs ctors derivings) = do
+#if __GLASGOW_HASKELL__ < 707
+  when (_nd == Newtype) $
+    fail $ "Newtypes don't promote under GHC 7.6. " ++
+           "Use <<data>> instead or upgrade GHC."
 #endif
-        else return []
-  ctorSyms <- buildDefunSymsDataD tyName tvbs ctors
-  return $ eq ++ ctorSyms
-
-buildDefunSymsDataD :: Quasi q => Name -> [TyVarBndr] -> [Con] -> q [Dec]
-buildDefunSymsDataD tyName tvbs ctors = do
-  let tyVarNames = getTyVarNames tvbs
-  promotedKind <- promoteType $ foldType (ConT tyName) tyVarNames
-  promotedCtorSyms <- mapM (promoteCtor promotedKind) ctors
-  let (tyCtorBaseName, tyCtorTySym) = tyCtorName tyName
-  tyConSyms <- buildCtorSyms StarT (tyCtorBaseName, replicate (length tvbs) StarT)
-  return $ concat (tyCtorTySym : tyConSyms : promotedCtorSyms)
-      where
-        ctorNameAndTypes :: Con -> (Name, [Type])
-        ctorNameAndTypes (NormalC name tys)    = (name, map snd tys)
-        ctorNameAndTypes (RecC    name tys)    = (name, map (\(_,_,t) -> t) tys)
-        ctorNameAndTypes (InfixC ty1 name ty2) = (name, [snd ty1, snd ty2])
-        ctorNameAndTypes (ForallC _ _ ctor)    = ctorNameAndTypes ctor
-
-        getTyVarNames :: [TyVarBndr] -> [Type]
-        getTyVarNames [] = []
-        getTyVarNames (PlainTV  name   : xs) = VarT name : getTyVarNames xs
-        getTyVarNames (KindedTV name _ : xs) = VarT name : getTyVarNames xs
-
-        promoteCtor :: Quasi q => Kind -> Con -> q [Dec]
-        promoteCtor promotedKind ctor =
-            buildCtorSyms promotedKind (ctorNameAndTypes ctor)
-
-        buildCtorSyms :: Quasi q => Kind -> (Name, [Type]) -> q [Dec]
-        buildCtorSyms promotedKind (name, types)
-            | length types > 0 = do
-                 (dataSyms, dataNames) <- buildSymDecs name types promotedKind
-                 applyInstances <- buildApplyInstances (zipWith (,) dataNames
-                                                       (name : dataNames))
-                 return $ dataSyms ++ applyInstances
-            | otherwise = buildEmptySymDec name
-
-        tyCtorName :: Name -> (Name, [Dec])
-        tyCtorName name = ( tySymName, [TySynD tySymName [] (ConT name)] )
-            where tySymName
-                      | Just degree <- tupleDegree_maybe (nameBase name) =
-                          mkName ("TupleTyCtor" ++ show degree)
-                      | name == listName = mkName "ListTyCtor"
-                      | otherwise        = mkName (nameBase name ++ "TyCtor")
-
--- second pass through declarations to deal with type signatures
--- returns the new declarations and the list of names that have been
--- processed
-promoteDec' :: Quasi q => TypeTable -> PromoteTable -> Dec -> q ([Dec], [Name])
-promoteDec' ctx tab (SigD name ty) = case Map.lookup name tab of
-  Nothing -> fail $ "Type declaration is missing its binding: " ++ (show name)
-  Just (numArgs, eqns) ->
-    -- if there are no args, then use a type synonym, not a type family
-    -- in the type synonym case, we ignore the type signature
-    if numArgs == typeSynonymFlag then return $ ([], [name]) else do
-      let ty' = ravel (Map.elems ctx ++ (unravel ty))
-      k <- promoteType ty'
-      let proName = promoteValNameLhs name
-          ks = unravel k
-          (argKs, resultKs) = splitAt numArgs ks -- divide by uniformity
-          resultK = ravelTyFun resultKs -- rebuild the return kind turning -> into TyFun
-      tyvarNames <- mapM qNewName (replicate (length argKs) "a")
-      (dataSyms, dataNames) <- buildSymDecs name argKs resultK
-      applyInstances <- buildApplyInstances (zip dataNames (proName : dataNames))
+  when (elem eqName derivings) $ do
 #if __GLASGOW_HASKELL__ >= 707
-      return ((ClosedTypeFamilyD proName
-                                 (zipWith KindedTV tyvarNames argKs)
-                                 (Just resultK)
-                                 eqns) :
-              dataSyms ++ applyInstances, [name])
+    kvs <- replicateM (length tvbs) (qNewName "k")
+    inst_decs <- mkEqTypeInstance (DConK name (map DVarK kvs)) ctors
 #else
-      return ((FamilyD TypeFam
-                       proName
-                       (zipWith KindedTV tyvarNames argKs)
-                       (Just resultK)) :
-              eqns ++ dataSyms ++ applyInstances, [name])
+    let pairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
+    inst_decs <- mapM mkEqTypeInstance pairs
 #endif
-promoteDec' _ _ _ = return ([], [])
+    emitDecs inst_decs
+  ctorSyms <- buildDefunSymsDataD name tvbs ctors
+  emitDecs ctorSyms
+  return []  -- promoting the datatype leads to no decs directly...
+  
+promoteDec (DTySynD _name _tvbs _ty) =
+  fail "Promotion of type synonym declaration not yet supported"
+promoteDec (DClassD _cxt _name _tvbs _fundeps _decs) =
+  fail "Promotion of class declaration not yet supported"
+promoteDec (DInstanceD _cxt _ty _decs) =
+  fail "Promotion of instance declaration not yet supported"
+promoteDec (DForeignD _fgn) =
+  fail "Promotion of foreign function declaration not yet supported"
+promoteDec (DPragmaD _prag) =
+  fail "Promotion of pragmas not yet supported"
+promoteDec (DFamilyD _flavour _name _tvbs _mkind) =
+  fail "Promotion of type and data families not yet supported"
+promoteDec (DDataInstD _nd _cxt _name _tys _ctors _derivings) =
+  fail "Promotion of data instances not yet supported"
+promoteDec (DTySynInstD _name _eqn) =
+  fail "Promotion of type synonym instances not yet supported"
+promoteDec (DClosedTypeFamilyD _name _tvs _mkind _eqns) =
+  fail "Promotion of closed type families not yet supported"
+promoteDec (DRoleAnnotD _name _roles) =
+  return [] -- silently ignore role annotations, as they're harmless here
 
+promoteLetDec :: DLetDec -> PrM LetDecEnv
+promoteLetDec (DFunD name clauses) = do
+  valueBinding name (Function clauses)
+promoteLetDec (DValD (DVarPa name) exp) = do
+  valueBinding name (Value exp)
+promoteLetDec dec@(DValD {}) = do  -- complex pattern. Flatten!
+  let_decs <- flattenDValD dec
+  concatMapM promoteLetDec let_decs
+promoteLetDec (DSigD name ty) = do
+  typeBinding name ty
+promoteLetDec (DInfixD fixity name)
+  | isUpcase name = return emptyLetDecEnv -- promoting a type or data ctor
+  | otherwise     = do                    -- value
+    emitDecs [DLetDec $ DInfixD fixity (promoteValNameLhs name)]
+    return emptyLetDecEnv
+
+promoteLetDecEnv :: String -> LetDecEnv -> PrM [DDec]
+promoteLetDecEnv prefix (value_env, type_env) =
+  mapM (uncurry prom_let_dec) (Map.toList value_env)
+  where
+    prom_let_dec :: Name -> LetDecRHS -> PrM DDec
+    prom_let_dec name (Value exp) = do
+      all_locals <- allLocals
+      exp' <- promoteExp exp
+      let proName = promote_lhs name
+        -- exported (top-level) value declarations need symbols, because we
+        -- don't know whether these are functions or not at use sites.
+        -- local decs don't need this, because the names are stored in the env't
+      when (null all_locals) $
+        emitDecs [DTySynD (promoteTySym proName 0) [] (DConT proName)]
+      return (DTySynD proName (map DPlainTV all_locals) exp')
+    prom_let_dec name (Function clauses) =
+      case Map.lookup name type_env of
+        Nothing -> fail ("No type signature for function \"" ++
+                         (show name) ++ "\". Cannot promote.")
+        Just ty -> do
+            -- promoteType turns arrows into TyFun. So, we unravel first to
+            -- avoid this behavior. Note the use of ravelTyFun in resultK
+            -- to make the return kind work out
+          kis <- mapM promoteType (unravel ty)
+          numArgs <- count_args clauses
+          let proName = promote_lhs name
+              (argKs, resultKs) = splitAt numArgs kis
+              resultK = ravelTyFun resultKs
+          all_locals <- allLocals
+          local_kis <- mapM (const $ qNewName "local") all_locals
+          tyvarNames <- mapM (const $ qNewName "a") argKs
+          let all_arg_names = all_locals ++ tyvarNames
+              all_arg_kinds = map DVarK local_kis ++ argKs
+              all_args = zipWith DKindedTV all_arg_names all_arg_kinds
+          emitDecsM $ defunctionalize proName all_arg_kinds resultK
+          eqns <- mapM promoteClause clauses
+          return (DClosedTypeFamilyD proName all_args (Just resultK) eqns)
+
+    promote_lhs = promoteValNameLhsPrefix prefix
+
+    count_args (DClause pats _ : _) = return $ length pats
+    count_args _ = fail $ "Impossible! A function without clauses."
+
+promoteType :: DType -> PrM DKind
+promoteType = go []
+  where
+    go :: [DKind] -> DType -> PrM DKind
+    -- We don't need to worry about constraints: they are used to express
+    -- static guarantees at runtime. But, because we don't need to do
+    -- anything special to keep static guarantees at compile time, we don't
+    -- need to promote them.
+    go []       (DForallT _tvbs _cxt ty) = go [] ty
+    go []       (DAppT (DAppT DArrowT (DForallT (_:_) _ _)) _) =
+      fail "Cannot promote types of rank above 1."
+    go args     (DAppT t1 t2) = do
+      k2 <- go [] t2
+      go (k2 : args) t1
+    go args     (DSigT ty _) = go args ty  -- just ignore signatures
+    go []       (DVarT name) = return $ DVarK name
+    go _        (DVarT name) = fail $ "Cannot promote an applied type variable " ++
+                                      show name ++ "."
+    go []       (DConT name)
+      | name == typeRepName               = return DStarK
+      | name == stringName                = return $ DConK symbolName []
+      | nameBase name == nameBase repName = return DStarK
+    go args     (DConT name) = return $ DConK name args
+    go [k1, k2] DArrowT = return $ addStar (buildTyFun k1 k2)
+    go _ (DLitT _) = fail "Cannot promote a type-level literal"
+
+    go args     head = fail $ "Illegal Haskell construct encountered:\n" ++
+                              "headed by: " ++ show head ++ "\n" ++
+                              "applied to: " ++ show args
+
+{-
 -- Takes a name of a function together with its arity and
 -- converts all normal applications of that variable into usage of
 -- Apply type family. Returns a type and a Bool that says whether
@@ -635,562 +346,160 @@ promoteDec' _ _ _ = return ([], [])
 --     helper function inspects third parameter returned by recursive
 --     call to go for ty1. If it is greater than 0 it means we have to
 --     add additional Apply.
-introduceApply :: (Name, Int) -> Type -> (Type, Bool)
+introduceApply :: (Name, Int) -> DType -> (DType, Bool)
 introduceApply funData' typeT =
     case go funData' typeT of
       (t, f, _ ) -> (t, f)
     where
-      go funData (ForallT tyvars ctx ty) =
+      go funData (DForallT tyvars ctx ty) =
           let (ty', isApplyAdded, n) = go funData ty
-          in (ForallT tyvars ctx ty', isApplyAdded, n)
-      go (funName, funArity) (AppT (VarT name) ty) =
+          in (DForallT tyvars ctx ty', isApplyAdded, n)
+      go (funName, funArity) (DAppT (DVarT name) ty) =
           let (ty', isApplyAdded, _) = go (funName, funArity) ty
           in if funName == name -- if we found our type variable then use Apply
-             then (AppT (AppT (ConT applyName) (VarT name)) ty'
+             then (DAppT (DAppT (DConT applyName) (DVarT name)) ty'
                   , True, funArity - 1)
-             else (AppT                        (VarT name)  ty'
+             else (DAppT                        (DVarT name)  ty'
                   , isApplyAdded, 0)
-      go funData (AppT ty1 ty2) =
+      go funData (DAppT ty1 ty2) =
           let (ty1', isApplyAdded1, n) = go funData ty1
               (ty2', isApplyAdded2, _) = go funData ty2
           in if n /= 0 -- do we need to insert more Applies because arity > 1?
-             then (AppT (AppT (ConT applyName) ty1') ty2', True  , n - 1)
-             else (AppT ty1' ty2', isApplyAdded1 || isApplyAdded2, n    )
+             then (DAppT (DAppT (DConT applyName) ty1') ty2', True  , n - 1)
+             else (DAppT ty1' ty2', isApplyAdded1 || isApplyAdded2, n    )
       go _ ty = (ty, False, 0)
+-}
 
--- Generate instances of Apply for data declarations generated by buildSymDecs.
--- Invariant: The list of tuples has the form:
---
---  [(FooSymN, Foo), (FooSym(N-1), FooSymN) ,..., (FooSym0, FooSym1)]
-buildApplyInstances :: Quasi q => [(Name, Name)] -> q ([Dec])
-buildApplyInstances names = go names (length names - 1)
-    where go :: Quasi q => [(Name, Name)] -> Int -> q ([Dec])
-          go []     _ = return []
-          go ((symName, rhsName):ds) l = do
-            defs    <- go ds (l-1)
-            tyVars  <- mapM (liftM VarT . qNewName) (replicate l "a")
-            paramTy <- liftM VarT . qNewName $ "a"
-            let def = TySynInstD applyName
-#if __GLASGOW_HASKELL__ >= 707
-                      (TySynEqn [      foldType (ConT symName) tyVars, paramTy]
-                                (AppT (foldType (ConT rhsName) tyVars) paramTy))
-#else
-                                [      foldType (ConT symName) tyVars, paramTy]
-                                (AppT (foldType (ConT rhsName) tyVars) paramTy)
-#endif
-            return (def : defs)
-
-#if __GLASGOW_HASKELL__ >= 707
-promoteClause :: Quasi q => TypeTable -> TypeTable -> Name -> Clause -> QWithDecs q TySynEqn
-#else
-promoteClause :: Quasi q => TypeTable -> TypeTable -> Name -> Clause -> QWithDecs q Dec
-#endif
-promoteClause ctx vars _name (Clause pats body []) = do
+promoteClause :: DClause -> PrM DTySynEqn
+promoteClause (DClause pats exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  (types, vartbl) <- evalForPair $ mapM promotePat pats
-  let vars' = Map.union ctx (Map.union vartbl vars)
-  ty <- promoteBody vars' body
-#if __GLASGOW_HASKELL__ >= 707
-  return $ TySynEqn (Map.elems ctx ++ types) ty
-#else
-  return $ TySynInstD _name (Map.elems ctx ++ types) ty
-#endif
-promoteClause _ _ _ (Clause _ _ (_:_)) =
-  fail "A <<where>> clause in a function definition is not yet supported"
+  (types, new_vars) <- evalForPair $ mapM promotePat pats
+  ty <- lambdaBind new_vars $ promoteExp exp
+  all_locals <- allLocals   -- these are bound *outside* of this clause
+  return $ DTySynEqn (map DVarT all_locals ++ types) ty
 
-#if __GLASGOW_HASKELL__ >= 707
-promoteMatch :: Quasi q => TypeTable -> Name -> Match -> QWithDecs q TySynEqn
-#else
-promoteMatch :: Quasi q => TypeTable -> Name -> Match -> QWithDecs q Dec
-#endif
-promoteMatch vars _name (Match pat body []) = do
+promoteMatch :: DMatch -> PrM DTySynEqn
+promoteMatch (DMatch pat exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  (types, vartbl) <- evalForPair $ promotePat pat
-  let vars' = Map.union vartbl vars
-  (rhs, decls) <- evalForPair $ promoteBody vars' body
-  mapM_ addElement decls
-  let inScopeTypes  = map snd . filter isBndrVarT $ Map.toList vars
-      eqnParams     = types : inScopeTypes
-#if __GLASGOW_HASKELL__ >= 707
-  return $ TySynEqn eqnParams rhs
-#else
-  return $ TySynInstD _name eqnParams rhs
-#endif
-promoteMatch _ _ (Match _ _ (_:_)) =
-  fail "A <<where>> clause in a case expression is not yet supported"
+  (ty, new_vars) <- evalForPair $ promotePat pat
+  rhs <- lambdaBind new_vars $ promoteExp exp
+  all_locals <- allLocals
+  return $ DTySynEqn (map DVarT all_locals ++ [ty]) rhs
 
-
--- the LHS of a top-level expression is a name and "type with hole"
--- the hole is filled in by the RHS
-data TopLevelLHS = LHS { lhsRawName :: Name -- the unpromoted name
-                       , lhsName :: Name
-                       , lhsHole :: Type -> Type
-                       }
-
--- Treatment of top-level patterns is different from other patterns
--- because type families have type patterns as their LHS. However,
--- it is not possible to use type patterns at the top level, so we
--- have to use other techniques.
-promoteTopLevelPat :: Quasi q => Pat -> QWithDecs q [TopLevelLHS]
-promoteTopLevelPat (LitP _) = fail "Cannot declare a global literal."
-promoteTopLevelPat (VarP name) = return [LHS name (promoteValNameLhs name) id]
-promoteTopLevelPat (TupP pats) = case length pats of
-  0 -> return [] -- unit as LHS of pattern... ignore
-  1 -> fail "1-tuple encountered during top-level pattern promotion"
-  n -> promoteTopLevelPat (ConP (tupleDataName n) pats)
-promoteTopLevelPat (UnboxedTupP pats) =
-  promoteTopLevelPat (TupP pats)
-
--- to promote a constructor pattern, we need to create extraction type
--- families to pull out the individual arguments of the constructor
-promoteTopLevelPat (ConP name pats) = do
-  ctorInfo <- reifyWithWarning name
-  (ctorType, argTypes) <- extractTypes ctorInfo
-  when (length argTypes /= length pats) $
-    fail $ "Inconsistent data constructor pattern: " ++ (show name) ++ " " ++
-           (show pats)
-  kind <- promoteType ctorType
-  argKinds <- mapM promoteType argTypes
-  extractorNames <- replicateM (length pats) (newUniqueName "Extract")
-
-  varName <- qNewName "a"
-  zipWithM_ (\nm arg -> addElement $ FamilyD TypeFam
-                                            nm
-                                            [KindedTV varName kind]
-                                            (Just arg))
-            extractorNames argKinds
-  componentNames <- replicateM (length pats) (qNewName "a")
-  zipWithM_ (\extractorName componentName ->
-    addElement $ mkTyFamInst extractorName
-                             [foldType (PromotedT name)
-                                       (map VarT componentNames)]
-                             (VarT componentName))
-    extractorNames componentNames
-
-  -- now we have the extractor families. Use the appropriate families
-  -- in the "holes"
-  promotedPats <- mapM promoteTopLevelPat pats
-  return $ concat $
-    zipWith (\lhslist extractor ->
-               map (\(LHS raw nm hole) -> LHS raw nm
-                                              (hole . (AppT (ConT extractor))))
-                   lhslist)
-            promotedPats extractorNames
-  where extractTypes :: Quasi q => Info -> q (Type, [Type])
-        extractTypes (DataConI datacon _dataconTy tyname _fixity) = do
-          tyinfo <- reifyWithWarning tyname
-          extractTypesHelper datacon tyinfo
-        extractTypes _ = fail "Internal error: unexpected Info in extractTypes"
-
-        extractTypesHelper :: Quasi q => Name -> Info -> q (Type, [Type])
-        extractTypesHelper datacon
-                           (TyConI (DataD _cxt tyname tvbs cons _derivs)) =
-          let mcon = find ((== datacon) . fst . extractNameArgs) cons in
-          case mcon of
-            Nothing -> fail $ "Internal error reifying " ++ (show datacon)
-            Just con -> return (foldType (ConT tyname)
-                                         (map (VarT . extractTvbName) tvbs),
-                                extractConArgs con)
-        extractTypesHelper datacon
-                           (TyConI (NewtypeD cxt tyname tvbs con derivs)) =
-          extractTypesHelper datacon (TyConI (DataD cxt tyname tvbs [con] derivs))
-        extractTypesHelper datacon _ =
-          fail $ "Cannot promote data constructor " ++ (show datacon)
-
-        extractConArgs :: Con -> [Type]
-        extractConArgs = ctor1Case (\_ tys -> tys)
-promoteTopLevelPat (InfixP l name r) = promoteTopLevelPat (ConP name [l, r])
-promoteTopLevelPat (UInfixP _ _ _) =
-  fail "Unresolved infix constructors not supported"
-promoteTopLevelPat (ParensP _) =
-  fail "Unresolved infix constructors not supported"
-promoteTopLevelPat (TildeP pat) = do
-  qReportWarning "Lazy pattern converted into regular pattern in promotion"
-  promoteTopLevelPat pat
-promoteTopLevelPat (BangP pat) = do
-  qReportWarning "Strict pattern converted into regular pattern in promotion"
-  promoteTopLevelPat pat
-promoteTopLevelPat (AsP _name _pat) =
-  fail "Promotion of aliased patterns at top level not yet supported"
-promoteTopLevelPat WildP = return []
-promoteTopLevelPat (RecP _ _) =
-  fail "Promotion of record patterns at top level not yet supported"
-
--- must do a similar trick as what is in the ConP case, but this is easier
--- because Lib defined Head and Tail
-promoteTopLevelPat (ListP pats) = do
-  promotedPats <- mapM promoteTopLevelPat pats
-  return $ concat $ snd $
-    mapAccumL (\extractFn lhss ->
-                 ((AppT tailTyFam) . extractFn,
-                  map (\(LHS raw nm hole) ->
-                         LHS raw nm (hole . (AppT headTyFam) . extractFn)) lhss))
-              id promotedPats
-promoteTopLevelPat (SigP pat _) = do
-  qReportWarning $ "Promotion of explicit type annotation in pattern " ++
-                         "not yet supported."
-  promoteTopLevelPat pat
-promoteTopLevelPat (ViewP _ _) =
-  fail "Promotion of view patterns not yet supported"
-
-type TypesQ q = QWithAux TypeTable q
-
--- promotes a term pattern into a type pattern, accumulating variable
--- binding in the auxiliary TypeTable
-promotePat :: Quasi q => Pat -> TypesQ q Type
-promotePat (LitP lit) = promoteLit lit
-promotePat (VarP name) = do
-  tyVar <- qNewName (nameBase name)
-  addBinding name (VarT tyVar)
-  return $ VarT tyVar
-promotePat (TupP pats) = do
+-- promotes a term pattern into a type pattern, accumulating bound variable names
+promotePat :: DPat -> QWithAux [Name] PrM DType
+promotePat (DLitPa lit) = promoteLit lit
+promotePat (DVarPa name) = do
+    -- somewhat cheekily use the same name at the type level
+  addElement name
+  return $ DVarT name
+promotePat (DConPa name pats) = do
   types <- mapM promotePat pats
-  let baseTup = PromotedTupleT (length types)
-      tup = foldType baseTup types
-  return tup
-promotePat (UnboxedTupP pats) =
-  promotePat (TupP pats)
-promotePat (ConP name pats) = do
-  types <- mapM promotePat pats
-  return $ foldType (PromotedT name) types
-promotePat (InfixP pat1 name pat2) = promotePat (ConP name [pat1, pat2])
-promotePat (UInfixP _ _ _) = fail "Unresolved infix constructions not supported"
-promotePat (ParensP _) = fail "Unresolved infix constructions not supported"
-promotePat (TildeP pat) = do
+  return $ foldType (DConT name) types
+promotePat (DTildePa pat) = do
   qReportWarning "Lazy pattern converted into regular pattern in promotion"
   promotePat pat
-promotePat (BangP pat) = do
+promotePat (DBangPa pat) = do
   qReportWarning "Strict pattern converted into regular pattern in promotion"
   promotePat pat
-promotePat (AsP name pat) = do
-  ty <- promotePat pat
-  addBinding name (promotedPatternToRHS ty)
-  return ty
-promotePat WildP = do
+promotePat DWildPa = do
   name <- qNewName "z"
-  return $ VarT name
-promotePat (RecP _ _) = fail "Promotion of record patterns not yet supported"
-promotePat (ListP pats) = do
-  types <- mapM promotePat pats
-  return $ foldr (\h t -> AppT (AppT PromotedConsT h) t) PromotedNilT types
-promotePat (SigP pat _) = do
-  qReportWarning $ "Promotion of explicit type annotation in pattern " ++
-                         "not yet supported"
-  promotePat pat
-promotePat (ViewP _ _) = fail "View patterns not yet supported"
+  return $ DVarT name
 
-promotedPatternToRHS :: Type -> Type
-promotedPatternToRHS (AppT exp1 exp2) =
-  AppT (AppT (ConT applyName) (promotedPatternToRHS exp1)) (promotedPatternToRHS exp2)
-promotedPatternToRHS (ConT name) = promoteValRhs name
-promotedPatternToRHS (PromotedT name) = promoteValRhs name
-promotedPatternToRHS (PromotedTupleT degree) = -- hack, because tuple is not represented as Name here
-  ConT $ mkName $ "Tuple" ++ show degree ++ "Sym0"
-promotedPatternToRHS PromotedNilT  = promoteValRhs nilName
-promotedPatternToRHS PromotedConsT = promoteValRhs consName
-promotedPatternToRHS t = t
-
--- promoting a body may produce auxiliary declarations. Accumulate these.
-type QWithDecs q = QWithAux [Dec] q
-
-promoteBody :: Quasi q => TypeTable -> Body -> QWithDecs q Type
-promoteBody vars (NormalB exp) = promoteExp vars exp
-promoteBody _vars (GuardedB _) =
-  fail "Promoting guards in patterns not yet supported"
-
-promoteExp :: Quasi q => TypeTable -> Exp -> QWithDecs q Type
-promoteExp vars (VarE name) = case Map.lookup name vars of
-  Just ty -> return ty
-  Nothing -> return $ promoteValRhs name
-promoteExp _vars (ConE name) = return $ promoteValRhs name
-promoteExp _vars (LitE lit) = promoteLit lit
-promoteExp vars (AppE exp1 exp2) = do
-  ty1 <- promoteExp vars exp1
-  ty2 <- promoteExp vars exp2
-  return $ AppT (AppT (ConT applyName) ty1) ty2
-promoteExp vars (InfixE mexp1 exp mexp2) =
-  case (mexp1, mexp2) of
-    (Nothing, Nothing) -> promoteExp vars exp
-    (Just exp1, Nothing) -> promoteExp vars (AppE exp exp1)
-    (Nothing, Just exp2) -> do
-      binder <- qNewName "x"
-      let lambdaExp = LamE [VarP binder] ((AppE (AppE exp (VarE binder)) exp2))
-      promoteExp vars lambdaExp
-    (Just exp1, Just exp2) -> promoteExp vars (AppE (AppE exp exp1) exp2)
-promoteExp _vars (UInfixE _ _ _) =
-  fail "Promotion of unresolved infix operators not supported"
-promoteExp _vars (ParensE _) = fail "Promotion of unresolved parens not supported"
-promoteExp vars (LamE pats exp) = do
+promoteExp :: DExp -> PrM DType
+promoteExp (DVarE name) = lookupVarE name
+promoteExp (DConE name) = return $ promoteValRhs name
+promoteExp (DLitE lit)  = promoteLit lit
+promoteExp (DAppE exp1 exp2) = apply <$> promoteExp exp1 <*> promoteExp exp2
+promoteExp (DLamE names exp) = do
   lambdaName <- newUniqueName "Lambda"
   resultKVarName  <- qNewName "r"
-  (types, vartbl) <- evalForPair $ mapM promotePat pats
-  rhs <- promoteExp (Map.union vartbl vars) exp
-  tyFamLamTypes <- replicateM (length pats) (qNewName "t")
-  tyFamLamKinds <- fmap (map VarT) $ replicateM (length pats) (qNewName "k")
-  let inScopeBnds   = filter isBndrVarT (Map.toList vars)
-      inScopeBndsNo = length inScopeBnds
-      tyFamParams   = inScopeBnds ++ (zip tyFamLamTypes tyFamLamKinds)
-      tyFamSig      = map (\(nm, ty) -> KindedTV nm ty) tyFamParams
-      inScopeTypes  = map snd inScopeBnds
-      eqnParams     = inScopeTypes ++ types
-      resultK       = VarT resultKVarName
-#if __GLASGOW_HASKELL__ >= 707
-  addElement (ClosedTypeFamilyD lambdaName
-                                tyFamSig
-                                (Just resultK)
-                                [TySynEqn eqnParams rhs])
-#else
-  addElement (FamilyD TypeFam lambdaName tyFamSig (Just resultK))
-  addElement (TySynInstD lambdaName eqnParams rhs)
-#endif
-  (dataSyms, dataNames) <- buildSymDecs lambdaName (inScopeTypes ++ tyFamLamKinds) resultK
-  applyInstances <- buildApplyInstances (zipWith (,) dataNames
-                                                    (lambdaName : dataNames))
-  -- drop symbols and instances that are never used
-  let dataSymsNo      = length dataSyms
-      dataSyms'       = take (dataSymsNo - inScopeBndsNo) dataSyms
-      applyInstances' = take (dataSymsNo - inScopeBndsNo) applyInstances
-  mapM_ addElement dataSyms'
-  mapM_ addElement applyInstances'
-  let callName = (reverse dataNames) !! (length inScopeBnds)
-  return $ foldType (ConT callName) inScopeTypes
-promoteExp vars (LamCaseE alts) = do
-  scrutinee <- qNewName "e"
-  let exp = VarE scrutinee
-      pat = VarP scrutinee
-  promoteExp vars (LamE [pat] (CaseE exp alts))
-promoteExp vars (TupE exps) = do
-  tys <- mapM (promoteExp vars) exps
-  let tuple = PromotedTupleT (length tys)
-      tup = foldType tuple tys
-  return tup
-promoteExp vars (UnboxedTupE exps) =
-  promoteExp vars (TupE exps)
-promoteExp vars (CondE bexp texp fexp) = do
-  tys <- mapM (promoteExp vars) [bexp, texp, fexp]
-  return $ foldType ifTyFam tys
-promoteExp _vars (MultiIfE _alts) =
-  fail "Promotion of multi-way if not yet supported"
-promoteExp vars (LetE decs exp) = do
-  letPrefix <- newUniqueName "Let"
-  let definedNames     = concatMap extractDefinedNames decs
-      nameMapping name = (name, catNames letPrefix name)
-      nameMap          = Map.fromList $ map nameMapping definedNames
-      renamer name     = Map.findWithDefault name name nameMap
-      insCtxVars name  = if name `elem` definedNames
-                         then foldExp (VarE name) (map VarE $ Map.keys vars)
-                         else VarE name
-      decs'            = map (renameInDec renamer . insertArgsFromCtxInDec insCtxVars) decs
-      exp'             = renameInExp renamer . insertArgsFromCtxInExp insCtxVars $ exp
-  pDecs <- promoteDecs vars decs'
-  mapM_ addElement pDecs
-  promoteExp vars exp'
-promoteExp vars (CaseE exp matches) = do
+  rhs <- lambdaBind names $ promoteExp exp
+  tyFamLamTypes <- mapM (const $ qNewName "t") names
+  all_locals <- allLocals
+  let all_args = all_locals ++ tyFamLamTypes
+  kinds <- fmap (map DVarK) $ mapM (const $ qNewName "k") all_args
+  let tyFamParams   = zipWith DKindedTV all_args kinds
+      resultK       = DVarK resultKVarName
+  emitDecs [DClosedTypeFamilyD lambdaName
+                               tyFamParams
+                               (Just resultK)
+                               [DTySynEqn (map DVarT (all_locals ++ names))
+                                          rhs]]
+  emitDecsM $ defunctionalize lambdaName kinds resultK
+  return $ foldl apply (DConT (promoteTySym lambdaName 0)) (map DVarT all_locals)
+promoteExp (DCaseE exp matches) = do
   caseTFName <- newUniqueName "Case"
-  (exp', _)  <- evalForPair $ promoteExp vars exp
-  (eqns, decls) <- evalForPair $ mapM (promoteMatch vars caseTFName) matches
+  exp'       <- promoteExp exp
+  eqns       <- mapM promoteMatch matches
   tyvarName  <- qNewName "t"
-  kindVar    <- fmap VarT $ qNewName "k"
-  resultK    <- fmap VarT $ qNewName "r"
-  let inScopeBnds   = filter isBndrVarT (Map.toList vars)
-      tyFamParams   = (tyvarName, kindVar) : inScopeBnds
-      tyFamSig      = map (\(nm, ty) -> KindedTV nm ty) tyFamParams
-      inScopeTypes  = map snd inScopeBnds
-  mapM_ addElement decls
-#if __GLASGOW_HASKELL__ >= 707
-  addElement (ClosedTypeFamilyD caseTFName tyFamSig (Just resultK) eqns)
-#else
-  addElement (FamilyD TypeFam caseTFName tyFamSig (Just resultK))
-  mapM_ addElement eqns
-#endif
-  return $ foldType (ConT caseTFName) (exp' : inScopeTypes)
-promoteExp _vars (DoE _stmts) = fail "Promotion of do statements not supported"
-promoteExp _vars (CompE _stmts) =
-  fail "Promotion of list comprehensions not yet supported"
-promoteExp _vars (ArithSeqE _) = fail "Promotion of ranges not supported"
-promoteExp vars (ListE exps) = do
-  tys <- mapM (promoteExp vars) exps
-  return $ foldr (\ty lst -> AppT (AppT PromotedConsT ty) lst) PromotedNilT tys
-promoteExp _vars (SigE _exp _ty) =
-  fail "Promotion of explicit type annotations not yet supported"
-promoteExp _vars (RecConE _name _fields) =
-  fail "Promotion of record construction not yet supported"
-promoteExp _vars (RecUpdE _exp _fields) =
-  fail "Promotion of record updates not yet supported"
+  all_locals <- allLocals
+  let all_args = all_locals ++ [tyvarName]
+  kinds      <- fmap (map DVarK) $ mapM (const $ qNewName "k") all_args
+  resultK    <- fmap DVarK $ qNewName "r"
+  let tyFamParams = zipWith DKindedTV all_args kinds
+  emitDecs [DClosedTypeFamilyD caseTFName tyFamParams (Just resultK) eqns]
+  return $ foldType (DConT caseTFName) (map DVarT all_locals ++ [exp'])
+promoteExp (DLetE decs exp) = do
+  letPrefix <- fmap nameBase $ newUniqueName "Let"
+  binds <- promoteLetDecs letPrefix decs
+  letBind binds $ promoteExp exp
+promoteExp (DSigE exp ty) = DSigT <$> promoteExp exp <*> promoteType ty
 
-insertArgsFromCtxInDec :: (Name -> Exp) -> Dec -> Dec
-insertArgsFromCtxInDec f (FunD name clauses) =
-    FunD name (map (insertArgsFromCtxInClause f) clauses)
-insertArgsFromCtxInDec f (ValD pat body decs) =
-    ValD pat
-         (insertArgsFromCtxInBody f body)
-         (map (insertArgsFromCtxInDec f) decs)
-insertArgsFromCtxInDec _ dec = dec
-
-renameInDec :: (Name -> Name) -> Dec -> Dec
-renameInDec f (FunD name clauses) =
-    FunD (f name) (map (renameInClause f) clauses)
-renameInDec f (ValD pat body decs) =
-    ValD (renameInPat f pat) (renameInBody f body) (map (renameInDec f) decs)
-renameInDec f (DataD cxt name tyvars ctors derivings) =
-    DataD cxt (f name) tyvars (map (renameInCtor f) ctors) derivings
-renameInDec f (NewtypeD cxt name tyvars ctor derivings) =
-    NewtypeD cxt (f name) tyvars (renameInCtor f ctor) derivings
-renameInDec f (SigD name ty) =
-    SigD (f name) ty
-renameInDec _ dec = dec
-
-insertArgsFromCtxInClause :: (Name -> Exp) -> Clause -> Clause
-insertArgsFromCtxInClause f (Clause pats body decs) =
-    Clause pats
-           (insertArgsFromCtxInBody f body)
-           (map (insertArgsFromCtxInDec f) decs)
-
-renameInClause :: (Name -> Name) -> Clause -> Clause
-renameInClause f (Clause pats body decs) =
-    Clause (map (renameInPat f) pats)
-           (renameInBody f body)
-           (map (renameInDec f) decs)
-
-renameInPat :: (Name -> Name) -> Pat -> Pat
-renameInPat f (VarP name) =
-    VarP (f name)
-renameInPat f (TupP pats) =
-    TupP (map (renameInPat f) pats)
-renameInPat f (ConP name pats) =
-    ConP name (map (renameInPat f) pats)
-renameInPat f (InfixP p1 name p2) =
-    InfixP (renameInPat f p1) name (renameInPat f p2)
-renameInPat f (TildeP pat) =
-    renameInPat f pat
-renameInPat f (ListP pats) =
-    ListP (map (renameInPat f) pats)
-renameInPat f (BangP pat) =
-    renameInPat f pat
-renameInPat f (SigP pat _) =
-    renameInPat f pat
-renameInPat _ pat = pat
-
-insertArgsFromCtxInBody :: (Name -> Exp) -> Body -> Body
-insertArgsFromCtxInBody f (NormalB exp)
-    = NormalB (insertArgsFromCtxInExp f exp)
-insertArgsFromCtxInBody _ body = body
-
-renameInBody :: (Name -> Name) -> Body -> Body
-renameInBody f (NormalB exp) = NormalB (renameInExp f exp)
-renameInBody _ body = body -- guarded body. We don't promote that anyway, so
-                           -- let's just ignore it during renaming
-
-renameInCtor :: (Name -> Name) -> Con -> Con
-renameInCtor f (NormalC name types) =
-    NormalC (f name) types
-renameInCtor f (RecC name types) =
-    RecC (f name) types
-renameInCtor f (InfixC t1 name t2) =
-    InfixC t1 (f name) t2
-renameInCtor f (ForallC tyvars cxt ctor) =
-    ForallC tyvars cxt (renameInCtor f ctor)
-
-insertArgsFromCtxInExp :: (Name -> Exp) -> Exp -> Exp
-insertArgsFromCtxInExp f (VarE name) =
-    f name
-insertArgsFromCtxInExp f (AppE exp1 exp2) =
-    AppE (insertArgsFromCtxInExp f exp1)
-         (insertArgsFromCtxInExp f exp2)
-insertArgsFromCtxInExp f (InfixE mexp1 exp mexp2) =
-    InfixE (fmap (insertArgsFromCtxInExp f) mexp1)
-           (insertArgsFromCtxInExp f exp)
-           (fmap (insertArgsFromCtxInExp f) mexp2)
-insertArgsFromCtxInExp f (LamE pats exp) =
-    LamE pats (insertArgsFromCtxInExp f exp)
-insertArgsFromCtxInExp f (LamCaseE alts) =
-    LamCaseE (map (insertArgsFromCtxInMatch f) alts)
-insertArgsFromCtxInExp f (TupE exps) =
-    TupE (map (insertArgsFromCtxInExp f) exps)
-insertArgsFromCtxInExp f (CondE bexp texp fexp) =
-    CondE (insertArgsFromCtxInExp f bexp)
-          (insertArgsFromCtxInExp f texp)
-          (insertArgsFromCtxInExp f fexp)
-insertArgsFromCtxInExp f (LetE decs exp) =
-    LetE (map (insertArgsFromCtxInDec f) decs)
-         (insertArgsFromCtxInExp f exp)
-insertArgsFromCtxInExp f (CaseE exp matches) =
-    CaseE (insertArgsFromCtxInExp f exp)
-          (map (insertArgsFromCtxInMatch f) matches)
-insertArgsFromCtxInExp f (ListE exps) =
-    ListE (map (insertArgsFromCtxInExp f) exps)
-insertArgsFromCtxInExp _ exp = exp
-
-renameInExp :: (Name -> Name) -> Exp -> Exp
-renameInExp f (VarE name) =
-    VarE (f name)
-renameInExp f (ConE name) =
-    ConE (f name)
-renameInExp f (AppE exp1 exp2) =
-    AppE (renameInExp f exp1) (renameInExp f exp2)
-renameInExp f (InfixE mexp1 exp mexp2) =
-    InfixE (fmap (renameInExp f) mexp1) (renameInExp f exp) (fmap (renameInExp f) mexp2)
-renameInExp f (LamE pats exp) =
-    LamE (map (renameInPat f) pats) (renameInExp f exp)
-renameInExp f (LamCaseE alts) =
-    LamCaseE (map (renameInMatch f) alts)
-renameInExp f (TupE exps) =
-    TupE (map (renameInExp f) exps)
-renameInExp f (CondE bexp texp fexp) =
-    CondE (renameInExp f bexp) (renameInExp f texp) (renameInExp f fexp)
-renameInExp f (LetE decs exp) =
-    LetE (map (renameInDec f) decs) (renameInExp f exp)
-renameInExp f (CaseE exp matches) =
-    CaseE (renameInExp f exp) (map (renameInMatch f) matches)
-renameInExp f (ListE exps) =
-    ListE (map (renameInExp f) exps)
-renameInExp _ exp = exp
-
-insertArgsFromCtxInMatch :: (Name -> Exp) -> Match -> Match
-insertArgsFromCtxInMatch f (Match pat body decs) =
-    Match pat
-          (insertArgsFromCtxInBody f body)
-          (map (insertArgsFromCtxInDec f) decs)
-
-renameInMatch :: (Name -> Name) -> Match -> Match
-renameInMatch f (Match pat body decs) =
-    Match (renameInPat f pat)
-          (renameInBody f body)
-          (map (renameInDec f) decs)
-
-extractDefinedNames :: Dec -> [Name]
-extractDefinedNames (FunD name _)           = [name]
-extractDefinedNames (ValD pat _ _)          = extractNamesFromPat pat
-extractDefinedNames (DataD    _ name _ _ _) = [name]
-extractDefinedNames (NewtypeD _ name _ _ _) = [name]
-extractDefinedNames _                       = [] -- ignore other things - they don't promote anyway
-
--- I need to test scoping, ie. I need to make sure that all of the returned
--- names are actually visible within whole let-statement. This function is
--- written analogously to promoteTopLevelPattern, so all should be fine.
-extractNamesFromPat :: Pat -> [Name]
-extractNamesFromPat (VarP name)      = [name]
-extractNamesFromPat (TupP pats)      = concatMap extractNamesFromPat pats
-extractNamesFromPat (ConP _ pats)    = concatMap extractNamesFromPat pats
-extractNamesFromPat (InfixP p1 _ p2) = extractNamesFromPat p1 ++
-                                       extractNamesFromPat p2
-extractNamesFromPat (TildeP pat)     = extractNamesFromPat pat
-extractNamesFromPat (BangP pat)      = extractNamesFromPat pat
-extractNamesFromPat (ListP pats)     = concatMap extractNamesFromPat pats
-extractNamesFromPat (SigP pat _)     = extractNamesFromPat pat
-extractNamesFromPat _                = []
-
-promoteLit :: Monad m => Lit -> m Type
+promoteLit :: Monad m => Lit -> m DType
 promoteLit (IntegerL n)
-  | n >= 0    = return $ LitT (NumTyLit n)
+  | n >= 0    = return $ DLitT (NumTyLit n)
   | otherwise = fail ("Promoting negative integers not supported: " ++ (show n))
-promoteLit (StringL str) = return $ LitT (StrTyLit str)
+promoteLit (StringL str) = return $ DLitT (StrTyLit str)
 promoteLit lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
 
--- Generate data declarations required for defunctionalization.
+---------------------------------------------------------------------
+-- Defunctionalization
+---------------------------------------------------------------------
+
+defunInfo :: DInfo -> PrM [DDec]
+defunInfo (DTyConI dec _instances) = buildDefunSyms dec
+defunInfo (DPrimTyConI _name _numArgs _unlifted) =
+  fail $ "Building defunctionalization symbols of primitive " ++
+         "type constructors not supported"
+defunInfo (DVarI _name _ty _mdec _fixity) =
+  fail "Building defunctionalization symbols of values not supported"
+defunInfo (DTyVarI _name _ty) =
+  fail "Building defunctionalization symbols of type variables not supported"
+
+buildDefunSyms :: DDec -> PrM [DDec]
+buildDefunSyms (DDataD _new_or_data _cxt tyName tvbs ctors _derivings) =
+  buildDefunSymsDataD tyName tvbs ctors
+buildDefunSyms (DClosedTypeFamilyD name tvbs returnK_maybe _) = do
+  arg_kinds <- mapM (inferKind . extractTvbKind) tvbs
+  res_kind  <- inferKind returnK_maybe
+  defunctionalize name arg_kinds res_kind
+buildDefunSyms (DFamilyD TypeFam name tvbs returnK_maybe) = do
+  let arg_kinds = map (default_to_star . extractTvbKind) tvbs
+      res_kind  = default_to_star returnK_maybe
+      default_to_star Nothing  = DStarK
+      default_to_star (Just k) = k
+  defunctionalize name arg_kinds res_kind
+buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
+                          "type families and data declarations"
+
+buildDefunSymsDataD :: Name -> [DTyVarBndr] -> [DCon] -> PrM [DDec]
+buildDefunSymsDataD tyName tvbs ctors = do
+  let kis = map (DVarK . extractTvbName) tvbs
+      promotedKind = DConK tyName kis
+  concatMapM (promoteCtor promotedKind) ctors
+  where
+    promoteCtor :: DKind -> DCon -> PrM [DDec]
+    promoteCtor promotedKind ctor = do
+      let (name, arg_tys) = extractNameTypes ctor
+      arg_kis <- mapM promoteType arg_tys
+      defunctionalize name arg_kis promotedKind
+
+-- Generate data declarations and apply instances
+-- required for defunctionalization.
 -- For a type family:
 --
 -- type family Foo (m :: Nat) (n :: Nat) (l :: Nat) :: Nat
@@ -1198,99 +507,69 @@ promoteLit lit =
 -- we generate data declarations that allow us to talk about partial
 -- application at the type level:
 --
+-- type FooSym3 a b c = Foo a b c
 -- data FooSym2 :: Nat -> Nat -> (TyFun Nat Nat) -> *
+-- type instance Apply (FooSym2 a b) c = FooSym3 a b c
 -- data FooSym1 :: Nat -> (TyFun Nat (TyFun Nat Nat -> *)) -> *
+-- type instance Apply (FooSym1 a) b = FooSym2 a b
 -- data FooSym0 :: TyFun Nat (TyFun Nat (TyFun Nat Nat -> *) -> *) -> *
+-- type instance Apply FooSym0 a = FooSym1 a
 --
--- buildSymDecs takes list of kinds of the type family parameters and
+-- defunctionalize takes list of kinds of the type family parameters and
 -- kind of the result.
---
--- Invariants:
---   * list of TF parameters cannot be empty (if it is we generate
---     type synonym).
---   * this function does not work for tuples
---   * result contains declarations and their names ordered by arity
---     (highest first).
-buildSymDecs :: Quasi q => Name -> [Kind] -> Kind -> q ([Dec], [Name])
-buildSymDecs name argKs resultK = go tailArgK (buildTyFun lastArgK resultK)
-                                  (length tailArgK)
-    where (lastArgK : tailArgK) = reverse argKs
-          go :: Quasi q => [Kind] -> Type -> Int -> q ([Dec], [Name])
-          go [] acc l = do
-            let dataName0 = promoteTySym name l
-            typeVarName <- qNewName "k"
-            return ([DataD [] dataName0 [KindedTV typeVarName acc] [] []],
-                    [dataName0])
-          go (k:ks) acc l = do
-            (defs, names) <- go ks (buildTyFun k (addStar acc)) (l - 1)
-            tyvarNames <- mapM qNewName (replicate (l + 1) "l")
-            let dataName = promoteTySym name l
-                params   = zipWith KindedTV tyvarNames (reverse (acc:k:ks))
-                newDef   = DataD [] dataName params [] []
-            return (newDef : defs, dataName : names)
+defunctionalize :: Name -> [DKind] -> DKind -> PrM [DDec]
+defunctionalize name args result = do
+  let num_args = length args
+      sat_name = promoteTySym name num_args
+  tvbNames <- replicateM num_args $ qNewName "t"
+  let sat_dec = DTySynD sat_name (zipWith DKindedTV tvbNames args)
+                        (foldType (DConT name) (map DVarT tvbNames))
+  other_decs <- go (num_args - 1) (reverse args) result
+  return $ sat_dec : other_decs
+  where
+    go :: Int -> [DKind] -> DKind -> PrM [DDec]
+    go _ [] _ = return []
+    go n (arg : args) result = do
+      decls <- go (n - 1) args (addStar (buildTyFun arg result))
+      tvbNames@(fst_name : rest_names) <- replicateM (n + 1) (qNewName "l")
+      let data_name = promoteTySym name n
+          tyfun     = buildTyFun arg result
+          params    = zipWith DKindedTV tvbNames (reverse (tyfun : args))
+          data_decl = DDataD Data [] data_name params [] []
+          app_eqn   = DTySynEqn [ foldType (DConT data_name)
+                                           (map DVarT rest_names)
+                                , DVarT fst_name ]
+                                (foldType (DConT (promoteTySym name (n+1)))
+                                          (map DVarT (rest_names ++ [fst_name])))
+          app_decl  = DTySynInstD applyName app_eqn
+      return $ data_decl : app_decl : decls
+    
+buildTyFun :: DKind -> DKind -> DKind
+buildTyFun k1 k2 = DConK tyFunName [k1, k2]
 
--- Builds empty type level symbol for 0-arity declaration. It is used
--- to generate type-level symbols for promoted nullary data constructors.
--- Eg. for standard Nat datatype:
---
--- data Nat = Zero | Succ Nat
---
--- we generate
---
--- type ZeroSym0 = Zero                <-- generated by buildEmptySymDec
--- data SuccSym0 (k1 :: TyFun Nat Nat) <-- generated by buildSymDecs
--- type instance Apply SuccSym0 k1 = Succ k1
-buildEmptySymDec :: Quasi q => Name -> q [Dec]
-buildEmptySymDec name =
-    -- When calling ConT here we assume that the name includes
-    -- a baked-in namespace. If this is not the case this code
-    -- will fail. See https://github.com/goldfirere/singletons/issues/10
-    let promotedName = promoteTySym name 0
-    in return [TySynD promotedName [] (ConT name)]
+addStar :: DKind -> DKind
+addStar t = DArrowK t DStarK
 
 -- Counts the arity of type level function represented with TyFun constructors
 -- TODO: this and isTuFun looks like a good place to use PatternSynonyms
-tyFunArity :: Kind -> Int
-tyFunArity (AppT (AppT ArrowT (AppT (AppT (ConT tyFunNm) _) b)) StarT) =
-    if tyFunName == tyFunNm
-    then 1 + tyFunArity b
-    else 0
+tyFunArity :: DKind -> Int
+tyFunArity (DArrowK (DConK tyFunNm [_, b]) DStarK)
+  | tyFunName == tyFunNm
+  = 1 + tyFunArity b
 tyFunArity _ = 0
 
--- Get argument kinds from an arrow kind. Removing ForallT is an
--- important preprocessing step required by promoteType.
-unravel :: Kind -> [Kind]
-unravel (ForallT _ _ ty) = unravel ty
-unravel (AppT (AppT ArrowT k1) k2) =
-    let ks = unravel k2 in k1 : ks
-unravel k = [k]
-
--- Reconstruct arrow kind from the list of kinds
-ravel :: [Kind] -> Kind
-ravel []    = error "Internal error: raveling nil"
-ravel [k]   = k
-ravel (h:t) = AppT (AppT ArrowT h) (ravel t)
+-- Checks if type is (TyFun a b -> *)
+isTyFun :: DKind -> Bool
+isTyFun (DArrowK (DConK tyFunNm [_,_]) DStarK)
+  | tyFunName == tyFunNm
+  = True
+isTyFun _ = False
 
 -- Build TyFun kind from the list of kinds
-ravelTyFun :: [Kind] -> Kind
+ravelTyFun :: [DKind] -> DKind
 ravelTyFun []    = error "Internal error: TyFun raveling nil"
 ravelTyFun [k]   = k
 ravelTyFun kinds = go tailK (buildTyFun k1 k2)
     where (k1 : k2 : tailK) = reverse kinds
           go []     acc = addStar acc
           go (k:ks) acc = go ks (buildTyFun k (addStar acc))
-
-buildTyFun :: Kind -> Kind -> Type
-buildTyFun k1 k2 = (AppT (AppT (ConT tyFunName) k1) k2)
-
-addStar :: Type -> Type
-addStar t = AppT (AppT ArrowT t) StarT
-
--- Checks if type is (TyFun a b -> *)
-isTyFun :: Type -> Bool
-isTyFun (AppT (AppT ArrowT (AppT (AppT (ConT tyFunNm) _) _)) StarT) =
-    tyFunName == tyFunNm
-isTyFun _ = False
-
-isBndrVarT :: (Name ,Type) -> Bool
-isBndrVarT b  = case b of {(_, VarT _) -> True; _ -> False}

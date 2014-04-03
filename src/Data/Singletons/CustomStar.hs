@@ -23,6 +23,7 @@ import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Singletons
+import Data.Singletons.Names
 import Control.Monad
 
 #if __GLASGOW_HASKELL__ >= 707
@@ -105,13 +106,13 @@ singletonStar names = do
             TyConI (DataD (_:_) _ _ _ _) ->
                fail "Cannot make a representation of a constrainted data type"
             TyConI (DataD [] _ tvbs _ _) ->
-               return $ map extractTvbKind tvbs
+               return $ map extractTvbKind_ tvbs
             TyConI (NewtypeD (_:_) _ _ _ _) ->
                fail "Cannot make a representation of a constrainted newtype"
             TyConI (NewtypeD [] _ tvbs _ _) ->
-               return $ map extractTvbKind tvbs
+               return $ map extractTvbKind_ tvbs
             TyConI (TySynD _ tvbs _) ->
-               return $ map extractTvbKind tvbs
+               return $ map extractTvbKind_ tvbs
             PrimTyConI _ n _ ->
                return $ replicate n StarT
             _ -> fail $ "Invalid thing for representation: " ++ (show name)
@@ -168,7 +169,7 @@ mkCustomEqInstances ctors = do
                  [FunD '(%:==)
                        [Clause [VarP a, VarP b]
                                (NormalB $
-                                CaseE (foldExp (VarE '(%~)) [VarE a, VarE b])
+                                CaseE (foldl AppE (VarE '(%~)) [VarE a, VarE b])
                                       [ Match (ConP 'Proved [ConP 'Refl []])
                                               (NormalB $ ConE 'STrue) []
                                       , Match (ConP 'Disproved [WildP])

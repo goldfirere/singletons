@@ -9,30 +9,26 @@ Users of the package should not need to consult this file.
 
 {-# LANGUAGE CPP, TypeSynonymInstances, FlexibleInstances, RankNTypes,
              TemplateHaskell, GeneralizedNewtypeDeriving,
-             MultiParamTypeClasses #-}
+             MultiParamTypeClasses, StandaloneDeriving,
+             UndecidableInstances #-}
 
 module Data.Singletons.Util (
   module Data.Singletons.Util,
   module Language.Haskell.TH.Desugar )
   where
 
-import Prelude hiding ( exp )
+import Prelude hiding ( exp, foldl, concat, mapM, any )
 import Language.Haskell.TH hiding ( Q )
 import Language.Haskell.TH.Syntax ( Quasi(..) )
-import Language.Haskell.TH.Desugar ( reifyWithWarning, getDataD )
+import Language.Haskell.TH.Desugar
 import Data.Char
-import Control.Monad
+import Control.Monad hiding ( mapM )
 import Control.Applicative
-import Control.Monad.Writer
+import Control.Monad.Writer hiding ( mapM )
+import Control.Monad.Reader hiding ( mapM )
 import qualified Data.Map as Map
-
-mkTyFamInst :: Name -> [Type] -> Type -> Dec
-mkTyFamInst name lhs rhs =
-#if __GLASGOW_HASKELL__ >= 707
-  TySynInstD name (TySynEqn lhs rhs)
-#else
-  TySynInstD name lhs rhs
-#endif
+import Data.Foldable
+import Data.Traversable
 
 -- The list of types that singletons processes by default
 basicTypes :: [Name]
@@ -66,6 +62,17 @@ qReportWarning = qReport False
 qReportError :: Quasi q => String -> q ()
 qReportError = qReport True
 
+checkForRep :: Quasi q => [Name] -> q ()
+checkForRep names =
+  when (any ((== "Rep") . nameBase) names)
+    (fail $ "A data type named <<Rep>> is a special case.\n" ++
+            "Promoting it will not work as expected.\n" ++
+            "Please choose another name for your data type.")
+
+checkForRepInDecls :: Quasi q => [DDec] -> q ()
+checkForRepInDecls decls =
+  checkForRep (allNamesIn decls)
+
 -- extract the degree of a tuple
 tupleDegree_maybe :: String -> Maybe Int
 tupleDegree_maybe s = do
@@ -80,29 +87,24 @@ tupleDegree_maybe s = do
 tupleNameDegree_maybe :: Name -> Maybe Int
 tupleNameDegree_maybe = tupleDegree_maybe . nameBase
 
--- reduce the four cases of a 'Con' to just two: monomorphic and polymorphic
--- and convert 'StrictType' to 'Type'
-ctorCases :: (Name -> [Type] -> a) -> ([TyVarBndr] -> Cxt -> Con -> a) -> Con -> a
-ctorCases genFun forallFun ctor = case ctor of
-  NormalC name stypes -> genFun name (map snd stypes)
-  RecC name vstypes -> genFun name (map (\(_,_,ty) -> ty) vstypes)
-  InfixC (_,ty1) name (_,ty2) -> genFun name [ty1, ty2]
-  ForallC [] [] ctor' -> ctorCases genFun forallFun ctor'
-  ForallC tvbs cx ctor' -> forallFun tvbs cx ctor'
-
--- reduce the four cases of a 'Con' to just 1: a polymorphic Con is treated
--- as a monomorphic one
-ctor1Case :: (Name -> [Type] -> a) -> Con -> a
-ctor1Case mono = ctorCases mono (\_ _ ctor -> ctor1Case mono ctor)
+tysOfConFields :: DConFields -> [DType]
+tysOfConFields (DNormalC stys) = map snd stys
+tysOfConFields (DRecC vstys)   = map (\(_,_,ty) -> ty) vstys
 
 -- extract the name and number of arguments to a constructor
-extractNameArgs :: Con -> (Name, Int)
-extractNameArgs = ctor1Case (\name tys -> (name, length tys))
+extractNameArgs :: DCon -> (Name, Int)
+extractNameArgs = liftSnd length . extractNameTypes
+
+-- extract the name and types of constructor arguments
+extractNameTypes :: DCon -> (Name, [DType])
+extractNameTypes (DCon _ _ n fields) = (n, tysOfConFields fields)
 
 -- reinterpret a name. This is useful when a Name has an associated
 -- namespace that we wish to forget
 reinterpret :: Name -> Name
 reinterpret = mkName . nameBase
+
+{-# DEPRECATED reinterpret, catNames "" #-} -- RAE
 
 catNames :: Name -> Name -> Name
 catNames n1 n2 = mkName (nameBase n1 ++ nameBase n2)
@@ -155,43 +157,40 @@ prefixLCName pre tyPre n =
      else mkName (tyPre ++ str)
 
 -- extract the kind from a TyVarBndr. Returns '*' by default.
-extractTvbKind :: TyVarBndr -> Kind
-extractTvbKind (PlainTV _) = StarT -- FIXME: This seems wrong.
-extractTvbKind (KindedTV _ k) = k
+extractTvbKind :: DTyVarBndr -> Maybe DKind
+extractTvbKind (DPlainTV _) = Nothing
+extractTvbKind (DKindedTV _ k) = Just k
 
 -- extract the name from a TyVarBndr.
-extractTvbName :: TyVarBndr -> Name
-extractTvbName (PlainTV n) = n
-extractTvbName (KindedTV n _) = n
+extractTvbName :: DTyVarBndr -> Name
+extractTvbName (DPlainTV n) = n
+extractTvbName (DKindedTV n _) = n
+
+-- use the kind provided, or make a fresh kind variable
+inferKind :: Quasi q => Maybe DKind -> q DKind
+inferKind (Just k) = return k
+inferKind Nothing = do
+  newK <- qNewName "k"
+  return $ DVarK newK
 
 -- apply a type to a list of types
-foldType :: Type -> [Type] -> Type
-foldType = foldl AppT
+foldType :: DType -> [DType] -> DType
+foldType = foldl DAppT
 
 -- apply an expression to a list of expressions
-foldExp :: Exp -> [Exp] -> Exp
-foldExp = foldl AppE
+foldExp :: DExp -> [DExp] -> DExp
+foldExp = foldl DAppE
 
 -- is a kind a variable?
-isVarK :: Kind -> Bool
-isVarK (VarT _) = True
+isVarK :: DKind -> Bool
+isVarK (DVarK _) = True
 isVarK _ = False
 
 -- is a function type?
-isFunTy :: Type -> Bool
-isFunTy (AppT (AppT ArrowT _) _) = True
-isFunTy (ForallT _ _ _)          = True
-isFunTy _                        = False
-
--- tuple up a list of expressions
-mkTupleExp :: [Exp] -> Exp
-mkTupleExp [x] = x
-mkTupleExp xs  = TupE xs
-
--- tuple up a list of patterns
-mkTuplePat :: [Pat] -> Pat
-mkTuplePat [x] = x
-mkTuplePat xs  = TupP xs
+isFunTy :: DType -> Bool
+isFunTy (DAppT (DAppT DArrowT _) _) = True
+isFunTy (DForallT _ _ _)            = True
+isFunTy _                           = False
 
 -- choose the first non-empty list
 orIfEmpty :: [a] -> [a] -> [a]
@@ -199,26 +198,21 @@ orIfEmpty [] x = x
 orIfEmpty x  _ = x
 
 -- an empty list of matches, compatible with GHC 7.6.3
-emptyMatches :: [Match]
-emptyMatches = [Match WildP (NormalB (AppE (VarE 'error) (LitE (StringL errStr)))) []]
+emptyMatches :: [DMatch]
+emptyMatches = [DMatch DWildPa (DAppE (DVarE 'error) (DLitE (StringL errStr)))]
   where errStr = "Empty case reached -- this should be impossible"
 
 -- build a pattern match over several expressions, each with only one pattern
-multiCase :: [Exp] -> [Pat] -> Exp -> Exp
+multiCase :: [DExp] -> [DPat] -> DExp -> DExp
 multiCase [] [] body = body
 multiCase scruts pats body =
-  CaseE (mkTupleExp scruts)
-        [Match (mkTuplePat pats) (NormalB body) []]
+  DCaseE (mkTupleDExp scruts) [DMatch (mkTupleDPat pats) body]
 
 -- a monad transformer for writing a monoid alongside returning a Q
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
-  deriving (Functor, Applicative, Monad, MonadTrans)
+  deriving (Functor, Applicative, Monad, MonadTrans, MonadWriter m)
 
-instance (Monoid m, Monad q) => MonadWriter m (QWithAux m q) where
-  writer = QWA . writer
-  tell   = QWA . tell
-  listen = QWA . listen . runQWA
-  pass   = QWA . pass . runQWA
+deriving instance (Monoid m, MonadReader r q) => MonadReader r (QWithAux m q)
 
 -- make a Quasi instance for easy lifting
 instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
@@ -274,11 +268,25 @@ addElement :: Quasi q => elt -> QWithAux [elt] q ()
 addElement elt = tell [elt]
 
 -- lift concatMap into a monad
-concatMapM :: Monad m => (a -> m [b]) -> [a] -> m [b]
+-- could this be more efficient?
+concatMapM :: (Monad monad, Monoid monoid, Traversable traversable)
+           => (a -> monad monoid) -> traversable a -> monad monoid
 concatMapM fn list = do
   bss <- mapM fn list
-  return $ concat bss
+  return $ fold bss
 
 -- make a one-element list
 listify :: a -> [a]
-listify = return
+listify = (:[])
+
+liftSnd :: (a -> b) -> (c, a) -> (c, b)
+liftSnd f (c, a) = (c, f a)
+
+partitionWith :: (a -> Either b c) -> [a] -> ([b], [c])
+partitionWith f = go [] []
+  where go bs cs []     = (reverse bs, reverse cs)
+        go bs cs (a:as) =
+          case f a of
+            Left b  -> go (b:bs) cs as
+            Right c -> go bs (c:cs) as
+

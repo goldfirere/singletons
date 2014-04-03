@@ -15,12 +15,115 @@ import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (falseName, trueName, Quasi(..))
 import Data.Singletons.Util
 import Data.Singletons.Promote
+import Data.Singletons.Promote.Monad
+import Data.Singletons.Names
 import Data.Singletons
 import Data.Singletons.Decide
+import Language.Haskell.TH.Desugar
+import Language.Haskell.TH.Desugar.Sweeten
 import qualified Data.Map as Map
 import Control.Monad
 import Control.Applicative
 import Data.List (find)
+
+-- reduce the four cases of a 'Con' to just two: monomorphic and polymorphic
+-- and convert 'StrictType' to 'Type'
+ctorCases :: (Name -> [Type] -> a) -> ([TyVarBndr] -> Cxt -> Con -> a) -> Con -> a
+ctorCases genFun forallFun ctor = case ctor of
+  NormalC name stypes -> genFun name (map snd stypes)
+  RecC name vstypes -> genFun name (map (\(_,_,ty) -> ty) vstypes)
+  InfixC (_,ty1) name (_,ty2) -> genFun name [ty1, ty2]
+  ForallC [] [] ctor' -> ctorCases genFun forallFun ctor'
+  ForallC tvbs cx ctor' -> forallFun tvbs cx ctor'
+
+-- reduce the four cases of a 'Con' to just 1: a polymorphic Con is treated
+-- as a monomorphic one
+ctor1Case :: (Name -> [Type] -> a) -> Con -> a
+ctor1Case mono = ctorCases mono (\_ _ ctor -> ctor1Case mono ctor)
+
+-- tuple up a list of patterns
+mkTuplePat :: [Pat] -> Pat
+mkTuplePat [x] = x
+mkTuplePat xs  = TupP xs
+
+-- tuple up a list of expressions
+mkTupleExp :: [Exp] -> Exp
+mkTupleExp [x] = x
+mkTupleExp xs  = TupE xs
+
+mkTyFamInst :: Name -> [Type] -> Type -> Dec
+mkTyFamInst name lhs rhs =
+#if __GLASGOW_HASKELL__ >= 707
+  TySynInstD name (TySynEqn lhs rhs)
+#else
+  TySynInstD name lhs rhs
+#endif
+
+-- Get argument kinds from an arrow kind. Removing ForallT is an
+-- important preprocessing step required by promoteType.
+unravel :: Kind -> [Kind]
+unravel (ForallT _ _ ty) = unravel ty
+unravel (AppT (AppT ArrowT k1) k2) =
+    let ks = unravel k2 in k1 : ks
+unravel k = [k]
+
+-- Reconstruct arrow kind from the list of kinds
+ravel :: [Kind] -> Kind
+ravel []    = error "Internal error: raveling nil"
+ravel [k]   = k
+ravel (h:t) = AppT (AppT ArrowT h) (ravel t)
+
+oldPromoteType :: Quasi q => Type -> q Kind
+oldPromoteType ty = do
+  ty' <- dsType ty
+  (ki, _) <- promoteM $ promoteType ty'
+  return $ kindToTH ki
+
+oldPromoteDecs :: Quasi q => [Dec] -> q [Dec]
+oldPromoteDecs decs = do
+  decs' <- dsDecs decs
+  (decs'', others) <- promoteM $ promoteDecs decs'
+  return $ decsToTH (decs'' ++ others)
+
+extractTvbName_ :: TyVarBndr -> Name
+extractTvbName_ (PlainTV n) = n
+extractTvbName_ (KindedTV n _) = n
+
+-- extract the kind from a TyVarBndr. Returns '*' by default.
+extractTvbKind_ :: TyVarBndr -> Kind
+extractTvbKind_ (PlainTV _) = StarT -- FIXME: This seems wrong.
+extractTvbKind_ (KindedTV _ k) = k
+
+emptyMatches_ :: [Match]
+emptyMatches_ = [Match WildP (NormalB (AppE (VarE 'error) (LitE (StringL errStr)))) []]
+  where errStr = "Empty case reached -- this should be impossible"
+
+extractNameArgs_ :: Con -> (Name, Int)
+extractNameArgs_ = ctor1Case (\name tys -> (name, length tys))
+                                             
+introduceApply :: (Name, Int) -> Type -> (Type, Bool)
+introduceApply funData' typeT =
+    case go funData' typeT of
+      (t, f, _ ) -> (t, f)
+    where
+      go funData (ForallT tyvars ctx ty) =
+          let (ty', isApplyAdded, n) = go funData ty
+          in (ForallT tyvars ctx ty', isApplyAdded, n)
+      go (funName, funArity) (AppT (VarT name) ty) =
+          let (ty', isApplyAdded, _) = go (funName, funArity) ty
+          in if funName == name -- if we found our type variable then use Apply
+             then (AppT (AppT (ConT applyName) (VarT name)) ty'
+                  , True, funArity - 1)
+             else (AppT                        (VarT name)  ty'
+                  , isApplyAdded, 0)
+      go funData (AppT ty1 ty2) =
+          let (ty1', isApplyAdded1, n) = go funData ty1
+              (ty2', isApplyAdded2, _) = go funData ty2
+          in if n /= 0 -- do we need to insert more Applies because arity > 1?
+             then (AppT (AppT (ConT applyName) ty1') ty2', True  , n - 1)
+             else (AppT ty1' ty2', isApplyAdded1 || isApplyAdded2, n    )
+      go _ ty = (ty, False, 0)
+
 
 -- map to track bound variables
 type ExpTable = Map.Map Name Exp
@@ -31,40 +134,6 @@ type TypeFn = Type -> Type
 
 -- a list of argument types extracted from a type application
 type TypeContext = [Type]
-
-singFamilyName, singIName, singMethName, demoteRepName, singKindClassName,
-  sEqClassName, sEqMethName, sconsName, snilName, sIfName,
-  kProxyDataName, kProxyTypeName, proxyTypeName, proxyDataName,
-  someSingTypeName, someSingDataName,
-  sListName, sDecideClassName, sDecideMethName,
-  provedName, disprovedName, reflName, toSingName, fromSingName :: Name
-singFamilyName = ''Sing
-singIName = ''SingI
-singMethName = 'sing
-toSingName = 'toSing
-fromSingName = 'fromSing
-demoteRepName = ''DemoteRep
-singKindClassName = ''SingKind
-sEqClassName = mkName "SEq"
-sEqMethName = mkName "%:=="
-sIfName = mkName "sIf"
-sconsName = mkName "SCons"
-snilName = mkName "SNil"
-kProxyDataName = 'KProxy
-kProxyTypeName = ''KProxy
-someSingTypeName = ''SomeSing
-someSingDataName = 'SomeSing
-proxyTypeName = ''Proxy
-proxyDataName = 'Proxy
-sListName = mkName "SList"
-sDecideClassName = ''SDecide
-sDecideMethName = '(%~)
-provedName = 'Proved
-disprovedName = 'Disproved
-reflName = 'Refl
-
-mkTupleName :: Int -> Name
-mkTupleName n = mkName $ "STuple" ++ (show n)
 
 singFamily :: Type
 singFamily = ConT singFamilyName
@@ -105,6 +174,30 @@ singVal = VarE . singValName
 kindParam :: Kind -> Type
 kindParam k = SigT (ConT kProxyDataName) (AppT (ConT kProxyTypeName) k)
 
+-- Counts the arity of type level function represented with TyFun constructors
+-- TODO: this and isTuFun looks like a good place to use PatternSynonyms
+tyFunArity_ :: Kind -> Int
+tyFunArity_ (AppT (AppT ArrowT (AppT (AppT (ConT tyFunNm) _) b)) StarT) =
+    if tyFunName == tyFunNm
+    then 1 + tyFunArity_ b
+    else 0
+tyFunArity_ _ = 0
+
+promoteLit_ :: Quasi q => Lit -> q Type
+promoteLit_ = fmap typeToTH . promoteLit
+
+-- build a pattern match over several expressions, each with only one pattern
+multiCase_ :: [Exp] -> [Pat] -> Exp -> Exp
+multiCase_ [] [] body = body
+multiCase_ scruts pats body =
+  CaseE (mkTupleExp scruts)
+        [Match (mkTuplePat pats) (NormalB body) []]
+
+isTyFun_ :: Type -> Bool
+isTyFun_ (AppT (AppT ArrowT (AppT (AppT (ConT tyFunNm) _) _)) StarT) =
+    tyFunName == tyFunNm
+isTyFun_ _ = False
+
 -- | Generate singleton definitions from a type that is already defined.
 -- For example, the singletons package itself uses
 --
@@ -121,11 +214,12 @@ singInfo (ClassI _dec _instances) =
   fail "Singling of class info not supported"
 singInfo (ClassOpI _name _ty _className _fixity) =
   fail "Singling of class members info not supported"
-singInfo (TyConI dec@(DataD cxt name tvbs ctors derivings)) = do -- TODO: document this special case
+singInfo i@(TyConI dec@(DataD {})) = do -- TODO: document this special case
   (newDecls, binds) <- evalForPair $ singDec dec --rename binds
   newDecls' <- mapM (singDec' binds) newDecls
-  promotedDataDecs <- promoteDataD cxt name tvbs ctors derivings
-  return $ promotedDataDecs ++ newDecls'
+  i' <- dsInfo i
+  (promotedDataDecs, otherDecs) <- promoteM $ promoteInfo i'
+  return $ decsToTH (promotedDataDecs ++ otherDecs) ++ newDecls'
 singInfo (TyConI dec) = do
   (newDecls, binds)  <- evalForPair $ singDec dec --rename binds
   newDecls' <- mapM (singDec' binds) newDecls
@@ -145,7 +239,7 @@ singInfo (TyVarI _name _ty) =
 -- refine a constructor. the first parameter is the type variable that
 -- the singleton GADT is parameterized by
 -- runs in the QWithDecs monad because auxiliary declarations are produced
-singCtor :: Quasi q => Type -> Con -> QWithDecs q Con
+singCtor :: Quasi q => Type -> Con -> QWithAux [Dec] q Con
 singCtor a = ctorCases
   -- monomorphic case
   (\name types -> do
@@ -154,7 +248,7 @@ singCtor a = ctorCases
         pCon = PromotedT name
     indexNames <- replicateM (length types) (qNewName "n")
     let indices = map VarT indexNames
-    kinds <- mapM promoteType types
+    kinds <- mapM oldPromoteType types
     args <- buildArgTypes types indices
     let tvbs = zipWith KindedTV indexNames kinds
         kindedIndices = zipWith SigT indices kinds
@@ -162,14 +256,14 @@ singCtor a = ctorCases
     -- SingI instance
     addElement $ InstanceD (map (ClassP singIName . listify) indices)
                            (AppT (ConT singIName)
-                                 (foldType pCon kindedIndices))
+                                 (foldl AppT pCon kindedIndices))
                            [ValD (VarP singMethName)
-                                 (NormalB $ foldExp sCon (replicate (length types)
+                                 (NormalB $ foldl AppE sCon (replicate (length types)
                                                            (VarE singMethName)))
                                  []]
 
     return $ ForallC tvbs
-                     [EqualP a (foldType pCon indices)]
+                     [EqualP a (foldl AppT pCon indices)]
                      (NormalC sName $ map (NotStrict,) args))
 
   -- polymorphic case
@@ -211,7 +305,7 @@ singletonsOnly = (>>= singDecs False)
 -- first parameter says whether or not to include original decls
 singDecs :: Quasi q => Bool -> [Dec] -> q [Dec]
 singDecs originals decls = do
-  promDecls <- promoteDecs Map.empty decls
+  promDecls <- oldPromoteDecs decls
   (newDecls, proxyTable) <- evalForPair $ mapM singDec decls
   newDecls' <- mapM (singDec' proxyTable) (concat newDecls)
   return $ (if originals then (decls ++) else id) $ promDecls ++ newDecls'
@@ -335,8 +429,8 @@ singEqualityInstance :: Quasi q => EqualityClassDesc q -> Name -> q Dec
 singEqualityInstance desc@(_, className, _) name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
                             show className ++ " for it.") name
-  let tyvars = map (VarT . extractTvbName) tvbs
-      kind = foldType (ConT name) tyvars
+  let tyvars = map (VarT . extractTvbName_) tvbs
+      kind = foldl AppT (ConT name) tyvars
   aName <- qNewName "a"
   let aVar = VarT aName
   scons <- mapM (evalWithoutAux . singCtor aVar) cons
@@ -373,7 +467,7 @@ mkEqualityInstance k ctors (mkMeth, className, methName) = do
         mkEmptyMethClauses :: Quasi q => q [Clause]
         mkEmptyMethClauses = do
           a <- qNewName "a"
-          return [Clause [VarP a, WildP] (NormalB (CaseE (VarE a) emptyMatches)) []]
+          return [Clause [VarP a, WildP] (NormalB (CaseE (VarE a) emptyMatches_)) []]
 
 mkEqMethClause :: Quasi q => (Con, Con) -> q Clause
 mkEqMethClause (c1, c2)
@@ -387,7 +481,7 @@ mkEqMethClause (c1, c2)
     return $ Clause
       [ConP lname lpats, ConP rname rpats]
       (NormalB $
-        allExp (zipWith (\l r -> foldExp (VarE sEqMethName) [l, r])
+        allExp (zipWith (\l r -> foldl AppE (VarE sEqMethName) [l, r])
                         lvars rvars))
       []
   | otherwise =
@@ -401,8 +495,8 @@ mkEqMethClause (c1, c2)
         allExp [one] = one
         allExp (h:t) = AppE (AppE (singVal andName) h) (allExp t)
 
-        (lname, lNumArgs) = extractNameArgs c1
-        (rname, rNumArgs) = extractNameArgs c2
+        (lname, lNumArgs) = extractNameArgs_ c1
+        (rname, rNumArgs) = extractNameArgs_ c2
 
 mkDecideMethClause :: Quasi q => (Con, Con) -> q Clause
 mkDecideMethClause (c1, c2)
@@ -422,7 +516,7 @@ mkDecideMethClause (c1, c2)
         [ConP lname lpats, ConP rname rpats]
         (NormalB $
          CaseE (mkTupleExp $
-                zipWith (\l r -> foldExp (VarE sDecideMethName) [l, r])
+                zipWith (\l r -> foldl AppE (VarE sDecideMethName) [l, r])
                         lvars rvars)
                ((Match (mkTuplePat (replicate lNumArgs
                                       (ConP provedName [ConP reflName []])))
@@ -442,12 +536,12 @@ mkDecideMethClause (c1, c2)
     return $ Clause
       [ConP lname (replicate lNumArgs WildP),
        ConP rname (replicate rNumArgs WildP)]
-      (NormalB (AppE (ConE disprovedName) (LamCaseE emptyMatches)))
+      (NormalB (AppE (ConE disprovedName) (LamCaseE emptyMatches_)))
       []
 
   where
-    (lname, lNumArgs) = extractNameArgs c1
-    (rname, rNumArgs) = extractNameArgs c2
+    (lname, lNumArgs) = extractNameArgs_ c1
+    (rname, rNumArgs) = extractNameArgs_ c2
 
 -- the first parameter is True when we're refining the special case "Rep"
 -- and false otherwise. We wish to consider the promotion of "Rep" to be *
@@ -458,8 +552,8 @@ singDataD rep cxt name tvbs ctors derivings
   | otherwise    = do
   aName <- qNewName "z"
   let a = VarT aName
-  let tvbNames = map extractTvbName tvbs
-  k <- promoteType (foldType (ConT name) (map VarT tvbNames))
+  let tvbNames = map extractTvbName_ tvbs
+  k <- oldPromoteType (foldl AppT (ConT name) (map VarT tvbNames))
   (ctors', ctorInstDecls) <- evalForPair $ mapM (singCtor a) ctors
 
   -- instance for SingKind
@@ -471,7 +565,7 @@ singDataD rep cxt name tvbs ctors derivings
                         (kindParam k))
                   [ mkTyFamInst demoteRepName
                      [kindParam k]
-                     (foldType (ConT name)
+                     (foldl AppT (ConT name)
                        (map (AppT demote . kindParam . VarT) tvbNames))
                   , FunD fromSingName (fromSingClauses `orIfEmpty` emptyMethod aName)
                   , FunD toSingName   (toSingClauses   `orIfEmpty` emptyMethod aName) ]
@@ -499,10 +593,10 @@ singDataD rep cxt name tvbs ctors derivings
 
         mkFromSingClause :: Quasi q => Con -> q Clause
         mkFromSingClause c = do
-          let (cname, numArgs) = extractNameArgs c
+          let (cname, numArgs) = extractNameArgs_ c
           varNames <- replicateM numArgs (qNewName "b")
           return $ Clause [ConP (singDataConName cname) (map VarP varNames)]
-                          (NormalB $ foldExp
+                          (NormalB $ foldl AppE
                              (ConE $ mkConName cname)
                              (map (AppE (VarE fromSingName) . VarE) varNames))
                           []
@@ -511,16 +605,16 @@ singDataD rep cxt name tvbs ctors derivings
         mkToSingClause = ctor1Case $ \cname types -> do
           varNames  <- mapM (const $ qNewName "b") types
           svarNames <- mapM (const $ qNewName "c") types
-          promoted  <- mapM promoteType types
+          promoted  <- mapM oldPromoteType types
           let recursiveCalls = zipWith mkRecursiveCall varNames promoted
           return $
             Clause [ConP (mkConName cname) (map VarP varNames)]
                    (NormalB $
-                    multiCase recursiveCalls
+                    multiCase_ recursiveCalls
                               (map (ConP someSingDataName . listify . VarP)
                                    svarNames)
                               (AppE (ConE someSingDataName)
-                                        (foldExp (ConE (singDataConName cname))
+                                        (foldl AppE (ConE (singDataConName cname))
                                                  (map VarE svarNames))))
                    []
 
@@ -530,7 +624,7 @@ singDataD rep cxt name tvbs ctors derivings
                (AppT (ConT someSingTypeName) (kindParam ki))
 
         emptyMethod :: Name -> [Clause]
-        emptyMethod n = [Clause [VarP n] (NormalB $ CaseE (VarE n) emptyMatches) []]
+        emptyMethod n = [Clause [VarP n] (NormalB $ CaseE (VarE n) emptyMatches_) []]
 
 singKind :: Quasi q => Kind -> q (Kind -> Kind)
 singKind (ForallT _ _ _) =
@@ -719,7 +813,7 @@ liftOutForalls =
     getTyFunNames [] = []
     getTyFunNames (PlainTV _ : tys) = getTyFunNames tys
     getTyFunNames (KindedTV name kind : tys)
-                  | isTyFun kind = (name, tyFunArity kind) : getTyFunNames tys
+                  | isTyFun_ kind = (name, tyFunArity_ kind) : getTyFunNames tys
                   | otherwise    = getTyFunNames tys
 
 -- the first parameter is the list of types the current type is applied to
@@ -747,7 +841,7 @@ singTypeRec ctx ArrowT = case ctx of
     t    <- qNewName "t"
     sty1 <- singTypeRec [] ty1
     sty2 <- singTypeRec [] ty2
-    k1   <- promoteType' ty1
+    k1   <- oldPromoteType ty1
     return (\f -> ForallT [KindedTV t k1]
                           []
                           (AppT (AppT ArrowT (sty1 (VarT t)))
@@ -775,7 +869,7 @@ singContext = mapM singPred
 
 singPred :: Quasi q => Pred -> q Pred
 singPred (ClassP name tys) = do
-  kis <- mapM promoteType tys
+  kis <- mapM oldPromoteType tys
   let sName = singClassName name
   return $ ClassP sName (map kindParam kis)
 singPred (EqualP _ty1 _ty2) =
@@ -905,12 +999,12 @@ singExp _ _vars (LamCaseE _matches) =
 singExp proxyTable vars (TupE exps) = do
   sExps <- mapM (singExp proxyTable vars) exps
   sTuple <- singExp proxyTable vars (ConE (tupleDataName (length exps)))
-  return $ foldExp sTuple sExps
+  return $ foldl AppE sTuple sExps
 singExp _ _vars (UnboxedTupE _exps) =
   fail "Singling of unboxed tuple not supported"
 singExp proxyTable vars (CondE bexp texp fexp) = do
   exps <- mapM (singExp proxyTable vars) [bexp, texp, fexp]
-  return $ foldExp (VarE sIfName) exps
+  return $ foldl AppE (VarE sIfName) exps
 singExp _ _vars (MultiIfE _alts) =
   fail "Singling of multi-way if statements not yet supported"
 singExp _ _vars (LetE _decs _exp) =
@@ -935,4 +1029,4 @@ singExp _ _vars (RecUpdE _exp _fields) =
   fail "Singling of record updates not yet supported"
 
 singLit :: Quasi q => Lit -> q Exp
-singLit lit = SigE (VarE singMethName) <$> (AppT singFamily <$> (promoteLit lit))
+singLit lit = SigE (VarE singMethName) <$> (AppT singFamily <$> (promoteLit_ lit))
