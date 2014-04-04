@@ -17,6 +17,11 @@ $(promote [d|
   Pair (Pair jz zz) fls = complex
   (tf, tjz, tt) = tuple
   [_, lsz, (Succ blimy)] = aList
+  lsz :: Nat
+  fls :: Bool
+#if __GLASGOW_HASKELL__ < 707
+  blimy :: Nat   -- this is necessary to promote nested patterns
+#endif
 
   foo1 :: (a, b) -> a
   foo1 (x, y) = (\_ -> x) y
@@ -26,14 +31,18 @@ $(promote [d|
                         (# a, b #) -> (\_ -> a) b
   |])
 
-foo1a :: Proxy (Foo1 '(Int, Char))
-foo1a = Proxy
+test1 :: Proxy (Foo1 '(Int, Char)) -> Proxy Int
+test1 = id
 
-foo1b :: Proxy Int
-foo1b = foo1a
+test2 :: Proxy (Foo2 '(Int, Char)) -> Proxy Int
+test2 = id
 
-foo2a :: Proxy (Foo2 '(Int, Char))
-foo2a = Proxy
+test3 :: Proxy Lsz -> Proxy (Succ Zero)
+test3 = id
 
-foo2b :: Proxy Int
-foo2b = foo2a
+test4 :: Proxy Blimy -> Proxy (Succ Zero)
+test4 = id
+
+test5 :: Proxy Fls -> Proxy False
+test5 = id
+

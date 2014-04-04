@@ -106,6 +106,10 @@ promoteTySym name sat
     | Just degree <- tupleNameDegree_maybe name
     = mkName $ "Tuple" ++ show degree ++ "Sym" ++ (show sat)
 
+       -- treat unboxed tuples like tuples
+    | Just degree <- unboxedTupleNameDegree_maybe name
+    = mkName $ "Tuple" ++ show degree ++ "Sym" ++ (show sat)
+
     | otherwise
     = let capped = toUpcaseStr name in
       if head capped == ':'

@@ -3,8 +3,6 @@ Singletons/Empty.hs:0:0: Splicing declarations
   ======>
     Singletons/Empty.hs:(0,0)-(0,0)
     data Empty
-    type EmptyTyCtor = Empty
-    type EmptyTyCtorSym0 = EmptyTyCtor
     data instance Sing (z :: Empty)
     type SEmpty (z :: Empty) = Sing z
     instance SingKind (KProxy :: KProxy Empty) where

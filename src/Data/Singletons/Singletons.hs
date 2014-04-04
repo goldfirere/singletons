@@ -149,12 +149,14 @@ singDataConName nm
   | nm == nilName                           = snilName
   | nm == consName                          = sconsName
   | Just degree <- tupleNameDegree_maybe nm = mkTupleName degree
+  | Just degree <- unboxedTupleNameDegree_maybe nm = mkTupleName degree
   | otherwise                               = prefixUCName "S" ":%" nm
 
 singTyConName :: Name -> Name
 singTyConName name
   | name == listName                          = sListName
   | Just degree <- tupleNameDegree_maybe name = mkTupleName degree
+  | Just degree <- unboxedTupleNameDegree_maybe name = mkTupleName degree
   | otherwise                                 = prefixUCName "S" ":%" name
 
 singClassName :: Name -> Name

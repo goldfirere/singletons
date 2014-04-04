@@ -6,16 +6,13 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     Promote/TopLevelPatterns.hs:(0,0)-(0,0)
     data Bool = False | True
     data Foo = Bar Bool Bool
-    type BoolTyCtor = Bool
-    type BoolTyCtorSym0 = BoolTyCtor
     type FalseSym0 = False
     type TrueSym0 = True
-    type FooTyCtor = Foo
-    type FooTyCtorSym0 = FooTyCtor
+    type BarSym2 t t = Bar t t
     data BarSym1 (l :: Bool) (l :: TyFun Bool Foo)
-    data BarSym0 (k :: TyFun Bool (TyFun Bool Foo -> *))
-    type instance Apply (BarSym1 a) a = Bar a a
-    type instance Apply BarSym0 a = BarSym1 a
+    type instance Apply (BarSym1 l) l = BarSym2 l l
+    data BarSym0 (l :: TyFun Bool (TyFun Bool Foo -> *))
+    type instance Apply BarSym0 l = BarSym1 l
 Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     promote
       [d| otherwise :: Bool
@@ -56,43 +53,61 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     l :: Bool
     m :: Bool
     [l, m] = [not True, id False]
-    type Otherwise = TrueSym0
-    type OtherwiseSym0 = Otherwise
-    type False_ = FalseSym0
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
     type False_Sym0 = False_
-    type F = Head '[NotSym0, IdSym0]
+    type NotSym1 t = Not t
+    data NotSym0 (l :: TyFun Bool Bool)
+    type instance Apply NotSym0 l = NotSym1 l
+    type IdSym1 t = Id t
+    data IdSym0 (l :: TyFun a a)
+    type instance Apply IdSym0 l = IdSym1 l
+    type family Case_0123456789 t where
+      Case_0123456789 ((GHC.Types.:) y ((GHC.Types.:) z GHC.Types.[])) = y
     type FSym0 = F
-    type G = Head (Tail '[NotSym0, IdSym0])
+    type family Case_0123456789 t where
+      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y GHC.Types.[])) = y
     type GSym0 = G
-    type H = Extract_0123456789 '(FSym0, GSym0)
+    type family Case_0123456789 t where
+      Case_0123456789 (GHC.Tuple.(,) y z) = y
     type HSym0 = H
-    type I = Extract_0123456789 '(FSym0, GSym0)
+    type family Case_0123456789 t where
+      Case_0123456789 (GHC.Tuple.(,) z y) = y
     type ISym0 = I
-    type family Extract_0123456789 (a :: GHC.Tuple.(,) a b) :: a
-    type family Extract_0123456789 (a :: GHC.Tuple.(,) a b) :: b
-    type instance Extract_0123456789 (GHC.Tuple.(,) a a) = a
-    type instance Extract_0123456789 (GHC.Tuple.(,) a a) = a
-    type J =
-        Extract_0123456789 (Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0))
+    type family Case_0123456789 t where
+      Case_0123456789 (Bar y z) = y
     type JSym0 = J
-    type K =
-        Extract_0123456789 (Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0))
+    type family Case_0123456789 t where
+      Case_0123456789 (Bar z y) = y
     type KSym0 = K
-    type family Extract_0123456789 (a :: Foo) :: Bool
-    type family Extract_0123456789 (a :: Foo) :: Bool
-    type instance Extract_0123456789 (Bar a a) = a
-    type instance Extract_0123456789 (Bar a a) = a
-    type L = Head '[Apply NotSym0 TrueSym0, Apply IdSym0 FalseSym0]
+    type family Case_0123456789 t where
+      Case_0123456789 ((GHC.Types.:) y ((GHC.Types.:) z GHC.Types.[])) = y
     type LSym0 = L
-    type M =
-        Head (Tail '[Apply NotSym0 TrueSym0, Apply IdSym0 FalseSym0])
+    type family Case_0123456789 t where
+      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y GHC.Types.[])) = y
     type MSym0 = M
-    type family Id (a :: a) :: a where
-      Id x = x
-    data IdSym0 (k :: TyFun a a)
-    type instance Apply IdSym0 a = Id a
+    type OtherwiseSym0 = Otherwise
+    type X_0123456789 =
+        Apply (Apply (:$) NotSym0) (Apply (Apply (:$) IdSym0) GHC.Types.[])
+    type X_0123456789 = Apply (Apply Tuple2Sym0 FSym0) GSym0
+    type X_0123456789 =
+        Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0)
+    type X_0123456789 =
+        Apply (Apply (:$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:$) (Apply IdSym0 FalseSym0)) GHC.Types.[])
+    type False_ = FalseSym0
     type family Not (a :: Bool) :: Bool where
       Not True = FalseSym0
       Not False = TrueSym0
-    data NotSym0 (k :: TyFun Bool Bool)
-    type instance Apply NotSym0 a = Not a
+    type family Id (a :: a) :: a where
+      Id x = x
+    type F = (Case_0123456789 X_0123456789Sym0 :: TyFun Bool Bool -> *)
+    type G = (Case_0123456789 X_0123456789Sym0 :: TyFun Bool Bool -> *)
+    type H = (Case_0123456789 X_0123456789Sym0 :: TyFun Bool Bool -> *)
+    type I = (Case_0123456789 X_0123456789Sym0 :: TyFun Bool Bool -> *)
+    type J = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type K = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type L = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type M = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type Otherwise = (TrueSym0 :: Bool)

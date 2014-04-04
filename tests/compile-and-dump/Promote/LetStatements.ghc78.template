@@ -186,167 +186,188 @@ Promote/LetStatements.hs:0:0: Splicing declarations
         in foo13b bar
     foo13b :: forall a. a -> a
     foo13b y = y
-    type family Let_0123456789y (a :: x) :: Nat where
-      Let_0123456789y x = Apply SuccSym0 ZeroSym0
-    data Let_0123456789ySym0 (k :: TyFun x Nat)
-    type instance Apply Let_0123456789ySym0 a = Let_0123456789y a
-    type Foo2 = Let_0123456789zSym0
+    type Foo13bSym1 t = Foo13b t
+    data Foo13bSym0 (l :: TyFun a a)
+    type instance Apply Foo13bSym0 l = Foo13bSym1 l
+    type Foo13Sym1 t = Foo13 t
+    data Foo13Sym0 (l :: TyFun a a)
+    type instance Apply Foo13Sym0 l = Foo13Sym1 l
+    type Let_0123456789BarSym1 t = Let_0123456789Bar t
+    data Let_0123456789BarSym0 (l :: TyFun k a)
+    type instance Apply Let_0123456789BarSym0 l = Let_0123456789BarSym1 l
+    type Let_0123456789Bar x = (x :: a)
+    type Foo12Sym1 t = Foo12 t
+    data Foo12Sym0 (l :: TyFun Nat Nat)
+    type instance Apply Foo12Sym0 l = Foo12Sym1 l
+    type Let_0123456789:+Sym3 t t t = Let_0123456789:+ t t t
+    data Let_0123456789:+Sym2 (l :: k) (l :: Nat) (l :: TyFun Nat Nat)
+    type instance Apply (Let_0123456789:+Sym2 l l) l = Let_0123456789:+Sym3 l l l
+    data Let_0123456789:+Sym1 (l :: k)
+                              (l :: TyFun Nat (TyFun Nat Nat -> *))
+    type instance Apply (Let_0123456789:+Sym1 l) l = Let_0123456789:+Sym2 l l
+    data Let_0123456789:+Sym0 (l :: TyFun k (TyFun Nat (TyFun Nat Nat
+                                                        -> *)
+                                             -> *))
+    type instance Apply Let_0123456789:+Sym0 l = Let_0123456789:+Sym1 l
+    type family Let_0123456789:+ x (a :: Nat) (a :: Nat) :: Nat where
+      Let_0123456789:+ x Zero m = m
+      Let_0123456789:+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Let_0123456789:+Sym1 x) n) x)
+    type Foo11Sym1 t = Foo11 t
+    data Foo11Sym0 (l :: TyFun Nat Nat)
+    type instance Apply Foo11Sym0 l = Foo11Sym1 l
+    type Let_0123456789ZSym1 t = Let_0123456789Z t
+    data Let_0123456789ZSym0 (l :: TyFun k Nat)
+    type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
+    type Let_0123456789:+Sym3 t t t = Let_0123456789:+ t t t
+    data Let_0123456789:+Sym2 (l :: k) (l :: Nat) (l :: TyFun Nat Nat)
+    type instance Apply (Let_0123456789:+Sym2 l l) l = Let_0123456789:+Sym3 l l l
+    data Let_0123456789:+Sym1 (l :: k)
+                              (l :: TyFun Nat (TyFun Nat Nat -> *))
+    type instance Apply (Let_0123456789:+Sym1 l) l = Let_0123456789:+Sym2 l l
+    data Let_0123456789:+Sym0 (l :: TyFun k (TyFun Nat (TyFun Nat Nat
+                                                        -> *)
+                                             -> *))
+    type instance Apply Let_0123456789:+Sym0 l = Let_0123456789:+Sym1 l
+    type Let_0123456789Z x = (x :: Nat)
+    type family Let_0123456789:+ x (a :: Nat) (a :: Nat) :: Nat where
+      Let_0123456789:+ x Zero m = m
+      Let_0123456789:+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Let_0123456789:+Sym1 x) n) m)
+    type Foo10Sym1 t = Foo10 t
+    data Foo10Sym0 (l :: TyFun Nat Nat)
+    type instance Apply Foo10Sym0 l = Foo10Sym1 l
+    type Let_0123456789:+Sym3 t t t = Let_0123456789:+ t t t
+    data Let_0123456789:+Sym2 (l :: k) (l :: Nat) (l :: TyFun Nat Nat)
+    type instance Apply (Let_0123456789:+Sym2 l l) l = Let_0123456789:+Sym3 l l l
+    data Let_0123456789:+Sym1 (l :: k)
+                              (l :: TyFun Nat (TyFun Nat Nat -> *))
+    type instance Apply (Let_0123456789:+Sym1 l) l = Let_0123456789:+Sym2 l l
+    data Let_0123456789:+Sym0 (l :: TyFun k (TyFun Nat (TyFun Nat Nat
+                                                        -> *)
+                                             -> *))
+    type instance Apply Let_0123456789:+Sym0 l = Let_0123456789:+Sym1 l
+    type family Let_0123456789:+ x (a :: Nat) (a :: Nat) :: Nat where
+      Let_0123456789:+ x Zero m = m
+      Let_0123456789:+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Let_0123456789:+Sym1 x) n) m)
+    type Foo9Sym1 t = Foo9 t
+    data Foo9Sym0 (l :: TyFun Nat Nat)
+    type instance Apply Foo9Sym0 l = Foo9Sym1 l
+    type family Lambda_0123456789 x t where
+      Lambda_0123456789 x x = x
+    type Lambda_0123456789Sym2 t t = Lambda_0123456789 t t
+    data Lambda_0123456789Sym1 (l :: k) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    data Lambda_0123456789Sym0 (l :: TyFun k (TyFun k r -> *))
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type Let_0123456789ZSym1 t = Let_0123456789Z t
+    data Let_0123456789ZSym0 (l :: TyFun k (TyFun Nat Nat -> *))
+    type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
+    type Let_0123456789Z x =
+        (Apply Lambda_0123456789Sym0 x :: TyFun Nat Nat -> *)
+    type Foo8Sym1 t = Foo8 t
+    data Foo8Sym0 (l :: TyFun Nat Nat)
+    type instance Apply Foo8Sym0 l = Foo8Sym1 l
+    type family Lambda_0123456789 x t where
+      Lambda_0123456789 x x = x
+    type Lambda_0123456789Sym2 t t = Lambda_0123456789 t t
+    data Lambda_0123456789Sym1 (l :: k) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    data Lambda_0123456789Sym0 (l :: TyFun k (TyFun k r -> *))
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type Let_0123456789ZSym1 t = Let_0123456789Z t
+    data Let_0123456789ZSym0 (l :: TyFun k Nat)
+    type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
+    type Let_0123456789Z x =
+        (Apply (Apply Lambda_0123456789Sym0 x) ZeroSym0 :: Nat)
+    type Foo7Sym1 t = Foo7 t
+    data Foo7Sym0 (l :: TyFun Nat Nat)
+    type instance Apply Foo7Sym0 l = Foo7Sym1 l
+    type Let_0123456789XSym1 t = Let_0123456789X t
+    data Let_0123456789XSym0 (l :: TyFun k Nat)
+    type instance Apply Let_0123456789XSym0 l = Let_0123456789XSym1 l
+    type Let_0123456789X x = (ZeroSym0 :: Nat)
+    type Foo6Sym1 t = Foo6 t
+    data Foo6Sym0 (l :: TyFun Nat Nat)
+    type instance Apply Foo6Sym0 l = Foo6Sym1 l
+    type Let_0123456789FSym2 t t = Let_0123456789F t t
+    data Let_0123456789FSym1 (l :: k) (l :: TyFun Nat Nat)
+    type instance Apply (Let_0123456789FSym1 l) l = Let_0123456789FSym2 l l
+    data Let_0123456789FSym0 (l :: TyFun k (TyFun Nat Nat -> *))
+    type instance Apply Let_0123456789FSym0 l = Let_0123456789FSym1 l
+    type family Let_0123456789F x (a :: Nat) :: Nat where
+      Let_0123456789F x y = Apply SuccSym0 y
+    type Let_0123456789ZSym1 t = Let_0123456789Z t
+    data Let_0123456789ZSym0 (l :: TyFun k Nat)
+    type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
+    type Let_0123456789Z x = (Apply (Let_0123456789FSym1 x) x :: Nat)
+    type Foo5Sym1 t = Foo5 t
+    data Foo5Sym0 (l :: TyFun Nat Nat)
+    type instance Apply Foo5Sym0 l = Foo5Sym1 l
+    type Let_0123456789FSym2 t t = Let_0123456789F t t
+    data Let_0123456789FSym1 (l :: k) (l :: TyFun Nat Nat)
+    type instance Apply (Let_0123456789FSym1 l) l = Let_0123456789FSym2 l l
+    data Let_0123456789FSym0 (l :: TyFun k (TyFun Nat Nat -> *))
+    type instance Apply Let_0123456789FSym0 l = Let_0123456789FSym1 l
+    type Let_0123456789ZSym2 t t = Let_0123456789Z t t
+    data Let_0123456789ZSym1 (l :: k) (l :: TyFun k Nat)
+    type instance Apply (Let_0123456789ZSym1 l) l = Let_0123456789ZSym2 l l
+    data Let_0123456789ZSym0 (l :: TyFun k (TyFun k Nat -> *))
+    type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
+    type Let_0123456789Z x y = (Apply SuccSym0 y :: Nat)
+    type family Let_0123456789F x (a :: Nat) :: Nat where
+      Let_0123456789F x y = Apply SuccSym0 (Let_0123456789ZSym2 x y)
+    type Foo4Sym1 t = Foo4 t
+    data Foo4Sym0 (l :: TyFun Nat Nat)
+    type instance Apply Foo4Sym0 l = Foo4Sym1 l
+    type Let_0123456789FSym2 t t = Let_0123456789F t t
+    data Let_0123456789FSym1 (l :: k) (l :: TyFun Nat Nat)
+    type instance Apply (Let_0123456789FSym1 l) l = Let_0123456789FSym2 l l
+    data Let_0123456789FSym0 (l :: TyFun k (TyFun Nat Nat -> *))
+    type instance Apply Let_0123456789FSym0 l = Let_0123456789FSym1 l
+    type family Let_0123456789F x (a :: Nat) :: Nat where
+      Let_0123456789F x y = Apply SuccSym0 y
+    type Foo3Sym1 t = Foo3 t
+    data Foo3Sym0 (l :: TyFun Nat Nat)
+    type instance Apply Foo3Sym0 l = Foo3Sym1 l
+    type Let_0123456789YSym1 t = Let_0123456789Y t
+    data Let_0123456789YSym0 (l :: TyFun k Nat)
+    type instance Apply Let_0123456789YSym0 l = Let_0123456789YSym1 l
+    type Let_0123456789Y x = (Apply SuccSym0 x :: Nat)
+    type Let_0123456789YSym0 = Let_0123456789Y
+    type Let_0123456789ZSym0 = Let_0123456789Z
+    type Let_0123456789Y = Apply SuccSym0 ZeroSym0
+    type Let_0123456789Z = Apply SuccSym0 Let_0123456789YSym0
     type Foo2Sym0 = Foo2
-    type Let_0123456789y = Apply SuccSym0 ZeroSym0
-    type Let_0123456789ySym0 = Let_0123456789y
-    type Let_0123456789z = Apply SuccSym0 Let_0123456789ySym0
-    type Let_0123456789zSym0 = Let_0123456789z
-    type family Let_0123456789y (a :: x) :: Nat where
-      Let_0123456789y x = Apply SuccSym0 x
-    data Let_0123456789ySym0 (k :: TyFun x Nat)
-    type instance Apply Let_0123456789ySym0 a = Let_0123456789y a
-    type family Let_0123456789f (a :: x) (a :: Nat) :: Nat where
-      Let_0123456789f x y = Apply SuccSym0 y
-    data Let_0123456789fSym1 (l :: x) (l :: TyFun Nat Nat)
-    data Let_0123456789fSym0 (k :: TyFun x (TyFun Nat Nat -> *))
-    type instance Apply (Let_0123456789fSym1 a) a = Let_0123456789f a a
-    type instance Apply Let_0123456789fSym0 a = Let_0123456789fSym1 a
-    type family Let_0123456789z (a :: x) (a :: y) :: Nat where
-      Let_0123456789z x y = Apply SuccSym0 y
-    data Let_0123456789zSym1 (l :: x) (l :: TyFun y Nat)
-    data Let_0123456789zSym0 (k :: TyFun x (TyFun y Nat -> *))
-    type instance Apply (Let_0123456789zSym1 a) a = Let_0123456789z a a
-    type instance Apply Let_0123456789zSym0 a = Let_0123456789zSym1 a
-    type family Let_0123456789f (a :: x) (a :: Nat) :: Nat where
-      Let_0123456789f x y = Apply SuccSym0 (Apply (Apply Let_0123456789zSym0 x) y)
-    data Let_0123456789fSym1 (l :: x) (l :: TyFun Nat Nat)
-    data Let_0123456789fSym0 (k :: TyFun x (TyFun Nat Nat -> *))
-    type instance Apply (Let_0123456789fSym1 a) a = Let_0123456789f a a
-    type instance Apply Let_0123456789fSym0 a = Let_0123456789fSym1 a
-    type family Let_0123456789f (a :: x) (a :: Nat) :: Nat where
-      Let_0123456789f x y = Apply SuccSym0 y
-    data Let_0123456789fSym1 (l :: x) (l :: TyFun Nat Nat)
-    data Let_0123456789fSym0 (k :: TyFun x (TyFun Nat Nat -> *))
-    type instance Apply (Let_0123456789fSym1 a) a = Let_0123456789f a a
-    type instance Apply Let_0123456789fSym0 a = Let_0123456789fSym1 a
-    type family Let_0123456789z (a :: x) :: Nat where
-      Let_0123456789z x = Apply (Apply Let_0123456789fSym0 x) x
-    data Let_0123456789zSym0 (k :: TyFun x Nat)
-    type instance Apply Let_0123456789zSym0 a = Let_0123456789z a
-    type family Let_0123456789x (a :: x) :: Nat where
-      Let_0123456789x x = ZeroSym0
-    data Let_0123456789xSym0 (k :: TyFun x Nat)
-    type instance Apply Let_0123456789xSym0 a = Let_0123456789x a
-    type family Lambda_0123456789 (x :: x) (t :: k) :: r where
-      Lambda_0123456789 x x = x
-    data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
-    type instance Apply (Lambda_0123456789Sym1 a) a = Lambda_0123456789 a a
-    type family Let_0123456789z (a :: x) :: Nat where
-      Let_0123456789z x = Apply (Lambda_0123456789Sym1 x) ZeroSym0
-    data Let_0123456789zSym0 (k :: TyFun x Nat)
-    type instance Apply Let_0123456789zSym0 a = Let_0123456789z a
-    type family Lambda_0123456789 (x :: x) (t :: k) :: r where
-      Lambda_0123456789 x x = x
-    data Lambda_0123456789Sym1 (l :: x) (l :: TyFun k r)
-    type instance Apply (Lambda_0123456789Sym1 a) a = Lambda_0123456789 a a
-    type family Let_0123456789z (a :: x) :: TyFun Nat Nat -> * where
-      Let_0123456789z x = Lambda_0123456789Sym1 x
-    data Let_0123456789zSym0 (k :: TyFun x (TyFun Nat Nat -> *))
-    type instance Apply Let_0123456789zSym0 a = Let_0123456789z a
-    type family Let_0123456789+ (a :: x)
-                                (a :: Nat)
-                                (a :: Nat) :: Nat where
-      Let_0123456789+ x Zero m = m
-      Let_0123456789+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Apply Let_0123456789+Sym0 x) n) m)
-    data Let_0123456789+Sym2 (l :: x) (l :: Nat) (l :: TyFun Nat Nat)
-    data Let_0123456789+Sym1 (l :: x)
-                             (l :: TyFun Nat (TyFun Nat Nat -> *))
-    data Let_0123456789+Sym0 (k :: TyFun x (TyFun Nat (TyFun Nat Nat
-                                                       -> *)
-                                            -> *))
-    type instance Apply (Let_0123456789+Sym2 a a) a = Let_0123456789+ a a a
-    type instance Apply (Let_0123456789+Sym1 a) a = Let_0123456789+Sym2 a a
-    type instance Apply Let_0123456789+Sym0 a = Let_0123456789+Sym1 a
-    type family Let_0123456789+ (a :: x)
-                                (a :: Nat)
-                                (a :: Nat) :: Nat where
-      Let_0123456789+ x Zero m = m
-      Let_0123456789+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Apply Let_0123456789+Sym0 x) n) m)
-    data Let_0123456789+Sym2 (l :: x) (l :: Nat) (l :: TyFun Nat Nat)
-    data Let_0123456789+Sym1 (l :: x)
-                             (l :: TyFun Nat (TyFun Nat Nat -> *))
-    data Let_0123456789+Sym0 (k :: TyFun x (TyFun Nat (TyFun Nat Nat
-                                                       -> *)
-                                            -> *))
-    type instance Apply (Let_0123456789+Sym2 a a) a = Let_0123456789+ a a a
-    type instance Apply (Let_0123456789+Sym1 a) a = Let_0123456789+Sym2 a a
-    type instance Apply Let_0123456789+Sym0 a = Let_0123456789+Sym1 a
-    type family Let_0123456789z (a :: x) :: Nat where
-      Let_0123456789z x = x
-    data Let_0123456789zSym0 (k :: TyFun x Nat)
-    type instance Apply Let_0123456789zSym0 a = Let_0123456789z a
-    type family Let_0123456789+ (a :: x)
-                                (a :: Nat)
-                                (a :: Nat) :: Nat where
-      Let_0123456789+ x Zero m = m
-      Let_0123456789+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Apply Let_0123456789+Sym0 x) n) x)
-    data Let_0123456789+Sym2 (l :: x) (l :: Nat) (l :: TyFun Nat Nat)
-    data Let_0123456789+Sym1 (l :: x)
-                             (l :: TyFun Nat (TyFun Nat Nat -> *))
-    data Let_0123456789+Sym0 (k :: TyFun x (TyFun Nat (TyFun Nat Nat
-                                                       -> *)
-                                            -> *))
-    type instance Apply (Let_0123456789+Sym2 a a) a = Let_0123456789+ a a a
-    type instance Apply (Let_0123456789+Sym1 a) a = Let_0123456789+Sym2 a a
-    type instance Apply Let_0123456789+Sym0 a = Let_0123456789+Sym1 a
-    type family Let_0123456789bar (a :: x) :: a where
-      Let_0123456789bar x = x
-    data Let_0123456789barSym0 (k :: TyFun x a)
-    type instance Apply Let_0123456789barSym0 a = Let_0123456789bar a
-    type family Foo1 (a :: Nat) :: Nat where
-      Foo1 x = Apply Let_0123456789ySym0 x
-    data Foo1Sym0 (k :: TyFun Nat Nat)
-    type instance Apply Foo1Sym0 a = Foo1 a
-    type family Foo3 (a :: Nat) :: Nat where
-      Foo3 x = Apply Let_0123456789ySym0 x
-    data Foo3Sym0 (k :: TyFun Nat Nat)
-    type instance Apply Foo3Sym0 a = Foo3 a
-    type family Foo4 (a :: Nat) :: Nat where
-      Foo4 x = Apply (Apply Let_0123456789fSym0 x) x
-    data Foo4Sym0 (k :: TyFun Nat Nat)
-    type instance Apply Foo4Sym0 a = Foo4 a
-    type family Foo5 (a :: Nat) :: Nat where
-      Foo5 x = Apply (Apply Let_0123456789fSym0 x) x
-    data Foo5Sym0 (k :: TyFun Nat Nat)
-    type instance Apply Foo5Sym0 a = Foo5 a
-    type family Foo6 (a :: Nat) :: Nat where
-      Foo6 x = Apply Let_0123456789zSym0 x
-    data Foo6Sym0 (k :: TyFun Nat Nat)
-    type instance Apply Foo6Sym0 a = Foo6 a
-    type family Foo7 (a :: Nat) :: Nat where
-      Foo7 x = Apply Let_0123456789xSym0 x
-    data Foo7Sym0 (k :: TyFun Nat Nat)
-    type instance Apply Foo7Sym0 a = Foo7 a
-    type family Foo8 (a :: Nat) :: Nat where
-      Foo8 x = Apply Let_0123456789zSym0 x
-    data Foo8Sym0 (k :: TyFun Nat Nat)
-    type instance Apply Foo8Sym0 a = Foo8 a
-    type family Foo9 (a :: Nat) :: Nat where
-      Foo9 x = Apply (Apply Let_0123456789zSym0 x) x
-    data Foo9Sym0 (k :: TyFun Nat Nat)
-    type instance Apply Foo9Sym0 a = Foo9 a
-    type family Foo10 (a :: Nat) :: Nat where
-      Foo10 x = Apply (Apply (Apply Let_0123456789+Sym0 x) (Apply SuccSym0 ZeroSym0)) x
-    data Foo10Sym0 (k :: TyFun Nat Nat)
-    type instance Apply Foo10Sym0 a = Foo10 a
-    type family Foo11 (a :: Nat) :: Nat where
-      Foo11 x = Apply (Apply (Apply Let_0123456789+Sym0 x) (Apply SuccSym0 ZeroSym0)) (Apply Let_0123456789zSym0 x)
-    data Foo11Sym0 (k :: TyFun Nat Nat)
-    type instance Apply Foo11Sym0 a = Foo11 a
-    type family Foo12 (a :: Nat) :: Nat where
-      Foo12 x = Apply (Apply (Apply Let_0123456789+Sym0 x) x) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))
-    data Foo12Sym0 (k :: TyFun Nat Nat)
-    type instance Apply Foo12Sym0 a = Foo12 a
-    type family Foo13 (a :: a) :: a where
-      Foo13 x = Apply Foo13bSym0 (Apply Let_0123456789barSym0 x)
-    data Foo13Sym0 (k :: TyFun a a)
-    type instance Apply Foo13Sym0 a = Foo13 a
+    type Foo1Sym1 t = Foo1 t
+    data Foo1Sym0 (l :: TyFun Nat Nat)
+    type instance Apply Foo1Sym0 l = Foo1Sym1 l
+    type Let_0123456789YSym1 t = Let_0123456789Y t
+    data Let_0123456789YSym0 (l :: TyFun k Nat)
+    type instance Apply Let_0123456789YSym0 l = Let_0123456789YSym1 l
+    type Let_0123456789Y x = (Apply SuccSym0 ZeroSym0 :: Nat)
     type family Foo13b (a :: a) :: a where
       Foo13b y = y
-    data Foo13bSym0 (k :: TyFun a a)
-    type instance Apply Foo13bSym0 a = Foo13b a
+    type family Foo13 (a :: a) :: a where
+      Foo13 x = Apply Foo13bSym0 (Let_0123456789BarSym1 x)
+    type family Foo12 (a :: Nat) :: Nat where
+      Foo12 x = Apply (Apply (Let_0123456789:+Sym1 x) x) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))
+    type family Foo11 (a :: Nat) :: Nat where
+      Foo11 x = Apply (Apply (Let_0123456789:+Sym1 x) (Apply SuccSym0 ZeroSym0)) (Let_0123456789ZSym1 x)
+    type family Foo10 (a :: Nat) :: Nat where
+      Foo10 x = Apply (Apply (Let_0123456789:+Sym1 x) (Apply SuccSym0 ZeroSym0)) x
+    type family Foo9 (a :: Nat) :: Nat where
+      Foo9 x = Apply (Let_0123456789ZSym1 x) x
+    type family Foo8 (a :: Nat) :: Nat where
+      Foo8 x = Let_0123456789ZSym1 x
+    type family Foo7 (a :: Nat) :: Nat where
+      Foo7 x = Let_0123456789XSym1 x
+    type family Foo6 (a :: Nat) :: Nat where
+      Foo6 x = Let_0123456789ZSym1 x
+    type family Foo5 (a :: Nat) :: Nat where
+      Foo5 x = Apply (Let_0123456789FSym1 x) x
+    type family Foo4 (a :: Nat) :: Nat where
+      Foo4 x = Apply (Let_0123456789FSym1 x) x
+    type family Foo3 (a :: Nat) :: Nat where
+      Foo3 x = Let_0123456789YSym1 x
+    type Foo2 = (Let_0123456789ZSym0 :: Nat)
+    type family Foo1 (a :: Nat) :: Nat where
+      Foo1 x = Let_0123456789YSym1 x

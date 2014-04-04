@@ -44,51 +44,90 @@ Promote/CaseExpressions.hs:0:0: Splicing declarations
                in z }
     foo5 :: forall a. a -> a
     foo5 x = case x of { y -> \ _ -> x y }
-    type family Case_0123456789 (t :: k) (d :: d) (x :: x) :: r where
-      Case_0123456789 (Just y) d x = y
-      Case_0123456789 Nothing d x = d
-    type family Case_0123456789 (t :: k) (d :: d) :: r where
-      Case_0123456789 (Just y) d = y
-      Case_0123456789 Nothing d = d
-    type family Case_0123456789 (t :: k) (a :: a) (b :: b) :: r where
-      Case_0123456789 '(p, z) a b = p
-    type family Let_0123456789z (a :: x) (a :: y) :: a where
-      Let_0123456789z x y = y
-    data Let_0123456789zSym1 (l :: x) (l :: TyFun y a)
-    data Let_0123456789zSym0 (k :: TyFun x (TyFun y a -> *))
-    type instance Apply (Let_0123456789zSym1 a) a = Let_0123456789z a a
-    type instance Apply Let_0123456789zSym0 a = Let_0123456789zSym1 a
-    type family Case_0123456789 (t :: k) (x :: x) :: r where
-      Case_0123456789 y x = Apply (Apply Let_0123456789zSym0 x) y
-    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) :: r where
-      Lambda_0123456789 x y z = x
-    data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
-    type instance Apply (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a
-    type family Case_0123456789 (t :: k) (x :: x) :: r where
-      Case_0123456789 y x = Apply (Lambda_0123456789Sym2 x y) y
-    type family Foo1 (a :: a) (a :: Maybe a) :: a where
-      Foo1 d x = Case_0123456789 x d x
-    data Foo1Sym1 (l :: a) (l :: TyFun (Maybe a) a)
-    data Foo1Sym0 (k :: TyFun a (TyFun (Maybe a) a -> *))
-    type instance Apply (Foo1Sym1 a) a = Foo1 a a
-    type instance Apply Foo1Sym0 a = Foo1Sym1 a
-    type family Foo2 (a :: a) (a :: Maybe a) :: a where
-      Foo2 d z = Case_0123456789 (Apply JustSym0 d) d
-    data Foo2Sym1 (l :: a) (l :: TyFun (Maybe a) a)
-    data Foo2Sym0 (k :: TyFun a (TyFun (Maybe a) a -> *))
-    type instance Apply (Foo2Sym1 a) a = Foo2 a a
-    type instance Apply Foo2Sym0 a = Foo2Sym1 a
-    type family Foo3 (a :: a) (a :: b) :: a where
-      Foo3 a b = Case_0123456789 '(a, b) a b
+    type Foo5Sym1 t = Foo5 t
+    data Foo5Sym0 (l :: TyFun a a)
+    type instance Apply Foo5Sym0 l = Foo5Sym1 l
+    type Let_0123456789ScrutineeSym1 t = Let_0123456789Scrutinee t
+    data Let_0123456789ScrutineeSym0 (l :: TyFun k kresult)
+    type instance Apply Let_0123456789ScrutineeSym0 l = Let_0123456789ScrutineeSym1 l
+    type Let_0123456789Scrutinee x = x
+    type family Case_0123456789 x y arg t where
+      Case_0123456789 x y arg z = x
+    type family Lambda_0123456789 x y t where
+      Lambda_0123456789 x y arg = Case_0123456789 x y arg arg
+    type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
+    data Lambda_0123456789Sym2 (l :: k) (l :: k) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    data Lambda_0123456789Sym1 (l :: k) (l :: TyFun k (TyFun k r -> *))
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    data Lambda_0123456789Sym0 (l :: TyFun k (TyFun k (TyFun k r -> *)
+                                              -> *))
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Case_0123456789 x t where
+      Case_0123456789 x y = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
+    type Foo4Sym1 t = Foo4 t
+    data Foo4Sym0 (l :: TyFun a a)
+    type instance Apply Foo4Sym0 l = Foo4Sym1 l
+    type Let_0123456789ScrutineeSym1 t = Let_0123456789Scrutinee t
+    data Let_0123456789ScrutineeSym0 (l :: TyFun k kresult)
+    type instance Apply Let_0123456789ScrutineeSym0 l = Let_0123456789ScrutineeSym1 l
+    type Let_0123456789Scrutinee x = x
+    type Let_0123456789ZSym2 t t = Let_0123456789Z t t
+    data Let_0123456789ZSym1 (l :: k) (l :: TyFun k a)
+    type instance Apply (Let_0123456789ZSym1 l) l = Let_0123456789ZSym2 l l
+    data Let_0123456789ZSym0 (l :: TyFun k (TyFun k a -> *))
+    type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
+    type Let_0123456789Z x y = (y :: a)
+    type family Case_0123456789 x t where
+      Case_0123456789 x y = Let_0123456789ZSym2 x y
+    type Foo3Sym2 t t = Foo3 t t
     data Foo3Sym1 (l :: a) (l :: TyFun b a)
-    data Foo3Sym0 (k :: TyFun a (TyFun b a -> *))
-    type instance Apply (Foo3Sym1 a) a = Foo3 a a
-    type instance Apply Foo3Sym0 a = Foo3Sym1 a
-    type family Foo4 (a :: a) :: a where
-      Foo4 x = Case_0123456789 x x
-    data Foo4Sym0 (k :: TyFun a a)
-    type instance Apply Foo4Sym0 a = Foo4 a
+    type instance Apply (Foo3Sym1 l) l = Foo3Sym2 l l
+    data Foo3Sym0 (l :: TyFun a (TyFun b a -> *))
+    type instance Apply Foo3Sym0 l = Foo3Sym1 l
+    type Let_0123456789ScrutineeSym2 t t = Let_0123456789Scrutinee t t
+    data Let_0123456789ScrutineeSym1 (l :: k) (l :: TyFun k kresult)
+    type instance Apply (Let_0123456789ScrutineeSym1 l) l = Let_0123456789ScrutineeSym2 l l
+    data Let_0123456789ScrutineeSym0 (l :: TyFun k (TyFun k kresult
+                                                    -> *))
+    type instance Apply Let_0123456789ScrutineeSym0 l = Let_0123456789ScrutineeSym1 l
+    type Let_0123456789Scrutinee a b = Apply (Apply Tuple2Sym0 a) b
+    type family Case_0123456789 a b t where
+      Case_0123456789 a b (GHC.Tuple.(,) p z) = p
+    type Foo2Sym2 t t = Foo2 t t
+    data Foo2Sym1 (l :: a) (l :: TyFun (Maybe a) a)
+    type instance Apply (Foo2Sym1 l) l = Foo2Sym2 l l
+    data Foo2Sym0 (l :: TyFun a (TyFun (Maybe a) a -> *))
+    type instance Apply Foo2Sym0 l = Foo2Sym1 l
+    type Let_0123456789ScrutineeSym1 t = Let_0123456789Scrutinee t
+    data Let_0123456789ScrutineeSym0 (l :: TyFun k kresult)
+    type instance Apply Let_0123456789ScrutineeSym0 l = Let_0123456789ScrutineeSym1 l
+    type Let_0123456789Scrutinee d = Apply JustSym0 d
+    type family Case_0123456789 d t where
+      Case_0123456789 d (Just y) = y
+      Case_0123456789 d Nothing = d
+    type Foo1Sym2 t t = Foo1 t t
+    data Foo1Sym1 (l :: a) (l :: TyFun (Maybe a) a)
+    type instance Apply (Foo1Sym1 l) l = Foo1Sym2 l l
+    data Foo1Sym0 (l :: TyFun a (TyFun (Maybe a) a -> *))
+    type instance Apply Foo1Sym0 l = Foo1Sym1 l
+    type Let_0123456789ScrutineeSym2 t t = Let_0123456789Scrutinee t t
+    data Let_0123456789ScrutineeSym1 (l :: k) (l :: TyFun k kresult)
+    type instance Apply (Let_0123456789ScrutineeSym1 l) l = Let_0123456789ScrutineeSym2 l l
+    data Let_0123456789ScrutineeSym0 (l :: TyFun k (TyFun k kresult
+                                                    -> *))
+    type instance Apply Let_0123456789ScrutineeSym0 l = Let_0123456789ScrutineeSym1 l
+    type Let_0123456789Scrutinee d x = x
+    type family Case_0123456789 d x t where
+      Case_0123456789 d x (Just y) = y
+      Case_0123456789 d x Nothing = d
     type family Foo5 (a :: a) :: a where
-      Foo5 x = Case_0123456789 x x
-    data Foo5Sym0 (k :: TyFun a a)
-    type instance Apply Foo5Sym0 a = Foo5 a
+      Foo5 x = Case_0123456789 x (Let_0123456789ScrutineeSym1 x)
+    type family Foo4 (a :: a) :: a where
+      Foo4 x = Case_0123456789 x (Let_0123456789ScrutineeSym1 x)
+    type family Foo3 (a :: a) (a :: b) :: a where
+      Foo3 a b = Case_0123456789 a b (Let_0123456789ScrutineeSym2 a b)
+    type family Foo2 (a :: a) (a :: Maybe a) :: a where
+      Foo2 d z = Case_0123456789 d (Let_0123456789ScrutineeSym1 d)
+    type family Foo1 (a :: a) (a :: Maybe a) :: a where
+      Foo1 d x = Case_0123456789 d x (Let_0123456789ScrutineeSym2 d x)

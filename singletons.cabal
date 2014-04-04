@@ -71,7 +71,11 @@ library
   other-modules:      Data.Singletons.Promote,
                       Data.Singletons.Singletons,
                       Data.Singletons.Util,
-                      Data.Singletons.Instances
+                      Data.Singletons.Instances,
+                      Data.Singletons.Promote.Monad,
+                      Data.Singletons.Names,
+                      Data.Singletons.Promote.Equality,
+                      Data.Singletons.Promote.Util
 
   ghc-options:        -Wall
 

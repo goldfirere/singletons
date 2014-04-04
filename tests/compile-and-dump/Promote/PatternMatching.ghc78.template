@@ -17,34 +17,31 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
     complex = Pair (Pair (Just Zero) Zero) False
     tuple = (False, Just Zero, True)
     aList = [Zero, Succ Zero, Succ (Succ Zero)]
-    type PairTyCtor = Pair
-    data PairTyCtorSym1 (l :: *) (l :: TyFun * *)
-    data PairTyCtorSym0 (k :: TyFun * (TyFun * * -> *))
-    type instance Apply (PairTyCtorSym1 a) a = PairTyCtor a a
-    type instance Apply PairTyCtorSym0 a = PairTyCtorSym1 a
-    data PairSym1 (l :: a) (l :: TyFun b (Pair a b))
-    data PairSym0 (k :: TyFun a (TyFun b (Pair a b) -> *))
-    type instance Apply (PairSym1 a) a = Pair a a
-    type instance Apply PairSym0 a = PairSym1 a
-    type Pr =
-        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) '[ZeroSym0]
+    type AListSym0 = AList
+    type TupleSym0 = Tuple
+    type ComplexSym0 = Complex
     type PrSym0 = Pr
+    type AList =
+        Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) GHC.Types.[]))
+    type Tuple =
+        Apply (Apply (Apply Tuple3Sym0 FalseSym0) (Apply JustSym0 ZeroSym0)) TrueSym0
     type Complex =
         Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
-    type ComplexSym0 = Complex
-    type Tuple = '(FalseSym0, Apply JustSym0 ZeroSym0, TrueSym0)
-    type TupleSym0 = Tuple
-    type AList =
-        '[ZeroSym0,
-          Apply SuccSym0 ZeroSym0,
-          Apply SuccSym0 (Apply SuccSym0 ZeroSym0)]
-    type AListSym0 = AList
+    type Pr =
+        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) ZeroSym0) GHC.Types.[])
+    type PairSym2 t t = Pair t t
+    data PairSym1 (l :: a) (l :: TyFun b (Pair a b))
+    type instance Apply (PairSym1 l) l = PairSym2 l l
+    data PairSym0 (l :: TyFun a (TyFun b (Pair a b) -> *))
+    type instance Apply PairSym0 l = PairSym1 l
 Promote/PatternMatching.hs:0:0: Splicing declarations
     promote
       [d| Pair sz lz = pr
           Pair (Pair jz zz) fls = complex
           (tf, tjz, tt) = tuple
           [_, lsz, (Succ blimy)] = aList
+          lsz :: Nat
+          fls :: Bool
           foo1 :: (a, b) -> a
           foo1 (x, y) = (\ _ -> x) y
           foo2 :: (# a, b #) -> a
@@ -55,74 +52,123 @@ Promote/PatternMatching.hs:0:0: Splicing declarations
     Pair (Pair jz zz) fls = complex
     (tf, tjz, tt) = tuple
     [_, lsz, Succ blimy] = aList
+    lsz :: Nat
+    fls :: Bool
     foo1 :: forall a b. (a, b) -> a
     foo1 (x, y) = \ _ -> x y
     foo2 :: forall a b. (# a, b #) -> a
     foo2 t@(# x, y #) = case t of { (# a, b #) -> \ _ -> a b }
-    type Sz = Extract_0123456789 PrSym0
-    type SzSym0 = Sz
-    type Lz = Extract_0123456789 PrSym0
-    type LzSym0 = Lz
-    type family Extract_0123456789 (a :: Pair a b) :: a
-    type family Extract_0123456789 (a :: Pair a b) :: b
-    type instance Extract_0123456789 (Pair a a) = a
-    type instance Extract_0123456789 (Pair a a) = a
-    type Jz = Extract_0123456789 (Extract_0123456789 ComplexSym0)
-    type JzSym0 = Jz
-    type Zz = Extract_0123456789 (Extract_0123456789 ComplexSym0)
-    type ZzSym0 = Zz
-    type Fls = Extract_0123456789 ComplexSym0
-    type FlsSym0 = Fls
-    type family Extract_0123456789 (a :: Pair a b) :: a
-    type family Extract_0123456789 (a :: Pair a b) :: b
-    type instance Extract_0123456789 (Pair a a) = a
-    type instance Extract_0123456789 (Pair a a) = a
-    type family Extract_0123456789 (a :: Pair a b) :: a
-    type family Extract_0123456789 (a :: Pair a b) :: b
-    type instance Extract_0123456789 (Pair a a) = a
-    type instance Extract_0123456789 (Pair a a) = a
-    type Tf = Extract_0123456789 TupleSym0
-    type TfSym0 = Tf
-    type Tjz = Extract_0123456789 TupleSym0
-    type TjzSym0 = Tjz
-    type Tt = Extract_0123456789 TupleSym0
-    type TtSym0 = Tt
-    type family Extract_0123456789 (a :: GHC.Tuple.(,,) a b c) :: a
-    type family Extract_0123456789 (a :: GHC.Tuple.(,,) a b c) :: b
-    type family Extract_0123456789 (a :: GHC.Tuple.(,,) a b c) :: c
-    type instance Extract_0123456789 (GHC.Tuple.(,,) a a a) = a
-    type instance Extract_0123456789 (GHC.Tuple.(,,) a a a) = a
-    type instance Extract_0123456789 (GHC.Tuple.(,,) a a a) = a
-    type Lsz = Head (Tail AListSym0)
-    type LszSym0 = Lsz
-    type Blimy = Extract_0123456789 (Head (Tail (Tail AListSym0)))
-    type BlimySym0 = Blimy
-    type family Extract_0123456789 (a :: Nat) :: Nat
-    type instance Extract_0123456789 (Succ a) = a
-    type family Lambda_0123456789 (x :: x) (y :: y) (t :: k) :: r where
-      Lambda_0123456789 x y z = x
-    data Lambda_0123456789Sym2 (l :: x) (l :: y) (l :: TyFun k r)
-    type instance Apply (Lambda_0123456789Sym2 a a) a = Lambda_0123456789 a a a
-    type family Lambda_0123456789 (x :: x)
-                                  (y :: y)
-                                  (a :: a)
-                                  (b :: b)
-                                  (t :: k) :: r where
-      Lambda_0123456789 x y a b z = a
-    data Lambda_0123456789Sym4 (l :: x)
-                               (l :: y)
-                               (l :: a)
-                               (l :: b)
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
+    type Foo2Sym1 t = Foo2 t
+    data Foo2Sym0 (l :: TyFun (GHC.Tuple.(,) a b) a)
+    type instance Apply Foo2Sym0 l = Foo2Sym1 l
+    type Let_0123456789TSym2 t t = Let_0123456789T t t
+    data Let_0123456789TSym1 (l :: k) (l :: TyFun k kresult)
+    type instance Apply (Let_0123456789TSym1 l) l = Let_0123456789TSym2 l l
+    data Let_0123456789TSym0 (l :: TyFun k (TyFun k kresult -> *))
+    type instance Apply Let_0123456789TSym0 l = Let_0123456789TSym1 l
+    type Let_0123456789T x y = Apply (Apply Tuple2Sym0 x) y
+    type Let_0123456789ScrutineeSym2 t t = Let_0123456789Scrutinee t t
+    data Let_0123456789ScrutineeSym1 (l :: k) (l :: TyFun k kresult)
+    type instance Apply (Let_0123456789ScrutineeSym1 l) l = Let_0123456789ScrutineeSym2 l l
+    data Let_0123456789ScrutineeSym0 (l :: TyFun k (TyFun k kresult
+                                                    -> *))
+    type instance Apply Let_0123456789ScrutineeSym0 l = Let_0123456789ScrutineeSym1 l
+    type Let_0123456789Scrutinee x y = Let_0123456789TSym2 x y
+    type family Case_0123456789 x y a b arg t where
+      Case_0123456789 x y a b arg z = a
+    type family Lambda_0123456789 x y a b t where
+      Lambda_0123456789 x y a b arg = Case_0123456789 x y a b arg arg
+    type Lambda_0123456789Sym5 t t t t t = Lambda_0123456789 t t t t t
+    data Lambda_0123456789Sym4 (l :: k)
+                               (l :: k)
+                               (l :: k)
+                               (l :: k)
                                (l :: TyFun k r)
-    type instance Apply (Lambda_0123456789Sym4 a a a a) a = Lambda_0123456789 a a a a a
-    type family Case_0123456789 (t :: k) (x :: x) (y :: y) :: r where
-      Case_0123456789 '(a,
-                        b) x y = Apply (Lambda_0123456789Sym4 x y a b) b
-    type family Foo1 (a :: (a, b)) :: a where
-      Foo1 '(x, y) = Apply (Lambda_0123456789Sym2 x y) y
-    data Foo1Sym0 (k :: TyFun (a, b) a)
-    type instance Apply Foo1Sym0 a = Foo1 a
-    type family Foo2 (a :: (a, b)) :: a where
-      Foo2 '(x, y) = Case_0123456789 (Apply (Apply Tuple2Sym0 x) y) x y
-    data Foo2Sym0 (k :: TyFun (a, b) a)
-    type instance Apply Foo2Sym0 a = Foo2 a
+    type instance Apply (Lambda_0123456789Sym4 l l l l) l = Lambda_0123456789Sym5 l l l l l
+    data Lambda_0123456789Sym3 (l :: k)
+                               (l :: k)
+                               (l :: k)
+                               (l :: TyFun k (TyFun k r -> *))
+    type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789Sym4 l l l l
+    data Lambda_0123456789Sym2 (l :: k)
+                               (l :: k)
+                               (l :: TyFun k (TyFun k (TyFun k r -> *) -> *))
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    data Lambda_0123456789Sym1 (l :: k)
+                               (l :: TyFun k (TyFun k (TyFun k (TyFun k r -> *) -> *) -> *))
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    data Lambda_0123456789Sym0 (l :: TyFun k (TyFun k (TyFun k (TyFun k (TyFun k r
+                                                                         -> *)
+                                                                -> *)
+                                                       -> *)
+                                              -> *))
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Case_0123456789 x y t where
+      Case_0123456789 x y (GHC.Tuple.(,) a b) = Apply (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) a) b) b
+    type Foo1Sym1 t = Foo1 t
+    data Foo1Sym0 (l :: TyFun (GHC.Tuple.(,) a b) a)
+    type instance Apply Foo1Sym0 l = Foo1Sym1 l
+    type family Case_0123456789 x y arg t where
+      Case_0123456789 x y arg z = x
+    type family Lambda_0123456789 x y t where
+      Lambda_0123456789 x y arg = Case_0123456789 x y arg arg
+    type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
+    data Lambda_0123456789Sym2 (l :: k) (l :: k) (l :: TyFun k r)
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    data Lambda_0123456789Sym1 (l :: k) (l :: TyFun k (TyFun k r -> *))
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    data Lambda_0123456789Sym0 (l :: TyFun k (TyFun k (TyFun k r -> *)
+                                              -> *))
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Case_0123456789 t where
+      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y ((GHC.Types.:) (Succ z) GHC.Types.[]))) = y
+    type LszSym0 = Lsz
+    type family Case_0123456789 t where
+      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) z ((GHC.Types.:) (Succ y) GHC.Types.[]))) = y
+    type BlimySym0 = Blimy
+    type family Case_0123456789 t where
+      Case_0123456789 (GHC.Tuple.(,,) y z z) = y
+    type TfSym0 = Tf
+    type family Case_0123456789 t where
+      Case_0123456789 (GHC.Tuple.(,,) z y z) = y
+    type TjzSym0 = Tjz
+    type family Case_0123456789 t where
+      Case_0123456789 (GHC.Tuple.(,,) z z y) = y
+    type TtSym0 = Tt
+    type family Case_0123456789 t where
+      Case_0123456789 (Pair (Pair y z) z) = y
+    type JzSym0 = Jz
+    type family Case_0123456789 t where
+      Case_0123456789 (Pair (Pair z y) z) = y
+    type ZzSym0 = Zz
+    type family Case_0123456789 t where
+      Case_0123456789 (Pair (Pair z z) y) = y
+    type FlsSym0 = Fls
+    type family Case_0123456789 t where
+      Case_0123456789 (Pair y z) = y
+    type SzSym0 = Sz
+    type family Case_0123456789 t where
+      Case_0123456789 (Pair z y) = y
+    type LzSym0 = Lz
+    type X_0123456789 = PrSym0
+    type X_0123456789 = ComplexSym0
+    type X_0123456789 = TupleSym0
+    type X_0123456789 = AListSym0
+    type family Foo2 (a :: GHC.Tuple.(,) a b) :: a where
+      Foo2 (GHC.Tuple.(,) x y) = Case_0123456789 x y (Let_0123456789ScrutineeSym2 x y)
+    type family Foo1 (a :: GHC.Tuple.(,) a b) :: a where
+      Foo1 (GHC.Tuple.(,) x y) = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
+    type Lsz = (Case_0123456789 X_0123456789Sym0 :: Nat)
+    type Blimy = Case_0123456789 X_0123456789Sym0
+    type Tf = Case_0123456789 X_0123456789Sym0
+    type Tjz = Case_0123456789 X_0123456789Sym0
+    type Tt = Case_0123456789 X_0123456789Sym0
+    type Jz = Case_0123456789 X_0123456789Sym0
+    type Zz = Case_0123456789 X_0123456789Sym0
+    type Fls = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type Sz = Case_0123456789 X_0123456789Sym0
+    type Lz = Case_0123456789 X_0123456789Sym0

@@ -6,37 +6,35 @@ Promote/Constructors.hs:0:0: Splicing declarations
     Promote/Constructors.hs:(0,0)-(0,0)
     data Foo = Foo | Foo :+ Foo
     data Bar = Bar Bar Bar Bar Bar Foo
-    type FooTyCtor = Foo
-    type FooTyCtorSym0 = FooTyCtor
     type FooSym0 = Foo
+    type (:+$$$) t t = (:+) t t
     data (:+$$) (l :: Foo) (l :: TyFun Foo Foo)
-    data (:+$) (k :: TyFun Foo (TyFun Foo Foo -> *))
-    type instance Apply ((:+$$) a) a = (:+) a a
-    type instance Apply (:+$) a = (:+$$) a
-    type BarTyCtor = Bar
-    type BarTyCtorSym0 = BarTyCtor
+    type instance Apply ((:+$$) l) l = (:+$$$) l l
+    data (:+$) (l :: TyFun Foo (TyFun Foo Foo -> *))
+    type instance Apply (:+$) l = (:+$$) l
+    type BarSym5 t t t t t = Bar t t t t t
     data BarSym4 (l :: Bar)
                  (l :: Bar)
                  (l :: Bar)
                  (l :: Bar)
                  (l :: TyFun Foo Bar)
+    type instance Apply (BarSym4 l l l l) l = BarSym5 l l l l l
     data BarSym3 (l :: Bar)
                  (l :: Bar)
                  (l :: Bar)
                  (l :: TyFun Bar (TyFun Foo Bar -> *))
+    type instance Apply (BarSym3 l l l) l = BarSym4 l l l l
     data BarSym2 (l :: Bar)
                  (l :: Bar)
                  (l :: TyFun Bar (TyFun Bar (TyFun Foo Bar -> *) -> *))
+    type instance Apply (BarSym2 l l) l = BarSym3 l l l
     data BarSym1 (l :: Bar)
                  (l :: TyFun Bar (TyFun Bar (TyFun Bar (TyFun Foo Bar -> *) -> *)
                                   -> *))
-    data BarSym0 (k :: TyFun Bar (TyFun Bar (TyFun Bar (TyFun Bar (TyFun Foo Bar
+    type instance Apply (BarSym1 l) l = BarSym2 l l
+    data BarSym0 (l :: TyFun Bar (TyFun Bar (TyFun Bar (TyFun Bar (TyFun Foo Bar
                                                                    -> *)
                                                         -> *)
                                              -> *)
                                   -> *))
-    type instance Apply (BarSym4 a a a a) a = Bar a a a a a
-    type instance Apply (BarSym3 a a a) a = BarSym4 a a a a
-    type instance Apply (BarSym2 a a) a = BarSym3 a a a
-    type instance Apply (BarSym1 a) a = BarSym2 a a
-    type instance Apply BarSym0 a = BarSym1 a
+    type instance Apply BarSym0 l = BarSym1 l

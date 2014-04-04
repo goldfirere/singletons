@@ -1,3 +1,5 @@
 
 Singletons/BadPlus.hs:0:0:
-    No type signature for functions: "badPlus"; cannot promote or make singletons.
+    No type signature for function "badPlus". Cannot promote.
+
+Singletons/BadPlus.hs:0:0: Q monad failure

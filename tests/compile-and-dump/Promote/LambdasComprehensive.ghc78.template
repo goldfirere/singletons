@@ -12,15 +12,14 @@ Promote/LambdasComprehensive.hs:0:0: Splicing declarations
       = map (\ x -> either_ pred Succ x) [Left Zero, Right (Succ Zero)]
     bar :: [Nat]
     bar = map (either_ pred Succ) [Left Zero, Right (Succ Zero)]
-    type Foo =
-        Apply (Apply MapSym0 Lambda_0123456789Sym0) '[Apply LeftSym0 ZeroSym0,
-                                                      Apply RightSym0 (Apply SuccSym0 ZeroSym0)]
-    type FooSym0 = Foo
-    type family Lambda_0123456789 (t :: k) :: r where
-      Lambda_0123456789 x = Apply (Apply (Apply Either_Sym0 PredSym0) SuccSym0) x
-    data Lambda_0123456789Sym0 (k :: TyFun k r)
-    type instance Apply Lambda_0123456789Sym0 a = Lambda_0123456789 a
-    type Bar =
-        Apply (Apply MapSym0 (Apply (Apply Either_Sym0 PredSym0) SuccSym0)) '[Apply LeftSym0 ZeroSym0,
-                                                                              Apply RightSym0 (Apply SuccSym0 ZeroSym0)]
     type BarSym0 = Bar
+    type family Lambda_0123456789 t where
+      Lambda_0123456789 x = Apply (Apply (Apply Either_Sym0 PredSym0) SuccSym0) x
+    type Lambda_0123456789Sym1 t = Lambda_0123456789 t
+    data Lambda_0123456789Sym0 (l :: TyFun k r)
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type FooSym0 = Foo
+    type Bar =
+        (Apply (Apply MapSym0 (Apply (Apply Either_Sym0 PredSym0) SuccSym0)) (Apply (Apply (:$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) GHC.Types.[])) :: GHC.Types.[] Nat)
+    type Foo =
+        (Apply (Apply MapSym0 Lambda_0123456789Sym0) (Apply (Apply (:$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) GHC.Types.[])) :: GHC.Types.[] Nat)

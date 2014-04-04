@@ -10,7 +10,7 @@ Users of the package should not need to consult this file.
 {-# LANGUAGE CPP, TypeSynonymInstances, FlexibleInstances, RankNTypes,
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses, StandaloneDeriving,
-             UndecidableInstances #-}
+             UndecidableInstances, MagicHash, UnboxedTuples #-}
 
 module Data.Singletons.Util (
   module Data.Singletons.Util,
@@ -46,14 +46,6 @@ basicTypes = [ ''Bool
              , ''(,,,,,,)
              ]
 
--- Like newName, but even more unique (unique across different splices)
--- TH doesn't allow "newName"s to work at the top-level, so we have to
--- do this trick to ensure the Extract functions are unique
-newUniqueName :: Quasi q => String -> q Name
-newUniqueName str = do
-  n <- qNewName str
-  return $ mkName $ show n
-
 -- like reportWarning, but generalized to any Quasi
 qReportWarning :: Quasi q => String -> q ()
 qReportWarning = qReport False
@@ -86,6 +78,20 @@ tupleDegree_maybe s = do
 -- extract the degree of a tuple name
 tupleNameDegree_maybe :: Name -> Maybe Int
 tupleNameDegree_maybe = tupleDegree_maybe . nameBase
+
+-- extract the degree of an unboxed tuple
+unboxedTupleDegree_maybe :: String -> Maybe Int
+unboxedTupleDegree_maybe s = do
+  '(' : '#' : s1 <- return s
+  (commas, "#)") <- return $ span (== ',') s1
+  let degree
+        | "" <- commas = 0
+        | otherwise    = length commas + 1
+  return degree
+
+-- extract the degree of a tuple name
+unboxedTupleNameDegree_maybe :: Name -> Maybe Int
+unboxedTupleNameDegree_maybe = unboxedTupleDegree_maybe . nameBase
 
 tysOfConFields :: DConFields -> [DType]
 tysOfConFields (DNormalC stys) = map snd stys

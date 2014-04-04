@@ -7,7 +7,7 @@ This file contains functions to promote term-level constructs to the
 type level. It is an internal module to the singletons package.
 -}
 
-{-# LANGUAGE TemplateHaskell, CPP, MultiWayIf, LambdaCase #-}
+{-# LANGUAGE TemplateHaskell, CPP, MultiWayIf, LambdaCase, TupleSections #-}
 
 module Data.Singletons.Promote where
 
@@ -251,16 +251,19 @@ promoteLetDecEnv prefix (value_env, type_env) =
       all_locals <- allLocals
       exp' <- promoteExp exp
       let proName = promote_lhs name
-        -- exported (top-level) value declarations need symbols, because we
-        -- don't know whether these are functions or not at use sites.
-        -- local decs don't need this, because the names are stored in the env't
-      when (null all_locals) $
-        emitDecs [DTySynD (promoteTySym proName 0) [] (DConT proName)]
-      return (DTySynD proName (map DPlainTV all_locals) exp')
+      (_, kinds) <- mapAndUnzipM inferKindTV all_locals
+      (res_kind, mk_rhs)
+        <- case Map.lookup name type_env of
+             Nothing -> (, id) <$> (fmap DVarK $ qNewName "kresult")
+             Just ty -> do
+               ki <- promoteType ty
+               return (ki, (`DSigT` ki))
+      emitDecsM $ defunctionalize proName kinds res_kind
+      return (DTySynD proName (map DPlainTV all_locals) (mk_rhs exp'))
     prom_let_dec name (Function clauses) =
       case Map.lookup name type_env of
         Nothing -> fail ("No type signature for function \"" ++
-                         (show name) ++ "\". Cannot promote.")
+                         (nameBase name) ++ "\". Cannot promote.")
         Just ty -> do
             -- promoteType turns arrows into TyFun. So, we unravel first to
             -- avoid this behavior. Note the use of ravelTyFun in resultK
@@ -271,12 +274,10 @@ promoteLetDecEnv prefix (value_env, type_env) =
               (argKs, resultKs) = splitAt numArgs kis
               resultK = ravelTyFun resultKs
           all_locals <- allLocals
-          local_kis <- mapM (const $ qNewName "local") all_locals
+          (local_tvbs, local_kis) <- mapAndUnzipM inferKindTV all_locals
           tyvarNames <- mapM (const $ qNewName "a") argKs
-          let all_arg_names = all_locals ++ tyvarNames
-              all_arg_kinds = map DVarK local_kis ++ argKs
-              all_args = zipWith DKindedTV all_arg_names all_arg_kinds
-          emitDecsM $ defunctionalize proName all_arg_kinds resultK
+          let all_args = local_tvbs ++ zipWith DKindedTV tyvarNames argKs
+          emitDecsM $ defunctionalize proName (local_kis ++ argKs) resultK
           eqns <- mapM promoteClause clauses
           return (DClosedTypeFamilyD proName all_args (Just resultK) eqns)
 
@@ -307,7 +308,11 @@ promoteType = go []
       | name == typeRepName               = return DStarK
       | name == stringName                = return $ DConK symbolName []
       | nameBase name == nameBase repName = return DStarK
-    go args     (DConT name) = return $ DConK name args
+    go args     (DConT name)
+      | Just n <- unboxedTupleNameDegree_maybe name
+      = return $ DConK (tupleTypeName n) args
+      | otherwise
+      = return $ DConK name args
     go [k1, k2] DArrowT = return $ addStar (buildTyFun k1 k2)
     go _ (DLitT _) = fail "Cannot promote a type-level literal"
 
@@ -397,7 +402,12 @@ promotePat (DVarPa name) = do
   return $ DVarT name
 promotePat (DConPa name pats) = do
   types <- mapM promotePat pats
-  return $ foldType (DConT name) types
+  let name' = unboxed_tuple_to_tuple name
+  return $ foldType (DConT name') types
+  where
+    unboxed_tuple_to_tuple n
+      | Just deg <- unboxedTupleNameDegree_maybe n = tupleDataName deg
+      | otherwise                                  = n
 promotePat (DTildePa pat) = do
   qReportWarning "Lazy pattern converted into regular pattern in promotion"
   promotePat pat
@@ -420,12 +430,12 @@ promoteExp (DLamE names exp) = do
   tyFamLamTypes <- mapM (const $ qNewName "t") names
   all_locals <- allLocals
   let all_args = all_locals ++ tyFamLamTypes
-  kinds <- fmap (map DVarK) $ mapM (const $ qNewName "k") all_args
-  let tyFamParams   = zipWith DKindedTV all_args kinds
-      resultK       = DVarK resultKVarName
+  (tvbs, kinds) <- mapAndUnzipM inferKindTV all_args
+  let resultK       = DVarK resultKVarName
+      m_resultK     = unknownResult resultK
   emitDecs [DClosedTypeFamilyD lambdaName
-                               tyFamParams
-                               (Just resultK)
+                               tvbs
+                               m_resultK
                                [DTySynEqn (map DVarT (all_locals ++ names))
                                           rhs]]
   emitDecsM $ defunctionalize lambdaName kinds resultK
@@ -437,10 +447,9 @@ promoteExp (DCaseE exp matches) = do
   tyvarName  <- qNewName "t"
   all_locals <- allLocals
   let all_args = all_locals ++ [tyvarName]
-  kinds      <- fmap (map DVarK) $ mapM (const $ qNewName "k") all_args
+  (tvbs, _)  <- mapAndUnzipM inferKindTV all_args
   resultK    <- fmap DVarK $ qNewName "r"
-  let tyFamParams = zipWith DKindedTV all_args kinds
-  emitDecs [DClosedTypeFamilyD caseTFName tyFamParams (Just resultK) eqns]
+  emitDecs [DClosedTypeFamilyD caseTFName tvbs (unknownResult resultK) eqns]
   return $ foldType (DConT caseTFName) (map DVarT all_locals ++ [exp'])
 promoteExp (DLetE decs exp) = do
   letPrefix <- fmap nameBase $ newUniqueName "Let"
@@ -522,7 +531,9 @@ defunctionalize name args result = do
   let num_args = length args
       sat_name = promoteTySym name num_args
   tvbNames <- replicateM num_args $ qNewName "t"
-  let sat_dec = DTySynD sat_name (zipWith DKindedTV tvbNames args)
+     -- use kind inference on the saturated definition. This causes no harm
+     -- in 7.6.3 but is crucial in 7.8, when sometimes the args are too polymorphic
+  let sat_dec = DTySynD sat_name (map DPlainTV tvbNames)
                         (foldType (DConT name) (map DVarT tvbNames))
   other_decs <- go (num_args - 1) (reverse args) result
   return $ sat_dec : other_decs

@@ -43,7 +43,16 @@ module Data.Singletons.TH (
   type (==), (:==), If, sIf, (:&&), SEq(..),
   Any,
   SDecide(..), (:~:)(..), Void, Refuted, Decision(..),
-  KProxy(..), SomeSing(..)
+  KProxy(..), SomeSing(..),
+
+  Tuple0Sym0,
+  Tuple2Sym0, Tuple2Sym1, Tuple2Sym2,
+  Tuple3Sym0, Tuple3Sym1, Tuple3Sym2, Tuple3Sym3,
+  Tuple4Sym0, Tuple4Sym1, Tuple4Sym2, Tuple4Sym3, Tuple4Sym4,
+  Tuple5Sym0, Tuple5Sym1, Tuple5Sym2, Tuple5Sym3, Tuple5Sym4, Tuple5Sym5,
+  Tuple6Sym0, Tuple6Sym1, Tuple6Sym2, Tuple6Sym3, Tuple6Sym4, Tuple6Sym5, Tuple6Sym6,
+  Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6, Tuple7Sym7
+
  ) where
 
 import Data.Singletons

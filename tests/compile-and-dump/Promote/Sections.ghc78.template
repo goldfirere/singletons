@@ -20,27 +20,25 @@ Promote/Sections.hs:0:0: Splicing declarations
     foo2 = map (+ Succ Zero) [Zero, Succ Zero]
     foo3 :: [Nat]
     foo3 = zipWith (+) [Succ Zero, Succ Zero] [Zero, Succ Zero]
-    type Foo1 =
-        Apply (Apply MapSym0 (Apply (:+$) (Apply SuccSym0 ZeroSym0))) '[ZeroSym0,
-                                                                        Apply SuccSym0 ZeroSym0]
+    type (:+$$$) t t = (:+) t t
+    data (:+$$) (l :: Nat) (l :: TyFun Nat Nat)
+    type instance Apply ((:+$$) l) l = (:+$$$) l l
+    data (:+$) (l :: TyFun Nat (TyFun Nat Nat -> *))
+    type instance Apply (:+$) l = (:+$$) l
     type Foo1Sym0 = Foo1
-    type Foo2 =
-        Apply (Apply MapSym0 Lambda_0123456789Sym0) '[ZeroSym0,
-                                                      Apply SuccSym0 ZeroSym0]
+    type family Lambda_0123456789 t where
+      Lambda_0123456789 lhs = Apply (Apply (:+$) lhs) (Apply SuccSym0 ZeroSym0)
+    type Lambda_0123456789Sym1 t = Lambda_0123456789 t
+    data Lambda_0123456789Sym0 (l :: TyFun k r)
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type Foo2Sym0 = Foo2
-    type family Lambda_0123456789 (t :: k) :: r where
-      Lambda_0123456789 x = Apply (Apply (:+$) x) (Apply SuccSym0 ZeroSym0)
-    data Lambda_0123456789Sym0 (k :: TyFun k r)
-    type instance Apply Lambda_0123456789Sym0 a = Lambda_0123456789 a
-    type Foo3 =
-        Apply (Apply (Apply ZipWithSym0 (:+$)) '[Apply SuccSym0 ZeroSym0,
-                                                 Apply SuccSym0 ZeroSym0]) '[ZeroSym0,
-                                                                             Apply SuccSym0 ZeroSym0]
     type Foo3Sym0 = Foo3
     type family (:+) (a :: Nat) (a :: Nat) :: Nat where
       (:+) Zero m = m
       (:+) (Succ n) m = Apply SuccSym0 (Apply (Apply (:+$) n) m)
-    data (:+$$) (l :: Nat) (l :: TyFun Nat Nat)
-    data (:+$) (k :: TyFun Nat (TyFun Nat Nat -> *))
-    type instance Apply ((:+$$) a) a = (:+) a a
-    type instance Apply (:+$) a = (:+$$) a
+    type Foo1 =
+        (Apply (Apply MapSym0 (Apply (:+$) (Apply SuccSym0 ZeroSym0))) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) GHC.Types.[])) :: GHC.Types.[] Nat)
+    type Foo2 =
+        (Apply (Apply MapSym0 Lambda_0123456789Sym0) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) GHC.Types.[])) :: GHC.Types.[] Nat)
+    type Foo3 =
+        (Apply (Apply (Apply ZipWithSym0 (:+$)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) GHC.Types.[]))) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) GHC.Types.[])) :: GHC.Types.[] Nat)
