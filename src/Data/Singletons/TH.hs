@@ -28,7 +28,7 @@ module Data.Singletons.TH (
   singDecideInstances, singDecideInstance,
 
   -- ** defunctionalization
-  TyFun, TyCon, Apply, type (@@),
+  TyFun, Apply, type (@@),
 
   -- ** Utility function
   cases,
@@ -56,7 +56,7 @@ module Data.Singletons.TH (
  ) where
 
 import Data.Singletons
-import Data.Singletons.Singletons
+import Data.Singletons.Single
 import Data.Singletons.Promote
 import Data.Singletons.Instances
 import Data.Singletons.Bool
@@ -64,6 +64,8 @@ import Data.Singletons.Eq
 import Data.Singletons.Types
 import Data.Singletons.Void
 import Data.Singletons.Decide
+import Language.Haskell.TH.Desugar
+import Language.Haskell.TH.Desugar.Sweeten
 
 import GHC.Exts
 import Language.Haskell.TH
@@ -82,16 +84,15 @@ cases :: Quasi q
       -> q Exp
 cases tyName expq bodyq = do
   info <- reifyWithWarning tyName
-  case info of
-    TyConI (DataD _ _ _ ctors _) -> buildCases ctors
-    TyConI (NewtypeD _ _ _ ctor _) -> buildCases [ctor]
+  dinfo <- dsInfo info
+  case dinfo of
+    DTyConI (DDataD _ _ _ _ ctors _) _ -> fmap expToTH $ buildCases ctors
     _ -> fail $ "Using <<cases>> with something other than a type constructor: "
                 ++ (show tyName)
   where buildCases ctors =
-          CaseE <$> expq <*>
-                    mapM (\con -> Match (conToPat con) <$>
-                                        (NormalB <$> bodyq) <*> pure []) ctors
+          DCaseE <$> (dsExp =<< expq) <*>
+                     mapM (\con -> DMatch (conToPat con) <$> (dsExp =<< bodyq)) ctors
 
-        conToPat :: Con -> Pat
-        conToPat = ctor1Case
-          (\name tys -> ConP name (map (const WildP) tys))
+        conToPat :: DCon -> DPat
+        conToPat (DCon _ _ name fields) =
+          DConPa name (map (const DWildPa) $ tysOfConFields fields)

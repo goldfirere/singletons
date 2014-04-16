@@ -22,7 +22,7 @@ module Data.Singletons.Eq (
 
 import Data.Singletons.Bool
 import Data.Singletons
-import Data.Singletons.Singletons
+import Data.Singletons.Single
 import Data.Singletons.Instances
 import Data.Singletons.Types
 import Data.Singletons.Util

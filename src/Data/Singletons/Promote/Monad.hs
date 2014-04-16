@@ -10,35 +10,35 @@ of DDec, and is wrapped around a Q.
 -}
 
 {-# LANGUAGE GeneralizedNewtypeDeriving, StandaloneDeriving, CPP,
-             FlexibleContexts #-}
+             FlexibleContexts, TypeFamilies, KindSignatures #-}
 
 module Data.Singletons.Promote.Monad (
-  PrM, promoteM, promoteMDecs, 
+  PrM, promoteM, promoteMDecs, VarPromotions,
   allLocals, emitDecs, emitDecsM,
-  lambdaBind, LetBind, letBind, lookupVarE,
-  LetDecEnv, LetDecRHS(..), valueBinding, typeBinding, emptyLetDecEnv
+  lambdaBind, LetBind, letBind, lookupVarE
   ) where
 
 import Control.Monad.Reader
 import Control.Monad.Writer
-import qualified Data.Map as Map
-import Data.Map ( Map )
-import qualified Data.Set as Set
-import Data.Set ( Set )
+import qualified Data.Map.Strict as Map
+import Data.Map.Strict ( Map )
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
 import Control.Applicative
 import Data.Singletons.Names
 
+type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
+type LetExpansions = Map Name DType  -- from **term-level** name
+
 -- environment during promotion
 data PrEnv =
-  PrEnv { pr_lambda_bound :: Set Name       -- these type variables are in scope
-        , pr_let_bound    :: Map Name DType -- these variables must be expanded
+  PrEnv { pr_lambda_bound :: Map Name Name
+        , pr_let_bound    :: LetExpansions
         }
 
 emptyPrEnv :: PrEnv
-emptyPrEnv = PrEnv { pr_lambda_bound = Set.empty
+emptyPrEnv = PrEnv { pr_lambda_bound = Map.empty
                    , pr_let_bound    = Map.empty }
 
 -- the promotion monad
@@ -67,8 +67,8 @@ instance (Quasi q, Monoid m) => Quasi (WriterT m q) where
   qPutQ             = lift `comp1` qPutQ
 #endif
 
-  qRecover exp handler = do
-    (result, aux) <- lift $ qRecover (runWriterT exp) (runWriterT handler)
+  qRecover handler body = do
+    (result, aux) <- lift $ qRecover (runWriterT handler) (runWriterT body)
     tell aux
     return result
 
@@ -91,20 +91,21 @@ instance Quasi q => Quasi (ReaderT r q) where
   qPutQ             = lift `comp1` qPutQ
 #endif
 
-  qRecover exp handler = do
+  qRecover handler body = do
     env <- ask
-    lift $ qRecover (runReaderT exp env) (runReaderT handler env)
+    lift $ qRecover (runReaderT handler env) (runReaderT body env)
 
+-- return *type-level* names
 allLocals :: MonadReader PrEnv m => m [Name]
 allLocals = do
-  lambdas <- asks (Set.elems . pr_lambda_bound)
+  lambdas <- asks (Map.toList . pr_lambda_bound)
   lets    <- asks pr_let_bound
     -- filter out shadowed variables!
-  return [ name
-         | name <- lambdas
-         , case Map.lookup name lets of
-             Just (DVarT name') | name' == name -> True
-             _                                  -> False ]
+  return [ typeName
+         | (termName, typeName) <- lambdas
+         , case Map.lookup termName lets of
+             Just (DVarT typeName') | typeName' == typeName -> True
+             _                                              -> False ]
 
 emitDecs :: MonadWriter [DDec] m => [DDec] -> m ()
 emitDecs = tell
@@ -116,12 +117,12 @@ emitDecsM action = do
 
 -- when lambda-binding variables, we still need to add the variables
 -- to the let-expansion, because of shadowing. ugh.
-lambdaBind :: [Name] -> PrM a -> PrM a
+lambdaBind :: VarPromotions -> PrM a -> PrM a
 lambdaBind binds = local add_binds
   where add_binds env@(PrEnv { pr_lambda_bound = lambdas
                              , pr_let_bound    = lets }) =
-          let new_lets = Map.fromList [ (n, DVarT n) | n <- binds ] in
-          env { pr_lambda_bound = Set.union (Set.fromList binds) lambdas
+          let new_lets = Map.fromList [ (tmN, DVarT tyN) | (tmN, tyN) <- binds ] in
+          env { pr_lambda_bound = Map.union (Map.fromList binds) lambdas
               , pr_let_bound    = Map.union new_lets lets }
 
 type LetBind = (Name, DType)
@@ -138,9 +139,9 @@ lookupVarE n = do
     Nothing -> return $ promoteValRhs n
 
 promoteM :: Quasi q => PrM a -> q (a, [DDec])
-promoteM (PrM reader) =
-  let writer = runReaderT reader emptyPrEnv
-      q      = runWriterT writer
+promoteM (PrM rdr) =
+  let wr = runReaderT rdr emptyPrEnv
+      q  = runWriterT wr
   in
   runQ q
 
@@ -150,21 +151,3 @@ promoteMDecs thing = do
   (decs1, decs2) <- promoteM thing
   return $ decs1 ++ decs2
 
---------------------------------------------------------------------
--- PrDecM
--- A specialized monad for promoted let declarations
---------------------------------------------------------------------
-
-data LetDecRHS = Function [DClause]
-               | Value    DExp
-type LetDecEnv = ( Map Name LetDecRHS
-                 , Map Name DType )  -- type signatures
-
-valueBinding :: Name -> LetDecRHS -> PrM LetDecEnv
-valueBinding n v = return (Map.singleton n v, mempty)
-
-typeBinding :: Name -> DType -> PrM LetDecEnv
-typeBinding n t = return (mempty, Map.singleton n t)
-
-emptyLetDecEnv :: LetDecEnv
-emptyLetDecEnv = mempty

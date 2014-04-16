@@ -21,10 +21,14 @@ module Data.Singletons.CustomStar ( singletonStar ) where
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Data.Singletons.Util
-import Data.Singletons.Promote
-import Data.Singletons.Singletons
+import Data.Singletons.Single
+import Data.Singletons.Single.Monad
 import Data.Singletons.Names
 import Control.Monad
+import Data.Maybe
+import Control.Applicative
+import Language.Haskell.TH.Desugar
+import Language.Haskell.TH.Desugar.Sweeten
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Singletons.Decide
@@ -85,97 +89,78 @@ singletonStar :: Quasi q
 singletonStar names = do
   kinds <- mapM getKind names
   ctors <- zipWithM (mkCtor True) names kinds
-  let repDecl = DataD [] repName [] ctors
-                      [''Eq, ''Show, ''Read]
+  let repDecl = DDataD Data [] repName [] ctors
+                       [''Eq, ''Show, ''Read]
   fakeCtors <- zipWithM (mkCtor False) names kinds
   eqInstances <- mkCustomEqInstances fakeCtors
-  singletonDecls <- singDataD True [] repName [] fakeCtors
+  singletonDecls <- singDecsM $ singDataD [] repName [] fakeCtors
                               [''Show, ''Read
 #if __GLASGOW_HASKELL__ < 707
                               , ''Eq
 #endif
                               ]
-  return $ repDecl :
-           eqInstances ++
-           singletonDecls
+  return $ decsToTH $ repDecl :
+                      eqInstances ++
+                      singletonDecls
   where -- get the kinds of the arguments to the tycon with the given name
-        getKind :: Quasi q => Name -> q [Kind]
+        getKind :: Quasi q => Name -> q [DKind]
         getKind name = do
           info <- reifyWithWarning name
-          case info of
-            TyConI (DataD (_:_) _ _ _ _) ->
+          dinfo <- dsInfo info
+          case dinfo of
+            DTyConI (DDataD _ (_:_) _ _ _ _) _ ->
                fail "Cannot make a representation of a constrainted data type"
-            TyConI (DataD [] _ tvbs _ _) ->
-               return $ map extractTvbKind_ tvbs
-            TyConI (NewtypeD (_:_) _ _ _ _) ->
-               fail "Cannot make a representation of a constrainted newtype"
-            TyConI (NewtypeD [] _ tvbs _ _) ->
-               return $ map extractTvbKind_ tvbs
-            TyConI (TySynD _ tvbs _) ->
-               return $ map extractTvbKind_ tvbs
-            PrimTyConI _ n _ ->
-               return $ replicate n StarT
+            DTyConI (DDataD _ [] _ tvbs _ _) _ ->
+               return $ map (fromMaybe DStarK . extractTvbKind) tvbs
+            DTyConI (DTySynD _ tvbs _) _ ->
+               return $ map (fromMaybe DStarK . extractTvbKind) tvbs
+            DPrimTyConI _ n _ ->
+               return $ replicate n DStarK
             _ -> fail $ "Invalid thing for representation: " ++ (show name)
 
         -- first parameter is whether this is a real ctor (with a fresh name)
         -- or a fake ctor (when the name is actually a Haskell type)
-        mkCtor :: Quasi q => Bool -> Name -> [Kind] -> q Con
+        mkCtor :: Quasi q => Bool -> Name -> [DKind] -> q DCon
         mkCtor real name args = do
           (types, vars) <- evalForPair $ mapM kindToType args
-          let ctor = NormalC ((if real then reinterpret else id) name)
-                             (map (\ty -> (NotStrict, ty)) types)
-          if length vars > 0
-            then return $ ForallC (map PlainTV vars) [] ctor
-            else return ctor
+          dataName <- if real then mkDataName (nameBase name) else return name
+          return $ DCon (map DPlainTV vars) [] dataName $
+                   DNormalC (map (\ty -> (NotStrict, ty)) types)
 
         -- demote a kind back to a type, accumulating any unbound parameters
-        kindToType :: Quasi q => Kind -> QWithAux [Name] q Type
-        kindToType (ForallT _ _ _) = fail "Explicit forall encountered in kind"
-        kindToType (AppT k1 k2) = do
+        kindToType :: Quasi q => DKind -> QWithAux [Name] q DType
+        kindToType (DForallK _ _) = fail "Explicit forall encountered in kind"
+        kindToType (DVarK n) = do
+          addElement n
+          return $ DVarT n
+        kindToType (DConK n args) = foldType (DConT n) <$> mapM kindToType args
+        kindToType (DArrowK k1 k2) = do
           t1 <- kindToType k1
           t2 <- kindToType k2
-          return $ AppT t1 t2
-        kindToType (SigT _ _) = fail "Sort signature encountered in kind"
-        kindToType (VarT n) = do
-          addElement n
-          return $ VarT n
-        kindToType (ConT n) = return $ ConT n
-        kindToType (PromotedT _) = fail "Promoted type used as a kind"
-        kindToType (TupleT n) = return $ TupleT n
-        kindToType (UnboxedTupleT _) = fail "Unboxed tuple kind encountered"
-        kindToType ArrowT = return ArrowT
-        kindToType ListT = return ListT
-        kindToType (PromotedTupleT _) = fail "Promoted tuple kind encountered"
-        kindToType PromotedNilT = fail "Promoted nil kind encountered"
-        kindToType PromotedConsT = fail "Promoted cons kind encountered"
-        kindToType StarT = return $ ConT repName
-        kindToType ConstraintT =
-          fail $ "Cannot make a representation of a type that has " ++
-                 "an argument of kind Constraint"
-        kindToType (LitT _) = fail "Literal encountered at the kind level"
+          return $ DAppT (DAppT DArrowT t1) t2
+        kindToType DStarK = return $ DConT repName
 
-mkCustomEqInstances :: Quasi q => [Con] -> q [Dec]
+mkCustomEqInstances :: Quasi q => [DCon] -> q [DDec]
 mkCustomEqInstances ctors = do
 #if __GLASGOW_HASKELL__ >= 707
   let ctorVar = error "Internal error: Equality instance inspected ctor var"
-  sCtors <- evalWithoutAux $ mapM (singCtor ctorVar) ctors
-  decideInst <- mkEqualityInstance StarT sCtors sDecideClassDesc
+  (sCtors, _) <- singM $ mapM (singCtor ctorVar) ctors
+  decideInst <- mkEqualityInstance DStarK sCtors sDecideClassDesc
 
   a <- qNewName "a"
   b <- qNewName "b"
-  let eqInst = InstanceD
+  let eqInst = DInstanceD
                  []
-                 (AppT (ConT ''SEq) (kindParam StarT))
-                 [FunD '(%:==)
-                       [Clause [VarP a, VarP b]
-                               (NormalB $
-                                CaseE (foldl AppE (VarE '(%~)) [VarE a, VarE b])
-                                      [ Match (ConP 'Proved [ConP 'Refl []])
-                                              (NormalB $ ConE 'STrue) []
-                                      , Match (ConP 'Disproved [WildP])
-                                              (NormalB $ AppE (VarE 'unsafeCoerce)
-                                                              (ConE 'SFalse)) []
-                                      ]) []]]
+                 (DAppT (DConT ''SEq) (kindParam DStarK))
+                 [DLetDec $ DFunD '(%:==)
+                       [DClause [DVarPa a, DVarPa b]
+                               (DCaseE (foldExp (DVarE '(%~)) [DVarE a, DVarE b])
+                                      [ DMatch (DConPa 'Proved [DConPa 'Refl []])
+                                              (DConE 'STrue)
+                                      , DMatch (DConPa 'Disproved [DWildPa])
+                                              (DAppE (DVarE 'unsafeCoerce)
+                                                     (DConE 'SFalse))
+                                      ])]]
   return [decideInst, eqInst]
 #else
   mapM mkEqTypeInstance [(c1, c2) | c1 <- ctors, c2 <- ctors]

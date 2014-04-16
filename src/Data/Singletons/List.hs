@@ -57,7 +57,7 @@ module Data.Singletons.List (
 
 import Data.Singletons
 import Data.Singletons.Instances
-import Data.Singletons.Singletons
+import Data.Singletons.Single
 import Data.Singletons.TypeLits
 
 $(singletonsOnly [d|

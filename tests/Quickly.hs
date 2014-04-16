@@ -2,6 +2,7 @@
    that the TH code singletons produces compiles. Run `make` in the
    `tests` directory to compile this file. -}
 
+{-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
 module Quickly where
@@ -26,7 +27,7 @@ import Singletons.Contains
 import Singletons.DataValues
 import Singletons.Empty
 import Singletons.EqInstances
-import Singletons.HigherOrder
+-- import Singletons.HigherOrder
 import Singletons.Maybe
 import Singletons.Nat
 import Singletons.Operators

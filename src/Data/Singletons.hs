@@ -45,7 +45,8 @@ module Data.Singletons (
   withSing, singThat,
 
   -- ** Defunctionalization
-  TyFun, TyCon, Apply, type (@@),
+  TyFun, TyCon1, TyCon2, TyCon3, TyCon4, TyCon5, TyCon6, TyCon7,
+  Apply, type (@@),
 
   -- * Auxiliary functions
   bugInGHC,
@@ -136,9 +137,8 @@ singInstance s = with_sing_i SingInstance
 -- applications have to be fully saturated.
 data TyFun :: * -> * -> *
 
--- | Wrapper for converting term level arrows into type level
--- arrows. TyCon is designed to allow usage of term-level functions
--- where type-level function is expected. For example given:
+-- | Wrapper for converting the normal type-level arrow into a 'TyFun'.
+-- For example, given:
 --
 -- > data Nat = Zero | Succ Nat
 -- > type family Map (a :: TyFun a b -> *) (a :: [a]) :: [b]
@@ -147,12 +147,26 @@ data TyFun :: * -> * -> *
 --
 -- We can write:
 --
--- > Map (TyCon Succ) [Zero, Succ Zero]
-data TyCon :: (k1 -> k2) -> (TyFun k1 k2) -> *
+-- > Map (TyCon1 Succ) [Zero, Succ Zero]
+data TyCon1 :: (k1 -> k2) -> (TyFun k1 k2) -> *
+
+-- | Similar to 'TyCon1', but for two-parameter type constructors.
+data TyCon2 :: (k1 -> k2 -> k3) -> TyFun k1 (TyFun k2 k3 -> *) -> *
+data TyCon3 :: (k1 -> k2 -> k3 -> k4) -> TyFun k1 (TyFun k2 (TyFun k3 k4 -> *) -> *) -> *
+data TyCon4 :: (k1 -> k2 -> k3 -> k4 -> k5) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 k5 -> *) -> *) -> *) -> *
+data TyCon5 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 k6 -> *) -> *) -> *) -> *) -> *
+data TyCon6 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 k7 -> *) -> *) -> *) -> *) -> *) -> *
+data TyCon7 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 (TyFun k7 k8 -> *) -> *) -> *) -> *) -> *) -> *) -> *
 
 -- | Type level function application
 type family Apply (f :: TyFun k1 k2 -> *) (x :: k1) :: k2
-type instance Apply (TyCon f) x = f x
+type instance Apply (TyCon1 f) x = f x
+type instance Apply (TyCon2 f) x = TyCon1 (f x)
+type instance Apply (TyCon3 f) x = TyCon2 (f x)
+type instance Apply (TyCon4 f) x = TyCon3 (f x)
+type instance Apply (TyCon5 f) x = TyCon4 (f x)
+type instance Apply (TyCon6 f) x = TyCon5 (f x)
+type instance Apply (TyCon7 f) x = TyCon6 (f x)
 
 -- | An infix synonym for `Apply`
 type a @@ b = Apply a b

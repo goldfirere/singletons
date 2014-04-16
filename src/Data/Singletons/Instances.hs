@@ -20,7 +20,7 @@ re-exported from various places.
 
 module Data.Singletons.Instances where
 
-import Data.Singletons.Singletons
+import Data.Singletons.Single
 import Data.Singletons.Util
 
 -- some useful singletons

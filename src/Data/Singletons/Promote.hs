@@ -12,7 +12,7 @@ type level. It is an internal module to the singletons package.
 module Data.Singletons.Promote where
 
 import Language.Haskell.TH hiding ( Q, cxt )
-import Language.Haskell.TH.Syntax ( falseName, trueName, Quasi(..) )
+import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.Sweeten
 import Data.Singletons.Names
@@ -20,21 +20,13 @@ import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Util
 import Data.Singletons.Promote.Equality
 import Data.Singletons.Util
-import Data.Singletons.Types
-import Data.Singletons
-import GHC.Exts (Any)
-import GHC.TypeLits (Symbol)
+import Data.Singletons.LetDecEnv
 import Prelude hiding (exp)
-import qualified Data.Map as Map
-import qualified Data.Set as Set
-import Data.Map ( Map )
-import Data.Set ( Set )
 import Control.Monad
 import Control.Monad.Trans
 import Control.Applicative
-import Data.List
 import Data.Maybe
-import Data.Typeable ( TypeRep )
+import qualified Data.Map.Strict as Map
 
 -- | Promote every declaration given to the type level, retaining the originals.
 promote :: Quasi q => q [Dec] -> q [Dec]
@@ -135,8 +127,7 @@ promoteDecs :: [DDec] -> PrM [DDec]
 promoteDecs decls = do
   checkForRepInDecls decls
   -- See Note [Promoting declarations in two stages]
-  let (let_decs, other_decs) = partitionWith (\case DLetDec ld -> Left ld
-                                                    dec        -> Right dec) decls
+  let (let_decs, other_decs) = partitionLetDecs decls
       -- promoteLetDecs returns LetBinds, which we don't need
   _ <- promoteLetDecs noPrefix let_decs
   prom_decs <- concatMapM promoteDec other_decs
@@ -145,10 +136,10 @@ promoteDecs decls = do
 promoteLetDecs :: String -- prefix to use on all new definitions
                -> [DLetDec] -> PrM [LetBind]
 promoteLetDecs prefix decls = do
-  let_dec_env <- concatMapM promoteLetDec decls
+  let_dec_env <- buildLetDecEnv decls
   all_locals <- allLocals
   let binds = [ (name, foldType (DConT sym) (map DVarT all_locals))
-              | name <- Map.keys $ fst let_dec_env
+              | name <- Map.keys $ lde_defns let_dec_env
               , let proName = promoteValNameLhsPrefix prefix name
                     sym = promoteTySym proName (length all_locals) ]
   emitDecsM $ letBind binds $ promoteLetDecEnv prefix let_dec_env
@@ -226,26 +217,19 @@ promoteDec (DClosedTypeFamilyD _name _tvs _mkind _eqns) =
 promoteDec (DRoleAnnotD _name _roles) =
   return [] -- silently ignore role annotations, as they're harmless here
 
-promoteLetDec :: DLetDec -> PrM LetDecEnv
-promoteLetDec (DFunD name clauses) = do
-  valueBinding name (Function clauses)
-promoteLetDec (DValD (DVarPa name) exp) = do
-  valueBinding name (Value exp)
-promoteLetDec dec@(DValD {}) = do  -- complex pattern. Flatten!
-  let_decs <- flattenDValD dec
-  concatMapM promoteLetDec let_decs
-promoteLetDec (DSigD name ty) = do
-  typeBinding name ty
-promoteLetDec (DInfixD fixity name)
-  | isUpcase name = return emptyLetDecEnv -- promoting a type or data ctor
-  | otherwise     = do                    -- value
-    emitDecs [DLetDec $ DInfixD fixity (promoteValNameLhs name)]
-    return emptyLetDecEnv
-
 promoteLetDecEnv :: String -> LetDecEnv -> PrM [DDec]
-promoteLetDecEnv prefix (value_env, type_env) =
-  mapM (uncurry prom_let_dec) (Map.toList value_env)
+promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
+                                   , lde_types = type_env
+                                   , lde_infix = infix_decls }) = do
+  liftM2 (++)
+    (return $ catMaybes $ map (uncurry prom_infix_decl) infix_decls)
+    (mapM (uncurry prom_let_dec) (Map.toList value_env))
   where
+    prom_infix_decl :: Fixity -> Name -> Maybe DDec
+    prom_infix_decl fixity name
+      | isUpcase name = Nothing   -- no need to promote the decl
+      | otherwise     = Just $ DLetDec $ DInfixD fixity (promoteValNameLhs name)
+    
     prom_let_dec :: Name -> LetDecRHS -> PrM DDec
     prom_let_dec name (Value exp) = do
       all_locals <- allLocals
@@ -286,10 +270,12 @@ promoteLetDecEnv prefix (value_env, type_env) =
     count_args (DClause pats _ : _) = return $ length pats
     count_args _ = fail $ "Impossible! A function without clauses."
 
-promoteType :: DType -> PrM DKind
+-- the only monadic thing we do here is fail. This allows the function
+-- to be used from the Singletons module
+promoteType :: Monad m => DType -> m DKind
 promoteType = go []
   where
-    go :: [DKind] -> DType -> PrM DKind
+    go :: Monad m => [DKind] -> DType -> m DKind
     -- We don't need to worry about constraints: they are used to express
     -- static guarantees at runtime. But, because we don't need to do
     -- anything special to keep static guarantees at compile time, we don't
@@ -316,9 +302,9 @@ promoteType = go []
     go [k1, k2] DArrowT = return $ addStar (buildTyFun k1 k2)
     go _ (DLitT _) = fail "Cannot promote a type-level literal"
 
-    go args     head = fail $ "Illegal Haskell construct encountered:\n" ++
-                              "headed by: " ++ show head ++ "\n" ++
-                              "applied to: " ++ show args
+    go args     hd = fail $ "Illegal Haskell construct encountered:\n" ++
+                            "headed by: " ++ show hd ++ "\n" ++
+                            "applied to: " ++ show args
 
 {-
 -- Takes a name of a function together with its arity and
@@ -394,12 +380,13 @@ promoteMatch (DMatch pat exp) = do
   return $ DTySynEqn (map DVarT all_locals ++ [ty]) rhs
 
 -- promotes a term pattern into a type pattern, accumulating bound variable names
-promotePat :: DPat -> QWithAux [Name] PrM DType
+promotePat :: DPat -> QWithAux VarPromotions PrM DType
 promotePat (DLitPa lit) = promoteLit lit
 promotePat (DVarPa name) = do
-    -- somewhat cheekily use the same name at the type level
-  addElement name
-  return $ DVarT name
+      -- term vars can be symbols... type vars can't!
+  tyName <- mkTyName name
+  addElement (name, tyName)
+  return $ DVarT tyName
 promotePat (DConPa name pats) = do
   types <- mapM promotePat pats
   let name' = unboxed_tuple_to_tuple name
@@ -417,6 +404,7 @@ promotePat (DBangPa pat) = do
 promotePat DWildPa = do
   name <- qNewName "z"
   return $ DVarT name
+promotePat (DSigPa pat ty) = DSigT <$> promotePat pat <*> lift (promoteType ty)
 
 promoteExp :: DExp -> PrM DType
 promoteExp (DVarE name) = lookupVarE name
@@ -426,7 +414,8 @@ promoteExp (DAppE exp1 exp2) = apply <$> promoteExp exp1 <*> promoteExp exp2
 promoteExp (DLamE names exp) = do
   lambdaName <- newUniqueName "Lambda"
   resultKVarName  <- qNewName "r"
-  rhs <- lambdaBind names $ promoteExp exp
+  tyNames <- mapM mkTyName names
+  rhs <- lambdaBind (zip names tyNames) $ promoteExp exp
   tyFamLamTypes <- mapM (const $ qNewName "t") names
   all_locals <- allLocals
   let all_args = all_locals ++ tyFamLamTypes
@@ -436,7 +425,7 @@ promoteExp (DLamE names exp) = do
   emitDecs [DClosedTypeFamilyD lambdaName
                                tvbs
                                m_resultK
-                               [DTySynEqn (map DVarT (all_locals ++ names))
+                               [DTySynEqn (map DVarT (all_locals ++ tyNames))
                                           rhs]]
   emitDecsM $ defunctionalize lambdaName kinds resultK
   return $ foldl apply (DConT (promoteTySym lambdaName 0)) (map DVarT all_locals)
@@ -527,15 +516,15 @@ buildDefunSymsDataD tyName tvbs ctors = do
 -- defunctionalize takes list of kinds of the type family parameters and
 -- kind of the result.
 defunctionalize :: Name -> [DKind] -> DKind -> PrM [DDec]
-defunctionalize name args result = do
-  let num_args = length args
+defunctionalize name as res = do
+  let num_args = length as
       sat_name = promoteTySym name num_args
   tvbNames <- replicateM num_args $ qNewName "t"
      -- use kind inference on the saturated definition. This causes no harm
      -- in 7.6.3 but is crucial in 7.8, when sometimes the args are too polymorphic
   let sat_dec = DTySynD sat_name (map DPlainTV tvbNames)
                         (foldType (DConT name) (map DVarT tvbNames))
-  other_decs <- go (num_args - 1) (reverse args) result
+  other_decs <- go (num_args - 1) (reverse as) res
   return $ sat_dec : other_decs
   where
     go :: Int -> [DKind] -> DKind -> PrM [DDec]

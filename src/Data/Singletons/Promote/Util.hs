@@ -13,7 +13,6 @@ module Data.Singletons.Promote.Util where
 import Language.Haskell.TH.Syntax
 import Data.Singletons.Names
 import Language.Haskell.TH.Desugar
-import Control.Monad
 
 falseTySym :: DType
 falseTySym = promoteValRhs falseName

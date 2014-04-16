@@ -10,12 +10,10 @@ Users of the package should not need to consult this file.
 {-# LANGUAGE CPP, TypeSynonymInstances, FlexibleInstances, RankNTypes,
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses, StandaloneDeriving,
-             UndecidableInstances, MagicHash, UnboxedTuples #-}
+             UndecidableInstances, MagicHash, UnboxedTuples,
+             LambdaCase #-}
 
-module Data.Singletons.Util (
-  module Data.Singletons.Util,
-  module Language.Haskell.TH.Desugar )
-  where
+module Data.Singletons.Util where
 
 import Prelude hiding ( exp, foldl, concat, mapM, any )
 import Language.Haskell.TH hiding ( Q )
@@ -132,7 +130,7 @@ toUpcaseStr n
   | otherwise
   = let str   = nameBase n
         first = head str
-    in if isLetter first
+    in if isHsLetter first
        then (toUpper first) : tail str
        else ':' : str
 
@@ -141,7 +139,7 @@ locase :: Name -> Name
 locase n =
   let str = nameBase n
       first = head str in
-    if isLetter first
+    if isHsLetter first
      then mkName ((toLower first) : tail str)
      else mkName (tail str) -- remove the ":"
 
@@ -158,7 +156,7 @@ prefixLCName :: String -> String -> Name -> Name
 prefixLCName pre tyPre n =
   let str = nameBase n
       first = head str in
-    if isLetter first
+    if isHsLetter first
      then mkName (pre ++ str)
      else mkName (tyPre ++ str)
 
@@ -213,6 +211,12 @@ multiCase :: [DExp] -> [DPat] -> DExp -> DExp
 multiCase [] [] body = body
 multiCase scruts pats body =
   DCaseE (mkTupleDExp scruts) [DMatch (mkTupleDPat pats) body]
+
+-- Make a desugar function into a TH function.
+wrapDesugar :: (Desugar th ds, Quasi q) => (ds -> q ds) -> th -> q th
+wrapDesugar f th = do
+  ds <- desugar th
+  fmap sweeten $ f ds
 
 -- a monad transformer for writing a monoid alongside returning a Q
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
@@ -275,8 +279,8 @@ addElement elt = tell [elt]
 
 -- lift concatMap into a monad
 -- could this be more efficient?
-concatMapM :: (Monad monad, Monoid monoid, Traversable traversable)
-           => (a -> monad monoid) -> traversable a -> monad monoid
+concatMapM :: (Monad monad, Monoid monoid, Traversable t)
+           => (a -> monad monoid) -> t a -> monad monoid
 concatMapM fn list = do
   bss <- mapM fn list
   return $ fold bss
@@ -296,3 +300,17 @@ partitionWith f = go [] []
             Left b  -> go (b:bs) cs as
             Right c -> go bs (c:cs) as
 
+partitionLetDecs :: [DDec] -> ([DLetDec], [DDec])
+partitionLetDecs = partitionWith (\case DLetDec ld -> Left ld
+                                        dec        -> Right dec)
+
+mapAndUnzip3M :: Monad m => (a -> m (b,c,d)) -> [a] -> m ([b],[c],[d])
+mapAndUnzip3M _ []     = return ([],[],[])
+mapAndUnzip3M f (x:xs) = do
+    (r1,  r2,  r3)  <- f x
+    (rs1, rs2, rs3) <- mapAndUnzip3M f xs
+    return (r1:rs1, r2:rs2, r3:rs3)                  
+
+-- is it a letter or underscore?
+isHsLetter :: Char -> Bool
+isHsLetter c = isLetter c || c == '_'

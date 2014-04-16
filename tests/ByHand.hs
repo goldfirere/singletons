@@ -20,12 +20,12 @@ module ByHand where
 import Prelude hiding (Maybe, Just, Nothing, Either, Left, Right, map, zipWith,
                        (+), (-))
 import Unsafe.Coerce
-import ByHandAux
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Type.Bool
-import Data.Type.Equality
+import Data.Type.Equality hiding (apply)
 import Data.Proxy
+import Data.Coerce
 #endif
 
 -----------------------------------
@@ -149,10 +149,56 @@ newtype Void = Void Void
 
 -- defunctionalization symbols
 data TyFun :: * -> * -> *
-data TyCon :: (k1 -> k2) -> (TyFun k1 k2) -> *
 type family (f :: TyFun k1 k2 -> *) @@ (x :: k1) :: k2
-type instance (TyCon f) @@ x = f x
 infixl 9 @@
+
+type family TyCon (x :: k) :: TyFun k1 k2 -> * where
+  TyCon (x :: k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8) = TyCon7 x
+  TyCon (x :: k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7)       = TyCon6 x
+  TyCon (x :: k1 -> k2 -> k3 -> k4 -> k5 -> k6)             = TyCon5 x
+  TyCon (x :: k1 -> k2 -> k3 -> k4 -> k5)                   = TyCon4 x
+  TyCon (x :: k1 -> k2 -> k3 -> k4)                         = TyCon3 x
+  TyCon (x :: k1 -> k2 -> k3)                               = TyCon2 x
+  TyCon (x :: k1 -> k2)                                     = TyCon1 x
+
+data TyCon1 :: (k1 -> k2) -> TyFun k1 k2 -> *
+data TyCon2 :: (k1 -> k2 -> k3) -> TyFun k1 (TyFun k2 k3 -> *) -> *
+data TyCon3 :: (k1 -> k2 -> k3 -> k4) -> TyFun k1 (TyFun k2 (TyFun k3 k4 -> *) -> *) -> *
+data TyCon4 :: (k1 -> k2 -> k3 -> k4 -> k5) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 k5 -> *) -> *) -> *) -> *
+data TyCon5 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 k6 -> *) -> *) -> *) -> *) -> *
+data TyCon6 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 k7 -> *) -> *) -> *) -> *) -> *) -> *
+data TyCon7 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 (TyFun k7 k8 -> *) -> *) -> *) -> *) -> *) -> *) -> *
+
+type instance (TyCon1 f) @@ x = f x
+type instance (TyCon2 f) @@ x = TyCon1 (f x)
+type instance (TyCon3 f) @@ x = TyCon2 (f x)
+type instance (TyCon4 f) @@ x = TyCon3 (f x)
+type instance (TyCon5 f) @@ x = TyCon4 (f x)
+type instance (TyCon6 f) @@ x = TyCon5 (f x)
+type instance (TyCon7 f) @@ x = TyCon6 (f x)
+
+-- Sing instance for functions
+newtype instance Sing (f :: TyFun k1 k2 -> *) =
+  WrapArrow { apply :: forall t. Sing t -> Sing (f @@ t) }
+
+{-
+wrapDataCon :: forall (f :: k1 -> k2 -> *). (forall (t :: k1). Sing t -> Sing (f t)) -> Sing (TyCon f :: TyFun k1 (TyFun k2 * -> *) -> *)
+wrapDataCon = WrapArrow
+-}
+
+wrapSucc :: Sing ConsSym0
+wrapSucc = WrapArrow (\x -> WrapArrow (SCons x))
+
+wrapPred :: Sing PredSym0
+wrapPred = WrapArrow sPred
+
+blah = apply wrapPred (SSucc SZero)
+
+data ConsSym0 :: TyFun a (TyFun (List a) (List a) -> *) -> *
+type instance ConsSym0 @@ x = ConsSym1 x
+
+data ConsSym1 :: a -> TyFun (List a) (List a) -> *
+type instance (ConsSym1 x) @@ y = Cons x y
 
 -----------------------------------
 -- Auto-generated code ------------
@@ -163,6 +209,9 @@ infixl 9 @@
 data instance Sing (a :: Nat) where
   SZero :: Sing Zero
   SSucc :: Sing n -> Sing (Succ n)
+
+data SuccSym0 :: TyFun Nat Nat -> *
+type instance (SuccSym0 @@ x) = Succ x
 
 #if __GLASGOW_HASKELL__ >= 707
 
@@ -193,8 +242,8 @@ instance SDecide ('KProxy :: KProxy Nat) where
     case m %~ n of
       Proved Refl -> Proved Refl
       Disproved contra -> Disproved (\Refl -> contra Refl)
-  SZero %~ (SSucc _) = Disproved ($emptyLamCase)
-  (SSucc _) %~ SZero = Disproved ($emptyLamCase)
+  SZero %~ (SSucc _) = Disproved (\case _ -> undefined)
+  (SSucc _) %~ SZero = Disproved (\case _ -> undefined)
 
 instance SingI Zero where
   sing = SZero
@@ -260,9 +309,9 @@ instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (Maybe k)) 
     case x %~ y of
       Proved Refl -> Proved Refl
       Disproved contra -> Disproved (\Refl -> contra Refl)
-  SNothing %~ (SJust _) = Disproved ($emptyLamCase)
-  (SJust _) %~ SNothing = Disproved ($emptyLamCase)
-
+  SNothing %~ (SJust _) = Disproved (\case _ -> undefined)
+  (SJust _) %~ SNothing = Disproved (\case _ -> undefined)
+  
 instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (Maybe k)) where
   SNothing %:== SNothing = STrue
   SNothing %:== (SJust _) = SFalse
@@ -318,8 +367,8 @@ instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (List k)) w
       (Proved Refl, Proved Refl) -> Proved Refl
       (Disproved contra, _) -> Disproved (\Refl -> contra Refl)
       (_, Disproved contra) -> Disproved (\Refl -> contra Refl)
-  SNil %~ (SCons _ _) = Disproved ($emptyLamCase)
-  (SCons _ _) %~ SNil = Disproved ($emptyLamCase)
+  SNil %~ (SCons _ _) = Disproved (\case _ -> undefined)
+  (SCons _ _) %~ SNil = Disproved (\case _ -> undefined)
 
 instance SingI Nil where
   sing = SNil
@@ -368,8 +417,8 @@ instance (SDecide ('KProxy :: KProxy k1), SDecide ('KProxy :: KProxy k2)) => SDe
     case x %~ y of
       Proved Refl -> Proved Refl
       Disproved contra -> Disproved (\Refl -> contra Refl)
-  (SLeft _) %~ (SRight _) = Disproved ($emptyLamCase)
-  (SRight _) %~ (SLeft _) = Disproved ($emptyLamCase)
+  (SLeft _) %~ (SRight _) = Disproved (\case _ -> undefined)
+  (SRight _) %~ (SLeft _) = Disproved (\case _ -> undefined)
 
 -- Composite
 
@@ -402,8 +451,8 @@ data Empty
 data instance Sing (a :: Empty)
 instance SingKind ('KProxy :: KProxy Empty) where
   type DemoteRep ('KProxy :: KProxy Empty) = Empty
-  fromSing = $emptyLamCase
-  toSing = $emptyLamCase
+  fromSing = \case _ -> undefined
+  toSing = \case _ -> undefined
 
 -- *
 
@@ -443,16 +492,16 @@ instance SingKind ('KProxy :: KProxy *) where
 
 instance SDecide ('KProxy :: KProxy *) where
   SNat %~ SNat = Proved Refl
-  SNat %~ (SMaybe {}) = Disproved ($emptyLamCase)
-  SNat %~ (SVec {}) = Disproved ($emptyLamCase)
-  (SMaybe {}) %~ SNat = Disproved ($emptyLamCase)
+  SNat %~ (SMaybe {}) = Disproved (\case _ -> undefined)
+  SNat %~ (SVec {}) = Disproved (\case _ -> undefined)
+  (SMaybe {}) %~ SNat = Disproved (\case _ -> undefined)
   (SMaybe a) %~ (SMaybe b) =
     case a %~ b of
       Proved Refl -> Proved Refl
       Disproved contra -> Disproved (\Refl -> contra Refl)
-  (SMaybe {}) %~ (SVec {}) = Disproved ($emptyLamCase)
-  (SVec {}) %~ SNat = Disproved ($emptyLamCase)
-  (SVec {}) %~ (SMaybe {}) = Disproved ($emptyLamCase)
+  (SMaybe {}) %~ (SVec {}) = Disproved (\case _ -> undefined)
+  (SVec {}) %~ SNat = Disproved (\case _ -> undefined)
+  (SVec {}) %~ (SMaybe {}) = Disproved (\case _ -> undefined)
   (SVec a1 n1) %~ (SVec a2 n2) =
     case (a1 %~ a2, n1 %~ n2) of
       (Proved Refl, Proved Refl) -> Proved Refl
@@ -556,27 +605,34 @@ foo = sMap (\(_ :: Proxy (TyCon Succ)) -> SSucc) (SCons (SSucc SZero) (SCons SZe
 
 -- test sMap2
 bar :: Sing (Cons (Succ (Succ Zero)) (Cons (Succ Zero) Nil))
-bar = sMap2 (Proxy :: Proxy (TyCon Succ)) (SSucc) (SCons (SSucc SZero) (SCons SZero SNil))
+bar = sMap2 (Proxy :: Proxy SuccSym0) (SSucc) (SCons (SSucc SZero) (SCons SZero SNil))
 
 baz :: Sing (Cons Zero (Cons Zero Nil))
 baz = sMap2 (Proxy :: Proxy PredSym0) (sPred) (SCons (SSucc SZero) (SCons SZero SNil))
 
 zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
 zipWith f (x:xs) (y:ys) = f x y : zipWith f xs ys
-zipWith _ _ _           = []
+zipWith _ [] (_:_)      = []
+zipWith _ (_:_) []      = []
+zipWith _ []    []      = []
 
 #if __GLASGOW_HASKELL__ >= 707
 type family ZipWith (k1 :: TyFun a (TyFun b c -> *) -> *)
                     (k2 :: List a)
                     (k3 :: List b) :: List c where
   ZipWith f (Cons x xs) (Cons y ys) = Cons ((@@) ((@@) f x) y) (ZipWith f xs ys)
-  ZipWith f xs ys = Nil
+  ZipWith f Nil (Cons z1 z2) = Nil
+  ZipWith f (Cons z1 z2) Nil = Nil
+  ZipWith f Nil          Nil = Nil
 #else
 type family ZipWith (k1 :: TyFun a (TyFun b c -> *) -> *)
                     (k2 :: List a)
                     (k3 :: List b) :: List c
 type instance ZipWith f (Cons x xs) (Cons y ys) = Cons ((@@) ((@@) f x) y) (ZipWith f xs ys)
 type instance ZipWith f xs ys = Nil
+type instance ZipWith f Nil (Cons z1 z2) = Nil
+type instance ZipWith f (Cons z1 z2) Nil = Nil
+type instance ZipWith f Nil          Nil = Nil
 #endif
 
 data ZipWithSym2 (k1 :: TyFun a (TyFun b c -> *) -> *)
@@ -596,7 +652,9 @@ sZipWith :: forall (k1 :: TyFun a (TyFun b c -> *) -> *) (k2 :: List a) (k3 :: L
   (forall (t1 :: a). Proxy k1 -> Sing t1 -> forall (t2 :: b). Sing t2 -> Sing ((@@) ((@@) k1 t1) t2))
   -> Sing k2 -> Sing k3 -> Sing (ZipWith k1 k2 k3)
 sZipWith f (SCons x xs) (SCons y ys) = SCons (f Proxy x y) (sZipWith f xs ys)
-sZipWith _ SNil SNil                 = SNil
+sZipWith _ SNil (SCons _ _) = SNil
+sZipWith _ (SCons _ _) SNil = SNil
+sZipWith _ SNil        SNil = SNil
 
 either :: (a -> c) -> (b -> c) -> Either a b -> c
 either l _ (Left x) = l x
@@ -648,11 +706,11 @@ sEither2 _ _ l _ (SLeft  x) = l x
 sEither2 _ _ _ r (SRight x) = r x
 
 eitherFoo :: Sing (Succ (Succ Zero))
-eitherFoo = sEither (\(_ :: Proxy (TyCon Succ)) -> SSucc)
+eitherFoo = sEither (\(_ :: Proxy SuccSym0) -> SSucc)
                     (\(_ :: Proxy PredSym0)     -> sPred) (SLeft (SSucc SZero))
 
 eitherBar :: Sing Zero
-eitherBar = sEither2 (Proxy :: Proxy (TyCon Succ))
+eitherBar = sEither2 (Proxy :: Proxy SuccSym0)
                      (Proxy :: Proxy PredSym0)
                      SSucc
                      sPred (SRight (SSucc SZero))

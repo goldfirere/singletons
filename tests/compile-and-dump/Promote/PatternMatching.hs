@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-unused-matches #-}
+
 module Promote.PatternMatching where
 
 import Data.Singletons.TH

@@ -13,7 +13,8 @@ module Data.Singletons.Names where
 import Data.Singletons
 import Data.Singletons.Types
 import Data.Singletons.Decide
-import Language.Haskell.TH
+import Language.Haskell.TH.Syntax
+import Language.Haskell.TH.Desugar
 import GHC.TypeLits ( Symbol )
 import GHC.Exts ( Any )
 import Data.Typeable ( TypeRep )
@@ -27,7 +28,8 @@ anyTypeName, boolName, andName, tyEqName, repName,
   sIfName, kProxyDataName, kProxyTypeName, proxyTypeName, proxyDataName,
   someSingTypeName, someSingDataName,
   sListName, sDecideClassName, sDecideMethName,
-  provedName, disprovedName, reflName, toSingName, fromSingName :: Name
+  provedName, disprovedName, reflName, toSingName, fromSingName,
+  equalityName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
@@ -71,6 +73,7 @@ sDecideMethName = '(%~)
 provedName = 'Proved
 disprovedName = 'Disproved
 reflName = 'Refl
+equalityName = ''(~)
 
 mkTupleName :: Int -> Name
 mkTupleName n = mkName $ "STuple" ++ (show n)
@@ -116,3 +119,35 @@ promoteTySym name sat
       then mkName (capped ++ (replicate (sat + 1) '$'))
       else mkName (capped ++ "Sym" ++ (show sat))
 
+-- Singletons
+
+singDataConName :: Name -> Name
+singDataConName nm
+  | nm == nilName                                  = snilName
+  | nm == consName                                 = sconsName
+  | Just degree <- tupleNameDegree_maybe nm        = mkTupleName degree
+  | Just degree <- unboxedTupleNameDegree_maybe nm = mkTupleName degree
+  | otherwise                                      = prefixUCName "S" ":%" nm
+
+singTyConName :: Name -> Name
+singTyConName name
+  | name == listName                                 = sListName
+  | Just degree <- tupleNameDegree_maybe name        = mkTupleName degree
+  | Just degree <- unboxedTupleNameDegree_maybe name = mkTupleName degree
+  | otherwise                                        = prefixUCName "S" ":%" name
+
+singClassName :: Name -> Name
+singClassName = singTyConName
+
+singValName :: Name -> Name
+singValName n
+  | n == undefinedName       = undefinedName
+     -- avoid unused variable warnings
+  | head (nameBase n) == '_' = (prefixLCName "_s" "%") $ n
+  | otherwise                = (prefixLCName "s" "%") $ upcase n
+
+mkTyName :: Quasi q => Name -> q Name
+mkTyName tmName = do
+  let nameStr  = nameBase tmName
+      symbolic = not (isHsLetter (head nameStr))
+  qNewName (if symbolic then "ty" else nameStr)

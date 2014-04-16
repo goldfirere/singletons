@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -fno-warn-unused-binds -fno-warn-unused-matches
+                -fno-warn-name-shadowing #-}
+
 module Promote.LetStatements where
 
 import Data.Singletons.TH

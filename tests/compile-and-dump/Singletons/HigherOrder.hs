@@ -1,5 +1,7 @@
+
 module Singletons.HigherOrder where
 
+import Data.Singletons
 import Data.Singletons.TH
 import Data.Singletons.List hiding (
            sMap, Map, MapSym0, MapSym1, zipWith, ZipWith, sZipWith, ZipWithSym0,
@@ -26,25 +28,25 @@ $(singletons [d|
   zipWith _ [] (_:_)      = []
 
   -- higher order function that accepts higher order function
-  foo :: ((a -> b) -> a -> b) -> (a -> b)  -> a -> b
-  foo f g a = f g a
+  -- not currently supported
+  -- foo :: ((a -> b) -> a -> b) -> (a -> b)  -> a -> b
+  -- foo f g a = f g a
 
   splunge :: [Nat] -> [Bool] -> [Nat]
   splunge ns bs = zipWith (\n b -> if b then Succ (Succ n) else n) ns bs
-
+{-
   etad :: [Nat] -> [Bool] -> [Nat]
   etad = zipWith (\n b -> if b then Succ (Succ n) else n)
+-}
  |])
 
-data Proxy a = Proxy
-
-foo1a :: Proxy (ZipWith EitherTyCtorSym0 '[Int, Bool] '[Char, Double])
+foo1a :: Proxy (ZipWith (TyCon2 Either) '[Int, Bool] '[Char, Double])
 foo1a = Proxy
 
 foo1b :: Proxy ('[Either Int Char, Either Bool Double])
 foo1b = foo1a
 
-foo2a :: Proxy (Map (EitherTyCtorSym1 Int) '[Bool, Double])
+foo2a :: Proxy (Map (TyCon1 (Either Int)) '[Bool, Double])
 foo2a = Proxy
 
 foo2b :: Proxy ('[Either Int Bool, Either Int Double])
@@ -53,5 +55,5 @@ foo2b = foo2a
 foo3a :: Proxy (Map PredSym0 '[Succ Zero, Succ (Succ Zero)])
 foo3a = Proxy
 
-foo3b :: Proxy ('[Succ(Succ Zero), Succ(Succ (Succ Zero))])
+foo3b :: Proxy '[Zero, Succ Zero]
 foo3b = foo3a
