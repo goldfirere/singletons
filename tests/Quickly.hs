@@ -20,6 +20,7 @@ import Promote.CaseExpressions
 import Promote.LambdaCase
 import Promote.LetStatements
 import Promote.Sections
+import Promote.Records
 
 import Singletons.AtPattern
 import Singletons.BoxUnBox

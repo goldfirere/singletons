@@ -128,10 +128,21 @@ promoteDecs decls = do
   checkForRepInDecls decls
   -- See Note [Promoting declarations in two stages]
   let (let_decs, other_decs) = partitionLetDecs decls
-      -- promoteLetDecs returns LetBinds, which we don't need
-  _ <- promoteLetDecs noPrefix let_decs
+  rec_selectors <- concatMapM extract_rec_selectors other_decs
+
+    -- promoteLetDecs returns LetBinds, which we don't need at top level
+  _ <- promoteLetDecs noPrefix (rec_selectors ++ let_decs)
   prom_decs <- concatMapM promoteDec other_decs
   return prom_decs
+  where
+    extract_rec_selectors :: DDec -> PrM [DLetDec]
+    extract_rec_selectors (DDataD _nd _cxt data_name tvbs cons _derivings) =
+      let arg_ty = foldType (DConT data_name)
+                            (map (DVarT . extractTvbName) tvbs)
+      in
+      concatMapM (getRecordSelectors arg_ty) cons
+    extract_rec_selectors _ = return []
+      
 
 promoteLetDecs :: String -- prefix to use on all new definitions
                -> [DLetDec] -> PrM [LetBind]

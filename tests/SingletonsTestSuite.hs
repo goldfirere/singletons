@@ -41,6 +41,7 @@ tests =
     , compileAndDumpStdTest "TopLevelPatterns"
     , compileAndDumpStdTest "LetStatements"
     , compileAndDumpStdTest "Sections"
+    , compileAndDumpStdTest "Records"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts
