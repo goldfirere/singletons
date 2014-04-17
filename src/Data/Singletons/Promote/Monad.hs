@@ -11,6 +11,7 @@ of DDec, and is wrapped around a Q.
 
 {-# LANGUAGE GeneralizedNewtypeDeriving, StandaloneDeriving, CPP,
              FlexibleContexts, TypeFamilies, KindSignatures #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}   -- we have orphan Quasi instances
 
 module Data.Singletons.Promote.Monad (
   PrM, promoteM, promoteMDecs, VarPromotions,

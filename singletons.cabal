@@ -59,7 +59,7 @@ library
                       Data.Singletons.Bool,
                       Data.Singletons.Maybe,
                       Data.Singletons.Either,
-                      Data.Singletons.Tuple
+                      Data.Singletons.Tuple,
                       Data.Singletons.TH,
                       Data.Singletons.Eq,
                       Data.Singletons.Prelude,
@@ -69,13 +69,15 @@ library
                       Data.Singletons.Void
 
   other-modules:      Data.Singletons.Promote,
-                      Data.Singletons.Singletons,
                       Data.Singletons.Util,
                       Data.Singletons.Instances,
                       Data.Singletons.Promote.Monad,
                       Data.Singletons.Names,
                       Data.Singletons.Promote.Equality,
-                      Data.Singletons.Promote.Util
+                      Data.Singletons.Promote.Util,
+                      Data.Singletons.Single.Monad,
+                      Data.Singletons.Single,
+                      Data.Singletons.LetDecEnv
 
   ghc-options:        -Wall
 
