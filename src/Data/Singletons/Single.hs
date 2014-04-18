@@ -27,137 +27,6 @@ import Control.Applicative
 import Data.Foldable ( foldrM )
 import Data.Maybe
 
-{-
--- reduce the four cases of a 'Con' to just two: monomorphic and polymorphic
--- and convert 'StrictType' to 'Type'
-ctorCases :: (Name -> [Type] -> a) -> ([TyVarBndr] -> Cxt -> Con -> a) -> Con -> a
-ctorCases genFun forallFun ctor = case ctor of
-  NormalC name stypes -> genFun name (map snd stypes)
-  RecC name vstypes -> genFun name (map (\(_,_,ty) -> ty) vstypes)
-  InfixC (_,ty1) name (_,ty2) -> genFun name [ty1, ty2]
-  ForallC [] [] ctor' -> ctorCases genFun forallFun ctor'
-  ForallC tvbs cx ctor' -> forallFun tvbs cx ctor'
-
--- reduce the four cases of a 'Con' to just 1: a polymorphic Con is treated
--- as a monomorphic one
-ctor1Case :: (Name -> [Type] -> a) -> Con -> a
-ctor1Case mono = ctorCases mono (\_ _ ctor -> ctor1Case mono ctor)
-
--- tuple up a list of patterns
-mkTuplePat :: [Pat] -> Pat
-mkTuplePat [x] = x
-mkTuplePat xs  = TupP xs
-
--- tuple up a list of expressions
-mkTupleExp :: [Exp] -> Exp
-mkTupleExp [x] = x
-mkTupleExp xs  = TupE xs
-
-mkTyFamInst :: Name -> [Type] -> Type -> Dec
-mkTyFamInst name lhs rhs =
-#if __GLASGOW_HASKELL__ >= 707
-  TySynInstD name (TySynEqn lhs rhs)
-#else
-  TySynInstD name lhs rhs
-#endif
-
--- Get argument kinds from an arrow kind. Removing ForallT is an
--- important preprocessing step required by promoteType.
-unravel :: Kind -> [Kind]
-unravel (ForallT _ _ ty) = unravel ty
-unravel (AppT (AppT ArrowT k1) k2) =
-    let ks = unravel k2 in k1 : ks
-unravel k = [k]
-
--- Reconstruct arrow kind from the list of kinds
-ravel :: [Kind] -> Kind
-ravel []    = error "Internal error: raveling nil"
-ravel [k]   = k
-ravel (h:t) = AppT (AppT ArrowT h) (ravel t)
-
-oldPromoteType :: Quasi q => Type -> q Kind
-oldPromoteType ty = do
-  ty' <- dsType ty
-  (ki, _) <- promoteM $ promoteType ty'
-  return $ kindToTH ki
-
-oldPromoteDecs :: Quasi q => [Dec] -> q [Dec]
-oldPromoteDecs decs = do
-  decs' <- dsDecs decs
-  (decs'', others) <- promoteM $ promoteDecs decs'
-  return $ decsToTH (decs'' ++ others)
-
-extractTvbName_ :: TyVarBndr -> Name
-extractTvbName_ (PlainTV n) = n
-extractTvbName_ (KindedTV n _) = n
-
--- extract the kind from a TyVarBndr. Returns '*' by default.
-extractTvbKind_ :: TyVarBndr -> Kind
-extractTvbKind_ (PlainTV _) = StarT -- FIXME: This seems wrong.
-extractTvbKind_ (KindedTV _ k) = k
-
-emptyMatches_ :: [Match]
-emptyMatches_ = [Match WildP (NormalB (AppE (VarE 'error) (LitE (StringL errStr)))) []]
-  where errStr = "Empty case reached -- this should be impossible"
-
-extractNameArgs_ :: Con -> (Name, Int)
-extractNameArgs_ = ctor1Case (\name tys -> (name, length tys))
-                                             
-introduceApply :: (Name, Int) -> Type -> (Type, Bool)
-introduceApply funData' typeT =
-    case go funData' typeT of
-      (t, f, _ ) -> (t, f)
-    where
-      go funData (ForallT tyvars ctx ty) =
-          let (ty', isApplyAdded, n) = go funData ty
-          in (ForallT tyvars ctx ty', isApplyAdded, n)
-      go (funName, funArity) (AppT (VarT name) ty) =
-          let (ty', isApplyAdded, _) = go (funName, funArity) ty
-          in if funName == name -- if we found our type variable then use Apply
-             then (AppT (AppT (ConT applyName) (VarT name)) ty'
-                  , True, funArity - 1)
-             else (AppT                        (VarT name)  ty'
-                  , isApplyAdded, 0)
-      go funData (AppT ty1 ty2) =
-          let (ty1', isApplyAdded1, n) = go funData ty1
-              (ty2', isApplyAdded2, _) = go funData ty2
-          in if n /= 0 -- do we need to insert more Applies because arity > 1?
-             then (AppT (AppT (ConT applyName) ty1') ty2', True  , n - 1)
-             else (AppT ty1' ty2', isApplyAdded1 || isApplyAdded2, n    )
-      go _ ty = (ty, False, 0)
-
--- map to track bound variables
-type ExpTable = Map.Map Name DExp
-
--- translating a type gives a type with a hole in it,
--- represented here as a function
-type DTypeFn = DType -> DType
-
--- Counts the arity of type level function represented with TyFun constructors
--- TODO: this and isTuFun looks like a good place to use PatternSynonyms
-tyFunArity_ :: Kind -> Int
-tyFunArity_ (AppT (AppT ArrowT (AppT (AppT (ConT tyFunNm) _) b)) StarT) =
-    if tyFunName == tyFunNm
-    then 1 + tyFunArity_ b
-    else 0
-tyFunArity_ _ = 0
-
-promoteLit_ :: Quasi q => Lit -> q Type
-promoteLit_ = fmap typeToTH . promoteLit
-
--- build a pattern match over several expressions, each with only one pattern
-multiCase_ :: [Exp] -> [Pat] -> Exp -> Exp
-multiCase_ [] [] body = body
-multiCase_ scruts pats body =
-  CaseE (mkTupleExp scruts)
-        [Match (mkTuplePat pats) (NormalB body) []]
-
-isTyFun_ :: Type -> Bool
-isTyFun_ (AppT (AppT ArrowT (AppT (AppT (ConT tyFunNm) _) _)) StarT) =
-    tyFunName == tyFunNm
-isTyFun_ _ = False
-
--}
 singFamily :: DType
 singFamily = DConT singFamilyName
 
@@ -672,24 +541,16 @@ singPredRec ctx (DConPr n)
 
 singClause :: ProxySpec -> DClause -> SgM DClause
 singClause proxyCount (DClause pats exp) = do
-  (sPats, new_vars) <- evalForPair $ mapM (singPat Parameter) pats
+  sPats <- mapM (singPat Parameter) pats
   sPats' <- foldrM insert_proxies [] $ zip proxyCount sPats
-  sBody <- bindVars new_vars $ singExp exp
+  sBody <- singExp exp
   return $ DClause sPats' sBody
   where
     insert_proxies :: (ProxyFlag, DPat) -> [DPat] -> SgM [DPat]
-    insert_proxies (NoProxy, p)                      ps = return (p : ps)
-      -- we need to remove the type signature, as it's wrong for functions!
-    insert_proxies (YesProxy, DSigPa p@(DVarPa _)
-                                     (DConT _ `DAppT` DVarT tyvar)) ps = do
+    insert_proxies (NoProxy, p)        ps = return (p : ps)
+    insert_proxies (YesProxy, p)       ps = do
       proxy_name <- qNewName "_proxy"
-      return (DSigPa (DVarPa proxy_name) (DConT proxyTypeName `DAppT` DVarT tyvar)
-              : p : ps)
-    insert_proxies (YesProxy, DWildPa)               ps = do
-      proxy_name <- qNewName "_proxy"
-      return (DVarPa proxy_name : DWildPa : ps)
-    insert_proxies (YesProxy, pat)                   _  = do
-      fail $ "Internal error: inserting a proxy into " ++ show pat
+      return (DVarPa proxy_name : p : ps)
 
 -- we need to know where a pattern is to anticipate when
 -- GHC's brain might explode
@@ -705,13 +566,10 @@ checkIfBrainWillExplode _ =
   fail $ "Can't use a singleton pattern outside of a case-statement or\n" ++
          "do expression: GHC's brain will explode if you try. (Do try it!)"
 
-singPat :: PatternContext -> DPat -> QWithAux VarPromotions SgM DPat
+singPat :: PatternContext -> DPat -> SgM DPat
 singPat _patCxt (DLitPa _lit) =
   fail "Singling of literal patterns not yet supported"
-singPat _patCxt (DVarPa name) = do
-  tyName <- mkTyName name
-  addElement (name, tyName)
-  return $ DSigPa (DVarPa (singValName name)) (singFamily `DAppT` (DVarT tyName))
+singPat _patCxt (DVarPa name) = return $ DVarPa (singValName name)
 singPat patCxt (DConPa name pats) = do
   checkIfBrainWillExplode patCxt
   pats' <- mapM (singPat patCxt) pats
@@ -752,11 +610,9 @@ singExpRec args (DLamE names exp) = do
   -- DLamE doesn't allow type signatures in the patterns, so we have to
   -- use a nested Case construct. Tiresome, but not bad.
   let sNames = map singValName names
-  ty_names <- mapM mkTyName names
-  let pats = zipWith (\sn tn -> DSigPa (DVarPa sn) (singFamily `DAppT` (DVarT tn)))
-                     sNames ty_names
+      pats = map DVarPa sNames
   arg_names <- mapM (const $ qNewName "arg") names
-  exp' <- bindVars (zip names ty_names) $ singExp exp
+  exp' <- singExp exp
   foldExp (DLamE arg_names (DCaseE (mkTupleDExp $ map DVarE arg_names)
                                    [DMatch (mkTupleDPat pats) exp']))
           <$> mapM singExp args
@@ -775,8 +631,8 @@ singExpRec args (DSigE exp ty) = do
 
 singMatch :: DMatch -> SgM DMatch
 singMatch (DMatch pat exp) = do
-  (sPat, new_vars) <- evalForPair $ singPat CaseStatement pat
-  sExp <- bindVars new_vars $ singExp exp
+  sPat <- singPat CaseStatement pat
+  sExp <- singExp exp
   return $ DMatch sPat sExp
 
 singLit :: Lit -> SgM DExp

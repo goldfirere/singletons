@@ -9,19 +9,19 @@ module Quickly where
 
 import Promote.PatternMatching
 import Promote.Constructors
-import Promote.Error
-import Promote.Lambdas
-import Promote.LambdasComprehensive
 #if __GLASGOW_HASKELL__ >= 707
 import Promote.Newtypes
 #endif
 import Promote.GenDefunSymbols
-import Promote.CaseExpressions
-import Promote.LambdaCase
 import Promote.LetStatements
 import Promote.Sections
 import Promote.Records
 
+import Singletons.Error
+import Singletons.LambdaCase
+import Singletons.Lambdas
+import Singletons.LambdasComprehensive
+import Singletons.CaseExpressions
 import Singletons.AtPattern
 import Singletons.BoxUnBox
 import Singletons.Contains

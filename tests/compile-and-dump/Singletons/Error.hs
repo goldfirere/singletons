@@ -1,9 +1,9 @@
-module Promote.Error where
+module Singletons.Error where
 
 import Data.Singletons.TH
 import Data.Singletons.Prelude hiding (Head, HeadSym0)
 
-$(promote [d|
+$(singletons [d|
   head :: [a] -> a
   head (a : _) = a
   head []      = error "Data.Singletons.List.head: empty list"

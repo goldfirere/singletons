@@ -13,14 +13,13 @@ GHCVERSIONSTR := $(shell ghc --numeric-version)
 ifeq "$(GHCVERSIONSTR)" "7.6.3"
 OPTS += -fno-warn-name-shadowing
 else
-EXTS += EmptyCase
 # Parallel build with 2 threads. Using more threads can actually make the test
 # slower - see https://github.com/jstolarek/singletons/issues/35
 OPTS += -j2
 endif
 
 
-RUNGHC = ghc $(INCLUDES:%=-i%) -outputdir $(OUTPUT) Quickly.hs $(EXTS:%=-X%) $(OPTS)
+RUNGHC = ghc $(INCLUDES:%=-i%) -outputdir $(OUTPUT) Quickly.hs $(EXTS:%=-X%) $(OPTS) $(MORE_OPTS)
 
 all:
 	-rm -rf $(OUTPUT)

@@ -1,13 +1,13 @@
 {-# OPTIONS_GHC -fno-warn-unused-matches -fno-warn-name-shadowing #-}
 {-# LANGUAGE UnboxedTuples #-}
 -- We expect unused binds and name shadowing in foo5 test.
-module Promote.Lambdas where
+module Singletons.Lambdas where
 
 import Data.Singletons.TH
 
 data Proxy a = Proxy
 
-$(promote [d|
+$(singletons [d|
   -- nothing in scope
   foo0 :: a -> b -> a
   foo0 = (\x y -> x)

@@ -1,9 +1,10 @@
-module Promote.CaseExpressions where
+module Singletons.CaseExpressions where
 
 import Data.Singletons.TH
 import Data.Singletons.Maybe
+import Data.Singletons.Prelude
 
-$(promote [d|
+$(singletons [d|
   foo1 :: a -> Maybe a -> a
   foo1 d x = case x of
                Just y  -> y

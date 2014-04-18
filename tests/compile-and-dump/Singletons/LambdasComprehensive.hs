@@ -1,4 +1,4 @@
-module Promote.LambdasComprehensive where
+module Singletons.LambdasComprehensive where
 
 import Data.Singletons.TH
 import Data.Singletons.Prelude
@@ -6,7 +6,7 @@ import Singletons.Nat
 
 import Prelude hiding (pred)
 
-$(promote [d|
+$(singletons [d|
  foo :: [Nat]
  foo = map (\x -> either_ pred Succ x) [Left Zero, Right (Succ Zero)]
 

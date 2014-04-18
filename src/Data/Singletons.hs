@@ -1,5 +1,6 @@
 {-# LANGUAGE MagicHash, RankNTypes, PolyKinds, GADTs, DataKinds,
-             FlexibleContexts, CPP, TypeFamilies, TypeOperators #-}
+             FlexibleContexts, CPP, TypeFamilies, TypeOperators,
+             UndecidableInstances #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -29,7 +30,7 @@
 module Data.Singletons (
   -- * Main singleton definitions
 
-  Sing,
+  Sing(SLambda, applySing),
   -- | See also 'Data.Singletons.Prelude.Sing' for exported constructors
 
   SingI(..), SingKind(..),
@@ -47,6 +48,20 @@ module Data.Singletons (
   -- ** Defunctionalization
   TyFun, TyCon1, TyCon2, TyCon3, TyCon4, TyCon5, TyCon6, TyCon7,
   Apply, type (@@),
+
+  -- ** Defunctionalized singletons
+  -- | When calling a higher-order singleton function, you need to use a
+  -- @singFun...@ function to wrap it. See 'singFun1'.
+  singFun1, singFun2, singFun3, singFun4, singFun5, singFun6, singFun7,
+  singFun8, singFun9, singFun10, singFun11, singFun12, singFun13,
+  singFun14, singFun15, singFun16, singFun17, singFun18, singFun19, singFun20,
+
+  -- | These type synonyms are exported only to improve error messages; users
+  -- should not have to mention them.
+  SingFunction1, SingFunction2, SingFunction3, SingFunction4, SingFunction5,
+  SingFunction6, SingFunction7, SingFunction8, SingFunction9, SingFunction10,
+  SingFunction11, SingFunction12, SingFunction13, SingFunction14, SingFunction15,
+  SingFunction16, SingFunction17, SingFunction18, SingFunction19, SingFunction20,
 
   -- * Auxiliary functions
   bugInGHC,
@@ -170,8 +185,111 @@ type instance Apply (TyCon7 f) x = TyCon6 (f x)
 
 -- | An infix synonym for `Apply`
 type a @@ b = Apply a b
-
 infixl 9 @@
+
+----------------------------------------------------------------------
+---- Defunctionalized Sing instance and utilities --------------------
+----------------------------------------------------------------------
+
+newtype instance Sing (f :: TyFun k1 k2 -> *) =
+  SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
+
+instance (SingKind ('KProxy :: KProxy k1), SingKind ('KProxy :: KProxy k2))
+         => SingKind ('KProxy :: KProxy (TyFun k1 k2 -> *)) where
+  type DemoteRep ('KProxy :: KProxy (TyFun k1 k2 -> *)) =
+    DemoteRep ('KProxy :: KProxy k1) -> DemoteRep ('KProxy :: KProxy k2)
+  fromSing sFun x = withSomeSing x (fromSing . applySing sFun)
+  toSing _ = error "Cannot create existentially-quantified singleton functions."
+
+type SingFunction1 f = forall t. Sing t -> Sing (f @@ t)
+
+-- | Use this function when passing a function on singletons as
+-- a higher-order function. You will often need an explicit type
+-- annotation to get this to work. For example:
+--
+-- > falses = sMap (singFun1 sNot :: Sing NotSym0)
+-- >               (STrue `SCons` STrue `SCons` SNil)
+--
+-- There are a family of @singFun...@ functions, keyed by the number
+-- of parameters of the function.
+singFun1 :: SingFunction1 f -> Sing f
+singFun1 f = SLambda f
+
+type SingFunction2 f = forall t. Sing t -> SingFunction1 (f @@ t)
+singFun2 :: SingFunction2 f -> Sing f
+singFun2 f = SLambda (\x -> singFun1 (f x))
+
+type SingFunction3 f = forall t. Sing t -> SingFunction2 (f @@ t)
+singFun3 :: SingFunction3 f -> Sing f
+singFun3 f = SLambda (\x -> singFun2 (f x))
+
+type SingFunction4 f = forall t. Sing t -> SingFunction3 (f @@ t)
+singFun4 :: SingFunction4 f -> Sing f
+singFun4 f = SLambda (\x -> singFun3 (f x))
+
+type SingFunction5 f = forall t. Sing t -> SingFunction4 (f @@ t)
+singFun5 :: SingFunction5 f -> Sing f
+singFun5 f = SLambda (\x -> singFun4 (f x))
+
+type SingFunction6 f = forall t. Sing t -> SingFunction5 (f @@ t)
+singFun6 :: SingFunction6 f -> Sing f
+singFun6 f = SLambda (\x -> singFun5 (f x))
+
+type SingFunction7 f = forall t. Sing t -> SingFunction6 (f @@ t)
+singFun7 :: SingFunction7 f -> Sing f
+singFun7 f = SLambda (\x -> singFun6 (f x))
+
+type SingFunction8 f = forall t. Sing t -> SingFunction7 (f @@ t)
+singFun8 :: SingFunction8 f -> Sing f
+singFun8 f = SLambda (\x -> singFun7 (f x))
+
+type SingFunction9 f = forall t. Sing t -> SingFunction8 (f @@ t)
+singFun9 :: SingFunction9 f -> Sing f
+singFun9 f = SLambda (\x -> singFun8 (f x))
+
+type SingFunction10 f = forall t. Sing t -> SingFunction9 (f @@ t)
+singFun10 :: SingFunction10 f -> Sing f
+singFun10 f = SLambda (\x -> singFun9 (f x))
+
+type SingFunction11 f = forall t. Sing t -> SingFunction10 (f @@ t)
+singFun11 :: SingFunction11 f -> Sing f
+singFun11 f = SLambda (\x -> singFun10 (f x))
+
+type SingFunction12 f = forall t. Sing t -> SingFunction11 (f @@ t)
+singFun12 :: SingFunction12 f -> Sing f
+singFun12 f = SLambda (\x -> singFun11 (f x))
+
+type SingFunction13 f = forall t. Sing t -> SingFunction12 (f @@ t)
+singFun13 :: SingFunction13 f -> Sing f
+singFun13 f = SLambda (\x -> singFun12 (f x))
+
+type SingFunction14 f = forall t. Sing t -> SingFunction13 (f @@ t)
+singFun14 :: SingFunction14 f -> Sing f
+singFun14 f = SLambda (\x -> singFun13 (f x))
+
+type SingFunction15 f = forall t. Sing t -> SingFunction14 (f @@ t)
+singFun15 :: SingFunction15 f -> Sing f
+singFun15 f = SLambda (\x -> singFun14 (f x))
+
+type SingFunction16 f = forall t. Sing t -> SingFunction15 (f @@ t)
+singFun16 :: SingFunction16 f -> Sing f
+singFun16 f = SLambda (\x -> singFun15 (f x))
+
+type SingFunction17 f = forall t. Sing t -> SingFunction16 (f @@ t)
+singFun17 :: SingFunction17 f -> Sing f
+singFun17 f = SLambda (\x -> singFun16 (f x))
+
+type SingFunction18 f = forall t. Sing t -> SingFunction17 (f @@ t)
+singFun18 :: SingFunction18 f -> Sing f
+singFun18 f = SLambda (\x -> singFun17 (f x))
+
+type SingFunction19 f = forall t. Sing t -> SingFunction18 (f @@ t)
+singFun19 :: SingFunction19 f -> Sing f
+singFun19 f = SLambda (\x -> singFun18 (f x))
+
+type SingFunction20 f = forall t. Sing t -> SingFunction19 (f @@ t)
+singFun20 :: SingFunction20 f -> Sing f
+singFun20 f = SLambda (\x -> singFun19 (f x))
 
 ----------------------------------------------------------------------
 ---- Convenience -----------------------------------------------------
