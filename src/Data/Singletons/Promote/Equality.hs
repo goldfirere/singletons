@@ -14,7 +14,6 @@ module Data.Singletons.Promote.Equality where
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
-import Data.Singletons.Promote.Util
 import Data.Singletons.Util
 import Control.Monad
 

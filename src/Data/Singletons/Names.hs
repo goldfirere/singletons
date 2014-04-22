@@ -11,6 +11,7 @@ Defining names and maniuplations on names for use in promotion and singling.
 module Data.Singletons.Names where
 
 import Data.Singletons
+import Data.Singletons.Hidden
 import Data.Singletons.Types
 import Data.Singletons.Decide
 import Language.Haskell.TH.Syntax
@@ -29,7 +30,7 @@ anyTypeName, boolName, andName, tyEqName, repName,
   someSingTypeName, someSingDataName,
   sListName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
-  equalityName :: Name
+  equalityName, applySingName, suppressClassName, suppressMethodName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
@@ -74,6 +75,9 @@ provedName = 'Proved
 disprovedName = 'Disproved
 reflName = 'Refl
 equalityName = ''(~)
+applySingName = 'applySing
+suppressClassName = ''SuppressUnusedWarnings
+suppressMethodName = 'suppressUnusedWarnings
 
 mkTupleName :: Int -> Name
 mkTupleName n = mkName $ "STuple" ++ (show n)
@@ -119,6 +123,59 @@ promoteTySym name sat
       then mkName (capped ++ (replicate (sat + 1) '$'))
       else mkName (capped ++ "Sym" ++ (show sat))
 
+mkTyName :: Quasi q => Name -> q Name
+mkTyName tmName = do
+  let nameStr  = nameBase tmName
+      symbolic = not (isHsLetter (head nameStr))
+  qNewName (if symbolic then "ty" else nameStr)
+
+falseTySym :: DType
+falseTySym = promoteValRhs falseName
+
+trueTySym :: DType
+trueTySym = promoteValRhs trueName
+
+boolKi :: DKind
+boolKi = DConK boolName []
+
+andTySym :: DType
+andTySym = promoteValRhs andName
+
+apply :: DType -> DType -> DType
+apply t1 t2 = DAppT (DAppT (DConT applyName) t1) t2
+
+-- make a Name with an unknown kind into a DTyVarBndr.
+-- Uses a fresh kind variable for GHC 7.6.3 and PlainTV for 7.8+
+-- because 7.8+ has kind inference
+inferKindTV :: Quasi q => Name -> q DTyVarBndr
+inferKindTV n = do
+#if __GLASGOW_HASKELL__ < 707
+  ki <- fmap DVarK $ qNewName "k"
+  return $ DKindedTV n _ki
+#else
+  return $ DPlainTV n
+#endif
+
+inferMaybeKindTV :: Quasi q => Name -> Maybe DKind -> q DTyVarBndr
+inferMaybeKindTV n Nothing =
+#if __GLASGOW_HASKELL__ < 707
+  do k <- qNewName "k"
+     return $ DKindedTV n (DVarK k)
+#else
+  return $ DPlainTV n
+#endif
+inferMaybeKindTV n (Just k) = return $ DKindedTV n k
+
+-- similar to above, this is for annotating the result kind of
+-- a closed type family. Makes it polymorphic in 7.6.3, inferred
+-- in 7.8
+unknownResult :: DKind -> Maybe DKind
+#if __GLASGOW_HASKELL__ < 707
+unknownResult = Just
+#else
+unknownResult = const Nothing
+#endif
+
 -- Singletons
 
 singDataConName :: Name -> Name
@@ -146,8 +203,17 @@ singValName n
   | head (nameBase n) == '_' = (prefixLCName "_s" "%") $ n
   | otherwise                = (prefixLCName "s" "%") $ upcase n
 
-mkTyName :: Quasi q => Name -> q Name
-mkTyName tmName = do
-  let nameStr  = nameBase tmName
-      symbolic = not (isHsLetter (head nameStr))
-  qNewName (if symbolic then "ty" else nameStr)
+kindParam :: DKind -> DType
+kindParam k = DSigT (DConT kProxyDataName) (DConK kProxyTypeName [k])
+
+proxyFor :: DType -> DExp
+proxyFor ty = DSigE (DConE proxyDataName) (DAppT (DConT proxyTypeName) ty)
+
+singFamily :: DType
+singFamily = DConT singFamilyName
+
+singKindConstraint :: DKind -> DPred
+singKindConstraint k = DAppPr (DConPr singKindClassName) (kindParam k)
+
+demote :: DType
+demote = DConT demoteRepName

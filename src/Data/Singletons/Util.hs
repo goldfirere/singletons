@@ -16,8 +16,7 @@ Users of the package should not need to consult this file.
 module Data.Singletons.Util where
 
 import Prelude hiding ( exp, foldl, concat, mapM, any )
-import Language.Haskell.TH hiding ( Q )
-import Language.Haskell.TH.Syntax ( Quasi(..) )
+import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Char
 import Control.Monad hiding ( mapM )
@@ -171,11 +170,36 @@ extractTvbName (DPlainTV n) = n
 extractTvbName (DKindedTV n _) = n
 
 -- use the kind provided, or make a fresh kind variable
-inferKind :: Quasi q => Maybe DKind -> q DKind
-inferKind (Just k) = return k
+inferKind :: Quasi q => Maybe DKind -> q (Maybe DKind)
+inferKind (Just k) = return $ Just k
+#if __GLASGOW_HASKELL__ < 707
 inferKind Nothing = do
   newK <- qNewName "k"
-  return $ DVarK newK
+  return $ Just $ DVarK newK
+#else
+inferKind Nothing = return Nothing
+#endif
+
+-- Get argument kinds from an arrow kind. Removing ForallT is an
+-- important preprocessing step required by promoteType.
+unravel :: DType -> ([DPred], [DType])
+unravel (DForallT _ cxt ty) =
+  let (cxt', tys) = unravel ty in
+  (cxt ++ cxt', tys)
+unravel (DAppT (DAppT DArrowT t1) t2) =
+  let (cxt, tys) = unravel t2 in
+  (cxt, t1 : tys)
+unravel t = ([], [t])
+
+-- Reconstruct arrow kind from the list of kinds
+ravel :: [DType] -> DType
+ravel []    = error "Internal error: raveling nil"
+ravel [k]   = k
+ravel (h:t) = DAppT (DAppT DArrowT h) (ravel t)
+
+-- count the number of arguments in a type
+countArgs :: DType -> Int
+countArgs ty = length (snd $ unravel ty) - 1
 
 -- apply a type to a list of types
 foldType :: DType -> [DType] -> DType
@@ -288,6 +312,9 @@ concatMapM fn list = do
 -- make a one-element list
 listify :: a -> [a]
 listify = (:[])
+
+fstOf3 :: (a,b,c) -> a
+fstOf3 (a,_,_) = a
 
 liftSnd :: (a -> b) -> (c, a) -> (c, b)
 liftSnd f (c, a) = (c, f a)

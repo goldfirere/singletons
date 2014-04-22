@@ -14,6 +14,5 @@ import Language.Haskell.TH.Desugar.Sweeten
 import Data.Singletons.Util
 import Data.Singletons.Names
 import Data.Singletons.Single.Monad
-import Data.Singletons.Single.Util
 import Control.Monad
 

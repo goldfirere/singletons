@@ -17,13 +17,11 @@ import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.Sweeten
 import Data.Singletons.Names
 import Data.Singletons.Promote.Monad
-import Data.Singletons.Promote.Util
 import Data.Singletons.Promote.Equality
 import Data.Singletons.Util
 import Data.Singletons.LetDecEnv
 import Prelude hiding (exp)
 import Control.Monad
-import Control.Monad.Trans
 import Control.Applicative
 import Data.Maybe
 import qualified Data.Map.Strict as Map
@@ -128,12 +126,16 @@ promoteDecs decls = do
   checkForRepInDecls decls
   -- See Note [Promoting declarations in two stages]
   let (let_decs, other_decs) = partitionLetDecs decls
-  rec_selectors <- concatMapM extract_rec_selectors other_decs
-
+  
     -- promoteLetDecs returns LetBinds, which we don't need at top level
-  _ <- promoteLetDecs noPrefix (rec_selectors ++ let_decs)
-  prom_decs <- concatMapM promoteDec other_decs
-  return prom_decs
+  _ <- promoteLetDecs noPrefix let_decs
+  promoteNonLetDecs other_decs
+
+promoteNonLetDecs :: [DDec] -> PrM [DDec]
+promoteNonLetDecs other_decs = do
+  rec_selectors <- concatMapM extract_rec_selectors other_decs
+  _ <- promoteLetDecs noPrefix rec_selectors
+  concatMapM promoteDec other_decs
   where
     extract_rec_selectors :: DDec -> PrM [DLetDec]
     extract_rec_selectors (DDataD _nd _cxt data_name tvbs cons _derivings) =
@@ -142,10 +144,10 @@ promoteDecs decls = do
       in
       concatMapM (getRecordSelectors arg_ty) cons
     extract_rec_selectors _ = return []
-      
-
+    
+  
 promoteLetDecs :: String -- prefix to use on all new definitions
-               -> [DLetDec] -> PrM [LetBind]
+               -> [DLetDec] -> PrM ([LetBind], ALetDecEnv)
 promoteLetDecs prefix decls = do
   let_dec_env <- buildLetDecEnv decls
   all_locals <- allLocals
@@ -153,8 +155,9 @@ promoteLetDecs prefix decls = do
               | name <- Map.keys $ lde_defns let_dec_env
               , let proName = promoteValNameLhsPrefix prefix name
                     sym = promoteTySym proName (length all_locals) ]
-  emitDecsM $ letBind binds $ promoteLetDecEnv prefix let_dec_env
-  return binds
+  (decs, let_dec_env') <- letBind binds $ promoteLetDecEnv prefix let_dec_env
+  emitDecs decs 
+  return (binds, let_dec_env' { lde_proms = Map.fromList binds })
 
 noPrefix :: String
 noPrefix = ""
@@ -228,53 +231,70 @@ promoteDec (DClosedTypeFamilyD _name _tvs _mkind _eqns) =
 promoteDec (DRoleAnnotD _name _roles) =
   return [] -- silently ignore role annotations, as they're harmless here
 
-promoteLetDecEnv :: String -> LetDecEnv -> PrM [DDec]
+promoteLetDecEnv :: String -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
                                    , lde_types = type_env
                                    , lde_infix = infix_decls }) = do
-  liftM2 (++)
-    (return $ catMaybes $ map (uncurry prom_infix_decl) infix_decls)
-    (mapM (uncurry prom_let_dec) (Map.toList value_env))
+  let infix_decls'  = catMaybes $ map (uncurry prom_infix_decl) infix_decls
+      (names, rhss) = unzip $ Map.toList value_env
+  (decs, ann_rhss) <- fmap unzip $ zipWithM prom_let_dec names rhss
+  let let_dec_env' = LetDecEnv { lde_defns = Map.fromList $ zip names ann_rhss
+                               , lde_types = type_env
+                               , lde_infix = infix_decls
+                               , lde_proms = Map.empty }  -- filled in promoteLetDecs
+  return (infix_decls' ++ decs, let_dec_env')
   where
     prom_infix_decl :: Fixity -> Name -> Maybe DDec
     prom_infix_decl fixity name
       | isUpcase name = Nothing   -- no need to promote the decl
       | otherwise     = Just $ DLetDec $ DInfixD fixity (promoteValNameLhs name)
     
-    prom_let_dec :: Name -> LetDecRHS -> PrM DDec
-    prom_let_dec name (Value exp) = do
+    prom_let_dec :: Name -> ULetDecRHS -> PrM (DDec, ALetDecRHS)
+    prom_let_dec name (UValue exp) = do
       all_locals <- allLocals
-      exp' <- promoteExp exp
+      (exp', ann_exp) <- promoteExp exp
       let proName = promote_lhs name
-      (_, kinds) <- mapAndUnzipM inferKindTV all_locals
-      (res_kind, mk_rhs)
+      (res_kind, mk_rhs, num_arrows)
         <- case Map.lookup name type_env of
-             Nothing -> (, id) <$> (fmap DVarK $ qNewName "kresult")
+             Nothing -> return (Nothing, id, 0)
              Just ty -> do
                ki <- promoteType ty
-               return (ki, (`DSigT` ki))
-      emitDecsM $ defunctionalize proName kinds res_kind
-      return (DTySynD proName (map DPlainTV all_locals) (mk_rhs exp'))
-    prom_let_dec name (Function clauses) =
-      case Map.lookup name type_env of
+               return (Just ki, (`DSigT` ki), countArgs ty)
+      emitDecsM $ defunctionalize proName (map (const Nothing) all_locals) res_kind
+      return ( DTySynD proName (map DPlainTV all_locals) (mk_rhs exp')
+             , AValue num_arrows ann_exp )
+    prom_let_dec name (UFunction clauses) = do
+      numArgs <- count_args clauses
+      (m_argKs, m_resK, ty_num_args) <- case Map.lookup name type_env of
+#if __GLASGOW_HASKELL__ < 707
         Nothing -> fail ("No type signature for function \"" ++
-                         (nameBase name) ++ "\". Cannot promote.")
+                         (nameBase name) ++ "\". Cannot promote in GHC 7.6.3.\n" ++
+                         "Either add a type signature or upgrade GHC.")
+#else
+        Nothing -> return (replicate numArgs Nothing, Nothing, numArgs)
+#endif
         Just ty -> do
-            -- promoteType turns arrows into TyFun. So, we unravel first to
-            -- avoid this behavior. Note the use of ravelTyFun in resultK
-            -- to make the return kind work out
-          kis <- mapM promoteType (unravel ty)
-          numArgs <- count_args clauses
-          let proName = promote_lhs name
-              (argKs, resultKs) = splitAt numArgs kis
+          -- promoteType turns arrows into TyFun. So, we unravel first to
+          -- avoid this behavior. Note the use of ravelTyFun in resultK
+          -- to make the return kind work out
+          kis <- mapM promoteType (snd $ unravel ty)
+          let (argKs, resultKs) = splitAt numArgs kis
               resultK = ravelTyFun resultKs
-          all_locals <- allLocals
-          (local_tvbs, local_kis) <- mapAndUnzipM inferKindTV all_locals
-          tyvarNames <- mapM (const $ qNewName "a") argKs
-          let all_args = local_tvbs ++ zipWith DKindedTV tyvarNames argKs
-          emitDecsM $ defunctionalize proName (local_kis ++ argKs) resultK
-          eqns <- mapM promoteClause clauses
-          return (DClosedTypeFamilyD proName all_args (Just resultK) eqns)
+          return (map Just argKs, Just resultK, countArgs ty)
+    
+      let proName = promote_lhs name
+      all_locals <- allLocals
+      emitDecsM $ defunctionalize proName
+                    (map (const Nothing) all_locals ++ m_argKs) m_resK
+      local_tvbs <- mapM inferKindTV all_locals
+      tyvarNames <- mapM (const $ qNewName "a") m_argKs
+      (eqns, ann_clauses) <- mapAndUnzipM promoteClause clauses
+      prom_fun <- lookupVarE name
+      args <- zipWithM inferMaybeKindTV tyvarNames m_argKs
+      let all_args = local_tvbs ++ args
+      resultK <- inferKind m_resK
+      return ( DClosedTypeFamilyD proName all_args resultK eqns
+             , AFunction prom_fun ty_num_args ann_clauses )
 
     promote_lhs = promoteValNameLhsPrefix prefix
 
@@ -310,85 +330,32 @@ promoteType = go []
       = return $ DConK (tupleTypeName n) args
       | otherwise
       = return $ DConK name args
-    go [k1, k2] DArrowT = return $ addStar (buildTyFun k1 k2)
+    go [k1, k2] DArrowT = return $ addStar (DConK tyFunName [k1, k2])
     go _ (DLitT _) = fail "Cannot promote a type-level literal"
 
     go args     hd = fail $ "Illegal Haskell construct encountered:\n" ++
                             "headed by: " ++ show hd ++ "\n" ++
                             "applied to: " ++ show args
 
-{-
--- Takes a name of a function together with its arity and
--- converts all normal applications of that variable into usage of
--- Apply type family. Returns a type and a Bool that says whether
--- Apply was introduced or not. This extra flag is used when
--- singletonizing type signature.
-
--- The algorithm here is actually a bit tricky because it has to deal
--- with cases when function has arity larger than 1. For example this
--- body:
---
---   f a b
---
--- must be promoted to
---
---  Apply (Apply f a) b
---
--- Algorithm can be viewed as having two passes:
---
---  1. A top-down pass recurses to the bottom of abstract syntax tree
---     and inserts first application of Apply whenever it encounters a
---     variable that represents a function. So in the above example
---     upon reaching application (f a) it would generate (Apply f a)
---     and recurse on b. This is done by the second case of "go"
---     helper function.
---
---  2. Inserting Apply triggers a bottom-up pass that adds additional
---     Applys if required by function arity. Second case of "go"
---     helper function inspects third parameter returned by recursive
---     call to go for ty1. If it is greater than 0 it means we have to
---     add additional Apply.
-introduceApply :: (Name, Int) -> DType -> (DType, Bool)
-introduceApply funData' typeT =
-    case go funData' typeT of
-      (t, f, _ ) -> (t, f)
-    where
-      go funData (DForallT tyvars ctx ty) =
-          let (ty', isApplyAdded, n) = go funData ty
-          in (DForallT tyvars ctx ty', isApplyAdded, n)
-      go (funName, funArity) (DAppT (DVarT name) ty) =
-          let (ty', isApplyAdded, _) = go (funName, funArity) ty
-          in if funName == name -- if we found our type variable then use Apply
-             then (DAppT (DAppT (DConT applyName) (DVarT name)) ty'
-                  , True, funArity - 1)
-             else (DAppT                        (DVarT name)  ty'
-                  , isApplyAdded, 0)
-      go funData (DAppT ty1 ty2) =
-          let (ty1', isApplyAdded1, n) = go funData ty1
-              (ty2', isApplyAdded2, _) = go funData ty2
-          in if n /= 0 -- do we need to insert more Applies because arity > 1?
-             then (DAppT (DAppT (DConT applyName) ty1') ty2', True  , n - 1)
-             else (DAppT ty1' ty2', isApplyAdded1 || isApplyAdded2, n    )
-      go _ ty = (ty, False, 0)
--}
-
-promoteClause :: DClause -> PrM DTySynEqn
+promoteClause :: DClause -> PrM (DTySynEqn, ADClause)
 promoteClause (DClause pats exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
   (types, new_vars) <- evalForPair $ mapM promotePat pats
-  ty <- lambdaBind new_vars $ promoteExp exp
+  (ty, ann_exp) <- lambdaBind new_vars $ promoteExp exp
   all_locals <- allLocals   -- these are bound *outside* of this clause
-  return $ DTySynEqn (map DVarT all_locals ++ types) ty
+  return ( DTySynEqn (map DVarT all_locals ++ types) ty
+         , ADClause new_vars pats ann_exp )
 
-promoteMatch :: DMatch -> PrM DTySynEqn
-promoteMatch (DMatch pat exp) = do
+promoteMatch :: DType -> DMatch -> PrM (DTySynEqn, ADMatch)
+promoteMatch prom_case (DMatch pat exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
   (ty, new_vars) <- evalForPair $ promotePat pat
-  rhs <- lambdaBind new_vars $ promoteExp exp
+  (rhs, ann_exp) <- lambdaBind new_vars $ promoteExp exp
   all_locals <- allLocals
-  return $ DTySynEqn (map DVarT all_locals ++ [ty]) rhs
+  return $ ( DTySynEqn (map DVarT all_locals ++ [ty]) rhs
+           , ADMatch new_vars prom_case pat ann_exp)
 
 -- promotes a term pattern into a type pattern, accumulating bound variable names
 promotePat :: DPat -> QWithAux VarPromotions PrM DType
@@ -415,22 +382,25 @@ promotePat (DBangPa pat) = do
 promotePat DWildPa = do
   name <- qNewName "z"
   return $ DVarT name
-promotePat (DSigPa pat ty) = DSigT <$> promotePat pat <*> lift (promoteType ty)
 
-promoteExp :: DExp -> PrM DType
-promoteExp (DVarE name) = lookupVarE name
-promoteExp (DConE name) = return $ promoteValRhs name
-promoteExp (DLitE lit)  = promoteLit lit
-promoteExp (DAppE exp1 exp2) = apply <$> promoteExp exp1 <*> promoteExp exp2
+promoteExp :: DExp -> PrM (DType, ADExp)
+promoteExp (DVarE name) = fmap (, ADVarE name) $ lookupVarE name
+promoteExp (DConE name) = return $ (promoteValRhs name, ADConE name)
+promoteExp (DLitE lit)  = fmap (, ADLitE lit) $ promoteLit lit
+promoteExp (DAppE exp1 exp2) = do
+  (exp1', ann_exp1) <- promoteExp exp1
+  (exp2', ann_exp2) <- promoteExp exp2
+  return (apply exp1' exp2', ADAppE ann_exp1 ann_exp2)
 promoteExp (DLamE names exp) = do
   lambdaName <- newUniqueName "Lambda"
   resultKVarName  <- qNewName "r"
   tyNames <- mapM mkTyName names
-  rhs <- lambdaBind (zip names tyNames) $ promoteExp exp
+  let var_proms = zip names tyNames
+  (rhs, ann_exp) <- lambdaBind var_proms $ promoteExp exp
   tyFamLamTypes <- mapM (const $ qNewName "t") names
   all_locals <- allLocals
   let all_args = all_locals ++ tyFamLamTypes
-  (tvbs, kinds) <- mapAndUnzipM inferKindTV all_args
+  tvbs <- mapM inferKindTV all_args
   let resultK       = DVarK resultKVarName
       m_resultK     = unknownResult resultK
   emitDecs [DClosedTypeFamilyD lambdaName
@@ -438,24 +408,32 @@ promoteExp (DLamE names exp) = do
                                m_resultK
                                [DTySynEqn (map DVarT (all_locals ++ tyNames))
                                           rhs]]
-  emitDecsM $ defunctionalize lambdaName kinds resultK
-  return $ foldl apply (DConT (promoteTySym lambdaName 0)) (map DVarT all_locals)
+  emitDecsM $ defunctionalize lambdaName (map (const Nothing) all_args) Nothing
+  let promLambda = foldl apply (DConT (promoteTySym lambdaName 0))
+                               (map DVarT all_locals)
+  return (promLambda, ADLamE var_proms promLambda names ann_exp)
 promoteExp (DCaseE exp matches) = do
   caseTFName <- newUniqueName "Case"
-  exp'       <- promoteExp exp
-  eqns       <- mapM promoteMatch matches
-  tyvarName  <- qNewName "t"
   all_locals <- allLocals
+  let prom_case = foldType (DConT caseTFName) (map DVarT all_locals)
+  (exp', ann_exp)     <- promoteExp exp
+  (eqns, ann_matches) <- mapAndUnzipM (promoteMatch prom_case) matches
+  tyvarName  <- qNewName "t"
   let all_args = all_locals ++ [tyvarName]
-  (tvbs, _)  <- mapAndUnzipM inferKindTV all_args
+  tvbs  <- mapM inferKindTV all_args
   resultK    <- fmap DVarK $ qNewName "r"
   emitDecs [DClosedTypeFamilyD caseTFName tvbs (unknownResult resultK) eqns]
-  return $ foldType (DConT caseTFName) (map DVarT all_locals ++ [exp'])
+  return ( prom_case `DAppT` exp'
+         , ADCaseE ann_exp ann_matches )
 promoteExp (DLetE decs exp) = do
   letPrefix <- fmap nameBase $ newUniqueName "Let"
-  binds <- promoteLetDecs letPrefix decs
-  letBind binds $ promoteExp exp
-promoteExp (DSigE exp ty) = DSigT <$> promoteExp exp <*> promoteType ty
+  (binds, ann_env) <- promoteLetDecs letPrefix decs
+  (exp', ann_exp) <- letBind binds $ promoteExp exp
+  return (exp', ADLetE ann_env ann_exp)
+promoteExp (DSigE exp ty) = do
+  (exp', ann_exp) <- promoteExp exp
+  ty' <- promoteType ty
+  return (DSigT exp' ty', ADSigE ann_exp ty)
 
 promoteLit :: Monad m => Lit -> m DType
 promoteLit (IntegerL n)
@@ -483,14 +461,13 @@ buildDefunSyms :: DDec -> PrM [DDec]
 buildDefunSyms (DDataD _new_or_data _cxt tyName tvbs ctors _derivings) =
   buildDefunSymsDataD tyName tvbs ctors
 buildDefunSyms (DClosedTypeFamilyD name tvbs returnK_maybe _) = do
-  arg_kinds <- mapM (inferKind . extractTvbKind) tvbs
-  res_kind  <- inferKind returnK_maybe
-  defunctionalize name arg_kinds res_kind
+  let arg_m_kinds = map extractTvbKind tvbs
+  defunctionalize name arg_m_kinds returnK_maybe
 buildDefunSyms (DFamilyD TypeFam name tvbs returnK_maybe) = do
   let arg_kinds = map (default_to_star . extractTvbKind) tvbs
       res_kind  = default_to_star returnK_maybe
-      default_to_star Nothing  = DStarK
-      default_to_star (Just k) = k
+      default_to_star Nothing  = Just DStarK
+      default_to_star (Just k) = Just k
   defunctionalize name arg_kinds res_kind
 buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
                           "type families and data declarations"
@@ -505,7 +482,7 @@ buildDefunSymsDataD tyName tvbs ctors = do
     promoteCtor promotedKind ctor = do
       let (name, arg_tys) = extractNameTypes ctor
       arg_kis <- mapM promoteType arg_tys
-      defunctionalize name arg_kis promotedKind
+      defunctionalize name (map Just arg_kis) (Just promotedKind)
 
 -- Generate data declarations and apply instances
 -- required for defunctionalization.
@@ -526,40 +503,75 @@ buildDefunSymsDataD tyName tvbs ctors = do
 --
 -- defunctionalize takes list of kinds of the type family parameters and
 -- kind of the result.
-defunctionalize :: Name -> [DKind] -> DKind -> PrM [DDec]
-defunctionalize name as res = do
-  let num_args = length as
+defunctionalize :: Name -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
+defunctionalize name m_arg_kinds m_res_kind = do
+  let num_args = length m_arg_kinds
       sat_name = promoteTySym name num_args
   tvbNames <- replicateM num_args $ qNewName "t"
-     -- use kind inference on the saturated definition. This causes no harm
-     -- in 7.6.3 but is crucial in 7.8, when sometimes the args are too polymorphic
-  let sat_dec = DTySynD sat_name (map DPlainTV tvbNames)
+  let sat_dec = DTySynD sat_name (zipWith mk_tvb tvbNames m_arg_kinds)
                         (foldType (DConT name) (map DVarT tvbNames))
-  other_decs <- go (num_args - 1) (reverse as) res
+  other_decs <- go (num_args - 1) (reverse m_arg_kinds) m_res_kind
   return $ sat_dec : other_decs
   where
-    go :: Int -> [DKind] -> DKind -> PrM [DDec]
-    go _ [] _ = return []
-    go n (arg : args) result = do
-      decls <- go (n - 1) args (addStar (buildTyFun arg result))
-      tvbNames@(fst_name : rest_names) <- replicateM (n + 1) (qNewName "l")
-      let data_name = promoteTySym name n
-          tyfun     = buildTyFun arg result
-          params    = zipWith DKindedTV tvbNames (reverse (tyfun : args))
-          data_decl = DDataD Data [] data_name params [] []
-          app_eqn   = DTySynEqn [ foldType (DConT data_name)
-                                           (map DVarT rest_names)
-                                , DVarT fst_name ]
-                                (foldType (DConT (promoteTySym name (n+1)))
-                                          (map DVarT (rest_names ++ [fst_name])))
-          app_decl  = DTySynInstD applyName app_eqn
-      return $ data_decl : app_decl : decls
+    mk_tvb :: Name -> Maybe DKind -> DTyVarBndr
+    mk_tvb tvb_name Nothing  = DPlainTV tvb_name
+    mk_tvb tvb_name (Just k) = DKindedTV tvb_name k
     
+    go :: Int -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
+    go _ [] _ = return []
+    go n (m_arg : m_args) m_result = do
+      decls <- go (n - 1) m_args (addStar_maybe (buildTyFun_maybe m_arg m_result))
+      fst_name : rest_names <- replicateM (n + 1) (qNewName "l")
+      extra_name <- qNewName "arg"
+      let data_name   = promoteTySym name n
+          next_name   = promoteTySym name (n+1)
+          con_name    = mkName $ nameBase (data_name) ++ "KindInference"
+          m_tyfun     = buildTyFun_maybe m_arg m_result
+          arg_params  = zipWith mk_tvb rest_names (reverse m_args)
+          tyfun_param = mk_tvb fst_name m_tyfun
+          arg_names   = map extractTvbName arg_params
+          params      = arg_params ++ [tyfun_param]
+          con_eq_ct   = foldl DAppPr (DConPr equalityName)
+                          [ foldType (DConT data_name) (map DVarT arg_names)
+                            `apply`
+                            (DVarT extra_name)
+                          , foldType (DConT next_name) (map DVarT (arg_names ++ [extra_name]))
+                          ]
+          con_decl    = DCon [DPlainTV extra_name]
+                             [con_eq_ct]
+                             con_name
+                             (DNormalC [( NotStrict
+                                       , DConT proxyTypeName `DAppT`
+                                         DVarT extra_name )])
+          data_decl   = DDataD Data [] data_name params [con_decl] []
+          app_eqn     = DTySynEqn [ foldType (DConT data_name)
+                                             (map DVarT rest_names)
+                                  , DVarT fst_name ]
+                                  (foldType (DConT (promoteTySym name (n+1)))
+                                            (map DVarT (rest_names ++ [fst_name])))
+          app_decl    = DTySynInstD applyName app_eqn
+          suppress    = DInstanceD [] (DConT suppressClassName `DAppT` DConT data_name)
+                          [DLetDec $ DFunD suppressMethodName
+                                           [DClause [DWildPa]
+                                                    ((DVarE 'snd) `DAppE`
+                                                     mkTupleDExp [DConE con_name,
+                                                                  mkTupleDExp []])]]
+      return $ suppress : data_decl : app_decl : decls
+
 buildTyFun :: DKind -> DKind -> DKind
 buildTyFun k1 k2 = DConK tyFunName [k1, k2]
+    
+buildTyFun_maybe :: Maybe DKind -> Maybe DKind -> Maybe DKind
+buildTyFun_maybe m_k1 m_k2 = do
+  k1 <- m_k1
+  k2 <- m_k2
+  return $ DConK tyFunName [k1, k2]
 
 addStar :: DKind -> DKind
 addStar t = DArrowK t DStarK
+
+addStar_maybe :: Maybe DKind -> Maybe DKind
+addStar_maybe t = DArrowK <$> t <*> pure DStarK
 
 -- Counts the arity of type level function represented with TyFun constructors
 -- TODO: this and isTuFun looks like a good place to use PatternSynonyms
@@ -580,7 +592,7 @@ isTyFun _ = False
 ravelTyFun :: [DKind] -> DKind
 ravelTyFun []    = error "Internal error: TyFun raveling nil"
 ravelTyFun [k]   = k
-ravelTyFun kinds = go tailK (buildTyFun k1 k2)
+ravelTyFun kinds = go tailK (buildTyFun k2 k1)
     where (k1 : k2 : tailK) = reverse kinds
           go []     acc = addStar acc
           go (k:ks) acc = go ks (buildTyFun k (addStar acc))

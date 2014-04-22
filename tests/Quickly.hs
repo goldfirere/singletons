@@ -28,7 +28,7 @@ import Singletons.Contains
 import Singletons.DataValues
 import Singletons.Empty
 import Singletons.EqInstances
--- import Singletons.HigherOrder
+import Singletons.HigherOrder
 import Singletons.Maybe
 import Singletons.Nat
 import Singletons.Operators

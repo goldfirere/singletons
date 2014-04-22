@@ -12,7 +12,7 @@ This file is a great way to understand the singleton encoding better.
              FlexibleInstances, FlexibleContexts, UndecidableInstances,
              RankNTypes, TypeOperators, MultiParamTypeClasses,
              FunctionalDependencies, ScopedTypeVariables, CPP,
-             LambdaCase, TemplateHaskell
+             LambdaCase, TemplateHaskell, EmptyCase
  #-}
 
 module ByHand where
@@ -27,6 +27,10 @@ import Data.Type.Equality hiding (apply)
 import Data.Proxy
 import Data.Coerce
 #endif
+
+import Data.Singletons
+import Data.Singletons.Decide
+import GHC.Exts ( Any )
 
 -----------------------------------
 -- Original ADTs ------------------
@@ -54,7 +58,6 @@ type instance True :&& False = False
 type instance True :&& True = True
 #endif
 
-
 data Maybe :: * -> * where
   Nothing :: Maybe a
   Just :: a -> Maybe a
@@ -70,6 +73,7 @@ data Either :: * -> * -> * where
   Left :: a -> Either a b
   Right :: b -> Either a b
 
+
 -----------------------------------
 -- One-time definitions -----------
 -----------------------------------
@@ -79,127 +83,10 @@ class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
   (%:==) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :== b)
   -- omitting definition of %:/=
 
--- A way to store instances of SingRep at runtime
-data SingInstance :: k -> * where
-  SingInstance :: SingI a => SingInstance a
-
--- A "kind class" marking those kinds that are considered in our
--- universe. Any type of a kind that has a SingKind instance can
--- be made into a singleton.
-class (kparam ~ 'KProxy) => SingKind (kparam :: KProxy k) where
-  type DemoteRep kparam :: *
-  fromSing :: Sing (a :: k) -> DemoteRep kparam
-  toSing :: DemoteRep kparam -> SomeSing kparam
-
--- The Sing family
-data family Sing (a :: k)
-
--- Implicit singletons
-class SingI (a :: k) where
-  sing :: Sing a
-
--- Convenient abbreviations
-type KindOf (a :: k) = ('KProxy :: KProxy k)
-type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)
-
--- Wraps up a singleton
-data SomeSing :: KProxy k -> * where
-  SomeSing :: Sing (a :: k) -> SomeSing ('KProxy :: KProxy k)
-
-#if __GLASGOW_HASKELL__ < 707
-type family If (a :: Bool) (b :: k) (c :: k) :: k
-type instance If True b c = b
-type instance If False b c = c
-#endif
-
 sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
 sIf STrue b _ = b
 sIf SFalse _ c = c
-
-withSomeSing :: SingKind ('KProxy :: KProxy k)
-             => DemoteRep ('KProxy :: KProxy k)
-             -> (forall (a :: k). Sing a -> r)
-             -> r
-withSomeSing x f =
-  case toSing x of
-    SomeSing x' -> f x'
-
-newtype DontInstantiate a = MkDI { unDI :: SingI a => SingInstance a }
-
-singInstance :: forall (a :: k). Sing a -> SingInstance a
-singInstance s = with_sing_i s SingInstance
-  where
-    with_sing_i :: Sing a -> (SingI a => SingInstance a) -> SingInstance a
-    with_sing_i s' si = unsafeCoerce (MkDI si) s'
-
-withSingI :: Sing n -> (SingI n => r) -> r
-withSingI sn r =
-  case singInstance sn of
-    SingInstance -> r
-
-class (kparam ~ 'KProxy) => SDecide (kparam :: KProxy k) where
-  (%~) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Decision (a :~: b)
-
-type Refuted a = (a -> Void)
-
-data Decision a = Proved a
-                | Disproved (Refuted a)
-
-newtype Void = Void Void
-
--- defunctionalization symbols
-data TyFun :: * -> * -> *
-type family (f :: TyFun k1 k2 -> *) @@ (x :: k1) :: k2
-infixl 9 @@
-
-type family TyCon (x :: k) :: TyFun k1 k2 -> * where
-  TyCon (x :: k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8) = TyCon7 x
-  TyCon (x :: k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7)       = TyCon6 x
-  TyCon (x :: k1 -> k2 -> k3 -> k4 -> k5 -> k6)             = TyCon5 x
-  TyCon (x :: k1 -> k2 -> k3 -> k4 -> k5)                   = TyCon4 x
-  TyCon (x :: k1 -> k2 -> k3 -> k4)                         = TyCon3 x
-  TyCon (x :: k1 -> k2 -> k3)                               = TyCon2 x
-  TyCon (x :: k1 -> k2)                                     = TyCon1 x
-
-data TyCon1 :: (k1 -> k2) -> TyFun k1 k2 -> *
-data TyCon2 :: (k1 -> k2 -> k3) -> TyFun k1 (TyFun k2 k3 -> *) -> *
-data TyCon3 :: (k1 -> k2 -> k3 -> k4) -> TyFun k1 (TyFun k2 (TyFun k3 k4 -> *) -> *) -> *
-data TyCon4 :: (k1 -> k2 -> k3 -> k4 -> k5) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 k5 -> *) -> *) -> *) -> *
-data TyCon5 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 k6 -> *) -> *) -> *) -> *) -> *
-data TyCon6 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 k7 -> *) -> *) -> *) -> *) -> *) -> *
-data TyCon7 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 (TyFun k7 k8 -> *) -> *) -> *) -> *) -> *) -> *) -> *
-
-type instance (TyCon1 f) @@ x = f x
-type instance (TyCon2 f) @@ x = TyCon1 (f x)
-type instance (TyCon3 f) @@ x = TyCon2 (f x)
-type instance (TyCon4 f) @@ x = TyCon3 (f x)
-type instance (TyCon5 f) @@ x = TyCon4 (f x)
-type instance (TyCon6 f) @@ x = TyCon5 (f x)
-type instance (TyCon7 f) @@ x = TyCon6 (f x)
-
--- Sing instance for functions
-newtype instance Sing (f :: TyFun k1 k2 -> *) =
-  WrapArrow { apply :: forall t. Sing t -> Sing (f @@ t) }
-
-{-
-wrapDataCon :: forall (f :: k1 -> k2 -> *). (forall (t :: k1). Sing t -> Sing (f t)) -> Sing (TyCon f :: TyFun k1 (TyFun k2 * -> *) -> *)
-wrapDataCon = WrapArrow
--}
-
-wrapSucc :: Sing ConsSym0
-wrapSucc = WrapArrow (\x -> WrapArrow (SCons x))
-
-wrapPred :: Sing PredSym0
-wrapPred = WrapArrow sPred
-
-blah = apply wrapPred (SSucc SZero)
-
-data ConsSym0 :: TyFun a (TyFun (List a) (List a) -> *) -> *
-type instance ConsSym0 @@ x = ConsSym1 x
-
-data ConsSym1 :: a -> TyFun (List a) (List a) -> *
-type instance (ConsSym1 x) @@ y = Cons x y
-
+       
 -----------------------------------
 -- Auto-generated code ------------
 -----------------------------------
@@ -211,7 +98,7 @@ data instance Sing (a :: Nat) where
   SSucc :: Sing n -> Sing (Succ n)
 
 data SuccSym0 :: TyFun Nat Nat -> *
-type instance (SuccSym0 @@ x) = Succ x
+type instance Apply SuccSym0 x = Succ x
 
 #if __GLASGOW_HASKELL__ >= 707
 
@@ -336,6 +223,16 @@ instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (Maybe k)
 data instance Sing (a :: List k) where
   SNil :: Sing Nil
   SCons :: forall (h :: k) (t :: List k). Sing h -> Sing t -> Sing (Cons h t)
+
+type NilSym0 = Nil
+
+data ConsSym0 :: TyFun a (TyFun (List a) (List a) -> *) -> *
+type instance Apply ConsSym0 a = ConsSym1 a
+
+data ConsSym1 :: a -> TyFun (List a) (List a) -> *
+type instance Apply (ConsSym1 a) b = ConsSym2 a b
+
+type ConsSym2 a b = Cons a b
 
 #if __GLASGOW_HASKELL__ >= 707
 
@@ -538,7 +435,7 @@ type instance IsJust (Just a) = True
 
 -- defunctionalization symbols
 data IsJustSym0 (f :: TyFun (Maybe a) Bool)
-type instance (@@) IsJustSym0 a = IsJust a
+type instance Apply IsJustSym0 a = IsJust a
 
 sIsJust :: Sing a -> Sing (IsJust a)
 sIsJust SNothing = SFalse
@@ -559,7 +456,7 @@ type instance Pred (Succ n) = n
 #endif
 
 data PredSym0 (a :: TyFun Nat Nat)
-type instance (@@) PredSym0 a = Pred a
+type instance Apply PredSym0 a = Pred a
 
 sPred :: forall (t :: Nat). Sing t -> Sing (Pred t)
 sPred SZero = SZero
@@ -572,11 +469,11 @@ map f (Cons h t) = Cons (f h) (map f t)
 #if __GLASGOW_HASKELL__ >= 707
 type family Map (f :: TyFun k1 k2 -> *) (l :: List k1) :: List k2 where
     Map f Nil = Nil
-    Map f (Cons h t) = Cons ((@@) f h) (Map f t)
+    Map f (Cons h t) = Cons (Apply f h) (Map f t)
 #else
 type family Map (f :: TyFun k1 k2 -> *) (l :: List k1) :: List k2
 type instance Map f Nil = Nil
-type instance Map f (Cons h t) = Cons ((@@) f h) (Map f t)
+type instance Map f (Cons h t) = Cons (Apply f h) (Map f t)
 #endif
 
 -- defunctionalization symbols
@@ -584,24 +481,24 @@ data MapSym1 (k1 :: TyFun a b -> *)
              (k2 :: TyFun (List a) (List b))
 data MapSym0 (k3 :: TyFun (TyFun a b -> *)
                           (TyFun (List a) (List b) -> *))
-type instance (@@) (MapSym1 f) xs = Map f xs
-type instance (@@)  MapSym0 f     = MapSym1 f
+type instance Apply (MapSym1 f) xs = Map f xs
+type instance Apply  MapSym0 f     = MapSym1 f
 
 sMap :: forall (a :: List k1) (f :: TyFun k1 k2 -> *).
-       (forall b. Proxy f -> Sing b -> Sing ((@@) f b)) -> Sing a -> Sing (Map f a)
+       (forall b. Proxy f -> Sing b -> Sing (Apply f b)) -> Sing a -> Sing (Map f a)
 sMap _ SNil = SNil
 sMap f (SCons h t) = SCons (f Proxy h) (sMap f t)
 
 -- Alternative implementation of sMap with Proxy outside of callback.
 -- Not generated by the library.
 sMap2 :: forall (a :: List k1) (f :: TyFun k1 k2 -> *). Proxy f ->
-       (forall b. Sing b -> Sing ((@@) f b)) -> Sing a -> Sing (Map f a)
+       (forall b. Sing b -> Sing (Apply f b)) -> Sing a -> Sing (Map f a)
 sMap2 _ _ SNil = SNil
 sMap2 p f (SCons h t) = SCons (f h) (sMap2 p f t)
 
 -- test sMap
 foo :: Sing (Cons (Succ (Succ Zero)) (Cons (Succ Zero) Nil))
-foo = sMap (\(_ :: Proxy (TyCon Succ)) -> SSucc) (SCons (SSucc SZero) (SCons SZero SNil))
+foo = sMap (\(_ :: Proxy (TyCon1 Succ)) -> SSucc) (SCons (SSucc SZero) (SCons SZero SNil))
 
 -- test sMap2
 bar :: Sing (Cons (Succ (Succ Zero)) (Cons (Succ Zero) Nil))
@@ -620,7 +517,7 @@ zipWith _ []    []      = []
 type family ZipWith (k1 :: TyFun a (TyFun b c -> *) -> *)
                     (k2 :: List a)
                     (k3 :: List b) :: List c where
-  ZipWith f (Cons x xs) (Cons y ys) = Cons ((@@) ((@@) f x) y) (ZipWith f xs ys)
+  ZipWith f (Cons x xs) (Cons y ys) = Cons (Apply (Apply f x) y) (ZipWith f xs ys)
   ZipWith f Nil (Cons z1 z2) = Nil
   ZipWith f (Cons z1 z2) Nil = Nil
   ZipWith f Nil          Nil = Nil
@@ -628,7 +525,7 @@ type family ZipWith (k1 :: TyFun a (TyFun b c -> *) -> *)
 type family ZipWith (k1 :: TyFun a (TyFun b c -> *) -> *)
                     (k2 :: List a)
                     (k3 :: List b) :: List c
-type instance ZipWith f (Cons x xs) (Cons y ys) = Cons ((@@) ((@@) f x) y) (ZipWith f xs ys)
+type instance ZipWith f (Cons x xs) (Cons y ys) = Cons (Apply (Apply f x) y) (ZipWith f xs ys)
 type instance ZipWith f xs ys = Nil
 type instance ZipWith f Nil (Cons z1 z2) = Nil
 type instance ZipWith f (Cons z1 z2) Nil = Nil
@@ -643,13 +540,13 @@ data ZipWithSym1 (k1 :: TyFun a (TyFun b c -> *) -> *)
 data ZipWithSym0 (k3 :: TyFun (TyFun a (TyFun b c -> *) -> *)
                               (TyFun (List a)
                                      (TyFun (List b) (List c) -> *) -> *))
-type instance (@@) (ZipWithSym2 f xs) ys = ZipWith f xs ys
-type instance (@@) (ZipWithSym1 f)    xs = ZipWithSym2 f xs
-type instance (@@)  ZipWithSym0 f        = ZipWithSym1 f
+type instance Apply (ZipWithSym2 f xs) ys = ZipWith f xs ys
+type instance Apply (ZipWithSym1 f)    xs = ZipWithSym2 f xs
+type instance Apply  ZipWithSym0 f        = ZipWithSym1 f
 
 
 sZipWith :: forall (k1 :: TyFun a (TyFun b c -> *) -> *) (k2 :: List a) (k3 :: List b).
-  (forall (t1 :: a). Proxy k1 -> Sing t1 -> forall (t2 :: b). Sing t2 -> Sing ((@@) ((@@) k1 t1) t2))
+  (forall (t1 :: a). Proxy k1 -> Sing t1 -> forall (t2 :: b). Sing t2 -> Sing (Apply (Apply k1 t1) t2))
   -> Sing k2 -> Sing k3 -> Sing (ZipWith k1 k2 k3)
 sZipWith f (SCons x xs) (SCons y ys) = SCons (f Proxy x y) (sZipWith f xs ys)
 sZipWith _ SNil (SCons _ _) = SNil
@@ -662,12 +559,12 @@ either _ r (Right x) = r x
 
 #if __GLASGOW_HASKELL__ >= 707
 type family Either_ (l :: TyFun a c -> *) (r :: TyFun b c -> *) (e :: Either a b) :: c where
-    Either_ l r (Left x) = (@@) l x
-    Either_ l r (Right x) = (@@) r x
+    Either_ l r (Left x) = Apply l x
+    Either_ l r (Right x) = Apply r x
 #else
 type family Either_ (l :: TyFun a c -> *) (r :: TyFun b c -> *) (e :: Either a b) :: c
-type instance Either_ l r (Left x) = (@@) l x
-type instance Either_ l r (Right x) = (@@) r x
+type instance Either_ l r (Left x) = Apply l x
+type instance Either_ l r (Right x) = Apply r x
 #endif
 
 -- defunctionalization symbols
@@ -680,15 +577,15 @@ data Either_Sym1 (k1 :: TyFun a c -> *)
 data Either_Sym0 (k1 :: TyFun (TyFun a c -> *)
                               (TyFun (TyFun b c -> *)
                                      (TyFun (Either a b) c -> *) -> *))
-type instance (@@) (Either_Sym2 k1 k2) k3 = Either_     k1 k2 k3
-type instance (@@) (Either_Sym1 k1)    k2 = Either_Sym2 k1 k2
-type instance (@@)  Either_Sym0        k1 = Either_Sym1 k1
+type instance Apply (Either_Sym2 k1 k2) k3 = Either_     k1 k2 k3
+type instance Apply (Either_Sym1 k1)    k2 = Either_Sym2 k1 k2
+type instance Apply  Either_Sym0        k1 = Either_Sym1 k1
 
 sEither :: forall (l :: TyFun a c -> *)
                   (r :: TyFun b c -> *)
                   (e :: Either a b).
-           (forall n. Proxy l -> Sing n -> Sing ((@@) l n)) ->
-           (forall n. Proxy r -> Sing n -> Sing ((@@) r n)) ->
+           (forall n. Proxy l -> Sing n -> Sing (Apply l n)) ->
+           (forall n. Proxy r -> Sing n -> Sing (Apply r n)) ->
            Sing e -> Sing (Either_ l r e)
 sEither l _ (SLeft x) = l Proxy x
 sEither _ r (SRight x) = r Proxy x
@@ -699,8 +596,8 @@ sEither2 :: forall (l :: TyFun a c -> *)
                    (r :: TyFun b c -> *)
                    (e :: Either a b).
            Proxy l -> Proxy r ->
-           (forall n. Sing n -> Sing ((@@) l n)) ->
-           (forall n. Sing n -> Sing ((@@) r n)) ->
+           (forall n. Sing n -> Sing (Apply l n)) ->
+           (forall n. Sing n -> Sing (Apply r n)) ->
            Sing e -> Sing (Either_ l r e)
 sEither2 _ _ l _ (SLeft  x) = l x
 sEither2 _ _ _ r (SRight x) = r x
@@ -740,22 +637,22 @@ liftMaybe f (Just a) = Just (f a)
 #if __GLASGOW_HASKELL__ >= 707
 type family LiftMaybe (f :: TyFun a b -> *) (x :: Maybe a) :: Maybe b where
     LiftMaybe f Nothing = Nothing
-    LiftMaybe f (Just a) = Just ((@@) f a)
+    LiftMaybe f (Just a) = Just (Apply f a)
 #else
 type family LiftMaybe (f :: TyFun a b -> *) (x :: Maybe a) :: Maybe b
 type instance LiftMaybe f Nothing = Nothing
-type instance LiftMaybe f (Just a) = Just ((@@) f a)
+type instance LiftMaybe f (Just a) = Just (Apply f a)
 #endif
 
 data LiftMaybeSym1 (k1 :: TyFun a b -> *)
                    (k2 :: TyFun (Maybe a) (Maybe b))
 data LiftMaybeSym0 (k1 :: TyFun (TyFun a b -> *)
                                 (TyFun (Maybe a) (Maybe b) -> *))
-type instance (@@) (LiftMaybeSym1 k1) k2 = LiftMaybe k1 k2
-type instance (@@)  LiftMaybeSym0     k1 = LiftMaybeSym1 k1
+type instance Apply (LiftMaybeSym1 k1) k2 = LiftMaybe k1 k2
+type instance Apply  LiftMaybeSym0     k1 = LiftMaybeSym1 k1
 
 sLiftMaybe :: forall (f :: TyFun a b -> *) (x :: Maybe a).
-                (forall (y :: a). Proxy f -> Sing y -> Sing ((@@) f y)) ->
+                (forall (y :: a). Proxy f -> Sing y -> Sing (Apply f y)) ->
                 Sing x -> Sing (LiftMaybe f x)
 sLiftMaybe _ SNothing = SNothing
 sLiftMaybe f (SJust a) = SJust (f Proxy a)
@@ -778,8 +675,8 @@ type instance (Succ x) :+ y = Succ (x :+ y)
 data (:+$$) (k1 :: Nat)
             (k2 :: TyFun Nat Nat)
 data (:+$)  (k1 :: TyFun Nat (TyFun Nat Nat -> *))
-type instance (@@) ((:+$$) k1) k2 = (:+) k1 k2
-type instance (@@)  (:+$)  k1     = (:+$$) k1
+type instance Apply ((:+$$) k1) k2 = (:+) k1 k2
+type instance Apply  (:+$)  k1     = (:+$$) k1
 
 (%:+) :: Sing m -> Sing n -> Sing (m :+ n)
 SZero %:+ x = x
@@ -805,8 +702,8 @@ type instance (Succ x) :- (Succ y) = x :- y
 data (:-$$) (k1 :: Nat)
             (k2 :: TyFun Nat Nat)
 data (:-$)  (k1 :: TyFun Nat (TyFun Nat Nat -> *))
-type instance (@@) ((:-$$) k1) k2 = (:-) k1 k2
-type instance (@@)  (:-$)  k1     = (:-$$) k1
+type instance Apply ((:-$$) k1) k2 = (:-) k1 k2
+type instance Apply  (:-$)  k1     = (:-$$) k1
 
 (%:-) :: Sing m -> Sing n -> Sing (m :- n)
 SZero %:- _ = SZero
@@ -825,7 +722,7 @@ type instance IsZero n = If (n :== Zero) True False
 #endif
 
 data IsZeroSym0 (a :: TyFun Nat Bool)
-type instance (@@) IsZeroSym0 a = IsZero a
+type instance Apply IsZeroSym0 a = IsZero a
 
 sIsZero :: Sing n -> Sing (IsZero n)
 sIsZero n = sIf (n %:== SZero) STrue SFalse
@@ -849,8 +746,8 @@ type instance True :|| x = True
 data (:||$$) (k1 :: Bool)
              (k2 :: TyFun Bool Bool)
 data (:||$)  (k1 :: TyFun Bool (TyFun Bool Bool -> *))
-type instance (@@) ((:||$$) a) b = (:||) a b
-type instance (@@) (:||$) a = (:||$$) a
+type instance Apply ((:||$$) a) b = (:||) a b
+type instance Apply (:||$) a = (:||$$) a
 
 (%:||) :: Sing a -> Sing b -> Sing (a :|| b)
 SFalse %:|| x = x
@@ -875,14 +772,91 @@ type instance Contains elt (Cons h t) = (elt :== h) :|| (Contains elt t)
 data ContainsSym1 (k1 :: a)
                   (k2 :: TyFun (List a) Bool)
 data ContainsSym0 (k1 :: TyFun a (TyFun (List a) Bool -> *))
-type instance (@@) (ContainsSym1 a) b = Contains a b
-type instance (@@)  ContainsSym0 a    = ContainsSym1 a
+type instance Apply (ContainsSym1 a) b = Contains a b
+type instance Apply  ContainsSym0 a    = ContainsSym1 a
 
+{-
 sContains :: forall. SEq ('KProxy :: KProxy k) =>
              forall (a :: k). Sing a ->
              forall (list :: List k). Sing list -> Sing (Contains a list)
 sContains _ SNil = SFalse
 sContains elt (SCons h t) = (elt %:== h) %:|| (sContains elt t)
+-}
+
+sContains :: forall (t1 :: a) (t2 :: List a). SEq ('KProxy :: KProxy a) => Sing t1
+          -> Sing t2 -> Sing (Contains t1 t2)
+sContains _ SNil =
+  let lambda :: forall wild. Sing (Contains wild Nil)
+      lambda = SFalse
+  in
+  lambda
+sContains elt (SCons h t) =
+  let lambda :: forall elt h t. (elt ~ t1, (Cons h t) ~ t2) => Sing elt -> Sing h -> Sing t -> Sing (Contains elt (Cons h t))
+      lambda elt' h' t' = (elt' %:== h') %:|| sContains elt' t'
+  in
+  lambda elt h t
+
+cont :: Eq a => a -> List a -> Bool
+cont = \elt list -> case list of
+  Nil -> False
+  Cons h t -> (elt == h) || cont elt t
+
+type family Cont :: TyFun a (TyFun (List a) Bool -> *) -> * where
+  Cont = Lambda10Sym0
+
+data Lambda10Sym0 f where
+  Lambda10Sym0KindInference :: (Lambda10Sym0 @@ arg) ~ Lambda10Sym1 arg
+                            => Proxy arg
+                            -> Lambda10Sym0 f
+type instance Lambda10Sym0 `Apply` x = Lambda10Sym1 x
+
+data Lambda10Sym1 a f where
+  Lambda10Sym1KindInference :: (Lambda10Sym1 a @@ arg) ~ Lambda10Sym2 a arg
+                            => Proxy arg
+                            -> Lambda10Sym1 a f
+type instance (Lambda10Sym1 a) `Apply` b = Lambda10Sym2 a b
+
+type Lambda10Sym2 a b = Lambda10 a b
+
+type family Lambda10 a b where
+  Lambda10 elt list = Case10 elt list list
+
+type family Case10 a b scrut where
+  Case10 elt list Nil = False
+  Case10 elt list (Cons h t) = (:||$) @@ ((:==$) @@ elt @@ h) @@ (Cont @@ elt @@ t)
+
+type KindOfUnderList (x :: List a) = ('KProxy :: KProxy a)
+
+sCont :: forall (t1 :: a) (t2 :: List a). SEq ('KProxy :: KProxy a) => Sing t1 -> Sing t2 -> Sing (Cont @@ t1 @@ t2)
+sCont = \elt list ->
+  let lambda :: forall elt list. ((Lambda10Sym0 @@ elt @@ list) ~ (Cont @@ t1 @@ t2)) => Sing elt -> Sing list -> Sing (Lambda10Sym0 @@ elt @@ list)
+      lambda elt' list' = case list' of
+        SNil -> let lambda1 :: ((Case10 elt list Nil) ~ (Lambda10Sym0 @@ elt @@ list), list ~ Nil) => Sing (Case10 elt list Nil)
+                    lambda1 = SFalse
+                in
+                lambda1
+        SCons h t -> let lambda2 :: forall h t. (Case10 elt list (Cons h t) ~ (Lambda10Sym0 @@ elt @@ list), list ~ Cons h t {-, SEq (KindOfUnderList t), SEq (KindOf h) -}) => Sing h -> Sing t -> Sing (Case10 elt list (Cons h t))
+                         lambda2 h' t' = (elt' %:== h') %:|| (sCont elt' t')
+                     in
+                     lambda2 h t
+  in
+  lambda elt list
+                                                            
+
+data (:==$) f where
+  (:==$##) :: ((:==$) @@ arg) ~ (:==$$) arg
+           => Proxy arg
+           -> (:==$) f
+type instance (:==$) `Apply` x = (:==$$) x
+
+data (:==$$) a f where
+  (:==$$##) :: ((:==$$) x @@ arg) ~ (:==$$$) x arg
+            => Proxy arg
+            -> (:==$$) x y
+type instance (:==$$) a `Apply` b = (:==$$$) a b
+
+type (:==$$$) a b = (:==) a b
+                          
 
 impNat :: forall m n. SingI n => Proxy n -> Sing m -> Sing (n :+ m)
 impNat _ sm = (sing :: Sing n) %:+ sm
@@ -893,3 +867,131 @@ callImpNat sn sm = withSingI sn (impNat (Proxy :: Proxy n) sm)
 instance Show (Sing (n :: Nat)) where
   show SZero = "SZero"
   show (SSucc n) = "SSucc (" ++ (show n) ++ ")"
+
+findIndices :: (a -> Bool) -> [a] -> [Nat]
+findIndices p ls = loop Zero ls
+  where
+    loop _ [] = []
+    loop n (x:xs) | p x = n : loop (Succ n) xs
+                  | otherwise = loop (Succ n) xs
+
+findIndices' :: forall a. (a -> Bool) -> [a] -> [Nat]
+findIndices' p ls =
+  let loop :: Nat -> [a] -> [Nat]
+      loop _ [] = []
+      loop n (x:xs) = case p x of
+                        True -> n : loop (Succ n) xs
+                        False -> loop (Succ n) xs
+  in
+  loop Zero ls
+
+type family FindIndices (f :: TyFun a Bool -> *) (ls :: List a) :: List Nat where
+  FindIndices p ls = (Let123LoopSym2 p ls) @@ Zero @@ ls
+
+type family Let123Loop p ls (arg1 :: Nat) (arg2 :: List a) :: List Nat where
+  Let123Loop p ls z Nil = Nil
+  Let123Loop p ls n (x `Cons` xs) = Case123 p ls n x xs (p @@ x)
+
+type family Case123 p ls n x xs scrut where
+  Case123 p ls n x xs True = n `Cons` ((Let123LoopSym2 p ls) @@ (Succ n) @@ xs)
+  Case123 p ls n x xs False = (Let123LoopSym2 p ls) @@ (Succ n) @@ xs
+
+data Let123LoopSym2 a b c where
+  Let123LoopSym2KindInfernece :: ((Let123LoopSym2 a b @@ z) ~ Let123LoopSym3 a b z)
+                              => Proxy z
+                              -> Let123LoopSym2 a b c
+type instance Apply (Let123LoopSym2 a b) c = Let123LoopSym3 a b c
+
+data Let123LoopSym3 a b c d where
+  Let123LoopSym3KindInference :: ((Let123LoopSym3 a b c @@ z) ~ Let123LoopSym4 a b c z)
+                              => Proxy z
+                              -> Let123LoopSym3 a b c d
+type instance Apply (Let123LoopSym3 a b c) d = Let123LoopSym4 a b c d
+
+type Let123LoopSym4 a b c d = Let123Loop a b c d
+
+data FindIndicesSym0 a where
+  FindIndicesSym0KindInference :: (FindIndicesSym0 @@ z) ~ FindIndicesSym1 z
+                               => Proxy z
+                               -> FindIndicesSym0 a
+type instance Apply FindIndicesSym0 a = FindIndicesSym1 a
+
+data FindIndicesSym1 a b where
+  FindIndicesSym1KindInference :: (FindIndicesSym1 a @@ z) ~ FindIndicesSym2 a z
+                               => Proxy z
+                               -> FindIndicesSym1 a b
+type instance Apply (FindIndicesSym1 a) b = FindIndicesSym2 a b
+
+type FindIndicesSym2 a b = FindIndices a b
+
+sFindIndices :: forall (t1 :: TyFun a Bool -> *) (t2 :: (List a)).
+                Sing t1
+             -> Sing t2
+             -> Sing (FindIndicesSym0 @@ t1 @@ t2)
+sFindIndices sP sLs =
+  let sLoop :: forall (u1 :: Nat). Sing u1
+            -> forall (u2 :: List a). Sing u2
+            -> Sing ((Let123LoopSym2 t1 t2) @@ u1 @@ u2)
+      sLoop _ SNil = SNil
+      sLoop sN (sX `SCons` sXs) = case sP `applySing` sX of
+        STrue -> (singFun2 (Proxy :: Proxy ConsSym0) SCons) `applySing` sN `applySing`
+                   ((singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` ((singFun1 (Proxy :: Proxy SuccSym0) SSucc) `applySing` sN) `applySing` sXs)
+        SFalse -> (singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` ((singFun1 (Proxy :: Proxy SuccSym0) SSucc) `applySing` sN) `applySing` sXs
+  in
+  (singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` SZero `applySing` sLs
+
+
+fI :: forall a. (a -> Bool) -> [a] -> [Nat]
+fI = \p ls ->
+  let loop :: Nat -> [a] -> [Nat]
+      loop _ [] = []
+      loop n (x:xs) = case p x of
+                        True -> n : loop (Succ n) xs
+                        False -> loop (Succ n) xs
+  in
+  loop Zero ls
+
+type FI = Lambda22Sym0
+
+type FISym0 = FI
+
+type family Lambda22 p ls where
+  Lambda22 p ls = (Let123LoopSym2 p ls) @@ Zero @@ ls
+
+data Lambda22Sym0 a where
+  Lambda22Sym0KindInference :: (Lambda22Sym0 @@ z) ~ Lambda22Sym1 z
+                            => Proxy z
+                            -> Lambda22Sym0 a
+type instance Apply Lambda22Sym0 a = Lambda22Sym1 a
+
+data Lambda22Sym1 a b where
+  Lambda22Sym1KindInference :: (Lambda22Sym1 a @@ z) ~ Lambda22Sym2 a z
+                            => Proxy z
+                            -> Lambda22Sym1 a b
+type instance Apply (Lambda22Sym1 a) b = Lambda22Sym2 a b
+
+type Lambda22Sym2 a b = Lambda22 a b
+
+
+sFI :: forall (t1 :: TyFun a Bool -> *) (t2 :: List a). Sing t1
+    -> Sing t2
+    -> Sing (FISym0 @@ t1 @@ t2)
+sFI = unSingFun2 (singFun2 (Proxy :: Proxy FI) (\p ls ->
+    let lambda :: forall {-(t1 :: TyFun a Bool -> *)-} t1 t2. Sing t1 -> Sing t2 -> Sing (Lambda22Sym0 @@ t1 @@ t2)
+        lambda sP sLs =
+          let sLoop :: (Lambda22Sym0 @@ t1 @@ t2) ~ (Let123LoopSym2 t1 t2 @@ Zero @@ t2) => forall (u1 :: Nat). Sing u1
+                    -> forall {-(u2 :: List a)-} u2. Sing u2
+                    -> Sing ((Let123LoopSym2 t1 t2) @@ u1 @@ u2)
+              sLoop _ SNil = SNil
+              sLoop sN (sX `SCons` sXs) =  case sP `applySing` sX of
+                STrue -> (singFun2 (Proxy :: Proxy ConsSym0) SCons) `applySing` sN `applySing`
+                     ((singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` ((singFun1 (Proxy :: Proxy SuccSym0) SSucc) `applySing` sN) `applySing` sXs)
+                SFalse -> (singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` ((singFun1 (Proxy :: Proxy SuccSym0) SSucc) `applySing` sN) `applySing` sXs 
+          in
+          (singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` SZero `applySing` sLs
+    in
+    lambda p ls
+  ))
+
+
+

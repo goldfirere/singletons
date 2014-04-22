@@ -1,9 +1,11 @@
 INCLUDES = ../src ../dist/build compile-and-dump
 OUTPUT = ../dist/build/quickly
-OPTS = -O0 -Wall -Werror -fno-warn-orphans -fno-warn-missing-signatures
+OPTS = -O0 -Wall -Werror -fno-warn-orphans -fno-warn-missing-signatures \
+       -fprint-explicit-foralls
 EXTS = TemplateHaskell DataKinds PolyKinds ScopedTypeVariables FlexibleContexts \
        FlexibleInstances GADTs TypeFamilies RankNTypes UndecidableInstances \
-       TypeOperators MultiParamTypeClasses CPP LambdaCase MagicHash UnboxedTuples
+       TypeOperators MultiParamTypeClasses CPP LambdaCase MagicHash UnboxedTuples \
+       DeriveDataTypeable
 
 ifndef THREADS
 THREADS = 1
@@ -15,7 +17,7 @@ OPTS += -fno-warn-name-shadowing
 else
 # Parallel build with 2 threads. Using more threads can actually make the test
 # slower - see https://github.com/jstolarek/singletons/issues/35
-OPTS += -j2
+OPTS += -j2 -fprint-explicit-kinds -XAllowAmbiguousTypes
 endif
 
 

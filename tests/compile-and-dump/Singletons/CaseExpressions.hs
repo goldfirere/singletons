@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module Singletons.CaseExpressions where
 
 import Data.Singletons.TH
@@ -13,7 +15,8 @@ $(singletons [d|
   foo2 :: a -> Maybe a -> a
   foo2 d _ = case (Just d) of
                Just y  -> y
-               Nothing -> d
+--               Nothing -> d
+-- the above line causes an "inaccessible code" error. w00t.
 
   foo3 :: a -> b -> a
   foo3 a b = case (a, b) of
@@ -30,8 +33,6 @@ $(singletons [d|
   foo5 x = case x of
              y -> (\_ -> x) y
  |])
-
-data Proxy a = Proxy
 
 foo1a :: Proxy (Foo1 Int (Just Char))
 foo1a = Proxy

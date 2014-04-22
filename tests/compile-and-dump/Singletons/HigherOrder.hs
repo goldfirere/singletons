@@ -4,7 +4,7 @@ module Singletons.HigherOrder where
 import Data.Singletons
 import Data.Singletons.TH
 import Data.Singletons.List hiding (
-           sMap, Map, MapSym0, MapSym1, zipWith, ZipWith, sZipWith, ZipWithSym0,
+           sMap, Map, MapSym0, MapSym1, ZipWith, sZipWith, ZipWithSym0,
            ZipWithSym1, ZipWithSym2 )
 import Data.Singletons.Maybe
 import Singletons.Nat
@@ -27,17 +27,15 @@ $(singletons [d|
   zipWith _ (_:_) []      = []
   zipWith _ [] (_:_)      = []
 
-  -- higher order function that accepts higher order function
-  -- not currently supported
-  -- foo :: ((a -> b) -> a -> b) -> (a -> b)  -> a -> b
-  -- foo f g a = f g a
+  foo :: ((a -> b) -> a -> b) -> (a -> b)  -> a -> b
+  foo f g a = f g a
 
   splunge :: [Nat] -> [Bool] -> [Nat]
   splunge ns bs = zipWith (\n b -> if b then Succ (Succ n) else n) ns bs
-{-
+
   etad :: [Nat] -> [Bool] -> [Nat]
   etad = zipWith (\n b -> if b then Succ (Succ n) else n)
--}
+
  |])
 
 foo1a :: Proxy (ZipWith (TyCon2 Either) '[Int, Bool] '[Char, Double])

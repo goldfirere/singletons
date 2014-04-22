@@ -6,7 +6,7 @@ eir@cis.upenn.edu
 Utility functions for singletonizing.
 -}
 
-module Data.Singletons.Single.Util where
+module Barf where
 
 import Language.Haskell.TH
 import Language.Haskell.TH.Desugar

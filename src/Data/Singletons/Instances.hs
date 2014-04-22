@@ -14,6 +14,8 @@ re-exported from various places.
 #if __GLASGOW_HASKELL__ < 707
   -- optimizing instances of SDecide cause GHC to die (#8467)
 {-# OPTIONS_GHC -O0 #-}
+#else
+{-# LANGUAGE AllowAmbiguousTypes #-}   -- GHC #9019
 #endif
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}

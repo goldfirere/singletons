@@ -3,7 +3,6 @@ module Singletons.AtPattern where
 import Data.Singletons.TH
 import Data.Singletons.Maybe
 import Data.Singletons.List
-import Data.Singletons.Tuple
 import Singletons.Nat
 
 $(singletons [d|

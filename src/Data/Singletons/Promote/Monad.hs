@@ -28,8 +28,8 @@ import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
 import Control.Applicative
 import Data.Singletons.Names
+import Data.Singletons.LetDecEnv
 
-type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
 type LetExpansions = Map Name DType  -- from **term-level** name
 
 -- environment during promotion

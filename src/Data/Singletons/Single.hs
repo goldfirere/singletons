@@ -6,7 +6,7 @@ eir@cis.upenn.edu
 This file contains functions to refine constructs to work with singleton
 types. It is an internal module to the singletons package.
 -}
-{-# LANGUAGE TemplateHaskell, CPP, TupleSections #-}
+{-# LANGUAGE TemplateHaskell, CPP, TupleSections, ParallelListComp #-}
 
 module Data.Singletons.Single where
 
@@ -15,26 +15,16 @@ import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (falseName, trueName, Quasi(..))
 import Data.Singletons.Util
 import Data.Singletons.Promote
-import Data.Singletons.Promote.Monad
+import Data.Singletons.Promote.Monad ( promoteMDecs, promoteM )
 import Data.Singletons.Names
 import Data.Singletons.Single.Monad
 import Data.Singletons.LetDecEnv
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.Sweeten
 import qualified Data.Map.Strict as Map
+import Data.Map.Strict ( Map )
 import Control.Monad
 import Control.Applicative
-import Data.Foldable ( foldrM )
-import Data.Maybe
-
-singFamily :: DType
-singFamily = DConT singFamilyName
-
-singKindConstraint :: DKind -> DPred
-singKindConstraint k = DAppPr (DConPr singKindClassName) (kindParam k)
-
-demote :: DType
-demote = DConT demoteRepName
 
 -- | Generate singleton definitions from a type that is already defined.
 -- For example, the singletons package itself uses
@@ -126,12 +116,15 @@ singInfo (DTyVarI _name _ty) =
 --     step one to introduce extra Proxy arguments in the function body.
 singTopLevelDecs :: Quasi q => [DDec] -> q [DDec]
 singTopLevelDecs decls = do
-  promDecls <- promoteMDecs $ promoteDecs decls
+  let (letDecls, otherDecls) = partitionLetDecs decls
+  otherDecls' <- promoteMDecs $ promoteNonLetDecs otherDecls
+  ((_, letDecEnv), letDecls') <- promoteM $ promoteLetDecs noPrefix letDecls
   singDecsM $ do
-    let (letDecls, otherDecls) = partitionLetDecs decls
-    (newLetDecls, newOtherDecls) <- singLetDecs TopLevel letDecls $
+    let letBinds = concatMap buildLets otherDecls
+    (newLetDecls, newOtherDecls) <- bindLets letBinds $
+                                    singLetDecEnv TopLevel letDecEnv $
                                     concatMapM singDec otherDecls
-    return $ promDecls ++ (map DLetDec newLetDecls) ++ newOtherDecls
+    return $ otherDecls' ++ letDecls' ++ (map DLetDec newLetDecls) ++ newOtherDecls
 
 singDec :: DDec -> SgM [DDec]
 singDec (DLetDec dec) =
@@ -160,25 +153,40 @@ singDec (DClosedTypeFamilyD _name _tvs _mkind _eqns) =
 singDec (DRoleAnnotD _name _roles) =
   return [] -- silently ignore role annotations, as they're harmless
 
+buildLets :: DDec -> [(Name, DExp)]
+buildLets (DDataD _nd _cxt _name _tvbs cons _derivings) =
+  concatMap con_num_args cons
+  where
+    con_num_args :: DCon -> [(Name, DExp)]
+    con_num_args (DCon _tvbs _cxt name fields) =
+      (name, wrapSingFun (length (tysOfConFields fields))
+                         (promoteValRhs name) (DConE $ singDataConName name))
+      : rec_selectors fields
+
+    rec_selectors :: DConFields -> [(Name, DExp)]
+    rec_selectors (DNormalC {}) = []
+    rec_selectors (DRecC fields) =
+      let names = map fstOf3 fields in
+      [ (name, wrapSingFun 1 (promoteValRhs name) (DVarE $ singValName name))
+      | name <- names ]
+      
+buildLets (DClassD _cxt _name _tvbs _fds decs) = concatMap buildLets decs
+buildLets _ = []
+
 data TopLevelFlag = TopLevel | NotTopLevel
 
-singLetDecs :: TopLevelFlag -> [DLetDec] -> SgM a -> SgM ([DLetDec], a)
-singLetDecs top_level letDecls thing_inside = do
-  let_dec_env <- buildLetDecEnv letDecls
-  singLetDecEnv top_level let_dec_env $ thing_inside
-
-singLetDecEnv :: TopLevelFlag -> LetDecEnv -> SgM a -> SgM ([DLetDec], a)
+singLetDecEnv :: TopLevelFlag -> ALetDecEnv -> SgM a -> SgM ([DLetDec], a)
 singLetDecEnv top_level
               (LetDecEnv { lde_defns = defns
                          , lde_types = types
-                         , lde_infix = infix_decls })
+                         , lde_infix = infix_decls
+                         , lde_proms = proms })
               thing_inside = do
-  (typeSigs, proxyTableEntries, m_promotions)
-    <- mapAndUnzip3M (uncurry sing_ty_sig) (Map.toList types)
-  let proxyTable   = Map.fromList proxyTableEntries
-      infix_decls' = map (uncurry sing_infix_decl) infix_decls
-  bindProxies proxyTable $ bindLets (catMaybes m_promotions) $ do
-    let_decs <- mapM (uncurry sing_let_dec) (Map.toList defns)
+  (typeSigs, letBinds, tyvarNames)
+    <- mapAndUnzip3M (uncurry sing_ty_sig) (Map.toList proms)
+  let infix_decls' = map (uncurry sing_infix_decl) infix_decls
+  bindLets letBinds $ do
+    let_decs <- mapM (uncurry (sing_let_dec (Map.fromList tyvarNames))) (Map.toList defns)
     thing <- thing_inside
     return (infix_decls' ++ typeSigs ++ let_decs, thing)
   where
@@ -191,31 +199,52 @@ singLetDecEnv top_level
         DInfixD fixity (singDataConName name)
       | otherwise = DInfixD fixity (singValName name)
 
-    sing_ty_sig :: Name -> DType
+    sing_ty_sig :: Name -> DType   -- the type is the promoted type, not the type sig!
                 -> SgM ( DLetDec               -- the new type signature
-                       , (Name, ProxySpec)     -- the proxy table entry
-                       , Maybe (Name, DType))  -- the let-expansion entry
-    sing_ty_sig name ty = do
-      (tyTrans, proxies) <- singType ty
-      let typeSig   = tyTrans (promoteValRhs name)
-          sName     = singValName name
-          promotion
-            | TopLevel <- top_level
-            = Nothing      -- promotion at top-level doesn't extend env't
-            | otherwise
-            = case typeSig of
-                DAppT (DConT singFamilyName') tyarg
-                  | singFamilyName' == singFamilyName
-                  -> Just (name, tyarg)
-                _ -> Just (name, error "Passing let-bound functions not supported")
-      return (DSigD sName typeSig, (sName, proxies), promotion)
+                       , (Name, DExp)          -- the let-bind entry
+                       , (Name, [Name])        -- the scoped tyvar names in the tysig
+                       ) 
+    sing_ty_sig name prom_ty =
+      let sName = singValName name in
+      case Map.lookup name types of
+        Nothing -> do
+          num_args <- guess_num_args name
+          (sty, tyvar_names) <- mk_sing_ty num_args prom_ty
+          return ( DSigD sName sty
+                 , (name, wrapSingFun num_args prom_ty (DVarE sName))
+                 , (name, tyvar_names) )
+        Just ty -> do
+          (sty, num_args, tyvar_names) <- singType top_level prom_ty ty
+          return ( DSigD sName sty
+                 , (name, wrapSingFun num_args prom_ty (DVarE sName))
+                 , (name, tyvar_names) )
 
-    sing_let_dec :: Name -> LetDecRHS -> SgM DLetDec
-    sing_let_dec name (Value exp) =
-      DValD (DVarPa (singValName name)) <$> singExp exp
-    sing_let_dec name (Function clauses) = do
-      proxySpec <- lookupProxy (singValName name)
-      DFunD (singValName name) <$> mapM (singClause proxySpec) clauses
+    guess_num_args :: Name -> SgM Int
+    guess_num_args name =
+      case Map.lookup name defns of
+        Nothing -> fail "Internal error: promotion known for something not let-bound."
+        Just (AValue n _) -> return n
+        Just (AFunction _ n _) -> return n
+
+    mk_sing_ty :: Int -> DType -> SgM (DType, [Name])
+    mk_sing_ty n prom_ty = do
+      arg_names <- replicateM n (qNewName "arg")
+      return ( DForallT (map DPlainTV arg_names) []
+                        (ravel (map (\name -> singFamily `DAppT` DVarT name) arg_names
+                                ++ [singFamily `DAppT`
+                                    (foldl apply prom_ty (map DVarT arg_names))]))
+             , arg_names )
+
+    sing_let_dec :: Map Name [Name] -> Name -> ALetDecRHS -> SgM DLetDec
+    sing_let_dec _bound_names name (AValue num_arrows exp) =
+      DValD (DVarPa (singValName name)) <$>
+      (wrapUnSingFun num_arrows <$> singExp exp)
+    sing_let_dec bound_names name (AFunction prom_fun num_arrows clauses) =
+      let tyvar_names = case Map.lookup name bound_names of
+                          Nothing -> []
+                          Just ns -> ns
+      in
+      DFunD (singValName name) <$> mapM (singClause prom_fun num_arrows tyvar_names) clauses
 
 -- refine a constructor. the first parameter is the type variable that
 -- the singleton GADT is parameterized by
@@ -230,7 +259,7 @@ singCtor a (DCon _tvbs cxt name fields)
   = do
   let types = tysOfConFields fields
       sName = singDataConName name
-      sCon = singDataCon name
+      sCon = DConE sName
       pCon = DConT name
   indexNames <- mapM (const $ qNewName "n") types
   let indices = map DVarT indexNames
@@ -247,14 +276,20 @@ singCtor a (DCon _tvbs cxt name fields)
                 [DLetDec $ DValD (DVarPa singMethName)
                        (foldExp sCon (map (const $ DVarE singMethName) types))]]
 
+  let conFields = case fields of
+                    DNormalC _ -> DNormalC $ map (NotStrict,) args
+                    DRecC rec_fields ->
+                      DRecC [ (singValName field_name, NotStrict, arg)
+                            | (field_name, _, _) <- rec_fields
+                            | arg <- args ]
   return $ DCon tvbs
                 [foldl DAppPr (DConPr equalityName) [a, foldType pCon indices]]
                 sName
-                (DNormalC $ map (NotStrict,) args)
+                conFields
   where buildArgType :: DType -> DType -> SgM DType
         buildArgType ty index = do
-          (typeFn, _) <- singType ty
-          return $ typeFn index
+          (ty', _, _) <- singType NotTopLevel index ty
+          return ty'
 
 -- We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
@@ -440,87 +475,30 @@ singDataD cxt name tvbs ctors derivings
 -- where first Type is the type that will be substituted in the
 -- signature (see Note [Singletonizing type signature]). The result is
 -- a tuple containing the final type signature with its proxy table.
-singType :: DType -> SgM (DType -> DType, ProxySpec)
-singType ty = do
-  (sTypeFn, proxies) <- singTypeRec [] ty
-  return (\inner_ty -> liftOutForalls (sTypeFn inner_ty), proxies)
-
--- Lifts all foralls to the top-level. This is a workaround
--- for bug #8031 on GHC.
-liftOutForalls :: DType -> DType
-liftOutForalls =
-  go [] [] []
-  where
-    go tyvars cxt args (DForallT tyvars1 cxt1 t1)
-      = go (reverse tyvars1 ++ tyvars) (reverse cxt1 ++ cxt) args t1
-    go tyvars cxt args (DSigT t1 _kind)  -- ignore these kind annotations, which have to be *
-      = go tyvars cxt args t1
-    go tyvars cxt args (DAppT (DAppT DArrowT arg1) res1)
-      = go tyvars cxt (arg1 : args) res1
-    go [] [] args t1
-      = mk_fun_ty (reverse args) t1
-    go tyvars cxt args t1
-      = DForallT (reverse tyvars) (reverse cxt) (mk_fun_ty (reverse args) t1)
-
-    mk_fun_ty [] res = res
-    mk_fun_ty (arg1:args) res = DAppT (DAppT DArrowT arg1) (mk_fun_ty args res)
-
--- the first parameter is the list of types the current type is applied to
-singTypeRec :: [DType] -> DType -> SgM (DType -> DType, ProxySpec)
-singTypeRec (_:_) (DForallT _ _ _) =
-  fail "I thought this was impossible in Haskell. Email me at eir@cis.upenn.edu with your code if you see this message."
-singTypeRec [] (DForallT _ [] ty) = -- Sing makes handling foralls automatic
-  singTypeRec [] ty
-singTypeRec ctx (DForallT _tvbs cxt innerty) = do
-  cxt' <- singContext cxt
-  (innerty', proxies) <- singTypeRec ctx innerty
-  return (\ty -> DForallT [] cxt' (innerty' ty), proxies)
-singTypeRec ctx (DAppT ty1 ty2) =
-  singTypeRec (ty2 : ctx) ty1 -- recur with the ty2 in the applied context
-singTypeRec _ctx (DSigT _ty _knd) =
-  fail "Singling of types with explicit kinds not yet supported"
-singTypeRec (_:_) (DVarT _) =
-  fail "Singling of type variables of arrow kinds not yet supported"
-singTypeRec [] (DVarT _name) =
-  return $ (\ty -> DAppT singFamily ty, [])
-singTypeRec _ctx (DConT _name) = -- we don't need to process the context with Sing
-  return $ (\ty -> DAppT singFamily ty, [])
-singTypeRec ctx DArrowT = case ctx of
-  [ty1, ty2] -> do
-    t               <- qNewName "t"
-    (sty1, _)       <- singTypeRec [] ty1
-    (sty2, proxies) <- singTypeRec [] ty2
-    k1              <- promoteType ty1
-    proxy_flag      <- needs_proxy ty1
-    return ( \f -> DForallT [DKindedTV t k1]
-                            []
-                            (maybe_add_proxy proxy_flag (DVarT t) $
-                             DArrowT `DAppT` (sty1 (DVarT t))
-                                     `DAppT` (sty2 $ DConT applyName
-                                                      `DAppT` f
-                                                      `DAppT` (DVarT t)))
-           , proxy_flag : proxies )
-    where
-      needs_proxy :: DType -> SgM ProxyFlag
-      needs_proxy (DForallT {}) =
-        fail "Cannot singletonize a higher-rank type."
-      needs_proxy (DAppT (DAppT DArrowT _) _) = return YesProxy
-      needs_proxy (DSigT ty _) = needs_proxy ty
-      needs_proxy _ = return NoProxy
-
-      maybe_add_proxy :: ProxyFlag  -- add the proxy?
-                      -> DType      -- proxy for this type
-                      -> DType      -- added to this type
-                      -> DType      -- creates this type
-      maybe_add_proxy NoProxy  _   ty = ty
-      maybe_add_proxy YesProxy pty ty =
-        DAppT (DAppT DArrowT (DAppT (DConT proxyTypeName) pty)) ty
-  _ -> fail "Internal error in Sing: converting ArrowT with improper context"
-singTypeRec _ctx (DLitT _) = fail "Singling of type-level literals not yet supported"
-
--- refine a constraint context
-singContext :: DCxt -> SgM DCxt
-singContext = mapM singPred
+singType :: TopLevelFlag -> DType -> DType -> SgM (DType, Int, [Name])
+singType top_level prom ty = do
+  let (cxt, tys) = unravel ty
+      args       = init tys
+      num_args   = length args
+  cxt' <- mapM singPred cxt
+  arg_names <- replicateM num_args (qNewName "t")
+  let args' = map (\n -> singFamily `DAppT` (DVarT n)) arg_names
+      res'  = singFamily `DAppT` (foldl apply prom (map DVarT arg_names))
+      tau   = ravel (args' ++ [res'])
+  ty' <- case top_level of
+           TopLevel -> do
+             prom_args <- mapM promoteType args
+             return $ DForallT (zipWith DKindedTV arg_names prom_args)
+                               cxt' tau
+                -- don't annotate kinds. Why? Because the original source
+                -- may have used scoped type variables, and we're just
+                -- not clever enough to get the scoped kind variables right.
+                -- (the business in bindTyVars gets in the way)
+                -- If ScopedTypeVariables was actually sane in patterns,
+                -- this restriction might be able to be lifted.
+           NotTopLevel -> return $ DForallT (map DPlainTV arg_names)
+                                            cxt' tau
+  return (ty', num_args, arg_names)
 
 singPred :: DPred -> SgM DPred
 singPred = singPredRec []
@@ -539,18 +517,22 @@ singPredRec ctx (DConPr n)
     let sName = singClassName n
     return $ foldl DAppPr (DConPr sName) (map kindParam kis)
 
-singClause :: ProxySpec -> DClause -> SgM DClause
-singClause proxyCount (DClause pats exp) = do
-  sPats <- mapM (singPat Parameter) pats
-  sPats' <- foldrM insert_proxies [] $ zip proxyCount sPats
-  sBody <- singExp exp
-  return $ DClause sPats' sBody
-  where
-    insert_proxies :: (ProxyFlag, DPat) -> [DPat] -> SgM [DPat]
-    insert_proxies (NoProxy, p)        ps = return (p : ps)
-    insert_proxies (YesProxy, p)       ps = do
-      proxy_name <- qNewName "_proxy"
-      return (DVarPa proxy_name : p : ps)
+singClause :: DType   -- the promoted function
+           -> Int     -- the number of arrows in the type. If this is more
+                      -- than the number of patterns, we need to eta-expand
+                      -- with unSingFun.
+           -> [Name]  -- the names of the forall'd vars in the type sig of this
+                      -- function. This list should have the same length as the
+                      -- number of patterns in the clause
+           -> ADClause -> SgM DClause
+singClause prom_fun num_arrows bound_names (ADClause var_proms pats exp) = do
+  ((sPats, prom_pats), wilds)
+    <- evalForPair $ mapAndUnzipM (singPat (Map.fromList var_proms) Parameter) pats
+  let equalities = zip (map DVarT bound_names) prom_pats
+  sBody <- bindTyVarsClause var_proms wilds
+                            (foldl apply prom_fun prom_pats) equalities $ singExp exp
+  let sBody' = wrapUnSingFun (num_arrows - length pats) sBody
+  return $ DClause sPats sBody'
 
 -- we need to know where a pattern is to anticipate when
 -- GHC's brain might explode
@@ -566,89 +548,62 @@ checkIfBrainWillExplode _ =
   fail $ "Can't use a singleton pattern outside of a case-statement or\n" ++
          "do expression: GHC's brain will explode if you try. (Do try it!)"
 
-singPat :: PatternContext -> DPat -> SgM DPat
-singPat _patCxt (DLitPa _lit) =
+singPat :: Map Name Name   -- from term-level names to type-level names
+        -> PatternContext -> DPat -> QWithAux [Name]  -- these names must be forall-bound
+                                     SgM ( DPat
+                                         , DType ) -- the type form of the pat
+singPat _var_proms _patCxt (DLitPa _lit) =
   fail "Singling of literal patterns not yet supported"
-singPat _patCxt (DVarPa name) = return $ DVarPa (singValName name)
-singPat patCxt (DConPa name pats) = do
+singPat var_proms _patCxt (DVarPa name) = do
+  tyname <- case Map.lookup name var_proms of
+              Nothing     -> qNewName (nameBase name)
+              Just tyname -> return tyname
+  return (DVarPa (singValName name), DVarT tyname)
+singPat var_proms patCxt (DConPa name pats) = do
   checkIfBrainWillExplode patCxt
-  pats' <- mapM (singPat patCxt) pats
-  return $ DConPa (singDataConName name) pats'
-singPat patCxt (DTildePa pat) = do
-  pat' <- singPat patCxt pat
-  return $ DTildePa pat'
-singPat patCxt (DBangPa pat) = do
-  pat' <- singPat patCxt pat
-  return $ DBangPa pat'
-singPat _patCxt DWildPa = return DWildPa
-singPat _patCxt p@(DSigPa {}) =
-  fail $ "This should be impossible -- GHC doesn't quote scoped type variables, "
-      ++ "and th-desugar doesn't desugar them!\n"
-      ++ show p
+  (pats', tys) <- mapAndUnzipM (singPat var_proms patCxt) pats
+  return ( DConPa (singDataConName name) pats'
+         , foldl apply (promoteValRhs name) tys )
+singPat var_proms patCxt (DTildePa pat) = do
+  (pat', ty) <- singPat var_proms patCxt pat
+  return (DTildePa pat', ty)
+singPat var_proms patCxt (DBangPa pat) = do
+  (pat', ty) <- singPat var_proms patCxt pat
+  return (DBangPa pat', ty)
+singPat _var_proms _patCxt DWildPa = do
+  wild <- qNewName "wild"
+  addElement wild
+  return (DWildPa, DVarT wild)
 
-singExp :: DExp -> SgM DExp
-singExp = singExpRec []
-
-singExpRec :: [DExp]    -- not yet sing'ed
-           -> DExp -> SgM DExp
-singExpRec []   (DVarE name) = return (singVal name)
-singExpRec args (DVarE name) = do
-  proxies <- lookupProxy (singValName name)
-  args'  <- foldrM insert_proxies [] $ zip proxies args
-  return (foldExp (singVal name) args')
-  where
-    insert_proxies :: (ProxyFlag, DExp) -> [DExp] -> SgM [DExp]
-    insert_proxies (NoProxy,  e) es = (:) <$> singExp e <*> pure es
-    insert_proxies (YesProxy, e) es = do
-      ty <- liftPrM $ promoteExp e
-      e' <- singExp e
-      return (proxyFor ty : e' : es)
-singExpRec args (DConE name) = foldExp (singDataCon name) <$> mapM singExp args
-singExpRec args (DLitE lit) = foldExp <$> (singLit lit) <*> mapM singExp args
-singExpRec args (DAppE exp1 exp2) = singExpRec (exp2 : args) exp1
-singExpRec args (DLamE names exp) = do
-  -- DLamE doesn't allow type signatures in the patterns, so we have to
-  -- use a nested Case construct. Tiresome, but not bad.
+singExp :: ADExp -> SgM DExp
+singExp (ADVarE name)  = lookupVarE name
+singExp (ADConE name)  = lookupConE name
+singExp (ADLitE lit)   = singLit lit
+singExp (ADAppE e1 e2) = do
+  e1' <- singExp e1
+  e2' <- singExp e2
+  return $ (DVarE applySingName) `DAppE` e1' `DAppE` e2'
+singExp (ADLamE var_proms prom_lam names exp) = do
   let sNames = map singValName names
-      pats = map DVarPa sNames
-  arg_names <- mapM (const $ qNewName "arg") names
-  exp' <- singExp exp
-  foldExp (DLamE arg_names (DCaseE (mkTupleDExp $ map DVarE arg_names)
-                                   [DMatch (mkTupleDPat pats) exp']))
-          <$> mapM singExp args
-singExpRec args (DCaseE exp matches) = do
-  exp' <- singExp exp
-  matches' <- mapM singMatch matches
-  foldExp (DCaseE exp' matches') <$> mapM singExp args
-singExpRec args (DLetE decs exp) = do
-  (decs', exp') <- singLetDecs NotTopLevel decs $ singExp exp
-  foldExp (DLetE decs' exp') <$> mapM singExp args
-singExpRec args (DSigE exp ty) = do
-  exp' <- singExp exp
-  (ty', _) <- singType ty
-  pty <- liftPrM $ promoteExp exp
-  foldExp (DSigE exp' (ty' pty)) <$> mapM singExp args
+  exp' <- bindTyVars var_proms [] (foldl apply prom_lam (map (DVarT . snd) var_proms)) $
+          singExp exp
+  return $ wrapSingFun (length names) prom_lam $ DLamE sNames exp'
+singExp (ADCaseE exp matches) = DCaseE <$> singExp exp <*> mapM singMatch matches
+singExp (ADLetE env exp) =
+  uncurry DLetE <$> singLetDecEnv NotTopLevel env (singExp exp)
+singExp (ADSigE {}) =
+  fail "Singling of explicit type annotations not yet supported."
 
-singMatch :: DMatch -> SgM DMatch
-singMatch (DMatch pat exp) = do
-  sPat <- singPat CaseStatement pat
-  sExp <- singExp exp
+singMatch :: ADMatch -> SgM DMatch
+singMatch (ADMatch var_proms prom_match pat exp) = do
+  ((sPat, prom_pat), wilds)
+    <- evalForPair $ singPat (Map.fromList var_proms) CaseStatement pat
+        -- why DAppT below? See comment near decl of ADMatch in LetDecEnv.
+  sExp <- bindTyVars var_proms wilds (prom_match `DAppT` prom_pat) $ singExp exp
   return $ DMatch sPat sExp
 
 singLit :: Lit -> SgM DExp
 singLit lit = DSigE (DVarE singMethName) <$> (DAppT singFamily <$> (promoteLit lit))
-
-kindParam :: DKind -> DType
-kindParam k = DSigT (DConT kProxyDataName) (DConK kProxyTypeName [k])
-
-proxyFor :: DType -> DExp
-proxyFor ty = DSigE (DConE proxyDataName) (DAppT (DConT proxyTypeName) ty)
-
-singDataCon :: Name -> DExp
-singDataCon = DConE . singDataConName
-
-singVal :: Name -> DExp
-singVal = DVarE . singValName
 
 -----------------------------------------------------
 -- Generating SEq and SDecide instances
@@ -719,11 +674,11 @@ mkEqMethClause (c1, c2)
     return $ DClause
       [DConPa lname (replicate lNumArgs DWildPa),
        DConPa rname (replicate rNumArgs DWildPa)]
-      (singDataCon falseName)
+      (DConE $ singDataConName falseName)
   where allExp :: [DExp] -> DExp
-        allExp [] = singDataCon trueName
+        allExp [] = DConE $ singDataConName trueName
         allExp [one] = one
-        allExp (h:t) = DAppE (DAppE (singVal andName) h) (allExp t)
+        allExp (h:t) = DAppE (DAppE (DVarE $ singValName andName) h) (allExp t)
 
         (lname, lNumArgs) = extractNameArgs c1
         (rname, rNumArgs) = extractNameArgs c2
