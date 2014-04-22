@@ -1,15 +1,17 @@
-module Promote.TopLevelPatterns where
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
-import Data.Singletons.TH
+module Singletons.TopLevelPatterns where
+
+import Data.Singletons.TH hiding (STrue, SFalse, TrueSym0, FalseSym0)
 import Data.Singletons.List
-import Prelude hiding (Bool(..))
 
-$(promote [d|
+$(singletons [d|
   data Bool = False | True
   data Foo = Bar Bool Bool
  |])
 
-$(promote [d|
+$(singletons [d|
   otherwise :: Bool
   otherwise = True
 

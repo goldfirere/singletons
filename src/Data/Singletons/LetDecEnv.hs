@@ -45,7 +45,8 @@ type instance IfAnn Unannotated yes no = no
 data ALetDecRHS = AFunction DType  -- promote function (unapplied)
                             Int    -- number of arrows in type
                             [ADClause]
-                | AValue Int  -- number of arrows in type
+                | AValue DType -- promoted exp
+                         Int   -- number of arrows in type
                          ADExp
 data ULetDecRHS = UFunction [DClause]
                 | UValue DExp

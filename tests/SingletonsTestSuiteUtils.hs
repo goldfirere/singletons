@@ -96,7 +96,6 @@ ghcOpts = [
   , "-XCPP"
   , "-XLambdaCase"
   , "-XUnboxedTuples"
-  , "-XDeriveDataTypeable"
   ]
 
 -- Note [-package-name hack]

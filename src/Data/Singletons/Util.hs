@@ -159,6 +159,14 @@ prefixLCName pre tyPre n =
      then mkName (pre ++ str)
      else mkName (tyPre ++ str)
 
+suffixName :: String -> String -> Name -> Name
+suffixName ident symb n =
+  let str = nameBase n
+      first = head str in
+  if isHsLetter first
+  then mkName (str ++ ident)
+  else mkName (str ++ symb)
+
 -- extract the kind from a TyVarBndr. Returns '*' by default.
 extractTvbKind :: DTyVarBndr -> Maybe DKind
 extractTvbKind (DPlainTV _) = Nothing

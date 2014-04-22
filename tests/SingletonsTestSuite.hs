@@ -31,16 +31,16 @@ tests =
     , compileAndDumpStdTest "Lambdas"
     , compileAndDumpStdTest "LambdasComprehensive"
     , compileAndDumpStdTest "Error"
-    , compileAndDumpStdTest "LambdaCase"
-    ],
-    testCompileAndDumpGroup "Promote"
-    [ compileAndDumpStdTest "PatternMatching"
-    , compileAndDumpStdTest "Constructors"
-    , compileAndDumpStdTest "GenDefunSymbols"
-    , compileAndDumpStdTest "Newtypes"
     , compileAndDumpStdTest "TopLevelPatterns"
     , compileAndDumpStdTest "LetStatements"
+    , compileAndDumpStdTest "LambdaCase"
     , compileAndDumpStdTest "Sections"
+    , compileAndDumpStdTest "PatternMatching"
+    ],
+    testCompileAndDumpGroup "Promote"
+    [ compileAndDumpStdTest "Constructors"
+    , compileAndDumpStdTest "GenDefunSymbols"
+    , compileAndDumpStdTest "Newtypes"
     , compileAndDumpStdTest "Records"
     ],
     testGroup "Database client"

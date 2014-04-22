@@ -7,16 +7,17 @@
 
 module Quickly where
 
-import Promote.PatternMatching
 import Promote.Constructors
 #if __GLASGOW_HASKELL__ >= 707
 import Promote.Newtypes
 #endif
 import Promote.GenDefunSymbols
-import Promote.LetStatements
-import Promote.Sections
 import Promote.Records
 
+import Singletons.TopLevelPatterns
+import Singletons.Sections
+import Singletons.PatternMatching
+import Singletons.LetStatements
 import Singletons.Error
 import Singletons.LambdaCase
 import Singletons.Lambdas

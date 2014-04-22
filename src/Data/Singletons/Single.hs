@@ -223,7 +223,7 @@ singLetDecEnv top_level
     guess_num_args name =
       case Map.lookup name defns of
         Nothing -> fail "Internal error: promotion known for something not let-bound."
-        Just (AValue n _) -> return n
+        Just (AValue _ n _) -> return n
         Just (AFunction _ n _) -> return n
 
     mk_sing_ty :: Int -> DType -> SgM (DType, [Name])
@@ -236,9 +236,9 @@ singLetDecEnv top_level
              , arg_names )
 
     sing_let_dec :: Map Name [Name] -> Name -> ALetDecRHS -> SgM DLetDec
-    sing_let_dec _bound_names name (AValue num_arrows exp) =
+    sing_let_dec _bound_names name (AValue prom num_arrows exp) =
       DValD (DVarPa (singValName name)) <$>
-      (wrapUnSingFun num_arrows <$> singExp exp)
+      (wrapUnSingFun num_arrows prom <$> singExp exp)
     sing_let_dec bound_names name (AFunction prom_fun num_arrows clauses) =
       let tyvar_names = case Map.lookup name bound_names of
                           Nothing -> []
@@ -522,16 +522,20 @@ singClause :: DType   -- the promoted function
                       -- than the number of patterns, we need to eta-expand
                       -- with unSingFun.
            -> [Name]  -- the names of the forall'd vars in the type sig of this
-                      -- function. This list should have the same length as the
+                      -- function. This list should have at least the length as the
                       -- number of patterns in the clause
            -> ADClause -> SgM DClause
 singClause prom_fun num_arrows bound_names (ADClause var_proms pats exp) = do
   ((sPats, prom_pats), wilds)
     <- evalForPair $ mapAndUnzipM (singPat (Map.fromList var_proms) Parameter) pats
   let equalities = zip (map DVarT bound_names) prom_pats
-  sBody <- bindTyVarsClause var_proms wilds
-                            (foldl apply prom_fun prom_pats) equalities $ singExp exp
-  let sBody' = wrapUnSingFun (num_arrows - length pats) sBody
+      applied_ty = foldl apply prom_fun prom_pats
+  sBody <- bindTyVarsClause var_proms wilds applied_ty equalities $ singExp exp
+    -- when calling unSingFun, the prom_pats aren't in scope, so we use the
+    -- bound_names instead
+  let pattern_bound_names = zipWith const bound_names pats
+      sBody' = wrapUnSingFun (num_arrows - length pats)
+                 (foldl apply prom_fun (map DVarT pattern_bound_names)) sBody
   return $ DClause sPats sBody'
 
 -- we need to know where a pattern is to anticipate when

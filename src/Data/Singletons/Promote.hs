@@ -262,7 +262,8 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
                return (Just ki, (`DSigT` ki), countArgs ty)
       emitDecsM $ defunctionalize proName (map (const Nothing) all_locals) res_kind
       return ( DTySynD proName (map DPlainTV all_locals) (mk_rhs exp')
-             , AValue num_arrows ann_exp )
+             , AValue (foldType (DConT proName) (map DVarT all_locals))
+                      num_arrows ann_exp )
     prom_let_dec name (UFunction clauses) = do
       numArgs <- count_args clauses
       (m_argKs, m_resK, ty_num_args) <- case Map.lookup name type_env of
@@ -525,7 +526,7 @@ defunctionalize name m_arg_kinds m_res_kind = do
       extra_name <- qNewName "arg"
       let data_name   = promoteTySym name n
           next_name   = promoteTySym name (n+1)
-          con_name    = mkName $ nameBase (data_name) ++ "KindInference"
+          con_name    = suffixName "KindInference" "###" data_name
           m_tyfun     = buildTyFun_maybe m_arg m_result
           arg_params  = zipWith mk_tvb rest_names (reverse m_args)
           tyfun_param = mk_tvb fst_name m_tyfun

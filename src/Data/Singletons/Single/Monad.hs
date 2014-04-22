@@ -106,8 +106,8 @@ lookup_var_con mk_sing_name mk_exp name = do
     Just exp -> return exp
 
 wrapSingFun :: Int -> DType -> DExp -> DExp
-wrapSingFun 0 _  exp = exp
-wrapSingFun n ty exp =
+wrapSingFun 0 _  = id
+wrapSingFun n ty =
   let wrap_fun = DVarE $ case n of
                            1 -> 'singFun1
                            2 -> 'singFun2
@@ -118,11 +118,11 @@ wrapSingFun n ty exp =
                            7 -> 'singFun7
                            _ -> error "No support for functions of arity > 7."
   in
-  wrap_fun `DAppE` proxyFor ty `DAppE` exp
+  (wrap_fun `DAppE` proxyFor ty `DAppE`)
 
-wrapUnSingFun :: Int -> DExp -> DExp
-wrapUnSingFun 0 = id
-wrapUnSingFun n =
+wrapUnSingFun :: Int -> DType -> DExp -> DExp
+wrapUnSingFun 0 _  = id
+wrapUnSingFun n ty =
   let unwrap_fun = DVarE $ case n of
                              1 -> 'unSingFun1
                              2 -> 'unSingFun2
@@ -133,7 +133,7 @@ wrapUnSingFun n =
                              7 -> 'unSingFun7
                              _ -> error "No support for functions of arity > 7."
   in
-  DAppE unwrap_fun
+  (unwrap_fun `DAppE` proxyFor ty `DAppE`)
 
 singM :: Quasi q => SgM a -> q (a, [DDec])
 singM (SgM rdr) =

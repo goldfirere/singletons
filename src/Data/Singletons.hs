@@ -239,26 +239,26 @@ singFun7 _ f = SLambda (\x -> singFun6 Proxy (f x))
 
 -- | This is the inverse of 'singFun1', and likewise for the other
 -- @unSingFun...@ functions.
-unSingFun1 :: Sing f -> SingFunction1 f
-unSingFun1 sf = applySing sf
+unSingFun1 :: Proxy f -> Sing f -> SingFunction1 f
+unSingFun1 _ sf = applySing sf
 
-unSingFun2 :: Sing f -> SingFunction2 f
-unSingFun2 sf x = unSingFun1 (sf `applySing` x)
+unSingFun2 :: Proxy f -> Sing f -> SingFunction2 f
+unSingFun2 _ sf x = unSingFun1 Proxy (sf `applySing` x)
 
-unSingFun3 :: Sing f -> SingFunction3 f
-unSingFun3 sf x = unSingFun2 (sf `applySing` x)
+unSingFun3 :: Proxy f -> Sing f -> SingFunction3 f
+unSingFun3 _ sf x = unSingFun2 Proxy (sf `applySing` x)
 
-unSingFun4 :: Sing f -> SingFunction4 f
-unSingFun4 sf x = unSingFun3 (sf `applySing` x)
+unSingFun4 :: Proxy f -> Sing f -> SingFunction4 f
+unSingFun4 _ sf x = unSingFun3 Proxy (sf `applySing` x)
 
-unSingFun5 :: Sing f -> SingFunction5 f
-unSingFun5 sf x = unSingFun4 (sf `applySing` x)
+unSingFun5 :: Proxy f -> Sing f -> SingFunction5 f
+unSingFun5 _ sf x = unSingFun4 Proxy (sf `applySing` x)
 
-unSingFun6 :: Sing f -> SingFunction6 f
-unSingFun6 sf x = unSingFun5 (sf `applySing` x)
+unSingFun6 :: Proxy f -> Sing f -> SingFunction6 f
+unSingFun6 _ sf x = unSingFun5 Proxy (sf `applySing` x)
 
-unSingFun7 :: Sing f -> SingFunction7 f
-unSingFun7 sf x = unSingFun6 (sf `applySing` x)
+unSingFun7 :: Proxy f -> Sing f -> SingFunction7 f
+unSingFun7 _ sf x = unSingFun6 Proxy (sf `applySing` x)
 
 ----------------------------------------------------------------------
 ---- Convenience -----------------------------------------------------

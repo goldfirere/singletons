@@ -1,12 +1,12 @@
-{-# OPTIONS_GHC -fno-warn-unused-matches #-}
+{-# OPTIONS_GHC -fno-warn-unused-matches -fno-warn-incomplete-patterns #-}
 
-module Promote.PatternMatching where
+module Singletons.PatternMatching where
 
 import Data.Singletons.TH
 import Data.Singletons.Prelude
 import Singletons.Nat
 
-$(promote [d|
+$(singletons [d|
   data Pair a b = Pair a b deriving Show
   pr = Pair (Succ Zero) ([Zero])
   complex = Pair (Pair (Just Zero) Zero) False
@@ -14,7 +14,7 @@ $(promote [d|
   aList = [Zero, Succ Zero, Succ (Succ Zero)]
  |])
 
-$(promote [d|
+$(singletons [d|
   Pair sz lz = pr
   Pair (Pair jz zz) fls = complex
   (tf, tjz, tt) = tuple

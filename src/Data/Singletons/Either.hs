@@ -3,6 +3,8 @@
 
 #if __GLASGOW_HASKELL__ < 707
 {-# OPTIONS_GHC -fno-warn-name-shadowing #-}
+#else
+{-# LANGUAGE AllowAmbiguousTypes #-}
 #endif
 
 -----------------------------------------------------------------------------

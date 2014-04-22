@@ -1,12 +1,12 @@
 {-# OPTIONS_GHC -fno-warn-unused-binds -fno-warn-unused-matches
                 -fno-warn-name-shadowing #-}
 
-module Promote.LetStatements where
+module Singletons.LetStatements where
 
 import Data.Singletons.TH
 import Singletons.Nat
 
-$(promote [d|
+$(singletons [d|
   -- type signature required for a constant
   foo1 :: Nat -> Nat
   foo1 x = let y :: Nat
