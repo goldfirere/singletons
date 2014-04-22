@@ -1,4 +1,4 @@
-{- Data/Singletons/Promote/Equality.hs
+{- Data/Singletons/Promote/Eq.hs
 
 (c) Richard Eisenberg 2014
 eir@cis.upenn.edu
@@ -9,7 +9,7 @@ family instances.
 
 {-# LANGUAGE CPP #-}
 
-module Data.Singletons.Promote.Equality where
+module Data.Singletons.Promote.Eq where
 
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar

@@ -12,12 +12,15 @@ module Data.Singletons.Single where
 
 import Prelude hiding ( exp )
 import Language.Haskell.TH hiding ( cxt )
-import Language.Haskell.TH.Syntax (falseName, trueName, Quasi(..))
+import Language.Haskell.TH.Syntax (Quasi(..))
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Promote.Monad ( promoteMDecs, promoteM )
 import Data.Singletons.Names
 import Data.Singletons.Single.Monad
+import Data.Singletons.Single.Type
+import Data.Singletons.Single.Data
+import Data.Singletons.Single.Eq
 import Data.Singletons.LetDecEnv
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.Sweeten
@@ -89,6 +92,21 @@ singDecideInstances = concatMapM singDecideInstance
 -- @{-# OPTIONS_GHC -O0 #-}@ in your file.
 singDecideInstance :: Quasi q => Name -> q [Dec]
 singDecideInstance name = singEqualityInstance sDecideClassDesc name
+
+-- generalized function for creating equality instances
+singEqualityInstance :: Quasi q => EqualityClassDesc q -> Name -> q [Dec]
+singEqualityInstance desc@(_, className, _) name = do
+  (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
+                            show className ++ " for it.") name
+  dtvbs <- mapM dsTvb tvbs
+  dcons <- mapM dsCon cons
+  let tyvars = map (DVarK . extractTvbName) dtvbs
+      kind = DConK name tyvars
+  aName <- qNewName "a"
+  let aVar = DVarT aName
+  (scons, _) <- singM $ mapM (singCtor aVar) dcons
+  eqInstance <- mkEqualityInstance kind scons desc
+  return $ decToTH eqInstance
 
 singInfo :: Quasi q => DInfo -> q [DDec]
 singInfo (DTyConI dec Nothing) = do -- TODO: document this special case
@@ -173,8 +191,6 @@ buildLets (DDataD _nd _cxt _name _tvbs cons _derivings) =
 buildLets (DClassD _cxt _name _tvbs _fds decs) = concatMap buildLets decs
 buildLets _ = []
 
-data TopLevelFlag = TopLevel | NotTopLevel
-
 singLetDecEnv :: TopLevelFlag -> ALetDecEnv -> SgM a -> SgM ([DLetDec], a)
 singLetDecEnv top_level
               (LetDecEnv { lde_defns = defns
@@ -245,277 +261,6 @@ singLetDecEnv top_level
                           Just ns -> ns
       in
       DFunD (singValName name) <$> mapM (singClause prom_fun num_arrows tyvar_names) clauses
-
--- refine a constructor. the first parameter is the type variable that
--- the singleton GADT is parameterized by
-singCtor :: DType -> DCon -> SgM DCon
- -- polymorphic constructors are handled just
- -- like monomorphic ones -- the polymorphism in
- -- the kind is automatic
-singCtor a (DCon _tvbs cxt name fields)
-  | not (null cxt)
-  = fail "Singling of constrained constructors not yet supported"
-  | otherwise
-  = do
-  let types = tysOfConFields fields
-      sName = singDataConName name
-      sCon = DConE sName
-      pCon = DConT name
-  indexNames <- mapM (const $ qNewName "n") types
-  let indices = map DVarT indexNames
-  kinds <- mapM promoteType types
-  args <- zipWithM buildArgType types indices
-  let tvbs = zipWith DKindedTV indexNames kinds
-      kindedIndices = zipWith DSigT indices kinds
-
-  -- SingI instance
-  emitDecs 
-    [DInstanceD (map (DAppPr (DConPr singIName)) indices)
-                (DAppT (DConT singIName)
-                       (foldType pCon kindedIndices))
-                [DLetDec $ DValD (DVarPa singMethName)
-                       (foldExp sCon (map (const $ DVarE singMethName) types))]]
-
-  let conFields = case fields of
-                    DNormalC _ -> DNormalC $ map (NotStrict,) args
-                    DRecC rec_fields ->
-                      DRecC [ (singValName field_name, NotStrict, arg)
-                            | (field_name, _, _) <- rec_fields
-                            | arg <- args ]
-  return $ DCon tvbs
-                [foldl DAppPr (DConPr equalityName) [a, foldType pCon indices]]
-                sName
-                conFields
-  where buildArgType :: DType -> DType -> SgM DType
-        buildArgType ty index = do
-          (ty', _, _) <- singType NotTopLevel index ty
-          return ty'
-
--- We wish to consider the promotion of "Rep" to be *
--- not a promoted data constructor.
-singDataD :: DCxt -> Name -> [DTyVarBndr] -> [DCon] -> [Name] -> SgM [DDec]
-singDataD cxt name tvbs ctors derivings
-  | (_:_) <- cxt = fail "Singling of constrained datatypes is not supported"
-  | otherwise    = do
-  aName <- qNewName "z"
-  let a = DVarT aName
-  let tvbNames = map extractTvbName tvbs
-  k <- promoteType (foldType (DConT name) (map DVarT tvbNames))
-  ctors' <- mapM (singCtor a) ctors
-
-  -- instance for SingKind
-  fromSingClauses <- mapM mkFromSingClause ctors
-  toSingClauses   <- mapM mkToSingClause ctors
-  let singKindInst =
-        DInstanceD (map (singKindConstraint . DVarK) tvbNames)
-                   (DAppT (DConT singKindClassName)
-                          (kindParam k))
-                   [ DTySynInstD demoteRepName $ DTySynEqn
-                      [kindParam k]
-                      (foldType (DConT name)
-                        (map (DAppT demote . kindParam . DVarK) tvbNames))
-                   , DLetDec $ DFunD fromSingName (fromSingClauses `orIfEmpty` emptyMethod aName)
-                   , DLetDec $ DFunD toSingName   (toSingClauses   `orIfEmpty` emptyMethod aName) ]
-
-  -- SEq instance
-  sEqInsts <- if elem eqName derivings
-              then mapM (mkEqualityInstance k ctors') [sEqClassDesc, sDecideClassDesc]
-              else return []
-
-  -- e.g. type SNat (a :: Nat) = Sing a
-  let kindedSynInst =
-        DTySynD (singTyConName name)
-                [DKindedTV aName k]
-                (DAppT singFamily a)
-
-  return $ (DDataInstD Data [] singFamilyName [DSigT a k] ctors' []) :
-           kindedSynInst :
-           singKindInst :
-           sEqInsts
-  where -- in the Rep case, the names of the constructors are in the wrong scope
-        -- (they're types, not datacons), so we have to reinterpret them.
-        mkConName :: Name -> SgM Name
-        mkConName
-          | nameBase name == nameBase repName = mkDataName . nameBase
-          | otherwise                         = return
-
-        mkFromSingClause :: DCon -> SgM DClause
-        mkFromSingClause c = do
-          let (cname, numArgs) = extractNameArgs c
-          cname' <- mkConName cname
-          varNames <- replicateM numArgs (qNewName "b")
-          return $ DClause [DConPa (singDataConName cname) (map DVarPa varNames)]
-                           (foldExp
-                              (DConE cname')
-                              (map (DAppE (DVarE fromSingName) . DVarE) varNames))
-
-        mkToSingClause :: DCon -> SgM DClause
-        mkToSingClause (DCon _tvbs _cxt cname fields) = do
-          let types = tysOfConFields fields
-          varNames  <- mapM (const $ qNewName "b") types
-          svarNames <- mapM (const $ qNewName "c") types
-          promoted  <- mapM promoteType types
-          cname' <- mkConName cname
-          let recursiveCalls = zipWith mkRecursiveCall varNames promoted
-          return $
-            DClause [DConPa cname' (map DVarPa varNames)]
-                    (multiCase recursiveCalls
-                               (map (DConPa someSingDataName . listify . DVarPa)
-                                    svarNames)
-                               (DAppE (DConE someSingDataName)
-                                         (foldExp (DConE (singDataConName cname))
-                                                  (map DVarE svarNames))))
-
-        mkRecursiveCall :: Name -> DKind -> DExp
-        mkRecursiveCall var_name ki =
-          DSigE (DAppE (DVarE toSingName) (DVarE var_name))
-                (DAppT (DConT someSingTypeName) (kindParam ki))
-
-        emptyMethod :: Name -> [DClause]
-        emptyMethod n = [DClause [DVarPa n] (DCaseE (DVarE n) emptyMatches)]
-
--- Note [Singletonizing type signature]
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
--- Proces of singletonizing a type signature is conducted in two steps:
---
---  1. Prepare a singletonized (but not defunctionalized) type
---     signature. The result is returned as a function that expects
---     one type parameter. That parameter is the name of a type-level
---     equivalent (ie. a type family) of a function being promoted.
---     This is done by singTypeRec. Most of the implementation is
---     straightforward. The most interesting part is the promotion of
---     arrows (ArrowT clause). When we reach an arrow we expect that
---     both its parameters are placed within the context (this is done
---     by AppT clause). We promote the type of first parameter to a
---     kind and introduce it via kind-annotated type variable in a
---     forall. At this point arguments that are functions are
---     converted to TyFun representation. This is important for
---     defunctionalization.
---
---  2. Lift out foralls: accumulate separate foralls at the beginning
---     of type signature. So this:
---
---      forall (a :: k). Proxy a -> forall (b :: [k]). Proxy b -> SList (a ': b)
---
---     becomes:
---
---      forall (a :: k) (b :: [k]). Proxy a -> Proxy b -> SList (a ': b)
---
---     This was originally a workaround for #8031 but later this was
---     used as a part of defunctionalization algorithm. Lifting
---     foralls produces new type signature and a list of type
---     variables that represent type level functions (TyFun kind).
---
---  3. Introduce Apply and Proxy. Using the list of type variables
---     that are type level functions (see step 2) we convert each
---     application of such variable into application of Apply type
---     family. Also, for each type variable that was converted to
---     Apply we introduce a Proxy parameter. For example this
---     signature:
---
---       sEither_ ::
---         forall (t1 :: TyFun k1 k3 -> *)
---                (t2 :: TyFun k2 k3 -> *)
---                (t3 :: Either k1 k2).
---                (forall (t4 :: k1). Sing t4 -> Sing (t1 t4))
---             -> (forall (t5 :: k2). Sing t5 -> Sing (t2 t5))
---             -> Sing t3 -> Sing (Either_ t1 t2 t3)
---
---     is converted to:
---
---       sEither_ ::
---         forall (t1 :: TyFun k1 k3 -> *)
---                (t2 :: TyFun k2 k3 -> *)
---                (t3 :: Either k1 k2).
---                (forall (t4 :: k1). Proxy t1 -> Sing t4 -> Sing (Apply t1 t4))
---             -> (forall (t5 :: k2). Proxy t2 -> Sing t5 -> Sing (Apply t2 t5))
---             -> Sing t3 -> Sing (Either_ t1 t2 t3)
---
---     Note that Proxy parameters were introduced only for arguments
---     that are functions. This will require us to add extra Proxy
---     arguments when calling these functions in the function body
---     (see Note [Creating singleton functions in two stages]).
---
---  4. Steps 2 and 3 are mutually recursive, ie. we introduce Apply and Proxy
---     for each parameter in the function signature we are singletonizing. Why?
---     Because a higher order function may accept parameters that are themselves
---     higher order functions:
---
---       foo :: ((a -> b) -> a -> b) -> (a -> b)  -> a -> b
---       foo f g a = f g a
---
---     Here 'foo' is a higher order function for which we must introduce Apply
---     and Proxy, but so is 'f'. Hence the mutually recursive calls between
---     introduceApplyAndProxy and introduceApplyAndProxyWorker. Singletonized
---     foo looks like this:
---
---       sFoo :: forall (k1 :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
---                      (k2 :: TyFun a b -> *)
---                      (k3 :: a).
---               (forall (t1 :: TyFun a b -> *).
---                       Proxy k1 ->
---                       (forall (t2 :: a). Proxy t1 -> Sing t2 -> Sing (Apply t1 t2))
---               -> forall (t3 :: a). Sing t3 -> Sing (Apply (Apply k1 t1) t3))
---               -> (forall (t4 :: a). Proxy k2 -> Sing t4 -> Sing (Apply k2 t4))
---               -> Sing k3 -> Sing (Foo k1 k2 k3)
---       sFoo f g a = (f Proxy g) a
---
---     Luckily for us the Proxies we introduce for the higher-order parameter
---     are not reflected in the body of sFoo - it is assumed that 'f' will
---     handle passing Proxy paramters to 'g' internally. This allows us to
---     discard the Proxy count returned by introduceApplyAndProxy in the body of
---     introduceApplyAndProxyWorker.
-
-
--- The return type of singType is:
---
---   Type -> (Type, [Int])
---
--- where first Type is the type that will be substituted in the
--- signature (see Note [Singletonizing type signature]). The result is
--- a tuple containing the final type signature with its proxy table.
-singType :: TopLevelFlag -> DType -> DType -> SgM (DType, Int, [Name])
-singType top_level prom ty = do
-  let (cxt, tys) = unravel ty
-      args       = init tys
-      num_args   = length args
-  cxt' <- mapM singPred cxt
-  arg_names <- replicateM num_args (qNewName "t")
-  let args' = map (\n -> singFamily `DAppT` (DVarT n)) arg_names
-      res'  = singFamily `DAppT` (foldl apply prom (map DVarT arg_names))
-      tau   = ravel (args' ++ [res'])
-  ty' <- case top_level of
-           TopLevel -> do
-             prom_args <- mapM promoteType args
-             return $ DForallT (zipWith DKindedTV arg_names prom_args)
-                               cxt' tau
-                -- don't annotate kinds. Why? Because the original source
-                -- may have used scoped type variables, and we're just
-                -- not clever enough to get the scoped kind variables right.
-                -- (the business in bindTyVars gets in the way)
-                -- If ScopedTypeVariables was actually sane in patterns,
-                -- this restriction might be able to be lifted.
-           NotTopLevel -> return $ DForallT (map DPlainTV arg_names)
-                                            cxt' tau
-  return (ty', num_args, arg_names)
-
-singPred :: DPred -> SgM DPred
-singPred = singPredRec []
-
-singPredRec :: [DType] -> DPred -> SgM DPred
-singPredRec ctx (DAppPr pr ty) = singPredRec (ty : ctx) pr
-singPredRec _ctx (DSigPr _pr _ki) =
-  fail "Singling of constraints with explicit kinds not yet supported"
-singPredRec _ctx (DVarPr _n) =
-  fail "Singling of contraint variables not yet supported"
-singPredRec ctx (DConPr n)
-  | n == equalityName
-  = fail "Singling of type equality constraints not yet supported"
-  | otherwise = do
-    kis <- mapM promoteType ctx
-    let sName = singClassName n
-    return $ foldl DAppPr (DConPr sName) (map kindParam kis)
 
 singClause :: DType   -- the promoted function
            -> Int     -- the number of arrows in the type. If this is more
@@ -609,125 +354,4 @@ singMatch (ADMatch var_proms prom_match pat exp) = do
 singLit :: Lit -> SgM DExp
 singLit lit = DSigE (DVarE singMethName) <$> (DAppT singFamily <$> (promoteLit lit))
 
------------------------------------------------------
--- Generating SEq and SDecide instances
------------------------------------------------------
 
--- generalized function for creating equality instances
-singEqualityInstance :: Quasi q => EqualityClassDesc q -> Name -> q [Dec]
-singEqualityInstance desc@(_, className, _) name = do
-  (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
-                            show className ++ " for it.") name
-  dtvbs <- mapM dsTvb tvbs
-  dcons <- mapM dsCon cons
-  let tyvars = map (DVarK . extractTvbName) dtvbs
-      kind = DConK name tyvars
-  aName <- qNewName "a"
-  let aVar = DVarT aName
-  (scons, _) <- singM $ mapM (singCtor aVar) dcons
-  eqInstance <- mkEqualityInstance kind scons desc
-  return $ decToTH eqInstance
-
--- making the SEq instance and the SDecide instance are rather similar,
--- so we generalize
-type EqualityClassDesc q = ((DCon, DCon) -> q DClause, Name, Name)
-sEqClassDesc, sDecideClassDesc :: Quasi q => EqualityClassDesc q
-sEqClassDesc = (mkEqMethClause, sEqClassName, sEqMethName)
-sDecideClassDesc = (mkDecideMethClause, sDecideClassName, sDecideMethName)
-
--- pass the *singleton* constructors, not the originals
-mkEqualityInstance :: Quasi q => DKind -> [DCon]
-                   -> EqualityClassDesc q -> q DDec
-mkEqualityInstance k ctors (mkMeth, className, methName) = do
-  let ctorPairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
-  methClauses <- if null ctors
-                 then mkEmptyMethClauses
-                 else mapM mkMeth ctorPairs
-  return $ DInstanceD (map (\kvar -> (DConPr className) `DAppPr` kindParam kvar)
-                           (getKindVars k))
-                     (DAppT (DConT className)
-                            (kindParam k))
-                     [DLetDec $ DFunD methName methClauses]
-  where getKindVars :: DKind -> [DKind]
-        getKindVars (DVarK x)         = [DVarK x]
-        getKindVars (DConK _ args)    = concatMap getKindVars args
-        getKindVars DStarK            = []
-        getKindVars (DArrowK arg res) = concatMap getKindVars [arg, res]
-        getKindVars other             =
-          error ("getKindVars sees an unusual kind: " ++ show other)
-
-        mkEmptyMethClauses :: Quasi q => q [DClause]
-        mkEmptyMethClauses = do
-          a <- qNewName "a"
-          return [DClause [DVarPa a, DWildPa] (DCaseE (DVarE a) emptyMatches)]
-
-mkEqMethClause :: Quasi q => (DCon, DCon) -> q DClause
-mkEqMethClause (c1, c2)
-  | lname == rname = do
-    lnames <- replicateM lNumArgs (qNewName "a")
-    rnames <- replicateM lNumArgs (qNewName "b")
-    let lpats = map DVarPa lnames
-        rpats = map DVarPa rnames
-        lvars = map DVarE lnames
-        rvars = map DVarE rnames
-    return $ DClause
-      [DConPa lname lpats, DConPa rname rpats]
-      (allExp (zipWith (\l r -> foldExp (DVarE sEqMethName) [l, r])
-                        lvars rvars))
-  | otherwise =
-    return $ DClause
-      [DConPa lname (replicate lNumArgs DWildPa),
-       DConPa rname (replicate rNumArgs DWildPa)]
-      (DConE $ singDataConName falseName)
-  where allExp :: [DExp] -> DExp
-        allExp [] = DConE $ singDataConName trueName
-        allExp [one] = one
-        allExp (h:t) = DAppE (DAppE (DVarE $ singValName andName) h) (allExp t)
-
-        (lname, lNumArgs) = extractNameArgs c1
-        (rname, rNumArgs) = extractNameArgs c2
-
-mkDecideMethClause :: Quasi q => (DCon, DCon) -> q DClause
-mkDecideMethClause (c1, c2)
-  | lname == rname =
-    if lNumArgs == 0
-    then return $ DClause [DConPa lname [], DConPa rname []]
-                          (DAppE (DConE provedName) (DConE reflName))
-    else do
-      lnames <- replicateM lNumArgs (qNewName "a")
-      rnames <- replicateM lNumArgs (qNewName "b")
-      contra <- qNewName "contra"
-      let lpats = map DVarPa lnames
-          rpats = map DVarPa rnames
-          lvars = map DVarE lnames
-          rvars = map DVarE rnames
-      refl <- qNewName "refl"
-      return $ DClause
-        [DConPa lname lpats, DConPa rname rpats]
-        (DCaseE (mkTupleDExp $
-                 zipWith (\l r -> foldExp (DVarE sDecideMethName) [l, r])
-                         lvars rvars)
-                ((DMatch (mkTupleDPat (replicate lNumArgs
-                                        (DConPa provedName [DConPa reflName []])))
-                        (DAppE (DConE provedName) (DConE reflName))) :
-                 [DMatch (mkTupleDPat (replicate i DWildPa ++
-                                       DConPa disprovedName [DVarPa contra] :
-                                       replicate (lNumArgs - i - 1) DWildPa))
-                         (DAppE (DConE disprovedName)
-                                (DLamE [refl] $
-                                 DCaseE (DVarE refl)
-                                        [DMatch (DConPa reflName []) $
-                                         (DAppE (DVarE contra)
-                                                (DConE reflName))]))
-                 | i <- [0..lNumArgs-1] ]))
-
-  | otherwise = do
-    x <- qNewName "x"
-    return $ DClause
-      [DConPa lname (replicate lNumArgs DWildPa),
-       DConPa rname (replicate rNumArgs DWildPa)]
-      (DAppE (DConE disprovedName) (DLamE [x] (DCaseE (DVarE x) emptyMatches)))
-
-  where
-    (lname, lNumArgs) = extractNameArgs c1
-    (rname, rNumArgs) = extractNameArgs c2

@@ -21,8 +21,9 @@ module Data.Singletons.CustomStar ( singletonStar ) where
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Data.Singletons.Util
-import Data.Singletons.Single
 import Data.Singletons.Single.Monad
+import Data.Singletons.Single.Data
+import Data.Singletons.Single.Eq
 import Data.Singletons.Names
 import Control.Monad
 import Data.Maybe

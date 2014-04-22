@@ -209,6 +209,12 @@ ravel (h:t) = DAppT (DAppT DArrowT h) (ravel t)
 countArgs :: DType -> Int
 countArgs ty = length (snd $ unravel ty) - 1
 
+addStar :: DKind -> DKind
+addStar t = DArrowK t DStarK
+
+addStar_maybe :: Maybe DKind -> Maybe DKind
+addStar_maybe t = DArrowK <$> t <*> pure DStarK
+
 -- apply a type to a list of types
 foldType :: DType -> [DType] -> DType
 foldType = foldl DAppT
