@@ -1,8 +1,8 @@
-module Promote.Records where
+module Singletons.Records where
 
 import Data.Singletons.TH
 
-$(promote [d|
+$(singletons [d|
   data Record a = MkRecord { field1 :: a
                            , field2 :: Bool }
   |])

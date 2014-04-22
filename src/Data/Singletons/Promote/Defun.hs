@@ -65,15 +65,32 @@ buildDefunSymsDataD tyName tvbs ctors = do
 -- application at the type level:
 --
 -- type FooSym3 a b c = Foo a b c
--- data FooSym2 :: Nat -> Nat -> (TyFun Nat Nat) -> *
+-- data FooSym2 a b f where
+--   FooSym2KindInference :: Apply (FooSym2 a b) arg ~ FooSym3 a b arg
+--                        => Proxy arg
+--                        -> FooSym2 a b f
 -- type instance Apply (FooSym2 a b) c = FooSym3 a b c
--- data FooSym1 :: Nat -> (TyFun Nat (TyFun Nat Nat -> *)) -> *
+-- data FooSym1 a f where
+--   FooSym1KindInference :: Apply (FooSym1 a) arg ~ FooSym2 a arg
+--                        => Proxy arg
+--                        -> FooSym1 a f
 -- type instance Apply (FooSym1 a) b = FooSym2 a b
--- data FooSym0 :: TyFun Nat (TyFun Nat (TyFun Nat Nat -> *) -> *) -> *
+-- data FooSym0 f where
+--  FooSym0KindInference :: Apply FooSym0 arg ~ FooSym1 arg
+--                       => Proxy arg
+--                       -> FooSym0 f
 -- type instance Apply FooSym0 a = FooSym1 a
 --
--- defunctionalize takes list of kinds of the type family parameters and
--- kind of the result.
+-- What's up with all the "KindInference" stuff? In some scenarios, we don't
+-- know the kinds that we should be using in these symbols. But, GHC can figure
+-- it out using the types of the "KindInference" dummy data constructors. A
+-- bit of a hack, but it works quite nicely. The only problem is that GHC will
+-- warn about an unused data constructor. So, we use the data constructor in
+-- an instance of a dummy class. (See Data.Singletons.Hidden for the class, which
+-- should never be seen by anyone, ever.)
+--
+-- The defunctionalize function takes Maybe DKinds so that the caller can
+-- indicate which kinds are known and which need to be inferred.
 defunctionalize :: Name -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
 defunctionalize name m_arg_kinds m_res_kind = do
   let num_args = length m_arg_kinds
@@ -139,7 +156,6 @@ buildTyFun_maybe m_k1 m_k2 = do
   return $ DConK tyFunName [k1, k2]
 
 -- Counts the arity of type level function represented with TyFun constructors
--- TODO: this and isTuFun looks like a good place to use PatternSynonyms
 tyFunArity :: DKind -> Int
 tyFunArity (DArrowK (DConK tyFunNm [_, b]) DStarK)
   | tyFunName == tyFunNm

@@ -20,12 +20,22 @@ import qualified Data.Map.Strict as Map
 
 type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
 
+{-
+We see below several datatypes beginning with "A". These are annotated structures,
+necessary for Promote to communicate key things to Single. In particular, promotion
+of expressions is *not* deterministic, due to the necessity to create unique names
+for lets, cases, and lambdas. So, we put these promotions into an annotated AST
+so that Single can use the right promotions.
+-}
+
 -- A DExp with let and lambda nodes annotated with their type-level equivalents
 data ADExp = ADVarE Name
            | ADConE Name
            | ADLitE Lit
            | ADAppE ADExp ADExp
-           | ADLamE VarPromotions DType [Name] ADExp
+           | ADLamE VarPromotions  -- bind these type variables to these term vars
+                    DType          -- the promoted lambda
+                    [Name] ADExp
            | ADCaseE ADExp [ADMatch]
            | ADLetE ALetDecEnv ADExp
            | ADSigE ADExp DType

@@ -36,12 +36,12 @@ tests =
     , compileAndDumpStdTest "LambdaCase"
     , compileAndDumpStdTest "Sections"
     , compileAndDumpStdTest "PatternMatching"
+    , compileAndDumpStdTest "Records"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"
     , compileAndDumpStdTest "GenDefunSymbols"
     , compileAndDumpStdTest "Newtypes"
-    , compileAndDumpStdTest "Records"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts

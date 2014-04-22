@@ -83,27 +83,22 @@ promoteInfo (DTyVarI _name _ty) =
 -- Note [Promoting declarations in two stages]
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --
--- Promoting declarations proceeds in two stages:
--- 1) Promote everything except type signatures.
---    Function and value declarations don't get promoted yet, but the key
---    information (either the function clauses or the value RHS) get stored
---    in a LetDecEnv.
-
--- 2) Promote type signatures. This must be done in a second pass
---    because a function type signature gets promoted to a type family
---    declaration.  Although function signatures do not differentiate
---    between uniform parameters and non-uniform parameters, type
---    family declarations do. We need to process a function's
---    definition to get the count of non-uniform parameters before
---    producing the type family declaration.  At this point, any
---    function written without a type signature is rejected and
---    removed.
+-- It is necessary to know the types of things when promoting. So,
+-- we promote in two stages: first, we build a LetDecEnv, which allows
+-- for easy lookup. Then, we go through the actual elements of the LetDecEnv,
+-- performing the promotion.
+--
+-- Why do we need the types? For kind annotations on the type family. We also
+-- need to have both the types and the actual function definition at the same
+-- time, because the function definition tells us how many patterns are
+-- matched. Note that an eta-contracted function needs to return a TyFun,
+-- not a proper type-level function.
 --
 -- Consider this example:
 --
---   foo :: Int -> Bool -> Bool
---   foo 0 = id
---   foo _ = not
+--   foo :: Nat -> Bool -> Bool
+--   foo Zero = id
+--   foo _    = not
 --
 -- Here the first parameter to foo is non-uniform, because it is
 -- inspected in a pattern and can be different in each defining
@@ -112,9 +107,9 @@ promoteInfo (DTyVarI _name _ty) =
 -- each defining equation of foo uses it the same way. The foo
 -- function will be promoted to a type familty Foo like this:
 --
---   type family Foo (n :: Int) :: Bool -> Bool where
---      Foo 0 = Id
---      Foo a = Not
+--   type family Foo (n :: Nat) :: TyFun Bool Bool -> * where
+--      Foo Zero = Id
+--      Foo a    = Not
 --
 -- To generate type signature for Foo type family we must first learn
 -- what is the actual number of patterns used in defining cequations
@@ -146,7 +141,7 @@ promoteNonLetDecs other_decs = do
       concatMapM (getRecordSelectors arg_ty) cons
     extract_rec_selectors _ = return []
     
-  
+-- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
 promoteLetDecs :: String -- prefix to use on all new definitions
                -> [DLetDec] -> PrM ([LetBind], ALetDecEnv)
 promoteLetDecs prefix decls = do
@@ -162,18 +157,6 @@ promoteLetDecs prefix decls = do
 
 noPrefix :: String
 noPrefix = ""
-
-{---------------------------------------------------------------------
-
-Note [Why lhsToDecs works]
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-It seems odd (to RAE, at least) that a *symbol* type synonym is identical
-to a normal one. Won't the kind of a normal type synonym not be
-defunctionalized? Ah, but it would be, because the RHS is promoted in
-a defunctionalized way. So, it all works out.
-
----------------------------------------------------------------------}
 
 promoteDec :: DDec -> PrM [DDec]
 promoteDec (DLetDec letdec) = fail $ "Internal error! Let-declarations should " ++
@@ -236,13 +219,19 @@ promoteLetDecEnv :: String -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
                                    , lde_types = type_env
                                    , lde_infix = infix_decls }) = do
+    -- deal with the infix_decls, to get them out of the way
   let infix_decls'  = catMaybes $ map (uncurry prom_infix_decl) infix_decls
+
+    -- promote all the declarations, producing annotated declarations
       (names, rhss) = unzip $ Map.toList value_env
   (decs, ann_rhss) <- fmap unzip $ zipWithM prom_let_dec names rhss
+
+    -- build the ALetDecEnv
   let let_dec_env' = LetDecEnv { lde_defns = Map.fromList $ zip names ann_rhss
                                , lde_types = type_env
                                , lde_infix = infix_decls
                                , lde_proms = Map.empty }  -- filled in promoteLetDecs
+
   return (infix_decls' ++ decs, let_dec_env')
   where
     prom_infix_decl :: Fixity -> Name -> Maybe DDec
@@ -265,10 +254,13 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
       return ( DTySynD proName (map DPlainTV all_locals) (mk_rhs exp')
              , AValue (foldType (DConT proName) (map DVarT all_locals))
                       num_arrows ann_exp )
+        
     prom_let_dec name (UFunction clauses) = do
       numArgs <- count_args clauses
       (m_argKs, m_resK, ty_num_args) <- case Map.lookup name type_env of
 #if __GLASGOW_HASKELL__ < 707
+          -- we require a type signature here because GHC 7.6.3 doesn't support
+          -- kind inference for type families
         Nothing -> fail ("No type signature for function \"" ++
                          (nameBase name) ++ "\". Cannot promote in GHC 7.6.3.\n" ++
                          "Either add a type signature or upgrade GHC.")
@@ -408,6 +400,4 @@ promoteLit (IntegerL n)
 promoteLit (StringL str) = return $ DLitT (StrTyLit str)
 promoteLit lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
-
-
 

@@ -21,7 +21,7 @@ module Data.Singletons.Single.Monad (
 import Prelude hiding ( exp )
 import Data.Map ( Map )
 import qualified Data.Map as Map
-import Data.Singletons.Promote.Monad hiding (lookupVarE)
+import Data.Singletons.Promote.Monad ( emitDecs, emitDecsM, VarPromotions )
 import Data.Singletons.Names
 import Data.Singletons.Util
 import Data.Singletons
@@ -42,7 +42,7 @@ emptySgEnv = SgEnv { sg_let_binds = Map.empty
                    }
 
 -- the singling monad
-newtype SgM a = SgM (ReaderT SgEnv PrM a)
+newtype SgM a = SgM (ReaderT SgEnv (WriterT [DDec] Q) a)
   deriving ( Functor, Applicative, Monad, Quasi
            , MonadReader SgEnv, MonadWriter [DDec] )
 
@@ -50,6 +50,53 @@ bindLets :: [(Name, DExp)] -> SgM a -> SgM a
 bindLets lets1 =
   local (\env@(SgEnv { sg_let_binds = lets2 }) ->
                env { sg_let_binds = (Map.fromList lets1) `Map.union` lets2 })
+
+{-
+bindTyVarsClause
+~~~~~~~~~~~~~~~~
+
+This function does some dirty business.
+
+The problem is that, whenever we bind a term variable, we would also like to
+bind a type variable, for use in promotions of any nested lambdas, cases, and lets.
+The natural idea, something like `(\(foo :: Sing ty_foo) (bar :: Sing ty_bar) -> ...)`
+doesn't work, because ScopedTypeVariables is stupid (in RAE's opinon). The
+ScopedTypeVariables extension says that any scoped type variable is a rigid skolem.
+This means that the types ty_foo and ty_bar must be distinct! That's actually not
+the problem. The problem is that the implicit kind variables used in ty_foo's and
+ty_bar's kinds are also skolems, and this breaks the idea.
+
+The solution? Use scoped type variables from a function signature, where the
+bound variables' kinds are *inferred*, not skolem. This means that, whenever
+we lambda-bind variables (that is, in lambdas, let-bound functions, and case
+matches), we must then pass the variables immediately to a function with an
+explicit type signature. Thus, something like
+
+  (\foo bar -> ...)
+
+becomes
+
+  (\foo bar ->
+    let lambda :: forall ty_foo ty_bar. Sing ty_foo -> Sing ty_bar -> Sing ...
+        lambda foo' bar' = ... (with foo |-> foo' and bar |-> bar')
+    in lambda foo bar)
+
+Getting the ... right in the type above is a major nuisance, and it explains
+a bunch of the types stored in the ADExp AST. (See LetDecEnv.)
+
+A further, unsolved problem with all of this is that the type signature generated
+never has any constraints. Thus, if the body requires a constraint somewhere, the
+code will fail to compile; we're not quite clever enough to get everything to line
+up.
+
+As a stop-gap measure to fix this, in the function clause case, we tie the scoped
+type variables in this "lambda" to the outer scoped type variables. This has the
+effect of making sure that the kinds of ty_foo and ty_bar match that of the outer
+context and makes sure that any constraint is available from within the "lambda".
+
+This means, though, that using constraints with case statements and lambdas will
+likely not work. Ugh.
+-}
 
 bindTyVarsClause :: VarPromotions   -- the bindings we wish to effect
                  -> [Name]          -- free variables in...
@@ -137,8 +184,10 @@ wrapUnSingFun n ty =
 
 singM :: Quasi q => SgM a -> q (a, [DDec])
 singM (SgM rdr) =
-  let prm = runReaderT rdr emptySgEnv in
-  promoteM prm
+  let wr = runReaderT rdr emptySgEnv
+      q  = runWriterT wr
+  in
+  runQ q
 
 singDecsM :: Quasi q => SgM [DDec] -> q [DDec]
 singDecsM thing = do

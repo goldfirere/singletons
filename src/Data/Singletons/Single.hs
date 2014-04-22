@@ -29,6 +29,40 @@ import Data.Map.Strict ( Map )
 import Control.Monad
 import Control.Applicative
 
+{-
+How singletons works
+~~~~~~~~~~~~~~~~~~~~
+
+Singling, on the surface, doesn't seem all that complicated. Promote the type,
+and singletonize all the terms. That's essentially what was done singletons < 1.0.
+But, now we want to deal with higher-order singletons. So, things are a little
+more complicated.
+
+The way to understand all of this is that *every* variable maps to something
+of type (Sing t), for an appropriately-kinded t. This includes functions, which
+use the "SLambda" instance of Sing. To apply singleton functions, we use the
+applySing function.
+
+That, in an of itself, wouldn't be too hard, but it's really annoying from
+the user standpoint. After dutifully singling `map`, a user doesn't want to
+have to use two `applySing`s to actually use it. So, any let-bound identifier
+is eta-expanded so that the singled type has the same number of arrows as
+the original type. (If there is no original type signature, then it has as
+many arrows as the original had patterns.) Then, we store a use of one of the
+singFunX functions in the SgM environment so that every use of a let-bound
+identifier has a proper type (Sing t).
+
+It would be consistent to avoid this eta-expansion for local lets (as opposed
+to top-level lets), but that seemed like more bother than it was worth. It
+may also be possible to be cleverer about nested eta-expansions and contractions,
+but that also seemed not to be worth it. Though I haven't tested it, my hope
+is that the eta-expansions and contractions have no runtime effect, especially
+because SLambda is a *newtype* instance, not a *data* instance.
+
+Note that to maintain the desired invariant, we must also be careful to eta-
+contract constructors. This is the point of buildLets.
+-}
+
 -- | Generate singleton definitions from a type that is already defined.
 -- For example, the singletons package itself uses
 --
@@ -120,18 +154,6 @@ singInfo (DVarI _name _ty _mdec _fixity) =
 singInfo (DTyVarI _name _ty) =
   fail "Singling of type variable info not supported"
 
--- Note [Creating singleton functions in two stages]
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
--- Creating a singletons from declaration is conducted in two stages:
---
---  1) Singletonize everything except function bodies. When
---     singletonizing type signature for a function it might happen
---     that parameters that are functions will receive extra 'Proxy t'
---     arguments. We record information about number of Proxy
---     arguments required by each function argument.
---  2) Singletonize function bodies. We use information acquired in
---     step one to introduce extra Proxy arguments in the function body.
 singTopLevelDecs :: Quasi q => [DDec] -> q [DDec]
 singTopLevelDecs decls = do
   let (letDecls, otherDecls) = partitionLetDecs decls
@@ -171,6 +193,7 @@ singDec (DClosedTypeFamilyD _name _tvs _mkind _eqns) =
 singDec (DRoleAnnotD _name _roles) =
   return [] -- silently ignore role annotations, as they're harmless
 
+-- see comment at top of file
 buildLets :: DDec -> [(Name, DExp)]
 buildLets (DDataD _nd _cxt _name _tvbs cons _derivings) =
   concatMap con_num_args cons
@@ -242,6 +265,7 @@ singLetDecEnv top_level
         Just (AValue _ n _) -> return n
         Just (AFunction _ n _) -> return n
 
+      -- create a Sing t1 -> Sing t2 -> ... type of a given arity and result type
     mk_sing_ty :: Int -> DType -> SgM (DType, [Name])
     mk_sing_ty n prom_ty = do
       arg_names <- replicateM n (qNewName "arg")
@@ -279,6 +303,7 @@ singClause prom_fun num_arrows bound_names (ADClause var_proms pats exp) = do
     -- when calling unSingFun, the prom_pats aren't in scope, so we use the
     -- bound_names instead
   let pattern_bound_names = zipWith const bound_names pats
+       -- this does eta-expansion. See comment at top of file.
       sBody' = wrapUnSingFun (num_arrows - length pats)
                  (foldl apply prom_fun (map DVarT pattern_bound_names)) sBody
   return $ DClause sPats sBody'
