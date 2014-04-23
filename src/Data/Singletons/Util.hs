@@ -353,7 +353,7 @@ mapAndUnzip3M _ []     = return ([],[],[])
 mapAndUnzip3M f (x:xs) = do
     (r1,  r2,  r3)  <- f x
     (rs1, rs2, rs3) <- mapAndUnzip3M f xs
-    return (r1:rs1, r2:rs2, r3:rs3)                  
+    return (r1:rs1, r2:rs2, r3:rs3)
 
 -- is it a letter or underscore?
 isHsLetter :: Char -> Bool

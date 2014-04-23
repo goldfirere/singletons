@@ -4,7 +4,7 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Eq
+-- Module      :  Data.Singletons.Prelude.Eq
 -- Copyright   :  (C) 2013 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
@@ -15,15 +15,15 @@
 --
 -----------------------------------------------------------------------------
 
-module Data.Singletons.Eq (
+module Data.Singletons.Prelude.Eq (
   SEq(..),
-  type (==), (:==), (:/=), (:==$), (:==$$), (:/=$), (:/=$$)
+  type (==), (:==), (:/=), (:==$), (:==$$), (:==$$$), (:/=$), (:/=$$), (:/=$$$)
   ) where
 
-import Data.Singletons.Bool
+import Data.Singletons.Prelude.Bool
 import Data.Singletons
 import Data.Singletons.Single
-import Data.Singletons.Instances
+import Data.Singletons.Prelude.Instances
 import Data.Singletons.Types
 import Data.Singletons.Util
 #if __GLASGOW_HASKELL__ < 707
@@ -33,11 +33,13 @@ import Data.Singletons.Promote ( promoteEqInstances )
 -- | A type synonym conforming to singletons naming conventions
 type a :/= b = Not (a :== b)
 
+type (:==$$$) a b = a :== b
 data (:==$$) (a :: k1) (b :: TyFun k1 Bool)
 data (:==$) (a :: TyFun k1 (TyFun k1 Bool -> *))
 type instance Apply ((:==$$) a) b = a :== b
 type instance Apply (:==$)      a = (:==$$) a
 
+type (:/=$$$) a b = a :== b
 data (:/=$$) (a :: k1) (b :: TyFun k1 Bool)
 data (:/=$) (a :: TyFun k1 (TyFun k1 Bool -> *))
 type instance Apply ((:/=$$) a) b = a :/= b

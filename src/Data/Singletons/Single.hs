@@ -163,7 +163,7 @@ singTopLevelDecs decls = do
 
   when (not (null classes) || not (null insts)) $
     qReportError "Classes and instances may not yet be made into singletons."
-    
+
   dataDecls' <- promoteM_ $ promoteDataDecs datas
   ((_, letDecEnv), letDecls') <- promoteM $ promoteLetDecs noPrefix letDecls
   singDecsM $ do
@@ -224,7 +224,7 @@ singLetDecEnv top_level
                 -> SgM ( DLetDec               -- the new type signature
                        , (Name, DExp)          -- the let-bind entry
                        , (Name, [Name])        -- the scoped tyvar names in the tysig
-                       ) 
+                       )
     sing_ty_sig name prom_ty =
       let sName = singValName name in
       case Map.lookup name types of
@@ -360,5 +360,3 @@ singMatch (ADMatch var_proms prom_match pat exp) = do
 
 singLit :: Lit -> SgM DExp
 singLit lit = DSigE (DVarE singMethName) <$> (DAppT singFamily <$> (promoteLit lit))
-
-

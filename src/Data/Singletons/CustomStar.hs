@@ -34,8 +34,8 @@ import Language.Haskell.TH.Desugar.Sweeten
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Singletons.Decide
-import Data.Singletons.Instances
-import Data.Singletons.Eq
+import Data.Singletons.Prelude.Instances
+import Data.Singletons.Prelude.Eq
 import Unsafe.Coerce
 #endif
 

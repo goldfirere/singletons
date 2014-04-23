@@ -1,16 +1,15 @@
-{- Data/Singletons/Hidden.hs
-
-(c) Richard Eisenberg 2014
-eir@cis.upenn.edu
-
-This declares user-oriented exports that are actually meant to be hidden
-from the user. Why would anyone ever want this? Because what is below
-is dirty, and no one wants to see it.
--}
+-- Data/Singletons/Hidden.hs
+--
+-- (c) Richard Eisenberg 2014
+-- eir@cis.upenn.edu
+--
+-- This declares user-oriented exports that are actually meant to be hidden
+-- from the user. Why would anyone ever want this? Because what is below
+-- is dirty, and no one wants to see it.
 
 {-# LANGUAGE PolyKinds #-}
 
-module Data.Singletons.Hidden where
+module Data.Singletons.SuppressUnusedWarnings where
 
 import Data.Proxy
 

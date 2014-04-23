@@ -11,7 +11,7 @@ Defining names and maniuplations on names for use in promotion and singling.
 module Data.Singletons.Names where
 
 import Data.Singletons
-import Data.Singletons.Hidden
+import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.Types
 import Data.Singletons.Decide
 import Language.Haskell.TH.Syntax

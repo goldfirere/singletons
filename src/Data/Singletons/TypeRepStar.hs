@@ -29,10 +29,10 @@ module Data.Singletons.TypeRepStar (
   -- also supplied.
   ) where
 
-import Data.Singletons.Instances
+import Data.Singletons.Prelude.Instances
 import Data.Singletons
 import Data.Singletons.Types
-import Data.Singletons.Eq
+import Data.Singletons.Prelude.Eq
 import Data.Typeable
 import Unsafe.Coerce
 import Data.Singletons.Decide

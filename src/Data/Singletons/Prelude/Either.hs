@@ -9,8 +9,8 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Either
--- Copyright   :  (C) 2013 Richard Eisenberg
+-- Module      :  Data.Singletons.Prelude.Either
+-- Copyright   :  (C) 2013-2014 Richard Eisenberg, Jan Stolarek
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
 -- Stability   :  experimental
@@ -27,7 +27,7 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Singletons.Either (
+module Data.Singletons.Prelude.Either (
   -- * The 'Either' singleton
   Sing(SLeft, SRight),
   -- | Though Haddock doesn't show it, the 'Sing' instance above declares
@@ -50,17 +50,16 @@ module Data.Singletons.Either (
   PartitionEithers, sPartitionEithers, IsLeft, sIsLeft, IsRight, sIsRight,
 
   -- * Defunctionalization symbols
-  LeftSym0, RightSym0,
+  LeftSym0, LeftSym1, RightSym0, RightSym1,
 
-  Either_Sym0, Either_Sym1, Either_Sym2,
-  LeftsSym0, RightsSym0,
-  PartitionEithersSym0, PartitionEithers_auxSym0, PartitionEithers_auxSym1,
-  IsLeftSym0, IsRightSym0
+  Either_Sym0, Either_Sym1, Either_Sym2, Either_Sym3,
+  LeftsSym0, LeftsSym1, RightsSym0, RightsSym1,
+  IsLeftSym0, IsLeftSym1, IsRightSym0, IsRightSym1
   ) where
 
-import Data.Singletons.Instances
+import Data.Singletons.Prelude.Instances
 import Data.Singletons.TH
-import Data.Singletons.List
+import Data.Singletons.Prelude.Base
 
 $(singletons [d|
   -- | Case analysis for the 'Either' type.
@@ -92,16 +91,11 @@ $(singletonsOnly [d|
   -- All the 'Left' elements are extracted, in order, to the first
   -- component of the output.  Similarly the 'Right' elements are extracted
   -- to the second component of the output.
-
   partitionEithers :: [Either a b] -> ([a],[b])
-  partitionEithers es = partitionEithers_aux ([], []) es
-
-  partitionEithers_aux :: ([a],[b]) -> [Either a b] -> ([a],[b])
-  partitionEithers_aux (as,bs) [] = (reverse as,reverse bs)
-  partitionEithers_aux (as,bs) (Left a : es) =
-    partitionEithers_aux (a : as, bs) es
-  partitionEithers_aux (as,bs) (Right b : es) =
-    partitionEithers_aux (as, b : bs) es
+  partitionEithers = foldr (either_ left right) ([],[])
+   where
+    left  a (l, r) = (a:l, r)
+    right a (l, r) = (l, a:r)
 
   -- | Return `True` if the given value is a `Left`-value, `False` otherwise.
   --

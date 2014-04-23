@@ -20,7 +20,7 @@ re-exported from various places.
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Data.Singletons.Instances where
+module Data.Singletons.Prelude.Instances where
 
 import Data.Singletons.Single
 import Data.Singletons.Util

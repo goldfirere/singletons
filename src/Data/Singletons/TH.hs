@@ -60,9 +60,9 @@ module Data.Singletons.TH (
 import Data.Singletons
 import Data.Singletons.Single
 import Data.Singletons.Promote
-import Data.Singletons.Instances
-import Data.Singletons.Bool
-import Data.Singletons.Eq
+import Data.Singletons.Prelude.Instances
+import Data.Singletons.Prelude.Bool
+import Data.Singletons.Prelude.Eq
 import Data.Singletons.Types
 import Data.Singletons.Void
 import Data.Singletons.Decide

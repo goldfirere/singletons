@@ -29,9 +29,9 @@ module Data.Singletons.TypeLits (
 
 import Data.Singletons
 import Data.Singletons.Types
-import Data.Singletons.Eq
+import Data.Singletons.Prelude.Eq
 import Data.Singletons.Decide
-import Data.Singletons.Bool
+import Data.Singletons.Prelude.Bool
 #if __GLASGOW_HASKELL__ >= 707
 import GHC.TypeLits
 #else
@@ -67,7 +67,7 @@ instance SingKind ('KProxy :: KProxy Symbol) where
   fromSing (SSym :: Sing n) = symbolVal (Proxy :: Proxy n)
   toSing s = case someSymbolVal s of
                SomeSymbol (_ :: Proxy n) -> SomeSing (SSym :: Sing n)
-                  
+
 #else
 
 data TLSingInstance (a :: k) where
@@ -88,7 +88,7 @@ withTLSingI sn r =
 
 data instance Sing (n :: Nat) = TL.SingRep n Integer => SNat
 
-instance TL.SingRep n Integer => SingI (n :: Nat) where 
+instance TL.SingRep n Integer => SingI (n :: Nat) where
   sing = SNat
 
 instance SingKind ('KProxy :: KProxy Nat) where
@@ -143,7 +143,7 @@ instance SDecide ('KProxy :: KProxy Symbol) where
     | otherwise
     = Disproved (\_ -> error errStr)
     where errStr = "Broken Symbol singletons"
-                  
+
 -- need SEq instances for TypeLits kinds
 instance SEq ('KProxy :: KProxy Nat) where
   a %:== b
@@ -154,7 +154,7 @@ instance SEq ('KProxy :: KProxy Symbol) where
   a %:== b
     | fromSing a == fromSing b    = unsafeCoerce STrue
     | otherwise                   = unsafeCoerce SFalse
-                  
+
 -- | Kind-restricted synonym for 'Sing' for @Nat@s
 type SNat (x :: Nat) = Sing x
 

@@ -7,8 +7,8 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Bool
--- Copyright   :  (C) 2013 Richard Eisenberg
+-- Module      :  Data.Singletons.Prelude.Bool
+-- Copyright   :  (C) 2013-2014 Richard Eisenberg, Jan Stolarek
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
 -- Stability   :  experimental
@@ -25,7 +25,7 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Singletons.Bool (
+module Data.Singletons.Prelude.Bool (
   -- * The 'Bool' singleton
 
   Sing(SFalse, STrue),
@@ -51,12 +51,15 @@ module Data.Singletons.Bool (
   -- * Defunctionalization symbols
   TrueSym0, FalseSym0,
 
-  NotSym0, (:&&$), (:&&$$), (:||$), (:||$$),
-  Bool_Sym0, Bool_Sym1, Bool_Sym2, OtherwiseSym0
+  NotSym0, NotSym1,
+  (:&&$), (:&&$$), (:&&$$$),
+  (:||$), (:||$$), (:||$$$),
+  Bool_Sym0, Bool_Sym1, Bool_Sym2, Bool_Sym3,
+  OtherwiseSym0
   ) where
 
 import Data.Singletons
-import Data.Singletons.Instances
+import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
 import Data.Singletons.Types
 
@@ -70,6 +73,7 @@ type a :|| b = a || b
 SFalse %:&& _ = SFalse
 STrue  %:&& a = a
 
+type (:&&$$$) a b = a :&& b
 data (:&&$$) (a :: Bool) (b :: TyFun Bool Bool)
 data (:&&$)  (a :: TyFun Bool (TyFun Bool Bool -> *))
 type instance Apply ((:&&$$) a) b = a :&& b
@@ -79,6 +83,7 @@ type instance Apply (:&&$)      a = (:&&$$) a
 SFalse %:|| a = a
 STrue  %:|| _ = STrue
 
+type (:||$$$) a b = a :|| b
 data (:||$$) (a :: Bool) (b :: TyFun Bool Bool)
 data (:||$)  (a :: TyFun Bool (TyFun Bool Bool -> *))
 type instance Apply ((:||$$) a) b = a :|| b
@@ -102,6 +107,7 @@ sNot :: SBool a -> SBool (Not a)
 sNot SFalse = STrue
 sNot STrue  = SFalse
 
+type NotSym1 a = Not a
 data NotSym0 (t :: TyFun Bool Bool)
 type instance Apply NotSym0 a = Not a
 
@@ -116,6 +122,6 @@ $(singletonsOnly [d|
   bool_ fls _tru False = fls
   bool_ _fls tru True  = tru
 
-  otherwise :: Bool
-  otherwise = True
+  otherwise               :: Bool
+  otherwise               =  True
   |])

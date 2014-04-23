@@ -17,7 +17,7 @@
 --
 ----------------------------------------------------------------------------
 
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE ExplicitNamespaces #-}
 module Data.Singletons.Prelude (
   -- * Basic singleton definitions
   module Data.Singletons,
@@ -81,15 +81,31 @@ module Data.Singletons.Prelude (
   -- * Functions working with 'Bool'
   If, sIf, Not, sNot, (:&&), (:||), (%:&&), (%:||), Otherwise, sOtherwise,
 
-  -- * Functions working with lists
-  Head, sHead, Tail, sTail, (:++), (%:++), Reverse, sReverse, Map, sMap,
-  Zip, sZip, ZipWith, sZipWith,
-
   -- * Error reporting
   Error, ErrorSym0, sError,
 
   -- * Singleton equality
-  module Data.Singletons.Eq,
+  type (==), (:==), (:/=), SEq(..),
+
+  -- ** Miscellaneous functions
+  Id, sId, Const, sConst, (:.), (%:.), Flip, sFlip, AsTypeOf, sAsTypeOf,
+  Seq, sSeq,
+
+  -- * List operations
+  Map, sMap, (:++), (%:++), Head, sHead, Last, sLast, Tail, sTail,
+  Init, sInit, Null, sNull, Reverse, sReverse,
+  -- ** Reducing lists (folds)
+  Foldl, sFoldl, Foldl1, sFoldl1, Foldr, sFoldr, Foldr1, sFoldr1,
+  -- *** Special folds
+  And, sAnd, Or, sOr, Any_, sAny_, All, sAll,
+  Concat, sConcat, ConcatMap, sConcatMap,
+  -- *** Scans
+  Scanl, sScanl, Scanl1, sScanl1, Scanr, sScanr, Scanr1, sScanr1,
+  -- ** Searching lists
+  Elem, sElem, NotElem, sNotElem,
+  -- ** Zipping and unzipping lists
+  Zip, sZip, Zip3, sZip3, ZipWith, sZipWith, ZipWith3, sZipWith3,
+  Unzip, sUnzip, Unzip3, sUnzip3,
 
   -- * Other datatypes
   Maybe_, sMaybe_,
@@ -100,36 +116,73 @@ module Data.Singletons.Prelude (
   either_, -- reimplementation of either to be used with singletons library
 
   -- * Defunctionalization symbols
-  TrueSym0, FalseSym0,
-  (:$), (:$$),
-  ConsSym0, ConsSym1, NilSym0,
-  NothingSym0, JustSym0,
-  LeftSym0, RightSym0,
-  EQSym0, LTSym0, GTSym0,
+  FalseSym0, TrueSym0,
+  NotSym0, NotSym1, (:&&$), (:&&$$), (:&&$$$), (:||$), (:||$$), (:||$$$),
+  OtherwiseSym0,
+
+  NothingSym0, JustSym0, JustSym1,
+  Maybe_Sym0, Maybe_Sym1, Maybe_Sym2, Maybe_Sym3,
+
+  LeftSym0, LeftSym1, RightSym0, RightSym1,
+  Either_Sym0, Either_Sym1, Either_Sym2, Either_Sym3,
+
   Tuple0Sym0,
-  Tuple2Sym0, Tuple2Sym1,
-  Tuple3Sym0, Tuple3Sym1, Tuple3Sym2,
-  Tuple4Sym0, Tuple4Sym1, Tuple4Sym2, Tuple4Sym3,
-  Tuple5Sym0, Tuple5Sym1, Tuple5Sym2, Tuple5Sym3, Tuple5Sym4,
-  Tuple6Sym0, Tuple6Sym1, Tuple6Sym2, Tuple6Sym3, Tuple6Sym4, Tuple6Sym5,
-  Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6,
+  Tuple2Sym0, Tuple2Sym1, Tuple2Sym2,
+  Tuple3Sym0, Tuple3Sym1, Tuple3Sym2, Tuple3Sym3,
+  Tuple4Sym0, Tuple4Sym1, Tuple4Sym2, Tuple4Sym3, Tuple4Sym4,
+  Tuple5Sym0, Tuple5Sym1, Tuple5Sym2, Tuple5Sym3, Tuple5Sym4, Tuple5Sym5,
+  Tuple6Sym0, Tuple6Sym1, Tuple6Sym2, Tuple6Sym3, Tuple6Sym4, Tuple6Sym5, Tuple6Sym6,
+  Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6, Tuple7Sym7,
+  FstSym0, FstSym1, SndSym0, SndSym1,
+  CurrySym0, CurrySym1, CurrySym2, CurrySym3,
+  UncurrySym0, UncurrySym1, UncurrySym2,
 
-  NotSym0, (:&&$), (:&&$$), (:||$), (:||$$), OtherwiseSym0,
+  (:==$), (:==$$), (:==$$$), (:/=$), (:/=$$), (:/=$$$),
 
-  HeadSym0, TailSym0, (:++$), (:++$$), ReverseSym0, MapSym0, MapSym1,
-  ZipSym0, ZipSym1, ZipWithSym0, ZipWithSym1, ZipWithSym2,
+  EQSym0, LTSym0, GTSym0,
 
-  Maybe_Sym0, Maybe_Sym1, Maybe_Sym2,
-  Either_Sym0, Either_Sym1, Either_Sym2,
-  FstSym0, SndSym0, CurrySym0, CurrySym1, CurrySym2, UncurrySym0, UncurrySym1
+  IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
+  (:.$), (:.$$), (:.$$$), FlipSym0, FlipSym1, FlipSym2,
+  AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
+
+  (:$), (:$$), (:$$$), NilSym0, ConsSym0, ConsSym1, ConsSym2,
+  MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
+  (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
+  TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
+
+  FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,
+  Foldl1Sym0, Foldl1Sym1, Foldl1Sym2,
+  FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
+  Foldr1Sym0, Foldr1Sym1, Foldr1Sym2,
+
+  ConcatSym0, ConcatSym1,
+  ConcatMapSym0, ConcatMapSym1, ConcatMapSym2,
+  AndSym0, AndSym1, OrSym0, OrSym1,
+  Any_Sym0, Any_Sym1, Any_Sym2,
+  AllSym0, AllSym1, AllSym2,
+
+  ScanlSym0, ScanlSym1, ScanlSym2, ScanlSym3,
+  Scanl1Sym0, Scanl1Sym1, Scanl1Sym2,
+  ScanrSym0, ScanrSym1, ScanrSym2, ScanrSym3,
+  Scanr1Sym0, Scanr1Sym1, Scanr1Sym2,
+
+  ElemSym0, ElemSym1, ElemSym2,
+  NotElemSym0, NotElemSym1, NotElemSym2,
+
+  ZipSym0, ZipSym1, ZipSym2,
+  Zip3Sym0, Zip3Sym1, Zip3Sym2, Zip3Sym3,
+  ZipWithSym0, ZipWithSym1, ZipWithSym2, ZipWithSym3,
+  ZipWith3Sym0, ZipWith3Sym1, ZipWith3Sym2, ZipWith3Sym3,
+  UnzipSym0, UnzipSym1
   ) where
 
 import Data.Singletons
-import Data.Singletons.Bool
-import Data.Singletons.List
-import Data.Singletons.Maybe
-import Data.Singletons.Either
-import Data.Singletons.Tuple
-import Data.Singletons.Eq
-import Data.Singletons.Instances
+import Data.Singletons.Prelude.Base
+import Data.Singletons.Prelude.Bool
+import Data.Singletons.Prelude.Either
+import Data.Singletons.Prelude.List
+import Data.Singletons.Prelude.Maybe
+import Data.Singletons.Prelude.Tuple
+import Data.Singletons.Prelude.Eq
+import Data.Singletons.Prelude.Instances
 import Data.Singletons.TypeLits

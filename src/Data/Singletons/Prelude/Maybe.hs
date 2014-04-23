@@ -10,8 +10,8 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Maybe
--- Copyright   :  (C) 2013 Richard Eisenberg
+-- Module      :  Data.Singletons.Prelude.Maybe
+-- Copyright   :  (C) 2013-2014 Richard Eisenberg, Jan Stolarek
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
 -- Stability   :  experimental
@@ -29,7 +29,7 @@
 ----------------------------------------------------------------------------
 
 
-module Data.Singletons.Maybe (
+module Data.Singletons.Prelude.Maybe (
   -- The 'Maybe' singleton
 
   Sing(SNothing, SJust),
@@ -53,18 +53,19 @@ module Data.Singletons.Maybe (
   ListToMaybe, sListToMaybe, CatMaybes, sCatMaybes, MapMaybe, sMapMaybe,
 
   -- * Defunctionalization symbols
-  NothingSym0, JustSym0,
+  NothingSym0, JustSym0, JustSym1,
 
-  Maybe_Sym0, Maybe_Sym1, Maybe_Sym2,
-  IsJustSym0, IsNothingSym0, FromJustSym0,
-  FromMaybeSym0, FromMaybeSym1, MaybeToListSym0, ListToMaybeSym0,
-  CatMaybesSym0, MapMaybeSym0, MapMaybeSym1
+  Maybe_Sym0, Maybe_Sym1, Maybe_Sym2, Maybe_Sym3,
+  IsJustSym0, IsJustSym1, IsNothingSym0, IsNothingSym1,
+  FromJustSym0, FromJustSym1, FromMaybeSym0, FromMaybeSym1, FromMaybeSym2,
+  MaybeToListSym0, MaybeToListSym1, ListToMaybeSym0, ListToMaybeSym1,
+  CatMaybesSym0, CatMaybesSym1, MapMaybeSym0, MapMaybeSym1, MapMaybeSym2
   ) where
 
-import Data.Singletons.Instances
+import Data.Singletons.Prelude.Instances
 import Data.Singletons
 import Data.Singletons.TH
-import Data.Singletons.List
+import Data.Singletons.Prelude.Base
 import Data.Singletons.TypeLits
 
 $(singletonsOnly [d|
@@ -100,17 +101,17 @@ $(singletonsOnly [d|
   fromMaybe d Nothing  = d
   fromMaybe _ (Just v) = v
 
-  -- | The 'maybeToList' function returns an empty list when given
-  -- 'Nothing' or a singleton list when not given 'Nothing'.
-  maybeToList            :: Maybe a -> [a]
-  maybeToList  Nothing   = []
-  maybeToList  (Just x)  = [x]
-
   -- | The 'listToMaybe' function returns 'Nothing' on an empty list
   -- or @'Just' a@ where @a@ is the first element of the list.
   listToMaybe           :: [a] -> Maybe a
   listToMaybe []        =  Nothing
   listToMaybe (a:_)     =  Just a
+
+  -- | The 'maybeToList' function returns an empty list when given
+  -- 'Nothing' or a singleton list when not given 'Nothing'.
+  maybeToList            :: Maybe a -> [a]
+  maybeToList  Nothing   = []
+  maybeToList  (Just x)  = [x]
 
   -- | The 'catMaybes' function takes a list of 'Maybe's and returns
   -- a list of all the 'Just' values.
