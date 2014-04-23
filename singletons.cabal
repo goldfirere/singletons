@@ -70,6 +70,7 @@ library
                       Data.Singletons.TypeLits,
                       Data.Singletons.Decide,
                       Data.Singletons.Void
+                      Data.Singletons.Hidden
 
   other-modules:      Data.Singletons.Promote,
                       Data.Singletons.Promote.Monad,
