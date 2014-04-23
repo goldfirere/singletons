@@ -24,6 +24,7 @@ import Data.Singletons.Util
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Data
 import Data.Singletons.Single.Eq
+import Data.Singletons.Syntax
 import Data.Singletons.Names
 import Control.Monad
 import Data.Maybe
@@ -94,12 +95,12 @@ singletonStar names = do
                        [''Eq, ''Show, ''Read]
   fakeCtors <- zipWithM (mkCtor False) names kinds
   eqInstances <- mkCustomEqInstances fakeCtors
-  singletonDecls <- singDecsM $ singDataD [] repName [] fakeCtors
+  singletonDecls <- singDecsM $ singDataD (DataDecl Data repName [] fakeCtors
                               [''Show, ''Read
 #if __GLASGOW_HASKELL__ < 707
                               , ''Eq
 #endif
-                              ]
+                              ])
   return $ decsToTH $ repDecl :
                       eqInstances ++
                       singletonDecls

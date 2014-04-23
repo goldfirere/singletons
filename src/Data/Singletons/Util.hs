@@ -43,6 +43,11 @@ basicTypes = [ ''Bool
              , ''(,,,,,,)
              ]
 
+qReifyMaybe :: Quasi q => Name -> q (Maybe DInfo)
+qReifyMaybe name = do
+  m_info <- qRecover (return Nothing) (fmap Just $ qReify name)
+  traverse dsInfo m_info
+
 -- like reportWarning, but generalized to any Quasi
 qReportWarning :: Quasi q => String -> q ()
 qReportWarning = qReport False
@@ -101,16 +106,6 @@ extractNameArgs = liftSnd length . extractNameTypes
 -- extract the name and types of constructor arguments
 extractNameTypes :: DCon -> (Name, [DType])
 extractNameTypes (DCon _ _ n fields) = (n, tysOfConFields fields)
-
--- reinterpret a name. This is useful when a Name has an associated
--- namespace that we wish to forget
-reinterpret :: Name -> Name
-reinterpret = mkName . nameBase
-
-{-# DEPRECATED reinterpret, catNames "" #-} -- RAE
-
-catNames :: Name -> Name -> Name
-catNames n1 n2 = mkName (nameBase n1 ++ nameBase n2)
 
 -- is an identifier uppercase?
 isUpcase :: Name -> Bool
@@ -330,8 +325,16 @@ listify = (:[])
 fstOf3 :: (a,b,c) -> a
 fstOf3 (a,_,_) = a
 
+liftFst :: (a -> b) -> (a, c) -> (b, c)
+liftFst f (a, c) = (f a, c)
+
 liftSnd :: (a -> b) -> (c, a) -> (c, b)
 liftSnd f (c, a) = (c, f a)
+
+snocView :: [a] -> ([a], a)
+snocView [] = error "snocView nil"
+snocView [x] = ([], x)
+snocView (x : xs) = liftFst (x:) (snocView xs)
 
 partitionWith :: (a -> Either b c) -> [a] -> ([b], [c])
 partitionWith f = go [] []

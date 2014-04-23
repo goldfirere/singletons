@@ -15,13 +15,13 @@ import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (Quasi(..))
 import Data.Singletons.Util
 import Data.Singletons.Promote
-import Data.Singletons.Promote.Monad ( promoteMDecs, promoteM )
+import Data.Singletons.Promote.Monad ( promoteM, promoteM_ )
 import Data.Singletons.Names
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
 import Data.Singletons.Single.Data
 import Data.Singletons.Single.Eq
-import Data.Singletons.LetDecEnv
+import Data.Singletons.Syntax
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.Sweeten
 import qualified Data.Map.Strict as Map
@@ -156,46 +156,27 @@ singInfo (DTyVarI _name _ty) =
 
 singTopLevelDecs :: Quasi q => [DDec] -> q [DDec]
 singTopLevelDecs decls = do
-  let (letDecls, otherDecls) = partitionLetDecs decls
-  otherDecls' <- promoteMDecs $ promoteNonLetDecs otherDecls
+  PDecs { pd_let_decs              = letDecls
+        , pd_class_decs            = classes
+        , pd_instance_decs         = insts
+        , pd_data_decs             = datas }    <- partitionDecs decls
+
+  when (not (null classes) || not (null insts)) $
+    qReportError "Classes and instances may not yet be made into singletons."
+    
+  dataDecls' <- promoteM_ $ promoteDataDecs datas
   ((_, letDecEnv), letDecls') <- promoteM $ promoteLetDecs noPrefix letDecls
   singDecsM $ do
-    let letBinds = concatMap buildLets otherDecls
-    (newLetDecls, newOtherDecls) <- bindLets letBinds $
-                                    singLetDecEnv TopLevel letDecEnv $
-                                    concatMapM singDec otherDecls
-    return $ otherDecls' ++ letDecls' ++ (map DLetDec newLetDecls) ++ newOtherDecls
-
-singDec :: DDec -> SgM [DDec]
-singDec (DLetDec dec) =
-  fail $ "Internal error! LetDec encountered in singDec: " ++ show dec
-singDec (DDataD _nd cxt name tvbs ctors derivings) =
-  singDataD cxt name tvbs ctors derivings
-singDec (DTySynD _name _tvbs _ty) =
-  fail "Singling of type synonyms not yet supported"
-singDec (DClassD _cxt _name _tvbs _fundeps _decs) =
-  fail "Singling of class declaration not yet supported"
-singDec (DInstanceD _cxt _ty _decs) =
-  fail "Singling of class instance not yet supported"
-singDec (DForeignD _fgn) =
-  fail "Singling of foreign functions not supported"
-singDec (DPragmaD _prag) = do
-  qReportWarning "Singling of pragmas not supported"
-  return []
-singDec (DFamilyD _flavour _name _tvbs _mkind) =
-  fail "Singling of type and data families not yet supported"
-singDec (DDataInstD _nd _cxt _name _tys _ctors _derivings) =
-  fail "Singling of data instances not yet supported"
-singDec (DTySynInstD _name _eqns) =
-  fail "Singling of type family instances not yet supported"
-singDec (DClosedTypeFamilyD _name _tvs _mkind _eqns) =
-  fail "Singling of closed type families not yet supported"
-singDec (DRoleAnnotD _name _roles) =
-  return [] -- silently ignore role annotations, as they're harmless
+    let letBinds = concatMap buildDataLets datas
+                ++ concatMap buildMethLets classes
+    (newLetDecls, newDataDecls) <- bindLets letBinds $
+                                   singLetDecEnv TopLevel letDecEnv $
+                                   concatMapM singDataD datas
+    return $ dataDecls' ++ letDecls' ++ (map DLetDec newLetDecls) ++ newDataDecls
 
 -- see comment at top of file
-buildLets :: DDec -> [(Name, DExp)]
-buildLets (DDataD _nd _cxt _name _tvbs cons _derivings) =
+buildDataLets :: DataDecl -> [(Name, DExp)]
+buildDataLets (DataDecl _nd _name _tvbs cons _derivings) =
   concatMap con_num_args cons
   where
     con_num_args :: DCon -> [(Name, DExp)]
@@ -210,9 +191,10 @@ buildLets (DDataD _nd _cxt _name _tvbs cons _derivings) =
       let names = map fstOf3 fields in
       [ (name, wrapSingFun 1 (promoteValRhs name) (DVarE $ singValName name))
       | name <- names ]
-      
-buildLets (DClassD _cxt _name _tvbs _fds decs) = concatMap buildLets decs
-buildLets _ = []
+
+buildMethLets :: ClassDecl -> [(Name, DExp)]
+buildMethLets = error "Cannot singletonize class definitions yet."
+  -- FIXME!
 
 singLetDecEnv :: TopLevelFlag -> ALetDecEnv -> SgM a -> SgM ([DLetDec], a)
 singLetDecEnv top_level

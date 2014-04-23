@@ -12,6 +12,7 @@ import Promote.Constructors
 import Promote.Newtypes
 #endif
 import Promote.GenDefunSymbols
+import Promote.Classes
 
 import Singletons.Records
 import Singletons.TopLevelPatterns

@@ -105,6 +105,7 @@ module Data.Singletons.Prelude (
   ConsSym0, ConsSym1, NilSym0,
   NothingSym0, JustSym0,
   LeftSym0, RightSym0,
+  EQSym0, LTSym0, GTSym0,
   Tuple0Sym0,
   Tuple2Sym0, Tuple2Sym1,
   Tuple3Sym0, Tuple3Sym1, Tuple3Sym2,

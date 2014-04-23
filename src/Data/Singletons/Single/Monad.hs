@@ -28,7 +28,6 @@ import Data.Singletons
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Control.Applicative
-import Data.Traversable ( traverse )
 import Control.Monad.Reader
 import Control.Monad.Writer
 
@@ -143,8 +142,7 @@ lookup_var_con mk_sing_name mk_exp name = do
   case Map.lookup name letExpansions of
     Nothing -> do
       -- try to get it from the global context
-      m_info <- qRecover (return Nothing) (fmap Just $ qReify sName)
-      m_dinfo <- traverse dsInfo m_info
+      m_dinfo <- qReifyMaybe sName
       case m_dinfo of
         Just (DVarI _ ty _ _) ->
           let num_args = countArgs ty in

@@ -18,14 +18,13 @@ import Data.Singletons.Promote.Type
 import Data.Singletons.Single.Eq
 import Data.Singletons.Util
 import Data.Singletons.Names
+import Data.Singletons.Syntax
 import Control.Monad
 
 -- We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
-singDataD :: DCxt -> Name -> [DTyVarBndr] -> [DCon] -> [Name] -> SgM [DDec]
-singDataD cxt name tvbs ctors derivings
-  | (_:_) <- cxt = fail "Singling of constrained datatypes is not supported"
-  | otherwise    = do
+singDataD :: DataDecl -> SgM [DDec]
+singDataD (DataDecl _nd name tvbs ctors derivings) = do
   aName <- qNewName "z"
   let a = DVarT aName
   let tvbNames = map extractTvbName tvbs

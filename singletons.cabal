@@ -72,15 +72,19 @@ library
                       Data.Singletons.Void
 
   other-modules:      Data.Singletons.Promote,
+                      Data.Singletons.Promote.Monad,
+                      Data.Singletons.Promote.Eq,
+                      Data.Singletons.Promote.Type,
+                      Data.Singletons.Promote.Defun,
                       Data.Singletons.Util,
                       Data.Singletons.Instances,
-                      Data.Singletons.Promote.Monad,
                       Data.Singletons.Names,
-                      Data.Singletons.Promote.Equality,
-                      Data.Singletons.Promote.Util,
                       Data.Singletons.Single.Monad,
+                      Data.Singletons.Single.Type,
+                      Data.Singletons.Single.Eq,
+                      Data.Singletons.Single.Data,
                       Data.Singletons.Single,
-                      Data.Singletons.LetDecEnv
+                      Data.Singletons.Syntax
 
   ghc-options:        -Wall
 

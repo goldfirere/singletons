@@ -21,18 +21,29 @@ import Data.Singletons.Promote.Eq
 import Data.Singletons.Promote.Defun
 import Data.Singletons.Promote.Type
 import Data.Singletons.Util
-import Data.Singletons.LetDecEnv
+import Data.Singletons.Syntax
 import Prelude hiding (exp)
 import Control.Monad
 import Data.Maybe
 import qualified Data.Map.Strict as Map
+import Data.Map.Strict ( Map )
+
+-- | Generate promoted definitions from a type that is already defined.
+-- This is generally only useful with classes.
+genPromotions :: Quasi q => [Name] -> q [Dec]
+genPromotions names = do
+  checkForRep names
+  infos <- mapM reifyWithWarning names
+  dinfos <- mapM dsInfo infos
+  ddecs <- promoteM_ $ mapM_ promoteInfo dinfos
+  return $ decsToTH ddecs
 
 -- | Promote every declaration given to the type level, retaining the originals.
 promote :: Quasi q => q [Dec] -> q [Dec]
 promote qdec = do
   decls <- qdec
   ddecls <- dsDecs decls
-  promDecls <- promoteMDecs $ promoteDecs ddecls
+  promDecls <- promoteM_ $ promoteDecs ddecls
   return $ decls ++ decsToTH promDecls
 
 -- | Promote each declaration, discarding the originals.
@@ -40,7 +51,7 @@ promoteOnly :: Quasi q => q [Dec] -> q [Dec]
 promoteOnly qdec = do
   decls  <- qdec
   ddecls <- dsDecs decls
-  promDecls <- promoteMDecs $ promoteDecs ddecls
+  promDecls <- promoteM_ $ promoteDecs ddecls
   return $ decsToTH promDecls
 
 -- | Generate defunctionalization symbols for existing type family
@@ -71,7 +82,7 @@ promoteEqInstance name = do
   mapM (fmap decsToTH . mkEqTypeInstance) pairs
 #endif
 
-promoteInfo :: DInfo -> PrM [DDec]
+promoteInfo :: DInfo -> PrM ()
 promoteInfo (DTyConI dec _instances) = promoteDecs [dec]
 promoteInfo (DPrimTyConI _name _numArgs _unlifted) =
   fail "Promotion of primitive type constructors not supported"
@@ -117,29 +128,34 @@ promoteInfo (DTyVarI _name _ty) =
 -- one argument and have return type of Bool -> Bool.
 
 -- Promote a list of top-level declarations.
-promoteDecs :: [DDec] -> PrM [DDec]
+promoteDecs :: [DDec] -> PrM ()
 promoteDecs decls = do
   checkForRepInDecls decls
   -- See Note [Promoting declarations in two stages]
-  let (let_decs, other_decs) = partitionLetDecs decls
-  
+  PDecs { pd_let_decs              = let_decs
+        , pd_class_decs            = classes
+        , pd_instance_decs         = insts
+        , pd_data_decs             = datas }    <- partitionDecs decls
+
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
-  promoteNonLetDecs other_decs
+  (class_tvbs, meth_sigss) <- mapAndUnzipM promoteClassDec classes
+  mapM_ (promoteInstanceDec (Map.fromList class_tvbs)
+                            (Map.fromList $ concat meth_sigss)) insts
+  promoteDataDecs datas
 
-promoteNonLetDecs :: [DDec] -> PrM [DDec]
-promoteNonLetDecs other_decs = do
-  rec_selectors <- concatMapM extract_rec_selectors other_decs
+promoteDataDecs :: [DataDecl] -> PrM ()
+promoteDataDecs data_decs = do
+  rec_selectors <- concatMapM extract_rec_selectors data_decs
   _ <- promoteLetDecs noPrefix rec_selectors
-  concatMapM promoteDec other_decs
+  mapM_ promoteDataDec data_decs
   where
-    extract_rec_selectors :: DDec -> PrM [DLetDec]
-    extract_rec_selectors (DDataD _nd _cxt data_name tvbs cons _derivings) =
+    extract_rec_selectors :: DataDecl -> PrM [DLetDec]
+    extract_rec_selectors (DataDecl _nd data_name tvbs cons _derivings) =
       let arg_ty = foldType (DConT data_name)
                             (map (DVarT . extractTvbName) tvbs)
       in
       concatMapM (getRecordSelectors arg_ty) cons
-    extract_rec_selectors _ = return []
     
 -- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
 promoteLetDecs :: String -- prefix to use on all new definitions
@@ -158,10 +174,6 @@ promoteLetDecs prefix decls = do
 noPrefix :: String
 noPrefix = ""
 
-promoteDec :: DDec -> PrM [DDec]
-promoteDec (DLetDec letdec) = fail $ "Internal error! Let-declarations should " ++
-                                     "not be seen in promoteDec: " ++ show letdec
-
 -- Promotion of data types to kinds is automatic (see "Ginving Haskell a
 -- Promotion" paper for more details). Here we "plug into" the promotion
 -- mechanism to add some extra stuff to the promotion:
@@ -175,7 +187,8 @@ promoteDec (DLetDec letdec) = fail $ "Internal error! Let-declarations should " 
 --    type level in the same way they can be used uniformly at the type level.
 --
 --  * for each nullary data constructor we generate a type synonym
-promoteDec (DDataD _nd _cxt name tvbs ctors derivings) = do
+promoteDataDec :: DataDecl -> PrM ()
+promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
 #if __GLASGOW_HASKELL__ < 707
   when (_nd == Newtype) $
     fail $ "Newtypes don't promote under GHC 7.6. " ++
@@ -192,28 +205,128 @@ promoteDec (DDataD _nd _cxt name tvbs ctors derivings) = do
     emitDecs inst_decs
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
-  return []  -- promoting the datatype leads to no decs directly...
+
+-- returns mappings from method names to pairs of types with the bound
+-- names, appearing in the order of the class declaration
+promoteClassDec :: ClassDecl -> PrM ( (Name, [Name])    -- from cls_name to tvbs
+                                    , [(Name, DType)] ) -- method sigs
+promoteClassDec (ClassDecl name tvbs sigs) = do
+  -- we need to remember the names of the tvbs so we can perform substitution
+  -- on instance method declarations.
+  -- But, we need a way to do this non-locally. The solution? Spit out a
+  -- fake type class declaration with just the right tvbs. Then, use the
+  -- SuppressUnusedWarnings nonsense to suppress the warning. Ugh.
+  let tvsName  = classTvsName name
+      tvbNames = map extractTvbName tvbs
+  emitDecs [ DClassD [] tvsName tvbs [] []
+           , DInstanceD [] (DConT suppressClassName `DAppT` DConT tvsName)
+                        [DLetDec (DFunD suppressMethodName
+                                        [DClause [DWildPa] (mkTupleDExp [])])]]
+  mapM_ promoteMethSig sigs
+  return ( (name, tvbNames)
+         , sigs )
+
+promoteMethSig :: (Name, DType) -> PrM ()
+promoteMethSig (name, ty) = do
+  -- the real ty also has a context from the class. But, we ignore conexts anyway.
+  let proName = promoteValNameLhs name
+      (_, all_tys) = unravel ty
+  all_kis <- mapM promoteType all_tys
+  let (arg_kis, res_ki) = snocView all_kis
+  emitDecsM $ defunctionalize proName (map Just arg_kis) (Just res_ki)
+  arg_names <- mapM (const $ qNewName "arg") arg_kis
+  emitDecs [DFamilyD TypeFam
+                     proName
+                     (zipWith DKindedTV arg_names arg_kis)
+                     (Just res_ki)]
+
+promoteInstanceDec :: Map Name [Name]
+                   -> Map Name DType -> InstDecl -> PrM ()
+promoteInstanceDec cls_tvbs meth_tys (InstDecl cls_name inst_tys meths) = do
+  tvbNames <- lookup_cls_tvbs
+  inst_kis <- mapM promoteType inst_tys
+  let subst = Map.fromList $ zip (map nameBase tvbNames) inst_kis
+  mapM_ (promoteMethDefn subst meth_tys) meths
+  where
+    lookup_cls_tvbs :: PrM [Name]
+    lookup_cls_tvbs = case Map.lookup cls_name cls_tvbs of
+      Nothing -> do
+        m_dinfo <- qReifyMaybe (classTvsName cls_name)
+        case m_dinfo of
+          Just (DTyConI (DClassD _cxt _name tvbs _fds _decs) _insts) ->
+            return $ map extractTvbName tvbs
+          _ -> fail $ "Cannot find class declaration for " ++ show cls_name
+      Just names -> return names
   
-promoteDec (DTySynD _name _tvbs _ty) =
-  fail "Promotion of type synonym declaration not yet supported"
-promoteDec (DClassD _cxt _name _tvbs _fundeps _decs) =
-  fail "Promotion of class declaration not yet supported"
-promoteDec (DInstanceD _cxt _ty _decs) =
-  fail "Promotion of instance declaration not yet supported"
-promoteDec (DForeignD _fgn) =
-  fail "Promotion of foreign function declaration not yet supported"
-promoteDec (DPragmaD _prag) =
-  fail "Promotion of pragmas not yet supported"
-promoteDec (DFamilyD _flavour _name _tvbs _mkind) =
-  fail "Promotion of type and data families not yet supported"
-promoteDec (DDataInstD _nd _cxt _name _tys _ctors _derivings) =
-  fail "Promotion of data instances not yet supported"
-promoteDec (DTySynInstD _name _eqn) =
-  fail "Promotion of type synonym instances not yet supported"
-promoteDec (DClosedTypeFamilyD _name _tvs _mkind _eqns) =
-  fail "Promotion of closed type families not yet supported"
-promoteDec (DRoleAnnotD _name _roles) =
-  return [] -- silently ignore role annotations, as they're harmless here
+promoteMethDefn :: Map String DKind
+                -> Map Name DType -> (Name, ULetDecRHS) -> PrM ()
+promoteMethDefn subst meth_tys (name, let_rhs) = do
+  (meth_arg_kis, meth_res_ki) <- lookup_meth_ty
+  let meth_arg_kis' = map subst_ki meth_arg_kis
+      meth_res_ki'  = subst_ki meth_res_ki
+  eqns <- case let_rhs of
+    UValue exp -> do    
+      (exp', _) <- promoteExp exp
+      return [DTySynEqn [] exp']
+    UFunction clauses -> fmap fst $ mapAndUnzipM promoteClause clauses
+  eqns' <- mapM (eta_expand (length meth_arg_kis')) eqns
+  let eqns'' = map (apply_kis meth_arg_kis' meth_res_ki') eqns'
+  emitDecs $ map (DTySynInstD proName) eqns''
+  where
+    proName = promoteValNameLhs name
+    
+    lookup_meth_ty :: PrM ([DKind], DKind)
+    lookup_meth_ty = case Map.lookup name meth_tys of
+      Nothing -> do
+          -- lookup the promoted name, just in case the term-level one
+          -- isn't defined
+        m_dinfo <- qReifyMaybe proName
+        case m_dinfo of
+          Just (DTyConI (DFamilyD _flav _name tvbs (Just res)) _insts) -> do
+            arg_kis <- mapM (expect_just . extractTvbKind) tvbs
+            return (arg_kis, res)
+          _ -> fail $ "Cannot find type of " ++ show proName
+      Just ty -> do
+        let (_, tys) = unravel ty
+        kis <- mapM promoteType tys
+        return $ snocView kis
+
+    expect_just :: Maybe a -> PrM a
+    expect_just (Just x) = return x
+    expect_just Nothing =
+      fail "Internal error: unknown kind of a promoted class method."
+
+    eta_expand :: Int -> DTySynEqn -> PrM DTySynEqn
+    eta_expand needed_num_args eqn@(DTySynEqn lhs rhs) =
+      let orig_num_args = length lhs in
+      if orig_num_args == needed_num_args
+      then return eqn
+      else do
+        let num_extra_args = needed_num_args - orig_num_args
+        new_names <- replicateM num_extra_args (qNewName "eta_arg")
+        let new_tys = map DVarT new_names
+            lhs'    = lhs ++ new_tys
+            rhs'    = foldl apply rhs new_tys
+        return $ DTySynEqn lhs' rhs'
+
+    subst_ki :: DKind -> DKind
+    subst_ki (DForallK {}) =
+      error "Higher-rank kind encountered in instance method promotion."
+    subst_ki (DVarK n) =
+      case Map.lookup (nameBase n) subst of
+        Just ki -> ki
+        Nothing -> DVarK n
+    subst_ki (DConK con kis) = DConK con (map subst_ki kis)
+    subst_ki (DArrowK k1 k2) = DArrowK (subst_ki k1) (subst_ki k2)
+    subst_ki DStarK = DStarK
+
+    apply_kis :: [DKind] -> DKind -> DTySynEqn -> DTySynEqn
+    apply_kis arg_kis res_ki (DTySynEqn lhs rhs) =
+      DTySynEqn (zipWith apply_ki lhs arg_kis) (apply_ki rhs res_ki)
+
+    apply_ki :: DType -> DKind -> DType
+    apply_ki = DSigT
+      
 
 promoteLetDecEnv :: String -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env

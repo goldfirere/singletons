@@ -14,7 +14,7 @@ of DDec, and is wrapped around a Q.
 {-# OPTIONS_GHC -fno-warn-orphans #-}   -- we have orphan Quasi instances
 
 module Data.Singletons.Promote.Monad (
-  PrM, promoteM, promoteMDecs, VarPromotions,
+  PrM, promoteM, promoteM_, promoteMDecs, VarPromotions,
   allLocals, emitDecs, emitDecsM,
   lambdaBind, LetBind, letBind, lookupVarE
   ) where
@@ -28,7 +28,7 @@ import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
 import Control.Applicative
 import Data.Singletons.Names
-import Data.Singletons.LetDecEnv
+import Data.Singletons.Syntax
 
 type LetExpansions = Map Name DType  -- from **term-level** name
 
@@ -145,6 +145,11 @@ promoteM (PrM rdr) =
       q  = runWriterT wr
   in
   runQ q
+
+promoteM_ :: Quasi q => PrM () -> q [DDec]
+promoteM_ thing = do
+  ((), decs) <- promoteM thing
+  return decs
 
 -- promoteM specialized to [DDec]
 promoteMDecs :: Quasi q => PrM [DDec] -> q [DDec]

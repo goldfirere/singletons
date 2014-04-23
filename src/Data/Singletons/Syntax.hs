@@ -1,24 +1,82 @@
-{- Data/Singletons/LetDecEnv.hs
+{- Data/Singletons/Syntax.hs
 
 (c) Richard Eisenberg 2014
 eir@cis.upenn.edu
 
-Converts a list of DLetDecs into a LetDecEnv for easier processing.
+Converts a list of DLetDecs into a LetDecEnv for easier processing,
+and contains various other AST definitions.
 -}
 
 {-# LANGUAGE DataKinds, TypeFamilies, PolyKinds, DeriveDataTypeable,
              StandaloneDeriving, FlexibleInstances #-}
 
-module Data.Singletons.LetDecEnv where
+module Data.Singletons.Syntax where
 
 import Prelude hiding ( exp )
 import Data.Monoid
+import Data.Singletons.Util
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
+import Language.Haskell.TH.Ppr
+import Language.Haskell.TH.Desugar.Sweeten
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
 
 type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
+
+  -- the relevant part of declarations
+data DataDecl  = DataDecl NewOrData Name [DTyVarBndr] [DCon] [Name]
+data ClassDecl = ClassDecl Name [DTyVarBndr] [(Name, DType)]
+data InstDecl  = InstDecl Name [DType] [(Name, ULetDecRHS)]
+
+data PartitionedDecs =
+  PDecs { pd_let_decs :: [DLetDec]
+        , pd_class_decs :: [ClassDecl]
+        , pd_instance_decs :: [InstDecl]
+        , pd_data_decs :: [DataDecl]
+        }
+
+instance Monoid PartitionedDecs where
+  mempty = PDecs [] [] [] []
+  mappend (PDecs a1 b1 c1 d1) (PDecs a2 b2 c2 d2) =
+    PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2)
+
+-- monadic only because of failure
+partitionDecs :: Monad m => [DDec] -> m PartitionedDecs
+partitionDecs = concatMapM partitionDec
+
+partitionDec :: Monad m => DDec -> m PartitionedDecs
+partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
+partitionDec (DDataD nd _cxt name tvbs cons derivings) =
+  return $ mempty { pd_data_decs = [DataDecl nd name tvbs cons derivings] }
+partitionDec (DClassD _cxt name tvbs _fds decs) = do
+  sigs <- mapM partitionClassDec decs
+  return $ mempty { pd_class_decs = [ClassDecl name tvbs sigs] }
+partitionDec (DInstanceD _cxt ty decs) = do
+  defns <- mapM partitionInstanceDec decs
+  (name, tys) <- split_app_tys [] ty
+  return $ mempty { pd_instance_decs = [InstDecl name tys defns] }
+  where
+    split_app_tys acc (DAppT t1 t2) = split_app_tys (t2:acc) t1
+    split_app_tys acc (DConT name)  = return (name, acc)
+    split_app_tys acc (DSigT t _)   = split_app_tys acc t
+    split_app_tys _ _ = fail $ "Illegal instance head: " ++ show ty
+partitionDec (DRoleAnnotD {}) = return mempty  -- ignore these
+partitionDec dec =
+  fail $ "Declaration cannot be promoted: " ++ pprint (decToTH dec)
+
+partitionClassDec :: Monad m => DDec -> m (Name, DType)
+partitionClassDec (DLetDec (DSigD name ty)) = return (name, ty)
+partitionClassDec _ =
+  fail "Only method declarations can be promoted within a class."
+
+partitionInstanceDec :: Monad m => DDec -> m (Name, ULetDecRHS)
+partitionInstanceDec (DLetDec (DValD (DVarPa name) exp)) =
+  return (name, UValue exp)
+partitionInstanceDec (DLetDec (DFunD name clauses)) =
+  return (name, UFunction clauses)
+partitionInstanceDec _ =
+  fail "Only method bodies can be promoted within an instance."
 
 {-
 We see below several datatypes beginning with "A". These are annotated structures,

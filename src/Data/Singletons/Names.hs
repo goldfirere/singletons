@@ -123,6 +123,11 @@ promoteTySym name sat
       then mkName (capped ++ (replicate (sat + 1) '$'))
       else mkName (capped ++ "Sym" ++ (show sat))
 
+-- produce the silly type class used to store the type variables for
+-- a class
+classTvsName :: Name -> Name
+classTvsName = suffixName "TyVars" "^^^"
+
 mkTyName :: Quasi q => Name -> q Name
 mkTyName tmName = do
   let nameStr  = nameBase tmName
