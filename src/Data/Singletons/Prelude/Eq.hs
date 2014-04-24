@@ -23,6 +23,7 @@ module Data.Singletons.Prelude.Eq (
 import Data.Singletons.Prelude.Bool
 import Data.Singletons
 import Data.Singletons.Single
+import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Types
 import Data.Singletons.Util
@@ -34,16 +35,44 @@ import Data.Singletons.Promote ( promoteEqInstances )
 type a :/= b = Not (a :== b)
 
 type (:==$$$) a b = a :== b
-data (:==$$) (a :: k1) (b :: TyFun k1 Bool)
-data (:==$) (a :: TyFun k1 (TyFun k1 Bool -> *))
-type instance Apply ((:==$$) a) b = a :== b
-type instance Apply (:==$)      a = (:==$$) a
 
-type (:/=$$$) a b = a :== b
-data (:/=$$) (a :: k1) (b :: TyFun k1 Bool)
-data (:/=$) (a :: TyFun k1 (TyFun k1 Bool -> *))
-type instance Apply ((:/=$$) a) b = a :/= b
-type instance Apply (:/=$)      a = (:/=$$) a
+data (:==$$) (a :: k1) (b :: TyFun k1 Bool) where
+     (:==$$###) :: Apply ((:==$$) a) arg ~ (:==$$$) a arg
+                => Proxy arg
+                -> (:==$$) a b
+type instance Apply ((:==$$) a) b = (:==$$$) a b
+
+instance SuppressUnusedWarnings (:==$$) where
+    suppressUnusedWarnings _ = snd ((:==$$###),())
+
+data (:==$) (a :: TyFun k1 (TyFun k1 Bool -> *)) where
+     (:==$###) :: Apply (:==$) arg ~ (:==$$) arg
+               => Proxy arg
+               -> (:==$) a
+type instance Apply (:==$) a = (:==$$) a
+
+instance SuppressUnusedWarnings (:==$) where
+    suppressUnusedWarnings _ = snd ((:==$###),())
+
+type (:/=$$$) a b = a :/= b
+
+data (:/=$$) (a :: k1) (b :: TyFun k1 Bool) where
+     (:/=$$###) :: Apply ((:/=$$) a) arg ~ (:/=$$$) a arg
+                => Proxy arg
+                -> (:/=$$) a b
+type instance Apply ((:/=$$) a) b = (:/=$$$) a b
+
+instance SuppressUnusedWarnings (:/=$$) where
+    suppressUnusedWarnings _ = snd ((:/=$$###),())
+
+data (:/=$) (a :: TyFun k1 (TyFun k1 Bool -> *)) where
+     (:/=$###) :: Apply (:/=$) arg ~ (:/=$$) arg
+               => Proxy arg
+               -> (:/=$) a
+type instance Apply (:/=$) a = (:/=$$) a
+
+instance SuppressUnusedWarnings (:/=$) where
+    suppressUnusedWarnings _ = snd ((:/=$###),())
 
 -- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
 -- that instances define a body for '(%:==)'. You may also supply a body for '(%:/=)'.

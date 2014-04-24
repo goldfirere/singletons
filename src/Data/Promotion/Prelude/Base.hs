@@ -40,7 +40,6 @@ module Data.Promotion.Prelude.Base (
   ) where
 
 import Data.Singletons.TH
-import Data.Singletons.TypeLits
 import Data.Singletons.Prelude.Base
 
 $(promoteOnly [d|

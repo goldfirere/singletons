@@ -62,6 +62,7 @@ import Data.Singletons
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
 import Data.Singletons.Types
+import Data.Singletons.SuppressUnusedWarnings
 
 #if __GLASGOW_HASKELL__ >= 707
 import Data.Type.Bool
@@ -74,20 +75,48 @@ SFalse %:&& _ = SFalse
 STrue  %:&& a = a
 
 type (:&&$$$) a b = a :&& b
-data (:&&$$) (a :: Bool) (b :: TyFun Bool Bool)
-data (:&&$)  (a :: TyFun Bool (TyFun Bool Bool -> *))
-type instance Apply ((:&&$$) a) b = a :&& b
-type instance Apply (:&&$)      a = (:&&$$) a
+
+data (:&&$$) (a :: Bool) (b :: TyFun Bool Bool) where
+     (:&&$$###) :: Apply ((:&&$$) a) arg ~ (:&&$$$) a arg
+                => Proxy arg
+                -> (:&&$$) a b
+type instance Apply ((:&&$$) a) b = (:&&$$$) a b
+
+instance SuppressUnusedWarnings (:&&$$) where
+    suppressUnusedWarnings _ = snd ((:&&$$###),())
+
+data (:&&$) (a :: TyFun Bool (TyFun Bool Bool -> *)) where
+     (:&&$###) :: Apply (:&&$) arg ~ (:&&$$) arg
+               => Proxy arg
+               -> (:&&$) a
+type instance Apply (:&&$) a = (:&&$$) a
+
+instance SuppressUnusedWarnings (:&&$) where
+    suppressUnusedWarnings _ = snd ((:&&$###),())
 
 (%:||) :: SBool a -> SBool b -> SBool (a :|| b)
 SFalse %:|| a = a
 STrue  %:|| _ = STrue
 
 type (:||$$$) a b = a :|| b
-data (:||$$) (a :: Bool) (b :: TyFun Bool Bool)
-data (:||$)  (a :: TyFun Bool (TyFun Bool Bool -> *))
-type instance Apply ((:||$$) a) b = a :|| b
-type instance Apply (:||$)      a = (:||$$) a
+
+data (:||$$) (a :: Bool) (b :: TyFun Bool Bool) where
+     (:||$$###) :: Apply ((:||$$) a) arg ~ (:||$$$) a arg
+                => Proxy arg
+                -> (:||$$) a b
+type instance Apply ((:||$$) a) b = (:||$$$) a b
+
+instance SuppressUnusedWarnings (:||$$) where
+    suppressUnusedWarnings _ = snd ((:||$$###),())
+
+data (:||$) (a :: TyFun Bool (TyFun Bool Bool -> *)) where
+     (:||$###) :: Apply (:||$) arg ~ (:||$$) arg
+               => Proxy arg
+               -> (:||$) a
+type instance Apply (:||$) a = (:||$$) a
+
+instance SuppressUnusedWarnings (:||$) where
+    suppressUnusedWarnings _ = snd ((:||$###),())
 
 #else
 
@@ -108,8 +137,14 @@ sNot SFalse = STrue
 sNot STrue  = SFalse
 
 type NotSym1 a = Not a
-data NotSym0 (t :: TyFun Bool Bool)
+data NotSym0 (t :: TyFun Bool Bool) where
+     NotSym0KindInference :: Apply NotSym0 arg ~ NotSym1 arg
+                          => Proxy arg
+                          -> NotSym0 a
 type instance Apply NotSym0 a = Not a
+
+instance SuppressUnusedWarnings NotSym0 where
+    suppressUnusedWarnings _ = snd (NotSym0KindInference,())
 
 -- | Conditional over singletons
 sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
