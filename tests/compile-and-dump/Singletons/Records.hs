@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
+
 module Singletons.Records where
 
 import Data.Singletons.SuppressUnusedWarnings

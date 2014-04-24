@@ -1,4 +1,5 @@
-{-# OPTIONS_GHC -fno-warn-unused-matches -fno-warn-name-shadowing #-}
+{-# OPTIONS_GHC -fno-warn-unused-matches -fno-warn-name-shadowing -fno-warn-unused-imports #-}
+
 {-# LANGUAGE UnboxedTuples #-}
 -- We expect unused binds and name shadowing in foo5 test.
 module Singletons.Lambdas where

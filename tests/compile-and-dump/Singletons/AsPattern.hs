@@ -1,4 +1,4 @@
-module Singletons.AtPattern where
+module Singletons.AsPattern where
 
 import Data.Proxy
 import Data.Singletons

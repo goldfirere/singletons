@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
+
 module Promote.GenDefunSymbols where
 
 import Data.Singletons (Apply, TyFun)

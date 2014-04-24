@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
+
 module Promote.Newtypes where
 
 import Data.Singletons.SuppressUnusedWarnings

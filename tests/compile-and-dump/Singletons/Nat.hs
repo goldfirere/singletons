@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
+
 module Singletons.Nat where
 
 import Data.Singletons.TH
