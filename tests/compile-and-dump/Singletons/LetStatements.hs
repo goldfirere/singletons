@@ -4,6 +4,7 @@
 module Singletons.LetStatements where
 
 import Data.Singletons
+import Data.Singletons.Prelude
 import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Singletons.Nat
@@ -96,10 +97,15 @@ $(singletons [d|
   foo13 :: forall a. a -> a
   foo13 x = let bar :: a
                 bar = x
-            in foo13b bar
+            in foo13_ bar
 
-  foo13b :: a -> a
-  foo13b y = y
+  foo13_ :: a -> a
+  foo13_ y = y
+
+  -- tuple patterns in let statements. See #20
+  foo14 :: Nat -> (Nat, Nat)
+  foo14 x = let (y, z) = (Succ x, x)
+            in  (z, y)
  |])
 
 foo1a :: Proxy (Foo1 Zero)
@@ -173,3 +179,15 @@ foo12a = Proxy
 
 foo12b :: Proxy (Succ (Succ (Succ (Succ (Succ (Succ Zero))))))
 foo12b = foo12a
+
+foo13a :: Proxy (Foo13 Zero)
+foo13a = Proxy
+
+foo13b :: Proxy Zero
+foo13b = foo13a
+
+foo14a :: Proxy (Foo14 Zero)
+foo14a = Proxy
+
+foo14b :: Proxy '(Zero, Succ Zero)
+foo14b = foo14a
