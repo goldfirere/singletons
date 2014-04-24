@@ -131,6 +131,7 @@ import Data.Promotion.Prelude.Bool
 import Data.Promotion.Prelude.Either
 import Data.Promotion.Prelude.List
 import Data.Promotion.Prelude.Maybe
+import Data.Promotion.Prelude.Monad
 import Data.Promotion.Prelude.Tuple
 import Data.Promotion.Prelude.Eq
 import Data.Singletons.Prelude.Instances (EQSym0, LTSym0, GTSym0)

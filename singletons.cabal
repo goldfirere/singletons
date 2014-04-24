@@ -74,6 +74,7 @@ library
                       Data.Promotion.Prelude.Eq,
                       Data.Promotion.Prelude.List,
                       Data.Promotion.Prelude.Maybe,
+                      Data.Promotion.Prelude.Monad,
                       Data.Promotion.Prelude.Tuple,
                       Data.Singletons.Types,
                       Data.Singletons.TypeLits,
