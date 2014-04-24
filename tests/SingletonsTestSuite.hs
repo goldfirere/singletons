@@ -18,10 +18,9 @@ tests =
     , compileAndDumpStdTest "Maybe"
     , compileAndDumpStdTest "BoxUnBox"
     , compileAndDumpStdTest "Operators"
-    , compileAndDumpStdTest "BadPlus"
     , compileAndDumpStdTest "HigherOrder"
     , compileAndDumpStdTest "Contains"
-    , compileAndDumpStdTest "AtPattern"
+    , compileAndDumpStdTest "AsPattern"
     , compileAndDumpStdTest "DataValues"
     , compileAndDumpStdTest "EqInstances"
     , compileAndDumpStdTest "CaseExpressions"
@@ -42,6 +41,7 @@ tests =
     [ compileAndDumpStdTest "Constructors"
     , compileAndDumpStdTest "GenDefunSymbols"
     , compileAndDumpStdTest "Newtypes"
+    , compileAndDumpStdTest "Classes"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts

@@ -1,5 +1,6 @@
 module Promote.Constructors where
 
+import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 
 -- Tests defunctionalization symbol generation for :

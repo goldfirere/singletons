@@ -1,6 +1,9 @@
 module Singletons.Nat where
 
 import Data.Singletons.TH
+import Data.Singletons
+import Data.Proxy
+import Data.Singletons.SuppressUnusedWarnings
 
 $(singletons [d|
   data Nat where

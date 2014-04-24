@@ -1,9 +1,12 @@
 module Singletons.AtPattern where
 
+import Data.Proxy
+import Data.Singletons
 import Data.Singletons.TH
-import Data.Singletons.Maybe
-import Data.Singletons.List
+import Data.Singletons.Prelude.Maybe
+import Data.Singletons.Prelude.List
 import Singletons.Nat
+import Data.Singletons.SuppressUnusedWarnings
 
 $(singletons [d|
   maybePlus :: Maybe Nat -> Maybe Nat

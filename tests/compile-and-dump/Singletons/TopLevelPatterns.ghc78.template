@@ -1,20 +1,60 @@
-Promote/TopLevelPatterns.hs:0:0: Splicing declarations
-    promote
+Singletons/TopLevelPatterns.hs:0:0: Splicing declarations
+    singletons
       [d| data Bool = False | True
           data Foo = Bar Bool Bool |]
   ======>
-    Promote/TopLevelPatterns.hs:(0,0)-(0,0)
+    Singletons/TopLevelPatterns.hs:(0,0)-(0,0)
     data Bool = False | True
     data Foo = Bar Bool Bool
     type FalseSym0 = False
     type TrueSym0 = True
-    type BarSym2 t t = Bar t t
+    type BarSym2 (t :: Bool) (t :: Bool) = Bar t t
+    instance SuppressUnusedWarnings BarSym1 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) BarSym1KindInference GHC.Tuple.())
     data BarSym1 (l :: Bool) (l :: TyFun Bool Foo)
+      = forall arg. (GHC.Types.~) (Apply (BarSym1 l) arg) (BarSym2 l arg) =>
+        BarSym1KindInference (Proxy arg)
     type instance Apply (BarSym1 l) l = BarSym2 l l
+    instance SuppressUnusedWarnings BarSym0 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) BarSym0KindInference GHC.Tuple.())
     data BarSym0 (l :: TyFun Bool (TyFun Bool Foo -> *))
+      = forall arg. (GHC.Types.~) (Apply BarSym0 arg) (BarSym1 arg) =>
+        BarSym0KindInference (Proxy arg)
     type instance Apply BarSym0 l = BarSym1 l
-Promote/TopLevelPatterns.hs:0:0: Splicing declarations
-    promote
+    data instance Sing (z :: Bool)
+      = (GHC.Types.~) z False => SFalse | (GHC.Types.~) z True => STrue
+    type SBool (z :: Bool) = Sing z
+    instance SingKind (KProxy :: KProxy Bool) where
+      type DemoteRep (KProxy :: KProxy Bool) = Bool
+      fromSing SFalse = False
+      fromSing STrue = True
+      toSing False = SomeSing SFalse
+      toSing True = SomeSing STrue
+    data instance Sing (z :: Foo)
+      = forall (n :: Bool) (n :: Bool). (GHC.Types.~) z (Bar n n) =>
+        SBar (Sing n) (Sing n)
+    type SFoo (z :: Foo) = Sing z
+    instance SingKind (KProxy :: KProxy Foo) where
+      type DemoteRep (KProxy :: KProxy Foo) = Foo
+      fromSing (SBar b b) = Bar (fromSing b) (fromSing b)
+      toSing (Bar b b)
+        = case
+              GHC.Tuple.(,)
+                (toSing b :: SomeSing (KProxy :: KProxy Bool))
+                (toSing b :: SomeSing (KProxy :: KProxy Bool))
+          of {
+            GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SBar c c) }
+    instance SingI False where
+      sing = SFalse
+    instance SingI True where
+      sing = STrue
+    instance (SingI n, SingI n) =>
+             SingI (Bar (n :: Bool) (n :: Bool)) where
+      sing = SBar sing sing
+Singletons/TopLevelPatterns.hs:0:0: Splicing declarations
+    singletons
       [d| otherwise :: Bool
           otherwise = True
           id :: a -> a
@@ -32,7 +72,7 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
           l, m :: Bool
           [l, m] = [not True, id False] |]
   ======>
-    Promote/TopLevelPatterns.hs:(0,0)-(0,0)
+    Singletons/TopLevelPatterns.hs:(0,0)-(0,0)
     otherwise :: Bool
     otherwise = True
     id :: forall a. a -> a
@@ -53,16 +93,22 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     l :: Bool
     m :: Bool
     [l, m] = [not True, id False]
-    type X_0123456789Sym0 = X_0123456789
-    type X_0123456789Sym0 = X_0123456789
-    type X_0123456789Sym0 = X_0123456789
-    type X_0123456789Sym0 = X_0123456789
     type False_Sym0 = False_
-    type NotSym1 t = Not t
+    type NotSym1 (t :: Bool) = Not t
+    instance SuppressUnusedWarnings NotSym0 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) NotSym0KindInference GHC.Tuple.())
     data NotSym0 (l :: TyFun Bool Bool)
+      = forall arg. (GHC.Types.~) (Apply NotSym0 arg) (NotSym1 arg) =>
+        NotSym0KindInference (Proxy arg)
     type instance Apply NotSym0 l = NotSym1 l
-    type IdSym1 t = Id t
+    type IdSym1 (t :: a) = Id t
+    instance SuppressUnusedWarnings IdSym0 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) IdSym0KindInference GHC.Tuple.())
     data IdSym0 (l :: TyFun a a)
+      = forall arg. (GHC.Types.~) (Apply IdSym0 arg) (IdSym1 arg) =>
+        IdSym0KindInference (Proxy arg)
     type instance Apply IdSym0 l = IdSym1 l
     type family Case_0123456789 t where
       Case_0123456789 ((GHC.Types.:) y ((GHC.Types.:) z GHC.Types.[])) = y
@@ -89,13 +135,10 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y GHC.Types.[])) = y
     type MSym0 = M
     type OtherwiseSym0 = Otherwise
-    type X_0123456789 =
-        Apply (Apply (:$) NotSym0) (Apply (Apply (:$) IdSym0) GHC.Types.[])
-    type X_0123456789 = Apply (Apply Tuple2Sym0 FSym0) GSym0
-    type X_0123456789 =
-        Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0)
-    type X_0123456789 =
-        Apply (Apply (:$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:$) (Apply IdSym0 FalseSym0)) GHC.Types.[])
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
     type False_ = FalseSym0
     type family Not (a :: Bool) :: Bool where
       Not True = FalseSym0
@@ -111,3 +154,159 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     type L = (Case_0123456789 X_0123456789Sym0 :: Bool)
     type M = (Case_0123456789 X_0123456789Sym0 :: Bool)
     type Otherwise = (TrueSym0 :: Bool)
+    type X_0123456789 =
+        Apply (Apply (:$) NotSym0) (Apply (Apply (:$) IdSym0) GHC.Types.[])
+    type X_0123456789 = Apply (Apply Tuple2Sym0 FSym0) GSym0
+    type X_0123456789 =
+        Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0)
+    type X_0123456789 =
+        Apply (Apply (:$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:$) (Apply IdSym0 FalseSym0)) GHC.Types.[])
+    sFalse_ :: Sing False_Sym0
+    sNot :: forall (t :: Bool). Sing t -> Sing (Apply NotSym0 t)
+    sId :: forall (t :: a). Sing t -> Sing (Apply IdSym0 t)
+    sF :: forall (t :: Bool). Sing t -> Sing (Apply FSym0 t)
+    sG :: forall (t :: Bool). Sing t -> Sing (Apply GSym0 t)
+    sH :: forall (t :: Bool). Sing t -> Sing (Apply HSym0 t)
+    sI :: forall (t :: Bool). Sing t -> Sing (Apply ISym0 t)
+    sJ :: Sing JSym0
+    sK :: Sing KSym0
+    sL :: Sing LSym0
+    sM :: Sing MSym0
+    sOtherwise :: Sing OtherwiseSym0
+    sX_0123456789 :: Sing X_0123456789Sym0
+    sX_0123456789 :: Sing X_0123456789Sym0
+    sX_0123456789 :: Sing X_0123456789Sym0
+    sX_0123456789 :: Sing X_0123456789Sym0
+    sFalse_ = SFalse
+    sNot STrue
+      = let
+          lambda :: (GHC.Types.~) t TrueSym0 => Sing (Apply NotSym0 TrueSym0)
+          lambda = SFalse
+        in lambda
+    sNot SFalse
+      = let
+          lambda ::
+            (GHC.Types.~) t FalseSym0 => Sing (Apply NotSym0 FalseSym0)
+          lambda = STrue
+        in lambda
+    sId sX
+      = let
+          lambda ::
+            forall x. (GHC.Types.~) t x => Sing x -> Sing (Apply IdSym0 x)
+          lambda x = x
+        in lambda sX
+    sF
+      = unSingFun1
+          (Proxy :: Proxy F)
+          (case sX_0123456789 of {
+             SCons sY (SCons _ SNil)
+               -> let
+                    lambda ::
+                      forall y wild.
+                      Sing y
+                      -> Sing (Case_0123456789 (Apply (Apply (:$) y) (Apply (Apply (:$) wild) GHC.Types.[])))
+                    lambda y = y
+                  in lambda sY })
+    sG
+      = unSingFun1
+          (Proxy :: Proxy G)
+          (case sX_0123456789 of {
+             SCons _ (SCons sY SNil)
+               -> let
+                    lambda ::
+                      forall y wild.
+                      Sing y
+                      -> Sing (Case_0123456789 (Apply (Apply (:$) wild) (Apply (Apply (:$) y) GHC.Types.[])))
+                    lambda y = y
+                  in lambda sY })
+    sH
+      = unSingFun1
+          (Proxy :: Proxy H)
+          (case sX_0123456789 of {
+             STuple2 sY _
+               -> let
+                    lambda ::
+                      forall y wild.
+                      Sing y -> Sing (Case_0123456789 (Apply (Apply Tuple2Sym0 y) wild))
+                    lambda y = y
+                  in lambda sY })
+    sI
+      = unSingFun1
+          (Proxy :: Proxy I)
+          (case sX_0123456789 of {
+             STuple2 _ sY
+               -> let
+                    lambda ::
+                      forall y wild.
+                      Sing y -> Sing (Case_0123456789 (Apply (Apply Tuple2Sym0 wild) y))
+                    lambda y = y
+                  in lambda sY })
+    sJ
+      = case sX_0123456789 of {
+          SBar sY _
+            -> let
+                 lambda ::
+                   forall y wild.
+                   Sing y -> Sing (Case_0123456789 (Apply (Apply BarSym0 y) wild))
+                 lambda y = y
+               in lambda sY }
+    sK
+      = case sX_0123456789 of {
+          SBar _ sY
+            -> let
+                 lambda ::
+                   forall y wild.
+                   Sing y -> Sing (Case_0123456789 (Apply (Apply BarSym0 wild) y))
+                 lambda y = y
+               in lambda sY }
+    sL
+      = case sX_0123456789 of {
+          SCons sY (SCons _ SNil)
+            -> let
+                 lambda ::
+                   forall y wild.
+                   Sing y
+                   -> Sing (Case_0123456789 (Apply (Apply (:$) y) (Apply (Apply (:$) wild) GHC.Types.[])))
+                 lambda y = y
+               in lambda sY }
+    sM
+      = case sX_0123456789 of {
+          SCons _ (SCons sY SNil)
+            -> let
+                 lambda ::
+                   forall y wild.
+                   Sing y
+                   -> Sing (Case_0123456789 (Apply (Apply (:$) wild) (Apply (Apply (:$) y) GHC.Types.[])))
+                 lambda y = y
+               in lambda sY }
+    sOtherwise = STrue
+    sX_0123456789
+      = applySing
+          (applySing
+             (singFun2 (Proxy :: Proxy (:$)) SCons)
+             (singFun1 (Proxy :: Proxy NotSym0) sNot))
+          (applySing
+             (applySing
+                (singFun2 (Proxy :: Proxy (:$)) SCons)
+                (singFun1 (Proxy :: Proxy IdSym0) sId))
+             SNil)
+    sX_0123456789
+      = applySing
+          (applySing
+             (singFun2 (Proxy :: Proxy Tuple2Sym0) STuple2)
+             (singFun1 (Proxy :: Proxy FSym0) sF))
+          (singFun1 (Proxy :: Proxy GSym0) sG)
+    sX_0123456789
+      = applySing
+          (applySing (singFun2 (Proxy :: Proxy BarSym0) SBar) STrue)
+          (applySing (singFun1 (Proxy :: Proxy HSym0) sH) SFalse)
+    sX_0123456789
+      = applySing
+          (applySing
+             (singFun2 (Proxy :: Proxy (:$)) SCons)
+             (applySing (singFun1 (Proxy :: Proxy NotSym0) sNot) STrue))
+          (applySing
+             (applySing
+                (singFun2 (Proxy :: Proxy (:$)) SCons)
+                (applySing (singFun1 (Proxy :: Proxy IdSym0) sId) SFalse))
+             SNil)

@@ -8,15 +8,51 @@ Singletons/Contains.hs:0:0: Splicing declarations
     contains :: forall a. Eq a => a -> [a] -> Bool
     contains _ GHC.Types.[] = False
     contains elt (h GHC.Types.: t) = ((elt == h) || (contains elt t))
-    type family Contains (a :: a) (a :: [a]) :: Bool where
-         Contains z GHC.Types.[] = FalseSym0
-         Contains elt ((GHC.Types.:) h t) = Apply (Apply (:||$) (Apply (Apply (:==$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
-    data ContainsSym1 (l :: a) (l :: TyFun [a] Bool)
-    data ContainsSym0 (k :: TyFun a (TyFun [a] Bool -> *))
-    type instance Apply (ContainsSym1 a) a = Contains a a
-    type instance Apply ContainsSym0 a = ContainsSym1 a
+    type ContainsSym2 (t :: a) (t :: GHC.Types.[] a) = Contains t t
+    instance SuppressUnusedWarnings ContainsSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ContainsSym1KindInference GHC.Tuple.())
+    data ContainsSym1 (l :: a) (l :: TyFun (GHC.Types.[] a) Bool)
+      = forall arg. (GHC.Types.~) (Apply (ContainsSym1 l) arg) (ContainsSym2 l arg) =>
+        ContainsSym1KindInference (Proxy arg)
+    type instance Apply (ContainsSym1 l) l = ContainsSym2 l l
+    instance SuppressUnusedWarnings ContainsSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ContainsSym0KindInference GHC.Tuple.())
+    data ContainsSym0 (l :: TyFun a (TyFun (GHC.Types.[] a) Bool -> *))
+      = forall arg. (GHC.Types.~) (Apply ContainsSym0 arg) (ContainsSym1 arg) =>
+        ContainsSym0KindInference (Proxy arg)
+    type instance Apply ContainsSym0 l = ContainsSym1 l
+    type family Contains (a :: a) (a :: GHC.Types.[] a) :: Bool where
+      Contains z GHC.Types.[] = FalseSym0
+      Contains elt ((GHC.Types.:) h t) = Apply (Apply (:||$) (Apply (Apply (:==$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
     sContains ::
-      forall (t :: a) (t :: [a]). SEq (KProxy :: KProxy a) =>
-      Sing t -> Sing t -> Sing (Contains t t)
-    sContains _ SNil = SFalse
-    sContains elt (SCons h t) = (%:||) ((%:==) elt h) (sContains elt t)
+      forall (t :: a) (t :: GHC.Types.[] a). SEq (KProxy :: KProxy a) =>
+      Sing t -> Sing t -> Sing (Apply (Apply ContainsSym0 t) t)
+    sContains _ SNil
+      = let
+          lambda ::
+            forall wild. ((GHC.Types.~) t wild,
+                          (GHC.Types.~) t GHC.Types.[]) =>
+            Sing (Apply (Apply ContainsSym0 wild) GHC.Types.[])
+          lambda = SFalse
+        in lambda
+    sContains sElt (SCons sH sT)
+      = let
+          lambda ::
+            forall elt h t. ((GHC.Types.~) t elt,
+                             (GHC.Types.~) t (Apply (Apply (:$) h) t)) =>
+            Sing elt
+            -> Sing h
+               -> Sing t
+                  -> Sing (Apply (Apply ContainsSym0 elt) (Apply (Apply (:$) h) t))
+          lambda elt h t
+            = applySing
+                (applySing
+                   (singFun2 (Proxy :: Proxy (:||$)) (%:||))
+                   (applySing
+                      (applySing (singFun2 (Proxy :: Proxy (:==$)) (%:==)) elt) h))
+                (applySing
+                   (applySing (singFun2 (Proxy :: Proxy ContainsSym0) sContains) elt)
+                   t)
+        in lambda sElt sH sT

@@ -1,7 +1,9 @@
 module Singletons.Sections where
 
+import Data.Singletons
+import Data.Singletons.Prelude.List
+import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
-import Data.Singletons.List
 import Singletons.Nat
 
 $(singletons [d|
@@ -18,8 +20,6 @@ $(singletons [d|
   foo3 :: [Nat]
   foo3 = zipWith (+) [Succ Zero, Succ Zero] [Zero, Succ Zero]
  |])
-
-data Proxy a = Proxy
 
 foo1a :: Proxy Foo1
 foo1a = Proxy

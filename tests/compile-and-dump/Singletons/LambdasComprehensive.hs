@@ -1,5 +1,6 @@
 module Singletons.LambdasComprehensive where
 
+import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Data.Singletons.Prelude
 import Singletons.Nat

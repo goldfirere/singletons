@@ -1,5 +1,6 @@
 module Singletons.Records where
 
+import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 
 $(singletons [d|
@@ -20,4 +21,3 @@ foo2a = Proxy
 
 foo2b :: Proxy 5
 foo2b = foo2a
-          

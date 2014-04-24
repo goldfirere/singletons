@@ -1,16 +1,39 @@
-Promote/Error.hs:0:0: Splicing declarations
-    promote
+Singletons/Error.hs:0:0: Splicing declarations
+    singletons
       [d| head :: [a] -> a
           head (a : _) = a
           head [] = error "Data.Singletons.List.head: empty list" |]
   ======>
-    Promote/Error.hs:(0,0)-(0,0)
+    Singletons/Error.hs:(0,0)-(0,0)
     head :: forall a. [a] -> a
     head (a GHC.Types.: _) = a
     head GHC.Types.[] = error "Data.Singletons.List.head: empty list"
-    type HeadSym1 t = Head t
+    type HeadSym1 (t :: GHC.Types.[] a) = Head t
+    instance SuppressUnusedWarnings HeadSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) HeadSym0KindInference GHC.Tuple.())
     data HeadSym0 (l :: TyFun (GHC.Types.[] a) a)
+      = forall arg. (GHC.Types.~) (Apply HeadSym0 arg) (HeadSym1 arg) =>
+        HeadSym0KindInference (Proxy arg)
     type instance Apply HeadSym0 l = HeadSym1 l
     type family Head (a :: GHC.Types.[] a) :: a where
       Head ((GHC.Types.:) a z) = a
       Head GHC.Types.[] = Apply ErrorSym0 "Data.Singletons.List.head: empty list"
+    sHead ::
+      forall (t :: GHC.Types.[] a). Sing t -> Sing (Apply HeadSym0 t)
+    sHead (SCons sA _)
+      = let
+          lambda ::
+            forall a wild. (GHC.Types.~) t (Apply (Apply (:$) a) wild) =>
+            Sing a -> Sing (Apply HeadSym0 (Apply (Apply (:$) a) wild))
+          lambda a = a
+        in lambda sA
+    sHead SNil
+      = let
+          lambda ::
+            (GHC.Types.~) t GHC.Types.[] => Sing (Apply HeadSym0 GHC.Types.[])
+          lambda
+            = applySing
+                (singFun1 (Proxy :: Proxy ErrorSym0) sError)
+                (sing :: Sing "Data.Singletons.List.head: empty list")
+        in lambda

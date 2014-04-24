@@ -1,7 +1,8 @@
 module Promote.GenDefunSymbols where
 
-import Data.Singletons.Promote
 import Data.Singletons (Apply, TyFun)
+import Data.Singletons.Promote
+import Data.Singletons.SuppressUnusedWarnings
 
 #if __GLASGOW_HASKELL__ >= 707
 type family LiftMaybe (f :: TyFun a b -> *) (x :: Maybe a) :: Maybe b where

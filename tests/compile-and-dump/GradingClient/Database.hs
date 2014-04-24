@@ -22,8 +22,9 @@ presented in /Dependently typed programming with singletons/
 module GradingClient.Database where
 
 import Prelude hiding ( tail, id )
-import Data.Singletons.TH
 import Data.Singletons.Prelude
+import Data.Singletons.SuppressUnusedWarnings
+import Data.Singletons.TH
 import Control.Monad
 import Data.List hiding ( tail )
 import Control.Monad.Error

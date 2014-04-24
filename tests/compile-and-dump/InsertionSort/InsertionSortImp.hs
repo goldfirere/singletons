@@ -31,8 +31,9 @@ unambiguous.
 
 module InsertionSort.InsertionSortImp where
 
-import Data.Singletons.TH
 import Data.Singletons.Prelude
+import Data.Singletons.SuppressUnusedWarnings
+import Data.Singletons.TH
 
 -- We use the Dict data type from Edward Kmett's constraints package to be
 -- able to return dictionaries from functions

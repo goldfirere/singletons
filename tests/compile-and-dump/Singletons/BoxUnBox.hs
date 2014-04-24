@@ -1,6 +1,7 @@
 module Singletons.BoxUnBox where
 
 import Data.Singletons.TH
+import Data.Singletons.SuppressUnusedWarnings
 
 $(singletons [d|
   data Box a = FBox a

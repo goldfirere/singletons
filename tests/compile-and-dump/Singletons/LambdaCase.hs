@@ -1,7 +1,8 @@
 module Singletons.LambdaCase where
 
-import Data.Singletons.TH
 import Data.Singletons.Prelude
+import Data.Singletons.SuppressUnusedWarnings
+import Data.Singletons.TH
 
 $(singletons [d|
   foo1 :: a -> Maybe a -> a

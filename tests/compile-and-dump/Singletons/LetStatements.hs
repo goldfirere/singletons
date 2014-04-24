@@ -3,6 +3,8 @@
 
 module Singletons.LetStatements where
 
+import Data.Singletons
+import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Singletons.Nat
 
@@ -99,8 +101,6 @@ $(singletons [d|
   foo13b :: a -> a
   foo13b y = y
  |])
-
-data Proxy a = Proxy
 
 foo1a :: Proxy (Foo1 Zero)
 foo1a = Proxy

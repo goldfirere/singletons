@@ -3,9 +3,10 @@
 -- We expect unused binds and name shadowing in foo5 test.
 module Singletons.Lambdas where
 
+import Data.Proxy
+import Data.Singletons
+import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
-
-data Proxy a = Proxy
 
 $(singletons [d|
   -- nothing in scope

@@ -2,13 +2,15 @@ module Promote.Classes where
 
 import Prelude hiding (Ord(..), const)
 import Singletons.Nat
+import Data.Singletons
+import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
-import Data.Singletons.Prelude
+import Data.Singletons.Prelude (EQSym0, LTSym0, GTSym0)
 
 $(promote [d|
   const :: a -> b -> a
   const x _ = x
-           
+
   class Ord a where
     compare :: a -> a -> Ordering
 

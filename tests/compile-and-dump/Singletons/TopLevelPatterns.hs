@@ -3,8 +3,10 @@
 
 module Singletons.TopLevelPatterns where
 
+import Data.Singletons
+import Data.Singletons.Prelude.List
+import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH hiding (STrue, SFalse, TrueSym0, FalseSym0)
-import Data.Singletons.List
 
 $(singletons [d|
   data Bool = False | True

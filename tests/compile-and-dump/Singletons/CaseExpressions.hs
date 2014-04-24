@@ -2,9 +2,10 @@
 
 module Singletons.CaseExpressions where
 
+import Data.Singletons
 import Data.Singletons.TH
-import Data.Singletons.Maybe
-import Data.Singletons.Prelude
+import Data.Singletons.Prelude.Maybe
+import Data.Singletons.SuppressUnusedWarnings
 
 $(singletons [d|
   foo1 :: a -> Maybe a -> a

@@ -1,9 +1,8 @@
-{-# OPTIONS_GHC -fno-warn-unused-matches -fno-warn-incomplete-patterns #-}
-
 module Singletons.PatternMatching where
 
-import Data.Singletons.TH
 import Data.Singletons.Prelude
+import Data.Singletons.SuppressUnusedWarnings
+import Data.Singletons.TH
 import Singletons.Nat
 
 $(singletons [d|
@@ -47,4 +46,3 @@ test4 = id
 
 test5 :: Proxy Fls -> Proxy False
 test5 = id
-

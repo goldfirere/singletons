@@ -1,14 +1,14 @@
-
 module Singletons.HigherOrder where
 
 import Data.Singletons
 import Data.Singletons.TH
-import Data.Singletons.List hiding (
-           sMap, Map, MapSym0, MapSym1, ZipWith, sZipWith, ZipWithSym0,
-           ZipWithSym1, ZipWithSym2 )
-import Data.Singletons.Maybe
+import Data.Singletons.Prelude.List hiding (
+         sMap, Map, MapSym0, MapSym1, MapSym2,
+         ZipWith, sZipWith, ZipWithSym0, ZipWithSym1, ZipWithSym2, ZipWithSym3 )
+import Data.Singletons.Prelude.Maybe
 import Singletons.Nat
 import Prelude hiding (Either(..))
+import Data.Singletons.SuppressUnusedWarnings
 
 $(singletons [d|
   data Either a b = Left a | Right b

@@ -9,16 +9,34 @@ Singletons/BoxUnBox.hs:0:0: Splicing declarations
     data Box a = FBox a
     unBox :: forall a. Box a -> a
     unBox (FBox a) = a
+    type FBoxSym1 (t :: a) = FBox t
+    instance SuppressUnusedWarnings FBoxSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FBoxSym0KindInference GHC.Tuple.())
+    data FBoxSym0 (l :: TyFun a (Box a))
+      = forall arg. (GHC.Types.~) (Apply FBoxSym0 arg) (FBoxSym1 arg) =>
+        FBoxSym0KindInference (Data.Proxy.Proxy arg)
+    type instance Apply FBoxSym0 l = FBoxSym1 l
     type UnBoxSym1 (t :: Box a) = UnBox t
+    instance SuppressUnusedWarnings UnBoxSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) UnBoxSym0KindInference GHC.Tuple.())
     data UnBoxSym0 (l :: TyFun (Box a) a)
+      = forall arg. (GHC.Types.~) (Apply UnBoxSym0 arg) (UnBoxSym1 arg) =>
+        UnBoxSym0KindInference (Data.Proxy.Proxy arg)
     type instance Apply UnBoxSym0 l = UnBoxSym1 l
     type family UnBox (a :: Box a) :: a where
       UnBox (FBox a) = a
-    type FBoxSym1 (t :: a) = FBox t
-    data FBoxSym0 (l :: TyFun a (Box a))
-    type instance Apply FBoxSym0 l = FBoxSym1 l
+    sUnBox :: forall (t :: Box a). Sing t -> Sing (Apply UnBoxSym0 t)
+    sUnBox (SFBox sA)
+      = let
+          lambda ::
+            forall a. (GHC.Types.~) t (Apply FBoxSym0 a) =>
+            Sing a -> Sing (Apply UnBoxSym0 (Apply FBoxSym0 a))
+          lambda a = a
+        in lambda sA
     data instance Sing (z :: Box a)
-      = forall (n :: a). z ~ FBox n => SFBox (Sing n)
+      = forall (n :: a). (GHC.Types.~) z (FBox n) => SFBox (Sing n)
     type SBox (z :: Box a) = Sing z
     instance SingKind (KProxy :: KProxy a) =>
              SingKind (KProxy :: KProxy (Box a)) where
@@ -29,5 +47,3 @@ Singletons/BoxUnBox.hs:0:0: Splicing declarations
             SomeSing c -> SomeSing (SFBox c) }
     instance SingI n => SingI (FBox (n :: a)) where
       sing = SFBox sing
-    sUnBox :: forall (t :: Box a). Sing t -> Sing (UnBox t)
-    sUnBox (SFBox a) = a

@@ -16,11 +16,16 @@ Singletons/Maybe.hs:0:0: Splicing declarations
     type instance (==) (a :: Maybe k) (b :: Maybe k) = Equals_0123456789 a b
     type NothingSym0 = Nothing
     type JustSym1 (t :: a) = Just t
+    instance SuppressUnusedWarnings JustSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) JustSym0KindInference GHC.Tuple.())
     data JustSym0 (l :: TyFun a (Maybe a))
+      = forall arg. (GHC.Types.~) (Apply JustSym0 arg) (JustSym1 arg) =>
+        JustSym0KindInference (Data.Proxy.Proxy arg)
     type instance Apply JustSym0 l = JustSym1 l
     data instance Sing (z :: Maybe a)
-      = z ~ Nothing => SNothing |
-        forall (n :: a). z ~ Just n => SJust (Sing n)
+      = (GHC.Types.~) z Nothing => SNothing |
+        forall (n :: a). (GHC.Types.~) z (Just n) => SJust (Sing n)
     type SMaybe (z :: Maybe a) = Sing z
     instance SingKind (KProxy :: KProxy a) =>
              SingKind (KProxy :: KProxy (Maybe a)) where
@@ -42,16 +47,19 @@ Singletons/Maybe.hs:0:0: Splicing declarations
       (%~) SNothing SNothing = Proved Refl
       (%~) SNothing (SJust _)
         = Disproved
-            (\case {
-               _ -> error "Empty case reached -- this should be impossible" })
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) (SJust _) SNothing
         = Disproved
-            (\case {
-               _ -> error "Empty case reached -- this should be impossible" })
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) (SJust a) (SJust b)
         = case (%~) a b of {
             Proved Refl -> Proved Refl
-            Disproved contra -> Disproved (\ Refl -> contra Refl) }
+            Disproved contra
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
     instance SingI Nothing where
       sing = SNothing
     instance SingI n => SingI (Just (n :: a)) where

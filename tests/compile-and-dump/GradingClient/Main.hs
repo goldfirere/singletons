@@ -12,8 +12,9 @@ some basic queries on it.
 
 module Main where
 
+import Data.Singletons
 import Data.Singletons.TH
-import Data.Singletons.List
+import Data.Singletons.Prelude.List
 import GradingClient.Database
 
 $(singletons [d|

@@ -24,7 +24,7 @@ import Singletons.LambdaCase
 import Singletons.Lambdas
 import Singletons.LambdasComprehensive
 import Singletons.CaseExpressions
-import Singletons.AtPattern
+import Singletons.AsPattern
 import Singletons.BoxUnBox
 import Singletons.Contains
 import Singletons.DataValues

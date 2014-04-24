@@ -6,6 +6,7 @@ import Data.Singletons.Prelude
 import Data.Singletons.Decide
 import Data.Singletons.CustomStar
 import Singletons.Nat
+--import Singletons.Star
 
 data Vec :: * -> Nat -> * where
   VNil :: Vec a Zero
