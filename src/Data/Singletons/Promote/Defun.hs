@@ -95,8 +95,9 @@ buildDefunSymsDataD tyName tvbs ctors = do
 -- The defunctionalize function takes Maybe DKinds so that the caller can
 -- indicate which kinds are known and which need to be inferred.
 defunctionalize :: Name -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
-defunctionalize name m_arg_kinds m_res_kind = do
-  let num_args = length m_arg_kinds
+defunctionalize name m_arg_kinds' m_res_kind' = do
+  let (m_arg_kinds, m_res_kind) = eta_expand m_arg_kinds' m_res_kind'
+      num_args = length m_arg_kinds
       sat_name = promoteTySym name num_args
   tvbNames <- replicateM num_args $ qNewName "t"
   let sat_dec = DTySynD sat_name (zipWith mk_tvb tvbNames m_arg_kinds)
@@ -107,6 +108,20 @@ defunctionalize name m_arg_kinds m_res_kind = do
     mk_tvb :: Name -> Maybe DKind -> DTyVarBndr
     mk_tvb tvb_name Nothing  = DPlainTV tvb_name
     mk_tvb tvb_name (Just k) = DKindedTV tvb_name k
+
+    eta_expand :: [Maybe DKind] -> Maybe DKind -> ([Maybe DKind], Maybe DKind)
+    eta_expand m_arg_kinds Nothing = (m_arg_kinds, Nothing)
+    eta_expand m_arg_kinds (Just res_kind) =
+        let ks                 = unravelK res_kind
+            (argKs, [resultK]) =  splitAt (length ks - 1) ks
+        in (m_arg_kinds ++ (map Just argKs), Just resultK)
+
+    unravelK :: DKind -> [DKind]
+    unravelK (DForallK _name k) = unravelK k
+    unravelK (DArrowK (DConK _ ks) DStarK) =
+        concatMap unravelK ks
+    unravelK (DArrowK k1 k2) = k1 : unravelK k2
+    unravelK t = [t]
 
     go :: Int -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
     go _ [] _ = return []

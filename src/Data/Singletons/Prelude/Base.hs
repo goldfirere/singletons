@@ -46,8 +46,7 @@ import Data.Singletons.Prelude.Bool
 
 $(singletonsOnly [d|
   foldr                   :: (a -> b -> b) -> b -> [a] -> b
-  -- Temporalily eta-expanded to work around #31
-  foldr k z n = go n
+  foldr k z = go
             where
               go []     = z
               go (y:ys) = y `k` go ys
@@ -73,8 +72,7 @@ $(singletonsOnly [d|
   flip f x y              =  f y x
 
   asTypeOf                :: a -> a -> a
-  -- Temporalily eta-expanded to work around #31
-  asTypeOf a b            =  const a b
+  asTypeOf                =  const
 
   -- This is not part of GHC.Base, but we need to emulate seq and this is a good
   -- place to do it.

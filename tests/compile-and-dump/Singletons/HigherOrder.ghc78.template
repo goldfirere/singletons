@@ -175,12 +175,46 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply Lambda_0123456789Sym0 arg) (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference (Proxy arg)
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
-    type family Case_0123456789 n b t where
-      Case_0123456789 n b True = Apply SuccSym0 (Apply SuccSym0 n)
-      Case_0123456789 n b False = n
-    type family Lambda_0123456789 t t where
-      Lambda_0123456789 n b = Case_0123456789 n b b
-    type Lambda_0123456789Sym2 t t = Lambda_0123456789 t t
+    type EtadSym2 (t :: GHC.Types.[] Nat) (t :: GHC.Types.[] Bool) =
+        Etad t t
+    instance SuppressUnusedWarnings EtadSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) EtadSym1KindInference GHC.Tuple.())
+    data EtadSym1 (l :: GHC.Types.[] Nat)
+                  (l :: TyFun (GHC.Types.[] Bool) (GHC.Types.[] Nat))
+      = forall arg. (GHC.Types.~) (Apply (EtadSym1 l) arg) (EtadSym2 l arg) =>
+        EtadSym1KindInference (Proxy arg)
+    type instance Apply (EtadSym1 l) l = EtadSym2 l l
+    instance SuppressUnusedWarnings EtadSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) EtadSym0KindInference GHC.Tuple.())
+    data EtadSym0 (l :: TyFun (GHC.Types.[] Nat) (TyFun (GHC.Types.[] Bool) (GHC.Types.[] Nat)
+                                                  -> *))
+      = forall arg. (GHC.Types.~) (Apply EtadSym0 arg) (EtadSym1 arg) =>
+        EtadSym0KindInference (Proxy arg)
+    type instance Apply EtadSym0 l = EtadSym1 l
+    type family Case_0123456789 n b a_0123456789 a_0123456789 t where
+      Case_0123456789 n b a_0123456789 a_0123456789 True = Apply SuccSym0 (Apply SuccSym0 n)
+      Case_0123456789 n b a_0123456789 a_0123456789 False = n
+    type family Lambda_0123456789 a_0123456789 a_0123456789 t t where
+      Lambda_0123456789 a_0123456789 a_0123456789 n b = Case_0123456789 n b a_0123456789 a_0123456789 b
+    type Lambda_0123456789Sym4 t t t t = Lambda_0123456789 t t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym3 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym3KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym3 l l l l
+      = forall arg. (GHC.Types.~) (Apply (Lambda_0123456789Sym3 l l l) arg) (Lambda_0123456789Sym4 l l l arg) =>
+        Lambda_0123456789Sym3KindInference (Proxy arg)
+    type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789Sym4 l l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. (GHC.Types.~) (Apply (Lambda_0123456789Sym2 l l) arg) (Lambda_0123456789Sym3 l l arg) =>
+        Lambda_0123456789Sym2KindInference (Proxy arg)
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
@@ -197,7 +231,6 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply Lambda_0123456789Sym0 arg) (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference (Proxy arg)
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
-    type EtadSym0 = Etad
     type LiftMaybeSym2 (t :: TyFun a b -> *) (t :: Maybe a) =
         LiftMaybe t t
     instance SuppressUnusedWarnings LiftMaybeSym1 where
@@ -247,10 +280,9 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
     type family Splunge (a :: GHC.Types.[] Nat)
                         (a :: GHC.Types.[] Bool) :: GHC.Types.[] Nat where
       Splunge ns bs = Apply (Apply (Apply ZipWithSym0 (Apply (Apply Lambda_0123456789Sym0 ns) bs)) ns) bs
-    type Etad =
-        (Apply ZipWithSym0 Lambda_0123456789Sym0 :: TyFun (GHC.Types.[] Nat) (TyFun (GHC.Types.[] Bool) (GHC.Types.[] Nat)
-                                                                              -> *)
-                                                    -> *)
+    type family Etad (a :: GHC.Types.[] Nat)
+                     (a :: GHC.Types.[] Bool) :: GHC.Types.[] Nat where
+      Etad a_0123456789 a_0123456789 = Apply (Apply (Apply ZipWithSym0 (Apply (Apply Lambda_0123456789Sym0 a_0123456789) a_0123456789)) a_0123456789) a_0123456789
     type family LiftMaybe (a :: TyFun a b -> *)
                           (a :: Maybe a) :: Maybe b where
       LiftMaybe f (Just x) = Apply JustSym0 (Apply f x)
@@ -382,34 +414,51 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
                    ns)
                 bs
         in lambda sNs sBs
-    sEtad
-      = unSingFun2
-          (Proxy :: Proxy Etad)
-          (applySing
-             (singFun3 (Proxy :: Proxy ZipWithSym0) sZipWith)
-             (singFun2
-                (Proxy :: Proxy Lambda_0123456789Sym0)
-                (\ sN sB
-                   -> let
-                        lambda ::
-                          forall n b.
-                          Sing n -> Sing b -> Sing (Apply (Apply Lambda_0123456789Sym0 n) b)
-                        lambda n b
-                          = case b of {
-                              STrue
-                                -> let
-                                     lambda :: Sing (Case_0123456789 n b TrueSym0)
-                                     lambda
-                                       = applySing
-                                           (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
-                                           (applySing (singFun1 (Proxy :: Proxy SuccSym0) SSucc) n)
-                                   in lambda
-                              SFalse
-                                -> let
-                                     lambda :: Sing (Case_0123456789 n b FalseSym0)
-                                     lambda = n
-                                   in lambda }
-                      in lambda sN sB)))
+    sEtad sA_0123456789 sA_0123456789
+      = let
+          lambda ::
+            forall a_0123456789 a_0123456789. ((GHC.Types.~) t a_0123456789,
+                                               (GHC.Types.~) t a_0123456789) =>
+            Sing a_0123456789
+            -> Sing a_0123456789
+               -> Sing (Apply (Apply EtadSym0 a_0123456789) a_0123456789)
+          lambda a_0123456789 a_0123456789
+            = applySing
+                (applySing
+                   (applySing
+                      (singFun3 (Proxy :: Proxy ZipWithSym0) sZipWith)
+                      (singFun2
+                         (Proxy ::
+                            Proxy (Apply (Apply Lambda_0123456789Sym0 a_0123456789) a_0123456789))
+                         (\ sN sB
+                            -> let
+                                 lambda ::
+                                   forall n b.
+                                   Sing n
+                                   -> Sing b
+                                      -> Sing (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 a_0123456789) a_0123456789) n) b)
+                                 lambda n b
+                                   = case b of {
+                                       STrue
+                                         -> let
+                                              lambda ::
+                                                Sing (Case_0123456789 n b a_0123456789 a_0123456789 TrueSym0)
+                                              lambda
+                                                = applySing
+                                                    (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
+                                                    (applySing
+                                                       (singFun1 (Proxy :: Proxy SuccSym0) SSucc) n)
+                                            in lambda
+                                       SFalse
+                                         -> let
+                                              lambda ::
+                                                Sing (Case_0123456789 n b a_0123456789 a_0123456789 FalseSym0)
+                                              lambda = n
+                                            in lambda }
+                               in lambda sN sB)))
+                   a_0123456789)
+                a_0123456789
+        in lambda sA_0123456789 sA_0123456789
     sLiftMaybe sF (SJust sX)
       = let
           lambda ::

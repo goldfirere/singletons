@@ -1,0 +1,152 @@
+Promote/TopLevelPatterns.hs:0:0: Splicing declarations
+    promote
+      [d| id :: a -> a
+          id x = x
+          not :: Bool -> Bool
+          not True = False
+          not False = True
+          f, g :: Bool -> Bool
+          [f, g] = [not, id]
+          h, i :: Bool -> Bool
+          (h, i) = (f, g)
+          j, k :: Bool
+          (Bar j k) = Bar True (h False)
+          l, m :: Bool
+          [l, m] = [not True, id False]
+          
+          data Bool = False | True
+          data Foo = Bar Bool Bool |]
+  ======>
+    Promote/TopLevelPatterns.hs:(0,0)-(0,0)
+    data Bool = False | True
+    data Foo = Bar Bool Bool
+    id :: forall a. a -> a
+    id x = x
+    not :: Bool -> Bool
+    not True = False
+    not False = True
+    f :: Bool -> Bool
+    g :: Bool -> Bool
+    [f, g] = [not, id]
+    h :: Bool -> Bool
+    i :: Bool -> Bool
+    (h, i) = (f, g)
+    j :: Bool
+    k :: Bool
+    Bar j k = Bar True (h False)
+    l :: Bool
+    m :: Bool
+    [l, m] = [not True, id False]
+    type NotSym1 (t :: Bool) = Not t
+    instance SuppressUnusedWarnings NotSym0 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) NotSym0KindInference GHC.Tuple.())
+    data NotSym0 (l :: TyFun Bool Bool)
+      = forall arg. (GHC.Types.~) (Apply NotSym0 arg) (NotSym1 arg) =>
+        NotSym0KindInference (Proxy arg)
+    type instance Apply NotSym0 l = NotSym1 l
+    type IdSym1 (t :: a) = Id t
+    instance SuppressUnusedWarnings IdSym0 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) IdSym0KindInference GHC.Tuple.())
+    data IdSym0 (l :: TyFun a a)
+      = forall arg. (GHC.Types.~) (Apply IdSym0 arg) (IdSym1 arg) =>
+        IdSym0KindInference (Proxy arg)
+    type instance Apply IdSym0 l = IdSym1 l
+    type FSym1 (t :: Bool) = F t
+    instance SuppressUnusedWarnings FSym0 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) FSym0KindInference GHC.Tuple.())
+    data FSym0 (l :: TyFun Bool Bool)
+      = forall arg. (GHC.Types.~) (Apply FSym0 arg) (FSym1 arg) =>
+        FSym0KindInference (Proxy arg)
+    type instance Apply FSym0 l = FSym1 l
+    type family Case_0123456789 a_0123456789 t where
+      Case_0123456789 a_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) z GHC.Types.[])) = y_0123456789
+    type GSym1 (t :: Bool) = G t
+    instance SuppressUnusedWarnings GSym0 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) GSym0KindInference GHC.Tuple.())
+    data GSym0 (l :: TyFun Bool Bool)
+      = forall arg. (GHC.Types.~) (Apply GSym0 arg) (GSym1 arg) =>
+        GSym0KindInference (Proxy arg)
+    type instance Apply GSym0 l = GSym1 l
+    type family Case_0123456789 a_0123456789 t where
+      Case_0123456789 a_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
+    type HSym1 (t :: Bool) = H t
+    instance SuppressUnusedWarnings HSym0 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) HSym0KindInference GHC.Tuple.())
+    data HSym0 (l :: TyFun Bool Bool)
+      = forall arg. (GHC.Types.~) (Apply HSym0 arg) (HSym1 arg) =>
+        HSym0KindInference (Proxy arg)
+    type instance Apply HSym0 l = HSym1 l
+    type family Case_0123456789 a_0123456789 t where
+      Case_0123456789 a_0123456789 (GHC.Tuple.(,) y_0123456789 z) = y_0123456789
+    type ISym1 (t :: Bool) = I t
+    instance SuppressUnusedWarnings ISym0 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) ISym0KindInference GHC.Tuple.())
+    data ISym0 (l :: TyFun Bool Bool)
+      = forall arg. (GHC.Types.~) (Apply ISym0 arg) (ISym1 arg) =>
+        ISym0KindInference (Proxy arg)
+    type instance Apply ISym0 l = ISym1 l
+    type family Case_0123456789 a_0123456789 t where
+      Case_0123456789 a_0123456789 (GHC.Tuple.(,) z y_0123456789) = y_0123456789
+    type family Case_0123456789 t where
+      Case_0123456789 (Bar y_0123456789 z) = y_0123456789
+    type JSym0 = J
+    type family Case_0123456789 t where
+      Case_0123456789 (Bar z y_0123456789) = y_0123456789
+    type KSym0 = K
+    type family Case_0123456789 t where
+      Case_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) z GHC.Types.[])) = y_0123456789
+    type LSym0 = L
+    type family Case_0123456789 t where
+      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
+    type MSym0 = M
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
+    type X_0123456789Sym0 = X_0123456789
+    type family Not (a :: Bool) :: Bool where
+      Not True = FalseSym0
+      Not False = TrueSym0
+    type family Id (a :: a) :: a where
+      Id x = x
+    type family F (a :: Bool) :: Bool where
+      F a_0123456789 = Apply (Case_0123456789 a_0123456789 X_0123456789Sym0) a_0123456789
+    type family G (a :: Bool) :: Bool where
+      G a_0123456789 = Apply (Case_0123456789 a_0123456789 X_0123456789Sym0) a_0123456789
+    type family H (a :: Bool) :: Bool where
+      H a_0123456789 = Apply (Case_0123456789 a_0123456789 X_0123456789Sym0) a_0123456789
+    type family I (a :: Bool) :: Bool where
+      I a_0123456789 = Apply (Case_0123456789 a_0123456789 X_0123456789Sym0) a_0123456789
+    type J = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type K = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type L = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type M = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type X_0123456789 =
+        Apply (Apply (:$) NotSym0) (Apply (Apply (:$) IdSym0) GHC.Types.[])
+    type X_0123456789 = Apply (Apply Tuple2Sym0 FSym0) GSym0
+    type X_0123456789 =
+        Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0)
+    type X_0123456789 =
+        Apply (Apply (:$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:$) (Apply IdSym0 FalseSym0)) GHC.Types.[])
+    type FalseSym0 = False
+    type TrueSym0 = True
+    type BarSym2 (t :: Bool) (t :: Bool) = Bar t t
+    instance SuppressUnusedWarnings BarSym1 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) BarSym1KindInference GHC.Tuple.())
+    data BarSym1 (l :: Bool) (l :: TyFun Bool Foo)
+      = forall arg. (GHC.Types.~) (Apply (BarSym1 l) arg) (BarSym2 l arg) =>
+        BarSym1KindInference (Proxy arg)
+    type instance Apply (BarSym1 l) l = BarSym2 l l
+    instance SuppressUnusedWarnings BarSym0 where
+      suppressUnusedWarnings _
+        = Data.Tuple.snd (GHC.Tuple.(,) BarSym0KindInference GHC.Tuple.())
+    data BarSym0 (l :: TyFun Bool (TyFun Bool Foo -> *))
+      = forall arg. (GHC.Types.~) (Apply BarSym0 arg) (BarSym1 arg) =>
+        BarSym0KindInference (Proxy arg)
+    type instance Apply BarSym0 l = BarSym1 l

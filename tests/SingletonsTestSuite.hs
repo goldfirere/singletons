@@ -42,6 +42,7 @@ tests =
     , compileAndDumpStdTest "GenDefunSymbols"
     , compileAndDumpStdTest "Newtypes"
     , compileAndDumpStdTest "Classes"
+    , compileAndDumpStdTest "TopLevelPatterns"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts

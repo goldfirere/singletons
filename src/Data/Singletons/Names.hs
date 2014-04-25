@@ -146,9 +146,6 @@ boolKi = DConK boolName []
 andTySym :: DType
 andTySym = promoteValRhs andName
 
-apply :: DType -> DType -> DType
-apply t1 t2 = DAppT (DAppT (DConT applyName) t1) t2
-
 -- make a Name with an unknown kind into a DTyVarBndr.
 -- Uses a fresh kind variable for GHC 7.6.3 and PlainTV for 7.8+
 -- because 7.8+ has kind inference
@@ -222,3 +219,11 @@ singKindConstraint k = DAppPr (DConPr singKindClassName) (kindParam k)
 
 demote :: DType
 demote = DConT demoteRepName
+
+apply :: DType -> DType -> DType
+apply t1 t2 = DAppT (DAppT (DConT applyName) t1) t2
+
+-- apply a type to a list of types using Apply type family
+-- This is defined here, not in Utils, to avoid cyclic dependencies
+foldApply :: DType -> [DType] -> DType
+foldApply = foldl apply

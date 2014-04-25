@@ -199,7 +199,7 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
         Foo14Sym0KindInference (Proxy arg)
     type instance Apply Foo14Sym0 l = Foo14Sym1 l
     type family Case_0123456789 x t where
-      Case_0123456789 x (GHC.Tuple.(,) y z) = y
+      Case_0123456789 x (GHC.Tuple.(,) y_0123456789 z) = y_0123456789
     type Let_0123456789YSym1 t = Let_0123456789Y t
     instance SuppressUnusedWarnings Let_0123456789YSym0 where
       suppressUnusedWarnings _
@@ -209,7 +209,7 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
         Let_0123456789YSym0KindInference (Proxy arg)
     type instance Apply Let_0123456789YSym0 l = Let_0123456789YSym1 l
     type family Case_0123456789 x t where
-      Case_0123456789 x (GHC.Tuple.(,) z y) = y
+      Case_0123456789 x (GHC.Tuple.(,) z y_0123456789) = y_0123456789
     type Let_0123456789ZSym1 t = Let_0123456789Z t
     instance SuppressUnusedWarnings Let_0123456789ZSym0 where
       suppressUnusedWarnings _
@@ -389,9 +389,32 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply Foo9Sym0 arg) (Foo9Sym1 arg) =>
         Foo9Sym0KindInference (Proxy arg)
     type instance Apply Foo9Sym0 l = Foo9Sym1 l
-    type family Lambda_0123456789 x t where
-      Lambda_0123456789 x x = x
-    type Lambda_0123456789Sym2 t t = Lambda_0123456789 t t
+    type Let_0123456789ZSym2 t (t :: Nat) = Let_0123456789Z t t
+    instance SuppressUnusedWarnings Let_0123456789ZSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Let_0123456789ZSym1KindInference GHC.Tuple.())
+    data Let_0123456789ZSym1 l (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply (Let_0123456789ZSym1 l) arg) (Let_0123456789ZSym2 l arg) =>
+        Let_0123456789ZSym1KindInference (Proxy arg)
+    type instance Apply (Let_0123456789ZSym1 l) l = Let_0123456789ZSym2 l l
+    instance SuppressUnusedWarnings Let_0123456789ZSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Let_0123456789ZSym0KindInference GHC.Tuple.())
+    data Let_0123456789ZSym0 l
+      = forall arg. (GHC.Types.~) (Apply Let_0123456789ZSym0 arg) (Let_0123456789ZSym1 arg) =>
+        Let_0123456789ZSym0KindInference (Proxy arg)
+    type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
+    type family Lambda_0123456789 x a_0123456789 t where
+      Lambda_0123456789 x a_0123456789 x = x
+    type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. (GHC.Types.~) (Apply (Lambda_0123456789Sym2 l l) arg) (Lambda_0123456789Sym3 l l arg) =>
+        Lambda_0123456789Sym2KindInference (Proxy arg)
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
@@ -408,16 +431,8 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply Lambda_0123456789Sym0 arg) (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference (Proxy arg)
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
-    type Let_0123456789ZSym1 t = Let_0123456789Z t
-    instance SuppressUnusedWarnings Let_0123456789ZSym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Let_0123456789ZSym0KindInference GHC.Tuple.())
-    data Let_0123456789ZSym0 l
-      = forall arg. (GHC.Types.~) (Apply Let_0123456789ZSym0 arg) (Let_0123456789ZSym1 arg) =>
-        Let_0123456789ZSym0KindInference (Proxy arg)
-    type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
-    type Let_0123456789Z x =
-        (Apply Lambda_0123456789Sym0 x :: TyFun Nat Nat -> *)
+    type family Let_0123456789Z x (a :: Nat) :: Nat where
+      Let_0123456789Z x a_0123456789 = Apply (Apply (Apply Lambda_0123456789Sym0 x) a_0123456789) a_0123456789
     type Foo8Sym1 (t :: Nat) = Foo8 t
     instance SuppressUnusedWarnings Foo8Sym0 where
       suppressUnusedWarnings _
@@ -666,24 +681,24 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
                 sX_0123456789 :: Sing (Let_0123456789X_0123456789Sym1 x)
                 sY
                   = case sX_0123456789 of {
-                      STuple2 sY _
+                      STuple2 sY_0123456789 _
                         -> let
                              lambda ::
-                               forall y wild.
-                               Sing y
-                               -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 y) wild))
-                             lambda y = y
-                           in lambda sY }
+                               forall y_0123456789 wild.
+                               Sing y_0123456789
+                               -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 y_0123456789) wild))
+                             lambda y_0123456789 = y_0123456789
+                           in lambda sY_0123456789 }
                 sZ
                   = case sX_0123456789 of {
-                      STuple2 _ sY
+                      STuple2 _ sY_0123456789
                         -> let
                              lambda ::
-                               forall y wild.
-                               Sing y
-                               -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 wild) y))
-                             lambda y = y
-                           in lambda sY }
+                               forall y_0123456789 wild.
+                               Sing y_0123456789
+                               -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 wild) y_0123456789))
+                             lambda y_0123456789 = y_0123456789
+                           in lambda sY_0123456789 }
                 sX_0123456789
                   = applySing
                       (applySing
@@ -840,18 +855,27 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
           lambda x
             = let
                 sZ :: forall t. Sing t -> Sing (Apply (Let_0123456789ZSym1 x) t)
-                sZ
-                  = unSingFun1
-                      (Proxy :: Proxy (Let_0123456789Z x))
-                      (singFun1
-                         (Proxy :: Proxy (Apply Lambda_0123456789Sym0 x))
-                         (\ sX
-                            -> let
-                                 lambda ::
-                                   forall x.
-                                   Sing x -> Sing (Apply (Apply Lambda_0123456789Sym0 x) x)
-                                 lambda x = x
-                               in lambda sX))
+                sZ sA_0123456789
+                  = let
+                      lambda ::
+                        forall a_0123456789. (GHC.Types.~) t a_0123456789 =>
+                        Sing a_0123456789
+                        -> Sing (Apply (Let_0123456789ZSym1 x) a_0123456789)
+                      lambda a_0123456789
+                        = applySing
+                            (singFun1
+                               (Proxy ::
+                                  Proxy (Apply (Apply Lambda_0123456789Sym0 x) a_0123456789))
+                               (\ sX
+                                  -> let
+                                       lambda ::
+                                         forall x.
+                                         Sing x
+                                         -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 x) a_0123456789) x)
+                                       lambda x = x
+                                     in lambda sX))
+                            a_0123456789
+                    in lambda sA_0123456789
               in
                 applySing (singFun1 (Proxy :: Proxy (Let_0123456789ZSym1 x)) sZ) x
         in lambda sX

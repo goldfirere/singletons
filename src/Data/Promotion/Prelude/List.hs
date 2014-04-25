@@ -242,9 +242,8 @@ $(promoteOnly [d|
               | p x       =  dropWhile p xs'
               | otherwise =  xs
 
-  dropWhileEnd :: (a -> Bool) -> [a] -> [a]
-  -- Temporalily eta-expanded to work around #31
-  dropWhileEnd p as = foldr (\x xs -> if p x && null xs then [] else x : xs) [] as
+  dropWhileEnd            :: (a -> Bool) -> [a] -> [a]
+  dropWhileEnd p          = foldr (\x xs -> if p x && null xs then [] else x : xs) []
 
   span                    :: (a -> Bool) -> [a] -> ([a],[a])
   span _ xs@[]            =  (xs, xs)
@@ -282,8 +281,7 @@ $(promoteOnly [d|
 
   -- Relies on filter, which does not singletonize
   find                    :: (a -> Bool) -> [a] -> Maybe a
-  -- Temporalily eta-expanded to work around #31
-  find p xs               = listToMaybe (filter p xs)
+  find p                  = listToMaybe . filter p
 
   filter :: (a -> Bool) -> [a] -> [a]
   filter _p []            = []
@@ -302,21 +300,20 @@ $(promoteOnly [d|
 
   -- To singletonize these we would need to rewrite all patterns
   -- as non-overlapping. This means 2^7 equations for zipWith7.
-  -- All definitions temporalily eta-expanded to work around #31
 
   zip4                    :: [a] -> [b] -> [c] -> [d] -> [(a,b,c,d)]
-  zip4 a b c d            =  zipWith4 (,,,) a b c d
+  zip4                    =  zipWith4 (,,,)
 
   zip5                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [(a,b,c,d,e)]
-  zip5 a b c d e          =  zipWith5 (,,,,) a b c d e
+  zip5                    =  zipWith5 (,,,,)
 
   zip6                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [f] ->
                               [(a,b,c,d,e,f)]
-  zip6 a b c d e f        =  zipWith6 (,,,,,) a b c d e f
+  zip6                    =  zipWith6 (,,,,,)
 
   zip7                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [f] ->
                               [g] -> [(a,b,c,d,e,f,g)]
-  zip7 a b c d e f g      =  zipWith7 (,,,,,,) a b c d e f g
+  zip7                    =  zipWith7 (,,,,,,)
 
   zipWith4                :: (a->b->c->d->e) -> [a]->[b]->[c]->[d]->[e]
   zipWith4 z (a:as) (b:bs) (c:cs) (d:ds)
@@ -369,6 +366,5 @@ $(promoteOnly [d|
 
   -- This relies on unionBy, which does not singletonize
   union                   :: (Eq a) => [a] -> [a] -> [a]
-  -- Temporalily eta-expanded to work around #31
-  union xs ys             = unionBy (==) xs ys
+  union                   = unionBy (==)
  |])

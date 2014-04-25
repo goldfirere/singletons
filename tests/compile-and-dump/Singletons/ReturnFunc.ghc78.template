@@ -22,7 +22,14 @@ Singletons/ReturnFunc.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply IdSym0 arg) (IdSym1 arg) =>
         IdSym0KindInference (Proxy arg)
     type instance Apply IdSym0 l = IdSym1 l
-    type IdFooSym1 (t :: c) = IdFoo t
+    type IdFooSym2 (t :: c) (t :: a) = IdFoo t t
+    instance SuppressUnusedWarnings IdFooSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) IdFooSym1KindInference GHC.Tuple.())
+    data IdFooSym1 (l :: c) (l :: TyFun a a)
+      = forall arg. (GHC.Types.~) (Apply (IdFooSym1 l) arg) (IdFooSym2 l arg) =>
+        IdFooSym1KindInference (Proxy arg)
+    type instance Apply (IdFooSym1 l) l = IdFooSym2 l l
     instance SuppressUnusedWarnings IdFooSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) IdFooSym0KindInference GHC.Tuple.())
@@ -30,7 +37,14 @@ Singletons/ReturnFunc.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply IdFooSym0 arg) (IdFooSym1 arg) =>
         IdFooSym0KindInference (Proxy arg)
     type instance Apply IdFooSym0 l = IdFooSym1 l
-    type ReturnFuncSym1 (t :: Nat) = ReturnFunc t
+    type ReturnFuncSym2 (t :: Nat) (t :: Nat) = ReturnFunc t t
+    instance SuppressUnusedWarnings ReturnFuncSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ReturnFuncSym1KindInference GHC.Tuple.())
+    data ReturnFuncSym1 (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply (ReturnFuncSym1 l) arg) (ReturnFuncSym2 l arg) =>
+        ReturnFuncSym1KindInference (Proxy arg)
+    type instance Apply (ReturnFuncSym1 l) l = ReturnFuncSym2 l l
     instance SuppressUnusedWarnings ReturnFuncSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ReturnFuncSym0KindInference GHC.Tuple.())
@@ -40,10 +54,10 @@ Singletons/ReturnFunc.hs:0:0: Splicing declarations
     type instance Apply ReturnFuncSym0 l = ReturnFuncSym1 l
     type family Id (a :: a) :: a where
       Id x = x
-    type family IdFoo (a :: c) :: TyFun a a -> * where
-      IdFoo z = IdSym0
-    type family ReturnFunc (a :: Nat) :: TyFun Nat Nat -> * where
-      ReturnFunc z = SuccSym0
+    type family IdFoo (a :: c) (a :: a) :: a where
+      IdFoo z a_0123456789 = Apply IdSym0 a_0123456789
+    type family ReturnFunc (a :: Nat) (a :: Nat) :: Nat where
+      ReturnFunc z a_0123456789 = Apply SuccSym0 a_0123456789
     sId :: forall (t :: a). Sing t -> Sing (Apply IdSym0 t)
     sIdFoo ::
       forall (t :: c) (t :: a).
@@ -57,20 +71,23 @@ Singletons/ReturnFunc.hs:0:0: Splicing declarations
             forall x. (GHC.Types.~) t x => Sing x -> Sing (Apply IdSym0 x)
           lambda x = x
         in lambda sX
-    sIdFoo _
-      = unSingFun1
-          (Proxy :: Proxy (Apply IdFooSym0 t))
-          (let
-             lambda ::
-               forall wild. (GHC.Types.~) t wild => Sing (Apply IdFooSym0 wild)
-             lambda = singFun1 (Proxy :: Proxy IdSym0) sId
-           in lambda)
-    sReturnFunc _
-      = unSingFun1
-          (Proxy :: Proxy (Apply ReturnFuncSym0 t))
-          (let
-             lambda ::
-               forall wild. (GHC.Types.~) t wild =>
-               Sing (Apply ReturnFuncSym0 wild)
-             lambda = singFun1 (Proxy :: Proxy SuccSym0) SSucc
-           in lambda)
+    sIdFoo _ sA_0123456789
+      = let
+          lambda ::
+            forall a_0123456789 wild. ((GHC.Types.~) t wild,
+                                       (GHC.Types.~) t a_0123456789) =>
+            Sing a_0123456789
+            -> Sing (Apply (Apply IdFooSym0 wild) a_0123456789)
+          lambda a_0123456789
+            = applySing (singFun1 (Proxy :: Proxy IdSym0) sId) a_0123456789
+        in lambda sA_0123456789
+    sReturnFunc _ sA_0123456789
+      = let
+          lambda ::
+            forall a_0123456789 wild. ((GHC.Types.~) t wild,
+                                       (GHC.Types.~) t a_0123456789) =>
+            Sing a_0123456789
+            -> Sing (Apply (Apply ReturnFuncSym0 wild) a_0123456789)
+          lambda a_0123456789
+            = applySing (singFun1 (Proxy :: Proxy SuccSym0) SSucc) a_0123456789
+        in lambda sA_0123456789

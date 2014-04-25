@@ -8,14 +8,10 @@ import Data.Singletons.Prelude.List
 import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH hiding (STrue, SFalse, TrueSym0, FalseSym0)
 
-$(singletons [d|
+-- Remove this test once #54 is fixed
+$(promote [d|
   data Bool = False | True
   data Foo = Bar Bool Bool
- |])
-
-$(singletons [d|
-  otherwise :: Bool
-  otherwise = True
 
   id :: a -> a
   id x = x
@@ -24,9 +20,6 @@ $(singletons [d|
   not True  = False
   not False = True
 
-  false_ = False
-
-{- Commented out until #54 is fixed
   f,g :: Bool -> Bool
   [f,g] = [not, id]
 
@@ -38,5 +31,4 @@ $(singletons [d|
 
   l,m :: Bool
   [l,m] = [not True, id False]
--}
  |])

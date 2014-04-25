@@ -156,7 +156,7 @@ promoteDataDecs data_decs = do
                             (map (DVarT . extractTvbName) tvbs)
       in
       concatMapM (getRecordSelectors arg_ty) cons
-    
+
 -- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
 promoteLetDecs :: String -- prefix to use on all new definitions
                -> [DLetDec] -> PrM ([LetBind], ALetDecEnv)
@@ -168,7 +168,7 @@ promoteLetDecs prefix decls = do
               , let proName = promoteValNameLhsPrefix prefix name
                     sym = promoteTySym proName (length all_locals) ]
   (decs, let_dec_env') <- letBind binds $ promoteLetDecEnv prefix let_dec_env
-  emitDecs decs 
+  emitDecs decs
   return (binds, let_dec_env' { lde_proms = Map.fromList binds })
 
 noPrefix :: String
@@ -257,7 +257,7 @@ promoteInstanceDec cls_tvbs meth_tys (InstDecl cls_name inst_tys meths) = do
             return $ map extractTvbName tvbs
           _ -> fail $ "Cannot find class declaration for " ++ show cls_name
       Just names -> return names
-  
+
 promoteMethDefn :: Map String DKind
                 -> Map Name DType -> (Name, ULetDecRHS) -> PrM ()
 promoteMethDefn subst meth_tys (name, let_rhs) = do
@@ -265,7 +265,7 @@ promoteMethDefn subst meth_tys (name, let_rhs) = do
   let meth_arg_kis' = map subst_ki meth_arg_kis
       meth_res_ki'  = subst_ki meth_res_ki
   eqns <- case let_rhs of
-    UValue exp -> do    
+    UValue exp -> do
       (exp', _) <- promoteExp exp
       return [DTySynEqn [] exp']
     UFunction clauses -> fmap fst $ mapAndUnzipM promoteClause clauses
@@ -274,7 +274,7 @@ promoteMethDefn subst meth_tys (name, let_rhs) = do
   emitDecs $ map (DTySynInstD proName) eqns''
   where
     proName = promoteValNameLhs name
-    
+
     lookup_meth_ty :: PrM ([DKind], DKind)
     lookup_meth_ty = case Map.lookup name meth_tys of
       Nothing -> do
@@ -326,7 +326,7 @@ promoteMethDefn subst meth_tys (name, let_rhs) = do
 
     apply_ki :: DType -> DKind -> DType
     apply_ki = DSigT
-      
+
 
 promoteLetDecEnv :: String -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
@@ -351,23 +351,30 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
     prom_infix_decl fixity name
       | isUpcase name = Nothing   -- no need to promote the decl
       | otherwise     = Just $ DLetDec $ DInfixD fixity (promoteValNameLhs name)
-    
+
     prom_let_dec :: Name -> ULetDecRHS -> PrM (DDec, ALetDecRHS)
     prom_let_dec name (UValue exp) = do
-      all_locals <- allLocals
-      (exp', ann_exp) <- promoteExp exp
-      let proName = promote_lhs name
       (res_kind, mk_rhs, num_arrows)
         <- case Map.lookup name type_env of
              Nothing -> return (Nothing, id, 0)
              Just ty -> do
                ki <- promoteType ty
                return (Just ki, (`DSigT` ki), countArgs ty)
-      emitDecsM $ defunctionalize proName (map (const Nothing) all_locals) res_kind
-      return ( DTySynD proName (map DPlainTV all_locals) (mk_rhs exp')
-             , AValue (foldType (DConT proName) (map DVarT all_locals))
-                      num_arrows ann_exp )
-        
+      case num_arrows of
+        0 -> do
+          all_locals <- allLocals
+          (exp', ann_exp) <- promoteExp exp
+          let proName = promote_lhs name
+          emitDecsM $ defunctionalize proName (map (const Nothing) all_locals) res_kind
+          return ( DTySynD proName (map DPlainTV all_locals) (mk_rhs exp')
+                 , AValue (foldType (DConT proName) (map DVarT all_locals))
+                          num_arrows ann_exp )
+        _ -> do
+          names <- replicateM num_arrows (newUniqueName "a")
+          let pats    = map DVarPa names
+              newArgs = map DVarE  names
+          prom_let_dec name (UFunction [DClause pats (foldExp exp newArgs)])
+
     prom_let_dec name (UFunction clauses) = do
       numArgs <- count_args clauses
       (m_argKs, m_resK, ty_num_args) <- case Map.lookup name type_env of
@@ -385,25 +392,33 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
           -- avoid this behavior. Note the use of ravelTyFun in resultK
           -- to make the return kind work out
           kis <- mapM promoteType (snd $ unravel ty)
-          let (argKs, resultKs) = splitAt numArgs kis
-              resultK = ravelTyFun resultKs
-          return (map Just argKs, Just resultK, countArgs ty)
-    
+          let (argKs, [resultK]) = splitAt (length kis - 1) kis
+          -- invariant: countArgs ty == length argKs
+          return (map Just argKs, Just resultK, length argKs)
+
       let proName = promote_lhs name
       all_locals <- allLocals
       emitDecsM $ defunctionalize proName
                     (map (const Nothing) all_locals ++ m_argKs) m_resK
       local_tvbs <- mapM inferKindTV all_locals
       tyvarNames <- mapM (const $ qNewName "a") m_argKs
-      (eqns, ann_clauses) <- mapAndUnzipM promoteClause clauses
+      expClauses <- mapM (etaExpand (ty_num_args - numArgs)) clauses
+      (eqns, ann_clauses) <- mapAndUnzipM promoteClause expClauses
       prom_fun <- lookupVarE name
       args <- zipWithM inferMaybeKindTV tyvarNames m_argKs
       let all_args = local_tvbs ++ args
       resultK <- inferKind m_resK
       return ( DClosedTypeFamilyD proName all_args resultK eqns
-             , AFunction prom_fun ty_num_args ann_clauses )
+             , AFunction prom_fun (length m_argKs) ann_clauses )
 
     promote_lhs = promoteValNameLhsPrefix prefix
+
+    etaExpand :: Quasi q => Int -> DClause -> q DClause
+    etaExpand n (DClause pats exp) = do
+      names <- replicateM n (newUniqueName "a")
+      let newPats = map DVarPa names
+          newArgs = map DVarE  names
+      return $ DClause (pats ++ newPats) (foldExp exp newArgs)
 
     count_args (DClause pats _ : _) = return $ length pats
     count_args _ = fail $ "Impossible! A function without clauses."
@@ -513,4 +528,3 @@ promoteLit (IntegerL n)
 promoteLit (StringL str) = return $ DLitT (StrTyLit str)
 promoteLit lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
-
