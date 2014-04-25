@@ -133,5 +133,6 @@ import Data.Promotion.Prelude.List
 import Data.Promotion.Prelude.Maybe
 import Data.Promotion.Prelude.Tuple
 import Data.Promotion.Prelude.Eq
+import Data.Promotion.Prelude.Ord
 import Data.Singletons.Prelude.Instances (EQSym0, LTSym0, GTSym0)
 import Data.Singletons.TypeLits (Error, ErrorSym0)

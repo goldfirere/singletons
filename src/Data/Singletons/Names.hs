@@ -24,7 +24,7 @@ import Data.Singletons.Util
 anyTypeName, boolName, andName, tyEqName, repName,
   nilName, consName, listName, tyFunName,
   applyName, symbolName, undefinedName, typeRepName, stringName,
-  eqName, singFamilyName, singIName, singMethName, demoteRepName,
+  eqName, ordName, singFamilyName, singIName, singMethName, demoteRepName,
   singKindClassName, sEqClassName, sEqMethName, sconsName, snilName,
   sIfName, kProxyDataName, kProxyTypeName, proxyTypeName, proxyDataName,
   someSingTypeName, someSingDataName,
@@ -50,6 +50,7 @@ undefinedName = 'undefined
 typeRepName = ''TypeRep
 stringName = ''String
 eqName = ''Eq
+ordName = ''Ord
 singFamilyName = ''Sing
 singIName = ''SingI
 singMethName = 'sing

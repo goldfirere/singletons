@@ -18,6 +18,7 @@ import Language.Haskell.TH.Desugar.Sweeten
 import Data.Singletons.Names
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Eq
+import Data.Singletons.Promote.Ord
 import Data.Singletons.Promote.Defun
 import Data.Singletons.Promote.Type
 import Data.Singletons.Util
@@ -156,7 +157,7 @@ promoteDataDecs data_decs = do
                             (map (DVarT . extractTvbName) tvbs)
       in
       concatMapM (getRecordSelectors arg_ty) cons
-    
+
 -- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
 promoteLetDecs :: String -- prefix to use on all new definitions
                -> [DLetDec] -> PrM ([LetBind], ALetDecEnv)
@@ -168,7 +169,7 @@ promoteLetDecs prefix decls = do
               , let proName = promoteValNameLhsPrefix prefix name
                     sym = promoteTySym proName (length all_locals) ]
   (decs, let_dec_env') <- letBind binds $ promoteLetDecEnv prefix let_dec_env
-  emitDecs decs 
+  emitDecs decs
   return (binds, let_dec_env' { lde_proms = Map.fromList binds })
 
 noPrefix :: String
@@ -194,15 +195,26 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
     fail $ "Newtypes don't promote under GHC 7.6. " ++
            "Use <<data>> instead or upgrade GHC."
 #endif
+  -- deriving Eq instance
   when (elem eqName derivings) $ do
 #if __GLASGOW_HASKELL__ >= 707
     kvs <- replicateM (length tvbs) (qNewName "k")
-    inst_decs <- mkEqTypeInstance (DConK name (map DVarK kvs)) ctors
+    eq_decs <- mkEqTypeInstance (DConK name (map DVarK kvs)) ctors
 #else
     let pairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
-    inst_decs <- mapM mkEqTypeInstance pairs
+    eq_decs <- mapM mkEqTypeInstance pairs
 #endif
-    emitDecs inst_decs
+    emitDecs eq_decs
+
+  -- deriving Ord instance
+  when (elem ordName derivings) $ do
+#if __GLASGOW_HASKELL__ >= 707
+    kvs <- replicateM (length tvbs) (qNewName "k")
+    ord_decs <- mkOrdTypeInstance (DConK name (map DVarK kvs)) ctors
+#else
+    error "Ord deriving not yet implemented in GHC 7.6"
+#endif
+    emitDecs ord_decs
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
 
@@ -257,7 +269,7 @@ promoteInstanceDec cls_tvbs meth_tys (InstDecl cls_name inst_tys meths) = do
             return $ map extractTvbName tvbs
           _ -> fail $ "Cannot find class declaration for " ++ show cls_name
       Just names -> return names
-  
+
 promoteMethDefn :: Map String DKind
                 -> Map Name DType -> (Name, ULetDecRHS) -> PrM ()
 promoteMethDefn subst meth_tys (name, let_rhs) = do
@@ -265,7 +277,7 @@ promoteMethDefn subst meth_tys (name, let_rhs) = do
   let meth_arg_kis' = map subst_ki meth_arg_kis
       meth_res_ki'  = subst_ki meth_res_ki
   eqns <- case let_rhs of
-    UValue exp -> do    
+    UValue exp -> do
       (exp', _) <- promoteExp exp
       return [DTySynEqn [] exp']
     UFunction clauses -> fmap fst $ mapAndUnzipM promoteClause clauses
@@ -274,7 +286,7 @@ promoteMethDefn subst meth_tys (name, let_rhs) = do
   emitDecs $ map (DTySynInstD proName) eqns''
   where
     proName = promoteValNameLhs name
-    
+
     lookup_meth_ty :: PrM ([DKind], DKind)
     lookup_meth_ty = case Map.lookup name meth_tys of
       Nothing -> do
@@ -326,7 +338,7 @@ promoteMethDefn subst meth_tys (name, let_rhs) = do
 
     apply_ki :: DType -> DKind -> DType
     apply_ki = DSigT
-      
+
 
 promoteLetDecEnv :: String -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
@@ -351,7 +363,7 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
     prom_infix_decl fixity name
       | isUpcase name = Nothing   -- no need to promote the decl
       | otherwise     = Just $ DLetDec $ DInfixD fixity (promoteValNameLhs name)
-    
+
     prom_let_dec :: Name -> ULetDecRHS -> PrM (DDec, ALetDecRHS)
     prom_let_dec name (UValue exp) = do
       all_locals <- allLocals
@@ -367,7 +379,7 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
       return ( DTySynD proName (map DPlainTV all_locals) (mk_rhs exp')
              , AValue (foldType (DConT proName) (map DVarT all_locals))
                       num_arrows ann_exp )
-        
+
     prom_let_dec name (UFunction clauses) = do
       numArgs <- count_args clauses
       (m_argKs, m_resK, ty_num_args) <- case Map.lookup name type_env of
@@ -388,7 +400,7 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
           let (argKs, resultKs) = splitAt numArgs kis
               resultK = ravelTyFun resultKs
           return (map Just argKs, Just resultK, countArgs ty)
-    
+
       let proName = promote_lhs name
       all_locals <- allLocals
       emitDecsM $ defunctionalize proName
@@ -513,4 +525,3 @@ promoteLit (IntegerL n)
 promoteLit (StringL str) = return $ DLitT (StrTyLit str)
 promoteLit lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
-

@@ -72,6 +72,7 @@ library
                       Data.Promotion.Prelude.Bool,
                       Data.Promotion.Prelude.Either,
                       Data.Promotion.Prelude.Eq,
+                      Data.Promotion.Prelude.Ord,
                       Data.Promotion.Prelude.List,
                       Data.Promotion.Prelude.Maybe,
                       Data.Promotion.Prelude.Tuple,
