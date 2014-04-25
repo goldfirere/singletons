@@ -40,6 +40,9 @@ buildDefunSyms (DFamilyD TypeFam name tvbs returnK_maybe) = do
       default_to_star Nothing  = Just DStarK
       default_to_star (Just k) = Just k
   defunctionalize name arg_kinds res_kind
+buildDefunSyms (DTySynD name tvbs _type) = do
+  let arg_m_kinds = map extractTvbKind tvbs
+  defunctionalize name arg_m_kinds Nothing
 buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
                           "type families and data declarations"
 
@@ -104,7 +107,7 @@ defunctionalize name m_arg_kinds m_res_kind = do
     mk_tvb :: Name -> Maybe DKind -> DTyVarBndr
     mk_tvb tvb_name Nothing  = DPlainTV tvb_name
     mk_tvb tvb_name (Just k) = DKindedTV tvb_name k
-    
+
     go :: Int -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
     go _ [] _ = return []
     go n (m_arg : m_args) m_result = do
@@ -148,7 +151,7 @@ defunctionalize name m_arg_kinds m_res_kind = do
 
 buildTyFun :: DKind -> DKind -> DKind
 buildTyFun k1 k2 = DConK tyFunName [k1, k2]
-    
+
 buildTyFun_maybe :: Maybe DKind -> Maybe DKind -> Maybe DKind
 buildTyFun_maybe m_k1 m_k2 = do
   k1 <- m_k1

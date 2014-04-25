@@ -1,5 +1,5 @@
 Promote/GenDefunSymbols.hs:0:0: Splicing declarations
-    genDefunSymbols [''LiftMaybe, ''Nat]
+    genDefunSymbols [''LiftMaybe, ''NatT, '':+]
   ======>
     Promote/GenDefunSymbols.hs:0:0:
     type LiftMaybeSym2 (t :: TyFun a b -> *) (t :: Maybe a) =
@@ -21,11 +21,26 @@ Promote/GenDefunSymbols.hs:0:0: Splicing declarations
         LiftMaybeSym0KindInference (Data.Proxy.Proxy arg)
     type instance Apply LiftMaybeSym0 l = LiftMaybeSym1 l
     type ZeroSym0 = Zero
-    type SuccSym1 (t :: Nat) = Succ t
+    type SuccSym1 (t :: NatT) = Succ t
     instance SuppressUnusedWarnings SuccSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SuccSym0KindInference GHC.Tuple.())
-    data SuccSym0 (l :: TyFun Nat Nat)
+    data SuccSym0 (l :: TyFun NatT NatT)
       = forall arg. (GHC.Types.~) (Apply SuccSym0 arg) (SuccSym1 arg) =>
         SuccSym0KindInference (Data.Proxy.Proxy arg)
     type instance Apply SuccSym0 l = SuccSym1 l
+    type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
+    instance SuppressUnusedWarnings (:+$$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:+$$###) GHC.Tuple.())
+    data (:+$$) (l :: Nat) l
+      = forall arg. (GHC.Types.~) (Apply ((:+$$) l) arg) ((:+$$$) l arg) =>
+        (:+$$###) (Data.Proxy.Proxy arg)
+    type instance Apply ((:+$$) l) l = (:+$$$) l l
+    instance SuppressUnusedWarnings (:+$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:+$###) GHC.Tuple.())
+    data (:+$) l
+      = forall arg. (GHC.Types.~) (Apply (:+$) arg) ((:+$$) arg) =>
+        (:+$###) (Data.Proxy.Proxy arg)
+    type instance Apply (:+$) l = (:+$$) l
