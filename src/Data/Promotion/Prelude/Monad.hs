@@ -24,41 +24,58 @@ module Data.Promotion.Prelude.Monad (
  ) where
 
 import Data.Singletons
+import Data.Singletons.TH
+--import Data.Singletons.SuppressUnusedWarnings
 
-type family (:>>=) (a :: k1) (b :: TyFun k2 k3 -> *) :: k3
+type family (:>>=) (a :: k1) (b :: TyFun k2 k1 -> *) :: k1
+type family (:>>)  (a :: k1) (b :: k1) :: k1
+type family Return (a :: k1) :: k2
+$(genDefunSymbols [ ''(:>>=), ''(:>>), ''Return ])
+
+{-
 type (:>>=$$$) a b = a :>>= b
 data (:>>=$$) a b where
     (:>>=$$###) :: Apply ((:>>=$$) a) arg ~ (:>>=$$$) a arg
                 => Proxy arg
                 -> (:>>=$$) a b
 type instance Apply ((:>>=$$) a) b = (:>>=$$$) a b
+instance SuppressUnusedWarnings (:>>=$$) where
+    suppressUnusedWarnings _ = snd ((:>>=$$###), ())
+
 data (:>>=$) a where
     (:>>=$###) :: Apply (:>>=$) arg ~ (:>>=$$) arg
                 => Proxy arg
                -> (:>>=$) a
 type instance Apply (:>>=$) a = (:>>=$$) a
-
-type family (:>>) (a :: k1) (b :: k2) :: k2
+instance SuppressUnusedWarnings (:>>=$) where
+    suppressUnusedWarnings _ = snd ((:>>=$###), ())
 type (:>>$$$) a b = a :>> b
 data (:>>$$) a b where
     (:>>$$###) :: Apply ((:>>$$) a) arg ~ (:>>$$$) a arg
                => Proxy arg
                -> (:>>$$) a b
 type instance Apply ((:>>$$) a) b = (:>>$$$) a b
+instance SuppressUnusedWarnings (:>>$$) where
+    suppressUnusedWarnings _ = snd ((:>>$$###), ())
+
 data (:>>$) a where
     (:>>$###) :: Apply (:>>$) arg ~ (:>>$$) arg
                => Proxy arg
                -> (:>>$) a
 type instance Apply (:>>$) a = (:>>$$) a
+instance SuppressUnusedWarnings (:>>$) where
+    suppressUnusedWarnings _ = snd ((:>>$###), ())
 
-type family Return (a :: k1) :: k2
 type ReturnSym1 a = Return a
 data ReturnSym0 a where
     ReturnSym0KindInference :: Apply ReturnSym0 arg ~ ReturnSym1 arg
                             => Proxy arg
                             -> ReturnSym0 a
 type instance Apply ReturnSym0 a = ReturnSym1 a
+instance SuppressUnusedWarnings ReturnSym0 where
+    suppressUnusedWarnings _ = snd (ReturnSym0KindInference, ())
 
+-}
 {-
 class  Monad m  where
     (>>=)       :: forall a b. m a -> (a -> m b) -> m b

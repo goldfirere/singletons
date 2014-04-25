@@ -11,7 +11,8 @@
 --
 ----------------------------------------------------------------------------
 
-
+{-# LANGUAGE KindSignatures, PolyKinds, DataKinds, TypeFamilies, GADTs,
+             UndecidableInstances #-}
 module Data.Promotion.Prelude.Maybe (
   Maybe_, IsJust, IsNothing, FromJust, FromMaybe, MaybeToList,
   ListToMaybe, CatMaybes, MapMaybe,
@@ -27,3 +28,23 @@ module Data.Promotion.Prelude.Maybe (
   ) where
 
 import Data.Singletons.Prelude.Maybe
+import Data.Promotion.Prelude.Monad
+import Data.Singletons.TH
+
+-- Promote Monad instance
+$(promoteOnly [d|
+    maybeReturn            :: a -> Maybe a
+    maybeReturn a          = Just a
+
+    maybeBind              :: Maybe a -> (a -> Maybe a) -> Maybe a
+    maybeBind (Just x) k   = k x
+    maybeBind Nothing  _   = Nothing
+
+    maybeBind'             :: Maybe a -> Maybe a -> Maybe a
+    maybeBind' (Just _) k  = k
+    maybeBind' Nothing  _  = Nothing
+ |])
+
+type instance Return a = MaybeReturn a
+type instance a :>>= b = MaybeBind   a b
+type instance a :>>  b = MaybeBind'  a b

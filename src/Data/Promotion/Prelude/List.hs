@@ -20,7 +20,7 @@
 ----------------------------------------------------------------------------
 
 module Data.Promotion.Prelude.List (
-  --Transpose,
+--  Transpose,
   TakeWhile, DropWhile, DropWhileEnd, Span, Break,
   StripPrefix,
 
@@ -223,7 +223,7 @@ import Data.Singletons.TH
 import Data.Maybe (listToMaybe)
 import Data.List  (deleteBy)
 
--- Promoting Monad instance
+-- Promote Monad instance
 $(promoteOnly [d|
     listReturn :: a -> [a]
     listReturn a = [a]
@@ -241,10 +241,10 @@ type instance a :>>  b = ListBind'  a b
 
 $(promoteOnly [d|
 -- Needs monad promotion
-  transpose               :: [[a]] -> [[a]]
-  transpose []            = []
-  transpose ([]   : xss)  = transpose xss
-  transpose ((x:xs) : xss)= (x : [h | (h:_) <- xss]) : transpose (xs : [ t | (_:t) <- xss])
+--  transpose               :: [[a]] -> [[a]]
+--  transpose []            = []
+--  transpose ([]   : xss)  = transpose xss
+--  transpose ((x:xs) : xss)= (x : [h | (h:_) <- xss]) : transpose (xs : [ t | (_:t) <- xss])
 
   takeWhile               :: (a -> Bool) -> [a] -> [a]
   takeWhile _ []          =  []
