@@ -27,6 +27,10 @@ module Data.Singletons.TH (
   singEqInstancesOnly, singEqInstanceOnly,
   singDecideInstances, singDecideInstance,
 
+  -- ** Functions to generate Ord instances
+  promoteOrdInstances, promoteOrdInstance,
+
+
   -- ** defunctionalization
   TyFun, Apply, type (@@),
 

@@ -21,10 +21,11 @@ import GHC.Exts ( Any )
 import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
 
-anyTypeName, boolName, andName, tyEqName, repName,
+anyTypeName, boolName, andName, tyEqName, tyCompareName, repName,
   nilName, consName, listName, tyFunName,
   applyName, symbolName, undefinedName, typeRepName, stringName,
-  eqName, ordName, singFamilyName, singIName, singMethName, demoteRepName,
+  eqName, ordName, orderingName, ordLTSymName, ordEQSymName, ordGTSymName,
+  singFamilyName, singIName, singMethName, demoteRepName,
   singKindClassName, sEqClassName, sEqMethName, sconsName, snilName,
   sIfName, kProxyDataName, kProxyTypeName, proxyTypeName, proxyDataName,
   someSingTypeName, someSingDataName,
@@ -39,6 +40,7 @@ tyEqName = ''(==)
 #else
 tyEqName = ''(:==)
 #endif
+tyCompareName = mkName "Compare"
 repName = mkName "Rep"
 nilName = '[]
 consName = '(:)
@@ -51,6 +53,10 @@ typeRepName = ''TypeRep
 stringName = ''String
 eqName = ''Eq
 ordName = ''Ord
+orderingName = ''Ordering
+ordLTSymName = mkName "LTSym0"
+ordEQSymName = mkName "EQSym0"
+ordGTSymName = mkName "GTSym0"
 singFamilyName = ''Sing
 singIName = ''SingI
 singMethName = 'sing

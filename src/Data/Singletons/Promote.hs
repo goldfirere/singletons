@@ -67,6 +67,10 @@ genDefunSymbols names = do
 promoteEqInstances :: Quasi q => [Name] -> q [Dec]
 promoteEqInstances = concatMapM promoteEqInstance
 
+-- | Produce instances for 'Compare' from the given types
+promoteOrdInstances :: Quasi q => [Name] -> q [Dec]
+promoteOrdInstances = concatMapM promoteOrdInstance
+
 -- | Produce an instance for '(:==)' (type-level equality) from the given type
 promoteEqInstance :: Quasi q => Name -> q [Dec]
 promoteEqInstance name = do
@@ -81,6 +85,21 @@ promoteEqInstance name = do
 #else
   let pairs = [(c1, c2) | c1 <- cons, c2 <- cons]
   mapM (fmap decsToTH . mkEqTypeInstance) pairs
+#endif
+
+-- | Produce an instance for 'Compare' from the given type
+promoteOrdInstance :: Quasi q => Name -> q [Dec]
+promoteOrdInstance name = do
+  (_tvbs, cons) <- getDataD "I cannot make an instance of Ord for it." name
+  cons' <- mapM dsCon cons
+#if __GLASGOW_HASKELL__ >= 707
+  vars <- replicateM (length _tvbs) (qNewName "k")
+  let tyvars = map DVarK vars
+      kind = DConK name tyvars
+  inst_decs <- mkOrdTypeInstance kind cons'
+  return $ decsToTH inst_decs
+#else
+  error "promoteOrdInstance not implemented for GHC 7.6"
 #endif
 
 promoteInfo :: DInfo -> PrM ()

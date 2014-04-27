@@ -85,6 +85,7 @@ library
   other-modules:      Data.Singletons.Promote,
                       Data.Singletons.Promote.Monad,
                       Data.Singletons.Promote.Eq,
+                      Data.Singletons.Promote.Ord,
                       Data.Singletons.Promote.Type,
                       Data.Singletons.Promote.Defun,
                       Data.Singletons.Util,

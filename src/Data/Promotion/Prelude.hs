@@ -89,6 +89,13 @@ module Data.Promotion.Prelude (
 
   (:==$), (:==$$), (:==$$$), (:/=$), (:/=$$), (:/=$$$),
 
+  Compare, CompareSym0, CompareSym1, CompareSym2,
+  (:<) , (:<$) , (:<$$) , (:<$$$),
+  (:<=), (:<=$), (:<=$$), (:<=$$$),
+  (:>) , (:>$) , (:>$$) , (:>$$$),
+  (:>=), (:>=$), (:>=$$), (:>=$$$),
+  Max, MaxSym0, MaxSym1, MaxSym2,
+  Min, MinSym0, MinSym1, MinSym2,
   EQSym0, LTSym0, GTSym0,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
@@ -134,5 +141,4 @@ import Data.Promotion.Prelude.Maybe
 import Data.Promotion.Prelude.Tuple
 import Data.Promotion.Prelude.Eq
 import Data.Promotion.Prelude.Ord
-import Data.Singletons.Prelude.Instances (EQSym0, LTSym0, GTSym0)
 import Data.Singletons.TypeLits (Error, ErrorSym0)
