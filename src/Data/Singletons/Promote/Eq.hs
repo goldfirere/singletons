@@ -17,6 +17,15 @@ import Data.Singletons.Names
 import Data.Singletons.Util
 import Control.Monad
 
+-- Why do we have two different versions of this code? Because GHC 7.6, which
+-- doesn't allow any overlap among type family equations, needs O(n^2) instances.
+-- Yuck. But, GHC 7.8 can get away with only O(n) equations in a closed type
+-- family. The difference is significant enough to make it worth maintaining two
+-- different generation functions, in RAE's opinion.
+--
+-- If we wish to change this, delete the 7.8 code -- the 7.6 code should work
+-- just fine under 7.8.
+
 #if __GLASGOW_HASKELL__ >= 707
 -- produce a closed type family helper and the instance
 -- for (:==) over the given list of ctors
