@@ -111,6 +111,7 @@ module Data.Singletons.Prelude (
   Maybe_, sMaybe_,
   Either_, sEither_,
   Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry,
+  Symbol,
 
   -- * Other functions
   either_, -- reimplementation of either to be used with singletons library

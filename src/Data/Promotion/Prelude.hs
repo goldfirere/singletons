@@ -58,7 +58,7 @@ module Data.Promotion.Prelude (
   Zip, Zip3, ZipWith, ZipWith3, Unzip, Unzip3,
 
   -- * Other datatypes
-  Maybe_, Either_,
+  Maybe_, Either_, Symbol,
   Fst, Snd, Curry, Uncurry,
 
   -- * Other functions
@@ -134,4 +134,4 @@ import Data.Promotion.Prelude.Maybe
 import Data.Promotion.Prelude.Tuple
 import Data.Promotion.Prelude.Eq
 import Data.Singletons.Prelude.Instances (EQSym0, LTSym0, GTSym0)
-import Data.Singletons.TypeLits (Error, ErrorSym0)
+import Data.Singletons.TypeLits (Error, ErrorSym0, Symbol)
