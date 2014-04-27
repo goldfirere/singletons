@@ -296,10 +296,11 @@ The following constructs are not supported, because GHC cannot support them:
 * list comprehensions
 * do
 
-Why are these out of reach? Because they depend on monads, which mention
-a higher-kinded type variable. GHC does not support higher-sorted kind variables,
-which would be necessary to promote/singletonize monads. There are other tricks
-possible, too, but none are likely to work.
+Why are these out of reach? Because they depend on monads, which mention a
+higher-kinded type variable. GHC does not support higher-sorted kind
+variables, which would be necessary to promote/singletonize monads. There are
+other tricks possible, too, but none are likely to work. See the bug report
+[here](https://github.com/goldfirere/singletons/issues/37) for more info.
 
 As described briefly in the paper, the singletons generation mechanism does not
 currently work for higher-order datatypes (though higher-order functions are
