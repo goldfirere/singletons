@@ -19,7 +19,6 @@ import Data.Singletons.Names
 import Data.Singletons.Util
 import Control.Monad
 import Data.List
-import Debug.Trace
 
 mkOrdTypeInstance :: Quasi q => DKind -> [DCon] -> q [DDec]
 mkOrdTypeInstance kind cons = do
@@ -37,11 +36,6 @@ mkOrdTypeInstance kind cons = do
                                       then reverse xs
                                       else xs
       consPairs    = concat (map reverseOrder groupedCombs)
-  trace ("taggedCons : "   ++ show taggedCons) $ return ()
-  trace ("half : "         ++ show half) $ return ()
-  trace ("combinations : " ++ show combinations) $ return ()
-  trace ("groupedCombs : " ++ show groupedCombs) $ return ()
-  trace ("consPairs : "    ++ show consPairs) $ return ()
   helperName <- newUniqueName "Compare"
   aName <- qNewName "a"
   bName <- qNewName "b"

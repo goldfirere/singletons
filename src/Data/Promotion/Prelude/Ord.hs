@@ -27,6 +27,7 @@ module Data.Promotion.Prelude.Ord (
 
 import Data.Singletons.TH
 import Data.Singletons.Prelude.Instances (EQSym0, LTSym0, GTSym0)
+import Data.Singletons.Util
 
 $(promoteOnly [d|
   class (Eq a) => Ord a where
@@ -35,7 +36,7 @@ $(promoteOnly [d|
       max, min             :: a -> a -> a
  |])
 
--- $(promoteOrdInstances basicTypes)
+$(promoteOrdInstances basicTypes)
 
 type family LTDefault (a :: Ordering) where
     LTDefault LTSym0 = TrueSym0

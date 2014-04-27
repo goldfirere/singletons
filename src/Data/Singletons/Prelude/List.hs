@@ -99,8 +99,8 @@ module Data.Singletons.Prelude.List (
   DeleteBy, sDeleteBy, DeleteFirstsBy, sDeleteFirstsBy,
   -- IntersectBy, sIntersectBy,
 
-  -- SortBy, sSortBy, InsertBy, sInsertBy,
-  -- MaximumBy, sMaximumBy, MinimumBy, sMinimumBy,
+  SortBy, sSortBy, InsertBy, sInsertBy,
+  MaximumBy, sMaximumBy, MinimumBy, sMinimumBy,
 
   -- * Defunctionalization symbols
   (:$), (:$$), (:$$$),
@@ -169,10 +169,10 @@ module Data.Singletons.Prelude.List (
   DeleteFirstsBySym0, DeleteFirstsBySym1, DeleteFirstsBySym2, DeleteFirstsBySym3,
   -- IntersectBySym0, IntersectBySym1, IntersectBySym2,
 
-  -- SortBySym0, SortBySym1, SortBySym2,
-  -- InsertBySym0, InsertBySym1, InsertBySym2, InsertBySym3,
-  -- MaximumBySym0, MaximumBySym1, MaximumBySym2,
-  -- MinimumBySym0, MinimumBySym1, MinimumBySym2,
+  SortBySym0, SortBySym1, SortBySym2,
+  InsertBySym0, InsertBySym1, InsertBySym2, InsertBySym3,
+  MaximumBySym0, MaximumBySym1, MaximumBySym2,
+  MinimumBySym0, MinimumBySym1, MinimumBySym2,
   ) where
 
 import Data.Singletons
@@ -321,15 +321,6 @@ $(singletonsOnly [d|
 --    where
 --      prod []     a = a
 --      prod (x:xs) a = prod xs (a*x)
-
--- Not promotable until promotion of Ord is implemented
---  maximum                 :: (Ord a) => [a] -> a
---  maximum []              =  error "Data.Singletons.List.maximum: empty list"
---  maximum xs              =  foldl1 max xs
---
---  minimum                 :: (Ord a) => [a] -> a
---  minimum []              =  error "Data.Singletons.List.minimum: empty list"
---  minimum xs              =  foldl1 min xs
 
   scanl         :: (b -> a -> b) -> b -> [a] -> [b]
   scanl f q ls  =  q : (case ls of
@@ -554,14 +545,6 @@ $(singletonsOnly [d|
 --  -- Temporalily eta-expanded to work around #31
 --  intersect xs ys         =  intersectBy (==) xs ys
 
--- Needs deriving of Ord instances
---  insert :: Ord a => a -> [a] -> [a]
---  insert e ls = insertBy (compare) e ls
---
---  sort :: (Ord a) => [a] -> [a]
---  -- Temporalily eta-expanded to work around #31
---  sort xs = sortBy compare xs
-
   deleteBy                :: (a -> a -> Bool) -> a -> [a] -> [a]
   deleteBy _  _ []        = []
   deleteBy eq x (y:ys)    = if x `eq` y then ys else y : deleteBy eq x ys
@@ -577,34 +560,35 @@ $(singletonsOnly [d|
 --  intersectBy _  (_:_) [] =  []
 --  intersectBy eq xs ys    =  [x | x <- xs, any_ (eq x) ys]
 
---  Needs deriving of Ord instances
---  sortBy :: (a -> a -> Ordering) -> [a] -> [a]
---  sortBy cmp = foldr (insertBy cmp) []
---
---  insertBy :: (a -> a -> Ordering) -> a -> [a] -> [a]
---  insertBy _   x [] = [x]
---  insertBy cmp x ys@(y:ys')
---   = case cmp x y of
---       GT -> y : insertBy cmp x ys'
---       _  -> x : ys
---
---  maximumBy               :: (a -> a -> Ordering) -> [a] -> a
---  maximumBy _ []          =  error "Data.Singletons.List.maximumBy: empty list"
---  maximumBy cmp xs        =  foldl1 maxBy xs
---                          where
---                            maxBy :: a -> a -> a
---                            maxBy x y = case cmp x y of
---                                         GT -> x
---                                         _  -> y
---
---  minimumBy               :: (a -> a -> Ordering) -> [a] -> a
---  minimumBy _ []          =  error "Data.Singletons.List.minimumBy: empty list"
---  minimumBy cmp xs        =  foldl1 minBy xs
---                          where
---                            minBy :: a -> a -> a
---                            minBy x y = case cmp x y of
---                                         GT -> y
---                                         _  -> x
+  sortBy :: (a -> a -> Ordering) -> [a] -> [a]
+  -- Temporalily eta-expanded to work around #31
+  sortBy cmp xs = foldr (insertBy cmp) [] xs
+
+  insertBy :: (a -> a -> Ordering) -> a -> [a] -> [a]
+  insertBy _   x [] = [x]
+  insertBy cmp x ys@(y:ys')
+   = case cmp x y of
+       GT -> y : insertBy cmp x ys'
+       LT  -> x : ys
+       EQ  -> x : ys
+
+  maximumBy               :: (a -> a -> Ordering) -> [a] -> a
+  maximumBy _ []          =  error "Data.Singletons.List.maximumBy: empty list"
+  maximumBy cmp xs@(_:_)  =  foldl1 maxBy xs
+                          where
+                            maxBy x y = case cmp x y of
+                                         GT -> x
+                                         EQ -> y
+                                         LT -> y
+
+  minimumBy               :: (a -> a -> Ordering) -> [a] -> a
+  minimumBy _ []          =  error "Data.Singletons.List.minimumBy: empty list"
+  minimumBy cmp xs@(_:_)  =  foldl1 minBy xs
+                          where
+                            minBy x y = case cmp x y of
+                                         GT -> y
+                                         EQ -> x
+                                         LT -> x
 
 -- Promotion of these generic functions requires bettern handling of
 -- integers at the type level:

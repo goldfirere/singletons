@@ -20,9 +20,11 @@
 ----------------------------------------------------------------------------
 
 module Data.Promotion.Prelude.List (
-  --Transpose,
+  -- Transpose,
   TakeWhile, DropWhile, DropWhileEnd, Span, Break,
   StripPrefix,
+
+  Maximum, Minimum,
 
   -- * Sublists
 
@@ -59,6 +61,8 @@ module Data.Promotion.Prelude.List (
   SpanSym0, SpanSym1, SpanSym2,
   BreakSym0, BreakSym1, BreakSym2,
   StripPrefixSym0, StripPrefixSym1,
+  MaximumSym0, MaximumSym1,
+  MinimumSym0, MinimumSym1,
   GroupSym0, GroupSym1,
   GroupBySym0, GroupBySym1, GroupBySym2,
   LookupSym0, LookupSym1, LookupSym2,
@@ -136,8 +140,8 @@ module Data.Promotion.Prelude.List (
   DeleteBy, DeleteFirstsBy,
   -- IntersectBy,
 
-  -- SortBy, InsertBy,
-  -- MaximumBy, MinimumBy,
+  SortBy, InsertBy,
+  MaximumBy, MinimumBy,
 
   -- * Defunctionalization symbols
   (:$), (:$$), (:$$$),
@@ -199,29 +203,32 @@ module Data.Promotion.Prelude.List (
   (:\\$), (:\\$$), (:\\$$$),
   -- IntersectSym0, IntersectSym1, IntersectSym2,
 
-  -- InsertSym0, InsertSym1, InsertSym2,
-  -- SortSym0, SortSym1,
+  InsertSym0, InsertSym1, InsertSym2,
+  SortSym0, SortSym1,
 
   DeleteBySym0, DeleteBySym1, DeleteBySym2, DeleteBySym3,
   DeleteFirstsBySym0, DeleteFirstsBySym1, DeleteFirstsBySym2, DeleteFirstsBySym3,
   -- IntersectBySym0, IntersectBySym1, IntersectBySym2,
 
-  -- SortBySym0, SortBySym1, SortBySym2,
-  -- InsertBySym0, InsertBySym1, InsertBySym2, InsertBySym3,
-  -- MaximumBySym0, MaximumBySym1, MaximumBySym2,
-  -- MinimumBySym0, MinimumBySym1, MinimumBySym2,
-
+  SortBySym0, SortBySym1, SortBySym2,
+  InsertBySym0, InsertBySym1, InsertBySym2, InsertBySym3,
+  MaximumBySym0, MaximumBySym1, MaximumBySym2,
+  MinimumBySym0, MinimumBySym1, MinimumBySym2,
   ) where
 
 import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Eq
+import Data.Promotion.Prelude.Ord
 import Data.Singletons.Prelude.List
 import Data.Singletons.Prelude.Maybe
 import Data.Singletons.TH
+import Data.Singletons.TypeLits
 
 import Data.Maybe (listToMaybe)
-import Data.List  (deleteBy)
+-- these imports are required fir functions that singletonize but are used
+-- in this module by a function that can't be singletonized
+import Data.List  (deleteBy, sortBy, insertBy)
 
 $(promoteOnly [d|
 -- Needs monad promotion
@@ -267,6 +274,25 @@ $(promoteOnly [d|
   -- Relies on groupBy, which relies on span, which does not singletonize
   group                   :: Eq a => [a] -> [[a]]
   group xs                =  groupBy (==) xs
+
+  -- Requires Ord instance, which does not singletonize
+  maximum                 :: (Ord a) => [a] -> a
+  maximum []              =  error "Data.Singletons.List.maximum: empty list"
+  maximum xs              =  foldl1 max xs
+
+  -- Requires Ord instance, which does not singletonize
+  minimum                 :: (Ord a) => [a] -> a
+  minimum []              =  error "Data.Singletons.List.minimum: empty list"
+  minimum xs              =  foldl1 min xs
+
+  -- Requires Ord instance, which does not singletonize
+  insert :: Ord a => a -> [a] -> [a]
+  insert e ls = insertBy (compare) e ls
+
+  -- Requires Ord instance, which does not singletonize
+  sort :: (Ord a) => [a] -> [a]
+  -- Temporalily eta-expanded to work around #31
+  sort xs = sortBy compare xs
 
   -- Relies on span, which does not singletonize
   groupBy                 :: (a -> a -> Bool) -> [a] -> [[a]]
