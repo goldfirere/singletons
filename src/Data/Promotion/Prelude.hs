@@ -49,7 +49,7 @@ module Data.Promotion.Prelude (
   -- ** Reducing lists (folds)
   Foldl, Foldl1, Foldr, Foldr1,
   -- *** Special folds
-  And, Or, Any_, All, Concat, ConcatMap,
+  And, Or, Any_, All, Concat, ConcatMap, Maximum, Minimum,
   -- *** Scans
   Scanl, Scanl1, Scanr, Scanr1,
   -- ** Searching lists
@@ -114,6 +114,8 @@ module Data.Promotion.Prelude (
 
   ConcatSym0, ConcatSym1,
   ConcatMapSym0, ConcatMapSym1, ConcatMapSym2,
+  MaximumBySym0, MaximumBySym1, MaximumBySym2,
+  MinimumBySym0, MinimumBySym1, MinimumBySym2,
   AndSym0, AndSym1, OrSym0, OrSym1,
   Any_Sym0, Any_Sym1, Any_Sym2,
   AllSym0, AllSym1, AllSym2,

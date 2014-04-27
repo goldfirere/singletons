@@ -39,7 +39,7 @@ mkOrdTypeInstance kind cons = do
   helperName <- newUniqueName "Compare"
   aName <- qNewName "a"
   bName <- qNewName "b"
-  compareEqns <- mapM (mkCompareEqn half) consPairs
+  (compareEqns, eqDecs) <- evalForPair $ mapM (mkCompareEqn half) consPairs
   let closedFam = DClosedTypeFamilyD helperName
                                      [ DKindedTV aName kind
                                      , DKindedTV bName kind ]
@@ -50,22 +50,26 @@ mkOrdTypeInstance kind cons = do
                                           , DSigT (DVarT bName) kind ]
                                           (foldType (DConT helperName)
                                                     [DVarT aName, DVarT bName]))
-  return [closedFam, compareInst]
+  return (closedFam : compareInst : eqDecs)
 
-  where mkCompareEqn :: Quasi q => Int -> ((DCon, Int), (DCon, Int)) -> q DTySynEqn
+  where mkCompareEqn :: Quasi q => Int -> ((DCon, Int), (DCon, Int)) -> QWithAux [DDec] q DTySynEqn
         mkCompareEqn half ((con1, tag1), (con2, tag2))
             | tag1 > tag2 && tag1 <= half =
-                mkCompareEqnHelper con1 (Just con2) ordGTSymName
+                mkCompareEqnHelper con1 (Just con2) gtT
             | tag1 < tag2 && tag1 >  half = do
-                mkCompareEqnHelper con1 (Just con2) ordLTSymName
+                mkCompareEqnHelper con1 (Just con2) ltT
             | tag1 < tag2 && tag1 <= half =
-                mkCompareEqnHelper con1 Nothing ordLTSymName
+                mkCompareEqnHelper con1 Nothing ltT
             | tag1 > tag2 && tag1 >  half =
-                mkCompareEqnHelper con1 Nothing ordGTSymName
-            | otherwise = -- WRONG!
-                mkCompareEqnHelper con1 (Just con2) ordEQSymName
+                mkCompareEqnHelper con1 Nothing gtT
+            | otherwise =
+                mkCompareEqual con1
 
-        mkCompareEqnHelper :: Quasi q => DCon -> Maybe DCon -> Name -> q DTySynEqn
+        eqT = DConT ordEQSymName
+        ltT = DConT ordLTSymName
+        gtT = DConT ordGTSymName
+
+        mkCompareEqnHelper :: Quasi q => DCon -> Maybe DCon -> DType -> q DTySynEqn
         mkCompareEqnHelper con1 con2 result = do
             let (name1, numArgs1) = extractNameArgs con1
             (name2, numArgs2) <- case con2 of
@@ -78,4 +82,34 @@ mkOrdTypeInstance kind cons = do
                 rvars = map DVarT rnames
                 ltype = foldType (DConT name1) lvars
                 rtype = foldType name2 rvars
-            return $ DTySynEqn [ltype, rtype] (DConT result)
+            return $ DTySynEqn [ltype, rtype] result
+
+        mkCompareEqual :: Quasi q => DCon -> QWithAux [DDec] q DTySynEqn
+        mkCompareEqual con = do
+            let (name, numArgs) = extractNameArgs con
+            (patterns, results) <- case numArgs of
+                         0 -> return ([[eqT]], [eqT])
+                         1 -> return ([[ltT],[gtT],[eqT]], [ltT , gtT , eqT])
+                         n -> loop n ([[ltT],[gtT],[eqT]], [ltT , gtT , eqT])
+            tyFamParamNames <- replicateM numArgs (qNewName "a")
+            helperName <- newUniqueName "OrderingEqualCase"
+            let eqns = map (uncurry DTySynEqn) (zip patterns results)
+                closedFam = DClosedTypeFamilyD helperName
+                                     (zipWith DKindedTV tyFamParamNames (repeat (DConK orderingName [])))
+                                     (Just (DConK orderingName []))
+                                     eqns
+            addElement closedFam
+            undefined
+
+            where loop :: Quasi q => Int -> ([[DType]], [DType]) -> q ([[DType]], [DType])
+                  loop 1 acc = return acc
+                  loop n acc = do
+                    let eqns    = fst acc
+                        results = snd acc
+                        n       = length (head eqns)
+                        newEqs  = map (eqT :) eqns
+                    names <- replicateM n (qNewName "a")
+                    let tys   = map DVarT names
+                        ltRow = ltT : tys
+                        gtRow = gtT : tys
+                    loop (n-1) (ltRow : gtRow : newEqs , ltT : gtT : results )
