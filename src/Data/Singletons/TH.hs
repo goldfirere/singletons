@@ -46,6 +46,7 @@ module Data.Singletons.TH (
   SDecide(..), (:~:)(..), Void, Refuted, Decision(..),
   KProxy(..), SomeSing(..),
 
+  Error, ErrorSym0,
   TrueSym0, FalseSym0,
   Tuple0Sym0,
   Tuple2Sym0, Tuple2Sym1, Tuple2Sym2,
@@ -53,7 +54,9 @@ module Data.Singletons.TH (
   Tuple4Sym0, Tuple4Sym1, Tuple4Sym2, Tuple4Sym3, Tuple4Sym4,
   Tuple5Sym0, Tuple5Sym1, Tuple5Sym2, Tuple5Sym3, Tuple5Sym4, Tuple5Sym5,
   Tuple6Sym0, Tuple6Sym1, Tuple6Sym2, Tuple6Sym3, Tuple6Sym4, Tuple6Sym5, Tuple6Sym6,
-  Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6, Tuple7Sym7
+  Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6, Tuple7Sym7,
+
+  SuppressUnusedWarnings(..)
 
  ) where
 
@@ -66,6 +69,8 @@ import Data.Singletons.Prelude.Eq
 import Data.Singletons.Types
 import Data.Singletons.Void
 import Data.Singletons.Decide
+import Data.Singletons.TypeLits
+import Data.Singletons.SuppressUnusedWarnings
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.Sweeten
 
