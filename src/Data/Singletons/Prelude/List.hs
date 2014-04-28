@@ -613,7 +613,11 @@ $(singletonsOnly [d|
 --  genericReplicate
   |])
 
+-- The symbol []$ is clearly malformed, so we have to name this symbol
+-- NilSym0
+type NilSym0      = '[]
+
+-- If Nil has an alphanumeric symbol, we wouldn't want to leave Cons out...
 type ConsSym0     = (:$)
 type ConsSym1     = (:$$)
 type ConsSym2 a b = (:$$$) a b
-type NilSym0      = '[]
