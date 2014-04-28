@@ -52,7 +52,8 @@ mkOrdTypeInstance kind cons = do
                                                     [DVarT aName, DVarT bName]))
   return (closedFam : compareInst : eqDecs)
 
-  where mkCompareEqn :: Quasi q => Int -> ((DCon, Int), (DCon, Int)) -> QWithAux [DDec] q DTySynEqn
+  where mkCompareEqn :: Quasi q => Int -> ((DCon, Int), (DCon, Int))
+                                -> QWithAux [DDec] q DTySynEqn
         mkCompareEqn half ((con1, tag1), (con2, tag2))
             | tag1 > tag2 && tag1 <= half =
                 mkCompareEqnHelper con1 (Just con2) gtT
@@ -87,29 +88,50 @@ mkOrdTypeInstance kind cons = do
         mkCompareEqual :: Quasi q => DCon -> QWithAux [DDec] q DTySynEqn
         mkCompareEqual con = do
             let (name, numArgs) = extractNameArgs con
-            (patterns, results) <- case numArgs of
-                         0 -> return ([[eqT]], [eqT])
-                         1 -> return ([[ltT],[gtT],[eqT]], [ltT , gtT , eqT])
-                         n -> loop n ([[ltT],[gtT],[eqT]], [ltT , gtT , eqT])
-            tyFamParamNames <- replicateM numArgs (qNewName "a")
-            helperName <- newUniqueName "OrderingEqualCase"
-            let eqns = map (uncurry DTySynEqn) (zip patterns results)
-                closedFam = DClosedTypeFamilyD helperName
-                                     (zipWith DKindedTV tyFamParamNames (repeat (DConK orderingName [])))
-                                     (Just (DConK orderingName []))
-                                     eqns
-            addElement closedFam
-            undefined
+            case numArgs of
+              0 -> return $ DTySynEqn [DConT name, DConT name] eqT
+              _ -> do
+                helperName <- newUniqueName "OrderingEqualCase"
+                buildHelperTyFam numArgs helperName
 
-            where loop :: Quasi q => Int -> ([[DType]], [DType]) -> q ([[DType]], [DType])
-                  loop 1 acc = return acc
-                  loop n acc = do
+                -- Call the helper function
+                lnames <- replicateM numArgs (qNewName "a")
+                rnames <- replicateM numArgs (qNewName "b")
+                let lvars      = map DVarT lnames
+                    rvars      = map DVarT rnames
+                    ltype      = foldType (DConT name) lvars
+                    rtype      = foldType (DConT name) rvars
+                    callParams = zipWith (\l r -> foldType (DConT tyCompareName) [l,r])
+                                          lvars rvars
+                    call = foldType (DConT helperName) callParams
+                return $ DTySynEqn [ltype, rtype] call
+            where
+                  buildHelperTyFam :: Quasi q => Int -> Name -> QWithAux [DDec] q ()
+                  buildHelperTyFam numArgs helperName = do
+                    let orderingKCon = DConK orderingName []
+                    -- Build helper type family that does the comparison
+                    (patterns, results) <- buildEqnPats numArgs ([[]], [eqT])
+                    tyFamParamNames <- replicateM numArgs (qNewName "a")
+                    let eqns = map (uncurry DTySynEqn) (zip patterns results)
+                        closedFam = DClosedTypeFamilyD helperName
+                                      (zipWith DKindedTV tyFamParamNames
+                                              (repeat orderingKCon))
+                                      (Just orderingKCon)
+                                      eqns
+                    addElement closedFam
+                    return ()
+
+                  buildEqnPats :: Quasi q => Int -> ([[DType]], [DType])
+                                          -> q ([[DType]], [DType])
+                  buildEqnPats 0 acc = return acc
+                  buildEqnPats n acc = do
                     let eqns    = fst acc
                         results = snd acc
-                        n       = length (head eqns)
+                        eqnNo   = length (head eqns)
                         newEqs  = map (eqT :) eqns
-                    names <- replicateM n (qNewName "a")
+                    names <- replicateM eqnNo (qNewName "a")
                     let tys   = map DVarT names
                         ltRow = ltT : tys
                         gtRow = gtT : tys
-                    loop (n-1) (ltRow : gtRow : newEqs , ltT : gtT : results )
+                    buildEqnPats (n-1) ( ltRow : gtRow : newEqs
+                                       , ltT : gtT : results )
