@@ -20,6 +20,72 @@ import Data.Singletons.Util
 import Control.Monad
 import Data.List
 
+-- Note [Deriving Ord]
+-- ~~~~~~~~~~~~~~~~~~~
+--
+-- We derive instances of Ord by generating promoted instance of Compare.  Under
+-- GHC 7.8 this is done by generating a closed type family that does tha
+-- comparing for given datatype and then making appropriate instance of Compare
+-- open type family. There are two interesting points in this
+-- algorithm. Firstly we minimize the number of equations required to compare
+-- all existing data constructors. To do this we use a catch-all equations. For
+-- example for this data type:
+--
+--  data Foo = A | B | C | D | E | F deriving (Eq,Ord)
+--
+-- We generate equations:
+--
+--  CompareFoo A A = EQ
+--  CompareFoo A a = LT -- catch-all case
+--  CompareFoo B A = GT
+--  CompareFoo B B = EQ
+--  CompareFoo B a = LT -- catch-all case
+--
+-- This however would be very inefficient for the last constructor:
+--
+--  CompareFoo F A = GT
+--  CompareFoo F B = GT
+--  CompareFoo F C = GT
+--  CompareFoo F D = GT
+--  CompareFoo F E = GT
+--  CompareFoo F F = EQ
+--
+-- So once we get past half of the constructors we reverse the order in which we
+-- test second constructor passed to Compare:
+--
+--  CompareFoo F F = EQ
+--  CompareFoo F a = GT
+--  CompareFoo E F = LT
+--  CompareFoo E E = EQ
+--  CompareFoo E a = GT
+--
+-- Second interesting point in our algorithm is comparing identical
+-- constructors. Obviously if they store no data they are equal. But if
+-- constructor has any fields then they must be compared by calling Compare on
+-- every field until we get LT or GT result. To do this we generate a helper
+-- type function that does all the comparing. For example (,,) constructor has
+-- three fields and we generate this code:
+--
+-- type family OrderingEqualCase (t1 :: Ordering)
+--                               (t2 :: Ordering)
+--                               (t3 :: Ordering) :: Ordering where
+--   OrderingEqualCase LTSym0 a      b      = LTSym0
+--   OrderingEqualCase GTSym0 a      b      = GTSym0
+--   OrderingEqualCase EQSym0 LTSym0 b      = LTSym0
+--   OrderingEqualCase EQSym0 GTSym0 b      = GTSym0
+--   OrderingEqualCase EQSym0 EQSym0 LTSym0 = LTSym0
+--   OrderingEqualCase EQSym0 EQSym0 GTSym0 = GTSym0
+--   OrderingEqualCase EQSym0 EQSym0 EQSym0 = EQSym0
+--
+--  type family Compare_helper (a :: (k1,k2,k3)) (b :: (k1,k2,k3) :: Ordering where
+--    Compare_helper (a1,a2,a3) (b1,b2,b3) =
+--      OrderingEqualCase (Compare a1 b1) (Compare a2 b2) (Compare a3 b3)
+--
+---- Notice that we perform only necessary comparisons. If we can determine
+---- ordering based on comparing first field we ignore the remaining fields
+---- (although this implementation requires that we actually compare all fields
+---- at the call site).
+
 mkOrdTypeInstance :: Quasi q => DKind -> [DCon] -> q [DDec]
 mkOrdTypeInstance kind cons = do
   let taggedCons   = zip cons [1..]
@@ -89,9 +155,12 @@ mkOrdTypeInstance kind cons = do
         mkCompareEqual con = do
             let (name, numArgs) = extractNameArgs con
             case numArgs of
+              -- If constructor has no fields it is equal to itself
               0 -> return $ DTySynEqn [DConT name, DConT name] eqT
+              -- But if it has fields we have to compare them one by one
               _ -> do
                 helperName <- newUniqueName "OrderingEqualCase"
+                -- Build helper type family that does the comparison
                 buildHelperTyFam numArgs helperName
 
                 -- Call the helper function
@@ -109,7 +178,6 @@ mkOrdTypeInstance kind cons = do
                   buildHelperTyFam :: Quasi q => Int -> Name -> QWithAux [DDec] q ()
                   buildHelperTyFam numArgs helperName = do
                     let orderingKCon = DConK orderingName []
-                    -- Build helper type family that does the comparison
                     (patterns, results) <- buildEqnPats numArgs ([[]], [eqT])
                     tyFamParamNames <- replicateM numArgs (qNewName "a")
                     let eqns = map (uncurry DTySynEqn) (zip patterns results)
