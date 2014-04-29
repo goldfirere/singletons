@@ -392,7 +392,7 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
           -- avoid this behavior. Note the use of ravelTyFun in resultK
           -- to make the return kind work out
           kis <- mapM promoteType (snd $ unravel ty)
-          let (argKs, [resultK]) = splitAt (length kis - 1) kis
+          let (argKs, resultK) = snocView kis
           -- invariant: countArgs ty == length argKs
           return (map Just argKs, Just resultK, length argKs)
 
@@ -409,11 +409,11 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
       let all_args = local_tvbs ++ args
       resultK <- inferKind m_resK
       return ( DClosedTypeFamilyD proName all_args resultK eqns
-             , AFunction prom_fun (length m_argKs) ann_clauses )
+             , AFunction prom_fun ty_num_args ann_clauses )
 
     promote_lhs = promoteValNameLhsPrefix prefix
 
-    etaExpand :: Quasi q => Int -> DClause -> q DClause
+    etaExpand :: Int -> DClause -> PrM DClause
     etaExpand n (DClause pats exp) = do
       names <- replicateM n (newUniqueName "a")
       let newPats = map DVarPa names
