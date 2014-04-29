@@ -1,7 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
-module Singletons.TopLevelPatterns where
+module Promote.TopLevelPatterns where
 
 import Data.Singletons
 import Data.Singletons.Prelude.List

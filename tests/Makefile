@@ -1,7 +1,7 @@
 INCLUDES = ../src ../dist/build compile-and-dump
 OUTPUT = ../dist/build/quickly
 OPTS = -O0 -Wall -Werror -fno-warn-orphans -fno-warn-missing-signatures \
-       -fprint-explicit-foralls
+       -fprint-explicit-foralls -fno-warn-unused-imports
 EXTS = TemplateHaskell DataKinds PolyKinds ScopedTypeVariables FlexibleContexts \
        FlexibleInstances GADTs TypeFamilies RankNTypes UndecidableInstances \
        TypeOperators MultiParamTypeClasses CPP LambdaCase MagicHash UnboxedTuples

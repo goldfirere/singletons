@@ -6,7 +6,6 @@ module Singletons.Lambdas where
 
 import Data.Proxy
 import Data.Singletons
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 
 $(singletons [d|

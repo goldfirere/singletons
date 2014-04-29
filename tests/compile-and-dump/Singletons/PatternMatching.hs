@@ -1,7 +1,9 @@
+{-# OPTIONS_GHC -fno-warn-unused-matches #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module Singletons.PatternMatching where
 
 import Data.Singletons.Prelude
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Singletons.Nat
 
