@@ -331,6 +331,11 @@ liftFst f (a, c) = (f a, c)
 liftSnd :: (a -> b) -> (c, a) -> (c, b)
 liftSnd f (c, a) = (c, f a)
 
+consView :: [a] -> (a, [a])
+consView []       = error "snocView nil"
+consView [x]      = (x, [])
+consView (x : xs) = (x, xs)
+
 snocView :: [a] -> ([a], a)
 snocView [] = error "snocView nil"
 snocView [x] = ([], x)

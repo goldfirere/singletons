@@ -27,6 +27,7 @@ import Control.Monad
 import Data.Maybe
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
+import Debug.Trace
 
 -- | Generate promoted definitions from a type that is already defined.
 -- This is generally only useful with classes.
@@ -141,6 +142,7 @@ promoteDecs decls = do
   _ <- promoteLetDecs noPrefix let_decs
 --  (class_tvbs, meth_sigss) <- mapAndUnzipM promoteClassDec classes
   mapM promoteClassDec classes
+  mapM promoteInstanceDec insts
 --  mapM_ (promoteInstanceDec (Map.fromList class_tvbs)
 --                            (Map.fromList $ concat meth_sigss)) insts
   promoteDataDecs datas
@@ -210,48 +212,56 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
 promoteClassDec :: ClassDecl -> PrM ()
 promoteClassDec (ClassDecl name tvbs sigs) = do
   let tvbNames = map extractTvbName tvbs
-      pname    = mkName ("P" ++ nameBase name)
+      pClsName = prefixUCName "P" "#" name
   kproxies <- mapM (const $ qNewName "kproxy") tvbNames
-  let ctx = map (\kp -> DAppPr (DVarPr kp) (DAppT (DConT equalityName) (DConT kProxyTypeName))) kproxies
-  emitDecs [ DClassD ctx pname tvbs [] [] ]
+  let ctx = map (\kp -> foldl DAppPr (DConPr equalityName) [DVarT kp, DConT kProxyDataName]) kproxies
+      ptvbs = zipWith (\proxy tvb -> DKindedTV proxy (DConK kProxyTypeName [DVarK tvb]))
+                      kproxies tvbNames
+  decs <- mapM promoteSig sigs
+  emitDecs [ DClassD ctx pClsName ptvbs [] decs ]
+  return ()
+      where
+        promoteSig :: (Name, DType) -> PrM DDec
+        promoteSig (name, ty) = do
+          let proName = promoteValNameLhs name
+          (argKs, resK) <- snocView `liftM` (mapM promoteType (snd $ unravel ty))
+          args <- mapM (const $ qNewName "x") argKs
+          emitDecsM $ defunctionalize proName (map Just argKs) (Just resK)
+          return $ DFamilyD TypeFam proName
+                            (zipWith DKindedTV args argKs)
+                            (Just resK)
+
+promoteInstanceDec :: InstDecl -> PrM ()
+promoteInstanceDec (InstDecl name tvbs decs) = do
+  trace ("instance name: " ++ show name) $ return ()
+  trace ("instance tvbs: " ++ show tvbs) $ return ()
+  let pClsName = prefixUCName "P" "#" name
+  kproxies <- mapM (const $ qNewName "kproxy") tvbs
+  let ctx = map (\kp -> foldl DAppPr (DConPr equalityName) [DVarT kp, DConT kProxyDataName]) kproxies
+--      ptvbs = zipWith (\proxy tvb -> DKindedTV proxy (DConK kProxyTypeName [DVarK tvb]))
+--                      kproxies tvbNames
+  proDecs <- mapM_ promoteInsanceDecDef decs
+  --DAppT (DConT proName) ()
+--  DInstanceD ctx 
   return ()
 
-{-
--- returns mappings from method names to pairs of types with the bound
--- names, appearing in the order of the class declaration
-promoteClassDec :: ClassDecl -> PrM ( (Name, [Name])    -- from cls_name to tvbs
-                                    , [(Name, DType)] ) -- method sigs
-promoteClassDec (ClassDecl name tvbs sigs) = do
-  -- we need to remember the names of the tvbs so we can perform substitution
-  -- on instance method declarations.
-  -- But, we need a way to do this non-locally. The solution? Spit out a
-  -- fake type class declaration with just the right tvbs. Then, use the
-  -- SuppressUnusedWarnings nonsense to suppress the warning. Ugh.
-  let tvsName  = classTvsName name
-      tvbNames = map extractTvbName tvbs
-  emitDecs [ DClassD [] tvsName tvbs [] []
-           , DInstanceD [] (DConT suppressClassName `DAppT` DConT tvsName)
-                        [DLetDec (DFunD suppressMethodName
-                                        [DClause [DWildPa] (mkTupleDExp [])])]]
-  mapM_ promoteMethSig sigs
-  return ( (name, tvbNames)
-         , sigs )
--}
-{-
-promoteMethSig :: (Name, DType) -> PrM ()
-promoteMethSig (name, ty) = do
-  -- the real ty also has a context from the class. But, we ignore conexts anyway.
+promoteInsanceDecDef :: (Name, ULetDecRHS) -> PrM [DDec]
+promoteInsanceDecDef (name, UFunction clauses) = do
   let proName = promoteValNameLhs name
-      (_, all_tys) = unravel ty
-  all_kis <- mapM promoteType all_tys
-  let (arg_kis, res_ki) = snocView all_kis
-  emitDecsM $ defunctionalize proName (map Just arg_kis) (Just res_ki)
-  arg_names <- mapM (const $ qNewName "arg") arg_kis
-  emitDecs [DFamilyD TypeFam
-                     proName
-                     (zipWith DKindedTV arg_names arg_kis)
-                     (Just res_ki)]
--}
+  tySynEqns <- mapM (fmap fst . promoteClause) clauses
+  return $ map (DTySynInstD proName) tySynEqns
+promoteInsanceDecDef (_name, UValue _exp) = do
+  fail "Promotion of values in instance declarations not supported"
+
+--data ULetDecRHS = UFunction [DClause]
+--                | UValue DExp
+
+--  return ()
+--          | DInstanceD DCxt DType [DDec]
+
+--  emitDecs [ DInstanceD [] ]
+-- InstDecl Name [DType] [(Name, ULetDecRHS)]
+
 {-
 promoteInstanceDec :: Map Name [Name]
                    -> Map Name DType -> InstDecl -> PrM ()

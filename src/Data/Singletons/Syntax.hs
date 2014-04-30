@@ -21,6 +21,7 @@ import Language.Haskell.TH.Ppr
 import Language.Haskell.TH.Desugar.Sweeten
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
+import Debug.Trace
 
 type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
 
@@ -53,6 +54,7 @@ partitionDec (DClassD _cxt name tvbs _fds decs) = do
   sigs <- mapM partitionClassDec decs
   return $ mempty { pd_class_decs = [ClassDecl name tvbs sigs] }
 partitionDec (DInstanceD _cxt ty decs) = do
+  trace ("Instance: " ++ show ty ++ " "  ++ show decs) $ return ()
   defns <- mapM partitionInstanceDec decs
   (name, tys) <- split_app_tys [] ty
   return $ mempty { pd_instance_decs = [InstDecl name tys defns] }
