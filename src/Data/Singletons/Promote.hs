@@ -139,9 +139,10 @@ promoteDecs decls = do
 
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
-  (class_tvbs, meth_sigss) <- mapAndUnzipM promoteClassDec classes
-  mapM_ (promoteInstanceDec (Map.fromList class_tvbs)
-                            (Map.fromList $ concat meth_sigss)) insts
+--  (class_tvbs, meth_sigss) <- mapAndUnzipM promoteClassDec classes
+  mapM promoteClassDec classes
+--  mapM_ (promoteInstanceDec (Map.fromList class_tvbs)
+--                            (Map.fromList $ concat meth_sigss)) insts
   promoteDataDecs datas
 
 promoteDataDecs :: [DataDecl] -> PrM ()
@@ -206,6 +207,16 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
 
+promoteClassDec :: ClassDecl -> PrM ()
+promoteClassDec (ClassDecl name tvbs sigs) = do
+  let tvbNames = map extractTvbName tvbs
+      pname    = mkName ("P" ++ nameBase name)
+  kproxies <- mapM (const $ qNewName "kproxy") tvbNames
+  let ctx = map (\kp -> DAppPr (DVarPr kp) (DAppT (DConT equalityName) (DConT kProxyTypeName))) kproxies
+  emitDecs [ DClassD ctx pname tvbs [] [] ]
+  return ()
+
+{-
 -- returns mappings from method names to pairs of types with the bound
 -- names, appearing in the order of the class declaration
 promoteClassDec :: ClassDecl -> PrM ( (Name, [Name])    -- from cls_name to tvbs
@@ -225,7 +236,8 @@ promoteClassDec (ClassDecl name tvbs sigs) = do
   mapM_ promoteMethSig sigs
   return ( (name, tvbNames)
          , sigs )
-
+-}
+{-
 promoteMethSig :: (Name, DType) -> PrM ()
 promoteMethSig (name, ty) = do
   -- the real ty also has a context from the class. But, we ignore conexts anyway.
@@ -239,7 +251,8 @@ promoteMethSig (name, ty) = do
                      proName
                      (zipWith DKindedTV arg_names arg_kis)
                      (Just res_ki)]
-
+-}
+{-
 promoteInstanceDec :: Map Name [Name]
                    -> Map Name DType -> InstDecl -> PrM ()
 promoteInstanceDec cls_tvbs meth_tys (InstDecl cls_name inst_tys meths) = do
@@ -326,7 +339,7 @@ promoteMethDefn subst meth_tys (name, let_rhs) = do
 
     apply_ki :: DType -> DKind -> DType
     apply_ki = DSigT
-
+-}
 
 promoteLetDecEnv :: String -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env

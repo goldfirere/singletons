@@ -12,7 +12,7 @@ $(promote [d|
 
   class Ord a where
     compare :: a -> a -> Ordering
-
+{-
   instance Ord Nat where
     Zero `compare` Zero = EQ
     Zero `compare` (Succ _) = LT
@@ -22,6 +22,7 @@ $(promote [d|
     -- test eta-expansion
   instance Ord () where
     compare _ = const EQ
+-}
   |])
 
 foo1a :: Proxy (Zero `Compare` (Succ Zero))
