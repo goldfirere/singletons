@@ -14,6 +14,7 @@ import Promote.Newtypes
 import Promote.GenDefunSymbols
 import Promote.Classes
 import Promote.TopLevelPatterns
+import Promote.Pragmas
 
 import Singletons.Records
 import Singletons.TopLevelPatterns

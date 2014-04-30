@@ -43,6 +43,7 @@ tests =
     , compileAndDumpStdTest "Newtypes"
     , compileAndDumpStdTest "Classes"
     , compileAndDumpStdTest "TopLevelPatterns"
+    , compileAndDumpStdTest "Pragmas"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts

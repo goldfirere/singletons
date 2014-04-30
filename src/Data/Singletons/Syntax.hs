@@ -62,6 +62,7 @@ partitionDec (DInstanceD _cxt ty decs) = do
     split_app_tys acc (DSigT t _)   = split_app_tys acc t
     split_app_tys _ _ = fail $ "Illegal instance head: " ++ show ty
 partitionDec (DRoleAnnotD {}) = return mempty  -- ignore these
+partitionDec (DPragmaD {}) = return mempty
 partitionDec dec =
   fail $ "Declaration cannot be promoted: " ++ pprint (decToTH dec)
 
@@ -105,7 +106,7 @@ data ADClause = ADClause VarPromotions
                          [DPat] ADExp
 
 data AnnotationFlag = Annotated | Unannotated
-           
+
 type family IfAnn (ann :: AnnotationFlag) (yes :: k) (no :: k) :: k
 type instance IfAnn Annotated   yes no = yes
 type instance IfAnn Unannotated yes no = no
