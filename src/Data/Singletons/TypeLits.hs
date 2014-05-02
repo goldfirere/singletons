@@ -13,7 +13,7 @@
 
 {-# LANGUAGE CPP, PolyKinds, DataKinds, TypeFamilies, FlexibleInstances,
              UndecidableInstances, ScopedTypeVariables, RankNTypes,
-             GADTs, FlexibleContexts #-}
+             GADTs, FlexibleContexts, TypeOperators #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 #if __GLASGOW_HASKELL__ < 707
@@ -30,10 +30,12 @@ module Data.Singletons.TypeLits (
 import Data.Singletons
 import Data.Singletons.Types
 import Data.Singletons.Prelude.Eq
+import Data.Singletons.Prelude.Ord
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
 #if __GLASGOW_HASKELL__ >= 707
-import GHC.TypeLits
+import GHC.TypeLits as TL
+import Data.Type.Equality
 #else
 import GHC.TypeLits (Nat, Symbol)
 import qualified GHC.TypeLits as TL
@@ -144,6 +146,12 @@ instance SDecide ('KProxy :: KProxy Symbol) where
     = Disproved (\_ -> error errStr)
     where errStr = "Broken Symbol singletons"
 
+-- PEq instances
+instance PEq ('KProxy :: KProxy Nat) where
+  type (a :: Nat) :== (b :: Nat) = a == b
+instance PEq ('KProxy :: KProxy Symbol) where
+  type (a :: Symbol) :== (b :: Symbol) = a == b
+                  
 -- need SEq instances for TypeLits kinds
 instance SEq ('KProxy :: KProxy Nat) where
   a %:== b
@@ -155,6 +163,13 @@ instance SEq ('KProxy :: KProxy Symbol) where
     | fromSing a == fromSing b    = unsafeCoerce STrue
     | otherwise                   = unsafeCoerce SFalse
 
+-- POrd instances
+instance POrd ('KProxy :: KProxy Nat) where
+  type (a :: Nat) `Compare` (b :: Nat) = a `TL.CmpNat` b
+
+instance POrd ('KProxy :: KProxy Symbol) where
+  type (a :: Symbol) `Compare` (b :: Symbol) = a `TL.CmpSymbol` b
+              
 -- | Kind-restricted synonym for 'Sing' for @Nat@s
 type SNat (x :: Nat) = Sing x
 

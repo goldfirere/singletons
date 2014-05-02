@@ -34,11 +34,7 @@ anyTypeName, boolName, andName, tyEqName, repName,
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
-#if __GLASGOW_HASKELL__ >= 707
-tyEqName = ''(==)
-#else
-tyEqName = ''(:==)
-#endif
+tyEqName = mkName ":=="
 repName = mkName "Rep"
 nilName = '[]
 consName = '(:)
@@ -122,6 +118,9 @@ promoteTySym name sat
       if head capped == ':'
       then mkName (capped ++ (replicate (sat + 1) '$'))
       else mkName (capped ++ "Sym" ++ (show sat))
+
+promoteClassName :: Name -> Name
+promoteClassName = prefixUCName "P" "#"
 
 -- produce the silly type class used to store the type variables for
 -- a class

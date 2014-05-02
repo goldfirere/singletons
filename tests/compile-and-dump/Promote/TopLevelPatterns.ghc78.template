@@ -37,6 +37,22 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     l :: Bool
     m :: Bool
     [l, m] = [not True, id False]
+    type family Case_0123456789 a_0123456789 t where
+      Case_0123456789 a_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) z GHC.Types.[])) = y_0123456789
+    type family Case_0123456789 a_0123456789 t where
+      Case_0123456789 a_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
+    type family Case_0123456789 a_0123456789 t where
+      Case_0123456789 a_0123456789 (GHC.Tuple.(,) y_0123456789 z) = y_0123456789
+    type family Case_0123456789 a_0123456789 t where
+      Case_0123456789 a_0123456789 (GHC.Tuple.(,) z y_0123456789) = y_0123456789
+    type family Case_0123456789 t where
+      Case_0123456789 (Bar y_0123456789 z) = y_0123456789
+    type family Case_0123456789 t where
+      Case_0123456789 (Bar z y_0123456789) = y_0123456789
+    type family Case_0123456789 t where
+      Case_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) z GHC.Types.[])) = y_0123456789
+    type family Case_0123456789 t where
+      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
     type NotSym1 (t :: Bool) = Not t
     instance SuppressUnusedWarnings NotSym0 where
       suppressUnusedWarnings _
@@ -61,8 +77,6 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply FSym0 arg) (FSym1 arg) =>
         FSym0KindInference (Proxy arg)
     type instance Apply FSym0 l = FSym1 l
-    type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) z GHC.Types.[])) = y_0123456789
     type GSym1 (t :: Bool) = G t
     instance SuppressUnusedWarnings GSym0 where
       suppressUnusedWarnings _
@@ -71,8 +85,6 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply GSym0 arg) (GSym1 arg) =>
         GSym0KindInference (Proxy arg)
     type instance Apply GSym0 l = GSym1 l
-    type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
     type HSym1 (t :: Bool) = H t
     instance SuppressUnusedWarnings HSym0 where
       suppressUnusedWarnings _
@@ -81,8 +93,6 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply HSym0 arg) (HSym1 arg) =>
         HSym0KindInference (Proxy arg)
     type instance Apply HSym0 l = HSym1 l
-    type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 (GHC.Tuple.(,) y_0123456789 z) = y_0123456789
     type ISym1 (t :: Bool) = I t
     instance SuppressUnusedWarnings ISym0 where
       suppressUnusedWarnings _
@@ -91,19 +101,9 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply ISym0 arg) (ISym1 arg) =>
         ISym0KindInference (Proxy arg)
     type instance Apply ISym0 l = ISym1 l
-    type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 (GHC.Tuple.(,) z y_0123456789) = y_0123456789
-    type family Case_0123456789 t where
-      Case_0123456789 (Bar y_0123456789 z) = y_0123456789
     type JSym0 = J
-    type family Case_0123456789 t where
-      Case_0123456789 (Bar z y_0123456789) = y_0123456789
     type KSym0 = K
-    type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) z GHC.Types.[])) = y_0123456789
     type LSym0 = L
-    type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
     type MSym0 = M
     type X_0123456789Sym0 = X_0123456789
     type X_0123456789Sym0 = X_0123456789

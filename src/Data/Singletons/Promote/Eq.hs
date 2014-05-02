@@ -45,7 +45,10 @@ mkEqTypeInstance kind cons = do
                                                , DSigT (DVarT bName) kind ]
                                              (foldType (DConT helperName)
                                                        [DVarT aName, DVarT bName]))
-  return [closedFam, eqInst]
+      inst = DInstanceD [] ((DConT $ promoteClassName eqName) `DAppT`
+                            kindParam kind) [eqInst]
+                                     
+  return [closedFam, inst]
 
   where mk_branch :: Quasi q => DCon -> q DTySynEqn
         mk_branch con = do

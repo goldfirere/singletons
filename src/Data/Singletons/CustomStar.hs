@@ -16,14 +16,20 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Singletons.CustomStar ( singletonStar ) where
+module Data.Singletons.CustomStar (
+  singletonStar,
+
+  module Data.Singletons.Prelude.Eq,
+  module Data.Singletons.Prelude.Bool
+  ) where
 
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Data.Singletons.Util
+import Data.Singletons.Promote
+import Data.Singletons.Promote.Monad
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Data
-import Data.Singletons.Single.Eq
 import Data.Singletons.Syntax
 import Data.Singletons.Names
 import Control.Monad
@@ -31,33 +37,8 @@ import Data.Maybe
 import Control.Applicative
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.Sweeten
-
-#if __GLASGOW_HASKELL__ >= 707
-import Data.Singletons.Decide
-import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Eq
-import Unsafe.Coerce
-#endif
-
-{-
-The SEq instance here is tricky.
-The problem is that, in GHC 7.8+, the instance of type-level (==) for *
-is not recursive. Thus, it's impossible, say, to get (Maybe a == Maybe b) ~ False
-from (a == b) ~ False.
-
-There are a few ways forward:
-  1) Define SEq to use our own Boolean (==) operator, instead of the built-in one.
-     This would work, but feels wrong.
-  2) Use unsafeCoerce.
-We do #2.
-
-Also to note: because these problems don't exist in GHC 7.6, the generation of
-Eq and Decide for 7.6 is entirely normal.
-
-Note that mkCustomEqInstances makes the SDecide and SEq instances in GHC 7.8+,
-but the type-level (==) instance in GHC 7.6. This is perhaps poor design, but
-it reduces the amount of CPP noise.
--}
+import Data.Singletons.Prelude.Bool
 
 -- | Produce a representation and singleton for the collection of types given.
 --
@@ -94,15 +75,11 @@ singletonStar names = do
   let repDecl = DDataD Data [] repName [] ctors
                        [''Eq, ''Show, ''Read]
   fakeCtors <- zipWithM (mkCtor False) names kinds
-  eqInstances <- mkCustomEqInstances fakeCtors
-  singletonDecls <- singDecsM $ singDataD (DataDecl Data repName [] fakeCtors
-                              [''Show, ''Read
-#if __GLASGOW_HASKELL__ < 707
-                              , ''Eq
-#endif
-                              ])
+  let dataDecl = DataDecl Data repName [] fakeCtors [''Show, ''Read , ''Eq, ''Ord]
+  promDecls      <- promoteM_ $ promoteDataDec dataDecl
+  singletonDecls <- singDecsM $ singDataD dataDecl
   return $ decsToTH $ repDecl :
-                      eqInstances ++
+                      promDecls ++
                       singletonDecls
   where -- get the kinds of the arguments to the tycon with the given name
         getKind :: Quasi q => Name -> q [DKind]
@@ -142,28 +119,3 @@ singletonStar names = do
           return $ DAppT (DAppT DArrowT t1) t2
         kindToType DStarK = return $ DConT repName
 
-mkCustomEqInstances :: Quasi q => [DCon] -> q [DDec]
-mkCustomEqInstances ctors = do
-#if __GLASGOW_HASKELL__ >= 707
-  let ctorVar = error "Internal error: Equality instance inspected ctor var"
-  (sCtors, _) <- singM $ mapM (singCtor ctorVar) ctors
-  decideInst <- mkEqualityInstance DStarK sCtors sDecideClassDesc
-
-  a <- qNewName "a"
-  b <- qNewName "b"
-  let eqInst = DInstanceD
-                 []
-                 (DAppT (DConT ''SEq) (kindParam DStarK))
-                 [DLetDec $ DFunD '(%:==)
-                       [DClause [DVarPa a, DVarPa b]
-                               (DCaseE (foldExp (DVarE '(%~)) [DVarE a, DVarE b])
-                                      [ DMatch (DConPa 'Proved [DConPa 'Refl []])
-                                              (DConE 'STrue)
-                                      , DMatch (DConPa 'Disproved [DWildPa])
-                                              (DAppE (DVarE 'unsafeCoerce)
-                                                     (DConE 'SFalse))
-                                      ])]]
-  return [decideInst, eqInst]
-#else
-  mapM mkEqTypeInstance [(c1, c2) | c1 <- ctors, c2 <- ctors]
-#endif

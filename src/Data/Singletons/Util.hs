@@ -331,11 +331,6 @@ liftFst f (a, c) = (f a, c)
 liftSnd :: (a -> b) -> (c, a) -> (c, b)
 liftSnd f (c, a) = (c, f a)
 
-consView :: [a] -> (a, [a])
-consView []       = error "snocView nil"
-consView [x]      = (x, [])
-consView (x : xs) = (x, xs)
-
 snocView :: [a] -> ([a], a)
 snocView [] = error "snocView nil"
 snocView [x] = ([], x)
@@ -346,6 +341,15 @@ partitionWith f = go [] []
   where go bs cs []     = (reverse bs, reverse cs)
         go bs cs (a:as) =
           case f a of
+            Left b  -> go (b:bs) cs as
+            Right c -> go bs (c:cs) as
+
+partitionWithM :: Monad m => (a -> m (Either b c)) -> [a] -> m ([b], [c])
+partitionWithM f = go [] []
+  where go bs cs []     = return (reverse bs, reverse cs)
+        go bs cs (a:as) = do
+          fa <- f a
+          case fa of
             Left b  -> go (b:bs) cs as
             Right c -> go bs (c:cs) as
 

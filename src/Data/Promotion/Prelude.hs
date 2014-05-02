@@ -38,8 +38,11 @@ module Data.Promotion.Prelude (
   -- * Error reporting
   Error, ErrorSym0,
 
-  -- * Singleton equality
-  type (==), (:==), (:/=),
+  -- * Promoted equality
+  module Data.Promotion.Prelude.Eq,
+
+  -- * Promoted comparisons
+  module Data.Promotion.Prelude.Ord,
 
   -- ** Miscellaneous functions
   Id, Const, (:.), Flip, AsTypeOf, Seq,
@@ -87,10 +90,6 @@ module Data.Promotion.Prelude (
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
 
-  (:==$), (:==$$), (:==$$$), (:/=$), (:/=$$), (:/=$$$),
-
-  EQSym0, LTSym0, GTSym0,
-
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   (:.$), (:.$$), (:.$$$), FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
@@ -133,5 +132,5 @@ import Data.Promotion.Prelude.List
 import Data.Promotion.Prelude.Maybe
 import Data.Promotion.Prelude.Tuple
 import Data.Promotion.Prelude.Eq
-import Data.Singletons.Prelude.Instances (EQSym0, LTSym0, GTSym0)
+import Data.Promotion.Prelude.Ord
 import Data.Singletons.TypeLits (Error, ErrorSym0, Symbol)

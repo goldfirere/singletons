@@ -3,29 +3,33 @@ Promote/Classes.hs:0:0: Splicing declarations
       [d| const :: a -> b -> a
           const x _ = x
           
-          class Ord a where
-            compare :: a -> a -> Ordering
+          class MyOrd a where
+            mycompare :: a -> a -> Ordering
+            (<=>) :: a -> a -> Ordering
+            (<=>) = mycompare
           
-          instance Ord () where
-            compare _ = const EQ
-          instance Ord Nat where
-            Zero `compare` Zero = EQ
-            Zero `compare` (Succ _) = LT
-            (Succ _) `compare` Zero = GT
-            (Succ n) `compare` (Succ m) = m `compare` n |]
+          instance MyOrd () where
+            mycompare _ = const EQ
+          instance MyOrd Nat where
+            Zero `mycompare` Zero = EQ
+            Zero `mycompare` (Succ _) = LT
+            (Succ _) `mycompare` Zero = GT
+            (Succ n) `mycompare` (Succ m) = m `mycompare` n |]
   ======>
     Promote/Classes.hs:(0,0)-(0,0)
     const :: forall a b. a -> b -> a
     const x _ = x
-    class Ord a where
-      compare :: a -> a -> Ordering
-    instance Ord Nat where
-      compare Zero Zero = EQ
-      compare Zero (Succ _) = LT
-      compare (Succ _) Zero = GT
-      compare (Succ n) (Succ m) = (m `compare` n)
-    instance Ord () where
-      compare _ = const EQ
+    class MyOrd a where
+      mycompare :: a -> a -> Ordering
+      (<=>) :: a -> a -> Ordering
+      (<=>) = mycompare
+    instance MyOrd Nat where
+      mycompare Zero Zero = EQ
+      mycompare Zero (Succ _) = LT
+      mycompare (Succ _) Zero = GT
+      mycompare (Succ n) (Succ m) = (m `mycompare` n)
+    instance MyOrd () where
+      mycompare _ = const EQ
     type ConstSym2 (t :: a) (t :: b) = Const t t
     instance SuppressUnusedWarnings ConstSym1 where
       suppressUnusedWarnings _
@@ -43,27 +47,44 @@ Promote/Classes.hs:0:0: Splicing declarations
     type instance Apply ConstSym0 l = ConstSym1 l
     type family Const (a :: a) (a :: b) :: a where
       Const x z = x
-    class OrdTyVars a
-    instance SuppressUnusedWarnings OrdTyVars where
-      suppressUnusedWarnings _ = GHC.Tuple.()
-    type CompareSym2 (t :: a) (t :: a) = Compare t t
-    instance SuppressUnusedWarnings CompareSym1 where
+    type MycompareSym2 (t :: a) (t :: a) = Mycompare t t
+    instance SuppressUnusedWarnings MycompareSym1 where
       suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) CompareSym1KindInference GHC.Tuple.())
-    data CompareSym1 (l :: a) (l :: TyFun a Ordering)
-      = forall arg. (GHC.Types.~) (Apply (CompareSym1 l) arg) (CompareSym2 l arg) =>
-        CompareSym1KindInference (Proxy arg)
-    type instance Apply (CompareSym1 l) l = CompareSym2 l l
-    instance SuppressUnusedWarnings CompareSym0 where
+        = snd (GHC.Tuple.(,) MycompareSym1KindInference GHC.Tuple.())
+    data MycompareSym1 (l :: a) (l :: TyFun a Ordering)
+      = forall arg. (GHC.Types.~) (Apply (MycompareSym1 l) arg) (MycompareSym2 l arg) =>
+        MycompareSym1KindInference (Proxy arg)
+    type instance Apply (MycompareSym1 l) l = MycompareSym2 l l
+    instance SuppressUnusedWarnings MycompareSym0 where
       suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) CompareSym0KindInference GHC.Tuple.())
-    data CompareSym0 (l :: TyFun a (TyFun a Ordering -> *))
-      = forall arg. (GHC.Types.~) (Apply CompareSym0 arg) (CompareSym1 arg) =>
-        CompareSym0KindInference (Proxy arg)
-    type instance Apply CompareSym0 l = CompareSym1 l
-    type family Compare (arg :: a) (arg :: a) :: Ordering
-    type instance Compare (Zero :: Nat) (Zero :: Nat) = (EQSym0 :: Ordering)
-    type instance Compare (Zero :: Nat) (Succ z :: Nat) = (LTSym0 :: Ordering)
-    type instance Compare (Succ z :: Nat) (Zero :: Nat) = (GTSym0 :: Ordering)
-    type instance Compare (Succ n :: Nat) (Succ m :: Nat) = (Apply (Apply CompareSym0 m) n :: Ordering)
-    type instance Compare (z :: GHC.Tuple.()) (eta_arg :: GHC.Tuple.()) = (Apply (Apply ConstSym0 EQSym0) eta_arg :: Ordering)
+        = snd (GHC.Tuple.(,) MycompareSym0KindInference GHC.Tuple.())
+    data MycompareSym0 (l :: TyFun a (TyFun a Ordering -> *))
+      = forall arg. (GHC.Types.~) (Apply MycompareSym0 arg) (MycompareSym1 arg) =>
+        MycompareSym0KindInference (Proxy arg)
+    type instance Apply MycompareSym0 l = MycompareSym1 l
+    type (:<=>$$$) (t :: a) (t :: a) = (:<=>) t t
+    instance SuppressUnusedWarnings (:<=>$$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:<=>$$###) GHC.Tuple.())
+    data (:<=>$$) (l :: a) (l :: TyFun a Ordering)
+      = forall arg. (GHC.Types.~) (Apply ((:<=>$$) l) arg) ((:<=>$$$) l arg) =>
+        (:<=>$$###) (Proxy arg)
+    type instance Apply ((:<=>$$) l) l = (:<=>$$$) l l
+    instance SuppressUnusedWarnings (:<=>$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:<=>$###) GHC.Tuple.())
+    data (:<=>$) (l :: TyFun a (TyFun a Ordering -> *))
+      = forall arg. (GHC.Types.~) (Apply (:<=>$) arg) ((:<=>$$) arg) =>
+        (:<=>$###) (Proxy arg)
+    type instance Apply (:<=>$) l = (:<=>$$) l
+    class (GHC.Types.~) kproxy KProxy => PMyOrd (kproxy :: KProxy a) where
+      type family Mycompare (arg :: a) (arg :: a) :: Ordering
+      type family (:<=>) (arg :: a) (arg :: a) :: Ordering
+      type instance (:<=>) (a_0123456789 :: a) (a_0123456789 :: a) = (Apply (Apply MycompareSym0 a_0123456789) a_0123456789 :: Ordering)
+    instance PMyOrd (KProxy :: KProxy Nat) where
+      type Mycompare (Zero :: Nat) (Zero :: Nat) = (EQSym0 :: Ordering)
+      type Mycompare (Zero :: Nat) (Succ z :: Nat) = (LTSym0 :: Ordering)
+      type Mycompare (Succ z :: Nat) (Zero :: Nat) = (GTSym0 :: Ordering)
+      type Mycompare (Succ n :: Nat) (Succ m :: Nat) = (Apply (Apply MycompareSym0 m) n :: Ordering)
+    instance PMyOrd (KProxy :: KProxy GHC.Tuple.()) where
+      type Mycompare (z :: GHC.Tuple.()) (a_0123456789 :: GHC.Tuple.()) = (Apply (Apply ConstSym0 EQSym0) a_0123456789 :: Ordering)

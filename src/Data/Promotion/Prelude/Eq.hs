@@ -13,7 +13,7 @@
 
 {-# LANGUAGE ExplicitNamespaces #-}
 module Data.Promotion.Prelude.Eq (
-  type (==), (:==), (:/=), (:==$), (:==$$), (:==$$$), (:/=$), (:/=$$), (:/=$$$)
+  PEq(..), (:==$), (:==$$), (:==$$$), (:/=$), (:/=$$), (:/=$$$)
   ) where
 
 import Data.Singletons.Prelude.Eq

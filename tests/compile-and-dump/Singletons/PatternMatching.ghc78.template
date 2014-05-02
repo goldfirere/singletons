@@ -127,14 +127,6 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     foo1 (x, y) = \ _ -> x y
     foo2 :: forall a b. (# a, b #) -> a
     foo2 t@(# x, y #) = case t of { (# a, b #) -> \ _ -> a b }
-    type Foo2Sym1 (t :: GHC.Tuple.(,) a b) = Foo2 t
-    instance SuppressUnusedWarnings Foo2Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo2Sym0KindInference GHC.Tuple.())
-    data Foo2Sym0 (l :: TyFun (GHC.Tuple.(,) a b) a)
-      = forall arg. (GHC.Types.~) (Apply Foo2Sym0 arg) (Foo2Sym1 arg) =>
-        Foo2Sym0KindInference (Proxy arg)
-    type instance Apply Foo2Sym0 l = Foo2Sym1 l
     type Let_0123456789TSym2 t t = Let_0123456789T t t
     instance SuppressUnusedWarnings Let_0123456789TSym1 where
       suppressUnusedWarnings _
@@ -220,14 +212,6 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 x y t where
       Case_0123456789 x y (GHC.Tuple.(,) a b) = Apply (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) a) b) b
-    type Foo1Sym1 (t :: GHC.Tuple.(,) a b) = Foo1 t
-    instance SuppressUnusedWarnings Foo1Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
-    data Foo1Sym0 (l :: TyFun (GHC.Tuple.(,) a b) a)
-      = forall arg. (GHC.Types.~) (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
-        Foo1Sym0KindInference (Proxy arg)
-    type instance Apply Foo1Sym0 l = Foo1Sym1 l
     type family Case_0123456789 x y arg_0123456789 t where
       Case_0123456789 x y arg_0123456789 z = x
     type family Lambda_0123456789 x y t where
@@ -259,33 +243,49 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 t where
       Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 ((GHC.Types.:) (Succ z) GHC.Types.[]))) = y_0123456789
-    type LszSym0 = Lsz
     type family Case_0123456789 t where
       Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) z ((GHC.Types.:) (Succ y_0123456789) GHC.Types.[]))) = y_0123456789
-    type BlimySym0 = Blimy
     type family Case_0123456789 t where
       Case_0123456789 (GHC.Tuple.(,,) y_0123456789 z z) = y_0123456789
-    type TfSym0 = Tf
     type family Case_0123456789 t where
       Case_0123456789 (GHC.Tuple.(,,) z y_0123456789 z) = y_0123456789
-    type TjzSym0 = Tjz
     type family Case_0123456789 t where
       Case_0123456789 (GHC.Tuple.(,,) z z y_0123456789) = y_0123456789
-    type TtSym0 = Tt
     type family Case_0123456789 t where
       Case_0123456789 (Pair (Pair y_0123456789 z) z) = y_0123456789
-    type JzSym0 = Jz
     type family Case_0123456789 t where
       Case_0123456789 (Pair (Pair z y_0123456789) z) = y_0123456789
-    type ZzSym0 = Zz
     type family Case_0123456789 t where
       Case_0123456789 (Pair (Pair z z) y_0123456789) = y_0123456789
-    type FlsSym0 = Fls
     type family Case_0123456789 t where
       Case_0123456789 (Pair y_0123456789 z) = y_0123456789
-    type SzSym0 = Sz
     type family Case_0123456789 t where
       Case_0123456789 (Pair z y_0123456789) = y_0123456789
+    type Foo2Sym1 (t :: GHC.Tuple.(,) a b) = Foo2 t
+    instance SuppressUnusedWarnings Foo2Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo2Sym0KindInference GHC.Tuple.())
+    data Foo2Sym0 (l :: TyFun (GHC.Tuple.(,) a b) a)
+      = forall arg. (GHC.Types.~) (Apply Foo2Sym0 arg) (Foo2Sym1 arg) =>
+        Foo2Sym0KindInference (Proxy arg)
+    type instance Apply Foo2Sym0 l = Foo2Sym1 l
+    type Foo1Sym1 (t :: GHC.Tuple.(,) a b) = Foo1 t
+    instance SuppressUnusedWarnings Foo1Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
+    data Foo1Sym0 (l :: TyFun (GHC.Tuple.(,) a b) a)
+      = forall arg. (GHC.Types.~) (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
+        Foo1Sym0KindInference (Proxy arg)
+    type instance Apply Foo1Sym0 l = Foo1Sym1 l
+    type LszSym0 = Lsz
+    type BlimySym0 = Blimy
+    type TfSym0 = Tf
+    type TjzSym0 = Tjz
+    type TtSym0 = Tt
+    type JzSym0 = Jz
+    type ZzSym0 = Zz
+    type FlsSym0 = Fls
+    type SzSym0 = Sz
     type LzSym0 = Lz
     type X_0123456789Sym0 = X_0123456789
     type X_0123456789Sym0 = X_0123456789

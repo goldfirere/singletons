@@ -21,9 +21,10 @@ Promote/Newtypes.hs:0:0: Splicing declarations
     type family UnBar (a :: Bar) :: Nat where
       UnBar (Bar field) = field
     type family Equals_0123456789 (a :: Foo) (b :: Foo) :: Bool where
-      Equals_0123456789 (Foo a) (Foo b) = (==) a b
+      Equals_0123456789 (Foo a) (Foo b) = (:==) a b
       Equals_0123456789 (a :: Foo) (b :: Foo) = FalseSym0
-    type instance (==) (a :: Foo) (b :: Foo) = Equals_0123456789 a b
+    instance PEq (KProxy :: KProxy Foo) where
+      type (:==) (a :: Foo) (b :: Foo) = Equals_0123456789 a b
     type FooSym1 (t :: Nat) = Foo t
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings _

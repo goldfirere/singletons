@@ -21,13 +21,14 @@ import Language.Haskell.TH.Ppr
 import Language.Haskell.TH.Desugar.Sweeten
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
-import Debug.Trace
+import Data.Maybe
+import Control.Monad
 
 type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
 
   -- the relevant part of declarations
 data DataDecl  = DataDecl NewOrData Name [DTyVarBndr] [DCon] [Name]
-data ClassDecl = ClassDecl Name [DTyVarBndr] [(Name, DType)]
+data ClassDecl = ClassDecl DCxt Name [DTyVarBndr] ULetDecEnv
 data InstDecl  = InstDecl Name [DType] [(Name, ULetDecRHS)]
 
 data PartitionedDecs =
@@ -50,12 +51,11 @@ partitionDec :: Monad m => DDec -> m PartitionedDecs
 partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
 partitionDec (DDataD nd _cxt name tvbs cons derivings) =
   return $ mempty { pd_data_decs = [DataDecl nd name tvbs cons derivings] }
-partitionDec (DClassD _cxt name tvbs _fds decs) = do
-  sigs <- mapM partitionClassDec decs
-  return $ mempty { pd_class_decs = [ClassDecl name tvbs sigs] }
+partitionDec (DClassD cxt name tvbs _fds decs) = do
+  env <- concatMapM partitionClassDec decs
+  return $ mempty { pd_class_decs = [ClassDecl cxt name tvbs env] }
 partitionDec (DInstanceD _cxt ty decs) = do
-  trace ("Instance: " ++ show ty ++ " "  ++ show decs) $ return ()
-  defns <- mapM partitionInstanceDec decs
+  defns <- liftM catMaybes $ mapM partitionInstanceDec decs
   (name, tys) <- split_app_tys [] ty
   return $ mempty { pd_instance_decs = [InstDecl name tys defns] }
   where
@@ -68,16 +68,24 @@ partitionDec (DPragmaD {}) = return mempty
 partitionDec dec =
   fail $ "Declaration cannot be promoted: " ++ pprint (decToTH dec)
 
-partitionClassDec :: Monad m => DDec -> m (Name, DType)
-partitionClassDec (DLetDec (DSigD name ty)) = return (name, ty)
+partitionClassDec :: Monad m => DDec -> m ULetDecEnv
+partitionClassDec (DLetDec (DSigD name ty)) = return $ typeBinding name ty
+partitionClassDec (DLetDec (DValD (DVarPa name) exp)) =
+  return $ valueBinding name (UValue exp)
+partitionClassDec (DLetDec (DFunD name clauses)) =
+  return $ valueBinding name (UFunction clauses)
+partitionClassDec (DLetDec (DInfixD fixity name)) =
+  return $ infixDecl fixity name
+partitionClassDec (DPragmaD {}) = return mempty
 partitionClassDec _ =
   fail "Only method declarations can be promoted within a class."
 
-partitionInstanceDec :: Monad m => DDec -> m (Name, ULetDecRHS)
+partitionInstanceDec :: Monad m => DDec -> m (Maybe (Name, ULetDecRHS))
 partitionInstanceDec (DLetDec (DValD (DVarPa name) exp)) =
-  return (name, UValue exp)
+  return $ Just (name, UValue exp)
 partitionInstanceDec (DLetDec (DFunD name clauses)) =
-  return (name, UFunction clauses)
+  return $ Just (name, UFunction clauses)
+partitionInstanceDec (DPragmaD {}) = return Nothing
 partitionInstanceDec _ =
   fail "Only method bodies can be promoted within an instance."
 
