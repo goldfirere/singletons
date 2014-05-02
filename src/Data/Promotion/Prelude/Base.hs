@@ -52,8 +52,7 @@ $(promoteOnly [d|
 
   -- Does not singletoznize. See #30
   until                   :: (a -> Bool) -> (a -> a) -> a -> a
-  -- Temporalily eta-expanded to work around #31
-  until p f n = go n
+  until p f = go
     where
       go x | p x          = x
            | otherwise    = go (f x)

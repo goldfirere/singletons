@@ -85,7 +85,10 @@ module Data.Singletons.Prelude (
   Error, ErrorSym0, sError,
 
   -- * Singleton equality
-  type (==), (:==), (:/=), SEq(..),
+  module Data.Singletons.Prelude.Eq,
+
+  -- * Singleton comparisons
+  module Data.Singletons.Prelude.Ord,
 
   -- ** Miscellaneous functions
   Id, sId, Const, sConst, (:.), (%:.), Flip, sFlip, AsTypeOf, sAsTypeOf,
@@ -111,6 +114,7 @@ module Data.Singletons.Prelude (
   Maybe_, sMaybe_,
   Either_, sEither_,
   Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry,
+  Symbol,
 
   -- * Other functions
   either_, -- reimplementation of either to be used with singletons library
@@ -136,10 +140,6 @@ module Data.Singletons.Prelude (
   FstSym0, FstSym1, SndSym0, SndSym1,
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
-
-  (:==$), (:==$$), (:==$$$), (:/=$), (:/=$$), (:/=$$$),
-
-  EQSym0, LTSym0, GTSym0,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   (:.$), (:.$$), (:.$$$), FlipSym0, FlipSym1, FlipSym2,
@@ -184,5 +184,6 @@ import Data.Singletons.Prelude.List
 import Data.Singletons.Prelude.Maybe
 import Data.Singletons.Prelude.Tuple
 import Data.Singletons.Prelude.Eq
+import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.TypeLits

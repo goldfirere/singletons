@@ -57,6 +57,40 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
     insertionSort :: [Nat] -> [Nat]
     insertionSort GHC.Types.[] = []
     insertionSort (h GHC.Types.: t) = insert h (insertionSort t)
+    type Let_0123456789Scrutinee_0123456789Sym3 t t t =
+        Let_0123456789Scrutinee_0123456789 t t t
+    instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,)
+               Let_0123456789Scrutinee_0123456789Sym2KindInference GHC.Tuple.())
+    data Let_0123456789Scrutinee_0123456789Sym2 l l l
+      = forall arg. (GHC.Types.~) (Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) arg) (Let_0123456789Scrutinee_0123456789Sym3 l l arg) =>
+        Let_0123456789Scrutinee_0123456789Sym2KindInference (Proxy arg)
+    type instance Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) l = Let_0123456789Scrutinee_0123456789Sym3 l l l
+    instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,)
+               Let_0123456789Scrutinee_0123456789Sym1KindInference GHC.Tuple.())
+    data Let_0123456789Scrutinee_0123456789Sym1 l l
+      = forall arg. (GHC.Types.~) (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg) (Let_0123456789Scrutinee_0123456789Sym2 l arg) =>
+        Let_0123456789Scrutinee_0123456789Sym1KindInference (Proxy arg)
+    type instance Apply (Let_0123456789Scrutinee_0123456789Sym1 l) l = Let_0123456789Scrutinee_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,)
+               Let_0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
+    data Let_0123456789Scrutinee_0123456789Sym0 l
+      = forall arg. (GHC.Types.~) (Apply Let_0123456789Scrutinee_0123456789Sym0 arg) (Let_0123456789Scrutinee_0123456789Sym1 arg) =>
+        Let_0123456789Scrutinee_0123456789Sym0KindInference (Proxy arg)
+    type instance Apply Let_0123456789Scrutinee_0123456789Sym0 l = Let_0123456789Scrutinee_0123456789Sym1 l
+    type Let_0123456789Scrutinee_0123456789 n h t =
+        Apply (Apply LeqSym0 n) h
+    type family Case_0123456789 n h t t where
+      Case_0123456789 n h t True = Apply (Apply (:$) n) (Apply (Apply (:$) h) t)
+      Case_0123456789 n h t False = Apply (Apply (:$) h) (Apply (Apply InsertSym0 n) t)
     type LeqSym2 (t :: Nat) (t :: Nat) = Leq t t
     instance SuppressUnusedWarnings LeqSym1 where
       suppressUnusedWarnings _
@@ -89,9 +123,6 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply InsertSym0 arg) (InsertSym1 arg) =>
         InsertSym0KindInference (Proxy arg)
     type instance Apply InsertSym0 l = InsertSym1 l
-    type family Case_0123456789 n h t t where
-      Case_0123456789 n h t True = Apply (Apply (:$) n) (Apply (Apply (:$) h) t)
-      Case_0123456789 n h t False = Apply (Apply (:$) h) (Apply (Apply InsertSym0 n) t)
     type InsertionSortSym1 (t :: GHC.Types.[] Nat) = InsertionSort t
     instance SuppressUnusedWarnings InsertionSortSym0 where
       suppressUnusedWarnings _
@@ -107,7 +138,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
     type family Insert (a :: Nat)
                        (a :: GHC.Types.[] Nat) :: GHC.Types.[] Nat where
       Insert n GHC.Types.[] = Apply (Apply (:$) n) GHC.Types.[]
-      Insert n ((GHC.Types.:) h t) = Case_0123456789 n h t (Apply (Apply LeqSym0 n) h)
+      Insert n ((GHC.Types.:) h t) = Case_0123456789 n h t (Let_0123456789Scrutinee_0123456789Sym3 n h t)
     type family InsertionSort (a :: GHC.Types.[] Nat) :: GHC.Types.[] Nat where
       InsertionSort GHC.Types.[] = GHC.Types.[]
       InsertionSort ((GHC.Types.:) h t) = Apply (Apply InsertSym0 h) (Apply InsertionSortSym0 t)
@@ -166,26 +197,31 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
                -> Sing t
                   -> Sing (Apply (Apply InsertSym0 n) (Apply (Apply (:$) h) t))
           lambda n h t
-            = case
-                  applySing (applySing (singFun2 (Proxy :: Proxy LeqSym0) sLeq) n) h
-              of {
-                STrue
-                  -> let
-                       lambda :: Sing (Case_0123456789 n h t TrueSym0)
-                       lambda
-                         = applySing
-                             (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) n)
-                             (applySing (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) h) t)
-                     in lambda
-                SFalse
-                  -> let
-                       lambda :: Sing (Case_0123456789 n h t FalseSym0)
-                       lambda
-                         = applySing
-                             (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) h)
-                             (applySing
-                                (applySing (singFun2 (Proxy :: Proxy InsertSym0) sInsert) n) t)
-                     in lambda }
+            = let
+                sScrutinee_0123456789 ::
+                  Sing (Let_0123456789Scrutinee_0123456789Sym3 n h t)
+                sScrutinee_0123456789
+                  = applySing
+                      (applySing (singFun2 (Proxy :: Proxy LeqSym0) sLeq) n) h
+              in
+                case sScrutinee_0123456789 of {
+                  STrue
+                    -> let
+                         lambda :: Sing (Case_0123456789 n h t TrueSym0)
+                         lambda
+                           = applySing
+                               (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) n)
+                               (applySing (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) h) t)
+                       in lambda
+                  SFalse
+                    -> let
+                         lambda :: Sing (Case_0123456789 n h t FalseSym0)
+                         lambda
+                           = applySing
+                               (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) h)
+                               (applySing
+                                  (applySing (singFun2 (Proxy :: Proxy InsertSym0) sInsert) n) t)
+                       in lambda }
         in lambda sN sH sT
     sInsertionSort SNil
       = let

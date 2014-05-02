@@ -1,12 +1,13 @@
-singletons 0.10
-===============
+singletons 1.0
+==============
 
 [![Build Status](https://travis-ci.org/goldfirere/singletons.svg?branch=master)](https://travis-ci.org/goldfirere/singletons)
 
 This is the README file for the singletons library. This file contains all the
 documentation for the definitions and functions in the library.
 
-The singletons library was written by Richard Eisenberg, eir@cis.upenn.edu.
+The singletons library was written by Richard Eisenberg, eir@cis.upenn.edu,
+and with significant contributions by Jan Stolarek, jan.stolarek@@p.lodz.pl.
 See also _Dependently typed programming with singletons_, available
 [here](http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf).
 
@@ -18,15 +19,21 @@ programmers to use dependently typed techniques to enforce rich constraints
 among the types in their programs. See the paper cited above for a
 more thorough introduction.
 
+The package also allows _promotion_ of term-level functions to type-level
+equivalents. Accordingly, it exports a Prelude of promoted and singletonized
+functions, mirroring much of the standard Prelude and associated libraries.
+
 Compatibility
 -------------
 
-The singletons library requires GHC version 7.6.3 or greater.
-Any code that uses the singleton generation primitives will also need
-to enable a long list of GHC extensions. This list includes, but
-is not necessarily limited to, the following:
+The singletons library requires GHC version 7.6.3 or greater (with the
+exception of GHC 7.8.1, which has a critical bug). Any code that uses the
+singleton generation primitives will also need to enable a long list of GHC
+extensions. This list includes, but is not necessarily limited to, the
+following:
 
 * `ScopedTypeVariables` (absolutely required)
+* `AllowAmbiguousTypes` (absolutely required under GHC 7.8.2+)
 * `TemplateHaskell`
 * `TypeFamilies`
 * `GADTs`
@@ -41,6 +48,8 @@ is not necessarily limited to, the following:
 
 Modules
 -------
+
+TODO: Update!
 
 `Data.Singletons` exports all the basic singletons definitions. Import this
 module if you are not using Template Haskell and wish only to define your
@@ -255,31 +264,43 @@ The following constructs are fully supported:
 * constructors
 * if statements
 * infix expressions
-* !, ~, and _ patterns
-* aliased patterns (except at top-level)
+* `_` patterns
+* aliased patterns
 * lists
-* (+) sections
-* (x +) sections
+* sections
 * undefined
 * error
 * deriving Eq
-* class constraints
+* class constraints (though these sometimes fail with `let`, `lambda`, and `case`)
 * literals (for `Nat` and `Symbol`)
-
-The following constructs will be coming soon:
-
-* unboxed tuples
+* unboxed tuples (which are treated as normal tuples)
 * records
-* scoped type variables
-* overlapping patterns
 * pattern guards
-* (+ x) sections
 * case
 * let
-* list comprehensions
 * lambda expressions
-* do
+
+The following constructs are supported for promotion but not singleton generation:
+
+* `!` and `~` patterns (silently but successfully ignored during promotion)
+* class and instance declarations
+* scoped type variables
+* overlapping patterns (GHC 7.8.2+ only)
+
+The following construct is coming Real Soon Now:
+
 * arithmetic sequences
+
+The following constructs are not supported, because GHC cannot support them:
+
+* list comprehensions
+* do
+
+Why are these out of reach? Because they depend on monads, which mention a
+higher-kinded type variable. GHC does not support higher-sorted kind
+variables, which would be necessary to promote/singletonize monads. There are
+other tricks possible, too, but none are likely to work. See the bug report
+[here](https://github.com/goldfirere/singletons/issues/37) for more info.
 
 As described briefly in the paper, the singletons generation mechanism does not
 currently work for higher-order datatypes (though higher-order functions are

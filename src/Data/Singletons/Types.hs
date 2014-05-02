@@ -19,7 +19,7 @@
 module Data.Singletons.Types (
   KProxy(..), Proxy(..),
   (:~:)(..), gcastWith, TestEquality(..),
-  Not, If, type (==), (:==)
+  Not, If
   ) where
 
 #if __GLASGOW_HASKELL__ < 707
@@ -44,9 +44,6 @@ type family If (a :: Bool) (b :: k) (c :: k) :: k
 type instance If 'True b c = b
 type instance If 'False b c = c
 
-type family (a :: k) :== (b :: k) :: Bool
-type a == b = a :== b
-
 type family Not (b :: Bool) :: Bool
 type instance Not True  = False
 type instance Not False = True
@@ -56,10 +53,6 @@ type instance Not False = True
 import Data.Proxy
 import Data.Type.Equality
 import Data.Type.Bool
-
--- | A re-export of the type-level @(==)@ that conforms to the singletons naming
--- convention.
-type a :== b = a == b
 
 #endif
 

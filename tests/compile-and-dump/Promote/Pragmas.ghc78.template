@@ -1,0 +1,12 @@
+Promote/Pragmas.hs:0:0: Splicing declarations
+    promote
+      [d| {-# INLINE foo #-}
+          foo :: Bool
+          foo = True |]
+  ======>
+    Promote/Pragmas.hs:(0,0)-(0,0)
+    {-# INLINE foo #-}
+    foo :: Bool
+    foo = True
+    type FooSym0 = Foo
+    type Foo = (TrueSym0 :: Bool)

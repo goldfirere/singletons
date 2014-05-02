@@ -1,6 +1,6 @@
 {-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies,
              RankNTypes, FlexibleContexts, TemplateHaskell,
-             UndecidableInstances, GADTs, CPP #-}
+             UndecidableInstances, GADTs, CPP, DefaultSignatures #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -16,63 +16,35 @@
 -----------------------------------------------------------------------------
 
 module Data.Singletons.Prelude.Eq (
-  SEq(..),
-  type (==), (:==), (:/=), (:==$), (:==$$), (:==$$$), (:/=$), (:/=$$), (:/=$$$)
+  PEq(..), SEq(..),
+  (:==$), (:==$$), (:==$$$), (:/=$), (:/=$$), (:/=$$$)
   ) where
 
 import Data.Singletons.Prelude.Bool
 import Data.Singletons
 import Data.Singletons.Single
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.Prelude.Instances
-import Data.Singletons.Types
 import Data.Singletons.Util
-#if __GLASGOW_HASKELL__ < 707
-import Data.Singletons.Promote ( promoteEqInstances )
+import Data.Singletons.Promote
+
+#if __GLASGOW_HASKELL__ >= 707
+import Data.Type.Equality
 #endif
 
--- | A type synonym conforming to singletons naming conventions
-type a :/= b = Not (a :== b)
+-- | The promoted analogue of 'Eq'. If you supply no definition for '(:==)' under
+-- GHC 7.8+, then it defaults to a use of '(==)', from @Data.Type.Equality@.
+class kproxy ~ 'KProxy => PEq (kproxy :: KProxy a) where
+  type (:==) (x :: a) (y :: a) :: Bool
+  type (:/=) (x :: a) (y :: a) :: Bool
 
-type (:==$$$) a b = a :== b
+#if __GLASGOW_HASKELL__ < 707
+  type (x :: a) :== (y :: a) = Not (x :/= y)
+#else
+  type (x :: a) :== (y :: a) = x == y
+#endif
+  type (x :: a) :/= (y :: a) = Not (x :== y)
 
-data (:==$$) (a :: k1) (b :: TyFun k1 Bool) where
-     (:==$$###) :: Apply ((:==$$) a) arg ~ (:==$$$) a arg
-                => Proxy arg
-                -> (:==$$) a b
-type instance Apply ((:==$$) a) b = (:==$$$) a b
-
-instance SuppressUnusedWarnings (:==$$) where
-    suppressUnusedWarnings _ = snd ((:==$$###),())
-
-data (:==$) (a :: TyFun k1 (TyFun k1 Bool -> *)) where
-     (:==$###) :: Apply (:==$) arg ~ (:==$$) arg
-               => Proxy arg
-               -> (:==$) a
-type instance Apply (:==$) a = (:==$$) a
-
-instance SuppressUnusedWarnings (:==$) where
-    suppressUnusedWarnings _ = snd ((:==$###),())
-
-type (:/=$$$) a b = a :/= b
-
-data (:/=$$) (a :: k1) (b :: TyFun k1 Bool) where
-     (:/=$$###) :: Apply ((:/=$$) a) arg ~ (:/=$$$) a arg
-                => Proxy arg
-                -> (:/=$$) a b
-type instance Apply ((:/=$$) a) b = (:/=$$$) a b
-
-instance SuppressUnusedWarnings (:/=$$) where
-    suppressUnusedWarnings _ = snd ((:/=$$###),())
-
-data (:/=$) (a :: TyFun k1 (TyFun k1 Bool -> *)) where
-     (:/=$###) :: Apply (:/=$) arg ~ (:/=$$) arg
-               => Proxy arg
-               -> (:/=$) a
-type instance Apply (:/=$) a = (:/=$$) a
-
-instance SuppressUnusedWarnings (:/=$) where
-    suppressUnusedWarnings _ = snd ((:/=$###),())
+$(genDefunSymbols [''(:==), ''(:/=)])
 
 -- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
 -- that instances define a body for '(%:==)'. You may also supply a body for '(%:/=)'.
@@ -82,11 +54,9 @@ class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
 
   -- | Boolean disequality on singletons
   (%:/=) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :/= b)
+  default (%:/=) :: forall (a :: k) (b :: k).
+                    ((a :/= b) ~ Not (a :== b))
+                 => Sing a -> Sing b -> Sing (a :/= b)
   a %:/= b = sNot (a %:== b)
 
-
-#if __GLASGOW_HASKELL__ < 707
-$(promoteEqInstances basicTypes)   -- these instances are in Data.Type.Equality
-#endif
-
-$(singEqInstancesOnly basicTypes)
+$(singEqInstances basicTypes)

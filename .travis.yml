@@ -1,6 +1,11 @@
 # Taken from github.com/hvr/multi-ghc-travis
 # NB: don't set `language: haskell` here
 
+branches:
+  only:
+    - master
+    - /v[0-9.]+/
+
 env:
  - GHCVER=7.6.3
  - GHCVER=7.8.1

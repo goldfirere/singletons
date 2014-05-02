@@ -40,13 +40,10 @@ import Data.Singletons.Decide
 #if __GLASGOW_HASKELL__ >= 707
 import GHC.Exts ( Proxy# )
 import Data.Type.Coercion
+import Data.Type.Equality
 #else
-
 eqT :: (Typeable a, Typeable b) => Maybe (a :~: b)
 eqT = gcast Refl
-
-type instance (a :: *) :== (a :: *) = True
-
 #endif
 
 data instance Sing (a :: *) where
@@ -58,6 +55,13 @@ instance SingKind ('KProxy :: KProxy *) where
   type DemoteRep ('KProxy :: KProxy *) = TypeRep
   fromSing (STypeRep :: Sing a) = typeOf (undefined :: a)
   toSing = dirty_mk_STypeRep
+
+instance PEq ('KProxy :: KProxy *) where
+#if __GLASGOW_HASKELL__ < 707
+  type (a :: *) :== (a :: *) = True
+#else
+  type (a :: *) :== (b :: *) = a == b
+#endif
 
 instance SEq ('KProxy :: KProxy *) where
   (STypeRep :: Sing a) %:== (STypeRep :: Sing b) =

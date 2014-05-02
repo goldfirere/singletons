@@ -6,7 +6,6 @@ module Singletons.Lambdas where
 
 import Data.Proxy
 import Data.Singletons
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 
 $(singletons [d|
@@ -52,7 +51,7 @@ $(singletons [d|
   foo8 x = (\(Foo a _) -> a) x
  |])
 
-foo1a :: Proxy (Apply (Foo1 Int) Char)
+foo1a :: Proxy (Foo1 Int Char)
 foo1a = Proxy
 
 foo1b :: Proxy Int

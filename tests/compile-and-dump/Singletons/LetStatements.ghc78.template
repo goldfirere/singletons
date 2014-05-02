@@ -190,16 +190,10 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
     foo13_ y = y
     foo14 :: Nat -> (Nat, Nat)
     foo14 x = let (y, z) = (Succ x, x) in (z, y)
-    type Foo14Sym1 (t :: Nat) = Foo14 t
-    instance SuppressUnusedWarnings Foo14Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo14Sym0KindInference GHC.Tuple.())
-    data Foo14Sym0 (l :: TyFun Nat (GHC.Tuple.(,) Nat Nat))
-      = forall arg. (GHC.Types.~) (Apply Foo14Sym0 arg) (Foo14Sym1 arg) =>
-        Foo14Sym0KindInference (Proxy arg)
-    type instance Apply Foo14Sym0 l = Foo14Sym1 l
     type family Case_0123456789 x t where
-      Case_0123456789 x (GHC.Tuple.(,) y z) = y
+      Case_0123456789 x (GHC.Tuple.(,) y_0123456789 z) = y_0123456789
+    type family Case_0123456789 x t where
+      Case_0123456789 x (GHC.Tuple.(,) z y_0123456789) = y_0123456789
     type Let_0123456789YSym1 t = Let_0123456789Y t
     instance SuppressUnusedWarnings Let_0123456789YSym0 where
       suppressUnusedWarnings _
@@ -208,8 +202,6 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply Let_0123456789YSym0 arg) (Let_0123456789YSym1 arg) =>
         Let_0123456789YSym0KindInference (Proxy arg)
     type instance Apply Let_0123456789YSym0 l = Let_0123456789YSym1 l
-    type family Case_0123456789 x t where
-      Case_0123456789 x (GHC.Tuple.(,) z y) = y
     type Let_0123456789ZSym1 t = Let_0123456789Z t
     instance SuppressUnusedWarnings Let_0123456789ZSym0 where
       suppressUnusedWarnings _
@@ -235,22 +227,6 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
         Case_0123456789 x (Let_0123456789X_0123456789Sym1 x)
     type Let_0123456789X_0123456789 x =
         Apply (Apply Tuple2Sym0 (Apply SuccSym0 x)) x
-    type Foo13_Sym1 (t :: a) = Foo13_ t
-    instance SuppressUnusedWarnings Foo13_Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo13_Sym0KindInference GHC.Tuple.())
-    data Foo13_Sym0 (l :: TyFun a a)
-      = forall arg. (GHC.Types.~) (Apply Foo13_Sym0 arg) (Foo13_Sym1 arg) =>
-        Foo13_Sym0KindInference (Proxy arg)
-    type instance Apply Foo13_Sym0 l = Foo13_Sym1 l
-    type Foo13Sym1 (t :: a) = Foo13 t
-    instance SuppressUnusedWarnings Foo13Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo13Sym0KindInference GHC.Tuple.())
-    data Foo13Sym0 (l :: TyFun a a)
-      = forall arg. (GHC.Types.~) (Apply Foo13Sym0 arg) (Foo13Sym1 arg) =>
-        Foo13Sym0KindInference (Proxy arg)
-    type instance Apply Foo13Sym0 l = Foo13Sym1 l
     type Let_0123456789BarSym1 t = Let_0123456789Bar t
     instance SuppressUnusedWarnings Let_0123456789BarSym0 where
       suppressUnusedWarnings _
@@ -261,14 +237,6 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
         Let_0123456789BarSym0KindInference (Proxy arg)
     type instance Apply Let_0123456789BarSym0 l = Let_0123456789BarSym1 l
     type Let_0123456789Bar x = (x :: a)
-    type Foo12Sym1 (t :: Nat) = Foo12 t
-    instance SuppressUnusedWarnings Foo12Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo12Sym0KindInference GHC.Tuple.())
-    data Foo12Sym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply Foo12Sym0 arg) (Foo12Sym1 arg) =>
-        Foo12Sym0KindInference (Proxy arg)
-    type instance Apply Foo12Sym0 l = Foo12Sym1 l
     type Let_0123456789:+Sym3 t (t :: Nat) (t :: Nat) =
         Let_0123456789:+ t t t
     instance SuppressUnusedWarnings Let_0123456789:+Sym2 where
@@ -298,14 +266,6 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
     type family Let_0123456789:+ x (a :: Nat) (a :: Nat) :: Nat where
       Let_0123456789:+ x Zero m = m
       Let_0123456789:+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Let_0123456789:+Sym1 x) n) x)
-    type Foo11Sym1 (t :: Nat) = Foo11 t
-    instance SuppressUnusedWarnings Foo11Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo11Sym0KindInference GHC.Tuple.())
-    data Foo11Sym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply Foo11Sym0 arg) (Foo11Sym1 arg) =>
-        Foo11Sym0KindInference (Proxy arg)
-    type instance Apply Foo11Sym0 l = Foo11Sym1 l
     type Let_0123456789ZSym1 t = Let_0123456789Z t
     instance SuppressUnusedWarnings Let_0123456789ZSym0 where
       suppressUnusedWarnings _
@@ -344,14 +304,6 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
     type family Let_0123456789:+ x (a :: Nat) (a :: Nat) :: Nat where
       Let_0123456789:+ x Zero m = m
       Let_0123456789:+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Let_0123456789:+Sym1 x) n) m)
-    type Foo10Sym1 (t :: Nat) = Foo10 t
-    instance SuppressUnusedWarnings Foo10Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo10Sym0KindInference GHC.Tuple.())
-    data Foo10Sym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply Foo10Sym0 arg) (Foo10Sym1 arg) =>
-        Foo10Sym0KindInference (Proxy arg)
-    type instance Apply Foo10Sym0 l = Foo10Sym1 l
     type Let_0123456789:+Sym3 t (t :: Nat) (t :: Nat) =
         Let_0123456789:+ t t t
     instance SuppressUnusedWarnings Let_0123456789:+Sym2 where
@@ -381,17 +333,17 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
     type family Let_0123456789:+ x (a :: Nat) (a :: Nat) :: Nat where
       Let_0123456789:+ x Zero m = m
       Let_0123456789:+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Let_0123456789:+Sym1 x) n) m)
-    type Foo9Sym1 (t :: Nat) = Foo9 t
-    instance SuppressUnusedWarnings Foo9Sym0 where
+    type family Lambda_0123456789 x a_0123456789 t where
+      Lambda_0123456789 x a_0123456789 x = x
+    type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
       suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo9Sym0KindInference GHC.Tuple.())
-    data Foo9Sym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply Foo9Sym0 arg) (Foo9Sym1 arg) =>
-        Foo9Sym0KindInference (Proxy arg)
-    type instance Apply Foo9Sym0 l = Foo9Sym1 l
-    type family Lambda_0123456789 x t where
-      Lambda_0123456789 x x = x
-    type Lambda_0123456789Sym2 t t = Lambda_0123456789 t t
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. (GHC.Types.~) (Apply (Lambda_0123456789Sym2 l l) arg) (Lambda_0123456789Sym3 l l arg) =>
+        Lambda_0123456789Sym2KindInference (Proxy arg)
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
@@ -408,7 +360,14 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply Lambda_0123456789Sym0 arg) (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference (Proxy arg)
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
-    type Let_0123456789ZSym1 t = Let_0123456789Z t
+    type Let_0123456789ZSym2 t (t :: Nat) = Let_0123456789Z t t
+    instance SuppressUnusedWarnings Let_0123456789ZSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Let_0123456789ZSym1KindInference GHC.Tuple.())
+    data Let_0123456789ZSym1 l (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply (Let_0123456789ZSym1 l) arg) (Let_0123456789ZSym2 l arg) =>
+        Let_0123456789ZSym1KindInference (Proxy arg)
+    type instance Apply (Let_0123456789ZSym1 l) l = Let_0123456789ZSym2 l l
     instance SuppressUnusedWarnings Let_0123456789ZSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789ZSym0KindInference GHC.Tuple.())
@@ -416,16 +375,8 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply Let_0123456789ZSym0 arg) (Let_0123456789ZSym1 arg) =>
         Let_0123456789ZSym0KindInference (Proxy arg)
     type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
-    type Let_0123456789Z x =
-        (Apply Lambda_0123456789Sym0 x :: TyFun Nat Nat -> *)
-    type Foo8Sym1 (t :: Nat) = Foo8 t
-    instance SuppressUnusedWarnings Foo8Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo8Sym0KindInference GHC.Tuple.())
-    data Foo8Sym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply Foo8Sym0 arg) (Foo8Sym1 arg) =>
-        Foo8Sym0KindInference (Proxy arg)
-    type instance Apply Foo8Sym0 l = Foo8Sym1 l
+    type family Let_0123456789Z x (a :: Nat) :: Nat where
+      Let_0123456789Z x a_0123456789 = Apply (Apply (Apply Lambda_0123456789Sym0 x) a_0123456789) a_0123456789
     type family Lambda_0123456789 x t where
       Lambda_0123456789 x x = x
     type Lambda_0123456789Sym2 t t = Lambda_0123456789 t t
@@ -455,14 +406,6 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
     type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
     type Let_0123456789Z x =
         (Apply (Apply Lambda_0123456789Sym0 x) ZeroSym0 :: Nat)
-    type Foo7Sym1 (t :: Nat) = Foo7 t
-    instance SuppressUnusedWarnings Foo7Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo7Sym0KindInference GHC.Tuple.())
-    data Foo7Sym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply Foo7Sym0 arg) (Foo7Sym1 arg) =>
-        Foo7Sym0KindInference (Proxy arg)
-    type instance Apply Foo7Sym0 l = Foo7Sym1 l
     type Let_0123456789XSym1 t = Let_0123456789X t
     instance SuppressUnusedWarnings Let_0123456789XSym0 where
       suppressUnusedWarnings _
@@ -472,14 +415,6 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
         Let_0123456789XSym0KindInference (Proxy arg)
     type instance Apply Let_0123456789XSym0 l = Let_0123456789XSym1 l
     type Let_0123456789X x = (ZeroSym0 :: Nat)
-    type Foo6Sym1 (t :: Nat) = Foo6 t
-    instance SuppressUnusedWarnings Foo6Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo6Sym0KindInference GHC.Tuple.())
-    data Foo6Sym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply Foo6Sym0 arg) (Foo6Sym1 arg) =>
-        Foo6Sym0KindInference (Proxy arg)
-    type instance Apply Foo6Sym0 l = Foo6Sym1 l
     type Let_0123456789FSym2 t (t :: Nat) = Let_0123456789F t t
     instance SuppressUnusedWarnings Let_0123456789FSym1 where
       suppressUnusedWarnings _
@@ -506,29 +441,6 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
         Let_0123456789ZSym0KindInference (Proxy arg)
     type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
     type Let_0123456789Z x = (Apply (Let_0123456789FSym1 x) x :: Nat)
-    type Foo5Sym1 (t :: Nat) = Foo5 t
-    instance SuppressUnusedWarnings Foo5Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo5Sym0KindInference GHC.Tuple.())
-    data Foo5Sym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply Foo5Sym0 arg) (Foo5Sym1 arg) =>
-        Foo5Sym0KindInference (Proxy arg)
-    type instance Apply Foo5Sym0 l = Foo5Sym1 l
-    type Let_0123456789FSym2 t (t :: Nat) = Let_0123456789F t t
-    instance SuppressUnusedWarnings Let_0123456789FSym1 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Let_0123456789FSym1KindInference GHC.Tuple.())
-    data Let_0123456789FSym1 l (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply (Let_0123456789FSym1 l) arg) (Let_0123456789FSym2 l arg) =>
-        Let_0123456789FSym1KindInference (Proxy arg)
-    type instance Apply (Let_0123456789FSym1 l) l = Let_0123456789FSym2 l l
-    instance SuppressUnusedWarnings Let_0123456789FSym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Let_0123456789FSym0KindInference GHC.Tuple.())
-    data Let_0123456789FSym0 l
-      = forall arg. (GHC.Types.~) (Apply Let_0123456789FSym0 arg) (Let_0123456789FSym1 arg) =>
-        Let_0123456789FSym0KindInference (Proxy arg)
-    type instance Apply Let_0123456789FSym0 l = Let_0123456789FSym1 l
     type Let_0123456789ZSym2 t t = Let_0123456789Z t t
     instance SuppressUnusedWarnings Let_0123456789ZSym1 where
       suppressUnusedWarnings _
@@ -545,16 +457,23 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
         Let_0123456789ZSym0KindInference (Proxy arg)
     type instance Apply Let_0123456789ZSym0 l = Let_0123456789ZSym1 l
     type Let_0123456789Z x y = (Apply SuccSym0 y :: Nat)
+    type Let_0123456789FSym2 t (t :: Nat) = Let_0123456789F t t
+    instance SuppressUnusedWarnings Let_0123456789FSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Let_0123456789FSym1KindInference GHC.Tuple.())
+    data Let_0123456789FSym1 l (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply (Let_0123456789FSym1 l) arg) (Let_0123456789FSym2 l arg) =>
+        Let_0123456789FSym1KindInference (Proxy arg)
+    type instance Apply (Let_0123456789FSym1 l) l = Let_0123456789FSym2 l l
+    instance SuppressUnusedWarnings Let_0123456789FSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Let_0123456789FSym0KindInference GHC.Tuple.())
+    data Let_0123456789FSym0 l
+      = forall arg. (GHC.Types.~) (Apply Let_0123456789FSym0 arg) (Let_0123456789FSym1 arg) =>
+        Let_0123456789FSym0KindInference (Proxy arg)
+    type instance Apply Let_0123456789FSym0 l = Let_0123456789FSym1 l
     type family Let_0123456789F x (a :: Nat) :: Nat where
       Let_0123456789F x y = Apply SuccSym0 (Let_0123456789ZSym2 x y)
-    type Foo4Sym1 (t :: Nat) = Foo4 t
-    instance SuppressUnusedWarnings Foo4Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo4Sym0KindInference GHC.Tuple.())
-    data Foo4Sym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply Foo4Sym0 arg) (Foo4Sym1 arg) =>
-        Foo4Sym0KindInference (Proxy arg)
-    type instance Apply Foo4Sym0 l = Foo4Sym1 l
     type Let_0123456789FSym2 t (t :: Nat) = Let_0123456789F t t
     instance SuppressUnusedWarnings Let_0123456789FSym1 where
       suppressUnusedWarnings _
@@ -572,14 +491,6 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
     type instance Apply Let_0123456789FSym0 l = Let_0123456789FSym1 l
     type family Let_0123456789F x (a :: Nat) :: Nat where
       Let_0123456789F x y = Apply SuccSym0 y
-    type Foo3Sym1 (t :: Nat) = Foo3 t
-    instance SuppressUnusedWarnings Foo3Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo3Sym0KindInference GHC.Tuple.())
-    data Foo3Sym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
-        Foo3Sym0KindInference (Proxy arg)
-    type instance Apply Foo3Sym0 l = Foo3Sym1 l
     type Let_0123456789YSym1 t = Let_0123456789Y t
     instance SuppressUnusedWarnings Let_0123456789YSym0 where
       suppressUnusedWarnings _
@@ -593,15 +504,6 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
     type Let_0123456789ZSym0 = Let_0123456789Z
     type Let_0123456789Y = Apply SuccSym0 ZeroSym0
     type Let_0123456789Z = Apply SuccSym0 Let_0123456789YSym0
-    type Foo2Sym0 = Foo2
-    type Foo1Sym1 (t :: Nat) = Foo1 t
-    instance SuppressUnusedWarnings Foo1Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
-    data Foo1Sym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
-        Foo1Sym0KindInference (Proxy arg)
-    type instance Apply Foo1Sym0 l = Foo1Sym1 l
     type Let_0123456789YSym1 t = Let_0123456789Y t
     instance SuppressUnusedWarnings Let_0123456789YSym0 where
       suppressUnusedWarnings _
@@ -611,6 +513,119 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
         Let_0123456789YSym0KindInference (Proxy arg)
     type instance Apply Let_0123456789YSym0 l = Let_0123456789YSym1 l
     type Let_0123456789Y x = (Apply SuccSym0 ZeroSym0 :: Nat)
+    type Foo14Sym1 (t :: Nat) = Foo14 t
+    instance SuppressUnusedWarnings Foo14Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo14Sym0KindInference GHC.Tuple.())
+    data Foo14Sym0 (l :: TyFun Nat (GHC.Tuple.(,) Nat Nat))
+      = forall arg. (GHC.Types.~) (Apply Foo14Sym0 arg) (Foo14Sym1 arg) =>
+        Foo14Sym0KindInference (Proxy arg)
+    type instance Apply Foo14Sym0 l = Foo14Sym1 l
+    type Foo13_Sym1 (t :: a) = Foo13_ t
+    instance SuppressUnusedWarnings Foo13_Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo13_Sym0KindInference GHC.Tuple.())
+    data Foo13_Sym0 (l :: TyFun a a)
+      = forall arg. (GHC.Types.~) (Apply Foo13_Sym0 arg) (Foo13_Sym1 arg) =>
+        Foo13_Sym0KindInference (Proxy arg)
+    type instance Apply Foo13_Sym0 l = Foo13_Sym1 l
+    type Foo13Sym1 (t :: a) = Foo13 t
+    instance SuppressUnusedWarnings Foo13Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo13Sym0KindInference GHC.Tuple.())
+    data Foo13Sym0 (l :: TyFun a a)
+      = forall arg. (GHC.Types.~) (Apply Foo13Sym0 arg) (Foo13Sym1 arg) =>
+        Foo13Sym0KindInference (Proxy arg)
+    type instance Apply Foo13Sym0 l = Foo13Sym1 l
+    type Foo12Sym1 (t :: Nat) = Foo12 t
+    instance SuppressUnusedWarnings Foo12Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo12Sym0KindInference GHC.Tuple.())
+    data Foo12Sym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply Foo12Sym0 arg) (Foo12Sym1 arg) =>
+        Foo12Sym0KindInference (Proxy arg)
+    type instance Apply Foo12Sym0 l = Foo12Sym1 l
+    type Foo11Sym1 (t :: Nat) = Foo11 t
+    instance SuppressUnusedWarnings Foo11Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo11Sym0KindInference GHC.Tuple.())
+    data Foo11Sym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply Foo11Sym0 arg) (Foo11Sym1 arg) =>
+        Foo11Sym0KindInference (Proxy arg)
+    type instance Apply Foo11Sym0 l = Foo11Sym1 l
+    type Foo10Sym1 (t :: Nat) = Foo10 t
+    instance SuppressUnusedWarnings Foo10Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo10Sym0KindInference GHC.Tuple.())
+    data Foo10Sym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply Foo10Sym0 arg) (Foo10Sym1 arg) =>
+        Foo10Sym0KindInference (Proxy arg)
+    type instance Apply Foo10Sym0 l = Foo10Sym1 l
+    type Foo9Sym1 (t :: Nat) = Foo9 t
+    instance SuppressUnusedWarnings Foo9Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo9Sym0KindInference GHC.Tuple.())
+    data Foo9Sym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply Foo9Sym0 arg) (Foo9Sym1 arg) =>
+        Foo9Sym0KindInference (Proxy arg)
+    type instance Apply Foo9Sym0 l = Foo9Sym1 l
+    type Foo8Sym1 (t :: Nat) = Foo8 t
+    instance SuppressUnusedWarnings Foo8Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo8Sym0KindInference GHC.Tuple.())
+    data Foo8Sym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply Foo8Sym0 arg) (Foo8Sym1 arg) =>
+        Foo8Sym0KindInference (Proxy arg)
+    type instance Apply Foo8Sym0 l = Foo8Sym1 l
+    type Foo7Sym1 (t :: Nat) = Foo7 t
+    instance SuppressUnusedWarnings Foo7Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo7Sym0KindInference GHC.Tuple.())
+    data Foo7Sym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply Foo7Sym0 arg) (Foo7Sym1 arg) =>
+        Foo7Sym0KindInference (Proxy arg)
+    type instance Apply Foo7Sym0 l = Foo7Sym1 l
+    type Foo6Sym1 (t :: Nat) = Foo6 t
+    instance SuppressUnusedWarnings Foo6Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo6Sym0KindInference GHC.Tuple.())
+    data Foo6Sym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply Foo6Sym0 arg) (Foo6Sym1 arg) =>
+        Foo6Sym0KindInference (Proxy arg)
+    type instance Apply Foo6Sym0 l = Foo6Sym1 l
+    type Foo5Sym1 (t :: Nat) = Foo5 t
+    instance SuppressUnusedWarnings Foo5Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo5Sym0KindInference GHC.Tuple.())
+    data Foo5Sym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply Foo5Sym0 arg) (Foo5Sym1 arg) =>
+        Foo5Sym0KindInference (Proxy arg)
+    type instance Apply Foo5Sym0 l = Foo5Sym1 l
+    type Foo4Sym1 (t :: Nat) = Foo4 t
+    instance SuppressUnusedWarnings Foo4Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo4Sym0KindInference GHC.Tuple.())
+    data Foo4Sym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply Foo4Sym0 arg) (Foo4Sym1 arg) =>
+        Foo4Sym0KindInference (Proxy arg)
+    type instance Apply Foo4Sym0 l = Foo4Sym1 l
+    type Foo3Sym1 (t :: Nat) = Foo3 t
+    instance SuppressUnusedWarnings Foo3Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo3Sym0KindInference GHC.Tuple.())
+    data Foo3Sym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
+        Foo3Sym0KindInference (Proxy arg)
+    type instance Apply Foo3Sym0 l = Foo3Sym1 l
+    type Foo2Sym0 = Foo2
+    type Foo1Sym1 (t :: Nat) = Foo1 t
+    instance SuppressUnusedWarnings Foo1Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
+    data Foo1Sym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
+        Foo1Sym0KindInference (Proxy arg)
+    type instance Apply Foo1Sym0 l = Foo1Sym1 l
     type family Foo14 (a :: Nat) :: GHC.Tuple.(,) Nat Nat where
       Foo14 x = Apply (Apply Tuple2Sym0 (Let_0123456789ZSym1 x)) (Let_0123456789YSym1 x)
     type family Foo13_ (a :: a) :: a where
@@ -666,24 +681,24 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
                 sX_0123456789 :: Sing (Let_0123456789X_0123456789Sym1 x)
                 sY
                   = case sX_0123456789 of {
-                      STuple2 sY _
+                      STuple2 sY_0123456789 _
                         -> let
                              lambda ::
-                               forall y wild.
-                               Sing y
-                               -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 y) wild))
-                             lambda y = y
-                           in lambda sY }
+                               forall y_0123456789 wild.
+                               Sing y_0123456789
+                               -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 y_0123456789) wild))
+                             lambda y_0123456789 = y_0123456789
+                           in lambda sY_0123456789 }
                 sZ
                   = case sX_0123456789 of {
-                      STuple2 _ sY
+                      STuple2 _ sY_0123456789
                         -> let
                              lambda ::
-                               forall y wild.
-                               Sing y
-                               -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 wild) y))
-                             lambda y = y
-                           in lambda sY }
+                               forall y_0123456789 wild.
+                               Sing y_0123456789
+                               -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 wild) y_0123456789))
+                             lambda y_0123456789 = y_0123456789
+                           in lambda sY_0123456789 }
                 sX_0123456789
                   = applySing
                       (applySing
@@ -840,18 +855,27 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
           lambda x
             = let
                 sZ :: forall t. Sing t -> Sing (Apply (Let_0123456789ZSym1 x) t)
-                sZ
-                  = unSingFun1
-                      (Proxy :: Proxy (Let_0123456789Z x))
-                      (singFun1
-                         (Proxy :: Proxy (Apply Lambda_0123456789Sym0 x))
-                         (\ sX
-                            -> let
-                                 lambda ::
-                                   forall x.
-                                   Sing x -> Sing (Apply (Apply Lambda_0123456789Sym0 x) x)
-                                 lambda x = x
-                               in lambda sX))
+                sZ sA_0123456789
+                  = let
+                      lambda ::
+                        forall a_0123456789. (GHC.Types.~) t a_0123456789 =>
+                        Sing a_0123456789
+                        -> Sing (Apply (Let_0123456789ZSym1 x) a_0123456789)
+                      lambda a_0123456789
+                        = applySing
+                            (singFun1
+                               (Proxy ::
+                                  Proxy (Apply (Apply Lambda_0123456789Sym0 x) a_0123456789))
+                               (\ sX
+                                  -> let
+                                       lambda ::
+                                         forall x.
+                                         Sing x
+                                         -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 x) a_0123456789) x)
+                                       lambda x = x
+                                     in lambda sX))
+                            a_0123456789
+                    in lambda sA_0123456789
               in
                 applySing (singFun1 (Proxy :: Proxy (Let_0123456789ZSym1 x)) sZ) x
         in lambda sX

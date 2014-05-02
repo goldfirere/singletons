@@ -9,6 +9,95 @@ Singletons/Star.hs:0:0: Splicing declarations
         Singletons.Star.Maybe Rep |
         Singletons.Star.Vec Rep Nat
       deriving (Eq, Show, Read)
+    type family Equals_0123456789 (a :: *) (b :: *) :: Bool where
+      Equals_0123456789 Nat Nat = TrueSym0
+      Equals_0123456789 Int Int = TrueSym0
+      Equals_0123456789 String String = TrueSym0
+      Equals_0123456789 (Maybe a) (Maybe b) = (:==) a b
+      Equals_0123456789 (Vec a a) (Vec b b) = (:&&) ((:==) a b) ((:==) a b)
+      Equals_0123456789 (a :: *) (b :: *) = FalseSym0
+    instance PEq (KProxy :: KProxy *) where
+      type (:==) (a :: *) (b :: *) = Equals_0123456789 a b
+    type NatSym0 = Nat
+    type IntSym0 = Int
+    type StringSym0 = String
+    type MaybeSym1 (t :: *) = Maybe t
+    instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings MaybeSym0 where
+      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) MaybeSym0KindInference GHC.Tuple.())
+    data MaybeSym0 (l :: TyFun * *)
+      = forall arg. (GHC.Types.~) (Apply MaybeSym0 arg) (MaybeSym1 arg) =>
+        MaybeSym0KindInference (Proxy arg)
+    type instance Apply MaybeSym0 l = MaybeSym1 l
+    type VecSym2 (t :: *) (t :: Nat) = Vec t t
+    instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings VecSym1 where
+      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) VecSym1KindInference GHC.Tuple.())
+    data VecSym1 (l :: *) (l :: TyFun Nat *)
+      = forall arg. (GHC.Types.~) (Apply (VecSym1 l) arg) (VecSym2 l arg) =>
+        VecSym1KindInference (Proxy arg)
+    type instance Apply (VecSym1 l) l = VecSym2 l l
+    instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings VecSym0 where
+      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) VecSym0KindInference GHC.Tuple.())
+    data VecSym0 (l :: TyFun * (TyFun Nat * -> *))
+      = forall arg. (GHC.Types.~) (Apply VecSym0 arg) (VecSym1 arg) =>
+        VecSym0KindInference (Proxy arg)
+    type instance Apply VecSym0 l = VecSym1 l
+    data instance Sing (z :: *)
+      = (GHC.Types.~) z Nat => SNat |
+        (GHC.Types.~) z Int => SInt |
+        (GHC.Types.~) z String => SString |
+        forall (n :: *). (GHC.Types.~) z (Maybe n) => SMaybe (Sing n) |
+        forall (n :: *) (n :: Nat). (GHC.Types.~) z (Vec n n) =>
+        SVec (Sing n) (Sing n)
+    type SRep (z :: *) = Sing z
+    instance SingKind (KProxy :: KProxy *) where
+      type DemoteRep (KProxy :: KProxy *) = Rep
+      fromSing SNat = Singletons.Star.Nat
+      fromSing SInt = Singletons.Star.Int
+      fromSing SString = Singletons.Star.String
+      fromSing (SMaybe b) = Singletons.Star.Maybe (fromSing b)
+      fromSing (SVec b b) = Singletons.Star.Vec (fromSing b) (fromSing b)
+      toSing Singletons.Star.Nat = SomeSing SNat
+      toSing Singletons.Star.Int = SomeSing SInt
+      toSing Singletons.Star.String = SomeSing SString
+      toSing (Singletons.Star.Maybe b)
+        = case toSing b :: SomeSing (KProxy :: KProxy *) of {
+            SomeSing c -> SomeSing (SMaybe c) }
+      toSing (Singletons.Star.Vec b b)
+        = case
+              GHC.Tuple.(,)
+                (toSing b :: SomeSing (KProxy :: KProxy *))
+                (toSing b :: SomeSing (KProxy :: KProxy Nat))
+          of {
+            GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SVec c c) }
+    instance SEq (KProxy :: KProxy *) where
+      (%:==) SNat SNat = STrue
+      (%:==) SNat SInt = SFalse
+      (%:==) SNat SString = SFalse
+      (%:==) SNat (SMaybe _) = SFalse
+      (%:==) SNat (SVec _ _) = SFalse
+      (%:==) SInt SNat = SFalse
+      (%:==) SInt SInt = STrue
+      (%:==) SInt SString = SFalse
+      (%:==) SInt (SMaybe _) = SFalse
+      (%:==) SInt (SVec _ _) = SFalse
+      (%:==) SString SNat = SFalse
+      (%:==) SString SInt = SFalse
+      (%:==) SString SString = STrue
+      (%:==) SString (SMaybe _) = SFalse
+      (%:==) SString (SVec _ _) = SFalse
+      (%:==) (SMaybe _) SNat = SFalse
+      (%:==) (SMaybe _) SInt = SFalse
+      (%:==) (SMaybe _) SString = SFalse
+      (%:==) (SMaybe a) (SMaybe b) = (%:==) a b
+      (%:==) (SMaybe _) (SVec _ _) = SFalse
+      (%:==) (SVec _ _) SNat = SFalse
+      (%:==) (SVec _ _) SInt = SFalse
+      (%:==) (SVec _ _) SString = SFalse
+      (%:==) (SVec _ _) (SMaybe _) = SFalse
+      (%:==) (SVec a a) (SVec b b) = (%:&&) ((%:==) a b) ((%:==) a b)
     instance SDecide (KProxy :: KProxy *) where
       (%~) SNat SNat = Proved Refl
       (%~) SNat SInt
@@ -125,39 +214,6 @@ Singletons/Star.hs:0:0: Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             GHC.Tuple.(,) _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
-    instance SEq (KProxy :: KProxy *) where
-      (%:==) a b
-        = case (%~) a b of {
-            Proved Refl -> STrue
-            Disproved _ -> Unsafe.Coerce.unsafeCoerce SFalse }
-    data instance Sing (z :: *)
-      = (GHC.Types.~) z Nat => SNat |
-        (GHC.Types.~) z Int => SInt |
-        (GHC.Types.~) z String => SString |
-        forall (n :: *). (GHC.Types.~) z (Maybe n) => SMaybe (Sing n) |
-        forall (n :: *) (n :: Nat). (GHC.Types.~) z (Vec n n) =>
-        SVec (Sing n) (Sing n)
-    type SRep (z :: *) = Sing z
-    instance SingKind (KProxy :: KProxy *) where
-      type DemoteRep (KProxy :: KProxy *) = Rep
-      fromSing SNat = Singletons.Star.Nat
-      fromSing SInt = Singletons.Star.Int
-      fromSing SString = Singletons.Star.String
-      fromSing (SMaybe b) = Singletons.Star.Maybe (fromSing b)
-      fromSing (SVec b b) = Singletons.Star.Vec (fromSing b) (fromSing b)
-      toSing Singletons.Star.Nat = SomeSing SNat
-      toSing Singletons.Star.Int = SomeSing SInt
-      toSing Singletons.Star.String = SomeSing SString
-      toSing (Singletons.Star.Maybe b)
-        = case toSing b :: SomeSing (KProxy :: KProxy *) of {
-            SomeSing c -> SomeSing (SMaybe c) }
-      toSing (Singletons.Star.Vec b b)
-        = case
-              GHC.Tuple.(,)
-                (toSing b :: SomeSing (KProxy :: KProxy *))
-                (toSing b :: SomeSing (KProxy :: KProxy Nat))
-          of {
-            GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SVec c c) }
     instance SingI Nat where
       sing = SNat
     instance SingI Int where

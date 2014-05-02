@@ -30,21 +30,6 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
           (Just d)
     foo3 :: forall a b. a -> b -> a
     foo3 a b = \case { (p, _) -> p } (a, b)
-    type Foo3Sym2 (t :: a) (t :: b) = Foo3 t t
-    instance SuppressUnusedWarnings Foo3Sym1 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo3Sym1KindInference GHC.Tuple.())
-    data Foo3Sym1 (l :: a) (l :: TyFun b a)
-      = forall arg. (GHC.Types.~) (Apply (Foo3Sym1 l) arg) (Foo3Sym2 l arg) =>
-        Foo3Sym1KindInference (Proxy arg)
-    type instance Apply (Foo3Sym1 l) l = Foo3Sym2 l l
-    instance SuppressUnusedWarnings Foo3Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo3Sym0KindInference GHC.Tuple.())
-    data Foo3Sym0 (l :: TyFun a (TyFun b a -> *))
-      = forall arg. (GHC.Types.~) (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
-        Foo3Sym0KindInference (Proxy arg)
-    type instance Apply Foo3Sym0 l = Foo3Sym1 l
     type family Case_0123456789 a b x_0123456789 t where
       Case_0123456789 a b x_0123456789 (GHC.Tuple.(,) p z) = p
     type family Lambda_0123456789 a b t where
@@ -74,21 +59,6 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply Lambda_0123456789Sym0 arg) (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference (Proxy arg)
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
-    type Foo2Sym2 (t :: a) (t :: Maybe a) = Foo2 t t
-    instance SuppressUnusedWarnings Foo2Sym1 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo2Sym1KindInference GHC.Tuple.())
-    data Foo2Sym1 (l :: a) (l :: TyFun (Maybe a) a)
-      = forall arg. (GHC.Types.~) (Apply (Foo2Sym1 l) arg) (Foo2Sym2 l arg) =>
-        Foo2Sym1KindInference (Proxy arg)
-    type instance Apply (Foo2Sym1 l) l = Foo2Sym2 l l
-    instance SuppressUnusedWarnings Foo2Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo2Sym0KindInference GHC.Tuple.())
-    data Foo2Sym0 (l :: TyFun a (TyFun (Maybe a) a -> *))
-      = forall arg. (GHC.Types.~) (Apply Foo2Sym0 arg) (Foo2Sym1 arg) =>
-        Foo2Sym0KindInference (Proxy arg)
-    type instance Apply Foo2Sym0 l = Foo2Sym1 l
     type family Case_0123456789 d x_0123456789 t where
       Case_0123456789 d x_0123456789 (Just y) = y
       Case_0123456789 d x_0123456789 Nothing = d
@@ -111,21 +81,6 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply Lambda_0123456789Sym0 arg) (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference (Proxy arg)
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
-    type Foo1Sym2 (t :: a) (t :: Maybe a) = Foo1 t t
-    instance SuppressUnusedWarnings Foo1Sym1 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo1Sym1KindInference GHC.Tuple.())
-    data Foo1Sym1 (l :: a) (l :: TyFun (Maybe a) a)
-      = forall arg. (GHC.Types.~) (Apply (Foo1Sym1 l) arg) (Foo1Sym2 l arg) =>
-        Foo1Sym1KindInference (Proxy arg)
-    type instance Apply (Foo1Sym1 l) l = Foo1Sym2 l l
-    instance SuppressUnusedWarnings Foo1Sym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
-    data Foo1Sym0 (l :: TyFun a (TyFun (Maybe a) a -> *))
-      = forall arg. (GHC.Types.~) (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
-        Foo1Sym0KindInference (Proxy arg)
-    type instance Apply Foo1Sym0 l = Foo1Sym1 l
     type family Case_0123456789 d x x_0123456789 t where
       Case_0123456789 d x x_0123456789 (Just y) = y
       Case_0123456789 d x x_0123456789 Nothing = d
@@ -156,6 +111,51 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply Lambda_0123456789Sym0 arg) (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference (Proxy arg)
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type Foo3Sym2 (t :: a) (t :: b) = Foo3 t t
+    instance SuppressUnusedWarnings Foo3Sym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo3Sym1KindInference GHC.Tuple.())
+    data Foo3Sym1 (l :: a) (l :: TyFun b a)
+      = forall arg. (GHC.Types.~) (Apply (Foo3Sym1 l) arg) (Foo3Sym2 l arg) =>
+        Foo3Sym1KindInference (Proxy arg)
+    type instance Apply (Foo3Sym1 l) l = Foo3Sym2 l l
+    instance SuppressUnusedWarnings Foo3Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo3Sym0KindInference GHC.Tuple.())
+    data Foo3Sym0 (l :: TyFun a (TyFun b a -> *))
+      = forall arg. (GHC.Types.~) (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
+        Foo3Sym0KindInference (Proxy arg)
+    type instance Apply Foo3Sym0 l = Foo3Sym1 l
+    type Foo2Sym2 (t :: a) (t :: Maybe a) = Foo2 t t
+    instance SuppressUnusedWarnings Foo2Sym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo2Sym1KindInference GHC.Tuple.())
+    data Foo2Sym1 (l :: a) (l :: TyFun (Maybe a) a)
+      = forall arg. (GHC.Types.~) (Apply (Foo2Sym1 l) arg) (Foo2Sym2 l arg) =>
+        Foo2Sym1KindInference (Proxy arg)
+    type instance Apply (Foo2Sym1 l) l = Foo2Sym2 l l
+    instance SuppressUnusedWarnings Foo2Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo2Sym0KindInference GHC.Tuple.())
+    data Foo2Sym0 (l :: TyFun a (TyFun (Maybe a) a -> *))
+      = forall arg. (GHC.Types.~) (Apply Foo2Sym0 arg) (Foo2Sym1 arg) =>
+        Foo2Sym0KindInference (Proxy arg)
+    type instance Apply Foo2Sym0 l = Foo2Sym1 l
+    type Foo1Sym2 (t :: a) (t :: Maybe a) = Foo1 t t
+    instance SuppressUnusedWarnings Foo1Sym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo1Sym1KindInference GHC.Tuple.())
+    data Foo1Sym1 (l :: a) (l :: TyFun (Maybe a) a)
+      = forall arg. (GHC.Types.~) (Apply (Foo1Sym1 l) arg) (Foo1Sym2 l arg) =>
+        Foo1Sym1KindInference (Proxy arg)
+    type instance Apply (Foo1Sym1 l) l = Foo1Sym2 l l
+    instance SuppressUnusedWarnings Foo1Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
+    data Foo1Sym0 (l :: TyFun a (TyFun (Maybe a) a -> *))
+      = forall arg. (GHC.Types.~) (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
+        Foo1Sym0KindInference (Proxy arg)
+    type instance Apply Foo1Sym0 l = Foo1Sym1 l
     type family Foo3 (a :: a) (a :: b) :: a where
       Foo3 a b = Apply (Apply (Apply Lambda_0123456789Sym0 a) b) (Apply (Apply Tuple2Sym0 a) b)
     type family Foo2 (a :: a) (a :: Maybe a) :: a where

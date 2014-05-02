@@ -11,9 +11,10 @@ Singletons/Maybe.hs:0:0: Splicing declarations
     type family Equals_0123456789 (a :: Maybe k)
                                   (b :: Maybe k) :: Bool where
       Equals_0123456789 Nothing Nothing = TrueSym0
-      Equals_0123456789 (Just a) (Just b) = (==) a b
+      Equals_0123456789 (Just a) (Just b) = (:==) a b
       Equals_0123456789 (a :: Maybe k) (b :: Maybe k) = FalseSym0
-    type instance (==) (a :: Maybe k) (b :: Maybe k) = Equals_0123456789 a b
+    instance PEq (KProxy :: KProxy (Maybe k)) where
+      type (:==) (a :: Maybe k) (b :: Maybe k) = Equals_0123456789 a b
     type NothingSym0 = Nothing
     type JustSym1 (t :: a) = Just t
     instance SuppressUnusedWarnings JustSym0 where

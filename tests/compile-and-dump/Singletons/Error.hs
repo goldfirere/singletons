@@ -1,6 +1,5 @@
 module Singletons.Error where
 
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons
 import Data.Singletons.Prelude hiding (Head, HeadSym0, HeadSym1)
 import Data.Singletons.TH

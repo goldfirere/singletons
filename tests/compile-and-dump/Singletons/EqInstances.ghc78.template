@@ -9,9 +9,10 @@ Singletons/EqInstances.hs:0:0: Splicing declarations
       (%:==) ((:%+:) a a) ((:%+:) b b) = (%:&&) ((%:==) a b) ((%:==) a b)
     type family Equals_0123456789 (a :: Foo) (b :: Foo) :: Bool where
       Equals_0123456789 FLeaf FLeaf = TrueSym0
-      Equals_0123456789 ((:+:) a a) ((:+:) b b) = (:&&) ((==) a b) ((==) a b)
+      Equals_0123456789 ((:+:) a a) ((:+:) b b) = (:&&) ((:==) a b) ((:==) a b)
       Equals_0123456789 (a :: Foo) (b :: Foo) = FalseSym0
-    type instance (==) (a :: Foo) (b :: Foo) = Equals_0123456789 a b
+    instance PEq (KProxy :: KProxy Foo) where
+      type (:==) (a :: Foo) (b :: Foo) = Equals_0123456789 a b
     instance SEq (KProxy :: KProxy Empty) where
       (%:==) a _
         = case a of {
@@ -19,4 +20,5 @@ Singletons/EqInstances.hs:0:0: Splicing declarations
     type family Equals_0123456789 (a :: Empty)
                                   (b :: Empty) :: Bool where
       Equals_0123456789 (a :: Empty) (b :: Empty) = FalseSym0
-    type instance (==) (a :: Empty) (b :: Empty) = Equals_0123456789 a b
+    instance PEq (KProxy :: KProxy Empty) where
+      type (:==) (a :: Empty) (b :: Empty) = Equals_0123456789 a b

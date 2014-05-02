@@ -35,12 +35,8 @@ anyTypeName, boolName, andName, tyEqName, tyCompareName, repName,
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
-#if __GLASGOW_HASKELL__ >= 707
-tyEqName = ''(==)
-#else
-tyEqName = ''(:==)
-#endif
 tyCompareName = mkName "Compare"
+tyEqName = mkName ":=="
 repName = mkName "Rep"
 nilName = '[]
 consName = '(:)
@@ -130,6 +126,9 @@ promoteTySym name sat
       then mkName (capped ++ (replicate (sat + 1) '$'))
       else mkName (capped ++ "Sym" ++ (show sat))
 
+promoteClassName :: Name -> Name
+promoteClassName = prefixUCName "P" "#"
+
 -- produce the silly type class used to store the type variables for
 -- a class
 classTvsName :: Name -> Name
@@ -152,9 +151,6 @@ boolKi = DConK boolName []
 
 andTySym :: DType
 andTySym = promoteValRhs andName
-
-apply :: DType -> DType -> DType
-apply t1 t2 = DAppT (DAppT (DConT applyName) t1) t2
 
 -- make a Name with an unknown kind into a DTyVarBndr.
 -- Uses a fresh kind variable for GHC 7.6.3 and PlainTV for 7.8+
@@ -229,3 +225,11 @@ singKindConstraint k = DAppPr (DConPr singKindClassName) (kindParam k)
 
 demote :: DType
 demote = DConT demoteRepName
+
+apply :: DType -> DType -> DType
+apply t1 t2 = DAppT (DAppT (DConT applyName) t1) t2
+
+-- apply a type to a list of types using Apply type family
+-- This is defined here, not in Utils, to avoid cyclic dependencies
+foldApply :: DType -> [DType] -> DType
+foldApply = foldl apply

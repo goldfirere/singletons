@@ -290,12 +290,10 @@ $(singletonsOnly [d|
   foldr1 _ []             =  error "Data.Singletons.List.foldr1: empty list"
 
   concat :: [[a]] -> [a]
-  -- Temporalily eta-expanded to work around #31
-  concat xs = foldr (++) [] xs
+  concat = foldr (++) []
 
   concatMap               :: (a -> [b]) -> [a] -> [b]
-  -- Temporalily eta-expanded to work around #31
-  concatMap f xs          =  foldr ((++) . f) [] xs
+  concatMap f             =  foldr ((++) . f) []
 
   and                     :: [Bool] -> Bool
   and []                  =  True
@@ -534,24 +532,21 @@ $(singletonsOnly [d|
 --  unwords ws              =  foldr1 (\w s -> w ++ ' ':s) ws
 
   delete                  :: (Eq a) => a -> [a] -> [a]
-  delete x xs             =  deleteBy (==) x xs
+  delete                  =  deleteBy (==)
 
   (\\)                    :: (Eq a) => [a] -> [a] -> [a]
-  -- Temporalily eta-expanded to work around #31
-  (\\) xs ys              =  foldl (flip delete) xs ys
+  (\\)                    =  foldl (flip delete)
 
 --  Relies on intersectBy, which relies on list monad
 --  intersect               :: (Eq a) => [a] -> [a] -> [a]
---  -- Temporalily eta-expanded to work around #31
---  intersect xs ys         =  intersectBy (==) xs ys
+--  intersect               =  intersectBy (==)
 
   deleteBy                :: (a -> a -> Bool) -> a -> [a] -> [a]
   deleteBy _  _ []        = []
   deleteBy eq x (y:ys)    = if x `eq` y then ys else y : deleteBy eq x ys
 
   deleteFirstsBy          :: (a -> a -> Bool) -> [a] -> [a] -> [a]
-  -- Temporalily eta-expanded to work around #31
-  deleteFirstsBy eq xs ys =  foldl (flip (deleteBy eq)) xs ys
+  deleteFirstsBy eq       =  foldl (flip (deleteBy eq))
 
 --  Needs list monad promotion
 --  intersectBy             :: (a -> a -> Bool) -> [a] -> [a] -> [a]
@@ -597,7 +592,11 @@ $(singletonsOnly [d|
 --  genericReplicate
   |])
 
+-- The symbol []$ is clearly malformed, so we have to name this symbol
+-- NilSym0
+type NilSym0      = '[]
+
+-- If Nil has an alphanumeric symbol, we wouldn't want to leave Cons out...
 type ConsSym0     = (:$)
 type ConsSym1     = (:$$)
 type ConsSym2 a b = (:$$$) a b
-type NilSym0      = '[]

@@ -183,7 +183,7 @@ inferKind Nothing = do
 inferKind Nothing = return Nothing
 #endif
 
--- Get argument kinds from an arrow kind. Removing ForallT is an
+-- Get argument types from an arrow type. Removing ForallT is an
 -- important preprocessing step required by promoteType.
 unravel :: DType -> ([DPred], [DType])
 unravel (DForallT _ cxt ty) =
@@ -341,6 +341,15 @@ partitionWith f = go [] []
   where go bs cs []     = (reverse bs, reverse cs)
         go bs cs (a:as) =
           case f a of
+            Left b  -> go (b:bs) cs as
+            Right c -> go bs (c:cs) as
+
+partitionWithM :: Monad m => (a -> m (Either b c)) -> [a] -> m ([b], [c])
+partitionWithM f = go [] []
+  where go bs cs []     = return (reverse bs, reverse cs)
+        go bs cs (a:as) = do
+          fa <- f a
+          case fa of
             Left b  -> go (b:bs) cs as
             Right c -> go bs (c:cs) as
 
