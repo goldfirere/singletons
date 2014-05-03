@@ -321,11 +321,13 @@ singPat var_proms patCxt (DConPa name pats) = do
   return ( DConPa (singDataConName name) pats'
          , foldl apply (promoteValRhs name) tys )
 singPat var_proms patCxt (DTildePa pat) = do
-  (pat', ty) <- singPat var_proms patCxt pat
-  return (DTildePa pat', ty)
+  qReportWarning
+    "Lazy pattern converted into regular pattern during singleton generation."
+  singPat var_proms patCxt pat
 singPat var_proms patCxt (DBangPa pat) = do
-  (pat', ty) <- singPat var_proms patCxt pat
-  return (DBangPa pat', ty)
+  qReportWarning
+    "Strict pattern converted into regular pattern during singleton generation."
+  singPat var_proms patCxt pat
 singPat _var_proms _patCxt DWildPa = do
   wild <- qNewName "wild"
   addElement wild
