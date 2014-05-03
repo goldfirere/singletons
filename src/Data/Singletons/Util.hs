@@ -118,7 +118,8 @@ upcase = mkName . toUpcaseStr
 -- make an identifier uppercase and return it as a String
 toUpcaseStr :: Name -> String
 toUpcaseStr n
-  | isUpcase n
+  |  isUpcase n
+  || head (nameBase n) == '$'   -- special case to avoid name clashes. See #29
   = nameBase n
 
   | otherwise
