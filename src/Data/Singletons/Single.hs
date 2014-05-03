@@ -325,9 +325,8 @@ singPat var_proms patCxt (DTildePa pat) = do
     "Lazy pattern converted into regular pattern during singleton generation."
   singPat var_proms patCxt pat
 singPat var_proms patCxt (DBangPa pat) = do
-  qReportWarning
-    "Strict pattern converted into regular pattern during singleton generation."
-  singPat var_proms patCxt pat
+  (pat', ty) <- singPat var_proms patCxt pat
+  return (DBangPa pat', ty)
 singPat _var_proms _patCxt DWildPa = do
   wild <- qNewName "wild"
   addElement wild
