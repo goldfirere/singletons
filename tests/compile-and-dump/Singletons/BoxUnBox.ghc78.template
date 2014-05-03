@@ -15,7 +15,7 @@ Singletons/BoxUnBox.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) FBoxSym0KindInference GHC.Tuple.())
     data FBoxSym0 (l :: TyFun a (Box a))
       = forall arg. (GHC.Types.~) (Apply FBoxSym0 arg) (FBoxSym1 arg) =>
-        FBoxSym0KindInference (Data.Proxy.Proxy arg)
+        FBoxSym0KindInference (Proxy arg)
     type instance Apply FBoxSym0 l = FBoxSym1 l
     type UnBoxSym1 (t :: Box a) = UnBox t
     instance SuppressUnusedWarnings UnBoxSym0 where
@@ -23,7 +23,7 @@ Singletons/BoxUnBox.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) UnBoxSym0KindInference GHC.Tuple.())
     data UnBoxSym0 (l :: TyFun (Box a) a)
       = forall arg. (GHC.Types.~) (Apply UnBoxSym0 arg) (UnBoxSym1 arg) =>
-        UnBoxSym0KindInference (Data.Proxy.Proxy arg)
+        UnBoxSym0KindInference (Proxy arg)
     type instance Apply UnBoxSym0 l = UnBoxSym1 l
     type family UnBox (a :: Box a) :: a where
       UnBox (FBox a) = a

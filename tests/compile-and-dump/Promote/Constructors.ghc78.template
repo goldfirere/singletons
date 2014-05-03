@@ -13,14 +13,14 @@ Promote/Constructors.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) (:+$$###) GHC.Tuple.())
     data (:+$$) (l :: Foo) (l :: TyFun Foo Foo)
       = forall arg. (GHC.Types.~) (Apply ((:+$$) l) arg) ((:+$$$) l arg) =>
-        (:+$$###) (Data.Proxy.Proxy arg)
+        (:+$$###) (Proxy arg)
     type instance Apply ((:+$$) l) l = (:+$$$) l l
     instance SuppressUnusedWarnings (:+$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+$###) GHC.Tuple.())
     data (:+$) (l :: TyFun Foo (TyFun Foo Foo -> *))
       = forall arg. (GHC.Types.~) (Apply (:+$) arg) ((:+$$) arg) =>
-        (:+$###) (Data.Proxy.Proxy arg)
+        (:+$###) (Proxy arg)
     type instance Apply (:+$) l = (:+$$) l
     type BarSym5 (t :: Bar)
                  (t :: Bar)
@@ -37,7 +37,7 @@ Promote/Constructors.hs:0:0: Splicing declarations
                  (l :: Bar)
                  (l :: TyFun Foo Bar)
       = forall arg. (GHC.Types.~) (Apply (BarSym4 l l l l) arg) (BarSym5 l l l l arg) =>
-        BarSym4KindInference (Data.Proxy.Proxy arg)
+        BarSym4KindInference (Proxy arg)
     type instance Apply (BarSym4 l l l l) l = BarSym5 l l l l l
     instance SuppressUnusedWarnings BarSym3 where
       suppressUnusedWarnings _
@@ -47,7 +47,7 @@ Promote/Constructors.hs:0:0: Splicing declarations
                  (l :: Bar)
                  (l :: TyFun Bar (TyFun Foo Bar -> *))
       = forall arg. (GHC.Types.~) (Apply (BarSym3 l l l) arg) (BarSym4 l l l arg) =>
-        BarSym3KindInference (Data.Proxy.Proxy arg)
+        BarSym3KindInference (Proxy arg)
     type instance Apply (BarSym3 l l l) l = BarSym4 l l l l
     instance SuppressUnusedWarnings BarSym2 where
       suppressUnusedWarnings _
@@ -56,7 +56,7 @@ Promote/Constructors.hs:0:0: Splicing declarations
                  (l :: Bar)
                  (l :: TyFun Bar (TyFun Bar (TyFun Foo Bar -> *) -> *))
       = forall arg. (GHC.Types.~) (Apply (BarSym2 l l) arg) (BarSym3 l l arg) =>
-        BarSym2KindInference (Data.Proxy.Proxy arg)
+        BarSym2KindInference (Proxy arg)
     type instance Apply (BarSym2 l l) l = BarSym3 l l l
     instance SuppressUnusedWarnings BarSym1 where
       suppressUnusedWarnings _
@@ -65,7 +65,7 @@ Promote/Constructors.hs:0:0: Splicing declarations
                  (l :: TyFun Bar (TyFun Bar (TyFun Bar (TyFun Foo Bar -> *) -> *)
                                   -> *))
       = forall arg. (GHC.Types.~) (Apply (BarSym1 l) arg) (BarSym2 l arg) =>
-        BarSym1KindInference (Data.Proxy.Proxy arg)
+        BarSym1KindInference (Proxy arg)
     type instance Apply (BarSym1 l) l = BarSym2 l l
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings _
@@ -76,5 +76,5 @@ Promote/Constructors.hs:0:0: Splicing declarations
                                              -> *)
                                   -> *))
       = forall arg. (GHC.Types.~) (Apply BarSym0 arg) (BarSym1 arg) =>
-        BarSym0KindInference (Data.Proxy.Proxy arg)
+        BarSym0KindInference (Proxy arg)
     type instance Apply BarSym0 l = BarSym1 l

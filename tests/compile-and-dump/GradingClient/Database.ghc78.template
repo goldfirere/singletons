@@ -14,6 +14,11 @@ GradingClient/Database.hs:0:0: Splicing declarations
       Equals_0123456789 (a :: Nat) (b :: Nat) = FalseSym0
     instance PEq (KProxy :: KProxy Nat) where
       type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789 a b
+    instance POrd (KProxy :: KProxy Nat) where
+      type Compare Zero Zero = EQ
+      type Compare Zero (Succ rhs) = LT
+      type Compare (Succ lhs) Zero = GT
+      type Compare (Succ lhs) (Succ rhs) = ThenCmp EQ (Compare lhs rhs)
     type ZeroSym0 = Zero
     type SuccSym1 (t :: Nat) = Succ t
     instance SuppressUnusedWarnings SuccSym0 where

@@ -18,6 +18,32 @@ Singletons/Star.hs:0:0: Splicing declarations
       Equals_0123456789 (a :: *) (b :: *) = FalseSym0
     instance PEq (KProxy :: KProxy *) where
       type (:==) (a :: *) (b :: *) = Equals_0123456789 a b
+    instance POrd (KProxy :: KProxy *) where
+      type Compare Nat Nat = EQ
+      type Compare Nat Int = LT
+      type Compare Nat String = LT
+      type Compare Nat (Maybe rhs) = LT
+      type Compare Nat (Vec rhs rhs) = LT
+      type Compare Int Nat = GT
+      type Compare Int Int = EQ
+      type Compare Int String = LT
+      type Compare Int (Maybe rhs) = LT
+      type Compare Int (Vec rhs rhs) = LT
+      type Compare String Nat = GT
+      type Compare String Int = GT
+      type Compare String String = EQ
+      type Compare String (Maybe rhs) = LT
+      type Compare String (Vec rhs rhs) = LT
+      type Compare (Maybe lhs) Nat = GT
+      type Compare (Maybe lhs) Int = GT
+      type Compare (Maybe lhs) String = GT
+      type Compare (Maybe lhs) (Maybe rhs) = ThenCmp EQ (Compare lhs rhs)
+      type Compare (Maybe lhs) (Vec rhs rhs) = LT
+      type Compare (Vec lhs lhs) Nat = GT
+      type Compare (Vec lhs lhs) Int = GT
+      type Compare (Vec lhs lhs) String = GT
+      type Compare (Vec lhs lhs) (Maybe rhs) = GT
+      type Compare (Vec lhs lhs) (Vec rhs rhs) = ThenCmp (ThenCmp EQ (Compare lhs rhs)) (Compare lhs rhs)
     type NatSym0 = Nat
     type IntSym0 = Int
     type StringSym0 = String
@@ -27,7 +53,7 @@ Singletons/Star.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) MaybeSym0KindInference GHC.Tuple.())
     data MaybeSym0 (l :: TyFun * *)
       = forall arg. (GHC.Types.~) (Apply MaybeSym0 arg) (MaybeSym1 arg) =>
-        MaybeSym0KindInference (Proxy arg)
+        MaybeSym0KindInference (Data.Proxy.Proxy arg)
     type instance Apply MaybeSym0 l = MaybeSym1 l
     type VecSym2 (t :: *) (t :: Nat) = Vec t t
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings VecSym1 where
@@ -35,14 +61,14 @@ Singletons/Star.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) VecSym1KindInference GHC.Tuple.())
     data VecSym1 (l :: *) (l :: TyFun Nat *)
       = forall arg. (GHC.Types.~) (Apply (VecSym1 l) arg) (VecSym2 l arg) =>
-        VecSym1KindInference (Proxy arg)
+        VecSym1KindInference (Data.Proxy.Proxy arg)
     type instance Apply (VecSym1 l) l = VecSym2 l l
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings VecSym0 where
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) VecSym0KindInference GHC.Tuple.())
     data VecSym0 (l :: TyFun * (TyFun Nat * -> *))
       = forall arg. (GHC.Types.~) (Apply VecSym0 arg) (VecSym1 arg) =>
-        VecSym0KindInference (Proxy arg)
+        VecSym0KindInference (Data.Proxy.Proxy arg)
     type instance Apply VecSym0 l = VecSym1 l
     data instance Sing (z :: *)
       = (GHC.Types.~) z Nat => SNat |

@@ -63,7 +63,7 @@ module Data.Singletons (
 
   -- * Auxiliary functions
   bugInGHC,
-  KProxy(..), Proxy(..)
+  KProxy(..)
   ) where
 
 import Unsafe.Coerce

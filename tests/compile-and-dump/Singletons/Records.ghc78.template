@@ -10,7 +10,7 @@ Singletons/Records.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) Field1Sym0KindInference GHC.Tuple.())
     data Field1Sym0 (l :: TyFun (Record a) a)
       = forall arg. (GHC.Types.~) (Apply Field1Sym0 arg) (Field1Sym1 arg) =>
-        Field1Sym0KindInference (Data.Proxy.Proxy arg)
+        Field1Sym0KindInference (Proxy arg)
     type instance Apply Field1Sym0 l = Field1Sym1 l
     type Field2Sym1 (t :: Record a) = Field2 t
     instance SuppressUnusedWarnings Field2Sym0 where
@@ -18,7 +18,7 @@ Singletons/Records.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) Field2Sym0KindInference GHC.Tuple.())
     data Field2Sym0 (l :: TyFun (Record a) Bool)
       = forall arg. (GHC.Types.~) (Apply Field2Sym0 arg) (Field2Sym1 arg) =>
-        Field2Sym0KindInference (Data.Proxy.Proxy arg)
+        Field2Sym0KindInference (Proxy arg)
     type instance Apply Field2Sym0 l = Field2Sym1 l
     type family Field1 (a :: Record a) :: a where
       Field1 (MkRecord field z) = field
@@ -30,14 +30,14 @@ Singletons/Records.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) MkRecordSym1KindInference GHC.Tuple.())
     data MkRecordSym1 (l :: a) (l :: TyFun Bool (Record a))
       = forall arg. (GHC.Types.~) (Apply (MkRecordSym1 l) arg) (MkRecordSym2 l arg) =>
-        MkRecordSym1KindInference (Data.Proxy.Proxy arg)
+        MkRecordSym1KindInference (Proxy arg)
     type instance Apply (MkRecordSym1 l) l = MkRecordSym2 l l
     instance SuppressUnusedWarnings MkRecordSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) MkRecordSym0KindInference GHC.Tuple.())
     data MkRecordSym0 (l :: TyFun a (TyFun Bool (Record a) -> *))
       = forall arg. (GHC.Types.~) (Apply MkRecordSym0 arg) (MkRecordSym1 arg) =>
-        MkRecordSym0KindInference (Data.Proxy.Proxy arg)
+        MkRecordSym0KindInference (Proxy arg)
     type instance Apply MkRecordSym0 l = MkRecordSym1 l
     data instance Sing (z :: Record a)
       = forall (n :: a) (n :: Bool). (GHC.Types.~) z (MkRecord n n) =>

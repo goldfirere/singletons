@@ -30,7 +30,6 @@ module Data.Singletons.TH (
   -- ** Functions to generate Ord instances
   promoteOrdInstances, promoteOrdInstance,
 
-
   -- ** defunctionalization
   TyFun, Apply, type (@@),
 
@@ -49,7 +48,7 @@ module Data.Singletons.TH (
   POrd(..),
   Any,
   SDecide(..), (:~:)(..), Void, Refuted, Decision(..),
-  KProxy(..), SomeSing(..),
+  Proxy(..), KProxy(..), SomeSing(..),
 
   Error, ErrorSym0,
   TrueSym0, FalseSym0,

@@ -69,6 +69,7 @@ library
                       Data.Singletons.Prelude.Maybe,
                       Data.Singletons.Prelude.Tuple,
                       Data.Promotion.Prelude,
+                      Data.Promotion.TH,
                       Data.Promotion.Prelude.Base,
                       Data.Promotion.Prelude.Bool,
                       Data.Promotion.Prelude.Either,

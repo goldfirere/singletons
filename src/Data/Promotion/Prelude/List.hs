@@ -223,7 +223,6 @@ import Data.Promotion.Prelude.Ord
 import Data.Singletons.Prelude.List
 import Data.Singletons.Prelude.Maybe
 import Data.Singletons.TH
-import Data.Singletons.TypeLits
 
 import Data.Maybe (listToMaybe)
 -- these imports are required fir functions that singletonize but are used

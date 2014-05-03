@@ -10,8 +10,6 @@ $(singletons [d|
                            , field2 :: Bool }
   |])
 
-data Proxy a = Proxy
-
 foo1a :: Proxy (Field2 (MkRecord 5 True))
 foo1a = Proxy
 

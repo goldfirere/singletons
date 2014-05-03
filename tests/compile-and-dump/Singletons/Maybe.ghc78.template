@@ -22,7 +22,7 @@ Singletons/Maybe.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) JustSym0KindInference GHC.Tuple.())
     data JustSym0 (l :: TyFun a (Maybe a))
       = forall arg. (GHC.Types.~) (Apply JustSym0 arg) (JustSym1 arg) =>
-        JustSym0KindInference (Data.Proxy.Proxy arg)
+        JustSym0KindInference (Proxy arg)
     type instance Apply JustSym0 l = JustSym1 l
     data instance Sing (z :: Maybe a)
       = (GHC.Types.~) z Nothing => SNothing |

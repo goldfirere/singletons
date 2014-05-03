@@ -1,3 +1,5 @@
+{-# LANGUAGE TemplateHaskell #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Singletons.Promote.Ord
@@ -17,9 +19,40 @@ import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
 import Data.Singletons.Util
-import Control.Monad
-import Data.List
 
+mkOrdTypeInstance :: Quasi q => DKind -> [DCon] -> q [DDec]
+mkOrdTypeInstance kind cons = do
+  let tagged_cons = zip cons [1..]
+      con_pairs   = [ (c1, c2) | c1 <- tagged_cons, c2 <- tagged_cons ]
+  eqns <- mapM mkOrdTySynEqn con_pairs
+  let tyfam_insts = map (DTySynInstD tyCompareName) eqns
+      pord_name   = promoteClassName ordName
+      pord_inst   = DInstanceD [] (DConT pord_name `DAppT` kindParam kind)
+                               tyfam_insts
+  return [pord_inst]
+
+mkOrdTySynEqn :: Quasi q => ((DCon, Int), (DCon, Int)) -> q DTySynEqn
+mkOrdTySynEqn ((c1, n1), (c2, n2)) = do
+  let DCon _tvbs1 _cxt1 con_name1 con_fields1 = c1
+      DCon _tvbs2 _cxt2 con_name2 con_fields2 = c2
+  lhs_names <- mapM (const $ qNewName "lhs") (tysOfConFields con_fields1)
+  rhs_names <- mapM (const $ qNewName "rhs") (tysOfConFields con_fields2)
+  let lhs_ty = foldType (DConT con_name1) (map DVarT lhs_names)
+      rhs_ty = foldType (DConT con_name2) (map DVarT rhs_names)
+      result = case n1 `compare` n2 of
+        EQ -> let cmps   = zipWith (\lhs rhs ->
+                                     foldType (DConT tyCompareName) [ DVarT lhs
+                                                                    , DVarT rhs ])
+                           lhs_names rhs_names
+              in
+              foldl (\l r -> foldType (DConT tyThenCmpName) [l, r])
+                    (DConT 'EQ) cmps
+
+        LT -> DConT 'LT
+        GT -> DConT 'GT
+  return $ DTySynEqn [lhs_ty, rhs_ty] result
+
+{-
 -- Note [Deriving Ord]
 -- ~~~~~~~~~~~~~~~~~~~
 --
@@ -203,3 +236,5 @@ mkOrdTypeInstance kind cons = do
                         gtRow = gtT : tys
                     buildEqnPats (n-1) ( ltRow : gtRow : newEqs
                                        , ltT : gtT : results )
+
+-}

@@ -63,6 +63,7 @@ module Data.Promotion.Prelude (
   -- * Other datatypes
   Maybe_, Either_, Symbol,
   Fst, Snd, Curry, Uncurry,
+  KProxy(..),
 
   -- * Other functions
   either_, -- reimplementation of either to be used with singletons library
@@ -127,6 +128,7 @@ module Data.Promotion.Prelude (
   UnzipSym0, UnzipSym1
   ) where
 
+import Data.Singletons.Types ( KProxy(..) )
 import Data.Promotion.Prelude.Base
 import Data.Promotion.Prelude.Bool
 import Data.Promotion.Prelude.Either

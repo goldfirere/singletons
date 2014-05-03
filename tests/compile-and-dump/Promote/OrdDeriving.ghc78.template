@@ -1,0 +1,30 @@
+Promote/OrdDeriving.hs:0:0: Splicing declarations
+    promote
+      [d| data Nat
+            = Zero | Succ Nat
+            deriving (Eq, Ord) |]
+  ======>
+    Promote/OrdDeriving.hs:(0,0)-(0,0)
+    data Nat
+      = Zero | Succ Nat
+      deriving (Eq, Ord)
+    type family Equals_0123456789 (a :: Nat) (b :: Nat) :: Bool where
+      Equals_0123456789 Zero Zero = TrueSym0
+      Equals_0123456789 (Succ a) (Succ b) = (:==) a b
+      Equals_0123456789 (a :: Nat) (b :: Nat) = FalseSym0
+    instance PEq (KProxy :: KProxy Nat) where
+      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789 a b
+    instance POrd (KProxy :: KProxy Nat) where
+      type Compare Zero Zero = EQ
+      type Compare Zero (Succ rhs) = LT
+      type Compare (Succ lhs) Zero = GT
+      type Compare (Succ lhs) (Succ rhs) = ThenCmp EQ (Compare lhs rhs)
+    type ZeroSym0 = Zero
+    type SuccSym1 (t :: Nat) = Succ t
+    instance SuppressUnusedWarnings SuccSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) SuccSym0KindInference GHC.Tuple.())
+    data SuccSym0 (l :: TyFun Nat Nat)
+      = forall arg. (GHC.Types.~) (Apply SuccSym0 arg) (SuccSym1 arg) =>
+        SuccSym0KindInference (Proxy arg)
+    type instance Apply SuccSym0 l = SuccSym1 l

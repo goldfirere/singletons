@@ -214,11 +214,11 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
            "Use <<data>> instead or upgrade GHC."
 #endif
   -- deriving Eq instance
+  _kvs <- replicateM (length tvbs) (qNewName "k")
+  _kind <- promoteType (foldType (DConT name) (map DVarT _kvs))
   when (elem eqName derivings) $ do
 #if __GLASGOW_HASKELL__ >= 707
-    kvs <- replicateM (length tvbs) (qNewName "k")
-    kind <- promoteType (foldType (DConT name) (map DVarT kvs))
-    eq_decs <- mkEqTypeInstance kind ctors
+    eq_decs <- mkEqTypeInstance _kind ctors
 #else
     let pairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
     eq_decs <- mapM mkEqTypeInstance pairs
@@ -228,8 +228,7 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   -- deriving Ord instance
   when (elem ordName derivings) $ do
 #if __GLASGOW_HASKELL__ >= 707
-    kvs <- replicateM (length tvbs) (qNewName "k")
-    ord_decs <- mkOrdTypeInstance (DConK name (map DVarK kvs)) ctors
+    ord_decs <- mkOrdTypeInstance _kind ctors
 #else
     error "Ord deriving not yet implemented in GHC 7.6"
 #endif

@@ -19,10 +19,15 @@
 module Data.Singletons.Prelude.Ord (
   POrd(..), SOrd(..),
 
+  -- | 'thenCmp' returns its second argument if its first is 'EQ'; otherwise,
+  -- it returns its first argument.
+  thenCmp, ThenCmp, sThenCmp,
+
   Sing(SLT, SEQ, SGT),
 
+  -- ** Defunctionalization symbols
+  ThenCmpSym0, ThenCmpSym1, ThenCmpSym2,
   LTSym0, EQSym0, GTSym0,
-  
   CompareSym0, CompareSym1, CompareSym2,
   (:<$), (:<$$), (:<$$$),
   (:<=$), (:<=$$), (:<=$$$),
@@ -33,10 +38,12 @@ module Data.Singletons.Prelude.Ord (
   ) where
 
 import Data.Singletons.Promote
+import Data.Singletons.Single
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Bool
 import Data.Singletons
+import Data.Singletons.Util
 
 $(promoteOnly [d|
   class  (Eq a) => Ord a  where
@@ -114,4 +121,11 @@ class (kproxy ~ 'KProxy, SEq ('KProxy :: KProxy a))
                => Sing x -> Sing y -> Sing (Min x y)
   sMin x y = sIf (x %:<= y) x y
 
--- $(promoteOrdInstances basicTypes)
+$(singletons [d|
+  thenCmp :: Ordering -> Ordering -> Ordering
+  thenCmp EQ x = x
+  thenCmp LT _ = LT
+  thenCmp GT _ = GT
+  |])
+
+$(promoteOrdInstances basicTypes)
