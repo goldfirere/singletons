@@ -20,7 +20,8 @@
 
 module Data.Singletons.Prelude.Base (
   Foldr, sFoldr, Map, sMap, (:++), (%:++), Otherwise, sOtherwise,
-  Id, sId, Const, sConst, (:.), (%:.), Flip, sFlip, AsTypeOf, sAsTypeOf,
+  Id, sId, Const, sConst, (:.), (%:.), type ($), (%$),
+  Flip, sFlip, AsTypeOf, sAsTypeOf,
   Seq, sSeq,
 
   -- * Defunctionalization symbols
@@ -31,6 +32,7 @@ module Data.Singletons.Prelude.Base (
   IdSym0, IdSym1,
   ConstSym0, ConstSym1, ConstSym2,
   (:.$), (:.$$), (:.$$$),
+  type ($$), type ($$$), type ($$$$),
   FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2,
   SeqSym0, SeqSym1, SeqSym2
@@ -79,3 +81,20 @@ $(singletonsOnly [d|
   seq :: a -> b -> b
   seq _ x = x
  |])
+
+-- ($) is a special case, because its kind-inference data constructors clash
+-- with (:). See #29.
+type family (f :: TyFun a b -> *) $ (x :: a) :: b
+type instance f $ x = f @@ x
+
+data ($$) :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *
+type instance Apply ($$) arg = ($$$) arg
+
+data ($$$) :: (TyFun a b -> *) -> TyFun a b -> *
+type instance Apply (($$$) f) arg = ($$$$) f arg
+
+type ($$$$) a b = ($) a b
+
+(%$) :: forall (f :: TyFun a b -> *) (x :: a).
+        Sing f -> Sing x -> Sing (($$) @@ f @@ x)
+f %$ x = applySing f x

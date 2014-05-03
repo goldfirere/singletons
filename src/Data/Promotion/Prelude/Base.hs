@@ -26,7 +26,8 @@ module Data.Promotion.Prelude.Base (
   UntilSym0, UntilSym1, UntilSym2, UntilSym3,
 
   -- * Re-exported from Data.Singletons.Prelude.Base
-  Foldr, Map, (:++), Otherwise, Id, Const, (:.), Flip, AsTypeOf, Seq,
+  Foldr, Map, (:++), Otherwise, Id, Const, (:.), type ($),
+  Flip, AsTypeOf, Seq,
   FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
   MapSym0, MapSym1, MapSym2,
   (:++$), (:++$$),
@@ -34,6 +35,7 @@ module Data.Promotion.Prelude.Base (
   IdSym0, IdSym1,
   ConstSym0, ConstSym1, ConstSym2,
   (:.$), (:.$$), (:.$$$),
+  type ($$), type ($$$), type ($$$$),
   FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2,
   SeqSym0, SeqSym1, SeqSym2

@@ -91,7 +91,8 @@ module Data.Singletons.Prelude (
   module Data.Singletons.Prelude.Ord,
 
   -- ** Miscellaneous functions
-  Id, sId, Const, sConst, (:.), (%:.), Flip, sFlip, AsTypeOf, sAsTypeOf,
+  Id, sId, Const, sConst, (:.), (%:.), type ($), (%$),
+  Flip, sFlip, AsTypeOf, sAsTypeOf,
   Seq, sSeq,
 
   -- * List operations
@@ -142,7 +143,8 @@ module Data.Singletons.Prelude (
   UncurrySym0, UncurrySym1, UncurrySym2,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
-  (:.$), (:.$$), (:.$$$), FlipSym0, FlipSym1, FlipSym2,
+  (:.$), (:.$$), (:.$$$), type ($$), type ($$$), type ($$$$),
+  FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
 
   (:$), (:$$), (:$$$), NilSym0, ConsSym0, ConsSym1, ConsSym2,
