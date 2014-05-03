@@ -1,0 +1,35 @@
+Singletons/T33.hs:0:0: Splicing declarations
+    singletons
+      [d| foo :: (Bool, Bool) -> ()
+          foo ~(_, _) = () |]
+  ======>
+    Singletons/T33.hs:(0,0)-(0,0)
+    foo :: (Bool, Bool) -> ()
+    foo ~(_, _) = GHC.Tuple.()
+    type FooSym1 (t :: GHC.Tuple.(,) Bool Bool) = Foo t
+    instance SuppressUnusedWarnings FooSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
+    data FooSym0 (l :: TyFun (GHC.Tuple.(,) Bool Bool) GHC.Tuple.())
+      = forall arg. (GHC.Types.~) (Apply FooSym0 arg) (FooSym1 arg) =>
+        FooSym0KindInference (Proxy arg)
+    type instance Apply FooSym0 l = FooSym1 l
+    type family Foo (a :: GHC.Tuple.(,) Bool Bool) :: GHC.Tuple.() where
+      Foo (GHC.Tuple.(,) z z) = Tuple0Sym0
+    sFoo ::
+      forall (t :: GHC.Tuple.(,) Bool Bool).
+      Sing t -> Sing (Apply FooSym0 t)
+    sFoo (STuple2 _ _)
+      = let
+          lambda ::
+            forall wild
+                   wild. (GHC.Types.~) t (Apply (Apply Tuple2Sym0 wild) wild) =>
+            Sing (Apply FooSym0 (Apply (Apply Tuple2Sym0 wild) wild))
+          lambda = STuple0
+        in lambda
+
+Singletons/T33.hs:0:0: Warning:
+    Lazy pattern converted into regular pattern in promotion
+
+Singletons/T33.hs:0:0: Warning:
+    Lazy pattern converted into regular pattern during singleton generation.
