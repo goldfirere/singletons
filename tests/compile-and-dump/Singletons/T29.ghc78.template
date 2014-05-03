@@ -1,0 +1,30 @@
+Singletons/T29.hs:0:0: Splicing declarations
+    singletons
+      [d| foo :: Bool -> Bool
+          foo x = not $ x |]
+  ======>
+    Singletons/T29.hs:(0,0)-(0,0)
+    foo :: Bool -> Bool
+    foo x = (not $ x)
+    type FooSym1 (t :: Bool) = Foo t
+    instance SuppressUnusedWarnings FooSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
+    data FooSym0 (l :: TyFun Bool Bool)
+      = forall arg. (GHC.Types.~) (Apply FooSym0 arg) (FooSym1 arg) =>
+        FooSym0KindInference (Proxy arg)
+    type instance Apply FooSym0 l = FooSym1 l
+    type family Foo (a :: Bool) :: Bool where
+      Foo x = Apply (Apply ($$) NotSym0) x
+    sFoo :: forall (t :: Bool). Sing t -> Sing (Apply FooSym0 t)
+    sFoo sX
+      = let
+          lambda ::
+            forall x. (GHC.Types.~) t x => Sing x -> Sing (Apply FooSym0 x)
+          lambda x
+            = applySing
+                (applySing
+                   (singFun2 (Proxy :: Proxy ($$)) (%$))
+                   (singFun1 (Proxy :: Proxy NotSym0) sNot))
+                x
+        in lambda sX

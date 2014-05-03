@@ -36,6 +36,7 @@ tests =
     , compileAndDumpStdTest "Sections"
     , compileAndDumpStdTest "PatternMatching"
     , compileAndDumpStdTest "Records"
+    , compileAndDumpStdTest "T29"
     , compileAndDumpStdTest "T33"
     ],
     testCompileAndDumpGroup "Promote"
