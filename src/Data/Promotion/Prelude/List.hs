@@ -263,6 +263,7 @@ $(promoteOnly [d|
              | p x        =  ([],xs)
              | otherwise  =  let (ys,zs) = break p xs' in (x:ys,zs)
 
+  -- Overlapping patterns don't singletonize
   stripPrefix :: Eq a => [a] -> [a] -> Maybe [a]
   stripPrefix [] ys = Just ys
   stripPrefix (x:xs) (y:ys)

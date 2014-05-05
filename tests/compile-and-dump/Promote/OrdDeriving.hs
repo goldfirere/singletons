@@ -6,6 +6,13 @@ import Data.Promotion.TH
 $(promote [d|
   data Nat = Zero | Succ Nat
     deriving (Eq, Ord)
+
+  data Foo a b c d = A a b c d
+                   | B a b c d
+                   | C a b c d
+                   | D a b c d
+                   | E a b c d
+                   | F a b c d deriving (Eq,Ord)
   |])
 
 foo1a :: Proxy (Zero :< Succ Zero)

@@ -2,12 +2,19 @@ Promote/Classes.hs:0:0: Splicing declarations
     promote
       [d| const :: a -> b -> a
           const x _ = x
+          fooCompare :: Foo -> Foo -> Ordering
+          fooCompare A A = EQ
+          fooCompare A _ = LT
+          fooCompare _ _ = GT
           
           class MyOrd a where
             mycompare :: a -> a -> Ordering
             (<=>) :: a -> a -> Ordering
             (<=>) = mycompare
+          data Foo = A | B
           
+          instance MyOrd Foo where
+            mycompare = fooCompare
           instance MyOrd () where
             mycompare _ = const EQ
           instance MyOrd Nat where
@@ -30,6 +37,28 @@ Promote/Classes.hs:0:0: Splicing declarations
       mycompare (Succ n) (Succ m) = (m `mycompare` n)
     instance MyOrd () where
       mycompare _ = const EQ
+    data Foo = A | B
+    fooCompare :: Foo -> Foo -> Ordering
+    fooCompare A A = EQ
+    fooCompare A _ = LT
+    fooCompare _ _ = GT
+    instance MyOrd Foo where
+      mycompare = fooCompare
+    type FooCompareSym2 (t :: Foo) (t :: Foo) = FooCompare t t
+    instance SuppressUnusedWarnings FooCompareSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FooCompareSym1KindInference GHC.Tuple.())
+    data FooCompareSym1 (l :: Foo) (l :: TyFun Foo Ordering)
+      = forall arg. (GHC.Types.~) (Apply (FooCompareSym1 l) arg) (FooCompareSym2 l arg) =>
+        FooCompareSym1KindInference (Proxy arg)
+    type instance Apply (FooCompareSym1 l) l = FooCompareSym2 l l
+    instance SuppressUnusedWarnings FooCompareSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FooCompareSym0KindInference GHC.Tuple.())
+    data FooCompareSym0 (l :: TyFun Foo (TyFun Foo Ordering -> *))
+      = forall arg. (GHC.Types.~) (Apply FooCompareSym0 arg) (FooCompareSym1 arg) =>
+        FooCompareSym0KindInference (Proxy arg)
+    type instance Apply FooCompareSym0 l = FooCompareSym1 l
     type ConstSym2 (t :: a) (t :: b) = Const t t
     instance SuppressUnusedWarnings ConstSym1 where
       suppressUnusedWarnings _
@@ -45,6 +74,10 @@ Promote/Classes.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Apply ConstSym0 arg) (ConstSym1 arg) =>
         ConstSym0KindInference (Proxy arg)
     type instance Apply ConstSym0 l = ConstSym1 l
+    type family FooCompare (a :: Foo) (a :: Foo) :: Ordering where
+      FooCompare A A = EQSym0
+      FooCompare A z = LTSym0
+      FooCompare z z = GTSym0
     type family Const (a :: a) (a :: b) :: a where
       Const x z = x
     type MycompareSym2 (t :: a) (t :: a) = Mycompare t t
@@ -88,3 +121,7 @@ Promote/Classes.hs:0:0: Splicing declarations
       type Mycompare (Succ n :: Nat) (Succ m :: Nat) = (Apply (Apply MycompareSym0 m) n :: Ordering)
     instance PMyOrd (KProxy :: KProxy GHC.Tuple.()) where
       type Mycompare (z :: GHC.Tuple.()) (a_0123456789 :: GHC.Tuple.()) = (Apply (Apply ConstSym0 EQSym0) a_0123456789 :: Ordering)
+    instance PMyOrd (KProxy :: KProxy Foo) where
+      type Mycompare (a_0123456789 :: Foo) (a_0123456789 :: Foo) = (Apply (Apply FooCompareSym0 a_0123456789) a_0123456789 :: Ordering)
+    type ASym0 = A
+    type BSym0 = B

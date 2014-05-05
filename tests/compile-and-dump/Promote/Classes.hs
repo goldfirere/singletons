@@ -26,7 +26,18 @@ $(promote [d|
   instance MyOrd () where
     mycompare _ = const EQ
 
-  |])
+  data Foo = A | B
+
+  fooCompare :: Foo -> Foo -> Ordering
+  fooCompare A A = EQ
+  fooCompare A _ = LT
+  fooCompare _ _ = GT
+
+  instance MyOrd Foo where
+    -- test that values in instance definitions are eta-expanded
+    mycompare = fooCompare
+ |])
+
 
 foo1a :: Proxy (Zero `Mycompare` (Succ Zero))
 foo1a = Proxy
@@ -34,8 +45,14 @@ foo1a = Proxy
 foo1b :: Proxy LT
 foo1b = foo1a
 
-foo2a :: Proxy ('() `Mycompare` '())
+foo2a :: Proxy (A `Mycompare` A)
 foo2a = Proxy
 
 foo2b :: Proxy EQ
 foo2b = foo2a
+
+foo3a :: Proxy ('() `Mycompare` '())
+foo3a = Proxy
+
+foo3b :: Proxy EQ
+foo3b = foo3a
