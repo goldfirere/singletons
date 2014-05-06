@@ -49,8 +49,8 @@ module Data.Singletons.Prelude.Maybe (
   -- 'Maybe'.
 
   IsJust, sIsJust, IsNothing, sIsNothing,
-  FromJust, sFromJust, FromMaybe, sFromMaybe, MaybeToList, sMaybeToList,
-  ListToMaybe, sListToMaybe, CatMaybes, sCatMaybes, MapMaybe, sMapMaybe,
+  FromJust, sFromJust, FromMaybe, sFromMaybe, ListToMaybe, sListToMaybe,
+  MaybeToList, sMaybeToList, CatMaybes, sCatMaybes, MapMaybe, sMapMaybe,
 
   -- * Defunctionalization symbols
   NothingSym0, JustSym0, JustSym1,
@@ -58,14 +58,13 @@ module Data.Singletons.Prelude.Maybe (
   Maybe_Sym0, Maybe_Sym1, Maybe_Sym2, Maybe_Sym3,
   IsJustSym0, IsJustSym1, IsNothingSym0, IsNothingSym1,
   FromJustSym0, FromJustSym1, FromMaybeSym0, FromMaybeSym1, FromMaybeSym2,
-  MaybeToListSym0, MaybeToListSym1, ListToMaybeSym0, ListToMaybeSym1,
+  ListToMaybeSym0, ListToMaybeSym1, MaybeToListSym0, MaybeToListSym1,
   CatMaybesSym0, CatMaybesSym1, MapMaybeSym0, MapMaybeSym1, MapMaybeSym2
   ) where
 
 import Data.Singletons.Prelude.Instances
 import Data.Singletons
 import Data.Singletons.TH
-import Data.Singletons.Prelude.Base
 import Data.Singletons.TypeLits
 
 $(singletonsOnly [d|
@@ -98,20 +97,19 @@ $(singletonsOnly [d|
   -- value.  If the 'Maybe' is 'Nothing', it returns the default values;
   -- otherwise, it returns the value contained in the 'Maybe'.
   fromMaybe     :: a -> Maybe a -> a
-  fromMaybe d Nothing  = d
-  fromMaybe _ (Just v) = v
-
-  -- | The 'listToMaybe' function returns 'Nothing' on an empty list
-  -- or @'Just' a@ where @a@ is the first element of the list.
-  listToMaybe           :: [a] -> Maybe a
-  listToMaybe []        =  Nothing
-  listToMaybe (a:_)     =  Just a
+  fromMaybe d x = case x of {Nothing -> d;Just v  -> v}
 
   -- | The 'maybeToList' function returns an empty list when given
   -- 'Nothing' or a singleton list when not given 'Nothing'.
   maybeToList            :: Maybe a -> [a]
   maybeToList  Nothing   = []
   maybeToList  (Just x)  = [x]
+
+  -- | The 'listToMaybe' function returns 'Nothing' on an empty list
+  -- or @'Just' a@ where @a@ is the first element of the list.
+  listToMaybe           :: [a] -> Maybe a
+  listToMaybe []        =  Nothing
+  listToMaybe (a:_)     =  Just a
 
   -- | The 'catMaybes' function takes a list of 'Maybe's and returns
   -- a list of all the 'Just' values.
@@ -127,5 +125,9 @@ $(singletonsOnly [d|
   -- included in the result list.
   mapMaybe          :: (a -> Maybe b) -> [a] -> [b]
   mapMaybe _ []     = []
-  mapMaybe f (x:xs) = maybeToList (f x) ++ (mapMaybe f xs)
+  mapMaybe f (x:xs) =
+   let rs = mapMaybe f xs in
+   case f x of
+    Nothing -> rs
+    Just r  -> r:rs
   |])

@@ -11,8 +11,6 @@
 --
 -----------------------------------------------------------------------------
 
-{-# LANGUAGE ExplicitNamespaces #-}
-
 module Data.Promotion.Prelude.Ord (
   POrd(..),
   LTSym0, EQSym0, GTSym0,

@@ -62,63 +62,6 @@ import Data.Singletons
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
 import Data.Singletons.Types
-import Data.Singletons.SuppressUnusedWarnings
-
-#if __GLASGOW_HASKELL__ >= 707
-import Data.Type.Bool
-
-type a :&& b = a && b
-type a :|| b = a || b
-
-(%:&&) :: SBool a -> SBool b -> SBool (a :&& b)
-SFalse %:&& _ = SFalse
-STrue  %:&& a = a
-
-type (:&&$$$) a b = a :&& b
-
-data (:&&$$) (a :: Bool) (b :: TyFun Bool Bool) where
-     (:&&$$###) :: Apply ((:&&$$) a) arg ~ (:&&$$$) a arg
-                => Proxy arg
-                -> (:&&$$) a b
-type instance Apply ((:&&$$) a) b = (:&&$$$) a b
-
-instance SuppressUnusedWarnings (:&&$$) where
-    suppressUnusedWarnings _ = snd ((:&&$$###),())
-
-data (:&&$) (a :: TyFun Bool (TyFun Bool Bool -> *)) where
-     (:&&$###) :: Apply (:&&$) arg ~ (:&&$$) arg
-               => Proxy arg
-               -> (:&&$) a
-type instance Apply (:&&$) a = (:&&$$) a
-
-instance SuppressUnusedWarnings (:&&$) where
-    suppressUnusedWarnings _ = snd ((:&&$###),())
-
-(%:||) :: SBool a -> SBool b -> SBool (a :|| b)
-SFalse %:|| a = a
-STrue  %:|| _ = STrue
-
-type (:||$$$) a b = a :|| b
-
-data (:||$$) (a :: Bool) (b :: TyFun Bool Bool) where
-     (:||$$###) :: Apply ((:||$$) a) arg ~ (:||$$$) a arg
-                => Proxy arg
-                -> (:||$$) a b
-type instance Apply ((:||$$) a) b = (:||$$$) a b
-
-instance SuppressUnusedWarnings (:||$$) where
-    suppressUnusedWarnings _ = snd ((:||$$###),())
-
-data (:||$) (a :: TyFun Bool (TyFun Bool Bool -> *)) where
-     (:||$###) :: Apply (:||$) arg ~ (:||$$) arg
-               => Proxy arg
-               -> (:||$) a
-type instance Apply (:||$) a = (:||$$) a
-
-instance SuppressUnusedWarnings (:||$) where
-    suppressUnusedWarnings _ = snd ((:||$###),())
-
-#else
 
 $(singletonsOnly [d|
   (&&) :: Bool -> Bool -> Bool
@@ -128,31 +71,11 @@ $(singletonsOnly [d|
   (||) :: Bool -> Bool -> Bool
   False || x = x
   True  || _ = True
-  |])
 
-#endif
+  not :: Bool -> Bool
+  not False = True
+  not True = False
 
-sNot :: SBool a -> SBool (Not a)
-sNot SFalse = STrue
-sNot STrue  = SFalse
-
-type NotSym1 a = Not a
-data NotSym0 (t :: TyFun Bool Bool) where
-     NotSym0KindInference :: Apply NotSym0 arg ~ NotSym1 arg
-                          => Proxy arg
-                          -> NotSym0 a
-type instance Apply NotSym0 a = Not a
-
-instance SuppressUnusedWarnings NotSym0 where
-    suppressUnusedWarnings _ = snd (NotSym0KindInference,())
-
--- | Conditional over singletons
-sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
-sIf STrue b _ = b
-sIf SFalse _ c = c
-
--- ... with some functions over Booleans
-$(singletonsOnly [d|
   bool_ :: a -> a -> Bool -> a
   bool_ fls _tru False = fls
   bool_ _fls tru True  = tru
@@ -160,3 +83,8 @@ $(singletonsOnly [d|
   otherwise               :: Bool
   otherwise               =  True
   |])
+
+-- | Conditional over singletons
+sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
+sIf STrue b _ = b
+sIf SFalse _ c = c
