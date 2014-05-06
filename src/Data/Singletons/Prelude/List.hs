@@ -324,7 +324,6 @@ $(singletonsOnly [d|
   scanl f q ls  =  q : (case ls of
                         []   -> []
                         x:xs -> scanl f (f q x) xs)
-
   scanl1                  :: (a -> a -> a) -> [a] -> [a]
   scanl1 f (x:xs)         =  scanl f x xs
   scanl1 _ []             =  []
@@ -556,8 +555,7 @@ $(singletonsOnly [d|
 --  intersectBy eq xs ys    =  [x | x <- xs, any_ (eq x) ys]
 
   sortBy :: (a -> a -> Ordering) -> [a] -> [a]
-  -- Temporalily eta-expanded to work around #31
-  sortBy cmp xs = foldr (insertBy cmp) [] xs
+  sortBy cmp  = foldr (insertBy cmp) []
 
   insertBy :: (a -> a -> Ordering) -> a -> [a] -> [a]
   insertBy _   x [] = [x]

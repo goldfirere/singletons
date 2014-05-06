@@ -290,8 +290,7 @@ $(promoteOnly [d|
 
   -- Requires Ord instance, which does not singletonize
   sort :: (Ord a) => [a] -> [a]
-  -- Temporalily eta-expanded to work around #31
-  sort xs = sortBy compare xs
+  sort = sortBy compare
 
   -- Relies on span, which does not singletonize
   groupBy                 :: (a -> a -> Bool) -> [a] -> [[a]]
