@@ -296,18 +296,35 @@ promoteInstanceDec cls_tvb_env meth_sigs
   where
     pClsName = promoteClassName cls_name
     
-    lookup_cls_tvb_names :: PrM [Name]
+    lookup_cls_tvb_names :: PrM [String]
     lookup_cls_tvb_names = case Map.lookup cls_name cls_tvb_env of
       Nothing -> do
         m_dinfo <- qReifyMaybe pClsName
         case m_dinfo of
           Just (DTyConI (DClassD _cxt _name cls_tvbs _fds _decs) _insts) -> do
-            return $ map extractTvbName cls_tvbs
+            mapM extract_kv_name cls_tvbs
           _ -> fail $ "Cannot find class declaration for " ++ show cls_name
-      Just tvb_names -> return tvb_names
+          -- See Note [Bad Names in reification]
+      Just tvb_names -> return $ map nameBase tvb_names
 
-promoteMethod :: Map Name DKind   -- instantiations for class tyvars
-              -> Map Name DType   -- method types
+    extract_kv_name :: DTyVarBndr -> PrM String
+    extract_kv_name (DKindedTV _kpVar (DConK _kpType [DVarK kv])) =
+      -- See Note [Bad Names in reification]
+      return $ nameBase kv
+    extract_kv_name tvb =
+      fail $ "Unexpected parameter to promoted class: " ++ show tvb
+
+-- Note [Bad Names in reification]
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- For reasons I (RAE) don't understand, reifying a class and reifying an
+-- associated type family sometimes produce *different* Names for the
+-- associated type/kind variables. This wreaks havoc with the type subst
+-- algorithm in promoteMethod. The solution? Ickily compare nameBases
+-- instead of proper Names.
+
+-- See Note [Bad Names in reification]
+promoteMethod :: Map String DKind   -- instantiations for class tyvars
+              -> Map Name DType     -- method types
               -> (Name, ULetDecRHS) -> PrM [DDec]
 promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   (payload, _defuns, _ann_rhs)
@@ -353,7 +370,8 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
     subst_ki (DForallK {}) =
       error "Higher-rank kind encountered in instance method promotion."
     subst_ki (DVarK n) =
-      case Map.lookup n subst of
+      -- See Note [Bad Names in reification]
+      case Map.lookup (nameBase n) subst of
         Just ki -> ki
         Nothing -> DVarK n
     subst_ki (DConK con kis) = DConK con (map subst_ki kis)

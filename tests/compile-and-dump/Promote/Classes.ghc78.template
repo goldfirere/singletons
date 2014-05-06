@@ -125,3 +125,34 @@ Promote/Classes.hs:0:0: Splicing declarations
       type Mycompare (a_0123456789 :: Foo) (a_0123456789 :: Foo) = (Apply (Apply FooCompareSym0 a_0123456789) a_0123456789 :: Ordering)
     type ASym0 = A
     type BSym0 = B
+Promote/Classes.hs:0:0: Splicing declarations
+    promote
+      [d| data Nat' = Zero' | Succ' Nat'
+          
+          instance MyOrd Nat' where
+            Zero' `mycompare` Zero' = EQ
+            Zero' `mycompare` (Succ' _) = LT
+            (Succ' _) `mycompare` Zero' = GT
+            (Succ' n) `mycompare` (Succ' m) = m `mycompare` n |]
+  ======>
+    Promote/Classes.hs:(0,0)-(0,0)
+    data Nat' = Zero' | Succ' Nat'
+    instance MyOrd Nat' where
+      mycompare Zero' Zero' = EQ
+      mycompare Zero' (Succ' _) = LT
+      mycompare (Succ' _) Zero' = GT
+      mycompare (Succ' n) (Succ' m) = (m `mycompare` n)
+    instance PMyOrd (KProxy :: KProxy Nat') where
+      type Mycompare (Zero' :: Nat') (Zero' :: Nat') = (EQSym0 :: Ordering)
+      type Mycompare (Zero' :: Nat') (Succ' z :: Nat') = (LTSym0 :: Ordering)
+      type Mycompare (Succ' z :: Nat') (Zero' :: Nat') = (GTSym0 :: Ordering)
+      type Mycompare (Succ' n :: Nat') (Succ' m :: Nat') = (Apply (Apply MycompareSym0 m) n :: Ordering)
+    type Zero'Sym0 = Zero'
+    type Succ'Sym1 (t :: Nat') = Succ' t
+    instance SuppressUnusedWarnings Succ'Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Succ'Sym0KindInference GHC.Tuple.())
+    data Succ'Sym0 (l :: TyFun Nat' Nat')
+      = forall arg. (GHC.Types.~) (Apply Succ'Sym0 arg) (Succ'Sym1 arg) =>
+        Succ'Sym0KindInference (Proxy arg)
+    type instance Apply Succ'Sym0 l = Succ'Sym1 l

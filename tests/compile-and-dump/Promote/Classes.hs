@@ -4,7 +4,7 @@ import Prelude hiding (Ord(..), const)
 import Singletons.Nat
 import Data.Singletons
 import Data.Singletons.TH
-import Data.Singletons.Prelude (EQSym0, LTSym0, GTSym0)
+import Data.Singletons.Prelude.Ord (EQSym0, LTSym0, GTSym0)
 
 $(promote [d|
   const :: a -> b -> a
@@ -38,6 +38,15 @@ $(promote [d|
     mycompare = fooCompare
  |])
 
+-- check promotion across different splices (#55)
+$(promote [d|
+  data Nat' = Zero' | Succ' Nat'
+  instance MyOrd Nat' where
+    Zero' `mycompare` Zero' = EQ
+    Zero' `mycompare` (Succ' _) = LT
+    (Succ' _) `mycompare` Zero' = GT
+    (Succ' n) `mycompare` (Succ' m) = m `mycompare` n
+ |])
 
 foo1a :: Proxy (Zero `Mycompare` (Succ Zero))
 foo1a = Proxy
@@ -56,3 +65,9 @@ foo3a = Proxy
 
 foo3b :: Proxy EQ
 foo3b = foo3a
+
+foo4a :: Proxy (Succ' Zero' :<=> Zero')
+foo4a = Proxy
+
+foo4b :: Proxy GT
+foo4b = foo4a
