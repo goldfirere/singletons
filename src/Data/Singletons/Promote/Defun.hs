@@ -69,19 +69,19 @@ buildDefunSymsDataD tyName tvbs ctors = do
 --
 -- type FooSym3 a b c = Foo a b c
 -- data FooSym2 a b f where
---   FooSym2KindInference :: Apply (FooSym2 a b) arg ~ FooSym3 a b arg
---                        => Proxy arg
---                        -> FooSym2 a b f
+--   FooSym2KindInference :: KindOf (Apply (FooSym2 a b) arg)
+--                          ~ KindOf (FooSym3 a b arg)
+--                        => FooSym2 a b f
 -- type instance Apply (FooSym2 a b) c = FooSym3 a b c
 -- data FooSym1 a f where
---   FooSym1KindInference :: Apply (FooSym1 a) arg ~ FooSym2 a arg
---                        => Proxy arg
---                        -> FooSym1 a f
+--   FooSym1KindInference :: KindOf (Apply (FooSym1 a) arg)
+--                           ~ KindOf (FooSym2 a arg)
+--                        => FooSym1 a f
 -- type instance Apply (FooSym1 a) b = FooSym2 a b
 -- data FooSym0 f where
---  FooSym0KindInference :: Apply FooSym0 arg ~ FooSym1 arg
---                       => Proxy arg
---                       -> FooSym0 f
+--  FooSym0KindInference :: KindOf (Apply FooSym0 arg)
+--                          ~ KindOf (FooSym1 arg)
+--                       => FooSym0 f
 -- type instance Apply FooSym0 a = FooSym1 a
 --
 -- What's up with all the "KindInference" stuff? In some scenarios, we don't
@@ -148,9 +148,7 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
           con_decl    = DCon [DPlainTV extra_name]
                              [con_eq_ct]
                              con_name
-                             (DNormalC [( NotStrict
-                                       , DConT proxyTypeName `DAppT`
-                                         DVarT extra_name )])
+                             (DNormalC [])
           data_decl   = DDataD Data [] data_name params [con_decl] []
           app_eqn     = DTySynEqn [ foldType (DConT data_name)
                                              (map DVarT rest_names)
