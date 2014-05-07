@@ -25,8 +25,8 @@ GradingClient/Database.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SuccSym0KindInference GHC.Tuple.())
     data SuccSym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply SuccSym0 arg) (SuccSym1 arg) =>
-        SuccSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply SuccSym0 arg)) (KindOf (SuccSym1 arg)) =>
+        SuccSym0KindInference
     type instance Apply SuccSym0 l = SuccSym1 l
     data instance Sing (z :: Nat)
       = (GHC.Types.~) z Zero => SZero |
@@ -188,15 +188,15 @@ GradingClient/Database.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) VECSym1KindInference GHC.Tuple.())
     data VECSym1 (l :: U) (l :: TyFun Nat U)
-      = forall arg. (GHC.Types.~) (Apply (VECSym1 l) arg) (VECSym2 l arg) =>
-        VECSym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (VECSym1 l) arg)) (KindOf (VECSym2 l arg)) =>
+        VECSym1KindInference
     type instance Apply (VECSym1 l) l = VECSym2 l l
     instance SuppressUnusedWarnings VECSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) VECSym0KindInference GHC.Tuple.())
     data VECSym0 (l :: TyFun U (TyFun Nat U -> *))
-      = forall arg. (GHC.Types.~) (Apply VECSym0 arg) (VECSym1 arg) =>
-        VECSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply VECSym0 arg)) (KindOf (VECSym1 arg)) =>
+        VECSym0KindInference
     type instance Apply VECSym0 l = VECSym1 l
     type family Equals_0123456789 (a :: AChar)
                                   (b :: AChar) :: Bool where
@@ -260,24 +260,24 @@ GradingClient/Database.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AttrSym1KindInference GHC.Tuple.())
     data AttrSym1 (l :: GHC.Types.[] AChar) (l :: TyFun U Attribute)
-      = forall arg. (GHC.Types.~) (Apply (AttrSym1 l) arg) (AttrSym2 l arg) =>
-        AttrSym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (AttrSym1 l) arg)) (KindOf (AttrSym2 l arg)) =>
+        AttrSym1KindInference
     type instance Apply (AttrSym1 l) l = AttrSym2 l l
     instance SuppressUnusedWarnings AttrSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AttrSym0KindInference GHC.Tuple.())
     data AttrSym0 (l :: TyFun (GHC.Types.[] AChar) (TyFun U Attribute
                                                     -> *))
-      = forall arg. (GHC.Types.~) (Apply AttrSym0 arg) (AttrSym1 arg) =>
-        AttrSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply AttrSym0 arg)) (KindOf (AttrSym1 arg)) =>
+        AttrSym0KindInference
     type instance Apply AttrSym0 l = AttrSym1 l
     type SchSym1 (t :: GHC.Types.[] Attribute) = Sch t
     instance SuppressUnusedWarnings SchSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SchSym0KindInference GHC.Tuple.())
     data SchSym0 (l :: TyFun (GHC.Types.[] Attribute) Schema)
-      = forall arg. (GHC.Types.~) (Apply SchSym0 arg) (SchSym1 arg) =>
-        SchSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply SchSym0 arg)) (KindOf (SchSym1 arg)) =>
+        SchSym0KindInference
     type instance Apply SchSym0 l = SchSym1 l
     type Let_0123456789Scrutinee_0123456789Sym4 t t t t =
         Let_0123456789Scrutinee_0123456789 t t t t
@@ -287,8 +287,8 @@ GradingClient/Database.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym3KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym3 l l l l
-      = forall arg. (GHC.Types.~) (Apply (Let_0123456789Scrutinee_0123456789Sym3 l l l) arg) (Let_0123456789Scrutinee_0123456789Sym4 l l l arg) =>
-        Let_0123456789Scrutinee_0123456789Sym3KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym3 l l l) arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym4 l l l arg)) =>
+        Let_0123456789Scrutinee_0123456789Sym3KindInference
     type instance Apply (Let_0123456789Scrutinee_0123456789Sym3 l l l) l = Let_0123456789Scrutinee_0123456789Sym4 l l l l
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym2 where
       suppressUnusedWarnings _
@@ -296,8 +296,8 @@ GradingClient/Database.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym2KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym2 l l l
-      = forall arg. (GHC.Types.~) (Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) arg) (Let_0123456789Scrutinee_0123456789Sym3 l l arg) =>
-        Let_0123456789Scrutinee_0123456789Sym2KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym3 l l arg)) =>
+        Let_0123456789Scrutinee_0123456789Sym2KindInference
     type instance Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) l = Let_0123456789Scrutinee_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym1 where
       suppressUnusedWarnings _
@@ -305,8 +305,8 @@ GradingClient/Database.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym1KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym1 l l
-      = forall arg. (GHC.Types.~) (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg) (Let_0123456789Scrutinee_0123456789Sym2 l arg) =>
-        Let_0123456789Scrutinee_0123456789Sym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym2 l arg)) =>
+        Let_0123456789Scrutinee_0123456789Sym1KindInference
     type instance Apply (Let_0123456789Scrutinee_0123456789Sym1 l) l = Let_0123456789Scrutinee_0123456789Sym2 l l
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym0 where
       suppressUnusedWarnings _
@@ -314,8 +314,8 @@ GradingClient/Database.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (Apply Let_0123456789Scrutinee_0123456789Sym0 arg) (Let_0123456789Scrutinee_0123456789Sym1 arg) =>
-        Let_0123456789Scrutinee_0123456789Sym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg)) =>
+        Let_0123456789Scrutinee_0123456789Sym0KindInference
     type instance Apply Let_0123456789Scrutinee_0123456789Sym0 l = Let_0123456789Scrutinee_0123456789Sym1 l
     type Let_0123456789Scrutinee_0123456789 name name' u attrs =
         Apply (Apply (:==$) name) name'
@@ -328,16 +328,16 @@ GradingClient/Database.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) LookupSym1KindInference GHC.Tuple.())
     data LookupSym1 (l :: GHC.Types.[] AChar) (l :: TyFun Schema U)
-      = forall arg. (GHC.Types.~) (Apply (LookupSym1 l) arg) (LookupSym2 l arg) =>
-        LookupSym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (LookupSym1 l) arg)) (KindOf (LookupSym2 l arg)) =>
+        LookupSym1KindInference
     type instance Apply (LookupSym1 l) l = LookupSym2 l l
     instance SuppressUnusedWarnings LookupSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) LookupSym0KindInference GHC.Tuple.())
     data LookupSym0 (l :: TyFun (GHC.Types.[] AChar) (TyFun Schema U
                                                       -> *))
-      = forall arg. (GHC.Types.~) (Apply LookupSym0 arg) (LookupSym1 arg) =>
-        LookupSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply LookupSym0 arg)) (KindOf (LookupSym1 arg)) =>
+        LookupSym0KindInference
     type instance Apply LookupSym0 l = LookupSym1 l
     type OccursSym2 (t :: GHC.Types.[] AChar) (t :: Schema) =
         Occurs t t
@@ -345,61 +345,61 @@ GradingClient/Database.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) OccursSym1KindInference GHC.Tuple.())
     data OccursSym1 (l :: GHC.Types.[] AChar) (l :: TyFun Schema Bool)
-      = forall arg. (GHC.Types.~) (Apply (OccursSym1 l) arg) (OccursSym2 l arg) =>
-        OccursSym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (OccursSym1 l) arg)) (KindOf (OccursSym2 l arg)) =>
+        OccursSym1KindInference
     type instance Apply (OccursSym1 l) l = OccursSym2 l l
     instance SuppressUnusedWarnings OccursSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) OccursSym0KindInference GHC.Tuple.())
     data OccursSym0 (l :: TyFun (GHC.Types.[] AChar) (TyFun Schema Bool
                                                       -> *))
-      = forall arg. (GHC.Types.~) (Apply OccursSym0 arg) (OccursSym1 arg) =>
-        OccursSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply OccursSym0 arg)) (KindOf (OccursSym1 arg)) =>
+        OccursSym0KindInference
     type instance Apply OccursSym0 l = OccursSym1 l
     type AttrNotInSym2 (t :: Attribute) (t :: Schema) = AttrNotIn t t
     instance SuppressUnusedWarnings AttrNotInSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AttrNotInSym1KindInference GHC.Tuple.())
     data AttrNotInSym1 (l :: Attribute) (l :: TyFun Schema Bool)
-      = forall arg. (GHC.Types.~) (Apply (AttrNotInSym1 l) arg) (AttrNotInSym2 l arg) =>
-        AttrNotInSym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (AttrNotInSym1 l) arg)) (KindOf (AttrNotInSym2 l arg)) =>
+        AttrNotInSym1KindInference
     type instance Apply (AttrNotInSym1 l) l = AttrNotInSym2 l l
     instance SuppressUnusedWarnings AttrNotInSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AttrNotInSym0KindInference GHC.Tuple.())
     data AttrNotInSym0 (l :: TyFun Attribute (TyFun Schema Bool -> *))
-      = forall arg. (GHC.Types.~) (Apply AttrNotInSym0 arg) (AttrNotInSym1 arg) =>
-        AttrNotInSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply AttrNotInSym0 arg)) (KindOf (AttrNotInSym1 arg)) =>
+        AttrNotInSym0KindInference
     type instance Apply AttrNotInSym0 l = AttrNotInSym1 l
     type DisjointSym2 (t :: Schema) (t :: Schema) = Disjoint t t
     instance SuppressUnusedWarnings DisjointSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) DisjointSym1KindInference GHC.Tuple.())
     data DisjointSym1 (l :: Schema) (l :: TyFun Schema Bool)
-      = forall arg. (GHC.Types.~) (Apply (DisjointSym1 l) arg) (DisjointSym2 l arg) =>
-        DisjointSym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (DisjointSym1 l) arg)) (KindOf (DisjointSym2 l arg)) =>
+        DisjointSym1KindInference
     type instance Apply (DisjointSym1 l) l = DisjointSym2 l l
     instance SuppressUnusedWarnings DisjointSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) DisjointSym0KindInference GHC.Tuple.())
     data DisjointSym0 (l :: TyFun Schema (TyFun Schema Bool -> *))
-      = forall arg. (GHC.Types.~) (Apply DisjointSym0 arg) (DisjointSym1 arg) =>
-        DisjointSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply DisjointSym0 arg)) (KindOf (DisjointSym1 arg)) =>
+        DisjointSym0KindInference
     type instance Apply DisjointSym0 l = DisjointSym1 l
     type AppendSym2 (t :: Schema) (t :: Schema) = Append t t
     instance SuppressUnusedWarnings AppendSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AppendSym1KindInference GHC.Tuple.())
     data AppendSym1 (l :: Schema) (l :: TyFun Schema Schema)
-      = forall arg. (GHC.Types.~) (Apply (AppendSym1 l) arg) (AppendSym2 l arg) =>
-        AppendSym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (AppendSym1 l) arg)) (KindOf (AppendSym2 l arg)) =>
+        AppendSym1KindInference
     type instance Apply (AppendSym1 l) l = AppendSym2 l l
     instance SuppressUnusedWarnings AppendSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AppendSym0KindInference GHC.Tuple.())
     data AppendSym0 (l :: TyFun Schema (TyFun Schema Schema -> *))
-      = forall arg. (GHC.Types.~) (Apply AppendSym0 arg) (AppendSym1 arg) =>
-        AppendSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply AppendSym0 arg)) (KindOf (AppendSym1 arg)) =>
+        AppendSym0KindInference
     type instance Apply AppendSym0 l = AppendSym1 l
     type family Lookup (a :: GHC.Types.[] AChar)
                        (a :: Schema) :: U where

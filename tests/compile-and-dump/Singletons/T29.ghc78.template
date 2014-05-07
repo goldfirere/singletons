@@ -15,16 +15,16 @@ Singletons/T29.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) BarSym0KindInference GHC.Tuple.())
     data BarSym0 (l :: TyFun Bool Bool)
-      = forall arg. (GHC.Types.~) (Apply BarSym0 arg) (BarSym1 arg) =>
-        BarSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply BarSym0 arg)) (KindOf (BarSym1 arg)) =>
+        BarSym0KindInference
     type instance Apply BarSym0 l = BarSym1 l
     type FooSym1 (t :: Bool) = Foo t
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
     data FooSym0 (l :: TyFun Bool Bool)
-      = forall arg. (GHC.Types.~) (Apply FooSym0 arg) (FooSym1 arg) =>
-        FooSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply FooSym0 arg)) (KindOf (FooSym1 arg)) =>
+        FooSym0KindInference
     type instance Apply FooSym0 l = FooSym1 l
     type family Bar (a :: Bool) :: Bool where
       Bar x = Apply (Apply ($$) (Apply (Apply (:.$) NotSym0) (Apply (Apply (:.$) NotSym0) NotSym0))) x

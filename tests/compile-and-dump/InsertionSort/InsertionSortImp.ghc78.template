@@ -9,8 +9,8 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SuccSym0KindInference GHC.Tuple.())
     data SuccSym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply SuccSym0 arg) (SuccSym1 arg) =>
-        SuccSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply SuccSym0 arg)) (KindOf (SuccSym1 arg)) =>
+        SuccSym0KindInference
     type instance Apply SuccSym0 l = SuccSym1 l
     data instance Sing (z :: Nat)
       = (GHC.Types.~) z Zero => SZero |
@@ -65,8 +65,8 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym2KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym2 l l l
-      = forall arg. (GHC.Types.~) (Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) arg) (Let_0123456789Scrutinee_0123456789Sym3 l l arg) =>
-        Let_0123456789Scrutinee_0123456789Sym2KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym3 l l arg)) =>
+        Let_0123456789Scrutinee_0123456789Sym2KindInference
     type instance Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) l = Let_0123456789Scrutinee_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym1 where
       suppressUnusedWarnings _
@@ -74,8 +74,8 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym1KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym1 l l
-      = forall arg. (GHC.Types.~) (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg) (Let_0123456789Scrutinee_0123456789Sym2 l arg) =>
-        Let_0123456789Scrutinee_0123456789Sym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym2 l arg)) =>
+        Let_0123456789Scrutinee_0123456789Sym1KindInference
     type instance Apply (Let_0123456789Scrutinee_0123456789Sym1 l) l = Let_0123456789Scrutinee_0123456789Sym2 l l
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym0 where
       suppressUnusedWarnings _
@@ -83,8 +83,8 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (Apply Let_0123456789Scrutinee_0123456789Sym0 arg) (Let_0123456789Scrutinee_0123456789Sym1 arg) =>
-        Let_0123456789Scrutinee_0123456789Sym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg)) =>
+        Let_0123456789Scrutinee_0123456789Sym0KindInference
     type instance Apply Let_0123456789Scrutinee_0123456789Sym0 l = Let_0123456789Scrutinee_0123456789Sym1 l
     type Let_0123456789Scrutinee_0123456789 n h t =
         Apply (Apply LeqSym0 n) h
@@ -96,15 +96,15 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) LeqSym1KindInference GHC.Tuple.())
     data LeqSym1 (l :: Nat) (l :: TyFun Nat Bool)
-      = forall arg. (GHC.Types.~) (Apply (LeqSym1 l) arg) (LeqSym2 l arg) =>
-        LeqSym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (LeqSym1 l) arg)) (KindOf (LeqSym2 l arg)) =>
+        LeqSym1KindInference
     type instance Apply (LeqSym1 l) l = LeqSym2 l l
     instance SuppressUnusedWarnings LeqSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) LeqSym0KindInference GHC.Tuple.())
     data LeqSym0 (l :: TyFun Nat (TyFun Nat Bool -> *))
-      = forall arg. (GHC.Types.~) (Apply LeqSym0 arg) (LeqSym1 arg) =>
-        LeqSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply LeqSym0 arg)) (KindOf (LeqSym1 arg)) =>
+        LeqSym0KindInference
     type instance Apply LeqSym0 l = LeqSym1 l
     type InsertSym2 (t :: Nat) (t :: GHC.Types.[] Nat) = Insert t t
     instance SuppressUnusedWarnings InsertSym1 where
@@ -112,24 +112,24 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) InsertSym1KindInference GHC.Tuple.())
     data InsertSym1 (l :: Nat)
                     (l :: TyFun (GHC.Types.[] Nat) (GHC.Types.[] Nat))
-      = forall arg. (GHC.Types.~) (Apply (InsertSym1 l) arg) (InsertSym2 l arg) =>
-        InsertSym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (InsertSym1 l) arg)) (KindOf (InsertSym2 l arg)) =>
+        InsertSym1KindInference
     type instance Apply (InsertSym1 l) l = InsertSym2 l l
     instance SuppressUnusedWarnings InsertSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) InsertSym0KindInference GHC.Tuple.())
     data InsertSym0 (l :: TyFun Nat (TyFun (GHC.Types.[] Nat) (GHC.Types.[] Nat)
                                      -> *))
-      = forall arg. (GHC.Types.~) (Apply InsertSym0 arg) (InsertSym1 arg) =>
-        InsertSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply InsertSym0 arg)) (KindOf (InsertSym1 arg)) =>
+        InsertSym0KindInference
     type instance Apply InsertSym0 l = InsertSym1 l
     type InsertionSortSym1 (t :: GHC.Types.[] Nat) = InsertionSort t
     instance SuppressUnusedWarnings InsertionSortSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) InsertionSortSym0KindInference GHC.Tuple.())
     data InsertionSortSym0 (l :: TyFun (GHC.Types.[] Nat) (GHC.Types.[] Nat))
-      = forall arg. (GHC.Types.~) (Apply InsertionSortSym0 arg) (InsertionSortSym1 arg) =>
-        InsertionSortSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply InsertionSortSym0 arg)) (KindOf (InsertionSortSym1 arg)) =>
+        InsertionSortSym0KindInference
     type instance Apply InsertionSortSym0 l = InsertionSortSym1 l
     type family Leq (a :: Nat) (a :: Nat) :: Bool where
       Leq Zero z = TrueSym0

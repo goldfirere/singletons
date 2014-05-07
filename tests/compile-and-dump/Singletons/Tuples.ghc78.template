@@ -18,15 +18,15 @@ Singletons/Tuples.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Tuple2Sym1KindInference GHC.Tuple.())
     data Tuple2Sym1 (l :: a) (l :: TyFun b (GHC.Tuple.(,) a b))
-      = forall arg. (GHC.Types.~) (Apply (Tuple2Sym1 l) arg) (Tuple2Sym2 l arg) =>
-        Tuple2Sym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple2Sym1 l) arg)) (KindOf (Tuple2Sym2 l arg)) =>
+        Tuple2Sym1KindInference
     type instance Apply (Tuple2Sym1 l) l = Tuple2Sym2 l l
     instance SuppressUnusedWarnings Tuple2Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Tuple2Sym0KindInference GHC.Tuple.())
     data Tuple2Sym0 (l :: TyFun a (TyFun b (GHC.Tuple.(,) a b) -> *))
-      = forall arg. (GHC.Types.~) (Apply Tuple2Sym0 arg) (Tuple2Sym1 arg) =>
-        Tuple2Sym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply Tuple2Sym0 arg)) (KindOf (Tuple2Sym1 arg)) =>
+        Tuple2Sym0KindInference
     type instance Apply Tuple2Sym0 l = Tuple2Sym1 l
     data instance Sing (z :: GHC.Tuple.(,) a b)
       = forall (n :: a) (n :: b). (GHC.Types.~) z (GHC.Tuple.(,) n n) =>
@@ -54,16 +54,16 @@ Singletons/Tuples.hs:0:0: Splicing declarations
     data Tuple3Sym2 (l :: a)
                     (l :: b)
                     (l :: TyFun c (GHC.Tuple.(,,) a b c))
-      = forall arg. (GHC.Types.~) (Apply (Tuple3Sym2 l l) arg) (Tuple3Sym3 l l arg) =>
-        Tuple3Sym2KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple3Sym2 l l) arg)) (KindOf (Tuple3Sym3 l l arg)) =>
+        Tuple3Sym2KindInference
     type instance Apply (Tuple3Sym2 l l) l = Tuple3Sym3 l l l
     instance SuppressUnusedWarnings Tuple3Sym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Tuple3Sym1KindInference GHC.Tuple.())
     data Tuple3Sym1 (l :: a)
                     (l :: TyFun b (TyFun c (GHC.Tuple.(,,) a b c) -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple3Sym1 l) arg) (Tuple3Sym2 l arg) =>
-        Tuple3Sym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple3Sym1 l) arg)) (KindOf (Tuple3Sym2 l arg)) =>
+        Tuple3Sym1KindInference
     type instance Apply (Tuple3Sym1 l) l = Tuple3Sym2 l l
     instance SuppressUnusedWarnings Tuple3Sym0 where
       suppressUnusedWarnings _
@@ -71,8 +71,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
     data Tuple3Sym0 (l :: TyFun a (TyFun b (TyFun c (GHC.Tuple.(,,) a b c)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply Tuple3Sym0 arg) (Tuple3Sym1 arg) =>
-        Tuple3Sym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply Tuple3Sym0 arg)) (KindOf (Tuple3Sym1 arg)) =>
+        Tuple3Sym0KindInference
     type instance Apply Tuple3Sym0 l = Tuple3Sym1 l
     data instance Sing (z :: GHC.Tuple.(,,) a b c)
       = forall (n :: a)
@@ -108,8 +108,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                     (l :: b)
                     (l :: c)
                     (l :: TyFun d (GHC.Tuple.(,,,) a b c d))
-      = forall arg. (GHC.Types.~) (Apply (Tuple4Sym3 l l l) arg) (Tuple4Sym4 l l l arg) =>
-        Tuple4Sym3KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple4Sym3 l l l) arg)) (KindOf (Tuple4Sym4 l l l arg)) =>
+        Tuple4Sym3KindInference
     type instance Apply (Tuple4Sym3 l l l) l = Tuple4Sym4 l l l l
     instance SuppressUnusedWarnings Tuple4Sym2 where
       suppressUnusedWarnings _
@@ -117,8 +117,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
     data Tuple4Sym2 (l :: a)
                     (l :: b)
                     (l :: TyFun c (TyFun d (GHC.Tuple.(,,,) a b c d) -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple4Sym2 l l) arg) (Tuple4Sym3 l l arg) =>
-        Tuple4Sym2KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple4Sym2 l l) arg)) (KindOf (Tuple4Sym3 l l arg)) =>
+        Tuple4Sym2KindInference
     type instance Apply (Tuple4Sym2 l l) l = Tuple4Sym3 l l l
     instance SuppressUnusedWarnings Tuple4Sym1 where
       suppressUnusedWarnings _
@@ -126,8 +126,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
     data Tuple4Sym1 (l :: a)
                     (l :: TyFun b (TyFun c (TyFun d (GHC.Tuple.(,,,) a b c d) -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple4Sym1 l) arg) (Tuple4Sym2 l arg) =>
-        Tuple4Sym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple4Sym1 l) arg)) (KindOf (Tuple4Sym2 l arg)) =>
+        Tuple4Sym1KindInference
     type instance Apply (Tuple4Sym1 l) l = Tuple4Sym2 l l
     instance SuppressUnusedWarnings Tuple4Sym0 where
       suppressUnusedWarnings _
@@ -136,8 +136,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply Tuple4Sym0 arg) (Tuple4Sym1 arg) =>
-        Tuple4Sym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply Tuple4Sym0 arg)) (KindOf (Tuple4Sym1 arg)) =>
+        Tuple4Sym0KindInference
     type instance Apply Tuple4Sym0 l = Tuple4Sym1 l
     data instance Sing (z :: GHC.Tuple.(,,,) a b c d)
       = forall (n :: a)
@@ -178,8 +178,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                     (l :: c)
                     (l :: d)
                     (l :: TyFun e (GHC.Tuple.(,,,,) a b c d e))
-      = forall arg. (GHC.Types.~) (Apply (Tuple5Sym4 l l l l) arg) (Tuple5Sym5 l l l l arg) =>
-        Tuple5Sym4KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple5Sym4 l l l l) arg)) (KindOf (Tuple5Sym5 l l l l arg)) =>
+        Tuple5Sym4KindInference
     type instance Apply (Tuple5Sym4 l l l l) l = Tuple5Sym5 l l l l l
     instance SuppressUnusedWarnings Tuple5Sym3 where
       suppressUnusedWarnings _
@@ -188,8 +188,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                     (l :: b)
                     (l :: c)
                     (l :: TyFun d (TyFun e (GHC.Tuple.(,,,,) a b c d e) -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple5Sym3 l l l) arg) (Tuple5Sym4 l l l arg) =>
-        Tuple5Sym3KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple5Sym3 l l l) arg)) (KindOf (Tuple5Sym4 l l l arg)) =>
+        Tuple5Sym3KindInference
     type instance Apply (Tuple5Sym3 l l l) l = Tuple5Sym4 l l l l
     instance SuppressUnusedWarnings Tuple5Sym2 where
       suppressUnusedWarnings _
@@ -198,8 +198,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                     (l :: b)
                     (l :: TyFun c (TyFun d (TyFun e (GHC.Tuple.(,,,,) a b c d e) -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple5Sym2 l l) arg) (Tuple5Sym3 l l arg) =>
-        Tuple5Sym2KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple5Sym2 l l) arg)) (KindOf (Tuple5Sym3 l l arg)) =>
+        Tuple5Sym2KindInference
     type instance Apply (Tuple5Sym2 l l) l = Tuple5Sym3 l l l
     instance SuppressUnusedWarnings Tuple5Sym1 where
       suppressUnusedWarnings _
@@ -209,8 +209,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple5Sym1 l) arg) (Tuple5Sym2 l arg) =>
-        Tuple5Sym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple5Sym1 l) arg)) (KindOf (Tuple5Sym2 l arg)) =>
+        Tuple5Sym1KindInference
     type instance Apply (Tuple5Sym1 l) l = Tuple5Sym2 l l
     instance SuppressUnusedWarnings Tuple5Sym0 where
       suppressUnusedWarnings _
@@ -220,8 +220,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply Tuple5Sym0 arg) (Tuple5Sym1 arg) =>
-        Tuple5Sym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply Tuple5Sym0 arg)) (KindOf (Tuple5Sym1 arg)) =>
+        Tuple5Sym0KindInference
     type instance Apply Tuple5Sym0 l = Tuple5Sym1 l
     data instance Sing (z :: GHC.Tuple.(,,,,) a b c d e)
       = forall (n :: a)
@@ -275,8 +275,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                     (l :: d)
                     (l :: e)
                     (l :: TyFun f (GHC.Tuple.(,,,,,) a b c d e f))
-      = forall arg. (GHC.Types.~) (Apply (Tuple6Sym5 l l l l l) arg) (Tuple6Sym6 l l l l l arg) =>
-        Tuple6Sym5KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple6Sym5 l l l l l) arg)) (KindOf (Tuple6Sym6 l l l l l arg)) =>
+        Tuple6Sym5KindInference
     type instance Apply (Tuple6Sym5 l l l l l) l = Tuple6Sym6 l l l l l l
     instance SuppressUnusedWarnings Tuple6Sym4 where
       suppressUnusedWarnings _
@@ -286,8 +286,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                     (l :: c)
                     (l :: d)
                     (l :: TyFun e (TyFun f (GHC.Tuple.(,,,,,) a b c d e f) -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple6Sym4 l l l l) arg) (Tuple6Sym5 l l l l arg) =>
-        Tuple6Sym4KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple6Sym4 l l l l) arg)) (KindOf (Tuple6Sym5 l l l l arg)) =>
+        Tuple6Sym4KindInference
     type instance Apply (Tuple6Sym4 l l l l) l = Tuple6Sym5 l l l l l
     instance SuppressUnusedWarnings Tuple6Sym3 where
       suppressUnusedWarnings _
@@ -298,8 +298,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                     (l :: TyFun d (TyFun e (TyFun f (GHC.Tuple.(,,,,,) a b c d e f)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple6Sym3 l l l) arg) (Tuple6Sym4 l l l arg) =>
-        Tuple6Sym3KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple6Sym3 l l l) arg)) (KindOf (Tuple6Sym4 l l l arg)) =>
+        Tuple6Sym3KindInference
     type instance Apply (Tuple6Sym3 l l l) l = Tuple6Sym4 l l l l
     instance SuppressUnusedWarnings Tuple6Sym2 where
       suppressUnusedWarnings _
@@ -310,8 +310,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple6Sym2 l l) arg) (Tuple6Sym3 l l arg) =>
-        Tuple6Sym2KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple6Sym2 l l) arg)) (KindOf (Tuple6Sym3 l l arg)) =>
+        Tuple6Sym2KindInference
     type instance Apply (Tuple6Sym2 l l) l = Tuple6Sym3 l l l
     instance SuppressUnusedWarnings Tuple6Sym1 where
       suppressUnusedWarnings _
@@ -322,8 +322,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple6Sym1 l) arg) (Tuple6Sym2 l arg) =>
-        Tuple6Sym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple6Sym1 l) arg)) (KindOf (Tuple6Sym2 l arg)) =>
+        Tuple6Sym1KindInference
     type instance Apply (Tuple6Sym1 l) l = Tuple6Sym2 l l
     instance SuppressUnusedWarnings Tuple6Sym0 where
       suppressUnusedWarnings _
@@ -334,8 +334,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply Tuple6Sym0 arg) (Tuple6Sym1 arg) =>
-        Tuple6Sym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply Tuple6Sym0 arg)) (KindOf (Tuple6Sym1 arg)) =>
+        Tuple6Sym0KindInference
     type instance Apply Tuple6Sym0 l = Tuple6Sym1 l
     data instance Sing (z :: GHC.Tuple.(,,,,,) a b c d e f)
       = forall (n :: a)
@@ -400,8 +400,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                     (l :: e)
                     (l :: f)
                     (l :: TyFun g (GHC.Tuple.(,,,,,,) a b c d e f g))
-      = forall arg. (GHC.Types.~) (Apply (Tuple7Sym6 l l l l l l) arg) (Tuple7Sym7 l l l l l l arg) =>
-        Tuple7Sym6KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple7Sym6 l l l l l l) arg)) (KindOf (Tuple7Sym7 l l l l l l arg)) =>
+        Tuple7Sym6KindInference
     type instance Apply (Tuple7Sym6 l l l l l l) l = Tuple7Sym7 l l l l l l l
     instance SuppressUnusedWarnings Tuple7Sym5 where
       suppressUnusedWarnings _
@@ -412,8 +412,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                     (l :: d)
                     (l :: e)
                     (l :: TyFun f (TyFun g (GHC.Tuple.(,,,,,,) a b c d e f g) -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple7Sym5 l l l l l) arg) (Tuple7Sym6 l l l l l arg) =>
-        Tuple7Sym5KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple7Sym5 l l l l l) arg)) (KindOf (Tuple7Sym6 l l l l l arg)) =>
+        Tuple7Sym5KindInference
     type instance Apply (Tuple7Sym5 l l l l l) l = Tuple7Sym6 l l l l l l
     instance SuppressUnusedWarnings Tuple7Sym4 where
       suppressUnusedWarnings _
@@ -425,8 +425,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                     (l :: TyFun e (TyFun f (TyFun g (GHC.Tuple.(,,,,,,) a b c d e f g)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple7Sym4 l l l l) arg) (Tuple7Sym5 l l l l arg) =>
-        Tuple7Sym4KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple7Sym4 l l l l) arg)) (KindOf (Tuple7Sym5 l l l l arg)) =>
+        Tuple7Sym4KindInference
     type instance Apply (Tuple7Sym4 l l l l) l = Tuple7Sym5 l l l l l
     instance SuppressUnusedWarnings Tuple7Sym3 where
       suppressUnusedWarnings _
@@ -438,8 +438,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple7Sym3 l l l) arg) (Tuple7Sym4 l l l arg) =>
-        Tuple7Sym3KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple7Sym3 l l l) arg)) (KindOf (Tuple7Sym4 l l l arg)) =>
+        Tuple7Sym3KindInference
     type instance Apply (Tuple7Sym3 l l l) l = Tuple7Sym4 l l l l
     instance SuppressUnusedWarnings Tuple7Sym2 where
       suppressUnusedWarnings _
@@ -451,8 +451,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple7Sym2 l l) arg) (Tuple7Sym3 l l arg) =>
-        Tuple7Sym2KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple7Sym2 l l) arg)) (KindOf (Tuple7Sym3 l l arg)) =>
+        Tuple7Sym2KindInference
     type instance Apply (Tuple7Sym2 l l) l = Tuple7Sym3 l l l
     instance SuppressUnusedWarnings Tuple7Sym1 where
       suppressUnusedWarnings _
@@ -464,8 +464,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply (Tuple7Sym1 l) arg) (Tuple7Sym2 l arg) =>
-        Tuple7Sym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Tuple7Sym1 l) arg)) (KindOf (Tuple7Sym2 l arg)) =>
+        Tuple7Sym1KindInference
     type instance Apply (Tuple7Sym1 l) l = Tuple7Sym2 l l
     instance SuppressUnusedWarnings Tuple7Sym0 where
       suppressUnusedWarnings _
@@ -477,8 +477,8 @@ Singletons/Tuples.hs:0:0: Splicing declarations
                                                      -> *)
                                             -> *)
                                    -> *))
-      = forall arg. (GHC.Types.~) (Apply Tuple7Sym0 arg) (Tuple7Sym1 arg) =>
-        Tuple7Sym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply Tuple7Sym0 arg)) (KindOf (Tuple7Sym1 arg)) =>
+        Tuple7Sym0KindInference
     type instance Apply Tuple7Sym0 l = Tuple7Sym1 l
     data instance Sing (z :: GHC.Tuple.(,,,,,,) a b c d e f g)
       = forall (n :: a)

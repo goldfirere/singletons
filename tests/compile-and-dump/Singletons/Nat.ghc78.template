@@ -35,31 +35,31 @@ Singletons/Nat.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SuccSym0KindInference GHC.Tuple.())
     data SuccSym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply SuccSym0 arg) (SuccSym1 arg) =>
-        SuccSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply SuccSym0 arg)) (KindOf (SuccSym1 arg)) =>
+        SuccSym0KindInference
     type instance Apply SuccSym0 l = SuccSym1 l
     type PredSym1 (t :: Nat) = Pred t
     instance SuppressUnusedWarnings PredSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PredSym0KindInference GHC.Tuple.())
     data PredSym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply PredSym0 arg) (PredSym1 arg) =>
-        PredSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply PredSym0 arg)) (KindOf (PredSym1 arg)) =>
+        PredSym0KindInference
     type instance Apply PredSym0 l = PredSym1 l
     type PlusSym2 (t :: Nat) (t :: Nat) = Plus t t
     instance SuppressUnusedWarnings PlusSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PlusSym1KindInference GHC.Tuple.())
     data PlusSym1 (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply (PlusSym1 l) arg) (PlusSym2 l arg) =>
-        PlusSym1KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (PlusSym1 l) arg)) (KindOf (PlusSym2 l arg)) =>
+        PlusSym1KindInference
     type instance Apply (PlusSym1 l) l = PlusSym2 l l
     instance SuppressUnusedWarnings PlusSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PlusSym0KindInference GHC.Tuple.())
     data PlusSym0 (l :: TyFun Nat (TyFun Nat Nat -> *))
-      = forall arg. (GHC.Types.~) (Apply PlusSym0 arg) (PlusSym1 arg) =>
-        PlusSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply PlusSym0 arg)) (KindOf (PlusSym1 arg)) =>
+        PlusSym0KindInference
     type instance Apply PlusSym0 l = PlusSym1 l
     type family Pred (a :: Nat) :: Nat where
       Pred Zero = ZeroSym0

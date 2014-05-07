@@ -26,38 +26,38 @@ Singletons/Operators.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+:$$###) GHC.Tuple.())
     data (:+:$$) (l :: Foo) (l :: TyFun Foo Foo)
-      = forall arg. (GHC.Types.~) (Apply ((:+:$$) l) arg) ((:+:$$$) l arg) =>
-        (:+:$$###) (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply ((:+:$$) l) arg)) (KindOf ((:+:$$$) l arg)) =>
+        (:+:$$###)
     type instance Apply ((:+:$$) l) l = (:+:$$$) l l
     instance SuppressUnusedWarnings (:+:$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+:$###) GHC.Tuple.())
     data (:+:$) (l :: TyFun Foo (TyFun Foo Foo -> *))
-      = forall arg. (GHC.Types.~) (Apply (:+:$) arg) ((:+:$$) arg) =>
-        (:+:$###) (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (:+:$) arg)) (KindOf ((:+:$$) arg)) =>
+        (:+:$###)
     type instance Apply (:+:$) l = (:+:$$) l
     type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
     instance SuppressUnusedWarnings (:+$$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+$$###) GHC.Tuple.())
     data (:+$$) (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Apply ((:+$$) l) arg) ((:+$$$) l arg) =>
-        (:+$$###) (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply ((:+$$) l) arg)) (KindOf ((:+$$$) l arg)) =>
+        (:+$$###)
     type instance Apply ((:+$$) l) l = (:+$$$) l l
     instance SuppressUnusedWarnings (:+$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+$###) GHC.Tuple.())
     data (:+$) (l :: TyFun Nat (TyFun Nat Nat -> *))
-      = forall arg. (GHC.Types.~) (Apply (:+$) arg) ((:+$$) arg) =>
-        (:+$###) (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (:+$) arg)) (KindOf ((:+$$) arg)) =>
+        (:+$###)
     type instance Apply (:+$) l = (:+$$) l
     type ChildSym1 (t :: Foo) = Child t
     instance SuppressUnusedWarnings ChildSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ChildSym0KindInference GHC.Tuple.())
     data ChildSym0 (l :: TyFun Foo Foo)
-      = forall arg. (GHC.Types.~) (Apply ChildSym0 arg) (ChildSym1 arg) =>
-        ChildSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply ChildSym0 arg)) (KindOf (ChildSym1 arg)) =>
+        ChildSym0KindInference
     type instance Apply ChildSym0 l = ChildSym1 l
     type family (:+) (a :: Nat) (a :: Nat) :: Nat where
       (:+) Zero m = m

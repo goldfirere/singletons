@@ -52,23 +52,23 @@ Singletons/Star.hs:0:0: Splicing declarations
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) MaybeSym0KindInference GHC.Tuple.())
     data MaybeSym0 (l :: TyFun * *)
-      = forall arg. (GHC.Types.~) (Apply MaybeSym0 arg) (MaybeSym1 arg) =>
-        MaybeSym0KindInference (Data.Proxy.Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply MaybeSym0 arg)) (KindOf (MaybeSym1 arg)) =>
+        MaybeSym0KindInference
     type instance Apply MaybeSym0 l = MaybeSym1 l
     type VecSym2 (t :: *) (t :: Nat) = Vec t t
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings VecSym1 where
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) VecSym1KindInference GHC.Tuple.())
     data VecSym1 (l :: *) (l :: TyFun Nat *)
-      = forall arg. (GHC.Types.~) (Apply (VecSym1 l) arg) (VecSym2 l arg) =>
-        VecSym1KindInference (Data.Proxy.Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply (VecSym1 l) arg)) (KindOf (VecSym2 l arg)) =>
+        VecSym1KindInference
     type instance Apply (VecSym1 l) l = VecSym2 l l
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings VecSym0 where
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) VecSym0KindInference GHC.Tuple.())
     data VecSym0 (l :: TyFun * (TyFun Nat * -> *))
-      = forall arg. (GHC.Types.~) (Apply VecSym0 arg) (VecSym1 arg) =>
-        VecSym0KindInference (Data.Proxy.Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply VecSym0 arg)) (KindOf (VecSym1 arg)) =>
+        VecSym0KindInference
     type instance Apply VecSym0 l = VecSym1 l
     data instance Sing (z :: *)
       = (GHC.Types.~) z Nat => SNat |

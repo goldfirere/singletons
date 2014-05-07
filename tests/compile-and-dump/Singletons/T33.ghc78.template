@@ -11,8 +11,8 @@ Singletons/T33.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
     data FooSym0 (l :: TyFun (GHC.Tuple.(,) Bool Bool) GHC.Tuple.())
-      = forall arg. (GHC.Types.~) (Apply FooSym0 arg) (FooSym1 arg) =>
-        FooSym0KindInference (Proxy arg)
+      = forall arg. (GHC.Types.~) (KindOf (Apply FooSym0 arg)) (KindOf (FooSym1 arg)) =>
+        FooSym0KindInference
     type instance Apply FooSym0 l = FooSym1 l
     type family Foo (a :: GHC.Tuple.(,) Bool Bool) :: GHC.Tuple.() where
       Foo (GHC.Tuple.(,) z z) = Tuple0Sym0
