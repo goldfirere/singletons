@@ -33,7 +33,6 @@ extensions. This list includes, but is not necessarily limited to, the
 following:
 
 * `ScopedTypeVariables` (absolutely required)
-* `AllowAmbiguousTypes` (absolutely required under GHC 7.8.2+)
 * `TemplateHaskell`
 * `TypeFamilies`
 * `GADTs`

@@ -96,7 +96,6 @@ ghcOpts = [
   , "-XCPP"
   , "-XLambdaCase"
   , "-XUnboxedTuples"
-  , "-XAllowAmbiguousTypes"
   ]
 
 -- Note [-package-name hack]

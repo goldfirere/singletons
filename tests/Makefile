@@ -16,7 +16,7 @@ OPTS += -fno-warn-name-shadowing
 else
 # Parallel build with 2 threads. Using more threads can actually make the test
 # slower - see https://github.com/jstolarek/singletons/issues/35
-OPTS += -j2 -fprint-explicit-kinds -XAllowAmbiguousTypes
+OPTS += -j2 -fprint-explicit-kinds
 endif
 
 

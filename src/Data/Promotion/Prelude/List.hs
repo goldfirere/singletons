@@ -2,10 +2,6 @@
              TemplateHaskell, GADTs, UndecidableInstances, RankNTypes,
              ScopedTypeVariables #-}
 
-#if __GLASGOW_HASKELL__ >= 707
-{-# LANGUAGE AllowAmbiguousTypes #-}
-#endif
-
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Promotion.Prelude.List

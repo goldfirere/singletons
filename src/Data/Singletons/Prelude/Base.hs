@@ -1,9 +1,6 @@
 {-# LANGUAGE CPP, TemplateHaskell, KindSignatures, PolyKinds, TypeOperators,
              DataKinds, ScopedTypeVariables, TypeFamilies, GADTs,
              UndecidableInstances #-}
-#if __GLASGOW_HASKELL__ >= 707
-{-# LANGUAGE AllowAmbiguousTypes #-}   -- GHC #9019
-#endif
 
 -----------------------------------------------------------------------------
 -- |

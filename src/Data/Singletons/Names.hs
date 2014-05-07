@@ -32,7 +32,7 @@ anyTypeName, boolName, andName, tyEqName, tyCompareName, repName,
   sListName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
   equalityName, applySingName, suppressClassName, suppressMethodName,
-  tyThenCmpName :: Name
+  tyThenCmpName, kindOfName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
@@ -83,6 +83,7 @@ applySingName = 'applySing
 suppressClassName = ''SuppressUnusedWarnings
 suppressMethodName = 'suppressUnusedWarnings
 tyThenCmpName = mkName "ThenCmp"
+kindOfName = ''KindOf
 
 mkTupleName :: Int -> Name
 mkTupleName n = mkName $ "STuple" ++ (show n)
