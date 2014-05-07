@@ -119,6 +119,9 @@ module Data.Singletons.Prelude (
 
   -- * Other functions
   either_, -- reimplementation of either to be used with singletons library
+  maybe_,
+  bool_,
+  any_,
 
   -- * Defunctionalization symbols
   FalseSym0, TrueSym0,

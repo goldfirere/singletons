@@ -67,6 +67,8 @@ module Data.Promotion.Prelude (
 
   -- * Other functions
   either_, -- reimplementation of either to be used with singletons library
+  maybe_,
+  bool_,
   any_, -- equivalent of Data.List `any`. Avoids name clash with Any type
 
   -- * Defunctionalization symbols

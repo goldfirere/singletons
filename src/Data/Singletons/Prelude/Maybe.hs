@@ -43,7 +43,7 @@ module Data.Singletons.Prelude.Maybe (
   -- | 'SBool' is a kind-restricted synonym for 'Sing': @type SMaybe (a :: Maybe k) = Sing a@
 
   -- * Singletons from @Data.Maybe@
-  Maybe_, sMaybe_,
+  maybe_, Maybe_, sMaybe_,
   -- | The preceding two definitions are derived from the function 'maybe' in
   -- @Data.Maybe@. The extra underscore is to avoid name clashes with the type
   -- 'Maybe'.
@@ -67,7 +67,7 @@ import Data.Singletons
 import Data.Singletons.TH
 import Data.Singletons.TypeLits
 
-$(singletonsOnly [d|
+$(singletons [d|
   -- | The 'maybe' function takes a default value, a function, and a 'Maybe'
   -- value.  If the 'Maybe' value is 'Nothing', the function returns the
   -- default value.  Otherwise, it applies the function to the value inside
@@ -75,7 +75,9 @@ $(singletonsOnly [d|
   maybe_ :: b -> (a -> b) -> Maybe a -> b
   maybe_ n _ Nothing  = n
   maybe_ _ f (Just x) = f x
+ |])
 
+$(singletonsOnly [d|
   -- | The 'isJust' function returns 'True' iff its argument is of the
   -- form @Just _@.
   isJust         :: Maybe a -> Bool

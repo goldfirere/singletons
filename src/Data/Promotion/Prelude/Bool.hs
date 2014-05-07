@@ -12,7 +12,7 @@
 ----------------------------------------------------------------------------
 
 module Data.Promotion.Prelude.Bool (
-  If, Not, (:&&), (:||), Bool_, Otherwise,
+  bool_, If, Not, (:&&), (:||), Bool_, Otherwise,
 
   -- * Defunctionalization symbols
   TrueSym0, FalseSym0,

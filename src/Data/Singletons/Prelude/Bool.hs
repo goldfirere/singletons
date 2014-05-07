@@ -46,7 +46,7 @@ module Data.Singletons.Prelude.Bool (
 
   -- | The following are derived from the function 'bool' in @Data.Bool@. The extra
   -- underscore is to avoid name clashes with the type 'Bool'.
-  Bool_, sBool_, Otherwise, sOtherwise,
+  bool_, Bool_, sBool_, Otherwise, sOtherwise,
 
   -- * Defunctionalization symbols
   TrueSym0, FalseSym0,
@@ -63,6 +63,12 @@ import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
 import Data.Singletons.Types
 
+$(singletons [d|
+  bool_ :: a -> a -> Bool -> a
+  bool_ fls _tru False = fls
+  bool_ _fls tru True  = tru
+ |])
+
 $(singletonsOnly [d|
   (&&) :: Bool -> Bool -> Bool
   False && _ = False
@@ -75,10 +81,6 @@ $(singletonsOnly [d|
   not :: Bool -> Bool
   not False = True
   not True = False
-
-  bool_ :: a -> a -> Bool -> a
-  bool_ fls _tru False = fls
-  bool_ _fls tru True  = tru
 
   otherwise               :: Bool
   otherwise               =  True

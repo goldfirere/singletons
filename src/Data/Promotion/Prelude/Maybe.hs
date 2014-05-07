@@ -13,6 +13,8 @@
 
 
 module Data.Promotion.Prelude.Maybe (
+  maybe_,
+
   Maybe_, IsJust, IsNothing, FromJust, FromMaybe, MaybeToList,
   ListToMaybe, CatMaybes, MapMaybe,
 
