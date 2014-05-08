@@ -38,7 +38,8 @@ module Data.Singletons.Prelude.List (
   -- | 'SList' is a kind-restricted synonym for 'Sing': @type SList (a :: [k]) = Sing a@
 
   -- * Basic functions
-  (:++), (%:++), Head, sHead, Last, sLast, Tail, sTail, Init, sInit, Null, sNull,
+  (:++), (%:++), Head, sHead, Last, sLast, Tail, sTail, Init, sInit,
+  Null, sNull,
 
    -- * List transformations
   Map, sMap, Reverse, sReverse, Intersperse, sIntersperse,
@@ -86,7 +87,7 @@ module Data.Singletons.Prelude.List (
   -- * Special lists
 
   -- ** \"Set\" operations
-  Delete, sDelete, (:\\), (%:\\), --Intersect, sIntersect,
+  Delete, sDelete, (:\\), (%:\\),
 
   -- ** Ordered lists
   -- Insert, sInsert, Sort, sSort,
@@ -95,7 +96,6 @@ module Data.Singletons.Prelude.List (
 
   -- ** The \"@By@\" operations
   DeleteBy, sDeleteBy, DeleteFirstsBy, sDeleteFirstsBy,
-  -- IntersectBy, sIntersectBy,
 
   SortBy, sSortBy, InsertBy, sInsertBy,
   MaximumBy, sMaximumBy, MinimumBy, sMinimumBy,
@@ -158,14 +158,12 @@ module Data.Singletons.Prelude.List (
 
   DeleteSym0, DeleteSym1, DeleteSym2,
   (:\\$), (:\\$$), (:\\$$$),
-  -- IntersectSym0, IntersectSym1, IntersectSym2,
 
   -- InsertSym0, InsertSym1, InsertSym2,
   -- SortSym0, SortSym1,
 
   DeleteBySym0, DeleteBySym1, DeleteBySym2, DeleteBySym3,
   DeleteFirstsBySym0, DeleteFirstsBySym1, DeleteFirstsBySym2, DeleteFirstsBySym3,
-  -- IntersectBySym0, IntersectBySym1, IntersectBySym2,
 
   SortBySym0, SortBySym1, SortBySym2,
   InsertBySym0, InsertBySym1, InsertBySym2, InsertBySym3,
@@ -213,17 +211,6 @@ $(singletonsOnly [d|
   null                    :: [a] -> Bool
   null []                 =  True
   null (_:_)              =  False
-
---  Can't be promoted because of limitations of Int promotion
---  length                  :: [a] -> Int
---  length l                =  lenAcc l 0#
---
---  lenAcc :: [a] -> Int# -> Int
---  lenAcc []     a# = I# a#
---  lenAcc (_:xs) a# = lenAcc xs (a# +# 1#)
---
---  incLen :: a -> (Int# -> Int) -> Int# -> Int
---  incLen _ g x = g (x +# 1#)
 
   reverse                 :: [a] -> [a]
   reverse l =  rev l []
@@ -305,19 +292,6 @@ $(singletonsOnly [d|
   all _ []                =  True
   all p (x:xs)            =  p x && all p xs
 
---  Not promotable due to restrictions in Integer literals
---  sum                     :: (Num a) => [a] -> a
---  sum     l       = sum' l 0
---    where
---      sum' []     a = a
---      sum' (x:xs) a = sum' xs (a+x)
---
---  product                 :: (Num a) => [a] -> a
---  product l       = prod l 1
---    where
---      prod []     a = a
---      prod (x:xs) a = prod xs (a*x)
-
   scanl         :: (b -> a -> b) -> b -> [a] -> [b]
   scanl f q ls  =  q : (case ls of
                         []   -> []
@@ -357,40 +331,11 @@ $(singletonsOnly [d|
                              where (s'',y ) = f s' x
                                    (s', ys) = mapAccumR f s xs
 
--- Functions working on infinite lists don't promote because they create
--- infinite types. replicate also uses integers
---  iterate :: (a -> a) -> a -> [a]
---  iterate f x =  x : iterate f (f x)
---
---  repeat :: a -> [a]
---  repeat x = xs where xs = x : xs
---
---  replicate               :: Int -> a -> [a]
---  replicate n x           =  take n (repeat x)
---
---  cycle                   :: [a] -> [a]
---  cycle []                = error "Data.Singletons.List.cycle: empty list"
---  cycle xs                = xs' where xs' = xs ++ xs'
-
   unfoldr      :: (b -> Maybe (a, b)) -> b -> [a]
   unfoldr f b  =
     case f b of
      Just (a,new_b) -> a : unfoldr f new_b
      Nothing        -> []
-
--- These don't promote because we can't promote - (minus)
---  take                   :: Int -> [a] -> [a]
---  take n _      | n <= 0 =  []
---  take _ []              =  []
---  take n (x:xs)          =  x : take (n-1) xs
-
---  drop                   :: Int -> [a] -> [a]
---  drop n xs     | n <= 0 =  xs
---  drop _ []              =  []
---  drop n (_:xs)          =  drop (n-1) xs
-
---  splitAt                :: Int -> [a] -> ([a],[a])
---  splitAt n xs           =  (take n xs, drop n xs)
 
   inits                   :: [a] -> [[a]]
   inits xs                =  [] : case xs of
@@ -421,26 +366,6 @@ $(singletonsOnly [d|
   notElem                 :: (Eq a) => a -> [a] -> Bool
   notElem _ []            =  True
   notElem x (y:ys)        =  x /= y && notElem x ys
-
--- These don't promote because we can't promote - (minus)
---  (!!)                    :: [a] -> Int -> a
---  xs     !! n | n < 0 =  error "Data.Singletons.List.!!: negative index"
---  []     !! _         =  error "Data.Singletons.List.!!: index too large"
---  (x:_)  !! 0         =  x
---  (_:xs) !! n         =  xs !! (n-1)
-
--- Needs monad promotion
---  elemIndex       :: Eq a => a -> [a] -> Maybe Int
---  elemIndex x     = findIndex (x==)
---
---  elemIndices     :: Eq a => a -> [a] -> [Int]
---  elemIndices x   = findIndices (x==)
---
---  findIndex       :: (a -> Bool) -> [a] -> Maybe Int
---  findIndex p     = listToMaybe . findIndices p
---
---  findIndices      :: (a -> Bool) -> [a] -> [Int]
---  findIndices p xs = [ i | (x,i) <- zip xs [0..], p x]
 
   zip :: [a] -> [b] -> [(a,b)]
   zip (x:xs) (y:ys) = (x,y) : zip xs ys
@@ -534,23 +459,12 @@ $(singletonsOnly [d|
   (\\)                    :: (Eq a) => [a] -> [a] -> [a]
   (\\)                    =  foldl (flip delete)
 
---  Relies on intersectBy, which relies on list monad
---  intersect               :: (Eq a) => [a] -> [a] -> [a]
---  intersect               =  intersectBy (==)
-
   deleteBy                :: (a -> a -> Bool) -> a -> [a] -> [a]
   deleteBy _  _ []        = []
   deleteBy eq x (y:ys)    = if x `eq` y then ys else y : deleteBy eq x ys
 
   deleteFirstsBy          :: (a -> a -> Bool) -> [a] -> [a] -> [a]
   deleteFirstsBy eq       =  foldl (flip (deleteBy eq))
-
---  Needs list monad promotion
---  intersectBy             :: (a -> a -> Bool) -> [a] -> [a] -> [a]
---  intersectBy _  [] []    =  []
---  intersectBy _  [] (_:_) =  []
---  intersectBy _  (_:_) [] =  []
---  intersectBy eq xs ys    =  [x | x <- xs, any_ (eq x) ys]
 
   sortBy :: (a -> a -> Ordering) -> [a] -> [a]
   sortBy cmp  = foldr (insertBy cmp) []
@@ -581,11 +495,6 @@ $(singletonsOnly [d|
                                          EQ -> x
                                          LT -> x
 
--- Promotion of these generic functions requires bettern handling of
--- integers at the type level:
---
---  genericLength, genericTake, genericDrop, genericSplitAt, genericIndex
---  genericReplicate
   |])
 
 -- The symbol []$ is clearly malformed, so we have to name this symbol

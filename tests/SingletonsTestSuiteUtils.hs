@@ -74,6 +74,7 @@ ghcOpts = [
   , "-ddump-splices"
   , "-dsuppress-uniques"
   , "-fforce-recomp"
+  , "-fprint-explicit-kinds"
   , "-i" ++ includePath
   , "-XTemplateHaskell"
   , "-XDataKinds"

@@ -1,6 +1,6 @@
 {-# LANGUAGE CPP, TypeOperators, DataKinds, PolyKinds, TypeFamilies,
              TemplateHaskell, GADTs, UndecidableInstances, RankNTypes,
-             ScopedTypeVariables #-}
+             ScopedTypeVariables, MultiWayIf #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -16,7 +16,10 @@
 ----------------------------------------------------------------------------
 
 module Data.Promotion.Prelude.List (
-  -- Transpose,
+  Length, Sum, Product, Replicate,
+
+  Transpose,
+  Take, Drop, SplitAt,
   TakeWhile, DropWhile, DropWhileEnd, Span, Break,
   StripPrefix,
 
@@ -35,6 +38,10 @@ module Data.Promotion.Prelude.List (
   -- ** Searching with a predicate
   Find, Filter, Partition,
 
+  (:!!),
+
+  ElemIndex, ElemIndices, FindIndex, FindIndices,
+
   -- * Zipping and unzipping lists
   Zip4, Zip5, Zip6, Zip7,
   ZipWith4, ZipWith5, ZipWith6, ZipWith7,
@@ -49,8 +56,17 @@ module Data.Promotion.Prelude.List (
   -- ** The \"@By@\" operations
   GroupBy, NubBy, UnionBy,
 
+  GenericLength, GenericTake, GenericDrop,
+  GenericSplitAt, GenericIndex, GenericReplicate,
+
   -- * Defunctionalization symbols
---  TransposeSym0, TransposeSym1,
+  LengthSym0, LengthSym1,
+  SumSym0, SumSym1, ProductSym0, ProductSym1,
+  ReplicateSym0, ReplicateSym1, ReplicateSym2,
+  TransposeSym0, TransposeSym1,
+  TakeSym0, TakeSym1, TakeSym2,
+  DropSym0, DropSym1, DropSym2,
+  SplitAtSym0, SplitAtSym1, SplitAtSym2,
   TakeWhileSym0, TakeWhileSym1, TakeWhileSym2,
   DropWhileSym0, DropWhileSym1, DropWhileSym2,
   DropWhileEndSym0, DropWhileEndSym1, DropWhileEndSym2,
@@ -66,6 +82,13 @@ module Data.Promotion.Prelude.List (
   FilterSym0, FilterSym1, FilterSym2,
   PartitionSym0, PartitionSym1, PartitionSym2,
 
+  (:!!$), (:!!$$), (:!!$$$),
+
+  ElemIndexSym0, ElemIndexSym1, ElemIndexSym2,
+  ElemIndicesSym0, ElemIndicesSym1, ElemIndicesSym2,
+  FindIndexSym0, FindIndexSym1, FindIndexSym2,
+  FindIndicesSym0, FindIndicesSym1, FindIndicesSym2,
+
   Zip4Sym0, Zip4Sym1, Zip4Sym2, Zip4Sym3, Zip4Sym4,
   Zip5Sym0, Zip5Sym1, Zip5Sym2, Zip5Sym3, Zip5Sym4, Zip5Sym5,
   Zip6Sym0, Zip6Sym1, Zip6Sym2, Zip6Sym3, Zip6Sym4, Zip6Sym5, Zip6Sym6,
@@ -80,6 +103,13 @@ module Data.Promotion.Prelude.List (
   NubBySym0, NubBySym1, NubBySym2,
   UnionSym0, UnionSym1, UnionSym2,
   UnionBySym0, UnionBySym1, UnionBySym2, UnionBySym3,
+
+  GenericLengthSym0, GenericLengthSym1,
+  GenericTakeSym0, GenericTakeSym1, GenericTakeSym2,
+  GenericDropSym0, GenericDropSym1, GenericDropSym2,
+  GenericSplitAtSym0, GenericSplitAtSym1, GenericSplitAtSym2,
+  GenericIndexSym0, GenericIndexSym1, GenericIndexSym2,
+  GenericReplicateSym0, GenericReplicateSym1, GenericReplicateSym2,
 
   -- * Re-exports from Data.Singletons.Prelude
   (:++), Head, Last, Tail, Init, Null,
@@ -125,7 +155,7 @@ module Data.Promotion.Prelude.List (
   -- * Special lists
 
   -- ** \"Set\" operations
-  Delete, (:\\), --Intersect,
+  Delete, (:\\), Intersect,
 
   -- ** Ordered lists
   -- Insert, Sort,
@@ -134,7 +164,7 @@ module Data.Promotion.Prelude.List (
 
   -- ** The \"@By@\" operations
   DeleteBy, DeleteFirstsBy,
-  -- IntersectBy,
+  IntersectBy,
 
   SortBy, InsertBy,
   MaximumBy, MinimumBy,
@@ -197,14 +227,14 @@ module Data.Promotion.Prelude.List (
 
   DeleteSym0, DeleteSym1, DeleteSym2,
   (:\\$), (:\\$$), (:\\$$$),
-  -- IntersectSym0, IntersectSym1, IntersectSym2,
+  IntersectSym0, IntersectSym1, IntersectSym2,
 
   InsertSym0, InsertSym1, InsertSym2,
   SortSym0, SortSym1,
 
   DeleteBySym0, DeleteBySym1, DeleteBySym2, DeleteBySym3,
   DeleteFirstsBySym0, DeleteFirstsBySym1, DeleteFirstsBySym2, DeleteFirstsBySym3,
-  -- IntersectBySym0, IntersectBySym1, IntersectBySym2,
+  IntersectBySym0, IntersectBySym1, IntersectBySym2,
 
   SortBySym0, SortBySym1, SortBySym2,
   InsertBySym0, InsertBySym1, InsertBySym2, InsertBySym3,
@@ -218,7 +248,9 @@ import Data.Singletons.Prelude.Eq
 import Data.Promotion.Prelude.Ord
 import Data.Singletons.Prelude.List
 import Data.Singletons.Prelude.Maybe
+import Data.Singletons.Prelude.Tuple
 import Data.Singletons.TH
+import Data.Singletons.TypeLits
 
 import Data.Maybe (listToMaybe)
 -- these imports are required fir functions that singletonize but are used
@@ -226,11 +258,109 @@ import Data.Maybe (listToMaybe)
 import Data.List  (deleteBy, sortBy, insertBy)
 
 $(promoteOnly [d|
--- Needs monad promotion
+-- Can't be promoted because of limitations of Int promotion
+-- Below is a re-implementation using Nat
+--  length                  :: [a] -> Int
+--  length l                =  lenAcc l 0#
+--
+--  lenAcc :: [a] -> Int# -> Int
+--  lenAcc []     a# = I# a#
+--  lenAcc (_:xs) a# = lenAcc xs (a# +# 1#)
+--
+--  incLen :: a -> (Int# -> Int) -> Int# -> Int
+--  incLen _ g x = g (x +# 1#)
+
+  length :: [a] -> Nat
+  length [] = 0
+  length (_:xs) = 1 + length xs
+
+-- Can't be promoted because of limitations of Int promotion
+-- Below is a re-implementation using Nat
+--  sum                     :: (Num a) => [a] -> a
+--  sum     l       = sum' l 0
+--    where
+--      sum' []     a = a
+--      sum' (x:xs) a = sum' xs (a+x)
+--
+--  product                 :: (Num a) => [a] -> a
+--  product l       = prod l 1
+--    where
+--      prod []     a = a
+--      prod (x:xs) a = prod xs (a*x)
+
+  sum                     :: [Nat] -> Nat
+  sum     l       = sum' l 0
+    where
+      sum' []     a = a
+      sum' (x:xs) a = sum' xs (a+x)
+
+  product                 :: [Nat] -> Nat
+  product l       = prod l 1
+    where
+      prod []     a = a
+      prod (x:xs) a = prod xs (a*x)
+
+-- Functions working on infinite lists don't promote because they create
+-- infinite types. replicate also uses integers, but luckily it can be rewritten
+--  iterate :: (a -> a) -> a -> [a]
+--  iterate f x =  x : iterate f (f x)
+--
+--  repeat :: a -> [a]
+--  repeat x = xs where xs = x : xs
+--
+--  replicate               :: Int -> a -> [a]
+--  replicate n x           =  take n (repeat x)
+--
+--  cycle                   :: [a] -> [a]
+--  cycle []                = error "Data.Singletons.List.cycle: empty list"
+--  cycle xs                = xs' where xs' = xs ++ xs'
+
+  replicate               :: Nat -> a -> [a]
+  replicate 0 _           = []
+  replicate n x           = x : replicate (n-1) x
+
+-- Uses list comprehensions
 --  transpose               :: [[a]] -> [[a]]
 --  transpose []             = []
 --  transpose ([]   : xss)   = transpose xss
 --  transpose ((x:xs) : xss) = (x : [h | (h:_) <- xss]) : transpose (xs : [ t | (_:t) <- xss])
+
+  transpose               :: [[a]] -> [[a]]
+  transpose []             = []
+  transpose ([]   : xss)   = transpose xss
+  transpose ((x:xs) : xss) = (x : (map head xss)) : transpose (xs : (map tail xss))
+
+-- Can't be promoted because of limitations of Int promotion
+-- Below is a re-implementation using Nat
+--  take                   :: Int -> [a] -> [a]
+--  take n _      | n <= 0 =  []
+--  take _ []              =  []
+--  take n (x:xs)          =  x : take (n-1) xs
+
+--  drop                   :: Int -> [a] -> [a]
+--  drop n xs     | n <= 0 =  xs
+--  drop _ []              =  []
+--  drop n (_:xs)          =  drop (n-1) xs
+
+--  splitAt                :: Int -> [a] -> ([a],[a])
+--  splitAt n xs           =  (take n xs, drop n xs)
+
+  -- Implementation changed to use case expression to work around #60
+  take                   :: Nat -> [a] -> [a]
+  take _ []              =  []
+  take n (x:xs)  =  case n <= 0 of
+                              True -> []
+                              False -> x : take (n-1) xs
+
+  drop                   :: Nat -> [a] -> [a]
+  drop _ []              =  []
+  drop n (x:xs)          =  case n <= 0 of
+                              True  -> x : xs
+                              False -> drop (n-1) xs
+
+  splitAt                :: Nat -> [a] -> ([a],[a])
+  splitAt n xs           =  (take n xs, drop n xs)
+
 
   takeWhile               :: (a -> Bool) -> [a] -> [a]
   takeWhile _ []          =  []
@@ -319,6 +449,42 @@ $(promoteOnly [d|
   select p x (ts,fs) | p x       = (x:ts,fs)
                      | otherwise = (ts, x:fs)
 
+-- Can't be promoted because of limitations of Int promotion.
+-- Also, #60 and th-desugar #6 get in the way.
+-- Below is a re-implementation using Nat
+--  (!!)                    :: [a] -> Int -> a
+--  xs     !! n | n < 0 =  error "Data.Singletons.List.!!: negative index"
+--  []     !! _         =  error "Data.Singletons.List.!!: index too large"
+--  (x:_)  !! 0         =  x
+--  (_:xs) !! n         =  xs !! (n-1)
+
+  (!!)                    :: [a] -> Nat -> a
+  []     !! _                  =  error "Data.Singletons.List.!!: index too large"
+  (x:xs) !! n = if | n < 0     -> error "Data.Singletons.List.!!: negative index"
+                   | n == 0    -> x
+                   | otherwise -> xs !! (n-1)
+
+-- These three rely on findIndices, which does not promote.
+-- Since we have our own implementation of findIndices these are perfectly valid
+  elemIndex       :: Eq a => a -> [a] -> Maybe Nat
+  elemIndex x     = findIndex (x==)
+
+  elemIndices     :: Eq a => a -> [a] -> [Nat]
+  elemIndices x   = findIndices (x==)
+
+  findIndex       :: (a -> Bool) -> [a] -> Maybe Nat
+  findIndex p     = listToMaybe . findIndices p
+
+-- Uses list comprehensions, infinite lists and and Ints
+--  findIndices      :: (a -> Bool) -> [a] -> [Int]
+--  findIndices p xs = [ i | (x,i) <- zip xs [0..], p x]
+
+  findIndices      :: (a -> Bool) -> [a] -> [Nat]
+  findIndices p xs = map snd (filter (\(x,_) -> p x)
+                                     (zip xs (buildList 0 (length xs))))
+    where buildList _ 0 = []
+          buildList a n = a : buildList (a+1) (n-1)
+
   -- To singletonize these we would need to rewrite all patterns
   -- as non-overlapping. This means 2^7 equations for zipWith7.
 
@@ -381,11 +547,54 @@ $(promoteOnly [d|
   elem_by _  _ []         =  False
   elem_by eq y (x:xs)     =  y `eq` x || elem_by eq y xs
 
-  -- This relies on nubBy, which does not singletonize
+  -- Relies on nubBy, which does not singletonize
   unionBy                 :: (a -> a -> Bool) -> [a] -> [a] -> [a]
   unionBy eq xs ys        =  xs ++ foldl (flip (deleteBy eq)) (nubBy eq ys) xs
 
-  -- This relies on unionBy, which does not singletonize
+  -- Relies on unionBy, which does not singletonize
   union                   :: (Eq a) => [a] -> [a] -> [a]
   union                   = unionBy (==)
+
+  -- Relies on intersectBy, which does not singletonize
+  intersect               :: (Eq a) => [a] -> [a] -> [a]
+  intersect               =  intersectBy (==)
+
+-- Uses list comprehensions. Desugared version uses filter, which does
+-- not singletonize due to #30
+--  intersectBy             :: (a -> a -> Bool) -> [a] -> [a] -> [a]
+--  intersectBy _  [] []    =  []
+--  intersectBy _  [] (_:_) =  []
+--  intersectBy _  (_:_) [] =  []
+--  intersectBy eq xs ys    =  [x | x <- xs, any_ (eq x) ys]
+
+  intersectBy             :: (a -> a -> Bool) -> [a] -> [a] -> [a]
+  intersectBy _  [] []    =  []
+  intersectBy _  [] (_:_) =  []
+  intersectBy _  (_:_) [] =  []
+  intersectBy eq xs ys    =  filter (\x -> any_ (eq x) ys) xs
+
+-- These functions use Integral or Num typeclass instead of Int.
+--
+--  genericLength, genericTake, genericDrop, genericSplitAt, genericIndex
+--  genericReplicate
+--
+-- We provide aliases below to improve compatibility
+
+  genericLength :: (Num i) => [a] -> i
+  genericLength = length
+
+  genericTake :: (Integral i) => i -> [a] -> [a]
+  genericTake = take
+
+  genericDrop :: (Integral i) => i -> [a] -> [a]
+  genericDrop = drop
+
+  genericSplitAt :: (Integral i) => i -> [a] -> ([a], [a])
+  genericSplitAt = splitAt
+
+  genericIndex :: (Integral i) => [a] -> i -> a
+  genericIndex = (!!)
+
+  genericReplicate :: (Integral i) => i -> a -> [a]
+  genericReplicate = replicate
  |])

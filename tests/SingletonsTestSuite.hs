@@ -47,6 +47,7 @@ tests =
     , compileAndDumpStdTest "TopLevelPatterns"
     , compileAndDumpStdTest "Pragmas"
     , compileAndDumpStdTest "OrdDeriving"
+    , compileAndDumpStdTest "Prelude"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts

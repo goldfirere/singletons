@@ -14,21 +14,34 @@
 {-# LANGUAGE ExplicitNamespaces #-}
 module Data.Promotion.Prelude (
   -- * Base
-  Until,
+  Until, Length,
+
+  Sum, Product, Replicate,
 
   -- ** Sublists
+  Take, Drop, SplitAt,
   TakeWhile, DropWhile, Span, Break,
   -- ** Searching lists
   Lookup, Filter,
 
+  (:!!),
+
   -- * Defunctionalization symbols
   UntilSym0, UntilSym1, UntilSym2, UntilSym3,
+  LengthSym0, LengthSym1,
+  SumSym0, SumSym1,
+  ProductSym0, ProductSym1,
+  ReplicateSym0, ReplicateSym1, ReplicateSym2,
+  TakeSym0, TakeSym1, TakeSym2,
+  DropSym0, DropSym1, DropSym2,
+  SplitAtSym0, SplitAtSym1, SplitAtSym2,
   TakeWhileSym0, TakeWhileSym1, TakeWhileSym2,
   DropWhileSym0, DropWhileSym1, DropWhileSym2,
   SpanSym0, SpanSym1, SpanSym2,
   BreakSym0, BreakSym1, BreakSym2,
   LookupSym0, LookupSym1, LookupSym2,
   FilterSym0, FilterSym1, FilterSym2,
+  (:!!$), (:!!$$), (:!!$$$),
 
   -- * Re-exports from Data.Singletons.Prelude
 
@@ -43,6 +56,9 @@ module Data.Promotion.Prelude (
 
   -- * Promoted comparisons
   module Data.Promotion.Prelude.Ord,
+
+  -- * Promoted arithmetic operations
+  Nat, (:+), (:-), (:*), (:^),
 
   -- ** Miscellaneous functions
   Id, Const, (:.), type ($), Flip, AsTypeOf, Seq,
@@ -93,6 +109,9 @@ module Data.Promotion.Prelude (
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
 
+  (:+$), (:+$$), (:-$), (:-$$),
+  (:*$), (:*$$), (:^$), (:^$$),
+
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   (:.$), (:.$$), (:.$$$), type ($$), type ($$$), type ($$$$),
   FlipSym0, FlipSym1, FlipSym2,
@@ -140,4 +159,4 @@ import Data.Promotion.Prelude.Maybe
 import Data.Promotion.Prelude.Tuple
 import Data.Promotion.Prelude.Eq
 import Data.Promotion.Prelude.Ord
-import Data.Singletons.TypeLits (Error, ErrorSym0, Symbol)
+import Data.Singletons.TypeLits

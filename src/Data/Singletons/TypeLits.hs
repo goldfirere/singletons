@@ -13,7 +13,7 @@
 
 {-# LANGUAGE CPP, PolyKinds, DataKinds, TypeFamilies, FlexibleInstances,
              UndecidableInstances, ScopedTypeVariables, RankNTypes,
-             GADTs, FlexibleContexts, TypeOperators #-}
+             GADTs, FlexibleContexts, TypeOperators, ConstraintKinds #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 #if __GLASGOW_HASKELL__ < 707
@@ -24,7 +24,11 @@ module Data.Singletons.TypeLits (
   Nat, Symbol,
   SNat, SSymbol, withKnownNat, withKnownSymbol,
   Error, ErrorSym0, sError,
-  KnownNat, natVal, KnownSymbol, symbolVal
+  KnownNat, natVal, KnownSymbol, symbolVal,
+
+  (:+), (:-), (:*), (:^),
+  (:+$), (:+$$), (:-$), (:-$$),
+  (:*$), (:*$$), (:^$), (:^$$)
   ) where
 
 import Data.Singletons
@@ -33,6 +37,7 @@ import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
+import Data.Singletons.Promote
 #if __GLASGOW_HASKELL__ >= 707
 import GHC.TypeLits as TL
 import Data.Type.Equality
@@ -129,6 +134,15 @@ instance TL.SingI n => KnownSymbol n where
 
 #endif
 
+-- Synonyms for GHC.TypeLits operations on Nat. These match our naming
+-- conventions.
+type x :+ y = x + y
+type x :- y = x - y
+type x :* y = x * y
+type x :^ y = x ^ y
+
+$(genDefunSymbols [ ''(:+), ''(:-), ''(:*), ''(:^)] )
+
 -- SDecide instances:
 instance SDecide ('KProxy :: KProxy Nat) where
   (SNat :: Sing n) %~ (SNat :: Sing m)
@@ -151,7 +165,7 @@ instance PEq ('KProxy :: KProxy Nat) where
   type (a :: Nat) :== (b :: Nat) = a == b
 instance PEq ('KProxy :: KProxy Symbol) where
   type (a :: Symbol) :== (b :: Symbol) = a == b
-                  
+
 -- need SEq instances for TypeLits kinds
 instance SEq ('KProxy :: KProxy Nat) where
   a %:== b
@@ -169,7 +183,7 @@ instance POrd ('KProxy :: KProxy Nat) where
 
 instance POrd ('KProxy :: KProxy Symbol) where
   type (a :: Symbol) `Compare` (b :: Symbol) = a `TL.CmpSymbol` b
-              
+
 -- | Kind-restricted synonym for 'Sing' for @Nat@s
 type SNat (x :: Nat) = Sing x
 
