@@ -61,7 +61,7 @@ module Data.Promotion.Prelude (
   Nat, (:+), (:-), (:*), (:^),
 
   -- ** Miscellaneous functions
-  Id, Const, (:.), type ($), Flip, AsTypeOf, Seq,
+  Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Seq,
 
   -- * List operations
   Map, (:++), Head, Last, Tail, Init, Null, Reverse,
@@ -113,7 +113,9 @@ module Data.Promotion.Prelude (
   (:*$), (:*$$), (:^$), (:^$$),
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
-  (:.$), (:.$$), (:.$$$), type ($$), type ($$$), type ($$$$),
+  (:.$), (:.$$), (:.$$$),
+  type ($$), type ($$$), type ($$$$),
+  type ($!$), type ($!$$), type ($!$$$),
   FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
 

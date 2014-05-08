@@ -271,7 +271,7 @@ $(promoteOnly [d|
 --  incLen _ g x = g (x +# 1#)
 
   length :: [a] -> Nat
-  length [] = 0
+  length []     = 0
   length (_:xs) = 1 + length xs
 
 -- Can't be promoted because of limitations of Int promotion
@@ -348,15 +348,13 @@ $(promoteOnly [d|
   -- Implementation changed to use case expression to work around #60
   take                   :: Nat -> [a] -> [a]
   take _ []              =  []
-  take n (x:xs)  =  case n <= 0 of
-                              True -> []
-                              False -> x : take (n-1) xs
+  take 0 (_:_)           =  []
+  take n (x:xs)          =  x : take (n-1) xs
 
   drop                   :: Nat -> [a] -> [a]
   drop _ []              =  []
-  drop n (x:xs)          =  case n <= 0 of
-                              True  -> x : xs
-                              False -> drop (n-1) xs
+  drop 0 xs@(_:_)        =  xs
+  drop n (_:xs)          =  drop (n-1) xs
 
   splitAt                :: Nat -> [a] -> ([a],[a])
   splitAt n xs           =  (take n xs, drop n xs)
@@ -459,9 +457,8 @@ $(promoteOnly [d|
 --  (_:xs) !! n         =  xs !! (n-1)
 
   (!!)                    :: [a] -> Nat -> a
-  []     !! _                  =  error "Data.Singletons.List.!!: index too large"
-  (x:xs) !! n = if | n < 0     -> error "Data.Singletons.List.!!: negative index"
-                   | n == 0    -> x
+  []     !! _ = error "Data.Singletons.List.!!: index too large"
+  (x:xs) !! n = if | n == 0    -> x
                    | otherwise -> xs !! (n-1)
 
 -- These three rely on findIndices, which does not promote.

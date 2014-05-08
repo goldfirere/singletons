@@ -89,12 +89,6 @@ indexingTest2a = Proxy
 indexingTest2b :: Proxy (Error "Data.Singletons.List.!!: index too large")
 indexingTest2b = indexingTest2a
 
-indexingTest3a :: Proxy ('[] :!! (negate 1) )
-indexingTest3a = Proxy
-
-indexingTest3b :: Proxy (Error "Data.Singletons.List.!!: index too large")
-indexingTest3b = indexingTest3a
-
 replicateTest1a :: Proxy (Replicate 2 True)
 replicateTest1a = Proxy
 

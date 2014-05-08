@@ -10,6 +10,13 @@ $(singletons [d|
   -- test that $ works with function composition
   bar :: Bool -> Bool
   bar x = not . not . not $ x
+
+  baz :: Bool -> Bool
+  baz x = not $! x
+
+  -- test that $! works with function composition
+  ban :: Bool -> Bool
+  ban x = not . not . not $! x
   |])
 
 foo1a :: Proxy (Foo True)
@@ -23,3 +30,15 @@ bar1a = Proxy
 
 bar1b :: Proxy False
 bar1b = bar1b
+
+baz1a :: Proxy (Baz True)
+baz1a = Proxy
+
+baz1b :: Proxy False
+baz1b = baz1b
+
+ban1a :: Proxy (Ban True)
+ban1a = Proxy
+
+ban1b :: Proxy False
+ban1b = ban1b
