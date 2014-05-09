@@ -60,6 +60,7 @@ import Data.Singletons.TH
 import Data.Singletons.Prelude.Base
 
 $(singletons [d|
+  -- Renamed to avoid name clash
   -- | Case analysis for the 'Either' type.
   -- If the value is @'Left' a@, apply the first function to @a@;
   -- if it is @'Right' b@, apply the second function to @b@.
@@ -72,6 +73,7 @@ $(singletonsOnly [d|
   -- | Extracts from a list of 'Either' all the 'Left' elements
   -- All the 'Left' elements are extracted in order.
 
+  -- Modified to avoid list comprehensions
   lefts   :: [Either a b] -> [a]
   lefts []             = []
   lefts (Left x  : xs) = x : lefts xs
@@ -80,6 +82,7 @@ $(singletonsOnly [d|
   -- | Extracts from a list of 'Either' all the 'Right' elements
   -- All the 'Right' elements are extracted in order.
 
+  -- Modified to avoid list comprehensions
   rights   :: [Either a b] -> [b]
   rights []             = []
   rights (Left _  : xs) = rights xs

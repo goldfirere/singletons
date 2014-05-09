@@ -66,6 +66,7 @@ import Data.Singletons.TH
 import Data.Singletons.TypeLits
 
 $(singletons [d|
+  -- Renamed to avoid name clash
   -- | The 'maybe' function takes a default value, a function, and a 'Maybe'
   -- value.  If the 'Maybe' value is 'Nothing', the function returns the
   -- default value.  Otherwise, it applies the function to the value inside
@@ -111,6 +112,7 @@ $(singletonsOnly [d|
   listToMaybe []        =  Nothing
   listToMaybe (a:_)     =  Just a
 
+  -- Modified to avoid list comprehensions
   -- | The 'catMaybes' function takes a list of 'Maybe's and returns
   -- a list of all the 'Just' values.
   catMaybes              :: [Maybe a] -> [a]
