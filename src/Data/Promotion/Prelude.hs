@@ -57,6 +57,9 @@ module Data.Promotion.Prelude (
   -- * Promoted comparisons
   module Data.Promotion.Prelude.Ord,
 
+  -- * Promoted bounds
+  module Data.Promotion.Prelude.Bounded,
+
   -- * Promoted arithmetic operations
   Nat, (:+), (:-), (:*), (:^),
 
@@ -161,4 +164,5 @@ import Data.Promotion.Prelude.Maybe
 import Data.Promotion.Prelude.Tuple
 import Data.Promotion.Prelude.Eq
 import Data.Promotion.Prelude.Ord
+import Data.Promotion.Prelude.Bounded
 import Data.Singletons.TypeLits

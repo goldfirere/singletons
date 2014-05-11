@@ -29,11 +29,14 @@ import Data.Traversable
 
 -- The list of types that singletons processes by default
 basicTypes :: [Name]
-basicTypes = [ ''Bool
-             , ''Maybe
-             , ''Either
-             , ''Ordering
+basicTypes = [ ''Maybe
              , ''[]
+             , ''Either
+             ] ++ boundedBasicTypes
+
+boundedBasicTypes :: [Name]
+boundedBasicTypes = [ ''Bool
+             , ''Ordering
              , ''()
              , ''(,)
              , ''(,,)
@@ -41,7 +44,7 @@ basicTypes = [ ''Bool
              , ''(,,,,)
              , ''(,,,,,)
              , ''(,,,,,,)
-             ]
+            ]
 
 qReifyMaybe :: Quasi q => Name -> q (Maybe DInfo)
 qReifyMaybe name = do

@@ -19,6 +19,7 @@ import Data.Singletons.Names
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Eq
 import Data.Singletons.Promote.Ord
+import Data.Singletons.Promote.Bounded
 import Data.Singletons.Promote.Defun
 import Data.Singletons.Promote.Type
 import Data.Singletons.Util
@@ -72,6 +73,10 @@ promoteEqInstances = concatMapM promoteEqInstance
 promoteOrdInstances :: Quasi q => [Name] -> q [Dec]
 promoteOrdInstances = concatMapM promoteOrdInstance
 
+-- | Produce instances for 'MinBound' and 'MaxBound' from the given types
+promoteBoundedInstances :: Quasi q => [Name] -> q [Dec]
+promoteBoundedInstances = concatMapM promoteBoundedInstance
+
 -- | Produce an instance for '(:==)' (type-level equality) from the given type
 promoteEqInstance :: Quasi q => Name -> q [Dec]
 promoteEqInstance name = do
@@ -100,6 +105,21 @@ promoteOrdInstance name = do
   return $ decsToTH inst_decs
 #else
   error "promoteOrdInstance not implemented for GHC 7.6"
+#endif
+
+-- | Produce an instance for 'MinBound' and 'MaxBound' from the given type
+promoteBoundedInstance :: Quasi q => Name -> q [Dec]
+promoteBoundedInstance name = do
+  (_tvbs, cons) <- getDataD "I cannot make an instance of Bounded for it." name
+  cons' <- mapM dsCon cons
+#if __GLASGOW_HASKELL__ >= 707
+  vars <- replicateM (length _tvbs) (qNewName "k")
+  let tyvars = map DVarK vars
+      kind = DConK name tyvars
+  inst_decs <- mkBoundedTypeInstance kind cons'
+  return $ decsToTH inst_decs
+#else
+  error "promoteBoundedInstance not implemented for GHC 7.6"
 #endif
 
 promoteInfo :: DInfo -> PrM ()
@@ -233,6 +253,16 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
     error "Ord deriving not yet implemented in GHC 7.6"
 #endif
     emitDecs ord_decs
+
+  -- deriving Bounded instance
+  when (elem boundedName derivings) $ do
+#if __GLASGOW_HASKELL__ >= 707
+    bounded_decs <- mkBoundedTypeInstance _kind ctors
+#else
+    error "Bounded deriving not yet implemented in GHC 7.6"
+#endif
+    emitDecs bounded_decs
+
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
 
@@ -295,7 +325,7 @@ promoteInstanceDec cls_tvb_env meth_sigs
                                     (map kindParam inst_kis)) meths']
   where
     pClsName = promoteClassName cls_name
-    
+
     lookup_cls_tvb_names :: PrM [String]
     lookup_cls_tvb_names = case Map.lookup cls_name cls_tvb_env of
       Nothing -> do
@@ -337,7 +367,7 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   return $ map (DTySynInstD proName) eqns'
   where
     proName = promoteValNameLhs meth_name
-    
+
     payload_to_eqns (Left (_name, tvbs, rhs)) =
       [DTySynEqn (map tvb_to_ty tvbs) rhs]
     payload_to_eqns (Right (_name, _tvbs, _res_ki, eqns)) = eqns
@@ -400,7 +430,7 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
 
   emitDecs $ concat defun_decss
   let decs = map payload_to_dec payloads
-  
+
     -- build the ALetDecEnv
   let let_dec_env' = LetDecEnv { lde_defns = Map.fromList $ zip names ann_rhss
                                , lde_types = type_env
@@ -492,7 +522,7 @@ promoteLetDecRHS type_env prefix name (UFunction clauses) = do
   return ( Right (proName, all_args, resultK, eqns)
          , defun_decs
          , AFunction prom_fun ty_num_args ann_clauses )
-  
+
   where
     etaExpand :: Int -> DClause -> PrM DClause
     etaExpand n (DClause pats exp) = do

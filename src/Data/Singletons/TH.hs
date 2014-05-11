@@ -30,6 +30,9 @@ module Data.Singletons.TH (
   -- ** Functions to generate Ord instances
   promoteOrdInstances, promoteOrdInstance,
 
+  -- ** Functions to generate Ord instances
+  promoteBoundedInstances, promoteBoundedInstance,
+
   -- ** Utility function
   cases,
 

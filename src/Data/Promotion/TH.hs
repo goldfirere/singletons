@@ -24,6 +24,9 @@ module Data.Promotion.TH (
   -- ** Functions to generate Ord instances
   promoteOrdInstances, promoteOrdInstance,
 
+  -- ** Functions to generate Ord instances
+  promoteBoundedInstances, promoteBoundedInstance,
+
   -- ** defunctionalization
   TyFun, Apply, type (@@),
 
@@ -61,5 +64,3 @@ import Data.Singletons.Prelude.Ord
 import Data.Singletons.TypeLits
 import Data.Singletons.SuppressUnusedWarnings
 import GHC.Exts
-
-

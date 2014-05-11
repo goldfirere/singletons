@@ -16,6 +16,7 @@ import Promote.Classes
 import Promote.TopLevelPatterns
 import Promote.Pragmas
 import Promote.OrdDeriving
+import Promote.BoundedDeriving
 import Promote.Prelude
 
 import Singletons.Records

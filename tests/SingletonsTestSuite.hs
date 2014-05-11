@@ -47,6 +47,8 @@ tests =
     , compileAndDumpStdTest "TopLevelPatterns"
     , compileAndDumpStdTest "Pragmas"
     , compileAndDumpStdTest "OrdDeriving"
+    , compileAndDumpStdTest "BoundedDeriving"
+    , compileAndDumpStdTest "BadBoundedDeriving"
     , compileAndDumpStdTest "Prelude"
     ],
     testGroup "Database client"
