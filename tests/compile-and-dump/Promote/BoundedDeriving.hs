@@ -7,6 +7,11 @@ $(promote [d|
   data Foo1 = Foo1 deriving (Bounded)
   data Foo2 = A | B | C | D | E deriving (Bounded)
   data Foo3 a = Foo3 a deriving (Bounded)
+  data Foo4 (a :: *) (b :: *) = Foo41 | Foo42 deriving Bounded
+
+  data Pair = Pair Bool Bool
+                  deriving Bounded
+
   |])
 
 foo1a :: Proxy (MinBound :: Foo1)

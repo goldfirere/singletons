@@ -8,6 +8,12 @@ Promote/BoundedDeriving.hs:0:0: Splicing declarations
             deriving (Bounded)
           data Foo3 a
             = Foo3 a
+            deriving (Bounded)
+          data Foo4 (a :: *) (b :: *)
+            = Foo41 | Foo42
+            deriving (Bounded)
+          data Pair
+            = Pair Bool Bool
             deriving (Bounded) |]
   ======>
     Promote/BoundedDeriving.hs:(0,0)-(0,0)
@@ -19,6 +25,12 @@ Promote/BoundedDeriving.hs:0:0: Splicing declarations
       deriving (Bounded)
     data Foo3 a
       = Foo3 a
+      deriving (Bounded)
+    data Foo4 (a :: *) (b :: *)
+      = Foo41 | Foo42
+      deriving (Bounded)
+    data Pair
+      = Pair Bool Bool
       deriving (Bounded)
     instance PBounded (KProxy :: KProxy Foo1) where
       type MinBound = Foo1
@@ -43,3 +55,26 @@ Promote/BoundedDeriving.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply Foo3Sym0 arg)) (Data.Singletons.KindOf (Foo3Sym1 arg)) =>
         Foo3Sym0KindInference
     type instance Apply Foo3Sym0 l = Foo3Sym1 l
+    instance PBounded (KProxy :: KProxy (Foo4 k k)) where
+      type MinBound = Foo41
+      type MaxBound = Foo42
+    type Foo41Sym0 = Foo41
+    type Foo42Sym0 = Foo42
+    instance PBounded (KProxy :: KProxy Pair) where
+      type MinBound = Pair MinBound MinBound
+      type MaxBound = Pair MaxBound MaxBound
+    type PairSym2 (t :: Bool) (t :: Bool) = Pair t t
+    instance SuppressUnusedWarnings PairSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) PairSym1KindInference GHC.Tuple.())
+    data PairSym1 (l :: Bool) (l :: TyFun Bool Pair)
+      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (PairSym1 l) arg)) (Data.Singletons.KindOf (PairSym2 l arg)) =>
+        PairSym1KindInference
+    type instance Apply (PairSym1 l) l = PairSym2 l l
+    instance SuppressUnusedWarnings PairSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) PairSym0KindInference GHC.Tuple.())
+    data PairSym0 (l :: TyFun Bool (TyFun Bool Pair -> *))
+      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply PairSym0 arg)) (Data.Singletons.KindOf (PairSym1 arg)) =>
+        PairSym0KindInference
+    type instance Apply PairSym0 l = PairSym1 l
