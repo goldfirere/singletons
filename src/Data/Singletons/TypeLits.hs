@@ -13,7 +13,8 @@
 
 {-# LANGUAGE CPP, PolyKinds, DataKinds, TypeFamilies, FlexibleInstances,
              UndecidableInstances, ScopedTypeVariables, RankNTypes,
-             GADTs, FlexibleContexts, TypeOperators, ConstraintKinds #-}
+             GADTs, FlexibleContexts, TypeOperators, ConstraintKinds,
+             TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 #if __GLASGOW_HASKELL__ < 707

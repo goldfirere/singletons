@@ -99,12 +99,11 @@ promoteOrdInstance name = do
   cons' <- mapM dsCon cons
 #if __GLASGOW_HASKELL__ >= 707
   vars <- replicateM (length _tvbs) (qNewName "k")
-  let tyvars = map DVarK vars
-      kind = DConK name tyvars
+  kind <- promoteType (foldType (DConT name) (map DVarT vars))
   inst_decs <- mkOrdTypeInstance kind cons'
   return $ decsToTH inst_decs
 #else
-  error "promoteOrdInstance not implemented for GHC 7.6"
+  fail "promoteOrdInstance not implemented for GHC 7.6"
 #endif
 
 -- | Produce an instance for 'MinBound' and 'MaxBound' from the given type
@@ -114,12 +113,11 @@ promoteBoundedInstance name = do
   cons' <- mapM dsCon cons
 #if __GLASGOW_HASKELL__ >= 707
   vars <- replicateM (length _tvbs) (qNewName "k")
-  let tyvars = map DVarK vars
-      kind = DConK name tyvars
+  kind <- promoteType (foldType (DConT name) (map DVarT vars))
   inst_decs <- mkBoundedTypeInstance kind cons'
   return $ decsToTH inst_decs
 #else
-  error "promoteBoundedInstance not implemented for GHC 7.6"
+  fail "promoteBoundedInstance not implemented for GHC 7.6"
 #endif
 
 promoteInfo :: DInfo -> PrM ()
@@ -250,7 +248,7 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
 #if __GLASGOW_HASKELL__ >= 707
     ord_decs <- mkOrdTypeInstance _kind ctors
 #else
-    error "Ord deriving not yet implemented in GHC 7.6"
+    fail "Ord deriving not yet implemented in GHC 7.6"
 #endif
     emitDecs ord_decs
 
@@ -259,7 +257,7 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
 #if __GLASGOW_HASKELL__ >= 707
     bounded_decs <- mkBoundedTypeInstance _kind ctors
 #else
-    error "Bounded deriving not yet implemented in GHC 7.6"
+    fail "Bounded deriving not yet implemented in GHC 7.6"
 #endif
     emitDecs bounded_decs
 
@@ -350,7 +348,7 @@ promoteInstanceDec cls_tvb_env meth_sigs
 -- associated type family sometimes produce *different* Names for the
 -- associated type/kind variables. This wreaks havoc with the type subst
 -- algorithm in promoteMethod. The solution? Ickily compare nameBases
--- instead of proper Names.
+-- instead of proper Names. See also GHC#9081.
 
 -- See Note [Bad Names in reification]
 promoteMethod :: Map String DKind   -- instantiations for class tyvars

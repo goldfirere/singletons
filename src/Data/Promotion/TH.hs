@@ -18,13 +18,13 @@ module Data.Promotion.TH (
   -- * Primary Template Haskell generation functions
   promote, promoteOnly, genDefunSymbols, genPromotions,
 
-  -- ** Functions to generate equality instances
+  -- ** Functions to generate @Eq@ instances
   promoteEqInstances, promoteEqInstance,
 
-  -- ** Functions to generate Ord instances
+  -- ** Functions to generate @Ord@ instances
   promoteOrdInstances, promoteOrdInstance,
 
-  -- ** Functions to generate Ord instances
+  -- ** Functions to generate @Bounded@ instances
   promoteBoundedInstances, promoteBoundedInstance,
 
   -- ** defunctionalization
