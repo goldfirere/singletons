@@ -6,11 +6,19 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Re-export promoted definitions related to tuples.
+-- Defines promoted functions and datatypes relating to tuples,
+-- including a promoted version of all the definitions in @Data.Tuple@.
+--
+-- Because many of these definitions are produced by Template Haskell,
+-- it is not possible to create proper Haddock documentation. Please look
+-- up the corresponding operation in @Data.Tuple@. Also, please excuse
+-- the apparent repeated variable names. This is due to an interaction
+-- between Template Haskell and Haddock.
 --
 ----------------------------------------------------------------------------
 
 module Data.Promotion.Prelude.Tuple (
+  -- * Promoted functions from @Data.Tuple@
   Fst, Snd, Curry, Uncurry, Swap,
 
   -- * Defunctionalization symbols

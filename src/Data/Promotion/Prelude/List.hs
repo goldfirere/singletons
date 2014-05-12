@@ -11,117 +11,29 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Re-export promoted definitions related to list datatype.
+-- Defines promoted functions and datatypes relating to 'List',
+-- including a promoted version of all the definitions in @Data.List@.
+--
+-- Because many of these definitions are produced by Template Haskell,
+-- it is not possible to create proper Haddock documentation. Please look
+-- up the corresponding operation in @Data.List@. Also, please excuse
+-- the apparent repeated variable names. This is due to an interaction
+-- between Template Haskell and Haddock.
 --
 ----------------------------------------------------------------------------
 
 module Data.Promotion.Prelude.List (
-  Length, Sum, Product, Replicate,
-
-  Transpose,
-  Take, Drop, SplitAt,
-  TakeWhile, DropWhile, DropWhileEnd, Span, Break,
-  StripPrefix,
-
-  Maximum, Minimum,
-
-  -- * Sublists
-
-  -- ** Extracting sublists
-  Group,
-
-  -- * Searching lists
-
-  -- ** Searching by equality
-  Lookup,
-
-  -- ** Searching with a predicate
-  Find, Filter, Partition,
-
-  (:!!),
-
-  ElemIndex, ElemIndices, FindIndex, FindIndices,
-
-  -- * Zipping and unzipping lists
-  Zip4, Zip5, Zip6, Zip7,
-  ZipWith4, ZipWith5, ZipWith6, ZipWith7,
-
-  -- * Special lists
-
-  -- ** \"Set\" operations
-  Nub, Union,
-
-  -- * Generalized functions
-
-  -- ** The \"@By@\" operations
-  GroupBy, NubBy, UnionBy,
-
-  GenericLength, GenericTake, GenericDrop,
-  GenericSplitAt, GenericIndex, GenericReplicate,
-
-  -- * Defunctionalization symbols
-  LengthSym0, LengthSym1,
-  SumSym0, SumSym1, ProductSym0, ProductSym1,
-  ReplicateSym0, ReplicateSym1, ReplicateSym2,
-  TransposeSym0, TransposeSym1,
-  TakeSym0, TakeSym1, TakeSym2,
-  DropSym0, DropSym1, DropSym2,
-  SplitAtSym0, SplitAtSym1, SplitAtSym2,
-  TakeWhileSym0, TakeWhileSym1, TakeWhileSym2,
-  DropWhileSym0, DropWhileSym1, DropWhileSym2,
-  DropWhileEndSym0, DropWhileEndSym1, DropWhileEndSym2,
-  SpanSym0, SpanSym1, SpanSym2,
-  BreakSym0, BreakSym1, BreakSym2,
-  StripPrefixSym0, StripPrefixSym1,
-  MaximumSym0, MaximumSym1,
-  MinimumSym0, MinimumSym1,
-  GroupSym0, GroupSym1,
-  GroupBySym0, GroupBySym1, GroupBySym2,
-  LookupSym0, LookupSym1, LookupSym2,
-  FindSym0, FindSym1, FindSym2,
-  FilterSym0, FilterSym1, FilterSym2,
-  PartitionSym0, PartitionSym1, PartitionSym2,
-
-  (:!!$), (:!!$$), (:!!$$$),
-
-  ElemIndexSym0, ElemIndexSym1, ElemIndexSym2,
-  ElemIndicesSym0, ElemIndicesSym1, ElemIndicesSym2,
-  FindIndexSym0, FindIndexSym1, FindIndexSym2,
-  FindIndicesSym0, FindIndicesSym1, FindIndicesSym2,
-
-  Zip4Sym0, Zip4Sym1, Zip4Sym2, Zip4Sym3, Zip4Sym4,
-  Zip5Sym0, Zip5Sym1, Zip5Sym2, Zip5Sym3, Zip5Sym4, Zip5Sym5,
-  Zip6Sym0, Zip6Sym1, Zip6Sym2, Zip6Sym3, Zip6Sym4, Zip6Sym5, Zip6Sym6,
-  Zip7Sym0, Zip7Sym1, Zip7Sym2, Zip7Sym3, Zip7Sym4, Zip7Sym5, Zip7Sym6, Zip7Sym7,
-
-  ZipWith4Sym0, ZipWith4Sym1, ZipWith4Sym2, ZipWith4Sym3, ZipWith4Sym4,
-  ZipWith5Sym0, ZipWith5Sym1, ZipWith5Sym2, ZipWith5Sym3, ZipWith5Sym4, ZipWith5Sym5,
-  ZipWith6Sym0, ZipWith6Sym1, ZipWith6Sym2, ZipWith6Sym3, ZipWith6Sym4, ZipWith6Sym5, ZipWith6Sym6,
-  ZipWith7Sym0, ZipWith7Sym1, ZipWith7Sym2, ZipWith7Sym3, ZipWith7Sym4, ZipWith7Sym5, ZipWith7Sym6, ZipWith7Sym7,
-
-  NubSym0, NubSym1,
-  NubBySym0, NubBySym1, NubBySym2,
-  UnionSym0, UnionSym1, UnionSym2,
-  UnionBySym0, UnionBySym1, UnionBySym2, UnionBySym3,
-
-  GenericLengthSym0, GenericLengthSym1,
-  GenericTakeSym0, GenericTakeSym1, GenericTakeSym2,
-  GenericDropSym0, GenericDropSym1, GenericDropSym2,
-  GenericSplitAtSym0, GenericSplitAtSym1, GenericSplitAtSym2,
-  GenericIndexSym0, GenericIndexSym1, GenericIndexSym2,
-  GenericReplicateSym0, GenericReplicateSym1, GenericReplicateSym2,
-
-  -- * Re-exports from Data.Singletons.Prelude
-  (:++), Head, Last, Tail, Init, Null,
+  -- * Basic functions
+  (:++), Head, Last, Tail, Init, Null, Length,
 
    -- * List transformations
-  Map, Reverse, Intersperse, Intercalate, Subsequences, Permutations,
+  Map, Reverse, Intersperse, Intercalate, Transpose, Subsequences, Permutations,
 
   -- * Reducing lists (folds)
   Foldl, Foldl', Foldl1, Foldl1', Foldr, Foldr1,
 
   -- ** Special folds
-  Concat, ConcatMap, And, Or, Any_, All,
+  Concat, ConcatMap, And, Or, Any_, All, Sum, Product, Maximum, Minimum,
   any_, -- equivalent of Data.List `any`. Avoids name clash with Any type
 
   -- * Building lists
@@ -132,12 +44,19 @@ module Data.Promotion.Prelude.List (
   -- ** Accumulating maps
   MapAccumL, MapAccumR,
 
+  -- ** Infinite lists
+  Replicate,
+
   -- ** Unfolding
   Unfoldr,
 
   -- * Sublists
 
   -- ** Extracting sublists
+  Take, Drop, SplitAt,
+  TakeWhile, DropWhile, DropWhileEnd, Span, Break,
+  StripPrefix,
+  Group,
   Inits, Tails,
 
   -- ** Predicates
@@ -146,28 +65,40 @@ module Data.Promotion.Prelude.List (
   -- * Searching lists
 
   -- ** Searching by equality
-  Elem, NotElem,
+  Elem, NotElem, Lookup,
+
+  -- ** Searching with a predicate
+  Find, Filter, Partition,
+
+  -- * Indexing lists
+  (:!!), ElemIndex, ElemIndices, FindIndex, FindIndices,
 
   -- * Zipping and unzipping lists
-  Zip, Zip3, ZipWith, ZipWith3,
+  Zip, Zip3, Zip4, Zip5, Zip6, Zip7,
+  ZipWith, ZipWith3, ZipWith4, ZipWith5, ZipWith6, ZipWith7,
   Unzip, Unzip3, Unzip4, Unzip5, Unzip6, Unzip7,
 
   -- * Special lists
 
   -- ** \"Set\" operations
-  Delete, (:\\), Intersect,
+  Nub, Delete, (:\\), Union, Intersect,
 
   -- ** Ordered lists
-  -- Insert, Sort,
+  Sort, Insert,
 
   -- * Generalized functions
 
   -- ** The \"@By@\" operations
-  DeleteBy, DeleteFirstsBy,
-  IntersectBy,
+  -- *** User-supplied equality (replacing an @Eq@ context)
+  NubBy, DeleteBy, DeleteFirstsBy, UnionBy, GroupBy, IntersectBy,
 
+  -- *** User-supplied comparison (replacing an @Ord@ context)
   SortBy, InsertBy,
   MaximumBy, MinimumBy,
+
+   -- ** The \"@generic@\" operations
+  GenericLength, GenericTake, GenericDrop,
+  GenericSplitAt, GenericIndex, GenericReplicate,
 
   -- * Defunctionalization symbols
   (:$), (:$$), (:$$$),
@@ -240,6 +171,57 @@ module Data.Promotion.Prelude.List (
   InsertBySym0, InsertBySym1, InsertBySym2, InsertBySym3,
   MaximumBySym0, MaximumBySym1, MaximumBySym2,
   MinimumBySym0, MinimumBySym1, MinimumBySym2,
+  LengthSym0, LengthSym1,
+  SumSym0, SumSym1, ProductSym0, ProductSym1,
+  ReplicateSym0, ReplicateSym1, ReplicateSym2,
+  TransposeSym0, TransposeSym1,
+  TakeSym0, TakeSym1, TakeSym2,
+  DropSym0, DropSym1, DropSym2,
+  SplitAtSym0, SplitAtSym1, SplitAtSym2,
+  TakeWhileSym0, TakeWhileSym1, TakeWhileSym2,
+  DropWhileSym0, DropWhileSym1, DropWhileSym2,
+  DropWhileEndSym0, DropWhileEndSym1, DropWhileEndSym2,
+  SpanSym0, SpanSym1, SpanSym2,
+  BreakSym0, BreakSym1, BreakSym2,
+  StripPrefixSym0, StripPrefixSym1,
+  MaximumSym0, MaximumSym1,
+  MinimumSym0, MinimumSym1,
+  GroupSym0, GroupSym1,
+  GroupBySym0, GroupBySym1, GroupBySym2,
+  LookupSym0, LookupSym1, LookupSym2,
+  FindSym0, FindSym1, FindSym2,
+  FilterSym0, FilterSym1, FilterSym2,
+  PartitionSym0, PartitionSym1, PartitionSym2,
+
+  (:!!$), (:!!$$), (:!!$$$),
+
+  ElemIndexSym0, ElemIndexSym1, ElemIndexSym2,
+  ElemIndicesSym0, ElemIndicesSym1, ElemIndicesSym2,
+  FindIndexSym0, FindIndexSym1, FindIndexSym2,
+  FindIndicesSym0, FindIndicesSym1, FindIndicesSym2,
+
+  Zip4Sym0, Zip4Sym1, Zip4Sym2, Zip4Sym3, Zip4Sym4,
+  Zip5Sym0, Zip5Sym1, Zip5Sym2, Zip5Sym3, Zip5Sym4, Zip5Sym5,
+  Zip6Sym0, Zip6Sym1, Zip6Sym2, Zip6Sym3, Zip6Sym4, Zip6Sym5, Zip6Sym6,
+  Zip7Sym0, Zip7Sym1, Zip7Sym2, Zip7Sym3, Zip7Sym4, Zip7Sym5, Zip7Sym6, Zip7Sym7,
+
+  ZipWith4Sym0, ZipWith4Sym1, ZipWith4Sym2, ZipWith4Sym3, ZipWith4Sym4,
+  ZipWith5Sym0, ZipWith5Sym1, ZipWith5Sym2, ZipWith5Sym3, ZipWith5Sym4, ZipWith5Sym5,
+  ZipWith6Sym0, ZipWith6Sym1, ZipWith6Sym2, ZipWith6Sym3, ZipWith6Sym4, ZipWith6Sym5, ZipWith6Sym6,
+  ZipWith7Sym0, ZipWith7Sym1, ZipWith7Sym2, ZipWith7Sym3, ZipWith7Sym4, ZipWith7Sym5, ZipWith7Sym6, ZipWith7Sym7,
+
+  NubSym0, NubSym1,
+  NubBySym0, NubBySym1, NubBySym2,
+  UnionSym0, UnionSym1, UnionSym2,
+  UnionBySym0, UnionBySym1, UnionBySym2, UnionBySym3,
+
+  GenericLengthSym0, GenericLengthSym1,
+  GenericTakeSym0, GenericTakeSym1, GenericTakeSym2,
+  GenericDropSym0, GenericDropSym1, GenericDropSym2,
+  GenericSplitAtSym0, GenericSplitAtSym1, GenericSplitAtSym2,
+  GenericIndexSym0, GenericIndexSym1, GenericIndexSym2,
+  GenericReplicateSym0, GenericReplicateSym1, GenericReplicateSym2,
+
   ) where
 
 import Data.Singletons.Prelude.Base

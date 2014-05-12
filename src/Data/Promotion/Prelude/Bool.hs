@@ -7,12 +7,27 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Re-export promoted definitions related to Bool datatype.
+-- Defines promoted functions and datatypes relating to 'Bool',
+-- including a promoted version of all the definitions in @Data.Bool@.
+--
+-- Because many of these definitions are produced by Template Haskell,
+-- it is not possible to create proper Haddock documentation. Please look
+-- up the corresponding operation in @Data.Bool@. Also, please excuse
+-- the apparent repeated variable names. This is due to an interaction
+-- between Template Haskell and Haddock.
 --
 ----------------------------------------------------------------------------
 
 module Data.Promotion.Prelude.Bool (
-  bool_, If, Not, (:&&), (:||), Bool_, Otherwise,
+  If,
+
+  -- * Promoted functions from @Data.Bool@
+  Bool_, bool_,
+  -- | The preceding two definitions are derived from the function 'bool' in
+  -- @Data.Bool@. The extra underscore is to avoid name clashes with the type
+  -- 'Bool'.
+
+  Not, (:&&), (:||), Otherwise,
 
   -- * Defunctionalization symbols
   TrueSym0, FalseSym0,

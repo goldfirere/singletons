@@ -13,40 +13,15 @@
 
 {-# LANGUAGE ExplicitNamespaces #-}
 module Data.Promotion.Prelude (
-  -- * Base
-  Until, Length,
-
-  Sum, Product, Replicate,
-
-  -- ** Sublists
-  Take, Drop, SplitAt,
-  TakeWhile, DropWhile, Span, Break,
-  -- ** Searching lists
-  Lookup, Filter,
-
-  (:!!),
-
-  -- * Defunctionalization symbols
-  UntilSym0, UntilSym1, UntilSym2, UntilSym3,
-  LengthSym0, LengthSym1,
-  SumSym0, SumSym1,
-  ProductSym0, ProductSym1,
-  ReplicateSym0, ReplicateSym1, ReplicateSym2,
-  TakeSym0, TakeSym1, TakeSym2,
-  DropSym0, DropSym1, DropSym2,
-  SplitAtSym0, SplitAtSym1, SplitAtSym2,
-  TakeWhileSym0, TakeWhileSym1, TakeWhileSym2,
-  DropWhileSym0, DropWhileSym1, DropWhileSym2,
-  SpanSym0, SpanSym1, SpanSym2,
-  BreakSym0, BreakSym1, BreakSym2,
-  LookupSym0, LookupSym1, LookupSym2,
-  FilterSym0, FilterSym1, FilterSym2,
-  (:!!$), (:!!$$), (:!!$$$),
-
-  -- * Re-exports from Data.Singletons.Prelude
-
-  -- * Functions working with 'Bool'
+  -- * Standard types, classes and related functions
+  -- ** Basic data types
   If, Not, (:&&), (:||), Otherwise,
+
+  maybe_, Maybe_, either_, Either_,
+
+  Symbol,
+
+  Fst, Snd, Curry, Uncurry,
 
   -- * Error reporting
   Error, ErrorSym0,
@@ -64,31 +39,36 @@ module Data.Promotion.Prelude (
   Nat, (:+), (:-), (:*), (:^),
 
   -- ** Miscellaneous functions
-  Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Seq,
+  Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Until, Seq,
+
 
   -- * List operations
-  Map, (:++), Head, Last, Tail, Init, Null, Reverse,
+  Map, (:++), Filter,
+  Head, Last, Tail, Init, Null, Length, (:!!),
+  Reverse,
   -- ** Reducing lists (folds)
   Foldl, Foldl1, Foldr, Foldr1,
   -- *** Special folds
-  And, Or, Any_, All, Concat, ConcatMap, Maximum, Minimum,
+  And, Or, any_, Any_, All,
+  Sum, Product,
+  Concat, ConcatMap,
+  Maximum, Minimum,
+  -- ** Building lists
   -- *** Scans
   Scanl, Scanl1, Scanr, Scanr1,
+  -- *** Infinite lists
+  Replicate,
+  -- ** Sublists
+  Take, Drop, SplitAt,
+  TakeWhile, DropWhile, Span, Break,
+
   -- ** Searching lists
-  Elem, NotElem,
+  Elem, NotElem, Lookup,
   -- ** Zipping and unzipping lists
   Zip, Zip3, ZipWith, ZipWith3, Unzip, Unzip3,
 
   -- * Other datatypes
-  Maybe_, Either_, Symbol,
-  Fst, Snd, Curry, Uncurry,
   KProxy(..),
-
-  -- * Other functions
-  either_, -- reimplementation of either to be used with singletons library
-  maybe_,
-  bool_,
-  any_, -- equivalent of Data.List `any`. Avoids name clash with Any type
 
   -- * Defunctionalization symbols
   FalseSym0, TrueSym0,
@@ -152,7 +132,23 @@ module Data.Promotion.Prelude (
   Zip3Sym0, Zip3Sym1, Zip3Sym2, Zip3Sym3,
   ZipWithSym0, ZipWithSym1, ZipWithSym2, ZipWithSym3,
   ZipWith3Sym0, ZipWith3Sym1, ZipWith3Sym2, ZipWith3Sym3,
-  UnzipSym0, UnzipSym1
+  UnzipSym0, UnzipSym1,
+
+  UntilSym0, UntilSym1, UntilSym2, UntilSym3,
+  LengthSym0, LengthSym1,
+  SumSym0, SumSym1,
+  ProductSym0, ProductSym1,
+  ReplicateSym0, ReplicateSym1, ReplicateSym2,
+  TakeSym0, TakeSym1, TakeSym2,
+  DropSym0, DropSym1, DropSym2,
+  SplitAtSym0, SplitAtSym1, SplitAtSym2,
+  TakeWhileSym0, TakeWhileSym1, TakeWhileSym2,
+  DropWhileSym0, DropWhileSym1, DropWhileSym2,
+  SpanSym0, SpanSym1, SpanSym2,
+  BreakSym0, BreakSym1, BreakSym2,
+  LookupSym0, LookupSym1, LookupSym2,
+  FilterSym0, FilterSym1, FilterSym2,
+  (:!!$), (:!!$$), (:!!$$$),
   ) where
 
 import Data.Singletons.Types ( KProxy(..) )

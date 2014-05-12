@@ -11,11 +11,18 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Implements singletonized functions from GHC.Base module.
+-- Implements singletonized versions of functions from @GHC.Base@ module.
+--
+-- Because many of these definitions are produced by Template Haskell,
+-- it is not possible to create proper Haddock documentation. Please look
+-- up the corresponding operation in @Data.Tuple@. Also, please excuse
+-- the apparent repeated variable names. This is due to an interaction
+-- between Template Haskell and Haddock.
 --
 ----------------------------------------------------------------------------
 
 module Data.Singletons.Prelude.Base (
+  -- * Basic functions
   Foldr, sFoldr, Map, sMap, (:++), (%:++), Otherwise, sOtherwise,
   Id, sId, Const, sConst, (:.), (%:.), type ($), type ($!), (%$), (%$!),
   Flip, sFlip, AsTypeOf, sAsTypeOf,

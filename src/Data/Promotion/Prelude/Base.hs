@@ -11,20 +11,22 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Implements singletonized functions from GHC.Base module.
+-- Implements promoted functions from GHC.Base module.
+--
+-- Because many of these definitions are produced by Template Haskell,
+-- it is not possible to create proper Haddock documentation. Please look
+-- up the corresponding operation in @Prelude@. Also, please excuse
+-- the apparent repeated variable names. This is due to an interaction
+-- between Template Haskell and Haddock.
 --
 ----------------------------------------------------------------------------
 
 module Data.Promotion.Prelude.Base (
-
-  Until,
+  -- * Promoted functions from @GHC.Base@
+  Foldr, Map, (:++), Otherwise, Id, Const, (:.), type ($), type ($!),
+  Flip, Until, AsTypeOf, Seq,
 
   -- * Defunctionalization symbols
-  UntilSym0, UntilSym1, UntilSym2, UntilSym3,
-
-  -- * Re-exported from Data.Singletons.Prelude.Base
-  Foldr, Map, (:++), Otherwise, Id, Const, (:.), type ($), type ($!),
-  Flip, AsTypeOf, Seq,
   FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
   MapSym0, MapSym1, MapSym2,
   (:++$), (:++$$),
@@ -35,6 +37,7 @@ module Data.Promotion.Prelude.Base (
   type ($$), type ($$$), type ($$$$),
   type ($!$), type ($!$$), type ($!$$$),
   FlipSym0, FlipSym1, FlipSym2,
+  UntilSym0, UntilSym1, UntilSym2, UntilSym3,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2,
   SeqSym0, SeqSym1, SeqSym2
   ) where

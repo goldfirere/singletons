@@ -7,14 +7,25 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Re-export promoted definitions related to Either datatype.
+-- Defines promoted functions and datatypes relating to 'Either',
+-- including a promoted version of all the definitions in @Data.Either@.
+--
+-- Because many of these definitions are produced by Template Haskell,
+-- it is not possible to create proper Haddock documentation. Please look
+-- up the corresponding operation in @Data.Either@. Also, please excuse
+-- the apparent repeated variable names. This is due to an interaction
+-- between Template Haskell and Haddock.
 --
 ----------------------------------------------------------------------------
 
 module Data.Promotion.Prelude.Either (
-  either_,
+  -- * Promoted functions from @Data.Either@
+  either_, Either_,
+  -- | The preceding two definitions are derived from the function 'either' in
+  -- @Data.Either@. The extra underscore is to avoid name clashes with the type
+  -- 'Either'.
 
-  Either_, Lefts, Rights, PartitionEithers, IsLeft, IsRight,
+  Lefts, Rights, PartitionEithers, IsLeft, IsRight,
 
   -- * Defunctionalization symbols
   LeftSym0, LeftSym1, RightSym0, RightSym1,

@@ -7,15 +7,26 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Re-export promoted definitions related to Maybe datatype.
+-- Defines promoted functions and datatypes relating to 'Maybe',
+-- including a promoted version of all the definitions in @Data.Maybe@.
+--
+-- Because many of these definitions are produced by Template Haskell,
+-- it is not possible to create proper Haddock documentation. Please look
+-- up the corresponding operation in @Data.Maybe@. Also, please excuse
+-- the apparent repeated variable names. This is due to an interaction
+-- between Template Haskell and Haddock.
 --
 ----------------------------------------------------------------------------
 
 
 module Data.Promotion.Prelude.Maybe (
-  maybe_,
+  -- * Promoted functions from @Data.Maybe@
+  maybe_, Maybe_,
+  -- | The preceding two definitions is derived from the function 'maybe' in
+  -- @Data.Maybe@. The extra underscore is to avoid name clashes with the type
+  -- 'Maybe'.
 
-  Maybe_, IsJust, IsNothing, FromJust, FromMaybe, MaybeToList,
+  IsJust, IsNothing, FromJust, FromMaybe, MaybeToList,
   ListToMaybe, CatMaybes, MapMaybe,
 
   -- * Defunctionalization symbols

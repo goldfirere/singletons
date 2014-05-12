@@ -7,7 +7,7 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Re-export promoted definitions related to type-level comparisons.
+-- Provides promoted definitions related to type-level comparisons.
 --
 -----------------------------------------------------------------------------
 
