@@ -315,49 +315,49 @@ Special names
 
 There are some special cases:
 
-original datatype: `[]`
+1. original datatype: `[]`
 
-singleton type: `SList`
-
-
-original constructor: `[]`
-
-promoted type: `'[]`
-
-singleton constructor: `SNil`
-
-symbols: `NilSym0`
+   singleton type: `SList`
 
 
-original constructor: `:`
+2.  original constructor: `[]`
 
-promoted type: `':`
+    promoted type: `'[]`
 
-singleton constructr: `SCons`
+    singleton constructor: `SNil`
 
-symbols: `ConsSym0`, `ConsSym1`
-
-
-original datatype: `(,)`
-
-singleton type: `STuple2`
+    symbols: `NilSym0`
 
 
-original constructor: `(,)`
+3. original constructor: `:`
 
-promoted type: `'(,)`
+   promoted type: `':`
 
-singleton constructor: `STuple2`
+   singleton constructr: `SCons`
 
-symbols: `Tuple2Sym0`, `Tuple2Sym1`, `Tuple2Sym2`
+   symbols: `ConsSym0`, `ConsSym1`
 
-All tuples (including the 0-tuple, unit) are treated similarly.
 
-original value: `undefined`
+4. original datatype: `(,)`
 
-promoted type: `Any`
+   singleton type: `STuple2`
 
-singleton value: `undefined`
+
+5. original constructor: `(,)`
+
+   promoted type: `'(,)`
+
+   singleton constructor: `STuple2`
+
+   symbols: `Tuple2Sym0`, `Tuple2Sym1`, `Tuple2Sym2`
+
+   All tuples (including the 0-tuple, unit) are treated similarly.
+
+6. original value: `undefined`
+
+   promoted type: `Any`
+
+   singleton value: `undefined`
 
 
 Supported Haskell constructs
