@@ -259,55 +259,55 @@ On names
 The singletons library has to produce new names for the new constructs it
 generates. Here are some examples showing how this is done:
 
-original datatype: `Nat`
+1. original datatype: `Nat`
 
-promoted kind: `Nat`
+   promoted kind: `Nat`
 
-singleton type: `SNat` (which is really a synonym for `Sing`)
-
-
-original datatype: `:/\:`
-
-promoted kind: `:/\:`
-
-singleton type: `:%/\:`
+   singleton type: `SNat` (which is really a synonym for `Sing`)
 
 
+2. original datatype: `:/\:`
 
-original constructor: `Succ`
+   promoted kind: `:/\:`
 
-promoted type: `'Succ` (you can use `Succ` when unambiguous)
-
-singleton constructor: `SSucc`
-
-symbols: `SuccSym0`, `SuccSym1`
+   singleton type: `:%/\:`
 
 
-original constructor: `:+:`
 
-promoted type: `':+:`
+3. original constructor: `Succ`
 
-singleton constructor: `:%+:`
+   promoted type: `'Succ` (you can use `Succ` when unambiguous)
 
-symbols: `:+:$`, `:+:$$`, `:+:$$$`
+   singleton constructor: `SSucc`
 
-
-original value: `pred`
-
-promoted type: `Pred`
-
-singleton value: `sPred`
-
-symbols: `PredSym0`, `PredSym1`
+   symbols: `SuccSym0`, `SuccSym1`
 
 
-original value: `+`
+4. original constructor: `:+:`
 
-promoted type: `:+`
+   promoted type: `':+:`
 
-singleton value: `%:+`
+   singleton constructor: `:%+:`
 
-symbols: `:+$`, `:+$$`, `:+$$$`
+   symbols: `:+:$`, `:+:$$`, `:+:$$$`
+
+
+5. original value: `pred`
+
+   promoted type: `Pred`
+
+   singleton value: `sPred`
+
+   symbols: `PredSym0`, `PredSym1`
+
+
+6. original value: `+`
+
+   promoted type: `:+`
+
+   singleton value: `%:+`
+
+   symbols: `:+$`, `:+$$`, `:+$$$`
 
 
 Special names
