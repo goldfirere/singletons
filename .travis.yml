@@ -18,7 +18,7 @@ before_install:
  - export PATH=/opt/ghc/$GHCVER/bin:$PATH
 
  - |
-   if [ $GHCVER = "head" ] || [ $GHCVER = "7.8.1" ]; then
+   if [ $GHCVER = "head" ] || [ $GHCVER = "7.8.2" ]; then
      $CABAL install happy alex
      export PATH=$HOME/.cabal/bin:$PATH
    fi
