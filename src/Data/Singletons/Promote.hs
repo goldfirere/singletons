@@ -284,12 +284,12 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
   sig_decs     <- mapM (uncurry promote_sig) (Map.toList meth_sigs)
      -- the first arg to promoteMethod is a kind subst. We actually don't
      -- want to subst for default instances, so we pass Map.empty
-  default_decs <- concatMapM (promoteMethod Map.empty meth_sigs)
-                             (Map.toList defaults)
+  (default_decs, helps) <- unzip `liftM` mapM (promoteMethod Map.empty meth_sigs)
+                                               (Map.toList defaults)
   let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
-  emitDecs [ DClassD cxt' pClsName ptvbs [] (sig_decs ++
+  emitDecs $ ( DClassD cxt' pClsName ptvbs [] (sig_decs ++
                                              default_decs ++
-                                             infix_decls') ]
+                                             infix_decls') ) : helps
   return ( Map.singleton cls_name tvbNames
          , meth_sigs )
   where
@@ -318,9 +318,11 @@ promoteInstanceDec cls_tvb_env meth_sigs
   cls_tvb_names <- lookup_cls_tvb_names
   inst_kis <- mapM promoteType inst_tys
   let subst = Map.fromList $ zip cls_tvb_names inst_kis
-  meths' <- concatMapM (promoteMethod subst meth_sigs) meths
-  emitDecs [DInstanceD [] (foldType (DConT pClsName)
-                                    (map kindParam inst_kis)) meths']
+  (meths', helps') <- unzip `liftM` mapM (promoteMethod subst meth_sigs)
+                                         meths
+  emitDecs $ (DInstanceD [] (foldType (DConT pClsName)
+                                            (map kindParam inst_kis)) meths')
+             : helps'
   where
     pClsName = promoteClassName cls_name
 
@@ -353,16 +355,27 @@ promoteInstanceDec cls_tvb_env meth_sigs
 -- See Note [Bad Names in reification]
 promoteMethod :: Map String DKind   -- instantiations for class tyvars
               -> Map Name DType     -- method types
-              -> (Name, ULetDecRHS) -> PrM [DDec]
+              -> (Name, ULetDecRHS) -> PrM (DDec, DDec)
 promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   (payload, _defuns, _ann_rhs)
     <- promoteLetDecRHS sigs_map noPrefix meth_name meth_rhs
   let eqns = payload_to_eqns payload
   (arg_kis, res_ki) <- lookup_meth_ty
+  meth_arg_tvs <- mapM (const $ qNewName "a") arg_kis
   let meth_arg_kis' = map subst_ki arg_kis
       meth_res_ki'  = subst_ki res_ki
       eqns'         = map (apply_kis meth_arg_kis' meth_res_ki') eqns
-  return $ map (DTySynInstD proName) eqns'
+  helperName <- newUniqueName (nameBase proName)
+  let closedFam = DClosedTypeFamilyD
+                              helperName
+                              (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
+                              (Just meth_res_ki') eqns'
+      proInst = DTySynInstD proName
+                            (DTySynEqn (zipWith (DSigT . DVarT)
+                                                meth_arg_tvs meth_arg_kis')
+                                  (foldType (DConT helperName)
+                                            (map DVarT meth_arg_tvs)))
+  return (proInst, closedFam)
   where
     proName = promoteValNameLhs meth_name
 

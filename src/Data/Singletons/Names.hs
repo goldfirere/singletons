@@ -16,7 +16,7 @@ import Data.Singletons.Types
 import Data.Singletons.Decide
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
-import GHC.TypeLits ( Symbol )
+import GHC.TypeLits ( Nat, Symbol )
 import GHC.Exts ( Any )
 import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
@@ -24,7 +24,7 @@ import Data.Singletons.Util
 anyTypeName, boolName, andName, tyEqName, tyCompareName, tyminBoundName,
   tymaxBoundName, repName,
   nilName, consName, listName, tyFunName,
-  applyName, symbolName, undefinedName, typeRepName, stringName,
+  applyName, natName, symbolName, undefinedName, typeRepName, stringName,
   eqName, ordName, boundedName, orderingName, ordLTSymName, ordEQSymName,
   ordGTSymName,
   singFamilyName, singIName, singMethName, demoteRepName,
@@ -49,6 +49,7 @@ listName = ''[]
 tyFunName = ''TyFun
 applyName = ''Apply
 symbolName = ''Symbol
+natName = ''Nat
 undefinedName = 'undefined
 typeRepName = ''TypeRep
 stringName = ''String

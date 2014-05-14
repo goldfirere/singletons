@@ -12,7 +12,11 @@ Promote/Classes.hs:0:0: Splicing declarations
             (<=>) :: a -> a -> Ordering
             (<=>) = mycompare
           data Foo = A | B
+          data Foo2 = F | G
           
+          instance MyOrd Foo2 where
+            F `mycompare` F = EQ
+            F `mycompare` a = LT
           instance MyOrd Foo where
             mycompare = fooCompare
           instance MyOrd () where
@@ -44,6 +48,10 @@ Promote/Classes.hs:0:0: Splicing declarations
     fooCompare _ _ = GT
     instance MyOrd Foo where
       mycompare = fooCompare
+    data Foo2 = F | G
+    instance MyOrd Foo2 where
+      mycompare F F = EQ
+      mycompare F a = LT
     type FooCompareSym2 (t :: Foo) (t :: Foo) = FooCompare t t
     instance SuppressUnusedWarnings FooCompareSym1 where
       suppressUnusedWarnings _
@@ -113,18 +121,37 @@ Promote/Classes.hs:0:0: Splicing declarations
     class (GHC.Types.~) kproxy KProxy => PMyOrd (kproxy :: KProxy a) where
       type family Mycompare (arg :: a) (arg :: a) :: Ordering
       type family (:<=>) (arg :: a) (arg :: a) :: Ordering
-      type instance (:<=>) (a_0123456789 :: a) (a_0123456789 :: a) = (Apply (Apply MycompareSym0 a_0123456789) a_0123456789 :: Ordering)
+      type instance (:<=>) (a :: a) (a :: a) = (:<=>_0123456789) a a
+    type family (:<=>_0123456789) (a :: a) (a :: a) :: Ordering where
+      (:<=>_0123456789) (a_0123456789 :: a) (a_0123456789 :: a) = (Apply (Apply MycompareSym0 a_0123456789) a_0123456789 :: Ordering)
     instance PMyOrd (KProxy :: KProxy Nat) where
-      type Mycompare (Zero :: Nat) (Zero :: Nat) = (EQSym0 :: Ordering)
-      type Mycompare (Zero :: Nat) (Succ z :: Nat) = (LTSym0 :: Ordering)
-      type Mycompare (Succ z :: Nat) (Zero :: Nat) = (GTSym0 :: Ordering)
-      type Mycompare (Succ n :: Nat) (Succ m :: Nat) = (Apply (Apply MycompareSym0 m) n :: Ordering)
+      type Mycompare (a :: Nat) (a :: Nat) = Mycompare_0123456789 a a
+    type family Mycompare_0123456789 (a :: Nat)
+                                     (a :: Nat) :: Ordering where
+      Mycompare_0123456789 (Zero :: Nat) (Zero :: Nat) = (EQSym0 :: Ordering)
+      Mycompare_0123456789 (Zero :: Nat) (Succ z :: Nat) = (LTSym0 :: Ordering)
+      Mycompare_0123456789 (Succ z :: Nat) (Zero :: Nat) = (GTSym0 :: Ordering)
+      Mycompare_0123456789 (Succ n :: Nat) (Succ m :: Nat) = (Apply (Apply MycompareSym0 m) n :: Ordering)
     instance PMyOrd (KProxy :: KProxy GHC.Tuple.()) where
-      type Mycompare (z :: GHC.Tuple.()) (a_0123456789 :: GHC.Tuple.()) = (Apply (Apply ConstSym0 EQSym0) a_0123456789 :: Ordering)
+      type Mycompare (a :: GHC.Tuple.()) (a :: GHC.Tuple.()) = Mycompare_0123456789 a a
+    type family Mycompare_0123456789 (a :: GHC.Tuple.())
+                                     (a :: GHC.Tuple.()) :: Ordering where
+      Mycompare_0123456789 (z :: GHC.Tuple.()) (a_0123456789 :: GHC.Tuple.()) = (Apply (Apply ConstSym0 EQSym0) a_0123456789 :: Ordering)
     instance PMyOrd (KProxy :: KProxy Foo) where
-      type Mycompare (a_0123456789 :: Foo) (a_0123456789 :: Foo) = (Apply (Apply FooCompareSym0 a_0123456789) a_0123456789 :: Ordering)
+      type Mycompare (a :: Foo) (a :: Foo) = Mycompare_0123456789 a a
+    type family Mycompare_0123456789 (a :: Foo)
+                                     (a :: Foo) :: Ordering where
+      Mycompare_0123456789 (a_0123456789 :: Foo) (a_0123456789 :: Foo) = (Apply (Apply FooCompareSym0 a_0123456789) a_0123456789 :: Ordering)
+    instance PMyOrd (KProxy :: KProxy Foo2) where
+      type Mycompare (a :: Foo2) (a :: Foo2) = Mycompare_0123456789 a a
+    type family Mycompare_0123456789 (a :: Foo2)
+                                     (a :: Foo2) :: Ordering where
+      Mycompare_0123456789 (F :: Foo2) (F :: Foo2) = (EQSym0 :: Ordering)
+      Mycompare_0123456789 (F :: Foo2) (a :: Foo2) = (LTSym0 :: Ordering)
     type ASym0 = A
     type BSym0 = B
+    type FSym0 = F
+    type GSym0 = G
 Promote/Classes.hs:0:0: Splicing declarations
     promote
       [d| data Nat' = Zero' | Succ' Nat'
@@ -143,10 +170,13 @@ Promote/Classes.hs:0:0: Splicing declarations
       mycompare (Succ' _) Zero' = GT
       mycompare (Succ' n) (Succ' m) = (m `mycompare` n)
     instance PMyOrd (KProxy :: KProxy Nat') where
-      type Mycompare (Zero' :: Nat') (Zero' :: Nat') = (EQSym0 :: Ordering)
-      type Mycompare (Zero' :: Nat') (Succ' z :: Nat') = (LTSym0 :: Ordering)
-      type Mycompare (Succ' z :: Nat') (Zero' :: Nat') = (GTSym0 :: Ordering)
-      type Mycompare (Succ' n :: Nat') (Succ' m :: Nat') = (Apply (Apply MycompareSym0 m) n :: Ordering)
+      type Mycompare (a :: Nat') (a :: Nat') = Mycompare_0123456789 a a
+    type family Mycompare_0123456789 (a :: Nat')
+                                     (a :: Nat') :: Ordering where
+      Mycompare_0123456789 (Zero' :: Nat') (Zero' :: Nat') = (EQSym0 :: Ordering)
+      Mycompare_0123456789 (Zero' :: Nat') (Succ' z :: Nat') = (LTSym0 :: Ordering)
+      Mycompare_0123456789 (Succ' z :: Nat') (Zero' :: Nat') = (GTSym0 :: Ordering)
+      Mycompare_0123456789 (Succ' n :: Nat') (Succ' m :: Nat') = (Apply (Apply MycompareSym0 m) n :: Ordering)
     type Zero'Sym0 = Zero'
     type Succ'Sym1 (t :: Nat') = Succ' t
     instance SuppressUnusedWarnings Succ'Sym0 where

@@ -19,31 +19,20 @@ Singletons/Star.hs:0:0: Splicing declarations
     instance PEq (KProxy :: KProxy *) where
       type (:==) (a :: *) (b :: *) = Equals_0123456789 a b
     instance POrd (KProxy :: KProxy *) where
-      type Compare Nat Nat = EQ
-      type Compare Nat Int = LT
-      type Compare Nat String = LT
-      type Compare Nat (Maybe rhs) = LT
-      type Compare Nat (Vec rhs rhs) = LT
-      type Compare Int Nat = GT
-      type Compare Int Int = EQ
-      type Compare Int String = LT
-      type Compare Int (Maybe rhs) = LT
-      type Compare Int (Vec rhs rhs) = LT
-      type Compare String Nat = GT
-      type Compare String Int = GT
-      type Compare String String = EQ
-      type Compare String (Maybe rhs) = LT
-      type Compare String (Vec rhs rhs) = LT
-      type Compare (Maybe lhs) Nat = GT
-      type Compare (Maybe lhs) Int = GT
-      type Compare (Maybe lhs) String = GT
-      type Compare (Maybe lhs) (Maybe rhs) = ThenCmp EQ (Compare lhs rhs)
-      type Compare (Maybe lhs) (Vec rhs rhs) = LT
-      type Compare (Vec lhs lhs) Nat = GT
-      type Compare (Vec lhs lhs) Int = GT
-      type Compare (Vec lhs lhs) String = GT
-      type Compare (Vec lhs lhs) (Maybe rhs) = GT
-      type Compare (Vec lhs lhs) (Vec rhs rhs) = ThenCmp (ThenCmp EQ (Compare lhs rhs)) (Compare lhs rhs)
+      type Compare (a :: *) (b :: *) = Compare_0123456789 a b
+    type family Compare_0123456789 (a :: *) (b :: *) :: Ordering where
+      Compare_0123456789 Nat Nat = EQ
+      Compare_0123456789 Int Int = EQ
+      Compare_0123456789 String String = EQ
+      Compare_0123456789 (Maybe x) (Maybe y) = ThenCmp EQ (Compare x y)
+      Compare_0123456789 (Vec x x) (Vec y y) = ThenCmp (ThenCmp EQ (Compare x y)) (Compare x y)
+      Compare_0123456789 (a :: *) (b :: *) = Compare (GetRank_0123456789 a) (GetRank_0123456789 b)
+    type family GetRank_0123456789 a :: GHC.TypeLits.Nat where
+      GetRank_0123456789 Nat = 1
+      GetRank_0123456789 Int = 2
+      GetRank_0123456789 String = 3
+      GetRank_0123456789 (Maybe a) = 4
+      GetRank_0123456789 (Vec a a) = 5
     type NatSym0 = Nat
     type IntSym0 = Int
     type StringSym0 = String
