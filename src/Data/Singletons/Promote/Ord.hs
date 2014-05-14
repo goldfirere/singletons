@@ -37,7 +37,7 @@ mkOrdTypeInstance kind cons = do
       ordInst = DTySynInstD tyCompareName
                             (DTySynEqn [ DSigT (DVarT aName) kind
                                        , DSigT (DVarT bName) kind ]
-                                     (foldType (DConT tyCompareName)
+                                     (foldType (DConT helperName)
                                                [DVarT aName, DVarT bName]))
       pord_name   = promoteClassName ordName
       pord_inst   = DInstanceD [] ((DConT $ promoteClassName ordName) `DAppT`

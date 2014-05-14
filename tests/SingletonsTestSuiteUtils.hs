@@ -33,7 +33,6 @@ instance Exception ProcessException
 
 instance Show ProcessException where
     show (ProcessException msg) = msg
-
 -- GHC executable name (if on path) or full path
 ghcPath :: FilePath
 ghcPath = "ghc"
