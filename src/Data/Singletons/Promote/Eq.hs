@@ -47,7 +47,7 @@ mkEqTypeInstance kind cons = do
                                                        [DVarT aName, DVarT bName]))
       inst = DInstanceD [] ((DConT $ promoteClassName eqName) `DAppT`
                             kindParam kind) [eqInst]
-                                     
+
   return [closedFam, inst]
 
   where mk_branch :: Quasi q => DCon -> q DTySynEqn

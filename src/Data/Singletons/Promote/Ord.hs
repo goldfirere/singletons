@@ -19,17 +19,47 @@ import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
 import Data.Singletons.Util
+import Control.Monad
 
 mkOrdTypeInstance :: Quasi q => DKind -> [DCon] -> q [DDec]
 mkOrdTypeInstance kind cons = do
+  helperName <- newUniqueName "Compare"
+  aName <- qNewName "a"
+  bName <- qNewName "b"
   let tagged_cons = zip cons [1..]
       con_pairs   = [ (c1, c2) | c1 <- tagged_cons, c2 <- tagged_cons ]
   eqns <- mapM mkOrdTySynEqn con_pairs
-  let tyfam_insts = map (DTySynInstD tyCompareName) eqns
+  let closedFam = DClosedTypeFamilyD helperName
+                                     [ DKindedTV aName kind
+                                     , DKindedTV bName kind ]
+                                     (Just (DConK orderingName []))
+                                     eqns
+      ordInst = DTySynInstD tyCompareName
+                            (DTySynEqn [ DSigT (DVarT aName) kind
+                                       , DSigT (DVarT bName) kind ]
+                                     (foldType (DConT tyCompareName)
+                                               [DVarT aName, DVarT bName]))
       pord_name   = promoteClassName ordName
-      pord_inst   = DInstanceD [] (DConT pord_name `DAppT` kindParam kind)
-                               tyfam_insts
-  return [pord_inst]
+      pord_inst   = DInstanceD [] ((DConT $ promoteClassName ordName) `DAppT`
+                                   kindParam kind) [ordInst]
+
+  return [pord_inst,closedFam]
+
+buildGetRank :: Quasi q => [(DCon, Int)] -> q DDec
+buildGetRank cons = do
+  getRankName <- newUniqueName "GetRank"
+  kvar <- qNewName "a"
+  let eqnsData =  map (\(con, tag) ->
+                        let (n, ar) = extractNameArgs con in (n, ar, tag))
+                      cons
+  eqns <- mapM mkGetRankEqn eqnsData
+  return $ DClosedTypeFamilyD getRankName [DPlainTV kvar] (Just (DConK natName [])) eqns
+      where
+        mkGetRankEqn :: Quasi q => (Name, Int, Int) -> q DTySynEqn
+        mkGetRankEqn (conName, arity, tag) = do
+          args <- replicateM arity (qNewName "a" >>= return . DVarT)
+          return $ DTySynEqn [foldType (DConT conName) args]
+                             (DLitT (NumTyLit (fromIntegral tag)))
 
 mkOrdTySynEqn :: Quasi q => ((DCon, Int), (DCon, Int)) -> q DTySynEqn
 mkOrdTySynEqn ((c1, n1), (c2, n2)) = do
