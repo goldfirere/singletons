@@ -1,6 +1,22 @@
 Changelog for singletons project
 ================================
 
+1.0
+---
+
+This is a complete rewrite of the package.
+
+* A much wider array of surface syntax is now accepted for promotion
+and singletonization, including `let`, `case`, partially-applied functions,
+and anonymous functions, `where`, sections, among others.
+
+* Classes and instances can be promoted (but not singletonized).
+
+* Derivation of promoted instances for `Ord` and `Bounded`.
+
+This release can be seen as a "technology preview". More features are coming
+soon.
+
 0.10.0
 ------
 

@@ -34,10 +34,8 @@ description:
     presented in /Dependently Typed Programming with Singletons/, published
     at the Haskell Symposium, 2012.
     (<http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>)
-
-    The Haddock documentation does not build with the Haddock distributed with
-    GHC 7.6.x, but it does build with 7.8.2. Please see links from the project
-    homepage to find the built documentation.
+    The promotion mechanism in the library is described in the draft paper here:
+    (<http://www.cis.upenn.edu/~eir/papers/2014/promotion/promotion.pdf>)
 
 source-repository this
   type:     git
