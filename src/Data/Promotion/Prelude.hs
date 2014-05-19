@@ -68,7 +68,7 @@ module Data.Promotion.Prelude (
   Zip, Zip3, ZipWith, ZipWith3, Unzip, Unzip3,
 
   -- * Other datatypes
-  KProxy(..),
+  Proxy(..), KProxy(..),
 
   -- * Defunctionalization symbols
   FalseSym0, TrueSym0,
@@ -151,7 +151,7 @@ module Data.Promotion.Prelude (
   (:!!$), (:!!$$), (:!!$$$),
   ) where
 
-import Data.Singletons.Types ( KProxy(..) )
+import Data.Proxy ( Proxy(..), KProxy(..) )
 import Data.Promotion.Prelude.Base
 import Data.Promotion.Prelude.Bool
 import Data.Promotion.Prelude.Either

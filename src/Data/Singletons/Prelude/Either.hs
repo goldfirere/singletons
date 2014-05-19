@@ -1,9 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies, GADTs,
-             DataKinds, PolyKinds, RankNTypes, UndecidableInstances, CPP #-}
-
-#if __GLASGOW_HASKELL__ < 707
-{-# OPTIONS_GHC -fno-warn-name-shadowing #-}
-#endif
+             DataKinds, PolyKinds, RankNTypes, UndecidableInstances #-}
 
 -----------------------------------------------------------------------------
 -- |

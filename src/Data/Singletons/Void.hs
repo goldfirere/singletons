@@ -5,7 +5,7 @@
 
 -}
 
-{-# LANGUAGE CPP, Trustworthy, DeriveDataTypeable, DeriveGeneric, StandaloneDeriving #-}
+{-# LANGUAGE Trustworthy, DeriveDataTypeable, DeriveGeneric, StandaloneDeriving #-}
 
 -----------------------------------------------------------------------------
 -- |

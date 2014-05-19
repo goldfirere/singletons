@@ -1,6 +1,6 @@
 {-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies,
              RankNTypes, FlexibleContexts, TemplateHaskell,
-             UndecidableInstances, GADTs, CPP, DefaultSignatures #-}
+             UndecidableInstances, GADTs, DefaultSignatures #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -26,10 +26,7 @@ import Data.Singletons.Single
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Util
 import Data.Singletons.Promote
-
-#if __GLASGOW_HASKELL__ >= 707
 import Data.Type.Equality
-#endif
 
 -- | The promoted analogue of 'Eq'. If you supply no definition for '(:==)' under
 -- GHC 7.8+, then it defaults to a use of '(==)', from @Data.Type.Equality@.
@@ -37,11 +34,7 @@ class kproxy ~ 'KProxy => PEq (kproxy :: KProxy a) where
   type (:==) (x :: a) (y :: a) :: Bool
   type (:/=) (x :: a) (y :: a) :: Bool
 
-#if __GLASGOW_HASKELL__ < 707
-  type (x :: a) :== (y :: a) = Not (x :/= y)
-#else
   type (x :: a) :== (y :: a) = x == y
-#endif
   type (x :: a) :/= (y :: a) = Not (x :== y)
 
 $(genDefunSymbols [''(:==), ''(:/=)])

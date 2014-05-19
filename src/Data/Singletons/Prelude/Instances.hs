@@ -8,14 +8,9 @@ re-exported from various places.
 
 -}
 
-{-# LANGUAGE CPP, RankNTypes, DataKinds, PolyKinds, GADTs, TypeFamilies,
+{-# LANGUAGE RankNTypes, DataKinds, PolyKinds, GADTs, TypeFamilies,
              FlexibleContexts, TemplateHaskell, ScopedTypeVariables,
              UndecidableInstances, TypeOperators, FlexibleInstances #-}
-#if __GLASGOW_HASKELL__ < 707
-  -- optimizing instances of SDecide cause GHC to die (#8467)
-{-# OPTIONS_GHC -O0 #-}
-#endif
-
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Data.Singletons.Prelude.Instances where

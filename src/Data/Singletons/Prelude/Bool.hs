@@ -1,9 +1,5 @@
 {-# LANGUAGE TemplateHaskell, DataKinds, PolyKinds, TypeFamilies, TypeOperators,
-             GADTs, CPP, ScopedTypeVariables, DeriveDataTypeable #-}
-
-#if __GLASGOW_HASKELL__ < 707
-{-# OPTIONS_GHC -fno-warn-name-shadowing #-}
-#endif
+             GADTs, ScopedTypeVariables, DeriveDataTypeable #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -61,7 +57,7 @@ module Data.Singletons.Prelude.Bool (
 import Data.Singletons
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
-import Data.Singletons.Types
+import Data.Type.Bool ( If )
 
 $(singletons [d|
   bool_ :: a -> a -> Bool -> a

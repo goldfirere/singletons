@@ -42,7 +42,8 @@ $(promote [d|
   -- instance with overlaping equations. Tests #56
   instance MyOrd Foo2 where
       F `mycompare` F = EQ
-      F `mycompare` a = LT
+      F `mycompare` _ = LT
+      _ `mycompare` _ = GT
  |])
 
 -- check promotion across different splices (#55)

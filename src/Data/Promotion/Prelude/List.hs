@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, TypeOperators, DataKinds, PolyKinds, TypeFamilies,
+{-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies,
              TemplateHaskell, GADTs, UndecidableInstances, RankNTypes,
              ScopedTypeVariables, MultiWayIf #-}
 

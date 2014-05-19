@@ -1,4 +1,4 @@
-{-# LANGUAGE ExplicitNamespaces, CPP #-}
+{-# LANGUAGE ExplicitNamespaces #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -72,7 +72,6 @@ import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord
-import Data.Singletons.Types
 import Data.Singletons.Void
 import Data.Singletons.Decide
 import Data.Singletons.TypeLits
@@ -84,6 +83,7 @@ import GHC.Exts
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Data.Singletons.Util
+import Data.Proxy ( Proxy(..) )
 import Control.Applicative
 
 -- | The function 'cases' generates a case expression where each right-hand side

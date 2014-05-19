@@ -9,7 +9,7 @@ The PrM monad allows reading from a PrEnv environment and writing to a list
 of DDec, and is wrapped around a Q.
 -}
 
-{-# LANGUAGE GeneralizedNewtypeDeriving, StandaloneDeriving, CPP,
+{-# LANGUAGE GeneralizedNewtypeDeriving, StandaloneDeriving,
              FlexibleContexts, TypeFamilies, KindSignatures #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}   -- we have orphan Quasi instances
 
@@ -58,7 +58,6 @@ instance (Quasi q, Monoid m) => Quasi (WriterT m q) where
   qLocation         = lift qLocation
   qRunIO            = lift `comp1` qRunIO
   qAddDependentFile = lift `comp1` qAddDependentFile
-#if __GLASGOW_HASKELL__ >= 707
   qReifyRoles       = lift `comp1` qReifyRoles
   qReifyAnnotations = lift `comp1` qReifyAnnotations
   qReifyModule      = lift `comp1` qReifyModule
@@ -66,7 +65,6 @@ instance (Quasi q, Monoid m) => Quasi (WriterT m q) where
   qAddModFinalizer  = lift `comp1` qAddModFinalizer
   qGetQ             = lift qGetQ
   qPutQ             = lift `comp1` qPutQ
-#endif
 
   qRecover handler body = do
     (result, aux) <- lift $ qRecover (runWriterT handler) (runWriterT body)
@@ -82,7 +80,6 @@ instance Quasi q => Quasi (ReaderT r q) where
   qLocation         = lift qLocation
   qRunIO            = lift `comp1` qRunIO
   qAddDependentFile = lift `comp1` qAddDependentFile
-#if __GLASGOW_HASKELL__ >= 707
   qReifyRoles       = lift `comp1` qReifyRoles
   qReifyAnnotations = lift `comp1` qReifyAnnotations
   qReifyModule      = lift `comp1` qReifyModule
@@ -90,7 +87,6 @@ instance Quasi q => Quasi (ReaderT r q) where
   qAddModFinalizer  = lift `comp1` qAddModFinalizer
   qGetQ             = lift qGetQ
   qPutQ             = lift `comp1` qPutQ
-#endif
 
   qRecover handler body = do
     env <- ask
@@ -156,4 +152,3 @@ promoteMDecs :: Quasi q => PrM [DDec] -> q [DDec]
 promoteMDecs thing = do
   (decs1, decs2) <- promoteM thing
   return $ decs1 ++ decs2
-

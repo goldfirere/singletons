@@ -77,7 +77,6 @@ library
                       Data.Promotion.Prelude.List,
                       Data.Promotion.Prelude.Maybe,
                       Data.Promotion.Prelude.Tuple,
-                      Data.Singletons.Types,
                       Data.Singletons.TypeLits,
                       Data.Singletons.Decide,
                       Data.Singletons.Void,

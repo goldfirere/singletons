@@ -6,13 +6,12 @@ eir@cis.upenn.edu
 Defining names and maniuplations on names for use in promotion and singling.
 -}
 
-{-# LANGUAGE CPP, TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Data.Singletons.Names where
 
 import Data.Singletons
 import Data.Singletons.SuppressUnusedWarnings
-import Data.Singletons.Types
 import Data.Singletons.Decide
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
@@ -20,6 +19,7 @@ import GHC.TypeLits ( Nat, Symbol )
 import GHC.Exts ( Any )
 import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
+import Data.Proxy ( Proxy(..) )
 
 anyTypeName, boolName, andName, tyEqName, tyCompareName, tyminBoundName,
   tymaxBoundName, repName,
@@ -162,36 +162,19 @@ andTySym :: DType
 andTySym = promoteValRhs andName
 
 -- make a Name with an unknown kind into a DTyVarBndr.
--- Uses a fresh kind variable for GHC 7.6.3 and PlainTV for 7.8+
--- because 7.8+ has kind inference
 inferKindTV :: Quasi q => Name -> q DTyVarBndr
 inferKindTV n = do
-#if __GLASGOW_HASKELL__ < 707
-  ki <- fmap DVarK $ qNewName "k"
-  return $ DKindedTV n _ki
-#else
   return $ DPlainTV n
-#endif
 
 inferMaybeKindTV :: Quasi q => Name -> Maybe DKind -> q DTyVarBndr
 inferMaybeKindTV n Nothing =
-#if __GLASGOW_HASKELL__ < 707
-  do k <- qNewName "k"
-     return $ DKindedTV n (DVarK k)
-#else
   return $ DPlainTV n
-#endif
 inferMaybeKindTV n (Just k) = return $ DKindedTV n k
 
 -- similar to above, this is for annotating the result kind of
--- a closed type family. Makes it polymorphic in 7.6.3, inferred
--- in 7.8
+-- a closed type family. Makes it inferred in 7.8
 unknownResult :: DKind -> Maybe DKind
-#if __GLASGOW_HASKELL__ < 707
-unknownResult = Just
-#else
 unknownResult = const Nothing
-#endif
 
 -- Singletons
 

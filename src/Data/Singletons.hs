@@ -1,5 +1,5 @@
 {-# LANGUAGE MagicHash, RankNTypes, PolyKinds, GADTs, DataKinds,
-             FlexibleContexts, CPP, TypeFamilies, TypeOperators,
+             FlexibleContexts, TypeFamilies, TypeOperators,
              UndecidableInstances #-}
 
 -----------------------------------------------------------------------------
@@ -22,11 +22,6 @@
 --
 ----------------------------------------------------------------------------
 
-#if __GLASGOW_HASKELL__ < 707
-  -- optimizing instances of SDecide cause GHC to die (#8467)
-{-# OPTIONS_GHC -O0 #-}
-#endif
-
 module Data.Singletons (
   -- * Main singleton definitions
 
@@ -40,9 +35,7 @@ module Data.Singletons (
   SingInstance(..), SomeSing(..),
   singInstance, withSingI, withSomeSing, singByProxy,
 
-#if __GLASGOW_HASKELL__ >= 707
   singByProxy#,
-#endif
   withSing, singThat,
 
   -- ** Defunctionalization
@@ -59,7 +52,7 @@ module Data.Singletons (
 -- | These type synonyms are exported only to improve error messages; users
   -- should not have to mention them.
   SingFunction1, SingFunction2, SingFunction3, SingFunction4, SingFunction5,
-  SingFunction6, SingFunction7, 
+  SingFunction6, SingFunction7,
 
   -- * Auxiliary functions
   bugInGHC,
@@ -67,10 +60,8 @@ module Data.Singletons (
   ) where
 
 import Unsafe.Coerce
-import Data.Singletons.Types
-#if __GLASGOW_HASKELL__ >= 707
+import Data.Proxy ( Proxy(..), KProxy(..) )
 import GHC.Exts ( Proxy# )
-#endif
 
 -- | Convenient synonym to refer to the kind of a type variable:
 -- @type KindOf (a :: k) = ('KProxy :: KProxy k)@
@@ -79,7 +70,7 @@ type KindOf (a :: k) = ('KProxy :: KProxy k)
 ----------------------------------------------------------------------
 ---- Sing & friends --------------------------------------------------
 ----------------------------------------------------------------------
-                        
+
 -- | The singleton kind-indexed data family.
 data family Sing (a :: k)
 
@@ -125,7 +116,7 @@ data SomeSing (kproxy :: KProxy k) where
 ----------------------------------------------------------------------
 ---- SingInstance ----------------------------------------------------
 ----------------------------------------------------------------------
-                  
+
 -- | A 'SingInstance' wraps up a 'SingI' instance for explicit handling.
 data SingInstance (a :: k) where
   SingInstance :: SingI a => SingInstance a
@@ -300,11 +291,9 @@ singThat p = withSing $ \x -> if p (fromSing x) then Just x else Nothing
 singByProxy :: SingI a => proxy a -> Sing a
 singByProxy _ = sing
 
-#if __GLASGOW_HASKELL__ >= 707
 -- | Allows creation of a singleton when a @proxy#@ is at hand.
 singByProxy# :: SingI a => Proxy# a -> Sing a
 singByProxy# _ = sing
-#endif
 
 -- | GHC 7.8 sometimes warns about incomplete pattern matches when no such
 -- patterns are possible, due to GADT constraints.
@@ -313,4 +302,3 @@ singByProxy# _ = sing
 -- 'bugInGHC' as its right-hand side.
 bugInGHC :: forall a. a
 bugInGHC = error "Bug encountered in GHC -- this should never happen"
-

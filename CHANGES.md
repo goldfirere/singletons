@@ -17,6 +17,8 @@ and anonymous functions, `where`, sections, among others.
 This release can be seen as a "technology preview". More features are coming
 soon.
 
+This version drops GHC 7.6 support.
+
 0.10.0
 ------
 

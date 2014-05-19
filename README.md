@@ -32,9 +32,8 @@ paper for a more thorough introduction.
 Compatibility
 -------------
 
-The singletons library requires GHC 7.8.2 or greater. We plan to restore GHC
-7.6.3 support, but no promises as to when will this happen. Any code that uses
-the singleton generation primitives needs to enable a long list of GHC
+The singletons library requires GHC 7.8.2 or greater. Any code that uses the
+singleton generation primitives needs to enable a long list of GHC
 extensions. This list includes, but is not necessarily limited to, the
 following:
 
@@ -74,17 +73,10 @@ provide singletonized `Eq` and `Ord` typeclasses
 `Data.Singletons.Decide` exports type classes for propositional equality.
 
 `Data.Singletons.TypeLits` exports definitions for working with `GHC.TypeLits`.
-In GHC 7.6.3, `Data.Singletons.TypeLits` defines and exports `KnownNat` and
-`KnownSymbol`, which are part of `GHC.TypeLits` in GHC 7.8. This makes
-cross-version support a little easier.
 
 `Data.Singletons.Void` exports a `Void` type, shamelessly copied from
 Edward Kmett's `void` package, but without the great many package dependencies
 in `void`.
-
-`Data.Singletons.Types` exports a few type-level definitions that are in
-`base` for GHC 7.8, but not in GHC 7.6.3. By importing this package, users
-of both GHC versions can access these definitions.
 
 Modules for function promotion
 ------------------------------
@@ -477,7 +469,9 @@ Changes from earlier versions
 singletons 1.0 provides promotion mechanism that supports case expressions, let
 statements, anonymous functions, higher order functions and many other
 features. This version of the library was published together with the promotion
-paper.
+paper. Version 1.0 of singletons drops GHC 7.6.3 support because romotion
+requires some features that were only added in GHC 7.8 (like kind inference for
+closed type families).
 
 singletons 0.9 contains a bit of an API change from previous versions. Here is
 a summary:

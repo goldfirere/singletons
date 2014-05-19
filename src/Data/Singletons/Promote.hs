@@ -7,7 +7,7 @@ This file contains functions to promote term-level constructs to the
 type level. It is an internal module to the singletons package.
 -}
 
-{-# LANGUAGE TemplateHaskell, CPP, MultiWayIf, LambdaCase, TupleSections #-}
+{-# LANGUAGE TemplateHaskell, MultiWayIf, LambdaCase, TupleSections #-}
 
 module Data.Singletons.Promote where
 
@@ -82,43 +82,30 @@ promoteEqInstance :: Quasi q => Name -> q [Dec]
 promoteEqInstance name = do
   (_tvbs, cons) <- getDataD "I cannot make an instance of (:==) for it." name
   cons' <- mapM dsCon cons
-#if __GLASGOW_HASKELL__ >= 707
   vars <- replicateM (length _tvbs) (qNewName "k")
   kind <- promoteType (foldType (DConT name) (map DVarT vars))
   inst_decs <- mkEqTypeInstance kind cons'
   return $ decsToTH inst_decs
-#else
-  let pairs = [(c1, c2) | c1 <- cons, c2 <- cons]
-  mapM (fmap decsToTH . mkEqTypeInstance) pairs
-#endif
 
 -- | Produce an instance for 'Compare' from the given type
 promoteOrdInstance :: Quasi q => Name -> q [Dec]
 promoteOrdInstance name = do
   (_tvbs, cons) <- getDataD "I cannot make an instance of Ord for it." name
   cons' <- mapM dsCon cons
-#if __GLASGOW_HASKELL__ >= 707
   vars <- replicateM (length _tvbs) (qNewName "k")
   kind <- promoteType (foldType (DConT name) (map DVarT vars))
   inst_decs <- mkOrdTypeInstance kind cons'
   return $ decsToTH inst_decs
-#else
-  fail "promoteOrdInstance not implemented for GHC 7.6"
-#endif
 
 -- | Produce an instance for 'MinBound' and 'MaxBound' from the given type
 promoteBoundedInstance :: Quasi q => Name -> q [Dec]
 promoteBoundedInstance name = do
   (_tvbs, cons) <- getDataD "I cannot make an instance of Bounded for it." name
   cons' <- mapM dsCon cons
-#if __GLASGOW_HASKELL__ >= 707
   vars <- replicateM (length _tvbs) (qNewName "k")
   kind <- promoteType (foldType (DConT name) (map DVarT vars))
   inst_decs <- mkBoundedTypeInstance kind cons'
   return $ decsToTH inst_decs
-#else
-  fail "promoteBoundedInstance not implemented for GHC 7.6"
-#endif
 
 promoteInfo :: DInfo -> PrM ()
 promoteInfo (DTyConI dec _instances) = promoteDecs [dec]
@@ -226,39 +213,21 @@ noPrefix = ""
 --  * for each nullary data constructor we generate a type synonym
 promoteDataDec :: DataDecl -> PrM ()
 promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
-#if __GLASGOW_HASKELL__ < 707
-  when (_nd == Newtype) $
-    fail $ "Newtypes don't promote under GHC 7.6. " ++
-           "Use <<data>> instead or upgrade GHC."
-#endif
   -- deriving Eq instance
   _kvs <- replicateM (length tvbs) (qNewName "k")
   _kind <- promoteType (foldType (DConT name) (map DVarT _kvs))
   when (elem eqName derivings) $ do
-#if __GLASGOW_HASKELL__ >= 707
     eq_decs <- mkEqTypeInstance _kind ctors
-#else
-    let pairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
-    eq_decs <- mapM mkEqTypeInstance pairs
-#endif
     emitDecs eq_decs
 
   -- deriving Ord instance
   when (elem ordName derivings) $ do
-#if __GLASGOW_HASKELL__ >= 707
     ord_decs <- mkOrdTypeInstance _kind ctors
-#else
-    fail "Ord deriving not yet implemented in GHC 7.6"
-#endif
     emitDecs ord_decs
 
   -- deriving Bounded instance
   when (elem boundedName derivings) $ do
-#if __GLASGOW_HASKELL__ >= 707
     bounded_decs <- mkBoundedTypeInstance _kind ctors
-#else
-    fail "Bounded deriving not yet implemented in GHC 7.6"
-#endif
     emitDecs bounded_decs
 
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
@@ -500,15 +469,7 @@ promoteLetDecRHS type_env prefix name (UValue exp) = do
 promoteLetDecRHS type_env prefix name (UFunction clauses) = do
   numArgs <- count_args clauses
   (m_argKs, m_resK, ty_num_args) <- case Map.lookup name type_env of
-#if __GLASGOW_HASKELL__ < 707
-      -- we require a type signature here because GHC 7.6.3 doesn't support
-      -- kind inference for type families
-    Nothing -> fail ("No type signature for function \"" ++
-                     (nameBase name) ++ "\". Cannot promote in GHC 7.6.3.\n" ++
-                     "Either add a type signature or upgrade GHC.")
-#else
     Nothing -> return (replicate numArgs Nothing, Nothing, numArgs)
-#endif
     Just ty -> do
       -- promoteType turns arrows into TyFun. So, we unravel first to
       -- avoid this behavior. Note the use of ravelTyFun in resultK

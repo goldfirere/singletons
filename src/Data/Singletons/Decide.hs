@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, RankNTypes, PolyKinds, DataKinds, TypeOperators,
+{-# LANGUAGE RankNTypes, PolyKinds, DataKinds, TypeOperators,
              TypeFamilies, FlexibleContexts, UndecidableInstances, GADTs #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
@@ -24,8 +24,8 @@ module Data.Singletons.Decide (
   ) where
 
 import Data.Singletons
-import Data.Singletons.Types
 import Data.Singletons.Void
+import Data.Type.Equality
 
 ----------------------------------------------------------------------
 ---- SDecide ---------------------------------------------------------
@@ -40,7 +40,7 @@ type Refuted a = (a -> Void)
 -- cannot exist.
 data Decision a = Proved a               -- ^ Witness for @a@
                 | Disproved (Refuted a)  -- ^ Proof that no @a@ exists
-                  
+
 -- | Members of the 'SDecide' "kind" class support decidable equality. Instances
 -- of this class are generated alongside singleton definitions for datatypes that
 -- derive an 'Eq' instance.

@@ -11,7 +11,7 @@ This file is a great way to understand the singleton encoding better.
 {-# LANGUAGE PolyKinds, DataKinds, TypeFamilies, KindSignatures, GADTs,
              FlexibleInstances, FlexibleContexts, UndecidableInstances,
              RankNTypes, TypeOperators, MultiParamTypeClasses,
-             FunctionalDependencies, ScopedTypeVariables, CPP,
+             FunctionalDependencies, ScopedTypeVariables,
              LambdaCase, TemplateHaskell, EmptyCase
  #-}
 
@@ -21,12 +21,10 @@ import Prelude hiding (Maybe, Just, Nothing, Either, Left, Right, map, zipWith,
                        (+), (-))
 import Unsafe.Coerce
 
-#if __GLASGOW_HASKELL__ >= 707
 import Data.Type.Bool
 import Data.Type.Equality hiding (apply)
 import Data.Proxy
 import Data.Coerce
-#endif
 
 import Data.Singletons
 import Data.Singletons.Decide
@@ -86,7 +84,7 @@ class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
 sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)
 sIf STrue b _ = b
 sIf SFalse _ c = c
-       
+
 -----------------------------------
 -- Auto-generated code ------------
 -----------------------------------
@@ -198,7 +196,7 @@ instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (Maybe k)) 
       Disproved contra -> Disproved (\Refl -> contra Refl)
   SNothing %~ (SJust _) = Disproved (\case _ -> undefined)
   (SJust _) %~ SNothing = Disproved (\case _ -> undefined)
-  
+
 instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (Maybe k)) where
   SNothing %:== SNothing = STrue
   SNothing %:== (SJust _) = SFalse
@@ -841,7 +839,7 @@ sCont = \elt list ->
                      lambda2 h t
   in
   lambda elt list
-                                                            
+
 
 data (:==$) f where
   (:==$##) :: ((:==$) @@ arg) ~ (:==$$) arg
@@ -856,7 +854,7 @@ data (:==$$) a f where
 type instance (:==$$) a `Apply` b = (:==$$$) a b
 
 type (:==$$$) a b = (:==) a b
-                          
+
 
 impNat :: forall m n. SingI n => Proxy n -> Sing m -> Sing (n :+ m)
 impNat _ sm = (sing :: Sing n) %:+ sm
@@ -986,12 +984,9 @@ sFI = unSingFun2 (singFun2 (Proxy :: Proxy FI) (\p ls ->
               sLoop sN (sX `SCons` sXs) =  case sP `applySing` sX of
                 STrue -> (singFun2 (Proxy :: Proxy ConsSym0) SCons) `applySing` sN `applySing`
                      ((singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` ((singFun1 (Proxy :: Proxy SuccSym0) SSucc) `applySing` sN) `applySing` sXs)
-                SFalse -> (singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` ((singFun1 (Proxy :: Proxy SuccSym0) SSucc) `applySing` sN) `applySing` sXs 
+                SFalse -> (singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` ((singFun1 (Proxy :: Proxy SuccSym0) SSucc) `applySing` sN) `applySing` sXs
           in
           (singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` SZero `applySing` sLs
     in
     lambda p ls
   ))
-
-
-

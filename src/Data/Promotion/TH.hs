@@ -1,4 +1,4 @@
-{-# LANGUAGE ExplicitNamespaces, CPP #-}
+{-# LANGUAGE ExplicitNamespaces #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -54,7 +54,7 @@ module Data.Promotion.TH (
 
  ) where
 
-import Data.Singletons.Types ( Proxy(..) )
+import Data.Proxy
 import Data.Singletons
 import Data.Singletons.Promote
 import Data.Singletons.Prelude.Instances

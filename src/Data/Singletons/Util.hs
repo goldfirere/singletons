@@ -7,7 +7,7 @@ This file contains helper functions internal to the singletons package.
 Users of the package should not need to consult this file.
 -}
 
-{-# LANGUAGE CPP, TypeSynonymInstances, FlexibleInstances, RankNTypes,
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, RankNTypes,
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses, StandaloneDeriving,
              UndecidableInstances, MagicHash, UnboxedTuples,
@@ -179,13 +179,7 @@ extractTvbName (DKindedTV n _) = n
 -- use the kind provided, or make a fresh kind variable
 inferKind :: Quasi q => Maybe DKind -> q (Maybe DKind)
 inferKind (Just k) = return $ Just k
-#if __GLASGOW_HASKELL__ < 707
-inferKind Nothing = do
-  newK <- qNewName "k"
-  return $ Just $ DVarK newK
-#else
 inferKind Nothing = return Nothing
-#endif
 
 -- Get argument types from an arrow type. Removing ForallT is an
 -- important preprocessing step required by promoteType.
@@ -238,7 +232,6 @@ orIfEmpty :: [a] -> [a] -> [a]
 orIfEmpty [] x = x
 orIfEmpty x  _ = x
 
--- an empty list of matches, compatible with GHC 7.6.3
 emptyMatches :: [DMatch]
 emptyMatches = [DMatch DWildPa (DAppE (DVarE 'error) (DLitE (StringL errStr)))]
   where errStr = "Empty case reached -- this should be impossible"
@@ -271,7 +264,6 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
   qLocation         = lift qLocation
   qRunIO            = lift `comp1` qRunIO
   qAddDependentFile = lift `comp1` qAddDependentFile
-#if __GLASGOW_HASKELL__ >= 707
   qReifyRoles       = lift `comp1` qReifyRoles
   qReifyAnnotations = lift `comp1` qReifyAnnotations
   qReifyModule      = lift `comp1` qReifyModule
@@ -279,7 +271,6 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
   qAddModFinalizer  = lift `comp1` qAddModFinalizer
   qGetQ             = lift qGetQ
   qPutQ             = lift `comp1` qPutQ
-#endif
 
   qRecover exp handler = do
     (result, aux) <- lift $ qRecover (evalForPair exp) (evalForPair handler)

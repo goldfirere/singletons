@@ -16,7 +16,8 @@ Promote/Classes.hs:0:0: Splicing declarations
           
           instance MyOrd Foo2 where
             F `mycompare` F = EQ
-            F `mycompare` a = LT
+            F `mycompare` _ = LT
+            _ `mycompare` _ = GT
           instance MyOrd Foo where
             mycompare = fooCompare
           instance MyOrd () where
@@ -51,7 +52,8 @@ Promote/Classes.hs:0:0: Splicing declarations
     data Foo2 = F | G
     instance MyOrd Foo2 where
       mycompare F F = EQ
-      mycompare F a = LT
+      mycompare F _ = LT
+      mycompare _ _ = GT
     type FooCompareSym2 (t :: Foo) (t :: Foo) = FooCompare t t
     instance SuppressUnusedWarnings FooCompareSym1 where
       suppressUnusedWarnings _
@@ -147,7 +149,8 @@ Promote/Classes.hs:0:0: Splicing declarations
     type family Mycompare_0123456789 (a :: Foo2)
                                      (a :: Foo2) :: Ordering where
       Mycompare_0123456789 (F :: Foo2) (F :: Foo2) = (EQSym0 :: Ordering)
-      Mycompare_0123456789 (F :: Foo2) (a :: Foo2) = (LTSym0 :: Ordering)
+      Mycompare_0123456789 (F :: Foo2) (z :: Foo2) = (LTSym0 :: Ordering)
+      Mycompare_0123456789 (z :: Foo2) (z :: Foo2) = (GTSym0 :: Ordering)
     type ASym0 = A
     type BSym0 = B
     type FSym0 = F

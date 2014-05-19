@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, TemplateHaskell, KindSignatures, PolyKinds, TypeOperators,
+{-# LANGUAGE TemplateHaskell, KindSignatures, PolyKinds, TypeOperators,
              DataKinds, ScopedTypeVariables, TypeFamilies, GADTs,
              UndecidableInstances, BangPatterns #-}
 

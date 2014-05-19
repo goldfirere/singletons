@@ -45,11 +45,9 @@ saved in a "golden" file. Below are some details about these tests:
    that creates a test with standard GHC options defined by the testsuite.
 
  * Testsuite supports multiple GHC versions because each version produces
-   different Template Haskell output. Every test requires a separate golden file
-   for GHC 7.6 and GHC 7.8. GHC HEAD is currently not supported. Golden files
-   for GHC 7.6 have `.ghc76` prefix appended before their extension
-   (eg. FooTest.ghc76.golden). Golden files for GHC 7.8 have `.ghc78` appended
-   before their extension.
+   different Template Haskell output. Every test requires a separate golden
+   file. GHC HEAD is currently not supported. Golden files for GHC 7.8 have
+   `.ghc78` appended before their extension.
 
  * Running full testsuite takes time. You can run shorter version of testsuite
    by typing:

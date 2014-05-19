@@ -47,12 +47,12 @@ includePath :: FilePath
 includePath = "../../dist/build"
 
 ghcVersion :: String
-#if __GLASGOW_HASKELL__ <  706
-ghcVersion = error "testsuite requires GHC 7.6 or newer"
+#if __GLASGOW_HASKELL__ <  708
+ghcVersion = error "testsuite requires GHC 7.8 or newer"
 #else
-#if __GLASGOW_HASKELL__ >= 706 && __GLASGOW_HASKELL__ < 707
-ghcVersion = ".ghc76"
-#else
+-- these conditions are a bit nonsense right now, but they are here
+-- to demonstrate how to add support for different GHC versions
+#if __GLASGOW_HASKELL__ >= 708
 ghcVersion = ".ghc78"
 #endif
 #endif
@@ -93,7 +93,6 @@ ghcOpts = [
   , "-XPolyKinds"
   , "-XFlexibleContexts"
   , "-XIncoherentInstances"
-  , "-XCPP"
   , "-XLambdaCase"
   , "-XUnboxedTuples"
   ]

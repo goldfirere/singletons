@@ -2,15 +2,12 @@
    that the TH code singletons produces compiles. Run `make` in the
    `tests` directory to compile this file. -}
 
-{-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
 module Quickly where
 
 import Promote.Constructors
-#if __GLASGOW_HASKELL__ >= 707
 import Promote.Newtypes
-#endif
 import Promote.GenDefunSymbols
 import Promote.Classes
 import Promote.TopLevelPatterns

@@ -22,9 +22,6 @@ $(singletons [d|
   [_, lsz, (Succ blimy)] = aList
   lsz :: Nat
   fls :: Bool
-#if __GLASGOW_HASKELL__ < 707
-  blimy :: Nat   -- this is necessary to promote nested patterns
-#endif
 
   foo1 :: (a, b) -> a
   foo1 (x, y) = (\_ -> x) y
