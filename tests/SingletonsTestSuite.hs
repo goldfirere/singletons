@@ -50,6 +50,7 @@ tests =
     , compileAndDumpStdTest "BoundedDeriving"
     , compileAndDumpStdTest "BadBoundedDeriving"
     , compileAndDumpStdTest "Prelude"
+    , compileAndDumpStdTest "Fixity"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts

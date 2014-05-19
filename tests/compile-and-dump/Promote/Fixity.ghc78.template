@@ -1,0 +1,59 @@
+Promote/Fixity.hs:0:0: Splicing declarations
+    promote
+      [d| infix 4 ====
+          infix 4 <=>
+          
+          (====) :: a -> a -> a
+          a ==== _ = a
+          
+          class MyOrd a where
+            (<=>) :: a -> a -> Ordering
+            infix 4 <=> |]
+  ======>
+    Promote/Fixity.hs:(0,0)-(0,0)
+    class MyOrd a where
+      (<=>) :: a -> a -> Ordering
+    infix 4 <=>
+    (====) :: forall a. a -> a -> a
+    (====) a _ = a
+    infix 4 ====
+    type (:====$$$) (t :: a) (t :: a) = (:====) t t
+    instance SuppressUnusedWarnings (:====$$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:====$$###) GHC.Tuple.())
+    data (:====$$) (l :: a) (l :: TyFun a a)
+      = forall arg. (GHC.Types.~) (KindOf (Apply ((:====$$) l) arg)) (KindOf ((:====$$$) l arg)) =>
+        (:====$$###)
+    type instance Apply ((:====$$) l) l = (:====$$$) l l
+    instance SuppressUnusedWarnings (:====$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:====$###) GHC.Tuple.())
+    data (:====$) (l :: TyFun a (TyFun a a -> *))
+      = forall arg. (GHC.Types.~) (KindOf (Apply (:====$) arg)) (KindOf ((:====$$) arg)) =>
+        (:====$###)
+    type instance Apply (:====$) l = (:====$$) l
+    type family (:====) (a :: a) (a :: a) :: a where
+      (:====) a z = a
+    type (:<=>$$$) (t :: a) (t :: a) = (:<=>) t t
+    instance SuppressUnusedWarnings (:<=>$$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:<=>$$###) GHC.Tuple.())
+    data (:<=>$$) (l :: a) (l :: TyFun a Ordering)
+      = forall arg. (GHC.Types.~) (KindOf (Apply ((:<=>$$) l) arg)) (KindOf ((:<=>$$$) l arg)) =>
+        (:<=>$$###)
+    type instance Apply ((:<=>$$) l) l = (:<=>$$$) l l
+    instance SuppressUnusedWarnings (:<=>$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:<=>$###) GHC.Tuple.())
+    data (:<=>$) (l :: TyFun a (TyFun a Ordering -> *))
+      = forall arg. (GHC.Types.~) (KindOf (Apply (:<=>$) arg)) (KindOf ((:<=>$$) arg)) =>
+        (:<=>$###)
+    type instance Apply (:<=>$) l = (:<=>$$) l
+    class (GHC.Types.~) kproxy KProxy => PMyOrd (kproxy :: KProxy a) where
+      type family (:<=>) (arg :: a) (arg :: a) :: Ordering
+
+Promote/Fixity.hs:0:0: Warning:
+    Droping fixity declaration for ==== due to GHC bug #9066
+
+Promote/Fixity.hs:0:0: Warning:
+    Droping fixity declaration for <=> due to GHC bug #9066

@@ -14,7 +14,7 @@ $(promote [d|
     mycompare :: a -> a -> Ordering
     (<=>) :: a -> a -> Ordering
     (<=>) = mycompare
---    infix 4 <=>  infix decls don't work due to #65
+    --infix 4 <=>  --infix decls are dropped due to #9066
 
   instance MyOrd Nat where
     Zero `mycompare` Zero = EQ
