@@ -7,7 +7,6 @@ branches:
     - /v[0-9.]+/
 
 env:
-# - GHCVER=7.6.3
  - GHCVER=7.8.2
 
 # Note: the distinction between `before_install` and `install` is not important.
@@ -16,12 +15,8 @@ before_install:
  - travis_retry sudo apt-get update
  - travis_retry sudo apt-get install cabal-install-1.18 ghc-$GHCVER happy
  - export PATH=/opt/ghc/$GHCVER/bin:$PATH
-
- - |
-   if [ $GHCVER = "head" ] || [ $GHCVER = "7.8.2" ]; then
-     $CABAL install happy alex
-     export PATH=$HOME/.cabal/bin:$PATH
-   fi
+ - $CABAL install happy alex
+ - export PATH=$HOME/.cabal/bin:$PATH
 
 install:
  - cabal-1.18 update
