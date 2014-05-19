@@ -19,9 +19,11 @@ GradingClient/Database.hs:0:0: Splicing declarations
     type family Compare_0123456789 (a :: Nat)
                                    (b :: Nat) :: Ordering where
       Compare_0123456789 Zero Zero = EQ
-      Compare_0123456789 Zero (Succ rhs) = LT
-      Compare_0123456789 (Succ lhs) Zero = GT
-      Compare_0123456789 (Succ lhs) (Succ rhs) = ThenCmp EQ (Compare lhs rhs)
+      Compare_0123456789 (Succ x) (Succ y) = ThenCmp EQ (Compare x y)
+      Compare_0123456789 (a :: Nat) (b :: Nat) = Compare (GetRank_0123456789 a) (GetRank_0123456789 b)
+    type family GetRank_0123456789 a :: GHC.TypeLits.Nat where
+      GetRank_0123456789 Zero = 1
+      GetRank_0123456789 (Succ a) = 2
     type ZeroSym0 = Zero
     type SuccSym1 (t :: Nat) = Succ t
     instance SuppressUnusedWarnings SuccSym0 where

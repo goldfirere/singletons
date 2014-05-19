@@ -35,9 +35,11 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
     type family Compare_0123456789 (a :: Nat)
                                    (b :: Nat) :: Ordering where
       Compare_0123456789 Zero Zero = EQ
-      Compare_0123456789 Zero (Succ rhs) = LT
-      Compare_0123456789 (Succ lhs) Zero = GT
-      Compare_0123456789 (Succ lhs) (Succ rhs) = ThenCmp EQ (Compare lhs rhs)
+      Compare_0123456789 (Succ x) (Succ y) = ThenCmp EQ (Compare x y)
+      Compare_0123456789 (a :: Nat) (b :: Nat) = Compare (GetRank_0123456789 a) (GetRank_0123456789 b)
+    type family GetRank_0123456789 a :: Nat where
+      GetRank_0123456789 Zero = 1
+      GetRank_0123456789 (Succ a) = 2
     type ZeroSym0 = Zero
     type SuccSym1 (t :: Nat) = Succ t
     instance SuppressUnusedWarnings SuccSym0 where
@@ -62,42 +64,20 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
       type Compare (a :: Foo k k k k) (b :: Foo k k k k) = Compare_0123456789 a b
     type family Compare_0123456789 (a :: Foo k k k k)
                                    (b :: Foo k k k k) :: Ordering where
-      Compare_0123456789 (A lhs lhs lhs lhs) (A rhs rhs rhs rhs) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)
-      Compare_0123456789 (A lhs lhs lhs lhs) (B rhs rhs rhs rhs) = LT
-      Compare_0123456789 (A lhs lhs lhs lhs) (C rhs rhs rhs rhs) = LT
-      Compare_0123456789 (A lhs lhs lhs lhs) (D rhs rhs rhs rhs) = LT
-      Compare_0123456789 (A lhs lhs lhs lhs) (E rhs rhs rhs rhs) = LT
-      Compare_0123456789 (A lhs lhs lhs lhs) (F rhs rhs rhs rhs) = LT
-      Compare_0123456789 (B lhs lhs lhs lhs) (A rhs rhs rhs rhs) = GT
-      Compare_0123456789 (B lhs lhs lhs lhs) (B rhs rhs rhs rhs) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)
-      Compare_0123456789 (B lhs lhs lhs lhs) (C rhs rhs rhs rhs) = LT
-      Compare_0123456789 (B lhs lhs lhs lhs) (D rhs rhs rhs rhs) = LT
-      Compare_0123456789 (B lhs lhs lhs lhs) (E rhs rhs rhs rhs) = LT
-      Compare_0123456789 (B lhs lhs lhs lhs) (F rhs rhs rhs rhs) = LT
-      Compare_0123456789 (C lhs lhs lhs lhs) (A rhs rhs rhs rhs) = GT
-      Compare_0123456789 (C lhs lhs lhs lhs) (B rhs rhs rhs rhs) = GT
-      Compare_0123456789 (C lhs lhs lhs lhs) (C rhs rhs rhs rhs) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)
-      Compare_0123456789 (C lhs lhs lhs lhs) (D rhs rhs rhs rhs) = LT
-      Compare_0123456789 (C lhs lhs lhs lhs) (E rhs rhs rhs rhs) = LT
-      Compare_0123456789 (C lhs lhs lhs lhs) (F rhs rhs rhs rhs) = LT
-      Compare_0123456789 (D lhs lhs lhs lhs) (A rhs rhs rhs rhs) = GT
-      Compare_0123456789 (D lhs lhs lhs lhs) (B rhs rhs rhs rhs) = GT
-      Compare_0123456789 (D lhs lhs lhs lhs) (C rhs rhs rhs rhs) = GT
-      Compare_0123456789 (D lhs lhs lhs lhs) (D rhs rhs rhs rhs) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)
-      Compare_0123456789 (D lhs lhs lhs lhs) (E rhs rhs rhs rhs) = LT
-      Compare_0123456789 (D lhs lhs lhs lhs) (F rhs rhs rhs rhs) = LT
-      Compare_0123456789 (E lhs lhs lhs lhs) (A rhs rhs rhs rhs) = GT
-      Compare_0123456789 (E lhs lhs lhs lhs) (B rhs rhs rhs rhs) = GT
-      Compare_0123456789 (E lhs lhs lhs lhs) (C rhs rhs rhs rhs) = GT
-      Compare_0123456789 (E lhs lhs lhs lhs) (D rhs rhs rhs rhs) = GT
-      Compare_0123456789 (E lhs lhs lhs lhs) (E rhs rhs rhs rhs) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)
-      Compare_0123456789 (E lhs lhs lhs lhs) (F rhs rhs rhs rhs) = LT
-      Compare_0123456789 (F lhs lhs lhs lhs) (A rhs rhs rhs rhs) = GT
-      Compare_0123456789 (F lhs lhs lhs lhs) (B rhs rhs rhs rhs) = GT
-      Compare_0123456789 (F lhs lhs lhs lhs) (C rhs rhs rhs rhs) = GT
-      Compare_0123456789 (F lhs lhs lhs lhs) (D rhs rhs rhs rhs) = GT
-      Compare_0123456789 (F lhs lhs lhs lhs) (E rhs rhs rhs rhs) = GT
-      Compare_0123456789 (F lhs lhs lhs lhs) (F rhs rhs rhs rhs) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)) (Compare lhs rhs)
+      Compare_0123456789 (A x x x x) (A y y y y) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare x y)) (Compare x y)) (Compare x y)) (Compare x y)
+      Compare_0123456789 (B x x x x) (B y y y y) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare x y)) (Compare x y)) (Compare x y)) (Compare x y)
+      Compare_0123456789 (C x x x x) (C y y y y) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare x y)) (Compare x y)) (Compare x y)) (Compare x y)
+      Compare_0123456789 (D x x x x) (D y y y y) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare x y)) (Compare x y)) (Compare x y)) (Compare x y)
+      Compare_0123456789 (E x x x x) (E y y y y) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare x y)) (Compare x y)) (Compare x y)) (Compare x y)
+      Compare_0123456789 (F x x x x) (F y y y y) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare x y)) (Compare x y)) (Compare x y)) (Compare x y)
+      Compare_0123456789 (a :: Foo k k k k) (b :: Foo k k k k) = Compare (GetRank_0123456789 a) (GetRank_0123456789 b)
+    type family GetRank_0123456789 a :: Nat where
+      GetRank_0123456789 (A a a a a) = 1
+      GetRank_0123456789 (B a a a a) = 2
+      GetRank_0123456789 (C a a a a) = 3
+      GetRank_0123456789 (D a a a a) = 4
+      GetRank_0123456789 (E a a a a) = 5
+      GetRank_0123456789 (F a a a a) = 6
     type ASym4 (t :: a) (t :: b) (t :: c) (t :: d) = A t t t t
     instance SuppressUnusedWarnings ASym3 where
       suppressUnusedWarnings _
