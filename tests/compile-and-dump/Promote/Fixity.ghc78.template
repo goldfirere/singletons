@@ -53,7 +53,7 @@ Promote/Fixity.hs:0:0: Splicing declarations
       type family (:<=>) (arg :: a) (arg :: a) :: Ordering
 
 Promote/Fixity.hs:0:0: Warning:
-    Droping fixity declaration for ==== due to GHC bug #9066
+    Cannot promote fixity declaration for ==== due to GHC bug #9066
 
 Promote/Fixity.hs:0:0: Warning:
-    Droping fixity declaration for <=> due to GHC bug #9066
+    Cannot promote fixity declaration for <=> due to GHC bug #9066

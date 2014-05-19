@@ -428,12 +428,12 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
 
 dropFixityDecls :: [(Fixity, Name)] -> PrM ()
 dropFixityDecls infix_decls =
-  mapM_ (\(_, n) -> qReport False ("Droping fixity declaration for " ++
-                                  nameBase n ++ " due to GHC bug #9066") )
-                           infix_decls
+  mapM_ (\(_, n) -> qReportWarning ("Cannot promote fixity declaration for " ++
+                                    nameBase n ++ " due to GHC bug #9066") )
+                                   infix_decls
 
 -- We can't promote fixity declarations until GHC #9066 bug is fixed. Until
--- the this function is not necessary.
+-- then this function is not necessary.
 -- promoteInfixDecl :: Fixity -> Name -> Maybe DDec
 -- promoteInfixDecl fixity name
 --  | isUpcase name = Nothing   -- no need to promote the decl
