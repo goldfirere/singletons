@@ -15,11 +15,11 @@ before_install:
  - travis_retry sudo apt-get update
  - travis_retry sudo apt-get install cabal-install-1.18 ghc-$GHCVER happy
  - export PATH=/opt/ghc/$GHCVER/bin:$PATH
- - $CABAL install happy alex
  - export PATH=$HOME/.cabal/bin:$PATH
 
 install:
  - cabal-1.18 update
+ - cabal-1.18 install happy alex
  - cabal-1.18 install --only-dependencies --enable-tests --enable-benchmarks
 
 # Here starts the actual work to be performed for the package under test; any command which exits with a non-zero exit code causes the build to fail.
