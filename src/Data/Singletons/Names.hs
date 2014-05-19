@@ -161,21 +161,6 @@ boolKi = DConK boolName []
 andTySym :: DType
 andTySym = promoteValRhs andName
 
--- make a Name with an unknown kind into a DTyVarBndr.
-inferKindTV :: Quasi q => Name -> q DTyVarBndr
-inferKindTV n = do
-  return $ DPlainTV n
-
-inferMaybeKindTV :: Quasi q => Name -> Maybe DKind -> q DTyVarBndr
-inferMaybeKindTV n Nothing =
-  return $ DPlainTV n
-inferMaybeKindTV n (Just k) = return $ DKindedTV n k
-
--- similar to above, this is for annotating the result kind of
--- a closed type family. Makes it inferred in 7.8
-unknownResult :: DKind -> Maybe DKind
-unknownResult = const Nothing
-
 -- Singletons
 
 singDataConName :: Name -> Name

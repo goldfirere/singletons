@@ -493,15 +493,14 @@ promoteLetDecRHS type_env prefix name (UFunction clauses) = do
   all_locals <- allLocals
   defun_decs <- defunctionalize proName
                 (map (const Nothing) all_locals ++ m_argKs) m_resK
-  local_tvbs <- mapM inferKindTV all_locals
+  let local_tvbs = map DPlainTV all_locals
   tyvarNames <- mapM (const $ qNewName "a") m_argKs
   expClauses <- mapM (etaExpand (ty_num_args - numArgs)) clauses
   (eqns, ann_clauses) <- mapAndUnzipM promoteClause expClauses
   prom_fun <- lookupVarE name
-  args <- zipWithM inferMaybeKindTV tyvarNames m_argKs
-  let all_args = local_tvbs ++ args
-  resultK <- inferKind m_resK
-  return ( Right (proName, all_args, resultK, eqns)
+  let args     = zipWith inferMaybeKindTV tyvarNames m_argKs
+      all_args = local_tvbs ++ args
+  return ( Right (proName, all_args, m_resK, eqns)
          , defun_decs
          , AFunction prom_fun ty_num_args ann_clauses )
 
@@ -572,19 +571,16 @@ promoteExp (DAppE exp1 exp2) = do
   return (apply exp1' exp2', ADAppE ann_exp1 ann_exp2)
 promoteExp (DLamE names exp) = do
   lambdaName <- newUniqueName "Lambda"
-  resultKVarName  <- qNewName "r"
   tyNames <- mapM mkTyName names
   let var_proms = zip names tyNames
   (rhs, ann_exp) <- lambdaBind var_proms $ promoteExp exp
   tyFamLamTypes <- mapM (const $ qNewName "t") names
   all_locals <- allLocals
   let all_args = all_locals ++ tyFamLamTypes
-  tvbs <- mapM inferKindTV all_args
-  let resultK       = DVarK resultKVarName
-      m_resultK     = unknownResult resultK
+      tvbs     = map DPlainTV all_args
   emitDecs [DClosedTypeFamilyD lambdaName
                                tvbs
-                               m_resultK
+                               Nothing
                                [DTySynEqn (map DVarT (all_locals ++ tyNames))
                                           rhs]]
   emitDecsM $ defunctionalize lambdaName (map (const Nothing) all_args) Nothing
@@ -599,9 +595,8 @@ promoteExp (DCaseE exp matches) = do
   (eqns, ann_matches) <- mapAndUnzipM (promoteMatch prom_case) matches
   tyvarName  <- qNewName "t"
   let all_args = all_locals ++ [tyvarName]
-  tvbs  <- mapM inferKindTV all_args
-  resultK    <- fmap DVarK $ qNewName "r"
-  emitDecs [DClosedTypeFamilyD caseTFName tvbs (unknownResult resultK) eqns]
+      tvbs     = map DPlainTV all_args
+  emitDecs [DClosedTypeFamilyD caseTFName tvbs Nothing eqns]
   return ( prom_case `DAppT` exp'
          , ADCaseE ann_exp ann_matches )
 promoteExp (DLetE decs exp) = do

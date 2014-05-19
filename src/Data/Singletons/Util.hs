@@ -176,10 +176,9 @@ extractTvbName :: DTyVarBndr -> Name
 extractTvbName (DPlainTV n) = n
 extractTvbName (DKindedTV n _) = n
 
--- use the kind provided, or make a fresh kind variable
-inferKind :: Quasi q => Maybe DKind -> q (Maybe DKind)
-inferKind (Just k) = return $ Just k
-inferKind Nothing = return Nothing
+inferMaybeKindTV :: Name -> Maybe DKind -> DTyVarBndr
+inferMaybeKindTV n Nothing =  DPlainTV n
+inferMaybeKindTV n (Just k) = DKindedTV n k
 
 -- Get argument types from an arrow type. Removing ForallT is an
 -- important preprocessing step required by promoteType.
