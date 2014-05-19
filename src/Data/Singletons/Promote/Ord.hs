@@ -39,7 +39,6 @@ mkOrdTypeInstance kind cons = do
                                        , DSigT (DVarT bName) kind ]
                                      (foldType (DConT helperName)
                                                [DVarT aName, DVarT bName]))
-      pord_name   = promoteClassName ordName
       pord_inst   = DInstanceD [] ((DConT $ promoteClassName ordName) `DAppT`
                                    kindParam kind) [ordInst]
 

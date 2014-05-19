@@ -37,12 +37,12 @@ $(promote [d|
     -- test that values in instance definitions are eta-expanded
     mycompare = fooCompare
 
---  data Foo2 = F | G
---
---  -- instance with overlaping equations. Tests #56
---  instance MyOrd Foo2 where
---      F `mycompare` F = EQ
---      F `mycompare` a = LT
+  data Foo2 = F | G
+
+  -- instance with overlaping equations. Tests #56
+  instance MyOrd Foo2 where
+      F `mycompare` F = EQ
+      F `mycompare` a = LT
  |])
 
 -- check promotion across different splices (#55)
