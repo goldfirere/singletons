@@ -52,21 +52,18 @@ mkOrdTypeInstance kind cons = do
   return [pord_inst,closedFam,getRank]
   where
    buildEqn :: Quasi q => DCon -> q DTySynEqn
-   buildEqn (DCon _ _ name fields)
-       | null (tysOfConFields fields) =
-           return $ DTySynEqn [DConT name, DConT name] (DConT 'EQ)
-       | otherwise = do
-           let args = length (tysOfConFields fields)
-           arg_names1 <- replicateM args (qNewName "x")
-           arg_names2 <- replicateM args (qNewName "y")
-           let cmps = zipWith (\x y -> foldType (DConT tyCompareName)
-                                                [ DVarT x, DVarT y ])
-                              arg_names1 arg_names2
-               rhs = foldl (\l r -> foldType (DConT tyThenCmpName) [l, r])
-                           (DConT 'EQ) cmps
-           return $ DTySynEqn [ foldType (DConT name) (map DVarT arg_names1)
-                              , foldType (DConT name) (map DVarT arg_names2) ]
-                              rhs
+   buildEqn (DCon _ _ name fields) = do
+     let args = length (tysOfConFields fields)
+     arg_names1 <- replicateM args (qNewName "x")
+     arg_names2 <- replicateM args (qNewName "y")
+     let cmps = zipWith (\x y -> foldType (DConT tyCompareName)
+                                          [ DVarT x, DVarT y ])
+                        arg_names1 arg_names2
+         rhs = foldl (\l r -> foldType (DConT tyThenCmpName) [l, r])
+                     (DConT 'EQ) cmps
+     return $ DTySynEqn [ foldType (DConT name) (map DVarT arg_names1)
+                        , foldType (DConT name) (map DVarT arg_names2) ]
+                        rhs
 
 buildGetRank :: Quasi q => [(DCon, Int)] -> q (Name, DDec)
 buildGetRank cons = do
