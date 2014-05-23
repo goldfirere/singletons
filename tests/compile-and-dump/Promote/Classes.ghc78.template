@@ -14,6 +14,14 @@ Promote/Classes.hs:0:0: Splicing declarations
           data Foo = A | B
           data Foo2 = F | G
           
+          instance Eq Foo2 where
+            F == F = True
+            G == G = True
+            _ == _ = False
+          instance Ord Foo2 where
+            F `compare` F = EQ
+            F `compare` _ = LT
+            _ `compare` _ = GT
           instance MyOrd Foo2 where
             F `mycompare` F = EQ
             F `mycompare` _ = LT
@@ -54,6 +62,14 @@ Promote/Classes.hs:0:0: Splicing declarations
       mycompare F F = EQ
       mycompare F _ = LT
       mycompare _ _ = GT
+    instance Ord Foo2 where
+      compare F F = EQ
+      compare F _ = LT
+      compare _ _ = GT
+    instance Eq Foo2 where
+      (==) F F = True
+      (==) G G = True
+      (==) _ _ = False
     type FooCompareSym2 (t :: Foo) (t :: Foo) = FooCompare t t
     instance SuppressUnusedWarnings FooCompareSym1 where
       suppressUnusedWarnings _
@@ -199,6 +215,19 @@ Promote/Classes.hs:0:0: Splicing declarations
       Mycompare_0123456789 (z :: Foo2) (z :: Foo2) = (GTSym0 :: Ordering)
     instance PMyOrd (KProxy :: KProxy Foo2) where
       type Mycompare (a :: Foo2) (a :: Foo2) = Mycompare_0123456789 a a
+    type family Compare_0123456789 (a :: Foo2)
+                                   (a :: Foo2) :: Ordering where
+      Compare_0123456789 (F :: Foo2) (F :: Foo2) = (EQSym0 :: Ordering)
+      Compare_0123456789 (F :: Foo2) (z :: Foo2) = (LTSym0 :: Ordering)
+      Compare_0123456789 (z :: Foo2) (z :: Foo2) = (GTSym0 :: Ordering)
+    instance POrd (KProxy :: KProxy Foo2) where
+      type Compare (a :: Foo2) (a :: Foo2) = Compare_0123456789 a a
+    type family (:==_0123456789) (a :: Foo2) (a :: Foo2) :: Bool where
+      (:==_0123456789) (F :: Foo2) (F :: Foo2) = (TrueSym0 :: Bool)
+      (:==_0123456789) (G :: Foo2) (G :: Foo2) = (TrueSym0 :: Bool)
+      (:==_0123456789) (z :: Foo2) (z :: Foo2) = (FalseSym0 :: Bool)
+    instance PEq (KProxy :: KProxy Foo2) where
+      type (:==) (a :: Foo2) (a :: Foo2) = (:==_0123456789) a a
     type ASym0 = A
     type BSym0 = B
     type FSym0 = F

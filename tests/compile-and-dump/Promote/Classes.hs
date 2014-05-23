@@ -1,6 +1,6 @@
 module Promote.Classes where
 
-import Prelude hiding (Ord(..), const)
+import Prelude hiding (const)
 import Singletons.Nat
 import Data.Singletons
 import Data.Singletons.TH
@@ -44,6 +44,16 @@ $(promote [d|
       F `mycompare` F = EQ
       F `mycompare` _ = LT
       _ `mycompare` _ = GT
+
+  instance Ord Foo2 where
+    F `compare` F = EQ
+    F `compare` _ = LT
+    _ `compare` _ = GT
+
+  instance Eq Foo2 where
+    F == F = True
+    G == G = True
+    _ == _ = False
  |])
 
 -- check promotion across different splices (#55)

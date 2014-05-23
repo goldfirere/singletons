@@ -28,8 +28,12 @@ import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Type.Equality
 
--- | The promoted analogue of 'Eq'. If you supply no definition for '(:==)' under
--- GHC 7.8+, then it defaults to a use of '(==)', from @Data.Type.Equality@.
+import Language.Haskell.TH
+import Language.Haskell.TH.Desugar
+import Data.Singletons.Names
+
+-- | The promoted analogue of 'Eq'. If you supply no definition for '(:==)',
+-- then it defaults to a use of '(==)', from @Data.Type.Equality@.
 class kproxy ~ 'KProxy => PEq (kproxy :: KProxy a) where
   type (:==) (x :: a) (y :: a) :: Bool
   type (:/=) (x :: a) (y :: a) :: Bool
@@ -37,6 +41,14 @@ class kproxy ~ 'KProxy => PEq (kproxy :: KProxy a) where
   type (x :: a) :== (y :: a) = x == y
   type (x :: a) :/= (y :: a) = Not (x :== y)
 
+-- need to spit out class and method annotations!
+$( do a <- newName "a"
+      classAnnot <- [| [a] |]
+      methAnnot  <- [| ([DVarK a, DVarK a], DConK boolName []) |]
+      return [ PragmaD $ AnnP (TypeAnnotation ''PEq)   classAnnot
+             , PragmaD $ AnnP (TypeAnnotation ''(:==)) methAnnot
+             , PragmaD $ AnnP (TypeAnnotation ''(:/=)) methAnnot ])
+               
 $(genDefunSymbols [''(:==), ''(:/=)])
 
 -- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
