@@ -1,6 +1,11 @@
 Changelog for singletons project
 ================================
 
+1.0.1
+-----
+
+* Bugfixes only.
+
 1.0
 ---
 

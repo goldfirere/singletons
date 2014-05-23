@@ -12,9 +12,10 @@ type level. It is an internal module to the singletons package.
 module Data.Singletons.Promote where
 
 import Language.Haskell.TH hiding ( Q, cxt )
-import Language.Haskell.TH.Syntax ( Quasi(..) )
+import Language.Haskell.TH.Syntax ( Quasi(..), lift )
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.Sweeten
+import Language.Haskell.TH.Desugar.Lift ()
 import Data.Singletons.Names
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Eq
@@ -232,6 +233,21 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
 
+-- Note [Class variable annotations]
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+-- GHC bug #9081 means that class variables and associated type variables do *not*
+-- always have the same uniques. Even worse, when these have been written out to
+-- an interface file and slurped back in, the base names might even be different.
+-- So, we use the facility of annotations to line up the method types with the class
+-- header.
+--
+-- Every promoted class has an annotation which is a list of the names of the type
+-- variables. Every promoted method has an annotation which is (argKs, resK) --
+-- the kinds of the arguments and the return. These can be read back in with
+-- reifyAnnotation, which gives enough information to do the kind substitution needed
+-- in promoteMethod.
+
 promoteClassDec :: ClassDecl
                 -> PrM ( Map Name [Name]    -- from class names to tyvar lists
                        , Map Name DType )   -- returns method signatures
@@ -253,6 +269,13 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
      -- the first arg to promoteMethod is a kind subst. We actually don't
      -- want to subst for default instances, so we pass Map.empty
   default_decs <- mapM (promoteMethod Map.empty meth_sigs) (Map.toList defaults)
+
+  -- See Note [Class variable annotations]
+  class_tyvars_exp <- runQ $ lift tvbNames
+                         -- annotations are too polymorphic -- need a type signature
+  class_tyvars_dexp <- dsExp (class_tyvars_exp `SigE` (ListT `AppT` (ConT ''Name)))
+  emitDecs [DPragmaD $ DAnnP (TypeAnnotation pClsName) class_tyvars_dexp]
+  
   -- We can't promote fixity declarations until GHC #9066 bug is fixed. Right
   -- now we drop fixity declarations and issue warnings.
   -- let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
@@ -267,6 +290,14 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
       (argKs, resK) <- snocView `liftM` (mapM promoteType (snd $ unravel ty))
       args <- mapM (const $ qNewName "arg") argKs
       emitDecsM $ defunctionalize proName (map Just argKs) (Just resK)
+
+      -- See Note [Class variable annotations]
+      kind_exp  <- runQ $ lift (argKs, resK)
+      kind_dexp <- dsExp (kind_exp `SigE` (TupleT 2 `AppT`
+                                             (ListT `AppT` (ConT ''DKind)) `AppT`
+                                             (ConT ''DKind)))
+      emitDecs [DPragmaD $ DAnnP (TypeAnnotation proName) kind_dexp]
+
       return $ DFamilyD TypeFam proName
                         (zipWith DKindedTV args argKs)
                         (Just resK)
@@ -292,34 +323,20 @@ promoteInstanceDec cls_tvb_env meth_sigs
   where
     pClsName = promoteClassName cls_name
 
-    lookup_cls_tvb_names :: PrM [String]
+    lookup_cls_tvb_names :: PrM [Name]
     lookup_cls_tvb_names = case Map.lookup cls_name cls_tvb_env of
       Nothing -> do
-        m_dinfo <- qReifyMaybe pClsName
-        case m_dinfo of
-          Just (DTyConI (DClassD _cxt _name cls_tvbs _fds _decs) _insts) -> do
-            mapM extract_kv_name cls_tvbs
-          _ -> fail $ "Cannot find class declaration for " ++ show cls_name
-          -- See Note [Bad Names in reification]
-      Just tvb_names -> return $ map nameBase tvb_names
+        cls_tyvar_namess <- qReifyAnnotations (AnnLookupName pClsName)
+        case cls_tyvar_namess of
+          [cls_tyvar_names] -> return cls_tyvar_names
+          _ -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
+      Just tvb_names -> return tvb_names
 
-    extract_kv_name :: DTyVarBndr -> PrM String
-    extract_kv_name (DKindedTV _kpVar (DConK _kpType [DVarK kv])) =
-      -- See Note [Bad Names in reification]
-      return $ nameBase kv
-    extract_kv_name tvb =
-      fail $ "Unexpected parameter to promoted class: " ++ show tvb
+-- promoteMethod needs to substitute in a method's kind because GHC does not do
+-- enough kind checking of associated types. See GHC #9063. When that bug is fixed,
+-- the substitution code can be removed.
 
--- Note [Bad Names in reification]
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- For reasons I (RAE) don't understand, reifying a class and reifying an
--- associated type family sometimes produce *different* Names for the
--- associated type/kind variables. This wreaks havoc with the type subst
--- algorithm in promoteMethod. The solution? Ickily compare nameBases
--- instead of proper Names. See also GHC#9081.
-
--- See Note [Bad Names in reification]
-promoteMethod :: Map String DKind   -- instantiations for class tyvars
+promoteMethod :: Map Name DKind     -- instantiations for class tyvars
               -> Map Name DType     -- method types
               -> (Name, ULetDecRHS) -> PrM DDec
 promoteMethod subst sigs_map (meth_name, meth_rhs) = do
@@ -354,28 +371,20 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
       Nothing -> do
           -- lookup the promoted name, just in case the term-level one
           -- isn't defined
-        m_dinfo <- qReifyMaybe proName
-        case m_dinfo of
-          Just (DTyConI (DFamilyD _flav _name tvbs (Just res)) _insts) -> do
-            arg_kis <- mapM (expect_just . extractTvbKind) tvbs
-            return (arg_kis, res)
-          _ -> fail $ "Cannot find type of " ++ show proName
+        kind_infos <- qReifyAnnotations (AnnLookupName proName)
+        case kind_infos of
+          [kind_info] -> return kind_info
+          _ -> fail $ "Cannot find type annotation for " ++ show proName
       Just ty -> do
         let (_, tys) = unravel ty
         kis <- mapM promoteType tys
         return $ snocView kis
 
-    expect_just :: Maybe a -> PrM a
-    expect_just (Just x) = return x
-    expect_just Nothing =
-      fail "Internal error: unknown kind of a promoted class method."
-
     subst_ki :: DKind -> DKind
     subst_ki (DForallK {}) =
       error "Higher-rank kind encountered in instance method promotion."
     subst_ki (DVarK n) =
-      -- See Note [Bad Names in reification]
-      case Map.lookup (nameBase n) subst of
+      case Map.lookup n subst of
         Just ki -> ki
         Nothing -> DVarK n
     subst_ki (DConK con kis) = DConK con (map subst_ki kis)
@@ -388,7 +397,6 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
 
     apply_ki :: DType -> DKind -> DType
     apply_ki = DSigT
-
 
 promoteLetDecEnv :: String -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env

@@ -105,6 +105,27 @@ Promote/Classes.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (KindOf (Apply MycompareSym0 arg)) (KindOf (MycompareSym1 arg)) =>
         MycompareSym0KindInference
     type instance Apply MycompareSym0 l = MycompareSym1 l
+    {-# ANN type Mycompare GHC.Tuple.(,)
+                             ((GHC.Types.:)
+                                (th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DVarK
+                                   (Language.Haskell.TH.Syntax.Name
+                                      (Language.Haskell.TH.Syntax.OccName "a")
+                                      (Language.Haskell.TH.Syntax.NameU 0123456789#)))
+                                ((GHC.Types.:)
+                                   (th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DVarK
+                                      (Language.Haskell.TH.Syntax.Name
+                                         (Language.Haskell.TH.Syntax.OccName "a")
+                                         (Language.Haskell.TH.Syntax.NameU 0123456789#)))
+                                   GHC.Types.[]))
+                             (th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DConK
+                                (Language.Haskell.TH.Syntax.Name
+                                   (Language.Haskell.TH.Syntax.OccName "Ordering")
+                                   (Language.Haskell.TH.Syntax.NameG
+                                      Language.Haskell.TH.Syntax.TcClsName
+                                      (Language.Haskell.TH.Syntax.PkgName "ghc-prim")
+                                      (Language.Haskell.TH.Syntax.ModName "GHC.Types")))
+                                GHC.Types.[]) ::
+                             GHC.Tuple.(,) (GHC.Types.[] th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DKind) th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DKind #-}
     type (:<=>$$$) (t :: a) (t :: a) = (:<=>) t t
     instance SuppressUnusedWarnings (:<=>$$) where
       suppressUnusedWarnings _
@@ -120,8 +141,35 @@ Promote/Classes.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (KindOf (Apply (:<=>$) arg)) (KindOf ((:<=>$$) arg)) =>
         (:<=>$###)
     type instance Apply (:<=>$) l = (:<=>$$) l
+    {-# ANN type :<=> GHC.Tuple.(,)
+                        ((GHC.Types.:)
+                           (th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DVarK
+                              (Language.Haskell.TH.Syntax.Name
+                                 (Language.Haskell.TH.Syntax.OccName "a")
+                                 (Language.Haskell.TH.Syntax.NameU 0123456789#)))
+                           ((GHC.Types.:)
+                              (th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DVarK
+                                 (Language.Haskell.TH.Syntax.Name
+                                    (Language.Haskell.TH.Syntax.OccName "a")
+                                    (Language.Haskell.TH.Syntax.NameU 0123456789#)))
+                              GHC.Types.[]))
+                        (th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DConK
+                           (Language.Haskell.TH.Syntax.Name
+                              (Language.Haskell.TH.Syntax.OccName "Ordering")
+                              (Language.Haskell.TH.Syntax.NameG
+                                 Language.Haskell.TH.Syntax.TcClsName
+                                 (Language.Haskell.TH.Syntax.PkgName "ghc-prim")
+                                 (Language.Haskell.TH.Syntax.ModName "GHC.Types")))
+                           GHC.Types.[]) ::
+                        GHC.Tuple.(,) (GHC.Types.[] th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DKind) th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DKind #-}
     type family (:<=>_0123456789) (a :: a) (a :: a) :: Ordering where
       (:<=>_0123456789) (a_0123456789 :: a) (a_0123456789 :: a) = (Apply (Apply MycompareSym0 a_0123456789) a_0123456789 :: Ordering)
+    {-# ANN type PMyOrd (GHC.Types.:)
+                          (Language.Haskell.TH.Syntax.Name
+                             (Language.Haskell.TH.Syntax.OccName "a")
+                             (Language.Haskell.TH.Syntax.NameU 0123456789#))
+                          GHC.Types.[] ::
+                          GHC.Types.[] Language.Haskell.TH.Syntax.Name #-}
     class (GHC.Types.~) kproxy KProxy => PMyOrd (kproxy :: KProxy a) where
       type family Mycompare (arg :: a) (arg :: a) :: Ordering
       type family (:<=>) (arg :: a) (arg :: a) :: Ordering
