@@ -12,8 +12,9 @@ are two papers that describe the library. Original one, _Dependently typed
 programming with singletons_, is available
 [here](http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf) and will
 be referenced in this documentation as the "singletons paper". A follow-up
-paper, _Promoting Functions to Type Families in Haskell_, will be available
-online Real Soon Now and will be referenced in this documentation as the
+paper, _Promoting Functions to Type Families in Haskell_, is available
+[here](http://www.cis.upenn.edu/~eir/papers/2014/promotion/promotion.pdf)
+and will be referenced in this documentation as the
 "promotion paper".
 
 Purpose of the singletons library
@@ -402,8 +403,8 @@ The following constructs are not supported:
 * list comprehensions
 * do
 * arithmetic sequences
-* datatypes that store arrows
-* literals
+* datatypes that store arrows, `Nat`, or `Symbol`
+* literals (limited support)
 
 Why are these out of reach? First two depend on monads, which mention a
 higher-kinded type variable. GHC does not support higher-sorted kind variables,
@@ -426,6 +427,9 @@ type level strings are no longer considered lists of characters. Function
 working on integer literals can be promoted by rewriting them to use
 `Nat`. Since `Nat` does not exist at the term level it will only be possible to
 use the promoted definition, but not the original, term-level one.
+
+This is the same line of reasoning that forbids the use of `Nat` or
+`Symbol` in datatype definitions.
 
 Support for `*`
 ---------------
