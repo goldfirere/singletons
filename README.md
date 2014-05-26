@@ -428,8 +428,9 @@ working on integer literals can be promoted by rewriting them to use
 `Nat`. Since `Nat` does not exist at the term level it will only be possible to
 use the promoted definition, but not the original, term-level one.
 
-This is the same line of reasoning that forbids the use of `Nat` or
-`Symbol` in datatype definitions.
+This is the same line of reasoning that forbids the use of `Nat` or `Symbol`
+in datatype definitions. But, see [this bug
+report](https://github.com/goldfirere/singletons/issues/76) for a workaround.
 
 Support for `*`
 ---------------
