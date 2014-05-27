@@ -459,9 +459,6 @@ of types with which to work. See the Haddock documentation for the function
 Known bugs
 ----------
 
-* Due to GHC bug #9081 deriving of hand-written instances of `Ord`, `Eq` and
-  `Bounded` is not supported. Your only option here is to have these instances
-  derived automatically.
 * Fixity declarations don't promote due to GHC bug #9066. They are dropped with
   a warning
 * Top-level eta-reduced patterns don't singletonize
