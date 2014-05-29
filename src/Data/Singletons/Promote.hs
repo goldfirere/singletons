@@ -333,7 +333,7 @@ promoteInstanceDec cls_tvb_env meth_sigs
       Just tvb_names -> return tvb_names
 
 -- promoteMethod needs to substitute in a method's kind because GHC does not do
--- enough kind checking of associated types. See GHC #9063. When that bug is fixed,
+-- enough kind checking of associated types. See GHC#9063. When that bug is fixed,
 -- the substitution code can be removed.
 
 promoteMethod :: Map Name DKind     -- instantiations for class tyvars
@@ -348,14 +348,20 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   let meth_arg_kis' = map subst_ki arg_kis
       meth_res_ki'  = subst_ki res_ki
       eqns'         = map (apply_kis meth_arg_kis' meth_res_ki') eqns
-  helperName <- newUniqueName (nameBase proName)
-  emitDecs [DClosedTypeFamilyD helperName
-                               (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
-                               (Just meth_res_ki') eqns']
-  return $ DTySynInstD
-             proName
-             (DTySynEqn (zipWith (DSigT . DVarT) meth_arg_tvs meth_arg_kis')
-                        (foldType (DConT helperName) (map DVarT meth_arg_tvs)))
+  -- if there is only one equation, it can't overlap. Don't use a helper.
+  -- This (rather silly) optimization is to work around GHC#9151 so that
+  -- the Enum class can promote.
+  case eqns' of
+    [eqn'] -> return $ DTySynInstD proName eqn'
+    _      -> do
+      helperName <- newUniqueName (nameBase proName)
+      emitDecs [DClosedTypeFamilyD helperName
+                                   (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
+                                   (Just meth_res_ki') eqns']
+      return $ DTySynInstD
+                 proName
+                 (DTySynEqn (zipWith (DSigT . DVarT) meth_arg_tvs meth_arg_kis')
+                            (foldType (DConT helperName) (map DVarT meth_arg_tvs)))
   where
     proName = promoteValNameLhs meth_name
 
@@ -540,7 +546,7 @@ promoteMatch prom_case (DMatch pat exp) = do
 -- See Note [No wildcards in singletons]
 promotePat :: DPat -> QWithAux VarPromotions PrM (DType, DPat)
 promotePat (DLitPa lit) = do
-  lit' <- promoteLit lit
+  lit' <- promoteLitPat lit
   return (lit', DLitPa lit)
 promotePat (DVarPa name) = do
       -- term vars can be symbols... type vars can't!
@@ -572,7 +578,7 @@ promotePat DWildPa = do
 promoteExp :: DExp -> PrM (DType, ADExp)
 promoteExp (DVarE name) = fmap (, ADVarE name) $ lookupVarE name
 promoteExp (DConE name) = return $ (promoteValRhs name, ADConE name)
-promoteExp (DLitE lit)  = fmap (, ADLitE lit) $ promoteLit lit
+promoteExp (DLitE lit)  = fmap (, ADLitE lit) $ promoteLitExp lit
 promoteExp (DAppE exp1 exp2) = do
   (exp1', ann_exp1) <- promoteExp exp1
   (exp2', ann_exp2) <- promoteExp exp2
@@ -617,10 +623,21 @@ promoteExp (DSigE exp ty) = do
   ty' <- promoteType ty
   return (DSigT exp' ty', ADSigE ann_exp ty)
 
-promoteLit :: Monad m => Lit -> m DType
-promoteLit (IntegerL n)
-  | n >= 0    = return $ DLitT (NumTyLit n)
-  | otherwise = fail ("Promoting negative integers not supported: " ++ (show n))
-promoteLit (StringL str) = return $ DLitT (StrTyLit str)
-promoteLit lit =
+promoteLitExp :: Monad m => Lit -> m DType
+promoteLitExp (IntegerL n)
+  | n >= 0    = return $ (DConT tyFromIntegerName `DAppT` DLitT (NumTyLit n))
+  | otherwise = return $ (DConT tyNegateName `DAppT`
+                          (DConT tyFromIntegerName `DAppT` DLitT (NumTyLit (-n))))
+promoteLitExp (StringL str) = return $ DLitT (StrTyLit str)
+promoteLitExp lit =
+  fail ("Only string and natural number literals can be promoted: " ++ show lit)
+
+promoteLitPat :: Monad m => Lit -> m DType
+promoteLitPat (IntegerL n)
+  | n >= 0    = return $ (DLitT (NumTyLit n))
+  | otherwise =
+    fail $ "Negative literal patterns are not allowed,\n" ++
+           "because literal patterns are promoted to natural numbers."
+promoteLitPat (StringL str) = return $ DLitT (StrTyLit str)
+promoteLitPat lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)

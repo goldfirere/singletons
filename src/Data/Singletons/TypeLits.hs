@@ -23,17 +23,16 @@ module Data.Singletons.TypeLits (
   Error, ErrorSym0, sError,
   KnownNat, natVal, KnownSymbol, symbolVal,
 
-  (:+), (:-), (:*), (:^),
-  (:+$), (:+$$), (:-$), (:-$$),
-  (:*$), (:*$$), (:^$), (:^$$)
+  (:^), (:^$), (:^$$), (:^$$$)
   ) where
 
+import Data.Singletons.Promote
 import Data.Singletons
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
-import Data.Singletons.Promote
+import Data.Singletons.Prelude.Num
 import GHC.TypeLits as TL
 import Data.Type.Equality
 import Data.Proxy ( Proxy(..) )
@@ -65,15 +64,6 @@ instance SingKind ('KProxy :: KProxy Symbol) where
   fromSing (SSym :: Sing n) = symbolVal (Proxy :: Proxy n)
   toSing s = case someSymbolVal s of
                SomeSymbol (_ :: Proxy n) -> SomeSing (SSym :: Sing n)
-
--- Synonyms for GHC.TypeLits operations on Nat. These match our naming
--- conventions.
-type x :+ y = x + y
-type x :- y = x - y
-type x :* y = x * y
-type x :^ y = x ^ y
-
-$(genDefunSymbols [ ''(:+), ''(:-), ''(:*), ''(:^)] )
 
 -- SDecide instances:
 instance SDecide ('KProxy :: KProxy Nat) where
@@ -122,6 +112,65 @@ type SNat (x :: Nat) = Sing x
 -- | Kind-restricted synonym for 'Sing' for @Symbol@s
 type SSymbol (x :: Symbol) = Sing x
 
+-- SOrd instances
+-- RAE: TODO
+
+-- PNum instance
+type family SignumNat (a :: Nat) :: Nat where
+  SignumNat 0 = 0
+  SignumNat x = 1
+
+instance PNum ('KProxy :: KProxy Nat) where
+  type a :+ b = a + b
+  type a :- b = a - b
+  type a :* b = a * b
+  type Negate a = Error "Cannot negate a natural number"
+  type Abs a = a
+  type Signum a = SignumNat a
+  type FromInteger a = a
+
+-- SNum instance
+instance SNum ('KProxy :: KProxy Nat) where
+  sa %:+ sb =
+    let a = fromSing sa
+        b = fromSing sb
+        ex = someNatVal (a + b)
+    in
+    case ex of
+      Just (SomeNat (_ :: Proxy ab)) -> unsafeCoerce (SNat :: Sing ab)
+      Nothing                        -> error "Two naturals added to a negative?"
+
+  sa %:- sb =
+    let a = fromSing sa
+        b = fromSing sb
+        ex = someNatVal (a - b)
+    in
+    case ex of
+      Just (SomeNat (_ :: Proxy ab)) -> unsafeCoerce (SNat :: Sing ab)
+      Nothing                        ->
+        error "Negative natural-number singletons are naturally not allowed."
+
+  sa %:* sb =
+    let a = fromSing sa
+        b = fromSing sb
+        ex = someNatVal (a * b)
+    in
+    case ex of
+      Just (SomeNat (_ :: Proxy ab)) -> unsafeCoerce (SNat :: Sing ab)
+      Nothing                        ->
+        error "Two naturals multiplied to a negative?"
+
+  sNegate _ = error "Cannot call sNegate on a natural number singleton."
+
+  sAbs x = x
+
+  sSignum sx =
+    case sx %~ (sing :: Sing 0) of
+      Proved Refl -> sing :: Sing 0
+      Disproved _ -> unsafeCoerce (sing :: Sing 1)
+
+  sFromInteger x = x
+               
 -- Convenience functions
 
 -- | Given a singleton for @Nat@, call something requiring a
@@ -142,3 +191,7 @@ type instance Apply ErrorSym0 a = Error a
 -- | The singleton for 'error'
 sError :: Sing (str :: Symbol) -> a
 sError sstr = error (fromSing sstr)
+
+-- TODO: move this to a better home:
+type a :^ b = a ^ b
+$(genDefunSymbols [''(:^)])

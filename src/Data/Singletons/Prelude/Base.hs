@@ -44,7 +44,8 @@ module Data.Singletons.Prelude.Base (
   ) where
 
 import Data.Singletons.Prelude.Instances
-import Data.Singletons.TH
+import Data.Singletons.Single
+import Data.Singletons
 import Data.Singletons.Prelude.Bool
 
 -- Promoted and singletonized versions of "otherwise" are imported and

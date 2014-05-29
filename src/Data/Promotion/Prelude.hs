@@ -32,15 +32,18 @@ module Data.Promotion.Prelude (
   -- * Promoted comparisons
   module Data.Promotion.Prelude.Ord,
 
-  -- * Promoted bounds
-  module Data.Promotion.Prelude.Bounded,
+  -- * Promoted enumerations
+  -- | As a matter of convenience, the promoted Prelude does /not/ export
+  -- promoted @succ@ and @pred@, due to likely conflicts with
+  -- unary numbers. Please import 'Data.Promotion.Prelude.Enum' directly if
+  -- you want these.
+  module Data.Promotion.Prelude.Enum,
 
-  -- * Promoted arithmetic operations
-  Nat, (:+), (:-), (:*), (:^),
+  -- * Promoted numbers
+  module Data.Promotion.Prelude.Num,
 
   -- ** Miscellaneous functions
   Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Until, Seq,
-
 
   -- * List operations
   Map, (:++), Filter,
@@ -92,8 +95,7 @@ module Data.Promotion.Prelude (
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
 
-  (:+$), (:+$$), (:-$), (:-$$),
-  (:*$), (:*$$), (:^$), (:^$$),
+  (:^$), (:^$$),
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   (:.$), (:.$$), (:.$$$),
@@ -160,5 +162,7 @@ import Data.Promotion.Prelude.Maybe
 import Data.Promotion.Prelude.Tuple
 import Data.Promotion.Prelude.Eq
 import Data.Promotion.Prelude.Ord
-import Data.Promotion.Prelude.Bounded
+import Data.Promotion.Prelude.Enum
+  hiding (Succ, Pred, SuccSym0, SuccSym1, PredSym0, PredSym1)
+import Data.Promotion.Prelude.Num
 import Data.Singletons.TypeLits

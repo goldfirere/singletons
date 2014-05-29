@@ -90,6 +90,16 @@ module Data.Singletons.Prelude (
   -- * Singleton comparisons
   module Data.Singletons.Prelude.Ord,
 
+  -- * Singleton Enum and Bounded
+  -- | As a matter of convenience, the singletons Prelude does /not/ export
+  -- promoted/singletonized @succ@ and @pred@, due to likely conflicts with
+  -- unary numbers. Please import 'Data.Singletons.Prelude.Enum' directly if
+  -- you want these.
+  module Data.Singletons.Prelude.Enum,
+
+  -- * Singletons numbers
+  module Data.Singletons.Prelude.Num,
+
   -- ** Miscellaneous functions
   Id, sId, Const, sConst, (:.), (%:.), type ($), (%$), type ($!), (%$!),
   Flip, sFlip, AsTypeOf, sAsTypeOf,
@@ -193,4 +203,7 @@ import Data.Singletons.Prelude.Tuple
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Instances
+import Data.Singletons.Prelude.Enum
+  hiding (Succ, Pred, SuccSym0, SuccSym1, PredSym0, PredSym1, sSucc, sPred)
+import Data.Singletons.Prelude.Num
 import Data.Singletons.TypeLits

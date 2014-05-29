@@ -1,10 +1,17 @@
 Changelog for singletons project
 ================================
 
-1.0.1
+1.1
 -----
 
-* Bugfixes only.
+* Instance promotion now works properly -- it was quite buggy in 1.0.
+
+* We now have promoted and singletonized versions of `Enum`, as well as `Bounded`.
+
+* Ditto for `Num`, which includes an instance for `Nat`, naturally.
+
+* Promoting a literal number now uses overloaded literals at the type level,
+using a type-level `FromInteger` in the type-level `Num` class.
 
 1.0
 ---

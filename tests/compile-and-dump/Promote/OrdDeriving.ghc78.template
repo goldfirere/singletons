@@ -37,7 +37,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
       Compare_0123456789 Zero Zero = EQ
       Compare_0123456789 (Succ x) (Succ y) = ThenCmp EQ (Compare x y)
       Compare_0123456789 (a :: Nat) (b :: Nat) = Compare (GetRank_0123456789 a) (GetRank_0123456789 b)
-    type family GetRank_0123456789 a :: Nat where
+    type family GetRank_0123456789 a :: GHC.TypeLits.Nat where
       GetRank_0123456789 Zero = 1
       GetRank_0123456789 (Succ a) = 2
     type ZeroSym0 = Zero
@@ -71,7 +71,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
       Compare_0123456789 (E x x x x) (E y y y y) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare x y)) (Compare x y)) (Compare x y)) (Compare x y)
       Compare_0123456789 (F x x x x) (F y y y y) = ThenCmp (ThenCmp (ThenCmp (ThenCmp EQ (Compare x y)) (Compare x y)) (Compare x y)) (Compare x y)
       Compare_0123456789 (a :: Foo k k k k) (b :: Foo k k k k) = Compare (GetRank_0123456789 a) (GetRank_0123456789 b)
-    type family GetRank_0123456789 a :: Nat where
+    type family GetRank_0123456789 a :: GHC.TypeLits.Nat where
       GetRank_0123456789 (A a a a a) = 1
       GetRank_0123456789 (B a a a a) = 2
       GetRank_0123456789 (C a a a a) = 3

@@ -178,8 +178,6 @@ Promote/Classes.hs:0:0: Splicing declarations
                                  (Language.Haskell.TH.Syntax.ModName "GHC.Types")))
                            GHC.Types.[]) ::
                         GHC.Tuple.(,) (GHC.Types.[] th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DKind) th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DKind #-}
-    type family (:<=>_0123456789) (a :: a) (a :: a) :: Ordering where
-      (:<=>_0123456789) (a_0123456789 :: a) (a_0123456789 :: a) = (Apply (Apply MycompareSym0 a_0123456789) a_0123456789 :: Ordering)
     {-# ANN type PMyOrd (GHC.Types.:)
                           (Language.Haskell.TH.Syntax.Name
                              (Language.Haskell.TH.Syntax.OccName "a")
@@ -189,7 +187,7 @@ Promote/Classes.hs:0:0: Splicing declarations
     class (GHC.Types.~) kproxy KProxy => PMyOrd (kproxy :: KProxy a) where
       type family Mycompare (arg :: a) (arg :: a) :: Ordering
       type family (:<=>) (arg :: a) (arg :: a) :: Ordering
-      type instance (:<=>) (a :: a) (a :: a) = (:<=>_0123456789) a a
+      type instance (:<=>) (a_0123456789 :: a) (a_0123456789 :: a) = (Apply (Apply MycompareSym0 a_0123456789) a_0123456789 :: Ordering)
     type family Mycompare_0123456789 (a :: Nat)
                                      (a :: Nat) :: Ordering where
       Mycompare_0123456789 (Zero :: Nat) (Zero :: Nat) = (EQSym0 :: Ordering)
@@ -198,16 +196,10 @@ Promote/Classes.hs:0:0: Splicing declarations
       Mycompare_0123456789 (Succ n :: Nat) (Succ m :: Nat) = (Apply (Apply MycompareSym0 m) n :: Ordering)
     instance PMyOrd (KProxy :: KProxy Nat) where
       type Mycompare (a :: Nat) (a :: Nat) = Mycompare_0123456789 a a
-    type family Mycompare_0123456789 (a :: GHC.Tuple.())
-                                     (a :: GHC.Tuple.()) :: Ordering where
-      Mycompare_0123456789 (_z_0123456789 :: GHC.Tuple.()) (a_0123456789 :: GHC.Tuple.()) = (Apply (Apply ConstSym0 EQSym0) a_0123456789 :: Ordering)
     instance PMyOrd (KProxy :: KProxy GHC.Tuple.()) where
-      type Mycompare (a :: GHC.Tuple.()) (a :: GHC.Tuple.()) = Mycompare_0123456789 a a
-    type family Mycompare_0123456789 (a :: Foo)
-                                     (a :: Foo) :: Ordering where
-      Mycompare_0123456789 (a_0123456789 :: Foo) (a_0123456789 :: Foo) = (Apply (Apply FooCompareSym0 a_0123456789) a_0123456789 :: Ordering)
+      type Mycompare (_z_0123456789 :: GHC.Tuple.()) (a_0123456789 :: GHC.Tuple.()) = (Apply (Apply ConstSym0 EQSym0) a_0123456789 :: Ordering)
     instance PMyOrd (KProxy :: KProxy Foo) where
-      type Mycompare (a :: Foo) (a :: Foo) = Mycompare_0123456789 a a
+      type Mycompare (a_0123456789 :: Foo) (a_0123456789 :: Foo) = (Apply (Apply FooCompareSym0 a_0123456789) a_0123456789 :: Ordering)
     type family Mycompare_0123456789 (a :: Foo2)
                                      (a :: Foo2) :: Ordering where
       Mycompare_0123456789 (F :: Foo2) (F :: Foo2) = (EQSym0 :: Ordering)

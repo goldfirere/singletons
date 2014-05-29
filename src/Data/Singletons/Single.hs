@@ -360,4 +360,4 @@ singMatch (ADMatch var_proms prom_match pat exp) = do
   return $ DMatch sPat sExp
 
 singLit :: Lit -> SgM DExp
-singLit lit = DSigE (DVarE singMethName) <$> (DAppT singFamily <$> (promoteLit lit))
+singLit lit = DSigE (DVarE singMethName) <$> (DAppT singFamily <$> (promoteLitExp lit))
