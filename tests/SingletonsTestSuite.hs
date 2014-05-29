@@ -25,7 +25,6 @@ tests =
     , compileAndDumpStdTest "EqInstances"
     , compileAndDumpStdTest "CaseExpressions"
     , compileAndDumpStdTest "Star"
-    , compileAndDumpStdTest "Tuples"
     , compileAndDumpStdTest "ReturnFunc"
     , compileAndDumpStdTest "Lambdas"
     , compileAndDumpStdTest "LambdasComprehensive"
@@ -38,6 +37,7 @@ tests =
     , compileAndDumpStdTest "Records"
     , compileAndDumpStdTest "T29"
     , compileAndDumpStdTest "T33"
+    , compileAndDumpStdTest "Names"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

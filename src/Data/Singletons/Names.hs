@@ -20,6 +20,7 @@ import GHC.Exts ( Any )
 import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
 import Data.Proxy ( Proxy(..) )
+import Control.Monad
 
 anyTypeName, boolName, andName, tyEqName, tyCompareName, tyminBoundName,
   tymaxBoundName, repName,
@@ -34,15 +35,15 @@ anyTypeName, boolName, andName, tyEqName, tyCompareName, tyminBoundName,
   sListName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
   equalityName, applySingName, suppressClassName, suppressMethodName,
-  tyThenCmpName, kindOfName :: Name
+  tyThenCmpName, kindOfName, tyFromIntegerName, tyNegateName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
-tyCompareName = mkName "Compare"
-tyminBoundName = mkName "MinBound"
-tymaxBoundName = mkName "MaxBound"
-tyEqName = mkName ":=="
-repName = mkName "Rep"
+tyCompareName = mk_name_tc "Data.Singletons.Prelude.Ord" "Compare"
+tyminBoundName = mk_name_tc "Data.Singletons.Prelude.Enum" "MinBound"
+tymaxBoundName = mk_name_tc "Data.Singletons.Prelude.Enum" "MaxBound"
+tyEqName = mk_name_tc "Data.Singletons.Prelude.Eq" ":=="
+repName = mkName "Rep"   -- this is actually defined in client code!
 nilName = '[]
 consName = '(:)
 listName = ''[]
@@ -57,9 +58,9 @@ eqName = ''Eq
 ordName = ''Ord
 boundedName = ''Bounded
 orderingName = ''Ordering
-ordLTSymName = mkName "LTSym0"
-ordEQSymName = mkName "EQSym0"
-ordGTSymName = mkName "GTSym0"
+ordLTSymName = mk_name_tc "Data.Singletons.Prelude.Instances" "LTSym0"
+ordEQSymName = mk_name_tc "Data.Singletons.Prelude.Instances" "EQSym0"
+ordGTSymName = mk_name_tc "Data.Singletons.Prelude.Instances" "GTSym0"
 singFamilyName = ''Sing
 singIName = ''SingI
 singMethName = 'sing
@@ -67,18 +68,18 @@ toSingName = 'toSing
 fromSingName = 'fromSing
 demoteRepName = ''DemoteRep
 singKindClassName = ''SingKind
-sEqClassName = mkName "SEq"
-sEqMethName = mkName "%:=="
-sIfName = mkName "sIf"
-sconsName = mkName "SCons"
-snilName = mkName "SNil"
+sEqClassName = mk_name_tc "Data.Singletons.Prelude.Eq" "SEq"
+sEqMethName = mk_name_v "Data.Singletons.Prelude.Eq" "%:=="
+sIfName = mk_name_v "Data.Singletons.Prelude.Bool" "sIf"
+sconsName = mk_name_d "Data.Singletons.Prelude.Instances" "SCons"
+snilName = mk_name_d "Data.Singletons.Prelude.Instances" "SNil"
 kProxyDataName = 'KProxy
 kProxyTypeName = ''KProxy
 someSingTypeName = ''SomeSing
 someSingDataName = 'SomeSing
 proxyTypeName = ''Proxy
 proxyDataName = 'Proxy
-sListName = mkName "SList"
+sListName = mk_name_tc "Data.Singletons.Prelude.Instances" "SList"
 sDecideClassName = ''SDecide
 sDecideMethName = '(%~)
 provedName = 'Proved
@@ -88,11 +89,30 @@ equalityName = ''(~)
 applySingName = 'applySing
 suppressClassName = ''SuppressUnusedWarnings
 suppressMethodName = 'suppressUnusedWarnings
-tyThenCmpName = mkName "ThenCmp"
+tyThenCmpName = mk_name_tc "Data.Singletons.Prelude.Ord" "ThenCmp"
 kindOfName = ''KindOf
+tyFromIntegerName = mk_name_tc "Data.Singletons.Prelude.Num" "FromInteger"
+tyNegateName = mk_name_tc "Data.Singletons.Prelude.Num" "Negate"
 
-mkTupleName :: Int -> Name
-mkTupleName n = mkName $ "STuple" ++ (show n)
+singPkg :: String
+singPkg = $( (LitE . StringL . loc_package) `liftM` location )
+
+mk_name_tc :: String -> String -> Name
+mk_name_tc = mkNameG_tc singPkg
+
+mk_name_d :: String -> String -> Name
+mk_name_d = mkNameG_d singPkg
+
+mk_name_v :: String -> String -> Name
+mk_name_v = mkNameG_v singPkg
+
+mkTupleTypeName :: Int -> Name
+mkTupleTypeName n = mk_name_tc "Data.Singletons.Prelude.Instances" $
+                    "STuple" ++ (show n)
+
+mkTupleDataName :: Int -> Name
+mkTupleDataName n = mk_name_d "Data.Singletons.Prelude.Instances" $
+                    "STuple" ++ (show n)
 
 -- used when a value name appears in a pattern context
 -- works only for proper variables (lower-case names)
@@ -122,12 +142,11 @@ promoteTySym name sat
     | name == undefinedName
     = anyTypeName
 
-    | Just degree <- tupleNameDegree_maybe name
-    = mkName $ "Tuple" ++ show degree ++ "Sym" ++ (show sat)
-
        -- treat unboxed tuples like tuples
-    | Just degree <- unboxedTupleNameDegree_maybe name
-    = mkName $ "Tuple" ++ show degree ++ "Sym" ++ (show sat)
+    | Just degree <- tupleNameDegree_maybe name `mplus`
+                     unboxedTupleNameDegree_maybe name
+    = mk_name_tc "Data.Singletons.Prelude.Instances" $
+                 "Tuple" ++ show degree ++ "Sym" ++ (show sat)
 
     | otherwise
     = let capped = toUpcaseStr name in
@@ -167,15 +186,15 @@ singDataConName :: Name -> Name
 singDataConName nm
   | nm == nilName                                  = snilName
   | nm == consName                                 = sconsName
-  | Just degree <- tupleNameDegree_maybe nm        = mkTupleName degree
-  | Just degree <- unboxedTupleNameDegree_maybe nm = mkTupleName degree
+  | Just degree <- tupleNameDegree_maybe nm        = mkTupleDataName degree
+  | Just degree <- unboxedTupleNameDegree_maybe nm = mkTupleDataName degree
   | otherwise                                      = prefixUCName "S" ":%" nm
 
 singTyConName :: Name -> Name
 singTyConName name
   | name == listName                                 = sListName
-  | Just degree <- tupleNameDegree_maybe name        = mkTupleName degree
-  | Just degree <- unboxedTupleNameDegree_maybe name = mkTupleName degree
+  | Just degree <- tupleNameDegree_maybe name        = mkTupleTypeName degree
+  | Just degree <- unboxedTupleNameDegree_maybe name = mkTupleTypeName degree
   | otherwise                                        = prefixUCName "S" ":%" name
 
 singClassName :: Name -> Name

@@ -1,0 +1,32 @@
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT tyNegateName ======> Negate
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT tyFromIntegerName ======> FromInteger
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT tyThenCmpName ======> ThenCmp
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT sListName ======> SList
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT sEqClassName ======> SEq
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT ordGTSymName ======> GTSym0
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT ordEQSymName ======> EQSym0
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT ordLTSymName ======> LTSym0
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT tyEqName ======> (:==)
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT tymaxBoundName ======> MaxBound
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT tyminBoundName ======> MinBound
+Singletons/Names.hs:0:0:: Splicing type
+    return $ ConT tyCompareName ======> Compare
+Singletons/Names.hs:0:0:: Splicing expression
+    return $ VarE sEqMethName ======> (%:==)
+Singletons/Names.hs:0:0:: Splicing expression
+    return $ VarE sIfName ======> sIf
+Singletons/Names.hs:0:0:: Splicing expression
+    return $ ConE sconsName ======> SCons
+Singletons/Names.hs:0:0:: Splicing expression
+    return $ ConE snilName ======> SNil
