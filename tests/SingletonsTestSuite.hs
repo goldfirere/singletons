@@ -38,6 +38,7 @@ tests =
     , compileAndDumpStdTest "Records"
     , compileAndDumpStdTest "T29"
     , compileAndDumpStdTest "T33"
+    , compileAndDumpStdTest "T66"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"
