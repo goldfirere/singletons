@@ -297,9 +297,10 @@ checkIfBrainWillExplode _ =
          "do expression: GHC's brain will explode if you try. (Do try it!)"
 
 singPat :: Map Name Name   -- from term-level names to type-level names
-        -> PatternContext -> DPat -> QWithAux [Name]  -- these names must be forall-bound
-                                     SgM ( DPat
-                                         , DType ) -- the type form of the pat
+        -> PatternContext
+        -> DPat
+        -> QWithAux [Name]  -- these names must be forall-bound
+           SgM (DPat, DType) -- the type form of the pat
 singPat _var_proms _patCxt (DLitPa _lit) =
   fail "Singling of literal patterns not yet supported"
 singPat var_proms _patCxt (DVarPa name) = do
