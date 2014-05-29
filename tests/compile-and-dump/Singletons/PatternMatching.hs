@@ -29,6 +29,9 @@ $(singletons [d|
   foo2 :: (# a, b #) -> a
   foo2 t@(# x, y #) = case t of
                         (# a, b #) -> (\_ -> a) b
+
+  silly :: a -> ()
+  silly x = case x of _ -> ()
   |])
 
 test1 :: Proxy (Foo1 '(Int, Char)) -> Proxy Int

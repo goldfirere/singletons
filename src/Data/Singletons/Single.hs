@@ -269,11 +269,11 @@ singClause :: DType   -- the promoted function
                       -- number of patterns in the clause
            -> ADClause -> SgM DClause
 singClause prom_fun num_arrows bound_names (ADClause var_proms pats exp) = do
-  ((sPats, prom_pats), wilds)
-    <- evalForPair $ mapAndUnzipM (singPat (Map.fromList var_proms) Parameter) pats
+  (sPats, prom_pats)
+    <- mapAndUnzipM (singPat (Map.fromList var_proms) Parameter) pats
   let equalities = zip (map DVarT bound_names) prom_pats
       applied_ty = foldl apply prom_fun prom_pats
-  sBody <- bindTyVarsClause var_proms wilds applied_ty equalities $ singExp exp
+  sBody <- bindTyVarsClause var_proms applied_ty equalities $ singExp exp
     -- when calling unSingFun, the prom_pats aren't in scope, so we use the
     -- bound_names instead
   let pattern_bound_names = zipWith const bound_names pats
@@ -296,11 +296,19 @@ checkIfBrainWillExplode _ =
   fail $ "Can't use a singleton pattern outside of a case-statement or\n" ++
          "do expression: GHC's brain will explode if you try. (Do try it!)"
 
+-- Note [No wildcards in singletons]
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+-- We forbid patterns with wildcards during singletonization. Why? Because
+-- singletonizing a pattern also must produce a type expression equivalent
+-- to the pattern, for use in bindTyVars. Wildcards get in the way of this.
+-- Thus, we de-wild patterns during promotion, and put the de-wilded patterns
+-- in the ADExp AST.
+
 singPat :: Map Name Name   -- from term-level names to type-level names
         -> PatternContext
         -> DPat
-        -> QWithAux [Name]  -- these names must be forall-bound
-           SgM (DPat, DType) -- the type form of the pat
+        -> SgM (DPat, DType) -- the type form of the pat
 singPat _var_proms _patCxt (DLitPa _lit) =
   fail "Singling of literal patterns not yet supported"
 singPat var_proms _patCxt (DVarPa name) = do
@@ -320,10 +328,9 @@ singPat var_proms patCxt (DTildePa pat) = do
 singPat var_proms patCxt (DBangPa pat) = do
   (pat', ty) <- singPat var_proms patCxt pat
   return (DBangPa pat', ty)
-singPat _var_proms _patCxt DWildPa = do
-  wild <- qNewName "wild"
-  addElement wild
-  return (DWildPa, DVarT wild)
+singPat _var_proms _patCxt DWildPa =
+  -- See Note [No wildcards in singletons]
+  fail "Internal error: wildcard seen during singleton generation"
 
 singExp :: ADExp -> SgM DExp
 singExp (ADVarE name)  = lookupVarE name
@@ -335,7 +342,7 @@ singExp (ADAppE e1 e2) = do
   return $ (DVarE applySingName) `DAppE` e1' `DAppE` e2'
 singExp (ADLamE var_proms prom_lam names exp) = do
   let sNames = map singValName names
-  exp' <- bindTyVars var_proms [] (foldl apply prom_lam (map (DVarT . snd) var_proms)) $
+  exp' <- bindTyVars var_proms (foldl apply prom_lam (map (DVarT . snd) var_proms)) $
           singExp exp
   return $ wrapSingFun (length names) prom_lam $ DLamE sNames exp'
 singExp (ADCaseE exp matches) = DCaseE <$> singExp exp <*> mapM singMatch matches
@@ -346,10 +353,10 @@ singExp (ADSigE {}) =
 
 singMatch :: ADMatch -> SgM DMatch
 singMatch (ADMatch var_proms prom_match pat exp) = do
-  ((sPat, prom_pat), wilds)
-    <- evalForPair $ singPat (Map.fromList var_proms) CaseStatement pat
+  (sPat, prom_pat)
+    <- singPat (Map.fromList var_proms) CaseStatement pat
         -- why DAppT below? See comment near decl of ADMatch in LetDecEnv.
-  sExp <- bindTyVars var_proms wilds (prom_match `DAppT` prom_pat) $ singExp exp
+  sExp <- bindTyVars var_proms (prom_match `DAppT` prom_pat) $ singExp exp
   return $ DMatch sPat sExp
 
 singLit :: Lit -> SgM DExp

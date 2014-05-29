@@ -33,7 +33,7 @@ Promote/Fixity.hs:0:0: Splicing declarations
         (:====$###)
     type instance Apply (:====$) l = (:====$$) l
     type family (:====) (a :: a) (a :: a) :: a where
-      (:====) a z = a
+      (:====) a _z_0123456789 = a
     type (:<=>$$$) (t :: a) (t :: a) = (:<=>) t t
     instance SuppressUnusedWarnings (:<=>$$) where
       suppressUnusedWarnings _

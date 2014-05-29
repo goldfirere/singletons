@@ -55,9 +55,9 @@ Singletons/ReturnFunc.hs:0:0: Splicing declarations
     type family Id (a :: a) :: a where
       Id x = x
     type family IdFoo (a :: c) (a :: a) :: a where
-      IdFoo z a_0123456789 = Apply IdSym0 a_0123456789
+      IdFoo _z_0123456789 a_0123456789 = Apply IdSym0 a_0123456789
     type family ReturnFunc (a :: Nat) (a :: Nat) :: Nat where
-      ReturnFunc z a_0123456789 = Apply SuccSym0 a_0123456789
+      ReturnFunc _z_0123456789 a_0123456789 = Apply SuccSym0 a_0123456789
     sId :: forall (t :: a). Sing t -> Sing (Apply IdSym0 t)
     sIdFoo ::
       forall (t :: c) (t :: a).
@@ -71,23 +71,25 @@ Singletons/ReturnFunc.hs:0:0: Splicing declarations
             forall x. (GHC.Types.~) t x => Sing x -> Sing (Apply IdSym0 x)
           lambda x = x
         in lambda sX
-    sIdFoo _ sA_0123456789
+    sIdFoo _s_z_0123456789 sA_0123456789
       = let
           lambda ::
-            forall a_0123456789 wild. ((GHC.Types.~) t wild,
-                                       (GHC.Types.~) t a_0123456789) =>
-            Sing a_0123456789
-            -> Sing (Apply (Apply IdFooSym0 wild) a_0123456789)
-          lambda a_0123456789
+            forall _z_0123456789 a_0123456789. ((GHC.Types.~) t _z_0123456789,
+                                                (GHC.Types.~) t a_0123456789) =>
+            Sing _z_0123456789
+            -> Sing a_0123456789
+               -> Sing (Apply (Apply IdFooSym0 _z_0123456789) a_0123456789)
+          lambda _z_0123456789 a_0123456789
             = applySing (singFun1 (Proxy :: Proxy IdSym0) sId) a_0123456789
-        in lambda sA_0123456789
-    sReturnFunc _ sA_0123456789
+        in lambda _s_z_0123456789 sA_0123456789
+    sReturnFunc _s_z_0123456789 sA_0123456789
       = let
           lambda ::
-            forall a_0123456789 wild. ((GHC.Types.~) t wild,
-                                       (GHC.Types.~) t a_0123456789) =>
-            Sing a_0123456789
-            -> Sing (Apply (Apply ReturnFuncSym0 wild) a_0123456789)
-          lambda a_0123456789
+            forall _z_0123456789 a_0123456789. ((GHC.Types.~) t _z_0123456789,
+                                                (GHC.Types.~) t a_0123456789) =>
+            Sing _z_0123456789
+            -> Sing a_0123456789
+               -> Sing (Apply (Apply ReturnFuncSym0 _z_0123456789) a_0123456789)
+          lambda _z_0123456789 a_0123456789
             = applySing (singFun1 (Proxy :: Proxy SuccSym0) SSucc) a_0123456789
-        in lambda sA_0123456789
+        in lambda _s_z_0123456789 sA_0123456789

@@ -64,7 +64,7 @@ Singletons/Operators.hs:0:0: Splicing declarations
       (:+) (Succ n) m = Apply SuccSym0 (Apply (Apply (:+$) n) m)
     type family Child (a :: Foo) :: Foo where
       Child FLeaf = FLeafSym0
-      Child ((:+:) a z) = a
+      Child ((:+:) a _z_0123456789) = a
     (%:+) ::
       forall (t :: Nat) (t :: Nat).
       Sing t -> Sing t -> Sing (Apply (Apply (:+$) t) t)
@@ -93,13 +93,16 @@ Singletons/Operators.hs:0:0: Splicing declarations
             (GHC.Types.~) t FLeafSym0 => Sing (Apply ChildSym0 FLeafSym0)
           lambda = SFLeaf
         in lambda
-    sChild ((:%+:) sA _)
+    sChild ((:%+:) sA _s_z_0123456789)
       = let
           lambda ::
-            forall a wild. (GHC.Types.~) t (Apply (Apply (:+:$) a) wild) =>
-            Sing a -> Sing (Apply ChildSym0 (Apply (Apply (:+:$) a) wild))
-          lambda a = a
-        in lambda sA
+            forall a
+                   _z_0123456789. (GHC.Types.~) t (Apply (Apply (:+:$) a) _z_0123456789) =>
+            Sing a
+            -> Sing _z_0123456789
+               -> Sing (Apply ChildSym0 (Apply (Apply (:+:$) a) _z_0123456789))
+          lambda a _z_0123456789 = a
+        in lambda sA _s_z_0123456789
     data instance Sing (z :: Foo)
       = (GHC.Types.~) z FLeaf => SFLeaf |
         forall (n :: Foo) (n :: Foo). (GHC.Types.~) z ((:+:) n n) =>

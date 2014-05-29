@@ -15,18 +15,20 @@ Singletons/T33.hs:0:0: Splicing declarations
         FooSym0KindInference
     type instance Apply FooSym0 l = FooSym1 l
     type family Foo (a :: GHC.Tuple.(,) Bool Bool) :: GHC.Tuple.() where
-      Foo (GHC.Tuple.(,) z z) = Tuple0Sym0
+      Foo (GHC.Tuple.(,) _z_0123456789 _z_0123456789) = Tuple0Sym0
     sFoo ::
       forall (t :: GHC.Tuple.(,) Bool Bool).
       Sing t -> Sing (Apply FooSym0 t)
-    sFoo (STuple2 _ _)
+    sFoo (STuple2 _s_z_0123456789 _s_z_0123456789)
       = let
           lambda ::
-            forall wild
-                   wild. (GHC.Types.~) t (Apply (Apply Tuple2Sym0 wild) wild) =>
-            Sing (Apply FooSym0 (Apply (Apply Tuple2Sym0 wild) wild))
-          lambda = STuple0
-        in lambda
+            forall _z_0123456789
+                   _z_0123456789. (GHC.Types.~) t (Apply (Apply Tuple2Sym0 _z_0123456789) _z_0123456789) =>
+            Sing _z_0123456789
+            -> Sing _z_0123456789
+               -> Sing (Apply FooSym0 (Apply (Apply Tuple2Sym0 _z_0123456789) _z_0123456789))
+          lambda _z_0123456789 _z_0123456789 = STuple0
+        in lambda _s_z_0123456789 _s_z_0123456789
 
 Singletons/T33.hs:0:0: Warning:
     Lazy pattern converted into regular pattern in promotion

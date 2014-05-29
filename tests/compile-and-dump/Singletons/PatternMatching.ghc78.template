@@ -114,7 +114,9 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
           foo1 :: (a, b) -> a
           foo1 (x, y) = (\ _ -> x) y
           foo2 :: (# a, b #) -> a
-          foo2 t@(# x, y #) = case t of { (# a, b #) -> (\ _ -> a) b } |]
+          foo2 t@(# x, y #) = case t of { (# a, b #) -> (\ _ -> a) b }
+          silly :: a -> ()
+          silly x = case x of { _ -> () } |]
   ======>
     Singletons/PatternMatching.hs:(0,0)-(0,0)
     Pair sz lz = pr
@@ -127,6 +129,22 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     foo1 (x, y) = \ _ -> x y
     foo2 :: forall a b. (# a, b #) -> a
     foo2 t@(# x, y #) = case t of { (# a, b #) -> \ _ -> a b }
+    silly :: forall a. a -> ()
+    silly x = case x of { _ -> GHC.Tuple.() }
+    type Let_0123456789Scrutinee_0123456789Sym1 t =
+        Let_0123456789Scrutinee_0123456789 t
+    instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,)
+               Let_0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
+    data Let_0123456789Scrutinee_0123456789Sym0 l
+      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg)) =>
+        Let_0123456789Scrutinee_0123456789Sym0KindInference
+    type instance Apply Let_0123456789Scrutinee_0123456789Sym0 l = Let_0123456789Scrutinee_0123456789Sym1 l
+    type Let_0123456789Scrutinee_0123456789 x = x
+    type family Case_0123456789 x t where
+      Case_0123456789 x _z_0123456789 = Tuple0Sym0
     type Let_0123456789TSym2 t t = Let_0123456789T t t
     instance SuppressUnusedWarnings Let_0123456789TSym1 where
       suppressUnusedWarnings _
@@ -166,7 +184,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type Let_0123456789Scrutinee_0123456789 x y =
         Let_0123456789TSym2 x y
     type family Case_0123456789 x y a b arg_0123456789 t where
-      Case_0123456789 x y a b arg_0123456789 z = a
+      Case_0123456789 x y a b arg_0123456789 _z_0123456789 = a
     type family Lambda_0123456789 x y a b t where
       Lambda_0123456789 x y a b arg_0123456789 = Case_0123456789 x y a b arg_0123456789 arg_0123456789
     type Lambda_0123456789Sym5 t t t t t = Lambda_0123456789 t t t t t
@@ -213,7 +231,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type family Case_0123456789 x y t where
       Case_0123456789 x y (GHC.Tuple.(,) a b) = Apply (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) a) b) b
     type family Case_0123456789 x y arg_0123456789 t where
-      Case_0123456789 x y arg_0123456789 z = x
+      Case_0123456789 x y arg_0123456789 _z_0123456789 = x
     type family Lambda_0123456789 x y t where
       Lambda_0123456789 x y arg_0123456789 = Case_0123456789 x y arg_0123456789 arg_0123456789
     type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
@@ -242,25 +260,33 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 ((GHC.Types.:) (Succ z) GHC.Types.[]))) = y_0123456789
+      Case_0123456789 ((GHC.Types.:) _z_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) (Succ _z_0123456789) GHC.Types.[]))) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) z ((GHC.Types.:) (Succ y_0123456789) GHC.Types.[]))) = y_0123456789
+      Case_0123456789 ((GHC.Types.:) _z_0123456789 ((GHC.Types.:) _z_0123456789 ((GHC.Types.:) (Succ y_0123456789) GHC.Types.[]))) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (GHC.Tuple.(,,) y_0123456789 z z) = y_0123456789
+      Case_0123456789 (GHC.Tuple.(,,) y_0123456789 _z_0123456789 _z_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (GHC.Tuple.(,,) z y_0123456789 z) = y_0123456789
+      Case_0123456789 (GHC.Tuple.(,,) _z_0123456789 y_0123456789 _z_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (GHC.Tuple.(,,) z z y_0123456789) = y_0123456789
+      Case_0123456789 (GHC.Tuple.(,,) _z_0123456789 _z_0123456789 y_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (Pair (Pair y_0123456789 z) z) = y_0123456789
+      Case_0123456789 (Pair (Pair y_0123456789 _z_0123456789) _z_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (Pair (Pair z y_0123456789) z) = y_0123456789
+      Case_0123456789 (Pair (Pair _z_0123456789 y_0123456789) _z_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (Pair (Pair z z) y_0123456789) = y_0123456789
+      Case_0123456789 (Pair (Pair _z_0123456789 _z_0123456789) y_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (Pair y_0123456789 z) = y_0123456789
+      Case_0123456789 (Pair y_0123456789 _z_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (Pair z y_0123456789) = y_0123456789
+      Case_0123456789 (Pair _z_0123456789 y_0123456789) = y_0123456789
+    type SillySym1 (t :: a) = Silly t
+    instance SuppressUnusedWarnings SillySym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) SillySym0KindInference GHC.Tuple.())
+    data SillySym0 (l :: TyFun a GHC.Tuple.())
+      = forall arg. (GHC.Types.~) (KindOf (Apply SillySym0 arg)) (KindOf (SillySym1 arg)) =>
+        SillySym0KindInference
+    type instance Apply SillySym0 l = SillySym1 l
     type Foo2Sym1 (t :: GHC.Tuple.(,) a b) = Foo2 t
     instance SuppressUnusedWarnings Foo2Sym0 where
       suppressUnusedWarnings _
@@ -291,6 +317,8 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type X_0123456789Sym0 = X_0123456789
     type X_0123456789Sym0 = X_0123456789
     type X_0123456789Sym0 = X_0123456789
+    type family Silly (a :: a) :: GHC.Tuple.() where
+      Silly x = Case_0123456789 x (Let_0123456789Scrutinee_0123456789Sym1 x)
     type family Foo2 (a :: GHC.Tuple.(,) a b) :: a where
       Foo2 (GHC.Tuple.(,) x y) = Case_0123456789 x y (Let_0123456789Scrutinee_0123456789Sym2 x y)
     type family Foo1 (a :: GHC.Tuple.(,) a b) :: a where
@@ -309,6 +337,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type X_0123456789 = ComplexSym0
     type X_0123456789 = TupleSym0
     type X_0123456789 = AListSym0
+    sSilly :: forall (t :: a). Sing t -> Sing (Apply SillySym0 t)
     sFoo2 ::
       forall (t :: GHC.Tuple.(,) a b). Sing t -> Sing (Apply Foo2Sym0 t)
     sFoo1 ::
@@ -327,6 +356,25 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     sX_0123456789 :: Sing X_0123456789Sym0
     sX_0123456789 :: Sing X_0123456789Sym0
     sX_0123456789 :: Sing X_0123456789Sym0
+    sSilly sX
+      = let
+          lambda ::
+            forall x. (GHC.Types.~) t x => Sing x -> Sing (Apply SillySym0 x)
+          lambda x
+            = let
+                sScrutinee_0123456789 ::
+                  Sing (Let_0123456789Scrutinee_0123456789Sym1 x)
+                sScrutinee_0123456789 = x
+              in
+                case sScrutinee_0123456789 of {
+                  _s_z_0123456789
+                    -> let
+                         lambda ::
+                           forall _z_0123456789.
+                           Sing _z_0123456789 -> Sing (Case_0123456789 x _z_0123456789)
+                         lambda _z_0123456789 = STuple0
+                       in lambda _s_z_0123456789 }
+        in lambda sX
     sFoo2 (STuple2 sX sY)
       = let
           lambda ::
@@ -365,12 +413,14 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
                                             -> Sing (Apply (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) a) b) arg_0123456789)
                                           lambda arg_0123456789
                                             = case arg_0123456789 of {
-                                                _ -> let
+                                                _s_z_0123456789
+                                                  -> let
                                                        lambda ::
-                                                         forall wild.
-                                                         Sing (Case_0123456789 x y a b arg_0123456789 wild)
-                                                       lambda = a
-                                                     in lambda }
+                                                         forall _z_0123456789.
+                                                         Sing _z_0123456789
+                                                         -> Sing (Case_0123456789 x y a b arg_0123456789 _z_0123456789)
+                                                       lambda _z_0123456789 = a
+                                                     in lambda _s_z_0123456789 }
                                         in lambda sArg_0123456789))
                                b
                        in lambda sA sB }
@@ -393,115 +443,137 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
                              -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) arg_0123456789)
                            lambda arg_0123456789
                              = case arg_0123456789 of {
-                                 _ -> let
+                                 _s_z_0123456789
+                                   -> let
                                         lambda ::
-                                          forall wild.
-                                          Sing (Case_0123456789 x y arg_0123456789 wild)
-                                        lambda = x
-                                      in lambda }
+                                          forall _z_0123456789.
+                                          Sing _z_0123456789
+                                          -> Sing (Case_0123456789 x y arg_0123456789 _z_0123456789)
+                                        lambda _z_0123456789 = x
+                                      in lambda _s_z_0123456789 }
                          in lambda sArg_0123456789))
                 y
         in lambda sX sY
     sLsz
       = case sX_0123456789 of {
-          SCons _ (SCons sY_0123456789 (SCons (SSucc _) SNil))
+          SCons _s_z_0123456789
+                (SCons sY_0123456789 (SCons (SSucc _s_z_0123456789) SNil))
             -> let
                  lambda ::
-                   forall y_0123456789 wild wild.
-                   Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply (:$) wild) (Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) (Apply SuccSym0 wild)) GHC.Types.[]))))
-                 lambda y_0123456789 = y_0123456789
-               in lambda sY_0123456789 }
+                   forall _z_0123456789 y_0123456789 _z_0123456789.
+                   Sing _z_0123456789
+                   -> Sing y_0123456789
+                      -> Sing _z_0123456789
+                         -> Sing (Case_0123456789 (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) (Apply SuccSym0 _z_0123456789)) GHC.Types.[]))))
+                 lambda _z_0123456789 y_0123456789 _z_0123456789 = y_0123456789
+               in lambda _s_z_0123456789 sY_0123456789 _s_z_0123456789 }
     sBlimy
       = case sX_0123456789 of {
-          SCons _ (SCons _ (SCons (SSucc sY_0123456789) SNil))
+          SCons _s_z_0123456789
+                (SCons _s_z_0123456789 (SCons (SSucc sY_0123456789) SNil))
             -> let
                  lambda ::
-                   forall y_0123456789 wild wild.
-                   Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply (:$) wild) (Apply (Apply (:$) wild) (Apply (Apply (:$) (Apply SuccSym0 y_0123456789)) GHC.Types.[]))))
-                 lambda y_0123456789 = y_0123456789
-               in lambda sY_0123456789 }
+                   forall _z_0123456789 _z_0123456789 y_0123456789.
+                   Sing _z_0123456789
+                   -> Sing _z_0123456789
+                      -> Sing y_0123456789
+                         -> Sing (Case_0123456789 (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) (Apply SuccSym0 y_0123456789)) GHC.Types.[]))))
+                 lambda _z_0123456789 _z_0123456789 y_0123456789 = y_0123456789
+               in lambda _s_z_0123456789 _s_z_0123456789 sY_0123456789 }
     sTf
       = case sX_0123456789 of {
-          STuple3 sY_0123456789 _ _
+          STuple3 sY_0123456789 _s_z_0123456789 _s_z_0123456789
             -> let
                  lambda ::
-                   forall y_0123456789 wild wild.
+                   forall y_0123456789 _z_0123456789 _z_0123456789.
                    Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply (Apply Tuple3Sym0 y_0123456789) wild) wild))
-                 lambda y_0123456789 = y_0123456789
-               in lambda sY_0123456789 }
+                   -> Sing _z_0123456789
+                      -> Sing _z_0123456789
+                         -> Sing (Case_0123456789 (Apply (Apply (Apply Tuple3Sym0 y_0123456789) _z_0123456789) _z_0123456789))
+                 lambda y_0123456789 _z_0123456789 _z_0123456789 = y_0123456789
+               in lambda sY_0123456789 _s_z_0123456789 _s_z_0123456789 }
     sTjz
       = case sX_0123456789 of {
-          STuple3 _ sY_0123456789 _
+          STuple3 _s_z_0123456789 sY_0123456789 _s_z_0123456789
             -> let
                  lambda ::
-                   forall y_0123456789 wild wild.
-                   Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply (Apply Tuple3Sym0 wild) y_0123456789) wild))
-                 lambda y_0123456789 = y_0123456789
-               in lambda sY_0123456789 }
+                   forall _z_0123456789 y_0123456789 _z_0123456789.
+                   Sing _z_0123456789
+                   -> Sing y_0123456789
+                      -> Sing _z_0123456789
+                         -> Sing (Case_0123456789 (Apply (Apply (Apply Tuple3Sym0 _z_0123456789) y_0123456789) _z_0123456789))
+                 lambda _z_0123456789 y_0123456789 _z_0123456789 = y_0123456789
+               in lambda _s_z_0123456789 sY_0123456789 _s_z_0123456789 }
     sTt
       = case sX_0123456789 of {
-          STuple3 _ _ sY_0123456789
+          STuple3 _s_z_0123456789 _s_z_0123456789 sY_0123456789
             -> let
                  lambda ::
-                   forall y_0123456789 wild wild.
-                   Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply (Apply Tuple3Sym0 wild) wild) y_0123456789))
-                 lambda y_0123456789 = y_0123456789
-               in lambda sY_0123456789 }
+                   forall _z_0123456789 _z_0123456789 y_0123456789.
+                   Sing _z_0123456789
+                   -> Sing _z_0123456789
+                      -> Sing y_0123456789
+                         -> Sing (Case_0123456789 (Apply (Apply (Apply Tuple3Sym0 _z_0123456789) _z_0123456789) y_0123456789))
+                 lambda _z_0123456789 _z_0123456789 y_0123456789 = y_0123456789
+               in lambda _s_z_0123456789 _s_z_0123456789 sY_0123456789 }
     sJz
       = case sX_0123456789 of {
-          SPair (SPair sY_0123456789 _) _
+          SPair (SPair sY_0123456789 _s_z_0123456789) _s_z_0123456789
             -> let
                  lambda ::
-                   forall y_0123456789 wild wild.
+                   forall y_0123456789 _z_0123456789 _z_0123456789.
                    Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply PairSym0 (Apply (Apply PairSym0 y_0123456789) wild)) wild))
-                 lambda y_0123456789 = y_0123456789
-               in lambda sY_0123456789 }
+                   -> Sing _z_0123456789
+                      -> Sing _z_0123456789
+                         -> Sing (Case_0123456789 (Apply (Apply PairSym0 (Apply (Apply PairSym0 y_0123456789) _z_0123456789)) _z_0123456789))
+                 lambda y_0123456789 _z_0123456789 _z_0123456789 = y_0123456789
+               in lambda sY_0123456789 _s_z_0123456789 _s_z_0123456789 }
     sZz
       = case sX_0123456789 of {
-          SPair (SPair _ sY_0123456789) _
+          SPair (SPair _s_z_0123456789 sY_0123456789) _s_z_0123456789
             -> let
                  lambda ::
-                   forall y_0123456789 wild wild.
-                   Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply PairSym0 (Apply (Apply PairSym0 wild) y_0123456789)) wild))
-                 lambda y_0123456789 = y_0123456789
-               in lambda sY_0123456789 }
+                   forall _z_0123456789 y_0123456789 _z_0123456789.
+                   Sing _z_0123456789
+                   -> Sing y_0123456789
+                      -> Sing _z_0123456789
+                         -> Sing (Case_0123456789 (Apply (Apply PairSym0 (Apply (Apply PairSym0 _z_0123456789) y_0123456789)) _z_0123456789))
+                 lambda _z_0123456789 y_0123456789 _z_0123456789 = y_0123456789
+               in lambda _s_z_0123456789 sY_0123456789 _s_z_0123456789 }
     sFls
       = case sX_0123456789 of {
-          SPair (SPair _ _) sY_0123456789
+          SPair (SPair _s_z_0123456789 _s_z_0123456789) sY_0123456789
             -> let
                  lambda ::
-                   forall y_0123456789 wild wild.
-                   Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply PairSym0 (Apply (Apply PairSym0 wild) wild)) y_0123456789))
-                 lambda y_0123456789 = y_0123456789
-               in lambda sY_0123456789 }
+                   forall _z_0123456789 _z_0123456789 y_0123456789.
+                   Sing _z_0123456789
+                   -> Sing _z_0123456789
+                      -> Sing y_0123456789
+                         -> Sing (Case_0123456789 (Apply (Apply PairSym0 (Apply (Apply PairSym0 _z_0123456789) _z_0123456789)) y_0123456789))
+                 lambda _z_0123456789 _z_0123456789 y_0123456789 = y_0123456789
+               in lambda _s_z_0123456789 _s_z_0123456789 sY_0123456789 }
     sSz
       = case sX_0123456789 of {
-          SPair sY_0123456789 _
+          SPair sY_0123456789 _s_z_0123456789
             -> let
                  lambda ::
-                   forall y_0123456789 wild.
+                   forall y_0123456789 _z_0123456789.
                    Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply PairSym0 y_0123456789) wild))
-                 lambda y_0123456789 = y_0123456789
-               in lambda sY_0123456789 }
+                   -> Sing _z_0123456789
+                      -> Sing (Case_0123456789 (Apply (Apply PairSym0 y_0123456789) _z_0123456789))
+                 lambda y_0123456789 _z_0123456789 = y_0123456789
+               in lambda sY_0123456789 _s_z_0123456789 }
     sLz
       = case sX_0123456789 of {
-          SPair _ sY_0123456789
+          SPair _s_z_0123456789 sY_0123456789
             -> let
                  lambda ::
-                   forall y_0123456789 wild.
-                   Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply PairSym0 wild) y_0123456789))
-                 lambda y_0123456789 = y_0123456789
-               in lambda sY_0123456789 }
+                   forall _z_0123456789 y_0123456789.
+                   Sing _z_0123456789
+                   -> Sing y_0123456789
+                      -> Sing (Case_0123456789 (Apply (Apply PairSym0 _z_0123456789) y_0123456789))
+                 lambda _z_0123456789 y_0123456789 = y_0123456789
+               in lambda _s_z_0123456789 sY_0123456789 }
     sX_0123456789 = sPr
     sX_0123456789 = sComplex
     sX_0123456789 = sTuple

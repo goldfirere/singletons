@@ -98,22 +98,18 @@ bindLets lets1 =
 -- will likely not work. Ugh.
 
 bindTyVarsClause :: VarPromotions   -- the bindings we wish to effect
-                 -> [Name]          -- free variables in...
-                 -> DType           -- ...this type of the thing_inside
+                 -> DType           -- the type of the thing_inside
                  -> [(DType, DType)]  -- and asserting these equalities
                  -> SgM DExp -> SgM DExp
-bindTyVarsClause var_proms fv_names prom_fun equalities thing_inside = do
+bindTyVarsClause var_proms prom_fun equalities thing_inside = do
   lambda <- qNewName "lambda"
   let (term_names, tyvar_names) = unzip var_proms
       eq_ct  = [ DConPr equalityName `DAppPr` t1 `DAppPr` t2
                | (t1, t2) <- equalities ]
       ty_sig = DSigD lambda $
-               DForallT (map DPlainTV tyvar_names)
-                        []
-                        (DForallT (map DPlainTV fv_names) eq_ct $
-                                   ravel (map (\tv_name -> singFamily `DAppT` DVarT tv_name)
-                                    tyvar_names
-                                ++ [singFamily `DAppT` prom_fun]))
+               DForallT (map DPlainTV tyvar_names) eq_ct $
+                        ravel (map (\tv_name -> singFamily `DAppT` DVarT tv_name)
+                                    tyvar_names ++ [singFamily `DAppT` prom_fun])
   arg_names <- mapM (qNewName . nameBase) term_names
   body <- bindLets [ (term_name, DVarE arg_name)
                    | term_name <- term_names
@@ -122,12 +118,8 @@ bindTyVarsClause var_proms fv_names prom_fun equalities thing_inside = do
       let_body = foldExp (DVarE lambda) (map (DVarE . singValName) term_names)
   return $ DLetE [ty_sig, fundef] let_body
 
-bindTyVars :: VarPromotions
-           -> [Name]
-           -> DType
-           -> SgM DExp -> SgM DExp
-bindTyVars var_proms fv_names prom_fun =
-  bindTyVarsClause var_proms fv_names prom_fun []
+bindTyVars :: VarPromotions -> DType -> SgM DExp -> SgM DExp
+bindTyVars var_proms prom_fun = bindTyVarsClause var_proms prom_fun []
 
 lookupVarE :: Name -> SgM DExp
 lookupVarE = lookup_var_con singValName (DVarE . singValName)

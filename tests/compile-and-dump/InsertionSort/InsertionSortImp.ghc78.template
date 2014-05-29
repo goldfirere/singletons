@@ -132,8 +132,8 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
         InsertionSortSym0KindInference
     type instance Apply InsertionSortSym0 l = InsertionSortSym1 l
     type family Leq (a :: Nat) (a :: Nat) :: Bool where
-      Leq Zero z = TrueSym0
-      Leq (Succ z) Zero = FalseSym0
+      Leq Zero _z_0123456789 = TrueSym0
+      Leq (Succ _z_0123456789) Zero = FalseSym0
       Leq (Succ a) (Succ b) = Apply (Apply LeqSym0 a) b
     type family Insert (a :: Nat)
                        (a :: GHC.Types.[] Nat) :: GHC.Types.[] Nat where
@@ -151,21 +151,24 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
     sInsertionSort ::
       forall (t :: GHC.Types.[] Nat).
       Sing t -> Sing (Apply InsertionSortSym0 t)
-    sLeq SZero _
+    sLeq SZero _s_z_0123456789
       = let
           lambda ::
-            forall wild. ((GHC.Types.~) t ZeroSym0, (GHC.Types.~) t wild) =>
-            Sing (Apply (Apply LeqSym0 ZeroSym0) wild)
-          lambda = STrue
-        in lambda
-    sLeq (SSucc _) SZero
+            forall _z_0123456789. ((GHC.Types.~) t ZeroSym0,
+                                   (GHC.Types.~) t _z_0123456789) =>
+            Sing _z_0123456789
+            -> Sing (Apply (Apply LeqSym0 ZeroSym0) _z_0123456789)
+          lambda _z_0123456789 = STrue
+        in lambda _s_z_0123456789
+    sLeq (SSucc _s_z_0123456789) SZero
       = let
           lambda ::
-            forall wild. ((GHC.Types.~) t (Apply SuccSym0 wild),
-                          (GHC.Types.~) t ZeroSym0) =>
-            Sing (Apply (Apply LeqSym0 (Apply SuccSym0 wild)) ZeroSym0)
-          lambda = SFalse
-        in lambda
+            forall _z_0123456789. ((GHC.Types.~) t (Apply SuccSym0 _z_0123456789),
+                                   (GHC.Types.~) t ZeroSym0) =>
+            Sing _z_0123456789
+            -> Sing (Apply (Apply LeqSym0 (Apply SuccSym0 _z_0123456789)) ZeroSym0)
+          lambda _z_0123456789 = SFalse
+        in lambda _s_z_0123456789
     sLeq (SSucc sA) (SSucc sB)
       = let
           lambda ::

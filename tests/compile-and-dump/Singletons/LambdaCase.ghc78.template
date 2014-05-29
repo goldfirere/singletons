@@ -31,7 +31,7 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
     foo3 :: forall a b. a -> b -> a
     foo3 a b = \case { (p, _) -> p } (a, b)
     type family Case_0123456789 a b x_0123456789 t where
-      Case_0123456789 a b x_0123456789 (GHC.Tuple.(,) p z) = p
+      Case_0123456789 a b x_0123456789 (GHC.Tuple.(,) p _z_0123456789) = p
     type family Lambda_0123456789 a b t where
       Lambda_0123456789 a b x_0123456789 = Case_0123456789 a b x_0123456789 x_0123456789
     type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
@@ -59,12 +59,20 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
       = forall arg. (GHC.Types.~) (KindOf (Apply Lambda_0123456789Sym0 arg)) (KindOf (Lambda_0123456789Sym1 arg)) =>
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
-    type family Case_0123456789 d x_0123456789 t where
-      Case_0123456789 d x_0123456789 (Just y) = y
-      Case_0123456789 d x_0123456789 Nothing = d
-    type family Lambda_0123456789 d t where
-      Lambda_0123456789 d x_0123456789 = Case_0123456789 d x_0123456789 x_0123456789
-    type Lambda_0123456789Sym2 t t = Lambda_0123456789 t t
+    type family Case_0123456789 d x_0123456789 _z_0123456789 t where
+      Case_0123456789 d x_0123456789 _z_0123456789 (Just y) = y
+      Case_0123456789 d x_0123456789 _z_0123456789 Nothing = d
+    type family Lambda_0123456789 d _z_0123456789 t where
+      Lambda_0123456789 d _z_0123456789 x_0123456789 = Case_0123456789 d x_0123456789 _z_0123456789 x_0123456789
+    type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. (GHC.Types.~) (KindOf (Apply (Lambda_0123456789Sym2 l l) arg)) (KindOf (Lambda_0123456789Sym3 l l arg)) =>
+        Lambda_0123456789Sym2KindInference
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
@@ -159,7 +167,7 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
     type family Foo3 (a :: a) (a :: b) :: a where
       Foo3 a b = Apply (Apply (Apply Lambda_0123456789Sym0 a) b) (Apply (Apply Tuple2Sym0 a) b)
     type family Foo2 (a :: a) (a :: Maybe a) :: a where
-      Foo2 d z = Apply (Apply Lambda_0123456789Sym0 d) (Apply JustSym0 d)
+      Foo2 d _z_0123456789 = Apply (Apply (Apply Lambda_0123456789Sym0 d) _z_0123456789) (Apply JustSym0 d)
     type family Foo1 (a :: a) (a :: Maybe a) :: a where
       Foo1 d x = Apply (Apply (Apply Lambda_0123456789Sym0 d) x) x
     sFoo3 ::
@@ -188,33 +196,38 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
                              -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 a) b) x_0123456789)
                            lambda x_0123456789
                              = case x_0123456789 of {
-                                 STuple2 sP _
+                                 STuple2 sP _s_z_0123456789
                                    -> let
                                         lambda ::
-                                          forall p wild.
+                                          forall p _z_0123456789.
                                           Sing p
-                                          -> Sing (Case_0123456789 a b x_0123456789 (Apply (Apply Tuple2Sym0 p) wild))
-                                        lambda p = p
-                                      in lambda sP }
+                                          -> Sing _z_0123456789
+                                             -> Sing (Case_0123456789 a b x_0123456789 (Apply (Apply Tuple2Sym0 p) _z_0123456789))
+                                        lambda p _z_0123456789 = p
+                                      in lambda sP _s_z_0123456789 }
                          in lambda sX_0123456789))
                 (applySing
                    (applySing (singFun2 (Proxy :: Proxy Tuple2Sym0) STuple2) a) b)
         in lambda sA sB
-    sFoo2 sD _
+    sFoo2 sD _s_z_0123456789
       = let
           lambda ::
-            forall d wild. ((GHC.Types.~) t d, (GHC.Types.~) t wild) =>
-            Sing d -> Sing (Apply (Apply Foo2Sym0 d) wild)
-          lambda d
+            forall d _z_0123456789. ((GHC.Types.~) t d,
+                                     (GHC.Types.~) t _z_0123456789) =>
+            Sing d
+            -> Sing _z_0123456789
+               -> Sing (Apply (Apply Foo2Sym0 d) _z_0123456789)
+          lambda d _z_0123456789
             = applySing
                 (singFun1
-                   (Proxy :: Proxy (Apply Lambda_0123456789Sym0 d))
+                   (Proxy ::
+                      Proxy (Apply (Apply Lambda_0123456789Sym0 d) _z_0123456789))
                    (\ sX_0123456789
                       -> let
                            lambda ::
                              forall x_0123456789.
                              Sing x_0123456789
-                             -> Sing (Apply (Apply Lambda_0123456789Sym0 d) x_0123456789)
+                             -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 d) _z_0123456789) x_0123456789)
                            lambda x_0123456789
                              = case x_0123456789 of {
                                  SJust sY
@@ -222,17 +235,18 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
                                         lambda ::
                                           forall y.
                                           Sing y
-                                          -> Sing (Case_0123456789 d x_0123456789 (Apply JustSym0 y))
+                                          -> Sing (Case_0123456789 d x_0123456789 _z_0123456789 (Apply JustSym0 y))
                                         lambda y = y
                                       in lambda sY
                                  SNothing
                                    -> let
-                                        lambda :: Sing (Case_0123456789 d x_0123456789 NothingSym0)
+                                        lambda ::
+                                          Sing (Case_0123456789 d x_0123456789 _z_0123456789 NothingSym0)
                                         lambda = d
                                       in lambda }
                          in lambda sX_0123456789))
                 (applySing (singFun1 (Proxy :: Proxy JustSym0) SJust) d)
-        in lambda sD
+        in lambda sD _s_z_0123456789
     sFoo1 sD sX
       = let
           lambda ::

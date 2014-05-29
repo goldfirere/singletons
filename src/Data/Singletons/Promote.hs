@@ -520,47 +520,54 @@ promoteClause :: DClause -> PrM (DTySynEqn, ADClause)
 promoteClause (DClause pats exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  (types, new_vars) <- evalForPair $ mapM promotePat pats
+  ((types, pats'), new_vars) <- evalForPair $ mapAndUnzipM promotePat pats
   (ty, ann_exp) <- lambdaBind new_vars $ promoteExp exp
   all_locals <- allLocals   -- these are bound *outside* of this clause
   return ( DTySynEqn (map DVarT all_locals ++ types) ty
-         , ADClause new_vars pats ann_exp )
+         , ADClause new_vars pats' ann_exp )
 
 promoteMatch :: DType -> DMatch -> PrM (DTySynEqn, ADMatch)
 promoteMatch prom_case (DMatch pat exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  (ty, new_vars) <- evalForPair $ promotePat pat
+  ((ty, pat'), new_vars) <- evalForPair $ promotePat pat
   (rhs, ann_exp) <- lambdaBind new_vars $ promoteExp exp
   all_locals <- allLocals
   return $ ( DTySynEqn (map DVarT all_locals ++ [ty]) rhs
-           , ADMatch new_vars prom_case pat ann_exp)
+           , ADMatch new_vars prom_case pat' ann_exp)
 
 -- promotes a term pattern into a type pattern, accumulating bound variable names
-promotePat :: DPat -> QWithAux VarPromotions PrM DType
-promotePat (DLitPa lit) = promoteLit lit
+-- See Note [No wildcards in singletons]
+promotePat :: DPat -> QWithAux VarPromotions PrM (DType, DPat)
+promotePat (DLitPa lit) = do
+  lit' <- promoteLit lit
+  return (lit', DLitPa lit)
 promotePat (DVarPa name) = do
       -- term vars can be symbols... type vars can't!
   tyName <- mkTyName name
   addElement (name, tyName)
-  return $ DVarT tyName
+  return (DVarT tyName, DVarPa name)
 promotePat (DConPa name pats) = do
-  types <- mapM promotePat pats
+  (types, pats') <- mapAndUnzipM promotePat pats
   let name' = unboxed_tuple_to_tuple name
-  return $ foldType (DConT name') types
+  return (foldType (DConT name') types, DConPa name pats')
   where
     unboxed_tuple_to_tuple n
       | Just deg <- unboxedTupleNameDegree_maybe n = tupleDataName deg
       | otherwise                                  = n
 promotePat (DTildePa pat) = do
   qReportWarning "Lazy pattern converted into regular pattern in promotion"
-  promotePat pat
+  (ty, pat') <- promotePat pat
+  return (ty, DTildePa pat')
 promotePat (DBangPa pat) = do
   qReportWarning "Strict pattern converted into regular pattern in promotion"
-  promotePat pat
+  (ty, pat') <- promotePat pat
+  return (ty, DBangPa pat')
 promotePat DWildPa = do
-  name <- qNewName "z"
-  return $ DVarT name
+  name <- newUniqueName "_z"
+  tyName <- mkTyName name
+  addElement (name, tyName)
+  return (DVarT tyName, DVarPa name)
 
 promoteExp :: DExp -> PrM (DType, ADExp)
 promoteExp (DVarE name) = fmap (, ADVarE name) $ lookupVarE name

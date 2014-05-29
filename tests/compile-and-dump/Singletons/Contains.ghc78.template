@@ -24,19 +24,20 @@ Singletons/Contains.hs:0:0: Splicing declarations
         ContainsSym0KindInference
     type instance Apply ContainsSym0 l = ContainsSym1 l
     type family Contains (a :: a) (a :: GHC.Types.[] a) :: Bool where
-      Contains z GHC.Types.[] = FalseSym0
+      Contains _z_0123456789 GHC.Types.[] = FalseSym0
       Contains elt ((GHC.Types.:) h t) = Apply (Apply (:||$) (Apply (Apply (:==$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
     sContains ::
       forall (t :: a) (t :: GHC.Types.[] a). SEq (KProxy :: KProxy a) =>
       Sing t -> Sing t -> Sing (Apply (Apply ContainsSym0 t) t)
-    sContains _ SNil
+    sContains _s_z_0123456789 SNil
       = let
           lambda ::
-            forall wild. ((GHC.Types.~) t wild,
-                          (GHC.Types.~) t GHC.Types.[]) =>
-            Sing (Apply (Apply ContainsSym0 wild) GHC.Types.[])
-          lambda = SFalse
-        in lambda
+            forall _z_0123456789. ((GHC.Types.~) t _z_0123456789,
+                                   (GHC.Types.~) t GHC.Types.[]) =>
+            Sing _z_0123456789
+            -> Sing (Apply (Apply ContainsSym0 _z_0123456789) GHC.Types.[])
+          lambda _z_0123456789 = SFalse
+        in lambda _s_z_0123456789
     sContains sElt (SCons sH sT)
       = let
           lambda ::

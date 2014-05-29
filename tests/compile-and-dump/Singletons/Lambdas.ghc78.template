@@ -57,7 +57,7 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
         FooSym0KindInference
     type instance Apply FooSym0 l = FooSym1 l
     type family Case_0123456789 x arg_0123456789 t where
-      Case_0123456789 x arg_0123456789 (Foo a z) = a
+      Case_0123456789 x arg_0123456789 (Foo a _z_0123456789) = a
     type family Lambda_0123456789 x t where
       Lambda_0123456789 x arg_0123456789 = Case_0123456789 x arg_0123456789 arg_0123456789
     type Lambda_0123456789Sym2 t t = Lambda_0123456789 t t
@@ -78,7 +78,7 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 x y arg_0123456789 t where
-      Case_0123456789 x y arg_0123456789 (GHC.Tuple.(,) z b) = b
+      Case_0123456789 x y arg_0123456789 (GHC.Tuple.(,) _z_0123456789 b) = b
     type family Lambda_0123456789 x y t where
       Lambda_0123456789 x y arg_0123456789 = Case_0123456789 x y arg_0123456789 arg_0123456789
     type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
@@ -107,7 +107,7 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 a b x arg_0123456789 t where
-      Case_0123456789 a b x arg_0123456789 z = x
+      Case_0123456789 a b x arg_0123456789 _z_0123456789 = x
     type family Lambda_0123456789 a b x t where
       Lambda_0123456789 a b x arg_0123456789 = Case_0123456789 a b x arg_0123456789 arg_0123456789
     type Lambda_0123456789Sym4 t t t t = Lambda_0123456789 t t t t
@@ -203,7 +203,7 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                                 arg_0123456789
                                 arg_0123456789
                                 t where
-      Case_0123456789 x y z arg_0123456789 arg_0123456789 (GHC.Tuple.(,) z z) = x
+      Case_0123456789 x y z arg_0123456789 arg_0123456789 (GHC.Tuple.(,) _z_0123456789 _z_0123456789) = x
     type family Lambda_0123456789 x y z t t where
       Lambda_0123456789 x y z arg_0123456789 arg_0123456789 = Case_0123456789 x y z arg_0123456789 arg_0123456789 (Apply (Apply Tuple2Sym0 arg_0123456789) arg_0123456789)
     type Lambda_0123456789Sym5 t t t t t = Lambda_0123456789 t t t t t
@@ -267,7 +267,7 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 x y arg_0123456789 t where
-      Case_0123456789 x y arg_0123456789 z = x
+      Case_0123456789 x y arg_0123456789 _z_0123456789 = x
     type family Lambda_0123456789 x y t where
       Lambda_0123456789 x y arg_0123456789 = Case_0123456789 x y arg_0123456789 arg_0123456789
     type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
@@ -296,7 +296,7 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 x arg_0123456789 a_0123456789 t where
-      Case_0123456789 x arg_0123456789 a_0123456789 z = x
+      Case_0123456789 x arg_0123456789 a_0123456789 _z_0123456789 = x
     type family Lambda_0123456789 x a_0123456789 t where
       Lambda_0123456789 x a_0123456789 arg_0123456789 = Case_0123456789 x arg_0123456789 a_0123456789 arg_0123456789
     type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
@@ -545,14 +545,15 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                              -> Sing (Apply (Apply Lambda_0123456789Sym0 x) arg_0123456789)
                            lambda arg_0123456789
                              = case arg_0123456789 of {
-                                 SFoo sA _
+                                 SFoo sA _s_z_0123456789
                                    -> let
                                         lambda ::
-                                          forall a wild.
+                                          forall a _z_0123456789.
                                           Sing a
-                                          -> Sing (Case_0123456789 x arg_0123456789 (Apply (Apply FooSym0 a) wild))
-                                        lambda a = a
-                                      in lambda sA }
+                                          -> Sing _z_0123456789
+                                             -> Sing (Case_0123456789 x arg_0123456789 (Apply (Apply FooSym0 a) _z_0123456789))
+                                        lambda a _z_0123456789 = a
+                                      in lambda sA _s_z_0123456789 }
                          in lambda sArg_0123456789))
                 x
         in lambda sX
@@ -573,14 +574,15 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                              -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) arg_0123456789)
                            lambda arg_0123456789
                              = case arg_0123456789 of {
-                                 STuple2 _ sB
+                                 STuple2 _s_z_0123456789 sB
                                    -> let
                                         lambda ::
-                                          forall b wild.
-                                          Sing b
-                                          -> Sing (Case_0123456789 x y arg_0123456789 (Apply (Apply Tuple2Sym0 wild) b))
-                                        lambda b = b
-                                      in lambda sB }
+                                          forall _z_0123456789 b.
+                                          Sing _z_0123456789
+                                          -> Sing b
+                                             -> Sing (Case_0123456789 x y arg_0123456789 (Apply (Apply Tuple2Sym0 _z_0123456789) b))
+                                        lambda _z_0123456789 b = b
+                                      in lambda _s_z_0123456789 sB }
                          in lambda sArg_0123456789))
                 (applySing
                    (applySing (singFun2 (Proxy :: Proxy Tuple2Sym0) STuple2) x) y)
@@ -612,12 +614,14 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                                               -> Sing (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 a) b) x) arg_0123456789)
                                             lambda arg_0123456789
                                               = case arg_0123456789 of {
-                                                  _ -> let
+                                                  _s_z_0123456789
+                                                    -> let
                                                          lambda ::
-                                                           forall wild.
-                                                           Sing (Case_0123456789 a b x arg_0123456789 wild)
-                                                         lambda = x
-                                                       in lambda }
+                                                           forall _z_0123456789.
+                                                           Sing _z_0123456789
+                                                           -> Sing (Case_0123456789 a b x arg_0123456789 _z_0123456789)
+                                                         lambda _z_0123456789 = x
+                                                       in lambda _s_z_0123456789 }
                                           in lambda sArg_0123456789)
                             in lambda sX))
                    a)
@@ -670,13 +674,15 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                                            arg_0123456789)
                                         arg_0123456789
                                   of {
-                                    STuple2 _ _
+                                    STuple2 _s_z_0123456789 _s_z_0123456789
                                       -> let
                                            lambda ::
-                                             forall wild wild.
-                                             Sing (Case_0123456789 x y z arg_0123456789 arg_0123456789 (Apply (Apply Tuple2Sym0 wild) wild))
-                                           lambda = x
-                                         in lambda }
+                                             forall _z_0123456789 _z_0123456789.
+                                             Sing _z_0123456789
+                                             -> Sing _z_0123456789
+                                                -> Sing (Case_0123456789 x y z arg_0123456789 arg_0123456789 (Apply (Apply Tuple2Sym0 _z_0123456789) _z_0123456789))
+                                           lambda _z_0123456789 _z_0123456789 = x
+                                         in lambda _s_z_0123456789 _s_z_0123456789 }
                             in lambda sArg_0123456789 sArg_0123456789))
                    y)
                 z
@@ -714,12 +720,14 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                              -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) arg_0123456789)
                            lambda arg_0123456789
                              = case arg_0123456789 of {
-                                 _ -> let
+                                 _s_z_0123456789
+                                   -> let
                                         lambda ::
-                                          forall wild.
-                                          Sing (Case_0123456789 x y arg_0123456789 wild)
-                                        lambda = x
-                                      in lambda }
+                                          forall _z_0123456789.
+                                          Sing _z_0123456789
+                                          -> Sing (Case_0123456789 x y arg_0123456789 _z_0123456789)
+                                        lambda _z_0123456789 = x
+                                      in lambda _s_z_0123456789 }
                          in lambda sArg_0123456789))
                 y
         in lambda sX sY
@@ -744,12 +752,14 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                              -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 x) a_0123456789) arg_0123456789)
                            lambda arg_0123456789
                              = case arg_0123456789 of {
-                                 _ -> let
+                                 _s_z_0123456789
+                                   -> let
                                         lambda ::
-                                          forall wild.
-                                          Sing (Case_0123456789 x arg_0123456789 a_0123456789 wild)
-                                        lambda = x
-                                      in lambda }
+                                          forall _z_0123456789.
+                                          Sing _z_0123456789
+                                          -> Sing (Case_0123456789 x arg_0123456789 a_0123456789 _z_0123456789)
+                                        lambda _z_0123456789 = x
+                                      in lambda _s_z_0123456789 }
                          in lambda sArg_0123456789))
                 a_0123456789
         in lambda sX sA_0123456789

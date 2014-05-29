@@ -356,9 +356,9 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
                         (a :: GHC.Types.[] a)
                         (a :: GHC.Types.[] b) :: GHC.Types.[] c where
       ZipWith f ((GHC.Types.:) x xs) ((GHC.Types.:) y ys) = Apply (Apply (:$) (Apply (Apply f x) y)) (Apply (Apply (Apply ZipWithSym0 f) xs) ys)
-      ZipWith z GHC.Types.[] GHC.Types.[] = GHC.Types.[]
-      ZipWith z ((GHC.Types.:) z z) GHC.Types.[] = GHC.Types.[]
-      ZipWith z GHC.Types.[] ((GHC.Types.:) z z) = GHC.Types.[]
+      ZipWith _z_0123456789 GHC.Types.[] GHC.Types.[] = GHC.Types.[]
+      ZipWith _z_0123456789 ((GHC.Types.:) _z_0123456789 _z_0123456789) GHC.Types.[] = GHC.Types.[]
+      ZipWith _z_0123456789 GHC.Types.[] ((GHC.Types.:) _z_0123456789 _z_0123456789) = GHC.Types.[]
     type family Splunge (a :: GHC.Types.[] Nat)
                         (a :: GHC.Types.[] Bool) :: GHC.Types.[] Nat where
       Splunge ns bs = Apply (Apply (Apply ZipWithSym0 (Apply (Apply Lambda_0123456789Sym0 ns) bs)) ns) bs
@@ -368,10 +368,10 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
     type family LiftMaybe (a :: TyFun a b -> *)
                           (a :: Maybe a) :: Maybe b where
       LiftMaybe f (Just x) = Apply JustSym0 (Apply f x)
-      LiftMaybe z Nothing = NothingSym0
+      LiftMaybe _z_0123456789 Nothing = NothingSym0
     type family Map (a :: TyFun a b -> *)
                     (a :: GHC.Types.[] a) :: GHC.Types.[] b where
-      Map z GHC.Types.[] = GHC.Types.[]
+      Map _z_0123456789 GHC.Types.[] = GHC.Types.[]
       Map f ((GHC.Types.:) h t) = Apply (Apply (:$) (Apply f h)) (Apply (Apply MapSym0 f) t)
     sFoo ::
       forall (t :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *)
@@ -430,33 +430,50 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
                       (applySing (singFun3 (Proxy :: Proxy ZipWithSym0) sZipWith) f) xs)
                    ys)
         in lambda sF sX sXs sY sYs
-    sZipWith _ SNil SNil
+    sZipWith _s_z_0123456789 SNil SNil
       = let
           lambda ::
-            forall wild. ((GHC.Types.~) t wild,
-                          (GHC.Types.~) t GHC.Types.[],
-                          (GHC.Types.~) t GHC.Types.[]) =>
-            Sing (Apply (Apply (Apply ZipWithSym0 wild) GHC.Types.[]) GHC.Types.[])
-          lambda = SNil
-        in lambda
-    sZipWith _ (SCons _ _) SNil
+            forall _z_0123456789. ((GHC.Types.~) t _z_0123456789,
+                                   (GHC.Types.~) t GHC.Types.[],
+                                   (GHC.Types.~) t GHC.Types.[]) =>
+            Sing _z_0123456789
+            -> Sing (Apply (Apply (Apply ZipWithSym0 _z_0123456789) GHC.Types.[]) GHC.Types.[])
+          lambda _z_0123456789 = SNil
+        in lambda _s_z_0123456789
+    sZipWith
+      _s_z_0123456789
+      (SCons _s_z_0123456789 _s_z_0123456789)
+      SNil
       = let
           lambda ::
-            forall wild wild wild. ((GHC.Types.~) t wild,
-                                    (GHC.Types.~) t (Apply (Apply (:$) wild) wild),
-                                    (GHC.Types.~) t GHC.Types.[]) =>
-            Sing (Apply (Apply (Apply ZipWithSym0 wild) (Apply (Apply (:$) wild) wild)) GHC.Types.[])
-          lambda = SNil
-        in lambda
-    sZipWith _ SNil (SCons _ _)
+            forall _z_0123456789
+                   _z_0123456789
+                   _z_0123456789. ((GHC.Types.~) t _z_0123456789,
+                                   (GHC.Types.~) t (Apply (Apply (:$) _z_0123456789) _z_0123456789),
+                                   (GHC.Types.~) t GHC.Types.[]) =>
+            Sing _z_0123456789
+            -> Sing _z_0123456789
+               -> Sing _z_0123456789
+                  -> Sing (Apply (Apply (Apply ZipWithSym0 _z_0123456789) (Apply (Apply (:$) _z_0123456789) _z_0123456789)) GHC.Types.[])
+          lambda _z_0123456789 _z_0123456789 _z_0123456789 = SNil
+        in lambda _s_z_0123456789 _s_z_0123456789 _s_z_0123456789
+    sZipWith
+      _s_z_0123456789
+      SNil
+      (SCons _s_z_0123456789 _s_z_0123456789)
       = let
           lambda ::
-            forall wild wild wild. ((GHC.Types.~) t wild,
-                                    (GHC.Types.~) t GHC.Types.[],
-                                    (GHC.Types.~) t (Apply (Apply (:$) wild) wild)) =>
-            Sing (Apply (Apply (Apply ZipWithSym0 wild) GHC.Types.[]) (Apply (Apply (:$) wild) wild))
-          lambda = SNil
-        in lambda
+            forall _z_0123456789
+                   _z_0123456789
+                   _z_0123456789. ((GHC.Types.~) t _z_0123456789,
+                                   (GHC.Types.~) t GHC.Types.[],
+                                   (GHC.Types.~) t (Apply (Apply (:$) _z_0123456789) _z_0123456789)) =>
+            Sing _z_0123456789
+            -> Sing _z_0123456789
+               -> Sing _z_0123456789
+                  -> Sing (Apply (Apply (Apply ZipWithSym0 _z_0123456789) GHC.Types.[]) (Apply (Apply (:$) _z_0123456789) _z_0123456789))
+          lambda _z_0123456789 _z_0123456789 _z_0123456789 = SNil
+        in lambda _s_z_0123456789 _s_z_0123456789 _s_z_0123456789
     sSplunge sNs sBs
       = let
           lambda ::
@@ -565,21 +582,24 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
             = applySing
                 (singFun1 (Proxy :: Proxy JustSym0) SJust) (applySing f x)
         in lambda sF sX
-    sLiftMaybe _ SNothing
+    sLiftMaybe _s_z_0123456789 SNothing
       = let
           lambda ::
-            forall wild. ((GHC.Types.~) t wild, (GHC.Types.~) t NothingSym0) =>
-            Sing (Apply (Apply LiftMaybeSym0 wild) NothingSym0)
-          lambda = SNothing
-        in lambda
-    sMap _ SNil
+            forall _z_0123456789. ((GHC.Types.~) t _z_0123456789,
+                                   (GHC.Types.~) t NothingSym0) =>
+            Sing _z_0123456789
+            -> Sing (Apply (Apply LiftMaybeSym0 _z_0123456789) NothingSym0)
+          lambda _z_0123456789 = SNothing
+        in lambda _s_z_0123456789
+    sMap _s_z_0123456789 SNil
       = let
           lambda ::
-            forall wild. ((GHC.Types.~) t wild,
-                          (GHC.Types.~) t GHC.Types.[]) =>
-            Sing (Apply (Apply MapSym0 wild) GHC.Types.[])
-          lambda = SNil
-        in lambda
+            forall _z_0123456789. ((GHC.Types.~) t _z_0123456789,
+                                   (GHC.Types.~) t GHC.Types.[]) =>
+            Sing _z_0123456789
+            -> Sing (Apply (Apply MapSym0 _z_0123456789) GHC.Types.[])
+          lambda _z_0123456789 = SNil
+        in lambda _s_z_0123456789
     sMap sF (SCons sH sT)
       = let
           lambda ::

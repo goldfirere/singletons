@@ -1,3 +1,5 @@
+module T66 where
+
 import Data.Singletons.TH
 import Data.Singletons.Prelude
 

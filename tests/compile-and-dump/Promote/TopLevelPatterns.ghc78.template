@@ -38,21 +38,21 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     m :: Bool
     [l, m] = [not True, id False]
     type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) z GHC.Types.[])) = y_0123456789
+      Case_0123456789 a_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) _z_0123456789 GHC.Types.[])) = y_0123456789
     type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
+      Case_0123456789 a_0123456789 ((GHC.Types.:) _z_0123456789 ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
     type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 (GHC.Tuple.(,) y_0123456789 z) = y_0123456789
+      Case_0123456789 a_0123456789 (GHC.Tuple.(,) y_0123456789 _z_0123456789) = y_0123456789
     type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 (GHC.Tuple.(,) z y_0123456789) = y_0123456789
+      Case_0123456789 a_0123456789 (GHC.Tuple.(,) _z_0123456789 y_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (Bar y_0123456789 z) = y_0123456789
+      Case_0123456789 (Bar y_0123456789 _z_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (Bar z y_0123456789) = y_0123456789
+      Case_0123456789 (Bar _z_0123456789 y_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) z GHC.Types.[])) = y_0123456789
+      Case_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) _z_0123456789 GHC.Types.[])) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
+      Case_0123456789 ((GHC.Types.:) _z_0123456789 ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
     type NotSym1 (t :: Bool) = Not t
     instance SuppressUnusedWarnings NotSym0 where
       suppressUnusedWarnings _

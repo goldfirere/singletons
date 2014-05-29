@@ -191,9 +191,9 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
     foo14 :: Nat -> (Nat, Nat)
     foo14 x = let (y, z) = (Succ x, x) in (z, y)
     type family Case_0123456789 x t where
-      Case_0123456789 x (GHC.Tuple.(,) y_0123456789 z) = y_0123456789
+      Case_0123456789 x (GHC.Tuple.(,) y_0123456789 _z_0123456789) = y_0123456789
     type family Case_0123456789 x t where
-      Case_0123456789 x (GHC.Tuple.(,) z y_0123456789) = y_0123456789
+      Case_0123456789 x (GHC.Tuple.(,) _z_0123456789 y_0123456789) = y_0123456789
     type Let_0123456789YSym1 t = Let_0123456789Y t
     instance SuppressUnusedWarnings Let_0123456789YSym0 where
       suppressUnusedWarnings _
@@ -681,24 +681,26 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
                 sX_0123456789 :: Sing (Let_0123456789X_0123456789Sym1 x)
                 sY
                   = case sX_0123456789 of {
-                      STuple2 sY_0123456789 _
+                      STuple2 sY_0123456789 _s_z_0123456789
                         -> let
                              lambda ::
-                               forall y_0123456789 wild.
+                               forall y_0123456789 _z_0123456789.
                                Sing y_0123456789
-                               -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 y_0123456789) wild))
-                             lambda y_0123456789 = y_0123456789
-                           in lambda sY_0123456789 }
+                               -> Sing _z_0123456789
+                                  -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 y_0123456789) _z_0123456789))
+                             lambda y_0123456789 _z_0123456789 = y_0123456789
+                           in lambda sY_0123456789 _s_z_0123456789 }
                 sZ
                   = case sX_0123456789 of {
-                      STuple2 _ sY_0123456789
+                      STuple2 _s_z_0123456789 sY_0123456789
                         -> let
                              lambda ::
-                               forall y_0123456789 wild.
-                               Sing y_0123456789
-                               -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 wild) y_0123456789))
-                             lambda y_0123456789 = y_0123456789
-                           in lambda sY_0123456789 }
+                               forall _z_0123456789 y_0123456789.
+                               Sing _z_0123456789
+                               -> Sing y_0123456789
+                                  -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 _z_0123456789) y_0123456789))
+                             lambda _z_0123456789 y_0123456789 = y_0123456789
+                           in lambda _s_z_0123456789 sY_0123456789 }
                 sX_0123456789
                   = applySing
                       (applySing
