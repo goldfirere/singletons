@@ -313,7 +313,8 @@ singPat _var_proms _patCxt (DLitPa _lit) =
   fail "Singling of literal patterns not yet supported"
 singPat var_proms _patCxt (DVarPa name) = do
   tyname <- case Map.lookup name var_proms of
-              Nothing     -> qNewName (nameBase name)
+              Nothing     ->
+                fail "Internal error: unknown variable when singling pattern"
               Just tyname -> return tyname
   return (DVarPa (singValName name), DVarT tyname)
 singPat var_proms patCxt (DConPa name pats) = do
