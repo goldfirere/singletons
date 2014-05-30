@@ -611,8 +611,10 @@ promoteExp (DCaseE exp matches) = do
   let all_args = all_locals ++ [tyvarName]
       tvbs     = map DPlainTV all_args
   emitDecs [DClosedTypeFamilyD caseTFName tvbs Nothing eqns]
-  return ( prom_case `DAppT` exp'
-         , ADCaseE ann_exp ann_matches )
+    -- See Note [Annotate case return type] in Single
+  let applied_case = prom_case `DAppT` exp'
+  return ( applied_case
+         , ADCaseE ann_exp ann_matches applied_case )
 promoteExp (DLetE decs exp) = do
   letPrefix <- fmap nameBase $ newUniqueName "Let"
   (binds, ann_env) <- promoteLetDecs letPrefix decs

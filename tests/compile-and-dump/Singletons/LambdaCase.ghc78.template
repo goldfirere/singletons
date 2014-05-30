@@ -204,7 +204,8 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
                                           -> Sing _z_0123456789
                                              -> Sing (Case_0123456789 a b x_0123456789 (Apply (Apply Tuple2Sym0 p) _z_0123456789))
                                         lambda p _z_0123456789 = p
-                                      in lambda sP _s_z_0123456789 }
+                                      in lambda sP _s_z_0123456789 } ::
+                                 Sing (Case_0123456789 a b x_0123456789 x_0123456789)
                          in lambda sX_0123456789))
                 (applySing
                    (applySing (singFun2 (Proxy :: Proxy Tuple2Sym0) STuple2) a) b)
@@ -243,7 +244,8 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
                                         lambda ::
                                           Sing (Case_0123456789 d x_0123456789 _z_0123456789 NothingSym0)
                                         lambda = d
-                                      in lambda }
+                                      in lambda } ::
+                                 Sing (Case_0123456789 d x_0123456789 _z_0123456789 x_0123456789)
                          in lambda sX_0123456789))
                 (applySing (singFun1 (Proxy :: Proxy JustSym0) SJust) d)
         in lambda sD _s_z_0123456789
@@ -277,7 +279,8 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
                                         lambda ::
                                           Sing (Case_0123456789 d x x_0123456789 NothingSym0)
                                         lambda = d
-                                      in lambda }
+                                      in lambda } ::
+                                 Sing (Case_0123456789 d x x_0123456789 x_0123456789)
                          in lambda sX_0123456789))
                 x
         in lambda sD sX

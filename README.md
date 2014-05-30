@@ -378,14 +378,14 @@ The following constructs are fully supported:
 * case
 * let
 * lambda expressions
+* `!` and `~` patterns (silently but successfully ignored during promotion)
 
 The following constructs are supported for promotion but not singleton generation:
 
-* `!` and `~` patterns (silently but successfully ignored during promotion)
 * class and instance declarations
-* deriving of promoted `Eq`, `Ord` and `Bounded` instances
+* deriving of promoted `Ord` and `Bounded` instances
 * scoped type variables
-* overlapping patterns (GHC 7.8.2+ only). Note that overlapping patterns are
+* overlapping patterns. Note that overlapping patterns are
   sometime not obvious. For example `filter` function does not singletonize due
   to overlapping patterns:
 ```haskell
@@ -461,7 +461,6 @@ Known bugs
 
 * Fixity declarations don't promote due to GHC bug #9066. They are dropped with
   a warning
-* Top-level eta-reduced patterns don't singletonize
 * Record updates don't singletonize
 
 Changes from earlier versions

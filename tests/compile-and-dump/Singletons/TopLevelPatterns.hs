@@ -26,7 +26,6 @@ $(singletons [d|
 
   false_ = False
 
-{- Commented out until #54 is fixed
   f,g :: Bool -> Bool
   [f,g] = [not, id]
 
@@ -38,5 +37,4 @@ $(singletons [d|
 
   l,m :: Bool
   [l,m] = [not True, id False]
--}
  |])

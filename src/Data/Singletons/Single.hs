@@ -332,6 +332,16 @@ singPat _var_proms _patCxt DWildPa =
   -- See Note [No wildcards in singletons]
   fail "Internal error: wildcard seen during singleton generation"
 
+-- Note [Annotate case return type]
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+-- We're straining GHC's type inference here. One particular trouble area
+-- is determining the return type of a GADT pattern match. In general, GHC
+-- cannot infer return types of GADT pattern matches because the return type
+-- becomes "untouchable" in the case matches. See the OutsideIn paper. But,
+-- during singletonization, we *know* the return type. So, just add a type
+-- annotation. See #54.
+
 singExp :: ADExp -> SgM DExp
 singExp (ADVarE name)  = lookupVarE name
 singExp (ADConE name)  = lookupConE name
@@ -345,7 +355,10 @@ singExp (ADLamE var_proms prom_lam names exp) = do
   exp' <- bindTyVars var_proms (foldl apply prom_lam (map (DVarT . snd) var_proms)) $
           singExp exp
   return $ wrapSingFun (length names) prom_lam $ DLamE sNames exp'
-singExp (ADCaseE exp matches) = DCaseE <$> singExp exp <*> mapM singMatch matches
+singExp (ADCaseE exp matches ret_ty) =
+    -- See Note [Annotate case return type]
+  DSigE <$> (DCaseE <$> singExp exp <*> mapM singMatch matches)
+        <*> pure (singFamily `DAppT` ret_ty)
 singExp (ADLetE env exp) =
   uncurry DLetE <$> singLetDecEnv NotTopLevel env (singExp exp)
 singExp (ADSigE {}) =

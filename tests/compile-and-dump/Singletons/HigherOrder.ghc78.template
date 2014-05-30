@@ -498,23 +498,26 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
                                        sScrutinee_0123456789 ::
                                          Sing (Let_0123456789Scrutinee_0123456789Sym4 ns bs n b)
                                        sScrutinee_0123456789 = b
-                                     in
-                                       case sScrutinee_0123456789 of {
-                                         STrue
-                                           -> let
-                                                lambda :: Sing (Case_0123456789 ns bs n b TrueSym0)
-                                                lambda
-                                                  = applySing
-                                                      (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
-                                                      (applySing
-                                                         (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
-                                                         n)
-                                              in lambda
-                                         SFalse
-                                           -> let
-                                                lambda :: Sing (Case_0123456789 ns bs n b FalseSym0)
-                                                lambda = n
-                                              in lambda }
+                                     in  case sScrutinee_0123456789 of {
+                                           STrue
+                                             -> let
+                                                  lambda ::
+                                                    Sing (Case_0123456789 ns bs n b TrueSym0)
+                                                  lambda
+                                                    = applySing
+                                                        (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
+                                                        (applySing
+                                                           (singFun1
+                                                              (Proxy :: Proxy SuccSym0) SSucc)
+                                                           n)
+                                                in lambda
+                                           SFalse
+                                             -> let
+                                                  lambda ::
+                                                    Sing (Case_0123456789 ns bs n b FalseSym0)
+                                                  lambda = n
+                                                in lambda } ::
+                                           Sing (Case_0123456789 ns bs n b (Let_0123456789Scrutinee_0123456789Sym4 ns bs n b))
                                in lambda sN sB)))
                    ns)
                 bs
@@ -547,25 +550,26 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
                                        sScrutinee_0123456789 ::
                                          Sing (Let_0123456789Scrutinee_0123456789Sym4 n b a_0123456789 a_0123456789)
                                        sScrutinee_0123456789 = b
-                                     in
-                                       case sScrutinee_0123456789 of {
-                                         STrue
-                                           -> let
-                                                lambda ::
-                                                  Sing (Case_0123456789 n b a_0123456789 a_0123456789 TrueSym0)
-                                                lambda
-                                                  = applySing
-                                                      (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
-                                                      (applySing
-                                                         (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
-                                                         n)
-                                              in lambda
-                                         SFalse
-                                           -> let
-                                                lambda ::
-                                                  Sing (Case_0123456789 n b a_0123456789 a_0123456789 FalseSym0)
-                                                lambda = n
-                                              in lambda }
+                                     in  case sScrutinee_0123456789 of {
+                                           STrue
+                                             -> let
+                                                  lambda ::
+                                                    Sing (Case_0123456789 n b a_0123456789 a_0123456789 TrueSym0)
+                                                  lambda
+                                                    = applySing
+                                                        (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
+                                                        (applySing
+                                                           (singFun1
+                                                              (Proxy :: Proxy SuccSym0) SSucc)
+                                                           n)
+                                                in lambda
+                                           SFalse
+                                             -> let
+                                                  lambda ::
+                                                    Sing (Case_0123456789 n b a_0123456789 a_0123456789 FalseSym0)
+                                                  lambda = n
+                                                in lambda } ::
+                                           Sing (Case_0123456789 n b a_0123456789 a_0123456789 (Let_0123456789Scrutinee_0123456789Sym4 n b a_0123456789 a_0123456789))
                                in lambda sN sB)))
                    a_0123456789)
                 a_0123456789

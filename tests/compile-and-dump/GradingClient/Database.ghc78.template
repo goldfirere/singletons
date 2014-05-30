@@ -463,21 +463,21 @@ GradingClient/Database.hs:0:0: Splicing declarations
                 sScrutinee_0123456789
                   = applySing
                       (applySing (singFun2 (Proxy :: Proxy (:==$)) (%:==)) name) name'
-              in
-                case sScrutinee_0123456789 of {
-                  STrue
-                    -> let
-                         lambda :: Sing (Case_0123456789 name name' u attrs TrueSym0)
-                         lambda = u
-                       in lambda
-                  SFalse
-                    -> let
-                         lambda :: Sing (Case_0123456789 name name' u attrs FalseSym0)
-                         lambda
-                           = applySing
-                               (applySing (singFun2 (Proxy :: Proxy LookupSym0) sLookup) name)
-                               (applySing (singFun1 (Proxy :: Proxy SchSym0) SSch) attrs)
-                       in lambda }
+              in  case sScrutinee_0123456789 of {
+                    STrue
+                      -> let
+                           lambda :: Sing (Case_0123456789 name name' u attrs TrueSym0)
+                           lambda = u
+                         in lambda
+                    SFalse
+                      -> let
+                           lambda :: Sing (Case_0123456789 name name' u attrs FalseSym0)
+                           lambda
+                             = applySing
+                                 (applySing (singFun2 (Proxy :: Proxy LookupSym0) sLookup) name)
+                                 (applySing (singFun1 (Proxy :: Proxy SchSym0) SSch) attrs)
+                         in lambda } ::
+                    Sing (Case_0123456789 name name' u attrs (Let_0123456789Scrutinee_0123456789Sym4 name name' u attrs))
         in lambda sName sName' sU sAttrs
     sOccurs _s_z_0123456789 (SSch SNil)
       = let

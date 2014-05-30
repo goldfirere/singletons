@@ -689,7 +689,8 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
                                -> Sing _z_0123456789
                                   -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 y_0123456789) _z_0123456789))
                              lambda y_0123456789 _z_0123456789 = y_0123456789
-                           in lambda sY_0123456789 _s_z_0123456789 }
+                           in lambda sY_0123456789 _s_z_0123456789 } ::
+                      Sing (Case_0123456789 x (Let_0123456789X_0123456789Sym1 x))
                 sZ
                   = case sX_0123456789 of {
                       STuple2 _s_z_0123456789 sY_0123456789
@@ -700,7 +701,8 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
                                -> Sing y_0123456789
                                   -> Sing (Case_0123456789 x (Apply (Apply Tuple2Sym0 _z_0123456789) y_0123456789))
                              lambda _z_0123456789 y_0123456789 = y_0123456789
-                           in lambda _s_z_0123456789 sY_0123456789 }
+                           in lambda _s_z_0123456789 sY_0123456789 } ::
+                      Sing (Case_0123456789 x (Let_0123456789X_0123456789Sym1 x))
                 sX_0123456789
                   = applySing
                       (applySing

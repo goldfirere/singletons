@@ -37,6 +37,7 @@ tests =
     , compileAndDumpStdTest "Records"
     , compileAndDumpStdTest "T29"
     , compileAndDumpStdTest "T33"
+    , compileAndDumpStdTest "T54"
     , compileAndDumpStdTest "Names"
     ],
     testCompileAndDumpGroup "Promote"
@@ -44,7 +45,6 @@ tests =
     , compileAndDumpStdTest "GenDefunSymbols"
     , compileAndDumpStdTest "Newtypes"
     , compileAndDumpStdTest "Classes"
-    , compileAndDumpStdTest "TopLevelPatterns"
     , compileAndDumpStdTest "Pragmas"
     , compileAndDumpStdTest "OrdDeriving"
     , compileAndDumpStdTest "BoundedDeriving"

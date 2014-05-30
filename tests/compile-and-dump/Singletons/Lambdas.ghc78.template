@@ -553,7 +553,8 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                                           -> Sing _z_0123456789
                                              -> Sing (Case_0123456789 x arg_0123456789 (Apply (Apply FooSym0 a) _z_0123456789))
                                         lambda a _z_0123456789 = a
-                                      in lambda sA _s_z_0123456789 }
+                                      in lambda sA _s_z_0123456789 } ::
+                                 Sing (Case_0123456789 x arg_0123456789 arg_0123456789)
                          in lambda sArg_0123456789))
                 x
         in lambda sX
@@ -582,7 +583,8 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                                           -> Sing b
                                              -> Sing (Case_0123456789 x y arg_0123456789 (Apply (Apply Tuple2Sym0 _z_0123456789) b))
                                         lambda _z_0123456789 b = b
-                                      in lambda _s_z_0123456789 sB }
+                                      in lambda _s_z_0123456789 sB } ::
+                                 Sing (Case_0123456789 x y arg_0123456789 arg_0123456789)
                          in lambda sArg_0123456789))
                 (applySing
                    (applySing (singFun2 (Proxy :: Proxy Tuple2Sym0) STuple2) x) y)
@@ -621,7 +623,8 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                                                            Sing _z_0123456789
                                                            -> Sing (Case_0123456789 a b x arg_0123456789 _z_0123456789)
                                                          lambda _z_0123456789 = x
-                                                       in lambda _s_z_0123456789 }
+                                                       in lambda _s_z_0123456789 } ::
+                                                  Sing (Case_0123456789 a b x arg_0123456789 arg_0123456789)
                                           in lambda sArg_0123456789)
                             in lambda sX))
                    a)
@@ -682,7 +685,8 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                                              -> Sing _z_0123456789
                                                 -> Sing (Case_0123456789 x y z arg_0123456789 arg_0123456789 (Apply (Apply Tuple2Sym0 _z_0123456789) _z_0123456789))
                                            lambda _z_0123456789 _z_0123456789 = x
-                                         in lambda _s_z_0123456789 _s_z_0123456789 }
+                                         in lambda _s_z_0123456789 _s_z_0123456789 } ::
+                                    Sing (Case_0123456789 x y z arg_0123456789 arg_0123456789 (Apply (Apply Tuple2Sym0 arg_0123456789) arg_0123456789))
                             in lambda sArg_0123456789 sArg_0123456789))
                    y)
                 z
@@ -727,7 +731,8 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                                           Sing _z_0123456789
                                           -> Sing (Case_0123456789 x y arg_0123456789 _z_0123456789)
                                         lambda _z_0123456789 = x
-                                      in lambda _s_z_0123456789 }
+                                      in lambda _s_z_0123456789 } ::
+                                 Sing (Case_0123456789 x y arg_0123456789 arg_0123456789)
                          in lambda sArg_0123456789))
                 y
         in lambda sX sY
@@ -759,7 +764,8 @@ Singletons/Lambdas.hs:0:0: Splicing declarations
                                           Sing _z_0123456789
                                           -> Sing (Case_0123456789 x arg_0123456789 a_0123456789 _z_0123456789)
                                         lambda _z_0123456789 = x
-                                      in lambda _s_z_0123456789 }
+                                      in lambda _s_z_0123456789 } ::
+                                 Sing (Case_0123456789 x arg_0123456789 a_0123456789 arg_0123456789)
                          in lambda sArg_0123456789))
                 a_0123456789
         in lambda sX sA_0123456789
