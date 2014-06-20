@@ -3,16 +3,13 @@ source=src/Data/Singletons.hs src/Data/Singletons/*.hs src/Data/Singletons/Prelu
 test-suite=tests/SingletonsTestSuite.hs tests/SingletonsTestSuiteUtils.hs
 test-byhand=tests/ByHand.hs tests/ByHandAux.hs
 
-.PHONY: build byhand clean clean-tests configure install tests tests-quick
+.PHONY: build byhand clean clean-tests configure install tests
 
 configure: dist/setup-config
 
 build: dist/setup-config dist/build/libHSsingletons-$(version).a
 
 tests: dist/tests-enabled.dummy dist/build/compile/compile dist/test/singletons-$(version)-compile.log
-
-tests-quick:
-	make -C tests
 
 install: dist/setup-config dist/build/libHSsingletons-$(version).a
 	cabal install
