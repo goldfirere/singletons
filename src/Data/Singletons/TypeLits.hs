@@ -124,8 +124,8 @@ instance PNum ('KProxy :: KProxy Nat) where
   type a :+ b = a + b
   type a :- b = a - b
   type a :* b = a * b
-  type Negate a = Error "Cannot negate a natural number"
-  type Abs a = a
+  type Negate (a :: Nat) = Error "Cannot negate a natural number"
+  type Abs (a :: Nat) = a
   type Signum a = SignumNat a
   type FromInteger a = a
 
