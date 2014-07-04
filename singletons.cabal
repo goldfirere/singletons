@@ -41,7 +41,7 @@ source-repository this
 library
   hs-source-dirs:     src
   build-depends:      base >= 4.7 && < 5,
-                      mtl >= 2.1.1,
+                      mtl >= 2.2.1,
                       template-haskell,
                       containers >= 0.5,
                       th-desugar >= 1.4.1

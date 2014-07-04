@@ -27,7 +27,7 @@ import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Control.Monad
 import Data.List hiding ( tail )
-import Control.Monad.Error
+import Control.Monad.Except
 
 $(singletons [d|
   -- Basic Nat type
