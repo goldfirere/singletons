@@ -8,6 +8,11 @@ branches:
 
 env:
  - GHCVER=7.8.2
+ - GHCVER=head
+
+matrix:
+  allow_failures:
+    - env: GHCVER=head
 
 # Note: the distinction between `before_install` and `install` is not important.
 before_install:
