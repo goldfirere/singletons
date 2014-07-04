@@ -3,6 +3,7 @@ module Promote.Fixity where
 import Data.Singletons
 import Data.Promotion.TH
 import Data.Promotion.Prelude
+import Language.Haskell.TH.Desugar
 
 -- Fixity declarations don't work due to GHC bug #9066, so we drop
 -- them and issue a warning

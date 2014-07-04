@@ -5,6 +5,7 @@ import Singletons.Nat
 import Data.Singletons
 import Data.Singletons.TH
 import Data.Singletons.Prelude.Ord (EQSym0, LTSym0, GTSym0)
+import Language.Haskell.TH.Desugar
 
 $(promote [d|
   const :: a -> b -> a

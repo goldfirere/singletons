@@ -51,17 +51,17 @@ Promote/Fixity.hs:0:0: Splicing declarations
     type instance Apply (:<=>$) l = (:<=>$$) l
     {-# ANN type :<=> GHC.Tuple.(,)
                         ((GHC.Types.:)
-                           (th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DVarK
+                           (DVarK
                               (Language.Haskell.TH.Syntax.Name
                                  (Language.Haskell.TH.Syntax.OccName "a")
                                  (Language.Haskell.TH.Syntax.NameU 0123456789#)))
                            ((GHC.Types.:)
-                              (th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DVarK
+                              (DVarK
                                  (Language.Haskell.TH.Syntax.Name
                                     (Language.Haskell.TH.Syntax.OccName "a")
                                     (Language.Haskell.TH.Syntax.NameU 0123456789#)))
                               GHC.Types.[]))
-                        (th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DConK
+                        (DConK
                            (Language.Haskell.TH.Syntax.Name
                               (Language.Haskell.TH.Syntax.OccName "Ordering")
                               (Language.Haskell.TH.Syntax.NameG
@@ -69,7 +69,7 @@ Promote/Fixity.hs:0:0: Splicing declarations
                                  (Language.Haskell.TH.Syntax.PkgName "ghc-prim")
                                  (Language.Haskell.TH.Syntax.ModName "GHC.Types")))
                            GHC.Types.[]) ::
-                        GHC.Tuple.(,) (GHC.Types.[] th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DKind) th-desugar-1.4.1:Language.Haskell.TH.Desugar.Core.DKind #-}
+                        GHC.Tuple.(,) (GHC.Types.[] DKind) DKind #-}
     {-# ANN type PMyOrd (GHC.Types.:)
                           (Language.Haskell.TH.Syntax.Name
                              (Language.Haskell.TH.Syntax.OccName "a")
