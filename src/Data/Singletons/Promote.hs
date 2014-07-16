@@ -335,6 +335,8 @@ promoteInstanceDec cls_tvb_env meth_sigs
 -- promoteMethod needs to substitute in a method's kind because GHC does not do
 -- enough kind checking of associated types. See GHC#9063. When that bug is fixed,
 -- the substitution code can be removed.
+-- Bug is fixed, but only in HEAD, naturally. When we stop supporting 7.8,
+-- this can be rewritten more cleanly, I imagine.
 
 promoteMethod :: Map Name DKind     -- instantiations for class tyvars
               -> Map Name DType     -- method types
