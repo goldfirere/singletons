@@ -22,7 +22,7 @@ module Data.Singletons.TypeLits (
   SNat, SSymbol, withKnownNat, withKnownSymbol,
   Error, ErrorSym0, sError,
   KnownNat, natVal, KnownSymbol, symbolVal,
-  Sing(SSym), Sing(SNat),
+  Sing(SSym, SNat),
 
   (:^), (:^$), (:^$$), (:^$$$)
   ) where
