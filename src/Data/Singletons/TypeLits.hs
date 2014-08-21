@@ -20,7 +20,7 @@
 module Data.Singletons.TypeLits (
   Nat, Symbol,
   SNat, SSymbol, withKnownNat, withKnownSymbol,
-  Error, ErrorSym0, sError,
+  Error, ErrorSym0, ErrorSym1, sError,
   KnownNat, natVal, KnownSymbol, symbolVal,
 
   (:^), (:^$), (:^$$), (:^$$$)
@@ -185,8 +185,7 @@ withKnownSymbol SSym f = f
 
 -- | The promotion of 'error'
 type family Error (str :: Symbol) :: k
-data ErrorSym0 (t1 :: TyFun k1 k2)
-type instance Apply ErrorSym0 a = Error a
+$(genDefunSymbols [''Error])
 
 -- | The singleton for 'error'
 sError :: Sing (str :: Symbol) -> a

@@ -100,7 +100,7 @@ module Data.Singletons.Prelude.List (
   (:$), (:$$), (:$$$),
   NilSym0, ConsSym0, ConsSym1, ConsSym2,
 
-  (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
+  (:++$$$), (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
 
   MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
@@ -144,7 +144,7 @@ module Data.Singletons.Prelude.List (
   ZipSym0, ZipSym1, ZipSym2,
   Zip3Sym0, Zip3Sym1, Zip3Sym2, Zip3Sym3,
   ZipWithSym0, ZipWithSym1, ZipWithSym2, ZipWithSym3,
-  ZipWith3Sym0, ZipWith3Sym1, ZipWith3Sym2, ZipWith3Sym3,
+  ZipWith3Sym0, ZipWith3Sym1, ZipWith3Sym2, ZipWith3Sym3, ZipWith3Sym4,
   UnzipSym0, UnzipSym1,
   Unzip3Sym0, Unzip3Sym1,
   Unzip4Sym0, Unzip4Sym1,

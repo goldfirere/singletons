@@ -104,7 +104,7 @@ module Data.Promotion.Prelude.List (
   (:$), (:$$), (:$$$),
   NilSym0, ConsSym0, ConsSym1, ConsSym2,
 
-  (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
+  (:++$$$), (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
 
   MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
@@ -148,7 +148,7 @@ module Data.Promotion.Prelude.List (
   ZipSym0, ZipSym1, ZipSym2,
   Zip3Sym0, Zip3Sym1, Zip3Sym2, Zip3Sym3,
   ZipWithSym0, ZipWithSym1, ZipWithSym2, ZipWithSym3,
-  ZipWith3Sym0, ZipWith3Sym1, ZipWith3Sym2, ZipWith3Sym3,
+  ZipWith3Sym0, ZipWith3Sym1, ZipWith3Sym2, ZipWith3Sym3, ZipWith3Sym4,
   UnzipSym0, UnzipSym1,
   Unzip3Sym0, Unzip3Sym1,
   Unzip4Sym0, Unzip4Sym1,
@@ -183,7 +183,7 @@ module Data.Promotion.Prelude.List (
   DropWhileEndSym0, DropWhileEndSym1, DropWhileEndSym2,
   SpanSym0, SpanSym1, SpanSym2,
   BreakSym0, BreakSym1, BreakSym2,
-  StripPrefixSym0, StripPrefixSym1,
+  StripPrefixSym0, StripPrefixSym1, StripPrefixSym2,
   MaximumSym0, MaximumSym1,
   MinimumSym0, MinimumSym1,
   GroupSym0, GroupSym1,
@@ -205,10 +205,10 @@ module Data.Promotion.Prelude.List (
   Zip6Sym0, Zip6Sym1, Zip6Sym2, Zip6Sym3, Zip6Sym4, Zip6Sym5, Zip6Sym6,
   Zip7Sym0, Zip7Sym1, Zip7Sym2, Zip7Sym3, Zip7Sym4, Zip7Sym5, Zip7Sym6, Zip7Sym7,
 
-  ZipWith4Sym0, ZipWith4Sym1, ZipWith4Sym2, ZipWith4Sym3, ZipWith4Sym4,
-  ZipWith5Sym0, ZipWith5Sym1, ZipWith5Sym2, ZipWith5Sym3, ZipWith5Sym4, ZipWith5Sym5,
-  ZipWith6Sym0, ZipWith6Sym1, ZipWith6Sym2, ZipWith6Sym3, ZipWith6Sym4, ZipWith6Sym5, ZipWith6Sym6,
-  ZipWith7Sym0, ZipWith7Sym1, ZipWith7Sym2, ZipWith7Sym3, ZipWith7Sym4, ZipWith7Sym5, ZipWith7Sym6, ZipWith7Sym7,
+  ZipWith4Sym0, ZipWith4Sym1, ZipWith4Sym2, ZipWith4Sym3, ZipWith4Sym4, ZipWith4Sym5,
+  ZipWith5Sym0, ZipWith5Sym1, ZipWith5Sym2, ZipWith5Sym3, ZipWith5Sym4, ZipWith5Sym5, ZipWith5Sym6,
+  ZipWith6Sym0, ZipWith6Sym1, ZipWith6Sym2, ZipWith6Sym3, ZipWith6Sym4, ZipWith6Sym5, ZipWith6Sym6, ZipWith6Sym7,
+  ZipWith7Sym0, ZipWith7Sym1, ZipWith7Sym2, ZipWith7Sym3, ZipWith7Sym4, ZipWith7Sym5, ZipWith7Sym6, ZipWith7Sym7, ZipWith7Sym8,
 
   NubSym0, NubSym1,
   NubBySym0, NubBySym1, NubBySym2,
