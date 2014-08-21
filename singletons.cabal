@@ -44,7 +44,8 @@ library
                       mtl >= 2.2.1,
                       template-haskell,
                       containers >= 0.5,
-                      th-desugar >= 1.4.1
+                      th-desugar >= 1.4.1,
+                      syb >= 0.4
   default-language:   Haskell2010
   default-extensions: TemplateHaskell
         -- TemplateHaskell must be listed in cabal file to work with
@@ -81,7 +82,8 @@ library
                       Data.Singletons.Void,
                       Data.Singletons.SuppressUnusedWarnings
 
-  other-modules:      Data.Singletons.Promote,
+  other-modules:      Data.Singletons.Optimize,
+                      Data.Singletons.Promote,
                       Data.Singletons.Promote.Monad,
                       Data.Singletons.Promote.Eq,
                       Data.Singletons.Promote.Ord,

@@ -25,6 +25,7 @@ import Data.Singletons.Promote.Defun
 import Data.Singletons.Promote.Type
 import Data.Singletons.Util
 import Data.Singletons.Syntax
+import Data.Singletons.Optimize
 import Prelude hiding (exp)
 import Control.Monad
 import Control.Applicative
@@ -34,7 +35,7 @@ import Data.Map.Strict ( Map )
 -- | Generate promoted definitions from a type that is already defined.
 -- This is generally only useful with classes.
 genPromotions :: Quasi q => [Name] -> q [Dec]
-genPromotions names = do
+genPromotions names = optimize $ do
   checkForRep names
   infos <- mapM reifyWithWarning names
   dinfos <- mapM dsInfo infos
@@ -43,7 +44,7 @@ genPromotions names = do
 
 -- | Promote every declaration given to the type level, retaining the originals.
 promote :: Quasi q => q [Dec] -> q [Dec]
-promote qdec = do
+promote qdec = optimize $ do
   decls <- qdec
   ddecls <- dsDecs decls
   promDecls <- promoteM_ $ promoteDecs ddecls
@@ -51,7 +52,7 @@ promote qdec = do
 
 -- | Promote each declaration, discarding the originals.
 promoteOnly :: Quasi q => q [Dec] -> q [Dec]
-promoteOnly qdec = do
+promoteOnly qdec = optimize $ do
   decls  <- qdec
   ddecls <- dsDecs decls
   promDecls <- promoteM_ $ promoteDecs ddecls
@@ -59,7 +60,7 @@ promoteOnly qdec = do
 
 -- | Generate defunctionalization symbols for existing type family
 genDefunSymbols :: Quasi q => [Name] -> q [Dec]
-genDefunSymbols names = do
+genDefunSymbols names = optimize $ do
   checkForRep names
   infos <- mapM (dsInfo <=< reifyWithWarning) names
   decs <- promoteMDecs $ concatMapM defunInfo infos
@@ -79,7 +80,7 @@ promoteBoundedInstances = concatMapM promoteBoundedInstance
 
 -- | Produce an instance for '(:==)' (type-level equality) from the given type
 promoteEqInstance :: Quasi q => Name -> q [Dec]
-promoteEqInstance name = do
+promoteEqInstance name = optimize $ do
   (_tvbs, cons) <- getDataD "I cannot make an instance of (:==) for it." name
   cons' <- mapM dsCon cons
   vars <- replicateM (length _tvbs) (qNewName "k")
@@ -89,7 +90,7 @@ promoteEqInstance name = do
 
 -- | Produce an instance for 'Compare' from the given type
 promoteOrdInstance :: Quasi q => Name -> q [Dec]
-promoteOrdInstance name = do
+promoteOrdInstance name = optimize $ do
   (_tvbs, cons) <- getDataD "I cannot make an instance of Ord for it." name
   cons' <- mapM dsCon cons
   vars <- replicateM (length _tvbs) (qNewName "k")
@@ -99,7 +100,7 @@ promoteOrdInstance name = do
 
 -- | Produce an instance for 'MinBound' and 'MaxBound' from the given type
 promoteBoundedInstance :: Quasi q => Name -> q [Dec]
-promoteBoundedInstance name = do
+promoteBoundedInstance name = optimize $ do
   (_tvbs, cons) <- getDataD "I cannot make an instance of Bounded for it." name
   cons' <- mapM dsCon cons
   vars <- replicateM (length _tvbs) (qNewName "k")

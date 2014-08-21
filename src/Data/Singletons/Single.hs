@@ -22,6 +22,7 @@ import Data.Singletons.Single.Type
 import Data.Singletons.Single.Data
 import Data.Singletons.Single.Eq
 import Data.Singletons.Syntax
+import Data.Singletons.Optimize
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.Sweeten
 import qualified Data.Map.Strict as Map
@@ -70,7 +71,7 @@ contract constructors. This is the point of buildLets.
 --
 -- to generate singletons for Prelude types.
 genSingletons :: Quasi q => [Name] -> q [Dec]
-genSingletons names = do
+genSingletons names = optimize $ do
   checkForRep names
   ddecs <- concatMapM (singInfo <=< dsInfo <=< reifyWithWarning) names
   return $ decsToTH ddecs
@@ -80,7 +81,7 @@ genSingletons names = do
 -- See <http://www.cis.upenn.edu/~eir/packages/singletons/README.html> for
 -- further explanation.
 singletons :: Quasi q => q [Dec] -> q [Dec]
-singletons qdecs = do
+singletons qdecs = optimize $ do
   decs <- qdecs
   singDecs <- wrapDesugar singTopLevelDecs decs
   return (decs ++ singDecs)
@@ -88,7 +89,7 @@ singletons qdecs = do
 -- | Make promoted and singleton versions of all declarations given, discarding
 -- the original declarations.
 singletonsOnly :: Quasi q => q [Dec] -> q [Dec]
-singletonsOnly = (>>= wrapDesugar singTopLevelDecs)
+singletonsOnly = optimize . (>>= wrapDesugar singTopLevelDecs)
 
 -- | Create instances of 'SEq' and type-level '(:==)' for each type in the list
 singEqInstances :: Quasi q => [Name] -> q [Dec]
@@ -96,7 +97,7 @@ singEqInstances = concatMapM singEqInstance
 
 -- | Create instance of 'SEq' and type-level '(:==)' for the given type
 singEqInstance :: Quasi q => Name -> q [Dec]
-singEqInstance name = do
+singEqInstance name = optimize $ do
   promotion <- promoteEqInstance name
   dec <- singEqualityInstance sEqClassDesc name
   return $ dec ++ promotion
@@ -109,7 +110,7 @@ singEqInstancesOnly = concatMapM singEqInstanceOnly
 -- | Create instances of 'SEq' (only -- no instance for '(:==)', which 'SEq' generally
 -- relies on) for the given type
 singEqInstanceOnly :: Quasi q => Name -> q [Dec]
-singEqInstanceOnly name = singEqualityInstance sEqClassDesc name
+singEqInstanceOnly name = optimize $ singEqualityInstance sEqClassDesc name
 
 -- | Create instances of 'SDecide' for each type in the list.
 singDecideInstances :: Quasi q => [Name] -> q [Dec]
@@ -117,7 +118,7 @@ singDecideInstances = concatMapM singDecideInstance
 
 -- | Create instance of 'SDecide' for the given type.
 singDecideInstance :: Quasi q => Name -> q [Dec]
-singDecideInstance name = singEqualityInstance sDecideClassDesc name
+singDecideInstance name = optimize $ singEqualityInstance sDecideClassDesc name
 
 -- generalized function for creating equality instances
 singEqualityInstance :: Quasi q => EqualityClassDesc q -> Name -> q [Dec]
