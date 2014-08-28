@@ -46,7 +46,7 @@ library
                       containers >= 0.5,
                       th-desugar >= 1.4.1
   default-language:   Haskell2010
-  default-extensions: TemplateHaskell
+  other-extensions:   TemplateHaskell
         -- TemplateHaskell must be listed in cabal file to work with
         -- ghc7.8
   exposed-modules:    Data.Singletons,
