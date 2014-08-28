@@ -15,3 +15,7 @@ tags
 *.actual
 *.golden
 Main
+
+# cabal sandboxes
+cabal.sandbox.config
+.cabal-sandbox
