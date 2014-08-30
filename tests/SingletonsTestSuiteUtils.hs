@@ -4,17 +4,19 @@ module SingletonsTestSuiteUtils (
  , compileAndDumpStdTest
  , testCompileAndDumpGroup
  , ghcOpts
- , singletonsVersion
  ) where
 
 import Control.Exception  ( Exception, throw                    )
-import Data.List          ( intercalate                         )
+import Control.Monad      ( liftM                               )
+import Data.List          ( intercalate, find, isPrefixOf       )
 import Data.Typeable      ( Typeable                            )
 import System.Exit        ( ExitCode(..)                        )
 import System.FilePath    ( takeBaseName, pathSeparator         )
 import System.IO          ( IOMode(..), hGetContents, openFile  )
 import System.Process     ( CreateProcess(..), StdStream(..)
-                          , createProcess, proc, waitForProcess )
+                          , createProcess, proc, waitForProcess
+                          , readProcess                         )
+import System.Directory   ( doesFileExist                       )
 import Test.Tasty         ( TestTree, testGroup                 )
 import Test.Tasty.Golden  ( goldenVsFileDiff                    )
 
@@ -23,7 +25,8 @@ import Distribution.PackageDescription.Configuration ( flattenPackageDescription
 import Distribution.PackageDescription               ( PackageDescription(..)    )
 import Distribution.Verbosity                        ( silent                    )
 import Distribution.Package                          ( PackageIdentifier(..)     )
-import Data.Version                                  ( showVersion               )
+import Distribution.Text                             ( simpleParse               )
+import Data.Version                                  ( showVersion, Version(..)  )
 import System.IO.Unsafe                              ( unsafePerformIO           )
 
 -- Some infractructure for handling external process errors
@@ -57,6 +60,35 @@ ghcVersion = ".ghc78"
 #endif
 #endif
 
+-- The mtl package made an incompatible change between 2.1.3.1 and 2.2.1. Because
+-- test files are compiled outside of the cabal infrastructure, we need to check
+-- the mtl version and behave accordingly. Argh. The more general solution to this
+-- is to use cabal_macros.h and then use the package specifications in dist/setup-config.
+-- This also uses a cabal sandbox, if it is around.
+extraOpts :: [String]
+extraOpts = unsafePerformIO $ do
+  (ghcPackageDbOpts, ghcPkgOpts) <- do
+     sandboxed <- doesFileExist "cabal.sandbox.config"
+     if sandboxed
+     then do
+       let prefix = "package-db: "
+           opts_from_config config =
+             case find (prefix `isPrefixOf`) $ lines config of
+               Nothing -> ([], [])
+               Just db_line -> let package_db = drop (length prefix) db_line in
+                               ( [ "-no-user-package-db"
+                                 , "-package-db " ++ package_db ]
+                               , [ "--no-user-package-db"  -- ghc-pkg is slightly different!
+                                 , "--package-db=" ++ package_db ] )
+       opts_from_config `liftM` readFile "cabal.sandbox.config"
+     else return ([], [])
+  mtl_string <- readProcess "ghc-pkg" (ghcPkgOpts ++ ["latest", "mtl"]) ""
+  let Just (PackageIdentifier { pkgVersion = ver }) = simpleParse mtl_string
+      firstModernVersion = Version [2,2,1] []
+      mtlOpt | ver >= firstModernVersion = ["-DMODERN_MTL"]
+             | otherwise                 = []
+  return $ ghcPackageDbOpts ++ mtlOpt
+
 -- the version number of "singletons"
 singletonsVersion :: String
 singletonsVersion = unsafePerformIO $ do
@@ -66,7 +98,7 @@ singletonsVersion = unsafePerformIO $ do
 
 -- GHC options used when running the tests
 ghcOpts :: [String]
-ghcOpts = [
+ghcOpts = extraOpts ++ [
     "-v0"
   , "-c"
   , "-package-name singletons-" ++ singletonsVersion -- See Note [-package-name hack]
@@ -74,7 +106,7 @@ ghcOpts = [
   , "-dsuppress-uniques"
   , "-fforce-recomp"
   , "-fprint-explicit-kinds"
-  , "-i" ++ includePath
+  , "-i" ++ includePath   -- necessary because some tests use these modules
   , "-XTemplateHaskell"
   , "-XDataKinds"
   , "-XKindSignatures"

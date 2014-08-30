@@ -41,7 +41,7 @@ source-repository this
 library
   hs-source-dirs:     src
   build-depends:      base >= 4.7 && < 5,
-                      mtl >= 2.2.1,
+                      mtl >= 2.1.2,
                       template-haskell,
                       containers >= 0.5,
                       th-desugar >= 1.4.1
@@ -114,4 +114,5 @@ test-suite singletons-test-suite
                       process >= 1.1,
                       tasty >= 0.6,
                       tasty-golden >= 2.2,
-                      Cabal >= 1.16
+                      Cabal >= 1.16,
+                      directory >= 1
