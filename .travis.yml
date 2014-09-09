@@ -26,8 +26,6 @@ before_install:
 install:
  - cabal-1.18 update
  - cabal-1.18 install happy alex
- - git clone https://github.com/goldfirere/th-desugar.git
-# get the HEAD version of th-desugar always
  - cd th-desugar; cabal-1.18 install; cd ..
  - cabal-1.18 install --only-dependencies --enable-tests --enable-benchmarks
 
