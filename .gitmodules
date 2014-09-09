@@ -1,0 +1,3 @@
+[submodule "th-desugar"]
+	path = th-desugar
+	url = http://github.com/goldfirere/th-desugar.git
