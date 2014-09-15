@@ -19,7 +19,7 @@
 module Data.Singletons.Prelude.Enum (
   PBounded(..), SBounded(..),
   PEnum(..), SEnum(..),
-  
+
   -- ** Defunctionalization symbols
   MinBoundSym0,
   MaxBoundSym0,
@@ -30,7 +30,7 @@ module Data.Singletons.Prelude.Enum (
   EnumFromToSym0, EnumFromToSym1, EnumFromToSym2,
   EnumFromThenToSym0, EnumFromThenToSym1, EnumFromThenToSym2,
   EnumFromThenToSym3
-  
+
   ) where
 
 import Data.Singletons.Promote
