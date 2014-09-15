@@ -1,0 +1,17 @@
+Promote/Classes2.hs:0:0: Splicing declarations
+    promoteOnly
+      [d| instance MyOrd NatFoo where
+            ZeroFoo `mycompare` ZeroFoo = EQ
+            ZeroFoo `mycompare` (SuccFoo _) = LT
+            (SuccFoo _) `mycompare` ZeroFoo = GT
+            (SuccFoo n) `mycompare` (SuccFoo m) = m `mycompare` n |]
+  ======>
+    Promote/Classes2.hs:(0,0)-(0,0)
+    type family Mycompare_0123456789 (a :: NatFoo)
+                                     (a :: NatFoo) :: Ordering where
+      Mycompare_0123456789 (ZeroFoo :: NatFoo) (ZeroFoo :: NatFoo) = (EQSym0 :: Ordering)
+      Mycompare_0123456789 (ZeroFoo :: NatFoo) (SuccFoo _z_0123456789 :: NatFoo) = (LTSym0 :: Ordering)
+      Mycompare_0123456789 (SuccFoo _z_0123456789 :: NatFoo) (ZeroFoo :: NatFoo) = (GTSym0 :: Ordering)
+      Mycompare_0123456789 (SuccFoo n :: NatFoo) (SuccFoo m :: NatFoo) = (Apply (Apply MycompareSym0 m) n :: Ordering)
+    instance PMyOrd (KProxy :: KProxy NatFoo) where
+      type Mycompare (a :: NatFoo) (a :: NatFoo) = Mycompare_0123456789 a a

@@ -45,6 +45,7 @@ tests =
     , compileAndDumpStdTest "GenDefunSymbols"
     , compileAndDumpStdTest "Newtypes"
     , compileAndDumpStdTest "Classes"
+    , compileAndDumpStdTest "Classes2"
     , compileAndDumpStdTest "Pragmas"
     , compileAndDumpStdTest "OrdDeriving"
     , compileAndDumpStdTest "BoundedDeriving"
