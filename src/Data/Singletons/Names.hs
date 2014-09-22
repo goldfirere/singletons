@@ -35,7 +35,8 @@ anyTypeName, boolName, andName, tyEqName, tyCompareName, tyminBoundName,
   sListName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
   equalityName, applySingName, suppressClassName, suppressMethodName,
-  tyThenCmpName, kindOfName, tyFromIntegerName, tyNegateName :: Name
+  tyThenCmpName, kindOfName, tyFromIntegerName, tyNegateName,
+  errorName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
@@ -93,6 +94,7 @@ tyThenCmpName = mk_name_tc "Data.Singletons.Prelude.Ord" "ThenCmp"
 kindOfName = ''KindOf
 tyFromIntegerName = mk_name_tc "Data.Singletons.Prelude.Num" "FromInteger"
 tyNegateName = mk_name_tc "Data.Singletons.Prelude.Num" "Negate"
+errorName = 'error
 
 singPkg :: String
 singPkg = $( (LitE . StringL . loc_package) `liftM` location )

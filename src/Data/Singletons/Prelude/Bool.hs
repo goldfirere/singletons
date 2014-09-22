@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, DataKinds, PolyKinds, TypeFamilies, TypeOperators,
-             GADTs, ScopedTypeVariables, DeriveDataTypeable #-}
+             GADTs, ScopedTypeVariables, DeriveDataTypeable, UndecidableInstances #-}
 
 -----------------------------------------------------------------------------
 -- |

@@ -21,6 +21,7 @@ import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
 import Data.Singletons.Single.Data
 import Data.Singletons.Single.Eq
+import Data.Singletons.Single.Squash
 import Data.Singletons.Syntax
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.Sweeten
@@ -69,7 +70,7 @@ contract constructors. This is the point of buildLets.
 -- > $(genSingletons [''Bool, ''Maybe, ''Either, ''[]])
 --
 -- to generate singletons for Prelude types.
-genSingletons :: Quasi q => [Name] -> q [Dec]
+genSingletons :: DsMonad q => [Name] -> q [Dec]
 genSingletons names = do
   checkForRep names
   ddecs <- concatMapM (singInfo <=< dsInfo <=< reifyWithWarning) names
@@ -79,7 +80,7 @@ genSingletons names = do
 -- the original declarations.
 -- See <http://www.cis.upenn.edu/~eir/packages/singletons/README.html> for
 -- further explanation.
-singletons :: Quasi q => q [Dec] -> q [Dec]
+singletons :: DsMonad q => q [Dec] -> q [Dec]
 singletons qdecs = do
   decs <- qdecs
   singDecs <- wrapDesugar singTopLevelDecs decs
@@ -87,15 +88,15 @@ singletons qdecs = do
 
 -- | Make promoted and singleton versions of all declarations given, discarding
 -- the original declarations.
-singletonsOnly :: Quasi q => q [Dec] -> q [Dec]
+singletonsOnly :: DsMonad q => q [Dec] -> q [Dec]
 singletonsOnly = (>>= wrapDesugar singTopLevelDecs)
 
 -- | Create instances of 'SEq' and type-level '(:==)' for each type in the list
-singEqInstances :: Quasi q => [Name] -> q [Dec]
+singEqInstances :: DsMonad q => [Name] -> q [Dec]
 singEqInstances = concatMapM singEqInstance
 
 -- | Create instance of 'SEq' and type-level '(:==)' for the given type
-singEqInstance :: Quasi q => Name -> q [Dec]
+singEqInstance :: DsMonad q => Name -> q [Dec]
 singEqInstance name = do
   promotion <- promoteEqInstance name
   dec <- singEqualityInstance sEqClassDesc name
@@ -103,24 +104,24 @@ singEqInstance name = do
 
 -- | Create instances of 'SEq' (only -- no instance for '(:==)', which 'SEq' generally
 -- relies on) for each type in the list
-singEqInstancesOnly :: Quasi q => [Name] -> q [Dec]
+singEqInstancesOnly :: DsMonad q => [Name] -> q [Dec]
 singEqInstancesOnly = concatMapM singEqInstanceOnly
 
 -- | Create instances of 'SEq' (only -- no instance for '(:==)', which 'SEq' generally
 -- relies on) for the given type
-singEqInstanceOnly :: Quasi q => Name -> q [Dec]
+singEqInstanceOnly :: DsMonad q => Name -> q [Dec]
 singEqInstanceOnly name = singEqualityInstance sEqClassDesc name
 
 -- | Create instances of 'SDecide' for each type in the list.
-singDecideInstances :: Quasi q => [Name] -> q [Dec]
+singDecideInstances :: DsMonad q => [Name] -> q [Dec]
 singDecideInstances = concatMapM singDecideInstance
 
 -- | Create instance of 'SDecide' for the given type.
-singDecideInstance :: Quasi q => Name -> q [Dec]
+singDecideInstance :: DsMonad q => Name -> q [Dec]
 singDecideInstance name = singEqualityInstance sDecideClassDesc name
 
 -- generalized function for creating equality instances
-singEqualityInstance :: Quasi q => EqualityClassDesc q -> Name -> q [Dec]
+singEqualityInstance :: DsMonad q => EqualityClassDesc q -> Name -> q [Dec]
 singEqualityInstance desc@(_, className, _) name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
                             show className ++ " for it.") name
@@ -134,7 +135,7 @@ singEqualityInstance desc@(_, className, _) name = do
   eqInstance <- mkEqualityInstance kind scons desc
   return $ decToTH eqInstance
 
-singInfo :: Quasi q => DInfo -> q [DDec]
+singInfo :: DsMonad q => DInfo -> q [DDec]
 singInfo (DTyConI dec Nothing) = do -- TODO: document this special case
   singTopLevelDecs [dec]
 singInfo (DTyConI {}) =
@@ -146,23 +147,25 @@ singInfo (DVarI _name _ty _mdec _fixity) =
 singInfo (DTyVarI _name _ty) =
   fail "Singling of type variable info not supported"
 
-singTopLevelDecs :: Quasi q => [DDec] -> q [DDec]
+singTopLevelDecs :: DsMonad q => [DDec] -> q [DDec]
 singTopLevelDecs decls = do
   PDecs { pd_let_decs              = letDecls
         , pd_class_decs            = classes
         , pd_instance_decs         = insts
         , pd_data_decs             = datas }    <- partitionDecs decls
 
+  squashedLetDecls <- squashWildcards letDecls
+
   when (not (null classes) || not (null insts)) $
     qReportError "Classes and instances may not yet be made into singletons."
 
   dataDecls' <- promoteM_ $ promoteDataDecs datas
-  ((_, letDecEnv), letDecls') <- promoteM $ promoteLetDecs noPrefix letDecls
+  ((_, letDecEnv), letDecls') <- promoteM $ promoteLetDecs noPrefix squashedLetDecls
   singDecsM $ do
     let letBinds = concatMap buildDataLets datas
                 ++ concatMap buildMethLets classes
     (newLetDecls, newDataDecls) <- bindLets letBinds $
-                                   singLetDecEnv TopLevel letDecEnv $
+                                   singLetDecEnv letDecEnv $
                                    concatMapM singDataD datas
     return $ dataDecls' ++ letDecls' ++ (map DLetDec newLetDecls) ++ newDataDecls
 
@@ -188,9 +191,8 @@ buildMethLets :: ClassDecl -> [(Name, DExp)]
 buildMethLets = error "Cannot singletonize class definitions yet."
   -- FIXME!
 
-singLetDecEnv :: TopLevelFlag -> ALetDecEnv -> SgM a -> SgM ([DLetDec], a)
-singLetDecEnv top_level
-              (LetDecEnv { lde_defns = defns
+singLetDecEnv :: ALetDecEnv -> SgM a -> SgM ([DLetDec], a)
+singLetDecEnv (LetDecEnv { lde_defns = defns
                          , lde_types = types
                          , lde_infix = infix_decls
                          , lde_proms = proms })
@@ -227,7 +229,7 @@ singLetDecEnv top_level
                  , (name, wrapSingFun num_args prom_ty (DVarE sName))
                  , (name, tyvar_names) )
         Just ty -> do
-          (sty, num_args, tyvar_names) <- singType top_level prom_ty ty
+          (sty, num_args, tyvar_names) <- singType prom_ty ty
           return ( DSigD sName sty
                  , (name, wrapSingFun num_args prom_ty (DVarE sName))
                  , (name, tyvar_names) )
@@ -273,7 +275,7 @@ singClause prom_fun num_arrows bound_names (ADClause var_proms pats exp) = do
     <- mapAndUnzipM (singPat (Map.fromList var_proms) Parameter) pats
   let equalities = zip (map DVarT bound_names) prom_pats
       applied_ty = foldl apply prom_fun prom_pats
-  sBody <- bindTyVarsClause var_proms applied_ty equalities $ singExp exp
+  sBody <- bindTyVarsEq var_proms applied_ty equalities $ singExp exp
     -- when calling unSingFun, the prom_pats aren't in scope, so we use the
     -- bound_names instead
   let pattern_bound_names = zipWith const bound_names pats
@@ -343,7 +345,24 @@ singPat _var_proms _patCxt DWildPa =
 -- during singletonization, we *know* the return type. So, just add a type
 -- annotation. See #54.
 
+-- Note [Why error is so special]
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Some of the transformations that happen before this point produce impossible
+-- case matches. We must be careful when processing these so as not to make
+-- an error GHC will complain about. When binding the case-match variables, we
+-- normally include an equality constraint saying that the scrutinee is equal
+-- to the matched pattern. But, we can't do this in inaccessible matches, because
+-- equality is bogus, and GHC (rightly) complains. However, we then have another
+-- problem, because GHC doesn't have enough information when type-checking the
+-- RHS of the inaccessible match to deem it type-safe. The solution: treat error
+-- as super-special, so that GHC doesn't look too hard at singletonized error
+-- calls. Specifically, DON'T do the applySing stuff. Just use sError, which
+-- has a custom type (Sing x -> a) anyway.
+
 singExp :: ADExp -> SgM DExp
+  -- See Note [Why error is so special]
+singExp (ADVarE err `ADAppE` arg)
+  | err == errorName = DAppE (DVarE (singValName err)) <$> singExp arg
 singExp (ADVarE name)  = lookupVarE name
 singExp (ADConE name)  = lookupConE name
 singExp (ADLitE lit)   = singLit lit
@@ -356,21 +375,29 @@ singExp (ADLamE var_proms prom_lam names exp) = do
   exp' <- bindTyVars var_proms (foldl apply prom_lam (map (DVarT . snd) var_proms)) $
           singExp exp
   return $ wrapSingFun (length names) prom_lam $ DLamE sNames exp'
-singExp (ADCaseE exp matches ret_ty) =
+singExp (ADCaseE exp prom_exp matches ret_ty) =
     -- See Note [Annotate case return type]
-  DSigE <$> (DCaseE <$> singExp exp <*> mapM singMatch matches)
+  DSigE <$> (DCaseE <$> singExp exp <*> mapM (singMatch prom_exp) matches)
         <*> pure (singFamily `DAppT` ret_ty)
 singExp (ADLetE env exp) =
-  uncurry DLetE <$> singLetDecEnv NotTopLevel env (singExp exp)
+  uncurry DLetE <$> singLetDecEnv env (singExp exp)
 singExp (ADSigE {}) =
   fail "Singling of explicit type annotations not yet supported."
 
-singMatch :: ADMatch -> SgM DMatch
-singMatch (ADMatch var_proms prom_match pat exp) = do
+singMatch :: DType  -- ^ the promoted scrutinee
+          -> ADMatch -> SgM DMatch
+singMatch prom_scrut (ADMatch var_proms prom_match pat exp) = do
   (sPat, prom_pat)
     <- singPat (Map.fromList var_proms) CaseStatement pat
         -- why DAppT below? See comment near decl of ADMatch in LetDecEnv.
-  sExp <- bindTyVars var_proms (prom_match `DAppT` prom_pat) $ singExp exp
+  let equality
+        | DVarPa _ <- pat
+        , (ADVarE err) `ADAppE` _ <- exp
+        , err == errorName   -- See Note [Why error is so special]
+        = [] -- no equality from impossible case.
+        | otherwise      = [(prom_pat, prom_scrut)]
+  sExp <- bindTyVarsEq var_proms (prom_match `DAppT` prom_pat) equality $
+          singExp exp
   return $ DMatch sPat sExp
 
 singLit :: Lit -> SgM DExp

@@ -384,19 +384,6 @@ The following constructs are supported for promotion but not singleton generatio
 
 * class and instance declarations
 * deriving of promoted `Ord` and `Bounded` instances
-* scoped type variables
-* overlapping patterns. Note that overlapping patterns are
-  sometime not obvious. For example `filter` function does not singletonize due
-  to overlapping patterns:
-```haskell
-filter :: (a -> Bool) -> [a] -> [a]
-filter _pred []    = []
-filter pred (x:xs)
-  | pred x         = x : filter pred xs
-  | otherwise      = filter pred xs
-```
-Overlap is caused by `otherwise` catch-all guard, that is always true and this
-overlaps with `pred x` guard.
 
 The following constructs are not supported:
 
@@ -431,6 +418,9 @@ use the promoted definition, but not the original, term-level one.
 This is the same line of reasoning that forbids the use of `Nat` or `Symbol`
 in datatype definitions. But, see [this bug
 report](https://github.com/goldfirere/singletons/issues/76) for a workaround.
+
+Local functions whose inferred type would mention a constraint *must* have
+a type signature.
 
 Support for `*`
 ---------------

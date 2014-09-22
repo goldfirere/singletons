@@ -39,20 +39,21 @@ module Data.Singletons (
   withSing, singThat,
 
   -- ** Defunctionalization
-  TyFun, TyCon1, TyCon2, TyCon3, TyCon4, TyCon5, TyCon6, TyCon7,
+  TyFun, TyCon1, TyCon2, TyCon3, TyCon4, TyCon5, TyCon6, TyCon7, TyCon8,
   Apply, type (@@),
 
   -- ** Defunctionalized singletons
   -- | When calling a higher-order singleton function, you need to use a
   -- @singFun...@ function to wrap it. See 'singFun1'.
   singFun1, singFun2, singFun3, singFun4, singFun5, singFun6, singFun7,
+  singFun8,
   unSingFun1, unSingFun2, unSingFun3, unSingFun4, unSingFun5,
-  unSingFun6, unSingFun7,
+  unSingFun6, unSingFun7, unSingFun8,
 
 -- | These type synonyms are exported only to improve error messages; users
   -- should not have to mention them.
   SingFunction1, SingFunction2, SingFunction3, SingFunction4, SingFunction5,
-  SingFunction6, SingFunction7,
+  SingFunction6, SingFunction7, SingFunction8,
 
   -- * Auxiliary functions
   bugInGHC,
@@ -161,6 +162,7 @@ data TyCon4 :: (k1 -> k2 -> k3 -> k4 -> k5) -> TyFun k1 (TyFun k2 (TyFun k3 (TyF
 data TyCon5 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 k6 -> *) -> *) -> *) -> *) -> *
 data TyCon6 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 k7 -> *) -> *) -> *) -> *) -> *) -> *
 data TyCon7 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 (TyFun k7 k8 -> *) -> *) -> *) -> *) -> *) -> *) -> *
+data TyCon8 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 (TyFun k7 (TyFun k8 k9 -> *) -> *) -> *) -> *) -> *) -> *) -> *) -> *
 
 -- | Type level function application
 type family Apply (f :: TyFun k1 k2 -> *) (x :: k1) :: k2
@@ -171,6 +173,7 @@ type instance Apply (TyCon4 f) x = TyCon3 (f x)
 type instance Apply (TyCon5 f) x = TyCon4 (f x)
 type instance Apply (TyCon6 f) x = TyCon5 (f x)
 type instance Apply (TyCon7 f) x = TyCon6 (f x)
+type instance Apply (TyCon8 f) x = TyCon7 (f x)
 
 -- | An infix synonym for `Apply`
 type a @@ b = Apply a b
@@ -228,6 +231,10 @@ type SingFunction7 f = forall t. Sing t -> SingFunction6 (f @@ t)
 singFun7 :: Proxy f -> SingFunction7 f -> Sing f
 singFun7 _ f = SLambda (\x -> singFun6 Proxy (f x))
 
+type SingFunction8 f = forall t. Sing t -> SingFunction7 (f @@ t)
+singFun8 :: Proxy f -> SingFunction8 f -> Sing f
+singFun8 _ f = SLambda (\x -> singFun7 Proxy (f x))
+
 -- | This is the inverse of 'singFun1', and likewise for the other
 -- @unSingFun...@ functions.
 unSingFun1 :: Proxy f -> Sing f -> SingFunction1 f
@@ -250,6 +257,9 @@ unSingFun6 _ sf x = unSingFun5 Proxy (sf `applySing` x)
 
 unSingFun7 :: Proxy f -> Sing f -> SingFunction7 f
 unSingFun7 _ sf x = unSingFun6 Proxy (sf `applySing` x)
+
+unSingFun8 :: Proxy f -> Sing f -> SingFunction8 f
+unSingFun8 _ sf x = unSingFun7 Proxy (sf `applySing` x)
 
 ----------------------------------------------------------------------
 ---- Convenience -----------------------------------------------------

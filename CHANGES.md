@@ -13,6 +13,18 @@ Changelog for singletons project
 * Promoting a literal number now uses overloaded literals at the type level,
 using a type-level `FromInteger` in the type-level `Num` class.
 
+* Support for singletonizing overlapping patterns. As a consequence, a bunch
+more functions from `Data.List` are now made into singletons.
+
+* Better support for dealing with constraints. Some previously-unsingletonizable
+functions that have constrained parameters now work.
+
+* No more orphan `Quasi` instances!
+
+* Support for functions of arity 8 (instead of the old limit, 7).
+
+* No more GHC 7.8.2 support -- you must have GHC 7.8.3.
+
 1.0
 ---
 

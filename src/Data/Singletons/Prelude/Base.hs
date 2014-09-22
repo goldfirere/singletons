@@ -26,7 +26,7 @@ module Data.Singletons.Prelude.Base (
   Foldr, sFoldr, Map, sMap, (:++), (%:++), Otherwise, sOtherwise,
   Id, sId, Const, sConst, (:.), (%:.), type ($), type ($!), (%$), (%$!),
   Flip, sFlip, AsTypeOf, sAsTypeOf,
-  Seq, sSeq,
+  Seq, sSeq, Until, sUntil,
 
   -- * Defunctionalization symbols
   FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
@@ -40,7 +40,8 @@ module Data.Singletons.Prelude.Base (
   type ($!$), type ($!$$), type ($!$$$),
   FlipSym0, FlipSym1, FlipSym2, FlipSym3,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2,
-  SeqSym0, SeqSym1, SeqSym2
+  SeqSym0, SeqSym1, SeqSym2,
+  UntilSym0, UntilSym1, UntilSym2, UntilSym3
   ) where
 
 import Data.Singletons.Prelude.Instances
@@ -86,6 +87,12 @@ $(singletonsOnly [d|
   -- place to do it.
   seq :: a -> b -> b
   seq _ x = x
+
+  until                   :: (a -> Bool) -> (a -> a) -> a -> a
+  until p f = go
+    where
+      go x | p x          = x
+           | otherwise    = go (f x)
  |])
 
 -- ($) is a special case, because its kind-inference data constructors
