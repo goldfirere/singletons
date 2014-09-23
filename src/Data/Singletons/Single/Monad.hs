@@ -33,11 +33,13 @@ import Control.Monad.Writer
 
 -- environment during singling
 data SgEnv =
-  SgEnv { sg_let_binds :: Map Name DExp   -- from the *original* name
+  SgEnv { sg_let_binds   :: Map Name DExp   -- from the *original* name
+        , sg_local_decls :: [Dec]
         }
 
 emptySgEnv :: SgEnv
-emptySgEnv = SgEnv { sg_let_binds = Map.empty
+emptySgEnv = SgEnv { sg_let_binds   = Map.empty
+                   , sg_local_decls = []
                    }
 
 -- the singling monad
@@ -72,6 +74,9 @@ instance Quasi SgM where
                               (runWriterT $ runReaderT body env)
     tell aux
     return result
+
+instance DsMonad SgM where
+  localDeclarations = asks sg_local_decls
 
 bindLets :: [(Name, DExp)] -> SgM a -> SgM a
 bindLets lets1 =
@@ -148,7 +153,7 @@ lookup_var_con mk_sing_name mk_exp name = do
   case Map.lookup name letExpansions of
     Nothing -> do
       -- try to get it from the global context
-      m_dinfo <- qReifyMaybe sName
+      m_dinfo <- dsReify sName
       case m_dinfo of
         Just (DVarI _ ty _ _) ->
           let num_args = countArgs ty in
@@ -188,14 +193,14 @@ wrapUnSingFun n ty =
   in
   (unwrap_fun `DAppE` proxyFor ty `DAppE`)
 
-singM :: Quasi q => SgM a -> q (a, [DDec])
-singM (SgM rdr) =
-  let wr = runReaderT rdr emptySgEnv
+singM :: DsMonad q => [Dec] -> SgM a -> q (a, [DDec])
+singM locals (SgM rdr) = do
+  other_locals <- localDeclarations
+  let wr = runReaderT rdr (emptySgEnv { sg_local_decls = other_locals ++ locals })
       q  = runWriterT wr
-  in
   runQ q
 
-singDecsM :: Quasi q => SgM [DDec] -> q [DDec]
-singDecsM thing = do
-  (decs1, decs2) <- singM thing
+singDecsM :: DsMonad q => [Dec] -> SgM [DDec] -> q [DDec]
+singDecsM locals thing = do
+  (decs1, decs2) <- singM locals thing
   return $ decs1 ++ decs2

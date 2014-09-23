@@ -21,7 +21,7 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Singletons.Prelude.List {-(
+module Data.Singletons.Prelude.List (
   -- * The singleton for lists
   Sing(SNil, SCons),
   -- | Though Haddock doesn't show it, the 'Sing' instance above declares
@@ -75,7 +75,7 @@ module Data.Singletons.Prelude.List {-(
   -- * Searching lists
 
   -- ** Searching by equality
-{-  Elem, sElem, -} NotElem, sNotElem, Lookup, sLookup,
+  Elem, sElem, NotElem, sNotElem, Lookup, sLookup,
 
   -- ** Searching with a predicate
   Find, sFind, Filter, sFilter, Partition, sPartition,
@@ -90,7 +90,7 @@ module Data.Singletons.Prelude.List {-(
   -- * Special lists
 
   -- ** \"Set\" operations
-{-  Nub, sNub, -} Delete, sDelete, (:\\), (%:\\), Union, sUnion,
+  Nub, sNub,  Delete, sDelete, (:\\), (%:\\), Union, sUnion,
   Intersect, sIntersect,
 
   -- ** Ordered lists
@@ -148,7 +148,7 @@ module Data.Singletons.Prelude.List {-(
   IsSuffixOfSym0, IsSuffixOfSym1, IsSuffixOfSym2,
   IsInfixOfSym0, IsInfixOfSym1, IsInfixOfSym2,
 
-{-  ElemSym0, ElemSym1, ElemSym2, -}
+  ElemSym0, ElemSym1, ElemSym2,
   NotElemSym0, NotElemSym1, NotElemSym2,
 
   ZipSym0, ZipSym1, ZipSym2,
@@ -188,7 +188,7 @@ module Data.Singletons.Prelude.List {-(
   FindSym0, FindSym1, FindSym2,
   FilterSym0, FilterSym1, FilterSym2,
   PartitionSym0, PartitionSym1, PartitionSym2,
-{-
+
   Zip4Sym0, Zip4Sym1, Zip4Sym2, Zip4Sym3, Zip4Sym4,
   Zip5Sym0, Zip5Sym1, Zip5Sym2, Zip5Sym3, Zip5Sym4, Zip5Sym5,
   Zip6Sym0, Zip6Sym1, Zip6Sym2, Zip6Sym3, Zip6Sym4, Zip6Sym5, Zip6Sym6,
@@ -203,16 +203,16 @@ module Data.Singletons.Prelude.List {-(
   ZipWith6Sym5, ZipWith6Sym6, ZipWith6Sym7,
   ZipWith7Sym0, ZipWith7Sym1, ZipWith7Sym2, ZipWith7Sym3, ZipWith7Sym4,
   ZipWith7Sym5, ZipWith7Sym6, ZipWith7Sym7, ZipWith7Sym8,
--}
 
-{-  NubSym0, NubSym1, -}
+
+  NubSym0, NubSym1,
   NubBySym0, NubBySym1, NubBySym2,
   UnionBySym0, UnionBySym1, UnionBySym2, UnionBySym3,
   UnionSym0, UnionSym1, UnionSym2,
   IntersectSym0, IntersectSym1, IntersectSym2,
   IntersectBySym0, IntersectBySym1, IntersectBySym2, IntersectBySym3
 
-  )-} where
+  ) where
 
 import Data.Singletons
 import Data.Singletons.Prelude.Instances
@@ -444,7 +444,7 @@ $(singletonsOnly [d|
 
   unzip    :: [(a,b)] -> ([a],[b])
   unzip xs =  foldr (\(a,b) (as,bs) -> (a:as,b:bs)) ([],[]) xs
-{-
+
   -- Lazy patterns removed from unzip
   unzip3                  :: [(a,b,c)] -> ([a],[b],[c])
   unzip3 xs               =  foldr (\(a,b,c) (as,bs,cs) -> (a:as,b:bs,c:cs))
@@ -469,7 +469,7 @@ $(singletonsOnly [d|
   unzip7 xs               =  foldr (\(a,b,c,d,e,f,g) (as,bs,cs,ds,es,fs,gs) ->
                                           (a:as,b:bs,c:cs,d:ds,e:es,f:fs,g:gs))
                                    ([],[],[],[],[],[],[]) xs
--}
+
 -- We can't promote any of these functions because at the type level
 -- String literals are no longer considered to be lists of Chars, so
 -- there is mismatch between term-level and type-level semantics
@@ -603,7 +603,7 @@ $(singletonsOnly [d|
   select :: (a -> Bool) -> a -> ([a], [a]) -> ([a], [a])
   select p x ~(ts,fs) | p x       = (x:ts,fs)
                       | otherwise = (ts, x:fs)
-{-
+
   zip4                    :: [a] -> [b] -> [c] -> [d] -> [(a,b,c,d)]
   zip4                    =  zipWith4 (,,,)
 
@@ -640,7 +640,6 @@ $(singletonsOnly [d|
   zipWith7 z (a:as) (b:bs) (c:cs) (d:ds) (e:es) (f:fs) (g:gs)
                      =  z a b c d e f g : zipWith7 z as bs cs ds es fs gs
   zipWith7 _ _ _ _ _ _ _ _ = []
--}
 
   nub                     :: (Eq a) => [a] -> [a]
   nub l                   = nub' l []

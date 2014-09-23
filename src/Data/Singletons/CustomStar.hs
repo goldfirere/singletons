@@ -24,7 +24,6 @@ module Data.Singletons.CustomStar (
   ) where
 
 import Language.Haskell.TH
-import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Promote.Monad
@@ -36,7 +35,6 @@ import Control.Monad
 import Data.Maybe
 import Control.Applicative
 import Language.Haskell.TH.Desugar
-import Language.Haskell.TH.Desugar.Sweeten
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Bool
 
@@ -66,7 +64,7 @@ import Data.Singletons.Prelude.Bool
 -- @Bool@, and @Maybe@, not just promoted data constructors.
 --
 -- Please note that this function is /very/ experimental. Use at your own risk.
-singletonStar :: Quasi q
+singletonStar :: DsMonad q
               => [Name]        -- ^ A list of Template Haskell @Name@s for types
               -> q [Dec]
 singletonStar names = do
@@ -76,13 +74,13 @@ singletonStar names = do
                        [''Eq, ''Show, ''Read]
   fakeCtors <- zipWithM (mkCtor False) names kinds
   let dataDecl = DataDecl Data repName [] fakeCtors [''Show, ''Read , ''Eq, ''Ord]
-  promDecls      <- promoteM_ $ promoteDataDec dataDecl
-  singletonDecls <- singDecsM $ singDataD dataDecl
+  promDecls      <- promoteM_ [] $ promoteDataDec dataDecl
+  singletonDecls <- singDecsM [] $ singDataD dataDecl
   return $ decsToTH $ repDecl :
                       promDecls ++
                       singletonDecls
   where -- get the kinds of the arguments to the tycon with the given name
-        getKind :: Quasi q => Name -> q [DKind]
+        getKind :: DsMonad q => Name -> q [DKind]
         getKind name = do
           info <- reifyWithWarning name
           dinfo <- dsInfo info
@@ -99,7 +97,7 @@ singletonStar names = do
 
         -- first parameter is whether this is a real ctor (with a fresh name)
         -- or a fake ctor (when the name is actually a Haskell type)
-        mkCtor :: Quasi q => Bool -> Name -> [DKind] -> q DCon
+        mkCtor :: DsMonad q => Bool -> Name -> [DKind] -> q DCon
         mkCtor real name args = do
           (types, vars) <- evalForPair $ mapM kindToType args
           dataName <- if real then mkDataName (nameBase name) else return name
@@ -107,7 +105,7 @@ singletonStar names = do
                    DNormalC (map (\ty -> (NotStrict, ty)) types)
 
         -- demote a kind back to a type, accumulating any unbound parameters
-        kindToType :: Quasi q => DKind -> QWithAux [Name] q DType
+        kindToType :: DsMonad q => DKind -> QWithAux [Name] q DType
         kindToType (DForallK _ _) = fail "Explicit forall encountered in kind"
         kindToType (DVarK n) = do
           addElement n

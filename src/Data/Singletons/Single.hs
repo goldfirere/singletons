@@ -24,7 +24,6 @@ import Data.Singletons.Single.Eq
 import Data.Singletons.Single.Squash
 import Data.Singletons.Syntax
 import Language.Haskell.TH.Desugar
-import Language.Haskell.TH.Desugar.Sweeten
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Control.Monad
@@ -131,13 +130,13 @@ singEqualityInstance desc@(_, className, _) name = do
       kind = DConK name tyvars
   aName <- qNewName "a"
   let aVar = DVarT aName
-  (scons, _) <- singM $ mapM (singCtor aVar) dcons
+  (scons, _) <- singM [] $ mapM (singCtor aVar) dcons
   eqInstance <- mkEqualityInstance kind scons desc
   return $ decToTH eqInstance
 
 singInfo :: DsMonad q => DInfo -> q [DDec]
 singInfo (DTyConI dec Nothing) = do -- TODO: document this special case
-  singTopLevelDecs [dec]
+  singTopLevelDecs [] [dec]
 singInfo (DTyConI {}) =
   fail "Singling of things with instances not yet supported" -- TODO: fix
 singInfo (DPrimTyConI _name _numArgs _unlifted) =
@@ -147,8 +146,8 @@ singInfo (DVarI _name _ty _mdec _fixity) =
 singInfo (DTyVarI _name _ty) =
   fail "Singling of type variable info not supported"
 
-singTopLevelDecs :: DsMonad q => [DDec] -> q [DDec]
-singTopLevelDecs decls = do
+singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
+singTopLevelDecs locals decls = do
   PDecs { pd_let_decs              = letDecls
         , pd_class_decs            = classes
         , pd_instance_decs         = insts
@@ -159,9 +158,10 @@ singTopLevelDecs decls = do
   when (not (null classes) || not (null insts)) $
     qReportError "Classes and instances may not yet be made into singletons."
 
-  dataDecls' <- promoteM_ $ promoteDataDecs datas
-  ((_, letDecEnv), letDecls') <- promoteM $ promoteLetDecs noPrefix squashedLetDecls
-  singDecsM $ do
+  dataDecls' <- promoteM_ locals $ promoteDataDecs datas
+  ((_, letDecEnv), letDecls') <- promoteM locals $
+                                 promoteLetDecs noPrefix squashedLetDecls
+  singDecsM locals $ do
     let letBinds = concatMap buildDataLets datas
                 ++ concatMap buildMethLets classes
     (newLetDecls, newDataDecls) <- bindLets letBinds $

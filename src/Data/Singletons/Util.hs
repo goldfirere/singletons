@@ -46,11 +46,6 @@ boundedBasicTypes = [ ''Bool
              , ''(,,,,,,)
             ]
 
-qReifyMaybe :: Quasi q => Name -> q (Maybe DInfo)
-qReifyMaybe name = do
-  m_info <- qRecover (return Nothing) (fmap Just $ qReify name)
-  traverse dsInfo m_info
-
 -- like reportWarning, but generalized to any Quasi
 qReportWarning :: Quasi q => String -> q ()
 qReportWarning = qReport False
@@ -242,16 +237,15 @@ multiCase scruts pats body =
   DCaseE (mkTupleDExp scruts) [DMatch (mkTupleDPat pats) body]
 
 -- Make a desugar function into a TH function.
-wrapDesugar :: (Desugar th ds, Quasi q) => (ds -> q ds) -> th -> q th
+wrapDesugar :: (Desugar th ds, DsMonad q) => (th -> ds -> q ds) -> th -> q th
 wrapDesugar f th = do
   ds <- desugar th
-  fmap sweeten $ f ds
+  fmap sweeten $ f th ds
 
 -- a monad transformer for writing a monoid alongside returning a Q
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
-  deriving (Functor, Applicative, Monad, MonadTrans, MonadWriter m)
-
-deriving instance (Monoid m, MonadReader r q) => MonadReader r (QWithAux m q)
+  deriving ( Functor, Applicative, Monad, MonadTrans
+           , MonadWriter m, MonadReader r )
 
 -- make a Quasi instance for easy lifting
 instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
@@ -275,6 +269,9 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
     (result, aux) <- lift $ qRecover (evalForPair exp) (evalForPair handler)
     tell aux
     return result
+
+instance (DsMonad q, Monoid m) => DsMonad (QWithAux m q) where
+  localDeclarations = lift localDeclarations
 
 -- helper functions for composition
 comp1 :: (b -> c) -> (a -> b) -> a -> c

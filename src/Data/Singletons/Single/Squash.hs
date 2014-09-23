@@ -15,7 +15,6 @@ import Prelude hiding ( exp )
 import Language.Haskell.TH.Desugar
 import Control.Applicative
 import Control.Monad
-import Language.Haskell.TH.Desugar.Match
 import Data.Singletons.Util
 import Data.Singletons.Names
 import qualified Data.Set as Set

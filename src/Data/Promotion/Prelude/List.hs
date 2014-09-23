@@ -225,7 +225,6 @@ module Data.Promotion.Prelude.List (
   ) where
 
 import Data.Singletons.Prelude.Base
-import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Eq
 import Data.Promotion.Prelude.Ord
 import Data.Singletons.Prelude.List
@@ -238,7 +237,7 @@ import Data.Singletons.Prelude.Num
 import Data.Maybe (listToMaybe)
 -- these imports are required fir functions that singletonize but are used
 -- in this module by a function that can't be singletonized
-import Data.List  (deleteBy, sortBy, insertBy)
+import Data.List  (sortBy, insertBy)
 
 $(promoteOnly [d|
 -- Can't be promoted because of limitations of Int promotion

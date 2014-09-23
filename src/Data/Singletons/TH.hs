@@ -77,11 +77,9 @@ import Data.Singletons.Decide
 import Data.Singletons.TypeLits
 import Data.Singletons.SuppressUnusedWarnings
 import Language.Haskell.TH.Desugar
-import Language.Haskell.TH.Desugar.Sweeten
 
 import GHC.Exts
 import Language.Haskell.TH
-import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Data.Singletons.Util
 import Data.Proxy ( Proxy(..) )
 import Control.Applicative
@@ -90,13 +88,13 @@ import Control.Applicative
 -- is identical. This may be useful if the type-checker requires knowledge of which
 -- constructor is used to satisfy equality or type-class constraints, but where
 -- each constructor is treated the same.
-cases :: Quasi q
+cases :: DsMonad q
       => Name        -- ^ The head of the type of the scrutinee. (Like @''Maybe@ or @''Bool@.)
       -> q Exp       -- ^ The scrutinee, in a Template Haskell quote
       -> q Exp       -- ^ The body, in a Template Haskell quote
       -> q Exp
 cases tyName expq bodyq = do
-  info <- reifyWithWarning tyName
+  info <- reifyWithLocals tyName
   dinfo <- dsInfo info
   case dinfo of
     DTyConI (DDataD _ _ _ _ ctors _) _ -> fmap expToTH $ buildCases ctors

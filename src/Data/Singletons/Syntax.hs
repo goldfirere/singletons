@@ -18,7 +18,6 @@ import Data.Singletons.Util
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Ppr
-import Language.Haskell.TH.Desugar.Sweeten
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
 import Data.Maybe
