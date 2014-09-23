@@ -1,6 +1,7 @@
 {-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies,
              TemplateHaskell, GADTs, UndecidableInstances, RankNTypes,
              ScopedTypeVariables, MultiWayIf #-}
+{-# OPTIONS_GHC -O0 #-}
 
 -----------------------------------------------------------------------------
 -- |
