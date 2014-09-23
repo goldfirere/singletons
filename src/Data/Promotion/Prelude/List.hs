@@ -328,15 +328,14 @@ $(promoteOnly [d|
 --  splitAt                :: Int -> [a] -> ([a],[a])
 --  splitAt n xs           =  (take n xs, drop n xs)
 
-  -- Implementation changed to use case expression to work around #60
   take                   :: Nat -> [a] -> [a]
+  take n _      | n <= 0 =  []
   take _ []              =  []
-  take 0 (_:_)           =  []
   take n (x:xs)          =  x : take (n-1) xs
 
   drop                   :: Nat -> [a] -> [a]
+  drop n xs     | n <= 0 =  xs
   drop _ []              =  []
-  drop 0 xs@(_:_)        =  xs
   drop n (_:xs)          =  drop (n-1) xs
 
   splitAt                :: Nat -> [a] -> ([a],[a])
@@ -361,7 +360,6 @@ $(promoteOnly [d|
   sort = sortBy compare
 
 -- Can't be promoted because of limitations of Int promotion.
--- Also, #60 and th-desugar #6 get in the way.
 -- Below is a re-implementation using Nat
 --  (!!)                    :: [a] -> Int -> a
 --  xs     !! n | n < 0 =  error "Data.Singletons.List.!!: negative index"
@@ -370,9 +368,10 @@ $(promoteOnly [d|
 --  (_:xs) !! n         =  xs !! (n-1)
 
   (!!)                    :: [a] -> Nat -> a
-  []     !! _ = error "Data.Singletons.List.!!: index too large"
-  (x:xs) !! n = if | n == 0    -> x
-                   | otherwise -> xs !! (n-1)
+  _      !! n | n < 0 =  error "Data.Singletons.List.!!: negative index"
+  []     !! _         =  error "Data.Singletons.List.!!: index too large"
+  (x:_)  !! 0         =  x
+  (_:xs) !! n         =  xs !! (n-1)
 
 -- These three rely on findIndices, which does not promote.
 -- Since we have our own implementation of findIndices these are perfectly valid
