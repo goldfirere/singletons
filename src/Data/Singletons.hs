@@ -50,7 +50,7 @@ module Data.Singletons (
   unSingFun1, unSingFun2, unSingFun3, unSingFun4, unSingFun5,
   unSingFun6, unSingFun7, unSingFun8,
 
--- | These type synonyms are exported only to improve error messages; users
+  -- | These type synonyms are exported only to improve error messages; users
   -- should not have to mention them.
   SingFunction1, SingFunction2, SingFunction3, SingFunction4, SingFunction5,
   SingFunction6, SingFunction7, SingFunction8,
@@ -199,7 +199,7 @@ type SingFunction1 f = forall t. Sing t -> Sing (f @@ t)
 -- a higher-order function. You will often need an explicit type
 -- annotation to get this to work. For example:
 --
--- > falses = sMap (singFun1 sNot :: Sing NotSym0)
+-- > falses = sMap (singFun1 (Proxy :: Proxy NotSym0) sNot)
 -- >               (STrue `SCons` STrue `SCons` SNil)
 --
 -- There are a family of @singFun...@ functions, keyed by the number
