@@ -625,6 +625,7 @@ promoteExp (DSigE exp ty) = do
   (exp', ann_exp) <- promoteExp exp
   ty' <- promoteType ty
   return (DSigT exp' ty', ADSigE ann_exp ty)
+promoteExp e@(DStaticE _) = fail ("Static expressions cannot be promoted: " ++ show e)
 
 promoteLitExp :: Monad m => Lit -> m DType
 promoteLitExp (IntegerL n)
