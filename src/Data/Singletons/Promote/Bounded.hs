@@ -15,7 +15,6 @@
 
 module Data.Singletons.Promote.Bounded where
 
-import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
 import Data.Singletons.Util

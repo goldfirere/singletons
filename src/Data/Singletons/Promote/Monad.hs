@@ -25,9 +25,12 @@ import Data.Map.Strict ( Map )
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
-import Control.Applicative
 import Data.Singletons.Names
 import Data.Singletons.Syntax
+
+#if __GLASGOW_HASKELL__ < 709
+import Control.Applicative
+#endif
 
 type LetExpansions = Map Name DType  -- from **term-level** name
 
