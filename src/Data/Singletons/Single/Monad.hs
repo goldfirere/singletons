@@ -9,7 +9,7 @@ The SgM monad allows reading from a SgEnv environment and is wrapped around a Q.
 -}
 
 {-# LANGUAGE GeneralizedNewtypeDeriving, ParallelListComp,
-             TemplateHaskell #-}
+             TemplateHaskell, CPP #-}
 
 module Data.Singletons.Single.Monad (
   SgM, bindLets, bindTyVars, bindTyVarsEq, lookupVarE, lookupConE,
@@ -27,9 +27,12 @@ import Data.Singletons.Util
 import Data.Singletons
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
-import Control.Applicative
 import Control.Monad.Reader
 import Control.Monad.Writer
+
+#if __GLASGOW_HASKELL__ < 709
+import Control.Applicative
+#endif
 
 -- environment during singling
 data SgEnv =
