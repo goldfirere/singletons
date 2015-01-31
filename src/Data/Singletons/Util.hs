@@ -70,34 +70,6 @@ checkForRepInDecls :: Quasi q => [DDec] -> q ()
 checkForRepInDecls decls =
   checkForRep (allNamesIn decls)
 
--- extract the degree of a tuple
-tupleDegree_maybe :: String -> Maybe Int
-tupleDegree_maybe s = do
-  '(' : s1 <- return s
-  (commas, ")") <- return $ span (== ',') s1
-  let degree
-        | "" <- commas = 0
-        | otherwise    = length commas + 1
-  return degree
-
--- extract the degree of a tuple name
-tupleNameDegree_maybe :: Name -> Maybe Int
-tupleNameDegree_maybe = tupleDegree_maybe . nameBase
-
--- extract the degree of an unboxed tuple
-unboxedTupleDegree_maybe :: String -> Maybe Int
-unboxedTupleDegree_maybe s = do
-  '(' : '#' : s1 <- return s
-  (commas, "#)") <- return $ span (== ',') s1
-  let degree
-        | "" <- commas = 0
-        | otherwise    = length commas + 1
-  return degree
-
--- extract the degree of a tuple name
-unboxedTupleNameDegree_maybe :: Name -> Maybe Int
-unboxedTupleNameDegree_maybe = unboxedTupleDegree_maybe . nameBase
-
 tysOfConFields :: DConFields -> [DType]
 tysOfConFields (DNormalC stys) = map snd stys
 tysOfConFields (DRecC vstys)   = map (\(_,_,ty) -> ty) vstys
