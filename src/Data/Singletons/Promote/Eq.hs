@@ -29,7 +29,7 @@ import Control.Monad
 #if __GLASGOW_HASKELL__ >= 707
 -- produce a closed type family helper and the instance
 -- for (:==) over the given list of ctors
-mkEqTypeInstance :: Quasi q => DKind -> [DCon] -> q [DDec]
+mkEqTypeInstance :: DsMonad q => DKind -> [DCon] -> q [DDec]
 mkEqTypeInstance kind cons = do
   helperName <- newUniqueName "Equals"
   aName <- qNewName "a"
@@ -50,7 +50,7 @@ mkEqTypeInstance kind cons = do
                                      
   return [closedFam, inst]
 
-  where mk_branch :: Quasi q => DCon -> q DTySynEqn
+  where mk_branch :: DsMonad q => DCon -> q DTySynEqn
         mk_branch con = do
           let (name, numArgs) = extractNameArgs con
           lnames <- replicateM numArgs (qNewName "a")
@@ -63,7 +63,7 @@ mkEqTypeInstance kind cons = do
               result = tyAll results
           return $ DTySynEqn [ltype, rtype] result
 
-        false_case :: Quasi q => q DTySynEqn
+        false_case :: DsMonad q => q DTySynEqn
         false_case = do
           lvar <- qNewName "a"
           rvar <- qNewName "b"
@@ -79,7 +79,7 @@ mkEqTypeInstance kind cons = do
 #else
 
 -- produce the type instance for (:==) for the given pair of constructors
-mkEqTypeInstance :: Quasi q => (DCon, DCon) -> q DDec
+mkEqTypeInstance :: DsMonad q => (DCon, DCon) -> q DDec
 mkEqTypeInstance (c1, c2) =
   if c1 == c2
   then do

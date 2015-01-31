@@ -158,7 +158,7 @@ infixDecl f n = emptyLetDecEnv { lde_infix = [(f,n)] }
 emptyLetDecEnv :: ULetDecEnv
 emptyLetDecEnv = mempty
 
-buildLetDecEnv :: Quasi q => [DLetDec] -> q ULetDecEnv
+buildLetDecEnv :: DsMonad q => [DLetDec] -> q ULetDecEnv
 buildLetDecEnv = go emptyLetDecEnv
   where
     go acc [] = return acc

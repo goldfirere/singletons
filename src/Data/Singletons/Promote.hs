@@ -12,7 +12,7 @@ type level. It is an internal module to the singletons package.
 module Data.Singletons.Promote where
 
 import Language.Haskell.TH hiding ( Q, cxt )
-import Language.Haskell.TH.Syntax ( Quasi(..) )
+import Language.Haskell.TH.Syntax ( qNewName )
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.Lift ()
 import Data.Singletons.Names
@@ -327,7 +327,7 @@ promoteInstanceDec cls_tvb_env meth_sigs
     lookup_cls_tvb_names :: PrM [String]
     lookup_cls_tvb_names = case Map.lookup cls_name cls_tvb_env of
       Nothing -> do
-        m_dinfo <- qReifyMaybe pClsName
+        m_dinfo <- dsReify pClsName
         case m_dinfo of
           Just (DTyConI (DClassD _cxt _name cls_tvbs _fds _decs) _insts) -> do
             mapM extract_kv_name cls_tvbs
@@ -378,7 +378,7 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
       Nothing -> do
           -- lookup the promoted name, just in case the term-level one
           -- isn't defined
-        m_dinfo <- qReifyMaybe proName
+        m_dinfo <- dsReify proName
         case m_dinfo of
           Just (DTyConI (DFamilyD _flav _name tvbs (Just res)) _insts) -> do
             arg_kis <- mapM (expect_just . extractTvbKind) tvbs
@@ -629,6 +629,7 @@ promoteExp (DSigE exp ty) = do
   (exp', ann_exp) <- promoteExp exp
   ty' <- promoteType ty
   return (DSigT exp' ty', ADSigE ann_exp ty)
+promoteExp (DStaticE _) = fail "Promoting static expressions not yet supported"
 
 promoteLit :: Monad m => Lit -> m DType
 promoteLit (IntegerL n)

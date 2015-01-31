@@ -17,12 +17,12 @@ import Control.Monad
 -- making the SEq instance and the SDecide instance are rather similar,
 -- so we generalize
 type EqualityClassDesc q = ((DCon, DCon) -> q DClause, Name, Name)
-sEqClassDesc, sDecideClassDesc :: Quasi q => EqualityClassDesc q
+sEqClassDesc, sDecideClassDesc :: DsMonad q => EqualityClassDesc q
 sEqClassDesc = (mkEqMethClause, sEqClassName, sEqMethName)
 sDecideClassDesc = (mkDecideMethClause, sDecideClassName, sDecideMethName)
 
 -- pass the *singleton* constructors, not the originals
-mkEqualityInstance :: Quasi q => DKind -> [DCon]
+mkEqualityInstance :: DsMonad q => DKind -> [DCon]
                    -> EqualityClassDesc q -> q DDec
 mkEqualityInstance k ctors (mkMeth, className, methName) = do
   let ctorPairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
@@ -42,12 +42,12 @@ mkEqualityInstance k ctors (mkMeth, className, methName) = do
         getKindVars other             =
           error ("getKindVars sees an unusual kind: " ++ show other)
 
-        mkEmptyMethClauses :: Quasi q => q [DClause]
+        mkEmptyMethClauses :: DsMonad q => q [DClause]
         mkEmptyMethClauses = do
           a <- qNewName "a"
           return [DClause [DVarPa a, DWildPa] (DCaseE (DVarE a) emptyMatches)]
 
-mkEqMethClause :: Quasi q => (DCon, DCon) -> q DClause
+mkEqMethClause :: DsMonad q => (DCon, DCon) -> q DClause
 mkEqMethClause (c1, c2)
   | lname == rname = do
     lnames <- replicateM lNumArgs (qNewName "a")
@@ -73,7 +73,7 @@ mkEqMethClause (c1, c2)
         (lname, lNumArgs) = extractNameArgs c1
         (rname, rNumArgs) = extractNameArgs c2
 
-mkDecideMethClause :: Quasi q => (DCon, DCon) -> q DClause
+mkDecideMethClause :: DsMonad q => (DCon, DCon) -> q DClause
 mkDecideMethClause (c1, c2)
   | lname == rname =
     if lNumArgs == 0

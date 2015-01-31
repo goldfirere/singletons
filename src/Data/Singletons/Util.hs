@@ -46,22 +46,22 @@ boundedBasicTypes = [ ''Bool
              , ''(,,,,,,)
             ]
 
--- like reportWarning, but generalized to any Quasi
-qReportWarning :: Quasi q => String -> q ()
+-- like reportWarning, but generalized to any DsMonad
+qReportWarning :: DsMonad q => String -> q ()
 qReportWarning = qReport False
 
--- like reportError, but generalized to any Quasi
-qReportError :: Quasi q => String -> q ()
+-- like reportError, but generalized to any DsMonad
+qReportError :: DsMonad q => String -> q ()
 qReportError = qReport True
 
-checkForRep :: Quasi q => [Name] -> q ()
+checkForRep :: DsMonad q => [Name] -> q ()
 checkForRep names =
   when (any ((== "Rep") . nameBase) names)
     (fail $ "A data type named <<Rep>> is a special case.\n" ++
             "Promoting it will not work as expected.\n" ++
             "Please choose another name for your data type.")
 
-checkForRepInDecls :: Quasi q => [DDec] -> q ()
+checkForRepInDecls :: DsMonad q => [DDec] -> q ()
 checkForRepInDecls decls =
   checkForRep (allNamesIn decls)
 
@@ -144,7 +144,7 @@ extractTvbName (DPlainTV n) = n
 extractTvbName (DKindedTV n _) = n
 
 -- use the kind provided, or make a fresh kind variable
-inferKind :: Quasi q => Maybe DKind -> q (Maybe DKind)
+inferKind :: DsMonad q => Maybe DKind -> q (Maybe DKind)
 inferKind (Just k) = return $ Just k
 #if __GLASGOW_HASKELL__ < 707
 inferKind Nothing = do
@@ -227,7 +227,7 @@ newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
   deriving ( Functor, Applicative, Monad, MonadTrans
            , MonadWriter m, MonadReader r )
 
--- make a Quasi instance for easy lifting
+-- make a DsMonad instance for easy lifting
 instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
   qNewName          = lift `comp1` qNewName
   qReport           = lift `comp2` qReport

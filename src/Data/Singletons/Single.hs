@@ -12,7 +12,7 @@ module Data.Singletons.Single where
 
 import Prelude hiding ( exp )
 import Language.Haskell.TH hiding ( cxt )
-import Language.Haskell.TH.Syntax (Quasi(..))
+import Language.Haskell.TH.Syntax ( qNewName )
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Promote.Monad ( promoteM, promoteM_ )
@@ -68,7 +68,7 @@ contract constructors. This is the point of buildLets.
 -- > $(genSingletons [''Bool, ''Maybe, ''Either, ''[]])
 --
 -- to generate singletons for Prelude types.
-genSingletons :: Quasi q => [Name] -> q [Dec]
+genSingletons :: DsMonad q => [Name] -> q [Dec]
 genSingletons names = do
   checkForRep names
   ddecs <- concatMapM (singInfo <=< dsInfo <=< reifyWithWarning) names
@@ -78,7 +78,7 @@ genSingletons names = do
 -- the original declarations.
 -- See <http://www.cis.upenn.edu/~eir/packages/singletons/README.html> for
 -- further explanation.
-singletons :: Quasi q => q [Dec] -> q [Dec]
+singletons :: DsMonad q => q [Dec] -> q [Dec]
 singletons qdecs = do
   decs <- qdecs
   singDecs <- wrapDesugar singTopLevelDecs decs
@@ -86,15 +86,15 @@ singletons qdecs = do
 
 -- | Make promoted and singleton versions of all declarations given, discarding
 -- the original declarations.
-singletonsOnly :: Quasi q => q [Dec] -> q [Dec]
+singletonsOnly :: DsMonad q => q [Dec] -> q [Dec]
 singletonsOnly = (>>= wrapDesugar singTopLevelDecs)
 
 -- | Create instances of 'SEq' and type-level '(:==)' for each type in the list
-singEqInstances :: Quasi q => [Name] -> q [Dec]
+singEqInstances :: DsMonad q => [Name] -> q [Dec]
 singEqInstances = concatMapM singEqInstance
 
 -- | Create instance of 'SEq' and type-level '(:==)' for the given type
-singEqInstance :: Quasi q => Name -> q [Dec]
+singEqInstance :: DsMonad q => Name -> q [Dec]
 singEqInstance name = do
   promotion <- promoteEqInstance name
   dec <- singEqualityInstance sEqClassDesc name
@@ -102,12 +102,12 @@ singEqInstance name = do
 
 -- | Create instances of 'SEq' (only -- no instance for '(:==)', which 'SEq' generally
 -- relies on) for each type in the list
-singEqInstancesOnly :: Quasi q => [Name] -> q [Dec]
+singEqInstancesOnly :: DsMonad q => [Name] -> q [Dec]
 singEqInstancesOnly = concatMapM singEqInstanceOnly
 
 -- | Create instances of 'SEq' (only -- no instance for '(:==)', which 'SEq' generally
 -- relies on) for the given type
-singEqInstanceOnly :: Quasi q => Name -> q [Dec]
+singEqInstanceOnly :: DsMonad q => Name -> q [Dec]
 singEqInstanceOnly name = singEqualityInstance sEqClassDesc name
 
 -- | Create instances of 'SDecide' for each type in the list.
@@ -115,7 +115,7 @@ singEqInstanceOnly name = singEqualityInstance sEqClassDesc name
 -- Note that, due to a bug in GHC 7.6.3 (and lower) optimizing instances
 -- for SDecide can make GHC hang. You may want to put
 -- @{-# OPTIONS_GHC -O0 #-}@ in your file.
-singDecideInstances :: Quasi q => [Name] -> q [Dec]
+singDecideInstances :: DsMonad q => [Name] -> q [Dec]
 singDecideInstances = concatMapM singDecideInstance
 
 -- | Create instance of 'SDecide' for the given type.
@@ -123,11 +123,11 @@ singDecideInstances = concatMapM singDecideInstance
 -- Note that, due to a bug in GHC 7.6.3 (and lower) optimizing instances
 -- for SDecide can make GHC hang. You may want to put
 -- @{-# OPTIONS_GHC -O0 #-}@ in your file.
-singDecideInstance :: Quasi q => Name -> q [Dec]
+singDecideInstance :: DsMonad q => Name -> q [Dec]
 singDecideInstance name = singEqualityInstance sDecideClassDesc name
 
 -- generalized function for creating equality instances
-singEqualityInstance :: Quasi q => EqualityClassDesc q -> Name -> q [Dec]
+singEqualityInstance :: DsMonad q => EqualityClassDesc q -> Name -> q [Dec]
 singEqualityInstance desc@(_, className, _) name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
                             show className ++ " for it.") name
@@ -141,7 +141,7 @@ singEqualityInstance desc@(_, className, _) name = do
   eqInstance <- mkEqualityInstance kind scons desc
   return $ decToTH eqInstance
 
-singInfo :: Quasi q => DInfo -> q [DDec]
+singInfo :: DsMonad q => DInfo -> q [DDec]
 singInfo (DTyConI dec Nothing) = do -- TODO: document this special case
   singTopLevelDecs [] [dec]
 singInfo (DTyConI {}) =

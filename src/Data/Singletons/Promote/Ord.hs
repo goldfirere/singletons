@@ -20,7 +20,7 @@ import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
 import Data.Singletons.Util
 
-mkOrdTypeInstance :: Quasi q => DKind -> [DCon] -> q [DDec]
+mkOrdTypeInstance :: DsMonad q => DKind -> [DCon] -> q [DDec]
 mkOrdTypeInstance kind cons = do
   let tagged_cons = zip cons [1..]
       con_pairs   = [ (c1, c2) | c1 <- tagged_cons, c2 <- tagged_cons ]
@@ -31,7 +31,7 @@ mkOrdTypeInstance kind cons = do
                                tyfam_insts
   return [pord_inst]
 
-mkOrdTySynEqn :: Quasi q => ((DCon, Int), (DCon, Int)) -> q DTySynEqn
+mkOrdTySynEqn :: DsMonad q => ((DCon, Int), (DCon, Int)) -> q DTySynEqn
 mkOrdTySynEqn ((c1, n1), (c2, n2)) = do
   let DCon _tvbs1 _cxt1 con_name1 con_fields1 = c1
       DCon _tvbs2 _cxt2 con_name2 con_fields2 = c2
@@ -119,7 +119,7 @@ mkOrdTySynEqn ((c1, n1), (c2, n2)) = do
 ---- (although this implementation requires that we actually compare all fields
 ---- at the call site).
 
-mkOrdTypeInstance :: Quasi q => DKind -> [DCon] -> q [DDec]
+mkOrdTypeInstance :: DsMonad q => DKind -> [DCon] -> q [DDec]
 mkOrdTypeInstance kind cons = do
   let taggedCons   = zip cons [1..]
       l            = length cons
@@ -151,7 +151,7 @@ mkOrdTypeInstance kind cons = do
                                                     [DVarT aName, DVarT bName]))
   return (closedFam : compareInst : eqDecs)
 
-  where mkCompareEqn :: Quasi q => Int -> ((DCon, Int), (DCon, Int))
+  where mkCompareEqn :: DsMonad q => Int -> ((DCon, Int), (DCon, Int))
                                 -> QWithAux [DDec] q DTySynEqn
         mkCompareEqn half ((con1, tag1), (con2, tag2))
             | tag1 > tag2 && tag1 <= half =
@@ -169,7 +169,7 @@ mkOrdTypeInstance kind cons = do
         ltT = DConT ordLTSymName
         gtT = DConT ordGTSymName
 
-        mkCompareEqnHelper :: Quasi q => DCon -> Maybe DCon -> DType -> q DTySynEqn
+        mkCompareEqnHelper :: DsMonad q => DCon -> Maybe DCon -> DType -> q DTySynEqn
         mkCompareEqnHelper con1 con2 result = do
             let (name1, numArgs1) = extractNameArgs con1
             (name2, numArgs2) <- case con2 of
@@ -184,7 +184,7 @@ mkOrdTypeInstance kind cons = do
                 rtype = foldType name2 rvars
             return $ DTySynEqn [ltype, rtype] result
 
-        mkCompareEqual :: Quasi q => DCon -> QWithAux [DDec] q DTySynEqn
+        mkCompareEqual :: DsMonad q => DCon -> QWithAux [DDec] q DTySynEqn
         mkCompareEqual con = do
             let (name, numArgs) = extractNameArgs con
             case numArgs of
@@ -208,7 +208,7 @@ mkOrdTypeInstance kind cons = do
                     call = foldType (DConT helperName) callParams
                 return $ DTySynEqn [ltype, rtype] call
             where
-                  buildHelperTyFam :: Quasi q => Int -> Name -> QWithAux [DDec] q ()
+                  buildHelperTyFam :: DsMonad q => Int -> Name -> QWithAux [DDec] q ()
                   buildHelperTyFam numArgs helperName = do
                     let orderingKCon = DConK orderingName []
                     (patterns, results) <- buildEqnPats numArgs ([[]], [eqT])
@@ -222,7 +222,7 @@ mkOrdTypeInstance kind cons = do
                     addElement closedFam
                     return ()
 
-                  buildEqnPats :: Quasi q => Int -> ([[DType]], [DType])
+                  buildEqnPats :: DsMonad q => Int -> ([[DType]], [DType])
                                           -> q ([[DType]], [DType])
                   buildEqnPats 0 acc = return acc
                   buildEqnPats n acc = do
