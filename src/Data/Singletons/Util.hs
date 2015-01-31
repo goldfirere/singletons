@@ -46,7 +46,7 @@ boundedBasicTypes = [ ''Bool
              , ''(,,,,,,)
             ]
 
-qReifyMaybe :: Quasi q => Name -> q (Maybe DInfo)
+qReifyMaybe :: DsMonad q => Name -> q (Maybe DInfo)
 qReifyMaybe name = do
   m_info <- qRecover (return Nothing) (fmap Just $ qReify name)
   traverse dsInfo m_info
@@ -222,7 +222,7 @@ multiCase scruts pats body =
   DCaseE (mkTupleDExp scruts) [DMatch (mkTupleDPat pats) body]
 
 -- Make a desugar function into a TH function.
-wrapDesugar :: (Desugar th ds, Quasi q) => (ds -> q ds) -> th -> q th
+wrapDesugar :: (Desugar th ds, DsMonad q) => (ds -> q ds) -> th -> q th
 wrapDesugar f th = do
   ds <- desugar th
   fmap sweeten $ f ds

@@ -21,7 +21,7 @@ import Data.Singletons.Names
 import Data.Singletons.Util
 import Control.Monad
 
-mkBoundedTypeInstance :: Quasi q => DKind -> [DCon] -> q [DDec]
+mkBoundedTypeInstance :: DsMonad q => DKind -> [DCon] -> q [DDec]
 mkBoundedTypeInstance kind@(DConK name _) cons = do
   -- We can derive instance of Bounded if datatype is an enumeration (all
   -- constructors must be nullary) or has only one constructor. See Section 11

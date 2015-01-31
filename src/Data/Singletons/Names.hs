@@ -142,7 +142,7 @@ promoteClassName = prefixUCName "P" "#"
 classTvsName :: Name -> Name
 classTvsName = suffixName "TyVars" "^^^"
 
-mkTyName :: Quasi q => Name -> q Name
+mkTyName :: DsMonad q => Name -> q Name
 mkTyName tmName = do
   let nameStr  = nameBase tmName
       symbolic = not (isHsLetter (head nameStr))
@@ -163,7 +163,7 @@ andTySym = promoteValRhs andName
 -- make a Name with an unknown kind into a DTyVarBndr.
 -- Uses a fresh kind variable for GHC 7.6.3 and PlainTV for 7.8+
 -- because 7.8+ has kind inference
-inferKindTV :: Quasi q => Name -> q DTyVarBndr
+inferKindTV :: DsMonad q => Name -> q DTyVarBndr
 inferKindTV n = do
 #if __GLASGOW_HASKELL__ < 707
   ki <- fmap DVarK $ qNewName "k"
@@ -172,7 +172,7 @@ inferKindTV n = do
   return $ DPlainTV n
 #endif
 
-inferMaybeKindTV :: Quasi q => Name -> Maybe DKind -> q DTyVarBndr
+inferMaybeKindTV :: DsMonad q => Name -> Maybe DKind -> q DTyVarBndr
 inferMaybeKindTV n Nothing =
 #if __GLASGOW_HASKELL__ < 707
   do k <- qNewName "k"
