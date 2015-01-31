@@ -18,7 +18,6 @@ import Data.Singletons.Util
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Ppr
-import Language.Haskell.TH.Desugar.Sweeten
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
 import Data.Maybe
@@ -116,6 +115,10 @@ data ADClause = ADClause VarPromotions
                          [DPat] ADExp
 
 data AnnotationFlag = Annotated | Unannotated
+
+-- these will be promoted a lot!
+type Annotated = 'Annotated
+type Unannotated = 'Unannotated
 
 type family IfAnn (ann :: AnnotationFlag) (yes :: k) (no :: k) :: k
 type instance IfAnn Annotated   yes no = yes
