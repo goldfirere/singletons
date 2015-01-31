@@ -14,7 +14,7 @@ module Data.Singletons.Promote where
 import Language.Haskell.TH hiding ( Q, cxt )
 import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Language.Haskell.TH.Desugar
-import Language.Haskell.TH.Desugar.Sweeten
+import Language.Haskell.TH.Desugar.Lift ()
 import Data.Singletons.Names
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Eq
@@ -33,52 +33,52 @@ import Data.Map.Strict ( Map )
 
 -- | Generate promoted definitions from a type that is already defined.
 -- This is generally only useful with classes.
-genPromotions :: Quasi q => [Name] -> q [Dec]
+genPromotions :: DsMonad q => [Name] -> q [Dec]
 genPromotions names = do
   checkForRep names
   infos <- mapM reifyWithWarning names
   dinfos <- mapM dsInfo infos
-  ddecs <- promoteM_ $ mapM_ promoteInfo dinfos
+  ddecs <- promoteM_ [] $ mapM_ promoteInfo dinfos
   return $ decsToTH ddecs
 
 -- | Promote every declaration given to the type level, retaining the originals.
-promote :: Quasi q => q [Dec] -> q [Dec]
+promote :: DsMonad q => q [Dec] -> q [Dec]
 promote qdec = do
   decls <- qdec
-  ddecls <- dsDecs decls
-  promDecls <- promoteM_ $ promoteDecs ddecls
+  ddecls <- withLocalDeclarations decls $ dsDecs decls
+  promDecls <- promoteM_ decls $ promoteDecs ddecls
   return $ decls ++ decsToTH promDecls
 
 -- | Promote each declaration, discarding the originals.
-promoteOnly :: Quasi q => q [Dec] -> q [Dec]
+promoteOnly :: DsMonad q => q [Dec] -> q [Dec]
 promoteOnly qdec = do
   decls  <- qdec
   ddecls <- dsDecs decls
-  promDecls <- promoteM_ $ promoteDecs ddecls
+  promDecls <- promoteM_ decls $ promoteDecs ddecls
   return $ decsToTH promDecls
 
 -- | Generate defunctionalization symbols for existing type family
-genDefunSymbols :: Quasi q => [Name] -> q [Dec]
+genDefunSymbols :: DsMonad q => [Name] -> q [Dec]
 genDefunSymbols names = do
   checkForRep names
   infos <- mapM (dsInfo <=< reifyWithWarning) names
-  decs <- promoteMDecs $ concatMapM defunInfo infos
+  decs <- promoteMDecs [] $ concatMapM defunInfo infos
   return $ decsToTH decs
 
 -- | Produce instances for '(:==)' (type-level equality) from the given types
-promoteEqInstances :: Quasi q => [Name] -> q [Dec]
+promoteEqInstances :: DsMonad q => [Name] -> q [Dec]
 promoteEqInstances = concatMapM promoteEqInstance
 
 -- | Produce instances for 'Compare' from the given types
-promoteOrdInstances :: Quasi q => [Name] -> q [Dec]
+promoteOrdInstances :: DsMonad q => [Name] -> q [Dec]
 promoteOrdInstances = concatMapM promoteOrdInstance
 
 -- | Produce instances for 'MinBound' and 'MaxBound' from the given types
-promoteBoundedInstances :: Quasi q => [Name] -> q [Dec]
+promoteBoundedInstances :: DsMonad q => [Name] -> q [Dec]
 promoteBoundedInstances = concatMapM promoteBoundedInstance
 
 -- | Produce an instance for '(:==)' (type-level equality) from the given type
-promoteEqInstance :: Quasi q => Name -> q [Dec]
+promoteEqInstance :: DsMonad q => Name -> q [Dec]
 promoteEqInstance name = do
   (_tvbs, cons) <- getDataD "I cannot make an instance of (:==) for it." name
   cons' <- mapM dsCon cons
@@ -93,7 +93,7 @@ promoteEqInstance name = do
 #endif
 
 -- | Produce an instance for 'Compare' from the given type
-promoteOrdInstance :: Quasi q => Name -> q [Dec]
+promoteOrdInstance :: DsMonad q => Name -> q [Dec]
 promoteOrdInstance name = do
   (_tvbs, cons) <- getDataD "I cannot make an instance of Ord for it." name
   cons' <- mapM dsCon cons
@@ -107,7 +107,7 @@ promoteOrdInstance name = do
 #endif
 
 -- | Produce an instance for 'MinBound' and 'MaxBound' from the given type
-promoteBoundedInstance :: Quasi q => Name -> q [Dec]
+promoteBoundedInstance :: DsMonad q => Name -> q [Dec]
 promoteBoundedInstance name = do
   (_tvbs, cons) <- getDataD "I cannot make an instance of Bounded for it." name
   cons' <- mapM dsCon cons

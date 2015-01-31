@@ -36,11 +36,13 @@ type LetExpansions = Map Name DType  -- from **term-level** name
 data PrEnv =
   PrEnv { pr_lambda_bound :: Map Name Name
         , pr_let_bound    :: LetExpansions
+        , pr_local_decls  :: [Dec]
         }
 
 emptyPrEnv :: PrEnv
 emptyPrEnv = PrEnv { pr_lambda_bound = Map.empty
-                   , pr_let_bound    = Map.empty }
+                   , pr_let_bound    = Map.empty
+                   , pr_local_decls  = [] }
 
 -- the promotion monad
 newtype PrM a = PrM (ReaderT PrEnv (WriterT [DDec] Q) a)
@@ -73,28 +75,8 @@ instance (Quasi q, Monoid m) => Quasi (WriterT m q) where
     tell aux
     return result
 
-instance Quasi q => Quasi (ReaderT r q) where
-  qNewName          = lift `comp1` qNewName
-  qReport           = lift `comp2` qReport
-  qLookupName       = lift `comp2` qLookupName
-  qReify            = lift `comp1` qReify
-  qReifyInstances   = lift `comp2` qReifyInstances
-  qLocation         = lift qLocation
-  qRunIO            = lift `comp1` qRunIO
-  qAddDependentFile = lift `comp1` qAddDependentFile
-#if __GLASGOW_HASKELL__ >= 707
-  qReifyRoles       = lift `comp1` qReifyRoles
-  qReifyAnnotations = lift `comp1` qReifyAnnotations
-  qReifyModule      = lift `comp1` qReifyModule
-  qAddTopDecls      = lift `comp1` qAddTopDecls
-  qAddModFinalizer  = lift `comp1` qAddModFinalizer
-  qGetQ             = lift qGetQ
-  qPutQ             = lift `comp1` qPutQ
-#endif
-
-  qRecover handler body = do
-    env <- ask
-    lift $ qRecover (runReaderT handler env) (runReaderT body env)
+instance DsMonad PrM where
+  localDeclarations = asks pr_local_decls
 
 -- return *type-level* names
 allLocals :: MonadReader PrEnv m => m [Name]
@@ -139,21 +121,21 @@ lookupVarE n = do
     Just ty -> return ty
     Nothing -> return $ promoteValRhs n
 
-promoteM :: Quasi q => PrM a -> q (a, [DDec])
-promoteM (PrM rdr) =
-  let wr = runReaderT rdr emptyPrEnv
+promoteM :: DsMonad q => [Dec] -> PrM a -> q (a, [DDec])
+promoteM locals (PrM rdr) = do
+  other_locals <- localDeclarations
+  let wr = runReaderT rdr (emptyPrEnv { pr_local_decls = other_locals ++ locals })
       q  = runWriterT wr
-  in
   runQ q
 
-promoteM_ :: Quasi q => PrM () -> q [DDec]
-promoteM_ thing = do
-  ((), decs) <- promoteM thing
+promoteM_ :: DsMonad q => [Dec] -> PrM () -> q [DDec]
+promoteM_ locals thing = do
+  ((), decs) <- promoteM locals thing
   return decs
 
 -- promoteM specialized to [DDec]
-promoteMDecs :: Quasi q => PrM [DDec] -> q [DDec]
-promoteMDecs thing = do
-  (decs1, decs2) <- promoteM thing
+promoteMDecs :: DsMonad q => [Dec] -> PrM [DDec] -> q [DDec]
+promoteMDecs locals thing = do
+  (decs1, decs2) <- promoteM locals thing
   return $ decs1 ++ decs2
 
