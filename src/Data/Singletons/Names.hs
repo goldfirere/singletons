@@ -144,6 +144,9 @@ promoteTySym name sat
     | name == undefinedName
     = anyTypeName
 
+    | name == nilName
+    = mkName $ "NilSym" ++ (show sat)
+
        -- treat unboxed tuples like tuples
     | Just degree <- tupleNameDegree_maybe name `mplus`
                      unboxedTupleNameDegree_maybe name
