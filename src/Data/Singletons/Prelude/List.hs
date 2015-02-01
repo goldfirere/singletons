@@ -101,8 +101,8 @@ module Data.Singletons.Prelude.List (
   MaximumBy, sMaximumBy, MinimumBy, sMinimumBy,
 
   -- * Defunctionalization symbols
+  NilSym0,
   (:$), (:$$), (:$$$),
-  NilSym0, ConsSym0, ConsSym1, ConsSym2,
 
   (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
@@ -497,11 +497,3 @@ $(singletonsOnly [d|
 
   |])
 
--- The symbol []$ is clearly malformed, so we have to name this symbol
--- NilSym0
-type NilSym0      = '[]
-
--- If Nil has an alphanumeric symbol, we wouldn't want to leave Cons out...
-type ConsSym0     = (:$)
-type ConsSym1     = (:$$)
-type ConsSym2 a b = (:$$$) a b

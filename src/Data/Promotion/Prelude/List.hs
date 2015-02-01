@@ -101,8 +101,8 @@ module Data.Promotion.Prelude.List (
   GenericSplitAt, GenericIndex, GenericReplicate,
 
   -- * Defunctionalization symbols
+  NilSym0,
   (:$), (:$$), (:$$$),
-  NilSym0, ConsSym0, ConsSym1, ConsSym2,
 
   (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
