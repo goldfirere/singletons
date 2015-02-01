@@ -67,13 +67,13 @@ $(promoteOnly [d|
         -- because the latter is often more expensive
     max x y = if x <= y then y else x
     min x y = if x <= y then x else y
-    {-# MINIMAL compare | (<=) #-}
+    -- Not handled by TH: {-# MINIMAL compare | (<=) #-}
   |])
 
 type family CaseOrdering (ord :: Ordering) (lt :: k) (eq :: k) (gt :: k) :: k
-type instance CaseOrdering LT lt eq gt = lt
-type instance CaseOrdering EQ lt eq gt = eq
-type instance CaseOrdering GT lt eq gt = gt
+type instance CaseOrdering 'LT lt eq gt = lt
+type instance CaseOrdering 'EQ lt eq gt = eq
+type instance CaseOrdering 'GT lt eq gt = gt
 
 class (kproxy ~ 'KProxy, SEq ('KProxy :: KProxy a))
       => SOrd (kproxy :: KProxy a) where
@@ -86,28 +86,28 @@ class (kproxy ~ 'KProxy, SEq ('KProxy :: KProxy a))
   sMin      :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Min x y)
 
   default sCompare :: forall (x :: a) (y :: a).
-                      (Compare x y ~ If (x :== y) EQ (If (x :<= y) LT GT))
+                      (Compare x y ~ If (x :== y) 'EQ (If (x :<= y) 'LT 'GT))
                    => Sing x -> Sing y -> Sing (Compare x y)
   sCompare x y = sIf (x %:== y) SEQ
                      (sIf (x %:<= y) SLT SGT)
 
   default (%:<) :: forall (x :: a) (y :: a).
-                   ((x :< y) ~ CaseOrdering (Compare x y) True False False)
+                   ((x :< y) ~ CaseOrdering (Compare x y) 'True 'False 'False)
                 => Sing x -> Sing y -> Sing (x :< y)
   x %:< y = case sCompare x y of { SLT -> STrue; SEQ -> SFalse; SGT -> SFalse }
 
   default (%:<=) :: forall (x :: a) (y :: a).
-                    ((x :<= y) ~ CaseOrdering (Compare x y) True True False)
+                    ((x :<= y) ~ CaseOrdering (Compare x y) 'True 'True 'False)
                  => Sing x -> Sing y -> Sing (x :<= y)
   x %:<= y = case sCompare x y of { SLT -> STrue; SEQ -> STrue; SGT -> SFalse }
 
   default (%:>) :: forall (x :: a) (y :: a).
-                   ((x :> y) ~ CaseOrdering (Compare x y) False False True)
+                   ((x :> y) ~ CaseOrdering (Compare x y) 'False 'False 'True)
                 => Sing x -> Sing y -> Sing (x :> y)
   x %:> y = case sCompare x y of { SLT -> SFalse; SEQ -> SFalse; SGT -> STrue }
 
   default (%:>=) :: forall (x :: a) (y :: a).
-                    ((x :>= y) ~ CaseOrdering (Compare x y) False True True)
+                    ((x :>= y) ~ CaseOrdering (Compare x y) 'False 'True 'True)
                  => Sing x -> Sing y -> Sing (x :>= y)
   x %:>= y = case sCompare x y of { SLT -> SFalse; SEQ -> STrue; SGT -> STrue }
 
