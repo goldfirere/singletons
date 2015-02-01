@@ -121,6 +121,9 @@ promoteTySym name sat
     | name == undefinedName
     = anyTypeName
 
+    | name == nilName
+    = mkName $ "NilSym" ++ (show sat)
+
     | Just degree <- tupleNameDegree_maybe name
     = mkName $ "Tuple" ++ show degree ++ "Sym" ++ (show sat)
 
