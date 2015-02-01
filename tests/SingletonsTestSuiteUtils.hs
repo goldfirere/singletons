@@ -29,6 +29,8 @@ import Distribution.Text                             ( simpleParse              
 import Data.Version                                  ( showVersion, Version(..)  )
 import System.IO.Unsafe                              ( unsafePerformIO           )
 
+#include "../dist/build/autogen/cabal_macros.h"
+
 -- Some infractructure for handling external process errors
 data ProcessException = ProcessException String deriving (Typeable)
 
@@ -101,7 +103,11 @@ ghcOpts :: [String]
 ghcOpts = extraOpts ++ [
     "-v0"
   , "-c"
+#if __GLASGOW_HASKELL__ < 709
   , "-package-name singletons-" ++ singletonsVersion -- See Note [-package-name hack]
+#else
+  , "-this-package-key " ++ CURRENT_PACKAGE_KEY
+#endif
   , "-ddump-splices"
   , "-dsuppress-uniques"
   , "-fforce-recomp"
