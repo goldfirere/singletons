@@ -14,7 +14,7 @@ Singletons/BoxUnBox.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FBoxSym0KindInference GHC.Tuple.())
     data FBoxSym0 (l :: TyFun a (Box a))
-      = forall arg. (GHC.Types.~) (KindOf (Apply FBoxSym0 arg)) (KindOf (FBoxSym1 arg)) =>
+      = forall arg. KindOf (Apply FBoxSym0 arg) ~ KindOf (FBoxSym1 arg) =>
         FBoxSym0KindInference
     type instance Apply FBoxSym0 l = FBoxSym1 l
     type UnBoxSym1 (t :: Box a) = UnBox t
@@ -22,7 +22,7 @@ Singletons/BoxUnBox.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) UnBoxSym0KindInference GHC.Tuple.())
     data UnBoxSym0 (l :: TyFun (Box a) a)
-      = forall arg. (GHC.Types.~) (KindOf (Apply UnBoxSym0 arg)) (KindOf (UnBoxSym1 arg)) =>
+      = forall arg. KindOf (Apply UnBoxSym0 arg) ~ KindOf (UnBoxSym1 arg) =>
         UnBoxSym0KindInference
     type instance Apply UnBoxSym0 l = UnBoxSym1 l
     type family UnBox (a :: Box a) :: a where
@@ -31,12 +31,12 @@ Singletons/BoxUnBox.hs:0:0: Splicing declarations
     sUnBox (SFBox sA)
       = let
           lambda ::
-            forall a. (GHC.Types.~) t (Apply FBoxSym0 a) =>
+            forall a. t ~ Apply FBoxSym0 a =>
             Sing a -> Sing (Apply UnBoxSym0 (Apply FBoxSym0 a))
           lambda a = a
         in lambda sA
     data instance Sing (z :: Box a)
-      = forall (n :: a). (GHC.Types.~) z (FBox n) => SFBox (Sing n)
+      = forall (n :: a). z ~ FBox n => SFBox (Sing n)
     type SBox (z :: Box a) = Sing z
     instance SingKind (KProxy :: KProxy a) =>
              SingKind (KProxy :: KProxy (Box a)) where

@@ -58,7 +58,7 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) NotSym0KindInference GHC.Tuple.())
     data NotSym0 (l :: TyFun Bool Bool)
-      = forall arg. (GHC.Types.~) (KindOf (Apply NotSym0 arg)) (KindOf (NotSym1 arg)) =>
+      = forall arg. KindOf (Apply NotSym0 arg) ~ KindOf (NotSym1 arg) =>
         NotSym0KindInference
     type instance Apply NotSym0 l = NotSym1 l
     type IdSym1 (t :: a) = Id t
@@ -66,7 +66,7 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) IdSym0KindInference GHC.Tuple.())
     data IdSym0 (l :: TyFun a a)
-      = forall arg. (GHC.Types.~) (KindOf (Apply IdSym0 arg)) (KindOf (IdSym1 arg)) =>
+      = forall arg. KindOf (Apply IdSym0 arg) ~ KindOf (IdSym1 arg) =>
         IdSym0KindInference
     type instance Apply IdSym0 l = IdSym1 l
     type FSym1 (t :: Bool) = F t
@@ -74,7 +74,7 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) FSym0KindInference GHC.Tuple.())
     data FSym0 (l :: TyFun Bool Bool)
-      = forall arg. (GHC.Types.~) (KindOf (Apply FSym0 arg)) (KindOf (FSym1 arg)) =>
+      = forall arg. KindOf (Apply FSym0 arg) ~ KindOf (FSym1 arg) =>
         FSym0KindInference
     type instance Apply FSym0 l = FSym1 l
     type GSym1 (t :: Bool) = G t
@@ -82,7 +82,7 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) GSym0KindInference GHC.Tuple.())
     data GSym0 (l :: TyFun Bool Bool)
-      = forall arg. (GHC.Types.~) (KindOf (Apply GSym0 arg)) (KindOf (GSym1 arg)) =>
+      = forall arg. KindOf (Apply GSym0 arg) ~ KindOf (GSym1 arg) =>
         GSym0KindInference
     type instance Apply GSym0 l = GSym1 l
     type HSym1 (t :: Bool) = H t
@@ -90,7 +90,7 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) HSym0KindInference GHC.Tuple.())
     data HSym0 (l :: TyFun Bool Bool)
-      = forall arg. (GHC.Types.~) (KindOf (Apply HSym0 arg)) (KindOf (HSym1 arg)) =>
+      = forall arg. KindOf (Apply HSym0 arg) ~ KindOf (HSym1 arg) =>
         HSym0KindInference
     type instance Apply HSym0 l = HSym1 l
     type ISym1 (t :: Bool) = I t
@@ -98,7 +98,7 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) ISym0KindInference GHC.Tuple.())
     data ISym0 (l :: TyFun Bool Bool)
-      = forall arg. (GHC.Types.~) (KindOf (Apply ISym0 arg)) (KindOf (ISym1 arg)) =>
+      = forall arg. KindOf (Apply ISym0 arg) ~ KindOf (ISym1 arg) =>
         ISym0KindInference
     type instance Apply ISym0 l = ISym1 l
     type JSym0 = J
@@ -140,13 +140,13 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) BarSym1KindInference GHC.Tuple.())
     data BarSym1 (l :: Bool) (l :: TyFun Bool Foo)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (BarSym1 l) arg)) (KindOf (BarSym2 l arg)) =>
+      = forall arg. KindOf (Apply (BarSym1 l) arg) ~ KindOf (BarSym2 l arg) =>
         BarSym1KindInference
     type instance Apply (BarSym1 l) l = BarSym2 l l
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) BarSym0KindInference GHC.Tuple.())
     data BarSym0 (l :: TyFun Bool (TyFun Bool Foo -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply BarSym0 arg)) (KindOf (BarSym1 arg)) =>
+      = forall arg. KindOf (Apply BarSym0 arg) ~ KindOf (BarSym1 arg) =>
         BarSym0KindInference
     type instance Apply BarSym0 l = BarSym1 l

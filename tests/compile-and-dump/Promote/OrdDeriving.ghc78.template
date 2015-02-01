@@ -41,7 +41,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SuccSym0KindInference GHC.Tuple.())
     data SuccSym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply SuccSym0 arg)) (Data.Singletons.KindOf (SuccSym1 arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply SuccSym0 arg) ~ Data.Singletons.KindOf (SuccSym1 arg) =>
         SuccSym0KindInference
     type instance Apply SuccSym0 l = SuccSym1 l
     type family Equals_0123456789 (a :: Foo k k k k)
@@ -97,7 +97,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ASym3KindInference GHC.Tuple.())
     data ASym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (ASym3 l l l) arg)) (Data.Singletons.KindOf (ASym4 l l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (ASym3 l l l) arg) ~ Data.Singletons.KindOf (ASym4 l l l arg) =>
         ASym3KindInference
     type instance Apply (ASym3 l l l) l = ASym4 l l l l
     instance SuppressUnusedWarnings ASym2 where
@@ -106,7 +106,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
     data ASym2 (l :: a)
                (l :: b)
                (l :: TyFun c (TyFun d (Foo a b c d) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (ASym2 l l) arg)) (Data.Singletons.KindOf (ASym3 l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (ASym2 l l) arg) ~ Data.Singletons.KindOf (ASym3 l l arg) =>
         ASym2KindInference
     type instance Apply (ASym2 l l) l = ASym3 l l l
     instance SuppressUnusedWarnings ASym1 where
@@ -114,7 +114,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) ASym1KindInference GHC.Tuple.())
     data ASym1 (l :: a)
                (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (ASym1 l) arg)) (Data.Singletons.KindOf (ASym2 l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (ASym1 l) arg) ~ Data.Singletons.KindOf (ASym2 l arg) =>
         ASym1KindInference
     type instance Apply (ASym1 l) l = ASym2 l l
     instance SuppressUnusedWarnings ASym0 where
@@ -124,7 +124,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
                                                 -> *)
                                        -> *)
                               -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply ASym0 arg)) (Data.Singletons.KindOf (ASym1 arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply ASym0 arg) ~ Data.Singletons.KindOf (ASym1 arg) =>
         ASym0KindInference
     type instance Apply ASym0 l = ASym1 l
     type BSym4 (t :: a) (t :: b) (t :: c) (t :: d) = B t t t t
@@ -132,7 +132,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) BSym3KindInference GHC.Tuple.())
     data BSym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (BSym3 l l l) arg)) (Data.Singletons.KindOf (BSym4 l l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (BSym3 l l l) arg) ~ Data.Singletons.KindOf (BSym4 l l l arg) =>
         BSym3KindInference
     type instance Apply (BSym3 l l l) l = BSym4 l l l l
     instance SuppressUnusedWarnings BSym2 where
@@ -141,7 +141,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
     data BSym2 (l :: a)
                (l :: b)
                (l :: TyFun c (TyFun d (Foo a b c d) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (BSym2 l l) arg)) (Data.Singletons.KindOf (BSym3 l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (BSym2 l l) arg) ~ Data.Singletons.KindOf (BSym3 l l arg) =>
         BSym2KindInference
     type instance Apply (BSym2 l l) l = BSym3 l l l
     instance SuppressUnusedWarnings BSym1 where
@@ -149,7 +149,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) BSym1KindInference GHC.Tuple.())
     data BSym1 (l :: a)
                (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (BSym1 l) arg)) (Data.Singletons.KindOf (BSym2 l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (BSym1 l) arg) ~ Data.Singletons.KindOf (BSym2 l arg) =>
         BSym1KindInference
     type instance Apply (BSym1 l) l = BSym2 l l
     instance SuppressUnusedWarnings BSym0 where
@@ -159,7 +159,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
                                                 -> *)
                                        -> *)
                               -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply BSym0 arg)) (Data.Singletons.KindOf (BSym1 arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply BSym0 arg) ~ Data.Singletons.KindOf (BSym1 arg) =>
         BSym0KindInference
     type instance Apply BSym0 l = BSym1 l
     type CSym4 (t :: a) (t :: b) (t :: c) (t :: d) = C t t t t
@@ -167,7 +167,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) CSym3KindInference GHC.Tuple.())
     data CSym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (CSym3 l l l) arg)) (Data.Singletons.KindOf (CSym4 l l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (CSym3 l l l) arg) ~ Data.Singletons.KindOf (CSym4 l l l arg) =>
         CSym3KindInference
     type instance Apply (CSym3 l l l) l = CSym4 l l l l
     instance SuppressUnusedWarnings CSym2 where
@@ -176,7 +176,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
     data CSym2 (l :: a)
                (l :: b)
                (l :: TyFun c (TyFun d (Foo a b c d) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (CSym2 l l) arg)) (Data.Singletons.KindOf (CSym3 l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (CSym2 l l) arg) ~ Data.Singletons.KindOf (CSym3 l l arg) =>
         CSym2KindInference
     type instance Apply (CSym2 l l) l = CSym3 l l l
     instance SuppressUnusedWarnings CSym1 where
@@ -184,7 +184,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) CSym1KindInference GHC.Tuple.())
     data CSym1 (l :: a)
                (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (CSym1 l) arg)) (Data.Singletons.KindOf (CSym2 l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (CSym1 l) arg) ~ Data.Singletons.KindOf (CSym2 l arg) =>
         CSym1KindInference
     type instance Apply (CSym1 l) l = CSym2 l l
     instance SuppressUnusedWarnings CSym0 where
@@ -194,7 +194,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
                                                 -> *)
                                        -> *)
                               -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply CSym0 arg)) (Data.Singletons.KindOf (CSym1 arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply CSym0 arg) ~ Data.Singletons.KindOf (CSym1 arg) =>
         CSym0KindInference
     type instance Apply CSym0 l = CSym1 l
     type DSym4 (t :: a) (t :: b) (t :: c) (t :: d) = D t t t t
@@ -202,7 +202,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) DSym3KindInference GHC.Tuple.())
     data DSym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (DSym3 l l l) arg)) (Data.Singletons.KindOf (DSym4 l l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (DSym3 l l l) arg) ~ Data.Singletons.KindOf (DSym4 l l l arg) =>
         DSym3KindInference
     type instance Apply (DSym3 l l l) l = DSym4 l l l l
     instance SuppressUnusedWarnings DSym2 where
@@ -211,7 +211,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
     data DSym2 (l :: a)
                (l :: b)
                (l :: TyFun c (TyFun d (Foo a b c d) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (DSym2 l l) arg)) (Data.Singletons.KindOf (DSym3 l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (DSym2 l l) arg) ~ Data.Singletons.KindOf (DSym3 l l arg) =>
         DSym2KindInference
     type instance Apply (DSym2 l l) l = DSym3 l l l
     instance SuppressUnusedWarnings DSym1 where
@@ -219,7 +219,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) DSym1KindInference GHC.Tuple.())
     data DSym1 (l :: a)
                (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (DSym1 l) arg)) (Data.Singletons.KindOf (DSym2 l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (DSym1 l) arg) ~ Data.Singletons.KindOf (DSym2 l arg) =>
         DSym1KindInference
     type instance Apply (DSym1 l) l = DSym2 l l
     instance SuppressUnusedWarnings DSym0 where
@@ -229,7 +229,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
                                                 -> *)
                                        -> *)
                               -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply DSym0 arg)) (Data.Singletons.KindOf (DSym1 arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply DSym0 arg) ~ Data.Singletons.KindOf (DSym1 arg) =>
         DSym0KindInference
     type instance Apply DSym0 l = DSym1 l
     type ESym4 (t :: a) (t :: b) (t :: c) (t :: d) = E t t t t
@@ -237,7 +237,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ESym3KindInference GHC.Tuple.())
     data ESym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (ESym3 l l l) arg)) (Data.Singletons.KindOf (ESym4 l l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (ESym3 l l l) arg) ~ Data.Singletons.KindOf (ESym4 l l l arg) =>
         ESym3KindInference
     type instance Apply (ESym3 l l l) l = ESym4 l l l l
     instance SuppressUnusedWarnings ESym2 where
@@ -246,7 +246,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
     data ESym2 (l :: a)
                (l :: b)
                (l :: TyFun c (TyFun d (Foo a b c d) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (ESym2 l l) arg)) (Data.Singletons.KindOf (ESym3 l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (ESym2 l l) arg) ~ Data.Singletons.KindOf (ESym3 l l arg) =>
         ESym2KindInference
     type instance Apply (ESym2 l l) l = ESym3 l l l
     instance SuppressUnusedWarnings ESym1 where
@@ -254,7 +254,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) ESym1KindInference GHC.Tuple.())
     data ESym1 (l :: a)
                (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (ESym1 l) arg)) (Data.Singletons.KindOf (ESym2 l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (ESym1 l) arg) ~ Data.Singletons.KindOf (ESym2 l arg) =>
         ESym1KindInference
     type instance Apply (ESym1 l) l = ESym2 l l
     instance SuppressUnusedWarnings ESym0 where
@@ -264,7 +264,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
                                                 -> *)
                                        -> *)
                               -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply ESym0 arg)) (Data.Singletons.KindOf (ESym1 arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply ESym0 arg) ~ Data.Singletons.KindOf (ESym1 arg) =>
         ESym0KindInference
     type instance Apply ESym0 l = ESym1 l
     type FSym4 (t :: a) (t :: b) (t :: c) (t :: d) = F t t t t
@@ -272,7 +272,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FSym3KindInference GHC.Tuple.())
     data FSym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (FSym3 l l l) arg)) (Data.Singletons.KindOf (FSym4 l l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (FSym3 l l l) arg) ~ Data.Singletons.KindOf (FSym4 l l l arg) =>
         FSym3KindInference
     type instance Apply (FSym3 l l l) l = FSym4 l l l l
     instance SuppressUnusedWarnings FSym2 where
@@ -281,7 +281,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
     data FSym2 (l :: a)
                (l :: b)
                (l :: TyFun c (TyFun d (Foo a b c d) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (FSym2 l l) arg)) (Data.Singletons.KindOf (FSym3 l l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (FSym2 l l) arg) ~ Data.Singletons.KindOf (FSym3 l l arg) =>
         FSym2KindInference
     type instance Apply (FSym2 l l) l = FSym3 l l l
     instance SuppressUnusedWarnings FSym1 where
@@ -289,7 +289,7 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) FSym1KindInference GHC.Tuple.())
     data FSym1 (l :: a)
                (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (FSym1 l) arg)) (Data.Singletons.KindOf (FSym2 l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (FSym1 l) arg) ~ Data.Singletons.KindOf (FSym2 l arg) =>
         FSym1KindInference
     type instance Apply (FSym1 l) l = FSym2 l l
     instance SuppressUnusedWarnings FSym0 where
@@ -299,6 +299,6 @@ Promote/OrdDeriving.hs:0:0: Splicing declarations
                                                 -> *)
                                        -> *)
                               -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply FSym0 arg)) (Data.Singletons.KindOf (FSym1 arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply FSym0 arg) ~ Data.Singletons.KindOf (FSym1 arg) =>
         FSym0KindInference
     type instance Apply FSym0 l = FSym1 l

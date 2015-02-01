@@ -13,18 +13,18 @@ Singletons/TopLevelPatterns.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) BarSym1KindInference GHC.Tuple.())
     data BarSym1 (l :: Bool) (l :: TyFun Bool Foo)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (BarSym1 l) arg)) (KindOf (BarSym2 l arg)) =>
+      = forall arg. KindOf (Apply (BarSym1 l) arg) ~ KindOf (BarSym2 l arg) =>
         BarSym1KindInference
     type instance Apply (BarSym1 l) l = BarSym2 l l
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) BarSym0KindInference GHC.Tuple.())
     data BarSym0 (l :: TyFun Bool (TyFun Bool Foo -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply BarSym0 arg)) (KindOf (BarSym1 arg)) =>
+      = forall arg. KindOf (Apply BarSym0 arg) ~ KindOf (BarSym1 arg) =>
         BarSym0KindInference
     type instance Apply BarSym0 l = BarSym1 l
     data instance Sing (z :: Bool)
-      = (GHC.Types.~) z False => SFalse | (GHC.Types.~) z True => STrue
+      = z ~ False => SFalse | z ~ True => STrue
     type SBool (z :: Bool) = Sing z
     instance SingKind (KProxy :: KProxy Bool) where
       type DemoteRep (KProxy :: KProxy Bool) = Bool
@@ -33,7 +33,7 @@ Singletons/TopLevelPatterns.hs:0:0: Splicing declarations
       toSing False = SomeSing SFalse
       toSing True = SomeSing STrue
     data instance Sing (z :: Foo)
-      = forall (n :: Bool) (n :: Bool). (GHC.Types.~) z (Bar n n) =>
+      = forall (n :: Bool) (n :: Bool). z ~ Bar n n =>
         SBar (Sing n) (Sing n)
     type SFoo (z :: Foo) = Sing z
     instance SingKind (KProxy :: KProxy Foo) where
@@ -79,7 +79,7 @@ Singletons/TopLevelPatterns.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) NotSym0KindInference GHC.Tuple.())
     data NotSym0 (l :: TyFun Bool Bool)
-      = forall arg. (GHC.Types.~) (KindOf (Apply NotSym0 arg)) (KindOf (NotSym1 arg)) =>
+      = forall arg. KindOf (Apply NotSym0 arg) ~ KindOf (NotSym1 arg) =>
         NotSym0KindInference
     type instance Apply NotSym0 l = NotSym1 l
     type IdSym1 (t :: a) = Id t
@@ -87,7 +87,7 @@ Singletons/TopLevelPatterns.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) IdSym0KindInference GHC.Tuple.())
     data IdSym0 (l :: TyFun a a)
-      = forall arg. (GHC.Types.~) (KindOf (Apply IdSym0 arg)) (KindOf (IdSym1 arg)) =>
+      = forall arg. KindOf (Apply IdSym0 arg) ~ KindOf (IdSym1 arg) =>
         IdSym0KindInference
     type instance Apply IdSym0 l = IdSym1 l
     type OtherwiseSym0 = Otherwise
@@ -105,19 +105,17 @@ Singletons/TopLevelPatterns.hs:0:0: Splicing declarations
     sFalse_ = SFalse
     sNot STrue
       = let
-          lambda :: (GHC.Types.~) t TrueSym0 => Sing (Apply NotSym0 TrueSym0)
+          lambda :: t ~ TrueSym0 => Sing (Apply NotSym0 TrueSym0)
           lambda = SFalse
         in lambda
     sNot SFalse
       = let
-          lambda ::
-            (GHC.Types.~) t FalseSym0 => Sing (Apply NotSym0 FalseSym0)
+          lambda :: t ~ FalseSym0 => Sing (Apply NotSym0 FalseSym0)
           lambda = STrue
         in lambda
     sId sX
       = let
-          lambda ::
-            forall x. (GHC.Types.~) t x => Sing x -> Sing (Apply IdSym0 x)
+          lambda :: forall x. t ~ x => Sing x -> Sing (Apply IdSym0 x)
           lambda x = x
         in lambda sX
     sOtherwise = STrue

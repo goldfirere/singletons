@@ -20,7 +20,7 @@ Singletons/LambdasComprehensive.hs:0:0: Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
     data Lambda_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Lambda_0123456789Sym0 arg)) (KindOf (Lambda_0123456789Sym1 arg)) =>
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type BarSym0 = Bar

@@ -28,7 +28,7 @@ Singletons/Sections.hs:0:0: Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
     data Lambda_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Lambda_0123456789Sym0 arg)) (KindOf (Lambda_0123456789Sym1 arg)) =>
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
@@ -36,14 +36,14 @@ Singletons/Sections.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+$$###) GHC.Tuple.())
     data (:+$$) (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (KindOf (Apply ((:+$$) l) arg)) (KindOf ((:+$$$) l arg)) =>
+      = forall arg. KindOf (Apply ((:+$$) l) arg) ~ KindOf ((:+$$$) l arg) =>
         (:+$$###)
     type instance Apply ((:+$$) l) l = (:+$$$) l l
     instance SuppressUnusedWarnings (:+$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+$###) GHC.Tuple.())
     data (:+$) (l :: TyFun Nat (TyFun Nat Nat -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply (:+$) arg)) (KindOf ((:+$$) arg)) =>
+      = forall arg. KindOf (Apply (:+$) arg) ~ KindOf ((:+$$) arg) =>
         (:+$###)
     type instance Apply (:+$) l = (:+$$) l
     type Foo1Sym0 = Foo1
@@ -67,15 +67,14 @@ Singletons/Sections.hs:0:0: Splicing declarations
     (%:+) SZero sM
       = let
           lambda ::
-            forall m. ((GHC.Types.~) t ZeroSym0, (GHC.Types.~) t m) =>
+            forall m. (t ~ ZeroSym0, t ~ m) =>
             Sing m -> Sing (Apply (Apply (:+$) ZeroSym0) m)
           lambda m = m
         in lambda sM
     (%:+) (SSucc sN) sM
       = let
           lambda ::
-            forall n m. ((GHC.Types.~) t (Apply SuccSym0 n),
-                         (GHC.Types.~) t m) =>
+            forall n m. (t ~ Apply SuccSym0 n, t ~ m) =>
             Sing n -> Sing m -> Sing (Apply (Apply (:+$) (Apply SuccSym0 n)) m)
           lambda n m
             = applySing

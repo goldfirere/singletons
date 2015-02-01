@@ -35,7 +35,7 @@ Singletons/Nat.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SuccSym0KindInference GHC.Tuple.())
     data SuccSym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (KindOf (Apply SuccSym0 arg)) (KindOf (SuccSym1 arg)) =>
+      = forall arg. KindOf (Apply SuccSym0 arg) ~ KindOf (SuccSym1 arg) =>
         SuccSym0KindInference
     type instance Apply SuccSym0 l = SuccSym1 l
     type PredSym1 (t :: Nat) = Pred t
@@ -43,7 +43,7 @@ Singletons/Nat.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PredSym0KindInference GHC.Tuple.())
     data PredSym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (KindOf (Apply PredSym0 arg)) (KindOf (PredSym1 arg)) =>
+      = forall arg. KindOf (Apply PredSym0 arg) ~ KindOf (PredSym1 arg) =>
         PredSym0KindInference
     type instance Apply PredSym0 l = PredSym1 l
     type PlusSym2 (t :: Nat) (t :: Nat) = Plus t t
@@ -51,14 +51,14 @@ Singletons/Nat.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PlusSym1KindInference GHC.Tuple.())
     data PlusSym1 (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (PlusSym1 l) arg)) (KindOf (PlusSym2 l arg)) =>
+      = forall arg. KindOf (Apply (PlusSym1 l) arg) ~ KindOf (PlusSym2 l arg) =>
         PlusSym1KindInference
     type instance Apply (PlusSym1 l) l = PlusSym2 l l
     instance SuppressUnusedWarnings PlusSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PlusSym0KindInference GHC.Tuple.())
     data PlusSym0 (l :: TyFun Nat (TyFun Nat Nat -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply PlusSym0 arg)) (KindOf (PlusSym1 arg)) =>
+      = forall arg. KindOf (Apply PlusSym0 arg) ~ KindOf (PlusSym1 arg) =>
         PlusSym0KindInference
     type instance Apply PlusSym0 l = PlusSym1 l
     type family Pred (a :: Nat) :: Nat where
@@ -73,29 +73,27 @@ Singletons/Nat.hs:0:0: Splicing declarations
       Sing t -> Sing t -> Sing (Apply (Apply PlusSym0 t) t)
     sPred SZero
       = let
-          lambda ::
-            (GHC.Types.~) t ZeroSym0 => Sing (Apply PredSym0 ZeroSym0)
+          lambda :: t ~ ZeroSym0 => Sing (Apply PredSym0 ZeroSym0)
           lambda = SZero
         in lambda
     sPred (SSucc sN)
       = let
           lambda ::
-            forall n. (GHC.Types.~) t (Apply SuccSym0 n) =>
+            forall n. t ~ Apply SuccSym0 n =>
             Sing n -> Sing (Apply PredSym0 (Apply SuccSym0 n))
           lambda n = n
         in lambda sN
     sPlus SZero sM
       = let
           lambda ::
-            forall m. ((GHC.Types.~) t ZeroSym0, (GHC.Types.~) t m) =>
+            forall m. (t ~ ZeroSym0, t ~ m) =>
             Sing m -> Sing (Apply (Apply PlusSym0 ZeroSym0) m)
           lambda m = m
         in lambda sM
     sPlus (SSucc sN) sM
       = let
           lambda ::
-            forall n m. ((GHC.Types.~) t (Apply SuccSym0 n),
-                         (GHC.Types.~) t m) =>
+            forall n m. (t ~ Apply SuccSym0 n, t ~ m) =>
             Sing n
             -> Sing m -> Sing (Apply (Apply PlusSym0 (Apply SuccSym0 n)) m)
           lambda n m
@@ -105,8 +103,8 @@ Singletons/Nat.hs:0:0: Splicing declarations
                    (applySing (singFun2 (Proxy :: Proxy PlusSym0) sPlus) n) m)
         in lambda sN sM
     data instance Sing (z :: Nat)
-      = (GHC.Types.~) z Zero => SZero |
-        forall (n :: Nat). (GHC.Types.~) z (Succ n) => SSucc (Sing n)
+      = z ~ Zero => SZero |
+        forall (n :: Nat). z ~ Succ n => SSucc (Sing n)
     type SNat (z :: Nat) = Sing z
     instance SingKind (KProxy :: KProxy Nat) where
       type DemoteRep (KProxy :: KProxy Nat) = Nat

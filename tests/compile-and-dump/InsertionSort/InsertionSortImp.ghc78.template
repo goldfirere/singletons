@@ -9,12 +9,12 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SuccSym0KindInference GHC.Tuple.())
     data SuccSym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (KindOf (Apply SuccSym0 arg)) (KindOf (SuccSym1 arg)) =>
+      = forall arg. KindOf (Apply SuccSym0 arg) ~ KindOf (SuccSym1 arg) =>
         SuccSym0KindInference
     type instance Apply SuccSym0 l = SuccSym1 l
     data instance Sing (z :: Nat)
-      = (GHC.Types.~) z Zero => SZero |
-        forall (n :: Nat). (GHC.Types.~) z (Succ n) => SSucc (Sing n)
+      = z ~ Zero => SZero |
+        forall (n :: Nat). z ~ Succ n => SSucc (Sing n)
     type SNat (z :: Nat) = Sing z
     instance SingKind (KProxy :: KProxy Nat) where
       type DemoteRep (KProxy :: KProxy Nat) = Nat
@@ -65,7 +65,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym2KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym2 l l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym3 l l arg)) =>
+      = forall arg. KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym3 l l arg) =>
         Let_0123456789Scrutinee_0123456789Sym2KindInference
     type instance Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) l = Let_0123456789Scrutinee_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym1 where
@@ -74,7 +74,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym1KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym1 l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym2 l arg)) =>
+      = forall arg. KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym2 l arg) =>
         Let_0123456789Scrutinee_0123456789Sym1KindInference
     type instance Apply (Let_0123456789Scrutinee_0123456789Sym1 l) l = Let_0123456789Scrutinee_0123456789Sym2 l l
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym0 where
@@ -83,7 +83,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg)) =>
+      = forall arg. KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg) =>
         Let_0123456789Scrutinee_0123456789Sym0KindInference
     type instance Apply Let_0123456789Scrutinee_0123456789Sym0 l = Let_0123456789Scrutinee_0123456789Sym1 l
     type Let_0123456789Scrutinee_0123456789 n h t =
@@ -96,14 +96,14 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) LeqSym1KindInference GHC.Tuple.())
     data LeqSym1 (l :: Nat) (l :: TyFun Nat Bool)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (LeqSym1 l) arg)) (KindOf (LeqSym2 l arg)) =>
+      = forall arg. KindOf (Apply (LeqSym1 l) arg) ~ KindOf (LeqSym2 l arg) =>
         LeqSym1KindInference
     type instance Apply (LeqSym1 l) l = LeqSym2 l l
     instance SuppressUnusedWarnings LeqSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) LeqSym0KindInference GHC.Tuple.())
     data LeqSym0 (l :: TyFun Nat (TyFun Nat Bool -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply LeqSym0 arg)) (KindOf (LeqSym1 arg)) =>
+      = forall arg. KindOf (Apply LeqSym0 arg) ~ KindOf (LeqSym1 arg) =>
         LeqSym0KindInference
     type instance Apply LeqSym0 l = LeqSym1 l
     type InsertSym2 (t :: Nat) (t :: GHC.Types.[] Nat) = Insert t t
@@ -112,7 +112,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) InsertSym1KindInference GHC.Tuple.())
     data InsertSym1 (l :: Nat)
                     (l :: TyFun (GHC.Types.[] Nat) (GHC.Types.[] Nat))
-      = forall arg. (GHC.Types.~) (KindOf (Apply (InsertSym1 l) arg)) (KindOf (InsertSym2 l arg)) =>
+      = forall arg. KindOf (Apply (InsertSym1 l) arg) ~ KindOf (InsertSym2 l arg) =>
         InsertSym1KindInference
     type instance Apply (InsertSym1 l) l = InsertSym2 l l
     instance SuppressUnusedWarnings InsertSym0 where
@@ -120,7 +120,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) InsertSym0KindInference GHC.Tuple.())
     data InsertSym0 (l :: TyFun Nat (TyFun (GHC.Types.[] Nat) (GHC.Types.[] Nat)
                                      -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply InsertSym0 arg)) (KindOf (InsertSym1 arg)) =>
+      = forall arg. KindOf (Apply InsertSym0 arg) ~ KindOf (InsertSym1 arg) =>
         InsertSym0KindInference
     type instance Apply InsertSym0 l = InsertSym1 l
     type InsertionSortSym1 (t :: GHC.Types.[] Nat) = InsertionSort t
@@ -128,7 +128,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) InsertionSortSym0KindInference GHC.Tuple.())
     data InsertionSortSym0 (l :: TyFun (GHC.Types.[] Nat) (GHC.Types.[] Nat))
-      = forall arg. (GHC.Types.~) (KindOf (Apply InsertionSortSym0 arg)) (KindOf (InsertionSortSym1 arg)) =>
+      = forall arg. KindOf (Apply InsertionSortSym0 arg) ~ KindOf (InsertionSortSym1 arg) =>
         InsertionSortSym0KindInference
     type instance Apply InsertionSortSym0 l = InsertionSortSym1 l
     type family Leq (a :: Nat) (a :: Nat) :: Bool where
@@ -154,23 +154,21 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
     sLeq SZero _
       = let
           lambda ::
-            forall wild. ((GHC.Types.~) t ZeroSym0, (GHC.Types.~) t wild) =>
+            forall wild. (t ~ ZeroSym0, t ~ wild) =>
             Sing (Apply (Apply LeqSym0 ZeroSym0) wild)
           lambda = STrue
         in lambda
     sLeq (SSucc _) SZero
       = let
           lambda ::
-            forall wild. ((GHC.Types.~) t (Apply SuccSym0 wild),
-                          (GHC.Types.~) t ZeroSym0) =>
+            forall wild. (t ~ Apply SuccSym0 wild, t ~ ZeroSym0) =>
             Sing (Apply (Apply LeqSym0 (Apply SuccSym0 wild)) ZeroSym0)
           lambda = SFalse
         in lambda
     sLeq (SSucc sA) (SSucc sB)
       = let
           lambda ::
-            forall a b. ((GHC.Types.~) t (Apply SuccSym0 a),
-                         (GHC.Types.~) t (Apply SuccSym0 b)) =>
+            forall a b. (t ~ Apply SuccSym0 a, t ~ Apply SuccSym0 b) =>
             Sing a
             -> Sing b
                -> Sing (Apply (Apply LeqSym0 (Apply SuccSym0 a)) (Apply SuccSym0 b))
@@ -181,7 +179,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
     sInsert sN SNil
       = let
           lambda ::
-            forall n. ((GHC.Types.~) t n, (GHC.Types.~) t GHC.Types.[]) =>
+            forall n. (t ~ n, t ~ GHC.Types.[]) =>
             Sing n -> Sing (Apply (Apply InsertSym0 n) GHC.Types.[])
           lambda n
             = applySing
@@ -190,8 +188,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
     sInsert sN (SCons sH sT)
       = let
           lambda ::
-            forall n h t. ((GHC.Types.~) t n,
-                           (GHC.Types.~) t (Apply (Apply (:$) h) t)) =>
+            forall n h t. (t ~ n, t ~ Apply (Apply (:$) h) t) =>
             Sing n
             -> Sing h
                -> Sing t
@@ -226,14 +223,13 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
     sInsertionSort SNil
       = let
           lambda ::
-            (GHC.Types.~) t GHC.Types.[] =>
-            Sing (Apply InsertionSortSym0 GHC.Types.[])
+            t ~ GHC.Types.[] => Sing (Apply InsertionSortSym0 GHC.Types.[])
           lambda = SNil
         in lambda
     sInsertionSort (SCons sH sT)
       = let
           lambda ::
-            forall h t. (GHC.Types.~) t (Apply (Apply (:$) h) t) =>
+            forall h t. t ~ Apply (Apply (:$) h) t =>
             Sing h
             -> Sing t
                -> Sing (Apply InsertionSortSym0 (Apply (Apply (:$) h) t))

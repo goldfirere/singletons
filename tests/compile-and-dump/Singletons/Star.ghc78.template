@@ -52,7 +52,7 @@ Singletons/Star.hs:0:0: Splicing declarations
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) MaybeSym0KindInference GHC.Tuple.())
     data MaybeSym0 (l :: TyFun * *)
-      = forall arg. (GHC.Types.~) (KindOf (Apply MaybeSym0 arg)) (KindOf (MaybeSym1 arg)) =>
+      = forall arg. KindOf (Apply MaybeSym0 arg) ~ KindOf (MaybeSym1 arg) =>
         MaybeSym0KindInference
     type instance Apply MaybeSym0 l = MaybeSym1 l
     type VecSym2 (t :: *) (t :: Nat) = Vec t t
@@ -60,23 +60,22 @@ Singletons/Star.hs:0:0: Splicing declarations
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) VecSym1KindInference GHC.Tuple.())
     data VecSym1 (l :: *) (l :: TyFun Nat *)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (VecSym1 l) arg)) (KindOf (VecSym2 l arg)) =>
+      = forall arg. KindOf (Apply (VecSym1 l) arg) ~ KindOf (VecSym2 l arg) =>
         VecSym1KindInference
     type instance Apply (VecSym1 l) l = VecSym2 l l
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings VecSym0 where
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) VecSym0KindInference GHC.Tuple.())
     data VecSym0 (l :: TyFun * (TyFun Nat * -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply VecSym0 arg)) (KindOf (VecSym1 arg)) =>
+      = forall arg. KindOf (Apply VecSym0 arg) ~ KindOf (VecSym1 arg) =>
         VecSym0KindInference
     type instance Apply VecSym0 l = VecSym1 l
     data instance Sing (z :: *)
-      = (GHC.Types.~) z Nat => SNat |
-        (GHC.Types.~) z Int => SInt |
-        (GHC.Types.~) z String => SString |
-        forall (n :: *). (GHC.Types.~) z (Maybe n) => SMaybe (Sing n) |
-        forall (n :: *) (n :: Nat). (GHC.Types.~) z (Vec n n) =>
-        SVec (Sing n) (Sing n)
+      = z ~ Nat => SNat |
+        z ~ Int => SInt |
+        z ~ String => SString |
+        forall (n :: *). z ~ Maybe n => SMaybe (Sing n) |
+        forall (n :: *) (n :: Nat). z ~ Vec n n => SVec (Sing n) (Sing n)
     type SRep (z :: *) = Sing z
     instance SingKind (KProxy :: KProxy *) where
       type DemoteRep (KProxy :: KProxy *) = Rep
