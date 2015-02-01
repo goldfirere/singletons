@@ -118,6 +118,10 @@ data ADClause = ADClause VarPromotions
 
 data AnnotationFlag = Annotated | Unannotated
 
+-- These are used at the type-level exclusively
+type Annotated   = 'Annotated
+type Unannotated = 'Unannotated
+
 type family IfAnn (ann :: AnnotationFlag) (yes :: k) (no :: k) :: k
 type instance IfAnn Annotated   yes no = yes
 type instance IfAnn Unannotated yes no = no

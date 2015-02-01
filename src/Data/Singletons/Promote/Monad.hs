@@ -10,7 +10,7 @@ of DDec, and is wrapped around a Q.
 -}
 
 {-# LANGUAGE GeneralizedNewtypeDeriving, StandaloneDeriving,
-             FlexibleContexts, TypeFamilies, KindSignatures #-}
+             FlexibleContexts, TypeFamilies, KindSignatures, CPP #-}
 
 module Data.Singletons.Promote.Monad (
   PrM, promoteM, promoteM_, promoteMDecs, VarPromotions,

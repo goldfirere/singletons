@@ -20,13 +20,16 @@ import System.Directory   ( doesFileExist                       )
 import Test.Tasty         ( TestTree, testGroup                 )
 import Test.Tasty.Golden  ( goldenVsFileDiff                    )
 
+#if __GLASGOW_HASKELL__ < 709
 import Distribution.PackageDescription.Parse         ( readPackageDescription    )
 import Distribution.PackageDescription.Configuration ( flattenPackageDescription )
 import Distribution.PackageDescription               ( PackageDescription(..)    )
 import Distribution.Verbosity                        ( silent                    )
+import Data.Version                                  ( showVersion               )
+#endif
 import Distribution.Package                          ( PackageIdentifier(..)     )
 import Distribution.Text                             ( simpleParse               )
-import Data.Version                                  ( showVersion, Version(..)  )
+import Data.Version                                  ( Version(..)               )
 import System.IO.Unsafe                              ( unsafePerformIO           )
 
 #include "../dist/build/autogen/cabal_macros.h"
@@ -91,12 +94,14 @@ extraOpts = unsafePerformIO $ do
              | otherwise                 = []
   return $ ghcPackageDbOpts ++ mtlOpt
 
+#if __GLASGOW_HASKELL__ < 709
 -- the version number of "singletons"
 singletonsVersion :: String
 singletonsVersion = unsafePerformIO $ do
   gpd <- readPackageDescription silent "singletons.cabal"
   let pd = flattenPackageDescription gpd
   return $ showVersion $ pkgVersion $ package pd
+#endif
 
 -- GHC options used when running the tests
 ghcOpts :: [String]

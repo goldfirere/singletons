@@ -5,7 +5,7 @@
 
 -}
 
-{-# LANGUAGE Trustworthy, DeriveDataTypeable, DeriveGeneric, StandaloneDeriving #-}
+{-# LANGUAGE Safe, DeriveDataTypeable, DeriveGeneric, StandaloneDeriving #-}
 
 -----------------------------------------------------------------------------
 -- |

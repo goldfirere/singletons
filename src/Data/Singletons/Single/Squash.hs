@@ -21,7 +21,6 @@ import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
 import Language.Haskell.TH.Syntax
 import Control.Arrow
-import Data.Monoid
 
 squashWildcards :: DsMonad q => [DLetDec] -> q [DLetDec]
 squashWildcards = freshenNames <=< mapM (go_let_dec <=< scLetDec)
