@@ -162,7 +162,7 @@ module Data.Singletons.Prelude (
   FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
 
-  (:$), (:$$), (:$$$), NilSym0, ConsSym0, ConsSym1, ConsSym2,
+  (:$), (:$$), (:$$$), NilSym0,
   MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
   (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
