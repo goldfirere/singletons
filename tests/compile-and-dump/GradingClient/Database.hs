@@ -12,6 +12,7 @@ presented in /Dependently typed programming with singletons/
     GADTs, TypeOperators, RankNTypes, FlexibleContexts, UndecidableInstances,
     FlexibleInstances, ScopedTypeVariables, MultiParamTypeClasses,
     OverlappingInstances, ConstraintKinds, CPP #-}
+{-# OPTIONS_GHC -fno-warn-warnings-deprecations #-}
 
 -- The OverlappingInstances is needed only to allow the InC and SubsetC classes.
 -- This is simply a convenience so that GHC can infer the necessary proofs of
