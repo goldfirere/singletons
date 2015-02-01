@@ -1,6 +1,15 @@
 Changelog for singletons project
 ================================
 
+1.1
+---
+
+This is a maintenance release to support building (but *not* testing, due to
+GHC bug #10058) with 7.10. This release also targets th-desugar-1.5. Some
+types changed (using th-desugar's new `DsMonad` instead of `Quasi`), but
+clients generally won't need to make any changes, unless they, too, generalize
+over `Quasi`.
+
 1.0
 ---
 
