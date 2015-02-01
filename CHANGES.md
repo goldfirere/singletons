@@ -1,8 +1,8 @@
 Changelog for singletons project
 ================================
 
-1.1
------
+1.2
+---
 
 * Instance promotion now works properly -- it was quite buggy in 1.0.
 
@@ -24,6 +24,15 @@ functions that have constrained parameters now work.
 * Support for functions of arity 8 (instead of the old limit, 7).
 
 * No more GHC 7.8.2 support -- you must have GHC 7.8.3.
+
+1.1
+---
+
+This is a maintenance release to support building (but *not* testing, due to
+GHC bug #10058) with 7.10. This release also targets th-desugar-1.5. Some
+types changed (using th-desugar's new `DsMonad` instead of `Quasi`), but
+clients generally won't need to make any changes, unless they, too, generalize
+over `Quasi`.
 
 1.0
 ---
