@@ -4815,7 +4815,3 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing expression
     case r of {
       EmptyRow _ -> changeId ((++) n (getId r)) r
       ConsRow _ _ -> changeId ((++) n (getId r)) r }
-
-GradingClient/Database.hs:0:0: Warning:
-    Module ‘Control.Monad.Error’ is deprecated:
-      Use Control.Monad.Except instead
