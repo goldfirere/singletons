@@ -37,13 +37,13 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type ComplexSym0 = Complex
     type PrSym0 = Pr
     type AList =
-        Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) GHC.Types.[]))
+        Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) '[]))
     type Tuple =
         Apply (Apply (Apply Tuple3Sym0 FalseSym0) (Apply JustSym0 ZeroSym0)) TrueSym0
     type Complex =
         Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
     type Pr =
-        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) ZeroSym0) GHC.Types.[])
+        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) ZeroSym0) '[])
     sAList :: Sing AListSym0
     sTuple :: Sing TupleSym0
     sComplex :: Sing ComplexSym0
@@ -210,7 +210,8 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 x y t where
-      Case_0123456789 x y (GHC.Tuple.(,) a b) = Apply (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) a) b) b
+      Case_0123456789 x y '(a,
+                            b) = Apply (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) a) b) b
     type family Case_0123456789 x y arg_0123456789 t where
       Case_0123456789 x y arg_0123456789 z = x
     type family Lambda_0123456789 x y t where
@@ -241,15 +242,15 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 ((GHC.Types.:) (Succ z) GHC.Types.[]))) = y_0123456789
+      Case_0123456789 '[z, y_0123456789, Succ z] = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) z ((GHC.Types.:) (Succ y_0123456789) GHC.Types.[]))) = y_0123456789
+      Case_0123456789 '[z, z, Succ y_0123456789] = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (GHC.Tuple.(,,) y_0123456789 z z) = y_0123456789
+      Case_0123456789 '(y_0123456789, z, z) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (GHC.Tuple.(,,) z y_0123456789 z) = y_0123456789
+      Case_0123456789 '(z, y_0123456789, z) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (GHC.Tuple.(,,) z z y_0123456789) = y_0123456789
+      Case_0123456789 '(z, z, y_0123456789) = y_0123456789
     type family Case_0123456789 t where
       Case_0123456789 (Pair (Pair y_0123456789 z) z) = y_0123456789
     type family Case_0123456789 t where
@@ -260,19 +261,19 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
       Case_0123456789 (Pair y_0123456789 z) = y_0123456789
     type family Case_0123456789 t where
       Case_0123456789 (Pair z y_0123456789) = y_0123456789
-    type Foo2Sym1 (t :: GHC.Tuple.(,) a b) = Foo2 t
+    type Foo2Sym1 (t :: (a, b)) = Foo2 t
     instance SuppressUnusedWarnings Foo2Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo2Sym0KindInference GHC.Tuple.())
-    data Foo2Sym0 (l :: TyFun (GHC.Tuple.(,) a b) a)
+    data Foo2Sym0 (l :: TyFun (a, b) a)
       = forall arg. KindOf (Apply Foo2Sym0 arg) ~ KindOf (Foo2Sym1 arg) =>
         Foo2Sym0KindInference
     type instance Apply Foo2Sym0 l = Foo2Sym1 l
-    type Foo1Sym1 (t :: GHC.Tuple.(,) a b) = Foo1 t
+    type Foo1Sym1 (t :: (a, b)) = Foo1 t
     instance SuppressUnusedWarnings Foo1Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
-    data Foo1Sym0 (l :: TyFun (GHC.Tuple.(,) a b) a)
+    data Foo1Sym0 (l :: TyFun (a, b) a)
       = forall arg. KindOf (Apply Foo1Sym0 arg) ~ KindOf (Foo1Sym1 arg) =>
         Foo1Sym0KindInference
     type instance Apply Foo1Sym0 l = Foo1Sym1 l
@@ -290,10 +291,11 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type X_0123456789Sym0 = X_0123456789
     type X_0123456789Sym0 = X_0123456789
     type X_0123456789Sym0 = X_0123456789
-    type family Foo2 (a :: GHC.Tuple.(,) a b) :: a where
-      Foo2 (GHC.Tuple.(,) x y) = Case_0123456789 x y (Let_0123456789Scrutinee_0123456789Sym2 x y)
-    type family Foo1 (a :: GHC.Tuple.(,) a b) :: a where
-      Foo1 (GHC.Tuple.(,) x y) = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
+    type family Foo2 (a :: (a, b)) :: a where
+      Foo2 '(x,
+             y) = Case_0123456789 x y (Let_0123456789Scrutinee_0123456789Sym2 x y)
+    type family Foo1 (a :: (a, b)) :: a where
+      Foo1 '(x, y) = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
     type Lsz = (Case_0123456789 X_0123456789Sym0 :: Nat)
     type Blimy = Case_0123456789 X_0123456789Sym0
     type Tf = Case_0123456789 X_0123456789Sym0
@@ -308,10 +310,8 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type X_0123456789 = ComplexSym0
     type X_0123456789 = TupleSym0
     type X_0123456789 = AListSym0
-    sFoo2 ::
-      forall (t :: GHC.Tuple.(,) a b). Sing t -> Sing (Apply Foo2Sym0 t)
-    sFoo1 ::
-      forall (t :: GHC.Tuple.(,) a b). Sing t -> Sing (Apply Foo1Sym0 t)
+    sFoo2 :: forall (t :: (a, b)). Sing t -> Sing (Apply Foo2Sym0 t)
+    sFoo1 :: forall (t :: (a, b)). Sing t -> Sing (Apply Foo1Sym0 t)
     sLsz :: Sing LszSym0
     sBlimy :: Sing BlimySym0
     sTf :: Sing TfSym0
@@ -408,7 +408,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
                  lambda ::
                    forall y_0123456789 wild wild.
                    Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply (:$) wild) (Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) (Apply SuccSym0 wild)) GHC.Types.[]))))
+                   -> Sing (Case_0123456789 (Apply (Apply (:$) wild) (Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) (Apply SuccSym0 wild)) '[]))))
                  lambda y_0123456789 = y_0123456789
                in lambda sY_0123456789 }
     sBlimy
@@ -418,7 +418,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
                  lambda ::
                    forall y_0123456789 wild wild.
                    Sing y_0123456789
-                   -> Sing (Case_0123456789 (Apply (Apply (:$) wild) (Apply (Apply (:$) wild) (Apply (Apply (:$) (Apply SuccSym0 y_0123456789)) GHC.Types.[]))))
+                   -> Sing (Case_0123456789 (Apply (Apply (:$) wild) (Apply (Apply (:$) wild) (Apply (Apply (:$) (Apply SuccSym0 y_0123456789)) '[]))))
                  lambda y_0123456789 = y_0123456789
                in lambda sY_0123456789 }
     sTf

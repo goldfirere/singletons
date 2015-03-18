@@ -31,7 +31,7 @@ Singletons/LambdaCase.hs:0:0: Splicing declarations
     foo3 :: forall a b. a -> b -> a
     foo3 a b = \case { (p, _) -> p } (a, b)
     type family Case_0123456789 a b x_0123456789 t where
-      Case_0123456789 a b x_0123456789 (GHC.Tuple.(,) p z) = p
+      Case_0123456789 a b x_0123456789 '(p, z) = p
     type family Lambda_0123456789 a b t where
       Lambda_0123456789 a b x_0123456789 = Case_0123456789 a b x_0123456789 x_0123456789
     type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t

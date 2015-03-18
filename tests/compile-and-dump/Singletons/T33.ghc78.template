@@ -6,19 +6,18 @@ Singletons/T33.hs:0:0: Splicing declarations
     Singletons/T33.hs:(0,0)-(0,0)
     foo :: (Bool, Bool) -> ()
     foo ~(_, _) = GHC.Tuple.()
-    type FooSym1 (t :: GHC.Tuple.(,) Bool Bool) = Foo t
+    type FooSym1 (t :: (Bool, Bool)) = Foo t
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
-    data FooSym0 (l :: TyFun (GHC.Tuple.(,) Bool Bool) GHC.Tuple.())
+    data FooSym0 (l :: TyFun (Bool, Bool) ())
       = forall arg. KindOf (Apply FooSym0 arg) ~ KindOf (FooSym1 arg) =>
         FooSym0KindInference
     type instance Apply FooSym0 l = FooSym1 l
-    type family Foo (a :: GHC.Tuple.(,) Bool Bool) :: GHC.Tuple.() where
-      Foo (GHC.Tuple.(,) z z) = Tuple0Sym0
+    type family Foo (a :: (Bool, Bool)) :: () where
+      Foo '(z, z) = Tuple0Sym0
     sFoo ::
-      forall (t :: GHC.Tuple.(,) Bool Bool).
-      Sing t -> Sing (Apply FooSym0 t)
+      forall (t :: (Bool, Bool)). Sing t -> Sing (Apply FooSym0 t)
     sFoo (STuple2 _ _)
       = let
           lambda ::

@@ -119,8 +119,8 @@ Promote/Classes.hs:0:0: Splicing declarations
       type Mycompare (Zero :: Nat) (Succ z :: Nat) = (LTSym0 :: Ordering)
       type Mycompare (Succ z :: Nat) (Zero :: Nat) = (GTSym0 :: Ordering)
       type Mycompare (Succ n :: Nat) (Succ m :: Nat) = (Apply (Apply MycompareSym0 m) n :: Ordering)
-    instance PMyOrd (KProxy :: KProxy GHC.Tuple.()) where
-      type Mycompare (z :: GHC.Tuple.()) (a_0123456789 :: GHC.Tuple.()) = (Apply (Apply ConstSym0 EQSym0) a_0123456789 :: Ordering)
+    instance PMyOrd (KProxy :: KProxy ()) where
+      type Mycompare (z :: ()) (a_0123456789 :: ()) = (Apply (Apply ConstSym0 EQSym0) a_0123456789 :: Ordering)
     instance PMyOrd (KProxy :: KProxy Foo) where
       type Mycompare (a_0123456789 :: Foo) (a_0123456789 :: Foo) = (Apply (Apply FooCompareSym0 a_0123456789) a_0123456789 :: Ordering)
     type ASym0 = A

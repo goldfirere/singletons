@@ -38,21 +38,21 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     m :: Bool
     [l, m] = [not True, id False]
     type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) z GHC.Types.[])) = y_0123456789
+      Case_0123456789 a_0123456789 '[y_0123456789, z] = y_0123456789
     type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
+      Case_0123456789 a_0123456789 '[z, y_0123456789] = y_0123456789
     type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 (GHC.Tuple.(,) y_0123456789 z) = y_0123456789
+      Case_0123456789 a_0123456789 '(y_0123456789, z) = y_0123456789
     type family Case_0123456789 a_0123456789 t where
-      Case_0123456789 a_0123456789 (GHC.Tuple.(,) z y_0123456789) = y_0123456789
+      Case_0123456789 a_0123456789 '(z, y_0123456789) = y_0123456789
     type family Case_0123456789 t where
       Case_0123456789 (Bar y_0123456789 z) = y_0123456789
     type family Case_0123456789 t where
       Case_0123456789 (Bar z y_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) z GHC.Types.[])) = y_0123456789
+      Case_0123456789 '[y_0123456789, z] = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) z ((GHC.Types.:) y_0123456789 GHC.Types.[])) = y_0123456789
+      Case_0123456789 '[z, y_0123456789] = y_0123456789
     type NotSym1 (t :: Bool) = Not t
     instance SuppressUnusedWarnings NotSym0 where
       suppressUnusedWarnings _
@@ -127,12 +127,12 @@ Promote/TopLevelPatterns.hs:0:0: Splicing declarations
     type L = (Case_0123456789 X_0123456789Sym0 :: Bool)
     type M = (Case_0123456789 X_0123456789Sym0 :: Bool)
     type X_0123456789 =
-        Apply (Apply (:$) NotSym0) (Apply (Apply (:$) IdSym0) GHC.Types.[])
+        Apply (Apply (:$) NotSym0) (Apply (Apply (:$) IdSym0) '[])
     type X_0123456789 = Apply (Apply Tuple2Sym0 FSym0) GSym0
     type X_0123456789 =
         Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0)
     type X_0123456789 =
-        Apply (Apply (:$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:$) (Apply IdSym0 FalseSym0)) GHC.Types.[])
+        Apply (Apply (:$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:$) (Apply IdSym0 FalseSym0)) '[])
     type FalseSym0 = False
     type TrueSym0 = True
     type BarSym2 (t :: Bool) (t :: Bool) = Bar t t

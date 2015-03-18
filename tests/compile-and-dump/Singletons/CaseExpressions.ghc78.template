@@ -134,7 +134,7 @@ Singletons/CaseExpressions.hs:0:0: Splicing declarations
     type Let_0123456789Scrutinee_0123456789 a b =
         Apply (Apply Tuple2Sym0 a) b
     type family Case_0123456789 a b t where
-      Case_0123456789 a b (GHC.Tuple.(,) p z) = p
+      Case_0123456789 a b '(p, z) = p
     type Let_0123456789Scrutinee_0123456789Sym1 t =
         Let_0123456789Scrutinee_0123456789 t
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym0 where

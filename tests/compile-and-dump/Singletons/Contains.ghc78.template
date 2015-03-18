@@ -8,32 +8,32 @@ Singletons/Contains.hs:0:0: Splicing declarations
     contains :: forall a. Eq a => a -> [a] -> Bool
     contains _ GHC.Types.[] = False
     contains elt (h GHC.Types.: t) = ((elt == h) || (contains elt t))
-    type ContainsSym2 (t :: a) (t :: GHC.Types.[] a) = Contains t t
+    type ContainsSym2 (t :: a) (t :: [a]) = Contains t t
     instance SuppressUnusedWarnings ContainsSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ContainsSym1KindInference GHC.Tuple.())
-    data ContainsSym1 (l :: a) (l :: TyFun (GHC.Types.[] a) Bool)
+    data ContainsSym1 (l :: a) (l :: TyFun [a] Bool)
       = forall arg. KindOf (Apply (ContainsSym1 l) arg) ~ KindOf (ContainsSym2 l arg) =>
         ContainsSym1KindInference
     type instance Apply (ContainsSym1 l) l = ContainsSym2 l l
     instance SuppressUnusedWarnings ContainsSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ContainsSym0KindInference GHC.Tuple.())
-    data ContainsSym0 (l :: TyFun a (TyFun (GHC.Types.[] a) Bool -> *))
+    data ContainsSym0 (l :: TyFun a (TyFun [a] Bool -> *))
       = forall arg. KindOf (Apply ContainsSym0 arg) ~ KindOf (ContainsSym1 arg) =>
         ContainsSym0KindInference
     type instance Apply ContainsSym0 l = ContainsSym1 l
-    type family Contains (a :: a) (a :: GHC.Types.[] a) :: Bool where
-      Contains z GHC.Types.[] = FalseSym0
-      Contains elt ((GHC.Types.:) h t) = Apply (Apply (:||$) (Apply (Apply (:==$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
+    type family Contains (a :: a) (a :: [a]) :: Bool where
+      Contains z '[] = FalseSym0
+      Contains elt ((:) h t) = Apply (Apply (:||$) (Apply (Apply (:==$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
     sContains ::
-      forall (t :: a) (t :: GHC.Types.[] a). SEq (KProxy :: KProxy a) =>
+      forall (t :: a) (t :: [a]). SEq (KProxy :: KProxy a) =>
       Sing t -> Sing t -> Sing (Apply (Apply ContainsSym0 t) t)
     sContains _ SNil
       = let
           lambda ::
-            forall wild. (t ~ wild, t ~ GHC.Types.[]) =>
-            Sing (Apply (Apply ContainsSym0 wild) GHC.Types.[])
+            forall wild. (t ~ wild, t ~ '[]) =>
+            Sing (Apply (Apply ContainsSym0 wild) '[])
           lambda = SFalse
         in lambda
     sContains sElt (SCons sH sT)

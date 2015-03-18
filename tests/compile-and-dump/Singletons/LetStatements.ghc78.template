@@ -191,9 +191,9 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
     foo14 :: Nat -> (Nat, Nat)
     foo14 x = let (y, z) = (Succ x, x) in (z, y)
     type family Case_0123456789 x t where
-      Case_0123456789 x (GHC.Tuple.(,) y_0123456789 z) = y_0123456789
+      Case_0123456789 x '(y_0123456789, z) = y_0123456789
     type family Case_0123456789 x t where
-      Case_0123456789 x (GHC.Tuple.(,) z y_0123456789) = y_0123456789
+      Case_0123456789 x '(z, y_0123456789) = y_0123456789
     type Let_0123456789YSym1 t = Let_0123456789Y t
     instance SuppressUnusedWarnings Let_0123456789YSym0 where
       suppressUnusedWarnings _
@@ -517,7 +517,7 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
     instance SuppressUnusedWarnings Foo14Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo14Sym0KindInference GHC.Tuple.())
-    data Foo14Sym0 (l :: TyFun Nat (GHC.Tuple.(,) Nat Nat))
+    data Foo14Sym0 (l :: TyFun Nat (Nat, Nat))
       = forall arg. KindOf (Apply Foo14Sym0 arg) ~ KindOf (Foo14Sym1 arg) =>
         Foo14Sym0KindInference
     type instance Apply Foo14Sym0 l = Foo14Sym1 l
@@ -626,7 +626,7 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
       = forall arg. KindOf (Apply Foo1Sym0 arg) ~ KindOf (Foo1Sym1 arg) =>
         Foo1Sym0KindInference
     type instance Apply Foo1Sym0 l = Foo1Sym1 l
-    type family Foo14 (a :: Nat) :: GHC.Tuple.(,) Nat Nat where
+    type family Foo14 (a :: Nat) :: (Nat, Nat) where
       Foo14 x = Apply (Apply Tuple2Sym0 (Let_0123456789ZSym1 x)) (Let_0123456789YSym1 x)
     type family Foo13_ (a :: a) :: a where
       Foo13_ y = y

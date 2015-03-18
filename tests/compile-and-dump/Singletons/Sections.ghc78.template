@@ -53,11 +53,11 @@ Singletons/Sections.hs:0:0: Splicing declarations
       (:+) Zero m = m
       (:+) (Succ n) m = Apply SuccSym0 (Apply (Apply (:+$) n) m)
     type Foo1 =
-        (Apply (Apply MapSym0 (Apply (:+$) (Apply SuccSym0 ZeroSym0))) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) GHC.Types.[])) :: GHC.Types.[] Nat)
+        (Apply (Apply MapSym0 (Apply (:+$) (Apply SuccSym0 ZeroSym0))) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[])) :: [Nat])
     type Foo2 =
-        (Apply (Apply MapSym0 Lambda_0123456789Sym0) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) GHC.Types.[])) :: GHC.Types.[] Nat)
+        (Apply (Apply MapSym0 Lambda_0123456789Sym0) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[])) :: [Nat])
     type Foo3 =
-        (Apply (Apply (Apply ZipWithSym0 (:+$)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) GHC.Types.[]))) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) GHC.Types.[])) :: GHC.Types.[] Nat)
+        (Apply (Apply (Apply ZipWithSym0 (:+$)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[]))) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[])) :: [Nat])
     (%:+) ::
       forall (t :: Nat) (t :: Nat).
       Sing t -> Sing t -> Sing (Apply (Apply (:+$) t) t)
