@@ -30,8 +30,10 @@ description:
     presented in /Dependently Typed Programming with Singletons/, published
     at the Haskell Symposium, 2012.
     (<http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>)
-    The promotion mechanism in the library is described in the draft paper here:
-    (<http://www.cis.upenn.edu/~eir/papers/2014/promotion/promotion.pdf>)
+
+    Version 1.0 and onwards works a lot harder to promote functions. See the
+    paper published at Haskell Symposium, 2014:
+    <http://www.cis.upenn.edu/~eir/papers/2014/promotion/promotion.pdf>.
 
 source-repository this
   type:     git
@@ -44,7 +46,7 @@ library
                       mtl >= 2.1.2,
                       template-haskell,
                       containers >= 0.5,
-                      th-desugar >= 1.5 && < 1.6
+                      th-desugar >= 1.5.2 && < 1.6
   default-language:   Haskell2010
   other-extensions:   TemplateHaskell
         -- TemplateHaskell must be listed in cabal file to work with

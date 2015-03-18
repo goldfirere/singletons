@@ -25,6 +25,11 @@ functions that have constrained parameters now work.
 
 * No more GHC 7.8.2 support -- you must have GHC 7.8.3.
 
+1.1.1
+-----
+
+Update testsuite to work with th-desugar-1.5.2. No functional changes.
+
 1.1
 ---
 
