@@ -4,7 +4,7 @@ Changelog for singletons project
 1.1.1
 -----
 
-Update testsuite to work with th-desugar-1.5.1. No functional changes.
+Update testsuite to work with th-desugar-1.5.2. No functional changes.
 
 1.1
 ---
