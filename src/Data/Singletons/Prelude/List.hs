@@ -67,7 +67,7 @@ module Data.Singletons.Prelude.List (
   -- ** Extracting sublists
   Inits, sInits, Tails, sTails, TakeWhile, sTakeWhile, DropWhile, sDropWhile,
   DropWhileEnd, sDropWhileEnd, Span, sSpan, Break, sBreak,
-  StripPrefix, sStripPrefix, Group, sGroup, 
+  StripPrefix, sStripPrefix, Group, sGroup,
 
   -- ** Predicates
   IsPrefixOf, sIsPrefixOf, IsSuffixOf, sIsSuffixOf, IsInfixOf, sIsInfixOf,
@@ -222,6 +222,7 @@ import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Maybe
+import Data.Singletons.Prelude.List.Zips
 import Data.Maybe
 
 $(singletons [d|
@@ -410,66 +411,6 @@ $(singletonsOnly [d|
   notElem _ []            =  True
   notElem x (y:ys)        =  x /= y && notElem x ys
 
-  zip :: [a] -> [b] -> [(a,b)]
-  zip (x:xs) (y:ys) = (x,y) : zip xs ys
-  zip [] []         = []
-  zip (_:_) []      = []
-  zip [] (_:_)      = []
-
-  zip3 :: [a] -> [b] -> [c] -> [(a,b,c)]
-  zip3 (a:as) (b:bs) (c:cs) = (a,b,c) : zip3 as bs cs
-  zip3 []     []     []     = []
-  zip3 []     []     (_:_)  = []
-  zip3 []     (_:_)     []  = []
-  zip3 []     (_:_)  (_:_)  = []
-  zip3 (_:_)  []     []     = []
-  zip3 (_:_)  []     (_:_)  = []
-  zip3 (_:_)  (_:_)  []     = []
-
-  zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
-  zipWith f (x:xs) (y:ys) = f x y : zipWith f xs ys
-  zipWith _ [] []         = []
-  zipWith _ (_:_) []      = []
-  zipWith _ [] (_:_)      = []
-
-  zipWith3                :: (a->b->c->d) -> [a]->[b]->[c]->[d]
-  zipWith3 z (a:as) (b:bs) (c:cs) =  z a b c : zipWith3 z as bs cs
-  zipWith3 _ []     []     []     = []
-  zipWith3 _ []     []     (_:_)  = []
-  zipWith3 _ []     (_:_)     []  = []
-  zipWith3 _ []     (_:_)  (_:_)  = []
-  zipWith3 _ (_:_)  []     []     = []
-  zipWith3 _ (_:_)  []     (_:_)  = []
-  zipWith3 _ (_:_)  (_:_)  []     = []
-
-  unzip    :: [(a,b)] -> ([a],[b])
-  unzip xs =  foldr (\(a,b) (as,bs) -> (a:as,b:bs)) ([],[]) xs
-
-  -- Lazy patterns removed from unzip
-  unzip3                  :: [(a,b,c)] -> ([a],[b],[c])
-  unzip3 xs               =  foldr (\(a,b,c) (as,bs,cs) -> (a:as,b:bs,c:cs))
-                                   ([],[],[]) xs
-
-  unzip4                  :: [(a,b,c,d)] -> ([a],[b],[c],[d])
-  unzip4 xs               =  foldr (\(a,b,c,d) (as,bs,cs,ds) ->
-                                          (a:as,b:bs,c:cs,d:ds))
-                                   ([],[],[],[]) xs
-
-  unzip5                  :: [(a,b,c,d,e)] -> ([a],[b],[c],[d],[e])
-  unzip5 xs               =  foldr (\(a,b,c,d,e) (as,bs,cs,ds,es) ->
-                                          (a:as,b:bs,c:cs,d:ds,e:es))
-                                   ([],[],[],[],[]) xs
-
-  unzip6                  :: [(a,b,c,d,e,f)] -> ([a],[b],[c],[d],[e],[f])
-  unzip6 xs               =  foldr (\(a,b,c,d,e,f) (as,bs,cs,ds,es,fs) ->
-                                          (a:as,b:bs,c:cs,d:ds,e:es,f:fs))
-                                   ([],[],[],[],[],[]) xs
-
-  unzip7                  :: [(a,b,c,d,e,f,g)] -> ([a],[b],[c],[d],[e],[f],[g])
-  unzip7 xs               =  foldr (\(a,b,c,d,e,f,g) (as,bs,cs,ds,es,fs,gs) ->
-                                          (a:as,b:bs,c:cs,d:ds,e:es,f:fs,g:gs))
-                                   ([],[],[],[],[],[],[]) xs
-
 -- We can't promote any of these functions because at the type level
 -- String literals are no longer considered to be lists of Chars, so
 -- there is mismatch between term-level and type-level semantics
@@ -603,43 +544,6 @@ $(singletonsOnly [d|
   select :: (a -> Bool) -> a -> ([a], [a]) -> ([a], [a])
   select p x ~(ts,fs) | p x       = (x:ts,fs)
                       | otherwise = (ts, x:fs)
-
-  zip4                    :: [a] -> [b] -> [c] -> [d] -> [(a,b,c,d)]
-  zip4                    =  zipWith4 (,,,)
-
-  zip5                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [(a,b,c,d,e)]
-  zip5                    =  zipWith5 (,,,,)
-
-  zip6                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [f] ->
-                              [(a,b,c,d,e,f)]
-  zip6                    =  zipWith6 (,,,,,)
-
-  zip7                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [f] ->
-                              [g] -> [(a,b,c,d,e,f,g)]
-  zip7                    =  zipWith7 (,,,,,,)
-
-  zipWith4                :: (a->b->c->d->e) -> [a]->[b]->[c]->[d]->[e]
-  zipWith4 z (a:as) (b:bs) (c:cs) (d:ds)
-                          =  z a b c d : zipWith4 z as bs cs ds
-  zipWith4 _ _ _ _ _      =  []
-
-  zipWith5                :: (a->b->c->d->e->f) ->
-                             [a]->[b]->[c]->[d]->[e]->[f]
-  zipWith5 z (a:as) (b:bs) (c:cs) (d:ds) (e:es)
-                          =  z a b c d e : zipWith5 z as bs cs ds es
-  zipWith5 _ _ _ _ _ _    = []
-
-  zipWith6                :: (a->b->c->d->e->f->g) ->
-                             [a]->[b]->[c]->[d]->[e]->[f]->[g]
-  zipWith6 z (a:as) (b:bs) (c:cs) (d:ds) (e:es) (f:fs)
-                          =  z a b c d e f : zipWith6 z as bs cs ds es fs
-  zipWith6 _ _ _ _ _ _ _  = []
-
-  zipWith7                :: (a->b->c->d->e->f->g->h) ->
-                             [a]->[b]->[c]->[d]->[e]->[f]->[g]->[h]
-  zipWith7 z (a:as) (b:bs) (c:cs) (d:ds) (e:es) (f:fs) (g:gs)
-                     =  z a b c d e f g : zipWith7 z as bs cs ds es fs gs
-  zipWith7 _ _ _ _ _ _ _ _ = []
 
   nub                     :: (Eq a) => [a] -> [a]
   nub l                   = nub' l []
