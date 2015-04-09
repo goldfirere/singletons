@@ -59,6 +59,16 @@ saved in a "golden" file. Below are some details about these tests:
    This will simply compile all the tests without actually checking that
    produced TH output is exactly as expected.
 
+ * You can run single tests or groups of tests whose name match a regexp using
+   tasty's pattern feature. For example:
+
+   ```bash
+   cabal test --test-options="--pattern=Testsuite/Singletons/*"
+   ```
+
+   runs all tests in the Testsuite/Singletons branch of the test tree.
+   SingletonsTestSuite module defines structure of the test tree.
+
 ## Generating golden files from templates
 
 It is possible to have definitions generated in one tests used in another
