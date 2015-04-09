@@ -14,6 +14,7 @@ import Prelude hiding ( exp )
 
 import Language.Haskell.TH.Desugar
 import Control.Applicative
+import Data.Monoid
 import Control.Monad
 import Data.Singletons.Util
 import Data.Singletons.Names
