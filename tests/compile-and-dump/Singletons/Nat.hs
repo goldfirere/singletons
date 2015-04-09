@@ -12,7 +12,9 @@ $(singletons [d|
     Zero :: Nat
     Succ :: Nat -> Nat
       deriving (Eq, Show, Read)
+ |])
 
+$(singletons [d|
   plus :: Nat -> Nat -> Nat
   plus Zero m = m
   plus (Succ n) m = Succ (plus n m)
