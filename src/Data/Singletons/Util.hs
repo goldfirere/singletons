@@ -11,7 +11,7 @@ Users of the package should not need to consult this file.
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses, StandaloneDeriving,
              UndecidableInstances, MagicHash, UnboxedTuples,
-             LambdaCase #-}
+             LambdaCase, CPP #-}
 
 module Data.Singletons.Util where
 
@@ -20,7 +20,11 @@ import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Char
 import Control.Monad hiding ( mapM )
+#if __GLASGOW_HASKELL__ < 710
+-- We don't need this import for GHC 7.10 as it exports all required functions
+-- from Prelude
 import Control.Applicative
+#endif
 import Control.Monad.Writer hiding ( mapM )
 import Control.Monad.Reader hiding ( mapM )
 import qualified Data.Map as Map

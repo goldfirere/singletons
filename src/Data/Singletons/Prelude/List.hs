@@ -684,4 +684,3 @@ $(singletonsOnly [d|
   intersectBy _  (_:_) [] =  []
   intersectBy eq xs ys    =  filter (\x -> any_ (eq x) ys) xs
   |])
-

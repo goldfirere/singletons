@@ -1,4 +1,4 @@
-{-# LANGUAGE DataKinds, TypeFamilies, KindSignatures, TemplateHaskell #-}
+{-# LANGUAGE DataKinds, TypeFamilies, KindSignatures, TemplateHaskell, CPP #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -33,7 +33,11 @@ import Data.Singletons.Syntax
 import Data.Singletons.Names
 import Control.Monad
 import Data.Maybe
+#if __GLASGOW_HASKELL__ < 710
+-- We don't need this import for GHC 7.10 as it exports all required functions
+-- from Prelude
 import Control.Applicative
+#endif
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Bool

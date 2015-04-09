@@ -7,7 +7,7 @@ This file contains functions to promote term-level constructs to the
 type level. It is an internal module to the singletons package.
 -}
 
-{-# LANGUAGE TemplateHaskell, MultiWayIf, LambdaCase, TupleSections #-}
+{-# LANGUAGE TemplateHaskell, MultiWayIf, LambdaCase, TupleSections, CPP #-}
 
 module Data.Singletons.Promote where
 
@@ -26,7 +26,11 @@ import Data.Singletons.Util
 import Data.Singletons.Syntax
 import Prelude hiding (exp)
 import Control.Monad
+#if __GLASGOW_HASKELL__ < 710
+-- We don't need this import for GHC 7.10 as it exports all required functions
+-- from Prelude
 import Control.Applicative
+#endif
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 

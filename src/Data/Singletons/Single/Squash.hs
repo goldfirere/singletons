@@ -6,15 +6,19 @@ eir@cis.upenn.edu
 Squash top-level wildcard patterns.
 -}
 
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, CPP #-}
 
 module Data.Singletons.Single.Squash where
 
 import Prelude hiding ( exp )
 
 import Language.Haskell.TH.Desugar
+#if __GLASGOW_HASKELL__ < 710
+-- We don't need thess imports for GHC 7.10 as it exports all required functions
+-- from Prelude
 import Control.Applicative
 import Data.Monoid
+#endif
 import Control.Monad
 import Data.Singletons.Util
 import Data.Singletons.Names
@@ -71,7 +75,7 @@ squashWildcards = freshenNames <=< mapM (go_let_dec <=< scLetDec)
       | (DVarE err) `DAppE` _ <- rhs
       , err == errorName
       = return [DMatch DWildPa rhs]
-      
+
     mk_wild_matches used@(c1:_) rhs = do
       ty_name <- dataConNameToDataName c1
       (_, cons) <- getDataD "Constructor of unknown datatype" ty_name
@@ -149,7 +153,7 @@ freshenNames decs = snd `liftM` bind_let_decs mempty decs
     use_name (_, mapping) n = case Map.lookup n mapping of
       Just n' -> n'
       Nothing -> n
-      
+
 mapAccumLM :: Monad m
             => (acc -> x -> m (acc, y)) -- ^ combining funcction
             -> acc                      -- ^ initial state

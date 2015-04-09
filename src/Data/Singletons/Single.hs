@@ -6,7 +6,7 @@ eir@cis.upenn.edu
 This file contains functions to refine constructs to work with singleton
 types. It is an internal module to the singletons package.
 -}
-{-# LANGUAGE TemplateHaskell, TupleSections, ParallelListComp #-}
+{-# LANGUAGE TemplateHaskell, TupleSections, ParallelListComp, CPP #-}
 
 module Data.Singletons.Single where
 
@@ -27,7 +27,11 @@ import Language.Haskell.TH.Desugar
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Control.Monad
+#if __GLASGOW_HASKELL__ < 710
+-- We don't need this import for GHC 7.10 as it exports all required functions
+-- from Prelude
 import Control.Applicative
+#endif
 
 {-
 How singletons works
