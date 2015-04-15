@@ -104,9 +104,7 @@ data ADExp = ADVarE Name
            | ADLamE VarPromotions  -- bind these type variables to these term vars
                     DType          -- the promoted lambda
                     [Name] ADExp
-           | ADCaseE ADExp DType [ADMatch] DType
-               -- the first type is the promoted scrutinee;
-               -- the second type is the return type
+           | ADCaseE ADExp [ADMatch] DType  -- the type is the return type
            | ADLetE ALetDecEnv ADExp
            | ADSigE ADExp DType
 

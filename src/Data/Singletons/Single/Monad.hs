@@ -12,7 +12,7 @@ The SgM monad allows reading from a SgEnv environment and is wrapped around a Q.
              TemplateHaskell, CPP #-}
 
 module Data.Singletons.Single.Monad (
-  SgM, bindLets, bindTyVars, bindTyVarsEq, lookupVarE, lookupConE,
+  SgM, bindLets, bindTyVars, bindTyVarsClause, lookupVarE, lookupConE,
   wrapSingFun, wrapUnSingFun,
   singM, singDecsM,
   emitDecs, emitDecsM
@@ -86,8 +86,8 @@ bindLets lets1 =
   local (\env@(SgEnv { sg_let_binds = lets2 }) ->
                env { sg_let_binds = (Map.fromList lets1) `Map.union` lets2 })
 
--- bindTyVarsEq
--- ~~~~~~~~~~~~
+-- bindTyVarsClause
+-- ~~~~~~~~~~~~~~~~
 --
 -- This function does some dirty business.
 --
@@ -118,12 +118,26 @@ bindLets lets1 =
 --
 -- Getting the ... right in the type above is a major nuisance, and it
 -- explains a bunch of the types stored in the ADExp AST. (See LetDecEnv.)
+--
+-- A further, unsolved problem with all of this is that the type signature
+-- generated never has any constraints. Thus, if the body requires a
+-- constraint somewhere, the code will fail to compile; we're not quite clever
+-- enough to get everything to line up.
+--
+-- As a stop-gap measure to fix this, in the function clause case, we tie the
+-- scoped type variables in this "lambda" to the outer scoped type variables.
+-- This has the effect of making sure that the kinds of ty_foo and ty_bar
+-- match that of the surrounding scope and makes sure that any constraint is
+-- available from within the "lambda".
+--
+-- This means, though, that using constraints with case statements and lambdas
+-- will likely not work. Ugh.
 
-bindTyVarsEq :: VarPromotions   -- the bindings we wish to effect
-             -> DType           -- the type of the thing_inside
-             -> [(DType, DType)]  -- and asserting these equalities
-             -> SgM DExp -> SgM DExp
-bindTyVarsEq var_proms prom_fun equalities thing_inside = do
+bindTyVarsClause :: VarPromotions   -- the bindings we wish to effect
+                 -> DType           -- the type of the thing_inside
+                 -> [(DType, DType)]  -- and asserting these equalities
+                 -> SgM DExp -> SgM DExp
+bindTyVarsClause var_proms prom_fun equalities thing_inside = do
   lambda <- qNewName "lambda"
   let (term_names, tyvar_names) = unzip var_proms
       eq_ct  = [ DConPr equalityName `DAppPr` t1 `DAppPr` t2
@@ -141,7 +155,7 @@ bindTyVarsEq var_proms prom_fun equalities thing_inside = do
   return $ DLetE [ty_sig, fundef] let_body
 
 bindTyVars :: VarPromotions -> DType -> SgM DExp -> SgM DExp
-bindTyVars var_proms prom_fun = bindTyVarsEq var_proms prom_fun []
+bindTyVars var_proms prom_fun = bindTyVarsClause var_proms prom_fun []
 
 lookupVarE :: Name -> SgM DExp
 lookupVarE = lookup_var_con singValName (DVarE . singValName)
@@ -175,8 +189,7 @@ wrapSingFun n ty =
                            5 -> 'singFun5
                            6 -> 'singFun6
                            7 -> 'singFun7
-                           8 -> 'singFun8
-                           _ -> error "No support for functions of arity > 8."
+                           _ -> error "No support for functions of arity > 7."
   in
   (wrap_fun `DAppE` proxyFor ty `DAppE`)
 
@@ -191,8 +204,7 @@ wrapUnSingFun n ty =
                              5 -> 'unSingFun5
                              6 -> 'unSingFun6
                              7 -> 'unSingFun7
-                             8 -> 'unSingFun8
-                             _ -> error "No support for functions of arity > 8."
+                             _ -> error "No support for functions of arity > 7."
   in
   (unwrap_fun `DAppE` proxyFor ty `DAppE`)
 

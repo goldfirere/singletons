@@ -48,34 +48,30 @@ emptyPrEnv = PrEnv { pr_lambda_bound = Map.empty
 
 -- the promotion monad
 newtype PrM a = PrM (ReaderT PrEnv (WriterT [DDec] Q) a)
-  deriving ( Functor, Applicative, Monad
+  deriving ( Functor, Applicative, Monad, Quasi
            , MonadReader PrEnv, MonadWriter [DDec] )
 
-liftPrM :: Q a -> PrM a
-liftPrM = PrM . lift . lift
+-- we need Quasi instances for ReaderT and WriterT for the above to work.
 
-instance Quasi PrM where
-  qNewName          = liftPrM `comp1` qNewName
-  qReport           = liftPrM `comp2` qReport
-  qLookupName       = liftPrM `comp2` qLookupName
-  qReify            = liftPrM `comp1` qReify
-  qReifyInstances   = liftPrM `comp2` qReifyInstances
-  qLocation         = liftPrM qLocation
-  qRunIO            = liftPrM `comp1` qRunIO
-  qAddDependentFile = liftPrM `comp1` qAddDependentFile
-  qReifyRoles       = liftPrM `comp1` qReifyRoles
-  qReifyAnnotations = liftPrM `comp1` qReifyAnnotations
-  qReifyModule      = liftPrM `comp1` qReifyModule
-  qAddTopDecls      = liftPrM `comp1` qAddTopDecls
-  qAddModFinalizer  = liftPrM `comp1` qAddModFinalizer
-  qGetQ             = liftPrM qGetQ
-  qPutQ             = liftPrM `comp1` qPutQ
+instance (Quasi q, Monoid m) => Quasi (WriterT m q) where
+  qNewName          = lift `comp1` qNewName
+  qReport           = lift `comp2` qReport
+  qLookupName       = lift `comp2` qLookupName
+  qReify            = lift `comp1` qReify
+  qReifyInstances   = lift `comp2` qReifyInstances
+  qLocation         = lift qLocation
+  qRunIO            = lift `comp1` qRunIO
+  qAddDependentFile = lift `comp1` qAddDependentFile
+  qReifyRoles       = lift `comp1` qReifyRoles
+  qReifyAnnotations = lift `comp1` qReifyAnnotations
+  qReifyModule      = lift `comp1` qReifyModule
+  qAddTopDecls      = lift `comp1` qAddTopDecls
+  qAddModFinalizer  = lift `comp1` qAddModFinalizer
+  qGetQ             = lift qGetQ
+  qPutQ             = lift `comp1` qPutQ
 
-  qRecover (PrM handler) (PrM body) = do
-    env <- ask
-    (result, aux) <- liftPrM $
-                     qRecover (runWriterT $ runReaderT handler env)
-                              (runWriterT $ runReaderT body env)
+  qRecover handler body = do
+    (result, aux) <- lift $ qRecover (runWriterT handler) (runWriterT body)
     tell aux
     return result
 

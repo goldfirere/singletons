@@ -619,7 +619,7 @@ promoteExp (DCaseE exp matches) = do
     -- See Note [Annotate case return type] in Single
   let applied_case = prom_case `DAppT` exp'
   return ( applied_case
-         , ADCaseE ann_exp exp' ann_matches applied_case )
+         , ADCaseE ann_exp ann_matches applied_case )
 promoteExp (DLetE decs exp) = do
   letPrefix <- fmap nameBase $ newUniqueName "Let"
   (binds, ann_env) <- promoteLetDecs letPrefix decs

@@ -16,12 +16,15 @@ import Data.Singletons.Promote.Type
 import Data.Singletons.Util
 import Control.Monad
 
-singType :: DType          -- the promoted version of the thing classified by...
+data TopLevelFlag = TopLevel | NotTopLevel
+
+singType :: TopLevelFlag
+         -> DType          -- the promoted version of the thing classified by...
          -> DType          -- ... this type
          -> SgM ( DType    -- the singletonized type
                 , Int      -- the number of arguments
                 , [Name] ) -- the names of the tyvars used in the sing'd type
-singType prom ty = do
+singType top_level prom ty = do
   let (cxt, tys) = unravel ty
       args       = init tys
       num_args   = length args
@@ -30,9 +33,19 @@ singType prom ty = do
   let args' = map (\n -> singFamily `DAppT` (DVarT n)) arg_names
       res'  = singFamily `DAppT` (foldl apply prom (map DVarT arg_names))
       tau   = ravel (args' ++ [res'])
-  prom_args <- mapM promoteType args
-  let ty' = DForallT (zipWith DKindedTV arg_names prom_args)
-                     cxt' tau
+  ty' <- case top_level of
+           TopLevel -> do
+             prom_args <- mapM promoteType args
+             return $ DForallT (zipWith DKindedTV arg_names prom_args)
+                               cxt' tau
+                -- don't annotate kinds. Why? Because the original source
+                -- may have used scoped type variables, and we're just
+                -- not clever enough to get the scoped kind variables right.
+                -- (the business in bindTyVars gets in the way)
+                -- If ScopedTypeVariables was actually sane in patterns,
+                -- this restriction might be able to be lifted.
+           NotTopLevel -> return $ DForallT (map DPlainTV arg_names)
+                                            cxt' tau
   return (ty', num_args, arg_names)
 
 singPred :: DPred -> SgM DPred

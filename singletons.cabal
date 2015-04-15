@@ -98,7 +98,6 @@ library
                       Data.Singletons.Single.Type,
                       Data.Singletons.Single.Eq,
                       Data.Singletons.Single.Data,
-                      Data.Singletons.Single.Squash,
                       Data.Singletons.Single,
                       Data.Singletons.Syntax
 

@@ -340,6 +340,45 @@ $(promoteOnly [d|
   splitAt                :: Nat -> [a] -> ([a],[a])
   splitAt n xs           =  (take n xs, drop n xs)
 
+
+  takeWhile               :: (a -> Bool) -> [a] -> [a]
+  takeWhile _ []          =  []
+  takeWhile p (x:xs)
+              | p x       =  x : takeWhile p xs
+              | otherwise =  []
+
+  dropWhile               :: (a -> Bool) -> [a] -> [a]
+  dropWhile _ []          =  []
+  dropWhile p xs@(x:xs')
+              | p x       =  dropWhile p xs'
+              | otherwise =  xs
+
+  dropWhileEnd            :: (a -> Bool) -> [a] -> [a]
+  dropWhileEnd p          = foldr (\x xs -> if p x && null xs then [] else x : xs) []
+
+  span                    :: (a -> Bool) -> [a] -> ([a],[a])
+  span _ xs@[]            =  (xs, xs)
+  span p xs@(x:xs')
+           | p x          =  let (ys,zs) = span p xs' in (x:ys,zs)
+           | otherwise    =  ([],xs)
+
+  break                   :: (a -> Bool) -> [a] -> ([a],[a])
+  break _ xs@[]           =  (xs, xs)
+  break p xs@(x:xs')
+             | p x        =  ([],xs)
+             | otherwise  =  let (ys,zs) = break p xs' in (x:ys,zs)
+
+  -- Overlapping patterns don't singletonize
+  stripPrefix :: Eq a => [a] -> [a] -> Maybe [a]
+  stripPrefix [] ys = Just ys
+  stripPrefix (x:xs) (y:ys)
+   | x == y = stripPrefix xs ys
+  stripPrefix _ _ = Nothing
+
+  -- Relies on groupBy, which relies on span, which does not singletonize
+  group                   :: Eq a => [a] -> [[a]]
+  group xs                =  groupBy (==) xs
+
   -- Requires Ord instance, which does not singletonize
   maximum                 :: (Ord a) => [a] -> a
   maximum []              =  error "Data.Singletons.List.maximum: empty list"
@@ -357,6 +396,37 @@ $(promoteOnly [d|
   -- Requires Ord instance, which does not singletonize
   sort :: (Ord a) => [a] -> [a]
   sort = sortBy compare
+
+  -- Relies on span, which does not singletonize
+  groupBy                 :: (a -> a -> Bool) -> [a] -> [[a]]
+  groupBy _  []           =  []
+  groupBy eq (x:xs)       =  (x:ys) : groupBy eq zs
+                             where (ys,zs) = span (eq x) xs
+
+  lookup                  :: (Eq a) => a -> [(a,b)] -> Maybe b
+  lookup _key []          =  Nothing
+  lookup  key ((x,y):xys)
+      | key == x          =  Just y
+      | otherwise         =  lookup key xys
+
+  -- Relies on filter, which does not singletonize
+  find                    :: (a -> Bool) -> [a] -> Maybe a
+  find p                  = listToMaybe . filter p
+
+  filter :: (a -> Bool) -> [a] -> [a]
+  filter _p []            = []
+  filter p (x:xs)
+    | p x                 = x : filter p xs
+    | otherwise           = filter p xs
+
+  -- Relies on select, which does not singletonize (#30, #33)
+  partition               :: (a -> Bool) -> [a] -> ([a],[a])
+  partition p xs          = foldr (select p) ([],[]) xs
+
+  -- Lazy pattern removed from select
+  select :: (a -> Bool) -> a -> ([a], [a]) -> ([a], [a])
+  select p x (ts,fs) | p x       = (x:ts,fs)
+                     | otherwise = (ts, x:fs)
 
 -- Can't be promoted because of limitations of Int promotion.
 -- Below is a re-implementation using Nat
@@ -392,6 +462,94 @@ $(promoteOnly [d|
                                      (zip xs (buildList 0 (length xs))))
     where buildList _ 0 = []
           buildList a n = a : buildList (a+1) (n-1)
+
+  -- To singletonize these we would need to rewrite all patterns
+  -- as non-overlapping. This means 2^7 equations for zipWith7.
+
+  zip4                    :: [a] -> [b] -> [c] -> [d] -> [(a,b,c,d)]
+  zip4                    =  zipWith4 (,,,)
+
+  zip5                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [(a,b,c,d,e)]
+  zip5                    =  zipWith5 (,,,,)
+
+  zip6                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [f] ->
+                              [(a,b,c,d,e,f)]
+  zip6                    =  zipWith6 (,,,,,)
+
+  zip7                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [f] ->
+                              [g] -> [(a,b,c,d,e,f,g)]
+  zip7                    =  zipWith7 (,,,,,,)
+
+  zipWith4                :: (a->b->c->d->e) -> [a]->[b]->[c]->[d]->[e]
+  zipWith4 z (a:as) (b:bs) (c:cs) (d:ds)
+                          =  z a b c d : zipWith4 z as bs cs ds
+  zipWith4 _ _ _ _ _      =  []
+
+  zipWith5                :: (a->b->c->d->e->f) ->
+                             [a]->[b]->[c]->[d]->[e]->[f]
+  zipWith5 z (a:as) (b:bs) (c:cs) (d:ds) (e:es)
+                          =  z a b c d e : zipWith5 z as bs cs ds es
+  zipWith5 _ _ _ _ _ _    = []
+
+  zipWith6                :: (a->b->c->d->e->f->g) ->
+                             [a]->[b]->[c]->[d]->[e]->[f]->[g]
+  zipWith6 z (a:as) (b:bs) (c:cs) (d:ds) (e:es) (f:fs)
+                          =  z a b c d e f : zipWith6 z as bs cs ds es fs
+  zipWith6 _ _ _ _ _ _ _  = []
+
+  zipWith7                :: (a->b->c->d->e->f->g->h) ->
+                             [a]->[b]->[c]->[d]->[e]->[f]->[g]->[h]
+  zipWith7 z (a:as) (b:bs) (c:cs) (d:ds) (e:es) (f:fs) (g:gs)
+                     =  z a b c d e f g : zipWith7 z as bs cs ds es fs gs
+  zipWith7 _ _ _ _ _ _ _ _ = []
+
+  nub                     :: (Eq a) => [a] -> [a]
+  nub l                   = nub' l []
+    where
+      nub' :: [a] -> [a] -> [a]
+      nub' [] _           = []
+      nub' (x:xs) ls
+          | x `elem` ls   = nub' xs ls
+          | otherwise     = x : nub' xs (x:ls)
+
+  nubBy                   :: (a -> a -> Bool) -> [a] -> [a]
+  nubBy eq l              = nubBy' l []
+    where
+      nubBy' :: [b] -> [b] -> [b]
+      nubBy' [] _         = []
+      nubBy' (y:ys) xs
+         | elem_by eq y xs = nubBy' ys xs
+         | otherwise       = y : nubBy' ys (y:xs)
+
+  elem_by :: (a -> a -> Bool) -> a -> [a] -> Bool
+  elem_by _  _ []         =  False
+  elem_by eq y (x:xs)     =  y `eq` x || elem_by eq y xs
+
+  -- Relies on nubBy, which does not singletonize
+  unionBy                 :: (a -> a -> Bool) -> [a] -> [a] -> [a]
+  unionBy eq xs ys        =  xs ++ foldl (flip (deleteBy eq)) (nubBy eq ys) xs
+
+  -- Relies on unionBy, which does not singletonize
+  union                   :: (Eq a) => [a] -> [a] -> [a]
+  union                   = unionBy (==)
+
+  -- Relies on intersectBy, which does not singletonize
+  intersect               :: (Eq a) => [a] -> [a] -> [a]
+  intersect               =  intersectBy (==)
+
+-- Uses list comprehensions. Desugared version uses filter, which does
+-- not singletonize due to #30
+--  intersectBy             :: (a -> a -> Bool) -> [a] -> [a] -> [a]
+--  intersectBy _  [] []    =  []
+--  intersectBy _  [] (_:_) =  []
+--  intersectBy _  (_:_) [] =  []
+--  intersectBy eq xs ys    =  [x | x <- xs, any_ (eq x) ys]
+
+  intersectBy             :: (a -> a -> Bool) -> [a] -> [a] -> [a]
+  intersectBy _  [] []    =  []
+  intersectBy _  [] (_:_) =  []
+  intersectBy _  (_:_) [] =  []
+  intersectBy eq xs ys    =  filter (\x -> any_ (eq x) ys) xs
 
 -- These functions use Integral or Num typeclass instead of Int.
 --
