@@ -63,7 +63,6 @@ library
                       Data.Singletons.Prelude.Eq,
                       Data.Singletons.Prelude.Ord,
                       Data.Singletons.Prelude.List,
-                      Data.Singletons.Prelude.List.Zips,
                       Data.Singletons.Prelude.Maybe,
                       Data.Singletons.Prelude.Num
                       Data.Singletons.Prelude.Tuple,
