@@ -15,7 +15,7 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
           foo p@[] = p
           foo p@[_] = p
           foo p@(_ : _) = p
-
+          
           data Baz = Baz Nat Nat Nat |]
   ======>
     Singletons/AsPattern.hs:(0,0)-(0,0)
@@ -40,48 +40,48 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) BazSym2KindInference GHC.Tuple.())
     data BazSym2 (l :: Nat) (l :: Nat) (l :: TyFun Nat Baz)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (BazSym2 l l) arg)) (KindOf (BazSym3 l l arg)) =>
+      = forall arg. KindOf (Apply (BazSym2 l l) arg) ~ KindOf (BazSym3 l l arg) =>
         BazSym2KindInference
     type instance Apply (BazSym2 l l) l = BazSym3 l l l
     instance SuppressUnusedWarnings BazSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) BazSym1KindInference GHC.Tuple.())
     data BazSym1 (l :: Nat) (l :: TyFun Nat (TyFun Nat Baz -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply (BazSym1 l) arg)) (KindOf (BazSym2 l arg)) =>
+      = forall arg. KindOf (Apply (BazSym1 l) arg) ~ KindOf (BazSym2 l arg) =>
         BazSym1KindInference
     type instance Apply (BazSym1 l) l = BazSym2 l l
     instance SuppressUnusedWarnings BazSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) BazSym0KindInference GHC.Tuple.())
     data BazSym0 (l :: TyFun Nat (TyFun Nat (TyFun Nat Baz -> *) -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply BazSym0 arg)) (KindOf (BazSym1 arg)) =>
+      = forall arg. KindOf (Apply BazSym0 arg) ~ KindOf (BazSym1 arg) =>
         BazSym0KindInference
     type instance Apply BazSym0 l = BazSym1 l
     type Let_0123456789PSym0 = Let_0123456789P
-    type Let_0123456789P = GHC.Types.[]
+    type Let_0123456789P = '[]
     type Let_0123456789PSym1 t = Let_0123456789P t
     instance SuppressUnusedWarnings Let_0123456789PSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789PSym0KindInference GHC.Tuple.())
     data Let_0123456789PSym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789PSym0 arg)) (KindOf (Let_0123456789PSym1 arg)) =>
+      = forall arg. KindOf (Apply Let_0123456789PSym0 arg) ~ KindOf (Let_0123456789PSym1 arg) =>
         Let_0123456789PSym0KindInference
     type instance Apply Let_0123456789PSym0 l = Let_0123456789PSym1 l
     type Let_0123456789P wild_0123456789 =
-        Apply (Apply (:$) wild_0123456789) GHC.Types.[]
+        Apply (Apply (:$) wild_0123456789) '[]
     type Let_0123456789PSym2 t t = Let_0123456789P t t
     instance SuppressUnusedWarnings Let_0123456789PSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789PSym1KindInference GHC.Tuple.())
     data Let_0123456789PSym1 l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789PSym1 l) arg)) (KindOf (Let_0123456789PSym2 l arg)) =>
+      = forall arg. KindOf (Apply (Let_0123456789PSym1 l) arg) ~ KindOf (Let_0123456789PSym2 l arg) =>
         Let_0123456789PSym1KindInference
     type instance Apply (Let_0123456789PSym1 l) l = Let_0123456789PSym2 l l
     instance SuppressUnusedWarnings Let_0123456789PSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789PSym0KindInference GHC.Tuple.())
     data Let_0123456789PSym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789PSym0 arg)) (KindOf (Let_0123456789PSym1 arg)) =>
+      = forall arg. KindOf (Apply Let_0123456789PSym0 arg) ~ KindOf (Let_0123456789PSym1 arg) =>
         Let_0123456789PSym0KindInference
     type instance Apply Let_0123456789PSym0 l = Let_0123456789PSym1 l
     type Let_0123456789P wild_0123456789 wild_0123456789 =
@@ -91,14 +91,14 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789PSym1KindInference GHC.Tuple.())
     data Let_0123456789PSym1 l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789PSym1 l) arg)) (KindOf (Let_0123456789PSym2 l arg)) =>
+      = forall arg. KindOf (Apply (Let_0123456789PSym1 l) arg) ~ KindOf (Let_0123456789PSym2 l arg) =>
         Let_0123456789PSym1KindInference
     type instance Apply (Let_0123456789PSym1 l) l = Let_0123456789PSym2 l l
     instance SuppressUnusedWarnings Let_0123456789PSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789PSym0KindInference GHC.Tuple.())
     data Let_0123456789PSym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789PSym0 arg)) (KindOf (Let_0123456789PSym1 arg)) =>
+      = forall arg. KindOf (Apply Let_0123456789PSym0 arg) ~ KindOf (Let_0123456789PSym1 arg) =>
         Let_0123456789PSym0KindInference
     type instance Apply Let_0123456789PSym0 l = Let_0123456789PSym1 l
     type Let_0123456789P wild_0123456789 wild_0123456789 =
@@ -110,21 +110,21 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789PSym2KindInference GHC.Tuple.())
     data Let_0123456789PSym2 l l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789PSym2 l l) arg)) (KindOf (Let_0123456789PSym3 l l arg)) =>
+      = forall arg. KindOf (Apply (Let_0123456789PSym2 l l) arg) ~ KindOf (Let_0123456789PSym3 l l arg) =>
         Let_0123456789PSym2KindInference
     type instance Apply (Let_0123456789PSym2 l l) l = Let_0123456789PSym3 l l l
     instance SuppressUnusedWarnings Let_0123456789PSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789PSym1KindInference GHC.Tuple.())
     data Let_0123456789PSym1 l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789PSym1 l) arg)) (KindOf (Let_0123456789PSym2 l arg)) =>
+      = forall arg. KindOf (Apply (Let_0123456789PSym1 l) arg) ~ KindOf (Let_0123456789PSym2 l arg) =>
         Let_0123456789PSym1KindInference
     type instance Apply (Let_0123456789PSym1 l) l = Let_0123456789PSym2 l l
     instance SuppressUnusedWarnings Let_0123456789PSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789PSym0KindInference GHC.Tuple.())
     data Let_0123456789PSym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789PSym0 arg)) (KindOf (Let_0123456789PSym1 arg)) =>
+      = forall arg. KindOf (Apply Let_0123456789PSym0 arg) ~ KindOf (Let_0123456789PSym1 arg) =>
         Let_0123456789PSym0KindInference
     type instance Apply Let_0123456789PSym0 l = Let_0123456789PSym1 l
     type Let_0123456789P wild_0123456789
@@ -136,27 +136,27 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789XSym0KindInference GHC.Tuple.())
     data Let_0123456789XSym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789XSym0 arg)) (KindOf (Let_0123456789XSym1 arg)) =>
+      = forall arg. KindOf (Apply Let_0123456789XSym0 arg) ~ KindOf (Let_0123456789XSym1 arg) =>
         Let_0123456789XSym0KindInference
     type instance Apply Let_0123456789XSym0 l = Let_0123456789XSym1 l
     type Let_0123456789X wild_0123456789 =
         Apply JustSym0 wild_0123456789
     type Let_0123456789PSym0 = Let_0123456789P
     type Let_0123456789P = NothingSym0
-    type FooSym1 (t :: GHC.Types.[] Nat) = Foo t
+    type FooSym1 (t :: [Nat]) = Foo t
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
-    data FooSym0 (l :: TyFun (GHC.Types.[] Nat) (GHC.Types.[] Nat))
-      = forall arg. (GHC.Types.~) (KindOf (Apply FooSym0 arg)) (KindOf (FooSym1 arg)) =>
+    data FooSym0 (l :: TyFun [Nat] [Nat])
+      = forall arg. KindOf (Apply FooSym0 arg) ~ KindOf (FooSym1 arg) =>
         FooSym0KindInference
     type instance Apply FooSym0 l = FooSym1 l
-    type TupSym1 (t :: GHC.Tuple.(,) Nat Nat) = Tup t
+    type TupSym1 (t :: (Nat, Nat)) = Tup t
     instance SuppressUnusedWarnings TupSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) TupSym0KindInference GHC.Tuple.())
-    data TupSym0 (l :: TyFun (GHC.Tuple.(,) Nat Nat) (GHC.Tuple.(,) Nat Nat))
-      = forall arg. (GHC.Types.~) (KindOf (Apply TupSym0 arg)) (KindOf (TupSym1 arg)) =>
+    data TupSym0 (l :: TyFun (Nat, Nat) (Nat, Nat))
+      = forall arg. KindOf (Apply TupSym0 arg) ~ KindOf (TupSym1 arg) =>
         TupSym0KindInference
     type instance Apply TupSym0 l = TupSym1 l
     type Baz_Sym1 (t :: Maybe Baz) = Baz_ t
@@ -164,7 +164,7 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Baz_Sym0KindInference GHC.Tuple.())
     data Baz_Sym0 (l :: TyFun (Maybe Baz) (Maybe Baz))
-      = forall arg. (GHC.Types.~) (KindOf (Apply Baz_Sym0 arg)) (KindOf (Baz_Sym1 arg)) =>
+      = forall arg. KindOf (Apply Baz_Sym0 arg) ~ KindOf (Baz_Sym1 arg) =>
         Baz_Sym0KindInference
     type instance Apply Baz_Sym0 l = Baz_Sym1 l
     type BarSym1 (t :: Maybe Nat) = Bar t
@@ -172,7 +172,7 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) BarSym0KindInference GHC.Tuple.())
     data BarSym0 (l :: TyFun (Maybe Nat) (Maybe Nat))
-      = forall arg. (GHC.Types.~) (KindOf (Apply BarSym0 arg)) (KindOf (BarSym1 arg)) =>
+      = forall arg. KindOf (Apply BarSym0 arg) ~ KindOf (BarSym1 arg) =>
         BarSym0KindInference
     type instance Apply BarSym0 l = BarSym1 l
     type MaybePlusSym1 (t :: Maybe Nat) = MaybePlus t
@@ -180,15 +180,16 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) MaybePlusSym0KindInference GHC.Tuple.())
     data MaybePlusSym0 (l :: TyFun (Maybe Nat) (Maybe Nat))
-      = forall arg. (GHC.Types.~) (KindOf (Apply MaybePlusSym0 arg)) (KindOf (MaybePlusSym1 arg)) =>
+      = forall arg. KindOf (Apply MaybePlusSym0 arg) ~ KindOf (MaybePlusSym1 arg) =>
         MaybePlusSym0KindInference
     type instance Apply MaybePlusSym0 l = MaybePlusSym1 l
-    type family Foo (a :: GHC.Types.[] Nat) :: GHC.Types.[] Nat where
-      Foo GHC.Types.[] = Let_0123456789PSym0
-      Foo ((GHC.Types.:) wild_0123456789 GHC.Types.[]) = Let_0123456789PSym1 wild_0123456789
-      Foo ((GHC.Types.:) wild_0123456789 wild_0123456789) = Let_0123456789PSym2 wild_0123456789 wild_0123456789
-    type family Tup (a :: GHC.Tuple.(,) Nat Nat) :: GHC.Tuple.(,) Nat Nat where
-      Tup (GHC.Tuple.(,) wild_0123456789 wild_0123456789) = Let_0123456789PSym2 wild_0123456789 wild_0123456789
+    type family Foo (a :: [Nat]) :: [Nat] where
+      Foo '[] = Let_0123456789PSym0
+      Foo '[wild_0123456789] = Let_0123456789PSym1 wild_0123456789
+      Foo ((:) wild_0123456789 wild_0123456789) = Let_0123456789PSym2 wild_0123456789 wild_0123456789
+    type family Tup (a :: (Nat, Nat)) :: (Nat, Nat) where
+      Tup '(wild_0123456789,
+            wild_0123456789) = Let_0123456789PSym2 wild_0123456789 wild_0123456789
     type family Baz_ (a :: Maybe Baz) :: Maybe Baz where
       Baz_ Nothing = Let_0123456789PSym0
       Baz_ (Just (Baz wild_0123456789 wild_0123456789 wild_0123456789)) = Let_0123456789PSym3 wild_0123456789 wild_0123456789 wild_0123456789
@@ -198,19 +199,15 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
     type family MaybePlus (a :: Maybe Nat) :: Maybe Nat where
       MaybePlus (Just n) = Apply JustSym0 (Apply (Apply PlusSym0 (Apply SuccSym0 ZeroSym0)) n)
       MaybePlus Nothing = Let_0123456789PSym0
-    sFoo ::
-      forall (t :: GHC.Types.[] Nat). Sing t -> Sing (Apply FooSym0 t)
-    sTup ::
-      forall (t :: GHC.Tuple.(,) Nat Nat).
-      Sing t -> Sing (Apply TupSym0 t)
+    sFoo :: forall (t :: [Nat]). Sing t -> Sing (Apply FooSym0 t)
+    sTup :: forall (t :: (Nat, Nat)). Sing t -> Sing (Apply TupSym0 t)
     sBaz_ :: forall (t :: Maybe Baz). Sing t -> Sing (Apply Baz_Sym0 t)
     sBar :: forall (t :: Maybe Nat). Sing t -> Sing (Apply BarSym0 t)
     sMaybePlus ::
       forall (t :: Maybe Nat). Sing t -> Sing (Apply MaybePlusSym0 t)
     sFoo SNil
       = let
-          lambda ::
-            (GHC.Types.~) t GHC.Types.[] => Sing (Apply FooSym0 GHC.Types.[])
+          lambda :: t ~ '[] => Sing (Apply FooSym0 '[])
           lambda
             = let
                 sP :: Sing Let_0123456789PSym0
@@ -220,9 +217,9 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
     sFoo (SCons sWild_0123456789 SNil)
       = let
           lambda ::
-            forall wild_0123456789. (GHC.Types.~) t (Apply (Apply (:$) wild_0123456789) GHC.Types.[]) =>
+            forall wild_0123456789. t ~ Apply (Apply (:$) wild_0123456789) '[] =>
             Sing wild_0123456789
-            -> Sing (Apply FooSym0 (Apply (Apply (:$) wild_0123456789) GHC.Types.[]))
+            -> Sing (Apply FooSym0 (Apply (Apply (:$) wild_0123456789) '[]))
           lambda wild_0123456789
             = let
                 sP :: Sing (Let_0123456789PSym1 wild_0123456789)
@@ -236,7 +233,7 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
       = let
           lambda ::
             forall wild_0123456789
-                   wild_0123456789. (GHC.Types.~) t (Apply (Apply (:$) wild_0123456789) wild_0123456789) =>
+                   wild_0123456789. t ~ Apply (Apply (:$) wild_0123456789) wild_0123456789 =>
             Sing wild_0123456789
             -> Sing wild_0123456789
                -> Sing (Apply FooSym0 (Apply (Apply (:$) wild_0123456789) wild_0123456789))
@@ -253,7 +250,7 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
       = let
           lambda ::
             forall wild_0123456789
-                   wild_0123456789. (GHC.Types.~) t (Apply (Apply Tuple2Sym0 wild_0123456789) wild_0123456789) =>
+                   wild_0123456789. t ~ Apply (Apply Tuple2Sym0 wild_0123456789) wild_0123456789 =>
             Sing wild_0123456789
             -> Sing wild_0123456789
                -> Sing (Apply TupSym0 (Apply (Apply Tuple2Sym0 wild_0123456789) wild_0123456789))
@@ -269,8 +266,7 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
         in lambda sWild_0123456789 sWild_0123456789
     sBaz_ SNothing
       = let
-          lambda ::
-            (GHC.Types.~) t NothingSym0 => Sing (Apply Baz_Sym0 NothingSym0)
+          lambda :: t ~ NothingSym0 => Sing (Apply Baz_Sym0 NothingSym0)
           lambda
             = let
                 sP :: Sing Let_0123456789PSym0
@@ -283,7 +279,7 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
           lambda ::
             forall wild_0123456789
                    wild_0123456789
-                   wild_0123456789. (GHC.Types.~) t (Apply JustSym0 (Apply (Apply (Apply BazSym0 wild_0123456789) wild_0123456789) wild_0123456789)) =>
+                   wild_0123456789. t ~ Apply JustSym0 (Apply (Apply (Apply BazSym0 wild_0123456789) wild_0123456789) wild_0123456789) =>
             Sing wild_0123456789
             -> Sing wild_0123456789
                -> Sing wild_0123456789
@@ -306,7 +302,7 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
     sBar (SJust sWild_0123456789)
       = let
           lambda ::
-            forall wild_0123456789. (GHC.Types.~) t (Apply JustSym0 wild_0123456789) =>
+            forall wild_0123456789. t ~ Apply JustSym0 wild_0123456789 =>
             Sing wild_0123456789
             -> Sing (Apply BarSym0 (Apply JustSym0 wild_0123456789))
           lambda wild_0123456789
@@ -319,14 +315,13 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
         in lambda sWild_0123456789
     sBar SNothing
       = let
-          lambda ::
-            (GHC.Types.~) t NothingSym0 => Sing (Apply BarSym0 NothingSym0)
+          lambda :: t ~ NothingSym0 => Sing (Apply BarSym0 NothingSym0)
           lambda = SNothing
         in lambda
     sMaybePlus (SJust sN)
       = let
           lambda ::
-            forall n. (GHC.Types.~) t (Apply JustSym0 n) =>
+            forall n. t ~ Apply JustSym0 n =>
             Sing n -> Sing (Apply MaybePlusSym0 (Apply JustSym0 n))
           lambda n
             = applySing
@@ -339,9 +334,7 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
         in lambda sN
     sMaybePlus SNothing
       = let
-          lambda ::
-            (GHC.Types.~) t NothingSym0 =>
-            Sing (Apply MaybePlusSym0 NothingSym0)
+          lambda :: t ~ NothingSym0 => Sing (Apply MaybePlusSym0 NothingSym0)
           lambda
             = let
                 sP :: Sing Let_0123456789PSym0
@@ -349,9 +342,7 @@ Singletons/AsPattern.hs:0:0: Splicing declarations
               in sP
         in lambda
     data instance Sing (z :: Baz)
-      = forall (n :: Nat)
-               (n :: Nat)
-               (n :: Nat). (GHC.Types.~) z (Baz n n n) =>
+      = forall (n :: Nat) (n :: Nat) (n :: Nat). z ~ Baz n n n =>
         SBaz (Sing n) (Sing n) (Sing n)
     type SBaz (z :: Baz) = Sing z
     instance SingKind (KProxy :: KProxy Baz) where

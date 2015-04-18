@@ -20,15 +20,15 @@ Singletons/LambdasComprehensive.hs:0:0: Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
     data Lambda_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Lambda_0123456789Sym0 arg)) (KindOf (Lambda_0123456789Sym1 arg)) =>
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type BarSym0 = Bar
     type FooSym0 = Foo
     type Bar =
-        (Apply (Apply MapSym0 (Apply (Apply Either_Sym0 PredSym0) SuccSym0)) (Apply (Apply (:$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) GHC.Types.[])) :: GHC.Types.[] Nat)
+        (Apply (Apply MapSym0 (Apply (Apply Either_Sym0 PredSym0) SuccSym0)) (Apply (Apply (:$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) '[])) :: [Nat])
     type Foo =
-        (Apply (Apply MapSym0 Lambda_0123456789Sym0) (Apply (Apply (:$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) GHC.Types.[])) :: GHC.Types.[] Nat)
+        (Apply (Apply MapSym0 Lambda_0123456789Sym0) (Apply (Apply (:$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) '[])) :: [Nat])
     sBar :: Sing BarSym0
     sFoo :: Sing FooSym0
     sBar

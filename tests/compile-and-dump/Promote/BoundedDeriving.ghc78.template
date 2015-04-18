@@ -52,7 +52,7 @@ Promote/BoundedDeriving.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo3Sym0KindInference GHC.Tuple.())
     data Foo3Sym0 (l :: TyFun a (Foo3 a))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply Foo3Sym0 arg)) (Data.Singletons.KindOf (Foo3Sym1 arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply Foo3Sym0 arg) ~ Data.Singletons.KindOf (Foo3Sym1 arg) =>
         Foo3Sym0KindInference
     type instance Apply Foo3Sym0 l = Foo3Sym1 l
     instance PBounded (KProxy :: KProxy (Foo4 k k)) where
@@ -68,13 +68,13 @@ Promote/BoundedDeriving.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PairSym1KindInference GHC.Tuple.())
     data PairSym1 (l :: Bool) (l :: TyFun Bool Pair)
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply (PairSym1 l) arg)) (Data.Singletons.KindOf (PairSym2 l arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply (PairSym1 l) arg) ~ Data.Singletons.KindOf (PairSym2 l arg) =>
         PairSym1KindInference
     type instance Apply (PairSym1 l) l = PairSym2 l l
     instance SuppressUnusedWarnings PairSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PairSym0KindInference GHC.Tuple.())
     data PairSym0 (l :: TyFun Bool (TyFun Bool Pair -> *))
-      = forall arg. (GHC.Types.~) (Data.Singletons.KindOf (Apply PairSym0 arg)) (Data.Singletons.KindOf (PairSym1 arg)) =>
+      = forall arg. Data.Singletons.KindOf (Apply PairSym0 arg) ~ Data.Singletons.KindOf (PairSym1 arg) =>
         PairSym0KindInference
     type instance Apply PairSym0 l = PairSym1 l

@@ -14,19 +14,19 @@ Singletons/T54.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg)) =>
+      = forall arg. KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg) =>
         Let_0123456789Scrutinee_0123456789Sym0KindInference
     type instance Apply Let_0123456789Scrutinee_0123456789Sym0 l = Let_0123456789Scrutinee_0123456789Sym1 l
     type Let_0123456789Scrutinee_0123456789 e =
-        Apply (Apply (:$) NotSym0) GHC.Types.[]
+        Apply (Apply (:$) NotSym0) '[]
     type family Case_0123456789 e t where
-      Case_0123456789 e ((GHC.Types.:) _z_0123456789 GHC.Types.[]) = NotSym0
+      Case_0123456789 e '[_z_0123456789] = NotSym0
     type GSym1 (t :: Bool) = G t
     instance SuppressUnusedWarnings GSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) GSym0KindInference GHC.Tuple.())
     data GSym0 (l :: TyFun Bool Bool)
-      = forall arg. (GHC.Types.~) (KindOf (Apply GSym0 arg)) (KindOf (GSym1 arg)) =>
+      = forall arg. KindOf (Apply GSym0 arg) ~ KindOf (GSym1 arg) =>
         GSym0KindInference
     type instance Apply GSym0 l = GSym1 l
     type family G (a :: Bool) :: Bool where
@@ -34,8 +34,7 @@ Singletons/T54.hs:0:0: Splicing declarations
     sG :: forall (t :: Bool). Sing t -> Sing (Apply GSym0 t)
     sG sE
       = let
-          lambda ::
-            forall e. (GHC.Types.~) t e => Sing e -> Sing (Apply GSym0 e)
+          lambda :: forall e. t ~ e => Sing e -> Sing (Apply GSym0 e)
           lambda e
             = applySing
                 (let
@@ -51,9 +50,9 @@ Singletons/T54.hs:0:0: Splicing declarations
                        SCons _s_z_0123456789 SNil
                          -> let
                               lambda ::
-                                forall _z_0123456789.
+                                forall _z_0123456789. Apply (Apply (:$) _z_0123456789) '[] ~ Let_0123456789Scrutinee_0123456789Sym1 e =>
                                 Sing _z_0123456789
-                                -> Sing (Case_0123456789 e (Apply (Apply (:$) _z_0123456789) GHC.Types.[]))
+                                -> Sing (Case_0123456789 e (Apply (Apply (:$) _z_0123456789) '[]))
                               lambda _z_0123456789 = singFun1 (Proxy :: Proxy NotSym0) sNot
                             in lambda _s_z_0123456789 } ::
                        Sing (Case_0123456789 e (Let_0123456789Scrutinee_0123456789Sym1 e)))

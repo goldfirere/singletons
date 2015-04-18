@@ -30,12 +30,12 @@ GradingClient/Database.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SuccSym0KindInference GHC.Tuple.())
     data SuccSym0 (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (KindOf (Apply SuccSym0 arg)) (KindOf (SuccSym1 arg)) =>
+      = forall arg. KindOf (Apply SuccSym0 arg) ~ KindOf (SuccSym1 arg) =>
         SuccSym0KindInference
     type instance Apply SuccSym0 l = SuccSym1 l
     data instance Sing (z :: Nat)
-      = (GHC.Types.~) z Zero => SZero |
-        forall (n :: Nat). (GHC.Types.~) z (Succ n) => SSucc (Sing n)
+      = z ~ Zero => SZero |
+        forall (n :: Nat). z ~ Succ n => SSucc (Sing n)
     type SNat (z :: Nat) = Sing z
     instance SingKind (KProxy :: KProxy Nat) where
       type DemoteRep (KProxy :: KProxy Nat) = Nat
@@ -193,14 +193,14 @@ GradingClient/Database.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) VECSym1KindInference GHC.Tuple.())
     data VECSym1 (l :: U) (l :: TyFun Nat U)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (VECSym1 l) arg)) (KindOf (VECSym2 l arg)) =>
+      = forall arg. KindOf (Apply (VECSym1 l) arg) ~ KindOf (VECSym2 l arg) =>
         VECSym1KindInference
     type instance Apply (VECSym1 l) l = VECSym2 l l
     instance SuppressUnusedWarnings VECSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) VECSym0KindInference GHC.Tuple.())
     data VECSym0 (l :: TyFun U (TyFun Nat U -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply VECSym0 arg)) (KindOf (VECSym1 arg)) =>
+      = forall arg. KindOf (Apply VECSym0 arg) ~ KindOf (VECSym1 arg) =>
         VECSym0KindInference
     type instance Apply VECSym0 l = VECSym1 l
     type family Equals_0123456789 (a :: AChar)
@@ -260,28 +260,27 @@ GradingClient/Database.hs:0:0: Splicing declarations
     type CXSym0 = CX
     type CYSym0 = CY
     type CZSym0 = CZ
-    type AttrSym2 (t :: GHC.Types.[] AChar) (t :: U) = Attr t t
+    type AttrSym2 (t :: [AChar]) (t :: U) = Attr t t
     instance SuppressUnusedWarnings AttrSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AttrSym1KindInference GHC.Tuple.())
-    data AttrSym1 (l :: GHC.Types.[] AChar) (l :: TyFun U Attribute)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (AttrSym1 l) arg)) (KindOf (AttrSym2 l arg)) =>
+    data AttrSym1 (l :: [AChar]) (l :: TyFun U Attribute)
+      = forall arg. KindOf (Apply (AttrSym1 l) arg) ~ KindOf (AttrSym2 l arg) =>
         AttrSym1KindInference
     type instance Apply (AttrSym1 l) l = AttrSym2 l l
     instance SuppressUnusedWarnings AttrSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AttrSym0KindInference GHC.Tuple.())
-    data AttrSym0 (l :: TyFun (GHC.Types.[] AChar) (TyFun U Attribute
-                                                    -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply AttrSym0 arg)) (KindOf (AttrSym1 arg)) =>
+    data AttrSym0 (l :: TyFun [AChar] (TyFun U Attribute -> *))
+      = forall arg. KindOf (Apply AttrSym0 arg) ~ KindOf (AttrSym1 arg) =>
         AttrSym0KindInference
     type instance Apply AttrSym0 l = AttrSym1 l
-    type SchSym1 (t :: GHC.Types.[] Attribute) = Sch t
+    type SchSym1 (t :: [Attribute]) = Sch t
     instance SuppressUnusedWarnings SchSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SchSym0KindInference GHC.Tuple.())
-    data SchSym0 (l :: TyFun (GHC.Types.[] Attribute) Schema)
-      = forall arg. (GHC.Types.~) (KindOf (Apply SchSym0 arg)) (KindOf (SchSym1 arg)) =>
+    data SchSym0 (l :: TyFun [Attribute] Schema)
+      = forall arg. KindOf (Apply SchSym0 arg) ~ KindOf (SchSym1 arg) =>
         SchSym0KindInference
     type instance Apply SchSym0 l = SchSym1 l
     type Let_0123456789Scrutinee_0123456789Sym4 t t t t =
@@ -292,7 +291,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym3KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym3 l l l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym3 l l l) arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym4 l l l arg)) =>
+      = forall arg. KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym3 l l l) arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym4 l l l arg) =>
         Let_0123456789Scrutinee_0123456789Sym3KindInference
     type instance Apply (Let_0123456789Scrutinee_0123456789Sym3 l l l) l = Let_0123456789Scrutinee_0123456789Sym4 l l l l
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym2 where
@@ -301,7 +300,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym2KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym2 l l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym3 l l arg)) =>
+      = forall arg. KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym3 l l arg) =>
         Let_0123456789Scrutinee_0123456789Sym2KindInference
     type instance Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) l = Let_0123456789Scrutinee_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym1 where
@@ -310,7 +309,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym1KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym1 l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym2 l arg)) =>
+      = forall arg. KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym2 l arg) =>
         Let_0123456789Scrutinee_0123456789Sym1KindInference
     type instance Apply (Let_0123456789Scrutinee_0123456789Sym1 l) l = Let_0123456789Scrutinee_0123456789Sym2 l l
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym0 where
@@ -319,7 +318,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg)) =>
+      = forall arg. KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg) =>
         Let_0123456789Scrutinee_0123456789Sym0KindInference
     type instance Apply Let_0123456789Scrutinee_0123456789Sym0 l = Let_0123456789Scrutinee_0123456789Sym1 l
     type Let_0123456789Scrutinee_0123456789 name name' u attrs =
@@ -327,38 +326,34 @@ GradingClient/Database.hs:0:0: Splicing declarations
     type family Case_0123456789 name name' u attrs t where
       Case_0123456789 name name' u attrs True = u
       Case_0123456789 name name' u attrs False = Apply (Apply LookupSym0 name) (Apply SchSym0 attrs)
-    type LookupSym2 (t :: GHC.Types.[] AChar) (t :: Schema) =
-        Lookup t t
+    type LookupSym2 (t :: [AChar]) (t :: Schema) = Lookup t t
     instance SuppressUnusedWarnings LookupSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) LookupSym1KindInference GHC.Tuple.())
-    data LookupSym1 (l :: GHC.Types.[] AChar) (l :: TyFun Schema U)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (LookupSym1 l) arg)) (KindOf (LookupSym2 l arg)) =>
+    data LookupSym1 (l :: [AChar]) (l :: TyFun Schema U)
+      = forall arg. KindOf (Apply (LookupSym1 l) arg) ~ KindOf (LookupSym2 l arg) =>
         LookupSym1KindInference
     type instance Apply (LookupSym1 l) l = LookupSym2 l l
     instance SuppressUnusedWarnings LookupSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) LookupSym0KindInference GHC.Tuple.())
-    data LookupSym0 (l :: TyFun (GHC.Types.[] AChar) (TyFun Schema U
-                                                      -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply LookupSym0 arg)) (KindOf (LookupSym1 arg)) =>
+    data LookupSym0 (l :: TyFun [AChar] (TyFun Schema U -> *))
+      = forall arg. KindOf (Apply LookupSym0 arg) ~ KindOf (LookupSym1 arg) =>
         LookupSym0KindInference
     type instance Apply LookupSym0 l = LookupSym1 l
-    type OccursSym2 (t :: GHC.Types.[] AChar) (t :: Schema) =
-        Occurs t t
+    type OccursSym2 (t :: [AChar]) (t :: Schema) = Occurs t t
     instance SuppressUnusedWarnings OccursSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) OccursSym1KindInference GHC.Tuple.())
-    data OccursSym1 (l :: GHC.Types.[] AChar) (l :: TyFun Schema Bool)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (OccursSym1 l) arg)) (KindOf (OccursSym2 l arg)) =>
+    data OccursSym1 (l :: [AChar]) (l :: TyFun Schema Bool)
+      = forall arg. KindOf (Apply (OccursSym1 l) arg) ~ KindOf (OccursSym2 l arg) =>
         OccursSym1KindInference
     type instance Apply (OccursSym1 l) l = OccursSym2 l l
     instance SuppressUnusedWarnings OccursSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) OccursSym0KindInference GHC.Tuple.())
-    data OccursSym0 (l :: TyFun (GHC.Types.[] AChar) (TyFun Schema Bool
-                                                      -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply OccursSym0 arg)) (KindOf (OccursSym1 arg)) =>
+    data OccursSym0 (l :: TyFun [AChar] (TyFun Schema Bool -> *))
+      = forall arg. KindOf (Apply OccursSym0 arg) ~ KindOf (OccursSym1 arg) =>
         OccursSym0KindInference
     type instance Apply OccursSym0 l = OccursSym1 l
     type AttrNotInSym2 (t :: Attribute) (t :: Schema) = AttrNotIn t t
@@ -366,14 +361,14 @@ GradingClient/Database.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AttrNotInSym1KindInference GHC.Tuple.())
     data AttrNotInSym1 (l :: Attribute) (l :: TyFun Schema Bool)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (AttrNotInSym1 l) arg)) (KindOf (AttrNotInSym2 l arg)) =>
+      = forall arg. KindOf (Apply (AttrNotInSym1 l) arg) ~ KindOf (AttrNotInSym2 l arg) =>
         AttrNotInSym1KindInference
     type instance Apply (AttrNotInSym1 l) l = AttrNotInSym2 l l
     instance SuppressUnusedWarnings AttrNotInSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AttrNotInSym0KindInference GHC.Tuple.())
     data AttrNotInSym0 (l :: TyFun Attribute (TyFun Schema Bool -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply AttrNotInSym0 arg)) (KindOf (AttrNotInSym1 arg)) =>
+      = forall arg. KindOf (Apply AttrNotInSym0 arg) ~ KindOf (AttrNotInSym1 arg) =>
         AttrNotInSym0KindInference
     type instance Apply AttrNotInSym0 l = AttrNotInSym1 l
     type DisjointSym2 (t :: Schema) (t :: Schema) = Disjoint t t
@@ -381,14 +376,14 @@ GradingClient/Database.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) DisjointSym1KindInference GHC.Tuple.())
     data DisjointSym1 (l :: Schema) (l :: TyFun Schema Bool)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (DisjointSym1 l) arg)) (KindOf (DisjointSym2 l arg)) =>
+      = forall arg. KindOf (Apply (DisjointSym1 l) arg) ~ KindOf (DisjointSym2 l arg) =>
         DisjointSym1KindInference
     type instance Apply (DisjointSym1 l) l = DisjointSym2 l l
     instance SuppressUnusedWarnings DisjointSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) DisjointSym0KindInference GHC.Tuple.())
     data DisjointSym0 (l :: TyFun Schema (TyFun Schema Bool -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply DisjointSym0 arg)) (KindOf (DisjointSym1 arg)) =>
+      = forall arg. KindOf (Apply DisjointSym0 arg) ~ KindOf (DisjointSym1 arg) =>
         DisjointSym0KindInference
     type instance Apply DisjointSym0 l = DisjointSym1 l
     type AppendSym2 (t :: Schema) (t :: Schema) = Append t t
@@ -396,37 +391,35 @@ GradingClient/Database.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AppendSym1KindInference GHC.Tuple.())
     data AppendSym1 (l :: Schema) (l :: TyFun Schema Schema)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (AppendSym1 l) arg)) (KindOf (AppendSym2 l arg)) =>
+      = forall arg. KindOf (Apply (AppendSym1 l) arg) ~ KindOf (AppendSym2 l arg) =>
         AppendSym1KindInference
     type instance Apply (AppendSym1 l) l = AppendSym2 l l
     instance SuppressUnusedWarnings AppendSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) AppendSym0KindInference GHC.Tuple.())
     data AppendSym0 (l :: TyFun Schema (TyFun Schema Schema -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply AppendSym0 arg)) (KindOf (AppendSym1 arg)) =>
+      = forall arg. KindOf (Apply AppendSym0 arg) ~ KindOf (AppendSym1 arg) =>
         AppendSym0KindInference
     type instance Apply AppendSym0 l = AppendSym1 l
-    type family Lookup (a :: GHC.Types.[] AChar)
-                       (a :: Schema) :: U where
-      Lookup _z_0123456789 (Sch GHC.Types.[]) = Any
-      Lookup name (Sch ((GHC.Types.:) (Attr name' u) attrs)) = Case_0123456789 name name' u attrs (Let_0123456789Scrutinee_0123456789Sym4 name name' u attrs)
-    type family Occurs (a :: GHC.Types.[] AChar)
-                       (a :: Schema) :: Bool where
-      Occurs _z_0123456789 (Sch GHC.Types.[]) = FalseSym0
-      Occurs name (Sch ((GHC.Types.:) (Attr name' _z_0123456789) attrs)) = Apply (Apply (:||$) (Apply (Apply (:==$) name) name')) (Apply (Apply OccursSym0 name) (Apply SchSym0 attrs))
+    type family Lookup (a :: [AChar]) (a :: Schema) :: U where
+      Lookup _z_0123456789 (Sch '[]) = Any
+      Lookup name (Sch ((:) (Attr name' u) attrs)) = Case_0123456789 name name' u attrs (Let_0123456789Scrutinee_0123456789Sym4 name name' u attrs)
+    type family Occurs (a :: [AChar]) (a :: Schema) :: Bool where
+      Occurs _z_0123456789 (Sch '[]) = FalseSym0
+      Occurs name (Sch ((:) (Attr name' _z_0123456789) attrs)) = Apply (Apply (:||$) (Apply (Apply (:==$) name) name')) (Apply (Apply OccursSym0 name) (Apply SchSym0 attrs))
     type family AttrNotIn (a :: Attribute) (a :: Schema) :: Bool where
-      AttrNotIn _z_0123456789 (Sch GHC.Types.[]) = TrueSym0
-      AttrNotIn (Attr name u) (Sch ((GHC.Types.:) (Attr name' _z_0123456789) t)) = Apply (Apply (:&&$) (Apply (Apply (:/=$) name) name')) (Apply (Apply AttrNotInSym0 (Apply (Apply AttrSym0 name) u)) (Apply SchSym0 t))
+      AttrNotIn _z_0123456789 (Sch '[]) = TrueSym0
+      AttrNotIn (Attr name u) (Sch ((:) (Attr name' _z_0123456789) t)) = Apply (Apply (:&&$) (Apply (Apply (:/=$) name) name')) (Apply (Apply AttrNotInSym0 (Apply (Apply AttrSym0 name) u)) (Apply SchSym0 t))
     type family Disjoint (a :: Schema) (a :: Schema) :: Bool where
-      Disjoint (Sch GHC.Types.[]) _z_0123456789 = TrueSym0
-      Disjoint (Sch ((GHC.Types.:) h t)) s = Apply (Apply (:&&$) (Apply (Apply AttrNotInSym0 h) s)) (Apply (Apply DisjointSym0 (Apply SchSym0 t)) s)
+      Disjoint (Sch '[]) _z_0123456789 = TrueSym0
+      Disjoint (Sch ((:) h t)) s = Apply (Apply (:&&$) (Apply (Apply AttrNotInSym0 h) s)) (Apply (Apply DisjointSym0 (Apply SchSym0 t)) s)
     type family Append (a :: Schema) (a :: Schema) :: Schema where
       Append (Sch s1) (Sch s2) = Apply SchSym0 (Apply (Apply (:++$) s1) s2)
     sLookup ::
-      forall (t :: GHC.Types.[] AChar) (t :: Schema).
+      forall (t :: [AChar]) (t :: Schema).
       Sing t -> Sing t -> Sing (Apply (Apply LookupSym0 t) t)
     sOccurs ::
-      forall (t :: GHC.Types.[] AChar) (t :: Schema).
+      forall (t :: [AChar]) (t :: Schema).
       Sing t -> Sing t -> Sing (Apply (Apply OccursSym0 t) t)
     sAttrNotIn ::
       forall (t :: Attribute) (t :: Schema).
@@ -440,17 +433,16 @@ GradingClient/Database.hs:0:0: Splicing declarations
     sLookup _s_z_0123456789 (SSch SNil)
       = let
           lambda ::
-            forall _z_0123456789. ((GHC.Types.~) t _z_0123456789,
-                                   (GHC.Types.~) t (Apply SchSym0 GHC.Types.[])) =>
+            forall _z_0123456789. (t ~ _z_0123456789, t ~ Apply SchSym0 '[]) =>
             Sing _z_0123456789
-            -> Sing (Apply (Apply LookupSym0 _z_0123456789) (Apply SchSym0 GHC.Types.[]))
+            -> Sing (Apply (Apply LookupSym0 _z_0123456789) (Apply SchSym0 '[]))
           lambda _z_0123456789 = undefined
         in lambda _s_z_0123456789
     sLookup sName (SSch (SCons (SAttr sName' sU) sAttrs))
       = let
           lambda ::
-            forall name name' u attrs. ((GHC.Types.~) t name,
-                                        (GHC.Types.~) t (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') u)) attrs))) =>
+            forall name name' u attrs. (t ~ name,
+                                        t ~ Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') u)) attrs)) =>
             Sing name
             -> Sing name'
                -> Sing u
@@ -466,12 +458,16 @@ GradingClient/Database.hs:0:0: Splicing declarations
               in  case sScrutinee_0123456789 of {
                     STrue
                       -> let
-                           lambda :: Sing (Case_0123456789 name name' u attrs TrueSym0)
+                           lambda ::
+                             TrueSym0 ~ Let_0123456789Scrutinee_0123456789Sym4 name name' u attrs =>
+                             Sing (Case_0123456789 name name' u attrs TrueSym0)
                            lambda = u
                          in lambda
                     SFalse
                       -> let
-                           lambda :: Sing (Case_0123456789 name name' u attrs FalseSym0)
+                           lambda ::
+                             FalseSym0 ~ Let_0123456789Scrutinee_0123456789Sym4 name name' u attrs =>
+                             Sing (Case_0123456789 name name' u attrs FalseSym0)
                            lambda
                              = applySing
                                  (applySing (singFun2 (Proxy :: Proxy LookupSym0) sLookup) name)
@@ -482,17 +478,16 @@ GradingClient/Database.hs:0:0: Splicing declarations
     sOccurs _s_z_0123456789 (SSch SNil)
       = let
           lambda ::
-            forall _z_0123456789. ((GHC.Types.~) t _z_0123456789,
-                                   (GHC.Types.~) t (Apply SchSym0 GHC.Types.[])) =>
+            forall _z_0123456789. (t ~ _z_0123456789, t ~ Apply SchSym0 '[]) =>
             Sing _z_0123456789
-            -> Sing (Apply (Apply OccursSym0 _z_0123456789) (Apply SchSym0 GHC.Types.[]))
+            -> Sing (Apply (Apply OccursSym0 _z_0123456789) (Apply SchSym0 '[]))
           lambda _z_0123456789 = SFalse
         in lambda _s_z_0123456789
     sOccurs sName (SSch (SCons (SAttr sName' _s_z_0123456789) sAttrs))
       = let
           lambda ::
-            forall name name' _z_0123456789 attrs. ((GHC.Types.~) t name,
-                                                    (GHC.Types.~) t (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') _z_0123456789)) attrs))) =>
+            forall name name' _z_0123456789 attrs. (t ~ name,
+                                                    t ~ Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') _z_0123456789)) attrs)) =>
             Sing name
             -> Sing name'
                -> Sing _z_0123456789
@@ -511,10 +506,9 @@ GradingClient/Database.hs:0:0: Splicing declarations
     sAttrNotIn _s_z_0123456789 (SSch SNil)
       = let
           lambda ::
-            forall _z_0123456789. ((GHC.Types.~) t _z_0123456789,
-                                   (GHC.Types.~) t (Apply SchSym0 GHC.Types.[])) =>
+            forall _z_0123456789. (t ~ _z_0123456789, t ~ Apply SchSym0 '[]) =>
             Sing _z_0123456789
-            -> Sing (Apply (Apply AttrNotInSym0 _z_0123456789) (Apply SchSym0 GHC.Types.[]))
+            -> Sing (Apply (Apply AttrNotInSym0 _z_0123456789) (Apply SchSym0 '[]))
           lambda _z_0123456789 = STrue
         in lambda _s_z_0123456789
     sAttrNotIn
@@ -526,8 +520,8 @@ GradingClient/Database.hs:0:0: Splicing declarations
                    u
                    name'
                    _z_0123456789
-                   t. ((GHC.Types.~) t (Apply (Apply AttrSym0 name) u),
-                       (GHC.Types.~) t (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') _z_0123456789)) t))) =>
+                   t. (t ~ Apply (Apply AttrSym0 name) u,
+                       t ~ Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') _z_0123456789)) t)) =>
             Sing name
             -> Sing u
                -> Sing name'
@@ -550,19 +544,16 @@ GradingClient/Database.hs:0:0: Splicing declarations
     sDisjoint (SSch SNil) _s_z_0123456789
       = let
           lambda ::
-            forall _z_0123456789. ((GHC.Types.~) t (Apply SchSym0 GHC.Types.[]),
-                                   (GHC.Types.~) t _z_0123456789) =>
+            forall _z_0123456789. (t ~ Apply SchSym0 '[], t ~ _z_0123456789) =>
             Sing _z_0123456789
-            -> Sing (Apply (Apply DisjointSym0 (Apply SchSym0 GHC.Types.[])) _z_0123456789)
+            -> Sing (Apply (Apply DisjointSym0 (Apply SchSym0 '[])) _z_0123456789)
           lambda _z_0123456789 = STrue
         in lambda _s_z_0123456789
     sDisjoint (SSch (SCons sH sT)) sS
       = let
           lambda ::
-            forall h
-                   t
-                   s. ((GHC.Types.~) t (Apply SchSym0 (Apply (Apply (:$) h) t)),
-                       (GHC.Types.~) t s) =>
+            forall h t s. (t ~ Apply SchSym0 (Apply (Apply (:$) h) t),
+                           t ~ s) =>
             Sing h
             -> Sing t
                -> Sing s
@@ -583,8 +574,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
     sAppend (SSch sS1) (SSch sS2)
       = let
           lambda ::
-            forall s1 s2. ((GHC.Types.~) t (Apply SchSym0 s1),
-                           (GHC.Types.~) t (Apply SchSym0 s2)) =>
+            forall s1 s2. (t ~ Apply SchSym0 s1, t ~ Apply SchSym0 s2) =>
             Sing s1
             -> Sing s2
                -> Sing (Apply (Apply AppendSym0 (Apply SchSym0 s1)) (Apply SchSym0 s2))
@@ -595,11 +585,10 @@ GradingClient/Database.hs:0:0: Splicing declarations
                    (applySing (singFun2 (Proxy :: Proxy (:++$)) (%:++)) s1) s2)
         in lambda sS1 sS2
     data instance Sing (z :: U)
-      = (GHC.Types.~) z BOOL => SBOOL |
-        (GHC.Types.~) z STRING => SSTRING |
-        (GHC.Types.~) z NAT => SNAT |
-        forall (n :: U) (n :: Nat). (GHC.Types.~) z (VEC n n) =>
-        SVEC (Sing n) (Sing n)
+      = z ~ BOOL => SBOOL |
+        z ~ STRING => SSTRING |
+        z ~ NAT => SNAT |
+        forall (n :: U) (n :: Nat). z ~ VEC n n => SVEC (Sing n) (Sing n)
     type SU (z :: U) = Sing z
     instance SingKind (KProxy :: KProxy U) where
       type DemoteRep (KProxy :: KProxy U) = U
@@ -706,32 +695,32 @@ GradingClient/Database.hs:0:0: Splicing declarations
             GHC.Tuple.(,) _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
     data instance Sing (z :: AChar)
-      = (GHC.Types.~) z CA => SCA |
-        (GHC.Types.~) z CB => SCB |
-        (GHC.Types.~) z CC => SCC |
-        (GHC.Types.~) z CD => SCD |
-        (GHC.Types.~) z CE => SCE |
-        (GHC.Types.~) z CF => SCF |
-        (GHC.Types.~) z CG => SCG |
-        (GHC.Types.~) z CH => SCH |
-        (GHC.Types.~) z CI => SCI |
-        (GHC.Types.~) z CJ => SCJ |
-        (GHC.Types.~) z CK => SCK |
-        (GHC.Types.~) z CL => SCL |
-        (GHC.Types.~) z CM => SCM |
-        (GHC.Types.~) z CN => SCN |
-        (GHC.Types.~) z CO => SCO |
-        (GHC.Types.~) z CP => SCP |
-        (GHC.Types.~) z CQ => SCQ |
-        (GHC.Types.~) z CR => SCR |
-        (GHC.Types.~) z CS => SCS |
-        (GHC.Types.~) z CT => SCT |
-        (GHC.Types.~) z CU => SCU |
-        (GHC.Types.~) z CV => SCV |
-        (GHC.Types.~) z CW => SCW |
-        (GHC.Types.~) z CX => SCX |
-        (GHC.Types.~) z CY => SCY |
-        (GHC.Types.~) z CZ => SCZ
+      = z ~ CA => SCA |
+        z ~ CB => SCB |
+        z ~ CC => SCC |
+        z ~ CD => SCD |
+        z ~ CE => SCE |
+        z ~ CF => SCF |
+        z ~ CG => SCG |
+        z ~ CH => SCH |
+        z ~ CI => SCI |
+        z ~ CJ => SCJ |
+        z ~ CK => SCK |
+        z ~ CL => SCL |
+        z ~ CM => SCM |
+        z ~ CN => SCN |
+        z ~ CO => SCO |
+        z ~ CP => SCP |
+        z ~ CQ => SCQ |
+        z ~ CR => SCR |
+        z ~ CS => SCS |
+        z ~ CT => SCT |
+        z ~ CU => SCU |
+        z ~ CV => SCV |
+        z ~ CW => SCW |
+        z ~ CX => SCX |
+        z ~ CY => SCY |
+        z ~ CZ => SCZ
     type SAChar (z :: AChar) = Sing z
     instance SingKind (KProxy :: KProxy AChar) where
       type DemoteRep (KProxy :: KProxy AChar) = AChar
@@ -4742,8 +4731,7 @@ GradingClient/Database.hs:0:0: Splicing declarations
                     _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCZ SCZ = Proved Refl
     data instance Sing (z :: Attribute)
-      = forall (n :: GHC.Types.[] AChar)
-               (n :: U). (GHC.Types.~) z (Attr n n) =>
+      = forall (n :: [AChar]) (n :: U). z ~ Attr n n =>
         SAttr (Sing n) (Sing n)
     type SAttribute (z :: Attribute) = Sing z
     instance SingKind (KProxy :: KProxy Attribute) where
@@ -4752,21 +4740,18 @@ GradingClient/Database.hs:0:0: Splicing declarations
       toSing (Attr b b)
         = case
               GHC.Tuple.(,)
-                (toSing b :: SomeSing (KProxy :: KProxy (GHC.Types.[] AChar)))
+                (toSing b :: SomeSing (KProxy :: KProxy [AChar]))
                 (toSing b :: SomeSing (KProxy :: KProxy U))
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SAttr c c) }
     data instance Sing (z :: Schema)
-      = forall (n :: GHC.Types.[] Attribute). (GHC.Types.~) z (Sch n) =>
-        SSch (Sing n)
+      = forall (n :: [Attribute]). z ~ Sch n => SSch (Sing n)
     type SSchema (z :: Schema) = Sing z
     instance SingKind (KProxy :: KProxy Schema) where
       type DemoteRep (KProxy :: KProxy Schema) = Schema
       fromSing (SSch b) = Sch (fromSing b)
       toSing (Sch b)
-        = case  toSing b ::
-                  SomeSing (KProxy :: KProxy (GHC.Types.[] Attribute))
-          of {
+        = case toSing b :: SomeSing (KProxy :: KProxy [Attribute]) of {
             SomeSing c -> SomeSing (SSch c) }
     instance SingI BOOL where
       sing = SBOOL
@@ -4830,9 +4815,9 @@ GradingClient/Database.hs:0:0: Splicing declarations
     instance SingI CZ where
       sing = SCZ
     instance (SingI n, SingI n) =>
-             SingI (Attr (n :: GHC.Types.[] AChar) (n :: U)) where
+             SingI (Attr (n :: [AChar]) (n :: U)) where
       sing = SAttr sing sing
-    instance SingI n => SingI (Sch (n :: GHC.Types.[] Attribute)) where
+    instance SingI n => SingI (Sch (n :: [Attribute])) where
       sing = SSch sing
 GradingClient/Database.hs:0:0: Splicing declarations
     return [] ======> GradingClient/Database.hs:0:0:

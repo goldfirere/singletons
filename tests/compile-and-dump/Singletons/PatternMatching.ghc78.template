@@ -22,14 +22,14 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PairSym1KindInference GHC.Tuple.())
     data PairSym1 (l :: a) (l :: TyFun b (Pair a b))
-      = forall arg. (GHC.Types.~) (KindOf (Apply (PairSym1 l) arg)) (KindOf (PairSym2 l arg)) =>
+      = forall arg. KindOf (Apply (PairSym1 l) arg) ~ KindOf (PairSym2 l arg) =>
         PairSym1KindInference
     type instance Apply (PairSym1 l) l = PairSym2 l l
     instance SuppressUnusedWarnings PairSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PairSym0KindInference GHC.Tuple.())
     data PairSym0 (l :: TyFun a (TyFun b (Pair a b) -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply PairSym0 arg)) (KindOf (PairSym1 arg)) =>
+      = forall arg. KindOf (Apply PairSym0 arg) ~ KindOf (PairSym1 arg) =>
         PairSym0KindInference
     type instance Apply PairSym0 l = PairSym1 l
     type AListSym0 = AList
@@ -37,13 +37,13 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type ComplexSym0 = Complex
     type PrSym0 = Pr
     type AList =
-        Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) GHC.Types.[]))
+        Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) '[]))
     type Tuple =
         Apply (Apply (Apply Tuple3Sym0 FalseSym0) (Apply JustSym0 ZeroSym0)) TrueSym0
     type Complex =
         Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
     type Pr =
-        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) ZeroSym0) GHC.Types.[])
+        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) ZeroSym0) '[])
     sAList :: Sing AListSym0
     sTuple :: Sing TupleSym0
     sComplex :: Sing ComplexSym0
@@ -86,8 +86,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
           (applySing
              (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) SZero) SNil)
     data instance Sing (z :: Pair a b)
-      = forall (n :: a) (n :: b). (GHC.Types.~) z (Pair n n) =>
-        SPair (Sing n) (Sing n)
+      = forall (n :: a) (n :: b). z ~ Pair n n => SPair (Sing n) (Sing n)
     type SPair (z :: Pair a b) = Sing z
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b)) =>
@@ -139,7 +138,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg)) =>
+      = forall arg. KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg) =>
         Let_0123456789Scrutinee_0123456789Sym0KindInference
     type instance Apply Let_0123456789Scrutinee_0123456789Sym0 l = Let_0123456789Scrutinee_0123456789Sym1 l
     type Let_0123456789Scrutinee_0123456789 x = x
@@ -150,14 +149,14 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789TSym1KindInference GHC.Tuple.())
     data Let_0123456789TSym1 l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789TSym1 l) arg)) (KindOf (Let_0123456789TSym2 l arg)) =>
+      = forall arg. KindOf (Apply (Let_0123456789TSym1 l) arg) ~ KindOf (Let_0123456789TSym2 l arg) =>
         Let_0123456789TSym1KindInference
     type instance Apply (Let_0123456789TSym1 l) l = Let_0123456789TSym2 l l
     instance SuppressUnusedWarnings Let_0123456789TSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let_0123456789TSym0KindInference GHC.Tuple.())
     data Let_0123456789TSym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789TSym0 arg)) (KindOf (Let_0123456789TSym1 arg)) =>
+      = forall arg. KindOf (Apply Let_0123456789TSym0 arg) ~ KindOf (Let_0123456789TSym1 arg) =>
         Let_0123456789TSym0KindInference
     type instance Apply Let_0123456789TSym0 l = Let_0123456789TSym1 l
     type Let_0123456789T x y = Apply (Apply Tuple2Sym0 x) y
@@ -169,7 +168,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym1KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym1 l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym2 l arg)) =>
+      = forall arg. KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym2 l arg) =>
         Let_0123456789Scrutinee_0123456789Sym1KindInference
     type instance Apply (Let_0123456789Scrutinee_0123456789Sym1 l) l = Let_0123456789Scrutinee_0123456789Sym2 l l
     instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym0 where
@@ -178,7 +177,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
             (GHC.Tuple.(,)
                Let_0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
     data Let_0123456789Scrutinee_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg)) (KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg)) =>
+      = forall arg. KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg) =>
         Let_0123456789Scrutinee_0123456789Sym0KindInference
     type instance Apply Let_0123456789Scrutinee_0123456789Sym0 l = Let_0123456789Scrutinee_0123456789Sym1 l
     type Let_0123456789Scrutinee_0123456789 x y =
@@ -193,7 +192,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym4KindInference GHC.Tuple.())
     data Lambda_0123456789Sym4 l l l l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Lambda_0123456789Sym4 l l l l) arg)) (KindOf (Lambda_0123456789Sym5 l l l l arg)) =>
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym4 l l l l) arg) ~ KindOf (Lambda_0123456789Sym5 l l l l arg) =>
         Lambda_0123456789Sym4KindInference
     type instance Apply (Lambda_0123456789Sym4 l l l l) l = Lambda_0123456789Sym5 l l l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym3 where
@@ -201,7 +200,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym3KindInference GHC.Tuple.())
     data Lambda_0123456789Sym3 l l l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Lambda_0123456789Sym3 l l l) arg)) (KindOf (Lambda_0123456789Sym4 l l l arg)) =>
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym3 l l l) arg) ~ KindOf (Lambda_0123456789Sym4 l l l arg) =>
         Lambda_0123456789Sym3KindInference
     type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789Sym4 l l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
@@ -209,7 +208,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
     data Lambda_0123456789Sym2 l l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Lambda_0123456789Sym2 l l) arg)) (KindOf (Lambda_0123456789Sym3 l l arg)) =>
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
         Lambda_0123456789Sym2KindInference
     type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
@@ -217,7 +216,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
     data Lambda_0123456789Sym1 l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Lambda_0123456789Sym1 l) arg)) (KindOf (Lambda_0123456789Sym2 l arg)) =>
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
         Lambda_0123456789Sym1KindInference
     type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
@@ -225,11 +224,12 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
     data Lambda_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Lambda_0123456789Sym0 arg)) (KindOf (Lambda_0123456789Sym1 arg)) =>
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 x y t where
-      Case_0123456789 x y (GHC.Tuple.(,) a b) = Apply (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) a) b) b
+      Case_0123456789 x y '(a,
+                            b) = Apply (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) a) b) b
     type family Case_0123456789 x y arg_0123456789 t where
       Case_0123456789 x y arg_0123456789 _z_0123456789 = x
     type family Lambda_0123456789 x y t where
@@ -240,7 +240,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
     data Lambda_0123456789Sym2 l l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Lambda_0123456789Sym2 l l) arg)) (KindOf (Lambda_0123456789Sym3 l l arg)) =>
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
         Lambda_0123456789Sym2KindInference
     type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
@@ -248,7 +248,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
     data Lambda_0123456789Sym1 l l
-      = forall arg. (GHC.Types.~) (KindOf (Apply (Lambda_0123456789Sym1 l) arg)) (KindOf (Lambda_0123456789Sym2 l arg)) =>
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
         Lambda_0123456789Sym1KindInference
     type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
@@ -256,19 +256,29 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
     data Lambda_0123456789Sym0 l
-      = forall arg. (GHC.Types.~) (KindOf (Apply Lambda_0123456789Sym0 arg)) (KindOf (Lambda_0123456789Sym1 arg)) =>
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) _z_0123456789 ((GHC.Types.:) y_0123456789 ((GHC.Types.:) (Succ _z_0123456789) GHC.Types.[]))) = y_0123456789
+      Case_0123456789 '[_z_0123456789,
+                        y_0123456789,
+                        Succ _z_0123456789] = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 ((GHC.Types.:) _z_0123456789 ((GHC.Types.:) _z_0123456789 ((GHC.Types.:) (Succ y_0123456789) GHC.Types.[]))) = y_0123456789
+      Case_0123456789 '[_z_0123456789,
+                        _z_0123456789,
+                        Succ y_0123456789] = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (GHC.Tuple.(,,) y_0123456789 _z_0123456789 _z_0123456789) = y_0123456789
+      Case_0123456789 '(y_0123456789,
+                        _z_0123456789,
+                        _z_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (GHC.Tuple.(,,) _z_0123456789 y_0123456789 _z_0123456789) = y_0123456789
+      Case_0123456789 '(_z_0123456789,
+                        y_0123456789,
+                        _z_0123456789) = y_0123456789
     type family Case_0123456789 t where
-      Case_0123456789 (GHC.Tuple.(,,) _z_0123456789 _z_0123456789 y_0123456789) = y_0123456789
+      Case_0123456789 '(_z_0123456789,
+                        _z_0123456789,
+                        y_0123456789) = y_0123456789
     type family Case_0123456789 t where
       Case_0123456789 (Pair (Pair y_0123456789 _z_0123456789) _z_0123456789) = y_0123456789
     type family Case_0123456789 t where
@@ -283,24 +293,24 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     instance SuppressUnusedWarnings SillySym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SillySym0KindInference GHC.Tuple.())
-    data SillySym0 (l :: TyFun a GHC.Tuple.())
-      = forall arg. (GHC.Types.~) (KindOf (Apply SillySym0 arg)) (KindOf (SillySym1 arg)) =>
+    data SillySym0 (l :: TyFun a ())
+      = forall arg. KindOf (Apply SillySym0 arg) ~ KindOf (SillySym1 arg) =>
         SillySym0KindInference
     type instance Apply SillySym0 l = SillySym1 l
-    type Foo2Sym1 (t :: GHC.Tuple.(,) a b) = Foo2 t
+    type Foo2Sym1 (t :: (a, b)) = Foo2 t
     instance SuppressUnusedWarnings Foo2Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo2Sym0KindInference GHC.Tuple.())
-    data Foo2Sym0 (l :: TyFun (GHC.Tuple.(,) a b) a)
-      = forall arg. (GHC.Types.~) (KindOf (Apply Foo2Sym0 arg)) (KindOf (Foo2Sym1 arg)) =>
+    data Foo2Sym0 (l :: TyFun (a, b) a)
+      = forall arg. KindOf (Apply Foo2Sym0 arg) ~ KindOf (Foo2Sym1 arg) =>
         Foo2Sym0KindInference
     type instance Apply Foo2Sym0 l = Foo2Sym1 l
-    type Foo1Sym1 (t :: GHC.Tuple.(,) a b) = Foo1 t
+    type Foo1Sym1 (t :: (a, b)) = Foo1 t
     instance SuppressUnusedWarnings Foo1Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
-    data Foo1Sym0 (l :: TyFun (GHC.Tuple.(,) a b) a)
-      = forall arg. (GHC.Types.~) (KindOf (Apply Foo1Sym0 arg)) (KindOf (Foo1Sym1 arg)) =>
+    data Foo1Sym0 (l :: TyFun (a, b) a)
+      = forall arg. KindOf (Apply Foo1Sym0 arg) ~ KindOf (Foo1Sym1 arg) =>
         Foo1Sym0KindInference
     type instance Apply Foo1Sym0 l = Foo1Sym1 l
     type LszSym0 = Lsz
@@ -317,12 +327,13 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type X_0123456789Sym0 = X_0123456789
     type X_0123456789Sym0 = X_0123456789
     type X_0123456789Sym0 = X_0123456789
-    type family Silly (a :: a) :: GHC.Tuple.() where
+    type family Silly (a :: a) :: () where
       Silly x = Case_0123456789 x (Let_0123456789Scrutinee_0123456789Sym1 x)
-    type family Foo2 (a :: GHC.Tuple.(,) a b) :: a where
-      Foo2 (GHC.Tuple.(,) x y) = Case_0123456789 x y (Let_0123456789Scrutinee_0123456789Sym2 x y)
-    type family Foo1 (a :: GHC.Tuple.(,) a b) :: a where
-      Foo1 (GHC.Tuple.(,) x y) = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
+    type family Foo2 (a :: (a, b)) :: a where
+      Foo2 '(x,
+             y) = Case_0123456789 x y (Let_0123456789Scrutinee_0123456789Sym2 x y)
+    type family Foo1 (a :: (a, b)) :: a where
+      Foo1 '(x, y) = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
     type Lsz = (Case_0123456789 X_0123456789Sym0 :: Nat)
     type Blimy = Case_0123456789 X_0123456789Sym0
     type Tf = Case_0123456789 X_0123456789Sym0
@@ -338,10 +349,8 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type X_0123456789 = TupleSym0
     type X_0123456789 = AListSym0
     sSilly :: forall (t :: a). Sing t -> Sing (Apply SillySym0 t)
-    sFoo2 ::
-      forall (t :: GHC.Tuple.(,) a b). Sing t -> Sing (Apply Foo2Sym0 t)
-    sFoo1 ::
-      forall (t :: GHC.Tuple.(,) a b). Sing t -> Sing (Apply Foo1Sym0 t)
+    sFoo2 :: forall (t :: (a, b)). Sing t -> Sing (Apply Foo2Sym0 t)
+    sFoo1 :: forall (t :: (a, b)). Sing t -> Sing (Apply Foo1Sym0 t)
     sLsz :: Sing LszSym0
     sBlimy :: Sing BlimySym0
     sTf :: Sing TfSym0
@@ -358,8 +367,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     sX_0123456789 :: Sing X_0123456789Sym0
     sSilly sX
       = let
-          lambda ::
-            forall x. (GHC.Types.~) t x => Sing x -> Sing (Apply SillySym0 x)
+          lambda :: forall x. t ~ x => Sing x -> Sing (Apply SillySym0 x)
           lambda x
             = let
                 sScrutinee_0123456789 ::
@@ -369,7 +377,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
                     _s_z_0123456789
                       -> let
                            lambda ::
-                             forall _z_0123456789.
+                             forall _z_0123456789. _z_0123456789 ~ Let_0123456789Scrutinee_0123456789Sym1 x =>
                              Sing _z_0123456789 -> Sing (Case_0123456789 x _z_0123456789)
                            lambda _z_0123456789 = STuple0
                          in lambda _s_z_0123456789 } ::
@@ -378,7 +386,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     sFoo2 (STuple2 sX sY)
       = let
           lambda ::
-            forall x y. (GHC.Types.~) t (Apply (Apply Tuple2Sym0 x) y) =>
+            forall x y. t ~ Apply (Apply Tuple2Sym0 x) y =>
             Sing x
             -> Sing y -> Sing (Apply Foo2Sym0 (Apply (Apply Tuple2Sym0 x) y))
           lambda x y
@@ -395,7 +403,8 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
                     STuple2 sA sB
                       -> let
                            lambda ::
-                             forall a b.
+                             forall a
+                                    b. Apply (Apply Tuple2Sym0 a) b ~ Let_0123456789Scrutinee_0123456789Sym2 x y =>
                              Sing a
                              -> Sing b
                                 -> Sing (Case_0123456789 x y (Apply (Apply Tuple2Sym0 a) b))
@@ -415,7 +424,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
                                                   _s_z_0123456789
                                                     -> let
                                                          lambda ::
-                                                           forall _z_0123456789.
+                                                           forall _z_0123456789. _z_0123456789 ~ arg_0123456789 =>
                                                            Sing _z_0123456789
                                                            -> Sing (Case_0123456789 x y a b arg_0123456789 _z_0123456789)
                                                          lambda _z_0123456789 = a
@@ -429,7 +438,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     sFoo1 (STuple2 sX sY)
       = let
           lambda ::
-            forall x y. (GHC.Types.~) t (Apply (Apply Tuple2Sym0 x) y) =>
+            forall x y. t ~ Apply (Apply Tuple2Sym0 x) y =>
             Sing x
             -> Sing y -> Sing (Apply Foo1Sym0 (Apply (Apply Tuple2Sym0 x) y))
           lambda x y
@@ -447,7 +456,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
                                  _s_z_0123456789
                                    -> let
                                         lambda ::
-                                          forall _z_0123456789.
+                                          forall _z_0123456789. _z_0123456789 ~ arg_0123456789 =>
                                           Sing _z_0123456789
                                           -> Sing (Case_0123456789 x y arg_0123456789 _z_0123456789)
                                         lambda _z_0123456789 = x
@@ -462,11 +471,13 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
                 (SCons sY_0123456789 (SCons (SSucc _s_z_0123456789) SNil))
             -> let
                  lambda ::
-                   forall _z_0123456789 y_0123456789 _z_0123456789.
+                   forall _z_0123456789
+                          y_0123456789
+                          _z_0123456789. Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) (Apply SuccSym0 _z_0123456789)) '[])) ~ X_0123456789Sym0 =>
                    Sing _z_0123456789
                    -> Sing y_0123456789
                       -> Sing _z_0123456789
-                         -> Sing (Case_0123456789 (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) (Apply SuccSym0 _z_0123456789)) GHC.Types.[]))))
+                         -> Sing (Case_0123456789 (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) (Apply SuccSym0 _z_0123456789)) '[]))))
                  lambda _z_0123456789 y_0123456789 _z_0123456789 = y_0123456789
                in lambda _s_z_0123456789 sY_0123456789 _s_z_0123456789 } ::
           Sing (Case_0123456789 X_0123456789Sym0)
@@ -476,11 +487,13 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
                 (SCons _s_z_0123456789 (SCons (SSucc sY_0123456789) SNil))
             -> let
                  lambda ::
-                   forall _z_0123456789 _z_0123456789 y_0123456789.
+                   forall _z_0123456789
+                          _z_0123456789
+                          y_0123456789. Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) (Apply SuccSym0 y_0123456789)) '[])) ~ X_0123456789Sym0 =>
                    Sing _z_0123456789
                    -> Sing _z_0123456789
                       -> Sing y_0123456789
-                         -> Sing (Case_0123456789 (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) (Apply SuccSym0 y_0123456789)) GHC.Types.[]))))
+                         -> Sing (Case_0123456789 (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) (Apply SuccSym0 y_0123456789)) '[]))))
                  lambda _z_0123456789 _z_0123456789 y_0123456789 = y_0123456789
                in lambda _s_z_0123456789 _s_z_0123456789 sY_0123456789 } ::
           Sing (Case_0123456789 X_0123456789Sym0)
@@ -489,7 +502,9 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
           STuple3 sY_0123456789 _s_z_0123456789 _s_z_0123456789
             -> let
                  lambda ::
-                   forall y_0123456789 _z_0123456789 _z_0123456789.
+                   forall y_0123456789
+                          _z_0123456789
+                          _z_0123456789. Apply (Apply (Apply Tuple3Sym0 y_0123456789) _z_0123456789) _z_0123456789 ~ X_0123456789Sym0 =>
                    Sing y_0123456789
                    -> Sing _z_0123456789
                       -> Sing _z_0123456789
@@ -502,7 +517,9 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
           STuple3 _s_z_0123456789 sY_0123456789 _s_z_0123456789
             -> let
                  lambda ::
-                   forall _z_0123456789 y_0123456789 _z_0123456789.
+                   forall _z_0123456789
+                          y_0123456789
+                          _z_0123456789. Apply (Apply (Apply Tuple3Sym0 _z_0123456789) y_0123456789) _z_0123456789 ~ X_0123456789Sym0 =>
                    Sing _z_0123456789
                    -> Sing y_0123456789
                       -> Sing _z_0123456789
@@ -515,7 +532,9 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
           STuple3 _s_z_0123456789 _s_z_0123456789 sY_0123456789
             -> let
                  lambda ::
-                   forall _z_0123456789 _z_0123456789 y_0123456789.
+                   forall _z_0123456789
+                          _z_0123456789
+                          y_0123456789. Apply (Apply (Apply Tuple3Sym0 _z_0123456789) _z_0123456789) y_0123456789 ~ X_0123456789Sym0 =>
                    Sing _z_0123456789
                    -> Sing _z_0123456789
                       -> Sing y_0123456789
@@ -528,7 +547,9 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
           SPair (SPair sY_0123456789 _s_z_0123456789) _s_z_0123456789
             -> let
                  lambda ::
-                   forall y_0123456789 _z_0123456789 _z_0123456789.
+                   forall y_0123456789
+                          _z_0123456789
+                          _z_0123456789. Apply (Apply PairSym0 (Apply (Apply PairSym0 y_0123456789) _z_0123456789)) _z_0123456789 ~ X_0123456789Sym0 =>
                    Sing y_0123456789
                    -> Sing _z_0123456789
                       -> Sing _z_0123456789
@@ -541,7 +562,9 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
           SPair (SPair _s_z_0123456789 sY_0123456789) _s_z_0123456789
             -> let
                  lambda ::
-                   forall _z_0123456789 y_0123456789 _z_0123456789.
+                   forall _z_0123456789
+                          y_0123456789
+                          _z_0123456789. Apply (Apply PairSym0 (Apply (Apply PairSym0 _z_0123456789) y_0123456789)) _z_0123456789 ~ X_0123456789Sym0 =>
                    Sing _z_0123456789
                    -> Sing y_0123456789
                       -> Sing _z_0123456789
@@ -554,7 +577,9 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
           SPair (SPair _s_z_0123456789 _s_z_0123456789) sY_0123456789
             -> let
                  lambda ::
-                   forall _z_0123456789 _z_0123456789 y_0123456789.
+                   forall _z_0123456789
+                          _z_0123456789
+                          y_0123456789. Apply (Apply PairSym0 (Apply (Apply PairSym0 _z_0123456789) _z_0123456789)) y_0123456789 ~ X_0123456789Sym0 =>
                    Sing _z_0123456789
                    -> Sing _z_0123456789
                       -> Sing y_0123456789
@@ -567,7 +592,8 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
           SPair sY_0123456789 _s_z_0123456789
             -> let
                  lambda ::
-                   forall y_0123456789 _z_0123456789.
+                   forall y_0123456789
+                          _z_0123456789. Apply (Apply PairSym0 y_0123456789) _z_0123456789 ~ X_0123456789Sym0 =>
                    Sing y_0123456789
                    -> Sing _z_0123456789
                       -> Sing (Case_0123456789 (Apply (Apply PairSym0 y_0123456789) _z_0123456789))
@@ -579,7 +605,8 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
           SPair _s_z_0123456789 sY_0123456789
             -> let
                  lambda ::
-                   forall _z_0123456789 y_0123456789.
+                   forall _z_0123456789
+                          y_0123456789. Apply (Apply PairSym0 _z_0123456789) y_0123456789 ~ X_0123456789Sym0 =>
                    Sing _z_0123456789
                    -> Sing y_0123456789
                       -> Sing (Case_0123456789 (Apply (Apply PairSym0 _z_0123456789) y_0123456789))

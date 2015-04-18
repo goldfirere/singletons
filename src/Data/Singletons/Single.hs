@@ -21,7 +21,6 @@ import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
 import Data.Singletons.Single.Data
 import Data.Singletons.Single.Eq
-import Data.Singletons.Single.Squash
 import Data.Singletons.Syntax
 import Language.Haskell.TH.Desugar
 import qualified Data.Map.Strict as Map
@@ -157,14 +156,12 @@ singTopLevelDecs locals decls = do
         , pd_instance_decs         = insts
         , pd_data_decs             = datas }    <- partitionDecs decls
 
-  squashedLetDecls <- squashWildcards letDecls
-
   when (not (null classes) || not (null insts)) $
     qReportError "Classes and instances may not yet be made into singletons."
 
   dataDecls' <- promoteM_ locals $ promoteDataDecs datas
   ((_, letDecEnv), letDecls') <- promoteM locals $
-                                 promoteLetDecs noPrefix squashedLetDecls
+                                 promoteLetDecs noPrefix letDecls
   singDecsM locals $ do
     let letBinds = concatMap buildDataLets datas
                 ++ concatMap buildMethLets classes

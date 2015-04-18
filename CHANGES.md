@@ -13,9 +13,6 @@ Changelog for singletons project
 * Promoting a literal number now uses overloaded literals at the type level,
 using a type-level `FromInteger` in the type-level `Num` class.
 
-* Support for singletonizing overlapping patterns. As a consequence, a bunch
-more functions from `Data.List` are now made into singletons.
-
 * Better support for dealing with constraints. Some previously-unsingletonizable
 functions that have constrained parameters now work.
 

@@ -42,5 +42,14 @@ module Data.Promotion.Prelude.Base (
   SeqSym0, SeqSym1, SeqSym2
   ) where
 
+import Data.Singletons.TH
 import Data.Singletons.Prelude.Base
 
+$(promoteOnly [d|
+  -- Does not singletoznize. See #30
+  until                   :: (a -> Bool) -> (a -> a) -> a -> a
+  until p f = go
+    where
+      go x | p x          = x
+           | otherwise    = go (f x)
+ |])

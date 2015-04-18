@@ -26,14 +26,14 @@ Singletons/Operators.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+:$$###) GHC.Tuple.())
     data (:+:$$) (l :: Foo) (l :: TyFun Foo Foo)
-      = forall arg. (GHC.Types.~) (KindOf (Apply ((:+:$$) l) arg)) (KindOf ((:+:$$$) l arg)) =>
+      = forall arg. KindOf (Apply ((:+:$$) l) arg) ~ KindOf ((:+:$$$) l arg) =>
         (:+:$$###)
     type instance Apply ((:+:$$) l) l = (:+:$$$) l l
     instance SuppressUnusedWarnings (:+:$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+:$###) GHC.Tuple.())
     data (:+:$) (l :: TyFun Foo (TyFun Foo Foo -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply (:+:$) arg)) (KindOf ((:+:$$) arg)) =>
+      = forall arg. KindOf (Apply (:+:$) arg) ~ KindOf ((:+:$$) arg) =>
         (:+:$###)
     type instance Apply (:+:$) l = (:+:$$) l
     type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
@@ -41,14 +41,14 @@ Singletons/Operators.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+$$###) GHC.Tuple.())
     data (:+$$) (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (KindOf (Apply ((:+$$) l) arg)) (KindOf ((:+$$$) l arg)) =>
+      = forall arg. KindOf (Apply ((:+$$) l) arg) ~ KindOf ((:+$$$) l arg) =>
         (:+$$###)
     type instance Apply ((:+$$) l) l = (:+$$$) l l
     instance SuppressUnusedWarnings (:+$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+$###) GHC.Tuple.())
     data (:+$) (l :: TyFun Nat (TyFun Nat Nat -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply (:+$) arg)) (KindOf ((:+$$) arg)) =>
+      = forall arg. KindOf (Apply (:+$) arg) ~ KindOf ((:+$$) arg) =>
         (:+$###)
     type instance Apply (:+$) l = (:+$$) l
     type ChildSym1 (t :: Foo) = Child t
@@ -56,7 +56,7 @@ Singletons/Operators.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ChildSym0KindInference GHC.Tuple.())
     data ChildSym0 (l :: TyFun Foo Foo)
-      = forall arg. (GHC.Types.~) (KindOf (Apply ChildSym0 arg)) (KindOf (ChildSym1 arg)) =>
+      = forall arg. KindOf (Apply ChildSym0 arg) ~ KindOf (ChildSym1 arg) =>
         ChildSym0KindInference
     type instance Apply ChildSym0 l = ChildSym1 l
     type family (:+) (a :: Nat) (a :: Nat) :: Nat where
@@ -72,15 +72,14 @@ Singletons/Operators.hs:0:0: Splicing declarations
     (%:+) SZero sM
       = let
           lambda ::
-            forall m. ((GHC.Types.~) t ZeroSym0, (GHC.Types.~) t m) =>
+            forall m. (t ~ ZeroSym0, t ~ m) =>
             Sing m -> Sing (Apply (Apply (:+$) ZeroSym0) m)
           lambda m = m
         in lambda sM
     (%:+) (SSucc sN) sM
       = let
           lambda ::
-            forall n m. ((GHC.Types.~) t (Apply SuccSym0 n),
-                         (GHC.Types.~) t m) =>
+            forall n m. (t ~ Apply SuccSym0 n, t ~ m) =>
             Sing n -> Sing m -> Sing (Apply (Apply (:+$) (Apply SuccSym0 n)) m)
           lambda n m
             = applySing
@@ -89,23 +88,21 @@ Singletons/Operators.hs:0:0: Splicing declarations
         in lambda sN sM
     sChild SFLeaf
       = let
-          lambda ::
-            (GHC.Types.~) t FLeafSym0 => Sing (Apply ChildSym0 FLeafSym0)
+          lambda :: t ~ FLeafSym0 => Sing (Apply ChildSym0 FLeafSym0)
           lambda = SFLeaf
         in lambda
     sChild ((:%+:) sA _s_z_0123456789)
       = let
           lambda ::
-            forall a
-                   _z_0123456789. (GHC.Types.~) t (Apply (Apply (:+:$) a) _z_0123456789) =>
+            forall a _z_0123456789. t ~ Apply (Apply (:+:$) a) _z_0123456789 =>
             Sing a
             -> Sing _z_0123456789
                -> Sing (Apply ChildSym0 (Apply (Apply (:+:$) a) _z_0123456789))
           lambda a _z_0123456789 = a
         in lambda sA _s_z_0123456789
     data instance Sing (z :: Foo)
-      = (GHC.Types.~) z FLeaf => SFLeaf |
-        forall (n :: Foo) (n :: Foo). (GHC.Types.~) z ((:+:) n n) =>
+      = z ~ FLeaf => SFLeaf |
+        forall (n :: Foo) (n :: Foo). z ~ (:+:) n n =>
         (:%+:) (Sing n) (Sing n)
     type SFoo (z :: Foo) = Sing z
     instance SingKind (KProxy :: KProxy Foo) where

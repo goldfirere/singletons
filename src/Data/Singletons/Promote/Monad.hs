@@ -24,7 +24,6 @@ import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
-import Data.Singletons.Util
 import Data.Singletons.Names
 import Data.Singletons.Syntax
 
@@ -48,36 +47,8 @@ emptyPrEnv = PrEnv { pr_lambda_bound = Map.empty
 
 -- the promotion monad
 newtype PrM a = PrM (ReaderT PrEnv (WriterT [DDec] Q) a)
-  deriving ( Functor, Applicative, Monad
+  deriving ( Functor, Applicative, Monad, Quasi
            , MonadReader PrEnv, MonadWriter [DDec] )
-
-liftPrM :: Q a -> PrM a
-liftPrM = PrM . lift . lift
-
-instance Quasi PrM where
-  qNewName          = liftPrM `comp1` qNewName
-  qReport           = liftPrM `comp2` qReport
-  qLookupName       = liftPrM `comp2` qLookupName
-  qReify            = liftPrM `comp1` qReify
-  qReifyInstances   = liftPrM `comp2` qReifyInstances
-  qLocation         = liftPrM qLocation
-  qRunIO            = liftPrM `comp1` qRunIO
-  qAddDependentFile = liftPrM `comp1` qAddDependentFile
-  qReifyRoles       = liftPrM `comp1` qReifyRoles
-  qReifyAnnotations = liftPrM `comp1` qReifyAnnotations
-  qReifyModule      = liftPrM `comp1` qReifyModule
-  qAddTopDecls      = liftPrM `comp1` qAddTopDecls
-  qAddModFinalizer  = liftPrM `comp1` qAddModFinalizer
-  qGetQ             = liftPrM qGetQ
-  qPutQ             = liftPrM `comp1` qPutQ
-
-  qRecover (PrM handler) (PrM body) = do
-    env <- ask
-    (result, aux) <- liftPrM $
-                     qRecover (runWriterT $ runReaderT handler env)
-                              (runWriterT $ runReaderT body env)
-    tell aux
-    return result
 
 instance DsMonad PrM where
   localDeclarations = asks pr_local_decls

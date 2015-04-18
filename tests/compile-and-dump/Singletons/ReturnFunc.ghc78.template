@@ -19,7 +19,7 @@ Singletons/ReturnFunc.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) IdSym0KindInference GHC.Tuple.())
     data IdSym0 (l :: TyFun a a)
-      = forall arg. (GHC.Types.~) (KindOf (Apply IdSym0 arg)) (KindOf (IdSym1 arg)) =>
+      = forall arg. KindOf (Apply IdSym0 arg) ~ KindOf (IdSym1 arg) =>
         IdSym0KindInference
     type instance Apply IdSym0 l = IdSym1 l
     type IdFooSym2 (t :: c) (t :: a) = IdFoo t t
@@ -27,14 +27,14 @@ Singletons/ReturnFunc.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) IdFooSym1KindInference GHC.Tuple.())
     data IdFooSym1 (l :: c) (l :: TyFun a a)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (IdFooSym1 l) arg)) (KindOf (IdFooSym2 l arg)) =>
+      = forall arg. KindOf (Apply (IdFooSym1 l) arg) ~ KindOf (IdFooSym2 l arg) =>
         IdFooSym1KindInference
     type instance Apply (IdFooSym1 l) l = IdFooSym2 l l
     instance SuppressUnusedWarnings IdFooSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) IdFooSym0KindInference GHC.Tuple.())
     data IdFooSym0 (l :: TyFun c (TyFun a a -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply IdFooSym0 arg)) (KindOf (IdFooSym1 arg)) =>
+      = forall arg. KindOf (Apply IdFooSym0 arg) ~ KindOf (IdFooSym1 arg) =>
         IdFooSym0KindInference
     type instance Apply IdFooSym0 l = IdFooSym1 l
     type ReturnFuncSym2 (t :: Nat) (t :: Nat) = ReturnFunc t t
@@ -42,14 +42,14 @@ Singletons/ReturnFunc.hs:0:0: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ReturnFuncSym1KindInference GHC.Tuple.())
     data ReturnFuncSym1 (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. (GHC.Types.~) (KindOf (Apply (ReturnFuncSym1 l) arg)) (KindOf (ReturnFuncSym2 l arg)) =>
+      = forall arg. KindOf (Apply (ReturnFuncSym1 l) arg) ~ KindOf (ReturnFuncSym2 l arg) =>
         ReturnFuncSym1KindInference
     type instance Apply (ReturnFuncSym1 l) l = ReturnFuncSym2 l l
     instance SuppressUnusedWarnings ReturnFuncSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ReturnFuncSym0KindInference GHC.Tuple.())
     data ReturnFuncSym0 (l :: TyFun Nat (TyFun Nat Nat -> *))
-      = forall arg. (GHC.Types.~) (KindOf (Apply ReturnFuncSym0 arg)) (KindOf (ReturnFuncSym1 arg)) =>
+      = forall arg. KindOf (Apply ReturnFuncSym0 arg) ~ KindOf (ReturnFuncSym1 arg) =>
         ReturnFuncSym0KindInference
     type instance Apply ReturnFuncSym0 l = ReturnFuncSym1 l
     type family Id (a :: a) :: a where
@@ -67,15 +67,14 @@ Singletons/ReturnFunc.hs:0:0: Splicing declarations
       Sing t -> Sing t -> Sing (Apply (Apply ReturnFuncSym0 t) t)
     sId sX
       = let
-          lambda ::
-            forall x. (GHC.Types.~) t x => Sing x -> Sing (Apply IdSym0 x)
+          lambda :: forall x. t ~ x => Sing x -> Sing (Apply IdSym0 x)
           lambda x = x
         in lambda sX
     sIdFoo _s_z_0123456789 sA_0123456789
       = let
           lambda ::
-            forall _z_0123456789 a_0123456789. ((GHC.Types.~) t _z_0123456789,
-                                                (GHC.Types.~) t a_0123456789) =>
+            forall _z_0123456789 a_0123456789. (t ~ _z_0123456789,
+                                                t ~ a_0123456789) =>
             Sing _z_0123456789
             -> Sing a_0123456789
                -> Sing (Apply (Apply IdFooSym0 _z_0123456789) a_0123456789)
@@ -85,8 +84,8 @@ Singletons/ReturnFunc.hs:0:0: Splicing declarations
     sReturnFunc _s_z_0123456789 sA_0123456789
       = let
           lambda ::
-            forall _z_0123456789 a_0123456789. ((GHC.Types.~) t _z_0123456789,
-                                                (GHC.Types.~) t a_0123456789) =>
+            forall _z_0123456789 a_0123456789. (t ~ _z_0123456789,
+                                                t ~ a_0123456789) =>
             Sing _z_0123456789
             -> Sing a_0123456789
                -> Sing (Apply (Apply ReturnFuncSym0 _z_0123456789) a_0123456789)

@@ -87,7 +87,7 @@ bindLets lets1 =
                env { sg_let_binds = (Map.fromList lets1) `Map.union` lets2 })
 
 -- bindTyVarsEq
--- ~~~~~~~~~~~~
+-- ~~~~~~~~~~~~~~~~
 --
 -- This function does some dirty business.
 --
@@ -118,6 +118,20 @@ bindLets lets1 =
 --
 -- Getting the ... right in the type above is a major nuisance, and it
 -- explains a bunch of the types stored in the ADExp AST. (See LetDecEnv.)
+--
+-- A further, unsolved problem with all of this is that the type signature
+-- generated never has any constraints. Thus, if the body requires a
+-- constraint somewhere, the code will fail to compile; we're not quite clever
+-- enough to get everything to line up.
+--
+-- As a stop-gap measure to fix this, in the function clause case, we tie the
+-- scoped type variables in this "lambda" to the outer scoped type variables.
+-- This has the effect of making sure that the kinds of ty_foo and ty_bar
+-- match that of the surrounding scope and makes sure that any constraint is
+-- available from within the "lambda".
+--
+-- This means, though, that using constraints with case statements and lambdas
+-- will likely not work. Ugh.
 
 bindTyVarsEq :: VarPromotions   -- the bindings we wish to effect
              -> DType           -- the type of the thing_inside
@@ -175,8 +189,7 @@ wrapSingFun n ty =
                            5 -> 'singFun5
                            6 -> 'singFun6
                            7 -> 'singFun7
-                           8 -> 'singFun8
-                           _ -> error "No support for functions of arity > 8."
+                           _ -> error "No support for functions of arity > 7."
   in
   (wrap_fun `DAppE` proxyFor ty `DAppE`)
 
@@ -191,8 +204,7 @@ wrapUnSingFun n ty =
                              5 -> 'unSingFun5
                              6 -> 'unSingFun6
                              7 -> 'unSingFun7
-                             8 -> 'unSingFun8
-                             _ -> error "No support for functions of arity > 8."
+                             _ -> error "No support for functions of arity > 7."
   in
   (unwrap_fun `DAppE` proxyFor ty `DAppE`)
 
