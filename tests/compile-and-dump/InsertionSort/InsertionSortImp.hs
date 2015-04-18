@@ -27,7 +27,7 @@ unambiguous.
 
 -}
 
-{-# LANGUAGE IncoherentInstances #-}
+{-# LANGUAGE IncoherentInstances, ConstraintKinds #-}
 
 module InsertionSort.InsertionSortImp where
 
@@ -35,9 +35,8 @@ import Data.Singletons.Prelude
 import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 
--- We use the Dict data type from Edward Kmett's constraints package to be
--- able to return dictionaries from functions
-import Data.Constraint
+data Dict c where
+  Dict :: c => Dict c
 
 -- Natural numbers, defined with singleton counterparts
 $(singletons [d|
