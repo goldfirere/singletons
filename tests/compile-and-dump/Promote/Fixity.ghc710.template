@@ -1,0 +1,85 @@
+Promote/Fixity.hs:(0,0)-(0,0): Splicing declarations
+    promote
+      [d| infix 4 ====
+          infix 4 <=>
+          
+          (====) :: a -> a -> a
+          a ==== _ = a
+          
+          class MyOrd a where
+            (<=>) :: a -> a -> Ordering
+            infix 4 <=> |]
+  ======>
+    class MyOrd a where
+      (<=>) :: a -> a -> Ordering
+    infix 4 <=>
+    (====) :: forall a. a -> a -> a
+    (====) a _ = a
+    infix 4 ====
+    type (:====$$$) (t :: a) (t :: a) = (:====) t t
+    instance SuppressUnusedWarnings (:====$$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:====$$###) GHC.Tuple.())
+    data (:====$$) (l :: a) (l :: TyFun a a)
+      = forall arg. KindOf (Apply ((:====$$) l) arg) ~ KindOf ((:====$$$) l arg) =>
+        :====$$###
+    type instance Apply ((:====$$) l) l = (:====$$$) l l
+    instance SuppressUnusedWarnings (:====$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:====$###) GHC.Tuple.())
+    data (:====$) (l :: TyFun a (TyFun a a -> *))
+      = forall arg. KindOf (Apply (:====$) arg) ~ KindOf ((:====$$) arg) =>
+        :====$###
+    type instance Apply (:====$) l = (:====$$) l
+    type family (:====) (a :: a) (a :: a) :: a where
+      (:====) a _z_0123456789 = a
+    type (:<=>$$$) (t :: a) (t :: a) = (:<=>) t t
+    instance SuppressUnusedWarnings (:<=>$$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:<=>$$###) GHC.Tuple.())
+    data (:<=>$$) (l :: a) (l :: TyFun a Ordering)
+      = forall arg. KindOf (Apply ((:<=>$$) l) arg) ~ KindOf ((:<=>$$$) l arg) =>
+        :<=>$$###
+    type instance Apply ((:<=>$$) l) l = (:<=>$$$) l l
+    instance SuppressUnusedWarnings (:<=>$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:<=>$###) GHC.Tuple.())
+    data (:<=>$) (l :: TyFun a (TyFun a Ordering -> *))
+      = forall arg. KindOf (Apply (:<=>$) arg) ~ KindOf ((:<=>$$) arg) =>
+        :<=>$###
+    type instance Apply (:<=>$) l = (:<=>$$) l
+    {-# ANN type :<=> GHC.Tuple.(,)
+                        ((GHC.Types.:)
+                           (DVarK
+                              (Language.Haskell.TH.Syntax.Name
+                                 (Language.Haskell.TH.Syntax.mkOccName "a")
+                                 (Language.Haskell.TH.Syntax.NameU 0123456789 )))
+                           ((GHC.Types.:)
+                              (DVarK
+                                 (Language.Haskell.TH.Syntax.Name
+                                    (Language.Haskell.TH.Syntax.mkOccName "a")
+                                 (Language.Haskell.TH.Syntax.NameU 0123456789 )))
+                              GHC.Types.[]))
+                        (DConK
+                           (Language.Haskell.TH.Syntax.Name
+                              (Language.Haskell.TH.Syntax.mkOccName "Ordering")
+                              (Language.Haskell.TH.Syntax.NameG
+                                 Language.Haskell.TH.Syntax.TcClsName
+                                 (Language.Haskell.TH.Syntax.mkPkgName "ghc-prim")
+                                 (Language.Haskell.TH.Syntax.mkModName "GHC.Types")))
+                           GHC.Types.[]) ::
+                        ([DKind], DKind) #-}
+    {-# ANN type PMyOrd (GHC.Types.:)
+                          (Language.Haskell.TH.Syntax.Name
+                             (Language.Haskell.TH.Syntax.mkOccName "a")
+                             (Language.Haskell.TH.Syntax.NameU 0123456789 ))
+                          GHC.Types.[] ::
+                          [Language.Haskell.TH.Syntax.Name] #-}
+    class kproxy ~ KProxy => PMyOrd (kproxy :: KProxy a) where
+      type family (:<=>) (arg :: a) (arg :: a) :: Ordering
+
+Promote/Fixity.hs:0:0: Warning:
+    Cannot promote fixity declaration for ==== due to GHC bug #9066
+
+Promote/Fixity.hs:0:0: Warning:
+    Cannot promote fixity declaration for <=> due to GHC bug #9066

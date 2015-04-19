@@ -1,0 +1,45 @@
+Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
+    genDefunSymbols [''LiftMaybe, ''NatT, '':+]
+  ======>
+    type LiftMaybeSym2 (t :: TyFun a b -> *) (t :: Maybe a) =
+        LiftMaybe t t
+    instance SuppressUnusedWarnings LiftMaybeSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) LiftMaybeSym1KindInference GHC.Tuple.())
+    data LiftMaybeSym1 (l :: TyFun a b -> *)
+                       (l :: TyFun (Maybe a) (Maybe b))
+      = forall arg. Data.Singletons.KindOf (Apply (LiftMaybeSym1 l) arg) ~ Data.Singletons.KindOf (LiftMaybeSym2 l arg) =>
+        LiftMaybeSym1KindInference
+    type instance Apply (LiftMaybeSym1 l) l = LiftMaybeSym2 l l
+    instance SuppressUnusedWarnings LiftMaybeSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) LiftMaybeSym0KindInference GHC.Tuple.())
+    data LiftMaybeSym0 (l :: TyFun (TyFun a b
+                                    -> *) (TyFun (Maybe a) (Maybe b) -> *))
+      = forall arg. Data.Singletons.KindOf (Apply LiftMaybeSym0 arg) ~ Data.Singletons.KindOf (LiftMaybeSym1 arg) =>
+        LiftMaybeSym0KindInference
+    type instance Apply LiftMaybeSym0 l = LiftMaybeSym1 l
+    type ZeroSym0 = Zero
+    type SuccSym1 (t :: NatT) = Succ t
+    instance SuppressUnusedWarnings SuccSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) SuccSym0KindInference GHC.Tuple.())
+    data SuccSym0 (l :: TyFun NatT NatT)
+      = forall arg. Data.Singletons.KindOf (Apply SuccSym0 arg) ~ Data.Singletons.KindOf (SuccSym1 arg) =>
+        SuccSym0KindInference
+    type instance Apply SuccSym0 l = SuccSym1 l
+    type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
+    instance SuppressUnusedWarnings (:+$$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:+$$###) GHC.Tuple.())
+    data (:+$$) (l :: Nat) l
+      = forall arg. Data.Singletons.KindOf (Apply ((:+$$) l) arg) ~ Data.Singletons.KindOf ((:+$$$) l arg) =>
+        :+$$###
+    type instance Apply ((:+$$) l) l = (:+$$$) l l
+    instance SuppressUnusedWarnings (:+$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:+$###) GHC.Tuple.())
+    data (:+$) l
+      = forall arg. Data.Singletons.KindOf (Apply (:+$) arg) ~ Data.Singletons.KindOf ((:+$$) arg) =>
+        :+$###
+    type instance Apply (:+$) l = (:+$$) l

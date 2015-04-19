@@ -1,0 +1,103 @@
+Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| pr = Pair (Succ Zero) ([Zero])
+          complex = Pair (Pair (Just Zero) Zero) False
+          tuple = (False, Just Zero, True)
+          aList = [Zero, Succ Zero, Succ (Succ Zero)]
+          
+          data Pair a b
+            = Pair a b
+            deriving (Show) |]
+  ======>
+    data Pair a b
+      = Pair a b
+      deriving (Show)
+    pr = Pair (Succ Zero) [Zero]
+    complex = Pair (Pair (Just Zero) Zero) False
+    tuple = (False, Just Zero, True)
+    aList = [Zero, Succ Zero, Succ (Succ Zero)]
+    type PairSym2 (t :: a) (t :: b) = Pair t t
+    instance SuppressUnusedWarnings PairSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) PairSym1KindInference GHC.Tuple.())
+    data PairSym1 (l :: a) (l :: TyFun b (Pair a b))
+      = forall arg. KindOf (Apply (PairSym1 l) arg) ~ KindOf (PairSym2 l arg) =>
+        PairSym1KindInference
+    type instance Apply (PairSym1 l) l = PairSym2 l l
+    instance SuppressUnusedWarnings PairSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) PairSym0KindInference GHC.Tuple.())
+    data PairSym0 (l :: TyFun a (TyFun b (Pair a b) -> *))
+      = forall arg. KindOf (Apply PairSym0 arg) ~ KindOf (PairSym1 arg) =>
+        PairSym0KindInference
+    type instance Apply PairSym0 l = PairSym1 l
+    type AListSym0 = AList
+    type TupleSym0 = Tuple
+    type ComplexSym0 = Complex
+    type PrSym0 = Pr
+    type AList =
+        Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) '[]))
+    type Tuple =
+        Apply (Apply (Apply Tuple3Sym0 FalseSym0) (Apply JustSym0 ZeroSym0)) TrueSym0
+    type Complex =
+        Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
+    type Pr =
+        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) ZeroSym0) '[])
+    sAList :: Sing AListSym0
+    sTuple :: Sing TupleSym0
+    sComplex :: Sing ComplexSym0
+    sPr :: Sing PrSym0
+    sAList
+      = applySing
+          (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) SZero)
+          (applySing
+             (applySing
+                (singFun2 (Proxy :: Proxy (:$)) SCons)
+                (applySing (singFun1 (Proxy :: Proxy SuccSym0) SSucc) SZero))
+             (applySing
+                (applySing
+                   (singFun2 (Proxy :: Proxy (:$)) SCons)
+                   (applySing
+                      (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
+                      (applySing (singFun1 (Proxy :: Proxy SuccSym0) SSucc) SZero)))
+                SNil))
+    sTuple
+      = applySing
+          (applySing
+             (applySing (singFun3 (Proxy :: Proxy Tuple3Sym0) STuple3) SFalse)
+             (applySing (singFun1 (Proxy :: Proxy JustSym0) SJust) SZero))
+          STrue
+    sComplex
+      = applySing
+          (applySing
+             (singFun2 (Proxy :: Proxy PairSym0) SPair)
+             (applySing
+                (applySing
+                   (singFun2 (Proxy :: Proxy PairSym0) SPair)
+                   (applySing (singFun1 (Proxy :: Proxy JustSym0) SJust) SZero))
+                SZero))
+          SFalse
+    sPr
+      = applySing
+          (applySing
+             (singFun2 (Proxy :: Proxy PairSym0) SPair)
+             (applySing (singFun1 (Proxy :: Proxy SuccSym0) SSucc) SZero))
+          (applySing
+             (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) SZero) SNil)
+    data instance Sing (z :: Pair a b)
+      = forall (n :: a) (n :: b). z ~ Pair n n => SPair (Sing n) (Sing n)
+    type SPair (z :: Pair a b) = Sing z
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b)) =>
+             SingKind (KProxy :: KProxy (Pair a b)) where
+      type DemoteRep (KProxy :: KProxy (Pair a b)) = Pair (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b))
+      fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
+      toSing (Pair b b)
+        = case
+              GHC.Tuple.(,)
+                (toSing b :: SomeSing (KProxy :: KProxy a))
+                (toSing b :: SomeSing (KProxy :: KProxy b))
+          of {
+            GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SPair c c) }
+    instance (SingI n, SingI n) => SingI (Pair (n :: a) (n :: b)) where
+      sing = SPair sing sing

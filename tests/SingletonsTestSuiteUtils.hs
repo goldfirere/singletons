@@ -60,8 +60,10 @@ ghcVersion = error "testsuite requires GHC 7.8 or newer"
 #else
 -- these conditions are a bit nonsense right now, but they are here
 -- to demonstrate how to add support for different GHC versions
-#if __GLASGOW_HASKELL__ >= 708
+#if __GLASGOW_HASKELL__ < 709
 ghcVersion = ".ghc78"
+#else
+ghcVersion = ".ghc710"
 #endif
 #endif
 
