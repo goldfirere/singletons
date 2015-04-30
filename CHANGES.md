@@ -1,6 +1,11 @@
 Changelog for singletons project
 ================================
 
+1.1.2
+-----
+
+Fix warnings and Haddock failure.
+
 1.1.1
 -----
 
