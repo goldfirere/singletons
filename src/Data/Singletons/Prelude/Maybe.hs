@@ -63,7 +63,7 @@ import Data.Singletons.TypeLits
 
 $(singletons [d|
   -- Renamed to avoid name clash
-  -- | The 'maybe' function takes a default value, a function, and a 'Maybe'
+  -- -| The 'maybe' function takes a default value, a function, and a 'Maybe'
   -- value.  If the 'Maybe' value is 'Nothing', the function returns the
   -- default value.  Otherwise, it applies the function to the value inside
   -- the 'Just' and returns the result.
@@ -73,50 +73,50 @@ $(singletons [d|
  |])
 
 $(singletonsOnly [d|
-  -- | The 'isJust' function returns 'True' iff its argument is of the
+  -- -| The 'isJust' function returns 'True' iff its argument is of the
   -- form @Just _@.
   isJust         :: Maybe a -> Bool
   isJust Nothing  = False
   isJust (Just _) = True
 
-  -- | The 'isNothing' function returns 'True' iff its argument is 'Nothing'.
+  -- -| The 'isNothing' function returns 'True' iff its argument is 'Nothing'.
   isNothing         :: Maybe a -> Bool
   isNothing Nothing  = True
   isNothing (Just _) = False
 
-  -- | The 'fromJust' function extracts the element out of a 'Just' and
+  -- -| The 'fromJust' function extracts the element out of a 'Just' and
   -- throws an error if its argument is 'Nothing'.
   fromJust          :: Maybe a -> a
   fromJust Nothing  = error "Maybe.fromJust: Nothing" -- yuck
   fromJust (Just x) = x
 
-  -- | The 'fromMaybe' function takes a default value and and 'Maybe'
+  -- -| The 'fromMaybe' function takes a default value and and 'Maybe'
   -- value.  If the 'Maybe' is 'Nothing', it returns the default values;
   -- otherwise, it returns the value contained in the 'Maybe'.
   fromMaybe     :: a -> Maybe a -> a
   fromMaybe d x = case x of {Nothing -> d;Just v  -> v}
 
-  -- | The 'maybeToList' function returns an empty list when given
+  -- -| The 'maybeToList' function returns an empty list when given
   -- 'Nothing' or a singleton list when not given 'Nothing'.
   maybeToList            :: Maybe a -> [a]
   maybeToList  Nothing   = []
   maybeToList  (Just x)  = [x]
 
-  -- | The 'listToMaybe' function returns 'Nothing' on an empty list
+  -- -| The 'listToMaybe' function returns 'Nothing' on an empty list
   -- or @'Just' a@ where @a@ is the first element of the list.
   listToMaybe           :: [a] -> Maybe a
   listToMaybe []        =  Nothing
   listToMaybe (a:_)     =  Just a
 
   -- Modified to avoid list comprehensions
-  -- | The 'catMaybes' function takes a list of 'Maybe's and returns
+  -- -| The 'catMaybes' function takes a list of 'Maybe's and returns
   -- a list of all the 'Just' values.
   catMaybes              :: [Maybe a] -> [a]
   catMaybes []             = []
   catMaybes (Just x  : xs) = x : catMaybes xs
   catMaybes (Nothing : xs) = catMaybes xs
 
-  -- | The 'mapMaybe' function is a version of 'map' which can throw
+  -- -| The 'mapMaybe' function is a version of 'map' which can throw
   -- out elements.  In particular, the functional argument returns
   -- something of type @'Maybe' b@.  If this is 'Nothing', no element
   -- is added on to the result list.  If it just @'Just' b@, then @b@ is
