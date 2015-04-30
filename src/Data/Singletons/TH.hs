@@ -82,7 +82,10 @@ import Language.Haskell.TH.Desugar
 import GHC.Exts
 import Language.Haskell.TH
 import Data.Singletons.Util
+
+#if __GLASGOW_HASKELL__ < 709
 import Control.Applicative
+#endif
 
 -- | The function 'cases' generates a case expression where each right-hand side
 -- is identical. This may be useful if the type-checker requires knowledge of which

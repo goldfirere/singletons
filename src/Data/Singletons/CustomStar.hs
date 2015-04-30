@@ -33,10 +33,13 @@ import Data.Singletons.Syntax
 import Data.Singletons.Names
 import Control.Monad
 import Data.Maybe
-import Control.Applicative
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Bool
+
+#if __GLASGOW_HASKELL__ < 709
+import Control.Applicative
+#endif
 
 -- | Produce a representation and singleton for the collection of types given.
 --
@@ -116,4 +119,3 @@ singletonStar names = do
           t2 <- kindToType k2
           return $ DAppT (DAppT DArrowT t1) t2
         kindToType DStarK = return $ DConT repName
-

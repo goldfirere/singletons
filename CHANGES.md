@@ -4,7 +4,7 @@ Changelog for singletons project
 1.1.2
 -----
 
-Fix warnings and Haddock failure.
+Fix warnings and Haddock failure with GHC 7.10.1.
 
 1.1.1
 -----

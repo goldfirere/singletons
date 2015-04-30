@@ -26,10 +26,13 @@ import Data.Singletons.Util
 import Data.Singletons.Syntax
 import Prelude hiding (exp)
 import Control.Monad
-import Control.Applicative
 import Data.Maybe
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
+
+#if __GLASGOW_HASKELL__ < 709
+import Control.Applicative
+#endif
 
 -- | Generate promoted definitions from a type that is already defined.
 -- This is generally only useful with classes.

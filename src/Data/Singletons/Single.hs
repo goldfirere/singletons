@@ -26,7 +26,10 @@ import Language.Haskell.TH.Desugar
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Control.Monad
+
+#if __GLASGOW_HASKELL__ < 709
 import Control.Applicative
+#endif
 
 {-
 How singletons works

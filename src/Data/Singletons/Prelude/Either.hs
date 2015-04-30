@@ -59,9 +59,11 @@ import Data.Singletons.Prelude.Instances
 import Data.Singletons.TH
 import Data.Singletons.Prelude.Base
 
+-- NB: The haddock comments are disabled because TH can't deal with them.
+
 $(singletons [d|
   -- Renamed to avoid name clash
-  -- | Case analysis for the 'Either' type.
+  -- -| Case analysis for the 'Either' type.
   -- If the value is @'Left' a@, apply the first function to @a@;
   -- if it is @'Right' b@, apply the second function to @b@.
   either_                  :: (a -> c) -> (b -> c) -> Either a b -> c
@@ -70,7 +72,7 @@ $(singletons [d|
  |])
 
 $(singletonsOnly [d|
-  -- | Extracts from a list of 'Either' all the 'Left' elements
+  -- -| Extracts from a list of 'Either' all the 'Left' elements
   -- All the 'Left' elements are extracted in order.
 
   -- Modified to avoid list comprehensions
@@ -79,7 +81,7 @@ $(singletonsOnly [d|
   lefts (Left x  : xs) = x : lefts xs
   lefts (Right _ : xs) = lefts xs
 
-  -- | Extracts from a list of 'Either' all the 'Right' elements
+  -- -| Extracts from a list of 'Either' all the 'Right' elements
   -- All the 'Right' elements are extracted in order.
 
   -- Modified to avoid list comprehensions
@@ -88,7 +90,7 @@ $(singletonsOnly [d|
   rights (Left _  : xs) = rights xs
   rights (Right x : xs) = x : rights xs
 
-  -- | Partitions a list of 'Either' into two lists
+  -- -| Partitions a list of 'Either' into two lists
   -- All the 'Left' elements are extracted, in order, to the first
   -- component of the output.  Similarly the 'Right' elements are extracted
   -- to the second component of the output.
@@ -98,14 +100,14 @@ $(singletonsOnly [d|
     left  a (l, r) = (a:l, r)
     right a (l, r) = (l, a:r)
 
-  -- | Return `True` if the given value is a `Left`-value, `False` otherwise.
+  -- -| Return `True` if the given value is a `Left`-value, `False` otherwise.
   --
   -- /Since: 4.7.0.0/
   isLeft :: Either a b -> Bool
   isLeft (Left  _) = True
   isLeft (Right _) = False
 
-  -- | Return `True` if the given value is a `Right`-value, `False` otherwise.
+  -- -| Return `True` if the given value is a `Right`-value, `False` otherwise.
   --
   -- /Since: 4.7.0.0/
   isRight :: Either a b -> Bool

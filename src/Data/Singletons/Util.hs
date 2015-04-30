@@ -20,12 +20,15 @@ import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Char
 import Control.Monad hiding ( mapM )
-import Control.Applicative
 import Control.Monad.Writer hiding ( mapM )
 import Control.Monad.Reader hiding ( mapM )
 import qualified Data.Map as Map
 import Data.Foldable
 import Data.Traversable
+
+#if __GLASGOW_HASKELL__ < 709
+import Control.Applicative
+#endif
 
 -- The list of types that singletons processes by default
 basicTypes :: [Name]
