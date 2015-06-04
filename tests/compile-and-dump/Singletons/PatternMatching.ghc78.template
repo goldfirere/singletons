@@ -126,44 +126,43 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     foo1 (x, y) = \ _ -> x y
     foo2 :: forall a b. (# a, b #) -> a
     foo2 t@(# x, y #) = case t of { (# a, b #) -> \ _ -> a b }
-    type Let_0123456789TSym2 t t = Let_0123456789T t t
-    instance SuppressUnusedWarnings Let_0123456789TSym1 where
+    type Let0123456789TSym2 t t = Let0123456789T t t
+    instance SuppressUnusedWarnings Let0123456789TSym1 where
       suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Let_0123456789TSym1KindInference GHC.Tuple.())
-    data Let_0123456789TSym1 l l
-      = forall arg. KindOf (Apply (Let_0123456789TSym1 l) arg) ~ KindOf (Let_0123456789TSym2 l arg) =>
-        Let_0123456789TSym1KindInference
-    type instance Apply (Let_0123456789TSym1 l) l = Let_0123456789TSym2 l l
-    instance SuppressUnusedWarnings Let_0123456789TSym0 where
+        = snd (GHC.Tuple.(,) Let0123456789TSym1KindInference GHC.Tuple.())
+    data Let0123456789TSym1 l l
+      = forall arg. KindOf (Apply (Let0123456789TSym1 l) arg) ~ KindOf (Let0123456789TSym2 l arg) =>
+        Let0123456789TSym1KindInference
+    type instance Apply (Let0123456789TSym1 l) l = Let0123456789TSym2 l l
+    instance SuppressUnusedWarnings Let0123456789TSym0 where
       suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Let_0123456789TSym0KindInference GHC.Tuple.())
-    data Let_0123456789TSym0 l
-      = forall arg. KindOf (Apply Let_0123456789TSym0 arg) ~ KindOf (Let_0123456789TSym1 arg) =>
-        Let_0123456789TSym0KindInference
-    type instance Apply Let_0123456789TSym0 l = Let_0123456789TSym1 l
-    type Let_0123456789T x y = Apply (Apply Tuple2Sym0 x) y
-    type Let_0123456789Scrutinee_0123456789Sym2 t t =
-        Let_0123456789Scrutinee_0123456789 t t
-    instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym1 where
-      suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,)
-               Let_0123456789Scrutinee_0123456789Sym1KindInference GHC.Tuple.())
-    data Let_0123456789Scrutinee_0123456789Sym1 l l
-      = forall arg. KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym2 l arg) =>
-        Let_0123456789Scrutinee_0123456789Sym1KindInference
-    type instance Apply (Let_0123456789Scrutinee_0123456789Sym1 l) l = Let_0123456789Scrutinee_0123456789Sym2 l l
-    instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym0 where
+        = snd (GHC.Tuple.(,) Let0123456789TSym0KindInference GHC.Tuple.())
+    data Let0123456789TSym0 l
+      = forall arg. KindOf (Apply Let0123456789TSym0 arg) ~ KindOf (Let0123456789TSym1 arg) =>
+        Let0123456789TSym0KindInference
+    type instance Apply Let0123456789TSym0 l = Let0123456789TSym1 l
+    type Let0123456789T x y = Apply (Apply Tuple2Sym0 x) y
+    type Let0123456789Scrutinee_0123456789Sym2 t t =
+        Let0123456789Scrutinee_0123456789 t t
+    instance SuppressUnusedWarnings Let0123456789Scrutinee_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
             (GHC.Tuple.(,)
-               Let_0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
-    data Let_0123456789Scrutinee_0123456789Sym0 l
-      = forall arg. KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg) =>
-        Let_0123456789Scrutinee_0123456789Sym0KindInference
-    type instance Apply Let_0123456789Scrutinee_0123456789Sym0 l = Let_0123456789Scrutinee_0123456789Sym1 l
-    type Let_0123456789Scrutinee_0123456789 x y =
-        Let_0123456789TSym2 x y
+               Let0123456789Scrutinee_0123456789Sym1KindInference GHC.Tuple.())
+    data Let0123456789Scrutinee_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Let0123456789Scrutinee_0123456789Sym1 l) arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym2 l arg) =>
+        Let0123456789Scrutinee_0123456789Sym1KindInference
+    type instance Apply (Let0123456789Scrutinee_0123456789Sym1 l) l = Let0123456789Scrutinee_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Let0123456789Scrutinee_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,)
+               Let0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
+    data Let0123456789Scrutinee_0123456789Sym0 l
+      = forall arg. KindOf (Apply Let0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym1 arg) =>
+        Let0123456789Scrutinee_0123456789Sym0KindInference
+    type instance Apply Let0123456789Scrutinee_0123456789Sym0 l = Let0123456789Scrutinee_0123456789Sym1 l
+    type Let0123456789Scrutinee_0123456789 x y = Let0123456789TSym2 x y
     type family Case_0123456789 x y a b arg_0123456789 t where
       Case_0123456789 x y a b arg_0123456789 z = a
     type family Lambda_0123456789 x y a b t where
@@ -293,7 +292,7 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
     type X_0123456789Sym0 = X_0123456789
     type family Foo2 (a :: (a, b)) :: a where
       Foo2 '(x,
-             y) = Case_0123456789 x y (Let_0123456789Scrutinee_0123456789Sym2 x y)
+             y) = Case_0123456789 x y (Let0123456789Scrutinee_0123456789Sym2 x y)
     type family Foo1 (a :: (a, b)) :: a where
       Foo1 '(x, y) = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
     type Lsz = (Case_0123456789 X_0123456789Sym0 :: Nat)
@@ -334,13 +333,13 @@ Singletons/PatternMatching.hs:0:0: Splicing declarations
             -> Sing y -> Sing (Apply Foo2Sym0 (Apply (Apply Tuple2Sym0 x) y))
           lambda x y
             = let
-                sT :: Sing (Let_0123456789TSym2 x y)
+                sT :: Sing (Let0123456789TSym2 x y)
                 sT
                   = applySing
                       (applySing (singFun2 (Proxy :: Proxy Tuple2Sym0) STuple2) x) y in
               let
                 sScrutinee_0123456789 ::
-                  Sing (Let_0123456789Scrutinee_0123456789Sym2 x y)
+                  Sing (Let0123456789Scrutinee_0123456789Sym2 x y)
                 sScrutinee_0123456789 = sT
               in
                 case sScrutinee_0123456789 of {

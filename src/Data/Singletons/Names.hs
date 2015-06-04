@@ -3,7 +3,7 @@
 (c) Richard Eisenberg 2014
 eir@cis.upenn.edu
 
-Defining names and maniuplations on names for use in promotion and singling.
+Defining names and manipulations on names for use in promotion and singling.
 -}
 
 {-# LANGUAGE CPP, TemplateHaskell #-}
@@ -99,8 +99,8 @@ promoteValNameLhs :: Name -> Name
 promoteValNameLhs = upcase
 
 -- like promoteValNameLhs, but adds a prefix to the promoted name
-promoteValNameLhsPrefix :: String -> Name -> Name
-promoteValNameLhsPrefix prefix = mkName . (prefix ++) . toUpcaseStr
+promoteValNameLhsPrefix :: (String, String) -> Name -> Name
+promoteValNameLhsPrefix pres n = mkName $ toUpcaseStr pres n
 
 -- used when a value name appears in an expression context
 -- works for both variables and datacons
@@ -132,7 +132,7 @@ promoteTySym name sat
     = mkName $ "Tuple" ++ show degree ++ "Sym" ++ (show sat)
 
     | otherwise
-    = let capped = toUpcaseStr name in
+    = let capped = toUpcaseStr noPrefix name in
       if isHsLetter (head capped)
       then mkName (capped ++ "Sym" ++ (show sat))
       else mkName (capped ++ (replicate (sat + 1) '$'))

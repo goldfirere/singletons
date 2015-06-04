@@ -1,6 +1,12 @@
 Changelog for singletons project
 ================================
 
+1.1.2.1
+-------
+
+Fix bug #116, thus allowing locally-declared symbols to be used in GHC 7.10.
+
+
 1.1.2
 -----
 
