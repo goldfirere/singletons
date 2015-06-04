@@ -182,7 +182,7 @@ uniquePrefixes alpha symb n = (alpha ++ n_str, symb ++ convert n_str)
                  '6' -> '+'
                  '7' -> '.'
                  '8' -> '/'
-                 '9' -> '<'
+                 '9' -> '>'
                  _   -> error "non-digit in show #"
       in d' : convert ds
 
