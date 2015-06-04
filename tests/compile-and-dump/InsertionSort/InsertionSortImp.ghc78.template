@@ -57,36 +57,36 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
     insertionSort :: [Nat] -> [Nat]
     insertionSort GHC.Types.[] = []
     insertionSort (h GHC.Types.: t) = insert h (insertionSort t)
-    type Let_0123456789Scrutinee_0123456789Sym3 t t t =
-        Let_0123456789Scrutinee_0123456789 t t t
-    instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym2 where
+    type Let0123456789Scrutinee_0123456789Sym3 t t t =
+        Let0123456789Scrutinee_0123456789 t t t
+    instance SuppressUnusedWarnings Let0123456789Scrutinee_0123456789Sym2 where
       suppressUnusedWarnings _
         = snd
             (GHC.Tuple.(,)
-               Let_0123456789Scrutinee_0123456789Sym2KindInference GHC.Tuple.())
-    data Let_0123456789Scrutinee_0123456789Sym2 l l l
-      = forall arg. KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym3 l l arg) =>
-        Let_0123456789Scrutinee_0123456789Sym2KindInference
-    type instance Apply (Let_0123456789Scrutinee_0123456789Sym2 l l) l = Let_0123456789Scrutinee_0123456789Sym3 l l l
-    instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym1 where
+               Let0123456789Scrutinee_0123456789Sym2KindInference GHC.Tuple.())
+    data Let0123456789Scrutinee_0123456789Sym2 l l l
+      = forall arg. KindOf (Apply (Let0123456789Scrutinee_0123456789Sym2 l l) arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym3 l l arg) =>
+        Let0123456789Scrutinee_0123456789Sym2KindInference
+    type instance Apply (Let0123456789Scrutinee_0123456789Sym2 l l) l = Let0123456789Scrutinee_0123456789Sym3 l l l
+    instance SuppressUnusedWarnings Let0123456789Scrutinee_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
             (GHC.Tuple.(,)
-               Let_0123456789Scrutinee_0123456789Sym1KindInference GHC.Tuple.())
-    data Let_0123456789Scrutinee_0123456789Sym1 l l
-      = forall arg. KindOf (Apply (Let_0123456789Scrutinee_0123456789Sym1 l) arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym2 l arg) =>
-        Let_0123456789Scrutinee_0123456789Sym1KindInference
-    type instance Apply (Let_0123456789Scrutinee_0123456789Sym1 l) l = Let_0123456789Scrutinee_0123456789Sym2 l l
-    instance SuppressUnusedWarnings Let_0123456789Scrutinee_0123456789Sym0 where
+               Let0123456789Scrutinee_0123456789Sym1KindInference GHC.Tuple.())
+    data Let0123456789Scrutinee_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Let0123456789Scrutinee_0123456789Sym1 l) arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym2 l arg) =>
+        Let0123456789Scrutinee_0123456789Sym1KindInference
+    type instance Apply (Let0123456789Scrutinee_0123456789Sym1 l) l = Let0123456789Scrutinee_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Let0123456789Scrutinee_0123456789Sym0 where
       suppressUnusedWarnings _
         = snd
             (GHC.Tuple.(,)
-               Let_0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
-    data Let_0123456789Scrutinee_0123456789Sym0 l
-      = forall arg. KindOf (Apply Let_0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let_0123456789Scrutinee_0123456789Sym1 arg) =>
-        Let_0123456789Scrutinee_0123456789Sym0KindInference
-    type instance Apply Let_0123456789Scrutinee_0123456789Sym0 l = Let_0123456789Scrutinee_0123456789Sym1 l
-    type Let_0123456789Scrutinee_0123456789 n h t =
+               Let0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
+    data Let0123456789Scrutinee_0123456789Sym0 l
+      = forall arg. KindOf (Apply Let0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym1 arg) =>
+        Let0123456789Scrutinee_0123456789Sym0KindInference
+    type instance Apply Let0123456789Scrutinee_0123456789Sym0 l = Let0123456789Scrutinee_0123456789Sym1 l
+    type Let0123456789Scrutinee_0123456789 n h t =
         Apply (Apply LeqSym0 n) h
     type family Case_0123456789 n h t t where
       Case_0123456789 n h t True = Apply (Apply (:$) n) (Apply (Apply (:$) h) t)
@@ -135,7 +135,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
       Leq (Succ a) (Succ b) = Apply (Apply LeqSym0 a) b
     type family Insert (a :: Nat) (a :: [Nat]) :: [Nat] where
       Insert n '[] = Apply (Apply (:$) n) '[]
-      Insert n ((:) h t) = Case_0123456789 n h t (Let_0123456789Scrutinee_0123456789Sym3 n h t)
+      Insert n ((:) h t) = Case_0123456789 n h t (Let0123456789Scrutinee_0123456789Sym3 n h t)
     type family InsertionSort (a :: [Nat]) :: [Nat] where
       InsertionSort '[] = '[]
       InsertionSort ((:) h t) = Apply (Apply InsertSym0 h) (Apply InsertionSortSym0 t)
@@ -195,7 +195,7 @@ InsertionSort/InsertionSortImp.hs:0:0: Splicing declarations
           lambda n h t
             = let
                 sScrutinee_0123456789 ::
-                  Sing (Let_0123456789Scrutinee_0123456789Sym3 n h t)
+                  Sing (Let0123456789Scrutinee_0123456789Sym3 n h t)
                 sScrutinee_0123456789
                   = applySing
                       (applySing (singFun2 (Proxy :: Proxy LeqSym0) sLeq) n) h

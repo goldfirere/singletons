@@ -185,21 +185,18 @@ promoteDataDecs data_decs = do
       concatMapM (getRecordSelectors arg_ty) cons
 
 -- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
-promoteLetDecs :: String -- prefix to use on all new definitions
+promoteLetDecs :: (String, String) -- (alpha, symb) prefixes to use
                -> [DLetDec] -> PrM ([LetBind], ALetDecEnv)
-promoteLetDecs prefix decls = do
+promoteLetDecs prefixes decls = do
   let_dec_env <- buildLetDecEnv decls
   all_locals <- allLocals
   let binds = [ (name, foldType (DConT sym) (map DVarT all_locals))
               | name <- Map.keys $ lde_defns let_dec_env
-              , let proName = promoteValNameLhsPrefix prefix name
+              , let proName = promoteValNameLhsPrefix prefixes name
                     sym = promoteTySym proName (length all_locals) ]
-  (decs, let_dec_env') <- letBind binds $ promoteLetDecEnv prefix let_dec_env
+  (decs, let_dec_env') <- letBind binds $ promoteLetDecEnv prefixes let_dec_env
   emitDecs decs
   return (binds, let_dec_env' { lde_proms = Map.fromList binds })
-
-noPrefix :: String
-noPrefix = ""
 
 -- Promotion of data types to kinds is automatic (see "Ginving Haskell a
 -- Promotion" paper for more details). Here we "plug into" the promotion
@@ -278,7 +275,7 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
                          -- annotations are too polymorphic -- need a type signature
   class_tyvars_dexp <- dsExp (class_tyvars_exp `SigE` (ListT `AppT` (ConT ''Name)))
   emitDecs [DPragmaD $ DAnnP (TypeAnnotation pClsName) class_tyvars_dexp]
-  
+
   -- We can't promote fixity declarations until GHC #9066 bug is fixed. Right
   -- now we drop fixity declarations and issue warnings.
   -- let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
@@ -409,10 +406,10 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
     apply_ki :: DType -> DKind -> DType
     apply_ki = DSigT
 
-promoteLetDecEnv :: String -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
-promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
-                                   , lde_types = type_env
-                                   , lde_infix = infix_decls }) = do
+promoteLetDecEnv :: (String, String) -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
+promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
+                                     , lde_types = type_env
+                                     , lde_infix = infix_decls }) = do
   -- We can't promote fixity declarations until GHC #9066 bug is fixed. Right
   -- now we drop fixity declarations and issue warnings.
   -- let infix_decls'  = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
@@ -421,7 +418,7 @@ promoteLetDecEnv prefix (LetDecEnv { lde_defns = value_env
     -- promote all the declarations, producing annotated declarations
   let (names, rhss) = unzip $ Map.toList value_env
   (payloads, defun_decss, ann_rhss)
-    <- fmap unzip3 $ zipWithM (promoteLetDecRHS type_env prefix) names rhss
+    <- fmap unzip3 $ zipWithM (promoteLetDecRHS type_env prefixes) names rhss
 
   emitDecs $ concat defun_decss
   let decs = map payload_to_dec payloads
@@ -455,7 +452,7 @@ dropFixityDecls infix_decls =
 -- let bindings. Thus, it can't quite do all the work locally and returns
 -- an unwiedly intermediate structure. Perhaps a better design is available.
 promoteLetDecRHS :: Map Name DType       -- local type env't
-                 -> String               -- let-binding prefix
+                 -> (String, String)     -- let-binding prefixes
                  -> Name                 -- name of the thing being promoted
                  -> ULetDecRHS           -- body of the thing
                  -> PrM ( Either
@@ -464,7 +461,7 @@ promoteLetDecRHS :: Map Name DType       -- local type env't
                                                         -- "type family"
                         , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
-promoteLetDecRHS type_env prefix name (UValue exp) = do
+promoteLetDecRHS type_env prefixes name (UValue exp) = do
   (res_kind, mk_rhs, num_arrows)
     <- case Map.lookup name type_env of
          Nothing -> return (Nothing, id, 0)
@@ -475,7 +472,7 @@ promoteLetDecRHS type_env prefix name (UValue exp) = do
     0 -> do
       all_locals <- allLocals
       (exp', ann_exp) <- promoteExp exp
-      let proName = promoteValNameLhsPrefix prefix name
+      let proName = promoteValNameLhsPrefix prefixes name
       defuns <- defunctionalize proName (map (const Nothing) all_locals) res_kind
       return ( Left (proName, map DPlainTV all_locals, mk_rhs exp')
              , defuns
@@ -485,10 +482,10 @@ promoteLetDecRHS type_env prefix name (UValue exp) = do
       names <- replicateM num_arrows (newUniqueName "a")
       let pats    = map DVarPa names
           newArgs = map DVarE  names
-      promoteLetDecRHS type_env prefix name
+      promoteLetDecRHS type_env prefixes name
                        (UFunction [DClause pats (foldExp exp newArgs)])
 
-promoteLetDecRHS type_env prefix name (UFunction clauses) = do
+promoteLetDecRHS type_env prefixes name (UFunction clauses) = do
   numArgs <- count_args clauses
   (m_argKs, m_resK, ty_num_args) <- case Map.lookup name type_env of
     Nothing -> return (replicate numArgs Nothing, Nothing, numArgs)
@@ -501,7 +498,7 @@ promoteLetDecRHS type_env prefix name (UFunction clauses) = do
       -- invariant: countArgs ty == length argKs
       return (map Just argKs, Just resultK, length argKs)
 
-  let proName = promoteValNameLhsPrefix prefix name
+  let proName = promoteValNameLhsPrefix prefixes name
   all_locals <- allLocals
   defun_decs <- defunctionalize proName
                 (map (const Nothing) all_locals ++ m_argKs) m_resK
@@ -621,8 +618,9 @@ promoteExp (DCaseE exp matches) = do
   return ( applied_case
          , ADCaseE ann_exp exp' ann_matches applied_case )
 promoteExp (DLetE decs exp) = do
-  letPrefix <- fmap nameBase $ newUniqueName "Let"
-  (binds, ann_env) <- promoteLetDecs letPrefix decs
+  unique <- qNewUnique
+  let letPrefixes = uniquePrefixes "Let" ":<<<" unique
+  (binds, ann_env) <- promoteLetDecs letPrefixes decs
   (exp', ann_exp) <- letBind binds $ promoteExp exp
   return (exp', ADLetE ann_env ann_exp)
 promoteExp (DSigE exp ty) = do

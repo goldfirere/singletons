@@ -20,16 +20,16 @@ import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Char
 import Control.Monad hiding ( mapM )
-#if __GLASGOW_HASKELL__ < 710
--- We don't need this import for GHC 7.10 as it exports all required functions
--- from Prelude
-import Control.Applicative
-#endif
 import Control.Monad.Writer hiding ( mapM )
 import Control.Monad.Reader hiding ( mapM )
 import qualified Data.Map as Map
 import Data.Foldable
 import Data.Traversable
+
+#if __GLASGOW_HASKELL__ < 709
+import Control.Applicative
+import GHC.Exts ( Int(I#) )
+#endif
 
 -- The list of types that singletons processes by default
 basicTypes :: [Name]
@@ -57,6 +57,18 @@ qReportWarning = qReport False
 -- like reportError, but generalized to any Quasi
 qReportError :: Quasi q => String -> q ()
 qReportError = qReport True
+
+-- | Generate a new Unique
+qNewUnique :: DsMonad q => q Int
+qNewUnique = do
+  Name _ flav <- qNewName "x"
+  case flav of
+#if __GLASGOW_HASKELL__ >= 709
+    NameU n -> return n
+#else
+    NameU n -> return (I# n)
+#endif
+    _       -> error "Internal error: `qNewName` didn't return a NameU"
 
 checkForRep :: Quasi q => [Name] -> q ()
 checkForRep names =
@@ -87,21 +99,33 @@ isUpcase n = let first = head (nameBase n) in isUpper first || first == ':'
 
 -- make an identifier uppercase
 upcase :: Name -> Name
-upcase = mkName . toUpcaseStr
+upcase = mkName . toUpcaseStr noPrefix
 
 -- make an identifier uppercase and return it as a String
-toUpcaseStr :: Name -> String
-toUpcaseStr n
-  |  isUpcase n
-  || head (nameBase n) == '$'   -- special case to avoid name clashes. See #29
-  = nameBase n
+toUpcaseStr :: (String, String)  -- (alpha, symb) prefixes to prepend
+            -> Name -> String
+toUpcaseStr (alpha, symb) n
+  | isHsLetter first
+  = upcase_alpha
 
   | otherwise
-  = let str   = nameBase n
-        first = head str
-    in if isHsLetter first
-       then (toUpper first) : tail str
-       else ':' : str
+  = upcase_symb
+
+  where
+    str   = nameBase n
+    first = head str
+
+    upcase_alpha = alpha ++ (toUpper first) : tail str
+
+    upcase_symb
+      |  first == ':'
+      || first == '$' -- special case to avoid name clashes. See #29
+      = symb ++ str
+      | otherwise
+      = symb ++ ':' : str
+
+noPrefix :: (String, String)
+noPrefix = ("", "")
 
 -- make an identifier lowercase
 locase :: Name -> Name
@@ -136,6 +160,31 @@ suffixName ident symb n =
   if isHsLetter first
   then mkName (str ++ ident)
   else mkName (str ++ symb)
+
+-- convert a number into both alphanumeric and symoblic forms
+uniquePrefixes :: String   -- alphanumeric prefix
+               -> String   -- symbolic prefix
+               -> Int
+               -> (String, String)  -- (alphanum, symbolic)
+uniquePrefixes alpha symb n = (alpha ++ n_str, symb ++ convert n_str)
+  where
+    n_str = show n
+
+    convert [] = []
+    convert (d : ds) =
+      let d' = case d of
+                 '0' -> '!'
+                 '1' -> '#'
+                 '2' -> '$'
+                 '3' -> '%'
+                 '4' -> '&'
+                 '5' -> '*'
+                 '6' -> '+'
+                 '7' -> '.'
+                 '8' -> '/'
+                 '9' -> '<'
+                 _   -> error "non-digit in show #"
+      in d' : convert ds
 
 -- extract the kind from a TyVarBndr. Returns '*' by default.
 extractTvbKind :: DTyVarBndr -> Maybe DKind
