@@ -482,7 +482,7 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
                                            STrue
                                              -> let
                                                   lambda ::
-                                                    TrueSym0 ~ Let_0123456789Scrutinee_0123456789Sym4 ns bs n b =>
+                                                    TrueSym0 ~ Let0123456789Scrutinee_0123456789Sym4 ns bs n b =>
                                                     Sing (Case_0123456789 ns bs n b TrueSym0)
                                                   lambda
                                                     = applySing
@@ -495,11 +495,11 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
                                            SFalse
                                              -> let
                                                   lambda ::
-                                                    FalseSym0 ~ Let_0123456789Scrutinee_0123456789Sym4 ns bs n b =>
+                                                    FalseSym0 ~ Let0123456789Scrutinee_0123456789Sym4 ns bs n b =>
                                                     Sing (Case_0123456789 ns bs n b FalseSym0)
                                                   lambda = n
                                                 in lambda } ::
-                                           Sing (Case_0123456789 ns bs n b (Let_0123456789Scrutinee_0123456789Sym4 ns bs n b))
+                                           Sing (Case_0123456789 ns bs n b (Let0123456789Scrutinee_0123456789Sym4 ns bs n b))
                                in lambda sN sB)))
                    ns)
                 bs
@@ -536,7 +536,7 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
                                            STrue
                                              -> let
                                                   lambda ::
-                                                    TrueSym0 ~ Let_0123456789Scrutinee_0123456789Sym4 n b a_0123456789 a_0123456789 =>
+                                                    TrueSym0 ~ Let0123456789Scrutinee_0123456789Sym4 n b a_0123456789 a_0123456789 =>
                                                     Sing (Case_0123456789 n b a_0123456789 a_0123456789 TrueSym0)
                                                   lambda
                                                     = applySing
@@ -549,11 +549,11 @@ Singletons/HigherOrder.hs:0:0: Splicing declarations
                                            SFalse
                                              -> let
                                                   lambda ::
-                                                    FalseSym0 ~ Let_0123456789Scrutinee_0123456789Sym4 n b a_0123456789 a_0123456789 =>
+                                                    FalseSym0 ~ Let0123456789Scrutinee_0123456789Sym4 n b a_0123456789 a_0123456789 =>
                                                     Sing (Case_0123456789 n b a_0123456789 a_0123456789 FalseSym0)
                                                   lambda = n
                                                 in lambda } ::
-                                           Sing (Case_0123456789 n b a_0123456789 a_0123456789 (Let_0123456789Scrutinee_0123456789Sym4 n b a_0123456789 a_0123456789))
+                                           Sing (Case_0123456789 n b a_0123456789 a_0123456789 (Let0123456789Scrutinee_0123456789Sym4 n b a_0123456789 a_0123456789))
                                in lambda sN sB)))
                    a_0123456789)
                 a_0123456789
