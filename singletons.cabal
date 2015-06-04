@@ -39,7 +39,7 @@ source-repository this
   type:     git
   location: https://github.com/goldfirere/singletons.git
   tag:      v1.2
-g
+
 library
   hs-source-dirs:     src
   build-depends:      base >= 4.7.0.1 && < 5,
