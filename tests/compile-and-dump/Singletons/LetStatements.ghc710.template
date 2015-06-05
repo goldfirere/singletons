@@ -1,4 +1,4 @@
-Singletons/LetStatements.hs:0:0: Splicing declarations
+Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| foo1 :: Nat -> Nat
           foo1 x
@@ -95,7 +95,6 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
           foo14 :: Nat -> (Nat, Nat)
           foo14 x = let (y, z) = (Succ x, x) in (z, y) |]
   ======>
-    Singletons/LetStatements.hs:(0,0)-(0,0)
     foo1 :: Nat -> Nat
     foo1 x
       = let
@@ -210,8 +209,7 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
       = forall arg. KindOf (Apply Let0123456789ZSym0 arg) ~ KindOf (Let0123456789ZSym1 arg) =>
         Let0123456789ZSym0KindInference
     type instance Apply Let0123456789ZSym0 l = Let0123456789ZSym1 l
-    type Let0123456789X_0123456789Sym1 t =
-        Let0123456789X_0123456789 t
+    type Let0123456789X_0123456789Sym1 t = Let0123456789X_0123456789 t
     instance SuppressUnusedWarnings Let0123456789X_0123456789Sym0 where
       suppressUnusedWarnings _
         = snd
@@ -237,35 +235,32 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
         Let0123456789BarSym0KindInference
     type instance Apply Let0123456789BarSym0 l = Let0123456789BarSym1 l
     type Let0123456789Bar x = (x :: a)
-    type Let0123456789:+Sym3 t (t :: Nat) (t :: Nat) =
-        Let0123456789:+ t t t
-    instance SuppressUnusedWarnings Let0123456789:+Sym2 where
+    type (:<<<%%%%%%%%%%:+$$$$) t (t :: Nat) (t :: Nat) =
+        (:<<<%%%%%%%%%%:+) t t t
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$$$) where
       suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,) Let0123456789:+Sym2KindInference GHC.Tuple.())
-    data Let0123456789:+Sym2 l (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. KindOf (Apply (Let0123456789:+Sym2 l l) arg) ~ KindOf (Let0123456789:+Sym3 l l arg) =>
-        Let0123456789:+Sym2KindInference
-    type instance Apply (Let0123456789:+Sym2 l l) l = Let0123456789:+Sym3 l l l
-    instance SuppressUnusedWarnings Let0123456789:+Sym1 where
+        = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$$$###) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%:+$$$) l (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. KindOf (Apply ((:<<<%%%%%%%%%%:+$$$) l l) arg) ~ KindOf ((:<<<%%%%%%%%%%:+$$$$) l l arg) =>
+        :<<<%%%%%%%%%%:+$$$###
+    type instance Apply ((:<<<%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%:+$$$$) l l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$$) where
       suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,) Let0123456789:+Sym1KindInference GHC.Tuple.())
-    data Let0123456789:+Sym1 l (l :: TyFun Nat (TyFun Nat Nat -> *))
-      = forall arg. KindOf (Apply (Let0123456789:+Sym1 l) arg) ~ KindOf (Let0123456789:+Sym2 l arg) =>
-        Let0123456789:+Sym1KindInference
-    type instance Apply (Let0123456789:+Sym1 l) l = Let0123456789:+Sym2 l l
-    instance SuppressUnusedWarnings Let0123456789:+Sym0 where
+        = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$$###) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%:+$$) l (l :: TyFun Nat (TyFun Nat Nat -> *))
+      = forall arg. KindOf (Apply ((:<<<%%%%%%%%%%:+$$) l) arg) ~ KindOf ((:<<<%%%%%%%%%%:+$$$) l arg) =>
+        :<<<%%%%%%%%%%:+$$###
+    type instance Apply ((:<<<%%%%%%%%%%:+$$) l) l = (:<<<%%%%%%%%%%:+$$$) l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$) where
       suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,) Let0123456789:+Sym0KindInference GHC.Tuple.())
-    data Let0123456789:+Sym0 l
-      = forall arg. KindOf (Apply Let0123456789:+Sym0 arg) ~ KindOf (Let0123456789:+Sym1 arg) =>
-        Let0123456789:+Sym0KindInference
-    type instance Apply Let0123456789:+Sym0 l = Let0123456789:+Sym1 l
-    type family Let0123456789:+ x (a :: Nat) (a :: Nat) :: Nat where
-      Let0123456789:+ x Zero m = m
-      Let0123456789:+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Let0123456789:+Sym1 x) n) x)
+        = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$###) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%:+$) l
+      = forall arg. KindOf (Apply (:<<<%%%%%%%%%%:+$) arg) ~ KindOf ((:<<<%%%%%%%%%%:+$$) arg) =>
+        :<<<%%%%%%%%%%:+$###
+    type instance Apply (:<<<%%%%%%%%%%:+$) l = (:<<<%%%%%%%%%%:+$$) l
+    type family (:<<<%%%%%%%%%%:+) x (a :: Nat) (a :: Nat) :: Nat where
+      (:<<<%%%%%%%%%%:+) x Zero m = m
+      (:<<<%%%%%%%%%%:+) x (Succ n) m = Apply SuccSym0 (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) n) x)
     type Let0123456789ZSym1 t = Let0123456789Z t
     instance SuppressUnusedWarnings Let0123456789ZSym0 where
       suppressUnusedWarnings _
@@ -274,65 +269,59 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
       = forall arg. KindOf (Apply Let0123456789ZSym0 arg) ~ KindOf (Let0123456789ZSym1 arg) =>
         Let0123456789ZSym0KindInference
     type instance Apply Let0123456789ZSym0 l = Let0123456789ZSym1 l
-    type Let0123456789:+Sym3 t (t :: Nat) (t :: Nat) =
-        Let0123456789:+ t t t
-    instance SuppressUnusedWarnings Let0123456789:+Sym2 where
+    type (:<<<%%%%%%%%%%:+$$$$) t (t :: Nat) (t :: Nat) =
+        (:<<<%%%%%%%%%%:+) t t t
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$$$) where
       suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,) Let0123456789:+Sym2KindInference GHC.Tuple.())
-    data Let0123456789:+Sym2 l (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. KindOf (Apply (Let0123456789:+Sym2 l l) arg) ~ KindOf (Let0123456789:+Sym3 l l arg) =>
-        Let0123456789:+Sym2KindInference
-    type instance Apply (Let0123456789:+Sym2 l l) l = Let0123456789:+Sym3 l l l
-    instance SuppressUnusedWarnings Let0123456789:+Sym1 where
+        = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$$$###) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%:+$$$) l (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. KindOf (Apply ((:<<<%%%%%%%%%%:+$$$) l l) arg) ~ KindOf ((:<<<%%%%%%%%%%:+$$$$) l l arg) =>
+        :<<<%%%%%%%%%%:+$$$###
+    type instance Apply ((:<<<%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%:+$$$$) l l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$$) where
       suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,) Let0123456789:+Sym1KindInference GHC.Tuple.())
-    data Let0123456789:+Sym1 l (l :: TyFun Nat (TyFun Nat Nat -> *))
-      = forall arg. KindOf (Apply (Let0123456789:+Sym1 l) arg) ~ KindOf (Let0123456789:+Sym2 l arg) =>
-        Let0123456789:+Sym1KindInference
-    type instance Apply (Let0123456789:+Sym1 l) l = Let0123456789:+Sym2 l l
-    instance SuppressUnusedWarnings Let0123456789:+Sym0 where
+        = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$$###) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%:+$$) l (l :: TyFun Nat (TyFun Nat Nat -> *))
+      = forall arg. KindOf (Apply ((:<<<%%%%%%%%%%:+$$) l) arg) ~ KindOf ((:<<<%%%%%%%%%%:+$$$) l arg) =>
+        :<<<%%%%%%%%%%:+$$###
+    type instance Apply ((:<<<%%%%%%%%%%:+$$) l) l = (:<<<%%%%%%%%%%:+$$$) l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$) where
       suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,) Let0123456789:+Sym0KindInference GHC.Tuple.())
-    data Let0123456789:+Sym0 l
-      = forall arg. KindOf (Apply Let0123456789:+Sym0 arg) ~ KindOf (Let0123456789:+Sym1 arg) =>
-        Let0123456789:+Sym0KindInference
-    type instance Apply Let0123456789:+Sym0 l = Let0123456789:+Sym1 l
+        = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$###) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%:+$) l
+      = forall arg. KindOf (Apply (:<<<%%%%%%%%%%:+$) arg) ~ KindOf ((:<<<%%%%%%%%%%:+$$) arg) =>
+        :<<<%%%%%%%%%%:+$###
+    type instance Apply (:<<<%%%%%%%%%%:+$) l = (:<<<%%%%%%%%%%:+$$) l
     type Let0123456789Z x = (x :: Nat)
-    type family Let0123456789:+ x (a :: Nat) (a :: Nat) :: Nat where
-      Let0123456789:+ x Zero m = m
-      Let0123456789:+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Let0123456789:+Sym1 x) n) m)
-    type Let0123456789:+Sym3 t (t :: Nat) (t :: Nat) =
-        Let0123456789:+ t t t
-    instance SuppressUnusedWarnings Let0123456789:+Sym2 where
+    type family (:<<<%%%%%%%%%%:+) x (a :: Nat) (a :: Nat) :: Nat where
+      (:<<<%%%%%%%%%%:+) x Zero m = m
+      (:<<<%%%%%%%%%%:+) x (Succ n) m = Apply SuccSym0 (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) n) m)
+    type (:<<<%%%%%%%%%%:+$$$$) t (t :: Nat) (t :: Nat) =
+        (:<<<%%%%%%%%%%:+) t t t
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$$$) where
       suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,) Let0123456789:+Sym2KindInference GHC.Tuple.())
-    data Let0123456789:+Sym2 l (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. KindOf (Apply (Let0123456789:+Sym2 l l) arg) ~ KindOf (Let0123456789:+Sym3 l l arg) =>
-        Let0123456789:+Sym2KindInference
-    type instance Apply (Let0123456789:+Sym2 l l) l = Let0123456789:+Sym3 l l l
-    instance SuppressUnusedWarnings Let0123456789:+Sym1 where
+        = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$$$###) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%:+$$$) l (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. KindOf (Apply ((:<<<%%%%%%%%%%:+$$$) l l) arg) ~ KindOf ((:<<<%%%%%%%%%%:+$$$$) l l arg) =>
+        :<<<%%%%%%%%%%:+$$$###
+    type instance Apply ((:<<<%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%:+$$$$) l l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$$) where
       suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,) Let0123456789:+Sym1KindInference GHC.Tuple.())
-    data Let0123456789:+Sym1 l (l :: TyFun Nat (TyFun Nat Nat -> *))
-      = forall arg. KindOf (Apply (Let0123456789:+Sym1 l) arg) ~ KindOf (Let0123456789:+Sym2 l arg) =>
-        Let0123456789:+Sym1KindInference
-    type instance Apply (Let0123456789:+Sym1 l) l = Let0123456789:+Sym2 l l
-    instance SuppressUnusedWarnings Let0123456789:+Sym0 where
+        = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$$###) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%:+$$) l (l :: TyFun Nat (TyFun Nat Nat -> *))
+      = forall arg. KindOf (Apply ((:<<<%%%%%%%%%%:+$$) l) arg) ~ KindOf ((:<<<%%%%%%%%%%:+$$$) l arg) =>
+        :<<<%%%%%%%%%%:+$$###
+    type instance Apply ((:<<<%%%%%%%%%%:+$$) l) l = (:<<<%%%%%%%%%%:+$$$) l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$) where
       suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,) Let0123456789:+Sym0KindInference GHC.Tuple.())
-    data Let0123456789:+Sym0 l
-      = forall arg. KindOf (Apply Let0123456789:+Sym0 arg) ~ KindOf (Let0123456789:+Sym1 arg) =>
-        Let0123456789:+Sym0KindInference
-    type instance Apply Let0123456789:+Sym0 l = Let0123456789:+Sym1 l
-    type family Let0123456789:+ x (a :: Nat) (a :: Nat) :: Nat where
-      Let0123456789:+ x Zero m = m
-      Let0123456789:+ x (Succ n) m = Apply SuccSym0 (Apply (Apply (Let0123456789:+Sym1 x) n) m)
+        = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$###) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%:+$) l
+      = forall arg. KindOf (Apply (:<<<%%%%%%%%%%:+$) arg) ~ KindOf ((:<<<%%%%%%%%%%:+$$) arg) =>
+        :<<<%%%%%%%%%%:+$###
+    type instance Apply (:<<<%%%%%%%%%%:+$) l = (:<<<%%%%%%%%%%:+$$) l
+    type family (:<<<%%%%%%%%%%:+) x (a :: Nat) (a :: Nat) :: Nat where
+      (:<<<%%%%%%%%%%:+) x Zero m = m
+      (:<<<%%%%%%%%%%:+) x (Succ n) m = Apply SuccSym0 (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) n) m)
     type family Lambda_0123456789 x a_0123456789 t where
       Lambda_0123456789 x a_0123456789 x = x
     type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
@@ -633,11 +622,11 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
     type family Foo13 (a :: a) :: a where
       Foo13 x = Apply Foo13_Sym0 (Let0123456789BarSym1 x)
     type family Foo12 (a :: Nat) :: Nat where
-      Foo12 x = Apply (Apply (Let0123456789:+Sym1 x) x) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))
+      Foo12 x = Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) x) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))
     type family Foo11 (a :: Nat) :: Nat where
-      Foo11 x = Apply (Apply (Let0123456789:+Sym1 x) (Apply SuccSym0 ZeroSym0)) (Let0123456789ZSym1 x)
+      Foo11 x = Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) (Apply SuccSym0 ZeroSym0)) (Let0123456789ZSym1 x)
     type family Foo10 (a :: Nat) :: Nat where
-      Foo10 x = Apply (Apply (Let0123456789:+Sym1 x) (Apply SuccSym0 ZeroSym0)) x
+      Foo10 x = Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) (Apply SuccSym0 ZeroSym0)) x
     type family Foo9 (a :: Nat) :: Nat where
       Foo9 x = Apply (Let0123456789ZSym1 x) x
     type family Foo8 (a :: Nat) :: Nat where
@@ -736,12 +725,12 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
                 (%:+) ::
                   forall (t :: Nat) (t :: Nat).
                   Sing t
-                  -> Sing t -> Sing (Apply (Apply (Let0123456789:+Sym1 x) t) t)
+                  -> Sing t -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) t) t)
                 (%:+) SZero sM
                   = let
                       lambda ::
                         forall m. (t ~ ZeroSym0, t ~ m) =>
-                        Sing m -> Sing (Apply (Apply (Let0123456789:+Sym1 x) ZeroSym0) m)
+                        Sing m -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) ZeroSym0) m)
                       lambda m = m
                     in lambda sM
                 (%:+) (SSucc sN) sM
@@ -750,19 +739,19 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
                         forall n m. (t ~ Apply SuccSym0 n, t ~ m) =>
                         Sing n
                         -> Sing m
-                           -> Sing (Apply (Apply (Let0123456789:+Sym1 x) (Apply SuccSym0 n)) m)
+                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) (Apply SuccSym0 n)) m)
                       lambda n m
                         = applySing
                             (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
                             (applySing
                                (applySing
-                                  (singFun2 (Proxy :: Proxy (Let0123456789:+Sym1 x)) (%:+)) n)
+                                  (singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%:+$$) x)) (%:+)) n)
                                x)
                     in lambda sN sM
               in
                 applySing
                   (applySing
-                     (singFun2 (Proxy :: Proxy (Let0123456789:+Sym1 x)) (%:+)) x)
+                     (singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%:+$$) x)) (%:+)) x)
                   (applySing
                      (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
                      (applySing (singFun1 (Proxy :: Proxy SuccSym0) SSucc) SZero))
@@ -776,13 +765,13 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
                 (%:+) ::
                   forall (t :: Nat) (t :: Nat).
                   Sing t
-                  -> Sing t -> Sing (Apply (Apply (Let0123456789:+Sym1 x) t) t)
+                  -> Sing t -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) t) t)
                 sZ = x
                 (%:+) SZero sM
                   = let
                       lambda ::
                         forall m. (t ~ ZeroSym0, t ~ m) =>
-                        Sing m -> Sing (Apply (Apply (Let0123456789:+Sym1 x) ZeroSym0) m)
+                        Sing m -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) ZeroSym0) m)
                       lambda m = m
                     in lambda sM
                 (%:+) (SSucc sN) sM
@@ -791,19 +780,19 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
                         forall n m. (t ~ Apply SuccSym0 n, t ~ m) =>
                         Sing n
                         -> Sing m
-                           -> Sing (Apply (Apply (Let0123456789:+Sym1 x) (Apply SuccSym0 n)) m)
+                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) (Apply SuccSym0 n)) m)
                       lambda n m
                         = applySing
                             (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
                             (applySing
                                (applySing
-                                  (singFun2 (Proxy :: Proxy (Let0123456789:+Sym1 x)) (%:+)) n)
+                                  (singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%:+$$) x)) (%:+)) n)
                                m)
                     in lambda sN sM
               in
                 applySing
                   (applySing
-                     (singFun2 (Proxy :: Proxy (Let0123456789:+Sym1 x)) (%:+))
+                     (singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%:+$$) x)) (%:+))
                      (applySing (singFun1 (Proxy :: Proxy SuccSym0) SSucc) SZero))
                   sZ
         in lambda sX
@@ -815,12 +804,12 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
                 (%:+) ::
                   forall (t :: Nat) (t :: Nat).
                   Sing t
-                  -> Sing t -> Sing (Apply (Apply (Let0123456789:+Sym1 x) t) t)
+                  -> Sing t -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) t) t)
                 (%:+) SZero sM
                   = let
                       lambda ::
                         forall m. (t ~ ZeroSym0, t ~ m) =>
-                        Sing m -> Sing (Apply (Apply (Let0123456789:+Sym1 x) ZeroSym0) m)
+                        Sing m -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) ZeroSym0) m)
                       lambda m = m
                     in lambda sM
                 (%:+) (SSucc sN) sM
@@ -829,19 +818,19 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
                         forall n m. (t ~ Apply SuccSym0 n, t ~ m) =>
                         Sing n
                         -> Sing m
-                           -> Sing (Apply (Apply (Let0123456789:+Sym1 x) (Apply SuccSym0 n)) m)
+                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) (Apply SuccSym0 n)) m)
                       lambda n m
                         = applySing
                             (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
                             (applySing
                                (applySing
-                                  (singFun2 (Proxy :: Proxy (Let0123456789:+Sym1 x)) (%:+)) n)
+                                  (singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%:+$$) x)) (%:+)) n)
                                m)
                     in lambda sN sM
               in
                 applySing
                   (applySing
-                     (singFun2 (Proxy :: Proxy (Let0123456789:+Sym1 x)) (%:+))
+                     (singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%:+$$) x)) (%:+))
                      (applySing (singFun1 (Proxy :: Proxy SuccSym0) SSucc) SZero))
                   x
         in lambda sX
@@ -921,8 +910,7 @@ Singletons/LetStatements.hs:0:0: Splicing declarations
               let
                 sZ :: Sing (Let0123456789ZSym1 x)
                 sZ
-                  = applySing
-                      (singFun1 (Proxy :: Proxy (Let0123456789FSym1 x)) sF) x
+                  = applySing (singFun1 (Proxy :: Proxy (Let0123456789FSym1 x)) sF) x
               in sZ
         in lambda sX
     sFoo5 sX
