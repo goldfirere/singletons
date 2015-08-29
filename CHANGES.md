@@ -1,7 +1,7 @@
 Changelog for singletons project
 ================================
 
-1.2
+2.0
 ---
 
 * Instance promotion now works properly -- it was quite buggy in 1.0.
