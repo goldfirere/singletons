@@ -1,4 +1,4 @@
-Promote/Classes.hs:0:0: Splicing declarations
+Promote/Classes.hs:(0,0)-(0,0): Splicing declarations
     promote
       [d| const :: a -> b -> a
           const x _ = x
@@ -36,7 +36,6 @@ Promote/Classes.hs:0:0: Splicing declarations
             (Succ _) `mycompare` Zero = GT
             (Succ n) `mycompare` (Succ m) = m `mycompare` n |]
   ======>
-    Promote/Classes.hs:(0,0)-(0,0)
     const :: forall a b. a -> b -> a
     const x _ = x
     class MyOrd a where
@@ -126,20 +125,12 @@ Promote/Classes.hs:0:0: Splicing declarations
                                 (DVarK
                                    (Language.Haskell.TH.Syntax.Name
                                       (Language.Haskell.TH.Syntax.mkOccName "a")
-                                      (let scrutinee_0123456789 = 0123456789
-                                       in
-                                         case scrutinee_0123456789 of {
-                                           GHC.Types.I# i'
-                                             -> Language.Haskell.TH.Syntax.NameU i' })))
+                                      (Language.Haskell.TH.Syntax.NameU 0123456789)))
                                 ((GHC.Types.:)
                                    (DVarK
                                       (Language.Haskell.TH.Syntax.Name
                                          (Language.Haskell.TH.Syntax.mkOccName "a")
-                                         (let scrutinee_0123456789 = 0123456789
-                                          in
-                                            case scrutinee_0123456789 of {
-                                              GHC.Types.I# i'
-                                                -> Language.Haskell.TH.Syntax.NameU i' })))
+                                         (Language.Haskell.TH.Syntax.NameU 0123456789)))
                                    GHC.Types.[]))
                              (DConK
                                 (Language.Haskell.TH.Syntax.Name
@@ -156,32 +147,26 @@ Promote/Classes.hs:0:0: Splicing declarations
         = snd (GHC.Tuple.(,) (:<=>$$###) GHC.Tuple.())
     data (:<=>$$) (l :: a) (l :: TyFun a Ordering)
       = forall arg. KindOf (Apply ((:<=>$$) l) arg) ~ KindOf ((:<=>$$$) l arg) =>
-        (:<=>$$###)
+        :<=>$$###
     type instance Apply ((:<=>$$) l) l = (:<=>$$$) l l
     instance SuppressUnusedWarnings (:<=>$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:<=>$###) GHC.Tuple.())
     data (:<=>$) (l :: TyFun a (TyFun a Ordering -> *))
       = forall arg. KindOf (Apply (:<=>$) arg) ~ KindOf ((:<=>$$) arg) =>
-        (:<=>$###)
+        :<=>$###
     type instance Apply (:<=>$) l = (:<=>$$) l
     {-# ANN type :<=> GHC.Tuple.(,)
                         ((GHC.Types.:)
                            (DVarK
                               (Language.Haskell.TH.Syntax.Name
                                  (Language.Haskell.TH.Syntax.mkOccName "a")
-                                 (let scrutinee_0123456789 = 0123456789
-                                  in
-                                    case scrutinee_0123456789 of {
-                                      GHC.Types.I# i' -> Language.Haskell.TH.Syntax.NameU i' })))
+                                 (Language.Haskell.TH.Syntax.NameU 0123456789)))
                            ((GHC.Types.:)
                               (DVarK
                                  (Language.Haskell.TH.Syntax.Name
                                     (Language.Haskell.TH.Syntax.mkOccName "a")
-                                    (let scrutinee_0123456789 = 0123456789
-                                     in
-                                       case scrutinee_0123456789 of {
-                                         GHC.Types.I# i' -> Language.Haskell.TH.Syntax.NameU i' })))
+                                    (Language.Haskell.TH.Syntax.NameU 0123456789)))
                               GHC.Types.[]))
                         (DConK
                            (Language.Haskell.TH.Syntax.Name
@@ -195,16 +180,14 @@ Promote/Classes.hs:0:0: Splicing declarations
     {-# ANN type PMyOrd (GHC.Types.:)
                           (Language.Haskell.TH.Syntax.Name
                              (Language.Haskell.TH.Syntax.mkOccName "a")
-                             (let scrutinee_0123456789 = 0123456789
-                              in
-                                case scrutinee_0123456789 of {
-                                  GHC.Types.I# i' -> Language.Haskell.TH.Syntax.NameU i' }))
+                             (Language.Haskell.TH.Syntax.NameU 0123456789))
                           GHC.Types.[] ::
                           [Language.Haskell.TH.Syntax.Name] #-}
     class kproxy ~ KProxy => PMyOrd (kproxy :: KProxy a) where
       type family Mycompare (arg :: a) (arg :: a) :: Ordering
       type family (:<=>) (arg :: a) (arg :: a) :: Ordering
-      type instance (:<=>) (a_0123456789 :: a) (a_0123456789 :: a) = (Apply (Apply MycompareSym0 a_0123456789) a_0123456789 :: Ordering)
+      (:<=>) (a_0123456789 :: a)
+             (a_0123456789 :: a) = (Apply (Apply MycompareSym0 a_0123456789) a_0123456789 :: Ordering)
     type family Mycompare_0123456789 (a :: Nat)
                                      (a :: Nat) :: Ordering where
       Mycompare_0123456789 (Zero :: Nat) (Zero :: Nat) = (EQSym0 :: Ordering)
@@ -231,17 +214,18 @@ Promote/Classes.hs:0:0: Splicing declarations
       Compare_0123456789 (_z_0123456789 :: Foo2) (_z_0123456789 :: Foo2) = (GTSym0 :: Ordering)
     instance POrd (KProxy :: KProxy Foo2) where
       type Compare (a :: Foo2) (a :: Foo2) = Compare_0123456789 a a
-    type family (:==_0123456789) (a :: Foo2) (a :: Foo2) :: Bool where
-      (:==_0123456789) (F :: Foo2) (F :: Foo2) = (TrueSym0 :: Bool)
-      (:==_0123456789) (G :: Foo2) (G :: Foo2) = (TrueSym0 :: Bool)
-      (:==_0123456789) (_z_0123456789 :: Foo2) (_z_0123456789 :: Foo2) = (FalseSym0 :: Bool)
+    type family TFHelper_0123456789 (a :: Foo2)
+                                    (a :: Foo2) :: Bool where
+      TFHelper_0123456789 (F :: Foo2) (F :: Foo2) = (TrueSym0 :: Bool)
+      TFHelper_0123456789 (G :: Foo2) (G :: Foo2) = (TrueSym0 :: Bool)
+      TFHelper_0123456789 (_z_0123456789 :: Foo2) (_z_0123456789 :: Foo2) = (FalseSym0 :: Bool)
     instance PEq (KProxy :: KProxy Foo2) where
-      type (:==) (a :: Foo2) (a :: Foo2) = (:==_0123456789) a a
+      type (:==) (a :: Foo2) (a :: Foo2) = TFHelper_0123456789 a a
     type ASym0 = A
     type BSym0 = B
     type FSym0 = F
     type GSym0 = G
-Promote/Classes.hs:0:0: Splicing declarations
+Promote/Classes.hs:(0,0)-(0,0): Splicing declarations
     promote
       [d| data Nat' = Zero' | Succ' Nat'
           
@@ -251,7 +235,6 @@ Promote/Classes.hs:0:0: Splicing declarations
             (Succ' _) `mycompare` Zero' = GT
             (Succ' n) `mycompare` (Succ' m) = m `mycompare` n |]
   ======>
-    Promote/Classes.hs:(0,0)-(0,0)
     data Nat' = Zero' | Succ' Nat'
     instance MyOrd Nat' where
       mycompare Zero' Zero' = EQ

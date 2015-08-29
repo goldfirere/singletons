@@ -159,7 +159,6 @@ promoteInfo (DTyVarI _name _ty) =
 promoteDecs :: [DDec] -> PrM ()
 promoteDecs decls = do
   checkForRepInDecls decls
-  -- See Note [Promoting declarations in two stages]
   PDecs { pd_let_decs              = let_decs
         , pd_class_decs            = classes
         , pd_instance_decs         = insts
@@ -187,6 +186,7 @@ promoteDataDecs data_decs = do
 -- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
 promoteLetDecs :: (String, String) -- (alpha, symb) prefixes to use
                -> [DLetDec] -> PrM ([LetBind], ALetDecEnv)
+  -- See Note [Promoting declarations in two stages]
 promoteLetDecs prefixes decls = do
   let_dec_env <- buildLetDecEnv decls
   all_locals <- allLocals
@@ -356,7 +356,10 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   case eqns' of
     [eqn'] -> return $ DTySynInstD proName eqn'
     _      -> do
-      helperName <- newUniqueName (nameBase proName)
+      let helperNameBase = case nameBase proName of
+                             first:_ | not (isHsLetter first) -> "TFHelper"
+                             alpha                            -> alpha
+      helperName <- newUniqueName helperNameBase
       emitDecs [DClosedTypeFamilyD helperName
                                    (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
                                    (Just meth_res_ki') eqns']

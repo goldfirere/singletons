@@ -1,4 +1,4 @@
-Promote/Classes2.hs:0:0: Splicing declarations
+Promote/Classes2.hs:(0,0)-(0,0): Splicing declarations
     promoteOnly
       [d| instance MyOrd NatFoo where
             ZeroFoo `mycompare` ZeroFoo = EQ
@@ -6,7 +6,6 @@ Promote/Classes2.hs:0:0: Splicing declarations
             (SuccFoo _) `mycompare` ZeroFoo = GT
             (SuccFoo n) `mycompare` (SuccFoo m) = m `mycompare` n |]
   ======>
-    Promote/Classes2.hs:(0,0)-(0,0)
     type family Mycompare_0123456789 (a :: NatFoo)
                                      (a :: NatFoo) :: Ordering where
       Mycompare_0123456789 (ZeroFoo :: NatFoo) (ZeroFoo :: NatFoo) = (EQSym0 :: Ordering)
