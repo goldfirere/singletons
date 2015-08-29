@@ -20,13 +20,6 @@ import System.Directory   ( doesFileExist                       )
 import Test.Tasty         ( TestTree, testGroup                 )
 import Test.Tasty.Golden  ( goldenVsFileDiff                    )
 
-#if __GLASGOW_HASKELL__ < 709
-import Distribution.PackageDescription.Parse         ( readPackageDescription    )
-import Distribution.PackageDescription.Configuration ( flattenPackageDescription )
-import Distribution.PackageDescription               ( PackageDescription(..)    )
-import Distribution.Verbosity                        ( silent                    )
-import Data.Version                                  ( showVersion               )
-#endif
 import Distribution.Package                          ( PackageIdentifier(..)     )
 import Distribution.Text                             ( simpleParse               )
 import Data.Version                                  ( Version(..)               )
@@ -55,17 +48,7 @@ includePath :: FilePath
 includePath = "../../dist/build"
 
 ghcVersion :: String
-#if __GLASGOW_HASKELL__ <  708
-ghcVersion = error "testsuite requires GHC 7.8 or newer"
-#else
--- these conditions are a bit nonsense right now, but they are here
--- to demonstrate how to add support for different GHC versions
-#if __GLASGOW_HASKELL__ < 709
-ghcVersion = ".ghc78"
-#else
 ghcVersion = ".ghc710"
-#endif
-#endif
 
 -- The mtl package made an incompatible change between 2.1.3.1 and 2.2.1. Because
 -- test files are compiled outside of the cabal infrastructure, we need to check
@@ -96,25 +79,13 @@ extraOpts = unsafePerformIO $ do
              | otherwise                 = []
   return $ ghcPackageDbOpts ++ mtlOpt
 
-#if __GLASGOW_HASKELL__ < 709
--- the version number of "singletons"
-singletonsVersion :: String
-singletonsVersion = unsafePerformIO $ do
-  gpd <- readPackageDescription silent "singletons.cabal"
-  let pd = flattenPackageDescription gpd
-  return $ showVersion $ pkgVersion $ package pd
-#endif
 
 -- GHC options used when running the tests
 ghcOpts :: [String]
 ghcOpts = extraOpts ++ [
     "-v0"
   , "-c"
-#if __GLASGOW_HASKELL__ < 709
-  , "-package-name singletons-" ++ singletonsVersion -- See Note [-package-name hack]
-#else
-  , "-this-package-key " ++ CURRENT_PACKAGE_KEY
-#endif
+  , "-this-package-key " ++ CURRENT_PACKAGE_KEY -- See Note [-this-package-key hack]
   , "-ddump-splices"
   , "-dsuppress-uniques"
   , "-fforce-recomp"
@@ -138,12 +109,12 @@ ghcOpts = extraOpts ++ [
   , "-XUnboxedTuples"
   ]
 
--- Note [-package-name hack]
--- ~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Note [-this-package-key hack]
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --
 -- We want to avoid installing singletons package before running the
 -- testsuite, because in this way we prevent double compilation of the
--- library. To do this we pass -package-name option to GHC to convince
+-- library. To do this we pass -this-package-key option to GHC to convince
 -- it that the test files are actually part of the current
 -- package. This means that library doesn't have to be installed
 -- globally and interface files generated during library compilation

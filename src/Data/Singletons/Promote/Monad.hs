@@ -27,10 +27,6 @@ import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
 import Data.Singletons.Syntax
 
-#if __GLASGOW_HASKELL__ < 709
-import Control.Applicative
-#endif
-
 type LetExpansions = Map Name DType  -- from **term-level** name
 
 -- environment during promotion

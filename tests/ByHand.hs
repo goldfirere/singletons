@@ -39,22 +39,9 @@ data Nat :: * where
   Succ :: Nat -> Nat
   deriving Eq
 
-#if __GLASGOW_HASKELL__ >= 707
 -- Kind-level synonyms following singletons naming convention
 type a :&& b = a && b
 type a :== b = a == b
-#else
--- Type-level boolean equality
-type family (a :: k) == (b :: k) :: Bool
--- Kind-level synonym
-type a :== b = a == b
--- This is necessary for defining boolean equality at the type level
-type family (a :: Bool) :&& (b :: Bool) :: Bool
-type instance False :&& False = False
-type instance False :&& True = False
-type instance True :&& False = False
-type instance True :&& True = True
-#endif
 
 data Maybe :: * -> * where
   Nothing :: Maybe a
@@ -98,22 +85,11 @@ data instance Sing (a :: Nat) where
 data SuccSym0 :: TyFun Nat Nat -> *
 type instance Apply SuccSym0 x = Succ x
 
-#if __GLASGOW_HASKELL__ >= 707
-
 type family EqualsNat (a :: Nat) (b :: Nat) where
   EqualsNat Zero Zero = True
   EqualsNat (Succ a) (Succ b) = a == b
   EqualsNat (n1 :: Nat) (n2 :: Nat) = False
 type instance (a :: Nat) == (b :: Nat) = EqualsNat a b
-
-#else
-
-type instance Zero == Zero = True
-type instance Zero == (Succ n) = False
-type instance (Succ n) == Zero = False
-type instance (Succ n) == (Succ n') = n == n'
-
-#endif
 
 instance SEq ('KProxy :: KProxy Nat) where
   SZero %:== SZero = STrue
@@ -171,22 +147,11 @@ data instance Sing (a :: Maybe k) where
   SNothing :: Sing Nothing
   SJust :: forall (a :: k). Sing a -> Sing (Just a)
 
-#if __GLASGOW_HASKELL__ >= 707
-
 type family EqualsMaybe (a :: Maybe k) (b :: Maybe k) where
   EqualsMaybe Nothing Nothing = True
   EqualsMaybe (Just a) (Just a') = a == a'
   EqualsMaybe (x :: Maybe k) (y :: Maybe k) = False
 type instance (a :: Maybe k) == (b :: Maybe k) = EqualsMaybe a b
-
-#else
-
-type instance Nothing == Nothing = True
-type instance Nothing == (Just a) = False
-type instance (Just a) == Nothing = False
-type instance (Just a) == (Just a') = a == a'
-
-#endif
 
 instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (Maybe k)) where
   SNothing %~ SNothing = Proved Refl
@@ -232,22 +197,11 @@ type instance Apply (ConsSym1 a) b = ConsSym2 a b
 
 type ConsSym2 a b = Cons a b
 
-#if __GLASGOW_HASKELL__ >= 707
-
 type family EqualsList (a :: List k) (b :: List k) where
   EqualsList Nil Nil = True
   EqualsList (Cons a b) (Cons a' b') = (a == a') :&& (b == b')
   EqualsList (x :: List k) (y :: List k) = False
 type instance (a :: List k) == (b :: List k) = EqualsList a b
-
-#else
-
-type instance Nil == Nil = True
-type instance Nil == (Cons a b) = False
-type instance (Cons a b) == Nil = False
-type instance (Cons a b) == (Cons a' b') = (a == a') :&& (b == b')
-
-#endif
 
 instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (List k)) where
   SNil %:== SNil = STrue
@@ -403,10 +357,6 @@ instance SDecide ('KProxy :: KProxy *) where
       (Disproved contra, _) -> Disproved (\Refl -> contra Refl)
       (_, Disproved contra) -> Disproved (\Refl -> contra Refl)
 
-#if __GLASGOW_HASKELL__ < 707
-type instance (a :: *) == (a :: *) = True
-#endif
-
 instance SEq ('KProxy :: KProxy *) where
   a %:== b =
     case a %~ b of
@@ -421,15 +371,9 @@ isJust :: Maybe a -> Bool
 isJust Nothing = False
 isJust (Just _) = True
 
-#if __GLASGOW_HASKELL__ >= 707
 type family IsJust (a :: Maybe k) :: Bool where
     IsJust Nothing = False
     IsJust (Just a) = True
-#else
-type family IsJust (a :: Maybe k) :: Bool
-type instance IsJust Nothing = False
-type instance IsJust (Just a) = True
-#endif
 
 -- defunctionalization symbols
 data IsJustSym0 (f :: TyFun (Maybe a) Bool)
@@ -443,15 +387,9 @@ pred :: Nat -> Nat
 pred Zero = Zero
 pred (Succ n) = n
 
-#if __GLASGOW_HASKELL__ >= 707
 type family Pred (a :: Nat) :: Nat where
   Pred Zero = Zero
   Pred (Succ n) = n
-#else
-type family Pred (a :: Nat) :: Nat
-type instance Pred Zero = Zero
-type instance Pred (Succ n) = n
-#endif
 
 data PredSym0 (a :: TyFun Nat Nat)
 type instance Apply PredSym0 a = Pred a
@@ -464,15 +402,9 @@ map :: (a -> b) -> List a -> List b
 map _ Nil = Nil
 map f (Cons h t) = Cons (f h) (map f t)
 
-#if __GLASGOW_HASKELL__ >= 707
 type family Map (f :: TyFun k1 k2 -> *) (l :: List k1) :: List k2 where
     Map f Nil = Nil
     Map f (Cons h t) = Cons (Apply f h) (Map f t)
-#else
-type family Map (f :: TyFun k1 k2 -> *) (l :: List k1) :: List k2
-type instance Map f Nil = Nil
-type instance Map f (Cons h t) = Cons (Apply f h) (Map f t)
-#endif
 
 -- defunctionalization symbols
 data MapSym1 (k1 :: TyFun a b -> *)
@@ -511,7 +443,6 @@ zipWith _ [] (_:_)      = []
 zipWith _ (_:_) []      = []
 zipWith _ []    []      = []
 
-#if __GLASGOW_HASKELL__ >= 707
 type family ZipWith (k1 :: TyFun a (TyFun b c -> *) -> *)
                     (k2 :: List a)
                     (k3 :: List b) :: List c where
@@ -519,16 +450,6 @@ type family ZipWith (k1 :: TyFun a (TyFun b c -> *) -> *)
   ZipWith f Nil (Cons z1 z2) = Nil
   ZipWith f (Cons z1 z2) Nil = Nil
   ZipWith f Nil          Nil = Nil
-#else
-type family ZipWith (k1 :: TyFun a (TyFun b c -> *) -> *)
-                    (k2 :: List a)
-                    (k3 :: List b) :: List c
-type instance ZipWith f (Cons x xs) (Cons y ys) = Cons (Apply (Apply f x) y) (ZipWith f xs ys)
-type instance ZipWith f xs ys = Nil
-type instance ZipWith f Nil (Cons z1 z2) = Nil
-type instance ZipWith f (Cons z1 z2) Nil = Nil
-type instance ZipWith f Nil          Nil = Nil
-#endif
 
 data ZipWithSym2 (k1 :: TyFun a (TyFun b c -> *) -> *)
                  (k2 :: List a)
@@ -555,15 +476,9 @@ either :: (a -> c) -> (b -> c) -> Either a b -> c
 either l _ (Left x) = l x
 either _ r (Right x) = r x
 
-#if __GLASGOW_HASKELL__ >= 707
 type family Either_ (l :: TyFun a c -> *) (r :: TyFun b c -> *) (e :: Either a b) :: c where
     Either_ l r (Left x) = Apply l x
     Either_ l r (Right x) = Apply r x
-#else
-type family Either_ (l :: TyFun a c -> *) (r :: TyFun b c -> *) (e :: Either a b) :: c
-type instance Either_ l r (Left x) = Apply l x
-type instance Either_ l r (Right x) = Apply r x
-#endif
 
 -- defunctionalization symbols
 data Either_Sym2 (k1 :: TyFun a c -> *)
@@ -614,15 +529,9 @@ eitherToNat :: Either Nat Nat -> Nat
 eitherToNat (Left  x) = x
 eitherToNat (Right x) = x
 
-#if __GLASGOW_HASKELL__ >= 707
 type family EitherToNat (e :: Either Nat Nat) :: Nat where
     EitherToNat (Left x) = x
     EitherToNat (Right x) = x
-#else
-type family EitherToNat (e :: Either Nat Nat) :: Nat
-type instance EitherToNat (Left x) = x
-type instance EitherToNat (Right x) = x
-#endif
 
 sEitherToNat :: Sing a -> Sing (EitherToNat a)
 sEitherToNat (SLeft x) = x
@@ -632,15 +541,9 @@ liftMaybe :: (a -> b) -> Maybe a -> Maybe b
 liftMaybe _ Nothing = Nothing
 liftMaybe f (Just a) = Just (f a)
 
-#if __GLASGOW_HASKELL__ >= 707
 type family LiftMaybe (f :: TyFun a b -> *) (x :: Maybe a) :: Maybe b where
     LiftMaybe f Nothing = Nothing
     LiftMaybe f (Just a) = Just (Apply f a)
-#else
-type family LiftMaybe (f :: TyFun a b -> *) (x :: Maybe a) :: Maybe b
-type instance LiftMaybe f Nothing = Nothing
-type instance LiftMaybe f (Just a) = Just (Apply f a)
-#endif
 
 data LiftMaybeSym1 (k1 :: TyFun a b -> *)
                    (k2 :: TyFun (Maybe a) (Maybe b))
@@ -659,15 +562,9 @@ sLiftMaybe f (SJust a) = SJust (f Proxy a)
 Zero + x = x
 (Succ x) + y = Succ (x + y)
 
-#if __GLASGOW_HASKELL__ >= 707
 type family (:+) (m :: Nat) (n :: Nat) :: Nat where
   Zero :+ x = x
   (Succ x) :+ y = Succ (x :+ y)
-#else
-type family (:+) (m :: Nat) (n :: Nat) :: Nat
-type instance Zero :+ x = x
-type instance (Succ x) :+ y = Succ (x :+ y)
-#endif
 
 -- defunctionalization symbols
 data (:+$$) (k1 :: Nat)
@@ -685,17 +582,10 @@ Zero - _ = Zero
 (Succ x) - Zero = Succ x
 (Succ x) - (Succ y) = x - y
 
-#if __GLASGOW_HASKELL__ >= 707
 type family (:-) (m :: Nat) (n :: Nat) :: Nat where
   Zero :- x = Zero
   (Succ x) :- Zero = Succ x
   (Succ x) :- (Succ y) = x :- y
-#else
-type family (:-) (m :: Nat) (n :: Nat) :: Nat
-type instance Zero :- x = Zero
-type instance (Succ x) :- Zero = Succ x
-type instance (Succ x) :- (Succ y) = x :- y
-#endif
 
 data (:-$$) (k1 :: Nat)
             (k2 :: TyFun Nat Nat)
@@ -711,13 +601,8 @@ SZero %:- _ = SZero
 isZero :: Nat -> Bool
 isZero n = if n == Zero then True else False
 
-#if __GLASGOW_HASKELL__ >= 707
 type family IsZero (n :: Nat) :: Bool where
   IsZero n = If (n :== Zero) True False
-#else
-type family IsZero (n :: Nat) :: Bool
-type instance IsZero n = If (n :== Zero) True False
-#endif
 
 data IsZeroSym0 (a :: TyFun Nat Bool)
 type instance Apply IsZeroSym0 a = IsZero a
@@ -731,15 +616,9 @@ False || x = x
 True || _ = True
 -}
 
-#if __GLASGOW_HASKELL__ >= 707
 type family (a :: Bool) :|| (b :: Bool) :: Bool where
   False :|| x = x
   True :|| x = True
-#else
-type family (a :: Bool) :|| (b :: Bool) :: Bool
-type instance False :|| x = x
-type instance True :|| x = True
-#endif
 
 data (:||$$) (k1 :: Bool)
              (k2 :: TyFun Bool Bool)
@@ -757,15 +636,9 @@ contains _ Nil = False
 contains elt (Cons h t) = (elt == h) || contains elt t
 -}
 
-#if __GLASGOW_HASKELL__ >= 707
 type family Contains (a :: k) (b :: List k) :: Bool where
   Contains elt Nil = False
   Contains elt (Cons h t) = (elt :== h) :|| (Contains elt t)
-#else
-type family Contains (a :: k) (b :: List k) :: Bool
-type instance Contains elt Nil = False
-type instance Contains elt (Cons h t) = (elt :== h) :|| (Contains elt t)
-#endif
 
 data ContainsSym1 (k1 :: a)
                   (k2 :: TyFun (List a) Bool)

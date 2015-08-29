@@ -82,11 +82,6 @@ import GHC.Exts
 import Language.Haskell.TH
 import Data.Singletons.Util
 import Data.Proxy ( Proxy(..) )
-#if __GLASGOW_HASKELL__ < 710
--- We don't need this import for GHC 7.10 as it exports all required functions
--- from Prelude
-import Control.Applicative
-#endif
 
 -- | The function 'cases' generates a case expression where each right-hand side
 -- is identical. This may be useful if the type-checker requires knowledge of which

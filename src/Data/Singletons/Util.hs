@@ -26,11 +26,6 @@ import qualified Data.Map as Map
 import Data.Foldable
 import Data.Traversable
 
-#if __GLASGOW_HASKELL__ < 709
-import Control.Applicative
-import GHC.Exts ( Int(I#) )
-#endif
-
 -- The list of types that singletons processes by default
 basicTypes :: [Name]
 basicTypes = [ ''Maybe
@@ -63,11 +58,7 @@ qNewUnique :: DsMonad q => q Int
 qNewUnique = do
   Name _ flav <- qNewName "x"
   case flav of
-#if __GLASGOW_HASKELL__ >= 709
     NameU n -> return n
-#else
-    NameU n -> return (I# n)
-#endif
     _       -> error "Internal error: `qNewName` didn't return a NameU"
 
 checkForRep :: Quasi q => [Name] -> q ()

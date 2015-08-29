@@ -26,11 +26,6 @@ import Data.Singletons.Util
 import Data.Singletons.Syntax
 import Prelude hiding (exp)
 import Control.Monad
-#if __GLASGOW_HASKELL__ < 710
--- We don't need this import for GHC 7.10 as it exports all required functions
--- from Prelude
-import Control.Applicative
-#endif
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 

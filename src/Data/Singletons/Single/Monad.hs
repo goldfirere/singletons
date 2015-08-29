@@ -30,10 +30,6 @@ import Language.Haskell.TH.Desugar
 import Control.Monad.Reader
 import Control.Monad.Writer
 
-#if __GLASGOW_HASKELL__ < 709
-import Control.Applicative
-#endif
-
 -- environment during singling
 data SgEnv =
   SgEnv { sg_let_binds   :: Map Name DExp   -- from the *original* name
