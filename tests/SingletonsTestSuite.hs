@@ -4,10 +4,13 @@ module Main (
 
 import Test.Tasty               ( TestTree, defaultMain, testGroup          )
 import SingletonsTestSuiteUtils ( compileAndDumpStdTest, compileAndDumpTest
-                                , testCompileAndDumpGroup, ghcOpts          )
+                                , testCompileAndDumpGroup, ghcOpts
+                                , cleanFiles                                )
 
 main :: IO ()
-main = defaultMain tests
+main = do
+  cleanFiles
+  defaultMain tests
 
 tests :: TestTree
 tests =

@@ -15,7 +15,7 @@ import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (Quasi(..))
 import Data.Singletons.Util
 import Data.Singletons.Promote
-import Data.Singletons.Promote.Monad ( promoteM, promoteM_ )
+import Data.Singletons.Promote.Monad ( promoteM )
 import Data.Singletons.Promote.Type
 import Data.Singletons.Names
 import Data.Singletons.Single.Monad

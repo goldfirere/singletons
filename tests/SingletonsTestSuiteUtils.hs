@@ -4,6 +4,7 @@ module SingletonsTestSuiteUtils (
  , compileAndDumpStdTest
  , testCompileAndDumpGroup
  , ghcOpts
+ , cleanFiles
  ) where
 
 import Control.Exception  ( Exception, throw                    )
@@ -15,7 +16,7 @@ import System.FilePath    ( takeBaseName, pathSeparator         )
 import System.IO          ( IOMode(..), hGetContents, openFile  )
 import System.Process     ( CreateProcess(..), StdStream(..)
                           , createProcess, proc, waitForProcess
-                          , readProcess                         )
+                          , readProcess, callCommand            )
 import System.Directory   ( doesFileExist                       )
 import Test.Tasty         ( TestTree, testGroup                 )
 import Test.Tasty.Golden  ( goldenVsFileDiff                    )
@@ -244,3 +245,6 @@ runProcessWithOpts stdout program opts = do
        err <- hGetContents serr -- Text would be faster than String, but this is
                                 -- a corner case so probably not worth it.
        throw $ ProcessException ("Error when running " ++ program ++ ":\n" ++ err)
+
+cleanFiles :: IO ()
+cleanFiles = callCommand "rm -f tests/compile-and-dump/*/*.{hi,o}"
