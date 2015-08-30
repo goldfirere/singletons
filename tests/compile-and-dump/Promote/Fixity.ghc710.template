@@ -33,6 +33,8 @@ Promote/Fixity.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (:====$) l = (:====$$) l
     type family (:====) (a :: a) (a :: a) :: a where
       (:====) a _z_0123456789 = a
+    infix 4 :====
+    infix 4 :<=>
     type (:<=>$$$) (t :: a) (t :: a) = (:<=>) t t
     instance SuppressUnusedWarnings (:<=>$$) where
       suppressUnusedWarnings _
@@ -50,9 +52,3 @@ Promote/Fixity.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (:<=>$) l = (:<=>$$) l
     class kproxy ~ KProxy => PMyOrd (kproxy :: KProxy a) where
       type family (:<=>) (arg :: a) (arg :: a) :: Ordering
-
-Promote/Fixity.hs:0:0: Warning:
-    Cannot promote fixity declaration for ==== due to GHC bug #9066
-
-Promote/Fixity.hs:0:0: Warning:
-    Cannot promote fixity declaration for <=> due to GHC bug #9066

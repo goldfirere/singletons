@@ -250,11 +250,9 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
      -- want to subst for default instances, so we pass Map.empty
   default_decs <- mapM (promoteMethod Map.empty meth_sigs) (Map.toList defaults)
 
-  -- We can't promote fixity declarations until GHC #9066 bug is fixed. Right
-  -- now we drop fixity declarations and issue warnings.
-  -- let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
-  dropFixityDecls infix_decls
-  emitDecs [DClassD cxt' pClsName ptvbs [] (sig_decs ++ default_decs)]
+  let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
+  emitDecs [DClassD cxt' pClsName ptvbs []
+                    (sig_decs ++ default_decs ++ infix_decls')]
   return ( Map.singleton cls_name tvbNames
          , meth_sigs )
   where
@@ -391,10 +389,7 @@ promoteLetDecEnv :: (String, String) -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
                                      , lde_types = type_env
                                      , lde_infix = infix_decls }) = do
-  -- We can't promote fixity declarations until GHC #9066 bug is fixed. Right
-  -- now we drop fixity declarations and issue warnings.
-  -- let infix_decls'  = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
-  dropFixityDecls infix_decls
+  let infix_decls'  = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
 
     -- promote all the declarations, producing annotated declarations
   let (names, rhss) = unzip $ Map.toList value_env
@@ -402,7 +397,7 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
     <- fmap unzip3 $ zipWithM (promoteLetDecRHS type_env prefixes) names rhss
 
   emitDecs $ concat defun_decss
-  let decs = map payload_to_dec payloads
+  let decs = map payload_to_dec payloads ++ infix_decls'
 
     -- build the ALetDecEnv
   let let_dec_env' = LetDecEnv { lde_defns = Map.fromList $ zip names ann_rhss
@@ -416,18 +411,10 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
     payload_to_dec (Right (name, tvbs, m_ki, eqns)) =
       DClosedTypeFamilyD name tvbs m_ki eqns
 
-dropFixityDecls :: [(Fixity, Name)] -> PrM ()
-dropFixityDecls infix_decls =
-  mapM_ (\(_, n) -> qReportWarning ("Cannot promote fixity declaration for " ++
-                                    nameBase n ++ " due to GHC bug #9066") )
-                                   infix_decls
-
--- We can't promote fixity declarations until GHC #9066 bug is fixed. Until
--- then this function is not necessary.
--- promoteInfixDecl :: Fixity -> Name -> Maybe DDec
--- promoteInfixDecl fixity name
---  | isUpcase name = Nothing   -- no need to promote the decl
---  | otherwise     = Just $ DLetDec $ DInfixD fixity (promoteValNameLhs name)
+promoteInfixDecl :: Fixity -> Name -> Maybe DDec
+promoteInfixDecl fixity name
+ | isUpcase name = Nothing   -- no need to promote the decl
+ | otherwise     = Just $ DLetDec $ DInfixD fixity (promoteValNameLhs name)
 
 -- This function is used both to promote class method defaults and normal
 -- let bindings. Thus, it can't quite do all the work locally and returns
