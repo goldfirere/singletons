@@ -28,7 +28,7 @@ type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
   -- the relevant part of declarations
 data DataDecl  = DataDecl NewOrData Name [DTyVarBndr] [DCon] [Name]
 data ClassDecl = ClassDecl DCxt Name [DTyVarBndr] ULetDecEnv
-data InstDecl  = InstDecl Name [DType] [(Name, ULetDecRHS)]
+data InstDecl  = InstDecl DCxt Name [DType] [(Name, ULetDecRHS)]
 
 data PartitionedDecs =
   PDecs { pd_let_decs :: [DLetDec]
@@ -53,10 +53,10 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) =
 partitionDec (DClassD cxt name tvbs _fds decs) = do
   env <- concatMapM partitionClassDec decs
   return $ mempty { pd_class_decs = [ClassDecl cxt name tvbs env] }
-partitionDec (DInstanceD _cxt ty decs) = do
+partitionDec (DInstanceD cxt ty decs) = do
   defns <- liftM catMaybes $ mapM partitionInstanceDec decs
   (name, tys) <- split_app_tys [] ty
-  return $ mempty { pd_instance_decs = [InstDecl name tys defns] }
+  return $ mempty { pd_instance_decs = [InstDecl cxt name tys defns] }
   where
     split_app_tys acc (DAppT t1 t2) = split_app_tys (t2:acc) t1
     split_app_tys acc (DConT name)  = return (name, acc)

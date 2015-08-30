@@ -247,7 +247,8 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
   sig_decs     <- mapM (uncurry promote_sig) (Map.toList meth_sigs)
      -- the first arg to promoteMethod is a kind subst. We actually don't
      -- want to subst for default instances, so we pass Map.empty
-  default_decs <- mapM (promoteMethod Map.empty meth_sigs) (Map.toList defaults)
+  (default_decs, _ann_rhss)
+    <- mapAndUnzipM (promoteMethod Map.empty meth_sigs) (Map.toList defaults)
 
   let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
   emitDecs [DClassD cxt' pClsName ptvbs []
@@ -274,15 +275,17 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
                               ++ show name
       go (DConPr name)  = return $ DConPr (promoteClassName name)
 
-promoteInstanceDec :: Map Name DType -> InstDecl -> PrM ()
+-- returns (unpromoted method name, ALetDecRHS) pairs
+promoteInstanceDec :: Map Name DType -> InstDecl -> PrM [(Name, ALetDecRHS)]
 promoteInstanceDec meth_sigs
-                   (InstDecl cls_name inst_tys meths) = do
+                   (InstDecl _cxt cls_name inst_tys meths) = do
   cls_tvb_names <- lookup_cls_tvb_names
   inst_kis <- mapM promoteType inst_tys
   let subst = Map.fromList $ zip cls_tvb_names inst_kis
-  meths' <- mapM (promoteMethod subst meth_sigs) meths
+  (meths', ann_rhss) <- mapAndUnzipM (promoteMethod subst meth_sigs) meths
   emitDecs [DInstanceD [] (foldType (DConT pClsName)
                                     (map kindParam inst_kis)) meths']
+  return $ zip (map fst meths) ann_rhss
   where
     pClsName = promoteClassName cls_name
 
@@ -309,9 +312,9 @@ promoteInstanceDec meth_sigs
 
 promoteMethod :: Map Name DKind     -- instantiations for class tyvars
               -> Map Name DType     -- method types
-              -> (Name, ULetDecRHS) -> PrM DDec
+              -> (Name, ULetDecRHS) -> PrM (DDec, ALetDecRHS)
 promoteMethod subst sigs_map (meth_name, meth_rhs) = do
-  (payload, _defuns, _ann_rhs)
+  (payload, _defuns, ann_rhs)
     <- promoteLetDecRHS sigs_map noPrefix meth_name meth_rhs
   let eqns = payload_to_eqns payload
   (arg_kis, res_ki) <- lookup_meth_ty
@@ -323,7 +326,7 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   -- This (rather silly) optimization is to work around GHC#9151 so that
   -- the Enum class can promote.
   case eqns' of
-    [eqn'] -> return $ DTySynInstD proName eqn'
+    [eqn'] -> return (DTySynInstD proName eqn', ann_rhs)
     _      -> do
       let helperNameBase = case nameBase proName of
                              first:_ | not (isHsLetter first) -> "TFHelper"
@@ -332,10 +335,11 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
       emitDecs [DClosedTypeFamilyD helperName
                                    (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
                                    (Just meth_res_ki') eqns']
-      return $ DTySynInstD
+      return ( DTySynInstD
                  proName
                  (DTySynEqn (zipWith (DSigT . DVarT) meth_arg_tvs meth_arg_kis')
                             (foldType (DConT helperName) (map DVarT meth_arg_tvs)))
+             , ann_rhs )
   where
     proName = promoteValNameLhs meth_name
 

@@ -16,6 +16,7 @@ import Language.Haskell.TH.Syntax (Quasi(..))
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Promote.Monad ( promoteM, promoteM_ )
+import Data.Singletons.Promote.Type
 import Data.Singletons.Names
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
@@ -58,7 +59,7 @@ is that the eta-expansions and contractions have no runtime effect, especially
 because SLambda is a *newtype* instance, not a *data* instance.
 
 Note that to maintain the desired invariant, we must also be careful to eta-
-contract constructors. This is the point of buildLets.
+contract constructors. This is the point of buildDataLets.
 -}
 
 -- | Generate singleton definitions from a type that is already defined.
@@ -154,16 +155,21 @@ singTopLevelDecs locals decls = do
   when (not (null classes) || not (null insts)) $
     qReportError "Classes and instances may not yet be made into singletons."
 
-  dataDecls' <- promoteM_ locals $ promoteDataDecs datas
-  ((_, letDecEnv), letDecls') <- promoteM locals $
-                                 promoteLetDecs noPrefix letDecls
+  ((letDecEnv, ann_meths), promDecls) <- promoteM locals $ do
+    promoteDataDecs datas
+    (_, letDecEnv) <- promoteLetDecs noPrefix letDecls
+    ann_meths <- mapM (promoteInstanceDec Map.empty) insts
+    return (letDecEnv, ann_meths)
+
   singDecsM locals $ do
     let letBinds = concatMap buildDataLets datas
                 ++ concatMap buildMethLets classes
-    (newLetDecls, newDataDecls) <- bindLets letBinds $
-                                   singLetDecEnv letDecEnv $
-                                   concatMapM singDataD datas
-    return $ dataDecls' ++ letDecls' ++ (map DLetDec newLetDecls) ++ newDataDecls
+    (newLetDecls, newDecls) <- bindLets letBinds $
+                               singLetDecEnv letDecEnv $ do
+                                 newDataDecls <- concatMapM singDataD datas
+                                 newInstDecls <- zipWithM singInstD insts ann_meths
+                                 return (newDataDecls ++ newInstDecls)
+    return $ promDecls ++ (map DLetDec newLetDecls) ++ newDecls
 
 -- see comment at top of file
 buildDataLets :: DataDecl -> [(Name, DExp)]
@@ -187,6 +193,28 @@ buildMethLets :: ClassDecl -> [(Name, DExp)]
 buildMethLets = error "Cannot singletonize class definitions yet."
   -- FIXME!
 
+singInstD :: InstDecl -> [(Name, ALetDecRHS)] -> SgM DDec
+singInstD (InstDecl cxt inst_name inst_tys _unann_meths) ann_meths = do
+  cxt' <- mapM singPred cxt
+  inst_kis <- mapM promoteType inst_tys
+  meths <- concatMapM (uncurry sing_meth) ann_meths
+  return (DInstanceD cxt'
+                     (foldl DAppT (DConT s_inst_name) (map kindParam inst_kis))
+                     meths)
+
+  where
+    s_inst_name = singClassName inst_name
+
+    sing_meth :: Name -> ALetDecRHS -> SgM [DDec]
+    sing_meth name rhs = do
+      mb_info <- dsReify name
+      ty <- case mb_info of
+              Just (DVarI _ ty _ _) -> return ty
+              _ -> fail $ "Cannot find type of method " ++ show name
+      (s_ty, _num_args, tyvar_names) <- singType (promoteValRhs name) ty
+      meth' <- singLetDecRHS (Map.singleton name tyvar_names) name rhs
+      return $ map DLetDec [DSigD (promoteValNameLhs name) s_ty, meth']
+
 singLetDecEnv :: ALetDecEnv -> SgM a -> SgM ([DLetDec], a)
 singLetDecEnv (LetDecEnv { lde_defns = defns
                          , lde_types = types
@@ -197,7 +225,7 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
     <- mapAndUnzip3M (uncurry sing_ty_sig) (Map.toList proms)
   let infix_decls' = map (uncurry sing_infix_decl) infix_decls
   bindLets letBinds $ do
-    let_decs <- mapM (uncurry (sing_let_dec (Map.fromList tyvarNames))) (Map.toList defns)
+    let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList tyvarNames))) (Map.toList defns)
     thing <- thing_inside
     return (infix_decls' ++ typeSigs ++ let_decs, thing)
   where
@@ -247,16 +275,16 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
                                     (foldl apply prom_ty (map DVarT arg_names))]))
              , arg_names )
 
-    sing_let_dec :: Map Name [Name] -> Name -> ALetDecRHS -> SgM DLetDec
-    sing_let_dec _bound_names name (AValue prom num_arrows exp) =
-      DValD (DVarPa (singValName name)) <$>
-      (wrapUnSingFun num_arrows prom <$> singExp exp)
-    sing_let_dec bound_names name (AFunction prom_fun num_arrows clauses) =
-      let tyvar_names = case Map.lookup name bound_names of
-                          Nothing -> []
-                          Just ns -> ns
-      in
-      DFunD (singValName name) <$> mapM (singClause prom_fun num_arrows tyvar_names) clauses
+singLetDecRHS :: Map Name [Name] -> Name -> ALetDecRHS -> SgM DLetDec
+singLetDecRHS _bound_names name (AValue prom num_arrows exp) =
+  DValD (DVarPa (singValName name)) <$>
+  (wrapUnSingFun num_arrows prom <$> singExp exp)
+singLetDecRHS bound_names name (AFunction prom_fun num_arrows clauses) =
+  let tyvar_names = case Map.lookup name bound_names of
+                      Nothing -> []
+                      Just ns -> ns
+  in
+  DFunD (singValName name) <$> mapM (singClause prom_fun num_arrows tyvar_names) clauses
 
 singClause :: DType   -- the promoted function
            -> Int     -- the number of arrows in the type. If this is more
