@@ -49,6 +49,10 @@ $(promoteOnly [d|
   class  (Eq a) => Ord a  where
     compare              :: a -> a -> Ordering
     (<), (<=), (>), (>=) :: a -> a -> Bool
+    infix 4 <=
+    infix 4 <
+    infix 4 >
+    infix 4 >=
     max, min             :: a -> a -> a
 
     compare x y = if x == y then EQ
@@ -79,9 +83,13 @@ class (kproxy ~ 'KProxy, SEq ('KProxy :: KProxy a))
       => SOrd (kproxy :: KProxy a) where
   sCompare :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Compare x y)
   (%:<)    :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :< y)
+  infix 4 %:<
   (%:<=)   :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :<= y)
+  infix 4 %:<=
   (%:>)    :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :> y)
+  infix 4 %:>
   (%:>=)   :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :>= y)
+  infix 4 %:>=
   sMax      :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Max x y)
   sMin      :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Min x y)
 

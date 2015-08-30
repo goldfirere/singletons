@@ -37,18 +37,12 @@ import Data.Singletons.Names
 class kproxy ~ 'KProxy => PEq (kproxy :: KProxy a) where
   type (:==) (x :: a) (y :: a) :: Bool
   type (:/=) (x :: a) (y :: a) :: Bool
+  infix 4 :==
+  infix 4 :/=
 
   type (x :: a) :== (y :: a) = x == y
   type (x :: a) :/= (y :: a) = Not (x :== y)
 
--- need to spit out class and method annotations!
-$( do a <- newName "a"
-      classAnnot <- [| [a] |]
-      methAnnot  <- [| ([DVarK a, DVarK a], DConK boolName []) |]
-      return [ PragmaD $ AnnP (TypeAnnotation ''PEq)   classAnnot
-             , PragmaD $ AnnP (TypeAnnotation ''(:==)) methAnnot
-             , PragmaD $ AnnP (TypeAnnotation ''(:/=)) methAnnot ])
-               
 $(genDefunSymbols [''(:==), ''(:/=)])
 
 -- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
@@ -56,6 +50,7 @@ $(genDefunSymbols [''(:==), ''(:/=)])
 class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
   -- | Boolean equality on singletons
   (%:==) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :== b)
+  infix 4 %:==
 
   -- | Boolean disequality on singletons
   (%:/=) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :/= b)
@@ -63,5 +58,6 @@ class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
                     ((a :/= b) ~ Not (a :== b))
                  => Sing a -> Sing b -> Sing (a :/= b)
   a %:/= b = sNot (a %:== b)
+  infix 4 %:==
 
 $(singEqInstances basicTypes)

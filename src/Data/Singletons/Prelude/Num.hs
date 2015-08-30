@@ -42,6 +42,9 @@ $(promoteOnly [d|
   -- Minimal complete definition: all except 'negate' or @(-)@
   class  Num a  where
       (+), (-), (*)       :: a -> a -> a
+      infixl 6 +
+      infixl 6 -
+      infixl 6 *
       -- | Unary negation.
       negate              :: a -> a
       -- | Absolute value.
@@ -64,8 +67,11 @@ $(promoteOnly [d|
 
 class kproxy ~ 'KProxy => SNum (kproxy :: KProxy a) where
   (%:+) :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :+ y)
+  infixl 6 %:+
   (%:-) :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :- y)
+  infixl 6 %:-
   (%:*) :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :* y)
+  infixl 7 %:*
   sNegate :: forall (x :: a). Sing x -> Sing (Negate x)
   sAbs :: forall (x :: a). Sing x -> Sing (Abs x)
   sSignum :: forall (x :: a). Sing x -> Sing (Signum x)

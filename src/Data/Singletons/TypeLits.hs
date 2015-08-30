@@ -170,7 +170,7 @@ instance SNum ('KProxy :: KProxy Nat) where
       Disproved _ -> unsafeCoerce (sing :: Sing 1)
 
   sFromInteger x = x
-               
+
 -- Convenience functions
 
 -- | Given a singleton for @Nat@, call something requiring a
@@ -193,4 +193,5 @@ sError sstr = error (fromSing sstr)
 
 -- TODO: move this to a better home:
 type a :^ b = a ^ b
+infixr 8 :^
 $(genDefunSymbols [''(:^)])

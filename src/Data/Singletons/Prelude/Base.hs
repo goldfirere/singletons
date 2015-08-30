@@ -66,6 +66,7 @@ $(singletonsOnly [d|
   (++)                    :: [a] -> [a] -> [a]
   (++) []     ys          = ys
   (++) (x:xs) ys          = x : xs ++ ys
+  infixr 5 ++
 
   id                      :: a -> a
   id x                    =  x
@@ -75,6 +76,7 @@ $(singletonsOnly [d|
 
   (.)    :: (b -> c) -> (a -> b) -> a -> c
   (.) f g = \x -> f (g x)
+  infixr 9 .
 
   flip                    :: (a -> b -> c) -> b -> a -> c
   flip f x y              =  f y x
@@ -86,12 +88,14 @@ $(singletonsOnly [d|
   -- place to do it.
   seq :: a -> b -> b
   seq _ x = x
+  infixr 0 `seq`
  |])
 
 -- ($) is a special case, because its kind-inference data constructors
 -- clash with (:). See #29.
 type family (f :: TyFun a b -> *) $ (x :: a) :: b
 type instance f $ x = f @@ x
+infixr 0 $
 
 data ($$) :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *
 type instance Apply ($$) arg = ($$$) arg
@@ -104,9 +108,11 @@ type ($$$$) a b = ($) a b
 (%$) :: forall (f :: TyFun a b -> *) (x :: a).
         Sing f -> Sing x -> Sing (($$) @@ f @@ x)
 f %$ x = applySing f x
+infixr 0 %$
 
 type family (f :: TyFun a b -> *) $! (x :: a) :: b
 type instance f $! x = f @@ x
+infixr 0 $!
 
 data ($!$) :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *
 type instance Apply ($!$) arg = ($!$$) arg
@@ -119,3 +125,4 @@ type ($!$$$) a b = ($!) a b
 (%$!) :: forall (f :: TyFun a b -> *) (x :: a).
         Sing f -> Sing x -> Sing (($!$) @@ f @@ x)
 f %$! x = applySing f x
+infixr 0 %$!

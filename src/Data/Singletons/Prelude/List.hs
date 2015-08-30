@@ -455,6 +455,7 @@ $(singletonsOnly [d|
 
   (\\)                    :: (Eq a) => [a] -> [a] -> [a]
   (\\)                    =  foldl (flip delete)
+  infix 5 \\
 
   deleteBy                :: (a -> a -> Bool) -> a -> [a] -> [a]
   deleteBy _  _ []        = []

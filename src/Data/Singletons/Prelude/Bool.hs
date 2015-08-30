@@ -69,10 +69,12 @@ $(singletonsOnly [d|
   (&&) :: Bool -> Bool -> Bool
   False && _ = False
   True  && x = x
+  infixr 3 &&
 
   (||) :: Bool -> Bool -> Bool
   False || x = x
   True  || _ = True
+  infixr 2 ||
 
   not :: Bool -> Bool
   not False = True
