@@ -12,9 +12,8 @@ type level. It is an internal module to the singletons package.
 module Data.Singletons.Promote where
 
 import Language.Haskell.TH hiding ( Q, cxt )
-import Language.Haskell.TH.Syntax ( Quasi(..), lift )
+import Language.Haskell.TH.Syntax ( Quasi(..) )
 import Language.Haskell.TH.Desugar
-import Language.Haskell.TH.Desugar.Lift ()
 import Data.Singletons.Names
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Eq
@@ -28,6 +27,7 @@ import Prelude hiding (exp)
 import Control.Monad
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
+import Data.Maybe
 
 -- | Generate promoted definitions from a type that is already defined.
 -- This is generally only useful with classes.
@@ -228,21 +228,6 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
 
--- Note [Class variable annotations]
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
--- GHC bug #9081 means that class variables and associated type variables do *not*
--- always have the same uniques. Even worse, when these have been written out to
--- an interface file and slurped back in, the base names might even be different.
--- So, we use the facility of annotations to line up the method types with the class
--- header.
---
--- Every promoted class has an annotation which is a list of the names of the type
--- variables. Every promoted method has an annotation which is (argKs, resK) --
--- the kinds of the arguments and the return. These can be read back in with
--- reifyAnnotation, which gives enough information to do the kind substitution needed
--- in promoteMethod.
-
 promoteClassDec :: ClassDecl
                 -> PrM ( Map Name [Name]    -- from class names to tyvar lists
                        , Map Name DType )   -- returns method signatures
@@ -265,12 +250,6 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
      -- want to subst for default instances, so we pass Map.empty
   default_decs <- mapM (promoteMethod Map.empty meth_sigs) (Map.toList defaults)
 
-  -- See Note [Class variable annotations]
-  class_tyvars_exp <- runQ $ lift tvbNames
-                         -- annotations are too polymorphic -- need a type signature
-  class_tyvars_dexp <- dsExp (class_tyvars_exp `SigE` (ListT `AppT` (ConT ''Name)))
-  emitDecs [DPragmaD $ DAnnP (TypeAnnotation pClsName) class_tyvars_dexp]
-
   -- We can't promote fixity declarations until GHC #9066 bug is fixed. Right
   -- now we drop fixity declarations and issue warnings.
   -- let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
@@ -285,13 +264,6 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
       (argKs, resK) <- snocView `liftM` (mapM promoteType (snd $ unravel ty))
       args <- mapM (const $ qNewName "arg") argKs
       emitDecsM $ defunctionalize proName (map Just argKs) (Just resK)
-
-      -- See Note [Class variable annotations]
-      kind_exp  <- runQ $ lift (argKs, resK)
-      kind_dexp <- dsExp (kind_exp `SigE` (TupleT 2 `AppT`
-                                             (ListT `AppT` (ConT ''DKind)) `AppT`
-                                             (ConT ''DKind)))
-      emitDecs [DPragmaD $ DAnnP (TypeAnnotation proName) kind_dexp]
 
       return $ DFamilyD TypeFam proName
                         (zipWith DKindedTV args argKs)
@@ -321,11 +293,19 @@ promoteInstanceDec cls_tvb_env meth_sigs
     lookup_cls_tvb_names :: PrM [Name]
     lookup_cls_tvb_names = case Map.lookup cls_name cls_tvb_env of
       Nothing -> do
-        cls_tyvar_namess <- qReifyAnnotations (AnnLookupName pClsName)
-        case cls_tyvar_namess of
-          [cls_tyvar_names] -> return cls_tyvar_names
+        mb_info <- liftM2 orElse (dsReify pClsName) (dsReify cls_name)
+        case mb_info of
+          Just (DTyConI (DClassD _ _ tvbs _ _) _) -> return (map extract_kv_name tvbs)
           _ -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
       Just tvb_names -> return tvb_names
+
+    orElse :: Maybe a -> Maybe a -> Maybe a
+    orElse m1 _  | isJust m1 = m1
+    orElse _  m2             = m2
+
+    extract_kv_name :: DTyVarBndr -> Name
+    extract_kv_name (DKindedTV _ (DConK _kproxy [DVarK kv_name])) = kv_name
+    extract_kv_name tvb = error $ "Internal error: extract_kv_name\n" ++ show tvb
 
 -- promoteMethod needs to substitute in a method's kind because GHC does not do
 -- enough kind checking of associated types. See GHC#9063. When that bug is fixed,
@@ -375,16 +355,19 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
     lookup_meth_ty :: PrM ([DKind], DKind)
     lookup_meth_ty = case Map.lookup meth_name sigs_map of
       Nothing -> do
-          -- lookup the promoted name, just in case the term-level one
-          -- isn't defined
-        kind_infos <- qReifyAnnotations (AnnLookupName proName)
-        case kind_infos of
-          [kind_info] -> return kind_info
+        mb_info <- dsReify proName
+        case mb_info of
+          Just (DTyConI (DFamilyD _ _ tvbs mb_res_ki) _)
+            -> return ( map (default_to_star . extractTvbKind) tvbs
+                      , default_to_star mb_res_ki )
           _ -> fail $ "Cannot find type annotation for " ++ show proName
       Just ty -> do
         let (_, tys) = unravel ty
         kis <- mapM promoteType tys
         return $ snocView kis
+
+    default_to_star Nothing  = DStarK
+    default_to_star (Just k) = k
 
     subst_ki :: DKind -> DKind
     subst_ki (DForallK {}) =

@@ -177,7 +177,7 @@ uniquePrefixes alpha symb n = (alpha ++ n_str, symb ++ convert n_str)
                  _   -> error "non-digit in show #"
       in d' : convert ds
 
--- extract the kind from a TyVarBndr. Returns '*' by default.
+-- extract the kind from a TyVarBndr
 extractTvbKind :: DTyVarBndr -> Maybe DKind
 extractTvbKind (DPlainTV _) = Nothing
 extractTvbKind (DKindedTV _ k) = Just k
