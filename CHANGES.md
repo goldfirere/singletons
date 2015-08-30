@@ -20,6 +20,8 @@ functions that have constrained parameters now work.
 
 * Support for functions of arity 8 (instead of the old limit, 7).
 
+* Full support for fixity declarations.
+
 1.1.2.1
 -------
 
