@@ -133,7 +133,7 @@ singEqualityInstance desc@(_, className, _) name = do
   return $ decToTH eqInstance
 
 singInfo :: DsMonad q => DInfo -> q [DDec]
-singInfo (DTyConI dec Nothing) = do -- TODO: document this special case
+singInfo (DTyConI dec Nothing) =
   singTopLevelDecs [] [dec]
 singInfo (DTyConI {}) =
   fail "Singling of things with instances not yet supported" -- TODO: fix

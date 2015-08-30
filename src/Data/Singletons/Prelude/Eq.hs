@@ -28,20 +28,17 @@ import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Type.Equality
 
-import Language.Haskell.TH
-import Language.Haskell.TH.Desugar
-import Data.Singletons.Names
-
 -- | The promoted analogue of 'Eq'. If you supply no definition for '(:==)',
 -- then it defaults to a use of '(==)', from @Data.Type.Equality@.
 class kproxy ~ 'KProxy => PEq (kproxy :: KProxy a) where
   type (:==) (x :: a) (y :: a) :: Bool
   type (:/=) (x :: a) (y :: a) :: Bool
-  infix 4 :==
-  infix 4 :/=
 
   type (x :: a) :== (y :: a) = x == y
   type (x :: a) :/= (y :: a) = Not (x :== y)
+
+infix 4 :==
+infix 4 :/=
 
 $(genDefunSymbols [''(:==), ''(:/=)])
 
@@ -58,6 +55,6 @@ class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
                     ((a :/= b) ~ Not (a :== b))
                  => Sing a -> Sing b -> Sing (a :/= b)
   a %:/= b = sNot (a %:== b)
-  infix 4 %:==
+  infix 4 %:/=
 
 $(singEqInstances basicTypes)

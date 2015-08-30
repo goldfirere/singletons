@@ -161,8 +161,8 @@ promoteDecs decls = do
 
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
-  (cls_tvb_env, meth_sigs) <- concatMapM promoteClassDec classes
-  mapM_ (promoteInstanceDec cls_tvb_env meth_sigs) insts
+  meth_sigs <- concatMapM promoteClassDec classes
+  mapM_ (promoteInstanceDec meth_sigs) insts
   promoteDataDecs datas
 
 promoteDataDecs :: [DataDecl] -> PrM ()
@@ -229,8 +229,7 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   emitDecs ctorSyms
 
 promoteClassDec :: ClassDecl
-                -> PrM ( Map Name [Name]    -- from class names to tyvar lists
-                       , Map Name DType )   -- returns method signatures
+                -> PrM (Map Name DType)   -- returns method signatures
 promoteClassDec (ClassDecl cxt cls_name tvbs
                            (LetDecEnv { lde_defns = defaults
                                       , lde_types = meth_sigs
@@ -253,8 +252,7 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
   let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
   emitDecs [DClassD cxt' pClsName ptvbs []
                     (sig_decs ++ default_decs ++ infix_decls')]
-  return ( Map.singleton cls_name tvbNames
-         , meth_sigs )
+  return meth_sigs
   where
     promote_sig :: Name -> DType -> PrM DDec
     promote_sig name ty = do
@@ -276,8 +274,8 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
                               ++ show name
       go (DConPr name)  = return $ DConPr (promoteClassName name)
 
-promoteInstanceDec :: Map Name [Name] -> Map Name DType -> InstDecl -> PrM ()
-promoteInstanceDec cls_tvb_env meth_sigs
+promoteInstanceDec :: Map Name DType -> InstDecl -> PrM ()
+promoteInstanceDec meth_sigs
                    (InstDecl cls_name inst_tys meths) = do
   cls_tvb_names <- lookup_cls_tvb_names
   inst_kis <- mapM promoteType inst_tys
@@ -289,17 +287,15 @@ promoteInstanceDec cls_tvb_env meth_sigs
     pClsName = promoteClassName cls_name
 
     lookup_cls_tvb_names :: PrM [Name]
-    lookup_cls_tvb_names = case Map.lookup cls_name cls_tvb_env of
-      Nothing -> do
-        mb_info <- liftM2 orElse (dsReify pClsName) (dsReify cls_name)
-        case mb_info of
-          Just (DTyConI (DClassD _ _ tvbs _ _) _) -> return (map extract_kv_name tvbs)
-          _ -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
-      Just tvb_names -> return tvb_names
-
-    orElse :: Maybe a -> Maybe a -> Maybe a
-    orElse m1 _  | isJust m1 = m1
-    orElse _  m2             = m2
+    lookup_cls_tvb_names = do
+      mb_info <- dsReify pClsName
+      case mb_info of
+        Just (DTyConI (DClassD _ _ tvbs _ _) _) -> return (map extract_kv_name tvbs)
+        _ -> do
+          mb_info' <- dsReify cls_name
+          case mb_info' of
+            Just (DTyConI (DClassD _ _ tvbs _ _) _) -> return (map extractTvbName tvbs)
+            _ -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
 
     extract_kv_name :: DTyVarBndr -> Name
     extract_kv_name (DKindedTV _ (DConK _kproxy [DVarK kv_name])) = kv_name
