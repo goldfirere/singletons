@@ -322,24 +322,18 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   let meth_arg_kis' = map subst_ki arg_kis
       meth_res_ki'  = subst_ki res_ki
       eqns'         = map (apply_kis meth_arg_kis' meth_res_ki') eqns
-  -- if there is only one equation, it can't overlap. Don't use a helper.
-  -- This (rather silly) optimization is to work around GHC#9151 so that
-  -- the Enum class can promote.
-  case eqns' of
-    [eqn'] -> return (DTySynInstD proName eqn', ann_rhs)
-    _      -> do
-      let helperNameBase = case nameBase proName of
-                             first:_ | not (isHsLetter first) -> "TFHelper"
-                             alpha                            -> alpha
-      helperName <- newUniqueName helperNameBase
-      emitDecs [DClosedTypeFamilyD helperName
-                                   (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
-                                   (Just meth_res_ki') eqns']
-      return ( DTySynInstD
-                 proName
-                 (DTySynEqn (zipWith (DSigT . DVarT) meth_arg_tvs meth_arg_kis')
-                            (foldType (DConT helperName) (map DVarT meth_arg_tvs)))
-             , ann_rhs )
+      helperNameBase = case nameBase proName of
+                         first:_ | not (isHsLetter first) -> "TFHelper"
+                         alpha                            -> alpha
+  helperName <- newUniqueName helperNameBase
+  emitDecs [DClosedTypeFamilyD helperName
+                               (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
+                               (Just meth_res_ki') eqns']
+  return ( DTySynInstD
+             proName
+             (DTySynEqn (zipWith (DSigT . DVarT) meth_arg_tvs meth_arg_kis')
+                        (foldType (DConT helperName) (map DVarT meth_arg_tvs)))
+         , ann_rhs )
   where
     proName = promoteValNameLhs meth_name
 
