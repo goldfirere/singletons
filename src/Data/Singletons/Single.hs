@@ -42,7 +42,7 @@ of type (Sing t), for an appropriately-kinded t. This includes functions, which
 use the "SLambda" instance of Sing. To apply singleton functions, we use the
 applySing function.
 
-That, in an of itself, wouldn't be too hard, but it's really annoying from
+That, in and of itself, wouldn't be too hard, but it's really annoying from
 the user standpoint. After dutifully singling `map`, a user doesn't want to
 have to use two `applySing`s to actually use it. So, any let-bound identifier
 is eta-expanded so that the singled type has the same number of arrows as
@@ -167,8 +167,9 @@ singTopLevelDecs locals decls = do
     (newLetDecls, newDecls) <- bindLets letBinds $
                                singLetDecEnv letDecEnv $ do
                                  newDataDecls <- concatMapM singDataD datas
+                                 newClassDecls <- mapM singClassD classes
                                  newInstDecls <- zipWithM singInstD insts ann_meths
-                                 return (newDataDecls ++ newInstDecls)
+                                 return (newDataDecls ++ newClassDecls ++ newInstDecls)
     return $ promDecls ++ (map DLetDec newLetDecls) ++ newDecls
 
 -- see comment at top of file
@@ -189,9 +190,16 @@ buildDataLets (DataDecl _nd _name _tvbs cons _derivings) =
       [ (name, wrapSingFun 1 (promoteValRhs name) (DVarE $ singValName name))
       | name <- names ]
 
+-- see comment at top of file
 buildMethLets :: ClassDecl -> [(Name, DExp)]
-buildMethLets = error "Cannot singletonize class definitions yet."
-  -- FIXME!
+buildMethLets (ClassDecl _cxt _name _tvbs (LetDecEnv { lde_types = meth_sigs })) =
+  map mk_bind (Map.toList meth_sigs)
+  where
+    mk_bind (meth_name, meth_ty) =
+      let (_, tys) = unravel meth_ty in
+      ( meth_name
+      , wrapSingFun (length tys - 1) (promoteValRhs meth_name)
+                                     (DVarE $ singValName meth_name) )
 
 singInstD :: InstDecl -> [(Name, ALetDecRHS)] -> SgM DDec
 singInstD (InstDecl cxt inst_name inst_tys _unann_meths) ann_meths = do

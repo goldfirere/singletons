@@ -309,6 +309,7 @@ promoteInstanceDec meth_sigs
 -- the substitution code can be removed.
 -- Bug is fixed, but only in HEAD, naturally. When we stop supporting 7.8,
 -- this can be rewritten more cleanly, I imagine.
+-- UPDATE: GHC 7.10.2 didn't fully solve GHC#9063. Urgh.
 
 promoteMethod :: Map Name DKind     -- instantiations for class tyvars
               -> Map Name DType     -- method types
