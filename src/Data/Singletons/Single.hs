@@ -152,14 +152,12 @@ singTopLevelDecs locals decls = do
         , pd_instance_decs         = insts
         , pd_data_decs             = datas }    <- partitionDecs decls
 
-  when (not (null classes) || not (null insts)) $
-    qReportError "Classes and instances may not yet be made into singletons."
-
-  ((letDecEnv, ann_meths), promDecls) <- promoteM locals $ do
+  ((letDecEnv, insts'), promDecls) <- promoteM locals $ do
     promoteDataDecs datas
     (_, letDecEnv) <- promoteLetDecs noPrefix letDecls
-    ann_meths <- mapM (promoteInstanceDec Map.empty) insts
-    return (letDecEnv, ann_meths)
+    classes' <- mapM promoteClassDec
+    insts' <- mapM (promoteInstanceDec Map.empty) insts
+    return (letDecEnv, insts')
 
   singDecsM locals $ do
     let letBinds = concatMap buildDataLets datas
@@ -168,7 +166,7 @@ singTopLevelDecs locals decls = do
                                singLetDecEnv letDecEnv $ do
                                  newDataDecls <- concatMapM singDataD datas
                                  newClassDecls <- mapM singClassD classes
-                                 newInstDecls <- zipWithM singInstD insts ann_meths
+                                 newInstDecls <- mapM singInstD insts'
                                  return (newDataDecls ++ newClassDecls ++ newInstDecls)
     return $ promDecls ++ (map DLetDec newLetDecls) ++ newDecls
 
@@ -191,8 +189,8 @@ buildDataLets (DataDecl _nd _name _tvbs cons _derivings) =
       | name <- names ]
 
 -- see comment at top of file
-buildMethLets :: ClassDecl -> [(Name, DExp)]
-buildMethLets (ClassDecl _cxt _name _tvbs (LetDecEnv { lde_types = meth_sigs })) =
+buildMethLets :: AClassDecl -> [(Name, DExp)]
+buildMethLets (ClassDecl { cd_lde = LetDecEnv { lde_types = meth_sigs } }) =
   map mk_bind (Map.toList meth_sigs)
   where
     mk_bind (meth_name, meth_ty) =
@@ -201,8 +199,12 @@ buildMethLets (ClassDecl _cxt _name _tvbs (LetDecEnv { lde_types = meth_sigs }))
       , wrapSingFun (length tys - 1) (promoteValRhs meth_name)
                                      (DVarE $ singValName meth_name) )
 
-singInstD :: InstDecl -> [(Name, ALetDecRHS)] -> SgM DDec
-singInstD (InstDecl cxt inst_name inst_tys _unann_meths) ann_meths = do
+singClassD :: AClassDecl -> SgM DDec
+singClassD (ClassDecl cxt name tvbs (LetDecEnv { lde_
+
+singInstD :: AInstDecl -> SgM DDec
+singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
+                    , id_arg_tys = inst_tys, id_meths = ann_meths }) = do
   cxt' <- mapM singPred cxt
   inst_kis <- mapM promoteType inst_tys
   meths <- concatMapM (uncurry sing_meth) ann_meths

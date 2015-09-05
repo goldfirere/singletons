@@ -161,8 +161,9 @@ promoteDecs decls = do
 
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
-  meth_sigs <- concatMapM promoteClassDec classes
-  mapM_ (promoteInstanceDec meth_sigs) insts
+  mapM_ promoteClassDec classes
+  let all_meth_sigs = foldMap cd_meths classes
+  mapM_ (promoteInstanceDec all_meth_sigs) insts
   promoteDataDecs datas
 
 promoteDataDecs :: [DataDecl] -> PrM ()
@@ -228,12 +229,15 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
 
-promoteClassDec :: ClassDecl
-                -> PrM (Map Name DType)   -- returns method signatures
-promoteClassDec (ClassDecl cxt cls_name tvbs
-                           (LetDecEnv { lde_defns = defaults
-                                      , lde_types = meth_sigs
-                                      , lde_infix = infix_decls })) = do
+promoteClassDec :: UClassDecl
+                -> PrM AClassDecl
+promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
+                                , cd_name = cls_name
+                                , cd_tvbs = tvbs
+                                , cd_lde  = lde@LetDecEnv
+                                    { lde_defns = defaults
+                                    , lde_types = meth_sigs
+                                    , lde_infix = infix_decls } }) = do
   let tvbNames = map extractTvbName tvbs
       pClsName = promoteClassName cls_name
   kproxies <- mapM (const $ qNewName "kproxy") tvbs
@@ -253,7 +257,7 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
   let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
   emitDecs [DClassD cxt' pClsName ptvbs []
                     (sig_decs ++ default_decs ++ infix_decls')]
-  return meth_sigs
+  return (decl { cd_lde = lde { lde_proms =
   where
     promote_sig :: Name -> DType -> PrM DDec
     promote_sig name ty = do
@@ -276,16 +280,18 @@ promoteClassDec (ClassDecl cxt cls_name tvbs
       go (DConPr name)  = return $ DConPr (promoteClassName name)
 
 -- returns (unpromoted method name, ALetDecRHS) pairs
-promoteInstanceDec :: Map Name DType -> InstDecl -> PrM [(Name, ALetDecRHS)]
+promoteInstanceDec :: Map Name DType -> UInstDecl -> PrM AInstDecl
 promoteInstanceDec meth_sigs
-                   (InstDecl _cxt cls_name inst_tys meths) = do
+                   decl@(InstDecl { id_name     = cls_name
+                                  , id_arg_tys  = inst_tys
+                                  , id_meths    = meths }) = do
   cls_tvb_names <- lookup_cls_tvb_names
   inst_kis <- mapM promoteType inst_tys
   let subst = Map.fromList $ zip cls_tvb_names inst_kis
   (meths', ann_rhss) <- mapAndUnzipM (promoteMethod subst meth_sigs) meths
   emitDecs [DInstanceD [] (foldType (DConT pClsName)
                                     (map kindParam inst_kis)) meths']
-  return $ zip (map fst meths) ann_rhss
+  return (decl { id_meths = zip (map fst meths) ann_rhss })
   where
     pClsName = promoteClassName cls_name
 

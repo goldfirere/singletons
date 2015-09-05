@@ -26,14 +26,28 @@ import Control.Monad
 type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
 
   -- the relevant part of declarations
-data DataDecl  = DataDecl NewOrData Name [DTyVarBndr] [DCon] [Name]
-data ClassDecl = ClassDecl DCxt Name [DTyVarBndr] ULetDecEnv
-data InstDecl  = InstDecl DCxt Name [DType] [(Name, ULetDecRHS)]
+data DataDecl      = DataDecl NewOrData Name [DTyVarBndr] [DCon] [Name]
+
+data ClassDecl ann = ClassDecl { cd_cxt  :: DCxt
+                               , cd_name :: Name
+                               , cd_tvbs :: [DTyVarBndr]
+                               , cd_lde  :: LetDecEnv ann }
+
+data InstDecl  ann = InstDecl { id_cxt     :: DCxt
+                              , id_name    :: Name
+                              , id_arg_tys :: [DType]
+                              , id_meths   :: [(Name, LetDecRHS ann)] }
+
+type UClassDecl = ClassDecl Unannotated
+type UInstDecl  = InstDecl Unannotated
+
+type AClassDecl = ClassDecl Annotated
+type AInstDecl  = InstDecl Annotated
 
 data PartitionedDecs =
   PDecs { pd_let_decs :: [DLetDec]
-        , pd_class_decs :: [ClassDecl]
-        , pd_instance_decs :: [InstDecl]
+        , pd_class_decs :: [UClassDecl]
+        , pd_instance_decs :: [UInstDecl]
         , pd_data_decs :: [DataDecl]
         }
 
@@ -52,11 +66,17 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) =
   return $ mempty { pd_data_decs = [DataDecl nd name tvbs cons derivings] }
 partitionDec (DClassD cxt name tvbs _fds decs) = do
   env <- concatMapM partitionClassDec decs
-  return $ mempty { pd_class_decs = [ClassDecl cxt name tvbs env] }
+  return $ mempty { pd_class_decs = [ClassDecl { cd_cxt  = cxt
+                                               , cd_name = name
+                                               , cd_tvbs = tvbs
+                                               , cd_lde  = env }] }
 partitionDec (DInstanceD cxt ty decs) = do
   defns <- liftM catMaybes $ mapM partitionInstanceDec decs
   (name, tys) <- split_app_tys [] ty
-  return $ mempty { pd_instance_decs = [InstDecl cxt name tys defns] }
+  return $ mempty { pd_instance_decs = [InstDecl { id_cxt = cxt
+                                                 , id_name = name
+                                                 , id_arg_tys = tys
+                                                 , id_meths = defns }] }
   where
     split_app_tys acc (DAppT t1 t2) = split_app_tys (t2:acc) t1
     split_app_tys acc (DConT name)  = return (name, acc)
@@ -126,16 +146,22 @@ type family IfAnn (ann :: AnnotationFlag) (yes :: k) (no :: k) :: k
 type instance IfAnn Annotated   yes no = yes
 type instance IfAnn Unannotated yes no = no
 
-data ALetDecRHS = AFunction DType  -- promote function (unapplied)
-                            Int    -- number of arrows in type
-                            [ADClause]
-                | AValue DType -- promoted exp
-                         Int   -- number of arrows in type
-                         ADExp
-data ULetDecRHS = UFunction [DClause]
-                | UValue DExp
+data family LetDecRHS (ann :: AnnotationFlag)
+data instance LetDecRHS Annotated
+  = AFunction DType  -- promote function (unapplied)
+    Int    -- number of arrows in type
+    [ADClause]
+  | AValue DType -- promoted exp
+    Int   -- number of arrows in type
+    ADExp
+data instance LetDecRHS Unannotated = UFunction [DClause]
+                                    | UValue DExp
+
+type ALetDecRHS = LetDecRHS Annotated
+type ULetDecRHS = LetDecRHS Unannotated
+
 data LetDecEnv ann = LetDecEnv
-                   { lde_defns :: Map Name (IfAnn ann ALetDecRHS ULetDecRHS)
+                   { lde_defns :: Map Name (LetDecRHS ann)
                    , lde_types :: Map Name DType   -- type signatures
                    , lde_infix :: [(Fixity, Name)] -- infix declarations
                    , lde_proms :: IfAnn ann (Map Name DType) () -- possibly, promotions
