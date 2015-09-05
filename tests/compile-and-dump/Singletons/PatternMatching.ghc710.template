@@ -35,14 +35,14 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type TupleSym0 = Tuple
     type ComplexSym0 = Complex
     type PrSym0 = Pr
-    type AList =
-        Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) '[]))
-    type Tuple =
-        Apply (Apply (Apply Tuple3Sym0 FalseSym0) (Apply JustSym0 ZeroSym0)) TrueSym0
-    type Complex =
-        Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
-    type Pr =
-        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) ZeroSym0) '[])
+    type family AList where
+      AList = Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) '[]))
+    type family Tuple where
+      Tuple = Apply (Apply (Apply Tuple3Sym0 FalseSym0) (Apply JustSym0 ZeroSym0)) TrueSym0
+    type family Complex where
+      Complex = Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
+    type family Pr where
+      Pr = Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) ZeroSym0) '[])
     sAList :: Sing AListSym0
     sTuple :: Sing TupleSym0
     sComplex :: Sing ComplexSym0
@@ -139,7 +139,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym1 arg) =>
         Let0123456789Scrutinee_0123456789Sym0KindInference
     type instance Apply Let0123456789Scrutinee_0123456789Sym0 l = Let0123456789Scrutinee_0123456789Sym1 l
-    type Let0123456789Scrutinee_0123456789 x = x
+    type family Let0123456789Scrutinee_0123456789 x where
+      Let0123456789Scrutinee_0123456789 x = x
     type family Case_0123456789 x t where
       Case_0123456789 x _z_0123456789 = Tuple0Sym0
     type Let0123456789TSym2 t t = Let0123456789T t t
@@ -157,7 +158,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789TSym0 arg) ~ KindOf (Let0123456789TSym1 arg) =>
         Let0123456789TSym0KindInference
     type instance Apply Let0123456789TSym0 l = Let0123456789TSym1 l
-    type Let0123456789T x y = Apply (Apply Tuple2Sym0 x) y
+    type family Let0123456789T x y where
+      Let0123456789T x y = Apply (Apply Tuple2Sym0 x) y
     type Let0123456789Scrutinee_0123456789Sym2 t t =
         Let0123456789Scrutinee_0123456789 t t
     instance SuppressUnusedWarnings Let0123456789Scrutinee_0123456789Sym1 where
@@ -178,7 +180,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym1 arg) =>
         Let0123456789Scrutinee_0123456789Sym0KindInference
     type instance Apply Let0123456789Scrutinee_0123456789Sym0 l = Let0123456789Scrutinee_0123456789Sym1 l
-    type Let0123456789Scrutinee_0123456789 x y = Let0123456789TSym2 x y
+    type family Let0123456789Scrutinee_0123456789 x y where
+      Let0123456789Scrutinee_0123456789 x y = Let0123456789TSym2 x y
     type family Case_0123456789 x y a b arg_0123456789 t where
       Case_0123456789 x y a b arg_0123456789 _z_0123456789 = a
     type family Lambda_0123456789 x y a b t where
@@ -331,20 +334,34 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
              y) = Case_0123456789 x y (Let0123456789Scrutinee_0123456789Sym2 x y)
     type family Foo1 (a :: (a, b)) :: a where
       Foo1 '(x, y) = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
-    type Lsz = (Case_0123456789 X_0123456789Sym0 :: Nat)
-    type Blimy = Case_0123456789 X_0123456789Sym0
-    type Tf = Case_0123456789 X_0123456789Sym0
-    type Tjz = Case_0123456789 X_0123456789Sym0
-    type Tt = Case_0123456789 X_0123456789Sym0
-    type Jz = Case_0123456789 X_0123456789Sym0
-    type Zz = Case_0123456789 X_0123456789Sym0
-    type Fls = (Case_0123456789 X_0123456789Sym0 :: Bool)
-    type Sz = Case_0123456789 X_0123456789Sym0
-    type Lz = Case_0123456789 X_0123456789Sym0
-    type X_0123456789 = PrSym0
-    type X_0123456789 = ComplexSym0
-    type X_0123456789 = TupleSym0
-    type X_0123456789 = AListSym0
+    type family Lsz :: Nat where
+      Lsz = Case_0123456789 X_0123456789Sym0
+    type family Blimy where
+      Blimy = Case_0123456789 X_0123456789Sym0
+    type family Tf where
+      Tf = Case_0123456789 X_0123456789Sym0
+    type family Tjz where
+      Tjz = Case_0123456789 X_0123456789Sym0
+    type family Tt where
+      Tt = Case_0123456789 X_0123456789Sym0
+    type family Jz where
+      Jz = Case_0123456789 X_0123456789Sym0
+    type family Zz where
+      Zz = Case_0123456789 X_0123456789Sym0
+    type family Fls :: Bool where
+      Fls = Case_0123456789 X_0123456789Sym0
+    type family Sz where
+      Sz = Case_0123456789 X_0123456789Sym0
+    type family Lz where
+      Lz = Case_0123456789 X_0123456789Sym0
+    type family X_0123456789 where
+      X_0123456789 = PrSym0
+    type family X_0123456789 where
+      X_0123456789 = ComplexSym0
+    type family X_0123456789 where
+      X_0123456789 = TupleSym0
+    type family X_0123456789 where
+      X_0123456789 = AListSym0
     sSilly :: forall (t :: a). Sing t -> Sing (Apply SillySym0 t)
     sFoo2 :: forall (t :: (a, b)). Sing t -> Sing (Apply Foo2Sym0 t)
     sFoo1 :: forall (t :: (a, b)). Sing t -> Sing (Apply Foo1Sym0 t)

@@ -219,12 +219,12 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789X_0123456789Sym0 arg) ~ KindOf (Let0123456789X_0123456789Sym1 arg) =>
         Let0123456789X_0123456789Sym0KindInference
     type instance Apply Let0123456789X_0123456789Sym0 l = Let0123456789X_0123456789Sym1 l
-    type Let0123456789Y x =
-        Case_0123456789 x (Let0123456789X_0123456789Sym1 x)
-    type Let0123456789Z x =
-        Case_0123456789 x (Let0123456789X_0123456789Sym1 x)
-    type Let0123456789X_0123456789 x =
-        Apply (Apply Tuple2Sym0 (Apply SuccSym0 x)) x
+    type family Let0123456789Y x where
+      Let0123456789Y x = Case_0123456789 x (Let0123456789X_0123456789Sym1 x)
+    type family Let0123456789Z x where
+      Let0123456789Z x = Case_0123456789 x (Let0123456789X_0123456789Sym1 x)
+    type family Let0123456789X_0123456789 x where
+      Let0123456789X_0123456789 x = Apply (Apply Tuple2Sym0 (Apply SuccSym0 x)) x
     type Let0123456789BarSym1 t = Let0123456789Bar t
     instance SuppressUnusedWarnings Let0123456789BarSym0 where
       suppressUnusedWarnings _
@@ -234,7 +234,8 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789BarSym0 arg) ~ KindOf (Let0123456789BarSym1 arg) =>
         Let0123456789BarSym0KindInference
     type instance Apply Let0123456789BarSym0 l = Let0123456789BarSym1 l
-    type Let0123456789Bar x = (x :: a)
+    type family Let0123456789Bar x :: a where
+      Let0123456789Bar x = x
     type (:<<<%%%%%%%%%%:+$$$$) t (t :: Nat) (t :: Nat) =
         (:<<<%%%%%%%%%%:+) t t t
     instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$$$) where
@@ -292,7 +293,8 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply (:<<<%%%%%%%%%%:+$) arg) ~ KindOf ((:<<<%%%%%%%%%%:+$$) arg) =>
         :<<<%%%%%%%%%%:+$###
     type instance Apply (:<<<%%%%%%%%%%:+$) l = (:<<<%%%%%%%%%%:+$$) l
-    type Let0123456789Z x = (x :: Nat)
+    type family Let0123456789Z x :: Nat where
+      Let0123456789Z x = x
     type family (:<<<%%%%%%%%%%:+) x (a :: Nat) (a :: Nat) :: Nat where
       (:<<<%%%%%%%%%%:+) x Zero m = m
       (:<<<%%%%%%%%%%:+) x (Succ n) m = Apply SuccSym0 (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) n) m)
@@ -393,8 +395,8 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789ZSym0 arg) ~ KindOf (Let0123456789ZSym1 arg) =>
         Let0123456789ZSym0KindInference
     type instance Apply Let0123456789ZSym0 l = Let0123456789ZSym1 l
-    type Let0123456789Z x =
-        (Apply (Apply Lambda_0123456789Sym0 x) ZeroSym0 :: Nat)
+    type family Let0123456789Z x :: Nat where
+      Let0123456789Z x = Apply (Apply Lambda_0123456789Sym0 x) ZeroSym0
     type Let0123456789XSym1 t = Let0123456789X t
     instance SuppressUnusedWarnings Let0123456789XSym0 where
       suppressUnusedWarnings _
@@ -403,7 +405,8 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789XSym0 arg) ~ KindOf (Let0123456789XSym1 arg) =>
         Let0123456789XSym0KindInference
     type instance Apply Let0123456789XSym0 l = Let0123456789XSym1 l
-    type Let0123456789X x = (ZeroSym0 :: Nat)
+    type family Let0123456789X x :: Nat where
+      Let0123456789X x = ZeroSym0
     type Let0123456789FSym2 t (t :: Nat) = Let0123456789F t t
     instance SuppressUnusedWarnings Let0123456789FSym1 where
       suppressUnusedWarnings _
@@ -429,7 +432,8 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789ZSym0 arg) ~ KindOf (Let0123456789ZSym1 arg) =>
         Let0123456789ZSym0KindInference
     type instance Apply Let0123456789ZSym0 l = Let0123456789ZSym1 l
-    type Let0123456789Z x = (Apply (Let0123456789FSym1 x) x :: Nat)
+    type family Let0123456789Z x :: Nat where
+      Let0123456789Z x = Apply (Let0123456789FSym1 x) x
     type Let0123456789ZSym2 t t = Let0123456789Z t t
     instance SuppressUnusedWarnings Let0123456789ZSym1 where
       suppressUnusedWarnings _
@@ -445,7 +449,8 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789ZSym0 arg) ~ KindOf (Let0123456789ZSym1 arg) =>
         Let0123456789ZSym0KindInference
     type instance Apply Let0123456789ZSym0 l = Let0123456789ZSym1 l
-    type Let0123456789Z x y = (Apply SuccSym0 y :: Nat)
+    type family Let0123456789Z x y :: Nat where
+      Let0123456789Z x y = Apply SuccSym0 y
     type Let0123456789FSym2 t (t :: Nat) = Let0123456789F t t
     instance SuppressUnusedWarnings Let0123456789FSym1 where
       suppressUnusedWarnings _
@@ -488,11 +493,14 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789YSym0 arg) ~ KindOf (Let0123456789YSym1 arg) =>
         Let0123456789YSym0KindInference
     type instance Apply Let0123456789YSym0 l = Let0123456789YSym1 l
-    type Let0123456789Y x = (Apply SuccSym0 x :: Nat)
+    type family Let0123456789Y x :: Nat where
+      Let0123456789Y x = Apply SuccSym0 x
     type Let0123456789YSym0 = Let0123456789Y
     type Let0123456789ZSym0 = Let0123456789Z
-    type Let0123456789Y = Apply SuccSym0 ZeroSym0
-    type Let0123456789Z = Apply SuccSym0 Let0123456789YSym0
+    type family Let0123456789Y where
+      Let0123456789Y = Apply SuccSym0 ZeroSym0
+    type family Let0123456789Z where
+      Let0123456789Z = Apply SuccSym0 Let0123456789YSym0
     type Let0123456789YSym1 t = Let0123456789Y t
     instance SuppressUnusedWarnings Let0123456789YSym0 where
       suppressUnusedWarnings _
@@ -501,7 +509,8 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789YSym0 arg) ~ KindOf (Let0123456789YSym1 arg) =>
         Let0123456789YSym0KindInference
     type instance Apply Let0123456789YSym0 l = Let0123456789YSym1 l
-    type Let0123456789Y x = (Apply SuccSym0 ZeroSym0 :: Nat)
+    type family Let0123456789Y x :: Nat where
+      Let0123456789Y x = Apply SuccSym0 ZeroSym0
     type Foo14Sym1 (t :: Nat) = Foo14 t
     instance SuppressUnusedWarnings Foo14Sym0 where
       suppressUnusedWarnings _
@@ -641,7 +650,8 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       Foo4 x = Apply (Let0123456789FSym1 x) x
     type family Foo3 (a :: Nat) :: Nat where
       Foo3 x = Let0123456789YSym1 x
-    type Foo2 = (Let0123456789ZSym0 :: Nat)
+    type family Foo2 :: Nat where
+      Foo2 = Let0123456789ZSym0
     type family Foo1 (a :: Nat) :: Nat where
       Foo1 x = Let0123456789YSym1 x
     sFoo14 :: forall (t :: Nat). Sing t -> Sing (Apply Foo14Sym0 t)

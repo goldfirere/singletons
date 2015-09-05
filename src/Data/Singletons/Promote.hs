@@ -321,9 +321,8 @@ promoteMethod :: Map Name DKind     -- instantiations for class tyvars
               -> Map Name DType     -- method types
               -> (Name, ULetDecRHS) -> PrM (DDec, ALetDecRHS)
 promoteMethod subst sigs_map (meth_name, meth_rhs) = do
-  (payload, _defuns, ann_rhs)
+  ((_, _, _, eqns), _defuns, ann_rhs)
     <- promoteLetDecRHS sigs_map noPrefix meth_name meth_rhs
-  let eqns = payload_to_eqns payload
   (arg_kis, res_ki) <- lookup_meth_ty
   meth_arg_tvs <- mapM (const $ qNewName "a") arg_kis
   let meth_arg_kis' = map subst_ki arg_kis
@@ -343,13 +342,6 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
          , ann_rhs )
   where
     proName = promoteValNameLhs meth_name
-
-    payload_to_eqns (Left (_name, tvbs, rhs)) =
-      [DTySynEqn (map tvb_to_ty tvbs) rhs]
-    payload_to_eqns (Right (_name, _tvbs, _res_ki, eqns)) = eqns
-
-    tvb_to_ty (DPlainTV n)     = DVarT n
-    tvb_to_ty (DKindedTV n ki) = DVarT n `DSigT` ki
 
     lookup_meth_ty :: PrM ([DKind], DKind)
     lookup_meth_ty = case Map.lookup meth_name sigs_map of
@@ -408,9 +400,7 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
 
   return (decs, let_dec_env')
   where
-    payload_to_dec (Left  (name, tvbs, ty)) = DTySynD name tvbs ty
-    payload_to_dec (Right (name, tvbs, m_ki, eqns)) =
-      DClosedTypeFamilyD name tvbs m_ki eqns
+    payload_to_dec (name, tvbs, m_ki, eqns) = DClosedTypeFamilyD name tvbs m_ki eqns
 
 promoteInfixDecl :: Fixity -> Name -> Maybe DDec
 promoteInfixDecl fixity name
@@ -424,26 +414,24 @@ promoteLetDecRHS :: Map Name DType       -- local type env't
                  -> (String, String)     -- let-binding prefixes
                  -> Name                 -- name of the thing being promoted
                  -> ULetDecRHS           -- body of the thing
-                 -> PrM ( Either
-                            (Name, [DTyVarBndr], DType) -- "type synonym"
-                            (Name, [DTyVarBndr], Maybe DKind, [DTySynEqn])
-                                                        -- "type family"
+                 -> PrM ( (Name, [DTyVarBndr], Maybe DKind, [DTySynEqn]) -- "type family"
                         , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
 promoteLetDecRHS type_env prefixes name (UValue exp) = do
-  (res_kind, mk_rhs, num_arrows)
+  (res_kind, num_arrows)
     <- case Map.lookup name type_env of
-         Nothing -> return (Nothing, id, 0)
+         Nothing -> return (Nothing, 0)
          Just ty -> do
            ki <- promoteType ty
-           return (Just ki, (`DSigT` ki), countArgs ty)
+           return (Just ki, countArgs ty)
   case num_arrows of
     0 -> do
       all_locals <- allLocals
       (exp', ann_exp) <- promoteExp exp
       let proName = promoteValNameLhsPrefix prefixes name
       defuns <- defunctionalize proName (map (const Nothing) all_locals) res_kind
-      return ( Left (proName, map DPlainTV all_locals, mk_rhs exp')
+      return ( ( proName, map DPlainTV all_locals, res_kind
+               , [DTySynEqn (map DVarT all_locals) exp'] )
              , defuns
              , AValue (foldType (DConT proName) (map DVarT all_locals))
                       num_arrows ann_exp )
@@ -478,7 +466,7 @@ promoteLetDecRHS type_env prefixes name (UFunction clauses) = do
   prom_fun <- lookupVarE name
   let args     = zipWith inferMaybeKindTV tyvarNames m_argKs
       all_args = local_tvbs ++ args
-  return ( Right (proName, all_args, m_resK, eqns)
+  return ( (proName, all_args, m_resK, eqns)
          , defun_decs
          , AFunction prom_fun ty_num_args ann_clauses )
 

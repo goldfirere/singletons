@@ -27,7 +27,7 @@ $(singletons [d|
   tup p@(_, _) = p
 
   foo :: [Nat] -> [Nat]
-  foo p@[]    = p
-  foo p@[_]   = p
-  foo p@(_:_) = p
+  foo p@[]      = p
+  foo p@[_]     = p
+  foo p@(_:_:_) = p
  |])
