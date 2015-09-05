@@ -18,7 +18,7 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     type family Head (a :: [a]) :: a where
       Head ((:) a _z_0123456789) = a
       Head '[] = Apply ErrorSym0 "Data.Singletons.List.head: empty list"
-    sHead :: forall (t :: [a]). Sing t -> Sing (Apply HeadSym0 t)
+    sHead :: forall (t :: [a]). Sing t -> Sing (Apply HeadSym0 t :: a)
     sHead (SCons sA _s_z_0123456789)
       = let
           lambda ::

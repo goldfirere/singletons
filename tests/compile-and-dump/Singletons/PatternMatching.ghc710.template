@@ -85,7 +85,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
           (applySing
              (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) SZero) SNil)
     data instance Sing (z :: Pair a b)
-      = forall (n :: a) (n :: b). z ~ Pair n n => SPair (Sing n) (Sing n)
+      = forall (n :: a) (n :: b). z ~ Pair n n =>
+        SPair (Sing (n :: a)) (Sing (n :: b))
     type SPair (z :: Pair a b) = Sing z
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b)) =>
@@ -362,17 +363,19 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       X_0123456789 = TupleSym0
     type family X_0123456789 where
       X_0123456789 = AListSym0
-    sSilly :: forall (t :: a). Sing t -> Sing (Apply SillySym0 t)
-    sFoo2 :: forall (t :: (a, b)). Sing t -> Sing (Apply Foo2Sym0 t)
-    sFoo1 :: forall (t :: (a, b)). Sing t -> Sing (Apply Foo1Sym0 t)
-    sLsz :: Sing LszSym0
+    sSilly :: forall (t :: a). Sing t -> Sing (Apply SillySym0 t :: ())
+    sFoo2 ::
+      forall (t :: (a, b)). Sing t -> Sing (Apply Foo2Sym0 t :: a)
+    sFoo1 ::
+      forall (t :: (a, b)). Sing t -> Sing (Apply Foo1Sym0 t :: a)
+    sLsz :: Sing (LszSym0 :: Nat)
     sBlimy :: Sing BlimySym0
     sTf :: Sing TfSym0
     sTjz :: Sing TjzSym0
     sTt :: Sing TtSym0
     sJz :: Sing JzSym0
     sZz :: Sing ZzSym0
-    sFls :: Sing FlsSym0
+    sFls :: Sing (FlsSym0 :: Bool)
     sSz :: Sing SzSym0
     sLz :: Sing LzSym0
     sX_0123456789 :: Sing X_0123456789Sym0

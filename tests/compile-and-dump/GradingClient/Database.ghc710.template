@@ -34,7 +34,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply SuccSym0 l = SuccSym1 l
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
-        forall (n :: Nat). z ~ Succ n => SSucc (Sing n)
+        forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
     type SNat (z :: Nat) = Sing z
     instance SingKind (KProxy :: KProxy Nat) where
       type DemoteRep (KProxy :: KProxy Nat) = Nat
@@ -418,19 +418,19 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Append (Sch s1) (Sch s2) = Apply SchSym0 (Apply (Apply (:++$) s1) s2)
     sLookup ::
       forall (t :: [AChar]) (t :: Schema).
-      Sing t -> Sing t -> Sing (Apply (Apply LookupSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply LookupSym0 t) t :: U)
     sOccurs ::
       forall (t :: [AChar]) (t :: Schema).
-      Sing t -> Sing t -> Sing (Apply (Apply OccursSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply OccursSym0 t) t :: Bool)
     sAttrNotIn ::
       forall (t :: Attribute) (t :: Schema).
-      Sing t -> Sing t -> Sing (Apply (Apply AttrNotInSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply AttrNotInSym0 t) t :: Bool)
     sDisjoint ::
       forall (t :: Schema) (t :: Schema).
-      Sing t -> Sing t -> Sing (Apply (Apply DisjointSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply DisjointSym0 t) t :: Bool)
     sAppend ::
       forall (t :: Schema) (t :: Schema).
-      Sing t -> Sing t -> Sing (Apply (Apply AppendSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply AppendSym0 t) t :: Schema)
     sLookup _s_z_0123456789 (SSch SNil)
       = let
           lambda ::
@@ -589,7 +589,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       = z ~ BOOL => SBOOL |
         z ~ STRING => SSTRING |
         z ~ NAT => SNAT |
-        forall (n :: U) (n :: Nat). z ~ VEC n n => SVEC (Sing n) (Sing n)
+        forall (n :: U) (n :: Nat). z ~ VEC n n =>
+        SVEC (Sing (n :: U)) (Sing (n :: Nat))
     type SU (z :: U) = Sing z
     instance SingKind (KProxy :: KProxy U) where
       type DemoteRep (KProxy :: KProxy U) = U
@@ -4733,7 +4734,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (%~) SCZ SCZ = Proved Refl
     data instance Sing (z :: Attribute)
       = forall (n :: [AChar]) (n :: U). z ~ Attr n n =>
-        SAttr (Sing n) (Sing n)
+        SAttr (Sing (n :: [AChar])) (Sing (n :: U))
     type SAttribute (z :: Attribute) = Sing z
     instance SingKind (KProxy :: KProxy Attribute) where
       type DemoteRep (KProxy :: KProxy Attribute) = Attribute
@@ -4746,7 +4747,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SAttr c c) }
     data instance Sing (z :: Schema)
-      = forall (n :: [Attribute]). z ~ Sch n => SSch (Sing n)
+      = forall (n :: [Attribute]). z ~ Sch n =>
+        SSch (Sing (n :: [Attribute]))
     type SSchema (z :: Schema) = Sing z
     instance SingKind (KProxy :: KProxy Schema) where
       type DemoteRep (KProxy :: KProxy Schema) = Schema

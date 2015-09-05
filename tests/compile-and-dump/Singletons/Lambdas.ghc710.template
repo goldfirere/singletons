@@ -505,30 +505,32 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
       Foo1 x a_0123456789 = Apply (Apply (Apply Lambda_0123456789Sym0 x) a_0123456789) a_0123456789
     type family Foo0 (a :: a) (a :: b) :: a where
       Foo0 a_0123456789 a_0123456789 = Apply (Apply (Apply (Apply Lambda_0123456789Sym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789
-    sFoo8 :: forall (t :: Foo a b). Sing t -> Sing (Apply Foo8Sym0 t)
+    sFoo8 ::
+      forall (t :: Foo a b). Sing t -> Sing (Apply Foo8Sym0 t :: a)
     sFoo7 ::
       forall (t :: a) (t :: b).
-      Sing t -> Sing t -> Sing (Apply (Apply Foo7Sym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply Foo7Sym0 t) t :: b)
     sFoo6 ::
       forall (t :: a) (t :: b).
-      Sing t -> Sing t -> Sing (Apply (Apply Foo6Sym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply Foo6Sym0 t) t :: a)
     sFoo5 ::
       forall (t :: a) (t :: b).
-      Sing t -> Sing t -> Sing (Apply (Apply Foo5Sym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply Foo5Sym0 t) t :: b)
     sFoo4 ::
       forall (t :: a) (t :: b) (t :: c).
       Sing t
-      -> Sing t -> Sing t -> Sing (Apply (Apply (Apply Foo4Sym0 t) t) t)
-    sFoo3 :: forall (t :: a). Sing t -> Sing (Apply Foo3Sym0 t)
+      -> Sing t
+         -> Sing t -> Sing (Apply (Apply (Apply Foo4Sym0 t) t) t :: a)
+    sFoo3 :: forall (t :: a). Sing t -> Sing (Apply Foo3Sym0 t :: a)
     sFoo2 ::
       forall (t :: a) (t :: b).
-      Sing t -> Sing t -> Sing (Apply (Apply Foo2Sym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply Foo2Sym0 t) t :: a)
     sFoo1 ::
       forall (t :: a) (t :: b).
-      Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a)
     sFoo0 ::
       forall (t :: a) (t :: b).
-      Sing t -> Sing t -> Sing (Apply (Apply Foo0Sym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply Foo0Sym0 t) t :: a)
     sFoo8 sX
       = let
           lambda :: forall x. t ~ x => Sing x -> Sing (Apply Foo8Sym0 x)
@@ -794,7 +796,8 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                 a_0123456789
         in lambda sA_0123456789 sA_0123456789
     data instance Sing (z :: Foo a b)
-      = forall (n :: a) (n :: b). z ~ Foo n n => SFoo (Sing n) (Sing n)
+      = forall (n :: a) (n :: b). z ~ Foo n n =>
+        SFoo (Sing (n :: a)) (Sing (n :: b))
     type SFoo (z :: Foo a b) = Sing z
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b)) =>

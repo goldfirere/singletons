@@ -25,7 +25,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply JustSym0 l = JustSym1 l
     data instance Sing (z :: Maybe a)
       = z ~ Nothing => SNothing |
-        forall (n :: a). z ~ Just n => SJust (Sing n)
+        forall (n :: a). z ~ Just n => SJust (Sing (n :: a))
     type SMaybe (z :: Maybe a) = Sing z
     instance SingKind (KProxy :: KProxy a) =>
              SingKind (KProxy :: KProxy (Maybe a)) where

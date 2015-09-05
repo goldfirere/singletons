@@ -171,13 +171,13 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
       Foo1 d x = Apply (Apply (Apply Lambda_0123456789Sym0 d) x) x
     sFoo3 ::
       forall (t :: a) (t :: b).
-      Sing t -> Sing t -> Sing (Apply (Apply Foo3Sym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply Foo3Sym0 t) t :: a)
     sFoo2 ::
       forall (t :: a) (t :: Maybe a).
-      Sing t -> Sing t -> Sing (Apply (Apply Foo2Sym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply Foo2Sym0 t) t :: a)
     sFoo1 ::
       forall (t :: a) (t :: Maybe a).
-      Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a)
     sFoo3 sA sB
       = let
           lambda ::

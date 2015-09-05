@@ -52,13 +52,13 @@ GradingClient/Main.hs:(0,0)-(0,0): Splicing declarations
       GradingSchema = Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 LastNameSym0) STRINGSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 YearNameSym0) NATSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 GradeNameSym0) NATSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 MajorNameSym0) BOOLSym0)) '[])))))
     type family Names :: Schema where
       Names = Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 LastNameSym0) STRINGSym0)) '[]))
-    sMajorName :: Sing MajorNameSym0
-    sGradeName :: Sing GradeNameSym0
-    sYearName :: Sing YearNameSym0
-    sFirstName :: Sing FirstNameSym0
-    sLastName :: Sing LastNameSym0
-    sGradingSchema :: Sing GradingSchemaSym0
-    sNames :: Sing NamesSym0
+    sMajorName :: Sing (MajorNameSym0 :: [AChar])
+    sGradeName :: Sing (GradeNameSym0 :: [AChar])
+    sYearName :: Sing (YearNameSym0 :: [AChar])
+    sFirstName :: Sing (FirstNameSym0 :: [AChar])
+    sLastName :: Sing (LastNameSym0 :: [AChar])
+    sGradingSchema :: Sing (GradingSchemaSym0 :: Schema)
+    sNames :: Sing (NamesSym0 :: Schema)
     sMajorName
       = applySing
           (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) SCM)

@@ -364,24 +364,26 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
              (t :: TyFun a b -> *)
              (t :: a).
       Sing t
-      -> Sing t -> Sing t -> Sing (Apply (Apply (Apply FooSym0 t) t) t)
+      -> Sing t
+         -> Sing t -> Sing (Apply (Apply (Apply FooSym0 t) t) t :: b)
     sZipWith ::
       forall (t :: TyFun a (TyFun b c -> *) -> *) (t :: [a]) (t :: [b]).
       Sing t
       -> Sing t
-         -> Sing t -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t)
+         -> Sing t -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
     sSplunge ::
       forall (t :: [Nat]) (t :: [Bool]).
-      Sing t -> Sing t -> Sing (Apply (Apply SplungeSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply SplungeSym0 t) t :: [Nat])
     sEtad ::
       forall (t :: [Nat]) (t :: [Bool]).
-      Sing t -> Sing t -> Sing (Apply (Apply EtadSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply EtadSym0 t) t :: [Nat])
     sLiftMaybe ::
       forall (t :: TyFun a b -> *) (t :: Maybe a).
-      Sing t -> Sing t -> Sing (Apply (Apply LiftMaybeSym0 t) t)
+      Sing t
+      -> Sing t -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
     sMap ::
       forall (t :: TyFun a b -> *) (t :: [a]).
-      Sing t -> Sing t -> Sing (Apply (Apply MapSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply MapSym0 t) t :: [b])
     sFoo sF sG sA
       = let
           lambda ::
@@ -600,8 +602,8 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                    (applySing (singFun2 (Proxy :: Proxy MapSym0) sMap) f) t)
         in lambda sF sH sT
     data instance Sing (z :: Either a b)
-      = forall (n :: a). z ~ Left n => SLeft (Sing n) |
-        forall (n :: b). z ~ Right n => SRight (Sing n)
+      = forall (n :: a). z ~ Left n => SLeft (Sing (n :: a)) |
+        forall (n :: b). z ~ Right n => SRight (Sing (n :: b))
     type SEither (z :: Either a b) = Sing z
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b)) =>

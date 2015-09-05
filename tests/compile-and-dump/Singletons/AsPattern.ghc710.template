@@ -210,12 +210,20 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     type family MaybePlus (a :: Maybe Nat) :: Maybe Nat where
       MaybePlus (Just n) = Apply JustSym0 (Apply (Apply PlusSym0 (Apply SuccSym0 ZeroSym0)) n)
       MaybePlus Nothing = Let0123456789PSym0
-    sFoo :: forall (t :: [Nat]). Sing t -> Sing (Apply FooSym0 t)
-    sTup :: forall (t :: (Nat, Nat)). Sing t -> Sing (Apply TupSym0 t)
-    sBaz_ :: forall (t :: Maybe Baz). Sing t -> Sing (Apply Baz_Sym0 t)
-    sBar :: forall (t :: Maybe Nat). Sing t -> Sing (Apply BarSym0 t)
+    sFoo ::
+      forall (t :: [Nat]). Sing t -> Sing (Apply FooSym0 t :: [Nat])
+    sTup ::
+      forall (t :: (Nat, Nat)).
+      Sing t -> Sing (Apply TupSym0 t :: (Nat, Nat))
+    sBaz_ ::
+      forall (t :: Maybe Baz).
+      Sing t -> Sing (Apply Baz_Sym0 t :: Maybe Baz)
+    sBar ::
+      forall (t :: Maybe Nat).
+      Sing t -> Sing (Apply BarSym0 t :: Maybe Nat)
     sMaybePlus ::
-      forall (t :: Maybe Nat). Sing t -> Sing (Apply MaybePlusSym0 t)
+      forall (t :: Maybe Nat).
+      Sing t -> Sing (Apply MaybePlusSym0 t :: Maybe Nat)
     sFoo SNil
       = let
           lambda :: t ~ '[] => Sing (Apply FooSym0 '[])
@@ -360,7 +368,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         in lambda
     data instance Sing (z :: Baz)
       = forall (n :: Nat) (n :: Nat) (n :: Nat). z ~ Baz n n n =>
-        SBaz (Sing n) (Sing n) (Sing n)
+        SBaz (Sing (n :: Nat)) (Sing (n :: Nat)) (Sing (n :: Nat))
     type SBaz (z :: Baz) = Sing z
     instance SingKind (KProxy :: KProxy Baz) where
       type DemoteRep (KProxy :: KProxy Baz) = Baz

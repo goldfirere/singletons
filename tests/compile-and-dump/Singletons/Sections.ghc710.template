@@ -59,10 +59,10 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
       Foo3 = Apply (Apply (Apply ZipWithSym0 (:+$)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[]))) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[]))
     (%:+) ::
       forall (t :: Nat) (t :: Nat).
-      Sing t -> Sing t -> Sing (Apply (Apply (:+$) t) t)
-    sFoo1 :: Sing Foo1Sym0
-    sFoo2 :: Sing Foo2Sym0
-    sFoo3 :: Sing Foo3Sym0
+      Sing t -> Sing t -> Sing (Apply (Apply (:+$) t) t :: Nat)
+    sFoo1 :: Sing (Foo1Sym0 :: [Nat])
+    sFoo2 :: Sing (Foo2Sym0 :: [Nat])
+    sFoo3 :: Sing (Foo3Sym0 :: [Nat])
     (%:+) SZero sM
       = let
           lambda ::
