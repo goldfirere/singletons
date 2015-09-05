@@ -238,17 +238,11 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
                                     { lde_defns = defaults
                                     , lde_types = meth_sigs
                                     , lde_infix = infix_decls } }) = do
-  let tvbNames = map extractTvbName tvbs
-      pClsName = promoteClassName cls_name
-  kproxies <- mapM (const $ qNewName "kproxy") tvbs
+  let pClsName = promoteClassName cls_name
+  (ptvbs, proxyCxt) <- mkKProxies (map extractTvbName tvbs)
   pCxt <- mapM promote_superclass_pred cxt
-  let proxyCxt = map (\kp -> foldl DAppPr (DConPr equalityName)
-                                   [DVarT kp, DConT kProxyDataName]) kproxies
-      cxt'  = pCxt ++ proxyCxt
-      ptvbs = zipWith (\proxy tvbName -> DKindedTV proxy
-                                           (DConK kProxyTypeName [DVarK tvbName]))
-                      kproxies tvbNames
-  sig_decs     <- mapM (uncurry promote_sig) (Map.toList meth_sigs)
+  let cxt'  = pCxt ++ proxyCxt
+  sig_decs <- mapM (uncurry promote_sig) (Map.toList meth_sigs)
      -- the first arg to promoteMethod is a kind subst. We actually don't
      -- want to subst for default instances, so we pass Map.empty
   let defaults_list  = Map.toList defaults

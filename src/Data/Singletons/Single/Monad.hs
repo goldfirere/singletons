@@ -136,7 +136,7 @@ bindTyVarsEq :: VarPromotions   -- the bindings we wish to effect
 bindTyVarsEq var_proms prom_fun equalities thing_inside = do
   lambda <- qNewName "lambda"
   let (term_names, tyvar_names) = unzip var_proms
-      eq_ct  = [ DConPr equalityName `DAppPr` t1 `DAppPr` t2
+      eq_ct  = [ mkEqPred t1 t2
                | (t1, t2) <- equalities ]
       ty_sig = DSigD lambda $
                DForallT (map DPlainTV tyvar_names) eq_ct $

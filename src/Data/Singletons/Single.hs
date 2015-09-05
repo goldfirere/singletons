@@ -26,6 +26,7 @@ import Data.Singletons.Syntax
 import Language.Haskell.TH.Desugar
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
+import Data.Maybe
 import Control.Monad
 
 {-
@@ -152,13 +153,13 @@ singTopLevelDecs locals decls = do
         , pd_instance_decs         = insts
         , pd_data_decs             = datas }    <- partitionDecs decls
 
-  ((letDecEnv, insts'), promDecls) <- promoteM locals $ do
+  ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
     promoteDataDecs datas
     (_, letDecEnv) <- promoteLetDecs noPrefix letDecls
-    classes' <- mapM promoteClassDec
-    let meth_sigs = concatMap (lde_types . cd_lde) classes
+    classes' <- mapM promoteClassDec classes
+    let meth_sigs = foldMap (lde_types . cd_lde) classes
     insts' <- mapM (promoteInstanceDec meth_sigs) insts
-    return (letDecEnv, insts')
+    return (letDecEnv, classes', insts')
 
   singDecsM locals $ do
     let letBinds = concatMap buildDataLets datas
@@ -190,7 +191,7 @@ buildDataLets (DataDecl _nd _name _tvbs cons _derivings) =
       | name <- names ]
 
 -- see comment at top of file
-buildMethLets :: AClassDecl -> [(Name, DExp)]
+buildMethLets :: UClassDecl -> [(Name, DExp)]
 buildMethLets (ClassDecl { cd_lde = LetDecEnv { lde_types = meth_sigs } }) =
   map mk_bind (Map.toList meth_sigs)
   where
@@ -210,16 +211,34 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
   (sing_sigs, _, tyvar_names)
     <- unzip3 <$> zipWithM (singTySig no_meth_defns meth_sigs)
                            meth_names (map promoteValRhs meth_names)
-  let default_sigs = zipWith mk_default_sig meth_names sing_sigs
+  let default_sigs = catMaybes $ zipWith mk_default_sig meth_names sing_sigs
+  sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList tyvar_names)))
+                     (Map.toList default_defns)
+  let fixities' = map (uncurry singInfixDecl) fixities
+  cls_cxt' <- mapM singPred cls_cxt
+  (kproxies, kproxy_pred) <- mkKProxies (map extractTvbName cls_tvbs)
+  return $ DClassD (cls_cxt' ++ kproxy_pred)
+                   cls_name kproxies
+                   []   -- functional dependencies
+                   (map DLetDec (sing_sigs ++ sing_meths ++ fixities') ++ default_sigs)
   where
     no_meth_defns = error "Internal error: can't find declared method type"
     meth_names    = Map.keys meth_sigs
 
     mk_default_sig meth_name (DSigD s_name sty) =
-      DDefaultSigD s_name (add_constraints meth_name (hoist_foralls sty))
+      DDefaultSigD s_name <$> add_constraints meth_name sty
+    mk_default_sig _ _ = error "Internal error: a singled signature isn't a signature."
 
-    hoist_foralls ty = DForallT tvbs cxt (ravel args res)
-      where (tvbs, cxt, args, res) = unravel ty
+    add_constraints meth_name sty = do  -- Maybe monad
+      prom_dflt <- Map.lookup meth_name promoted_defaults
+      let default_pred = foldl DAppPr (DConPr equalityName)
+                               [ foldType  (promoteValRhs meth_name) tvs
+                               , foldApply prom_dflt tvs ]
+      return $ DForallT tvbs (default_pred : cxt) (ravel args res)
+      where
+        (tvbs, cxt, args, res) = unravel sty
+        tvs          = map (DVarT . extractTvbName) tvbs
+
 
 singInstD :: AInstDecl -> SgM DDec
 singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
@@ -252,30 +271,20 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
               thing_inside = do
   (typeSigs, letBinds, tyvarNames)
     <- mapAndUnzip3M (uncurry (singTySig defns types)) (Map.toList proms)
-  let infix_decls' = map (uncurry sing_infix_decl) infix_decls
+  let infix_decls' = map (uncurry singInfixDecl) infix_decls
   bindLets letBinds $ do
     let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList tyvarNames))) (Map.toList defns)
     thing <- thing_inside
     return (infix_decls' ++ typeSigs ++ let_decs, thing)
-  where
-    sing_infix_decl :: Fixity -> Name -> DLetDec
-    sing_infix_decl fixity name
-      | isUpcase name =
-        -- is it a tycon name or a datacon name??
-        -- it *must* be a datacon name, because symbolic tycons
-        -- can't be promoted. This is terrible.
-        DInfixD fixity (singDataConName name)
-      | otherwise = DInfixD fixity (singValName name)
 
-      -- create a Sing t1 -> Sing t2 -> ... type of a given arity and result type
-    mk_sing_ty :: Int -> DType -> SgM (DType, [Name])
-    mk_sing_ty n prom_ty = do
-      arg_names <- replicateM n (qNewName "arg")
-      return ( DForallT (map DPlainTV arg_names) []
-                        (ravel (map (\name -> singFamily `DAppT` DVarT name) arg_names)
-                               (singFamily `DAppT`
-                                    (foldl apply prom_ty (map DVarT arg_names))))
-             , arg_names )
+singInfixDecl :: Fixity -> Name -> DLetDec
+singInfixDecl fixity name
+  | isUpcase name =
+    -- is it a tycon name or a datacon name??
+    -- it *must* be a datacon name, because symbolic tycons
+    -- can't be promoted. This is terrible.
+    DInfixD fixity (singDataConName name)
+  | otherwise = DInfixD fixity (singValName name)
 
 singTySig :: Map Name ALetDecRHS  -- definitions
           -> Map Name DType       -- type signatures
@@ -288,8 +297,8 @@ singTySig defns types name prom_ty =
   let sName = singValName name in
   case Map.lookup name types of
     Nothing -> do
-      num_args <- guess_num_args name
-      (sty, tyvar_names) <- mk_sing_ty num_args prom_ty
+      num_args <- guess_num_args
+      (sty, tyvar_names) <- mk_sing_ty num_args
       return ( DSigD sName sty
              , (name, wrapSingFun num_args prom_ty (DVarE sName))
              , (name, tyvar_names) )
@@ -299,13 +308,22 @@ singTySig defns types name prom_ty =
              , (name, wrapSingFun num_args prom_ty (DVarE sName))
              , (name, tyvar_names) )
   where
-    guess_num_args :: Name -> SgM Int
-    guess_num_args name =
+    guess_num_args :: SgM Int
+    guess_num_args =
       case Map.lookup name defns of
         Nothing -> fail "Internal error: promotion known for something not let-bound."
         Just (AValue _ n _) -> return n
         Just (AFunction _ n _) -> return n
 
+      -- create a Sing t1 -> Sing t2 -> ... type of a given arity and result type
+    mk_sing_ty :: Int -> SgM (DType, [Name])
+    mk_sing_ty n = do
+      arg_names <- replicateM n (qNewName "arg")
+      return ( DForallT (map DPlainTV arg_names) []
+                        (ravel (map (\nm -> singFamily `DAppT` DVarT nm) arg_names)
+                               (singFamily `DAppT`
+                                    (foldl apply prom_ty (map DVarT arg_names))))
+             , arg_names )
 
 singLetDecRHS :: Map Name [Name] -> Name -> ALetDecRHS -> SgM DLetDec
 singLetDecRHS _bound_names name (AValue prom num_arrows exp) =

@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, PolyKinds, DataKinds, TypeFamilies,
-             UndecidableInstances #-}
+             UndecidableInstances, GADTs #-}
 
 -- Suppress orphan instance warning for PEnum KProxy. This will go away once #25
 -- is fixed and instance declaration for Enum Nat is moved to

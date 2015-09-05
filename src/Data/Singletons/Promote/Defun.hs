@@ -137,14 +137,13 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
           tyfun_param = mk_tvb fst_name m_tyfun
           arg_names   = map extractTvbName arg_params
           params      = arg_params ++ [tyfun_param]
-          con_eq_ct   = foldl DAppPr (DConPr equalityName)
-                          [ DConT kindOfName `DAppT`
-                              (foldType (DConT data_name) (map DVarT arg_names)
-                               `apply`
-                               (DVarT extra_name))
-                          , DConT kindOfName `DAppT`
-                            foldType (DConT next_name) (map DVarT (arg_names ++ [extra_name]))
-                          ]
+          con_eq_ct   = mkEqPred
+                          (DConT kindOfName `DAppT`
+                            (foldType (DConT data_name) (map DVarT arg_names)
+                             `apply`
+                             (DVarT extra_name)))
+                          (DConT kindOfName `DAppT`
+                           foldType (DConT next_name) (map DVarT (arg_names ++ [extra_name])))
           con_decl    = DCon [DPlainTV extra_name]
                              [con_eq_ct]
                              con_name

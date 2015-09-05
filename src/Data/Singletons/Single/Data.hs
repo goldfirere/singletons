@@ -125,7 +125,7 @@ singCtor a (DCon _tvbs cxt name fields)
       kindedIndices = zipWith DSigT indices kinds
 
   -- SingI instance
-  emitDecs 
+  emitDecs
     [DInstanceD (map (DAppPr (DConPr singIName)) indices)
                 (DAppT (DConT singIName)
                        (foldType pCon kindedIndices))
@@ -139,7 +139,7 @@ singCtor a (DCon _tvbs cxt name fields)
                             | (field_name, _, _) <- rec_fields
                             | arg <- args ]
   return $ DCon tvbs
-                [foldl DAppPr (DConPr equalityName) [a, foldType pCon indices]]
+                [mkEqPred a (foldType pCon indices)]
                 sName
                 conFields
   where buildArgType :: DType -> DType -> SgM DType

@@ -234,3 +234,17 @@ apply t1 t2 = DAppT (DAppT (DConT applyName) t1) t2
 -- This is defined here, not in Utils, to avoid cyclic dependencies
 foldApply :: DType -> [DType] -> DType
 foldApply = foldl apply
+
+-- make and equality predicate
+mkEqPred :: DType -> DType -> DPred
+mkEqPred ty1 ty2 = foldl DAppPr (DConPr equalityName) [ty1, ty2]
+
+-- create a bunch of kproxy vars, and constrain them all to be 'KProxy
+mkKProxies :: Quasi q
+           => [Name]   -- for the kinds of the kproxies
+           -> q ([DTyVarBndr], DCxt)
+mkKProxies ns = do
+  kproxies <- mapM (const $ qNewName "kproxy") ns
+  return ( zipWith (\kp kv -> DKindedTV kp (DConK kProxyTypeName [DVarK kv]))
+                   kproxies ns
+         , map (\kp -> mkEqPred (DVarT kp) (DConT kProxyDataName)) kproxies )

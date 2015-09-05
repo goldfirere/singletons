@@ -6,7 +6,7 @@ eir@cis.upenn.edu
 This file implements promotion of types into kinds.
 -}
 
-module Data.Singletons.Promote.Type ( promoteType ) where
+module Data.Singletons.Promote.Type ( promoteType, promoteUnraveled ) where
 
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
@@ -53,5 +53,6 @@ promoteUnraveled :: Monad m => DType -> m ([DKind], DKind)
 promoteUnraveled ty = do
   arg_kis <- mapM promoteType arg_tys
   res_ki  <- promoteType res_ty
+  return (arg_kis, res_ki)
   where
     (_, _, arg_tys, res_ty) = unravel ty

@@ -29,7 +29,7 @@ singType prom ty = do
   prom_args <- mapM promoteType args
   prom_res  <- promoteType res
   let args' = map (\n -> singFamily `DAppT` (DVarT n)) arg_names
-      res'  = singFamily `DAppT` (foldl apply prom (map DVarT arg_names))
+      res'  = singFamily `DAppT` (foldl apply prom (map DVarT arg_names) `DSigT` prom_res)
       tau   = ravel args' res'
   let ty' = DForallT (zipWith DKindedTV arg_names prom_args)
                      cxt' tau
