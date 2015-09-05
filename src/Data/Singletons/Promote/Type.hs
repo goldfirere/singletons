@@ -48,3 +48,10 @@ promoteType = go []
     go args     hd = fail $ "Illegal Haskell construct encountered:\n" ++
                             "headed by: " ++ show hd ++ "\n" ++
                             "applied to: " ++ show args
+
+promoteUnraveled :: Monad m => DType -> m ([DKind], DKind)
+promoteUnraveled ty = do
+  arg_kis <- mapM promoteType arg_tys
+  res_ki  <- promoteType res_ty
+  where
+    (_, _, arg_tys, res_ty) = unravel ty

@@ -193,24 +193,24 @@ inferMaybeKindTV n (Just k) = DKindedTV n k
 
 -- Get argument types from an arrow type. Removing ForallT is an
 -- important preprocessing step required by promoteType.
-unravel :: DType -> ([DPred], [DType])
-unravel (DForallT _ cxt ty) =
-  let (cxt', tys) = unravel ty in
-  (cxt ++ cxt', tys)
+unravel :: DType -> ([DTyVarBndr], [DPred], [DType], DType)
+unravel (DForallT tvbs cxt ty) =
+  let (tvbs', cxt', tys, res) = unravel ty in
+  (tvbs ++ tvbs', cxt ++ cxt', tys, res)
 unravel (DAppT (DAppT DArrowT t1) t2) =
-  let (cxt, tys) = unravel t2 in
-  (cxt, t1 : tys)
-unravel t = ([], [t])
+  let (tvbs, cxt, tys, res) = unravel t2 in
+  (tvbs, cxt, t1 : tys, res)
+unravel t = ([], [], [], t)
 
 -- Reconstruct arrow kind from the list of kinds
-ravel :: [DType] -> DType
-ravel []    = error "Internal error: raveling nil"
-ravel [k]   = k
-ravel (h:t) = DAppT (DAppT DArrowT h) (ravel t)
+ravel :: [DType] -> DType -> DType
+ravel []    res  = res
+ravel (h:t) res = DAppT (DAppT DArrowT h) (ravel t res)
 
 -- count the number of arguments in a type
 countArgs :: DType -> Int
-countArgs ty = length (snd $ unravel ty) - 1
+countArgs ty = length args
+  where (_, _, args, _) = unravel ty
 
 addStar :: DKind -> DKind
 addStar t = DArrowK t DStarK

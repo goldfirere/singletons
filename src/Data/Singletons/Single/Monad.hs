@@ -141,7 +141,8 @@ bindTyVarsEq var_proms prom_fun equalities thing_inside = do
       ty_sig = DSigD lambda $
                DForallT (map DPlainTV tyvar_names) eq_ct $
                         ravel (map (\tv_name -> singFamily `DAppT` DVarT tv_name)
-                                    tyvar_names ++ [singFamily `DAppT` prom_fun])
+                                    tyvar_names)
+                              (singFamily `DAppT` prom_fun)
   arg_names <- mapM (qNewName . nameBase) term_names
   body <- bindLets [ (term_name, DVarE arg_name)
                    | term_name <- term_names

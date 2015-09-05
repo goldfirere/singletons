@@ -162,7 +162,7 @@ promoteDecs decls = do
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
   mapM_ promoteClassDec classes
-  let all_meth_sigs = foldMap cd_meths classes
+  let all_meth_sigs = foldMap (lde_types . cd_lde) classes
   mapM_ (promoteInstanceDec all_meth_sigs) insts
   promoteDataDecs datas
 
@@ -251,18 +251,23 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
   sig_decs     <- mapM (uncurry promote_sig) (Map.toList meth_sigs)
      -- the first arg to promoteMethod is a kind subst. We actually don't
      -- want to subst for default instances, so we pass Map.empty
-  (default_decs, _ann_rhss)
-    <- mapAndUnzipM (promoteMethod Map.empty meth_sigs) (Map.toList defaults)
+  let defaults_list  = Map.toList defaults
+      defaults_names = map fst defaults_list
+  (default_decs, ann_rhss, prom_rhss)
+    <- mapAndUnzip3M (promoteMethod Map.empty meth_sigs) defaults_list
 
   let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
   emitDecs [DClassD cxt' pClsName ptvbs []
                     (sig_decs ++ default_decs ++ infix_decls')]
-  return (decl { cd_lde = lde { lde_proms =
+  let defaults_list' = zip defaults_names ann_rhss
+      proms          = zip defaults_names prom_rhss
+  return (decl { cd_lde = lde { lde_defns = Map.fromList defaults_list'
+                              , lde_proms = Map.fromList proms } })
   where
     promote_sig :: Name -> DType -> PrM DDec
     promote_sig name ty = do
       let proName = promoteValNameLhs name
-      (argKs, resK) <- snocView `liftM` (mapM promoteType (snd $ unravel ty))
+      (argKs, resK) <- promoteUnraveled ty
       args <- mapM (const $ qNewName "arg") argKs
       emitDecsM $ defunctionalize proName (map Just argKs) (Just resK)
 
@@ -288,7 +293,7 @@ promoteInstanceDec meth_sigs
   cls_tvb_names <- lookup_cls_tvb_names
   inst_kis <- mapM promoteType inst_tys
   let subst = Map.fromList $ zip cls_tvb_names inst_kis
-  (meths', ann_rhss) <- mapAndUnzipM (promoteMethod subst meth_sigs) meths
+  (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod subst meth_sigs) meths
   emitDecs [DInstanceD [] (foldType (DConT pClsName)
                                     (map kindParam inst_kis)) meths']
   return (decl { id_meths = zip (map fst meths) ann_rhss })
@@ -319,7 +324,9 @@ promoteInstanceDec meth_sigs
 
 promoteMethod :: Map Name DKind     -- instantiations for class tyvars
               -> Map Name DType     -- method types
-              -> (Name, ULetDecRHS) -> PrM (DDec, ALetDecRHS)
+              -> (Name, ULetDecRHS)
+              -> PrM (DDec, ALetDecRHS, DType)
+                 -- returns (type instance, ALetDecRHS, promoted RHS)
 promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   ((_, _, _, eqns), _defuns, ann_rhs)
     <- promoteLetDecRHS sigs_map noPrefix meth_name meth_rhs
@@ -335,11 +342,13 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   emitDecs [DClosedTypeFamilyD helperName
                                (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
                                (Just meth_res_ki') eqns']
+  emitDecsM (defunctionalize helperName (map Just meth_arg_kis') (Just meth_res_ki'))
   return ( DTySynInstD
              proName
              (DTySynEqn (zipWith (DSigT . DVarT) meth_arg_tvs meth_arg_kis')
                         (foldType (DConT helperName) (map DVarT meth_arg_tvs)))
-         , ann_rhs )
+         , ann_rhs
+         , DConT (promoteTySym helperName 0) )
   where
     proName = promoteValNameLhs meth_name
 
@@ -352,10 +361,7 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
             -> return ( map (default_to_star . extractTvbKind) tvbs
                       , default_to_star mb_res_ki )
           _ -> fail $ "Cannot find type annotation for " ++ show proName
-      Just ty -> do
-        let (_, tys) = unravel ty
-        kis <- mapM promoteType tys
-        return $ snocView kis
+      Just ty -> promoteUnraveled ty
 
     default_to_star Nothing  = DStarK
     default_to_star (Just k) = k
@@ -409,7 +415,7 @@ promoteInfixDecl fixity name
 
 -- This function is used both to promote class method defaults and normal
 -- let bindings. Thus, it can't quite do all the work locally and returns
--- an unwiedly intermediate structure. Perhaps a better design is available.
+-- an intermediate structure. Perhaps a better design is available.
 promoteLetDecRHS :: Map Name DType       -- local type env't
                  -> (String, String)     -- let-binding prefixes
                  -> Name                 -- name of the thing being promoted
@@ -450,8 +456,7 @@ promoteLetDecRHS type_env prefixes name (UFunction clauses) = do
       -- promoteType turns arrows into TyFun. So, we unravel first to
       -- avoid this behavior. Note the use of ravelTyFun in resultK
       -- to make the return kind work out
-      kis <- mapM promoteType (snd $ unravel ty)
-      let (argKs, resultK) = snocView kis
+      (argKs, resultK) <- promoteUnraveled ty
       -- invariant: countArgs ty == length argKs
       return (map Just argKs, Just resultK, length argKs)
 

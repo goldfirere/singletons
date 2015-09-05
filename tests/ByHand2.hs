@@ -144,3 +144,21 @@ instance SOrd ('KProxy :: KProxy Nat) where
   sCompare SZero (SSucc _) = SLT
   sCompare (SSucc _) SZero = SGT
   sCompare (SSucc x) (SSucc y) = sCompare x y
+
+class Pointed a where
+  point :: a
+
+class kproxy ~ 'KProxy => PPointed (kproxy :: KProxy a) where
+  type Point :: a
+
+class kproxy ~ 'KProxy => SPointed (kproxy :: KProxy a) where
+  sPoint :: Sing (Point :: a)
+
+instance Pointed Nat where
+  point = Zero
+
+instance PPointed ('KProxy :: KProxy Nat) where
+  type Point = 'Zero
+
+instance SPointed ('KProxy :: KProxy Nat) where
+  sPoint = SZero

@@ -22,14 +22,13 @@ singType :: DType          -- the promoted version of the thing classified by...
                 , Int      -- the number of arguments
                 , [Name] ) -- the names of the tyvars used in the sing'd type
 singType prom ty = do
-  let (cxt, tys) = unravel ty
-      args       = init tys
-      num_args   = length args
+  let (_, cxt, args, _) = unravel ty
+      num_args          = length args
   cxt' <- mapM singPred cxt
   arg_names <- replicateM num_args (qNewName "t")
   let args' = map (\n -> singFamily `DAppT` (DVarT n)) arg_names
       res'  = singFamily `DAppT` (foldl apply prom (map DVarT arg_names))
-      tau   = ravel (args' ++ [res'])
+      tau   = ravel args' res'
   prom_args <- mapM promoteType args
   let ty' = DForallT (zipWith DKindedTV arg_names prom_args)
                      cxt' tau

@@ -156,7 +156,8 @@ singTopLevelDecs locals decls = do
     promoteDataDecs datas
     (_, letDecEnv) <- promoteLetDecs noPrefix letDecls
     classes' <- mapM promoteClassDec
-    insts' <- mapM (promoteInstanceDec Map.empty) insts
+    let meth_sigs = concatMap (lde_types . cd_lde) classes
+    insts' <- mapM (promoteInstanceDec meth_sigs) insts
     return (letDecEnv, insts')
 
   singDecsM locals $ do
@@ -165,7 +166,7 @@ singTopLevelDecs locals decls = do
     (newLetDecls, newDecls) <- bindLets letBinds $
                                singLetDecEnv letDecEnv $ do
                                  newDataDecls <- concatMapM singDataD datas
-                                 newClassDecls <- mapM singClassD classes
+                                 newClassDecls <- mapM singClassD classes'
                                  newInstDecls <- mapM singInstD insts'
                                  return (newDataDecls ++ newClassDecls ++ newInstDecls)
     return $ promDecls ++ (map DLetDec newLetDecls) ++ newDecls
@@ -194,13 +195,31 @@ buildMethLets (ClassDecl { cd_lde = LetDecEnv { lde_types = meth_sigs } }) =
   map mk_bind (Map.toList meth_sigs)
   where
     mk_bind (meth_name, meth_ty) =
-      let (_, tys) = unravel meth_ty in
       ( meth_name
-      , wrapSingFun (length tys - 1) (promoteValRhs meth_name)
-                                     (DVarE $ singValName meth_name) )
+      , wrapSingFun (countArgs meth_ty) (promoteValRhs meth_name)
+                                        (DVarE $ singValName meth_name) )
 
 singClassD :: AClassDecl -> SgM DDec
-singClassD (ClassDecl cxt name tvbs (LetDecEnv { lde_
+singClassD (ClassDecl { cd_cxt  = cls_cxt
+                      , cd_name = cls_name
+                      , cd_tvbs = cls_tvbs
+                      , cd_lde  = LetDecEnv { lde_defns = default_defns
+                                            , lde_types = meth_sigs
+                                            , lde_infix = fixities
+                                            , lde_proms = promoted_defaults } }) = do
+  (sing_sigs, _, tyvar_names)
+    <- unzip3 <$> zipWithM (singTySig no_meth_defns meth_sigs)
+                           meth_names (map promoteValRhs meth_names)
+  let default_sigs = zipWith mk_default_sig meth_names sing_sigs
+  where
+    no_meth_defns = error "Internal error: can't find declared method type"
+    meth_names    = Map.keys meth_sigs
+
+    mk_default_sig meth_name (DSigD s_name sty) =
+      DDefaultSigD s_name (add_constraints meth_name (hoist_foralls sty))
+
+    hoist_foralls ty = DForallT tvbs cxt (ravel args res)
+      where (tvbs, cxt, args, res) = unravel ty
 
 singInstD :: AInstDecl -> SgM DDec
 singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
@@ -232,7 +251,7 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
                          , lde_proms = proms })
               thing_inside = do
   (typeSigs, letBinds, tyvarNames)
-    <- mapAndUnzip3M (uncurry sing_ty_sig) (Map.toList proms)
+    <- mapAndUnzip3M (uncurry (singTySig defns types)) (Map.toList proms)
   let infix_decls' = map (uncurry sing_infix_decl) infix_decls
   bindLets letBinds $ do
     let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList tyvarNames))) (Map.toList defns)
@@ -248,26 +267,38 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
         DInfixD fixity (singDataConName name)
       | otherwise = DInfixD fixity (singValName name)
 
-    sing_ty_sig :: Name -> DType   -- the type is the promoted type, not the type sig!
-                -> SgM ( DLetDec               -- the new type signature
-                       , (Name, DExp)          -- the let-bind entry
-                       , (Name, [Name])        -- the scoped tyvar names in the tysig
-                       )
-    sing_ty_sig name prom_ty =
-      let sName = singValName name in
-      case Map.lookup name types of
-        Nothing -> do
-          num_args <- guess_num_args name
-          (sty, tyvar_names) <- mk_sing_ty num_args prom_ty
-          return ( DSigD sName sty
-                 , (name, wrapSingFun num_args prom_ty (DVarE sName))
-                 , (name, tyvar_names) )
-        Just ty -> do
-          (sty, num_args, tyvar_names) <- singType prom_ty ty
-          return ( DSigD sName sty
-                 , (name, wrapSingFun num_args prom_ty (DVarE sName))
-                 , (name, tyvar_names) )
+      -- create a Sing t1 -> Sing t2 -> ... type of a given arity and result type
+    mk_sing_ty :: Int -> DType -> SgM (DType, [Name])
+    mk_sing_ty n prom_ty = do
+      arg_names <- replicateM n (qNewName "arg")
+      return ( DForallT (map DPlainTV arg_names) []
+                        (ravel (map (\name -> singFamily `DAppT` DVarT name) arg_names)
+                               (singFamily `DAppT`
+                                    (foldl apply prom_ty (map DVarT arg_names))))
+             , arg_names )
 
+singTySig :: Map Name ALetDecRHS  -- definitions
+          -> Map Name DType       -- type signatures
+          -> Name -> DType   -- the type is the promoted type, not the type sig!
+          -> SgM ( DLetDec               -- the new type signature
+                 , (Name, DExp)          -- the let-bind entry
+                 , (Name, [Name])        -- the scoped tyvar names in the tysig
+                 )
+singTySig defns types name prom_ty =
+  let sName = singValName name in
+  case Map.lookup name types of
+    Nothing -> do
+      num_args <- guess_num_args name
+      (sty, tyvar_names) <- mk_sing_ty num_args prom_ty
+      return ( DSigD sName sty
+             , (name, wrapSingFun num_args prom_ty (DVarE sName))
+             , (name, tyvar_names) )
+    Just ty -> do
+      (sty, num_args, tyvar_names) <- singType prom_ty ty
+      return ( DSigD sName sty
+             , (name, wrapSingFun num_args prom_ty (DVarE sName))
+             , (name, tyvar_names) )
+  where
     guess_num_args :: Name -> SgM Int
     guess_num_args name =
       case Map.lookup name defns of
@@ -275,15 +306,6 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
         Just (AValue _ n _) -> return n
         Just (AFunction _ n _) -> return n
 
-      -- create a Sing t1 -> Sing t2 -> ... type of a given arity and result type
-    mk_sing_ty :: Int -> DType -> SgM (DType, [Name])
-    mk_sing_ty n prom_ty = do
-      arg_names <- replicateM n (qNewName "arg")
-      return ( DForallT (map DPlainTV arg_names) []
-                        (ravel (map (\name -> singFamily `DAppT` DVarT name) arg_names
-                                ++ [singFamily `DAppT`
-                                    (foldl apply prom_ty (map DVarT arg_names))]))
-             , arg_names )
 
 singLetDecRHS :: Map Name [Name] -> Name -> ALetDecRHS -> SgM DLetDec
 singLetDecRHS _bound_names name (AValue prom num_arrows exp) =
