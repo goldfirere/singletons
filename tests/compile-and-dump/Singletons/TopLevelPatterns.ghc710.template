@@ -185,15 +185,15 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type family I (a :: Bool) :: Bool where
       I a_0123456789 = Apply (Case_0123456789 a_0123456789 X_0123456789Sym0) a_0123456789
     type family J :: Bool where
-      J = (Case_0123456789 X_0123456789Sym0 :: Bool)
+      J = Case_0123456789 X_0123456789Sym0
     type family K :: Bool where
-      K = (Case_0123456789 X_0123456789Sym0 :: Bool)
+      K = Case_0123456789 X_0123456789Sym0
     type family L :: Bool where
-      L = (Case_0123456789 X_0123456789Sym0 :: Bool)
+      L = Case_0123456789 X_0123456789Sym0
     type family M :: Bool where
-      M = (Case_0123456789 X_0123456789Sym0 :: Bool)
+      M = Case_0123456789 X_0123456789Sym0
     type family Otherwise :: Bool where
-      Otherwise = (TrueSym0 :: Bool)
+      Otherwise = TrueSym0
     type family X_0123456789 where
       X_0123456789 = Apply (Apply (:$) NotSym0) (Apply (Apply (:$) IdSym0) '[])
     type family X_0123456789 where

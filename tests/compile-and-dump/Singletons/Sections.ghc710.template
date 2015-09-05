@@ -52,11 +52,11 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
       (:+) Zero m = m
       (:+) (Succ n) m = Apply SuccSym0 (Apply (Apply (:+$) n) m)
     type family Foo1 :: [Nat] where
-      Foo1 = (Apply (Apply MapSym0 (Apply (:+$) (Apply SuccSym0 ZeroSym0))) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[])) :: [Nat])
+      Foo1 = Apply (Apply MapSym0 (Apply (:+$) (Apply SuccSym0 ZeroSym0))) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[]))
     type family Foo2 :: [Nat] where
-      Foo2 = (Apply (Apply MapSym0 Lambda_0123456789Sym0) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[])) :: [Nat])
+      Foo2 = Apply (Apply MapSym0 Lambda_0123456789Sym0) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[]))
     type family Foo3 :: [Nat] where
-      Foo3 = (Apply (Apply (Apply ZipWithSym0 (:+$)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[]))) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[])) :: [Nat])
+      Foo3 = Apply (Apply (Apply ZipWithSym0 (:+$)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[]))) (Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) '[]))
     (%:+) ::
       forall (t :: Nat) (t :: Nat).
       Sing t -> Sing t -> Sing (Apply (Apply (:+$) t) t)

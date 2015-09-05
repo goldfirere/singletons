@@ -335,7 +335,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type family Foo1 (a :: (a, b)) :: a where
       Foo1 '(x, y) = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
     type family Lsz :: Nat where
-      Lsz = (Case_0123456789 X_0123456789Sym0 :: Nat)
+      Lsz = Case_0123456789 X_0123456789Sym0
     type family Blimy where
       Blimy = Case_0123456789 X_0123456789Sym0
     type family Tf where
@@ -349,7 +349,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type family Zz where
       Zz = Case_0123456789 X_0123456789Sym0
     type family Fls :: Bool where
-      Fls = (Case_0123456789 X_0123456789Sym0 :: Bool)
+      Fls = Case_0123456789 X_0123456789Sym0
     type family Sz where
       Sz = Case_0123456789 X_0123456789Sym0
     type family Lz where

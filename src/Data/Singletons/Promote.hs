@@ -411,12 +411,12 @@ promoteLetDecRHS :: Map Name DType       -- local type env't
                         , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
 promoteLetDecRHS type_env prefixes name (UValue exp) = do
-  (res_kind, mk_rhs, num_arrows)
+  (res_kind, num_arrows)
     <- case Map.lookup name type_env of
-         Nothing -> return (Nothing, id, 0)
+         Nothing -> return (Nothing, 0)
          Just ty -> do
            ki <- promoteType ty
-           return (Just ki, (`DSigT` ki), countArgs ty)
+           return (Just ki, countArgs ty)
   case num_arrows of
     0 -> do
       all_locals <- allLocals
@@ -424,7 +424,7 @@ promoteLetDecRHS type_env prefixes name (UValue exp) = do
       let proName = promoteValNameLhsPrefix prefixes name
       defuns <- defunctionalize proName (map (const Nothing) all_locals) res_kind
       return ( ( proName, map DPlainTV all_locals, res_kind
-               , [DTySynEqn (map DVarT all_locals) (mk_rhs exp')])
+               , [DTySynEqn (map DVarT all_locals) exp'] )
              , defuns
              , AValue (foldType (DConT proName) (map DVarT all_locals))
                       num_arrows ann_exp )

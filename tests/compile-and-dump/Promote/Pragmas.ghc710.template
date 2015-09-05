@@ -9,4 +9,4 @@ Promote/Pragmas.hs:(0,0)-(0,0): Splicing declarations
     foo = True
     type FooSym0 = Foo
     type family Foo :: Bool where
-      Foo = (TrueSym0 :: Bool)
+      Foo = TrueSym0
