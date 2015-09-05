@@ -14,7 +14,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
           foo :: [Nat] -> [Nat]
           foo p@[] = p
           foo p@[_] = p
-          foo p@(_ : _) = p
+          foo p@(_ : _ : _) = p
           
           data Baz = Baz Nat Nat Nat |]
   ======>
@@ -33,7 +33,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     foo :: [Nat] -> [Nat]
     foo p@GHC.Types.[] = p
     foo p@[_] = p
-    foo p@(_ GHC.Types.: _) = p
+    foo p@(_ GHC.Types.: (_ GHC.Types.: _)) = p
     type BazSym3 (t :: Nat) (t :: Nat) (t :: Nat) = Baz t t t
     instance SuppressUnusedWarnings BazSym2 where
       suppressUnusedWarnings _
@@ -57,7 +57,8 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         BazSym0KindInference
     type instance Apply BazSym0 l = BazSym1 l
     type Let0123456789PSym0 = Let0123456789P
-    type Let0123456789P = '[]
+    type family Let0123456789P where
+      Let0123456789P = '[]
     type Let0123456789PSym1 t = Let0123456789P t
     instance SuppressUnusedWarnings Let0123456789PSym0 where
       suppressUnusedWarnings _
@@ -66,44 +67,8 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789PSym0 arg) ~ KindOf (Let0123456789PSym1 arg) =>
         Let0123456789PSym0KindInference
     type instance Apply Let0123456789PSym0 l = Let0123456789PSym1 l
-    type Let0123456789P wild_0123456789 =
-        Apply (Apply (:$) wild_0123456789) '[]
-    type Let0123456789PSym2 t t = Let0123456789P t t
-    instance SuppressUnusedWarnings Let0123456789PSym1 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Let0123456789PSym1KindInference GHC.Tuple.())
-    data Let0123456789PSym1 l l
-      = forall arg. KindOf (Apply (Let0123456789PSym1 l) arg) ~ KindOf (Let0123456789PSym2 l arg) =>
-        Let0123456789PSym1KindInference
-    type instance Apply (Let0123456789PSym1 l) l = Let0123456789PSym2 l l
-    instance SuppressUnusedWarnings Let0123456789PSym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Let0123456789PSym0KindInference GHC.Tuple.())
-    data Let0123456789PSym0 l
-      = forall arg. KindOf (Apply Let0123456789PSym0 arg) ~ KindOf (Let0123456789PSym1 arg) =>
-        Let0123456789PSym0KindInference
-    type instance Apply Let0123456789PSym0 l = Let0123456789PSym1 l
-    type Let0123456789P wild_0123456789 wild_0123456789 =
-        Apply (Apply (:$) wild_0123456789) wild_0123456789
-    type Let0123456789PSym2 t t = Let0123456789P t t
-    instance SuppressUnusedWarnings Let0123456789PSym1 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Let0123456789PSym1KindInference GHC.Tuple.())
-    data Let0123456789PSym1 l l
-      = forall arg. KindOf (Apply (Let0123456789PSym1 l) arg) ~ KindOf (Let0123456789PSym2 l arg) =>
-        Let0123456789PSym1KindInference
-    type instance Apply (Let0123456789PSym1 l) l = Let0123456789PSym2 l l
-    instance SuppressUnusedWarnings Let0123456789PSym0 where
-      suppressUnusedWarnings _
-        = snd (GHC.Tuple.(,) Let0123456789PSym0KindInference GHC.Tuple.())
-    data Let0123456789PSym0 l
-      = forall arg. KindOf (Apply Let0123456789PSym0 arg) ~ KindOf (Let0123456789PSym1 arg) =>
-        Let0123456789PSym0KindInference
-    type instance Apply Let0123456789PSym0 l = Let0123456789PSym1 l
-    type Let0123456789P wild_0123456789 wild_0123456789 =
-        Apply (Apply Tuple2Sym0 wild_0123456789) wild_0123456789
-    type Let0123456789PSym0 = Let0123456789P
-    type Let0123456789P = NothingSym0
+    type family Let0123456789P wild_0123456789 where
+      Let0123456789P wild_0123456789 = Apply (Apply (:$) wild_0123456789) '[]
     type Let0123456789PSym3 t t t = Let0123456789P t t t
     instance SuppressUnusedWarnings Let0123456789PSym2 where
       suppressUnusedWarnings _
@@ -126,10 +91,56 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789PSym0 arg) ~ KindOf (Let0123456789PSym1 arg) =>
         Let0123456789PSym0KindInference
     type instance Apply Let0123456789PSym0 l = Let0123456789PSym1 l
-    type Let0123456789P wild_0123456789
-                         wild_0123456789
-                         wild_0123456789 =
-        Apply JustSym0 (Apply (Apply (Apply BazSym0 wild_0123456789) wild_0123456789) wild_0123456789)
+    type family Let0123456789P wild_0123456789
+                               wild_0123456789
+                               wild_0123456789 where
+      Let0123456789P wild_0123456789 wild_0123456789 wild_0123456789 = Apply (Apply (:$) wild_0123456789) (Apply (Apply (:$) wild_0123456789) wild_0123456789)
+    type Let0123456789PSym2 t t = Let0123456789P t t
+    instance SuppressUnusedWarnings Let0123456789PSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Let0123456789PSym1KindInference GHC.Tuple.())
+    data Let0123456789PSym1 l l
+      = forall arg. KindOf (Apply (Let0123456789PSym1 l) arg) ~ KindOf (Let0123456789PSym2 l arg) =>
+        Let0123456789PSym1KindInference
+    type instance Apply (Let0123456789PSym1 l) l = Let0123456789PSym2 l l
+    instance SuppressUnusedWarnings Let0123456789PSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Let0123456789PSym0KindInference GHC.Tuple.())
+    data Let0123456789PSym0 l
+      = forall arg. KindOf (Apply Let0123456789PSym0 arg) ~ KindOf (Let0123456789PSym1 arg) =>
+        Let0123456789PSym0KindInference
+    type instance Apply Let0123456789PSym0 l = Let0123456789PSym1 l
+    type family Let0123456789P wild_0123456789 wild_0123456789 where
+      Let0123456789P wild_0123456789 wild_0123456789 = Apply (Apply Tuple2Sym0 wild_0123456789) wild_0123456789
+    type Let0123456789PSym0 = Let0123456789P
+    type family Let0123456789P where
+      Let0123456789P = NothingSym0
+    type Let0123456789PSym3 t t t = Let0123456789P t t t
+    instance SuppressUnusedWarnings Let0123456789PSym2 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Let0123456789PSym2KindInference GHC.Tuple.())
+    data Let0123456789PSym2 l l l
+      = forall arg. KindOf (Apply (Let0123456789PSym2 l l) arg) ~ KindOf (Let0123456789PSym3 l l arg) =>
+        Let0123456789PSym2KindInference
+    type instance Apply (Let0123456789PSym2 l l) l = Let0123456789PSym3 l l l
+    instance SuppressUnusedWarnings Let0123456789PSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Let0123456789PSym1KindInference GHC.Tuple.())
+    data Let0123456789PSym1 l l
+      = forall arg. KindOf (Apply (Let0123456789PSym1 l) arg) ~ KindOf (Let0123456789PSym2 l arg) =>
+        Let0123456789PSym1KindInference
+    type instance Apply (Let0123456789PSym1 l) l = Let0123456789PSym2 l l
+    instance SuppressUnusedWarnings Let0123456789PSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Let0123456789PSym0KindInference GHC.Tuple.())
+    data Let0123456789PSym0 l
+      = forall arg. KindOf (Apply Let0123456789PSym0 arg) ~ KindOf (Let0123456789PSym1 arg) =>
+        Let0123456789PSym0KindInference
+    type instance Apply Let0123456789PSym0 l = Let0123456789PSym1 l
+    type family Let0123456789P wild_0123456789
+                               wild_0123456789
+                               wild_0123456789 where
+      Let0123456789P wild_0123456789 wild_0123456789 wild_0123456789 = Apply JustSym0 (Apply (Apply (Apply BazSym0 wild_0123456789) wild_0123456789) wild_0123456789)
     type Let0123456789XSym1 t = Let0123456789X t
     instance SuppressUnusedWarnings Let0123456789XSym0 where
       suppressUnusedWarnings _
@@ -138,10 +149,11 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789XSym0 arg) ~ KindOf (Let0123456789XSym1 arg) =>
         Let0123456789XSym0KindInference
     type instance Apply Let0123456789XSym0 l = Let0123456789XSym1 l
-    type Let0123456789X wild_0123456789 =
-        Apply JustSym0 wild_0123456789
+    type family Let0123456789X wild_0123456789 where
+      Let0123456789X wild_0123456789 = Apply JustSym0 wild_0123456789
     type Let0123456789PSym0 = Let0123456789P
-    type Let0123456789P = NothingSym0
+    type family Let0123456789P where
+      Let0123456789P = NothingSym0
     type FooSym1 (t :: [Nat]) = Foo t
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings _
@@ -185,7 +197,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     type family Foo (a :: [Nat]) :: [Nat] where
       Foo '[] = Let0123456789PSym0
       Foo '[wild_0123456789] = Let0123456789PSym1 wild_0123456789
-      Foo ((:) wild_0123456789 wild_0123456789) = Let0123456789PSym2 wild_0123456789 wild_0123456789
+      Foo ((:) wild_0123456789 ((:) wild_0123456789 wild_0123456789)) = Let0123456789PSym3 wild_0123456789 wild_0123456789 wild_0123456789
     type family Tup (a :: (Nat, Nat)) :: (Nat, Nat) where
       Tup '(wild_0123456789,
             wild_0123456789) = Let0123456789PSym2 wild_0123456789 wild_0123456789
@@ -228,23 +240,29 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
                       SNil
               in sP
         in lambda sWild_0123456789
-    sFoo (SCons sWild_0123456789 sWild_0123456789)
+    sFoo
+      (SCons sWild_0123456789 (SCons sWild_0123456789 sWild_0123456789))
       = let
           lambda ::
             forall wild_0123456789
-                   wild_0123456789. t ~ Apply (Apply (:$) wild_0123456789) wild_0123456789 =>
+                   wild_0123456789
+                   wild_0123456789. t ~ Apply (Apply (:$) wild_0123456789) (Apply (Apply (:$) wild_0123456789) wild_0123456789) =>
             Sing wild_0123456789
             -> Sing wild_0123456789
-               -> Sing (Apply FooSym0 (Apply (Apply (:$) wild_0123456789) wild_0123456789))
-          lambda wild_0123456789 wild_0123456789
+               -> Sing wild_0123456789
+                  -> Sing (Apply FooSym0 (Apply (Apply (:$) wild_0123456789) (Apply (Apply (:$) wild_0123456789) wild_0123456789)))
+          lambda wild_0123456789 wild_0123456789 wild_0123456789
             = let
-                sP :: Sing (Let0123456789PSym2 wild_0123456789 wild_0123456789)
+                sP ::
+                  Sing (Let0123456789PSym3 wild_0123456789 wild_0123456789 wild_0123456789)
                 sP
                   = applySing
                       (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) wild_0123456789)
-                      wild_0123456789
+                      (applySing
+                         (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) wild_0123456789)
+                         wild_0123456789)
               in sP
-        in lambda sWild_0123456789 sWild_0123456789
+        in lambda sWild_0123456789 sWild_0123456789 sWild_0123456789
     sTup (STuple2 sWild_0123456789 sWild_0123456789)
       = let
           lambda ::

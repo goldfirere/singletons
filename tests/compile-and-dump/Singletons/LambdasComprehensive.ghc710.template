@@ -24,10 +24,10 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type BarSym0 = Bar
     type FooSym0 = Foo
-    type Bar =
-        (Apply (Apply MapSym0 (Apply (Apply Either_Sym0 PredSym0) SuccSym0)) (Apply (Apply (:$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) '[])) :: [Nat])
-    type Foo =
-        (Apply (Apply MapSym0 Lambda_0123456789Sym0) (Apply (Apply (:$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) '[])) :: [Nat])
+    type family Bar :: [Nat] where
+      Bar = (Apply (Apply MapSym0 (Apply (Apply Either_Sym0 PredSym0) SuccSym0)) (Apply (Apply (:$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) '[])) :: [Nat])
+    type family Foo :: [Nat] where
+      Foo = (Apply (Apply MapSym0 Lambda_0123456789Sym0) (Apply (Apply (:$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) '[])) :: [Nat])
     sBar :: Sing BarSym0
     sFoo :: Sing FooSym0
     sBar

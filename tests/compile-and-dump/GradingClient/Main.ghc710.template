@@ -38,20 +38,20 @@ GradingClient/Main.hs:(0,0)-(0,0): Splicing declarations
     type LastNameSym0 = LastName
     type GradingSchemaSym0 = GradingSchema
     type NamesSym0 = Names
-    type MajorName =
-        (Apply (Apply (:$) CMSym0) (Apply (Apply (:$) CASym0) (Apply (Apply (:$) CJSym0) (Apply (Apply (:$) COSym0) (Apply (Apply (:$) CRSym0) '[])))) :: [AChar])
-    type GradeName =
-        (Apply (Apply (:$) CGSym0) (Apply (Apply (:$) CRSym0) (Apply (Apply (:$) CASym0) (Apply (Apply (:$) CDSym0) (Apply (Apply (:$) CESym0) '[])))) :: [AChar])
-    type YearName =
-        (Apply (Apply (:$) CYSym0) (Apply (Apply (:$) CESym0) (Apply (Apply (:$) CASym0) (Apply (Apply (:$) CRSym0) '[]))) :: [AChar])
-    type FirstName =
-        (Apply (Apply (:$) CFSym0) (Apply (Apply (:$) CISym0) (Apply (Apply (:$) CRSym0) (Apply (Apply (:$) CSSym0) (Apply (Apply (:$) CTSym0) '[])))) :: [AChar])
-    type LastName =
-        (Apply (Apply (:$) CLSym0) (Apply (Apply (:$) CASym0) (Apply (Apply (:$) CSSym0) (Apply (Apply (:$) CTSym0) '[]))) :: [AChar])
-    type GradingSchema =
-        (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 LastNameSym0) STRINGSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 YearNameSym0) NATSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 GradeNameSym0) NATSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 MajorNameSym0) BOOLSym0)) '[]))))) :: Schema)
-    type Names =
-        (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 LastNameSym0) STRINGSym0)) '[])) :: Schema)
+    type family MajorName :: [AChar] where
+      MajorName = (Apply (Apply (:$) CMSym0) (Apply (Apply (:$) CASym0) (Apply (Apply (:$) CJSym0) (Apply (Apply (:$) COSym0) (Apply (Apply (:$) CRSym0) '[])))) :: [AChar])
+    type family GradeName :: [AChar] where
+      GradeName = (Apply (Apply (:$) CGSym0) (Apply (Apply (:$) CRSym0) (Apply (Apply (:$) CASym0) (Apply (Apply (:$) CDSym0) (Apply (Apply (:$) CESym0) '[])))) :: [AChar])
+    type family YearName :: [AChar] where
+      YearName = (Apply (Apply (:$) CYSym0) (Apply (Apply (:$) CESym0) (Apply (Apply (:$) CASym0) (Apply (Apply (:$) CRSym0) '[]))) :: [AChar])
+    type family FirstName :: [AChar] where
+      FirstName = (Apply (Apply (:$) CFSym0) (Apply (Apply (:$) CISym0) (Apply (Apply (:$) CRSym0) (Apply (Apply (:$) CSSym0) (Apply (Apply (:$) CTSym0) '[])))) :: [AChar])
+    type family LastName :: [AChar] where
+      LastName = (Apply (Apply (:$) CLSym0) (Apply (Apply (:$) CASym0) (Apply (Apply (:$) CSSym0) (Apply (Apply (:$) CTSym0) '[]))) :: [AChar])
+    type family GradingSchema :: Schema where
+      GradingSchema = (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 LastNameSym0) STRINGSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 YearNameSym0) NATSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 GradeNameSym0) NATSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 MajorNameSym0) BOOLSym0)) '[]))))) :: Schema)
+    type family Names :: Schema where
+      Names = (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0)) (Apply (Apply (:$) (Apply (Apply AttrSym0 LastNameSym0) STRINGSym0)) '[])) :: Schema)
     sMajorName :: Sing MajorNameSym0
     sGradeName :: Sing GradeNameSym0
     sYearName :: Sing YearNameSym0

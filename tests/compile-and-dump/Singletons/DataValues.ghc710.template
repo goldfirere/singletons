@@ -35,14 +35,14 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
     type TupleSym0 = Tuple
     type ComplexSym0 = Complex
     type PrSym0 = Pr
-    type AList =
-        Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) '[]))
-    type Tuple =
-        Apply (Apply (Apply Tuple3Sym0 FalseSym0) (Apply JustSym0 ZeroSym0)) TrueSym0
-    type Complex =
-        Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
-    type Pr =
-        Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) ZeroSym0) '[])
+    type family AList where
+      AList = Apply (Apply (:$) ZeroSym0) (Apply (Apply (:$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) '[]))
+    type family Tuple where
+      Tuple = Apply (Apply (Apply Tuple3Sym0 FalseSym0) (Apply JustSym0 ZeroSym0)) TrueSym0
+    type family Complex where
+      Complex = Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
+    type family Pr where
+      Pr = Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:$) ZeroSym0) '[])
     sAList :: Sing AListSym0
     sTuple :: Sing TupleSym0
     sComplex :: Sing ComplexSym0

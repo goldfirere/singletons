@@ -169,7 +169,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type X_0123456789Sym0 = X_0123456789
     type X_0123456789Sym0 = X_0123456789
     type X_0123456789Sym0 = X_0123456789
-    type False_ = FalseSym0
+    type family False_ where
+      False_ = FalseSym0
     type family Not (a :: Bool) :: Bool where
       Not True = FalseSym0
       Not False = TrueSym0
@@ -183,18 +184,24 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       H a_0123456789 = Apply (Case_0123456789 a_0123456789 X_0123456789Sym0) a_0123456789
     type family I (a :: Bool) :: Bool where
       I a_0123456789 = Apply (Case_0123456789 a_0123456789 X_0123456789Sym0) a_0123456789
-    type J = (Case_0123456789 X_0123456789Sym0 :: Bool)
-    type K = (Case_0123456789 X_0123456789Sym0 :: Bool)
-    type L = (Case_0123456789 X_0123456789Sym0 :: Bool)
-    type M = (Case_0123456789 X_0123456789Sym0 :: Bool)
-    type Otherwise = (TrueSym0 :: Bool)
-    type X_0123456789 =
-        Apply (Apply (:$) NotSym0) (Apply (Apply (:$) IdSym0) '[])
-    type X_0123456789 = Apply (Apply Tuple2Sym0 FSym0) GSym0
-    type X_0123456789 =
-        Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0)
-    type X_0123456789 =
-        Apply (Apply (:$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:$) (Apply IdSym0 FalseSym0)) '[])
+    type family J :: Bool where
+      J = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type family K :: Bool where
+      K = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type family L :: Bool where
+      L = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type family M :: Bool where
+      M = (Case_0123456789 X_0123456789Sym0 :: Bool)
+    type family Otherwise :: Bool where
+      Otherwise = (TrueSym0 :: Bool)
+    type family X_0123456789 where
+      X_0123456789 = Apply (Apply (:$) NotSym0) (Apply (Apply (:$) IdSym0) '[])
+    type family X_0123456789 where
+      X_0123456789 = Apply (Apply Tuple2Sym0 FSym0) GSym0
+    type family X_0123456789 where
+      X_0123456789 = Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0)
+    type family X_0123456789 where
+      X_0123456789 = Apply (Apply (:$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:$) (Apply IdSym0 FalseSym0)) '[])
     sFalse_ :: Sing False_Sym0
     sNot :: forall (t :: Bool). Sing t -> Sing (Apply NotSym0 t)
     sId :: forall (t :: a). Sing t -> Sing (Apply IdSym0 t)

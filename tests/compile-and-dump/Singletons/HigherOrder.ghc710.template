@@ -95,7 +95,8 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym1 arg) =>
         Let0123456789Scrutinee_0123456789Sym0KindInference
     type instance Apply Let0123456789Scrutinee_0123456789Sym0 l = Let0123456789Scrutinee_0123456789Sym1 l
-    type Let0123456789Scrutinee_0123456789 ns bs n b = b
+    type family Let0123456789Scrutinee_0123456789 ns bs n b where
+      Let0123456789Scrutinee_0123456789 ns bs n b = b
     type family Case_0123456789 ns bs n b t where
       Case_0123456789 ns bs n b True = Apply SuccSym0 (Apply SuccSym0 n)
       Case_0123456789 ns bs n b False = n
@@ -172,11 +173,11 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Let0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym1 arg) =>
         Let0123456789Scrutinee_0123456789Sym0KindInference
     type instance Apply Let0123456789Scrutinee_0123456789Sym0 l = Let0123456789Scrutinee_0123456789Sym1 l
-    type Let0123456789Scrutinee_0123456789 n
-                                            b
-                                            a_0123456789
-                                            a_0123456789 =
-        b
+    type family Let0123456789Scrutinee_0123456789 n
+                                                  b
+                                                  a_0123456789
+                                                  a_0123456789 where
+      Let0123456789Scrutinee_0123456789 n b a_0123456789 a_0123456789 = b
     type family Case_0123456789 n b a_0123456789 a_0123456789 t where
       Case_0123456789 n b a_0123456789 a_0123456789 True = Apply SuccSym0 (Apply SuccSym0 n)
       Case_0123456789 n b a_0123456789 a_0123456789 False = n
