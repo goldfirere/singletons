@@ -33,7 +33,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       toSing True = SomeSing STrue
     data instance Sing (z :: Foo)
       = forall (n :: Bool) (n :: Bool). z ~ Bar n n =>
-        SBar (Sing n) (Sing n)
+        SBar (Sing (n :: Bool)) (Sing (n :: Bool))
     type SFoo (z :: Foo) = Sing z
     instance SingKind (KProxy :: KProxy Foo) where
       type DemoteRep (KProxy :: KProxy Foo) = Foo
@@ -203,17 +203,18 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type family X_0123456789 where
       X_0123456789 = Apply (Apply (:$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:$) (Apply IdSym0 FalseSym0)) '[])
     sFalse_ :: Sing False_Sym0
-    sNot :: forall (t :: Bool). Sing t -> Sing (Apply NotSym0 t)
-    sId :: forall (t :: a). Sing t -> Sing (Apply IdSym0 t)
-    sF :: forall (t :: Bool). Sing t -> Sing (Apply FSym0 t)
-    sG :: forall (t :: Bool). Sing t -> Sing (Apply GSym0 t)
-    sH :: forall (t :: Bool). Sing t -> Sing (Apply HSym0 t)
-    sI :: forall (t :: Bool). Sing t -> Sing (Apply ISym0 t)
-    sJ :: Sing JSym0
-    sK :: Sing KSym0
-    sL :: Sing LSym0
-    sM :: Sing MSym0
-    sOtherwise :: Sing OtherwiseSym0
+    sNot ::
+      forall (t :: Bool). Sing t -> Sing (Apply NotSym0 t :: Bool)
+    sId :: forall (t :: a). Sing t -> Sing (Apply IdSym0 t :: a)
+    sF :: forall (t :: Bool). Sing t -> Sing (Apply FSym0 t :: Bool)
+    sG :: forall (t :: Bool). Sing t -> Sing (Apply GSym0 t :: Bool)
+    sH :: forall (t :: Bool). Sing t -> Sing (Apply HSym0 t :: Bool)
+    sI :: forall (t :: Bool). Sing t -> Sing (Apply ISym0 t :: Bool)
+    sJ :: Sing (JSym0 :: Bool)
+    sK :: Sing (KSym0 :: Bool)
+    sL :: Sing (LSym0 :: Bool)
+    sM :: Sing (MSym0 :: Bool)
+    sOtherwise :: Sing (OtherwiseSym0 :: Bool)
     sX_0123456789 :: Sing X_0123456789Sym0
     sX_0123456789 :: Sing X_0123456789Sym0
     sX_0123456789 :: Sing X_0123456789Sym0

@@ -13,7 +13,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply SuccSym0 l = SuccSym1 l
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
-        forall (n :: Nat). z ~ Succ n => SSucc (Sing n)
+        forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
     type SNat (z :: Nat) = Sing z
     instance SingKind (KProxy :: KProxy Nat) where
       type DemoteRep (KProxy :: KProxy Nat) = Nat
@@ -139,12 +139,13 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       InsertionSort ((:) h t) = Apply (Apply InsertSym0 h) (Apply InsertionSortSym0 t)
     sLeq ::
       forall (t :: Nat) (t :: Nat).
-      Sing t -> Sing t -> Sing (Apply (Apply LeqSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply LeqSym0 t) t :: Bool)
     sInsert ::
       forall (t :: Nat) (t :: [Nat]).
-      Sing t -> Sing t -> Sing (Apply (Apply InsertSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply InsertSym0 t) t :: [Nat])
     sInsertionSort ::
-      forall (t :: [Nat]). Sing t -> Sing (Apply InsertionSortSym0 t)
+      forall (t :: [Nat]).
+      Sing t -> Sing (Apply InsertionSortSym0 t :: [Nat])
     sLeq SZero _s_z_0123456789
       = let
           lambda ::

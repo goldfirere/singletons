@@ -57,13 +57,13 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
       IdFoo _z_0123456789 a_0123456789 = Apply IdSym0 a_0123456789
     type family ReturnFunc (a :: Nat) (a :: Nat) :: Nat where
       ReturnFunc _z_0123456789 a_0123456789 = Apply SuccSym0 a_0123456789
-    sId :: forall (t :: a). Sing t -> Sing (Apply IdSym0 t)
+    sId :: forall (t :: a). Sing t -> Sing (Apply IdSym0 t :: a)
     sIdFoo ::
       forall (t :: c) (t :: a).
-      Sing t -> Sing t -> Sing (Apply (Apply IdFooSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply IdFooSym0 t) t :: a)
     sReturnFunc ::
       forall (t :: Nat) (t :: Nat).
-      Sing t -> Sing t -> Sing (Apply (Apply ReturnFuncSym0 t) t)
+      Sing t -> Sing t -> Sing (Apply (Apply ReturnFuncSym0 t) t :: Nat)
     sId sX
       = let
           lambda :: forall x. t ~ x => Sing x -> Sing (Apply IdSym0 x)
