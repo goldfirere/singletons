@@ -9,7 +9,7 @@ import SingletonsTestSuiteUtils ( compileAndDumpStdTest, compileAndDumpTest
 
 main :: IO ()
 main = do
-  cleanFiles
+--  cleanFiles    We really need to parallelize the testsuite.
   defaultMain tests
 
 tests :: TestTree
@@ -42,13 +42,13 @@ tests =
     , compileAndDumpStdTest "T33"
     , compileAndDumpStdTest "T54"
     , compileAndDumpStdTest "Names"
+    , compileAndDumpStdTest "Classes"
+    , compileAndDumpStdTest "Classes2"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"
     , compileAndDumpStdTest "GenDefunSymbols"
     , compileAndDumpStdTest "Newtypes"
-    , compileAndDumpStdTest "Classes"
-    , compileAndDumpStdTest "Classes2"
     , compileAndDumpStdTest "Pragmas"
     , compileAndDumpStdTest "OrdDeriving"
     , compileAndDumpStdTest "BoundedDeriving"

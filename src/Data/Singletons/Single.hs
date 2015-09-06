@@ -135,10 +135,8 @@ singEqualityInstance desc@(_, className, _) name = do
   return $ decToTH eqInstance
 
 singInfo :: DsMonad q => DInfo -> q [DDec]
-singInfo (DTyConI dec Nothing) =
+singInfo (DTyConI dec _) =
   singTopLevelDecs [] [dec]
-singInfo (DTyConI {}) =
-  fail "Singling of things with instances not yet supported" -- TODO: fix
 singInfo (DPrimTyConI _name _numArgs _unlifted) =
   fail "Singling of primitive type constructors not supported"
 singInfo (DVarI _name _ty _mdec _fixity) =
@@ -217,8 +215,9 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
   let fixities' = map (uncurry singInfixDecl) fixities
   cls_cxt' <- mapM singPred cls_cxt
   (kproxies, kproxy_pred) <- mkKProxies (map extractTvbName cls_tvbs)
+
   return $ DClassD (cls_cxt' ++ kproxy_pred)
-                   cls_name kproxies
+                   (singClassName cls_name) kproxies
                    []   -- functional dependencies
                    (map DLetDec (sing_sigs ++ sing_meths ++ fixities') ++ default_sigs)
   where
@@ -232,7 +231,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
     add_constraints meth_name sty = do  -- Maybe monad
       prom_dflt <- Map.lookup meth_name promoted_defaults
       let default_pred = foldl DAppPr (DConPr equalityName)
-                               [ foldType  (promoteValRhs meth_name) tvs
+                               [ foldApply (promoteValRhs meth_name) tvs
                                , foldApply prom_dflt tvs ]
       return $ DForallT tvbs (default_pred : cxt) (ravel args res)
       where
@@ -261,9 +260,9 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
               _ -> fail $ "Cannot find type of method " ++ show name
       (s_ty, _num_args, tyvar_names) <- singType (promoteValRhs name) ty
       meth' <- singLetDecRHS (Map.singleton name tyvar_names) name rhs
-      return $ map DLetDec [DSigD (promoteValNameLhs name) s_ty, meth']
+      return $ map DLetDec [DSigD (singValName name) s_ty, meth']
 
-singLetDecEnv :: ALetDecEnv -> SgM a -> SgM ([DLetDec], a)
+singLetDecEnv :: ALetDecEnv -> CtSgM a -> CtSgM ([DLetDec], a)
 singLetDecEnv (LetDecEnv { lde_defns = defns
                          , lde_types = types
                          , lde_infix = infix_decls
@@ -325,7 +324,7 @@ singTySig defns types name prom_ty =
                                     (foldl apply prom_ty (map DVarT arg_names))))
              , arg_names )
 
-singLetDecRHS :: Map Name [Name] -> Name -> ALetDecRHS -> SgM DLetDec
+singLetDecRHS :: Map Name [Name] -> Name -> ALetDecRHS -> CtSgM DLetDec
 singLetDecRHS _bound_names name (AValue prom num_arrows exp) =
   DValD (DVarPa (singValName name)) <$>
   (wrapUnSingFun num_arrows prom <$> singExp exp)
@@ -343,7 +342,7 @@ singClause :: DType   -- the promoted function
            -> [Name]  -- the names of the forall'd vars in the type sig of this
                       -- function. This list should have at least the length as the
                       -- number of patterns in the clause
-           -> ADClause -> SgM DClause
+           -> ADClause -> CtSgM DClause
 singClause prom_fun num_arrows bound_names (ADClause var_proms pats exp) = do
   (sPats, prom_pats)
     <- mapAndUnzipM (singPat (Map.fromList var_proms) Parameter) pats
@@ -433,7 +432,7 @@ singPat _var_proms _patCxt DWildPa =
 -- calls. Specifically, DON'T do the applySing stuff. Just use sError, which
 -- has a custom type (Sing x -> a) anyway.
 
-singExp :: ADExp -> SgM DExp
+singExp :: ADExp -> CtSgM DExp
   -- See Note [Why error is so special]
 singExp (ADVarE err `ADAppE` arg)
   | err == errorName = DAppE (DVarE (singValName err)) <$> singExp arg
@@ -459,7 +458,7 @@ singExp (ADSigE {}) =
   fail "Singling of explicit type annotations not yet supported."
 
 singMatch :: DType  -- ^ the promoted scrutinee
-          -> ADMatch -> SgM DMatch
+          -> ADMatch -> CtSgM DMatch
 singMatch prom_scrut (ADMatch var_proms prom_match pat exp) = do
   (sPat, prom_pat)
     <- singPat (Map.fromList var_proms) CaseStatement pat
@@ -474,5 +473,8 @@ singMatch prom_scrut (ADMatch var_proms prom_match pat exp) = do
           singExp exp
   return $ DMatch sPat sExp
 
-singLit :: Lit -> SgM DExp
-singLit lit = DSigE (DVarE singMethName) <$> (DAppT singFamily <$> (promoteLitExp lit))
+singLit :: Lit -> CtSgM DExp
+singLit lit = do
+  prom_lit <- promoteLitExp lit
+  emit (DConPr singIName `DAppPr` prom_lit)
+  return $ DSigE (DVarE singMethName) (DAppT singFamily prom_lit)

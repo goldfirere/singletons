@@ -92,6 +92,7 @@ ghcOpts = extraOpts ++ [
   , "-fforce-recomp"
   , "-fprint-explicit-kinds"
   , "-i" ++ includePath   -- necessary because some tests use these modules
+  , "-itests/compile-and-dump"
   , "-XTemplateHaskell"
   , "-XDataKinds"
   , "-XKindSignatures"

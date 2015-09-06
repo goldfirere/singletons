@@ -36,7 +36,7 @@ import Data.Singletons.Single
 import Data.Singletons
 import GHC.TypeLits
 
-$(promoteOnly [d|
+$(singletonsOnly [d|
   -- | Basic numeric class.
   --
   -- Minimal complete definition: all except 'negate' or @(-)@
@@ -64,28 +64,6 @@ $(promoteOnly [d|
 
       negate x            = 0 - x
   |])
-
-class kproxy ~ 'KProxy => SNum (kproxy :: KProxy a) where
-  (%:+) :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :+ y)
-  infixl 6 %:+
-  (%:-) :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :- y)
-  infixl 6 %:-
-  (%:*) :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :* y)
-  infixl 7 %:*
-  sNegate :: forall (x :: a). Sing x -> Sing (Negate x)
-  sAbs :: forall (x :: a). Sing x -> Sing (Abs x)
-  sSignum :: forall (x :: a). Sing x -> Sing (Signum x)
-  sFromInteger :: forall (n :: Nat). Sing n -> Sing (FromInteger n :: a)
-
-  default (%:-) :: forall (x :: a) (y :: a).
-                   ((x :- y) ~ (x :+ Negate y))
-                => Sing x -> Sing y -> Sing (x :- y)
-  x %:- y = x %:+ sNegate y
-
-  default sNegate :: forall (x :: a).
-                     (Negate x ~ (FromInteger 0 :- x), SingI 0)
-                  => Sing x -> Sing (Negate x)
-  sNegate x = sFromInteger (sing :: Sing 0) %:- x
 
 $(singletonsOnly [d|
   subtract :: Num a => a -> a -> a
