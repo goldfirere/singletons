@@ -36,7 +36,6 @@ module Data.Singletons.Prelude.Enum (
 
 import Data.Singletons.Promote
 import Data.Singletons.Single
-import Data.Singletons
 import Data.Singletons.Util
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Base
@@ -44,7 +43,6 @@ import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.TypeLits
-import GHC.TypeLits
 
 $(singletonsOnly [d|
   class Bounded a where
