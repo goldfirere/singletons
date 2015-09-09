@@ -6,6 +6,10 @@ Changelog for singletons project
 
 * Instance promotion now works properly -- it was quite buggy in 1.0.
 
+* Classes and instances can now be singletonized.
+
+* Limited support for functional dependencies.
+
 * We now have promoted and singletonized versions of `Enum`, as well as `Bounded`.
 
 * Ditto for `Num`, which includes an instance for `Nat`, naturally.

@@ -31,6 +31,7 @@ data DataDecl      = DataDecl NewOrData Name [DTyVarBndr] [DCon] [Name]
 data ClassDecl ann = ClassDecl { cd_cxt  :: DCxt
                                , cd_name :: Name
                                , cd_tvbs :: [DTyVarBndr]
+                               , cd_fds  :: [FunDep]
                                , cd_lde  :: LetDecEnv ann }
 
 data InstDecl  ann = InstDecl { id_cxt     :: DCxt
@@ -64,11 +65,12 @@ partitionDec :: Monad m => DDec -> m PartitionedDecs
 partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
 partitionDec (DDataD nd _cxt name tvbs cons derivings) =
   return $ mempty { pd_data_decs = [DataDecl nd name tvbs cons derivings] }
-partitionDec (DClassD cxt name tvbs _fds decs) = do
+partitionDec (DClassD cxt name tvbs fds decs) = do
   env <- concatMapM partitionClassDec decs
   return $ mempty { pd_class_decs = [ClassDecl { cd_cxt  = cxt
                                                , cd_name = name
                                                , cd_tvbs = tvbs
+                                               , cd_fds  = fds
                                                , cd_lde  = env }] }
 partitionDec (DInstanceD cxt ty decs) = do
   defns <- liftM catMaybes $ mapM partitionInstanceDec decs

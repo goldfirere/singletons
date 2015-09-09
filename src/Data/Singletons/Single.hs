@@ -203,6 +203,7 @@ singClassD :: AClassDecl -> SgM DDec
 singClassD (ClassDecl { cd_cxt  = cls_cxt
                       , cd_name = cls_name
                       , cd_tvbs = cls_tvbs
+                      , cd_fds  = cls_fundeps
                       , cd_lde  = LetDecEnv { lde_defns = default_defns
                                             , lde_types = meth_sigs
                                             , lde_infix = fixities
@@ -222,7 +223,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
 
   return $ DClassD (cls_cxt' ++ kproxy_pred)
                    (singClassName cls_name) kproxies
-                   []   -- functional dependencies
+                   cls_fundeps   -- they are fine without modification
                    (map DLetDec (sing_sigs ++ sing_meths ++ fixities') ++ default_sigs)
   where
     no_meth_defns = error "Internal error: can't find declared method type"

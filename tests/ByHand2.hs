@@ -1,5 +1,7 @@
 {-# LANGUAGE DataKinds, PolyKinds, TypeFamilies, GADTs, TypeOperators,
-             DefaultSignatures, ScopedTypeVariables, InstanceSigs #-}
+             DefaultSignatures, ScopedTypeVariables, InstanceSigs,
+             MultiParamTypeClasses, FunctionalDependencies,
+             UndecidableInstances #-}
 
 module ByHand2 where
 
@@ -162,3 +164,42 @@ instance PPointed ('KProxy :: KProxy Nat) where
 
 instance SPointed ('KProxy :: KProxy Nat) where
   sPoint = SZero
+
+--------------------------------
+
+class FD a b | a -> b where
+  meth :: a -> a
+  l2r  :: a -> b
+
+instance FD Bool Nat where
+  meth = not
+  l2r False = Zero
+  l2r True = Succ Zero
+
+t1 = meth True
+t2 = l2r False
+
+class (kp1 ~ 'KProxy, kp2 ~ 'KProxy) => PFD (kp1 :: KProxy a) (kp2 :: KProxy b) | a -> b where
+  type Meth (x :: a) :: a
+  type L2r (x :: a) :: b
+
+instance PFD ('KProxy :: KProxy Bool) ('KProxy :: KProxy Nat) where
+  type Meth a = Not a
+  type L2r 'False = 'Zero
+  type L2r 'True = 'Succ 'Zero
+
+type T1 = Meth 'True
+type T2 = L2r 'False
+
+class (kp1 ~ 'KProxy, kp2 ~ 'KProxy) => SFD (kp1 :: KProxy a) (kp2 :: KProxy b) | a -> b where
+  sMeth :: forall (x :: a). Sing x -> Sing (Meth x :: a)
+  sL2r :: forall (x :: a). Sing x -> Sing (L2r x :: b)
+
+instance SFD ('KProxy :: KProxy Bool) ('KProxy :: KProxy Nat) where
+  sMeth x = sNot x
+  sL2r SFalse = SZero
+  sL2r STrue = SSucc SZero
+
+sT1 = sMeth STrue
+sT2 :: Sing T2
+sT2 = sL2r SFalse

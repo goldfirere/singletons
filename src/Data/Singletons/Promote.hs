@@ -234,6 +234,7 @@ promoteClassDec :: UClassDecl
 promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
                                 , cd_name = cls_name
                                 , cd_tvbs = tvbs
+                                , cd_fds  = fundeps
                                 , cd_lde  = lde@LetDecEnv
                                     { lde_defns = defaults
                                     , lde_types = meth_sigs
@@ -251,7 +252,9 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
     <- mapAndUnzip3M (promoteMethod Map.empty meth_sigs) defaults_list
 
   let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
-  emitDecs [DClassD cxt' pClsName ptvbs []
+
+  -- no need to do anything to the fundeps. They work as is!
+  emitDecs [DClassD cxt' pClsName ptvbs fundeps
                     (sig_decs ++ default_decs ++ infix_decls')]
   let defaults_list' = zip defaults_names ann_rhss
       proms          = zip defaults_names prom_rhss

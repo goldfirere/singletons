@@ -45,6 +45,7 @@ tests =
     , compileAndDumpStdTest "Names"
     , compileAndDumpStdTest "Classes"
     , compileAndDumpStdTest "Classes2"
+    , compileAndDumpStdTest "FunDeps"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

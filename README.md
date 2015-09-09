@@ -382,6 +382,7 @@ The following constructs are fully supported:
 * lambda expressions
 * `!` and `~` patterns (silently but successfully ignored during promotion)
 * class and instance declarations
+* functional dependencies (with limitations -- see below)
 
 The following constructs are supported for promotion but not singleton generation:
 
@@ -467,3 +468,7 @@ Known bugs
   happen only with certain uses where the constraint is needed inside of a
   `case` or lambda-expression. Having type inference on result types nearby
   makes this more likely to bite.
+* Inference dependent on functional dependencies is unpredictably bad. The
+  problem is that a use of an associated type family tied to a class with
+  fundeps doesn't provoke the fundep to kick in. This is GHC's problem, in
+  the end.
