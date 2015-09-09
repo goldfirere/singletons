@@ -109,6 +109,8 @@ ghcOpts = extraOpts ++ [
   , "-XIncoherentInstances"
   , "-XLambdaCase"
   , "-XUnboxedTuples"
+  , "-XInstanceSigs"
+  , "-XDefaultSignatures"
   ]
 
 -- Note [-this-package-key hack]

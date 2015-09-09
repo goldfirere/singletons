@@ -46,7 +46,7 @@ library
                       mtl >= 2.1.2,
                       template-haskell,
                       containers >= 0.5,
-                      th-desugar >= 1.5.2 && < 1.6
+                      th-desugar >= 1.5.4.1 && < 1.6
   default-language:   Haskell2010
   other-extensions:   TemplateHaskell
         -- TemplateHaskell must be listed in cabal file to work with
@@ -98,6 +98,7 @@ library
                       Data.Singletons.Single.Eq,
                       Data.Singletons.Single.Data,
                       Data.Singletons.Single,
+                      Data.Singletons.TypeLits.Internal,
                       Data.Singletons.Syntax
 
   ghc-options:        -Wall

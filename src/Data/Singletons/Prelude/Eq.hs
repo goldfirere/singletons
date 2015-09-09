@@ -28,6 +28,9 @@ import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Type.Equality
 
+-- NB: These must be defined by hand because of the custom handling of the
+-- default for (:==) to use Data.Type.Equality.==
+
 -- | The promoted analogue of 'Eq'. If you supply no definition for '(:==)',
 -- then it defaults to a use of '(==)', from @Data.Type.Equality@.
 class kproxy ~ 'KProxy => PEq (kproxy :: KProxy a) where

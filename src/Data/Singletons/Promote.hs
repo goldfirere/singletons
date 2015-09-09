@@ -326,8 +326,8 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
     <- promoteLetDecRHS sigs_map noPrefix meth_name meth_rhs
   (arg_kis, res_ki) <- lookup_meth_ty
   meth_arg_tvs <- mapM (const $ qNewName "a") arg_kis
-  let meth_arg_kis' = map subst_ki arg_kis
-      meth_res_ki'  = subst_ki res_ki
+  let meth_arg_kis' = map (substKind subst) arg_kis
+      meth_res_ki'  = substKind subst res_ki
       eqns'         = map (apply_kis meth_arg_kis' meth_res_ki') eqns
       helperNameBase = case nameBase proName of
                          first:_ | not (isHsLetter first) -> "TFHelper"
@@ -359,17 +359,6 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
 
     default_to_star Nothing  = DStarK
     default_to_star (Just k) = k
-
-    subst_ki :: DKind -> DKind
-    subst_ki (DForallK {}) =
-      error "Higher-rank kind encountered in instance method promotion."
-    subst_ki (DVarK n) =
-      case Map.lookup n subst of
-        Just ki -> ki
-        Nothing -> DVarK n
-    subst_ki (DConK con kis) = DConK con (map subst_ki kis)
-    subst_ki (DArrowK k1 k2) = DArrowK (subst_ki k1) (subst_ki k2)
-    subst_ki DStarK = DStarK
 
     apply_kis :: [DKind] -> DKind -> DTySynEqn -> DTySynEqn
     apply_kis arg_kis res_ki (DTySynEqn lhs rhs) =

@@ -436,7 +436,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall _z_0123456789. (t ~ _z_0123456789, t ~ Apply SchSym0 '[]) =>
             Sing _z_0123456789
-            -> Sing (Apply (Apply LookupSym0 _z_0123456789) (Apply SchSym0 '[]))
+            -> Sing (Apply (Apply LookupSym0 _z_0123456789) (Apply SchSym0 '[]) :: U)
           lambda _z_0123456789 = undefined
         in lambda _s_z_0123456789
     sLookup sName (SSch (SCons (SAttr sName' sU) sAttrs))
@@ -448,7 +448,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
             -> Sing name'
                -> Sing u
                   -> Sing attrs
-                     -> Sing (Apply (Apply LookupSym0 name) (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') u)) attrs)))
+                     -> Sing (Apply (Apply LookupSym0 name) (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') u)) attrs)) :: U)
           lambda name name' u attrs
             = let
                 sScrutinee_0123456789 ::
@@ -481,7 +481,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall _z_0123456789. (t ~ _z_0123456789, t ~ Apply SchSym0 '[]) =>
             Sing _z_0123456789
-            -> Sing (Apply (Apply OccursSym0 _z_0123456789) (Apply SchSym0 '[]))
+            -> Sing (Apply (Apply OccursSym0 _z_0123456789) (Apply SchSym0 '[]) :: Bool)
           lambda _z_0123456789 = SFalse
         in lambda _s_z_0123456789
     sOccurs sName (SSch (SCons (SAttr sName' _s_z_0123456789) sAttrs))
@@ -493,7 +493,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
             -> Sing name'
                -> Sing _z_0123456789
                   -> Sing attrs
-                     -> Sing (Apply (Apply OccursSym0 name) (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') _z_0123456789)) attrs)))
+                     -> Sing (Apply (Apply OccursSym0 name) (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') _z_0123456789)) attrs)) :: Bool)
           lambda name name' _z_0123456789 attrs
             = applySing
                 (applySing
@@ -509,7 +509,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall _z_0123456789. (t ~ _z_0123456789, t ~ Apply SchSym0 '[]) =>
             Sing _z_0123456789
-            -> Sing (Apply (Apply AttrNotInSym0 _z_0123456789) (Apply SchSym0 '[]))
+            -> Sing (Apply (Apply AttrNotInSym0 _z_0123456789) (Apply SchSym0 '[]) :: Bool)
           lambda _z_0123456789 = STrue
         in lambda _s_z_0123456789
     sAttrNotIn
@@ -528,7 +528,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                -> Sing name'
                   -> Sing _z_0123456789
                      -> Sing t
-                        -> Sing (Apply (Apply AttrNotInSym0 (Apply (Apply AttrSym0 name) u)) (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') _z_0123456789)) t)))
+                        -> Sing (Apply (Apply AttrNotInSym0 (Apply (Apply AttrSym0 name) u)) (Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') _z_0123456789)) t)) :: Bool)
           lambda name u name' _z_0123456789 t
             = applySing
                 (applySing
@@ -547,7 +547,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall _z_0123456789. (t ~ Apply SchSym0 '[], t ~ _z_0123456789) =>
             Sing _z_0123456789
-            -> Sing (Apply (Apply DisjointSym0 (Apply SchSym0 '[])) _z_0123456789)
+            -> Sing (Apply (Apply DisjointSym0 (Apply SchSym0 '[])) _z_0123456789 :: Bool)
           lambda _z_0123456789 = STrue
         in lambda _s_z_0123456789
     sDisjoint (SSch (SCons sH sT)) sS
@@ -558,7 +558,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
             Sing h
             -> Sing t
                -> Sing s
-                  -> Sing (Apply (Apply DisjointSym0 (Apply SchSym0 (Apply (Apply (:$) h) t))) s)
+                  -> Sing (Apply (Apply DisjointSym0 (Apply SchSym0 (Apply (Apply (:$) h) t))) s :: Bool)
           lambda h t s
             = applySing
                 (applySing
@@ -578,7 +578,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
             forall s1 s2. (t ~ Apply SchSym0 s1, t ~ Apply SchSym0 s2) =>
             Sing s1
             -> Sing s2
-               -> Sing (Apply (Apply AppendSym0 (Apply SchSym0 s1)) (Apply SchSym0 s2))
+               -> Sing (Apply (Apply AppendSym0 (Apply SchSym0 s1)) (Apply SchSym0 s2) :: Schema)
           lambda s1 s2
             = applySing
                 (singFun1 (Proxy :: Proxy SchSym0) SSch)

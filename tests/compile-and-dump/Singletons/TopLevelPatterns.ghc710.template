@@ -222,24 +222,24 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     sFalse_ = SFalse
     sNot STrue
       = let
-          lambda :: t ~ TrueSym0 => Sing (Apply NotSym0 TrueSym0)
+          lambda :: t ~ TrueSym0 => Sing (Apply NotSym0 TrueSym0 :: Bool)
           lambda = SFalse
         in lambda
     sNot SFalse
       = let
-          lambda :: t ~ FalseSym0 => Sing (Apply NotSym0 FalseSym0)
+          lambda :: t ~ FalseSym0 => Sing (Apply NotSym0 FalseSym0 :: Bool)
           lambda = STrue
         in lambda
     sId sX
       = let
-          lambda :: forall x. t ~ x => Sing x -> Sing (Apply IdSym0 x)
+          lambda :: forall x. t ~ x => Sing x -> Sing (Apply IdSym0 x :: a)
           lambda x = x
         in lambda sX
     sF sA_0123456789
       = let
           lambda ::
             forall a_0123456789. t ~ a_0123456789 =>
-            Sing a_0123456789 -> Sing (Apply FSym0 a_0123456789)
+            Sing a_0123456789 -> Sing (Apply FSym0 a_0123456789 :: Bool)
           lambda a_0123456789
             = applySing
                 (case sX_0123456789 of {
@@ -260,7 +260,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             forall a_0123456789. t ~ a_0123456789 =>
-            Sing a_0123456789 -> Sing (Apply GSym0 a_0123456789)
+            Sing a_0123456789 -> Sing (Apply GSym0 a_0123456789 :: Bool)
           lambda a_0123456789
             = applySing
                 (case sX_0123456789 of {
@@ -281,7 +281,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             forall a_0123456789. t ~ a_0123456789 =>
-            Sing a_0123456789 -> Sing (Apply HSym0 a_0123456789)
+            Sing a_0123456789 -> Sing (Apply HSym0 a_0123456789 :: Bool)
           lambda a_0123456789
             = applySing
                 (case sX_0123456789 of {
@@ -302,7 +302,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             forall a_0123456789. t ~ a_0123456789 =>
-            Sing a_0123456789 -> Sing (Apply ISym0 a_0123456789)
+            Sing a_0123456789 -> Sing (Apply ISym0 a_0123456789 :: Bool)
           lambda a_0123456789
             = applySing
                 (case sX_0123456789 of {

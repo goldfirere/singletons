@@ -67,14 +67,15 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             forall m. (t ~ ZeroSym0, t ~ m) =>
-            Sing m -> Sing (Apply (Apply (:+$) ZeroSym0) m)
+            Sing m -> Sing (Apply (Apply (:+$) ZeroSym0) m :: Nat)
           lambda m = m
         in lambda sM
     (%:+) (SSucc sN) sM
       = let
           lambda ::
             forall n m. (t ~ Apply SuccSym0 n, t ~ m) =>
-            Sing n -> Sing m -> Sing (Apply (Apply (:+$) (Apply SuccSym0 n)) m)
+            Sing n
+            -> Sing m -> Sing (Apply (Apply (:+$) (Apply SuccSym0 n)) m :: Nat)
           lambda n m
             = applySing
                 (singFun1 (Proxy :: Proxy SuccSym0) SSucc)

@@ -24,7 +24,7 @@ Singletons/T33.hs:(0,0)-(0,0): Splicing declarations
                    _z_0123456789. t ~ Apply (Apply Tuple2Sym0 _z_0123456789) _z_0123456789 =>
             Sing _z_0123456789
             -> Sing _z_0123456789
-               -> Sing (Apply FooSym0 (Apply (Apply Tuple2Sym0 _z_0123456789) _z_0123456789))
+               -> Sing (Apply FooSym0 (Apply (Apply Tuple2Sym0 _z_0123456789) _z_0123456789) :: ())
           lambda _z_0123456789 _z_0123456789 = STuple0
         in lambda _s_z_0123456789 _s_z_0123456789
 

@@ -270,7 +270,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
       Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a)
     sFoo5 sX
       = let
-          lambda :: forall x. t ~ x => Sing x -> Sing (Apply Foo5Sym0 x)
+          lambda :: forall x. t ~ x => Sing x -> Sing (Apply Foo5Sym0 x :: a)
           lambda x
             = let
                 sScrutinee_0123456789 ::
@@ -310,7 +310,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
         in lambda sX
     sFoo4 sX
       = let
-          lambda :: forall x. t ~ x => Sing x -> Sing (Apply Foo4Sym0 x)
+          lambda :: forall x. t ~ x => Sing x -> Sing (Apply Foo4Sym0 x :: a)
           lambda x
             = let
                 sScrutinee_0123456789 ::
@@ -334,7 +334,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             forall a b. (t ~ a, t ~ b) =>
-            Sing a -> Sing b -> Sing (Apply (Apply Foo3Sym0 a) b)
+            Sing a -> Sing b -> Sing (Apply (Apply Foo3Sym0 a) b :: a)
           lambda a b
             = let
                 sScrutinee_0123456789 ::
@@ -361,7 +361,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
             forall d _z_0123456789. (t ~ d, t ~ _z_0123456789) =>
             Sing d
             -> Sing _z_0123456789
-               -> Sing (Apply (Apply Foo2Sym0 d) _z_0123456789)
+               -> Sing (Apply (Apply Foo2Sym0 d) _z_0123456789 :: a)
           lambda d _z_0123456789
             = let
                 sScrutinee_0123456789 ::
@@ -382,7 +382,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             forall d x. (t ~ d, t ~ x) =>
-            Sing d -> Sing x -> Sing (Apply (Apply Foo1Sym0 d) x)
+            Sing d -> Sing x -> Sing (Apply (Apply Foo1Sym0 d) x :: a)
           lambda d x
             = let
                 sScrutinee_0123456789 ::

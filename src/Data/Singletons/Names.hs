@@ -35,7 +35,8 @@ anyTypeName, boolName, andName, tyEqName, tyCompareName, tyminBoundName,
   sListName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
   equalityName, applySingName, suppressClassName, suppressMethodName,
-  tyThenCmpName, kindOfName, tyFromIntegerName, tyNegateName,
+  tyThenCmpName, kindOfName, tyFromIntegerName, tyNegateName, sFromIntegerName,
+  sNegateName,
   errorName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
@@ -94,6 +95,8 @@ tyThenCmpName = mk_name_tc "Data.Singletons.Prelude.Ord" "ThenCmp"
 kindOfName = ''KindOf
 tyFromIntegerName = mk_name_tc "Data.Singletons.Prelude.Num" "FromInteger"
 tyNegateName = mk_name_tc "Data.Singletons.Prelude.Num" "Negate"
+sFromIntegerName = mk_name_v "Data.Singletons.Prelude.Num" "sFromInteger"
+sNegateName = mk_name_v "Data.Singletons.Prelude.Num" "sNegate"
 errorName = 'error
 
 singPkg :: String

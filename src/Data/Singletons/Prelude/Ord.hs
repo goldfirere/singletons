@@ -42,10 +42,9 @@ import Data.Singletons.Single
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Bool
-import Data.Singletons
 import Data.Singletons.Util
 
-$(promoteOnly [d|
+$(singletonsOnly [d|
   class  (Eq a) => Ord a  where
     compare              :: a -> a -> Ordering
     (<), (<=), (>), (>=) :: a -> a -> Bool
@@ -62,72 +61,18 @@ $(promoteOnly [d|
                   else if x <= y then LT
                   else GT
 
-    x <  y = case compare x y of { LT -> True;  _ -> False }
-    x <= y = case compare x y of { GT -> False; _ -> True }
-    x >  y = case compare x y of { GT -> True;  _ -> False }
-    x >= y = case compare x y of { LT -> False; _ -> True }
+    x <  y = case compare x y of { LT -> True;  EQ -> False; GT -> False }
+    x <= y = case compare x y of { LT -> True;  EQ -> True;  GT -> False }
+    x >  y = case compare x y of { LT -> False; EQ -> False; GT -> True }
+    x >= y = case compare x y of { LT -> False; EQ -> True;  GT -> True }
 
         -- These two default methods use '<=' rather than 'compare'
         -- because the latter is often more expensive
     max x y = if x <= y then y else x
     min x y = if x <= y then x else y
     -- Not handled by TH: {-# MINIMAL compare | (<=) #-}
+
   |])
-
-type family CaseOrdering (ord :: Ordering) (lt :: k) (eq :: k) (gt :: k) :: k
-type instance CaseOrdering 'LT lt eq gt = lt
-type instance CaseOrdering 'EQ lt eq gt = eq
-type instance CaseOrdering 'GT lt eq gt = gt
-
-class (kproxy ~ 'KProxy, SEq ('KProxy :: KProxy a))
-      => SOrd (kproxy :: KProxy a) where
-  sCompare :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Compare x y)
-  (%:<)    :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :< y)
-  infix 4 %:<
-  (%:<=)   :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :<= y)
-  infix 4 %:<=
-  (%:>)    :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :> y)
-  infix 4 %:>
-  (%:>=)   :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :>= y)
-  infix 4 %:>=
-  sMax      :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Max x y)
-  sMin      :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Min x y)
-
-  default sCompare :: forall (x :: a) (y :: a).
-                      (Compare x y ~ If (x :== y) 'EQ (If (x :<= y) 'LT 'GT))
-                   => Sing x -> Sing y -> Sing (Compare x y)
-  sCompare x y = sIf (x %:== y) SEQ
-                     (sIf (x %:<= y) SLT SGT)
-
-  default (%:<) :: forall (x :: a) (y :: a).
-                   ((x :< y) ~ CaseOrdering (Compare x y) 'True 'False 'False)
-                => Sing x -> Sing y -> Sing (x :< y)
-  x %:< y = case sCompare x y of { SLT -> STrue; SEQ -> SFalse; SGT -> SFalse }
-
-  default (%:<=) :: forall (x :: a) (y :: a).
-                    ((x :<= y) ~ CaseOrdering (Compare x y) 'True 'True 'False)
-                 => Sing x -> Sing y -> Sing (x :<= y)
-  x %:<= y = case sCompare x y of { SLT -> STrue; SEQ -> STrue; SGT -> SFalse }
-
-  default (%:>) :: forall (x :: a) (y :: a).
-                   ((x :> y) ~ CaseOrdering (Compare x y) 'False 'False 'True)
-                => Sing x -> Sing y -> Sing (x :> y)
-  x %:> y = case sCompare x y of { SLT -> SFalse; SEQ -> SFalse; SGT -> STrue }
-
-  default (%:>=) :: forall (x :: a) (y :: a).
-                    ((x :>= y) ~ CaseOrdering (Compare x y) 'False 'True 'True)
-                 => Sing x -> Sing y -> Sing (x :>= y)
-  x %:>= y = case sCompare x y of { SLT -> SFalse; SEQ -> STrue; SGT -> STrue }
-
-  default sMax :: forall (x :: a) (y :: a).
-                  (Max x y ~ If (x :<= y) y x)
-               => Sing x -> Sing y -> Sing (Max x y)
-  sMax x y = sIf (x %:<= y) y x
-
-  default sMin :: forall (x :: a) (y :: a).
-                  (Min x y ~ If (x :<= y) x y)
-               => Sing x -> Sing y -> Sing (Min x y)
-  sMin x y = sIf (x %:<= y) x y
 
 $(singletons [d|
   thenCmp :: Ordering -> Ordering -> Ordering
@@ -137,3 +82,4 @@ $(singletons [d|
   |])
 
 $(promoteOrdInstances basicTypes)
+-- TODO: singOrdInstances

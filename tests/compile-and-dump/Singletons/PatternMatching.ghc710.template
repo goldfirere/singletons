@@ -384,7 +384,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     sX_0123456789 :: Sing X_0123456789Sym0
     sSilly sX
       = let
-          lambda :: forall x. t ~ x => Sing x -> Sing (Apply SillySym0 x)
+          lambda ::
+            forall x. t ~ x => Sing x -> Sing (Apply SillySym0 x :: ())
           lambda x
             = let
                 sScrutinee_0123456789 ::
@@ -405,7 +406,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall x y. t ~ Apply (Apply Tuple2Sym0 x) y =>
             Sing x
-            -> Sing y -> Sing (Apply Foo2Sym0 (Apply (Apply Tuple2Sym0 x) y))
+            -> Sing y
+               -> Sing (Apply Foo2Sym0 (Apply (Apply Tuple2Sym0 x) y) :: a)
           lambda x y
             = let
                 sT :: Sing (Let0123456789TSym2 x y)
@@ -457,7 +459,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall x y. t ~ Apply (Apply Tuple2Sym0 x) y =>
             Sing x
-            -> Sing y -> Sing (Apply Foo1Sym0 (Apply (Apply Tuple2Sym0 x) y))
+            -> Sing y
+               -> Sing (Apply Foo1Sym0 (Apply (Apply Tuple2Sym0 x) y) :: a)
           lambda x y
             = applySing
                 (singFun1

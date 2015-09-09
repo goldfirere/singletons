@@ -1,4 +1,4 @@
-singletons 1.0
+singletons 2.0
 ==============
 
 [![Build Status](https://travis-ci.org/goldfirere/singletons.svg?branch=master)](https://travis-ci.org/goldfirere/singletons)
@@ -33,7 +33,7 @@ paper for a more thorough introduction.
 Compatibility
 -------------
 
-The singletons library requires GHC 7.8.2 or greater. Any code that uses the
+The singletons library requires GHC 7.10.2 or greater. Any code that uses the
 singleton generation primitives needs to enable a long list of GHC
 extensions. This list includes, but is not necessarily limited to, the
 following:
@@ -50,6 +50,8 @@ following:
 * `RankNTypes`
 * `UndecidableInstances`
 * `FlexibleInstances`
+* `InstanceSigs`
+* `DefaultSignatures`
 
 Modules for singleton types
 ---------------------------
@@ -379,14 +381,15 @@ The following constructs are fully supported:
 * let
 * lambda expressions
 * `!` and `~` patterns (silently but successfully ignored during promotion)
+* class and instance declarations
 
 The following constructs are supported for promotion but not singleton generation:
 
-* class and instance declarations
 * deriving of promoted `Ord` and `Bounded` instances
 * scoped type variables
 * overlapping patterns. Note that overlapping patterns are
-  sometime not obvious. For example `filter` function does not singletonize due
+  sometimes not obvious. For example, the `filter` function does not
+  singletonize due
   to overlapping patterns:
 ```haskell
 filter :: (a -> Bool) -> [a] -> [a]
@@ -459,33 +462,8 @@ of types with which to work. See the Haddock documentation for the function
 Known bugs
 ----------
 
-* Fixity declarations don't promote due to GHC bug #9066. They are dropped with
-  a warning
 * Record updates don't singletonize
-
-Changes from earlier versions
------------------------------
-
-singletons 1.0 provides promotion mechanism that supports case expressions, let
-statements, anonymous functions, higher order functions and many other
-features. This version of the library was published together with the promotion
-paper. Version 1.0 of singletons drops GHC 7.6.3 support because romotion
-requires some features that were only added in GHC 7.8 (like kind inference for
-closed type families).
-
-singletons 0.9 contains a bit of an API change from previous versions. Here is
-a summary:
-
-* There are no more "smart" constructors. Those were necessary because each
-singleton used to carry both explicit and implicit versions of any children
-nodes. However, this leads to exponential overhead! Now, the magic (i.e., a
-use of `unsafeCoerce`) in `singInstance` gets rid of the need for storing
-implicit singletons. The smart constructors did some of the work of managing
-the stored implicits, so they are no longer needed.
-
-* `SingE` and `SingRep` are gone. If you need to carry an implicit singleton,
-use `SingI`. Otherwise, you probably want `SingKind`.
-
-* The Template Haskell functions are now exported from `Data.Singletons.TH`.
-
-* The Prelude singletons are now exported from `Data.Singletons.Prelude`.
+* In obscure scenarios, GHC "forgets" constraints on functions. This should
+  happen only with certain uses where the constraint is needed inside of a
+  `case` or lambda-expression. Having type inference on result types nearby
+  makes this more likely to bite.

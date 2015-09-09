@@ -5,7 +5,8 @@ module Main (
 import Test.Tasty               ( TestTree, defaultMain, testGroup          )
 import SingletonsTestSuiteUtils ( compileAndDumpStdTest, compileAndDumpTest
                                 , testCompileAndDumpGroup, ghcOpts
-                                , cleanFiles                                )
+                             --   , cleanFiles
+                                )
 
 main :: IO ()
 main = do

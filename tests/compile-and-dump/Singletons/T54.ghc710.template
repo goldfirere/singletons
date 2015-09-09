@@ -33,7 +33,7 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
     sG :: forall (t :: Bool). Sing t -> Sing (Apply GSym0 t :: Bool)
     sG sE
       = let
-          lambda :: forall e. t ~ e => Sing e -> Sing (Apply GSym0 e)
+          lambda :: forall e. t ~ e => Sing e -> Sing (Apply GSym0 e :: Bool)
           lambda e
             = applySing
                 (let

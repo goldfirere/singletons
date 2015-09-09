@@ -15,7 +15,7 @@ Users of the package should not need to consult this file.
 
 module Data.Singletons.Util where
 
-import Prelude hiding ( exp, foldl, concat, mapM, any )
+import Prelude hiding ( exp, foldl, concat, mapM, any, pred )
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Char
@@ -23,6 +23,7 @@ import Control.Monad hiding ( mapM )
 import Control.Monad.Writer hiding ( mapM )
 import Control.Monad.Reader hiding ( mapM )
 import qualified Data.Map as Map
+import Data.Map ( Map )
 import Data.Foldable
 import Data.Traversable
 
@@ -211,6 +212,43 @@ ravel (h:t) res = DAppT (DAppT DArrowT h) (ravel t res)
 countArgs :: DType -> Int
 countArgs ty = length args
   where (_, _, args, _) = unravel ty
+
+substKind :: Map Name DKind -> DKind -> DKind
+substKind _ (DForallK {}) =
+  error "Higher-rank kind encountered in instance method promotion."
+substKind subst (DVarK n) =
+  case Map.lookup n subst of
+    Just ki -> ki
+    Nothing -> DVarK n
+substKind subst (DConK con kis) = DConK con (map (substKind subst) kis)
+substKind subst (DArrowK k1 k2) = DArrowK (substKind subst k1) (substKind subst k2)
+substKind _ DStarK = DStarK
+
+substType :: Map Name DType -> DType -> DType
+substType subst ty | Map.null subst = ty
+substType subst (DForallT tvbs cxt inner_ty) =
+  let subst'    = foldr Map.delete subst (map extractTvbName tvbs)
+      cxt'      = map (substPred subst') cxt
+      inner_ty' = substType subst' inner_ty
+  in
+  DForallT tvbs cxt' inner_ty'
+substType subst (DAppT ty1 ty2) = substType subst ty1 `DAppT` substType subst ty2
+substType subst (DSigT ty ki) = substType subst ty `DSigT` ki
+substType subst (DVarT n) =
+  case Map.lookup n subst of
+    Just ki -> ki
+    Nothing -> DVarT n
+substType _ ty@(DConT {}) = ty
+substType _ ty@(DArrowT)  = ty
+substType _ ty@(DLitT {}) = ty
+
+substPred :: Map Name DType -> DPred -> DPred
+substPred subst pred | Map.null subst = pred
+substPred subst (DAppPr pred ty) =
+  DAppPr (substPred subst pred) (substType subst ty)
+substPred subst (DSigPr pred ki) = DSigPr (substPred subst pred) ki
+substPred _ pred@(DVarPr {}) = pred
+substPred _ pred@(DConPr {}) = pred
 
 addStar :: DKind -> DKind
 addStar t = DArrowK t DStarK

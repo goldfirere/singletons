@@ -20,7 +20,8 @@ singType :: DType          -- the promoted version of the thing classified by...
          -> DType          -- ... this type
          -> SgM ( DType    -- the singletonized type
                 , Int      -- the number of arguments
-                , [Name] ) -- the names of the tyvars used in the sing'd type
+                , [Name]   -- the names of the tyvars used in the sing'd type
+                , DKind )  -- the kind of the result type
 singType prom ty = do
   let (_, cxt, args, res) = unravel ty
       num_args            = length args
@@ -33,7 +34,7 @@ singType prom ty = do
       tau   = ravel args' res'
   let ty' = DForallT (zipWith DKindedTV arg_names prom_args)
                      cxt' tau
-  return (ty', num_args, arg_names)
+  return (ty', num_args, arg_names, prom_res)
 
 singPred :: DPred -> SgM DPred
 singPred = singPredRec []

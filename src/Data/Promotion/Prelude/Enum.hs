@@ -34,32 +34,3 @@ module Data.Promotion.Prelude.Enum (
   ) where
 
 import Data.Singletons.Prelude.Enum
-import Data.Singletons.Promote
-import Data.Singletons.TypeLits
-import Data.Promotion.Prelude.Ord
-import Data.Promotion.Prelude.Num
-import Data.Promotion.Prelude.Eq
-import Data.Promotion.Prelude.List
-
-$(promoteOnly [d|
-  instance Enum Nat where
-    toEnum n | n >= 0    = n
-             | otherwise = error "Enumerating negative Nat literals not supported"
-
-    fromEnum n | n >= 0    = n
-               | otherwise = error "Enumerating negative Nat literals not supported"
-
-    succ n = 1 + n
-
-    pred 0 = 0
-    pred n | n > 0 = n - 1
-           | otherwise = error "Negative type-level Nat literals not supported"
-
-    enumFromTo x y | x == y = [x]
-                   | x <  y = x : enumFromTo (x + 1) y
-                   | x >  y = []
-
-    enumFromThenTo x1 x2 y | x1 == y = [x1]
-                           | x1 <  y = x1 : enumFromTo (x1 + x2) y
-                           | x1 >  y = []
-  |])

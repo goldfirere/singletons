@@ -9,19 +9,13 @@ The SgM monad allows reading from a SgEnv environment and is wrapped around a Q.
 -}
 
 {-# LANGUAGE GeneralizedNewtypeDeriving, ParallelListComp,
-             TemplateHaskell, DataKinds, StandaloneDeriving,
-             MultiParamTypeClasses, TypeSynonymInstances,
-             FlexibleInstances, RankNTypes, GADTs,
-             FlexibleContexts, ScopedTypeVariables,
-             ConstraintKinds, UndecidableInstances,
-             PartialTypeSignatures #-}
-{-# OPTIONS_GHC -fno-warn-partial-type-signatures #-}
+             TemplateHaskell, CPP #-}
 
 module Data.Singletons.Single.Monad (
-  SgM, CtSgM, bindLets, bindTyVars, bindTyVarsEq, lookupVarE, lookupConE,
+  SgM, bindLets, bindTyVars, bindTyVarsEq, lookupVarE, lookupConE,
   wrapSingFun, wrapUnSingFun,
-  singM, singDecsM, captureConstraints,
-  emitDecs, emitDecsM, emit
+  singM, singDecsM,
+  emitDecs, emitDecsM
   ) where
 
 import Prelude hiding ( exp )
@@ -35,23 +29,7 @@ import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Control.Monad.Reader
 import Control.Monad.Writer
-import Data.Type.Bool
-import Control.Arrow
-import Data.Coerce
-
--- Urgh. To do the constrained thing, I sorta need a singleton Bool.
--- So I'll use a bootstrap singleton Bool.
-data BSBool b where
-  BSTrue  :: BSBool 'True
-  BSFalse :: BSBool 'False
-
-class BSBoolI b where
-  bsBool :: BSBool b
-
-instance BSBoolI 'True where
-  bsBool = BSTrue
-instance BSBoolI 'False where
-  bsBool = BSFalse
+import Control.Applicative
 
 -- environment during singling
 data SgEnv =
@@ -64,29 +42,15 @@ emptySgEnv = SgEnv { sg_let_binds   = Map.empty
                    , sg_local_decls = []
                    }
 
-type Sensible c = (Monoid (If c ([DDec], DCxt) [DDec]), BSBoolI c)
-
--- capability for a singling monad
-class DsMonad m => SgMonad m where
-  bindLets :: [(Name, DExp)] -> m a -> m a
-
 -- the singling monad
 newtype SgM a = SgM (ReaderT SgEnv (WriterT [DDec] Q) a)
-  deriving ( Functor, Applicative, Monad, MonadReader SgEnv
-           , MonadWriter [DDec] )
+  deriving ( Functor, Applicative, Monad
+           , MonadReader SgEnv, MonadWriter [DDec] )
 
--- adds ability to emit constraints
-newtype CtSgM a = CtSgM (SgM (a, DCxt))
-  deriving ( Functor, Applicative, Monad, MonadReader SgEnv
-           , MonadWriter [DDec] )
-
-emit :: DPred -> CtSgM ()
-emit pred = SgM $ tell ([], [pred])
-
-liftSgM :: Sensible c => Q a -> SgM_ c a
+liftSgM :: Q a -> SgM a
 liftSgM = SgM . lift . lift
 
-instance Sensible c => Quasi (SgM_ c) where
+instance Quasi SgM where
   qNewName          = liftSgM `comp1` qNewName
   qReport           = liftSgM `comp2` qReport
   qLookupName       = liftSgM `comp2` qLookupName
@@ -108,19 +72,13 @@ instance Sensible c => Quasi (SgM_ c) where
     (result, aux) <- liftSgM $
                      qRecover (runWriterT $ runReaderT handler env)
                               (runWriterT $ runReaderT body env)
-    (case bsBool :: BSBool c of
-       BSFalse -> tell aux
-       BSTrue  -> do tell (fst aux)
-                     mapM_ emit (snd aux)) :: _ ()
-    -- TODO: fix GHC so that there is a better way of giving that
-    -- type annotation. This is terrible.
-
+    tell aux
     return result
 
-instance Sensible c => DsMonad (SgM_ c) where
+instance DsMonad SgM where
   localDeclarations = asks sg_local_decls
 
-bindLets :: Sensible c => [(Name, DExp)] -> SgM_ c a -> SgM_ c a
+bindLets :: [(Name, DExp)] -> SgM a -> SgM a
 bindLets lets1 =
   local (\env@(SgEnv { sg_let_binds = lets2 }) ->
                env { sg_let_binds = (Map.fromList lets1) `Map.union` lets2 })
@@ -170,13 +128,16 @@ bindLets lets1 =
 -- available from within the "lambda".
 --
 -- This means, though, that using constraints with case statements and lambdas
--- will likely not work. Ugh.
+-- will likely not work. Ugh. UPDATE: This actually bit in practice! The
+-- Enum class wants to define `succ = toEnum . (+1) . fromEnum`. But that
+-- (+1) is a right-section, which desugars to a lambda. The Num constraint
+-- couldn't get through. Changing (+1) to (1+) fixed the problem, as
+-- left-sections don't need a lambda.
 
-bindTyVarsEq :: Sensible c
-             => VarPromotions   -- the bindings we wish to effect
+bindTyVarsEq :: VarPromotions   -- the bindings we wish to effect
              -> DType           -- the type of the thing_inside
              -> [(DType, DType)]  -- and asserting these equalities
-             -> SgM_ c DExp -> SgM_ c DExp
+             -> SgM DExp -> SgM DExp
 bindTyVarsEq var_proms prom_fun equalities thing_inside = do
   lambda <- qNewName "lambda"
   let (term_names, tyvar_names) = unzip var_proms
@@ -195,23 +156,24 @@ bindTyVarsEq var_proms prom_fun equalities thing_inside = do
       let_body = foldExp (DVarE lambda) (map (DVarE . singValName) term_names)
   return $ DLetE [ty_sig, fundef] let_body
 
-bindTyVars :: Sensible c => VarPromotions -> DType -> SgM_ c DExp -> SgM_ c DExp
+bindTyVars :: VarPromotions -> DType -> SgM DExp -> SgM DExp
 bindTyVars var_proms prom_fun = bindTyVarsEq var_proms prom_fun []
 
-lookupVarE :: Sensible c => Name -> SgM_ c DExp
+lookupVarE :: Name -> SgM DExp
 lookupVarE = lookup_var_con singValName (DVarE . singValName)
 
-lookupConE :: Sensible c => Name -> SgM_ c DExp
+lookupConE :: Name -> SgM DExp
 lookupConE = lookup_var_con singDataConName (DConE . singDataConName)
 
-lookup_var_con :: Sensible c => (Name -> Name) -> (Name -> DExp) -> Name -> SgM_ c DExp
+lookup_var_con :: (Name -> Name) -> (Name -> DExp) -> Name -> SgM DExp
 lookup_var_con mk_sing_name mk_exp name = do
   letExpansions <- asks sg_let_binds
   sName <- mkDataName (nameBase (mk_sing_name name)) -- we want *term* names!
   case Map.lookup name letExpansions of
     Nothing -> do
       -- try to get it from the global context
-      m_dinfo <- dsReify sName
+      m_dinfo <- liftM2 (<|>) (dsReify sName) (dsReify name)
+        -- try the unrefined name too -- it's needed to bootstrap Enum
       case m_dinfo of
         Just (DVarI _ ty _ _) ->
           let num_args = countArgs ty in
@@ -248,13 +210,6 @@ wrapUnSingFun n ty =
                              _ -> error "No support for functions of arity > 7."
   in
   (unwrap_fun `DAppE` proxyFor ty `DAppE`)
-
-captureConstraints :: forall a. CtSgM a -> SgM (a, DCxt)
-captureConstraints (SgM action) = do
-  env <- ask
-  (result, (decs, cxt)) <- liftSgM $ runWriterT (runReaderT action env)
-  tell decs
-  return (result, cxt)
 
 singM :: DsMonad q => [Dec] -> SgM a -> q (a, [DDec])
 singM locals (SgM rdr) = do

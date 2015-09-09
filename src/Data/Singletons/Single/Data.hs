@@ -144,5 +144,5 @@ singCtor a (DCon _tvbs cxt name fields)
                 conFields
   where buildArgType :: DType -> DType -> SgM DType
         buildArgType ty index = do
-          (ty', _, _) <- singType index ty
+          (ty', _, _, _) <- singType index ty
           return ty'
