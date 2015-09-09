@@ -374,6 +374,9 @@ singClause prom_fun num_arrows bound_names res_ki
   (sPats, prom_pats)
     <- mapAndUnzipM (singPat (Map.fromList var_proms) Parameter) pats
   let equalities = zip (map DVarT bound_names) prom_pats
+      -- This res_ki stuff is necessary when we need to propagate result-
+      -- based type-inference. It was inspired by toEnum. (If you remove
+      -- this, that should fail to compile.)
       applied_ty = maybe id (\ki -> (`DSigT` ki)) res_ki $
                    foldl apply prom_fun prom_pats
   sBody <- bindTyVarsEq var_proms applied_ty equalities $ singExp exp
