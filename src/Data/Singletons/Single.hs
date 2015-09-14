@@ -146,7 +146,8 @@ singInfo (DTyVarI _name _ty) =
   fail "Singling of type variable info not supported"
 
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
-singTopLevelDecs locals decls = do
+singTopLevelDecs locals raw_decls = do
+  decls <- withLocalDeclarations locals $ expand raw_decls     -- expand type synonyms
   PDecs { pd_let_decs              = letDecls
         , pd_class_decs            = classes
         , pd_instance_decs         = insts

@@ -152,7 +152,8 @@ promoteInfo (DTyVarI _name _ty) =
 
 -- Promote a list of top-level declarations.
 promoteDecs :: [DDec] -> PrM ()
-promoteDecs decls = do
+promoteDecs raw_decls = do
+  decls <- expand raw_decls     -- expand type synonyms
   checkForRepInDecls decls
   PDecs { pd_let_decs              = let_decs
         , pd_class_decs            = classes
