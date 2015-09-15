@@ -72,7 +72,6 @@ import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord
-import Data.Singletons.Void
 import Data.Singletons.Decide
 import Data.Singletons.TypeLits
 import Data.Singletons.SuppressUnusedWarnings
