@@ -45,7 +45,7 @@ module Data.Singletons.TH (
   -- so they must be in scope.
 
   PEq(..), If, sIf, (:&&), SEq(..),
-  POrd(..),
+  POrd(..), SOrd(..), ThenCmp, sThenCmp, Foldl, sFoldl,
   Any,
   SDecide(..), (:~:)(..), Void, Refuted, Decision(..),
   Proxy(..), KProxy(..), SomeSing(..),
@@ -60,6 +60,7 @@ module Data.Singletons.TH (
   Tuple5Sym0, Tuple5Sym1, Tuple5Sym2, Tuple5Sym3, Tuple5Sym4, Tuple5Sym5,
   Tuple6Sym0, Tuple6Sym1, Tuple6Sym2, Tuple6Sym3, Tuple6Sym4, Tuple6Sym5, Tuple6Sym6,
   Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6, Tuple7Sym7,
+  CompareSym0, ThenCmpSym0, FoldlSym0,
 
   SuppressUnusedWarnings(..)
 

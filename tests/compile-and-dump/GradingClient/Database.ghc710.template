@@ -13,16 +13,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789 (a :: Nat) (b :: Nat) = FalseSym0
     instance PEq (KProxy :: KProxy Nat) where
       type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789 a b
-    instance POrd (KProxy :: KProxy Nat) where
-      type Compare (a :: Nat) (b :: Nat) = Compare_0123456789 a b
-    type family Compare_0123456789 (a :: Nat)
-                                   (b :: Nat) :: Ordering where
-      Compare_0123456789 Zero Zero = EQ
-      Compare_0123456789 (Succ x) (Succ y) = ThenCmp EQ (Compare x y)
-      Compare_0123456789 (a :: Nat) (b :: Nat) = Compare (GetRank_0123456789 a) (GetRank_0123456789 b)
-    type family GetRank_0123456789 a :: GHC.TypeLits.Nat where
-      GetRank_0123456789 Zero = 1
-      GetRank_0123456789 (Succ a) = 2
     type ZeroSym0 = Zero
     type SuccSym1 (t :: Nat) = Succ t
     instance SuppressUnusedWarnings SuccSym0 where
@@ -32,6 +22,33 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply SuccSym0 arg) ~ KindOf (SuccSym1 arg) =>
         SuccSym0KindInference
     type instance Apply SuccSym0 l = SuccSym1 l
+    type family Compare_0123456789 (a :: Nat)
+                                   (a :: Nat) :: Ordering where
+      Compare_0123456789 (Zero :: Nat) (Zero :: Nat) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[] :: Ordering)
+      Compare_0123456789 (Succ a_0123456789 :: Nat) (Succ b_0123456789 :: Nat) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]) :: Ordering)
+      Compare_0123456789 (Zero :: Nat) (Succ _z_0123456789 :: Nat) = (LTSym0 :: Ordering)
+      Compare_0123456789 (Succ _z_0123456789 :: Nat) (Zero :: Nat) = (GTSym0 :: Ordering)
+    type Compare_0123456789Sym2 (t :: Nat) (t :: Nat) =
+        Compare_0123456789 t t
+    instance SuppressUnusedWarnings Compare_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Compare_0123456789Sym1KindInference GHC.Tuple.())
+    data Compare_0123456789Sym1 (l :: Nat) (l :: TyFun Nat Ordering)
+      = forall arg. KindOf (Apply (Compare_0123456789Sym1 l) arg) ~ KindOf (Compare_0123456789Sym2 l arg) =>
+        Compare_0123456789Sym1KindInference
+    type instance Apply (Compare_0123456789Sym1 l) l = Compare_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Compare_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Compare_0123456789Sym0KindInference GHC.Tuple.())
+    data Compare_0123456789Sym0 (l :: TyFun Nat (TyFun Nat Ordering
+                                                 -> *))
+      = forall arg. KindOf (Apply Compare_0123456789Sym0 arg) ~ KindOf (Compare_0123456789Sym1 arg) =>
+        Compare_0123456789Sym0KindInference
+    type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
+    instance POrd (KProxy :: KProxy Nat) where
+      type Compare (a :: Nat) (a :: Nat) = Compare_0123456789 a a
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
@@ -66,6 +83,68 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
+    instance SOrd (KProxy :: KProxy Nat) =>
+             SOrd (KProxy :: KProxy Nat) where
+      sCompare ::
+        forall (t :: Nat) (t :: Nat).
+        Sing t
+        -> Sing t -> Sing (Apply (Apply CompareSym0 t) t :: Ordering)
+      sCompare SZero SZero
+        = let
+            lambda ::
+              (t ~ ZeroSym0, t ~ ZeroSym0) =>
+              Sing (Apply (Apply CompareSym0 ZeroSym0) ZeroSym0 :: Ordering)
+            lambda
+              = applySing
+                  (applySing
+                     (applySing
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
+                     SEQ)
+                  SNil
+          in lambda
+      sCompare (SSucc sA_0123456789) (SSucc sB_0123456789)
+        = let
+            lambda ::
+              forall a_0123456789 b_0123456789. (t ~ Apply SuccSym0 a_0123456789,
+                                                 t ~ Apply SuccSym0 b_0123456789) =>
+              Sing a_0123456789
+              -> Sing b_0123456789
+                 -> Sing (Apply (Apply CompareSym0 (Apply SuccSym0 a_0123456789)) (Apply SuccSym0 b_0123456789) :: Ordering)
+            lambda a_0123456789 b_0123456789
+              = applySing
+                  (applySing
+                     (applySing
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
+                     SEQ)
+                  (applySing
+                     (applySing
+                        (singFun2 (Proxy :: Proxy (:$)) SCons)
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                           b_0123456789))
+                     SNil)
+          in lambda sA_0123456789 sB_0123456789
+      sCompare SZero (SSucc _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789. (t ~ ZeroSym0,
+                                     t ~ Apply SuccSym0 _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing (Apply (Apply CompareSym0 ZeroSym0) (Apply SuccSym0 _z_0123456789) :: Ordering)
+            lambda _z_0123456789 = SLT
+          in lambda _s_z_0123456789
+      sCompare (SSucc _s_z_0123456789) SZero
+        = let
+            lambda ::
+              forall _z_0123456789. (t ~ Apply SuccSym0 _z_0123456789,
+                                     t ~ ZeroSym0) =>
+              Sing _z_0123456789
+              -> Sing (Apply (Apply CompareSym0 (Apply SuccSym0 _z_0123456789)) ZeroSym0 :: Ordering)
+            lambda _z_0123456789 = SGT
+          in lambda _s_z_0123456789
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where

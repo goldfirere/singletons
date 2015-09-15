@@ -14,14 +14,10 @@ module Data.Singletons.Syntax where
 
 import Prelude hiding ( exp )
 import Data.Monoid
-import Data.Singletons.Util
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
-import Language.Haskell.TH.Ppr
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
-import Data.Maybe
-import Control.Monad
 
 type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
 
@@ -44,71 +40,6 @@ type UInstDecl  = InstDecl Unannotated
 
 type AClassDecl = ClassDecl Annotated
 type AInstDecl  = InstDecl Annotated
-
-data PartitionedDecs =
-  PDecs { pd_let_decs :: [DLetDec]
-        , pd_class_decs :: [UClassDecl]
-        , pd_instance_decs :: [UInstDecl]
-        , pd_data_decs :: [DataDecl]
-        }
-
-instance Monoid PartitionedDecs where
-  mempty = PDecs [] [] [] []
-  mappend (PDecs a1 b1 c1 d1) (PDecs a2 b2 c2 d2) =
-    PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2)
-
--- monadic only because of failure
-partitionDecs :: Monad m => [DDec] -> m PartitionedDecs
-partitionDecs = concatMapM partitionDec
-
-partitionDec :: Monad m => DDec -> m PartitionedDecs
-partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
-partitionDec (DDataD nd _cxt name tvbs cons derivings) =
-  return $ mempty { pd_data_decs = [DataDecl nd name tvbs cons derivings] }
-partitionDec (DClassD cxt name tvbs fds decs) = do
-  env <- concatMapM partitionClassDec decs
-  return $ mempty { pd_class_decs = [ClassDecl { cd_cxt  = cxt
-                                               , cd_name = name
-                                               , cd_tvbs = tvbs
-                                               , cd_fds  = fds
-                                               , cd_lde  = env }] }
-partitionDec (DInstanceD cxt ty decs) = do
-  defns <- liftM catMaybes $ mapM partitionInstanceDec decs
-  (name, tys) <- split_app_tys [] ty
-  return $ mempty { pd_instance_decs = [InstDecl { id_cxt = cxt
-                                                 , id_name = name
-                                                 , id_arg_tys = tys
-                                                 , id_meths = defns }] }
-  where
-    split_app_tys acc (DAppT t1 t2) = split_app_tys (t2:acc) t1
-    split_app_tys acc (DConT name)  = return (name, acc)
-    split_app_tys acc (DSigT t _)   = split_app_tys acc t
-    split_app_tys _ _ = fail $ "Illegal instance head: " ++ show ty
-partitionDec (DRoleAnnotD {}) = return mempty  -- ignore these
-partitionDec (DPragmaD {}) = return mempty
-partitionDec dec =
-  fail $ "Declaration cannot be promoted: " ++ pprint (decToTH dec)
-
-partitionClassDec :: Monad m => DDec -> m ULetDecEnv
-partitionClassDec (DLetDec (DSigD name ty)) = return $ typeBinding name ty
-partitionClassDec (DLetDec (DValD (DVarPa name) exp)) =
-  return $ valueBinding name (UValue exp)
-partitionClassDec (DLetDec (DFunD name clauses)) =
-  return $ valueBinding name (UFunction clauses)
-partitionClassDec (DLetDec (DInfixD fixity name)) =
-  return $ infixDecl fixity name
-partitionClassDec (DPragmaD {}) = return mempty
-partitionClassDec _ =
-  fail "Only method declarations can be promoted within a class."
-
-partitionInstanceDec :: Monad m => DDec -> m (Maybe (Name, ULetDecRHS))
-partitionInstanceDec (DLetDec (DValD (DVarPa name) exp)) =
-  return $ Just (name, UValue exp)
-partitionInstanceDec (DLetDec (DFunD name clauses)) =
-  return $ Just (name, UFunction clauses)
-partitionInstanceDec (DPragmaD {}) = return Nothing
-partitionInstanceDec _ =
-  fail "Only method bodies can be promoted within an instance."
 
 {-
 We see below several datatypes beginning with "A". These are annotated structures,

@@ -48,7 +48,7 @@ buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " +
 
 buildDefunSymsDataD :: Name -> [DTyVarBndr] -> [DCon] -> PrM [DDec]
 buildDefunSymsDataD tyName tvbs ctors = do
-  let res_ty = foldType (DConT tyName) (map (DVarT . extractTvbName) tvbs)
+  let res_ty = foldType (DConT tyName) (map tvbToType tvbs)
   res_ki <- promoteType res_ty
   concatMapM (promoteCtor res_ki) ctors
   where

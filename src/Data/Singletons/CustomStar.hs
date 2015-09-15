@@ -25,10 +25,12 @@ module Data.Singletons.CustomStar (
 
 import Language.Haskell.TH
 import Data.Singletons.Util
+import Data.Singletons.Deriving.Ord
 import Data.Singletons.Promote
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Data
+import Data.Singletons.Single
 import Data.Singletons.Syntax
 import Data.Singletons.Names
 import Control.Monad
@@ -72,9 +74,13 @@ singletonStar names = do
   let repDecl = DDataD Data [] repName [] ctors
                        [''Eq, ''Show, ''Read]
   fakeCtors <- zipWithM (mkCtor False) names kinds
-  let dataDecl = DataDecl Data repName [] fakeCtors [''Show, ''Read , ''Eq, ''Ord]
-  promDecls      <- promoteM_ [] $ promoteDataDec dataDecl
-  singletonDecls <- singDecsM [] $ singDataD dataDecl
+  let dataDecl = DataDecl Data repName [] fakeCtors [''Show, ''Read , ''Eq]
+  ordInst <- mkOrdInstance (DConT repName) fakeCtors
+  (pOrdInst, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
+                                            promoteInstanceDec mempty ordInst
+  singletonDecls <- singDecsM [] $ do decs1 <- singDataD dataDecl
+                                      dec2  <- singInstD pOrdInst
+                                      return (dec2 : decs1)
   return $ decsToTH $ repDecl :
                       promDecls ++
                       singletonDecls

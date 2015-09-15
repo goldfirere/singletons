@@ -1,9 +1,9 @@
-module Promote.OrdDeriving where
+module Singletons.OrdDeriving where
 
-import Data.Promotion.Prelude
-import Data.Promotion.TH
+import Data.Singletons.Prelude
+import Data.Singletons.TH
 
-$(promote [d|
+$(singletons [d|
   data Nat = Zero | Succ Nat
     deriving (Eq, Ord)
 

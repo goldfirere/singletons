@@ -22,7 +22,7 @@ import Data.Singletons.Util
 import Data.Proxy ( Proxy(..) )
 import Control.Monad
 
-anyTypeName, boolName, andName, tyEqName, tyCompareName, tyminBoundName,
+anyTypeName, boolName, andName, tyEqName, compareName, tyCompareName, tyminBoundName,
   tymaxBoundName, repName,
   nilName, consName, listName, tyFunName,
   applyName, natName, symbolName, undefinedName, typeRepName, stringName,
@@ -35,13 +35,14 @@ anyTypeName, boolName, andName, tyEqName, tyCompareName, tyminBoundName,
   sListName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
   equalityName, applySingName, suppressClassName, suppressMethodName,
-  tyThenCmpName, kindOfName, tyFromIntegerName, tyNegateName, sFromIntegerName,
-  sNegateName,
-  errorName :: Name
+  tyThenCmpName, thenCmpName,
+  kindOfName, tyFromIntegerName, tyNegateName, sFromIntegerName,
+  sNegateName, errorName, foldlName, cmpEQName, cmpLTName, cmpGTName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
 tyCompareName = mk_name_tc "Data.Singletons.Prelude.Ord" "Compare"
+compareName = 'compare
 tyminBoundName = mk_name_tc "Data.Singletons.Prelude.Enum" "MinBound"
 tymaxBoundName = mk_name_tc "Data.Singletons.Prelude.Enum" "MaxBound"
 tyEqName = mk_name_tc "Data.Singletons.Prelude.Eq" ":=="
@@ -91,6 +92,7 @@ equalityName = ''(~)
 applySingName = 'applySing
 suppressClassName = ''SuppressUnusedWarnings
 suppressMethodName = 'suppressUnusedWarnings
+thenCmpName = mk_name_v "Data.Singletons.Prelude.Ord" "thenCmp"
 tyThenCmpName = mk_name_tc "Data.Singletons.Prelude.Ord" "ThenCmp"
 kindOfName = ''KindOf
 tyFromIntegerName = mk_name_tc "Data.Singletons.Prelude.Num" "FromInteger"
@@ -98,6 +100,10 @@ tyNegateName = mk_name_tc "Data.Singletons.Prelude.Num" "Negate"
 sFromIntegerName = mk_name_v "Data.Singletons.Prelude.Num" "sFromInteger"
 sNegateName = mk_name_v "Data.Singletons.Prelude.Num" "sNegate"
 errorName = 'error
+foldlName = 'foldl
+cmpEQName = 'EQ
+cmpLTName = 'LT
+cmpGTName = 'GT
 
 singPkg :: String
 singPkg = $( (LitE . StringL . loc_package) `liftM` location )
@@ -232,6 +238,10 @@ demote = DConT demoteRepName
 
 apply :: DType -> DType -> DType
 apply t1 t2 = DAppT (DAppT (DConT applyName) t1) t2
+
+mkListE :: [DExp] -> DExp
+mkListE =
+  foldr (\h t -> DConE consName `DAppE` h `DAppE` t) (DConE nilName)
 
 -- apply a type to a list of types using Apply type family
 -- This is defined here, not in Utils, to avoid cyclic dependencies

@@ -21,3 +21,14 @@ import Data.Singletons.Util
 -- some useful singletons
 $(genSingletons basicTypes)
 $(singDecideInstances basicTypes)
+
+-- basic definitions we need right away
+
+$(singletonsOnly [d|
+  foldl        :: forall a b. (b -> a -> b) -> b -> [a] -> b
+  foldl f z0 xs0 = lgo z0 xs0
+               where
+                 lgo :: b -> [a] -> b
+                 lgo z []     =  z
+                 lgo z (x:xs) = lgo (f z x) xs
+  |])

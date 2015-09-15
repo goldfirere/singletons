@@ -17,10 +17,11 @@ import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Eq
-import Data.Singletons.Promote.Ord
 import Data.Singletons.Promote.Bounded
 import Data.Singletons.Promote.Defun
 import Data.Singletons.Promote.Type
+import Data.Singletons.Deriving.Ord
+import Data.Singletons.Partition
 import Data.Singletons.Util
 import Data.Singletons.Syntax
 import Prelude hiding (exp)
@@ -88,12 +89,12 @@ promoteEqInstance name = do
 -- | Produce an instance for 'Compare' from the given type
 promoteOrdInstance :: DsMonad q => Name -> q [Dec]
 promoteOrdInstance name = do
-  (_tvbs, cons) <- getDataD "I cannot make an instance of Ord for it." name
+  (tvbs, cons) <- getDataD "I cannot make an instance of Ord for it." name
   cons' <- mapM dsCon cons
-  vars <- replicateM (length _tvbs) (qNewName "k")
-  kind <- promoteType (foldType (DConT name) (map DVarT vars))
-  inst_decs <- mkOrdTypeInstance kind cons'
-  return $ decsToTH inst_decs
+  tvbs' <- mapM dsTvb tvbs
+  raw_ord_inst <- mkOrdInstance (foldType (DConT name) (map tvbToType tvbs')) cons'
+  decs <- promoteM_ [] $ void $ promoteInstanceDec Map.empty raw_ord_inst
+  return $ decsToTH decs
 
 -- | Produce an instance for 'MinBound' and 'MaxBound' from the given type
 promoteBoundedInstance :: DsMonad q => Name -> q [Dec]
@@ -176,7 +177,7 @@ promoteDataDecs data_decs = do
     extract_rec_selectors :: DataDecl -> PrM [DLetDec]
     extract_rec_selectors (DataDecl _nd data_name tvbs cons _derivings) =
       let arg_ty = foldType (DConT data_name)
-                            (map (DVarT . extractTvbName) tvbs)
+                            (map tvbToType tvbs)
       in
       concatMapM (getRecordSelectors arg_ty) cons
 
@@ -216,11 +217,6 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   when (elem eqName derivings) $ do
     eq_decs <- mkEqTypeInstance _kind ctors
     emitDecs eq_decs
-
-  -- deriving Ord instance
-  when (elem ordName derivings) $ do
-    ord_decs <- mkOrdTypeInstance _kind ctors
-    emitDecs ord_decs
 
   -- deriving Bounded instance
   when (elem boundedName derivings) $ do

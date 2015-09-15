@@ -1,0 +1,2821 @@
+Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| data Nat
+            = Zero | Succ Nat
+            deriving (Eq, Ord)
+          data Foo a b c d
+            = A a b c d |
+              B a b c d |
+              C a b c d |
+              D a b c d |
+              E a b c d |
+              F a b c d
+            deriving (Eq, Ord) |]
+  ======>
+    data Nat
+      = Zero | Succ Nat
+      deriving (Eq, Ord)
+    data Foo a b c d
+      = A a b c d |
+        B a b c d |
+        C a b c d |
+        D a b c d |
+        E a b c d |
+        F a b c d
+      deriving (Eq, Ord)
+    type family Equals_0123456789 (a :: Nat) (b :: Nat) :: Bool where
+      Equals_0123456789 Zero Zero = TrueSym0
+      Equals_0123456789 (Succ a) (Succ b) = (:==) a b
+      Equals_0123456789 (a :: Nat) (b :: Nat) = FalseSym0
+    instance PEq (KProxy :: KProxy Nat) where
+      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789 a b
+    type ZeroSym0 = Zero
+    type SuccSym1 (t :: Nat) = Succ t
+    instance SuppressUnusedWarnings SuccSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) SuccSym0KindInference GHC.Tuple.())
+    data SuccSym0 (l :: TyFun Nat Nat)
+      = forall arg. KindOf (Apply SuccSym0 arg) ~ KindOf (SuccSym1 arg) =>
+        SuccSym0KindInference
+    type instance Apply SuccSym0 l = SuccSym1 l
+    type family Equals_0123456789 (a :: Foo k k k k)
+                                  (b :: Foo k k k k) :: Bool where
+      Equals_0123456789 (A a a a a) (A b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789 (B a a a a) (B b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789 (C a a a a) (C b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789 (D a a a a) (D b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789 (E a a a a) (E b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789 (F a a a a) (F b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789 (a :: Foo k k k k) (b :: Foo k k k k) = FalseSym0
+    instance PEq (KProxy :: KProxy (Foo k k k k)) where
+      type (:==) (a :: Foo k k k k) (b :: Foo k k k k) = Equals_0123456789 a b
+    type ASym4 (t :: a) (t :: b) (t :: c) (t :: d) = A t t t t
+    instance SuppressUnusedWarnings ASym3 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ASym3KindInference GHC.Tuple.())
+    data ASym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
+      = forall arg. KindOf (Apply (ASym3 l l l) arg) ~ KindOf (ASym4 l l l arg) =>
+        ASym3KindInference
+    type instance Apply (ASym3 l l l) l = ASym4 l l l l
+    instance SuppressUnusedWarnings ASym2 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ASym2KindInference GHC.Tuple.())
+    data ASym2 (l :: a)
+               (l :: b)
+               (l :: TyFun c (TyFun d (Foo a b c d) -> *))
+      = forall arg. KindOf (Apply (ASym2 l l) arg) ~ KindOf (ASym3 l l arg) =>
+        ASym2KindInference
+    type instance Apply (ASym2 l l) l = ASym3 l l l
+    instance SuppressUnusedWarnings ASym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ASym1KindInference GHC.Tuple.())
+    data ASym1 (l :: a)
+               (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
+      = forall arg. KindOf (Apply (ASym1 l) arg) ~ KindOf (ASym2 l arg) =>
+        ASym1KindInference
+    type instance Apply (ASym1 l) l = ASym2 l l
+    instance SuppressUnusedWarnings ASym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ASym0KindInference GHC.Tuple.())
+    data ASym0 (l :: TyFun a (TyFun b (TyFun c (TyFun d (Foo a b c d)
+                                                -> *)
+                                       -> *)
+                              -> *))
+      = forall arg. KindOf (Apply ASym0 arg) ~ KindOf (ASym1 arg) =>
+        ASym0KindInference
+    type instance Apply ASym0 l = ASym1 l
+    type BSym4 (t :: a) (t :: b) (t :: c) (t :: d) = B t t t t
+    instance SuppressUnusedWarnings BSym3 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) BSym3KindInference GHC.Tuple.())
+    data BSym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
+      = forall arg. KindOf (Apply (BSym3 l l l) arg) ~ KindOf (BSym4 l l l arg) =>
+        BSym3KindInference
+    type instance Apply (BSym3 l l l) l = BSym4 l l l l
+    instance SuppressUnusedWarnings BSym2 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) BSym2KindInference GHC.Tuple.())
+    data BSym2 (l :: a)
+               (l :: b)
+               (l :: TyFun c (TyFun d (Foo a b c d) -> *))
+      = forall arg. KindOf (Apply (BSym2 l l) arg) ~ KindOf (BSym3 l l arg) =>
+        BSym2KindInference
+    type instance Apply (BSym2 l l) l = BSym3 l l l
+    instance SuppressUnusedWarnings BSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) BSym1KindInference GHC.Tuple.())
+    data BSym1 (l :: a)
+               (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
+      = forall arg. KindOf (Apply (BSym1 l) arg) ~ KindOf (BSym2 l arg) =>
+        BSym1KindInference
+    type instance Apply (BSym1 l) l = BSym2 l l
+    instance SuppressUnusedWarnings BSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) BSym0KindInference GHC.Tuple.())
+    data BSym0 (l :: TyFun a (TyFun b (TyFun c (TyFun d (Foo a b c d)
+                                                -> *)
+                                       -> *)
+                              -> *))
+      = forall arg. KindOf (Apply BSym0 arg) ~ KindOf (BSym1 arg) =>
+        BSym0KindInference
+    type instance Apply BSym0 l = BSym1 l
+    type CSym4 (t :: a) (t :: b) (t :: c) (t :: d) = C t t t t
+    instance SuppressUnusedWarnings CSym3 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) CSym3KindInference GHC.Tuple.())
+    data CSym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
+      = forall arg. KindOf (Apply (CSym3 l l l) arg) ~ KindOf (CSym4 l l l arg) =>
+        CSym3KindInference
+    type instance Apply (CSym3 l l l) l = CSym4 l l l l
+    instance SuppressUnusedWarnings CSym2 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) CSym2KindInference GHC.Tuple.())
+    data CSym2 (l :: a)
+               (l :: b)
+               (l :: TyFun c (TyFun d (Foo a b c d) -> *))
+      = forall arg. KindOf (Apply (CSym2 l l) arg) ~ KindOf (CSym3 l l arg) =>
+        CSym2KindInference
+    type instance Apply (CSym2 l l) l = CSym3 l l l
+    instance SuppressUnusedWarnings CSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) CSym1KindInference GHC.Tuple.())
+    data CSym1 (l :: a)
+               (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
+      = forall arg. KindOf (Apply (CSym1 l) arg) ~ KindOf (CSym2 l arg) =>
+        CSym1KindInference
+    type instance Apply (CSym1 l) l = CSym2 l l
+    instance SuppressUnusedWarnings CSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) CSym0KindInference GHC.Tuple.())
+    data CSym0 (l :: TyFun a (TyFun b (TyFun c (TyFun d (Foo a b c d)
+                                                -> *)
+                                       -> *)
+                              -> *))
+      = forall arg. KindOf (Apply CSym0 arg) ~ KindOf (CSym1 arg) =>
+        CSym0KindInference
+    type instance Apply CSym0 l = CSym1 l
+    type DSym4 (t :: a) (t :: b) (t :: c) (t :: d) = D t t t t
+    instance SuppressUnusedWarnings DSym3 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) DSym3KindInference GHC.Tuple.())
+    data DSym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
+      = forall arg. KindOf (Apply (DSym3 l l l) arg) ~ KindOf (DSym4 l l l arg) =>
+        DSym3KindInference
+    type instance Apply (DSym3 l l l) l = DSym4 l l l l
+    instance SuppressUnusedWarnings DSym2 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) DSym2KindInference GHC.Tuple.())
+    data DSym2 (l :: a)
+               (l :: b)
+               (l :: TyFun c (TyFun d (Foo a b c d) -> *))
+      = forall arg. KindOf (Apply (DSym2 l l) arg) ~ KindOf (DSym3 l l arg) =>
+        DSym2KindInference
+    type instance Apply (DSym2 l l) l = DSym3 l l l
+    instance SuppressUnusedWarnings DSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) DSym1KindInference GHC.Tuple.())
+    data DSym1 (l :: a)
+               (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
+      = forall arg. KindOf (Apply (DSym1 l) arg) ~ KindOf (DSym2 l arg) =>
+        DSym1KindInference
+    type instance Apply (DSym1 l) l = DSym2 l l
+    instance SuppressUnusedWarnings DSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) DSym0KindInference GHC.Tuple.())
+    data DSym0 (l :: TyFun a (TyFun b (TyFun c (TyFun d (Foo a b c d)
+                                                -> *)
+                                       -> *)
+                              -> *))
+      = forall arg. KindOf (Apply DSym0 arg) ~ KindOf (DSym1 arg) =>
+        DSym0KindInference
+    type instance Apply DSym0 l = DSym1 l
+    type ESym4 (t :: a) (t :: b) (t :: c) (t :: d) = E t t t t
+    instance SuppressUnusedWarnings ESym3 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ESym3KindInference GHC.Tuple.())
+    data ESym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
+      = forall arg. KindOf (Apply (ESym3 l l l) arg) ~ KindOf (ESym4 l l l arg) =>
+        ESym3KindInference
+    type instance Apply (ESym3 l l l) l = ESym4 l l l l
+    instance SuppressUnusedWarnings ESym2 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ESym2KindInference GHC.Tuple.())
+    data ESym2 (l :: a)
+               (l :: b)
+               (l :: TyFun c (TyFun d (Foo a b c d) -> *))
+      = forall arg. KindOf (Apply (ESym2 l l) arg) ~ KindOf (ESym3 l l arg) =>
+        ESym2KindInference
+    type instance Apply (ESym2 l l) l = ESym3 l l l
+    instance SuppressUnusedWarnings ESym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ESym1KindInference GHC.Tuple.())
+    data ESym1 (l :: a)
+               (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
+      = forall arg. KindOf (Apply (ESym1 l) arg) ~ KindOf (ESym2 l arg) =>
+        ESym1KindInference
+    type instance Apply (ESym1 l) l = ESym2 l l
+    instance SuppressUnusedWarnings ESym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ESym0KindInference GHC.Tuple.())
+    data ESym0 (l :: TyFun a (TyFun b (TyFun c (TyFun d (Foo a b c d)
+                                                -> *)
+                                       -> *)
+                              -> *))
+      = forall arg. KindOf (Apply ESym0 arg) ~ KindOf (ESym1 arg) =>
+        ESym0KindInference
+    type instance Apply ESym0 l = ESym1 l
+    type FSym4 (t :: a) (t :: b) (t :: c) (t :: d) = F t t t t
+    instance SuppressUnusedWarnings FSym3 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FSym3KindInference GHC.Tuple.())
+    data FSym3 (l :: a) (l :: b) (l :: c) (l :: TyFun d (Foo a b c d))
+      = forall arg. KindOf (Apply (FSym3 l l l) arg) ~ KindOf (FSym4 l l l arg) =>
+        FSym3KindInference
+    type instance Apply (FSym3 l l l) l = FSym4 l l l l
+    instance SuppressUnusedWarnings FSym2 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FSym2KindInference GHC.Tuple.())
+    data FSym2 (l :: a)
+               (l :: b)
+               (l :: TyFun c (TyFun d (Foo a b c d) -> *))
+      = forall arg. KindOf (Apply (FSym2 l l) arg) ~ KindOf (FSym3 l l arg) =>
+        FSym2KindInference
+    type instance Apply (FSym2 l l) l = FSym3 l l l
+    instance SuppressUnusedWarnings FSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FSym1KindInference GHC.Tuple.())
+    data FSym1 (l :: a)
+               (l :: TyFun b (TyFun c (TyFun d (Foo a b c d) -> *) -> *))
+      = forall arg. KindOf (Apply (FSym1 l) arg) ~ KindOf (FSym2 l arg) =>
+        FSym1KindInference
+    type instance Apply (FSym1 l) l = FSym2 l l
+    instance SuppressUnusedWarnings FSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FSym0KindInference GHC.Tuple.())
+    data FSym0 (l :: TyFun a (TyFun b (TyFun c (TyFun d (Foo a b c d)
+                                                -> *)
+                                       -> *)
+                              -> *))
+      = forall arg. KindOf (Apply FSym0 arg) ~ KindOf (FSym1 arg) =>
+        FSym0KindInference
+    type instance Apply FSym0 l = FSym1 l
+    type family Compare_0123456789 (a :: Nat)
+                                   (a :: Nat) :: Ordering where
+      Compare_0123456789 (Zero :: Nat) (Zero :: Nat) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[] :: Ordering)
+      Compare_0123456789 (Succ a_0123456789 :: Nat) (Succ b_0123456789 :: Nat) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]) :: Ordering)
+      Compare_0123456789 (Zero :: Nat) (Succ _z_0123456789 :: Nat) = (LTSym0 :: Ordering)
+      Compare_0123456789 (Succ _z_0123456789 :: Nat) (Zero :: Nat) = (GTSym0 :: Ordering)
+    type Compare_0123456789Sym2 (t :: Nat) (t :: Nat) =
+        Compare_0123456789 t t
+    instance SuppressUnusedWarnings Compare_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Compare_0123456789Sym1KindInference GHC.Tuple.())
+    data Compare_0123456789Sym1 (l :: Nat) (l :: TyFun Nat Ordering)
+      = forall arg. KindOf (Apply (Compare_0123456789Sym1 l) arg) ~ KindOf (Compare_0123456789Sym2 l arg) =>
+        Compare_0123456789Sym1KindInference
+    type instance Apply (Compare_0123456789Sym1 l) l = Compare_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Compare_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Compare_0123456789Sym0KindInference GHC.Tuple.())
+    data Compare_0123456789Sym0 (l :: TyFun Nat (TyFun Nat Ordering
+                                                 -> *))
+      = forall arg. KindOf (Apply Compare_0123456789Sym0 arg) ~ KindOf (Compare_0123456789Sym1 arg) =>
+        Compare_0123456789Sym0KindInference
+    type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
+    instance POrd (KProxy :: KProxy Nat) where
+      type Compare (a :: Nat) (a :: Nat) = Compare_0123456789 a a
+    type family Compare_0123456789 (a :: Foo a b c d)
+                                   (a :: Foo a b c d) :: Ordering where
+      Compare_0123456789 (A a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (A b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
+      Compare_0123456789 (B a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (B b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
+      Compare_0123456789 (C a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (C b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
+      Compare_0123456789 (D a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (D b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
+      Compare_0123456789 (E a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (E b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
+      Compare_0123456789 (F a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (F b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
+      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
+      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+    type Compare_0123456789Sym2 (t :: Foo a b c d) (t :: Foo a b c d) =
+        Compare_0123456789 t t
+    instance SuppressUnusedWarnings Compare_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Compare_0123456789Sym1KindInference GHC.Tuple.())
+    data Compare_0123456789Sym1 (l :: Foo a b c d)
+                                (l :: TyFun (Foo a b c d) Ordering)
+      = forall arg. KindOf (Apply (Compare_0123456789Sym1 l) arg) ~ KindOf (Compare_0123456789Sym2 l arg) =>
+        Compare_0123456789Sym1KindInference
+    type instance Apply (Compare_0123456789Sym1 l) l = Compare_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Compare_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Compare_0123456789Sym0KindInference GHC.Tuple.())
+    data Compare_0123456789Sym0 (l :: TyFun (Foo a b c d) (TyFun (Foo a b c d) Ordering
+                                                           -> *))
+      = forall arg. KindOf (Apply Compare_0123456789Sym0 arg) ~ KindOf (Compare_0123456789Sym1 arg) =>
+        Compare_0123456789Sym0KindInference
+    type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
+    instance POrd (KProxy :: KProxy (Foo a b c d)) where
+      type Compare (a :: Foo a b c d) (a :: Foo a b c d) = Compare_0123456789 a a
+    data instance Sing (z :: Nat)
+      = z ~ Zero => SZero |
+        forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
+    type SNat (z :: Nat) = Sing z
+    instance SingKind (KProxy :: KProxy Nat) where
+      type DemoteRep (KProxy :: KProxy Nat) = Nat
+      fromSing SZero = Zero
+      fromSing (SSucc b) = Succ (fromSing b)
+      toSing Zero = SomeSing SZero
+      toSing (Succ b)
+        = case toSing b :: SomeSing (KProxy :: KProxy Nat) of {
+            SomeSing c -> SomeSing (SSucc c) }
+    instance SEq (KProxy :: KProxy Nat) where
+      (%:==) SZero SZero = STrue
+      (%:==) SZero (SSucc _) = SFalse
+      (%:==) (SSucc _) SZero = SFalse
+      (%:==) (SSucc a) (SSucc b) = (%:==) a b
+    instance SDecide (KProxy :: KProxy Nat) where
+      (%~) SZero SZero = Proved Refl
+      (%~) SZero (SSucc _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SSucc _) SZero
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SSucc a) (SSucc b)
+        = case (%~) a b of {
+            Proved Refl -> Proved Refl
+            Disproved contra
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
+    data instance Sing (z :: Foo a b c d)
+      = forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ A n n n n =>
+        SA (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
+        forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ B n n n n =>
+        SB (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
+        forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ C n n n n =>
+        SC (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
+        forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ D n n n n =>
+        SD (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
+        forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ E n n n n =>
+        SE (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
+        forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ F n n n n =>
+        SF (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d))
+    type SFoo (z :: Foo a b c d) = Sing z
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b),
+              SingKind (KProxy :: KProxy c),
+              SingKind (KProxy :: KProxy d)) =>
+             SingKind (KProxy :: KProxy (Foo a b c d)) where
+      type DemoteRep (KProxy :: KProxy (Foo a b c d)) = Foo (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b)) (DemoteRep (KProxy :: KProxy c)) (DemoteRep (KProxy :: KProxy d))
+      fromSing (SA b b b b)
+        = A (fromSing b) (fromSing b) (fromSing b) (fromSing b)
+      fromSing (SB b b b b)
+        = B (fromSing b) (fromSing b) (fromSing b) (fromSing b)
+      fromSing (SC b b b b)
+        = C (fromSing b) (fromSing b) (fromSing b) (fromSing b)
+      fromSing (SD b b b b)
+        = D (fromSing b) (fromSing b) (fromSing b) (fromSing b)
+      fromSing (SE b b b b)
+        = E (fromSing b) (fromSing b) (fromSing b) (fromSing b)
+      fromSing (SF b b b b)
+        = F (fromSing b) (fromSing b) (fromSing b) (fromSing b)
+      toSing (A b b b b)
+        = case
+              GHC.Tuple.(,,,)
+                (toSing b :: SomeSing (KProxy :: KProxy a))
+                (toSing b :: SomeSing (KProxy :: KProxy b))
+                (toSing b :: SomeSing (KProxy :: KProxy c))
+                (toSing b :: SomeSing (KProxy :: KProxy d))
+          of {
+            GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
+              -> SomeSing (SA c c c c) }
+      toSing (B b b b b)
+        = case
+              GHC.Tuple.(,,,)
+                (toSing b :: SomeSing (KProxy :: KProxy a))
+                (toSing b :: SomeSing (KProxy :: KProxy b))
+                (toSing b :: SomeSing (KProxy :: KProxy c))
+                (toSing b :: SomeSing (KProxy :: KProxy d))
+          of {
+            GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
+              -> SomeSing (SB c c c c) }
+      toSing (C b b b b)
+        = case
+              GHC.Tuple.(,,,)
+                (toSing b :: SomeSing (KProxy :: KProxy a))
+                (toSing b :: SomeSing (KProxy :: KProxy b))
+                (toSing b :: SomeSing (KProxy :: KProxy c))
+                (toSing b :: SomeSing (KProxy :: KProxy d))
+          of {
+            GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
+              -> SomeSing (SC c c c c) }
+      toSing (D b b b b)
+        = case
+              GHC.Tuple.(,,,)
+                (toSing b :: SomeSing (KProxy :: KProxy a))
+                (toSing b :: SomeSing (KProxy :: KProxy b))
+                (toSing b :: SomeSing (KProxy :: KProxy c))
+                (toSing b :: SomeSing (KProxy :: KProxy d))
+          of {
+            GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
+              -> SomeSing (SD c c c c) }
+      toSing (E b b b b)
+        = case
+              GHC.Tuple.(,,,)
+                (toSing b :: SomeSing (KProxy :: KProxy a))
+                (toSing b :: SomeSing (KProxy :: KProxy b))
+                (toSing b :: SomeSing (KProxy :: KProxy c))
+                (toSing b :: SomeSing (KProxy :: KProxy d))
+          of {
+            GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
+              -> SomeSing (SE c c c c) }
+      toSing (F b b b b)
+        = case
+              GHC.Tuple.(,,,)
+                (toSing b :: SomeSing (KProxy :: KProxy a))
+                (toSing b :: SomeSing (KProxy :: KProxy b))
+                (toSing b :: SomeSing (KProxy :: KProxy c))
+                (toSing b :: SomeSing (KProxy :: KProxy d))
+          of {
+            GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
+              -> SomeSing (SF c c c c) }
+    instance (SEq (KProxy :: KProxy a),
+              SEq (KProxy :: KProxy b),
+              SEq (KProxy :: KProxy c),
+              SEq (KProxy :: KProxy d)) =>
+             SEq (KProxy :: KProxy (Foo a b c d)) where
+      (%:==) (SA a a a a) (SA b b b b)
+        = (%:&&)
+            ((%:==) a b)
+            ((%:&&) ((%:==) a b) ((%:&&) ((%:==) a b) ((%:==) a b)))
+      (%:==) (SA _ _ _ _) (SB _ _ _ _) = SFalse
+      (%:==) (SA _ _ _ _) (SC _ _ _ _) = SFalse
+      (%:==) (SA _ _ _ _) (SD _ _ _ _) = SFalse
+      (%:==) (SA _ _ _ _) (SE _ _ _ _) = SFalse
+      (%:==) (SA _ _ _ _) (SF _ _ _ _) = SFalse
+      (%:==) (SB _ _ _ _) (SA _ _ _ _) = SFalse
+      (%:==) (SB a a a a) (SB b b b b)
+        = (%:&&)
+            ((%:==) a b)
+            ((%:&&) ((%:==) a b) ((%:&&) ((%:==) a b) ((%:==) a b)))
+      (%:==) (SB _ _ _ _) (SC _ _ _ _) = SFalse
+      (%:==) (SB _ _ _ _) (SD _ _ _ _) = SFalse
+      (%:==) (SB _ _ _ _) (SE _ _ _ _) = SFalse
+      (%:==) (SB _ _ _ _) (SF _ _ _ _) = SFalse
+      (%:==) (SC _ _ _ _) (SA _ _ _ _) = SFalse
+      (%:==) (SC _ _ _ _) (SB _ _ _ _) = SFalse
+      (%:==) (SC a a a a) (SC b b b b)
+        = (%:&&)
+            ((%:==) a b)
+            ((%:&&) ((%:==) a b) ((%:&&) ((%:==) a b) ((%:==) a b)))
+      (%:==) (SC _ _ _ _) (SD _ _ _ _) = SFalse
+      (%:==) (SC _ _ _ _) (SE _ _ _ _) = SFalse
+      (%:==) (SC _ _ _ _) (SF _ _ _ _) = SFalse
+      (%:==) (SD _ _ _ _) (SA _ _ _ _) = SFalse
+      (%:==) (SD _ _ _ _) (SB _ _ _ _) = SFalse
+      (%:==) (SD _ _ _ _) (SC _ _ _ _) = SFalse
+      (%:==) (SD a a a a) (SD b b b b)
+        = (%:&&)
+            ((%:==) a b)
+            ((%:&&) ((%:==) a b) ((%:&&) ((%:==) a b) ((%:==) a b)))
+      (%:==) (SD _ _ _ _) (SE _ _ _ _) = SFalse
+      (%:==) (SD _ _ _ _) (SF _ _ _ _) = SFalse
+      (%:==) (SE _ _ _ _) (SA _ _ _ _) = SFalse
+      (%:==) (SE _ _ _ _) (SB _ _ _ _) = SFalse
+      (%:==) (SE _ _ _ _) (SC _ _ _ _) = SFalse
+      (%:==) (SE _ _ _ _) (SD _ _ _ _) = SFalse
+      (%:==) (SE a a a a) (SE b b b b)
+        = (%:&&)
+            ((%:==) a b)
+            ((%:&&) ((%:==) a b) ((%:&&) ((%:==) a b) ((%:==) a b)))
+      (%:==) (SE _ _ _ _) (SF _ _ _ _) = SFalse
+      (%:==) (SF _ _ _ _) (SA _ _ _ _) = SFalse
+      (%:==) (SF _ _ _ _) (SB _ _ _ _) = SFalse
+      (%:==) (SF _ _ _ _) (SC _ _ _ _) = SFalse
+      (%:==) (SF _ _ _ _) (SD _ _ _ _) = SFalse
+      (%:==) (SF _ _ _ _) (SE _ _ _ _) = SFalse
+      (%:==) (SF a a a a) (SF b b b b)
+        = (%:&&)
+            ((%:==) a b)
+            ((%:&&) ((%:==) a b) ((%:&&) ((%:==) a b) ((%:==) a b)))
+    instance (SDecide (KProxy :: KProxy a),
+              SDecide (KProxy :: KProxy b),
+              SDecide (KProxy :: KProxy c),
+              SDecide (KProxy :: KProxy d)) =>
+             SDecide (KProxy :: KProxy (Foo a b c d)) where
+      (%~) (SA a a a a) (SA b b b b)
+        = case
+              GHC.Tuple.(,,,) ((%~) a b) ((%~) a b) ((%~) a b) ((%~) a b)
+          of {
+            GHC.Tuple.(,,,) (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+              -> Proved Refl
+            GHC.Tuple.(,,,) (Disproved contra) _ _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ (Disproved contra) _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ (Disproved contra) _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ _ (Disproved contra)
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
+      (%~) (SA _ _ _ _) (SB _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SA _ _ _ _) (SC _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SA _ _ _ _) (SD _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SA _ _ _ _) (SE _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SA _ _ _ _) (SF _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SB _ _ _ _) (SA _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SB a a a a) (SB b b b b)
+        = case
+              GHC.Tuple.(,,,) ((%~) a b) ((%~) a b) ((%~) a b) ((%~) a b)
+          of {
+            GHC.Tuple.(,,,) (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+              -> Proved Refl
+            GHC.Tuple.(,,,) (Disproved contra) _ _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ (Disproved contra) _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ (Disproved contra) _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ _ (Disproved contra)
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
+      (%~) (SB _ _ _ _) (SC _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SB _ _ _ _) (SD _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SB _ _ _ _) (SE _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SB _ _ _ _) (SF _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SC _ _ _ _) (SA _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SC _ _ _ _) (SB _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SC a a a a) (SC b b b b)
+        = case
+              GHC.Tuple.(,,,) ((%~) a b) ((%~) a b) ((%~) a b) ((%~) a b)
+          of {
+            GHC.Tuple.(,,,) (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+              -> Proved Refl
+            GHC.Tuple.(,,,) (Disproved contra) _ _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ (Disproved contra) _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ (Disproved contra) _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ _ (Disproved contra)
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
+      (%~) (SC _ _ _ _) (SD _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SC _ _ _ _) (SE _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SC _ _ _ _) (SF _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SD _ _ _ _) (SA _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SD _ _ _ _) (SB _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SD _ _ _ _) (SC _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SD a a a a) (SD b b b b)
+        = case
+              GHC.Tuple.(,,,) ((%~) a b) ((%~) a b) ((%~) a b) ((%~) a b)
+          of {
+            GHC.Tuple.(,,,) (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+              -> Proved Refl
+            GHC.Tuple.(,,,) (Disproved contra) _ _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ (Disproved contra) _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ (Disproved contra) _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ _ (Disproved contra)
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
+      (%~) (SD _ _ _ _) (SE _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SD _ _ _ _) (SF _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SE _ _ _ _) (SA _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SE _ _ _ _) (SB _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SE _ _ _ _) (SC _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SE _ _ _ _) (SD _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SE a a a a) (SE b b b b)
+        = case
+              GHC.Tuple.(,,,) ((%~) a b) ((%~) a b) ((%~) a b) ((%~) a b)
+          of {
+            GHC.Tuple.(,,,) (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+              -> Proved Refl
+            GHC.Tuple.(,,,) (Disproved contra) _ _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ (Disproved contra) _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ (Disproved contra) _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ _ (Disproved contra)
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
+      (%~) (SE _ _ _ _) (SF _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SF _ _ _ _) (SA _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SF _ _ _ _) (SB _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SF _ _ _ _) (SC _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SF _ _ _ _) (SD _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SF _ _ _ _) (SE _ _ _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SF a a a a) (SF b b b b)
+        = case
+              GHC.Tuple.(,,,) ((%~) a b) ((%~) a b) ((%~) a b) ((%~) a b)
+          of {
+            GHC.Tuple.(,,,) (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+                            (Proved Refl)
+              -> Proved Refl
+            GHC.Tuple.(,,,) (Disproved contra) _ _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ (Disproved contra) _ _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ (Disproved contra) _
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+            GHC.Tuple.(,,,) _ _ _ (Disproved contra)
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
+    instance SOrd (KProxy :: KProxy Nat) =>
+             SOrd (KProxy :: KProxy Nat) where
+      sCompare ::
+        forall (t :: Nat) (t :: Nat).
+        Sing t
+        -> Sing t -> Sing (Apply (Apply CompareSym0 t) t :: Ordering)
+      sCompare SZero SZero
+        = let
+            lambda ::
+              (t ~ ZeroSym0, t ~ ZeroSym0) =>
+              Sing (Apply (Apply CompareSym0 ZeroSym0) ZeroSym0 :: Ordering)
+            lambda
+              = applySing
+                  (applySing
+                     (applySing
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
+                     SEQ)
+                  SNil
+          in lambda
+      sCompare (SSucc sA_0123456789) (SSucc sB_0123456789)
+        = let
+            lambda ::
+              forall a_0123456789 b_0123456789. (t ~ Apply SuccSym0 a_0123456789,
+                                                 t ~ Apply SuccSym0 b_0123456789) =>
+              Sing a_0123456789
+              -> Sing b_0123456789
+                 -> Sing (Apply (Apply CompareSym0 (Apply SuccSym0 a_0123456789)) (Apply SuccSym0 b_0123456789) :: Ordering)
+            lambda a_0123456789 b_0123456789
+              = applySing
+                  (applySing
+                     (applySing
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
+                     SEQ)
+                  (applySing
+                     (applySing
+                        (singFun2 (Proxy :: Proxy (:$)) SCons)
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                           b_0123456789))
+                     SNil)
+          in lambda sA_0123456789 sB_0123456789
+      sCompare SZero (SSucc _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789. (t ~ ZeroSym0,
+                                     t ~ Apply SuccSym0 _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing (Apply (Apply CompareSym0 ZeroSym0) (Apply SuccSym0 _z_0123456789) :: Ordering)
+            lambda _z_0123456789 = SLT
+          in lambda _s_z_0123456789
+      sCompare (SSucc _s_z_0123456789) SZero
+        = let
+            lambda ::
+              forall _z_0123456789. (t ~ Apply SuccSym0 _z_0123456789,
+                                     t ~ ZeroSym0) =>
+              Sing _z_0123456789
+              -> Sing (Apply (Apply CompareSym0 (Apply SuccSym0 _z_0123456789)) ZeroSym0 :: Ordering)
+            lambda _z_0123456789 = SGT
+          in lambda _s_z_0123456789
+    instance (SOrd (KProxy :: KProxy a),
+              SOrd (KProxy :: KProxy b),
+              SOrd (KProxy :: KProxy c),
+              SOrd (KProxy :: KProxy d)) =>
+             SOrd (KProxy :: KProxy (Foo a b c d)) where
+      sCompare ::
+        forall (t :: Foo a b c d) (t :: Foo a b c d).
+        Sing t
+        -> Sing t -> Sing (Apply (Apply CompareSym0 t) t :: Ordering)
+      sCompare
+        (SA sA_0123456789 sA_0123456789 sA_0123456789 sA_0123456789)
+        (SA sB_0123456789 sB_0123456789 sB_0123456789 sB_0123456789)
+        = let
+            lambda ::
+              forall a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t ~ Apply (Apply (Apply (Apply ASym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+              Sing a_0123456789
+              -> Sing a_0123456789
+                 -> Sing a_0123456789
+                    -> Sing a_0123456789
+                       -> Sing b_0123456789
+                          -> Sing b_0123456789
+                             -> Sing b_0123456789
+                                -> Sing b_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply ASym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+            lambda
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              = applySing
+                  (applySing
+                     (applySing
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
+                     SEQ)
+                  (applySing
+                     (applySing
+                        (singFun2 (Proxy :: Proxy (:$)) SCons)
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                           b_0123456789))
+                     (applySing
+                        (applySing
+                           (singFun2 (Proxy :: Proxy (:$)) SCons)
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                              b_0123456789))
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy (:$)) SCons)
+                              (applySing
+                                 (applySing
+                                    (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                                 b_0123456789))
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy (:$)) SCons)
+                                 (applySing
+                                    (applySing
+                                       (singFun2 (Proxy :: Proxy CompareSym0) sCompare)
+                                       a_0123456789)
+                                    b_0123456789))
+                              SNil))))
+          in
+            lambda
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+      sCompare
+        (SB sA_0123456789 sA_0123456789 sA_0123456789 sA_0123456789)
+        (SB sB_0123456789 sB_0123456789 sB_0123456789 sB_0123456789)
+        = let
+            lambda ::
+              forall a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t ~ Apply (Apply (Apply (Apply BSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+              Sing a_0123456789
+              -> Sing a_0123456789
+                 -> Sing a_0123456789
+                    -> Sing a_0123456789
+                       -> Sing b_0123456789
+                          -> Sing b_0123456789
+                             -> Sing b_0123456789
+                                -> Sing b_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply BSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+            lambda
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              = applySing
+                  (applySing
+                     (applySing
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
+                     SEQ)
+                  (applySing
+                     (applySing
+                        (singFun2 (Proxy :: Proxy (:$)) SCons)
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                           b_0123456789))
+                     (applySing
+                        (applySing
+                           (singFun2 (Proxy :: Proxy (:$)) SCons)
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                              b_0123456789))
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy (:$)) SCons)
+                              (applySing
+                                 (applySing
+                                    (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                                 b_0123456789))
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy (:$)) SCons)
+                                 (applySing
+                                    (applySing
+                                       (singFun2 (Proxy :: Proxy CompareSym0) sCompare)
+                                       a_0123456789)
+                                    b_0123456789))
+                              SNil))))
+          in
+            lambda
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+      sCompare
+        (SC sA_0123456789 sA_0123456789 sA_0123456789 sA_0123456789)
+        (SC sB_0123456789 sB_0123456789 sB_0123456789 sB_0123456789)
+        = let
+            lambda ::
+              forall a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t ~ Apply (Apply (Apply (Apply CSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+              Sing a_0123456789
+              -> Sing a_0123456789
+                 -> Sing a_0123456789
+                    -> Sing a_0123456789
+                       -> Sing b_0123456789
+                          -> Sing b_0123456789
+                             -> Sing b_0123456789
+                                -> Sing b_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply CSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+            lambda
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              = applySing
+                  (applySing
+                     (applySing
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
+                     SEQ)
+                  (applySing
+                     (applySing
+                        (singFun2 (Proxy :: Proxy (:$)) SCons)
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                           b_0123456789))
+                     (applySing
+                        (applySing
+                           (singFun2 (Proxy :: Proxy (:$)) SCons)
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                              b_0123456789))
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy (:$)) SCons)
+                              (applySing
+                                 (applySing
+                                    (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                                 b_0123456789))
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy (:$)) SCons)
+                                 (applySing
+                                    (applySing
+                                       (singFun2 (Proxy :: Proxy CompareSym0) sCompare)
+                                       a_0123456789)
+                                    b_0123456789))
+                              SNil))))
+          in
+            lambda
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+      sCompare
+        (SD sA_0123456789 sA_0123456789 sA_0123456789 sA_0123456789)
+        (SD sB_0123456789 sB_0123456789 sB_0123456789 sB_0123456789)
+        = let
+            lambda ::
+              forall a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t ~ Apply (Apply (Apply (Apply DSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+              Sing a_0123456789
+              -> Sing a_0123456789
+                 -> Sing a_0123456789
+                    -> Sing a_0123456789
+                       -> Sing b_0123456789
+                          -> Sing b_0123456789
+                             -> Sing b_0123456789
+                                -> Sing b_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply DSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+            lambda
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              = applySing
+                  (applySing
+                     (applySing
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
+                     SEQ)
+                  (applySing
+                     (applySing
+                        (singFun2 (Proxy :: Proxy (:$)) SCons)
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                           b_0123456789))
+                     (applySing
+                        (applySing
+                           (singFun2 (Proxy :: Proxy (:$)) SCons)
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                              b_0123456789))
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy (:$)) SCons)
+                              (applySing
+                                 (applySing
+                                    (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                                 b_0123456789))
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy (:$)) SCons)
+                                 (applySing
+                                    (applySing
+                                       (singFun2 (Proxy :: Proxy CompareSym0) sCompare)
+                                       a_0123456789)
+                                    b_0123456789))
+                              SNil))))
+          in
+            lambda
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+      sCompare
+        (SE sA_0123456789 sA_0123456789 sA_0123456789 sA_0123456789)
+        (SE sB_0123456789 sB_0123456789 sB_0123456789 sB_0123456789)
+        = let
+            lambda ::
+              forall a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t ~ Apply (Apply (Apply (Apply ESym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+              Sing a_0123456789
+              -> Sing a_0123456789
+                 -> Sing a_0123456789
+                    -> Sing a_0123456789
+                       -> Sing b_0123456789
+                          -> Sing b_0123456789
+                             -> Sing b_0123456789
+                                -> Sing b_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply ESym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+            lambda
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              = applySing
+                  (applySing
+                     (applySing
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
+                     SEQ)
+                  (applySing
+                     (applySing
+                        (singFun2 (Proxy :: Proxy (:$)) SCons)
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                           b_0123456789))
+                     (applySing
+                        (applySing
+                           (singFun2 (Proxy :: Proxy (:$)) SCons)
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                              b_0123456789))
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy (:$)) SCons)
+                              (applySing
+                                 (applySing
+                                    (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                                 b_0123456789))
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy (:$)) SCons)
+                                 (applySing
+                                    (applySing
+                                       (singFun2 (Proxy :: Proxy CompareSym0) sCompare)
+                                       a_0123456789)
+                                    b_0123456789))
+                              SNil))))
+          in
+            lambda
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+      sCompare
+        (SF sA_0123456789 sA_0123456789 sA_0123456789 sA_0123456789)
+        (SF sB_0123456789 sB_0123456789 sB_0123456789 sB_0123456789)
+        = let
+            lambda ::
+              forall a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     a_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789
+                     b_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t ~ Apply (Apply (Apply (Apply FSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+              Sing a_0123456789
+              -> Sing a_0123456789
+                 -> Sing a_0123456789
+                    -> Sing a_0123456789
+                       -> Sing b_0123456789
+                          -> Sing b_0123456789
+                             -> Sing b_0123456789
+                                -> Sing b_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply FSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+            lambda
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              a_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              b_0123456789
+              = applySing
+                  (applySing
+                     (applySing
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
+                     SEQ)
+                  (applySing
+                     (applySing
+                        (singFun2 (Proxy :: Proxy (:$)) SCons)
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                           b_0123456789))
+                     (applySing
+                        (applySing
+                           (singFun2 (Proxy :: Proxy (:$)) SCons)
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                              b_0123456789))
+                        (applySing
+                           (applySing
+                              (singFun2 (Proxy :: Proxy (:$)) SCons)
+                              (applySing
+                                 (applySing
+                                    (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
+                                 b_0123456789))
+                           (applySing
+                              (applySing
+                                 (singFun2 (Proxy :: Proxy (:$)) SCons)
+                                 (applySing
+                                    (applySing
+                                       (singFun2 (Proxy :: Proxy CompareSym0) sCompare)
+                                       a_0123456789)
+                                    b_0123456789))
+                              SNil))))
+          in
+            lambda
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sA_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+              sB_0123456789
+      sCompare
+        (SA _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SB _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SA _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SC _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SA _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SD _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SA _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SE _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SA _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SF _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SB _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SA _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SB _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SC _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SB _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SD _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SB _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SE _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SB _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SF _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SC _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SA _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SC _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SB _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SC _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SD _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SC _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SE _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SC _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SF _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SD _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SA _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SD _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SB _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SD _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SC _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SD _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SE _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SD _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SF _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SE _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SA _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SE _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SB _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SE _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SC _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SE _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SD _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SE _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SF _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SLT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SF _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SA _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SF _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SB _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SF _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SC _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SF _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SD _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+      sCompare
+        (SF _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        (SE _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789
+            _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789
+                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing _z_0123456789
+                 -> Sing _z_0123456789
+                    -> Sing _z_0123456789
+                       -> Sing _z_0123456789
+                          -> Sing _z_0123456789
+                             -> Sing _z_0123456789
+                                -> Sing _z_0123456789
+                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+            lambda
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              _z_0123456789
+              = SGT
+          in
+            lambda
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+              _s_z_0123456789
+    instance SingI Zero where
+      sing = SZero
+    instance SingI n => SingI (Succ (n :: Nat)) where
+      sing = SSucc sing
+    instance (SingI n, SingI n, SingI n, SingI n) =>
+             SingI (A (n :: a) (n :: b) (n :: c) (n :: d)) where
+      sing = SA sing sing sing sing
+    instance (SingI n, SingI n, SingI n, SingI n) =>
+             SingI (B (n :: a) (n :: b) (n :: c) (n :: d)) where
+      sing = SB sing sing sing sing
+    instance (SingI n, SingI n, SingI n, SingI n) =>
+             SingI (C (n :: a) (n :: b) (n :: c) (n :: d)) where
+      sing = SC sing sing sing sing
+    instance (SingI n, SingI n, SingI n, SingI n) =>
+             SingI (D (n :: a) (n :: b) (n :: c) (n :: d)) where
+      sing = SD sing sing sing sing
+    instance (SingI n, SingI n, SingI n, SingI n) =>
+             SingI (E (n :: a) (n :: b) (n :: c) (n :: d)) where
+      sing = SE sing sing sing sing
+    instance (SingI n, SingI n, SingI n, SingI n) =>
+             SingI (F (n :: a) (n :: b) (n :: c) (n :: d)) where
+      sing = SF sing sing sing sing

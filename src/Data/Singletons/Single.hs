@@ -23,6 +23,7 @@ import Data.Singletons.Single.Type
 import Data.Singletons.Single.Data
 import Data.Singletons.Single.Eq
 import Data.Singletons.Syntax
+import Data.Singletons.Partition
 import Language.Haskell.TH.Desugar
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
@@ -243,7 +244,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
       return $ DForallT tvbs (default_pred : cxt) (ravel args res)
       where
         (tvbs, cxt, args, res) = unravel sty
-        tvs          = map (DVarT . extractTvbName) tvbs
+        tvs                    = map tvbToType tvbs
 
 
 singInstD :: AInstDecl -> SgM DDec
