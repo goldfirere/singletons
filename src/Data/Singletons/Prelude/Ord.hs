@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, DataKinds, PolyKinds, ScopedTypeVariables,
              TypeFamilies, TypeOperators, GADTs, UndecidableInstances,
-             FlexibleContexts, DefaultSignatures #-}
+             FlexibleContexts, DefaultSignatures, InstanceSigs #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -37,7 +37,6 @@ module Data.Singletons.Prelude.Ord (
   MinSym0, MinSym1, MinSym2
   ) where
 
-import Data.Singletons.Promote
 import Data.Singletons.Single
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
@@ -81,5 +80,4 @@ $(singletons [d|
   thenCmp GT _ = GT
   |])
 
-$(promoteOrdInstances basicTypes)
--- TODO: singOrdInstances
+$(singOrdInstances basicTypes)

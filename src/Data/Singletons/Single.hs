@@ -13,6 +13,7 @@ module Data.Singletons.Single where
 import Prelude hiding ( exp )
 import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (Quasi(..))
+import Data.Singletons.Deriving.Ord
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Promote.Monad ( promoteM )
@@ -135,6 +136,28 @@ singEqualityInstance desc@(_, className, _) name = do
   (scons, _) <- singM [] $ mapM (singCtor aVar) dcons
   eqInstance <- mkEqualityInstance kind scons desc
   return $ decToTH eqInstance
+
+-- | Create instances of 'SOrd' for the given types
+singOrdInstances :: DsMonad q => [Name] -> q [Dec]
+singOrdInstances = concatMapM singOrdInstance
+
+-- | Create instance of 'SOrd' for the given type
+singOrdInstance :: DsMonad q => Name -> q [Dec]
+singOrdInstance = singInstance mkOrdInstance "Ord"
+
+singInstance :: DsMonad q
+             => (DType -> [DCon] -> q UInstDecl)
+             -> String -> Name -> q [Dec]
+singInstance mk_inst inst_name name = do
+  (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
+                            ++ " for it.") name
+  dtvbs <- mapM dsTvb tvbs
+  dcons <- mapM dsCon cons
+  raw_inst <- mk_inst (foldType (DConT name) (map tvbToType dtvbs)) dcons
+  (a_inst, decs) <- promoteM [] $
+                    promoteInstanceDec Map.empty raw_inst
+  decs' <- singDecsM [] $ (:[]) <$> singInstD a_inst
+  return $ decsToTH (decs ++ decs')
 
 singInfo :: DsMonad q => DInfo -> q [DDec]
 singInfo (DTyConI dec _) =
