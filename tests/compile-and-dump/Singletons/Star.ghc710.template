@@ -44,31 +44,31 @@ Singletons/Star.hs:0:0:: Splicing declarations
         VecSym0KindInference
     type instance Apply VecSym0 l = VecSym1 l
     type family Compare_0123456789 (a :: *) (a :: *) :: Ordering where
-      Compare_0123456789 (Nat :: *) (Nat :: *) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[] :: Ordering)
-      Compare_0123456789 (Int :: *) (Int :: *) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[] :: Ordering)
-      Compare_0123456789 (String :: *) (String :: *) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[] :: Ordering)
-      Compare_0123456789 (Maybe a_0123456789 :: *) (Maybe b_0123456789 :: *) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]) :: Ordering)
-      Compare_0123456789 (Vec a_0123456789 a_0123456789 :: *) (Vec b_0123456789 b_0123456789 :: *) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])) :: Ordering)
-      Compare_0123456789 (Nat :: *) (Int :: *) = (LTSym0 :: Ordering)
-      Compare_0123456789 (Nat :: *) (String :: *) = (LTSym0 :: Ordering)
-      Compare_0123456789 (Nat :: *) (Maybe _z_0123456789 :: *) = (LTSym0 :: Ordering)
-      Compare_0123456789 (Nat :: *) (Vec _z_0123456789 _z_0123456789 :: *) = (LTSym0 :: Ordering)
-      Compare_0123456789 (Int :: *) (Nat :: *) = (GTSym0 :: Ordering)
-      Compare_0123456789 (Int :: *) (String :: *) = (LTSym0 :: Ordering)
-      Compare_0123456789 (Int :: *) (Maybe _z_0123456789 :: *) = (LTSym0 :: Ordering)
-      Compare_0123456789 (Int :: *) (Vec _z_0123456789 _z_0123456789 :: *) = (LTSym0 :: Ordering)
-      Compare_0123456789 (String :: *) (Nat :: *) = (GTSym0 :: Ordering)
-      Compare_0123456789 (String :: *) (Int :: *) = (GTSym0 :: Ordering)
-      Compare_0123456789 (String :: *) (Maybe _z_0123456789 :: *) = (LTSym0 :: Ordering)
-      Compare_0123456789 (String :: *) (Vec _z_0123456789 _z_0123456789 :: *) = (LTSym0 :: Ordering)
-      Compare_0123456789 (Maybe _z_0123456789 :: *) (Nat :: *) = (GTSym0 :: Ordering)
-      Compare_0123456789 (Maybe _z_0123456789 :: *) (Int :: *) = (GTSym0 :: Ordering)
-      Compare_0123456789 (Maybe _z_0123456789 :: *) (String :: *) = (GTSym0 :: Ordering)
-      Compare_0123456789 (Maybe _z_0123456789 :: *) (Vec _z_0123456789 _z_0123456789 :: *) = (LTSym0 :: Ordering)
-      Compare_0123456789 (Vec _z_0123456789 _z_0123456789 :: *) (Nat :: *) = (GTSym0 :: Ordering)
-      Compare_0123456789 (Vec _z_0123456789 _z_0123456789 :: *) (Int :: *) = (GTSym0 :: Ordering)
-      Compare_0123456789 (Vec _z_0123456789 _z_0123456789 :: *) (String :: *) = (GTSym0 :: Ordering)
-      Compare_0123456789 (Vec _z_0123456789 _z_0123456789 :: *) (Maybe _z_0123456789 :: *) = (GTSym0 :: Ordering)
+      Compare_0123456789 Nat Nat = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
+      Compare_0123456789 Int Int = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
+      Compare_0123456789 String String = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
+      Compare_0123456789 (Maybe a_0123456789) (Maybe b_0123456789) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])
+      Compare_0123456789 (Vec a_0123456789 a_0123456789) (Vec b_0123456789 b_0123456789) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]))
+      Compare_0123456789 Nat Int = LTSym0
+      Compare_0123456789 Nat String = LTSym0
+      Compare_0123456789 Nat (Maybe _z_0123456789) = LTSym0
+      Compare_0123456789 Nat (Vec _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 Int Nat = GTSym0
+      Compare_0123456789 Int String = LTSym0
+      Compare_0123456789 Int (Maybe _z_0123456789) = LTSym0
+      Compare_0123456789 Int (Vec _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 String Nat = GTSym0
+      Compare_0123456789 String Int = GTSym0
+      Compare_0123456789 String (Maybe _z_0123456789) = LTSym0
+      Compare_0123456789 String (Vec _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (Maybe _z_0123456789) Nat = GTSym0
+      Compare_0123456789 (Maybe _z_0123456789) Int = GTSym0
+      Compare_0123456789 (Maybe _z_0123456789) String = GTSym0
+      Compare_0123456789 (Maybe _z_0123456789) (Vec _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (Vec _z_0123456789 _z_0123456789) Nat = GTSym0
+      Compare_0123456789 (Vec _z_0123456789 _z_0123456789) Int = GTSym0
+      Compare_0123456789 (Vec _z_0123456789 _z_0123456789) String = GTSym0
+      Compare_0123456789 (Vec _z_0123456789 _z_0123456789) (Maybe _z_0123456789) = GTSym0
     type Compare_0123456789Sym2 (t :: *) (t :: *) =
         Compare_0123456789 t t
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings Compare_0123456789Sym1 where

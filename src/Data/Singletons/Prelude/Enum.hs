@@ -49,8 +49,7 @@ $(singletonsOnly [d|
     minBound, maxBound :: a
   |])
 
--- TODO: Singletonize Bounded instances
-$(promoteBoundedInstances boundedBasicTypes)
+$(singBoundedInstances boundedBasicTypes)
 
 $(singletonsOnly [d|
   class  Enum a   where

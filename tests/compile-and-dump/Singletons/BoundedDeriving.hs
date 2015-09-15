@@ -1,9 +1,9 @@
-module Promote.BoundedDeriving where
+module Singletons.BoundedDeriving where
 
-import Data.Promotion.Prelude
-import Data.Promotion.TH
+import Data.Singletons.Prelude
+import Data.Singletons.TH
 
-$(promote [d|
+$(singletons [d|
   data Foo1 = Foo1 deriving (Bounded)
   data Foo2 = A | B | C | D | E deriving (Bounded)
   data Foo3 a = Foo3 a deriving (Bounded)

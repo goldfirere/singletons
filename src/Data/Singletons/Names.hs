@@ -22,12 +22,11 @@ import Data.Singletons.Util
 import Data.Proxy ( Proxy(..) )
 import Control.Monad
 
-anyTypeName, boolName, andName, tyEqName, compareName, tyCompareName, tyminBoundName,
-  tymaxBoundName, repName,
+anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
+  maxBoundName, repName,
   nilName, consName, listName, tyFunName,
   applyName, natName, symbolName, undefinedName, typeRepName, stringName,
-  eqName, ordName, boundedName, orderingName, ordLTSymName, ordEQSymName,
-  ordGTSymName,
+  eqName, ordName, boundedName, orderingName,
   singFamilyName, singIName, singMethName, demoteRepName,
   singKindClassName, sEqClassName, sEqMethName, sconsName, snilName,
   sIfName, kProxyDataName, kProxyTypeName, proxyTypeName, proxyDataName,
@@ -35,16 +34,15 @@ anyTypeName, boolName, andName, tyEqName, compareName, tyCompareName, tyminBound
   sListName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
   equalityName, applySingName, suppressClassName, suppressMethodName,
-  tyThenCmpName, thenCmpName,
+  thenCmpName,
   kindOfName, tyFromIntegerName, tyNegateName, sFromIntegerName,
   sNegateName, errorName, foldlName, cmpEQName, cmpLTName, cmpGTName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
-tyCompareName = mk_name_tc "Data.Singletons.Prelude.Ord" "Compare"
 compareName = 'compare
-tyminBoundName = mk_name_tc "Data.Singletons.Prelude.Enum" "MinBound"
-tymaxBoundName = mk_name_tc "Data.Singletons.Prelude.Enum" "MaxBound"
+minBoundName = 'minBound
+maxBoundName = 'maxBound
 tyEqName = mk_name_tc "Data.Singletons.Prelude.Eq" ":=="
 repName = mkName "Rep"   -- this is actually defined in client code!
 nilName = '[]
@@ -61,9 +59,6 @@ eqName = ''Eq
 ordName = ''Ord
 boundedName = ''Bounded
 orderingName = ''Ordering
-ordLTSymName = mk_name_tc "Data.Singletons.Prelude.Instances" "LTSym0"
-ordEQSymName = mk_name_tc "Data.Singletons.Prelude.Instances" "EQSym0"
-ordGTSymName = mk_name_tc "Data.Singletons.Prelude.Instances" "GTSym0"
 singFamilyName = ''Sing
 singIName = ''SingI
 singMethName = 'sing
@@ -93,7 +88,6 @@ applySingName = 'applySing
 suppressClassName = ''SuppressUnusedWarnings
 suppressMethodName = 'suppressUnusedWarnings
 thenCmpName = mk_name_v "Data.Singletons.Prelude.Ord" "thenCmp"
-tyThenCmpName = mk_name_tc "Data.Singletons.Prelude.Ord" "ThenCmp"
 kindOfName = ''KindOf
 tyFromIntegerName = mk_name_tc "Data.Singletons.Prelude.Num" "FromInteger"
 tyNegateName = mk_name_tc "Data.Singletons.Prelude.Num" "Negate"

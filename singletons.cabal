@@ -85,11 +85,11 @@ library
                       Data.Singletons.SuppressUnusedWarnings
 
   other-modules:      Data.Singletons.Deriving.Infer,
+                      Data.Singletons.Deriving.Bounded,
                       Data.Singletons.Deriving.Ord,
                       Data.Singletons.Promote,
                       Data.Singletons.Promote.Monad,
                       Data.Singletons.Promote.Eq,
-                      Data.Singletons.Promote.Bounded,
                       Data.Singletons.Promote.Type,
                       Data.Singletons.Promote.Defun,
                       Data.Singletons.Util,

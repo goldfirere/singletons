@@ -44,7 +44,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       type family Meth (arg :: a) :: a
       type family L2r (arg :: a) :: b
     type family Meth_0123456789 (a :: Bool) :: Bool where
-      Meth_0123456789 (a_0123456789 :: Bool) = (Apply NotSym0 a_0123456789 :: Bool)
+      Meth_0123456789 a_0123456789 = Apply NotSym0 a_0123456789
     type Meth_0123456789Sym1 (t :: Bool) = Meth_0123456789 t
     instance SuppressUnusedWarnings Meth_0123456789Sym0 where
       suppressUnusedWarnings _
@@ -54,8 +54,8 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
         Meth_0123456789Sym0KindInference
     type instance Apply Meth_0123456789Sym0 l = Meth_0123456789Sym1 l
     type family L2r_0123456789 (a :: Bool) :: Nat where
-      L2r_0123456789 (False :: Bool) = (FromInteger 0 :: Nat)
-      L2r_0123456789 (True :: Bool) = (FromInteger 1 :: Nat)
+      L2r_0123456789 False = FromInteger 0
+      L2r_0123456789 True = FromInteger 1
     type L2r_0123456789Sym1 (t :: Bool) = L2r_0123456789 t
     instance SuppressUnusedWarnings L2r_0123456789Sym0 where
       suppressUnusedWarnings _

@@ -24,10 +24,10 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply SuccSym0 l = SuccSym1 l
     type family Compare_0123456789 (a :: Nat)
                                    (a :: Nat) :: Ordering where
-      Compare_0123456789 (Zero :: Nat) (Zero :: Nat) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[] :: Ordering)
-      Compare_0123456789 (Succ a_0123456789 :: Nat) (Succ b_0123456789 :: Nat) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]) :: Ordering)
-      Compare_0123456789 (Zero :: Nat) (Succ _z_0123456789 :: Nat) = (LTSym0 :: Ordering)
-      Compare_0123456789 (Succ _z_0123456789 :: Nat) (Zero :: Nat) = (GTSym0 :: Ordering)
+      Compare_0123456789 Zero Zero = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
+      Compare_0123456789 (Succ a_0123456789) (Succ b_0123456789) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])
+      Compare_0123456789 Zero (Succ _z_0123456789) = LTSym0
+      Compare_0123456789 (Succ _z_0123456789) Zero = GTSym0
     type Compare_0123456789Sym2 (t :: Nat) (t :: Nat) =
         Compare_0123456789 t t
     instance SuppressUnusedWarnings Compare_0123456789Sym1 where

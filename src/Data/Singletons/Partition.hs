@@ -16,6 +16,7 @@ module Data.Singletons.Partition where
 import Prelude hiding ( exp )
 import Data.Singletons.Syntax
 import Data.Singletons.Deriving.Ord
+import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Names
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Ppr
@@ -51,10 +52,13 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
   return $ mempty { pd_data_decs = [DataDecl nd name tvbs cons derivings']
                   , pd_instance_decs = derived_instances }
   where
+    ty = foldType (DConT name) (map tvbToType tvbs)
     part_derivings :: Quasi m => Name -> m (Either Name UInstDecl)
     part_derivings deriv_name
       | deriv_name == ordName
-      = Right <$> mkOrdInstance (foldType (DConT name) (map tvbToType tvbs)) cons
+      = Right <$> mkOrdInstance ty cons
+      | deriv_name == boundedName
+      = Right <$> mkBoundedInstance ty cons
       | otherwise
       = return (Left deriv_name)
 

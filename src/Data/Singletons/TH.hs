@@ -33,6 +33,7 @@ module Data.Singletons.TH (
 
   -- ** Functions to generate Ord instances
   promoteBoundedInstances, promoteBoundedInstance,
+  singBoundedInstances, singBoundedInstance,
 
   -- ** Utility function
   cases,

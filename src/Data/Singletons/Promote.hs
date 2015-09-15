@@ -17,10 +17,10 @@ import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Eq
-import Data.Singletons.Promote.Bounded
 import Data.Singletons.Promote.Defun
 import Data.Singletons.Promote.Type
 import Data.Singletons.Deriving.Ord
+import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Partition
 import Data.Singletons.Util
 import Data.Singletons.Syntax
@@ -88,23 +88,22 @@ promoteEqInstance name = do
 
 -- | Produce an instance for 'Compare' from the given type
 promoteOrdInstance :: DsMonad q => Name -> q [Dec]
-promoteOrdInstance name = do
-  (tvbs, cons) <- getDataD "I cannot make an instance of Ord for it." name
-  cons' <- mapM dsCon cons
-  tvbs' <- mapM dsTvb tvbs
-  raw_ord_inst <- mkOrdInstance (foldType (DConT name) (map tvbToType tvbs')) cons'
-  decs <- promoteM_ [] $ void $ promoteInstanceDec Map.empty raw_ord_inst
-  return $ decsToTH decs
+promoteOrdInstance = promoteInstance mkOrdInstance "Ord"
 
 -- | Produce an instance for 'MinBound' and 'MaxBound' from the given type
 promoteBoundedInstance :: DsMonad q => Name -> q [Dec]
-promoteBoundedInstance name = do
-  (_tvbs, cons) <- getDataD "I cannot make an instance of Bounded for it." name
+promoteBoundedInstance = promoteInstance mkBoundedInstance "Bounded"
+
+promoteInstance :: DsMonad q => (DType -> [DCon] -> q UInstDecl)
+                -> String -> Name -> q [Dec]
+promoteInstance mk_inst class_name name = do
+  (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
+                            ++ " for it.") name
   cons' <- mapM dsCon cons
-  vars <- replicateM (length _tvbs) (qNewName "k")
-  kind <- promoteType (foldType (DConT name) (map DVarT vars))
-  inst_decs <- mkBoundedTypeInstance kind cons'
-  return $ decsToTH inst_decs
+  tvbs' <- mapM dsTvb tvbs
+  raw_inst <- mk_inst (foldType (DConT name) (map tvbToType tvbs')) cons'
+  decs <- promoteM_ [] $ void $ promoteInstanceDec Map.empty raw_inst
+  return $ decsToTH decs
 
 promoteInfo :: DInfo -> PrM ()
 promoteInfo (DTyConI dec _instances) = promoteDecs [dec]
@@ -212,16 +211,11 @@ promoteLetDecs prefixes decls = do
 promoteDataDec :: DataDecl -> PrM ()
 promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   -- deriving Eq instance
-  _kvs <- replicateM (length tvbs) (qNewName "k")
-  _kind <- promoteType (foldType (DConT name) (map DVarT _kvs))
+  kvs <- replicateM (length tvbs) (qNewName "k")
+  kind <- promoteType (foldType (DConT name) (map DVarT kvs))
   when (elem eqName derivings) $ do
-    eq_decs <- mkEqTypeInstance _kind ctors
+    eq_decs <- mkEqTypeInstance kind ctors
     emitDecs eq_decs
-
-  -- deriving Bounded instance
-  when (elem boundedName derivings) $ do
-    bounded_decs <- mkBoundedTypeInstance _kind ctors
-    emitDecs bounded_decs
 
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
@@ -328,14 +322,14 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   meth_arg_tvs <- mapM (const $ qNewName "a") arg_kis
   let meth_arg_kis' = map (substKind subst) arg_kis
       meth_res_ki'  = substKind subst res_ki
-      eqns'         = map (apply_kis meth_arg_kis' meth_res_ki') eqns
+--      eqns'         = map (apply_kis meth_arg_kis' meth_res_ki') eqns
       helperNameBase = case nameBase proName of
                          first:_ | not (isHsLetter first) -> "TFHelper"
                          alpha                            -> alpha
   helperName <- newUniqueName helperNameBase
   emitDecs [DClosedTypeFamilyD helperName
                                (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
-                               (Just meth_res_ki') eqns']
+                               (Just meth_res_ki') eqns]
   emitDecsM (defunctionalize helperName (map Just meth_arg_kis') (Just meth_res_ki'))
   return ( DTySynInstD
              proName

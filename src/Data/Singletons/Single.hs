@@ -14,6 +14,7 @@ import Prelude hiding ( exp )
 import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (Quasi(..))
 import Data.Singletons.Deriving.Ord
+import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Promote.Monad ( promoteM )
@@ -144,6 +145,14 @@ singOrdInstances = concatMapM singOrdInstance
 -- | Create instance of 'SOrd' for the given type
 singOrdInstance :: DsMonad q => Name -> q [Dec]
 singOrdInstance = singInstance mkOrdInstance "Ord"
+
+-- | Create instances of 'SBounded' for the given types
+singBoundedInstances :: DsMonad q => [Name] -> q [Dec]
+singBoundedInstances = concatMapM singBoundedInstance
+
+-- | Create instance of 'SBounded' for the given type
+singBoundedInstance :: DsMonad q => Name -> q [Dec]
+singBoundedInstance = singInstance mkBoundedInstance "Bounded"
 
 singInstance :: DsMonad q
              => (DType -> [DCon] -> q UInstDecl)

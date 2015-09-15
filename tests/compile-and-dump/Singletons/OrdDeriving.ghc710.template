@@ -261,10 +261,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply FSym0 l = FSym1 l
     type family Compare_0123456789 (a :: Nat)
                                    (a :: Nat) :: Ordering where
-      Compare_0123456789 (Zero :: Nat) (Zero :: Nat) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[] :: Ordering)
-      Compare_0123456789 (Succ a_0123456789 :: Nat) (Succ b_0123456789 :: Nat) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]) :: Ordering)
-      Compare_0123456789 (Zero :: Nat) (Succ _z_0123456789 :: Nat) = (LTSym0 :: Ordering)
-      Compare_0123456789 (Succ _z_0123456789 :: Nat) (Zero :: Nat) = (GTSym0 :: Ordering)
+      Compare_0123456789 Zero Zero = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
+      Compare_0123456789 (Succ a_0123456789) (Succ b_0123456789) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])
+      Compare_0123456789 Zero (Succ _z_0123456789) = LTSym0
+      Compare_0123456789 (Succ _z_0123456789) Zero = GTSym0
     type Compare_0123456789Sym2 (t :: Nat) (t :: Nat) =
         Compare_0123456789 t t
     instance SuppressUnusedWarnings Compare_0123456789Sym1 where
@@ -288,42 +288,42 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       type Compare (a :: Nat) (a :: Nat) = Compare_0123456789 a a
     type family Compare_0123456789 (a :: Foo a b c d)
                                    (a :: Foo a b c d) :: Ordering where
-      Compare_0123456789 (A a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (A b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
-      Compare_0123456789 (B a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (B b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
-      Compare_0123456789 (C a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (C b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
-      Compare_0123456789 (D a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (D b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
-      Compare_0123456789 (E a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (E b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
-      Compare_0123456789 (F a_0123456789 a_0123456789 a_0123456789 a_0123456789 :: Foo a b c d) (F b_0123456789 b_0123456789 b_0123456789 b_0123456789 :: Foo a b c d) = (Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[])))) :: Ordering)
-      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (LTSym0 :: Ordering)
-      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
-      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789 :: Foo a b c d) = (GTSym0 :: Ordering)
+      Compare_0123456789 (A a_0123456789 a_0123456789 a_0123456789 a_0123456789) (A b_0123456789 b_0123456789 b_0123456789 b_0123456789) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]))))
+      Compare_0123456789 (B a_0123456789 a_0123456789 a_0123456789 a_0123456789) (B b_0123456789 b_0123456789 b_0123456789 b_0123456789) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]))))
+      Compare_0123456789 (C a_0123456789 a_0123456789 a_0123456789 a_0123456789) (C b_0123456789 b_0123456789 b_0123456789 b_0123456789) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]))))
+      Compare_0123456789 (D a_0123456789 a_0123456789 a_0123456789 a_0123456789) (D b_0123456789 b_0123456789 b_0123456789 b_0123456789) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]))))
+      Compare_0123456789 (E a_0123456789 a_0123456789 a_0123456789 a_0123456789) (E b_0123456789 b_0123456789 b_0123456789 b_0123456789) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]))))
+      Compare_0123456789 (F a_0123456789 a_0123456789 a_0123456789 a_0123456789) (F b_0123456789 b_0123456789 b_0123456789 b_0123456789) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]))))
+      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = LTSym0
+      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (A _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (B _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (C _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (D _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
+      Compare_0123456789 (F _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) (E _z_0123456789 _z_0123456789 _z_0123456789 _z_0123456789) = GTSym0
     type Compare_0123456789Sym2 (t :: Foo a b c d) (t :: Foo a b c d) =
         Compare_0123456789 t t
     instance SuppressUnusedWarnings Compare_0123456789Sym1 where

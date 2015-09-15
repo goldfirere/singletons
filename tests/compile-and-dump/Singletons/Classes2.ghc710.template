@@ -25,10 +25,10 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply SuccFooSym0 l = SuccFooSym1 l
     type family Mycompare_0123456789 (a :: NatFoo)
                                      (a :: NatFoo) :: Ordering where
-      Mycompare_0123456789 (ZeroFoo :: NatFoo) (ZeroFoo :: NatFoo) = (EQSym0 :: Ordering)
-      Mycompare_0123456789 (ZeroFoo :: NatFoo) (SuccFoo _z_0123456789 :: NatFoo) = (LTSym0 :: Ordering)
-      Mycompare_0123456789 (SuccFoo _z_0123456789 :: NatFoo) (ZeroFoo :: NatFoo) = (GTSym0 :: Ordering)
-      Mycompare_0123456789 (SuccFoo n :: NatFoo) (SuccFoo m :: NatFoo) = (Apply (Apply MycompareSym0 m) n :: Ordering)
+      Mycompare_0123456789 ZeroFoo ZeroFoo = EQSym0
+      Mycompare_0123456789 ZeroFoo (SuccFoo _z_0123456789) = LTSym0
+      Mycompare_0123456789 (SuccFoo _z_0123456789) ZeroFoo = GTSym0
+      Mycompare_0123456789 (SuccFoo n) (SuccFoo m) = Apply (Apply MycompareSym0 m) n
     type Mycompare_0123456789Sym2 (t :: NatFoo) (t :: NatFoo) =
         Mycompare_0123456789 t t
     instance SuppressUnusedWarnings Mycompare_0123456789Sym1 where

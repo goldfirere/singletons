@@ -1,5 +1,0 @@
-
-Promote/BadBoundedDeriving.hs:0:0:
-    Can't derive promoted Bounded instance for Foo_0123456789 datatype.
-
-Promote/BadBoundedDeriving.hs:0:0: Q monad failure
