@@ -532,7 +532,11 @@ singExp (ADLitE lit)   = singLit lit
 singExp (ADAppE e1 e2) = do
   e1' <- singExp e1
   e2' <- singExp e2
-  return $ (DVarE applySingName) `DAppE` e1' `DAppE` e2'
+  -- `applySing undefined x` kills type inference, because GHC can't figure
+  -- out the type of `undefined`. So we don't emit that code.
+  if isException e1'
+  then return e1'
+  else return $ (DVarE applySingName) `DAppE` e1' `DAppE` e2'
 singExp (ADLamE var_proms prom_lam names exp) = do
   let sNames = map singValName names
   exp' <- bindTyVars var_proms (foldl apply prom_lam (map (DVarT . snd) var_proms)) $
@@ -546,6 +550,18 @@ singExp (ADLetE env exp) =
   uncurry DLetE <$> singLetDecEnv env (singExp exp)
 singExp (ADSigE {}) =
   fail "Singling of explicit type annotations not yet supported."
+
+isException :: DExp -> Bool
+isException (DVarE n)             = n == undefinedName
+isException (DConE {})            = False
+isException (DLitE {})            = False
+isException (DAppE (DVarE fun) _) | nameBase fun == "sError" = True
+isException (DAppE fun _)         = isException fun
+isException (DLamE _ _)           = False
+isException (DCaseE e _)          = isException e
+isException (DLetE _ e)           = isException e
+isException (DSigE e _)           = isException e
+isException (DStaticE e)          = isException e
 
 singMatch :: DType  -- ^ the promoted scrutinee
           -> ADMatch -> SgM DMatch
