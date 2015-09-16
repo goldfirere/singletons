@@ -49,7 +49,9 @@ promote qdec = do
   promDecls <- promoteM_ decls $ promoteDecs ddecls
   return $ decls ++ decsToTH promDecls
 
--- | Promote each declaration, discarding the originals.
+-- | Promote each declaration, discarding the originals. Note that a promoted
+-- datatype uses the same definition as an original datatype, so this will
+-- not work with datatypes. Classes, instances, and functions are all fine.
 promoteOnly :: DsMonad q => q [Dec] -> q [Dec]
 promoteOnly qdec = do
   decls  <- qdec

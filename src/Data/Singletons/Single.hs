@@ -91,7 +91,9 @@ singletons qdecs = do
   return (decs ++ singDecs)
 
 -- | Make promoted and singleton versions of all declarations given, discarding
--- the original declarations.
+-- the original declarations. Note that a singleton based on a datatype needs
+-- the original datatype, so this will fail if it sees any datatype declarations.
+-- Classes, instances, and functions are all fine.
 singletonsOnly :: DsMonad q => q [Dec] -> q [Dec]
 singletonsOnly = (>>= wrapDesugar singTopLevelDecs)
 
