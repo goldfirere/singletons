@@ -81,7 +81,6 @@ library
                       Data.Promotion.Prelude.Tuple,
                       Data.Singletons.TypeLits,
                       Data.Singletons.Decide,
-                      Data.Singletons.Void,
                       Data.Singletons.SuppressUnusedWarnings
 
   other-modules:      Data.Singletons.Deriving.Infer,
