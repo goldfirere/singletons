@@ -39,8 +39,8 @@ module Data.Singletons.TH (
   promoteEnumInstances, promoteEnumInstance,
   singEnumInstances, singEnumInstance,
 
-  -- ** Utility function
-  cases,
+  -- ** Utility functions
+  cases, sCases,
 
   -- * Basic singleton definitions
   Sing(SFalse, STrue, STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7),
@@ -82,12 +82,14 @@ import Data.Singletons.Prelude.Ord
 import Data.Singletons.Decide
 import Data.Singletons.TypeLits
 import Data.Singletons.SuppressUnusedWarnings
+import Data.Singletons.Names
 import Language.Haskell.TH.Desugar
 
 import GHC.Exts
 import Language.Haskell.TH
 import Data.Singletons.Util
 import Data.Proxy ( Proxy(..) )
+import Control.Arrow ( first )
 
 -- | The function 'cases' generates a case expression where each right-hand side
 -- is identical. This may be useful if the type-checker requires knowledge of which
@@ -99,16 +101,47 @@ cases :: DsMonad q
       -> q Exp       -- ^ The body, in a Template Haskell quote
       -> q Exp
 cases tyName expq bodyq = do
-  info <- reifyWithLocals tyName
-  dinfo <- dsInfo info
+  dinfo <- dsReify tyName
   case dinfo of
-    DTyConI (DDataD _ _ _ _ ctors _) _ -> fmap expToTH $ buildCases ctors
-    _ -> fail $ "Using <<cases>> with something other than a type constructor: "
-                ++ (show tyName)
-  where buildCases ctors =
-          DCaseE <$> (dsExp =<< expq) <*>
-                     mapM (\con -> DMatch (conToPat con) <$> (dsExp =<< bodyq)) ctors
+    Just (DTyConI (DDataD _ _ _ _ ctors _) _) ->
+      expToTH <$> buildCases (map extractNameArgs ctors) expq bodyq
+    Just _ ->
+      fail $ "Using <<cases>> with something other than a type constructor: "
+              ++ (show tyName)
+    _ -> fail $ "Cannot find " ++ show tyName
 
-        conToPat :: DCon -> DPat
-        conToPat (DCon _ _ name fields) =
-          DConPa name (map (const DWildPa) $ tysOfConFields fields)
+-- | The function 'sCases' generates a case expression where each right-hand side
+-- is identical. This may be useful if the type-checker requires knowledge of which
+-- constructor is used to satisfy equality or type-class constraints, but where
+-- each constructor is treated the same. For 'sCases', unlike 'cases', the
+-- scrutinee is a singleton. But make sure to pass in the name of the /original/
+-- datatype, preferring @''Maybe@ over @''SMaybe@.
+sCases :: DsMonad q
+       => Name        -- ^ The head of the type the scrutinee's type is based on.
+                      -- (Like @''Maybe@ or @''Bool@.)
+       -> q Exp       -- ^ The scrutinee, in a Template Haskell quote
+       -> q Exp       -- ^ The body, in a Template Haskell quote
+       -> q Exp
+sCases tyName expq bodyq = do
+  dinfo <- dsReify tyName
+  case dinfo of
+    Just (DTyConI (DDataD _ _ _ _ ctors _) _) ->
+      let ctor_stuff = map (first singDataConName . extractNameArgs) ctors in
+      expToTH <$> buildCases ctor_stuff expq bodyq
+    Just _ ->
+      fail $ "Using <<cases>> with something other than a type constructor: "
+              ++ (show tyName)
+    _ -> fail $ "Cannot find " ++ show tyName
+
+buildCases :: DsMonad m
+           => [(Name, Int)]
+           -> m Exp  -- scrutinee
+           -> m Exp  -- body
+           -> m DExp
+buildCases ctor_infos expq bodyq =
+  DCaseE <$> (dsExp =<< expq) <*>
+             mapM (\con -> DMatch (conToPat con) <$> (dsExp =<< bodyq)) ctor_infos
+  where
+    conToPat :: (Name, Int) -> DPat
+    conToPat (name, num_fields) =
+      DConPa name (replicate num_fields DWildPa)

@@ -53,6 +53,7 @@ tests =
     , compileAndDumpStdTest "BadEnumDeriving"
     , compileAndDumpStdTest "Fixity"
     , compileAndDumpStdTest "Undef"
+    , compileAndDumpStdTest "T124"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"
