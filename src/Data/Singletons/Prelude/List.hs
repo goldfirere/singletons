@@ -188,11 +188,9 @@ $(singletonsOnly [d|
   head []      = error "Data.Singletons.List.head: empty list"
 
   last :: [a] -> a
-  last []      =  error "Data.Singletons.List.last: empty list"
-  last (x:xs)  =  last' x xs
-    where last' :: a -> [a] -> a
-          last' y []     = y
-          last' _ (y:ys) = last' y ys
+  last []       =  error "Data.Singletons.List.last: empty list"
+  last [x]      =  x
+  last (_:x:xs) =  last (x:xs)
 
   tail :: [a] -> [a]
   tail (_ : t) = t
