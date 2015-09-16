@@ -474,8 +474,8 @@ singPat :: Map Name Name   -- from term-level names to type-level names
         -> PatternContext
         -> DPat
         -> SgM (DPat, DType) -- the type form of the pat
-singPat _var_proms _patCxt (DLitPa _lit) =
-  fail "Singling of literal patterns not yet supported"
+singPat _var_proms _patCxt (DLitPa lit) =
+  fail ("Singling of literal patterns not yet supported: " ++ pprint lit)
 singPat var_proms _patCxt (DVarPa name) = do
   tyname <- case Map.lookup name var_proms of
               Nothing     ->
@@ -565,12 +565,13 @@ singMatch prom_scrut (ADMatch var_proms prom_match pat exp) = do
 
 singLit :: Lit -> SgM DExp
 singLit (IntegerL n)
-  | n >= 0    = return $
-                DVarE sFromIntegerName `DAppE`
-                (DVarE singMethName `DSigE`
-                 (singFamily `DAppT` DLitT (NumTyLit n)))
-  | otherwise = do sLit <- singLit (IntegerL (-n))
-                   return $ DVarE sNegateName `DAppE` sLit
+  = return $ DVarE sFromIntegerName `DAppE`
+             (DVarE singMethName `DSigE`
+              (singFamily `DAppT` promoteInteger n))
+singLit (RationalL rat)
+  = return $ DVarE sFromRationalName `DAppE`
+             (DVarE singMethName `DSigE`
+              (singFamily `DAppT` promoteRatio rat))
 singLit lit = do
   prom_lit <- promoteLitExp lit
   return $ DVarE singMethName `DSigE` (singFamily `DAppT` prom_lit)

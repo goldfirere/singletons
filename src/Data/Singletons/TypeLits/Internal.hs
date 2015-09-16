@@ -27,7 +27,6 @@ module Data.Singletons.TypeLits.Internal (
   Error, ErrorSym0, ErrorSym1, sError,
   KnownNat, natVal, KnownSymbol, symbolVal,
 
-  (:^), (:^$), (:^$$), (:^$$$)
   ) where
 
 import Data.Singletons.Promote
@@ -147,8 +146,3 @@ $(genDefunSymbols [''Error])
 -- | The singleton for 'error'
 sError :: Sing (str :: Symbol) -> a
 sError sstr = error (fromSing sstr)
-
--- TODO: move this to a better home:
-type a :^ b = a ^ b
-infixr 8 :^
-$(genDefunSymbols [''(:^)])

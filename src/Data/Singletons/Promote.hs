@@ -30,6 +30,7 @@ import Control.Monad
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Data.Maybe
+import Data.Ratio
 
 -- | Generate promoted definitions from a type that is already defined.
 -- This is generally only useful with classes.
@@ -570,20 +571,33 @@ promoteExp (DSigE exp ty) = do
 promoteExp e@(DStaticE _) = fail ("Static expressions cannot be promoted: " ++ show e)
 
 promoteLitExp :: Monad m => Lit -> m DType
-promoteLitExp (IntegerL n)
-  | n >= 0    = return $ (DConT tyFromIntegerName `DAppT` DLitT (NumTyLit n))
-  | otherwise = return $ (DConT tyNegateName `DAppT`
-                          (DConT tyFromIntegerName `DAppT` DLitT (NumTyLit (-n))))
-promoteLitExp (StringL str) = return $ DLitT (StrTyLit str)
+promoteLitExp (IntegerL n) = return $ DConT tyFromIntegerName `DAppT` promoteInteger n
+promoteLitExp (StringL str) = return $ promoteString str
+promoteLitExp (RationalL rat) = return $ DConT tyFromRationalName `DAppT` promoteRatio rat
 promoteLitExp lit =
-  fail ("Only string and natural number literals can be promoted: " ++ show lit)
+  fail ("Literal cannot be promoted: " ++ show lit)
 
 promoteLitPat :: Monad m => Lit -> m DType
 promoteLitPat (IntegerL n)
-  | n >= 0    = return $ (DLitT (NumTyLit n))
+  | n >= 0    = return $ promoteInteger n
   | otherwise =
     fail $ "Negative literal patterns are not allowed,\n" ++
            "because literal patterns are promoted to natural numbers."
-promoteLitPat (StringL str) = return $ DLitT (StrTyLit str)
+promoteLitPat (StringL str) = return $ promoteString str
 promoteLitPat lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
+
+promoteInteger :: Integer -> DType
+promoteInteger n
+  | n >= 0    = DLitT (NumTyLit n)
+  | otherwise = DConT tyNegateName `DAppT` DLitT (NumTyLit (-n))
+
+promoteRatio :: Rational -> DType
+promoteRatio rat =
+  DConT ratioConName `DAppT` promoteInteger numer `DAppT` promoteInteger denom
+  where
+    numer = numerator rat
+    denom = denominator rat
+
+promoteString :: String -> DType
+promoteString = DLitT . StrTyLit

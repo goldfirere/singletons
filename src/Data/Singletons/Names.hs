@@ -21,6 +21,7 @@ import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
 import Data.Proxy ( Proxy(..) )
 import Control.Monad
+import GHC.Real
 
 anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
   maxBoundName, repName,
@@ -38,7 +39,7 @@ anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
   kindOfName, tyFromIntegerName, tyNegateName, sFromIntegerName,
   sNegateName, errorName, foldlName, cmpEQName, cmpLTName, cmpGTName,
   singletonsToEnumName, singletonsFromEnumName, enumName, singletonsEnumName,
-  equalsName :: Name
+  equalsName, ratioConName, tyFromRationalName, sFromRationalName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
@@ -105,6 +106,9 @@ singletonsFromEnumName = mk_name_v "Data.Singletons.Prelude.Enum" "fromEnum"
 enumName = ''Enum
 singletonsEnumName = mk_name_tc "Data.Singletons.Prelude.Enum" "Enum"
 equalsName = '(==)
+ratioConName = '(:%)
+tyFromRationalName = mk_name_tc "Data.Singletons.Prelude.Real" "FromRational"
+sFromRationalName = mk_name_v "Data.Singletons.Prelude.Real" "sFromRational"
 
 singPkg :: String
 singPkg = $( (LitE . StringL . loc_package) `liftM` location )
@@ -156,6 +160,9 @@ promoteTySym name sat
 
     | name == nilName
     = mkName $ "NilSym" ++ (show sat)
+
+    | name == ratioConName   -- this clashes with the exported % operator. Urgh.
+    = promoteTySym (mkName "::%") sat
 
        -- treat unboxed tuples like tuples
     | Just degree <- tupleNameDegree_maybe name `mplus`
