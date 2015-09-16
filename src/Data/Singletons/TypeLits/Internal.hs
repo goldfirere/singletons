@@ -140,8 +140,9 @@ withKnownNat SNat f = f
 withKnownSymbol :: Sing n -> (KnownSymbol n => r) -> r
 withKnownSymbol SSym f = f
 
--- | The promotion of 'error'
-type family Error (str :: Symbol) :: k
+-- | The promotion of 'error'. This version is more poly-kinded for
+-- easier use.
+type family Error (str :: k0) :: k
 $(genDefunSymbols [''Error])
 
 -- | The singleton for 'error'
