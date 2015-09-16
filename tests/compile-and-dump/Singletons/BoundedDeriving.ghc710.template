@@ -108,7 +108,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       type MinBound = MinBound_0123456789Sym0
       type MaxBound = MaxBound_0123456789Sym0
     data instance Sing (z :: Foo1) = z ~ Foo1 => SFoo1
-    type SFoo1 (z :: Foo1) = Sing z
+    type SFoo1 = (Sing :: Foo1 -> *)
     instance SingKind (KProxy :: KProxy Foo1) where
       type DemoteRep (KProxy :: KProxy Foo1) = Foo1
       fromSing SFoo1 = Foo1
@@ -119,7 +119,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
         z ~ C => SC |
         z ~ D => SD |
         z ~ E => SE
-    type SFoo2 (z :: Foo2) = Sing z
+    type SFoo2 = (Sing :: Foo2 -> *)
     instance SingKind (KProxy :: KProxy Foo2) where
       type DemoteRep (KProxy :: KProxy Foo2) = Foo2
       fromSing SA = A
@@ -134,7 +134,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing E = SomeSing SE
     data instance Sing (z :: Foo3 a)
       = forall (n :: a). z ~ Foo3 n => SFoo3 (Sing (n :: a))
-    type SFoo3 (z :: Foo3 a) = Sing z
+    type SFoo3 = (Sing :: Foo3 a -> *)
     instance SingKind (KProxy :: KProxy a) =>
              SingKind (KProxy :: KProxy (Foo3 a)) where
       type DemoteRep (KProxy :: KProxy (Foo3 a)) = Foo3 (DemoteRep (KProxy :: KProxy a))
@@ -144,7 +144,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SFoo3 c) }
     data instance Sing (z :: Foo4 a b)
       = z ~ Foo41 => SFoo41 | z ~ Foo42 => SFoo42
-    type SFoo4 (z :: Foo4 a b) = Sing z
+    type SFoo4 = (Sing :: Foo4 a b -> *)
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b)) =>
              SingKind (KProxy :: KProxy (Foo4 a b)) where
@@ -156,7 +156,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Pair)
       = forall (n :: Bool) (n :: Bool). z ~ Pair n n =>
         SPair (Sing (n :: Bool)) (Sing (n :: Bool))
-    type SPair (z :: Pair) = Sing z
+    type SPair = (Sing :: Pair -> *)
     instance SingKind (KProxy :: KProxy Pair) where
       type DemoteRep (KProxy :: KProxy Pair) = Pair
       fromSing (SPair b b) = Pair (fromSing b) (fromSing b)

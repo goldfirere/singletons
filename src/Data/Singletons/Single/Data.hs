@@ -50,11 +50,11 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
               then mapM (mkEqualityInstance k ctors') [sEqClassDesc, sDecideClassDesc]
               else return []
 
-  -- e.g. type SNat (a :: Nat) = Sing a
+  -- e.g. type SNat = Sing :: Nat -> *
   let kindedSynInst =
         DTySynD (singTyConName name)
-                [DKindedTV aName k]
-                (DAppT singFamily a)
+                []
+                (singFamily `DSigT` (k `DArrowK` DStarK))
 
   return $ (DDataInstD Data [] singFamilyName [DSigT a k] ctors' []) :
            kindedSynInst :

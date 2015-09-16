@@ -375,7 +375,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Baz)
       = forall (n :: Nat) (n :: Nat) (n :: Nat). z ~ Baz n n n =>
         SBaz (Sing (n :: Nat)) (Sing (n :: Nat)) (Sing (n :: Nat))
-    type SBaz (z :: Baz) = Sing z
+    type SBaz = (Sing :: Baz -> *)
     instance SingKind (KProxy :: KProxy Baz) where
       type DemoteRep (KProxy :: KProxy Baz) = Baz
       fromSing (SBaz b b b) = Baz (fromSing b) (fromSing b) (fromSing b)

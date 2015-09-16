@@ -606,7 +606,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Either a b)
       = forall (n :: a). z ~ Left n => SLeft (Sing (n :: a)) |
         forall (n :: b). z ~ Right n => SRight (Sing (n :: b))
-    type SEither (z :: Either a b) = Sing z
+    type SEither = (Sing :: Either a b -> *)
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b)) =>
              SingKind (KProxy :: KProxy (Either a b)) where

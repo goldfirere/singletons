@@ -349,7 +349,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
-    type SNat (z :: Nat) = Sing z
+    type SNat = (Sing :: Nat -> *)
     instance SingKind (KProxy :: KProxy Nat) where
       type DemoteRep (KProxy :: KProxy Nat) = Nat
       fromSing SZero = Zero
@@ -393,7 +393,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         SE (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
         forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ F n n n n =>
         SF (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d))
-    type SFoo (z :: Foo a b c d) = Sing z
+    type SFoo = (Sing :: Foo a b c d -> *)
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b),
               SingKind (KProxy :: KProxy c),

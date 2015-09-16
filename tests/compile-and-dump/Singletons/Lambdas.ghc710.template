@@ -799,7 +799,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Foo a b)
       = forall (n :: a) (n :: b). z ~ Foo n n =>
         SFoo (Sing (n :: a)) (Sing (n :: b))
-    type SFoo (z :: Foo a b) = Sing z
+    type SFoo = (Sing :: Foo a b -> *)
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b)) =>
              SingKind (KProxy :: KProxy (Foo a b)) where

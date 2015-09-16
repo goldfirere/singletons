@@ -41,7 +41,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Record a)
       = forall (n :: a) (n :: Bool). z ~ MkRecord n n =>
         SMkRecord {sField1 :: Sing (n :: a), sField2 :: Sing (n :: Bool)}
-    type SRecord (z :: Record a) = Sing z
+    type SRecord = (Sing :: Record a -> *)
     instance SingKind (KProxy :: KProxy a) =>
              SingKind (KProxy :: KProxy (Record a)) where
       type DemoteRep (KProxy :: KProxy (Record a)) = Record (DemoteRep (KProxy :: KProxy a))

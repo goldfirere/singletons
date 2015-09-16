@@ -37,7 +37,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
         in lambda sA
     data instance Sing (z :: Box a)
       = forall (n :: a). z ~ FBox n => SFBox (Sing (n :: a))
-    type SBox (z :: Box a) = Sing z
+    type SBox = (Sing :: Box a -> *)
     instance SingKind (KProxy :: KProxy a) =>
              SingKind (KProxy :: KProxy (Box a)) where
       type DemoteRep (KProxy :: KProxy (Box a)) = Box (DemoteRep (KProxy :: KProxy a))

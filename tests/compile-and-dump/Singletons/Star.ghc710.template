@@ -411,7 +411,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
         forall (n :: *). z ~ Maybe n => SMaybe (Sing (n :: *)) |
         forall (n :: *) (n :: Nat). z ~ Vec n n =>
         SVec (Sing (n :: *)) (Sing (n :: Nat))
-    type SRep (z :: *) = Sing z
+    type SRep = (Sing :: * -> *)
     instance SingKind (KProxy :: KProxy *) where
       type DemoteRep (KProxy :: KProxy *) = Rep
       fromSing SNat = Singletons.Star.Nat

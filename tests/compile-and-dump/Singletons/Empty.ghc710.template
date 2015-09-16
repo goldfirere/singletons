@@ -3,7 +3,7 @@ Singletons/Empty.hs:(0,0)-(0,0): Splicing declarations
   ======>
     data Empty
     data instance Sing (z :: Empty)
-    type SEmpty (z :: Empty) = Sing z
+    type SEmpty = (Sing :: Empty -> *)
     instance SingKind (KProxy :: KProxy Empty) where
       type DemoteRep (KProxy :: KProxy Empty) = Empty
       fromSing z

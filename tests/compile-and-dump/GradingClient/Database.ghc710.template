@@ -52,7 +52,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
-    type SNat (z :: Nat) = Sing z
+    type SNat = (Sing :: Nat -> *)
     instance SingKind (KProxy :: KProxy Nat) where
       type DemoteRep (KProxy :: KProxy Nat) = Nat
       fromSing SZero = Zero
@@ -675,7 +675,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         z ~ NAT => SNAT |
         forall (n :: U) (n :: Nat). z ~ VEC n n =>
         SVEC (Sing (n :: U)) (Sing (n :: Nat))
-    type SU (z :: U) = Sing z
+    type SU = (Sing :: U -> *)
     instance SingKind (KProxy :: KProxy U) where
       type DemoteRep (KProxy :: KProxy U) = U
       fromSing SBOOL = BOOL
@@ -807,7 +807,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         z ~ CX => SCX |
         z ~ CY => SCY |
         z ~ CZ => SCZ
-    type SAChar (z :: AChar) = Sing z
+    type SAChar = (Sing :: AChar -> *)
     instance SingKind (KProxy :: KProxy AChar) where
       type DemoteRep (KProxy :: KProxy AChar) = AChar
       fromSing SCA = CA
@@ -4819,7 +4819,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Attribute)
       = forall (n :: [AChar]) (n :: U). z ~ Attr n n =>
         SAttr (Sing (n :: [AChar])) (Sing (n :: U))
-    type SAttribute (z :: Attribute) = Sing z
+    type SAttribute = (Sing :: Attribute -> *)
     instance SingKind (KProxy :: KProxy Attribute) where
       type DemoteRep (KProxy :: KProxy Attribute) = Attribute
       fromSing (SAttr b b) = Attr (fromSing b) (fromSing b)
@@ -4833,7 +4833,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Schema)
       = forall (n :: [Attribute]). z ~ Sch n =>
         SSch (Sing (n :: [Attribute]))
-    type SSchema (z :: Schema) = Sing z
+    type SSchema = (Sing :: Schema -> *)
     instance SingKind (KProxy :: KProxy Schema) where
       type DemoteRep (KProxy :: KProxy Schema) = Schema
       fromSing (SSch b) = Sch (fromSing b)

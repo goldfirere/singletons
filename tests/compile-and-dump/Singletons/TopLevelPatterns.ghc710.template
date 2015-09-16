@@ -24,7 +24,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply BarSym0 l = BarSym1 l
     data instance Sing (z :: Bool)
       = z ~ False => SFalse | z ~ True => STrue
-    type SBool (z :: Bool) = Sing z
+    type SBool = (Sing :: Bool -> *)
     instance SingKind (KProxy :: KProxy Bool) where
       type DemoteRep (KProxy :: KProxy Bool) = Bool
       fromSing SFalse = False
@@ -34,7 +34,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Foo)
       = forall (n :: Bool) (n :: Bool). z ~ Bar n n =>
         SBar (Sing (n :: Bool)) (Sing (n :: Bool))
-    type SFoo (z :: Foo) = Sing z
+    type SFoo = (Sing :: Foo -> *)
     instance SingKind (KProxy :: KProxy Foo) where
       type DemoteRep (KProxy :: KProxy Foo) = Foo
       fromSing (SBar b b) = Bar (fromSing b) (fromSing b)

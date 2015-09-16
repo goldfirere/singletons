@@ -53,7 +53,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       type FromEnum (a :: Foo) = Apply FromEnum_0123456789Sym0 a
     data instance Sing (z :: Foo)
       = z ~ Bar => SBar | z ~ Baz => SBaz | z ~ Bum => SBum
-    type SFoo (z :: Foo) = Sing z
+    type SFoo = (Sing :: Foo -> *)
     instance SingKind (KProxy :: KProxy Foo) where
       type DemoteRep (KProxy :: KProxy Foo) = Foo
       fromSing SBar = Bar
@@ -63,7 +63,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing Baz = SomeSing SBaz
       toSing Bum = SomeSing SBum
     data instance Sing (z :: Quux) = z ~ Q1 => SQ1 | z ~ Q2 => SQ2
-    type SQuux (z :: Quux) = Sing z
+    type SQuux = (Sing :: Quux -> *)
     instance SingKind (KProxy :: KProxy Quux) where
       type DemoteRep (KProxy :: KProxy Quux) = Quux
       fromSing SQ1 = Q1

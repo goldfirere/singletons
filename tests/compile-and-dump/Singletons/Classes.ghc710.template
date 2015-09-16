@@ -306,7 +306,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
           lambda x _z_0123456789 = x
         in lambda sX _s_z_0123456789
     data instance Sing (z :: Foo) = z ~ A => SA | z ~ B => SB
-    type SFoo (z :: Foo) = Sing z
+    type SFoo = (Sing :: Foo -> *)
     instance SingKind (KProxy :: KProxy Foo) where
       type DemoteRep (KProxy :: KProxy Foo) = Foo
       fromSing SA = A
@@ -314,7 +314,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       toSing A = SomeSing SA
       toSing B = SomeSing SB
     data instance Sing (z :: Foo2) = z ~ F => SF | z ~ G => SG
-    type SFoo2 (z :: Foo2) = Sing z
+    type SFoo2 = (Sing :: Foo2 -> *)
     instance SingKind (KProxy :: KProxy Foo2) where
       type DemoteRep (KProxy :: KProxy Foo2) = Foo2
       fromSing SF = F
@@ -591,7 +591,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Nat')
       = z ~ Zero' => SZero' |
         forall (n :: Nat'). z ~ Succ' n => SSucc' (Sing (n :: Nat'))
-    type SNat' (z :: Nat') = Sing z
+    type SNat' = (Sing :: Nat' -> *)
     instance SingKind (KProxy :: KProxy Nat') where
       type DemoteRep (KProxy :: KProxy Nat') = Nat'
       fromSing SZero' = Zero'

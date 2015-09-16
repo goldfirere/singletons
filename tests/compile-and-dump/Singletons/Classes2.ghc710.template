@@ -55,7 +55,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       = z ~ ZeroFoo => SZeroFoo |
         forall (n :: NatFoo). z ~ SuccFoo n =>
         SSuccFoo (Sing (n :: NatFoo))
-    type SNatFoo (z :: NatFoo) = Sing z
+    type SNatFoo = (Sing :: NatFoo -> *)
     instance SingKind (KProxy :: KProxy NatFoo) where
       type DemoteRep (KProxy :: KProxy NatFoo) = NatFoo
       fromSing SZeroFoo = ZeroFoo
