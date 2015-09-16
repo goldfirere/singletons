@@ -15,6 +15,7 @@ import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (Quasi(..))
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
+import Data.Singletons.Deriving.Enum
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Promote.Monad ( promoteM )
@@ -153,6 +154,14 @@ singBoundedInstances = concatMapM singBoundedInstance
 -- | Create instance of 'SBounded' for the given type
 singBoundedInstance :: DsMonad q => Name -> q [Dec]
 singBoundedInstance = singInstance mkBoundedInstance "Bounded"
+
+-- | Create instances of 'SEnum' for the given types
+singEnumInstances :: DsMonad q => [Name] -> q [Dec]
+singEnumInstances = concatMapM singEnumInstance
+
+-- | Create instance of 'SEnum' for the given type
+singEnumInstance :: DsMonad q => Name -> q [Dec]
+singEnumInstance = singInstance mkEnumInstance "Enum"
 
 singInstance :: DsMonad q
              => (DType -> [DCon] -> q UInstDecl)
@@ -294,21 +303,36 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
 
     sing_meth :: Name -> ALetDecRHS -> SgM [DDec]
     sing_meth name rhs = do
-      mb_info <- dsReify name
-      ty <- case mb_info of
-              Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _ _) -> do
-                let subst = Map.fromList (zip (map extractTvbName cls_tvbs)
-                                              inst_tys)
-                return (substType subst inner_ty)
-              _ -> do
-                info <- reifyWithLocals name
-                decls <- localDeclarations
-                fail $ "Cannot find type of method " ++ show name ++ "\nRAE " ++ show mb_info ++ "\n" ++ show info ++ "\n" ++ show decls
-              -- TODO: also should look up sName, just in case
-      (s_ty, _num_args, tyvar_names, res_ki) <- singType (promoteValRhs name) ty
+      mb_s_info <- dsReify (singValName name)
+      (s_ty, tyvar_names, m_res_ki) <- case mb_s_info of
+        Just (DVarI _ (DForallT cls_kproxy_tvbs _cls_pred s_ty) _ _) -> do
+          let class_kvs = map extract_kv cls_kproxy_tvbs
+              extract_kv (DKindedTV _kproxyVar (DConK _kproxyTy [DVarK kv])) = kv
+              extract_kv _ = error "sing_meth cannot extract a kind variable"
+
+              (sing_tvbs, _pred, _args, res_ty) = unravel s_ty
+
+          inst_kis <- mapM promoteType inst_tys
+          let subst    = Map.fromList (zip class_kvs inst_kis)
+              m_res_ki = case res_ty of
+                _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substKind subst res_ki)
+                _                                         -> Nothing
+
+          return (substKindInType subst s_ty, map extractTvbName sing_tvbs, m_res_ki)
+        _ -> do
+          mb_info <- dsReify name
+          case mb_info of
+            Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _ _) -> do
+              let subst = Map.fromList (zip (map extractTvbName cls_tvbs)
+                                            inst_tys)
+              (s_ty, _num_args, tyvar_names, res_ki) <- singType (promoteValRhs name)
+                                                                 (substType subst inner_ty)
+              return (s_ty, tyvar_names, Just res_ki)
+            _ -> fail $ "Cannot find type of method " ++ show name
+
+      let kind_map = maybe Map.empty (Map.singleton name) m_res_ki
       meth' <- singLetDecRHS (Map.singleton name tyvar_names)
-                             (Map.singleton name res_ki)
-                             name rhs
+                             kind_map name rhs
       return $ map DLetDec [DSigD (singValName name) s_ty, meth']
 
 singLetDecEnv :: ALetDecEnv -> SgM a -> SgM ([DLetDec], a)

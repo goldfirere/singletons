@@ -36,7 +36,9 @@ anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
   equalityName, applySingName, suppressClassName, suppressMethodName,
   thenCmpName,
   kindOfName, tyFromIntegerName, tyNegateName, sFromIntegerName,
-  sNegateName, errorName, foldlName, cmpEQName, cmpLTName, cmpGTName :: Name
+  sNegateName, errorName, foldlName, cmpEQName, cmpLTName, cmpGTName,
+  singletonsToEnumName, singletonsFromEnumName, enumName, singletonsEnumName,
+  equalsName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
@@ -98,6 +100,11 @@ foldlName = 'foldl
 cmpEQName = 'EQ
 cmpLTName = 'LT
 cmpGTName = 'GT
+singletonsToEnumName = mk_name_v "Data.Singletons.Prelude.Enum" "toEnum"
+singletonsFromEnumName = mk_name_v "Data.Singletons.Prelude.Enum" "fromEnum"
+enumName = ''Enum
+singletonsEnumName = mk_name_tc "Data.Singletons.Prelude.Enum" "Enum"
+equalsName = '(==)
 
 singPkg :: String
 singPkg = $( (LitE . StringL . loc_package) `liftM` location )

@@ -48,7 +48,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789Sym0KindInference
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
     instance POrd (KProxy :: KProxy Nat) where
-      type Compare (a :: Nat) (a :: Nat) = Compare_0123456789 a a
+      type Compare (a :: Nat) (a :: Nat) = Apply (Apply Compare_0123456789Sym0 a) a
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
@@ -86,13 +86,17 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SOrd (KProxy :: KProxy Nat) =>
              SOrd (KProxy :: KProxy Nat) where
       sCompare ::
-        forall (t :: Nat) (t :: Nat).
-        Sing t
-        -> Sing t -> Sing (Apply (Apply CompareSym0 t) t :: Ordering)
+        forall (t0 :: Nat) (t1 :: Nat).
+        Sing t0
+        -> Sing t1
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat (TyFun Nat Ordering
+                                                            -> *)
+                                                 -> *) t0 :: TyFun Nat Ordering
+                                                             -> *) t1 :: Ordering)
       sCompare SZero SZero
         = let
             lambda ::
-              (t ~ ZeroSym0, t ~ ZeroSym0) =>
+              (t0 ~ ZeroSym0, t1 ~ ZeroSym0) =>
               Sing (Apply (Apply CompareSym0 ZeroSym0) ZeroSym0 :: Ordering)
             lambda
               = applySing
@@ -106,8 +110,9 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sCompare (SSucc sA_0123456789) (SSucc sB_0123456789)
         = let
             lambda ::
-              forall a_0123456789 b_0123456789. (t ~ Apply SuccSym0 a_0123456789,
-                                                 t ~ Apply SuccSym0 b_0123456789) =>
+              forall a_0123456789
+                     b_0123456789. (t0 ~ Apply SuccSym0 a_0123456789,
+                                    t1 ~ Apply SuccSym0 b_0123456789) =>
               Sing a_0123456789
               -> Sing b_0123456789
                  -> Sing (Apply (Apply CompareSym0 (Apply SuccSym0 a_0123456789)) (Apply SuccSym0 b_0123456789) :: Ordering)
@@ -130,8 +135,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sCompare SZero (SSucc _s_z_0123456789)
         = let
             lambda ::
-              forall _z_0123456789. (t ~ ZeroSym0,
-                                     t ~ Apply SuccSym0 _z_0123456789) =>
+              forall _z_0123456789. (t0 ~ ZeroSym0,
+                                     t1 ~ Apply SuccSym0 _z_0123456789) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply CompareSym0 ZeroSym0) (Apply SuccSym0 _z_0123456789) :: Ordering)
             lambda _z_0123456789 = SLT
@@ -139,8 +144,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sCompare (SSucc _s_z_0123456789) SZero
         = let
             lambda ::
-              forall _z_0123456789. (t ~ Apply SuccSym0 _z_0123456789,
-                                     t ~ ZeroSym0) =>
+              forall _z_0123456789. (t0 ~ Apply SuccSym0 _z_0123456789,
+                                     t1 ~ ZeroSym0) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply CompareSym0 (Apply SuccSym0 _z_0123456789)) ZeroSym0 :: Ordering)
             lambda _z_0123456789 = SGT

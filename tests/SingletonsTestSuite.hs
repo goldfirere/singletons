@@ -49,6 +49,9 @@ tests =
     , compileAndDumpStdTest "OrdDeriving"
     , compileAndDumpStdTest "BoundedDeriving"
     , compileAndDumpStdTest "BadBoundedDeriving"
+    , compileAndDumpStdTest "EnumDeriving"
+    , compileAndDumpStdTest "BadEnumDeriving"
+    , compileAndDumpStdTest "Fixity"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"
@@ -56,7 +59,6 @@ tests =
     , compileAndDumpStdTest "Newtypes"
     , compileAndDumpStdTest "Pragmas"
     , compileAndDumpStdTest "Prelude"
-    , compileAndDumpStdTest "Fixity"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts

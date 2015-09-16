@@ -88,18 +88,21 @@ Singletons/Star.hs:0:0:: Splicing declarations
         Compare_0123456789Sym0KindInference
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
     instance POrd (KProxy :: KProxy *) where
-      type Compare (a :: *) (a :: *) = Compare_0123456789 a a
+      type Compare (a :: *) (a :: *) = Apply (Apply Compare_0123456789Sym0 a) a
     instance (SOrd (KProxy :: KProxy *),
               SOrd (KProxy :: KProxy Nat)) =>
              SOrd (KProxy :: KProxy *) where
       sCompare ::
-        forall (t :: *) (t :: *).
-        Sing t
-        -> Sing t -> Sing (Apply (Apply CompareSym0 t) t :: Ordering)
+        forall (t0 :: *) (t1 :: *).
+        Sing t0
+        -> Sing t1
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun * (TyFun * Ordering
+                                                          -> *)
+                                                 -> *) t0 :: TyFun * Ordering -> *) t1 :: Ordering)
       sCompare SNat SNat
         = let
             lambda ::
-              (t ~ NatSym0, t ~ NatSym0) =>
+              (t0 ~ NatSym0, t1 ~ NatSym0) =>
               Sing (Apply (Apply CompareSym0 NatSym0) NatSym0 :: Ordering)
             lambda
               = applySing
@@ -114,7 +117,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare SInt SInt
         = let
             lambda ::
-              (t ~ IntSym0, t ~ IntSym0) =>
+              (t0 ~ IntSym0, t1 ~ IntSym0) =>
               Sing (Apply (Apply CompareSym0 IntSym0) IntSym0 :: Ordering)
             lambda
               = applySing
@@ -129,7 +132,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare SString SString
         = let
             lambda ::
-              (t ~ StringSym0, t ~ StringSym0) =>
+              (t0 ~ StringSym0, t1 ~ StringSym0) =>
               Sing (Apply (Apply CompareSym0 StringSym0) StringSym0 :: Ordering)
             lambda
               = applySing
@@ -145,8 +148,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
         = let
             lambda ::
               forall a_0123456789
-                     b_0123456789. (t ~ Apply MaybeSym0 a_0123456789,
-                                    t ~ Apply MaybeSym0 b_0123456789) =>
+                     b_0123456789. (t0 ~ Apply MaybeSym0 a_0123456789,
+                                    t1 ~ Apply MaybeSym0 b_0123456789) =>
               Sing a_0123456789
               -> Sing b_0123456789
                  -> Sing (Apply (Apply CompareSym0 (Apply MaybeSym0 a_0123456789)) (Apply MaybeSym0 b_0123456789) :: Ordering)
@@ -177,8 +180,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
               forall a_0123456789
                      a_0123456789
                      b_0123456789
-                     b_0123456789. (t ~ Apply (Apply VecSym0 a_0123456789) a_0123456789,
-                                    t ~ Apply (Apply VecSym0 b_0123456789) b_0123456789) =>
+                     b_0123456789. (t0 ~ Apply (Apply VecSym0 a_0123456789) a_0123456789,
+                                    t1 ~ Apply (Apply VecSym0 b_0123456789) b_0123456789) =>
               Sing a_0123456789
               -> Sing a_0123456789
                  -> Sing b_0123456789
@@ -215,22 +218,22 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare SNat SInt
         = let
             lambda ::
-              (t ~ NatSym0, t ~ IntSym0) =>
+              (t0 ~ NatSym0, t1 ~ IntSym0) =>
               Sing (Apply (Apply CompareSym0 NatSym0) IntSym0 :: Ordering)
             lambda = SLT
           in lambda
       sCompare SNat SString
         = let
             lambda ::
-              (t ~ NatSym0, t ~ StringSym0) =>
+              (t0 ~ NatSym0, t1 ~ StringSym0) =>
               Sing (Apply (Apply CompareSym0 NatSym0) StringSym0 :: Ordering)
             lambda = SLT
           in lambda
       sCompare SNat (SMaybe _s_z_0123456789)
         = let
             lambda ::
-              forall _z_0123456789. (t ~ NatSym0,
-                                     t ~ Apply MaybeSym0 _z_0123456789) =>
+              forall _z_0123456789. (t0 ~ NatSym0,
+                                     t1 ~ Apply MaybeSym0 _z_0123456789) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply CompareSym0 NatSym0) (Apply MaybeSym0 _z_0123456789) :: Ordering)
             lambda _z_0123456789 = SLT
@@ -238,8 +241,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare SNat (SVec _s_z_0123456789 _s_z_0123456789)
         = let
             lambda ::
-              forall _z_0123456789 _z_0123456789. (t ~ NatSym0,
-                                                   t ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789) =>
+              forall _z_0123456789 _z_0123456789. (t0 ~ NatSym0,
+                                                   t1 ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing (Apply (Apply CompareSym0 NatSym0) (Apply (Apply VecSym0 _z_0123456789) _z_0123456789) :: Ordering)
@@ -248,22 +251,22 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare SInt SNat
         = let
             lambda ::
-              (t ~ IntSym0, t ~ NatSym0) =>
+              (t0 ~ IntSym0, t1 ~ NatSym0) =>
               Sing (Apply (Apply CompareSym0 IntSym0) NatSym0 :: Ordering)
             lambda = SGT
           in lambda
       sCompare SInt SString
         = let
             lambda ::
-              (t ~ IntSym0, t ~ StringSym0) =>
+              (t0 ~ IntSym0, t1 ~ StringSym0) =>
               Sing (Apply (Apply CompareSym0 IntSym0) StringSym0 :: Ordering)
             lambda = SLT
           in lambda
       sCompare SInt (SMaybe _s_z_0123456789)
         = let
             lambda ::
-              forall _z_0123456789. (t ~ IntSym0,
-                                     t ~ Apply MaybeSym0 _z_0123456789) =>
+              forall _z_0123456789. (t0 ~ IntSym0,
+                                     t1 ~ Apply MaybeSym0 _z_0123456789) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply CompareSym0 IntSym0) (Apply MaybeSym0 _z_0123456789) :: Ordering)
             lambda _z_0123456789 = SLT
@@ -271,8 +274,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare SInt (SVec _s_z_0123456789 _s_z_0123456789)
         = let
             lambda ::
-              forall _z_0123456789 _z_0123456789. (t ~ IntSym0,
-                                                   t ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789) =>
+              forall _z_0123456789 _z_0123456789. (t0 ~ IntSym0,
+                                                   t1 ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing (Apply (Apply CompareSym0 IntSym0) (Apply (Apply VecSym0 _z_0123456789) _z_0123456789) :: Ordering)
@@ -281,22 +284,22 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare SString SNat
         = let
             lambda ::
-              (t ~ StringSym0, t ~ NatSym0) =>
+              (t0 ~ StringSym0, t1 ~ NatSym0) =>
               Sing (Apply (Apply CompareSym0 StringSym0) NatSym0 :: Ordering)
             lambda = SGT
           in lambda
       sCompare SString SInt
         = let
             lambda ::
-              (t ~ StringSym0, t ~ IntSym0) =>
+              (t0 ~ StringSym0, t1 ~ IntSym0) =>
               Sing (Apply (Apply CompareSym0 StringSym0) IntSym0 :: Ordering)
             lambda = SGT
           in lambda
       sCompare SString (SMaybe _s_z_0123456789)
         = let
             lambda ::
-              forall _z_0123456789. (t ~ StringSym0,
-                                     t ~ Apply MaybeSym0 _z_0123456789) =>
+              forall _z_0123456789. (t0 ~ StringSym0,
+                                     t1 ~ Apply MaybeSym0 _z_0123456789) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply CompareSym0 StringSym0) (Apply MaybeSym0 _z_0123456789) :: Ordering)
             lambda _z_0123456789 = SLT
@@ -304,8 +307,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare SString (SVec _s_z_0123456789 _s_z_0123456789)
         = let
             lambda ::
-              forall _z_0123456789 _z_0123456789. (t ~ StringSym0,
-                                                   t ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789) =>
+              forall _z_0123456789 _z_0123456789. (t0 ~ StringSym0,
+                                                   t1 ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing (Apply (Apply CompareSym0 StringSym0) (Apply (Apply VecSym0 _z_0123456789) _z_0123456789) :: Ordering)
@@ -314,8 +317,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare (SMaybe _s_z_0123456789) SNat
         = let
             lambda ::
-              forall _z_0123456789. (t ~ Apply MaybeSym0 _z_0123456789,
-                                     t ~ NatSym0) =>
+              forall _z_0123456789. (t0 ~ Apply MaybeSym0 _z_0123456789,
+                                     t1 ~ NatSym0) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply CompareSym0 (Apply MaybeSym0 _z_0123456789)) NatSym0 :: Ordering)
             lambda _z_0123456789 = SGT
@@ -323,8 +326,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare (SMaybe _s_z_0123456789) SInt
         = let
             lambda ::
-              forall _z_0123456789. (t ~ Apply MaybeSym0 _z_0123456789,
-                                     t ~ IntSym0) =>
+              forall _z_0123456789. (t0 ~ Apply MaybeSym0 _z_0123456789,
+                                     t1 ~ IntSym0) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply CompareSym0 (Apply MaybeSym0 _z_0123456789)) IntSym0 :: Ordering)
             lambda _z_0123456789 = SGT
@@ -332,8 +335,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare (SMaybe _s_z_0123456789) SString
         = let
             lambda ::
-              forall _z_0123456789. (t ~ Apply MaybeSym0 _z_0123456789,
-                                     t ~ StringSym0) =>
+              forall _z_0123456789. (t0 ~ Apply MaybeSym0 _z_0123456789,
+                                     t1 ~ StringSym0) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply CompareSym0 (Apply MaybeSym0 _z_0123456789)) StringSym0 :: Ordering)
             lambda _z_0123456789 = SGT
@@ -345,8 +348,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
             lambda ::
               forall _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply MaybeSym0 _z_0123456789,
-                                     t ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply MaybeSym0 _z_0123456789,
+                                     t1 ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -357,8 +360,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
         = let
             lambda ::
               forall _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789,
-                                     t ~ NatSym0) =>
+                     _z_0123456789. (t0 ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789,
+                                     t1 ~ NatSym0) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing (Apply (Apply CompareSym0 (Apply (Apply VecSym0 _z_0123456789) _z_0123456789)) NatSym0 :: Ordering)
@@ -368,8 +371,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
         = let
             lambda ::
               forall _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789,
-                                     t ~ IntSym0) =>
+                     _z_0123456789. (t0 ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789,
+                                     t1 ~ IntSym0) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing (Apply (Apply CompareSym0 (Apply (Apply VecSym0 _z_0123456789) _z_0123456789)) IntSym0 :: Ordering)
@@ -379,8 +382,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
         = let
             lambda ::
               forall _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789,
-                                     t ~ StringSym0) =>
+                     _z_0123456789. (t0 ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789,
+                                     t1 ~ StringSym0) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing (Apply (Apply CompareSym0 (Apply (Apply VecSym0 _z_0123456789) _z_0123456789)) StringSym0 :: Ordering)
@@ -393,8 +396,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
             lambda ::
               forall _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789,
-                                     t ~ Apply MaybeSym0 _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply VecSym0 _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply MaybeSym0 _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789

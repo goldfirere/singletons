@@ -50,7 +50,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
     instance PMyOrd (KProxy :: KProxy NatFoo) where
-      type Mycompare (a :: NatFoo) (a :: NatFoo) = Mycompare_0123456789 a a
+      type Mycompare (a :: NatFoo) (a :: NatFoo) = Apply (Apply Mycompare_0123456789Sym0 a) a
     data instance Sing (z :: NatFoo)
       = z ~ ZeroFoo => SZeroFoo |
         forall (n :: NatFoo). z ~ SuccFoo n =>
@@ -66,21 +66,25 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SSuccFoo c) }
     instance SMyOrd (KProxy :: KProxy NatFoo) where
       sMycompare ::
-        forall (t :: NatFoo) (t :: NatFoo).
-        Sing t
-        -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
+        forall (t0 :: NatFoo) (t1 :: NatFoo).
+        Sing t0
+        -> Sing t1
+           -> Sing (Apply (Apply (MycompareSym0 :: TyFun NatFoo (TyFun NatFoo Ordering
+                                                                 -> *)
+                                                   -> *) t0 :: TyFun NatFoo Ordering
+                                                               -> *) t1 :: Ordering)
       sMycompare SZeroFoo SZeroFoo
         = let
             lambda ::
-              (t ~ ZeroFooSym0, t ~ ZeroFooSym0) =>
+              (t0 ~ ZeroFooSym0, t1 ~ ZeroFooSym0) =>
               Sing (Apply (Apply MycompareSym0 ZeroFooSym0) ZeroFooSym0 :: Ordering)
             lambda = SEQ
           in lambda
       sMycompare SZeroFoo (SSuccFoo _s_z_0123456789)
         = let
             lambda ::
-              forall _z_0123456789. (t ~ ZeroFooSym0,
-                                     t ~ Apply SuccFooSym0 _z_0123456789) =>
+              forall _z_0123456789. (t0 ~ ZeroFooSym0,
+                                     t1 ~ Apply SuccFooSym0 _z_0123456789) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply MycompareSym0 ZeroFooSym0) (Apply SuccFooSym0 _z_0123456789) :: Ordering)
             lambda _z_0123456789 = SLT
@@ -88,8 +92,8 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       sMycompare (SSuccFoo _s_z_0123456789) SZeroFoo
         = let
             lambda ::
-              forall _z_0123456789. (t ~ Apply SuccFooSym0 _z_0123456789,
-                                     t ~ ZeroFooSym0) =>
+              forall _z_0123456789. (t0 ~ Apply SuccFooSym0 _z_0123456789,
+                                     t1 ~ ZeroFooSym0) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply MycompareSym0 (Apply SuccFooSym0 _z_0123456789)) ZeroFooSym0 :: Ordering)
             lambda _z_0123456789 = SGT
@@ -97,7 +101,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       sMycompare (SSuccFoo sN) (SSuccFoo sM)
         = let
             lambda ::
-              forall n m. (t ~ Apply SuccFooSym0 n, t ~ Apply SuccFooSym0 m) =>
+              forall n m. (t0 ~ Apply SuccFooSym0 n, t1 ~ Apply SuccFooSym0 m) =>
               Sing n
               -> Sing m
                  -> Sing (Apply (Apply MycompareSym0 (Apply SuccFooSym0 n)) (Apply SuccFooSym0 m) :: Ordering)

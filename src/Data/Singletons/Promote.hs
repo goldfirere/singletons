@@ -21,6 +21,7 @@ import Data.Singletons.Promote.Defun
 import Data.Singletons.Promote.Type
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
+import Data.Singletons.Deriving.Enum
 import Data.Singletons.Partition
 import Data.Singletons.Util
 import Data.Singletons.Syntax
@@ -68,13 +69,29 @@ genDefunSymbols names = do
 promoteEqInstances :: DsMonad q => [Name] -> q [Dec]
 promoteEqInstances = concatMapM promoteEqInstance
 
--- | Produce instances for 'Compare' from the given types
+-- | Produce instances for 'POrd' from the given types
 promoteOrdInstances :: DsMonad q => [Name] -> q [Dec]
 promoteOrdInstances = concatMapM promoteOrdInstance
 
--- | Produce instances for 'MinBound' and 'MaxBound' from the given types
+-- | Produce an instance for 'POrd' from the given type
+promoteOrdInstance :: DsMonad q => Name -> q [Dec]
+promoteOrdInstance = promoteInstance mkOrdInstance "Ord"
+
+-- | Produce instances for 'PBounded' from the given types
 promoteBoundedInstances :: DsMonad q => [Name] -> q [Dec]
 promoteBoundedInstances = concatMapM promoteBoundedInstance
+
+-- | Produce an instance for 'PBounded' from the given type
+promoteBoundedInstance :: DsMonad q => Name -> q [Dec]
+promoteBoundedInstance = promoteInstance mkBoundedInstance "Bounded"
+
+-- | Produce instances for 'PEnum' from the given types
+promoteEnumInstances :: DsMonad q => [Name] -> q [Dec]
+promoteEnumInstances = concatMapM promoteEnumInstance
+
+-- | Produce an instance for 'PEnum' from the given type
+promoteEnumInstance :: DsMonad q => Name -> q [Dec]
+promoteEnumInstance = promoteInstance mkEnumInstance "Enum"
 
 -- | Produce an instance for '(:==)' (type-level equality) from the given type
 promoteEqInstance :: DsMonad q => Name -> q [Dec]
@@ -85,14 +102,6 @@ promoteEqInstance name = do
   kind <- promoteType (foldType (DConT name) (map DVarT vars))
   inst_decs <- mkEqTypeInstance kind cons'
   return $ decsToTH inst_decs
-
--- | Produce an instance for 'Compare' from the given type
-promoteOrdInstance :: DsMonad q => Name -> q [Dec]
-promoteOrdInstance = promoteInstance mkOrdInstance "Ord"
-
--- | Produce an instance for 'MinBound' and 'MaxBound' from the given type
-promoteBoundedInstance :: DsMonad q => Name -> q [Dec]
-promoteBoundedInstance = promoteInstance mkBoundedInstance "Bounded"
 
 promoteInstance :: DsMonad q => (DType -> [DCon] -> q UInstDecl)
                 -> String -> Name -> q [Dec]
@@ -322,7 +331,6 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   meth_arg_tvs <- mapM (const $ qNewName "a") arg_kis
   let meth_arg_kis' = map (substKind subst) arg_kis
       meth_res_ki'  = substKind subst res_ki
---      eqns'         = map (apply_kis meth_arg_kis' meth_res_ki') eqns
       helperNameBase = case nameBase proName of
                          first:_ | not (isHsLetter first) -> "TFHelper"
                          alpha                            -> alpha
@@ -334,7 +342,7 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   return ( DTySynInstD
              proName
              (DTySynEqn (zipWith (DSigT . DVarT) meth_arg_tvs meth_arg_kis')
-                        (foldType (DConT helperName) (map DVarT meth_arg_tvs)))
+                        (foldApply (promoteValRhs helperName) (map DVarT meth_arg_tvs)))
          , ann_rhs
          , DConT (promoteTySym helperName 0) )
   where
@@ -353,13 +361,6 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
 
     default_to_star Nothing  = DStarK
     default_to_star (Just k) = k
-
-    apply_kis :: [DKind] -> DKind -> DTySynEqn -> DTySynEqn
-    apply_kis arg_kis res_ki (DTySynEqn lhs rhs) =
-      DTySynEqn (zipWith apply_ki lhs arg_kis) (apply_ki rhs res_ki)
-
-    apply_ki :: DType -> DKind -> DType
-    apply_ki = DSigT
 
 promoteLetDecEnv :: (String, String) -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env

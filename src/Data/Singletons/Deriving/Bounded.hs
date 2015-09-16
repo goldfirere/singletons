@@ -33,7 +33,7 @@ mkBoundedInstance ty cons = do
   when (null cons
        || (any (\(DCon _ _ _ f) -> not . null . tysOfConFields $ f) cons
             && (not . null . tail $ cons))) $
-       fail ("Can't derive promoted Bounded instance for "
+       fail ("Can't derive Bounded instance for "
              ++ pprint (typeToTH ty) ++ ".")
   -- at this point we know that either we have a datatype that has only one
   -- constructor or a datatype where each constructor is nullary

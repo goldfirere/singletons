@@ -86,6 +86,7 @@ library
 
   other-modules:      Data.Singletons.Deriving.Infer,
                       Data.Singletons.Deriving.Bounded,
+                      Data.Singletons.Deriving.Enum,
                       Data.Singletons.Deriving.Ord,
                       Data.Singletons.Promote,
                       Data.Singletons.Promote.Monad,

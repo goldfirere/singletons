@@ -65,8 +65,8 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
         L2r_0123456789Sym0KindInference
     type instance Apply L2r_0123456789Sym0 l = L2r_0123456789Sym1 l
     instance PFD (KProxy :: KProxy Bool) (KProxy :: KProxy Nat) where
-      type Meth (a :: Bool) = Meth_0123456789 a
-      type L2r (a :: Bool) = L2r_0123456789 a
+      type Meth (a :: Bool) = Apply Meth_0123456789Sym0 a
+      type L2r (a :: Bool) = Apply L2r_0123456789Sym0 a
     sT1 :: Sing T1Sym0
     sT1 = applySing (singFun1 (Proxy :: Proxy MethSym0) sMeth) STrue
     class (kproxy ~ KProxy,

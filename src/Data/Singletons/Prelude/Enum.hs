@@ -34,7 +34,6 @@ module Data.Singletons.Prelude.Enum (
 
   ) where
 
-import Data.Singletons.Promote
 import Data.Singletons.Single
 import Data.Singletons.Util
 import Data.Singletons.Prelude.Num
@@ -135,4 +134,4 @@ $(singletonsOnly [d|
       enumFromThenTo = efdtNat
   |])
 
--- TODO: Write prelude Enum instances. (Bool, Ordering... any others?)
+$(singEnumInstances enumBasicTypes)

@@ -35,16 +35,17 @@ basicTypes = [ ''Maybe
              ] ++ boundedBasicTypes
 
 boundedBasicTypes :: [Name]
-boundedBasicTypes = [ ''Bool
-             , ''Ordering
-             , ''()
-             , ''(,)
-             , ''(,,)
-             , ''(,,,)
-             , ''(,,,,)
-             , ''(,,,,,)
-             , ''(,,,,,,)
-            ]
+boundedBasicTypes =
+            [  ''(,)
+            , ''(,,)
+            , ''(,,,)
+            , ''(,,,,)
+            , ''(,,,,,)
+            , ''(,,,,,,)
+            ] ++ enumBasicTypes
+
+enumBasicTypes :: [Name]
+enumBasicTypes = [ ''Bool, ''Ordering, ''() ]
 
 -- like reportWarning, but generalized to any Quasi
 qReportWarning :: Quasi q => String -> q ()
@@ -84,6 +85,9 @@ extractNameArgs = liftSnd length . extractNameTypes
 -- extract the name and types of constructor arguments
 extractNameTypes :: DCon -> (Name, [DType])
 extractNameTypes (DCon _ _ n fields) = (n, tysOfConFields fields)
+
+extractName :: DCon -> Name
+extractName (DCon _ _ n _) = n
 
 -- is an identifier uppercase?
 isUpcase :: Name -> Bool
@@ -252,6 +256,35 @@ substPred subst (DAppPr pred ty) =
 substPred subst (DSigPr pred ki) = DSigPr (substPred subst pred) ki
 substPred _ pred@(DVarPr {}) = pred
 substPred _ pred@(DConPr {}) = pred
+
+substKindInType :: Map Name DKind -> DType -> DType
+substKindInType subst ty | Map.null subst = ty
+substKindInType subst (DForallT tvbs cxt inner_ty) =
+  let tvbs'     = map (substKindInTvb subst) tvbs
+      cxt'      = map (substKindInPred subst) cxt
+      inner_ty' = substKindInType subst inner_ty
+  in
+  DForallT tvbs' cxt' inner_ty'
+substKindInType subst (DAppT ty1 ty2)
+  = substKindInType subst ty1 `DAppT` substKindInType subst ty2
+substKindInType subst (DSigT ty ki) = substKindInType subst ty `DSigT` substKind subst ki
+substKindInType _ ty@(DVarT {}) = ty
+substKindInType _ ty@(DConT {}) = ty
+substKindInType _ ty@(DArrowT)  = ty
+substKindInType _ ty@(DLitT {}) = ty
+
+substKindInPred :: Map Name DKind -> DPred -> DPred
+substKindInPred subst pred | Map.null subst = pred
+substKindInPred subst (DAppPr pred ty) =
+  DAppPr (substKindInPred subst pred) (substKindInType subst ty)
+substKindInPred subst (DSigPr pred ki) = DSigPr (substKindInPred subst pred)
+                                                (substKind subst ki)
+substKindInPred _ pred@(DVarPr {}) = pred
+substKindInPred _ pred@(DConPr {}) = pred
+
+substKindInTvb :: Map Name DKind -> DTyVarBndr -> DTyVarBndr
+substKindInTvb _ tvb@(DPlainTV _) = tvb
+substKindInTvb subst (DKindedTV n ki) = DKindedTV n (substKind subst ki)
 
 addStar :: DKind -> DKind
 addStar t = DArrowK t DStarK

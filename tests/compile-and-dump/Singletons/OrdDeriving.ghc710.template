@@ -285,7 +285,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789Sym0KindInference
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
     instance POrd (KProxy :: KProxy Nat) where
-      type Compare (a :: Nat) (a :: Nat) = Compare_0123456789 a a
+      type Compare (a :: Nat) (a :: Nat) = Apply (Apply Compare_0123456789Sym0 a) a
     type family Compare_0123456789 (a :: Foo a b c d)
                                    (a :: Foo a b c d) :: Ordering where
       Compare_0123456789 (A a_0123456789 a_0123456789 a_0123456789 a_0123456789) (A b_0123456789 b_0123456789 b_0123456789 b_0123456789) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789) b_0123456789)) '[]))))
@@ -345,7 +345,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789Sym0KindInference
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
     instance POrd (KProxy :: KProxy (Foo a b c d)) where
-      type Compare (a :: Foo a b c d) (a :: Foo a b c d) = Compare_0123456789 a a
+      type Compare (a :: Foo a b c d) (a :: Foo a b c d) = Apply (Apply Compare_0123456789Sym0 a) a
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
@@ -791,13 +791,17 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SOrd (KProxy :: KProxy Nat) =>
              SOrd (KProxy :: KProxy Nat) where
       sCompare ::
-        forall (t :: Nat) (t :: Nat).
-        Sing t
-        -> Sing t -> Sing (Apply (Apply CompareSym0 t) t :: Ordering)
+        forall (t0 :: Nat) (t1 :: Nat).
+        Sing t0
+        -> Sing t1
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat (TyFun Nat Ordering
+                                                            -> *)
+                                                 -> *) t0 :: TyFun Nat Ordering
+                                                             -> *) t1 :: Ordering)
       sCompare SZero SZero
         = let
             lambda ::
-              (t ~ ZeroSym0, t ~ ZeroSym0) =>
+              (t0 ~ ZeroSym0, t1 ~ ZeroSym0) =>
               Sing (Apply (Apply CompareSym0 ZeroSym0) ZeroSym0 :: Ordering)
             lambda
               = applySing
@@ -811,8 +815,9 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       sCompare (SSucc sA_0123456789) (SSucc sB_0123456789)
         = let
             lambda ::
-              forall a_0123456789 b_0123456789. (t ~ Apply SuccSym0 a_0123456789,
-                                                 t ~ Apply SuccSym0 b_0123456789) =>
+              forall a_0123456789
+                     b_0123456789. (t0 ~ Apply SuccSym0 a_0123456789,
+                                    t1 ~ Apply SuccSym0 b_0123456789) =>
               Sing a_0123456789
               -> Sing b_0123456789
                  -> Sing (Apply (Apply CompareSym0 (Apply SuccSym0 a_0123456789)) (Apply SuccSym0 b_0123456789) :: Ordering)
@@ -835,8 +840,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       sCompare SZero (SSucc _s_z_0123456789)
         = let
             lambda ::
-              forall _z_0123456789. (t ~ ZeroSym0,
-                                     t ~ Apply SuccSym0 _z_0123456789) =>
+              forall _z_0123456789. (t0 ~ ZeroSym0,
+                                     t1 ~ Apply SuccSym0 _z_0123456789) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply CompareSym0 ZeroSym0) (Apply SuccSym0 _z_0123456789) :: Ordering)
             lambda _z_0123456789 = SLT
@@ -844,8 +849,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       sCompare (SSucc _s_z_0123456789) SZero
         = let
             lambda ::
-              forall _z_0123456789. (t ~ Apply SuccSym0 _z_0123456789,
-                                     t ~ ZeroSym0) =>
+              forall _z_0123456789. (t0 ~ Apply SuccSym0 _z_0123456789,
+                                     t1 ~ ZeroSym0) =>
               Sing _z_0123456789
               -> Sing (Apply (Apply CompareSym0 (Apply SuccSym0 _z_0123456789)) ZeroSym0 :: Ordering)
             lambda _z_0123456789 = SGT
@@ -856,9 +861,13 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               SOrd (KProxy :: KProxy d)) =>
              SOrd (KProxy :: KProxy (Foo a b c d)) where
       sCompare ::
-        forall (t :: Foo a b c d) (t :: Foo a b c d).
-        Sing t
-        -> Sing t -> Sing (Apply (Apply CompareSym0 t) t :: Ordering)
+        forall (t0 :: Foo a b c d) (t1 :: Foo a b c d).
+        Sing t0
+        -> Sing t1
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Foo a b c d) (TyFun (Foo a b c d) Ordering
+                                                                      -> *)
+                                                 -> *) t0 :: TyFun (Foo a b c d) Ordering
+                                                             -> *) t1 :: Ordering)
       sCompare
         (SA sA_0123456789 sA_0123456789 sA_0123456789 sA_0123456789)
         (SA sB_0123456789 sB_0123456789 sB_0123456789 sB_0123456789)
@@ -871,8 +880,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      b_0123456789
                      b_0123456789
                      b_0123456789
-                     b_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
-                                    t ~ Apply (Apply (Apply (Apply ASym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+                     b_0123456789. (t0 ~ Apply (Apply (Apply (Apply ASym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t1 ~ Apply (Apply (Apply (Apply ASym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
               Sing a_0123456789
               -> Sing a_0123456789
                  -> Sing a_0123456789
@@ -949,8 +958,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      b_0123456789
                      b_0123456789
                      b_0123456789
-                     b_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
-                                    t ~ Apply (Apply (Apply (Apply BSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+                     b_0123456789. (t0 ~ Apply (Apply (Apply (Apply BSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t1 ~ Apply (Apply (Apply (Apply BSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
               Sing a_0123456789
               -> Sing a_0123456789
                  -> Sing a_0123456789
@@ -1027,8 +1036,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      b_0123456789
                      b_0123456789
                      b_0123456789
-                     b_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
-                                    t ~ Apply (Apply (Apply (Apply CSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+                     b_0123456789. (t0 ~ Apply (Apply (Apply (Apply CSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t1 ~ Apply (Apply (Apply (Apply CSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
               Sing a_0123456789
               -> Sing a_0123456789
                  -> Sing a_0123456789
@@ -1105,8 +1114,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      b_0123456789
                      b_0123456789
                      b_0123456789
-                     b_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
-                                    t ~ Apply (Apply (Apply (Apply DSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+                     b_0123456789. (t0 ~ Apply (Apply (Apply (Apply DSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t1 ~ Apply (Apply (Apply (Apply DSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
               Sing a_0123456789
               -> Sing a_0123456789
                  -> Sing a_0123456789
@@ -1183,8 +1192,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      b_0123456789
                      b_0123456789
                      b_0123456789
-                     b_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
-                                    t ~ Apply (Apply (Apply (Apply ESym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+                     b_0123456789. (t0 ~ Apply (Apply (Apply (Apply ESym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t1 ~ Apply (Apply (Apply (Apply ESym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
               Sing a_0123456789
               -> Sing a_0123456789
                  -> Sing a_0123456789
@@ -1261,8 +1270,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      b_0123456789
                      b_0123456789
                      b_0123456789
-                     b_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
-                                    t ~ Apply (Apply (Apply (Apply FSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
+                     b_0123456789. (t0 ~ Apply (Apply (Apply (Apply FSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789,
+                                    t1 ~ Apply (Apply (Apply (Apply FSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) =>
               Sing a_0123456789
               -> Sing a_0123456789
                  -> Sing a_0123456789
@@ -1345,8 +1354,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1394,8 +1403,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1443,8 +1452,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1492,8 +1501,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1541,8 +1550,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1590,8 +1599,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1639,8 +1648,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1688,8 +1697,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1737,8 +1746,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1786,8 +1795,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1835,8 +1844,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1884,8 +1893,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1933,8 +1942,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -1982,8 +1991,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2031,8 +2040,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2080,8 +2089,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2129,8 +2138,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2178,8 +2187,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2227,8 +2236,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2276,8 +2285,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2325,8 +2334,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2374,8 +2383,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2423,8 +2432,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2472,8 +2481,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2521,8 +2530,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2570,8 +2579,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2619,8 +2628,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2668,8 +2677,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2717,8 +2726,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789
@@ -2766,8 +2775,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      _z_0123456789
                      _z_0123456789
                      _z_0123456789
-                     _z_0123456789. (t ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
-                                     t ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
+                     _z_0123456789. (t0 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789,
+                                     t1 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) =>
               Sing _z_0123456789
               -> Sing _z_0123456789
                  -> Sing _z_0123456789

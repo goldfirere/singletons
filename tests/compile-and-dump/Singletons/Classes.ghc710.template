@@ -156,7 +156,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     class kproxy ~ KProxy => PMyOrd (kproxy :: KProxy a) where
       type family Mycompare (arg :: a) (arg :: a) :: Ordering
       type family (:<=>) (arg :: a) (arg :: a) :: Ordering
-      (:<=>) (a :: a) (a :: a) = TFHelper_0123456789 a a
+      (:<=>) (a :: a)
+             (a :: a) = Apply (Apply TFHelper_0123456789Sym0 a) a
     type family Mycompare_0123456789 (a :: Nat)
                                      (a :: Nat) :: Ordering where
       Mycompare_0123456789 Zero Zero = EQSym0
@@ -183,7 +184,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
     instance PMyOrd (KProxy :: KProxy Nat) where
-      type Mycompare (a :: Nat) (a :: Nat) = Mycompare_0123456789 a a
+      type Mycompare (a :: Nat) (a :: Nat) = Apply (Apply Mycompare_0123456789Sym0 a) a
     type family Mycompare_0123456789 (a :: ())
                                      (a :: ()) :: Ordering where
       Mycompare_0123456789 _z_0123456789 a_0123456789 = Apply (Apply ConstSym0 EQSym0) a_0123456789
@@ -207,7 +208,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
     instance PMyOrd (KProxy :: KProxy ()) where
-      type Mycompare (a :: ()) (a :: ()) = Mycompare_0123456789 a a
+      type Mycompare (a :: ()) (a :: ()) = Apply (Apply Mycompare_0123456789Sym0 a) a
     type family Mycompare_0123456789 (a :: Foo)
                                      (a :: Foo) :: Ordering where
       Mycompare_0123456789 a_0123456789 a_0123456789 = Apply (Apply FooCompareSym0 a_0123456789) a_0123456789
@@ -231,7 +232,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
     instance PMyOrd (KProxy :: KProxy Foo) where
-      type Mycompare (a :: Foo) (a :: Foo) = Mycompare_0123456789 a a
+      type Mycompare (a :: Foo) (a :: Foo) = Apply (Apply Mycompare_0123456789Sym0 a) a
     type family TFHelper_0123456789 (a :: Foo2)
                                     (a :: Foo2) :: Bool where
       TFHelper_0123456789 F F = TrueSym0
@@ -258,7 +259,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         TFHelper_0123456789Sym0KindInference
     type instance Apply TFHelper_0123456789Sym0 l = TFHelper_0123456789Sym1 l
     instance PEq (KProxy :: KProxy Foo2) where
-      type (:==) (a :: Foo2) (a :: Foo2) = TFHelper_0123456789 a a
+      type (:==) (a :: Foo2) (a :: Foo2) = Apply (Apply TFHelper_0123456789Sym0 a) a
     infix 4 %:<=>
     sFooCompare ::
       forall (t :: Foo) (t :: Foo).
@@ -428,34 +429,30 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
           in lambda sA_0123456789 sA_0123456789
     instance SEq (KProxy :: KProxy Foo2) where
       (%:==) ::
-        forall (t :: Foo2) (t :: Foo2).
-        Sing t -> Sing t -> Sing (Apply (Apply (:==$) t) t :: Bool)
+        forall (a :: Foo2) (b :: Foo2).
+        Sing a -> Sing b -> Sing ((:==) a b)
       (%:==) SF SF
         = let
             lambda ::
-              (t ~ FSym0, t ~ FSym0) =>
-              Sing (Apply (Apply (:==$) FSym0) FSym0 :: Bool)
+              (a ~ FSym0, b ~ FSym0) => Sing (Apply (Apply (:==$) FSym0) FSym0)
             lambda = STrue
           in lambda
       (%:==) SG SG
         = let
             lambda ::
-              (t ~ GSym0, t ~ GSym0) =>
-              Sing (Apply (Apply (:==$) GSym0) GSym0 :: Bool)
+              (a ~ GSym0, b ~ GSym0) => Sing (Apply (Apply (:==$) GSym0) GSym0)
             lambda = STrue
           in lambda
       (%:==) SF SG
         = let
             lambda ::
-              (t ~ FSym0, t ~ GSym0) =>
-              Sing (Apply (Apply (:==$) FSym0) GSym0 :: Bool)
+              (a ~ FSym0, b ~ GSym0) => Sing (Apply (Apply (:==$) FSym0) GSym0)
             lambda = SFalse
           in lambda
       (%:==) SG SF
         = let
             lambda ::
-              (t ~ GSym0, t ~ FSym0) =>
-              Sing (Apply (Apply (:==$) GSym0) FSym0 :: Bool)
+              (a ~ GSym0, b ~ FSym0) => Sing (Apply (Apply (:==$) GSym0) FSym0)
             lambda = SFalse
           in lambda
     instance SingI A where
@@ -511,7 +508,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
     instance PMyOrd (KProxy :: KProxy Foo2) where
-      type Mycompare (a :: Foo2) (a :: Foo2) = Mycompare_0123456789 a a
+      type Mycompare (a :: Foo2) (a :: Foo2) = Apply (Apply Mycompare_0123456789Sym0 a) a
     type family Compare_0123456789 (a :: Foo2)
                                    (a :: Foo2) :: Ordering where
       Compare_0123456789 F F = EQSym0
@@ -537,7 +534,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789Sym0KindInference
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
     instance POrd (KProxy :: KProxy Foo2) where
-      type Compare (a :: Foo2) (a :: Foo2) = Compare_0123456789 a a
+      type Compare (a :: Foo2) (a :: Foo2) = Apply (Apply Compare_0123456789Sym0 a) a
 Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| data Nat' = Zero' | Succ' Nat'
@@ -590,7 +587,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
     instance PMyOrd (KProxy :: KProxy Nat') where
-      type Mycompare (a :: Nat') (a :: Nat') = Mycompare_0123456789 a a
+      type Mycompare (a :: Nat') (a :: Nat') = Apply (Apply Mycompare_0123456789Sym0 a) a
     data instance Sing (z :: Nat')
       = z ~ Zero' => SZero' |
         forall (n :: Nat'). z ~ Succ' n => SSucc' (Sing (n :: Nat'))
@@ -607,7 +604,11 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       sMycompare ::
         forall (t :: Nat') (t :: Nat').
         Sing t
-        -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
+        -> Sing t
+           -> Sing (Apply (Apply (MycompareSym0 :: TyFun Nat' (TyFun Nat' Ordering
+                                                               -> *)
+                                                   -> *) t :: TyFun Nat' Ordering
+                                                              -> *) t :: Ordering)
       sMycompare SZero' SZero'
         = let
             lambda ::

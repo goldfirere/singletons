@@ -29,8 +29,8 @@ mkOrdInstance ty cons = do
                                   [ (con1, con2)
                                   | con1 <- zip cons [1..]
                                   , con2 <- zip cons [1..]
-                                  , fst (extractNameArgs (fst con1)) /=
-                                    fst (extractNameArgs (fst con2)) ]
+                                  , extractName (fst con1) /=
+                                    extractName (fst con2) ]
   return (InstDecl { id_cxt = constraints
                    , id_name = ordName
                    , id_arg_tys = [ty]

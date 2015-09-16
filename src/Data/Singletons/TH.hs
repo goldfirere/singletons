@@ -27,13 +27,17 @@ module Data.Singletons.TH (
   singEqInstancesOnly, singEqInstanceOnly,
   singDecideInstances, singDecideInstance,
 
-  -- ** Functions to generate Ord instances
+  -- ** Functions to generate 'Ord' instances
   promoteOrdInstances, promoteOrdInstance,
   singOrdInstances, singOrdInstance,
 
-  -- ** Functions to generate Ord instances
+  -- ** Functions to generate 'Bounded' instances
   promoteBoundedInstances, promoteBoundedInstance,
   singBoundedInstances, singBoundedInstance,
+
+  -- ** Functions to generate 'Enum' instances
+  promoteEnumInstances, promoteEnumInstance,
+  singEnumInstances, singEnumInstance,
 
   -- ** Utility function
   cases,

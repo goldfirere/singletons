@@ -17,6 +17,7 @@ import Prelude hiding ( exp )
 import Data.Singletons.Syntax
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
+import Data.Singletons.Deriving.Enum
 import Data.Singletons.Names
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Ppr
@@ -59,6 +60,8 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
       = Right <$> mkOrdInstance ty cons
       | deriv_name == boundedName
       = Right <$> mkBoundedInstance ty cons
+      | deriv_name == enumName
+      = Right <$> mkEnumInstance ty cons
       | otherwise
       = return (Left deriv_name)
 

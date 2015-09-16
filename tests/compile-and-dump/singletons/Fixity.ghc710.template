@@ -1,5 +1,5 @@
-Promote/Fixity.hs:(0,0)-(0,0): Splicing declarations
-    promote
+Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
+    singletons
       [d| infix 4 ====
           infix 4 <=>
           
@@ -52,3 +52,21 @@ Promote/Fixity.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (:<=>$) l = (:<=>$$) l
     class kproxy ~ KProxy => PMyOrd (kproxy :: KProxy a) where
       type family (:<=>) (arg :: a) (arg :: a) :: Ordering
+    infix 4 %:====
+    infix 4 %:<=>
+    (%:====) ::
+      forall (t :: a) (t :: a).
+      Sing t -> Sing t -> Sing (Apply (Apply (:====$) t) t :: a)
+    (%:====) sA _s_z_0123456789
+      = let
+          lambda ::
+            forall a _z_0123456789. (t ~ a, t ~ _z_0123456789) =>
+            Sing a
+            -> Sing _z_0123456789
+               -> Sing (Apply (Apply (:====$) a) _z_0123456789 :: a)
+          lambda a _z_0123456789 = a
+        in lambda sA _s_z_0123456789
+    class kproxy ~ KProxy => SMyOrd (kproxy :: KProxy a) where
+      (%:<=>) ::
+        forall (t :: a) (t :: a).
+        Sing t -> Sing t -> Sing (Apply (Apply (:<=>$) t) t :: Ordering)

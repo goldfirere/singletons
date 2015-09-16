@@ -27,6 +27,9 @@ module Data.Promotion.TH (
   -- ** Functions to generate @Bounded@ instances
   promoteBoundedInstances, promoteBoundedInstance,
 
+  -- ** Functions to generate @Enum@ instances
+  promoteEnumInstances, promoteEnumInstance,
+
   -- ** defunctionalization
   TyFun, Apply, type (@@),
 
