@@ -257,6 +257,79 @@ In this example, `foo` would be out of scope.
 
 Refer to the promotion paper for more details on function promotion.
 
+Classes and instances
+---------------------
+
+This is best understood by example. Let's look at a stripped down `Ord`:
+
+```haskell
+class Eq a => Ord a where
+  compare :: a -> a -> Ordering
+  (<)     :: a -> a -> Bool
+  x < y = case x `compare` y of
+            LT -> True
+	    EQ -> False
+	    GT -> False
+```
+
+This class gets promoted to a "kind class" thus:
+
+```haskell
+class (kproxy ~ 'KProxy, PEq kproxy) => POrd (kproxy :: KProxy a) where
+  type Compare (x :: a) (y :: a) :: Ordering
+  type (:<)    (x :: a) (y :: a) :: Bool
+  type x :< y = ... -- promoting `case` is yucky.
+```
+
+Note that default method definitions become default associated type family
+instances. This works out quite nicely.
+
+We also get this singleton class:
+
+```haskell
+class (kproxy ~ 'KProxy, SEq kproxy) => SOrd (kproxy :: KProxy a) where
+  sCompare :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Compare x y)
+  (%:<)    :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :< y)
+
+  default (%:<) :: forall (x :: a) (y :: a).
+                   ((x :< y) ~ {- RHS from (:<) above -})
+		=> Sing x -> Sing y -> Sing (x :< y)
+  x %:< y = ...  -- this is a bit yucky too
+```
+
+Note that a singletonized class needs to use `default` signatures, because
+type-checking the default body requires that the default associated type
+family instance was used in the promoted class. The extra equality constraint
+on the default signature asserts this fact to the type-checker.
+
+Instances work roughly similarly.
+
+```haskell
+instance Ord Bool where
+  compare False False = EQ
+  compare False True  = LT
+  compare True  False = GT
+  compare True  True  = EQ
+
+instance POrd ('KProxy :: KProxy Bool) where
+  type Compare 'False 'False = 'EQ
+  type Compare 'False 'True  = 'LT
+  type Compare 'True  'False = 'GT
+  type Compare 'True  'True  = 'EQ
+
+instance SOrd ('KProxy :: KProxy Bool) where
+  sCompare :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Compare x y)
+  sCompare SFalse SFalse = SEQ
+  sCompare SFalse STrue  = SLT
+  sCompare STrue  SFalse = SGT
+  sCompare STrue  STrue  = SEQ
+```
+
+The only interesting bit here is the instance signature. It's not necessary
+in such a simple scenario, but more complicated functions need to refer to
+scoped type variables, which the instance signature can bring into scope.
+The defaults all just work.
+
 On names
 --------
 
@@ -312,6 +385,20 @@ generates. Here are some examples showing how this is done:
    singleton value: `%:+`
 
    symbols: `:+$`, `:+$$`, `:+$$$`
+
+
+7. original class: `Num`
+
+   promoted class: `PNum`
+
+   singleton class: `SNum`
+
+
+8. original class: `~>`
+
+   promoted class: `#~>`
+
+   singleton class: `:%~>`
 
 
 Special names
@@ -380,9 +467,9 @@ The following constructs are fully supported:
 * sections
 * undefined
 * error
-* deriving Eq
+* deriving `Eq`, `Ord`, `Bounded`, and `Enum`
 * class constraints (though these sometimes fail with `let`, `lambda`, and `case`)
-* literals (for `Nat` and `Symbol`)
+* literals (for `Nat` and `Symbol`), including overloaded number literals
 * unboxed tuples (which are treated as normal tuples)
 * records
 * pattern guards
@@ -395,7 +482,6 @@ The following constructs are fully supported:
 
 The following constructs are supported for promotion but not singleton generation:
 
-* deriving of promoted `Ord` and `Bounded` instances
 * scoped type variables
 * overlapping patterns. Note that overlapping patterns are
   sometimes not obvious. For example, the `filter` function does not

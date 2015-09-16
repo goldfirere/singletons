@@ -12,6 +12,8 @@ Changelog for singletons project
 
 * We now have promoted and singletonized versions of `Enum`, as well as `Bounded`.
 
+* Deriving `Enum` is also now supported.
+
 * Ditto for `Num`, which includes an instance for `Nat`, naturally.
 
 * Promoting a literal number now uses overloaded literals at the type level,
@@ -25,6 +27,8 @@ functions that have constrained parameters now work.
 * Support for functions of arity 8 (instead of the old limit, 7).
 
 * Full support for fixity declarations.
+
+* A raft of bugfixes.
 
 1.1.2.1
 -------
