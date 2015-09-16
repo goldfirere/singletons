@@ -246,6 +246,15 @@ Users also have access to `Data.Promotion.Prelude` and its submodules (`Base`,
 `Bool`, `Either`, `List`, `Maybe` and `Tuple`). These provide promoted versions
 of function found in GHC's base library.
 
+Note that GHC resolves variable names in Template Haskell quotes. You cannot
+then use an undefined identifier in a quote, making idioms like this not
+work:
+```haskell
+type family Foo a where ...
+$(promote [d| ... foo x ... |])
+```
+In this example, `foo` would be out of scope.
+
 Refer to the promotion paper for more details on function promotion.
 
 On names
