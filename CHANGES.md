@@ -1,6 +1,10 @@
 Changelog for singletons project
 ================================
 
+2.0.0.1
+-------
+ * Make haddock work.
+
 2.0
 ---
 
