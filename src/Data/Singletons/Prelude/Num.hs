@@ -40,7 +40,7 @@ import Data.Proxy
 import Unsafe.Coerce
 
 $(singletonsOnly [d|
-  -- | Basic numeric class.
+  -- Basic numeric class.
   --
   -- Minimal complete definition: all except 'negate' or @(-)@
   class  Num a  where
@@ -48,11 +48,11 @@ $(singletonsOnly [d|
       infixl 6 +
       infixl 6 -
       infixl 6 *
-      -- | Unary negation.
+      -- Unary negation.
       negate              :: a -> a
-      -- | Absolute value.
+      -- Absolute value.
       abs                 :: a -> a
-      -- | Sign of a number.
+      -- Sign of a number.
       -- The functions 'abs' and 'signum' should satisfy the law:
       --
       -- > abs x * signum x == x
@@ -60,7 +60,7 @@ $(singletonsOnly [d|
       -- For real numbers, the 'signum' is either @-1@ (negative), @0@ (zero)
       -- or @1@ (positive).
       signum              :: a -> a
-      -- | Conversion from a 'Nat'.
+      -- Conversion from a 'Nat'.
       fromInteger         :: Nat -> a
 
       x - y               = x + negate y

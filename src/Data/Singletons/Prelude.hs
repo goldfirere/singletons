@@ -24,52 +24,6 @@ module Data.Singletons.Prelude (
 
   Sing(SFalse, STrue, SNil, SCons, SJust, SNothing, SLeft, SRight, SLT, SEQ, SGT,
        STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7),
-  -- | Though Haddock doesn't show it, the 'Sing' instance above includes
-  -- the following instances
-  --
-  -- > data instance Sing (a :: Bool) where
-  -- >   SFalse :: Sing False
-  -- >   STrue  :: Sing True
-  -- >
-  -- > data instance Sing (a :: [k]) where
-  -- >   SNil  :: Sing '[]
-  -- >   SCons :: Sing (h :: k) -> Sing (t :: [k]) -> Sing (h ': t)
-  -- >
-  -- > data instance Sing (a :: Maybe k) where
-  -- >   SNothing :: Sing Nothing
-  -- >   SJust    :: Sing (a :: k) -> Sing (Just a)
-  -- >
-  -- > data instance Sing (a :: Either x y) where
-  -- >   SLeft  :: Sing (a :: x) -> Sing (Left a)
-  -- >   SRight :: Sing (b :: y) -> Sing (Right b)
-  -- >
-  -- > data instance Sing (a :: Ordering) where
-  -- >   SLT :: Sing LT
-  -- >   SEQ :: Sing EQ
-  -- >   SGT :: Sing GT
-  -- >
-  -- > data instance Sing (a :: ()) where
-  -- >   STuple0 :: Sing '()
-  -- >
-  -- > data instance Sing (z :: (a, b)) where
-  -- >   STuple2 :: Sing a -> Sing b -> Sing '(a, b)
-  -- >
-  -- > data instance Sing (z :: (a, b, c)) where
-  -- >   STuple3 :: Sing a -> Sing b -> Sing c -> Sing '(a, b, c)
-  -- >
-  -- > data instance Sing (z :: (a, b, c, d)) where
-  -- >   STuple4 :: Sing a -> Sing b -> Sing c -> Sing d -> Sing '(a, b, c, d)
-  -- >
-  -- > data instance Sing (z :: (a, b, c, d, e)) where
-  -- >   STuple5 :: Sing a -> Sing b -> Sing c -> Sing d -> Sing e -> Sing '(a, b, c, d, e)
-  -- >
-  -- > data instance Sing (z :: (a, b, c, d, e, f)) where
-  -- >   STuple6 :: Sing a -> Sing b -> Sing c -> Sing d -> Sing e -> Sing f
-  -- >           -> Sing '(a, b, c, d, e, f)
-  -- >
-  -- > data instance Sing (z :: (a, b, c, d, e, f, g)) where
-  -- >   STuple7 :: Sing a -> Sing b -> Sing c -> Sing d -> Sing e -> Sing f
-  -- >           -> Sing g -> Sing '(a, b, c, d, e, f, g)
 
   -- * Singleton type synonyms
 
