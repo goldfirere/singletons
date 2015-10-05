@@ -47,7 +47,7 @@ $(singletonsOnly [d|
       (+), (-), (*)       :: a -> a -> a
       infixl 6 +
       infixl 6 -
-      infixl 6 *
+      infixl 7 *
       -- Unary negation.
       negate              :: a -> a
       -- Absolute value.
