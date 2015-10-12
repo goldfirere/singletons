@@ -3,7 +3,7 @@ version:        2.0.0.2
                 -- Remember to bump version in the Makefile as well
 cabal-version:  >= 1.10
 synopsis:       A framework for generating singleton types
-homepage:       http://www.cis.upenn.edu/~eir/packages/singletons
+homepage:       http://www.github.com/goldfirere/singletons
 category:       Dependent Types
 author:         Richard Eisenberg <eir@cis.upenn.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
 maintainer:     Richard Eisenberg <eir@cis.upenn.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
