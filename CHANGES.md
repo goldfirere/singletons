@@ -1,6 +1,16 @@
 Changelog for singletons project
 ================================
 
+2.0.1
+-----
+ * Lots more functions in `Data.Singletons.Prelude.List`:
+   `filter`, `find`, `elemIndex`, `elemIndices`, `findIndex`, `findIndices`,
+   `intersect`, `intersectBy`, `takeWhile`, `dropWhile`, `dropWhileEnd`,
+   `span`, `break`, `take`, `drop`, `splitAt`, `group`, `maximum`,
+   `minimum`, `insert`, `sort`, `groupBy`, `lookup`, `partition`,
+   `sum`, `product`, `length`, `replicate`, `transpose`, `(!!)`,
+   `nub`, `nubBy`, `unionBy`, `union`, `genericLength`
+
 2.0.0.2
 -------
  * Fix fixity of `*`.
@@ -37,6 +47,8 @@ functions that have constrained parameters now work.
 * Full support for fixity declarations.
 
 * A raft of bugfixes.
+
+* Drop support for GHC 7.8. You must have GHC 7.10.2.
 
 1.1.2.1
 -------

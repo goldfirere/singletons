@@ -36,12 +36,12 @@ module Data.Singletons.Prelude.List (
 
   -- * Basic functions
   (:++), (%:++), Head, sHead, Last, sLast, Tail, sTail, Init, sInit,
-  Null, sNull,
+  Null, sNull, Length, sLength,
 
    -- * List transformations
   Map, sMap, Reverse, sReverse, Intersperse, sIntersperse,
-  Intercalate, sIntercalate, Subsequences, sSubsequences,
-  Permutations, sPermutations,
+  Intercalate, sIntercalate, Transpose, sTranspose,
+  Subsequences, sSubsequences, Permutations, sPermutations,
 
   -- * Reducing lists (folds)
   Foldl, sFoldl, Foldl', sFoldl', Foldl1, sFoldl1, Foldl1', sFoldl1',
@@ -50,6 +50,8 @@ module Data.Singletons.Prelude.List (
   -- ** Special folds
   Concat, sConcat, ConcatMap, sConcatMap,
   And, sAnd, Or, sOr, Any_, sAny_, All, sAll,
+  Sum, sSum, Product, sProduct, Maximum, sMaximum,
+  Minimum, sMinimum,
   any_, -- equivalent of Data.List `any`. Avoids name clash with Any type
 
   -- * Building lists
@@ -60,12 +62,18 @@ module Data.Singletons.Prelude.List (
   -- ** Accumulating maps
   MapAccumL, sMapAccumL, MapAccumR, sMapAccumR,
 
+  -- ** Cyclical lists
+  Replicate, sReplicate,
+
   -- ** Unfolding
   Unfoldr, sUnfoldr,
 
   -- * Sublists
 
   -- ** Extracting sublists
+  Take, sTake, Drop, sDrop, SplitAt, sSplitAt,
+  TakeWhile, sTakeWhile, DropWhile, sDropWhile, DropWhileEnd, sDropWhileEnd,
+  Span, sSpan, Break, sBreak, Group, sGroup,
   Inits, sInits, Tails, sTails,
 
   -- ** Predicates
@@ -74,7 +82,15 @@ module Data.Singletons.Prelude.List (
   -- * Searching lists
 
   -- ** Searching by equality
-  Elem, sElem, NotElem, sNotElem,
+  Elem, sElem, NotElem, sNotElem, Lookup, sLookup,
+
+  -- ** Searching with a predicate
+  Find, sFind, Filter, sFilter, Partition, sPartition,
+
+  -- * Indexing lists
+  (:!!), (%:!!),
+  ElemIndex, sElemIndex, ElemIndices, sElemIndices,
+  FindIndex, sFindIndex, FindIndices, sFindIndices,
 
   -- * Zipping and unzipping lists
   Zip, sZip, Zip3, sZip3, ZipWith, sZipWith, ZipWith3, sZipWith3,
@@ -84,18 +100,32 @@ module Data.Singletons.Prelude.List (
   -- * Special lists
 
   -- ** \"Set\" operations
-  Delete, sDelete, (:\\), (%:\\),
+  Nub, sNub, Delete, sDelete, (:\\), (%:\\),
+  Union, sUnion, Intersect, sIntersect,
 
   -- ** Ordered lists
-  -- Insert, sInsert, Sort, sSort,
+  Insert, sInsert, Sort, sSort,
 
   -- * Generalized functions
 
   -- ** The \"@By@\" operations
-  DeleteBy, sDeleteBy, DeleteFirstsBy, sDeleteFirstsBy,
 
+  -- *** User-supplied equality (replacing an @Eq@ context)
+  -- | The predicate is assumed to define an equivalence.
+  NubBy, sNubBy,
+  DeleteBy, sDeleteBy, DeleteFirstsBy, sDeleteFirstsBy,
+  UnionBy, sUnionBy, IntersectBy, sIntersectBy,
+  GroupBy, sGroupBy,
+
+  -- *** User-supplied comparison (replacing an @Ord@ context)
+  -- | The function is assumed to define a total ordering.
   SortBy, sSortBy, InsertBy, sInsertBy,
   MaximumBy, sMaximumBy, MinimumBy, sMinimumBy,
+
+  -- ** The \"@generic@\" operations
+  -- | The prefix \`@generic@\' indicates an overloaded function that
+  -- is a generalized version of a "Prelude" function.
+  GenericLength, sGenericLength,
 
   -- * Defunctionalization symbols
   NilSym0,
@@ -103,10 +133,12 @@ module Data.Singletons.Prelude.List (
 
   (:++$$$), (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
+  LengthSym0, LengthSym1,
 
   MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
   IntersperseSym0, IntersperseSym1, IntersperseSym2,
   IntercalateSym0, IntercalateSym1, IntercalateSym2,
+  TransposeSym0, TransposeSym1,
   SubsequencesSym0, SubsequencesSym1,
   PermutationsSym0, PermutationsSym1,
 
@@ -122,6 +154,10 @@ module Data.Singletons.Prelude.List (
   AndSym0, AndSym1, OrSym0, OrSym1,
   Any_Sym0, Any_Sym1, Any_Sym2,
   AllSym0, AllSym1, AllSym2,
+  SumSym0, SumSym1,
+  ProductSym0, ProductSym1,
+  MaximumSym0, MaximumSym1,
+  MinimumSym0, MinimumSym1,
 
   ScanlSym0, ScanlSym1, ScanlSym2, ScanlSym3,
   Scanl1Sym0, Scanl1Sym1, Scanl1Sym2,
@@ -131,8 +167,19 @@ module Data.Singletons.Prelude.List (
   MapAccumLSym0, MapAccumLSym1, MapAccumLSym2, MapAccumLSym3,
   MapAccumRSym0, MapAccumRSym1, MapAccumRSym2, MapAccumRSym3,
 
+  ReplicateSym0, ReplicateSym1, ReplicateSym2,
+
   UnfoldrSym0, UnfoldrSym1, UnfoldrSym2,
 
+  TakeSym0, TakeSym1, TakeSym2,
+  DropSym0, DropSym1, DropSym2,
+  SplitAtSym0, SplitAtSym1, SplitAtSym2,
+  TakeWhileSym0, TakeWhileSym1, TakeWhileSym2,
+  DropWhileSym0, DropWhileSym1, DropWhileSym2,
+  DropWhileEndSym0, DropWhileEndSym1, DropWhileEndSym2,
+  SpanSym0, SpanSym1, SpanSym2,
+  BreakSym0, BreakSym1, BreakSym2,
+  GroupSym0, GroupSym1,
   InitsSym0, InitsSym1, TailsSym0, TailsSym1,
 
   IsPrefixOfSym0, IsPrefixOfSym1, IsPrefixOfSym2,
@@ -141,6 +188,17 @@ module Data.Singletons.Prelude.List (
 
   ElemSym0, ElemSym1, ElemSym2,
   NotElemSym0, NotElemSym1, NotElemSym2,
+  LookupSym0, LookupSym1, LookupSym2,
+
+  FindSym0, FindSym1, FindSym2,
+  FilterSym0, FilterSym1, FilterSym2,
+  PartitionSym0, PartitionSym1, PartitionSym2,
+
+  (:!!$), (:!!$$), (:!!$$$),
+  ElemIndexSym0, ElemIndexSym1, ElemIndexSym2,
+  ElemIndicesSym0, ElemIndicesSym1, ElemIndicesSym2,
+  FindIndexSym0, FindIndexSym1, FindIndexSym2,
+  FindIndicesSym0, FindIndicesSym1, FindIndicesSym2,
 
   ZipSym0, ZipSym1, ZipSym2,
   Zip3Sym0, Zip3Sym1, Zip3Sym2, Zip3Sym3,
@@ -153,19 +211,28 @@ module Data.Singletons.Prelude.List (
   Unzip6Sym0, Unzip6Sym1,
   Unzip7Sym0, Unzip7Sym1,
 
+  NubSym0, NubSym1,
   DeleteSym0, DeleteSym1, DeleteSym2,
   (:\\$), (:\\$$), (:\\$$$),
+  UnionSym0, UnionSym1, UnionSym2,
+  IntersectSym0, IntersectSym1, IntersectSym2,
 
-  -- InsertSym0, InsertSym1, InsertSym2,
-  -- SortSym0, SortSym1,
+  InsertSym0, InsertSym1, InsertSym2,
+  SortSym0, SortSym1,
 
+  NubBySym0, NubBySym1, NubBySym2,
   DeleteBySym0, DeleteBySym1, DeleteBySym2, DeleteBySym3,
   DeleteFirstsBySym0, DeleteFirstsBySym1, DeleteFirstsBySym2, DeleteFirstsBySym3,
+  UnionBySym0, UnionBySym1, UnionBySym2, UnionBySym3,
+  IntersectBySym0, IntersectBySym1, IntersectBySym2, IntersectBySym3,
+  GroupBySym0, GroupBySym1, GroupBySym2,
 
   SortBySym0, SortBySym1, SortBySym2,
   InsertBySym0, InsertBySym1, InsertBySym2, InsertBySym3,
   MaximumBySym0, MaximumBySym1, MaximumBySym2,
   MinimumBySym0, MinimumBySym1, MinimumBySym2,
+
+  GenericLengthSym0, GenericLengthSym1
   ) where
 
 import Data.Singletons
@@ -175,6 +242,11 @@ import Data.Singletons.TypeLits
 import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Eq
+import Data.Singletons.Prelude.Maybe
+import Data.Singletons.Prelude.Tuple
+import Data.Singletons.Prelude.Num
+import Data.Singletons.Prelude.Ord
+import Data.Maybe
 
 $(singletons [d|
   any_                     :: (a -> Bool) -> [a] -> Bool
@@ -483,5 +555,244 @@ $(singletonsOnly [d|
                                          GT -> y
                                          EQ -> x
                                          LT -> x
+
+  filter :: (a -> Bool) -> [a] -> [a]
+  filter _p []    = []
+  filter p  (x:xs) = if p x then x : filter p xs else filter p xs
+
+  find                    :: (a -> Bool) -> [a] -> Maybe a
+  find p                  = listToMaybe . filter p
+
+-- These three rely on findIndices, which does not promote.
+-- Since we have our own implementation of findIndices these are perfectly valid
+  elemIndex       :: Eq a => a -> [a] -> Maybe Nat
+  elemIndex x     = findIndex (x==)
+
+  elemIndices     :: Eq a => a -> [a] -> [Nat]
+  elemIndices x   = findIndices (x==)
+
+  findIndex       :: (a -> Bool) -> [a] -> Maybe Nat
+  findIndex p     = listToMaybe . findIndices p
+
+-- Uses list comprehensions, infinite lists and and Ints
+--  findIndices      :: (a -> Bool) -> [a] -> [Int]
+--  findIndices p xs = [ i | (x,i) <- zip xs [0..], p x]
+
+  findIndices      :: (a -> Bool) -> [a] -> [Nat]
+  findIndices p xs = map snd (filter (\(x,_) -> p x)
+                                     (zip xs (buildList 0 xs)))
+    where buildList :: Nat -> [b] -> [Nat]
+          buildList _ []     = []
+          buildList a (_:rest) = a : buildList (a+1) rest
+
+  -- Relies on intersectBy, which does not singletonize
+  intersect               :: (Eq a) => [a] -> [a] -> [a]
+  intersect               =  intersectBy (==)
+
+-- Uses list comprehensions.
+--  intersectBy             :: (a -> a -> Bool) -> [a] -> [a] -> [a]
+--  intersectBy _  [] []    =  []
+--  intersectBy _  [] (_:_) =  []
+--  intersectBy _  (_:_) [] =  []
+--  intersectBy eq xs ys    =  [x | x <- xs, any_ (eq x) ys]
+
+  intersectBy             :: (a -> a -> Bool) -> [a] -> [a] -> [a]
+  intersectBy _  []       []       =  []
+  intersectBy _  []       (_:_)    =  []
+  intersectBy _  (_:_)    []       =  []
+  intersectBy eq xs@(_:_) ys@(_:_) =  filter (\x -> any_ (eq x) ys) xs
+
+  takeWhile               :: (a -> Bool) -> [a] -> [a]
+  takeWhile _ []          =  []
+  takeWhile p (x:xs)      = if p x then x : takeWhile p xs else []
+
+  dropWhile               :: (a -> Bool) -> [a] -> [a]
+  dropWhile _ []          =  []
+  dropWhile p xs@(x:xs')  = if p x then dropWhile p xs' else xs
+
+  dropWhileEnd            :: (a -> Bool) -> [a] -> [a]
+  dropWhileEnd p          = foldr (\x xs -> if p x && null xs then [] else x : xs) []
+
+  span                    :: (a -> Bool) -> [a] -> ([a],[a])
+  span _ xs@[]            =  (xs, xs)
+  span p xs@(x:xs')       = if p x then let (ys,zs) = span p xs' in (x:ys,zs)
+                                   else ([], xs)
+
+  break                   :: (a -> Bool) -> [a] -> ([a],[a])
+  break _ xs@[]           =  (xs, xs)
+  break p xs@(x:xs')      = if p x then ([],xs)
+                                   else let (ys,zs) = break p xs' in (x:ys,zs)
+
+-- Can't be promoted because of limitations of Int promotion
+-- Below is a re-implementation using Nat
+--  take                   :: Int -> [a] -> [a]
+--  take n _      | n <= 0 =  []
+--  take _ []              =  []
+--  take n (x:xs)          =  x : take (n-1) xs
+
+--  drop                   :: Int -> [a] -> [a]
+--  drop n xs     | n <= 0 =  xs
+--  drop _ []              =  []
+--  drop n (_:xs)          =  drop (n-1) xs
+
+--  splitAt                :: Int -> [a] -> ([a],[a])
+--  splitAt n xs           =  (take n xs, drop n xs)
+
+  take                   :: Nat -> [a] -> [a]
+  take _ []              =  []
+  take n (x:xs)          = if n == 0 then [] else x : take (n-1) xs
+
+  drop                   :: Nat -> [a] -> [a]
+  drop _ []              = []
+  drop n (x:xs)          = if n == 0 then x:xs else drop (n-1) xs
+
+  splitAt                :: Nat -> [a] -> ([a],[a])
+  splitAt n xs           =  (take n xs, drop n xs)
+
+  group                   :: Eq a => [a] -> [[a]]
+  group xs                =  groupBy (==) xs
+
+  maximum                 :: (Ord a) => [a] -> a
+  maximum []              =  error "Data.Singletons.List.maximum: empty list"
+  maximum xs@(_:_)        =  foldl1 max xs
+
+  minimum                 :: (Ord a) => [a] -> a
+  minimum []              =  error "Data.Singletons.List.minimum: empty list"
+  minimum xs@(_:_)        =  foldl1 min xs
+
+  insert :: Ord a => a -> [a] -> [a]
+  insert e ls = insertBy (compare) e ls
+
+  sort :: (Ord a) => [a] -> [a]
+  sort = sortBy compare
+
+  groupBy                 :: (a -> a -> Bool) -> [a] -> [[a]]
+  groupBy _  []           =  []
+  groupBy eq (x:xs)       =  (x:ys) : groupBy eq zs
+                             where (ys,zs) = span (eq x) xs
+
+  lookup                  :: (Eq a) => a -> [(a,b)] -> Maybe b
+  lookup _key []          =  Nothing
+  lookup  key ((x,y):xys) = if key == x then Just y else lookup key xys
+
+  partition               :: (a -> Bool) -> [a] -> ([a],[a])
+  partition p xs          = foldr (select p) ([],[]) xs
+
+  -- Lazy pattern removed from select
+  select :: (a -> Bool) -> a -> ([a], [a]) -> ([a], [a])
+  select p x (ts,fs) = if p x then (x:ts,fs) else (ts, x:fs)
+
+-- Can't be promoted because of limitations of Int promotion
+-- Below is a re-implementation using Nat
+--  sum                     :: (Num a) => [a] -> a
+--  sum     l       = sum' l 0
+--    where
+--      sum' []     a = a
+--      sum' (x:xs) a = sum' xs (a+x)
+--
+--  product                 :: (Num a) => [a] -> a
+--  product l       = prod l 1
+--    where
+--      prod []     a = a
+--      prod (x:xs) a = prod xs (a*x)
+
+  sum                     :: forall a. Num a => [a] -> a
+  sum     l       = sum' l 0
+    where
+      sum' :: [a] -> a -> a
+      sum' []     a = a
+      sum' (x:xs) a = sum' xs (a+x)
+
+  product                 :: forall a. Num a => [a] -> a
+  product l       = prod l 1
+    where
+      prod :: [a] -> a -> a
+      prod []     a = a
+      prod (x:xs) a = prod xs (a*x)
+
+
+-- Can't be promoted because of limitations of Int promotion
+-- Below is a re-implementation using Nat
+--  length                  :: [a] -> Int
+--  length l                =  lenAcc l 0#
+--
+--  lenAcc :: [a] -> Int# -> Int
+--  lenAcc []     a# = I# a#
+--  lenAcc (_:xs) a# = lenAcc xs (a# +# 1#)
+--
+--  incLen :: a -> (Int# -> Int) -> Int# -> Int
+--  incLen _ g x = g (x +# 1#)
+
+  length :: [a] -> Nat
+  length []     = 0
+  length (_:xs) = 1 + length xs
+
+-- Functions working on infinite lists don't promote because they create
+-- infinite types. replicate also uses integers, but luckily it can be rewritten
+--  iterate :: (a -> a) -> a -> [a]
+--  iterate f x =  x : iterate f (f x)
+--
+--  repeat :: a -> [a]
+--  repeat x = xs where xs = x : xs
+--
+--  replicate               :: Int -> a -> [a]
+--  replicate n x           =  take n (repeat x)
+--
+--  cycle                   :: [a] -> [a]
+--  cycle []                = error "Data.Singletons.List.cycle: empty list"
+--  cycle xs                = xs' where xs' = xs ++ xs'
+
+  replicate               :: Nat -> a -> [a]
+  replicate n x           = if n == 0 then [] else x : replicate (n-1) x
+
+-- Uses list comprehensions
+--  transpose               :: [[a]] -> [[a]]
+--  transpose []             = []
+--  transpose ([]   : xss)   = transpose xss
+--  transpose ((x:xs) : xss) = (x : [h | (h:_) <- xss]) : transpose (xs : [ t | (_:t) <- xss])
+
+  transpose               :: [[a]] -> [[a]]
+  transpose []             = []
+  transpose ([]   : xss)   = transpose xss
+  transpose ((x:xs) : xss) = (x : (map head xss)) : transpose (xs : (map tail xss))
+
+-- Can't be promoted because of limitations of Int promotion.
+-- Below is a re-implementation using Nat
+--  (!!)                    :: [a] -> Int -> a
+--  xs     !! n | n < 0 =  error "Data.Singletons.List.!!: negative index"
+--  []     !! _         =  error "Data.Singletons.List.!!: index too large"
+--  (x:_)  !! 0         =  x
+--  (_:xs) !! n         =  xs !! (n-1)
+
+  (!!)                    :: [a] -> Nat -> a
+  []     !! _         =  error "Data.Singletons.List.!!: index too large"
+  (x:xs) !! n         =  if n == 0 then x else xs !! (n-1)
+
+  nub                     :: forall a. (Eq a) => [a] -> [a]
+  nub l                   = nub' l []
+    where
+      nub' :: [a] -> [a] -> [a]
+      nub' [] _           = []
+      nub' (x:xs) ls      = if x `elem` ls then nub' xs ls else x : nub' xs (x:ls)
+
+  nubBy                   :: (a -> a -> Bool) -> [a] -> [a]
+  nubBy eq l              = nubBy' l []
+    where
+      nubBy' [] _         = []
+      nubBy' (y:ys) xs    = if elem_by eq y xs then nubBy' ys xs else y : nubBy' ys (y:xs)
+
+  elem_by :: (a -> a -> Bool) -> a -> [a] -> Bool
+  elem_by _  _ []         =  False
+  elem_by eq y (x:xs)     =  y `eq` x || elem_by eq y xs
+
+  unionBy                 :: (a -> a -> Bool) -> [a] -> [a] -> [a]
+  unionBy eq xs ys        =  xs ++ foldl (flip (deleteBy eq)) (nubBy eq ys) xs
+
+  union                   :: (Eq a) => [a] -> [a] -> [a]
+  union                   = unionBy (==)
+
+  genericLength :: (Num i) => [a] -> i
+  genericLength []     = 0
+  genericLength (_:xs) = 1 + genericLength xs
 
   |])
