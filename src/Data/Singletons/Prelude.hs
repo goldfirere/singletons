@@ -70,7 +70,7 @@ module Data.Singletons.Prelude (
   -- *** Scans
   Scanl, sScanl, Scanl1, sScanl1, Scanr, sScanr, Scanr1, sScanr1,
   -- ** Searching lists
-  Elem, sElem, NotElem, sNotElem,
+  Elem, sElem, NotElem, sNotElem, Lookup, sLookup,
   -- ** Zipping and unzipping lists
   Zip, sZip, Zip3, sZip3, ZipWith, sZipWith, ZipWith3, sZipWith3,
   Unzip, sUnzip, Unzip3, sUnzip3,
