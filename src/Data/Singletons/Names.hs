@@ -190,7 +190,7 @@ trueTySym :: DType
 trueTySym = promoteValRhs trueName
 
 boolKi :: DKind
-boolKi = DConK boolName []
+boolKi = DConT boolName
 
 andTySym :: DType
 andTySym = promoteValRhs andName
@@ -223,7 +223,7 @@ singValName n
   | otherwise                = (prefixLCName "s" "%") $ upcase n
 
 kindParam :: DKind -> DType
-kindParam k = DSigT (DConT kProxyDataName) (DConK kProxyTypeName [k])
+kindParam k = DSigT (DConT kProxyDataName) (DConT kProxyTypeName `DAppT` k)
 
 proxyFor :: DType -> DExp
 proxyFor ty = DSigE (DConE proxyDataName) (DAppT (DConT proxyTypeName) ty)
@@ -259,6 +259,6 @@ mkKProxies :: Quasi q
            -> q ([DTyVarBndr], DCxt)
 mkKProxies ns = do
   kproxies <- mapM (const $ qNewName "kproxy") ns
-  return ( zipWith (\kp kv -> DKindedTV kp (DConK kProxyTypeName [DVarK kv]))
+  return ( zipWith (\kp kv -> DKindedTV kp (DConT kProxyTypeName `DAppT` DVarT kv))
                    kproxies ns
          , map (\kp -> mkEqPred (DVarT kp) (DConT kProxyDataName)) kproxies )

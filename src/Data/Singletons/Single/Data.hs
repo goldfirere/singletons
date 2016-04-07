@@ -6,7 +6,7 @@ eir@cis.upenn.edu
 Singletonizes constructors.
 -}
 
-{-# LANGUAGE ParallelListComp, TupleSections #-}
+{-# LANGUAGE ParallelListComp, TupleSections, LambdaCase #-}
 
 module Data.Singletons.Single.Data where
 
@@ -20,6 +20,7 @@ import Data.Singletons.Util
 import Data.Singletons.Names
 import Data.Singletons.Syntax
 import Control.Monad
+import Data.Maybe
 
 -- We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
@@ -35,18 +36,18 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
   fromSingClauses <- mapM mkFromSingClause ctors
   toSingClauses   <- mapM mkToSingClause ctors
   let singKindInst =
-        DInstanceD (map (singKindConstraint . DVarK) tvbNames)
+        DInstanceD (map (singKindConstraint . DVarT) tvbNames)
                    (DAppT (DConT singKindClassName)
                           (kindParam k))
                    [ DTySynInstD demoteRepName $ DTySynEqn
                       [kindParam k]
                       (foldType (DConT name)
-                        (map (DAppT demote . kindParam . DVarK) tvbNames))
+                        (map (DAppT demote . kindParam . DVarT) tvbNames))
                    , DLetDec $ DFunD fromSingName (fromSingClauses `orIfEmpty` emptyMethod aName)
                    , DLetDec $ DFunD toSingName   (toSingClauses   `orIfEmpty` emptyMethod aName) ]
 
   -- SEq instance
-  sEqInsts <- if elem eqName derivings
+  sEqInsts <- if any (\case DConPr n -> n == eqName; _ -> False) derivings
               then mapM (mkEqualityInstance k ctors') [sEqClassDesc, sDecideClassDesc]
               else return []
 
@@ -54,7 +55,7 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
   let kindedSynInst =
         DTySynD (singTyConName name)
                 []
-                (singFamily `DSigT` (k `DArrowK` DStarK))
+                (singFamily `DSigT` (DArrowT `DAppT` k `DAppT` DStarT))
 
   return $ (DDataInstD Data [] singFamilyName [DSigT a k] ctors' []) :
            kindedSynInst :
@@ -78,7 +79,7 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
                               (map (DAppE (DVarE fromSingName) . DVarE) varNames))
 
         mkToSingClause :: DCon -> SgM DClause
-        mkToSingClause (DCon _tvbs _cxt cname fields) = do
+        mkToSingClause (DCon _tvbs _cxt cname fields _rty) = do
           let types = tysOfConFields fields
           varNames  <- mapM (const $ qNewName "b") types
           svarNames <- mapM (const $ qNewName "c") types
@@ -108,9 +109,11 @@ singCtor :: DType -> DCon -> SgM DCon
  -- polymorphic constructors are handled just
  -- like monomorphic ones -- the polymorphism in
  -- the kind is automatic
-singCtor a (DCon _tvbs cxt name fields)
+singCtor a (DCon _tvbs cxt name fields rty)
   | not (null cxt)
   = fail "Singling of constrained constructors not yet supported"
+  | not (isNothing rty)
+  = fail "Singling of GADTs not yet supported (but it could be -- care to help?)"
   | otherwise
   = do
   let types = tysOfConFields fields
@@ -132,16 +135,18 @@ singCtor a (DCon _tvbs cxt name fields)
                 [DLetDec $ DValD (DVarPa singMethName)
                        (foldExp sCon (map (const $ DVarE singMethName) types))]]
 
-  let conFields = case fields of
-                    DNormalC _ -> DNormalC $ map (NotStrict,) args
+  let noBang    = Bang NoSourceUnpackedness NoSourceStrictness
+      conFields = case fields of
+                    DNormalC _ -> DNormalC $ map (noBang,) args
                     DRecC rec_fields ->
-                      DRecC [ (singValName field_name, NotStrict, arg)
+                      DRecC [ (singValName field_name, noBang, arg)
                             | (field_name, _, _) <- rec_fields
                             | arg <- args ]
   return $ DCon tvbs
                 [mkEqPred a (foldType pCon indices)]
                 sName
                 conFields
+                Nothing
   where buildArgType :: DType -> DType -> SgM DType
         buildArgType ty index = do
           (ty', _, _, _) <- singType index ty

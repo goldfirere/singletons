@@ -31,6 +31,10 @@ import Control.Monad.Reader
 import Control.Monad.Writer
 import Control.Applicative
 
+#if __GLASGOW_HASKELL__ >= 711
+import Control.Monad.Fail
+#endif
+
 -- environment during singling
 data SgEnv =
   SgEnv { sg_let_binds   :: Map Name DExp   -- from the *original* name
@@ -45,7 +49,11 @@ emptySgEnv = SgEnv { sg_let_binds   = Map.empty
 -- the singling monad
 newtype SgM a = SgM (ReaderT SgEnv (WriterT [DDec] Q) a)
   deriving ( Functor, Applicative, Monad
-           , MonadReader SgEnv, MonadWriter [DDec] )
+           , MonadReader SgEnv, MonadWriter [DDec]
+#if __GLASGOW_HASKELL__ >= 711
+           , MonadFail
+#endif
+           )
 
 liftSgM :: Q a -> SgM a
 liftSgM = SgM . lift . lift
@@ -66,6 +74,13 @@ instance Quasi SgM where
   qAddModFinalizer  = liftSgM `comp1` qAddModFinalizer
   qGetQ             = liftSgM qGetQ
   qPutQ             = liftSgM `comp1` qPutQ
+
+#if __GLASGOW_HASKELL__ >= 711
+  qReifyFixity        = liftSgM `comp1` qReifyFixity
+  qReifyConStrictness = liftSgM `comp1` qReifyConStrictness
+  qIsExtEnabled       = liftSgM `comp1` qIsExtEnabled
+  qExtsEnabled        = liftSgM qExtsEnabled
+#endif
 
   qRecover (SgM handler) (SgM body) = do
     env <- ask
@@ -175,7 +190,7 @@ lookup_var_con mk_sing_name mk_exp name = do
       m_dinfo <- liftM2 (<|>) (dsReify sName) (dsReify name)
         -- try the unrefined name too -- it's needed to bootstrap Enum
       case m_dinfo of
-        Just (DVarI _ ty _ _) ->
+        Just (DVarI _ ty _) ->
           let num_args = countArgs ty in
           return $ wrapSingFun num_args (promoteValRhs name) (mk_exp name)
         _ -> return $ mk_exp name   -- lambda-bound

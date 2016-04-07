@@ -99,7 +99,7 @@ promoteEnumInstance = promoteInstance mkEnumInstance "Enum"
 promoteEqInstance :: DsMonad q => Name -> q [Dec]
 promoteEqInstance name = do
   (_tvbs, cons) <- getDataD "I cannot make an instance of (:==) for it." name
-  cons' <- mapM dsCon cons
+  cons' <- concatMapM dsCon cons
   vars <- replicateM (length _tvbs) (qNewName "k")
   kind <- promoteType (foldType (DConT name) (map DVarT vars))
   inst_decs <- mkEqTypeInstance kind cons'
@@ -110,7 +110,7 @@ promoteInstance :: DsMonad q => (DType -> [DCon] -> q UInstDecl)
 promoteInstance mk_inst class_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
                             ++ " for it.") name
-  cons' <- mapM dsCon cons
+  cons' <- concatMapM dsCon cons
   tvbs' <- mapM dsTvb tvbs
   raw_inst <- mk_inst (foldType (DConT name) (map tvbToType tvbs')) cons'
   decs <- promoteM_ [] $ void $ promoteInstanceDec Map.empty raw_inst
@@ -120,7 +120,7 @@ promoteInfo :: DInfo -> PrM ()
 promoteInfo (DTyConI dec _instances) = promoteDecs [dec]
 promoteInfo (DPrimTyConI _name _numArgs _unlifted) =
   fail "Promotion of primitive type constructors not supported"
-promoteInfo (DVarI _name _ty _mdec _fixity) =
+promoteInfo (DVarI _name _ty _mdec) =
   fail "Promotion of individual values not supported"
 promoteInfo (DTyVarI _name _ty) =
   fail "Promotion of individual type variables not supported"
@@ -224,7 +224,8 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   -- deriving Eq instance
   kvs <- replicateM (length tvbs) (qNewName "k")
   kind <- promoteType (foldType (DConT name) (map DVarT kvs))
-  when (elem eqName derivings) $ do
+  when (any (\case DConPr n -> n == eqName
+                   _        -> False) derivings) $ do
     eq_decs <- mkEqTypeInstance kind ctors
     emitDecs eq_decs
 
@@ -270,9 +271,10 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
       args <- mapM (const $ qNewName "arg") argKs
       emitDecsM $ defunctionalize proName (map Just argKs) (Just resK)
 
-      return $ DFamilyD TypeFam proName
-                        (zipWith DKindedTV args argKs)
-                        (Just resK)
+      return $ DOpenTypeFamilyD (DTypeFamilyHead proName
+                                                 (zipWith DKindedTV args argKs)
+                                                 (DKindSig resK)
+                                                 Nothing)
 
     promote_superclass_pred :: DPred -> PrM DPred
     promote_superclass_pred = go
@@ -282,6 +284,7 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
       go (DVarPr name)  = fail $ "Cannot promote ConstraintKinds variables like "
                               ++ show name
       go (DConPr name)  = return $ DConPr (promoteClassName name)
+      go DWildCardPr    = return DWildCardPr
 
 -- returns (unpromoted method name, ALetDecRHS) pairs
 promoteInstanceDec :: Map Name DType -> UInstDecl -> PrM AInstDecl
@@ -311,7 +314,7 @@ promoteInstanceDec meth_sigs
             _ -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
 
     extract_kv_name :: DTyVarBndr -> Name
-    extract_kv_name (DKindedTV _ (DConK _kproxy [DVarK kv_name])) = kv_name
+    extract_kv_name (DKindedTV _ (DConT _kproxy `DAppT` DVarT kv_name)) = kv_name
     extract_kv_name tvb = error $ "Internal error: extract_kv_name\n" ++ show tvb
 
 -- promoteMethod needs to substitute in a method's kind because GHC does not do
@@ -337,9 +340,12 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
                          first:_ | not (isHsLetter first) -> "TFHelper"
                          alpha                            -> alpha
   helperName <- newUniqueName helperNameBase
-  emitDecs [DClosedTypeFamilyD helperName
-                               (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
-                               (Just meth_res_ki') eqns]
+  emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
+                                  helperName
+                                  (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
+                                  (DKindSig meth_res_ki')
+                                  Nothing)
+                               eqns]
   emitDecsM (defunctionalize helperName (map Just meth_arg_kis') (Just meth_res_ki'))
   return ( DTySynInstD
              proName
@@ -355,13 +361,13 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
       Nothing -> do
         mb_info <- dsReify proName
         case mb_info of
-          Just (DTyConI (DFamilyD _ _ tvbs mb_res_ki) _)
+          Just (DTyConI (DOpenTypeFamilyD (DTypeFamilyHead _ tvbs mb_res_ki _)) _)
             -> return ( map (default_to_star . extractTvbKind) tvbs
-                      , default_to_star mb_res_ki )
+                      , default_to_star (resultSigToMaybeKind mb_res_ki) )
           _ -> fail $ "Cannot find type annotation for " ++ show proName
       Just ty -> promoteUnraveled ty
 
-    default_to_star Nothing  = DStarK
+    default_to_star Nothing  = DStarT
     default_to_star (Just k) = k
 
 promoteLetDecEnv :: (String, String) -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
@@ -386,7 +392,11 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
 
   return (decs, let_dec_env')
   where
-    payload_to_dec (name, tvbs, m_ki, eqns) = DClosedTypeFamilyD name tvbs m_ki eqns
+    payload_to_dec (name, tvbs, m_ki, eqns) = DClosedTypeFamilyD
+                                                (DTypeFamilyHead name tvbs sig Nothing)
+                                                eqns
+      where
+        sig = maybe DNoSig DKindSig m_ki
 
 promoteInfixDecl :: Fixity -> Name -> Maybe DDec
 promoteInfixDecl fixity name
@@ -536,9 +546,11 @@ promoteExp (DLamE names exp) = do
   all_locals <- allLocals
   let all_args = all_locals ++ tyFamLamTypes
       tvbs     = map DPlainTV all_args
-  emitDecs [DClosedTypeFamilyD lambdaName
-                               tvbs
-                               Nothing
+  emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
+                                 lambdaName
+                                 tvbs
+                                 DNoSig
+                                 Nothing)
                                [DTySynEqn (map DVarT (all_locals ++ tyNames))
                                           rhs]]
   emitDecsM $ defunctionalize lambdaName (map (const Nothing) all_args) Nothing
@@ -554,7 +566,7 @@ promoteExp (DCaseE exp matches) = do
   tyvarName  <- qNewName "t"
   let all_args = all_locals ++ [tyvarName]
       tvbs     = map DPlainTV all_args
-  emitDecs [DClosedTypeFamilyD caseTFName tvbs Nothing eqns]
+  emitDecs [DClosedTypeFamilyD (DTypeFamilyHead caseTFName tvbs DNoSig Nothing) eqns]
     -- See Note [Annotate case return type] in Single
   let applied_case = prom_case `DAppT` exp'
   return ( applied_case

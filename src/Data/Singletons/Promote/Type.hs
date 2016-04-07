@@ -30,19 +30,19 @@ promoteType = go []
       k2 <- go [] t2
       go (k2 : args) t1
     go args     (DSigT ty _) = go args ty  -- just ignore signatures
-    go []       (DVarT name) = return $ DVarK name
+    go []       (DVarT name) = return $ DVarT name
     go _        (DVarT name) = fail $ "Cannot promote an applied type variable " ++
                                       show name ++ "."
     go []       (DConT name)
-      | name == typeRepName               = return DStarK
-      | name == stringName                = return $ DConK symbolName []
-      | nameBase name == nameBase repName = return DStarK
+      | name == typeRepName               = return DStarT
+      | name == stringName                = return $ DConT symbolName
+      | nameBase name == nameBase repName = return DStarT
     go args     (DConT name)
       | Just n <- unboxedTupleNameDegree_maybe name
-      = return $ DConK (tupleTypeName n) args
+      = return $ foldType (DConT (tupleTypeName n)) args
       | otherwise
-      = return $ DConK name args
-    go [k1, k2] DArrowT = return $ addStar (DConK tyFunName [k1, k2])
+      = return $ foldType (DConT name) args
+    go [k1, k2] DArrowT = return $ addStar (DConT tyFunName `DAppT` k1 `DAppT` k2)
     go _ (DLitT _) = fail "Cannot promote a type-level literal"
 
     go args     hd = fail $ "Illegal Haskell construct encountered:\n" ++

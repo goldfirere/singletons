@@ -24,10 +24,11 @@ mkEqTypeInstance kind cons = do
   bName <- qNewName "b"
   true_branches <- mapM mk_branch cons
   false_branch  <- false_case
-  let closedFam = DClosedTypeFamilyD helperName
-                                     [ DKindedTV aName kind
-                                     , DKindedTV bName kind ]
-                                     (Just boolKi)
+  let closedFam = DClosedTypeFamilyD (DTypeFamilyHead helperName
+                                                      [ DKindedTV aName kind
+                                                      , DKindedTV bName kind ]
+                                                      (DKindSig boolKi)
+                                                      Nothing)
                                      (true_branches ++ [false_branch])
       eqInst = DTySynInstD tyEqName (DTySynEqn [ DSigT (DVarT aName) kind
                                                , DSigT (DVarT bName) kind ]

@@ -21,4 +21,4 @@ import Data.Generics.Twins
 inferConstraints :: DPred -> [DCon] -> DCxt
 inferConstraints pr = nubBy geq . concatMap infer_ct
   where
-    infer_ct (DCon _ _ _ fields) = map (pr `DAppPr`) (tysOfConFields fields)
+    infer_ct (DCon _ _ _ fields _) = map (pr `DAppPr`) (tysOfConFields fields)

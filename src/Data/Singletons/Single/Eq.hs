@@ -35,10 +35,11 @@ mkEqualityInstance k ctors (mkMeth, className, methName) = do
                             (kindParam k))
                      [DLetDec $ DFunD methName methClauses]
   where getKindVars :: DKind -> [DKind]
-        getKindVars (DVarK x)         = [DVarK x]
-        getKindVars (DConK _ args)    = concatMap getKindVars args
-        getKindVars DStarK            = []
-        getKindVars (DArrowK arg res) = concatMap getKindVars [arg, res]
+        getKindVars (DVarT x)         = [DVarT x]
+        getKindVars (DAppT f a)       = concatMap getKindVars [f, a]
+        getKindVars (DConT {})        = []
+        getKindVars DStarT            = []
+        getKindVars DArrowT           = []
         getKindVars other             =
           error ("getKindVars sees an unusual kind: " ++ show other)
 

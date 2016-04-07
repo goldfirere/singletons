@@ -1,6 +1,16 @@
 Changelog for singletons project
 ================================
 
+2.1
+---
+* Require `th-desugar` >= 1.6
+
+* Work with GHC 8. GHC 8 gives the opportunity to simplify some pieces of
+singletons, but these opportunities are not yet fully realized. For example,
+injective type families means that we no longer need `Sing` to be a data
+family; it could be a type family. This might drastically simplify the way
+functions are singletonized. But not yet!
+
 2.0.1
 -----
  * Lots more functions in `Data.Singletons.Prelude.List`:

@@ -132,9 +132,9 @@ singEqualityInstance desc@(_, className, _) name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
                             show className ++ " for it.") name
   dtvbs <- mapM dsTvb tvbs
-  dcons <- mapM dsCon cons
-  let tyvars = map (DVarK . extractTvbName) dtvbs
-      kind = DConK name tyvars
+  dcons <- concatMapM dsCon cons
+  let tyvars = map (DVarT . extractTvbName) dtvbs
+      kind = foldType (DConT name) tyvars
   aName <- qNewName "a"
   let aVar = DVarT aName
   (scons, _) <- singM [] $ mapM (singCtor aVar) dcons
@@ -172,7 +172,7 @@ singInstance mk_inst inst_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
                             ++ " for it.") name
   dtvbs <- mapM dsTvb tvbs
-  dcons <- mapM dsCon cons
+  dcons <- concatMapM dsCon cons
   raw_inst <- mk_inst (foldType (DConT name) (map tvbToType dtvbs)) dcons
   (a_inst, decs) <- promoteM [] $
                     promoteInstanceDec Map.empty raw_inst
@@ -184,7 +184,7 @@ singInfo (DTyConI dec _) =
   singTopLevelDecs [] [dec]
 singInfo (DPrimTyConI _name _numArgs _unlifted) =
   fail "Singling of primitive type constructors not supported"
-singInfo (DVarI _name _ty _mdec _fixity) =
+singInfo (DVarI _name _ty _mdec) =
   fail "Singling of value info not supported"
 singInfo (DTyVarI _name _ty) =
   fail "Singling of type variable info not supported"
@@ -222,7 +222,7 @@ buildDataLets (DataDecl _nd _name _tvbs cons _derivings) =
   concatMap con_num_args cons
   where
     con_num_args :: DCon -> [(Name, DExp)]
-    con_num_args (DCon _tvbs _cxt name fields) =
+    con_num_args (DCon _tvbs _cxt name fields _rty) =
       (name, wrapSingFun (length (tysOfConFields fields))
                          (promoteValRhs name) (DConE $ singDataConName name))
       : rec_selectors fields
@@ -307,9 +307,9 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
     sing_meth name rhs = do
       mb_s_info <- dsReify (singValName name)
       (s_ty, tyvar_names, m_res_ki) <- case mb_s_info of
-        Just (DVarI _ (DForallT cls_kproxy_tvbs _cls_pred s_ty) _ _) -> do
+        Just (DVarI _ (DForallT cls_kproxy_tvbs _cls_pred s_ty) _) -> do
           let class_kvs = map extract_kv cls_kproxy_tvbs
-              extract_kv (DKindedTV _kproxyVar (DConK _kproxyTy [DVarK kv])) = kv
+              extract_kv (DKindedTV _kproxyVar (DConT _kproxyTy `DAppT` DVarT kv)) = kv
               extract_kv _ = error "sing_meth cannot extract a kind variable"
 
               (sing_tvbs, _pred, _args, res_ty) = unravel s_ty
@@ -320,11 +320,11 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
                 _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substKind subst res_ki)
                 _                                         -> Nothing
 
-          return (substKindInType subst s_ty, map extractTvbName sing_tvbs, m_res_ki)
+          return (substType subst s_ty, map extractTvbName sing_tvbs, m_res_ki)
         _ -> do
           mb_info <- dsReify name
           case mb_info of
-            Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _ _) -> do
+            Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _) -> do
               let subst = Map.fromList (zip (map extractTvbName cls_tvbs)
                                             inst_tys)
               (s_ty, _num_args, tyvar_names, res_ki) <- singType (promoteValRhs name)

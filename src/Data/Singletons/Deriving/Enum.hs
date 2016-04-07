@@ -20,19 +20,21 @@ import Data.Singletons.Syntax
 import Data.Singletons.Util
 import Data.Singletons.Names
 import Control.Monad
+import Data.Maybe
 
 -- monadic for failure only
 mkEnumInstance :: Quasi q => DType -> [DCon] -> q UInstDecl
 mkEnumInstance ty cons = do
   when (null cons ||
-        any (\(DCon tvbs cxt _ f) -> or [ not $ null $ tysOfConFields f
-                                        , not $ null tvbs
-                                        , not $ null cxt ]) cons) $
+        any (\(DCon tvbs cxt _ f rty) -> or [ not $ null $ tysOfConFields f
+                                            , not $ null tvbs
+                                            , not $ null cxt
+                                            , isJust rty ]) cons) $
     fail ("Can't derive Enum instance for " ++ pprint (typeToTH ty) ++ ".")
   n <- qNewName "n"
   let to_enum = UFunction [DClause [DVarPa n] (to_enum_rhs cons [0..])]
       to_enum_rhs [] _ = DVarE errorName `DAppE` DLitE (StringL "toEnum: bad argument")
-      to_enum_rhs (DCon _ _ name _ : rest) (num:nums) =
+      to_enum_rhs (DCon _ _ name _ _ : rest) (num:nums) =
         DCaseE (DVarE equalsName `DAppE` DVarE n `DAppE` DLitE (IntegerL num))
           [ DMatch (DConPa trueName []) (DConE name)
           , DMatch (DConPa falseName []) (to_enum_rhs rest nums) ]

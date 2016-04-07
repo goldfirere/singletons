@@ -39,7 +39,7 @@ mkOrdInstance ty cons = do
                                               compare_noneq_clauses) )] })
 
 mk_equal_clause :: Quasi q => DCon -> q DClause
-mk_equal_clause (DCon _tvbs _cxt name fields) = do
+mk_equal_clause (DCon _tvbs _cxt name fields _rty) = do
   let tys = tysOfConFields fields
   a_names <- mapM (const $ newUniqueName "a") tys
   b_names <- mapM (const $ newUniqueName "b") tys
@@ -54,8 +54,8 @@ mk_equal_clause (DCon _tvbs _cxt name fields) = do
                                           a_names b_names))
 
 mk_nonequal_clause :: (DCon, Int) -> (DCon, Int) -> DClause
-mk_nonequal_clause (DCon _tvbs1 _cxt1 name1 fields1, n1)
-                   (DCon _tvbs2 _cxt2 name2 fields2, n2) =
+mk_nonequal_clause (DCon _tvbs1 _cxt1 name1 fields1 _rty1, n1)
+                   (DCon _tvbs2 _cxt2 name2 fields2 _rty2, n2) =
   DClause [pat1, pat2] (case n1 `compare` n2 of
                           LT -> DConE cmpLTName
                           EQ -> DConE cmpEQName

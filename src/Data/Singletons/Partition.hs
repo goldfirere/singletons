@@ -54,16 +54,16 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
                   , pd_instance_decs = derived_instances }
   where
     ty = foldType (DConT name) (map tvbToType tvbs)
-    part_derivings :: Quasi m => Name -> m (Either Name UInstDecl)
-    part_derivings deriv_name
-      | deriv_name == ordName
-      = Right <$> mkOrdInstance ty cons
-      | deriv_name == boundedName
-      = Right <$> mkBoundedInstance ty cons
-      | deriv_name == enumName
-      = Right <$> mkEnumInstance ty cons
-      | otherwise
-      = return (Left deriv_name)
+    part_derivings :: Quasi m => DPred -> m (Either DPred UInstDecl)
+    part_derivings deriv = case deriv of
+      DConPr deriv_name
+         | deriv_name == ordName
+        -> Right <$> mkOrdInstance ty cons
+         | deriv_name == boundedName
+        -> Right <$> mkBoundedInstance ty cons
+         | deriv_name == enumName
+        -> Right <$> mkEnumInstance ty cons
+      _ -> return (Left deriv)
 
 partitionDec (DClassD cxt name tvbs fds decs) = do
   env <- concatMapM partitionClassDec decs

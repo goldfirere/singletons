@@ -27,6 +27,10 @@ import Data.Map ( Map )
 import Data.Foldable
 import Data.Traversable
 
+#if __GLASGOW_HASKELL__ >= 711
+import Control.Monad.Fail ( MonadFail )
+#endif
+
 -- The list of types that singletons processes by default
 basicTypes :: [Name]
 basicTypes = [ ''Maybe
@@ -84,10 +88,10 @@ extractNameArgs = liftSnd length . extractNameTypes
 
 -- extract the name and types of constructor arguments
 extractNameTypes :: DCon -> (Name, [DType])
-extractNameTypes (DCon _ _ n fields) = (n, tysOfConFields fields)
+extractNameTypes (DCon _ _ n fields _) = (n, tysOfConFields fields)
 
 extractName :: DCon -> Name
-extractName (DCon _ _ n _) = n
+extractName (DCon _ _ n _ _) = n
 
 -- is an identifier uppercase?
 isUpcase :: Name -> Bool
@@ -199,6 +203,12 @@ inferMaybeKindTV :: Name -> Maybe DKind -> DTyVarBndr
 inferMaybeKindTV n Nothing =  DPlainTV n
 inferMaybeKindTV n (Just k) = DKindedTV n k
 
+resultSigToMaybeKind :: DFamilyResultSig -> Maybe DKind
+resultSigToMaybeKind DNoSig                      = Nothing
+resultSigToMaybeKind (DKindSig k)                = Just k
+resultSigToMaybeKind (DTyVarSig (DPlainTV _))    = Nothing
+resultSigToMaybeKind (DTyVarSig (DKindedTV _ k)) = Just k
+
 -- Get argument types from an arrow type. Removing ForallT is an
 -- important preprocessing step required by promoteType.
 unravel :: DType -> ([DTyVarBndr], [DPred], [DType], DType)
@@ -221,15 +231,7 @@ countArgs ty = length args
   where (_, _, args, _) = unravel ty
 
 substKind :: Map Name DKind -> DKind -> DKind
-substKind _ (DForallK {}) =
-  error "Higher-rank kind encountered in instance method promotion."
-substKind subst (DVarK n) =
-  case Map.lookup n subst of
-    Just ki -> ki
-    Nothing -> DVarK n
-substKind subst (DConK con kis) = DConK con (map (substKind subst) kis)
-substKind subst (DArrowK k1 k2) = DArrowK (substKind subst k1) (substKind subst k2)
-substKind _ DStarK = DStarK
+substKind = substType
 
 substType :: Map Name DType -> DType -> DType
 substType subst ty | Map.null subst = ty
@@ -248,6 +250,8 @@ substType subst (DVarT n) =
 substType _ ty@(DConT {}) = ty
 substType _ ty@(DArrowT)  = ty
 substType _ ty@(DLitT {}) = ty
+substType _ ty@DWildCardT = ty
+substType _ ty@DStarT     = ty
 
 substPred :: Map Name DType -> DPred -> DPred
 substPred subst pred | Map.null subst = pred
@@ -256,41 +260,27 @@ substPred subst (DAppPr pred ty) =
 substPred subst (DSigPr pred ki) = DSigPr (substPred subst pred) ki
 substPred _ pred@(DVarPr {}) = pred
 substPred _ pred@(DConPr {}) = pred
-
-substKindInType :: Map Name DKind -> DType -> DType
-substKindInType subst ty | Map.null subst = ty
-substKindInType subst (DForallT tvbs cxt inner_ty) =
-  let tvbs'     = map (substKindInTvb subst) tvbs
-      cxt'      = map (substKindInPred subst) cxt
-      inner_ty' = substKindInType subst inner_ty
-  in
-  DForallT tvbs' cxt' inner_ty'
-substKindInType subst (DAppT ty1 ty2)
-  = substKindInType subst ty1 `DAppT` substKindInType subst ty2
-substKindInType subst (DSigT ty ki) = substKindInType subst ty `DSigT` substKind subst ki
-substKindInType _ ty@(DVarT {}) = ty
-substKindInType _ ty@(DConT {}) = ty
-substKindInType _ ty@(DArrowT)  = ty
-substKindInType _ ty@(DLitT {}) = ty
+substPred _ pred@DWildCardPr = pred
 
 substKindInPred :: Map Name DKind -> DPred -> DPred
 substKindInPred subst pred | Map.null subst = pred
 substKindInPred subst (DAppPr pred ty) =
-  DAppPr (substKindInPred subst pred) (substKindInType subst ty)
+  DAppPr (substKindInPred subst pred) (substType subst ty)
 substKindInPred subst (DSigPr pred ki) = DSigPr (substKindInPred subst pred)
                                                 (substKind subst ki)
 substKindInPred _ pred@(DVarPr {}) = pred
 substKindInPred _ pred@(DConPr {}) = pred
+substKindInPred _ pred@DWildCardPr = pred
 
 substKindInTvb :: Map Name DKind -> DTyVarBndr -> DTyVarBndr
 substKindInTvb _ tvb@(DPlainTV _) = tvb
 substKindInTvb subst (DKindedTV n ki) = DKindedTV n (substKind subst ki)
 
 addStar :: DKind -> DKind
-addStar t = DArrowK t DStarK
+addStar t = DAppT (DAppT DArrowT t) DStarT
 
 addStar_maybe :: Maybe DKind -> Maybe DKind
-addStar_maybe t = DArrowK <$> t <*> pure DStarK
+addStar_maybe = fmap addStar
 
 -- apply a type to a list of types
 foldType :: DType -> [DType] -> DType
@@ -299,11 +289,6 @@ foldType = foldl DAppT
 -- apply an expression to a list of expressions
 foldExp :: DExp -> [DExp] -> DExp
 foldExp = foldl DAppE
-
--- is a kind a variable?
-isVarK :: DKind -> Bool
-isVarK (DVarK _) = True
-isVarK _ = False
 
 -- is a function type?
 isFunTy :: DType -> Bool
@@ -335,7 +320,11 @@ wrapDesugar f th = do
 -- a monad transformer for writing a monoid alongside returning a Q
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
   deriving ( Functor, Applicative, Monad, MonadTrans
-           , MonadWriter m, MonadReader r )
+           , MonadWriter m, MonadReader r
+#if __GLASGOW_HASKELL__ >= 711
+           , MonadFail
+#endif
+           )
 
 -- make a Quasi instance for easy lifting
 instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
@@ -354,6 +343,13 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
   qAddModFinalizer  = lift `comp1` qAddModFinalizer
   qGetQ             = lift qGetQ
   qPutQ             = lift `comp1` qPutQ
+
+#if __GLASGOW_HASKELL__ >= 711
+  qReifyFixity        = lift `comp1` qReifyFixity
+  qReifyConStrictness = lift `comp1` qReifyConStrictness
+  qIsExtEnabled       = lift `comp1` qIsExtEnabled
+  qExtsEnabled        = lift qExtsEnabled
+#endif
 
   qRecover exp handler = do
     (result, aux) <- lift $ qRecover (evalForPair exp) (evalForPair handler)
@@ -380,7 +376,7 @@ evalForAux = execWriterT . runQWA
 
 -- run a computation with an auxiliary monoid, return both the result
 -- of the computation and the monoid result
-evalForPair :: Quasi q => QWithAux m q a -> q (a, m)
+evalForPair :: QWithAux m q a -> q (a, m)
 evalForPair = runWriterT . runQWA
 
 -- in a computation with an auxiliary map, add a binding to the map

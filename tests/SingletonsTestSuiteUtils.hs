@@ -26,7 +26,7 @@ import Distribution.Text                             ( simpleParse              
 import Data.Version                                  ( Version(..)               )
 import System.IO.Unsafe                              ( unsafePerformIO           )
 
-#include "../dist/build/autogen/cabal_macros.h"
+#include "cabal_macros.h"
 
 -- Some infractructure for handling external process errors
 data ProcessException = ProcessException String deriving (Typeable)

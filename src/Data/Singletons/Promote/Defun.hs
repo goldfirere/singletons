@@ -23,7 +23,7 @@ defunInfo (DTyConI dec _instances) = buildDefunSyms dec
 defunInfo (DPrimTyConI _name _numArgs _unlifted) =
   fail $ "Building defunctionalization symbols of primitive " ++
          "type constructors not supported"
-defunInfo (DVarI _name _ty _mdec _fixity) =
+defunInfo (DVarI _name _ty _mdec) =
   fail "Building defunctionalization symbols of values not supported"
 defunInfo (DTyVarI _name _ty) =
   fail "Building defunctionalization symbols of type variables not supported"
@@ -31,13 +31,13 @@ defunInfo (DTyVarI _name _ty) =
 buildDefunSyms :: DDec -> PrM [DDec]
 buildDefunSyms (DDataD _new_or_data _cxt tyName tvbs ctors _derivings) =
   buildDefunSymsDataD tyName tvbs ctors
-buildDefunSyms (DClosedTypeFamilyD name tvbs returnK_maybe _) = do
+buildDefunSyms (DClosedTypeFamilyD (DTypeFamilyHead name tvbs result_sig _) _) = do
   let arg_m_kinds = map extractTvbKind tvbs
-  defunctionalize name arg_m_kinds returnK_maybe
-buildDefunSyms (DFamilyD TypeFam name tvbs returnK_maybe) = do
+  defunctionalize name arg_m_kinds (resultSigToMaybeKind result_sig)
+buildDefunSyms (DOpenTypeFamilyD (DTypeFamilyHead name tvbs result_sig _)) = do
   let arg_kinds = map (default_to_star . extractTvbKind) tvbs
-      res_kind  = default_to_star returnK_maybe
-      default_to_star Nothing  = Just DStarK
+      res_kind  = default_to_star (resultSigToMaybeKind result_sig)
+      default_to_star Nothing  = Just DStarT
       default_to_star (Just k) = Just k
   defunctionalize name arg_kinds res_kind
 buildDefunSyms (DTySynD name tvbs _type) = do
@@ -112,16 +112,8 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
     eta_expand :: [Maybe DKind] -> Maybe DKind -> ([Maybe DKind], Maybe DKind)
     eta_expand m_arg_kinds Nothing = (m_arg_kinds, Nothing)
     eta_expand m_arg_kinds (Just res_kind) =
-        let ks                 = unravelK res_kind
-            (argKs, [resultK]) =  splitAt (length ks - 1) ks
+        let (_, _, argKs, resultK) = unravel res_kind
         in (m_arg_kinds ++ (map Just argKs), Just resultK)
-
-    unravelK :: DKind -> [DKind]
-    unravelK (DForallK _name k) = unravelK k
-    unravelK (DArrowK (DConK _ ks) DStarK) =
-        concatMap unravelK ks
-    unravelK (DArrowK k1 k2) = k1 : unravelK k2
-    unravelK t = [t]
 
     go :: Int -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
     go _ [] _ = return []
@@ -148,6 +140,7 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
                              [con_eq_ct]
                              con_name
                              (DNormalC [])
+                             Nothing
           data_decl   = DDataD Data [] data_name params [con_decl] []
           app_eqn     = DTySynEqn [ foldType (DConT data_name)
                                              (map DVarT rest_names)
@@ -164,24 +157,24 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
       return $ suppress : data_decl : app_decl : decls
 
 buildTyFun :: DKind -> DKind -> DKind
-buildTyFun k1 k2 = DConK tyFunName [k1, k2]
+buildTyFun k1 k2 = DConT tyFunName `DAppT` k1 `DAppT` k2
 
 buildTyFun_maybe :: Maybe DKind -> Maybe DKind -> Maybe DKind
 buildTyFun_maybe m_k1 m_k2 = do
   k1 <- m_k1
   k2 <- m_k2
-  return $ DConK tyFunName [k1, k2]
+  return $ DConT tyFunName `DAppT` k1 `DAppT` k2
 
 -- Counts the arity of type level function represented with TyFun constructors
 tyFunArity :: DKind -> Int
-tyFunArity (DArrowK (DConK tyFunNm [_, b]) DStarK)
+tyFunArity (DArrowT `DAppT` (DConT tyFunNm `DAppT` _ `DAppT` b) `DAppT` DStarT)
   | tyFunName == tyFunNm
   = 1 + tyFunArity b
 tyFunArity _ = 0
 
 -- Checks if type is (TyFun a b -> *)
 isTyFun :: DKind -> Bool
-isTyFun (DArrowK (DConK tyFunNm [_,_]) DStarK)
+isTyFun (DArrowT `DAppT` (DConT tyFunNm `DAppT` _ `DAppT` _) `DAppT` DStarT)
   | tyFunName == tyFunNm
   = True
 isTyFun _ = False

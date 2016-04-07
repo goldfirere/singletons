@@ -22,7 +22,7 @@ import qualified Data.Map.Strict as Map
 type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
 
   -- the relevant part of declarations
-data DataDecl      = DataDecl NewOrData Name [DTyVarBndr] [DCon] [Name]
+data DataDecl      = DataDecl NewOrData Name [DTyVarBndr] [DCon] [DPred]
 
 data ClassDecl ann = ClassDecl { cd_cxt  :: DCxt
                                , cd_name :: Name
