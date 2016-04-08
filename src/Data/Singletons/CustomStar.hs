@@ -124,10 +124,10 @@ singletonStar names = do
           return $ DCon (map DPlainTV vars) [] dataName
 #if MIN_VERSION_th_desugar(1,6,0)
                    (DNormalC (map (\ty -> (Bang NoSourceUnpackedness NoSourceStrictness, ty)) types))
+                   Nothing
 #else
                    (DNormalC (map (\ty -> (NotStrict, ty)) types))
 #endif
-                   Nothing
 
         -- demote a kind back to a type, accumulating any unbound parameters
         kindToType :: DsMonad q => DKind -> QWithAux [Name] q DType
