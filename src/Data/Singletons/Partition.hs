@@ -56,7 +56,7 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
                   , pd_instance_decs = derived_instances }
   where
     ty = foldType (DConT name) (map tvbToType tvbs)
-#if MIN_VERSION_th_desugar(1,6,0) && __GLASGOW_HASKELL__ < 711
+#if MIN_VERSION_th_desugar(1,6,0)
     part_derivings :: Quasi m => DPred -> m (Either Name UInstDecl)
     part_derivings (DConPr deriv_name)
       | deriv_name == ordName

@@ -20,6 +20,9 @@ module Data.Singletons.Promote.Monad (
 
 import Control.Monad.Reader
 import Control.Monad.Writer
+#if __GLASGOW_HASKELL__ > 710
+import Control.Monad.Fail ( MonadFail )
+#endif
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Language.Haskell.TH.Syntax hiding ( lift )
@@ -44,6 +47,9 @@ emptyPrEnv = PrEnv { pr_lambda_bound = Map.empty
 -- the promotion monad
 newtype PrM a = PrM (ReaderT PrEnv (WriterT [DDec] Q) a)
   deriving ( Functor, Applicative, Monad, Quasi
+#if __GLASGOW_HASKELL__ > 710
+           , MonadFail
+#endif
            , MonadReader PrEnv, MonadWriter [DDec] )
 
 instance DsMonad PrM where

@@ -29,6 +29,9 @@ import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Control.Monad.Reader
 import Control.Monad.Writer
+#if __GLASGOW_HASKELL__ > 710
+import Control.Monad.Fail ( MonadFail )
+#endif
 import Control.Applicative
 
 -- environment during singling
@@ -45,6 +48,9 @@ emptySgEnv = SgEnv { sg_let_binds   = Map.empty
 -- the singling monad
 newtype SgM a = SgM (ReaderT SgEnv (WriterT [DDec] Q) a)
   deriving ( Functor, Applicative, Monad
+#if __GLASGOW_HASKELL__ > 710
+           , MonadFail
+#endif
            , MonadReader SgEnv, MonadWriter [DDec] )
 
 liftSgM :: Q a -> SgM a
@@ -74,6 +80,13 @@ instance Quasi SgM where
                               (runWriterT $ runReaderT body env)
     tell aux
     return result
+
+#if __GLASGOW_HASKELL__ > 710
+  qReifyFixity        = liftSgM `comp1` qReifyFixity
+  qReifyConStrictness = liftSgM `comp1` qReifyConStrictness
+  qIsExtEnabled       = liftSgM `comp1` qIsExtEnabled
+  qExtsEnabled        = liftSgM qExtsEnabled
+#endif
 
 instance DsMonad SgM where
   localDeclarations = asks sg_local_decls

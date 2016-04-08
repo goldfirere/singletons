@@ -22,6 +22,9 @@ import Data.Char
 import Control.Monad hiding ( mapM )
 import Control.Monad.Writer hiding ( mapM )
 import Control.Monad.Reader hiding ( mapM )
+#if __GLASGOW_HASKELL__ > 710
+import Control.Monad.Fail ( MonadFail )
+#endif
 import qualified Data.Map as Map
 import Data.Map ( Map )
 import Data.Foldable
@@ -396,6 +399,9 @@ wrapDesugar f th = do
 -- a monad transformer for writing a monoid alongside returning a Q
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
   deriving ( Functor, Applicative, Monad, MonadTrans
+#if __GLASGOW_HASKELL__ > 710
+           , MonadFail
+#endif
            , MonadWriter m, MonadReader r )
 
 -- make a Quasi instance for easy lifting
@@ -420,6 +426,13 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
     (result, aux) <- lift $ qRecover (evalForPair exp) (evalForPair handler)
     tell aux
     return result
+
+#if __GLASGOW_HASKELL__ > 710
+  qReifyFixity        = lift `comp1` qReifyFixity
+  qReifyConStrictness = lift `comp1` qReifyConStrictness
+  qIsExtEnabled       = lift `comp1` qIsExtEnabled
+  qExtsEnabled        = lift qExtsEnabled
+#endif
 
 instance (DsMonad q, Monoid m) => DsMonad (QWithAux m q) where
   localDeclarations = lift localDeclarations
