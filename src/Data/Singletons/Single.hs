@@ -308,9 +308,18 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
       mb_s_info <- dsReify (singValName name)
       (s_ty, tyvar_names, m_res_ki) <- case mb_s_info of
         Just (DVarI _ (DForallT cls_kproxy_tvbs _cls_pred s_ty) _) -> do
+#if __GLASGOW_HASKELL__ >= 711
+             -- GHC 8 quantifies over the kind vars explicitly
+          let class_kvs = [ class_kv | DKindedTV class_kv DStarT <- cls_kproxy_tvbs ]
+#else
           let class_kvs = map extract_kv cls_kproxy_tvbs
               extract_kv (DKindedTV _kproxyVar (DConT _kproxyTy `DAppT` DVarT kv)) = kv
-              extract_kv _ = error "sing_meth cannot extract a kind variable"
+              extract_kv k = error $ "sing_meth cannot extract a kind variable" ++
+                                     "\n" ++ show k ++
+                                     "\n" ++ show name ++
+                                     "\n" ++ show (singValName name) ++
+                                     "\n" ++ show mb_s_info
+#endif
 
               (sing_tvbs, _pred, _args, res_ty) = unravel s_ty
 

@@ -247,12 +247,10 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
   pCxt <- mapM promote_superclass_pred cxt
   let cxt'  = pCxt ++ proxyCxt
   sig_decs <- mapM (uncurry promote_sig) (Map.toList meth_sigs)
-     -- the first arg to promoteMethod is a kind subst. We actually don't
-     -- want to subst for default instances, so we pass Map.empty
   let defaults_list  = Map.toList defaults
       defaults_names = map fst defaults_list
   (default_decs, ann_rhss, prom_rhss)
-    <- mapAndUnzip3M (promoteMethod Map.empty meth_sigs) defaults_list
+    <- mapAndUnzip3M (promoteMethod Nothing meth_sigs) defaults_list
 
   let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
 
@@ -295,7 +293,7 @@ promoteInstanceDec meth_sigs
   cls_tvb_names <- lookup_cls_tvb_names
   inst_kis <- mapM promoteType inst_tys
   let subst = Map.fromList $ zip cls_tvb_names inst_kis
-  (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod subst meth_sigs) meths
+  (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod (Just subst) meth_sigs) meths
   emitDecs [DInstanceD [] (foldType (DConT pClsName)
                                     (map kindParam inst_kis)) meths']
   return (decl { id_meths = zip (map fst meths) ann_rhss })
@@ -324,21 +322,31 @@ promoteInstanceDec meth_sigs
 -- this can be rewritten more cleanly, I imagine.
 -- UPDATE: GHC 7.10.2 didn't fully solve GHC#9063. Urgh.
 
-promoteMethod :: Map Name DKind     -- instantiations for class tyvars
+promoteMethod :: Maybe (Map Name DKind)
+                    -- ^ instantiations for class tyvars (Nothing for default decls)
               -> Map Name DType     -- method types
               -> (Name, ULetDecRHS)
               -> PrM (DDec, ALetDecRHS, DType)
                  -- returns (type instance, ALetDecRHS, promoted RHS)
-promoteMethod subst sigs_map (meth_name, meth_rhs) = do
+promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
   ((_, _, _, eqns), _defuns, ann_rhs)
     <- promoteLetDecRHS sigs_map noPrefix meth_name meth_rhs
   (arg_kis, res_ki) <- lookup_meth_ty
   meth_arg_tvs <- mapM (const $ qNewName "a") arg_kis
-  let meth_arg_kis' = map (substKind subst) arg_kis
-      meth_res_ki'  = substKind subst res_ki
+  let do_subst      = maybe id substKind m_subst
+      meth_arg_kis' = map do_subst arg_kis
+      meth_res_ki'  = do_subst res_ki
       helperNameBase = case nameBase proName of
                          first:_ | not (isHsLetter first) -> "TFHelper"
                          alpha                            -> alpha
+      family_args
+#if __GLASGOW_HASKELL__ >= 711
+    -- GHC 8 requires bare tyvars to the left of a type family default
+        | Nothing <- m_subst
+        = map DVarT meth_arg_tvs
+        | otherwise
+#endif
+        = zipWith (DSigT . DVarT) meth_arg_tvs meth_arg_kis'
   helperName <- newUniqueName helperNameBase
   emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
                                   helperName
@@ -349,7 +357,7 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
   emitDecsM (defunctionalize helperName (map Just meth_arg_kis') (Just meth_res_ki'))
   return ( DTySynInstD
              proName
-             (DTySynEqn (zipWith (DSigT . DVarT) meth_arg_tvs meth_arg_kis')
+             (DTySynEqn family_args
                         (foldApply (promoteValRhs helperName) (map DVarT meth_arg_tvs)))
          , ann_rhs
          , DConT (promoteTySym helperName 0) )

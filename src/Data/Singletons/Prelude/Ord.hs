@@ -1,6 +1,9 @@
 {-# LANGUAGE TemplateHaskell, DataKinds, PolyKinds, ScopedTypeVariables,
              TypeFamilies, TypeOperators, GADTs, UndecidableInstances,
-             FlexibleContexts, DefaultSignatures, InstanceSigs #-}
+             FlexibleContexts, DefaultSignatures, InstanceSigs, CPP #-}
+#if __GLASGOW_HASKELL__ >= 711
+{-# LANGUAGE TypeInType #-}
+#endif
 
 -----------------------------------------------------------------------------
 -- |

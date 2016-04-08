@@ -72,9 +72,10 @@ singletonStar names = do
   kinds <- mapM getKind names
   ctors <- zipWithM (mkCtor True) names kinds
   let repDecl = DDataD Data [] repName [] ctors
-                       [''Eq, ''Show, ''Read]
+                       [DConPr ''Eq, DConPr ''Show, DConPr ''Read]
   fakeCtors <- zipWithM (mkCtor False) names kinds
-  let dataDecl = DataDecl Data repName [] fakeCtors [''Show, ''Read , ''Eq]
+  let dataDecl = DataDecl Data repName [] fakeCtors
+                          [DConPr ''Show, DConPr ''Read , DConPr ''Eq]
   ordInst <- mkOrdInstance (DConT repName) fakeCtors
   (pOrdInst, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
                                             promoteInstanceDec mempty ordInst
@@ -93,31 +94,40 @@ singletonStar names = do
             DTyConI (DDataD _ (_:_) _ _ _ _) _ ->
                fail "Cannot make a representation of a constrainted data type"
             DTyConI (DDataD _ [] _ tvbs _ _) _ ->
-               return $ map (fromMaybe DStarK . extractTvbKind) tvbs
+               return $ map (fromMaybe DStarT . extractTvbKind) tvbs
             DTyConI (DTySynD _ tvbs _) _ ->
-               return $ map (fromMaybe DStarK . extractTvbKind) tvbs
+               return $ map (fromMaybe DStarT . extractTvbKind) tvbs
             DPrimTyConI _ n _ ->
-               return $ replicate n DStarK
+               return $ replicate n DStarT
             _ -> fail $ "Invalid thing for representation: " ++ (show name)
 
         -- first parameter is whether this is a real ctor (with a fresh name)
         -- or a fake ctor (when the name is actually a Haskell type)
         mkCtor :: DsMonad q => Bool -> Name -> [DKind] -> q DCon
         mkCtor real name args = do
-          (types, vars) <- evalForPair $ mapM kindToType args
+          (types, vars) <- evalForPair $ mapM (kindToType []) args
           dataName <- if real then mkDataName (nameBase name) else return name
-          return $ DCon (map DPlainTV vars) [] dataName $
-                   DNormalC (map (\ty -> (NotStrict, ty)) types)
+          return $ DCon (map DPlainTV vars) [] dataName
+                        (DNormalC (map (\ty -> (noBang, ty)) types))
+                        Nothing
+            where
+              noBang = Bang NoSourceUnpackedness NoSourceStrictness
 
         -- demote a kind back to a type, accumulating any unbound parameters
-        kindToType :: DsMonad q => DKind -> QWithAux [Name] q DType
-        kindToType (DForallK _ _) = fail "Explicit forall encountered in kind"
-        kindToType (DVarK n) = do
+        kindToType :: DsMonad q => [DType] -> DKind -> QWithAux [Name] q DType
+        kindToType _    (DForallT _ _ _) = fail "Explicit forall encountered in kind"
+        kindToType args (DAppT f a) = do
+          a' <- kindToType [] a
+          kindToType (a' : args) f
+        kindToType args (DSigT t k) = do
+          t' <- kindToType [] t
+          k' <- kindToType [] k
+          return $ DSigT t' k' `foldType` args
+        kindToType args (DVarT n) = do
           addElement n
-          return $ DVarT n
-        kindToType (DConK n args) = foldType (DConT n) <$> mapM kindToType args
-        kindToType (DArrowK k1 k2) = do
-          t1 <- kindToType k1
-          t2 <- kindToType k2
-          return $ DAppT (DAppT DArrowT t1) t2
-        kindToType DStarK = return $ DConT repName
+          return $ DVarT n `foldType` args
+        kindToType args (DConT n)    = return $ DConT n       `foldType` args
+        kindToType args DArrowT      = return $ DArrowT       `foldType` args
+        kindToType args k@(DLitT {}) = return $ k             `foldType` args
+        kindToType args DWildCardT   = return $ DWildCardT    `foldType` args
+        kindToType args DStarT       = return $ DConT repName `foldType` args

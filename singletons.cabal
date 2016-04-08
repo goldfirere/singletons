@@ -52,6 +52,9 @@ library
   other-extensions:   TemplateHaskell
         -- TemplateHaskell must be listed in cabal file to work with
         -- ghc7.8
+  if impl(ghc >= 7.11)
+    ghc-options:      -Wno-redundant-constraints
+
   exposed-modules:    Data.Singletons,
                       Data.Singletons.CustomStar,
                       Data.Singletons.TypeRepStar,

@@ -96,7 +96,8 @@ buildDefunSymsDataD tyName tvbs ctors = do
 -- indicate which kinds are known and which need to be inferred.
 defunctionalize :: Name -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
 defunctionalize name m_arg_kinds' m_res_kind' = do
-  let (m_arg_kinds, m_res_kind) = eta_expand m_arg_kinds' m_res_kind'
+  let (m_arg_kinds, m_res_kind) = eta_expand (noExacts m_arg_kinds')
+                                             (noExacts m_res_kind')
       num_args = length m_arg_kinds
       sat_name = promoteTySym name num_args
   tvbNames <- replicateM num_args $ qNewName "t"

@@ -26,6 +26,7 @@ import qualified Data.Map as Map
 import Data.Map ( Map )
 import Data.Foldable
 import Data.Traversable
+import Data.Generics
 
 #if __GLASGOW_HASKELL__ >= 711
 import Control.Monad.Fail ( MonadFail )
@@ -229,6 +230,15 @@ ravel (h:t) res = DAppT (DAppT DArrowT h) (ravel t res)
 countArgs :: DType -> Int
 countArgs ty = length args
   where (_, _, args, _) = unravel ty
+
+-- changes all Names to not be Exact names
+noExacts :: Data a => a -> a
+noExacts = everywhere (mkT no_exact_name)
+  where
+    no_exact_name :: Name -> Name
+    no_exact_name (Name (OccName occ) (NameU unique)) = mkName (occ ++ show unique)
+    no_exact_name (Name (OccName occ) (NameL unique)) = mkName (occ ++ show unique)
+    no_exact_name n                                   = n
 
 substKind :: Map Name DKind -> DKind -> DKind
 substKind = substType
