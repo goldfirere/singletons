@@ -16,6 +16,8 @@
 --
 ----------------------------------------------------------------------------
 
+{-# LANGUAGE CPP #-}
+
 module Data.Singletons.CustomStar (
   singletonStar,
 
@@ -72,7 +74,11 @@ singletonStar names = do
   kinds <- mapM getKind names
   ctors <- zipWithM (mkCtor True) names kinds
   let repDecl = DDataD Data [] repName [] ctors
+#if MIN_VERSION_th_desugar(1,6,0)
+                       (map DConPr [''Eq, ''Show, ''Read])
+#else
                        [''Eq, ''Show, ''Read]
+#endif
   fakeCtors <- zipWithM (mkCtor False) names kinds
   let dataDecl = DataDecl Data repName [] fakeCtors [''Show, ''Read , ''Eq]
   ordInst <- mkOrdInstance (DConT repName) fakeCtors
@@ -92,12 +98,21 @@ singletonStar names = do
           case dinfo of
             DTyConI (DDataD _ (_:_) _ _ _ _) _ ->
                fail "Cannot make a representation of a constrainted data type"
+#if MIN_VERSION_th_desugar(1,6,0)
+            DTyConI (DDataD _ [] _ tvbs _ _) _ ->
+               return $ map (fromMaybe DStarT . extractTvbKind) tvbs
+            DTyConI (DTySynD _ tvbs _) _ ->
+               return $ map (fromMaybe DStarT . extractTvbKind) tvbs
+            DPrimTyConI _ n _ ->
+               return $ replicate n DStarT
+#else
             DTyConI (DDataD _ [] _ tvbs _ _) _ ->
                return $ map (fromMaybe DStarK . extractTvbKind) tvbs
             DTyConI (DTySynD _ tvbs _) _ ->
                return $ map (fromMaybe DStarK . extractTvbKind) tvbs
             DPrimTyConI _ n _ ->
                return $ replicate n DStarK
+#endif
             _ -> fail $ "Invalid thing for representation: " ++ (show name)
 
         -- first parameter is whether this is a real ctor (with a fresh name)
@@ -106,11 +121,35 @@ singletonStar names = do
         mkCtor real name args = do
           (types, vars) <- evalForPair $ mapM kindToType args
           dataName <- if real then mkDataName (nameBase name) else return name
-          return $ DCon (map DPlainTV vars) [] dataName $
-                   DNormalC (map (\ty -> (NotStrict, ty)) types)
+          return $ DCon (map DPlainTV vars) [] dataName
+#if MIN_VERSION_th_desugar(1,6,0)
+                   (DNormalC (map (\ty -> (Bang NoSourceUnpackedness NoSourceStrictness, ty)) types))
+#else
+                   (DNormalC (map (\ty -> (NotStrict, ty)) types))
+#endif
+                   Nothing
 
         -- demote a kind back to a type, accumulating any unbound parameters
         kindToType :: DsMonad q => DKind -> QWithAux [Name] q DType
+#if MIN_VERSION_th_desugar(1,6,0)
+        kindToType (DForallT _ _ _) = fail "Explicit forall encountered in kind"
+        kindToType (DVarT n) = do
+          addElement n
+          return $ DVarT n
+        kindToType k@(DConT _) = return k
+        kindToType k@(DArrowT)  = return k
+        kindToType (DAppT k1 k2) = do
+          t1 <- kindToType k1
+          t2 <- kindToType k2
+          return $ DAppT t1 t2
+        kindToType (DSigT t k) = do
+          t' <- kindToType t
+          k' <- kindToType k
+          return $ DSigT t' k'
+        kindToType (DLitT _) = fail "Type literal encountered in kind"
+        kindToType DWildCardT = fail "Wildcard encountered in kind"
+        kindToType DStarT = return $ DConT repName
+#else
         kindToType (DForallK _ _) = fail "Explicit forall encountered in kind"
         kindToType (DVarK n) = do
           addElement n
@@ -121,3 +160,4 @@ singletonStar names = do
           t2 <- kindToType k2
           return $ DAppT (DAppT DArrowT t1) t2
         kindToType DStarK = return $ DConT repName
+#endif

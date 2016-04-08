@@ -175,7 +175,11 @@ lookup_var_con mk_sing_name mk_exp name = do
       m_dinfo <- liftM2 (<|>) (dsReify sName) (dsReify name)
         -- try the unrefined name too -- it's needed to bootstrap Enum
       case m_dinfo of
+#if MIN_VERSION_th_desugar(1,6,0)
+        Just (DVarI _ ty _) ->
+#else
         Just (DVarI _ ty _ _) ->
+#endif
           let num_args = countArgs ty in
           return $ wrapSingFun num_args (promoteValRhs name) (mk_exp name)
         _ -> return $ mk_exp name   -- lambda-bound

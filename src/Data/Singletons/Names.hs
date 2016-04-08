@@ -6,7 +6,7 @@ eir@cis.upenn.edu
 Defining names and manipulations on names for use in promotion and singling.
 -}
 
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, CPP #-}
 
 module Data.Singletons.Names where
 
@@ -190,7 +190,11 @@ trueTySym :: DType
 trueTySym = promoteValRhs trueName
 
 boolKi :: DKind
+#if MIN_VERSION_th_desugar(1,6,0)
+boolKi = DConT boolName
+#else
 boolKi = DConK boolName []
+#endif
 
 andTySym :: DType
 andTySym = promoteValRhs andName
@@ -223,7 +227,11 @@ singValName n
   | otherwise                = (prefixLCName "s" "%") $ upcase n
 
 kindParam :: DKind -> DType
+#if MIN_VERSION_th_desugar(1,6,0)
+kindParam k = DSigT (DConT kProxyDataName) (DAppT (DConT kProxyTypeName) k)
+#else
 kindParam k = DSigT (DConT kProxyDataName) (DConK kProxyTypeName [k])
+#endif
 
 proxyFor :: DType -> DExp
 proxyFor ty = DSigE (DConE proxyDataName) (DAppT (DConT proxyTypeName) ty)
@@ -259,6 +267,10 @@ mkKProxies :: Quasi q
            -> q ([DTyVarBndr], DCxt)
 mkKProxies ns = do
   kproxies <- mapM (const $ qNewName "kproxy") ns
+#if MIN_VERSION_th_desugar(1,6,0)
+  return ( zipWith (\kp kv -> DKindedTV kp (DAppT (DConT kProxyTypeName) (DVarT kv)))
+#else
   return ( zipWith (\kp kv -> DKindedTV kp (DConK kProxyTypeName [DVarK kv]))
+#endif
                    kproxies ns
          , map (\kp -> mkEqPred (DVarT kp) (DConT kProxyDataName)) kproxies )

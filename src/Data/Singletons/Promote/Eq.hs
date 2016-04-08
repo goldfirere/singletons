@@ -7,6 +7,8 @@ This module defines the functions that generate type-level equality type
 family instances.
 -}
 
+{-# LANGUAGE CPP #-}
+
 module Data.Singletons.Promote.Eq where
 
 import Language.Haskell.TH.Syntax
@@ -24,11 +26,21 @@ mkEqTypeInstance kind cons = do
   bName <- qNewName "b"
   true_branches <- mapM mk_branch cons
   false_branch  <- false_case
+#if MIN_VERSION_th_desugar(1,6,0)
+  let closedFam = DClosedTypeFamilyD (DTypeFamilyHead
+                                        helperName
+                                        [ DKindedTV aName kind
+                                        , DKindedTV bName kind]
+                                        (DKindSig boolKi)
+                                        Nothing)
+                                     (true_branches ++ [false_branch])
+#else
   let closedFam = DClosedTypeFamilyD helperName
                                      [ DKindedTV aName kind
                                      , DKindedTV bName kind ]
                                      (Just boolKi)
                                      (true_branches ++ [false_branch])
+#endif
       eqInst = DTySynInstD tyEqName (DTySynEqn [ DSigT (DVarT aName) kind
                                                , DSigT (DVarT bName) kind ]
                                              (foldType (DConT helperName)

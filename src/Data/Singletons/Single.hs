@@ -6,7 +6,8 @@ eir@cis.upenn.edu
 This file contains functions to refine constructs to work with singleton
 types. It is an internal module to the singletons package.
 -}
-{-# LANGUAGE TemplateHaskell, TupleSections, ParallelListComp, CPP #-}
+{-# LANGUAGE TemplateHaskell, TupleSections, ParallelListComp, CPP,
+             ViewPatterns #-}
 
 module Data.Singletons.Single where
 
@@ -132,9 +133,15 @@ singEqualityInstance desc@(_, className, _) name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
                             show className ++ " for it.") name
   dtvbs <- mapM dsTvb tvbs
+#if MIN_VERSION_th_desugar(1,6,0)
+  dcons <- concatMapM dsCon cons
+  let tyvars = map (DVarT . extractTvbName) dtvbs
+      kind = foldType (DConT name) tyvars
+#else
   dcons <- mapM dsCon cons
   let tyvars = map (DVarK . extractTvbName) dtvbs
       kind = DConK name tyvars
+#endif
   aName <- qNewName "a"
   let aVar = DVarT aName
   (scons, _) <- singM [] $ mapM (singCtor aVar) dcons
@@ -172,7 +179,11 @@ singInstance mk_inst inst_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
                             ++ " for it.") name
   dtvbs <- mapM dsTvb tvbs
+#if MIN_VERSION_th_desugar(1,6,0)
+  dcons <- concatMapM dsCon cons
+#else
   dcons <- mapM dsCon cons
+#endif
   raw_inst <- mk_inst (foldType (DConT name) (map tvbToType dtvbs)) dcons
   (a_inst, decs) <- promoteM [] $
                     promoteInstanceDec Map.empty raw_inst
@@ -184,7 +195,7 @@ singInfo (DTyConI dec _) =
   singTopLevelDecs [] [dec]
 singInfo (DPrimTyConI _name _numArgs _unlifted) =
   fail "Singling of primitive type constructors not supported"
-singInfo (DVarI _name _ty _mdec _fixity) =
+singInfo (DVarI {}) =
   fail "Singling of value info not supported"
 singInfo (DTyVarI _name _ty) =
   fail "Singling of type variable info not supported"
@@ -222,7 +233,11 @@ buildDataLets (DataDecl _nd _name _tvbs cons _derivings) =
   concatMap con_num_args cons
   where
     con_num_args :: DCon -> [(Name, DExp)]
+#if MIN_VERSION_th_desugar(1,6,0)
+    con_num_args (DCon _tvbs _cxt name fields _m_kind) =
+#else
     con_num_args (DCon _tvbs _cxt name fields) =
+#endif
       (name, wrapSingFun (length (tysOfConFields fields))
                          (promoteValRhs name) (DConE $ singDataConName name))
       : rec_selectors fields
@@ -307,9 +322,17 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
     sing_meth name rhs = do
       mb_s_info <- dsReify (singValName name)
       (s_ty, tyvar_names, m_res_ki) <- case mb_s_info of
+#if MIN_VERSION_th_desugar(1,6,0)
+        Just (DVarI _ (DForallT cls_kproxy_tvbs _cls_pred s_ty) _) -> do
+#else
         Just (DVarI _ (DForallT cls_kproxy_tvbs _cls_pred s_ty) _ _) -> do
+#endif
           let class_kvs = map extract_kv cls_kproxy_tvbs
+#if MIN_VERSION_th_desugar(1,6,0)
+              extract_kv (DKindedTV _kproxyVar (unfoldDConTApp -> Just (_kproxyTy, [DVarT kv]))) = kv
+#else
               extract_kv (DKindedTV _kproxyVar (DConK _kproxyTy [DVarK kv])) = kv
+#endif
               extract_kv _ = error "sing_meth cannot extract a kind variable"
 
               (sing_tvbs, _pred, _args, res_ty) = unravel s_ty
@@ -317,14 +340,22 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
           inst_kis <- mapM promoteType inst_tys
           let subst    = Map.fromList (zip class_kvs inst_kis)
               m_res_ki = case res_ty of
+#if MIN_VERSION_th_desugar(1,6,0)
+                _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substType subst res_ki)
+#else
                 _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substKind subst res_ki)
+#endif
                 _                                         -> Nothing
 
           return (substKindInType subst s_ty, map extractTvbName sing_tvbs, m_res_ki)
         _ -> do
           mb_info <- dsReify name
           case mb_info of
+#if MIN_VERSION_th_desugar(1,6,0)
+            Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _) -> do
+#else
             Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _ _) -> do
+#endif
               let subst = Map.fromList (zip (map extractTvbName cls_tvbs)
                                             inst_tys)
               (s_ty, _num_args, tyvar_names, res_ki) <- singType (promoteValRhs name)
