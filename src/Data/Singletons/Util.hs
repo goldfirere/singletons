@@ -352,7 +352,7 @@ unfoldArrowT _ = Nothing
 unfoldDConTApp :: DType -> Maybe (Name,[DType])
 unfoldDConTApp = go []
   where
-    go args (DConT n)     = Just (n,reverse args)
+    go args (DConT n)     = Just (n, args)
     go args (DAppT t1 t2) = go (t2:args) t1
     go _    _             = Nothing
 #endif
