@@ -11,6 +11,8 @@
 --
 ----------------------------------------------------------------------------
 
+{-# LANGUAGE CPP #-}
+
 module Data.Singletons.Partition where
 
 import Prelude hiding ( exp )
@@ -54,6 +56,19 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
                   , pd_instance_decs = derived_instances }
   where
     ty = foldType (DConT name) (map tvbToType tvbs)
+#if MIN_VERSION_th_desugar(1,6,0)
+    part_derivings :: Quasi m => DPred -> m (Either Name UInstDecl)
+    part_derivings (DConPr deriv_name)
+      | deriv_name == ordName
+      = Right <$> mkOrdInstance ty cons
+      | deriv_name == boundedName
+      = Right <$> mkBoundedInstance ty cons
+      | deriv_name == enumName
+      = Right <$> mkEnumInstance ty cons
+      | otherwise
+      = return (Left deriv_name)
+    part_derivings p = fail $ "Illegal deriving construct: " ++ show p
+#else
     part_derivings :: Quasi m => Name -> m (Either Name UInstDecl)
     part_derivings deriv_name
       | deriv_name == ordName
@@ -64,6 +79,7 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
       = Right <$> mkEnumInstance ty cons
       | otherwise
       = return (Left deriv_name)
+#endif
 
 partitionDec (DClassD cxt name tvbs fds decs) = do
   env <- concatMapM partitionClassDec decs

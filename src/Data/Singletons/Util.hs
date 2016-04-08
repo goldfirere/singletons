@@ -22,6 +22,9 @@ import Data.Char
 import Control.Monad hiding ( mapM )
 import Control.Monad.Writer hiding ( mapM )
 import Control.Monad.Reader hiding ( mapM )
+#if __GLASGOW_HASKELL__ > 710
+import Control.Monad.Fail ( MonadFail )
+#endif
 import qualified Data.Map as Map
 import Data.Map ( Map )
 import Data.Foldable
@@ -84,10 +87,18 @@ extractNameArgs = liftSnd length . extractNameTypes
 
 -- extract the name and types of constructor arguments
 extractNameTypes :: DCon -> (Name, [DType])
+#if MIN_VERSION_th_desugar(1,6,0)
+extractNameTypes (DCon _ _ n fields _) = (n, tysOfConFields fields)
+#else
 extractNameTypes (DCon _ _ n fields) = (n, tysOfConFields fields)
+#endif
 
 extractName :: DCon -> Name
+#if MIN_VERSION_th_desugar(1,6,0)
+extractName (DCon _ _ n _ _) = n
+#else
 extractName (DCon _ _ n _) = n
+#endif
 
 -- is an identifier uppercase?
 isUpcase :: Name -> Bool
@@ -220,6 +231,7 @@ countArgs :: DType -> Int
 countArgs ty = length args
   where (_, _, args, _) = unravel ty
 
+#if !MIN_VERSION_th_desugar(1,6,0)
 substKind :: Map Name DKind -> DKind -> DKind
 substKind _ (DForallK {}) =
   error "Higher-rank kind encountered in instance method promotion."
@@ -230,6 +242,7 @@ substKind subst (DVarK n) =
 substKind subst (DConK con kis) = DConK con (map (substKind subst) kis)
 substKind subst (DArrowK k1 k2) = DArrowK (substKind subst k1) (substKind subst k2)
 substKind _ DStarK = DStarK
+#endif
 
 substType :: Map Name DType -> DType -> DType
 substType subst ty | Map.null subst = ty
@@ -248,6 +261,10 @@ substType subst (DVarT n) =
 substType _ ty@(DConT {}) = ty
 substType _ ty@(DArrowT)  = ty
 substType _ ty@(DLitT {}) = ty
+#if MIN_VERSION_th_desugar(1,6,0)
+substType _ ty@(DWildCardT {}) = ty
+substType _ ty@(DStarT {}) = ty
+#endif
 
 substPred :: Map Name DType -> DPred -> DPred
 substPred subst pred | Map.null subst = pred
@@ -256,6 +273,9 @@ substPred subst (DAppPr pred ty) =
 substPred subst (DSigPr pred ki) = DSigPr (substPred subst pred) ki
 substPred _ pred@(DVarPr {}) = pred
 substPred _ pred@(DConPr {}) = pred
+#if MIN_VERSION_th_desugar(1,6,0)
+substPred _ pred@(DWildCardPr {}) = pred
+#endif
 
 substKindInType :: Map Name DKind -> DType -> DType
 substKindInType subst ty | Map.null subst = ty
@@ -267,30 +287,57 @@ substKindInType subst (DForallT tvbs cxt inner_ty) =
   DForallT tvbs' cxt' inner_ty'
 substKindInType subst (DAppT ty1 ty2)
   = substKindInType subst ty1 `DAppT` substKindInType subst ty2
+#if MIN_VERSION_th_desugar(1,6,0)
+substKindInType subst (DSigT ty ki) = substKindInType subst ty `DSigT` substType subst ki
+#else
 substKindInType subst (DSigT ty ki) = substKindInType subst ty `DSigT` substKind subst ki
+#endif
 substKindInType _ ty@(DVarT {}) = ty
 substKindInType _ ty@(DConT {}) = ty
 substKindInType _ ty@(DArrowT)  = ty
 substKindInType _ ty@(DLitT {}) = ty
+#if MIN_VERSION_th_desugar(1,6,0)
+substKindInType _ ty@(DWildCardT {}) = ty
+substKindInType _ ty@(DStarT {}) = ty
+#endif
 
 substKindInPred :: Map Name DKind -> DPred -> DPred
 substKindInPred subst pred | Map.null subst = pred
 substKindInPred subst (DAppPr pred ty) =
   DAppPr (substKindInPred subst pred) (substKindInType subst ty)
 substKindInPred subst (DSigPr pred ki) = DSigPr (substKindInPred subst pred)
+#if MIN_VERSION_th_desugar(1,6,0)
+                                                (substType subst ki)
+#else
                                                 (substKind subst ki)
+#endif
 substKindInPred _ pred@(DVarPr {}) = pred
 substKindInPred _ pred@(DConPr {}) = pred
+#if MIN_VERSION_th_desugar(1,6,0)
+substKindInPred _ pred@(DWildCardPr {}) = pred
+#endif
 
 substKindInTvb :: Map Name DKind -> DTyVarBndr -> DTyVarBndr
 substKindInTvb _ tvb@(DPlainTV _) = tvb
+#if MIN_VERSION_th_desugar(1,6,0)
+substKindInTvb subst (DKindedTV n ki) = DKindedTV n (substType subst ki)
+#else
 substKindInTvb subst (DKindedTV n ki) = DKindedTV n (substKind subst ki)
+#endif
 
 addStar :: DKind -> DKind
+#if MIN_VERSION_th_desugar(1,6,0)
+addStar t = DAppT (DAppT DArrowT t) DStarT
+#else
 addStar t = DArrowK t DStarK
+#endif
 
 addStar_maybe :: Maybe DKind -> Maybe DKind
+#if MIN_VERSION_th_desugar(1,6,0)
+addStar_maybe t = DAppT <$> (DAppT DArrowT <$> t) <*> pure DStarT
+#else
 addStar_maybe t = DArrowK <$> t <*> pure DStarK
+#endif
 
 -- apply a type to a list of types
 foldType :: DType -> [DType] -> DType
@@ -300,9 +347,26 @@ foldType = foldl DAppT
 foldExp :: DExp -> [DExp] -> DExp
 foldExp = foldl DAppE
 
+#if MIN_VERSION_th_desugar(1,6,0)
+unfoldArrowT :: DType -> Maybe (DType,DType)
+unfoldArrowT (DAppT (DAppT DArrowT t1) t2) = Just (t1,t2)
+unfoldArrowT _ = Nothing
+
+unfoldDConTApp :: DType -> Maybe (Name,[DType])
+unfoldDConTApp = go []
+  where
+    go args (DConT n)     = Just (n, args)
+    go args (DAppT t1 t2) = go (t2:args) t1
+    go _    _             = Nothing
+#endif
+
 -- is a kind a variable?
 isVarK :: DKind -> Bool
+#if MIN_VERSION_th_desugar(1,6,0)
+isVarK (DVarT _) = True
+#else
 isVarK (DVarK _) = True
+#endif
 isVarK _ = False
 
 -- is a function type?
@@ -335,6 +399,9 @@ wrapDesugar f th = do
 -- a monad transformer for writing a monoid alongside returning a Q
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
   deriving ( Functor, Applicative, Monad, MonadTrans
+#if __GLASGOW_HASKELL__ > 710
+           , MonadFail
+#endif
            , MonadWriter m, MonadReader r )
 
 -- make a Quasi instance for easy lifting
@@ -359,6 +426,13 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
     (result, aux) <- lift $ qRecover (evalForPair exp) (evalForPair handler)
     tell aux
     return result
+
+#if __GLASGOW_HASKELL__ > 710
+  qReifyFixity        = lift `comp1` qReifyFixity
+  qReifyConStrictness = lift `comp1` qReifyConStrictness
+  qIsExtEnabled       = lift `comp1` qIsExtEnabled
+  qExtsEnabled        = lift qExtsEnabled
+#endif
 
 instance (DsMonad q, Monoid m) => DsMonad (QWithAux m q) where
   localDeclarations = lift localDeclarations

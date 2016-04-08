@@ -7,7 +7,8 @@ This file contains functions to promote term-level constructs to the
 type level. It is an internal module to the singletons package.
 -}
 
-{-# LANGUAGE TemplateHaskell, MultiWayIf, LambdaCase, TupleSections, CPP #-}
+{-# LANGUAGE TemplateHaskell, MultiWayIf, LambdaCase, TupleSections,
+             ViewPatterns, CPP #-}
 
 module Data.Singletons.Promote where
 
@@ -99,7 +100,11 @@ promoteEnumInstance = promoteInstance mkEnumInstance "Enum"
 promoteEqInstance :: DsMonad q => Name -> q [Dec]
 promoteEqInstance name = do
   (_tvbs, cons) <- getDataD "I cannot make an instance of (:==) for it." name
+#if MIN_VERSION_th_desugar(1,6,0)
+  cons' <- concatMapM dsCon cons
+#else
   cons' <- mapM dsCon cons
+#endif
   vars <- replicateM (length _tvbs) (qNewName "k")
   kind <- promoteType (foldType (DConT name) (map DVarT vars))
   inst_decs <- mkEqTypeInstance kind cons'
@@ -110,7 +115,11 @@ promoteInstance :: DsMonad q => (DType -> [DCon] -> q UInstDecl)
 promoteInstance mk_inst class_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
                             ++ " for it.") name
+#if MIN_VERSION_th_desugar(1,6,0)
+  cons' <- concatMapM dsCon cons
+#else
   cons' <- mapM dsCon cons
+#endif
   tvbs' <- mapM dsTvb tvbs
   raw_inst <- mk_inst (foldType (DConT name) (map tvbToType tvbs')) cons'
   decs <- promoteM_ [] $ void $ promoteInstanceDec Map.empty raw_inst
@@ -120,7 +129,7 @@ promoteInfo :: DInfo -> PrM ()
 promoteInfo (DTyConI dec _instances) = promoteDecs [dec]
 promoteInfo (DPrimTyConI _name _numArgs _unlifted) =
   fail "Promotion of primitive type constructors not supported"
-promoteInfo (DVarI _name _ty _mdec _fixity) =
+promoteInfo (DVarI {}) =
   fail "Promotion of individual values not supported"
 promoteInfo (DTyVarI _name _ty) =
   fail "Promotion of individual type variables not supported"
@@ -270,9 +279,17 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
       args <- mapM (const $ qNewName "arg") argKs
       emitDecsM $ defunctionalize proName (map Just argKs) (Just resK)
 
+#if MIN_VERSION_th_desugar(1,6,0)
+      return $ DOpenTypeFamilyD
+                  (DTypeFamilyHead proName
+                                   (zipWith DKindedTV args argKs)
+                                   (DKindSig resK)
+                                   Nothing)
+#else
       return $ DFamilyD TypeFam proName
                         (zipWith DKindedTV args argKs)
                         (Just resK)
+#endif
 
     promote_superclass_pred :: DPred -> PrM DPred
     promote_superclass_pred = go
@@ -282,6 +299,9 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
       go (DVarPr name)  = fail $ "Cannot promote ConstraintKinds variables like "
                               ++ show name
       go (DConPr name)  = return $ DConPr (promoteClassName name)
+#if MIN_VERSION_th_desugar(1,6,0)
+      go (DWildCardPr {}) = fail "Cannot promote Constraint wildcards"
+#endif
 
 -- returns (unpromoted method name, ALetDecRHS) pairs
 promoteInstanceDec :: Map Name DType -> UInstDecl -> PrM AInstDecl
@@ -311,7 +331,11 @@ promoteInstanceDec meth_sigs
             _ -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
 
     extract_kv_name :: DTyVarBndr -> Name
+#if MIN_VERSION_th_desugar(1,6,0)
+    extract_kv_name (DKindedTV _ (unfoldDConTApp -> Just (_kproxy, [DVarT kv_name]))) = kv_name
+#else
     extract_kv_name (DKindedTV _ (DConK _kproxy [DVarK kv_name])) = kv_name
+#endif
     extract_kv_name tvb = error $ "Internal error: extract_kv_name\n" ++ show tvb
 
 -- promoteMethod needs to substitute in a method's kind because GHC does not do
@@ -327,19 +351,37 @@ promoteMethod :: Map Name DKind     -- instantiations for class tyvars
               -> PrM (DDec, ALetDecRHS, DType)
                  -- returns (type instance, ALetDecRHS, promoted RHS)
 promoteMethod subst sigs_map (meth_name, meth_rhs) = do
+#if MIN_VERSION_th_desugar(1,6,0)
+  ((_, eqns), _defuns, ann_rhs)
+#else
   ((_, _, _, eqns), _defuns, ann_rhs)
+#endif
     <- promoteLetDecRHS sigs_map noPrefix meth_name meth_rhs
   (arg_kis, res_ki) <- lookup_meth_ty
   meth_arg_tvs <- mapM (const $ qNewName "a") arg_kis
+#if MIN_VERSION_th_desugar(1,6,0)
+  let meth_arg_kis' = map (substType subst) arg_kis
+      meth_res_ki'  = substType subst res_ki
+#else
   let meth_arg_kis' = map (substKind subst) arg_kis
       meth_res_ki'  = substKind subst res_ki
+#endif
       helperNameBase = case nameBase proName of
                          first:_ | not (isHsLetter first) -> "TFHelper"
                          alpha                            -> alpha
   helperName <- newUniqueName helperNameBase
+#if MIN_VERSION_th_desugar(1,6,0)
+  emitDecs [DClosedTypeFamilyD
+              (DTypeFamilyHead helperName
+                               (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
+                               (DKindSig meth_res_ki')
+                               Nothing)
+              eqns]
+#else
   emitDecs [DClosedTypeFamilyD helperName
                                (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
                                (Just meth_res_ki') eqns]
+#endif
   emitDecsM (defunctionalize helperName (map Just meth_arg_kis') (Just meth_res_ki'))
   return ( DTySynInstD
              proName
@@ -355,13 +397,30 @@ promoteMethod subst sigs_map (meth_name, meth_rhs) = do
       Nothing -> do
         mb_info <- dsReify proName
         case mb_info of
+#if MIN_VERSION_th_desugar(1,6,0)
+          Just (DTyConI (DOpenTypeFamilyD (DTypeFamilyHead _ tvbs frs _)) _)
+            -> let res_ki = case frs of
+                              DNoSig -> DStarT
+                              DKindSig k -> k
+                              DTyVarSig tv -> default_to_star (extractTvbKind tv)
+               in  return ( map (default_to_star . extractTvbKind) tvbs
+                          , res_ki )
+          Just (DTyConI (DDataFamilyD _ tvbs) _)
+            -> return ( map (default_to_star . extractTvbKind) tvbs
+                      , DStarT )
+#else
           Just (DTyConI (DFamilyD _ _ tvbs mb_res_ki) _)
             -> return ( map (default_to_star . extractTvbKind) tvbs
                       , default_to_star mb_res_ki )
+#endif
           _ -> fail $ "Cannot find type annotation for " ++ show proName
       Just ty -> promoteUnraveled ty
 
+#if MIN_VERSION_th_desugar(1,6,0)
+    default_to_star Nothing  = DStarT
+#else
     default_to_star Nothing  = DStarK
+#endif
     default_to_star (Just k) = k
 
 promoteLetDecEnv :: (String, String) -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
@@ -386,7 +445,11 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
 
   return (decs, let_dec_env')
   where
+#if MIN_VERSION_th_desugar(1,6,0)
+    payload_to_dec = uncurry DClosedTypeFamilyD
+#else
     payload_to_dec (name, tvbs, m_ki, eqns) = DClosedTypeFamilyD name tvbs m_ki eqns
+#endif
 
 promoteInfixDecl :: Fixity -> Name -> Maybe DDec
 promoteInfixDecl fixity name
@@ -400,7 +463,11 @@ promoteLetDecRHS :: Map Name DType       -- local type env't
                  -> (String, String)     -- let-binding prefixes
                  -> Name                 -- name of the thing being promoted
                  -> ULetDecRHS           -- body of the thing
+#if MIN_VERSION_th_desugar(1,6,0)
+                 -> PrM ( (DTypeFamilyHead, [DTySynEqn])
+#else
                  -> PrM ( (Name, [DTyVarBndr], Maybe DKind, [DTySynEqn]) -- "type family"
+#endif
                         , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
 promoteLetDecRHS type_env prefixes name (UValue exp) = do
@@ -416,7 +483,13 @@ promoteLetDecRHS type_env prefixes name (UValue exp) = do
       (exp', ann_exp) <- promoteExp exp
       let proName = promoteValNameLhsPrefix prefixes name
       defuns <- defunctionalize proName (map (const Nothing) all_locals) res_kind
+#if MIN_VERSION_th_desugar(1,6,0)
+      return ( ( DTypeFamilyHead proName (map DPlainTV all_locals)
+                                         (maybe DNoSig DKindSig res_kind)
+                                         Nothing
+#else
       return ( ( proName, map DPlainTV all_locals, res_kind
+#endif
                , [DTySynEqn (map DVarT all_locals) exp'] )
              , defuns
              , AValue (foldType (DConT proName) (map DVarT all_locals))
@@ -451,7 +524,14 @@ promoteLetDecRHS type_env prefixes name (UFunction clauses) = do
   prom_fun <- lookupVarE name
   let args     = zipWith inferMaybeKindTV tyvarNames m_argKs
       all_args = local_tvbs ++ args
+#if MIN_VERSION_th_desugar(1,6,0)
+  return ( ( DTypeFamilyHead proName all_args
+                             (maybe DNoSig DKindSig m_resK)
+                             Nothing
+           , eqns)
+#else
   return ( (proName, all_args, m_resK, eqns)
+#endif
          , defun_decs
          , AFunction prom_fun ty_num_args ann_clauses )
 
@@ -536,9 +616,17 @@ promoteExp (DLamE names exp) = do
   all_locals <- allLocals
   let all_args = all_locals ++ tyFamLamTypes
       tvbs     = map DPlainTV all_args
+#if MIN_VERSION_th_desugar(1,6,0)
+  emitDecs [DClosedTypeFamilyD
+              (DTypeFamilyHead lambdaName
+                               tvbs
+                               DNoSig
+                               Nothing)
+#else
   emitDecs [DClosedTypeFamilyD lambdaName
                                tvbs
                                Nothing
+#endif
                                [DTySynEqn (map DVarT (all_locals ++ tyNames))
                                           rhs]]
   emitDecsM $ defunctionalize lambdaName (map (const Nothing) all_args) Nothing
@@ -554,7 +642,13 @@ promoteExp (DCaseE exp matches) = do
   tyvarName  <- qNewName "t"
   let all_args = all_locals ++ [tyvarName]
       tvbs     = map DPlainTV all_args
+#if MIN_VERSION_th_desugar(1,6,0)
+  emitDecs [DClosedTypeFamilyD
+              (DTypeFamilyHead caseTFName tvbs DNoSig Nothing)
+              eqns]
+#else
   emitDecs [DClosedTypeFamilyD caseTFName tvbs Nothing eqns]
+#endif
     -- See Note [Annotate case return type] in Single
   let applied_case = prom_case `DAppT` exp'
   return ( applied_case

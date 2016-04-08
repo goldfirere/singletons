@@ -11,6 +11,8 @@
 --
 ----------------------------------------------------------------------------
 
+{-# LANGUAGE CPP #-}
+
 module Data.Singletons.Deriving.Ord ( mkOrdInstance ) where
 
 import Language.Haskell.TH.Desugar
@@ -39,7 +41,11 @@ mkOrdInstance ty cons = do
                                               compare_noneq_clauses) )] })
 
 mk_equal_clause :: Quasi q => DCon -> q DClause
+#if MIN_VERSION_th_desugar(1,6,0)
+mk_equal_clause (DCon _tvbs _cxt name fields _m_kind) = do
+#else
 mk_equal_clause (DCon _tvbs _cxt name fields) = do
+#endif
   let tys = tysOfConFields fields
   a_names <- mapM (const $ newUniqueName "a") tys
   b_names <- mapM (const $ newUniqueName "b") tys
@@ -54,8 +60,13 @@ mk_equal_clause (DCon _tvbs _cxt name fields) = do
                                           a_names b_names))
 
 mk_nonequal_clause :: (DCon, Int) -> (DCon, Int) -> DClause
+#if MIN_VERSION_th_desugar(1,6,0)
+mk_nonequal_clause (DCon _tvbs1 _cxt1 name1 fields1 _m_kind1, n1)
+                   (DCon _tvbs2 _cxt2 name2 fields2 _m_kind2, n2) =
+#else
 mk_nonequal_clause (DCon _tvbs1 _cxt1 name1 fields1, n1)
                    (DCon _tvbs2 _cxt2 name2 fields2, n2) =
+#endif
   DClause [pat1, pat2] (case n1 `compare` n2 of
                           LT -> DConE cmpLTName
                           EQ -> DConE cmpEQName

@@ -6,7 +6,7 @@ eir@cis.upenn.edu
 This file creates defunctionalization symbols for types during promotion.
 -}
 
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, ViewPatterns, CPP #-}
 
 module Data.Singletons.Promote.Defun where
 
@@ -23,7 +23,7 @@ defunInfo (DTyConI dec _instances) = buildDefunSyms dec
 defunInfo (DPrimTyConI _name _numArgs _unlifted) =
   fail $ "Building defunctionalization symbols of primitive " ++
          "type constructors not supported"
-defunInfo (DVarI _name _ty _mdec _fixity) =
+defunInfo (DVarI {}) =
   fail "Building defunctionalization symbols of values not supported"
 defunInfo (DTyVarI _name _ty) =
   fail "Building defunctionalization symbols of type variables not supported"
@@ -31,6 +31,25 @@ defunInfo (DTyVarI _name _ty) =
 buildDefunSyms :: DDec -> PrM [DDec]
 buildDefunSyms (DDataD _new_or_data _cxt tyName tvbs ctors _derivings) =
   buildDefunSymsDataD tyName tvbs ctors
+#if MIN_VERSION_th_desugar(1,6,0)
+buildDefunSyms (DClosedTypeFamilyD (DTypeFamilyHead name tvbs frs _) _) = do
+  let arg_m_kinds = map extractTvbKind tvbs
+      returnK_maybe = case frs of
+        DNoSig       -> Nothing
+        DKindSig k   -> Just k
+        DTyVarSig tv -> extractTvbKind tv
+  defunctionalize name arg_m_kinds returnK_maybe
+buildDefunSyms (DOpenTypeFamilyD (DTypeFamilyHead name tvbs frs _)) = do
+  let arg_kinds = map (default_to_star . extractTvbKind) tvbs
+      returnK_maybe = case frs of
+        DNoSig       -> Nothing
+        DKindSig k   -> Just k
+        DTyVarSig tv -> extractTvbKind tv
+      res_kind  = default_to_star returnK_maybe
+      default_to_star Nothing  = Just DStarT
+      default_to_star (Just k) = Just k
+  defunctionalize name arg_kinds res_kind
+#else
 buildDefunSyms (DClosedTypeFamilyD name tvbs returnK_maybe _) = do
   let arg_m_kinds = map extractTvbKind tvbs
   defunctionalize name arg_m_kinds returnK_maybe
@@ -40,6 +59,7 @@ buildDefunSyms (DFamilyD TypeFam name tvbs returnK_maybe) = do
       default_to_star Nothing  = Just DStarK
       default_to_star (Just k) = Just k
   defunctionalize name arg_kinds res_kind
+#endif
 buildDefunSyms (DTySynD name tvbs _type) = do
   let arg_m_kinds = map extractTvbKind tvbs
   defunctionalize name arg_m_kinds Nothing
@@ -116,12 +136,19 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
             (argKs, [resultK]) =  splitAt (length ks - 1) ks
         in (m_arg_kinds ++ (map Just argKs), Just resultK)
 
-    unravelK :: DKind -> [DKind]
+#if MIN_VERSION_th_desugar(1,6,0)
+    unravelK (DForallT _name _cxt k) = unravelK k
+    unravelK (unfoldArrowT -> Just (unfoldDConTApp -> Just (_,ks), DStarT)) =
+        concatMap unravelK ks
+    unravelK (unfoldArrowT -> Just (k1,k2)) = k1 : unravelK k2
+    unravelK t = [t]
+#else
     unravelK (DForallK _name k) = unravelK k
     unravelK (DArrowK (DConK _ ks) DStarK) =
         concatMap unravelK ks
     unravelK (DArrowK k1 k2) = k1 : unravelK k2
     unravelK t = [t]
+#endif
 
     go :: Int -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
     go _ [] _ = return []
@@ -148,6 +175,9 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
                              [con_eq_ct]
                              con_name
                              (DNormalC [])
+#if MIN_VERSION_th_desugar(1,6,0)
+                             Nothing
+#endif
           data_decl   = DDataD Data [] data_name params [con_decl] []
           app_eqn     = DTySynEqn [ foldType (DConT data_name)
                                              (map DVarT rest_names)
@@ -164,24 +194,40 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
       return $ suppress : data_decl : app_decl : decls
 
 buildTyFun :: DKind -> DKind -> DKind
+#if MIN_VERSION_th_desugar(1,6,0)
+buildTyFun k1 k2 = foldType (DConT tyFunName) [k1, k2]
+#else
 buildTyFun k1 k2 = DConK tyFunName [k1, k2]
+#endif
 
 buildTyFun_maybe :: Maybe DKind -> Maybe DKind -> Maybe DKind
 buildTyFun_maybe m_k1 m_k2 = do
   k1 <- m_k1
   k2 <- m_k2
+#if MIN_VERSION_th_desugar(1,6,0)
+  return $ foldType (DConT tyFunName) [k1, k2]
+#else
   return $ DConK tyFunName [k1, k2]
+#endif
 
 -- Counts the arity of type level function represented with TyFun constructors
 tyFunArity :: DKind -> Int
+#if MIN_VERSION_th_desugar(1,6,0)
+tyFunArity (unfoldArrowT -> Just (unfoldDConTApp -> Just (tyFunNm, [_ , b]), DStarT))
+#else
 tyFunArity (DArrowK (DConK tyFunNm [_, b]) DStarK)
+#endif
   | tyFunName == tyFunNm
   = 1 + tyFunArity b
 tyFunArity _ = 0
 
 -- Checks if type is (TyFun a b -> *)
 isTyFun :: DKind -> Bool
+#if MIN_VERSION_th_desugar(1,6,0)
+isTyFun (unfoldArrowT -> Just (unfoldDConTApp -> Just (tyFunNm, [_,_]), DStarT))
+#else
 isTyFun (DArrowK (DConK tyFunNm [_,_]) DStarK)
+#endif
   | tyFunName == tyFunNm
   = True
 isTyFun _ = False

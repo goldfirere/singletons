@@ -6,6 +6,8 @@ eir@cis.upenn.edu
 This file implements promotion of types into kinds.
 -}
 
+{-# LANGUAGE CPP #-}
+
 module Data.Singletons.Promote.Type ( promoteType, promoteUnraveled ) where
 
 import Language.Haskell.TH.Desugar
@@ -30,6 +32,21 @@ promoteType = go []
       k2 <- go [] t2
       go (k2 : args) t1
     go args     (DSigT ty _) = go args ty  -- just ignore signatures
+#if MIN_VERSION_th_desugar(1,6,0)
+    go []       (DVarT name) = return $ DVarT name
+    go _        (DVarT name) = fail $ "Cannot promote an applied type variable " ++
+                                      show name ++ "."
+    go []       (DConT name)
+      | name == typeRepName               = return DStarT
+      | name == stringName                = return $ DConT symbolName
+      | nameBase name == nameBase repName = return DStarT
+    go args     (DConT name)
+      | Just n <- unboxedTupleNameDegree_maybe name
+      = return $ foldType (DConT (tupleTypeName n)) args
+      | otherwise
+      = return $ foldType (DConT name) args
+    go [k1, k2] DArrowT = return $ addStar (foldType (DConT tyFunName) [k1, k2])
+#else
     go []       (DVarT name) = return $ DVarK name
     go _        (DVarT name) = fail $ "Cannot promote an applied type variable " ++
                                       show name ++ "."
@@ -43,6 +60,7 @@ promoteType = go []
       | otherwise
       = return $ DConK name args
     go [k1, k2] DArrowT = return $ addStar (DConK tyFunName [k1, k2])
+#endif
     go _ (DLitT _) = fail "Cannot promote a type-level literal"
 
     go args     hd = fail $ "Illegal Haskell construct encountered:\n" ++

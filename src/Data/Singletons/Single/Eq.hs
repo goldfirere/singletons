@@ -6,6 +6,8 @@ eir@cis.upenn.edu
 Defines functions to generate SEq and SDecide instances.
 -}
 
+{-# LANGUAGE ViewPatterns, CPP #-}
+
 module Data.Singletons.Single.Eq where
 
 import Language.Haskell.TH.Syntax
@@ -35,10 +37,17 @@ mkEqualityInstance k ctors (mkMeth, className, methName) = do
                             (kindParam k))
                      [DLetDec $ DFunD methName methClauses]
   where getKindVars :: DKind -> [DKind]
+#if MIN_VERSION_th_desugar(1,6,0)
+        getKindVars (DVarT x)         = [DVarT x]
+        getKindVars DStarT            = []
+        getKindVars (unfoldArrowT -> Just (arg,res)) = concatMap getKindVars [arg, res]
+        getKindVars (unfoldDConTApp -> Just (_,args)) = concatMap getKindVars args
+#else
         getKindVars (DVarK x)         = [DVarK x]
         getKindVars (DConK _ args)    = concatMap getKindVars args
         getKindVars DStarK            = []
         getKindVars (DArrowK arg res) = concatMap getKindVars [arg, res]
+#endif
         getKindVars other             =
           error ("getKindVars sees an unusual kind: " ++ show other)
 

@@ -6,6 +6,8 @@ eir@cis.upenn.edu
 Singletonizes types.
 -}
 
+{-# LANGUAGE CPP #-}
+
 module Data.Singletons.Single.Type where
 
 import Language.Haskell.TH.Desugar
@@ -52,3 +54,6 @@ singPredRec ctx (DConPr n)
     kis <- mapM promoteType ctx
     let sName = singClassName n
     return $ foldl DAppPr (DConPr sName) (map kindParam kis)
+#if MIN_VERSION_th_desugar(1,6,0)
+singPredRec _ DWildCardPr = fail "Singling of type wildcard constraint not yet supported"
+#endif

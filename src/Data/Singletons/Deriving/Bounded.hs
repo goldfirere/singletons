@@ -11,6 +11,8 @@
 --
 ----------------------------------------------------------------------------
 
+{-# LANGUAGE CPP #-}
+
 module Data.Singletons.Deriving.Bounded where
 
 import Language.Haskell.TH.Syntax
@@ -31,14 +33,23 @@ mkBoundedInstance ty cons = do
   -- of Haskell 2010 Language Report.
   -- Note that order of conditions below is important.
   when (null cons
+#if MIN_VERSION_th_desugar(1,6,0)
+       || (any (\(DCon _ _ _ f _) -> not . null . tysOfConFields $ f) cons
+#else
        || (any (\(DCon _ _ _ f) -> not . null . tysOfConFields $ f) cons
+#endif
             && (not . null . tail $ cons))) $
        fail ("Can't derive Bounded instance for "
              ++ pprint (typeToTH ty) ++ ".")
   -- at this point we know that either we have a datatype that has only one
   -- constructor or a datatype where each constructor is nullary
+#if MIN_VERSION_th_desugar(1,6,0)
+  let (DCon _ _ minName fields _) = head cons
+      (DCon _ _ maxName _      _) = last cons
+#else
   let (DCon _ _ minName fields) = head cons
       (DCon _ _ maxName _)      = last cons
+#endif
       fieldsCount   = length $ tysOfConFields fields
       (minRHS, maxRHS) = case fieldsCount of
         0 -> (DConE minName, DConE maxName)

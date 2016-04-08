@@ -11,6 +11,8 @@
 --
 ----------------------------------------------------------------------------
 
+{-# LANGUAGE CPP #-}
+
 module Data.Singletons.Deriving.Infer ( inferConstraints ) where
 
 import Language.Haskell.TH.Desugar
@@ -21,4 +23,8 @@ import Data.Generics.Twins
 inferConstraints :: DPred -> [DCon] -> DCxt
 inferConstraints pr = nubBy geq . concatMap infer_ct
   where
+#if MIN_VERSION_th_desugar(1,6,0)
+    infer_ct (DCon _ _ _ fields _) = map (pr `DAppPr`) (tysOfConFields fields)
+#else
     infer_ct (DCon _ _ _ fields) = map (pr `DAppPr`) (tysOfConFields fields)
+#endif
