@@ -13,26 +13,28 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     id x = x
     idFoo :: forall c a. c -> a -> a
     idFoo _ = id
-    type IdSym1 (t :: a) = Id t
+    type IdSym1 (t :: a0123456789) = Id t
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) IdSym0KindInference GHC.Tuple.())
-    data IdSym0 (l :: TyFun a a)
+    data IdSym0 (l :: TyFun a0123456789 a0123456789)
       = forall arg. KindOf (Apply IdSym0 arg) ~ KindOf (IdSym1 arg) =>
         IdSym0KindInference
     type instance Apply IdSym0 l = IdSym1 l
-    type IdFooSym2 (t :: c) (t :: a) = IdFoo t t
+    type IdFooSym2 (t :: c0123456789) (t :: a0123456789) = IdFoo t t
     instance SuppressUnusedWarnings IdFooSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) IdFooSym1KindInference GHC.Tuple.())
-    data IdFooSym1 (l :: c) (l :: TyFun a a)
+    data IdFooSym1 (l :: c0123456789)
+                   (l :: TyFun a0123456789 a0123456789)
       = forall arg. KindOf (Apply (IdFooSym1 l) arg) ~ KindOf (IdFooSym2 l arg) =>
         IdFooSym1KindInference
     type instance Apply (IdFooSym1 l) l = IdFooSym2 l l
     instance SuppressUnusedWarnings IdFooSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) IdFooSym0KindInference GHC.Tuple.())
-    data IdFooSym0 (l :: TyFun c (TyFun a a -> *))
+    data IdFooSym0 (l :: TyFun c0123456789 (TyFun a0123456789 a0123456789
+                                            -> *))
       = forall arg. KindOf (Apply IdFooSym0 arg) ~ KindOf (IdFooSym1 arg) =>
         IdFooSym0KindInference
     type instance Apply IdFooSym0 l = IdFooSym1 l

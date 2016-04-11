@@ -15,11 +15,11 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     instance PEq (KProxy :: KProxy (Maybe k)) where
       type (:==) (a :: Maybe k) (b :: Maybe k) = Equals_0123456789 a b
     type NothingSym0 = Nothing
-    type JustSym1 (t :: a) = Just t
+    type JustSym1 (t :: a0123456789) = Just t
     instance SuppressUnusedWarnings JustSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) JustSym0KindInference GHC.Tuple.())
-    data JustSym0 (l :: TyFun a (Maybe a))
+    data JustSym0 (l :: TyFun a0123456789 (Maybe a0123456789))
       = forall arg. KindOf (Apply JustSym0 arg) ~ KindOf (JustSym1 arg) =>
         JustSym0KindInference
     type instance Apply JustSym0 l = JustSym1 l

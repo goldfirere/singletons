@@ -22,19 +22,19 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     type T1Sym0 = T1
     type family T1 where
       T1 = Apply MethSym0 TrueSym0
-    type MethSym1 (t :: a) = Meth t
+    type MethSym1 (t :: a0123456789) = Meth t
     instance SuppressUnusedWarnings MethSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) MethSym0KindInference GHC.Tuple.())
-    data MethSym0 (l :: TyFun a a)
+    data MethSym0 (l :: TyFun a0123456789 a0123456789)
       = forall arg. KindOf (Apply MethSym0 arg) ~ KindOf (MethSym1 arg) =>
         MethSym0KindInference
     type instance Apply MethSym0 l = MethSym1 l
-    type L2rSym1 (t :: a) = L2r t
+    type L2rSym1 (t :: a0123456789) = L2r t
     instance SuppressUnusedWarnings L2rSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) L2rSym0KindInference GHC.Tuple.())
-    data L2rSym0 (l :: TyFun a b)
+    data L2rSym0 (l :: TyFun a0123456789 b0123456789)
       = forall arg. KindOf (Apply L2rSym0 arg) ~ KindOf (L2rSym1 arg) =>
         L2rSym0KindInference
     type instance Apply L2rSym0 l = L2rSym1 l

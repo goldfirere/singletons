@@ -16,18 +16,20 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     complex = Pair (Pair (Just Zero) Zero) False
     tuple = (False, Just Zero, True)
     aList = [Zero, Succ Zero, Succ (Succ Zero)]
-    type PairSym2 (t :: a) (t :: b) = Pair t t
+    type PairSym2 (t :: a0123456789) (t :: b0123456789) = Pair t t
     instance SuppressUnusedWarnings PairSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PairSym1KindInference GHC.Tuple.())
-    data PairSym1 (l :: a) (l :: TyFun b (Pair a b))
+    data PairSym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 (Pair a0123456789 b0123456789))
       = forall arg. KindOf (Apply (PairSym1 l) arg) ~ KindOf (PairSym2 l arg) =>
         PairSym1KindInference
     type instance Apply (PairSym1 l) l = PairSym2 l l
     instance SuppressUnusedWarnings PairSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PairSym0KindInference GHC.Tuple.())
-    data PairSym0 (l :: TyFun a (TyFun b (Pair a b) -> *))
+    data PairSym0 (l :: TyFun a0123456789 (TyFun b0123456789 (Pair a0123456789 b0123456789)
+                                           -> *))
       = forall arg. KindOf (Apply PairSym0 arg) ~ KindOf (PairSym1 arg) =>
         PairSym0KindInference
     type instance Apply PairSym0 l = PairSym1 l
@@ -129,19 +131,6 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     foo2 t@(# x, y #) = case t of { (# a, b #) -> \ _ -> a b }
     silly :: forall a. a -> ()
     silly x = case x of { _ -> GHC.Tuple.() }
-    type Let0123456789Scrutinee_0123456789Sym1 t =
-        Let0123456789Scrutinee_0123456789 t
-    instance SuppressUnusedWarnings Let0123456789Scrutinee_0123456789Sym0 where
-      suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,)
-               Let0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
-    data Let0123456789Scrutinee_0123456789Sym0 l
-      = forall arg. KindOf (Apply Let0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym1 arg) =>
-        Let0123456789Scrutinee_0123456789Sym0KindInference
-    type instance Apply Let0123456789Scrutinee_0123456789Sym0 l = Let0123456789Scrutinee_0123456789Sym1 l
-    type family Let0123456789Scrutinee_0123456789 x where
-      Let0123456789Scrutinee_0123456789 x = x
     type family Case_0123456789 x t where
       Case_0123456789 x _z_0123456789 = Tuple0Sym0
     type Let0123456789TSym2 t t = Let0123456789T t t
@@ -161,28 +150,6 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789TSym0 l = Let0123456789TSym1 l
     type family Let0123456789T x y where
       Let0123456789T x y = Apply (Apply Tuple2Sym0 x) y
-    type Let0123456789Scrutinee_0123456789Sym2 t t =
-        Let0123456789Scrutinee_0123456789 t t
-    instance SuppressUnusedWarnings Let0123456789Scrutinee_0123456789Sym1 where
-      suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,)
-               Let0123456789Scrutinee_0123456789Sym1KindInference GHC.Tuple.())
-    data Let0123456789Scrutinee_0123456789Sym1 l l
-      = forall arg. KindOf (Apply (Let0123456789Scrutinee_0123456789Sym1 l) arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym2 l arg) =>
-        Let0123456789Scrutinee_0123456789Sym1KindInference
-    type instance Apply (Let0123456789Scrutinee_0123456789Sym1 l) l = Let0123456789Scrutinee_0123456789Sym2 l l
-    instance SuppressUnusedWarnings Let0123456789Scrutinee_0123456789Sym0 where
-      suppressUnusedWarnings _
-        = snd
-            (GHC.Tuple.(,)
-               Let0123456789Scrutinee_0123456789Sym0KindInference GHC.Tuple.())
-    data Let0123456789Scrutinee_0123456789Sym0 l
-      = forall arg. KindOf (Apply Let0123456789Scrutinee_0123456789Sym0 arg) ~ KindOf (Let0123456789Scrutinee_0123456789Sym1 arg) =>
-        Let0123456789Scrutinee_0123456789Sym0KindInference
-    type instance Apply Let0123456789Scrutinee_0123456789Sym0 l = Let0123456789Scrutinee_0123456789Sym1 l
-    type family Let0123456789Scrutinee_0123456789 x y where
-      Let0123456789Scrutinee_0123456789 x y = Let0123456789TSym2 x y
     type family Case_0123456789 x y a b arg_0123456789 t where
       Case_0123456789 x y a b arg_0123456789 _z_0123456789 = a
     type family Lambda_0123456789 x y a b t where
@@ -290,27 +257,27 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789 (Pair y_0123456789 _z_0123456789) = y_0123456789
     type family Case_0123456789 t where
       Case_0123456789 (Pair _z_0123456789 y_0123456789) = y_0123456789
-    type SillySym1 (t :: a) = Silly t
+    type SillySym1 (t :: a0123456789) = Silly t
     instance SuppressUnusedWarnings SillySym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SillySym0KindInference GHC.Tuple.())
-    data SillySym0 (l :: TyFun a ())
+    data SillySym0 (l :: TyFun a0123456789 ())
       = forall arg. KindOf (Apply SillySym0 arg) ~ KindOf (SillySym1 arg) =>
         SillySym0KindInference
     type instance Apply SillySym0 l = SillySym1 l
-    type Foo2Sym1 (t :: (a, b)) = Foo2 t
+    type Foo2Sym1 (t :: (a0123456789, b0123456789)) = Foo2 t
     instance SuppressUnusedWarnings Foo2Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo2Sym0KindInference GHC.Tuple.())
-    data Foo2Sym0 (l :: TyFun (a, b) a)
+    data Foo2Sym0 (l :: TyFun (a0123456789, b0123456789) a0123456789)
       = forall arg. KindOf (Apply Foo2Sym0 arg) ~ KindOf (Foo2Sym1 arg) =>
         Foo2Sym0KindInference
     type instance Apply Foo2Sym0 l = Foo2Sym1 l
-    type Foo1Sym1 (t :: (a, b)) = Foo1 t
+    type Foo1Sym1 (t :: (a0123456789, b0123456789)) = Foo1 t
     instance SuppressUnusedWarnings Foo1Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
-    data Foo1Sym0 (l :: TyFun (a, b) a)
+    data Foo1Sym0 (l :: TyFun (a0123456789, b0123456789) a0123456789)
       = forall arg. KindOf (Apply Foo1Sym0 arg) ~ KindOf (Foo1Sym1 arg) =>
         Foo1Sym0KindInference
     type instance Apply Foo1Sym0 l = Foo1Sym1 l
@@ -329,10 +296,9 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type X_0123456789Sym0 = X_0123456789
     type X_0123456789Sym0 = X_0123456789
     type family Silly (a :: a) :: () where
-      Silly x = Case_0123456789 x (Let0123456789Scrutinee_0123456789Sym1 x)
+      Silly x = Case_0123456789 x x
     type family Foo2 (a :: (a, b)) :: a where
-      Foo2 '(x,
-             y) = Case_0123456789 x y (Let0123456789Scrutinee_0123456789Sym2 x y)
+      Foo2 '(x, y) = Case_0123456789 x y (Let0123456789TSym2 x y)
     type family Foo1 (a :: (a, b)) :: a where
       Foo1 '(x, y) = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
     type family Lsz :: Nat where
@@ -387,19 +353,15 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall x. t ~ x => Sing x -> Sing (Apply SillySym0 x :: ())
           lambda x
-            = let
-                sScrutinee_0123456789 ::
-                  Sing (Let0123456789Scrutinee_0123456789Sym1 x)
-                sScrutinee_0123456789 = x
-              in  case sScrutinee_0123456789 of {
-                    _s_z_0123456789
-                      -> let
-                           lambda ::
-                             forall _z_0123456789. _z_0123456789 ~ Let0123456789Scrutinee_0123456789Sym1 x =>
-                             Sing _z_0123456789 -> Sing (Case_0123456789 x _z_0123456789)
-                           lambda _z_0123456789 = STuple0
-                         in lambda _s_z_0123456789 } ::
-                    Sing (Case_0123456789 x (Let0123456789Scrutinee_0123456789Sym1 x))
+            = case x of {
+                _s_z_0123456789
+                  -> let
+                       lambda ::
+                         forall _z_0123456789. _z_0123456789 ~ x =>
+                         Sing _z_0123456789 -> Sing (Case_0123456789 x _z_0123456789)
+                       lambda _z_0123456789 = STuple0
+                     in lambda _s_z_0123456789 } ::
+                Sing (Case_0123456789 x x)
         in lambda sX
     sFoo2 (STuple2 sX sY)
       = let
@@ -413,17 +375,13 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                 sT :: Sing (Let0123456789TSym2 x y)
                 sT
                   = applySing
-                      (applySing (singFun2 (Proxy :: Proxy Tuple2Sym0) STuple2) x) y in
-              let
-                sScrutinee_0123456789 ::
-                  Sing (Let0123456789Scrutinee_0123456789Sym2 x y)
-                sScrutinee_0123456789 = sT
-              in  case sScrutinee_0123456789 of {
+                      (applySing (singFun2 (Proxy :: Proxy Tuple2Sym0) STuple2) x) y
+              in  case sT of {
                     STuple2 sA sB
                       -> let
                            lambda ::
                              forall a
-                                    b. Apply (Apply Tuple2Sym0 a) b ~ Let0123456789Scrutinee_0123456789Sym2 x y =>
+                                    b. Apply (Apply Tuple2Sym0 a) b ~ Let0123456789TSym2 x y =>
                              Sing a
                              -> Sing b
                                 -> Sing (Case_0123456789 x y (Apply (Apply Tuple2Sym0 a) b))
@@ -452,7 +410,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                           in lambda sArg_0123456789))
                                  b
                          in lambda sA sB } ::
-                    Sing (Case_0123456789 x y (Let0123456789Scrutinee_0123456789Sym2 x y))
+                    Sing (Case_0123456789 x y (Let0123456789TSym2 x y))
         in lambda sX sY
     sFoo1 (STuple2 sX sY)
       = let

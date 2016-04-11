@@ -1,7 +1,11 @@
 {-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies,
              TemplateHaskell, GADTs, UndecidableInstances, RankNTypes,
-             ScopedTypeVariables, FlexibleContexts #-}
+             ScopedTypeVariables, FlexibleContexts, CPP #-}
 {-# OPTIONS_GHC -O0 #-}
+#if __GLASGOW_HASKELL__ >= 711
+{-# LANGUAGE TypeInType #-}
+#endif
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Singletons.Prelude.List
@@ -518,7 +522,8 @@ $(singletonsOnly [d|
 
   (\\)                    :: (Eq a) => [a] -> [a] -> [a]
   (\\)                    =  foldl (flip delete)
-  infix 5 \\
+  infix 5 \\      -- This comment is necessary so CPP doesn't treat the
+                  -- trailing backslash as a line splice. Urgh.
 
   deleteBy                :: (a -> a -> Bool) -> a -> [a] -> [a]
   deleteBy _  _ []        = []

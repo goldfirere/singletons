@@ -11,7 +11,7 @@ Users of the package should not need to consult this file.
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses, StandaloneDeriving,
              UndecidableInstances, MagicHash, UnboxedTuples,
-             LambdaCase, CPP #-}
+             LambdaCase, CPP, NoMonomorphismRestriction #-}
 
 module Data.Singletons.Util where
 
@@ -231,28 +231,43 @@ countArgs :: DType -> Int
 countArgs ty = length args
   where (_, _, args, _) = unravel ty
 
--- changes all Names to not be Exact names
-noExacts :: Data a => a -> a
-noExacts = everywhere (mkT no_exact_name)
+-- changes all TyVars not to be NameU's. Workaround for GHC#11812
+noExactTyVars :: Data a => a -> a
+noExactTyVars = everywhere go
   where
+    go :: Data a => a -> a
+    go = mkT fix_tvb `extT` fix_ty `extT` fix_inj_ann
+
     no_exact_name :: Name -> Name
     no_exact_name (Name (OccName occ) (NameU unique)) = mkName (occ ++ show unique)
-    no_exact_name (Name (OccName occ) (NameL unique)) = mkName (occ ++ show unique)
     no_exact_name n                                   = n
+
+    fix_tvb (DPlainTV n)    = DPlainTV (no_exact_name n)
+    fix_tvb (DKindedTV n k) = DKindedTV (no_exact_name n) k
+
+    fix_ty (DVarT n)           = DVarT (no_exact_name n)
+    fix_ty ty                  = ty
+
+    fix_inj_ann (InjectivityAnn lhs rhs)
+      = InjectivityAnn (no_exact_name lhs) (map no_exact_name rhs)
 
 substKind :: Map Name DKind -> DKind -> DKind
 substKind = substType
 
 substType :: Map Name DType -> DType -> DType
 substType subst ty | Map.null subst = ty
-substType subst (DForallT tvbs cxt inner_ty) =
-  let subst'    = foldr Map.delete subst (map extractTvbName tvbs)
-      cxt'      = map (substPred subst') cxt
-      inner_ty' = substType subst' inner_ty
-  in
-  DForallT tvbs cxt' inner_ty'
+substType subst (DForallT tvbs cxt inner_ty)
+  = DForallT tvbs' cxt' inner_ty'
+  where
+    (subst', tvbs') = mapAccumL subst_tvb subst tvbs
+    cxt'            = map (substPred subst') cxt
+    inner_ty'       = substType subst' inner_ty
+
+    subst_tvb s tvb@(DPlainTV n) = (Map.delete n s, tvb)
+    subst_tvb s (DKindedTV n k)  = (Map.delete n s, DKindedTV n (substKind s k))
+
 substType subst (DAppT ty1 ty2) = substType subst ty1 `DAppT` substType subst ty2
-substType subst (DSigT ty ki) = substType subst ty `DSigT` ki
+substType subst (DSigT ty ki) = substType subst ty `DSigT` substType subst ki
 substType subst (DVarT n) =
   case Map.lookup n subst of
     Just ki -> ki

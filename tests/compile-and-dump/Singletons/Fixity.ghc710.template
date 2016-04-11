@@ -16,18 +16,20 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     (====) :: forall a. a -> a -> a
     (====) a _ = a
     infix 4 ====
-    type (:====$$$) (t :: a) (t :: a) = (:====) t t
+    type (:====$$$) (t :: a0123456789) (t :: a0123456789) = (:====) t t
     instance SuppressUnusedWarnings (:====$$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:====$$###) GHC.Tuple.())
-    data (:====$$) (l :: a) (l :: TyFun a a)
+    data (:====$$) (l :: a0123456789)
+                   (l :: TyFun a0123456789 a0123456789)
       = forall arg. KindOf (Apply ((:====$$) l) arg) ~ KindOf ((:====$$$) l arg) =>
         :====$$###
     type instance Apply ((:====$$) l) l = (:====$$$) l l
     instance SuppressUnusedWarnings (:====$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:====$###) GHC.Tuple.())
-    data (:====$) (l :: TyFun a (TyFun a a -> *))
+    data (:====$) (l :: TyFun a0123456789 (TyFun a0123456789 a0123456789
+                                           -> *))
       = forall arg. KindOf (Apply (:====$) arg) ~ KindOf ((:====$$) arg) =>
         :====$###
     type instance Apply (:====$) l = (:====$$) l
@@ -35,18 +37,19 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
       (:====) a _z_0123456789 = a
     infix 4 :====
     infix 4 :<=>
-    type (:<=>$$$) (t :: a) (t :: a) = (:<=>) t t
+    type (:<=>$$$) (t :: a0123456789) (t :: a0123456789) = (:<=>) t t
     instance SuppressUnusedWarnings (:<=>$$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:<=>$$###) GHC.Tuple.())
-    data (:<=>$$) (l :: a) (l :: TyFun a Ordering)
+    data (:<=>$$) (l :: a0123456789) (l :: TyFun a0123456789 Ordering)
       = forall arg. KindOf (Apply ((:<=>$$) l) arg) ~ KindOf ((:<=>$$$) l arg) =>
         :<=>$$###
     type instance Apply ((:<=>$$) l) l = (:<=>$$$) l l
     instance SuppressUnusedWarnings (:<=>$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:<=>$###) GHC.Tuple.())
-    data (:<=>$) (l :: TyFun a (TyFun a Ordering -> *))
+    data (:<=>$) (l :: TyFun a0123456789 (TyFun a0123456789 Ordering
+                                          -> *))
       = forall arg. KindOf (Apply (:<=>$) arg) ~ KindOf ((:<=>$$) arg) =>
         :<=>$###
     type instance Apply (:<=>$) l = (:<=>$$) l

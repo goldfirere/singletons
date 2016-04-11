@@ -1,6 +1,9 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies,
              DataKinds, PolyKinds, UndecidableInstances, GADTs,
-             RankNTypes #-}
+             RankNTypes, CPP #-}
+#if __GLASGOW_HASKELL__ >= 711
+{-# LANGUAGE TypeInType #-}
+#endif
 
 -----------------------------------------------------------------------------
 -- |

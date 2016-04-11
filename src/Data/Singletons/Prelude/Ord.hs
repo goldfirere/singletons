@@ -43,8 +43,11 @@ module Data.Singletons.Prelude.Ord (
 import Data.Singletons.Single
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
-import Data.Singletons.Prelude.Bool
 import Data.Singletons.Util
+
+#if __GLASGOW_HASKELL__ < 711
+import Data.Singletons ( Sing )
+#endif
 
 $(singletonsOnly [d|
   class  (Eq a) => Ord a  where

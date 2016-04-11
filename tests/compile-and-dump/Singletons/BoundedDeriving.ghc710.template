@@ -37,11 +37,11 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type CSym0 = C
     type DSym0 = D
     type ESym0 = E
-    type Foo3Sym1 (t :: a) = Foo3 t
+    type Foo3Sym1 (t :: a0123456789) = Foo3 t
     instance SuppressUnusedWarnings Foo3Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo3Sym0KindInference GHC.Tuple.())
-    data Foo3Sym0 (l :: TyFun a (Foo3 a))
+    data Foo3Sym0 (l :: TyFun a0123456789 (Foo3 a0123456789))
       = forall arg. KindOf (Apply Foo3Sym0 arg) ~ KindOf (Foo3Sym1 arg) =>
         Foo3Sym0KindInference
     type instance Apply Foo3Sym0 l = Foo3Sym1 l

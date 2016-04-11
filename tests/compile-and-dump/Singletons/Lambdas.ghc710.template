@@ -40,18 +40,20 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Foo a b = Foo a b
     foo8 :: forall a b. Foo a b -> a
     foo8 x = \ (Foo a _) -> a x
-    type FooSym2 (t :: a) (t :: b) = Foo t t
+    type FooSym2 (t :: a0123456789) (t :: b0123456789) = Foo t t
     instance SuppressUnusedWarnings FooSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FooSym1KindInference GHC.Tuple.())
-    data FooSym1 (l :: a) (l :: TyFun b (Foo a b))
+    data FooSym1 (l :: a0123456789)
+                 (l :: TyFun b0123456789 (Foo a0123456789 b0123456789))
       = forall arg. KindOf (Apply (FooSym1 l) arg) ~ KindOf (FooSym2 l arg) =>
         FooSym1KindInference
     type instance Apply (FooSym1 l) l = FooSym2 l l
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
-    data FooSym0 (l :: TyFun a (TyFun b (Foo a b) -> *))
+    data FooSym0 (l :: TyFun a0123456789 (TyFun b0123456789 (Foo a0123456789 b0123456789)
+                                          -> *))
       = forall arg. KindOf (Apply FooSym0 arg) ~ KindOf (FooSym1 arg) =>
         FooSym0KindInference
     type instance Apply FooSym0 l = FooSym1 l
@@ -359,131 +361,151 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
-    type Foo8Sym1 (t :: Foo a b) = Foo8 t
+    type Foo8Sym1 (t :: Foo a0123456789 b0123456789) = Foo8 t
     instance SuppressUnusedWarnings Foo8Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo8Sym0KindInference GHC.Tuple.())
-    data Foo8Sym0 (l :: TyFun (Foo a b) a)
+    data Foo8Sym0 (l :: TyFun (Foo a0123456789 b0123456789) a0123456789)
       = forall arg. KindOf (Apply Foo8Sym0 arg) ~ KindOf (Foo8Sym1 arg) =>
         Foo8Sym0KindInference
     type instance Apply Foo8Sym0 l = Foo8Sym1 l
-    type Foo7Sym2 (t :: a) (t :: b) = Foo7 t t
+    type Foo7Sym2 (t :: a0123456789) (t :: b0123456789) = Foo7 t t
     instance SuppressUnusedWarnings Foo7Sym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo7Sym1KindInference GHC.Tuple.())
-    data Foo7Sym1 (l :: a) (l :: TyFun b b)
+    data Foo7Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 b0123456789)
       = forall arg. KindOf (Apply (Foo7Sym1 l) arg) ~ KindOf (Foo7Sym2 l arg) =>
         Foo7Sym1KindInference
     type instance Apply (Foo7Sym1 l) l = Foo7Sym2 l l
     instance SuppressUnusedWarnings Foo7Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo7Sym0KindInference GHC.Tuple.())
-    data Foo7Sym0 (l :: TyFun a (TyFun b b -> *))
+    data Foo7Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 b0123456789
+                                           -> *))
       = forall arg. KindOf (Apply Foo7Sym0 arg) ~ KindOf (Foo7Sym1 arg) =>
         Foo7Sym0KindInference
     type instance Apply Foo7Sym0 l = Foo7Sym1 l
-    type Foo6Sym2 (t :: a) (t :: b) = Foo6 t t
+    type Foo6Sym2 (t :: a0123456789) (t :: b0123456789) = Foo6 t t
     instance SuppressUnusedWarnings Foo6Sym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo6Sym1KindInference GHC.Tuple.())
-    data Foo6Sym1 (l :: a) (l :: TyFun b a)
+    data Foo6Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 a0123456789)
       = forall arg. KindOf (Apply (Foo6Sym1 l) arg) ~ KindOf (Foo6Sym2 l arg) =>
         Foo6Sym1KindInference
     type instance Apply (Foo6Sym1 l) l = Foo6Sym2 l l
     instance SuppressUnusedWarnings Foo6Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo6Sym0KindInference GHC.Tuple.())
-    data Foo6Sym0 (l :: TyFun a (TyFun b a -> *))
+    data Foo6Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 a0123456789
+                                           -> *))
       = forall arg. KindOf (Apply Foo6Sym0 arg) ~ KindOf (Foo6Sym1 arg) =>
         Foo6Sym0KindInference
     type instance Apply Foo6Sym0 l = Foo6Sym1 l
-    type Foo5Sym2 (t :: a) (t :: b) = Foo5 t t
+    type Foo5Sym2 (t :: a0123456789) (t :: b0123456789) = Foo5 t t
     instance SuppressUnusedWarnings Foo5Sym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo5Sym1KindInference GHC.Tuple.())
-    data Foo5Sym1 (l :: a) (l :: TyFun b b)
+    data Foo5Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 b0123456789)
       = forall arg. KindOf (Apply (Foo5Sym1 l) arg) ~ KindOf (Foo5Sym2 l arg) =>
         Foo5Sym1KindInference
     type instance Apply (Foo5Sym1 l) l = Foo5Sym2 l l
     instance SuppressUnusedWarnings Foo5Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo5Sym0KindInference GHC.Tuple.())
-    data Foo5Sym0 (l :: TyFun a (TyFun b b -> *))
+    data Foo5Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 b0123456789
+                                           -> *))
       = forall arg. KindOf (Apply Foo5Sym0 arg) ~ KindOf (Foo5Sym1 arg) =>
         Foo5Sym0KindInference
     type instance Apply Foo5Sym0 l = Foo5Sym1 l
-    type Foo4Sym3 (t :: a) (t :: b) (t :: c) = Foo4 t t t
+    type Foo4Sym3 (t :: a0123456789)
+                  (t :: b0123456789)
+                  (t :: c0123456789) =
+        Foo4 t t t
     instance SuppressUnusedWarnings Foo4Sym2 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo4Sym2KindInference GHC.Tuple.())
-    data Foo4Sym2 (l :: a) (l :: b) (l :: TyFun c a)
+    data Foo4Sym2 (l :: a0123456789)
+                  (l :: b0123456789)
+                  (l :: TyFun c0123456789 a0123456789)
       = forall arg. KindOf (Apply (Foo4Sym2 l l) arg) ~ KindOf (Foo4Sym3 l l arg) =>
         Foo4Sym2KindInference
     type instance Apply (Foo4Sym2 l l) l = Foo4Sym3 l l l
     instance SuppressUnusedWarnings Foo4Sym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo4Sym1KindInference GHC.Tuple.())
-    data Foo4Sym1 (l :: a) (l :: TyFun b (TyFun c a -> *))
+    data Foo4Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 (TyFun c0123456789 a0123456789 -> *))
       = forall arg. KindOf (Apply (Foo4Sym1 l) arg) ~ KindOf (Foo4Sym2 l arg) =>
         Foo4Sym1KindInference
     type instance Apply (Foo4Sym1 l) l = Foo4Sym2 l l
     instance SuppressUnusedWarnings Foo4Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo4Sym0KindInference GHC.Tuple.())
-    data Foo4Sym0 (l :: TyFun a (TyFun b (TyFun c a -> *) -> *))
+    data Foo4Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 (TyFun c0123456789 a0123456789
+                                                              -> *)
+                                           -> *))
       = forall arg. KindOf (Apply Foo4Sym0 arg) ~ KindOf (Foo4Sym1 arg) =>
         Foo4Sym0KindInference
     type instance Apply Foo4Sym0 l = Foo4Sym1 l
-    type Foo3Sym1 (t :: a) = Foo3 t
+    type Foo3Sym1 (t :: a0123456789) = Foo3 t
     instance SuppressUnusedWarnings Foo3Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo3Sym0KindInference GHC.Tuple.())
-    data Foo3Sym0 (l :: TyFun a a)
+    data Foo3Sym0 (l :: TyFun a0123456789 a0123456789)
       = forall arg. KindOf (Apply Foo3Sym0 arg) ~ KindOf (Foo3Sym1 arg) =>
         Foo3Sym0KindInference
     type instance Apply Foo3Sym0 l = Foo3Sym1 l
-    type Foo2Sym2 (t :: a) (t :: b) = Foo2 t t
+    type Foo2Sym2 (t :: a0123456789) (t :: b0123456789) = Foo2 t t
     instance SuppressUnusedWarnings Foo2Sym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo2Sym1KindInference GHC.Tuple.())
-    data Foo2Sym1 (l :: a) (l :: TyFun b a)
+    data Foo2Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 a0123456789)
       = forall arg. KindOf (Apply (Foo2Sym1 l) arg) ~ KindOf (Foo2Sym2 l arg) =>
         Foo2Sym1KindInference
     type instance Apply (Foo2Sym1 l) l = Foo2Sym2 l l
     instance SuppressUnusedWarnings Foo2Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo2Sym0KindInference GHC.Tuple.())
-    data Foo2Sym0 (l :: TyFun a (TyFun b a -> *))
+    data Foo2Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 a0123456789
+                                           -> *))
       = forall arg. KindOf (Apply Foo2Sym0 arg) ~ KindOf (Foo2Sym1 arg) =>
         Foo2Sym0KindInference
     type instance Apply Foo2Sym0 l = Foo2Sym1 l
-    type Foo1Sym2 (t :: a) (t :: b) = Foo1 t t
+    type Foo1Sym2 (t :: a0123456789) (t :: b0123456789) = Foo1 t t
     instance SuppressUnusedWarnings Foo1Sym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo1Sym1KindInference GHC.Tuple.())
-    data Foo1Sym1 (l :: a) (l :: TyFun b a)
+    data Foo1Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 a0123456789)
       = forall arg. KindOf (Apply (Foo1Sym1 l) arg) ~ KindOf (Foo1Sym2 l arg) =>
         Foo1Sym1KindInference
     type instance Apply (Foo1Sym1 l) l = Foo1Sym2 l l
     instance SuppressUnusedWarnings Foo1Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
-    data Foo1Sym0 (l :: TyFun a (TyFun b a -> *))
+    data Foo1Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 a0123456789
+                                           -> *))
       = forall arg. KindOf (Apply Foo1Sym0 arg) ~ KindOf (Foo1Sym1 arg) =>
         Foo1Sym0KindInference
     type instance Apply Foo1Sym0 l = Foo1Sym1 l
-    type Foo0Sym2 (t :: a) (t :: b) = Foo0 t t
+    type Foo0Sym2 (t :: a0123456789) (t :: b0123456789) = Foo0 t t
     instance SuppressUnusedWarnings Foo0Sym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo0Sym1KindInference GHC.Tuple.())
-    data Foo0Sym1 (l :: a) (l :: TyFun b a)
+    data Foo0Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 a0123456789)
       = forall arg. KindOf (Apply (Foo0Sym1 l) arg) ~ KindOf (Foo0Sym2 l arg) =>
         Foo0Sym1KindInference
     type instance Apply (Foo0Sym1 l) l = Foo0Sym2 l l
     instance SuppressUnusedWarnings Foo0Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo0Sym0KindInference GHC.Tuple.())
-    data Foo0Sym0 (l :: TyFun a (TyFun b a -> *))
+    data Foo0Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 a0123456789
+                                           -> *))
       = forall arg. KindOf (Apply Foo0Sym0 arg) ~ KindOf (Foo0Sym1 arg) =>
         Foo0Sym0KindInference
     type instance Apply Foo0Sym0 l = Foo0Sym1 l

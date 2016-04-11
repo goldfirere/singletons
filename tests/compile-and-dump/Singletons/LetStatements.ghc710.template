@@ -519,19 +519,19 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Foo14Sym0 arg) ~ KindOf (Foo14Sym1 arg) =>
         Foo14Sym0KindInference
     type instance Apply Foo14Sym0 l = Foo14Sym1 l
-    type Foo13_Sym1 (t :: a) = Foo13_ t
+    type Foo13_Sym1 (t :: a0123456789) = Foo13_ t
     instance SuppressUnusedWarnings Foo13_Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo13_Sym0KindInference GHC.Tuple.())
-    data Foo13_Sym0 (l :: TyFun a a)
+    data Foo13_Sym0 (l :: TyFun a0123456789 a0123456789)
       = forall arg. KindOf (Apply Foo13_Sym0 arg) ~ KindOf (Foo13_Sym1 arg) =>
         Foo13_Sym0KindInference
     type instance Apply Foo13_Sym0 l = Foo13_Sym1 l
-    type Foo13Sym1 (t :: a) = Foo13 t
+    type Foo13Sym1 (t :: a0123456789) = Foo13 t
     instance SuppressUnusedWarnings Foo13Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo13Sym0KindInference GHC.Tuple.())
-    data Foo13Sym0 (l :: TyFun a a)
+    data Foo13Sym0 (l :: TyFun a0123456789 a0123456789)
       = forall arg. KindOf (Apply Foo13Sym0 arg) ~ KindOf (Foo13Sym1 arg) =>
         Foo13Sym0KindInference
     type instance Apply Foo13Sym0 l = Foo13Sym1 l

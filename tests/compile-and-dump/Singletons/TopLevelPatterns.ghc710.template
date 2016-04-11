@@ -120,11 +120,11 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply NotSym0 arg) ~ KindOf (NotSym1 arg) =>
         NotSym0KindInference
     type instance Apply NotSym0 l = NotSym1 l
-    type IdSym1 (t :: a) = Id t
+    type IdSym1 (t :: a0123456789) = Id t
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings _
         = Data.Tuple.snd (GHC.Tuple.(,) IdSym0KindInference GHC.Tuple.())
-    data IdSym0 (l :: TyFun a a)
+    data IdSym0 (l :: TyFun a0123456789 a0123456789)
       = forall arg. KindOf (Apply IdSym0 arg) ~ KindOf (IdSym1 arg) =>
         IdSym0KindInference
     type instance Apply IdSym0 l = IdSym1 l
