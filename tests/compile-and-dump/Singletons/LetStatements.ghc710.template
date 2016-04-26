@@ -685,7 +685,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo14 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo14Sym0 x :: (Nat, Nat))
+            forall x. t ~ x => Sing x -> Sing (Apply Foo14Sym0 t :: (Nat, Nat))
           lambda x
             = let
                 sY :: Sing (Let0123456789YSym1 x)
@@ -730,13 +730,13 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo13_ sY
       = let
           lambda ::
-            forall y. t ~ y => Sing y -> Sing (Apply Foo13_Sym0 y :: a)
+            forall y. t ~ y => Sing y -> Sing (Apply Foo13_Sym0 t :: a)
           lambda y = y
         in lambda sY
     sFoo13 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo13Sym0 x :: a)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo13Sym0 t :: a)
           lambda x
             = let
                 sBar :: Sing (Let0123456789BarSym1 x :: a)
@@ -746,7 +746,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo12 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo12Sym0 x :: Nat)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo12Sym0 t :: Nat)
           lambda x
             = let
                 (%:+) ::
@@ -758,8 +758,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                   = let
                       lambda ::
                         forall m. (t ~ ZeroSym0, t ~ m) =>
-                        Sing m
-                        -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) ZeroSym0) m :: Nat)
+                        Sing m -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) t) t :: Nat)
                       lambda m = m
                     in lambda sM
                 (%:+) (SSucc sN) sM
@@ -768,7 +767,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                         forall n m. (t ~ Apply SuccSym0 n, t ~ m) =>
                         Sing n
                         -> Sing m
-                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) (Apply SuccSym0 n)) m :: Nat)
+                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) t) t :: Nat)
                       lambda n m
                         = applySing
                             (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
@@ -788,7 +787,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo11 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo11Sym0 x :: Nat)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo11Sym0 t :: Nat)
           lambda x
             = let
                 sZ :: Sing (Let0123456789ZSym1 x :: Nat)
@@ -802,8 +801,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                   = let
                       lambda ::
                         forall m. (t ~ ZeroSym0, t ~ m) =>
-                        Sing m
-                        -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) ZeroSym0) m :: Nat)
+                        Sing m -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) t) t :: Nat)
                       lambda m = m
                     in lambda sM
                 (%:+) (SSucc sN) sM
@@ -812,7 +810,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                         forall n m. (t ~ Apply SuccSym0 n, t ~ m) =>
                         Sing n
                         -> Sing m
-                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) (Apply SuccSym0 n)) m :: Nat)
+                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) t) t :: Nat)
                       lambda n m
                         = applySing
                             (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
@@ -831,7 +829,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo10 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo10Sym0 x :: Nat)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo10Sym0 t :: Nat)
           lambda x
             = let
                 (%:+) ::
@@ -843,8 +841,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                   = let
                       lambda ::
                         forall m. (t ~ ZeroSym0, t ~ m) =>
-                        Sing m
-                        -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) ZeroSym0) m :: Nat)
+                        Sing m -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) t) t :: Nat)
                       lambda m = m
                     in lambda sM
                 (%:+) (SSucc sN) sM
@@ -853,7 +850,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                         forall n m. (t ~ Apply SuccSym0 n, t ~ m) =>
                         Sing n
                         -> Sing m
-                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) (Apply SuccSym0 n)) m :: Nat)
+                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%:+$$) x) t) t :: Nat)
                       lambda n m
                         = applySing
                             (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
@@ -872,7 +869,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo9 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo9Sym0 x :: Nat)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo9Sym0 t :: Nat)
           lambda x
             = let
                 sZ ::
@@ -882,8 +879,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                   = let
                       lambda ::
                         forall a_0123456789. t ~ a_0123456789 =>
-                        Sing a_0123456789
-                        -> Sing (Apply (Let0123456789ZSym1 x) a_0123456789 :: Nat)
+                        Sing a_0123456789 -> Sing (Apply (Let0123456789ZSym1 x) t :: Nat)
                       lambda a_0123456789
                         = applySing
                             (singFun1
@@ -905,7 +901,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo8 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo8Sym0 x :: Nat)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo8Sym0 t :: Nat)
           lambda x
             = let
                 sZ :: Sing (Let0123456789ZSym1 x :: Nat)
@@ -926,7 +922,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo7 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo7Sym0 x :: Nat)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo7Sym0 t :: Nat)
           lambda x
             = let
                 sX :: Sing (Let0123456789XSym1 x :: Nat)
@@ -936,7 +932,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo6 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo6Sym0 x :: Nat)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo6Sym0 t :: Nat)
           lambda x
             = let
                 sF ::
@@ -946,7 +942,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                   = let
                       lambda ::
                         forall y. t ~ y =>
-                        Sing y -> Sing (Apply (Let0123456789FSym1 x) y :: Nat)
+                        Sing y -> Sing (Apply (Let0123456789FSym1 x) t :: Nat)
                       lambda y = applySing (singFun1 (Proxy :: Proxy SuccSym0) SSucc) y
                     in lambda sY in
               let
@@ -958,7 +954,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo5 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo5Sym0 x :: Nat)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo5Sym0 t :: Nat)
           lambda x
             = let
                 sF ::
@@ -968,7 +964,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                   = let
                       lambda ::
                         forall y. t ~ y =>
-                        Sing y -> Sing (Apply (Let0123456789FSym1 x) y :: Nat)
+                        Sing y -> Sing (Apply (Let0123456789FSym1 x) t :: Nat)
                       lambda y
                         = let
                             sZ :: Sing (Let0123456789ZSym2 x y :: Nat)
@@ -981,7 +977,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo4 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo4Sym0 x :: Nat)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo4Sym0 t :: Nat)
           lambda x
             = let
                 sF ::
@@ -991,7 +987,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                   = let
                       lambda ::
                         forall y. t ~ y =>
-                        Sing y -> Sing (Apply (Let0123456789FSym1 x) y :: Nat)
+                        Sing y -> Sing (Apply (Let0123456789FSym1 x) t :: Nat)
                       lambda y = applySing (singFun1 (Proxy :: Proxy SuccSym0) SSucc) y
                     in lambda sY
               in
@@ -1000,7 +996,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo3 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo3Sym0 x :: Nat)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo3Sym0 t :: Nat)
           lambda x
             = let
                 sY :: Sing (Let0123456789YSym1 x :: Nat)
@@ -1017,7 +1013,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo1 sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo1Sym0 x :: Nat)
+            forall x. t ~ x => Sing x -> Sing (Apply Foo1Sym0 t :: Nat)
           lambda x
             = let
                 sY :: Sing (Let0123456789YSym1 x :: Nat)

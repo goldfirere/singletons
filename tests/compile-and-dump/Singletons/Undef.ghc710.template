@@ -37,13 +37,13 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             forall a_0123456789. t ~ a_0123456789 =>
-            Sing a_0123456789 -> Sing (Apply BarSym0 a_0123456789 :: Bool)
+            Sing a_0123456789 -> Sing (Apply BarSym0 t :: Bool)
           lambda a_0123456789 = sError (sing :: Sing "urk")
         in lambda sA_0123456789
     sFoo sA_0123456789
       = let
           lambda ::
             forall a_0123456789. t ~ a_0123456789 =>
-            Sing a_0123456789 -> Sing (Apply FooSym0 a_0123456789 :: Bool)
+            Sing a_0123456789 -> Sing (Apply FooSym0 t :: Bool)
           lambda a_0123456789 = undefined
         in lambda sA_0123456789

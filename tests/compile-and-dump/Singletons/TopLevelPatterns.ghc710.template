@@ -222,24 +222,24 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     sFalse_ = SFalse
     sNot STrue
       = let
-          lambda :: t ~ TrueSym0 => Sing (Apply NotSym0 TrueSym0 :: Bool)
+          lambda :: t ~ TrueSym0 => Sing (Apply NotSym0 t :: Bool)
           lambda = SFalse
         in lambda
     sNot SFalse
       = let
-          lambda :: t ~ FalseSym0 => Sing (Apply NotSym0 FalseSym0 :: Bool)
+          lambda :: t ~ FalseSym0 => Sing (Apply NotSym0 t :: Bool)
           lambda = STrue
         in lambda
     sId sX
       = let
-          lambda :: forall x. t ~ x => Sing x -> Sing (Apply IdSym0 x :: a)
+          lambda :: forall x. t ~ x => Sing x -> Sing (Apply IdSym0 t :: a)
           lambda x = x
         in lambda sX
     sF sA_0123456789
       = let
           lambda ::
             forall a_0123456789. t ~ a_0123456789 =>
-            Sing a_0123456789 -> Sing (Apply FSym0 a_0123456789 :: Bool)
+            Sing a_0123456789 -> Sing (Apply FSym0 t :: Bool)
           lambda a_0123456789
             = applySing
                 (case sX_0123456789 of {
@@ -260,7 +260,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             forall a_0123456789. t ~ a_0123456789 =>
-            Sing a_0123456789 -> Sing (Apply GSym0 a_0123456789 :: Bool)
+            Sing a_0123456789 -> Sing (Apply GSym0 t :: Bool)
           lambda a_0123456789
             = applySing
                 (case sX_0123456789 of {
@@ -281,7 +281,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             forall a_0123456789. t ~ a_0123456789 =>
-            Sing a_0123456789 -> Sing (Apply HSym0 a_0123456789 :: Bool)
+            Sing a_0123456789 -> Sing (Apply HSym0 t :: Bool)
           lambda a_0123456789
             = applySing
                 (case sX_0123456789 of {
@@ -302,7 +302,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             forall a_0123456789. t ~ a_0123456789 =>
-            Sing a_0123456789 -> Sing (Apply ISym0 a_0123456789 :: Bool)
+            Sing a_0123456789 -> Sing (Apply ISym0 t :: Bool)
           lambda a_0123456789
             = applySing
                 (case sX_0123456789 of {
@@ -328,10 +328,10 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                           _z_0123456789. Apply (Apply BarSym0 y_0123456789) _z_0123456789 ~ X_0123456789Sym0 =>
                    Sing y_0123456789
                    -> Sing _z_0123456789
-                      -> Sing (Case_0123456789 (Apply (Apply BarSym0 y_0123456789) _z_0123456789))
+                      -> Sing (Case_0123456789 (Apply (Apply BarSym0 y_0123456789) _z_0123456789) :: Bool)
                  lambda y_0123456789 _z_0123456789 = y_0123456789
                in lambda sY_0123456789 _s_z_0123456789 } ::
-          Sing (Case_0123456789 X_0123456789Sym0)
+          Sing (Case_0123456789 X_0123456789Sym0 :: Bool)
     sK
       = case sX_0123456789 of {
           SBar _s_z_0123456789 sY_0123456789
@@ -341,10 +341,10 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                           y_0123456789. Apply (Apply BarSym0 _z_0123456789) y_0123456789 ~ X_0123456789Sym0 =>
                    Sing _z_0123456789
                    -> Sing y_0123456789
-                      -> Sing (Case_0123456789 (Apply (Apply BarSym0 _z_0123456789) y_0123456789))
+                      -> Sing (Case_0123456789 (Apply (Apply BarSym0 _z_0123456789) y_0123456789) :: Bool)
                  lambda _z_0123456789 y_0123456789 = y_0123456789
                in lambda _s_z_0123456789 sY_0123456789 } ::
-          Sing (Case_0123456789 X_0123456789Sym0)
+          Sing (Case_0123456789 X_0123456789Sym0 :: Bool)
     sL
       = case sX_0123456789 of {
           SCons sY_0123456789 (SCons _s_z_0123456789 SNil)
@@ -354,10 +354,10 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                           _z_0123456789. Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) _z_0123456789) '[]) ~ X_0123456789Sym0 =>
                    Sing y_0123456789
                    -> Sing _z_0123456789
-                      -> Sing (Case_0123456789 (Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) _z_0123456789) '[])))
+                      -> Sing (Case_0123456789 (Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) _z_0123456789) '[])) :: Bool)
                  lambda y_0123456789 _z_0123456789 = y_0123456789
                in lambda sY_0123456789 _s_z_0123456789 } ::
-          Sing (Case_0123456789 X_0123456789Sym0)
+          Sing (Case_0123456789 X_0123456789Sym0 :: Bool)
     sM
       = case sX_0123456789 of {
           SCons _s_z_0123456789 (SCons sY_0123456789 SNil)
@@ -367,10 +367,10 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                           y_0123456789. Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) y_0123456789) '[]) ~ X_0123456789Sym0 =>
                    Sing _z_0123456789
                    -> Sing y_0123456789
-                      -> Sing (Case_0123456789 (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) y_0123456789) '[])))
+                      -> Sing (Case_0123456789 (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) y_0123456789) '[])) :: Bool)
                  lambda _z_0123456789 y_0123456789 = y_0123456789
                in lambda _s_z_0123456789 sY_0123456789 } ::
-          Sing (Case_0123456789 X_0123456789Sym0)
+          Sing (Case_0123456789 X_0123456789Sym0 :: Bool)
     sOtherwise = STrue
     sX_0123456789
       = applySing

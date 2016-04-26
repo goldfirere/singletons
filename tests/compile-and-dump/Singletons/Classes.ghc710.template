@@ -281,28 +281,28 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             (t ~ ASym0, t ~ ASym0) =>
-            Sing (Apply (Apply FooCompareSym0 ASym0) ASym0 :: Ordering)
+            Sing (Apply (Apply FooCompareSym0 t) t :: Ordering)
           lambda = SEQ
         in lambda
     sFooCompare SA SB
       = let
           lambda ::
             (t ~ ASym0, t ~ BSym0) =>
-            Sing (Apply (Apply FooCompareSym0 ASym0) BSym0 :: Ordering)
+            Sing (Apply (Apply FooCompareSym0 t) t :: Ordering)
           lambda = SLT
         in lambda
     sFooCompare SB SB
       = let
           lambda ::
             (t ~ BSym0, t ~ BSym0) =>
-            Sing (Apply (Apply FooCompareSym0 BSym0) BSym0 :: Ordering)
+            Sing (Apply (Apply FooCompareSym0 t) t :: Ordering)
           lambda = SGT
         in lambda
     sFooCompare SB SA
       = let
           lambda ::
             (t ~ BSym0, t ~ ASym0) =>
-            Sing (Apply (Apply FooCompareSym0 BSym0) ASym0 :: Ordering)
+            Sing (Apply (Apply FooCompareSym0 t) t :: Ordering)
           lambda = SEQ
         in lambda
     sConst sX _s_z_0123456789
@@ -310,8 +310,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall x _z_0123456789. (t ~ x, t ~ _z_0123456789) =>
             Sing x
-            -> Sing _z_0123456789
-               -> Sing (Apply (Apply ConstSym0 x) _z_0123456789 :: a)
+            -> Sing _z_0123456789 -> Sing (Apply (Apply ConstSym0 t) t :: a)
           lambda x _z_0123456789 = x
         in lambda sX _s_z_0123456789
     data instance Sing (z :: Foo) = z ~ A => SA | z ~ B => SB
@@ -349,7 +348,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                  t ~ a_0123456789) =>
               Sing a_0123456789
               -> Sing a_0123456789
-                 -> Sing (Apply (Apply (:<=>$) a_0123456789) a_0123456789 :: Ordering)
+                 -> Sing (Apply (Apply (:<=>$) t) t :: Ordering)
             lambda a_0123456789 a_0123456789
               = applySing
                   (applySing
@@ -365,7 +364,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         = let
             lambda ::
               (t ~ ZeroSym0, t ~ ZeroSym0) =>
-              Sing (Apply (Apply MycompareSym0 ZeroSym0) ZeroSym0 :: Ordering)
+              Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
             lambda = SEQ
           in lambda
       sMycompare SZero (SSucc _s_z_0123456789)
@@ -374,7 +373,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
               forall _z_0123456789. (t ~ ZeroSym0,
                                      t ~ Apply SuccSym0 _z_0123456789) =>
               Sing _z_0123456789
-              -> Sing (Apply (Apply MycompareSym0 ZeroSym0) (Apply SuccSym0 _z_0123456789) :: Ordering)
+              -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
             lambda _z_0123456789 = SLT
           in lambda _s_z_0123456789
       sMycompare (SSucc _s_z_0123456789) SZero
@@ -383,7 +382,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
               forall _z_0123456789. (t ~ Apply SuccSym0 _z_0123456789,
                                      t ~ ZeroSym0) =>
               Sing _z_0123456789
-              -> Sing (Apply (Apply MycompareSym0 (Apply SuccSym0 _z_0123456789)) ZeroSym0 :: Ordering)
+              -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
             lambda _z_0123456789 = SGT
           in lambda _s_z_0123456789
       sMycompare (SSucc sN) (SSucc sM)
@@ -391,8 +390,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
             lambda ::
               forall n m. (t ~ Apply SuccSym0 n, t ~ Apply SuccSym0 m) =>
               Sing n
-              -> Sing m
-                 -> Sing (Apply (Apply MycompareSym0 (Apply SuccSym0 n)) (Apply SuccSym0 m) :: Ordering)
+              -> Sing m -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
             lambda n m
               = applySing
                   (applySing (singFun2 (Proxy :: Proxy MycompareSym0) sMycompare) m)
@@ -410,7 +408,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                   t ~ a_0123456789) =>
               Sing _z_0123456789
               -> Sing a_0123456789
-                 -> Sing (Apply (Apply MycompareSym0 _z_0123456789) a_0123456789 :: Ordering)
+                 -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
             lambda _z_0123456789 a_0123456789
               = applySing
                   (applySing (singFun2 (Proxy :: Proxy ConstSym0) sConst) SEQ)
@@ -428,7 +426,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                  t ~ a_0123456789) =>
               Sing a_0123456789
               -> Sing a_0123456789
-                 -> Sing (Apply (Apply MycompareSym0 a_0123456789) a_0123456789 :: Ordering)
+                 -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
             lambda a_0123456789 a_0123456789
               = applySing
                   (applySing
@@ -442,26 +440,22 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Sing a -> Sing b -> Sing ((:==) a b)
       (%:==) SF SF
         = let
-            lambda ::
-              (a ~ FSym0, b ~ FSym0) => Sing (Apply (Apply (:==$) FSym0) FSym0)
+            lambda :: (a ~ FSym0, b ~ FSym0) => Sing (Apply (Apply (:==$) a) b)
             lambda = STrue
           in lambda
       (%:==) SG SG
         = let
-            lambda ::
-              (a ~ GSym0, b ~ GSym0) => Sing (Apply (Apply (:==$) GSym0) GSym0)
+            lambda :: (a ~ GSym0, b ~ GSym0) => Sing (Apply (Apply (:==$) a) b)
             lambda = STrue
           in lambda
       (%:==) SF SG
         = let
-            lambda ::
-              (a ~ FSym0, b ~ GSym0) => Sing (Apply (Apply (:==$) FSym0) GSym0)
+            lambda :: (a ~ FSym0, b ~ GSym0) => Sing (Apply (Apply (:==$) a) b)
             lambda = SFalse
           in lambda
       (%:==) SG SF
         = let
-            lambda ::
-              (a ~ GSym0, b ~ FSym0) => Sing (Apply (Apply (:==$) GSym0) FSym0)
+            lambda :: (a ~ GSym0, b ~ FSym0) => Sing (Apply (Apply (:==$) a) b)
             lambda = SFalse
           in lambda
     instance SingI A where
@@ -622,7 +616,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         = let
             lambda ::
               (t ~ Zero'Sym0, t ~ Zero'Sym0) =>
-              Sing (Apply (Apply MycompareSym0 Zero'Sym0) Zero'Sym0 :: Ordering)
+              Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
             lambda = SEQ
           in lambda
       sMycompare SZero' (SSucc' _s_z_0123456789)
@@ -631,7 +625,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
               forall _z_0123456789. (t ~ Zero'Sym0,
                                      t ~ Apply Succ'Sym0 _z_0123456789) =>
               Sing _z_0123456789
-              -> Sing (Apply (Apply MycompareSym0 Zero'Sym0) (Apply Succ'Sym0 _z_0123456789) :: Ordering)
+              -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
             lambda _z_0123456789 = SLT
           in lambda _s_z_0123456789
       sMycompare (SSucc' _s_z_0123456789) SZero'
@@ -640,7 +634,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
               forall _z_0123456789. (t ~ Apply Succ'Sym0 _z_0123456789,
                                      t ~ Zero'Sym0) =>
               Sing _z_0123456789
-              -> Sing (Apply (Apply MycompareSym0 (Apply Succ'Sym0 _z_0123456789)) Zero'Sym0 :: Ordering)
+              -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
             lambda _z_0123456789 = SGT
           in lambda _s_z_0123456789
       sMycompare (SSucc' sN) (SSucc' sM)
@@ -648,8 +642,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
             lambda ::
               forall n m. (t ~ Apply Succ'Sym0 n, t ~ Apply Succ'Sym0 m) =>
               Sing n
-              -> Sing m
-                 -> Sing (Apply (Apply MycompareSym0 (Apply Succ'Sym0 n)) (Apply Succ'Sym0 m) :: Ordering)
+              -> Sing m -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
             lambda n m
               = applySing
                   (applySing (singFun2 (Proxy :: Proxy MycompareSym0) sMycompare) m)

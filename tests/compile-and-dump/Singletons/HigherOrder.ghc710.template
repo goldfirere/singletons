@@ -331,7 +331,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
             forall f g a. (t ~ f, t ~ g, t ~ a) =>
             Sing f
             -> Sing g
-               -> Sing a -> Sing (Apply (Apply (Apply FooSym0 f) g) a :: b)
+               -> Sing a -> Sing (Apply (Apply (Apply FooSym0 t) t) t :: b)
           lambda f g a = applySing (applySing f g) a
         in lambda sF sG sA
     sZipWith sF (SCons sX sXs) (SCons sY sYs)
@@ -344,8 +344,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
             -> Sing x
                -> Sing xs
                   -> Sing y
-                     -> Sing ys
-                        -> Sing (Apply (Apply (Apply ZipWithSym0 f) (Apply (Apply (:$) x) xs)) (Apply (Apply (:$) y) ys) :: [c])
+                     -> Sing ys -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
           lambda f x xs y ys
             = applySing
                 (applySing
@@ -361,7 +360,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall _z_0123456789. (t ~ _z_0123456789, t ~ '[], t ~ '[]) =>
             Sing _z_0123456789
-            -> Sing (Apply (Apply (Apply ZipWithSym0 _z_0123456789) '[]) '[] :: [c])
+            -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
           lambda _z_0123456789 = SNil
         in lambda _s_z_0123456789
     sZipWith
@@ -378,7 +377,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
             Sing _z_0123456789
             -> Sing _z_0123456789
                -> Sing _z_0123456789
-                  -> Sing (Apply (Apply (Apply ZipWithSym0 _z_0123456789) (Apply (Apply (:$) _z_0123456789) _z_0123456789)) '[] :: [c])
+                  -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
           lambda _z_0123456789 _z_0123456789 _z_0123456789 = SNil
         in lambda _s_z_0123456789 _s_z_0123456789 _s_z_0123456789
     sZipWith
@@ -395,15 +394,14 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
             Sing _z_0123456789
             -> Sing _z_0123456789
                -> Sing _z_0123456789
-                  -> Sing (Apply (Apply (Apply ZipWithSym0 _z_0123456789) '[]) (Apply (Apply (:$) _z_0123456789) _z_0123456789) :: [c])
+                  -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
           lambda _z_0123456789 _z_0123456789 _z_0123456789 = SNil
         in lambda _s_z_0123456789 _s_z_0123456789 _s_z_0123456789
     sSplunge sNs sBs
       = let
           lambda ::
             forall ns bs. (t ~ ns, t ~ bs) =>
-            Sing ns
-            -> Sing bs -> Sing (Apply (Apply SplungeSym0 ns) bs :: [Nat])
+            Sing ns -> Sing bs -> Sing (Apply (Apply SplungeSym0 t) t :: [Nat])
           lambda ns bs
             = applySing
                 (applySing
@@ -449,8 +447,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
             forall a_0123456789 a_0123456789. (t ~ a_0123456789,
                                                t ~ a_0123456789) =>
             Sing a_0123456789
-            -> Sing a_0123456789
-               -> Sing (Apply (Apply EtadSym0 a_0123456789) a_0123456789 :: [Nat])
+            -> Sing a_0123456789 -> Sing (Apply (Apply EtadSym0 t) t :: [Nat])
           lambda a_0123456789 a_0123456789
             = applySing
                 (applySing
@@ -496,8 +493,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall f x. (t ~ f, t ~ Apply JustSym0 x) =>
             Sing f
-            -> Sing x
-               -> Sing (Apply (Apply LiftMaybeSym0 f) (Apply JustSym0 x) :: Maybe b)
+            -> Sing x -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
           lambda f x
             = applySing
                 (singFun1 (Proxy :: Proxy JustSym0) SJust) (applySing f x)
@@ -507,15 +503,14 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall _z_0123456789. (t ~ _z_0123456789, t ~ NothingSym0) =>
             Sing _z_0123456789
-            -> Sing (Apply (Apply LiftMaybeSym0 _z_0123456789) NothingSym0 :: Maybe b)
+            -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
           lambda _z_0123456789 = SNothing
         in lambda _s_z_0123456789
     sMap _s_z_0123456789 SNil
       = let
           lambda ::
             forall _z_0123456789. (t ~ _z_0123456789, t ~ '[]) =>
-            Sing _z_0123456789
-            -> Sing (Apply (Apply MapSym0 _z_0123456789) '[] :: [b])
+            Sing _z_0123456789 -> Sing (Apply (Apply MapSym0 t) t :: [b])
           lambda _z_0123456789 = SNil
         in lambda _s_z_0123456789
     sMap sF (SCons sH sT)
@@ -523,9 +518,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall f h t. (t ~ f, t ~ Apply (Apply (:$) h) t) =>
             Sing f
-            -> Sing h
-               -> Sing t
-                  -> Sing (Apply (Apply MapSym0 f) (Apply (Apply (:$) h) t) :: [b])
+            -> Sing h -> Sing t -> Sing (Apply (Apply MapSym0 t) t :: [b])
           lambda f h t
             = applySing
                 (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) (applySing f h))

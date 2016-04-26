@@ -1,0 +1,50 @@
+Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| class C a where
+            meth :: a -> a |]
+  ======>
+    class C a where
+      meth :: a -> a
+    type MethSym1 (t :: a0123456789) = Meth t
+    instance SuppressUnusedWarnings MethSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) MethSym0KindInference GHC.Tuple.())
+    data MethSym0 (l :: TyFun a0123456789 a0123456789)
+      = forall arg. KindOf (Apply MethSym0 arg) ~ KindOf (MethSym1 arg) =>
+        MethSym0KindInference
+    type instance Apply MethSym0 l = MethSym1 l
+    class kproxy ~ KProxy => PC (kproxy :: KProxy a) where
+      type family Meth (arg :: a) :: a
+    class kproxy ~ KProxy => SC (kproxy :: KProxy a) where
+      sMeth :: forall (t :: a). Sing t -> Sing (Apply MethSym0 t :: a)
+Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| instance C Bool where
+            meth = not |]
+  ======>
+    instance C Bool where
+      meth = not
+    type family Meth_0123456789 (a :: Bool) :: Bool where
+      Meth_0123456789 a_0123456789 = Apply NotSym0 a_0123456789
+    type Meth_0123456789Sym1 (t :: Bool) = Meth_0123456789 t
+    instance SuppressUnusedWarnings Meth_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Meth_0123456789Sym0KindInference GHC.Tuple.())
+    data Meth_0123456789Sym0 (l :: TyFun Bool Bool)
+      = forall arg. KindOf (Apply Meth_0123456789Sym0 arg) ~ KindOf (Meth_0123456789Sym1 arg) =>
+        Meth_0123456789Sym0KindInference
+    type instance Apply Meth_0123456789Sym0 l = Meth_0123456789Sym1 l
+    instance PC (KProxy :: KProxy Bool) where
+      type Meth (a :: Bool) = Apply Meth_0123456789Sym0 a
+    instance SC (KProxy :: KProxy Bool) where
+      sMeth ::
+        forall (t :: Bool).
+        Sing t -> Sing (Apply (MethSym0 :: TyFun Bool Bool -> *) t :: Bool)
+      sMeth sA_0123456789
+        = let
+            lambda ::
+              forall a_0123456789. t ~ a_0123456789 =>
+              Sing a_0123456789 -> Sing (Apply MethSym0 t :: Bool)
+            lambda a_0123456789
+              = applySing (singFun1 (Proxy :: Proxy NotSym0) sNot) a_0123456789
+          in lambda sA_0123456789

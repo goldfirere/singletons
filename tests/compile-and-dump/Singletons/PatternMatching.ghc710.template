@@ -351,25 +351,23 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     sSilly sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply SillySym0 x :: ())
+            forall x. t ~ x => Sing x -> Sing (Apply SillySym0 t :: ())
           lambda x
             = case x of {
                 _s_z_0123456789
                   -> let
                        lambda ::
                          forall _z_0123456789. _z_0123456789 ~ x =>
-                         Sing _z_0123456789 -> Sing (Case_0123456789 x _z_0123456789)
+                         Sing _z_0123456789 -> Sing (Case_0123456789 x _z_0123456789 :: ())
                        lambda _z_0123456789 = STuple0
                      in lambda _s_z_0123456789 } ::
-                Sing (Case_0123456789 x x)
+                Sing (Case_0123456789 x x :: ())
         in lambda sX
     sFoo2 (STuple2 sX sY)
       = let
           lambda ::
             forall x y. t ~ Apply (Apply Tuple2Sym0 x) y =>
-            Sing x
-            -> Sing y
-               -> Sing (Apply Foo2Sym0 (Apply (Apply Tuple2Sym0 x) y) :: a)
+            Sing x -> Sing y -> Sing (Apply Foo2Sym0 t :: a)
           lambda x y
             = let
                 sT :: Sing (Let0123456789TSym2 x y)
@@ -384,7 +382,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                     b. Apply (Apply Tuple2Sym0 a) b ~ Let0123456789TSym2 x y =>
                              Sing a
                              -> Sing b
-                                -> Sing (Case_0123456789 x y (Apply (Apply Tuple2Sym0 a) b))
+                                -> Sing (Case_0123456789 x y (Apply (Apply Tuple2Sym0 a) b) :: a)
                            lambda a b
                              = applySing
                                  (singFun1
@@ -410,15 +408,13 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                           in lambda sArg_0123456789))
                                  b
                          in lambda sA sB } ::
-                    Sing (Case_0123456789 x y (Let0123456789TSym2 x y))
+                    Sing (Case_0123456789 x y (Let0123456789TSym2 x y) :: a)
         in lambda sX sY
     sFoo1 (STuple2 sX sY)
       = let
           lambda ::
             forall x y. t ~ Apply (Apply Tuple2Sym0 x) y =>
-            Sing x
-            -> Sing y
-               -> Sing (Apply Foo1Sym0 (Apply (Apply Tuple2Sym0 x) y) :: a)
+            Sing x -> Sing y -> Sing (Apply Foo1Sym0 t :: a)
           lambda x y
             = applySing
                 (singFun1
@@ -455,10 +451,10 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                    Sing _z_0123456789
                    -> Sing y_0123456789
                       -> Sing _z_0123456789
-                         -> Sing (Case_0123456789 (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) (Apply SuccSym0 _z_0123456789)) '[]))))
+                         -> Sing (Case_0123456789 (Apply (Apply (:$) _z_0123456789) (Apply (Apply (:$) y_0123456789) (Apply (Apply (:$) (Apply SuccSym0 _z_0123456789)) '[]))) :: Nat)
                  lambda _z_0123456789 y_0123456789 _z_0123456789 = y_0123456789
                in lambda _s_z_0123456789 sY_0123456789 _s_z_0123456789 } ::
-          Sing (Case_0123456789 X_0123456789Sym0)
+          Sing (Case_0123456789 X_0123456789Sym0 :: Nat)
     sBlimy
       = case sX_0123456789 of {
           SCons _s_z_0123456789
@@ -561,10 +557,10 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                    Sing _z_0123456789
                    -> Sing _z_0123456789
                       -> Sing y_0123456789
-                         -> Sing (Case_0123456789 (Apply (Apply PairSym0 (Apply (Apply PairSym0 _z_0123456789) _z_0123456789)) y_0123456789))
+                         -> Sing (Case_0123456789 (Apply (Apply PairSym0 (Apply (Apply PairSym0 _z_0123456789) _z_0123456789)) y_0123456789) :: Bool)
                  lambda _z_0123456789 _z_0123456789 y_0123456789 = y_0123456789
                in lambda _s_z_0123456789 _s_z_0123456789 sY_0123456789 } ::
-          Sing (Case_0123456789 X_0123456789Sym0)
+          Sing (Case_0123456789 X_0123456789Sym0 :: Bool)
     sSz
       = case sX_0123456789 of {
           SPair sY_0123456789 _s_z_0123456789

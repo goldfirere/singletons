@@ -84,7 +84,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       sToEnum sN
         = let
             lambda ::
-              forall n. t0 ~ n => Sing n -> Sing (Apply ToEnumSym0 n :: Foo)
+              forall n. t0 ~ n => Sing n -> Sing (Apply ToEnumSym0 t0 :: Foo)
             lambda n
               = case
                     applySing
@@ -95,14 +95,14 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
                     -> let
                          lambda ::
                            TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
-                           Sing (Case_0123456789 n TrueSym0)
+                           Sing (Case_0123456789 n TrueSym0 :: Foo)
                          lambda = SBar
                        in lambda
                   SFalse
                     -> let
                          lambda ::
                            FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
-                           Sing (Case_0123456789 n FalseSym0)
+                           Sing (Case_0123456789 n FalseSym0 :: Foo)
                          lambda
                            = case
                                  applySing
@@ -113,14 +113,14 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
                                  -> let
                                       lambda ::
                                         TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
-                                        Sing (Case_0123456789 n TrueSym0)
+                                        Sing (Case_0123456789 n TrueSym0 :: Foo)
                                       lambda = SBaz
                                     in lambda
                                SFalse
                                  -> let
                                       lambda ::
                                         FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
-                                        Sing (Case_0123456789 n FalseSym0)
+                                        Sing (Case_0123456789 n FalseSym0 :: Foo)
                                       lambda
                                         = case
                                               applySing
@@ -132,42 +132,39 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
                                               -> let
                                                    lambda ::
                                                      TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 2) =>
-                                                     Sing (Case_0123456789 n TrueSym0)
+                                                     Sing (Case_0123456789 n TrueSym0 :: Foo)
                                                    lambda = SBum
                                                  in lambda
                                             SFalse
                                               -> let
                                                    lambda ::
                                                      FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 2) =>
-                                                     Sing (Case_0123456789 n FalseSym0)
+                                                     Sing (Case_0123456789 n FalseSym0 :: Foo)
                                                    lambda
                                                      = sError (sing :: Sing "toEnum: bad argument")
                                                  in lambda } ::
-                                            Sing (Case_0123456789 n (Apply (Apply (:==$) n) (FromInteger 2)))
+                                            Sing (Case_0123456789 n (Apply (Apply (:==$) n) (FromInteger 2)) :: Foo)
                                     in lambda } ::
-                               Sing (Case_0123456789 n (Apply (Apply (:==$) n) (FromInteger 1)))
+                               Sing (Case_0123456789 n (Apply (Apply (:==$) n) (FromInteger 1)) :: Foo)
                        in lambda } ::
-                  Sing (Case_0123456789 n (Apply (Apply (:==$) n) (FromInteger 0)))
+                  Sing (Case_0123456789 n (Apply (Apply (:==$) n) (FromInteger 0)) :: Foo)
           in lambda sN
       sFromEnum SBar
         = let
             lambda ::
-              t0 ~ BarSym0 =>
-              Sing (Apply FromEnumSym0 BarSym0 :: GHC.TypeLits.Nat)
+              t0 ~ BarSym0 => Sing (Apply FromEnumSym0 t0 :: GHC.TypeLits.Nat)
             lambda = sFromInteger (sing :: Sing 0)
           in lambda
       sFromEnum SBaz
         = let
             lambda ::
-              t0 ~ BazSym0 =>
-              Sing (Apply FromEnumSym0 BazSym0 :: GHC.TypeLits.Nat)
+              t0 ~ BazSym0 => Sing (Apply FromEnumSym0 t0 :: GHC.TypeLits.Nat)
             lambda = sFromInteger (sing :: Sing 1)
           in lambda
       sFromEnum SBum
         = let
             lambda ::
-              t0 ~ BumSym0 =>
-              Sing (Apply FromEnumSym0 BumSym0 :: GHC.TypeLits.Nat)
+              t0 ~ BumSym0 => Sing (Apply FromEnumSym0 t0 :: GHC.TypeLits.Nat)
             lambda = sFromInteger (sing :: Sing 2)
           in lambda
     instance SingI Bar where
@@ -230,7 +227,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       sToEnum sN
         = let
             lambda ::
-              forall n. t0 ~ n => Sing n -> Sing (Apply ToEnumSym0 n :: Quux)
+              forall n. t0 ~ n => Sing n -> Sing (Apply ToEnumSym0 t0 :: Quux)
             lambda n
               = case
                     applySing
@@ -241,14 +238,14 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
                     -> let
                          lambda ::
                            TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
-                           Sing (Case_0123456789 n TrueSym0)
+                           Sing (Case_0123456789 n TrueSym0 :: Quux)
                          lambda = SQ1
                        in lambda
                   SFalse
                     -> let
                          lambda ::
                            FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
-                           Sing (Case_0123456789 n FalseSym0)
+                           Sing (Case_0123456789 n FalseSym0 :: Quux)
                          lambda
                            = case
                                  applySing
@@ -259,29 +256,29 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
                                  -> let
                                       lambda ::
                                         TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
-                                        Sing (Case_0123456789 n TrueSym0)
+                                        Sing (Case_0123456789 n TrueSym0 :: Quux)
                                       lambda = SQ2
                                     in lambda
                                SFalse
                                  -> let
                                       lambda ::
                                         FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
-                                        Sing (Case_0123456789 n FalseSym0)
+                                        Sing (Case_0123456789 n FalseSym0 :: Quux)
                                       lambda = sError (sing :: Sing "toEnum: bad argument")
                                     in lambda } ::
-                               Sing (Case_0123456789 n (Apply (Apply (:==$) n) (FromInteger 1)))
+                               Sing (Case_0123456789 n (Apply (Apply (:==$) n) (FromInteger 1)) :: Quux)
                        in lambda } ::
-                  Sing (Case_0123456789 n (Apply (Apply (:==$) n) (FromInteger 0)))
+                  Sing (Case_0123456789 n (Apply (Apply (:==$) n) (FromInteger 0)) :: Quux)
           in lambda sN
       sFromEnum SQ1
         = let
             lambda ::
-              t0 ~ Q1Sym0 => Sing (Apply FromEnumSym0 Q1Sym0 :: GHC.TypeLits.Nat)
+              t0 ~ Q1Sym0 => Sing (Apply FromEnumSym0 t0 :: GHC.TypeLits.Nat)
             lambda = sFromInteger (sing :: Sing 0)
           in lambda
       sFromEnum SQ2
         = let
             lambda ::
-              t0 ~ Q2Sym0 => Sing (Apply FromEnumSym0 Q2Sym0 :: GHC.TypeLits.Nat)
+              t0 ~ Q2Sym0 => Sing (Apply FromEnumSym0 t0 :: GHC.TypeLits.Nat)
             lambda = sFromInteger (sing :: Sing 1)
           in lambda

@@ -26,20 +26,17 @@ Singletons/T78.hs:(0,0)-(0,0): Splicing declarations
     sFoo (SJust SFalse)
       = let
           lambda ::
-            t ~ Apply JustSym0 FalseSym0 =>
-            Sing (Apply FooSym0 (Apply JustSym0 FalseSym0) :: Bool)
+            t ~ Apply JustSym0 FalseSym0 => Sing (Apply FooSym0 t :: Bool)
           lambda = SFalse
         in lambda
     sFoo (SJust STrue)
       = let
           lambda ::
-            t ~ Apply JustSym0 TrueSym0 =>
-            Sing (Apply FooSym0 (Apply JustSym0 TrueSym0) :: Bool)
+            t ~ Apply JustSym0 TrueSym0 => Sing (Apply FooSym0 t :: Bool)
           lambda = STrue
         in lambda
     sFoo SNothing
       = let
-          lambda ::
-            t ~ NothingSym0 => Sing (Apply FooSym0 NothingSym0 :: Bool)
+          lambda :: t ~ NothingSym0 => Sing (Apply FooSym0 t :: Bool)
           lambda = SFalse
         in lambda
