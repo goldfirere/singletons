@@ -444,12 +444,16 @@ singClause prom_fun num_arrows bound_names res_ki
            (ADClause var_proms pats exp) = do
   (sPats, prom_pats)
     <- mapAndUnzipM (singPat (Map.fromList var_proms) Parameter) pats
-  let equalities = zip (map DVarT bound_names) prom_pats
+  let bound_name_tys = map DVarT bound_names
+      equalities     = zip bound_name_tys prom_pats
       -- This res_ki stuff is necessary when we need to propagate result-
       -- based type-inference. It was inspired by toEnum. (If you remove
       -- this, that should fail to compile.)
       applied_ty = maybe id (\ki -> (`DSigT` ki)) res_ki $
-                   foldl apply prom_fun prom_pats
+                   foldl apply prom_fun bound_name_tys
+         -- We used to use prom_pats as the arguments above, but bound_name_tys
+         -- is better, because the type variables have kinds. When the pattern
+         -- is, say, [], then we get a kind ambiguity. See #136.
   sBody <- bindTyVarsEq var_proms applied_ty equalities $ singExp exp
     -- when calling unSingFun, the prom_pats aren't in scope, so we use the
     -- bound_names instead
