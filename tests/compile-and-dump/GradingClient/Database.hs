@@ -35,6 +35,10 @@ import Control.Monad.Except  ( throwError )
 import Control.Monad.Error   ( throwError )
 #endif
 
+#if __GLASGOW_HASKELL__ >= 711
+import Data.Kind
+#endif
+
 $(singletons [d|
   -- Basic Nat type
   data Nat = Zero | Succ Nat deriving (Eq, Ord)

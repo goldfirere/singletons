@@ -296,7 +296,8 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
   cxt' <- mapM singPred cxt
   inst_kis <- mapM promoteType inst_tys
   meths <- concatMapM (uncurry sing_meth) ann_meths
-  return (DInstanceD cxt'
+  return (DInstanceD Nothing
+                     cxt'
                      (foldl DAppT (DConT s_inst_name) (map kindParam inst_kis))
                      meths)
 

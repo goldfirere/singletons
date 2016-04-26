@@ -1,0 +1,37 @@
+Singletons/T124.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| foo :: Bool -> ()
+          foo True = ()
+          foo False = () |]
+  ======>
+    foo :: Bool -> ()
+    foo True = GHC.Tuple.()
+    foo False = GHC.Tuple.()
+    type FooSym1 (t :: Bool) = Foo t
+    instance SuppressUnusedWarnings FooSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
+    data FooSym0 (l :: TyFun Bool ())
+      = forall arg. KindOf (Apply FooSym0 arg) ~ KindOf (FooSym1 arg) =>
+        FooSym0KindInference
+    type instance Apply FooSym0 l = FooSym1 l
+    type family Foo (a :: Bool) :: () where
+      Foo True = Tuple0Sym0
+      Foo False = Tuple0Sym0
+    sFoo :: forall (t :: Bool). Sing t -> Sing (Apply FooSym0 t :: ())
+    sFoo STrue
+      = let
+          lambda :: t ~ TrueSym0 => Sing (Apply FooSym0 TrueSym0 :: ())
+          lambda = STuple0
+        in lambda
+    sFoo SFalse
+      = let
+          lambda :: t ~ FalseSym0 => Sing (Apply FooSym0 FalseSym0 :: ())
+          lambda = STuple0
+        in lambda
+Singletons/T124.hs:0:0:: Splicing expression
+    sCases ''Bool [| b |] [| STuple0 |]
+  ======>
+    case b of {
+      SFalse -> STuple0
+      STrue -> STuple0 }

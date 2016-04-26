@@ -31,6 +31,10 @@ unambiguous.
 
 module InsertionSort.InsertionSortImp where
 
+#if __GLASGOW_HASKELL__ >= 711
+import Data.Kind (type (*))
+#endif
+
 import Data.Singletons.Prelude
 import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH

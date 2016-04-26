@@ -26,7 +26,15 @@ import Distribution.Text                             ( simpleParse              
 import Data.Version                                  ( Version(..)               )
 import System.IO.Unsafe                              ( unsafePerformIO           )
 
-#include "cabal_macros.h"
+#if __GLASGOW_HASKELL__ >= 711
+#ifndef LOCAL_COMPONENT_ID
+#include "../dist/build/autogen/cabal_macros.h"
+#endif
+#else
+#ifndef CURRENT_PACKAGE_KEY
+#include "../dist/build/autogen/cabal_macros.h"
+#endif
+#endif
 
 -- Some infractructure for handling external process errors
 data ProcessException = ProcessException String deriving (Typeable)
@@ -49,7 +57,11 @@ includePath :: FilePath
 includePath = "../../dist/build"
 
 ghcVersion :: String
+#if __GLASGOW_HASKELL__ >= 711
+ghcVersion = ".ghc80"
+#else
 ghcVersion = ".ghc710"
+#endif
 
 -- The mtl package made an incompatible change between 2.1.3.1 and 2.2.1. Because
 -- test files are compiled outside of the cabal infrastructure, we need to check
@@ -86,7 +98,11 @@ ghcOpts :: [String]
 ghcOpts = extraOpts ++ [
     "-v0"
   , "-c"
+#if __GLASGOW_HASKELL__ < 711
   , "-this-package-key " ++ CURRENT_PACKAGE_KEY -- See Note [-this-package-key hack]
+#else
+  , "-this-unit-id " ++ LOCAL_COMPONENT_ID
+#endif
   , "-ddump-splices"
   , "-dsuppress-uniques"
   , "-fforce-recomp"
@@ -112,6 +128,11 @@ ghcOpts = extraOpts ++ [
   , "-XUnboxedTuples"
   , "-XInstanceSigs"
   , "-XDefaultSignatures"
+  , "-XCPP"
+#if __GLASGOW_HASKELL__ >= 711
+  , "-XTypeInType"
+  , "-Wno-overlapping-patterns"
+#endif
   ]
 
 -- Note [-this-package-key hack]

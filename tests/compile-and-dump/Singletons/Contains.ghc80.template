@@ -1,0 +1,62 @@
+Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| contains :: Eq a => a -> [a] -> Bool
+          contains _ [] = False
+          contains elt (h : t) = (elt == h) || (contains elt t) |]
+  ======>
+    contains :: forall a. Eq a => a -> [a] -> Bool
+    contains _ GHC.Types.[] = False
+    contains elt (h GHC.Types.: t) = ((elt == h) || (contains elt t))
+    type ContainsSym2 (t :: a0123456789) (t :: [a0123456789]) =
+        Contains t t
+    instance SuppressUnusedWarnings ContainsSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ContainsSym1KindInference GHC.Tuple.())
+    data ContainsSym1 (l :: a0123456789)
+                      (l :: TyFun [a0123456789] Bool)
+      = forall arg. KindOf (Apply (ContainsSym1 l) arg) ~ KindOf (ContainsSym2 l arg) =>
+        ContainsSym1KindInference
+    type instance Apply (ContainsSym1 l) l = ContainsSym2 l l
+    instance SuppressUnusedWarnings ContainsSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) ContainsSym0KindInference GHC.Tuple.())
+    data ContainsSym0 (l :: TyFun a0123456789 (TyFun [a0123456789] Bool
+                                               -> GHC.Types.Type))
+      = forall arg. KindOf (Apply ContainsSym0 arg) ~ KindOf (ContainsSym1 arg) =>
+        ContainsSym0KindInference
+    type instance Apply ContainsSym0 l = ContainsSym1 l
+    type family Contains (a :: a) (a :: [a]) :: Bool where
+      Contains _z_0123456789 '[] = FalseSym0
+      Contains elt ((:) h t) = Apply (Apply (:||$) (Apply (Apply (:==$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
+    sContains ::
+      forall (t :: a) (t :: [a]).
+      SEq (KProxy :: KProxy a) =>
+      Sing t -> Sing t -> Sing (Apply (Apply ContainsSym0 t) t :: Bool)
+    sContains _s_z_0123456789 SNil
+      = let
+          lambda ::
+            forall _z_0123456789.
+            (t ~ _z_0123456789, t ~ '[]) =>
+            Sing _z_0123456789
+            -> Sing (Apply (Apply ContainsSym0 _z_0123456789) '[] :: Bool)
+          lambda _z_0123456789 = SFalse
+        in lambda _s_z_0123456789
+    sContains sElt (SCons sH sT)
+      = let
+          lambda ::
+            forall elt h t.
+            (t ~ elt, t ~ Apply (Apply (:$) h) t) =>
+            Sing elt
+            -> Sing h
+               -> Sing t
+                  -> Sing (Apply (Apply ContainsSym0 elt) (Apply (Apply (:$) h) t) :: Bool)
+          lambda elt h t
+            = applySing
+                (applySing
+                   (singFun2 (Proxy :: Proxy (:||$)) (%:||))
+                   (applySing
+                      (applySing (singFun2 (Proxy :: Proxy (:==$)) (%:==)) elt) h))
+                (applySing
+                   (applySing (singFun2 (Proxy :: Proxy ContainsSym0) sContains) elt)
+                   t)
+        in lambda sElt sH sT

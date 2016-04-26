@@ -1,0 +1,848 @@
+Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| foo0 :: a -> b -> a
+          foo0 = (\ x y -> x)
+          foo1 :: a -> b -> a
+          foo1 x = (\ _ -> x)
+          foo2 :: a -> b -> a
+          foo2 x y = (\ _ -> x) y
+          foo3 :: a -> a
+          foo3 x = (\ y -> y) x
+          foo4 :: a -> b -> c -> a
+          foo4 x y z = (\ _ _ -> x) y z
+          foo5 :: a -> b -> b
+          foo5 x y = (\ x -> x) y
+          foo6 :: a -> b -> a
+          foo6 a b = (\ x -> \ _ -> x) a b
+          foo7 :: a -> b -> b
+          foo7 x y = (\ (_, b) -> b) (x, y)
+          foo8 :: Foo a b -> a
+          foo8 x = (\ (Foo a _) -> a) x
+          
+          data Foo a b = Foo a b |]
+  ======>
+    foo0 :: forall a b. a -> b -> a
+    foo0 = \ x y -> x
+    foo1 :: forall a b. a -> b -> a
+    foo1 x = \ _ -> x
+    foo2 :: forall a b. a -> b -> a
+    foo2 x y = (\ _ -> x) y
+    foo3 :: forall a. a -> a
+    foo3 x = (\ y -> y) x
+    foo4 :: forall a b c. a -> b -> c -> a
+    foo4 x y z = (\ _ _ -> x) y z
+    foo5 :: forall a b. a -> b -> b
+    foo5 x y = (\ x -> x) y
+    foo6 :: forall a b. a -> b -> a
+    foo6 a b = (\ x -> \ _ -> x) a b
+    foo7 :: forall a b. a -> b -> b
+    foo7 x y = (\ (_, b) -> b) (x, y)
+    data Foo a b = Foo a b
+    foo8 :: forall a b. Foo a b -> a
+    foo8 x = (\ (Foo a _) -> a) x
+    type FooSym2 (t :: a0123456789) (t :: b0123456789) = Foo t t
+    instance SuppressUnusedWarnings FooSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FooSym1KindInference GHC.Tuple.())
+    data FooSym1 (l :: a0123456789)
+                 (l :: TyFun b0123456789 (Foo a0123456789 b0123456789))
+      = forall arg. KindOf (Apply (FooSym1 l) arg) ~ KindOf (FooSym2 l arg) =>
+        FooSym1KindInference
+    type instance Apply (FooSym1 l) l = FooSym2 l l
+    instance SuppressUnusedWarnings FooSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
+    data FooSym0 (l :: TyFun a0123456789 (TyFun b0123456789 (Foo a0123456789 b0123456789)
+                                          -> GHC.Types.Type))
+      = forall arg. KindOf (Apply FooSym0 arg) ~ KindOf (FooSym1 arg) =>
+        FooSym0KindInference
+    type instance Apply FooSym0 l = FooSym1 l
+    type family Case_0123456789 x arg_0123456789 t where
+      Case_0123456789 x arg_0123456789 (Foo a _z_0123456789) = a
+    type family Lambda_0123456789 x t where
+      Lambda_0123456789 x arg_0123456789 = Case_0123456789 x arg_0123456789 arg_0123456789
+    type Lambda_0123456789Sym2 t t = Lambda_0123456789 t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+        Lambda_0123456789Sym1KindInference
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym0 l
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+        Lambda_0123456789Sym0KindInference
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Case_0123456789 x y arg_0123456789 t where
+      Case_0123456789 x y arg_0123456789 '(_z_0123456789, b) = b
+    type family Lambda_0123456789 x y t where
+      Lambda_0123456789 x y arg_0123456789 = Case_0123456789 x y arg_0123456789 arg_0123456789
+    type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
+        Lambda_0123456789Sym2KindInference
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+        Lambda_0123456789Sym1KindInference
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym0 l
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+        Lambda_0123456789Sym0KindInference
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Case_0123456789 a b x arg_0123456789 t where
+      Case_0123456789 a b x arg_0123456789 _z_0123456789 = x
+    type family Lambda_0123456789 a b x t where
+      Lambda_0123456789 a b x arg_0123456789 = Case_0123456789 a b x arg_0123456789 arg_0123456789
+    type Lambda_0123456789Sym4 t t t t = Lambda_0123456789 t t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym3 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym3KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym3 l l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym3 l l l) arg) ~ KindOf (Lambda_0123456789Sym4 l l l arg) =>
+        Lambda_0123456789Sym3KindInference
+    type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789Sym4 l l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
+        Lambda_0123456789Sym2KindInference
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+        Lambda_0123456789Sym1KindInference
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym0 l
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+        Lambda_0123456789Sym0KindInference
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Lambda_0123456789 a b t where
+      Lambda_0123456789 a b x = Apply (Apply (Apply Lambda_0123456789Sym0 a) b) x
+    type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
+        Lambda_0123456789Sym2KindInference
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+        Lambda_0123456789Sym1KindInference
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym0 l
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+        Lambda_0123456789Sym0KindInference
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Lambda_0123456789 x y t where
+      Lambda_0123456789 x y x = x
+    type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
+        Lambda_0123456789Sym2KindInference
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+        Lambda_0123456789Sym1KindInference
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym0 l
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+        Lambda_0123456789Sym0KindInference
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Case_0123456789 x
+                                y
+                                z
+                                arg_0123456789
+                                arg_0123456789
+                                t where
+      Case_0123456789 x y z arg_0123456789 arg_0123456789 '(_z_0123456789,
+                                                            _z_0123456789) = x
+    type family Lambda_0123456789 x y z t t where
+      Lambda_0123456789 x y z arg_0123456789 arg_0123456789 = Case_0123456789 x y z arg_0123456789 arg_0123456789 (Apply (Apply Tuple2Sym0 arg_0123456789) arg_0123456789)
+    type Lambda_0123456789Sym5 t t t t t = Lambda_0123456789 t t t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym4 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym4KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym4 l l l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym4 l l l l) arg) ~ KindOf (Lambda_0123456789Sym5 l l l l arg) =>
+        Lambda_0123456789Sym4KindInference
+    type instance Apply (Lambda_0123456789Sym4 l l l l) l = Lambda_0123456789Sym5 l l l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym3 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym3KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym3 l l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym3 l l l) arg) ~ KindOf (Lambda_0123456789Sym4 l l l arg) =>
+        Lambda_0123456789Sym3KindInference
+    type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789Sym4 l l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
+        Lambda_0123456789Sym2KindInference
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+        Lambda_0123456789Sym1KindInference
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym0 l
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+        Lambda_0123456789Sym0KindInference
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Lambda_0123456789 x t where
+      Lambda_0123456789 x y = y
+    type Lambda_0123456789Sym2 t t = Lambda_0123456789 t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+        Lambda_0123456789Sym1KindInference
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym0 l
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+        Lambda_0123456789Sym0KindInference
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Case_0123456789 x y arg_0123456789 t where
+      Case_0123456789 x y arg_0123456789 _z_0123456789 = x
+    type family Lambda_0123456789 x y t where
+      Lambda_0123456789 x y arg_0123456789 = Case_0123456789 x y arg_0123456789 arg_0123456789
+    type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
+        Lambda_0123456789Sym2KindInference
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+        Lambda_0123456789Sym1KindInference
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym0 l
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+        Lambda_0123456789Sym0KindInference
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Case_0123456789 x arg_0123456789 a_0123456789 t where
+      Case_0123456789 x arg_0123456789 a_0123456789 _z_0123456789 = x
+    type family Lambda_0123456789 x a_0123456789 t where
+      Lambda_0123456789 x a_0123456789 arg_0123456789 = Case_0123456789 x arg_0123456789 a_0123456789 arg_0123456789
+    type Lambda_0123456789Sym3 t t t = Lambda_0123456789 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
+        Lambda_0123456789Sym2KindInference
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+        Lambda_0123456789Sym1KindInference
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym0 l
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+        Lambda_0123456789Sym0KindInference
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type family Lambda_0123456789 a_0123456789 a_0123456789 t t where
+      Lambda_0123456789 a_0123456789 a_0123456789 x y = x
+    type Lambda_0123456789Sym4 t t t t = Lambda_0123456789 t t t t
+    instance SuppressUnusedWarnings Lambda_0123456789Sym3 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym3KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym3 l l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym3 l l l) arg) ~ KindOf (Lambda_0123456789Sym4 l l l arg) =>
+        Lambda_0123456789Sym3KindInference
+    type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789Sym4 l l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym2 l l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
+        Lambda_0123456789Sym2KindInference
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym1 l l
+      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+        Lambda_0123456789Sym1KindInference
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
+    data Lambda_0123456789Sym0 l
+      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+        Lambda_0123456789Sym0KindInference
+    type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
+    type Foo8Sym1 (t :: Foo a0123456789 b0123456789) = Foo8 t
+    instance SuppressUnusedWarnings Foo8Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo8Sym0KindInference GHC.Tuple.())
+    data Foo8Sym0 (l :: TyFun (Foo a0123456789 b0123456789) a0123456789)
+      = forall arg. KindOf (Apply Foo8Sym0 arg) ~ KindOf (Foo8Sym1 arg) =>
+        Foo8Sym0KindInference
+    type instance Apply Foo8Sym0 l = Foo8Sym1 l
+    type Foo7Sym2 (t :: a0123456789) (t :: b0123456789) = Foo7 t t
+    instance SuppressUnusedWarnings Foo7Sym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo7Sym1KindInference GHC.Tuple.())
+    data Foo7Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 b0123456789)
+      = forall arg. KindOf (Apply (Foo7Sym1 l) arg) ~ KindOf (Foo7Sym2 l arg) =>
+        Foo7Sym1KindInference
+    type instance Apply (Foo7Sym1 l) l = Foo7Sym2 l l
+    instance SuppressUnusedWarnings Foo7Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo7Sym0KindInference GHC.Tuple.())
+    data Foo7Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 b0123456789
+                                           -> GHC.Types.Type))
+      = forall arg. KindOf (Apply Foo7Sym0 arg) ~ KindOf (Foo7Sym1 arg) =>
+        Foo7Sym0KindInference
+    type instance Apply Foo7Sym0 l = Foo7Sym1 l
+    type Foo6Sym2 (t :: a0123456789) (t :: b0123456789) = Foo6 t t
+    instance SuppressUnusedWarnings Foo6Sym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo6Sym1KindInference GHC.Tuple.())
+    data Foo6Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 a0123456789)
+      = forall arg. KindOf (Apply (Foo6Sym1 l) arg) ~ KindOf (Foo6Sym2 l arg) =>
+        Foo6Sym1KindInference
+    type instance Apply (Foo6Sym1 l) l = Foo6Sym2 l l
+    instance SuppressUnusedWarnings Foo6Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo6Sym0KindInference GHC.Tuple.())
+    data Foo6Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 a0123456789
+                                           -> GHC.Types.Type))
+      = forall arg. KindOf (Apply Foo6Sym0 arg) ~ KindOf (Foo6Sym1 arg) =>
+        Foo6Sym0KindInference
+    type instance Apply Foo6Sym0 l = Foo6Sym1 l
+    type Foo5Sym2 (t :: a0123456789) (t :: b0123456789) = Foo5 t t
+    instance SuppressUnusedWarnings Foo5Sym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo5Sym1KindInference GHC.Tuple.())
+    data Foo5Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 b0123456789)
+      = forall arg. KindOf (Apply (Foo5Sym1 l) arg) ~ KindOf (Foo5Sym2 l arg) =>
+        Foo5Sym1KindInference
+    type instance Apply (Foo5Sym1 l) l = Foo5Sym2 l l
+    instance SuppressUnusedWarnings Foo5Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo5Sym0KindInference GHC.Tuple.())
+    data Foo5Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 b0123456789
+                                           -> GHC.Types.Type))
+      = forall arg. KindOf (Apply Foo5Sym0 arg) ~ KindOf (Foo5Sym1 arg) =>
+        Foo5Sym0KindInference
+    type instance Apply Foo5Sym0 l = Foo5Sym1 l
+    type Foo4Sym3 (t :: a0123456789)
+                  (t :: b0123456789)
+                  (t :: c0123456789) =
+        Foo4 t t t
+    instance SuppressUnusedWarnings Foo4Sym2 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo4Sym2KindInference GHC.Tuple.())
+    data Foo4Sym2 (l :: a0123456789)
+                  (l :: b0123456789)
+                  (l :: TyFun c0123456789 a0123456789)
+      = forall arg. KindOf (Apply (Foo4Sym2 l l) arg) ~ KindOf (Foo4Sym3 l l arg) =>
+        Foo4Sym2KindInference
+    type instance Apply (Foo4Sym2 l l) l = Foo4Sym3 l l l
+    instance SuppressUnusedWarnings Foo4Sym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo4Sym1KindInference GHC.Tuple.())
+    data Foo4Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 (TyFun c0123456789 a0123456789
+                                           -> GHC.Types.Type))
+      = forall arg. KindOf (Apply (Foo4Sym1 l) arg) ~ KindOf (Foo4Sym2 l arg) =>
+        Foo4Sym1KindInference
+    type instance Apply (Foo4Sym1 l) l = Foo4Sym2 l l
+    instance SuppressUnusedWarnings Foo4Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo4Sym0KindInference GHC.Tuple.())
+    data Foo4Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 (TyFun c0123456789 a0123456789
+                                                              -> GHC.Types.Type)
+                                           -> GHC.Types.Type))
+      = forall arg. KindOf (Apply Foo4Sym0 arg) ~ KindOf (Foo4Sym1 arg) =>
+        Foo4Sym0KindInference
+    type instance Apply Foo4Sym0 l = Foo4Sym1 l
+    type Foo3Sym1 (t :: a0123456789) = Foo3 t
+    instance SuppressUnusedWarnings Foo3Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo3Sym0KindInference GHC.Tuple.())
+    data Foo3Sym0 (l :: TyFun a0123456789 a0123456789)
+      = forall arg. KindOf (Apply Foo3Sym0 arg) ~ KindOf (Foo3Sym1 arg) =>
+        Foo3Sym0KindInference
+    type instance Apply Foo3Sym0 l = Foo3Sym1 l
+    type Foo2Sym2 (t :: a0123456789) (t :: b0123456789) = Foo2 t t
+    instance SuppressUnusedWarnings Foo2Sym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo2Sym1KindInference GHC.Tuple.())
+    data Foo2Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 a0123456789)
+      = forall arg. KindOf (Apply (Foo2Sym1 l) arg) ~ KindOf (Foo2Sym2 l arg) =>
+        Foo2Sym1KindInference
+    type instance Apply (Foo2Sym1 l) l = Foo2Sym2 l l
+    instance SuppressUnusedWarnings Foo2Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo2Sym0KindInference GHC.Tuple.())
+    data Foo2Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 a0123456789
+                                           -> GHC.Types.Type))
+      = forall arg. KindOf (Apply Foo2Sym0 arg) ~ KindOf (Foo2Sym1 arg) =>
+        Foo2Sym0KindInference
+    type instance Apply Foo2Sym0 l = Foo2Sym1 l
+    type Foo1Sym2 (t :: a0123456789) (t :: b0123456789) = Foo1 t t
+    instance SuppressUnusedWarnings Foo1Sym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo1Sym1KindInference GHC.Tuple.())
+    data Foo1Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 a0123456789)
+      = forall arg. KindOf (Apply (Foo1Sym1 l) arg) ~ KindOf (Foo1Sym2 l arg) =>
+        Foo1Sym1KindInference
+    type instance Apply (Foo1Sym1 l) l = Foo1Sym2 l l
+    instance SuppressUnusedWarnings Foo1Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
+    data Foo1Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 a0123456789
+                                           -> GHC.Types.Type))
+      = forall arg. KindOf (Apply Foo1Sym0 arg) ~ KindOf (Foo1Sym1 arg) =>
+        Foo1Sym0KindInference
+    type instance Apply Foo1Sym0 l = Foo1Sym1 l
+    type Foo0Sym2 (t :: a0123456789) (t :: b0123456789) = Foo0 t t
+    instance SuppressUnusedWarnings Foo0Sym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo0Sym1KindInference GHC.Tuple.())
+    data Foo0Sym1 (l :: a0123456789)
+                  (l :: TyFun b0123456789 a0123456789)
+      = forall arg. KindOf (Apply (Foo0Sym1 l) arg) ~ KindOf (Foo0Sym2 l arg) =>
+        Foo0Sym1KindInference
+    type instance Apply (Foo0Sym1 l) l = Foo0Sym2 l l
+    instance SuppressUnusedWarnings Foo0Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo0Sym0KindInference GHC.Tuple.())
+    data Foo0Sym0 (l :: TyFun a0123456789 (TyFun b0123456789 a0123456789
+                                           -> GHC.Types.Type))
+      = forall arg. KindOf (Apply Foo0Sym0 arg) ~ KindOf (Foo0Sym1 arg) =>
+        Foo0Sym0KindInference
+    type instance Apply Foo0Sym0 l = Foo0Sym1 l
+    type family Foo8 (a :: Foo a b) :: a where
+      Foo8 x = Apply (Apply Lambda_0123456789Sym0 x) x
+    type family Foo7 (a :: a) (a :: b) :: b where
+      Foo7 x y = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) (Apply (Apply Tuple2Sym0 x) y)
+    type family Foo6 (a :: a) (a :: b) :: a where
+      Foo6 a b = Apply (Apply (Apply (Apply Lambda_0123456789Sym0 a) b) a) b
+    type family Foo5 (a :: a) (a :: b) :: b where
+      Foo5 x y = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
+    type family Foo4 (a :: a) (a :: b) (a :: c) :: a where
+      Foo4 x y z = Apply (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) z) y) z
+    type family Foo3 (a :: a) :: a where
+      Foo3 x = Apply (Apply Lambda_0123456789Sym0 x) x
+    type family Foo2 (a :: a) (a :: b) :: a where
+      Foo2 x y = Apply (Apply (Apply Lambda_0123456789Sym0 x) y) y
+    type family Foo1 (a :: a) (a :: b) :: a where
+      Foo1 x a_0123456789 = Apply (Apply (Apply Lambda_0123456789Sym0 x) a_0123456789) a_0123456789
+    type family Foo0 (a :: a) (a :: b) :: a where
+      Foo0 a_0123456789 a_0123456789 = Apply (Apply (Apply (Apply Lambda_0123456789Sym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789
+    sFoo8 ::
+      forall (t :: Foo a b). Sing t -> Sing (Apply Foo8Sym0 t :: a)
+    sFoo7 ::
+      forall (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply Foo7Sym0 t) t :: b)
+    sFoo6 ::
+      forall (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply Foo6Sym0 t) t :: a)
+    sFoo5 ::
+      forall (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply Foo5Sym0 t) t :: b)
+    sFoo4 ::
+      forall (t :: a) (t :: b) (t :: c).
+      Sing t
+      -> Sing t
+         -> Sing t -> Sing (Apply (Apply (Apply Foo4Sym0 t) t) t :: a)
+    sFoo3 :: forall (t :: a). Sing t -> Sing (Apply Foo3Sym0 t :: a)
+    sFoo2 ::
+      forall (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply Foo2Sym0 t) t :: a)
+    sFoo1 ::
+      forall (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a)
+    sFoo0 ::
+      forall (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply Foo0Sym0 t) t :: a)
+    sFoo8 sX
+      = let
+          lambda :: forall x. t ~ x => Sing x -> Sing (Apply Foo8Sym0 x :: a)
+          lambda x
+            = applySing
+                (singFun1
+                   (Proxy :: Proxy (Apply Lambda_0123456789Sym0 x))
+                   (\ sArg_0123456789
+                      -> let
+                           lambda ::
+                             forall arg_0123456789.
+                             Sing arg_0123456789
+                             -> Sing (Apply (Apply Lambda_0123456789Sym0 x) arg_0123456789)
+                           lambda arg_0123456789
+                             = case arg_0123456789 of {
+                                 SFoo sA _s_z_0123456789
+                                   -> let
+                                        lambda ::
+                                          forall a _z_0123456789.
+                                          Apply (Apply FooSym0 a) _z_0123456789 ~ arg_0123456789 =>
+                                          Sing a
+                                          -> Sing _z_0123456789
+                                             -> Sing (Case_0123456789 x arg_0123456789 (Apply (Apply FooSym0 a) _z_0123456789))
+                                        lambda a _z_0123456789 = a
+                                      in lambda sA _s_z_0123456789 } ::
+                                 Sing (Case_0123456789 x arg_0123456789 arg_0123456789)
+                         in lambda sArg_0123456789))
+                x
+        in lambda sX
+    sFoo7 sX sY
+      = let
+          lambda ::
+            forall x y.
+            (t ~ x, t ~ y) =>
+            Sing x -> Sing y -> Sing (Apply (Apply Foo7Sym0 x) y :: b)
+          lambda x y
+            = applySing
+                (singFun1
+                   (Proxy :: Proxy (Apply (Apply Lambda_0123456789Sym0 x) y))
+                   (\ sArg_0123456789
+                      -> let
+                           lambda ::
+                             forall arg_0123456789.
+                             Sing arg_0123456789
+                             -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) arg_0123456789)
+                           lambda arg_0123456789
+                             = case arg_0123456789 of {
+                                 STuple2 _s_z_0123456789 sB
+                                   -> let
+                                        lambda ::
+                                          forall _z_0123456789 b.
+                                          Apply (Apply Tuple2Sym0 _z_0123456789) b ~ arg_0123456789 =>
+                                          Sing _z_0123456789
+                                          -> Sing b
+                                             -> Sing (Case_0123456789 x y arg_0123456789 (Apply (Apply Tuple2Sym0 _z_0123456789) b))
+                                        lambda _z_0123456789 b = b
+                                      in lambda _s_z_0123456789 sB } ::
+                                 Sing (Case_0123456789 x y arg_0123456789 arg_0123456789)
+                         in lambda sArg_0123456789))
+                (applySing
+                   (applySing (singFun2 (Proxy :: Proxy Tuple2Sym0) STuple2) x) y)
+        in lambda sX sY
+    sFoo6 sA sB
+      = let
+          lambda ::
+            forall a b.
+            (t ~ a, t ~ b) =>
+            Sing a -> Sing b -> Sing (Apply (Apply Foo6Sym0 a) b :: a)
+          lambda a b
+            = applySing
+                (applySing
+                   (singFun1
+                      (Proxy :: Proxy (Apply (Apply Lambda_0123456789Sym0 a) b))
+                      (\ sX
+                         -> let
+                              lambda ::
+                                forall x.
+                                Sing x -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 a) b) x)
+                              lambda x
+                                = singFun1
+                                    (Proxy ::
+                                       Proxy (Apply (Apply (Apply Lambda_0123456789Sym0 a) b) x))
+                                    (\ sArg_0123456789
+                                       -> let
+                                            lambda ::
+                                              forall arg_0123456789.
+                                              Sing arg_0123456789
+                                              -> Sing (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 a) b) x) arg_0123456789)
+                                            lambda arg_0123456789
+                                              = case arg_0123456789 of {
+                                                  _s_z_0123456789
+                                                    -> let
+                                                         lambda ::
+                                                           forall _z_0123456789.
+                                                           _z_0123456789 ~ arg_0123456789 =>
+                                                           Sing _z_0123456789
+                                                           -> Sing (Case_0123456789 a b x arg_0123456789 _z_0123456789)
+                                                         lambda _z_0123456789 = x
+                                                       in lambda _s_z_0123456789 } ::
+                                                  Sing (Case_0123456789 a b x arg_0123456789 arg_0123456789)
+                                          in lambda sArg_0123456789)
+                            in lambda sX))
+                   a)
+                b
+        in lambda sA sB
+    sFoo5 sX sY
+      = let
+          lambda ::
+            forall x y.
+            (t ~ x, t ~ y) =>
+            Sing x -> Sing y -> Sing (Apply (Apply Foo5Sym0 x) y :: b)
+          lambda x y
+            = applySing
+                (singFun1
+                   (Proxy :: Proxy (Apply (Apply Lambda_0123456789Sym0 x) y))
+                   (\ sX
+                      -> let
+                           lambda ::
+                             forall x.
+                             Sing x -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) x)
+                           lambda x = x
+                         in lambda sX))
+                y
+        in lambda sX sY
+    sFoo4 sX sY sZ
+      = let
+          lambda ::
+            forall x y z.
+            (t ~ x, t ~ y, t ~ z) =>
+            Sing x
+            -> Sing y
+               -> Sing z -> Sing (Apply (Apply (Apply Foo4Sym0 x) y) z :: a)
+          lambda x y z
+            = applySing
+                (applySing
+                   (singFun2
+                      (Proxy ::
+                         Proxy (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) z))
+                      (\ sArg_0123456789 sArg_0123456789
+                         -> let
+                              lambda ::
+                                forall arg_0123456789 arg_0123456789.
+                                Sing arg_0123456789
+                                -> Sing arg_0123456789
+                                   -> Sing (Apply (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) z) arg_0123456789) arg_0123456789)
+                              lambda arg_0123456789 arg_0123456789
+                                = case
+                                      applySing
+                                        (applySing
+                                           (singFun2 (Proxy :: Proxy Tuple2Sym0) STuple2)
+                                           arg_0123456789)
+                                        arg_0123456789
+                                  of {
+                                    STuple2 _s_z_0123456789 _s_z_0123456789
+                                      -> let
+                                           lambda ::
+                                             forall _z_0123456789 _z_0123456789.
+                                             Apply (Apply Tuple2Sym0 _z_0123456789) _z_0123456789 ~ Apply (Apply Tuple2Sym0 arg_0123456789) arg_0123456789 =>
+                                             Sing _z_0123456789
+                                             -> Sing _z_0123456789
+                                                -> Sing (Case_0123456789 x y z arg_0123456789 arg_0123456789 (Apply (Apply Tuple2Sym0 _z_0123456789) _z_0123456789))
+                                           lambda _z_0123456789 _z_0123456789 = x
+                                         in lambda _s_z_0123456789 _s_z_0123456789 } ::
+                                    Sing (Case_0123456789 x y z arg_0123456789 arg_0123456789 (Apply (Apply Tuple2Sym0 arg_0123456789) arg_0123456789))
+                            in lambda sArg_0123456789 sArg_0123456789))
+                   y)
+                z
+        in lambda sX sY sZ
+    sFoo3 sX
+      = let
+          lambda :: forall x. t ~ x => Sing x -> Sing (Apply Foo3Sym0 x :: a)
+          lambda x
+            = applySing
+                (singFun1
+                   (Proxy :: Proxy (Apply Lambda_0123456789Sym0 x))
+                   (\ sY
+                      -> let
+                           lambda ::
+                             forall y. Sing y -> Sing (Apply (Apply Lambda_0123456789Sym0 x) y)
+                           lambda y = y
+                         in lambda sY))
+                x
+        in lambda sX
+    sFoo2 sX sY
+      = let
+          lambda ::
+            forall x y.
+            (t ~ x, t ~ y) =>
+            Sing x -> Sing y -> Sing (Apply (Apply Foo2Sym0 x) y :: a)
+          lambda x y
+            = applySing
+                (singFun1
+                   (Proxy :: Proxy (Apply (Apply Lambda_0123456789Sym0 x) y))
+                   (\ sArg_0123456789
+                      -> let
+                           lambda ::
+                             forall arg_0123456789.
+                             Sing arg_0123456789
+                             -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 x) y) arg_0123456789)
+                           lambda arg_0123456789
+                             = case arg_0123456789 of {
+                                 _s_z_0123456789
+                                   -> let
+                                        lambda ::
+                                          forall _z_0123456789.
+                                          _z_0123456789 ~ arg_0123456789 =>
+                                          Sing _z_0123456789
+                                          -> Sing (Case_0123456789 x y arg_0123456789 _z_0123456789)
+                                        lambda _z_0123456789 = x
+                                      in lambda _s_z_0123456789 } ::
+                                 Sing (Case_0123456789 x y arg_0123456789 arg_0123456789)
+                         in lambda sArg_0123456789))
+                y
+        in lambda sX sY
+    sFoo1 sX sA_0123456789
+      = let
+          lambda ::
+            forall x a_0123456789.
+            (t ~ x, t ~ a_0123456789) =>
+            Sing x
+            -> Sing a_0123456789
+               -> Sing (Apply (Apply Foo1Sym0 x) a_0123456789 :: a)
+          lambda x a_0123456789
+            = applySing
+                (singFun1
+                   (Proxy ::
+                      Proxy (Apply (Apply Lambda_0123456789Sym0 x) a_0123456789))
+                   (\ sArg_0123456789
+                      -> let
+                           lambda ::
+                             forall arg_0123456789.
+                             Sing arg_0123456789
+                             -> Sing (Apply (Apply (Apply Lambda_0123456789Sym0 x) a_0123456789) arg_0123456789)
+                           lambda arg_0123456789
+                             = case arg_0123456789 of {
+                                 _s_z_0123456789
+                                   -> let
+                                        lambda ::
+                                          forall _z_0123456789.
+                                          _z_0123456789 ~ arg_0123456789 =>
+                                          Sing _z_0123456789
+                                          -> Sing (Case_0123456789 x arg_0123456789 a_0123456789 _z_0123456789)
+                                        lambda _z_0123456789 = x
+                                      in lambda _s_z_0123456789 } ::
+                                 Sing (Case_0123456789 x arg_0123456789 a_0123456789 arg_0123456789)
+                         in lambda sArg_0123456789))
+                a_0123456789
+        in lambda sX sA_0123456789
+    sFoo0 sA_0123456789 sA_0123456789
+      = let
+          lambda ::
+            forall a_0123456789 a_0123456789.
+            (t ~ a_0123456789, t ~ a_0123456789) =>
+            Sing a_0123456789
+            -> Sing a_0123456789
+               -> Sing (Apply (Apply Foo0Sym0 a_0123456789) a_0123456789 :: a)
+          lambda a_0123456789 a_0123456789
+            = applySing
+                (applySing
+                   (singFun2
+                      (Proxy ::
+                         Proxy (Apply (Apply Lambda_0123456789Sym0 a_0123456789) a_0123456789))
+                      (\ sX sY
+                         -> let
+                              lambda ::
+                                forall x y.
+                                Sing x
+                                -> Sing y
+                                   -> Sing (Apply (Apply (Apply (Apply Lambda_0123456789Sym0 a_0123456789) a_0123456789) x) y)
+                              lambda x y = x
+                            in lambda sX sY))
+                   a_0123456789)
+                a_0123456789
+        in lambda sA_0123456789 sA_0123456789
+    data instance Sing (z :: Foo a b)
+      = forall (n :: a) (n :: b). z ~ Foo n n =>
+        SFoo (Sing (n :: a)) (Sing (n :: b))
+    type SFoo = (Sing :: Foo a b -> GHC.Types.Type)
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b)) =>
+             SingKind (KProxy :: KProxy (Foo a b)) where
+      type DemoteRep (KProxy :: KProxy (Foo a b)) = Foo (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b))
+      fromSing (SFoo b b) = Foo (fromSing b) (fromSing b)
+      toSing (Foo b b)
+        = case
+              GHC.Tuple.(,)
+                (toSing b :: SomeSing (KProxy :: KProxy a))
+                (toSing b :: SomeSing (KProxy :: KProxy b))
+          of {
+            GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SFoo c c) }
+    instance (SingI n, SingI n) => SingI (Foo (n :: a) (n :: b)) where
+      sing = SFoo sing sing

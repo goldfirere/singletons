@@ -294,7 +294,7 @@ promoteInstanceDec meth_sigs
   inst_kis <- mapM promoteType inst_tys
   let subst = Map.fromList $ zip cls_tvb_names inst_kis
   (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod (Just subst) meth_sigs) meths
-  emitDecs [DInstanceD [] (foldType (DConT pClsName)
+  emitDecs [DInstanceD Nothing [] (foldType (DConT pClsName)
                                     (map kindParam inst_kis)) meths']
   return (decl { id_meths = zip (map fst meths) ann_rhss })
   where

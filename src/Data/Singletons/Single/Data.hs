@@ -20,7 +20,6 @@ import Data.Singletons.Util
 import Data.Singletons.Names
 import Data.Singletons.Syntax
 import Control.Monad
-import Data.Maybe
 
 -- We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
@@ -36,7 +35,8 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
   fromSingClauses <- mapM mkFromSingClause ctors
   toSingClauses   <- mapM mkToSingClause ctors
   let singKindInst =
-        DInstanceD (map (singKindConstraint . DVarT) tvbNames)
+        DInstanceD Nothing
+                   (map (singKindConstraint . DVarT) tvbNames)
                    (DAppT (DConT singKindClassName)
                           (kindParam k))
                    [ DTySynInstD demoteRepName $ DTySynEqn
@@ -109,11 +109,9 @@ singCtor :: DType -> DCon -> SgM DCon
  -- polymorphic constructors are handled just
  -- like monomorphic ones -- the polymorphism in
  -- the kind is automatic
-singCtor a (DCon _tvbs cxt name fields rty)
-  | not (null cxt)
+singCtor a (DCon _tvbs cxt name fields _rty)
+  | not (null (filter (not . isEqPred) cxt))
   = fail "Singling of constrained constructors not yet supported"
-  | not (isNothing rty)
-  = fail "Singling of GADTs not yet supported (but it could be -- care to help?)"
   | otherwise
   = do
   let types = tysOfConFields fields
@@ -129,7 +127,8 @@ singCtor a (DCon _tvbs cxt name fields rty)
 
   -- SingI instance
   emitDecs
-    [DInstanceD (map (DAppPr (DConPr singIName)) indices)
+    [DInstanceD Nothing
+                (map (DAppPr (DConPr singIName)) indices)
                 (DAppT (DConT singIName)
                        (foldType pCon kindedIndices))
                 [DLetDec $ DValD (DVarPa singMethName)
@@ -151,3 +150,10 @@ singCtor a (DCon _tvbs cxt name fields rty)
         buildArgType ty index = do
           (ty', _, _, _) <- singType index ty
           return ty'
+
+        isEqPred :: DPred -> Bool
+        isEqPred (DAppPr f _) = isEqPred f
+        isEqPred (DSigPr p _) = isEqPred p
+        isEqPred (DVarPr _)   = False
+        isEqPred (DConPr n)   = n == equalityName
+        isEqPred DWildCardPr  = False

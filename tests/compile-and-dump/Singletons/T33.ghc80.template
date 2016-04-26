@@ -1,0 +1,35 @@
+Singletons/T33.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| foo :: (Bool, Bool) -> ()
+          foo ~(_, _) = () |]
+  ======>
+    foo :: (Bool, Bool) -> ()
+    foo ~(_, _) = GHC.Tuple.()
+    type FooSym1 (t :: (Bool, Bool)) = Foo t
+    instance SuppressUnusedWarnings FooSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
+    data FooSym0 (l :: TyFun (Bool, Bool) ())
+      = forall arg. KindOf (Apply FooSym0 arg) ~ KindOf (FooSym1 arg) =>
+        FooSym0KindInference
+    type instance Apply FooSym0 l = FooSym1 l
+    type family Foo (a :: (Bool, Bool)) :: () where
+      Foo '(_z_0123456789, _z_0123456789) = Tuple0Sym0
+    sFoo ::
+      forall (t :: (Bool, Bool)). Sing t -> Sing (Apply FooSym0 t :: ())
+    sFoo (STuple2 _s_z_0123456789 _s_z_0123456789)
+      = let
+          lambda ::
+            forall _z_0123456789 _z_0123456789.
+            t ~ Apply (Apply Tuple2Sym0 _z_0123456789) _z_0123456789 =>
+            Sing _z_0123456789
+            -> Sing _z_0123456789
+               -> Sing (Apply FooSym0 (Apply (Apply Tuple2Sym0 _z_0123456789) _z_0123456789) :: ())
+          lambda _z_0123456789 _z_0123456789 = STuple0
+        in lambda _s_z_0123456789 _s_z_0123456789
+
+Singletons/T33.hs:0:0: warning:
+    Lazy pattern converted into regular pattern in promotion
+
+Singletons/T33.hs:0:0: warning:
+    Lazy pattern converted into regular pattern during singleton generation.

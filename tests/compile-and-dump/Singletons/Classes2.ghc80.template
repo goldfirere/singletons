@@ -1,0 +1,117 @@
+Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| data NatFoo = ZeroFoo | SuccFoo NatFoo
+          
+          instance MyOrd NatFoo where
+            ZeroFoo `mycompare` ZeroFoo = EQ
+            ZeroFoo `mycompare` (SuccFoo _) = LT
+            (SuccFoo _) `mycompare` ZeroFoo = GT
+            (SuccFoo n) `mycompare` (SuccFoo m) = m `mycompare` n |]
+  ======>
+    data NatFoo = ZeroFoo | SuccFoo NatFoo
+    instance MyOrd NatFoo where
+      mycompare ZeroFoo ZeroFoo = EQ
+      mycompare ZeroFoo (SuccFoo _) = LT
+      mycompare (SuccFoo _) ZeroFoo = GT
+      mycompare (SuccFoo n) (SuccFoo m) = (m `mycompare` n)
+    type ZeroFooSym0 = ZeroFoo
+    type SuccFooSym1 (t :: NatFoo) = SuccFoo t
+    instance SuppressUnusedWarnings SuccFooSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) SuccFooSym0KindInference GHC.Tuple.())
+    data SuccFooSym0 (l :: TyFun NatFoo NatFoo)
+      = forall arg. KindOf (Apply SuccFooSym0 arg) ~ KindOf (SuccFooSym1 arg) =>
+        SuccFooSym0KindInference
+    type instance Apply SuccFooSym0 l = SuccFooSym1 l
+    type family Mycompare_0123456789 (a :: NatFoo)
+                                     (a :: NatFoo) :: Ordering where
+      Mycompare_0123456789 ZeroFoo ZeroFoo = EQSym0
+      Mycompare_0123456789 ZeroFoo (SuccFoo _z_0123456789) = LTSym0
+      Mycompare_0123456789 (SuccFoo _z_0123456789) ZeroFoo = GTSym0
+      Mycompare_0123456789 (SuccFoo n) (SuccFoo m) = Apply (Apply MycompareSym0 m) n
+    type Mycompare_0123456789Sym2 (t :: NatFoo) (t :: NatFoo) =
+        Mycompare_0123456789 t t
+    instance SuppressUnusedWarnings Mycompare_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Mycompare_0123456789Sym1KindInference GHC.Tuple.())
+    data Mycompare_0123456789Sym1 (l :: NatFoo)
+                                  (l :: TyFun NatFoo Ordering)
+      = forall arg. KindOf (Apply (Mycompare_0123456789Sym1 l) arg) ~ KindOf (Mycompare_0123456789Sym2 l arg) =>
+        Mycompare_0123456789Sym1KindInference
+    type instance Apply (Mycompare_0123456789Sym1 l) l = Mycompare_0123456789Sym2 l l
+    instance SuppressUnusedWarnings Mycompare_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) Mycompare_0123456789Sym0KindInference GHC.Tuple.())
+    data Mycompare_0123456789Sym0 (l :: TyFun NatFoo (TyFun NatFoo Ordering
+                                                      -> GHC.Types.Type))
+      = forall arg. KindOf (Apply Mycompare_0123456789Sym0 arg) ~ KindOf (Mycompare_0123456789Sym1 arg) =>
+        Mycompare_0123456789Sym0KindInference
+    type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
+    instance PMyOrd (KProxy :: KProxy NatFoo) where
+      type Mycompare (a :: NatFoo) (a :: NatFoo) = Apply (Apply Mycompare_0123456789Sym0 a) a
+    data instance Sing (z :: NatFoo)
+      = z ~ ZeroFoo => SZeroFoo |
+        forall (n :: NatFoo). z ~ SuccFoo n =>
+        SSuccFoo (Sing (n :: NatFoo))
+    type SNatFoo = (Sing :: NatFoo -> GHC.Types.Type)
+    instance SingKind (KProxy :: KProxy NatFoo) where
+      type DemoteRep (KProxy :: KProxy NatFoo) = NatFoo
+      fromSing SZeroFoo = ZeroFoo
+      fromSing (SSuccFoo b) = SuccFoo (fromSing b)
+      toSing ZeroFoo = SomeSing SZeroFoo
+      toSing (SuccFoo b)
+        = case toSing b :: SomeSing (KProxy :: KProxy NatFoo) of {
+            SomeSing c -> SomeSing (SSuccFoo c) }
+    instance SMyOrd (KProxy :: KProxy NatFoo) where
+      sMycompare ::
+        forall (t0 :: NatFoo) (t1 :: NatFoo).
+        Sing t0
+        -> Sing t1
+           -> Sing (Apply (Apply (MycompareSym0 :: TyFun NatFoo (TyFun NatFoo Ordering
+                                                                 -> GHC.Types.Type)
+                                                   -> GHC.Types.Type) t0 :: TyFun NatFoo Ordering
+                                                                            -> GHC.Types.Type) t1 :: Ordering)
+      sMycompare SZeroFoo SZeroFoo
+        = let
+            lambda ::
+              (t0 ~ ZeroFooSym0, t1 ~ ZeroFooSym0) =>
+              Sing (Apply (Apply MycompareSym0 ZeroFooSym0) ZeroFooSym0 :: Ordering)
+            lambda = SEQ
+          in lambda
+      sMycompare SZeroFoo (SSuccFoo _s_z_0123456789)
+        = let
+            lambda ::
+              forall _z_0123456789.
+              (t0 ~ ZeroFooSym0, t1 ~ Apply SuccFooSym0 _z_0123456789) =>
+              Sing _z_0123456789
+              -> Sing (Apply (Apply MycompareSym0 ZeroFooSym0) (Apply SuccFooSym0 _z_0123456789) :: Ordering)
+            lambda _z_0123456789 = SLT
+          in lambda _s_z_0123456789
+      sMycompare (SSuccFoo _s_z_0123456789) SZeroFoo
+        = let
+            lambda ::
+              forall _z_0123456789.
+              (t0 ~ Apply SuccFooSym0 _z_0123456789, t1 ~ ZeroFooSym0) =>
+              Sing _z_0123456789
+              -> Sing (Apply (Apply MycompareSym0 (Apply SuccFooSym0 _z_0123456789)) ZeroFooSym0 :: Ordering)
+            lambda _z_0123456789 = SGT
+          in lambda _s_z_0123456789
+      sMycompare (SSuccFoo sN) (SSuccFoo sM)
+        = let
+            lambda ::
+              forall n m.
+              (t0 ~ Apply SuccFooSym0 n, t1 ~ Apply SuccFooSym0 m) =>
+              Sing n
+              -> Sing m
+                 -> Sing (Apply (Apply MycompareSym0 (Apply SuccFooSym0 n)) (Apply SuccFooSym0 m) :: Ordering)
+            lambda n m
+              = applySing
+                  (applySing (singFun2 (Proxy :: Proxy MycompareSym0) sMycompare) m)
+                  n
+          in lambda sN sM
+    instance SingI ZeroFoo where
+      sing = SZeroFoo
+    instance SingI n => SingI (SuccFoo (n :: NatFoo)) where
+      sing = SSuccFoo sing

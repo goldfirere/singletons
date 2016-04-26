@@ -72,7 +72,7 @@ partitionDec (DClassD cxt name tvbs fds decs) = do
                                                , cd_tvbs = tvbs
                                                , cd_fds  = fds
                                                , cd_lde  = env }] }
-partitionDec (DInstanceD cxt ty decs) = do
+partitionDec (DInstanceD _ cxt ty decs) = do
   defns <- liftM catMaybes $ mapM partitionInstanceDec decs
   (name, tys) <- split_app_tys [] ty
   return $ mempty { pd_instance_decs = [InstDecl { id_cxt = cxt

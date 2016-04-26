@@ -29,7 +29,8 @@ mkEqualityInstance k ctors (mkMeth, className, methName) = do
   methClauses <- if null ctors
                  then mkEmptyMethClauses
                  else mapM mkMeth ctorPairs
-  return $ DInstanceD (map (\kvar -> (DConPr className) `DAppPr` kindParam kvar)
+  return $ DInstanceD Nothing
+                      (map (\kvar -> (DConPr className) `DAppPr` kindParam kvar)
                            (getKindVars k))
                      (DAppT (DConT className)
                             (kindParam k))

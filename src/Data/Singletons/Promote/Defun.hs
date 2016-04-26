@@ -149,7 +149,8 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
                                   (foldType (DConT (promoteTySym name (n+1)))
                                             (map DVarT (rest_names ++ [fst_name])))
           app_decl    = DTySynInstD applyName app_eqn
-          suppress    = DInstanceD [] (DConT suppressClassName `DAppT` DConT data_name)
+          suppress    = DInstanceD Nothing []
+                          (DConT suppressClassName `DAppT` DConT data_name)
                           [DLetDec $ DFunD suppressMethodName
                                            [DClause [DWildPa]
                                                     ((DVarE 'snd) `DAppE`

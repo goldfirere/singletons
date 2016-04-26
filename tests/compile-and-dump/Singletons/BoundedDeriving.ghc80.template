@@ -1,0 +1,265 @@
+Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| data Foo1
+            = Foo1
+            deriving (Bounded)
+          data Foo2
+            = A | B | C | D | E
+            deriving (Bounded)
+          data Foo3 a
+            = Foo3 a
+            deriving (Bounded)
+          data Foo4 (a :: *) (b :: *)
+            = Foo41 | Foo42
+            deriving (Bounded)
+          data Pair
+            = Pair Bool Bool
+            deriving (Bounded) |]
+  ======>
+    data Foo1
+      = Foo1
+      deriving (Bounded)
+    data Foo2
+      = A | B | C | D | E
+      deriving (Bounded)
+    data Foo3 a
+      = Foo3 a
+      deriving (Bounded)
+    data Foo4 (a :: Type) (b :: Type)
+      = Foo41 | Foo42
+      deriving (Bounded)
+    data Pair
+      = Pair Bool Bool
+      deriving (Bounded)
+    type Foo1Sym0 = Foo1
+    type ASym0 = A
+    type BSym0 = B
+    type CSym0 = C
+    type DSym0 = D
+    type ESym0 = E
+    type Foo3Sym1 (t :: a0123456789) = Foo3 t
+    instance SuppressUnusedWarnings Foo3Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Foo3Sym0KindInference GHC.Tuple.())
+    data Foo3Sym0 (l :: TyFun a0123456789 (Foo3 a0123456789))
+      = forall arg. KindOf (Apply Foo3Sym0 arg) ~ KindOf (Foo3Sym1 arg) =>
+        Foo3Sym0KindInference
+    type instance Apply Foo3Sym0 l = Foo3Sym1 l
+    type Foo41Sym0 = Foo41
+    type Foo42Sym0 = Foo42
+    type PairSym2 (t :: Bool) (t :: Bool) = Pair t t
+    instance SuppressUnusedWarnings PairSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) PairSym1KindInference GHC.Tuple.())
+    data PairSym1 (l :: Bool) (l :: TyFun Bool Pair)
+      = forall arg. KindOf (Apply (PairSym1 l) arg) ~ KindOf (PairSym2 l arg) =>
+        PairSym1KindInference
+    type instance Apply (PairSym1 l) l = PairSym2 l l
+    instance SuppressUnusedWarnings PairSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) PairSym0KindInference GHC.Tuple.())
+    data PairSym0 (l :: TyFun Bool (TyFun Bool Pair -> Type))
+      = forall arg. KindOf (Apply PairSym0 arg) ~ KindOf (PairSym1 arg) =>
+        PairSym0KindInference
+    type instance Apply PairSym0 l = PairSym1 l
+    type family MinBound_0123456789 :: Foo1 where
+      MinBound_0123456789 = Foo1Sym0
+    type MinBound_0123456789Sym0 = MinBound_0123456789
+    type family MaxBound_0123456789 :: Foo1 where
+      MaxBound_0123456789 = Foo1Sym0
+    type MaxBound_0123456789Sym0 = MaxBound_0123456789
+    instance PBounded (KProxy :: KProxy Foo1) where
+      type MinBound = MinBound_0123456789Sym0
+      type MaxBound = MaxBound_0123456789Sym0
+    type family MinBound_0123456789 :: Foo2 where
+      MinBound_0123456789 = ASym0
+    type MinBound_0123456789Sym0 = MinBound_0123456789
+    type family MaxBound_0123456789 :: Foo2 where
+      MaxBound_0123456789 = ESym0
+    type MaxBound_0123456789Sym0 = MaxBound_0123456789
+    instance PBounded (KProxy :: KProxy Foo2) where
+      type MinBound = MinBound_0123456789Sym0
+      type MaxBound = MaxBound_0123456789Sym0
+    type family MinBound_0123456789 :: Foo3 a where
+      MinBound_0123456789 = Apply Foo3Sym0 MinBoundSym0
+    type MinBound_0123456789Sym0 = MinBound_0123456789
+    type family MaxBound_0123456789 :: Foo3 a where
+      MaxBound_0123456789 = Apply Foo3Sym0 MaxBoundSym0
+    type MaxBound_0123456789Sym0 = MaxBound_0123456789
+    instance PBounded (KProxy :: KProxy (Foo3 a)) where
+      type MinBound = MinBound_0123456789Sym0
+      type MaxBound = MaxBound_0123456789Sym0
+    type family MinBound_0123456789 :: Foo4 a b where
+      MinBound_0123456789 = Foo41Sym0
+    type MinBound_0123456789Sym0 = MinBound_0123456789
+    type family MaxBound_0123456789 :: Foo4 a b where
+      MaxBound_0123456789 = Foo42Sym0
+    type MaxBound_0123456789Sym0 = MaxBound_0123456789
+    instance PBounded (KProxy :: KProxy (Foo4 a b)) where
+      type MinBound = MinBound_0123456789Sym0
+      type MaxBound = MaxBound_0123456789Sym0
+    type family MinBound_0123456789 :: Pair where
+      MinBound_0123456789 = Apply (Apply PairSym0 MinBoundSym0) MinBoundSym0
+    type MinBound_0123456789Sym0 = MinBound_0123456789
+    type family MaxBound_0123456789 :: Pair where
+      MaxBound_0123456789 = Apply (Apply PairSym0 MaxBoundSym0) MaxBoundSym0
+    type MaxBound_0123456789Sym0 = MaxBound_0123456789
+    instance PBounded (KProxy :: KProxy Pair) where
+      type MinBound = MinBound_0123456789Sym0
+      type MaxBound = MaxBound_0123456789Sym0
+    data instance Sing (z :: Foo1) = z ~ Foo1 => SFoo1
+    type SFoo1 = (Sing :: Foo1 -> Type)
+    instance SingKind (KProxy :: KProxy Foo1) where
+      type DemoteRep (KProxy :: KProxy Foo1) = Foo1
+      fromSing SFoo1 = Foo1
+      toSing Foo1 = SomeSing SFoo1
+    data instance Sing (z :: Foo2)
+      = z ~ A => SA |
+        z ~ B => SB |
+        z ~ C => SC |
+        z ~ D => SD |
+        z ~ E => SE
+    type SFoo2 = (Sing :: Foo2 -> Type)
+    instance SingKind (KProxy :: KProxy Foo2) where
+      type DemoteRep (KProxy :: KProxy Foo2) = Foo2
+      fromSing SA = A
+      fromSing SB = B
+      fromSing SC = C
+      fromSing SD = D
+      fromSing SE = E
+      toSing A = SomeSing SA
+      toSing B = SomeSing SB
+      toSing C = SomeSing SC
+      toSing D = SomeSing SD
+      toSing E = SomeSing SE
+    data instance Sing (z :: Foo3 a)
+      = forall (n :: a). z ~ Foo3 n => SFoo3 (Sing (n :: a))
+    type SFoo3 = (Sing :: Foo3 a -> Type)
+    instance SingKind (KProxy :: KProxy a) =>
+             SingKind (KProxy :: KProxy (Foo3 a)) where
+      type DemoteRep (KProxy :: KProxy (Foo3 a)) = Foo3 (DemoteRep (KProxy :: KProxy a))
+      fromSing (SFoo3 b) = Foo3 (fromSing b)
+      toSing (Foo3 b)
+        = case toSing b :: SomeSing (KProxy :: KProxy a) of {
+            SomeSing c -> SomeSing (SFoo3 c) }
+    data instance Sing (z :: Foo4 a b)
+      = z ~ Foo41 => SFoo41 | z ~ Foo42 => SFoo42
+    type SFoo4 = (Sing :: Foo4 a b -> Type)
+    instance (SingKind (KProxy :: KProxy a),
+              SingKind (KProxy :: KProxy b)) =>
+             SingKind (KProxy :: KProxy (Foo4 a b)) where
+      type DemoteRep (KProxy :: KProxy (Foo4 a b)) = Foo4 (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b))
+      fromSing SFoo41 = Foo41
+      fromSing SFoo42 = Foo42
+      toSing Foo41 = SomeSing SFoo41
+      toSing Foo42 = SomeSing SFoo42
+    data instance Sing (z :: Pair)
+      = forall (n :: Bool) (n :: Bool). z ~ Pair n n =>
+        SPair (Sing (n :: Bool)) (Sing (n :: Bool))
+    type SPair = (Sing :: Pair -> Type)
+    instance SingKind (KProxy :: KProxy Pair) where
+      type DemoteRep (KProxy :: KProxy Pair) = Pair
+      fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
+      toSing (Pair b b)
+        = case
+              GHC.Tuple.(,)
+                (toSing b :: SomeSing (KProxy :: KProxy Bool))
+                (toSing b :: SomeSing (KProxy :: KProxy Bool))
+          of {
+            GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SPair c c) }
+    instance SBounded (KProxy :: KProxy Foo1) where
+      sMinBound :: Sing (MinBoundSym0 :: Foo1)
+      sMaxBound :: Sing (MaxBoundSym0 :: Foo1)
+      sMinBound
+        = let
+            lambda :: Sing (MinBoundSym0 :: Foo1)
+            lambda = SFoo1
+          in lambda
+      sMaxBound
+        = let
+            lambda :: Sing (MaxBoundSym0 :: Foo1)
+            lambda = SFoo1
+          in lambda
+    instance SBounded (KProxy :: KProxy Foo2) where
+      sMinBound :: Sing (MinBoundSym0 :: Foo2)
+      sMaxBound :: Sing (MaxBoundSym0 :: Foo2)
+      sMinBound
+        = let
+            lambda :: Sing (MinBoundSym0 :: Foo2)
+            lambda = SA
+          in lambda
+      sMaxBound
+        = let
+            lambda :: Sing (MaxBoundSym0 :: Foo2)
+            lambda = SE
+          in lambda
+    instance SBounded (KProxy :: KProxy a) =>
+             SBounded (KProxy :: KProxy (Foo3 a)) where
+      sMinBound :: Sing (MinBoundSym0 :: Foo3 a)
+      sMaxBound :: Sing (MaxBoundSym0 :: Foo3 a)
+      sMinBound
+        = let
+            lambda :: Sing (MinBoundSym0 :: Foo3 a)
+            lambda
+              = applySing (singFun1 (Proxy :: Proxy Foo3Sym0) SFoo3) sMinBound
+          in lambda
+      sMaxBound
+        = let
+            lambda :: Sing (MaxBoundSym0 :: Foo3 a)
+            lambda
+              = applySing (singFun1 (Proxy :: Proxy Foo3Sym0) SFoo3) sMaxBound
+          in lambda
+    instance SBounded (KProxy :: KProxy (Foo4 a b)) where
+      sMinBound :: Sing (MinBoundSym0 :: Foo4 a b)
+      sMaxBound :: Sing (MaxBoundSym0 :: Foo4 a b)
+      sMinBound
+        = let
+            lambda :: Sing (MinBoundSym0 :: Foo4 a b)
+            lambda = SFoo41
+          in lambda
+      sMaxBound
+        = let
+            lambda :: Sing (MaxBoundSym0 :: Foo4 a b)
+            lambda = SFoo42
+          in lambda
+    instance SBounded (KProxy :: KProxy Bool) =>
+             SBounded (KProxy :: KProxy Pair) where
+      sMinBound :: Sing (MinBoundSym0 :: Pair)
+      sMaxBound :: Sing (MaxBoundSym0 :: Pair)
+      sMinBound
+        = let
+            lambda :: Sing (MinBoundSym0 :: Pair)
+            lambda
+              = applySing
+                  (applySing (singFun2 (Proxy :: Proxy PairSym0) SPair) sMinBound)
+                  sMinBound
+          in lambda
+      sMaxBound
+        = let
+            lambda :: Sing (MaxBoundSym0 :: Pair)
+            lambda
+              = applySing
+                  (applySing (singFun2 (Proxy :: Proxy PairSym0) SPair) sMaxBound)
+                  sMaxBound
+          in lambda
+    instance SingI Foo1 where
+      sing = SFoo1
+    instance SingI A where
+      sing = SA
+    instance SingI B where
+      sing = SB
+    instance SingI C where
+      sing = SC
+    instance SingI D where
+      sing = SD
+    instance SingI E where
+      sing = SE
+    instance SingI n => SingI (Foo3 (n :: a)) where
+      sing = SFoo3 sing
+    instance SingI Foo41 where
+      sing = SFoo41
+    instance SingI Foo42 where
+      sing = SFoo42
+    instance (SingI n, SingI n) =>
+             SingI (Pair (n :: Bool) (n :: Bool)) where
+      sing = SPair sing sing

@@ -12,11 +12,12 @@ This file is a great way to understand the singleton encoding better.
              FlexibleInstances, FlexibleContexts, UndecidableInstances,
              RankNTypes, TypeOperators, MultiParamTypeClasses,
              FunctionalDependencies, ScopedTypeVariables,
-             LambdaCase, TemplateHaskell, EmptyCase
+             LambdaCase, TemplateHaskell, EmptyCase, TypeInType
  #-}
 
 module ByHand where
 
+import Data.Kind
 import Prelude hiding (Maybe, Just, Nothing, Either, Left, Right, map, zipWith,
                        (+), (-))
 import Unsafe.Coerce
@@ -697,7 +698,7 @@ type family Case10 a b scrut where
   Case10 elt list (Cons h t) = (:||$) @@ ((:==$) @@ elt @@ h) @@ (Cont @@ elt @@ t)
 
 type KindOfUnderList (x :: List a) = ('KProxy :: KProxy a)
-
+{-
 sCont :: forall (t1 :: a) (t2 :: List a). SEq ('KProxy :: KProxy a) => Sing t1 -> Sing t2 -> Sing (Cont @@ t1 @@ t2)
 sCont = \elt list ->
   let lambda :: forall elt list. ((Lambda10Sym0 @@ elt @@ list) ~ (Cont @@ t1 @@ t2)) => Sing elt -> Sing list -> Sing (Lambda10Sym0 @@ elt @@ list)
@@ -712,7 +713,7 @@ sCont = \elt list ->
                      lambda2 h t
   in
   lambda elt list
-
+-}
 
 data (:==$) f where
   (:==$##) :: ((:==$) @@ arg) ~ (:==$$) arg
@@ -843,7 +844,7 @@ type instance Apply (Lambda22Sym1 a) b = Lambda22Sym2 a b
 
 type Lambda22Sym2 a b = Lambda22 a b
 
-
+{-
 sFI :: forall (t1 :: TyFun a Bool -> *) (t2 :: List a). Sing t1
     -> Sing t2
     -> Sing (FISym0 @@ t1 @@ t2)
@@ -863,3 +864,12 @@ sFI = unSingFun2 (singFun2 (Proxy :: Proxy FI) (\p ls ->
     in
     lambda p ls
   ))
+-}
+
+------------------------------------------------------------
+
+data G a where
+  MkG :: G Bool
+
+data instance Sing (x :: G a) where
+  SMkG :: Sing MkG

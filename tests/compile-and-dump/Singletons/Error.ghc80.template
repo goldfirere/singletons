@@ -1,0 +1,37 @@
+Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| head :: [a] -> a
+          head (a : _) = a
+          head [] = error "Data.Singletons.List.head: empty list" |]
+  ======>
+    head :: forall a. [a] -> a
+    head (a GHC.Types.: _) = a
+    head GHC.Types.[] = error "Data.Singletons.List.head: empty list"
+    type HeadSym1 (t :: [a0123456789]) = Head t
+    instance SuppressUnusedWarnings HeadSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) HeadSym0KindInference GHC.Tuple.())
+    data HeadSym0 (l :: TyFun [a0123456789] a0123456789)
+      = forall arg. KindOf (Apply HeadSym0 arg) ~ KindOf (HeadSym1 arg) =>
+        HeadSym0KindInference
+    type instance Apply HeadSym0 l = HeadSym1 l
+    type family Head (a :: [a]) :: a where
+      Head ((:) a _z_0123456789) = a
+      Head '[] = Apply ErrorSym0 "Data.Singletons.List.head: empty list"
+    sHead :: forall (t :: [a]). Sing t -> Sing (Apply HeadSym0 t :: a)
+    sHead (SCons sA _s_z_0123456789)
+      = let
+          lambda ::
+            forall a _z_0123456789.
+            t ~ Apply (Apply (:$) a) _z_0123456789 =>
+            Sing a
+            -> Sing _z_0123456789
+               -> Sing (Apply HeadSym0 (Apply (Apply (:$) a) _z_0123456789) :: a)
+          lambda a _z_0123456789 = a
+        in lambda sA _s_z_0123456789
+    sHead SNil
+      = let
+          lambda :: t ~ '[] => Sing (Apply HeadSym0 '[] :: a)
+          lambda
+            = sError (sing :: Sing "Data.Singletons.List.head: empty list")
+        in lambda

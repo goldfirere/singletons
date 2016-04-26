@@ -1,0 +1,45 @@
+Singletons/T78.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| foo :: MaybeBool -> Bool
+          foo (Just False) = False
+          foo (Just True) = True
+          foo Nothing = False |]
+  ======>
+    foo :: MaybeBool -> Bool
+    foo (Just False) = False
+    foo (Just True) = True
+    foo Nothing = False
+    type FooSym1 (t :: Maybe Bool) = Foo t
+    instance SuppressUnusedWarnings FooSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
+    data FooSym0 (l :: TyFun (Maybe Bool) Bool)
+      = forall arg. KindOf (Apply FooSym0 arg) ~ KindOf (FooSym1 arg) =>
+        FooSym0KindInference
+    type instance Apply FooSym0 l = FooSym1 l
+    type family Foo (a :: Maybe Bool) :: Bool where
+      Foo (Just False) = FalseSym0
+      Foo (Just True) = TrueSym0
+      Foo Nothing = FalseSym0
+    sFoo ::
+      forall (t :: Maybe Bool). Sing t -> Sing (Apply FooSym0 t :: Bool)
+    sFoo (SJust SFalse)
+      = let
+          lambda ::
+            t ~ Apply JustSym0 FalseSym0 =>
+            Sing (Apply FooSym0 (Apply JustSym0 FalseSym0) :: Bool)
+          lambda = SFalse
+        in lambda
+    sFoo (SJust STrue)
+      = let
+          lambda ::
+            t ~ Apply JustSym0 TrueSym0 =>
+            Sing (Apply FooSym0 (Apply JustSym0 TrueSym0) :: Bool)
+          lambda = STrue
+        in lambda
+    sFoo SNothing
+      = let
+          lambda ::
+            t ~ NothingSym0 => Sing (Apply FooSym0 NothingSym0 :: Bool)
+          lambda = SFalse
+        in lambda
