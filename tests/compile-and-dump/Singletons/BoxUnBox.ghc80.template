@@ -32,8 +32,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
       = let
           lambda ::
             forall a.
-            t ~ Apply FBoxSym0 a =>
-            Sing a -> Sing (Apply UnBoxSym0 (Apply FBoxSym0 a) :: a)
+            t ~ Apply FBoxSym0 a => Sing a -> Sing (Apply UnBoxSym0 t :: a)
           lambda a = a
         in lambda sA
     data instance Sing (z :: Box a)

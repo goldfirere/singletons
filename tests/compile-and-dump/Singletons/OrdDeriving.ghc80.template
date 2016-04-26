@@ -863,7 +863,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         = let
             lambda ::
               (t0 ~ ZeroSym0, t1 ~ ZeroSym0) =>
-              Sing (Apply (Apply CompareSym0 ZeroSym0) ZeroSym0 :: Ordering)
+              Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               = applySing
                   (applySing
@@ -881,7 +881,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                t1 ~ Apply SuccSym0 b_0123456789) =>
               Sing a_0123456789
               -> Sing b_0123456789
-                 -> Sing (Apply (Apply CompareSym0 (Apply SuccSym0 a_0123456789)) (Apply SuccSym0 b_0123456789) :: Ordering)
+                 -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda a_0123456789 b_0123456789
               = applySing
                   (applySing
@@ -904,7 +904,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               forall _z_0123456789.
               (t0 ~ ZeroSym0, t1 ~ Apply SuccSym0 _z_0123456789) =>
               Sing _z_0123456789
-              -> Sing (Apply (Apply CompareSym0 ZeroSym0) (Apply SuccSym0 _z_0123456789) :: Ordering)
+              -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda _z_0123456789 = SLT
           in lambda _s_z_0123456789
       sCompare (SSucc _s_z_0123456789) SZero
@@ -913,7 +913,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               forall _z_0123456789.
               (t0 ~ Apply SuccSym0 _z_0123456789, t1 ~ ZeroSym0) =>
               Sing _z_0123456789
-              -> Sing (Apply (Apply CompareSym0 (Apply SuccSym0 _z_0123456789)) ZeroSym0 :: Ordering)
+              -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda _z_0123456789 = SGT
           in lambda _s_z_0123456789
     instance (SOrd (KProxy :: KProxy a),
@@ -952,7 +952,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing b_0123456789
                              -> Sing b_0123456789
                                 -> Sing b_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply ASym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               a_0123456789
               a_0123456789
@@ -1031,7 +1031,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing b_0123456789
                              -> Sing b_0123456789
                                 -> Sing b_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply BSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               a_0123456789
               a_0123456789
@@ -1110,7 +1110,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing b_0123456789
                              -> Sing b_0123456789
                                 -> Sing b_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply CSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               a_0123456789
               a_0123456789
@@ -1189,7 +1189,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing b_0123456789
                              -> Sing b_0123456789
                                 -> Sing b_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply DSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               a_0123456789
               a_0123456789
@@ -1268,7 +1268,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing b_0123456789
                              -> Sing b_0123456789
                                 -> Sing b_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply ESym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               a_0123456789
               a_0123456789
@@ -1347,7 +1347,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing b_0123456789
                              -> Sing b_0123456789
                                 -> Sing b_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 a_0123456789) a_0123456789) a_0123456789) a_0123456789)) (Apply (Apply (Apply (Apply FSym0 b_0123456789) b_0123456789) b_0123456789) b_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               a_0123456789
               a_0123456789
@@ -1432,7 +1432,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -1482,7 +1482,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -1532,7 +1532,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -1582,7 +1582,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -1632,7 +1632,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -1682,7 +1682,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -1732,7 +1732,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -1782,7 +1782,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -1832,7 +1832,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -1882,7 +1882,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -1932,7 +1932,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -1982,7 +1982,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2032,7 +2032,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2082,7 +2082,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2132,7 +2132,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2182,7 +2182,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2232,7 +2232,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2282,7 +2282,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2332,7 +2332,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2382,7 +2382,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2432,7 +2432,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2482,7 +2482,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2532,7 +2532,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2582,7 +2582,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2632,7 +2632,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2682,7 +2682,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ASym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2732,7 +2732,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply BSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2782,7 +2782,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply CSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2832,7 +2832,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply DSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789
@@ -2882,7 +2882,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                           -> Sing _z_0123456789
                              -> Sing _z_0123456789
                                 -> Sing _z_0123456789
-                                   -> Sing (Apply (Apply CompareSym0 (Apply (Apply (Apply (Apply FSym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789)) (Apply (Apply (Apply (Apply ESym0 _z_0123456789) _z_0123456789) _z_0123456789) _z_0123456789) :: Ordering)
+                                   -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda
               _z_0123456789
               _z_0123456789

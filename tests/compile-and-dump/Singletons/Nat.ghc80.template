@@ -75,15 +75,14 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       Sing t -> Sing t -> Sing (Apply (Apply PlusSym0 t) t :: Nat)
     sPred SZero
       = let
-          lambda :: t ~ ZeroSym0 => Sing (Apply PredSym0 ZeroSym0 :: Nat)
+          lambda :: t ~ ZeroSym0 => Sing (Apply PredSym0 t :: Nat)
           lambda = SZero
         in lambda
     sPred (SSucc sN)
       = let
           lambda ::
             forall n.
-            t ~ Apply SuccSym0 n =>
-            Sing n -> Sing (Apply PredSym0 (Apply SuccSym0 n) :: Nat)
+            t ~ Apply SuccSym0 n => Sing n -> Sing (Apply PredSym0 t :: Nat)
           lambda n = n
         in lambda sN
     sPlus SZero sM
@@ -91,7 +90,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall m.
             (t ~ ZeroSym0, t ~ m) =>
-            Sing m -> Sing (Apply (Apply PlusSym0 ZeroSym0) m :: Nat)
+            Sing m -> Sing (Apply (Apply PlusSym0 t) t :: Nat)
           lambda m = m
         in lambda sM
     sPlus (SSucc sN) sM
@@ -99,9 +98,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall n m.
             (t ~ Apply SuccSym0 n, t ~ m) =>
-            Sing n
-            -> Sing m
-               -> Sing (Apply (Apply PlusSym0 (Apply SuccSym0 n)) m :: Nat)
+            Sing n -> Sing m -> Sing (Apply (Apply PlusSym0 t) t :: Nat)
           lambda n m
             = applySing
                 (singFun1 (Proxy :: Proxy SuccSym0) SSucc)

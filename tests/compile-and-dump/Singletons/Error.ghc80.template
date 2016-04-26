@@ -24,14 +24,12 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall a _z_0123456789.
             t ~ Apply (Apply (:$) a) _z_0123456789 =>
-            Sing a
-            -> Sing _z_0123456789
-               -> Sing (Apply HeadSym0 (Apply (Apply (:$) a) _z_0123456789) :: a)
+            Sing a -> Sing _z_0123456789 -> Sing (Apply HeadSym0 t :: a)
           lambda a _z_0123456789 = a
         in lambda sA _s_z_0123456789
     sHead SNil
       = let
-          lambda :: t ~ '[] => Sing (Apply HeadSym0 '[] :: a)
+          lambda :: t ~ '[] => Sing (Apply HeadSym0 t :: a)
           lambda
             = sError (sing :: Sing "Data.Singletons.List.head: empty list")
         in lambda

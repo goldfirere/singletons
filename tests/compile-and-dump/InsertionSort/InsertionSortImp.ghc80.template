@@ -152,8 +152,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall _z_0123456789.
             (t ~ ZeroSym0, t ~ _z_0123456789) =>
-            Sing _z_0123456789
-            -> Sing (Apply (Apply LeqSym0 ZeroSym0) _z_0123456789 :: Bool)
+            Sing _z_0123456789 -> Sing (Apply (Apply LeqSym0 t) t :: Bool)
           lambda _z_0123456789 = STrue
         in lambda _s_z_0123456789
     sLeq (SSucc _s_z_0123456789) SZero
@@ -161,8 +160,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall _z_0123456789.
             (t ~ Apply SuccSym0 _z_0123456789, t ~ ZeroSym0) =>
-            Sing _z_0123456789
-            -> Sing (Apply (Apply LeqSym0 (Apply SuccSym0 _z_0123456789)) ZeroSym0 :: Bool)
+            Sing _z_0123456789 -> Sing (Apply (Apply LeqSym0 t) t :: Bool)
           lambda _z_0123456789 = SFalse
         in lambda _s_z_0123456789
     sLeq (SSucc sA) (SSucc sB)
@@ -170,9 +168,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall a b.
             (t ~ Apply SuccSym0 a, t ~ Apply SuccSym0 b) =>
-            Sing a
-            -> Sing b
-               -> Sing (Apply (Apply LeqSym0 (Apply SuccSym0 a)) (Apply SuccSym0 b) :: Bool)
+            Sing a -> Sing b -> Sing (Apply (Apply LeqSym0 t) t :: Bool)
           lambda a b
             = applySing
                 (applySing (singFun2 (Proxy :: Proxy LeqSym0) sLeq) a) b
@@ -182,7 +178,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall n.
             (t ~ n, t ~ '[]) =>
-            Sing n -> Sing (Apply (Apply InsertSym0 n) '[] :: [Nat])
+            Sing n -> Sing (Apply (Apply InsertSym0 t) t :: [Nat])
           lambda n
             = applySing
                 (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) n) SNil
@@ -193,9 +189,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
             forall n h t.
             (t ~ n, t ~ Apply (Apply (:$) h) t) =>
             Sing n
-            -> Sing h
-               -> Sing t
-                  -> Sing (Apply (Apply InsertSym0 n) (Apply (Apply (:$) h) t) :: [Nat])
+            -> Sing h -> Sing t -> Sing (Apply (Apply InsertSym0 t) t :: [Nat])
           lambda n h t
             = let
                 sScrutinee_0123456789 ::
@@ -208,7 +202,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
                       -> let
                            lambda ::
                              TrueSym0 ~ Let0123456789Scrutinee_0123456789Sym3 n h t =>
-                             Sing (Case_0123456789 n h t TrueSym0)
+                             Sing (Case_0123456789 n h t TrueSym0 :: [Nat])
                            lambda
                              = applySing
                                  (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) n)
@@ -218,18 +212,18 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
                       -> let
                            lambda ::
                              FalseSym0 ~ Let0123456789Scrutinee_0123456789Sym3 n h t =>
-                             Sing (Case_0123456789 n h t FalseSym0)
+                             Sing (Case_0123456789 n h t FalseSym0 :: [Nat])
                            lambda
                              = applySing
                                  (applySing (singFun2 (Proxy :: Proxy (:$)) SCons) h)
                                  (applySing
                                     (applySing (singFun2 (Proxy :: Proxy InsertSym0) sInsert) n) t)
                          in lambda } ::
-                    Sing (Case_0123456789 n h t (Let0123456789Scrutinee_0123456789Sym3 n h t))
+                    Sing (Case_0123456789 n h t (Let0123456789Scrutinee_0123456789Sym3 n h t) :: [Nat])
         in lambda sN sH sT
     sInsertionSort SNil
       = let
-          lambda :: t ~ '[] => Sing (Apply InsertionSortSym0 '[] :: [Nat])
+          lambda :: t ~ '[] => Sing (Apply InsertionSortSym0 t :: [Nat])
           lambda = SNil
         in lambda
     sInsertionSort (SCons sH sT)
@@ -237,9 +231,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall h t.
             t ~ Apply (Apply (:$) h) t =>
-            Sing h
-            -> Sing t
-               -> Sing (Apply InsertionSortSym0 (Apply (Apply (:$) h) t) :: [Nat])
+            Sing h -> Sing t -> Sing (Apply InsertionSortSym0 t :: [Nat])
           lambda h t
             = applySing
                 (applySing (singFun2 (Proxy :: Proxy InsertSym0) sInsert) h)

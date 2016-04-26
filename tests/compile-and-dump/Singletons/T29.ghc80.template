@@ -68,7 +68,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
     sBan sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply BanSym0 x :: Bool)
+            forall x. t ~ x => Sing x -> Sing (Apply BanSym0 t :: Bool)
           lambda x
             = applySing
                 (applySing
@@ -87,7 +87,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
     sBaz sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply BazSym0 x :: Bool)
+            forall x. t ~ x => Sing x -> Sing (Apply BazSym0 t :: Bool)
           lambda x
             = applySing
                 (applySing
@@ -98,7 +98,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
     sBar sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply BarSym0 x :: Bool)
+            forall x. t ~ x => Sing x -> Sing (Apply BarSym0 t :: Bool)
           lambda x
             = applySing
                 (applySing
@@ -117,7 +117,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
     sFoo sX
       = let
           lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply FooSym0 x :: Bool)
+            forall x. t ~ x => Sing x -> Sing (Apply FooSym0 t :: Bool)
           lambda x
             = applySing
                 (applySing

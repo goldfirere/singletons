@@ -77,7 +77,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall m.
             (t ~ ZeroSym0, t ~ m) =>
-            Sing m -> Sing (Apply (Apply (:+$) ZeroSym0) m :: Nat)
+            Sing m -> Sing (Apply (Apply (:+$) t) t :: Nat)
           lambda m = m
         in lambda sM
     (%:+) (SSucc sN) sM
@@ -85,8 +85,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall n m.
             (t ~ Apply SuccSym0 n, t ~ m) =>
-            Sing n
-            -> Sing m -> Sing (Apply (Apply (:+$) (Apply SuccSym0 n)) m :: Nat)
+            Sing n -> Sing m -> Sing (Apply (Apply (:+$) t) t :: Nat)
           lambda n m
             = applySing
                 (singFun1 (Proxy :: Proxy SuccSym0) SSucc)
@@ -94,7 +93,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
         in lambda sN sM
     sChild SFLeaf
       = let
-          lambda :: t ~ FLeafSym0 => Sing (Apply ChildSym0 FLeafSym0 :: Foo)
+          lambda :: t ~ FLeafSym0 => Sing (Apply ChildSym0 t :: Foo)
           lambda = SFLeaf
         in lambda
     sChild ((:%+:) sA _s_z_0123456789)
@@ -102,9 +101,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall a _z_0123456789.
             t ~ Apply (Apply (:+:$) a) _z_0123456789 =>
-            Sing a
-            -> Sing _z_0123456789
-               -> Sing (Apply ChildSym0 (Apply (Apply (:+:$) a) _z_0123456789) :: Foo)
+            Sing a -> Sing _z_0123456789 -> Sing (Apply ChildSym0 t :: Foo)
           lambda a _z_0123456789 = a
         in lambda sA _s_z_0123456789
     data instance Sing (z :: Foo)

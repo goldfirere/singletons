@@ -54,6 +54,8 @@ tests =
     , compileAndDumpStdTest "Fixity"
     , compileAndDumpStdTest "Undef"
     , compileAndDumpStdTest "T124"
+    , compileAndDumpStdTest "T136"
+    , compileAndDumpStdTest "T136b"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

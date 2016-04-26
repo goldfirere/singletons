@@ -229,7 +229,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       Sing t -> Sing (Apply MaybePlusSym0 t :: Maybe Nat)
     sFoo SNil
       = let
-          lambda :: t ~ '[] => Sing (Apply FooSym0 '[] :: [Nat])
+          lambda :: t ~ '[] => Sing (Apply FooSym0 t :: [Nat])
           lambda
             = let
                 sP :: Sing Let0123456789PSym0
@@ -241,8 +241,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall wild_0123456789.
             t ~ Apply (Apply (:$) wild_0123456789) '[] =>
-            Sing wild_0123456789
-            -> Sing (Apply FooSym0 (Apply (Apply (:$) wild_0123456789) '[]) :: [Nat])
+            Sing wild_0123456789 -> Sing (Apply FooSym0 t :: [Nat])
           lambda wild_0123456789
             = let
                 sP :: Sing (Let0123456789PSym1 wild_0123456789)
@@ -260,8 +259,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
             t ~ Apply (Apply (:$) wild_0123456789) (Apply (Apply (:$) wild_0123456789) wild_0123456789) =>
             Sing wild_0123456789
             -> Sing wild_0123456789
-               -> Sing wild_0123456789
-                  -> Sing (Apply FooSym0 (Apply (Apply (:$) wild_0123456789) (Apply (Apply (:$) wild_0123456789) wild_0123456789)) :: [Nat])
+               -> Sing wild_0123456789 -> Sing (Apply FooSym0 t :: [Nat])
           lambda wild_0123456789 wild_0123456789 wild_0123456789
             = let
                 sP ::
@@ -280,9 +278,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
             forall wild_0123456789 wild_0123456789.
             t ~ Apply (Apply Tuple2Sym0 wild_0123456789) wild_0123456789 =>
             Sing wild_0123456789
-            -> Sing wild_0123456789
-               -> Sing (Apply TupSym0 (Apply (Apply Tuple2Sym0 wild_0123456789) wild_0123456789) :: (Nat,
-                                                                                                     Nat))
+            -> Sing wild_0123456789 -> Sing (Apply TupSym0 t :: (Nat, Nat))
           lambda wild_0123456789 wild_0123456789
             = let
                 sP :: Sing (Let0123456789PSym2 wild_0123456789 wild_0123456789)
@@ -295,8 +291,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         in lambda sWild_0123456789 sWild_0123456789
     sBaz_ SNothing
       = let
-          lambda ::
-            t ~ NothingSym0 => Sing (Apply Baz_Sym0 NothingSym0 :: Maybe Baz)
+          lambda :: t ~ NothingSym0 => Sing (Apply Baz_Sym0 t :: Maybe Baz)
           lambda
             = let
                 sP :: Sing Let0123456789PSym0
@@ -311,8 +306,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
             t ~ Apply JustSym0 (Apply (Apply (Apply BazSym0 wild_0123456789) wild_0123456789) wild_0123456789) =>
             Sing wild_0123456789
             -> Sing wild_0123456789
-               -> Sing wild_0123456789
-                  -> Sing (Apply Baz_Sym0 (Apply JustSym0 (Apply (Apply (Apply BazSym0 wild_0123456789) wild_0123456789) wild_0123456789)) :: Maybe Baz)
+               -> Sing wild_0123456789 -> Sing (Apply Baz_Sym0 t :: Maybe Baz)
           lambda wild_0123456789 wild_0123456789 wild_0123456789
             = let
                 sP ::
@@ -333,8 +327,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall wild_0123456789.
             t ~ Apply JustSym0 wild_0123456789 =>
-            Sing wild_0123456789
-            -> Sing (Apply BarSym0 (Apply JustSym0 wild_0123456789) :: Maybe Nat)
+            Sing wild_0123456789 -> Sing (Apply BarSym0 t :: Maybe Nat)
           lambda wild_0123456789
             = let
                 sX :: Sing (Let0123456789XSym1 wild_0123456789)
@@ -345,8 +338,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         in lambda sWild_0123456789
     sBar SNothing
       = let
-          lambda ::
-            t ~ NothingSym0 => Sing (Apply BarSym0 NothingSym0 :: Maybe Nat)
+          lambda :: t ~ NothingSym0 => Sing (Apply BarSym0 t :: Maybe Nat)
           lambda = SNothing
         in lambda
     sMaybePlus (SJust sN)
@@ -354,8 +346,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall n.
             t ~ Apply JustSym0 n =>
-            Sing n
-            -> Sing (Apply MaybePlusSym0 (Apply JustSym0 n) :: Maybe Nat)
+            Sing n -> Sing (Apply MaybePlusSym0 t :: Maybe Nat)
           lambda n
             = applySing
                 (singFun1 (Proxy :: Proxy JustSym0) SJust)
@@ -368,8 +359,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     sMaybePlus SNothing
       = let
           lambda ::
-            t ~ NothingSym0 =>
-            Sing (Apply MaybePlusSym0 NothingSym0 :: Maybe Nat)
+            t ~ NothingSym0 => Sing (Apply MaybePlusSym0 t :: Maybe Nat)
           lambda
             = let
                 sP :: Sing Let0123456789PSym0

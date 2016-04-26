@@ -37,8 +37,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
           lambda ::
             forall _z_0123456789.
             (t ~ _z_0123456789, t ~ '[]) =>
-            Sing _z_0123456789
-            -> Sing (Apply (Apply ContainsSym0 _z_0123456789) '[] :: Bool)
+            Sing _z_0123456789 -> Sing (Apply (Apply ContainsSym0 t) t :: Bool)
           lambda _z_0123456789 = SFalse
         in lambda _s_z_0123456789
     sContains sElt (SCons sH sT)
@@ -48,8 +47,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
             (t ~ elt, t ~ Apply (Apply (:$) h) t) =>
             Sing elt
             -> Sing h
-               -> Sing t
-                  -> Sing (Apply (Apply ContainsSym0 elt) (Apply (Apply (:$) h) t) :: Bool)
+               -> Sing t -> Sing (Apply (Apply ContainsSym0 t) t :: Bool)
           lambda elt h t
             = applySing
                 (applySing

@@ -66,8 +66,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
             forall a _z_0123456789.
             (t ~ a, t ~ _z_0123456789) =>
             Sing a
-            -> Sing _z_0123456789
-               -> Sing (Apply (Apply (:====$) a) _z_0123456789 :: a)
+            -> Sing _z_0123456789 -> Sing (Apply (Apply (:====$) t) t :: a)
           lambda a _z_0123456789 = a
         in lambda sA _s_z_0123456789
     class kproxy ~ KProxy => SMyOrd (kproxy :: KProxy a) where
