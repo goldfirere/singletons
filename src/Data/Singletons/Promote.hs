@@ -329,9 +329,9 @@ promoteMethod :: Maybe (Map Name DKind)
               -> PrM (DDec, ALetDecRHS, DType)
                  -- returns (type instance, ALetDecRHS, promoted RHS)
 promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
-  ((_, _, _, eqns), _defuns, ann_rhs)
-    <- promoteLetDecRHS sigs_map noPrefix meth_name meth_rhs
   (arg_kis, res_ki) <- lookup_meth_ty
+  ((_, _, _, eqns), _defuns, ann_rhs)
+    <- promoteLetDecRHS (Just (arg_kis, res_ki)) sigs_map noPrefix meth_name meth_rhs
   meth_arg_tvs <- mapM (const $ qNewName "a") arg_kis
   let do_subst      = maybe id substKind m_subst
       meth_arg_kis' = map do_subst arg_kis
@@ -370,8 +370,9 @@ promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
         mb_info <- dsReify proName
         case mb_info of
           Just (DTyConI (DOpenTypeFamilyD (DTypeFamilyHead _ tvbs mb_res_ki _)) _)
-            -> return ( map (default_to_star . extractTvbKind) tvbs
-                      , default_to_star (resultSigToMaybeKind mb_res_ki) )
+            -> let arg_kis = map (default_to_star . extractTvbKind) tvbs
+                   res_ki  = default_to_star (resultSigToMaybeKind mb_res_ki)
+               in return (arg_kis, res_ki)
           _ -> fail $ "Cannot find type annotation for " ++ show proName
       Just ty -> promoteUnraveled ty
 
@@ -387,7 +388,7 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
     -- promote all the declarations, producing annotated declarations
   let (names, rhss) = unzip $ Map.toList value_env
   (payloads, defun_decss, ann_rhss)
-    <- fmap unzip3 $ zipWithM (promoteLetDecRHS type_env prefixes) names rhss
+    <- fmap unzip3 $ zipWithM (promoteLetDecRHS Nothing type_env prefixes) names rhss
 
   emitDecs $ concat defun_decss
   let decs = map payload_to_dec payloads ++ infix_decls'
@@ -414,20 +415,25 @@ promoteInfixDecl fixity name
 -- This function is used both to promote class method defaults and normal
 -- let bindings. Thus, it can't quite do all the work locally and returns
 -- an intermediate structure. Perhaps a better design is available.
-promoteLetDecRHS :: Map Name DType       -- local type env't
+promoteLetDecRHS :: Maybe ([DKind], DKind)  -- the promoted type of the RHS (if known)
+                                            -- needed to fix #136
+                 -> Map Name DType       -- local type env't
                  -> (String, String)     -- let-binding prefixes
                  -> Name                 -- name of the thing being promoted
                  -> ULetDecRHS           -- body of the thing
                  -> PrM ( (Name, [DTyVarBndr], Maybe DKind, [DTySynEqn]) -- "type family"
                         , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
-promoteLetDecRHS type_env prefixes name (UValue exp) = do
+promoteLetDecRHS m_rhs_ki type_env prefixes name (UValue exp) = do
   (res_kind, num_arrows)
-    <- case Map.lookup name type_env of
-         Nothing -> return (Nothing, 0)
-         Just ty -> do
-           ki <- promoteType ty
-           return (Just ki, countArgs ty)
+    <- case m_rhs_ki of
+         Just (arg_kis, res_ki) -> return ( Just (ravelTyFun (arg_kis ++ [res_ki]))
+                                          , length arg_kis )
+         _ |  Just ty <- Map.lookup name type_env
+           -> do ki <- promoteType ty
+                 return (Just ki, countArgs ty)
+           |  otherwise
+           -> return (Nothing, 0)
   case num_arrows of
     0 -> do
       all_locals <- allLocals
@@ -443,14 +449,15 @@ promoteLetDecRHS type_env prefixes name (UValue exp) = do
       names <- replicateM num_arrows (newUniqueName "a")
       let pats    = map DVarPa names
           newArgs = map DVarE  names
-      promoteLetDecRHS type_env prefixes name
+      promoteLetDecRHS m_rhs_ki type_env prefixes name
                        (UFunction [DClause pats (foldExp exp newArgs)])
 
-promoteLetDecRHS type_env prefixes name (UFunction clauses) = do
+promoteLetDecRHS m_rhs_ki type_env prefixes name (UFunction clauses) = do
   numArgs <- count_args clauses
-  (m_argKs, m_resK, ty_num_args) <- case Map.lookup name type_env of
-    Nothing -> return (replicate numArgs Nothing, Nothing, numArgs)
-    Just ty -> do
+  (m_argKs, m_resK, ty_num_args) <- case m_rhs_ki of
+    Just (arg_kis, res_ki) -> return (map Just arg_kis, Just res_ki, length arg_kis)
+    _ |  Just ty <- Map.lookup name type_env
+      -> do
       -- promoteType turns arrows into TyFun. So, we unravel first to
       -- avoid this behavior. Note the use of ravelTyFun in resultK
       -- to make the return kind work out
@@ -458,6 +465,8 @@ promoteLetDecRHS type_env prefixes name (UFunction clauses) = do
       -- invariant: countArgs ty == length argKs
       return (map Just argKs, Just resultK, length argKs)
 
+      |  otherwise
+      -> return (replicate numArgs Nothing, Nothing, numArgs)
   let proName = promoteValNameLhsPrefix prefixes name
   all_locals <- allLocals
   defun_decs <- defunctionalize proName
