@@ -419,9 +419,9 @@ singTySig defns types name prom_ty =
 singLetDecRHS :: Map Name [Name]
               -> Map Name DKind   -- result kind (might not be known)
               -> Name -> ALetDecRHS -> SgM DLetDec
-singLetDecRHS _bound_names _res_kis name (AValue prom num_arrows exp) =
+singLetDecRHS _bound_names res_kis name (AValue prom num_arrows exp) =
   DValD (DVarPa (singValName name)) <$>
-  (wrapUnSingFun num_arrows prom <$> singExp exp)
+  (wrapUnSingFun num_arrows prom <$> singExp exp (Map.lookup name res_kis))
 singLetDecRHS bound_names res_kis name (AFunction prom_fun num_arrows clauses) =
   let tyvar_names = case Map.lookup name bound_names of
                       Nothing -> []
@@ -449,12 +449,11 @@ singClause prom_fun num_arrows bound_names res_ki
       -- This res_ki stuff is necessary when we need to propagate result-
       -- based type-inference. It was inspired by toEnum. (If you remove
       -- this, that should fail to compile.)
-      applied_ty = maybe id (\ki -> (`DSigT` ki)) res_ki $
-                   foldl apply prom_fun bound_name_tys
+      applied_ty = foldl apply prom_fun bound_name_tys `maybeSigT` res_ki
          -- We used to use prom_pats as the arguments above, but bound_name_tys
          -- is better, because the type variables have kinds. When the pattern
          -- is, say, [], then we get a kind ambiguity. See #136.
-  sBody <- bindTyVarsEq var_proms applied_ty equalities $ singExp exp
+  sBody <- bindTyVarsEq var_proms applied_ty equalities $ singExp exp res_ki
     -- when calling unSingFun, the prom_pats aren't in scope, so we use the
     -- bound_names instead
   let pattern_bound_names = zipWith const bound_names pats
@@ -538,33 +537,35 @@ singPat _var_proms _patCxt DWildPa =
 -- calls. Specifically, DON'T do the applySing stuff. Just use sError, which
 -- has a custom type (Sing x -> a) anyway.
 
-singExp :: ADExp -> SgM DExp
+singExp :: ADExp -> Maybe DKind   -- the kind of the expression, if known
+        -> SgM DExp
   -- See Note [Why error is so special]
-singExp (ADVarE err `ADAppE` arg)
-  | err == errorName = DAppE (DVarE (singValName err)) <$> singExp arg
-singExp (ADVarE name)  = lookupVarE name
-singExp (ADConE name)  = lookupConE name
-singExp (ADLitE lit)   = singLit lit
-singExp (ADAppE e1 e2) = do
-  e1' <- singExp e1
-  e2' <- singExp e2
+singExp (ADVarE err `ADAppE` arg) _res_ki
+  | err == errorName = DAppE (DVarE (singValName err)) <$>
+                       singExp arg (Just (DConT symbolName))
+singExp (ADVarE name) _res_ki = lookupVarE name
+singExp (ADConE name) _res_ki = lookupConE name
+singExp (ADLitE lit)  _res_ki = singLit lit
+singExp (ADAppE e1 e2) _res_ki = do
+  e1' <- singExp e1 Nothing
+  e2' <- singExp e2 Nothing
   -- `applySing undefined x` kills type inference, because GHC can't figure
   -- out the type of `undefined`. So we don't emit that code.
   if isException e1'
   then return e1'
   else return $ (DVarE applySingName) `DAppE` e1' `DAppE` e2'
-singExp (ADLamE var_proms prom_lam names exp) = do
+singExp (ADLamE var_proms prom_lam names exp) _res_ki = do
   let sNames = map singValName names
   exp' <- bindTyVars var_proms (foldl apply prom_lam (map (DVarT . snd) var_proms)) $
-          singExp exp
+          singExp exp Nothing
   return $ wrapSingFun (length names) prom_lam $ DLamE sNames exp'
-singExp (ADCaseE exp prom_exp matches ret_ty) =
+singExp (ADCaseE exp prom_exp matches ret_ty) res_ki =
     -- See Note [Annotate case return type]
-  DSigE <$> (DCaseE <$> singExp exp <*> mapM (singMatch prom_exp) matches)
-        <*> pure (singFamily `DAppT` ret_ty)
-singExp (ADLetE env exp) =
-  uncurry DLetE <$> singLetDecEnv env (singExp exp)
-singExp (ADSigE {}) =
+  DSigE <$> (DCaseE <$> singExp exp Nothing <*> mapM (singMatch prom_exp res_ki) matches)
+        <*> pure (singFamily `DAppT` (ret_ty `maybeSigT` res_ki))
+singExp (ADLetE env exp) res_ki =
+  uncurry DLetE <$> singLetDecEnv env (singExp exp res_ki)
+singExp (ADSigE {}) _ =
   fail "Singling of explicit type annotations not yet supported."
 
 isException :: DExp -> Bool
@@ -579,9 +580,10 @@ isException (DLetE _ e)           = isException e
 isException (DSigE e _)           = isException e
 isException (DStaticE e)          = isException e
 
-singMatch :: DType  -- ^ the promoted scrutinee
+singMatch :: DType        -- ^ the promoted scrutinee
+          -> Maybe DKind  -- ^ the result kind, if known
           -> ADMatch -> SgM DMatch
-singMatch prom_scrut (ADMatch var_proms prom_match pat exp) = do
+singMatch prom_scrut res_ki (ADMatch var_proms prom_match pat exp) = do
   (sPat, prom_pat)
     <- singPat (Map.fromList var_proms) CaseStatement pat
         -- why DAppT below? See comment near decl of ADMatch in LetDecEnv.
@@ -591,8 +593,8 @@ singMatch prom_scrut (ADMatch var_proms prom_match pat exp) = do
         , err == errorName   -- See Note [Why error is so special]
         = [] -- no equality from impossible case.
         | otherwise      = [(prom_pat, prom_scrut)]
-  sExp <- bindTyVarsEq var_proms (prom_match `DAppT` prom_pat) equality $
-          singExp exp
+  sExp <- bindTyVarsEq var_proms (prom_match `DAppT` prom_pat `maybeSigT` res_ki) equality $
+          singExp exp res_ki
   return $ DMatch sPat sExp
 
 singLit :: Lit -> SgM DExp
@@ -606,3 +608,7 @@ singLit (IntegerL n)
 singLit lit = do
   prom_lit <- promoteLitExp lit
   return $ DVarE singMethName `DSigE` (singFamily `DAppT` prom_lit)
+
+maybeSigT :: DType -> Maybe DKind -> DType
+maybeSigT ty Nothing   = ty
+maybeSigT ty (Just ki) = ty `DSigT` ki
