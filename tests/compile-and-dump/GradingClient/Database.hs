@@ -11,7 +11,7 @@ presented in /Dependently typed programming with singletons/
 {-# LANGUAGE PolyKinds, DataKinds, TemplateHaskell, TypeFamilies,
     GADTs, TypeOperators, RankNTypes, FlexibleContexts, UndecidableInstances,
     FlexibleInstances, ScopedTypeVariables, MultiParamTypeClasses,
-    ConstraintKinds, CPP #-}
+    ConstraintKinds, CPP, InstanceSigs #-}
 {-# OPTIONS_GHC -fno-warn-warnings-deprecations #-}
 
 -- The OverlappingInstances is needed only to allow the InC and SubsetC classes.
@@ -494,7 +494,9 @@ query (Project sch ra) = do
             -- for incomplete pattern matches when the remaining cases are impossible.
             -- So, we include this case (impossible to reach for any terminated value)
             -- to suppress the warning.
+#if __GLASGOW_HASKELL__ < 711
             _ -> error "Type checking failed"
+#endif
 
         -- Retrieves the element, looked up by the name of the provided attribute,
         -- from a row. The explicit quantification is necessary to create the scoped
@@ -505,11 +507,15 @@ query (Project sch ra) = do
           InElt -> case r of
             ConsRow h _ -> h
             -- EmptyRow _ -> undefined <== IMPOSSIBLE
+#if __GLASGOW_HASKELL__ < 711
             _ -> error "Type checking failed"
+#endif
           InTail  -> case r of
             ConsRow _ t -> extractElt attr t
             -- EmptyRow _ -> undefined <== IMPOSSBLE
+#if __GLASGOW_HASKELL__ < 711
             _ -> error "Type checking failed"
+#endif
 
 query (Select expr r) = do
   rows <- query r
@@ -529,7 +535,9 @@ query (Select expr r) = do
                       STrue -> h
                       SFalse -> withSingI stail (eval (Element (SSch stail) name) t)
                   _ -> bugInGHC
+#if __GLASGOW_HASKELL__ < 711
             _ -> bugInGHC
+#endif
 
         eval (Equal (e1 :: Expr s' u') e2) row =
           let v1 = eval e1 row
@@ -545,3 +553,20 @@ query (Select expr r) = do
           v1 < v2
 
         eval (LiteralNat x) _ = toNat x
+
+data G a where
+  GCons :: G ('Sch (a ': b))
+
+data H a where
+  HCons :: H ('Sch (a ': b))
+  HNil  :: H ('Sch '[])
+
+data J a where
+  JCons :: J (a ': b)
+  JNil  :: J '[]
+
+eval :: G s -> Sing s -> ()
+eval GCons s =
+        case s of
+          -- SSch SNil -> undefined -- <== IMPOSSIBLE
+          SSch (SCons _ _) -> undefined

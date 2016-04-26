@@ -131,7 +131,6 @@ ghcOpts = extraOpts ++ [
   , "-XCPP"
 #if __GLASGOW_HASKELL__ >= 711
   , "-XTypeInType"
-  , "-Wno-overlapping-patterns"
 #endif
   ]
 

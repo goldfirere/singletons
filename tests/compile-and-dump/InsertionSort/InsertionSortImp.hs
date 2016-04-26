@@ -27,7 +27,10 @@ unambiguous.
 
 -}
 
-{-# LANGUAGE IncoherentInstances, ConstraintKinds #-}
+{-# LANGUAGE IncoherentInstances, ConstraintKinds, CPP, TypeFamilies,
+             TemplateHaskell, RankNTypes, ScopedTypeVariables, GADTs,
+             TypeOperators, DataKinds, PolyKinds, MultiParamTypeClasses,
+             FlexibleContexts, FlexibleInstances, UndecidableInstances #-}
 
 module InsertionSort.InsertionSortImp where
 
@@ -128,7 +131,9 @@ sLeq_true__le a b = case (a, b) of
   -- (SSucc _, SZero) -> undefined <== IMPOSSIBLE
   (SSucc a', SSucc b') -> case sLeq_true__le a' b' of
     Dict -> Dict
+#if __GLASGOW_HASKELL__ < 711
   _ -> error "type checking failed"
+#endif
 
 -- A lemma that states if sLeq a b is SFalse, then (b :<=: a)
 sLeq_false__nle :: (Leq a b ~ False) => SNat a -> SNat b -> Dict (b :<=: a)
@@ -138,7 +143,9 @@ sLeq_false__nle a b = case (a, b) of
   (SSucc _, SZero) -> Dict
   (SSucc a', SSucc b') -> case sLeq_false__nle a' b' of
     Dict -> Dict
+#if __GLASGOW_HASKELL__ < 711
   _ -> error "type checking failed"
+#endif
 
 -- A lemma that states that inserting into an ascending list produces an
 -- ascending list
@@ -152,7 +159,9 @@ insert_ascending n lst =
       SCons h _ -> case sLeq n h of -- then check if n is <= h
         STrue -> case sLeq_true__le n h of Dict -> Dict -- if so, we're done
         SFalse -> case sLeq_false__nle n h of Dict -> Dict -- if not, we're done
+#if __GLASGOW_HASKELL__ < 711
       _ -> error "type checking failed"
+#endif
     AscCons -> case lst of -- Otherwise, if lst is more than one element...
       -- SNil -> undefined <== IMPOSSIBLE
       SCons h t -> case sLeq n h of -- then check if n is <= h
@@ -165,8 +174,10 @@ insert_ascending n lst =
                 case sLeq_true__le n h2 of Dict -> Dict
               SFalse -> -- otherwise, show that (Insert n t) is sorted
                 case insert_ascending n t of Dict -> Dict -- and we're done
+#if __GLASGOW_HASKELL__ < 711
             _ -> error "type checking failed"
       _ -> error "type checking failed"
+#endif
 
 -- A lemma that states that inserting n into lst produces a new list with n
 -- inserted into lst.
