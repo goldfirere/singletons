@@ -11,6 +11,10 @@ injective type families means that we no longer need `Sing` to be a data
 family; it could be a type family. This might drastically simplify the way
 functions are singletonized. But not yet!
 
+* `singletons` now outputs a few more type/kind annotations to help GHC do
+type inference. There may be a few more programs accepted than before.
+(This is the fix for #136.)
+
 2.0.1
 -----
  * Lots more functions in `Data.Singletons.Prelude.List`:
