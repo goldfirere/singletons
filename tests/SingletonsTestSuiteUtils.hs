@@ -26,14 +26,8 @@ import Distribution.Text                             ( simpleParse              
 import Data.Version                                  ( Version(..)               )
 import System.IO.Unsafe                              ( unsafePerformIO           )
 
-#if __GLASGOW_HASKELL__ >= 711
-#ifndef LOCAL_COMPONENT_ID
-#include "../dist/build/autogen/cabal_macros.h"
-#endif
-#else
 #ifndef CURRENT_PACKAGE_KEY
 #include "../dist/build/autogen/cabal_macros.h"
-#endif
 #endif
 
 -- Some infractructure for handling external process errors
@@ -101,7 +95,7 @@ ghcOpts = extraOpts ++ [
 #if __GLASGOW_HASKELL__ < 711
   , "-this-package-key " ++ CURRENT_PACKAGE_KEY -- See Note [-this-package-key hack]
 #else
-  , "-this-unit-id " ++ LOCAL_COMPONENT_ID
+  , "-this-unit-id " ++ CURRENT_PACKAGE_KEY
 #endif
   , "-ddump-splices"
   , "-dsuppress-uniques"
