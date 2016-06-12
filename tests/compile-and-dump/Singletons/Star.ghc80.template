@@ -15,7 +15,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
       Equals_0123456789 (Maybe a) (Maybe b) = (:==) a b
       Equals_0123456789 (Vec a a) (Vec b b) = (:&&) ((:==) a b) ((:==) a b)
       Equals_0123456789 (a :: Type) (b :: Type) = FalseSym0
-    instance PEq (Proxy :: KProxy Type) where
+    instance PEq (Proxy :: Proxy Type) where
       type (:==) (a :: Type) (b :: Type) = Equals_0123456789 a b
     type NatSym0 = Nat
     type IntSym0 = Int
@@ -89,7 +89,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
       = forall arg. KindOf (Apply Compare_0123456789Sym0 arg) ~ KindOf (Compare_0123456789Sym1 arg) =>
         Compare_0123456789Sym0KindInference
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
-    instance POrd (Proxy :: KProxy Type) where
+    instance POrd (Proxy :: Proxy Type) where
       type Compare (a :: Type) (a :: Type) = Apply (Apply Compare_0123456789Sym0 a) a
     instance (SOrd Type, SOrd Nat) => SOrd Type where
       sCompare ::

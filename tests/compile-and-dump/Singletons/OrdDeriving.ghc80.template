@@ -27,7 +27,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789 Zero Zero = TrueSym0
       Equals_0123456789 (Succ a) (Succ b) = (:==) a b
       Equals_0123456789 (a :: Nat) (b :: Nat) = FalseSym0
-    instance PEq (Proxy :: KProxy Nat) where
+    instance PEq (Proxy :: Proxy Nat) where
       type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789 a b
     type ZeroSym0 = Zero
     type SuccSym1 (t :: Nat) = Succ t
@@ -47,7 +47,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789 (E a a a a) (E b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
       Equals_0123456789 (F a a a a) (F b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
       Equals_0123456789 (a :: Foo k k k k) (b :: Foo k k k k) = FalseSym0
-    instance PEq (Proxy :: KProxy (Foo k k k k)) where
+    instance PEq (Proxy :: Proxy (Foo k k k k)) where
       type (:==) (a :: Foo k k k k) (b :: Foo k k k k) = Equals_0123456789 a b
     type ASym4 (t :: a0123456789)
                (t :: b0123456789)
@@ -344,7 +344,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Compare_0123456789Sym0 arg) ~ KindOf (Compare_0123456789Sym1 arg) =>
         Compare_0123456789Sym0KindInference
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
-    instance POrd (Proxy :: KProxy Nat) where
+    instance POrd (Proxy :: Proxy Nat) where
       type Compare (a :: Nat) (a :: Nat) = Apply (Apply Compare_0123456789Sym0 a) a
     type family Compare_0123456789 (a :: Foo a b c d)
                                    (a :: Foo a b c d) :: Ordering where
@@ -405,7 +405,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Compare_0123456789Sym0 arg) ~ KindOf (Compare_0123456789Sym1 arg) =>
         Compare_0123456789Sym0KindInference
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
-    instance POrd (Proxy :: KProxy (Foo a b c d)) where
+    instance POrd (Proxy :: Proxy (Foo a b c d)) where
       type Compare (a :: Foo a b c d) (a :: Foo a b c d) = Apply (Apply Compare_0123456789Sym0 a) a
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |

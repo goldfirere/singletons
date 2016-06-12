@@ -163,7 +163,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply TFHelper_0123456789Sym0 arg) ~ KindOf (TFHelper_0123456789Sym1 arg) =>
         TFHelper_0123456789Sym0KindInference
     type instance Apply TFHelper_0123456789Sym0 l = TFHelper_0123456789Sym1 l
-    class kproxy ~ Proxy => PMyOrd (kproxy :: KProxy a) where
+    class kproxy ~ Proxy => PMyOrd (kproxy :: Proxy a) where
       type Mycompare (arg :: a) (arg :: a) :: Ordering
       type (:<=>) (arg :: a) (arg :: a) :: Ordering
       type (:<=>) a a = Apply (Apply TFHelper_0123456789Sym0 a) a
@@ -192,7 +192,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Mycompare_0123456789Sym0 arg) ~ KindOf (Mycompare_0123456789Sym1 arg) =>
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
-    instance PMyOrd (Proxy :: KProxy Nat) where
+    instance PMyOrd (Proxy :: Proxy Nat) where
       type Mycompare (a :: Nat) (a :: Nat) = Apply (Apply Mycompare_0123456789Sym0 a) a
     type family Mycompare_0123456789 (a :: ())
                                      (a :: ()) :: Ordering where
@@ -216,7 +216,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Mycompare_0123456789Sym0 arg) ~ KindOf (Mycompare_0123456789Sym1 arg) =>
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
-    instance PMyOrd (Proxy :: KProxy ()) where
+    instance PMyOrd (Proxy :: Proxy ()) where
       type Mycompare (a :: ()) (a :: ()) = Apply (Apply Mycompare_0123456789Sym0 a) a
     type family Mycompare_0123456789 (a :: Foo)
                                      (a :: Foo) :: Ordering where
@@ -240,7 +240,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Mycompare_0123456789Sym0 arg) ~ KindOf (Mycompare_0123456789Sym1 arg) =>
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
-    instance PMyOrd (Proxy :: KProxy Foo) where
+    instance PMyOrd (Proxy :: Proxy Foo) where
       type Mycompare (a :: Foo) (a :: Foo) = Apply (Apply Mycompare_0123456789Sym0 a) a
     type family TFHelper_0123456789 (a :: Foo2)
                                     (a :: Foo2) :: Bool where
@@ -267,7 +267,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply TFHelper_0123456789Sym0 arg) ~ KindOf (TFHelper_0123456789Sym1 arg) =>
         TFHelper_0123456789Sym0KindInference
     type instance Apply TFHelper_0123456789Sym0 l = TFHelper_0123456789Sym1 l
-    instance PEq (Proxy :: KProxy Foo2) where
+    instance PEq (Proxy :: Proxy Foo2) where
       type (:==) (a :: Foo2) (a :: Foo2) = Apply (Apply TFHelper_0123456789Sym0 a) a
     infix 4 %:<=>
     sFooCompare ::
@@ -512,7 +512,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Mycompare_0123456789Sym0 arg) ~ KindOf (Mycompare_0123456789Sym1 arg) =>
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
-    instance PMyOrd (Proxy :: KProxy Foo2) where
+    instance PMyOrd (Proxy :: Proxy Foo2) where
       type Mycompare (a :: Foo2) (a :: Foo2) = Apply (Apply Mycompare_0123456789Sym0 a) a
     type family Compare_0123456789 (a :: Foo2)
                                    (a :: Foo2) :: Ordering where
@@ -538,7 +538,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Compare_0123456789Sym0 arg) ~ KindOf (Compare_0123456789Sym1 arg) =>
         Compare_0123456789Sym0KindInference
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
-    instance POrd (Proxy :: KProxy Foo2) where
+    instance POrd (Proxy :: Proxy Foo2) where
       type Compare (a :: Foo2) (a :: Foo2) = Apply (Apply Compare_0123456789Sym0 a) a
 Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     singletons
@@ -591,7 +591,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply Mycompare_0123456789Sym0 arg) ~ KindOf (Mycompare_0123456789Sym1 arg) =>
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
-    instance PMyOrd (Proxy :: KProxy Nat') where
+    instance PMyOrd (Proxy :: Proxy Nat') where
       type Mycompare (a :: Nat') (a :: Nat') = Apply (Apply Mycompare_0123456789Sym0 a) a
     data instance Sing (z :: Nat')
       = z ~ Zero' => SZero' |

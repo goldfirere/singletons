@@ -40,7 +40,7 @@ module Data.Promotion.TH (
   PEq(..), If, (:&&),
   POrd(..),
   Any,
-  Proxy(..), KProxy, ThenCmp, Foldl,
+  Proxy(..), ThenCmp, Foldl,
 
   Error, ErrorSym0,
   TrueSym0, FalseSym0,

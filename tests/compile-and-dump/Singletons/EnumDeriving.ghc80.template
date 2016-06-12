@@ -48,7 +48,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply FromEnum_0123456789Sym0 arg) ~ KindOf (FromEnum_0123456789Sym1 arg) =>
         FromEnum_0123456789Sym0KindInference
     type instance Apply FromEnum_0123456789Sym0 l = FromEnum_0123456789Sym1 l
-    instance PEnum (Proxy :: KProxy Foo) where
+    instance PEnum (Proxy :: Proxy Foo) where
       type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789Sym0 a
       type FromEnum (a :: Foo) = Apply FromEnum_0123456789Sym0 a
     data instance Sing (z :: Foo)
@@ -210,7 +210,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       = forall arg. KindOf (Apply FromEnum_0123456789Sym0 arg) ~ KindOf (FromEnum_0123456789Sym1 arg) =>
         FromEnum_0123456789Sym0KindInference
     type instance Apply FromEnum_0123456789Sym0 l = FromEnum_0123456789Sym1 l
-    instance PEnum (Proxy :: KProxy Quux) where
+    instance PEnum (Proxy :: Proxy Quux) where
       type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789Sym0 a
       type FromEnum (a :: Quux) = Apply FromEnum_0123456789Sym0 a
     instance SEnum Quux where
