@@ -98,7 +98,7 @@ instance SEq ('KProxy :: KProxy Nat) where
   (SSucc _) %:== SZero = SFalse
   (SSucc n) %:== (SSucc n') = n %:== n'
 
-instance SDecide ('KProxy :: KProxy Nat) where
+instance SDecide Nat where
   SZero %~ SZero = Proved Refl
   (SSucc m) %~ (SSucc n) =
     case m %~ n of
@@ -154,7 +154,7 @@ type family EqualsMaybe (a :: Maybe k) (b :: Maybe k) where
   EqualsMaybe (x :: Maybe k) (y :: Maybe k) = False
 type instance (a :: Maybe k) == (b :: Maybe k) = EqualsMaybe a b
 
-instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (Maybe k)) where
+instance SDecide k => SDecide (Maybe k) where
   SNothing %~ SNothing = Proved Refl
   (SJust x) %~ (SJust y) =
     case x %~ y of
@@ -210,7 +210,7 @@ instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (List k)) where
   (SCons _ _) %:== SNil = SFalse
   (SCons a b) %:== (SCons a' b') = (a %:== a') %:&& (b %:== b')
 
-instance SDecide ('KProxy :: KProxy k) => SDecide ('KProxy :: KProxy (List k)) where
+instance SDecide k => SDecide (List k) where
   SNil %~ SNil = Proved Refl
   (SCons h1 t1) %~ (SCons h2 t2) =
     case (h1 %~ h2, t1 %~ t2) of
@@ -256,7 +256,7 @@ instance (SingKind k1, SingKind k2) => SingKind (Either k1 k2) where
     case toSing x :: SomeSing k2 of
       SomeSing x' -> SomeSing $ SRight x'
 
-instance (SDecide ('KProxy :: KProxy k1), SDecide ('KProxy :: KProxy k2)) => SDecide ('KProxy :: KProxy (Either k1 k2)) where
+instance (SDecide k1, SDecide k2) => SDecide (Either k1 k2) where
   (SLeft x) %~ (SLeft y) =
     case x %~ y of
       Proved Refl -> Proved Refl
@@ -286,7 +286,7 @@ instance (SingKind k1, SingKind k2) => SingKind (Composite k1 k2) where
     case toSing x :: SomeSing (Either (Maybe k1) k2) of
       SomeSing x' -> SomeSing $ SMkComp x'
 
-instance (SDecide ('KProxy :: KProxy k1), SDecide ('KProxy :: KProxy k2)) => SDecide ('KProxy :: KProxy (Composite k1 k2)) where
+instance (SDecide k1, SDecide k2) => SDecide (Composite k1 k2) where
   (SMkComp x) %~ (SMkComp y) =
     case x %~ y of
       Proved Refl -> Proved Refl
@@ -337,7 +337,7 @@ instance SingKind Type where
          , toSing n :: SomeSing Nat) of
       (SomeSing a', SomeSing n') -> SomeSing $ SVec a' n'
 
-instance SDecide ('KProxy :: KProxy *) where
+instance SDecide Type where
   SNat %~ SNat = Proved Refl
   SNat %~ (SMaybe {}) = Disproved (\case _ -> undefined)
   SNat %~ (SVec {}) = Disproved (\case _ -> undefined)

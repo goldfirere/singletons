@@ -66,7 +66,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (%:==) SZero (SSucc _) = SFalse
       (%:==) (SSucc _) SZero = SFalse
       (%:==) (SSucc a) (SSucc b) = (%:==) a b
-    instance SDecide (KProxy :: KProxy Nat) where
+    instance SDecide Nat where
       (%~) SZero SZero = Proved Refl
       (%~) SZero (SSucc _)
         = Disproved
@@ -702,7 +702,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (%:==) (SVEC _ _) SSTRING = SFalse
       (%:==) (SVEC _ _) SNAT = SFalse
       (%:==) (SVEC a a) (SVEC b b) = (%:&&) ((%:==) a b) ((%:==) a b)
-    instance SDecide (KProxy :: KProxy U) where
+    instance SDecide U where
       (%~) SBOOL SBOOL = Proved Refl
       (%~) SBOOL SSTRING
         = Disproved
@@ -1532,7 +1532,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (%:==) SCZ SCX = SFalse
       (%:==) SCZ SCY = SFalse
       (%:==) SCZ SCZ = STrue
-    instance SDecide (KProxy :: KProxy AChar) where
+    instance SDecide AChar where
       (%~) SCA SCA = Proved Refl
       (%~) SCA SCB
         = Disproved

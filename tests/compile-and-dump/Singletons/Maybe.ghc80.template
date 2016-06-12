@@ -41,8 +41,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       (%:==) SNothing (SJust _) = SFalse
       (%:==) (SJust _) SNothing = SFalse
       (%:==) (SJust a) (SJust b) = (%:==) a b
-    instance SDecide (KProxy :: KProxy a) =>
-             SDecide (KProxy :: KProxy (Maybe a)) where
+    instance SDecide a => SDecide (Maybe a) where
       (%~) SNothing SNothing = Proved Refl
       (%~) SNothing (SJust _)
         = Disproved

@@ -1,4 +1,4 @@
-{-# LANGUAGE RankNTypes, PolyKinds, DataKinds, TypeOperators,
+{-# LANGUAGE RankNTypes, PolyKinds, DataKinds, TypeOperators, TypeInType,
              TypeFamilies, FlexibleContexts, UndecidableInstances, GADTs #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
@@ -23,6 +23,7 @@ module Data.Singletons.Decide (
   (:~:)(..), Void, Refuted, Decision(..)
   ) where
 
+import Data.Kind
 import Data.Singletons
 import Data.Type.Equality
 import Data.Void
@@ -44,11 +45,11 @@ data Decision a = Proved a               -- ^ Witness for @a@
 -- | Members of the 'SDecide' "kind" class support decidable equality. Instances
 -- of this class are generated alongside singleton definitions for datatypes that
 -- derive an 'Eq' instance.
-class (kparam ~ 'KProxy) => SDecide (kparam :: KProxy k) where
+class SDecide k where
   -- | Compute a proof or disproof of equality, given two singletons.
   (%~) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Decision (a :~: b)
 
-instance SDecide ('KProxy :: KProxy k) => TestEquality (Sing :: k -> *) where
+instance SDecide k => TestEquality (Sing :: k -> Type) where
   testEquality a b =
     case a %~ b of
       Proved Refl -> Just Refl

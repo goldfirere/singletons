@@ -424,7 +424,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       (%:==) SZero (SSucc _) = SFalse
       (%:==) (SSucc _) SZero = SFalse
       (%:==) (SSucc a) (SSucc b) = (%:==) a b
-    instance SDecide (KProxy :: KProxy Nat) where
+    instance SDecide Nat where
       (%~) SZero SZero = Proved Refl
       (%~) SZero (SSucc _)
         = Disproved
@@ -589,11 +589,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         = (%:&&)
             ((%:==) a b)
             ((%:&&) ((%:==) a b) ((%:&&) ((%:==) a b) ((%:==) a b)))
-    instance (SDecide (KProxy :: KProxy a),
-              SDecide (KProxy :: KProxy b),
-              SDecide (KProxy :: KProxy c),
-              SDecide (KProxy :: KProxy d)) =>
-             SDecide (KProxy :: KProxy (Foo a b c d)) where
+    instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
+             SDecide (Foo a b c d) where
       (%~) (SA a a a a) (SA b b b b)
         = case
               GHC.Tuple.(,,,) ((%~) a b) ((%~) a b) ((%~) a b) ((%~) a b)

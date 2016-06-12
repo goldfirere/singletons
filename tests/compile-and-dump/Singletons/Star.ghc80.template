@@ -459,7 +459,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
       (%:==) (SVec _ _) SString = SFalse
       (%:==) (SVec _ _) (SMaybe _) = SFalse
       (%:==) (SVec a a) (SVec b b) = (%:&&) ((%:==) a b) ((%:==) a b)
-    instance SDecide (KProxy :: KProxy Type) where
+    instance SDecide Type where
       (%~) SNat SNat = Proved Refl
       (%~) SNat SInt
         = Disproved

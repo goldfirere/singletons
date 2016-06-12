@@ -62,7 +62,7 @@ instance SEq ('KProxy :: KProxy *) where
                     -- the Data.Typeable interface isn't strong enough
                     -- to enable us to define this without unsafeCoerce
 
-instance SDecide ('KProxy :: KProxy *) where
+instance SDecide Type where
   (STypeRep :: Sing a) %~ (STypeRep :: Sing b) =
     case (eqT :: Maybe (a :~: b)) of
       Just Refl -> Proved Refl

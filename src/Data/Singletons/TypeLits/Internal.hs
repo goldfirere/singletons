@@ -69,7 +69,7 @@ instance SingKind Symbol where
                SomeSymbol (_ :: Proxy n) -> SomeSing (SSym :: Sing n)
 
 -- SDecide instances:
-instance SDecide ('KProxy :: KProxy Nat) where
+instance SDecide Nat where
   (SNat :: Sing n) %~ (SNat :: Sing m)
     | natVal (Proxy :: Proxy n) == natVal (Proxy :: Proxy m)
     = Proved $ unsafeCoerce Refl
@@ -77,7 +77,7 @@ instance SDecide ('KProxy :: KProxy Nat) where
     = Disproved (\_ -> error errStr)
     where errStr = "Broken Nat singletons"
 
-instance SDecide ('KProxy :: KProxy Symbol) where
+instance SDecide Symbol where
   (SSym :: Sing n) %~ (SSym :: Sing m)
     | symbolVal (Proxy :: Proxy n) == symbolVal (Proxy :: Proxy m)
     = Proved $ unsafeCoerce Refl

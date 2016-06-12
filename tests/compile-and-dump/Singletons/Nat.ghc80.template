@@ -122,7 +122,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       (%:==) SZero (SSucc _) = SFalse
       (%:==) (SSucc _) SZero = SFalse
       (%:==) (SSucc a) (SSucc b) = (%:==) a b
-    instance SDecide (KProxy :: KProxy Nat) where
+    instance SDecide Nat where
       (%~) SZero SZero = Proved Refl
       (%~) SZero (SSucc _)
         = Disproved
