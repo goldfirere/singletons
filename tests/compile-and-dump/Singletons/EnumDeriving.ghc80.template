@@ -54,7 +54,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Foo)
       = z ~ Bar => SBar | z ~ Baz => SBaz | z ~ Bum => SBum
     type SFoo = (Sing :: Foo -> GHC.Types.Type)
-    instance SingKind (KProxy :: KProxy Foo) where
+    instance SingKind Foo where
       type DemoteRep Foo = Foo
       fromSing SBar = Bar
       fromSing SBaz = Baz
@@ -64,7 +64,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing Bum = SomeSing SBum
     data instance Sing (z :: Quux) = z ~ Q1 => SQ1 | z ~ Q2 => SQ2
     type SQuux = (Sing :: Quux -> GHC.Types.Type)
-    instance SingKind (KProxy :: KProxy Quux) where
+    instance SingKind Quux where
       type DemoteRep Quux = Quux
       fromSing SQ1 = Q1
       fromSing SQ2 = Q2

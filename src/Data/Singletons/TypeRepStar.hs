@@ -46,7 +46,7 @@ data instance Sing (a :: *) where
 
 instance Typeable a => SingI (a :: *) where
   sing = STypeRep
-instance SingKind ('KProxy :: KProxy *) where
+instance SingKind Type where
   type DemoteRep Type = TypeRep
   fromSing (STypeRep :: Sing a) = typeOf (undefined :: a)
   toSing = dirty_mk_STypeRep

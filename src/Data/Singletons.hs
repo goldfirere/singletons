@@ -1,5 +1,6 @@
 {-# LANGUAGE MagicHash, RankNTypes, PolyKinds, GADTs, DataKinds,
-             FlexibleContexts, TypeFamilies, TypeOperators,
+             FlexibleContexts, FlexibleInstances,
+             TypeFamilies, TypeOperators,
              UndecidableInstances, TypeInType #-}
 
 -----------------------------------------------------------------------------
@@ -87,7 +88,7 @@ class SingI (a :: k) where
 -- | The 'SingKind' class is essentially a /kind/ class. It classifies all kinds
 -- for which singletons are defined. The class supports converting between a singleton
 -- type and the base (unrefined) type which it is built from.
-class (kparam ~ 'KProxy) => SingKind (kparam :: KProxy k) where
+class SingKind k where
   -- | Get a base type from a proxy for the promoted kind. For example,
   -- @DemoteRep ('KProxy :: KProxy Bool)@ will be the type @Bool@.
   type DemoteRep k :: *
@@ -187,8 +188,7 @@ infixl 9 @@
 newtype instance Sing (f :: TyFun k1 k2 -> *) =
   SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
 
-instance (SingKind ('KProxy :: KProxy k1), SingKind ('KProxy :: KProxy k2))
-         => SingKind ('KProxy :: KProxy (TyFun k1 k2 -> *)) where
+instance (SingKind k1, SingKind k2) => SingKind (TyFun k1 k2 -> *) where
   type DemoteRep (TyFun k1 k2 -> *) = DemoteRep k1 -> DemoteRep k2
   fromSing sFun x = withSomeSing x (fromSing . applySing sFun)
   toSing _ = error "Cannot create existentially-quantified singleton functions."
@@ -274,7 +274,7 @@ withSingI sn r =
 
 -- | Convert a normal datatype (like 'Bool') to a singleton for that datatype,
 -- passing it into a continuation.
-withSomeSing :: SingKind ('KProxy :: KProxy k)
+withSomeSing :: SingKind k
              => DemoteRep k                       -- ^ The original datatype
              -> (forall (a :: k). Sing a -> r)    -- ^ Function expecting a singleton
              -> r
@@ -293,7 +293,7 @@ withSing f = f sing
 -- property.  If the singleton does not satisfy the property, then the function
 -- returns 'Nothing'. The property is expressed in terms of the underlying
 -- representation of the singleton.
-singThat :: forall (a :: k). (SingKind ('KProxy :: KProxy k), SingI a)
+singThat :: forall (a :: k). (SingKind k, SingI a)
          => (Demote a -> Bool) -> Maybe (Sing a)
 singThat p = withSing $ \x -> if p (fromSing x) then Just x else Nothing
 

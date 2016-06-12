@@ -45,8 +45,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
         SMkRecord {sField1 :: (Sing (n :: a)),
                    sField2 :: (Sing (n :: Bool))}
     type SRecord = (Sing :: Record a -> GHC.Types.Type)
-    instance SingKind (KProxy :: KProxy a) =>
-             SingKind (KProxy :: KProxy (Record a)) where
+    instance SingKind a => SingKind (Record a) where
       type DemoteRep (Record a) = Record (DemoteRep a)
       fromSing (SMkRecord b b) = MkRecord (fromSing b) (fromSing b)
       toSing (MkRecord b b)

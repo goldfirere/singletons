@@ -53,7 +53,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       = z ~ Zero => SZero |
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
     type SNat = (Sing :: Nat -> Type)
-    instance SingKind (KProxy :: KProxy Nat) where
+    instance SingKind Nat where
       type DemoteRep Nat = Nat
       fromSing SZero = Zero
       fromSing (SSucc b) = Succ (fromSing b)
@@ -671,7 +671,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         forall (n :: U) (n :: Nat). z ~ VEC n n =>
         SVEC (Sing (n :: U)) (Sing (n :: Nat))
     type SU = (Sing :: U -> Type)
-    instance SingKind (KProxy :: KProxy U) where
+    instance SingKind U where
       type DemoteRep U = U
       fromSing SBOOL = BOOL
       fromSing SSTRING = STRING
@@ -801,7 +801,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         z ~ CY => SCY |
         z ~ CZ => SCZ
     type SAChar = (Sing :: AChar -> Type)
-    instance SingKind (KProxy :: KProxy AChar) where
+    instance SingKind AChar where
       type DemoteRep AChar = AChar
       fromSing SCA = CA
       fromSing SCB = CB
@@ -4813,7 +4813,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       = forall (n :: [AChar]) (n :: U). z ~ Attr n n =>
         SAttr (Sing (n :: [AChar])) (Sing (n :: U))
     type SAttribute = (Sing :: Attribute -> Type)
-    instance SingKind (KProxy :: KProxy Attribute) where
+    instance SingKind Attribute where
       type DemoteRep Attribute = Attribute
       fromSing (SAttr b b) = Attr (fromSing b) (fromSing b)
       toSing (Attr b b)
@@ -4826,7 +4826,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       = forall (n :: [Attribute]). z ~ Sch n =>
         SSch (Sing (n :: [Attribute]))
     type SSchema = (Sing :: Schema -> Type)
-    instance SingKind (KProxy :: KProxy Schema) where
+    instance SingKind Schema where
       type DemoteRep Schema = Schema
       fromSing (SSch b) = Sch (fromSing b)
       toSing (Sch b)

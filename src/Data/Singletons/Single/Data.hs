@@ -37,8 +37,7 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
   let singKindInst =
         DInstanceD Nothing
                    (map (singKindConstraint . DVarT) tvbNames)
-                   (DAppT (DConT singKindClassName)
-                          (kindParam k))
+                   (DAppT (DConT singKindClassName) k)
                    [ DTySynInstD demoteRepName $ DTySynEqn
                       [k]
                       (foldType (DConT name)

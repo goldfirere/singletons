@@ -232,7 +232,7 @@ singFamily :: DType
 singFamily = DConT singFamilyName
 
 singKindConstraint :: DKind -> DPred
-singKindConstraint k = DAppPr (DConPr singKindClassName) (kindParam k)
+singKindConstraint = DAppPr (DConPr singKindClassName)
 
 demote :: DType
 demote = DConT demoteRepName

@@ -27,8 +27,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       = z ~ Nothing => SNothing |
         forall (n :: a). z ~ Just n => SJust (Sing (n :: a))
     type SMaybe = (Sing :: Maybe a -> GHC.Types.Type)
-    instance SingKind (KProxy :: KProxy a) =>
-             SingKind (KProxy :: KProxy (Maybe a)) where
+    instance SingKind a => SingKind (Maybe a) where
       type DemoteRep (Maybe a) = Maybe (DemoteRep a)
       fromSing SNothing = Nothing
       fromSing (SJust b) = Just (fromSing b)

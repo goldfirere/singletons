@@ -50,7 +50,7 @@ data instance Sing (n :: Nat) = KnownNat n => SNat
 instance KnownNat n => SingI n where
   sing = SNat
 
-instance SingKind ('KProxy :: KProxy Nat) where
+instance SingKind Nat where
   type DemoteRep Nat = Integer
   fromSing (SNat :: Sing n) = natVal (Proxy :: Proxy n)
   toSing n = case someNatVal n of
@@ -62,7 +62,7 @@ data instance Sing (n :: Symbol) = KnownSymbol n => SSym
 instance KnownSymbol n => SingI n where
   sing = SSym
 
-instance SingKind ('KProxy :: KProxy Symbol) where
+instance SingKind Symbol where
   type DemoteRep Symbol = String
   fromSing (SSym :: Sing n) = symbolVal (Proxy :: Proxy n)
   toSing s = case someSymbolVal s of
