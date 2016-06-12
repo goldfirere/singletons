@@ -51,7 +51,7 @@ instance KnownNat n => SingI n where
   sing = SNat
 
 instance SingKind ('KProxy :: KProxy Nat) where
-  type DemoteRep ('KProxy :: KProxy Nat) = Integer
+  type DemoteRep Nat = Integer
   fromSing (SNat :: Sing n) = natVal (Proxy :: Proxy n)
   toSing n = case someNatVal n of
                Just (SomeNat (_ :: Proxy n)) -> SomeSing (SNat :: Sing n)
@@ -63,7 +63,7 @@ instance KnownSymbol n => SingI n where
   sing = SSym
 
 instance SingKind ('KProxy :: KProxy Symbol) where
-  type DemoteRep ('KProxy :: KProxy Symbol) = String
+  type DemoteRep Symbol = String
   fromSing (SSym :: Sing n) = symbolVal (Proxy :: Proxy n)
   toSing s = case someSymbolVal s of
                SomeSymbol (_ :: Proxy n) -> SomeSing (SSym :: Sing n)

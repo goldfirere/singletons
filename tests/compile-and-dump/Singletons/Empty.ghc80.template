@@ -5,7 +5,7 @@ Singletons/Empty.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Empty)
     type SEmpty = (Sing :: Empty -> GHC.Types.Type)
     instance SingKind (KProxy :: KProxy Empty) where
-      type DemoteRep (KProxy :: KProxy Empty) = Empty
+      type DemoteRep Empty = Empty
       fromSing z
         = case z of {
             _ -> error "Empty case reached -- this should be impossible" }

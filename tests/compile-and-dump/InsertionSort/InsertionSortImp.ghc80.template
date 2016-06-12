@@ -16,7 +16,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
     type SNat = (Sing :: Nat -> GHC.Types.Type)
     instance SingKind (KProxy :: KProxy Nat) where
-      type DemoteRep (KProxy :: KProxy Nat) = Nat
+      type DemoteRep Nat = Nat
       fromSing SZero = Zero
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero

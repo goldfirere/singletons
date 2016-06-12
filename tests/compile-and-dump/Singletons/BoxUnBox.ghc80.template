@@ -40,7 +40,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
     type SBox = (Sing :: Box a -> GHC.Types.Type)
     instance SingKind (KProxy :: KProxy a) =>
              SingKind (KProxy :: KProxy (Box a)) where
-      type DemoteRep (KProxy :: KProxy (Box a)) = Box (DemoteRep (KProxy :: KProxy a))
+      type DemoteRep (Box a) = Box (DemoteRep a)
       fromSing (SFBox b) = FBox (fromSing b)
       toSing (FBox b)
         = case toSing b :: SomeSing a of {

@@ -317,7 +317,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Foo) = z ~ A => SA | z ~ B => SB
     type SFoo = (Sing :: Foo -> GHC.Types.Type)
     instance SingKind (KProxy :: KProxy Foo) where
-      type DemoteRep (KProxy :: KProxy Foo) = Foo
+      type DemoteRep Foo = Foo
       fromSing SA = A
       fromSing SB = B
       toSing A = SomeSing SA
@@ -325,7 +325,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Foo2) = z ~ F => SF | z ~ G => SG
     type SFoo2 = (Sing :: Foo2 -> GHC.Types.Type)
     instance SingKind (KProxy :: KProxy Foo2) where
-      type DemoteRep (KProxy :: KProxy Foo2) = Foo2
+      type DemoteRep Foo2 = Foo2
       fromSing SF = F
       fromSing SG = G
       toSing F = SomeSing SF
@@ -598,7 +598,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         forall (n :: Nat'). z ~ Succ' n => SSucc' (Sing (n :: Nat'))
     type SNat' = (Sing :: Nat' -> GHC.Types.Type)
     instance SingKind (KProxy :: KProxy Nat') where
-      type DemoteRep (KProxy :: KProxy Nat') = Nat'
+      type DemoteRep Nat' = Nat'
       fromSing SZero' = Zero'
       fromSing (SSucc' b) = Succ' (fromSing b)
       toSing Zero' = SomeSing SZero'

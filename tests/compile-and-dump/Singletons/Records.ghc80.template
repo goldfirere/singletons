@@ -47,7 +47,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     type SRecord = (Sing :: Record a -> GHC.Types.Type)
     instance SingKind (KProxy :: KProxy a) =>
              SingKind (KProxy :: KProxy (Record a)) where
-      type DemoteRep (KProxy :: KProxy (Record a)) = Record (DemoteRep (KProxy :: KProxy a))
+      type DemoteRep (Record a) = Record (DemoteRep a)
       fromSing (SMkRecord b b) = MkRecord (fromSing b) (fromSing b)
       toSing (MkRecord b b)
         = case

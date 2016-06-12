@@ -371,7 +371,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         SBaz (Sing (n :: Nat)) (Sing (n :: Nat)) (Sing (n :: Nat))
     type SBaz = (Sing :: Baz -> GHC.Types.Type)
     instance SingKind (KProxy :: KProxy Baz) where
-      type DemoteRep (KProxy :: KProxy Baz) = Baz
+      type DemoteRep Baz = Baz
       fromSing (SBaz b b b) = Baz (fromSing b) (fromSing b) (fromSing b)
       toSing (Baz b b b)
         = case

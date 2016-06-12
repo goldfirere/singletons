@@ -560,7 +560,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b)) =>
              SingKind (KProxy :: KProxy (Either a b)) where
-      type DemoteRep (KProxy :: KProxy (Either a b)) = Either (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b))
+      type DemoteRep (Either a b) = Either (DemoteRep a) (DemoteRep b)
       fromSing (SLeft b) = Left (fromSing b)
       fromSing (SRight b) = Right (fromSing b)
       toSing (Left b)

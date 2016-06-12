@@ -412,7 +412,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
     type SNat = (Sing :: Nat -> GHC.Types.Type)
     instance SingKind (KProxy :: KProxy Nat) where
-      type DemoteRep (KProxy :: KProxy Nat) = Nat
+      type DemoteRep Nat = Nat
       fromSing SZero = Zero
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
@@ -460,7 +460,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               SingKind (KProxy :: KProxy c),
               SingKind (KProxy :: KProxy d)) =>
              SingKind (KProxy :: KProxy (Foo a b c d)) where
-      type DemoteRep (KProxy :: KProxy (Foo a b c d)) = Foo (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b)) (DemoteRep (KProxy :: KProxy c)) (DemoteRep (KProxy :: KProxy d))
+      type DemoteRep (Foo a b c d) = Foo (DemoteRep a) (DemoteRep b) (DemoteRep c) (DemoteRep d)
       fromSing (SA b b b b)
         = A (fromSing b) (fromSing b) (fromSing b) (fromSing b)
       fromSing (SB b b b b)

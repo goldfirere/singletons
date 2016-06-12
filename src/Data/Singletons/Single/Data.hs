@@ -40,9 +40,9 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
                    (DAppT (DConT singKindClassName)
                           (kindParam k))
                    [ DTySynInstD demoteRepName $ DTySynEqn
-                      [kindParam k]
+                      [k]
                       (foldType (DConT name)
-                        (map (DAppT demote . kindParam . DVarT) tvbNames))
+                        (map (DAppT demote . DVarT) tvbNames))
                    , DLetDec $ DFunD fromSingName (fromSingClauses `orIfEmpty` emptyMethod aName)
                    , DLetDec $ DFunD toSingName   (toSingClauses   `orIfEmpty` emptyMethod aName) ]
 

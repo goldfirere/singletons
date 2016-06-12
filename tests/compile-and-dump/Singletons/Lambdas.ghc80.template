@@ -833,7 +833,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b)) =>
              SingKind (KProxy :: KProxy (Foo a b)) where
-      type DemoteRep (KProxy :: KProxy (Foo a b)) = Foo (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b))
+      type DemoteRep (Foo a b) = Foo (DemoteRep a) (DemoteRep b)
       fromSing (SFoo b b) = Foo (fromSing b) (fromSing b)
       toSing (Foo b b)
         = case

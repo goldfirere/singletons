@@ -26,7 +26,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       = z ~ False => SFalse | z ~ True => STrue
     type SBool = (Sing :: Bool -> GHC.Types.Type)
     instance SingKind (KProxy :: KProxy Bool) where
-      type DemoteRep (KProxy :: KProxy Bool) = Bool
+      type DemoteRep Bool = Bool
       fromSing SFalse = False
       fromSing STrue = True
       toSing False = SomeSing SFalse
@@ -36,7 +36,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
         SBar (Sing (n :: Bool)) (Sing (n :: Bool))
     type SFoo = (Sing :: Foo -> GHC.Types.Type)
     instance SingKind (KProxy :: KProxy Foo) where
-      type DemoteRep (KProxy :: KProxy Foo) = Foo
+      type DemoteRep Foo = Foo
       fromSing (SBar b b) = Bar (fromSing b) (fromSing b)
       toSing (Bar b b)
         = case

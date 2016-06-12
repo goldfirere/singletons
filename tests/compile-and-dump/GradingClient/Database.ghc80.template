@@ -54,7 +54,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
     type SNat = (Sing :: Nat -> Type)
     instance SingKind (KProxy :: KProxy Nat) where
-      type DemoteRep (KProxy :: KProxy Nat) = Nat
+      type DemoteRep Nat = Nat
       fromSing SZero = Zero
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
@@ -672,7 +672,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         SVEC (Sing (n :: U)) (Sing (n :: Nat))
     type SU = (Sing :: U -> Type)
     instance SingKind (KProxy :: KProxy U) where
-      type DemoteRep (KProxy :: KProxy U) = U
+      type DemoteRep U = U
       fromSing SBOOL = BOOL
       fromSing SSTRING = STRING
       fromSing SNAT = NAT
@@ -802,7 +802,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         z ~ CZ => SCZ
     type SAChar = (Sing :: AChar -> Type)
     instance SingKind (KProxy :: KProxy AChar) where
-      type DemoteRep (KProxy :: KProxy AChar) = AChar
+      type DemoteRep AChar = AChar
       fromSing SCA = CA
       fromSing SCB = CB
       fromSing SCC = CC
@@ -4814,7 +4814,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         SAttr (Sing (n :: [AChar])) (Sing (n :: U))
     type SAttribute = (Sing :: Attribute -> Type)
     instance SingKind (KProxy :: KProxy Attribute) where
-      type DemoteRep (KProxy :: KProxy Attribute) = Attribute
+      type DemoteRep Attribute = Attribute
       fromSing (SAttr b b) = Attr (fromSing b) (fromSing b)
       toSing (Attr b b)
         = case
@@ -4827,7 +4827,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         SSch (Sing (n :: [Attribute]))
     type SSchema = (Sing :: Schema -> Type)
     instance SingKind (KProxy :: KProxy Schema) where
-      type DemoteRep (KProxy :: KProxy Schema) = Schema
+      type DemoteRep Schema = Schema
       fromSing (SSch b) = Sch (fromSing b)
       toSing (Sch b)
         = case toSing b :: SomeSing [Attribute] of {

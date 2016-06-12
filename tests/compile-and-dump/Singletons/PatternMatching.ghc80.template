@@ -93,7 +93,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b)) =>
              SingKind (KProxy :: KProxy (Pair a b)) where
-      type DemoteRep (KProxy :: KProxy (Pair a b)) = Pair (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b))
+      type DemoteRep (Pair a b) = Pair (DemoteRep a) (DemoteRep b)
       fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
       toSing (Pair b b)
         = case

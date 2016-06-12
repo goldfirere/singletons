@@ -110,7 +110,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Foo1) = z ~ Foo1 => SFoo1
     type SFoo1 = (Sing :: Foo1 -> Type)
     instance SingKind (KProxy :: KProxy Foo1) where
-      type DemoteRep (KProxy :: KProxy Foo1) = Foo1
+      type DemoteRep Foo1 = Foo1
       fromSing SFoo1 = Foo1
       toSing Foo1 = SomeSing SFoo1
     data instance Sing (z :: Foo2)
@@ -121,7 +121,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
         z ~ E => SE
     type SFoo2 = (Sing :: Foo2 -> Type)
     instance SingKind (KProxy :: KProxy Foo2) where
-      type DemoteRep (KProxy :: KProxy Foo2) = Foo2
+      type DemoteRep Foo2 = Foo2
       fromSing SA = A
       fromSing SB = B
       fromSing SC = C
@@ -137,7 +137,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type SFoo3 = (Sing :: Foo3 a -> Type)
     instance SingKind (KProxy :: KProxy a) =>
              SingKind (KProxy :: KProxy (Foo3 a)) where
-      type DemoteRep (KProxy :: KProxy (Foo3 a)) = Foo3 (DemoteRep (KProxy :: KProxy a))
+      type DemoteRep (Foo3 a) = Foo3 (DemoteRep a)
       fromSing (SFoo3 b) = Foo3 (fromSing b)
       toSing (Foo3 b)
         = case toSing b :: SomeSing a of {
@@ -148,7 +148,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance (SingKind (KProxy :: KProxy a),
               SingKind (KProxy :: KProxy b)) =>
              SingKind (KProxy :: KProxy (Foo4 a b)) where
-      type DemoteRep (KProxy :: KProxy (Foo4 a b)) = Foo4 (DemoteRep (KProxy :: KProxy a)) (DemoteRep (KProxy :: KProxy b))
+      type DemoteRep (Foo4 a b) = Foo4 (DemoteRep a) (DemoteRep b)
       fromSing SFoo41 = Foo41
       fromSing SFoo42 = Foo42
       toSing Foo41 = SomeSing SFoo41
@@ -158,7 +158,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
         SPair (Sing (n :: Bool)) (Sing (n :: Bool))
     type SPair = (Sing :: Pair -> Type)
     instance SingKind (KProxy :: KProxy Pair) where
-      type DemoteRep (KProxy :: KProxy Pair) = Pair
+      type DemoteRep Pair = Pair
       fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
       toSing (Pair b b)
         = case

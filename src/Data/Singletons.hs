@@ -90,17 +90,17 @@ class SingI (a :: k) where
 class (kparam ~ 'KProxy) => SingKind (kparam :: KProxy k) where
   -- | Get a base type from a proxy for the promoted kind. For example,
   -- @DemoteRep ('KProxy :: KProxy Bool)@ will be the type @Bool@.
-  type DemoteRep kparam :: *
+  type DemoteRep k :: *
 
   -- | Convert a singleton to its unrefined version.
-  fromSing :: Sing (a :: k) -> DemoteRep kparam
+  fromSing :: Sing (a :: k) -> DemoteRep k
 
   -- | Convert an unrefined type to an existentially-quantified singleton type.
-  toSing   :: DemoteRep kparam -> SomeSing k
+  toSing   :: DemoteRep k -> SomeSing k
 
 -- | Convenient abbreviation for 'DemoteRep':
 -- @type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)@
-type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)
+type Demote (a :: k) = DemoteRep k
 
 -- | An /existentially-quantified/ singleton. This type is useful when you want a
 -- singleton type, but there is no way of knowing, at compile-time, what the type
@@ -189,8 +189,7 @@ newtype instance Sing (f :: TyFun k1 k2 -> *) =
 
 instance (SingKind ('KProxy :: KProxy k1), SingKind ('KProxy :: KProxy k2))
          => SingKind ('KProxy :: KProxy (TyFun k1 k2 -> *)) where
-  type DemoteRep ('KProxy :: KProxy (TyFun k1 k2 -> *)) =
-    DemoteRep ('KProxy :: KProxy k1) -> DemoteRep ('KProxy :: KProxy k2)
+  type DemoteRep (TyFun k1 k2 -> *) = DemoteRep k1 -> DemoteRep k2
   fromSing sFun x = withSomeSing x (fromSing . applySing sFun)
   toSing _ = error "Cannot create existentially-quantified singleton functions."
 
@@ -276,7 +275,7 @@ withSingI sn r =
 -- | Convert a normal datatype (like 'Bool') to a singleton for that datatype,
 -- passing it into a continuation.
 withSomeSing :: SingKind ('KProxy :: KProxy k)
-             => DemoteRep ('KProxy :: KProxy k)   -- ^ The original datatype
+             => DemoteRep k                       -- ^ The original datatype
              -> (forall (a :: k). Sing a -> r)    -- ^ Function expecting a singleton
              -> r
 withSomeSing x f =
