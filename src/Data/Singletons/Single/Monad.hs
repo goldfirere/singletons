@@ -8,8 +8,7 @@ This file defines the SgM monad and its operations, for use during singling.
 The SgM monad allows reading from a SgEnv environment and is wrapped around a Q.
 -}
 
-{-# LANGUAGE GeneralizedNewtypeDeriving, ParallelListComp,
-             TemplateHaskell, CPP #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, ParallelListComp, TemplateHaskell #-}
 
 module Data.Singletons.Single.Monad (
   SgM, bindLets, bindTyVars, bindTyVarsEq, lookupVarE, lookupConE,
@@ -30,10 +29,7 @@ import Language.Haskell.TH.Desugar
 import Control.Monad.Reader
 import Control.Monad.Writer
 import Control.Applicative
-
-#if __GLASGOW_HASKELL__ >= 711
 import Control.Monad.Fail
-#endif
 
 -- environment during singling
 data SgEnv =
@@ -50,10 +46,7 @@ emptySgEnv = SgEnv { sg_let_binds   = Map.empty
 newtype SgM a = SgM (ReaderT SgEnv (WriterT [DDec] Q) a)
   deriving ( Functor, Applicative, Monad
            , MonadReader SgEnv, MonadWriter [DDec]
-#if __GLASGOW_HASKELL__ >= 711
-           , MonadFail
-#endif
-           )
+           , MonadFail )
 
 liftSgM :: Q a -> SgM a
 liftSgM = SgM . lift . lift
@@ -75,12 +68,10 @@ instance Quasi SgM where
   qGetQ             = liftSgM qGetQ
   qPutQ             = liftSgM `comp1` qPutQ
 
-#if __GLASGOW_HASKELL__ >= 711
   qReifyFixity        = liftSgM `comp1` qReifyFixity
   qReifyConStrictness = liftSgM `comp1` qReifyConStrictness
   qIsExtEnabled       = liftSgM `comp1` qIsExtEnabled
   qExtsEnabled        = liftSgM qExtsEnabled
-#endif
 
   qRecover (SgM handler) (SgM body) = do
     env <- ask

@@ -1,9 +1,6 @@
 {-# LANGUAGE TemplateHaskell, DataKinds, PolyKinds, ScopedTypeVariables,
              TypeFamilies, TypeOperators, GADTs, UndecidableInstances,
-             FlexibleContexts, DefaultSignatures, InstanceSigs, CPP #-}
-#if __GLASGOW_HASKELL__ >= 711
-{-# LANGUAGE TypeInType #-}
-#endif
+             FlexibleContexts, DefaultSignatures, InstanceSigs, TypeInType #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -44,10 +41,6 @@ import Data.Singletons.Single
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Util
-
-#if __GLASGOW_HASKELL__ < 711
-import Data.Singletons ( Sing )
-#endif
 
 $(singletonsOnly [d|
   class  (Eq a) => Ord a  where

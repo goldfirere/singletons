@@ -6,10 +6,7 @@ import Data.Singletons.Prelude
 import Data.Singletons.Decide
 import Data.Singletons.CustomStar
 import Singletons.Nat
-
-#if __GLASGOW_HASKELL__ >= 711
 import Data.Kind
-#endif
 
 data Vec :: * -> Nat -> * where
   VNil :: Vec a Zero

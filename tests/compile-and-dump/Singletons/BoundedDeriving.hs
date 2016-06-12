@@ -2,10 +2,7 @@ module Singletons.BoundedDeriving where
 
 import Data.Singletons.Prelude
 import Data.Singletons.TH
-
-#if __GLASGOW_HASKELL__ >= 711
 import Data.Kind
-#endif
 
 $(singletons [d|
   data Foo1 = Foo1 deriving (Bounded)

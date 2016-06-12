@@ -11,7 +11,7 @@ Users of the package should not need to consult this file.
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses, StandaloneDeriving,
              UndecidableInstances, MagicHash, UnboxedTuples,
-             LambdaCase, CPP, NoMonomorphismRestriction #-}
+             LambdaCase, NoMonomorphismRestriction #-}
 
 module Data.Singletons.Util where
 
@@ -28,10 +28,7 @@ import Data.Map ( Map )
 import Data.Foldable
 import Data.Traversable
 import Data.Generics
-
-#if __GLASGOW_HASKELL__ >= 711
 import Control.Monad.Fail ( MonadFail )
-#endif
 
 -- The list of types that singletons processes by default
 basicTypes :: [Name]
@@ -348,10 +345,7 @@ wrapDesugar f th = do
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
   deriving ( Functor, Applicative, Monad, MonadTrans
            , MonadWriter m, MonadReader r
-#if __GLASGOW_HASKELL__ >= 711
-           , MonadFail
-#endif
-           )
+           , MonadFail )
 
 -- make a Quasi instance for easy lifting
 instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
@@ -371,12 +365,10 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
   qGetQ             = lift qGetQ
   qPutQ             = lift `comp1` qPutQ
 
-#if __GLASGOW_HASKELL__ >= 711
   qReifyFixity        = lift `comp1` qReifyFixity
   qReifyConStrictness = lift `comp1` qReifyConStrictness
   qIsExtEnabled       = lift `comp1` qIsExtEnabled
   qExtsEnabled        = lift qExtsEnabled
-#endif
 
   qRecover exp handler = do
     (result, aux) <- lift $ qRecover (evalForPair exp) (evalForPair handler)

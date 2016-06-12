@@ -1,10 +1,7 @@
-{-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies,
+{-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies, TypeInType,
              TemplateHaskell, GADTs, UndecidableInstances, RankNTypes,
-             ScopedTypeVariables, FlexibleContexts, CPP #-}
+             ScopedTypeVariables, FlexibleContexts #-}
 {-# OPTIONS_GHC -O0 #-}
-#if __GLASGOW_HASKELL__ >= 711
-{-# LANGUAGE TypeInType #-}
-#endif
 
 -----------------------------------------------------------------------------
 -- |

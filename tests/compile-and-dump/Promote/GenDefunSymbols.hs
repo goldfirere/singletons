@@ -6,10 +6,7 @@ import Data.Singletons (Apply, TyFun)
 import Data.Singletons.Promote
 import Data.Singletons.SuppressUnusedWarnings
 import GHC.TypeLits hiding (type (*))
-
-#if __GLASGOW_HASKELL__ >= 711
 import Data.Kind
-#endif
 
 type family LiftMaybe (f :: TyFun a b -> *) (x :: Maybe a) :: Maybe b where
     LiftMaybe f Nothing = Nothing

@@ -57,7 +57,6 @@ module Data.Singletons (
   SingFunction6, SingFunction7, SingFunction8,
 
   -- * Auxiliary functions
-  bugInGHC,
   Proxy(..)
   ) where
 
@@ -304,11 +303,3 @@ singByProxy _ = sing
 -- | Allows creation of a singleton when a @proxy#@ is at hand.
 singByProxy# :: SingI a => Proxy# a -> Sing a
 singByProxy# _ = sing
-
--- | GHC 7.8 sometimes warns about incomplete pattern matches when no such
--- patterns are possible, due to GADT constraints.
--- See the bug report at <https://ghc.haskell.org/trac/ghc/ticket/3927>.
--- In such cases, it's useful to have a catch-all pattern that then has
--- 'bugInGHC' as its right-hand side.
-bugInGHC :: forall a. a
-bugInGHC = error "Bug encountered in GHC -- this should never happen"

@@ -10,7 +10,7 @@ of DDec, and is wrapped around a Q.
 -}
 
 {-# LANGUAGE GeneralizedNewtypeDeriving, StandaloneDeriving,
-             FlexibleContexts, TypeFamilies, KindSignatures, CPP #-}
+             FlexibleContexts, TypeFamilies, KindSignatures #-}
 
 module Data.Singletons.Promote.Monad (
   PrM, promoteM, promoteM_, promoteMDecs, VarPromotions,
@@ -26,10 +26,7 @@ import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
 import Data.Singletons.Syntax
-
-#if __GLASGOW_HASKELL__ >= 711
 import Control.Monad.Fail ( MonadFail )
-#endif
 
 type LetExpansions = Map Name DType  -- from **term-level** name
 
@@ -49,10 +46,7 @@ emptyPrEnv = PrEnv { pr_lambda_bound = Map.empty
 newtype PrM a = PrM (ReaderT PrEnv (WriterT [DDec] Q) a)
   deriving ( Functor, Applicative, Monad, Quasi
            , MonadReader PrEnv, MonadWriter [DDec]
-#if __GLASGOW_HASKELL__ >= 711
-           , MonadFail
-#endif
-           )
+           , MonadFail )
 
 instance DsMonad PrM where
   localDeclarations = asks pr_local_decls

@@ -7,7 +7,7 @@ This file contains functions to promote term-level constructs to the
 type level. It is an internal module to the singletons package.
 -}
 
-{-# LANGUAGE TemplateHaskell, MultiWayIf, LambdaCase, TupleSections, CPP #-}
+{-# LANGUAGE TemplateHaskell, MultiWayIf, LambdaCase, TupleSections #-}
 
 module Data.Singletons.Promote where
 
@@ -340,12 +340,10 @@ promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
                          first:_ | not (isHsLetter first) -> "TFHelper"
                          alpha                            -> alpha
       family_args
-#if __GLASGOW_HASKELL__ >= 711
     -- GHC 8 requires bare tyvars to the left of a type family default
         | Nothing <- m_subst
         = map DVarT meth_arg_tvs
         | otherwise
-#endif
         = zipWith (DSigT . DVarT) meth_arg_tvs meth_arg_kis'
   helperName <- newUniqueName helperNameBase
   emitDecs [DClosedTypeFamilyD (DTypeFamilyHead

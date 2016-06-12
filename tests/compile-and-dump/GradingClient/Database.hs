@@ -28,6 +28,7 @@ import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Control.Monad
 import Data.List hiding ( tail )
+import Data.Kind
 
 #ifdef MODERN_MTL
 import Control.Monad.Except  ( throwError )
@@ -35,9 +36,6 @@ import Control.Monad.Except  ( throwError )
 import Control.Monad.Error   ( throwError )
 #endif
 
-#if __GLASGOW_HASKELL__ >= 711
-import Data.Kind
-#endif
 
 $(singletons [d|
   -- Basic Nat type
@@ -494,9 +492,6 @@ query (Project sch ra) = do
             -- for incomplete pattern matches when the remaining cases are impossible.
             -- So, we include this case (impossible to reach for any terminated value)
             -- to suppress the warning.
-#if __GLASGOW_HASKELL__ < 711
-            _ -> error "Type checking failed"
-#endif
 
         -- Retrieves the element, looked up by the name of the provided attribute,
         -- from a row. The explicit quantification is necessary to create the scoped
@@ -507,15 +502,9 @@ query (Project sch ra) = do
           InElt -> case r of
             ConsRow h _ -> h
             -- EmptyRow _ -> undefined <== IMPOSSIBLE
-#if __GLASGOW_HASKELL__ < 711
-            _ -> error "Type checking failed"
-#endif
           InTail  -> case r of
             ConsRow _ t -> extractElt attr t
             -- EmptyRow _ -> undefined <== IMPOSSBLE
-#if __GLASGOW_HASKELL__ < 711
-            _ -> error "Type checking failed"
-#endif
 
 query (Select expr r) = do
   rows <- query r
@@ -534,10 +523,6 @@ query (Select expr r) = do
                     case name %:== name' of
                       STrue -> h
                       SFalse -> withSingI stail (eval (Element (SSch stail) name) t)
-                  _ -> bugInGHC
-#if __GLASGOW_HASKELL__ < 711
-            _ -> bugInGHC
-#endif
 
         eval (Equal (e1 :: Expr s' u') e2) row =
           let v1 = eval e1 row

@@ -51,11 +51,7 @@ includePath :: FilePath
 includePath = "../../dist/build"
 
 ghcVersion :: String
-#if __GLASGOW_HASKELL__ >= 711
 ghcVersion = ".ghc80"
-#else
-ghcVersion = ".ghc710"
-#endif
 
 -- The mtl package made an incompatible change between 2.1.3.1 and 2.2.1. Because
 -- test files are compiled outside of the cabal infrastructure, we need to check
@@ -92,11 +88,7 @@ ghcOpts :: [String]
 ghcOpts = extraOpts ++ [
     "-v0"
   , "-c"
-#if __GLASGOW_HASKELL__ < 711
-  , "-this-package-key " ++ CURRENT_PACKAGE_KEY -- See Note [-this-package-key hack]
-#else
-  , "-this-unit-id " ++ CURRENT_PACKAGE_KEY
-#endif
+  , "-this-unit-id " ++ CURRENT_PACKAGE_KEY -- See Note [-this-unit-id hack]
   , "-ddump-splices"
   , "-dsuppress-uniques"
   , "-fforce-recomp"
@@ -123,17 +115,15 @@ ghcOpts = extraOpts ++ [
   , "-XInstanceSigs"
   , "-XDefaultSignatures"
   , "-XCPP"
-#if __GLASGOW_HASKELL__ >= 711
   , "-XTypeInType"
-#endif
   ]
 
--- Note [-this-package-key hack]
+-- Note [-this-unit-id hack]
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --
 -- We want to avoid installing singletons package before running the
 -- testsuite, because in this way we prevent double compilation of the
--- library. To do this we pass -this-package-key option to GHC to convince
+-- library. To do this we pass -this-unit-id option to GHC to convince
 -- it that the test files are actually part of the current
 -- package. This means that library doesn't have to be installed
 -- globally and interface files generated during library compilation
