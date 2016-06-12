@@ -54,7 +54,7 @@ instance SingKind Type where
 instance PEq ('KProxy :: KProxy *) where
   type (a :: *) :== (b :: *) = a == b
 
-instance SEq ('KProxy :: KProxy *) where
+instance SEq Type where
   (STypeRep :: Sing a) %:== (STypeRep :: Sing b) =
     case (eqT :: Maybe (a :~: b)) of
       Just Refl -> STrue

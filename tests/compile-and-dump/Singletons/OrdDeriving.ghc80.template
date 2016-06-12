@@ -419,7 +419,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ b)
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
-    instance SEq (KProxy :: KProxy Nat) where
+    instance SEq Nat where
       (%:==) SZero SZero = STrue
       (%:==) SZero (SSucc _) = SFalse
       (%:==) (SSucc _) SZero = SFalse
@@ -530,11 +530,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing (SF c c c c) }
-    instance (SEq (KProxy :: KProxy a),
-              SEq (KProxy :: KProxy b),
-              SEq (KProxy :: KProxy c),
-              SEq (KProxy :: KProxy d)) =>
-             SEq (KProxy :: KProxy (Foo a b c d)) where
+    instance (SEq a, SEq b, SEq c, SEq d) => SEq (Foo a b c d) where
       (%:==) (SA a a a a) (SA b b b b)
         = (%:&&)
             ((%:==) a b)
@@ -843,8 +839,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             GHC.Tuple.(,,,) _ _ _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
-    instance SOrd (KProxy :: KProxy Nat) =>
-             SOrd (KProxy :: KProxy Nat) where
+    instance SOrd Nat => SOrd Nat where
       sCompare ::
         forall (t0 :: Nat) (t1 :: Nat).
         Sing t0
@@ -910,11 +905,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               -> Sing (Apply (Apply CompareSym0 t0) t1 :: Ordering)
             lambda _z_0123456789 = SGT
           in lambda _s_z_0123456789
-    instance (SOrd (KProxy :: KProxy a),
-              SOrd (KProxy :: KProxy b),
-              SOrd (KProxy :: KProxy c),
-              SOrd (KProxy :: KProxy d)) =>
-             SOrd (KProxy :: KProxy (Foo a b c d)) where
+    instance (SOrd a, SOrd b, SOrd c, SOrd d) =>
+             SOrd (Foo a b c d) where
       sCompare ::
         forall (t0 :: Foo a b c d) (t1 :: Foo a b c d).
         Sing t0

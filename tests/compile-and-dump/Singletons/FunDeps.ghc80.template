@@ -69,12 +69,10 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       type L2r (a :: Bool) = Apply L2r_0123456789Sym0 a
     sT1 :: Sing T1Sym0
     sT1 = applySing (singFun1 (Proxy :: Proxy MethSym0) sMeth) STrue
-    class (kproxy ~ KProxy,
-           kproxy ~ KProxy) => SFD (kproxy :: KProxy a)
-                                   (kproxy :: KProxy b) | a -> b where
+    class SFD a b | a -> b where
       sMeth :: forall (t :: a). Sing t -> Sing (Apply MethSym0 t :: a)
       sL2r :: forall (t :: a). Sing t -> Sing (Apply L2rSym0 t :: b)
-    instance SFD (KProxy :: KProxy Bool) (KProxy :: KProxy Nat) where
+    instance SFD Bool Nat where
       sMeth ::
         forall (t :: Bool). Sing t -> Sing (Apply MethSym0 t :: Bool)
       sL2r :: forall (t :: Bool). Sing t -> Sing (Apply L2rSym0 t :: Nat)

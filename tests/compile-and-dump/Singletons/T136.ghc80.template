@@ -91,7 +91,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
       type Pred (a :: [Bool]) = Apply Pred_0123456789Sym0 a
       type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789Sym0 a
       type FromEnum (a :: [Bool]) = Apply FromEnum_0123456789Sym0 a
-    instance SEnum (KProxy :: KProxy [Bool]) where
+    instance SEnum [Bool] where
       sSucc ::
         forall (t0 :: [Bool]).
         Sing t0

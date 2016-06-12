@@ -128,7 +128,7 @@ singDecideInstance name = singEqualityInstance sDecideClassDesc name
 
 -- generalized function for creating equality instances
 singEqualityInstance :: DsMonad q => EqualityClassDesc q -> Name -> q [Dec]
-singEqualityInstance desc@(_, className, _, _) name = do
+singEqualityInstance desc@(_, className, _) name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
                             show className ++ " for it.") name
   dtvbs <- mapM dsTvb tvbs
@@ -264,10 +264,9 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                      (Map.toList default_defns)
   let fixities' = map (uncurry singInfixDecl) fixities
   cls_cxt' <- mapM singPred cls_cxt
-  (kproxies, kproxy_pred) <- mkKProxies (map extractTvbName cls_tvbs)
-
-  return $ DClassD (cls_cxt' ++ kproxy_pred)
-                   (singClassName cls_name) kproxies
+  return $ DClassD cls_cxt'
+                   (singClassName cls_name)
+                   cls_tvbs
                    cls_fundeps   -- they are fine without modification
                    (map DLetDec (sing_sigs ++ sing_meths ++ fixities') ++ default_sigs)
   where
@@ -298,7 +297,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
   meths <- concatMapM (uncurry sing_meth) ann_meths
   return (DInstanceD Nothing
                      cxt'
-                     (foldl DAppT (DConT s_inst_name) (map kindParam inst_kis))
+                     (foldl DAppT (DConT s_inst_name) inst_kis)
                      meths)
 
   where

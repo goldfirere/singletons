@@ -330,7 +330,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       fromSing SG = G
       toSing F = SomeSing SF
       toSing G = SomeSing SG
-    class kproxy ~ KProxy => SMyOrd (kproxy :: KProxy a) where
+    class SMyOrd a where
       sMycompare ::
         forall (t :: a) (t :: a).
         Sing t
@@ -356,7 +356,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                      (singFun2 (Proxy :: Proxy MycompareSym0) sMycompare) a_0123456789)
                   a_0123456789
           in lambda sA_0123456789 sA_0123456789
-    instance SMyOrd (KProxy :: KProxy Nat) where
+    instance SMyOrd Nat where
       sMycompare ::
         forall (t :: Nat) (t :: Nat).
         Sing t
@@ -398,7 +398,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                   (applySing (singFun2 (Proxy :: Proxy MycompareSym0) sMycompare) m)
                   n
           in lambda sN sM
-    instance SMyOrd (KProxy :: KProxy ()) where
+    instance SMyOrd () where
       sMycompare ::
         forall (t :: ()) (t :: ()).
         Sing t
@@ -416,7 +416,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                   (applySing (singFun2 (Proxy :: Proxy ConstSym0) sConst) SEQ)
                   a_0123456789
           in lambda _s_z_0123456789 sA_0123456789
-    instance SMyOrd (KProxy :: KProxy Foo) where
+    instance SMyOrd Foo where
       sMycompare ::
         forall (t :: Foo) (t :: Foo).
         Sing t
@@ -436,7 +436,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                      a_0123456789)
                   a_0123456789
           in lambda sA_0123456789 sA_0123456789
-    instance SEq (KProxy :: KProxy Foo2) where
+    instance SEq Foo2 where
       (%:==) ::
         forall (a :: Foo2) (b :: Foo2).
         Sing a -> Sing b -> Sing ((:==) a b)
@@ -605,7 +605,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ' b)
         = case toSing b :: SomeSing Nat' of {
             SomeSing c -> SomeSing (SSucc' c) }
-    instance SMyOrd (KProxy :: KProxy Nat') where
+    instance SMyOrd Nat' where
       sMycompare ::
         forall (t :: Nat') (t :: Nat').
         Sing t

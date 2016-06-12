@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, PolyKinds, DataKinds, TypeFamilies,
+{-# LANGUAGE TemplateHaskell, PolyKinds, DataKinds, TypeFamilies, TypeInType,
              TypeOperators, GADTs, ScopedTypeVariables, UndecidableInstances,
              DefaultSignatures, FlexibleContexts
   #-}
@@ -83,7 +83,7 @@ instance PNum ('KProxy :: KProxy Nat) where
   type FromInteger a = a
 
 -- SNum instance
-instance SNum ('KProxy :: KProxy Nat) where
+instance SNum Nat where
   sa %:+ sb =
     let a = fromSing sa
         b = fromSing sb

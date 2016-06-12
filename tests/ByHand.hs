@@ -65,7 +65,7 @@ data Either :: * -> * -> * where
 -----------------------------------
 
 -- Singleton type equality type class
-class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
+class SEq k where
   (%:==) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :== b)
   -- omitting definition of %:/=
 
@@ -92,7 +92,7 @@ type family EqualsNat (a :: Nat) (b :: Nat) where
   EqualsNat (n1 :: Nat) (n2 :: Nat) = False
 type instance (a :: Nat) == (b :: Nat) = EqualsNat a b
 
-instance SEq ('KProxy :: KProxy Nat) where
+instance SEq Nat where
   SZero %:== SZero = STrue
   SZero %:== (SSucc _) = SFalse
   (SSucc _) %:== SZero = SFalse
@@ -163,7 +163,7 @@ instance SDecide k => SDecide (Maybe k) where
   SNothing %~ (SJust _) = Disproved (\case _ -> undefined)
   (SJust _) %~ SNothing = Disproved (\case _ -> undefined)
 
-instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (Maybe k)) where
+instance SEq k => SEq (Maybe k) where
   SNothing %:== SNothing = STrue
   SNothing %:== (SJust _) = SFalse
   (SJust _) %:== SNothing = SFalse
@@ -204,7 +204,7 @@ type family EqualsList (a :: List k) (b :: List k) where
   EqualsList (x :: List k) (y :: List k) = False
 type instance (a :: List k) == (b :: List k) = EqualsList a b
 
-instance SEq ('KProxy :: KProxy k) => SEq ('KProxy :: KProxy (List k)) where
+instance SEq k => SEq (List k) where
   SNil %:== SNil = STrue
   SNil %:== (SCons _ _) = SFalse
   (SCons _ _) %:== SNil = SFalse
@@ -355,7 +355,7 @@ instance SDecide Type where
       (Disproved contra, _) -> Disproved (\Refl -> contra Refl)
       (_, Disproved contra) -> Disproved (\Refl -> contra Refl)
 
-instance SEq ('KProxy :: KProxy *) where
+instance SEq Type where
   a %:== b =
     case a %~ b of
       Proved Refl -> STrue
@@ -645,14 +645,14 @@ type instance Apply (ContainsSym1 a) b = Contains a b
 type instance Apply  ContainsSym0 a    = ContainsSym1 a
 
 {-
-sContains :: forall. SEq ('KProxy :: KProxy k) =>
+sContains :: forall. SEq k =>
              forall (a :: k). Sing a ->
              forall (list :: List k). Sing list -> Sing (Contains a list)
 sContains _ SNil = SFalse
 sContains elt (SCons h t) = (elt %:== h) %:|| (sContains elt t)
 -}
 
-sContains :: forall (t1 :: a) (t2 :: List a). SEq ('KProxy :: KProxy a) => Sing t1
+sContains :: forall (t1 :: a) (t2 :: List a). SEq a => Sing t1
           -> Sing t2 -> Sing (Contains t1 t2)
 sContains _ SNil =
   let lambda :: forall wild. Sing (Contains wild Nil)
@@ -693,24 +693,6 @@ type family Lambda10 a b where
 type family Case10 a b scrut where
   Case10 elt list Nil = False
   Case10 elt list (Cons h t) = (:||$) @@ ((:==$) @@ elt @@ h) @@ (Cont @@ elt @@ t)
-
-type KindOfUnderList (x :: List a) = ('KProxy :: KProxy a)
-{-
-sCont :: forall (t1 :: a) (t2 :: List a). SEq ('KProxy :: KProxy a) => Sing t1 -> Sing t2 -> Sing (Cont @@ t1 @@ t2)
-sCont = \elt list ->
-  let lambda :: forall elt list. ((Lambda10Sym0 @@ elt @@ list) ~ (Cont @@ t1 @@ t2)) => Sing elt -> Sing list -> Sing (Lambda10Sym0 @@ elt @@ list)
-      lambda elt' list' = case list' of
-        SNil -> let lambda1 :: ((Case10 elt list Nil) ~ (Lambda10Sym0 @@ elt @@ list), list ~ Nil) => Sing (Case10 elt list Nil)
-                    lambda1 = SFalse
-                in
-                lambda1
-        SCons h t -> let lambda2 :: forall h t. (Case10 elt list (Cons h t) ~ (Lambda10Sym0 @@ elt @@ list), list ~ Cons h t {-, SEq (KindOfUnderList t), SEq (KindOf h) -}) => Sing h -> Sing t -> Sing (Case10 elt list (Cons h t))
-                         lambda2 h' t' = (elt' %:== h') %:|| (sCont elt' t')
-                     in
-                     lambda2 h t
-  in
-  lambda elt list
--}
 
 data (:==$) f where
   (:==$##) :: ((:==$) @@ arg) ~ (:==$$) arg

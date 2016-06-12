@@ -30,7 +30,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
       Contains elt ((:) h t) = Apply (Apply (:||$) (Apply (Apply (:==$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
     sContains ::
       forall (t :: a) (t :: [a]).
-      SEq (KProxy :: KProxy a) =>
+      SEq a =>
       Sing t -> Sing t -> Sing (Apply (Apply ContainsSym0 t) t :: Bool)
     sContains _s_z_0123456789 SNil
       = let

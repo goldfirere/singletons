@@ -15,7 +15,7 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply MethSym0 l = MethSym1 l
     class kproxy ~ KProxy => PC (kproxy :: KProxy a) where
       type Meth (arg :: a) :: a
-    class kproxy ~ KProxy => SC (kproxy :: KProxy a) where
+    class SC a where
       sMeth :: forall (t :: a). Sing t -> Sing (Apply MethSym0 t :: a)
 Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
     singletons
@@ -36,7 +36,7 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Meth_0123456789Sym0 l = Meth_0123456789Sym1 l
     instance PC (KProxy :: KProxy Bool) where
       type Meth (a :: Bool) = Apply Meth_0123456789Sym0 a
-    instance SC (KProxy :: KProxy Bool) where
+    instance SC Bool where
       sMeth ::
         forall (t :: Bool).
         Sing t

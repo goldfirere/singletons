@@ -51,5 +51,5 @@ singPredRec ctx (DConPr n)
   | otherwise = do
     kis <- mapM promoteType ctx
     let sName = singClassName n
-    return $ foldl DAppPr (DConPr sName) (map kindParam kis)
+    return $ foldl DAppPr (DConPr sName) kis
 singPredRec _ctx DWildCardPr = return DWildCardPr  -- it just might work

@@ -117,7 +117,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ b)
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
-    instance SEq (KProxy :: KProxy Nat) where
+    instance SEq Nat where
       (%:==) SZero SZero = STrue
       (%:==) SZero (SSucc _) = SFalse
       (%:==) (SSucc _) SZero = SFalse

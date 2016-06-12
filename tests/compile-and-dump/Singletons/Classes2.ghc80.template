@@ -64,7 +64,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       toSing (SuccFoo b)
         = case toSing b :: SomeSing NatFoo of {
             SomeSing c -> SomeSing (SSuccFoo c) }
-    instance SMyOrd (KProxy :: KProxy NatFoo) where
+    instance SMyOrd NatFoo where
       sMycompare ::
         forall (t0 :: NatFoo) (t1 :: NatFoo).
         Sing t0

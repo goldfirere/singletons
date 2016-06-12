@@ -16,24 +16,22 @@ import Control.Monad
 
 -- making the SEq instance and the SDecide instance are rather similar,
 -- so we generalize
-type EqualityClassDesc q = ((DCon, DCon) -> q DClause, Name, Name, DKind -> DType)
+type EqualityClassDesc q = ((DCon, DCon) -> q DClause, Name, Name)
 sEqClassDesc, sDecideClassDesc :: Quasi q => EqualityClassDesc q
-sEqClassDesc = (mkEqMethClause, sEqClassName, sEqMethName, kindParam)
-sDecideClassDesc = (mkDecideMethClause, sDecideClassName, sDecideMethName, id)
+sEqClassDesc = (mkEqMethClause, sEqClassName, sEqMethName)
+sDecideClassDesc = (mkDecideMethClause, sDecideClassName, sDecideMethName)
 
 -- pass the *singleton* constructors, not the originals
 mkEqualityInstance :: Quasi q => DKind -> [DCon]
                    -> EqualityClassDesc q -> q DDec
-mkEqualityInstance k ctors (mkMeth, className, methName, kParam) = do
+mkEqualityInstance k ctors (mkMeth, className, methName) = do
   let ctorPairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
   methClauses <- if null ctors
                  then mkEmptyMethClauses
                  else mapM mkMeth ctorPairs
   return $ DInstanceD Nothing
-                      (map (\kvar -> (DConPr className) `DAppPr` kParam kvar)
-                           (getKindVars k))
-                     (DAppT (DConT className)
-                            (kParam k))
+                      (map (DAppPr (DConPr className)) (getKindVars k))
+                     (DAppT (DConT className) k)
                      [DLetDec $ DFunD methName methClauses]
   where getKindVars :: DKind -> [DKind]
         getKindVars (DVarT x)         = [DVarT x]

@@ -47,7 +47,7 @@ $(genDefunSymbols [''(:==), ''(:/=)])
 
 -- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
 -- that instances define a body for '(%:==)'. You may also supply a body for '(%:/=)'.
-class (kparam ~ 'KProxy) => SEq (kparam :: KProxy k) where
+class SEq k where
   -- | Boolean equality on singletons
   (%:==) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a :== b)
   infix 4 %:==

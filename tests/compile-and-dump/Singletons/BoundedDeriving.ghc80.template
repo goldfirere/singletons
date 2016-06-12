@@ -163,7 +163,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
                 (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SPair c c) }
-    instance SBounded (KProxy :: KProxy Foo1) where
+    instance SBounded Foo1 where
       sMinBound :: Sing (MinBoundSym0 :: Foo1)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo1)
       sMinBound
@@ -176,7 +176,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
             lambda :: Sing (MaxBoundSym0 :: Foo1)
             lambda = SFoo1
           in lambda
-    instance SBounded (KProxy :: KProxy Foo2) where
+    instance SBounded Foo2 where
       sMinBound :: Sing (MinBoundSym0 :: Foo2)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo2)
       sMinBound
@@ -189,8 +189,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
             lambda :: Sing (MaxBoundSym0 :: Foo2)
             lambda = SE
           in lambda
-    instance SBounded (KProxy :: KProxy a) =>
-             SBounded (KProxy :: KProxy (Foo3 a)) where
+    instance SBounded a => SBounded (Foo3 a) where
       sMinBound :: Sing (MinBoundSym0 :: Foo3 a)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo3 a)
       sMinBound
@@ -205,7 +204,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
             lambda
               = applySing (singFun1 (Proxy :: Proxy Foo3Sym0) SFoo3) sMaxBound
           in lambda
-    instance SBounded (KProxy :: KProxy (Foo4 a b)) where
+    instance SBounded (Foo4 a b) where
       sMinBound :: Sing (MinBoundSym0 :: Foo4 a b)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo4 a b)
       sMinBound
@@ -218,8 +217,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
             lambda :: Sing (MaxBoundSym0 :: Foo4 a b)
             lambda = SFoo42
           in lambda
-    instance SBounded (KProxy :: KProxy Bool) =>
-             SBounded (KProxy :: KProxy Pair) where
+    instance SBounded Bool => SBounded Pair where
       sMinBound :: Sing (MinBoundSym0 :: Pair)
       sMaxBound :: Sing (MaxBoundSym0 :: Pair)
       sMinBound

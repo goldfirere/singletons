@@ -61,7 +61,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ b)
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
-    instance SEq (KProxy :: KProxy Nat) where
+    instance SEq Nat where
       (%:==) SZero SZero = STrue
       (%:==) SZero (SSucc _) = SFalse
       (%:==) (SSucc _) SZero = SFalse
@@ -83,8 +83,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl }) }
-    instance SOrd (KProxy :: KProxy Nat) =>
-             SOrd (KProxy :: KProxy Nat) where
+    instance SOrd Nat => SOrd Nat where
       sCompare ::
         forall (t0 :: Nat) (t1 :: Nat).
         Sing t0
@@ -685,7 +684,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
               GHC.Tuple.(,) (toSing b :: SomeSing U) (toSing b :: SomeSing Nat)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SVEC c c) }
-    instance SEq (KProxy :: KProxy U) where
+    instance SEq U where
       (%:==) SBOOL SBOOL = STrue
       (%:==) SBOOL SSTRING = SFalse
       (%:==) SBOOL SNAT = SFalse
@@ -855,7 +854,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       toSing CX = SomeSing SCX
       toSing CY = SomeSing SCY
       toSing CZ = SomeSing SCZ
-    instance SEq (KProxy :: KProxy AChar) where
+    instance SEq AChar where
       (%:==) SCA SCA = STrue
       (%:==) SCA SCB = SFalse
       (%:==) SCA SCC = SFalse

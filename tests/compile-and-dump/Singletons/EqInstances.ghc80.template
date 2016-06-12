@@ -1,7 +1,7 @@
 Singletons/EqInstances.hs:0:0:: Splicing declarations
     singEqInstances [''Foo, ''Empty]
   ======>
-    instance SEq (KProxy :: KProxy Foo) where
+    instance SEq Foo where
       (%:==) SFLeaf SFLeaf = STrue
       (%:==) SFLeaf ((:%+:) _ _) = SFalse
       (%:==) ((:%+:) _ _) SFLeaf = SFalse
@@ -12,7 +12,7 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
       Equals_0123456789 (a :: Foo) (b :: Foo) = FalseSym0
     instance PEq (KProxy :: KProxy Foo) where
       type (:==) (a :: Foo) (b :: Foo) = Equals_0123456789 a b
-    instance SEq (KProxy :: KProxy Empty) where
+    instance SEq Empty where
       (%:==) a _
         = case a of {
             _ -> error "Empty case reached -- this should be impossible" }

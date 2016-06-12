@@ -92,12 +92,12 @@ instance PEq ('KProxy :: KProxy Symbol) where
   type (a :: Symbol) :== (b :: Symbol) = a == b
 
 -- need SEq instances for TypeLits kinds
-instance SEq ('KProxy :: KProxy Nat) where
+instance SEq Nat where
   a %:== b
     | fromSing a == fromSing b    = unsafeCoerce STrue
     | otherwise                   = unsafeCoerce SFalse
 
-instance SEq ('KProxy :: KProxy Symbol) where
+instance SEq Symbol where
   a %:== b
     | fromSing a == fromSing b    = unsafeCoerce STrue
     | otherwise                   = unsafeCoerce SFalse
@@ -116,13 +116,13 @@ type SNat (x :: Nat) = Sing x
 type SSymbol (x :: Symbol) = Sing x
 
 -- SOrd instances
-instance SOrd ('KProxy :: KProxy Nat) where
+instance SOrd Nat where
   a `sCompare` b = case fromSing a `compare` fromSing b of
                      LT -> unsafeCoerce SLT
                      EQ -> unsafeCoerce SEQ
                      GT -> unsafeCoerce SGT
 
-instance SOrd ('KProxy :: KProxy Symbol) where
+instance SOrd Symbol where
   a `sCompare` b = case fromSing a `compare` fromSing b of
                      LT -> unsafeCoerce SLT
                      EQ -> unsafeCoerce SEQ

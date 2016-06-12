@@ -91,9 +91,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
     instance POrd (KProxy :: KProxy Type) where
       type Compare (a :: Type) (a :: Type) = Apply (Apply Compare_0123456789Sym0 a) a
-    instance (SOrd (KProxy :: KProxy Type),
-              SOrd (KProxy :: KProxy Nat)) =>
-             SOrd (KProxy :: KProxy Type) where
+    instance (SOrd Type, SOrd Nat) => SOrd Type where
       sCompare ::
         forall (t0 :: Type) (t1 :: Type).
         Sing t0
@@ -433,7 +431,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
                 (toSing b :: SomeSing Type) (toSing b :: SomeSing Nat)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SVec c c) }
-    instance SEq (KProxy :: KProxy Type) where
+    instance SEq Type where
       (%:==) SNat SNat = STrue
       (%:==) SNat SInt = SFalse
       (%:==) SNat SString = SFalse

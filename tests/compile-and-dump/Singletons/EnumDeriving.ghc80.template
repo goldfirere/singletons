@@ -70,7 +70,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       fromSing SQ2 = Q2
       toSing Q1 = SomeSing SQ1
       toSing Q2 = SomeSing SQ2
-    instance SEnum (KProxy :: KProxy Foo) where
+    instance SEnum Foo where
       sToEnum ::
         forall (t0 :: GHC.Types.Nat).
         Sing t0
@@ -213,7 +213,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
     instance PEnum (KProxy :: KProxy Quux) where
       type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789Sym0 a
       type FromEnum (a :: Quux) = Apply FromEnum_0123456789Sym0 a
-    instance SEnum (KProxy :: KProxy Quux) where
+    instance SEnum Quux where
       sToEnum ::
         forall (t0 :: GHC.Types.Nat).
         Sing t0
