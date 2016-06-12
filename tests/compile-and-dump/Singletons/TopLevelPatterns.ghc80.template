@@ -41,8 +41,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       toSing (Bar b b)
         = case
               GHC.Tuple.(,)
-                (toSing b :: SomeSing (KProxy :: KProxy Bool))
-                (toSing b :: SomeSing (KProxy :: KProxy Bool))
+                (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SBar c c) }
     instance SingI False where

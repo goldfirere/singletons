@@ -43,7 +43,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
       type DemoteRep (KProxy :: KProxy (Box a)) = Box (DemoteRep (KProxy :: KProxy a))
       fromSing (SFBox b) = FBox (fromSing b)
       toSing (FBox b)
-        = case toSing b :: SomeSing (KProxy :: KProxy a) of {
+        = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SFBox c) }
     instance SingI n => SingI (FBox (n :: a)) where
       sing = SFBox sing

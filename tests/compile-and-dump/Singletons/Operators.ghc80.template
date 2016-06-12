@@ -116,9 +116,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       toSing FLeaf = SomeSing SFLeaf
       toSing ((:+:) b b)
         = case
-              GHC.Tuple.(,)
-                (toSing b :: SomeSing (KProxy :: KProxy Foo))
-                (toSing b :: SomeSing (KProxy :: KProxy Foo))
+              GHC.Tuple.(,) (toSing b :: SomeSing Foo) (toSing b :: SomeSing Foo)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing ((:%+:) c c) }
     instance SingI FLeaf where

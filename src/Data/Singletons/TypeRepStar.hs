@@ -36,6 +36,7 @@ import Data.Typeable
 import Unsafe.Coerce
 import Data.Singletons.Decide
 
+import Data.Kind
 import GHC.Exts ( Proxy# )
 import Data.Type.Coercion
 import Data.Type.Equality
@@ -77,7 +78,7 @@ instance TestCoercion Sing where
 -- everything below here is private and dirty. Don't look!
 
 newtype DI = Don'tInstantiate (forall a. Typeable a => Sing a)
-dirty_mk_STypeRep :: TypeRep -> SomeSing ('KProxy :: KProxy *)
+dirty_mk_STypeRep :: TypeRep -> SomeSing *
 dirty_mk_STypeRep rep =
   let justLikeTypeable :: Proxy# a -> TypeRep
       justLikeTypeable _ = rep

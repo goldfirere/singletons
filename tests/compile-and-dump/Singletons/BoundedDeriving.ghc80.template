@@ -140,7 +140,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       type DemoteRep (KProxy :: KProxy (Foo3 a)) = Foo3 (DemoteRep (KProxy :: KProxy a))
       fromSing (SFoo3 b) = Foo3 (fromSing b)
       toSing (Foo3 b)
-        = case toSing b :: SomeSing (KProxy :: KProxy a) of {
+        = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SFoo3 c) }
     data instance Sing (z :: Foo4 a b)
       = z ~ Foo41 => SFoo41 | z ~ Foo42 => SFoo42
@@ -163,8 +163,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Pair b b)
         = case
               GHC.Tuple.(,)
-                (toSing b :: SomeSing (KProxy :: KProxy Bool))
-                (toSing b :: SomeSing (KProxy :: KProxy Bool))
+                (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SPair c c) }
     instance SBounded (KProxy :: KProxy Foo1) where

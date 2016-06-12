@@ -97,9 +97,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
       toSing (Pair b b)
         = case
-              GHC.Tuple.(,)
-                (toSing b :: SomeSing (KProxy :: KProxy a))
-                (toSing b :: SomeSing (KProxy :: KProxy b))
+              GHC.Tuple.(,) (toSing b :: SomeSing a) (toSing b :: SomeSing b)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SPair c c) }
     instance (SingI n, SingI n) => SingI (Pair (n :: a) (n :: b)) where

@@ -51,9 +51,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SMkRecord b b) = MkRecord (fromSing b) (fromSing b)
       toSing (MkRecord b b)
         = case
-              GHC.Tuple.(,)
-                (toSing b :: SomeSing (KProxy :: KProxy a))
-                (toSing b :: SomeSing (KProxy :: KProxy Bool))
+              GHC.Tuple.(,) (toSing b :: SomeSing a) (toSing b :: SomeSing Bool)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c)
               -> SomeSing (SMkRecord c c) }

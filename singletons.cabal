@@ -16,10 +16,6 @@ extra-source-files: README.md, CHANGES.md,
                     tests/compile-and-dump/InsertionSort/*.hs,
                     tests/compile-and-dump/Promote/*.hs,
                     tests/compile-and-dump/Singletons/*.hs
-                    tests/compile-and-dump/GradingClient/*.ghc710.template,
-                    tests/compile-and-dump/InsertionSort/*.ghc710.template,
-                    tests/compile-and-dump/Promote/*.ghc710.template,
-                    tests/compile-and-dump/Singletons/*.ghc710.template
                     tests/compile-and-dump/GradingClient/*.ghc80.template,
                     tests/compile-and-dump/InsertionSort/*.ghc80.template,
                     tests/compile-and-dump/Promote/*.ghc80.template,

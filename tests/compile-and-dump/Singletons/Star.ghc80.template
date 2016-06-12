@@ -425,13 +425,12 @@ Singletons/Star.hs:0:0:: Splicing declarations
       toSing Singletons.Star.Int = SomeSing SInt
       toSing Singletons.Star.String = SomeSing SString
       toSing (Singletons.Star.Maybe b)
-        = case toSing b :: SomeSing (KProxy :: KProxy Type) of {
+        = case toSing b :: SomeSing Type of {
             SomeSing c -> SomeSing (SMaybe c) }
       toSing (Singletons.Star.Vec b b)
         = case
               GHC.Tuple.(,)
-                (toSing b :: SomeSing (KProxy :: KProxy Type))
-                (toSing b :: SomeSing (KProxy :: KProxy Nat))
+                (toSing b :: SomeSing Type) (toSing b :: SomeSing Nat)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SVec c c) }
     instance SEq (KProxy :: KProxy Type) where

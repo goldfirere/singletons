@@ -376,9 +376,9 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       toSing (Baz b b b)
         = case
               GHC.Tuple.(,,)
-                (toSing b :: SomeSing (KProxy :: KProxy Nat))
-                (toSing b :: SomeSing (KProxy :: KProxy Nat))
-                (toSing b :: SomeSing (KProxy :: KProxy Nat))
+                (toSing b :: SomeSing Nat)
+                (toSing b :: SomeSing Nat)
+                (toSing b :: SomeSing Nat)
           of {
             GHC.Tuple.(,,) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing (SBaz c c c) }

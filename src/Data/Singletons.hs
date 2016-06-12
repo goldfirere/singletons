@@ -1,6 +1,6 @@
 {-# LANGUAGE MagicHash, RankNTypes, PolyKinds, GADTs, DataKinds,
              FlexibleContexts, TypeFamilies, TypeOperators,
-             UndecidableInstances #-}
+             UndecidableInstances, TypeInType #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -60,6 +60,7 @@ module Data.Singletons (
   KProxy(..)
   ) where
 
+import Data.Kind
 import Unsafe.Coerce
 import Data.Proxy ( Proxy(..), KProxy(..) )
 import GHC.Exts ( Proxy# )
@@ -95,7 +96,7 @@ class (kparam ~ 'KProxy) => SingKind (kparam :: KProxy k) where
   fromSing :: Sing (a :: k) -> DemoteRep kparam
 
   -- | Convert an unrefined type to an existentially-quantified singleton type.
-  toSing   :: DemoteRep kparam -> SomeSing kparam
+  toSing   :: DemoteRep kparam -> SomeSing k
 
 -- | Convenient abbreviation for 'DemoteRep':
 -- @type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)@
@@ -111,8 +112,8 @@ type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)
 -- >           SomeSing sb -> {- fancy dependently-typed code with sb -}
 --
 -- An example like the one above may be easier to write using 'withSomeSing'.
-data SomeSing (kproxy :: KProxy k) where
-  SomeSing :: Sing (a :: k) -> SomeSing ('KProxy :: KProxy k)
+data SomeSing k where
+  SomeSing :: Sing (a :: k) -> SomeSing k
 
 ----------------------------------------------------------------------
 ---- SingInstance ----------------------------------------------------

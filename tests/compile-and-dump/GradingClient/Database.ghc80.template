@@ -59,7 +59,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
       toSing (Succ b)
-        = case toSing b :: SomeSing (KProxy :: KProxy Nat) of {
+        = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
     instance SEq (KProxy :: KProxy Nat) where
       (%:==) SZero SZero = STrue
@@ -682,9 +682,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       toSing NAT = SomeSing SNAT
       toSing (VEC b b)
         = case
-              GHC.Tuple.(,)
-                (toSing b :: SomeSing (KProxy :: KProxy U))
-                (toSing b :: SomeSing (KProxy :: KProxy Nat))
+              GHC.Tuple.(,) (toSing b :: SomeSing U) (toSing b :: SomeSing Nat)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SVEC c c) }
     instance SEq (KProxy :: KProxy U) where
@@ -4821,8 +4819,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       toSing (Attr b b)
         = case
               GHC.Tuple.(,)
-                (toSing b :: SomeSing (KProxy :: KProxy [AChar]))
-                (toSing b :: SomeSing (KProxy :: KProxy U))
+                (toSing b :: SomeSing [AChar]) (toSing b :: SomeSing U)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SAttr c c) }
     data instance Sing (z :: Schema)
@@ -4833,7 +4830,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       type DemoteRep (KProxy :: KProxy Schema) = Schema
       fromSing (SSch b) = Sch (fromSing b)
       toSing (Sch b)
-        = case toSing b :: SomeSing (KProxy :: KProxy [Attribute]) of {
+        = case toSing b :: SomeSing [Attribute] of {
             SomeSing c -> SomeSing (SSch c) }
     instance SingI BOOL where
       sing = SBOOL

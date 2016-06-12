@@ -98,7 +98,7 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
         mkRecursiveCall :: Name -> DKind -> DExp
         mkRecursiveCall var_name ki =
           DSigE (DAppE (DVarE toSingName) (DVarE var_name))
-                (DAppT (DConT someSingTypeName) (kindParam ki))
+                (DAppT (DConT someSingTypeName) ki)
 
         emptyMethod :: Name -> [DClause]
         emptyMethod n = [DClause [DVarPa n] (DCaseE (DVarE n) emptyMatches)]

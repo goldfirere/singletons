@@ -179,7 +179,7 @@ instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (Maybe k)
   fromSing (SJust a) = Just (fromSing a)
   toSing Nothing = SomeSing SNothing
   toSing (Just x) =
-    case toSing x :: SomeSing ('KProxy :: KProxy k) of
+    case toSing x :: SomeSing k of
       SomeSing x' -> SomeSing $ SJust x'
 
 -- List
@@ -231,8 +231,8 @@ instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (List k))
   fromSing (SCons h t) = Cons (fromSing h) (fromSing t)
   toSing Nil = SomeSing SNil
   toSing (Cons h t) =
-    case ( toSing h :: SomeSing ('KProxy :: KProxy k)
-         , toSing t :: SomeSing ('KProxy :: KProxy (List k)) ) of
+    case ( toSing h :: SomeSing k
+         , toSing t :: SomeSing (List k) ) of
       (SomeSing h', SomeSing t') -> SomeSing $ SCons h' t'
 
 -- Either
@@ -252,10 +252,10 @@ instance (SingKind ('KProxy :: KProxy k1), SingKind ('KProxy :: KProxy k2))
   fromSing (SLeft x) = Left (fromSing x)
   fromSing (SRight x) = Right (fromSing x)
   toSing (Left x) =
-    case toSing x :: SomeSing ('KProxy :: KProxy k1) of
+    case toSing x :: SomeSing k1 of
       SomeSing x' -> SomeSing $ SLeft x'
   toSing (Right x) =
-    case toSing x :: SomeSing ('KProxy :: KProxy k2) of
+    case toSing x :: SomeSing k2 of
       SomeSing x' -> SomeSing $ SRight x'
 
 instance (SDecide ('KProxy :: KProxy k1), SDecide ('KProxy :: KProxy k2)) => SDecide ('KProxy :: KProxy (Either k1 k2)) where
@@ -286,7 +286,7 @@ instance (SingKind ('KProxy :: KProxy k1), SingKind ('KProxy :: KProxy k2))
     Composite (DemoteRep ('KProxy :: KProxy k1)) (DemoteRep ('KProxy :: KProxy k2))
   fromSing (SMkComp x) = MkComp (fromSing x)
   toSing (MkComp x) =
-    case toSing x :: SomeSing ('KProxy :: KProxy (Either (Maybe k1) k2)) of
+    case toSing x :: SomeSing (Either (Maybe k1) k2) of
       SomeSing x' -> SomeSing $ SMkComp x'
 
 instance (SDecide ('KProxy :: KProxy k1), SDecide ('KProxy :: KProxy k2)) => SDecide ('KProxy :: KProxy (Composite k1 k2)) where
@@ -333,11 +333,11 @@ instance SingKind ('KProxy :: KProxy *) where
 
   toSing Nat = SomeSing SNat
   toSing (Maybe a) =
-    case toSing a :: SomeSing ('KProxy :: KProxy *) of
+    case toSing a :: SomeSing * of
       SomeSing a' -> SomeSing $ SMaybe a'
   toSing (Vec a n) =
-    case ( toSing a :: SomeSing ('KProxy :: KProxy *)
-         , toSing n :: SomeSing ('KProxy :: KProxy Nat)) of
+    case ( toSing a :: SomeSing *
+         , toSing n :: SomeSing Nat) of
       (SomeSing a', SomeSing n') -> SomeSing $ SVec a' n'
 
 instance SDecide ('KProxy :: KProxy *) where

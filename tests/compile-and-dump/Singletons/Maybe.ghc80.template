@@ -34,7 +34,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SJust b) = Just (fromSing b)
       toSing Nothing = SomeSing SNothing
       toSing (Just b)
-        = case toSing b :: SomeSing (KProxy :: KProxy a) of {
+        = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SJust c) }
     instance SEq (KProxy :: KProxy a) =>
              SEq (KProxy :: KProxy (Maybe a)) where

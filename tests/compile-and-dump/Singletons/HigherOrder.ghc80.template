@@ -564,10 +564,10 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SLeft b) = Left (fromSing b)
       fromSing (SRight b) = Right (fromSing b)
       toSing (Left b)
-        = case toSing b :: SomeSing (KProxy :: KProxy a) of {
+        = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SLeft c) }
       toSing (Right b)
-        = case toSing b :: SomeSing (KProxy :: KProxy b) of {
+        = case toSing b :: SomeSing b of {
             SomeSing c -> SomeSing (SRight c) }
     instance SingI n => SingI (Left (n :: a)) where
       sing = SLeft sing

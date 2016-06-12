@@ -1,3 +1,0 @@
-
-Singletons/BadBoundedDeriving.hs:0:0:
-    Can't derive Bounded instance for Foo_0 a_1.

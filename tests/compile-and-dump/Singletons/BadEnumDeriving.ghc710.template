@@ -1,3 +1,0 @@
-
-Singletons/BadEnumDeriving.hs:0:0:
-    Can't derive Enum instance for Foo_0 a_1.

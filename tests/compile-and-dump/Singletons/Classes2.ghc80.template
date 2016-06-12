@@ -62,7 +62,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SSuccFoo b) = SuccFoo (fromSing b)
       toSing ZeroFoo = SomeSing SZeroFoo
       toSing (SuccFoo b)
-        = case toSing b :: SomeSing (KProxy :: KProxy NatFoo) of {
+        = case toSing b :: SomeSing NatFoo of {
             SomeSing c -> SomeSing (SSuccFoo c) }
     instance SMyOrd (KProxy :: KProxy NatFoo) where
       sMycompare ::

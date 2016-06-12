@@ -417,7 +417,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
       toSing (Succ b)
-        = case toSing b :: SomeSing (KProxy :: KProxy Nat) of {
+        = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
     instance SEq (KProxy :: KProxy Nat) where
       (%:==) SZero SZero = STrue
@@ -476,60 +476,60 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (A b b b b)
         = case
               GHC.Tuple.(,,,)
-                (toSing b :: SomeSing (KProxy :: KProxy a))
-                (toSing b :: SomeSing (KProxy :: KProxy b))
-                (toSing b :: SomeSing (KProxy :: KProxy c))
-                (toSing b :: SomeSing (KProxy :: KProxy d))
+                (toSing b :: SomeSing a)
+                (toSing b :: SomeSing b)
+                (toSing b :: SomeSing c)
+                (toSing b :: SomeSing d)
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing (SA c c c c) }
       toSing (B b b b b)
         = case
               GHC.Tuple.(,,,)
-                (toSing b :: SomeSing (KProxy :: KProxy a))
-                (toSing b :: SomeSing (KProxy :: KProxy b))
-                (toSing b :: SomeSing (KProxy :: KProxy c))
-                (toSing b :: SomeSing (KProxy :: KProxy d))
+                (toSing b :: SomeSing a)
+                (toSing b :: SomeSing b)
+                (toSing b :: SomeSing c)
+                (toSing b :: SomeSing d)
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing (SB c c c c) }
       toSing (C b b b b)
         = case
               GHC.Tuple.(,,,)
-                (toSing b :: SomeSing (KProxy :: KProxy a))
-                (toSing b :: SomeSing (KProxy :: KProxy b))
-                (toSing b :: SomeSing (KProxy :: KProxy c))
-                (toSing b :: SomeSing (KProxy :: KProxy d))
+                (toSing b :: SomeSing a)
+                (toSing b :: SomeSing b)
+                (toSing b :: SomeSing c)
+                (toSing b :: SomeSing d)
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing (SC c c c c) }
       toSing (D b b b b)
         = case
               GHC.Tuple.(,,,)
-                (toSing b :: SomeSing (KProxy :: KProxy a))
-                (toSing b :: SomeSing (KProxy :: KProxy b))
-                (toSing b :: SomeSing (KProxy :: KProxy c))
-                (toSing b :: SomeSing (KProxy :: KProxy d))
+                (toSing b :: SomeSing a)
+                (toSing b :: SomeSing b)
+                (toSing b :: SomeSing c)
+                (toSing b :: SomeSing d)
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing (SD c c c c) }
       toSing (E b b b b)
         = case
               GHC.Tuple.(,,,)
-                (toSing b :: SomeSing (KProxy :: KProxy a))
-                (toSing b :: SomeSing (KProxy :: KProxy b))
-                (toSing b :: SomeSing (KProxy :: KProxy c))
-                (toSing b :: SomeSing (KProxy :: KProxy d))
+                (toSing b :: SomeSing a)
+                (toSing b :: SomeSing b)
+                (toSing b :: SomeSing c)
+                (toSing b :: SomeSing d)
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing (SE c c c c) }
       toSing (F b b b b)
         = case
               GHC.Tuple.(,,,)
-                (toSing b :: SomeSing (KProxy :: KProxy a))
-                (toSing b :: SomeSing (KProxy :: KProxy b))
-                (toSing b :: SomeSing (KProxy :: KProxy c))
-                (toSing b :: SomeSing (KProxy :: KProxy d))
+                (toSing b :: SomeSing a)
+                (toSing b :: SomeSing b)
+                (toSing b :: SomeSing c)
+                (toSing b :: SomeSing d)
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing (SF c c c c) }

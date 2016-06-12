@@ -837,9 +837,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SFoo b b) = Foo (fromSing b) (fromSing b)
       toSing (Foo b b)
         = case
-              GHC.Tuple.(,)
-                (toSing b :: SomeSing (KProxy :: KProxy a))
-                (toSing b :: SomeSing (KProxy :: KProxy b))
+              GHC.Tuple.(,) (toSing b :: SomeSing a) (toSing b :: SomeSing b)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing (SFoo c c) }
     instance (SingI n, SingI n) => SingI (Foo (n :: a) (n :: b)) where
