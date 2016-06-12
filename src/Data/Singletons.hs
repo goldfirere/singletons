@@ -67,8 +67,8 @@ import Data.Proxy ( Proxy(..), KProxy(..) )
 import GHC.Exts ( Proxy# )
 
 -- | Convenient synonym to refer to the kind of a type variable:
--- @type KindOf (a :: k) = ('KProxy :: KProxy k)@
-type KindOf (a :: k) = ('KProxy :: KProxy k)
+-- @type KindOf (a :: k) = ('Proxy :: Proxy k)@
+type KindOf (a :: k) = ('Proxy :: Proxy k)
 
 ----------------------------------------------------------------------
 ---- Sing & friends --------------------------------------------------
@@ -90,7 +90,7 @@ class SingI (a :: k) where
 -- type and the base (unrefined) type which it is built from.
 class SingKind k where
   -- | Get a base type from a proxy for the promoted kind. For example,
-  -- @DemoteRep ('KProxy :: KProxy Bool)@ will be the type @Bool@.
+  -- @DemoteRep Bool@ will be the type @Bool@.
   type DemoteRep k :: *
 
   -- | Convert a singleton to its unrefined version.
@@ -100,7 +100,7 @@ class SingKind k where
   toSing   :: DemoteRep k -> SomeSing k
 
 -- | Convenient abbreviation for 'DemoteRep':
--- @type Demote (a :: k) = DemoteRep ('KProxy :: KProxy k)@
+-- @type Demote (a :: k) = DemoteRep k@
 type Demote (a :: k) = DemoteRep k
 
 -- | An /existentially-quantified/ singleton. This type is useful when you want a

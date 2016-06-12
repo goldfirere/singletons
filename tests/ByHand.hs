@@ -8,6 +8,8 @@ This file is a great way to understand the singleton encoding better.
 
 -}
 
+{-# OPTIONS_GHC -fno-warn-unticked-promoted-constructors #-}
+
 {-# LANGUAGE PolyKinds, DataKinds, TypeFamilies, KindSignatures, GADTs,
              FlexibleInstances, FlexibleContexts, UndecidableInstances,
              RankNTypes, TypeOperators, MultiParamTypeClasses,
@@ -25,11 +27,9 @@ import Unsafe.Coerce
 import Data.Type.Bool
 import Data.Type.Equality hiding (apply)
 import Data.Proxy
-import Data.Coerce
 
 import Data.Singletons
 import Data.Singletons.Decide
-import GHC.Exts ( Any )
 
 -----------------------------------
 -- Original ADTs ------------------
@@ -111,8 +111,8 @@ instance SingI Zero where
   sing = SZero
 instance SingI n => SingI (Succ n) where
   sing = SSucc sing
-instance SingKind ('KProxy :: KProxy Nat) where
-  type DemoteRep ('KProxy:: KProxy Nat) = Nat
+instance SingKind Nat where
+  type DemoteRep Nat = Nat
   fromSing SZero = Zero
   fromSing (SSucc n) = Succ (fromSing n)
   toSing Zero = SomeSing SZero
@@ -134,8 +134,8 @@ instance SingI False where
   sing = SFalse
 instance SingI True where
   sing = STrue
-instance SingKind ('KProxy :: KProxy Bool) where
-  type DemoteRep ('KProxy :: KProxy Bool) = Bool
+instance SingKind Bool where
+  type DemoteRep Bool = Bool
   fromSing SFalse = False
   fromSing STrue = True
   toSing False = SomeSing SFalse
@@ -173,8 +173,8 @@ instance SingI (Nothing :: Maybe k) where
   sing = SNothing
 instance SingI a => SingI (Just (a :: k)) where
   sing = SJust sing
-instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (Maybe k)) where
-  type DemoteRep ('KProxy :: KProxy (Maybe k)) = Maybe (DemoteRep ('KProxy :: KProxy k))
+instance SingKind k => SingKind (Maybe k) where
+  type DemoteRep (Maybe k) = Maybe (DemoteRep k)
   fromSing SNothing = Nothing
   fromSing (SJust a) = Just (fromSing a)
   toSing Nothing = SomeSing SNothing
@@ -225,8 +225,8 @@ instance SingI Nil where
 instance (SingI h, SingI t) =>
            SingI (Cons (h :: k) (t :: List k)) where
   sing = SCons sing sing
-instance SingKind ('KProxy :: KProxy k) => SingKind ('KProxy :: KProxy (List k)) where
-  type DemoteRep ('KProxy :: KProxy (List k)) = List (DemoteRep ('KProxy :: KProxy k))
+instance SingKind k => SingKind (List k) where
+  type DemoteRep (List k) = List (DemoteRep k)
   fromSing SNil = Nil
   fromSing (SCons h t) = Cons (fromSing h) (fromSing t)
   toSing Nil = SomeSing SNil
@@ -245,10 +245,8 @@ instance (SingI a) => SingI (Left (a :: k)) where
   sing = SLeft sing
 instance (SingI b) => SingI (Right (b :: k)) where
   sing = SRight sing
-instance (SingKind ('KProxy :: KProxy k1), SingKind ('KProxy :: KProxy k2))
-           => SingKind ('KProxy :: KProxy (Either k1 k2)) where
-  type DemoteRep ('KProxy :: KProxy (Either k1 k2)) =
-    Either (DemoteRep ('KProxy :: KProxy k1)) (DemoteRep ('KProxy :: KProxy k2))
+instance (SingKind k1, SingKind k2) => SingKind (Either k1 k2) where
+  type DemoteRep (Either k1 k2) = Either (DemoteRep k1) (DemoteRep k2)
   fromSing (SLeft x) = Left (fromSing x)
   fromSing (SRight x) = Right (fromSing x)
   toSing (Left x) =
@@ -280,10 +278,9 @@ data instance Sing (a :: Composite k1 k2) where
 
 instance SingI a => SingI (MkComp (a :: Either (Maybe k1) k2)) where
   sing = SMkComp sing
-instance (SingKind ('KProxy :: KProxy k1), SingKind ('KProxy :: KProxy k2))
-           => SingKind ('KProxy :: KProxy (Composite k1 k2)) where
-  type DemoteRep ('KProxy :: KProxy (Composite k1 k2)) =
-    Composite (DemoteRep ('KProxy :: KProxy k1)) (DemoteRep ('KProxy :: KProxy k2))
+instance (SingKind k1, SingKind k2) => SingKind (Composite k1 k2) where
+  type DemoteRep (Composite k1 k2) =
+    Composite (DemoteRep k1) (DemoteRep k2)
   fromSing (SMkComp x) = MkComp (fromSing x)
   toSing (MkComp x) =
     case toSing x :: SomeSing (Either (Maybe k1) k2) of
@@ -299,8 +296,8 @@ instance (SDecide ('KProxy :: KProxy k1), SDecide ('KProxy :: KProxy k2)) => SDe
 
 data Empty
 data instance Sing (a :: Empty)
-instance SingKind ('KProxy :: KProxy Empty) where
-  type DemoteRep ('KProxy :: KProxy Empty) = Empty
+instance SingKind Empty where
+  type DemoteRep Empty = Empty
   fromSing = \case _ -> undefined
   toSing = \case _ -> undefined
 
@@ -324,8 +321,8 @@ instance SingI a => SingI (Maybe a) where
 instance (SingI a, SingI n) => SingI (Vec a n) where
   sing = SVec sing sing
 
-instance SingKind ('KProxy :: KProxy *) where
-  type DemoteRep ('KProxy :: KProxy *) = Rep
+instance SingKind Type where
+  type DemoteRep Type = Rep
 
   fromSing SNat = Nat
   fromSing (SMaybe a) = Maybe (fromSing a)
