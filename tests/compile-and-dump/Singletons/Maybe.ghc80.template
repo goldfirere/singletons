@@ -12,7 +12,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789 Nothing Nothing = TrueSym0
       Equals_0123456789 (Just a) (Just b) = (:==) a b
       Equals_0123456789 (a :: Maybe k) (b :: Maybe k) = FalseSym0
-    instance PEq (KProxy :: KProxy (Maybe k)) where
+    instance PEq (Proxy :: KProxy (Maybe k)) where
       type (:==) (a :: Maybe k) (b :: Maybe k) = Equals_0123456789 a b
     type NothingSym0 = Nothing
     type JustSym1 (t :: a0123456789) = Just t

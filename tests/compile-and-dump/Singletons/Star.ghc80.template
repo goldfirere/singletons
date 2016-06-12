@@ -15,7 +15,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
       Equals_0123456789 (Maybe a) (Maybe b) = (:==) a b
       Equals_0123456789 (Vec a a) (Vec b b) = (:&&) ((:==) a b) ((:==) a b)
       Equals_0123456789 (a :: Type) (b :: Type) = FalseSym0
-    instance PEq (KProxy :: KProxy Type) where
+    instance PEq (Proxy :: KProxy Type) where
       type (:==) (a :: Type) (b :: Type) = Equals_0123456789 a b
     type NatSym0 = Nat
     type IntSym0 = Int
@@ -89,7 +89,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
       = forall arg. KindOf (Apply Compare_0123456789Sym0 arg) ~ KindOf (Compare_0123456789Sym1 arg) =>
         Compare_0123456789Sym0KindInference
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
-    instance POrd (KProxy :: KProxy Type) where
+    instance POrd (Proxy :: KProxy Type) where
       type Compare (a :: Type) (a :: Type) = Apply (Apply Compare_0123456789Sym0 a) a
     instance (SOrd Type, SOrd Nat) => SOrd Type where
       sCompare ::
@@ -109,9 +109,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
               = applySing
                   (applySing
                      (applySing
-                        (singFun3 (Data.Proxy.Proxy :: Data.Proxy.Proxy FoldlSym0) sFoldl)
-                        (singFun2
-                           (Data.Proxy.Proxy :: Data.Proxy.Proxy ThenCmpSym0) sThenCmp))
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
                      SEQ)
                   SNil
           in lambda
@@ -124,9 +123,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
               = applySing
                   (applySing
                      (applySing
-                        (singFun3 (Data.Proxy.Proxy :: Data.Proxy.Proxy FoldlSym0) sFoldl)
-                        (singFun2
-                           (Data.Proxy.Proxy :: Data.Proxy.Proxy ThenCmpSym0) sThenCmp))
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
                      SEQ)
                   SNil
           in lambda
@@ -139,9 +137,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
               = applySing
                   (applySing
                      (applySing
-                        (singFun3 (Data.Proxy.Proxy :: Data.Proxy.Proxy FoldlSym0) sFoldl)
-                        (singFun2
-                           (Data.Proxy.Proxy :: Data.Proxy.Proxy ThenCmpSym0) sThenCmp))
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
                      SEQ)
                   SNil
           in lambda
@@ -158,18 +155,15 @@ Singletons/Star.hs:0:0:: Splicing declarations
               = applySing
                   (applySing
                      (applySing
-                        (singFun3 (Data.Proxy.Proxy :: Data.Proxy.Proxy FoldlSym0) sFoldl)
-                        (singFun2
-                           (Data.Proxy.Proxy :: Data.Proxy.Proxy ThenCmpSym0) sThenCmp))
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
                      SEQ)
                   (applySing
                      (applySing
-                        (singFun2 (Data.Proxy.Proxy :: Data.Proxy.Proxy (:$)) SCons)
+                        (singFun2 (Proxy :: Proxy (:$)) SCons)
                         (applySing
                            (applySing
-                              (singFun2
-                                 (Data.Proxy.Proxy :: Data.Proxy.Proxy CompareSym0) sCompare)
-                              a_0123456789)
+                              (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
                            b_0123456789))
                      SNil)
           in lambda sA_0123456789 sB_0123456789
@@ -190,27 +184,22 @@ Singletons/Star.hs:0:0:: Splicing declarations
               = applySing
                   (applySing
                      (applySing
-                        (singFun3 (Data.Proxy.Proxy :: Data.Proxy.Proxy FoldlSym0) sFoldl)
-                        (singFun2
-                           (Data.Proxy.Proxy :: Data.Proxy.Proxy ThenCmpSym0) sThenCmp))
+                        (singFun3 (Proxy :: Proxy FoldlSym0) sFoldl)
+                        (singFun2 (Proxy :: Proxy ThenCmpSym0) sThenCmp))
                      SEQ)
                   (applySing
                      (applySing
-                        (singFun2 (Data.Proxy.Proxy :: Data.Proxy.Proxy (:$)) SCons)
+                        (singFun2 (Proxy :: Proxy (:$)) SCons)
                         (applySing
                            (applySing
-                              (singFun2
-                                 (Data.Proxy.Proxy :: Data.Proxy.Proxy CompareSym0) sCompare)
-                              a_0123456789)
+                              (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
                            b_0123456789))
                      (applySing
                         (applySing
-                           (singFun2 (Data.Proxy.Proxy :: Data.Proxy.Proxy (:$)) SCons)
+                           (singFun2 (Proxy :: Proxy (:$)) SCons)
                            (applySing
                               (applySing
-                                 (singFun2
-                                    (Data.Proxy.Proxy :: Data.Proxy.Proxy CompareSym0) sCompare)
-                                 a_0123456789)
+                                 (singFun2 (Proxy :: Proxy CompareSym0) sCompare) a_0123456789)
                               b_0123456789))
                         SNil))
           in lambda sA_0123456789 sA_0123456789 sB_0123456789 sB_0123456789

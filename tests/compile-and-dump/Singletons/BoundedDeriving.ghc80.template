@@ -68,7 +68,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type family MaxBound_0123456789 :: Foo1 where
       MaxBound_0123456789 = Foo1Sym0
     type MaxBound_0123456789Sym0 = MaxBound_0123456789
-    instance PBounded (KProxy :: KProxy Foo1) where
+    instance PBounded (Proxy :: KProxy Foo1) where
       type MinBound = MinBound_0123456789Sym0
       type MaxBound = MaxBound_0123456789Sym0
     type family MinBound_0123456789 :: Foo2 where
@@ -77,7 +77,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type family MaxBound_0123456789 :: Foo2 where
       MaxBound_0123456789 = ESym0
     type MaxBound_0123456789Sym0 = MaxBound_0123456789
-    instance PBounded (KProxy :: KProxy Foo2) where
+    instance PBounded (Proxy :: KProxy Foo2) where
       type MinBound = MinBound_0123456789Sym0
       type MaxBound = MaxBound_0123456789Sym0
     type family MinBound_0123456789 :: Foo3 a where
@@ -86,7 +86,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type family MaxBound_0123456789 :: Foo3 a where
       MaxBound_0123456789 = Apply Foo3Sym0 MaxBoundSym0
     type MaxBound_0123456789Sym0 = MaxBound_0123456789
-    instance PBounded (KProxy :: KProxy (Foo3 a)) where
+    instance PBounded (Proxy :: KProxy (Foo3 a)) where
       type MinBound = MinBound_0123456789Sym0
       type MaxBound = MaxBound_0123456789Sym0
     type family MinBound_0123456789 :: Foo4 a b where
@@ -95,7 +95,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type family MaxBound_0123456789 :: Foo4 a b where
       MaxBound_0123456789 = Foo42Sym0
     type MaxBound_0123456789Sym0 = MaxBound_0123456789
-    instance PBounded (KProxy :: KProxy (Foo4 a b)) where
+    instance PBounded (Proxy :: KProxy (Foo4 a b)) where
       type MinBound = MinBound_0123456789Sym0
       type MaxBound = MaxBound_0123456789Sym0
     type family MinBound_0123456789 :: Pair where
@@ -104,7 +104,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type family MaxBound_0123456789 :: Pair where
       MaxBound_0123456789 = Apply (Apply PairSym0 MaxBoundSym0) MaxBoundSym0
     type MaxBound_0123456789Sym0 = MaxBound_0123456789
-    instance PBounded (KProxy :: KProxy Pair) where
+    instance PBounded (Proxy :: KProxy Pair) where
       type MinBound = MinBound_0123456789Sym0
       type MaxBound = MaxBound_0123456789Sym0
     data instance Sing (z :: Foo1) = z ~ Foo1 => SFoo1

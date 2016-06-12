@@ -54,7 +54,7 @@ module Data.Singletons.TH (
   POrd(..), SOrd(..), ThenCmp, sThenCmp, Foldl, sFoldl,
   Any,
   SDecide(..), (:~:)(..), Void, Refuted, Decision(..),
-  Proxy(..), KProxy(..), SomeSing(..),
+  Proxy(..), SomeSing(..),
 
   Error, ErrorSym0,
   TrueSym0, FalseSym0,

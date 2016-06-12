@@ -23,6 +23,7 @@ import Control.Monad hiding ( mapM )
 import Control.Monad.Writer hiding ( mapM )
 import Control.Monad.Reader hiding ( mapM )
 import qualified Data.Map as Map
+import Data.List.NonEmpty (NonEmpty)
 import Data.Map ( Map )
 import Data.Foldable
 import Data.Traversable
@@ -37,6 +38,7 @@ basicTypes :: [Name]
 basicTypes = [ ''Maybe
              , ''[]
              , ''Either
+             , ''NonEmpty
              ] ++ boundedBasicTypes
 
 boundedBasicTypes :: [Name]

@@ -29,7 +29,7 @@ anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
   eqName, ordName, boundedName, orderingName,
   singFamilyName, singIName, singMethName, demoteRepName,
   singKindClassName, sEqClassName, sEqMethName, sconsName, snilName,
-  sIfName, kProxyDataName, kProxyTypeName, proxyTypeName, proxyDataName,
+  sIfName, kProxyTypeName, proxyTypeName, proxyDataName,
   someSingTypeName, someSingDataName,
   sListName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
@@ -73,7 +73,6 @@ sEqMethName = mk_name_v "Data.Singletons.Prelude.Eq" "%:=="
 sIfName = mk_name_v "Data.Singletons.Prelude.Bool" "sIf"
 sconsName = mk_name_d "Data.Singletons.Prelude.Instances" "SCons"
 snilName = mk_name_d "Data.Singletons.Prelude.Instances" "SNil"
-kProxyDataName = 'KProxy
 kProxyTypeName = ''KProxy
 someSingTypeName = ''SomeSing
 someSingDataName = 'SomeSing
@@ -172,11 +171,6 @@ promoteTySym name sat
 promoteClassName :: Name -> Name
 promoteClassName = prefixUCName "P" "#"
 
--- produce the silly type class used to store the type variables for
--- a class
-classTvsName :: Name -> Name
-classTvsName = suffixName "TyVars" "^^^"
-
 mkTyName :: Quasi q => Name -> q Name
 mkTyName tmName = do
   let nameStr  = nameBase tmName
@@ -223,7 +217,7 @@ singValName n
   | otherwise                = (prefixLCName "s" "%") $ upcase n
 
 kindParam :: DKind -> DType
-kindParam k = DSigT (DConT kProxyDataName) (DConT kProxyTypeName `DAppT` k)
+kindParam k = DSigT (DConT proxyDataName) (DConT kProxyTypeName `DAppT` k)
 
 proxyFor :: DType -> DExp
 proxyFor ty = DSigE (DConE proxyDataName) (DAppT (DConT proxyTypeName) ty)
@@ -261,4 +255,4 @@ mkKProxies ns = do
   kproxies <- mapM (const $ qNewName "kproxy") ns
   return ( zipWith (\kp kv -> DKindedTV kp (DConT kProxyTypeName `DAppT` DVarT kv))
                    kproxies ns
-         , map (\kp -> mkEqPred (DVarT kp) (DConT kProxyDataName)) kproxies )
+         , map (\kp -> mkEqPred (DVarT kp) (DConT proxyDataName)) kproxies )

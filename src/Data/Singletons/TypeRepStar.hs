@@ -51,7 +51,7 @@ instance SingKind Type where
   fromSing (STypeRep :: Sing a) = typeOf (undefined :: a)
   toSing = dirty_mk_STypeRep
 
-instance PEq ('KProxy :: KProxy *) where
+instance PEq ('Proxy :: Proxy Type) where
   type (a :: *) :== (b :: *) = a == b
 
 instance SEq Type where

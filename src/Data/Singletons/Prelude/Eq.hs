@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies,
+{-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies, TypeInType,
              RankNTypes, FlexibleContexts, TemplateHaskell,
              UndecidableInstances, GADTs, DefaultSignatures #-}
 
@@ -33,7 +33,7 @@ import Data.Type.Equality
 
 -- | The promoted analogue of 'Eq'. If you supply no definition for '(:==)',
 -- then it defaults to a use of '(==)', from @Data.Type.Equality@.
-class kproxy ~ 'KProxy => PEq (kproxy :: KProxy a) where
+class kproxy ~ 'Proxy => PEq (kproxy :: KProxy a) where
   type (:==) (x :: a) (y :: a) :: Bool
   type (:/=) (x :: a) (y :: a) :: Bool
 

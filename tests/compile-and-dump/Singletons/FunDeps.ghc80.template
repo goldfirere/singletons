@@ -38,9 +38,8 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply L2rSym0 arg) ~ KindOf (L2rSym1 arg) =>
         L2rSym0KindInference
     type instance Apply L2rSym0 l = L2rSym1 l
-    class (kproxy ~ KProxy,
-           kproxy ~ KProxy) => PFD (kproxy :: KProxy a)
-                                   (kproxy :: KProxy b) | a -> b where
+    class (kproxy ~ Proxy, kproxy ~ Proxy) => PFD (kproxy :: KProxy a)
+                                                  (kproxy :: KProxy b) | a -> b where
       type Meth (arg :: a) :: a
       type L2r (arg :: a) :: b
     type family Meth_0123456789 (a :: Bool) :: Bool where
@@ -64,7 +63,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. KindOf (Apply L2r_0123456789Sym0 arg) ~ KindOf (L2r_0123456789Sym1 arg) =>
         L2r_0123456789Sym0KindInference
     type instance Apply L2r_0123456789Sym0 l = L2r_0123456789Sym1 l
-    instance PFD (KProxy :: KProxy Bool) (KProxy :: KProxy Nat) where
+    instance PFD (Proxy :: KProxy Bool) (Proxy :: KProxy Nat) where
       type Meth (a :: Bool) = Apply Meth_0123456789Sym0 a
       type L2r (a :: Bool) = Apply L2r_0123456789Sym0 a
     sT1 :: Sing T1Sym0

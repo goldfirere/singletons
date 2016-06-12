@@ -36,7 +36,6 @@ import Data.Singletons
 import Data.Singletons.TypeLits.Internal
 import Data.Singletons.Decide
 import GHC.TypeLits
-import Data.Proxy
 import Unsafe.Coerce
 
 $(singletonsOnly [d|
@@ -73,7 +72,7 @@ type family SignumNat (a :: Nat) :: Nat where
   SignumNat 0 = 0
   SignumNat x = 1
 
-instance PNum ('KProxy :: KProxy Nat) where
+instance PNum ('Proxy :: KProxy Nat) where
   type a :+ b = a + b
   type a :- b = a - b
   type a :* b = a * b

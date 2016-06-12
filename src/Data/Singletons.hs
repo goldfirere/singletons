@@ -58,13 +58,16 @@ module Data.Singletons (
 
   -- * Auxiliary functions
   bugInGHC,
-  KProxy(..)
+  Proxy(..), KProxy
   ) where
 
 import Data.Kind
 import Unsafe.Coerce
-import Data.Proxy ( Proxy(..), KProxy(..) )
+import Data.Proxy ( Proxy(..) )
 import GHC.Exts ( Proxy# )
+
+-- Kind-restricted Proxy.
+type KProxy = (Proxy :: Type -> Type)
 
 -- | Convenient synonym to refer to the kind of a type variable:
 -- @type KindOf (a :: k) = ('Proxy :: Proxy k)@

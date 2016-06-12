@@ -40,7 +40,7 @@ module Data.Promotion.TH (
   PEq(..), If, (:&&),
   POrd(..),
   Any,
-  Proxy(..), KProxy(..), ThenCmp, Foldl,
+  Proxy(..), KProxy, ThenCmp, Foldl,
 
   Error, ErrorSym0,
   TrueSym0, FalseSym0,
@@ -58,7 +58,6 @@ module Data.Promotion.TH (
 
  ) where
 
-import Data.Proxy
 import Data.Singletons
 import Data.Singletons.Promote
 import Data.Singletons.Prelude.Instances
