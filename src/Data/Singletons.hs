@@ -40,7 +40,8 @@ module Data.Singletons (
   withSing, singThat,
 
   -- ** Defunctionalization
-  TyFun, TyCon1, TyCon2, TyCon3, TyCon4, TyCon5, TyCon6, TyCon7, TyCon8,
+  TyFun, type (~>),
+  TyCon1, TyCon2, TyCon3, TyCon4, TyCon5, TyCon6, TyCon7, TyCon8,
   Apply, type (@@),
 
   -- ** Defunctionalized singletons
@@ -84,7 +85,7 @@ class SingI (a :: k) where
   -- extension to use this method the way you want.
   sing :: Sing a
 
--- | The 'SingKind' class is essentially a /kind/ class. It classifies all kinds
+-- | The 'SingKind' class is a /kind/ class. It classifies all kinds
 -- for which singletons are defined. The class supports converting between a singleton
 -- type and the base (unrefined) type which it is built from.
 class SingKind k where
@@ -143,30 +144,39 @@ singInstance s = with_sing_i SingInstance
 -- applications have to be fully saturated.
 data TyFun :: * -> * -> *
 
--- | Wrapper for converting the normal type-level arrow into a 'TyFun'.
+-- | Something of kind `a ~> b` is a defunctionalized type function that is
+-- not necessarily generative or injective.
+type a ~> b = TyFun a b -> *
+infixr 0 ~>
+
+-- | Wrapper for converting the normal type-level arrow into a '~>'.
 -- For example, given:
 --
 -- > data Nat = Zero | Succ Nat
--- > type family Map (a :: TyFun a b -> *) (a :: [a]) :: [b]
+-- > type family Map (a :: a ~> b) (a :: [a]) :: [b]
 -- >   Map f '[] = '[]
 -- >   Map f (x ': xs) = Apply f x ': Map f xs
 --
 -- We can write:
 --
 -- > Map (TyCon1 Succ) [Zero, Succ Zero]
-data TyCon1 :: (k1 -> k2) -> (TyFun k1 k2) -> *
+data TyCon1 :: (k1 -> k2) -> (k1 ~> k2)
 
 -- | Similar to 'TyCon1', but for two-parameter type constructors.
-data TyCon2 :: (k1 -> k2 -> k3) -> TyFun k1 (TyFun k2 k3 -> *) -> *
-data TyCon3 :: (k1 -> k2 -> k3 -> k4) -> TyFun k1 (TyFun k2 (TyFun k3 k4 -> *) -> *) -> *
-data TyCon4 :: (k1 -> k2 -> k3 -> k4 -> k5) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 k5 -> *) -> *) -> *) -> *
-data TyCon5 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 k6 -> *) -> *) -> *) -> *) -> *
-data TyCon6 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 k7 -> *) -> *) -> *) -> *) -> *) -> *
-data TyCon7 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 (TyFun k7 k8 -> *) -> *) -> *) -> *) -> *) -> *) -> *
-data TyCon8 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9) -> TyFun k1 (TyFun k2 (TyFun k3 (TyFun k4 (TyFun k5 (TyFun k6 (TyFun k7 (TyFun k8 k9 -> *) -> *) -> *) -> *) -> *) -> *) -> *) -> *
+data TyCon2 :: (k1 -> k2 -> k3) -> (k1 ~> k2 ~> k3)
+data TyCon3 :: (k1 -> k2 -> k3 -> k4) -> (k1 ~> k2 ~> k3 ~> k4)
+data TyCon4 :: (k1 -> k2 -> k3 -> k4 -> k5) -> (k1 ~> k2 ~> k3 ~> k4 ~> k5)
+data TyCon5 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6)
+            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6)
+data TyCon6 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7)
+            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7)
+data TyCon7 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8)
+            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8)
+data TyCon8 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9)
+            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8 ~> k9)
 
 -- | Type level function application
-type family Apply (f :: TyFun k1 k2 -> *) (x :: k1) :: k2
+type family Apply (f :: k1 ~> k2) (x :: k1) :: k2
 type instance Apply (TyCon1 f) x = f x
 type instance Apply (TyCon2 f) x = TyCon1 (f x)
 type instance Apply (TyCon3 f) x = TyCon2 (f x)
@@ -184,11 +194,11 @@ infixl 9 @@
 ---- Defunctionalized Sing instance and utilities --------------------
 ----------------------------------------------------------------------
 
-newtype instance Sing (f :: TyFun k1 k2 -> *) =
+newtype instance Sing (f :: k1 ~> k2) =
   SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
 
-instance (SingKind k1, SingKind k2) => SingKind (TyFun k1 k2 -> *) where
-  type DemoteRep (TyFun k1 k2 -> *) = DemoteRep k1 -> DemoteRep k2
+instance (SingKind k1, SingKind k2) => SingKind (k1 ~> k2) where
+  type DemoteRep (k1 ~> k2) = DemoteRep k1 -> DemoteRep k2
   fromSing sFun x = withSomeSing x (fromSing . applySing sFun)
   toSing _ = error "Cannot create existentially-quantified singleton functions."
 

@@ -1,6 +1,17 @@
 Changelog for singletons project
 ================================
 
+2.2
+---
+* With `TypeInType`, we no longer kind `KProxy`. @int-index has very helpfully
+removed the use of `KProxy` from `singletons`.
+
+* Drop support for GHC 7.x.
+
+* Remove `bugInGHC`. That function was intended to work around GHC's difficulty
+in detecting exhaustiveness of GADT pattern matches. GHC 8 comes with a much
+better exhaustiveness checker, and so this function is no longer necessary.
+
 2.1
 ---
 * Require `th-desugar` >= 1.6

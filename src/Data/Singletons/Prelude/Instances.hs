@@ -8,7 +8,7 @@ re-exported from various places.
 
 -}
 
-{-# LANGUAGE RankNTypes, DataKinds, PolyKinds, GADTs, TypeFamilies,
+{-# LANGUAGE RankNTypes, TypeInType, GADTs, TypeFamilies,
              FlexibleContexts, TemplateHaskell, ScopedTypeVariables,
              UndecidableInstances, TypeOperators, FlexibleInstances #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}

@@ -1,5 +1,5 @@
 name:           singletons
-version:        2.1
+version:        2.2
                 -- Remember to bump version in the Makefile as well
 cabal-version:  >= 1.10
 synopsis:       A framework for generating singleton types
@@ -9,7 +9,7 @@ author:         Richard Eisenberg <eir@cis.upenn.edu>, Jan Stolarek <jan.stolare
 maintainer:     Richard Eisenberg <eir@cis.upenn.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC >= 7.10.2
+tested-with:    GHC == 8.0.1
 extra-source-files: README.md, CHANGES.md,
                     tests/compile-and-dump/buildGoldenFiles.awk,
                     tests/compile-and-dump/GradingClient/*.hs,
@@ -51,9 +51,7 @@ library
   default-language:   Haskell2010
   other-extensions:   TemplateHaskell
         -- TemplateHaskell must be listed in cabal file to work with
-        -- ghc7.8
-  if impl(ghc >= 7.11)
-    ghc-options:      -Wno-redundant-constraints
+        -- ghc7.8+
 
   exposed-modules:    Data.Singletons,
                       Data.Singletons.CustomStar,
@@ -107,7 +105,7 @@ library
                       Data.Singletons.TypeLits.Internal,
                       Data.Singletons.Syntax
 
-  ghc-options:        -Wall
+  ghc-options:        -Wall -Wno-redundant-constraints
 
 test-suite singletons-test-suite
   type:               exitcode-stdio-1.0

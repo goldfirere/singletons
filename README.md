@@ -1,4 +1,4 @@
-singletons 2.0
+singletons 2.2
 ==============
 
 [![Build Status](https://travis-ci.org/goldfirere/singletons.svg?branch=master)](https://travis-ci.org/goldfirere/singletons)
@@ -33,7 +33,7 @@ paper for a more thorough introduction.
 Compatibility
 -------------
 
-The singletons library requires GHC 7.10.2 or greater. Any code that uses the
+The singletons library requires GHC 8.0.1 or greater. Any code that uses the
 singleton generation primitives needs to enable a long list of GHC
 extensions. This list includes, but is not necessarily limited to, the
 following:
@@ -43,8 +43,6 @@ following:
 * `TypeFamilies`
 * `GADTs`
 * `KindSignatures`
-* `DataKinds`
-* `PolyKinds`
 * `TypeOperators`
 * `FlexibleContexts`
 * `RankNTypes`
@@ -52,6 +50,14 @@ following:
 * `FlexibleInstances`
 * `InstanceSigs`
 * `DefaultSignatures`
+* `TypeInType`
+
+You may also want
+
+* `-Wno-redundant-constraints`
+
+as the code that `singletons` generates uses redundant constraints, and there
+seems to be no way, without a large library redesign, to avoid this.
 
 Modules for singleton types
 ---------------------------
