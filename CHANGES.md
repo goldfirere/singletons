@@ -1,6 +1,10 @@
 Changelog for singletons project
 ================================
 
+2.2.0.1
+-------
+* Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.
+
 2.2
 ---
 * With `TypeInType`, we no longer kind `KProxy`. @int-index has very helpfully

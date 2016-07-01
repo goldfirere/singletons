@@ -8,8 +8,6 @@
 -- Portability :  non-portable
 --
 -- Defines and exports singletons useful for the Nat and Symbol kinds.
--- This exports the internal, unsafe constructors. Use Data.Singletons.TypeLits
--- for a safe interface.
 --
 ----------------------------------------------------------------------------
 
