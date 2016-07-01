@@ -283,7 +283,8 @@ withSingI sn r =
 
 -- | Convert a normal datatype (like 'Bool') to a singleton for that datatype,
 -- passing it into a continuation.
-withSomeSing :: SingKind k
+withSomeSing :: forall k r
+              . SingKind k
              => DemoteRep k                       -- ^ The original datatype
              -> (forall (a :: k). Sing a -> r)    -- ^ Function expecting a singleton
              -> r
