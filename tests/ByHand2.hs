@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds, PolyKinds, TypeFamilies, GADTs, TypeOperators,
              DefaultSignatures, ScopedTypeVariables, InstanceSigs,
              MultiParamTypeClasses, FunctionalDependencies,
-             UndecidableInstances #-}
+             UndecidableInstances, TypeInType #-}
 
 module ByHand2 where
 
@@ -42,20 +42,20 @@ sNot STrue = SFalse
 sNot SFalse = STrue
 
 infix 4 :==, :/=
-class kproxy ~ 'KProxy => PEq (kproxy :: KProxy a) where
+class kproxy ~ 'Proxy => PEq (kproxy :: Proxy a) where
   type (:==) (x :: a) (y :: a) :: Bool
   type (:/=) (x :: a) (y :: a) :: Bool
 
   type x :== y = Not (x :/= y)
   type x :/= y = Not (x :== y)
 
-instance PEq ('KProxy :: KProxy Nat) where
+instance PEq ('Proxy :: Proxy Nat) where
   type 'Zero :== 'Zero = 'True
   type 'Succ x :== 'Zero = 'False
   type 'Zero :== 'Succ x = 'False
   type 'Succ x :== 'Succ y = x :== y
 
-class kproxy ~ 'KProxy => SEq (kproxy :: KProxy a) where
+class SEq a where
   (%:==) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x :== y)
   (%:/=) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x :/= y)
 
@@ -65,7 +65,7 @@ class kproxy ~ 'KProxy => SEq (kproxy :: KProxy a) where
   default (%:/=) :: ((x :/= y) ~ (Not (x :== y))) => Sing (x :: a) -> Sing (y :: a) -> Sing (x :/= y)
   x %:/= y = sNot (x %:== y)
 
-instance SEq ('KProxy :: KProxy Nat) where
+instance SEq Nat where
   (%:==) :: forall (x :: Nat) (y :: Nat). Sing x -> Sing y -> Sing (x :== y)
   SZero %:== SZero = STrue
   SSucc _ %:== SZero = SFalse
@@ -89,7 +89,7 @@ class Eq a => Ord a where
 
   x < y = compare x y == LT
 
-class (PEq kproxy, kproxy ~ 'KProxy) => POrd (kproxy :: KProxy a) where
+class (PEq kproxy, kproxy ~ 'Proxy) => POrd (kproxy :: Proxy a) where
   type Compare (x :: a) (y :: a) :: Ordering
   type (:<) (x :: a) (y :: a) :: Bool
 
@@ -101,7 +101,7 @@ instance Ord Nat where
   compare (Succ _) Zero = GT
   compare (Succ a) (Succ b) = compare a b
 
-instance POrd ('KProxy :: KProxy Nat) where
+instance POrd ('Proxy :: Proxy Nat) where
   type Compare 'Zero 'Zero = 'EQ
   type Compare 'Zero ('Succ x) = 'LT
   type Compare ('Succ x) 'Zero = 'GT
@@ -112,7 +112,7 @@ data instance Sing (o :: Ordering) where
   SEQ :: Sing 'EQ
   SGT :: Sing 'GT
 
-instance PEq ('KProxy :: KProxy Ordering) where
+instance PEq ('Proxy :: Proxy Ordering) where
   type 'LT :== 'LT = 'True
   type 'LT :== 'EQ = 'False
   type 'LT :== 'GT = 'False
@@ -123,7 +123,7 @@ instance PEq ('KProxy :: KProxy Ordering) where
   type 'GT :== 'EQ = 'False
   type 'GT :== 'GT = 'True
 
-instance SEq ('KProxy :: KProxy Ordering) where
+instance SEq Ordering where
   SLT %:== SLT = STrue
   SLT %:== SEQ = SFalse
   SLT %:== SGT = SFalse
@@ -134,14 +134,14 @@ instance SEq ('KProxy :: KProxy Ordering) where
   SGT %:== SEQ = SFalse
   SGT %:== SGT = STrue
 
-class (SEq kproxy, kproxy ~ 'KProxy) => SOrd (kproxy :: KProxy a) where
+class SEq a => SOrd a where
   sCompare :: Sing (x :: a) -> Sing (y :: a) -> Sing (Compare x y)
   (%:<) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x :< y)
 
   default (%:<) :: ((x :< y) ~ (Compare x y :== 'LT)) => Sing (x :: a) -> Sing (y :: a) -> Sing (x :< y)
   x %:< y = sCompare x y %:== SLT
 
-instance SOrd ('KProxy :: KProxy Nat) where
+instance SOrd Nat where
   sCompare SZero SZero = SEQ
   sCompare SZero (SSucc _) = SLT
   sCompare (SSucc _) SZero = SGT
@@ -150,19 +150,19 @@ instance SOrd ('KProxy :: KProxy Nat) where
 class Pointed a where
   point :: a
 
-class kproxy ~ 'KProxy => PPointed (kproxy :: KProxy a) where
+class kproxy ~ 'Proxy => PPointed (kproxy :: Proxy a) where
   type Point :: a
 
-class kproxy ~ 'KProxy => SPointed (kproxy :: KProxy a) where
+class kproxy ~ 'Proxy => SPointed (kproxy :: Proxy a) where
   sPoint :: Sing (Point :: a)
 
 instance Pointed Nat where
   point = Zero
 
-instance PPointed ('KProxy :: KProxy Nat) where
+instance PPointed ('Proxy :: Proxy Nat) where
   type Point = 'Zero
 
-instance SPointed ('KProxy :: KProxy Nat) where
+instance SPointed ('Proxy :: Proxy Nat) where
   sPoint = SZero
 
 --------------------------------
@@ -179,11 +179,11 @@ instance FD Bool Nat where
 t1 = meth True
 t2 = l2r False
 
-class (kp1 ~ 'KProxy, kp2 ~ 'KProxy) => PFD (kp1 :: KProxy a) (kp2 :: KProxy b) | a -> b where
+class (kp1 ~ 'Proxy, kp2 ~ 'Proxy) => PFD (kp1 :: Proxy a) (kp2 :: Proxy b) | a -> b where
   type Meth (x :: a) :: a
   type L2r (x :: a) :: b
 
-instance PFD ('KProxy :: KProxy Bool) ('KProxy :: KProxy Nat) where
+instance PFD ('Proxy :: Proxy Bool) ('Proxy :: Proxy Nat) where
   type Meth a = Not a
   type L2r 'False = 'Zero
   type L2r 'True = 'Succ 'Zero
@@ -191,11 +191,11 @@ instance PFD ('KProxy :: KProxy Bool) ('KProxy :: KProxy Nat) where
 type T1 = Meth 'True
 type T2 = L2r 'False
 
-class (kp1 ~ 'KProxy, kp2 ~ 'KProxy) => SFD (kp1 :: KProxy a) (kp2 :: KProxy b) | a -> b where
+class SFD a b | a -> b where
   sMeth :: forall (x :: a). Sing x -> Sing (Meth x :: a)
   sL2r :: forall (x :: a). Sing x -> Sing (L2r x :: b)
 
-instance SFD ('KProxy :: KProxy Bool) ('KProxy :: KProxy Nat) where
+instance SFD Bool Nat where
   sMeth x = sNot x
   sL2r SFalse = SZero
   sL2r STrue = SSucc SZero

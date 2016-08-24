@@ -146,18 +146,18 @@ generated for every new singleton type.
 A class used to pass singleton values implicitly. The `sing` method produces
 an explicit singleton value.
 
-    data SomeSing (kproxy :: KProxy k) where
-      SomeSing :: Sing (a :: k) -> SomeSing ('KProxy :: KProxy k)
+    data SomeSing k where
+      SomeSing :: Sing (a :: k) -> SomeSing k
 
 The `SomeSing` type wraps up an _existentially-quantified_ singleton. Note that
 the type parameter `a` does not appear in the `SomeSing` type. Thus, this type
 can be used when you have a singleton, but you don't know at compile time what
-it will be. `SomeSing ('KProxy :: KProxy Thing)` is isomorphic to `Thing`.
+it will be. `SomeSing Thing` is isomorphic to `Thing`.
 
-    class (kparam ~ 'KProxy) => SingKind (kparam :: KProxy k) where
-      type DemoteRep kparam :: *
-      fromSing :: Sing (a :: k) -> DemoteRep kparam
-      toSing   :: DemoteRep kparam -> SomeSing kparam
+    class SingKind k where
+      type DemoteRep k :: *
+      fromSing :: Sing (a :: k) -> DemoteRep k
+      toSing   :: DemoteRep k -> SomeSing k
 
 This class is used to convert a singleton value back to a value in the
 original, unrefined ADT. The `fromSing` method converts, say, a
@@ -281,7 +281,7 @@ class Eq a => Ord a where
 This class gets promoted to a "kind class" thus:
 
 ```haskell
-class (kproxy ~ 'KProxy, PEq kproxy) => POrd (kproxy :: KProxy a) where
+class (kproxy ~ 'Proxy, PEq kproxy) => POrd (kproxy :: Proxy a) where
   type Compare (x :: a) (y :: a) :: Ordering
   type (:<)    (x :: a) (y :: a) :: Bool
   type x :< y = ... -- promoting `case` is yucky.
@@ -293,7 +293,7 @@ instances. This works out quite nicely.
 We also get this singleton class:
 
 ```haskell
-class (kproxy ~ 'KProxy, SEq kproxy) => SOrd (kproxy :: KProxy a) where
+class SEq a => SOrd a where
   sCompare :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Compare x y)
   (%:<)    :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :< y)
 
@@ -317,13 +317,13 @@ instance Ord Bool where
   compare True  False = GT
   compare True  True  = EQ
 
-instance POrd ('KProxy :: KProxy Bool) where
+instance POrd ('Proxy :: Proxy Bool) where
   type Compare 'False 'False = 'EQ
   type Compare 'False 'True  = 'LT
   type Compare 'True  'False = 'GT
   type Compare 'True  'True  = 'EQ
 
-instance SOrd ('KProxy :: KProxy Bool) where
+instance SOrd Bool where
   sCompare :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Compare x y)
   sCompare SFalse SFalse = SEQ
   sCompare SFalse STrue  = SLT

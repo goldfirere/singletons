@@ -1,10 +1,6 @@
 {-# LANGUAGE TemplateHaskell, PolyKinds, DataKinds, TypeFamilies,
              UndecidableInstances, GADTs #-}
 
--- Suppress orphan instance warning for PEnum KProxy. This will go away once #25
--- is fixed and instance declaration for Enum Nat is moved to
--- Data.Singletons.Prelude.Enum module.
-{-# OPTIONS_GHC -fno-warn-orphans #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Promotion.Prelude.Enum
