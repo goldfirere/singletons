@@ -164,8 +164,7 @@ original, unrefined ADT. The `fromSing` method converts, say, a
 singleton `Nat` back to an ordinary `Nat`. The `toSing` method produces
 an existentially-quantified singleton, wrapped up in a `SomeSing`.
 The `DemoteRep` associated
-kind-indexed type family maps a proxy of the kind `Nat`
-back to the type `Nat`.
+kind-indexed type family maps the kind `Nat` back to the type `Nat`.
 
     data SingInstance (a :: k) where
       SingInstance :: SingI a => SingInstance a
