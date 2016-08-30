@@ -41,6 +41,9 @@ import Data.Type.Equality
 import Data.Proxy ( Proxy(..) )
 import Unsafe.Coerce
 
+import qualified Data.Text as T
+import Data.Text ( Text )
+
 ----------------------------------------------------------------------
 ---- TypeLits singletons ---------------------------------------------
 ----------------------------------------------------------------------
@@ -63,9 +66,9 @@ instance KnownSymbol n => SingI n where
   sing = SSym
 
 instance SingKind Symbol where
-  type DemoteRep Symbol = String
-  fromSing (SSym :: Sing n) = symbolVal (Proxy :: Proxy n)
-  toSing s = case someSymbolVal s of
+  type DemoteRep Symbol = Text
+  fromSing (SSym :: Sing n) = T.pack (symbolVal (Proxy :: Proxy n))
+  toSing s = case someSymbolVal (T.unpack s) of
                SomeSymbol (_ :: Proxy n) -> SomeSing (SSym :: Sing n)
 
 -- SDecide instances:
@@ -147,7 +150,7 @@ $(genDefunSymbols [''Error])
 
 -- | The singleton for 'error'
 sError :: Sing (str :: Symbol) -> a
-sError sstr = error (fromSing sstr)
+sError sstr = error (T.unpack (fromSing sstr))
 
 -- TODO: move this to a better home:
 type a :^ b = a ^ b

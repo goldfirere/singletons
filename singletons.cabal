@@ -1,5 +1,5 @@
 name:           singletons
-version:        2.2.0.1
+version:        2.3
                 -- Remember to bump version in the Makefile as well
 cabal-version:  >= 1.10
 synopsis:       A framework for generating singleton types
@@ -38,7 +38,7 @@ description:
 source-repository this
   type:     git
   location: https://github.com/goldfirere/singletons.git
-  tag:      v2.2.0.1
+  tag:      v2.3
 
 library
   hs-source-dirs:     src
@@ -47,7 +47,8 @@ library
                       template-haskell,
                       containers >= 0.5,
                       th-desugar >= 1.6 && < 1.7,
-                      syb >= 0.4
+                      syb >= 0.4,
+                      text >= 1.2
   default-language:   Haskell2010
   other-extensions:   TemplateHaskell
         -- TemplateHaskell must be listed in cabal file to work with

@@ -1,9 +1,15 @@
 Changelog for singletons project
 ================================
 
-2.2.0.1
--------
+2.3
+---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.
+
+* `DemoteRep` is now injective.
+
+* Demoting a `Symbol` now gives `Text`. This is motivated by making `DemoteRep`
+  injective. (If `Symbol` demoted to `String`, then there would be a conflict
+  between demoting `[Char]` and `Symbol`.)
 
 2.2
 ---

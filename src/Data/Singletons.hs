@@ -1,6 +1,6 @@
 {-# LANGUAGE MagicHash, RankNTypes, PolyKinds, GADTs, DataKinds,
              FlexibleContexts, FlexibleInstances,
-             TypeFamilies, TypeOperators,
+             TypeFamilies, TypeOperators, TypeFamilyDependencies,
              UndecidableInstances, TypeInType #-}
 
 -----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ class SingI (a :: k) where
 class SingKind k where
   -- | Get a base type from a proxy for the promoted kind. For example,
   -- @DemoteRep Bool@ will be the type @Bool@.
-  type DemoteRep k :: *
+  type DemoteRep k = (r :: *) | r -> k
 
   -- | Convert a singleton to its unrefined version.
   fromSing :: Sing (a :: k) -> DemoteRep k
