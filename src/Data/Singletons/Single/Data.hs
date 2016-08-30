@@ -14,6 +14,7 @@ import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
+import Data.Singletons.Single.Fixity
 import Data.Singletons.Promote.Type
 import Data.Singletons.Single.Eq
 import Data.Singletons.Util
@@ -30,7 +31,8 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
   let tvbNames = map extractTvbName tvbs
   k <- promoteType (foldType (DConT name) (map DVarT tvbNames))
   ctors' <- mapM (singCtor a) ctors
-
+  ctorFixities <- singFixityDeclarations
+    [ n | DCon _ _ n _ _ <- ctors ]
   -- instance for SingKind
   fromSingClauses <- mapM mkFromSingClause ctors
   toSingClauses   <- mapM mkToSingClause ctors
@@ -59,7 +61,8 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
   return $ (DDataInstD Data [] singFamilyName [DSigT a k] ctors' []) :
            kindedSynInst :
            singKindInst :
-           sEqInsts
+           sEqInsts ++
+           ctorFixities
   where -- in the Rep case, the names of the constructors are in the wrong scope
         -- (they're types, not datacons), so we have to reinterpret them.
         mkConName :: Name -> SgM Name

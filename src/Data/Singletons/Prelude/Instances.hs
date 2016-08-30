@@ -20,8 +20,6 @@ import Data.Singletons.Util
 
 -- some useful singletons
 $(genSingletons basicTypes)
-infixr 5 `SCons`
-
 $(singDecideInstances basicTypes)
 
 -- basic definitions we need right away
