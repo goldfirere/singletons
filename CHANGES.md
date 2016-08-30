@@ -14,7 +14,7 @@ removed. `DemoteRep` has been renamed `Demote`.
   injective. (If `Symbol` demoted to `String`, then there would be a conflict
   between demoting `[Char]` and `Symbol`.)
 
-
+* `SCons` now has a proper right-fixity of 5. (Just like `:`).
 
 2.2
 ---
