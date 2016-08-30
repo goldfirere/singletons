@@ -39,7 +39,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
       = forall (n :: a). z ~ FBox n => SFBox (Sing (n :: a))
     type SBox = (Sing :: Box a -> GHC.Types.Type)
     instance SingKind a => SingKind (Box a) where
-      type DemoteRep (Box a) = Box (DemoteRep a)
+      type Demote (Box a) = Box (Demote a)
       fromSing (SFBox b) = FBox (fromSing b)
       toSing (FBox b)
         = case toSing b :: SomeSing a of {

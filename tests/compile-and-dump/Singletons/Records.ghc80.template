@@ -46,7 +46,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
                    sField2 :: (Sing (n :: Bool))}
     type SRecord = (Sing :: Record a -> GHC.Types.Type)
     instance SingKind a => SingKind (Record a) where
-      type DemoteRep (Record a) = Record (DemoteRep a)
+      type Demote (Record a) = Record (Demote a)
       fromSing (SMkRecord b b) = MkRecord (fromSing b) (fromSing b)
       toSing (MkRecord b b)
         = case

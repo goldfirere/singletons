@@ -38,7 +38,7 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
         DInstanceD Nothing
                    (map (singKindConstraint . DVarT) tvbNames)
                    (DAppT (DConT singKindClassName) k)
-                   [ DTySynInstD demoteRepName $ DTySynEqn
+                   [ DTySynInstD demoteName $ DTySynEqn
                       [k]
                       (foldType (DConT name)
                         (map (DAppT demote . DVarT) tvbNames))

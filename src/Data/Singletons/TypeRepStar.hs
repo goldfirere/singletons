@@ -47,7 +47,7 @@ data instance Sing (a :: *) where
 instance Typeable a => SingI (a :: *) where
   sing = STypeRep
 instance SingKind Type where
-  type DemoteRep Type = TypeRep
+  type Demote Type = TypeRep
   fromSing (STypeRep :: Sing a) = typeOf (undefined :: a)
   toSing = dirty_mk_STypeRep
 

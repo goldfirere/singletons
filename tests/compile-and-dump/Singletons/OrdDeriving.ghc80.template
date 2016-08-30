@@ -412,7 +412,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
     type SNat = (Sing :: Nat -> GHC.Types.Type)
     instance SingKind Nat where
-      type DemoteRep Nat = Nat
+      type Demote Nat = Nat
       fromSing SZero = Zero
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
@@ -457,7 +457,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type SFoo = (Sing :: Foo a b c d -> GHC.Types.Type)
     instance (SingKind a, SingKind b, SingKind c, SingKind d) =>
              SingKind (Foo a b c d) where
-      type DemoteRep (Foo a b c d) = Foo (DemoteRep a) (DemoteRep b) (DemoteRep c) (DemoteRep d)
+      type Demote (Foo a b c d) = Foo (Demote a) (Demote b) (Demote c) (Demote d)
       fromSing (SA b b b b)
         = A (fromSing b) (fromSing b) (fromSing b) (fromSing b)
       fromSing (SB b b b b)

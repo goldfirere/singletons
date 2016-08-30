@@ -558,7 +558,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         forall (n :: b). z ~ Right n => SRight (Sing (n :: b))
     type SEither = (Sing :: Either a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind (Either a b) where
-      type DemoteRep (Either a b) = Either (DemoteRep a) (DemoteRep b)
+      type Demote (Either a b) = Either (Demote a) (Demote b)
       fromSing (SLeft b) = Left (fromSing b)
       fromSing (SRight b) = Right (fromSing b)
       toSing (Left b)

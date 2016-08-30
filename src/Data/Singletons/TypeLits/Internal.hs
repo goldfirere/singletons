@@ -54,7 +54,7 @@ instance KnownNat n => SingI n where
   sing = SNat
 
 instance SingKind Nat where
-  type DemoteRep Nat = Integer
+  type Demote Nat = Integer
   fromSing (SNat :: Sing n) = natVal (Proxy :: Proxy n)
   toSing n = case someNatVal n of
                Just (SomeNat (_ :: Proxy n)) -> SomeSing (SNat :: Sing n)
@@ -66,7 +66,7 @@ instance KnownSymbol n => SingI n where
   sing = SSym
 
 instance SingKind Symbol where
-  type DemoteRep Symbol = Text
+  type Demote Symbol = Text
   fromSing (SSym :: Sing n) = T.pack (symbolVal (Proxy :: Proxy n))
   toSing s = case someSymbolVal (T.unpack s) of
                SomeSymbol (_ :: Proxy n) -> SomeSing (SSym :: Sing n)

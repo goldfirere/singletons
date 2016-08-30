@@ -831,7 +831,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
         SFoo (Sing (n :: a)) (Sing (n :: b))
     type SFoo = (Sing :: Foo a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind (Foo a b) where
-      type DemoteRep (Foo a b) = Foo (DemoteRep a) (DemoteRep b)
+      type Demote (Foo a b) = Foo (Demote a) (Demote b)
       fromSing (SFoo b b) = Foo (fromSing b) (fromSing b)
       toSing (Foo b b)
         = case

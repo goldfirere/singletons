@@ -32,7 +32,7 @@ module Data.Singletons (
   SingI(..), SingKind(..),
 
   -- * Working with singletons
-  KindOf, Demote,
+  KindOf,
   SingInstance(..), SomeSing(..),
   singInstance, withSingI, withSomeSing, singByProxy,
 
@@ -89,19 +89,16 @@ class SingI (a :: k) where
 -- for which singletons are defined. The class supports converting between a singleton
 -- type and the base (unrefined) type which it is built from.
 class SingKind k where
-  -- | Get a base type from a proxy for the promoted kind. For example,
-  -- @DemoteRep Bool@ will be the type @Bool@.
-  type DemoteRep k = (r :: *) | r -> k
+  -- | Get a base type from the promoted kind. For example,
+  -- @Demote Bool@ will be the type @Bool@. Rarely, the type and kind do not
+  -- match. For example, @Demote Nat@ is @Integer@.
+  type Demote k = (r :: *) | r -> k
 
   -- | Convert a singleton to its unrefined version.
-  fromSing :: Sing (a :: k) -> DemoteRep k
+  fromSing :: Sing (a :: k) -> Demote k
 
   -- | Convert an unrefined type to an existentially-quantified singleton type.
-  toSing   :: DemoteRep k -> SomeSing k
-
--- | Convenient abbreviation for 'DemoteRep':
--- @type Demote (a :: k) = DemoteRep k@
-type Demote (a :: k) = DemoteRep k
+  toSing   :: Demote k -> SomeSing k
 
 -- | An /existentially-quantified/ singleton. This type is useful when you want a
 -- singleton type, but there is no way of knowing, at compile-time, what the type
@@ -198,7 +195,7 @@ newtype instance Sing (f :: k1 ~> k2) =
   SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
 
 instance (SingKind k1, SingKind k2) => SingKind (k1 ~> k2) where
-  type DemoteRep (k1 ~> k2) = DemoteRep k1 -> DemoteRep k2
+  type Demote (k1 ~> k2) = Demote k1 -> Demote k2
   fromSing sFun x = withSomeSing x (fromSing . applySing sFun)
   toSing _ = error "Cannot create existentially-quantified singleton functions."
 
@@ -285,7 +282,7 @@ withSingI sn r =
 -- passing it into a continuation.
 withSomeSing :: forall k r
               . SingKind k
-             => DemoteRep k                       -- ^ The original datatype
+             => Demote k                          -- ^ The original datatype
              -> (forall (a :: k). Sing a -> r)    -- ^ Function expecting a singleton
              -> r
 withSomeSing x f =
@@ -304,7 +301,7 @@ withSing f = f sing
 -- returns 'Nothing'. The property is expressed in terms of the underlying
 -- representation of the singleton.
 singThat :: forall (a :: k). (SingKind k, SingI a)
-         => (Demote a -> Bool) -> Maybe (Sing a)
+         => (Demote k -> Bool) -> Maybe (Sing a)
 singThat p = withSing $ \x -> if p (fromSing x) then Just x else Nothing
 
 -- | Allows creation of a singleton when a proxy is at hand.

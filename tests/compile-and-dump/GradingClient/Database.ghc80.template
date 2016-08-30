@@ -54,7 +54,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
     type SNat = (Sing :: Nat -> Type)
     instance SingKind Nat where
-      type DemoteRep Nat = Nat
+      type Demote Nat = Nat
       fromSing SZero = Zero
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
@@ -671,7 +671,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         SVEC (Sing (n :: U)) (Sing (n :: Nat))
     type SU = (Sing :: U -> Type)
     instance SingKind U where
-      type DemoteRep U = U
+      type Demote U = U
       fromSing SBOOL = BOOL
       fromSing SSTRING = STRING
       fromSing SNAT = NAT
@@ -801,7 +801,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         z ~ CZ => SCZ
     type SAChar = (Sing :: AChar -> Type)
     instance SingKind AChar where
-      type DemoteRep AChar = AChar
+      type Demote AChar = AChar
       fromSing SCA = CA
       fromSing SCB = CB
       fromSing SCC = CC
@@ -4813,7 +4813,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         SAttr (Sing (n :: [AChar])) (Sing (n :: U))
     type SAttribute = (Sing :: Attribute -> Type)
     instance SingKind Attribute where
-      type DemoteRep Attribute = Attribute
+      type Demote Attribute = Attribute
       fromSing (SAttr b b) = Attr (fromSing b) (fromSing b)
       toSing (Attr b b)
         = case
@@ -4826,7 +4826,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         SSch (Sing (n :: [Attribute]))
     type SSchema = (Sing :: Schema -> Type)
     instance SingKind Schema where
-      type DemoteRep Schema = Schema
+      type Demote Schema = Schema
       fromSing (SSch b) = Sch (fromSing b)
       toSing (Sch b)
         = case toSing b :: SomeSing [Attribute] of {

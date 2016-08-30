@@ -155,15 +155,15 @@ can be used when you have a singleton, but you don't know at compile time what
 it will be. `SomeSing Thing` is isomorphic to `Thing`.
 
     class SingKind k where
-      type DemoteRep k :: *
-      fromSing :: Sing (a :: k) -> DemoteRep k
-      toSing   :: DemoteRep k -> SomeSing k
+      type Demote k :: *
+      fromSing :: Sing (a :: k) -> Demote k
+      toSing   :: Demote k -> SomeSing k
 
 This class is used to convert a singleton value back to a value in the
 original, unrefined ADT. The `fromSing` method converts, say, a
 singleton `Nat` back to an ordinary `Nat`. The `toSing` method produces
 an existentially-quantified singleton, wrapped up in a `SomeSing`.
-The `DemoteRep` associated
+The `Demote` associated
 kind-indexed type family maps the kind `Nat` back to the type `Nat`.
 
     data SingInstance (a :: k) where

@@ -27,7 +27,7 @@ anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
   nilName, consName, listName, tyFunName,
   applyName, natName, symbolName, undefinedName, typeRepName, stringName,
   eqName, ordName, boundedName, orderingName,
-  singFamilyName, singIName, singMethName, demoteRepName,
+  singFamilyName, singIName, singMethName, demoteName,
   singKindClassName, sEqClassName, sEqMethName, sconsName, snilName,
   sIfName, proxyTypeName, proxyDataName,
   someSingTypeName, someSingDataName,
@@ -66,7 +66,7 @@ singIName = ''SingI
 singMethName = 'sing
 toSingName = 'toSing
 fromSingName = 'fromSing
-demoteRepName = ''DemoteRep
+demoteName = ''Demote
 singKindClassName = ''SingKind
 sEqClassName = mk_name_tc "Data.Singletons.Prelude.Eq" "SEq"
 sEqMethName = mk_name_v "Data.Singletons.Prelude.Eq" "%:=="
@@ -228,7 +228,7 @@ singKindConstraint :: DKind -> DPred
 singKindConstraint = DAppPr (DConPr singKindClassName)
 
 demote :: DType
-demote = DConT demoteRepName
+demote = DConT demoteName
 
 apply :: DType -> DType -> DType
 apply t1 t2 = DAppT (DAppT (DConT applyName) t1) t2

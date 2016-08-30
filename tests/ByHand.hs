@@ -112,7 +112,7 @@ instance SingI Zero where
 instance SingI n => SingI (Succ n) where
   sing = SSucc sing
 instance SingKind Nat where
-  type DemoteRep Nat = Nat
+  type Demote Nat = Nat
   fromSing SZero = Zero
   fromSing (SSucc n) = Succ (fromSing n)
   toSing Zero = SomeSing SZero
@@ -135,7 +135,7 @@ instance SingI False where
 instance SingI True where
   sing = STrue
 instance SingKind Bool where
-  type DemoteRep Bool = Bool
+  type Demote Bool = Bool
   fromSing SFalse = False
   fromSing STrue = True
   toSing False = SomeSing SFalse
@@ -174,7 +174,7 @@ instance SingI (Nothing :: Maybe k) where
 instance SingI a => SingI (Just (a :: k)) where
   sing = SJust sing
 instance SingKind k => SingKind (Maybe k) where
-  type DemoteRep (Maybe k) = Maybe (DemoteRep k)
+  type Demote (Maybe k) = Maybe (Demote k)
   fromSing SNothing = Nothing
   fromSing (SJust a) = Just (fromSing a)
   toSing Nothing = SomeSing SNothing
@@ -226,7 +226,7 @@ instance (SingI h, SingI t) =>
            SingI (Cons (h :: k) (t :: List k)) where
   sing = SCons sing sing
 instance SingKind k => SingKind (List k) where
-  type DemoteRep (List k) = List (DemoteRep k)
+  type Demote (List k) = List (Demote k)
   fromSing SNil = Nil
   fromSing (SCons h t) = Cons (fromSing h) (fromSing t)
   toSing Nil = SomeSing SNil
@@ -246,7 +246,7 @@ instance (SingI a) => SingI (Left (a :: k)) where
 instance (SingI b) => SingI (Right (b :: k)) where
   sing = SRight sing
 instance (SingKind k1, SingKind k2) => SingKind (Either k1 k2) where
-  type DemoteRep (Either k1 k2) = Either (DemoteRep k1) (DemoteRep k2)
+  type Demote (Either k1 k2) = Either (Demote k1) (Demote k2)
   fromSing (SLeft x) = Left (fromSing x)
   fromSing (SRight x) = Right (fromSing x)
   toSing (Left x) =
@@ -279,8 +279,8 @@ data instance Sing (a :: Composite k1 k2) where
 instance SingI a => SingI (MkComp (a :: Either (Maybe k1) k2)) where
   sing = SMkComp sing
 instance (SingKind k1, SingKind k2) => SingKind (Composite k1 k2) where
-  type DemoteRep (Composite k1 k2) =
-    Composite (DemoteRep k1) (DemoteRep k2)
+  type Demote (Composite k1 k2) =
+    Composite (Demote k1) (Demote k2)
   fromSing (SMkComp x) = MkComp (fromSing x)
   toSing (MkComp x) =
     case toSing x :: SomeSing (Either (Maybe k1) k2) of
@@ -297,7 +297,7 @@ instance (SDecide k1, SDecide k2) => SDecide (Composite k1 k2) where
 data Empty
 data instance Sing (a :: Empty)
 instance SingKind Empty where
-  type DemoteRep Empty = Empty
+  type Demote Empty = Empty
   fromSing = \case _ -> undefined
   toSing = \case _ -> undefined
 
@@ -322,7 +322,7 @@ instance (SingI a, SingI n) => SingI (Vec a n) where
   sing = SVec sing sing
 
 instance SingKind Type where
-  type DemoteRep Type = Rep
+  type Demote Type = Rep
 
   fromSing SNat = Nat
   fromSing (SMaybe a) = Maybe (fromSing a)

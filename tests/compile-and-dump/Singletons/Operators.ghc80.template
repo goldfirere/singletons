@@ -110,7 +110,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
         (:%+:) (Sing (n :: Foo)) (Sing (n :: Foo))
     type SFoo = (Sing :: Foo -> GHC.Types.Type)
     instance SingKind Foo where
-      type DemoteRep Foo = Foo
+      type Demote Foo = Foo
       fromSing SFLeaf = FLeaf
       fromSing ((:%+:) b b) = (:+:) (fromSing b) (fromSing b)
       toSing FLeaf = SomeSing SFLeaf

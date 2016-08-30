@@ -57,7 +57,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
         SSuccFoo (Sing (n :: NatFoo))
     type SNatFoo = (Sing :: NatFoo -> GHC.Types.Type)
     instance SingKind NatFoo where
-      type DemoteRep NatFoo = NatFoo
+      type Demote NatFoo = NatFoo
       fromSing SZeroFoo = ZeroFoo
       fromSing (SSuccFoo b) = SuccFoo (fromSing b)
       toSing ZeroFoo = SomeSing SZeroFoo

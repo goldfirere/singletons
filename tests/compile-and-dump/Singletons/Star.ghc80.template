@@ -402,7 +402,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
         SVec (Sing (n :: Type)) (Sing (n :: Nat))
     type SRep = (Sing :: Type -> Type)
     instance SingKind Type where
-      type DemoteRep Type = Rep
+      type Demote Type = Rep
       fromSing SNat = Singletons.Star.Nat
       fromSing SInt = Singletons.Star.Int
       fromSing SString = Singletons.Star.String
