@@ -246,7 +246,7 @@ foldApply = foldl apply
 mkEqPred :: DType -> DType -> DPred
 mkEqPred ty1 ty2 = foldl DAppPr (DConPr equalityName) [ty1, ty2]
 
--- create a bunch of kproxy vars, and constrain them all to be 'KProxy
+-- create a bunch of kproxy vars, and constrain them all to be 'Proxy
 mkKProxies :: Quasi q
            => [Name]   -- for the kinds of the kproxies
            -> q ([DTyVarBndr], DCxt)
