@@ -17,9 +17,9 @@
 -- for singletons based on types in the @Prelude@.
 --
 -- You may also want to read
--- <http://www.cis.upenn.edu/~eir/packages/singletons/README.html> and the
--- original paper presenting this library, available at
--- <http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>.
+-- the original papers presenting this library, available at
+-- <http://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf>
+-- and <http://cs.brynmawr.edu/~rae/papers/2014/promotion/promotion.pdf>.
 --
 ----------------------------------------------------------------------------
 
