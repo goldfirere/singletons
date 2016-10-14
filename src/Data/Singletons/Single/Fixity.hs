@@ -24,4 +24,7 @@ singFixityDeclaration name = do
     Just fixity -> [DLetDec $ singInfixDecl fixity name]
 
 singFixityDeclarations :: DsMonad q => [Name] -> q [DDec]
-singFixityDeclarations = concatMapM singFixityDeclaration
+singFixityDeclarations = concatMapM trySingFixityDeclaration
+  where
+    trySingFixityDeclaration name =
+      qRecover (return []) (singFixityDeclaration name)

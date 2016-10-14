@@ -40,9 +40,8 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
     --    earlier and its constructors are in scope, the reification succeeds.
     -- 2. if we're in a call to 'singletons', the reification will fail, but
     --    the fixity declaration will get singletonized by itself (not from
-    --    here, look for other invokations of 'singInfixDecl')
-    qRecover (return []) $
-      singFixityDeclarations [ n | DCon _ _ n _ _ <- ctors ]
+    --    here, look for other invocations of 'singInfixDecl')
+    singFixityDeclarations [ n | DCon _ _ n _ _ <- ctors ]
   -- instance for SingKind
   fromSingClauses <- mapM mkFromSingClause ctors
   toSingClauses   <- mapM mkToSingClause ctors
