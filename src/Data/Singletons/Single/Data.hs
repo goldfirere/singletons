@@ -31,8 +31,18 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
   let tvbNames = map extractTvbName tvbs
   k <- promoteType (foldType (DConT name) (map DVarT tvbNames))
   ctors' <- mapM (singCtor a) ctors
-  ctorFixities <- singFixityDeclarations
-    [ n | DCon _ _ n _ _ <- ctors ]
+  ctorFixities <-
+    -- try to reify the fixity declarations for the constructors and then
+    -- singletonize them. In case the reification fails, we default to an
+    -- empty list of singletonized fixity declarations.
+    -- why this works:
+    -- 1. if we're in a call to 'genSingletons', the data type was defined
+    --    earlier and its constructors are in scope, the reification succeeds.
+    -- 2. if we're in a call to 'singletons', the reification will fail, but
+    --    the fixity declaration will get singletonized by itself (not from
+    --    here, look for other invokations of 'singInfixDecl')
+    qRecover (return []) $
+      singFixityDeclarations [ n | DCon _ _ n _ _ <- ctors ]
   -- instance for SingKind
   fromSingClauses <- mapM mkFromSingClause ctors
   toSingClauses   <- mapM mkToSingClause ctors
