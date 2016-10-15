@@ -24,6 +24,7 @@ import Data.Singletons.Names
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
 import Data.Singletons.Single.Data
+import Data.Singletons.Single.Fixity
 import Data.Singletons.Single.Eq
 import Data.Singletons.Syntax
 import Data.Singletons.Partition
@@ -352,15 +353,6 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
                      (Map.toList defns)
     thing <- thing_inside
     return (infix_decls' ++ typeSigs ++ let_decs, thing)
-
-singInfixDecl :: Fixity -> Name -> DLetDec
-singInfixDecl fixity name
-  | isUpcase name =
-    -- is it a tycon name or a datacon name??
-    -- it *must* be a datacon name, because symbolic tycons
-    -- can't be promoted. This is terrible.
-    DInfixD fixity (singDataConName name)
-  | otherwise = DInfixD fixity (singValName name)
 
 singTySig :: Map Name ALetDecRHS  -- definitions
           -> Map Name DType       -- type signatures
