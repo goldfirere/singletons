@@ -509,12 +509,15 @@ The following constructs are not supported:
 * arithmetic sequences
 * datatypes that store arrows, `Nat`, or `Symbol`
 * literals (limited support)
+* symbolic (as opposed to alphanumeric) types
 
-Why are these out of reach? First two depend on monads, which mention a
-higher-kinded type variable. GHC does not support higher-sorted kind variables,
-which would be necessary to promote/singletonize monads. There are other tricks
-possible, too, but none are likely to work. See the bug report
-[here](https://github.com/goldfirere/singletons/issues/37) for more info.
+Why are these out of reach? The first two depend on monads, which mention a
+higher-kinded type variable. GHC did not support higher-sorted kind variables,
+which are be necessary to promote/singletonize monads, and `singletons` has
+not be rewritten to accommodate this new ability. [This bug
+report](https://github.com/goldfirere/singletons/issues/37) is a feature request
+looking for support for these constructs.
+
 Arithmetic sequences are defined using `Enum` typeclass, which uses infinite
 lists.
 
@@ -535,6 +538,12 @@ use the promoted definition, but not the original, term-level one.
 This is the same line of reasoning that forbids the use of `Nat` or `Symbol`
 in datatype definitions. But, see [this bug
 report](https://github.com/goldfirere/singletons/issues/76) for a workaround.
+
+Symbolic types used in kinds were not supported in GHC, but now are. However,
+`singletons` still does not support them, mostly because of challenges around
+telling datacon names apart from tycon names. [This
+issue](https://github.com/goldfirere/singletons/issues/163) tracks adding
+this feature.
 
 Support for `*`
 ---------------

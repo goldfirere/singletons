@@ -14,7 +14,8 @@ removed. `DemoteRep` has been renamed `Demote`.
   injective. (If `Symbol` demoted to `String`, then there would be a conflict
   between demoting `[Char]` and `Symbol`.)
 
-* `SCons` now has a proper right-fixity of 5. (Just like `:`).
+* Generating singletons also now generates fixity declarations for the singletonized
+  definitions, thanks to @int-index.
 
 2.2
 ---
