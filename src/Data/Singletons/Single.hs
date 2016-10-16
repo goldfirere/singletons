@@ -83,7 +83,7 @@ genSingletons names = do
 
 -- | Make promoted and singleton versions of all declarations given, retaining
 -- the original declarations.
--- See <http://www.cis.upenn.edu/~eir/packages/singletons/README.html> for
+-- See <https://github.com/goldfirere/singletons/blob/master/README.md> for
 -- further explanation.
 singletons :: DsMonad q => q [Dec] -> q [Dec]
 singletons qdecs = do
