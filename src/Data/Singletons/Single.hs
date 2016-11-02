@@ -326,8 +326,11 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
             Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _) -> do
               let subst = Map.fromList (zip (map extractTvbName cls_tvbs)
                                             inst_tys)
+              -- Make sure to expand through type synonyms here! Not doing so
+              -- resulted in #167.
+              raw_ty <- expand inner_ty
               (s_ty, _num_args, tyvar_names, res_ki) <- singType (promoteValRhs name)
-                                                                 (substType subst inner_ty)
+                                                                 (substType subst raw_ty)
               return (s_ty, tyvar_names, Just res_ki)
             _ -> fail $ "Cannot find type of method " ++ show name
 

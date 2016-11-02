@@ -1,0 +1,166 @@
+Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
+    singletonsOnly
+      [d| class Foo a where
+            foosPrec :: Nat -> a -> DiffList
+            fooList :: a -> DiffList
+            fooList = undefined
+
+          instance Foo a => Foo [a] where
+            foosPrec _ = fooList |]
+  ======>
+    type FoosPrecSym3 (t :: Nat) (t :: a0123456789) (t :: [Bool]) =
+        FoosPrec t t t
+    instance SuppressUnusedWarnings FoosPrecSym2 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FoosPrecSym2KindInference GHC.Tuple.())
+    data FoosPrecSym2 (l :: Nat)
+                      (l :: a0123456789)
+                      (l :: TyFun [Bool] [Bool])
+      = forall arg. KindOf (Apply (FoosPrecSym2 l l) arg) ~ KindOf (FoosPrecSym3 l l arg) =>
+        FoosPrecSym2KindInference
+    type instance Apply (FoosPrecSym2 l l) l = FoosPrecSym3 l l l
+    instance SuppressUnusedWarnings FoosPrecSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FoosPrecSym1KindInference GHC.Tuple.())
+    data FoosPrecSym1 (l :: Nat)
+                      (l :: TyFun a0123456789 (TyFun [Bool] [Bool] -> GHC.Types.Type))
+      = forall arg. KindOf (Apply (FoosPrecSym1 l) arg) ~ KindOf (FoosPrecSym2 l arg) =>
+        FoosPrecSym1KindInference
+    type instance Apply (FoosPrecSym1 l) l = FoosPrecSym2 l l
+    instance SuppressUnusedWarnings FoosPrecSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FoosPrecSym0KindInference GHC.Tuple.())
+    data FoosPrecSym0 (l :: TyFun Nat (TyFun a0123456789 (TyFun [Bool] [Bool]
+                                                          -> GHC.Types.Type)
+                                       -> GHC.Types.Type))
+      = forall arg. KindOf (Apply FoosPrecSym0 arg) ~ KindOf (FoosPrecSym1 arg) =>
+        FoosPrecSym0KindInference
+    type instance Apply FoosPrecSym0 l = FoosPrecSym1 l
+    type FooListSym2 (t :: a0123456789) (t :: [Bool]) = FooList t t
+    instance SuppressUnusedWarnings FooListSym1 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FooListSym1KindInference GHC.Tuple.())
+    data FooListSym1 (l :: a0123456789) (l :: TyFun [Bool] [Bool])
+      = forall arg. KindOf (Apply (FooListSym1 l) arg) ~ KindOf (FooListSym2 l arg) =>
+        FooListSym1KindInference
+    type instance Apply (FooListSym1 l) l = FooListSym2 l l
+    instance SuppressUnusedWarnings FooListSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) FooListSym0KindInference GHC.Tuple.())
+    data FooListSym0 (l :: TyFun a0123456789 (TyFun [Bool] [Bool]
+                                              -> GHC.Types.Type))
+      = forall arg. KindOf (Apply FooListSym0 arg) ~ KindOf (FooListSym1 arg) =>
+        FooListSym0KindInference
+    type instance Apply FooListSym0 l = FooListSym1 l
+    type family FooList_0123456789 (a :: a)
+                                   (a :: [Bool]) :: [Bool] where
+      FooList_0123456789 a_0123456789 a_0123456789 = Apply (Apply Any a_0123456789) a_0123456789
+    type FooList_0123456789Sym2 (t :: a0123456789) (t :: [Bool]) =
+        FooList_0123456789 t t
+    instance SuppressUnusedWarnings FooList_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) FooList_0123456789Sym1KindInference GHC.Tuple.())
+    data FooList_0123456789Sym1 (l :: a0123456789)
+                                (l :: TyFun [Bool] [Bool])
+      = forall arg. KindOf (Apply (FooList_0123456789Sym1 l) arg) ~ KindOf (FooList_0123456789Sym2 l arg) =>
+        FooList_0123456789Sym1KindInference
+    type instance Apply (FooList_0123456789Sym1 l) l = FooList_0123456789Sym2 l l
+    instance SuppressUnusedWarnings FooList_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) FooList_0123456789Sym0KindInference GHC.Tuple.())
+    data FooList_0123456789Sym0 (l :: TyFun a0123456789 (TyFun [Bool] [Bool]
+                                                         -> GHC.Types.Type))
+      = forall arg. KindOf (Apply FooList_0123456789Sym0 arg) ~ KindOf (FooList_0123456789Sym1 arg) =>
+        FooList_0123456789Sym0KindInference
+    type instance Apply FooList_0123456789Sym0 l = FooList_0123456789Sym1 l
+    class kproxy ~ Proxy => PFoo (kproxy :: Proxy a) where
+      type FoosPrec (arg :: Nat) (arg :: a) (arg :: [Bool]) :: [Bool]
+      type FooList (arg :: a) (arg :: [Bool]) :: [Bool]
+      type FooList a a = Apply (Apply FooList_0123456789Sym0 a) a
+    type family FoosPrec_0123456789 (a :: Nat)
+                                    (a :: [a])
+                                    (a :: [Bool]) :: [Bool] where
+      FoosPrec_0123456789 _z_0123456789 a_0123456789 a_0123456789 = Apply (Apply FooListSym0 a_0123456789) a_0123456789
+    type FoosPrec_0123456789Sym3 (t :: Nat)
+                                 (t :: [a0123456789])
+                                 (t :: [Bool]) =
+        FoosPrec_0123456789 t t t
+    instance SuppressUnusedWarnings FoosPrec_0123456789Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) FoosPrec_0123456789Sym2KindInference GHC.Tuple.())
+    data FoosPrec_0123456789Sym2 (l :: Nat)
+                                 (l :: [a0123456789])
+                                 (l :: TyFun [Bool] [Bool])
+      = forall arg. KindOf (Apply (FoosPrec_0123456789Sym2 l l) arg) ~ KindOf (FoosPrec_0123456789Sym3 l l arg) =>
+        FoosPrec_0123456789Sym2KindInference
+    type instance Apply (FoosPrec_0123456789Sym2 l l) l = FoosPrec_0123456789Sym3 l l l
+    instance SuppressUnusedWarnings FoosPrec_0123456789Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) FoosPrec_0123456789Sym1KindInference GHC.Tuple.())
+    data FoosPrec_0123456789Sym1 (l :: Nat)
+                                 (l :: TyFun [a0123456789] (TyFun [Bool] [Bool] -> GHC.Types.Type))
+      = forall arg. KindOf (Apply (FoosPrec_0123456789Sym1 l) arg) ~ KindOf (FoosPrec_0123456789Sym2 l arg) =>
+        FoosPrec_0123456789Sym1KindInference
+    type instance Apply (FoosPrec_0123456789Sym1 l) l = FoosPrec_0123456789Sym2 l l
+    instance SuppressUnusedWarnings FoosPrec_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            (GHC.Tuple.(,) FoosPrec_0123456789Sym0KindInference GHC.Tuple.())
+    data FoosPrec_0123456789Sym0 (l :: TyFun Nat (TyFun [a0123456789] (TyFun [Bool] [Bool]
+                                                                       -> GHC.Types.Type)
+                                                  -> GHC.Types.Type))
+      = forall arg. KindOf (Apply FoosPrec_0123456789Sym0 arg) ~ KindOf (FoosPrec_0123456789Sym1 arg) =>
+        FoosPrec_0123456789Sym0KindInference
+    type instance Apply FoosPrec_0123456789Sym0 l = FoosPrec_0123456789Sym1 l
+    instance PFoo (Proxy :: Proxy [a]) where
+      type FoosPrec (a :: Nat) (a :: [a]) (a :: [Bool]) = Apply (Apply (Apply FoosPrec_0123456789Sym0 a) a) a
+    class SFoo a where
+      sFoosPrec ::
+        forall (t :: Nat) (t :: a) (t :: [Bool]).
+        Sing t
+        -> Sing t
+           -> Sing t
+              -> Sing (Apply (Apply (Apply FoosPrecSym0 t) t) t :: [Bool])
+      sFooList ::
+        forall (t :: a) (t :: [Bool]).
+        Sing t -> Sing t -> Sing (Apply (Apply FooListSym0 t) t :: [Bool])
+      default sFooList ::
+                forall (t :: a) (t :: [Bool]).
+                Apply (Apply FooListSym0 t) t ~ Apply (Apply FooList_0123456789Sym0 t) t =>
+                Sing t -> Sing t -> Sing (Apply (Apply FooListSym0 t) t :: [Bool])
+      sFooList sA_0123456789 sA_0123456789
+        = let
+            lambda ::
+              forall a_0123456789 a_0123456789.
+              (t ~ a_0123456789, t ~ a_0123456789) =>
+              Sing a_0123456789
+              -> Sing a_0123456789
+                 -> Sing (Apply (Apply FooListSym0 t) t :: [Bool])
+            lambda a_0123456789 a_0123456789 = undefined
+          in lambda sA_0123456789 sA_0123456789
+    instance SFoo a => SFoo [a] where
+      sFoosPrec ::
+        forall (t :: Nat) (t :: [a]) (t :: [Bool]).
+        Sing t
+        -> Sing t
+           -> Sing t
+              -> Sing (Apply (Apply (Apply FoosPrecSym0 t) t) t :: [Bool])
+      sFoosPrec _s_z_0123456789 sA_0123456789 sA_0123456789
+        = let
+            lambda ::
+              forall _z_0123456789 a_0123456789 a_0123456789.
+              (t ~ _z_0123456789, t ~ a_0123456789, t ~ a_0123456789) =>
+              Sing _z_0123456789
+              -> Sing a_0123456789
+                 -> Sing a_0123456789
+                    -> Sing (Apply (Apply (Apply FoosPrecSym0 t) t) t :: [Bool])
+            lambda _z_0123456789 a_0123456789 a_0123456789
+              = applySing
+                  (applySing
+                     (singFun2 (Proxy :: Proxy FooListSym0) sFooList) a_0123456789)
+                  a_0123456789
+          in lambda _s_z_0123456789 sA_0123456789 sA_0123456789
