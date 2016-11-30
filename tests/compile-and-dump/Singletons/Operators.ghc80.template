@@ -28,14 +28,14 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+:$$###) GHC.Tuple.())
     data (:+:$$) (l :: Foo) (l :: TyFun Foo Foo)
-      = forall arg. KindOf (Apply ((:+:$$) l) arg) ~ KindOf ((:+:$$$) l arg) =>
+      = forall arg. SameKind (Apply ((:+:$$) l) arg) ((:+:$$$) l arg) =>
         (:+:$$###)
     type instance Apply ((:+:$$) l) l = (:+:$$$) l l
     instance SuppressUnusedWarnings (:+:$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+:$###) GHC.Tuple.())
     data (:+:$) (l :: TyFun Foo (TyFun Foo Foo -> GHC.Types.Type))
-      = forall arg. KindOf (Apply (:+:$) arg) ~ KindOf ((:+:$$) arg) =>
+      = forall arg. SameKind (Apply (:+:$) arg) ((:+:$$) arg) =>
         (:+:$###)
     type instance Apply (:+:$) l = (:+:$$) l
     type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
@@ -43,22 +43,21 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+$$###) GHC.Tuple.())
     data (:+$$) (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. KindOf (Apply ((:+$$) l) arg) ~ KindOf ((:+$$$) l arg) =>
+      = forall arg. SameKind (Apply ((:+$$) l) arg) ((:+$$$) l arg) =>
         (:+$$###)
     type instance Apply ((:+$$) l) l = (:+$$$) l l
     instance SuppressUnusedWarnings (:+$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+$###) GHC.Tuple.())
     data (:+$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
-      = forall arg. KindOf (Apply (:+$) arg) ~ KindOf ((:+$$) arg) =>
-        (:+$###)
+      = forall arg. SameKind (Apply (:+$) arg) ((:+$$) arg) => (:+$###)
     type instance Apply (:+$) l = (:+$$) l
     type ChildSym1 (t :: Foo) = Child t
     instance SuppressUnusedWarnings ChildSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ChildSym0KindInference GHC.Tuple.())
     data ChildSym0 (l :: TyFun Foo Foo)
-      = forall arg. KindOf (Apply ChildSym0 arg) ~ KindOf (ChildSym1 arg) =>
+      = forall arg. SameKind (Apply ChildSym0 arg) (ChildSym1 arg) =>
         ChildSym0KindInference
     type instance Apply ChildSym0 l = ChildSym1 l
     type family (:+) (a :: Nat) (a :: Nat) :: Nat where

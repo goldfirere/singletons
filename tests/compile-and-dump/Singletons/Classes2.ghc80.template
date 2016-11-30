@@ -20,7 +20,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SuccFooSym0KindInference GHC.Tuple.())
     data SuccFooSym0 (l :: TyFun NatFoo NatFoo)
-      = forall arg. KindOf (Apply SuccFooSym0 arg) ~ KindOf (SuccFooSym1 arg) =>
+      = forall arg. SameKind (Apply SuccFooSym0 arg) (SuccFooSym1 arg) =>
         SuccFooSym0KindInference
     type instance Apply SuccFooSym0 l = SuccFooSym1 l
     type family Mycompare_0123456789 (a :: NatFoo)
@@ -37,7 +37,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
             (GHC.Tuple.(,) Mycompare_0123456789Sym1KindInference GHC.Tuple.())
     data Mycompare_0123456789Sym1 (l :: NatFoo)
                                   (l :: TyFun NatFoo Ordering)
-      = forall arg. KindOf (Apply (Mycompare_0123456789Sym1 l) arg) ~ KindOf (Mycompare_0123456789Sym2 l arg) =>
+      = forall arg. SameKind (Apply (Mycompare_0123456789Sym1 l) arg) (Mycompare_0123456789Sym2 l arg) =>
         Mycompare_0123456789Sym1KindInference
     type instance Apply (Mycompare_0123456789Sym1 l) l = Mycompare_0123456789Sym2 l l
     instance SuppressUnusedWarnings Mycompare_0123456789Sym0 where
@@ -46,7 +46,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
             (GHC.Tuple.(,) Mycompare_0123456789Sym0KindInference GHC.Tuple.())
     data Mycompare_0123456789Sym0 (l :: TyFun NatFoo (TyFun NatFoo Ordering
                                                       -> GHC.Types.Type))
-      = forall arg. KindOf (Apply Mycompare_0123456789Sym0 arg) ~ KindOf (Mycompare_0123456789Sym1 arg) =>
+      = forall arg. SameKind (Apply Mycompare_0123456789Sym0 arg) (Mycompare_0123456789Sym1 arg) =>
         Mycompare_0123456789Sym0KindInference
     type instance Apply Mycompare_0123456789Sym0 l = Mycompare_0123456789Sym1 l
     instance PMyOrd (Proxy :: Proxy NatFoo) where

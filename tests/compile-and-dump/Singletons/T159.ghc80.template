@@ -47,14 +47,14 @@ Singletons/T159.hs:0:0:: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) C1Sym1KindInference GHC.Tuple.())
     data C1Sym1 (l :: T0) (l :: TyFun T1 T1)
-      = forall arg. KindOf (Apply (C1Sym1 l) arg) ~ KindOf (C1Sym2 l arg) =>
+      = forall arg. SameKind (Apply (C1Sym1 l) arg) (C1Sym2 l arg) =>
         C1Sym1KindInference
     type instance Apply (C1Sym1 l) l = C1Sym2 l l
     instance SuppressUnusedWarnings C1Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) C1Sym0KindInference GHC.Tuple.())
     data C1Sym0 (l :: TyFun T0 (TyFun T1 T1 -> GHC.Types.Type))
-      = forall arg. KindOf (Apply C1Sym0 arg) ~ KindOf (C1Sym1 arg) =>
+      = forall arg. SameKind (Apply C1Sym0 arg) (C1Sym1 arg) =>
         C1Sym0KindInference
     type instance Apply C1Sym0 l = C1Sym1 l
     type (:&&$$$) (t :: T0) (t :: T1) = (:&&) t t
@@ -62,14 +62,14 @@ Singletons/T159.hs:0:0:: Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:&&$$###) GHC.Tuple.())
     data (:&&$$) (l :: T0) (l :: TyFun T1 T1)
-      = forall arg. KindOf (Apply ((:&&$$) l) arg) ~ KindOf ((:&&$$$) l arg) =>
+      = forall arg. SameKind (Apply ((:&&$$) l) arg) ((:&&$$$) l arg) =>
         (:&&$$###)
     type instance Apply ((:&&$$) l) l = (:&&$$$) l l
     instance SuppressUnusedWarnings (:&&$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:&&$###) GHC.Tuple.())
     data (:&&$) (l :: TyFun T0 (TyFun T1 T1 -> GHC.Types.Type))
-      = forall arg. KindOf (Apply (:&&$) arg) ~ KindOf ((:&&$$) arg) =>
+      = forall arg. SameKind (Apply (:&&$) arg) ((:&&$$) arg) =>
         (:&&$###)
     type instance Apply (:&&$) l = (:&&$$) l
     data instance Sing (z :: T1)
@@ -120,14 +120,14 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) C2Sym1KindInference GHC.Tuple.())
     data C2Sym1 (l :: T0) (l :: TyFun T2 T2)
-      = forall arg. KindOf (Apply (C2Sym1 l) arg) ~ KindOf (C2Sym2 l arg) =>
+      = forall arg. SameKind (Apply (C2Sym1 l) arg) (C2Sym2 l arg) =>
         C2Sym1KindInference
     type instance Apply (C2Sym1 l) l = C2Sym2 l l
     instance SuppressUnusedWarnings C2Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) C2Sym0KindInference GHC.Tuple.())
     data C2Sym0 (l :: TyFun T0 (TyFun T2 T2 -> GHC.Types.Type))
-      = forall arg. KindOf (Apply C2Sym0 arg) ~ KindOf (C2Sym1 arg) =>
+      = forall arg. SameKind (Apply C2Sym0 arg) (C2Sym1 arg) =>
         C2Sym0KindInference
     type instance Apply C2Sym0 l = C2Sym1 l
     type (:||$$$) (t :: T0) (t :: T2) = (:||) t t
@@ -135,14 +135,14 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:||$$###) GHC.Tuple.())
     data (:||$$) (l :: T0) (l :: TyFun T2 T2)
-      = forall arg. KindOf (Apply ((:||$$) l) arg) ~ KindOf ((:||$$$) l arg) =>
+      = forall arg. SameKind (Apply ((:||$$) l) arg) ((:||$$$) l arg) =>
         (:||$$###)
     type instance Apply ((:||$$) l) l = (:||$$$) l l
     instance SuppressUnusedWarnings (:||$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:||$###) GHC.Tuple.())
     data (:||$) (l :: TyFun T0 (TyFun T2 T2 -> GHC.Types.Type))
-      = forall arg. KindOf (Apply (:||$) arg) ~ KindOf ((:||$$) arg) =>
+      = forall arg. SameKind (Apply (:||$) arg) ((:||$$) arg) =>
         (:||$###)
     type instance Apply (:||$) l = (:||$$) l
     infixr 5 :%||

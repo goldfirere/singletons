@@ -69,18 +69,15 @@ buildDefunSymsDataD tyName tvbs ctors = do
 --
 -- type FooSym3 a b c = Foo a b c
 -- data FooSym2 a b f where
---   FooSym2KindInference :: KindOf (Apply (FooSym2 a b) arg)
---                          ~ KindOf (FooSym3 a b arg)
+--   FooSym2KindInference :: SameKind (Apply (FooSym2 a b) arg) (FooSym3 a b arg)
 --                        => FooSym2 a b f
 -- type instance Apply (FooSym2 a b) c = FooSym3 a b c
 -- data FooSym1 a f where
---   FooSym1KindInference :: KindOf (Apply (FooSym1 a) arg)
---                           ~ KindOf (FooSym2 a arg)
+--   FooSym1KindInference :: SameKind (Apply (FooSym1 a) arg) (FooSym2 a arg)
 --                        => FooSym1 a f
 -- type instance Apply (FooSym1 a) b = FooSym2 a b
 -- data FooSym0 f where
---  FooSym0KindInference :: KindOf (Apply FooSym0 arg)
---                          ~ KindOf (FooSym1 arg)
+--  FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg)
 --                       => FooSym0 f
 -- type instance Apply FooSym0 a = FooSym1 a
 --
@@ -130,13 +127,10 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
           tyfun_param = mk_tvb fst_name m_tyfun
           arg_names   = map extractTvbName arg_params
           params      = arg_params ++ [tyfun_param]
-          con_eq_ct   = mkEqPred
-                          (DConT kindOfName `DAppT`
-                            (foldType (DConT data_name) (map DVarT arg_names)
-                             `apply`
-                             (DVarT extra_name)))
-                          (DConT kindOfName `DAppT`
-                           foldType (DConT next_name) (map DVarT (arg_names ++ [extra_name])))
+          con_eq_ct   = DConPr sameKindName `DAppPr` lhs `DAppPr` rhs
+            where
+              lhs = foldType (DConT data_name) (map DVarT arg_names) `apply` (DVarT extra_name)
+              rhs = foldType (DConT next_name) (map DVarT (arg_names ++ [extra_name]))
           con_decl    = DCon [DPlainTV extra_name]
                              [con_eq_ct]
                              con_name

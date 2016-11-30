@@ -22,7 +22,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) BanSym0KindInference GHC.Tuple.())
     data BanSym0 (l :: TyFun Bool Bool)
-      = forall arg. KindOf (Apply BanSym0 arg) ~ KindOf (BanSym1 arg) =>
+      = forall arg. SameKind (Apply BanSym0 arg) (BanSym1 arg) =>
         BanSym0KindInference
     type instance Apply BanSym0 l = BanSym1 l
     type BazSym1 (t :: Bool) = Baz t
@@ -30,7 +30,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) BazSym0KindInference GHC.Tuple.())
     data BazSym0 (l :: TyFun Bool Bool)
-      = forall arg. KindOf (Apply BazSym0 arg) ~ KindOf (BazSym1 arg) =>
+      = forall arg. SameKind (Apply BazSym0 arg) (BazSym1 arg) =>
         BazSym0KindInference
     type instance Apply BazSym0 l = BazSym1 l
     type BarSym1 (t :: Bool) = Bar t
@@ -38,7 +38,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) BarSym0KindInference GHC.Tuple.())
     data BarSym0 (l :: TyFun Bool Bool)
-      = forall arg. KindOf (Apply BarSym0 arg) ~ KindOf (BarSym1 arg) =>
+      = forall arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
         BarSym0KindInference
     type instance Apply BarSym0 l = BarSym1 l
     type FooSym1 (t :: Bool) = Foo t
@@ -46,7 +46,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
     data FooSym0 (l :: TyFun Bool Bool)
-      = forall arg. KindOf (Apply FooSym0 arg) ~ KindOf (FooSym1 arg) =>
+      = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
         FooSym0KindInference
     type instance Apply FooSym0 l = FooSym1 l
     type family Ban (a :: Bool) :: Bool where

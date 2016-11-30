@@ -12,7 +12,7 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) HeadSym0KindInference GHC.Tuple.())
     data HeadSym0 (l :: TyFun [a0123456789] a0123456789)
-      = forall arg. KindOf (Apply HeadSym0 arg) ~ KindOf (HeadSym1 arg) =>
+      = forall arg. SameKind (Apply HeadSym0 arg) (HeadSym1 arg) =>
         HeadSym0KindInference
     type instance Apply HeadSym0 l = HeadSym1 l
     type family Head (a :: [a]) :: a where

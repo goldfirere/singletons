@@ -9,7 +9,7 @@ Promote/Prelude.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) OddSym0KindInference GHC.Tuple.())
     data OddSym0 (l :: TyFun Nat Bool)
-      = forall arg. Data.Singletons.KindOf (Apply OddSym0 arg) ~ Data.Singletons.KindOf (OddSym1 arg) =>
+      = forall arg. Data.Singletons.SameKind (Apply OddSym0 arg) (OddSym1 arg) =>
         OddSym0KindInference
     type instance Apply OddSym0 l = OddSym1 l
     type family Odd (a :: Nat) :: Bool where
