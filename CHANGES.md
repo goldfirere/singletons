@@ -16,6 +16,9 @@ removed. `DemoteRep` has been renamed `Demote`.
 
 * Generating singletons also now generates fixity declarations for the singletonized
   definitions, thanks to @int-index.
+  
+* Though more an implementation detail: singletons no longer uses kind-level proxies anywhere,
+  thanks again to @int-index.
 
 2.2
 ---
