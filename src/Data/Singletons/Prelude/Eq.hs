@@ -21,7 +21,6 @@ module Data.Singletons.Prelude.Eq (
   ) where
 
 import Data.Singletons.Prelude.Bool
-import Data.Singletons
 import Data.Singletons.Single
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Util
@@ -33,7 +32,7 @@ import Data.Type.Equality
 
 -- | The promoted analogue of 'Eq'. If you supply no definition for '(:==)',
 -- then it defaults to a use of '(==)', from @Data.Type.Equality@.
-class kproxy ~ 'Proxy => PEq (kproxy :: Proxy a) where
+class PEq a where
   type (:==) (x :: a) (y :: a) :: Bool
   type (:/=) (x :: a) (y :: a) :: Bool
 

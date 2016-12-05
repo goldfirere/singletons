@@ -35,7 +35,7 @@ mkEqTypeInstance kind cons = do
                                              (foldType (DConT helperName)
                                                        [DVarT aName, DVarT bName]))
       inst = DInstanceD Nothing [] ((DConT $ promoteClassName eqName) `DAppT`
-                                    kindParam kind) [eqInst]
+                                    kind) [eqInst]
 
   return [closedFam, inst]
 
