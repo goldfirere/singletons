@@ -91,8 +91,8 @@ buildDefunSymsDataD tyName tvbs ctors = do
 --
 -- The defunctionalize function takes Maybe DKinds so that the caller can
 -- indicate which kinds are known and which need to be inferred.
-defunctionalize :: Name -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
-defunctionalize name m_arg_kinds' m_res_kind' = do
+defunctionalize' :: Bool -> Name -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
+defunctionalize' need_kind_inf name m_arg_kinds' m_res_kind' = do
   let (m_arg_kinds, m_res_kind) = eta_expand (noExactTyVars m_arg_kinds')
                                              (noExactTyVars m_res_kind')
       num_args = length m_arg_kinds
@@ -136,7 +136,7 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
                              con_name
                              (DNormalC [])
                              Nothing
-          data_decl   = DDataD Data [] data_name params [con_decl] []
+          data_decl   = DDataD Data [] data_name params [con_decl | need_kind_inf] []
           app_eqn     = DTySynEqn [ foldType (DConT data_name)
                                              (map DVarT rest_names)
                                   , DVarT fst_name ]
@@ -150,7 +150,13 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
                                                     ((DVarE 'snd) `DAppE`
                                                      mkTupleDExp [DConE con_name,
                                                                   mkTupleDExp []])]]
-      return $ suppress : data_decl : app_decl : decls
+      return $ [suppress | need_kind_inf] ++ data_decl : app_decl : decls
+
+defunctionalize :: Name -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
+defunctionalize = defunctionalize' True
+
+defunctionalizeWithoutKindInference :: Name -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
+defunctionalizeWithoutKindInference = defunctionalize' False
 
 buildTyFun :: DKind -> DKind -> DKind
 buildTyFun k1 k2 = DConT tyFunName `DAppT` k1 `DAppT` k2

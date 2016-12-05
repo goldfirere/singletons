@@ -19,7 +19,6 @@ import GHC.TypeLits ( Nat, Symbol )
 import GHC.Exts ( Any )
 import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
-import Data.Proxy ( Proxy(..) )
 import Control.Monad
 
 anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
@@ -29,7 +28,7 @@ anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
   eqName, ordName, boundedName, orderingName,
   singFamilyName, singIName, singMethName, demoteName,
   singKindClassName, sEqClassName, sEqMethName, sconsName, snilName,
-  sIfName, proxyTypeName, proxyDataName,
+  sIfName,
   someSingTypeName, someSingDataName,
   sListName, sDecideClassName, sDecideMethName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
@@ -75,8 +74,6 @@ sconsName = mk_name_d "Data.Singletons.Prelude.Instances" "SCons"
 snilName = mk_name_d "Data.Singletons.Prelude.Instances" "SNil"
 someSingTypeName = ''SomeSing
 someSingDataName = 'SomeSing
-proxyTypeName = ''Proxy
-proxyDataName = 'Proxy
 sListName = mk_name_tc "Data.Singletons.Prelude.Instances" "SList"
 sDecideClassName = ''SDecide
 sDecideMethName = '(%~)
@@ -215,12 +212,6 @@ singValName n
   | head (nameBase n) == '_' = (prefixLCName "_s" "%") $ n
   | otherwise                = (prefixLCName "s" "%") $ upcase n
 
-kindParam :: DKind -> DType
-kindParam k = DSigT (DConT proxyDataName) (DConT proxyTypeName `DAppT` k)
-
-proxyFor :: DType -> DExp
-proxyFor ty = DSigE (DConE proxyDataName) (DAppT (DConT proxyTypeName) ty)
-
 singFamily :: DType
 singFamily = DConT singFamilyName
 
@@ -245,13 +236,3 @@ foldApply = foldl apply
 -- make and equality predicate
 mkEqPred :: DType -> DType -> DPred
 mkEqPred ty1 ty2 = foldl DAppPr (DConPr equalityName) [ty1, ty2]
-
--- create a bunch of kproxy vars, and constrain them all to be 'Proxy
-mkKProxies :: Quasi q
-           => [Name]   -- for the kinds of the kproxies
-           -> q ([DTyVarBndr], DCxt)
-mkKProxies ns = do
-  kproxies <- mapM (const $ qNewName "kproxy") ns
-  return ( zipWith (\kp kv -> DKindedTV kp (DConT proxyTypeName `DAppT` DVarT kv))
-                   kproxies ns
-         , map (\kp -> mkEqPred (DVarT kp) (DConT proxyDataName)) kproxies )
