@@ -10,7 +10,7 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
       Equals_0123456789 FLeaf FLeaf = TrueSym0
       Equals_0123456789 ((:+:) a a) ((:+:) b b) = (:&&) ((:==) a b) ((:==) a b)
       Equals_0123456789 (a :: Foo) (b :: Foo) = FalseSym0
-    instance PEq (Proxy :: Proxy Foo) where
+    instance PEq Foo where
       type (:==) (a :: Foo) (b :: Foo) = Equals_0123456789 a b
     instance SEq Empty where
       (%:==) a _
@@ -19,5 +19,5 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
     type family Equals_0123456789 (a :: Empty)
                                   (b :: Empty) :: Bool where
       Equals_0123456789 (a :: Empty) (b :: Empty) = FalseSym0
-    instance PEq (Proxy :: Proxy Empty) where
+    instance PEq Empty where
       type (:==) (a :: Empty) (b :: Empty) = Equals_0123456789 a b

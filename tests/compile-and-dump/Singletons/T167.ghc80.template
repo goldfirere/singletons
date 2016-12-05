@@ -75,7 +75,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. SameKind (Apply FooList_0123456789Sym0 arg) (FooList_0123456789Sym1 arg) =>
         FooList_0123456789Sym0KindInference
     type instance Apply FooList_0123456789Sym0 l = FooList_0123456789Sym1 l
-    class kproxy ~ Proxy => PFoo (kproxy :: Proxy a) where
+    class PFoo (a :: GHC.Types.Type) where
       type FoosPrec (arg :: Nat) (arg :: a) (arg :: [Bool]) :: [Bool]
       type FooList (arg :: a) (arg :: [Bool]) :: [Bool]
       type FooList a a = Apply (Apply FooList_0123456789Sym0 a) a
@@ -116,7 +116,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. SameKind (Apply FoosPrec_0123456789Sym0 arg) (FoosPrec_0123456789Sym1 arg) =>
         FoosPrec_0123456789Sym0KindInference
     type instance Apply FoosPrec_0123456789Sym0 l = FoosPrec_0123456789Sym1 l
-    instance PFoo (Proxy :: Proxy [a]) where
+    instance PFoo [a] where
       type FoosPrec (a :: Nat) (a :: [a]) (a :: [Bool]) = Apply (Apply (Apply FoosPrec_0123456789Sym0 a) a) a
     class SFoo a where
       sFoosPrec ::
