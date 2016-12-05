@@ -14,7 +14,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) UnBarSym0KindInference GHC.Tuple.())
     data UnBarSym0 (l :: TyFun Bar Nat)
-      = forall arg. KindOf (Apply UnBarSym0 arg) ~ KindOf (UnBarSym1 arg) =>
+      = forall arg. SameKind (Apply UnBarSym0 arg) (UnBarSym1 arg) =>
         UnBarSym0KindInference
     type instance Apply UnBarSym0 l = UnBarSym1 l
     type family UnBar (a :: Bar) :: Nat where
@@ -29,7 +29,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
     data FooSym0 (l :: TyFun Nat Foo)
-      = forall arg. KindOf (Apply FooSym0 arg) ~ KindOf (FooSym1 arg) =>
+      = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
         FooSym0KindInference
     type instance Apply FooSym0 l = FooSym1 l
     type BarSym1 (t :: Nat) = Bar t
@@ -37,6 +37,6 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) BarSym0KindInference GHC.Tuple.())
     data BarSym0 (l :: TyFun Nat Bar)
-      = forall arg. KindOf (Apply BarSym0 arg) ~ KindOf (BarSym1 arg) =>
+      = forall arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
         BarSym0KindInference
     type instance Apply BarSym0 l = BarSym1 l

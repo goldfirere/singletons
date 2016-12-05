@@ -1,7 +1,7 @@
 {-# LANGUAGE MagicHash, RankNTypes, PolyKinds, GADTs, DataKinds,
              FlexibleContexts, FlexibleInstances,
              TypeFamilies, TypeOperators, TypeFamilyDependencies,
-             UndecidableInstances, TypeInType #-}
+             UndecidableInstances, TypeInType, ConstraintKinds #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -32,7 +32,7 @@ module Data.Singletons (
   SingI(..), SingKind(..),
 
   -- * Working with singletons
-  KindOf,
+  KindOf, SameKind,
   SingInstance(..), SomeSing(..),
   singInstance, withSingI, withSomeSing, singByProxy,
 
@@ -64,11 +64,17 @@ module Data.Singletons (
 import Data.Kind
 import Unsafe.Coerce
 import Data.Proxy ( Proxy(..) )
-import GHC.Exts ( Proxy# )
+import GHC.Exts ( Proxy#, Constraint )
 
 -- | Convenient synonym to refer to the kind of a type variable:
--- @type KindOf (a :: k) = ('Proxy :: Proxy k)@
-type KindOf (a :: k) = ('Proxy :: Proxy k)
+-- @type KindOf (a :: k) = k@
+type KindOf (a :: k) = k
+
+-- | Force GHC to unify the kinds of @a@ and @b@. Note that @SameKind a b@ is
+-- different from @KindOf a ~ KindOf b@ in that the former makes the kinds
+-- unify immediately, whereas the latter is a proposition that GHC considers
+-- as possibly false.
+type SameKind (a :: k) (b :: k) = (() :: Constraint)
 
 ----------------------------------------------------------------------
 ---- Sing & friends --------------------------------------------------

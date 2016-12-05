@@ -22,7 +22,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
         = snd (GHC.Tuple.(,) (:====$$###) GHC.Tuple.())
     data (:====$$) (l :: a0123456789)
                    (l :: TyFun a0123456789 a0123456789)
-      = forall arg. KindOf (Apply ((:====$$) l) arg) ~ KindOf ((:====$$$) l arg) =>
+      = forall arg. SameKind (Apply ((:====$$) l) arg) ((:====$$$) l arg) =>
         (:====$$###)
     type instance Apply ((:====$$) l) l = (:====$$$) l l
     instance SuppressUnusedWarnings (:====$) where
@@ -30,7 +30,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
         = snd (GHC.Tuple.(,) (:====$###) GHC.Tuple.())
     data (:====$) (l :: TyFun a0123456789 (TyFun a0123456789 a0123456789
                                            -> GHC.Types.Type))
-      = forall arg. KindOf (Apply (:====$) arg) ~ KindOf ((:====$$) arg) =>
+      = forall arg. SameKind (Apply (:====$) arg) ((:====$$) arg) =>
         (:====$###)
     type instance Apply (:====$) l = (:====$$) l
     type family (:====) (a :: a) (a :: a) :: a where
@@ -42,7 +42,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:<=>$$###) GHC.Tuple.())
     data (:<=>$$) (l :: a0123456789) (l :: TyFun a0123456789 Ordering)
-      = forall arg. KindOf (Apply ((:<=>$$) l) arg) ~ KindOf ((:<=>$$$) l arg) =>
+      = forall arg. SameKind (Apply ((:<=>$$) l) arg) ((:<=>$$$) l arg) =>
         (:<=>$$###)
     type instance Apply ((:<=>$$) l) l = (:<=>$$$) l l
     instance SuppressUnusedWarnings (:<=>$) where
@@ -50,7 +50,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
         = snd (GHC.Tuple.(,) (:<=>$###) GHC.Tuple.())
     data (:<=>$) (l :: TyFun a0123456789 (TyFun a0123456789 Ordering
                                           -> GHC.Types.Type))
-      = forall arg. KindOf (Apply (:<=>$) arg) ~ KindOf ((:<=>$$) arg) =>
+      = forall arg. SameKind (Apply (:<=>$) arg) ((:<=>$$) arg) =>
         (:<=>$###)
     type instance Apply (:<=>$) l = (:<=>$$) l
     class kproxy ~ Proxy => PMyOrd (kproxy :: Proxy a) where

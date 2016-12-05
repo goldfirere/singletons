@@ -8,7 +8,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Field1Sym0KindInference GHC.Tuple.())
     data Field1Sym0 (l :: TyFun (Record a0123456789) a0123456789)
-      = forall arg. KindOf (Apply Field1Sym0 arg) ~ KindOf (Field1Sym1 arg) =>
+      = forall arg. SameKind (Apply Field1Sym0 arg) (Field1Sym1 arg) =>
         Field1Sym0KindInference
     type instance Apply Field1Sym0 l = Field1Sym1 l
     type Field2Sym1 (t :: Record a0123456789) = Field2 t
@@ -16,7 +16,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Field2Sym0KindInference GHC.Tuple.())
     data Field2Sym0 (l :: TyFun (Record a0123456789) Bool)
-      = forall arg. KindOf (Apply Field2Sym0 arg) ~ KindOf (Field2Sym1 arg) =>
+      = forall arg. SameKind (Apply Field2Sym0 arg) (Field2Sym1 arg) =>
         Field2Sym0KindInference
     type instance Apply Field2Sym0 l = Field2Sym1 l
     type family Field1 (a :: Record a) :: a where
@@ -29,7 +29,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
         = snd (GHC.Tuple.(,) MkRecordSym1KindInference GHC.Tuple.())
     data MkRecordSym1 (l :: a0123456789)
                       (l :: TyFun Bool (Record a0123456789))
-      = forall arg. KindOf (Apply (MkRecordSym1 l) arg) ~ KindOf (MkRecordSym2 l arg) =>
+      = forall arg. SameKind (Apply (MkRecordSym1 l) arg) (MkRecordSym2 l arg) =>
         MkRecordSym1KindInference
     type instance Apply (MkRecordSym1 l) l = MkRecordSym2 l l
     instance SuppressUnusedWarnings MkRecordSym0 where
@@ -37,7 +37,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
         = snd (GHC.Tuple.(,) MkRecordSym0KindInference GHC.Tuple.())
     data MkRecordSym0 (l :: TyFun a0123456789 (TyFun Bool (Record a0123456789)
                                                -> GHC.Types.Type))
-      = forall arg. KindOf (Apply MkRecordSym0 arg) ~ KindOf (MkRecordSym1 arg) =>
+      = forall arg. SameKind (Apply MkRecordSym0 arg) (MkRecordSym1 arg) =>
         MkRecordSym0KindInference
     type instance Apply MkRecordSym0 l = MkRecordSym1 l
     data instance Sing (z :: Record a)

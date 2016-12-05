@@ -35,7 +35,7 @@ anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
   equalityName, applySingName, suppressClassName, suppressMethodName,
   thenCmpName,
-  kindOfName, tyFromIntegerName, tyNegateName, sFromIntegerName,
+  sameKindName, tyFromIntegerName, tyNegateName, sFromIntegerName,
   sNegateName, errorName, foldlName, cmpEQName, cmpLTName, cmpGTName,
   singletonsToEnumName, singletonsFromEnumName, enumName, singletonsEnumName,
   equalsName :: Name
@@ -88,7 +88,7 @@ applySingName = 'applySing
 suppressClassName = ''SuppressUnusedWarnings
 suppressMethodName = 'suppressUnusedWarnings
 thenCmpName = mk_name_v "Data.Singletons.Prelude.Ord" "thenCmp"
-kindOfName = ''KindOf
+sameKindName = ''SameKind
 tyFromIntegerName = mk_name_tc "Data.Singletons.Prelude.Num" "FromInteger"
 tyNegateName = mk_name_tc "Data.Singletons.Prelude.Num" "Negate"
 sFromIntegerName = mk_name_v "Data.Singletons.Prelude.Num" "sFromInteger"

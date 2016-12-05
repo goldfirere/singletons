@@ -46,7 +46,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) LeftSym0KindInference GHC.Tuple.())
     data LeftSym0 (l :: TyFun a0123456789 (Either a0123456789 b0123456789))
-      = forall arg. KindOf (Apply LeftSym0 arg) ~ KindOf (LeftSym1 arg) =>
+      = forall arg. SameKind (Apply LeftSym0 arg) (LeftSym1 arg) =>
         LeftSym0KindInference
     type instance Apply LeftSym0 l = LeftSym1 l
     type RightSym1 (t :: b0123456789) = Right t
@@ -54,7 +54,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) RightSym0KindInference GHC.Tuple.())
     data RightSym0 (l :: TyFun b0123456789 (Either a0123456789 b0123456789))
-      = forall arg. KindOf (Apply RightSym0 arg) ~ KindOf (RightSym1 arg) =>
+      = forall arg. SameKind (Apply RightSym0 arg) (RightSym1 arg) =>
         RightSym0KindInference
     type instance Apply RightSym0 l = RightSym1 l
     type family Case_0123456789 ns bs n b t where
@@ -68,7 +68,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym3KindInference GHC.Tuple.())
     data Lambda_0123456789Sym3 l l l l
-      = forall arg. KindOf (Apply (Lambda_0123456789Sym3 l l l) arg) ~ KindOf (Lambda_0123456789Sym4 l l l arg) =>
+      = forall arg. SameKind (Apply (Lambda_0123456789Sym3 l l l) arg) (Lambda_0123456789Sym4 l l l arg) =>
         Lambda_0123456789Sym3KindInference
     type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789Sym4 l l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
@@ -76,7 +76,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
     data Lambda_0123456789Sym2 l l l
-      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
+      = forall arg. SameKind (Apply (Lambda_0123456789Sym2 l l) arg) (Lambda_0123456789Sym3 l l arg) =>
         Lambda_0123456789Sym2KindInference
     type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
@@ -84,7 +84,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
     data Lambda_0123456789Sym1 l l
-      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+      = forall arg. SameKind (Apply (Lambda_0123456789Sym1 l) arg) (Lambda_0123456789Sym2 l arg) =>
         Lambda_0123456789Sym1KindInference
     type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
@@ -92,7 +92,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
     data Lambda_0123456789Sym0 l
-      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+      = forall arg. SameKind (Apply Lambda_0123456789Sym0 arg) (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type family Case_0123456789 n b a_0123456789 a_0123456789 t where
@@ -106,7 +106,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym3KindInference GHC.Tuple.())
     data Lambda_0123456789Sym3 l l l l
-      = forall arg. KindOf (Apply (Lambda_0123456789Sym3 l l l) arg) ~ KindOf (Lambda_0123456789Sym4 l l l arg) =>
+      = forall arg. SameKind (Apply (Lambda_0123456789Sym3 l l l) arg) (Lambda_0123456789Sym4 l l l arg) =>
         Lambda_0123456789Sym3KindInference
     type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789Sym4 l l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
@@ -114,7 +114,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym2KindInference GHC.Tuple.())
     data Lambda_0123456789Sym2 l l l
-      = forall arg. KindOf (Apply (Lambda_0123456789Sym2 l l) arg) ~ KindOf (Lambda_0123456789Sym3 l l arg) =>
+      = forall arg. SameKind (Apply (Lambda_0123456789Sym2 l l) arg) (Lambda_0123456789Sym3 l l arg) =>
         Lambda_0123456789Sym2KindInference
     type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
@@ -122,7 +122,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym1KindInference GHC.Tuple.())
     data Lambda_0123456789Sym1 l l
-      = forall arg. KindOf (Apply (Lambda_0123456789Sym1 l) arg) ~ KindOf (Lambda_0123456789Sym2 l arg) =>
+      = forall arg. SameKind (Apply (Lambda_0123456789Sym1 l) arg) (Lambda_0123456789Sym2 l arg) =>
         Lambda_0123456789Sym1KindInference
     type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
@@ -130,7 +130,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         = snd
             (GHC.Tuple.(,) Lambda_0123456789Sym0KindInference GHC.Tuple.())
     data Lambda_0123456789Sym0 l
-      = forall arg. KindOf (Apply Lambda_0123456789Sym0 arg) ~ KindOf (Lambda_0123456789Sym1 arg) =>
+      = forall arg. SameKind (Apply Lambda_0123456789Sym0 arg) (Lambda_0123456789Sym1 arg) =>
         Lambda_0123456789Sym0KindInference
     type instance Apply Lambda_0123456789Sym0 l = Lambda_0123456789Sym1 l
     type FooSym3 (t :: TyFun (TyFun a0123456789 b0123456789
@@ -149,7 +149,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                        -> GHC.Types.Type)
                  (l :: TyFun a0123456789 b0123456789 -> GHC.Types.Type)
                  (l :: TyFun a0123456789 b0123456789)
-      = forall arg. KindOf (Apply (FooSym2 l l) arg) ~ KindOf (FooSym3 l l arg) =>
+      = forall arg. SameKind (Apply (FooSym2 l l) arg) (FooSym3 l l arg) =>
         FooSym2KindInference
     type instance Apply (FooSym2 l l) l = FooSym3 l l l
     instance SuppressUnusedWarnings FooSym1 where
@@ -162,7 +162,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                  (l :: TyFun (TyFun a0123456789 b0123456789
                               -> GHC.Types.Type) (TyFun a0123456789 b0123456789
                                                   -> GHC.Types.Type))
-      = forall arg. KindOf (Apply (FooSym1 l) arg) ~ KindOf (FooSym2 l arg) =>
+      = forall arg. SameKind (Apply (FooSym1 l) arg) (FooSym2 l arg) =>
         FooSym1KindInference
     type instance Apply (FooSym1 l) l = FooSym2 l l
     instance SuppressUnusedWarnings FooSym0 where
@@ -175,7 +175,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                                                          -> GHC.Types.Type) (TyFun a0123456789 b0123456789
                                                                              -> GHC.Types.Type)
                                                   -> GHC.Types.Type))
-      = forall arg. KindOf (Apply FooSym0 arg) ~ KindOf (FooSym1 arg) =>
+      = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
         FooSym0KindInference
     type instance Apply FooSym0 l = FooSym1 l
     type ZipWithSym3 (t :: TyFun a0123456789 (TyFun b0123456789 c0123456789
@@ -192,7 +192,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                            -> GHC.Types.Type)
                      (l :: [a0123456789])
                      (l :: TyFun [b0123456789] [c0123456789])
-      = forall arg. KindOf (Apply (ZipWithSym2 l l) arg) ~ KindOf (ZipWithSym3 l l arg) =>
+      = forall arg. SameKind (Apply (ZipWithSym2 l l) arg) (ZipWithSym3 l l arg) =>
         ZipWithSym2KindInference
     type instance Apply (ZipWithSym2 l l) l = ZipWithSym3 l l l
     instance SuppressUnusedWarnings ZipWithSym1 where
@@ -203,7 +203,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                            -> GHC.Types.Type)
                      (l :: TyFun [a0123456789] (TyFun [b0123456789] [c0123456789]
                                                 -> GHC.Types.Type))
-      = forall arg. KindOf (Apply (ZipWithSym1 l) arg) ~ KindOf (ZipWithSym2 l arg) =>
+      = forall arg. SameKind (Apply (ZipWithSym1 l) arg) (ZipWithSym2 l arg) =>
         ZipWithSym1KindInference
     type instance Apply (ZipWithSym1 l) l = ZipWithSym2 l l
     instance SuppressUnusedWarnings ZipWithSym0 where
@@ -214,7 +214,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                                   -> GHC.Types.Type) (TyFun [a0123456789] (TyFun [b0123456789] [c0123456789]
                                                                            -> GHC.Types.Type)
                                                       -> GHC.Types.Type))
-      = forall arg. KindOf (Apply ZipWithSym0 arg) ~ KindOf (ZipWithSym1 arg) =>
+      = forall arg. SameKind (Apply ZipWithSym0 arg) (ZipWithSym1 arg) =>
         ZipWithSym0KindInference
     type instance Apply ZipWithSym0 l = ZipWithSym1 l
     type SplungeSym2 (t :: [Nat]) (t :: [Bool]) = Splunge t t
@@ -222,7 +222,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) SplungeSym1KindInference GHC.Tuple.())
     data SplungeSym1 (l :: [Nat]) (l :: TyFun [Bool] [Nat])
-      = forall arg. KindOf (Apply (SplungeSym1 l) arg) ~ KindOf (SplungeSym2 l arg) =>
+      = forall arg. SameKind (Apply (SplungeSym1 l) arg) (SplungeSym2 l arg) =>
         SplungeSym1KindInference
     type instance Apply (SplungeSym1 l) l = SplungeSym2 l l
     instance SuppressUnusedWarnings SplungeSym0 where
@@ -230,7 +230,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         = snd (GHC.Tuple.(,) SplungeSym0KindInference GHC.Tuple.())
     data SplungeSym0 (l :: TyFun [Nat] (TyFun [Bool] [Nat]
                                         -> GHC.Types.Type))
-      = forall arg. KindOf (Apply SplungeSym0 arg) ~ KindOf (SplungeSym1 arg) =>
+      = forall arg. SameKind (Apply SplungeSym0 arg) (SplungeSym1 arg) =>
         SplungeSym0KindInference
     type instance Apply SplungeSym0 l = SplungeSym1 l
     type EtadSym2 (t :: [Nat]) (t :: [Bool]) = Etad t t
@@ -238,7 +238,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) EtadSym1KindInference GHC.Tuple.())
     data EtadSym1 (l :: [Nat]) (l :: TyFun [Bool] [Nat])
-      = forall arg. KindOf (Apply (EtadSym1 l) arg) ~ KindOf (EtadSym2 l arg) =>
+      = forall arg. SameKind (Apply (EtadSym1 l) arg) (EtadSym2 l arg) =>
         EtadSym1KindInference
     type instance Apply (EtadSym1 l) l = EtadSym2 l l
     instance SuppressUnusedWarnings EtadSym0 where
@@ -246,7 +246,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         = snd (GHC.Tuple.(,) EtadSym0KindInference GHC.Tuple.())
     data EtadSym0 (l :: TyFun [Nat] (TyFun [Bool] [Nat]
                                      -> GHC.Types.Type))
-      = forall arg. KindOf (Apply EtadSym0 arg) ~ KindOf (EtadSym1 arg) =>
+      = forall arg. SameKind (Apply EtadSym0 arg) (EtadSym1 arg) =>
         EtadSym0KindInference
     type instance Apply EtadSym0 l = EtadSym1 l
     type LiftMaybeSym2 (t :: TyFun a0123456789 b0123456789
@@ -259,7 +259,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     data LiftMaybeSym1 (l :: TyFun a0123456789 b0123456789
                              -> GHC.Types.Type)
                        (l :: TyFun (Maybe a0123456789) (Maybe b0123456789))
-      = forall arg. KindOf (Apply (LiftMaybeSym1 l) arg) ~ KindOf (LiftMaybeSym2 l arg) =>
+      = forall arg. SameKind (Apply (LiftMaybeSym1 l) arg) (LiftMaybeSym2 l arg) =>
         LiftMaybeSym1KindInference
     type instance Apply (LiftMaybeSym1 l) l = LiftMaybeSym2 l l
     instance SuppressUnusedWarnings LiftMaybeSym0 where
@@ -268,7 +268,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     data LiftMaybeSym0 (l :: TyFun (TyFun a0123456789 b0123456789
                                     -> GHC.Types.Type) (TyFun (Maybe a0123456789) (Maybe b0123456789)
                                                         -> GHC.Types.Type))
-      = forall arg. KindOf (Apply LiftMaybeSym0 arg) ~ KindOf (LiftMaybeSym1 arg) =>
+      = forall arg. SameKind (Apply LiftMaybeSym0 arg) (LiftMaybeSym1 arg) =>
         LiftMaybeSym0KindInference
     type instance Apply LiftMaybeSym0 l = LiftMaybeSym1 l
     type MapSym2 (t :: TyFun a0123456789 b0123456789 -> GHC.Types.Type)
@@ -279,7 +279,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         = snd (GHC.Tuple.(,) MapSym1KindInference GHC.Tuple.())
     data MapSym1 (l :: TyFun a0123456789 b0123456789 -> GHC.Types.Type)
                  (l :: TyFun [a0123456789] [b0123456789])
-      = forall arg. KindOf (Apply (MapSym1 l) arg) ~ KindOf (MapSym2 l arg) =>
+      = forall arg. SameKind (Apply (MapSym1 l) arg) (MapSym2 l arg) =>
         MapSym1KindInference
     type instance Apply (MapSym1 l) l = MapSym2 l l
     instance SuppressUnusedWarnings MapSym0 where
@@ -288,7 +288,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     data MapSym0 (l :: TyFun (TyFun a0123456789 b0123456789
                               -> GHC.Types.Type) (TyFun [a0123456789] [b0123456789]
                                                   -> GHC.Types.Type))
-      = forall arg. KindOf (Apply MapSym0 arg) ~ KindOf (MapSym1 arg) =>
+      = forall arg. SameKind (Apply MapSym0 arg) (MapSym1 arg) =>
         MapSym0KindInference
     type instance Apply MapSym0 l = MapSym1 l
     type family Foo (a :: TyFun (TyFun a b

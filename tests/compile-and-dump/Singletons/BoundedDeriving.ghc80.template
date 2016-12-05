@@ -42,7 +42,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo3Sym0KindInference GHC.Tuple.())
     data Foo3Sym0 (l :: TyFun a0123456789 (Foo3 a0123456789))
-      = forall arg. KindOf (Apply Foo3Sym0 arg) ~ KindOf (Foo3Sym1 arg) =>
+      = forall arg. SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
         Foo3Sym0KindInference
     type instance Apply Foo3Sym0 l = Foo3Sym1 l
     type Foo41Sym0 = Foo41
@@ -52,14 +52,14 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PairSym1KindInference GHC.Tuple.())
     data PairSym1 (l :: Bool) (l :: TyFun Bool Pair)
-      = forall arg. KindOf (Apply (PairSym1 l) arg) ~ KindOf (PairSym2 l arg) =>
+      = forall arg. SameKind (Apply (PairSym1 l) arg) (PairSym2 l arg) =>
         PairSym1KindInference
     type instance Apply (PairSym1 l) l = PairSym2 l l
     instance SuppressUnusedWarnings PairSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PairSym0KindInference GHC.Tuple.())
     data PairSym0 (l :: TyFun Bool (TyFun Bool Pair -> Type))
-      = forall arg. KindOf (Apply PairSym0 arg) ~ KindOf (PairSym1 arg) =>
+      = forall arg. SameKind (Apply PairSym0 arg) (PairSym1 arg) =>
         PairSym0KindInference
     type instance Apply PairSym0 l = PairSym1 l
     type family MinBound_0123456789 :: Foo1 where
