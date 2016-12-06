@@ -229,5 +229,7 @@ singDecsM locals thing = do
   (decs1, decs2) <- singM locals thing
   return $ decs1 ++ decs2
 
+-- Temporary function until support for -XTypeApplications is
+-- implemented in TH-desugar.
 proxyFor :: DType -> DExp
 proxyFor ty = DSigE (DConE 'Proxy) (DAppT (DConT ''Proxy) ty)

@@ -232,6 +232,20 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
 
+-- Note [CUSKification]
+-- ~~~~~~~~~~~~~~~~~~~~
+-- GHC #12928 means that sometimes, this TH code will produce a declaration
+-- that has a kind signature even when we want kind inference to work. There
+-- seems to be no way to avoid this, so we embrace it:
+--
+--   * If a class type variable has no explicit kind, we make no effort to
+--     guess it and default to *. This is OK because before TypeInType we were
+--     limited by KProxy anyway.
+--
+--   * If a class type variable has an explicit kind, it is preserved.
+--
+-- This way, we always get proper CUSKs where we need them.
+
 promoteClassDec :: UClassDecl
                 -> PrM AClassDecl
 promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
@@ -243,7 +257,7 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
                                     , lde_types = meth_sigs
                                     , lde_infix = infix_decls } }) = do
   let
-    -- a workaround for GHC Trac #12928
+    -- a workaround for GHC Trac #12928; see Note [CUSKification]
     cuskify :: DTyVarBndr -> DTyVarBndr
     cuskify (DPlainTV tvname) = DKindedTV tvname DStarT
     cuskify tv                = tv

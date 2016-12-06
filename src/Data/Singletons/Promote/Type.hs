@@ -29,7 +29,10 @@ promoteType = go []
     go args     (DAppT t1 t2) = do
       k2 <- go [] t2
       go (k2 : args) t1
-    go args     (DSigT ty ki) = DSigT <$> go args ty <*> go [] ki
+    go args     (DSigT ty ki) = do
+      ty' <- go [] ty
+      -- No need to promote 'ki' - it is already a kind.
+      return $ foldType (DSigT ty' ki) args
     go args     (DVarT name) = return $ foldType (DVarT name) args
     go []       (DConT name)
       | name == typeRepName               = return DStarT
