@@ -423,6 +423,12 @@ singClause :: DType   -- the promoted function
            -> ADClause -> SgM DClause
 singClause prom_fun num_arrows bound_names res_ki
            (ADClause var_proms pats exp) = do
+
+  -- Fix #166:
+  when (num_arrows - length pats < 0) $
+    fail $ "Function being promoted to " ++ (pprint (typeToTH prom_fun)) ++
+           " has too many arguments."
+
   (sPats, prom_pats)
     <- mapAndUnzipM (singPat (Map.fromList var_proms) Parameter) pats
   let bound_name_tys = map DVarT bound_names
