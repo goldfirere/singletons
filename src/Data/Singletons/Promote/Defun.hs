@@ -124,7 +124,7 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
       extra_name <- qNewName "arg"
       let data_name   = promoteTySym name n
           next_name   = promoteTySym name (n+1)
-          con_name    = suffixName "KindInference" "###" data_name
+          con_name    = suffixName "KindInference" "###" (toDataConName data_name)
           m_tyfun     = buildTyFun_maybe m_arg m_result
           arg_params  = zipWith mk_tvb rest_names (reverse m_args)
           tyfun_param = mk_tvb fst_name m_tyfun

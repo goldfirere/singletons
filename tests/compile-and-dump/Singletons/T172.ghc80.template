@@ -1,0 +1,36 @@
+Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
+    singletonsOnly
+      [d| ($>) :: Nat -> Nat -> Nat
+          ($>) = (+) |]
+  ======>
+    type ($>$$$) (t :: Nat) (t :: Nat) = ($>) t t
+    instance SuppressUnusedWarnings ($>$$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:$>$$###) GHC.Tuple.())
+    data ($>$$) (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply (($>$$) l) arg) (($>$$$) l arg) =>
+        (:$>$$###)
+    type instance Apply (($>$$) l) l = ($>$$$) l l
+    instance SuppressUnusedWarnings ($>$) where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) (:$>$###) GHC.Tuple.())
+    data ($>$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ($>$) arg) (($>$$) arg) => (:$>$###)
+    type instance Apply ($>$) l = ($>$$) l
+    type family ($>) (a :: Nat) (a :: Nat) :: Nat where
+      ($>) a_0123456789 a_0123456789 = Apply (Apply (:+$) a_0123456789) a_0123456789
+    (%$>) ::
+      forall (t :: Nat) (t :: Nat).
+      Sing t -> Sing t -> Sing (Apply (Apply ($>$) t) t :: Nat)
+    (%$>) sA_0123456789 sA_0123456789
+      = let
+          lambda ::
+            forall a_0123456789 a_0123456789.
+            (t ~ a_0123456789, t ~ a_0123456789) =>
+            Sing a_0123456789
+            -> Sing a_0123456789 -> Sing (Apply (Apply ($>$) t) t :: Nat)
+          lambda a_0123456789 a_0123456789
+            = applySing
+                (applySing (singFun2 (Proxy :: Proxy (:+$)) (%:+)) a_0123456789)
+                a_0123456789
+        in lambda sA_0123456789 sA_0123456789

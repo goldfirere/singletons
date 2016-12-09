@@ -124,6 +124,14 @@ toUpcaseStr (alpha, symb) n
       | otherwise
       = symb ++ ':' : str
 
+-- Ensures that the name is a suitable name for a data constructor
+toDataConName :: Name -> Name
+toDataConName n
+  | isUpcase n                  = n
+  | str@('$' : _) <- nameBase n = mkName (':' : str)
+  | otherwise                   = upcase n
+
+
 noPrefix :: (String, String)
 noPrefix = ("", "")
 
