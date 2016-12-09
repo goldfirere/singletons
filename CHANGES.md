@@ -22,6 +22,9 @@ removed. `DemoteRep` has been renamed `Demote`.
 
 * Support for promoting higher-kinded type variables, thanks for @int-index.
 
+* `Data.Singletons.TypeLits` now exports defunctionalization symbols for `KnownNat`
+and `KnownSymbol`.
+
 2.2
 ---
 * With `TypeInType`, we no longer kind `KProxy`. @int-index has very helpfully

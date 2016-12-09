@@ -16,7 +16,7 @@ import Data.Singletons.Decide
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import GHC.TypeLits ( Nat, Symbol )
-import GHC.Exts ( Any )
+import GHC.Exts ( Any, Constraint )
 import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
 import Control.Monad
@@ -37,7 +37,7 @@ anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
   sameKindName, tyFromIntegerName, tyNegateName, sFromIntegerName,
   sNegateName, errorName, foldlName, cmpEQName, cmpLTName, cmpGTName,
   singletonsToEnumName, singletonsFromEnumName, enumName, singletonsEnumName,
-  equalsName :: Name
+  equalsName, constraintName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
@@ -100,6 +100,7 @@ singletonsFromEnumName = mk_name_v "Data.Singletons.Prelude.Enum" "fromEnum"
 enumName = ''Enum
 singletonsEnumName = mk_name_tc "Data.Singletons.Prelude.Enum" "Enum"
 equalsName = '(==)
+constraintName = ''Constraint
 
 singPkg :: String
 singPkg = $( (LitE . StringL . loc_package) `liftM` location )

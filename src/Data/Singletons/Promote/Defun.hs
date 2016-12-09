@@ -43,6 +43,9 @@ buildDefunSyms (DOpenTypeFamilyD (DTypeFamilyHead name tvbs result_sig _)) = do
 buildDefunSyms (DTySynD name tvbs _type) = do
   let arg_m_kinds = map extractTvbKind tvbs
   defunctionalize name arg_m_kinds Nothing
+buildDefunSyms (DClassD _cxt name tvbs _fundeps _members) = do
+  let arg_m_kinds = map extractTvbKind tvbs
+  defunctionalize name arg_m_kinds (Just (DConT constraintName))
 buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
                           "type families and data declarations"
 
