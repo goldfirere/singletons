@@ -20,6 +20,8 @@ removed. `DemoteRep` has been renamed `Demote`.
 * Though more an implementation detail: singletons no longer uses kind-level proxies anywhere,
   thanks again to @int-index.
 
+* Support for promoting higher-kinded type variables, thanks for @int-index.
+
 2.2
 ---
 * With `TypeInType`, we no longer kind `KProxy`. @int-index has very helpfully

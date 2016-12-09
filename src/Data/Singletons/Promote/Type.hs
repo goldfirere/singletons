@@ -29,6 +29,12 @@ promoteType = go []
     go args     (DAppT t1 t2) = do
       k2 <- go [] t2
       go (k2 : args) t1
+       -- NB: This next case means that promoting something like
+       --   (((->) a) :: Type -> Type) b
+       -- will fail because the pattern below won't recognize the
+       -- arrow to turn it into a TyFun. But I'm not terribly
+       -- bothered by this, and it would be annoying to fix. Wait
+       -- for someone to report.
     go args     (DSigT ty ki) = do
       ty' <- go [] ty
       -- No need to promote 'ki' - it is already a kind.

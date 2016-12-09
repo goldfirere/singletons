@@ -280,7 +280,7 @@ class Eq a => Ord a where
 This class gets promoted to a "kind class" thus:
 
 ```haskell
-class (kproxy ~ 'Proxy, PEq kproxy) => POrd (kproxy :: Proxy a) where
+class PEq a => POrd a where
   type Compare (x :: a) (y :: a) :: Ordering
   type (:<)    (x :: a) (y :: a) :: Bool
   type x :< y = ... -- promoting `case` is yucky.
@@ -305,7 +305,7 @@ class SEq a => SOrd a where
 Note that a singletonized class needs to use `default` signatures, because
 type-checking the default body requires that the default associated type
 family instance was used in the promoted class. The extra equality constraint
-on the default signature asserts this fact to the type-checker.
+on the default signature asserts this fact to the type checker.
 
 Instances work roughly similarly.
 
@@ -316,7 +316,7 @@ instance Ord Bool where
   compare True  False = GT
   compare True  True  = EQ
 
-instance POrd ('Proxy :: Proxy Bool) where
+instance POrd Bool where
   type Compare 'False 'False = 'EQ
   type Compare 'False 'True  = 'LT
   type Compare 'True  'False = 'GT
@@ -483,7 +483,17 @@ The following constructs are fully supported:
 * lambda expressions
 * `!` and `~` patterns (silently but successfully ignored during promotion)
 * class and instance declarations
+* higher-kinded type variables (see below)
 * functional dependencies (with limitations -- see below)
+
+Higher-kinded type variables in `class`/`data` declarations must be annotated
+explicitly. This is due to GHC's handling of *complete
+user-specified kind signatures*, or [CUSKs](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#complete-user-supplied-kind-signatures-and-polymorphic-recursion).
+Briefly, `singletons` has a hard
+time conforming to the precise rules that GHC imposes around CUSKs and so
+needs a little help around kind inference here. See
+[this pull request](https://github.com/goldfirere/singletons/pull/171) for more
+background.
 
 The following constructs are supported for promotion but not singleton generation:
 
@@ -499,7 +509,7 @@ filter pred (x:xs)
   | pred x         = x : filter pred xs
   | otherwise      = filter pred xs
 ```
-Overlap is caused by `otherwise` catch-all guard, that is always true and this
+Overlap is caused by `otherwise` catch-all guard, which is always true and thus
 overlaps with `pred x` guard.
 
 The following constructs are not supported:
