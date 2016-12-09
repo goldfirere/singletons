@@ -1,0 +1,98 @@
+Singletons/T173.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| class Foo a where
+            bar :: a -> Bool
+
+          instance Foo a => Foo (NonEmpty a) where
+            bar ~(x :| xs) = bar x && bar xs
+          instance Foo a => Foo [a] where
+            bar [] = True
+            bar (x : xs) = bar x && bar xs |]
+  ======>
+    class Foo a where
+      bar :: a -> Bool
+    instance Foo a => Foo [a] where
+      bar GHC.Types.[] = True
+      bar (x GHC.Types.: xs) = ((bar x) && (bar xs))
+    instance Foo a => Foo (NonEmpty a) where
+      bar ~(x :| xs) = ((bar x) && (bar xs))
+    type BarSym1 (t :: a0123456789) = Bar t
+    instance SuppressUnusedWarnings BarSym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) BarSym0KindInference GHC.Tuple.())
+    data BarSym0 (l :: TyFun a0123456789 Bool)
+      = forall arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
+        BarSym0KindInference
+    type instance Apply BarSym0 l = BarSym1 l
+    class PFoo (a :: GHC.Types.Type) where
+      type Bar (arg :: a) :: Bool
+    type family Bar_0123456789 (a :: [a]) :: Bool where
+      Bar_0123456789 '[] = TrueSym0
+      Bar_0123456789 ((:) x xs) = Apply (Apply (:&&$) (Apply BarSym0 x)) (Apply BarSym0 xs)
+    type Bar_0123456789Sym1 (t :: [a0123456789]) = Bar_0123456789 t
+    instance SuppressUnusedWarnings Bar_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Bar_0123456789Sym0KindInference GHC.Tuple.())
+    data Bar_0123456789Sym0 (l :: TyFun [a0123456789] Bool)
+      = forall arg. SameKind (Apply Bar_0123456789Sym0 arg) (Bar_0123456789Sym1 arg) =>
+        Bar_0123456789Sym0KindInference
+    type instance Apply Bar_0123456789Sym0 l = Bar_0123456789Sym1 l
+    instance PFoo [a] where
+      type Bar (a :: [a]) = Apply Bar_0123456789Sym0 a
+    type family Bar_0123456789 (a :: NonEmpty a) :: Bool where
+      Bar_0123456789 ((:|) x xs) = Apply (Apply (:&&$) (Apply BarSym0 x)) (Apply BarSym0 xs)
+    type Bar_0123456789Sym1 (t :: NonEmpty a0123456789) =
+        Bar_0123456789 t
+    instance SuppressUnusedWarnings Bar_0123456789Sym0 where
+      suppressUnusedWarnings _
+        = snd (GHC.Tuple.(,) Bar_0123456789Sym0KindInference GHC.Tuple.())
+    data Bar_0123456789Sym0 (l :: TyFun (NonEmpty a0123456789) Bool)
+      = forall arg. SameKind (Apply Bar_0123456789Sym0 arg) (Bar_0123456789Sym1 arg) =>
+        Bar_0123456789Sym0KindInference
+    type instance Apply Bar_0123456789Sym0 l = Bar_0123456789Sym1 l
+    instance PFoo (NonEmpty a) where
+      type Bar (a :: NonEmpty a) = Apply Bar_0123456789Sym0 a
+    class SFoo a where
+      sBar :: forall (t :: a). Sing t -> Sing (Apply BarSym0 t :: Bool)
+    instance SFoo a => SFoo [a] where
+      sBar :: forall (t :: [a]). Sing t -> Sing (Apply BarSym0 t :: Bool)
+      sBar SNil
+        = let
+            lambda :: t ~ '[] => Sing (Apply BarSym0 t :: Bool)
+            lambda = STrue
+          in lambda
+      sBar (SCons sX sXs)
+        = let
+            lambda ::
+              forall x xs.
+              t ~ Apply (Apply (:$) x) xs =>
+              Sing x -> Sing xs -> Sing (Apply BarSym0 t :: Bool)
+            lambda x xs
+              = applySing
+                  (applySing
+                     (singFun2 (Proxy :: Proxy (:&&$)) (%:&&))
+                     (applySing (singFun1 (Proxy :: Proxy BarSym0) sBar) x))
+                  (applySing (singFun1 (Proxy :: Proxy BarSym0) sBar) xs)
+          in lambda sX sXs
+    instance SFoo a => SFoo (NonEmpty a) where
+      sBar ::
+        forall (t :: NonEmpty a). Sing t -> Sing (Apply BarSym0 t :: Bool)
+      sBar ((:%|) sX sXs)
+        = let
+            lambda ::
+              forall x xs.
+              t ~ Apply (Apply (:|$) x) xs =>
+              Sing x -> Sing xs -> Sing (Apply BarSym0 t :: Bool)
+            lambda x xs
+              = applySing
+                  (applySing
+                     (singFun2 (Proxy :: Proxy (:&&$)) (%:&&))
+                     (applySing (singFun1 (Proxy :: Proxy BarSym0) sBar) x))
+                  (applySing (singFun1 (Proxy :: Proxy BarSym0) sBar) xs)
+          in lambda sX sXs
+
+Singletons/T173.hs:0:0: warning:
+    Lazy pattern converted into regular pattern in promotion
+
+Singletons/T173.hs:0:0: warning:
+    Lazy pattern converted into regular pattern during singleton generation.
