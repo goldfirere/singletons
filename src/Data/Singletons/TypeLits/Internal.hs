@@ -89,9 +89,9 @@ instance SDecide Symbol where
     where errStr = "Broken Symbol singletons"
 
 -- PEq instances
-instance PEq ('Proxy :: Proxy Nat) where
+instance PEq Nat where
   type (a :: Nat) :== (b :: Nat) = a == b
-instance PEq ('Proxy :: Proxy Symbol) where
+instance PEq Symbol where
   type (a :: Symbol) :== (b :: Symbol) = a == b
 
 -- need SEq instances for TypeLits kinds
@@ -106,10 +106,10 @@ instance SEq Symbol where
     | otherwise                   = unsafeCoerce SFalse
 
 -- POrd instances
-instance POrd ('Proxy :: Proxy Nat) where
+instance POrd Nat where
   type (a :: Nat) `Compare` (b :: Nat) = a `TL.CmpNat` b
 
-instance POrd ('Proxy :: Proxy Symbol) where
+instance POrd Symbol where
   type (a :: Symbol) `Compare` (b :: Symbol) = a `TL.CmpSymbol` b
 
 -- | Kind-restricted synonym for 'Sing' for @Nat@s

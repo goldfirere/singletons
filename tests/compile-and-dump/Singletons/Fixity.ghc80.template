@@ -53,7 +53,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. SameKind (Apply (:<=>$) arg) ((:<=>$$) arg) =>
         (:<=>$###)
     type instance Apply (:<=>$) l = (:<=>$$) l
-    class kproxy ~ Proxy => PMyOrd (kproxy :: Proxy a) where
+    class PMyOrd (a :: GHC.Types.Type) where
       type (:<=>) (arg :: a) (arg :: a) :: Ordering
     infix 4 %:====
     infix 4 %:<=>

@@ -54,7 +54,7 @@ module Data.Singletons.TH (
   POrd(..), SOrd(..), ThenCmp, sThenCmp, Foldl, sFoldl,
   Any,
   SDecide(..), (:~:)(..), Void, Refuted, Decision(..),
-  Proxy(..), SomeSing(..),
+  SomeSing(..),
 
   Error, ErrorSym0,
   TrueSym0, FalseSym0,
@@ -88,7 +88,6 @@ import Language.Haskell.TH.Desugar
 import GHC.Exts
 import Language.Haskell.TH
 import Data.Singletons.Util
-import Data.Proxy ( Proxy(..) )
 import Control.Arrow ( first )
 
 -- | The function 'cases' generates a case expression where each right-hand side

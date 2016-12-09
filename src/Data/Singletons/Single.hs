@@ -308,13 +308,11 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
     sing_meth name rhs = do
       mb_s_info <- dsReify (singValName name)
       (s_ty, tyvar_names, m_res_ki) <- case mb_s_info of
-        Just (DVarI _ (DForallT cls_kproxy_tvbs _cls_pred s_ty) _) -> do
-             -- GHC 8 quantifies over the kind vars explicitly
-          let class_kvs = [ class_kv | DKindedTV class_kv DStarT <- cls_kproxy_tvbs ]
-              (sing_tvbs, _pred, _args, res_ty) = unravel s_ty
-
+        Just (DVarI _ (DForallT cls_tvbs _cls_pred s_ty) _) -> do
+          let (sing_tvbs, _pred, _args, res_ty) = unravel s_ty
           inst_kis <- mapM promoteType inst_tys
-          let subst    = Map.fromList (zip class_kvs inst_kis)
+          let subst = Map.fromList (zip (map extractTvbName cls_tvbs)
+                                        inst_kis)
               m_res_ki = case res_ty of
                 _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substKind subst res_ki)
                 _                                         -> Nothing

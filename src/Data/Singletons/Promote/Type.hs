@@ -29,10 +29,11 @@ promoteType = go []
     go args     (DAppT t1 t2) = do
       k2 <- go [] t2
       go (k2 : args) t1
-    go args     (DSigT ty _) = go args ty  -- just ignore signatures
-    go []       (DVarT name) = return $ DVarT name
-    go _        (DVarT name) = fail $ "Cannot promote an applied type variable " ++
-                                      show name ++ "."
+    go args     (DSigT ty ki) = do
+      ty' <- go [] ty
+      -- No need to promote 'ki' - it is already a kind.
+      return $ foldType (DSigT ty' ki) args
+    go args     (DVarT name) = return $ foldType (DVarT name) args
     go []       (DConT name)
       | name == typeRepName               = return DStarT
       | name == stringName                = return $ DConT symbolName

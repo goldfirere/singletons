@@ -11,7 +11,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789 Zero Zero = TrueSym0
       Equals_0123456789 (Succ a) (Succ b) = (:==) a b
       Equals_0123456789 (a :: Nat) (b :: Nat) = FalseSym0
-    instance PEq (Proxy :: Proxy Nat) where
+    instance PEq Nat where
       type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789 a b
     type ZeroSym0 = Zero
     type SuccSym1 (t :: Nat) = Succ t
@@ -47,7 +47,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. SameKind (Apply Compare_0123456789Sym0 arg) (Compare_0123456789Sym1 arg) =>
         Compare_0123456789Sym0KindInference
     type instance Apply Compare_0123456789Sym0 l = Compare_0123456789Sym1 l
-    instance POrd (Proxy :: Proxy Nat) where
+    instance POrd Nat where
       type Compare (a :: Nat) (a :: Nat) = Apply (Apply Compare_0123456789Sym0 a) a
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
@@ -264,7 +264,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789 NAT NAT = TrueSym0
       Equals_0123456789 (VEC a a) (VEC b b) = (:&&) ((:==) a b) ((:==) a b)
       Equals_0123456789 (a :: U) (b :: U) = FalseSym0
-    instance PEq (Proxy :: Proxy U) where
+    instance PEq U where
       type (:==) (a :: U) (b :: U) = Equals_0123456789 a b
     type BOOLSym0 = BOOL
     type STRINGSym0 = STRING
@@ -313,7 +313,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789 CY CY = TrueSym0
       Equals_0123456789 CZ CZ = TrueSym0
       Equals_0123456789 (a :: AChar) (b :: AChar) = FalseSym0
-    instance PEq (Proxy :: Proxy AChar) where
+    instance PEq AChar where
       type (:==) (a :: AChar) (b :: AChar) = Equals_0123456789 a b
     type CASym0 = CA
     type CBSym0 = CB

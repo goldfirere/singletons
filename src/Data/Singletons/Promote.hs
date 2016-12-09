@@ -232,20 +232,38 @@ promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
 
+-- Note [CUSKification]
+-- ~~~~~~~~~~~~~~~~~~~~
+-- GHC #12928 means that sometimes, this TH code will produce a declaration
+-- that has a kind signature even when we want kind inference to work. There
+-- seems to be no way to avoid this, so we embrace it:
+--
+--   * If a class type variable has no explicit kind, we make no effort to
+--     guess it and default to *. This is OK because before TypeInType we were
+--     limited by KProxy anyway.
+--
+--   * If a class type variable has an explicit kind, it is preserved.
+--
+-- This way, we always get proper CUSKs where we need them.
+
 promoteClassDec :: UClassDecl
                 -> PrM AClassDecl
 promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
                                 , cd_name = cls_name
-                                , cd_tvbs = tvbs
+                                , cd_tvbs = tvbs'
                                 , cd_fds  = fundeps
                                 , cd_lde  = lde@LetDecEnv
                                     { lde_defns = defaults
                                     , lde_types = meth_sigs
                                     , lde_infix = infix_decls } }) = do
+  let
+    -- a workaround for GHC Trac #12928; see Note [CUSKification]
+    cuskify :: DTyVarBndr -> DTyVarBndr
+    cuskify (DPlainTV tvname) = DKindedTV tvname DStarT
+    cuskify tv                = tv
+    tvbs = map cuskify tvbs'
   let pClsName = promoteClassName cls_name
-  (ptvbs, proxyCxt) <- mkKProxies (map extractTvbName tvbs)
   pCxt <- mapM promote_superclass_pred cxt
-  let cxt'  = pCxt ++ proxyCxt
   sig_decs <- mapM (uncurry promote_sig) (Map.toList meth_sigs)
   let defaults_list  = Map.toList defaults
       defaults_names = map fst defaults_list
@@ -255,7 +273,7 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
   let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
 
   -- no need to do anything to the fundeps. They work as is!
-  emitDecs [DClassD cxt' pClsName ptvbs fundeps
+  emitDecs [DClassD pCxt pClsName tvbs fundeps
                     (sig_decs ++ default_decs ++ infix_decls')]
   let defaults_list' = zip defaults_names ann_rhss
       proms          = zip defaults_names prom_rhss
@@ -277,7 +295,7 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
     promote_superclass_pred :: DPred -> PrM DPred
     promote_superclass_pred = go
       where
-      go (DAppPr pr ty) = DAppPr <$> go pr <*> fmap kindParam (promoteType ty)
+      go (DAppPr pr ty) = DAppPr <$> go pr <*> promoteType ty
       go (DSigPr pr _k) = go pr    -- just ignore the kind; it can't matter
       go (DVarPr name)  = fail $ "Cannot promote ConstraintKinds variables like "
                               ++ show name
@@ -295,7 +313,7 @@ promoteInstanceDec meth_sigs
   let subst = Map.fromList $ zip cls_tvb_names inst_kis
   (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod (Just subst) meth_sigs) meths
   emitDecs [DInstanceD Nothing [] (foldType (DConT pClsName)
-                                    (map kindParam inst_kis)) meths']
+                                    inst_kis) meths']
   return (decl { id_meths = zip (map fst meths) ann_rhss })
   where
     pClsName = promoteClassName cls_name
@@ -304,16 +322,12 @@ promoteInstanceDec meth_sigs
     lookup_cls_tvb_names = do
       mb_info <- dsReify pClsName
       case mb_info of
-        Just (DTyConI (DClassD _ _ tvbs _ _) _) -> return (map extract_kv_name tvbs)
+        Just (DTyConI (DClassD _ _ tvbs _ _) _) -> return (map extractTvbName tvbs)
         _ -> do
           mb_info' <- dsReify cls_name
           case mb_info' of
             Just (DTyConI (DClassD _ _ tvbs _ _) _) -> return (map extractTvbName tvbs)
             _ -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
-
-    extract_kv_name :: DTyVarBndr -> Name
-    extract_kv_name (DKindedTV _ (DConT _kproxy `DAppT` DVarT kv_name)) = kv_name
-    extract_kv_name tvb = error $ "Internal error: extract_kv_name\n" ++ show tvb
 
 -- promoteMethod needs to substitute in a method's kind because GHC does not do
 -- enough kind checking of associated types. See GHC#9063. When that bug is fixed,

@@ -60,6 +60,9 @@ tests =
     , compileAndDumpStdTest "T157"
     , compileAndDumpStdTest "T159"
     , compileAndDumpStdTest "T167"
+    , compileAndDumpStdTest "T145"
+    , compileAndDumpStdTest "PolyKinds"
+    , compileAndDumpStdTest "PolyKindsApp"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

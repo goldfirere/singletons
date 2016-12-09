@@ -72,7 +72,7 @@ type family SignumNat (a :: Nat) :: Nat where
   SignumNat 0 = 0
   SignumNat x = 1
 
-instance PNum ('Proxy :: Proxy Nat) where
+instance PNum Nat where
   type a :+ b = a + b
   type a :- b = a - b
   type a :* b = a * b
