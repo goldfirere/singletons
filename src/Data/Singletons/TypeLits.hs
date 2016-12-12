@@ -44,6 +44,12 @@ instance Num Nat where
   signum      = no_term_level_nats
   fromInteger = no_term_level_nats
 
+instance Eq Nat where
+  (==)        = no_term_level_nats
+
+instance Ord Nat where
+  compare     = no_term_level_nats
+
 no_term_level_nats :: a
 no_term_level_nats = error "The kind `Nat` may not be used at the term level."
 

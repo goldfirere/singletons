@@ -19,6 +19,8 @@
 module Data.Singletons.Prelude.Ord (
   POrd(..), SOrd(..),
 
+  Comparing, sComparing,
+
   -- | 'thenCmp' returns its second argument if its first is 'EQ'; otherwise,
   -- it returns its first argument.
   thenCmp, ThenCmp, sThenCmp,
@@ -34,7 +36,8 @@ module Data.Singletons.Prelude.Ord (
   (:>$), (:>$$), (:>$$$),
   (:>=$), (:>=$$), (:>=$$$),
   MaxSym0, MaxSym1, MaxSym2,
-  MinSym0, MinSym1, MinSym2
+  MinSym0, MinSym1, MinSym2,
+  ComparingSym0, ComparingSym1, ComparingSym2, ComparingSym3
   ) where
 
 import Data.Singletons.Single
@@ -70,6 +73,15 @@ $(singletonsOnly [d|
     min x y = if x <= y then x else y
     -- Not handled by TH: {-# MINIMAL compare | (<=) #-}
 
+  -- |
+  -- > comparing p x y = compare (p x) (p y)
+  --
+  -- Useful combinator for use in conjunction with the @xxxBy@ family
+  -- of functions from "Data.List", for example:
+  --
+  -- >   ... sortBy (comparing fst) ...
+  comparing :: (Ord a) => (b -> a) -> b -> b -> Ordering
+  comparing p x y = compare (p x) (p y)
   |])
 
 $(singletons [d|
