@@ -340,7 +340,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Sing t -> Sing t -> Sing (Apply (Apply (:<=>$) t) t :: Ordering)
       default (%:<=>) ::
                 forall (t :: a) (t :: a).
-                Apply (Apply (:<=>$) t) t ~ Apply (Apply TFHelper_0123456789Sym0 t) t =>
+                (Apply (Apply (:<=>$) t) t :: Ordering) ~ Apply (Apply TFHelper_0123456789Sym0 t) t =>
                 Sing t -> Sing t -> Sing (Apply (Apply (:<=>$) t) t :: Ordering)
       (%:<=>) sA_0123456789 sA_0123456789
         = let

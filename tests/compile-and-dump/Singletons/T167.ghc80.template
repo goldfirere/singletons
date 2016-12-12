@@ -130,7 +130,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
         Sing t -> Sing t -> Sing (Apply (Apply FooListSym0 t) t :: [Bool])
       default sFooList ::
                 forall (t :: a) (t :: [Bool]).
-                Apply (Apply FooListSym0 t) t ~ Apply (Apply FooList_0123456789Sym0 t) t =>
+                (Apply (Apply FooListSym0 t) t :: [Bool]) ~ Apply (Apply FooList_0123456789Sym0 t) t =>
                 Sing t -> Sing t -> Sing (Apply (Apply FooListSym0 t) t :: [Bool])
       sFooList sA_0123456789 sA_0123456789
         = let

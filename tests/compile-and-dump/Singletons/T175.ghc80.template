@@ -1,0 +1,44 @@
+Singletons/T175.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| quux2 :: Bar2 a => a
+          quux2 = baz
+          
+          class Foo a where
+            baz :: a
+          class Foo a => Bar1 a where
+            quux1 :: a
+            quux1 = baz
+          class Foo a => Bar2 a |]
+  ======>
+    class Foo a where
+      baz :: a
+    class Foo a => Bar1 a where
+      quux1 :: a
+      quux1 = baz
+    class Foo a => Bar2 a
+    quux2 :: forall a. Bar2 a => a
+    quux2 = baz
+    type Quux2Sym0 = Quux2
+    type family Quux2 :: a where
+      Quux2 = BazSym0
+    type BazSym0 = Baz
+    class PFoo (a :: GHC.Types.Type) where
+      type Baz :: a
+    type Quux1Sym0 = Quux1
+    type family Quux1_0123456789 :: a where
+      Quux1_0123456789 = BazSym0
+    type Quux1_0123456789Sym0 = Quux1_0123456789
+    class PFoo a => PBar1 (a :: GHC.Types.Type) where
+      type Quux1 :: a
+      type Quux1 = Quux1_0123456789Sym0
+    class PFoo a => PBar2 (a :: GHC.Types.Type)
+    sQuux2 :: SBar2 a => Sing (Quux2Sym0 :: a)
+    sQuux2 = sBaz
+    class SFoo a where
+      sBaz :: Sing (BazSym0 :: a)
+    class SFoo a => SBar1 a where
+      sQuux1 :: Sing (Quux1Sym0 :: a)
+      default sQuux1 ::
+                (Quux1Sym0 :: a) ~ Quux1_0123456789Sym0 => Sing (Quux1Sym0 :: a)
+      sQuux1 = sBaz
+    class SFoo a => SBar2 a

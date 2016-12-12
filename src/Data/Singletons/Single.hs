@@ -257,7 +257,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
   (sing_sigs, _, tyvar_names, res_kis)
     <- unzip4 <$> zipWithM (singTySig no_meth_defns meth_sigs)
                            meth_names (map promoteValRhs meth_names)
-  let default_sigs = catMaybes $ zipWith mk_default_sig meth_names sing_sigs
+  let default_sigs = catMaybes $ zipWith3 mk_default_sig meth_names sing_sigs res_kis
       res_ki_map   = Map.fromList (zip meth_names
                                        (map (fromMaybe always_sig) res_kis))
   sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList tyvar_names)
@@ -275,14 +275,17 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
     always_sig    = error "Internal error: no signature for default method"
     meth_names    = Map.keys meth_sigs
 
-    mk_default_sig meth_name (DSigD s_name sty) =
-      DDefaultSigD s_name <$> add_constraints meth_name sty
-    mk_default_sig _ _ = error "Internal error: a singled signature isn't a signature."
+    mk_default_sig meth_name (DSigD s_name sty) (Just res_ki) =
+      DDefaultSigD s_name <$> add_constraints meth_name sty res_ki
+    mk_default_sig _ _ _ = error "Internal error: a singled signature isn't a signature."
 
-    add_constraints meth_name sty = do  -- Maybe monad
+    add_constraints meth_name sty res_ki = do  -- Maybe monad
       prom_dflt <- Map.lookup meth_name promoted_defaults
       let default_pred = foldl DAppPr (DConPr equalityName)
-                               [ foldApply (promoteValRhs meth_name) tvs
+                                -- NB: Need the res_ki here to prevent ambiguous
+                                -- kinds in result-inferred default methods.
+                                -- See #175
+                               [ foldApply (promoteValRhs meth_name) tvs `DSigT` res_ki
                                , foldApply prom_dflt tvs ]
       return $ DForallT tvbs (default_pred : cxt) (ravel args res)
       where
