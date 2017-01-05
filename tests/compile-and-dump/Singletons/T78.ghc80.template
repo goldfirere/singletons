@@ -16,7 +16,7 @@ Singletons/T78.hs:(0,0)-(0,0): Splicing declarations
     data FooSym0 (l :: TyFun (Maybe Bool) Bool)
       = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
         FooSym0KindInference
-    type instance Apply FooSym0 l = FooSym1 l
+    type instance Apply FooSym0 l = Foo l
     type family Foo (a :: Maybe Bool) :: Bool where
       Foo (Just False) = FalseSym0
       Foo (Just True) = TrueSym0

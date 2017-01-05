@@ -200,7 +200,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789YSym0 l
       = forall arg. SameKind (Apply Let0123456789YSym0 arg) (Let0123456789YSym1 arg) =>
         Let0123456789YSym0KindInference
-    type instance Apply Let0123456789YSym0 l = Let0123456789YSym1 l
+    type instance Apply Let0123456789YSym0 l = Let0123456789Y l
     type Let0123456789ZSym1 t = Let0123456789Z t
     instance SuppressUnusedWarnings Let0123456789ZSym0 where
       suppressUnusedWarnings _
@@ -208,7 +208,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789ZSym0 l
       = forall arg. SameKind (Apply Let0123456789ZSym0 arg) (Let0123456789ZSym1 arg) =>
         Let0123456789ZSym0KindInference
-    type instance Apply Let0123456789ZSym0 l = Let0123456789ZSym1 l
+    type instance Apply Let0123456789ZSym0 l = Let0123456789Z l
     type Let0123456789X_0123456789Sym1 t = Let0123456789X_0123456789 t
     instance SuppressUnusedWarnings Let0123456789X_0123456789Sym0 where
       suppressUnusedWarnings _
@@ -218,7 +218,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789X_0123456789Sym0 l
       = forall arg. SameKind (Apply Let0123456789X_0123456789Sym0 arg) (Let0123456789X_0123456789Sym1 arg) =>
         Let0123456789X_0123456789Sym0KindInference
-    type instance Apply Let0123456789X_0123456789Sym0 l = Let0123456789X_0123456789Sym1 l
+    type instance Apply Let0123456789X_0123456789Sym0 l = Let0123456789X_0123456789 l
     type family Let0123456789Y x where
       Let0123456789Y x = Case_0123456789 x (Let0123456789X_0123456789Sym1 x)
     type family Let0123456789Z x where
@@ -233,7 +233,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789BarSym0 l
       = forall arg. SameKind (Apply Let0123456789BarSym0 arg) (Let0123456789BarSym1 arg) =>
         Let0123456789BarSym0KindInference
-    type instance Apply Let0123456789BarSym0 l = Let0123456789BarSym1 l
+    type instance Apply Let0123456789BarSym0 l = Let0123456789Bar l
     type family Let0123456789Bar x :: a where
       Let0123456789Bar x = x
     type (:<<<%%%%%%%%%%:+$$$$) t (t :: Nat) (t :: Nat) =
@@ -244,7 +244,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data (:<<<%%%%%%%%%%:+$$$) l (l :: Nat) (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%:+$$$) l l) arg) ((:<<<%%%%%%%%%%:+$$$$) l l arg) =>
         (:<<<%%%%%%%%%%:+$$$###)
-    type instance Apply ((:<<<%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%:+$$$$) l l l
+    type instance Apply ((:<<<%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%:+) l l l
     instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$$###) GHC.Tuple.())
@@ -270,7 +270,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789ZSym0 l
       = forall arg. SameKind (Apply Let0123456789ZSym0 arg) (Let0123456789ZSym1 arg) =>
         Let0123456789ZSym0KindInference
-    type instance Apply Let0123456789ZSym0 l = Let0123456789ZSym1 l
+    type instance Apply Let0123456789ZSym0 l = Let0123456789Z l
     type (:<<<%%%%%%%%%%:+$$$$) t (t :: Nat) (t :: Nat) =
         (:<<<%%%%%%%%%%:+) t t t
     instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$$$) where
@@ -279,7 +279,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data (:<<<%%%%%%%%%%:+$$$) l (l :: Nat) (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%:+$$$) l l) arg) ((:<<<%%%%%%%%%%:+$$$$) l l arg) =>
         (:<<<%%%%%%%%%%:+$$$###)
-    type instance Apply ((:<<<%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%:+$$$$) l l l
+    type instance Apply ((:<<<%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%:+) l l l
     instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$$###) GHC.Tuple.())
@@ -308,7 +308,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data (:<<<%%%%%%%%%%:+$$$) l (l :: Nat) (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%:+$$$) l l) arg) ((:<<<%%%%%%%%%%:+$$$$) l l arg) =>
         (:<<<%%%%%%%%%%:+$$$###)
-    type instance Apply ((:<<<%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%:+$$$$) l l l
+    type instance Apply ((:<<<%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%:+) l l l
     instance SuppressUnusedWarnings (:<<<%%%%%%%%%%:+$$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:<<<%%%%%%%%%%:+$$###) GHC.Tuple.())
@@ -337,7 +337,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym2 l l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym2 l l) arg) (Lambda_0123456789Sym3 l l arg) =>
         Lambda_0123456789Sym2KindInference
-    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
@@ -361,7 +361,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789ZSym1 l (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply (Let0123456789ZSym1 l) arg) (Let0123456789ZSym2 l arg) =>
         Let0123456789ZSym1KindInference
-    type instance Apply (Let0123456789ZSym1 l) l = Let0123456789ZSym2 l l
+    type instance Apply (Let0123456789ZSym1 l) l = Let0123456789Z l l
     instance SuppressUnusedWarnings Let0123456789ZSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let0123456789ZSym0KindInference GHC.Tuple.())
@@ -381,7 +381,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym1 l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym1 l) arg) (Lambda_0123456789Sym2 l arg) =>
         Lambda_0123456789Sym1KindInference
-    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789 l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
       suppressUnusedWarnings _
         = snd
@@ -397,7 +397,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789ZSym0 l
       = forall arg. SameKind (Apply Let0123456789ZSym0 arg) (Let0123456789ZSym1 arg) =>
         Let0123456789ZSym0KindInference
-    type instance Apply Let0123456789ZSym0 l = Let0123456789ZSym1 l
+    type instance Apply Let0123456789ZSym0 l = Let0123456789Z l
     type family Let0123456789Z x :: Nat where
       Let0123456789Z x = Apply (Apply Lambda_0123456789Sym0 x) ZeroSym0
     type Let0123456789XSym1 t = Let0123456789X t
@@ -407,7 +407,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789XSym0 l
       = forall arg. SameKind (Apply Let0123456789XSym0 arg) (Let0123456789XSym1 arg) =>
         Let0123456789XSym0KindInference
-    type instance Apply Let0123456789XSym0 l = Let0123456789XSym1 l
+    type instance Apply Let0123456789XSym0 l = Let0123456789X l
     type family Let0123456789X x :: Nat where
       Let0123456789X x = ZeroSym0
     type Let0123456789FSym2 t (t :: Nat) = Let0123456789F t t
@@ -417,7 +417,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789FSym1 l (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply (Let0123456789FSym1 l) arg) (Let0123456789FSym2 l arg) =>
         Let0123456789FSym1KindInference
-    type instance Apply (Let0123456789FSym1 l) l = Let0123456789FSym2 l l
+    type instance Apply (Let0123456789FSym1 l) l = Let0123456789F l l
     instance SuppressUnusedWarnings Let0123456789FSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let0123456789FSym0KindInference GHC.Tuple.())
@@ -434,7 +434,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789ZSym0 l
       = forall arg. SameKind (Apply Let0123456789ZSym0 arg) (Let0123456789ZSym1 arg) =>
         Let0123456789ZSym0KindInference
-    type instance Apply Let0123456789ZSym0 l = Let0123456789ZSym1 l
+    type instance Apply Let0123456789ZSym0 l = Let0123456789Z l
     type family Let0123456789Z x :: Nat where
       Let0123456789Z x = Apply (Let0123456789FSym1 x) x
     type Let0123456789ZSym2 t t = Let0123456789Z t t
@@ -444,7 +444,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789ZSym1 l l
       = forall arg. SameKind (Apply (Let0123456789ZSym1 l) arg) (Let0123456789ZSym2 l arg) =>
         Let0123456789ZSym1KindInference
-    type instance Apply (Let0123456789ZSym1 l) l = Let0123456789ZSym2 l l
+    type instance Apply (Let0123456789ZSym1 l) l = Let0123456789Z l l
     instance SuppressUnusedWarnings Let0123456789ZSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let0123456789ZSym0KindInference GHC.Tuple.())
@@ -461,7 +461,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789FSym1 l (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply (Let0123456789FSym1 l) arg) (Let0123456789FSym2 l arg) =>
         Let0123456789FSym1KindInference
-    type instance Apply (Let0123456789FSym1 l) l = Let0123456789FSym2 l l
+    type instance Apply (Let0123456789FSym1 l) l = Let0123456789F l l
     instance SuppressUnusedWarnings Let0123456789FSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let0123456789FSym0KindInference GHC.Tuple.())
@@ -478,7 +478,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789FSym1 l (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply (Let0123456789FSym1 l) arg) (Let0123456789FSym2 l arg) =>
         Let0123456789FSym1KindInference
-    type instance Apply (Let0123456789FSym1 l) l = Let0123456789FSym2 l l
+    type instance Apply (Let0123456789FSym1 l) l = Let0123456789F l l
     instance SuppressUnusedWarnings Let0123456789FSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Let0123456789FSym0KindInference GHC.Tuple.())
@@ -495,7 +495,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789YSym0 l
       = forall arg. SameKind (Apply Let0123456789YSym0 arg) (Let0123456789YSym1 arg) =>
         Let0123456789YSym0KindInference
-    type instance Apply Let0123456789YSym0 l = Let0123456789YSym1 l
+    type instance Apply Let0123456789YSym0 l = Let0123456789Y l
     type family Let0123456789Y x :: Nat where
       Let0123456789Y x = Apply SuccSym0 x
     type Let0123456789YSym0 = Let0123456789Y
@@ -511,7 +511,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789YSym0 l
       = forall arg. SameKind (Apply Let0123456789YSym0 arg) (Let0123456789YSym1 arg) =>
         Let0123456789YSym0KindInference
-    type instance Apply Let0123456789YSym0 l = Let0123456789YSym1 l
+    type instance Apply Let0123456789YSym0 l = Let0123456789Y l
     type family Let0123456789Y x :: Nat where
       Let0123456789Y x = Apply SuccSym0 ZeroSym0
     type Foo14Sym1 (t :: Nat) = Foo14 t
@@ -521,7 +521,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo14Sym0 (l :: TyFun Nat (Nat, Nat))
       = forall arg. SameKind (Apply Foo14Sym0 arg) (Foo14Sym1 arg) =>
         Foo14Sym0KindInference
-    type instance Apply Foo14Sym0 l = Foo14Sym1 l
+    type instance Apply Foo14Sym0 l = Foo14 l
     type Foo13_Sym1 (t :: a0123456789) = Foo13_ t
     instance SuppressUnusedWarnings Foo13_Sym0 where
       suppressUnusedWarnings _
@@ -529,7 +529,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo13_Sym0 (l :: TyFun a0123456789 a0123456789)
       = forall arg. SameKind (Apply Foo13_Sym0 arg) (Foo13_Sym1 arg) =>
         Foo13_Sym0KindInference
-    type instance Apply Foo13_Sym0 l = Foo13_Sym1 l
+    type instance Apply Foo13_Sym0 l = Foo13_ l
     type Foo13Sym1 (t :: a0123456789) = Foo13 t
     instance SuppressUnusedWarnings Foo13Sym0 where
       suppressUnusedWarnings _
@@ -537,7 +537,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo13Sym0 (l :: TyFun a0123456789 a0123456789)
       = forall arg. SameKind (Apply Foo13Sym0 arg) (Foo13Sym1 arg) =>
         Foo13Sym0KindInference
-    type instance Apply Foo13Sym0 l = Foo13Sym1 l
+    type instance Apply Foo13Sym0 l = Foo13 l
     type Foo12Sym1 (t :: Nat) = Foo12 t
     instance SuppressUnusedWarnings Foo12Sym0 where
       suppressUnusedWarnings _
@@ -545,7 +545,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo12Sym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply Foo12Sym0 arg) (Foo12Sym1 arg) =>
         Foo12Sym0KindInference
-    type instance Apply Foo12Sym0 l = Foo12Sym1 l
+    type instance Apply Foo12Sym0 l = Foo12 l
     type Foo11Sym1 (t :: Nat) = Foo11 t
     instance SuppressUnusedWarnings Foo11Sym0 where
       suppressUnusedWarnings _
@@ -553,7 +553,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo11Sym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply Foo11Sym0 arg) (Foo11Sym1 arg) =>
         Foo11Sym0KindInference
-    type instance Apply Foo11Sym0 l = Foo11Sym1 l
+    type instance Apply Foo11Sym0 l = Foo11 l
     type Foo10Sym1 (t :: Nat) = Foo10 t
     instance SuppressUnusedWarnings Foo10Sym0 where
       suppressUnusedWarnings _
@@ -561,7 +561,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo10Sym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply Foo10Sym0 arg) (Foo10Sym1 arg) =>
         Foo10Sym0KindInference
-    type instance Apply Foo10Sym0 l = Foo10Sym1 l
+    type instance Apply Foo10Sym0 l = Foo10 l
     type Foo9Sym1 (t :: Nat) = Foo9 t
     instance SuppressUnusedWarnings Foo9Sym0 where
       suppressUnusedWarnings _
@@ -569,7 +569,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo9Sym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply Foo9Sym0 arg) (Foo9Sym1 arg) =>
         Foo9Sym0KindInference
-    type instance Apply Foo9Sym0 l = Foo9Sym1 l
+    type instance Apply Foo9Sym0 l = Foo9 l
     type Foo8Sym1 (t :: Nat) = Foo8 t
     instance SuppressUnusedWarnings Foo8Sym0 where
       suppressUnusedWarnings _
@@ -577,7 +577,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo8Sym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply Foo8Sym0 arg) (Foo8Sym1 arg) =>
         Foo8Sym0KindInference
-    type instance Apply Foo8Sym0 l = Foo8Sym1 l
+    type instance Apply Foo8Sym0 l = Foo8 l
     type Foo7Sym1 (t :: Nat) = Foo7 t
     instance SuppressUnusedWarnings Foo7Sym0 where
       suppressUnusedWarnings _
@@ -585,7 +585,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo7Sym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply Foo7Sym0 arg) (Foo7Sym1 arg) =>
         Foo7Sym0KindInference
-    type instance Apply Foo7Sym0 l = Foo7Sym1 l
+    type instance Apply Foo7Sym0 l = Foo7 l
     type Foo6Sym1 (t :: Nat) = Foo6 t
     instance SuppressUnusedWarnings Foo6Sym0 where
       suppressUnusedWarnings _
@@ -593,7 +593,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo6Sym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply Foo6Sym0 arg) (Foo6Sym1 arg) =>
         Foo6Sym0KindInference
-    type instance Apply Foo6Sym0 l = Foo6Sym1 l
+    type instance Apply Foo6Sym0 l = Foo6 l
     type Foo5Sym1 (t :: Nat) = Foo5 t
     instance SuppressUnusedWarnings Foo5Sym0 where
       suppressUnusedWarnings _
@@ -601,7 +601,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo5Sym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply Foo5Sym0 arg) (Foo5Sym1 arg) =>
         Foo5Sym0KindInference
-    type instance Apply Foo5Sym0 l = Foo5Sym1 l
+    type instance Apply Foo5Sym0 l = Foo5 l
     type Foo4Sym1 (t :: Nat) = Foo4 t
     instance SuppressUnusedWarnings Foo4Sym0 where
       suppressUnusedWarnings _
@@ -609,7 +609,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo4Sym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply Foo4Sym0 arg) (Foo4Sym1 arg) =>
         Foo4Sym0KindInference
-    type instance Apply Foo4Sym0 l = Foo4Sym1 l
+    type instance Apply Foo4Sym0 l = Foo4 l
     type Foo3Sym1 (t :: Nat) = Foo3 t
     instance SuppressUnusedWarnings Foo3Sym0 where
       suppressUnusedWarnings _
@@ -617,7 +617,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo3Sym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
         Foo3Sym0KindInference
-    type instance Apply Foo3Sym0 l = Foo3Sym1 l
+    type instance Apply Foo3Sym0 l = Foo3 l
     type Foo2Sym0 = Foo2
     type Foo1Sym1 (t :: Nat) = Foo1 t
     instance SuppressUnusedWarnings Foo1Sym0 where
@@ -626,7 +626,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     data Foo1Sym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
         Foo1Sym0KindInference
-    type instance Apply Foo1Sym0 l = Foo1Sym1 l
+    type instance Apply Foo1Sym0 l = Foo1 l
     type family Foo14 (a :: Nat) :: (Nat, Nat) where
       Foo14 x = Apply (Apply Tuple2Sym0 (Let0123456789ZSym1 x)) (Let0123456789YSym1 x)
     type family Foo13_ (a :: a) :: a where

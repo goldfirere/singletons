@@ -24,7 +24,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
                    (l :: TyFun a0123456789 a0123456789)
       = forall arg. SameKind (Apply ((:====$$) l) arg) ((:====$$$) l arg) =>
         (:====$$###)
-    type instance Apply ((:====$$) l) l = (:====$$$) l l
+    type instance Apply ((:====$$) l) l = (:====) l l
     instance SuppressUnusedWarnings (:====$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:====$###) GHC.Tuple.())
@@ -44,7 +44,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     data (:<=>$$) (l :: a0123456789) (l :: TyFun a0123456789 Ordering)
       = forall arg. SameKind (Apply ((:<=>$$) l) arg) ((:<=>$$$) l arg) =>
         (:<=>$$###)
-    type instance Apply ((:<=>$$) l) l = (:<=>$$$) l l
+    type instance Apply ((:<=>$$) l) l = (:<=>) l l
     instance SuppressUnusedWarnings (:<=>$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:<=>$###) GHC.Tuple.())

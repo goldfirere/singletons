@@ -16,7 +16,7 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
     data BarSym0 (l :: TyFun Bool Bool)
       = forall arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
         BarSym0KindInference
-    type instance Apply BarSym0 l = BarSym1 l
+    type instance Apply BarSym0 l = Bar l
     type FooSym1 (t :: Bool) = Foo t
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings _
@@ -24,7 +24,7 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
     data FooSym0 (l :: TyFun Bool Bool)
       = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
         FooSym0KindInference
-    type instance Apply FooSym0 l = FooSym1 l
+    type instance Apply FooSym0 l = Foo l
     type family Bar (a :: Bool) :: Bool where
       Bar a_0123456789 = Apply (Apply ErrorSym0 "urk") a_0123456789
     type family Foo (a :: Bool) :: Bool where

@@ -27,7 +27,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
     data MaybeSym0 (l :: TyFun Type Type)
       = forall arg. SameKind (Apply MaybeSym0 arg) (MaybeSym1 arg) =>
         MaybeSym0KindInference
-    type instance Apply MaybeSym0 l = MaybeSym1 l
+    type instance Apply MaybeSym0 l = Maybe l
     type VecSym2 (t :: Type) (t :: Nat) = Vec t t
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings VecSym1 where
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
@@ -35,7 +35,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
     data VecSym1 (l :: Type) (l :: TyFun Nat Type)
       = forall arg. SameKind (Apply (VecSym1 l) arg) (VecSym2 l arg) =>
         VecSym1KindInference
-    type instance Apply (VecSym1 l) l = VecSym2 l l
+    type instance Apply (VecSym1 l) l = Vec l l
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings VecSym0 where
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) VecSym0KindInference GHC.Tuple.())
@@ -79,7 +79,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
     data Compare_0123456789Sym1 (l :: Type) (l :: TyFun Type Ordering)
       = forall arg. SameKind (Apply (Compare_0123456789Sym1 l) arg) (Compare_0123456789Sym2 l arg) =>
         Compare_0123456789Sym1KindInference
-    type instance Apply (Compare_0123456789Sym1 l) l = Compare_0123456789Sym2 l l
+    type instance Apply (Compare_0123456789Sym1 l) l = Compare_0123456789 l l
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings Compare_0123456789Sym0 where
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
         = snd

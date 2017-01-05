@@ -37,7 +37,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     data SuccSym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
         SuccSym0KindInference
-    type instance Apply SuccSym0 l = SuccSym1 l
+    type instance Apply SuccSym0 l = Succ l
     type family Equals_0123456789 (a :: Foo k k k k)
                                   (b :: Foo k k k k) :: Bool where
       Equals_0123456789 (A a a a a) (A b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
@@ -63,7 +63,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                (l :: TyFun d0123456789 (Foo a0123456789 b0123456789 c0123456789 d0123456789))
       = forall arg. SameKind (Apply (ASym3 l l l) arg) (ASym4 l l l arg) =>
         ASym3KindInference
-    type instance Apply (ASym3 l l l) l = ASym4 l l l l
+    type instance Apply (ASym3 l l l) l = A l l l l
     instance SuppressUnusedWarnings ASym2 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ASym2KindInference GHC.Tuple.())
@@ -108,7 +108,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                (l :: TyFun d0123456789 (Foo a0123456789 b0123456789 c0123456789 d0123456789))
       = forall arg. SameKind (Apply (BSym3 l l l) arg) (BSym4 l l l arg) =>
         BSym3KindInference
-    type instance Apply (BSym3 l l l) l = BSym4 l l l l
+    type instance Apply (BSym3 l l l) l = B l l l l
     instance SuppressUnusedWarnings BSym2 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) BSym2KindInference GHC.Tuple.())
@@ -153,7 +153,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                (l :: TyFun d0123456789 (Foo a0123456789 b0123456789 c0123456789 d0123456789))
       = forall arg. SameKind (Apply (CSym3 l l l) arg) (CSym4 l l l arg) =>
         CSym3KindInference
-    type instance Apply (CSym3 l l l) l = CSym4 l l l l
+    type instance Apply (CSym3 l l l) l = C l l l l
     instance SuppressUnusedWarnings CSym2 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) CSym2KindInference GHC.Tuple.())
@@ -198,7 +198,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                (l :: TyFun d0123456789 (Foo a0123456789 b0123456789 c0123456789 d0123456789))
       = forall arg. SameKind (Apply (DSym3 l l l) arg) (DSym4 l l l arg) =>
         DSym3KindInference
-    type instance Apply (DSym3 l l l) l = DSym4 l l l l
+    type instance Apply (DSym3 l l l) l = D l l l l
     instance SuppressUnusedWarnings DSym2 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) DSym2KindInference GHC.Tuple.())
@@ -243,7 +243,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                (l :: TyFun d0123456789 (Foo a0123456789 b0123456789 c0123456789 d0123456789))
       = forall arg. SameKind (Apply (ESym3 l l l) arg) (ESym4 l l l arg) =>
         ESym3KindInference
-    type instance Apply (ESym3 l l l) l = ESym4 l l l l
+    type instance Apply (ESym3 l l l) l = E l l l l
     instance SuppressUnusedWarnings ESym2 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ESym2KindInference GHC.Tuple.())
@@ -288,7 +288,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                (l :: TyFun d0123456789 (Foo a0123456789 b0123456789 c0123456789 d0123456789))
       = forall arg. SameKind (Apply (FSym3 l l l) arg) (FSym4 l l l arg) =>
         FSym3KindInference
-    type instance Apply (FSym3 l l l) l = FSym4 l l l l
+    type instance Apply (FSym3 l l l) l = F l l l l
     instance SuppressUnusedWarnings FSym2 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FSym2KindInference GHC.Tuple.())
@@ -334,7 +334,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     data Compare_0123456789Sym1 (l :: Nat) (l :: TyFun Nat Ordering)
       = forall arg. SameKind (Apply (Compare_0123456789Sym1 l) arg) (Compare_0123456789Sym2 l arg) =>
         Compare_0123456789Sym1KindInference
-    type instance Apply (Compare_0123456789Sym1 l) l = Compare_0123456789Sym2 l l
+    type instance Apply (Compare_0123456789Sym1 l) l = Compare_0123456789 l l
     instance SuppressUnusedWarnings Compare_0123456789Sym0 where
       suppressUnusedWarnings _
         = snd
@@ -395,7 +395,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                                 (l :: TyFun (Foo a0123456789 b0123456789 c0123456789 d0123456789) Ordering)
       = forall arg. SameKind (Apply (Compare_0123456789Sym1 l) arg) (Compare_0123456789Sym2 l arg) =>
         Compare_0123456789Sym1KindInference
-    type instance Apply (Compare_0123456789Sym1 l) l = Compare_0123456789Sym2 l l
+    type instance Apply (Compare_0123456789Sym1 l) l = Compare_0123456789 l l
     instance SuppressUnusedWarnings Compare_0123456789Sym0 where
       suppressUnusedWarnings _
         = snd

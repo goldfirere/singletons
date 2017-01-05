@@ -34,7 +34,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
     data ToEnum_0123456789Sym0 (l :: TyFun GHC.Types.Nat Foo)
       = forall arg. SameKind (Apply ToEnum_0123456789Sym0 arg) (ToEnum_0123456789Sym1 arg) =>
         ToEnum_0123456789Sym0KindInference
-    type instance Apply ToEnum_0123456789Sym0 l = ToEnum_0123456789Sym1 l
+    type instance Apply ToEnum_0123456789Sym0 l = ToEnum_0123456789 l
     type family FromEnum_0123456789 (a :: Foo) :: GHC.Types.Nat where
       FromEnum_0123456789 Bar = FromInteger 0
       FromEnum_0123456789 Baz = FromInteger 1
@@ -47,7 +47,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
     data FromEnum_0123456789Sym0 (l :: TyFun Foo GHC.Types.Nat)
       = forall arg. SameKind (Apply FromEnum_0123456789Sym0 arg) (FromEnum_0123456789Sym1 arg) =>
         FromEnum_0123456789Sym0KindInference
-    type instance Apply FromEnum_0123456789Sym0 l = FromEnum_0123456789Sym1 l
+    type instance Apply FromEnum_0123456789Sym0 l = FromEnum_0123456789 l
     instance PEnum Foo where
       type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789Sym0 a
       type FromEnum (a :: Foo) = Apply FromEnum_0123456789Sym0 a
@@ -197,7 +197,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
     data ToEnum_0123456789Sym0 (l :: TyFun GHC.Types.Nat Quux)
       = forall arg. SameKind (Apply ToEnum_0123456789Sym0 arg) (ToEnum_0123456789Sym1 arg) =>
         ToEnum_0123456789Sym0KindInference
-    type instance Apply ToEnum_0123456789Sym0 l = ToEnum_0123456789Sym1 l
+    type instance Apply ToEnum_0123456789Sym0 l = ToEnum_0123456789 l
     type family FromEnum_0123456789 (a :: Quux) :: GHC.Types.Nat where
       FromEnum_0123456789 Q1 = FromInteger 0
       FromEnum_0123456789 Q2 = FromInteger 1
@@ -209,7 +209,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
     data FromEnum_0123456789Sym0 (l :: TyFun Quux GHC.Types.Nat)
       = forall arg. SameKind (Apply FromEnum_0123456789Sym0 arg) (FromEnum_0123456789Sym1 arg) =>
         FromEnum_0123456789Sym0KindInference
-    type instance Apply FromEnum_0123456789Sym0 l = FromEnum_0123456789Sym1 l
+    type instance Apply FromEnum_0123456789Sym0 l = FromEnum_0123456789 l
     instance PEnum Quux where
       type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789Sym0 a
       type FromEnum (a :: Quux) = Apply FromEnum_0123456789Sym0 a

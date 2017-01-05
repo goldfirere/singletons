@@ -14,7 +14,7 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
                  (l :: TyFun a0123456789 Bool)
       = forall arg. SameKind (Apply (ColSym1 l) arg) (ColSym2 l arg) =>
         ColSym1KindInference
-    type instance Apply (ColSym1 l) l = ColSym2 l l
+    type instance Apply (ColSym1 l) l = Col l l
     instance SuppressUnusedWarnings ColSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) ColSym0KindInference GHC.Tuple.())

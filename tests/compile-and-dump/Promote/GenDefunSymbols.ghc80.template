@@ -11,7 +11,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
                        (l :: TyFun (Maybe a0123456789) (Maybe b0123456789))
       = forall arg. Data.Singletons.SameKind (Apply (LiftMaybeSym1 l) arg) (LiftMaybeSym2 l arg) =>
         LiftMaybeSym1KindInference
-    type instance Apply (LiftMaybeSym1 l) l = LiftMaybeSym2 l l
+    type instance Apply (LiftMaybeSym1 l) l = LiftMaybe l l
     instance SuppressUnusedWarnings LiftMaybeSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) LiftMaybeSym0KindInference GHC.Tuple.())
@@ -29,7 +29,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     data SuccSym0 (l :: TyFun NatT NatT)
       = forall arg. Data.Singletons.SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
         SuccSym0KindInference
-    type instance Apply SuccSym0 l = SuccSym1 l
+    type instance Apply SuccSym0 l = Succ l
     type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
     instance SuppressUnusedWarnings (:+$$) where
       suppressUnusedWarnings _
@@ -37,7 +37,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     data (:+$$) (l :: Nat) l
       = forall arg. Data.Singletons.SameKind (Apply ((:+$$) l) arg) ((:+$$$) l arg) =>
         (:+$$###)
-    type instance Apply ((:+$$) l) l = (:+$$$) l l
+    type instance Apply ((:+$$) l) l = (:+) l l
     instance SuppressUnusedWarnings (:+$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+$###) GHC.Tuple.())

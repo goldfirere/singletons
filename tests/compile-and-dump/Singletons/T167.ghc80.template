@@ -18,7 +18,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
                       (l :: TyFun [Bool] [Bool])
       = forall arg. SameKind (Apply (FoosPrecSym2 l l) arg) (FoosPrecSym3 l l arg) =>
         FoosPrecSym2KindInference
-    type instance Apply (FoosPrecSym2 l l) l = FoosPrecSym3 l l l
+    type instance Apply (FoosPrecSym2 l l) l = FoosPrec l l l
     instance SuppressUnusedWarnings FoosPrecSym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FoosPrecSym1KindInference GHC.Tuple.())
@@ -43,7 +43,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
     data FooListSym1 (l :: a0123456789) (l :: TyFun [Bool] [Bool])
       = forall arg. SameKind (Apply (FooListSym1 l) arg) (FooListSym2 l arg) =>
         FooListSym1KindInference
-    type instance Apply (FooListSym1 l) l = FooListSym2 l l
+    type instance Apply (FooListSym1 l) l = FooList l l
     instance SuppressUnusedWarnings FooListSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FooListSym0KindInference GHC.Tuple.())
@@ -65,7 +65,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
                                 (l :: TyFun [Bool] [Bool])
       = forall arg. SameKind (Apply (FooList_0123456789Sym1 l) arg) (FooList_0123456789Sym2 l arg) =>
         FooList_0123456789Sym1KindInference
-    type instance Apply (FooList_0123456789Sym1 l) l = FooList_0123456789Sym2 l l
+    type instance Apply (FooList_0123456789Sym1 l) l = FooList_0123456789 l l
     instance SuppressUnusedWarnings FooList_0123456789Sym0 where
       suppressUnusedWarnings _
         = snd
@@ -96,7 +96,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
                                  (l :: TyFun [Bool] [Bool])
       = forall arg. SameKind (Apply (FoosPrec_0123456789Sym2 l l) arg) (FoosPrec_0123456789Sym3 l l arg) =>
         FoosPrec_0123456789Sym2KindInference
-    type instance Apply (FoosPrec_0123456789Sym2 l l) l = FoosPrec_0123456789Sym3 l l l
+    type instance Apply (FoosPrec_0123456789Sym2 l l) l = FoosPrec_0123456789 l l l
     instance SuppressUnusedWarnings FoosPrec_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd

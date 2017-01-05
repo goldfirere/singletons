@@ -40,7 +40,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
     data Succ_0123456789Sym0 (l :: TyFun [Bool] [Bool])
       = forall arg. SameKind (Apply Succ_0123456789Sym0 arg) (Succ_0123456789Sym1 arg) =>
         Succ_0123456789Sym0KindInference
-    type instance Apply Succ_0123456789Sym0 l = Succ_0123456789Sym1 l
+    type instance Apply Succ_0123456789Sym0 l = Succ_0123456789 l
     type family Pred_0123456789 (a :: [Bool]) :: [Bool] where
       Pred_0123456789 '[] = Apply ErrorSym0 "pred 0"
       Pred_0123456789 ((:) False as) = Apply (Apply (:$) TrueSym0) (Apply PredSym0 as)
@@ -52,7 +52,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
     data Pred_0123456789Sym0 (l :: TyFun [Bool] [Bool])
       = forall arg. SameKind (Apply Pred_0123456789Sym0 arg) (Pred_0123456789Sym1 arg) =>
         Pred_0123456789Sym0KindInference
-    type instance Apply Pred_0123456789Sym0 l = Pred_0123456789Sym1 l
+    type instance Apply Pred_0123456789Sym0 l = Pred_0123456789 l
     type family Case_0123456789 i arg_0123456789 t where
       Case_0123456789 i arg_0123456789 True = '[]
       Case_0123456789 i arg_0123456789 False = Apply SuccSym0 (Apply ToEnumSym0 (Apply PredSym0 i))
@@ -72,7 +72,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
     data ToEnum_0123456789Sym0 (l :: TyFun GHC.Types.Nat [Bool])
       = forall arg. SameKind (Apply ToEnum_0123456789Sym0 arg) (ToEnum_0123456789Sym1 arg) =>
         ToEnum_0123456789Sym0KindInference
-    type instance Apply ToEnum_0123456789Sym0 l = ToEnum_0123456789Sym1 l
+    type instance Apply ToEnum_0123456789Sym0 l = ToEnum_0123456789 l
     type family FromEnum_0123456789 (a :: [Bool]) :: GHC.Types.Nat where
       FromEnum_0123456789 '[] = FromInteger 0
       FromEnum_0123456789 ((:) False as) = Apply (Apply (:*$) (FromInteger 2)) (Apply FromEnumSym0 as)
@@ -85,7 +85,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
     data FromEnum_0123456789Sym0 (l :: TyFun [Bool] GHC.Types.Nat)
       = forall arg. SameKind (Apply FromEnum_0123456789Sym0 arg) (FromEnum_0123456789Sym1 arg) =>
         FromEnum_0123456789Sym0KindInference
-    type instance Apply FromEnum_0123456789Sym0 l = FromEnum_0123456789Sym1 l
+    type instance Apply FromEnum_0123456789Sym0 l = FromEnum_0123456789 l
     instance PEnum [Bool] where
       type Succ (a :: [Bool]) = Apply Succ_0123456789Sym0 a
       type Pred (a :: [Bool]) = Apply Pred_0123456789Sym0 a

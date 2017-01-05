@@ -22,7 +22,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     data JustSym0 (l :: TyFun a0123456789 (Maybe a0123456789))
       = forall arg. SameKind (Apply JustSym0 arg) (JustSym1 arg) =>
         JustSym0KindInference
-    type instance Apply JustSym0 l = JustSym1 l
+    type instance Apply JustSym0 l = Just l
     data instance Sing (z :: Maybe a)
       = z ~ Nothing => SNothing |
         forall (n :: a). z ~ Just n => SJust (Sing (n :: a))

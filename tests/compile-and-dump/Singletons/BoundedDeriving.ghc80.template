@@ -44,7 +44,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     data Foo3Sym0 (l :: TyFun a0123456789 (Foo3 a0123456789))
       = forall arg. SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
         Foo3Sym0KindInference
-    type instance Apply Foo3Sym0 l = Foo3Sym1 l
+    type instance Apply Foo3Sym0 l = Foo3 l
     type Foo41Sym0 = Foo41
     type Foo42Sym0 = Foo42
     type PairSym2 (t :: Bool) (t :: Bool) = Pair t t
@@ -54,7 +54,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     data PairSym1 (l :: Bool) (l :: TyFun Bool Pair)
       = forall arg. SameKind (Apply (PairSym1 l) arg) (PairSym2 l arg) =>
         PairSym1KindInference
-    type instance Apply (PairSym1 l) l = PairSym2 l l
+    type instance Apply (PairSym1 l) l = Pair l l
     instance SuppressUnusedWarnings PairSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PairSym0KindInference GHC.Tuple.())

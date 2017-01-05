@@ -30,7 +30,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     data (:+:$$) (l :: Foo) (l :: TyFun Foo Foo)
       = forall arg. SameKind (Apply ((:+:$$) l) arg) ((:+:$$$) l arg) =>
         (:+:$$###)
-    type instance Apply ((:+:$$) l) l = (:+:$$$) l l
+    type instance Apply ((:+:$$) l) l = (:+:) l l
     instance SuppressUnusedWarnings (:+:$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+:$###) GHC.Tuple.())
@@ -45,7 +45,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     data (:+$$) (l :: Nat) (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply ((:+$$) l) arg) ((:+$$$) l arg) =>
         (:+$$###)
-    type instance Apply ((:+$$) l) l = (:+$$$) l l
+    type instance Apply ((:+$$) l) l = (:+) l l
     instance SuppressUnusedWarnings (:+$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:+$###) GHC.Tuple.())
@@ -59,7 +59,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     data ChildSym0 (l :: TyFun Foo Foo)
       = forall arg. SameKind (Apply ChildSym0 arg) (ChildSym1 arg) =>
         ChildSym0KindInference
-    type instance Apply ChildSym0 l = ChildSym1 l
+    type instance Apply ChildSym0 l = Child l
     type family (:+) (a :: Nat) (a :: Nat) :: Nat where
       (:+) Zero m = m
       (:+) (Succ n) m = Apply SuccSym0 (Apply (Apply (:+$) n) m)

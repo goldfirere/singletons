@@ -14,7 +14,7 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     data HeadSym0 (l :: TyFun [a0123456789] a0123456789)
       = forall arg. SameKind (Apply HeadSym0 arg) (HeadSym1 arg) =>
         HeadSym0KindInference
-    type instance Apply HeadSym0 l = HeadSym1 l
+    type instance Apply HeadSym0 l = Head l
     type family Head (a :: [a]) :: a where
       Head ((:) a _z_0123456789) = a
       Head '[] = Apply ErrorSym0 "Data.Singletons.List.head: empty list"

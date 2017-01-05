@@ -48,7 +48,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                  (l :: TyFun b0123456789 (Foo a0123456789 b0123456789))
       = forall arg. SameKind (Apply (FooSym1 l) arg) (FooSym2 l arg) =>
         FooSym1KindInference
-    type instance Apply (FooSym1 l) l = FooSym2 l l
+    type instance Apply (FooSym1 l) l = Foo l l
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) FooSym0KindInference GHC.Tuple.())
@@ -69,7 +69,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym1 l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym1 l) arg) (Lambda_0123456789Sym2 l arg) =>
         Lambda_0123456789Sym1KindInference
-    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789 l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
       suppressUnusedWarnings _
         = snd
@@ -90,7 +90,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym2 l l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym2 l l) arg) (Lambda_0123456789Sym3 l l arg) =>
         Lambda_0123456789Sym2KindInference
-    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
@@ -119,7 +119,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym3 l l l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym3 l l l) arg) (Lambda_0123456789Sym4 l l l arg) =>
         Lambda_0123456789Sym3KindInference
-    type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789Sym4 l l l l
+    type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789 l l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
       suppressUnusedWarnings _
         = snd
@@ -154,7 +154,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym2 l l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym2 l l) arg) (Lambda_0123456789Sym3 l l arg) =>
         Lambda_0123456789Sym2KindInference
-    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
@@ -181,7 +181,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym2 l l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym2 l l) arg) (Lambda_0123456789Sym3 l l arg) =>
         Lambda_0123456789Sym2KindInference
-    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
@@ -216,7 +216,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym4 l l l l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym4 l l l l) arg) (Lambda_0123456789Sym5 l l l l arg) =>
         Lambda_0123456789Sym4KindInference
-    type instance Apply (Lambda_0123456789Sym4 l l l l) l = Lambda_0123456789Sym5 l l l l l
+    type instance Apply (Lambda_0123456789Sym4 l l l l) l = Lambda_0123456789 l l l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym3 where
       suppressUnusedWarnings _
         = snd
@@ -259,7 +259,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym1 l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym1 l) arg) (Lambda_0123456789Sym2 l arg) =>
         Lambda_0123456789Sym1KindInference
-    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789Sym2 l l
+    type instance Apply (Lambda_0123456789Sym1 l) l = Lambda_0123456789 l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym0 where
       suppressUnusedWarnings _
         = snd
@@ -280,7 +280,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym2 l l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym2 l l) arg) (Lambda_0123456789Sym3 l l arg) =>
         Lambda_0123456789Sym2KindInference
-    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
@@ -309,7 +309,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym2 l l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym2 l l) arg) (Lambda_0123456789Sym3 l l arg) =>
         Lambda_0123456789Sym2KindInference
-    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789Sym3 l l l
+    type instance Apply (Lambda_0123456789Sym2 l l) l = Lambda_0123456789 l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym1 where
       suppressUnusedWarnings _
         = snd
@@ -336,7 +336,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789Sym3 l l l l
       = forall arg. SameKind (Apply (Lambda_0123456789Sym3 l l l) arg) (Lambda_0123456789Sym4 l l l arg) =>
         Lambda_0123456789Sym3KindInference
-    type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789Sym4 l l l l
+    type instance Apply (Lambda_0123456789Sym3 l l l) l = Lambda_0123456789 l l l l
     instance SuppressUnusedWarnings Lambda_0123456789Sym2 where
       suppressUnusedWarnings _
         = snd
@@ -368,7 +368,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Foo8Sym0 (l :: TyFun (Foo a0123456789 b0123456789) a0123456789)
       = forall arg. SameKind (Apply Foo8Sym0 arg) (Foo8Sym1 arg) =>
         Foo8Sym0KindInference
-    type instance Apply Foo8Sym0 l = Foo8Sym1 l
+    type instance Apply Foo8Sym0 l = Foo8 l
     type Foo7Sym2 (t :: a0123456789) (t :: b0123456789) = Foo7 t t
     instance SuppressUnusedWarnings Foo7Sym1 where
       suppressUnusedWarnings _
@@ -377,7 +377,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                   (l :: TyFun b0123456789 b0123456789)
       = forall arg. SameKind (Apply (Foo7Sym1 l) arg) (Foo7Sym2 l arg) =>
         Foo7Sym1KindInference
-    type instance Apply (Foo7Sym1 l) l = Foo7Sym2 l l
+    type instance Apply (Foo7Sym1 l) l = Foo7 l l
     instance SuppressUnusedWarnings Foo7Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo7Sym0KindInference GHC.Tuple.())
@@ -394,7 +394,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                   (l :: TyFun b0123456789 a0123456789)
       = forall arg. SameKind (Apply (Foo6Sym1 l) arg) (Foo6Sym2 l arg) =>
         Foo6Sym1KindInference
-    type instance Apply (Foo6Sym1 l) l = Foo6Sym2 l l
+    type instance Apply (Foo6Sym1 l) l = Foo6 l l
     instance SuppressUnusedWarnings Foo6Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo6Sym0KindInference GHC.Tuple.())
@@ -411,7 +411,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                   (l :: TyFun b0123456789 b0123456789)
       = forall arg. SameKind (Apply (Foo5Sym1 l) arg) (Foo5Sym2 l arg) =>
         Foo5Sym1KindInference
-    type instance Apply (Foo5Sym1 l) l = Foo5Sym2 l l
+    type instance Apply (Foo5Sym1 l) l = Foo5 l l
     instance SuppressUnusedWarnings Foo5Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo5Sym0KindInference GHC.Tuple.())
@@ -432,7 +432,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                   (l :: TyFun c0123456789 a0123456789)
       = forall arg. SameKind (Apply (Foo4Sym2 l l) arg) (Foo4Sym3 l l arg) =>
         Foo4Sym2KindInference
-    type instance Apply (Foo4Sym2 l l) l = Foo4Sym3 l l l
+    type instance Apply (Foo4Sym2 l l) l = Foo4 l l l
     instance SuppressUnusedWarnings Foo4Sym1 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo4Sym1KindInference GHC.Tuple.())
@@ -458,7 +458,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data Foo3Sym0 (l :: TyFun a0123456789 a0123456789)
       = forall arg. SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
         Foo3Sym0KindInference
-    type instance Apply Foo3Sym0 l = Foo3Sym1 l
+    type instance Apply Foo3Sym0 l = Foo3 l
     type Foo2Sym2 (t :: a0123456789) (t :: b0123456789) = Foo2 t t
     instance SuppressUnusedWarnings Foo2Sym1 where
       suppressUnusedWarnings _
@@ -467,7 +467,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                   (l :: TyFun b0123456789 a0123456789)
       = forall arg. SameKind (Apply (Foo2Sym1 l) arg) (Foo2Sym2 l arg) =>
         Foo2Sym1KindInference
-    type instance Apply (Foo2Sym1 l) l = Foo2Sym2 l l
+    type instance Apply (Foo2Sym1 l) l = Foo2 l l
     instance SuppressUnusedWarnings Foo2Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo2Sym0KindInference GHC.Tuple.())
@@ -484,7 +484,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                   (l :: TyFun b0123456789 a0123456789)
       = forall arg. SameKind (Apply (Foo1Sym1 l) arg) (Foo1Sym2 l arg) =>
         Foo1Sym1KindInference
-    type instance Apply (Foo1Sym1 l) l = Foo1Sym2 l l
+    type instance Apply (Foo1Sym1 l) l = Foo1 l l
     instance SuppressUnusedWarnings Foo1Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo1Sym0KindInference GHC.Tuple.())
@@ -501,7 +501,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                   (l :: TyFun b0123456789 a0123456789)
       = forall arg. SameKind (Apply (Foo0Sym1 l) arg) (Foo0Sym2 l arg) =>
         Foo0Sym1KindInference
-    type instance Apply (Foo0Sym1 l) l = Foo0Sym2 l l
+    type instance Apply (Foo0Sym1 l) l = Foo0 l l
     instance SuppressUnusedWarnings Foo0Sym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) Foo0Sym0KindInference GHC.Tuple.())

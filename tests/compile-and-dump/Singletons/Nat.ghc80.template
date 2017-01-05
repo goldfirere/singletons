@@ -38,7 +38,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     data SuccSym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
         SuccSym0KindInference
-    type instance Apply SuccSym0 l = SuccSym1 l
+    type instance Apply SuccSym0 l = Succ l
     type PredSym1 (t :: Nat) = Pred t
     instance SuppressUnusedWarnings PredSym0 where
       suppressUnusedWarnings _
@@ -46,7 +46,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     data PredSym0 (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply PredSym0 arg) (PredSym1 arg) =>
         PredSym0KindInference
-    type instance Apply PredSym0 l = PredSym1 l
+    type instance Apply PredSym0 l = Pred l
     type PlusSym2 (t :: Nat) (t :: Nat) = Plus t t
     instance SuppressUnusedWarnings PlusSym1 where
       suppressUnusedWarnings _
@@ -54,7 +54,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     data PlusSym1 (l :: Nat) (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply (PlusSym1 l) arg) (PlusSym2 l arg) =>
         PlusSym1KindInference
-    type instance Apply (PlusSym1 l) l = PlusSym2 l l
+    type instance Apply (PlusSym1 l) l = Plus l l
     instance SuppressUnusedWarnings PlusSym0 where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) PlusSym0KindInference GHC.Tuple.())

@@ -15,7 +15,7 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
     data Let0123456789Scrutinee_0123456789Sym0 l
       = forall arg. SameKind (Apply Let0123456789Scrutinee_0123456789Sym0 arg) (Let0123456789Scrutinee_0123456789Sym1 arg) =>
         Let0123456789Scrutinee_0123456789Sym0KindInference
-    type instance Apply Let0123456789Scrutinee_0123456789Sym0 l = Let0123456789Scrutinee_0123456789Sym1 l
+    type instance Apply Let0123456789Scrutinee_0123456789Sym0 l = Let0123456789Scrutinee_0123456789 l
     type family Let0123456789Scrutinee_0123456789 e where
       Let0123456789Scrutinee_0123456789 e = Apply (Apply (:$) NotSym0) '[]
     type family Case_0123456789 e t where
@@ -27,7 +27,7 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
     data GSym0 (l :: TyFun Bool Bool)
       = forall arg. SameKind (Apply GSym0 arg) (GSym1 arg) =>
         GSym0KindInference
-    type instance Apply GSym0 l = GSym1 l
+    type instance Apply GSym0 l = G l
     type family G (a :: Bool) :: Bool where
       G e = Apply (Case_0123456789 e (Let0123456789Scrutinee_0123456789Sym1 e)) e
     sG :: forall (t :: Bool). Sing t -> Sing (Apply GSym0 t :: Bool)

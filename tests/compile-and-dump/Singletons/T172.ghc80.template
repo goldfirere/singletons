@@ -10,7 +10,7 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
     data ($>$$) (l :: Nat) (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply (($>$$) l) arg) (($>$$$) l arg) =>
         (:$>$$###)
-    type instance Apply (($>$$) l) l = ($>$$$) l l
+    type instance Apply (($>$$) l) l = ($>) l l
     instance SuppressUnusedWarnings ($>$) where
       suppressUnusedWarnings _
         = snd (GHC.Tuple.(,) (:$>$###) GHC.Tuple.())
