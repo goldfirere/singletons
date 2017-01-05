@@ -101,9 +101,9 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
       num_args = length m_arg_kinds
       sat_name = promoteTySym name num_args
   tvbNames <- replicateM num_args $ qNewName "t"
-  let sat_dec = DTySynD sat_name (zipWith mk_tvb tvbNames m_arg_kinds)
-                        (foldType (DConT name) (map DVarT tvbNames))
-  other_decs <- go (num_args - 1) (reverse m_arg_kinds) m_res_kind
+  let  mk_rhs ns = foldType (DConT name) (map DVarT ns)
+       sat_dec   = DTySynD sat_name (zipWith mk_tvb tvbNames m_arg_kinds) (mk_rhs tvbNames)
+  other_decs <- go (num_args - 1) (reverse m_arg_kinds) m_res_kind mk_rhs
   return $ sat_dec : other_decs
   where
     mk_tvb :: Name -> Maybe DKind -> DTyVarBndr
@@ -116,10 +116,11 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
         let (_, _, argKs, resultK) = unravel res_kind
         in (m_arg_kinds ++ (map Just argKs), Just resultK)
 
-    go :: Int -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
-    go _ [] _ = return []
-    go n (m_arg : m_args) m_result = do
-      decls <- go (n - 1) m_args (addStar_maybe (buildTyFun_maybe m_arg m_result))
+    go :: Int -> [Maybe DKind] -> Maybe DKind
+       -> ([Name] -> DType)  -- given the argument names, the RHS of the Apply instance
+       -> PrM [DDec]
+    go _ [] _ _ = return []
+    go n (m_arg : m_args) m_result mk_rhs = do
       fst_name : rest_names <- replicateM (n + 1) (qNewName "l")
       extra_name <- qNewName "arg"
       let data_name   = promoteTySym name n
@@ -143,8 +144,7 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
           app_eqn     = DTySynEqn [ foldType (DConT data_name)
                                              (map DVarT rest_names)
                                   , DVarT fst_name ]
-                                  (foldType (DConT (promoteTySym name (n+1)))
-                                            (map DVarT (rest_names ++ [fst_name])))
+                                  (mk_rhs (rest_names ++ [fst_name]))
           app_decl    = DTySynInstD applyName app_eqn
           suppress    = DInstanceD Nothing []
                           (DConT suppressClassName `DAppT` DConT data_name)
@@ -153,6 +153,10 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
                                                     ((DVarE 'snd) `DAppE`
                                                      mkTupleDExp [DConE con_name,
                                                                   mkTupleDExp []])]]
+
+          mk_rhs' ns  = foldType (DConT data_name) (map DVarT ns)
+
+      decls <- go (n - 1) m_args (addStar_maybe (buildTyFun_maybe m_arg m_result)) mk_rhs'
       return $ suppress : data_decl : app_decl : decls
 
 buildTyFun :: DKind -> DKind -> DKind

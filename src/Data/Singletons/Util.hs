@@ -461,6 +461,11 @@ partitionLetDecs :: [DDec] -> ([DLetDec], [DDec])
 partitionLetDecs = partitionWith (\case DLetDec ld -> Left ld
                                         dec        -> Right dec)
 
+{-# INLINEABLE zipWith3M #-}
+zipWith3M :: Monad m => (a -> b -> m c) -> [a] -> [b] -> m [c]
+zipWith3M f (a:as) (b:bs) = (:) <$> f a b <*> zipWith3M f as bs
+zipWith3M _ _ _ = return []
+
 mapAndUnzip3M :: Monad m => (a -> m (b,c,d)) -> [a] -> m ([b],[c],[d])
 mapAndUnzip3M _ []     = return ([],[],[])
 mapAndUnzip3M f (x:xs) = do
