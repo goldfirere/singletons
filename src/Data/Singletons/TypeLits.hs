@@ -32,7 +32,7 @@ import Data.Singletons.Prelude.Num ()   -- for typelits instances
 
 import Data.Singletons.Promote
 
--- This bogus Num instance is helpful for people who want to define
+-- | This bogus 'Num' instance is helpful for people who want to define
 -- functions over Nats that will only be used at the type level or
 -- as singletons. A correct SNum instance for Nat singletons exists.
 instance Num Nat where
@@ -50,8 +50,21 @@ instance Eq Nat where
 instance Ord Nat where
   compare     = no_term_level_nats
 
+-- | This bogus instance is helpful for people who want to define
+-- functions over Symbols that will only be used at the type level or
+-- as singletons.
+instance Eq Symbol where
+  (==)        = no_term_level_syms
+
+instance Ord Symbol where
+  compare     = no_term_level_syms
+
+
 no_term_level_nats :: a
 no_term_level_nats = error "The kind `Nat` may not be used at the term level."
+
+no_term_level_syms :: a
+no_term_level_syms = error "The kind `Symbol` may not be used at the term level."
 
 -- These are often useful in TypeLits-heavy code
 $(genDefunSymbols [''KnownNat, ''KnownSymbol])
