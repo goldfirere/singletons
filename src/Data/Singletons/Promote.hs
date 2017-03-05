@@ -189,7 +189,56 @@ promoteDataDecs data_decs = do
       let arg_ty = foldType (DConT data_name)
                             (map tvbToType tvbs)
       in
-      concatMapM (getRecordSelectors arg_ty) cons
+      mergeLetDecs <$> concatMapM (getRecordSelectors arg_ty) cons
+
+-- After retrieving the record selectors from a data type's constructors, it
+-- may be necessary to do some post-processing to ensure that the returned
+-- list of DLetDecs makes sense. Why? Consider this example:
+--
+--   data X = X1 {y :: Symbol} | X2 {y :: Symbol}
+--
+-- After calling getRecordSelectors on each constructor, you end up with this
+-- list of DLetDecs:
+--
+--   [ DSigD y (DAppT (DAppT DArrowT (DConT X)) (DConT Symbol))
+--   , DFunD y [DClause [DConPa X1 [DVarPa field]] (DVarE field)]
+
+--   , DSigD y (DAppT (DAppT DArrowT (DConT X)) (DConT Symbol))
+--   , DFunD y [DClause [DConPa X2 [DVarPa field]] (DVarE field)] ]
+--
+-- This is not ideal, because the record selector 'y' is defined with two
+-- separate function declarations. In fact, when singletons build a LetDecEnv
+-- out of this, it will only keep the second definition of 'y', as it believes
+-- that 'y' must only be defined once! This means that the promoted version of
+-- 'y' will incorrectly be:
+--
+--   type family Y (a0 :: X) :: Symbol
+--     where [(field0 :: Symbol)] Y ('X2 field0) = field0
+--
+-- See #180 for an example of where this happened. To prevent it, mergeLetDecs
+-- is used to combine all of the clauses of each record selector into a
+-- single DFunD so that the promoted definition covers all constructors for
+-- which the record selector is present.
+mergeLetDecs :: [DLetDec] -> [DLetDec]
+mergeLetDecs [] = []
+mergeLetDecs (x:xs)
+  -- If we encounter a function declaration, looks for all other function
+  -- declarations in the rest of the list with the same name, and concat
+  -- their clauses.
+  | DFunD n clauses <- x
+  = let (other_clauses, neq_n)
+          = partitionWith (\case DFunD n2 cls | n == n2 -> Left cls; d -> Right d) xs
+        merged_clauses = concat $ clauses:other_clauses
+        merged_x       = DFunD n merged_clauses
+     in merged_x:mergeLetDecs neq_n
+  -- If we encounter a type signature, simply delete all other type signatures
+  -- in the rest of the list with the same name, as they are guaranteed to
+  -- have the same type signature.
+  | DSigD n _ <- x
+  = let neq_n = filter (\case DSigD n2 _ -> n /= n2; _ -> True) xs
+     in x:mergeLetDecs neq_n
+
+  | otherwise = x:mergeLetDecs xs
 
 -- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
 promoteLetDecs :: (String, String) -- (alpha, symb) prefixes to use
