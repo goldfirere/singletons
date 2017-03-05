@@ -27,7 +27,6 @@ import Data.Singletons.Util
 import Data.Singletons.Syntax
 import Prelude hiding (exp)
 import Control.Monad
-import Data.List (partition)
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Data.Maybe
@@ -227,8 +226,9 @@ mergeLetDecs (x:xs)
   -- declarations in the rest of the list with the same name, and concat
   -- their clauses.
   | DFunD n clauses <- x
-  = let (eq_n, neq_n)  = partition (\case DFunD n2 _ -> n == n2; _ -> False) xs
-        merged_clauses = concat $ clauses:map (\(DFunD _ cls) -> cls) eq_n
+  = let (other_clauses, neq_n)
+          = partitionWith (\case DFunD n2 cls | n == n2 -> Left cls; d -> Right d) xs
+        merged_clauses = concat $ clauses:other_clauses
         merged_x       = DFunD n merged_clauses
      in merged_x:mergeLetDecs neq_n
   -- If we encounter a type signature, simply delete all other type signatures
