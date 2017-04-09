@@ -72,7 +72,7 @@ singletonStar names = do
   kinds <- mapM getKind names
   ctors <- zipWithM (mkCtor True) names kinds
   let repDecl = DDataD Data [] repName [] ctors
-                       [DConPr ''Eq, DConPr ''Show, DConPr ''Read]
+                         [DDerivClause Nothing [DConPr ''Eq, DConPr ''Show, DConPr ''Read]]
   fakeCtors <- zipWithM (mkCtor False) names kinds
   let dataDecl = DataDecl Data repName [] fakeCtors
                           [DConPr ''Show, DConPr ''Read , DConPr ''Eq]

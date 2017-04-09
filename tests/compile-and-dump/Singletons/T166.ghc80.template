@@ -1,5 +1,0 @@
-
-Singletons/T166.hs:0:0: error:
-    Function being promoted to FooSym0 has too many arguments.
-
-Singletons/T166.hs:0:0: error: Q monad failure

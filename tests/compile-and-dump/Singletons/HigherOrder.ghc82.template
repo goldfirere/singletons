@@ -1,0 +1,593 @@
+Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| map :: (a -> b) -> [a] -> [b]
+          map _ [] = []
+          map f (h : t) = (f h) : (map f t)
+          liftMaybe :: (a -> b) -> Maybe a -> Maybe b
+          liftMaybe f (Just x) = Just (f x)
+          liftMaybe _ Nothing = Nothing
+          zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+          zipWith f (x : xs) (y : ys) = f x y : zipWith f xs ys
+          zipWith _ [] [] = []
+          zipWith _ (_ : _) [] = []
+          zipWith _ [] (_ : _) = []
+          foo :: ((a -> b) -> a -> b) -> (a -> b) -> a -> b
+          foo f g a = f g a
+          splunge :: [Nat] -> [Bool] -> [Nat]
+          splunge ns bs
+            = zipWith (\ n b -> if b then Succ (Succ n) else n) ns bs
+          etad :: [Nat] -> [Bool] -> [Nat]
+          etad = zipWith (\ n b -> if b then Succ (Succ n) else n)
+          
+          data Either a b = Left a | Right b |]
+  ======>
+    data Either a b = Left a | Right b
+    map :: (a -> b) -> [a] -> [b]
+    map _ GHC.Types.[] = []
+    map f (h GHC.Types.: t) = ((f h) GHC.Types.: ((map f) t))
+    liftMaybe :: (a -> b) -> Maybe a -> Maybe b
+    liftMaybe f (Just x) = Just (f x)
+    liftMaybe _ Nothing = Nothing
+    zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+    zipWith f (x GHC.Types.: xs) (y GHC.Types.: ys)
+      = (((f x) y) GHC.Types.: (((zipWith f) xs) ys))
+    zipWith _ GHC.Types.[] GHC.Types.[] = []
+    zipWith _ (_ GHC.Types.: _) GHC.Types.[] = []
+    zipWith _ GHC.Types.[] (_ GHC.Types.: _) = []
+    foo :: ((a -> b) -> a -> b) -> (a -> b) -> a -> b
+    foo f g a = (f g) a
+    splunge :: [Nat] -> [Bool] -> [Nat]
+    splunge ns bs
+      = ((zipWith (\ n b -> if b then Succ (Succ n) else n)) ns) bs
+    etad :: [Nat] -> [Bool] -> [Nat]
+    etad = zipWith (\ n b -> if b then Succ (Succ n) else n)
+    type LeftSym1 (t :: a0123456789876543210) = Left t
+    instance SuppressUnusedWarnings LeftSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) LeftSym0KindInference) GHC.Tuple.())
+    data LeftSym0 (l :: TyFun a0123456789876543210 (Either a0123456789876543210 b0123456789876543210))
+      = forall arg. SameKind (Apply LeftSym0 arg) (LeftSym1 arg) =>
+        LeftSym0KindInference
+    type instance Apply LeftSym0 l = Left l
+    type RightSym1 (t :: b0123456789876543210) = Right t
+    instance SuppressUnusedWarnings RightSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) RightSym0KindInference) GHC.Tuple.())
+    data RightSym0 (l :: TyFun b0123456789876543210 (Either a0123456789876543210 b0123456789876543210))
+      = forall arg. SameKind (Apply RightSym0 arg) (RightSym1 arg) =>
+        RightSym0KindInference
+    type instance Apply RightSym0 l = Right l
+    type family Case_0123456789876543210 ns bs n b t where
+      Case_0123456789876543210 ns bs n b True = Apply SuccSym0 (Apply SuccSym0 n)
+      Case_0123456789876543210 ns bs n b False = n
+    type family Lambda_0123456789876543210 ns bs t t where
+      Lambda_0123456789876543210 ns bs n b = Case_0123456789876543210 ns bs n b b
+    type Lambda_0123456789876543210Sym4 t t t t =
+        Lambda_0123456789876543210 t t t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym3 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym3KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym3 l l l l
+      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym3 l l l) arg) (Lambda_0123456789876543210Sym4 l l l arg) =>
+        Lambda_0123456789876543210Sym3KindInference
+    type instance Apply (Lambda_0123456789876543210Sym3 l l l) l = Lambda_0123456789876543210 l l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym2 l l l
+      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym2 l l) arg) (Lambda_0123456789876543210Sym3 l l arg) =>
+        Lambda_0123456789876543210Sym2KindInference
+    type instance Apply (Lambda_0123456789876543210Sym2 l l) l = Lambda_0123456789876543210Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l
+      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+        Lambda_0123456789876543210Sym1KindInference
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l
+      = forall arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+        Lambda_0123456789876543210Sym0KindInference
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type family Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 t where
+      Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 True = Apply SuccSym0 (Apply SuccSym0 n)
+      Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 False = n
+    type family Lambda_0123456789876543210 a_0123456789876543210 a_0123456789876543210 t t where
+      Lambda_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n b = Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 b
+    type Lambda_0123456789876543210Sym4 t t t t =
+        Lambda_0123456789876543210 t t t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym3 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym3KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym3 l l l l
+      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym3 l l l) arg) (Lambda_0123456789876543210Sym4 l l l arg) =>
+        Lambda_0123456789876543210Sym3KindInference
+    type instance Apply (Lambda_0123456789876543210Sym3 l l l) l = Lambda_0123456789876543210 l l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym2 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym2 l l l
+      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym2 l l) arg) (Lambda_0123456789876543210Sym3 l l arg) =>
+        Lambda_0123456789876543210Sym2KindInference
+    type instance Apply (Lambda_0123456789876543210Sym2 l l) l = Lambda_0123456789876543210Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l
+      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+        Lambda_0123456789876543210Sym1KindInference
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l
+      = forall arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+        Lambda_0123456789876543210Sym0KindInference
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type FooSym3 (t :: TyFun (TyFun a0123456789876543210 b0123456789876543210
+                              -> GHC.Types.Type) (TyFun a0123456789876543210 b0123456789876543210
+                                                  -> GHC.Types.Type)
+                       -> GHC.Types.Type) (t :: TyFun a0123456789876543210 b0123456789876543210
+                                                -> GHC.Types.Type) (t :: a0123456789876543210) =
+        Foo t t t
+    instance SuppressUnusedWarnings FooSym2 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) FooSym2KindInference) GHC.Tuple.())
+    data FooSym2 (l :: TyFun (TyFun a0123456789876543210 b0123456789876543210
+                              -> GHC.Types.Type) (TyFun a0123456789876543210 b0123456789876543210
+                                                  -> GHC.Types.Type)
+                       -> GHC.Types.Type) (l :: TyFun a0123456789876543210 b0123456789876543210
+                                                -> GHC.Types.Type) (l :: TyFun a0123456789876543210 b0123456789876543210)
+      = forall arg. SameKind (Apply (FooSym2 l l) arg) (FooSym3 l l arg) =>
+        FooSym2KindInference
+    type instance Apply (FooSym2 l l) l = Foo l l l
+    instance SuppressUnusedWarnings FooSym1 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) FooSym1KindInference) GHC.Tuple.())
+    data FooSym1 (l :: TyFun (TyFun a0123456789876543210 b0123456789876543210
+                              -> GHC.Types.Type) (TyFun a0123456789876543210 b0123456789876543210
+                                                  -> GHC.Types.Type)
+                       -> GHC.Types.Type) (l :: TyFun (TyFun a0123456789876543210 b0123456789876543210
+                                                       -> GHC.Types.Type) (TyFun a0123456789876543210 b0123456789876543210
+                                                                           -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (FooSym1 l) arg) (FooSym2 l arg) =>
+        FooSym1KindInference
+    type instance Apply (FooSym1 l) l = FooSym2 l l
+    instance SuppressUnusedWarnings FooSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) FooSym0KindInference) GHC.Tuple.())
+    data FooSym0 (l :: TyFun (TyFun (TyFun a0123456789876543210 b0123456789876543210
+                                     -> GHC.Types.Type) (TyFun a0123456789876543210 b0123456789876543210
+                                                         -> GHC.Types.Type)
+                              -> GHC.Types.Type) (TyFun (TyFun a0123456789876543210 b0123456789876543210
+                                                         -> GHC.Types.Type) (TyFun a0123456789876543210 b0123456789876543210
+                                                                             -> GHC.Types.Type)
+                                                  -> GHC.Types.Type))
+      = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
+        FooSym0KindInference
+    type instance Apply FooSym0 l = FooSym1 l
+    type ZipWithSym3 (t :: TyFun a0123456789876543210 (TyFun b0123456789876543210 c0123456789876543210
+                                                       -> GHC.Types.Type)
+                           -> GHC.Types.Type) (t :: [a0123456789876543210]) (t :: [b0123456789876543210]) =
+        ZipWith t t t
+    instance SuppressUnusedWarnings ZipWithSym2 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) ZipWithSym2KindInference) GHC.Tuple.())
+    data ZipWithSym2 (l :: TyFun a0123456789876543210 (TyFun b0123456789876543210 c0123456789876543210
+                                                       -> GHC.Types.Type)
+                           -> GHC.Types.Type) (l :: [a0123456789876543210]) (l :: TyFun [b0123456789876543210] [c0123456789876543210])
+      = forall arg. SameKind (Apply (ZipWithSym2 l l) arg) (ZipWithSym3 l l arg) =>
+        ZipWithSym2KindInference
+    type instance Apply (ZipWithSym2 l l) l = ZipWith l l l
+    instance SuppressUnusedWarnings ZipWithSym1 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) ZipWithSym1KindInference) GHC.Tuple.())
+    data ZipWithSym1 (l :: TyFun a0123456789876543210 (TyFun b0123456789876543210 c0123456789876543210
+                                                       -> GHC.Types.Type)
+                           -> GHC.Types.Type) (l :: TyFun [a0123456789876543210] (TyFun [b0123456789876543210] [c0123456789876543210]
+                                                                                  -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (ZipWithSym1 l) arg) (ZipWithSym2 l arg) =>
+        ZipWithSym1KindInference
+    type instance Apply (ZipWithSym1 l) l = ZipWithSym2 l l
+    instance SuppressUnusedWarnings ZipWithSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) ZipWithSym0KindInference) GHC.Tuple.())
+    data ZipWithSym0 (l :: TyFun (TyFun a0123456789876543210 (TyFun b0123456789876543210 c0123456789876543210
+                                                              -> GHC.Types.Type)
+                                  -> GHC.Types.Type) (TyFun [a0123456789876543210] (TyFun [b0123456789876543210] [c0123456789876543210]
+                                                                                    -> GHC.Types.Type)
+                                                      -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ZipWithSym0 arg) (ZipWithSym1 arg) =>
+        ZipWithSym0KindInference
+    type instance Apply ZipWithSym0 l = ZipWithSym1 l
+    type SplungeSym2 (t :: [Nat]) (t :: [Bool]) = Splunge t t
+    instance SuppressUnusedWarnings SplungeSym1 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) SplungeSym1KindInference) GHC.Tuple.())
+    data SplungeSym1 (l :: [Nat]) (l :: TyFun [Bool] [Nat])
+      = forall arg. SameKind (Apply (SplungeSym1 l) arg) (SplungeSym2 l arg) =>
+        SplungeSym1KindInference
+    type instance Apply (SplungeSym1 l) l = Splunge l l
+    instance SuppressUnusedWarnings SplungeSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) SplungeSym0KindInference) GHC.Tuple.())
+    data SplungeSym0 (l :: TyFun [Nat] (TyFun [Bool] [Nat]
+                                        -> GHC.Types.Type))
+      = forall arg. SameKind (Apply SplungeSym0 arg) (SplungeSym1 arg) =>
+        SplungeSym0KindInference
+    type instance Apply SplungeSym0 l = SplungeSym1 l
+    type EtadSym2 (t :: [Nat]) (t :: [Bool]) = Etad t t
+    instance SuppressUnusedWarnings EtadSym1 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) EtadSym1KindInference) GHC.Tuple.())
+    data EtadSym1 (l :: [Nat]) (l :: TyFun [Bool] [Nat])
+      = forall arg. SameKind (Apply (EtadSym1 l) arg) (EtadSym2 l arg) =>
+        EtadSym1KindInference
+    type instance Apply (EtadSym1 l) l = Etad l l
+    instance SuppressUnusedWarnings EtadSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) EtadSym0KindInference) GHC.Tuple.())
+    data EtadSym0 (l :: TyFun [Nat] (TyFun [Bool] [Nat]
+                                     -> GHC.Types.Type))
+      = forall arg. SameKind (Apply EtadSym0 arg) (EtadSym1 arg) =>
+        EtadSym0KindInference
+    type instance Apply EtadSym0 l = EtadSym1 l
+    type LiftMaybeSym2 (t :: TyFun a0123456789876543210 b0123456789876543210
+                             -> GHC.Types.Type) (t :: Maybe a0123456789876543210) =
+        LiftMaybe t t
+    instance SuppressUnusedWarnings LiftMaybeSym1 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) LiftMaybeSym1KindInference) GHC.Tuple.())
+    data LiftMaybeSym1 (l :: TyFun a0123456789876543210 b0123456789876543210
+                             -> GHC.Types.Type) (l :: TyFun (Maybe a0123456789876543210) (Maybe b0123456789876543210))
+      = forall arg. SameKind (Apply (LiftMaybeSym1 l) arg) (LiftMaybeSym2 l arg) =>
+        LiftMaybeSym1KindInference
+    type instance Apply (LiftMaybeSym1 l) l = LiftMaybe l l
+    instance SuppressUnusedWarnings LiftMaybeSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) LiftMaybeSym0KindInference) GHC.Tuple.())
+    data LiftMaybeSym0 (l :: TyFun (TyFun a0123456789876543210 b0123456789876543210
+                                    -> GHC.Types.Type) (TyFun (Maybe a0123456789876543210) (Maybe b0123456789876543210)
+                                                        -> GHC.Types.Type))
+      = forall arg. SameKind (Apply LiftMaybeSym0 arg) (LiftMaybeSym1 arg) =>
+        LiftMaybeSym0KindInference
+    type instance Apply LiftMaybeSym0 l = LiftMaybeSym1 l
+    type MapSym2 (t :: TyFun a0123456789876543210 b0123456789876543210
+                       -> GHC.Types.Type) (t :: [a0123456789876543210]) =
+        Map t t
+    instance SuppressUnusedWarnings MapSym1 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) MapSym1KindInference) GHC.Tuple.())
+    data MapSym1 (l :: TyFun a0123456789876543210 b0123456789876543210
+                       -> GHC.Types.Type) (l :: TyFun [a0123456789876543210] [b0123456789876543210])
+      = forall arg. SameKind (Apply (MapSym1 l) arg) (MapSym2 l arg) =>
+        MapSym1KindInference
+    type instance Apply (MapSym1 l) l = Map l l
+    instance SuppressUnusedWarnings MapSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) MapSym0KindInference) GHC.Tuple.())
+    data MapSym0 (l :: TyFun (TyFun a0123456789876543210 b0123456789876543210
+                              -> GHC.Types.Type) (TyFun [a0123456789876543210] [b0123456789876543210]
+                                                  -> GHC.Types.Type))
+      = forall arg. SameKind (Apply MapSym0 arg) (MapSym1 arg) =>
+        MapSym0KindInference
+    type instance Apply MapSym0 l = MapSym1 l
+    type family Foo (a :: TyFun (TyFun a b
+                                 -> GHC.Types.Type) (TyFun a b -> GHC.Types.Type)
+                          -> GHC.Types.Type) (a :: TyFun a b
+                                                   -> GHC.Types.Type) (a :: a) :: b where
+      Foo f g a = Apply (Apply f g) a
+    type family ZipWith (a :: TyFun a (TyFun b c -> GHC.Types.Type)
+                              -> GHC.Types.Type) (a :: [a]) (a :: [b]) :: [c] where
+      ZipWith f ((:) x xs) ((:) y ys) = Apply (Apply (:$) (Apply (Apply f x) y)) (Apply (Apply (Apply ZipWithSym0 f) xs) ys)
+      ZipWith _z_0123456789876543210 '[] '[] = '[]
+      ZipWith _z_0123456789876543210 ((:) _z_0123456789876543210 _z_0123456789876543210) '[] = '[]
+      ZipWith _z_0123456789876543210 '[] ((:) _z_0123456789876543210 _z_0123456789876543210) = '[]
+    type family Splunge (a :: [Nat]) (a :: [Bool]) :: [Nat] where
+      Splunge ns bs = Apply (Apply (Apply ZipWithSym0 (Apply (Apply Lambda_0123456789876543210Sym0 ns) bs)) ns) bs
+    type family Etad (a :: [Nat]) (a :: [Bool]) :: [Nat] where
+      Etad a_0123456789876543210 a_0123456789876543210 = Apply (Apply (Apply ZipWithSym0 (Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210)) a_0123456789876543210) a_0123456789876543210
+    type family LiftMaybe (a :: TyFun a b
+                                -> GHC.Types.Type) (a :: Maybe a) :: Maybe b where
+      LiftMaybe f (Just x) = Apply JustSym0 (Apply f x)
+      LiftMaybe _z_0123456789876543210 Nothing = NothingSym0
+    type family Map (a :: TyFun a b
+                          -> GHC.Types.Type) (a :: [a]) :: [b] where
+      Map _z_0123456789876543210 '[] = '[]
+      Map f ((:) h t) = Apply (Apply (:$) (Apply f h)) (Apply (Apply MapSym0 f) t)
+    sFoo ::
+      forall (t :: TyFun (TyFun a b -> GHC.Types.Type) (TyFun a b
+                                                        -> GHC.Types.Type)
+                   -> GHC.Types.Type)
+             (t :: TyFun a b -> GHC.Types.Type)
+             (t :: a).
+      Sing t
+      -> Sing t
+         -> Sing t -> Sing (Apply (Apply (Apply FooSym0 t) t) t :: b)
+    sZipWith ::
+      forall (t :: TyFun a (TyFun b c -> GHC.Types.Type)
+                   -> GHC.Types.Type)
+             (t :: [a])
+             (t :: [b]).
+      Sing t
+      -> Sing t
+         -> Sing t -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
+    sSplunge ::
+      forall (t :: [Nat]) (t :: [Bool]).
+      Sing t -> Sing t -> Sing (Apply (Apply SplungeSym0 t) t :: [Nat])
+    sEtad ::
+      forall (t :: [Nat]) (t :: [Bool]).
+      Sing t -> Sing t -> Sing (Apply (Apply EtadSym0 t) t :: [Nat])
+    sLiftMaybe ::
+      forall (t :: TyFun a b -> GHC.Types.Type) (t :: Maybe a).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
+    sMap ::
+      forall (t :: TyFun a b -> GHC.Types.Type) (t :: [a]).
+      Sing t -> Sing t -> Sing (Apply (Apply MapSym0 t) t :: [b])
+    sFoo sF sG sA
+      = let
+          lambda ::
+            forall f g a.
+            (t ~ f, t ~ g, t ~ a) =>
+            Sing f
+            -> Sing g
+               -> Sing a -> Sing (Apply (Apply (Apply FooSym0 t) t) t :: b)
+          lambda f g a = (applySing ((applySing f) g)) a
+        in ((lambda sF) sG) sA
+    sZipWith sF (SCons sX sXs) (SCons sY sYs)
+      = let
+          lambda ::
+            forall f x xs y ys.
+            (t ~ f,
+             t ~ Apply (Apply (:$) x) xs,
+             t ~ Apply (Apply (:$) y) ys) =>
+            Sing f
+            -> Sing x
+               -> Sing xs
+                  -> Sing y
+                     -> Sing ys -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
+          lambda f x xs y ys
+            = (applySing
+                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                    ((applySing ((applySing f) x)) y)))
+                ((applySing
+                    ((applySing
+                        ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith)) f))
+                       xs))
+                   ys)
+        in ((((lambda sF) sX) sXs) sY) sYs
+    sZipWith _s_z_0123456789876543210 SNil SNil
+      = let
+          lambda ::
+            forall _z_0123456789876543210.
+            (t ~ _z_0123456789876543210, t ~ '[], t ~ '[]) =>
+            Sing _z_0123456789876543210
+            -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
+          lambda _z_0123456789876543210 = SNil
+        in lambda _s_z_0123456789876543210
+    sZipWith
+      _s_z_0123456789876543210
+      (SCons _s_z_0123456789876543210 _s_z_0123456789876543210)
+      SNil
+      = let
+          lambda ::
+            forall _z_0123456789876543210
+                   _z_0123456789876543210
+                   _z_0123456789876543210.
+            (t ~ _z_0123456789876543210,
+             t ~ Apply (Apply (:$) _z_0123456789876543210) _z_0123456789876543210,
+             t ~ '[]) =>
+            Sing _z_0123456789876543210
+            -> Sing _z_0123456789876543210
+               -> Sing _z_0123456789876543210
+                  -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
+          lambda
+            _z_0123456789876543210
+            _z_0123456789876543210
+            _z_0123456789876543210
+            = SNil
+        in
+          ((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
+            _s_z_0123456789876543210
+    sZipWith
+      _s_z_0123456789876543210
+      SNil
+      (SCons _s_z_0123456789876543210 _s_z_0123456789876543210)
+      = let
+          lambda ::
+            forall _z_0123456789876543210
+                   _z_0123456789876543210
+                   _z_0123456789876543210.
+            (t ~ _z_0123456789876543210,
+             t ~ '[],
+             t ~ Apply (Apply (:$) _z_0123456789876543210) _z_0123456789876543210) =>
+            Sing _z_0123456789876543210
+            -> Sing _z_0123456789876543210
+               -> Sing _z_0123456789876543210
+                  -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
+          lambda
+            _z_0123456789876543210
+            _z_0123456789876543210
+            _z_0123456789876543210
+            = SNil
+        in
+          ((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
+            _s_z_0123456789876543210
+    sSplunge sNs sBs
+      = let
+          lambda ::
+            forall ns bs.
+            (t ~ ns, t ~ bs) =>
+            Sing ns -> Sing bs -> Sing (Apply (Apply SplungeSym0 t) t :: [Nat])
+          lambda ns bs
+            = (applySing
+                 ((applySing
+                     ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith))
+                        ((singFun2
+                            (Proxy ::
+                               Proxy (Apply (Apply Lambda_0123456789876543210Sym0 ns) bs)))
+                           (\ sN sB
+                              -> let
+                                   lambda ::
+                                     forall n b.
+                                     Sing n
+                                     -> Sing b
+                                        -> Sing (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 ns) bs) n) b)
+                                   lambda n b
+                                     = case b of
+                                         STrue
+                                           -> let
+                                                lambda ::
+                                                  TrueSym0 ~ b =>
+                                                  Sing (Case_0123456789876543210 ns bs n b TrueSym0)
+                                                lambda
+                                                  = (applySing
+                                                       ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+                                                      ((applySing
+                                                          ((singFun1 (Proxy :: Proxy SuccSym0))
+                                                             SSucc))
+                                                         n)
+                                              in lambda
+                                         SFalse
+                                           -> let
+                                                lambda ::
+                                                  FalseSym0 ~ b =>
+                                                  Sing (Case_0123456789876543210 ns bs n b FalseSym0)
+                                                lambda = n
+                                              in lambda ::
+                                         Sing (Case_0123456789876543210 ns bs n b b)
+                                 in (lambda sN) sB))))
+                    ns))
+                bs
+        in (lambda sNs) sBs
+    sEtad sA_0123456789876543210 sA_0123456789876543210
+      = let
+          lambda ::
+            forall a_0123456789876543210 a_0123456789876543210.
+            (t ~ a_0123456789876543210, t ~ a_0123456789876543210) =>
+            Sing a_0123456789876543210
+            -> Sing a_0123456789876543210
+               -> Sing (Apply (Apply EtadSym0 t) t :: [Nat])
+          lambda a_0123456789876543210 a_0123456789876543210
+            = (applySing
+                 ((applySing
+                     ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith))
+                        ((singFun2
+                            (Proxy ::
+                               Proxy (Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210)))
+                           (\ sN sB
+                              -> let
+                                   lambda ::
+                                     forall n b.
+                                     Sing n
+                                     -> Sing b
+                                        -> Sing (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210) n) b)
+                                   lambda n b
+                                     = case b of
+                                         STrue
+                                           -> let
+                                                lambda ::
+                                                  TrueSym0 ~ b =>
+                                                  Sing (Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 TrueSym0)
+                                                lambda
+                                                  = (applySing
+                                                       ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+                                                      ((applySing
+                                                          ((singFun1 (Proxy :: Proxy SuccSym0))
+                                                             SSucc))
+                                                         n)
+                                              in lambda
+                                         SFalse
+                                           -> let
+                                                lambda ::
+                                                  FalseSym0 ~ b =>
+                                                  Sing (Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 FalseSym0)
+                                                lambda = n
+                                              in lambda ::
+                                         Sing (Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 b)
+                                 in (lambda sN) sB))))
+                    a_0123456789876543210))
+                a_0123456789876543210
+        in (lambda sA_0123456789876543210) sA_0123456789876543210
+    sLiftMaybe sF (SJust sX)
+      = let
+          lambda ::
+            forall f x.
+            (t ~ f, t ~ Apply JustSym0 x) =>
+            Sing f
+            -> Sing x -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
+          lambda f x
+            = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
+                ((applySing f) x)
+        in (lambda sF) sX
+    sLiftMaybe _s_z_0123456789876543210 SNothing
+      = let
+          lambda ::
+            forall _z_0123456789876543210.
+            (t ~ _z_0123456789876543210, t ~ NothingSym0) =>
+            Sing _z_0123456789876543210
+            -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
+          lambda _z_0123456789876543210 = SNothing
+        in lambda _s_z_0123456789876543210
+    sMap _s_z_0123456789876543210 SNil
+      = let
+          lambda ::
+            forall _z_0123456789876543210.
+            (t ~ _z_0123456789876543210, t ~ '[]) =>
+            Sing _z_0123456789876543210
+            -> Sing (Apply (Apply MapSym0 t) t :: [b])
+          lambda _z_0123456789876543210 = SNil
+        in lambda _s_z_0123456789876543210
+    sMap sF (SCons sH sT)
+      = let
+          lambda ::
+            forall f h t.
+            (t ~ f, t ~ Apply (Apply (:$) h) t) =>
+            Sing f
+            -> Sing h -> Sing t -> Sing (Apply (Apply MapSym0 t) t :: [b])
+          lambda f h t
+            = (applySing
+                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                    ((applySing f) h)))
+                ((applySing
+                    ((applySing ((singFun2 (Proxy :: Proxy MapSym0)) sMap)) f))
+                   t)
+        in ((lambda sF) sH) sT
+    data instance Sing (z :: Either a b)
+      = forall (n :: a). z ~ Left n => SLeft (Sing (n :: a)) |
+        forall (n :: b). z ~ Right n => SRight (Sing (n :: b))
+    type SEither = (Sing :: Either a b -> GHC.Types.Type)
+    instance (SingKind a, SingKind b) => SingKind (Either a b) where
+      type Demote (Either a b) = Either (Demote a) (Demote b)
+      fromSing (SLeft b) = Left (fromSing b)
+      fromSing (SRight b) = Right (fromSing b)
+      toSing (Left b)
+        = case toSing b :: SomeSing a of {
+            SomeSing c -> SomeSing (SLeft c) }
+      toSing (Right b)
+        = case toSing b :: SomeSing b of {
+            SomeSing c -> SomeSing (SRight c) }
+    instance SingI n => SingI (Left (n :: a)) where
+      sing = SLeft sing
+    instance SingI n => SingI (Right (n :: b)) where
+      sing = SRight sing

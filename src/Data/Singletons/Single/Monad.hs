@@ -72,6 +72,7 @@ instance Quasi SgM where
   qReifyConStrictness = liftSgM `comp1` qReifyConStrictness
   qIsExtEnabled       = liftSgM `comp1` qIsExtEnabled
   qExtsEnabled        = liftSgM qExtsEnabled
+  qAddForeignFile     = liftSgM `comp2` qAddForeignFile
 
   qRecover (SgM handler) (SgM body) = do
     env <- ask

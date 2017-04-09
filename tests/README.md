@@ -46,8 +46,8 @@ saved in a "golden" file. Below are some details about these tests:
 
  * Testsuite supports multiple GHC versions because each version produces
    different Template Haskell output. Every test requires a separate golden
-   file. GHC HEAD is currently not supported. Golden files for GHC 8.0 have
-   `.ghc80` appended before their extension.
+   file. GHC HEAD is currently not supported. Golden files for GHC 8.2 have
+   `.ghc82` appended before their extension.
 
  * You can run single tests or groups of tests whose name match a regexp using
    tasty's pattern feature. For example:

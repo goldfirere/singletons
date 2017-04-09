@@ -189,6 +189,8 @@ singInfo (DVarI _name _ty _mdec) =
   fail "Singling of value info not supported"
 singInfo (DTyVarI _name _ty) =
   fail "Singling of type variable info not supported"
+singInfo (DPatSynI {}) =
+  fail "Singling of pattern synonym info not supported"
 
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
 singTopLevelDecs locals raw_decls = do
@@ -499,6 +501,7 @@ singPat var_proms patCxt (DTildePa pat) = do
 singPat var_proms patCxt (DBangPa pat) = do
   (pat', ty) <- singPat var_proms patCxt pat
   return (DBangPa pat', ty)
+singPat _var_proms _patCxt (DSigPa _pat _ty) = error "TODO: Handle SigPa"
 singPat _var_proms _patCxt DWildPa =
   -- See Note [No wildcards in singletons]
   fail "Internal error: wildcard seen during singleton generation"
@@ -564,6 +567,7 @@ isException (DConE {})            = False
 isException (DLitE {})            = False
 isException (DAppE (DVarE fun) _) | nameBase fun == "sError" = True
 isException (DAppE fun _)         = isException fun
+isException (DAppTypeE e _)       = isException e
 isException (DLamE _ _)           = False
 isException (DCaseE e _)          = isException e
 isException (DLetE _ e)           = isException e

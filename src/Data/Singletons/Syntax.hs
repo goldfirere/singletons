@@ -134,3 +134,4 @@ buildLetDecEnv = go emptyLetDecEnv
       go (typeBinding name ty <> acc) rest
     go acc (DInfixD f n : rest) =
       go (infixDecl f n <> acc) rest
+    go acc (DPragmaD{} : rest) = go acc rest

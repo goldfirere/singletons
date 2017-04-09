@@ -23,7 +23,7 @@ import Test.Tasty.Golden  ( goldenVsFileDiff                    )
 
 import Distribution.Package                          ( PackageIdentifier(..)     )
 import Distribution.Text                             ( simpleParse               )
-import Data.Version                                  ( Version(..)               )
+import Distribution.Version                          ( mkVersion                 )
 import System.IO.Unsafe                              ( unsafePerformIO           )
 
 #ifndef CURRENT_PACKAGE_KEY
@@ -51,7 +51,7 @@ includePath :: FilePath
 includePath = "../../dist/build"
 
 ghcVersion :: String
-ghcVersion = ".ghc80"
+ghcVersion = ".ghc82"
 
 -- The mtl package made an incompatible change between 2.1.3.1 and 2.2.1. Because
 -- test files are compiled outside of the cabal infrastructure, we need to check
@@ -77,7 +77,7 @@ extraOpts = unsafePerformIO $ do
      else return ([], [])
   mtl_string <- readProcess "ghc-pkg" (ghcPkgOpts ++ ["latest", "mtl"]) ""
   let Just (PackageIdentifier { pkgVersion = ver }) = simpleParse mtl_string
-      firstModernVersion = Version [2,2,1] []
+      firstModernVersion = mkVersion [2,2,1]
       mtlOpt | ver >= firstModernVersion = ["-DMODERN_MTL"]
              | otherwise                 = []
   return $ ghcPackageDbOpts ++ mtlOpt
@@ -228,7 +228,9 @@ filterWithSed file = runProcessWithOpts CreatePipe "sed"
   , "-e", "'s/:[0-9][0-9]*:[0-9][0-9]*/:0:0/g'"
   , "-e", "'s/:[0-9]*:[0-9]*-[0-9]*/:0:0:/g'"
   , "-e", "'s/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/0123456789/g'"
+  , "-e", "'s/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/0123456789876543210/g'"
   , "-e", "'s/[!#$%&*+./>]\\{10\\}/%%%%%%%%%%/g'"
+  , "-e", "'s/[!#$%&*+./>]\\{19\\}/%%%%%%%%%%%%%%%%%%%/g'"
   , file
   ]
 

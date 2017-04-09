@@ -1,0 +1,291 @@
+Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| data Foo
+            = Bar | Baz | Bum
+            deriving Enum
+          data Quux = Q1 | Q2 |]
+  ======>
+    data Foo
+      = Bar | Baz | Bum
+      deriving Enum
+    data Quux = Q1 | Q2
+    type BarSym0 = Bar
+    type BazSym0 = Baz
+    type BumSym0 = Bum
+    type Q1Sym0 = Q1
+    type Q2Sym0 = Q2
+    type family Case_0123456789876543210 n t where
+      Case_0123456789876543210 n True = BumSym0
+      Case_0123456789876543210 n False = Apply ErrorSym0 "toEnum: bad argument"
+    type family Case_0123456789876543210 n t where
+      Case_0123456789876543210 n True = BazSym0
+      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 2))
+    type family Case_0123456789876543210 n t where
+      Case_0123456789876543210 n True = BarSym0
+      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 1))
+    type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: Foo where
+      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 0))
+    type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
+        ToEnum_0123456789876543210 t
+    instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) ToEnum_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data ToEnum_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat Foo)
+      = forall arg. SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
+        ToEnum_0123456789876543210Sym0KindInference
+    type instance Apply ToEnum_0123456789876543210Sym0 l = ToEnum_0123456789876543210 l
+    type family FromEnum_0123456789876543210 (a :: Foo) :: GHC.Types.Nat where
+      FromEnum_0123456789876543210 Bar = FromInteger 0
+      FromEnum_0123456789876543210 Baz = FromInteger 1
+      FromEnum_0123456789876543210 Bum = FromInteger 2
+    type FromEnum_0123456789876543210Sym1 (t :: Foo) =
+        FromEnum_0123456789876543210 t
+    instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) FromEnum_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data FromEnum_0123456789876543210Sym0 (l :: TyFun Foo GHC.Types.Nat)
+      = forall arg. SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
+        FromEnum_0123456789876543210Sym0KindInference
+    type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
+    instance PEnum Foo where
+      type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789876543210Sym0 a
+      type FromEnum (a :: Foo) = Apply FromEnum_0123456789876543210Sym0 a
+    data instance Sing (z :: Foo)
+      = z ~ Bar => SBar | z ~ Baz => SBaz | z ~ Bum => SBum
+    type SFoo = (Sing :: Foo -> GHC.Types.Type)
+    instance SingKind Foo where
+      type Demote Foo = Foo
+      fromSing SBar = Bar
+      fromSing SBaz = Baz
+      fromSing SBum = Bum
+      toSing Bar = SomeSing SBar
+      toSing Baz = SomeSing SBaz
+      toSing Bum = SomeSing SBum
+    data instance Sing (z :: Quux) = z ~ Q1 => SQ1 | z ~ Q2 => SQ2
+    type SQuux = (Sing :: Quux -> GHC.Types.Type)
+    instance SingKind Quux where
+      type Demote Quux = Quux
+      fromSing SQ1 = Q1
+      fromSing SQ2 = Q2
+      toSing Q1 = SomeSing SQ1
+      toSing Q2 = SomeSing SQ2
+    instance SEnum Foo where
+      sToEnum ::
+        forall (t :: GHC.Types.Nat).
+        Sing t
+        -> Sing (Apply (ToEnumSym0 :: TyFun GHC.Types.Nat Foo
+                                      -> GHC.Types.Type) t :: Foo)
+      sFromEnum ::
+        forall (t :: Foo).
+        Sing t
+        -> Sing (Apply (FromEnumSym0 :: TyFun Foo GHC.Types.Nat
+                                        -> GHC.Types.Type) t :: GHC.Types.Nat)
+      sToEnum sN
+        = let
+            lambda ::
+              forall n. t ~ n => Sing n -> Sing (Apply ToEnumSym0 t :: Foo)
+            lambda n
+              = case
+                    (applySing
+                       ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) n))
+                      (sFromInteger (sing :: Sing 0))
+                of
+                  STrue
+                    -> let
+                         lambda ::
+                           TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
+                           Sing (Case_0123456789876543210 n TrueSym0 :: Foo)
+                         lambda = SBar
+                       in lambda
+                  SFalse
+                    -> let
+                         lambda ::
+                           FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
+                           Sing (Case_0123456789876543210 n FalseSym0 :: Foo)
+                         lambda
+                           = case
+                                 (applySing
+                                    ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) n))
+                                   (sFromInteger (sing :: Sing 1))
+                             of
+                               STrue
+                                 -> let
+                                      lambda ::
+                                        TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
+                                        Sing (Case_0123456789876543210 n TrueSym0 :: Foo)
+                                      lambda = SBaz
+                                    in lambda
+                               SFalse
+                                 -> let
+                                      lambda ::
+                                        FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
+                                        Sing (Case_0123456789876543210 n FalseSym0 :: Foo)
+                                      lambda
+                                        = case
+                                              (applySing
+                                                 ((applySing
+                                                     ((singFun2 (Proxy :: Proxy (:==$))) (%:==)))
+                                                    n))
+                                                (sFromInteger (sing :: Sing 2))
+                                          of
+                                            STrue
+                                              -> let
+                                                   lambda ::
+                                                     TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 2) =>
+                                                     Sing (Case_0123456789876543210 n TrueSym0 :: Foo)
+                                                   lambda = SBum
+                                                 in lambda
+                                            SFalse
+                                              -> let
+                                                   lambda ::
+                                                     FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 2) =>
+                                                     Sing (Case_0123456789876543210 n FalseSym0 :: Foo)
+                                                   lambda
+                                                     = sError (sing :: Sing "toEnum: bad argument")
+                                                 in lambda ::
+                                            Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 2)) :: Foo)
+                                    in lambda ::
+                               Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 1)) :: Foo)
+                       in lambda ::
+                  Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 0)) :: Foo)
+          in lambda sN
+      sFromEnum SBar
+        = let
+            lambda ::
+              t ~ BarSym0 => Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
+            lambda = sFromInteger (sing :: Sing 0)
+          in lambda
+      sFromEnum SBaz
+        = let
+            lambda ::
+              t ~ BazSym0 => Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
+            lambda = sFromInteger (sing :: Sing 1)
+          in lambda
+      sFromEnum SBum
+        = let
+            lambda ::
+              t ~ BumSym0 => Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
+            lambda = sFromInteger (sing :: Sing 2)
+          in lambda
+    instance SingI Bar where
+      sing = SBar
+    instance SingI Baz where
+      sing = SBaz
+    instance SingI Bum where
+      sing = SBum
+    instance SingI Q1 where
+      sing = SQ1
+    instance SingI Q2 where
+      sing = SQ2
+Singletons/EnumDeriving.hs:0:0:: Splicing declarations
+    singEnumInstance ''Quux
+  ======>
+    type family Case_0123456789876543210 n t where
+      Case_0123456789876543210 n True = Q2Sym0
+      Case_0123456789876543210 n False = Apply ErrorSym0 "toEnum: bad argument"
+    type family Case_0123456789876543210 n t where
+      Case_0123456789876543210 n True = Q1Sym0
+      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 1))
+    type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: Quux where
+      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 0))
+    type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
+        ToEnum_0123456789876543210 t
+    instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) ToEnum_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data ToEnum_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat Quux)
+      = forall arg. SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
+        ToEnum_0123456789876543210Sym0KindInference
+    type instance Apply ToEnum_0123456789876543210Sym0 l = ToEnum_0123456789876543210 l
+    type family FromEnum_0123456789876543210 (a :: Quux) :: GHC.Types.Nat where
+      FromEnum_0123456789876543210 Q1 = FromInteger 0
+      FromEnum_0123456789876543210 Q2 = FromInteger 1
+    type FromEnum_0123456789876543210Sym1 (t :: Quux) =
+        FromEnum_0123456789876543210 t
+    instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
+      suppressUnusedWarnings _
+        = snd
+            ((GHC.Tuple.(,) FromEnum_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data FromEnum_0123456789876543210Sym0 (l :: TyFun Quux GHC.Types.Nat)
+      = forall arg. SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
+        FromEnum_0123456789876543210Sym0KindInference
+    type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
+    instance PEnum Quux where
+      type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789876543210Sym0 a
+      type FromEnum (a :: Quux) = Apply FromEnum_0123456789876543210Sym0 a
+    instance SEnum Quux where
+      sToEnum ::
+        forall (t :: GHC.Types.Nat).
+        Sing t
+        -> Sing (Apply (ToEnumSym0 :: TyFun GHC.Types.Nat Quux
+                                      -> GHC.Types.Type) t :: Quux)
+      sFromEnum ::
+        forall (t :: Quux).
+        Sing t
+        -> Sing (Apply (FromEnumSym0 :: TyFun Quux GHC.Types.Nat
+                                        -> GHC.Types.Type) t :: GHC.Types.Nat)
+      sToEnum sN
+        = let
+            lambda ::
+              forall n. t ~ n => Sing n -> Sing (Apply ToEnumSym0 t :: Quux)
+            lambda n
+              = case
+                    (applySing
+                       ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) n))
+                      (sFromInteger (sing :: Sing 0))
+                of
+                  STrue
+                    -> let
+                         lambda ::
+                           TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
+                           Sing (Case_0123456789876543210 n TrueSym0 :: Quux)
+                         lambda = SQ1
+                       in lambda
+                  SFalse
+                    -> let
+                         lambda ::
+                           FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
+                           Sing (Case_0123456789876543210 n FalseSym0 :: Quux)
+                         lambda
+                           = case
+                                 (applySing
+                                    ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) n))
+                                   (sFromInteger (sing :: Sing 1))
+                             of
+                               STrue
+                                 -> let
+                                      lambda ::
+                                        TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
+                                        Sing (Case_0123456789876543210 n TrueSym0 :: Quux)
+                                      lambda = SQ2
+                                    in lambda
+                               SFalse
+                                 -> let
+                                      lambda ::
+                                        FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
+                                        Sing (Case_0123456789876543210 n FalseSym0 :: Quux)
+                                      lambda = sError (sing :: Sing "toEnum: bad argument")
+                                    in lambda ::
+                               Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 1)) :: Quux)
+                       in lambda ::
+                  Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 0)) :: Quux)
+          in lambda sN
+      sFromEnum SQ1
+        = let
+            lambda ::
+              t ~ Q1Sym0 => Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
+            lambda = sFromInteger (sing :: Sing 0)
+          in lambda
+      sFromEnum SQ2
+        = let
+            lambda ::
+              t ~ Q2Sym0 => Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
+            lambda = sFromInteger (sing :: Sing 1)
+          in lambda

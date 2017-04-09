@@ -124,6 +124,8 @@ promoteInfo (DVarI _name _ty _mdec) =
   fail "Promotion of individual values not supported"
 promoteInfo (DTyVarI _name _ty) =
   fail "Promotion of individual type variables not supported"
+promoteInfo (DPatSynI {}) =
+  fail "Promotion of pattern synonyms not supported"
 
 -- Note [Promoting declarations in two stages]
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -189,7 +191,7 @@ promoteDataDecs data_decs = do
       let arg_ty = foldType (DConT data_name)
                             (map tvbToType tvbs)
       in
-      concatMapM (getRecordSelectors arg_ty) cons
+      getRecordSelectors arg_ty cons
 
 -- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
 promoteLetDecs :: (String, String) -- (alpha, symb) prefixes to use
@@ -552,6 +554,7 @@ promotePat (DBangPa pat) = do
   qReportWarning "Strict pattern converted into regular pattern in promotion"
   (ty, pat') <- promotePat pat
   return (ty, DBangPa pat')
+promotePat (DSigPa _pat _ty) = error "TODO: Handle SigPa"
 promotePat DWildPa = do
   name <- newUniqueName "_z"
   tyName <- mkTyName name
@@ -566,6 +569,8 @@ promoteExp (DAppE exp1 exp2) = do
   (exp1', ann_exp1) <- promoteExp exp1
   (exp2', ann_exp2) <- promoteExp exp2
   return (apply exp1' exp2', ADAppE ann_exp1 ann_exp2)
+-- Until we get visible kind applications, this is the best we can do.
+promoteExp (DAppTypeE exp _) = promoteExp exp
 promoteExp (DLamE names exp) = do
   lambdaName <- newUniqueName "Lambda"
   tyNames <- mapM mkTyName names
