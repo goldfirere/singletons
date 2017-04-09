@@ -27,6 +27,8 @@ defunInfo (DVarI _name _ty _mdec) =
   fail "Building defunctionalization symbols of values not supported"
 defunInfo (DTyVarI _name _ty) =
   fail "Building defunctionalization symbols of type variables not supported"
+defunInfo (DPatSynI {}) =
+  fail "Building defunctionalization symbols of pattern synonyms not supported"
 
 buildDefunSyms :: DDec -> PrM [DDec]
 buildDefunSyms (DDataD _new_or_data _cxt tyName tvbs ctors _derivings) =

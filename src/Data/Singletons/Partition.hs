@@ -11,6 +11,8 @@
 --
 ----------------------------------------------------------------------------
 
+{-# LANGUAGE TupleSections #-}
+
 module Data.Singletons.Partition where
 
 import Prelude hiding ( exp )
@@ -46,23 +48,35 @@ partitionDecs :: Quasi m => [DDec] -> m PartitionedDecs
 partitionDecs = concatMapM partitionDec
 
 partitionDec :: Quasi m => DDec -> m PartitionedDecs
+partitionDec (DLetDec (DPragmaD {})) = return mempty
 partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
 
 partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
-  (derivings', derived_instances) <- partitionWithM part_derivings derivings
+  (derivings', derived_instances) <- partitionWithM part_derivings
+                                   $ concatMap flatten_clause derivings
   return $ mempty { pd_data_decs = [DataDecl nd name tvbs cons derivings']
                   , pd_instance_decs = derived_instances }
   where
     ty = foldType (DConT name) (map tvbToType tvbs)
-    part_derivings :: Quasi m => DPred -> m (Either DPred UInstDecl)
-    part_derivings deriv = case deriv of
+
+    flatten_clause :: DDerivClause -> [(Maybe DerivStrategy, DPred)]
+    flatten_clause (DDerivClause strat preds) = map (strat,) preds
+
+    part_derivings :: Quasi m => (Maybe DerivStrategy, DPred)
+                              -> m (Either DPred UInstDecl)
+    part_derivings (strat, deriv) = case deriv of
       DConPr deriv_name
-         | deriv_name == ordName
+         | stock, deriv_name == ordName
         -> Right <$> mkOrdInstance ty cons
-         | deriv_name == boundedName
+         | stock, deriv_name == boundedName
         -> Right <$> mkBoundedInstance ty cons
-         | deriv_name == enumName
+         | stock, deriv_name == enumName
         -> Right <$> mkEnumInstance ty cons
+        where
+          stock = case strat of
+                    Nothing            -> True
+                    Just StockStrategy -> True
+                    Just _             -> False
       _ -> return (Left deriv)
 
 partitionDec (DClassD cxt name tvbs fds decs) = do
@@ -85,7 +99,6 @@ partitionDec (DInstanceD _ cxt ty decs) = do
     split_app_tys acc (DSigT t _)   = split_app_tys acc t
     split_app_tys _ _ = fail $ "Illegal instance head: " ++ show ty
 partitionDec (DRoleAnnotD {}) = return mempty  -- ignore these
-partitionDec (DPragmaD {}) = return mempty
 partitionDec dec =
   fail $ "Declaration cannot be promoted: " ++ pprint (decToTH dec)
 
@@ -97,7 +110,7 @@ partitionClassDec (DLetDec (DFunD name clauses)) =
   return $ valueBinding name (UFunction clauses)
 partitionClassDec (DLetDec (DInfixD fixity name)) =
   return $ infixDecl fixity name
-partitionClassDec (DPragmaD {}) = return mempty
+partitionClassDec (DLetDec (DPragmaD {})) = return mempty
 partitionClassDec _ =
   fail "Only method declarations can be promoted within a class."
 
@@ -106,6 +119,6 @@ partitionInstanceDec (DLetDec (DValD (DVarPa name) exp)) =
   return $ Just (name, UValue exp)
 partitionInstanceDec (DLetDec (DFunD name clauses)) =
   return $ Just (name, UFunction clauses)
-partitionInstanceDec (DPragmaD {}) = return Nothing
+partitionInstanceDec (DLetDec (DPragmaD {})) = return Nothing
 partitionInstanceDec _ =
   fail "Only method bodies can be promoted within an instance."

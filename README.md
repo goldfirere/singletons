@@ -33,7 +33,7 @@ paper for a more thorough introduction.
 Compatibility
 -------------
 
-The singletons library requires GHC 8.0.1 or greater. Any code that uses the
+The singletons library requires GHC 8.2.1 or greater. Any code that uses the
 singleton generation primitives needs to enable a long list of GHC
 extensions. This list includes, but is not necessarily limited to, the
 following:

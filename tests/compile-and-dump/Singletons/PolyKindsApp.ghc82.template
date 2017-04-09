@@ -1,0 +1,12 @@
+Singletons/PolyKindsApp.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| class Cls (a :: k -> Type) where
+            fff :: (a :: k -> Type) (b :: k) |]
+  ======>
+    class Cls (a :: k -> Type) where
+      fff :: (a :: k -> Type) (b :: k)
+    type FffSym0 = Fff
+    class PCls (a :: k -> Type) where
+      type Fff :: (a :: k -> Type) (b :: k)
+    class SCls (a :: k -> Type) where
+      sFff :: Sing (FffSym0 :: (a :: k -> Type) (b :: k))

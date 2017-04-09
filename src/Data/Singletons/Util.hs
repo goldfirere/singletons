@@ -377,6 +377,7 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
   qReifyConStrictness = lift `comp1` qReifyConStrictness
   qIsExtEnabled       = lift `comp1` qIsExtEnabled
   qExtsEnabled        = lift qExtsEnabled
+  qAddForeignFile     = lift `comp2` qAddForeignFile
 
   qRecover exp handler = do
     (result, aux) <- lift $ qRecover (evalForPair exp) (evalForPair handler)

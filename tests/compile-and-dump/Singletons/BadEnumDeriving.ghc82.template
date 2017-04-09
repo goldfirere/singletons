@@ -1,0 +1,6 @@
+
+Singletons/BadEnumDeriving.hs:0:0: error:
+    Can't derive Enum instance for Foo_0 a_1.
+  |
+5 | $(singletons [d|
+  |   ^^^^^^^^^^^^^^...
