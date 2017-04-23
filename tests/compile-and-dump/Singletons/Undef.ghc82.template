@@ -1,0 +1,51 @@
+Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| foo :: Bool -> Bool
+          foo = undefined
+          bar :: Bool -> Bool
+          bar = error "urk" |]
+  ======>
+    foo :: Bool -> Bool
+    foo = undefined
+    bar :: Bool -> Bool
+    bar = error "urk"
+    type BarSym1 (t :: Bool) = Bar t
+    instance SuppressUnusedWarnings BarSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) BarSym0KindInference) GHC.Tuple.())
+    data BarSym0 (l :: TyFun Bool Bool)
+      = forall arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
+        BarSym0KindInference
+    type instance Apply BarSym0 l = Bar l
+    type FooSym1 (t :: Bool) = Foo t
+    instance SuppressUnusedWarnings FooSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) FooSym0KindInference) GHC.Tuple.())
+    data FooSym0 (l :: TyFun Bool Bool)
+      = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
+        FooSym0KindInference
+    type instance Apply FooSym0 l = Foo l
+    type family Bar (a :: Bool) :: Bool where
+      Bar a_0123456789876543210 = Apply (Apply ErrorSym0 "urk") a_0123456789876543210
+    type family Foo (a :: Bool) :: Bool where
+      Foo a_0123456789876543210 = Apply Any a_0123456789876543210
+    sBar ::
+      forall (t :: Bool). Sing t -> Sing (Apply BarSym0 t :: Bool)
+    sFoo ::
+      forall (t :: Bool). Sing t -> Sing (Apply FooSym0 t :: Bool)
+    sBar sA_0123456789876543210
+      = let
+          lambda ::
+            forall a_0123456789876543210.
+            t ~ a_0123456789876543210 =>
+            Sing a_0123456789876543210 -> Sing (Apply BarSym0 t :: Bool)
+          lambda a_0123456789876543210 = sError (sing :: Sing "urk")
+        in lambda sA_0123456789876543210
+    sFoo sA_0123456789876543210
+      = let
+          lambda ::
+            forall a_0123456789876543210.
+            t ~ a_0123456789876543210 =>
+            Sing a_0123456789876543210 -> Sing (Apply FooSym0 t :: Bool)
+          lambda a_0123456789876543210 = undefined
+        in lambda sA_0123456789876543210

@@ -9,17 +9,17 @@ author:         Richard Eisenberg <eir@cis.upenn.edu>, Jan Stolarek <jan.stolare
 maintainer:     Richard Eisenberg <eir@cis.upenn.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC == 8.0.1
+tested-with:    GHC == 8.2.1
 extra-source-files: README.md, CHANGES.md,
                     tests/compile-and-dump/buildGoldenFiles.awk,
                     tests/compile-and-dump/GradingClient/*.hs,
                     tests/compile-and-dump/InsertionSort/*.hs,
                     tests/compile-and-dump/Promote/*.hs,
                     tests/compile-and-dump/Singletons/*.hs
-                    tests/compile-and-dump/GradingClient/*.ghc80.template,
-                    tests/compile-and-dump/InsertionSort/*.ghc80.template,
-                    tests/compile-and-dump/Promote/*.ghc80.template,
-                    tests/compile-and-dump/Singletons/*.ghc80.template
+                    tests/compile-and-dump/GradingClient/*.ghc82.template,
+                    tests/compile-and-dump/InsertionSort/*.ghc82.template,
+                    tests/compile-and-dump/Promote/*.ghc82.template,
+                    tests/compile-and-dump/Singletons/*.ghc82.template
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -42,11 +42,11 @@ source-repository this
 
 library
   hs-source-dirs:     src
-  build-depends:      base >= 4.9 && < 5,
+  build-depends:      base >= 4.10 && < 5,
                       mtl >= 2.1.2,
                       template-haskell,
                       containers >= 0.5,
-                      th-desugar >= 1.6 && < 1.7,
+                      th-desugar >= 1.7 && < 1.8,
                       syb >= 0.4,
                       text >= 1.2
   default-language:   Haskell2010
@@ -122,10 +122,11 @@ test-suite singletons-test-suite
   main-is:            SingletonsTestSuite.hs
   other-modules:      SingletonsTestSuiteUtils
 
-  build-depends:      base >= 4.9 && < 5,
+  build-depends:      base >= 4.10 && < 5,
                       filepath >= 1.3,
                       process >= 1.1,
+                      singletons,
                       tasty >= 0.6,
                       tasty-golden >= 2.2,
-                      Cabal >= 1.16,
+                      Cabal >= 2.0,
                       directory >= 1
