@@ -16,10 +16,10 @@ extra-source-files: README.md, CHANGES.md,
                     tests/compile-and-dump/InsertionSort/*.hs,
                     tests/compile-and-dump/Promote/*.hs,
                     tests/compile-and-dump/Singletons/*.hs
-                    tests/compile-and-dump/GradingClient/*.ghc80.template,
-                    tests/compile-and-dump/InsertionSort/*.ghc80.template,
-                    tests/compile-and-dump/Promote/*.ghc80.template,
-                    tests/compile-and-dump/Singletons/*.ghc80.template
+                    tests/compile-and-dump/GradingClient/*.ghc82.template,
+                    tests/compile-and-dump/InsertionSort/*.ghc82.template,
+                    tests/compile-and-dump/Promote/*.ghc82.template,
+                    tests/compile-and-dump/Singletons/*.ghc82.template
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
