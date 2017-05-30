@@ -1,7 +1,7 @@
 {- Data/Singletons/Type.hs
 
 (c) Richard Eisenberg 2013
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 This file implements promotion of types into kinds.
 -}

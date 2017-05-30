@@ -1,7 +1,7 @@
 {- Data/Singletons/Promote/Defun.hs
 
 (c) Richard Eisenberg, Jan Stolarek 2014
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 This file creates defunctionalization symbols for types during promotion.
 -}

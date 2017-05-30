@@ -1,7 +1,7 @@
 {- Data/Singletons/Promote/Monad.hs
 
 (c) Richard Eisenberg 2014
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 This file defines the PrM monad and its operations, for use during promotion.
 

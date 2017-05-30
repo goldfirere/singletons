@@ -1,7 +1,7 @@
 {- Data/Singletons/Single/Eq.hs
 
 (c) Richard Eisenberg 2014
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 Defines functions to generate SEq and SDecide instances.
 -}

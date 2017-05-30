@@ -1,7 +1,7 @@
 {- Data/Singletons/Single/Monad.hs
 
 (c) Richard Eisenberg 2014
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 This file defines the SgM monad and its operations, for use during singling.
 

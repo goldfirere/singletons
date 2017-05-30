@@ -1,7 +1,7 @@
 -- Data/Singletons/Hidden.hs
 --
 -- (c) Richard Eisenberg 2014
--- eir@cis.upenn.edu
+-- rae@cs.brynmawr.edu
 --
 -- This declares user-oriented exports that are actually meant to be hidden
 -- from the user. Why would anyone ever want this? Because what is below

@@ -1,7 +1,7 @@
 {- Data/Singletons/Single/Type.hs
 
 (c) Richard Eisenberg 2013
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 Singletonizes types.
 -}

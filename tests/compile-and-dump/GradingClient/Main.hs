@@ -1,7 +1,7 @@
 {- GradingClient.hs
 
 (c) Richard Eisenberg 2012
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 This file accesses the database described in Database.hs and performs
 some basic queries on it.

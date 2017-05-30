@@ -1,7 +1,7 @@
 {- Data/Singletons/Syntax.hs
 
 (c) Richard Eisenberg 2014
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 Converts a list of DLetDecs into a LetDecEnv for easier processing,
 and contains various other AST definitions.

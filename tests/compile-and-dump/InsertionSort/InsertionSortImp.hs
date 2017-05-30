@@ -1,7 +1,7 @@
 {- InsertionSortImp.hs
 
 (c) Richard Eisenberg 2012
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 This file contains an implementation of insertion sort over natural numbers,
 along with a Haskell proof that the sort algorithm is correct. The code below

@@ -1,7 +1,7 @@
 {- ByHand.hs
 
 (c) Richard Eisenberg 2012
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 Shows the derivations for the singleton definitions done by hand.
 This file is a great way to understand the singleton encoding better.

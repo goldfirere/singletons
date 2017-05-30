@@ -1,7 +1,7 @@
 {- Database.hs
 
 (c) Richard Eisenberg 2012
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 This file contains the full code for the database interface example
 presented in /Dependently typed programming with singletons/

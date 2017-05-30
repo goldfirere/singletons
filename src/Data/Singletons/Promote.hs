@@ -1,7 +1,7 @@
 {- Data/Singletons/Promote.hs
 
 (c) Richard Eisenberg 2013
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 This file contains functions to promote term-level constructs to the
 type level. It is an internal module to the singletons package.

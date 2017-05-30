@@ -1,7 +1,7 @@
 {- Data/Singletons/Util.hs
 
 (c) Richard Eisenberg 2013
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 This file contains helper functions internal to the singletons package.
 Users of the package should not need to consult this file.

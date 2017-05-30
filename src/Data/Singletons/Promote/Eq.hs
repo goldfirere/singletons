@@ -1,7 +1,7 @@
 {- Data/Singletons/Promote/Eq.hs
 
 (c) Richard Eisenberg 2014
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 This module defines the functions that generate type-level equality type
 family instances.

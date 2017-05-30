@@ -1,7 +1,7 @@
 {- Data/Singletons/Instances.hs
 
 (c) Richard Eisenberg 2013
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 This (internal) module contains the main class definitions for singletons,
 re-exported from various places.

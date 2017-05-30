@@ -3,7 +3,7 @@
 -- Module      :  Data.Singletons.Prelude
 -- Copyright   :  (C) 2013 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
--- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
+-- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
 -- Stability   :  experimental
 -- Portability :  non-portable
 --

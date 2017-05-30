@@ -6,7 +6,7 @@
 -- Module      :  Data.Singletons.Prelude.Bool
 -- Copyright   :  (C) 2013-2014 Richard Eisenberg, Jan Stolarek
 -- License     :  BSD-style (see LICENSE)
--- Maintainer  :  Richard Eisenberg (eir@cis.upenn.edu)
+-- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
 -- Stability   :  experimental
 -- Portability :  non-portable
 --

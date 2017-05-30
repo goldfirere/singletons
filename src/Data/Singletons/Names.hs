@@ -1,7 +1,7 @@
 {- Data/Singletons/Names.hs
 
 (c) Richard Eisenberg 2014
-eir@cis.upenn.edu
+rae@cs.brynmawr.edu
 
 Defining names and manipulations on names for use in promotion and singling.
 -}
