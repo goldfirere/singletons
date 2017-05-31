@@ -257,8 +257,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
           sP :: Sing (Let0123456789876543210PSym1 wild_0123456789876543210)
           sP
             = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                    sWild_0123456789876543210))
+                 ((applySing ((singFun2 @(:$)) SCons)) sWild_0123456789876543210))
                 SNil
         in sP
     sFoo
@@ -270,11 +269,9 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
             Sing (Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
           sP
             = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                    sWild_0123456789876543210))
+                 ((applySing ((singFun2 @(:$)) SCons)) sWild_0123456789876543210))
                 ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                       sWild_0123456789876543210))
+                    ((applySing ((singFun2 @(:$)) SCons)) sWild_0123456789876543210))
                    sWild_0123456789876543210)
         in sP
     sTup
@@ -285,7 +282,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
             Sing (Let0123456789876543210PSym2 wild_0123456789876543210 wild_0123456789876543210)
           sP
             = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2))
+                 ((applySing ((singFun2 @Tuple2Sym0) STuple2))
                     sWild_0123456789876543210))
                 sWild_0123456789876543210
         in sP
@@ -302,11 +299,10 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
           sP ::
             Sing (Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
           sP
-            = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
+            = (applySing ((singFun1 @JustSym0) SJust))
                 ((applySing
                     ((applySing
-                        ((applySing ((singFun3 (Proxy :: Proxy BazSym0)) SBaz))
-                           sWild_0123456789876543210))
+                        ((applySing ((singFun3 @BazSym0) SBaz)) sWild_0123456789876543210))
                        sWild_0123456789876543210))
                    sWild_0123456789876543210)
         in sP
@@ -315,15 +311,15 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       = let
           sX :: Sing (Let0123456789876543210XSym1 wild_0123456789876543210)
           sX
-            = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
+            = (applySing ((singFun1 @JustSym0) SJust))
                 sWild_0123456789876543210
         in sX
     sBar SNothing = SNothing
     sMaybePlus (SJust (sN :: Sing n))
-      = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
+      = (applySing ((singFun1 @JustSym0) SJust))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy PlusSym0)) sPlus))
-                 ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
+              ((applySing ((singFun2 @PlusSym0) sPlus))
+                 ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
              sN)
     sMaybePlus SNothing
       = let

@@ -72,8 +72,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       type Meth (a :: Bool) = Apply Meth_0123456789876543210Sym0 a
       type L2r (a :: Bool) = Apply L2r_0123456789876543210Sym0 a
     sT1 :: Sing T1Sym0
-    sT1
-      = (applySing ((singFun1 (Proxy :: Proxy MethSym0)) sMeth)) STrue
+    sT1 = (applySing ((singFun1 @MethSym0) sMeth)) STrue
     class SFD a b | a -> b where
       sMeth :: forall (t :: a). Sing t -> Sing (Apply MethSym0 t :: a)
       sL2r :: forall (t :: a). Sing t -> Sing (Apply L2rSym0 t :: b)
@@ -82,7 +81,6 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
         forall (t :: Bool). Sing t -> Sing (Apply MethSym0 t :: Bool)
       sL2r :: forall (t :: Bool). Sing t -> Sing (Apply L2rSym0 t :: Nat)
       sMeth (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing ((singFun1 (Proxy :: Proxy NotSym0)) sNot))
-            sA_0123456789876543210
+        = (applySing ((singFun1 @NotSym0) sNot)) sA_0123456789876543210
       sL2r SFalse = sFromInteger (sing :: Sing 0)
       sL2r STrue = sFromInteger (sing :: Sing 1)

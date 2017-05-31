@@ -50,38 +50,33 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
     sComplex :: Sing ComplexSym0
     sPr :: Sing PrSym0
     sAList
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SZero))
+      = (applySing ((applySing ((singFun2 @(:$)) SCons)) SZero))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                 ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
+              ((applySing ((singFun2 @(:$)) SCons))
+                 ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
              ((applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                    ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                       ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero))))
+                 ((applySing ((singFun2 @(:$)) SCons))
+                    ((applySing ((singFun1 @SuccSym0) SSucc))
+                       ((applySing ((singFun1 @SuccSym0) SSucc)) SZero))))
                 SNil))
     sTuple
       = (applySing
-           ((applySing
-               ((applySing ((singFun3 (Proxy :: Proxy Tuple3Sym0)) STuple3))
-                  SFalse))
-              ((applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust)) SZero)))
+           ((applySing ((applySing ((singFun3 @Tuple3Sym0) STuple3)) SFalse))
+              ((applySing ((singFun1 @JustSym0) SJust)) SZero)))
           STrue
     sComplex
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy PairSym0)) SPair))
+           ((applySing ((singFun2 @PairSym0) SPair))
               ((applySing
-                  ((applySing ((singFun2 (Proxy :: Proxy PairSym0)) SPair))
-                     ((applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust)) SZero)))
+                  ((applySing ((singFun2 @PairSym0) SPair))
+                     ((applySing ((singFun1 @JustSym0) SJust)) SZero)))
                  SZero)))
           SFalse
     sPr
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy PairSym0)) SPair))
-              ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SZero))
-             SNil)
+           ((applySing ((singFun2 @PairSym0) SPair))
+              ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
+          ((applySing ((applySing ((singFun2 @(:$)) SCons)) SZero)) SNil)
     data instance Sing (z :: Pair a b)
       = forall (n :: a) (n :: b). z ~ Pair n n =>
         SPair (Sing (n :: a)) (Sing (n :: b))

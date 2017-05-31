@@ -190,22 +190,17 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
       Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a)
     sFoo3 (sA :: Sing a) (sB :: Sing b)
       = (applySing
-           ((singFun1
-               (Proxy ::
-                  Proxy (Apply (Apply Lambda_0123456789876543210Sym0 a) b)))
+           ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 a) b))
               (\ sX_0123456789876543210
                  -> case sX_0123456789876543210 of {
                       _ :: Sing x_0123456789876543210
                         -> case sX_0123456789876543210 of {
                              STuple2 (sP :: Sing p) _ -> sP } ::
                              Sing (Case_0123456789876543210 a b x_0123456789876543210 x_0123456789876543210) })))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2)) sA))
-             sB)
+          ((applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sA)) sB)
     sFoo2 (sD :: Sing d) _
       = (applySing
-           ((singFun1
-               (Proxy :: Proxy (Apply Lambda_0123456789876543210Sym0 d)))
+           ((singFun1 @(Apply Lambda_0123456789876543210Sym0 d))
               (\ sX_0123456789876543210
                  -> case sX_0123456789876543210 of {
                       _ :: Sing x_0123456789876543210
@@ -213,12 +208,10 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
                              SJust (sY :: Sing y) -> sY
                              SNothing -> sD ::
                              Sing (Case_0123456789876543210 d x_0123456789876543210 x_0123456789876543210) })))
-          ((applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust)) sD)
+          ((applySing ((singFun1 @JustSym0) SJust)) sD)
     sFoo1 (sD :: Sing d) (sX :: Sing x)
       = (applySing
-           ((singFun1
-               (Proxy ::
-                  Proxy (Apply (Apply Lambda_0123456789876543210Sym0 d) x)))
+           ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 d) x))
               (\ sX_0123456789876543210
                  -> case sX_0123456789876543210 of {
                       _ :: Sing x_0123456789876543210

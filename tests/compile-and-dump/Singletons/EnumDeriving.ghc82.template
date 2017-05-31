@@ -86,22 +86,19 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
                                         -> GHC.Types.Type) t :: GHC.Types.Nat)
       sToEnum (sN :: Sing n)
         = case
-              (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sN))
+              (applySing ((applySing ((singFun2 @(:==$)) (%:==))) sN))
                 (sFromInteger (sing :: Sing 0))
           of
             STrue -> SBar
             SFalse
               -> case
-                     (applySing
-                        ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sN))
+                     (applySing ((applySing ((singFun2 @(:==$)) (%:==))) sN))
                        (sFromInteger (sing :: Sing 1))
                  of
                    STrue -> SBaz
                    SFalse
                      -> case
-                            (applySing
-                               ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sN))
+                            (applySing ((applySing ((singFun2 @(:==$)) (%:==))) sN))
                               (sFromInteger (sing :: Sing 2))
                         of
                           STrue -> SBum
@@ -174,15 +171,13 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
                                         -> GHC.Types.Type) t :: GHC.Types.Nat)
       sToEnum (sN :: Sing n)
         = case
-              (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sN))
+              (applySing ((applySing ((singFun2 @(:==$)) (%:==))) sN))
                 (sFromInteger (sing :: Sing 0))
           of
             STrue -> SQ1
             SFalse
               -> case
-                     (applySing
-                        ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sN))
+                     (applySing ((applySing ((singFun2 @(:==$)) (%:==))) sN))
                        (sFromInteger (sing :: Sing 1))
                  of
                    STrue -> SQ2

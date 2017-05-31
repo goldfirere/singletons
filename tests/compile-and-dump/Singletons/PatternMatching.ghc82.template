@@ -50,38 +50,33 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     sComplex :: Sing ComplexSym0
     sPr :: Sing PrSym0
     sAList
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SZero))
+      = (applySing ((applySing ((singFun2 @(:$)) SCons)) SZero))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                 ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
+              ((applySing ((singFun2 @(:$)) SCons))
+                 ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
              ((applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                    ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                       ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero))))
+                 ((applySing ((singFun2 @(:$)) SCons))
+                    ((applySing ((singFun1 @SuccSym0) SSucc))
+                       ((applySing ((singFun1 @SuccSym0) SSucc)) SZero))))
                 SNil))
     sTuple
       = (applySing
-           ((applySing
-               ((applySing ((singFun3 (Proxy :: Proxy Tuple3Sym0)) STuple3))
-                  SFalse))
-              ((applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust)) SZero)))
+           ((applySing ((applySing ((singFun3 @Tuple3Sym0) STuple3)) SFalse))
+              ((applySing ((singFun1 @JustSym0) SJust)) SZero)))
           STrue
     sComplex
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy PairSym0)) SPair))
+           ((applySing ((singFun2 @PairSym0) SPair))
               ((applySing
-                  ((applySing ((singFun2 (Proxy :: Proxy PairSym0)) SPair))
-                     ((applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust)) SZero)))
+                  ((applySing ((singFun2 @PairSym0) SPair))
+                     ((applySing ((singFun1 @JustSym0) SJust)) SZero)))
                  SZero)))
           SFalse
     sPr
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy PairSym0)) SPair))
-              ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SZero))
-             SNil)
+           ((applySing ((singFun2 @PairSym0) SPair))
+              ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
+          ((applySing ((applySing ((singFun2 @(:$)) SCons)) SZero)) SNil)
     data instance Sing (z :: Pair a b)
       = forall (n :: a) (n :: b). z ~ Pair n n =>
         SPair (Sing (n :: a)) (Sing (n :: b))
@@ -367,15 +362,12 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       = let
           sT :: Sing (Let0123456789876543210TSym2 x y)
           sT
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2)) sX))
-                sY
+            = (applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX)) sY
         in  case sT of {
               STuple2 (sA :: Sing a) (sB :: Sing b)
                 -> (applySing
                       ((singFun1
-                          (Proxy ::
-                             Proxy (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) a) b)))
+                          @(Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) a) b))
                          (\ sArg_0123456789876543210
                             -> case sArg_0123456789876543210 of {
                                  _ :: Sing arg_0123456789876543210
@@ -385,9 +377,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
               Sing (Case_0123456789876543210 x y (Let0123456789876543210TSym2 x y) :: a)
     sFoo1 (STuple2 (sX :: Sing x) (sY :: Sing y))
       = (applySing
-           ((singFun1
-               (Proxy ::
-                  Proxy (Apply (Apply Lambda_0123456789876543210Sym0 x) y)))
+           ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 x) y))
               (\ sArg_0123456789876543210
                  -> case sArg_0123456789876543210 of {
                       _ :: Sing arg_0123456789876543210

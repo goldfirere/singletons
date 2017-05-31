@@ -96,8 +96,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sCompare SZero SZero
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             SNil
       sCompare
@@ -105,13 +105,13 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         (SSucc (sB_0123456789876543210 :: Sing b_0123456789876543210))
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                ((applySing ((singFun2 @(:$)) SCons))
                    ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                SNil)
@@ -492,16 +492,13 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
           sScrutinee_0123456789876543210 ::
             Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs)
           sScrutinee_0123456789876543210
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sName))
+            = (applySing ((applySing ((singFun2 @(:==$)) (%:==))) sName))
                 sName'
         in  case sScrutinee_0123456789876543210 of
               STrue -> sU
               SFalse
-                -> (applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy LookupSym0)) sLookup))
-                         sName))
-                     ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) sAttrs) ::
+                -> (applySing ((applySing ((singFun2 @LookupSym0) sLookup)) sName))
+                     ((applySing ((singFun1 @SchSym0) SSch)) sAttrs) ::
               Sing (Case_0123456789876543210 name name' u attrs (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs) :: U)
     sOccurs _ (SSch SNil) = SFalse
     sOccurs
@@ -509,48 +506,39 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (SSch (SCons (SAttr (sName' :: Sing name') _)
                    (sAttrs :: Sing attrs)))
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:||$))) (%:||)))
-              ((applySing
-                  ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sName))
+           ((applySing ((singFun2 @(:||$)) (%:||)))
+              ((applySing ((applySing ((singFun2 @(:==$)) (%:==))) sName))
                  sName')))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy OccursSym0)) sOccurs))
-                 sName))
-             ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) sAttrs))
+          ((applySing ((applySing ((singFun2 @OccursSym0) sOccurs)) sName))
+             ((applySing ((singFun1 @SchSym0) SSch)) sAttrs))
     sAttrNotIn _ (SSch SNil) = STrue
     sAttrNotIn
       (SAttr (sName :: Sing name) (sU :: Sing u))
       (SSch (SCons (SAttr (sName' :: Sing name') _) (sT :: Sing t)))
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:&&$))) (%:&&)))
-              ((applySing
-                  ((applySing ((singFun2 (Proxy :: Proxy (:/=$))) (%:/=))) sName))
+           ((applySing ((singFun2 @(:&&$)) (%:&&)))
+              ((applySing ((applySing ((singFun2 @(:/=$)) (%:/=))) sName))
                  sName')))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy AttrNotInSym0)) sAttrNotIn))
-                 ((applySing
-                     ((applySing ((singFun2 (Proxy :: Proxy AttrSym0)) SAttr)) sName))
-                    sU)))
-             ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) sT))
+              ((applySing ((singFun2 @AttrNotInSym0) sAttrNotIn))
+                 ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sName)) sU)))
+             ((applySing ((singFun1 @SchSym0) SSch)) sT))
     sDisjoint (SSch SNil) _ = STrue
     sDisjoint
       (SSch (SCons (sH :: Sing h) (sT :: Sing t)))
       (sS :: Sing s)
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:&&$))) (%:&&)))
+           ((applySing ((singFun2 @(:&&$)) (%:&&)))
               ((applySing
-                  ((applySing ((singFun2 (Proxy :: Proxy AttrNotInSym0)) sAttrNotIn))
-                     sH))
+                  ((applySing ((singFun2 @AttrNotInSym0) sAttrNotIn)) sH))
                  sS)))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy DisjointSym0)) sDisjoint))
-                 ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) sT)))
+              ((applySing ((singFun2 @DisjointSym0) sDisjoint))
+                 ((applySing ((singFun1 @SchSym0) SSch)) sT)))
              sS)
     sAppend (SSch (sS1 :: Sing s1)) (SSch (sS2 :: Sing s2))
-      = (applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:++$))) (%:++))) sS1))
-             sS2)
+      = (applySing ((singFun1 @SchSym0) SSch))
+          ((applySing ((applySing ((singFun2 @(:++$)) (%:++))) sS1)) sS2)
     data instance Sing (z :: U)
       = z ~ BOOL => SBOOL |
         z ~ STRING => SSTRING |

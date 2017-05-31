@@ -282,26 +282,23 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     sOtherwise = STrue
     sX_0123456789876543210
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-              ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
+           ((applySing ((singFun2 @(:$)) SCons)) ((singFun1 @NotSym0) sNot)))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                 ((singFun1 (Proxy :: Proxy IdSym0)) sId)))
+              ((applySing ((singFun2 @(:$)) SCons)) ((singFun1 @IdSym0) sId)))
              SNil)
     sX_0123456789876543210
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2))
-              ((singFun1 (Proxy :: Proxy FSym0)) sF)))
-          ((singFun1 (Proxy :: Proxy GSym0)) sG)
+           ((applySing ((singFun2 @Tuple2Sym0) STuple2))
+              ((singFun1 @FSym0) sF)))
+          ((singFun1 @GSym0) sG)
+    sX_0123456789876543210
+      = (applySing ((applySing ((singFun2 @BarSym0) SBar)) STrue))
+          ((applySing ((singFun1 @HSym0) sH)) SFalse)
     sX_0123456789876543210
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy BarSym0)) SBar)) STrue))
-          ((applySing ((singFun1 (Proxy :: Proxy HSym0)) sH)) SFalse)
-    sX_0123456789876543210
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-              ((applySing ((singFun1 (Proxy :: Proxy NotSym0)) sNot)) STrue)))
+           ((applySing ((singFun2 @(:$)) SCons))
+              ((applySing ((singFun1 @NotSym0) sNot)) STrue)))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                 ((applySing ((singFun1 (Proxy :: Proxy IdSym0)) sId)) SFalse)))
+              ((applySing ((singFun2 @(:$)) SCons))
+                 ((applySing ((singFun1 @IdSym0) sId)) SFalse)))
              SNil)

@@ -73,10 +73,8 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       forall (t :: Foo). Sing t -> Sing (Apply ChildSym0 t :: Foo)
     (%:+) SZero (sM :: Sing m) = sM
     (%:+) (SSucc (sN :: Sing n)) (sM :: Sing m)
-      = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:+$))) (%:+))) sN))
-             sM)
+      = (applySing ((singFun1 @SuccSym0) SSucc))
+          ((applySing ((applySing ((singFun2 @(:+$)) (%:+))) sN)) sM)
     sChild SFLeaf = SFLeaf
     sChild ((:%+:) (sA :: Sing a) _) = sA
     data instance Sing (z :: Foo)

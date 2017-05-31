@@ -67,33 +67,27 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
       forall (t :: Bool). Sing t -> Sing (Apply FooSym0 t :: Bool)
     sBan (sX :: Sing x)
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy ($!$))) (%$!)))
+           ((applySing ((singFun2 @($!$)) (%$!)))
               ((applySing
-                  ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
-                     ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
+                  ((applySing ((singFun3 @(:.$)) (%:.))) ((singFun1 @NotSym0) sNot)))
                  ((applySing
-                     ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
-                        ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
-                    ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))))
+                     ((applySing ((singFun3 @(:.$)) (%:.))) ((singFun1 @NotSym0) sNot)))
+                    ((singFun1 @NotSym0) sNot)))))
           sX
     sBaz (sX :: Sing x)
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy ($!$))) (%$!)))
-              ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
+           ((applySing ((singFun2 @($!$)) (%$!))) ((singFun1 @NotSym0) sNot)))
           sX
     sBar (sX :: Sing x)
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy ($$))) (%$)))
+           ((applySing ((singFun2 @($$)) (%$)))
               ((applySing
-                  ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
-                     ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
+                  ((applySing ((singFun3 @(:.$)) (%:.))) ((singFun1 @NotSym0) sNot)))
                  ((applySing
-                     ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
-                        ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
-                    ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))))
+                     ((applySing ((singFun3 @(:.$)) (%:.))) ((singFun1 @NotSym0) sNot)))
+                    ((singFun1 @NotSym0) sNot)))))
           sX
     sFoo (sX :: Sing x)
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy ($$))) (%$)))
-              ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
+           ((applySing ((singFun2 @($$)) (%$))) ((singFun1 @NotSym0) sNot)))
           sX

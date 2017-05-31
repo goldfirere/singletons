@@ -351,12 +351,10 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       (SCons (sX :: Sing x) (sXs :: Sing xs))
       (SCons (sY :: Sing y) (sYs :: Sing ys))
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+           ((applySing ((singFun2 @(:$)) SCons))
               ((applySing ((applySing sF) sX)) sY)))
           ((applySing
-              ((applySing
-                  ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith))
-                     sF))
+              ((applySing ((applySing ((singFun3 @ZipWithSym0) sZipWith)) sF))
                  sXs))
              sYs)
     sZipWith _ SNil SNil = SNil
@@ -365,18 +363,15 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     sSplunge (sNs :: Sing ns) (sBs :: Sing bs)
       = (applySing
            ((applySing
-               ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith))
-                  ((singFun2
-                      (Proxy ::
-                         Proxy (Apply (Apply Lambda_0123456789876543210Sym0 ns) bs)))
+               ((applySing ((singFun3 @ZipWithSym0) sZipWith))
+                  ((singFun2 @(Apply (Apply Lambda_0123456789876543210Sym0 ns) bs))
                      (\ sN sB
                         -> case (GHC.Tuple.(,) sN) sB of {
                              GHC.Tuple.(,) (_ :: Sing n) (_ :: Sing b)
                                -> case sB of
                                     STrue
-                                      -> (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                                           ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                                              sN)
+                                      -> (applySing ((singFun1 @SuccSym0) SSucc))
+                                           ((applySing ((singFun1 @SuccSym0) SSucc)) sN)
                                     SFalse -> sN ::
                                     Sing (Case_0123456789876543210 ns bs n b b) }))))
               sNs))
@@ -386,34 +381,28 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = (applySing
            ((applySing
-               ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith))
+               ((applySing ((singFun3 @ZipWithSym0) sZipWith))
                   ((singFun2
-                      (Proxy ::
-                         Proxy (Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210)))
+                      @(Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210))
                      (\ sN sB
                         -> case (GHC.Tuple.(,) sN) sB of {
                              GHC.Tuple.(,) (_ :: Sing n) (_ :: Sing b)
                                -> case sB of
                                     STrue
-                                      -> (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                                           ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                                              sN)
+                                      -> (applySing ((singFun1 @SuccSym0) SSucc))
+                                           ((applySing ((singFun1 @SuccSym0) SSucc)) sN)
                                     SFalse -> sN ::
                                     Sing (Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 b) }))))
               sA_0123456789876543210))
           sA_0123456789876543210
     sLiftMaybe (sF :: Sing f) (SJust (sX :: Sing x))
-      = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
-          ((applySing sF) sX)
+      = (applySing ((singFun1 @JustSym0) SJust)) ((applySing sF) sX)
     sLiftMaybe _ SNothing = SNothing
     sMap _ SNil = SNil
     sMap (sF :: Sing f) (SCons (sH :: Sing h) (sT :: Sing t))
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-              ((applySing sF) sH)))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy MapSym0)) sMap)) sF))
-             sT)
+           ((applySing ((singFun2 @(:$)) SCons)) ((applySing sF) sH)))
+          ((applySing ((applySing ((singFun2 @MapSym0) sMap)) sF)) sT)
     data instance Sing (z :: Either a b)
       = forall (n :: a). z ~ Left n => SLeft (Sing (n :: a)) |
         forall (n :: b). z ~ Right n => SRight (Sing (n :: b))

@@ -26,6 +26,5 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:+$))) (%:+)))
-              sA_0123456789876543210))
+           ((applySing ((singFun2 @(:+$)) (%:+))) sA_0123456789876543210))
           sA_0123456789876543210

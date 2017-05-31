@@ -60,106 +60,64 @@ GradingClient/Main.hs:(0,0)-(0,0): Splicing declarations
     sGradingSchema :: Sing (GradingSchemaSym0 :: Schema)
     sNames :: Sing (NamesSym0 :: Schema)
     sMajorName
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCM))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCA))
-             ((applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCJ))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCO))
-                   ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCR))
-                      SNil))))
+      = (applySing ((applySing ((singFun2 @(:$)) SCons)) SCM))
+          ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCA))
+             ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCJ))
+                ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCO))
+                   ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCR)) SNil))))
     sGradeName
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCG))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCR))
-             ((applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCA))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCD))
-                   ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCE))
-                      SNil))))
+      = (applySing ((applySing ((singFun2 @(:$)) SCons)) SCG))
+          ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCR))
+             ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCA))
+                ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCD))
+                   ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCE)) SNil))))
     sYearName
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCY))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCE))
-             ((applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCA))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCR))
-                   SNil)))
+      = (applySing ((applySing ((singFun2 @(:$)) SCons)) SCY))
+          ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCE))
+             ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCA))
+                ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCR)) SNil)))
     sFirstName
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCF))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCI))
-             ((applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCR))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCS))
-                   ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCT))
-                      SNil))))
+      = (applySing ((applySing ((singFun2 @(:$)) SCons)) SCF))
+          ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCI))
+             ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCR))
+                ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCS))
+                   ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCT)) SNil))))
     sLastName
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCL))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCA))
-             ((applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCS))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SCT))
-                   SNil)))
+      = (applySing ((applySing ((singFun2 @(:$)) SCons)) SCL))
+          ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCA))
+             ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCS))
+                ((applySing ((applySing ((singFun2 @(:$)) SCons)) SCT)) SNil)))
     sGradingSchema
-      = (applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch))
+      = (applySing ((singFun1 @SchSym0) SSch))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                 ((applySing
-                     ((applySing ((singFun2 (Proxy :: Proxy AttrSym0)) SAttr))
-                        sLastName))
+              ((applySing ((singFun2 @(:$)) SCons))
+                 ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sLastName))
                     SSTRING)))
              ((applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                    ((applySing
-                        ((applySing ((singFun2 (Proxy :: Proxy AttrSym0)) SAttr))
-                           sFirstName))
+                 ((applySing ((singFun2 @(:$)) SCons))
+                    ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sFirstName))
                        SSTRING)))
                 ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                       ((applySing
-                           ((applySing ((singFun2 (Proxy :: Proxy AttrSym0)) SAttr))
-                              sYearName))
+                    ((applySing ((singFun2 @(:$)) SCons))
+                       ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sYearName))
                           SNAT)))
                    ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                          ((applySing
-                              ((applySing ((singFun2 (Proxy :: Proxy AttrSym0)) SAttr))
-                                 sGradeName))
+                       ((applySing ((singFun2 @(:$)) SCons))
+                          ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sGradeName))
                              SNAT)))
                       ((applySing
-                          ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                             ((applySing
-                                 ((applySing ((singFun2 (Proxy :: Proxy AttrSym0)) SAttr))
-                                    sMajorName))
+                          ((applySing ((singFun2 @(:$)) SCons))
+                             ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sMajorName))
                                 SBOOL)))
                          SNil)))))
     sNames
-      = (applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch))
+      = (applySing ((singFun1 @SchSym0) SSch))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                 ((applySing
-                     ((applySing ((singFun2 (Proxy :: Proxy AttrSym0)) SAttr))
-                        sFirstName))
+              ((applySing ((singFun2 @(:$)) SCons))
+                 ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sFirstName))
                     SSTRING)))
              ((applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                    ((applySing
-                        ((applySing ((singFun2 (Proxy :: Proxy AttrSym0)) SAttr))
-                           sLastName))
+                 ((applySing ((singFun2 @(:$)) SCons))
+                    ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sLastName))
                        SSTRING)))
                 SNil))

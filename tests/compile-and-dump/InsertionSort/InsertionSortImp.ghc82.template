@@ -153,39 +153,25 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     sLeq SZero _ = STrue
     sLeq (SSucc _) SZero = SFalse
     sLeq (SSucc (sA :: Sing a)) (SSucc (sB :: Sing b))
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy LeqSym0)) sLeq)) sA))
-          sB
+      = (applySing ((applySing ((singFun2 @LeqSym0) sLeq)) sA)) sB
     sInsert (sN :: Sing n) SNil
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) sN))
-          SNil
+      = (applySing ((applySing ((singFun2 @(:$)) SCons)) sN)) SNil
     sInsert (sN :: Sing n) (SCons (sH :: Sing h) (sT :: Sing t))
       = let
           sScrutinee_0123456789876543210 ::
             Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t)
           sScrutinee_0123456789876543210
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy LeqSym0)) sLeq)) sN))
-                sH
+            = (applySing ((applySing ((singFun2 @LeqSym0) sLeq)) sN)) sH
         in  case sScrutinee_0123456789876543210 of
               STrue
-                -> (applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) sN))
-                     ((applySing
-                         ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) sH))
-                        sT)
+                -> (applySing ((applySing ((singFun2 @(:$)) SCons)) sN))
+                     ((applySing ((applySing ((singFun2 @(:$)) SCons)) sH)) sT)
               SFalse
-                -> (applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) sH))
-                     ((applySing
-                         ((applySing ((singFun2 (Proxy :: Proxy InsertSym0)) sInsert)) sN))
+                -> (applySing ((applySing ((singFun2 @(:$)) SCons)) sH))
+                     ((applySing ((applySing ((singFun2 @InsertSym0) sInsert)) sN))
                         sT) ::
               Sing (Case_0123456789876543210 n h t (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t) :: [Nat])
     sInsertionSort SNil = SNil
     sInsertionSort (SCons (sH :: Sing h) (sT :: Sing t))
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy InsertSym0)) sInsert)) sH))
-          ((applySing
-              ((singFun1 (Proxy :: Proxy InsertionSortSym0)) sInsertionSort))
-             sT)
+      = (applySing ((applySing ((singFun2 @InsertSym0) sInsert)) sH))
+          ((applySing ((singFun1 @InsertionSortSym0) sInsertionSort)) sT)

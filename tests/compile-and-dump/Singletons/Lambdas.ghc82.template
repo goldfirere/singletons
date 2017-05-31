@@ -590,8 +590,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
       Sing t -> Sing t -> Sing (Apply (Apply Foo0Sym0 t) t :: a)
     sFoo8 (sX :: Sing x)
       = (applySing
-           ((singFun1
-               (Proxy :: Proxy (Apply Lambda_0123456789876543210Sym0 x)))
+           ((singFun1 @(Apply Lambda_0123456789876543210Sym0 x))
               (\ sArg_0123456789876543210
                  -> case sArg_0123456789876543210 of {
                       _ :: Sing arg_0123456789876543210
@@ -601,30 +600,23 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
           sX
     sFoo7 (sX :: Sing x) (sY :: Sing y)
       = (applySing
-           ((singFun1
-               (Proxy ::
-                  Proxy (Apply (Apply Lambda_0123456789876543210Sym0 x) y)))
+           ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 x) y))
               (\ sArg_0123456789876543210
                  -> case sArg_0123456789876543210 of {
                       _ :: Sing arg_0123456789876543210
                         -> case sArg_0123456789876543210 of {
                              STuple2 _ (sB :: Sing b) -> sB } ::
                              Sing (Case_0123456789876543210 x y arg_0123456789876543210 arg_0123456789876543210) })))
-          ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2)) sX))
-             sY)
+          ((applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX)) sY)
     sFoo6 (sA :: Sing a) (sB :: Sing b)
       = (applySing
            ((applySing
-               ((singFun1
-                   (Proxy ::
-                      Proxy (Apply (Apply Lambda_0123456789876543210Sym0 a) b)))
+               ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 a) b))
                   (\ sX
                      -> case sX of {
                           _ :: Sing x
                             -> (singFun1
-                                  (Proxy ::
-                                     Proxy (Apply (Apply (Apply Lambda_0123456789876543210Sym0 a) b) x)))
+                                  @(Apply (Apply (Apply Lambda_0123456789876543210Sym0 a) b) x))
                                  (\ sArg_0123456789876543210
                                     -> case sArg_0123456789876543210 of {
                                          _ :: Sing arg_0123456789876543210
@@ -634,17 +626,14 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
           sB
     sFoo5 (sX :: Sing x) (sY :: Sing y)
       = (applySing
-           ((singFun1
-               (Proxy ::
-                  Proxy (Apply (Apply Lambda_0123456789876543210Sym0 x) y)))
+           ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 x) y))
               (\ sX -> case sX of { _ :: Sing x -> sX })))
           sY
     sFoo4 (sX :: Sing x) (sY :: Sing y) (sZ :: Sing z)
       = (applySing
            ((applySing
                ((singFun2
-                   (Proxy ::
-                      Proxy (Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) z)))
+                   @(Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) z))
                   (\ sArg_0123456789876543210 sArg_0123456789876543210
                      -> case
                             (GHC.Tuple.(,) sArg_0123456789876543210) sArg_0123456789876543210
@@ -653,7 +642,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                                         (_ :: Sing arg_0123456789876543210)
                             -> case
                                    (applySing
-                                      ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2))
+                                      ((applySing ((singFun2 @Tuple2Sym0) STuple2))
                                          sArg_0123456789876543210))
                                      sArg_0123456789876543210
                                of {
@@ -663,15 +652,12 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
           sZ
     sFoo3 (sX :: Sing x)
       = (applySing
-           ((singFun1
-               (Proxy :: Proxy (Apply Lambda_0123456789876543210Sym0 x)))
+           ((singFun1 @(Apply Lambda_0123456789876543210Sym0 x))
               (\ sY -> case sY of { _ :: Sing y -> sY })))
           sX
     sFoo2 (sX :: Sing x) (sY :: Sing y)
       = (applySing
-           ((singFun1
-               (Proxy ::
-                  Proxy (Apply (Apply Lambda_0123456789876543210Sym0 x) y)))
+           ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 x) y))
               (\ sArg_0123456789876543210
                  -> case sArg_0123456789876543210 of {
                       _ :: Sing arg_0123456789876543210
@@ -683,8 +669,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = (applySing
            ((singFun1
-               (Proxy ::
-                  Proxy (Apply (Apply Lambda_0123456789876543210Sym0 x) a_0123456789876543210)))
+               @(Apply (Apply Lambda_0123456789876543210Sym0 x) a_0123456789876543210))
               (\ sArg_0123456789876543210
                  -> case sArg_0123456789876543210 of {
                       _ :: Sing arg_0123456789876543210
@@ -697,8 +682,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
       = (applySing
            ((applySing
                ((singFun2
-                   (Proxy ::
-                      Proxy (Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210)))
+                   @(Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210))
                   (\ sX sY
                      -> case (GHC.Tuple.(,) sX) sY of {
                           GHC.Tuple.(,) (_ :: Sing x) (_ :: Sing y) -> sX })))

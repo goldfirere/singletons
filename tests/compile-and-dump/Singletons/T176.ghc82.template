@@ -116,14 +116,10 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
     sQuux1 ::
       forall (t :: a). SFoo1 a => Sing t -> Sing (Apply Quux1Sym0 t :: a)
     sQuux2 (sX :: Sing x)
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy Bar2Sym0)) sBar2)) sX))
-          sBaz2
+      = (applySing ((applySing ((singFun2 @Bar2Sym0) sBar2)) sX)) sBaz2
     sQuux1 (sX :: Sing x)
-      = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy Bar1Sym0)) sBar1)) sX))
-          ((singFun1
-              (Proxy :: Proxy (Apply Lambda_0123456789876543210Sym0 x)))
+      = (applySing ((applySing ((singFun2 @Bar1Sym0) sBar1)) sX))
+          ((singFun1 @(Apply Lambda_0123456789876543210Sym0 x))
              (\ sArg_0123456789876543210
                 -> case sArg_0123456789876543210 of {
                      _ :: Sing arg_0123456789876543210

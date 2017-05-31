@@ -318,7 +318,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         = (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy MycompareSym0)) sMycompare))
+             ((applySing ((singFun2 @MycompareSym0) sMycompare))
                 sA_0123456789876543210))
             sA_0123456789876543210
     instance SMyOrd Nat where
@@ -331,8 +331,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       sMycompare (SSucc _) SZero = SGT
       sMycompare (SSucc (sN :: Sing n)) (SSucc (sM :: Sing m))
         = (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy MycompareSym0)) sMycompare))
-                sM))
+             ((applySing ((singFun2 @MycompareSym0) sMycompare)) sM))
             sN
     instance SMyOrd () where
       sMycompare ::
@@ -340,8 +339,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Sing t
         -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
       sMycompare _ (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy ConstSym0)) sConst)) SEQ))
+        = (applySing ((applySing ((singFun2 @ConstSym0) sConst)) SEQ))
             sA_0123456789876543210
     instance SMyOrd Foo where
       sMycompare ::
@@ -352,8 +350,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         = (applySing
-             ((applySing
-                 ((singFun2 (Proxy :: Proxy FooCompareSym0)) sFooCompare))
+             ((applySing ((singFun2 @FooCompareSym0) sFooCompare))
                 sA_0123456789876543210))
             sA_0123456789876543210
     instance SEq Foo2 where
@@ -524,8 +521,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       sMycompare (SSucc' _) SZero' = SGT
       sMycompare (SSucc' (sN :: Sing n)) (SSucc' (sM :: Sing m))
         = (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy MycompareSym0)) sMycompare))
-                sM))
+             ((applySing ((singFun2 @MycompareSym0) sMycompare)) sM))
             sN
     instance SingI Zero' where
       sing = SZero'

@@ -764,20 +764,16 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                 Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x))
           sX_0123456789876543210
             = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2))
-                    ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sX)))
+                 ((applySing ((singFun2 @Tuple2Sym0) STuple2))
+                    ((applySing ((singFun1 @SuccSym0) SSucc)) sX)))
                 sX
-        in
-          (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2)) sZ))
-            sY
+        in (applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sZ)) sY
     sFoo13_ (sY :: Sing y) = sY
     sFoo13 (sX :: Sing x)
       = let
           sBar :: Sing (Let0123456789876543210BarSym1 x :: a)
           sBar = sX
-        in
-          (applySing ((singFun1 (Proxy :: Proxy Foo13_Sym0)) sFoo13_)) sBar
+        in (applySing ((singFun1 @Foo13_Sym0) sFoo13_)) sBar
     sFoo12 (sX :: Sing x)
       = let
           (%:+) ::
@@ -787,21 +783,17 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
           (%:+) SZero (sM :: Sing m) = sM
           (%:+) (SSucc (sN :: Sing n)) (sM :: Sing m)
-            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+            = (applySing ((singFun1 @SuccSym0) SSucc))
                 ((applySing
-                    ((applySing
-                        ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                           (%:+)))
+                    ((applySing ((singFun2 @((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)) (%:+)))
                        sN))
                    sX)
         in
           (applySing
-             ((applySing
-                 ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                    (%:+)))
+             ((applySing ((singFun2 @((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)) (%:+)))
                 sX))
-            ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-               ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero))
+            ((applySing ((singFun1 @SuccSym0) SSucc))
+               ((applySing ((singFun1 @SuccSym0) SSucc)) SZero))
     sFoo11 (sX :: Sing x)
       = let
           sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
@@ -813,19 +805,15 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
           sZ = sX
           (%:+) SZero (sM :: Sing m) = sM
           (%:+) (SSucc (sN :: Sing n)) (sM :: Sing m)
-            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+            = (applySing ((singFun1 @SuccSym0) SSucc))
                 ((applySing
-                    ((applySing
-                        ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                           (%:+)))
+                    ((applySing ((singFun2 @((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)) (%:+)))
                        sN))
                    sM)
         in
           (applySing
-             ((applySing
-                 ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                    (%:+)))
-                ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
+             ((applySing ((singFun2 @((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)) (%:+)))
+                ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
             sZ
     sFoo10 (sX :: Sing x)
       = let
@@ -836,19 +824,15 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
           (%:+) SZero (sM :: Sing m) = sM
           (%:+) (SSucc (sN :: Sing n)) (sM :: Sing m)
-            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+            = (applySing ((singFun1 @SuccSym0) SSucc))
                 ((applySing
-                    ((applySing
-                        ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                           (%:+)))
+                    ((applySing ((singFun2 @((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)) (%:+)))
                        sN))
                    sM)
         in
           (applySing
-             ((applySing
-                 ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                    (%:+)))
-                ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
+             ((applySing ((singFun2 @((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)) (%:+)))
+                ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
             sX
     sFoo9 (sX :: Sing x)
       = let
@@ -858,21 +842,16 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
           sZ (sA_0123456789876543210 :: Sing a_0123456789876543210)
             = (applySing
                  ((singFun1
-                     (Proxy ::
-                        Proxy (Apply (Apply Lambda_0123456789876543210Sym0 x) a_0123456789876543210)))
+                     @(Apply (Apply Lambda_0123456789876543210Sym0 x) a_0123456789876543210))
                     (\ sX -> case sX of { _ :: Sing x -> sX })))
                 sA_0123456789876543210
-        in
-          (applySing
-             ((singFun1 (Proxy :: Proxy (Let0123456789876543210ZSym1 x))) sZ))
-            sX
+        in (applySing ((singFun1 @(Let0123456789876543210ZSym1 x)) sZ)) sX
     sFoo8 (sX :: Sing x)
       = let
           sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
           sZ
             = (applySing
-                 ((singFun1
-                     (Proxy :: Proxy (Apply Lambda_0123456789876543210Sym0 x)))
+                 ((singFun1 @(Apply Lambda_0123456789876543210Sym0 x))
                     (\ sX -> case sX of { _ :: Sing x -> sX })))
                 SZero
         in sZ
@@ -886,14 +865,11 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
           sF ::
             forall (t :: Nat).
             Sing t -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
-          sF (sY :: Sing y)
-            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sY in
+          sF (sY :: Sing y) = (applySing ((singFun1 @SuccSym0) SSucc)) sY in
         let
           sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
           sZ
-            = (applySing
-                 ((singFun1 (Proxy :: Proxy (Let0123456789876543210FSym1 x))) sF))
-                sX
+            = (applySing ((singFun1 @(Let0123456789876543210FSym1 x)) sF)) sX
         in sZ
     sFoo5 (sX :: Sing x)
       = let
@@ -903,37 +879,30 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
           sF (sY :: Sing y)
             = let
                 sZ :: Sing (Let0123456789876543210ZSym2 x y :: Nat)
-                sZ = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sY
-              in (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sZ
-        in
-          (applySing
-             ((singFun1 (Proxy :: Proxy (Let0123456789876543210FSym1 x))) sF))
-            sX
+                sZ = (applySing ((singFun1 @SuccSym0) SSucc)) sY
+              in (applySing ((singFun1 @SuccSym0) SSucc)) sZ
+        in (applySing ((singFun1 @(Let0123456789876543210FSym1 x)) sF)) sX
     sFoo4 (sX :: Sing x)
       = let
           sF ::
             forall (t :: Nat).
             Sing t -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
-          sF (sY :: Sing y)
-            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sY
-        in
-          (applySing
-             ((singFun1 (Proxy :: Proxy (Let0123456789876543210FSym1 x))) sF))
-            sX
+          sF (sY :: Sing y) = (applySing ((singFun1 @SuccSym0) SSucc)) sY
+        in (applySing ((singFun1 @(Let0123456789876543210FSym1 x)) sF)) sX
     sFoo3 (sX :: Sing x)
       = let
           sY :: Sing (Let0123456789876543210YSym1 x :: Nat)
-          sY = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sX
+          sY = (applySing ((singFun1 @SuccSym0) SSucc)) sX
         in sY
     sFoo2
       = let
           sY :: Sing Let0123456789876543210YSym0
           sZ :: Sing Let0123456789876543210ZSym0
-          sY = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero
-          sZ = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sY
+          sY = (applySing ((singFun1 @SuccSym0) SSucc)) SZero
+          sZ = (applySing ((singFun1 @SuccSym0) SSucc)) sY
         in sZ
     sFoo1 (sX :: Sing x)
       = let
           sY :: Sing (Let0123456789876543210YSym1 x :: Nat)
-          sY = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero
+          sY = (applySing ((singFun1 @SuccSym0) SSucc)) SZero
         in sY

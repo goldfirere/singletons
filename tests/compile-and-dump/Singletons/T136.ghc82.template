@@ -122,63 +122,50 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         -> Sing (Apply (FromEnumSym0 :: TyFun [Bool] GHC.Types.Nat
                                         -> GHC.Types.Type) t :: GHC.Types.Nat)
       sSucc SNil
-        = (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) STrue))
-            SNil
+        = (applySing ((applySing ((singFun2 @(:$)) SCons)) STrue)) SNil
       sSucc (SCons SFalse (sAs :: Sing as))
-        = (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) STrue))
-            sAs
+        = (applySing ((applySing ((singFun2 @(:$)) SCons)) STrue)) sAs
       sSucc (SCons STrue (sAs :: Sing as))
-        = (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SFalse))
-            ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) sSucc)) sAs)
+        = (applySing ((applySing ((singFun2 @(:$)) SCons)) SFalse))
+            ((applySing ((singFun1 @SuccSym0) sSucc)) sAs)
       sPred SNil = sError (sing :: Sing "pred 0")
       sPred (SCons SFalse (sAs :: Sing as))
-        = (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) STrue))
-            ((applySing ((singFun1 (Proxy :: Proxy PredSym0)) sPred)) sAs)
+        = (applySing ((applySing ((singFun2 @(:$)) SCons)) STrue))
+            ((applySing ((singFun1 @PredSym0) sPred)) sAs)
       sPred (SCons STrue (sAs :: Sing as))
-        = (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SFalse))
-            sAs
+        = (applySing ((applySing ((singFun2 @(:$)) SCons)) SFalse)) sAs
       sToEnum (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
         = case sArg_0123456789876543210 of {
             sI :: Sing i
               -> case
-                     (applySing
-                        ((applySing ((singFun2 (Proxy :: Proxy (:<$))) (%:<))) sI))
+                     (applySing ((applySing ((singFun2 @(:<$)) (%:<))) sI))
                        (sFromInteger (sing :: Sing 0))
                  of
                    STrue -> sError (sing :: Sing "negative toEnum")
                    SFalse
                      -> case
-                            (applySing
-                               ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sI))
+                            (applySing ((applySing ((singFun2 @(:==$)) (%:==))) sI))
                               (sFromInteger (sing :: Sing 0))
                         of
                           STrue -> SNil
                           SFalse
-                            -> (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) sSucc))
-                                 ((applySing ((singFun1 (Proxy :: Proxy ToEnumSym0)) sToEnum))
-                                    ((applySing ((singFun1 (Proxy :: Proxy PredSym0)) sPred))
-                                       sI)) ::
+                            -> (applySing ((singFun1 @SuccSym0) sSucc))
+                                 ((applySing ((singFun1 @ToEnumSym0) sToEnum))
+                                    ((applySing ((singFun1 @PredSym0) sPred)) sI)) ::
                           Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (:==$) i) (FromInteger 0)) :: [Bool]) ::
                    Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (:<$) i) (FromInteger 0)) :: [Bool]) } ::
             Sing (Case_0123456789876543210 arg_0123456789876543210 arg_0123456789876543210 :: [Bool])
       sFromEnum SNil = sFromInteger (sing :: Sing 0)
       sFromEnum (SCons SFalse (sAs :: Sing as))
         = (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy (:*$))) (%:*)))
+             ((applySing ((singFun2 @(:*$)) (%:*)))
                 (sFromInteger (sing :: Sing 2))))
-            ((applySing ((singFun1 (Proxy :: Proxy FromEnumSym0)) sFromEnum))
-               sAs)
+            ((applySing ((singFun1 @FromEnumSym0) sFromEnum)) sAs)
       sFromEnum (SCons STrue (sAs :: Sing as))
         = (applySing
-             ((applySing ((singFun2 (Proxy :: Proxy (:+$))) (%:+)))
+             ((applySing ((singFun2 @(:+$)) (%:+)))
                 (sFromInteger (sing :: Sing 1))))
             ((applySing
-                ((applySing ((singFun2 (Proxy :: Proxy (:*$))) (%:*)))
+                ((applySing ((singFun2 @(:*$)) (%:*)))
                    (sFromInteger (sing :: Sing 2))))
-               ((applySing ((singFun1 (Proxy :: Proxy FromEnumSym0)) sFromEnum))
-                  sAs))
+               ((applySing ((singFun1 @FromEnumSym0) sFromEnum)) sAs))

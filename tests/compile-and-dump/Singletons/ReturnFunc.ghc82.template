@@ -69,10 +69,8 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
       Sing t -> Sing t -> Sing (Apply (Apply ReturnFuncSym0 t) t :: Nat)
     sId (sX :: Sing x) = sX
     sIdFoo _ (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = (applySing ((singFun1 (Proxy :: Proxy IdSym0)) sId))
-          sA_0123456789876543210
+      = (applySing ((singFun1 @IdSym0) sId)) sA_0123456789876543210
     sReturnFunc
       _
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-          sA_0123456789876543210
+      = (applySing ((singFun1 @SuccSym0) SSucc)) sA_0123456789876543210

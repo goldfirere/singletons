@@ -129,22 +129,22 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       sCompare SStr SStr
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             SNil
       sCompare SOpt SOpt
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             SNil
       sCompare SMany SMany
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             SNil
       sCompare SStr SOpt = SLT

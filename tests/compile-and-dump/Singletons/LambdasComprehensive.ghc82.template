@@ -35,37 +35,37 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
     sFoo :: Sing (FooSym0 :: [Nat])
     sBar
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy MapSym0)) sMap))
+           ((applySing ((singFun2 @MapSym0) sMap))
               ((applySing
-                  ((applySing ((singFun3 (Proxy :: Proxy Either_Sym0)) sEither_))
-                     ((singFun1 (Proxy :: Proxy PredSym0)) sPred)))
-                 ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))))
+                  ((applySing ((singFun3 @Either_Sym0) sEither_))
+                     ((singFun1 @PredSym0) sPred)))
+                 ((singFun1 @SuccSym0) SSucc))))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                 ((applySing ((singFun1 (Proxy :: Proxy LeftSym0)) SLeft)) SZero)))
+              ((applySing ((singFun2 @(:$)) SCons))
+                 ((applySing ((singFun1 @LeftSym0) SLeft)) SZero)))
              ((applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                    ((applySing ((singFun1 (Proxy :: Proxy RightSym0)) SRight))
-                       ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero))))
+                 ((applySing ((singFun2 @(:$)) SCons))
+                    ((applySing ((singFun1 @RightSym0) SRight))
+                       ((applySing ((singFun1 @SuccSym0) SSucc)) SZero))))
                 SNil))
     sFoo
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy MapSym0)) sMap))
-              ((singFun1 (Proxy :: Proxy Lambda_0123456789876543210Sym0))
+           ((applySing ((singFun2 @MapSym0) sMap))
+              ((singFun1 @Lambda_0123456789876543210Sym0)
                  (\ sX
                     -> case sX of {
                          _ :: Sing x
                            -> (applySing
                                  ((applySing
-                                     ((applySing ((singFun3 (Proxy :: Proxy Either_Sym0)) sEither_))
-                                        ((singFun1 (Proxy :: Proxy PredSym0)) sPred)))
-                                    ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)))
+                                     ((applySing ((singFun3 @Either_Sym0) sEither_))
+                                        ((singFun1 @PredSym0) sPred)))
+                                    ((singFun1 @SuccSym0) SSucc)))
                                 sX }))))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                 ((applySing ((singFun1 (Proxy :: Proxy LeftSym0)) SLeft)) SZero)))
+              ((applySing ((singFun2 @(:$)) SCons))
+                 ((applySing ((singFun1 @LeftSym0) SLeft)) SZero)))
              ((applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                    ((applySing ((singFun1 (Proxy :: Proxy RightSym0)) SRight))
-                       ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero))))
+                 ((applySing ((singFun2 @(:$)) SCons))
+                    ((applySing ((singFun1 @RightSym0) SRight))
+                       ((applySing ((singFun1 @SuccSym0) SSucc)) SZero))))
                 SNil))

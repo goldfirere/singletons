@@ -790,8 +790,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       sCompare SZero SZero
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             SNil
       sCompare
@@ -799,13 +799,13 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         (SSucc (sB_0123456789876543210 :: Sing b_0123456789876543210))
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                ((applySing ((singFun2 @(:$)) SCons))
                    ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                SNil)
@@ -832,31 +832,31 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (sB_0123456789876543210 :: Sing b_0123456789876543210))
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                ((applySing ((singFun2 @(:$)) SCons))
                    ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                   ((applySing ((singFun2 @(:$)) SCons))
                       ((applySing
-                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing ((singFun2 @(:$)) SCons))
                          ((applySing
-                             ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                         ((applySing ((singFun2 @(:$)) SCons))
                             ((applySing
-                                ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))
                                sB_0123456789876543210)))
                         SNil))))
@@ -871,31 +871,31 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (sB_0123456789876543210 :: Sing b_0123456789876543210))
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                ((applySing ((singFun2 @(:$)) SCons))
                    ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                   ((applySing ((singFun2 @(:$)) SCons))
                       ((applySing
-                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing ((singFun2 @(:$)) SCons))
                          ((applySing
-                             ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                         ((applySing ((singFun2 @(:$)) SCons))
                             ((applySing
-                                ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))
                                sB_0123456789876543210)))
                         SNil))))
@@ -910,31 +910,31 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (sB_0123456789876543210 :: Sing b_0123456789876543210))
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                ((applySing ((singFun2 @(:$)) SCons))
                    ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                   ((applySing ((singFun2 @(:$)) SCons))
                       ((applySing
-                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing ((singFun2 @(:$)) SCons))
                          ((applySing
-                             ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                         ((applySing ((singFun2 @(:$)) SCons))
                             ((applySing
-                                ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))
                                sB_0123456789876543210)))
                         SNil))))
@@ -949,31 +949,31 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (sB_0123456789876543210 :: Sing b_0123456789876543210))
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                ((applySing ((singFun2 @(:$)) SCons))
                    ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                   ((applySing ((singFun2 @(:$)) SCons))
                       ((applySing
-                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing ((singFun2 @(:$)) SCons))
                          ((applySing
-                             ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                         ((applySing ((singFun2 @(:$)) SCons))
                             ((applySing
-                                ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))
                                sB_0123456789876543210)))
                         SNil))))
@@ -988,31 +988,31 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (sB_0123456789876543210 :: Sing b_0123456789876543210))
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                ((applySing ((singFun2 @(:$)) SCons))
                    ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                   ((applySing ((singFun2 @(:$)) SCons))
                       ((applySing
-                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing ((singFun2 @(:$)) SCons))
                          ((applySing
-                             ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                         ((applySing ((singFun2 @(:$)) SCons))
                             ((applySing
-                                ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))
                                sB_0123456789876543210)))
                         SNil))))
@@ -1027,31 +1027,31 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (sB_0123456789876543210 :: Sing b_0123456789876543210))
         = (applySing
              ((applySing
-                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                ((applySing ((singFun2 @(:$)) SCons))
                    ((applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                   ((applySing ((singFun2 @(:$)) SCons))
                       ((applySing
-                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing ((singFun2 @(:$)) SCons))
                          ((applySing
-                             ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                         ((applySing ((singFun2 @(:$)) SCons))
                             ((applySing
-                                ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))
                                sB_0123456789876543210)))
                         SNil))))

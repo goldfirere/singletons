@@ -34,11 +34,8 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
     sContains _ SNil = SFalse
     sContains (sElt :: Sing elt) (SCons (sH :: Sing h) (sT :: Sing t))
       = (applySing
-           ((applySing ((singFun2 (Proxy :: Proxy (:||$))) (%:||)))
-              ((applySing
-                  ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sElt))
-                 sH)))
+           ((applySing ((singFun2 @(:||$)) (%:||)))
+              ((applySing ((applySing ((singFun2 @(:==$)) (%:==))) sElt)) sH)))
           ((applySing
-              ((applySing ((singFun2 (Proxy :: Proxy ContainsSym0)) sContains))
-                 sElt))
+              ((applySing ((singFun2 @ContainsSym0) sContains)) sElt))
              sT)
