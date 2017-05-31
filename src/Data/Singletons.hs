@@ -208,70 +208,70 @@ instance (SingKind k1, SingKind k2) => SingKind (k1 ~> k2) where
 type SingFunction1 f = forall t. Sing t -> Sing (f @@ t)
 
 -- | Use this function when passing a function on singletons as
--- a higher-order function. You will often need an explicit type
--- annotation to get this to work. For example:
+-- a higher-order function. You will need visible type application
+-- to get this to work. For example:
 --
--- > falses = sMap (singFun1 (Proxy :: Proxy NotSym0) sNot)
+-- > falses = sMap (singFun1 @NotSym0 sNot)
 -- >               (STrue `SCons` STrue `SCons` SNil)
 --
 -- There are a family of @singFun...@ functions, keyed by the number
 -- of parameters of the function.
-singFun1 :: Proxy f -> SingFunction1 f -> Sing f
-singFun1 _ f = SLambda f
+singFun1 :: forall f. SingFunction1 f -> Sing f
+singFun1 f = SLambda f
 
 type SingFunction2 f = forall t. Sing t -> SingFunction1 (f @@ t)
-singFun2 :: Proxy f -> SingFunction2 f -> Sing f
-singFun2 _ f = SLambda (\x -> singFun1 Proxy (f x))
+singFun2 :: forall f. SingFunction2 f -> Sing f
+singFun2 f = SLambda (\x -> singFun1 (f x))
 
 type SingFunction3 f = forall t. Sing t -> SingFunction2 (f @@ t)
-singFun3 :: Proxy f -> SingFunction3 f -> Sing f
-singFun3 _ f = SLambda (\x -> singFun2 Proxy (f x))
+singFun3 :: forall f. SingFunction3 f -> Sing f
+singFun3 f = SLambda (\x -> singFun2 (f x))
 
 type SingFunction4 f = forall t. Sing t -> SingFunction3 (f @@ t)
-singFun4 :: Proxy f -> SingFunction4 f -> Sing f
-singFun4 _ f = SLambda (\x -> singFun3 Proxy (f x))
+singFun4 :: forall f. SingFunction4 f -> Sing f
+singFun4 f = SLambda (\x -> singFun3 (f x))
 
 type SingFunction5 f = forall t. Sing t -> SingFunction4 (f @@ t)
-singFun5 :: Proxy f -> SingFunction5 f -> Sing f
-singFun5 _ f = SLambda (\x -> singFun4 Proxy (f x))
+singFun5 :: forall f. SingFunction5 f -> Sing f
+singFun5 f = SLambda (\x -> singFun4 (f x))
 
 type SingFunction6 f = forall t. Sing t -> SingFunction5 (f @@ t)
-singFun6 :: Proxy f -> SingFunction6 f -> Sing f
-singFun6 _ f = SLambda (\x -> singFun5 Proxy (f x))
+singFun6 :: forall f. SingFunction6 f -> Sing f
+singFun6 f = SLambda (\x -> singFun5 (f x))
 
 type SingFunction7 f = forall t. Sing t -> SingFunction6 (f @@ t)
-singFun7 :: Proxy f -> SingFunction7 f -> Sing f
-singFun7 _ f = SLambda (\x -> singFun6 Proxy (f x))
+singFun7 :: forall f. SingFunction7 f -> Sing f
+singFun7 f = SLambda (\x -> singFun6 (f x))
 
 type SingFunction8 f = forall t. Sing t -> SingFunction7 (f @@ t)
-singFun8 :: Proxy f -> SingFunction8 f -> Sing f
-singFun8 _ f = SLambda (\x -> singFun7 Proxy (f x))
+singFun8 :: forall f. SingFunction8 f -> Sing f
+singFun8 f = SLambda (\x -> singFun7 (f x))
 
 -- | This is the inverse of 'singFun1', and likewise for the other
 -- @unSingFun...@ functions.
-unSingFun1 :: Proxy f -> Sing f -> SingFunction1 f
-unSingFun1 _ sf = applySing sf
+unSingFun1 :: forall f. Sing f -> SingFunction1 f
+unSingFun1 sf = applySing sf
 
-unSingFun2 :: Proxy f -> Sing f -> SingFunction2 f
-unSingFun2 _ sf x = unSingFun1 Proxy (sf `applySing` x)
+unSingFun2 :: forall f. Sing f -> SingFunction2 f
+unSingFun2 sf x = unSingFun1 (sf `applySing` x)
 
-unSingFun3 :: Proxy f -> Sing f -> SingFunction3 f
-unSingFun3 _ sf x = unSingFun2 Proxy (sf `applySing` x)
+unSingFun3 :: forall f. Sing f -> SingFunction3 f
+unSingFun3 sf x = unSingFun2 (sf `applySing` x)
 
-unSingFun4 :: Proxy f -> Sing f -> SingFunction4 f
-unSingFun4 _ sf x = unSingFun3 Proxy (sf `applySing` x)
+unSingFun4 :: forall f. Sing f -> SingFunction4 f
+unSingFun4 sf x = unSingFun3 (sf `applySing` x)
 
-unSingFun5 :: Proxy f -> Sing f -> SingFunction5 f
-unSingFun5 _ sf x = unSingFun4 Proxy (sf `applySing` x)
+unSingFun5 :: forall f. Sing f -> SingFunction5 f
+unSingFun5 sf x = unSingFun4 (sf `applySing` x)
 
-unSingFun6 :: Proxy f -> Sing f -> SingFunction6 f
-unSingFun6 _ sf x = unSingFun5 Proxy (sf `applySing` x)
+unSingFun6 :: forall f. Sing f -> SingFunction6 f
+unSingFun6 sf x = unSingFun5 (sf `applySing` x)
 
-unSingFun7 :: Proxy f -> Sing f -> SingFunction7 f
-unSingFun7 _ sf x = unSingFun6 Proxy (sf `applySing` x)
+unSingFun7 :: forall f. Sing f -> SingFunction7 f
+unSingFun7 sf x = unSingFun6 (sf `applySing` x)
 
-unSingFun8 :: Proxy f -> Sing f -> SingFunction8 f
-unSingFun8 _ sf x = unSingFun7 Proxy (sf `applySing` x)
+unSingFun8 :: forall f. Sing f -> SingFunction8 f
+unSingFun8 sf x = unSingFun7 (sf `applySing` x)
 
 ----------------------------------------------------------------------
 ---- Convenience -----------------------------------------------------

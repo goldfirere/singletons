@@ -125,7 +125,7 @@ wrapSingFun n ty =
                            7 -> 'singFun7
                            _ -> error "No support for functions of arity > 7."
   in
-  (wrap_fun `DAppE` proxyFor ty `DAppE`)
+  (wrap_fun `DAppTypeE` ty `DAppE`)
 
 wrapUnSingFun :: Int -> DType -> DExp -> DExp
 wrapUnSingFun 0 _  = id
@@ -140,7 +140,7 @@ wrapUnSingFun n ty =
                              7 -> 'unSingFun7
                              _ -> error "No support for functions of arity > 7."
   in
-  (unwrap_fun `DAppE` proxyFor ty `DAppE`)
+  (unwrap_fun `DAppTypeE` ty `DAppE`)
 
 singM :: DsMonad q => [Dec] -> SgM a -> q (a, [DDec])
 singM locals (SgM rdr) = do
@@ -153,8 +153,3 @@ singDecsM :: DsMonad q => [Dec] -> SgM [DDec] -> q [DDec]
 singDecsM locals thing = do
   (decs1, decs2) <- singM locals thing
   return $ decs1 ++ decs2
-
--- Temporary function until support for -XTypeApplications is
--- implemented in TH-desugar.
-proxyFor :: DType -> DExp
-proxyFor ty = DSigE (DConE 'Proxy) (DAppT (DConT ''Proxy) ty)

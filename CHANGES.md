@@ -31,6 +31,9 @@ and `KnownSymbol`.
 
 * `Show` instances for `SNat` and `SSymbol`, thanks to @cumber.
 
+* The `singFun` and `unSingFun` functions no longer use proxies, preferring
+  `TypeApplications`.
+
 2.2
 ---
 * With `TypeInType`, we no longer kind `KProxy`. @int-index has very helpfully
