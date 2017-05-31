@@ -99,6 +99,9 @@ partitionDec (DInstanceD _ cxt ty decs) = do
     split_app_tys acc (DSigT t _)   = split_app_tys acc t
     split_app_tys _ _ = fail $ "Illegal instance head: " ++ show ty
 partitionDec (DRoleAnnotD {}) = return mempty  -- ignore these
+partitionDec (DTySynD {})     = return mempty  -- ignore type synonyms;
+                                               -- promotion is a no-op, and
+                                               -- singling expands all syns
 partitionDec dec =
   fail $ "Declaration cannot be promoted: " ++ pprint (decToTH dec)
 
