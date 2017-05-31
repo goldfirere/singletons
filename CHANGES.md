@@ -27,6 +27,10 @@ and `KnownSymbol`.
 
 * Better type inference support around constraints, as tracked in Issue #176.
 
+* Type synonym definitions are now ignored, as they should be.
+
+* `Show` instances for `SNat` and `SSymbol`, thanks to @cumber.
+
 2.2
 ---
 * With `TypeInType`, we no longer kind `KProxy`. @int-index has very helpfully
