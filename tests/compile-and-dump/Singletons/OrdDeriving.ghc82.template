@@ -788,61 +788,29 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                  -> GHC.Types.Type) t1 :: TyFun Nat Ordering
                                                                           -> GHC.Types.Type) t2 :: Ordering)
       sCompare SZero SZero
-        = let
-            lambda ::
-              (t1 ~ ZeroSym0, t2 ~ ZeroSym0) =>
-              Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              = (applySing
-                   ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
-                  SNil
-          in lambda
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            SNil
       sCompare
-        (SSucc sA_0123456789876543210)
-        (SSucc sB_0123456789876543210)
-        = let
-            lambda ::
-              forall a_0123456789876543210 b_0123456789876543210.
-              (t1 ~ Apply SuccSym0 a_0123456789876543210,
-               t2 ~ Apply SuccSym0 b_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing b_0123456789876543210
-                 -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda a_0123456789876543210 b_0123456789876543210
-              = (applySing
+        (SSucc (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SSucc (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                    ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
-                  ((applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                         ((applySing
-                             ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                a_0123456789876543210))
-                            b_0123456789876543210)))
-                     SNil)
-          in (lambda sA_0123456789876543210) sB_0123456789876543210
-      sCompare SZero (SSucc _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ ZeroSym0, t2 ~ Apply SuccSym0 _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SLT
-          in lambda _s_z_0123456789876543210
-      sCompare (SSucc _s_z_0123456789876543210) SZero
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ Apply SuccSym0 _z_0123456789876543210, t2 ~ ZeroSym0) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SGT
-          in lambda _s_z_0123456789876543210
+                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               SNil)
+      sCompare SZero (SSucc _) = SLT
+      sCompare (SSucc _) SZero = SGT
     instance (SOrd a, SOrd b, SOrd c, SOrd d) =>
              SOrd (Foo a b c d) where
       sCompare ::
@@ -854,1913 +822,269 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                  -> GHC.Types.Type) t1 :: TyFun (Foo a b c d) Ordering
                                                                           -> GHC.Types.Type) t2 :: Ordering)
       sCompare
-        (SA sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210)
-        (SA sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210)
-        = let
-            lambda ::
-              forall a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ASym0 a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ASym0 b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing a_0123456789876543210
-                    -> Sing a_0123456789876543210
-                       -> Sing b_0123456789876543210
-                          -> Sing b_0123456789876543210
-                             -> Sing b_0123456789876543210
-                                -> Sing b_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              = (applySing
+        (SA (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SA (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                    ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
+                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
                   ((applySing
                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                          ((applySing
                              ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                a_0123456789876543210))
-                            b_0123456789876543210)))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
                      ((applySing
                          ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                             ((applySing
                                 ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                   a_0123456789876543210))
-                               b_0123456789876543210)))
-                        ((applySing
-                            ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                               ((applySing
-                                   ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                      a_0123456789876543210))
-                                  b_0123456789876543210)))
-                           ((applySing
-                               ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                                  ((applySing
-                                      ((applySing
-                                          ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                         a_0123456789876543210))
-                                     b_0123456789876543210)))
-                              SNil))))
-          in
-            (((((((lambda sA_0123456789876543210) sA_0123456789876543210)
-                   sA_0123456789876543210)
-                  sA_0123456789876543210)
-                 sB_0123456789876543210)
-                sB_0123456789876543210)
-               sB_0123456789876543210)
-              sB_0123456789876543210
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
       sCompare
-        (SB sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210)
-        (SB sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210)
-        = let
-            lambda ::
-              forall a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply BSym0 a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply BSym0 b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing a_0123456789876543210
-                    -> Sing a_0123456789876543210
-                       -> Sing b_0123456789876543210
-                          -> Sing b_0123456789876543210
-                             -> Sing b_0123456789876543210
-                                -> Sing b_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              = (applySing
+        (SB (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SB (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                    ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
+                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
                   ((applySing
                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                          ((applySing
                              ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                a_0123456789876543210))
-                            b_0123456789876543210)))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
                      ((applySing
                          ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                             ((applySing
                                 ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                   a_0123456789876543210))
-                               b_0123456789876543210)))
-                        ((applySing
-                            ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                               ((applySing
-                                   ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                      a_0123456789876543210))
-                                  b_0123456789876543210)))
-                           ((applySing
-                               ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                                  ((applySing
-                                      ((applySing
-                                          ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                         a_0123456789876543210))
-                                     b_0123456789876543210)))
-                              SNil))))
-          in
-            (((((((lambda sA_0123456789876543210) sA_0123456789876543210)
-                   sA_0123456789876543210)
-                  sA_0123456789876543210)
-                 sB_0123456789876543210)
-                sB_0123456789876543210)
-               sB_0123456789876543210)
-              sB_0123456789876543210
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
       sCompare
-        (SC sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210)
-        (SC sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210)
-        = let
-            lambda ::
-              forall a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply CSym0 a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply CSym0 b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing a_0123456789876543210
-                    -> Sing a_0123456789876543210
-                       -> Sing b_0123456789876543210
-                          -> Sing b_0123456789876543210
-                             -> Sing b_0123456789876543210
-                                -> Sing b_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              = (applySing
+        (SC (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SC (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                    ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
+                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
                   ((applySing
                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                          ((applySing
                              ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                a_0123456789876543210))
-                            b_0123456789876543210)))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
                      ((applySing
                          ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                             ((applySing
                                 ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                   a_0123456789876543210))
-                               b_0123456789876543210)))
-                        ((applySing
-                            ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                               ((applySing
-                                   ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                      a_0123456789876543210))
-                                  b_0123456789876543210)))
-                           ((applySing
-                               ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                                  ((applySing
-                                      ((applySing
-                                          ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                         a_0123456789876543210))
-                                     b_0123456789876543210)))
-                              SNil))))
-          in
-            (((((((lambda sA_0123456789876543210) sA_0123456789876543210)
-                   sA_0123456789876543210)
-                  sA_0123456789876543210)
-                 sB_0123456789876543210)
-                sB_0123456789876543210)
-               sB_0123456789876543210)
-              sB_0123456789876543210
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
       sCompare
-        (SD sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210)
-        (SD sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210)
-        = let
-            lambda ::
-              forall a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply DSym0 a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply DSym0 b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing a_0123456789876543210
-                    -> Sing a_0123456789876543210
-                       -> Sing b_0123456789876543210
-                          -> Sing b_0123456789876543210
-                             -> Sing b_0123456789876543210
-                                -> Sing b_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              = (applySing
+        (SD (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SD (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                    ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
+                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
                   ((applySing
                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                          ((applySing
                              ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                a_0123456789876543210))
-                            b_0123456789876543210)))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
                      ((applySing
                          ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                             ((applySing
                                 ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                   a_0123456789876543210))
-                               b_0123456789876543210)))
-                        ((applySing
-                            ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                               ((applySing
-                                   ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                      a_0123456789876543210))
-                                  b_0123456789876543210)))
-                           ((applySing
-                               ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                                  ((applySing
-                                      ((applySing
-                                          ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                         a_0123456789876543210))
-                                     b_0123456789876543210)))
-                              SNil))))
-          in
-            (((((((lambda sA_0123456789876543210) sA_0123456789876543210)
-                   sA_0123456789876543210)
-                  sA_0123456789876543210)
-                 sB_0123456789876543210)
-                sB_0123456789876543210)
-               sB_0123456789876543210)
-              sB_0123456789876543210
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
       sCompare
-        (SE sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210)
-        (SE sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210)
-        = let
-            lambda ::
-              forall a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ESym0 a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ESym0 b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing a_0123456789876543210
-                    -> Sing a_0123456789876543210
-                       -> Sing b_0123456789876543210
-                          -> Sing b_0123456789876543210
-                             -> Sing b_0123456789876543210
-                                -> Sing b_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              = (applySing
+        (SE (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SE (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                    ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
+                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
                   ((applySing
                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                          ((applySing
                              ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                a_0123456789876543210))
-                            b_0123456789876543210)))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
                      ((applySing
                          ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                             ((applySing
                                 ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                   a_0123456789876543210))
-                               b_0123456789876543210)))
-                        ((applySing
-                            ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                               ((applySing
-                                   ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                      a_0123456789876543210))
-                                  b_0123456789876543210)))
-                           ((applySing
-                               ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                                  ((applySing
-                                      ((applySing
-                                          ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                         a_0123456789876543210))
-                                     b_0123456789876543210)))
-                              SNil))))
-          in
-            (((((((lambda sA_0123456789876543210) sA_0123456789876543210)
-                   sA_0123456789876543210)
-                  sA_0123456789876543210)
-                 sB_0123456789876543210)
-                sB_0123456789876543210)
-               sB_0123456789876543210)
-              sB_0123456789876543210
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
       sCompare
-        (SF sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210
-            sA_0123456789876543210)
-        (SF sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210
-            sB_0123456789876543210)
-        = let
-            lambda ::
-              forall a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply FSym0 a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply FSym0 b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) b_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing a_0123456789876543210
-                    -> Sing a_0123456789876543210
-                       -> Sing b_0123456789876543210
-                          -> Sing b_0123456789876543210
-                             -> Sing b_0123456789876543210
-                                -> Sing b_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              = (applySing
+        (SF (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SF (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                    ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
+                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
                   ((applySing
                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                          ((applySing
                              ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                a_0123456789876543210))
-                            b_0123456789876543210)))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
                      ((applySing
                          ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                             ((applySing
                                 ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                   a_0123456789876543210))
-                               b_0123456789876543210)))
-                        ((applySing
-                            ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                               ((applySing
-                                   ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                      a_0123456789876543210))
-                                  b_0123456789876543210)))
-                           ((applySing
-                               ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                                  ((applySing
-                                      ((applySing
-                                          ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                         a_0123456789876543210))
-                                     b_0123456789876543210)))
-                              SNil))))
-          in
-            (((((((lambda sA_0123456789876543210) sA_0123456789876543210)
-                   sA_0123456789876543210)
-                  sA_0123456789876543210)
-                 sB_0123456789876543210)
-                sB_0123456789876543210)
-               sB_0123456789876543210)
-              sB_0123456789876543210
-      sCompare
-        (SA _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SB _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SA _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SC _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SA _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SD _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SA _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SE _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SA _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SF _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SB _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SA _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SB _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SC _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SB _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SD _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SB _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SE _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SB _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SF _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SC _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SA _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SC _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SB _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SC _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SD _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SC _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SE _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SC _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SF _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SD _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SA _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SD _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SB _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SD _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SC _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SD _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SE _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SD _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SF _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SE _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SA _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SE _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SB _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SE _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SC _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SE _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SD _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SE _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SF _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SF _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SA _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ASym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SF _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SB _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply BSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SF _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SC _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply CSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SF _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SD _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply DSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SF _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        (SE _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210
-            _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply (Apply (Apply FSym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply (Apply (Apply (Apply ESym0 _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing _z_0123456789876543210
-                       -> Sing _z_0123456789876543210
-                          -> Sing _z_0123456789876543210
-                             -> Sing _z_0123456789876543210
-                                -> Sing _z_0123456789876543210
-                                   -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            (((((((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-                   _s_z_0123456789876543210)
-                  _s_z_0123456789876543210)
-                 _s_z_0123456789876543210)
-                _s_z_0123456789876543210)
-               _s_z_0123456789876543210)
-              _s_z_0123456789876543210
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
+      sCompare (SA _ _ _ _) (SB _ _ _ _) = SLT
+      sCompare (SA _ _ _ _) (SC _ _ _ _) = SLT
+      sCompare (SA _ _ _ _) (SD _ _ _ _) = SLT
+      sCompare (SA _ _ _ _) (SE _ _ _ _) = SLT
+      sCompare (SA _ _ _ _) (SF _ _ _ _) = SLT
+      sCompare (SB _ _ _ _) (SA _ _ _ _) = SGT
+      sCompare (SB _ _ _ _) (SC _ _ _ _) = SLT
+      sCompare (SB _ _ _ _) (SD _ _ _ _) = SLT
+      sCompare (SB _ _ _ _) (SE _ _ _ _) = SLT
+      sCompare (SB _ _ _ _) (SF _ _ _ _) = SLT
+      sCompare (SC _ _ _ _) (SA _ _ _ _) = SGT
+      sCompare (SC _ _ _ _) (SB _ _ _ _) = SGT
+      sCompare (SC _ _ _ _) (SD _ _ _ _) = SLT
+      sCompare (SC _ _ _ _) (SE _ _ _ _) = SLT
+      sCompare (SC _ _ _ _) (SF _ _ _ _) = SLT
+      sCompare (SD _ _ _ _) (SA _ _ _ _) = SGT
+      sCompare (SD _ _ _ _) (SB _ _ _ _) = SGT
+      sCompare (SD _ _ _ _) (SC _ _ _ _) = SGT
+      sCompare (SD _ _ _ _) (SE _ _ _ _) = SLT
+      sCompare (SD _ _ _ _) (SF _ _ _ _) = SLT
+      sCompare (SE _ _ _ _) (SA _ _ _ _) = SGT
+      sCompare (SE _ _ _ _) (SB _ _ _ _) = SGT
+      sCompare (SE _ _ _ _) (SC _ _ _ _) = SGT
+      sCompare (SE _ _ _ _) (SD _ _ _ _) = SGT
+      sCompare (SE _ _ _ _) (SF _ _ _ _) = SLT
+      sCompare (SF _ _ _ _) (SA _ _ _ _) = SGT
+      sCompare (SF _ _ _ _) (SB _ _ _ _) = SGT
+      sCompare (SF _ _ _ _) (SC _ _ _ _) = SGT
+      sCompare (SF _ _ _ _) (SD _ _ _ _) = SGT
+      sCompare (SF _ _ _ _) (SE _ _ _ _) = SGT
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where

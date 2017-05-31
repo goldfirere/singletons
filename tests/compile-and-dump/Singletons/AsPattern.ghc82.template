@@ -247,164 +247,89 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       Sing t -> Sing (Apply MaybePlusSym0 t :: Maybe Nat)
     sFoo SNil
       = let
-          lambda :: t ~ '[] => Sing (Apply FooSym0 t :: [Nat])
-          lambda
-            = let
-                sP :: Sing Let0123456789876543210PSym0
-                sP = SNil
-              in sP
-        in lambda
-    sFoo (SCons sWild_0123456789876543210 SNil)
-      = let
-          lambda ::
-            forall wild_0123456789876543210.
-            t ~ Apply (Apply (:$) wild_0123456789876543210) '[] =>
-            Sing wild_0123456789876543210 -> Sing (Apply FooSym0 t :: [Nat])
-          lambda wild_0123456789876543210
-            = let
-                sP :: Sing (Let0123456789876543210PSym1 wild_0123456789876543210)
-                sP
-                  = (applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                          wild_0123456789876543210))
-                      SNil
-              in sP
-        in lambda sWild_0123456789876543210
+          sP :: Sing Let0123456789876543210PSym0
+          sP = SNil
+        in sP
     sFoo
-      (SCons sWild_0123456789876543210
-             (SCons sWild_0123456789876543210 sWild_0123456789876543210))
+      (SCons (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
+             SNil)
       = let
-          lambda ::
-            forall wild_0123456789876543210
-                   wild_0123456789876543210
-                   wild_0123456789876543210.
-            t ~ Apply (Apply (:$) wild_0123456789876543210) (Apply (Apply (:$) wild_0123456789876543210) wild_0123456789876543210) =>
-            Sing wild_0123456789876543210
-            -> Sing wild_0123456789876543210
-               -> Sing wild_0123456789876543210 -> Sing (Apply FooSym0 t :: [Nat])
-          lambda
-            wild_0123456789876543210
-            wild_0123456789876543210
-            wild_0123456789876543210
-            = let
-                sP ::
-                  Sing (Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
-                sP
-                  = (applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                          wild_0123456789876543210))
-                      ((applySing
-                          ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                             wild_0123456789876543210))
-                         wild_0123456789876543210)
-              in sP
-        in
-          ((lambda sWild_0123456789876543210) sWild_0123456789876543210)
-            sWild_0123456789876543210
-    sTup (STuple2 sWild_0123456789876543210 sWild_0123456789876543210)
+          sP :: Sing (Let0123456789876543210PSym1 wild_0123456789876543210)
+          sP
+            = (applySing
+                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                    sWild_0123456789876543210))
+                SNil
+        in sP
+    sFoo
+      (SCons (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
+             (SCons (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
+                    (sWild_0123456789876543210 :: Sing wild_0123456789876543210)))
       = let
-          lambda ::
-            forall wild_0123456789876543210 wild_0123456789876543210.
-            t ~ Apply (Apply Tuple2Sym0 wild_0123456789876543210) wild_0123456789876543210 =>
-            Sing wild_0123456789876543210
-            -> Sing wild_0123456789876543210
-               -> Sing (Apply TupSym0 t :: (Nat, Nat))
-          lambda wild_0123456789876543210 wild_0123456789876543210
-            = let
-                sP ::
-                  Sing (Let0123456789876543210PSym2 wild_0123456789876543210 wild_0123456789876543210)
-                sP
-                  = (applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2))
-                          wild_0123456789876543210))
-                      wild_0123456789876543210
-              in sP
-        in (lambda sWild_0123456789876543210) sWild_0123456789876543210
+          sP ::
+            Sing (Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
+          sP
+            = (applySing
+                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                    sWild_0123456789876543210))
+                ((applySing
+                    ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                       sWild_0123456789876543210))
+                   sWild_0123456789876543210)
+        in sP
+    sTup
+      (STuple2 (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
+               (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
+      = let
+          sP ::
+            Sing (Let0123456789876543210PSym2 wild_0123456789876543210 wild_0123456789876543210)
+          sP
+            = (applySing
+                 ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2))
+                    sWild_0123456789876543210))
+                sWild_0123456789876543210
+        in sP
     sBaz_ SNothing
       = let
-          lambda :: t ~ NothingSym0 => Sing (Apply Baz_Sym0 t :: Maybe Baz)
-          lambda
-            = let
-                sP :: Sing Let0123456789876543210PSym0
-                sP = SNothing
-              in sP
-        in lambda
+          sP :: Sing Let0123456789876543210PSym0
+          sP = SNothing
+        in sP
     sBaz_
-      (SJust (SBaz sWild_0123456789876543210
-                   sWild_0123456789876543210
-                   sWild_0123456789876543210))
+      (SJust (SBaz (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
+                   (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
+                   (sWild_0123456789876543210 :: Sing wild_0123456789876543210)))
       = let
-          lambda ::
-            forall wild_0123456789876543210
-                   wild_0123456789876543210
-                   wild_0123456789876543210.
-            t ~ Apply JustSym0 (Apply (Apply (Apply BazSym0 wild_0123456789876543210) wild_0123456789876543210) wild_0123456789876543210) =>
-            Sing wild_0123456789876543210
-            -> Sing wild_0123456789876543210
-               -> Sing wild_0123456789876543210
-                  -> Sing (Apply Baz_Sym0 t :: Maybe Baz)
-          lambda
-            wild_0123456789876543210
-            wild_0123456789876543210
-            wild_0123456789876543210
-            = let
-                sP ::
-                  Sing (Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
-                sP
-                  = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
-                      ((applySing
-                          ((applySing
-                              ((applySing ((singFun3 (Proxy :: Proxy BazSym0)) SBaz))
-                                 wild_0123456789876543210))
-                             wild_0123456789876543210))
-                         wild_0123456789876543210)
-              in sP
-        in
-          ((lambda sWild_0123456789876543210) sWild_0123456789876543210)
-            sWild_0123456789876543210
-    sBar (SJust sWild_0123456789876543210)
-      = let
-          lambda ::
-            forall wild_0123456789876543210.
-            t ~ Apply JustSym0 wild_0123456789876543210 =>
-            Sing wild_0123456789876543210
-            -> Sing (Apply BarSym0 t :: Maybe Nat)
-          lambda wild_0123456789876543210
-            = let
-                sX :: Sing (Let0123456789876543210XSym1 wild_0123456789876543210)
-                sX
-                  = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
-                      wild_0123456789876543210
-              in sX
-        in lambda sWild_0123456789876543210
-    sBar SNothing
-      = let
-          lambda :: t ~ NothingSym0 => Sing (Apply BarSym0 t :: Maybe Nat)
-          lambda = SNothing
-        in lambda
-    sMaybePlus (SJust sN)
-      = let
-          lambda ::
-            forall n.
-            t ~ Apply JustSym0 n =>
-            Sing n -> Sing (Apply MaybePlusSym0 t :: Maybe Nat)
-          lambda n
+          sP ::
+            Sing (Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
+          sP
             = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
                 ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy PlusSym0)) sPlus))
-                       ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
-                   n)
-        in lambda sN
+                    ((applySing
+                        ((applySing ((singFun3 (Proxy :: Proxy BazSym0)) SBaz))
+                           sWild_0123456789876543210))
+                       sWild_0123456789876543210))
+                   sWild_0123456789876543210)
+        in sP
+    sBar
+      (SJust (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
+      = let
+          sX :: Sing (Let0123456789876543210XSym1 wild_0123456789876543210)
+          sX
+            = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
+                sWild_0123456789876543210
+        in sX
+    sBar SNothing = SNothing
+    sMaybePlus (SJust (sN :: Sing n))
+      = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
+          ((applySing
+              ((applySing ((singFun2 (Proxy :: Proxy PlusSym0)) sPlus))
+                 ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
+             sN)
     sMaybePlus SNothing
       = let
-          lambda ::
-            t ~ NothingSym0 => Sing (Apply MaybePlusSym0 t :: Maybe Nat)
-          lambda
-            = let
-                sP :: Sing Let0123456789876543210PSym0
-                sP = SNothing
-              in sP
-        in lambda
+          sP :: Sing Let0123456789876543210PSym0
+          sP = SNothing
+        in sP
     data instance Sing (z :: Baz)
       = forall (n :: Nat) (n :: Nat) (n :: Nat). z ~ Baz n n n =>
         SBaz (Sing (n :: Nat)) (Sing (n :: Nat)) (Sing (n :: Nat))

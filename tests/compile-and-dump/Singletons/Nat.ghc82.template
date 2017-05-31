@@ -73,38 +73,14 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     sPlus ::
       forall (t :: Nat) (t :: Nat).
       Sing t -> Sing t -> Sing (Apply (Apply PlusSym0 t) t :: Nat)
-    sPred SZero
-      = let
-          lambda :: t ~ ZeroSym0 => Sing (Apply PredSym0 t :: Nat)
-          lambda = SZero
-        in lambda
-    sPred (SSucc sN)
-      = let
-          lambda ::
-            forall n.
-            t ~ Apply SuccSym0 n => Sing n -> Sing (Apply PredSym0 t :: Nat)
-          lambda n = n
-        in lambda sN
-    sPlus SZero sM
-      = let
-          lambda ::
-            forall m.
-            (t ~ ZeroSym0, t ~ m) =>
-            Sing m -> Sing (Apply (Apply PlusSym0 t) t :: Nat)
-          lambda m = m
-        in lambda sM
-    sPlus (SSucc sN) sM
-      = let
-          lambda ::
-            forall n m.
-            (t ~ Apply SuccSym0 n, t ~ m) =>
-            Sing n -> Sing m -> Sing (Apply (Apply PlusSym0 t) t :: Nat)
-          lambda n m
-            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy PlusSym0)) sPlus)) n))
-                   m)
-        in (lambda sN) sM
+    sPred SZero = SZero
+    sPred (SSucc (sN :: Sing n)) = sN
+    sPlus SZero (sM :: Sing m) = sM
+    sPlus (SSucc (sN :: Sing n)) (sM :: Sing m)
+      = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+          ((applySing
+              ((applySing ((singFun2 (Proxy :: Proxy PlusSym0)) sPlus)) sN))
+             sM)
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))

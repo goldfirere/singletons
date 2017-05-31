@@ -122,165 +122,63 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         -> Sing (Apply (FromEnumSym0 :: TyFun [Bool] GHC.Types.Nat
                                         -> GHC.Types.Type) t :: GHC.Types.Nat)
       sSucc SNil
-        = let
-            lambda :: t ~ '[] => Sing (Apply SuccSym0 t :: [Bool])
-            lambda
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) STrue))
-                  SNil
-          in lambda
-      sSucc (SCons SFalse sAs)
-        = let
-            lambda ::
-              forall as.
-              t ~ Apply (Apply (:$) FalseSym0) as =>
-              Sing as -> Sing (Apply SuccSym0 t :: [Bool])
-            lambda as
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) STrue))
-                  as
-          in lambda sAs
-      sSucc (SCons STrue sAs)
-        = let
-            lambda ::
-              forall as.
-              t ~ Apply (Apply (:$) TrueSym0) as =>
-              Sing as -> Sing (Apply SuccSym0 t :: [Bool])
-            lambda as
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SFalse))
-                  ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) sSucc)) as)
-          in lambda sAs
-      sPred SNil
-        = let
-            lambda :: t ~ '[] => Sing (Apply PredSym0 t :: [Bool])
-            lambda = sError (sing :: Sing "pred 0")
-          in lambda
-      sPred (SCons SFalse sAs)
-        = let
-            lambda ::
-              forall as.
-              t ~ Apply (Apply (:$) FalseSym0) as =>
-              Sing as -> Sing (Apply PredSym0 t :: [Bool])
-            lambda as
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) STrue))
-                  ((applySing ((singFun1 (Proxy :: Proxy PredSym0)) sPred)) as)
-          in lambda sAs
-      sPred (SCons STrue sAs)
-        = let
-            lambda ::
-              forall as.
-              t ~ Apply (Apply (:$) TrueSym0) as =>
-              Sing as -> Sing (Apply PredSym0 t :: [Bool])
-            lambda as
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SFalse))
-                  as
-          in lambda sAs
-      sToEnum sArg_0123456789876543210
-        = let
-            lambda ::
-              forall arg_0123456789876543210.
-              t ~ arg_0123456789876543210 =>
-              Sing arg_0123456789876543210 -> Sing (Apply ToEnumSym0 t :: [Bool])
-            lambda arg_0123456789876543210
-              = case arg_0123456789876543210 of {
-                  sI
-                    -> let
-                         lambda ::
-                           forall i.
-                           i ~ arg_0123456789876543210 =>
-                           Sing i
-                           -> Sing (Case_0123456789876543210 arg_0123456789876543210 i :: [Bool])
-                         lambda i
-                           = case
-                                 (applySing
-                                    ((applySing ((singFun2 (Proxy :: Proxy (:<$))) (%:<))) i))
-                                   (sFromInteger (sing :: Sing 0))
-                             of
-                               STrue
-                                 -> let
-                                      lambda ::
-                                        TrueSym0 ~ Apply (Apply (:<$) i) (FromInteger 0) =>
-                                        Sing (Case_0123456789876543210 i arg_0123456789876543210 TrueSym0 :: [Bool])
-                                      lambda = sError (sing :: Sing "negative toEnum")
-                                    in lambda
-                               SFalse
-                                 -> let
-                                      lambda ::
-                                        FalseSym0 ~ Apply (Apply (:<$) i) (FromInteger 0) =>
-                                        Sing (Case_0123456789876543210 i arg_0123456789876543210 FalseSym0 :: [Bool])
-                                      lambda
-                                        = case
-                                              (applySing
-                                                 ((applySing
-                                                     ((singFun2 (Proxy :: Proxy (:==$))) (%:==)))
-                                                    i))
-                                                (sFromInteger (sing :: Sing 0))
-                                          of
-                                            STrue
-                                              -> let
-                                                   lambda ::
-                                                     TrueSym0 ~ Apply (Apply (:==$) i) (FromInteger 0) =>
-                                                     Sing (Case_0123456789876543210 i arg_0123456789876543210 TrueSym0 :: [Bool])
-                                                   lambda = SNil
-                                                 in lambda
-                                            SFalse
-                                              -> let
-                                                   lambda ::
-                                                     FalseSym0 ~ Apply (Apply (:==$) i) (FromInteger 0) =>
-                                                     Sing (Case_0123456789876543210 i arg_0123456789876543210 FalseSym0 :: [Bool])
-                                                   lambda
-                                                     = (applySing
-                                                          ((singFun1 (Proxy :: Proxy SuccSym0))
-                                                             sSucc))
-                                                         ((applySing
-                                                             ((singFun1 (Proxy :: Proxy ToEnumSym0))
-                                                                sToEnum))
-                                                            ((applySing
-                                                                ((singFun1
-                                                                    (Proxy :: Proxy PredSym0))
-                                                                   sPred))
-                                                               i))
-                                                 in lambda ::
-                                            Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (:==$) i) (FromInteger 0)) :: [Bool])
-                                    in lambda ::
-                               Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (:<$) i) (FromInteger 0)) :: [Bool])
-                       in lambda sI } ::
-                  Sing (Case_0123456789876543210 arg_0123456789876543210 arg_0123456789876543210 :: [Bool])
-          in lambda sArg_0123456789876543210
-      sFromEnum SNil
-        = let
-            lambda :: t ~ '[] => Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
-            lambda = sFromInteger (sing :: Sing 0)
-          in lambda
-      sFromEnum (SCons SFalse sAs)
-        = let
-            lambda ::
-              forall as.
-              t ~ Apply (Apply (:$) FalseSym0) as =>
-              Sing as -> Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
-            lambda as
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:*$))) (%:*)))
-                      (sFromInteger (sing :: Sing 2))))
-                  ((applySing ((singFun1 (Proxy :: Proxy FromEnumSym0)) sFromEnum))
-                     as)
-          in lambda sAs
-      sFromEnum (SCons STrue sAs)
-        = let
-            lambda ::
-              forall as.
-              t ~ Apply (Apply (:$) TrueSym0) as =>
-              Sing as -> Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
-            lambda as
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy (:+$))) (%:+)))
-                      (sFromInteger (sing :: Sing 1))))
-                  ((applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:*$))) (%:*)))
-                         (sFromInteger (sing :: Sing 2))))
-                     ((applySing ((singFun1 (Proxy :: Proxy FromEnumSym0)) sFromEnum))
-                        as))
-          in lambda sAs
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) STrue))
+            SNil
+      sSucc (SCons SFalse (sAs :: Sing as))
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) STrue))
+            sAs
+      sSucc (SCons STrue (sAs :: Sing as))
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SFalse))
+            ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) sSucc)) sAs)
+      sPred SNil = sError (sing :: Sing "pred 0")
+      sPred (SCons SFalse (sAs :: Sing as))
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) STrue))
+            ((applySing ((singFun1 (Proxy :: Proxy PredSym0)) sPred)) sAs)
+      sPred (SCons STrue (sAs :: Sing as))
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) SFalse))
+            sAs
+      sToEnum (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
+        = case sArg_0123456789876543210 of {
+            sI :: Sing i
+              -> case
+                     (applySing
+                        ((applySing ((singFun2 (Proxy :: Proxy (:<$))) (%:<))) sI))
+                       (sFromInteger (sing :: Sing 0))
+                 of
+                   STrue -> sError (sing :: Sing "negative toEnum")
+                   SFalse
+                     -> case
+                            (applySing
+                               ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sI))
+                              (sFromInteger (sing :: Sing 0))
+                        of
+                          STrue -> SNil
+                          SFalse
+                            -> (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) sSucc))
+                                 ((applySing ((singFun1 (Proxy :: Proxy ToEnumSym0)) sToEnum))
+                                    ((applySing ((singFun1 (Proxy :: Proxy PredSym0)) sPred))
+                                       sI)) ::
+                          Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (:==$) i) (FromInteger 0)) :: [Bool]) ::
+                   Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (:<$) i) (FromInteger 0)) :: [Bool]) } ::
+            Sing (Case_0123456789876543210 arg_0123456789876543210 arg_0123456789876543210 :: [Bool])
+      sFromEnum SNil = sFromInteger (sing :: Sing 0)
+      sFromEnum (SCons SFalse (sAs :: Sing as))
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy (:*$))) (%:*)))
+                (sFromInteger (sing :: Sing 2))))
+            ((applySing ((singFun1 (Proxy :: Proxy FromEnumSym0)) sFromEnum))
+               sAs)
+      sFromEnum (SCons STrue (sAs :: Sing as))
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy (:+$))) (%:+)))
+                (sFromInteger (sing :: Sing 1))))
+            ((applySing
+                ((applySing ((singFun2 (Proxy :: Proxy (:*$))) (%:*)))
+                   (sFromInteger (sing :: Sing 2))))
+               ((applySing ((singFun1 (Proxy :: Proxy FromEnumSym0)) sFromEnum))
+                  sAs))

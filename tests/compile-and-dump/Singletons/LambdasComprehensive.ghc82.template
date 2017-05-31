@@ -53,17 +53,14 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
            ((applySing ((singFun2 (Proxy :: Proxy MapSym0)) sMap))
               ((singFun1 (Proxy :: Proxy Lambda_0123456789876543210Sym0))
                  (\ sX
-                    -> let
-                         lambda ::
-                           forall x. Sing x -> Sing (Apply Lambda_0123456789876543210Sym0 x)
-                         lambda x
-                           = (applySing
-                                ((applySing
-                                    ((applySing ((singFun3 (Proxy :: Proxy Either_Sym0)) sEither_))
-                                       ((singFun1 (Proxy :: Proxy PredSym0)) sPred)))
-                                   ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)))
-                               x
-                       in lambda sX))))
+                    -> case sX of {
+                         _ :: Sing x
+                           -> (applySing
+                                 ((applySing
+                                     ((applySing ((singFun3 (Proxy :: Proxy Either_Sym0)) sEither_))
+                                        ((singFun1 (Proxy :: Proxy PredSym0)) sPred)))
+                                    ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)))
+                                sX }))))
           ((applySing
               ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                  ((applySing ((singFun1 (Proxy :: Proxy LeftSym0)) SLeft)) SZero)))

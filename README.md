@@ -1,4 +1,4 @@
-singletons 2.2
+singletons 2.3
 ==============
 
 [![Build Status](https://travis-ci.org/goldfirere/singletons.svg?branch=master)](https://travis-ci.org/goldfirere/singletons)
@@ -6,8 +6,8 @@ singletons 2.2
 This is the README file for the singletons library. This file contains all the
 documentation for the definitions and functions in the library.
 
-The singletons library was written by Richard Eisenberg, eir@cis.upenn.edu, and
-with significant contributions by Jan Stolarek, jan.stolarek@p.lodz.pl.  There
+The singletons library was written by Richard Eisenberg, <rae@cs.brynmawr.edu>, and
+with significant contributions by Jan Stolarek, <jan.stolarek@p.lodz.pl>.  There
 are two papers that describe the library. Original one, _Dependently typed
 programming with singletons_, is available
 [here](http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf) and will
@@ -16,6 +16,8 @@ paper, _Promoting Functions to Type Families in Haskell_, is available
 [here](http://www.cis.upenn.edu/~eir/papers/2014/promotion/promotion.pdf)
 and will be referenced in this documentation as the
 "promotion paper".
+
+Ryan Scott, <ryan.gl.scott@gmail.com>, is an active maintainer.
 
 Purpose of the singletons library
 ---------------------------------
@@ -583,10 +585,6 @@ Known bugs
 ----------
 
 * Record updates don't singletonize
-* In obscure scenarios, GHC "forgets" constraints on functions. This should
-  happen only with certain uses where the constraint is needed inside of a
-  `case` or lambda-expression. Having type inference on result types nearby
-  makes this more likely to bite.
 * Inference dependent on functional dependencies is unpredictably bad. The
   problem is that a use of an associated type family tied to a class with
   fundeps doesn't provoke the fundep to kick in. This is GHC's problem, in

@@ -28,13 +28,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
       UnBox (FBox a) = a
     sUnBox ::
       forall (t :: Box a). Sing t -> Sing (Apply UnBoxSym0 t :: a)
-    sUnBox (SFBox sA)
-      = let
-          lambda ::
-            forall a.
-            t ~ Apply FBoxSym0 a => Sing a -> Sing (Apply UnBoxSym0 t :: a)
-          lambda a = a
-        in lambda sA
+    sUnBox (SFBox (sA :: Sing a)) = sA
     data instance Sing (z :: Box a)
       = forall (n :: a). z ~ FBox n => SFBox (Sing (n :: a))
     type SBox = (Sing :: Box a -> GHC.Types.Type)

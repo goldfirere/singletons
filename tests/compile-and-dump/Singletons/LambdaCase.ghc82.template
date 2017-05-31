@@ -63,22 +63,13 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
         Lambda_0123456789876543210Sym0KindInference
     type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
-    type family Case_0123456789876543210 d x_0123456789876543210 _z_0123456789876543210 t where
-      Case_0123456789876543210 d x_0123456789876543210 _z_0123456789876543210 (Just y) = y
-      Case_0123456789876543210 d x_0123456789876543210 _z_0123456789876543210 Nothing = d
-    type family Lambda_0123456789876543210 d _z_0123456789876543210 t where
-      Lambda_0123456789876543210 d _z_0123456789876543210 x_0123456789876543210 = Case_0123456789876543210 d x_0123456789876543210 _z_0123456789876543210 x_0123456789876543210
-    type Lambda_0123456789876543210Sym3 t t t =
-        Lambda_0123456789876543210 t t t
-    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym2 where
-      suppressUnusedWarnings _
-        = snd
-            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym2KindInference)
-               GHC.Tuple.())
-    data Lambda_0123456789876543210Sym2 l l l
-      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym2 l l) arg) (Lambda_0123456789876543210Sym3 l l arg) =>
-        Lambda_0123456789876543210Sym2KindInference
-    type instance Apply (Lambda_0123456789876543210Sym2 l l) l = Lambda_0123456789876543210 l l l
+    type family Case_0123456789876543210 d x_0123456789876543210 t where
+      Case_0123456789876543210 d x_0123456789876543210 (Just y) = y
+      Case_0123456789876543210 d x_0123456789876543210 Nothing = d
+    type family Lambda_0123456789876543210 d t where
+      Lambda_0123456789876543210 d x_0123456789876543210 = Case_0123456789876543210 d x_0123456789876543210 x_0123456789876543210
+    type Lambda_0123456789876543210Sym2 t t =
+        Lambda_0123456789876543210 t t
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
       suppressUnusedWarnings _
         = snd
@@ -87,7 +78,7 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
     data Lambda_0123456789876543210Sym1 l l
       = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
         Lambda_0123456789876543210Sym1KindInference
-    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210Sym2 l l
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210 l l
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings _
         = snd
@@ -185,7 +176,7 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
     type family Foo3 (a :: a) (a :: b) :: a where
       Foo3 a b = Apply (Apply (Apply Lambda_0123456789876543210Sym0 a) b) (Apply (Apply Tuple2Sym0 a) b)
     type family Foo2 (a :: a) (a :: Maybe a) :: a where
-      Foo2 d _z_0123456789876543210 = Apply (Apply (Apply Lambda_0123456789876543210Sym0 d) _z_0123456789876543210) (Apply JustSym0 d)
+      Foo2 d _z_0123456789876543210 = Apply (Apply Lambda_0123456789876543210Sym0 d) (Apply JustSym0 d)
     type family Foo1 (a :: a) (a :: Maybe a) :: a where
       Foo1 d x = Apply (Apply (Apply Lambda_0123456789876543210Sym0 d) x) x
     sFoo3 ::
@@ -197,118 +188,42 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
     sFoo1 ::
       forall (t :: a) (t :: Maybe a).
       Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a)
-    sFoo3 sA sB
-      = let
-          lambda ::
-            forall a b.
-            (t ~ a, t ~ b) =>
-            Sing a -> Sing b -> Sing (Apply (Apply Foo3Sym0 t) t :: a)
-          lambda a b
-            = (applySing
-                 ((singFun1
-                     (Proxy ::
-                        Proxy (Apply (Apply Lambda_0123456789876543210Sym0 a) b)))
-                    (\ sX_0123456789876543210
-                       -> let
-                            lambda ::
-                              forall x_0123456789876543210.
-                              Sing x_0123456789876543210
-                              -> Sing (Apply (Apply (Apply Lambda_0123456789876543210Sym0 a) b) x_0123456789876543210)
-                            lambda x_0123456789876543210
-                              = case x_0123456789876543210 of {
-                                  STuple2 sP _s_z_0123456789876543210
-                                    -> let
-                                         lambda ::
-                                           forall p _z_0123456789876543210.
-                                           Apply (Apply Tuple2Sym0 p) _z_0123456789876543210 ~ x_0123456789876543210 =>
-                                           Sing p
-                                           -> Sing _z_0123456789876543210
-                                              -> Sing (Case_0123456789876543210 a b x_0123456789876543210 (Apply (Apply Tuple2Sym0 p) _z_0123456789876543210))
-                                         lambda p _z_0123456789876543210 = p
-                                       in (lambda sP) _s_z_0123456789876543210 } ::
-                                  Sing (Case_0123456789876543210 a b x_0123456789876543210 x_0123456789876543210)
-                          in lambda sX_0123456789876543210)))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2)) a))
-                   b)
-        in (lambda sA) sB
-    sFoo2 sD _s_z_0123456789876543210
-      = let
-          lambda ::
-            forall d _z_0123456789876543210.
-            (t ~ d, t ~ _z_0123456789876543210) =>
-            Sing d
-            -> Sing _z_0123456789876543210
-               -> Sing (Apply (Apply Foo2Sym0 t) t :: a)
-          lambda d _z_0123456789876543210
-            = (applySing
-                 ((singFun1
-                     (Proxy ::
-                        Proxy (Apply (Apply Lambda_0123456789876543210Sym0 d) _z_0123456789876543210)))
-                    (\ sX_0123456789876543210
-                       -> let
-                            lambda ::
-                              forall x_0123456789876543210.
-                              Sing x_0123456789876543210
-                              -> Sing (Apply (Apply (Apply Lambda_0123456789876543210Sym0 d) _z_0123456789876543210) x_0123456789876543210)
-                            lambda x_0123456789876543210
-                              = case x_0123456789876543210 of
-                                  SJust sY
-                                    -> let
-                                         lambda ::
-                                           forall y.
-                                           Apply JustSym0 y ~ x_0123456789876543210 =>
-                                           Sing y
-                                           -> Sing (Case_0123456789876543210 d x_0123456789876543210 _z_0123456789876543210 (Apply JustSym0 y))
-                                         lambda y = y
-                                       in lambda sY
-                                  SNothing
-                                    -> let
-                                         lambda ::
-                                           NothingSym0 ~ x_0123456789876543210 =>
-                                           Sing (Case_0123456789876543210 d x_0123456789876543210 _z_0123456789876543210 NothingSym0)
-                                         lambda = d
-                                       in lambda ::
-                                  Sing (Case_0123456789876543210 d x_0123456789876543210 _z_0123456789876543210 x_0123456789876543210)
-                          in lambda sX_0123456789876543210)))
-                ((applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust)) d)
-        in (lambda sD) _s_z_0123456789876543210
-    sFoo1 sD sX
-      = let
-          lambda ::
-            forall d x.
-            (t ~ d, t ~ x) =>
-            Sing d -> Sing x -> Sing (Apply (Apply Foo1Sym0 t) t :: a)
-          lambda d x
-            = (applySing
-                 ((singFun1
-                     (Proxy ::
-                        Proxy (Apply (Apply Lambda_0123456789876543210Sym0 d) x)))
-                    (\ sX_0123456789876543210
-                       -> let
-                            lambda ::
-                              forall x_0123456789876543210.
-                              Sing x_0123456789876543210
-                              -> Sing (Apply (Apply (Apply Lambda_0123456789876543210Sym0 d) x) x_0123456789876543210)
-                            lambda x_0123456789876543210
-                              = case x_0123456789876543210 of
-                                  SJust sY
-                                    -> let
-                                         lambda ::
-                                           forall y.
-                                           Apply JustSym0 y ~ x_0123456789876543210 =>
-                                           Sing y
-                                           -> Sing (Case_0123456789876543210 d x x_0123456789876543210 (Apply JustSym0 y))
-                                         lambda y = y
-                                       in lambda sY
-                                  SNothing
-                                    -> let
-                                         lambda ::
-                                           NothingSym0 ~ x_0123456789876543210 =>
-                                           Sing (Case_0123456789876543210 d x x_0123456789876543210 NothingSym0)
-                                         lambda = d
-                                       in lambda ::
-                                  Sing (Case_0123456789876543210 d x x_0123456789876543210 x_0123456789876543210)
-                          in lambda sX_0123456789876543210)))
-                x
-        in (lambda sD) sX
+    sFoo3 (sA :: Sing a) (sB :: Sing b)
+      = (applySing
+           ((singFun1
+               (Proxy ::
+                  Proxy (Apply (Apply Lambda_0123456789876543210Sym0 a) b)))
+              (\ sX_0123456789876543210
+                 -> case sX_0123456789876543210 of {
+                      _ :: Sing x_0123456789876543210
+                        -> case sX_0123456789876543210 of {
+                             STuple2 (sP :: Sing p) _ -> sP } ::
+                             Sing (Case_0123456789876543210 a b x_0123456789876543210 x_0123456789876543210) })))
+          ((applySing
+              ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2)) sA))
+             sB)
+    sFoo2 (sD :: Sing d) _
+      = (applySing
+           ((singFun1
+               (Proxy :: Proxy (Apply Lambda_0123456789876543210Sym0 d)))
+              (\ sX_0123456789876543210
+                 -> case sX_0123456789876543210 of {
+                      _ :: Sing x_0123456789876543210
+                        -> case sX_0123456789876543210 of
+                             SJust (sY :: Sing y) -> sY
+                             SNothing -> sD ::
+                             Sing (Case_0123456789876543210 d x_0123456789876543210 x_0123456789876543210) })))
+          ((applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust)) sD)
+    sFoo1 (sD :: Sing d) (sX :: Sing x)
+      = (applySing
+           ((singFun1
+               (Proxy ::
+                  Proxy (Apply (Apply Lambda_0123456789876543210Sym0 d) x)))
+              (\ sX_0123456789876543210
+                 -> case sX_0123456789876543210 of {
+                      _ :: Sing x_0123456789876543210
+                        -> case sX_0123456789876543210 of
+                             SJust (sY :: Sing y) -> sY
+                             SNothing -> sD ::
+                             Sing (Case_0123456789876543210 d x x_0123456789876543210 x_0123456789876543210) })))
+          sX

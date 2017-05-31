@@ -84,93 +84,34 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
         Sing t
         -> Sing (Apply (FromEnumSym0 :: TyFun Foo GHC.Types.Nat
                                         -> GHC.Types.Type) t :: GHC.Types.Nat)
-      sToEnum sN
-        = let
-            lambda ::
-              forall n. t ~ n => Sing n -> Sing (Apply ToEnumSym0 t :: Foo)
-            lambda n
-              = case
-                    (applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) n))
-                      (sFromInteger (sing :: Sing 0))
-                of
-                  STrue
-                    -> let
-                         lambda ::
-                           TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
-                           Sing (Case_0123456789876543210 n TrueSym0 :: Foo)
-                         lambda = SBar
-                       in lambda
-                  SFalse
-                    -> let
-                         lambda ::
-                           FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
-                           Sing (Case_0123456789876543210 n FalseSym0 :: Foo)
-                         lambda
-                           = case
-                                 (applySing
-                                    ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) n))
-                                   (sFromInteger (sing :: Sing 1))
-                             of
-                               STrue
-                                 -> let
-                                      lambda ::
-                                        TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
-                                        Sing (Case_0123456789876543210 n TrueSym0 :: Foo)
-                                      lambda = SBaz
-                                    in lambda
-                               SFalse
-                                 -> let
-                                      lambda ::
-                                        FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
-                                        Sing (Case_0123456789876543210 n FalseSym0 :: Foo)
-                                      lambda
-                                        = case
-                                              (applySing
-                                                 ((applySing
-                                                     ((singFun2 (Proxy :: Proxy (:==$))) (%:==)))
-                                                    n))
-                                                (sFromInteger (sing :: Sing 2))
-                                          of
-                                            STrue
-                                              -> let
-                                                   lambda ::
-                                                     TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 2) =>
-                                                     Sing (Case_0123456789876543210 n TrueSym0 :: Foo)
-                                                   lambda = SBum
-                                                 in lambda
-                                            SFalse
-                                              -> let
-                                                   lambda ::
-                                                     FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 2) =>
-                                                     Sing (Case_0123456789876543210 n FalseSym0 :: Foo)
-                                                   lambda
-                                                     = sError (sing :: Sing "toEnum: bad argument")
-                                                 in lambda ::
-                                            Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 2)) :: Foo)
-                                    in lambda ::
-                               Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 1)) :: Foo)
-                       in lambda ::
-                  Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 0)) :: Foo)
-          in lambda sN
-      sFromEnum SBar
-        = let
-            lambda ::
-              t ~ BarSym0 => Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
-            lambda = sFromInteger (sing :: Sing 0)
-          in lambda
-      sFromEnum SBaz
-        = let
-            lambda ::
-              t ~ BazSym0 => Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
-            lambda = sFromInteger (sing :: Sing 1)
-          in lambda
-      sFromEnum SBum
-        = let
-            lambda ::
-              t ~ BumSym0 => Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
-            lambda = sFromInteger (sing :: Sing 2)
-          in lambda
+      sToEnum (sN :: Sing n)
+        = case
+              (applySing
+                 ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sN))
+                (sFromInteger (sing :: Sing 0))
+          of
+            STrue -> SBar
+            SFalse
+              -> case
+                     (applySing
+                        ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sN))
+                       (sFromInteger (sing :: Sing 1))
+                 of
+                   STrue -> SBaz
+                   SFalse
+                     -> case
+                            (applySing
+                               ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sN))
+                              (sFromInteger (sing :: Sing 2))
+                        of
+                          STrue -> SBum
+                          SFalse -> sError (sing :: Sing "toEnum: bad argument") ::
+                          Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 2)) :: Foo) ::
+                   Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 1)) :: Foo) ::
+            Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 0)) :: Foo)
+      sFromEnum SBar = sFromInteger (sing :: Sing 0)
+      sFromEnum SBaz = sFromInteger (sing :: Sing 1)
+      sFromEnum SBum = sFromInteger (sing :: Sing 2)
     instance SingI Bar where
       sing = SBar
     instance SingI Baz where
@@ -231,61 +172,22 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
         Sing t
         -> Sing (Apply (FromEnumSym0 :: TyFun Quux GHC.Types.Nat
                                         -> GHC.Types.Type) t :: GHC.Types.Nat)
-      sToEnum sN
-        = let
-            lambda ::
-              forall n. t ~ n => Sing n -> Sing (Apply ToEnumSym0 t :: Quux)
-            lambda n
-              = case
-                    (applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) n))
-                      (sFromInteger (sing :: Sing 0))
-                of
-                  STrue
-                    -> let
-                         lambda ::
-                           TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
-                           Sing (Case_0123456789876543210 n TrueSym0 :: Quux)
-                         lambda = SQ1
-                       in lambda
-                  SFalse
-                    -> let
-                         lambda ::
-                           FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 0) =>
-                           Sing (Case_0123456789876543210 n FalseSym0 :: Quux)
-                         lambda
-                           = case
-                                 (applySing
-                                    ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) n))
-                                   (sFromInteger (sing :: Sing 1))
-                             of
-                               STrue
-                                 -> let
-                                      lambda ::
-                                        TrueSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
-                                        Sing (Case_0123456789876543210 n TrueSym0 :: Quux)
-                                      lambda = SQ2
-                                    in lambda
-                               SFalse
-                                 -> let
-                                      lambda ::
-                                        FalseSym0 ~ Apply (Apply (:==$) n) (FromInteger 1) =>
-                                        Sing (Case_0123456789876543210 n FalseSym0 :: Quux)
-                                      lambda = sError (sing :: Sing "toEnum: bad argument")
-                                    in lambda ::
-                               Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 1)) :: Quux)
-                       in lambda ::
-                  Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 0)) :: Quux)
-          in lambda sN
-      sFromEnum SQ1
-        = let
-            lambda ::
-              t ~ Q1Sym0 => Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
-            lambda = sFromInteger (sing :: Sing 0)
-          in lambda
-      sFromEnum SQ2
-        = let
-            lambda ::
-              t ~ Q2Sym0 => Sing (Apply FromEnumSym0 t :: GHC.Types.Nat)
-            lambda = sFromInteger (sing :: Sing 1)
-          in lambda
+      sToEnum (sN :: Sing n)
+        = case
+              (applySing
+                 ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sN))
+                (sFromInteger (sing :: Sing 0))
+          of
+            STrue -> SQ1
+            SFalse
+              -> case
+                     (applySing
+                        ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sN))
+                       (sFromInteger (sing :: Sing 1))
+                 of
+                   STrue -> SQ2
+                   SFalse -> sError (sing :: Sing "toEnum: bad argument") ::
+                   Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 1)) :: Quux) ::
+            Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 0)) :: Quux)
+      sFromEnum SQ1 = sFromInteger (sing :: Sing 0)
+      sFromEnum SQ2 = sFromInteger (sing :: Sing 1)

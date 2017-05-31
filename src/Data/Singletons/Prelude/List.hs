@@ -1,6 +1,6 @@
 {-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies, TypeInType,
              TemplateHaskell, GADTs, UndecidableInstances, RankNTypes,
-             ScopedTypeVariables, FlexibleContexts #-}
+             ScopedTypeVariables, FlexibleContexts, AllowAmbiguousTypes #-}
 {-# OPTIONS_GHC -O0 #-}
 
 -----------------------------------------------------------------------------

@@ -17,15 +17,7 @@ Singletons/T33.hs:(0,0)-(0,0): Splicing declarations
       Foo '(_z_0123456789876543210, _z_0123456789876543210) = Tuple0Sym0
     sFoo ::
       forall (t :: (Bool, Bool)). Sing t -> Sing (Apply FooSym0 t :: ())
-    sFoo (STuple2 _s_z_0123456789876543210 _s_z_0123456789876543210)
-      = let
-          lambda ::
-            forall _z_0123456789876543210 _z_0123456789876543210.
-            t ~ Apply (Apply Tuple2Sym0 _z_0123456789876543210) _z_0123456789876543210 =>
-            Sing _z_0123456789876543210
-            -> Sing _z_0123456789876543210 -> Sing (Apply FooSym0 t :: ())
-          lambda _z_0123456789876543210 _z_0123456789876543210 = STuple0
-        in (lambda _s_z_0123456789876543210) _s_z_0123456789876543210
+    sFoo (STuple2 _ _) = STuple0
 
 Singletons/T33.hs:0:0: warning:
     Lazy pattern converted into regular pattern in promotion

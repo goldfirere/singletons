@@ -344,235 +344,76 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     sMap ::
       forall (t :: TyFun a b -> GHC.Types.Type) (t :: [a]).
       Sing t -> Sing t -> Sing (Apply (Apply MapSym0 t) t :: [b])
-    sFoo sF sG sA
-      = let
-          lambda ::
-            forall f g a.
-            (t ~ f, t ~ g, t ~ a) =>
-            Sing f
-            -> Sing g
-               -> Sing a -> Sing (Apply (Apply (Apply FooSym0 t) t) t :: b)
-          lambda f g a = (applySing ((applySing f) g)) a
-        in ((lambda sF) sG) sA
-    sZipWith sF (SCons sX sXs) (SCons sY sYs)
-      = let
-          lambda ::
-            forall f x xs y ys.
-            (t ~ f,
-             t ~ Apply (Apply (:$) x) xs,
-             t ~ Apply (Apply (:$) y) ys) =>
-            Sing f
-            -> Sing x
-               -> Sing xs
-                  -> Sing y
-                     -> Sing ys -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
-          lambda f x xs y ys
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                    ((applySing ((applySing f) x)) y)))
-                ((applySing
-                    ((applySing
-                        ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith)) f))
-                       xs))
-                   ys)
-        in ((((lambda sF) sX) sXs) sY) sYs
-    sZipWith _s_z_0123456789876543210 SNil SNil
-      = let
-          lambda ::
-            forall _z_0123456789876543210.
-            (t ~ _z_0123456789876543210, t ~ '[], t ~ '[]) =>
-            Sing _z_0123456789876543210
-            -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
-          lambda _z_0123456789876543210 = SNil
-        in lambda _s_z_0123456789876543210
+    sFoo (sF :: Sing f) (sG :: Sing g) (sA :: Sing a)
+      = (applySing ((applySing sF) sG)) sA
     sZipWith
-      _s_z_0123456789876543210
-      (SCons _s_z_0123456789876543210 _s_z_0123456789876543210)
-      SNil
-      = let
-          lambda ::
-            forall _z_0123456789876543210
-                   _z_0123456789876543210
-                   _z_0123456789876543210.
-            (t ~ _z_0123456789876543210,
-             t ~ Apply (Apply (:$) _z_0123456789876543210) _z_0123456789876543210,
-             t ~ '[]) =>
-            Sing _z_0123456789876543210
-            -> Sing _z_0123456789876543210
-               -> Sing _z_0123456789876543210
-                  -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
-          lambda
-            _z_0123456789876543210
-            _z_0123456789876543210
-            _z_0123456789876543210
-            = SNil
-        in
-          ((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-            _s_z_0123456789876543210
-    sZipWith
-      _s_z_0123456789876543210
-      SNil
-      (SCons _s_z_0123456789876543210 _s_z_0123456789876543210)
-      = let
-          lambda ::
-            forall _z_0123456789876543210
-                   _z_0123456789876543210
-                   _z_0123456789876543210.
-            (t ~ _z_0123456789876543210,
-             t ~ '[],
-             t ~ Apply (Apply (:$) _z_0123456789876543210) _z_0123456789876543210) =>
-            Sing _z_0123456789876543210
-            -> Sing _z_0123456789876543210
-               -> Sing _z_0123456789876543210
-                  -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
-          lambda
-            _z_0123456789876543210
-            _z_0123456789876543210
-            _z_0123456789876543210
-            = SNil
-        in
-          ((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-            _s_z_0123456789876543210
-    sSplunge sNs sBs
-      = let
-          lambda ::
-            forall ns bs.
-            (t ~ ns, t ~ bs) =>
-            Sing ns -> Sing bs -> Sing (Apply (Apply SplungeSym0 t) t :: [Nat])
-          lambda ns bs
-            = (applySing
-                 ((applySing
-                     ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith))
-                        ((singFun2
-                            (Proxy ::
-                               Proxy (Apply (Apply Lambda_0123456789876543210Sym0 ns) bs)))
-                           (\ sN sB
-                              -> let
-                                   lambda ::
-                                     forall n b.
-                                     Sing n
-                                     -> Sing b
-                                        -> Sing (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 ns) bs) n) b)
-                                   lambda n b
-                                     = case b of
-                                         STrue
-                                           -> let
-                                                lambda ::
-                                                  TrueSym0 ~ b =>
-                                                  Sing (Case_0123456789876543210 ns bs n b TrueSym0)
-                                                lambda
-                                                  = (applySing
-                                                       ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                                                      ((applySing
-                                                          ((singFun1 (Proxy :: Proxy SuccSym0))
-                                                             SSucc))
-                                                         n)
-                                              in lambda
-                                         SFalse
-                                           -> let
-                                                lambda ::
-                                                  FalseSym0 ~ b =>
-                                                  Sing (Case_0123456789876543210 ns bs n b FalseSym0)
-                                                lambda = n
-                                              in lambda ::
-                                         Sing (Case_0123456789876543210 ns bs n b b)
-                                 in (lambda sN) sB))))
-                    ns))
-                bs
-        in (lambda sNs) sBs
-    sEtad sA_0123456789876543210 sA_0123456789876543210
-      = let
-          lambda ::
-            forall a_0123456789876543210 a_0123456789876543210.
-            (t ~ a_0123456789876543210, t ~ a_0123456789876543210) =>
-            Sing a_0123456789876543210
-            -> Sing a_0123456789876543210
-               -> Sing (Apply (Apply EtadSym0 t) t :: [Nat])
-          lambda a_0123456789876543210 a_0123456789876543210
-            = (applySing
-                 ((applySing
-                     ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith))
-                        ((singFun2
-                            (Proxy ::
-                               Proxy (Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210)))
-                           (\ sN sB
-                              -> let
-                                   lambda ::
-                                     forall n b.
-                                     Sing n
-                                     -> Sing b
-                                        -> Sing (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210) n) b)
-                                   lambda n b
-                                     = case b of
-                                         STrue
-                                           -> let
-                                                lambda ::
-                                                  TrueSym0 ~ b =>
-                                                  Sing (Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 TrueSym0)
-                                                lambda
-                                                  = (applySing
-                                                       ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                                                      ((applySing
-                                                          ((singFun1 (Proxy :: Proxy SuccSym0))
-                                                             SSucc))
-                                                         n)
-                                              in lambda
-                                         SFalse
-                                           -> let
-                                                lambda ::
-                                                  FalseSym0 ~ b =>
-                                                  Sing (Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 FalseSym0)
-                                                lambda = n
-                                              in lambda ::
-                                         Sing (Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 b)
-                                 in (lambda sN) sB))))
-                    a_0123456789876543210))
-                a_0123456789876543210
-        in (lambda sA_0123456789876543210) sA_0123456789876543210
-    sLiftMaybe sF (SJust sX)
-      = let
-          lambda ::
-            forall f x.
-            (t ~ f, t ~ Apply JustSym0 x) =>
-            Sing f
-            -> Sing x -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
-          lambda f x
-            = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
-                ((applySing f) x)
-        in (lambda sF) sX
-    sLiftMaybe _s_z_0123456789876543210 SNothing
-      = let
-          lambda ::
-            forall _z_0123456789876543210.
-            (t ~ _z_0123456789876543210, t ~ NothingSym0) =>
-            Sing _z_0123456789876543210
-            -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
-          lambda _z_0123456789876543210 = SNothing
-        in lambda _s_z_0123456789876543210
-    sMap _s_z_0123456789876543210 SNil
-      = let
-          lambda ::
-            forall _z_0123456789876543210.
-            (t ~ _z_0123456789876543210, t ~ '[]) =>
-            Sing _z_0123456789876543210
-            -> Sing (Apply (Apply MapSym0 t) t :: [b])
-          lambda _z_0123456789876543210 = SNil
-        in lambda _s_z_0123456789876543210
-    sMap sF (SCons sH sT)
-      = let
-          lambda ::
-            forall f h t.
-            (t ~ f, t ~ Apply (Apply (:$) h) t) =>
-            Sing f
-            -> Sing h -> Sing t -> Sing (Apply (Apply MapSym0 t) t :: [b])
-          lambda f h t
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                    ((applySing f) h)))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy MapSym0)) sMap)) f))
-                   t)
-        in ((lambda sF) sH) sT
+      (sF :: Sing f)
+      (SCons (sX :: Sing x) (sXs :: Sing xs))
+      (SCons (sY :: Sing y) (sYs :: Sing ys))
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+              ((applySing ((applySing sF) sX)) sY)))
+          ((applySing
+              ((applySing
+                  ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith))
+                     sF))
+                 sXs))
+             sYs)
+    sZipWith _ SNil SNil = SNil
+    sZipWith _ (SCons _ _) SNil = SNil
+    sZipWith _ SNil (SCons _ _) = SNil
+    sSplunge (sNs :: Sing ns) (sBs :: Sing bs)
+      = (applySing
+           ((applySing
+               ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith))
+                  ((singFun2
+                      (Proxy ::
+                         Proxy (Apply (Apply Lambda_0123456789876543210Sym0 ns) bs)))
+                     (\ sN sB
+                        -> case (GHC.Tuple.(,) sN) sB of {
+                             GHC.Tuple.(,) (_ :: Sing n) (_ :: Sing b)
+                               -> case sB of
+                                    STrue
+                                      -> (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+                                           ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+                                              sN)
+                                    SFalse -> sN ::
+                                    Sing (Case_0123456789876543210 ns bs n b b) }))))
+              sNs))
+          sBs
+    sEtad
+      (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      = (applySing
+           ((applySing
+               ((applySing ((singFun3 (Proxy :: Proxy ZipWithSym0)) sZipWith))
+                  ((singFun2
+                      (Proxy ::
+                         Proxy (Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210)))
+                     (\ sN sB
+                        -> case (GHC.Tuple.(,) sN) sB of {
+                             GHC.Tuple.(,) (_ :: Sing n) (_ :: Sing b)
+                               -> case sB of
+                                    STrue
+                                      -> (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+                                           ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+                                              sN)
+                                    SFalse -> sN ::
+                                    Sing (Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 b) }))))
+              sA_0123456789876543210))
+          sA_0123456789876543210
+    sLiftMaybe (sF :: Sing f) (SJust (sX :: Sing x))
+      = (applySing ((singFun1 (Proxy :: Proxy JustSym0)) SJust))
+          ((applySing sF) sX)
+    sLiftMaybe _ SNothing = SNothing
+    sMap _ SNil = SNil
+    sMap (sF :: Sing f) (SCons (sH :: Sing h) (sT :: Sing t))
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+              ((applySing sF) sH)))
+          ((applySing
+              ((applySing ((singFun2 (Proxy :: Proxy MapSym0)) sMap)) sF))
+             sT)
     data instance Sing (z :: Either a b)
       = forall (n :: a). z ~ Left n => SLeft (Sing (n :: a)) |
         forall (n :: b). z ~ Right n => SRight (Sing (n :: b))

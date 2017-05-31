@@ -128,16 +128,10 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
                 forall (t :: a) (t :: [Bool]).
                 (Apply (Apply FooListSym0 t) t :: [Bool]) ~ Apply (Apply FooList_0123456789876543210Sym0 t) t =>
                 Sing t -> Sing t -> Sing (Apply (Apply FooListSym0 t) t :: [Bool])
-      sFooList sA_0123456789876543210 sA_0123456789876543210
-        = let
-            lambda ::
-              forall a_0123456789876543210 a_0123456789876543210.
-              (t ~ a_0123456789876543210, t ~ a_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing (Apply (Apply FooListSym0 t) t :: [Bool])
-            lambda a_0123456789876543210 a_0123456789876543210 = undefined
-          in (lambda sA_0123456789876543210) sA_0123456789876543210
+      sFooList
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = undefined
     instance SFoo a => SFoo [a] where
       sFoosPrec ::
         forall (t :: Nat) (t :: [a]) (t :: [Bool]).
@@ -146,29 +140,10 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
            -> Sing t
               -> Sing (Apply (Apply (Apply FoosPrecSym0 t) t) t :: [Bool])
       sFoosPrec
-        _s_z_0123456789876543210
-        sA_0123456789876543210
-        sA_0123456789876543210
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     a_0123456789876543210
-                     a_0123456789876543210.
-              (t ~ _z_0123456789876543210,
-               t ~ a_0123456789876543210,
-               t ~ a_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing a_0123456789876543210
-                    -> Sing (Apply (Apply (Apply FoosPrecSym0 t) t) t :: [Bool])
-            lambda
-              _z_0123456789876543210
-              a_0123456789876543210
-              a_0123456789876543210
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy FooListSym0)) sFooList))
-                      a_0123456789876543210))
-                  a_0123456789876543210
-          in
-            ((lambda _s_z_0123456789876543210) sA_0123456789876543210)
-              sA_0123456789876543210
+        _
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy FooListSym0)) sFooList))
+                sA_0123456789876543210))
+            sA_0123456789876543210

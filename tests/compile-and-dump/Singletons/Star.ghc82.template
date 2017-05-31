@@ -102,330 +102,84 @@ Singletons/Star.hs:0:0:: Splicing declarations
                                                  -> Type) t1 :: TyFun Type Ordering
                                                                 -> Type) t2 :: Ordering)
       sCompare SNat SNat
-        = let
-            lambda ::
-              (t1 ~ NatSym0, t2 ~ NatSym0) =>
-              Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              = (applySing
-                   ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
-                  SNil
-          in lambda
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            SNil
       sCompare SInt SInt
-        = let
-            lambda ::
-              (t1 ~ IntSym0, t2 ~ IntSym0) =>
-              Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              = (applySing
-                   ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
-                  SNil
-          in lambda
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            SNil
       sCompare SString SString
-        = let
-            lambda ::
-              (t1 ~ StringSym0, t2 ~ StringSym0) =>
-              Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              = (applySing
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            SNil
+      sCompare
+        (SMaybe (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SMaybe (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                    ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
-                  SNil
-          in lambda
+                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               SNil)
       sCompare
-        (SMaybe sA_0123456789876543210)
-        (SMaybe sB_0123456789876543210)
-        = let
-            lambda ::
-              forall a_0123456789876543210 b_0123456789876543210.
-              (t1 ~ Apply MaybeSym0 a_0123456789876543210,
-               t2 ~ Apply MaybeSym0 b_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing b_0123456789876543210
-                 -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda a_0123456789876543210 b_0123456789876543210
-              = (applySing
+        (SVec (sA_0123456789876543210 :: Sing a_0123456789876543210)
+              (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SVec (sB_0123456789876543210 :: Sing b_0123456789876543210)
+              (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                    ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
-                  ((applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                         ((applySing
-                             ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                a_0123456789876543210))
-                            b_0123456789876543210)))
-                     SNil)
-          in (lambda sA_0123456789876543210) sB_0123456789876543210
-      sCompare
-        (SVec sA_0123456789876543210 sA_0123456789876543210)
-        (SVec sB_0123456789876543210 sB_0123456789876543210)
-        = let
-            lambda ::
-              forall a_0123456789876543210
-                     a_0123456789876543210
-                     b_0123456789876543210
-                     b_0123456789876543210.
-              (t1 ~ Apply (Apply VecSym0 a_0123456789876543210) a_0123456789876543210,
-               t2 ~ Apply (Apply VecSym0 b_0123456789876543210) b_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing b_0123456789876543210
-                    -> Sing b_0123456789876543210
-                       -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              a_0123456789876543210
-              a_0123456789876543210
-              b_0123456789876543210
-              b_0123456789876543210
-              = (applySing
-                   ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
-                  ((applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                         ((applySing
-                             ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                a_0123456789876543210))
-                            b_0123456789876543210)))
-                     ((applySing
-                         ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                            ((applySing
-                                ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                   a_0123456789876543210))
-                               b_0123456789876543210)))
-                        SNil))
-          in
-            (((lambda sA_0123456789876543210) sA_0123456789876543210)
-               sB_0123456789876543210)
-              sB_0123456789876543210
-      sCompare SNat SInt
-        = let
-            lambda ::
-              (t1 ~ NatSym0, t2 ~ IntSym0) =>
-              Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda = SLT
-          in lambda
-      sCompare SNat SString
-        = let
-            lambda ::
-              (t1 ~ NatSym0, t2 ~ StringSym0) =>
-              Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda = SLT
-          in lambda
-      sCompare SNat (SMaybe _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ NatSym0, t2 ~ Apply MaybeSym0 _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SLT
-          in lambda _s_z_0123456789876543210
-      sCompare
-        SNat
-        (SVec _s_z_0123456789876543210 _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210 _z_0123456789876543210.
-              (t1 ~ NatSym0,
-               t2 ~ Apply (Apply VecSym0 _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 _z_0123456789876543210 = SLT
-          in (lambda _s_z_0123456789876543210) _s_z_0123456789876543210
-      sCompare SInt SNat
-        = let
-            lambda ::
-              (t1 ~ IntSym0, t2 ~ NatSym0) =>
-              Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda = SGT
-          in lambda
-      sCompare SInt SString
-        = let
-            lambda ::
-              (t1 ~ IntSym0, t2 ~ StringSym0) =>
-              Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda = SLT
-          in lambda
-      sCompare SInt (SMaybe _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ IntSym0, t2 ~ Apply MaybeSym0 _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SLT
-          in lambda _s_z_0123456789876543210
-      sCompare
-        SInt
-        (SVec _s_z_0123456789876543210 _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210 _z_0123456789876543210.
-              (t1 ~ IntSym0,
-               t2 ~ Apply (Apply VecSym0 _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 _z_0123456789876543210 = SLT
-          in (lambda _s_z_0123456789876543210) _s_z_0123456789876543210
-      sCompare SString SNat
-        = let
-            lambda ::
-              (t1 ~ StringSym0, t2 ~ NatSym0) =>
-              Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda = SGT
-          in lambda
-      sCompare SString SInt
-        = let
-            lambda ::
-              (t1 ~ StringSym0, t2 ~ IntSym0) =>
-              Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda = SGT
-          in lambda
-      sCompare SString (SMaybe _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ StringSym0, t2 ~ Apply MaybeSym0 _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SLT
-          in lambda _s_z_0123456789876543210
-      sCompare
-        SString
-        (SVec _s_z_0123456789876543210 _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210 _z_0123456789876543210.
-              (t1 ~ StringSym0,
-               t2 ~ Apply (Apply VecSym0 _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 _z_0123456789876543210 = SLT
-          in (lambda _s_z_0123456789876543210) _s_z_0123456789876543210
-      sCompare (SMaybe _s_z_0123456789876543210) SNat
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ Apply MaybeSym0 _z_0123456789876543210, t2 ~ NatSym0) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SGT
-          in lambda _s_z_0123456789876543210
-      sCompare (SMaybe _s_z_0123456789876543210) SInt
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ Apply MaybeSym0 _z_0123456789876543210, t2 ~ IntSym0) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SGT
-          in lambda _s_z_0123456789876543210
-      sCompare (SMaybe _s_z_0123456789876543210) SString
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ Apply MaybeSym0 _z_0123456789876543210, t2 ~ StringSym0) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SGT
-          in lambda _s_z_0123456789876543210
-      sCompare
-        (SMaybe _s_z_0123456789876543210)
-        (SVec _s_z_0123456789876543210 _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply MaybeSym0 _z_0123456789876543210,
-               t2 ~ Apply (Apply VecSym0 _z_0123456789876543210) _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SLT
-          in
-            ((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-              _s_z_0123456789876543210
-      sCompare
-        (SVec _s_z_0123456789876543210 _s_z_0123456789876543210)
-        SNat
-        = let
-            lambda ::
-              forall _z_0123456789876543210 _z_0123456789876543210.
-              (t1 ~ Apply (Apply VecSym0 _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ NatSym0) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 _z_0123456789876543210 = SGT
-          in (lambda _s_z_0123456789876543210) _s_z_0123456789876543210
-      sCompare
-        (SVec _s_z_0123456789876543210 _s_z_0123456789876543210)
-        SInt
-        = let
-            lambda ::
-              forall _z_0123456789876543210 _z_0123456789876543210.
-              (t1 ~ Apply (Apply VecSym0 _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ IntSym0) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 _z_0123456789876543210 = SGT
-          in (lambda _s_z_0123456789876543210) _s_z_0123456789876543210
-      sCompare
-        (SVec _s_z_0123456789876543210 _s_z_0123456789876543210)
-        SString
-        = let
-            lambda ::
-              forall _z_0123456789876543210 _z_0123456789876543210.
-              (t1 ~ Apply (Apply VecSym0 _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ StringSym0) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 _z_0123456789876543210 = SGT
-          in (lambda _s_z_0123456789876543210) _s_z_0123456789876543210
-      sCompare
-        (SVec _s_z_0123456789876543210 _s_z_0123456789876543210)
-        (SMaybe _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210
-                     _z_0123456789876543210
-                     _z_0123456789876543210.
-              (t1 ~ Apply (Apply VecSym0 _z_0123456789876543210) _z_0123456789876543210,
-               t2 ~ Apply MaybeSym0 _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing _z_0123456789876543210
-                 -> Sing _z_0123456789876543210
-                    -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              _z_0123456789876543210
-              _z_0123456789876543210
-              _z_0123456789876543210
-              = SGT
-          in
-            ((lambda _s_z_0123456789876543210) _s_z_0123456789876543210)
-              _s_z_0123456789876543210
+                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  SNil))
+      sCompare SNat SInt = SLT
+      sCompare SNat SString = SLT
+      sCompare SNat (SMaybe _) = SLT
+      sCompare SNat (SVec _ _) = SLT
+      sCompare SInt SNat = SGT
+      sCompare SInt SString = SLT
+      sCompare SInt (SMaybe _) = SLT
+      sCompare SInt (SVec _ _) = SLT
+      sCompare SString SNat = SGT
+      sCompare SString SInt = SGT
+      sCompare SString (SMaybe _) = SLT
+      sCompare SString (SVec _ _) = SLT
+      sCompare (SMaybe _) SNat = SGT
+      sCompare (SMaybe _) SInt = SGT
+      sCompare (SMaybe _) SString = SGT
+      sCompare (SMaybe _) (SVec _ _) = SLT
+      sCompare (SVec _ _) SNat = SGT
+      sCompare (SVec _ _) SInt = SGT
+      sCompare (SVec _ _) SString = SGT
+      sCompare (SVec _ _) (SMaybe _) = SGT
     data instance Sing (z :: Type)
       = z ~ Nat => SNat |
         z ~ Int => SInt |

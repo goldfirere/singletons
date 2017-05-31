@@ -54,18 +54,15 @@ data ADExp = ADVarE Name
            | ADConE Name
            | ADLitE Lit
            | ADAppE ADExp ADExp
-           | ADLamE VarPromotions  -- bind these type variables to these term vars
+           | ADLamE [Name]         -- type-level names corresponding to term-level ones
                     DType          -- the promoted lambda
                     [Name] ADExp
-           | ADCaseE ADExp DType [ADMatch] DType
-               -- the first type is the promoted scrutinee;
-               -- the second type is the return type
+           | ADCaseE ADExp [ADMatch] DType
+               -- the type is the return type
            | ADLetE ALetDecEnv ADExp
            | ADSigE ADExp DType
 
- -- unlike in other places, the DType in an ADMatch (the promoted "case" statement)
- -- should be used with DAppT, *not* apply! (Case statements are not defunctionalized.)
-data ADMatch = ADMatch VarPromotions DType DPat ADExp
+data ADMatch = ADMatch VarPromotions DPat ADExp
 data ADClause = ADClause VarPromotions
                          [DPat] ADExp
 

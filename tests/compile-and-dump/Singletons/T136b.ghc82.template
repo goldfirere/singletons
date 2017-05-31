@@ -45,13 +45,6 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
         Sing t
         -> Sing (Apply (MethSym0 :: TyFun Bool Bool
                                     -> GHC.Types.Type) t :: Bool)
-      sMeth sA_0123456789876543210
-        = let
-            lambda ::
-              forall a_0123456789876543210.
-              t ~ a_0123456789876543210 =>
-              Sing a_0123456789876543210 -> Sing (Apply MethSym0 t :: Bool)
-            lambda a_0123456789876543210
-              = (applySing ((singFun1 (Proxy :: Proxy NotSym0)) sNot))
-                  a_0123456789876543210
-          in lambda sA_0123456789876543210
+      sMeth (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing ((singFun1 (Proxy :: Proxy NotSym0)) sNot))
+            sA_0123456789876543210

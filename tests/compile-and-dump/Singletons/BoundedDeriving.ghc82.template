@@ -176,80 +176,40 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SBounded Foo1 where
       sMinBound :: Sing (MinBoundSym0 :: Foo1)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo1)
-      sMinBound
-        = let
-            lambda :: Sing (MinBoundSym0 :: Foo1)
-            lambda = SFoo1
-          in lambda
-      sMaxBound
-        = let
-            lambda :: Sing (MaxBoundSym0 :: Foo1)
-            lambda = SFoo1
-          in lambda
+      sMinBound = SFoo1
+      sMaxBound = SFoo1
     instance SBounded Foo2 where
       sMinBound :: Sing (MinBoundSym0 :: Foo2)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo2)
-      sMinBound
-        = let
-            lambda :: Sing (MinBoundSym0 :: Foo2)
-            lambda = SA
-          in lambda
-      sMaxBound
-        = let
-            lambda :: Sing (MaxBoundSym0 :: Foo2)
-            lambda = SE
-          in lambda
+      sMinBound = SA
+      sMaxBound = SE
     instance SBounded a => SBounded (Foo3 a) where
       sMinBound :: Sing (MinBoundSym0 :: Foo3 a)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo3 a)
       sMinBound
-        = let
-            lambda :: Sing (MinBoundSym0 :: Foo3 a)
-            lambda
-              = (applySing ((singFun1 (Proxy :: Proxy Foo3Sym0)) SFoo3))
-                  sMinBound
-          in lambda
+        = (applySing ((singFun1 (Proxy :: Proxy Foo3Sym0)) SFoo3))
+            sMinBound
       sMaxBound
-        = let
-            lambda :: Sing (MaxBoundSym0 :: Foo3 a)
-            lambda
-              = (applySing ((singFun1 (Proxy :: Proxy Foo3Sym0)) SFoo3))
-                  sMaxBound
-          in lambda
+        = (applySing ((singFun1 (Proxy :: Proxy Foo3Sym0)) SFoo3))
+            sMaxBound
     instance SBounded (Foo4 a b) where
       sMinBound :: Sing (MinBoundSym0 :: Foo4 a b)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo4 a b)
-      sMinBound
-        = let
-            lambda :: Sing (MinBoundSym0 :: Foo4 a b)
-            lambda = SFoo41
-          in lambda
-      sMaxBound
-        = let
-            lambda :: Sing (MaxBoundSym0 :: Foo4 a b)
-            lambda = SFoo42
-          in lambda
+      sMinBound = SFoo41
+      sMaxBound = SFoo42
     instance SBounded Bool => SBounded Pair where
       sMinBound :: Sing (MinBoundSym0 :: Pair)
       sMaxBound :: Sing (MaxBoundSym0 :: Pair)
       sMinBound
-        = let
-            lambda :: Sing (MinBoundSym0 :: Pair)
-            lambda
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy PairSym0)) SPair))
-                      sMinBound))
-                  sMinBound
-          in lambda
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy PairSym0)) SPair))
+                sMinBound))
+            sMinBound
       sMaxBound
-        = let
-            lambda :: Sing (MaxBoundSym0 :: Pair)
-            lambda
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy PairSym0)) SPair))
-                      sMaxBound))
-                  sMaxBound
-          in lambda
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy PairSym0)) SPair))
+                sMaxBound))
+            sMaxBound
     instance SingI Foo1 where
       sing = SFoo1
     instance SingI A where

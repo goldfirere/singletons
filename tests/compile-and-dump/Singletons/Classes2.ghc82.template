@@ -73,46 +73,14 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
                                                                  -> GHC.Types.Type)
                                                    -> GHC.Types.Type) t1 :: TyFun NatFoo Ordering
                                                                             -> GHC.Types.Type) t2 :: Ordering)
-      sMycompare SZeroFoo SZeroFoo
-        = let
-            lambda ::
-              (t1 ~ ZeroFooSym0, t2 ~ ZeroFooSym0) =>
-              Sing (Apply (Apply MycompareSym0 t1) t2 :: Ordering)
-            lambda = SEQ
-          in lambda
-      sMycompare SZeroFoo (SSuccFoo _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ ZeroFooSym0,
-               t2 ~ Apply SuccFooSym0 _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply MycompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SLT
-          in lambda _s_z_0123456789876543210
-      sMycompare (SSuccFoo _s_z_0123456789876543210) SZeroFoo
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ Apply SuccFooSym0 _z_0123456789876543210,
-               t2 ~ ZeroFooSym0) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply MycompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SGT
-          in lambda _s_z_0123456789876543210
-      sMycompare (SSuccFoo sN) (SSuccFoo sM)
-        = let
-            lambda ::
-              forall n m.
-              (t1 ~ Apply SuccFooSym0 n, t2 ~ Apply SuccFooSym0 m) =>
-              Sing n
-              -> Sing m -> Sing (Apply (Apply MycompareSym0 t1) t2 :: Ordering)
-            lambda n m
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy MycompareSym0)) sMycompare))
-                      m))
-                  n
-          in (lambda sN) sM
+      sMycompare SZeroFoo SZeroFoo = SEQ
+      sMycompare SZeroFoo (SSuccFoo _) = SLT
+      sMycompare (SSuccFoo _) SZeroFoo = SGT
+      sMycompare (SSuccFoo (sN :: Sing n)) (SSuccFoo (sM :: Sing m))
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy MycompareSym0)) sMycompare))
+                sM))
+            sN
     instance SingI ZeroFoo where
       sing = SZeroFoo
     instance SingI n => SingI (SuccFoo (n :: NatFoo)) where

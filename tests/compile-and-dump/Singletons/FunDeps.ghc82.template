@@ -81,23 +81,8 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       sMeth ::
         forall (t :: Bool). Sing t -> Sing (Apply MethSym0 t :: Bool)
       sL2r :: forall (t :: Bool). Sing t -> Sing (Apply L2rSym0 t :: Nat)
-      sMeth sA_0123456789876543210
-        = let
-            lambda ::
-              forall a_0123456789876543210.
-              t ~ a_0123456789876543210 =>
-              Sing a_0123456789876543210 -> Sing (Apply MethSym0 t :: Bool)
-            lambda a_0123456789876543210
-              = (applySing ((singFun1 (Proxy :: Proxy NotSym0)) sNot))
-                  a_0123456789876543210
-          in lambda sA_0123456789876543210
-      sL2r SFalse
-        = let
-            lambda :: t ~ FalseSym0 => Sing (Apply L2rSym0 t :: Nat)
-            lambda = sFromInteger (sing :: Sing 0)
-          in lambda
-      sL2r STrue
-        = let
-            lambda :: t ~ TrueSym0 => Sing (Apply L2rSym0 t :: Nat)
-            lambda = sFromInteger (sing :: Sing 1)
-          in lambda
+      sMeth (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing ((singFun1 (Proxy :: Proxy NotSym0)) sNot))
+            sA_0123456789876543210
+      sL2r SFalse = sFromInteger (sing :: Sing 0)
+      sL2r STrue = sFromInteger (sing :: Sing 1)

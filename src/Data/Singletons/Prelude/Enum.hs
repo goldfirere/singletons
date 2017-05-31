@@ -72,7 +72,7 @@ $(singletonsOnly [d|
       -- | Used in Haskell's translation of @[n,n'..m]@.
       enumFromThenTo      :: a -> a -> a -> [a]
 
-      succ                   = toEnum . (1 +)  . fromEnum
+      succ                   = toEnum . (+1)  . fromEnum
       pred                   = toEnum . (subtract 1) . fromEnum
       -- enumFrom x             = map toEnum [fromEnum x ..]
       -- enumFromThen x y       = map toEnum [fromEnum x, fromEnum y ..]

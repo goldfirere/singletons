@@ -19,16 +19,8 @@ Singletons/T124.hs:(0,0)-(0,0): Splicing declarations
       Foo True = Tuple0Sym0
       Foo False = Tuple0Sym0
     sFoo :: forall (t :: Bool). Sing t -> Sing (Apply FooSym0 t :: ())
-    sFoo STrue
-      = let
-          lambda :: t ~ TrueSym0 => Sing (Apply FooSym0 t :: ())
-          lambda = STuple0
-        in lambda
-    sFoo SFalse
-      = let
-          lambda :: t ~ FalseSym0 => Sing (Apply FooSym0 t :: ())
-          lambda = STuple0
-        in lambda
+    sFoo STrue = STuple0
+    sFoo SFalse = STuple0
 Singletons/T124.hs:0:0:: Splicing expression
     sCases ''Bool [| b |] [| STuple0 |]
   ======>

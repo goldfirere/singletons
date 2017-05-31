@@ -25,6 +25,8 @@ removed. `DemoteRep` has been renamed `Demote`.
 * `Data.Singletons.TypeLits` now exports defunctionalization symbols for `KnownNat`
 and `KnownSymbol`.
 
+* Better type inference support around constraints, as tracked in Issue #176.
+
 2.2
 ---
 * With `TypeInType`, we no longer kind `KProxy`. @int-index has very helpfully

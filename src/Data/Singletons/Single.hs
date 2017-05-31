@@ -434,19 +434,9 @@ singClause prom_fun num_arrows bound_names res_ki
     fail $ "Function being promoted to " ++ (pprint (typeToTH prom_fun)) ++
            " has too many arguments."
 
-  (sPats, prom_pats)
-    <- mapAndUnzipM (singPat (Map.fromList var_proms) Parameter) pats
-  let bound_name_tys = map DVarT bound_names
-      equalities     = zip bound_name_tys prom_pats
-      -- This res_ki stuff is necessary when we need to propagate result-
-      -- based type-inference. It was inspired by toEnum. (If you remove
-      -- this, that should fail to compile.)
-      applied_ty = foldl apply prom_fun bound_name_tys `maybeSigT` res_ki
-         -- We used to use prom_pats as the arguments above, but bound_name_tys
-         -- is better, because the type variables have kinds. When the pattern
-         -- is, say, [], then we get a kind ambiguity. See #136.
-  sBody <- bindTyVarsEq var_proms applied_ty equalities $ singExp exp res_ki
-    -- when calling unSingFun, the prom_pats aren't in scope, so we use the
+  sPats <- mapM (singPat (Map.fromList var_proms) Parameter) pats
+  sBody <- singExp exp res_ki
+    -- when calling unSingFun, the promoted pats aren't in scope, so we use the
     -- bound_names instead
   let pattern_bound_names = zipWith const bound_names pats
        -- this does eta-expansion. See comment at top of file.
@@ -468,19 +458,10 @@ checkIfBrainWillExplode _ =
   fail $ "Can't use a singleton pattern outside of a case-statement or\n" ++
          "do expression: GHC's brain will explode if you try. (Do try it!)"
 
--- Note [No wildcards in singletons]
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
--- We forbid patterns with wildcards during singletonization. Why? Because
--- singletonizing a pattern also must produce a type expression equivalent
--- to the pattern, for use in bindTyVars. Wildcards get in the way of this.
--- Thus, we de-wild patterns during promotion, and put the de-wilded patterns
--- in the ADExp AST.
-
 singPat :: Map Name Name   -- from term-level names to type-level names
         -> PatternContext
         -> DPat
-        -> SgM (DPat, DType) -- the type form of the pat
+        -> SgM DPat
 singPat _var_proms _patCxt (DLitPa _lit) =
   fail "Singling of literal patterns not yet supported"
 singPat var_proms _patCxt (DVarPa name) = do
@@ -488,23 +469,21 @@ singPat var_proms _patCxt (DVarPa name) = do
               Nothing     ->
                 fail "Internal error: unknown variable when singling pattern"
               Just tyname -> return tyname
-  return (DVarPa (singValName name), DVarT tyname)
+  return $ DVarPa (singValName name) `DSigPa` (singFamily `DAppT` DVarT tyname)
 singPat var_proms patCxt (DConPa name pats) = do
   checkIfBrainWillExplode patCxt
-  (pats', tys) <- mapAndUnzipM (singPat var_proms patCxt) pats
-  return ( DConPa (singDataConName name) pats'
-         , foldl apply (promoteValRhs name) tys )
+  pats' <- mapM (singPat var_proms patCxt) pats
+  return $ DConPa (singDataConName name) pats'
 singPat var_proms patCxt (DTildePa pat) = do
   qReportWarning
     "Lazy pattern converted into regular pattern during singleton generation."
   singPat var_proms patCxt pat
 singPat var_proms patCxt (DBangPa pat) = do
-  (pat', ty) <- singPat var_proms patCxt pat
-  return (DBangPa pat', ty)
-singPat _var_proms _patCxt (DSigPa _pat _ty) = error "TODO: Handle SigPa"
-singPat _var_proms _patCxt DWildPa =
-  -- See Note [No wildcards in singletons]
-  fail "Internal error: wildcard seen during singleton generation"
+  pat' <- singPat var_proms patCxt pat
+  return $ DBangPa pat'
+singPat _var_proms _patCxt (DSigPa _pat _ty) = error "TODO: Handle SigPa. See Issue #183."
+singPat _var_proms _patCxt DWildPa = return DWildPa
+
 
 -- Note [Annotate case return type]
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -547,14 +526,20 @@ singExp (ADAppE e1 e2) _res_ki = do
   if isException e1'
   then return e1'
   else return $ (DVarE applySingName) `DAppE` e1' `DAppE` e2'
-singExp (ADLamE var_proms prom_lam names exp) _res_ki = do
+singExp (ADLamE ty_names prom_lam names exp) _res_ki = do
   let sNames = map singValName names
-  exp' <- bindTyVars var_proms (foldl apply prom_lam (map (DVarT . snd) var_proms)) $
-          singExp exp Nothing
-  return $ wrapSingFun (length names) prom_lam $ DLamE sNames exp'
-singExp (ADCaseE exp prom_exp matches ret_ty) res_ki =
+  exp' <- singExp exp Nothing
+  -- we need to bind the type variables... but DLamE doesn't allow SigT patterns.
+  -- So: build a case
+  let caseExp = DCaseE (mkTupleDExp (map DVarE sNames))
+                       [DMatch (mkTupleDPat
+                                (map ((DWildPa `DSigPa`) .
+                                      (singFamily `DAppT`) .
+                                      DVarT) ty_names)) exp']
+  return $ wrapSingFun (length names) prom_lam $ DLamE sNames caseExp
+singExp (ADCaseE exp matches ret_ty) res_ki =
     -- See Note [Annotate case return type]
-  DSigE <$> (DCaseE <$> singExp exp Nothing <*> mapM (singMatch prom_exp res_ki) matches)
+  DSigE <$> (DCaseE <$> singExp exp Nothing <*> mapM (singMatch res_ki) matches)
         <*> pure (singFamily `DAppT` (ret_ty `maybeSigT` res_ki))
 singExp (ADLetE env exp) res_ki =
   uncurry DLetE <$> singLetDecEnv env (singExp exp res_ki)
@@ -574,21 +559,11 @@ isException (DLetE _ e)           = isException e
 isException (DSigE e _)           = isException e
 isException (DStaticE e)          = isException e
 
-singMatch :: DType        -- ^ the promoted scrutinee
-          -> Maybe DKind  -- ^ the result kind, if known
+singMatch :: Maybe DKind  -- ^ the result kind, if known
           -> ADMatch -> SgM DMatch
-singMatch prom_scrut res_ki (ADMatch var_proms prom_match pat exp) = do
-  (sPat, prom_pat)
-    <- singPat (Map.fromList var_proms) CaseStatement pat
-        -- why DAppT below? See comment near decl of ADMatch in LetDecEnv.
-  let equality
-        | DVarPa _ <- pat
-        , (ADVarE err) `ADAppE` _ <- exp
-        , err == errorName   -- See Note [Why error is so special]
-        = [] -- no equality from impossible case.
-        | otherwise      = [(prom_pat, prom_scrut)]
-  sExp <- bindTyVarsEq var_proms (prom_match `DAppT` prom_pat `maybeSigT` res_ki) equality $
-          singExp exp res_ki
+singMatch res_ki (ADMatch var_proms pat exp) = do
+  sPat <- singPat (Map.fromList var_proms) CaseStatement pat
+  sExp <- singExp exp res_ki
   return $ DMatch sPat sExp
 
 singLit :: Lit -> SgM DExp

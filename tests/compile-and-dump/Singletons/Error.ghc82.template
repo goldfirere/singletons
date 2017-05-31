@@ -19,18 +19,6 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
       Head ((:) a _z_0123456789876543210) = a
       Head '[] = Apply ErrorSym0 "Data.Singletons.List.head: empty list"
     sHead :: forall (t :: [a]). Sing t -> Sing (Apply HeadSym0 t :: a)
-    sHead (SCons sA _s_z_0123456789876543210)
-      = let
-          lambda ::
-            forall a _z_0123456789876543210.
-            t ~ Apply (Apply (:$) a) _z_0123456789876543210 =>
-            Sing a
-            -> Sing _z_0123456789876543210 -> Sing (Apply HeadSym0 t :: a)
-          lambda a _z_0123456789876543210 = a
-        in (lambda sA) _s_z_0123456789876543210
+    sHead (SCons (sA :: Sing a) _) = sA
     sHead SNil
-      = let
-          lambda :: t ~ '[] => Sing (Apply HeadSym0 t :: a)
-          lambda
-            = sError (sing :: Sing "Data.Singletons.List.head: empty list")
-        in lambda
+      = sError (sing :: Sing "Data.Singletons.List.head: empty list")

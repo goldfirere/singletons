@@ -281,44 +281,11 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     sConst ::
       forall (t :: a) (t :: b).
       Sing t -> Sing t -> Sing (Apply (Apply ConstSym0 t) t :: a)
-    sFooCompare SA SA
-      = let
-          lambda ::
-            (t ~ ASym0, t ~ ASym0) =>
-            Sing (Apply (Apply FooCompareSym0 t) t :: Ordering)
-          lambda = SEQ
-        in lambda
-    sFooCompare SA SB
-      = let
-          lambda ::
-            (t ~ ASym0, t ~ BSym0) =>
-            Sing (Apply (Apply FooCompareSym0 t) t :: Ordering)
-          lambda = SLT
-        in lambda
-    sFooCompare SB SB
-      = let
-          lambda ::
-            (t ~ BSym0, t ~ BSym0) =>
-            Sing (Apply (Apply FooCompareSym0 t) t :: Ordering)
-          lambda = SGT
-        in lambda
-    sFooCompare SB SA
-      = let
-          lambda ::
-            (t ~ BSym0, t ~ ASym0) =>
-            Sing (Apply (Apply FooCompareSym0 t) t :: Ordering)
-          lambda = SEQ
-        in lambda
-    sConst sX _s_z_0123456789876543210
-      = let
-          lambda ::
-            forall x _z_0123456789876543210.
-            (t ~ x, t ~ _z_0123456789876543210) =>
-            Sing x
-            -> Sing _z_0123456789876543210
-               -> Sing (Apply (Apply ConstSym0 t) t :: a)
-          lambda x _z_0123456789876543210 = x
-        in (lambda sX) _s_z_0123456789876543210
+    sFooCompare SA SA = SEQ
+    sFooCompare SA SB = SLT
+    sFooCompare SB SB = SGT
+    sFooCompare SB SA = SEQ
+    sConst (sX :: Sing x) _ = sX
     data instance Sing (z :: Foo) = z ~ A => SA | z ~ B => SB
     type SFoo = (Sing :: Foo -> GHC.Types.Type)
     instance SingKind Foo where
@@ -347,125 +314,56 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                 forall (t :: a) (t :: a).
                 (Apply (Apply (:<=>$) t) t :: Ordering) ~ Apply (Apply TFHelper_0123456789876543210Sym0 t) t =>
                 Sing t -> Sing t -> Sing (Apply (Apply (:<=>$) t) t :: Ordering)
-      (%:<=>) sA_0123456789876543210 sA_0123456789876543210
-        = let
-            lambda ::
-              forall a_0123456789876543210 a_0123456789876543210.
-              (t ~ a_0123456789876543210, t ~ a_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing (Apply (Apply (:<=>$) t) t :: Ordering)
-            lambda a_0123456789876543210 a_0123456789876543210
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy MycompareSym0)) sMycompare))
-                      a_0123456789876543210))
-                  a_0123456789876543210
-          in (lambda sA_0123456789876543210) sA_0123456789876543210
+      (%:<=>)
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy MycompareSym0)) sMycompare))
+                sA_0123456789876543210))
+            sA_0123456789876543210
     instance SMyOrd Nat where
       sMycompare ::
         forall (t :: Nat) (t :: Nat).
         Sing t
         -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-      sMycompare SZero SZero
-        = let
-            lambda ::
-              (t ~ ZeroSym0, t ~ ZeroSym0) =>
-              Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-            lambda = SEQ
-          in lambda
-      sMycompare SZero (SSucc _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t ~ ZeroSym0, t ~ Apply SuccSym0 _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-            lambda _z_0123456789876543210 = SLT
-          in lambda _s_z_0123456789876543210
-      sMycompare (SSucc _s_z_0123456789876543210) SZero
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t ~ Apply SuccSym0 _z_0123456789876543210, t ~ ZeroSym0) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-            lambda _z_0123456789876543210 = SGT
-          in lambda _s_z_0123456789876543210
-      sMycompare (SSucc sN) (SSucc sM)
-        = let
-            lambda ::
-              forall n m.
-              (t ~ Apply SuccSym0 n, t ~ Apply SuccSym0 m) =>
-              Sing n
-              -> Sing m -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-            lambda n m
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy MycompareSym0)) sMycompare))
-                      m))
-                  n
-          in (lambda sN) sM
+      sMycompare SZero SZero = SEQ
+      sMycompare SZero (SSucc _) = SLT
+      sMycompare (SSucc _) SZero = SGT
+      sMycompare (SSucc (sN :: Sing n)) (SSucc (sM :: Sing m))
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy MycompareSym0)) sMycompare))
+                sM))
+            sN
     instance SMyOrd () where
       sMycompare ::
         forall (t :: ()) (t :: ()).
         Sing t
         -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-      sMycompare _s_z_0123456789876543210 sA_0123456789876543210
-        = let
-            lambda ::
-              forall _z_0123456789876543210 a_0123456789876543210.
-              (t ~ _z_0123456789876543210, t ~ a_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-            lambda _z_0123456789876543210 a_0123456789876543210
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy ConstSym0)) sConst)) SEQ))
-                  a_0123456789876543210
-          in (lambda _s_z_0123456789876543210) sA_0123456789876543210
+      sMycompare _ (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy ConstSym0)) sConst)) SEQ))
+            sA_0123456789876543210
     instance SMyOrd Foo where
       sMycompare ::
         forall (t :: Foo) (t :: Foo).
         Sing t
         -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-      sMycompare sA_0123456789876543210 sA_0123456789876543210
-        = let
-            lambda ::
-              forall a_0123456789876543210 a_0123456789876543210.
-              (t ~ a_0123456789876543210, t ~ a_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing a_0123456789876543210
-                 -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-            lambda a_0123456789876543210 a_0123456789876543210
-              = (applySing
-                   ((applySing
-                       ((singFun2 (Proxy :: Proxy FooCompareSym0)) sFooCompare))
-                      a_0123456789876543210))
-                  a_0123456789876543210
-          in (lambda sA_0123456789876543210) sA_0123456789876543210
+      sMycompare
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing
+                 ((singFun2 (Proxy :: Proxy FooCompareSym0)) sFooCompare))
+                sA_0123456789876543210))
+            sA_0123456789876543210
     instance SEq Foo2 where
       (%:==) ::
         forall (a :: Foo2) (b :: Foo2).
         Sing a -> Sing b -> Sing ((:==) a b)
-      (%:==) SF SF
-        = let
-            lambda :: (a ~ FSym0, b ~ FSym0) => Sing (Apply (Apply (:==$) a) b)
-            lambda = STrue
-          in lambda
-      (%:==) SG SG
-        = let
-            lambda :: (a ~ GSym0, b ~ GSym0) => Sing (Apply (Apply (:==$) a) b)
-            lambda = STrue
-          in lambda
-      (%:==) SF SG
-        = let
-            lambda :: (a ~ FSym0, b ~ GSym0) => Sing (Apply (Apply (:==$) a) b)
-            lambda = SFalse
-          in lambda
-      (%:==) SG SF
-        = let
-            lambda :: (a ~ GSym0, b ~ FSym0) => Sing (Apply (Apply (:==$) a) b)
-            lambda = SFalse
-          in lambda
+      (%:==) SF SF = STrue
+      (%:==) SG SG = STrue
+      (%:==) SF SG = SFalse
+      (%:==) SG SF = SFalse
     instance SingI A where
       sing = SA
     instance SingI B where
@@ -621,44 +519,14 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                                -> GHC.Types.Type)
                                                    -> GHC.Types.Type) t :: TyFun Nat' Ordering
                                                                            -> GHC.Types.Type) t :: Ordering)
-      sMycompare SZero' SZero'
-        = let
-            lambda ::
-              (t ~ Zero'Sym0, t ~ Zero'Sym0) =>
-              Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-            lambda = SEQ
-          in lambda
-      sMycompare SZero' (SSucc' _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t ~ Zero'Sym0, t ~ Apply Succ'Sym0 _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-            lambda _z_0123456789876543210 = SLT
-          in lambda _s_z_0123456789876543210
-      sMycompare (SSucc' _s_z_0123456789876543210) SZero'
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t ~ Apply Succ'Sym0 _z_0123456789876543210, t ~ Zero'Sym0) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-            lambda _z_0123456789876543210 = SGT
-          in lambda _s_z_0123456789876543210
-      sMycompare (SSucc' sN) (SSucc' sM)
-        = let
-            lambda ::
-              forall n m.
-              (t ~ Apply Succ'Sym0 n, t ~ Apply Succ'Sym0 m) =>
-              Sing n
-              -> Sing m -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
-            lambda n m
-              = (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy MycompareSym0)) sMycompare))
-                      m))
-                  n
-          in (lambda sN) sM
+      sMycompare SZero' SZero' = SEQ
+      sMycompare SZero' (SSucc' _) = SLT
+      sMycompare (SSucc' _) SZero' = SGT
+      sMycompare (SSucc' (sN :: Sing n)) (SSucc' (sM :: Sing m))
+        = (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy MycompareSym0)) sMycompare))
+                sM))
+            sN
     instance SingI Zero' where
       sing = SZero'
     instance SingI n => SingI (Succ' (n :: Nat')) where

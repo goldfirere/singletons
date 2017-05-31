@@ -511,55 +511,54 @@ promoteClause :: DClause -> PrM (DTySynEqn, ADClause)
 promoteClause (DClause pats exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  ((types, pats'), new_vars) <- evalForPair $ mapAndUnzipM promotePat pats
+  (types, new_vars) <- evalForPair $ mapM promotePat pats
   (ty, ann_exp) <- lambdaBind new_vars $ promoteExp exp
   all_locals <- allLocals   -- these are bound *outside* of this clause
   return ( DTySynEqn (map DVarT all_locals ++ types) ty
-         , ADClause new_vars pats' ann_exp )
+         , ADClause new_vars pats ann_exp )
 
-promoteMatch :: DType -> DMatch -> PrM (DTySynEqn, ADMatch)
-promoteMatch prom_case (DMatch pat exp) = do
+promoteMatch :: DMatch -> PrM (DTySynEqn, ADMatch)
+promoteMatch (DMatch pat exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  ((ty, pat'), new_vars) <- evalForPair $ promotePat pat
+  (ty, new_vars) <- evalForPair $ promotePat pat
   (rhs, ann_exp) <- lambdaBind new_vars $ promoteExp exp
   all_locals <- allLocals
   return $ ( DTySynEqn (map DVarT all_locals ++ [ty]) rhs
-           , ADMatch new_vars prom_case pat' ann_exp)
+           , ADMatch new_vars pat ann_exp)
 
 -- promotes a term pattern into a type pattern, accumulating bound variable names
--- See Note [No wildcards in singletons]
-promotePat :: DPat -> QWithAux VarPromotions PrM (DType, DPat)
+promotePat :: DPat -> QWithAux VarPromotions PrM DType
 promotePat (DLitPa lit) = do
   lit' <- promoteLitPat lit
-  return (lit', DLitPa lit)
+  return lit'
 promotePat (DVarPa name) = do
       -- term vars can be symbols... type vars can't!
   tyName <- mkTyName name
   addElement (name, tyName)
-  return (DVarT tyName, DVarPa name)
+  return $ DVarT tyName
 promotePat (DConPa name pats) = do
-  (types, pats') <- mapAndUnzipM promotePat pats
+  types <- mapM promotePat pats
   let name' = unboxed_tuple_to_tuple name
-  return (foldType (DConT name') types, DConPa name pats')
+  return $ foldType (DConT name') types
   where
     unboxed_tuple_to_tuple n
       | Just deg <- unboxedTupleNameDegree_maybe n = tupleDataName deg
       | otherwise                                  = n
 promotePat (DTildePa pat) = do
   qReportWarning "Lazy pattern converted into regular pattern in promotion"
-  (ty, pat') <- promotePat pat
-  return (ty, DTildePa pat')
+  promotePat pat
 promotePat (DBangPa pat) = do
   qReportWarning "Strict pattern converted into regular pattern in promotion"
-  (ty, pat') <- promotePat pat
-  return (ty, DBangPa pat')
-promotePat (DSigPa _pat _ty) = error "TODO: Handle SigPa"
+  promotePat pat
+promotePat (DSigPa pat ty) = do
+  promoted <- promotePat pat
+  ki <- promoteType ty
+  return $ DSigT promoted ki
 promotePat DWildPa = do
   name <- newUniqueName "_z"
   tyName <- mkTyName name
-  addElement (name, tyName)
-  return (DVarT tyName, DVarPa name)
+  return $ DVarT tyName
 
 promoteExp :: DExp -> PrM (DType, ADExp)
 promoteExp (DVarE name) = fmap (, ADVarE name) $ lookupVarE name
@@ -590,13 +589,13 @@ promoteExp (DLamE names exp) = do
   emitDecsM $ defunctionalize lambdaName (map (const Nothing) all_args) Nothing
   let promLambda = foldl apply (DConT (promoteTySym lambdaName 0))
                                (map DVarT all_locals)
-  return (promLambda, ADLamE var_proms promLambda names ann_exp)
+  return (promLambda, ADLamE tyNames promLambda names ann_exp)
 promoteExp (DCaseE exp matches) = do
   caseTFName <- newUniqueName "Case"
   all_locals <- allLocals
   let prom_case = foldType (DConT caseTFName) (map DVarT all_locals)
   (exp', ann_exp)     <- promoteExp exp
-  (eqns, ann_matches) <- mapAndUnzipM (promoteMatch prom_case) matches
+  (eqns, ann_matches) <- mapAndUnzipM promoteMatch matches
   tyvarName  <- qNewName "t"
   let all_args = all_locals ++ [tyvarName]
       tvbs     = map DPlainTV all_args
@@ -604,7 +603,7 @@ promoteExp (DCaseE exp matches) = do
     -- See Note [Annotate case return type] in Single
   let applied_case = prom_case `DAppT` exp'
   return ( applied_case
-         , ADCaseE ann_exp exp' ann_matches applied_case )
+         , ADCaseE ann_exp ann_matches applied_case )
 promoteExp (DLetE decs exp) = do
   unique <- qNewUnique
   let letPrefixes = uniquePrefixes "Let" ":<<<" unique

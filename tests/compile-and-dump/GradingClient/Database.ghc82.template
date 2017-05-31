@@ -94,61 +94,29 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                                                  -> Type) t1 :: TyFun Nat Ordering
                                                                 -> Type) t2 :: Ordering)
       sCompare SZero SZero
-        = let
-            lambda ::
-              (t1 ~ ZeroSym0, t2 ~ ZeroSym0) =>
-              Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda
-              = (applySing
-                   ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
-                  SNil
-          in lambda
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            SNil
       sCompare
-        (SSucc sA_0123456789876543210)
-        (SSucc sB_0123456789876543210)
-        = let
-            lambda ::
-              forall a_0123456789876543210 b_0123456789876543210.
-              (t1 ~ Apply SuccSym0 a_0123456789876543210,
-               t2 ~ Apply SuccSym0 b_0123456789876543210) =>
-              Sing a_0123456789876543210
-              -> Sing b_0123456789876543210
-                 -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda a_0123456789876543210 b_0123456789876543210
-              = (applySing
+        (SSucc (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SSucc (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
+                    ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
                    ((applySing
-                       ((applySing ((singFun3 (Proxy :: Proxy FoldlSym0)) sFoldl))
-                          ((singFun2 (Proxy :: Proxy ThenCmpSym0)) sThenCmp)))
-                      SEQ))
-                  ((applySing
-                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons))
-                         ((applySing
-                             ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
-                                a_0123456789876543210))
-                            b_0123456789876543210)))
-                     SNil)
-          in (lambda sA_0123456789876543210) sB_0123456789876543210
-      sCompare SZero (SSucc _s_z_0123456789876543210)
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ ZeroSym0, t2 ~ Apply SuccSym0 _z_0123456789876543210) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SLT
-          in lambda _s_z_0123456789876543210
-      sCompare (SSucc _s_z_0123456789876543210) SZero
-        = let
-            lambda ::
-              forall _z_0123456789876543210.
-              (t1 ~ Apply SuccSym0 _z_0123456789876543210, t2 ~ ZeroSym0) =>
-              Sing _z_0123456789876543210
-              -> Sing (Apply (Apply CompareSym0 t1) t2 :: Ordering)
-            lambda _z_0123456789876543210 = SGT
-          in lambda _s_z_0123456789876543210
+                       ((applySing ((singFun2 (Proxy :: Proxy CompareSym0)) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               SNil)
+      sCompare SZero (SSucc _) = SLT
+      sCompare (SSucc _) SZero = SGT
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where
@@ -515,161 +483,74 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     sAppend ::
       forall (t :: Schema) (t :: Schema).
       Sing t -> Sing t -> Sing (Apply (Apply AppendSym0 t) t :: Schema)
-    sLookup _s_z_0123456789876543210 (SSch SNil)
+    sLookup _ (SSch SNil) = undefined
+    sLookup
+      (sName :: Sing name)
+      (SSch (SCons (SAttr (sName' :: Sing name') (sU :: Sing u))
+                   (sAttrs :: Sing attrs)))
       = let
-          lambda ::
-            forall _z_0123456789876543210.
-            (t ~ _z_0123456789876543210, t ~ Apply SchSym0 '[]) =>
-            Sing _z_0123456789876543210
-            -> Sing (Apply (Apply LookupSym0 t) t :: U)
-          lambda _z_0123456789876543210 = undefined
-        in lambda _s_z_0123456789876543210
-    sLookup sName (SSch (SCons (SAttr sName' sU) sAttrs))
-      = let
-          lambda ::
-            forall name name' u attrs.
-            (t ~ name,
-             t ~ Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') u)) attrs)) =>
-            Sing name
-            -> Sing name'
-               -> Sing u -> Sing attrs -> Sing (Apply (Apply LookupSym0 t) t :: U)
-          lambda name name' u attrs
-            = let
-                sScrutinee_0123456789876543210 ::
-                  Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs)
-                sScrutinee_0123456789876543210
-                  = (applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) name))
-                      name'
-              in  case sScrutinee_0123456789876543210 of
-                    STrue
-                      -> let
-                           lambda ::
-                             TrueSym0 ~ Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs =>
-                             Sing (Case_0123456789876543210 name name' u attrs TrueSym0 :: U)
-                           lambda = u
-                         in lambda
-                    SFalse
-                      -> let
-                           lambda ::
-                             FalseSym0 ~ Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs =>
-                             Sing (Case_0123456789876543210 name name' u attrs FalseSym0 :: U)
-                           lambda
-                             = (applySing
-                                  ((applySing ((singFun2 (Proxy :: Proxy LookupSym0)) sLookup))
-                                     name))
-                                 ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) attrs)
-                         in lambda ::
-                    Sing (Case_0123456789876543210 name name' u attrs (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs) :: U)
-        in (((lambda sName) sName') sU) sAttrs
-    sOccurs _s_z_0123456789876543210 (SSch SNil)
-      = let
-          lambda ::
-            forall _z_0123456789876543210.
-            (t ~ _z_0123456789876543210, t ~ Apply SchSym0 '[]) =>
-            Sing _z_0123456789876543210
-            -> Sing (Apply (Apply OccursSym0 t) t :: Bool)
-          lambda _z_0123456789876543210 = SFalse
-        in lambda _s_z_0123456789876543210
+          sScrutinee_0123456789876543210 ::
+            Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs)
+          sScrutinee_0123456789876543210
+            = (applySing
+                 ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sName))
+                sName'
+        in  case sScrutinee_0123456789876543210 of
+              STrue -> sU
+              SFalse
+                -> (applySing
+                      ((applySing ((singFun2 (Proxy :: Proxy LookupSym0)) sLookup))
+                         sName))
+                     ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) sAttrs) ::
+              Sing (Case_0123456789876543210 name name' u attrs (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs) :: U)
+    sOccurs _ (SSch SNil) = SFalse
     sOccurs
-      sName
-      (SSch (SCons (SAttr sName' _s_z_0123456789876543210) sAttrs))
-      = let
-          lambda ::
-            forall name name' _z_0123456789876543210 attrs.
-            (t ~ name,
-             t ~ Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') _z_0123456789876543210)) attrs)) =>
-            Sing name
-            -> Sing name'
-               -> Sing _z_0123456789876543210
-                  -> Sing attrs -> Sing (Apply (Apply OccursSym0 t) t :: Bool)
-          lambda name name' _z_0123456789876543210 attrs
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:||$))) (%:||)))
-                    ((applySing
-                        ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) name))
-                       name')))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy OccursSym0)) sOccurs))
-                       name))
-                   ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) attrs))
-        in (((lambda sName) sName') _s_z_0123456789876543210) sAttrs
-    sAttrNotIn _s_z_0123456789876543210 (SSch SNil)
-      = let
-          lambda ::
-            forall _z_0123456789876543210.
-            (t ~ _z_0123456789876543210, t ~ Apply SchSym0 '[]) =>
-            Sing _z_0123456789876543210
-            -> Sing (Apply (Apply AttrNotInSym0 t) t :: Bool)
-          lambda _z_0123456789876543210 = STrue
-        in lambda _s_z_0123456789876543210
+      (sName :: Sing name)
+      (SSch (SCons (SAttr (sName' :: Sing name') _)
+                   (sAttrs :: Sing attrs)))
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy (:||$))) (%:||)))
+              ((applySing
+                  ((applySing ((singFun2 (Proxy :: Proxy (:==$))) (%:==))) sName))
+                 sName')))
+          ((applySing
+              ((applySing ((singFun2 (Proxy :: Proxy OccursSym0)) sOccurs))
+                 sName))
+             ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) sAttrs))
+    sAttrNotIn _ (SSch SNil) = STrue
     sAttrNotIn
-      (SAttr sName sU)
-      (SSch (SCons (SAttr sName' _s_z_0123456789876543210) sT))
-      = let
-          lambda ::
-            forall name u name' _z_0123456789876543210 t.
-            (t ~ Apply (Apply AttrSym0 name) u,
-             t ~ Apply SchSym0 (Apply (Apply (:$) (Apply (Apply AttrSym0 name') _z_0123456789876543210)) t)) =>
-            Sing name
-            -> Sing u
-               -> Sing name'
-                  -> Sing _z_0123456789876543210
-                     -> Sing t -> Sing (Apply (Apply AttrNotInSym0 t) t :: Bool)
-          lambda name u name' _z_0123456789876543210 t
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:&&$))) (%:&&)))
-                    ((applySing
-                        ((applySing ((singFun2 (Proxy :: Proxy (:/=$))) (%:/=))) name))
-                       name')))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy AttrNotInSym0)) sAttrNotIn))
-                       ((applySing
-                           ((applySing ((singFun2 (Proxy :: Proxy AttrSym0)) SAttr)) name))
-                          u)))
-                   ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) t))
-        in ((((lambda sName) sU) sName') _s_z_0123456789876543210) sT
-    sDisjoint (SSch SNil) _s_z_0123456789876543210
-      = let
-          lambda ::
-            forall _z_0123456789876543210.
-            (t ~ Apply SchSym0 '[], t ~ _z_0123456789876543210) =>
-            Sing _z_0123456789876543210
-            -> Sing (Apply (Apply DisjointSym0 t) t :: Bool)
-          lambda _z_0123456789876543210 = STrue
-        in lambda _s_z_0123456789876543210
-    sDisjoint (SSch (SCons sH sT)) sS
-      = let
-          lambda ::
-            forall h t s.
-            (t ~ Apply SchSym0 (Apply (Apply (:$) h) t), t ~ s) =>
-            Sing h
-            -> Sing t
-               -> Sing s -> Sing (Apply (Apply DisjointSym0 t) t :: Bool)
-          lambda h t s
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:&&$))) (%:&&)))
-                    ((applySing
-                        ((applySing ((singFun2 (Proxy :: Proxy AttrNotInSym0)) sAttrNotIn))
-                           h))
-                       s)))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy DisjointSym0)) sDisjoint))
-                       ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) t)))
-                   s)
-        in ((lambda sH) sT) sS
-    sAppend (SSch sS1) (SSch sS2)
-      = let
-          lambda ::
-            forall s1 s2.
-            (t ~ Apply SchSym0 s1, t ~ Apply SchSym0 s2) =>
-            Sing s1 -> Sing s2 -> Sing (Apply (Apply AppendSym0 t) t :: Schema)
-          lambda s1 s2
-            = (applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch))
-                ((applySing
-                    ((applySing ((singFun2 (Proxy :: Proxy (:++$))) (%:++))) s1))
-                   s2)
-        in (lambda sS1) sS2
+      (SAttr (sName :: Sing name) (sU :: Sing u))
+      (SSch (SCons (SAttr (sName' :: Sing name') _) (sT :: Sing t)))
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy (:&&$))) (%:&&)))
+              ((applySing
+                  ((applySing ((singFun2 (Proxy :: Proxy (:/=$))) (%:/=))) sName))
+                 sName')))
+          ((applySing
+              ((applySing ((singFun2 (Proxy :: Proxy AttrNotInSym0)) sAttrNotIn))
+                 ((applySing
+                     ((applySing ((singFun2 (Proxy :: Proxy AttrSym0)) SAttr)) sName))
+                    sU)))
+             ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) sT))
+    sDisjoint (SSch SNil) _ = STrue
+    sDisjoint
+      (SSch (SCons (sH :: Sing h) (sT :: Sing t)))
+      (sS :: Sing s)
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy (:&&$))) (%:&&)))
+              ((applySing
+                  ((applySing ((singFun2 (Proxy :: Proxy AttrNotInSym0)) sAttrNotIn))
+                     sH))
+                 sS)))
+          ((applySing
+              ((applySing ((singFun2 (Proxy :: Proxy DisjointSym0)) sDisjoint))
+                 ((applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch)) sT)))
+             sS)
+    sAppend (SSch (sS1 :: Sing s1)) (SSch (sS2 :: Sing s2))
+      = (applySing ((singFun1 (Proxy :: Proxy SchSym0)) SSch))
+          ((applySing
+              ((applySing ((singFun2 (Proxy :: Proxy (:++$))) (%:++))) sS1))
+             sS2)
     data instance Sing (z :: U)
       = z ~ BOOL => SBOOL |
         z ~ STRING => SSTRING |

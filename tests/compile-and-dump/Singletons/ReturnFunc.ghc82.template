@@ -67,32 +67,12 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     sReturnFunc ::
       forall (t :: Nat) (t :: Nat).
       Sing t -> Sing t -> Sing (Apply (Apply ReturnFuncSym0 t) t :: Nat)
-    sId sX
-      = let
-          lambda :: forall x. t ~ x => Sing x -> Sing (Apply IdSym0 t :: a)
-          lambda x = x
-        in lambda sX
-    sIdFoo _s_z_0123456789876543210 sA_0123456789876543210
-      = let
-          lambda ::
-            forall _z_0123456789876543210 a_0123456789876543210.
-            (t ~ _z_0123456789876543210, t ~ a_0123456789876543210) =>
-            Sing _z_0123456789876543210
-            -> Sing a_0123456789876543210
-               -> Sing (Apply (Apply IdFooSym0 t) t :: a)
-          lambda _z_0123456789876543210 a_0123456789876543210
-            = (applySing ((singFun1 (Proxy :: Proxy IdSym0)) sId))
-                a_0123456789876543210
-        in (lambda _s_z_0123456789876543210) sA_0123456789876543210
-    sReturnFunc _s_z_0123456789876543210 sA_0123456789876543210
-      = let
-          lambda ::
-            forall _z_0123456789876543210 a_0123456789876543210.
-            (t ~ _z_0123456789876543210, t ~ a_0123456789876543210) =>
-            Sing _z_0123456789876543210
-            -> Sing a_0123456789876543210
-               -> Sing (Apply (Apply ReturnFuncSym0 t) t :: Nat)
-          lambda _z_0123456789876543210 a_0123456789876543210
-            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                a_0123456789876543210
-        in (lambda _s_z_0123456789876543210) sA_0123456789876543210
+    sId (sX :: Sing x) = sX
+    sIdFoo _ (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      = (applySing ((singFun1 (Proxy :: Proxy IdSym0)) sId))
+          sA_0123456789876543210
+    sReturnFunc
+      _
+      (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+          sA_0123456789876543210

@@ -746,362 +746,185 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo2 :: Sing (Foo2Sym0 :: Nat)
     sFoo1 ::
       forall (t :: Nat). Sing t -> Sing (Apply Foo1Sym0 t :: Nat)
-    sFoo14 sX
+    sFoo14 (sX :: Sing x)
       = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo14Sym0 t :: (Nat, Nat))
-          lambda x
+          sY :: Sing (Let0123456789876543210YSym1 x)
+          sZ :: Sing (Let0123456789876543210ZSym1 x)
+          sX_0123456789876543210 ::
+            Sing (Let0123456789876543210X_0123456789876543210Sym1 x)
+          sY
+            = case sX_0123456789876543210 of {
+                STuple2 (sY_0123456789876543210 :: Sing y_0123456789876543210) _
+                  -> sY_0123456789876543210 } ::
+                Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x))
+          sZ
+            = case sX_0123456789876543210 of {
+                STuple2 _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
+                  -> sY_0123456789876543210 } ::
+                Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x))
+          sX_0123456789876543210
+            = (applySing
+                 ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2))
+                    ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sX)))
+                sX
+        in
+          (applySing
+             ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2)) sZ))
+            sY
+    sFoo13_ (sY :: Sing y) = sY
+    sFoo13 (sX :: Sing x)
+      = let
+          sBar :: Sing (Let0123456789876543210BarSym1 x :: a)
+          sBar = sX
+        in
+          (applySing ((singFun1 (Proxy :: Proxy Foo13_Sym0)) sFoo13_)) sBar
+    sFoo12 (sX :: Sing x)
+      = let
+          (%:+) ::
+            forall (t :: Nat) (t :: Nat).
+            Sing t
+            -> Sing t
+               -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
+          (%:+) SZero (sM :: Sing m) = sM
+          (%:+) (SSucc (sN :: Sing n)) (sM :: Sing m)
+            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+                ((applySing
+                    ((applySing
+                        ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
+                           (%:+)))
+                       sN))
+                   sX)
+        in
+          (applySing
+             ((applySing
+                 ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
+                    (%:+)))
+                sX))
+            ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+               ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero))
+    sFoo11 (sX :: Sing x)
+      = let
+          sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
+          (%:+) ::
+            forall (t :: Nat) (t :: Nat).
+            Sing t
+            -> Sing t
+               -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
+          sZ = sX
+          (%:+) SZero (sM :: Sing m) = sM
+          (%:+) (SSucc (sN :: Sing n)) (sM :: Sing m)
+            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+                ((applySing
+                    ((applySing
+                        ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
+                           (%:+)))
+                       sN))
+                   sM)
+        in
+          (applySing
+             ((applySing
+                 ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
+                    (%:+)))
+                ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
+            sZ
+    sFoo10 (sX :: Sing x)
+      = let
+          (%:+) ::
+            forall (t :: Nat) (t :: Nat).
+            Sing t
+            -> Sing t
+               -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
+          (%:+) SZero (sM :: Sing m) = sM
+          (%:+) (SSucc (sN :: Sing n)) (sM :: Sing m)
+            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
+                ((applySing
+                    ((applySing
+                        ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
+                           (%:+)))
+                       sN))
+                   sM)
+        in
+          (applySing
+             ((applySing
+                 ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
+                    (%:+)))
+                ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
+            sX
+    sFoo9 (sX :: Sing x)
+      = let
+          sZ ::
+            forall (t :: Nat).
+            Sing t -> Sing (Apply (Let0123456789876543210ZSym1 x) t :: Nat)
+          sZ (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            = (applySing
+                 ((singFun1
+                     (Proxy ::
+                        Proxy (Apply (Apply Lambda_0123456789876543210Sym0 x) a_0123456789876543210)))
+                    (\ sX -> case sX of { _ :: Sing x -> sX })))
+                sA_0123456789876543210
+        in
+          (applySing
+             ((singFun1 (Proxy :: Proxy (Let0123456789876543210ZSym1 x))) sZ))
+            sX
+    sFoo8 (sX :: Sing x)
+      = let
+          sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
+          sZ
+            = (applySing
+                 ((singFun1
+                     (Proxy :: Proxy (Apply Lambda_0123456789876543210Sym0 x)))
+                    (\ sX -> case sX of { _ :: Sing x -> sX })))
+                SZero
+        in sZ
+    sFoo7 (sX :: Sing x)
+      = let
+          sX :: Sing (Let0123456789876543210XSym1 x :: Nat)
+          sX = SZero
+        in sX
+    sFoo6 (sX :: Sing x)
+      = let
+          sF ::
+            forall (t :: Nat).
+            Sing t -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
+          sF (sY :: Sing y)
+            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sY in
+        let
+          sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
+          sZ
+            = (applySing
+                 ((singFun1 (Proxy :: Proxy (Let0123456789876543210FSym1 x))) sF))
+                sX
+        in sZ
+    sFoo5 (sX :: Sing x)
+      = let
+          sF ::
+            forall (t :: Nat).
+            Sing t -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
+          sF (sY :: Sing y)
             = let
-                sY :: Sing (Let0123456789876543210YSym1 x)
-                sZ :: Sing (Let0123456789876543210ZSym1 x)
-                sX_0123456789876543210 ::
-                  Sing (Let0123456789876543210X_0123456789876543210Sym1 x)
-                sY
-                  = case sX_0123456789876543210 of {
-                      STuple2 sY_0123456789876543210 _s_z_0123456789876543210
-                        -> let
-                             lambda ::
-                               forall y_0123456789876543210 _z_0123456789876543210.
-                               Apply (Apply Tuple2Sym0 y_0123456789876543210) _z_0123456789876543210 ~ Let0123456789876543210X_0123456789876543210Sym1 x =>
-                               Sing y_0123456789876543210
-                               -> Sing _z_0123456789876543210
-                                  -> Sing (Case_0123456789876543210 x (Apply (Apply Tuple2Sym0 y_0123456789876543210) _z_0123456789876543210))
-                             lambda y_0123456789876543210 _z_0123456789876543210
-                               = y_0123456789876543210
-                           in (lambda sY_0123456789876543210) _s_z_0123456789876543210 } ::
-                      Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x))
-                sZ
-                  = case sX_0123456789876543210 of {
-                      STuple2 _s_z_0123456789876543210 sY_0123456789876543210
-                        -> let
-                             lambda ::
-                               forall _z_0123456789876543210 y_0123456789876543210.
-                               Apply (Apply Tuple2Sym0 _z_0123456789876543210) y_0123456789876543210 ~ Let0123456789876543210X_0123456789876543210Sym1 x =>
-                               Sing _z_0123456789876543210
-                               -> Sing y_0123456789876543210
-                                  -> Sing (Case_0123456789876543210 x (Apply (Apply Tuple2Sym0 _z_0123456789876543210) y_0123456789876543210))
-                             lambda _z_0123456789876543210 y_0123456789876543210
-                               = y_0123456789876543210
-                           in (lambda _s_z_0123456789876543210) sY_0123456789876543210 } ::
-                      Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x))
-                sX_0123456789876543210
-                  = (applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2))
-                          ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) x)))
-                      x
-              in
-                (applySing
-                   ((applySing ((singFun2 (Proxy :: Proxy Tuple2Sym0)) STuple2)) sZ))
-                  sY
-        in lambda sX
-    sFoo13_ sY
+                sZ :: Sing (Let0123456789876543210ZSym2 x y :: Nat)
+                sZ = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sY
+              in (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sZ
+        in
+          (applySing
+             ((singFun1 (Proxy :: Proxy (Let0123456789876543210FSym1 x))) sF))
+            sX
+    sFoo4 (sX :: Sing x)
       = let
-          lambda ::
-            forall y. t ~ y => Sing y -> Sing (Apply Foo13_Sym0 t :: a)
-          lambda y = y
-        in lambda sY
-    sFoo13 sX
+          sF ::
+            forall (t :: Nat).
+            Sing t -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
+          sF (sY :: Sing y)
+            = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sY
+        in
+          (applySing
+             ((singFun1 (Proxy :: Proxy (Let0123456789876543210FSym1 x))) sF))
+            sX
+    sFoo3 (sX :: Sing x)
       = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo13Sym0 t :: a)
-          lambda x
-            = let
-                sBar :: Sing (Let0123456789876543210BarSym1 x :: a)
-                sBar = x
-              in
-                (applySing ((singFun1 (Proxy :: Proxy Foo13_Sym0)) sFoo13_)) sBar
-        in lambda sX
-    sFoo12 sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo12Sym0 t :: Nat)
-          lambda x
-            = let
-                (%:+) ::
-                  forall (t :: Nat) (t :: Nat).
-                  Sing t
-                  -> Sing t
-                     -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
-                (%:+) SZero sM
-                  = let
-                      lambda ::
-                        forall m.
-                        (t ~ ZeroSym0, t ~ m) =>
-                        Sing m
-                        -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
-                      lambda m = m
-                    in lambda sM
-                (%:+) (SSucc sN) sM
-                  = let
-                      lambda ::
-                        forall n m.
-                        (t ~ Apply SuccSym0 n, t ~ m) =>
-                        Sing n
-                        -> Sing m
-                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
-                      lambda n m
-                        = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                            ((applySing
-                                ((applySing
-                                    ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                                       (%:+)))
-                                   n))
-                               x)
-                    in (lambda sN) sM
-              in
-                (applySing
-                   ((applySing
-                       ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                          (%:+)))
-                      x))
-                  ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                     ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero))
-        in lambda sX
-    sFoo11 sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo11Sym0 t :: Nat)
-          lambda x
-            = let
-                sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
-                (%:+) ::
-                  forall (t :: Nat) (t :: Nat).
-                  Sing t
-                  -> Sing t
-                     -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
-                sZ = x
-                (%:+) SZero sM
-                  = let
-                      lambda ::
-                        forall m.
-                        (t ~ ZeroSym0, t ~ m) =>
-                        Sing m
-                        -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
-                      lambda m = m
-                    in lambda sM
-                (%:+) (SSucc sN) sM
-                  = let
-                      lambda ::
-                        forall n m.
-                        (t ~ Apply SuccSym0 n, t ~ m) =>
-                        Sing n
-                        -> Sing m
-                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
-                      lambda n m
-                        = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                            ((applySing
-                                ((applySing
-                                    ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                                       (%:+)))
-                                   n))
-                               m)
-                    in (lambda sN) sM
-              in
-                (applySing
-                   ((applySing
-                       ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                          (%:+)))
-                      ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
-                  sZ
-        in lambda sX
-    sFoo10 sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo10Sym0 t :: Nat)
-          lambda x
-            = let
-                (%:+) ::
-                  forall (t :: Nat) (t :: Nat).
-                  Sing t
-                  -> Sing t
-                     -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
-                (%:+) SZero sM
-                  = let
-                      lambda ::
-                        forall m.
-                        (t ~ ZeroSym0, t ~ m) =>
-                        Sing m
-                        -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
-                      lambda m = m
-                    in lambda sM
-                (%:+) (SSucc sN) sM
-                  = let
-                      lambda ::
-                        forall n m.
-                        (t ~ Apply SuccSym0 n, t ~ m) =>
-                        Sing n
-                        -> Sing m
-                           -> Sing (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x) t) t :: Nat)
-                      lambda n m
-                        = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc))
-                            ((applySing
-                                ((applySing
-                                    ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                                       (%:+)))
-                                   n))
-                               m)
-                    in (lambda sN) sM
-              in
-                (applySing
-                   ((applySing
-                       ((singFun2 (Proxy :: Proxy ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) x)))
-                          (%:+)))
-                      ((applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero)))
-                  x
-        in lambda sX
-    sFoo9 sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo9Sym0 t :: Nat)
-          lambda x
-            = let
-                sZ ::
-                  forall (t :: Nat).
-                  Sing t -> Sing (Apply (Let0123456789876543210ZSym1 x) t :: Nat)
-                sZ sA_0123456789876543210
-                  = let
-                      lambda ::
-                        forall a_0123456789876543210.
-                        t ~ a_0123456789876543210 =>
-                        Sing a_0123456789876543210
-                        -> Sing (Apply (Let0123456789876543210ZSym1 x) t :: Nat)
-                      lambda a_0123456789876543210
-                        = (applySing
-                             ((singFun1
-                                 (Proxy ::
-                                    Proxy (Apply (Apply Lambda_0123456789876543210Sym0 x) a_0123456789876543210)))
-                                (\ sX
-                                   -> let
-                                        lambda ::
-                                          forall x.
-                                          Sing x
-                                          -> Sing (Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) a_0123456789876543210) x)
-                                        lambda x = x
-                                      in lambda sX)))
-                            a_0123456789876543210
-                    in lambda sA_0123456789876543210
-              in
-                (applySing
-                   ((singFun1 (Proxy :: Proxy (Let0123456789876543210ZSym1 x))) sZ))
-                  x
-        in lambda sX
-    sFoo8 sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo8Sym0 t :: Nat)
-          lambda x
-            = let
-                sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
-                sZ
-                  = (applySing
-                       ((singFun1
-                           (Proxy :: Proxy (Apply Lambda_0123456789876543210Sym0 x)))
-                          (\ sX
-                             -> let
-                                  lambda ::
-                                    forall x.
-                                    Sing x
-                                    -> Sing (Apply (Apply Lambda_0123456789876543210Sym0 x) x)
-                                  lambda x = x
-                                in lambda sX)))
-                      SZero
-              in sZ
-        in lambda sX
-    sFoo7 sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo7Sym0 t :: Nat)
-          lambda x
-            = let
-                sX :: Sing (Let0123456789876543210XSym1 x :: Nat)
-                sX = SZero
-              in sX
-        in lambda sX
-    sFoo6 sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo6Sym0 t :: Nat)
-          lambda x
-            = let
-                sF ::
-                  forall (t :: Nat).
-                  Sing t -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
-                sF sY
-                  = let
-                      lambda ::
-                        forall y.
-                        t ~ y =>
-                        Sing y -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
-                      lambda y
-                        = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) y
-                    in lambda sY in
-              let
-                sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
-                sZ
-                  = (applySing
-                       ((singFun1 (Proxy :: Proxy (Let0123456789876543210FSym1 x))) sF))
-                      x
-              in sZ
-        in lambda sX
-    sFoo5 sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo5Sym0 t :: Nat)
-          lambda x
-            = let
-                sF ::
-                  forall (t :: Nat).
-                  Sing t -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
-                sF sY
-                  = let
-                      lambda ::
-                        forall y.
-                        t ~ y =>
-                        Sing y -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
-                      lambda y
-                        = let
-                            sZ :: Sing (Let0123456789876543210ZSym2 x y :: Nat)
-                            sZ = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) y
-                          in (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sZ
-                    in lambda sY
-              in
-                (applySing
-                   ((singFun1 (Proxy :: Proxy (Let0123456789876543210FSym1 x))) sF))
-                  x
-        in lambda sX
-    sFoo4 sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo4Sym0 t :: Nat)
-          lambda x
-            = let
-                sF ::
-                  forall (t :: Nat).
-                  Sing t -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
-                sF sY
-                  = let
-                      lambda ::
-                        forall y.
-                        t ~ y =>
-                        Sing y -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
-                      lambda y
-                        = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) y
-                    in lambda sY
-              in
-                (applySing
-                   ((singFun1 (Proxy :: Proxy (Let0123456789876543210FSym1 x))) sF))
-                  x
-        in lambda sX
-    sFoo3 sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo3Sym0 t :: Nat)
-          lambda x
-            = let
-                sY :: Sing (Let0123456789876543210YSym1 x :: Nat)
-                sY = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) x
-              in sY
-        in lambda sX
+          sY :: Sing (Let0123456789876543210YSym1 x :: Nat)
+          sY = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sX
+        in sY
     sFoo2
       = let
           sY :: Sing Let0123456789876543210YSym0
@@ -1109,13 +932,8 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
           sY = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero
           sZ = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) sY
         in sZ
-    sFoo1 sX
+    sFoo1 (sX :: Sing x)
       = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply Foo1Sym0 t :: Nat)
-          lambda x
-            = let
-                sY :: Sing (Let0123456789876543210YSym1 x :: Nat)
-                sY = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero
-              in sY
-        in lambda sX
+          sY :: Sing (Let0123456789876543210YSym1 x :: Nat)
+          sY = (applySing ((singFun1 (Proxy :: Proxy SuccSym0)) SSucc)) SZero
+        in sY

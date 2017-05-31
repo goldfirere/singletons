@@ -61,16 +61,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     (%:====) ::
       forall (t :: a) (t :: a).
       Sing t -> Sing t -> Sing (Apply (Apply (:====$) t) t :: a)
-    (%:====) sA _s_z_0123456789876543210
-      = let
-          lambda ::
-            forall a _z_0123456789876543210.
-            (t ~ a, t ~ _z_0123456789876543210) =>
-            Sing a
-            -> Sing _z_0123456789876543210
-               -> Sing (Apply (Apply (:====$) t) t :: a)
-          lambda a _z_0123456789876543210 = a
-        in (lambda sA) _s_z_0123456789876543210
+    (%:====) (sA :: Sing a) _ = sA
     class SMyOrd a where
       (%:<=>) ::
         forall (t :: a) (t :: a).

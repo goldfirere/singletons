@@ -65,55 +65,35 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
       forall (t :: Bool). Sing t -> Sing (Apply BarSym0 t :: Bool)
     sFoo ::
       forall (t :: Bool). Sing t -> Sing (Apply FooSym0 t :: Bool)
-    sBan sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply BanSym0 t :: Bool)
-          lambda x
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy ($!$))) (%$!)))
-                    ((applySing
-                        ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
-                           ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
-                       ((applySing
-                           ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
-                              ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
-                          ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))))
-                x
-        in lambda sX
-    sBaz sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply BazSym0 t :: Bool)
-          lambda x
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy ($!$))) (%$!)))
-                    ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
-                x
-        in lambda sX
-    sBar sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply BarSym0 t :: Bool)
-          lambda x
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy ($$))) (%$)))
-                    ((applySing
-                        ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
-                           ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
-                       ((applySing
-                           ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
-                              ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
-                          ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))))
-                x
-        in lambda sX
-    sFoo sX
-      = let
-          lambda ::
-            forall x. t ~ x => Sing x -> Sing (Apply FooSym0 t :: Bool)
-          lambda x
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy ($$))) (%$)))
-                    ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
-                x
-        in lambda sX
+    sBan (sX :: Sing x)
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy ($!$))) (%$!)))
+              ((applySing
+                  ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
+                     ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
+                 ((applySing
+                     ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
+                        ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
+                    ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))))
+          sX
+    sBaz (sX :: Sing x)
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy ($!$))) (%$!)))
+              ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
+          sX
+    sBar (sX :: Sing x)
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy ($$))) (%$)))
+              ((applySing
+                  ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
+                     ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
+                 ((applySing
+                     ((applySing ((singFun3 (Proxy :: Proxy (:.$))) (%:.)))
+                        ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
+                    ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))))
+          sX
+    sFoo (sX :: Sing x)
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy ($$))) (%$)))
+              ((singFun1 (Proxy :: Proxy NotSym0)) sNot)))
+          sX

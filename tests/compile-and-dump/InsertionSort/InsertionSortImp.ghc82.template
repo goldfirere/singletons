@@ -150,104 +150,42 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     sInsertionSort ::
       forall (t :: [Nat]).
       Sing t -> Sing (Apply InsertionSortSym0 t :: [Nat])
-    sLeq SZero _s_z_0123456789876543210
+    sLeq SZero _ = STrue
+    sLeq (SSucc _) SZero = SFalse
+    sLeq (SSucc (sA :: Sing a)) (SSucc (sB :: Sing b))
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy LeqSym0)) sLeq)) sA))
+          sB
+    sInsert (sN :: Sing n) SNil
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) sN))
+          SNil
+    sInsert (sN :: Sing n) (SCons (sH :: Sing h) (sT :: Sing t))
       = let
-          lambda ::
-            forall _z_0123456789876543210.
-            (t ~ ZeroSym0, t ~ _z_0123456789876543210) =>
-            Sing _z_0123456789876543210
-            -> Sing (Apply (Apply LeqSym0 t) t :: Bool)
-          lambda _z_0123456789876543210 = STrue
-        in lambda _s_z_0123456789876543210
-    sLeq (SSucc _s_z_0123456789876543210) SZero
-      = let
-          lambda ::
-            forall _z_0123456789876543210.
-            (t ~ Apply SuccSym0 _z_0123456789876543210, t ~ ZeroSym0) =>
-            Sing _z_0123456789876543210
-            -> Sing (Apply (Apply LeqSym0 t) t :: Bool)
-          lambda _z_0123456789876543210 = SFalse
-        in lambda _s_z_0123456789876543210
-    sLeq (SSucc sA) (SSucc sB)
-      = let
-          lambda ::
-            forall a b.
-            (t ~ Apply SuccSym0 a, t ~ Apply SuccSym0 b) =>
-            Sing a -> Sing b -> Sing (Apply (Apply LeqSym0 t) t :: Bool)
-          lambda a b
+          sScrutinee_0123456789876543210 ::
+            Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t)
+          sScrutinee_0123456789876543210
             = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy LeqSym0)) sLeq)) a))
-                b
-        in (lambda sA) sB
-    sInsert sN SNil
-      = let
-          lambda ::
-            forall n.
-            (t ~ n, t ~ '[]) =>
-            Sing n -> Sing (Apply (Apply InsertSym0 t) t :: [Nat])
-          lambda n
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) n))
-                SNil
-        in lambda sN
-    sInsert sN (SCons sH sT)
-      = let
-          lambda ::
-            forall n h t.
-            (t ~ n, t ~ Apply (Apply (:$) h) t) =>
-            Sing n
-            -> Sing h -> Sing t -> Sing (Apply (Apply InsertSym0 t) t :: [Nat])
-          lambda n h t
-            = let
-                sScrutinee_0123456789876543210 ::
-                  Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t)
-                sScrutinee_0123456789876543210
-                  = (applySing
-                       ((applySing ((singFun2 (Proxy :: Proxy LeqSym0)) sLeq)) n))
-                      h
-              in  case sScrutinee_0123456789876543210 of
-                    STrue
-                      -> let
-                           lambda ::
-                             TrueSym0 ~ Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t =>
-                             Sing (Case_0123456789876543210 n h t TrueSym0 :: [Nat])
-                           lambda
-                             = (applySing
-                                  ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) n))
-                                 ((applySing
-                                     ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) h))
-                                    t)
-                         in lambda
-                    SFalse
-                      -> let
-                           lambda ::
-                             FalseSym0 ~ Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t =>
-                             Sing (Case_0123456789876543210 n h t FalseSym0 :: [Nat])
-                           lambda
-                             = (applySing
-                                  ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) h))
-                                 ((applySing
-                                     ((applySing ((singFun2 (Proxy :: Proxy InsertSym0)) sInsert))
-                                        n))
-                                    t)
-                         in lambda ::
-                    Sing (Case_0123456789876543210 n h t (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t) :: [Nat])
-        in ((lambda sN) sH) sT
-    sInsertionSort SNil
-      = let
-          lambda :: t ~ '[] => Sing (Apply InsertionSortSym0 t :: [Nat])
-          lambda = SNil
-        in lambda
-    sInsertionSort (SCons sH sT)
-      = let
-          lambda ::
-            forall h t.
-            t ~ Apply (Apply (:$) h) t =>
-            Sing h -> Sing t -> Sing (Apply InsertionSortSym0 t :: [Nat])
-          lambda h t
-            = (applySing
-                 ((applySing ((singFun2 (Proxy :: Proxy InsertSym0)) sInsert)) h))
-                ((applySing
-                    ((singFun1 (Proxy :: Proxy InsertionSortSym0)) sInsertionSort))
-                   t)
-        in (lambda sH) sT
+                 ((applySing ((singFun2 (Proxy :: Proxy LeqSym0)) sLeq)) sN))
+                sH
+        in  case sScrutinee_0123456789876543210 of
+              STrue
+                -> (applySing
+                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) sN))
+                     ((applySing
+                         ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) sH))
+                        sT)
+              SFalse
+                -> (applySing
+                      ((applySing ((singFun2 (Proxy :: Proxy (:$))) SCons)) sH))
+                     ((applySing
+                         ((applySing ((singFun2 (Proxy :: Proxy InsertSym0)) sInsert)) sN))
+                        sT) ::
+              Sing (Case_0123456789876543210 n h t (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t) :: [Nat])
+    sInsertionSort SNil = SNil
+    sInsertionSort (SCons (sH :: Sing h) (sT :: Sing t))
+      = (applySing
+           ((applySing ((singFun2 (Proxy :: Proxy InsertSym0)) sInsert)) sH))
+          ((applySing
+              ((singFun1 (Proxy :: Proxy InsertionSortSym0)) sInsertionSort))
+             sT)
