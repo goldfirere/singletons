@@ -1,0 +1,48 @@
+Promote/T180.hs:(0,0)-(0,0): Splicing declarations
+    promote
+      [d| z (X1 x) = x
+          z (X2 x) = x
+          
+          data X = X1 {y :: Symbol} | X2 {y :: Symbol} |]
+  ======>
+    data X = X1 {y :: Symbol} | X2 {y :: Symbol}
+    z (X1 x) = x
+    z (X2 x) = x
+    type ZSym1 t = Z t
+    instance SuppressUnusedWarnings ZSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) ZSym0KindInference) GHC.Tuple.())
+    data ZSym0 l
+      = forall arg. SameKind (Apply ZSym0 arg) (ZSym1 arg) =>
+        ZSym0KindInference
+    type instance Apply ZSym0 l = Z l
+    type family Z a where
+      Z (X1 x) = x
+      Z (X2 x) = x
+    type YSym1 (t :: X) = Y t
+    instance SuppressUnusedWarnings YSym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) YSym0KindInference) GHC.Tuple.())
+    data YSym0 (l :: TyFun X Symbol)
+      = forall arg. SameKind (Apply YSym0 arg) (YSym1 arg) =>
+        YSym0KindInference
+    type instance Apply YSym0 l = Y l
+    type family Y (a :: X) :: Symbol where
+      Y (X1 field) = field
+      Y (X2 field) = field
+    type X1Sym1 (t :: Symbol) = X1 t
+    instance SuppressUnusedWarnings X1Sym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) X1Sym0KindInference) GHC.Tuple.())
+    data X1Sym0 (l :: TyFun Symbol X)
+      = forall arg. SameKind (Apply X1Sym0 arg) (X1Sym1 arg) =>
+        X1Sym0KindInference
+    type instance Apply X1Sym0 l = X1 l
+    type X2Sym1 (t :: Symbol) = X2 t
+    instance SuppressUnusedWarnings X2Sym0 where
+      suppressUnusedWarnings _
+        = snd ((GHC.Tuple.(,) X2Sym0KindInference) GHC.Tuple.())
+    data X2Sym0 (l :: TyFun Symbol X)
+      = forall arg. SameKind (Apply X2Sym0 arg) (X2Sym1 arg) =>
+        X2Sym0KindInference
+    type instance Apply X2Sym0 l = X2 l

@@ -75,6 +75,7 @@ tests =
     , compileAndDumpStdTest "Newtypes"
     , compileAndDumpStdTest "Pragmas"
     , compileAndDumpStdTest "Prelude"
+    , compileAndDumpStdTest "T180"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts
