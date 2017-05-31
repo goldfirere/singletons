@@ -569,7 +569,9 @@ promoteExp (DAppE exp1 exp2) = do
   (exp2', ann_exp2) <- promoteExp exp2
   return (apply exp1' exp2', ADAppE ann_exp1 ann_exp2)
 -- Until we get visible kind applications, this is the best we can do.
-promoteExp (DAppTypeE exp _) = promoteExp exp
+promoteExp (DAppTypeE exp _) = do
+  qReportWarning "Visible type applications are ignored by `singletons`."
+  promoteExp exp
 promoteExp (DLamE names exp) = do
   lambdaName <- newUniqueName "Lambda"
   tyNames <- mapM mkTyName names
