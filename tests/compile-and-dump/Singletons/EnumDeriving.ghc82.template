@@ -28,7 +28,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
     type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
         ToEnum_0123456789876543210 t
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ToEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
@@ -43,7 +43,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
     type FromEnum_0123456789876543210Sym1 (t :: Foo) =
         FromEnum_0123456789876543210 t
     instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) FromEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
@@ -133,7 +133,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
     type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
         ToEnum_0123456789876543210 t
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ToEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
@@ -147,7 +147,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
     type FromEnum_0123456789876543210Sym1 (t :: Quux) =
         FromEnum_0123456789876543210 t
     instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) FromEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())

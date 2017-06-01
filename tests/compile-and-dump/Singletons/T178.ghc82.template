@@ -40,7 +40,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type Compare_0123456789876543210Sym2 (t :: Occ) (t :: Occ) =
         Compare_0123456789876543210 t t
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
@@ -49,7 +49,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789876543210Sym1KindInference
     type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())

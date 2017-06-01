@@ -151,7 +151,7 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
           suppress    = DInstanceD Nothing []
                           (DConT suppressClassName `DAppT` DConT data_name)
                           [DLetDec $ DFunD suppressMethodName
-                                           [DClause [DWildPa]
+                                           [DClause []
                                                     ((DVarE 'snd) `DAppE`
                                                      mkTupleDExp [DConE con_name,
                                                                   mkTupleDExp []])]]

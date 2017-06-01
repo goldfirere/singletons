@@ -1,6 +1,5 @@
 module Singletons.AsPattern where
 
-import Data.Proxy
 import Data.Singletons
 import Data.Singletons.TH
 import Data.Singletons.Prelude.Maybe

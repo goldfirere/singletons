@@ -22,7 +22,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
     type StringSym0 = String
     type MaybeSym1 (t :: Type) = Maybe t
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings MaybeSym0 where
-      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
+      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MaybeSym0KindInference) GHC.Tuple.())
     data MaybeSym0 (l :: TyFun Type Type)
       = forall arg. SameKind (Apply MaybeSym0 arg) (MaybeSym1 arg) =>
@@ -30,14 +30,14 @@ Singletons/Star.hs:0:0:: Splicing declarations
     type instance Apply MaybeSym0 l = Maybe l
     type VecSym2 (t :: Type) (t :: Nat) = Vec t t
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings VecSym1 where
-      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
+      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) VecSym1KindInference) GHC.Tuple.())
     data VecSym1 (l :: Type) (l :: TyFun Nat Type)
       = forall arg. SameKind (Apply (VecSym1 l) arg) (VecSym2 l arg) =>
         VecSym1KindInference
     type instance Apply (VecSym1 l) l = Vec l l
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings VecSym0 where
-      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
+      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) VecSym0KindInference) GHC.Tuple.())
     data VecSym0 (l :: TyFun Type (TyFun Nat Type -> Type))
       = forall arg. SameKind (Apply VecSym0 arg) (VecSym1 arg) =>
@@ -72,7 +72,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
     type Compare_0123456789876543210Sym2 (t :: Type) (t :: Type) =
         Compare_0123456789876543210 t t
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
-      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
+      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
@@ -81,7 +81,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
         Compare_0123456789876543210Sym1KindInference
     type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
-      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings _
+      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())

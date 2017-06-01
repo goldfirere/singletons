@@ -3,7 +3,6 @@ module Promote.Prelude where
 import Data.Promotion.TH
 import Data.Promotion.Prelude
 import Data.Promotion.Prelude.List
-import Data.Proxy
 import GHC.TypeLits
 
 lengthTest1a :: Proxy (Length '[True, True, True, True])

@@ -17,7 +17,7 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
     type Lambda_0123456789876543210Sym1 t =
         Lambda_0123456789876543210 t
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
                GHC.Tuple.())

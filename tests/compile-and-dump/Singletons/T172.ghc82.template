@@ -5,14 +5,14 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
   ======>
     type ($>$$$) (t :: Nat) (t :: Nat) = ($>) t t
     instance SuppressUnusedWarnings ($>$$) where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:$>$$###)) GHC.Tuple.())
     data ($>$$) (l :: Nat) (l :: TyFun Nat Nat)
       = forall arg. SameKind (Apply (($>$$) l) arg) (($>$$$) l arg) =>
         (:$>$$###)
     type instance Apply (($>$$) l) l = ($>) l l
     instance SuppressUnusedWarnings ($>$) where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:$>$###)) GHC.Tuple.())
     data ($>$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
       = forall arg. SameKind (Apply ($>$) arg) (($>$$) arg) => (:$>$###)

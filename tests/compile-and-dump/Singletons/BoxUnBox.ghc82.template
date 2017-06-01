@@ -10,7 +10,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
     unBox (FBox a) = a
     type FBoxSym1 (t :: a0123456789876543210) = FBox t
     instance SuppressUnusedWarnings FBoxSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FBoxSym0KindInference) GHC.Tuple.())
     data FBoxSym0 (l :: TyFun a0123456789876543210 (Box a0123456789876543210))
       = forall arg. SameKind (Apply FBoxSym0 arg) (FBoxSym1 arg) =>
@@ -18,7 +18,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply FBoxSym0 l = FBox l
     type UnBoxSym1 (t :: Box a0123456789876543210) = UnBox t
     instance SuppressUnusedWarnings UnBoxSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) UnBoxSym0KindInference) GHC.Tuple.())
     data UnBoxSym0 (l :: TyFun (Box a0123456789876543210) a0123456789876543210)
       = forall arg. SameKind (Apply UnBoxSym0 arg) (UnBoxSym1 arg) =>
