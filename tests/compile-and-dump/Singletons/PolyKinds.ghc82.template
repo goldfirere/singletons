@@ -8,7 +8,7 @@ Singletons/PolyKinds.hs:(0,0)-(0,0): Splicing declarations
     type FffSym1 (t :: Proxy (a0123456789876543210 :: k0123456789876543210)) =
         Fff t
     instance SuppressUnusedWarnings FffSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FffSym0KindInference) GHC.Tuple.())
     data FffSym0 (l :: TyFun (Proxy (a0123456789876543210 :: k0123456789876543210)) ())
       = forall arg. SameKind (Apply FffSym0 arg) (FffSym1 arg) =>

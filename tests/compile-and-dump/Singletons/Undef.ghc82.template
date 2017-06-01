@@ -11,7 +11,7 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
     bar = error "urk"
     type BarSym1 (t :: Bool) = Bar t
     instance SuppressUnusedWarnings BarSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BarSym0KindInference) GHC.Tuple.())
     data BarSym0 (l :: TyFun Bool Bool)
       = forall arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
@@ -19,7 +19,7 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply BarSym0 l = Bar l
     type FooSym1 (t :: Bool) = Foo t
     instance SuppressUnusedWarnings FooSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooSym0KindInference) GHC.Tuple.())
     data FooSym0 (l :: TyFun Bool Bool)
       = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>

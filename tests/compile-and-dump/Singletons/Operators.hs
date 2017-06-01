@@ -2,7 +2,6 @@
 
 module Singletons.Operators where
 
-import Data.Proxy
 import Data.Singletons
 import Data.Singletons.TH
 import Singletons.Nat

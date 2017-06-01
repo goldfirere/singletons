@@ -16,7 +16,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     type NothingSym0 = Nothing
     type JustSym1 (t :: a0123456789876543210) = Just t
     instance SuppressUnusedWarnings JustSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) JustSym0KindInference) GHC.Tuple.())
     data JustSym0 (l :: TyFun a0123456789876543210 (Maybe a0123456789876543210))
       = forall arg. SameKind (Apply JustSym0 arg) (JustSym1 arg) =>

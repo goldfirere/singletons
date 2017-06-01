@@ -9,7 +9,7 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     head GHC.Types.[] = error "Data.Singletons.List.head: empty list"
     type HeadSym1 (t :: [a0123456789876543210]) = Head t
     instance SuppressUnusedWarnings HeadSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) HeadSym0KindInference) GHC.Tuple.())
     data HeadSym0 (l :: TyFun [a0123456789876543210] a0123456789876543210)
       = forall arg. SameKind (Apply HeadSym0 arg) (HeadSym1 arg) =>

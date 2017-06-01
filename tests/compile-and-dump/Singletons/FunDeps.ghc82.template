@@ -24,7 +24,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       = Apply MethSym0 TrueSym0
     type MethSym1 (t :: a0123456789876543210) = Meth t
     instance SuppressUnusedWarnings MethSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MethSym0KindInference) GHC.Tuple.())
     data MethSym0 (l :: TyFun a0123456789876543210 a0123456789876543210)
       = forall arg. SameKind (Apply MethSym0 arg) (MethSym1 arg) =>
@@ -32,7 +32,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply MethSym0 l = Meth l
     type L2rSym1 (t :: a0123456789876543210) = L2r t
     instance SuppressUnusedWarnings L2rSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) L2rSym0KindInference) GHC.Tuple.())
     data L2rSym0 (l :: TyFun a0123456789876543210 b0123456789876543210)
       = forall arg. SameKind (Apply L2rSym0 arg) (L2rSym1 arg) =>
@@ -46,7 +46,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     type Meth_0123456789876543210Sym1 (t :: Bool) =
         Meth_0123456789876543210 t
     instance SuppressUnusedWarnings Meth_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Meth_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
@@ -60,7 +60,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     type L2r_0123456789876543210Sym1 (t :: Bool) =
         L2r_0123456789876543210 t
     instance SuppressUnusedWarnings L2r_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) L2r_0123456789876543210Sym0KindInference)
                GHC.Tuple.())

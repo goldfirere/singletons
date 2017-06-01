@@ -19,14 +19,14 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
     type PairSym2 (t :: a0123456789876543210) (t :: b0123456789876543210) =
         Pair t t
     instance SuppressUnusedWarnings PairSym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PairSym1KindInference) GHC.Tuple.())
     data PairSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210))
       = forall arg. SameKind (Apply (PairSym1 l) arg) (PairSym2 l arg) =>
         PairSym1KindInference
     type instance Apply (PairSym1 l) l = Pair l l
     instance SuppressUnusedWarnings PairSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PairSym0KindInference) GHC.Tuple.())
     data PairSym0 (l :: TyFun a0123456789876543210 (TyFun b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210)
                                                     -> GHC.Types.Type))

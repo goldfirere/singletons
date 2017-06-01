@@ -5,7 +5,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
                              -> Type) (t :: Maybe a0123456789876543210) =
         LiftMaybe t t
     instance SuppressUnusedWarnings LiftMaybeSym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) LiftMaybeSym1KindInference) GHC.Tuple.())
     data LiftMaybeSym1 (l :: TyFun a0123456789876543210 b0123456789876543210
                              -> Type) (l :: TyFun (Maybe a0123456789876543210) (Maybe b0123456789876543210))
@@ -13,7 +13,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
         LiftMaybeSym1KindInference
     type instance Apply (LiftMaybeSym1 l) l = LiftMaybe l l
     instance SuppressUnusedWarnings LiftMaybeSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) LiftMaybeSym0KindInference) GHC.Tuple.())
     data LiftMaybeSym0 (l :: TyFun (TyFun a0123456789876543210 b0123456789876543210
                                     -> Type) (TyFun (Maybe a0123456789876543210) (Maybe b0123456789876543210)
@@ -24,7 +24,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     type ZeroSym0 = Zero
     type SuccSym1 (t :: NatT) = Succ t
     instance SuppressUnusedWarnings SuccSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) SuccSym0KindInference) GHC.Tuple.())
     data SuccSym0 (l :: TyFun NatT NatT)
       = forall arg. Data.Singletons.SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
@@ -32,14 +32,14 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     type instance Apply SuccSym0 l = Succ l
     type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
     instance SuppressUnusedWarnings (:+$$) where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+$$###)) GHC.Tuple.())
     data (:+$$) (l :: Nat) l
       = forall arg. Data.Singletons.SameKind (Apply ((:+$$) l) arg) ((:+$$$) l arg) =>
         (:+$$###)
     type instance Apply ((:+$$) l) l = (:+) l l
     instance SuppressUnusedWarnings (:+$) where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+$###)) GHC.Tuple.())
     data (:+$) l
       = forall arg. Data.Singletons.SameKind (Apply (:+$) arg) ((:+$$) arg) =>

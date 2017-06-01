@@ -9,7 +9,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type TrueSym0 = True
     type BarSym2 (t :: Bool) (t :: Bool) = Bar t t
     instance SuppressUnusedWarnings BarSym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = Data.Tuple.snd
             ((GHC.Tuple.(,) BarSym1KindInference) GHC.Tuple.())
     data BarSym1 (l :: Bool) (l :: TyFun Bool Foo)
@@ -17,7 +17,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
         BarSym1KindInference
     type instance Apply (BarSym1 l) l = Bar l l
     instance SuppressUnusedWarnings BarSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = Data.Tuple.snd
             ((GHC.Tuple.(,) BarSym0KindInference) GHC.Tuple.())
     data BarSym0 (l :: TyFun Bool (TyFun Bool Foo -> GHC.Types.Type))
@@ -117,7 +117,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type False_Sym0 = False_
     type NotSym1 (t :: Bool) = Not t
     instance SuppressUnusedWarnings NotSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = Data.Tuple.snd
             ((GHC.Tuple.(,) NotSym0KindInference) GHC.Tuple.())
     data NotSym0 (l :: TyFun Bool Bool)
@@ -126,7 +126,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply NotSym0 l = Not l
     type IdSym1 (t :: a0123456789876543210) = Id t
     instance SuppressUnusedWarnings IdSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = Data.Tuple.snd ((GHC.Tuple.(,) IdSym0KindInference) GHC.Tuple.())
     data IdSym0 (l :: TyFun a0123456789876543210 a0123456789876543210)
       = forall arg. SameKind (Apply IdSym0 arg) (IdSym1 arg) =>
@@ -134,7 +134,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply IdSym0 l = Id l
     type FSym1 (t :: Bool) = F t
     instance SuppressUnusedWarnings FSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = Data.Tuple.snd ((GHC.Tuple.(,) FSym0KindInference) GHC.Tuple.())
     data FSym0 (l :: TyFun Bool Bool)
       = forall arg. SameKind (Apply FSym0 arg) (FSym1 arg) =>
@@ -142,7 +142,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply FSym0 l = F l
     type GSym1 (t :: Bool) = G t
     instance SuppressUnusedWarnings GSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = Data.Tuple.snd ((GHC.Tuple.(,) GSym0KindInference) GHC.Tuple.())
     data GSym0 (l :: TyFun Bool Bool)
       = forall arg. SameKind (Apply GSym0 arg) (GSym1 arg) =>
@@ -150,7 +150,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply GSym0 l = G l
     type HSym1 (t :: Bool) = H t
     instance SuppressUnusedWarnings HSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = Data.Tuple.snd ((GHC.Tuple.(,) HSym0KindInference) GHC.Tuple.())
     data HSym0 (l :: TyFun Bool Bool)
       = forall arg. SameKind (Apply HSym0 arg) (HSym1 arg) =>
@@ -158,7 +158,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply HSym0 l = H l
     type ISym1 (t :: Bool) = I t
     instance SuppressUnusedWarnings ISym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = Data.Tuple.snd ((GHC.Tuple.(,) ISym0KindInference) GHC.Tuple.())
     data ISym0 (l :: TyFun Bool Bool)
       = forall arg. SameKind (Apply ISym0 arg) (ISym1 arg) =>
