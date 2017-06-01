@@ -18,42 +18,42 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     infix 4 ====
     type (:====@#@$$$) (t :: a0123456789876543210) (t :: a0123456789876543210) =
         (:====) t t
-    instance SuppressUnusedWarnings (:====@#@$$) where
+    instance SuppressUnusedWarnings (:====$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:====@#@$$###)) GHC.Tuple.())
-    data (:====@#@$$) (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 a0123456789876543210)
-      = forall arg. SameKind (Apply ((:====@#@$$) l) arg) ((:====@#@$$$) l arg) =>
-        (:====@#@$$###)
-    type instance Apply ((:====@#@$$) l) l = (:====) l l
-    instance SuppressUnusedWarnings (:====@#@$) where
+        = snd ((GHC.Tuple.(,) (:====$$###)) GHC.Tuple.())
+    data (:====$$) (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 a0123456789876543210)
+      = forall arg. SameKind (Apply ((:====$$) l) arg) ((:====$$$) l arg) =>
+        (:====$$###)
+    type instance Apply ((:====$$) l) l = (:====) l l
+    instance SuppressUnusedWarnings (:====$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:====@#@$###)) GHC.Tuple.())
-    data (:====@#@$) (l :: TyFun a0123456789876543210 (TyFun a0123456789876543210 a0123456789876543210
-                                                       -> GHC.Types.Type))
-      = forall arg. SameKind (Apply (:====@#@$) arg) ((:====@#@$$) arg) =>
-        (:====@#@$###)
-    type instance Apply (:====@#@$) l = (:====@#@$$) l
+        = snd ((GHC.Tuple.(,) (:====$###)) GHC.Tuple.())
+    data (:====$) (l :: TyFun a0123456789876543210 (TyFun a0123456789876543210 a0123456789876543210
+                                                    -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:====$) arg) ((:====$$) arg) =>
+        (:====$###)
+    type instance Apply (:====$) l = (:====$$) l
     type family (:====) (a :: a) (a :: a) :: a where
       (:====) a _ = a
     infix 4 :====
     infix 4 :<=>
     type (:<=>@#@$$$) (t :: a0123456789876543210) (t :: a0123456789876543210) =
         (:<=>) t t
-    instance SuppressUnusedWarnings (:<=>@#@$$) where
+    instance SuppressUnusedWarnings (:<=>$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:<=>@#@$$###)) GHC.Tuple.())
-    data (:<=>@#@$$) (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering)
-      = forall arg. SameKind (Apply ((:<=>@#@$$) l) arg) ((:<=>@#@$$$) l arg) =>
-        (:<=>@#@$$###)
-    type instance Apply ((:<=>@#@$$) l) l = (:<=>) l l
-    instance SuppressUnusedWarnings (:<=>@#@$) where
+        = snd ((GHC.Tuple.(,) (:<=>$$###)) GHC.Tuple.())
+    data (:<=>$$) (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering)
+      = forall arg. SameKind (Apply ((:<=>$$) l) arg) ((:<=>$$$) l arg) =>
+        (:<=>$$###)
+    type instance Apply ((:<=>$$) l) l = (:<=>) l l
+    instance SuppressUnusedWarnings (:<=>$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:<=>@#@$###)) GHC.Tuple.())
-    data (:<=>@#@$) (l :: TyFun a0123456789876543210 (TyFun a0123456789876543210 Ordering
-                                                      -> GHC.Types.Type))
-      = forall arg. SameKind (Apply (:<=>@#@$) arg) ((:<=>@#@$$) arg) =>
-        (:<=>@#@$###)
-    type instance Apply (:<=>@#@$) l = (:<=>@#@$$) l
+        = snd ((GHC.Tuple.(,) (:<=>$###)) GHC.Tuple.())
+    data (:<=>$) (l :: TyFun a0123456789876543210 (TyFun a0123456789876543210 Ordering
+                                                   -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:<=>$) arg) ((:<=>$$) arg) =>
+        (:<=>$###)
+    type instance Apply (:<=>$) l = (:<=>$$) l
     class PMyOrd (a :: GHC.Types.Type) where
       type (:<=>) (arg :: a) (arg :: a) :: Ordering
     infix 4 %:====

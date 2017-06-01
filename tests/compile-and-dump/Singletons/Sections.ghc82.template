@@ -32,21 +32,20 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
         Lambda_0123456789876543210Sym0KindInference
     type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210 l
-    type (:+@#@$$$) (t :: Nat) (t :: Nat) = (:+) t t
-    instance SuppressUnusedWarnings (:+@#@$$) where
+    type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
+    instance SuppressUnusedWarnings (:+$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+@#@$$###)) GHC.Tuple.())
-    data (:+@#@$$) (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply ((:+@#@$$) l) arg) ((:+@#@$$$) l arg) =>
-        (:+@#@$$###)
-    type instance Apply ((:+@#@$$) l) l = (:+) l l
-    instance SuppressUnusedWarnings (:+@#@$) where
+        = snd ((GHC.Tuple.(,) (:+$$###)) GHC.Tuple.())
+    data (:+$$) (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply ((:+$$) l) arg) ((:+$$$) l arg) =>
+        (:+$$###)
+    type instance Apply ((:+$$) l) l = (:+) l l
+    instance SuppressUnusedWarnings (:+$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+@#@$###)) GHC.Tuple.())
-    data (:+@#@$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
-      = forall arg. SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
-        (:+@#@$###)
-    type instance Apply (:+@#@$) l = (:+@#@$$) l
+        = snd ((GHC.Tuple.(,) (:+$###)) GHC.Tuple.())
+    data (:+$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:+$) arg) ((:+$$) arg) => (:+$###)
+    type instance Apply (:+$) l = (:+$$) l
     type Foo1Sym0 = Foo1
     type Foo2Sym0 = Foo2
     type Foo3Sym0 = Foo3
