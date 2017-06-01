@@ -184,17 +184,17 @@ $(singletonsOnly [d|
   fmap :: (a -> b) -> NonEmpty a -> NonEmpty b
   fmap f (x :| xs) = f x :| listmap f xs
 
-  -- | Number of elements in 'NonEmpty' list.
+  -- -| Number of elements in 'NonEmpty' list.
   length :: NonEmpty a -> Nat
   length (_ :| xs) = 1 + listlength xs
 
-  -- | Compute n-ary logic exclusive OR operation on 'NonEmpty' list.
+  -- -| Compute n-ary logic exclusive OR operation on 'NonEmpty' list.
   xor :: NonEmpty Bool -> Bool
   xor (x :| xs)   = foldr xor' x xs
     where xor' True y  = not y
           xor' False y = y
 
-  -- | 'unfold' produces a new stream by repeatedly applying the unfolding
+  -- -| 'unfold' produces a new stream by repeatedly applying the unfolding
   -- function to the seed value to produce an element of type @b@ and a new
   -- seed value.  When the unfolding function returns 'Nothing' instead of
   -- a new seed value, the stream ends.
@@ -203,18 +203,18 @@ $(singletonsOnly [d|
     (b, Nothing) -> b :| []
     (b, Just c)  -> b <| unfold f c
 
-  -- | 'nonEmpty' efficiently turns a normal list into a 'NonEmpty' stream,
+  -- -| 'nonEmpty' efficiently turns a normal list into a 'NonEmpty' stream,
   -- producing 'Nothing' if the input is empty.
   nonEmpty_ :: [a] -> Maybe (NonEmpty a)
   nonEmpty_ []     = Nothing
   nonEmpty_ (a:as) = Just (a :| as)
 
-  -- | 'uncons' produces the first element of the stream, and a stream of the
+  -- -| 'uncons' produces the first element of the stream, and a stream of the
   -- remaining elements, if any.
   uncons :: NonEmpty a -> (a, Maybe (NonEmpty a))
   uncons (a :| as) = (a, nonEmpty_ as)
 
-  -- | The 'unfoldr' function is analogous to "Data.List"'s
+  -- -| The 'unfoldr' function is analogous to "Data.List"'s
   -- 'Data.List.unfoldr' operation.
   unfoldr :: (a -> (b, Maybe a)) -> a -> NonEmpty b
   unfoldr f a = case f a of
@@ -253,67 +253,67 @@ $(singletonsOnly [d|
     fold ~(m :| ms) = m `mappend` fold ms
   -}
 
-  -- | Extract the first element of the stream.
+  -- -| Extract the first element of the stream.
   head :: NonEmpty a -> a
   head (a :| _) = a
 
-  -- | Extract the possibly-empty tail of the stream.
+  -- -| Extract the possibly-empty tail of the stream.
   tail :: NonEmpty a -> [a]
   tail (_ :| as) = as
 
-  -- | Extract the last element of the stream.
+  -- -| Extract the last element of the stream.
   last :: NonEmpty a -> a
   last (a :| as) = listlast (a : as)
 
-  -- | Extract everything except the last element of the stream.
+  -- -| Extract everything except the last element of the stream.
   init :: NonEmpty a -> [a]
   init (a :| as) = listinit (a : as)
 
-  -- | Prepend an element to the stream.
+  -- -| Prepend an element to the stream.
   (<|) :: a -> NonEmpty a -> NonEmpty a
   a <| (b :| bs) = a :| b : bs
 
-  -- | Synonym for '<|'.
+  -- -| Synonym for '<|'.
   cons :: a -> NonEmpty a -> NonEmpty a
   cons = (<|)
 
-  -- | Sort a stream.
+  -- -| Sort a stream.
   sort :: Ord a => NonEmpty a -> NonEmpty a
   sort = lift listsort
 
-  -- | Converts a normal list to a 'NonEmpty' stream.
+  -- -| Converts a normal list to a 'NonEmpty' stream.
   --
   -- Raises an error if given an empty list.
   fromList :: [a] -> NonEmpty a
   fromList (a:as) = a :| as
   fromList [] = error "NonEmpty.fromList: empty list"
 
-  -- | Convert a stream to a normal list efficiently.
+  -- -| Convert a stream to a normal list efficiently.
   toList :: NonEmpty a -> [a]
   toList (a :| as) = a : as
 
-  -- | Lift list operations to work on a 'NonEmpty' stream.
+  -- -| Lift list operations to work on a 'NonEmpty' stream.
   --
   -- /Beware/: If the provided function returns an empty list,
   -- this will raise an error.
   lift :: ([a] -> [b]) -> NonEmpty a -> NonEmpty b
   lift f = fromList . f . toList
 
-  -- | Map a function over a 'NonEmpty' stream.
+  -- -| Map a function over a 'NonEmpty' stream.
   map :: (a -> b) -> NonEmpty a -> NonEmpty b
   map f (a :| as) = f a :| listmap f as
 
-  -- | The 'inits' function takes a stream @xs@ and returns all the
+  -- -| The 'inits' function takes a stream @xs@ and returns all the
   -- finite prefixes of @xs@.
   inits :: [a] -> NonEmpty [a]
   inits = fromList . listinits
 
-  -- | The 'tails' function takes a stream @xs@ and returns all the
+  -- -| The 'tails' function takes a stream @xs@ and returns all the
   -- suffixes of @xs@.
   tails   :: [a] -> NonEmpty [a]
   tails = fromList . listtails
 
-  -- | @'insert' x xs@ inserts @x@ into the last position in @xs@ where it
+  -- -| @'insert' x xs@ inserts @x@ into the last position in @xs@ where it
   -- is still less than or equal to the next element. In particular, if the
   -- list is sorted beforehand, the result will also be sorted.
   insert  :: Ord a => a -> [a] -> NonEmpty a
@@ -325,7 +325,7 @@ $(singletonsOnly [d|
   some1 x = (:|) <$> x <*> many x
   -}
 
-  -- | 'scanl' is similar to 'foldl', but returns a stream of successive
+  -- -| 'scanl' is similar to 'foldl', but returns a stream of successive
   -- reduced values from the left:
   --
   -- > scanl f z [x1, x2, ...] == z :| [z `f` x1, (z `f` x1) `f` x2, ...]
@@ -336,24 +336,24 @@ $(singletonsOnly [d|
   scanl   :: (b -> a -> b) -> b -> [a] -> NonEmpty b
   scanl f z = fromList . listscanl f z
 
-  -- | 'scanr' is the right-to-left dual of 'scanl'.
+  -- -| 'scanr' is the right-to-left dual of 'scanl'.
   -- Note that
   --
   -- > head (scanr f z xs) == foldr f z xs.
   scanr   :: (a -> b -> b) -> b -> [a] -> NonEmpty b
   scanr f z = fromList . listscanr f z
 
-  -- | 'scanl1' is a variant of 'scanl' that has no starting value argument:
+  -- -| 'scanl1' is a variant of 'scanl' that has no starting value argument:
   --
   -- > scanl1 f [x1, x2, ...] == x1 :| [x1 `f` x2, x1 `f` (x2 `f` x3), ...]
   scanl1 :: (a -> a -> a) -> NonEmpty a -> NonEmpty a
   scanl1 f (a :| as) = fromList (listscanl f a as)
 
-  -- | 'scanr1' is a variant of 'scanr' that has no starting value argument.
+  -- -| 'scanr1' is a variant of 'scanr' that has no starting value argument.
   scanr1 :: (a -> a -> a) -> NonEmpty a -> NonEmpty a
   scanr1 f (a :| as) = fromList (listscanr1 f (a:as))
 
-  -- | 'intersperse x xs' alternates elements of the list with copies of @x@.
+  -- -| 'intersperse x xs' alternates elements of the list with copies of @x@.
   --
   -- > intersperse 0 (1 :| [2,3]) == 1 :| [0,2,0,3]
   intersperse :: a -> NonEmpty a -> NonEmpty a
@@ -376,7 +376,7 @@ $(singletonsOnly [d|
   cycle = fromList . listcycle . toList
   -}
 
-  -- | 'reverse' a finite NonEmpty stream.
+  -- -| 'reverse' a finite NonEmpty stream.
   reverse :: NonEmpty a -> NonEmpty a
   reverse = lift listreverse
 
@@ -387,16 +387,16 @@ $(singletonsOnly [d|
   repeat a = a :| listrepeat a
   -}
 
-  -- | @'take' n xs@ returns the first @n@ elements of @xs@.
+  -- -| @'take' n xs@ returns the first @n@ elements of @xs@.
   take :: Nat -> NonEmpty a -> [a]
   take n = listtake n . toList
 
-  -- | @'drop' n xs@ drops the first @n@ elements off the front of
+  -- -| @'drop' n xs@ drops the first @n@ elements off the front of
   -- the sequence @xs@.
   drop :: Nat -> NonEmpty a -> [a]
   drop n = listdrop n . toList
 
-  -- | @'splitAt' n xs@ returns a pair consisting of the prefix of @xs@
+  -- -| @'splitAt' n xs@ returns a pair consisting of the prefix of @xs@
   -- of length @n@ and the remaining stream immediately following this prefix.
   --
   -- > 'splitAt' n xs == ('take' n xs, 'drop' n xs)
@@ -404,17 +404,17 @@ $(singletonsOnly [d|
   splitAt :: Nat -> NonEmpty a -> ([a],[a])
   splitAt n = listsplitAt n . toList
 
-  -- | @'takeWhile' p xs@ returns the longest prefix of the stream
+  -- -| @'takeWhile' p xs@ returns the longest prefix of the stream
   -- @xs@ for which the predicate @p@ holds.
   takeWhile :: (a -> Bool) -> NonEmpty a -> [a]
   takeWhile p = listtakeWhile p . toList
 
-  -- | @'dropWhile' p xs@ returns the suffix remaining after
+  -- -| @'dropWhile' p xs@ returns the suffix remaining after
   -- @'takeWhile' p xs@.
   dropWhile :: (a -> Bool) -> NonEmpty a -> [a]
   dropWhile p = listdropWhile p . toList
 
-  -- | @'span' p xs@ returns the longest prefix of @xs@ that satisfies
+  -- -| @'span' p xs@ returns the longest prefix of @xs@ that satisfies
   -- @p@, together with the remainder of the stream.
   --
   -- > 'span' p xs == ('takeWhile' p xs, 'dropWhile' p xs)
@@ -422,15 +422,15 @@ $(singletonsOnly [d|
   span :: (a -> Bool) -> NonEmpty a -> ([a], [a])
   span p = listspan p . toList
 
-  -- | The @'break' p@ function is equivalent to @'span' (not . p)@.
+  -- -| The @'break' p@ function is equivalent to @'span' (not . p)@.
   break :: (a -> Bool) -> NonEmpty a -> ([a], [a])
   break p = span (not . p)
 
-  -- | @'filter' p xs@ removes any elements from @xs@ that do not satisfy @p@.
+  -- -| @'filter' p xs@ removes any elements from @xs@ that do not satisfy @p@.
   filter :: (a -> Bool) -> NonEmpty a -> [a]
   filter p = listfilter p . toList
 
-  -- | The 'partition' function takes a predicate @p@ and a stream
+  -- -| The 'partition' function takes a predicate @p@ and a stream
   -- @xs@, and returns a pair of lists. The first list corresponds to the
   -- elements of @xs@ for which @p@ holds; the second corresponds to the
   -- elements of @xs@ for which @p@ does not hold.
@@ -439,7 +439,7 @@ $(singletonsOnly [d|
   partition :: (a -> Bool) -> NonEmpty a -> ([a], [a])
   partition p = listpartition p . toList
 
-  -- | The 'group' function takes a stream and returns a list of
+  -- -| The 'group' function takes a stream and returns a list of
   -- streams such that flattening the resulting list is equal to the
   -- argument.  Moreover, each stream in the resulting list
   -- contains only equal elements.  For example, in list notation:
@@ -449,7 +449,7 @@ $(singletonsOnly [d|
   group :: Eq a => [a] -> [NonEmpty a]
   group = groupBy (==)
 
-  -- | 'groupBy' operates like 'group', but uses the provided equality
+  -- -| 'groupBy' operates like 'group', but uses the provided equality
   -- predicate instead of `==`.
   groupBy :: (a -> a -> Bool) -> [a] -> [NonEmpty a]
   groupBy eq0 = go eq0
@@ -458,42 +458,42 @@ $(singletonsOnly [d|
       go eq (x : xs) = (x :| ys) : groupBy eq zs
         where (ys, zs) = listspan (eq x) xs
 
-  -- | 'groupWith' operates like 'group', but uses the provided projection when
+  -- -| 'groupWith' operates like 'group', but uses the provided projection when
   -- comparing for equality
   groupWith :: Eq b => (a -> b) -> [a] -> [NonEmpty a]
   groupWith f = groupBy ((==) `on` f)
 
-  -- | 'groupAllWith' operates like 'groupWith', but sorts the list
+  -- -| 'groupAllWith' operates like 'groupWith', but sorts the list
   -- first so that each equivalence class has, at most, one list in the
   -- output
   groupAllWith :: (Ord b) => (a -> b) -> [a] -> [NonEmpty a]
   groupAllWith f = groupWith f . listsortBy (compare `on` f)
 
-  -- | 'group1' operates like 'group', but uses the knowledge that its
+  -- -| 'group1' operates like 'group', but uses the knowledge that its
   -- input is non-empty to produce guaranteed non-empty output.
   group1 :: Eq a => NonEmpty a -> NonEmpty (NonEmpty a)
   group1 = groupBy1 (==)
 
-  -- | 'groupBy1' is to 'group1' as 'groupBy' is to 'group'.
+  -- -| 'groupBy1' is to 'group1' as 'groupBy' is to 'group'.
   groupBy1 :: (a -> a -> Bool) -> NonEmpty a -> NonEmpty (NonEmpty a)
   groupBy1 eq (x :| xs) = (x :| ys) :| groupBy eq zs
     where (ys, zs) = listspan (eq x) xs
 
-  -- | 'groupWith1' is to 'group1' as 'groupWith' is to 'group'
+  -- -| 'groupWith1' is to 'group1' as 'groupWith' is to 'group'
   groupWith1 :: (Eq b) => (a -> b) -> NonEmpty a -> NonEmpty (NonEmpty a)
   groupWith1 f = groupBy1 ((==) `on` f)
 
-  -- | 'groupAllWith1' is to 'groupWith1' as 'groupAllWith' is to 'groupWith'
+  -- -| 'groupAllWith1' is to 'groupWith1' as 'groupAllWith' is to 'groupWith'
   groupAllWith1 :: (Ord b) => (a -> b) -> NonEmpty a -> NonEmpty (NonEmpty a)
   groupAllWith1 f = groupWith1 f . sortWith f
 
-  -- | The 'isPrefix' function returns @True@ if the first argument is
+  -- -| The 'isPrefix' function returns @True@ if the first argument is
   -- a prefix of the second.
   isPrefixOf :: Eq a => [a] -> NonEmpty a -> Bool
   isPrefixOf [] _ = True
   isPrefixOf (y:ys) (x :| xs) = (y == x) && listisPrefixOf ys xs
 
-  -- | @xs !! n@ returns the element of the stream @xs@ at index
+  -- -| @xs !! n@ returns the element of the stream @xs@ at index
   -- @n@. Note that the head of the stream has index 0.
   --
   -- /Beware/: a negative or out-of-bounds index will cause an error.
@@ -503,24 +503,24 @@ $(singletonsOnly [d|
     | n > 0  = xs `listindex` (n - 1)
     | otherwise = error "NonEmpty.!! negative argument"
 
-  -- | The 'zip' function takes two streams and returns a stream of
+  -- -| The 'zip' function takes two streams and returns a stream of
   -- corresponding pairs.
   zip :: NonEmpty a -> NonEmpty b -> NonEmpty (a,b)
   zip (x :| xs) (y :| ys) = (x, y) :| listzip xs ys
 
-  -- | The 'zipWith' function generalizes 'zip'. Rather than tupling
+  -- -| The 'zipWith' function generalizes 'zip'. Rather than tupling
   -- the elements, the elements are combined using the function
   -- passed as the first argument.
   zipWith :: (a -> b -> c) -> NonEmpty a -> NonEmpty b -> NonEmpty c
   zipWith f (x :| xs) (y :| ys) = f x y :| listzipWith f xs ys
 
-  -- | The 'unzip' function is the inverse of the 'zip' function.
+  -- -| The 'unzip' function is the inverse of the 'zip' function.
   unzip :: NonEmpty (a,b) -> (NonEmpty a, NonEmpty b)
   unzip ((a,b) :| asbs) = (a :| as, b :| bs)
     where
       (as, bs) = listunzip asbs
 
-  -- | The 'nub' function removes duplicate elements from a list. In
+  -- -| The 'nub' function removes duplicate elements from a list. In
   -- particular, it keeps only the first occurence of each element.
   -- (The name 'nub' means \'essence\'.)
   -- It is a special case of 'nubBy', which allows the programmer to
@@ -528,13 +528,13 @@ $(singletonsOnly [d|
   nub :: Eq a => NonEmpty a -> NonEmpty a
   nub = nubBy (==)
 
-  -- | The 'nubBy' function behaves just like 'nub', except it uses a
+  -- -| The 'nubBy' function behaves just like 'nub', except it uses a
   -- user-supplied equality predicate instead of the overloaded '=='
   -- function.
   nubBy :: (a -> a -> Bool) -> NonEmpty a -> NonEmpty a
   nubBy eq (a :| as) = a :| listnubBy eq (listfilter (\b -> not (eq a b)) as)
 
-  -- | 'transpose' for 'NonEmpty', behaves the same as 'Data.List.transpose'
+  -- -| 'transpose' for 'NonEmpty', behaves the same as 'Data.List.transpose'
   -- The rows/columns need not be the same length, in which case
   -- > transpose . transpose /= id
   transpose :: NonEmpty (NonEmpty a) -> NonEmpty (NonEmpty a)
@@ -542,11 +542,11 @@ $(singletonsOnly [d|
             . fromList . listtranspose . toList
             . fmap toList
 
-  -- | 'sortBy' for 'NonEmpty', behaves the same as 'Data.List.sortBy'
+  -- -| 'sortBy' for 'NonEmpty', behaves the same as 'Data.List.sortBy'
   sortBy :: (a -> a -> Ordering) -> NonEmpty a -> NonEmpty a
   sortBy f = lift (listsortBy f)
 
-  -- | 'sortWith' for 'NonEmpty', behaves the same as:
+  -- -| 'sortWith' for 'NonEmpty', behaves the same as:
   --
   -- > sortBy . comparing
   sortWith :: Ord o => (a -> o) -> NonEmpty a -> NonEmpty a

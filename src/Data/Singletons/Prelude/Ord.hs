@@ -73,7 +73,7 @@ $(singletonsOnly [d|
     min x y = if x <= y then x else y
     -- Not handled by TH: {-# MINIMAL compare | (<=) #-}
 
-  -- |
+  -- -|
   -- > comparing p x y = compare (p x) (p y)
   --
   -- Useful combinator for use in conjunction with the @xxxBy@ family

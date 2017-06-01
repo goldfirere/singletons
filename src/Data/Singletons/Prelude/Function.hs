@@ -48,17 +48,17 @@ $(singletonsOnly [d|
   fix f = let x = f x in x
   -}
 
-  -- | @(*) \`on\` f = \\x y -> f x * f y@.
+  -- -| @(*) \`on\` f = \\x y -> f x * f y@.
   --
   -- Typical usage: @'Data.List.sortBy' ('compare' \`on\` 'fst')@.
   --
   -- Algebraic properties:
   --
-  -- * @(*) \`on\` 'id' = (*)@ (if @(*) &#x2209; {&#x22a5;, 'const' &#x22a5;}@)
+  -- -* @(*) \`on\` 'id' = (*)@ (if @(*) &#x2209; {&#x22a5;, 'const' &#x22a5;}@)
   --
-  -- * @((*) \`on\` f) \`on\` g = (*) \`on\` (f . g)@
+  -- -* @((*) \`on\` f) \`on\` g = (*) \`on\` (f . g)@
   --
-  -- * @'flip' on f . 'flip' on g = 'flip' on (g . f)@
+  -- -* @'flip' on f . 'flip' on g = 'flip' on (g . f)@
 
   -- Proofs (so that I don't have to edit the test-suite):
 
@@ -104,7 +104,7 @@ $(singletonsOnly [d|
   (.*.) `on` f = \x y -> f x .*. f y
 
 
-  -- | '&' is a reverse application operator.  This provides notational
+  -- -| '&' is a reverse application operator.  This provides notational
   -- convenience.  Its precedence is one higher than that of the forward
   -- application operator '$', which allows '&' to be nested in '$'.
   --
