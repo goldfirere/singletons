@@ -7,7 +7,6 @@ module ByHand2 where
 
 import Prelude hiding ( Eq(..), Ord(..) )
 import Data.Singletons
-import Data.Proxy
 
 data Nat = Zero | Succ Nat
 
@@ -42,14 +41,14 @@ sNot STrue = SFalse
 sNot SFalse = STrue
 
 infix 4 :==, :/=
-class kproxy ~ 'Proxy => PEq (kproxy :: Proxy a) where
+class PEq a where
   type (:==) (x :: a) (y :: a) :: Bool
   type (:/=) (x :: a) (y :: a) :: Bool
 
   type x :== y = Not (x :/= y)
   type x :/= y = Not (x :== y)
 
-instance PEq ('Proxy :: Proxy Nat) where
+instance PEq Nat where
   type 'Zero :== 'Zero = 'True
   type 'Succ x :== 'Zero = 'False
   type 'Zero :== 'Succ x = 'False
@@ -89,7 +88,7 @@ class Eq a => Ord a where
 
   x < y = compare x y == LT
 
-class (PEq kproxy, kproxy ~ 'Proxy) => POrd (kproxy :: Proxy a) where
+class PEq a => POrd a where
   type Compare (x :: a) (y :: a) :: Ordering
   type (:<) (x :: a) (y :: a) :: Bool
 
@@ -101,7 +100,7 @@ instance Ord Nat where
   compare (Succ _) Zero = GT
   compare (Succ a) (Succ b) = compare a b
 
-instance POrd ('Proxy :: Proxy Nat) where
+instance POrd Nat where
   type Compare 'Zero 'Zero = 'EQ
   type Compare 'Zero ('Succ x) = 'LT
   type Compare ('Succ x) 'Zero = 'GT
@@ -112,7 +111,7 @@ data instance Sing (o :: Ordering) where
   SEQ :: Sing 'EQ
   SGT :: Sing 'GT
 
-instance PEq ('Proxy :: Proxy Ordering) where
+instance PEq Ordering where
   type 'LT :== 'LT = 'True
   type 'LT :== 'EQ = 'False
   type 'LT :== 'GT = 'False
@@ -150,19 +149,19 @@ instance SOrd Nat where
 class Pointed a where
   point :: a
 
-class kproxy ~ 'Proxy => PPointed (kproxy :: Proxy a) where
+class PPointed a where
   type Point :: a
 
-class kproxy ~ 'Proxy => SPointed (kproxy :: Proxy a) where
+class SPointed a where
   sPoint :: Sing (Point :: a)
 
 instance Pointed Nat where
   point = Zero
 
-instance PPointed ('Proxy :: Proxy Nat) where
+instance PPointed Nat where
   type Point = 'Zero
 
-instance SPointed ('Proxy :: Proxy Nat) where
+instance SPointed Nat where
   sPoint = SZero
 
 --------------------------------
@@ -179,11 +178,11 @@ instance FD Bool Nat where
 t1 = meth True
 t2 = l2r False
 
-class (kp1 ~ 'Proxy, kp2 ~ 'Proxy) => PFD (kp1 :: Proxy a) (kp2 :: Proxy b) | a -> b where
+class PFD a b | a -> b where
   type Meth (x :: a) :: a
   type L2r (x :: a) :: b
 
-instance PFD ('Proxy :: Proxy Bool) ('Proxy :: Proxy Nat) where
+instance PFD Bool Nat where
   type Meth a = Not a
   type L2r 'False = 'Zero
   type L2r 'True = 'Succ 'Zero
@@ -201,5 +200,6 @@ instance SFD Bool Nat where
   sL2r STrue = SSucc SZero
 
 sT1 = sMeth STrue
-sT2 :: Sing T2
+-- We can't use this type signature due to GHC Trac #13774
+-- sT2 :: Sing T2
 sT2 = sL2r SFalse

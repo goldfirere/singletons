@@ -5,7 +5,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     data Record a = MkRecord {field1 :: a, field2 :: Bool}
     type Field1Sym1 (t :: Record a0123456789876543210) = Field1 t
     instance SuppressUnusedWarnings Field1Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) Field1Sym0KindInference) GHC.Tuple.())
     data Field1Sym0 (l :: TyFun (Record a0123456789876543210) a0123456789876543210)
       = forall arg. SameKind (Apply Field1Sym0 arg) (Field1Sym1 arg) =>
@@ -13,7 +13,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Field1Sym0 l = Field1 l
     type Field2Sym1 (t :: Record a0123456789876543210) = Field2 t
     instance SuppressUnusedWarnings Field2Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) Field2Sym0KindInference) GHC.Tuple.())
     data Field2Sym0 (l :: TyFun (Record a0123456789876543210) Bool)
       = forall arg. SameKind (Apply Field2Sym0 arg) (Field2Sym1 arg) =>
@@ -26,14 +26,14 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     type MkRecordSym2 (t :: a0123456789876543210) (t :: Bool) =
         MkRecord t t
     instance SuppressUnusedWarnings MkRecordSym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MkRecordSym1KindInference) GHC.Tuple.())
     data MkRecordSym1 (l :: a0123456789876543210) (l :: TyFun Bool (Record a0123456789876543210))
       = forall arg. SameKind (Apply (MkRecordSym1 l) arg) (MkRecordSym2 l arg) =>
         MkRecordSym1KindInference
     type instance Apply (MkRecordSym1 l) l = MkRecord l l
     instance SuppressUnusedWarnings MkRecordSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MkRecordSym0KindInference) GHC.Tuple.())
     data MkRecordSym0 (l :: TyFun a0123456789876543210 (TyFun Bool (Record a0123456789876543210)
                                                         -> GHC.Types.Type))

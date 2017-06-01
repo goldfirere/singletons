@@ -8,7 +8,7 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
     type Let0123456789876543210Scrutinee_0123456789876543210Sym1 t =
         Let0123456789876543210Scrutinee_0123456789876543210 t
     instance SuppressUnusedWarnings Let0123456789876543210Scrutinee_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,)
                 Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
@@ -23,7 +23,7 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 e '[_z_0123456789876543210] = NotSym0
     type GSym1 (t :: Bool) = G t
     instance SuppressUnusedWarnings GSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) GSym0KindInference) GHC.Tuple.())
     data GSym0 (l :: TyFun Bool Bool)
       = forall arg. SameKind (Apply GSym0 arg) (GSym1 arg) =>

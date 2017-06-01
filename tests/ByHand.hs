@@ -14,7 +14,8 @@ This file is a great way to understand the singleton encoding better.
              FlexibleInstances, FlexibleContexts, UndecidableInstances,
              RankNTypes, TypeOperators, MultiParamTypeClasses,
              FunctionalDependencies, ScopedTypeVariables,
-             LambdaCase, TemplateHaskell, EmptyCase, TypeInType
+             LambdaCase, TemplateHaskell, EmptyCase, TypeInType,
+             AllowAmbiguousTypes, TypeApplications
  #-}
 
 module ByHand where
@@ -785,11 +786,11 @@ sFindIndices sP sLs =
             -> Sing ((Let123LoopSym2 t1 t2) @@ u1 @@ u2)
       sLoop _ SNil = SNil
       sLoop sN (sX `SCons` sXs) = case sP `applySing` sX of
-        STrue -> (singFun2 (Proxy :: Proxy ConsSym0) SCons) `applySing` sN `applySing`
-                   ((singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` ((singFun1 (Proxy :: Proxy SuccSym0) SSucc) `applySing` sN) `applySing` sXs)
-        SFalse -> (singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` ((singFun1 (Proxy :: Proxy SuccSym0) SSucc) `applySing` sN) `applySing` sXs
+        STrue -> (singFun2 @ConsSym0 SCons) `applySing` sN `applySing`
+                   ((singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` ((singFun1 @SuccSym0 SSucc) `applySing` sN) `applySing` sXs)
+        SFalse -> (singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` ((singFun1 @SuccSym0 SSucc) `applySing` sN) `applySing` sXs
   in
-  (singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` SZero `applySing` sLs
+  (singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` SZero `applySing` sLs
 
 
 fI :: forall a. (a -> Bool) -> [a] -> [Nat]
@@ -827,7 +828,7 @@ type Lambda22Sym2 a b = Lambda22 a b
 sFI :: forall (t1 :: TyFun a Bool -> *) (t2 :: List a). Sing t1
     -> Sing t2
     -> Sing (FISym0 @@ t1 @@ t2)
-sFI = unSingFun2 (singFun2 (Proxy :: Proxy FI) (\p ls ->
+sFI = unSingFun2 (singFun2 @FI (\p ls ->
     let lambda :: forall {-(t1 :: TyFun a Bool -> *)-} t1 t2. Sing t1 -> Sing t2 -> Sing (Lambda22Sym0 @@ t1 @@ t2)
         lambda sP sLs =
           let sLoop :: (Lambda22Sym0 @@ t1 @@ t2) ~ (Let123LoopSym2 t1 t2 @@ Zero @@ t2) => forall (u1 :: Nat). Sing u1
@@ -835,11 +836,11 @@ sFI = unSingFun2 (singFun2 (Proxy :: Proxy FI) (\p ls ->
                     -> Sing ((Let123LoopSym2 t1 t2) @@ u1 @@ u2)
               sLoop _ SNil = SNil
               sLoop sN (sX `SCons` sXs) =  case sP `applySing` sX of
-                STrue -> (singFun2 (Proxy :: Proxy ConsSym0) SCons) `applySing` sN `applySing`
-                     ((singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` ((singFun1 (Proxy :: Proxy SuccSym0) SSucc) `applySing` sN) `applySing` sXs)
-                SFalse -> (singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` ((singFun1 (Proxy :: Proxy SuccSym0) SSucc) `applySing` sN) `applySing` sXs
+                STrue -> (singFun2 @ConsSym0 SCons) `applySing` sN `applySing`
+                     ((singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` ((singFun1 @SuccSym0 SSucc) `applySing` sN) `applySing` sXs)
+                SFalse -> (singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` ((singFun1 @SuccSym0 SSucc) `applySing` sN) `applySing` sXs
           in
-          (singFun2 (Proxy :: Proxy (Let123LoopSym2 t1 t2)) sLoop) `applySing` SZero `applySing` sLs
+          (singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` SZero `applySing` sLs
     in
     lambda p ls
   ))

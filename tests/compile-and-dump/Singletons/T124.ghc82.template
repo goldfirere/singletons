@@ -9,7 +9,7 @@ Singletons/T124.hs:(0,0)-(0,0): Splicing declarations
     foo False = GHC.Tuple.()
     type FooSym1 (t :: Bool) = Foo t
     instance SuppressUnusedWarnings FooSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooSym0KindInference) GHC.Tuple.())
     data FooSym0 (l :: TyFun Bool ())
       = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>

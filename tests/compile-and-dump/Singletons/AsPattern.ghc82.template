@@ -36,14 +36,14 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     foo p@(_ GHC.Types.: (_ GHC.Types.: _)) = p
     type BazSym3 (t :: Nat) (t :: Nat) (t :: Nat) = Baz t t t
     instance SuppressUnusedWarnings BazSym2 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BazSym2KindInference) GHC.Tuple.())
     data BazSym2 (l :: Nat) (l :: Nat) (l :: TyFun Nat Baz)
       = forall arg. SameKind (Apply (BazSym2 l l) arg) (BazSym3 l l arg) =>
         BazSym2KindInference
     type instance Apply (BazSym2 l l) l = Baz l l l
     instance SuppressUnusedWarnings BazSym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BazSym1KindInference) GHC.Tuple.())
     data BazSym1 (l :: Nat) (l :: TyFun Nat (TyFun Nat Baz
                                              -> GHC.Types.Type))
@@ -51,7 +51,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         BazSym1KindInference
     type instance Apply (BazSym1 l) l = BazSym2 l l
     instance SuppressUnusedWarnings BazSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BazSym0KindInference) GHC.Tuple.())
     data BazSym0 (l :: TyFun Nat (TyFun Nat (TyFun Nat Baz
                                              -> GHC.Types.Type)
@@ -64,7 +64,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       = '[]
     type Let0123456789876543210PSym1 t = Let0123456789876543210P t
     instance SuppressUnusedWarnings Let0123456789876543210PSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Let0123456789876543210PSym0KindInference)
                GHC.Tuple.())
@@ -77,7 +77,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     type Let0123456789876543210PSym3 t t t =
         Let0123456789876543210P t t t
     instance SuppressUnusedWarnings Let0123456789876543210PSym2 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Let0123456789876543210PSym2KindInference)
                GHC.Tuple.())
@@ -86,7 +86,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         Let0123456789876543210PSym2KindInference
     type instance Apply (Let0123456789876543210PSym2 l l) l = Let0123456789876543210P l l l
     instance SuppressUnusedWarnings Let0123456789876543210PSym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Let0123456789876543210PSym1KindInference)
                GHC.Tuple.())
@@ -95,7 +95,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         Let0123456789876543210PSym1KindInference
     type instance Apply (Let0123456789876543210PSym1 l) l = Let0123456789876543210PSym2 l l
     instance SuppressUnusedWarnings Let0123456789876543210PSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Let0123456789876543210PSym0KindInference)
                GHC.Tuple.())
@@ -107,7 +107,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210 = Apply (Apply (:$) wild_0123456789876543210) (Apply (Apply (:$) wild_0123456789876543210) wild_0123456789876543210)
     type Let0123456789876543210PSym2 t t = Let0123456789876543210P t t
     instance SuppressUnusedWarnings Let0123456789876543210PSym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Let0123456789876543210PSym1KindInference)
                GHC.Tuple.())
@@ -116,7 +116,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         Let0123456789876543210PSym1KindInference
     type instance Apply (Let0123456789876543210PSym1 l) l = Let0123456789876543210P l l
     instance SuppressUnusedWarnings Let0123456789876543210PSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Let0123456789876543210PSym0KindInference)
                GHC.Tuple.())
@@ -132,7 +132,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     type Let0123456789876543210PSym3 t t t =
         Let0123456789876543210P t t t
     instance SuppressUnusedWarnings Let0123456789876543210PSym2 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Let0123456789876543210PSym2KindInference)
                GHC.Tuple.())
@@ -141,7 +141,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         Let0123456789876543210PSym2KindInference
     type instance Apply (Let0123456789876543210PSym2 l l) l = Let0123456789876543210P l l l
     instance SuppressUnusedWarnings Let0123456789876543210PSym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Let0123456789876543210PSym1KindInference)
                GHC.Tuple.())
@@ -150,7 +150,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         Let0123456789876543210PSym1KindInference
     type instance Apply (Let0123456789876543210PSym1 l) l = Let0123456789876543210PSym2 l l
     instance SuppressUnusedWarnings Let0123456789876543210PSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Let0123456789876543210PSym0KindInference)
                GHC.Tuple.())
@@ -162,7 +162,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210 = Apply JustSym0 (Apply (Apply (Apply BazSym0 wild_0123456789876543210) wild_0123456789876543210) wild_0123456789876543210)
     type Let0123456789876543210XSym1 t = Let0123456789876543210X t
     instance SuppressUnusedWarnings Let0123456789876543210XSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Let0123456789876543210XSym0KindInference)
                GHC.Tuple.())
@@ -177,7 +177,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       = NothingSym0
     type FooSym1 (t :: [Nat]) = Foo t
     instance SuppressUnusedWarnings FooSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooSym0KindInference) GHC.Tuple.())
     data FooSym0 (l :: TyFun [Nat] [Nat])
       = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
@@ -185,7 +185,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply FooSym0 l = Foo l
     type TupSym1 (t :: (Nat, Nat)) = Tup t
     instance SuppressUnusedWarnings TupSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) TupSym0KindInference) GHC.Tuple.())
     data TupSym0 (l :: TyFun (Nat, Nat) (Nat, Nat))
       = forall arg. SameKind (Apply TupSym0 arg) (TupSym1 arg) =>
@@ -193,7 +193,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply TupSym0 l = Tup l
     type Baz_Sym1 (t :: Maybe Baz) = Baz_ t
     instance SuppressUnusedWarnings Baz_Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) Baz_Sym0KindInference) GHC.Tuple.())
     data Baz_Sym0 (l :: TyFun (Maybe Baz) (Maybe Baz))
       = forall arg. SameKind (Apply Baz_Sym0 arg) (Baz_Sym1 arg) =>
@@ -201,7 +201,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Baz_Sym0 l = Baz_ l
     type BarSym1 (t :: Maybe Nat) = Bar t
     instance SuppressUnusedWarnings BarSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BarSym0KindInference) GHC.Tuple.())
     data BarSym0 (l :: TyFun (Maybe Nat) (Maybe Nat))
       = forall arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
@@ -209,7 +209,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply BarSym0 l = Bar l
     type MaybePlusSym1 (t :: Maybe Nat) = MaybePlus t
     instance SuppressUnusedWarnings MaybePlusSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MaybePlusSym0KindInference) GHC.Tuple.())
     data MaybePlusSym0 (l :: TyFun (Maybe Nat) (Maybe Nat))
       = forall arg. SameKind (Apply MaybePlusSym0 arg) (MaybePlusSym1 arg) =>

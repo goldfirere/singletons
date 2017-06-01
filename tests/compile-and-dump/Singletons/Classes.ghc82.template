@@ -67,14 +67,14 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type GSym0 = G
     type FooCompareSym2 (t :: Foo) (t :: Foo) = FooCompare t t
     instance SuppressUnusedWarnings FooCompareSym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooCompareSym1KindInference) GHC.Tuple.())
     data FooCompareSym1 (l :: Foo) (l :: TyFun Foo Ordering)
       = forall arg. SameKind (Apply (FooCompareSym1 l) arg) (FooCompareSym2 l arg) =>
         FooCompareSym1KindInference
     type instance Apply (FooCompareSym1 l) l = FooCompare l l
     instance SuppressUnusedWarnings FooCompareSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooCompareSym0KindInference) GHC.Tuple.())
     data FooCompareSym0 (l :: TyFun Foo (TyFun Foo Ordering
                                          -> GHC.Types.Type))
@@ -84,14 +84,14 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type ConstSym2 (t :: a0123456789876543210) (t :: b0123456789876543210) =
         Const t t
     instance SuppressUnusedWarnings ConstSym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ConstSym1KindInference) GHC.Tuple.())
     data ConstSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 a0123456789876543210)
       = forall arg. SameKind (Apply (ConstSym1 l) arg) (ConstSym2 l arg) =>
         ConstSym1KindInference
     type instance Apply (ConstSym1 l) l = Const l l
     instance SuppressUnusedWarnings ConstSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ConstSym0KindInference) GHC.Tuple.())
     data ConstSym0 (l :: TyFun a0123456789876543210 (TyFun b0123456789876543210 a0123456789876543210
                                                      -> GHC.Types.Type))
@@ -109,14 +109,14 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type MycompareSym2 (t :: a0123456789876543210) (t :: a0123456789876543210) =
         Mycompare t t
     instance SuppressUnusedWarnings MycompareSym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MycompareSym1KindInference) GHC.Tuple.())
     data MycompareSym1 (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering)
       = forall arg. SameKind (Apply (MycompareSym1 l) arg) (MycompareSym2 l arg) =>
         MycompareSym1KindInference
     type instance Apply (MycompareSym1 l) l = Mycompare l l
     instance SuppressUnusedWarnings MycompareSym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MycompareSym0KindInference) GHC.Tuple.())
     data MycompareSym0 (l :: TyFun a0123456789876543210 (TyFun a0123456789876543210 Ordering
                                                          -> GHC.Types.Type))
@@ -126,14 +126,14 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type (:<=>$$$) (t :: a0123456789876543210) (t :: a0123456789876543210) =
         (:<=>) t t
     instance SuppressUnusedWarnings (:<=>$$) where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:<=>$$###)) GHC.Tuple.())
     data (:<=>$$) (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering)
       = forall arg. SameKind (Apply ((:<=>$$) l) arg) ((:<=>$$$) l arg) =>
         (:<=>$$###)
     type instance Apply ((:<=>$$) l) l = (:<=>) l l
     instance SuppressUnusedWarnings (:<=>$) where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:<=>$###)) GHC.Tuple.())
     data (:<=>$) (l :: TyFun a0123456789876543210 (TyFun a0123456789876543210 Ordering
                                                    -> GHC.Types.Type))
@@ -145,7 +145,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type TFHelper_0123456789876543210Sym2 (t :: a0123456789876543210) (t :: a0123456789876543210) =
         TFHelper_0123456789876543210 t t
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) TFHelper_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
@@ -154,7 +154,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         TFHelper_0123456789876543210Sym1KindInference
     type instance Apply (TFHelper_0123456789876543210Sym1 l) l = TFHelper_0123456789876543210 l l
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) TFHelper_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
@@ -175,7 +175,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type Mycompare_0123456789876543210Sym2 (t :: Nat) (t :: Nat) =
         Mycompare_0123456789876543210 t t
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
@@ -184,7 +184,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789876543210Sym1KindInference
     type instance Apply (Mycompare_0123456789876543210Sym1 l) l = Mycompare_0123456789876543210 l l
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
@@ -200,7 +200,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type Mycompare_0123456789876543210Sym2 (t :: ()) (t :: ()) =
         Mycompare_0123456789876543210 t t
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
@@ -209,7 +209,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789876543210Sym1KindInference
     type instance Apply (Mycompare_0123456789876543210Sym1 l) l = Mycompare_0123456789876543210 l l
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
@@ -225,7 +225,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type Mycompare_0123456789876543210Sym2 (t :: Foo) (t :: Foo) =
         Mycompare_0123456789876543210 t t
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
@@ -234,7 +234,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789876543210Sym1KindInference
     type instance Apply (Mycompare_0123456789876543210Sym1 l) l = Mycompare_0123456789876543210 l l
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
@@ -253,7 +253,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type TFHelper_0123456789876543210Sym2 (t :: Foo2) (t :: Foo2) =
         TFHelper_0123456789876543210 t t
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) TFHelper_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
@@ -262,7 +262,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         TFHelper_0123456789876543210Sym1KindInference
     type instance Apply (TFHelper_0123456789876543210Sym1 l) l = TFHelper_0123456789876543210 l l
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) TFHelper_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
@@ -395,7 +395,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type Mycompare_0123456789876543210Sym2 (t :: Foo2) (t :: Foo2) =
         Mycompare_0123456789876543210 t t
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
@@ -404,7 +404,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789876543210Sym1KindInference
     type instance Apply (Mycompare_0123456789876543210Sym1 l) l = Mycompare_0123456789876543210 l l
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
@@ -422,7 +422,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type Compare_0123456789876543210Sym2 (t :: Foo2) (t :: Foo2) =
         Compare_0123456789876543210 t t
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
@@ -431,7 +431,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789876543210Sym1KindInference
     type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
@@ -461,7 +461,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type Zero'Sym0 = Zero'
     type Succ'Sym1 (t :: Nat') = Succ' t
     instance SuppressUnusedWarnings Succ'Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) Succ'Sym0KindInference) GHC.Tuple.())
     data Succ'Sym0 (l :: TyFun Nat' Nat')
       = forall arg. SameKind (Apply Succ'Sym0 arg) (Succ'Sym1 arg) =>
@@ -475,7 +475,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type Mycompare_0123456789876543210Sym2 (t :: Nat') (t :: Nat') =
         Mycompare_0123456789876543210 t t
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym1 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
@@ -484,7 +484,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789876543210Sym1KindInference
     type instance Apply (Mycompare_0123456789876543210Sym1 l) l = Mycompare_0123456789876543210 l l
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
-      suppressUnusedWarnings _
+      suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
