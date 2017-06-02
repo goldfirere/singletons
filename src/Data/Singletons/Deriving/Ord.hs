@@ -24,7 +24,11 @@ import Data.Singletons.Syntax
 mkOrdInstance :: Quasi q => DType -> [DCon] -> q UInstDecl
 mkOrdInstance ty cons = do
   let constraints = inferConstraints (DConPr ordName) cons
-  compare_eq_clauses <- mapM mk_equal_clause cons
+  -- This case also handles empty datatypes, since we can just create
+  -- one clause with wildcard matches and zero fields to fold over
+  compare_eq_clauses <- mapM mk_equal_clause $ if null cons
+                                                  then [Nothing]
+                                                  else map Just cons
   let compare_noneq_clauses = map (uncurry mk_nonequal_clause)
                                   [ (con1, con2)
                                   | con1 <- zip cons [1..]
@@ -38,13 +42,18 @@ mkOrdInstance ty cons = do
                                  , UFunction (compare_eq_clauses ++
                                               compare_noneq_clauses) )] })
 
-mk_equal_clause :: Quasi q => DCon -> q DClause
-mk_equal_clause (DCon _tvbs _cxt name fields _rty) = do
-  let tys = tysOfConFields fields
+mk_equal_clause :: Quasi q => Maybe DCon -- Nothing if it's an empty datatype,
+                                         -- Just a constructor name otherwise
+                           -> q DClause
+mk_equal_clause mb_con = do
+  let tys = maybe [] (snd . extractNameTypes) mb_con
   a_names <- mapM (const $ newUniqueName "a") tys
   b_names <- mapM (const $ newUniqueName "b") tys
-  let pat1 = DConPa name (map DVarPa a_names)
-      pat2 = DConPa name (map DVarPa b_names)
+  let mk_pat names = maybe DWildPa
+                           (\con -> DConPa (extractName con) (map DVarPa names))
+                           mb_con
+      pat1 = mk_pat a_names
+      pat2 = mk_pat b_names
   return $ DClause [pat1, pat2] (DVarE foldlName `DAppE`
                                  DVarE thenCmpName `DAppE`
                                  DConE cmpEQName `DAppE`
