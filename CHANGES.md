@@ -1,6 +1,10 @@
 Changelog for singletons project
 ================================
 
+next
+----
+* Permit derived `Ord` instances for empty datatypes.
+
 2.3.1
 -----
 * Fix the Haddock build, thanks to @christiaanb.
