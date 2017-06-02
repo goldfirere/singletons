@@ -1,15 +1,20 @@
 Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
-    singletons
-      [d| data Empty
-          
-          deriving instance Ord Empty
-          deriving instance Eq Empty |]
+    singletonsOnly
+      (return
+         [DataD
+            []
+            ''Empty
+            []
+            Nothing
+            []
+            [DerivClause Nothing [ConT ''Eq, ConT ''Ord]]])
   ======>
-    data Empty
-    deriving instance Eq Empty
-    deriving instance Ord Empty
+    type family Equals_0123456789876543210 (a :: Empty) (b :: Empty) :: Bool where
+      Equals_0123456789876543210 (a :: Empty) (b :: Empty) = FalseSym0
+    instance PEq Empty where
+      type (:==) (a :: Empty) (b :: Empty) = Equals_0123456789876543210 a b
     type family Compare_0123456789876543210 (a :: Empty) (a :: Empty) :: Ordering where
-      Compare_0123456789876543210 _ _ = EQSym0
+      Compare_0123456789876543210 _z_0123456789876543210 _z_0123456789876543210 = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
     type Compare_0123456789876543210Sym2 (t :: Empty) (t :: Empty) =
         Compare_0123456789876543210 t t
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
@@ -32,17 +37,25 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd Empty where
-      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
-    type family Equals_0123456789876543210 (a :: Empty) (b :: Empty) :: Bool where
-      Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = TrueSym0
-    instance PEq Empty where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type Compare (a :: Empty) (a :: Empty) = Apply (Apply Compare_0123456789876543210Sym0 a) a
     data instance Sing (z :: Empty)
     type SEmpty = (Sing :: Empty -> GHC.Types.Type)
     instance SingKind Empty where
       type Demote Empty = Empty
-      fromSing x = case x of
-      toSing x = SomeSing (case x of)
+      fromSing z
+        = case z of {
+            _ -> error "Empty case reached -- this should be impossible" }
+      toSing z
+        = case z of {
+            _ -> error "Empty case reached -- this should be impossible" }
+    instance SEq Empty where
+      (%:==) a _
+        = case a of {
+            _ -> error "Empty case reached -- this should be impossible" }
+    instance SDecide Empty where
+      (%~) a _
+        = case a of {
+            _ -> error "Empty case reached -- this should be impossible" }
     instance SOrd Empty where
       sCompare ::
         forall (t1 :: Empty) (t2 :: Empty).
@@ -52,8 +65,10 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
                                                               -> GHC.Types.Type)
                                                  -> GHC.Types.Type) t1 :: TyFun Empty Ordering
                                                                           -> GHC.Types.Type) t2 :: Ordering)
-      sCompare _ _ = SEQ
-    instance SEq Empty where
-      (%:==) _ _ = STrue
-    instance SDecide Empty where
-      (%~) x _ = Proved (case x of)
+      sCompare _ _
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            SNil
