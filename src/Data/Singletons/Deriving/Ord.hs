@@ -31,12 +31,12 @@ mkOrdInstance ty cons = do
                                   , con2 <- zip cons [1..]
                                   , extractName (fst con1) /=
                                     extractName (fst con2) ]
+      clauses | null cons = [mk_empty_clause]
+              | otherwise = compare_eq_clauses ++ compare_noneq_clauses
   return (InstDecl { id_cxt = constraints
                    , id_name = ordName
                    , id_arg_tys = [ty]
-                   , id_meths = [( compareName
-                                 , UFunction (compare_eq_clauses ++
-                                              compare_noneq_clauses) )] })
+                   , id_meths = [(compareName, UFunction clauses)] })
 
 mk_equal_clause :: Quasi q => DCon -> q DClause
 mk_equal_clause (DCon _tvbs _cxt name fields _rty) = do
@@ -63,3 +63,7 @@ mk_nonequal_clause (DCon _tvbs1 _cxt1 name1 fields1 _rty1, n1)
   where
     pat1 = DConPa name1 (map (const DWildPa) (tysOfConFields fields1))
     pat2 = DConPa name2 (map (const DWildPa) (tysOfConFields fields2))
+
+-- A variant of mk_equal_clause tailored to empty datatypes
+mk_empty_clause :: DClause
+mk_empty_clause = DClause [DWildPa, DWildPa] (DConE cmpEQName)
