@@ -14,7 +14,7 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     instance PEq Empty where
       type (:==) (a :: Empty) (b :: Empty) = Equals_0123456789876543210 a b
     type family Compare_0123456789876543210 (a :: Empty) (a :: Empty) :: Ordering where
-      Compare_0123456789876543210 _z_0123456789876543210 _z_0123456789876543210 = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
+      Compare_0123456789876543210 _z_0123456789876543210 _z_0123456789876543210 = EQSym0
     type Compare_0123456789876543210Sym2 (t :: Empty) (t :: Empty) =
         Compare_0123456789876543210 t t
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
@@ -65,10 +65,4 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
                                                               -> GHC.Types.Type)
                                                  -> GHC.Types.Type) t1 :: TyFun Empty Ordering
                                                                           -> GHC.Types.Type) t2 :: Ordering)
-      sCompare _ _
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
-                SEQ))
-            SNil
+      sCompare _ _ = SEQ
