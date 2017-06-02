@@ -24,36 +24,27 @@ import Data.Singletons.Syntax
 mkOrdInstance :: Quasi q => DType -> [DCon] -> q UInstDecl
 mkOrdInstance ty cons = do
   let constraints = inferConstraints (DConPr ordName) cons
-  -- This case also handles empty datatypes, since we can just create
-  -- one clause with wildcard matches and zero fields to fold over
-  compare_eq_clauses <- mapM mk_equal_clause $ if null cons
-                                                  then [Nothing]
-                                                  else map Just cons
+  compare_eq_clauses <- mapM mk_equal_clause cons
   let compare_noneq_clauses = map (uncurry mk_nonequal_clause)
                                   [ (con1, con2)
                                   | con1 <- zip cons [1..]
                                   , con2 <- zip cons [1..]
                                   , extractName (fst con1) /=
                                     extractName (fst con2) ]
+      clauses | null cons = [mk_empty_clause]
+              | otherwise = compare_eq_clauses ++ compare_noneq_clauses
   return (InstDecl { id_cxt = constraints
                    , id_name = ordName
                    , id_arg_tys = [ty]
-                   , id_meths = [( compareName
-                                 , UFunction (compare_eq_clauses ++
-                                              compare_noneq_clauses) )] })
+                   , id_meths = [(compareName, UFunction clauses)] })
 
-mk_equal_clause :: Quasi q => Maybe DCon -- Nothing if it's an empty datatype,
-                                         -- Just a constructor name otherwise
-                           -> q DClause
-mk_equal_clause mb_con = do
-  let tys = maybe [] (snd . extractNameTypes) mb_con
+mk_equal_clause :: Quasi q => DCon -> q DClause
+mk_equal_clause (DCon _tvbs _cxt name fields _rty) = do
+  let tys = tysOfConFields fields
   a_names <- mapM (const $ newUniqueName "a") tys
   b_names <- mapM (const $ newUniqueName "b") tys
-  let mk_pat names = maybe DWildPa
-                           (\con -> DConPa (extractName con) (map DVarPa names))
-                           mb_con
-      pat1 = mk_pat a_names
-      pat2 = mk_pat b_names
+  let pat1 = DConPa name (map DVarPa a_names)
+      pat2 = DConPa name (map DVarPa b_names)
   return $ DClause [pat1, pat2] (DVarE foldlName `DAppE`
                                  DVarE thenCmpName `DAppE`
                                  DConE cmpEQName `DAppE`
@@ -72,3 +63,7 @@ mk_nonequal_clause (DCon _tvbs1 _cxt1 name1 fields1 _rty1, n1)
   where
     pat1 = DConPa name1 (map (const DWildPa) (tysOfConFields fields1))
     pat2 = DConPa name2 (map (const DWildPa) (tysOfConFields fields2))
+
+-- A variant of mk_equal_clause tailored to empty datatypes
+mk_empty_clause :: DClause
+mk_empty_clause = DClause [DWildPa, DWildPa] (DConE cmpEQName)
