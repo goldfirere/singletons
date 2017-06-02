@@ -298,7 +298,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       Foo f g a = Apply (Apply f g) a
     type family ZipWith (a :: TyFun a (TyFun b c -> GHC.Types.Type)
                               -> GHC.Types.Type) (a :: [a]) (a :: [b]) :: [c] where
-      ZipWith f ((:) x xs) ((:) y ys) = Apply (Apply (:@#@$) (Apply (Apply f x) y)) (Apply (Apply (Apply ZipWithSym0 f) xs) ys)
+      ZipWith f ((:) x xs) ((:) y ys) = Apply (Apply (:$) (Apply (Apply f x) y)) (Apply (Apply (Apply ZipWithSym0 f) xs) ys)
       ZipWith _ '[] '[] = '[]
       ZipWith _ ((:) _ _) '[] = '[]
       ZipWith _ '[] ((:) _ _) = '[]
@@ -313,7 +313,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     type family Map (a :: TyFun a b
                           -> GHC.Types.Type) (a :: [a]) :: [b] where
       Map _ '[] = '[]
-      Map f ((:) h t) = Apply (Apply (:@#@$) (Apply f h)) (Apply (Apply MapSym0 f) t)
+      Map f ((:) h t) = Apply (Apply (:$) (Apply f h)) (Apply (Apply MapSym0 f) t)
     sFoo ::
       forall (t :: TyFun (TyFun a b -> GHC.Types.Type) (TyFun a b
                                                         -> GHC.Types.Type)
