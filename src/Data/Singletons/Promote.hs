@@ -555,10 +555,7 @@ promotePat (DSigPa pat ty) = do
   promoted <- promotePat pat
   ki <- promoteType ty
   return $ DSigT promoted ki
-promotePat DWildPa = do
-  name <- newUniqueName "_z"
-  tyName <- mkTyName name
-  return $ DVarT tyName
+promotePat DWildPa = return DWildCardT
 
 promoteExp :: DExp -> PrM (DType, ADExp)
 promoteExp (DVarE name) = fmap (, ADVarE name) $ lookupVarE name

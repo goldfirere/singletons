@@ -191,9 +191,9 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     foo14 x = let (y, z) = (Succ x, x) in (z, y)
     type family Case_0123456789876543210 x t where
       Case_0123456789876543210 x '(y_0123456789876543210,
-                                   _z_0123456789876543210) = y_0123456789876543210
+                                   _) = y_0123456789876543210
     type family Case_0123456789876543210 x t where
-      Case_0123456789876543210 x '(_z_0123456789876543210,
+      Case_0123456789876543210 x '(_,
                                    y_0123456789876543210) = y_0123456789876543210
     type Let0123456789876543210YSym1 t = Let0123456789876543210Y t
     instance SuppressUnusedWarnings Let0123456789876543210YSym0 where

@@ -65,7 +65,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       (:+) (Succ n) m = Apply SuccSym0 (Apply (Apply (:+$) n) m)
     type family Child (a :: Foo) :: Foo where
       Child FLeaf = FLeafSym0
-      Child ((:+:) a _z_0123456789876543210) = a
+      Child ((:+:) a _) = a
     (%:+) ::
       forall (t :: Nat) (t :: Nat).
       Sing t -> Sing t -> Sing (Apply (Apply (:+$) t) t :: Nat)

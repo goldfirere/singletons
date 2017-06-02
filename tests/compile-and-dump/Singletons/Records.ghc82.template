@@ -20,9 +20,9 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
         Field2Sym0KindInference
     type instance Apply Field2Sym0 l = Field2 l
     type family Field1 (a :: Record a) :: a where
-      Field1 (MkRecord field _z_0123456789876543210) = field
+      Field1 (MkRecord field _) = field
     type family Field2 (a :: Record a) :: Bool where
-      Field2 (MkRecord _z_0123456789876543210 field) = field
+      Field2 (MkRecord _ field) = field
     type MkRecordSym2 (t :: a0123456789876543210) (t :: Bool) =
         MkRecord t t
     instance SuppressUnusedWarnings MkRecordSym1 where

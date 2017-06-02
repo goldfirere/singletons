@@ -79,7 +79,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       type FooList (arg :: a) (arg :: [Bool]) :: [Bool]
       type FooList a a = Apply (Apply FooList_0123456789876543210Sym0 a) a
     type family FoosPrec_0123456789876543210 (a :: Nat) (a :: [a]) (a :: [Bool]) :: [Bool] where
-      FoosPrec_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply FooListSym0 a_0123456789876543210) a_0123456789876543210
+      FoosPrec_0123456789876543210 _ a_0123456789876543210 a_0123456789876543210 = Apply (Apply FooListSym0 a_0123456789876543210) a_0123456789876543210
     type FoosPrec_0123456789876543210Sym3 (t :: Nat) (t :: [a0123456789876543210]) (t :: [Bool]) =
         FoosPrec_0123456789876543210 t t t
     instance SuppressUnusedWarnings FoosPrec_0123456789876543210Sym2 where

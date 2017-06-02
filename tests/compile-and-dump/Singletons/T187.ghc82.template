@@ -14,7 +14,7 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     instance PEq Empty where
       type (:==) (a :: Empty) (b :: Empty) = Equals_0123456789876543210 a b
     type family Compare_0123456789876543210 (a :: Empty) (a :: Empty) :: Ordering where
-      Compare_0123456789876543210 _z_0123456789876543210 _z_0123456789876543210 = EQSym0
+      Compare_0123456789876543210 _ _ = EQSym0
     type Compare_0123456789876543210Sym2 (t :: Empty) (t :: Empty) =
         Compare_0123456789876543210 t t
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where

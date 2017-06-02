@@ -299,9 +299,9 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     type family ZipWith (a :: TyFun a (TyFun b c -> GHC.Types.Type)
                               -> GHC.Types.Type) (a :: [a]) (a :: [b]) :: [c] where
       ZipWith f ((:) x xs) ((:) y ys) = Apply (Apply (:$) (Apply (Apply f x) y)) (Apply (Apply (Apply ZipWithSym0 f) xs) ys)
-      ZipWith _z_0123456789876543210 '[] '[] = '[]
-      ZipWith _z_0123456789876543210 ((:) _z_0123456789876543210 _z_0123456789876543210) '[] = '[]
-      ZipWith _z_0123456789876543210 '[] ((:) _z_0123456789876543210 _z_0123456789876543210) = '[]
+      ZipWith _ '[] '[] = '[]
+      ZipWith _ ((:) _ _) '[] = '[]
+      ZipWith _ '[] ((:) _ _) = '[]
     type family Splunge (a :: [Nat]) (a :: [Bool]) :: [Nat] where
       Splunge ns bs = Apply (Apply (Apply ZipWithSym0 (Apply (Apply Lambda_0123456789876543210Sym0 ns) bs)) ns) bs
     type family Etad (a :: [Nat]) (a :: [Bool]) :: [Nat] where
@@ -309,10 +309,10 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     type family LiftMaybe (a :: TyFun a b
                                 -> GHC.Types.Type) (a :: Maybe a) :: Maybe b where
       LiftMaybe f (Just x) = Apply JustSym0 (Apply f x)
-      LiftMaybe _z_0123456789876543210 Nothing = NothingSym0
+      LiftMaybe _ Nothing = NothingSym0
     type family Map (a :: TyFun a b
                           -> GHC.Types.Type) (a :: [a]) :: [b] where
-      Map _z_0123456789876543210 '[] = '[]
+      Map _ '[] = '[]
       Map f ((:) h t) = Apply (Apply (:$) (Apply f h)) (Apply (Apply MapSym0 f) t)
     sFoo ::
       forall (t :: TyFun (TyFun a b -> GHC.Types.Type) (TyFun a b

@@ -132,8 +132,8 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
         InsertionSortSym0KindInference
     type instance Apply InsertionSortSym0 l = InsertionSort l
     type family Leq (a :: Nat) (a :: Nat) :: Bool where
-      Leq Zero _z_0123456789876543210 = TrueSym0
-      Leq (Succ _z_0123456789876543210) Zero = FalseSym0
+      Leq Zero _ = TrueSym0
+      Leq (Succ _) Zero = FalseSym0
       Leq (Succ a) (Succ b) = Apply (Apply LeqSym0 a) b
     type family Insert (a :: Nat) (a :: [Nat]) :: [Nat] where
       Insert n '[] = Apply (Apply (:$) n) '[]
