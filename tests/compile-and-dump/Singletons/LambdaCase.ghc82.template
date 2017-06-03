@@ -30,8 +30,7 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
     foo3 :: a -> b -> a
     foo3 a b = (\case \ (p, _) -> p) (a, b)
     type family Case_0123456789876543210 a b x_0123456789876543210 t where
-      Case_0123456789876543210 a b x_0123456789876543210 '(p,
-                                                           _z_0123456789876543210) = p
+      Case_0123456789876543210 a b x_0123456789876543210 '(p, _) = p
     type family Lambda_0123456789876543210 a b t where
       Lambda_0123456789876543210 a b x_0123456789876543210 = Case_0123456789876543210 a b x_0123456789876543210 x_0123456789876543210
     type Lambda_0123456789876543210Sym3 t t t =
@@ -176,7 +175,7 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
     type family Foo3 (a :: a) (a :: b) :: a where
       Foo3 a b = Apply (Apply (Apply Lambda_0123456789876543210Sym0 a) b) (Apply (Apply Tuple2Sym0 a) b)
     type family Foo2 (a :: a) (a :: Maybe a) :: a where
-      Foo2 d _z_0123456789876543210 = Apply (Apply Lambda_0123456789876543210Sym0 d) (Apply JustSym0 d)
+      Foo2 d _ = Apply (Apply Lambda_0123456789876543210Sym0 d) (Apply JustSym0 d)
     type family Foo1 (a :: a) (a :: Maybe a) :: a where
       Foo1 d x = Apply (Apply (Apply Lambda_0123456789876543210Sym0 d) x) x
     sFoo3 ::

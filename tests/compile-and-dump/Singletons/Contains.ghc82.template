@@ -25,7 +25,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
         ContainsSym0KindInference
     type instance Apply ContainsSym0 l = ContainsSym1 l
     type family Contains (a :: a) (a :: [a]) :: Bool where
-      Contains _z_0123456789876543210 '[] = FalseSym0
+      Contains _ '[] = FalseSym0
       Contains elt ((:) h t) = Apply (Apply (:||$) (Apply (Apply (:==$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
     sContains ::
       forall (t :: a) (t :: [a]).

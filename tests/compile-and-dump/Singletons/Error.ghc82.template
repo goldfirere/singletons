@@ -16,7 +16,7 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
         HeadSym0KindInference
     type instance Apply HeadSym0 l = Head l
     type family Head (a :: [a]) :: a where
-      Head ((:) a _z_0123456789876543210) = a
+      Head ((:) a _) = a
       Head '[] = Apply ErrorSym0 "Data.Singletons.List.head: empty list"
     sHead :: forall (t :: [a]). Sing t -> Sing (Apply HeadSym0 t :: a)
     sHead (SCons (sA :: Sing a) _) = sA

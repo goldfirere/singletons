@@ -104,7 +104,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       FooCompare B B = GTSym0
       FooCompare B A = EQSym0
     type family Const (a :: a) (a :: b) :: a where
-      Const x _z_0123456789876543210 = x
+      Const x _ = x
     infix 4 :<=>
     type MycompareSym2 (t :: a0123456789876543210) (t :: a0123456789876543210) =
         Mycompare t t
@@ -169,8 +169,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       type (:<=>) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type family Mycompare_0123456789876543210 (a :: Nat) (a :: Nat) :: Ordering where
       Mycompare_0123456789876543210 Zero Zero = EQSym0
-      Mycompare_0123456789876543210 Zero (Succ _z_0123456789876543210) = LTSym0
-      Mycompare_0123456789876543210 (Succ _z_0123456789876543210) Zero = GTSym0
+      Mycompare_0123456789876543210 Zero (Succ _) = LTSym0
+      Mycompare_0123456789876543210 (Succ _) Zero = GTSym0
       Mycompare_0123456789876543210 (Succ n) (Succ m) = Apply (Apply MycompareSym0 m) n
     type Mycompare_0123456789876543210Sym2 (t :: Nat) (t :: Nat) =
         Mycompare_0123456789876543210 t t
@@ -196,7 +196,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     instance PMyOrd Nat where
       type Mycompare (a :: Nat) (a :: Nat) = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     type family Mycompare_0123456789876543210 (a :: ()) (a :: ()) :: Ordering where
-      Mycompare_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 = Apply (Apply ConstSym0 EQSym0) a_0123456789876543210
+      Mycompare_0123456789876543210 _ a_0123456789876543210 = Apply (Apply ConstSym0 EQSym0) a_0123456789876543210
     type Mycompare_0123456789876543210Sym2 (t :: ()) (t :: ()) =
         Mycompare_0123456789876543210 t t
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym1 where
@@ -390,8 +390,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       compare _ _ = GT
     type family Mycompare_0123456789876543210 (a :: Foo2) (a :: Foo2) :: Ordering where
       Mycompare_0123456789876543210 F F = EQSym0
-      Mycompare_0123456789876543210 F _z_0123456789876543210 = LTSym0
-      Mycompare_0123456789876543210 _z_0123456789876543210 _z_0123456789876543210 = GTSym0
+      Mycompare_0123456789876543210 F _ = LTSym0
+      Mycompare_0123456789876543210 _ _ = GTSym0
     type Mycompare_0123456789876543210Sym2 (t :: Foo2) (t :: Foo2) =
         Mycompare_0123456789876543210 t t
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym1 where
@@ -417,8 +417,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       type Mycompare (a :: Foo2) (a :: Foo2) = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     type family Compare_0123456789876543210 (a :: Foo2) (a :: Foo2) :: Ordering where
       Compare_0123456789876543210 F F = EQSym0
-      Compare_0123456789876543210 F _z_0123456789876543210 = LTSym0
-      Compare_0123456789876543210 _z_0123456789876543210 _z_0123456789876543210 = GTSym0
+      Compare_0123456789876543210 F _ = LTSym0
+      Compare_0123456789876543210 _ _ = GTSym0
     type Compare_0123456789876543210Sym2 (t :: Foo2) (t :: Foo2) =
         Compare_0123456789876543210 t t
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
@@ -469,8 +469,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Succ'Sym0 l = Succ' l
     type family Mycompare_0123456789876543210 (a :: Nat') (a :: Nat') :: Ordering where
       Mycompare_0123456789876543210 Zero' Zero' = EQSym0
-      Mycompare_0123456789876543210 Zero' (Succ' _z_0123456789876543210) = LTSym0
-      Mycompare_0123456789876543210 (Succ' _z_0123456789876543210) Zero' = GTSym0
+      Mycompare_0123456789876543210 Zero' (Succ' _) = LTSym0
+      Mycompare_0123456789876543210 (Succ' _) Zero' = GTSym0
       Mycompare_0123456789876543210 (Succ' n) (Succ' m) = Apply (Apply MycompareSym0 m) n
     type Mycompare_0123456789876543210Sym2 (t :: Nat') (t :: Nat') =
         Mycompare_0123456789876543210 t t

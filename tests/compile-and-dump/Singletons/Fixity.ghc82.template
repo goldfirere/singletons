@@ -34,7 +34,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
         (:====$###)
     type instance Apply (:====$) l = (:====$$) l
     type family (:====) (a :: a) (a :: a) :: a where
-      (:====) a _z_0123456789876543210 = a
+      (:====) a _ = a
     infix 4 :====
     infix 4 :<=>
     type (:<=>$$$) (t :: a0123456789876543210) (t :: a0123456789876543210) =
