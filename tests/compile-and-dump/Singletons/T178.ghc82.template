@@ -52,7 +52,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd Occ where
-      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
+      type Compare (a :: Occ) (a :: Occ) = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family ShowsPrec_0123456789876543210 (a :: Nat) (a :: Occ) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ Str a_0123456789876543210 = Apply (Apply ShowStringSym0 "Str") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ Opt a_0123456789876543210 = Apply (Apply ShowStringSym0 "Opt") a_0123456789876543210
@@ -90,14 +90,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow Occ where
-      type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    type family Equals_0123456789876543210 (a :: Occ) (b :: Occ) :: Bool where
-      Equals_0123456789876543210 Str Str = TrueSym0
-      Equals_0123456789876543210 Opt Opt = TrueSym0
-      Equals_0123456789876543210 Many Many = TrueSym0
-      Equals_0123456789876543210 (_ :: Occ) (_ :: Occ) = FalseSym0
-    instance PEq Occ where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type ShowsPrec (a :: Nat) (a :: Occ) (a :: Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)])
     sEmpty = Data.Singletons.Prelude.Instances.SNil
     data instance Sing (z :: Occ)
@@ -187,26 +180,6 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
              ((applySing ((singFun2 @ShowStringSym0) sShowString))
                 (sing :: Sing "Many")))
             sA_0123456789876543210
-    instance SEq Occ where
-      (%:==) SStr SStr = STrue
-      (%:==) SStr SOpt = SFalse
-      (%:==) SStr SMany = SFalse
-      (%:==) SOpt SStr = SFalse
-      (%:==) SOpt SOpt = STrue
-      (%:==) SOpt SMany = SFalse
-      (%:==) SMany SStr = SFalse
-      (%:==) SMany SOpt = SFalse
-      (%:==) SMany SMany = STrue
-    instance SDecide Occ where
-      (%~) SStr SStr = Proved Refl
-      (%~) SStr SOpt = Disproved (\ x -> case x of)
-      (%~) SStr SMany = Disproved (\ x -> case x of)
-      (%~) SOpt SStr = Disproved (\ x -> case x of)
-      (%~) SOpt SOpt = Proved Refl
-      (%~) SOpt SMany = Disproved (\ x -> case x of)
-      (%~) SMany SStr = Disproved (\ x -> case x of)
-      (%~) SMany SOpt = Disproved (\ x -> case x of)
-      (%~) SMany SMany = Proved Refl
     instance SingI Str where
       sing = SStr
     instance SingI Opt where

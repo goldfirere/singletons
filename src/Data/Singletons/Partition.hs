@@ -63,9 +63,27 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
     data_dec = mempty { pd_data_decs = [DataDecl nd name tvbs cons []] }
     ty = foldType (DConT name) (map tvbToType tvbs)
 
-    flatten_clause :: DDerivClause -> [(Maybe DerivStrategy, DType)]
-    flatten_clause (DDerivClause strat preds) =
-      map (\p -> (strat, predToType p)) preds
+    flatten_clause :: DDerivClause -> [(Maybe DerivStrategy, DPred)]
+    flatten_clause (DDerivClause strat preds) = map (strat,) preds
+
+    part_derivings :: DsMonad m => (Maybe DerivStrategy, DPred)
+                              -> m (Either DPred UInstDecl)
+    part_derivings (strat, deriv) = case deriv of
+      DConPr deriv_name
+         | stock, deriv_name == ordName
+        -> Right <$> mkOrdInstance ty cons
+         | stock, deriv_name == boundedName
+        -> Right <$> mkBoundedInstance ty cons
+         | stock, deriv_name == enumName
+        -> Right <$> mkEnumInstance ty cons
+         | stock, deriv_name == showName
+        -> Right <$> mkShowInstance ty cons
+        where
+          stock = case strat of
+                    Nothing            -> True
+                    Just StockStrategy -> True
+                    Just _             -> False
+      _ -> return (Left deriv)
 
 partitionDec (DClassD cxt name tvbs fds decs) = do
   env <- concatMapM partitionClassDec decs

@@ -43,7 +43,7 @@ module Data.Promotion.Prelude (
   module Data.Promotion.Prelude.Num,
 
   -- * Promoted 'Show'
-  PShow(..), ShowS, SChar, show_, (:<>), Shows, ShowChar, ShowString, ShowParen,
+  module Data.Promotion.Prelude.Show,
 
   -- ** Miscellaneous functions
   Id, Const, (:.), (:$), (:$!), Flip, AsTypeOf, Until, Seq,

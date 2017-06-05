@@ -10,10 +10,12 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
+{-# LANGUAGE TypeApplications #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Singletons.Prelude.Show
--- Copyright   :  (C) 2017 Ryan Scott
+-- Copyright   :  (C) 2013 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
 -- Stability   :  experimental
@@ -24,48 +26,52 @@
 -----------------------------------------------------------------------------
 
 module Data.Singletons.Prelude.Show (
-  PShow(..), SShow(..), SymbolS, SChar, show_,
-  (:<>), (%:<>),
-  Shows, sShows,
-  ShowListWith, sShowListWith,
-  ShowChar, sShowChar,
-  ShowString, sShowString,
-  ShowParen, sShowParen,
-  ShowSpace, sShowSpace,
-  ShowCommaSpace, sShowCommaSpace,
-  AppPrec, sAppPrec,
-  AppPrec1, sAppPrec1,
+  PShow(..), SShow(..), SymbolS, SChar,
 
-  -- * Defunctionalization symbols
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
-  Show_Sym0, Show_Sym1,
+  Show'Sym0, Show'Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$),
+
+  (:<>), (%:<>),
+  (:<>$), (:<>$$), (:<>$$$),
+
+  Shows, sShows,
   ShowsSym0, ShowsSym1, ShowsSym2,
+
+  ShowListWith, sShowListWith,
   ShowListWithSym0, ShowListWithSym1, ShowListWithSym2, ShowListWithSym3,
+
+  ShowChar, sShowChar,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
+
+  ShowString, sShowString,
   ShowStringSym0, ShowStringSym1, ShowStringSym2,
+
+  ShowParen, sShowParen,
   ShowParenSym0, ShowParenSym1, ShowParenSym2,
+
+  ShowSpace, sShowSpace,
   ShowSpaceSym0, ShowSpaceSym1,
+
+  ShowCommaSpace, sShowCommaSpace,
   ShowCommaSpaceSym0, ShowCommaSpaceSym1,
-  AppPrecSym0, AppPrec1Sym0
+
+  AppPrec, sAppPrec, AppPrecSym0,
+
+  AppPrec1, sAppPrec1, AppPrec1Sym0
   ) where
 
+import           Data.Kind (Type)
 import           Data.List.NonEmpty (NonEmpty)
-import           Data.Proxy
-import           Data.Singletons.Internal
+import           Data.Monoid ((<>))
 import           Data.Singletons.Prelude.Base
 import           Data.Singletons.Prelude.Instances
 import           Data.Singletons.Prelude.List
-import           Data.Singletons.Prelude.Num
 import           Data.Singletons.Prelude.Ord
-import           Data.Singletons.Prelude.Tuple
-import           Data.Singletons.Prelude.Void
-import           Data.Singletons.Promote
 import           Data.Singletons.Single
+import           Data.Singletons.TH
 import           Data.Singletons.TypeLits
 import qualified Data.Text as T
-import           Data.Void
 
 import           GHC.TypeLits
 
@@ -73,6 +79,34 @@ import qualified Prelude as P
 import           Prelude hiding (Show(..))
 
 import           Unsafe.Coerce (unsafeCoerce)
+
+-- | The promoted analogue of '(<>)' for 'Symbol's. This uses the special
+-- 'AppendSymbol' type family from "GHC.TypeLits".
+type a :<> b = AppendSymbol a b
+infixr 6 :<>
+
+-- | The singleton analogue of '(<>)' for 'Symbol's.
+(%:<>) :: Sing a -> Sing b -> Sing (a :<> b)
+sa %:<> sb =
+    let a  = fromSing sa
+        b  = fromSing sb
+        ex = someSymbolVal $ T.unpack $ a <> b
+    in case ex of
+         SomeSymbol (_ :: Proxy ab) -> unsafeCoerce (SSym :: Sing ab)
+infixr 6 %:<>
+
+type (:<>$$$) (x :: Symbol) (y :: Symbol) =
+    (:<>) x y
+instance SuppressUnusedWarnings (:<>$$) where
+  suppressUnusedWarnings = snd ((:<>$$###), ())
+data (:<>$$) (x :: Symbol) (y :: TyFun Symbol Symbol)
+  = forall arg. KindOf (Apply ((:<>$$) x) arg) ~ KindOf ((:<>$$$) x arg) => (:<>$$###)
+type instance Apply ((:<>$$) x) y = (:<>$$$) x y
+instance SuppressUnusedWarnings (:<>$) where
+  suppressUnusedWarnings = snd ((:<>$###), ())
+data (:<>$) (x :: TyFun Symbol (TyFun Symbol Symbol -> Type))
+  = forall arg. KindOf (Apply (:<>$) arg) ~ KindOf ((:<>$$) arg) => (:<>$###)
+type instance Apply (:<>$) x = (:<>$$) x
 
 -- | The @shows@ functions return a function that prepends the
 -- output 'Symbol' to an existing 'Symbol'.  This allows constant-time
@@ -86,11 +120,12 @@ type SChar = Symbol
 $(singletonsOnly [d|
   class Show a where
     showsPrec :: Nat -> a -> SymbolS
-    show_     :: a -> Symbol
+    -- Intentionally renamed to avoid clashing with the Show class
+    show'     :: a -> Symbol
     showList  :: [a] -> SymbolS
 
-    showsPrec _ x s = show_ x <> s
-    show_ x         = shows x ""
+    showsPrec _ x s = show' x <> s
+    show' x         = shows x ""
     showList ls   s = showListWith shows ls s
 
   shows :: Show a => a -> SymbolS
@@ -156,46 +191,11 @@ $(singletonsOnly [d|
           => Show (a,b,c,d,e,f,g) where
     showsPrec _ (a,b,c,d,e,f,g) s
           = show_tuple [shows a, shows b, shows c, shows d, shows e, shows f, shows g] s
-
-  instance Show Void where
-    showsPrec _ = absurd
   |])
 
-$(promoteOnly [d|
-  showsNat :: Nat -> SymbolS
-  showsNat 0 = showChar "0"
-  showsNat 1 = showChar "1"
-  showsNat 2 = showChar "2"
-  showsNat 3 = showChar "3"
-  showsNat 4 = showChar "4"
-  showsNat 5 = showChar "5"
-  showsNat 6 = showChar "6"
-  showsNat 7 = showChar "7"
-  showsNat 8 = showChar "8"
-  showsNat 9 = showChar "9"
-  showsNat n = showsNat (n `div` 10) . showsNat (n `mod` 10)
-
-  -- https://ghc.haskell.org/trac/ghc/ticket/13652 asks for these in GHC.TypeLits.
-  -- That would be nice, since this implementation is horribly slow.
-  divmod :: Nat -> Nat -> Nat -> Nat -> (Nat, Nat)
-  divmod 0 _ q u = (q, u)
-  divmod n y q 0 = divmod (n-1) y (q+1) y
-  divmod n y q u = divmod (n-1) y q     (u-1)
-
-  div :: Nat -> Nat -> Nat
-  div _ 0 = 0
-  div x y = fst (divmod x (y-1) 0 (y-1))
-
-  mod :: Nat -> Nat -> Nat
-  mod _ 0 = 0
-  mod x y = (y-1) - snd (divmod x (y-1) 0 (y-1))
-
-  |])
-
--- | Note that this instance is really, really slow, since it uses an inefficient,
--- inductive definition of division behind the hood.
-instance PShow Nat where
-  type ShowsPrec _ n x = ShowsNat n x
+-- At the moment, I can't think of a way to implement a PShow Nat instance,
+-- since that would require a way to convert Nats to Symbols at the type level.
+-- Oh well.
 
 instance SShow Nat where
   sShowsPrec _ sn sx =
@@ -206,9 +206,24 @@ instance SShow Nat where
     case ex of
       SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
 
--- | 'P.show', but with an extra underscore so that its promoted counterpart
--- ('Show_') will not clash with the 'Show' class.
-show_ :: P.Show a => a -> String
-show_ = P.show
+  -- Annoyingly enough, the default definitions for sShow' and sShowList won't
+  -- typecheck because they rely on the type-level Show' and ShowList reducing,
+  -- but since we don't have a PShow Nat instance, that doesn't happen. To work
+  -- around this, we define sShow' and sShowList by hand.
+
+  sShow' sn =
+    let n = fromSing sn
+        ex = someSymbolVal (P.show n)
+    in
+    case ex of
+      SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
+
+  sShowList sl sx =
+    let l = fromSing sl
+        x = fromSing sx
+        ex = someSymbolVal (P.show l ++ T.unpack x)
+    in
+    case ex of
+      SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
 
 $(singShowInstances [ ''(), ''Maybe, ''Either, ''NonEmpty, ''Bool, ''Ordering ])

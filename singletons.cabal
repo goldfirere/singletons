@@ -43,11 +43,11 @@ source-repository this
 library
   hs-source-dirs:     src
   build-depends:      base >= 4.10 && < 5,
-                      mtl >= 2.2.1,
+                      mtl >= 2.1.2,
                       ghc-boot-th,
                       template-haskell,
                       containers >= 0.5,
-                      th-desugar >= 1.8 && < 1.9,
+                      th-desugar >= 1.7.1 && < 1.8,
                       syb >= 0.4,
                       text >= 1.2
   default-language:   Haskell2010
@@ -99,7 +99,6 @@ library
                       Data.Singletons.Deriving.Enum,
                       Data.Singletons.Deriving.Ord,
                       Data.Singletons.Deriving.Show,
-                      Data.Singletons.Internal,
                       Data.Singletons.Prelude.List.NonEmpty.Internal,
                       Data.Singletons.Promote,
                       Data.Singletons.Promote.Monad,

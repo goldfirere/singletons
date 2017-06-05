@@ -18,7 +18,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply JustSym0 l = Just l
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Maybe a) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210 _ Nothing a_0123456789876543210 = Apply (Apply ShowStringSym0 "Nothing") a_0123456789876543210
-      ShowsPrec_0123456789876543210 p_0123456789876543210 (Just arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (:>@#@$) p_0123456789876543210) (Data.Singletons.Prelude.Num.FromInteger 10))) (Apply (Apply (:.@#@$) (Apply ShowStringSym0 "Just ")) (Apply (Apply ShowsPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
+      ShowsPrec_0123456789876543210 p_0123456789876543210 (Just arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (:>$) p_0123456789876543210) (Data.Singletons.Prelude.Num.FromInteger 10))) (Apply (Apply (:.$) (Apply ShowStringSym0 "Just ")) (Apply (Apply ShowsPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym3 (t :: GHC.Types.Nat) (t :: Maybe a0123456789876543210) (t :: GHC.Types.Symbol) =
         ShowsPrec_0123456789876543210 t t t
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym2 where
@@ -52,13 +52,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow (Maybe a) where
-      type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    type family Equals_0123456789876543210 (a :: Maybe a) (b :: Maybe a) :: Bool where
-      Equals_0123456789876543210 Nothing Nothing = TrueSym0
-      Equals_0123456789876543210 (Just a) (Just b) = (:==) a b
-      Equals_0123456789876543210 (_ :: Maybe a) (_ :: Maybe a) = FalseSym0
-    instance PEq (Maybe a) where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type ShowsPrec (a :: GHC.Types.Nat) (a :: Maybe a) (a :: GHC.Types.Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     data instance Sing (z :: Maybe a)
       where
         SNothing :: Sing Nothing
@@ -128,6 +122,48 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance SShow a => SShow (Maybe a) where
+      sShowsPrec ::
+        forall (t1 :: GHC.Types.Nat)
+               (t2 :: Maybe a)
+               (t3 :: GHC.Types.Symbol).
+        Sing t1
+        -> Sing t2
+           -> Sing t3
+              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun (Maybe a) (TyFun GHC.Types.Symbol GHC.Types.Symbol
+                                                                                                   -> GHC.Types.Type)
+                                                                                  -> GHC.Types.Type)
+                                                             -> GHC.Types.Type) t1 :: TyFun (Maybe a) (TyFun GHC.Types.Symbol GHC.Types.Symbol
+                                                                                                       -> GHC.Types.Type)
+                                                                                      -> GHC.Types.Type) t2 :: TyFun GHC.Types.Symbol GHC.Types.Symbol
+                                                                                                               -> GHC.Types.Type) t3 :: GHC.Types.Symbol)
+      sShowsPrec
+        _
+        SNothing
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "Nothing")))
+            sA_0123456789876543210
+      sShowsPrec
+        (sP_0123456789876543210 :: Sing p_0123456789876543210)
+        (SJust (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
+                    ((applySing
+                        ((applySing ((singFun2 @(:>$)) (%:>))) sP_0123456789876543210))
+                       (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 10)))))
+                ((applySing
+                    ((applySing ((singFun3 @(:.$)) (%:.)))
+                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                          (sing :: Sing "Just "))))
+                   ((applySing
+                       ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
+                          (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 11))))
+                      sArg_0123456789876543210))))
+            sA_0123456789876543210
     instance SingI Nothing where
       sing = SNothing
     instance SingI n => SingI (Just (n :: a)) where

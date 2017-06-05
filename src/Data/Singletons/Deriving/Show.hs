@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Singletons.Deriving.Show
--- Copyright   :  (C) 2017 Ryan Scott
+-- Copyright   :  (C) 2015 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
 -- Stability   :  experimental
@@ -25,12 +25,12 @@ import Data.Maybe (fromMaybe)
 import GHC.Lexeme (startsConSym, startsVarSym)
 import GHC.Show (appPrec, appPrec1)
 
-mkShowInstance :: DsMonad q => Maybe DCxt -> DType -> [DCon] -> q UInstDecl
-mkShowInstance mb_ctxt ty cons = do
+mkShowInstance :: DsMonad q => DType -> [DCon] -> q UInstDecl
+mkShowInstance ty cons = do
   when (null cons) $
     fail ("Can't derive Show instance for " ++ pprint (typeToTH ty) ++ ".")
   clauses <- mk_showsPrec cons
-  return $ InstDecl { id_cxt = inferConstraintsDef mb_ctxt (DConPr showName) cons
+  return $ InstDecl { id_cxt = inferConstraints (DConPr showName) cons
                     , id_name = showName
                     , id_arg_tys = [ty]
                     , id_meths = [ (showsPrecName, UFunction clauses) ] }
@@ -89,8 +89,8 @@ mk_showsPrec_clause p (DCon _ _ con_name con_fields _) = go con_fields
           `DAppE` (DVarE gtName `DAppE` DVarE p `DAppE` dIntegerE appPrec)
           `DAppE` named_args
 
-    -- We show a record constructor with no fields the same way we'd show a
-    -- normal constructor with no fields.
+    -- A record constructor with no fields? This probably won't ever happen,
+    -- but just to be safe, we'll act as if it were a DNormalC.
     go (DRecC []) = go (DNormalC False [])
 
     go (DRecC tys) = do
