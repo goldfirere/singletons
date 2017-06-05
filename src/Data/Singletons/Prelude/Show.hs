@@ -24,7 +24,7 @@
 -----------------------------------------------------------------------------
 
 module Data.Singletons.Prelude.Show (
-  PShow(..), SShow(..), SymbolS, SChar,
+  PShow(..), SShow(..), SymbolS, SChar, show_,
   (:<>), (%:<>),
   Shows, sShows,
   ShowListWith, sShowListWith,
@@ -38,7 +38,7 @@ module Data.Singletons.Prelude.Show (
 
   -- * Defunctionalization symbols
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
-  Show'Sym0, Show'Sym1,
+  Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
   (:<>$), (:<>$$), (:<>$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
@@ -110,12 +110,11 @@ type SChar = Symbol
 $(singletonsOnly [d|
   class Show a where
     showsPrec :: Nat -> a -> SymbolS
-    -- Intentionally renamed to avoid clashing with the Show class
-    show'     :: a -> Symbol
+    show_     :: a -> Symbol
     showList  :: [a] -> SymbolS
 
-    showsPrec _ x s = show' x <> s
-    show' x         = shows x ""
+    showsPrec _ x s = show_ x <> s
+    show_ x         = shows x ""
     showList ls   s = showListWith shows ls s
 
   shows :: Show a => a -> SymbolS
@@ -196,12 +195,12 @@ instance SShow Nat where
     case ex of
       SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
 
-  -- Annoyingly enough, the default definitions for sShow' and sShowList won't
-  -- typecheck because they rely on the type-level Show' and ShowList reducing,
+  -- Annoyingly enough, the default definitions for sShow_ and sShowList won't
+  -- typecheck because they rely on the type-level Show_ and ShowList reducing,
   -- but since we don't have a PShow Nat instance, that doesn't happen. To work
-  -- around this, we define sShow' and sShowList by hand.
+  -- around this, we define sShow_ and sShowList by hand.
 
-  sShow' sn =
+  sShow_ sn =
     let n = fromSing sn
         ex = someSymbolVal (P.show n)
     in
@@ -215,5 +214,10 @@ instance SShow Nat where
     in
     case ex of
       SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
+
+-- | 'P.show', but with an extra underscore so that its promoted counterpart
+-- ('Show_') will not clash with the 'Show' class.
+show_ :: P.Show a => a -> String
+show_ = P.show
 
 $(singShowInstances [ ''(), ''Maybe, ''Either, ''NonEmpty, ''Bool, ''Ordering ])
