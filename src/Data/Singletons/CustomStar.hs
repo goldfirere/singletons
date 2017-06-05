@@ -108,7 +108,7 @@ singletonStar names = do
           (types, vars) <- evalForPair $ mapM (kindToType []) args
           dataName <- if real then mkDataName (nameBase name) else return name
           return $ DCon (map DPlainTV vars) [] dataName
-                        (DNormalC (map (\ty -> (noBang, ty)) types))
+                        (DNormalC False (map (\ty -> (noBang, ty)) types))
                         Nothing
             where
               noBang = Bang NoSourceUnpackedness NoSourceStrictness

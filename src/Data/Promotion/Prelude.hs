@@ -42,6 +42,9 @@ module Data.Promotion.Prelude (
   -- * Promoted numbers
   module Data.Promotion.Prelude.Num,
 
+  -- * Promoted 'Show'
+  module Data.Promotion.Prelude.Show,
+
   -- ** Miscellaneous functions
   Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Until, Seq,
 
@@ -161,4 +164,5 @@ import Data.Promotion.Prelude.Ord
 import Data.Promotion.Prelude.Enum
   hiding (Succ, Pred, SuccSym0, SuccSym1, PredSym0, PredSym1)
 import Data.Promotion.Prelude.Num
+import Data.Promotion.Prelude.Show
 import Data.Singletons.TypeLits

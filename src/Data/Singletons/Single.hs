@@ -16,6 +16,7 @@ import Language.Haskell.TH.Syntax (Quasi(..))
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Deriving.Enum
+import Data.Singletons.Deriving.Show
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Promote.Monad ( promoteM )
@@ -165,6 +166,14 @@ singEnumInstances = concatMapM singEnumInstance
 -- | Create instance of 'SEnum' for the given type
 singEnumInstance :: DsMonad q => Name -> q [Dec]
 singEnumInstance = singInstance mkEnumInstance "Enum"
+
+-- | Create instance of 'SShow' for the given type
+singShowInstance :: DsMonad q => Name -> q [Dec]
+singShowInstance = singInstance mkShowInstance "Show"
+
+-- | Create instances of 'SShow' for the given types
+singShowInstances :: DsMonad q => [Name] -> q [Dec]
+singShowInstances = concatMapM singShowInstance
 
 singInstance :: DsMonad q
              => (DType -> [DCon] -> q UInstDecl)

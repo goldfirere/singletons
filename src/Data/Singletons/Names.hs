@@ -17,6 +17,7 @@ import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import GHC.TypeLits ( Nat, Symbol )
 import GHC.Exts ( Any, Constraint )
+import GHC.Show ( showCommaSpace, showSpace )
 import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
 import Control.Monad
@@ -37,7 +38,9 @@ anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
   sameKindName, tyFromIntegerName, tyNegateName, sFromIntegerName,
   sNegateName, errorName, foldlName, cmpEQName, cmpLTName, cmpGTName,
   singletonsToEnumName, singletonsFromEnumName, enumName, singletonsEnumName,
-  equalsName, constraintName :: Name
+  equalsName, constraintName,
+  showName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
+  showSpaceName, showStringName, composeName, gtName :: Name
 anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
@@ -101,6 +104,15 @@ enumName = ''Enum
 singletonsEnumName = mk_name_tc "Data.Singletons.Prelude.Enum" "Enum"
 equalsName = '(==)
 constraintName = ''Constraint
+showName = ''Show
+showCharName = 'showChar
+showParenName = 'showParen
+showSpaceName = 'showSpace
+showsPrecName = 'showsPrec
+showStringName = 'showString
+composeName = '(.)
+gtName = '(>)
+showCommaSpaceName = 'showCommaSpace
 
 singPkg :: String
 singPkg = $( (LitE . StringL . loc_package) `liftM` location )

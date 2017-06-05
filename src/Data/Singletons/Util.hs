@@ -79,7 +79,7 @@ checkForRepInDecls decls =
   checkForRep (allNamesIn decls)
 
 tysOfConFields :: DConFields -> [DType]
-tysOfConFields (DNormalC stys) = map snd stys
+tysOfConFields (DNormalC _ stys) = map snd stys
 tysOfConFields (DRecC vstys)   = map (\(_,_,ty) -> ty) vstys
 
 -- extract the name and number of arguments to a constructor
@@ -92,6 +92,11 @@ extractNameTypes (DCon _ _ n fields _) = (n, tysOfConFields fields)
 
 extractName :: DCon -> Name
 extractName (DCon _ _ n _ _) = n
+
+-- | is a valid Haskell infix data constructor (i.e., does it begin with a colon?)
+isInfixDataCon :: String -> Bool
+isInfixDataCon (':':_) = True
+isInfixDataCon _       = False
 
 -- is an identifier uppercase?
 isUpcase :: Name -> Bool

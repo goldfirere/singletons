@@ -30,6 +30,9 @@ module Data.Promotion.TH (
   -- ** Functions to generate @Enum@ instances
   promoteEnumInstances, promoteEnumInstance,
 
+  -- ** Functions to generate @Show@ instances
+  promoteShowInstances, promoteShowInstance,
+
   -- ** defunctionalization
   TyFun, Apply, type (@@),
 
