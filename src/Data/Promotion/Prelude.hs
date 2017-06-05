@@ -43,7 +43,7 @@ module Data.Promotion.Prelude (
   module Data.Promotion.Prelude.Num,
 
   -- * Promoted 'Show'
-  PShow(..), ShowS, SChar, (:<>), Shows, ShowChar, ShowString, ShowParen,
+  PShow(..), ShowS, SChar, show_, (:<>), Shows, ShowChar, ShowString, ShowParen,
 
   -- ** Miscellaneous functions
   Id, Const, (:.), (:$), (:$!), Flip, AsTypeOf, Until, Seq,
@@ -113,7 +113,7 @@ module Data.Promotion.Prelude (
   ShowParenSym0, ShowParenSym1, ShowParenSym2,
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
-  Show'Sym0, Show'Sym1,
+  Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
   (:<>$), (:<>$$), (:<>$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,

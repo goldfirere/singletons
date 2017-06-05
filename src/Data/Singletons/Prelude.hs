@@ -102,6 +102,7 @@ module Data.Singletons.Prelude (
   either_, -- reimplementation of either to be used with singletons library
   maybe_,
   bool_,
+  any_,
   show_,
 
   -- * Defunctionalization symbols
@@ -129,7 +130,7 @@ module Data.Singletons.Prelude (
   UncurrySym0, UncurrySym1, UncurrySym2,
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
-  Show'Sym0, Show'Sym1,
+  Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
   (:<>$), (:<>$$), (:<>$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
