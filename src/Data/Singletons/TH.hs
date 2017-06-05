@@ -39,6 +39,10 @@ module Data.Singletons.TH (
   promoteEnumInstances, promoteEnumInstance,
   singEnumInstances, singEnumInstance,
 
+  -- ** Functions to generate 'Show' instances
+  promoteShowInstances, promoteShowInstance,
+  singShowInstances, singShowInstance,
+
   -- ** Utility functions
   cases, sCases,
 

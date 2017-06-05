@@ -60,6 +60,44 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd Occ where
       type Compare (a :: Occ) (a :: Occ) = Apply (Apply Compare_0123456789876543210Sym0 a) a
+    type family ShowsPrec_0123456789876543210 (a :: Nat) (a :: Occ) (a :: Symbol) :: Symbol where
+      ShowsPrec_0123456789876543210 _ Str a_0123456789876543210 = Apply (Apply ShowStringSym0 "Str") a_0123456789876543210
+      ShowsPrec_0123456789876543210 _ Opt a_0123456789876543210 = Apply (Apply ShowStringSym0 "Opt") a_0123456789876543210
+      ShowsPrec_0123456789876543210 _ Many a_0123456789876543210 = Apply (Apply ShowStringSym0 "Many") a_0123456789876543210
+    type ShowsPrec_0123456789876543210Sym3 (t :: Nat) (t :: Occ) (t :: Symbol) =
+        ShowsPrec_0123456789876543210 t t t
+    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym2 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data ShowsPrec_0123456789876543210Sym2 (l :: Nat) (l :: Occ) (l :: TyFun Symbol Symbol)
+      = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym2 l l) arg) (ShowsPrec_0123456789876543210Sym3 l l arg) =>
+        ShowsPrec_0123456789876543210Sym2KindInference
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 l l) l = ShowsPrec_0123456789876543210 l l l
+    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data ShowsPrec_0123456789876543210Sym1 (l :: Nat) (l :: TyFun Occ (TyFun Symbol Symbol
+                                                                       -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym1 l) arg) (ShowsPrec_0123456789876543210Sym2 l arg) =>
+        ShowsPrec_0123456789876543210Sym1KindInference
+    type instance Apply (ShowsPrec_0123456789876543210Sym1 l) l = ShowsPrec_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun Nat (TyFun Occ (TyFun Symbol Symbol
+                                                                       -> GHC.Types.Type)
+                                                            -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
+        ShowsPrec_0123456789876543210Sym0KindInference
+    type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
+    instance PShow Occ where
+      type ShowsPrec (a :: Nat) (a :: Occ) (a :: Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)])
     sEmpty = SNil
     data instance Sing (z :: Occ)
@@ -153,6 +191,43 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       sCompare SOpt SMany = SLT
       sCompare SMany SStr = SGT
       sCompare SMany SOpt = SGT
+    instance SShow Occ where
+      sShowsPrec ::
+        forall (t1 :: Nat) (t2 :: Occ) (t3 :: Symbol).
+        Sing t1
+        -> Sing t2
+           -> Sing t3
+              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun Nat (TyFun Occ (TyFun Symbol Symbol
+                                                                                   -> GHC.Types.Type)
+                                                                        -> GHC.Types.Type)
+                                                             -> GHC.Types.Type) t1 :: TyFun Occ (TyFun Symbol Symbol
+                                                                                                 -> GHC.Types.Type)
+                                                                                      -> GHC.Types.Type) t2 :: TyFun Symbol Symbol
+                                                                                                               -> GHC.Types.Type) t3 :: Symbol)
+      sShowsPrec
+        _
+        SStr
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "Str")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SOpt
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "Opt")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SMany
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "Many")))
+            sA_0123456789876543210
     instance SingI Str where
       sing = SStr
     instance SingI Opt where

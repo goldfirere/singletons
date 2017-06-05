@@ -6,6 +6,11 @@ import Data.Singletons.TH
 import Data.Singletons
 import Data.Singletons.SuppressUnusedWarnings
 
+-- Work around #190
+import Data.Singletons.Prelude.Base
+import Data.Singletons.Prelude.Ord
+import Data.Singletons.Prelude.Show
+
 $(singletons [d|
   data Nat where
     Zero :: Nat

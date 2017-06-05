@@ -54,6 +54,9 @@ module Data.Singletons.Prelude (
   -- * Singletons numbers
   module Data.Singletons.Prelude.Num,
 
+  -- * Singleton 'Show'
+  module Data.Singletons.Prelude.Show,
+
   -- ** Miscellaneous functions
   Id, sId, Const, sConst, (:.), (%:.), type ($), (%$), type ($!), (%$!),
   Flip, sFlip, AsTypeOf, sAsTypeOf,
@@ -160,4 +163,5 @@ import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Enum
   hiding (Succ, Pred, SuccSym0, SuccSym1, PredSym0, PredSym1, sSucc, sPred)
 import Data.Singletons.Prelude.Num
+import Data.Singletons.Prelude.Show
 import Data.Singletons.TypeLits

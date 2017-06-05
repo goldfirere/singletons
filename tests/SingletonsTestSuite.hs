@@ -69,6 +69,8 @@ tests =
     , compileAndDumpStdTest "T176"
     , compileAndDumpStdTest "T178"
     , compileAndDumpStdTest "T187"
+    , compileAndDumpStdTest "ShowDeriving"
+    , compileAndDumpStdTest "BadShowDeriving"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

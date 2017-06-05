@@ -140,7 +140,7 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
           con_decl    = DCon [DPlainTV extra_name]
                              [con_eq_ct]
                              con_name
-                             (DNormalC [])
+                             (DNormalC False [])
                              Nothing
           data_decl   = DDataD Data [] data_name params [con_decl] []
           app_eqn     = DTySynEqn [ foldType (DConT data_name)

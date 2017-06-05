@@ -22,6 +22,7 @@ import Data.Singletons.Promote.Type
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Deriving.Enum
+import Data.Singletons.Deriving.Show
 import Data.Singletons.Partition
 import Data.Singletons.Util
 import Data.Singletons.Syntax
@@ -94,6 +95,14 @@ promoteEnumInstances = concatMapM promoteEnumInstance
 -- | Produce an instance for 'PEnum' from the given type
 promoteEnumInstance :: DsMonad q => Name -> q [Dec]
 promoteEnumInstance = promoteInstance mkEnumInstance "Enum"
+
+-- | Produce instances for 'PShow' from the given types
+promoteShowInstances :: DsMonad q => [Name] -> q [Dec]
+promoteShowInstances = concatMapM promoteShowInstance
+
+-- | Produce an instance for 'PShow' from the given type
+promoteShowInstance :: DsMonad q => Name -> q [Dec]
+promoteShowInstance = promoteInstance mkShowInstance "Show"
 
 -- | Produce an instance for '(:==)' (type-level equality) from the given type
 promoteEqInstance :: DsMonad q => Name -> q [Dec]
