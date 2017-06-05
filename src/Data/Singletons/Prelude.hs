@@ -61,7 +61,8 @@ module Data.Singletons.Prelude (
   Shows, sShows, ShowChar, sShowChar, ShowString, sShowString, ShowParen, sShowParen,
 
   -- * Singleton 'Show'
-  module Data.Singletons.Prelude.Show,
+  PShow(..), SShow(..), ShowS, SChar, (:<>), (%:<>),
+  Shows, sShows, ShowChar, sShowChar, ShowString, sShowString, ShowParen, sShowParen,
 
   -- ** Miscellaneous functions
   Id, sId, Const, sConst, (:.), (%:.), (:$), (%:$), (:$!), (%:$!),
@@ -127,14 +128,10 @@ module Data.Singletons.Prelude (
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
 
-  ErrorSym0, ErrorSym1, UndefinedSym0,
-
-  (:^@#@$), (:^@#@$$), (:^@#@$$$),
-
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
-  Show_Sym0, Show_Sym1,
+  Show'Sym0, Show'Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$),
+  (:<>$), (:<>$$), (:<>$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowStringSym0, ShowStringSym1, ShowStringSym2,
