@@ -2,6 +2,7 @@ module Singletons.ShowDeriving where
 
 import Data.Type.Equality
 import Data.Singletons.Prelude
+import Data.Singletons.Prelude.Show
 import Data.Singletons.TH
 
 $(singletons [d|

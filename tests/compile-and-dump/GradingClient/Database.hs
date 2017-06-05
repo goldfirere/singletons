@@ -24,6 +24,7 @@ module GradingClient.Database where
 
 import Prelude hiding ( tail, id )
 import Data.Singletons.Prelude hiding ( Lookup, sLookup )
+import Data.Singletons.Prelude.Show
 import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Control.Monad
