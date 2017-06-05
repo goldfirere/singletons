@@ -4,6 +4,7 @@
 module Singletons.PatternMatching where
 
 import Data.Singletons.Prelude
+import Data.Singletons.Prelude.Show
 import Data.Singletons.TH
 import Singletons.Nat
 

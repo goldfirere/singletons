@@ -10,12 +10,10 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-{-# LANGUAGE TypeApplications #-}
-
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Singletons.Prelude.Show
--- Copyright   :  (C) 2013 Richard Eisenberg
+-- Copyright   :  (C) 2017 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
 -- Stability   :  experimental
@@ -27,38 +25,30 @@
 
 module Data.Singletons.Prelude.Show (
   PShow(..), SShow(..), SymbolS, SChar,
+  (:<>), (%:<>),
+  Shows, sShows,
+  ShowListWith, sShowListWith,
+  ShowChar, sShowChar,
+  ShowString, sShowString,
+  ShowParen, sShowParen,
+  ShowSpace, sShowSpace,
+  ShowCommaSpace, sShowCommaSpace,
+  AppPrec, sAppPrec,
+  AppPrec1, sAppPrec1,
 
+  -- * Defunctionalization symbols
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show'Sym0, Show'Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-
-  (:<>), (%:<>),
   (:<>$), (:<>$$), (:<>$$$),
-
-  Shows, sShows,
   ShowsSym0, ShowsSym1, ShowsSym2,
-
-  ShowListWith, sShowListWith,
   ShowListWithSym0, ShowListWithSym1, ShowListWithSym2, ShowListWithSym3,
-
-  ShowChar, sShowChar,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
-
-  ShowString, sShowString,
   ShowStringSym0, ShowStringSym1, ShowStringSym2,
-
-  ShowParen, sShowParen,
   ShowParenSym0, ShowParenSym1, ShowParenSym2,
-
-  ShowSpace, sShowSpace,
   ShowSpaceSym0, ShowSpaceSym1,
-
-  ShowCommaSpace, sShowCommaSpace,
   ShowCommaSpaceSym0, ShowCommaSpaceSym1,
-
-  AppPrec, sAppPrec, AppPrecSym0,
-
-  AppPrec1, sAppPrec1, AppPrec1Sym0
+  AppPrecSym0, AppPrec1Sym0
   ) where
 
 import           Data.Kind (Type)

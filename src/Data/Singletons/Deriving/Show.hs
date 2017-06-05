@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Singletons.Deriving.Show
--- Copyright   :  (C) 2015 Richard Eisenberg
+-- Copyright   :  (C) 2017 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
 -- Stability   :  experimental
@@ -89,8 +89,8 @@ mk_showsPrec_clause p (DCon _ _ con_name con_fields _) = go con_fields
           `DAppE` (DVarE gtName `DAppE` DVarE p `DAppE` dIntegerE appPrec)
           `DAppE` named_args
 
-    -- A record constructor with no fields? This probably won't ever happen,
-    -- but just to be safe, we'll act as if it were a DNormalC.
+    -- We show a record constructor with no fields the same way we'd show a
+    -- normal constructor with no fields.
     go (DRecC []) = go (DNormalC False [])
 
     go (DRecC tys) = do

@@ -2,6 +2,7 @@ module Singletons.DataValues where
 
 import Data.Singletons.TH
 import Data.Singletons.Prelude
+import Data.Singletons.Prelude.Show
 import Singletons.Nat
 import Data.Singletons.SuppressUnusedWarnings
 
