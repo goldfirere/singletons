@@ -57,7 +57,9 @@ import           Data.Monoid ((<>))
 import           Data.Singletons.Prelude.Base
 import           Data.Singletons.Prelude.Instances
 import           Data.Singletons.Prelude.List
+import           Data.Singletons.Prelude.Num
 import           Data.Singletons.Prelude.Ord
+import           Data.Singletons.Prelude.Tuple
 import           Data.Singletons.Single
 import           Data.Singletons.TH
 import           Data.Singletons.TypeLits
@@ -182,35 +184,47 @@ $(singletonsOnly [d|
           = show_tuple [shows a, shows b, shows c, shows d, shows e, shows f, shows g] s
   |])
 
--- At the moment, I can't think of a way to implement a PShow Nat instance,
--- since that would require a way to convert Nats to Symbols at the type level.
--- Oh well.
+$(promoteOnly [d|
+  showsNat :: Nat -> SymbolS
+  showsNat 0 = showChar "0"
+  showsNat 1 = showChar "1"
+  showsNat 2 = showChar "2"
+  showsNat 3 = showChar "3"
+  showsNat 4 = showChar "4"
+  showsNat 5 = showChar "5"
+  showsNat 6 = showChar "6"
+  showsNat 7 = showChar "7"
+  showsNat 8 = showChar "8"
+  showsNat 9 = showChar "9"
+  showsNat n = showsNat (n `div` 10) . showsNat (n `mod` 10)
+
+  -- https://ghc.haskell.org/trac/ghc/ticket/13652 asks for these in GHC.TypeLits.
+  -- That would be nice, since this implementation is horribly slow.
+  divmod :: Nat -> Nat -> Nat -> Nat -> (Nat, Nat)
+  divmod 0 _ q u = (q, u)
+  divmod n y q 0 = divmod (n-1) y (q+1) y
+  divmod n y q u = divmod (n-1) y q     (u-1)
+
+  div :: Nat -> Nat -> Nat
+  div _ 0 = 0
+  div x y = fst (divmod x (y-1) 0 (y-1))
+
+  mod :: Nat -> Nat -> Nat
+  mod _ 0 = 0
+  mod x y = (y-1) - snd (divmod x (y-1) 0 (y-1))
+
+  |])
+
+-- | Note that this instance is really, really slow, since it uses an inefficient,
+-- inductive definition of division behind the hood.
+instance PShow Nat where
+  type ShowsPrec _ n x = ShowsNat n x
 
 instance SShow Nat where
   sShowsPrec _ sn sx =
     let n = fromSing sn
         x = fromSing sx
         ex = someSymbolVal (P.show n ++ T.unpack x)
-    in
-    case ex of
-      SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
-
-  -- Annoyingly enough, the default definitions for sShow_ and sShowList won't
-  -- typecheck because they rely on the type-level Show_ and ShowList reducing,
-  -- but since we don't have a PShow Nat instance, that doesn't happen. To work
-  -- around this, we define sShow_ and sShowList by hand.
-
-  sShow_ sn =
-    let n = fromSing sn
-        ex = someSymbolVal (P.show n)
-    in
-    case ex of
-      SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
-
-  sShowList sl sx =
-    let l = fromSing sl
-        x = fromSing sx
-        ex = someSymbolVal (P.show l ++ T.unpack x)
     in
     case ex of
       SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
