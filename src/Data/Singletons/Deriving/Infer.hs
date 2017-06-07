@@ -11,14 +11,18 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Singletons.Deriving.Infer ( inferConstraints ) where
+module Data.Singletons.Deriving.Infer ( inferConstraints, inferConstraintsDef ) where
 
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
 import Data.List
+import Data.Maybe (fromMaybe)
 import Data.Generics.Twins
 
 inferConstraints :: DPred -> [DCon] -> DCxt
 inferConstraints pr = nubBy geq . concatMap infer_ct
   where
     infer_ct (DCon _ _ _ fields _) = map (pr `DAppPr`) (tysOfConFields fields)
+
+inferConstraintsDef :: Maybe DCxt -> DPred -> [DCon] -> DCxt
+inferConstraintsDef mb_ctxt pr cons = fromMaybe (inferConstraints pr cons) mb_ctxt

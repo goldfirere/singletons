@@ -21,9 +21,9 @@ import Data.Singletons.Deriving.Infer
 import Data.Singletons.Syntax
 
 -- | Make a *non-singleton* Ord instance
-mkOrdInstance :: Quasi q => DType -> [DCon] -> q UInstDecl
-mkOrdInstance ty cons = do
-  let constraints = inferConstraints (DConPr ordName) cons
+mkOrdInstance :: Quasi q => Maybe DCxt -> DType -> [DCon] -> q UInstDecl
+mkOrdInstance mb_ctxt ty cons = do
+  let constraints = inferConstraintsDef mb_ctxt (DConPr ordName) cons
   compare_eq_clauses <- mapM mk_equal_clause cons
   let compare_noneq_clauses = map (uncurry mk_nonequal_clause)
                                   [ (con1, con2)

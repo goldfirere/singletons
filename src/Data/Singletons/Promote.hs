@@ -114,14 +114,14 @@ promoteEqInstance name = do
   inst_decs <- mkEqTypeInstance kind cons'
   return $ decsToTH inst_decs
 
-promoteInstance :: DsMonad q => (DType -> [DCon] -> q UInstDecl)
+promoteInstance :: DsMonad q => (Maybe DCxt -> DType -> [DCon] -> q UInstDecl)
                 -> String -> Name -> q [Dec]
 promoteInstance mk_inst class_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
                             ++ " for it.") name
   cons' <- concatMapM dsCon cons
   tvbs' <- mapM dsTvb tvbs
-  raw_inst <- mk_inst (foldType (DConT name) (map tvbToType tvbs')) cons'
+  raw_inst <- mk_inst Nothing (foldType (DConT name) (map tvbToType tvbs')) cons'
   decs <- promoteM_ [] $ void $ promoteInstanceDec Map.empty raw_inst
   return $ decsToTH decs
 

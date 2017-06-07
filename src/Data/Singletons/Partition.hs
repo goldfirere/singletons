@@ -29,6 +29,7 @@ import Data.Singletons.Util
 
 import Data.Monoid
 import Control.Monad
+import Data.List.NonEmpty (NonEmpty(..))
 import Data.Maybe
 
 data PartitionedDecs =
@@ -53,8 +54,9 @@ partitionDec (DLetDec (DPragmaD {})) = return mempty
 partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
 
 partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
-  (derivings', derived_instances) <- partitionWithM part_derivings
-                                   $ concatMap flatten_clause derivings
+  (derivings', derived_instances)
+    <- partitionWithM (\(strat, deriv_pred) -> partitionDeriving strat deriv_pred Nothing ty cons)
+      $ concatMap flatten_clause derivings
   return $ mempty { pd_data_decs = [DataDecl nd name tvbs cons derivings']
                   , pd_instance_decs = derived_instances }
   where
@@ -62,25 +64,6 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
 
     flatten_clause :: DDerivClause -> [(Maybe DerivStrategy, DPred)]
     flatten_clause (DDerivClause strat preds) = map (strat,) preds
-
-    part_derivings :: DsMonad m => (Maybe DerivStrategy, DPred)
-                              -> m (Either DPred UInstDecl)
-    part_derivings (strat, deriv) = case deriv of
-      DConPr deriv_name
-         | stock, deriv_name == ordName
-        -> Right <$> mkOrdInstance ty cons
-         | stock, deriv_name == boundedName
-        -> Right <$> mkBoundedInstance ty cons
-         | stock, deriv_name == enumName
-        -> Right <$> mkEnumInstance ty cons
-         | stock, deriv_name == showName
-        -> Right <$> mkShowInstance ty cons
-        where
-          stock = case strat of
-                    Nothing            -> True
-                    Just StockStrategy -> True
-                    Just _             -> False
-      _ -> return (Left deriv)
 
 partitionDec (DClassD cxt name tvbs fds decs) = do
   env <- concatMapM partitionClassDec decs
@@ -105,6 +88,28 @@ partitionDec (DRoleAnnotD {}) = return mempty  -- ignore these
 partitionDec (DTySynD {})     = return mempty  -- ignore type synonyms;
                                                -- promotion is a no-op, and
                                                -- singling expands all syns
+partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
+  case unfoldType ty of
+    cls_pred_ty :| cls_tys
+      | DConT cls_pred_tycon <- cls_pred_ty
+      , not (null cls_tys) -- We can't handle zero-parameter type classes
+      , let data_ty = last cls_tys
+            data_ty_head = case unfoldType data_ty of ty_head :| _ -> ty_head
+      , DConT data_tycon <- data_ty_head -- We can't handle deriving an instance for something
+                                         -- other than a type constructor application
+      -> do let cls_pred = DConPr cls_pred_tycon
+            dinfo <- dsReify data_tycon
+            case dinfo of
+              Just (DTyConI (DDataD _ _ _ _ cons _) _) -> do
+                mb_instance <- partitionDeriving mb_strat cls_pred (Just ctxt) data_ty cons
+                case mb_instance of
+                  Left _ -> return mempty -- singletons doesn't support deriving this instance
+                  Right derived_instance -> return $ mempty { pd_instance_decs = [derived_instance] }
+              Just _ ->
+                fail $ "Standalone derived instance for something other than a datatype: "
+                       ++ show data_ty
+              _ -> fail $ "Cannot find " ++ show data_ty
+    _ -> return mempty
 partitionDec dec =
   fail $ "Declaration cannot be promoted: " ++ pprint (decToTH dec)
 
@@ -128,3 +133,22 @@ partitionInstanceDec (DLetDec (DFunD name clauses)) =
 partitionInstanceDec (DLetDec (DPragmaD {})) = return Nothing
 partitionInstanceDec _ =
   fail "Only method bodies can be promoted within an instance."
+
+partitionDeriving :: DsMonad m => Maybe DerivStrategy -> DPred -> Maybe DCxt -> DType -> [DCon]
+                  -> m (Either DPred UInstDecl)
+partitionDeriving mb_strat deriv_pred mb_ctxt ty cons = case deriv_pred of
+  DConPr deriv_name
+     | stock, deriv_name == ordName
+    -> Right <$> mkOrdInstance mb_ctxt ty cons
+     | stock, deriv_name == boundedName
+    -> Right <$> mkBoundedInstance mb_ctxt ty cons
+     | stock, deriv_name == enumName
+    -> Right <$> mkEnumInstance mb_ctxt ty cons
+     | stock, deriv_name == showName
+    -> Right <$> mkShowInstance mb_ctxt ty cons
+    where
+      stock = case mb_strat of
+                Nothing            -> True
+                Just StockStrategy -> True
+                Just _             -> False
+  _ -> return (Left deriv_pred)

@@ -7,6 +7,8 @@ next
 
 * Permit derived `Ord` instances for empty datatypes.
 
+* Permit standalone `deriving` declarations.
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.

@@ -23,8 +23,8 @@ import Control.Monad
 import Data.Maybe
 
 -- monadic for failure only
-mkEnumInstance :: Quasi q => DType -> [DCon] -> q UInstDecl
-mkEnumInstance ty cons = do
+mkEnumInstance :: Quasi q => Maybe DCxt -> DType -> [DCon] -> q UInstDecl
+mkEnumInstance mb_ctxt ty cons = do
   when (null cons ||
         any (\(DCon tvbs cxt _ f rty) -> or [ not $ null $ tysOfConFields f
                                             , not $ null tvbs
@@ -43,7 +43,7 @@ mkEnumInstance ty cons = do
       from_enum = UFunction (zipWith (\i con -> DClause [DConPa (extractName con) []]
                                                         (DLitE (IntegerL i)))
                                      [0..] cons)
-  return (InstDecl { id_cxt     = []
+  return (InstDecl { id_cxt     = fromMaybe [] mb_ctxt
                    , id_name    = singletonsEnumName
                       -- need to use singletons's Enum class to get the types
                       -- to use Nat instead of Int

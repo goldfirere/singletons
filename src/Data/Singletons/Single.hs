@@ -176,14 +176,14 @@ singShowInstances :: DsMonad q => [Name] -> q [Dec]
 singShowInstances = concatMapM singShowInstance
 
 singInstance :: DsMonad q
-             => (DType -> [DCon] -> q UInstDecl)
+             => (Maybe DCxt -> DType -> [DCon] -> q UInstDecl)
              -> String -> Name -> q [Dec]
 singInstance mk_inst inst_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
                             ++ " for it.") name
   dtvbs <- mapM dsTvb tvbs
   dcons <- concatMapM dsCon cons
-  raw_inst <- mk_inst (foldType (DConT name) (map tvbToType dtvbs)) dcons
+  raw_inst <- mk_inst Nothing (foldType (DConT name) (map tvbToType dtvbs)) dcons
   (a_inst, decs) <- promoteM [] $
                     promoteInstanceDec Map.empty raw_inst
   decs' <- singDecsM [] $ (:[]) <$> singInstD a_inst
