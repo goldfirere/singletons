@@ -107,10 +107,10 @@ promoteShowInstance = promoteInstance mkShowInstance "Show"
 -- | Produce an instance for '(:==)' (type-level equality) from the given type
 promoteEqInstance :: DsMonad q => Name -> q [Dec]
 promoteEqInstance name = do
-  (_tvbs, cons) <- getDataD "I cannot make an instance of (:==) for it." name
+  (tvbs, cons) <- getDataD "I cannot make an instance of (:==) for it." name
   cons' <- concatMapM dsCon cons
-  vars <- replicateM (length _tvbs) (qNewName "k")
-  kind <- promoteType (foldType (DConT name) (map DVarT vars))
+  tvbs' <- mapM dsTvb tvbs
+  kind <- promoteType (foldType (DConT name) (map tvbToType tvbs'))
   inst_decs <- mkEqTypeInstance kind cons'
   return $ decsToTH inst_decs
 
@@ -233,8 +233,7 @@ promoteLetDecs prefixes decls = do
 promoteDataDec :: DataDecl -> PrM ()
 promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
   -- deriving Eq instance
-  kvs <- replicateM (length tvbs) (qNewName "k")
-  kind <- promoteType (foldType (DConT name) (map DVarT kvs))
+  kind <- promoteType (foldType (DConT name) (map tvbToType tvbs))
   when (any (\case DConPr n -> n == eqName
                    _        -> False) derivings) $ do
     eq_decs <- mkEqTypeInstance kind ctors

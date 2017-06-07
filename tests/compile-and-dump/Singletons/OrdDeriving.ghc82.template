@@ -38,16 +38,16 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
         SuccSym0KindInference
     type instance Apply SuccSym0 l = Succ l
-    type family Equals_0123456789876543210 (a :: Foo k k k k) (b :: Foo k k k k) :: Bool where
+    type family Equals_0123456789876543210 (a :: Foo a b c d) (b :: Foo a b c d) :: Bool where
       Equals_0123456789876543210 (A a a a a) (A b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
       Equals_0123456789876543210 (B a a a a) (B b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
       Equals_0123456789876543210 (C a a a a) (C b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
       Equals_0123456789876543210 (D a a a a) (D b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
       Equals_0123456789876543210 (E a a a a) (E b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
       Equals_0123456789876543210 (F a a a a) (F b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
-      Equals_0123456789876543210 (a :: Foo k k k k) (b :: Foo k k k k) = FalseSym0
-    instance PEq (Foo k k k k) where
-      type (:==) (a :: Foo k k k k) (b :: Foo k k k k) = Equals_0123456789876543210 a b
+      Equals_0123456789876543210 (a :: Foo a b c d) (b :: Foo a b c d) = FalseSym0
+    instance PEq (Foo a b c d) where
+      type (:==) (a :: Foo a b c d) (b :: Foo a b c d) = Equals_0123456789876543210 a b
     type ASym4 (t :: a0123456789876543210) (t :: b0123456789876543210) (t :: c0123456789876543210) (t :: d0123456789876543210) =
         A t t t t
     instance SuppressUnusedWarnings ASym3 where

@@ -7,12 +7,12 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     data Maybe a
       = Nothing | Just a
       deriving (Eq, Show)
-    type family Equals_0123456789876543210 (a :: Maybe k) (b :: Maybe k) :: Bool where
+    type family Equals_0123456789876543210 (a :: Maybe a) (b :: Maybe a) :: Bool where
       Equals_0123456789876543210 Nothing Nothing = TrueSym0
       Equals_0123456789876543210 (Just a) (Just b) = (:==) a b
-      Equals_0123456789876543210 (a :: Maybe k) (b :: Maybe k) = FalseSym0
-    instance PEq (Maybe k) where
-      type (:==) (a :: Maybe k) (b :: Maybe k) = Equals_0123456789876543210 a b
+      Equals_0123456789876543210 (a :: Maybe a) (b :: Maybe a) = FalseSym0
+    instance PEq (Maybe a) where
+      type (:==) (a :: Maybe a) (b :: Maybe a) = Equals_0123456789876543210 a b
     type NothingSym0 = Nothing
     type JustSym1 (t :: a0123456789876543210) = Just t
     instance SuppressUnusedWarnings JustSym0 where
