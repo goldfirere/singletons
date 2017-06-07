@@ -58,7 +58,7 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
 
   -- SEq instance
   sEqInsts <- if any (\case DConPr n -> n == eqName; _ -> False) derivings
-              then mapM (mkEqualityInstance k ctors') [sEqClassDesc, sDecideClassDesc]
+              then mapM (mkEqualityInstance Nothing k ctors') [sEqClassDesc, sDecideClassDesc]
               else return []
 
   -- e.g. type SNat = Sing :: Nat -> *

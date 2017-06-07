@@ -140,7 +140,7 @@ singEqualityInstance desc@(_, className, _) name = do
   aName <- qNewName "a"
   let aVar = DVarT aName
   (scons, _) <- singM [] $ mapM (singCtor aVar) dcons
-  eqInstance <- mkEqualityInstance kind scons desc
+  eqInstance <- mkEqualityInstance Nothing kind scons desc
   return $ decToTH eqInstance
 
 -- | Create instances of 'SOrd' for the given types
@@ -204,10 +204,11 @@ singInfo (DPatSynI {}) =
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
 singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
   decls <- expand raw_decls     -- expand type synonyms
-  PDecs { pd_let_decs              = letDecls
-        , pd_class_decs            = classes
-        , pd_instance_decs         = insts
-        , pd_data_decs             = datas }    <- partitionDecs decls
+  PDecs { pd_let_decs                   = letDecls
+        , pd_class_decs                 = classes
+        , pd_instance_decs              = insts
+        , pd_data_decs                  = datas
+        , pd_standalone_derived_eq_decs = sdEqDecs } <- partitionDecs decls
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
     promoteDataDecs datas
@@ -215,6 +216,7 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
     classes' <- mapM promoteClassDec classes
     let meth_sigs = foldMap (lde_types . cd_lde) classes
     insts' <- mapM (promoteInstanceDec meth_sigs) insts
+    mapM_ promoteStandaloneDerivedEqDec sdEqDecs
     return (letDecEnv, classes', insts')
 
   singDecsM locals $ do
@@ -225,7 +227,8 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
                                  newDataDecls <- concatMapM singDataD datas
                                  newClassDecls <- mapM singClassD classes'
                                  newInstDecls <- mapM singInstD insts'
-                                 return (newDataDecls ++ newClassDecls ++ newInstDecls)
+                                 newSDEqDecs <- concatMapM singStandaloneDerivedEqDecs sdEqDecs
+                                 return (newDataDecls ++ newClassDecls ++ newInstDecls ++ newSDEqDecs)
     return $ promDecls ++ (map DLetDec newLetDecls) ++ newDecls
 
 -- see comment at top of file
@@ -554,6 +557,33 @@ singExp (ADLetE env exp) res_ki =
   uncurry DLetE <$> singLetDecEnv env (singExp exp res_ki)
 singExp (ADSigE {}) _ =
   fail "Singling of explicit type annotations not yet supported."
+
+-- TODO: Note
+singStandaloneDerivedEqDecs :: StandaloneDerivedEqDec -> SgM [DDec]
+singStandaloneDerivedEqDecs (SDEqDec { sded_cxt  = ctxt
+                                     , sded_type = ty
+                                     , sded_cons = cons }) = do
+  aName <- qNewName "a"
+  let aVar = DVarT aName
+  (scons, _) <- singM [] $ mapM (singCtor aVar) cons
+  sctxt <- mapM singPred ctxt
+  sEqInst <- mkEqualityInstance (Just sctxt) ty scons sEqClassDesc
+  -- TODO: What are we doing here?
+  let sctxtDecide = map sEqToSDecide sctxt
+  sDecideInst <- mkEqualityInstance (Just sctxtDecide) ty scons sDecideClassDesc
+  return [sEqInst, sDecideInst]
+
+sEqToSDecide :: DPred -> DPred
+sEqToSDecide (DAppPr p t) = DAppPr (sEqToSDecide p) t
+sEqToSDecide (DSigPr p k) = DSigPr (sEqToSDecide p) k
+sEqToSDecide p@(DVarPr _) = p
+sEqToSDecide p@(DConPr n)
+    -- Why don't we directly compare n to sEqClassName? Because n is almost certainly
+    -- produced from a call to singClassName, which uses unqualified Names. Ugh.
+  | nameBase n == nameBase sEqClassName
+  = DConPr sDecideClassName
+  | otherwise = p
+sEqToSDecide DWildCardPr = DWildCardPr
 
 isException :: DExp -> Bool
 isException (DVarE n)             = n == undefinedName

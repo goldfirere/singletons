@@ -7,16 +7,19 @@ import Data.Singletons.TH
 $(singletons [d|
 
   infixl 6 :*:
-  data T a = a :*: a
-  data S = S1 | S2 deriving Eq
+  data T a b = a :*: b
+  data S = S1 | S2
   |])
 
 -- We need to put the standalone deriving declarations separately from the
 -- data types for the time being due to #192
 $(singletons [d|
 
-  deriving instance Show a => Show (T a)
+  deriving instance Eq a => Eq (T a ())
+  deriving instance Ord a => Ord (T a ())
+  deriving instance Show a => Show (T a ())
 
+  deriving instance Eq S
   deriving instance Ord S
   deriving instance Show S
   deriving instance Bounded S

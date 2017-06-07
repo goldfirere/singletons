@@ -37,12 +37,13 @@ data PartitionedDecs =
         , pd_class_decs :: [UClassDecl]
         , pd_instance_decs :: [UInstDecl]
         , pd_data_decs :: [DataDecl]
+        , pd_standalone_derived_eq_decs :: [StandaloneDerivedEqDec]
         }
 
 instance Monoid PartitionedDecs where
-  mempty = PDecs [] [] [] []
-  mappend (PDecs a1 b1 c1 d1) (PDecs a2 b2 c2 d2) =
-    PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2)
+  mempty = PDecs [] [] [] [] []
+  mappend (PDecs a1 b1 c1 d1 e1) (PDecs a2 b2 c2 d2 e2) =
+    PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2) (e1 <> e2)
 
 -- | Split up a @[DDec]@ into its pieces, extracting 'Ord' instances
 -- from deriving clauses
@@ -103,7 +104,15 @@ partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
               Just (DTyConI (DDataD _ _ _ _ cons _) _) -> do
                 mb_instance <- partitionDeriving mb_strat cls_pred (Just ctxt) data_ty cons
                 case mb_instance of
-                  Left _ -> return mempty -- singletons doesn't support deriving this instance
+                  Left _ -> case cls_pred of
+                              -- TODO: Note
+                              DConPr cls_name
+                                | isStock mb_strat, cls_name == eqName
+                                -> let sded = SDEqDec { sded_cxt  = ctxt
+                                                      , sded_type = data_ty
+                                                      , sded_cons = cons }
+                                   in return mempty { pd_standalone_derived_eq_decs = [sded] }
+                              _ -> return mempty -- singletons doesn't support deriving this instance
                   Right derived_instance -> return $ mempty { pd_instance_decs = [derived_instance] }
               Just _ ->
                 fail $ "Standalone derived instance for something other than a datatype: "
@@ -147,8 +156,14 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty cons = case deriv_pred of
      | stock, deriv_name == showName
     -> Right <$> mkShowInstance mb_ctxt ty cons
     where
-      stock = case mb_strat of
-                Nothing            -> True
-                Just StockStrategy -> True
-                Just _             -> False
+      stock = isStock mb_strat
   _ -> return (Left deriv_pred)
+
+isStock :: Maybe DerivStrategy -> Bool
+isStock Nothing = True -- We assume the lack of an explicit deriving strategy to
+                       -- indicate defaulting to stock. In reality, GHC's defaulting
+                       -- behavior is much more complex than this, but implementing
+                       -- this in singletons would be impossible, as would require
+                       -- detecting the presence of extensions.
+isStock (Just StockStrategy) = True
+isStock (Just _)             = False

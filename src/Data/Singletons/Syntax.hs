@@ -104,6 +104,13 @@ instance Monoid ULetDecEnv where
   mappend (LetDecEnv defns1 types1 infx1 _) (LetDecEnv defns2 types2 infx2 _) =
     LetDecEnv (defns1 <> defns2) (types1 <> types2) (infx1 <> infx2) ()
 
+-- TODO: Note
+data StandaloneDerivedEqDec = SDEqDec
+  { sded_cxt  :: DCxt
+  , sded_type :: DType
+  , sded_cons :: [DCon]
+  }
+
 valueBinding :: Name -> ULetDecRHS -> ULetDecEnv
 valueBinding n v = emptyLetDecEnv { lde_defns = Map.singleton n v }
 
