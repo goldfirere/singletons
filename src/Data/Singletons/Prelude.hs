@@ -54,6 +54,10 @@ module Data.Singletons.Prelude (
   -- * Singletons numbers
   module Data.Singletons.Prelude.Num,
 
+  -- * Singleton 'Show'
+  PShow(..), SShow(..), ShowS, SChar, (:<>), (%:<>),
+  Shows, sShows, ShowChar, sShowChar, ShowString, sShowString, ShowParen, sShowParen,
+
   -- ** Miscellaneous functions
   Id, sId, Const, sConst, (:.), (%:.), type ($), (%$), type ($!), (%$!),
   Flip, sFlip, AsTypeOf, sAsTypeOf,
@@ -86,6 +90,7 @@ module Data.Singletons.Prelude (
   maybe_,
   bool_,
   any_,
+  show_,
 
   -- * Defunctionalization symbols
   FalseSym0, TrueSym0,
@@ -108,6 +113,15 @@ module Data.Singletons.Prelude (
   FstSym0, FstSym1, SndSym0, SndSym1,
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
+
+  ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
+  Show_Sym0, Show_Sym1,
+  ShowListSym0, ShowListSym1, ShowListSym2,
+  (:<>$), (:<>$$), (:<>$$$),
+  ShowsSym0, ShowsSym1, ShowsSym2,
+  ShowCharSym0, ShowCharSym1, ShowCharSym2,
+  ShowStringSym0, ShowStringSym1, ShowStringSym2,
+  ShowParenSym0, ShowParenSym1, ShowParenSym2,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   (:.$), (:.$$), (:.$$$),
@@ -160,4 +174,5 @@ import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Enum
   hiding (Succ, Pred, SuccSym0, SuccSym1, PredSym0, PredSym1, sSucc, sPred)
 import Data.Singletons.Prelude.Num
+import Data.Singletons.Prelude.Show
 import Data.Singletons.TypeLits

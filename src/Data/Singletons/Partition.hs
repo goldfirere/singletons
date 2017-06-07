@@ -20,8 +20,9 @@ import Data.Singletons.Syntax
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Deriving.Enum
+import Data.Singletons.Deriving.Show
 import Data.Singletons.Names
-import Language.Haskell.TH.Syntax
+import Language.Haskell.TH.Syntax hiding (showName)
 import Language.Haskell.TH.Ppr
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
@@ -44,10 +45,10 @@ instance Monoid PartitionedDecs where
 
 -- | Split up a @[DDec]@ into its pieces, extracting 'Ord' instances
 -- from deriving clauses
-partitionDecs :: Quasi m => [DDec] -> m PartitionedDecs
+partitionDecs :: DsMonad m => [DDec] -> m PartitionedDecs
 partitionDecs = concatMapM partitionDec
 
-partitionDec :: Quasi m => DDec -> m PartitionedDecs
+partitionDec :: DsMonad m => DDec -> m PartitionedDecs
 partitionDec (DLetDec (DPragmaD {})) = return mempty
 partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
 
@@ -62,7 +63,7 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
     flatten_clause :: DDerivClause -> [(Maybe DerivStrategy, DPred)]
     flatten_clause (DDerivClause strat preds) = map (strat,) preds
 
-    part_derivings :: Quasi m => (Maybe DerivStrategy, DPred)
+    part_derivings :: DsMonad m => (Maybe DerivStrategy, DPred)
                               -> m (Either DPred UInstDecl)
     part_derivings (strat, deriv) = case deriv of
       DConPr deriv_name
@@ -72,6 +73,8 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
         -> Right <$> mkBoundedInstance ty cons
          | stock, deriv_name == enumName
         -> Right <$> mkEnumInstance ty cons
+         | stock, deriv_name == showName
+        -> Right <$> mkShowInstance ty cons
         where
           stock = case strat of
                     Nothing            -> True

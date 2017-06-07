@@ -147,7 +147,7 @@ singCtor a (DCon _tvbs cxt name fields _rty)
 
   let noBang    = Bang NoSourceUnpackedness NoSourceStrictness
       conFields = case fields of
-                    DNormalC _ -> DNormalC $ map (noBang,) args
+                    DNormalC dInfix _ -> DNormalC dInfix $ map (noBang,) args
                     DRecC rec_fields ->
                       DRecC [ (singValName field_name, noBang, arg)
                             | (field_name, _, _) <- rec_fields

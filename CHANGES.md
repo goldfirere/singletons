@@ -3,6 +3,8 @@ Changelog for singletons project
 
 next
 ----
+* Add promoted and singled versions of `Show`, including `deriving` support.
+
 * Permit derived `Ord` instances for empty datatypes.
 
 2.3

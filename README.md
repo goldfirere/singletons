@@ -474,7 +474,7 @@ The following constructs are fully supported:
 * sections
 * undefined
 * error
-* deriving `Eq`, `Ord`, `Bounded`, and `Enum`
+* deriving `Eq`, `Ord`, `Show`, `Bounded`, and `Enum`
 * class constraints (though these sometimes fail with `let`, `lambda`, and `case`)
 * literals (for `Nat` and `Symbol`), including overloaded number literals
 * unboxed tuples (which are treated as normal tuples)
@@ -556,6 +556,13 @@ Symbolic types used in kinds were not supported in GHC, but now are. However,
 telling datacon names apart from tycon names. [This
 issue](https://github.com/goldfirere/singletons/issues/163) tracks adding
 this feature.
+
+A promoted and singled `Show` instance is provided for `Symbol`, but it is only
+a crude approximation of the value-level `Show` instance for `String`. On the
+value level, showing `String`s escapes special characters (such as double
+quotes), but implementing this requires pattern-matching on character literals,
+something which is currently impossible at the level. As a consequence, the
+type-level `Show` instance for `Symbol`s does not do any character escaping.
 
 Support for `*`
 ---------------
