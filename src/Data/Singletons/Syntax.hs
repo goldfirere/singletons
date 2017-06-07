@@ -104,13 +104,6 @@ instance Monoid ULetDecEnv where
   mappend (LetDecEnv defns1 types1 infx1 _) (LetDecEnv defns2 types2 infx2 _) =
     LetDecEnv (defns1 <> defns2) (types1 <> types2) (infx1 <> infx2) ()
 
--- TODO: Note
-data StandaloneDerivedEqDec = SDEqDec
-  { sded_cxt  :: DCxt
-  , sded_type :: DType
-  , sded_cons :: [DCon]
-  }
-
 valueBinding :: Name -> ULetDecRHS -> ULetDecEnv
 valueBinding n v = emptyLetDecEnv { lde_defns = Map.singleton n v }
 
@@ -139,3 +132,29 @@ buildLetDecEnv = go emptyLetDecEnv
     go acc (DInfixD f n : rest) =
       go (infixDecl f n <> acc) rest
     go acc (DPragmaD{} : rest) = go acc rest
+
+-- See Note [Standalone derived Eq instances]
+data StandaloneDerivedEqDec = SDEqDec
+  { sded_cxt  :: DCxt
+  , sded_type :: DType
+  , sded_cons :: [DCon]
+  }
+
+{- Note [Standalone derived Eq instances]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Most standalone derived instances are handled in
+Data.Singletons.Partition.partitionDecs. There is one notable exception to this
+rule, however: Eq instances. The reason is because deriving Eq in singletons
+not only derives PEq/SEq instances, but it also derives SDecide instances.
+This additional complication makes Eq difficult to integrate with the other
+deriving machinery, so we handle it specially in Data.Singletons.Promote
+and Data.Singletons.Single (depending on the task at hand).
+
+The StandaloneDerivedEqDec type encodes just enough information to recreate
+the standalone derived Eq instance:
+
+1. The instance context (sded_cxt)
+2. The datatype, applied to some number of type arguments, as in the
+   instance declaration (sded_type)
+3. The datatype's constructors (sded_cons)
+-}

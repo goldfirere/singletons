@@ -644,7 +644,7 @@ promoteLitPat (StringL str) = return $ DLitT (StrTyLit str)
 promoteLitPat lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
 
--- TODO: Note
+-- See Note [Standalone derived Eq instances]
 promoteStandaloneDerivedEqDec :: StandaloneDerivedEqDec -> PrM ()
 promoteStandaloneDerivedEqDec (SDEqDec { sded_type = ty, sded_cons = cons }) = do
   inst_decs <- mkEqTypeInstance ty cons

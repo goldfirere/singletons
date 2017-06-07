@@ -558,7 +558,7 @@ singExp (ADLetE env exp) res_ki =
 singExp (ADSigE {}) _ =
   fail "Singling of explicit type annotations not yet supported."
 
--- TODO: Note
+-- See Note [Standalone derived Eq instances]
 singStandaloneDerivedEqDecs :: StandaloneDerivedEqDec -> SgM [DDec]
 singStandaloneDerivedEqDecs (SDEqDec { sded_cxt  = ctxt
                                      , sded_type = ty
@@ -568,11 +568,18 @@ singStandaloneDerivedEqDecs (SDEqDec { sded_cxt  = ctxt
   (scons, _) <- singM [] $ mapM (singCtor aVar) cons
   sctxt <- mapM singPred ctxt
   sEqInst <- mkEqualityInstance (Just sctxt) ty scons sEqClassDesc
-  -- TODO: What are we doing here?
+  -- Beware! The user might have specified an instance context like this:
+  --
+  --   deriving instance Eq a => Eq (T a Int)
+  --
+  -- When we single the context, it will become (SEq a). But we do *not* want
+  -- this for the SDecide instance! The simplest solution is to simply replace
+  -- all occurrences of SEq with SDecide in the context.
   let sctxtDecide = map sEqToSDecide sctxt
   sDecideInst <- mkEqualityInstance (Just sctxtDecide) ty scons sDecideClassDesc
   return [sEqInst, sDecideInst]
 
+-- Walk a DPred, replacing all occurrences of SEq with SDecide.
 sEqToSDecide :: DPred -> DPred
 sEqToSDecide (DAppPr p t) = DAppPr (sEqToSDecide p) t
 sEqToSDecide (DSigPr p k) = DSigPr (sEqToSDecide p) k

@@ -105,7 +105,7 @@ partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
                 mb_instance <- partitionDeriving mb_strat cls_pred (Just ctxt) data_ty cons
                 case mb_instance of
                   Left _ -> case cls_pred of
-                              -- TODO: Note
+                              -- See Note [Standalone derived Eq instances]
                               DConPr cls_name
                                 | isStock mb_strat, cls_name == eqName
                                 -> let sded = SDEqDec { sded_cxt  = ctxt
