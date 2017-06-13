@@ -202,11 +202,10 @@ singInfo (DPatSynI {}) =
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
 singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
   decls <- expand raw_decls     -- expand type synonyms
-  PDecs { pd_let_decs        = letDecls
-        , pd_class_decs      = classes
-        , pd_instance_decs   = insts
-        , pd_data_decs       = datas
-        , pd_derived_eq_decs = derivedEqDecs } <- partitionDecs decls
+  PDecs { pd_let_decs              = letDecls
+        , pd_class_decs            = classes
+        , pd_instance_decs         = insts
+        , pd_data_decs             = datas }    <- partitionDecs decls
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
     promoteDataDecs datas
