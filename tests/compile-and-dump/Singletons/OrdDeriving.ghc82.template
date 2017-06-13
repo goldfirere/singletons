@@ -23,12 +23,6 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         E a b c d |
         F a b c d
       deriving (Eq, Ord)
-    type family Equals_0123456789876543210 (a :: Nat) (b :: Nat) :: Bool where
-      Equals_0123456789876543210 Zero Zero = TrueSym0
-      Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
-      Equals_0123456789876543210 (a :: Nat) (b :: Nat) = FalseSym0
-    instance PEq Nat where
-      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789876543210 a b
     type ZeroSym0 = Zero
     type SuccSym1 (t :: Nat) = Succ t
     instance SuppressUnusedWarnings SuccSym0 where
@@ -38,16 +32,6 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
         SuccSym0KindInference
     type instance Apply SuccSym0 l = Succ l
-    type family Equals_0123456789876543210 (a :: Foo a b c d) (b :: Foo a b c d) :: Bool where
-      Equals_0123456789876543210 (A a a a a) (A b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
-      Equals_0123456789876543210 (B a a a a) (B b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
-      Equals_0123456789876543210 (C a a a a) (C b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
-      Equals_0123456789876543210 (D a a a a) (D b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
-      Equals_0123456789876543210 (E a a a a) (E b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
-      Equals_0123456789876543210 (F a a a a) (F b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
-      Equals_0123456789876543210 (a :: Foo a b c d) (b :: Foo a b c d) = FalseSym0
-    instance PEq (Foo a b c d) where
-      type (:==) (a :: Foo a b c d) (b :: Foo a b c d) = Equals_0123456789876543210 a b
     type ASym4 (t :: a0123456789876543210) (t :: b0123456789876543210) (t :: c0123456789876543210) (t :: d0123456789876543210) =
         A t t t t
     instance SuppressUnusedWarnings ASym3 where
@@ -352,6 +336,22 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd (Foo a b c d) where
       type Compare (a :: Foo a b c d) (a :: Foo a b c d) = Apply (Apply Compare_0123456789876543210Sym0 a) a
+    type family Equals_0123456789876543210 (a :: Nat) (b :: Nat) :: Bool where
+      Equals_0123456789876543210 Zero Zero = TrueSym0
+      Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
+      Equals_0123456789876543210 (a :: Nat) (b :: Nat) = FalseSym0
+    instance PEq Nat where
+      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789876543210 a b
+    type family Equals_0123456789876543210 (a :: Foo a b c d) (b :: Foo a b c d) :: Bool where
+      Equals_0123456789876543210 (A a a a a) (A b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789876543210 (B a a a a) (B b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789876543210 (C a a a a) (C b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789876543210 (D a a a a) (D b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789876543210 (E a a a a) (E b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789876543210 (F a a a a) (F b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
+      Equals_0123456789876543210 (a :: Foo a b c d) (b :: Foo a b c d) = FalseSym0
+    instance PEq (Foo a b c d) where
+      type (:==) (a :: Foo a b c d) (b :: Foo a b c d) = Equals_0123456789876543210 a b
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
@@ -364,28 +364,6 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ b)
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
-    instance SEq Nat where
-      (%:==) SZero SZero = STrue
-      (%:==) SZero (SSucc _) = SFalse
-      (%:==) (SSucc _) SZero = SFalse
-      (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
-    instance SDecide Nat where
-      (%~) SZero SZero = Proved Refl
-      (%~) SZero (SSucc _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SSucc _) SZero
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SSucc a) (SSucc b)
-        = case ((%~) a) b of
-            Proved Refl -> Proved Refl
-            Disproved contra
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
     data instance Sing (z :: Foo a b c d)
       = forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ A n n n n =>
         SA (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
@@ -469,6 +447,335 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing ((((SF c) c) c) c) }
+    instance SOrd Nat => SOrd Nat where
+      sCompare ::
+        forall (t1 :: Nat) (t2 :: Nat).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat (TyFun Nat Ordering
+                                                            -> GHC.Types.Type)
+                                                 -> GHC.Types.Type) t1 :: TyFun Nat Ordering
+                                                                          -> GHC.Types.Type) t2 :: Ordering)
+      sCompare SZero SZero
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            SNil
+      sCompare
+        (SSucc (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SSucc (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               SNil)
+      sCompare SZero (SSucc _) = SLT
+      sCompare (SSucc _) SZero = SGT
+    instance (SOrd a, SOrd b, SOrd c, SOrd d) =>
+             SOrd (Foo a b c d) where
+      sCompare ::
+        forall (t1 :: Foo a b c d) (t2 :: Foo a b c d).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Foo a b c d) (TyFun (Foo a b c d) Ordering
+                                                                      -> GHC.Types.Type)
+                                                 -> GHC.Types.Type) t1 :: TyFun (Foo a b c d) Ordering
+                                                                          -> GHC.Types.Type) t2 :: Ordering)
+      sCompare
+        (SA (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SA (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
+                     ((applySing
+                         ((applySing ((singFun2 @(:$)) SCons))
+                            ((applySing
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
+      sCompare
+        (SB (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SB (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
+                     ((applySing
+                         ((applySing ((singFun2 @(:$)) SCons))
+                            ((applySing
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
+      sCompare
+        (SC (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SC (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
+                     ((applySing
+                         ((applySing ((singFun2 @(:$)) SCons))
+                            ((applySing
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
+      sCompare
+        (SD (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SD (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
+                     ((applySing
+                         ((applySing ((singFun2 @(:$)) SCons))
+                            ((applySing
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
+      sCompare
+        (SE (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SE (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
+                     ((applySing
+                         ((applySing ((singFun2 @(:$)) SCons))
+                            ((applySing
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
+      sCompare
+        (SF (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SF (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing
+                          ((applySing ((singFun2 @CompareSym0) sCompare))
+                             sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing
+                             ((applySing ((singFun2 @CompareSym0) sCompare))
+                                sA_0123456789876543210))
+                            sB_0123456789876543210)))
+                     ((applySing
+                         ((applySing ((singFun2 @(:$)) SCons))
+                            ((applySing
+                                ((applySing ((singFun2 @CompareSym0) sCompare))
+                                   sA_0123456789876543210))
+                               sB_0123456789876543210)))
+                        SNil))))
+      sCompare (SA _ _ _ _) (SB _ _ _ _) = SLT
+      sCompare (SA _ _ _ _) (SC _ _ _ _) = SLT
+      sCompare (SA _ _ _ _) (SD _ _ _ _) = SLT
+      sCompare (SA _ _ _ _) (SE _ _ _ _) = SLT
+      sCompare (SA _ _ _ _) (SF _ _ _ _) = SLT
+      sCompare (SB _ _ _ _) (SA _ _ _ _) = SGT
+      sCompare (SB _ _ _ _) (SC _ _ _ _) = SLT
+      sCompare (SB _ _ _ _) (SD _ _ _ _) = SLT
+      sCompare (SB _ _ _ _) (SE _ _ _ _) = SLT
+      sCompare (SB _ _ _ _) (SF _ _ _ _) = SLT
+      sCompare (SC _ _ _ _) (SA _ _ _ _) = SGT
+      sCompare (SC _ _ _ _) (SB _ _ _ _) = SGT
+      sCompare (SC _ _ _ _) (SD _ _ _ _) = SLT
+      sCompare (SC _ _ _ _) (SE _ _ _ _) = SLT
+      sCompare (SC _ _ _ _) (SF _ _ _ _) = SLT
+      sCompare (SD _ _ _ _) (SA _ _ _ _) = SGT
+      sCompare (SD _ _ _ _) (SB _ _ _ _) = SGT
+      sCompare (SD _ _ _ _) (SC _ _ _ _) = SGT
+      sCompare (SD _ _ _ _) (SE _ _ _ _) = SLT
+      sCompare (SD _ _ _ _) (SF _ _ _ _) = SLT
+      sCompare (SE _ _ _ _) (SA _ _ _ _) = SGT
+      sCompare (SE _ _ _ _) (SB _ _ _ _) = SGT
+      sCompare (SE _ _ _ _) (SC _ _ _ _) = SGT
+      sCompare (SE _ _ _ _) (SD _ _ _ _) = SGT
+      sCompare (SE _ _ _ _) (SF _ _ _ _) = SLT
+      sCompare (SF _ _ _ _) (SA _ _ _ _) = SGT
+      sCompare (SF _ _ _ _) (SB _ _ _ _) = SGT
+      sCompare (SF _ _ _ _) (SC _ _ _ _) = SGT
+      sCompare (SF _ _ _ _) (SD _ _ _ _) = SGT
+      sCompare (SF _ _ _ _) (SE _ _ _ _) = SGT
+    instance SEq Nat where
+      (%:==) SZero SZero = STrue
+      (%:==) SZero (SSucc _) = SFalse
+      (%:==) (SSucc _) SZero = SFalse
+      (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
+    instance SDecide Nat where
+      (%~) SZero SZero = Proved Refl
+      (%~) SZero (SSucc _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SSucc _) SZero
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SSucc a) (SSucc b)
+        = case ((%~) a) b of
+            Proved Refl -> Proved Refl
+            Disproved contra
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
     instance (SEq a, SEq b, SEq c, SEq d) => SEq (Foo a b c d) where
       (%:==) (SA a a a a) (SA b b b b)
         = ((%:&&) (((%:==) a) b))
@@ -778,313 +1085,6 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             GHC.Tuple.(,,,) _ _ _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-    instance SOrd Nat => SOrd Nat where
-      sCompare ::
-        forall (t1 :: Nat) (t2 :: Nat).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat (TyFun Nat Ordering
-                                                            -> GHC.Types.Type)
-                                                 -> GHC.Types.Type) t1 :: TyFun Nat Ordering
-                                                                          -> GHC.Types.Type) t2 :: Ordering)
-      sCompare SZero SZero
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
-                SEQ))
-            SNil
-      sCompare
-        (SSucc (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        (SSucc (sB_0123456789876543210 :: Sing b_0123456789876543210))
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
-                SEQ))
-            ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
-                   ((applySing
-                       ((applySing ((singFun2 @CompareSym0) sCompare))
-                          sA_0123456789876543210))
-                      sB_0123456789876543210)))
-               SNil)
-      sCompare SZero (SSucc _) = SLT
-      sCompare (SSucc _) SZero = SGT
-    instance (SOrd a, SOrd b, SOrd c, SOrd d) =>
-             SOrd (Foo a b c d) where
-      sCompare ::
-        forall (t1 :: Foo a b c d) (t2 :: Foo a b c d).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Foo a b c d) (TyFun (Foo a b c d) Ordering
-                                                                      -> GHC.Types.Type)
-                                                 -> GHC.Types.Type) t1 :: TyFun (Foo a b c d) Ordering
-                                                                          -> GHC.Types.Type) t2 :: Ordering)
-      sCompare
-        (SA (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        (SA (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210))
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
-                SEQ))
-            ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
-                   ((applySing
-                       ((applySing ((singFun2 @CompareSym0) sCompare))
-                          sA_0123456789876543210))
-                      sB_0123456789876543210)))
-               ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
-                      ((applySing
-                          ((applySing ((singFun2 @CompareSym0) sCompare))
-                             sA_0123456789876543210))
-                         sB_0123456789876543210)))
-                  ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
-                         ((applySing
-                             ((applySing ((singFun2 @CompareSym0) sCompare))
-                                sA_0123456789876543210))
-                            sB_0123456789876543210)))
-                     ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
-                            ((applySing
-                                ((applySing ((singFun2 @CompareSym0) sCompare))
-                                   sA_0123456789876543210))
-                               sB_0123456789876543210)))
-                        SNil))))
-      sCompare
-        (SB (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        (SB (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210))
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
-                SEQ))
-            ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
-                   ((applySing
-                       ((applySing ((singFun2 @CompareSym0) sCompare))
-                          sA_0123456789876543210))
-                      sB_0123456789876543210)))
-               ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
-                      ((applySing
-                          ((applySing ((singFun2 @CompareSym0) sCompare))
-                             sA_0123456789876543210))
-                         sB_0123456789876543210)))
-                  ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
-                         ((applySing
-                             ((applySing ((singFun2 @CompareSym0) sCompare))
-                                sA_0123456789876543210))
-                            sB_0123456789876543210)))
-                     ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
-                            ((applySing
-                                ((applySing ((singFun2 @CompareSym0) sCompare))
-                                   sA_0123456789876543210))
-                               sB_0123456789876543210)))
-                        SNil))))
-      sCompare
-        (SC (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        (SC (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210))
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
-                SEQ))
-            ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
-                   ((applySing
-                       ((applySing ((singFun2 @CompareSym0) sCompare))
-                          sA_0123456789876543210))
-                      sB_0123456789876543210)))
-               ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
-                      ((applySing
-                          ((applySing ((singFun2 @CompareSym0) sCompare))
-                             sA_0123456789876543210))
-                         sB_0123456789876543210)))
-                  ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
-                         ((applySing
-                             ((applySing ((singFun2 @CompareSym0) sCompare))
-                                sA_0123456789876543210))
-                            sB_0123456789876543210)))
-                     ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
-                            ((applySing
-                                ((applySing ((singFun2 @CompareSym0) sCompare))
-                                   sA_0123456789876543210))
-                               sB_0123456789876543210)))
-                        SNil))))
-      sCompare
-        (SD (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        (SD (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210))
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
-                SEQ))
-            ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
-                   ((applySing
-                       ((applySing ((singFun2 @CompareSym0) sCompare))
-                          sA_0123456789876543210))
-                      sB_0123456789876543210)))
-               ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
-                      ((applySing
-                          ((applySing ((singFun2 @CompareSym0) sCompare))
-                             sA_0123456789876543210))
-                         sB_0123456789876543210)))
-                  ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
-                         ((applySing
-                             ((applySing ((singFun2 @CompareSym0) sCompare))
-                                sA_0123456789876543210))
-                            sB_0123456789876543210)))
-                     ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
-                            ((applySing
-                                ((applySing ((singFun2 @CompareSym0) sCompare))
-                                   sA_0123456789876543210))
-                               sB_0123456789876543210)))
-                        SNil))))
-      sCompare
-        (SE (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        (SE (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210))
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
-                SEQ))
-            ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
-                   ((applySing
-                       ((applySing ((singFun2 @CompareSym0) sCompare))
-                          sA_0123456789876543210))
-                      sB_0123456789876543210)))
-               ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
-                      ((applySing
-                          ((applySing ((singFun2 @CompareSym0) sCompare))
-                             sA_0123456789876543210))
-                         sB_0123456789876543210)))
-                  ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
-                         ((applySing
-                             ((applySing ((singFun2 @CompareSym0) sCompare))
-                                sA_0123456789876543210))
-                            sB_0123456789876543210)))
-                     ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
-                            ((applySing
-                                ((applySing ((singFun2 @CompareSym0) sCompare))
-                                   sA_0123456789876543210))
-                               sB_0123456789876543210)))
-                        SNil))))
-      sCompare
-        (SF (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        (SF (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210)
-            (sB_0123456789876543210 :: Sing b_0123456789876543210))
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
-                SEQ))
-            ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
-                   ((applySing
-                       ((applySing ((singFun2 @CompareSym0) sCompare))
-                          sA_0123456789876543210))
-                      sB_0123456789876543210)))
-               ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
-                      ((applySing
-                          ((applySing ((singFun2 @CompareSym0) sCompare))
-                             sA_0123456789876543210))
-                         sB_0123456789876543210)))
-                  ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
-                         ((applySing
-                             ((applySing ((singFun2 @CompareSym0) sCompare))
-                                sA_0123456789876543210))
-                            sB_0123456789876543210)))
-                     ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
-                            ((applySing
-                                ((applySing ((singFun2 @CompareSym0) sCompare))
-                                   sA_0123456789876543210))
-                               sB_0123456789876543210)))
-                        SNil))))
-      sCompare (SA _ _ _ _) (SB _ _ _ _) = SLT
-      sCompare (SA _ _ _ _) (SC _ _ _ _) = SLT
-      sCompare (SA _ _ _ _) (SD _ _ _ _) = SLT
-      sCompare (SA _ _ _ _) (SE _ _ _ _) = SLT
-      sCompare (SA _ _ _ _) (SF _ _ _ _) = SLT
-      sCompare (SB _ _ _ _) (SA _ _ _ _) = SGT
-      sCompare (SB _ _ _ _) (SC _ _ _ _) = SLT
-      sCompare (SB _ _ _ _) (SD _ _ _ _) = SLT
-      sCompare (SB _ _ _ _) (SE _ _ _ _) = SLT
-      sCompare (SB _ _ _ _) (SF _ _ _ _) = SLT
-      sCompare (SC _ _ _ _) (SA _ _ _ _) = SGT
-      sCompare (SC _ _ _ _) (SB _ _ _ _) = SGT
-      sCompare (SC _ _ _ _) (SD _ _ _ _) = SLT
-      sCompare (SC _ _ _ _) (SE _ _ _ _) = SLT
-      sCompare (SC _ _ _ _) (SF _ _ _ _) = SLT
-      sCompare (SD _ _ _ _) (SA _ _ _ _) = SGT
-      sCompare (SD _ _ _ _) (SB _ _ _ _) = SGT
-      sCompare (SD _ _ _ _) (SC _ _ _ _) = SGT
-      sCompare (SD _ _ _ _) (SE _ _ _ _) = SLT
-      sCompare (SD _ _ _ _) (SF _ _ _ _) = SLT
-      sCompare (SE _ _ _ _) (SA _ _ _ _) = SGT
-      sCompare (SE _ _ _ _) (SB _ _ _ _) = SGT
-      sCompare (SE _ _ _ _) (SC _ _ _ _) = SGT
-      sCompare (SE _ _ _ _) (SD _ _ _ _) = SGT
-      sCompare (SE _ _ _ _) (SF _ _ _ _) = SLT
-      sCompare (SF _ _ _ _) (SA _ _ _ _) = SGT
-      sCompare (SF _ _ _ _) (SB _ _ _ _) = SGT
-      sCompare (SF _ _ _ _) (SC _ _ _ _) = SGT
-      sCompare (SF _ _ _ _) (SD _ _ _ _) = SGT
-      sCompare (SF _ _ _ _) (SE _ _ _ _) = SGT
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where

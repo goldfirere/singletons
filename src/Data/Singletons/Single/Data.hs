@@ -16,7 +16,6 @@ import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
 import Data.Singletons.Single.Fixity
 import Data.Singletons.Promote.Type
-import Data.Singletons.Single.Eq
 import Data.Singletons.Util
 import Data.Singletons.Names
 import Data.Singletons.Syntax
@@ -25,7 +24,7 @@ import Control.Monad
 -- We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
 singDataD :: DataDecl -> SgM [DDec]
-singDataD (DataDecl _nd name tvbs ctors derivings) = do
+singDataD (DataDecl _nd name tvbs ctors _derivings) = do
   aName <- qNewName "z"
   let a = DVarT aName
   let tvbNames = map extractTvbName tvbs
@@ -56,11 +55,6 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
                    , DLetDec $ DFunD fromSingName (fromSingClauses `orIfEmpty` emptyMethod aName)
                    , DLetDec $ DFunD toSingName   (toSingClauses   `orIfEmpty` emptyMethod aName) ]
 
-  -- SEq instance
-  sEqInsts <- if any (\case DConPr n -> n == eqName; _ -> False) derivings
-              then mapM (mkEqualityInstance Nothing k ctors') [sEqClassDesc, sDecideClassDesc]
-              else return []
-
   -- e.g. type SNat = Sing :: Nat -> *
   let kindedSynInst =
         DTySynD (singTyConName name)
@@ -70,7 +64,6 @@ singDataD (DataDecl _nd name tvbs ctors derivings) = do
   return $ (DDataInstD Data [] singFamilyName [DSigT a k] ctors' []) :
            kindedSynInst :
            singKindInst :
-           sEqInsts ++
            ctorFixities
   where -- in the Rep case, the names of the constructors are in the wrong scope
         -- (they're types, not datacons), so we have to reinterpret them.

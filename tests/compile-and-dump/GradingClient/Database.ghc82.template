@@ -7,12 +7,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     data Nat
       = Zero | Succ Nat
       deriving (Eq, Ord)
-    type family Equals_0123456789876543210 (a :: Nat) (b :: Nat) :: Bool where
-      Equals_0123456789876543210 Zero Zero = TrueSym0
-      Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
-      Equals_0123456789876543210 (a :: Nat) (b :: Nat) = FalseSym0
-    instance PEq Nat where
-      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789876543210 a b
     type ZeroSym0 = Zero
     type SuccSym1 (t :: Nat) = Succ t
     instance SuppressUnusedWarnings SuccSym0 where
@@ -50,6 +44,12 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd Nat where
       type Compare (a :: Nat) (a :: Nat) = Apply (Apply Compare_0123456789876543210Sym0 a) a
+    type family Equals_0123456789876543210 (a :: Nat) (b :: Nat) :: Bool where
+      Equals_0123456789876543210 Zero Zero = TrueSym0
+      Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
+      Equals_0123456789876543210 (a :: Nat) (b :: Nat) = FalseSym0
+    instance PEq Nat where
+      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789876543210 a b
     data instance Sing (z :: Nat)
       = z ~ Zero => SZero |
         forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
@@ -62,28 +62,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ b)
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
-    instance SEq Nat where
-      (%:==) SZero SZero = STrue
-      (%:==) SZero (SSucc _) = SFalse
-      (%:==) (SSucc _) SZero = SFalse
-      (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
-    instance SDecide Nat where
-      (%~) SZero SZero = Proved Refl
-      (%~) SZero (SSucc _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SSucc _) SZero
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SSucc a) (SSucc b)
-        = case ((%~) a) b of
-            Proved Refl -> Proved Refl
-            Disproved contra
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
     instance SOrd Nat => SOrd Nat where
       sCompare ::
         forall (t1 :: Nat) (t2 :: Nat).
@@ -117,6 +95,28 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                SNil)
       sCompare SZero (SSucc _) = SLT
       sCompare (SSucc _) SZero = SGT
+    instance SEq Nat where
+      (%:==) SZero SZero = STrue
+      (%:==) SZero (SSucc _) = SFalse
+      (%:==) (SSucc _) SZero = SFalse
+      (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
+    instance SDecide Nat where
+      (%~) SZero SZero = Proved Refl
+      (%~) SZero (SSucc _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SSucc _) SZero
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SSucc a) (SSucc b)
+        = case ((%~) a) b of
+            Proved Refl -> Proved Refl
+            Disproved contra
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where
@@ -226,14 +226,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     lookup _ (Sch GHC.Types.[]) = undefined
     lookup name (Sch (Attr name' u GHC.Types.: attrs))
       = if (name == name') then u else (lookup name) (Sch attrs)
-    type family Equals_0123456789876543210 (a :: U) (b :: U) :: Bool where
-      Equals_0123456789876543210 BOOL BOOL = TrueSym0
-      Equals_0123456789876543210 STRING STRING = TrueSym0
-      Equals_0123456789876543210 NAT NAT = TrueSym0
-      Equals_0123456789876543210 (VEC a a) (VEC b b) = (:&&) ((:==) a b) ((:==) a b)
-      Equals_0123456789876543210 (a :: U) (b :: U) = FalseSym0
-    instance PEq U where
-      type (:==) (a :: U) (b :: U) = Equals_0123456789876543210 a b
     type BOOLSym0 = BOOL
     type STRINGSym0 = STRING
     type NATSym0 = NAT
@@ -252,36 +244,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. SameKind (Apply VECSym0 arg) (VECSym1 arg) =>
         VECSym0KindInference
     type instance Apply VECSym0 l = VECSym1 l
-    type family Equals_0123456789876543210 (a :: AChar) (b :: AChar) :: Bool where
-      Equals_0123456789876543210 CA CA = TrueSym0
-      Equals_0123456789876543210 CB CB = TrueSym0
-      Equals_0123456789876543210 CC CC = TrueSym0
-      Equals_0123456789876543210 CD CD = TrueSym0
-      Equals_0123456789876543210 CE CE = TrueSym0
-      Equals_0123456789876543210 CF CF = TrueSym0
-      Equals_0123456789876543210 CG CG = TrueSym0
-      Equals_0123456789876543210 CH CH = TrueSym0
-      Equals_0123456789876543210 CI CI = TrueSym0
-      Equals_0123456789876543210 CJ CJ = TrueSym0
-      Equals_0123456789876543210 CK CK = TrueSym0
-      Equals_0123456789876543210 CL CL = TrueSym0
-      Equals_0123456789876543210 CM CM = TrueSym0
-      Equals_0123456789876543210 CN CN = TrueSym0
-      Equals_0123456789876543210 CO CO = TrueSym0
-      Equals_0123456789876543210 CP CP = TrueSym0
-      Equals_0123456789876543210 CQ CQ = TrueSym0
-      Equals_0123456789876543210 CR CR = TrueSym0
-      Equals_0123456789876543210 CS CS = TrueSym0
-      Equals_0123456789876543210 CT CT = TrueSym0
-      Equals_0123456789876543210 CU CU = TrueSym0
-      Equals_0123456789876543210 CV CV = TrueSym0
-      Equals_0123456789876543210 CW CW = TrueSym0
-      Equals_0123456789876543210 CX CX = TrueSym0
-      Equals_0123456789876543210 CY CY = TrueSym0
-      Equals_0123456789876543210 CZ CZ = TrueSym0
-      Equals_0123456789876543210 (a :: AChar) (b :: AChar) = FalseSym0
-    instance PEq AChar where
-      type (:==) (a :: AChar) (b :: AChar) = Equals_0123456789876543210 a b
     type CASym0 = CA
     type CBSym0 = CB
     type CCSym0 = CC
@@ -568,6 +530,44 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow AChar where
       type ShowsPrec (a :: GHC.Types.Nat) (a :: AChar) (a :: Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+    type family Equals_0123456789876543210 (a :: U) (b :: U) :: Bool where
+      Equals_0123456789876543210 BOOL BOOL = TrueSym0
+      Equals_0123456789876543210 STRING STRING = TrueSym0
+      Equals_0123456789876543210 NAT NAT = TrueSym0
+      Equals_0123456789876543210 (VEC a a) (VEC b b) = (:&&) ((:==) a b) ((:==) a b)
+      Equals_0123456789876543210 (a :: U) (b :: U) = FalseSym0
+    instance PEq U where
+      type (:==) (a :: U) (b :: U) = Equals_0123456789876543210 a b
+    type family Equals_0123456789876543210 (a :: AChar) (b :: AChar) :: Bool where
+      Equals_0123456789876543210 CA CA = TrueSym0
+      Equals_0123456789876543210 CB CB = TrueSym0
+      Equals_0123456789876543210 CC CC = TrueSym0
+      Equals_0123456789876543210 CD CD = TrueSym0
+      Equals_0123456789876543210 CE CE = TrueSym0
+      Equals_0123456789876543210 CF CF = TrueSym0
+      Equals_0123456789876543210 CG CG = TrueSym0
+      Equals_0123456789876543210 CH CH = TrueSym0
+      Equals_0123456789876543210 CI CI = TrueSym0
+      Equals_0123456789876543210 CJ CJ = TrueSym0
+      Equals_0123456789876543210 CK CK = TrueSym0
+      Equals_0123456789876543210 CL CL = TrueSym0
+      Equals_0123456789876543210 CM CM = TrueSym0
+      Equals_0123456789876543210 CN CN = TrueSym0
+      Equals_0123456789876543210 CO CO = TrueSym0
+      Equals_0123456789876543210 CP CP = TrueSym0
+      Equals_0123456789876543210 CQ CQ = TrueSym0
+      Equals_0123456789876543210 CR CR = TrueSym0
+      Equals_0123456789876543210 CS CS = TrueSym0
+      Equals_0123456789876543210 CT CT = TrueSym0
+      Equals_0123456789876543210 CU CU = TrueSym0
+      Equals_0123456789876543210 CV CV = TrueSym0
+      Equals_0123456789876543210 CW CW = TrueSym0
+      Equals_0123456789876543210 CX CX = TrueSym0
+      Equals_0123456789876543210 CY CY = TrueSym0
+      Equals_0123456789876543210 CZ CZ = TrueSym0
+      Equals_0123456789876543210 (a :: AChar) (b :: AChar) = FalseSym0
+    instance PEq AChar where
+      type (:==) (a :: AChar) (b :: AChar) = Equals_0123456789876543210 a b
     sLookup ::
       forall (t :: [AChar]) (t :: Schema).
       Sing t -> Sing t -> Sing (Apply (Apply LookupSym0 t) t :: U)
@@ -660,6 +660,398 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
               (GHC.Tuple.(,) (toSing b :: SomeSing U)) (toSing b :: SomeSing Nat)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing ((SVEC c) c) }
+    data instance Sing (z :: AChar)
+      = z ~ CA => SCA |
+        z ~ CB => SCB |
+        z ~ CC => SCC |
+        z ~ CD => SCD |
+        z ~ CE => SCE |
+        z ~ CF => SCF |
+        z ~ CG => SCG |
+        z ~ CH => SCH |
+        z ~ CI => SCI |
+        z ~ CJ => SCJ |
+        z ~ CK => SCK |
+        z ~ CL => SCL |
+        z ~ CM => SCM |
+        z ~ CN => SCN |
+        z ~ CO => SCO |
+        z ~ CP => SCP |
+        z ~ CQ => SCQ |
+        z ~ CR => SCR |
+        z ~ CS => SCS |
+        z ~ CT => SCT |
+        z ~ CU => SCU |
+        z ~ CV => SCV |
+        z ~ CW => SCW |
+        z ~ CX => SCX |
+        z ~ CY => SCY |
+        z ~ CZ => SCZ
+    type SAChar = (Sing :: AChar -> Type)
+    instance SingKind AChar where
+      type Demote AChar = AChar
+      fromSing SCA = CA
+      fromSing SCB = CB
+      fromSing SCC = CC
+      fromSing SCD = CD
+      fromSing SCE = CE
+      fromSing SCF = CF
+      fromSing SCG = CG
+      fromSing SCH = CH
+      fromSing SCI = CI
+      fromSing SCJ = CJ
+      fromSing SCK = CK
+      fromSing SCL = CL
+      fromSing SCM = CM
+      fromSing SCN = CN
+      fromSing SCO = CO
+      fromSing SCP = CP
+      fromSing SCQ = CQ
+      fromSing SCR = CR
+      fromSing SCS = CS
+      fromSing SCT = CT
+      fromSing SCU = CU
+      fromSing SCV = CV
+      fromSing SCW = CW
+      fromSing SCX = CX
+      fromSing SCY = CY
+      fromSing SCZ = CZ
+      toSing CA = SomeSing SCA
+      toSing CB = SomeSing SCB
+      toSing CC = SomeSing SCC
+      toSing CD = SomeSing SCD
+      toSing CE = SomeSing SCE
+      toSing CF = SomeSing SCF
+      toSing CG = SomeSing SCG
+      toSing CH = SomeSing SCH
+      toSing CI = SomeSing SCI
+      toSing CJ = SomeSing SCJ
+      toSing CK = SomeSing SCK
+      toSing CL = SomeSing SCL
+      toSing CM = SomeSing SCM
+      toSing CN = SomeSing SCN
+      toSing CO = SomeSing SCO
+      toSing CP = SomeSing SCP
+      toSing CQ = SomeSing SCQ
+      toSing CR = SomeSing SCR
+      toSing CS = SomeSing SCS
+      toSing CT = SomeSing SCT
+      toSing CU = SomeSing SCU
+      toSing CV = SomeSing SCV
+      toSing CW = SomeSing SCW
+      toSing CX = SomeSing SCX
+      toSing CY = SomeSing SCY
+      toSing CZ = SomeSing SCZ
+    data instance Sing (z :: Attribute)
+      = forall (n :: [AChar]) (n :: U). z ~ Attr n n =>
+        SAttr (Sing (n :: [AChar])) (Sing (n :: U))
+    type SAttribute = (Sing :: Attribute -> Type)
+    instance SingKind Attribute where
+      type Demote Attribute = Attribute
+      fromSing (SAttr b b) = (Attr (fromSing b)) (fromSing b)
+      toSing (Attr b b)
+        = case
+              (GHC.Tuple.(,) (toSing b :: SomeSing [AChar]))
+                (toSing b :: SomeSing U)
+          of {
+            GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing ((SAttr c) c) }
+    data instance Sing (z :: Schema)
+      = forall (n :: [Attribute]). z ~ Sch n =>
+        SSch (Sing (n :: [Attribute]))
+    type SSchema = (Sing :: Schema -> Type)
+    instance SingKind Schema where
+      type Demote Schema = Schema
+      fromSing (SSch b) = Sch (fromSing b)
+      toSing (Sch b)
+        = case toSing b :: SomeSing [Attribute] of {
+            SomeSing c -> SomeSing (SSch c) }
+    instance (SShow U, SShow Nat) => SShow U where
+      sShowsPrec ::
+        forall (t1 :: GHC.Types.Nat) (t2 :: U) (t3 :: Symbol).
+        Sing t1
+        -> Sing t2
+           -> Sing t3
+              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun U (TyFun Symbol Symbol
+                                                                                           -> Type)
+                                                                                  -> Type)
+                                                             -> Type) t1 :: TyFun U (TyFun Symbol Symbol
+                                                                                     -> Type)
+                                                                            -> Type) t2 :: TyFun Symbol Symbol
+                                                                                           -> Type) t3 :: Symbol)
+      sShowsPrec
+        _
+        SBOOL
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "BOOL")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SSTRING
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "STRING")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SNAT
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "NAT")))
+            sA_0123456789876543210
+      sShowsPrec
+        (sP_0123456789876543210 :: Sing p_0123456789876543210)
+        (SVEC (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
+              (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
+                    ((applySing
+                        ((applySing ((singFun2 @(:>$)) (%:>))) sP_0123456789876543210))
+                       (sFromInteger (sing :: Sing 10)))))
+                ((applySing
+                    ((applySing ((singFun3 @(:.$)) (%:.)))
+                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                          (sing :: Sing "VEC "))))
+                   ((applySing
+                       ((applySing ((singFun3 @(:.$)) (%:.)))
+                          ((applySing
+                              ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
+                                 (sFromInteger (sing :: Sing 11))))
+                             sArg_0123456789876543210)))
+                      ((applySing
+                          ((applySing ((singFun3 @(:.$)) (%:.)))
+                             ((singFun1 @ShowSpaceSym0) sShowSpace)))
+                         ((applySing
+                             ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
+                                (sFromInteger (sing :: Sing 11))))
+                            sArg_0123456789876543210))))))
+            sA_0123456789876543210
+    instance SShow AChar where
+      sShowsPrec ::
+        forall (t1 :: GHC.Types.Nat) (t2 :: AChar) (t3 :: Symbol).
+        Sing t1
+        -> Sing t2
+           -> Sing t3
+              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun AChar (TyFun Symbol Symbol
+                                                                                               -> Type)
+                                                                                  -> Type)
+                                                             -> Type) t1 :: TyFun AChar (TyFun Symbol Symbol
+                                                                                         -> Type)
+                                                                            -> Type) t2 :: TyFun Symbol Symbol
+                                                                                           -> Type) t3 :: Symbol)
+      sShowsPrec
+        _
+        SCA
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CA")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCB
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CB")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCC
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CC")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCD
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CD")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCE
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CE")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCF
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CF")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCG
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CG")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCH
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CH")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCI
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CI")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCJ
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CJ")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCK
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CK")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCL
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CL")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCM
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CM")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCN
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CN")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCO
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CO")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCP
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CP")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCQ
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CQ")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCR
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CR")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCS
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CS")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCT
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CT")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCU
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CU")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCV
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CV")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCW
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CW")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCX
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CX")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCY
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CY")))
+            sA_0123456789876543210
+      sShowsPrec
+        _
+        SCZ
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "CZ")))
+            sA_0123456789876543210
     instance SEq U where
       (%:==) SBOOL SBOOL = STrue
       (%:==) SBOOL SSTRING = SFalse
@@ -749,88 +1141,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             GHC.Tuple.(,) _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-    data instance Sing (z :: AChar)
-      = z ~ CA => SCA |
-        z ~ CB => SCB |
-        z ~ CC => SCC |
-        z ~ CD => SCD |
-        z ~ CE => SCE |
-        z ~ CF => SCF |
-        z ~ CG => SCG |
-        z ~ CH => SCH |
-        z ~ CI => SCI |
-        z ~ CJ => SCJ |
-        z ~ CK => SCK |
-        z ~ CL => SCL |
-        z ~ CM => SCM |
-        z ~ CN => SCN |
-        z ~ CO => SCO |
-        z ~ CP => SCP |
-        z ~ CQ => SCQ |
-        z ~ CR => SCR |
-        z ~ CS => SCS |
-        z ~ CT => SCT |
-        z ~ CU => SCU |
-        z ~ CV => SCV |
-        z ~ CW => SCW |
-        z ~ CX => SCX |
-        z ~ CY => SCY |
-        z ~ CZ => SCZ
-    type SAChar = (Sing :: AChar -> Type)
-    instance SingKind AChar where
-      type Demote AChar = AChar
-      fromSing SCA = CA
-      fromSing SCB = CB
-      fromSing SCC = CC
-      fromSing SCD = CD
-      fromSing SCE = CE
-      fromSing SCF = CF
-      fromSing SCG = CG
-      fromSing SCH = CH
-      fromSing SCI = CI
-      fromSing SCJ = CJ
-      fromSing SCK = CK
-      fromSing SCL = CL
-      fromSing SCM = CM
-      fromSing SCN = CN
-      fromSing SCO = CO
-      fromSing SCP = CP
-      fromSing SCQ = CQ
-      fromSing SCR = CR
-      fromSing SCS = CS
-      fromSing SCT = CT
-      fromSing SCU = CU
-      fromSing SCV = CV
-      fromSing SCW = CW
-      fromSing SCX = CX
-      fromSing SCY = CY
-      fromSing SCZ = CZ
-      toSing CA = SomeSing SCA
-      toSing CB = SomeSing SCB
-      toSing CC = SomeSing SCC
-      toSing CD = SomeSing SCD
-      toSing CE = SomeSing SCE
-      toSing CF = SomeSing SCF
-      toSing CG = SomeSing SCG
-      toSing CH = SomeSing SCH
-      toSing CI = SomeSing SCI
-      toSing CJ = SomeSing SCJ
-      toSing CK = SomeSing SCK
-      toSing CL = SomeSing SCL
-      toSing CM = SomeSing SCM
-      toSing CN = SomeSing SCN
-      toSing CO = SomeSing SCO
-      toSing CP = SomeSing SCP
-      toSing CQ = SomeSing SCQ
-      toSing CR = SomeSing SCR
-      toSing CS = SomeSing SCS
-      toSing CT = SomeSing SCT
-      toSing CU = SomeSing SCU
-      toSing CV = SomeSing SCV
-      toSing CW = SomeSing SCW
-      toSing CX = SomeSing SCX
-      toSing CY = SomeSing SCY
-      toSing CZ = SomeSing SCZ
     instance SEq AChar where
       (%:==) SCA SCA = STrue
       (%:==) SCA SCB = SFalse
@@ -4785,316 +5095,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                -> case x of {
                     _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCZ SCZ = Proved Refl
-    data instance Sing (z :: Attribute)
-      = forall (n :: [AChar]) (n :: U). z ~ Attr n n =>
-        SAttr (Sing (n :: [AChar])) (Sing (n :: U))
-    type SAttribute = (Sing :: Attribute -> Type)
-    instance SingKind Attribute where
-      type Demote Attribute = Attribute
-      fromSing (SAttr b b) = (Attr (fromSing b)) (fromSing b)
-      toSing (Attr b b)
-        = case
-              (GHC.Tuple.(,) (toSing b :: SomeSing [AChar]))
-                (toSing b :: SomeSing U)
-          of {
-            GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing ((SAttr c) c) }
-    data instance Sing (z :: Schema)
-      = forall (n :: [Attribute]). z ~ Sch n =>
-        SSch (Sing (n :: [Attribute]))
-    type SSchema = (Sing :: Schema -> Type)
-    instance SingKind Schema where
-      type Demote Schema = Schema
-      fromSing (SSch b) = Sch (fromSing b)
-      toSing (Sch b)
-        = case toSing b :: SomeSing [Attribute] of {
-            SomeSing c -> SomeSing (SSch c) }
-    instance (SShow U, SShow Nat) => SShow U where
-      sShowsPrec ::
-        forall (t1 :: GHC.Types.Nat) (t2 :: U) (t3 :: Symbol).
-        Sing t1
-        -> Sing t2
-           -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun U (TyFun Symbol Symbol
-                                                                                           -> Type)
-                                                                                  -> Type)
-                                                             -> Type) t1 :: TyFun U (TyFun Symbol Symbol
-                                                                                     -> Type)
-                                                                            -> Type) t2 :: TyFun Symbol Symbol
-                                                                                           -> Type) t3 :: Symbol)
-      sShowsPrec
-        _
-        SBOOL
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "BOOL")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SSTRING
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "STRING")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SNAT
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "NAT")))
-            sA_0123456789876543210
-      sShowsPrec
-        (sP_0123456789876543210 :: Sing p_0123456789876543210)
-        (SVEC (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
-              (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(:>$)) (%:>))) sP_0123456789876543210))
-                       (sFromInteger (sing :: Sing 10)))))
-                ((applySing
-                    ((applySing ((singFun3 @(:.$)) (%:.)))
-                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                          (sing :: Sing "VEC "))))
-                   ((applySing
-                       ((applySing ((singFun3 @(:.$)) (%:.)))
-                          ((applySing
-                              ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                 (sFromInteger (sing :: Sing 11))))
-                             sArg_0123456789876543210)))
-                      ((applySing
-                          ((applySing ((singFun3 @(:.$)) (%:.)))
-                             ((singFun1 @ShowSpaceSym0) sShowSpace)))
-                         ((applySing
-                             ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                (sFromInteger (sing :: Sing 11))))
-                            sArg_0123456789876543210))))))
-            sA_0123456789876543210
-    instance SShow AChar where
-      sShowsPrec ::
-        forall (t1 :: GHC.Types.Nat) (t2 :: AChar) (t3 :: Symbol).
-        Sing t1
-        -> Sing t2
-           -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun AChar (TyFun Symbol Symbol
-                                                                                               -> Type)
-                                                                                  -> Type)
-                                                             -> Type) t1 :: TyFun AChar (TyFun Symbol Symbol
-                                                                                         -> Type)
-                                                                            -> Type) t2 :: TyFun Symbol Symbol
-                                                                                           -> Type) t3 :: Symbol)
-      sShowsPrec
-        _
-        SCA
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CA")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCB
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CB")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCC
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CC")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCD
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CD")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCE
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CE")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCF
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CF")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCG
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CG")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCH
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CH")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCI
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CI")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCJ
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CJ")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCK
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CK")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCL
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CL")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCM
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CM")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCN
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CN")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCO
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CO")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCP
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CP")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCQ
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CQ")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCR
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CR")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCS
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CS")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCT
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CT")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCU
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CU")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCV
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CV")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCW
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CW")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCX
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CX")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCY
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CY")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCZ
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CZ")))
-            sA_0123456789876543210
     instance SingI BOOL where
       sing = SBOOL
     instance SingI STRING where

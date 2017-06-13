@@ -202,13 +202,13 @@ singInfo (DPatSynI {}) =
   fail "Singling of pattern synonym info not supported"
 
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
-singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
+singTopLevelDecs locals raw_decls = withLocalDeclaration locals $ do
   decls <- expand raw_decls     -- expand type synonyms
-  PDecs { pd_let_decs                   = letDecls
-        , pd_class_decs                 = classes
-        , pd_instance_decs              = insts
-        , pd_data_decs                  = datas
-        , pd_standalone_derived_eq_decs = sdEqDecs } <- partitionDecs decls
+  PDecs { pd_let_decs        = letDecls
+        , pd_class_decs      = classes
+        , pd_instance_decs   = insts
+        , pd_data_decs       = datas
+        , pd_derived_eq_decs = derivedEqDecs } <- partitionDecs decls
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
     promoteDataDecs datas
@@ -216,7 +216,7 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
     classes' <- mapM promoteClassDec classes
     let meth_sigs = foldMap (lde_types . cd_lde) classes
     insts' <- mapM (promoteInstanceDec meth_sigs) insts
-    mapM_ promoteStandaloneDerivedEqDec sdEqDecs
+    mapM_ promoteDerivedEqDec derivedEqDecs
     return (letDecEnv, classes', insts')
 
   singDecsM locals $ do
@@ -227,8 +227,8 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
                                  newDataDecls <- concatMapM singDataD datas
                                  newClassDecls <- mapM singClassD classes'
                                  newInstDecls <- mapM singInstD insts'
-                                 newSDEqDecs <- concatMapM singStandaloneDerivedEqDecs sdEqDecs
-                                 return (newDataDecls ++ newClassDecls ++ newInstDecls ++ newSDEqDecs)
+                                 newDerivedEqDecs <- concatMapM singDerivedEqDecs derivedEqDecs
+                                 return (newDataDecls ++ newClassDecls ++ newInstDecls ++ newDerivedEqDecs)
     return $ promDecls ++ (map DLetDec newLetDecls) ++ newDecls
 
 -- see comment at top of file
@@ -558,16 +558,17 @@ singExp (ADLetE env exp) res_ki =
 singExp (ADSigE {}) _ =
   fail "Singling of explicit type annotations not yet supported."
 
--- See Note [Standalone derived Eq instances]
-singStandaloneDerivedEqDecs :: StandaloneDerivedEqDec -> SgM [DDec]
-singStandaloneDerivedEqDecs (SDEqDec { sded_cxt  = ctxt
-                                     , sded_type = ty
-                                     , sded_cons = cons }) = do
+-- See Note [Derived Eq instances]
+singDerivedEqDecs :: DerivedEqDecl -> SgM [DDec]
+singDerivedEqDecs (DerivedEqDecl { ded_mb_cxt = mb_ctxt
+                                 , ded_type   = ty
+                                 , ded_cons   = cons }) = do
   aName <- qNewName "a"
   let aVar = DVarT aName
   (scons, _) <- singM [] $ mapM (singCtor aVar) cons
-  sctxt <- mapM singPred ctxt
-  sEqInst <- mkEqualityInstance (Just sctxt) ty scons sEqClassDesc
+  mb_sctxt <- mapM (mapM singPred) mb_ctxt
+  kind <- promoteType ty
+  sEqInst <- mkEqualityInstance mb_sctxt kind scons sEqClassDesc
   -- Beware! The user might have specified an instance context like this:
   --
   --   deriving instance Eq a => Eq (T a Int)
@@ -575,8 +576,8 @@ singStandaloneDerivedEqDecs (SDEqDec { sded_cxt  = ctxt
   -- When we single the context, it will become (SEq a). But we do *not* want
   -- this for the SDecide instance! The simplest solution is to simply replace
   -- all occurrences of SEq with SDecide in the context.
-  let sctxtDecide = map sEqToSDecide sctxt
-  sDecideInst <- mkEqualityInstance (Just sctxtDecide) ty scons sDecideClassDesc
+  let mb_sctxtDecide = fmap (map sEqToSDecide) mb_sctxt
+  sDecideInst <- mkEqualityInstance mb_sctxtDecide kind scons sDecideClassDesc
   return [sEqInst, sDecideInst]
 
 -- Walk a DPred, replacing all occurrences of SEq with SDecide.

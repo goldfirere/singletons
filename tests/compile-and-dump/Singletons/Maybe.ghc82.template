@@ -7,12 +7,6 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     data Maybe a
       = Nothing | Just a
       deriving (Eq, Show)
-    type family Equals_0123456789876543210 (a :: Maybe a) (b :: Maybe a) :: Bool where
-      Equals_0123456789876543210 Nothing Nothing = TrueSym0
-      Equals_0123456789876543210 (Just a) (Just b) = (:==) a b
-      Equals_0123456789876543210 (a :: Maybe a) (b :: Maybe a) = FalseSym0
-    instance PEq (Maybe a) where
-      type (:==) (a :: Maybe a) (b :: Maybe a) = Equals_0123456789876543210 a b
     type NothingSym0 = Nothing
     type JustSym1 (t :: a0123456789876543210) = Just t
     instance SuppressUnusedWarnings JustSym0 where
@@ -59,6 +53,12 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow (Maybe a) where
       type ShowsPrec (a :: GHC.Types.Nat) (a :: Maybe a) (a :: GHC.Types.Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+    type family Equals_0123456789876543210 (a :: Maybe a) (b :: Maybe a) :: Bool where
+      Equals_0123456789876543210 Nothing Nothing = TrueSym0
+      Equals_0123456789876543210 (Just a) (Just b) = (:==) a b
+      Equals_0123456789876543210 (a :: Maybe a) (b :: Maybe a) = FalseSym0
+    instance PEq (Maybe a) where
+      type (:==) (a :: Maybe a) (b :: Maybe a) = Equals_0123456789876543210 a b
     data instance Sing (z :: Maybe a)
       = z ~ Nothing => SNothing |
         forall (n :: a). z ~ Just n => SJust (Sing (n :: a))
@@ -71,28 +71,6 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       toSing (Just b)
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SJust c) }
-    instance SEq a => SEq (Maybe a) where
-      (%:==) SNothing SNothing = STrue
-      (%:==) SNothing (SJust _) = SFalse
-      (%:==) (SJust _) SNothing = SFalse
-      (%:==) (SJust a) (SJust b) = ((%:==) a) b
-    instance SDecide a => SDecide (Maybe a) where
-      (%~) SNothing SNothing = Proved Refl
-      (%~) SNothing (SJust _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SJust _) SNothing
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SJust a) (SJust b)
-        = case ((%~) a) b of
-            Proved Refl -> Proved Refl
-            Disproved contra
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
     instance SShow a => SShow (Maybe a) where
       sShowsPrec ::
         forall (t1 :: GHC.Types.Nat)
@@ -135,6 +113,28 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
                           (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 11))))
                       sArg_0123456789876543210))))
             sA_0123456789876543210
+    instance SEq a => SEq (Maybe a) where
+      (%:==) SNothing SNothing = STrue
+      (%:==) SNothing (SJust _) = SFalse
+      (%:==) (SJust _) SNothing = SFalse
+      (%:==) (SJust a) (SJust b) = ((%:==) a) b
+    instance SDecide a => SDecide (Maybe a) where
+      (%~) SNothing SNothing = Proved Refl
+      (%~) SNothing (SJust _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SJust _) SNothing
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SJust a) (SJust b)
+        = case ((%~) a) b of
+            Proved Refl -> Proved Refl
+            Disproved contra
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
     instance SingI Nothing where
       sing = SNothing
     instance SingI n => SingI (Just (n :: a)) where

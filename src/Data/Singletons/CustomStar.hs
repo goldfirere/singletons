@@ -75,13 +75,16 @@ singletonStar names = do
                          [DDerivClause Nothing [DConPr ''Eq, DConPr ''Show, DConPr ''Read]]
   fakeCtors <- zipWithM (mkCtor False) names kinds
   let dataDecl = DataDecl Data repName [] fakeCtors
-                          [DConPr ''Show, DConPr ''Read , DConPr ''Eq]
+                          [DConPr ''Show, DConPr ''Read]
+      dataDeclEqInst = DerivedEqDecl Nothing (DConT repName) fakeCtors
   ordInst <- mkOrdInstance Nothing (DConT repName) fakeCtors
   (pOrdInst, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
+                                            promoteDerivedEqDec dataDeclEqInst
                                             promoteInstanceDec mempty ordInst
   singletonDecls <- singDecsM [] $ do decs1 <- singDataD dataDecl
-                                      dec2  <- singInstD pOrdInst
-                                      return (dec2 : decs1)
+                                      decs2 <- singDerivedEqDecs dataDeclEqInst
+                                      dec3  <- singInstD pOrdInst
+                                      return (dec3 : decs1 ++ decs2)
   return $ decsToTH $ repDecl :
                       promDecls ++
                       singletonDecls

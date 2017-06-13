@@ -177,18 +177,18 @@ promoteDecs :: [DDec] -> PrM ()
 promoteDecs raw_decls = do
   decls <- expand raw_decls     -- expand type synonyms
   checkForRepInDecls decls
-  PDecs { pd_let_decs                   = let_decs
-        , pd_class_decs                 = classes
-        , pd_instance_decs              = insts
-        , pd_data_decs                  = datas
-        , pd_standalone_derived_eq_decs = sd_eq_decs } <- partitionDecs decls
+  PDecs { pd_let_decs        = let_decs
+        , pd_class_decs      = classes
+        , pd_instance_decs   = insts
+        , pd_data_decs       = datas
+        , pd_derived_eq_decs = derived_eq_decs } <- partitionDecs decls
 
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
   mapM_ promoteClassDec classes
   let all_meth_sigs = foldMap (lde_types . cd_lde) classes
   mapM_ (promoteInstanceDec all_meth_sigs) insts
-  mapM_ promoteStandaloneDerivedEqDec sd_eq_decs
+  mapM_ promoteDerivedEqDec derived_eq_decs
   promoteDataDecs datas
 
 promoteDataDecs :: [DataDecl] -> PrM ()
@@ -233,14 +233,7 @@ promoteLetDecs prefixes decls = do
 --
 --  * for each nullary data constructor we generate a type synonym
 promoteDataDec :: DataDecl -> PrM ()
-promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
-  -- deriving Eq instance
-  kind <- promoteType (foldType (DConT name) (map tvbToType tvbs))
-  when (any (\case DConPr n -> n == eqName
-                   _        -> False) derivings) $ do
-    eq_decs <- mkEqTypeInstance kind ctors
-    emitDecs eq_decs
-
+promoteDataDec (DataDecl _nd name tvbs ctors _derivings) = do
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
 
@@ -644,8 +637,9 @@ promoteLitPat (StringL str) = return $ DLitT (StrTyLit str)
 promoteLitPat lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
 
--- See Note [Standalone derived Eq instances]
-promoteStandaloneDerivedEqDec :: StandaloneDerivedEqDec -> PrM ()
-promoteStandaloneDerivedEqDec (SDEqDec { sded_type = ty, sded_cons = cons }) = do
-  inst_decs <- mkEqTypeInstance ty cons
+-- See Note [Derived Eq instances]
+promoteDerivedEqDec :: DerivedEqDecl -> PrM ()
+promoteDerivedEqDec (DerivedEqDecl { ded_type = ty, ded_cons = cons }) = do
+  kind <- promoteType ty
+  inst_decs <- mkEqTypeInstance kind cons
   emitDecs inst_decs

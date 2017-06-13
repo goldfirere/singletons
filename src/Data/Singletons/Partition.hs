@@ -37,7 +37,7 @@ data PartitionedDecs =
         , pd_class_decs :: [UClassDecl]
         , pd_instance_decs :: [UInstDecl]
         , pd_data_decs :: [DataDecl]
-        , pd_standalone_derived_eq_decs :: [StandaloneDerivedEqDec]
+        , pd_derived_eq_decs :: [DerivedEqDecl]
         }
 
 instance Monoid PartitionedDecs where
@@ -55,12 +55,12 @@ partitionDec (DLetDec (DPragmaD {})) = return mempty
 partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
 
 partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
-  (derivings', derived_instances)
-    <- partitionWithM (\(strat, deriv_pred) -> partitionDeriving strat deriv_pred Nothing ty cons)
+  derived_decs
+    <- mapM (\(strat, deriv_pred) -> partitionDeriving strat deriv_pred Nothing ty cons)
       $ concatMap flatten_clause derivings
-  return $ mempty { pd_data_decs = [DataDecl nd name tvbs cons derivings']
-                  , pd_instance_decs = derived_instances }
+  return $ mconcat $ data_dec : derived_decs
   where
+    data_dec = mempty { pd_data_decs = [DataDecl nd name tvbs cons []] }
     ty = foldType (DConT name) (map tvbToType tvbs)
 
     flatten_clause :: DDerivClause -> [(Maybe DerivStrategy, DPred)]
@@ -102,18 +102,7 @@ partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
             dinfo <- dsReify data_tycon
             case dinfo of
               Just (DTyConI (DDataD _ _ _ _ cons _) _) -> do
-                mb_instance <- partitionDeriving mb_strat cls_pred (Just ctxt) data_ty cons
-                case mb_instance of
-                  Left _ -> case cls_pred of
-                              -- See Note [Standalone derived Eq instances]
-                              DConPr cls_name
-                                | isStock mb_strat, cls_name == eqName
-                                -> let sded = SDEqDec { sded_cxt  = ctxt
-                                                      , sded_type = data_ty
-                                                      , sded_cons = cons }
-                                   in return mempty { pd_standalone_derived_eq_decs = [sded] }
-                              _ -> return mempty -- singletons doesn't support deriving this instance
-                  Right derived_instance -> return $ mempty { pd_instance_decs = [derived_instance] }
+                partitionDeriving mb_strat cls_pred (Just ctxt) data_ty cons
               Just _ ->
                 fail $ "Standalone derived instance for something other than a datatype: "
                        ++ show data_ty
@@ -144,26 +133,34 @@ partitionInstanceDec _ =
   fail "Only method bodies can be promoted within an instance."
 
 partitionDeriving :: DsMonad m => Maybe DerivStrategy -> DPred -> Maybe DCxt -> DType -> [DCon]
-                  -> m (Either DPred UInstDecl)
+                  -> m PartitionedDecs
 partitionDeriving mb_strat deriv_pred mb_ctxt ty cons = case deriv_pred of
   DConPr deriv_name
      | stock, deriv_name == ordName
-    -> Right <$> mkOrdInstance mb_ctxt ty cons
+    -> mk_derived_inst <$> mkOrdInstance mb_ctxt ty cons
      | stock, deriv_name == boundedName
-    -> Right <$> mkBoundedInstance mb_ctxt ty cons
+    -> mk_derived_inst <$> mkBoundedInstance mb_ctxt ty cons
      | stock, deriv_name == enumName
-    -> Right <$> mkEnumInstance mb_ctxt ty cons
+    -> mk_derived_inst <$> mkEnumInstance mb_ctxt ty cons
      | stock, deriv_name == showName
-    -> Right <$> mkShowInstance mb_ctxt ty cons
+    -> mk_derived_inst <$> mkShowInstance mb_ctxt ty cons
+       -- See Note [Derived Eq instances]
+     | stock, deriv_name == eqName
+    -> return $ mk_derived_eq_inst
+         DerivedEqDecl { ded_mb_cxt = mb_ctxt
+                       , ded_type   = ty
+                       , ded_cons   = cons }
     where
+      mk_derived_inst    dec = mempty { pd_instance_decs   = [dec] }
+      mk_derived_eq_inst dec = mempty { pd_derived_eq_decs = [dec] }
       stock = isStock mb_strat
-  _ -> return (Left deriv_pred)
+  _ -> return mempty -- singletons doesn't support deriving this instance
 
 isStock :: Maybe DerivStrategy -> Bool
 isStock Nothing = True -- We assume the lack of an explicit deriving strategy to
                        -- indicate defaulting to stock. In reality, GHC's defaulting
                        -- behavior is much more complex than this, but implementing
-                       -- this in singletons would be impossible, as would require
+                       -- this in singletons would be impossible, as that would require
                        -- detecting the presence of extensions.
 isStock (Just StockStrategy) = True
 isStock (Just _)             = False

@@ -24,12 +24,6 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     pred :: Nat -> Nat
     pred Zero = Zero
     pred (Succ n) = n
-    type family Equals_0123456789876543210 (a :: Nat) (b :: Nat) :: Bool where
-      Equals_0123456789876543210 Zero Zero = TrueSym0
-      Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
-      Equals_0123456789876543210 (a :: Nat) (b :: Nat) = FalseSym0
-    instance PEq Nat where
-      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789876543210 a b
     type ZeroSym0 = Zero
     type SuccSym1 (t :: Nat) = Succ t
     instance SuppressUnusedWarnings SuccSym0 where
@@ -105,6 +99,12 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow Nat where
       type ShowsPrec (a :: GHC.Types.Nat) (a :: Nat) (a :: GHC.Types.Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+    type family Equals_0123456789876543210 (a :: Nat) (b :: Nat) :: Bool where
+      Equals_0123456789876543210 Zero Zero = TrueSym0
+      Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
+      Equals_0123456789876543210 (a :: Nat) (b :: Nat) = FalseSym0
+    instance PEq Nat where
+      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789876543210 a b
     sPred ::
       forall (t :: Nat). Sing t -> Sing (Apply PredSym0 t :: Nat)
     sPlus ::
@@ -128,28 +128,6 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ b)
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
-    instance SEq Nat where
-      (%:==) SZero SZero = STrue
-      (%:==) SZero (SSucc _) = SFalse
-      (%:==) (SSucc _) SZero = SFalse
-      (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
-    instance SDecide Nat where
-      (%~) SZero SZero = Proved Refl
-      (%~) SZero (SSucc _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SSucc _) SZero
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SSucc a) (SSucc b)
-        = case ((%~) a) b of
-            Proved Refl -> Proved Refl
-            Disproved contra
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
     instance SShow Nat => SShow Nat where
       sShowsPrec ::
         forall (t1 :: GHC.Types.Nat) (t2 :: Nat) (t3 :: GHC.Types.Symbol).
@@ -190,6 +168,28 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
                           (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 11))))
                       sArg_0123456789876543210))))
             sA_0123456789876543210
+    instance SEq Nat where
+      (%:==) SZero SZero = STrue
+      (%:==) SZero (SSucc _) = SFalse
+      (%:==) (SSucc _) SZero = SFalse
+      (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
+    instance SDecide Nat where
+      (%~) SZero SZero = Proved Refl
+      (%~) SZero (SSucc _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SSucc _) SZero
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SSucc a) (SSucc b)
+        = case ((%~) a) b of
+            Proved Refl -> Proved Refl
+            Disproved contra
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where
