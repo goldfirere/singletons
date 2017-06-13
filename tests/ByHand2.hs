@@ -200,6 +200,5 @@ instance SFD Bool Nat where
   sL2r STrue = SSucc SZero
 
 sT1 = sMeth STrue
--- We can't use this type signature due to GHC Trac #13774
--- sT2 :: Sing T2
+sT2 :: Sing (T2 :: Nat)
 sT2 = sL2r SFalse
