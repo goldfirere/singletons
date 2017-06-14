@@ -140,7 +140,7 @@ singEqualityInstance desc@(_, className, _) name = do
   aName <- qNewName "a"
   let aVar = DVarT aName
   (scons, _) <- singM [] $ mapM (singCtor aVar) dcons
-  eqInstance <- mkEqualityInstance kind scons desc
+  eqInstance <- mkEqualityInstance Nothing kind scons desc
   return $ decToTH eqInstance
 
 -- | Create instances of 'SOrd' for the given types
@@ -176,14 +176,14 @@ singShowInstances :: DsMonad q => [Name] -> q [Dec]
 singShowInstances = concatMapM singShowInstance
 
 singInstance :: DsMonad q
-             => (DType -> [DCon] -> q UInstDecl)
+             => (Maybe DCxt -> DType -> [DCon] -> q UInstDecl)
              -> String -> Name -> q [Dec]
 singInstance mk_inst inst_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
                             ++ " for it.") name
   dtvbs <- mapM dsTvb tvbs
   dcons <- concatMapM dsCon cons
-  raw_inst <- mk_inst (foldType (DConT name) (map tvbToType dtvbs)) dcons
+  raw_inst <- mk_inst Nothing (foldType (DConT name) (map tvbToType dtvbs)) dcons
   (a_inst, decs) <- promoteM [] $
                     promoteInstanceDec Map.empty raw_inst
   decs' <- singDecsM [] $ (:[]) <$> singInstD a_inst
@@ -204,10 +204,11 @@ singInfo (DPatSynI {}) =
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
 singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
   decls <- expand raw_decls     -- expand type synonyms
-  PDecs { pd_let_decs              = letDecls
-        , pd_class_decs            = classes
-        , pd_instance_decs         = insts
-        , pd_data_decs             = datas }    <- partitionDecs decls
+  PDecs { pd_let_decs        = letDecls
+        , pd_class_decs      = classes
+        , pd_instance_decs   = insts
+        , pd_data_decs       = datas
+        , pd_derived_eq_decs = derivedEqDecs } <- partitionDecs decls
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
     promoteDataDecs datas
@@ -215,6 +216,7 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
     classes' <- mapM promoteClassDec classes
     let meth_sigs = foldMap (lde_types . cd_lde) classes
     insts' <- mapM (promoteInstanceDec meth_sigs) insts
+    mapM_ promoteDerivedEqDec derivedEqDecs
     return (letDecEnv, classes', insts')
 
   singDecsM locals $ do
@@ -225,7 +227,8 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
                                  newDataDecls <- concatMapM singDataD datas
                                  newClassDecls <- mapM singClassD classes'
                                  newInstDecls <- mapM singInstD insts'
-                                 return (newDataDecls ++ newClassDecls ++ newInstDecls)
+                                 newDerivedEqDecs <- concatMapM singDerivedEqDecs derivedEqDecs
+                                 return (newDataDecls ++ newClassDecls ++ newInstDecls ++ newDerivedEqDecs)
     return $ promDecls ++ (map DLetDec newLetDecls) ++ newDecls
 
 -- see comment at top of file
@@ -554,6 +557,41 @@ singExp (ADLetE env exp) res_ki =
   uncurry DLetE <$> singLetDecEnv env (singExp exp res_ki)
 singExp (ADSigE {}) _ =
   fail "Singling of explicit type annotations not yet supported."
+
+-- See Note [Derived Eq instances]
+singDerivedEqDecs :: DerivedEqDecl -> SgM [DDec]
+singDerivedEqDecs (DerivedEqDecl { ded_mb_cxt = mb_ctxt
+                                 , ded_type   = ty
+                                 , ded_cons   = cons }) = do
+  aName <- qNewName "a"
+  let aVar = DVarT aName
+  (scons, _) <- singM [] $ mapM (singCtor aVar) cons
+  mb_sctxt <- mapM (mapM singPred) mb_ctxt
+  kind <- promoteType ty
+  sEqInst <- mkEqualityInstance mb_sctxt kind scons sEqClassDesc
+  -- Beware! The user might have specified an instance context like this:
+  --
+  --   deriving instance Eq a => Eq (T a Int)
+  --
+  -- When we single the context, it will become (SEq a). But we do *not* want
+  -- this for the SDecide instance! The simplest solution is to simply replace
+  -- all occurrences of SEq with SDecide in the context.
+  let mb_sctxtDecide = fmap (map sEqToSDecide) mb_sctxt
+  sDecideInst <- mkEqualityInstance mb_sctxtDecide kind scons sDecideClassDesc
+  return [sEqInst, sDecideInst]
+
+-- Walk a DPred, replacing all occurrences of SEq with SDecide.
+sEqToSDecide :: DPred -> DPred
+sEqToSDecide (DAppPr p t) = DAppPr (sEqToSDecide p) t
+sEqToSDecide (DSigPr p k) = DSigPr (sEqToSDecide p) k
+sEqToSDecide p@(DVarPr _) = p
+sEqToSDecide p@(DConPr n)
+    -- Why don't we directly compare n to sEqClassName? Because n is almost certainly
+    -- produced from a call to singClassName, which uses unqualified Names. Ugh.
+  | nameBase n == nameBase sEqClassName
+  = DConPr sDecideClassName
+  | otherwise = p
+sEqToSDecide DWildCardPr = DWildCardPr
 
 isException :: DExp -> Bool
 isException (DVarE n)             = n == undefinedName

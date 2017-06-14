@@ -24,8 +24,8 @@ import Control.Monad
 
 -- monadic only for failure and parallelism with other functions
 -- that make instances
-mkBoundedInstance :: Quasi q => DType -> [DCon] -> q UInstDecl
-mkBoundedInstance ty cons = do
+mkBoundedInstance :: Quasi q => Maybe DCxt -> DType -> [DCon] -> q UInstDecl
+mkBoundedInstance mb_ctxt ty cons = do
   -- We can derive instance of Bounded if datatype is an enumeration (all
   -- constructors must be nullary) or has only one constructor. See Section 11
   -- of Haskell 2010 Language Report.
@@ -50,7 +50,7 @@ mkBoundedInstance ty cons = do
           in (minEqnRHS, maxEqnRHS)
 
       mk_rhs rhs = UFunction [DClause [] rhs]
-  return $ InstDecl { id_cxt = inferConstraints (DConPr boundedName) cons
+  return $ InstDecl { id_cxt = inferConstraintsDef mb_ctxt (DConPr boundedName) cons
                     , id_name = boundedName
                     , id_arg_tys = [ty]
                     , id_meths = [ (minBoundName, mk_rhs minRHS)

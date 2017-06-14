@@ -25,12 +25,12 @@ import Data.Maybe (fromMaybe)
 import GHC.Lexeme (startsConSym, startsVarSym)
 import GHC.Show (appPrec, appPrec1)
 
-mkShowInstance :: DsMonad q => DType -> [DCon] -> q UInstDecl
-mkShowInstance ty cons = do
+mkShowInstance :: DsMonad q => Maybe DCxt -> DType -> [DCon] -> q UInstDecl
+mkShowInstance mb_ctxt ty cons = do
   when (null cons) $
     fail ("Can't derive Show instance for " ++ pprint (typeToTH ty) ++ ".")
   clauses <- mk_showsPrec cons
-  return $ InstDecl { id_cxt = inferConstraints (DConPr showName) cons
+  return $ InstDecl { id_cxt = inferConstraintsDef mb_ctxt (DConPr showName) cons
                     , id_name = showName
                     , id_arg_tys = [ty]
                     , id_meths = [ (showsPrecName, UFunction clauses) ] }

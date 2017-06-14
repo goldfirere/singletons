@@ -13,6 +13,7 @@ import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
 import Data.Singletons.Names
 import Control.Monad
+import Data.Maybe (fromMaybe)
 
 -- making the SEq instance and the SDecide instance are rather similar,
 -- so we generalize
@@ -22,15 +23,15 @@ sEqClassDesc = (mkEqMethClause, sEqClassName, sEqMethName)
 sDecideClassDesc = (mkDecideMethClause, sDecideClassName, sDecideMethName)
 
 -- pass the *singleton* constructors, not the originals
-mkEqualityInstance :: Quasi q => DKind -> [DCon]
+mkEqualityInstance :: Quasi q => Maybe DCxt -> DKind -> [DCon]
                    -> EqualityClassDesc q -> q DDec
-mkEqualityInstance k ctors (mkMeth, className, methName) = do
+mkEqualityInstance mb_ctxt k ctors (mkMeth, className, methName) = do
   let ctorPairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
   methClauses <- if null ctors
                  then mkEmptyMethClauses
                  else mapM mkMeth ctorPairs
   return $ DInstanceD Nothing
-                      (map (DAppPr (DConPr className)) (getKindVars k))
+                     (fromMaybe (map (DAppPr (DConPr className)) (getKindVars k)) mb_ctxt)
                      (DAppT (DConT className) k)
                      [DLetDec $ DFunD methName methClauses]
   where getKindVars :: DKind -> [DKind]

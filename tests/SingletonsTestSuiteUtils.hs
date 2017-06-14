@@ -116,6 +116,7 @@ ghcOpts = extraOpts ++ [
   , "-XDefaultSignatures"
   , "-XCPP"
   , "-XTypeInType"
+  , "-XStandaloneDeriving"
   ]
 
 -- Note [-this-unit-id hack]
