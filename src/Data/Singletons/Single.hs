@@ -137,7 +137,9 @@ singEqualityInstance desc@(_, _, className, _) name = do
   dcons <- concatMapM dsCon cons
   let tyvars = map (DVarT . extractTvbName) dtvbs
       kind = foldType (DConT name) tyvars
-  (scons, _) <- singM [] $ mapM singCtor dcons
+  aName <- qNewName "a"
+  let aVar = DVarT aName
+  (scons, _) <- singM [] $ mapM (singCtor aVar) dcons
   eqInstance <- mkEqualityInstance Nothing kind scons desc
   return $ decToTH eqInstance
 
@@ -202,10 +204,11 @@ singInfo (DPatSynI {}) =
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
 singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
   decls <- expand raw_decls     -- expand type synonyms
-  PDecs { pd_let_decs              = letDecls
-        , pd_class_decs            = classes
-        , pd_instance_decs         = insts
-        , pd_data_decs             = datas }    <- partitionDecs decls
+  PDecs { pd_let_decs        = letDecls
+        , pd_class_decs      = classes
+        , pd_instance_decs   = insts
+        , pd_data_decs       = datas
+        , pd_derived_eq_decs = derivedEqDecs } <- partitionDecs decls
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
     promoteDataDecs datas
@@ -544,7 +547,9 @@ singDerivedEqDecs :: DerivedEqDecl -> SgM [DDec]
 singDerivedEqDecs (DerivedEqDecl { ded_mb_cxt = mb_ctxt
                                  , ded_type   = ty
                                  , ded_cons   = cons }) = do
-  (scons, _) <- singM [] $ mapM singCtor cons
+  aName <- qNewName "a"
+  let aVar = DVarT aName
+  (scons, _) <- singM [] $ mapM (singCtor aVar) cons
   mb_sctxt <- mapM (mapM singPred) mb_ctxt
   kind <- promoteType ty
   sEqInst <- mkEqualityInstance mb_sctxt kind scons sEqClassDesc

@@ -99,6 +99,12 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow Nat where
       type ShowsPrec (a :: GHC.Types.Nat) (a :: Nat) (a :: GHC.Types.Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+    type family Equals_0123456789876543210 (a :: Nat) (b :: Nat) :: Bool where
+      Equals_0123456789876543210 Zero Zero = TrueSym0
+      Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
+      Equals_0123456789876543210 (a :: Nat) (b :: Nat) = FalseSym0
+    instance PEq Nat where
+      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789876543210 a b
     sPred ::
       forall (t :: Nat). Sing t -> Sing (Apply PredSym0 t :: Nat)
     sPlus ::
@@ -152,10 +158,10 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
              ((applySing
                  ((applySing ((singFun3 @ShowParenSym0) sShowParen))
                     ((applySing
-                        ((applySing ((singFun2 @(:>@#@$)) (%:>))) sP_0123456789876543210))
+                        ((applySing ((singFun2 @(:>$)) (%:>))) sP_0123456789876543210))
                        (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 10)))))
                 ((applySing
-                    ((applySing ((singFun3 @(:.@#@$)) (%:.)))
+                    ((applySing ((singFun3 @(:.$)) (%:.)))
                        ((applySing ((singFun2 @ShowStringSym0) sShowString))
                           (sing :: Sing "Succ "))))
                    ((applySing
@@ -170,53 +176,21 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
     instance SDecide Nat where
       (%~) SZero SZero = Proved Refl
-      (%~) SZero (SSucc _) = Disproved (\ x -> case x of)
-      (%~) (SSucc _) SZero = Disproved (\ x -> case x of)
+      (%~) SZero (SSucc _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SSucc _) SZero
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) (SSucc a) (SSucc b)
         = case ((%~) a) b of
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-    instance SShow Nat => SShow Nat where
-      sShowsPrec ::
-        forall (t1 :: GHC.Types.Nat) (t2 :: Nat) (t3 :: GHC.Types.Symbol).
-        Sing t1
-        -> Sing t2
-           -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun Nat (TyFun GHC.Types.Symbol GHC.Types.Symbol
-                                                                                             -> GHC.Types.Type)
-                                                                                  -> GHC.Types.Type)
-                                                             -> GHC.Types.Type) t1 :: TyFun Nat (TyFun GHC.Types.Symbol GHC.Types.Symbol
-                                                                                                 -> GHC.Types.Type)
-                                                                                      -> GHC.Types.Type) t2 :: TyFun GHC.Types.Symbol GHC.Types.Symbol
-                                                                                                               -> GHC.Types.Type) t3 :: GHC.Types.Symbol)
-      sShowsPrec
-        _
-        SZero
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "Zero")))
-            sA_0123456789876543210
-      sShowsPrec
-        (sP_0123456789876543210 :: Sing p_0123456789876543210)
-        (SSucc (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(:>$)) (%:>))) sP_0123456789876543210))
-                       (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 10)))))
-                ((applySing
-                    ((applySing ((singFun3 @(:.$)) (%:.)))
-                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                          (sing :: Sing "Succ "))))
-                   ((applySing
-                       ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                          (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 11))))
-                      sArg_0123456789876543210))))
-            sA_0123456789876543210
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where

@@ -53,10 +53,8 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
                       [k]
                       (foldType (DConT name)
                         (map (DAppT demote . DVarT) tvbNames))
-                   , DLetDec $ DFunD fromSingName
-                               (fromSingClauses `orIfEmpty` [emptyFromSingClause])
-                   , DLetDec $ DFunD toSingName
-                               (toSingClauses   `orIfEmpty` [emptyToSingClause]) ]
+                   , DLetDec $ DFunD fromSingName (fromSingClauses `orIfEmpty` emptyMethod aName)
+                   , DLetDec $ DFunD toSingName   (toSingClauses   `orIfEmpty` emptyMethod aName) ]
 
   -- e.g. type SNat = Sing :: Nat -> *
   let kindedSynInst =

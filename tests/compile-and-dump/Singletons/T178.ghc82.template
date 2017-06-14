@@ -91,6 +91,13 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow Occ where
       type ShowsPrec (a :: Nat) (a :: Occ) (a :: Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+    type family Equals_0123456789876543210 (a :: Occ) (b :: Occ) :: Bool where
+      Equals_0123456789876543210 Str Str = TrueSym0
+      Equals_0123456789876543210 Opt Opt = TrueSym0
+      Equals_0123456789876543210 Many Many = TrueSym0
+      Equals_0123456789876543210 (a :: Occ) (b :: Occ) = FalseSym0
+    instance PEq Occ where
+      type (:==) (a :: Occ) (b :: Occ) = Equals_0123456789876543210 a b
     sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)])
     sEmpty = Data.Singletons.Prelude.Instances.SNil
     data instance Sing (z :: Occ)
@@ -180,6 +187,50 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
              ((applySing ((singFun2 @ShowStringSym0) sShowString))
                 (sing :: Sing "Many")))
             sA_0123456789876543210
+    instance SEq Occ where
+      (%:==) SStr SStr = STrue
+      (%:==) SStr SOpt = SFalse
+      (%:==) SStr SMany = SFalse
+      (%:==) SOpt SStr = SFalse
+      (%:==) SOpt SOpt = STrue
+      (%:==) SOpt SMany = SFalse
+      (%:==) SMany SStr = SFalse
+      (%:==) SMany SOpt = SFalse
+      (%:==) SMany SMany = STrue
+    instance SDecide Occ where
+      (%~) SStr SStr = Proved Refl
+      (%~) SStr SOpt
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SStr SMany
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SOpt SStr
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SOpt SOpt = Proved Refl
+      (%~) SOpt SMany
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SMany SStr
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SMany SOpt
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SMany SMany = Proved Refl
     instance SingI Str where
       sing = SStr
     instance SingI Opt where

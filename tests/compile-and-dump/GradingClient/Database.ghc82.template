@@ -43,13 +43,13 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd Nat where
-      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
+      type Compare (a :: Nat) (a :: Nat) = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Equals_0123456789876543210 (a :: Nat) (b :: Nat) :: Bool where
       Equals_0123456789876543210 Zero Zero = TrueSym0
       Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
-      Equals_0123456789876543210 (_ :: Nat) (_ :: Nat) = FalseSym0
+      Equals_0123456789876543210 (a :: Nat) (b :: Nat) = FalseSym0
     instance PEq Nat where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789876543210 a b
     data instance Sing (z :: Nat)
       where
         SZero :: Sing Zero
@@ -103,8 +103,16 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
     instance SDecide Nat where
       (%~) SZero SZero = Proved Refl
-      (%~) SZero (SSucc _) = Disproved (\ x -> case x of)
-      (%~) (SSucc _) SZero = Disproved (\ x -> case x of)
+      (%~) SZero (SSucc _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SSucc _) SZero
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) (SSucc a) (SSucc b)
         = case ((%~) a) b of
             Proved Refl -> Proved Refl
@@ -523,6 +531,44 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow AChar where
       type ShowsPrec (a :: GHC.Types.Nat) (a :: AChar) (a :: Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+    type family Equals_0123456789876543210 (a :: U) (b :: U) :: Bool where
+      Equals_0123456789876543210 BOOL BOOL = TrueSym0
+      Equals_0123456789876543210 STRING STRING = TrueSym0
+      Equals_0123456789876543210 NAT NAT = TrueSym0
+      Equals_0123456789876543210 (VEC a a) (VEC b b) = (:&&) ((:==) a b) ((:==) a b)
+      Equals_0123456789876543210 (a :: U) (b :: U) = FalseSym0
+    instance PEq U where
+      type (:==) (a :: U) (b :: U) = Equals_0123456789876543210 a b
+    type family Equals_0123456789876543210 (a :: AChar) (b :: AChar) :: Bool where
+      Equals_0123456789876543210 CA CA = TrueSym0
+      Equals_0123456789876543210 CB CB = TrueSym0
+      Equals_0123456789876543210 CC CC = TrueSym0
+      Equals_0123456789876543210 CD CD = TrueSym0
+      Equals_0123456789876543210 CE CE = TrueSym0
+      Equals_0123456789876543210 CF CF = TrueSym0
+      Equals_0123456789876543210 CG CG = TrueSym0
+      Equals_0123456789876543210 CH CH = TrueSym0
+      Equals_0123456789876543210 CI CI = TrueSym0
+      Equals_0123456789876543210 CJ CJ = TrueSym0
+      Equals_0123456789876543210 CK CK = TrueSym0
+      Equals_0123456789876543210 CL CL = TrueSym0
+      Equals_0123456789876543210 CM CM = TrueSym0
+      Equals_0123456789876543210 CN CN = TrueSym0
+      Equals_0123456789876543210 CO CO = TrueSym0
+      Equals_0123456789876543210 CP CP = TrueSym0
+      Equals_0123456789876543210 CQ CQ = TrueSym0
+      Equals_0123456789876543210 CR CR = TrueSym0
+      Equals_0123456789876543210 CS CS = TrueSym0
+      Equals_0123456789876543210 CT CT = TrueSym0
+      Equals_0123456789876543210 CU CU = TrueSym0
+      Equals_0123456789876543210 CV CV = TrueSym0
+      Equals_0123456789876543210 CW CW = TrueSym0
+      Equals_0123456789876543210 CX CX = TrueSym0
+      Equals_0123456789876543210 CY CY = TrueSym0
+      Equals_0123456789876543210 CZ CZ = TrueSym0
+      Equals_0123456789876543210 (a :: AChar) (b :: AChar) = FalseSym0
+    instance PEq AChar where
+      type (:==) (a :: AChar) (b :: AChar) = Equals_0123456789876543210 a b
     sLookup ::
       forall (t :: [AChar]) (t :: Schema).
       Sing t -> Sing t -> Sing (Apply (Apply LookupSym0 t) t :: U)
@@ -700,9 +746,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       toSing CY = SomeSing SCY
       toSing CZ = SomeSing SCZ
     data instance Sing (z :: Attribute)
-      where
-        SAttr :: forall (n :: [AChar]) (n :: U).
-                 (Sing (n :: [AChar])) -> (Sing (n :: U)) -> Sing (Attr n n)
+      = forall (n :: [AChar]) (n :: U). z ~ Attr n n =>
+        SAttr (Sing (n :: [AChar])) (Sing (n :: U))
     type SAttribute = (Sing :: Attribute -> Type)
     instance SingKind Attribute where
       type Demote Attribute = Attribute
@@ -714,9 +759,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing ((SAttr c) c) }
     data instance Sing (z :: Schema)
-      where
-        SSch :: forall (n :: [Attribute]).
-                (Sing (n :: [Attribute])) -> Sing (Sch n)
+      = forall (n :: [Attribute]). z ~ Sch n =>
+        SSch (Sing (n :: [Attribute]))
     type SSchema = (Sing :: Schema -> Type)
     instance SingKind Schema where
       type Demote Schema = Schema
@@ -770,20 +814,20 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
              ((applySing
                  ((applySing ((singFun3 @ShowParenSym0) sShowParen))
                     ((applySing
-                        ((applySing ((singFun2 @(:>@#@$)) (%:>))) sP_0123456789876543210))
+                        ((applySing ((singFun2 @(:>$)) (%:>))) sP_0123456789876543210))
                        (sFromInteger (sing :: Sing 10)))))
                 ((applySing
-                    ((applySing ((singFun3 @(:.@#@$)) (%:.)))
+                    ((applySing ((singFun3 @(:.$)) (%:.)))
                        ((applySing ((singFun2 @ShowStringSym0) sShowString))
                           (sing :: Sing "VEC "))))
                    ((applySing
-                       ((applySing ((singFun3 @(:.@#@$)) (%:.)))
+                       ((applySing ((singFun3 @(:.$)) (%:.)))
                           ((applySing
                               ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
                                  (sFromInteger (sing :: Sing 11))))
                              sArg_0123456789876543210)))
                       ((applySing
-                          ((applySing ((singFun3 @(:.@#@$)) (%:.)))
+                          ((applySing ((singFun3 @(:.$)) (%:.)))
                              ((singFun1 @ShowSpaceSym0) sShowSpace)))
                          ((applySing
                              ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
@@ -1031,20 +1075,68 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         = ((%:&&) (((%:==) a) b)) (((%:==) a) b)
     instance SDecide U where
       (%~) SBOOL SBOOL = Proved Refl
-      (%~) SBOOL SSTRING = Disproved (\ x -> case x of)
-      (%~) SBOOL SNAT = Disproved (\ x -> case x of)
-      (%~) SBOOL (SVEC _ _) = Disproved (\ x -> case x of)
-      (%~) SSTRING SBOOL = Disproved (\ x -> case x of)
+      (%~) SBOOL SSTRING
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SBOOL SNAT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SBOOL (SVEC _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SSTRING SBOOL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SSTRING SSTRING = Proved Refl
-      (%~) SSTRING SNAT = Disproved (\ x -> case x of)
-      (%~) SSTRING (SVEC _ _) = Disproved (\ x -> case x of)
-      (%~) SNAT SBOOL = Disproved (\ x -> case x of)
-      (%~) SNAT SSTRING = Disproved (\ x -> case x of)
+      (%~) SSTRING SNAT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SSTRING (SVEC _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SNAT SBOOL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SNAT SSTRING
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SNAT SNAT = Proved Refl
-      (%~) SNAT (SVEC _ _) = Disproved (\ x -> case x of)
-      (%~) (SVEC _ _) SBOOL = Disproved (\ x -> case x of)
-      (%~) (SVEC _ _) SSTRING = Disproved (\ x -> case x of)
-      (%~) (SVEC _ _) SNAT = Disproved (\ x -> case x of)
+      (%~) SNAT (SVEC _ _)
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SVEC _ _) SBOOL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SVEC _ _) SSTRING
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SVEC _ _) SNAT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) (SVEC a a) (SVEC b b)
         = case (GHC.Tuple.(,) (((%~) a) b)) (((%~) a) b) of
             GHC.Tuple.(,) (Proved Refl) (Proved Refl) -> Proved Refl
@@ -1731,991 +1823,3281 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (%:==) SCZ SCZ = STrue
     instance SDecide AChar where
       (%~) SCA SCA = Proved Refl
-      (%~) SCA SCB = Disproved (\ x -> case x of)
-      (%~) SCA SCC = Disproved (\ x -> case x of)
-      (%~) SCA SCD = Disproved (\ x -> case x of)
-      (%~) SCA SCE = Disproved (\ x -> case x of)
-      (%~) SCA SCF = Disproved (\ x -> case x of)
-      (%~) SCA SCG = Disproved (\ x -> case x of)
-      (%~) SCA SCH = Disproved (\ x -> case x of)
-      (%~) SCA SCI = Disproved (\ x -> case x of)
-      (%~) SCA SCJ = Disproved (\ x -> case x of)
-      (%~) SCA SCK = Disproved (\ x -> case x of)
-      (%~) SCA SCL = Disproved (\ x -> case x of)
-      (%~) SCA SCM = Disproved (\ x -> case x of)
-      (%~) SCA SCN = Disproved (\ x -> case x of)
-      (%~) SCA SCO = Disproved (\ x -> case x of)
-      (%~) SCA SCP = Disproved (\ x -> case x of)
-      (%~) SCA SCQ = Disproved (\ x -> case x of)
-      (%~) SCA SCR = Disproved (\ x -> case x of)
-      (%~) SCA SCS = Disproved (\ x -> case x of)
-      (%~) SCA SCT = Disproved (\ x -> case x of)
-      (%~) SCA SCU = Disproved (\ x -> case x of)
-      (%~) SCA SCV = Disproved (\ x -> case x of)
-      (%~) SCA SCW = Disproved (\ x -> case x of)
-      (%~) SCA SCX = Disproved (\ x -> case x of)
-      (%~) SCA SCY = Disproved (\ x -> case x of)
-      (%~) SCA SCZ = Disproved (\ x -> case x of)
-      (%~) SCB SCA = Disproved (\ x -> case x of)
+      (%~) SCA SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCA SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCB SCB = Proved Refl
-      (%~) SCB SCC = Disproved (\ x -> case x of)
-      (%~) SCB SCD = Disproved (\ x -> case x of)
-      (%~) SCB SCE = Disproved (\ x -> case x of)
-      (%~) SCB SCF = Disproved (\ x -> case x of)
-      (%~) SCB SCG = Disproved (\ x -> case x of)
-      (%~) SCB SCH = Disproved (\ x -> case x of)
-      (%~) SCB SCI = Disproved (\ x -> case x of)
-      (%~) SCB SCJ = Disproved (\ x -> case x of)
-      (%~) SCB SCK = Disproved (\ x -> case x of)
-      (%~) SCB SCL = Disproved (\ x -> case x of)
-      (%~) SCB SCM = Disproved (\ x -> case x of)
-      (%~) SCB SCN = Disproved (\ x -> case x of)
-      (%~) SCB SCO = Disproved (\ x -> case x of)
-      (%~) SCB SCP = Disproved (\ x -> case x of)
-      (%~) SCB SCQ = Disproved (\ x -> case x of)
-      (%~) SCB SCR = Disproved (\ x -> case x of)
-      (%~) SCB SCS = Disproved (\ x -> case x of)
-      (%~) SCB SCT = Disproved (\ x -> case x of)
-      (%~) SCB SCU = Disproved (\ x -> case x of)
-      (%~) SCB SCV = Disproved (\ x -> case x of)
-      (%~) SCB SCW = Disproved (\ x -> case x of)
-      (%~) SCB SCX = Disproved (\ x -> case x of)
-      (%~) SCB SCY = Disproved (\ x -> case x of)
-      (%~) SCB SCZ = Disproved (\ x -> case x of)
-      (%~) SCC SCA = Disproved (\ x -> case x of)
-      (%~) SCC SCB = Disproved (\ x -> case x of)
+      (%~) SCB SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCB SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCC SCC = Proved Refl
-      (%~) SCC SCD = Disproved (\ x -> case x of)
-      (%~) SCC SCE = Disproved (\ x -> case x of)
-      (%~) SCC SCF = Disproved (\ x -> case x of)
-      (%~) SCC SCG = Disproved (\ x -> case x of)
-      (%~) SCC SCH = Disproved (\ x -> case x of)
-      (%~) SCC SCI = Disproved (\ x -> case x of)
-      (%~) SCC SCJ = Disproved (\ x -> case x of)
-      (%~) SCC SCK = Disproved (\ x -> case x of)
-      (%~) SCC SCL = Disproved (\ x -> case x of)
-      (%~) SCC SCM = Disproved (\ x -> case x of)
-      (%~) SCC SCN = Disproved (\ x -> case x of)
-      (%~) SCC SCO = Disproved (\ x -> case x of)
-      (%~) SCC SCP = Disproved (\ x -> case x of)
-      (%~) SCC SCQ = Disproved (\ x -> case x of)
-      (%~) SCC SCR = Disproved (\ x -> case x of)
-      (%~) SCC SCS = Disproved (\ x -> case x of)
-      (%~) SCC SCT = Disproved (\ x -> case x of)
-      (%~) SCC SCU = Disproved (\ x -> case x of)
-      (%~) SCC SCV = Disproved (\ x -> case x of)
-      (%~) SCC SCW = Disproved (\ x -> case x of)
-      (%~) SCC SCX = Disproved (\ x -> case x of)
-      (%~) SCC SCY = Disproved (\ x -> case x of)
-      (%~) SCC SCZ = Disproved (\ x -> case x of)
-      (%~) SCD SCA = Disproved (\ x -> case x of)
-      (%~) SCD SCB = Disproved (\ x -> case x of)
-      (%~) SCD SCC = Disproved (\ x -> case x of)
+      (%~) SCC SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCC SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCD SCD = Proved Refl
-      (%~) SCD SCE = Disproved (\ x -> case x of)
-      (%~) SCD SCF = Disproved (\ x -> case x of)
-      (%~) SCD SCG = Disproved (\ x -> case x of)
-      (%~) SCD SCH = Disproved (\ x -> case x of)
-      (%~) SCD SCI = Disproved (\ x -> case x of)
-      (%~) SCD SCJ = Disproved (\ x -> case x of)
-      (%~) SCD SCK = Disproved (\ x -> case x of)
-      (%~) SCD SCL = Disproved (\ x -> case x of)
-      (%~) SCD SCM = Disproved (\ x -> case x of)
-      (%~) SCD SCN = Disproved (\ x -> case x of)
-      (%~) SCD SCO = Disproved (\ x -> case x of)
-      (%~) SCD SCP = Disproved (\ x -> case x of)
-      (%~) SCD SCQ = Disproved (\ x -> case x of)
-      (%~) SCD SCR = Disproved (\ x -> case x of)
-      (%~) SCD SCS = Disproved (\ x -> case x of)
-      (%~) SCD SCT = Disproved (\ x -> case x of)
-      (%~) SCD SCU = Disproved (\ x -> case x of)
-      (%~) SCD SCV = Disproved (\ x -> case x of)
-      (%~) SCD SCW = Disproved (\ x -> case x of)
-      (%~) SCD SCX = Disproved (\ x -> case x of)
-      (%~) SCD SCY = Disproved (\ x -> case x of)
-      (%~) SCD SCZ = Disproved (\ x -> case x of)
-      (%~) SCE SCA = Disproved (\ x -> case x of)
-      (%~) SCE SCB = Disproved (\ x -> case x of)
-      (%~) SCE SCC = Disproved (\ x -> case x of)
-      (%~) SCE SCD = Disproved (\ x -> case x of)
+      (%~) SCD SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCD SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCE SCE = Proved Refl
-      (%~) SCE SCF = Disproved (\ x -> case x of)
-      (%~) SCE SCG = Disproved (\ x -> case x of)
-      (%~) SCE SCH = Disproved (\ x -> case x of)
-      (%~) SCE SCI = Disproved (\ x -> case x of)
-      (%~) SCE SCJ = Disproved (\ x -> case x of)
-      (%~) SCE SCK = Disproved (\ x -> case x of)
-      (%~) SCE SCL = Disproved (\ x -> case x of)
-      (%~) SCE SCM = Disproved (\ x -> case x of)
-      (%~) SCE SCN = Disproved (\ x -> case x of)
-      (%~) SCE SCO = Disproved (\ x -> case x of)
-      (%~) SCE SCP = Disproved (\ x -> case x of)
-      (%~) SCE SCQ = Disproved (\ x -> case x of)
-      (%~) SCE SCR = Disproved (\ x -> case x of)
-      (%~) SCE SCS = Disproved (\ x -> case x of)
-      (%~) SCE SCT = Disproved (\ x -> case x of)
-      (%~) SCE SCU = Disproved (\ x -> case x of)
-      (%~) SCE SCV = Disproved (\ x -> case x of)
-      (%~) SCE SCW = Disproved (\ x -> case x of)
-      (%~) SCE SCX = Disproved (\ x -> case x of)
-      (%~) SCE SCY = Disproved (\ x -> case x of)
-      (%~) SCE SCZ = Disproved (\ x -> case x of)
-      (%~) SCF SCA = Disproved (\ x -> case x of)
-      (%~) SCF SCB = Disproved (\ x -> case x of)
-      (%~) SCF SCC = Disproved (\ x -> case x of)
-      (%~) SCF SCD = Disproved (\ x -> case x of)
-      (%~) SCF SCE = Disproved (\ x -> case x of)
+      (%~) SCE SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCE SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCF SCF = Proved Refl
-      (%~) SCF SCG = Disproved (\ x -> case x of)
-      (%~) SCF SCH = Disproved (\ x -> case x of)
-      (%~) SCF SCI = Disproved (\ x -> case x of)
-      (%~) SCF SCJ = Disproved (\ x -> case x of)
-      (%~) SCF SCK = Disproved (\ x -> case x of)
-      (%~) SCF SCL = Disproved (\ x -> case x of)
-      (%~) SCF SCM = Disproved (\ x -> case x of)
-      (%~) SCF SCN = Disproved (\ x -> case x of)
-      (%~) SCF SCO = Disproved (\ x -> case x of)
-      (%~) SCF SCP = Disproved (\ x -> case x of)
-      (%~) SCF SCQ = Disproved (\ x -> case x of)
-      (%~) SCF SCR = Disproved (\ x -> case x of)
-      (%~) SCF SCS = Disproved (\ x -> case x of)
-      (%~) SCF SCT = Disproved (\ x -> case x of)
-      (%~) SCF SCU = Disproved (\ x -> case x of)
-      (%~) SCF SCV = Disproved (\ x -> case x of)
-      (%~) SCF SCW = Disproved (\ x -> case x of)
-      (%~) SCF SCX = Disproved (\ x -> case x of)
-      (%~) SCF SCY = Disproved (\ x -> case x of)
-      (%~) SCF SCZ = Disproved (\ x -> case x of)
-      (%~) SCG SCA = Disproved (\ x -> case x of)
-      (%~) SCG SCB = Disproved (\ x -> case x of)
-      (%~) SCG SCC = Disproved (\ x -> case x of)
-      (%~) SCG SCD = Disproved (\ x -> case x of)
-      (%~) SCG SCE = Disproved (\ x -> case x of)
-      (%~) SCG SCF = Disproved (\ x -> case x of)
+      (%~) SCF SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCF SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCG SCG = Proved Refl
-      (%~) SCG SCH = Disproved (\ x -> case x of)
-      (%~) SCG SCI = Disproved (\ x -> case x of)
-      (%~) SCG SCJ = Disproved (\ x -> case x of)
-      (%~) SCG SCK = Disproved (\ x -> case x of)
-      (%~) SCG SCL = Disproved (\ x -> case x of)
-      (%~) SCG SCM = Disproved (\ x -> case x of)
-      (%~) SCG SCN = Disproved (\ x -> case x of)
-      (%~) SCG SCO = Disproved (\ x -> case x of)
-      (%~) SCG SCP = Disproved (\ x -> case x of)
-      (%~) SCG SCQ = Disproved (\ x -> case x of)
-      (%~) SCG SCR = Disproved (\ x -> case x of)
-      (%~) SCG SCS = Disproved (\ x -> case x of)
-      (%~) SCG SCT = Disproved (\ x -> case x of)
-      (%~) SCG SCU = Disproved (\ x -> case x of)
-      (%~) SCG SCV = Disproved (\ x -> case x of)
-      (%~) SCG SCW = Disproved (\ x -> case x of)
-      (%~) SCG SCX = Disproved (\ x -> case x of)
-      (%~) SCG SCY = Disproved (\ x -> case x of)
-      (%~) SCG SCZ = Disproved (\ x -> case x of)
-      (%~) SCH SCA = Disproved (\ x -> case x of)
-      (%~) SCH SCB = Disproved (\ x -> case x of)
-      (%~) SCH SCC = Disproved (\ x -> case x of)
-      (%~) SCH SCD = Disproved (\ x -> case x of)
-      (%~) SCH SCE = Disproved (\ x -> case x of)
-      (%~) SCH SCF = Disproved (\ x -> case x of)
-      (%~) SCH SCG = Disproved (\ x -> case x of)
+      (%~) SCG SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCG SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCH SCH = Proved Refl
-      (%~) SCH SCI = Disproved (\ x -> case x of)
-      (%~) SCH SCJ = Disproved (\ x -> case x of)
-      (%~) SCH SCK = Disproved (\ x -> case x of)
-      (%~) SCH SCL = Disproved (\ x -> case x of)
-      (%~) SCH SCM = Disproved (\ x -> case x of)
-      (%~) SCH SCN = Disproved (\ x -> case x of)
-      (%~) SCH SCO = Disproved (\ x -> case x of)
-      (%~) SCH SCP = Disproved (\ x -> case x of)
-      (%~) SCH SCQ = Disproved (\ x -> case x of)
-      (%~) SCH SCR = Disproved (\ x -> case x of)
-      (%~) SCH SCS = Disproved (\ x -> case x of)
-      (%~) SCH SCT = Disproved (\ x -> case x of)
-      (%~) SCH SCU = Disproved (\ x -> case x of)
-      (%~) SCH SCV = Disproved (\ x -> case x of)
-      (%~) SCH SCW = Disproved (\ x -> case x of)
-      (%~) SCH SCX = Disproved (\ x -> case x of)
-      (%~) SCH SCY = Disproved (\ x -> case x of)
-      (%~) SCH SCZ = Disproved (\ x -> case x of)
-      (%~) SCI SCA = Disproved (\ x -> case x of)
-      (%~) SCI SCB = Disproved (\ x -> case x of)
-      (%~) SCI SCC = Disproved (\ x -> case x of)
-      (%~) SCI SCD = Disproved (\ x -> case x of)
-      (%~) SCI SCE = Disproved (\ x -> case x of)
-      (%~) SCI SCF = Disproved (\ x -> case x of)
-      (%~) SCI SCG = Disproved (\ x -> case x of)
-      (%~) SCI SCH = Disproved (\ x -> case x of)
+      (%~) SCH SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCH SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCI SCI = Proved Refl
-      (%~) SCI SCJ = Disproved (\ x -> case x of)
-      (%~) SCI SCK = Disproved (\ x -> case x of)
-      (%~) SCI SCL = Disproved (\ x -> case x of)
-      (%~) SCI SCM = Disproved (\ x -> case x of)
-      (%~) SCI SCN = Disproved (\ x -> case x of)
-      (%~) SCI SCO = Disproved (\ x -> case x of)
-      (%~) SCI SCP = Disproved (\ x -> case x of)
-      (%~) SCI SCQ = Disproved (\ x -> case x of)
-      (%~) SCI SCR = Disproved (\ x -> case x of)
-      (%~) SCI SCS = Disproved (\ x -> case x of)
-      (%~) SCI SCT = Disproved (\ x -> case x of)
-      (%~) SCI SCU = Disproved (\ x -> case x of)
-      (%~) SCI SCV = Disproved (\ x -> case x of)
-      (%~) SCI SCW = Disproved (\ x -> case x of)
-      (%~) SCI SCX = Disproved (\ x -> case x of)
-      (%~) SCI SCY = Disproved (\ x -> case x of)
-      (%~) SCI SCZ = Disproved (\ x -> case x of)
-      (%~) SCJ SCA = Disproved (\ x -> case x of)
-      (%~) SCJ SCB = Disproved (\ x -> case x of)
-      (%~) SCJ SCC = Disproved (\ x -> case x of)
-      (%~) SCJ SCD = Disproved (\ x -> case x of)
-      (%~) SCJ SCE = Disproved (\ x -> case x of)
-      (%~) SCJ SCF = Disproved (\ x -> case x of)
-      (%~) SCJ SCG = Disproved (\ x -> case x of)
-      (%~) SCJ SCH = Disproved (\ x -> case x of)
-      (%~) SCJ SCI = Disproved (\ x -> case x of)
+      (%~) SCI SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCI SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCJ SCJ = Proved Refl
-      (%~) SCJ SCK = Disproved (\ x -> case x of)
-      (%~) SCJ SCL = Disproved (\ x -> case x of)
-      (%~) SCJ SCM = Disproved (\ x -> case x of)
-      (%~) SCJ SCN = Disproved (\ x -> case x of)
-      (%~) SCJ SCO = Disproved (\ x -> case x of)
-      (%~) SCJ SCP = Disproved (\ x -> case x of)
-      (%~) SCJ SCQ = Disproved (\ x -> case x of)
-      (%~) SCJ SCR = Disproved (\ x -> case x of)
-      (%~) SCJ SCS = Disproved (\ x -> case x of)
-      (%~) SCJ SCT = Disproved (\ x -> case x of)
-      (%~) SCJ SCU = Disproved (\ x -> case x of)
-      (%~) SCJ SCV = Disproved (\ x -> case x of)
-      (%~) SCJ SCW = Disproved (\ x -> case x of)
-      (%~) SCJ SCX = Disproved (\ x -> case x of)
-      (%~) SCJ SCY = Disproved (\ x -> case x of)
-      (%~) SCJ SCZ = Disproved (\ x -> case x of)
-      (%~) SCK SCA = Disproved (\ x -> case x of)
-      (%~) SCK SCB = Disproved (\ x -> case x of)
-      (%~) SCK SCC = Disproved (\ x -> case x of)
-      (%~) SCK SCD = Disproved (\ x -> case x of)
-      (%~) SCK SCE = Disproved (\ x -> case x of)
-      (%~) SCK SCF = Disproved (\ x -> case x of)
-      (%~) SCK SCG = Disproved (\ x -> case x of)
-      (%~) SCK SCH = Disproved (\ x -> case x of)
-      (%~) SCK SCI = Disproved (\ x -> case x of)
-      (%~) SCK SCJ = Disproved (\ x -> case x of)
+      (%~) SCJ SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCJ SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCK SCK = Proved Refl
-      (%~) SCK SCL = Disproved (\ x -> case x of)
-      (%~) SCK SCM = Disproved (\ x -> case x of)
-      (%~) SCK SCN = Disproved (\ x -> case x of)
-      (%~) SCK SCO = Disproved (\ x -> case x of)
-      (%~) SCK SCP = Disproved (\ x -> case x of)
-      (%~) SCK SCQ = Disproved (\ x -> case x of)
-      (%~) SCK SCR = Disproved (\ x -> case x of)
-      (%~) SCK SCS = Disproved (\ x -> case x of)
-      (%~) SCK SCT = Disproved (\ x -> case x of)
-      (%~) SCK SCU = Disproved (\ x -> case x of)
-      (%~) SCK SCV = Disproved (\ x -> case x of)
-      (%~) SCK SCW = Disproved (\ x -> case x of)
-      (%~) SCK SCX = Disproved (\ x -> case x of)
-      (%~) SCK SCY = Disproved (\ x -> case x of)
-      (%~) SCK SCZ = Disproved (\ x -> case x of)
-      (%~) SCL SCA = Disproved (\ x -> case x of)
-      (%~) SCL SCB = Disproved (\ x -> case x of)
-      (%~) SCL SCC = Disproved (\ x -> case x of)
-      (%~) SCL SCD = Disproved (\ x -> case x of)
-      (%~) SCL SCE = Disproved (\ x -> case x of)
-      (%~) SCL SCF = Disproved (\ x -> case x of)
-      (%~) SCL SCG = Disproved (\ x -> case x of)
-      (%~) SCL SCH = Disproved (\ x -> case x of)
-      (%~) SCL SCI = Disproved (\ x -> case x of)
-      (%~) SCL SCJ = Disproved (\ x -> case x of)
-      (%~) SCL SCK = Disproved (\ x -> case x of)
+      (%~) SCK SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCK SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCL SCL = Proved Refl
-      (%~) SCL SCM = Disproved (\ x -> case x of)
-      (%~) SCL SCN = Disproved (\ x -> case x of)
-      (%~) SCL SCO = Disproved (\ x -> case x of)
-      (%~) SCL SCP = Disproved (\ x -> case x of)
-      (%~) SCL SCQ = Disproved (\ x -> case x of)
-      (%~) SCL SCR = Disproved (\ x -> case x of)
-      (%~) SCL SCS = Disproved (\ x -> case x of)
-      (%~) SCL SCT = Disproved (\ x -> case x of)
-      (%~) SCL SCU = Disproved (\ x -> case x of)
-      (%~) SCL SCV = Disproved (\ x -> case x of)
-      (%~) SCL SCW = Disproved (\ x -> case x of)
-      (%~) SCL SCX = Disproved (\ x -> case x of)
-      (%~) SCL SCY = Disproved (\ x -> case x of)
-      (%~) SCL SCZ = Disproved (\ x -> case x of)
-      (%~) SCM SCA = Disproved (\ x -> case x of)
-      (%~) SCM SCB = Disproved (\ x -> case x of)
-      (%~) SCM SCC = Disproved (\ x -> case x of)
-      (%~) SCM SCD = Disproved (\ x -> case x of)
-      (%~) SCM SCE = Disproved (\ x -> case x of)
-      (%~) SCM SCF = Disproved (\ x -> case x of)
-      (%~) SCM SCG = Disproved (\ x -> case x of)
-      (%~) SCM SCH = Disproved (\ x -> case x of)
-      (%~) SCM SCI = Disproved (\ x -> case x of)
-      (%~) SCM SCJ = Disproved (\ x -> case x of)
-      (%~) SCM SCK = Disproved (\ x -> case x of)
-      (%~) SCM SCL = Disproved (\ x -> case x of)
+      (%~) SCL SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCL SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCM SCM = Proved Refl
-      (%~) SCM SCN = Disproved (\ x -> case x of)
-      (%~) SCM SCO = Disproved (\ x -> case x of)
-      (%~) SCM SCP = Disproved (\ x -> case x of)
-      (%~) SCM SCQ = Disproved (\ x -> case x of)
-      (%~) SCM SCR = Disproved (\ x -> case x of)
-      (%~) SCM SCS = Disproved (\ x -> case x of)
-      (%~) SCM SCT = Disproved (\ x -> case x of)
-      (%~) SCM SCU = Disproved (\ x -> case x of)
-      (%~) SCM SCV = Disproved (\ x -> case x of)
-      (%~) SCM SCW = Disproved (\ x -> case x of)
-      (%~) SCM SCX = Disproved (\ x -> case x of)
-      (%~) SCM SCY = Disproved (\ x -> case x of)
-      (%~) SCM SCZ = Disproved (\ x -> case x of)
-      (%~) SCN SCA = Disproved (\ x -> case x of)
-      (%~) SCN SCB = Disproved (\ x -> case x of)
-      (%~) SCN SCC = Disproved (\ x -> case x of)
-      (%~) SCN SCD = Disproved (\ x -> case x of)
-      (%~) SCN SCE = Disproved (\ x -> case x of)
-      (%~) SCN SCF = Disproved (\ x -> case x of)
-      (%~) SCN SCG = Disproved (\ x -> case x of)
-      (%~) SCN SCH = Disproved (\ x -> case x of)
-      (%~) SCN SCI = Disproved (\ x -> case x of)
-      (%~) SCN SCJ = Disproved (\ x -> case x of)
-      (%~) SCN SCK = Disproved (\ x -> case x of)
-      (%~) SCN SCL = Disproved (\ x -> case x of)
-      (%~) SCN SCM = Disproved (\ x -> case x of)
+      (%~) SCM SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCM SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCN SCN = Proved Refl
-      (%~) SCN SCO = Disproved (\ x -> case x of)
-      (%~) SCN SCP = Disproved (\ x -> case x of)
-      (%~) SCN SCQ = Disproved (\ x -> case x of)
-      (%~) SCN SCR = Disproved (\ x -> case x of)
-      (%~) SCN SCS = Disproved (\ x -> case x of)
-      (%~) SCN SCT = Disproved (\ x -> case x of)
-      (%~) SCN SCU = Disproved (\ x -> case x of)
-      (%~) SCN SCV = Disproved (\ x -> case x of)
-      (%~) SCN SCW = Disproved (\ x -> case x of)
-      (%~) SCN SCX = Disproved (\ x -> case x of)
-      (%~) SCN SCY = Disproved (\ x -> case x of)
-      (%~) SCN SCZ = Disproved (\ x -> case x of)
-      (%~) SCO SCA = Disproved (\ x -> case x of)
-      (%~) SCO SCB = Disproved (\ x -> case x of)
-      (%~) SCO SCC = Disproved (\ x -> case x of)
-      (%~) SCO SCD = Disproved (\ x -> case x of)
-      (%~) SCO SCE = Disproved (\ x -> case x of)
-      (%~) SCO SCF = Disproved (\ x -> case x of)
-      (%~) SCO SCG = Disproved (\ x -> case x of)
-      (%~) SCO SCH = Disproved (\ x -> case x of)
-      (%~) SCO SCI = Disproved (\ x -> case x of)
-      (%~) SCO SCJ = Disproved (\ x -> case x of)
-      (%~) SCO SCK = Disproved (\ x -> case x of)
-      (%~) SCO SCL = Disproved (\ x -> case x of)
-      (%~) SCO SCM = Disproved (\ x -> case x of)
-      (%~) SCO SCN = Disproved (\ x -> case x of)
+      (%~) SCN SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCN SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCO SCO = Proved Refl
-      (%~) SCO SCP = Disproved (\ x -> case x of)
-      (%~) SCO SCQ = Disproved (\ x -> case x of)
-      (%~) SCO SCR = Disproved (\ x -> case x of)
-      (%~) SCO SCS = Disproved (\ x -> case x of)
-      (%~) SCO SCT = Disproved (\ x -> case x of)
-      (%~) SCO SCU = Disproved (\ x -> case x of)
-      (%~) SCO SCV = Disproved (\ x -> case x of)
-      (%~) SCO SCW = Disproved (\ x -> case x of)
-      (%~) SCO SCX = Disproved (\ x -> case x of)
-      (%~) SCO SCY = Disproved (\ x -> case x of)
-      (%~) SCO SCZ = Disproved (\ x -> case x of)
-      (%~) SCP SCA = Disproved (\ x -> case x of)
-      (%~) SCP SCB = Disproved (\ x -> case x of)
-      (%~) SCP SCC = Disproved (\ x -> case x of)
-      (%~) SCP SCD = Disproved (\ x -> case x of)
-      (%~) SCP SCE = Disproved (\ x -> case x of)
-      (%~) SCP SCF = Disproved (\ x -> case x of)
-      (%~) SCP SCG = Disproved (\ x -> case x of)
-      (%~) SCP SCH = Disproved (\ x -> case x of)
-      (%~) SCP SCI = Disproved (\ x -> case x of)
-      (%~) SCP SCJ = Disproved (\ x -> case x of)
-      (%~) SCP SCK = Disproved (\ x -> case x of)
-      (%~) SCP SCL = Disproved (\ x -> case x of)
-      (%~) SCP SCM = Disproved (\ x -> case x of)
-      (%~) SCP SCN = Disproved (\ x -> case x of)
-      (%~) SCP SCO = Disproved (\ x -> case x of)
+      (%~) SCO SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCO SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCP SCP = Proved Refl
-      (%~) SCP SCQ = Disproved (\ x -> case x of)
-      (%~) SCP SCR = Disproved (\ x -> case x of)
-      (%~) SCP SCS = Disproved (\ x -> case x of)
-      (%~) SCP SCT = Disproved (\ x -> case x of)
-      (%~) SCP SCU = Disproved (\ x -> case x of)
-      (%~) SCP SCV = Disproved (\ x -> case x of)
-      (%~) SCP SCW = Disproved (\ x -> case x of)
-      (%~) SCP SCX = Disproved (\ x -> case x of)
-      (%~) SCP SCY = Disproved (\ x -> case x of)
-      (%~) SCP SCZ = Disproved (\ x -> case x of)
-      (%~) SCQ SCA = Disproved (\ x -> case x of)
-      (%~) SCQ SCB = Disproved (\ x -> case x of)
-      (%~) SCQ SCC = Disproved (\ x -> case x of)
-      (%~) SCQ SCD = Disproved (\ x -> case x of)
-      (%~) SCQ SCE = Disproved (\ x -> case x of)
-      (%~) SCQ SCF = Disproved (\ x -> case x of)
-      (%~) SCQ SCG = Disproved (\ x -> case x of)
-      (%~) SCQ SCH = Disproved (\ x -> case x of)
-      (%~) SCQ SCI = Disproved (\ x -> case x of)
-      (%~) SCQ SCJ = Disproved (\ x -> case x of)
-      (%~) SCQ SCK = Disproved (\ x -> case x of)
-      (%~) SCQ SCL = Disproved (\ x -> case x of)
-      (%~) SCQ SCM = Disproved (\ x -> case x of)
-      (%~) SCQ SCN = Disproved (\ x -> case x of)
-      (%~) SCQ SCO = Disproved (\ x -> case x of)
-      (%~) SCQ SCP = Disproved (\ x -> case x of)
+      (%~) SCP SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCP SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCQ SCQ = Proved Refl
-      (%~) SCQ SCR = Disproved (\ x -> case x of)
-      (%~) SCQ SCS = Disproved (\ x -> case x of)
-      (%~) SCQ SCT = Disproved (\ x -> case x of)
-      (%~) SCQ SCU = Disproved (\ x -> case x of)
-      (%~) SCQ SCV = Disproved (\ x -> case x of)
-      (%~) SCQ SCW = Disproved (\ x -> case x of)
-      (%~) SCQ SCX = Disproved (\ x -> case x of)
-      (%~) SCQ SCY = Disproved (\ x -> case x of)
-      (%~) SCQ SCZ = Disproved (\ x -> case x of)
-      (%~) SCR SCA = Disproved (\ x -> case x of)
-      (%~) SCR SCB = Disproved (\ x -> case x of)
-      (%~) SCR SCC = Disproved (\ x -> case x of)
-      (%~) SCR SCD = Disproved (\ x -> case x of)
-      (%~) SCR SCE = Disproved (\ x -> case x of)
-      (%~) SCR SCF = Disproved (\ x -> case x of)
-      (%~) SCR SCG = Disproved (\ x -> case x of)
-      (%~) SCR SCH = Disproved (\ x -> case x of)
-      (%~) SCR SCI = Disproved (\ x -> case x of)
-      (%~) SCR SCJ = Disproved (\ x -> case x of)
-      (%~) SCR SCK = Disproved (\ x -> case x of)
-      (%~) SCR SCL = Disproved (\ x -> case x of)
-      (%~) SCR SCM = Disproved (\ x -> case x of)
-      (%~) SCR SCN = Disproved (\ x -> case x of)
-      (%~) SCR SCO = Disproved (\ x -> case x of)
-      (%~) SCR SCP = Disproved (\ x -> case x of)
-      (%~) SCR SCQ = Disproved (\ x -> case x of)
+      (%~) SCQ SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCQ SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCR SCR = Proved Refl
-      (%~) SCR SCS = Disproved (\ x -> case x of)
-      (%~) SCR SCT = Disproved (\ x -> case x of)
-      (%~) SCR SCU = Disproved (\ x -> case x of)
-      (%~) SCR SCV = Disproved (\ x -> case x of)
-      (%~) SCR SCW = Disproved (\ x -> case x of)
-      (%~) SCR SCX = Disproved (\ x -> case x of)
-      (%~) SCR SCY = Disproved (\ x -> case x of)
-      (%~) SCR SCZ = Disproved (\ x -> case x of)
-      (%~) SCS SCA = Disproved (\ x -> case x of)
-      (%~) SCS SCB = Disproved (\ x -> case x of)
-      (%~) SCS SCC = Disproved (\ x -> case x of)
-      (%~) SCS SCD = Disproved (\ x -> case x of)
-      (%~) SCS SCE = Disproved (\ x -> case x of)
-      (%~) SCS SCF = Disproved (\ x -> case x of)
-      (%~) SCS SCG = Disproved (\ x -> case x of)
-      (%~) SCS SCH = Disproved (\ x -> case x of)
-      (%~) SCS SCI = Disproved (\ x -> case x of)
-      (%~) SCS SCJ = Disproved (\ x -> case x of)
-      (%~) SCS SCK = Disproved (\ x -> case x of)
-      (%~) SCS SCL = Disproved (\ x -> case x of)
-      (%~) SCS SCM = Disproved (\ x -> case x of)
-      (%~) SCS SCN = Disproved (\ x -> case x of)
-      (%~) SCS SCO = Disproved (\ x -> case x of)
-      (%~) SCS SCP = Disproved (\ x -> case x of)
-      (%~) SCS SCQ = Disproved (\ x -> case x of)
-      (%~) SCS SCR = Disproved (\ x -> case x of)
+      (%~) SCR SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCR SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCS SCS = Proved Refl
-      (%~) SCS SCT = Disproved (\ x -> case x of)
-      (%~) SCS SCU = Disproved (\ x -> case x of)
-      (%~) SCS SCV = Disproved (\ x -> case x of)
-      (%~) SCS SCW = Disproved (\ x -> case x of)
-      (%~) SCS SCX = Disproved (\ x -> case x of)
-      (%~) SCS SCY = Disproved (\ x -> case x of)
-      (%~) SCS SCZ = Disproved (\ x -> case x of)
-      (%~) SCT SCA = Disproved (\ x -> case x of)
-      (%~) SCT SCB = Disproved (\ x -> case x of)
-      (%~) SCT SCC = Disproved (\ x -> case x of)
-      (%~) SCT SCD = Disproved (\ x -> case x of)
-      (%~) SCT SCE = Disproved (\ x -> case x of)
-      (%~) SCT SCF = Disproved (\ x -> case x of)
-      (%~) SCT SCG = Disproved (\ x -> case x of)
-      (%~) SCT SCH = Disproved (\ x -> case x of)
-      (%~) SCT SCI = Disproved (\ x -> case x of)
-      (%~) SCT SCJ = Disproved (\ x -> case x of)
-      (%~) SCT SCK = Disproved (\ x -> case x of)
-      (%~) SCT SCL = Disproved (\ x -> case x of)
-      (%~) SCT SCM = Disproved (\ x -> case x of)
-      (%~) SCT SCN = Disproved (\ x -> case x of)
-      (%~) SCT SCO = Disproved (\ x -> case x of)
-      (%~) SCT SCP = Disproved (\ x -> case x of)
-      (%~) SCT SCQ = Disproved (\ x -> case x of)
-      (%~) SCT SCR = Disproved (\ x -> case x of)
-      (%~) SCT SCS = Disproved (\ x -> case x of)
+      (%~) SCS SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCS SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCT SCT = Proved Refl
-      (%~) SCT SCU = Disproved (\ x -> case x of)
-      (%~) SCT SCV = Disproved (\ x -> case x of)
-      (%~) SCT SCW = Disproved (\ x -> case x of)
-      (%~) SCT SCX = Disproved (\ x -> case x of)
-      (%~) SCT SCY = Disproved (\ x -> case x of)
-      (%~) SCT SCZ = Disproved (\ x -> case x of)
-      (%~) SCU SCA = Disproved (\ x -> case x of)
-      (%~) SCU SCB = Disproved (\ x -> case x of)
-      (%~) SCU SCC = Disproved (\ x -> case x of)
-      (%~) SCU SCD = Disproved (\ x -> case x of)
-      (%~) SCU SCE = Disproved (\ x -> case x of)
-      (%~) SCU SCF = Disproved (\ x -> case x of)
-      (%~) SCU SCG = Disproved (\ x -> case x of)
-      (%~) SCU SCH = Disproved (\ x -> case x of)
-      (%~) SCU SCI = Disproved (\ x -> case x of)
-      (%~) SCU SCJ = Disproved (\ x -> case x of)
-      (%~) SCU SCK = Disproved (\ x -> case x of)
-      (%~) SCU SCL = Disproved (\ x -> case x of)
-      (%~) SCU SCM = Disproved (\ x -> case x of)
-      (%~) SCU SCN = Disproved (\ x -> case x of)
-      (%~) SCU SCO = Disproved (\ x -> case x of)
-      (%~) SCU SCP = Disproved (\ x -> case x of)
-      (%~) SCU SCQ = Disproved (\ x -> case x of)
-      (%~) SCU SCR = Disproved (\ x -> case x of)
-      (%~) SCU SCS = Disproved (\ x -> case x of)
-      (%~) SCU SCT = Disproved (\ x -> case x of)
+      (%~) SCT SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCT SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCU SCU = Proved Refl
-      (%~) SCU SCV = Disproved (\ x -> case x of)
-      (%~) SCU SCW = Disproved (\ x -> case x of)
-      (%~) SCU SCX = Disproved (\ x -> case x of)
-      (%~) SCU SCY = Disproved (\ x -> case x of)
-      (%~) SCU SCZ = Disproved (\ x -> case x of)
-      (%~) SCV SCA = Disproved (\ x -> case x of)
-      (%~) SCV SCB = Disproved (\ x -> case x of)
-      (%~) SCV SCC = Disproved (\ x -> case x of)
-      (%~) SCV SCD = Disproved (\ x -> case x of)
-      (%~) SCV SCE = Disproved (\ x -> case x of)
-      (%~) SCV SCF = Disproved (\ x -> case x of)
-      (%~) SCV SCG = Disproved (\ x -> case x of)
-      (%~) SCV SCH = Disproved (\ x -> case x of)
-      (%~) SCV SCI = Disproved (\ x -> case x of)
-      (%~) SCV SCJ = Disproved (\ x -> case x of)
-      (%~) SCV SCK = Disproved (\ x -> case x of)
-      (%~) SCV SCL = Disproved (\ x -> case x of)
-      (%~) SCV SCM = Disproved (\ x -> case x of)
-      (%~) SCV SCN = Disproved (\ x -> case x of)
-      (%~) SCV SCO = Disproved (\ x -> case x of)
-      (%~) SCV SCP = Disproved (\ x -> case x of)
-      (%~) SCV SCQ = Disproved (\ x -> case x of)
-      (%~) SCV SCR = Disproved (\ x -> case x of)
-      (%~) SCV SCS = Disproved (\ x -> case x of)
-      (%~) SCV SCT = Disproved (\ x -> case x of)
-      (%~) SCV SCU = Disproved (\ x -> case x of)
+      (%~) SCU SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCU SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCV SCV = Proved Refl
-      (%~) SCV SCW = Disproved (\ x -> case x of)
-      (%~) SCV SCX = Disproved (\ x -> case x of)
-      (%~) SCV SCY = Disproved (\ x -> case x of)
-      (%~) SCV SCZ = Disproved (\ x -> case x of)
-      (%~) SCW SCA = Disproved (\ x -> case x of)
-      (%~) SCW SCB = Disproved (\ x -> case x of)
-      (%~) SCW SCC = Disproved (\ x -> case x of)
-      (%~) SCW SCD = Disproved (\ x -> case x of)
-      (%~) SCW SCE = Disproved (\ x -> case x of)
-      (%~) SCW SCF = Disproved (\ x -> case x of)
-      (%~) SCW SCG = Disproved (\ x -> case x of)
-      (%~) SCW SCH = Disproved (\ x -> case x of)
-      (%~) SCW SCI = Disproved (\ x -> case x of)
-      (%~) SCW SCJ = Disproved (\ x -> case x of)
-      (%~) SCW SCK = Disproved (\ x -> case x of)
-      (%~) SCW SCL = Disproved (\ x -> case x of)
-      (%~) SCW SCM = Disproved (\ x -> case x of)
-      (%~) SCW SCN = Disproved (\ x -> case x of)
-      (%~) SCW SCO = Disproved (\ x -> case x of)
-      (%~) SCW SCP = Disproved (\ x -> case x of)
-      (%~) SCW SCQ = Disproved (\ x -> case x of)
-      (%~) SCW SCR = Disproved (\ x -> case x of)
-      (%~) SCW SCS = Disproved (\ x -> case x of)
-      (%~) SCW SCT = Disproved (\ x -> case x of)
-      (%~) SCW SCU = Disproved (\ x -> case x of)
-      (%~) SCW SCV = Disproved (\ x -> case x of)
+      (%~) SCV SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCV SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCW SCW = Proved Refl
-      (%~) SCW SCX = Disproved (\ x -> case x of)
-      (%~) SCW SCY = Disproved (\ x -> case x of)
-      (%~) SCW SCZ = Disproved (\ x -> case x of)
-      (%~) SCX SCA = Disproved (\ x -> case x of)
-      (%~) SCX SCB = Disproved (\ x -> case x of)
-      (%~) SCX SCC = Disproved (\ x -> case x of)
-      (%~) SCX SCD = Disproved (\ x -> case x of)
-      (%~) SCX SCE = Disproved (\ x -> case x of)
-      (%~) SCX SCF = Disproved (\ x -> case x of)
-      (%~) SCX SCG = Disproved (\ x -> case x of)
-      (%~) SCX SCH = Disproved (\ x -> case x of)
-      (%~) SCX SCI = Disproved (\ x -> case x of)
-      (%~) SCX SCJ = Disproved (\ x -> case x of)
-      (%~) SCX SCK = Disproved (\ x -> case x of)
-      (%~) SCX SCL = Disproved (\ x -> case x of)
-      (%~) SCX SCM = Disproved (\ x -> case x of)
-      (%~) SCX SCN = Disproved (\ x -> case x of)
-      (%~) SCX SCO = Disproved (\ x -> case x of)
-      (%~) SCX SCP = Disproved (\ x -> case x of)
-      (%~) SCX SCQ = Disproved (\ x -> case x of)
-      (%~) SCX SCR = Disproved (\ x -> case x of)
-      (%~) SCX SCS = Disproved (\ x -> case x of)
-      (%~) SCX SCT = Disproved (\ x -> case x of)
-      (%~) SCX SCU = Disproved (\ x -> case x of)
-      (%~) SCX SCV = Disproved (\ x -> case x of)
-      (%~) SCX SCW = Disproved (\ x -> case x of)
+      (%~) SCW SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCW SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCX SCX = Proved Refl
-      (%~) SCX SCY = Disproved (\ x -> case x of)
-      (%~) SCX SCZ = Disproved (\ x -> case x of)
-      (%~) SCY SCA = Disproved (\ x -> case x of)
-      (%~) SCY SCB = Disproved (\ x -> case x of)
-      (%~) SCY SCC = Disproved (\ x -> case x of)
-      (%~) SCY SCD = Disproved (\ x -> case x of)
-      (%~) SCY SCE = Disproved (\ x -> case x of)
-      (%~) SCY SCF = Disproved (\ x -> case x of)
-      (%~) SCY SCG = Disproved (\ x -> case x of)
-      (%~) SCY SCH = Disproved (\ x -> case x of)
-      (%~) SCY SCI = Disproved (\ x -> case x of)
-      (%~) SCY SCJ = Disproved (\ x -> case x of)
-      (%~) SCY SCK = Disproved (\ x -> case x of)
-      (%~) SCY SCL = Disproved (\ x -> case x of)
-      (%~) SCY SCM = Disproved (\ x -> case x of)
-      (%~) SCY SCN = Disproved (\ x -> case x of)
-      (%~) SCY SCO = Disproved (\ x -> case x of)
-      (%~) SCY SCP = Disproved (\ x -> case x of)
-      (%~) SCY SCQ = Disproved (\ x -> case x of)
-      (%~) SCY SCR = Disproved (\ x -> case x of)
-      (%~) SCY SCS = Disproved (\ x -> case x of)
-      (%~) SCY SCT = Disproved (\ x -> case x of)
-      (%~) SCY SCU = Disproved (\ x -> case x of)
-      (%~) SCY SCV = Disproved (\ x -> case x of)
-      (%~) SCY SCW = Disproved (\ x -> case x of)
-      (%~) SCY SCX = Disproved (\ x -> case x of)
+      (%~) SCX SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCX SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCY SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCY SCY = Proved Refl
-      (%~) SCY SCZ = Disproved (\ x -> case x of)
-      (%~) SCZ SCA = Disproved (\ x -> case x of)
-      (%~) SCZ SCB = Disproved (\ x -> case x of)
-      (%~) SCZ SCC = Disproved (\ x -> case x of)
-      (%~) SCZ SCD = Disproved (\ x -> case x of)
-      (%~) SCZ SCE = Disproved (\ x -> case x of)
-      (%~) SCZ SCF = Disproved (\ x -> case x of)
-      (%~) SCZ SCG = Disproved (\ x -> case x of)
-      (%~) SCZ SCH = Disproved (\ x -> case x of)
-      (%~) SCZ SCI = Disproved (\ x -> case x of)
-      (%~) SCZ SCJ = Disproved (\ x -> case x of)
-      (%~) SCZ SCK = Disproved (\ x -> case x of)
-      (%~) SCZ SCL = Disproved (\ x -> case x of)
-      (%~) SCZ SCM = Disproved (\ x -> case x of)
-      (%~) SCZ SCN = Disproved (\ x -> case x of)
-      (%~) SCZ SCO = Disproved (\ x -> case x of)
-      (%~) SCZ SCP = Disproved (\ x -> case x of)
-      (%~) SCZ SCQ = Disproved (\ x -> case x of)
-      (%~) SCZ SCR = Disproved (\ x -> case x of)
-      (%~) SCZ SCS = Disproved (\ x -> case x of)
-      (%~) SCZ SCT = Disproved (\ x -> case x of)
-      (%~) SCZ SCU = Disproved (\ x -> case x of)
-      (%~) SCZ SCV = Disproved (\ x -> case x of)
-      (%~) SCZ SCW = Disproved (\ x -> case x of)
-      (%~) SCZ SCX = Disproved (\ x -> case x of)
-      (%~) SCZ SCY = Disproved (\ x -> case x of)
+      (%~) SCY SCZ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCA
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCB
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCC
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCD
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCE
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCF
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCG
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCH
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCI
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCJ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCK
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCL
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCM
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCN
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCO
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCP
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCQ
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCR
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCS
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCT
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCU
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCV
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCW
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCX
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SCZ SCY
+        = Disproved
+            (\ x
+               -> case x of {
+                    _ -> error "Empty case reached -- this should be impossible" })
       (%~) SCZ SCZ = Proved Refl
-    data instance Sing (z :: Attribute)
-      = forall (n :: [AChar]) (n :: U). z ~ Attr n n =>
-        SAttr (Sing (n :: [AChar])) (Sing (n :: U))
-    type SAttribute = (Sing :: Attribute -> Type)
-    instance SingKind Attribute where
-      type Demote Attribute = Attribute
-      fromSing (SAttr b b) = (Attr (fromSing b)) (fromSing b)
-      toSing (Attr b b)
-        = case
-              (GHC.Tuple.(,) (toSing b :: SomeSing [AChar]))
-                (toSing b :: SomeSing U)
-          of {
-            GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing ((SAttr c) c) }
-    data instance Sing (z :: Schema)
-      = forall (n :: [Attribute]). z ~ Sch n =>
-        SSch (Sing (n :: [Attribute]))
-    type SSchema = (Sing :: Schema -> Type)
-    instance SingKind Schema where
-      type Demote Schema = Schema
-      fromSing (SSch b) = Sch (fromSing b)
-      toSing (Sch b)
-        = case toSing b :: SomeSing [Attribute] of {
-            SomeSing c -> SomeSing (SSch c) }
-    instance (SShow U, SShow Nat) => SShow U where
-      sShowsPrec ::
-        forall (t1 :: GHC.Types.Nat) (t2 :: U) (t3 :: Symbol).
-        Sing t1
-        -> Sing t2
-           -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun U (TyFun Symbol Symbol
-                                                                                           -> Type)
-                                                                                  -> Type)
-                                                             -> Type) t1 :: TyFun U (TyFun Symbol Symbol
-                                                                                     -> Type)
-                                                                            -> Type) t2 :: TyFun Symbol Symbol
-                                                                                           -> Type) t3 :: Symbol)
-      sShowsPrec
-        _
-        SBOOL
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "BOOL")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SSTRING
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "STRING")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SNAT
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "NAT")))
-            sA_0123456789876543210
-      sShowsPrec
-        (sP_0123456789876543210 :: Sing p_0123456789876543210)
-        (SVEC (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
-              (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(:>$)) (%:>))) sP_0123456789876543210))
-                       (sFromInteger (sing :: Sing 10)))))
-                ((applySing
-                    ((applySing ((singFun3 @(:.$)) (%:.)))
-                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                          (sing :: Sing "VEC "))))
-                   ((applySing
-                       ((applySing ((singFun3 @(:.$)) (%:.)))
-                          ((applySing
-                              ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                 (sFromInteger (sing :: Sing 11))))
-                             sArg_0123456789876543210)))
-                      ((applySing
-                          ((applySing ((singFun3 @(:.$)) (%:.)))
-                             ((singFun1 @ShowSpaceSym0) sShowSpace)))
-                         ((applySing
-                             ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                (sFromInteger (sing :: Sing 11))))
-                            sArg_0123456789876543210))))))
-            sA_0123456789876543210
-    instance SShow AChar where
-      sShowsPrec ::
-        forall (t1 :: GHC.Types.Nat) (t2 :: AChar) (t3 :: Symbol).
-        Sing t1
-        -> Sing t2
-           -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun AChar (TyFun Symbol Symbol
-                                                                                               -> Type)
-                                                                                  -> Type)
-                                                             -> Type) t1 :: TyFun AChar (TyFun Symbol Symbol
-                                                                                         -> Type)
-                                                                            -> Type) t2 :: TyFun Symbol Symbol
-                                                                                           -> Type) t3 :: Symbol)
-      sShowsPrec
-        _
-        SCA
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CA")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCB
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CB")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCC
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CC")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCD
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CD")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCE
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CE")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCF
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CF")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCG
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CG")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCH
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CH")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCI
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CI")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCJ
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CJ")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCK
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CK")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCL
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CL")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCM
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CM")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCN
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CN")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCO
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CO")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCP
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CP")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCQ
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CQ")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCR
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CR")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCS
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CS")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCT
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CT")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCU
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CU")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCV
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CV")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCW
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CW")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCX
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CX")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCY
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CY")))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SCZ
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "CZ")))
-            sA_0123456789876543210
     instance SingI BOOL where
       sing = SBOOL
     instance SingI STRING where

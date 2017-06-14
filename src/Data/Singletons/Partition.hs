@@ -66,25 +66,6 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
     flatten_clause :: DDerivClause -> [(Maybe DerivStrategy, DPred)]
     flatten_clause (DDerivClause strat preds) = map (strat,) preds
 
-    part_derivings :: DsMonad m => (Maybe DerivStrategy, DPred)
-                              -> m (Either DPred UInstDecl)
-    part_derivings (strat, deriv) = case deriv of
-      DConPr deriv_name
-         | stock, deriv_name == ordName
-        -> Right <$> mkOrdInstance ty cons
-         | stock, deriv_name == boundedName
-        -> Right <$> mkBoundedInstance ty cons
-         | stock, deriv_name == enumName
-        -> Right <$> mkEnumInstance ty cons
-         | stock, deriv_name == showName
-        -> Right <$> mkShowInstance ty cons
-        where
-          stock = case strat of
-                    Nothing            -> True
-                    Just StockStrategy -> True
-                    Just _             -> False
-      _ -> return (Left deriv)
-
 partitionDec (DClassD cxt name tvbs fds decs) = do
   env <- concatMapM partitionClassDec decs
   return $ mempty { pd_class_decs = [ClassDecl { cd_cxt  = cxt
@@ -111,13 +92,13 @@ partitionDec (DTySynD {})     = return mempty  -- ignore type synonyms;
 partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
   case unfoldType ty of
     cls_pred_ty :| cls_tys
-      | not (null cls_tys) -- We can't handle zero-parameter type classes
-      , let cls_arg_tys  = init cls_tys
-            data_ty      = last cls_tys
+      | DConT cls_pred_tycon <- cls_pred_ty
+      , not (null cls_tys) -- We can't handle zero-parameter type classes
+      , let data_ty = last cls_tys
             data_ty_head = case unfoldType data_ty of ty_head :| _ -> ty_head
       , DConT data_tycon <- data_ty_head -- We can't handle deriving an instance for something
                                          -- other than a type constructor application
-      -> do let cls_pred = foldType cls_pred_ty cls_arg_tys
+      -> do let cls_pred = DConPr cls_pred_tycon
             dinfo <- dsReify data_tycon
             case dinfo of
               Just (DTyConI (DDataD _ _ _ _ cons _) _) -> do
@@ -151,79 +132,35 @@ partitionInstanceDec (DLetDec (DPragmaD {})) = return Nothing
 partitionInstanceDec _ =
   fail "Only method bodies can be promoted within an instance."
 
-partitionDeriving :: DsMonad m => Maybe DerivStrategy -> DType -> Maybe DCxt -> DType -> [DCon]
+partitionDeriving :: DsMonad m => Maybe DerivStrategy -> DPred -> Maybe DCxt -> DType -> [DCon]
                   -> m PartitionedDecs
-partitionDeriving mb_strat deriv_pred mb_ctxt ty cons =
-  case unfoldType deriv_pred of
-    DConT deriv_name :| arg_tys
-         -- Here, we are more conservative than GHC: DeriveAnyClass only kicks
-         -- in if the user explicitly chooses to do so with the anyclass
-         -- deriving strategy
-       | Just AnyclassStrategy <- mb_strat
-      -> return $ mk_derived_inst
-           InstDecl { id_cxt = fromMaybe [] mb_ctxt
-                      -- For now at least, there's no point in attempting to
-                      -- infer an instance context for DeriveAnyClass, since
-                      -- the other language feature that requires it,
-                      -- DefaultSignatures, can't be singled. Thus, inferring an
-                      -- empty context will Just Work for all currently supported
-                      -- default implementations.
-                      --
-                      -- (Of course, if a user specifies a context with
-                      -- StandaloneDeriving, use that.)
-
-                    , id_name    = deriv_name
-                    , id_arg_tys = arg_tys ++ [ty]
-                    , id_meths   = [] }
-
-       | Just NewtypeStrategy <- mb_strat
-      -> do qReportWarning "GeneralizedNewtypeDeriving is ignored by `singletons`."
-            return mempty
-
-    -- Stock classes. These are derived only if `singletons` supports them
-    -- (and, optionally, if an explicit stock deriving strategy is used)
-    DConT deriv_name :| [] -- For now, all stock derivable class supported in
-                           -- singletons take just one argument (the data
-                           -- type itself)
-       | stock_or_default
-       , deriv_name == ordName
-      -> mk_derived_inst <$> mkOrdInstance mb_ctxt ty cons
-
-       | stock_or_default
-       , deriv_name == boundedName
-      -> mk_derived_inst <$> mkBoundedInstance mb_ctxt ty cons
-
-       | stock_or_default
-       , deriv_name == enumName
-      -> mk_derived_inst <$> mkEnumInstance mb_ctxt ty cons
-
-       | stock_or_default
-       , deriv_name == showName
-      -> mk_derived_inst <$> mkShowInstance mb_ctxt ty cons
-
-         -- See Note [Derived Eq instances] in Data.Singletons.Syntax
-       | stock_or_default
-       , deriv_name == eqName
-      -> return $ mk_derived_eq_inst
-           DerivedEqDecl { ded_mb_cxt = mb_ctxt
-                         , ded_type   = ty
-                         , ded_cons   = cons }
-
-         -- If we can't find a stock class, but the user bothered to use an
-         -- explicit stock keyword, we can at least warn them about it.
-       | Just StockStrategy <- mb_strat
-      -> do qReportWarning $ "`singletons` doesn't recognize the stock class "
-                             ++ nameBase deriv_name
-            return mempty
-
-    _ -> return mempty -- singletons doesn't support deriving this instance
-  where
+partitionDeriving mb_strat deriv_pred mb_ctxt ty cons = case deriv_pred of
+  DConPr deriv_name
+     | stock, deriv_name == ordName
+    -> mk_derived_inst <$> mkOrdInstance mb_ctxt ty cons
+     | stock, deriv_name == boundedName
+    -> mk_derived_inst <$> mkBoundedInstance mb_ctxt ty cons
+     | stock, deriv_name == enumName
+    -> mk_derived_inst <$> mkEnumInstance mb_ctxt ty cons
+     | stock, deriv_name == showName
+    -> mk_derived_inst <$> mkShowInstance mb_ctxt ty cons
+       -- See Note [Derived Eq instances]
+     | stock, deriv_name == eqName
+    -> return $ mk_derived_eq_inst
+         DerivedEqDecl { ded_mb_cxt = mb_ctxt
+                       , ded_type   = ty
+                       , ded_cons   = cons }
+    where
       mk_derived_inst    dec = mempty { pd_instance_decs   = [dec] }
       mk_derived_eq_inst dec = mempty { pd_derived_eq_decs = [dec] }
-      stock_or_default = isStockOrDefault mb_strat
+      stock = isStock mb_strat
+  _ -> return mempty -- singletons doesn't support deriving this instance
 
--- Is this being used with an explicit stock strategy, or no strategy at all?
-isStockOrDefault :: Maybe DerivStrategy -> Bool
-isStockOrDefault Nothing              = True
-isStockOrDefault (Just StockStrategy) = True
-isStockOrDefault (Just _)             = False
+isStock :: Maybe DerivStrategy -> Bool
+isStock Nothing = True -- We assume the lack of an explicit deriving strategy to
+                       -- indicate defaulting to stock. In reality, GHC's defaulting
+                       -- behavior is much more complex than this, but implementing
+                       -- this in singletons would be impossible, as that would require
+                       -- detecting the presence of extensions.
+isStock (Just StockStrategy) = True
+isStock (Just _)             = False
