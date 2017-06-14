@@ -9,11 +9,6 @@ $(singletons [d|
   infixl 6 :*:
   data T a b = a :*: b
   data S = S1 | S2
-  |])
-
--- We need to put the standalone deriving declarations separately from the
--- data types for the time being due to #192
-$(singletons [d|
 
   deriving instance Eq a => Eq (T a ())
   deriving instance Ord a => Ord (T a ())

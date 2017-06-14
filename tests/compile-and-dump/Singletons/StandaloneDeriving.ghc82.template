@@ -3,11 +3,28 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       [d| infixl 6 :*:
           
           data T a b = a :*: b
-          data S = S1 | S2 |]
+          data S = S1 | S2
+          
+          deriving instance Enum S
+          deriving instance Bounded S
+          deriving instance Show S
+          deriving instance Ord S
+          deriving instance Eq S
+          deriving instance Show a => Show (T a ())
+          deriving instance Ord a => Ord (T a ())
+          deriving instance Eq a => Eq (T a ()) |]
   ======>
     infixl 6 :*:
     data T a b = a :*: b
     data S = S1 | S2
+    deriving instance Eq a => Eq (T a ())
+    deriving instance Ord a => Ord (T a ())
+    deriving instance Show a => Show (T a ())
+    deriving instance Eq S
+    deriving instance Ord S
+    deriving instance Show S
+    deriving instance Bounded S
+    deriving instance Enum S
     type (:*:$$$) (t :: a0123456789876543210) (t :: b0123456789876543210) =
         (:*:) t t
     instance SuppressUnusedWarnings (:*:$$) where
@@ -27,54 +44,6 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (:*:$) l = (:*:$$) l
     type S1Sym0 = S1
     type S2Sym0 = S2
-    infixl 6 :%*:
-    data instance Sing (z :: T a b)
-      = forall (n :: a) (n :: b). z ~ (:*:) n n =>
-        (Sing (n :: a)) :%*: (Sing (n :: b))
-    type ST = (Sing :: T a b -> GHC.Types.Type)
-    instance (SingKind a, SingKind b) => SingKind (T a b) where
-      type Demote (T a b) = T (Demote a) (Demote b)
-      fromSing ((:%*:) b b) = ((:*:) (fromSing b)) (fromSing b)
-      toSing ((:*:) b b)
-        = case
-              (GHC.Tuple.(,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b)
-          of {
-            GHC.Tuple.(,) (SomeSing c) (SomeSing c)
-              -> SomeSing (((:%*:) c) c) }
-    data instance Sing (z :: S) = z ~ S1 => SS1 | z ~ S2 => SS2
-    type SS = (Sing :: S -> GHC.Types.Type)
-    instance SingKind S where
-      type Demote S = S
-      fromSing SS1 = S1
-      fromSing SS2 = S2
-      toSing S1 = SomeSing SS1
-      toSing S2 = SomeSing SS2
-    instance (SingI n, SingI n) =>
-             SingI ((:*:) (n :: a) (n :: b)) where
-      sing = ((:%*:) sing) sing
-    instance SingI S1 where
-      sing = SS1
-    instance SingI S2 where
-      sing = SS2
-Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
-    singletons
-      [d| deriving instance Enum S
-          deriving instance Bounded S
-          deriving instance Show S
-          deriving instance Ord S
-          deriving instance Eq S
-          deriving instance Show a => Show (T a ())
-          deriving instance Ord a => Ord (T a ())
-          deriving instance Eq a => Eq (T a ()) |]
-  ======>
-    deriving instance Eq a => Eq (T a ())
-    deriving instance Ord a => Ord (T a ())
-    deriving instance Show a => Show (T a ())
-    deriving instance Eq S
-    deriving instance Ord S
-    deriving instance Show S
-    deriving instance Bounded S
-    deriving instance Enum S
     type family Compare_0123456789876543210 (a :: T a ()) (a :: T a ()) :: Ordering where
       Compare_0123456789876543210 ((:*:) a_0123456789876543210 a_0123456789876543210) ((:*:) b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))
     type Compare_0123456789876543210Sym2 (t :: T a0123456789876543210 ()) (t :: T a0123456789876543210 ()) =
@@ -259,6 +228,28 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (a :: S) (b :: S) = FalseSym0
     instance PEq S where
       type (:==) (a :: S) (b :: S) = Equals_0123456789876543210 a b
+    infixl 6 :%*:
+    data instance Sing (z :: T a b)
+      = forall (n :: a) (n :: b). z ~ (:*:) n n =>
+        (Sing (n :: a)) :%*: (Sing (n :: b))
+    type ST = (Sing :: T a b -> GHC.Types.Type)
+    instance (SingKind a, SingKind b) => SingKind (T a b) where
+      type Demote (T a b) = T (Demote a) (Demote b)
+      fromSing ((:%*:) b b) = ((:*:) (fromSing b)) (fromSing b)
+      toSing ((:*:) b b)
+        = case
+              (GHC.Tuple.(,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b)
+          of {
+            GHC.Tuple.(,) (SomeSing c) (SomeSing c)
+              -> SomeSing (((:%*:) c) c) }
+    data instance Sing (z :: S) = z ~ S1 => SS1 | z ~ S2 => SS2
+    type SS = (Sing :: S -> GHC.Types.Type)
+    instance SingKind S where
+      type Demote S = S
+      fromSing SS1 = S1
+      fromSing SS2 = S2
+      toSing S1 = SomeSing SS1
+      toSing S2 = SomeSing SS2
     instance SOrd a => SOrd (T a ()) where
       sCompare ::
         forall (t1 :: T a ()) (t2 :: T a ()).
@@ -446,3 +437,10 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                -> case x of {
                     _ -> error "Empty case reached -- this should be impossible" })
       (%~) SS2 SS2 = Proved Refl
+    instance (SingI n, SingI n) =>
+             SingI ((:*:) (n :: a) (n :: b)) where
+      sing = ((:%*:) sing) sing
+    instance SingI S1 where
+      sing = SS1
+    instance SingI S2 where
+      sing = SS2
