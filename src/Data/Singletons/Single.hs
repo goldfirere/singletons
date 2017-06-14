@@ -202,7 +202,7 @@ singInfo (DPatSynI {}) =
   fail "Singling of pattern synonym info not supported"
 
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
-singTopLevelDecs locals raw_decls = withLocalDeclaration locals $ do
+singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
   decls <- expand raw_decls     -- expand type synonyms
   PDecs { pd_let_decs        = letDecls
         , pd_class_decs      = classes
