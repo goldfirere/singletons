@@ -465,7 +465,7 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
 
 promoteInfixDecl :: Fixity -> Name -> Maybe DDec
 promoteInfixDecl fixity name
- | isUpcase name
+ | isUpcase name || head (nameBase name) == '$' -- See #29 and #197
  = Nothing   -- no need to promote the decl
  | otherwise
  = Just $ DLetDec $ DInfixD fixity (promoteValNameLhs name)
