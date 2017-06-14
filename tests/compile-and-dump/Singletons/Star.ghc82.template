@@ -8,15 +8,6 @@ Singletons/Star.hs:0:0:: Splicing declarations
         Singletons.Star.Maybe Rep |
         Singletons.Star.Vec Rep Nat
       deriving (Eq, Show, Read)
-    type family Equals_0123456789876543210 (a :: Type) (b :: Type) :: Bool where
-      Equals_0123456789876543210 Nat Nat = TrueSym0
-      Equals_0123456789876543210 Int Int = TrueSym0
-      Equals_0123456789876543210 String String = TrueSym0
-      Equals_0123456789876543210 (Maybe a) (Maybe b) = (:==) a b
-      Equals_0123456789876543210 (Vec a a) (Vec b b) = (:&&) ((:==) a b) ((:==) a b)
-      Equals_0123456789876543210 (a :: Type) (b :: Type) = FalseSym0
-    instance PEq Type where
-      type (:==) (a :: Type) (b :: Type) = Equals_0123456789876543210 a b
     type NatSym0 = Nat
     type IntSym0 = Int
     type StringSym0 = String
@@ -43,6 +34,15 @@ Singletons/Star.hs:0:0:: Splicing declarations
       = forall arg. SameKind (Apply VecSym0 arg) (VecSym1 arg) =>
         VecSym0KindInference
     type instance Apply VecSym0 l = VecSym1 l
+    type family Equals_0123456789876543210 (a :: Type) (b :: Type) :: Bool where
+      Equals_0123456789876543210 Nat Nat = TrueSym0
+      Equals_0123456789876543210 Int Int = TrueSym0
+      Equals_0123456789876543210 String String = TrueSym0
+      Equals_0123456789876543210 (Maybe a) (Maybe b) = (:==) a b
+      Equals_0123456789876543210 (Vec a a) (Vec b b) = (:&&) ((:==) a b) ((:==) a b)
+      Equals_0123456789876543210 (a :: Type) (b :: Type) = FalseSym0
+    instance PEq Type where
+      type (:==) (a :: Type) (b :: Type) = Equals_0123456789876543210 a b
     type family Compare_0123456789876543210 (a :: Type) (a :: Type) :: Ordering where
       Compare_0123456789876543210 Nat Nat = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
       Compare_0123456789876543210 Int Int = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]

@@ -23,7 +23,7 @@ import Control.Monad hiding ( mapM )
 import Control.Monad.Writer hiding ( mapM )
 import Control.Monad.Reader hiding ( mapM )
 import qualified Data.Map as Map
-import Data.List.NonEmpty (NonEmpty)
+import Data.List.NonEmpty (NonEmpty(..))
 import Data.Map ( Map )
 import Data.Foldable
 import Data.Traversable
@@ -238,6 +238,8 @@ ravel :: [DType] -> DType -> DType
 ravel []    res  = res
 ravel (h:t) res = DAppT (DAppT DArrowT h) (ravel t res)
 
+
+
 -- count the number of arguments in a type
 countArgs :: DType -> Int
 countArgs ty = length args
@@ -322,6 +324,26 @@ addStar_maybe = fmap addStar
 -- apply a type to a list of types
 foldType :: DType -> [DType] -> DType
 foldType = foldl DAppT
+
+-- | Decompose an applied type into its individual components. For example, this:
+--
+-- @
+-- Either Int Char
+-- @
+--
+-- would be unfolded to this:
+--
+-- @
+-- Either :| [Int, Char]
+-- @
+unfoldType :: DType -> NonEmpty DType
+unfoldType = go []
+  where
+    go :: [DType] -> DType -> NonEmpty DType
+    go acc (DAppT t1 t2)    = go (t2:acc) t1
+    go acc (DSigT t _)      = go acc t
+    go acc (DForallT _ _ t) = go acc t
+    go acc t                = t :| acc
 
 -- apply an expression to a list of expressions
 foldExp :: DExp -> [DExp] -> DExp

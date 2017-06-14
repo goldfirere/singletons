@@ -107,21 +107,21 @@ promoteShowInstance = promoteInstance mkShowInstance "Show"
 -- | Produce an instance for '(:==)' (type-level equality) from the given type
 promoteEqInstance :: DsMonad q => Name -> q [Dec]
 promoteEqInstance name = do
-  (_tvbs, cons) <- getDataD "I cannot make an instance of (:==) for it." name
+  (tvbs, cons) <- getDataD "I cannot make an instance of (:==) for it." name
   cons' <- concatMapM dsCon cons
-  vars <- replicateM (length _tvbs) (qNewName "k")
-  kind <- promoteType (foldType (DConT name) (map DVarT vars))
+  tvbs' <- mapM dsTvb tvbs
+  kind <- promoteType (foldType (DConT name) (map tvbToType tvbs'))
   inst_decs <- mkEqTypeInstance kind cons'
   return $ decsToTH inst_decs
 
-promoteInstance :: DsMonad q => (DType -> [DCon] -> q UInstDecl)
+promoteInstance :: DsMonad q => (Maybe DCxt -> DType -> [DCon] -> q UInstDecl)
                 -> String -> Name -> q [Dec]
 promoteInstance mk_inst class_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
                             ++ " for it.") name
   cons' <- concatMapM dsCon cons
   tvbs' <- mapM dsTvb tvbs
-  raw_inst <- mk_inst (foldType (DConT name) (map tvbToType tvbs')) cons'
+  raw_inst <- mk_inst Nothing (foldType (DConT name) (map tvbToType tvbs')) cons'
   decs <- promoteM_ [] $ void $ promoteInstanceDec Map.empty raw_inst
   return $ decsToTH decs
 
@@ -177,16 +177,18 @@ promoteDecs :: [DDec] -> PrM ()
 promoteDecs raw_decls = do
   decls <- expand raw_decls     -- expand type synonyms
   checkForRepInDecls decls
-  PDecs { pd_let_decs              = let_decs
-        , pd_class_decs            = classes
-        , pd_instance_decs         = insts
-        , pd_data_decs             = datas }    <- partitionDecs decls
+  PDecs { pd_let_decs        = let_decs
+        , pd_class_decs      = classes
+        , pd_instance_decs   = insts
+        , pd_data_decs       = datas
+        , pd_derived_eq_decs = derived_eq_decs } <- partitionDecs decls
 
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
   mapM_ promoteClassDec classes
   let all_meth_sigs = foldMap (lde_types . cd_lde) classes
   mapM_ (promoteInstanceDec all_meth_sigs) insts
+  mapM_ promoteDerivedEqDec derived_eq_decs
   promoteDataDecs datas
 
 promoteDataDecs :: [DataDecl] -> PrM ()
@@ -231,15 +233,7 @@ promoteLetDecs prefixes decls = do
 --
 --  * for each nullary data constructor we generate a type synonym
 promoteDataDec :: DataDecl -> PrM ()
-promoteDataDec (DataDecl _nd name tvbs ctors derivings) = do
-  -- deriving Eq instance
-  kvs <- replicateM (length tvbs) (qNewName "k")
-  kind <- promoteType (foldType (DConT name) (map DVarT kvs))
-  when (any (\case DConPr n -> n == eqName
-                   _        -> False) derivings) $ do
-    eq_decs <- mkEqTypeInstance kind ctors
-    emitDecs eq_decs
-
+promoteDataDec (DataDecl _nd name tvbs ctors _derivings) = do
   ctorSyms <- buildDefunSymsDataD name tvbs ctors
   emitDecs ctorSyms
 
@@ -642,3 +636,10 @@ promoteLitPat (IntegerL n)
 promoteLitPat (StringL str) = return $ DLitT (StrTyLit str)
 promoteLitPat lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
+
+-- See Note [Derived Eq instances]
+promoteDerivedEqDec :: DerivedEqDecl -> PrM ()
+promoteDerivedEqDec (DerivedEqDecl { ded_type = ty, ded_cons = cons }) = do
+  kind <- promoteType ty
+  inst_decs <- mkEqTypeInstance kind cons
+  emitDecs inst_decs
