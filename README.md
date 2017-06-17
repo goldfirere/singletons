@@ -374,7 +374,7 @@ generates. Here are some examples showing how this is done:
 
    singleton constructor: `:%+:`
 
-   symbols: `:+:$`, `:+:$$`, `:+:$$$`
+   symbols: `:+:@#$%^%$#@$`, `:+:@#$%^%$#@$$`, `:+:@#$%^%$#@$$$`
 
 
 5. original value: `pred`
@@ -392,7 +392,7 @@ generates. Here are some examples showing how this is done:
 
    singleton value: `%:+`
 
-   symbols: `:+$`, `:+$$`, `:+$$$`
+   symbols: `:+@#$%^%$#@$`, `:+@#$%^%$#@$$`, `:+@#$%^%$#@$$$`
 
 
 7. original class: `Num`

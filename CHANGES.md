@@ -3,6 +3,22 @@ Changelog for singletons project
 
 next
 ----
+* The suffix for defunctionalized names of symbolic functions (e.g., `(+)`) has
+  changed. Before, the promoted type name would be suffixed with some number of
+  dollar signs (e.g., `(:+$)` and `(:+$$)`) to indicate defunctionalization
+  symbols. Now, the promoted type name is first suffixed with `@#$%^%$#@` and
+  _then_ followed by dollar signs (e.g., `(:+@#$%^%$#@$)` and `(:+@#$%^%$#@$$)`).
+  Adopting this conventional eliminates naming conflicts that could arise for
+  functions that consisted of solely `$` symbols.
+
+* The promoted/singled/defunctionalized symbols for `($)` have changed:
+
+  * `($)`  is now `(:$)`
+  * `(%$)` is now `(%:$)`
+  * `($$)` is now `($@#$%^%$#@$)`, and `($$$)` is now `($@#$%^%$#@$$)`
+
+  This makes the treatment of `($)` consistent with other symbolic functions.
+
 * Add promoted and singled versions of `Show`, including `deriving` support.
 
 * Permit derived `Ord` instances for empty datatypes.

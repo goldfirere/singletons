@@ -175,7 +175,7 @@ promoteTySym name sat
     = let capped = toUpcaseStr noPrefix name in
       if isHsLetter (head capped)
       then mkName (capped ++ "Sym" ++ (show sat))
-      else mkName (capped ++ "@#$%^%$#@"
+      else mkName (capped ++ "@#$%^%$#@" -- See Note [Defunctionalization symbol suffixes]
                           ++ (replicate (sat + 1) '$'))
 
 promoteClassName :: Name -> Name
@@ -250,3 +250,30 @@ foldApply = foldl apply
 -- make and equality predicate
 mkEqPred :: DType -> DType -> DPred
 mkEqPred ty1 ty2 = foldl DAppPr (DConPr equalityName) [ty1, ty2]
+
+{-
+Note [Defunctionalization symbol suffixes]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Before, we used to denote defunctionalization symbols by simply appending dollar
+signs at the end (e.g., (:+$) and (:+$$)). But this can lead to ambiguity when you
+have function names that consist of solely $ characters. For instance, if you
+tried to promote ($) and ($$) simultaneously, you'd get these promoted types:
+
+:$
+:$$
+
+And these defunctionalization symbols:
+
+:$$
+:$$$
+
+But now there's a name clash between the promoted type for ($) and the
+defunctionalization symbol for ($$)! The solution is to use a precede these
+defunctionalization dollar signs with another string (we choose @#$%^%$#@).
+So now the new defunctionalization symbols would be:
+
+:$@#$%^%$#@$
+:$@#$%^%$#@$$
+
+And there is no conflict.
+-}

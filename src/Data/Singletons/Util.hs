@@ -123,8 +123,7 @@ toUpcaseStr (alpha, symb) n
     upcase_alpha = alpha ++ (toUpper first) : tail str
 
     upcase_symb
-      |  first == ':'
-      || first == '$' -- special case to avoid name clashes. See #29
+      | first == ':'
       = symb ++ str
       | otherwise
       = symb ++ ':' : str

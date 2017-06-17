@@ -59,7 +59,7 @@ module Data.Singletons.Prelude (
   Shows, sShows, ShowChar, sShowChar, ShowString, sShowString, ShowParen, sShowParen,
 
   -- ** Miscellaneous functions
-  Id, sId, Const, sConst, (:.), (%:.), type ($), (%$), type ($!), (%$!),
+  Id, sId, Const, sConst, (:.), (%:.), (:$), (%:$), (:$!), (%:$!),
   Flip, sFlip, AsTypeOf, sAsTypeOf,
   Seq, sSeq,
 
@@ -127,8 +127,8 @@ module Data.Singletons.Prelude (
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   (:.@#$%^%$#@$), (:.@#$%^%$#@$$), (:.@#$%^%$#@$$$),
-  type ($@#$%^%$#@$), type ($@#$%^%$#@$$), type ($@#$%^%$#@$$$),
-  type ($!@#$%^%$#@$), type ($!@#$%^%$#@$$), type ($!@#$%^%$#@$$$),
+  (:$@#$%^%$#@$),  (:$@#$%^%$#@$$),  (:$@#$%^%$#@$$$),
+  (:$!@#$%^%$#@$), (:$!@#$%^%$#@$$), (:$!@#$%^%$#@$$$),
   FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
 

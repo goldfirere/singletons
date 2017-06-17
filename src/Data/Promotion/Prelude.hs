@@ -46,7 +46,7 @@ module Data.Promotion.Prelude (
   PShow(..), ShowS, SChar, show_, (:<>), Shows, ShowChar, ShowString, ShowParen,
 
   -- ** Miscellaneous functions
-  Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Until, Seq,
+  Id, Const, (:.), (:$), (:$!), Flip, AsTypeOf, Until, Seq,
 
   -- * List operations
   Map, (:++), Filter,
@@ -110,8 +110,8 @@ module Data.Promotion.Prelude (
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   (:.@#$%^%$#@$), (:.@#$%^%$#@$$), (:.@#$%^%$#@$$$),
-  type ($@#$%^%$#@$),  type ($@#$%^%$#@$$),  type ($@#$%^%$#@$$$),
-  type ($!@#$%^%$#@$), type ($!@#$%^%$#@$$), type ($!@#$%^%$#@$$$),
+  (:$@#$%^%$#@$),  (:$@#$%^%$#@$$),  (:$@#$%^%$#@$$$),
+  (:$!@#$%^%$#@$), (:$!@#$%^%$#@$$), (:$!@#$%^%$#@$$$),
   FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
 

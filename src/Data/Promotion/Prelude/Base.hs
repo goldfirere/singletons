@@ -23,7 +23,7 @@
 
 module Data.Promotion.Prelude.Base (
   -- * Promoted functions from @GHC.Base@
-  Foldr, Map, (:++), Otherwise, Id, Const, (:.), type ($), type ($!),
+  Foldr, Map, (:++), Otherwise, Id, Const, (:.), (:$), (:$!),
   Flip, Until, AsTypeOf, Seq,
 
   -- * Defunctionalization symbols
@@ -34,8 +34,8 @@ module Data.Promotion.Prelude.Base (
   IdSym0, IdSym1,
   ConstSym0, ConstSym1, ConstSym2,
   (:.@#$%^%$#@$), (:.@#$%^%$#@$$), (:.@#$%^%$#@$$$), (:.@#$%^%$#@$$$$),
-  type ($@#$%^%$#@$), type ($@#$%^%$#@$$), type ($@#$%^%$#@$$$),
-  type ($!@#$%^%$#@$), type ($!@#$%^%$#@$$), type ($!@#$%^%$#@$$$),
+  (:$@#$%^%$#@$),  (:$@#$%^%$#@$$),  (:$@#$%^%$#@$$$),
+  (:$!@#$%^%$#@$), (:$!@#$%^%$#@$$), (:$!@#$%^%$#@$$$),
   FlipSym0, FlipSym1, FlipSym2, FlipSym3,
   UntilSym0, UntilSym1, UntilSym2, UntilSym3,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2,

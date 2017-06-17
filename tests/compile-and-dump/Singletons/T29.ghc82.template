@@ -50,13 +50,13 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
         FooSym0KindInference
     type instance Apply FooSym0 l = Foo l
     type family Ban (a :: Bool) :: Bool where
-      Ban x = Apply (Apply ($!@#$%^%$#@$) (Apply (Apply (:.@#$%^%$#@$) NotSym0) (Apply (Apply (:.@#$%^%$#@$) NotSym0) NotSym0))) x
+      Ban x = Apply (Apply (:$!@#$%^%$#@$) (Apply (Apply (:.@#$%^%$#@$) NotSym0) (Apply (Apply (:.@#$%^%$#@$) NotSym0) NotSym0))) x
     type family Baz (a :: Bool) :: Bool where
-      Baz x = Apply (Apply ($!@#$%^%$#@$) NotSym0) x
+      Baz x = Apply (Apply (:$!@#$%^%$#@$) NotSym0) x
     type family Bar (a :: Bool) :: Bool where
-      Bar x = Apply (Apply ($@#$%^%$#@$) (Apply (Apply (:.@#$%^%$#@$) NotSym0) (Apply (Apply (:.@#$%^%$#@$) NotSym0) NotSym0))) x
+      Bar x = Apply (Apply (:$@#$%^%$#@$) (Apply (Apply (:.@#$%^%$#@$) NotSym0) (Apply (Apply (:.@#$%^%$#@$) NotSym0) NotSym0))) x
     type family Foo (a :: Bool) :: Bool where
-      Foo x = Apply (Apply ($@#$%^%$#@$) NotSym0) x
+      Foo x = Apply (Apply (:$@#$%^%$#@$) NotSym0) x
     sBan ::
       forall (t :: Bool). Sing t -> Sing (Apply BanSym0 t :: Bool)
     sBaz ::
@@ -67,7 +67,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
       forall (t :: Bool). Sing t -> Sing (Apply FooSym0 t :: Bool)
     sBan (sX :: Sing x)
       = (applySing
-           ((applySing ((singFun2 @($!@#$%^%$#@$)) (%$!)))
+           ((applySing ((singFun2 @(:$!@#$%^%$#@$)) (%:$!)))
               ((applySing
                   ((applySing ((singFun3 @(:.@#$%^%$#@$)) (%:.)))
                      ((singFun1 @NotSym0) sNot)))
@@ -78,12 +78,12 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
           sX
     sBaz (sX :: Sing x)
       = (applySing
-           ((applySing ((singFun2 @($!@#$%^%$#@$)) (%$!)))
+           ((applySing ((singFun2 @(:$!@#$%^%$#@$)) (%:$!)))
               ((singFun1 @NotSym0) sNot)))
           sX
     sBar (sX :: Sing x)
       = (applySing
-           ((applySing ((singFun2 @($@#$%^%$#@$)) (%$)))
+           ((applySing ((singFun2 @(:$@#$%^%$#@$)) (%:$)))
               ((applySing
                   ((applySing ((singFun3 @(:.@#$%^%$#@$)) (%:.)))
                      ((singFun1 @NotSym0) sNot)))
@@ -94,6 +94,6 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
           sX
     sFoo (sX :: Sing x)
       = (applySing
-           ((applySing ((singFun2 @($@#$%^%$#@$)) (%$)))
+           ((applySing ((singFun2 @(:$@#$%^%$#@$)) (%:$)))
               ((singFun1 @NotSym0) sNot)))
           sX

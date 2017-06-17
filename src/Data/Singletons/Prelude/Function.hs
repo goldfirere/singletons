@@ -22,7 +22,7 @@
 
 module Data.Singletons.Prelude.Function (
     -- * "Prelude" re-exports
-    Id, sId, Const, sConst, (:.), (%:.), Flip, sFlip, type ($), (%$)
+    Id, sId, Const, sConst, (:.), (%:.), Flip, sFlip, (:$), (%:$)
     -- * Other combinators
   , (:&), (%:&), On, sOn
 
@@ -31,7 +31,7 @@ module Data.Singletons.Prelude.Function (
   , ConstSym0, ConstSym1, ConstSym2
   , (:.@#$%^%$#@$), (:.@#$%^%$#@$$), (:.@#$%^%$#@$$$), (:.@#$%^%$#@$$$$)
   , FlipSym0, FlipSym1, FlipSym2, FlipSym3
-  , type ($@#$%^%$#@$), type ($@#$%^%$#@$$), type ($@#$%^%$#@$$$)
+  , (:$@#$%^%$#@$), (:$@#$%^%$#@$$), (:$@#$%^%$#@$$$)
   , (:&@#$%^%$#@$), (:&@#$%^%$#@$$), (:&@#$%^%$#@$$$)
   , OnSym0, OnSym1, OnSym2, OnSym3, OnSym4
   ) where
