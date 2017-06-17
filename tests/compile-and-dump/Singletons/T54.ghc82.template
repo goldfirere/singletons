@@ -18,7 +18,7 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
         Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference
     type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 l = Let0123456789876543210Scrutinee_0123456789876543210 l
     type family Let0123456789876543210Scrutinee_0123456789876543210 e where
-      Let0123456789876543210Scrutinee_0123456789876543210 e = Apply (Apply (:$) NotSym0) '[]
+      Let0123456789876543210Scrutinee_0123456789876543210 e = Apply (Apply (:@#$%^%$#@$) NotSym0) '[]
     type family Case_0123456789876543210 e t where
       Case_0123456789876543210 e '[_] = NotSym0
     type GSym1 (t :: Bool) = G t
@@ -39,7 +39,8 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
                 Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e)
               sScrutinee_0123456789876543210
                 = (applySing
-                     ((applySing ((singFun2 @(:$)) SCons)) ((singFun1 @NotSym0) sNot)))
+                     ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+                        ((singFun1 @NotSym0) sNot)))
                     SNil
             in  case sScrutinee_0123456789876543210 of {
                   SCons _ SNil -> (singFun1 @NotSym0) sNot } ::

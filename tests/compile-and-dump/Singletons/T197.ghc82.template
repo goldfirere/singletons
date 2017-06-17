@@ -8,25 +8,27 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 $$:
     ($$:) :: Bool -> Bool -> Bool
     ($$:) _ _ = False
-    type ($$:$$$) (t :: Bool) (t :: Bool) = ($$:) t t
-    instance SuppressUnusedWarnings ($$:$$) where
+    type ($$:@#$%^%$#@$$$) (t :: Bool) (t :: Bool) = ($$:) t t
+    instance SuppressUnusedWarnings ($$:@#$%^%$#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:$$:$$###)) GHC.Tuple.())
-    data ($$:$$) (l :: Bool) (l :: TyFun Bool Bool)
-      = forall arg. SameKind (Apply (($$:$$) l) arg) (($$:$$$) l arg) =>
-        (:$$:$$###)
-    type instance Apply (($$:$$) l) l = ($$:) l l
-    instance SuppressUnusedWarnings ($$:$) where
+        = snd ((GHC.Tuple.(,) (:$$:@#$%^%$#@$$###)) GHC.Tuple.())
+    data ($$:@#$%^%$#@$$) (l :: Bool) (l :: TyFun Bool Bool)
+      = forall arg. SameKind (Apply (($$:@#$%^%$#@$$) l) arg) (($$:@#$%^%$#@$$$) l arg) =>
+        (:$$:@#$%^%$#@$$###)
+    type instance Apply (($$:@#$%^%$#@$$) l) l = ($$:) l l
+    instance SuppressUnusedWarnings ($$:@#$%^%$#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:$$:$###)) GHC.Tuple.())
-    data ($$:$) (l :: TyFun Bool (TyFun Bool Bool -> GHC.Types.Type))
-      = forall arg. SameKind (Apply ($$:$) arg) (($$:$$) arg) =>
-        (:$$:$###)
-    type instance Apply ($$:$) l = ($$:$$) l
+        = snd ((GHC.Tuple.(,) (:$$:@#$%^%$#@$###)) GHC.Tuple.())
+    data ($$:@#$%^%$#@$) (l :: TyFun Bool (TyFun Bool Bool
+                                           -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ($$:@#$%^%$#@$) arg) (($$:@#$%^%$#@$$) arg) =>
+        (:$$:@#$%^%$#@$###)
+    type instance Apply ($$:@#$%^%$#@$) l = ($$:@#$%^%$#@$$) l
     type family ($$:) (a :: Bool) (a :: Bool) :: Bool where
       ($$:) _ _ = FalseSym0
     infixl 5 %$$:
     (%$$:) ::
       forall (t :: Bool) (t :: Bool).
-      Sing t -> Sing t -> Sing (Apply (Apply ($$:$) t) t :: Bool)
+      Sing t
+      -> Sing t -> Sing (Apply (Apply ($$:@#$%^%$#@$) t) t :: Bool)
     (%$$:) _ _ = SFalse

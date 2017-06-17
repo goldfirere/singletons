@@ -23,35 +23,38 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     (+) Zero m = m
     (+) (Succ n) m = Succ (n + m)
     type FLeafSym0 = FLeaf
-    type (:+:$$$) (t :: Foo) (t :: Foo) = (:+:) t t
-    instance SuppressUnusedWarnings (:+:$$) where
+    type (:+:@#$%^%$#@$$$) (t :: Foo) (t :: Foo) = (:+:) t t
+    instance SuppressUnusedWarnings (:+:@#$%^%$#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+:$$###)) GHC.Tuple.())
-    data (:+:$$) (l :: Foo) (l :: TyFun Foo Foo)
-      = forall arg. SameKind (Apply ((:+:$$) l) arg) ((:+:$$$) l arg) =>
-        (:+:$$###)
-    type instance Apply ((:+:$$) l) l = (:+:) l l
-    instance SuppressUnusedWarnings (:+:$) where
+        = snd ((GHC.Tuple.(,) (:+:@#$%^%$#@$$###)) GHC.Tuple.())
+    data (:+:@#$%^%$#@$$) (l :: Foo) (l :: TyFun Foo Foo)
+      = forall arg. SameKind (Apply ((:+:@#$%^%$#@$$) l) arg) ((:+:@#$%^%$#@$$$) l arg) =>
+        (:+:@#$%^%$#@$$###)
+    type instance Apply ((:+:@#$%^%$#@$$) l) l = (:+:) l l
+    instance SuppressUnusedWarnings (:+:@#$%^%$#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+:$###)) GHC.Tuple.())
-    data (:+:$) (l :: TyFun Foo (TyFun Foo Foo -> GHC.Types.Type))
-      = forall arg. SameKind (Apply (:+:$) arg) ((:+:$$) arg) =>
-        (:+:$###)
-    type instance Apply (:+:$) l = (:+:$$) l
-    type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
-    instance SuppressUnusedWarnings (:+$$) where
+        = snd ((GHC.Tuple.(,) (:+:@#$%^%$#@$###)) GHC.Tuple.())
+    data (:+:@#$%^%$#@$) (l :: TyFun Foo (TyFun Foo Foo
+                                          -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:+:@#$%^%$#@$) arg) ((:+:@#$%^%$#@$$) arg) =>
+        (:+:@#$%^%$#@$###)
+    type instance Apply (:+:@#$%^%$#@$) l = (:+:@#$%^%$#@$$) l
+    type (:+@#$%^%$#@$$$) (t :: Nat) (t :: Nat) = (:+) t t
+    instance SuppressUnusedWarnings (:+@#$%^%$#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+$$###)) GHC.Tuple.())
-    data (:+$$) (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply ((:+$$) l) arg) ((:+$$$) l arg) =>
-        (:+$$###)
-    type instance Apply ((:+$$) l) l = (:+) l l
-    instance SuppressUnusedWarnings (:+$) where
+        = snd ((GHC.Tuple.(,) (:+@#$%^%$#@$$###)) GHC.Tuple.())
+    data (:+@#$%^%$#@$$) (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply ((:+@#$%^%$#@$$) l) arg) ((:+@#$%^%$#@$$$) l arg) =>
+        (:+@#$%^%$#@$$###)
+    type instance Apply ((:+@#$%^%$#@$$) l) l = (:+) l l
+    instance SuppressUnusedWarnings (:+@#$%^%$#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+$###)) GHC.Tuple.())
-    data (:+$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
-      = forall arg. SameKind (Apply (:+$) arg) ((:+$$) arg) => (:+$###)
-    type instance Apply (:+$) l = (:+$$) l
+        = snd ((GHC.Tuple.(,) (:+@#$%^%$#@$###)) GHC.Tuple.())
+    data (:+@#$%^%$#@$) (l :: TyFun Nat (TyFun Nat Nat
+                                         -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:+@#$%^%$#@$) arg) ((:+@#$%^%$#@$$) arg) =>
+        (:+@#$%^%$#@$###)
+    type instance Apply (:+@#$%^%$#@$) l = (:+@#$%^%$#@$$) l
     type ChildSym1 (t :: Foo) = Child t
     instance SuppressUnusedWarnings ChildSym0 where
       suppressUnusedWarnings
@@ -62,19 +65,20 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ChildSym0 l = Child l
     type family (:+) (a :: Nat) (a :: Nat) :: Nat where
       (:+) Zero m = m
-      (:+) (Succ n) m = Apply SuccSym0 (Apply (Apply (:+$) n) m)
+      (:+) (Succ n) m = Apply SuccSym0 (Apply (Apply (:+@#$%^%$#@$) n) m)
     type family Child (a :: Foo) :: Foo where
       Child FLeaf = FLeafSym0
       Child ((:+:) a _) = a
     (%:+) ::
       forall (t :: Nat) (t :: Nat).
-      Sing t -> Sing t -> Sing (Apply (Apply (:+$) t) t :: Nat)
+      Sing t -> Sing t -> Sing (Apply (Apply (:+@#$%^%$#@$) t) t :: Nat)
     sChild ::
       forall (t :: Foo). Sing t -> Sing (Apply ChildSym0 t :: Foo)
     (%:+) SZero (sM :: Sing m) = sM
     (%:+) (SSucc (sN :: Sing n)) (sM :: Sing m)
       = (applySing ((singFun1 @SuccSym0) SSucc))
-          ((applySing ((applySing ((singFun2 @(:+$)) (%:+))) sN)) sM)
+          ((applySing ((applySing ((singFun2 @(:+@#$%^%$#@$)) (%:+))) sN))
+             sM)
     sChild SFLeaf = SFLeaf
     sChild ((:%+:) (sA :: Sing a) _) = sA
     data instance Sing (z :: Foo)

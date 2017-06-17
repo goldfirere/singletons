@@ -123,23 +123,23 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       = forall arg. SameKind (Apply MycompareSym0 arg) (MycompareSym1 arg) =>
         MycompareSym0KindInference
     type instance Apply MycompareSym0 l = MycompareSym1 l
-    type (:<=>$$$) (t :: a0123456789876543210) (t :: a0123456789876543210) =
+    type (:<=>@#$%^%$#@$$$) (t :: a0123456789876543210) (t :: a0123456789876543210) =
         (:<=>) t t
-    instance SuppressUnusedWarnings (:<=>$$) where
+    instance SuppressUnusedWarnings (:<=>@#$%^%$#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:<=>$$###)) GHC.Tuple.())
-    data (:<=>$$) (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering)
-      = forall arg. SameKind (Apply ((:<=>$$) l) arg) ((:<=>$$$) l arg) =>
-        (:<=>$$###)
-    type instance Apply ((:<=>$$) l) l = (:<=>) l l
-    instance SuppressUnusedWarnings (:<=>$) where
+        = snd ((GHC.Tuple.(,) (:<=>@#$%^%$#@$$###)) GHC.Tuple.())
+    data (:<=>@#$%^%$#@$$) (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering)
+      = forall arg. SameKind (Apply ((:<=>@#$%^%$#@$$) l) arg) ((:<=>@#$%^%$#@$$$) l arg) =>
+        (:<=>@#$%^%$#@$$###)
+    type instance Apply ((:<=>@#$%^%$#@$$) l) l = (:<=>) l l
+    instance SuppressUnusedWarnings (:<=>@#$%^%$#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:<=>$###)) GHC.Tuple.())
-    data (:<=>$) (l :: TyFun a0123456789876543210 (TyFun a0123456789876543210 Ordering
-                                                   -> GHC.Types.Type))
-      = forall arg. SameKind (Apply (:<=>$) arg) ((:<=>$$) arg) =>
-        (:<=>$###)
-    type instance Apply (:<=>$) l = (:<=>$$) l
+        = snd ((GHC.Tuple.(,) (:<=>@#$%^%$#@$###)) GHC.Tuple.())
+    data (:<=>@#$%^%$#@$) (l :: TyFun a0123456789876543210 (TyFun a0123456789876543210 Ordering
+                                                            -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:<=>@#$%^%$#@$) arg) ((:<=>@#$%^%$#@$$) arg) =>
+        (:<=>@#$%^%$#@$###)
+    type instance Apply (:<=>@#$%^%$#@$) l = (:<=>@#$%^%$#@$$) l
     type family TFHelper_0123456789876543210 (a :: a) (a :: a) :: Ordering where
       TFHelper_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply MycompareSym0 a_0123456789876543210) a_0123456789876543210
     type TFHelper_0123456789876543210Sym2 (t :: a0123456789876543210) (t :: a0123456789876543210) =
@@ -309,11 +309,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
       (%:<=>) ::
         forall (t :: a) (t :: a).
-        Sing t -> Sing t -> Sing (Apply (Apply (:<=>$) t) t :: Ordering)
+        Sing t
+        -> Sing t -> Sing (Apply (Apply (:<=>@#$%^%$#@$) t) t :: Ordering)
       default (%:<=>) ::
                 forall (t :: a) (t :: a).
-                (Apply (Apply (:<=>$) t) t :: Ordering) ~ Apply (Apply TFHelper_0123456789876543210Sym0 t) t =>
-                Sing t -> Sing t -> Sing (Apply (Apply (:<=>$) t) t :: Ordering)
+                (Apply (Apply (:<=>@#$%^%$#@$) t) t :: Ordering) ~ Apply (Apply TFHelper_0123456789876543210Sym0 t) t =>
+                Sing t
+                -> Sing t -> Sing (Apply (Apply (:<=>@#$%^%$#@$) t) t :: Ordering)
       (%:<=>)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)

@@ -31,13 +31,13 @@ module Data.Singletons.Prelude.Base (
   -- * Defunctionalization symbols
   FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
   MapSym0, MapSym1, MapSym2,
-  (:++$), (:++$$), (:++$$$),
+  (:++@#$%^%$#@$), (:++@#$%^%$#@$$), (:++@#$%^%$#@$$$),
   OtherwiseSym0,
   IdSym0, IdSym1,
   ConstSym0, ConstSym1, ConstSym2,
-  (:.$), (:.$$), (:.$$$), (:.$$$$),
-  type ($$), type ($$$), type ($$$$),
-  type ($!$), type ($!$$), type ($!$$$),
+  (:.@#$%^%$#@$), (:.@#$%^%$#@$$), (:.@#$%^%$#@$$$), (:.@#$%^%$#@$$$$),
+  type ($@#$%^%$#@$), type ($@#$%^%$#@$$), type ($@#$%^%$#@$$$),
+  type ($!@#$%^%$#@$), type ($!@#$%^%$#@$$), type ($!@#$%^%$#@$$$),
   FlipSym0, FlipSym1, FlipSym2, FlipSym3,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2,
   SeqSym0, SeqSym1, SeqSym2
@@ -97,16 +97,16 @@ type family (f :: TyFun a b -> *) $ (x :: a) :: b
 type instance f $ x = f @@ x
 infixr 0 $
 
-data ($$) :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *
-type instance Apply ($$) arg = ($$$) arg
+data ($@#$%^%$#@$) :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *
+type instance Apply ($@#$%^%$#@$) arg = ($@#$%^%$#@$$) arg
 
-data ($$$) :: (TyFun a b -> *) -> TyFun a b -> *
-type instance Apply (($$$) f) arg = ($$$$) f arg
+data ($@#$%^%$#@$$) :: (TyFun a b -> *) -> TyFun a b -> *
+type instance Apply (($@#$%^%$#@$$) f) arg = ($@#$%^%$#@$$$) f arg
 
-type ($$$$) a b = ($) a b
+type ($@#$%^%$#@$$$) a b = ($) a b
 
 (%$) :: forall (f :: TyFun a b -> *) (x :: a).
-        Sing f -> Sing x -> Sing (($$) @@ f @@ x)
+        Sing f -> Sing x -> Sing (($@#$%^%$#@$) @@ f @@ x)
 f %$ x = applySing f x
 infixr 0 %$
 
@@ -114,15 +114,15 @@ type family (f :: TyFun a b -> *) $! (x :: a) :: b
 type instance f $! x = f @@ x
 infixr 0 $!
 
-data ($!$) :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *
-type instance Apply ($!$) arg = ($!$$) arg
+data ($!@#$%^%$#@$) :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *
+type instance Apply ($!@#$%^%$#@$) arg = ($!@#$%^%$#@$$) arg
 
-data ($!$$) :: (TyFun a b -> *) -> TyFun a b -> *
-type instance Apply (($!$$) f) arg = ($!$$$) f arg
+data ($!@#$%^%$#@$$) :: (TyFun a b -> *) -> TyFun a b -> *
+type instance Apply (($!@#$%^%$#@$$) f) arg = ($!@#$%^%$#@$$$) f arg
 
-type ($!$$$) a b = ($!) a b
+type ($!@#$%^%$#@$$$) a b = ($!) a b
 
 (%$!) :: forall (f :: TyFun a b -> *) (x :: a).
-        Sing f -> Sing x -> Sing (($!$) @@ f @@ x)
+        Sing f -> Sing x -> Sing (($!@#$%^%$#@$) @@ f @@ x)
 f %$! x = applySing f x
 infixr 0 %$!

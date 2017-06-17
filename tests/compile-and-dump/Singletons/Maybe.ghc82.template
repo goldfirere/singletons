@@ -18,7 +18,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply JustSym0 l = Just l
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Maybe a) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210 _ Nothing a_0123456789876543210 = Apply (Apply ShowStringSym0 "Nothing") a_0123456789876543210
-      ShowsPrec_0123456789876543210 p_0123456789876543210 (Just arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (:>$) p_0123456789876543210) (Data.Singletons.Prelude.Num.FromInteger 10))) (Apply (Apply (:.$) (Apply ShowStringSym0 "Just ")) (Apply (Apply ShowsPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
+      ShowsPrec_0123456789876543210 p_0123456789876543210 (Just arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (:>@#$%^%$#@$) p_0123456789876543210) (Data.Singletons.Prelude.Num.FromInteger 10))) (Apply (Apply (:.@#$%^%$#@$) (Apply ShowStringSym0 "Just ")) (Apply (Apply ShowsPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym3 (t :: GHC.Types.Nat) (t :: Maybe a0123456789876543210) (t :: GHC.Types.Symbol) =
         ShowsPrec_0123456789876543210 t t t
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym2 where
@@ -102,10 +102,11 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
              ((applySing
                  ((applySing ((singFun3 @ShowParenSym0) sShowParen))
                     ((applySing
-                        ((applySing ((singFun2 @(:>$)) (%:>))) sP_0123456789876543210))
+                        ((applySing ((singFun2 @(:>@#$%^%$#@$)) (%:>)))
+                           sP_0123456789876543210))
                        (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 10)))))
                 ((applySing
-                    ((applySing ((singFun3 @(:.$)) (%:.)))
+                    ((applySing ((singFun3 @(:.@#$%^%$#@$)) (%:.)))
                        ((applySing ((singFun2 @ShowStringSym0) sShowString))
                           (sing :: Sing "Just "))))
                    ((applySing

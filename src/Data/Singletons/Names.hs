@@ -175,7 +175,8 @@ promoteTySym name sat
     = let capped = toUpcaseStr noPrefix name in
       if isHsLetter (head capped)
       then mkName (capped ++ "Sym" ++ (show sat))
-      else mkName (capped ++ (replicate (sat + 1) '$'))
+      else mkName (capped ++ "@#$%^%$#@"
+                          ++ (replicate (sat + 1) '$'))
 
 promoteClassName :: Name -> Name
 promoteClassName = prefixUCName "P" "#"

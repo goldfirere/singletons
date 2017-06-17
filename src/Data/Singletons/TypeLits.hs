@@ -24,7 +24,7 @@ module Data.Singletons.TypeLits (
   KnownNat, KnownNatSym0, KnownNatSym1, natVal,
   KnownSymbol, KnownSymbolSym0, KnownSymbolSym1, symbolVal,
 
-  (:^), (:^$), (:^$$), (:^$$$)
+  (:^), (:^@#$%^%$#@$), (:^@#$%^%$#@$$), (:^@#$%^%$#@$$$)
   ) where
 
 import Data.Singletons.TypeLits.Internal

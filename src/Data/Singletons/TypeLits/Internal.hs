@@ -27,7 +27,7 @@ module Data.Singletons.TypeLits.Internal (
   Error, ErrorSym0, ErrorSym1, sError,
   KnownNat, natVal, KnownSymbol, symbolVal,
 
-  (:^), (:^$), (:^$$), (:^$$$)
+  (:^), (:^@#$%^%$#@$), (:^@#$%^%$#@$$), (:^@#$%^%$#@$$$)
   ) where
 
 import Data.Singletons.Promote

@@ -25,27 +25,27 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     deriving instance Show S
     deriving instance Bounded S
     deriving instance Enum S
-    type (:*:$$$) (t :: a0123456789876543210) (t :: b0123456789876543210) =
+    type (:*:@#$%^%$#@$$$) (t :: a0123456789876543210) (t :: b0123456789876543210) =
         (:*:) t t
-    instance SuppressUnusedWarnings (:*:$$) where
+    instance SuppressUnusedWarnings (:*:@#$%^%$#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:*:$$###)) GHC.Tuple.())
-    data (:*:$$) (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 (T a0123456789876543210 b0123456789876543210))
-      = forall arg. SameKind (Apply ((:*:$$) l) arg) ((:*:$$$) l arg) =>
-        (:*:$$###)
-    type instance Apply ((:*:$$) l) l = (:*:) l l
-    instance SuppressUnusedWarnings (:*:$) where
+        = snd ((GHC.Tuple.(,) (:*:@#$%^%$#@$$###)) GHC.Tuple.())
+    data (:*:@#$%^%$#@$$) (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 (T a0123456789876543210 b0123456789876543210))
+      = forall arg. SameKind (Apply ((:*:@#$%^%$#@$$) l) arg) ((:*:@#$%^%$#@$$$) l arg) =>
+        (:*:@#$%^%$#@$$###)
+    type instance Apply ((:*:@#$%^%$#@$$) l) l = (:*:) l l
+    instance SuppressUnusedWarnings (:*:@#$%^%$#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:*:$###)) GHC.Tuple.())
-    data (:*:$) (l :: TyFun a0123456789876543210 (TyFun b0123456789876543210 (T a0123456789876543210 b0123456789876543210)
-                                                  -> GHC.Types.Type))
-      = forall arg. SameKind (Apply (:*:$) arg) ((:*:$$) arg) =>
-        (:*:$###)
-    type instance Apply (:*:$) l = (:*:$$) l
+        = snd ((GHC.Tuple.(,) (:*:@#$%^%$#@$###)) GHC.Tuple.())
+    data (:*:@#$%^%$#@$) (l :: TyFun a0123456789876543210 (TyFun b0123456789876543210 (T a0123456789876543210 b0123456789876543210)
+                                                           -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:*:@#$%^%$#@$) arg) ((:*:@#$%^%$#@$$) arg) =>
+        (:*:@#$%^%$#@$###)
+    type instance Apply (:*:@#$%^%$#@$) l = (:*:@#$%^%$#@$$) l
     type S1Sym0 = S1
     type S2Sym0 = S2
     type family Compare_0123456789876543210 (a :: T a ()) (a :: T a ()) :: Ordering where
-      Compare_0123456789876543210 ((:*:) a_0123456789876543210 a_0123456789876543210) ((:*:) b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))
+      Compare_0123456789876543210 ((:*:) a_0123456789876543210 a_0123456789876543210) ((:*:) b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#$%^%$#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#$%^%$#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))
     type Compare_0123456789876543210Sym2 (t :: T a0123456789876543210 ()) (t :: T a0123456789876543210 ()) =
         Compare_0123456789876543210 t t
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
@@ -70,7 +70,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance POrd (T a ()) where
       type Compare (a :: T a ()) (a :: T a ()) = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: T a ()) (a :: Symbol) :: Symbol where
-      ShowsPrec_0123456789876543210 p_0123456789876543210 ((:*:) argL_0123456789876543210 argR_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (:>$) p_0123456789876543210) (FromInteger 6))) (Apply (Apply (:.$) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argL_0123456789876543210)) (Apply (Apply (:.$) (Apply ShowStringSym0 " :*: ")) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argR_0123456789876543210)))) a_0123456789876543210
+      ShowsPrec_0123456789876543210 p_0123456789876543210 ((:*:) argL_0123456789876543210 argR_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (:>@#$%^%$#@$) p_0123456789876543210) (FromInteger 6))) (Apply (Apply (:.@#$%^%$#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argL_0123456789876543210)) (Apply (Apply (:.@#$%^%$#@$) (Apply ShowStringSym0 " :*: ")) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argR_0123456789876543210)))) a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym3 (t :: GHC.Types.Nat) (t :: T a0123456789876543210 ()) (t :: Symbol) =
         ShowsPrec_0123456789876543210 t t t
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym2 where
@@ -186,9 +186,9 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 n False = Apply ErrorSym0 "toEnum: bad argument"
     type family Case_0123456789876543210 n t where
       Case_0123456789876543210 n True = S1Sym0
-      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 1))
+      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (:==@#$%^%$#@$) n) (FromInteger 1))
     type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: S where
-      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 0))
+      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (:==@#$%^%$#@$) n) (FromInteger 0))
     type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
         ToEnum_0123456789876543210 t
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
@@ -270,13 +270,13 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
+                ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
                       ((applySing
                           ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
@@ -304,16 +304,17 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
              ((applySing
                  ((applySing ((singFun3 @ShowParenSym0) sShowParen))
                     ((applySing
-                        ((applySing ((singFun2 @(:>$)) (%:>))) sP_0123456789876543210))
+                        ((applySing ((singFun2 @(:>@#$%^%$#@$)) (%:>)))
+                           sP_0123456789876543210))
                        (sFromInteger (sing :: Sing 6)))))
                 ((applySing
-                    ((applySing ((singFun3 @(:.$)) (%:.)))
+                    ((applySing ((singFun3 @(:.@#$%^%$#@$)) (%:.)))
                        ((applySing
                            ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
                               (sFromInteger (sing :: Sing 7))))
                           sArgL_0123456789876543210)))
                    ((applySing
-                       ((applySing ((singFun3 @(:.$)) (%:.)))
+                       ((applySing ((singFun3 @(:.@#$%^%$#@$)) (%:.)))
                           ((applySing ((singFun2 @ShowStringSym0) sShowString))
                              (sing :: Sing " :*: "))))
                       ((applySing
@@ -393,19 +394,19 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                                         -> GHC.Types.Type) t :: GHC.Types.Nat)
       sToEnum (sN :: Sing n)
         = case
-              (applySing ((applySing ((singFun2 @(:==$)) (%:==))) sN))
+              (applySing ((applySing ((singFun2 @(:==@#$%^%$#@$)) (%:==))) sN))
                 (sFromInteger (sing :: Sing 0))
           of
             STrue -> SS1
             SFalse
               -> case
-                     (applySing ((applySing ((singFun2 @(:==$)) (%:==))) sN))
+                     (applySing ((applySing ((singFun2 @(:==@#$%^%$#@$)) (%:==))) sN))
                        (sFromInteger (sing :: Sing 1))
                  of
                    STrue -> SS2
                    SFalse -> sError (sing :: Sing "toEnum: bad argument") ::
-                   Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 1)) :: S) ::
-            Sing (Case_0123456789876543210 n (Apply (Apply (:==$) n) (FromInteger 0)) :: S)
+                   Sing (Case_0123456789876543210 n (Apply (Apply (:==@#$%^%$#@$) n) (FromInteger 1)) :: S) ::
+            Sing (Case_0123456789876543210 n (Apply (Apply (:==@#$%^%$#@$) n) (FromInteger 0)) :: S)
       sFromEnum SS1 = sFromInteger (sing :: Sing 0)
       sFromEnum SS2 = sFromInteger (sing :: Sing 1)
     instance SEq a => SEq (T a ()) where

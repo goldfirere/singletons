@@ -102,9 +102,10 @@ module Data.Promotion.Prelude.List (
 
   -- * Defunctionalization symbols
   NilSym0,
-  (:$), (:$$), (:$$$),
+  (:@#$%^%$#@$), (:@#$%^%$#@$$), (:@#$%^%$#@$$$),
 
-  (:++$$$), (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
+  (:++@#$%^%$#@$$$), (:++@#$%^%$#@$$), (:++@#$%^%$#@$),
+  HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
 
   MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
@@ -157,7 +158,7 @@ module Data.Promotion.Prelude.List (
   Unzip7Sym0, Unzip7Sym1,
 
   DeleteSym0, DeleteSym1, DeleteSym2,
-  (:\\$), (:\\$$), (:\\$$$),
+  (:\\@#$%^%$#@$), (:\\@#$%^%$#@$$), (:\\@#$%^%$#@$$$),
   IntersectSym0, IntersectSym1, IntersectSym2,
 
   InsertSym0, InsertSym1, InsertSym2,
@@ -193,7 +194,7 @@ module Data.Promotion.Prelude.List (
   FilterSym0, FilterSym1, FilterSym2,
   PartitionSym0, PartitionSym1, PartitionSym2,
 
-  (:!!$), (:!!$$), (:!!$$$),
+  (:!!@#$%^%$#@$), (:!!@#$%^%$#@$$), (:!!@#$%^%$#@$$$),
 
   ElemIndexSym0, ElemIndexSym1, ElemIndexSym2,
   ElemIndicesSym0, ElemIndicesSym1, ElemIndicesSym2,

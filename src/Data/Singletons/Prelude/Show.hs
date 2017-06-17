@@ -40,7 +40,7 @@ module Data.Singletons.Prelude.Show (
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  (:<>$), (:<>$$), (:<>$$$),
+  (:<>@#$%^%$#@$), (:<>@#$%^%$#@$$), (:<>@#$%^%$#@$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowListWithSym0, ShowListWithSym1, ShowListWithSym2, ShowListWithSym3,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
@@ -51,7 +51,6 @@ module Data.Singletons.Prelude.Show (
   AppPrecSym0, AppPrec1Sym0
   ) where
 
-import           Data.Kind (Type)
 import           Data.List.NonEmpty (NonEmpty)
 import           Data.Monoid ((<>))
 import           Data.Singletons.Prelude.Base
@@ -87,18 +86,7 @@ sa %:<> sb =
          SomeSymbol (_ :: Proxy ab) -> unsafeCoerce (SSym :: Sing ab)
 infixr 6 %:<>
 
-type (:<>$$$) (x :: Symbol) (y :: Symbol) =
-    (:<>) x y
-instance SuppressUnusedWarnings (:<>$$) where
-  suppressUnusedWarnings = snd ((:<>$$###), ())
-data (:<>$$) (x :: Symbol) (y :: TyFun Symbol Symbol)
-  = forall arg. KindOf (Apply ((:<>$$) x) arg) ~ KindOf ((:<>$$$) x arg) => (:<>$$###)
-type instance Apply ((:<>$$) x) y = (:<>$$$) x y
-instance SuppressUnusedWarnings (:<>$) where
-  suppressUnusedWarnings = snd ((:<>$###), ())
-data (:<>$) (x :: TyFun Symbol (TyFun Symbol Symbol -> Type))
-  = forall arg. KindOf (Apply (:<>$) arg) ~ KindOf ((:<>$$) arg) => (:<>$###)
-type instance Apply (:<>$) x = (:<>$$) x
+$(genDefunSymbols [''(:<>)])
 
 -- | The @shows@ functions return a function that prepends the
 -- output 'Symbol' to an existing 'Symbol'.  This allows constant-time

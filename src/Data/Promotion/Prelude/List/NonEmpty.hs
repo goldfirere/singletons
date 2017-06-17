@@ -69,7 +69,7 @@ module Data.Promotion.Prelude.List.NonEmpty (
   Xor,
 
   -- * Defunctionalization symbols
-  (:|$), (:|$$), (:|$$$),
+  (:|@#$%^%$#@$), (:|@#$%^%$#@$$), (:|@#$%^%$#@$$$),
   MapSym0, MapSym1, MapSym2,
   IntersperseSym0, IntersperseSym1, IntersperseSym2,
   ScanlSym0, ScanlSym1, ScanlSym2, ScanlSym3,
@@ -84,7 +84,7 @@ module Data.Promotion.Prelude.List.NonEmpty (
   TailSym0, TailSym1,
   LastSym0, LastSym1,
   InitSym0, InitSym1,
-  (:<|$), (:<|$$), (:<|$$$),
+  (:<|@#$%^%$#@$), (:<|@#$%^%$#@$$), (:<|@#$%^%$#@$$$),
   ConsSym0, ConsSym1, ConsSym2,
   UnconsSym0, UnconsSym1,
   UnfoldrSym0, UnfoldrSym1, UnfoldrSym2,
@@ -114,7 +114,7 @@ module Data.Promotion.Prelude.List.NonEmpty (
   IsPrefixOfSym0, IsPrefixOfSym1, IsPrefixOfSym2,
   NubSym0, NubSym1,
   NubBySym0, NubBySym1, NubBySym2,
-  (:!!$), (:!!$$), (:!!$$$),
+  (:!!@#$%^%$#@$), (:!!@#$%^%$#@$$), (:!!@#$%^%$#@$$$),
   ZipSym0, ZipSym1, ZipSym2,
   ZipWithSym0, ZipWithSym1, ZipWithSym2, ZipWithSym3,
   UnzipSym0, UnzipSym1,
