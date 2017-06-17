@@ -41,6 +41,7 @@ extensions. This list includes, but is not necessarily limited to, the
 following:
 
 * `DefaultSignatures`
+* `ExistentialQuantification`
 * `FlexibleContexts`
 * `FlexibleInstances`
 * `GADTs`
