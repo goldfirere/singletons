@@ -80,9 +80,8 @@ equivalent of the real `Prelude`. Note that not all functions from original
 
 `Data.Singletons.Prelude.*` modules provide singletonized equivalents of
 definitions found in the following `base` library modules: `Data.Bool`,
-`Data.Maybe`, `Data.Either`, `Data.List`, `Data.Tuple`, `Data.Void` and
-`GHC.Base`. We also provide singletonized `Eq`, `Ord`, `Show`, `Enum`, and
-`Bounded` typeclasses.
+`Data.Maybe`, `Data.Either`, `Data.List`, `Data.Tuple` and `GHC.Base`. We also
+provide singletonized `Eq`, `Ord`, `Show`, `Enum`, and `Bounded` typeclasses.
 
 `Data.Singletons.Decide` exports type classes for propositional equality.
 
