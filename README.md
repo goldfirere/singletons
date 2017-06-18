@@ -416,6 +416,8 @@ There are some special cases:
 
 1. original datatype: `[]`
 
+   promoted kind: `[]`
+
    singleton type: `SList`
 
 
@@ -439,6 +441,8 @@ There are some special cases:
 
 4. original datatype: `(,)`
 
+   promoted kind: `(,)`
+
    singleton type: `STuple2`
 
 
@@ -457,6 +461,8 @@ There are some special cases:
    promoted type: `Any`
 
    singleton value: `undefined`
+
+   symbols: `Any`
 
 
 Supported Haskell constructs
