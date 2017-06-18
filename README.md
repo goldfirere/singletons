@@ -417,7 +417,7 @@ treatment):
 
    promoted kind: `[]`
 
-   singleton type\*: `SList`
+   singleton type: `SList`
 
 
 2. original constructor: `[]`
@@ -442,7 +442,7 @@ treatment):
 
    promoted kind: `(,)`
 
-   singleton type\*: `STuple2`
+   singleton type: `STuple2`
 
 
 5. original constructor: `(,)`
@@ -454,6 +454,15 @@ treatment):
    symbols\*: `Tuple2Sym0`, `Tuple2Sym1`, `Tuple2Sym2`
 
    All tuples (including the 0-tuple, unit) are treated similarly.
+
+6. original value: `undefined`
+
+   promoted type: `Any`
+
+   singleton value: `undefined`
+
+   symbols: `Any`
+
 
 Supported Haskell constructs
 ----------------------------
