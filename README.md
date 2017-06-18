@@ -432,7 +432,7 @@ There are some special cases:
 
    promoted type: `':`
 
-   singleton constructr: `SCons`
+   singleton constructor: `SCons`
 
    symbols: `ConsSym0`, `ConsSym1`
 
