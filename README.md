@@ -433,7 +433,7 @@ treatment):
 
    promoted type: `':`
 
-   singleton constructor\*: `SCons`
+   singleton constructor: `SCons`
 
    symbols: `:@#@$`, `:@#@$$`, `:@#@$$$`
 
