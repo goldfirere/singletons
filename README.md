@@ -409,39 +409,38 @@ generates. Here are some examples showing how this is done:
 Special names
 -------------
 
-There are some special cases, listed below (with asterisks\* denoting special
-treatment):
+There are some special cases, listed below (with asterisks\* denoting special treatment):
 
 1. original datatype: `[]`
 
    promoted kind: `[]`
 
-   singleton type: `SList`
+   singleton type\*: `SList`
 
 
 2. original constructor: `[]`
 
    promoted type: `'[]`
 
-   singleton constructor\*: `SNil`
+    singleton constructor\*: `SNil`
 
-   symbols\*: `NilSym0`
+    symbols\*: `NilSym0`
 
 
 3. original constructor: `:`
 
    promoted type: `':`
 
-   singleton constructor: `SCons`
+   singleton constructor\*: `SCons`
 
-   symbols: `:@#@$`, `:@#@$$`, `:@#@$$$`
+   symbols\*: `ConsSym0`, `ConsSym1`
 
 
 4. original datatype: `(,)`
 
    promoted kind: `(,)`
 
-   singleton type: `STuple2`
+   singleton type\*: `STuple2`
 
 
 5. original constructor: `(,)`
@@ -456,11 +455,11 @@ treatment):
 
 6. original value: `undefined`
 
-   promoted type: `Any`
+   promoted type\*: `Any`
 
-   singleton value: `undefined`
+   singleton value\*: `undefined`
 
-   symbols: `Any`
+   symbols\*: `Any`
 
 
 Supported Haskell constructs
