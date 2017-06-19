@@ -353,8 +353,9 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance PEq (Foo a b c d) where
       type (:==) (a :: Foo a b c d) (b :: Foo a b c d) = Equals_0123456789876543210 a b
     data instance Sing (z :: Nat)
-      = z ~ Zero => SZero |
-        forall (n :: Nat). z ~ Succ n => SSucc (Sing (n :: Nat))
+      where
+        SZero :: Sing Zero
+        SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> Sing (Succ n)
     type SNat = (Sing :: Nat -> GHC.Types.Type)
     instance SingKind Nat where
       type Demote Nat = Nat
@@ -365,18 +366,31 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
     data instance Sing (z :: Foo a b c d)
-      = forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ A n n n n =>
-        SA (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
-        forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ B n n n n =>
-        SB (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
-        forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ C n n n n =>
-        SC (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
-        forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ D n n n n =>
-        SD (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
-        forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ E n n n n =>
-        SE (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d)) |
-        forall (n :: a) (n :: b) (n :: c) (n :: d). z ~ F n n n n =>
-        SF (Sing (n :: a)) (Sing (n :: b)) (Sing (n :: c)) (Sing (n :: d))
+      where
+        SA :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+              (Sing (n :: a))
+              -> (Sing (n :: b))
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (A n n n n)
+        SB :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+              (Sing (n :: a))
+              -> (Sing (n :: b))
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (B n n n n)
+        SC :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+              (Sing (n :: a))
+              -> (Sing (n :: b))
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (C n n n n)
+        SD :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+              (Sing (n :: a))
+              -> (Sing (n :: b))
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (D n n n n)
+        SE :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+              (Sing (n :: a))
+              -> (Sing (n :: b))
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (E n n n n)
+        SF :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+              (Sing (n :: a))
+              -> (Sing (n :: b))
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (F n n n n)
     type SFoo = (Sing :: Foo a b c d -> GHC.Types.Type)
     instance (SingKind a, SingKind b, SingKind c, SingKind d) =>
              SingKind (Foo a b c d) where

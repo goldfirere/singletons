@@ -181,12 +181,13 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare (SVec _ _) SString = SGT
       sCompare (SVec _ _) (SMaybe _) = SGT
     data instance Sing (z :: Type)
-      = z ~ Nat => SNat |
-        z ~ Int => SInt |
-        z ~ String => SString |
-        forall (n :: Type). z ~ Maybe n => SMaybe (Sing (n :: Type)) |
-        forall (n :: Type) (n :: Nat). z ~ Vec n n =>
-        SVec (Sing (n :: Type)) (Sing (n :: Nat))
+      where
+        SNat :: Sing Nat
+        SInt :: Sing Int
+        SString :: Sing String
+        SMaybe :: forall (n :: Type). (Sing (n :: Type)) -> Sing (Maybe n)
+        SVec :: forall (n :: Type) (n :: Nat).
+                (Sing (n :: Type)) -> (Sing (n :: Nat)) -> Sing (Vec n n)
     type SRep = (Sing :: Type -> Type)
     instance SingKind Type where
       type Demote Type = Rep

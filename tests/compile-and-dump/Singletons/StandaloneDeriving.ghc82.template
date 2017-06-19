@@ -230,8 +230,9 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       type (:==) (a :: S) (b :: S) = Equals_0123456789876543210 a b
     infixl 6 :%*:
     data instance Sing (z :: T a b)
-      = forall (n :: a) (n :: b). z ~ (:*:) n n =>
-        (Sing (n :: a)) :%*: (Sing (n :: b))
+      where
+        (:%*:) :: forall (n :: a) (n :: b).
+                  (Sing (n :: a)) -> (Sing (n :: b)) -> Sing ((:*:) n n)
     type ST = (Sing :: T a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind (T a b) where
       type Demote (T a b) = T (Demote a) (Demote b)
@@ -242,7 +243,10 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c)
               -> SomeSing (((:%*:) c) c) }
-    data instance Sing (z :: S) = z ~ S1 => SS1 | z ~ S2 => SS2
+    data instance Sing (z :: S)
+      where
+        SS1 :: Sing S1
+        SS2 :: Sing S2
     type SS = (Sing :: S -> GHC.Types.Type)
     instance SingKind S where
       type Demote S = S

@@ -245,21 +245,22 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 :%&:
     infixl 5 :%*:
     infixl 5 `SMkFoo2b`
-    data instance Sing (z :: Foo1) = z ~ MkFoo1 => SMkFoo1
+    data instance Sing (z :: Foo1) where SMkFoo1 :: Sing MkFoo1
     type SFoo1 = (Sing :: Foo1 -> GHC.Types.Type)
     instance SingKind Foo1 where
       type Demote Foo1 = Foo1
       fromSing SMkFoo1 = MkFoo1
       toSing MkFoo1 = SomeSing SMkFoo1
     data instance Sing (z :: Foo2 a)
-      = forall (n :: a) (n :: a). z ~ MkFoo2a n n =>
-        SMkFoo2a (Sing (n :: a)) (Sing (n :: a)) |
-        forall (n :: a) (n :: a). z ~ MkFoo2b n n =>
-        (Sing (n :: a)) `SMkFoo2b` (Sing (n :: a)) |
-        forall (n :: a) (n :: a). z ~ (:*:) n n =>
-        (:%*:) (Sing (n :: a)) (Sing (n :: a)) |
-        forall (n :: a) (n :: a). z ~ (:&:) n n =>
-        (Sing (n :: a)) :%&: (Sing (n :: a))
+      where
+        SMkFoo2a :: forall (n :: a) (n :: a).
+                    (Sing (n :: a)) -> (Sing (n :: a)) -> Sing (MkFoo2a n n)
+        SMkFoo2b :: forall (n :: a) (n :: a).
+                    (Sing (n :: a)) -> (Sing (n :: a)) -> Sing (MkFoo2b n n)
+        (:%*:) :: forall (n :: a) (n :: a).
+                  (Sing (n :: a)) -> (Sing (n :: a)) -> Sing ((:*:) n n)
+        (:%&:) :: forall (n :: a) (n :: a).
+                  (Sing (n :: a)) -> (Sing (n :: a)) -> Sing ((:&:) n n)
     type SFoo2 = (Sing :: Foo2 a -> GHC.Types.Type)
     instance SingKind a => SingKind (Foo2 a) where
       type Demote (Foo2 a) = Foo2 (Demote a)
@@ -292,9 +293,10 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
             GHC.Tuple.(,) (SomeSing c) (SomeSing c)
               -> SomeSing (((:%&:) c) c) }
     data instance Sing (z :: Foo3)
-      = forall (n :: Bool) (n :: Bool). z ~ MkFoo3 n n =>
-        SMkFoo3 {sGetFoo3a :: (Sing (n :: Bool)),
-                 %:*** :: (Sing (n :: Bool))}
+      where
+        SMkFoo3 :: forall (n :: Bool) (n :: Bool).
+                   {sGetFoo3a :: (Sing (n :: Bool)), %:*** :: (Sing (n :: Bool))}
+                   -> Sing (MkFoo3 n n)
     type SFoo3 = (Sing :: Foo3 -> GHC.Types.Type)
     instance SingKind Foo3 where
       type Demote Foo3 = Foo3

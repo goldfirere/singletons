@@ -327,8 +327,10 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
           sP = SNothing
         in sP
     data instance Sing (z :: Baz)
-      = forall (n :: Nat) (n :: Nat) (n :: Nat). z ~ Baz n n n =>
-        SBaz (Sing (n :: Nat)) (Sing (n :: Nat)) (Sing (n :: Nat))
+      where
+        SBaz :: forall (n :: Nat) (n :: Nat) (n :: Nat).
+                (Sing (n :: Nat))
+                -> (Sing (n :: Nat)) -> (Sing (n :: Nat)) -> Sing (Baz n n n)
     type SBaz = (Sing :: Baz -> GHC.Types.Type)
     instance SingKind Baz where
       type Demote Baz = Baz

@@ -286,7 +286,10 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     sFooCompare SB SB = SGT
     sFooCompare SB SA = SEQ
     sConst (sX :: Sing x) _ = sX
-    data instance Sing (z :: Foo) = z ~ A => SA | z ~ B => SB
+    data instance Sing (z :: Foo)
+      where
+        SA :: Sing A
+        SB :: Sing B
     type SFoo = (Sing :: Foo -> GHC.Types.Type)
     instance SingKind Foo where
       type Demote Foo = Foo
@@ -294,7 +297,10 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       fromSing SB = B
       toSing A = SomeSing SA
       toSing B = SomeSing SB
-    data instance Sing (z :: Foo2) = z ~ F => SF | z ~ G => SG
+    data instance Sing (z :: Foo2)
+      where
+        SF :: Sing F
+        SG :: Sing G
     type SFoo2 = (Sing :: Foo2 -> GHC.Types.Type)
     instance SingKind Foo2 where
       type Demote Foo2 = Foo2
@@ -496,8 +502,9 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     instance PMyOrd Nat' where
       type Mycompare (a :: Nat') (a :: Nat') = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     data instance Sing (z :: Nat')
-      = z ~ Zero' => SZero' |
-        forall (n :: Nat'). z ~ Succ' n => SSucc' (Sing (n :: Nat'))
+      where
+        SZero' :: Sing Zero'
+        SSucc' :: forall (n :: Nat'). (Sing (n :: Nat')) -> Sing (Succ' n)
     type SNat' = (Sing :: Nat' -> GHC.Types.Type)
     instance SingKind Nat' where
       type Demote Nat' = Nat'
