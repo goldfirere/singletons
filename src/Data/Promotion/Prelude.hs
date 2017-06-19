@@ -24,7 +24,7 @@ module Data.Promotion.Prelude (
   Fst, Snd, Curry, Uncurry,
 
   -- * Error reporting
-  Error, ErrorSym0,
+  Error, Undefined,
 
   -- * Promoted equality
   module Data.Promotion.Prelude.Eq,
@@ -55,7 +55,7 @@ module Data.Promotion.Prelude (
   -- ** Reducing lists (folds)
   Foldl, Foldl1, Foldr, Foldr1,
   -- *** Special folds
-  And, Or, any_, Any_, All,
+  And, Or, Any, All,
   Sum, Product,
   Concat, ConcatMap,
   Maximum, Minimum,
@@ -97,6 +97,8 @@ module Data.Promotion.Prelude (
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
 
+  ErrorSym0, ErrorSym1, UndefinedSym0,
+
   (:^@#@$), (:^@#@$$),
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
@@ -130,7 +132,7 @@ module Data.Promotion.Prelude (
   MaximumBySym0, MaximumBySym1, MaximumBySym2,
   MinimumBySym0, MinimumBySym1, MinimumBySym2,
   AndSym0, AndSym1, OrSym0, OrSym1,
-  Any_Sym0, Any_Sym1, Any_Sym2,
+  AnySym0, AnySym1, AnySym2,
   AllSym0, AllSym1, AllSym2,
 
   ScanlSym0, ScanlSym1, ScanlSym2, ScanlSym3,

@@ -590,7 +590,7 @@ sEqToSDecide p@(DConPr n)
 sEqToSDecide DWildCardPr = DWildCardPr
 
 isException :: DExp -> Bool
-isException (DVarE n)             = n == undefinedName
+isException (DVarE n)             = nameBase n == "sUndefined"
 isException (DConE {})            = False
 isException (DLitE {})            = False
 isException (DAppE (DVarE fun) _) | nameBase fun == "sError" = True

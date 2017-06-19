@@ -19,6 +19,10 @@ next
 
   This makes the treatment of `($)` consistent with other symbolic functions.
 
+* The treatment of `undefined` is less magical. Before, all uses of `undefined`
+  would be promoted to `GHC.Exts.Any` and singled to `undefined`. Now, there is
+  a proper `Undefined` type family and `sUndefined` singleton function.
+
 * Add promoted and singled versions of `Show`, including `deriving` support.
 
 * Permit derived `Ord` instances for empty datatypes.

@@ -52,7 +52,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
         FooListSym0KindInference
     type instance Apply FooListSym0 l = FooListSym1 l
     type family FooList_0123456789876543210 (a :: a) (a :: [Bool]) :: [Bool] where
-      FooList_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply Any a_0123456789876543210) a_0123456789876543210
+      FooList_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply UndefinedSym0 a_0123456789876543210) a_0123456789876543210
     type FooList_0123456789876543210Sym2 (t :: a0123456789876543210) (t :: [Bool]) =
         FooList_0123456789876543210 t t
     instance SuppressUnusedWarnings FooList_0123456789876543210Sym1 where
@@ -131,7 +131,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       sFooList
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = undefined
+        = sUndefined
     instance SFoo a => SFoo [a] where
       sFoosPrec ::
         forall (t :: Nat) (t :: [a]) (t :: [Bool]).

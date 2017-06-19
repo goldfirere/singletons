@@ -33,8 +33,7 @@ module Data.Promotion.Prelude.List (
   Foldl, Foldl', Foldl1, Foldl1', Foldr, Foldr1,
 
   -- ** Special folds
-  Concat, ConcatMap, And, Or, Any_, All, Sum, Product, Maximum, Minimum,
-  any_, -- equivalent of Data.List `any`. Avoids name clash with Any type
+  Concat, ConcatMap, And, Or, Any, All, Sum, Product, Maximum, Minimum,
 
   -- * Building lists
 
@@ -124,7 +123,7 @@ module Data.Promotion.Prelude.List (
   ConcatSym0, ConcatSym1,
   ConcatMapSym0, ConcatMapSym1, ConcatMapSym2,
   AndSym0, AndSym1, OrSym0, OrSym1,
-  Any_Sym0, Any_Sym1, Any_Sym2,
+  AnySym0, AnySym1, AnySym2,
   AllSym0, AllSym1, AllSym2,
 
   ScanlSym0, ScanlSym1, ScanlSym2, ScanlSym3,

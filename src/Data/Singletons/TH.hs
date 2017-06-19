@@ -56,11 +56,11 @@ module Data.Singletons.TH (
 
   PEq(..), If, sIf, (:&&), SEq(..),
   POrd(..), SOrd(..), ThenCmp, sThenCmp, Foldl, sFoldl,
-  Any,
   SDecide(..), (:~:)(..), Void, Refuted, Decision(..),
   SomeSing(..),
 
   Error, ErrorSym0,
+  Undefined, sUndefined, UndefinedSym0,
   TrueSym0, FalseSym0,
   LTSym0, EQSym0, GTSym0,
   Tuple0Sym0,
@@ -89,7 +89,6 @@ import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.Names
 import Language.Haskell.TH.Desugar
 
-import GHC.Exts
 import Language.Haskell.TH
 import Data.Singletons.Util
 import Control.Arrow ( first )

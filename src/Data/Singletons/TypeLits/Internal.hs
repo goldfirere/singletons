@@ -25,6 +25,7 @@ module Data.Singletons.TypeLits.Internal (
   Nat, Symbol,
   SNat, SSymbol, withKnownNat, withKnownSymbol,
   Error, ErrorSym0, ErrorSym1, sError,
+  Undefined, UndefinedSym0, sUndefined,
   KnownNat, natVal, KnownSymbol, symbolVal,
 
   (:^), (:^@#@$), (:^@#@$$), (:^@#@$$$)
@@ -145,12 +146,20 @@ withKnownSymbol SSym f = f
 
 -- | The promotion of 'error'. This version is more poly-kinded for
 -- easier use.
-type family Error (str :: k0) :: k
+type family Error (str :: k0) :: k where {}
 $(genDefunSymbols [''Error])
 
 -- | The singleton for 'error'
 sError :: Sing (str :: Symbol) -> a
 sError sstr = error (T.unpack (fromSing sstr))
+
+-- | The promotion of 'Undefined'.
+type family Undefined :: k where {}
+$(genDefunSymbols [''Undefined])
+
+-- | The singleton for 'undefined'.
+sUndefined :: a
+sUndefined = undefined
 
 -- TODO: move this to a better home:
 type a :^ b = a ^ b
