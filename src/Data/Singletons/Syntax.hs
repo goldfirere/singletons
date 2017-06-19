@@ -72,9 +72,9 @@ data AnnotationFlag = Annotated | Unannotated
 type Annotated   = 'Annotated
 type Unannotated = 'Unannotated
 
-type family IfAnn (ann :: AnnotationFlag) (yes :: k) (no :: k) :: k
-type instance IfAnn Annotated   yes no = yes
-type instance IfAnn Unannotated yes no = no
+type family IfAnn (ann :: AnnotationFlag) (yes :: k) (no :: k) :: k where
+  IfAnn Annotated   yes no = yes
+  IfAnn Unannotated yes no = no
 
 data family LetDecRHS (ann :: AnnotationFlag)
 data instance LetDecRHS Annotated
