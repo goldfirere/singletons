@@ -91,8 +91,8 @@ buildDefunSymsDataD tyName tvbs ctors = do
 -- it out using the types of the "KindInference" dummy data constructors. A
 -- bit of a hack, but it works quite nicely. The only problem is that GHC will
 -- warn about an unused data constructor. So, we use the data constructor in
--- an instance of a dummy class. (See Data.Singletons.Hidden for the class, which
--- should never be seen by anyone, ever.)
+-- an instance of a dummy class. (See Data.Singletons.SuppressUnusedWarnings
+-- for the class, which should never be seen by anyone, ever.)
 --
 -- The defunctionalize function takes Maybe DKinds so that the caller can
 -- indicate which kinds are known and which need to be inferred.
