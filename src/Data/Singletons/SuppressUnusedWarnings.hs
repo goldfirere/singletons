@@ -1,4 +1,4 @@
--- Data/Singletons/Hidden.hs
+-- Data/Singletons/SuppressUnusedWarnings.hs
 --
 -- (c) Richard Eisenberg 2014
 -- rae@cs.brynmawr.edu
