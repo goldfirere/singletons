@@ -104,7 +104,6 @@ $(singletonsOnly [d|
   (.*.) `on` f = \x y -> f x .*. f y
   infixl 0 `on`
 
-
   -- -| '&' is a reverse application operator.  This provides notational
   -- convenience.  Its precedence is one higher than that of the forward
   -- application operator '$', which allows '&' to be nested in '$'.
