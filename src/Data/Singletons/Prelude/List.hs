@@ -429,10 +429,12 @@ $(singletonsOnly [d|
   elem                    :: (Eq a) => a -> [a] -> Bool
   elem _ []               = False
   elem x (y:ys)           = x==y || elem x ys
+  infix 4 `elem`
 
   notElem                 :: (Eq a) => a -> [a] -> Bool
   notElem _ []            =  True
   notElem x (y:ys)        =  x /= y && notElem x ys
+  infix 4 `notElem`
 
   zip :: [a] -> [b] -> [(a,b)]
   zip (x:xs) (y:ys) = (x,y) : zip xs ys
@@ -775,6 +777,7 @@ $(singletonsOnly [d|
   (!!)                    :: [a] -> Nat -> a
   []     !! _         =  error "Data.Singletons.List.!!: index too large"
   (x:xs) !! n         =  if n == 0 then x else xs !! (n-1)
+  infixl 9 !!
 
   nub                     :: forall a. (Eq a) => [a] -> [a]
   nub l                   = nub' l []
