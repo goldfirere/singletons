@@ -219,7 +219,7 @@ promoteLetDecs prefixes decls = do
   emitDecs decs
   return (binds, let_dec_env' { lde_proms = Map.fromList binds })
 
--- Promotion of data types to kinds is automatic (see "Ginving Haskell a
+-- Promotion of data types to kinds is automatic (see "Giving Haskell a
 -- Promotion" paper for more details). Here we "plug into" the promotion
 -- mechanism to add some extra stuff to the promotion:
 --
