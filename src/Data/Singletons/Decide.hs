@@ -48,6 +48,7 @@ data Decision a = Proved a               -- ^ Witness for @a@
 class SDecide k where
   -- | Compute a proof or disproof of equality, given two singletons.
   (%~) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Decision (a :~: b)
+  infix 4 %~
 
 instance SDecide k => TestEquality (Sing :: k -> Type) where
   testEquality a b =
