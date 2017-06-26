@@ -9,6 +9,8 @@ next
 
 * Permit standalone `deriving` declarations.
 
+* Add a value-level `(@@)`, which is a synonym for `applySing`.
+
 2.3.1
 -----
 * Fix the Haddock build, thanks to @christiaanb.
