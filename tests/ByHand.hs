@@ -785,12 +785,12 @@ sFindIndices sP sLs =
             -> forall (u2 :: List a). Sing u2
             -> Sing ((Let123LoopSym2 t1 t2) @@ u1 @@ u2)
       sLoop _ SNil = SNil
-      sLoop sN (sX `SCons` sXs) = case sP `applySing` sX of
-        STrue -> (singFun2 @ConsSym0 SCons) `applySing` sN `applySing`
-                   ((singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` ((singFun1 @SuccSym0 SSucc) `applySing` sN) `applySing` sXs)
-        SFalse -> (singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` ((singFun1 @SuccSym0 SSucc) `applySing` sN) `applySing` sXs
+      sLoop sN (sX `SCons` sXs) = case sP @@ sX of
+        STrue -> (singFun2 @ConsSym0 SCons) @@ sN @@
+                   ((singFun2 @(Let123LoopSym2 t1 t2) sLoop) @@ ((singFun1 @SuccSym0 SSucc) @@ sN) @@ sXs)
+        SFalse -> (singFun2 @(Let123LoopSym2 t1 t2) sLoop) @@ ((singFun1 @SuccSym0 SSucc) @@ sN) @@ sXs
   in
-  (singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` SZero `applySing` sLs
+  (singFun2 @(Let123LoopSym2 t1 t2) sLoop) @@ SZero @@ sLs
 
 
 fI :: forall a. (a -> Bool) -> [a] -> [Nat]
@@ -835,12 +835,12 @@ sFI = unSingFun2 (singFun2 @FI (\p ls ->
                     -> forall {-(u2 :: List a)-} u2. Sing u2
                     -> Sing ((Let123LoopSym2 t1 t2) @@ u1 @@ u2)
               sLoop _ SNil = SNil
-              sLoop sN (sX `SCons` sXs) =  case sP `applySing` sX of
-                STrue -> (singFun2 @ConsSym0 SCons) `applySing` sN `applySing`
-                     ((singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` ((singFun1 @SuccSym0 SSucc) `applySing` sN) `applySing` sXs)
-                SFalse -> (singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` ((singFun1 @SuccSym0 SSucc) `applySing` sN) `applySing` sXs
+              sLoop sN (sX `SCons` sXs) =  case sP @@ sX of
+                STrue -> (singFun2 @ConsSym0 SCons) @@ sN @@
+                     ((singFun2 @(Let123LoopSym2 t1 t2) sLoop) @@ ((singFun1 @SuccSym0 SSucc) @@ sN) @@ sXs)
+                SFalse -> (singFun2 @(Let123LoopSym2 t1 t2) sLoop) @@ ((singFun1 @SuccSym0 SSucc) @@ sN) @@ sXs
           in
-          (singFun2 @(Let123LoopSym2 t1 t2) sLoop) `applySing` SZero `applySing` sLs
+          (singFun2 @(Let123LoopSym2 t1 t2) sLoop) @@ SZero @@ sLs
     in
     lambda p ls
   ))

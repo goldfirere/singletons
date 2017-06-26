@@ -26,7 +26,7 @@
 module Data.Singletons (
   -- * Main singleton definitions
 
-  Sing(SLambda, applySing),
+  Sing(SLambda, applySing), (@@),
   -- | See also 'Data.Singletons.Prelude.Sing' for exported constructors
 
   SingI(..), SingKind(..),
@@ -200,6 +200,10 @@ infixl 9 @@
 newtype instance Sing (f :: k1 ~> k2) =
   SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
 
+-- | An infix synonym for `applySing`
+(@@) :: forall (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)
+(@@) = applySing
+
 instance (SingKind k1, SingKind k2) => SingKind (k1 ~> k2) where
   type Demote (k1 ~> k2) = Demote k1 -> Demote k2
   fromSing sFun x = withSomeSing x (fromSing . applySing sFun)
@@ -253,25 +257,25 @@ unSingFun1 :: forall f. Sing f -> SingFunction1 f
 unSingFun1 sf = applySing sf
 
 unSingFun2 :: forall f. Sing f -> SingFunction2 f
-unSingFun2 sf x = unSingFun1 (sf `applySing` x)
+unSingFun2 sf x = unSingFun1 (sf @@ x)
 
 unSingFun3 :: forall f. Sing f -> SingFunction3 f
-unSingFun3 sf x = unSingFun2 (sf `applySing` x)
+unSingFun3 sf x = unSingFun2 (sf @@ x)
 
 unSingFun4 :: forall f. Sing f -> SingFunction4 f
-unSingFun4 sf x = unSingFun3 (sf `applySing` x)
+unSingFun4 sf x = unSingFun3 (sf @@ x)
 
 unSingFun5 :: forall f. Sing f -> SingFunction5 f
-unSingFun5 sf x = unSingFun4 (sf `applySing` x)
+unSingFun5 sf x = unSingFun4 (sf @@ x)
 
 unSingFun6 :: forall f. Sing f -> SingFunction6 f
-unSingFun6 sf x = unSingFun5 (sf `applySing` x)
+unSingFun6 sf x = unSingFun5 (sf @@ x)
 
 unSingFun7 :: forall f. Sing f -> SingFunction7 f
-unSingFun7 sf x = unSingFun6 (sf `applySing` x)
+unSingFun7 sf x = unSingFun6 (sf @@ x)
 
 unSingFun8 :: forall f. Sing f -> SingFunction8 f
-unSingFun8 sf x = unSingFun7 (sf `applySing` x)
+unSingFun8 sf x = unSingFun7 (sf @@ x)
 
 ----------------------------------------------------------------------
 ---- Convenience -----------------------------------------------------
