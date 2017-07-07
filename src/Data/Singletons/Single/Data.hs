@@ -111,12 +111,6 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
           pure $ DClause [DVarPa x]
                $ DCaseE (DVarE x) []
 
-        mkEmptyToSingClause :: SgM DClause
-        mkEmptyToSingClause = do
-          x <- qNewName "x"
-          pure $ DClause [DVarPa x]
-               $ DConE someSingDataName `DAppE` DCaseE (DVarE x) []
-
 -- refine a constructor.
 singCtor :: DCon -> SgM DCon
  -- polymorphic constructors are handled just

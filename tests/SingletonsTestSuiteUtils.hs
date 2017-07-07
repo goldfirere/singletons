@@ -99,6 +99,7 @@ ghcOpts = extraOpts ++ [
   , "-XCPP"
   , "-XTypeInType"
   , "-XStandaloneDeriving"
+  , "-XTypeApplications"
   ]
 
 -- Note [-this-unit-id hack]
