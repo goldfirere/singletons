@@ -39,19 +39,19 @@ GradingClient/Main.hs:(0,0)-(0,0): Splicing declarations
     type GradingSchemaSym0 = GradingSchema
     type NamesSym0 = Names
     type family MajorName :: [AChar] where
-      = Apply (Apply (:@#$%^%$#@$) CMSym0) (Apply (Apply (:@#$%^%$#@$) CASym0) (Apply (Apply (:@#$%^%$#@$) CJSym0) (Apply (Apply (:@#$%^%$#@$) COSym0) (Apply (Apply (:@#$%^%$#@$) CRSym0) '[]))))
+      = Apply (Apply (:@#@$) CMSym0) (Apply (Apply (:@#@$) CASym0) (Apply (Apply (:@#@$) CJSym0) (Apply (Apply (:@#@$) COSym0) (Apply (Apply (:@#@$) CRSym0) '[]))))
     type family GradeName :: [AChar] where
-      = Apply (Apply (:@#$%^%$#@$) CGSym0) (Apply (Apply (:@#$%^%$#@$) CRSym0) (Apply (Apply (:@#$%^%$#@$) CASym0) (Apply (Apply (:@#$%^%$#@$) CDSym0) (Apply (Apply (:@#$%^%$#@$) CESym0) '[]))))
+      = Apply (Apply (:@#@$) CGSym0) (Apply (Apply (:@#@$) CRSym0) (Apply (Apply (:@#@$) CASym0) (Apply (Apply (:@#@$) CDSym0) (Apply (Apply (:@#@$) CESym0) '[]))))
     type family YearName :: [AChar] where
-      = Apply (Apply (:@#$%^%$#@$) CYSym0) (Apply (Apply (:@#$%^%$#@$) CESym0) (Apply (Apply (:@#$%^%$#@$) CASym0) (Apply (Apply (:@#$%^%$#@$) CRSym0) '[])))
+      = Apply (Apply (:@#@$) CYSym0) (Apply (Apply (:@#@$) CESym0) (Apply (Apply (:@#@$) CASym0) (Apply (Apply (:@#@$) CRSym0) '[])))
     type family FirstName :: [AChar] where
-      = Apply (Apply (:@#$%^%$#@$) CFSym0) (Apply (Apply (:@#$%^%$#@$) CISym0) (Apply (Apply (:@#$%^%$#@$) CRSym0) (Apply (Apply (:@#$%^%$#@$) CSSym0) (Apply (Apply (:@#$%^%$#@$) CTSym0) '[]))))
+      = Apply (Apply (:@#@$) CFSym0) (Apply (Apply (:@#@$) CISym0) (Apply (Apply (:@#@$) CRSym0) (Apply (Apply (:@#@$) CSSym0) (Apply (Apply (:@#@$) CTSym0) '[]))))
     type family LastName :: [AChar] where
-      = Apply (Apply (:@#$%^%$#@$) CLSym0) (Apply (Apply (:@#$%^%$#@$) CASym0) (Apply (Apply (:@#$%^%$#@$) CSSym0) (Apply (Apply (:@#$%^%$#@$) CTSym0) '[])))
+      = Apply (Apply (:@#@$) CLSym0) (Apply (Apply (:@#@$) CASym0) (Apply (Apply (:@#@$) CSSym0) (Apply (Apply (:@#@$) CTSym0) '[])))
     type family GradingSchema :: Schema where
-      = Apply SchSym0 (Apply (Apply (:@#$%^%$#@$) (Apply (Apply AttrSym0 LastNameSym0) STRINGSym0)) (Apply (Apply (:@#$%^%$#@$) (Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0)) (Apply (Apply (:@#$%^%$#@$) (Apply (Apply AttrSym0 YearNameSym0) NATSym0)) (Apply (Apply (:@#$%^%$#@$) (Apply (Apply AttrSym0 GradeNameSym0) NATSym0)) (Apply (Apply (:@#$%^%$#@$) (Apply (Apply AttrSym0 MajorNameSym0) BOOLSym0)) '[])))))
+      = Apply SchSym0 (Apply (Apply (:@#@$) (Apply (Apply AttrSym0 LastNameSym0) STRINGSym0)) (Apply (Apply (:@#@$) (Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0)) (Apply (Apply (:@#@$) (Apply (Apply AttrSym0 YearNameSym0) NATSym0)) (Apply (Apply (:@#@$) (Apply (Apply AttrSym0 GradeNameSym0) NATSym0)) (Apply (Apply (:@#@$) (Apply (Apply AttrSym0 MajorNameSym0) BOOLSym0)) '[])))))
     type family Names :: Schema where
-      = Apply SchSym0 (Apply (Apply (:@#$%^%$#@$) (Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0)) (Apply (Apply (:@#$%^%$#@$) (Apply (Apply AttrSym0 LastNameSym0) STRINGSym0)) '[]))
+      = Apply SchSym0 (Apply (Apply (:@#@$) (Apply (Apply AttrSym0 FirstNameSym0) STRINGSym0)) (Apply (Apply (:@#@$) (Apply (Apply AttrSym0 LastNameSym0) STRINGSym0)) '[]))
     sMajorName :: Sing (MajorNameSym0 :: [AChar])
     sGradeName :: Sing (GradeNameSym0 :: [AChar])
     sYearName :: Sing (YearNameSym0 :: [AChar])
@@ -60,69 +60,64 @@ GradingClient/Main.hs:(0,0)-(0,0): Splicing declarations
     sGradingSchema :: Sing (GradingSchemaSym0 :: Schema)
     sNames :: Sing (NamesSym0 :: Schema)
     sMajorName
-      = (applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCM))
-          ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCA))
-             ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCJ))
-                ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCO))
-                   ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCR))
-                      SNil))))
+      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCM))
+          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCA))
+             ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCJ))
+                ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCO))
+                   ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCR)) SNil))))
     sGradeName
-      = (applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCG))
-          ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCR))
-             ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCA))
-                ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCD))
-                   ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCE))
-                      SNil))))
+      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCG))
+          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCR))
+             ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCA))
+                ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCD))
+                   ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCE)) SNil))))
     sYearName
-      = (applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCY))
-          ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCE))
-             ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCA))
-                ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCR))
-                   SNil)))
+      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCY))
+          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCE))
+             ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCA))
+                ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCR)) SNil)))
     sFirstName
-      = (applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCF))
-          ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCI))
-             ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCR))
-                ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCS))
-                   ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCT))
-                      SNil))))
+      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCF))
+          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCI))
+             ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCR))
+                ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCS))
+                   ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCT)) SNil))))
     sLastName
-      = (applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCL))
-          ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCA))
-             ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCS))
-                ((applySing ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons)) SCT))
-                   SNil)))
+      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCL))
+          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCA))
+             ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCS))
+                ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCT)) SNil)))
     sGradingSchema
       = (applySing ((singFun1 @SchSym0) SSch))
           ((applySing
-              ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+              ((applySing ((singFun2 @(:@#@$)) SCons))
                  ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sLastName))
                     SSTRING)))
              ((applySing
-                 ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+                 ((applySing ((singFun2 @(:@#@$)) SCons))
                     ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sFirstName))
                        SSTRING)))
                 ((applySing
-                    ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+                    ((applySing ((singFun2 @(:@#@$)) SCons))
                        ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sYearName))
                           SNAT)))
                    ((applySing
-                       ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+                       ((applySing ((singFun2 @(:@#@$)) SCons))
                           ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sGradeName))
                              SNAT)))
                       ((applySing
-                          ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+                          ((applySing ((singFun2 @(:@#@$)) SCons))
                              ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sMajorName))
                                 SBOOL)))
                          SNil)))))
     sNames
       = (applySing ((singFun1 @SchSym0) SSch))
           ((applySing
-              ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+              ((applySing ((singFun2 @(:@#@$)) SCons))
                  ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sFirstName))
                     SSTRING)))
              ((applySing
-                 ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+                 ((applySing ((singFun2 @(:@#@$)) SCons))
                     ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sLastName))
                        SSTRING)))
                 SNil))

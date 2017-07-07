@@ -175,7 +175,7 @@ promoteTySym name sat
     = let capped = toUpcaseStr noPrefix name in
       if isHsLetter (head capped)
       then mkName (capped ++ "Sym" ++ (show sat))
-      else mkName (capped ++ "@#$%^%$#@" -- See Note [Defunctionalization symbol suffixes]
+      else mkName (capped ++ "@#@" -- See Note [Defunctionalization symbol suffixes]
                           ++ (replicate (sat + 1) '$'))
 
 promoteClassName :: Name -> Name
@@ -269,11 +269,11 @@ And these defunctionalization symbols:
 
 But now there's a name clash between the promoted type for ($) and the
 defunctionalization symbol for ($$)! The solution is to use a precede these
-defunctionalization dollar signs with another string (we choose @#$%^%$#@).
+defunctionalization dollar signs with another string (we choose @#@).
 So now the new defunctionalization symbols would be:
 
-:$@#$%^%$#@$
-:$@#$%^%$#@$$
+:$@#@$
+:$@#@$$
 
 And there is no conflict.
 -}

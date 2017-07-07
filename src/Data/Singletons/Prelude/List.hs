@@ -130,9 +130,9 @@ module Data.Singletons.Prelude.List (
 
   -- * Defunctionalization symbols
   NilSym0,
-  (:@#$%^%$#@$), (:@#$%^%$#@$$), (:@#$%^%$#@$$$),
+  (:@#@$), (:@#@$$), (:@#@$$$),
 
-  (:++@#$%^%$#@$$$), (:++@#$%^%$#@$$), (:++@#$%^%$#@$),
+  (:++@#@$$$), (:++@#@$$), (:++@#@$),
   HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
   LengthSym0, LengthSym1,
@@ -196,7 +196,7 @@ module Data.Singletons.Prelude.List (
   FilterSym0, FilterSym1, FilterSym2,
   PartitionSym0, PartitionSym1, PartitionSym2,
 
-  (:!!@#$%^%$#@$), (:!!@#$%^%$#@$$), (:!!@#$%^%$#@$$$),
+  (:!!@#@$), (:!!@#@$$), (:!!@#@$$$),
   ElemIndexSym0, ElemIndexSym1, ElemIndexSym2,
   ElemIndicesSym0, ElemIndicesSym1, ElemIndicesSym2,
   FindIndexSym0, FindIndexSym1, FindIndexSym2,
@@ -215,7 +215,7 @@ module Data.Singletons.Prelude.List (
 
   NubSym0, NubSym1,
   DeleteSym0, DeleteSym1, DeleteSym2,
-  (:\\@#$%^%$#@$), (:\\@#$%^%$#@$$), (:\\@#$%^%$#@$$$),
+  (:\\@#@$), (:\\@#@$$), (:\\@#@$$$),
   UnionSym0, UnionSym1, UnionSym2,
   IntersectSym0, IntersectSym1, IntersectSym2,
 

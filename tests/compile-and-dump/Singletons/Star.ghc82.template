@@ -47,8 +47,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
       Compare_0123456789876543210 Nat Nat = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
       Compare_0123456789876543210 Int Int = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
       Compare_0123456789876543210 String String = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
-      Compare_0123456789876543210 (Maybe a_0123456789876543210) (Maybe b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#$%^%$#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
-      Compare_0123456789876543210 (Vec a_0123456789876543210 a_0123456789876543210) (Vec b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#$%^%$#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#$%^%$#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))
+      Compare_0123456789876543210 (Maybe a_0123456789876543210) (Maybe b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
+      Compare_0123456789876543210 (Vec a_0123456789876543210 a_0123456789876543210) (Vec b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))
       Compare_0123456789876543210 Nat Int = LTSym0
       Compare_0123456789876543210 Nat String = LTSym0
       Compare_0123456789876543210 Nat (Maybe _) = LTSym0
@@ -131,7 +131,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+                ((applySing ((singFun2 @(:@#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
@@ -148,13 +148,13 @@ Singletons/Star.hs:0:0:: Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+                ((applySing ((singFun2 @(:@#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+                   ((applySing ((singFun2 @(:@#@$)) SCons))
                       ((applySing
                           ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))

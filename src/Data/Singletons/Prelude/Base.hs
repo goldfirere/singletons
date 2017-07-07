@@ -31,13 +31,13 @@ module Data.Singletons.Prelude.Base (
   -- * Defunctionalization symbols
   FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
   MapSym0, MapSym1, MapSym2,
-  (:++@#$%^%$#@$), (:++@#$%^%$#@$$), (:++@#$%^%$#@$$$),
+  (:++@#@$), (:++@#@$$), (:++@#@$$$),
   OtherwiseSym0,
   IdSym0, IdSym1,
   ConstSym0, ConstSym1, ConstSym2,
-  (:.@#$%^%$#@$), (:.@#$%^%$#@$$), (:.@#$%^%$#@$$$), (:.@#$%^%$#@$$$$),
-  (:$@#$%^%$#@$),  (:$@#$%^%$#@$$),  (:$@#$%^%$#@$$$),
-  (:$!@#$%^%$#@$), (:$!@#$%^%$#@$$), (:$!@#$%^%$#@$$$),
+  (:.@#@$), (:.@#@$$), (:.@#@$$$), (:.@#@$$$$),
+  (:$@#@$),  (:$@#@$$),  (:$@#@$$$),
+  (:$!@#@$), (:$!@#@$$), (:$!@#@$$$),
   FlipSym0, FlipSym1, FlipSym2, FlipSym3,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2,
   SeqSym0, SeqSym1, SeqSym2

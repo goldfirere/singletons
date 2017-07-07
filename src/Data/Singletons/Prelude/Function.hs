@@ -29,10 +29,10 @@ module Data.Singletons.Prelude.Function (
     -- * Defunctionalization symbols
   , IdSym0, IdSym1
   , ConstSym0, ConstSym1, ConstSym2
-  , (:.@#$%^%$#@$), (:.@#$%^%$#@$$), (:.@#$%^%$#@$$$), (:.@#$%^%$#@$$$$)
+  , (:.@#@$), (:.@#@$$), (:.@#@$$$), (:.@#@$$$$)
   , FlipSym0, FlipSym1, FlipSym2, FlipSym3
-  , (:$@#$%^%$#@$), (:$@#$%^%$#@$$), (:$@#$%^%$#@$$$)
-  , (:&@#$%^%$#@$), (:&@#$%^%$#@$$), (:&@#$%^%$#@$$$)
+  , (:$@#@$), (:$@#@$$), (:$@#@$$$)
+  , (:&@#@$), (:&@#@$$), (:&@#@$$$)
   , OnSym0, OnSym1, OnSym2, OnSym3, OnSym4
   ) where
 

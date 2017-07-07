@@ -6,8 +6,8 @@ next
 * The suffix for defunctionalized names of symbolic functions (e.g., `(+)`) has
   changed. Before, the promoted type name would be suffixed with some number of
   dollar signs (e.g., `(:+$)` and `(:+$$)`) to indicate defunctionalization
-  symbols. Now, the promoted type name is first suffixed with `@#$%^%$#@` and
-  _then_ followed by dollar signs (e.g., `(:+@#$%^%$#@$)` and `(:+@#$%^%$#@$$)`).
+  symbols. Now, the promoted type name is first suffixed with `@#@` and
+  _then_ followed by dollar signs (e.g., `(:+@#@$)` and `(:+@#@$$)`).
   Adopting this conventional eliminates naming conflicts that could arise for
   functions that consisted of solely `$` symbols.
 
@@ -15,7 +15,7 @@ next
 
   * `($)`  is now `(:$)`
   * `(%$)` is now `(%:$)`
-  * `($$)` is now `($@#$%^%$#@$)`, and `($$$)` is now `($@#$%^%$#@$$)`
+  * `($$)` is now `($@#@$)`, and `($$$)` is now `($@#@$$)`
 
   This makes the treatment of `($)` consistent with other symbolic functions.
 

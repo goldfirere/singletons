@@ -298,7 +298,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       Foo f g a = Apply (Apply f g) a
     type family ZipWith (a :: TyFun a (TyFun b c -> GHC.Types.Type)
                               -> GHC.Types.Type) (a :: [a]) (a :: [b]) :: [c] where
-      ZipWith f ((:) x xs) ((:) y ys) = Apply (Apply (:@#$%^%$#@$) (Apply (Apply f x) y)) (Apply (Apply (Apply ZipWithSym0 f) xs) ys)
+      ZipWith f ((:) x xs) ((:) y ys) = Apply (Apply (:@#@$) (Apply (Apply f x) y)) (Apply (Apply (Apply ZipWithSym0 f) xs) ys)
       ZipWith _ '[] '[] = '[]
       ZipWith _ ((:) _ _) '[] = '[]
       ZipWith _ '[] ((:) _ _) = '[]
@@ -313,7 +313,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     type family Map (a :: TyFun a b
                           -> GHC.Types.Type) (a :: [a]) :: [b] where
       Map _ '[] = '[]
-      Map f ((:) h t) = Apply (Apply (:@#$%^%$#@$) (Apply f h)) (Apply (Apply MapSym0 f) t)
+      Map f ((:) h t) = Apply (Apply (:@#@$) (Apply f h)) (Apply (Apply MapSym0 f) t)
     sFoo ::
       forall (t :: TyFun (TyFun a b -> GHC.Types.Type) (TyFun a b
                                                         -> GHC.Types.Type)
@@ -351,7 +351,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       (SCons (sX :: Sing x) (sXs :: Sing xs))
       (SCons (sY :: Sing y) (sYs :: Sing ys))
       = (applySing
-           ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
+           ((applySing ((singFun2 @(:@#@$)) SCons))
               ((applySing ((applySing sF) sX)) sY)))
           ((applySing
               ((applySing ((applySing ((singFun3 @ZipWithSym0) sZipWith)) sF))
@@ -401,8 +401,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     sMap _ SNil = SNil
     sMap (sF :: Sing f) (SCons (sH :: Sing h) (sT :: Sing t))
       = (applySing
-           ((applySing ((singFun2 @(:@#$%^%$#@$)) SCons))
-              ((applySing sF) sH)))
+           ((applySing ((singFun2 @(:@#@$)) SCons)) ((applySing sF) sH)))
           ((applySing ((applySing ((singFun2 @MapSym0) sMap)) sF)) sT)
     data instance Sing (z :: Either a b)
       = forall (n :: a). z ~ Left n => SLeft (Sing (n :: a)) |

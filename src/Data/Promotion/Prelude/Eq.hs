@@ -14,8 +14,8 @@
 {-# LANGUAGE ExplicitNamespaces #-}
 module Data.Promotion.Prelude.Eq (
   PEq(..),
-  (:==@#$%^%$#@$), (:==@#$%^%$#@$$), (:==@#$%^%$#@$$$),
-  (:/=@#$%^%$#@$), (:/=@#$%^%$#@$$), (:/=@#$%^%$#@$$$)
+  (:==@#@$), (:==@#@$$), (:==@#@$$$),
+  (:/=@#@$), (:/=@#@$$), (:/=@#@$$$)
   ) where
 
 import Data.Singletons.Prelude.Eq

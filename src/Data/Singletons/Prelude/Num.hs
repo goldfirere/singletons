@@ -21,9 +21,9 @@ module Data.Singletons.Prelude.Num (
   PNum(..), SNum(..), Subtract, sSubtract,
 
   -- ** Defunctionalization symbols
-  (:+@#$%^%$#@$), (:+@#$%^%$#@$$), (:+@#$%^%$#@$$$),
-  (:-@#$%^%$#@$), (:-@#$%^%$#@$$), (:-@#$%^%$#@$$$),
-  (:*@#$%^%$#@$), (:*@#$%^%$#@$$), (:*@#$%^%$#@$$$),
+  (:+@#@$), (:+@#@$$), (:+@#@$$$),
+  (:-@#@$), (:-@#@$$), (:-@#@$$$),
+  (:*@#@$), (:*@#@$$), (:*@#@$$$),
   NegateSym0, NegateSym1,
   AbsSym0, AbsSym1,
   SignumSym0, SignumSym1,
