@@ -33,8 +33,8 @@ module Data.Promotion.Prelude.Bool (
   TrueSym0, FalseSym0,
 
   NotSym0, NotSym1,
-  (:&&$), (:&&$$), (:&&$$$),
-  (:||$), (:||$$), (:||$$$),
+  (:&&@#@$), (:&&@#@$$), (:&&@#@$$$),
+  (:||@#@$), (:||@#@$$), (:||@#@$$$),
   Bool_Sym0, Bool_Sym1, Bool_Sym2, Bool_Sym3,
   OtherwiseSym0
   ) where

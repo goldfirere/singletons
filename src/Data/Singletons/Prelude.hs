@@ -59,7 +59,7 @@ module Data.Singletons.Prelude (
   Shows, sShows, ShowChar, sShowChar, ShowString, sShowString, ShowParen, sShowParen,
 
   -- ** Miscellaneous functions
-  Id, sId, Const, sConst, (:.), (%:.), type ($), (%$), type ($!), (%$!),
+  Id, sId, Const, sConst, (:.), (%:.), (:$), (%:$), (:$!), (%:$!),
   Flip, sFlip, AsTypeOf, sAsTypeOf,
   Seq, sSeq,
 
@@ -94,7 +94,9 @@ module Data.Singletons.Prelude (
 
   -- * Defunctionalization symbols
   FalseSym0, TrueSym0,
-  NotSym0, NotSym1, (:&&$), (:&&$$), (:&&$$$), (:||$), (:||$$), (:||$$$),
+  NotSym0, NotSym1,
+  (:&&@#@$), (:&&@#@$$), (:&&@#@$$$),
+  (:||@#@$), (:||@#@$$), (:||@#@$$$),
   OtherwiseSym0,
 
   NothingSym0, JustSym0, JustSym1,
@@ -117,22 +119,22 @@ module Data.Singletons.Prelude (
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  (:<>$), (:<>$$), (:<>$$$),
+  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowStringSym0, ShowStringSym1, ShowStringSym2,
   ShowParenSym0, ShowParenSym1, ShowParenSym2,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
-  (:.$), (:.$$), (:.$$$),
-  type ($$), type ($$$), type ($$$$),
-  type ($!$), type ($!$$), type ($!$$$),
+  (:.@#@$), (:.@#@$$), (:.@#@$$$),
+  (:$@#@$),  (:$@#@$$),  (:$@#@$$$),
+  (:$!@#@$), (:$!@#@$$), (:$!@#@$$$),
   FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
 
-  (:$), (:$$), (:$$$), NilSym0,
+  (:@#@$), (:@#@$$), (:@#@$$$), NilSym0,
   MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
-  (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
+  (:++@#@$$), (:++@#@$), HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
 
   FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,

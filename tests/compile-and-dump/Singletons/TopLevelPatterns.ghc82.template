@@ -199,13 +199,13 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type family Otherwise :: Bool where
       = TrueSym0
     type family X_0123456789876543210 where
-      = Apply (Apply (:$) NotSym0) (Apply (Apply (:$) IdSym0) '[])
+      = Apply (Apply (:@#@$) NotSym0) (Apply (Apply (:@#@$) IdSym0) '[])
     type family X_0123456789876543210 where
       = Apply (Apply Tuple2Sym0 FSym0) GSym0
     type family X_0123456789876543210 where
       = Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0)
     type family X_0123456789876543210 where
-      = Apply (Apply (:$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:$) (Apply IdSym0 FalseSym0)) '[])
+      = Apply (Apply (:@#@$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:@#@$) (Apply IdSym0 FalseSym0)) '[])
     sFalse_ :: Sing False_Sym0
     sNot ::
       forall (t :: Bool). Sing t -> Sing (Apply NotSym0 t :: Bool)
@@ -282,9 +282,10 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     sOtherwise = STrue
     sX_0123456789876543210
       = (applySing
-           ((applySing ((singFun2 @(:$)) SCons)) ((singFun1 @NotSym0) sNot)))
+           ((applySing ((singFun2 @(:@#@$)) SCons))
+              ((singFun1 @NotSym0) sNot)))
           ((applySing
-              ((applySing ((singFun2 @(:$)) SCons)) ((singFun1 @IdSym0) sId)))
+              ((applySing ((singFun2 @(:@#@$)) SCons)) ((singFun1 @IdSym0) sId)))
              SNil)
     sX_0123456789876543210
       = (applySing
@@ -296,9 +297,9 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
           ((applySing ((singFun1 @HSym0) sH)) SFalse)
     sX_0123456789876543210
       = (applySing
-           ((applySing ((singFun2 @(:$)) SCons))
+           ((applySing ((singFun2 @(:@#@$)) SCons))
               ((applySing ((singFun1 @NotSym0) sNot)) STrue)))
           ((applySing
-              ((applySing ((singFun2 @(:$)) SCons))
+              ((applySing ((singFun2 @(:@#@$)) SCons))
                  ((applySing ((singFun1 @IdSym0) sId)) SFalse)))
              SNil)

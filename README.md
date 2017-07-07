@@ -374,7 +374,7 @@ generates. Here are some examples showing how this is done:
 
    singleton constructor: `:%+:`
 
-   symbols: `:+:$`, `:+:$$`, `:+:$$$`
+   symbols: `:+:@#@$`, `:+:@#@$$`, `:+:@#@$$$`
 
 
 5. original value: `pred`
@@ -392,7 +392,7 @@ generates. Here are some examples showing how this is done:
 
    singleton value: `%:+`
 
-   symbols: `:+$`, `:+$$`, `:+$$$`
+   symbols: `:+@#@$`, `:+@#@$$`, `:+@#@$$$`
 
 
 7. original class: `Num`
@@ -412,7 +412,8 @@ generates. Here are some examples showing how this is done:
 Special names
 -------------
 
-There are some special cases, listed below (with asterisks\* denoting special treatment):
+There are some special cases, listed below (with asterisks\* denoting special
+treatment):
 
 1. original datatype: `[]`
 
@@ -421,13 +422,13 @@ There are some special cases, listed below (with asterisks\* denoting special tr
    singleton type\*: `SList`
 
 
-2.  original constructor: `[]`
+2. original constructor: `[]`
 
-    promoted type: `'[]`
+   promoted type: `'[]`
 
-    singleton constructor\*: `SNil`
+   singleton constructor\*: `SNil`
 
-    symbols\*: `NilSym0`
+   symbols\*: `NilSym0`
 
 
 3. original constructor: `:`
@@ -436,7 +437,7 @@ There are some special cases, listed below (with asterisks\* denoting special tr
 
    singleton constructor\*: `SCons`
 
-   symbols\*: `ConsSym0`, `ConsSym1`
+   symbols: `:@#@$`, `:@#@$`
 
 
 4. original datatype: `(,)`

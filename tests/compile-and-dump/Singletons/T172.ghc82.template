@@ -3,28 +3,29 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
       [d| ($>) :: Nat -> Nat -> Nat
           ($>) = (+) |]
   ======>
-    type ($>$$$) (t :: Nat) (t :: Nat) = ($>) t t
-    instance SuppressUnusedWarnings ($>$$) where
+    type (:$>@#@$$$) (t :: Nat) (t :: Nat) = (:$>) t t
+    instance SuppressUnusedWarnings (:$>@#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:$>$$###)) GHC.Tuple.())
-    data ($>$$) (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply (($>$$) l) arg) (($>$$$) l arg) =>
-        (:$>$$###)
-    type instance Apply (($>$$) l) l = ($>) l l
-    instance SuppressUnusedWarnings ($>$) where
+        = snd ((GHC.Tuple.(,) (:$>@#@$$###)) GHC.Tuple.())
+    data (:$>@#@$$) (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply ((:$>@#@$$) l) arg) ((:$>@#@$$$) l arg) =>
+        (:$>@#@$$###)
+    type instance Apply ((:$>@#@$$) l) l = (:$>) l l
+    instance SuppressUnusedWarnings (:$>@#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:$>$###)) GHC.Tuple.())
-    data ($>$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
-      = forall arg. SameKind (Apply ($>$) arg) (($>$$) arg) => (:$>$###)
-    type instance Apply ($>$) l = ($>$$) l
-    type family ($>) (a :: Nat) (a :: Nat) :: Nat where
-      ($>) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (:+$) a_0123456789876543210) a_0123456789876543210
-    (%$>) ::
+        = snd ((GHC.Tuple.(,) (:$>@#@$###)) GHC.Tuple.())
+    data (:$>@#@$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:$>@#@$) arg) ((:$>@#@$$) arg) =>
+        (:$>@#@$###)
+    type instance Apply (:$>@#@$) l = (:$>@#@$$) l
+    type family (:$>) (a :: Nat) (a :: Nat) :: Nat where
+      (:$>) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (:+@#@$) a_0123456789876543210) a_0123456789876543210
+    (%:$>) ::
       forall (t :: Nat) (t :: Nat).
-      Sing t -> Sing t -> Sing (Apply (Apply ($>$) t) t :: Nat)
-    (%$>)
+      Sing t -> Sing t -> Sing (Apply (Apply (:$>@#@$) t) t :: Nat)
+    (%:$>)
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = (applySing
-           ((applySing ((singFun2 @(:+$)) (%:+))) sA_0123456789876543210))
+           ((applySing ((singFun2 @(:+@#@$)) (%:+))) sA_0123456789876543210))
           sA_0123456789876543210
