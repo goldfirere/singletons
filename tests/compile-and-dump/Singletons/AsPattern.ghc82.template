@@ -73,7 +73,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         Let0123456789876543210PSym0KindInference
     type instance Apply Let0123456789876543210PSym0 l = Let0123456789876543210P l
     type family Let0123456789876543210P wild_0123456789876543210 where
-      Let0123456789876543210P wild_0123456789876543210 = Apply (Apply (:$) wild_0123456789876543210) '[]
+      Let0123456789876543210P wild_0123456789876543210 = Apply (Apply (:@#@$) wild_0123456789876543210) '[]
     type Let0123456789876543210PSym3 t t t =
         Let0123456789876543210P t t t
     instance SuppressUnusedWarnings Let0123456789876543210PSym2 where
@@ -104,7 +104,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         Let0123456789876543210PSym0KindInference
     type instance Apply Let0123456789876543210PSym0 l = Let0123456789876543210PSym1 l
     type family Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210 where
-      Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210 = Apply (Apply (:$) wild_0123456789876543210) (Apply (Apply (:$) wild_0123456789876543210) wild_0123456789876543210)
+      Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210 = Apply (Apply (:@#@$) wild_0123456789876543210) (Apply (Apply (:@#@$) wild_0123456789876543210) wild_0123456789876543210)
     type Let0123456789876543210PSym2 t t = Let0123456789876543210P t t
     instance SuppressUnusedWarnings Let0123456789876543210PSym1 where
       suppressUnusedWarnings
@@ -257,7 +257,8 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
           sP :: Sing (Let0123456789876543210PSym1 wild_0123456789876543210)
           sP
             = (applySing
-                 ((applySing ((singFun2 @(:$)) SCons)) sWild_0123456789876543210))
+                 ((applySing ((singFun2 @(:@#@$)) SCons))
+                    sWild_0123456789876543210))
                 SNil
         in sP
     sFoo
@@ -269,9 +270,11 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
             Sing (Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
           sP
             = (applySing
-                 ((applySing ((singFun2 @(:$)) SCons)) sWild_0123456789876543210))
+                 ((applySing ((singFun2 @(:@#@$)) SCons))
+                    sWild_0123456789876543210))
                 ((applySing
-                    ((applySing ((singFun2 @(:$)) SCons)) sWild_0123456789876543210))
+                    ((applySing ((singFun2 @(:@#@$)) SCons))
+                       sWild_0123456789876543210))
                    sWild_0123456789876543210)
         in sP
     sTup

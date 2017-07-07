@@ -250,7 +250,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply FSym0 l = FSym1 l
     type family Compare_0123456789876543210 (a :: Nat) (a :: Nat) :: Ordering where
       Compare_0123456789876543210 Zero Zero = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
-      Compare_0123456789876543210 (Succ a_0123456789876543210) (Succ b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
+      Compare_0123456789876543210 (Succ a_0123456789876543210) (Succ b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
       Compare_0123456789876543210 Zero (Succ _) = LTSym0
       Compare_0123456789876543210 (Succ _) Zero = GTSym0
     type Compare_0123456789876543210Sym2 (t :: Nat) (t :: Nat) =
@@ -277,12 +277,12 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance POrd Nat where
       type Compare (a :: Nat) (a :: Nat) = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Compare_0123456789876543210 (a :: Foo a b c d) (a :: Foo a b c d) :: Ordering where
-      Compare_0123456789876543210 (A a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (A b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
-      Compare_0123456789876543210 (B a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (B b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
-      Compare_0123456789876543210 (C a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (C b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
-      Compare_0123456789876543210 (D a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (D b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
-      Compare_0123456789876543210 (E a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (E b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
-      Compare_0123456789876543210 (F a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (F b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
+      Compare_0123456789876543210 (A a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (A b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
+      Compare_0123456789876543210 (B a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (B b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
+      Compare_0123456789876543210 (C a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (C b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
+      Compare_0123456789876543210 (D a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (D b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
+      Compare_0123456789876543210 (E a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (E b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
+      Compare_0123456789876543210 (F a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (F b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[]))))
       Compare_0123456789876543210 (A _ _ _ _) (B _ _ _ _) = LTSym0
       Compare_0123456789876543210 (A _ _ _ _) (C _ _ _ _) = LTSym0
       Compare_0123456789876543210 (A _ _ _ _) (D _ _ _ _) = LTSym0
@@ -472,7 +472,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
+                ((applySing ((singFun2 @(:@#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
@@ -505,25 +505,25 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
+                ((applySing ((singFun2 @(:@#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing ((singFun2 @(:@#@$)) SCons))
                       ((applySing
                           ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing ((singFun2 @(:@#@$)) SCons))
                          ((applySing
                              ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing ((singFun2 @(:@#@$)) SCons))
                             ((applySing
                                 ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))
@@ -544,25 +544,25 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
+                ((applySing ((singFun2 @(:@#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing ((singFun2 @(:@#@$)) SCons))
                       ((applySing
                           ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing ((singFun2 @(:@#@$)) SCons))
                          ((applySing
                              ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing ((singFun2 @(:@#@$)) SCons))
                             ((applySing
                                 ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))
@@ -583,25 +583,25 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
+                ((applySing ((singFun2 @(:@#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing ((singFun2 @(:@#@$)) SCons))
                       ((applySing
                           ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing ((singFun2 @(:@#@$)) SCons))
                          ((applySing
                              ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing ((singFun2 @(:@#@$)) SCons))
                             ((applySing
                                 ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))
@@ -622,25 +622,25 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
+                ((applySing ((singFun2 @(:@#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing ((singFun2 @(:@#@$)) SCons))
                       ((applySing
                           ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing ((singFun2 @(:@#@$)) SCons))
                          ((applySing
                              ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing ((singFun2 @(:@#@$)) SCons))
                             ((applySing
                                 ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))
@@ -661,25 +661,25 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
+                ((applySing ((singFun2 @(:@#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing ((singFun2 @(:@#@$)) SCons))
                       ((applySing
                           ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing ((singFun2 @(:@#@$)) SCons))
                          ((applySing
                              ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing ((singFun2 @(:@#@$)) SCons))
                             ((applySing
                                 ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))
@@ -700,25 +700,25 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing ((singFun2 @(:$)) SCons))
+                ((applySing ((singFun2 @(:@#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                ((applySing
-                   ((applySing ((singFun2 @(:$)) SCons))
+                   ((applySing ((singFun2 @(:@#@$)) SCons))
                       ((applySing
                           ((applySing ((singFun2 @CompareSym0) sCompare))
                              sA_0123456789876543210))
                          sB_0123456789876543210)))
                   ((applySing
-                      ((applySing ((singFun2 @(:$)) SCons))
+                      ((applySing ((singFun2 @(:@#@$)) SCons))
                          ((applySing
                              ((applySing ((singFun2 @CompareSym0) sCompare))
                                 sA_0123456789876543210))
                             sB_0123456789876543210)))
                      ((applySing
-                         ((applySing ((singFun2 @(:$)) SCons))
+                         ((applySing ((singFun2 @(:@#@$)) SCons))
                             ((applySing
                                 ((applySing ((singFun2 @CompareSym0) sCompare))
                                    sA_0123456789876543210))

@@ -46,7 +46,7 @@ module Data.Promotion.Prelude (
   PShow(..), ShowS, SChar, show_, (:<>), Shows, ShowChar, ShowString, ShowParen,
 
   -- ** Miscellaneous functions
-  Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Until, Seq,
+  Id, Const, (:.), (:$), (:$!), Flip, AsTypeOf, Until, Seq,
 
   -- * List operations
   Map, (:++), Filter,
@@ -75,7 +75,9 @@ module Data.Promotion.Prelude (
 
   -- * Defunctionalization symbols
   FalseSym0, TrueSym0,
-  NotSym0, NotSym1, (:&&$), (:&&$$), (:&&$$$), (:||$), (:||$$), (:||$$$),
+  NotSym0, NotSym1,
+  (:&&@#@$), (:&&@#@$$), (:&&@#@$$$),
+  (:||@#@$), (:||@#@$$), (:||@#@$$$),
   OtherwiseSym0,
 
   NothingSym0, JustSym0, JustSym1,
@@ -95,27 +97,27 @@ module Data.Promotion.Prelude (
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
 
-  (:^$), (:^$$),
+  (:^@#@$), (:^@#@$$),
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  (:<>$), (:<>$$), (:<>$$$),
+  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowStringSym0, ShowStringSym1, ShowStringSym2,
   ShowParenSym0, ShowParenSym1, ShowParenSym2,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
-  (:.$), (:.$$), (:.$$$),
-  type ($$), type ($$$), type ($$$$),
-  type ($!$), type ($!$$), type ($!$$$),
+  (:.@#@$), (:.@#@$$), (:.@#@$$$),
+  (:$@#@$),  (:$@#@$$),  (:$@#@$$$),
+  (:$!@#@$), (:$!@#@$$), (:$!@#@$$$),
   FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
 
-  (:$), (:$$), (:$$$), NilSym0,
+  (:@#@$), (:@#@$$), (:@#@$$$), NilSym0,
   MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
-  (:++$$), (:++$), HeadSym0, HeadSym1, LastSym0, LastSym1,
+  (:++@#@$$), (:++@#@$), HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
 
   FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,
@@ -159,7 +161,7 @@ module Data.Promotion.Prelude (
   BreakSym0, BreakSym1, BreakSym2,
   LookupSym0, LookupSym1, LookupSym2,
   FilterSym0, FilterSym1, FilterSym2,
-  (:!!$), (:!!$$), (:!!$$$),
+  (:!!@#@$), (:!!@#@$$), (:!!@#@$$$),
   ) where
 
 import Data.Promotion.Prelude.Base

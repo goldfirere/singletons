@@ -26,7 +26,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ContainsSym0 l = ContainsSym1 l
     type family Contains (a :: a) (a :: [a]) :: Bool where
       Contains _ '[] = FalseSym0
-      Contains elt ((:) h t) = Apply (Apply (:||$) (Apply (Apply (:==$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
+      Contains elt ((:) h t) = Apply (Apply (:||@#@$) (Apply (Apply (:==@#@$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
     sContains ::
       forall (t :: a) (t :: [a]).
       SEq a =>
@@ -34,8 +34,9 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
     sContains _ SNil = SFalse
     sContains (sElt :: Sing elt) (SCons (sH :: Sing h) (sT :: Sing t))
       = (applySing
-           ((applySing ((singFun2 @(:||$)) (%:||)))
-              ((applySing ((applySing ((singFun2 @(:==$)) (%:==))) sElt)) sH)))
+           ((applySing ((singFun2 @(:||@#@$)) (%:||)))
+              ((applySing ((applySing ((singFun2 @(:==@#@$)) (%:==))) sElt))
+                 sH)))
           ((applySing
               ((applySing ((singFun2 @ContainsSym0) sContains)) sElt))
              sT)

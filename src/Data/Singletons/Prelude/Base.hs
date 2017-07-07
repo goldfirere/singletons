@@ -24,20 +24,20 @@
 module Data.Singletons.Prelude.Base (
   -- * Basic functions
   Foldr, sFoldr, Map, sMap, (:++), (%:++), Otherwise, sOtherwise,
-  Id, sId, Const, sConst, (:.), (%:.), type ($), type ($!), (%$), (%$!),
+  Id, sId, Const, sConst, (:.), (%:.), (:$), (:$!), (%:$), (%:$!),
   Flip, sFlip, AsTypeOf, sAsTypeOf,
   Seq, sSeq,
 
   -- * Defunctionalization symbols
   FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
   MapSym0, MapSym1, MapSym2,
-  (:++$), (:++$$), (:++$$$),
+  (:++@#@$), (:++@#@$$), (:++@#@$$$),
   OtherwiseSym0,
   IdSym0, IdSym1,
   ConstSym0, ConstSym1, ConstSym2,
-  (:.$), (:.$$), (:.$$$), (:.$$$$),
-  type ($$), type ($$$), type ($$$$),
-  type ($!$), type ($!$$), type ($!$$$),
+  (:.@#@$), (:.@#@$$), (:.@#@$$$), (:.@#@$$$$),
+  (:$@#@$),  (:$@#@$$),  (:$@#@$$$),
+  (:$!@#@$), (:$!@#@$$), (:$!@#@$$$),
   FlipSym0, FlipSym1, FlipSym2, FlipSym3,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2,
   SeqSym0, SeqSym1, SeqSym2
@@ -45,7 +45,6 @@ module Data.Singletons.Prelude.Base (
 
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
-import Data.Singletons
 import Data.Singletons.Prelude.Bool
 
 -- Promoted and singletonized versions of "otherwise" are imported and
@@ -84,45 +83,17 @@ $(singletonsOnly [d|
   asTypeOf                :: a -> a -> a
   asTypeOf                =  const
 
+  ($)                     :: (a -> b) -> a -> b
+  f $ x                   =  f x
+  infixr 0 $
+
+  ($!)                    :: (a -> b) -> a -> b
+  f $! x                  = let {-!-}vx = x in f vx
+  infixr 0 $!
+
   -- This is not part of GHC.Base, but we need to emulate seq and this is a good
   -- place to do it.
   seq :: a -> b -> b
   seq _ x = x
   infixr 0 `seq`
  |])
-
--- ($) is a special case, because its kind-inference data constructors
--- clash with (:). See #29.
-type family (f :: TyFun a b -> *) $ (x :: a) :: b
-type instance f $ x = f @@ x
-infixr 0 $
-
-data ($$) :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *
-type instance Apply ($$) arg = ($$$) arg
-
-data ($$$) :: (TyFun a b -> *) -> TyFun a b -> *
-type instance Apply (($$$) f) arg = ($$$$) f arg
-
-type ($$$$) a b = ($) a b
-
-(%$) :: forall (f :: TyFun a b -> *) (x :: a).
-        Sing f -> Sing x -> Sing (($$) @@ f @@ x)
-f %$ x = applySing f x
-infixr 0 %$
-
-type family (f :: TyFun a b -> *) $! (x :: a) :: b
-type instance f $! x = f @@ x
-infixr 0 $!
-
-data ($!$) :: TyFun (TyFun a b -> *) (TyFun a b -> *) -> *
-type instance Apply ($!$) arg = ($!$$) arg
-
-data ($!$$) :: (TyFun a b -> *) -> TyFun a b -> *
-type instance Apply (($!$$) f) arg = ($!$$$) f arg
-
-type ($!$$$) a b = ($!) a b
-
-(%$!) :: forall (f :: TyFun a b -> *) (x :: a).
-        Sing f -> Sing x -> Sing (($!$) @@ f @@ x)
-f %$! x = applySing f x
-infixr 0 %$!
