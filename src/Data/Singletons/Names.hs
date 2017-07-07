@@ -16,16 +16,16 @@ import Data.Singletons.Decide
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import GHC.TypeLits ( Nat, Symbol )
-import GHC.Exts ( Any, Constraint )
+import GHC.Exts ( Constraint )
 import GHC.Show ( showCommaSpace, showSpace )
 import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
 import Control.Monad
 
-anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
+boolName, andName, tyEqName, compareName, minBoundName,
   maxBoundName, repName,
   nilName, consName, listName, tyFunName,
-  applyName, natName, symbolName, undefinedName, typeRepName, stringName,
+  applyName, natName, symbolName, typeRepName, stringName,
   eqName, ordName, boundedName, orderingName,
   singFamilyName, singIName, singMethName, demoteName,
   singKindClassName, sEqClassName, sEqMethName, sconsName, snilName,
@@ -41,7 +41,6 @@ anyTypeName, boolName, andName, tyEqName, compareName, minBoundName,
   equalsName, constraintName,
   showName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
   showSpaceName, showStringName, composeName, gtName :: Name
-anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
 compareName = 'compare
@@ -56,7 +55,6 @@ tyFunName = ''TyFun
 applyName = ''Apply
 symbolName = ''Symbol
 natName = ''Nat
-undefinedName = 'undefined
 typeRepName = ''TypeRep
 stringName = ''String
 eqName = ''Eq
@@ -159,9 +157,6 @@ promoteValRhs name
 -- names.
 promoteTySym :: Name -> Int -> Name
 promoteTySym name sat
-    | name == undefinedName
-    = anyTypeName
-
     | name == nilName
     = mkName $ "NilSym" ++ (show sat)
 
@@ -221,7 +216,6 @@ singClassName = singTyConName
 
 singValName :: Name -> Name
 singValName n
-  | n == undefinedName       = undefinedName
      -- avoid unused variable warnings
   | head (nameBase n) == '_' = (prefixLCName "_s" "%") $ n
   | otherwise                = (prefixLCName "s" "%") $ upcase n

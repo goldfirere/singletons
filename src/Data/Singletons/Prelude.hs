@@ -36,7 +36,8 @@ module Data.Singletons.Prelude (
   If, sIf, Not, sNot, (:&&), (:||), (%:&&), (%:||), Otherwise, sOtherwise,
 
   -- * Error reporting
-  Error, ErrorSym0, sError,
+  Error, sError,
+  Undefined, sUndefined,
 
   -- * Singleton equality
   module Data.Singletons.Prelude.Eq,
@@ -69,7 +70,7 @@ module Data.Singletons.Prelude (
   -- ** Reducing lists (folds)
   Foldl, sFoldl, Foldl1, sFoldl1, Foldr, sFoldr, Foldr1, sFoldr1,
   -- *** Special folds
-  And, sAnd, Or, sOr, Any_, sAny_, All, sAll,
+  And, sAnd, Or, sOr, Any, sAny, All, sAll,
   Concat, sConcat, ConcatMap, sConcatMap,
   -- *** Scans
   Scanl, sScanl, Scanl1, sScanl1, Scanr, sScanr, Scanr1, sScanr1,
@@ -89,7 +90,6 @@ module Data.Singletons.Prelude (
   either_, -- reimplementation of either to be used with singletons library
   maybe_,
   bool_,
-  any_,
   show_,
 
   -- * Defunctionalization symbols
@@ -115,6 +115,8 @@ module Data.Singletons.Prelude (
   FstSym0, FstSym1, SndSym0, SndSym1,
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
+
+  ErrorSym0, ErrorSym1, UndefinedSym0,
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
@@ -145,7 +147,7 @@ module Data.Singletons.Prelude (
   ConcatSym0, ConcatSym1,
   ConcatMapSym0, ConcatMapSym1, ConcatMapSym2,
   AndSym0, AndSym1, OrSym0, OrSym1,
-  Any_Sym0, Any_Sym1, Any_Sym2,
+  AnySym0, AnySym1, AnySym2,
   AllSym0, AllSym1, AllSym2,
 
   ScanlSym0, ScanlSym1, ScanlSym2, ScanlSym3,

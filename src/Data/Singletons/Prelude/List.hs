@@ -50,10 +50,9 @@ module Data.Singletons.Prelude.List (
 
   -- ** Special folds
   Concat, sConcat, ConcatMap, sConcatMap,
-  And, sAnd, Or, sOr, Any_, sAny_, All, sAll,
+  And, sAnd, Or, sOr, Any, sAny, All, sAll,
   Sum, sSum, Product, sProduct, Maximum, sMaximum,
   Minimum, sMinimum,
-  any_, -- equivalent of Data.List `any`. Avoids name clash with Any type
 
   -- * Building lists
 
@@ -154,7 +153,7 @@ module Data.Singletons.Prelude.List (
   ConcatSym0, ConcatSym1,
   ConcatMapSym0, ConcatMapSym1, ConcatMapSym2,
   AndSym0, AndSym1, OrSym0, OrSym1,
-  Any_Sym0, Any_Sym1, Any_Sym2,
+  AnySym0, AnySym1, AnySym2,
   AllSym0, AllSym1, AllSym2,
   SumSym0, SumSym1,
   ProductSym0, ProductSym1,
@@ -249,12 +248,6 @@ import Data.Singletons.Prelude.Tuple
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Ord
 import Data.Maybe
-
-$(singletons [d|
-  any_                     :: (a -> Bool) -> [a] -> Bool
-  any_ _ []                = False
-  any_ p (x:xs)            = p x || any_ p xs
- |])
 
 $(singletonsOnly [d|
   head :: [a] -> a
@@ -360,6 +353,10 @@ $(singletonsOnly [d|
   all _ []                =  True
   all p (x:xs)            =  p x && all p xs
 
+  any                     :: (a -> Bool) -> [a] -> Bool
+  any _ []                = False
+  any p (x:xs)            = p x || any p xs
+
   scanl         :: (b -> a -> b) -> b -> [a] -> [b]
   scanl f q ls  =  q : (case ls of
                         []   -> []
@@ -425,7 +422,7 @@ $(singletonsOnly [d|
   isSuffixOf x y          =  reverse x `isPrefixOf` reverse y
 
   isInfixOf               :: (Eq a) => [a] -> [a] -> Bool
-  isInfixOf needle haystack = any_ (isPrefixOf needle) (tails haystack)
+  isInfixOf needle haystack = any (isPrefixOf needle) (tails haystack)
 
   elem                    :: (Eq a) => a -> [a] -> Bool
   elem _ []               = False
@@ -605,13 +602,13 @@ $(singletonsOnly [d|
 --  intersectBy _  [] []    =  []
 --  intersectBy _  [] (_:_) =  []
 --  intersectBy _  (_:_) [] =  []
---  intersectBy eq xs ys    =  [x | x <- xs, any_ (eq x) ys]
+--  intersectBy eq xs ys    =  [x | x <- xs, any (eq x) ys]
 
   intersectBy             :: (a -> a -> Bool) -> [a] -> [a] -> [a]
   intersectBy _  []       []       =  []
   intersectBy _  []       (_:_)    =  []
   intersectBy _  (_:_)    []       =  []
-  intersectBy eq xs@(_:_) ys@(_:_) =  filter (\x -> any_ (eq x) ys) xs
+  intersectBy eq xs@(_:_) ys@(_:_) =  filter (\x -> any (eq x) ys) xs
 
   takeWhile               :: (a -> Bool) -> [a] -> [a]
   takeWhile _ []          =  []

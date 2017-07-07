@@ -418,7 +418,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         AppendSym0KindInference
     type instance Apply AppendSym0 l = AppendSym1 l
     type family Lookup (a :: [AChar]) (a :: Schema) :: U where
-      Lookup _ (Sch '[]) = Any
+      Lookup _ (Sch '[]) = UndefinedSym0
       Lookup name (Sch ((:) (Attr name' u) attrs)) = Case_0123456789876543210 name name' u attrs (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs)
     type family Occurs (a :: [AChar]) (a :: Schema) :: Bool where
       Occurs _ (Sch '[]) = FalseSym0
@@ -584,7 +584,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     sAppend ::
       forall (t :: Schema) (t :: Schema).
       Sing t -> Sing t -> Sing (Apply (Apply AppendSym0 t) t :: Schema)
-    sLookup _ (SSch SNil) = undefined
+    sLookup _ (SSch SNil) = sUndefined
     sLookup
       (sName :: Sing name)
       (SSch (SCons (SAttr (sName' :: Sing name') (sU :: Sing u))
