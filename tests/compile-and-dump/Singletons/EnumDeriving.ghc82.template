@@ -19,12 +19,12 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 n False = Apply ErrorSym0 "toEnum: bad argument"
     type family Case_0123456789876543210 n t where
       Case_0123456789876543210 n True = BazSym0
-      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 2))
+      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (FromInteger 2))
     type family Case_0123456789876543210 n t where
       Case_0123456789876543210 n True = BarSym0
-      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 1))
+      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (FromInteger 1))
     type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: Foo where
-      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0))
+      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (FromInteger 0))
     type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
         ToEnum_0123456789876543210 t
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
@@ -93,31 +93,28 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       sToEnum (sN :: Sing n)
         = case
               (applySing ((applySing ((singFun2 @(:==@#@$)) (%:==))) sN))
-                (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))
+                (sFromInteger (sing :: Sing 0))
           of
             STrue -> SBar
             SFalse
               -> case
                      (applySing ((applySing ((singFun2 @(:==@#@$)) (%:==))) sN))
-                       (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 1))
+                       (sFromInteger (sing :: Sing 1))
                  of
                    STrue -> SBaz
                    SFalse
                      -> case
                             (applySing ((applySing ((singFun2 @(:==@#@$)) (%:==))) sN))
-                              (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 2))
+                              (sFromInteger (sing :: Sing 2))
                         of
                           STrue -> SBum
                           SFalse -> sError (sing :: Sing "toEnum: bad argument") ::
-                          Sing (Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 2)) :: Foo) ::
-                   Sing (Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 1)) :: Foo) ::
-            Sing (Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)) :: Foo)
-      sFromEnum SBar
-        = Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0)
-      sFromEnum SBaz
-        = Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 1)
-      sFromEnum SBum
-        = Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 2)
+                          Sing (Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (FromInteger 2)) :: Foo) ::
+                   Sing (Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (FromInteger 1)) :: Foo) ::
+            Sing (Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (FromInteger 0)) :: Foo)
+      sFromEnum SBar = sFromInteger (sing :: Sing 0)
+      sFromEnum SBaz = sFromInteger (sing :: Sing 1)
+      sFromEnum SBum = sFromInteger (sing :: Sing 2)
     instance SingI Bar where
       sing = SBar
     instance SingI Baz where
@@ -136,9 +133,9 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       Case_0123456789876543210 n False = Apply ErrorSym0 "toEnum: bad argument"
     type family Case_0123456789876543210 n t where
       Case_0123456789876543210 n True = Q1Sym0
-      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 1))
+      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (FromInteger 1))
     type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: Quux where
-      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0))
+      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (FromInteger 0))
     type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
         ToEnum_0123456789876543210 t
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
@@ -181,19 +178,17 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       sToEnum (sN :: Sing n)
         = case
               (applySing ((applySing ((singFun2 @(:==@#@$)) (%:==))) sN))
-                (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))
+                (sFromInteger (sing :: Sing 0))
           of
             STrue -> SQ1
             SFalse
               -> case
                      (applySing ((applySing ((singFun2 @(:==@#@$)) (%:==))) sN))
-                       (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 1))
+                       (sFromInteger (sing :: Sing 1))
                  of
                    STrue -> SQ2
                    SFalse -> sError (sing :: Sing "toEnum: bad argument") ::
-                   Sing (Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 1)) :: Quux) ::
-            Sing (Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)) :: Quux)
-      sFromEnum SQ1
-        = Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0)
-      sFromEnum SQ2
-        = Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 1)
+                   Sing (Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (FromInteger 1)) :: Quux) ::
+            Sing (Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (FromInteger 0)) :: Quux)
+      sFromEnum SQ1 = sFromInteger (sing :: Sing 0)
+      sFromEnum SQ2 = sFromInteger (sing :: Sing 1)

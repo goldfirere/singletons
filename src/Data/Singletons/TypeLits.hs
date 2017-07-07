@@ -25,15 +25,7 @@ module Data.Singletons.TypeLits (
   KnownNat, natVal,
   KnownSymbol, symbolVal,
 
-  (:^), (%:^),
-  (:<>), (%:<>),
-
-  -- * Defunctionalization symbols
-  ErrorSym0, ErrorSym1, UndefinedSym0,
-  KnownNatSym0, KnownNatSym1,
-  KnownSymbolSym0, KnownSymbolSym1,
-  (:^@#@$), (:^@#@$$), (:^@#@$$$),
-  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$),
+  (:^), (:^@#@$), (:^@#@$$), (:^@#@$$$)
   ) where
 
 import Data.Singletons.TypeLits.Internal

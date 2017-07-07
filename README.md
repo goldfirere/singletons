@@ -409,7 +409,8 @@ generates. Here are some examples showing how this is done:
 Special names
 -------------
 
-There are some special cases, listed below (with asterisks\* denoting special treatment):
+There are some special cases, listed below (with asterisks\* denoting special
+treatment):
 
 1. original datatype: `[]`
 
@@ -422,9 +423,9 @@ There are some special cases, listed below (with asterisks\* denoting special tr
 
    promoted type: `'[]`
 
-    singleton constructor\*: `SNil`
+   singleton constructor\*: `SNil`
 
-    symbols\*: `NilSym0`
+   symbols\*: `NilSym0`
 
 
 3. original constructor: `:`
@@ -433,7 +434,7 @@ There are some special cases, listed below (with asterisks\* denoting special tr
 
    singleton constructor\*: `SCons`
 
-   symbols\*: `ConsSym0`, `ConsSym1`
+   symbols: `:@#@$`, `:@#@$`
 
 
 4. original datatype: `(,)`

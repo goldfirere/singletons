@@ -30,18 +30,18 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
       = forall arg. Data.Singletons.Internal.SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
         SuccSym0KindInference
     type instance Apply SuccSym0 l = Succ l
-    type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
-    instance SuppressUnusedWarnings (:+$$) where
+    type (:+@#@$$$) (t :: Nat) (t :: Nat) = (:+) t t
+    instance SuppressUnusedWarnings (:+@#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+$$###)) GHC.Tuple.())
-    data (:+$$) (l :: Nat) l
-      = forall arg. Data.Singletons.SameKind (Apply ((:+$$) l) arg) ((:+$$$) l arg) =>
-        (:+$$###)
-    type instance Apply ((:+$$) l) l = (:+) l l
-    instance SuppressUnusedWarnings (:+$) where
+        = snd ((GHC.Tuple.(,) (:+@#@$$###)) GHC.Tuple.())
+    data (:+@#@$$) (l :: Nat) l
+      = forall arg. Data.Singletons.SameKind (Apply ((:+@#@$$) l) arg) ((:+@#@$$$) l arg) =>
+        (:+@#@$$###)
+    type instance Apply ((:+@#@$$) l) l = (:+) l l
+    instance SuppressUnusedWarnings (:+@#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+$###)) GHC.Tuple.())
-    data (:+$) l
-      = forall arg. Data.Singletons.SameKind (Apply (:+$) arg) ((:+$$) arg) =>
-        (:+$###)
-    type instance Apply (:+$) l = (:+$$) l
+        = snd ((GHC.Tuple.(,) (:+@#@$###)) GHC.Tuple.())
+    data (:+@#@$) l
+      = forall arg. Data.Singletons.SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
+        (:+@#@$###)
+    type instance Apply (:+@#@$) l = (:+@#@$$) l

@@ -247,31 +247,31 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       Let0123456789876543210Bar x = x
     type (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$$) t (t :: Nat) (t :: Nat) =
         (:<<<%%%%%%%%%%%%%%%%%%%:+) t t t
-    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+$$$) where
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) where
       suppressUnusedWarnings
         = snd
-            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+$$$###)) GHC.Tuple.())
-    data (:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$$) l l arg) =>
-        (:<<<%%%%%%%%%%%%%%%%%%%:+$$$###)
-    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+) l l l
-    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+$$) where
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$###)) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$$) l l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$###)
+    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+) l l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) where
       suppressUnusedWarnings
         = snd
-            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+$$###)) GHC.Tuple.())
-    data (:<<<%%%%%%%%%%%%%%%%%%%:+$$) l (l :: TyFun Nat (TyFun Nat Nat
-                                                          -> GHC.Types.Type))
-      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l arg) =>
-        (:<<<%%%%%%%%%%%%%%%%%%%:+$$###)
-    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l l
-    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+$) where
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$###)) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l (l :: TyFun Nat (TyFun Nat Nat
+                                                             -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$###)
+    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) where
       suppressUnusedWarnings
         = snd
-            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+$###)) GHC.Tuple.())
-    data (:<<<%%%%%%%%%%%%%%%%%%%:+$) l
-      = forall arg. SameKind (Apply (:<<<%%%%%%%%%%%%%%%%%%%:+$) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) arg) =>
-        (:<<<%%%%%%%%%%%%%%%%%%%:+$###)
-    type instance Apply (:<<<%%%%%%%%%%%%%%%%%%%:+$) l = (:<<<%%%%%%%%%%%%%%%%%%%:+$$) l
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$###)) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) l
+      = forall arg. SameKind (Apply (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$###)
+    type instance Apply (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) l = (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l
     type family (:<<<%%%%%%%%%%%%%%%%%%%:+) x (a :: Nat) (a :: Nat) :: Nat where
       (:<<<%%%%%%%%%%%%%%%%%%%:+) x Zero m = m
       (:<<<%%%%%%%%%%%%%%%%%%%:+) x (Succ n) m = Apply SuccSym0 (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) x) n) x)
@@ -287,31 +287,31 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210ZSym0 l = Let0123456789876543210Z l
     type (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$$) t (t :: Nat) (t :: Nat) =
         (:<<<%%%%%%%%%%%%%%%%%%%:+) t t t
-    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+$$$) where
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) where
       suppressUnusedWarnings
         = snd
-            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+$$$###)) GHC.Tuple.())
-    data (:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$$) l l arg) =>
-        (:<<<%%%%%%%%%%%%%%%%%%%:+$$$###)
-    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+) l l l
-    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+$$) where
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$###)) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$$) l l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$###)
+    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+) l l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) where
       suppressUnusedWarnings
         = snd
-            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+$$###)) GHC.Tuple.())
-    data (:<<<%%%%%%%%%%%%%%%%%%%:+$$) l (l :: TyFun Nat (TyFun Nat Nat
-                                                          -> GHC.Types.Type))
-      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l arg) =>
-        (:<<<%%%%%%%%%%%%%%%%%%%:+$$###)
-    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l l
-    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+$) where
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$###)) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l (l :: TyFun Nat (TyFun Nat Nat
+                                                             -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$###)
+    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) where
       suppressUnusedWarnings
         = snd
-            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+$###)) GHC.Tuple.())
-    data (:<<<%%%%%%%%%%%%%%%%%%%:+$) l
-      = forall arg. SameKind (Apply (:<<<%%%%%%%%%%%%%%%%%%%:+$) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) arg) =>
-        (:<<<%%%%%%%%%%%%%%%%%%%:+$###)
-    type instance Apply (:<<<%%%%%%%%%%%%%%%%%%%:+$) l = (:<<<%%%%%%%%%%%%%%%%%%%:+$$) l
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$###)) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) l
+      = forall arg. SameKind (Apply (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$###)
+    type instance Apply (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) l = (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l
     type family Let0123456789876543210Z x :: Nat where
       Let0123456789876543210Z x = x
     type family (:<<<%%%%%%%%%%%%%%%%%%%:+) x (a :: Nat) (a :: Nat) :: Nat where
@@ -319,31 +319,31 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       (:<<<%%%%%%%%%%%%%%%%%%%:+) x (Succ n) m = Apply SuccSym0 (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) x) n) m)
     type (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$$) t (t :: Nat) (t :: Nat) =
         (:<<<%%%%%%%%%%%%%%%%%%%:+) t t t
-    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+$$$) where
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) where
       suppressUnusedWarnings
         = snd
-            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+$$$###)) GHC.Tuple.())
-    data (:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$$) l l arg) =>
-        (:<<<%%%%%%%%%%%%%%%%%%%:+$$$###)
-    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+) l l l
-    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+$$) where
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$###)) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$$) l l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$###)
+    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+) l l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) where
       suppressUnusedWarnings
         = snd
-            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+$$###)) GHC.Tuple.())
-    data (:<<<%%%%%%%%%%%%%%%%%%%:+$$) l (l :: TyFun Nat (TyFun Nat Nat
-                                                          -> GHC.Types.Type))
-      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l arg) =>
-        (:<<<%%%%%%%%%%%%%%%%%%%:+$$###)
-    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+$$$) l l
-    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+$) where
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$###)) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l (l :: TyFun Nat (TyFun Nat Nat
+                                                             -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$###)
+    type instance Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l) l = (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$$) l l
+    instance SuppressUnusedWarnings (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) where
       suppressUnusedWarnings
         = snd
-            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+$###)) GHC.Tuple.())
-    data (:<<<%%%%%%%%%%%%%%%%%%%:+$) l
-      = forall arg. SameKind (Apply (:<<<%%%%%%%%%%%%%%%%%%%:+$) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+$$) arg) =>
-        (:<<<%%%%%%%%%%%%%%%%%%%:+$###)
-    type instance Apply (:<<<%%%%%%%%%%%%%%%%%%%:+$) l = (:<<<%%%%%%%%%%%%%%%%%%%:+$$) l
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$###)) GHC.Tuple.())
+    data (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) l
+      = forall arg. SameKind (Apply (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) arg) ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$###)
+    type instance Apply (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$) l = (:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) l
     type family (:<<<%%%%%%%%%%%%%%%%%%%:+) x (a :: Nat) (a :: Nat) :: Nat where
       (:<<<%%%%%%%%%%%%%%%%%%%:+) x Zero m = m
       (:<<<%%%%%%%%%%%%%%%%%%%:+) x (Succ n) m = Apply SuccSym0 (Apply (Apply ((:<<<%%%%%%%%%%%%%%%%%%%:+@#@$$) x) n) m)

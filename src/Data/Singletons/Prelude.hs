@@ -132,7 +132,7 @@ module Data.Singletons.Prelude (
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  (:<>$), (:<>$$), (:<>$$$),
+  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowStringSym0, ShowStringSym1, ShowStringSym2,

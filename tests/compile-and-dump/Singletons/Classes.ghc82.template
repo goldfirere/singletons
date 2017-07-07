@@ -125,21 +125,21 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply MycompareSym0 l = MycompareSym1 l
     type (:<=>@#@$$$) (t :: a0123456789876543210) (t :: a0123456789876543210) =
         (:<=>) t t
-    instance SuppressUnusedWarnings (:<=>$$) where
+    instance SuppressUnusedWarnings (:<=>@#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:<=>$$###)) GHC.Tuple.())
-    data (:<=>$$) (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering)
-      = forall arg. SameKind (Apply ((:<=>$$) l) arg) ((:<=>$$$) l arg) =>
-        (:<=>$$###)
-    type instance Apply ((:<=>$$) l) l = (:<=>) l l
-    instance SuppressUnusedWarnings (:<=>$) where
+        = snd ((GHC.Tuple.(,) (:<=>@#@$$###)) GHC.Tuple.())
+    data (:<=>@#@$$) (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering)
+      = forall arg. SameKind (Apply ((:<=>@#@$$) l) arg) ((:<=>@#@$$$) l arg) =>
+        (:<=>@#@$$###)
+    type instance Apply ((:<=>@#@$$) l) l = (:<=>) l l
+    instance SuppressUnusedWarnings (:<=>@#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:<=>$###)) GHC.Tuple.())
-    data (:<=>$) (l :: TyFun a0123456789876543210 (TyFun a0123456789876543210 Ordering
-                                                   -> GHC.Types.Type))
-      = forall arg. SameKind (Apply (:<=>$) arg) ((:<=>$$) arg) =>
-        (:<=>$###)
-    type instance Apply (:<=>$) l = (:<=>$$) l
+        = snd ((GHC.Tuple.(,) (:<=>@#@$###)) GHC.Tuple.())
+    data (:<=>@#@$) (l :: TyFun a0123456789876543210 (TyFun a0123456789876543210 Ordering
+                                                      -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:<=>@#@$) arg) ((:<=>@#@$$) arg) =>
+        (:<=>@#@$###)
+    type instance Apply (:<=>@#@$) l = (:<=>@#@$$) l
     type family TFHelper_0123456789876543210 (a :: a) (a :: a) :: Ordering where
       TFHelper_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply MycompareSym0 a_0123456789876543210) a_0123456789876543210
     type TFHelper_0123456789876543210Sym2 (t :: a0123456789876543210) (t :: a0123456789876543210) =

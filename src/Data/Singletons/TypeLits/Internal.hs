@@ -30,10 +30,7 @@ module Data.Singletons.TypeLits.Internal (
   (:^), (%:^),
   (:<>), (%:<>),
 
-  -- * Defunctionalization symbols
-  ErrorSym0, ErrorSym1, UndefinedSym0,
-  (:^@#@$), (:^@#@$$), (:^@#@$$$),
-  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$)
+  (:^), (:^@#@$), (:^@#@$$), (:^@#@$$$)
   ) where
 
 import Data.Singletons.Promote

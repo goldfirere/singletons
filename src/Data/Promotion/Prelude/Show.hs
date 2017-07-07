@@ -20,7 +20,7 @@ module Data.Promotion.Prelude.Show (
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  (:<>$), (:<>$$), (:<>$$$),
+  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowListWithSym0, ShowListWithSym1, ShowListWithSym2, ShowListWithSym3,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,

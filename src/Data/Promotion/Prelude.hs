@@ -99,23 +99,12 @@ module Data.Promotion.Prelude (
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
 
-  ErrorSym0, ErrorSym1, UndefinedSym0,
-
-  (:^@#@$), (:^@#@$$), (:^@#@$$$),
+  (:^@#@$), (:^@#@$$),
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
   (:<>@#@$), (:<>@#@$$), (:<>@#@$$$),
-  ShowsSym0, ShowsSym1, ShowsSym2,
-  ShowCharSym0, ShowCharSym1, ShowCharSym2,
-  ShowStringSym0, ShowStringSym1, ShowStringSym2,
-  ShowParenSym0, ShowParenSym1, ShowParenSym2,
-
-  ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
-  Show_Sym0, Show_Sym1,
-  ShowListSym0, ShowListSym1, ShowListSym2,
-  (:<>$), (:<>$$), (:<>$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowStringSym0, ShowStringSym1, ShowStringSym2,

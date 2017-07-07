@@ -23,35 +23,36 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     (+) Zero m = m
     (+) (Succ n) m = Succ (n + m)
     type FLeafSym0 = FLeaf
-    type (:+:$$$) (t :: Foo) (t :: Foo) = (:+:) t t
-    instance SuppressUnusedWarnings (:+:$$) where
+    type (:+:@#@$$$) (t :: Foo) (t :: Foo) = (:+:) t t
+    instance SuppressUnusedWarnings (:+:@#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+:$$###)) GHC.Tuple.())
-    data (:+:$$) (l :: Foo) (l :: TyFun Foo Foo)
-      = forall arg. SameKind (Apply ((:+:$$) l) arg) ((:+:$$$) l arg) =>
-        (:+:$$###)
-    type instance Apply ((:+:$$) l) l = (:+:) l l
-    instance SuppressUnusedWarnings (:+:$) where
+        = snd ((GHC.Tuple.(,) (:+:@#@$$###)) GHC.Tuple.())
+    data (:+:@#@$$) (l :: Foo) (l :: TyFun Foo Foo)
+      = forall arg. SameKind (Apply ((:+:@#@$$) l) arg) ((:+:@#@$$$) l arg) =>
+        (:+:@#@$$###)
+    type instance Apply ((:+:@#@$$) l) l = (:+:) l l
+    instance SuppressUnusedWarnings (:+:@#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+:$###)) GHC.Tuple.())
-    data (:+:$) (l :: TyFun Foo (TyFun Foo Foo -> GHC.Types.Type))
-      = forall arg. SameKind (Apply (:+:$) arg) ((:+:$$) arg) =>
-        (:+:$###)
-    type instance Apply (:+:$) l = (:+:$$) l
-    type (:+$$$) (t :: Nat) (t :: Nat) = (:+) t t
-    instance SuppressUnusedWarnings (:+$$) where
+        = snd ((GHC.Tuple.(,) (:+:@#@$###)) GHC.Tuple.())
+    data (:+:@#@$) (l :: TyFun Foo (TyFun Foo Foo -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:+:@#@$) arg) ((:+:@#@$$) arg) =>
+        (:+:@#@$###)
+    type instance Apply (:+:@#@$) l = (:+:@#@$$) l
+    type (:+@#@$$$) (t :: Nat) (t :: Nat) = (:+) t t
+    instance SuppressUnusedWarnings (:+@#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+$$###)) GHC.Tuple.())
-    data (:+$$) (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply ((:+$$) l) arg) ((:+$$$) l arg) =>
-        (:+$$###)
-    type instance Apply ((:+$$) l) l = (:+) l l
-    instance SuppressUnusedWarnings (:+$) where
+        = snd ((GHC.Tuple.(,) (:+@#@$$###)) GHC.Tuple.())
+    data (:+@#@$$) (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply ((:+@#@$$) l) arg) ((:+@#@$$$) l arg) =>
+        (:+@#@$$###)
+    type instance Apply ((:+@#@$$) l) l = (:+) l l
+    instance SuppressUnusedWarnings (:+@#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:+$###)) GHC.Tuple.())
-    data (:+$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
-      = forall arg. SameKind (Apply (:+$) arg) ((:+$$) arg) => (:+$###)
-    type instance Apply (:+$) l = (:+$$) l
+        = snd ((GHC.Tuple.(,) (:+@#@$###)) GHC.Tuple.())
+    data (:+@#@$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
+        (:+@#@$###)
+    type instance Apply (:+@#@$) l = (:+@#@$$) l
     type ChildSym1 (t :: Foo) = Child t
     instance SuppressUnusedWarnings ChildSym0 where
       suppressUnusedWarnings
