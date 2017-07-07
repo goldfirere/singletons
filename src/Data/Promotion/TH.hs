@@ -42,10 +42,10 @@ module Data.Promotion.TH (
 
   PEq(..), If, (:&&),
   POrd(..),
-  Any,
   Proxy(..), ThenCmp, Foldl,
 
   Error, ErrorSym0,
+  Undefined, UndefinedSym0,
   TrueSym0, FalseSym0,
   LTSym0, EQSym0, GTSym0,
   Tuple0Sym0,
@@ -69,4 +69,3 @@ import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.TypeLits
 import Data.Singletons.SuppressUnusedWarnings
-import GHC.Exts

@@ -28,7 +28,7 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
     type family Bar (a :: Bool) :: Bool where
       Bar a_0123456789876543210 = Apply (Apply ErrorSym0 "urk") a_0123456789876543210
     type family Foo (a :: Bool) :: Bool where
-      Foo a_0123456789876543210 = Apply Any a_0123456789876543210
+      Foo a_0123456789876543210 = Apply UndefinedSym0 a_0123456789876543210
     sBar ::
       forall (t :: Bool). Sing t -> Sing (Apply BarSym0 t :: Bool)
     sFoo ::
@@ -36,4 +36,4 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
     sBar (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = sError (sing :: Sing "urk")
     sFoo (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = undefined
+      = sUndefined
