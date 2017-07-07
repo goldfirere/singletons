@@ -11,7 +11,7 @@ presented in /Dependently typed programming with singletons/
 {-# LANGUAGE PolyKinds, DataKinds, TemplateHaskell, TypeFamilies,
     GADTs, TypeOperators, RankNTypes, FlexibleContexts, UndecidableInstances,
     FlexibleInstances, ScopedTypeVariables, MultiParamTypeClasses,
-    ConstraintKinds, InstanceSigs #-}
+    ConstraintKinds, CPP, InstanceSigs #-}
 {-# OPTIONS_GHC -Wno-warnings-deprecations #-}
 
 -- The OverlappingInstances is needed only to allow the InC and SubsetC classes.

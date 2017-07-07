@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-unused-imports #-}
+
 module Singletons.Maybe where
 
 import Data.Singletons.TH
