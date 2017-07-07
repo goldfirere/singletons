@@ -117,18 +117,19 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance PBounded Pair where
       type = MinBound_0123456789876543210Sym0
       type = MaxBound_0123456789876543210Sym0
-    data instance Sing (z :: Foo1) = z ~ Foo1 => SFoo1
+    data instance Sing (z :: Foo1) where SFoo1 :: Sing Foo1
     type SFoo1 = (Sing :: Foo1 -> Type)
     instance SingKind Foo1 where
       type Demote Foo1 = Foo1
       fromSing SFoo1 = Foo1
       toSing Foo1 = SomeSing SFoo1
     data instance Sing (z :: Foo2)
-      = z ~ A => SA |
-        z ~ B => SB |
-        z ~ C => SC |
-        z ~ D => SD |
-        z ~ E => SE
+      where
+        SA :: Sing A
+        SB :: Sing B
+        SC :: Sing C
+        SD :: Sing D
+        SE :: Sing E
     type SFoo2 = (Sing :: Foo2 -> Type)
     instance SingKind Foo2 where
       type Demote Foo2 = Foo2
@@ -143,7 +144,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing D = SomeSing SD
       toSing E = SomeSing SE
     data instance Sing (z :: Foo3 a)
-      = forall (n :: a). z ~ Foo3 n => SFoo3 (Sing (n :: a))
+      where SFoo3 :: forall (n :: a). (Sing (n :: a)) -> Sing (Foo3 n)
     type SFoo3 = (Sing :: Foo3 a -> Type)
     instance SingKind a => SingKind (Foo3 a) where
       type Demote (Foo3 a) = Foo3 (Demote a)
@@ -152,7 +153,9 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SFoo3 c) }
     data instance Sing (z :: Foo4 a b)
-      = z ~ Foo41 => SFoo41 | z ~ Foo42 => SFoo42
+      where
+        SFoo41 :: Sing Foo41
+        SFoo42 :: Sing Foo42
     type SFoo4 = (Sing :: Foo4 a b -> Type)
     instance (SingKind a, SingKind b) => SingKind (Foo4 a b) where
       type Demote (Foo4 a b) = Foo4 (Demote a) (Demote b)
@@ -161,8 +164,9 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing Foo41 = SomeSing SFoo41
       toSing Foo42 = SomeSing SFoo42
     data instance Sing (z :: Pair)
-      = forall (n :: Bool) (n :: Bool). z ~ Pair n n =>
-        SPair (Sing (n :: Bool)) (Sing (n :: Bool))
+      where
+        SPair :: forall (n :: Bool) (n :: Bool).
+                 (Sing (n :: Bool)) -> (Sing (n :: Bool)) -> Sing (Pair n n)
     type SPair = (Sing :: Pair -> Type)
     instance SingKind Pair where
       type Demote Pair = Pair

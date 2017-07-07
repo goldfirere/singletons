@@ -101,7 +101,10 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)])
     sEmpty = SNil
     data instance Sing (z :: Occ)
-      = z ~ Str => SStr | z ~ Opt => SOpt | z ~ Many => SMany
+      where
+        SStr :: Sing Str
+        SOpt :: Sing Opt
+        SMany :: Sing Many
     type SOcc = (Sing :: Occ -> GHC.Types.Type)
     instance SingKind Occ where
       type Demote Occ = Occ

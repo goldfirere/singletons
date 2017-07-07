@@ -26,10 +26,9 @@ import Control.Monad
 singDataD :: DataDecl -> SgM [DDec]
 singDataD (DataDecl _nd name tvbs ctors _derivings) = do
   aName <- qNewName "z"
-  let a = DVarT aName
   let tvbNames = map extractTvbName tvbs
   k <- promoteType (foldType (DConT name) (map DVarT tvbNames))
-  ctors' <- mapM (singCtor a) ctors
+  ctors' <- mapM singCtor ctors
   ctorFixities <-
     -- try to reify the fixity declarations for the constructors and then
     -- singletonize them. In case the reification fails, we default to an
@@ -61,7 +60,7 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
                 []
                 (singFamily `DSigT` (DArrowT `DAppT` k `DAppT` DStarT))
 
-  return $ (DDataInstD Data [] singFamilyName [DSigT a k] ctors' []) :
+  return $ (DDataInstD Data [] singFamilyName [DSigT (DVarT aName) k] ctors' []) :
            kindedSynInst :
            singKindInst :
            ctorFixities
@@ -107,13 +106,12 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
         emptyMethod :: Name -> [DClause]
         emptyMethod n = [DClause [DVarPa n] (DCaseE (DVarE n) emptyMatches)]
 
--- refine a constructor. the first parameter is the type variable that
--- the singleton GADT is parameterized by
-singCtor :: DType -> DCon -> SgM DCon
+-- refine a constructor.
+singCtor :: DCon -> SgM DCon
  -- polymorphic constructors are handled just
  -- like monomorphic ones -- the polymorphism in
  -- the kind is automatic
-singCtor a (DCon _tvbs cxt name fields _rty)
+singCtor (DCon _tvbs cxt name fields _rty)
   | not (null (filter (not . isEqPred) cxt))
   = fail "Singling of constrained constructors not yet supported"
   | otherwise
@@ -146,10 +144,10 @@ singCtor a (DCon _tvbs cxt name fields _rty)
                             | (field_name, _, _) <- rec_fields
                             | arg <- args ]
   return $ DCon tvbs
-                [mkEqPred a (foldType pCon indices)]
+                []
                 sName
                 conFields
-                Nothing
+                (Just (DConT singFamilyName `DAppT` foldType pCon indices))
   where buildArgType :: DType -> DType -> SgM DType
         buildArgType ty index = do
           (ty', _, _, _) <- singType index ty

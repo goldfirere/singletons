@@ -137,9 +137,7 @@ singEqualityInstance desc@(_, className, _) name = do
   dcons <- concatMapM dsCon cons
   let tyvars = map (DVarT . extractTvbName) dtvbs
       kind = foldType (DConT name) tyvars
-  aName <- qNewName "a"
-  let aVar = DVarT aName
-  (scons, _) <- singM [] $ mapM (singCtor aVar) dcons
+  (scons, _) <- singM [] $ mapM singCtor dcons
   eqInstance <- mkEqualityInstance Nothing kind scons desc
   return $ decToTH eqInstance
 
@@ -563,9 +561,7 @@ singDerivedEqDecs :: DerivedEqDecl -> SgM [DDec]
 singDerivedEqDecs (DerivedEqDecl { ded_mb_cxt = mb_ctxt
                                  , ded_type   = ty
                                  , ded_cons   = cons }) = do
-  aName <- qNewName "a"
-  let aVar = DVarT aName
-  (scons, _) <- singM [] $ mapM (singCtor aVar) cons
+  (scons, _) <- singM [] $ mapM singCtor cons
   mb_sctxt <- mapM (mapM singPred) mb_ctxt
   kind <- promoteType ty
   sEqInst <- mkEqualityInstance mb_sctxt kind scons sEqClassDesc

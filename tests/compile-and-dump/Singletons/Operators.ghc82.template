@@ -79,9 +79,10 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     sChild SFLeaf = SFLeaf
     sChild ((:%+:) (sA :: Sing a) _) = sA
     data instance Sing (z :: Foo)
-      = z ~ FLeaf => SFLeaf |
-        forall (n :: Foo) (n :: Foo). z ~ (:+:) n n =>
-        (Sing (n :: Foo)) :%+: (Sing (n :: Foo))
+      where
+        SFLeaf :: Sing FLeaf
+        (:%+:) :: forall (n :: Foo) (n :: Foo).
+                  (Sing (n :: Foo)) -> (Sing (n :: Foo)) -> Sing ((:+:) n n)
     type SFoo = (Sing :: Foo -> GHC.Types.Type)
     instance SingKind Foo where
       type Demote Foo = Foo
