@@ -17,7 +17,7 @@
              UndecidableInstances, ScopedTypeVariables, RankNTypes,
              GADTs, FlexibleContexts, TypeOperators, ConstraintKinds,
              TypeInType, TemplateHaskell, StandaloneDeriving #-}
-{-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Singletons.TypeLits.Internal (
   Sing(..),

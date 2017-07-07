@@ -11,7 +11,7 @@ re-exported from various places.
 {-# LANGUAGE RankNTypes, TypeInType, GADTs, TypeFamilies,
              FlexibleContexts, TemplateHaskell, ScopedTypeVariables,
              UndecidableInstances, TypeOperators, FlexibleInstances #-}
-{-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Singletons.Prelude.Instances where
 

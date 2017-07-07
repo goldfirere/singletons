@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
 module Singletons.T54 where
 

@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fno-warn-unused-matches -fno-warn-name-shadowing -fno-warn-unused-imports #-}
+{-# OPTIONS_GHC -Wno-unused-matches -Wno-name-shadowing -Wno-unused-imports #-}
 
 {-# LANGUAGE UnboxedTuples #-}
 -- We expect unused binds and name shadowing in foo5 test.
