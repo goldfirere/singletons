@@ -25,7 +25,9 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
         BarSym0KindInference
     type instance Apply BarSym0 l = BarSym1 l
     data instance Sing (z :: Bool)
-      = z ~ False => SFalse | z ~ True => STrue
+      where
+        SFalse :: Sing False
+        STrue :: Sing True
     type SBool = (Sing :: Bool -> GHC.Types.Type)
     instance SingKind Bool where
       type Demote Bool = Bool
@@ -34,8 +36,9 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       toSing False = SomeSing SFalse
       toSing True = SomeSing STrue
     data instance Sing (z :: Foo)
-      = forall (n :: Bool) (n :: Bool). z ~ Bar n n =>
-        SBar (Sing (n :: Bool)) (Sing (n :: Bool))
+      where
+        SBar :: forall (n :: Bool) (n :: Bool).
+                (Sing (n :: Bool)) -> (Sing (n :: Bool)) -> Sing (Bar n n)
     type SFoo = (Sing :: Foo -> GHC.Types.Type)
     instance SingKind Foo where
       type Demote Foo = Foo

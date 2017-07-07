@@ -404,8 +404,9 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
            ((applySing ((singFun2 @(:@#@$)) SCons)) ((applySing sF) sH)))
           ((applySing ((applySing ((singFun2 @MapSym0) sMap)) sF)) sT)
     data instance Sing (z :: Either a b)
-      = forall (n :: a). z ~ Left n => SLeft (Sing (n :: a)) |
-        forall (n :: b). z ~ Right n => SRight (Sing (n :: b))
+      where
+        SLeft :: forall (n :: a). (Sing (n :: a)) -> Sing (Left n)
+        SRight :: forall (n :: b). (Sing (n :: b)) -> Sing (Right n)
     type SEither = (Sing :: Either a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind (Either a b) where
       type Demote (Either a b) = Either (Demote a) (Demote b)

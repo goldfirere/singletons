@@ -52,9 +52,10 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
     instance PMyOrd NatFoo where
       type Mycompare (a :: NatFoo) (a :: NatFoo) = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     data instance Sing (z :: NatFoo)
-      = z ~ ZeroFoo => SZeroFoo |
-        forall (n :: NatFoo). z ~ SuccFoo n =>
-        SSuccFoo (Sing (n :: NatFoo))
+      where
+        SZeroFoo :: Sing ZeroFoo
+        SSuccFoo :: forall (n :: NatFoo).
+                    (Sing (n :: NatFoo)) -> Sing (SuccFoo n)
     type SNatFoo = (Sing :: NatFoo -> GHC.Types.Type)
     instance SingKind NatFoo where
       type Demote NatFoo = NatFoo

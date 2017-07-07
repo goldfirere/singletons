@@ -8,12 +8,13 @@ Singletons/T159.hs:0:0:: Splicing declarations
     type ESym0 = E
     type FSym0 = F
     data instance Sing (z :: T0)
-      = z ~ A => SA |
-        z ~ B => SB |
-        z ~ C => SC |
-        z ~ D => SD |
-        z ~ E => SE |
-        z ~ F => SF
+      where
+        SA :: Sing A
+        SB :: Sing B
+        SC :: Sing C
+        SD :: Sing D
+        SE :: Sing E
+        SF :: Sing F
     type ST0 = (Sing :: T0 -> GHC.Types.Type)
     instance SingKind T0 where
       type Demote T0 = T0
@@ -73,11 +74,12 @@ Singletons/T159.hs:0:0:: Splicing declarations
         (:&&@#@$###)
     type instance Apply (:&&@#@$) l = (:&&@#@$$) l
     data instance Sing (z :: T1)
-      = z ~ N1 => SN1 |
-        forall (n :: T0) (n :: T1). z ~ C1 n n =>
-        SC1 (Sing (n :: T0)) (Sing (n :: T1)) |
-        forall (n :: T0) (n :: T1). z ~ (:&&) n n =>
-        (Sing (n :: T0)) :%&& (Sing (n :: T1))
+      where
+        SN1 :: Sing N1
+        SC1 :: forall (n :: T0) (n :: T1).
+               (Sing (n :: T0)) -> (Sing (n :: T1)) -> Sing (C1 n n)
+        (:%&&) :: forall (n :: T0) (n :: T1).
+                  (Sing (n :: T0)) -> (Sing (n :: T1)) -> Sing ((:&&) n n)
     type ST1 = (Sing :: T1 -> GHC.Types.Type)
     instance SingKind T1 where
       type Demote T1 = T1
@@ -149,11 +151,12 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
     infixr 5 :%||
     infixr 5 `SC2`
     data instance Sing (z :: T2)
-      = z ~ N2 => SN2 |
-        forall (n :: T0) (n :: T2). z ~ C2 n n =>
-        SC2 (Sing (n :: T0)) (Sing (n :: T2)) |
-        forall (n :: T0) (n :: T2). z ~ (:||) n n =>
-        (Sing (n :: T0)) :%|| (Sing (n :: T2))
+      where
+        SN2 :: Sing N2
+        SC2 :: forall (n :: T0) (n :: T2).
+               (Sing (n :: T0)) -> (Sing (n :: T2)) -> Sing (C2 n n)
+        (:%||) :: forall (n :: T0) (n :: T2).
+                  (Sing (n :: T0)) -> (Sing (n :: T2)) -> Sing ((:||) n n)
     type ST2 = (Sing :: T2 -> GHC.Types.Type)
     instance SingKind T2 where
       type Demote T2 = T2
