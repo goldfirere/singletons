@@ -16,7 +16,7 @@ import Data.Singletons.Decide
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import GHC.TypeLits ( Nat, Symbol )
-import GHC.Exts ( Any, Constraint )
+import GHC.Exts ( Constraint )
 import GHC.Show ( showCommaSpace, showSpace )
 import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
@@ -41,7 +41,6 @@ boolName, andName, tyEqName, compareName, minBoundName,
   equalsName, constraintName,
   showName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
   showSpaceName, showStringName, composeName, gtName :: Name
-anyTypeName = ''Any
 boolName = ''Bool
 andName = '(&&)
 compareName = 'compare

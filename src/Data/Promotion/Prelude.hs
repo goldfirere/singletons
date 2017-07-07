@@ -99,6 +99,8 @@ module Data.Promotion.Prelude (
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
 
+  ErrorSym0, ErrorSym1, UndefinedSym0,
+
   (:^@#@$), (:^@#@$$),
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,

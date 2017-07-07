@@ -454,15 +454,6 @@ treatment):
 
    All tuples (including the 0-tuple, unit) are treated similarly.
 
-6. original value: `undefined`
-
-   promoted type\*: `Any`
-
-   singleton value\*: `undefined`
-
-   symbols\*: `Any`
-
-
 Supported Haskell constructs
 ----------------------------
 

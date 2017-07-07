@@ -20,10 +20,10 @@ module Data.Singletons.TypeLits (
   Nat, Symbol,
   Sing(SNat, SSym),
   SNat, SSymbol, withKnownNat, withKnownSymbol,
-  Error, sError,
-  Undefined, sUndefined,
-  KnownNat, natVal,
-  KnownSymbol, symbolVal,
+  Error, ErrorSym0, ErrorSym1, sError,
+  Undefined, UndefinedSym0, sUndefined,
+  KnownNat, KnownNatSym0, KnownNatSym1, natVal,
+  KnownSymbol, KnownSymbolSym0, KnownSymbolSym1, symbolVal,
 
   (:^), (:^@#@$), (:^@#@$$), (:^@#@$$$)
   ) where

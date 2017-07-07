@@ -24,8 +24,8 @@ module Data.Singletons.TypeLits.Internal (
 
   Nat, Symbol,
   SNat, SSymbol, withKnownNat, withKnownSymbol,
-  Error, sError,
-  Undefined, sUndefined,
+  Error, ErrorSym0, ErrorSym1, sError,
+  Undefined, UndefinedSym0, sUndefined,
   KnownNat, natVal, KnownSymbol, symbolVal,
   (:^), (%:^),
   (:<>), (%:<>),
@@ -157,7 +157,7 @@ $(genDefunSymbols [''Error])
 sError :: Sing (str :: Symbol) -> a
 sError sstr = error (T.unpack (fromSing sstr))
 
--- | The promotion of 'undefined'.
+-- | The promotion of 'Undefined'.
 type family Undefined :: k where {}
 $(genDefunSymbols [''Undefined])
 
