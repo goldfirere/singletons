@@ -14,7 +14,7 @@
 --
 ----------------------------------------------------------------------------
 
-{-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Singletons.TypeLits (
   Nat, Symbol,

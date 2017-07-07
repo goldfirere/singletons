@@ -1,7 +1,7 @@
 {-# LANGUAGE RankNTypes, TypeFamilies, KindSignatures, FlexibleInstances,
              GADTs, UndecidableInstances, ScopedTypeVariables, DataKinds,
              MagicHash, TypeOperators #-}
-{-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------
 -- |

@@ -8,7 +8,7 @@ This file is a great way to understand the singleton encoding better.
 
 -}
 
-{-# OPTIONS_GHC -fno-warn-unticked-promoted-constructors #-}
+{-# OPTIONS_GHC -Wno-unticked-promoted-constructors #-}
 
 {-# LANGUAGE PolyKinds, DataKinds, TypeFamilies, KindSignatures, GADTs,
              FlexibleInstances, FlexibleContexts, UndecidableInstances,
