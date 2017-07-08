@@ -24,13 +24,16 @@ module Data.Singletons.TypeLits.Internal (
 
   Nat, Symbol,
   SNat, SSymbol, withKnownNat, withKnownSymbol,
-  Error, ErrorSym0, ErrorSym1, sError,
-  Undefined, UndefinedSym0, sUndefined,
+  Error, sError,
+  Undefined, sUndefined,
   KnownNat, natVal, KnownSymbol, symbolVal,
-  (:^), (%:^),
+  (:^),
   (:<>), (%:<>),
 
-  (:^), (:^@#@$), (:^@#@$$), (:^@#@$$$)
+  -- * Defunctionalization symbols
+  ErrorSym0, ErrorSym1, UndefinedSym0,
+  (:^@#@$), (:^@#@$$), (:^@#@$$$),
+  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$)
   ) where
 
 import Data.Singletons.Promote
@@ -40,7 +43,6 @@ import Data.Singletons.Prelude.Ord
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
 import GHC.TypeLits as TL
-import qualified GHC.TypeNats as TN
 import Data.Monoid ((<>))
 import Data.Type.Equality
 import Data.Proxy ( Proxy(..) )
