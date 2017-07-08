@@ -79,6 +79,8 @@ module Data.Singletons.Prelude (
   -- ** Zipping and unzipping lists
   Zip, sZip, Zip3, sZip3, ZipWith, sZipWith, ZipWith3, sZipWith3,
   Unzip, sUnzip, Unzip3, sUnzip3,
+  -- ** Functions on 'Symbol's
+  Unlines, sUnlines, Unwords, sUnwords,
 
   -- * Other datatypes
   Maybe_, sMaybe_,
@@ -162,7 +164,9 @@ module Data.Singletons.Prelude (
   Zip3Sym0, Zip3Sym1, Zip3Sym2, Zip3Sym3,
   ZipWithSym0, ZipWithSym1, ZipWithSym2, ZipWithSym3,
   ZipWith3Sym0, ZipWith3Sym1, ZipWith3Sym2, ZipWith3Sym3,
-  UnzipSym0, UnzipSym1
+  UnzipSym0, UnzipSym1,
+
+  UnlinesSym0, UnlinesSym1, UnwordsSym0, UnwordsSym1
   ) where
 
 import Data.Singletons

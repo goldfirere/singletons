@@ -24,11 +24,16 @@ module Data.Singletons.TypeLits.Internal (
 
   Nat, Symbol,
   SNat, SSymbol, withKnownNat, withKnownSymbol,
-  Error, ErrorSym0, ErrorSym1, sError,
-  Undefined, UndefinedSym0, sUndefined,
+  Error, sError,
+  Undefined, sUndefined,
   KnownNat, natVal, KnownSymbol, symbolVal,
+  (:^),
+  (:<>), (%:<>),
 
-  (:^), (:^@#@$), (:^@#@$$), (:^@#@$$$)
+  -- * Defunctionalization symbols
+  ErrorSym0, ErrorSym1, UndefinedSym0,
+  (:^@#@$), (:^@#@$$), (:^@#@$$$),
+  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$)
   ) where
 
 import Data.Singletons.Promote
@@ -38,6 +43,7 @@ import Data.Singletons.Prelude.Ord
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
 import GHC.TypeLits as TL
+import Data.Monoid ((<>))
 import Data.Type.Equality
 import Data.Proxy ( Proxy(..) )
 import Unsafe.Coerce
@@ -165,6 +171,23 @@ sUndefined = undefined
 type a :^ b = a ^ b
 infixr 8 :^
 $(genDefunSymbols [''(:^)])
+
+-- | The promoted analogue of '(<>)' for 'Symbol's. This uses the special
+-- 'TL.AppendSymbol' type family from "GHC.TypeLits".
+type a :<> b = TL.AppendSymbol a b
+infixr 6 :<>
+
+-- | The singleton analogue of '(<>)' for 'Symbol's.
+(%:<>) :: Sing a -> Sing b -> Sing (a :<> b)
+sa %:<> sb =
+    let a  = fromSing sa
+        b  = fromSing sb
+        ex = someSymbolVal $ T.unpack $ a <> b
+    in case ex of
+         SomeSymbol (_ :: Proxy ab) -> unsafeCoerce (SSym :: Sing ab)
+infixr 6 %:<>
+
+$(genDefunSymbols [''(:<>)])
 
 ------------------------------------------------------------
 -- TypeLits singleton non-singleton instances
