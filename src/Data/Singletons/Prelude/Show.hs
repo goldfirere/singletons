@@ -52,7 +52,6 @@ module Data.Singletons.Prelude.Show (
   ) where
 
 import           Data.List.NonEmpty (NonEmpty)
-import           Data.Monoid ((<>))
 import           Data.Singletons.Prelude.Base
 import           Data.Singletons.Prelude.Instances
 import           Data.Singletons.Prelude.List
@@ -70,23 +69,6 @@ import qualified Prelude as P
 import           Prelude hiding (Show(..))
 
 import           Unsafe.Coerce (unsafeCoerce)
-
--- | The promoted analogue of '(<>)' for 'Symbol's. This uses the special
--- 'AppendSymbol' type family from "GHC.TypeLits".
-type a :<> b = AppendSymbol a b
-infixr 6 :<>
-
--- | The singleton analogue of '(<>)' for 'Symbol's.
-(%:<>) :: Sing a -> Sing b -> Sing (a :<> b)
-sa %:<> sb =
-    let a  = fromSing sa
-        b  = fromSing sb
-        ex = someSymbolVal $ T.unpack $ a <> b
-    in case ex of
-         SomeSymbol (_ :: Proxy ab) -> unsafeCoerce (SSym :: Sing ab)
-infixr 6 %:<>
-
-$(genDefunSymbols [''(:<>)])
 
 -- | The @shows@ functions return a function that prepends the
 -- output 'Symbol' to an existing 'Symbol'.  This allows constant-time

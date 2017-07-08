@@ -79,6 +79,9 @@ module Data.Promotion.Prelude.List (
 
   -- * Special lists
 
+  -- ** Functions on 'Symbol's
+  Unlines, Unwords,
+
   -- ** \"Set\" operations
   Nub, Delete, (:\\), Union, Intersect,
 
@@ -209,6 +212,9 @@ module Data.Promotion.Prelude.List (
   ZipWith5Sym0, ZipWith5Sym1, ZipWith5Sym2, ZipWith5Sym3, ZipWith5Sym4, ZipWith5Sym5, ZipWith5Sym6,
   ZipWith6Sym0, ZipWith6Sym1, ZipWith6Sym2, ZipWith6Sym3, ZipWith6Sym4, ZipWith6Sym5, ZipWith6Sym6, ZipWith6Sym7,
   ZipWith7Sym0, ZipWith7Sym1, ZipWith7Sym2, ZipWith7Sym3, ZipWith7Sym4, ZipWith7Sym5, ZipWith7Sym6, ZipWith7Sym7, ZipWith7Sym8,
+
+  UnlinesSym0, UnlinesSym1,
+  UnwordsSym0, UnwordsSym1,
 
   NubSym0, NubSym1,
   NubBySym0, NubBySym1, NubBySym2,

@@ -99,6 +99,10 @@ module Data.Singletons.Prelude.List (
 
   -- * Special lists
 
+  -- ** Functions on 'Symbol's
+  Unlines, sUnlines,
+  Unwords, sUnwords,
+
   -- ** \"Set\" operations
   Nub, sNub, Delete, sDelete, (:\\), (%:\\),
   Union, sUnion, Intersect, sIntersect,
@@ -211,6 +215,9 @@ module Data.Singletons.Prelude.List (
   Unzip5Sym0, Unzip5Sym1,
   Unzip6Sym0, Unzip6Sym1,
   Unzip7Sym0, Unzip7Sym1,
+
+  UnlinesSym0, UnlinesSym1,
+  UnwordsSym0, UnwordsSym1,
 
   NubSym0, NubSym1,
   DeleteSym0, DeleteSym1, DeleteSym2,
@@ -506,19 +513,23 @@ $(singletonsOnly [d|
 --      where
 --        cons ~(h, t)        =  h : t
 --
---  unlines                 :: [String] -> String
---  unlines                 =  concatMap (++ "\n")
---
 --  words                   :: String -> [String]
 --  words s                 =  case dropWhile isSpace s of
 --                                  "" -> []
 --                                  s' -> w : words s''
 --                                        where (w, s'') =
 --                                               break isSpace s'
---
---  unwords                 :: [String] -> String
---  unwords []              =  ""
---  unwords ws              =  foldr1 (\w s -> w ++ ' ':s) ws
+
+  unlines                 :: [Symbol] -> Symbol
+  unlines []              = ""
+  unlines (l:ls)          = l <> "\n" <> unlines ls
+
+  unwords                 :: [Symbol] -> Symbol
+  unwords []              = ""
+  unwords (w:ws)          = w <> go ws
+    where
+      go []     = ""
+      go (v:vs) = " " <> (v <> go vs)
 
   delete                  :: (Eq a) => a -> [a] -> [a]
   delete                  =  deleteBy (==)

@@ -72,6 +72,8 @@ module Data.Promotion.Prelude (
   Elem, NotElem, Lookup,
   -- ** Zipping and unzipping lists
   Zip, Zip3, ZipWith, ZipWith3, Unzip, Unzip3,
+  -- ** Functions on 'Symbol's
+  Unlines, Unwords,
 
   -- * Defunctionalization symbols
   FalseSym0, TrueSym0,
@@ -148,6 +150,8 @@ module Data.Promotion.Prelude (
   ZipWithSym0, ZipWithSym1, ZipWithSym2, ZipWithSym3,
   ZipWith3Sym0, ZipWith3Sym1, ZipWith3Sym2, ZipWith3Sym3,
   UnzipSym0, UnzipSym1,
+
+  UnlinesSym0, UnlinesSym1, UnwordsSym0, UnwordsSym1,
 
   UntilSym0, UntilSym1, UntilSym2, UntilSym3,
   LengthSym0, LengthSym1,
