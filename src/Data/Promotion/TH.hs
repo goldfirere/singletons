@@ -41,12 +41,19 @@ module Data.Promotion.TH (
   -- so they must be in scope.
 
   PEq(..), If, (:&&),
-  POrd(..),
-  Proxy(..), ThenCmp, Foldl,
+  POrd(..), ThenCmp, Foldl,
+  PBounded(..),
+  PEnum(FromEnum, ToEnum),
+  PShow(..),
+  ShowString, ShowParen, ShowSpace, ShowChar, ShowCommaSpace,
+  (:.),
+  Proxy(..),
 
-  Error, ErrorSym0,
+  Error, ErrorSym0, ErrorSym1,
   Undefined, UndefinedSym0,
   TrueSym0, FalseSym0,
+  (:==@#@$), (:==@#@$$), (:==@#@$$$),
+  (:>@#@$), (:>@#@$$), (:>@#@$$$),
   LTSym0, EQSym0, GTSym0,
   Tuple0Sym0,
   Tuple2Sym0, Tuple2Sym1, Tuple2Sym2,
@@ -55,7 +62,18 @@ module Data.Promotion.TH (
   Tuple5Sym0, Tuple5Sym1, Tuple5Sym2, Tuple5Sym3, Tuple5Sym4, Tuple5Sym5,
   Tuple6Sym0, Tuple6Sym1, Tuple6Sym2, Tuple6Sym3, Tuple6Sym4, Tuple6Sym5, Tuple6Sym6,
   Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6, Tuple7Sym7,
-  ThenCmpSym0, FoldlSym0,
+  CompareSym0, CompareSym1, CompareSym2,
+  ThenCmpSym0, ThenCmpSym1, ThenCmpSym2,
+  FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,
+  MinBoundSym0, MaxBoundSym0,
+  ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
+  ShowStringSym0, ShowStringSym1, ShowStringSym2,
+  ShowParenSym0, ShowParenSym1, ShowParenSym2,
+  ShowSpaceSym0, ShowSpaceSym1,
+  ShowCharSym0, ShowCharSym1, ShowCharSym2,
+  ShowCommaSpaceSym0, ShowCommaSpaceSym1,
+  (:.@#@$), (:.@#@$$), (:.@#@$$$), (:.@#@$$$$),
+  (:@#@$), (:@#@$$), (:@#@$$$),
 
   SuppressUnusedWarnings(..)
 
@@ -63,9 +81,12 @@ module Data.Promotion.TH (
 
 import Data.Singletons
 import Data.Singletons.Promote
+import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Bool
+import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord
+import Data.Singletons.Prelude.Show
 import Data.Singletons.TypeLits
 import Data.Singletons.SuppressUnusedWarnings

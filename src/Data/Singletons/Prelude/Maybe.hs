@@ -56,7 +56,7 @@ module Data.Singletons.Prelude.Maybe (
   ) where
 
 import Data.Singletons.Prelude.Instances
-import Data.Singletons.TH
+import Data.Singletons.Single
 import Data.Singletons.TypeLits
 
 $(singletons [d|

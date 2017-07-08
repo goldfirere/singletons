@@ -2,5 +2,5 @@
 Singletons/BadShowDeriving.hs:0:0: error:
     Can't derive Show instance for Foo_0.
   |
-6 | $(singletons [d| data Foo deriving Show |])
+5 | $(singletons [d| data Foo deriving Show |])
   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
