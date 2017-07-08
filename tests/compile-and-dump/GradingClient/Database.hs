@@ -11,7 +11,7 @@ presented in /Dependently typed programming with singletons/
 {-# LANGUAGE PolyKinds, DataKinds, TemplateHaskell, TypeFamilies,
     GADTs, TypeOperators, RankNTypes, FlexibleContexts, UndecidableInstances,
     FlexibleInstances, ScopedTypeVariables, MultiParamTypeClasses,
-    ConstraintKinds, CPP, InstanceSigs #-}
+    ConstraintKinds, InstanceSigs #-}
 {-# OPTIONS_GHC -Wno-warnings-deprecations #-}
 
 -- The OverlappingInstances is needed only to allow the InC and SubsetC classes.
@@ -28,15 +28,9 @@ import Data.Singletons.Prelude.Show
 import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Control.Monad
+import Control.Monad.Except  ( throwError )
 import Data.List hiding ( tail )
 import Data.Kind
-
-#ifdef MODERN_MTL
-import Control.Monad.Except  ( throwError )
-#else
-import Control.Monad.Error   ( throwError )
-#endif
-
 
 $(singletons [d|
   -- Basic Nat type
