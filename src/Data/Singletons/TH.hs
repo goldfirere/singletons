@@ -66,7 +66,7 @@ module Data.Singletons.TH (
   (:.), (%:.),
   SomeSing(..),
 
-  Error, ErrorSym0,
+  Error, sError, ErrorSym0, ErrorSym1,
   Undefined, sUndefined, UndefinedSym0,
   TrueSym0, FalseSym0,
   (:==@#@$), (:==@#@$$), (:==@#@$$$),

@@ -41,10 +41,15 @@ module Data.Promotion.TH (
   -- so they must be in scope.
 
   PEq(..), If, (:&&),
-  POrd(..),
-  Proxy(..), ThenCmp, Foldl,
+  POrd(..), ThenCmp, Foldl,
+  PBounded(..),
+  PEnum(FromEnum, ToEnum),
+  PShow(..),
+  ShowString, ShowParen, ShowSpace, ShowChar, ShowCommaSpace,
+  (:.),
+  Proxy(..),
 
-  Error, ErrorSym0,
+  Error, ErrorSym0, ErrorSym1,
   Undefined, UndefinedSym0,
   TrueSym0, FalseSym0,
   (:==@#@$), (:==@#@$$), (:==@#@$$$),

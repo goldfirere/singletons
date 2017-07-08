@@ -52,14 +52,16 @@ module Data.Singletons.Prelude.Show (
   ) where
 
 import           Data.List.NonEmpty (NonEmpty)
+import           Data.Proxy
+import           Data.Singletons
 import           Data.Singletons.Prelude.Base
 import           Data.Singletons.Prelude.Instances
 import           Data.Singletons.Prelude.List
 import           Data.Singletons.Prelude.Num
 import           Data.Singletons.Prelude.Ord
 import           Data.Singletons.Prelude.Tuple
+import           Data.Singletons.Promote
 import           Data.Singletons.Single
-import           Data.Singletons.TH
 import           Data.Singletons.TypeLits
 import qualified Data.Text as T
 
