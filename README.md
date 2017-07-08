@@ -434,7 +434,7 @@ treatment):
 
    singleton constructor\*: `SCons`
 
-   symbols: `:@#@$`, `:@#@$`
+   symbols: `:@#@$`, `:@#@$$`, `:@#@$$$`
 
 
 4. original datatype: `(,)`
