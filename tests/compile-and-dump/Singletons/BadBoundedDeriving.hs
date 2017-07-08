@@ -1,6 +1,5 @@
 module Singletons.BadBoundedDeriving where
 
-import Data.Singletons.Prelude
 import Data.Singletons.TH
 
 $(singletons [d|

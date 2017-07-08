@@ -47,7 +47,7 @@ module Data.Singletons.Prelude.Tuple (
   ) where
 
 import Data.Singletons.Prelude.Instances
-import Data.Singletons.TH
+import Data.Singletons.Single
 
 $(singletonsOnly [d|
   -- -| Extract the first component of a pair.
