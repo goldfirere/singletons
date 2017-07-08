@@ -28,6 +28,11 @@ next
   corresponding promoted type, singleton function, and defunctionalization
   symbols are now named `Any`, `sAny`, and `AnySym{0,1,2}`.
 
+* Add `(:<>)` and `(%:<>)`, the promoted and singled versions of `AppendSymbol`
+  from `GHC.TypeLits`.
+
+* Add `unlines` and `unwords` to `Data.Singletons.Prelude.List`.
+
 * Add promoted and singled versions of `Show`, including `deriving` support.
 
 * Permit derived `Ord` instances for empty datatypes.
