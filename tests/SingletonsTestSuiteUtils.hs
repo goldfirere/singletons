@@ -14,17 +14,13 @@ import Data.Typeable      ( Typeable                            )
 import System.Exit        ( ExitCode(..)                        )
 import System.FilePath    ( takeBaseName, pathSeparator         )
 import System.IO          ( IOMode(..), hGetContents, openFile  )
+import System.IO.Unsafe   ( unsafePerformIO                     )
 import System.Process     ( CreateProcess(..), StdStream(..)
                           , createProcess, proc, waitForProcess
-                          , readProcess, callCommand            )
+                          , callCommand                         )
 import System.Directory   ( doesFileExist                       )
 import Test.Tasty         ( TestTree, testGroup                 )
 import Test.Tasty.Golden  ( goldenVsFileDiff                    )
-
-import Distribution.Package                          ( PackageIdentifier(..)     )
-import Distribution.Text                             ( simpleParse               )
-import Distribution.Version                          ( mkVersion                 )
-import System.IO.Unsafe                              ( unsafePerformIO           )
 
 #ifndef CURRENT_PACKAGE_KEY
 #include "../dist/build/autogen/cabal_macros.h"
@@ -53,35 +49,21 @@ includePath = "../../dist/build"
 ghcVersion :: String
 ghcVersion = ".ghc82"
 
--- The mtl package made an incompatible change between 2.1.3.1 and 2.2.1. Because
--- test files are compiled outside of the cabal infrastructure, we need to check
--- the mtl version and behave accordingly. Argh. The more general solution to this
--- is to use cabal_macros.h and then use the package specifications in dist/setup-config.
--- This also uses a cabal sandbox, if it is around.
+-- If a cabal sandbox is present, use its package database instead of the global one.
 extraOpts :: [String]
 extraOpts = unsafePerformIO $ do
-  (ghcPackageDbOpts, ghcPkgOpts) <- do
-     sandboxed <- doesFileExist "cabal.sandbox.config"
-     if sandboxed
-     then do
-       let prefix = "package-db: "
-           opts_from_config config =
-             case find (prefix `isPrefixOf`) $ lines config of
-               Nothing -> ([], [])
-               Just db_line -> let package_db = drop (length prefix) db_line in
-                               ( [ "-no-user-package-db"
-                                 , "-package-db " ++ package_db ]
-                               , [ "--no-user-package-db"  -- ghc-pkg is slightly different!
-                                 , "--package-db=" ++ package_db ] )
-       opts_from_config `liftM` readFile "cabal.sandbox.config"
-     else return ([], [])
-  mtl_string <- readProcess "ghc-pkg" (ghcPkgOpts ++ ["latest", "mtl"]) ""
-  let Just (PackageIdentifier { pkgVersion = ver }) = simpleParse mtl_string
-      firstModernVersion = mkVersion [2,2,1]
-      mtlOpt | ver >= firstModernVersion = ["-DMODERN_MTL"]
-             | otherwise                 = []
-  return $ ghcPackageDbOpts ++ mtlOpt
-
+   sandboxed <- doesFileExist "cabal.sandbox.config"
+   if sandboxed
+   then do
+     let prefix = "package-db: "
+         opts_from_config config =
+           case find (prefix `isPrefixOf`) $ lines config of
+             Nothing -> []
+             Just db_line -> let package_db = drop (length prefix) db_line in
+                             [ "-no-user-package-db"
+                             , "-package-db " ++ package_db ]
+     opts_from_config `liftM` readFile "cabal.sandbox.config"
+   else return []
 
 -- GHC options used when running the tests
 ghcOpts :: [String]
