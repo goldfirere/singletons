@@ -10,7 +10,7 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
     type family Equals_0123456789876543210 (a :: Foo) (b :: Foo) :: Bool where
       Equals_0123456789876543210 FLeaf FLeaf = TrueSym0
       Equals_0123456789876543210 ((:+:) a a) ((:+:) b b) = (:&&) ((:==) a b) ((:==) a b)
-      Equals_0123456789876543210 (a :: Foo) (b :: Foo) = FalseSym0
+      Equals_0123456789876543210 (_ :: Foo) (_ :: Foo) = FalseSym0
     instance PEq Foo where
       type (:==) (a :: Foo) (b :: Foo) = Equals_0123456789876543210 a b
     instance SEq Empty where
@@ -18,6 +18,6 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
         = case a of {
             _ -> error "Empty case reached -- this should be impossible" }
     type family Equals_0123456789876543210 (a :: Empty) (b :: Empty) :: Bool where
-      Equals_0123456789876543210 (a :: Empty) (b :: Empty) = FalseSym0
+      Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = FalseSym0
     instance PEq Empty where
       type (:==) (a :: Empty) (b :: Empty) = Equals_0123456789876543210 a b

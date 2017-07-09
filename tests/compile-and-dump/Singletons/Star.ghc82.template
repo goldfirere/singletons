@@ -40,7 +40,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
       Equals_0123456789876543210 String String = TrueSym0
       Equals_0123456789876543210 (Maybe a) (Maybe b) = (:==) a b
       Equals_0123456789876543210 (Vec a a) (Vec b b) = (:&&) ((:==) a b) ((:==) a b)
-      Equals_0123456789876543210 (a :: Type) (b :: Type) = FalseSym0
+      Equals_0123456789876543210 (_ :: Type) (_ :: Type) = FalseSym0
     instance PEq Type where
       type (:==) (a :: Type) (b :: Type) = Equals_0123456789876543210 a b
     type family Compare_0123456789876543210 (a :: Type) (a :: Type) :: Ordering where

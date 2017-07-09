@@ -339,7 +339,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type family Equals_0123456789876543210 (a :: Nat) (b :: Nat) :: Bool where
       Equals_0123456789876543210 Zero Zero = TrueSym0
       Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
-      Equals_0123456789876543210 (a :: Nat) (b :: Nat) = FalseSym0
+      Equals_0123456789876543210 (_ :: Nat) (_ :: Nat) = FalseSym0
     instance PEq Nat where
       type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789876543210 a b
     type family Equals_0123456789876543210 (a :: Foo a b c d) (b :: Foo a b c d) :: Bool where
@@ -349,7 +349,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (D a a a a) (D b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
       Equals_0123456789876543210 (E a a a a) (E b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
       Equals_0123456789876543210 (F a a a a) (F b b b b) = (:&&) ((:==) a b) ((:&&) ((:==) a b) ((:&&) ((:==) a b) ((:==) a b)))
-      Equals_0123456789876543210 (a :: Foo a b c d) (b :: Foo a b c d) = FalseSym0
+      Equals_0123456789876543210 (_ :: Foo a b c d) (_ :: Foo a b c d) = FalseSym0
     instance PEq (Foo a b c d) where
       type (:==) (a :: Foo a b c d) (b :: Foo a b c d) = Equals_0123456789876543210 a b
     data instance Sing (z :: Nat)

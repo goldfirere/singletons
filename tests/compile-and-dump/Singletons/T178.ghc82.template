@@ -95,7 +95,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 Str Str = TrueSym0
       Equals_0123456789876543210 Opt Opt = TrueSym0
       Equals_0123456789876543210 Many Many = TrueSym0
-      Equals_0123456789876543210 (a :: Occ) (b :: Occ) = FalseSym0
+      Equals_0123456789876543210 (_ :: Occ) (_ :: Occ) = FalseSym0
     instance PEq Occ where
       type (:==) (a :: Occ) (b :: Occ) = Equals_0123456789876543210 a b
     sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)])

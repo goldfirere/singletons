@@ -54,9 +54,7 @@ mkEqTypeInstance kind cons = do
 
         false_case :: Quasi q => q DTySynEqn
         false_case = do
-          lvar <- qNewName "a"
-          rvar <- qNewName "b"
-          return $ DTySynEqn [DSigT (DVarT lvar) kind, DSigT (DVarT rvar) kind]
+          return $ DTySynEqn [DSigT DWildCardT kind, DSigT DWildCardT kind]
                              (promoteValRhs falseName)
 
         tyAll :: [DType] -> DType -- "all" at the type level
