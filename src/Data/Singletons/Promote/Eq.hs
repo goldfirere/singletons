@@ -58,10 +58,10 @@ mkEqTypeInstance kind cons = do
               result = tyAll results
           return $ DTySynEqn [ltype, rtype] result
 
-        catch_all_case :: Name -> DTySynEqn
-        catch_all_case returned_val_name =
-          DTySynEqn [DSigT DWildCardT kind, DSigT DWildCardT kind]
-                    (promoteValRhs returned_val_name)
+        false_case :: Quasi q => q DTySynEqn
+        false_case = do
+          return $ DTySynEqn [DSigT DWildCardT kind, DSigT DWildCardT kind]
+                             (promoteValRhs falseName)
 
         tyAll :: [DType] -> DType -- "all" at the type level
         tyAll [] = (promoteValRhs trueName)

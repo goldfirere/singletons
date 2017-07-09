@@ -114,7 +114,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       type ShowsPrec (a :: GHC.Types.Nat) (a :: T) (a :: GHC.Types.Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type family Equals_0123456789876543210 (a :: T) (b :: T) :: Bool where
       Equals_0123456789876543210 T T = TrueSym0
-      Equals_0123456789876543210 (a :: T) (b :: T) = FalseSym0
+      Equals_0123456789876543210 (_ :: T) (_ :: T) = FalseSym0
     instance PEq T where
       type (:==) (a :: T) (b :: T) = Equals_0123456789876543210 a b
     data instance Sing (z :: T) where ST :: Sing T
