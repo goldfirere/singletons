@@ -1,14 +1,13 @@
 Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
-    singletonsOnly
-      (return
-         [DataD
-            []
-            ''Empty
-            []
-            Nothing
-            []
-            [DerivClause Nothing [ConT ''Eq, ConT ''Ord]]])
+    singletons
+      [d| data Empty
+          
+          deriving instance Ord Empty
+          deriving instance Eq Empty |]
   ======>
+    data Empty
+    deriving instance Eq Empty
+    deriving instance Ord Empty
     type family Compare_0123456789876543210 (a :: Empty) (a :: Empty) :: Ordering where
       Compare_0123456789876543210 _ _ = EQSym0
     type Compare_0123456789876543210Sym2 (t :: Empty) (t :: Empty) =
