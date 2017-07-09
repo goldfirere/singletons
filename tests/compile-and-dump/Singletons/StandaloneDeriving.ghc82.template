@@ -219,13 +219,13 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       type FromEnum (a :: S) = Apply FromEnum_0123456789876543210Sym0 a
     type family Equals_0123456789876543210 (a :: T a ()) (b :: T a ()) :: Bool where
       Equals_0123456789876543210 ((:*:) a a) ((:*:) b b) = (:&&) ((:==) a b) ((:==) a b)
-      Equals_0123456789876543210 (a :: T a ()) (b :: T a ()) = FalseSym0
+      Equals_0123456789876543210 (_ :: T a ()) (_ :: T a ()) = FalseSym0
     instance PEq (T a ()) where
       type (:==) (a :: T a ()) (b :: T a ()) = Equals_0123456789876543210 a b
     type family Equals_0123456789876543210 (a :: S) (b :: S) :: Bool where
       Equals_0123456789876543210 S1 S1 = TrueSym0
       Equals_0123456789876543210 S2 S2 = TrueSym0
-      Equals_0123456789876543210 (a :: S) (b :: S) = FalseSym0
+      Equals_0123456789876543210 (_ :: S) (_ :: S) = FalseSym0
     instance PEq S where
       type (:==) (a :: S) (b :: S) = Equals_0123456789876543210 a b
     infixl 6 :%*:
