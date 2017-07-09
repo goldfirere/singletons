@@ -23,13 +23,16 @@ mkEqTypeInstance kind cons = do
   aName <- qNewName "a"
   bName <- qNewName "b"
   true_branches <- mapM mk_branch cons
-  false_branch  <- false_case
-  let closedFam = DClosedTypeFamilyD (DTypeFamilyHead helperName
+  let null_branch  = catch_all_case trueName
+      false_branch = catch_all_case falseName
+      branches | null cons = [null_branch]
+               | otherwise = true_branches ++ [false_branch]
+      closedFam = DClosedTypeFamilyD (DTypeFamilyHead helperName
                                                       [ DKindedTV aName kind
                                                       , DKindedTV bName kind ]
                                                       (DKindSig boolKi)
                                                       Nothing)
-                                     (true_branches ++ [false_branch])
+                                     branches
       eqInst = DTySynInstD tyEqName (DTySynEqn [ DSigT (DVarT aName) kind
                                                , DSigT (DVarT bName) kind ]
                                              (foldType (DConT helperName)
@@ -52,10 +55,10 @@ mkEqTypeInstance kind cons = do
               result = tyAll results
           return $ DTySynEqn [ltype, rtype] result
 
-        false_case :: Quasi q => q DTySynEqn
-        false_case = do
-          return $ DTySynEqn [DSigT DWildCardT kind, DSigT DWildCardT kind]
-                             (promoteValRhs falseName)
+        catch_all_case :: Name -> DTySynEqn
+        catch_all_case returned_val_name =
+          DTySynEqn [DSigT DWildCardT kind, DSigT DWildCardT kind]
+                    (promoteValRhs returned_val_name)
 
         tyAll :: [DType] -> DType -- "all" at the type level
         tyAll [] = (promoteValRhs trueName)
