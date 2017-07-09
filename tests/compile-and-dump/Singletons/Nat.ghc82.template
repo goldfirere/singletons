@@ -176,16 +176,8 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
     instance SDecide Nat where
       (%~) SZero SZero = Proved Refl
-      (%~) SZero (SSucc _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SSucc _) SZero
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SZero (SSucc _) = Disproved (\ x -> case x of)
+      (%~) (SSucc _) SZero = Disproved (\ x -> case x of)
       (%~) (SSucc a) (SSucc b)
         = case ((%~) a) b of
             Proved Refl -> Proved Refl

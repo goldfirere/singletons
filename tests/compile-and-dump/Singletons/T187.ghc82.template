@@ -34,19 +34,15 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     instance POrd Empty where
       type Compare (a :: Empty) (a :: Empty) = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Equals_0123456789876543210 (a :: Empty) (b :: Empty) :: Bool where
-      Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = FalseSym0
+      Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = TrueSym0
     instance PEq Empty where
       type (:==) (a :: Empty) (b :: Empty) = Equals_0123456789876543210 a b
     data instance Sing (z :: Empty)
     type SEmpty = (Sing :: Empty -> GHC.Types.Type)
     instance SingKind Empty where
       type Demote Empty = Empty
-      fromSing z
-        = case z of {
-            _ -> error "Empty case reached -- this should be impossible" }
-      toSing z
-        = case z of {
-            _ -> error "Empty case reached -- this should be impossible" }
+      fromSing x = case x of
+      toSing x = SomeSing (case x of)
     instance SOrd Empty where
       sCompare ::
         forall (t1 :: Empty) (t2 :: Empty).
@@ -58,10 +54,6 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
                                                                           -> GHC.Types.Type) t2 :: Ordering)
       sCompare _ _ = SEQ
     instance SEq Empty where
-      (%:==) a _
-        = case a of {
-            _ -> error "Empty case reached -- this should be impossible" }
+      (%:==) _ _ = STrue
     instance SDecide Empty where
-      (%~) a _
-        = case a of {
-            _ -> error "Empty case reached -- this should be impossible" }
+      (%~) x _ = Proved (case x of)
