@@ -359,10 +359,6 @@ orIfEmpty :: [a] -> [a] -> [a]
 orIfEmpty [] x = x
 orIfEmpty x  _ = x
 
-emptyMatches :: [DMatch]
-emptyMatches = [DMatch DWildPa (DAppE (DVarE 'error) (DLitE (StringL errStr)))]
-  where errStr = "Empty case reached -- this should be impossible"
-
 -- build a pattern match over several expressions, each with only one pattern
 multiCase :: [DExp] -> [DPat] -> DExp -> DExp
 multiCase [] [] body = body

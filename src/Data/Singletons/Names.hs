@@ -28,7 +28,7 @@ boolName, andName, tyEqName, compareName, minBoundName,
   applyName, natName, symbolName, typeRepName, stringName,
   eqName, ordName, boundedName, orderingName,
   singFamilyName, singIName, singMethName, demoteName,
-  singKindClassName, sEqClassName, sEqMethName, sconsName, snilName,
+  singKindClassName, sEqClassName, sEqMethName, sconsName, snilName, strueName,
   sIfName,
   someSingTypeName, someSingDataName,
   sListName, sDecideClassName, sDecideMethName,
@@ -73,6 +73,7 @@ sEqMethName = mk_name_v "Data.Singletons.Prelude.Eq" "%:=="
 sIfName = mk_name_v "Data.Singletons.Prelude.Bool" "sIf"
 sconsName = mk_name_d "Data.Singletons.Prelude.Instances" "SCons"
 snilName = mk_name_d "Data.Singletons.Prelude.Instances" "SNil"
+strueName = mk_name_d "Data.Singletons.Prelude.Instances" "STrue"
 someSingTypeName = ''SomeSing
 someSingDataName = 'SomeSing
 sListName = mk_name_tc "Data.Singletons.Prelude.Instances" "SList"

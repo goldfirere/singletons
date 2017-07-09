@@ -130,7 +130,7 @@ singDecideInstance name = singEqualityInstance sDecideClassDesc name
 
 -- generalized function for creating equality instances
 singEqualityInstance :: DsMonad q => EqualityClassDesc q -> Name -> q [Dec]
-singEqualityInstance desc@(_, className, _) name = do
+singEqualityInstance desc@(_, _, className, _) name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
                             show className ++ " for it.") name
   dtvbs <- mapM dsTvb tvbs
