@@ -100,6 +100,7 @@ ghcOpts = extraOpts ++ [
   , "-XTypeInType"
   , "-XStandaloneDeriving"
   , "-XTypeApplications"
+  , "-XEmptyCase"
   ]
 
 -- Note [-this-unit-id hack]
