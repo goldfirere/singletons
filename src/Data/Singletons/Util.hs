@@ -28,6 +28,7 @@ import Data.Map ( Map )
 import Data.Foldable
 import Data.Traversable
 import Data.Generics
+import Data.Void
 import Control.Monad.Fail ( MonadFail )
 
 -- The list of types that singletons processes by default
@@ -36,6 +37,7 @@ basicTypes = [ ''Maybe
              , ''[]
              , ''Either
              , ''NonEmpty
+             , ''Void
              ] ++ boundedBasicTypes
 
 boundedBasicTypes :: [Name]

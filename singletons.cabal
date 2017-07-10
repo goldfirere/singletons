@@ -73,6 +73,7 @@ library
                       Data.Singletons.Prelude.Num
                       Data.Singletons.Prelude.Show,
                       Data.Singletons.Prelude.Tuple,
+                      Data.Singletons.Prelude.Void,
                       Data.Promotion.Prelude,
                       Data.Promotion.TH,
                       Data.Promotion.Prelude.Base,
@@ -88,6 +89,7 @@ library
                       Data.Promotion.Prelude.Num,
                       Data.Promotion.Prelude.Show,
                       Data.Promotion.Prelude.Tuple,
+                      Data.Promotion.Prelude.Void,
                       Data.Singletons.TypeLits,
                       Data.Singletons.Decide,
                       Data.Singletons.SuppressUnusedWarnings
