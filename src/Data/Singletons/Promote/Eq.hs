@@ -28,16 +28,13 @@ mkEqTypeInstance kind cons = do
       branches | null cons = [null_branch]
                | otherwise = true_branches ++ [false_branch]
       closedFam = DClosedTypeFamilyD (DTypeFamilyHead helperName
-                                                        -- We opt to give explicit kinds for the tyvars
-                                                        -- in the helper type family.
-                                                        -- See Note [Promoted class method kinds]
-                                                        -- in Data.Singletons.Promote.
                                                       [ DKindedTV aName kind
                                                       , DKindedTV bName kind ]
                                                       (DKindSig boolKi)
                                                       Nothing)
                                      branches
-      eqInst = DTySynInstD tyEqName (DTySynEqn [DVarT aName, DVarT bName]
+      eqInst = DTySynInstD tyEqName (DTySynEqn [ DSigT (DVarT aName) kind
+                                               , DSigT (DVarT bName) kind ]
                                              (foldType (DConT helperName)
                                                        [DVarT aName, DVarT bName]))
       inst = DInstanceD Nothing [] ((DConT $ promoteClassName eqName) `DAppT`
@@ -58,10 +55,10 @@ mkEqTypeInstance kind cons = do
               result = tyAll results
           return $ DTySynEqn [ltype, rtype] result
 
-        false_case :: Quasi q => q DTySynEqn
-        false_case = do
-          return $ DTySynEqn [DSigT DWildCardT kind, DSigT DWildCardT kind]
-                             (promoteValRhs falseName)
+        catch_all_case :: Name -> DTySynEqn
+        catch_all_case returned_val_name =
+          DTySynEqn [DSigT DWildCardT kind, DSigT DWildCardT kind]
+                    (promoteValRhs returned_val_name)
 
         tyAll :: [DType] -> DType -- "all" at the type level
         tyAll [] = (promoteValRhs trueName)

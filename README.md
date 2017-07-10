@@ -42,6 +42,7 @@ extensions. This list includes, but is not necessarily limited to, the
 following:
 
 * `DefaultSignatures`
+* `EmptyCase`
 * `ExistentialQuantification`
 * `FlexibleContexts`
 * `FlexibleInstances`

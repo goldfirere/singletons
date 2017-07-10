@@ -25,7 +25,7 @@ sDecideClassDesc = (mkDecideMethClause, mkEmptyDecideMethClause, sDecideClassNam
 -- pass the *singleton* constructors, not the originals
 mkEqualityInstance :: Quasi q => Maybe DCxt -> DKind -> [DCon]
                    -> EqualityClassDesc q -> q DDec
-mkEqualityInstance mb_ctxt k ctors (mkMeth, className, methName) = do
+mkEqualityInstance mb_ctxt k ctors (mkMeth, mkEmpty, className, methName) = do
   let ctorPairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
   methClauses <- if null ctors
                  then (:[]) <$> mkEmpty

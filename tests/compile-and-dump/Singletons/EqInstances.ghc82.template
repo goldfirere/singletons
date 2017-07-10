@@ -16,6 +16,6 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
     instance SEq Empty where
       (%:==) _ _ = STrue
     type family Equals_0123456789876543210 (a :: Empty) (b :: Empty) :: Bool where
-      Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = FalseSym0
+      Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = TrueSym0
     instance PEq Empty where
       type (:==) a b = Equals_0123456789876543210 a b
