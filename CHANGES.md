@@ -36,6 +36,8 @@ next
   * Derived `SDecide` instances for empty data types now return `Proved bottom`,
     where `bottom` is a divergent computation, instead of `error`ing.
 
+* Add `Data.Singletons.Prelude.Void`.
+
 * Add `(:<>)` and `(%:<>)`, the promoted and singled versions of `AppendSymbol`
   from `GHC.TypeLits`.
 

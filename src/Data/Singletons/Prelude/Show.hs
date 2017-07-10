@@ -60,10 +60,12 @@ import           Data.Singletons.Prelude.List
 import           Data.Singletons.Prelude.Num
 import           Data.Singletons.Prelude.Ord
 import           Data.Singletons.Prelude.Tuple
+import           Data.Singletons.Prelude.Void
 import           Data.Singletons.Promote
 import           Data.Singletons.Single
 import           Data.Singletons.TypeLits
 import qualified Data.Text as T
+import           Data.Void
 
 import           GHC.TypeLits
 
@@ -154,6 +156,9 @@ $(singletonsOnly [d|
           => Show (a,b,c,d,e,f,g) where
     showsPrec _ (a,b,c,d,e,f,g) s
           = show_tuple [shows a, shows b, shows c, shows d, shows e, shows f, shows g] s
+
+  instance Show Void where
+    showsPrec _ = absurd
   |])
 
 $(promoteOnly [d|
