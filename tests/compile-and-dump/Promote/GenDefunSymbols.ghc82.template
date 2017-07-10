@@ -35,13 +35,13 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+@#@$$###)) GHC.Tuple.())
     data (:+@#@$$) (l :: Nat) l
-      = forall arg. Data.Singletons.SameKind (Apply ((:+@#@$$) l) arg) ((:+@#@$$$) l arg) =>
+      = forall arg. Data.Singletons.Internal.SameKind (Apply ((:+@#@$$) l) arg) ((:+@#@$$$) l arg) =>
         (:+@#@$$###)
     type instance Apply ((:+@#@$$) l) l = (:+) l l
     instance SuppressUnusedWarnings (:+@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+@#@$###)) GHC.Tuple.())
     data (:+@#@$) l
-      = forall arg. Data.Singletons.SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
+      = forall arg. Data.Singletons.Internal.SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
         (:+@#@$###)
     type instance Apply (:+@#@$) l = (:+@#@$$) l

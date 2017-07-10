@@ -49,6 +49,10 @@ next
 
 * Add a value-level `(@@)`, which is a synonym for `applySing`.
 
+* Add `Eq`, `Ord`, `Num`, `Enum`, and `Bounded` instances for `SomeSing`, which
+  leverage the `SEq`, `SOrd`, `SNum`, `SEnum`, and `SBounded` instances,
+  respectively, for the underlying `Sing`.
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.

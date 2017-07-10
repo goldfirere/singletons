@@ -53,7 +53,7 @@ module Data.Singletons.Prelude.Show (
 
 import           Data.List.NonEmpty (NonEmpty)
 import           Data.Proxy
-import           Data.Singletons
+import           Data.Singletons.Internal
 import           Data.Singletons.Prelude.Base
 import           Data.Singletons.Prelude.Instances
 import           Data.Singletons.Prelude.List
