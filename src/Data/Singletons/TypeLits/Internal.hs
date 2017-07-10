@@ -159,7 +159,7 @@ $(genDefunSymbols [''Error])
 sError :: Sing (str :: Symbol) -> a
 sError sstr = error (T.unpack (fromSing sstr))
 
--- | The promotion of 'Undefined'.
+-- | The promotion of 'undefined'.
 type family Undefined :: k where {}
 $(genDefunSymbols [''Undefined])
 
