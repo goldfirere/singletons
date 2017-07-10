@@ -199,37 +199,13 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       (%:==) SMany SMany = STrue
     instance SDecide Occ where
       (%~) SStr SStr = Proved Refl
-      (%~) SStr SOpt
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) SStr SMany
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) SOpt SStr
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SStr SOpt = Disproved (\ x -> case x of)
+      (%~) SStr SMany = Disproved (\ x -> case x of)
+      (%~) SOpt SStr = Disproved (\ x -> case x of)
       (%~) SOpt SOpt = Proved Refl
-      (%~) SOpt SMany
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) SMany SStr
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) SMany SOpt
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SOpt SMany = Disproved (\ x -> case x of)
+      (%~) SMany SStr = Disproved (\ x -> case x of)
+      (%~) SMany SOpt = Disproved (\ x -> case x of)
       (%~) SMany SMany = Proved Refl
     instance SingI Str where
       sing = SStr

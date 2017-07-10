@@ -775,16 +775,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
     instance SDecide Nat where
       (%~) SZero SZero = Proved Refl
-      (%~) SZero (SSucc _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SSucc _) SZero
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SZero (SSucc _) = Disproved (\ x -> case x of)
+      (%~) (SSucc _) SZero = Disproved (\ x -> case x of)
       (%~) (SSucc a) (SSucc b)
         = case ((%~) a) b of
             Proved Refl -> Proved Refl
@@ -859,36 +851,12 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             GHC.Tuple.(,,,) _ _ _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-      (%~) (SA _ _ _ _) (SB _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SA _ _ _ _) (SC _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SA _ _ _ _) (SD _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SA _ _ _ _) (SE _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SA _ _ _ _) (SF _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SB _ _ _ _) (SA _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SA _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SA _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SA _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SA _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SA _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SB _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of)
       (%~) (SB a a a a) (SB b b b b)
         = case
               (((GHC.Tuple.(,,,) (((%~) a) b)) (((%~) a) b)) (((%~) a) b))
@@ -907,36 +875,12 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             GHC.Tuple.(,,,) _ _ _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-      (%~) (SB _ _ _ _) (SC _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SB _ _ _ _) (SD _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SB _ _ _ _) (SE _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SB _ _ _ _) (SF _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SC _ _ _ _) (SA _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SC _ _ _ _) (SB _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SB _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SB _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SB _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SB _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SC _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SC _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of)
       (%~) (SC a a a a) (SC b b b b)
         = case
               (((GHC.Tuple.(,,,) (((%~) a) b)) (((%~) a) b)) (((%~) a) b))
@@ -955,36 +899,12 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             GHC.Tuple.(,,,) _ _ _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-      (%~) (SC _ _ _ _) (SD _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SC _ _ _ _) (SE _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SC _ _ _ _) (SF _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SD _ _ _ _) (SA _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SD _ _ _ _) (SB _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SD _ _ _ _) (SC _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SC _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SC _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SC _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SD _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SD _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SD _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of)
       (%~) (SD a a a a) (SD b b b b)
         = case
               (((GHC.Tuple.(,,,) (((%~) a) b)) (((%~) a) b)) (((%~) a) b))
@@ -1003,36 +923,12 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             GHC.Tuple.(,,,) _ _ _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-      (%~) (SD _ _ _ _) (SE _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SD _ _ _ _) (SF _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SE _ _ _ _) (SA _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SE _ _ _ _) (SB _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SE _ _ _ _) (SC _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SE _ _ _ _) (SD _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SD _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SD _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SE _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SE _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SE _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SE _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of)
       (%~) (SE a a a a) (SE b b b b)
         = case
               (((GHC.Tuple.(,,,) (((%~) a) b)) (((%~) a) b)) (((%~) a) b))
@@ -1051,36 +947,12 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             GHC.Tuple.(,,,) _ _ _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-      (%~) (SE _ _ _ _) (SF _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SF _ _ _ _) (SA _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SF _ _ _ _) (SB _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SF _ _ _ _) (SC _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SF _ _ _ _) (SD _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SF _ _ _ _) (SE _ _ _ _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) (SE _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SF _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SF _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SF _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SF _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of)
+      (%~) (SF _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of)
       (%~) (SF a a a a) (SF b b b b)
         = case
               (((GHC.Tuple.(,,,) (((%~) a) b)) (((%~) a) b)) (((%~) a) b))

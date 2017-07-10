@@ -17,18 +17,18 @@ import Data.Maybe (fromMaybe)
 
 -- making the SEq instance and the SDecide instance are rather similar,
 -- so we generalize
-type EqualityClassDesc q = ((DCon, DCon) -> q DClause, Name, Name)
+type EqualityClassDesc q = ((DCon, DCon) -> q DClause, q DClause, Name, Name)
 sEqClassDesc, sDecideClassDesc :: Quasi q => EqualityClassDesc q
-sEqClassDesc = (mkEqMethClause, sEqClassName, sEqMethName)
-sDecideClassDesc = (mkDecideMethClause, sDecideClassName, sDecideMethName)
+sEqClassDesc = (mkEqMethClause, mkEmptyEqMethClause, sEqClassName, sEqMethName)
+sDecideClassDesc = (mkDecideMethClause, mkEmptyDecideMethClause, sDecideClassName, sDecideMethName)
 
 -- pass the *singleton* constructors, not the originals
 mkEqualityInstance :: Quasi q => Maybe DCxt -> DKind -> [DCon]
                    -> EqualityClassDesc q -> q DDec
-mkEqualityInstance mb_ctxt k ctors (mkMeth, className, methName) = do
+mkEqualityInstance mb_ctxt k ctors (mkMeth, mkEmpty, className, methName) = do
   let ctorPairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
   methClauses <- if null ctors
-                 then mkEmptyMethClauses
+                 then (:[]) <$> mkEmpty
                  else mapM mkMeth ctorPairs
   return $ DInstanceD Nothing
                      (fromMaybe (map (DAppPr (DConPr className)) (getKindVars k)) mb_ctxt)
@@ -42,11 +42,6 @@ mkEqualityInstance mb_ctxt k ctors (mkMeth, className, methName) = do
         getKindVars DArrowT           = []
         getKindVars other             =
           error ("getKindVars sees an unusual kind: " ++ show other)
-
-        mkEmptyMethClauses :: Quasi q => q [DClause]
-        mkEmptyMethClauses = do
-          a <- qNewName "a"
-          return [DClause [DVarPa a, DWildPa] (DCaseE (DVarE a) emptyMatches)]
 
 mkEqMethClause :: Quasi q => (DCon, DCon) -> q DClause
 mkEqMethClause (c1, c2)
@@ -73,6 +68,11 @@ mkEqMethClause (c1, c2)
 
         (lname, lNumArgs) = extractNameArgs c1
         (rname, rNumArgs) = extractNameArgs c2
+
+mkEmptyEqMethClause :: Applicative q => q DClause
+mkEmptyEqMethClause =
+  pure $ DClause [DWildPa, DWildPa]
+       $ DConE strueName
 
 mkDecideMethClause :: Quasi q => (DCon, DCon) -> q DClause
 mkDecideMethClause (c1, c2)
@@ -113,8 +113,14 @@ mkDecideMethClause (c1, c2)
     return $ DClause
       [DConPa lname (replicate lNumArgs DWildPa),
        DConPa rname (replicate rNumArgs DWildPa)]
-      (DAppE (DConE disprovedName) (DLamE [x] (DCaseE (DVarE x) emptyMatches)))
+      (DAppE (DConE disprovedName) (DLamE [x] (DCaseE (DVarE x) [])))
 
   where
     (lname, lNumArgs) = extractNameArgs c1
     (rname, rNumArgs) = extractNameArgs c2
+
+mkEmptyDecideMethClause :: Quasi q => q DClause
+mkEmptyDecideMethClause = do
+  x <- qNewName "x"
+  pure $ DClause [DVarPa x, DWildPa]
+       $ DConE provedName `DAppE` DCaseE (DVarE x) []
