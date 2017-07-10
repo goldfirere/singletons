@@ -54,7 +54,7 @@ module Data.Singletons.Prelude.Bool (
   OtherwiseSym0
   ) where
 
-import Data.Singletons
+import Data.Singletons.Internal
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
 import Data.Type.Bool ( If )

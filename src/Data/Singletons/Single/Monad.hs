@@ -23,7 +23,7 @@ import qualified Data.Map as Map
 import Data.Singletons.Promote.Monad ( emitDecs, emitDecsM )
 import Data.Singletons.Names
 import Data.Singletons.Util
-import Data.Singletons
+import Data.Singletons.Internal
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Control.Monad.Reader

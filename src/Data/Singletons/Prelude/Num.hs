@@ -32,7 +32,7 @@ module Data.Singletons.Prelude.Num (
   ) where
 
 import Data.Singletons.Single
-import Data.Singletons
+import Data.Singletons.Internal
 import Data.Singletons.TypeLits.Internal
 import Data.Singletons.Decide
 import GHC.TypeLits

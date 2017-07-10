@@ -24,7 +24,7 @@ module Data.Singletons.Decide (
   ) where
 
 import Data.Kind
-import Data.Singletons
+import Data.Singletons.Internal
 import Data.Type.Equality
 import Data.Void
 
