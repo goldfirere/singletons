@@ -403,7 +403,7 @@ generates. Here are some examples showing how this is done:
    singleton class: `SNum`
 
 
-8. original class: `~>`
+8. original class: `:~>`
 
    promoted class: `#~>`
 
