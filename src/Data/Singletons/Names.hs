@@ -10,7 +10,7 @@ Defining names and manipulations on names for use in promotion and singling.
 
 module Data.Singletons.Names where
 
-import Data.Singletons
+import Data.Singletons.Internal
 import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.Decide
 import Language.Haskell.TH.Syntax

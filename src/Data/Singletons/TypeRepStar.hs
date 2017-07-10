@@ -30,7 +30,7 @@ module Data.Singletons.TypeRepStar (
   ) where
 
 import Data.Singletons.Prelude.Instances
-import Data.Singletons
+import Data.Singletons.Internal
 import Data.Singletons.Prelude.Eq
 import Data.Typeable
 import Unsafe.Coerce

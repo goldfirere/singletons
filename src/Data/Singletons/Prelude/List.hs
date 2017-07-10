@@ -243,7 +243,7 @@ module Data.Singletons.Prelude.List (
   GenericLengthSym0, GenericLengthSym1
   ) where
 
-import Data.Singletons
+import Data.Singletons.Internal
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
 import Data.Singletons.TypeLits
