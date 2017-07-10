@@ -37,7 +37,7 @@ module Data.Singletons.TypeLits.Internal (
   ) where
 
 import Data.Singletons.Promote
-import Data.Singletons
+import Data.Singletons.Internal
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Decide

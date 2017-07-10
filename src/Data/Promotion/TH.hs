@@ -79,7 +79,7 @@ module Data.Promotion.TH (
 
  ) where
 
-import Data.Singletons
+import Data.Singletons.Internal
 import Data.Singletons.Promote
 import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Instances
