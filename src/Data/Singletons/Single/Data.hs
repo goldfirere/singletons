@@ -41,8 +41,10 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
     --    here, look for other invocations of 'singInfixDecl')
     singFixityDeclarations [ n | DCon _ _ n _ _ <- ctors ]
   -- instance for SingKind
-  fromSingClauses <- mapM mkFromSingClause ctors
-  toSingClauses   <- mapM mkToSingClause ctors
+  fromSingClauses     <- mapM mkFromSingClause ctors
+  emptyFromSingClause <- mkEmptyFromSingClause
+  toSingClauses       <- mapM mkToSingClause ctors
+  emptyToSingClause   <- mkEmptyToSingClause
   let singKindInst =
         DInstanceD Nothing
                    (map (singKindConstraint . DVarT) tvbNames)
@@ -51,8 +53,10 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
                       [k]
                       (foldType (DConT name)
                         (map (DAppT demote . DVarT) tvbNames))
-                   , DLetDec $ DFunD fromSingName (fromSingClauses `orIfEmpty` emptyMethod aName)
-                   , DLetDec $ DFunD toSingName   (toSingClauses   `orIfEmpty` emptyMethod aName) ]
+                   , DLetDec $ DFunD fromSingName
+                               (fromSingClauses `orIfEmpty` [emptyFromSingClause])
+                   , DLetDec $ DFunD toSingName
+                               (toSingClauses   `orIfEmpty` [emptyToSingClause]) ]
 
   -- e.g. type SNat = Sing :: Nat -> *
   let kindedSynInst =
@@ -103,8 +107,17 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
           DSigE (DAppE (DVarE toSingName) (DVarE var_name))
                 (DAppT (DConT someSingTypeName) ki)
 
-        emptyMethod :: Name -> [DClause]
-        emptyMethod n = [DClause [DVarPa n] (DCaseE (DVarE n) emptyMatches)]
+        mkEmptyFromSingClause :: SgM DClause
+        mkEmptyFromSingClause = do
+          x <- qNewName "x"
+          pure $ DClause [DVarPa x]
+               $ DCaseE (DVarE x) []
+
+        mkEmptyToSingClause :: SgM DClause
+        mkEmptyToSingClause = do
+          x <- qNewName "x"
+          pure $ DClause [DVarPa x]
+               $ DConE someSingDataName `DAppE` DCaseE (DVarE x) []
 
 -- refine a constructor.
 singCtor :: DCon -> SgM DCon

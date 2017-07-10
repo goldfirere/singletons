@@ -6,9 +6,5 @@ Singletons/Empty.hs:(0,0)-(0,0): Splicing declarations
     type SEmpty = (Sing :: Empty -> GHC.Types.Type)
     instance SingKind Empty where
       type Demote Empty = Empty
-      fromSing z
-        = case z of {
-            _ -> error "Empty case reached -- this should be impossible" }
-      toSing z
-        = case z of {
-            _ -> error "Empty case reached -- this should be impossible" }
+      fromSing x = case x of
+      toSing x = SomeSing (case x of)

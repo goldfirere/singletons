@@ -430,16 +430,8 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       (%:==) SS2 SS2 = STrue
     instance SDecide S where
       (%~) SS1 SS1 = Proved Refl
-      (%~) SS1 SS2
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) SS2 SS1
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SS1 SS2 = Disproved (\ x -> case x of)
+      (%~) SS2 SS1 = Disproved (\ x -> case x of)
       (%~) SS2 SS2 = Proved Refl
     instance (SingI n, SingI n) =>
              SingI ((:*:) (n :: a) (n :: b)) where

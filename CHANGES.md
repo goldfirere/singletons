@@ -28,6 +28,14 @@ next
   corresponding promoted type, singleton function, and defunctionalization
   symbols are now named `Any`, `sAny`, and `AnySym{0,1,2}`.
 
+* Rework the treatment of empty data types:
+  * Generated `SingKind` instances for empty data types now use `EmptyCase`
+    instead of simply `error`ing.
+  * Derived `PEq` instances for empty data types now return `True` instead of
+    `False`. Derived `SEq` instances now return `True` instead of `error`ing.
+  * Derived `SDecide` instances for empty data types now return `Proved bottom`,
+    where `bottom` is a divergent computation, instead of `error`ing.
+
 * Add `(:<>)` and `(%:<>)`, the promoted and singled versions of `AppendSymbol`
   from `GHC.TypeLits`.
 

@@ -121,16 +121,8 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       (%:==) (SJust a) (SJust b) = ((%:==) a) b
     instance SDecide a => SDecide (Maybe a) where
       (%~) SNothing SNothing = Proved Refl
-      (%~) SNothing (SJust _)
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
-      (%~) (SJust _) SNothing
-        = Disproved
-            (\ x
-               -> case x of {
-                    _ -> error "Empty case reached -- this should be impossible" })
+      (%~) SNothing (SJust _) = Disproved (\ x -> case x of)
+      (%~) (SJust _) SNothing = Disproved (\ x -> case x of)
       (%~) (SJust a) (SJust b)
         = case ((%~) a) b of
             Proved Refl -> Proved Refl
