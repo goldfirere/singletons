@@ -69,8 +69,8 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
         L2r_0123456789876543210Sym0KindInference
     type instance Apply L2r_0123456789876543210Sym0 l = L2r_0123456789876543210 l
     instance PFD Bool Nat where
-      type Meth (a :: Bool) = Apply Meth_0123456789876543210Sym0 a
-      type L2r (a :: Bool) = Apply L2r_0123456789876543210Sym0 a
+      type Meth a = Apply Meth_0123456789876543210Sym0 a
+      type L2r a = Apply L2r_0123456789876543210Sym0 a
     sT1 :: Sing T1Sym0
     sT1 = (applySing ((singFun1 @MethSym0) sMeth)) STrue
     class SFD a b | a -> b where

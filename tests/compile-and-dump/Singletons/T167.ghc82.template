@@ -113,7 +113,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
         FoosPrec_0123456789876543210Sym0KindInference
     type instance Apply FoosPrec_0123456789876543210Sym0 l = FoosPrec_0123456789876543210Sym1 l
     instance PFoo [a] where
-      type FoosPrec (a :: Nat) (a :: [a]) (a :: [Bool]) = Apply (Apply (Apply FoosPrec_0123456789876543210Sym0 a) a) a
+      type FoosPrec a a a = Apply (Apply (Apply FoosPrec_0123456789876543210Sym0 a) a) a
     class SFoo a where
       sFoosPrec ::
         forall (t :: Nat) (t :: a) (t :: [Bool]).

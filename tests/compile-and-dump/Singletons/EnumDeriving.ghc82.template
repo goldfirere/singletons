@@ -52,8 +52,8 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
         FromEnum_0123456789876543210Sym0KindInference
     type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
     instance PEnum Foo where
-      type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789876543210Sym0 a
-      type FromEnum (a :: Foo) = Apply FromEnum_0123456789876543210Sym0 a
+      type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
+      type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
     data instance Sing (z :: Foo)
       where
         SBar :: Sing Bar
@@ -165,8 +165,8 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
         FromEnum_0123456789876543210Sym0KindInference
     type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
     instance PEnum Quux where
-      type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789876543210Sym0 a
-      type FromEnum (a :: Quux) = Apply FromEnum_0123456789876543210Sym0 a
+      type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
+      type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
     instance SEnum Quux where
       sToEnum ::
         forall (t :: GHC.Types.Nat).

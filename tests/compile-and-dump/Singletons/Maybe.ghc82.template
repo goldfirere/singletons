@@ -52,7 +52,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow (Maybe a) where
-      type ShowsPrec (a :: GHC.Types.Nat) (a :: Maybe a) (a :: GHC.Types.Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+      type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type family Equals_0123456789876543210 (a :: Maybe a) (b :: Maybe a) :: Bool where
       Equals_0123456789876543210 Nothing Nothing = TrueSym0
       Equals_0123456789876543210 (Just a) (Just b) = (:==) a b

@@ -32,7 +32,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd T where
-      type Compare (a :: T) (a :: T) = Apply (Apply Compare_0123456789876543210Sym0 a) a
+      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Case_0123456789876543210 n t where
       Case_0123456789876543210 n True = TSym0
       Case_0123456789876543210 n False = Apply ErrorSym0 "toEnum: bad argument"
@@ -63,8 +63,8 @@ Singletons/T190.hs:0:0:: Splicing declarations
         FromEnum_0123456789876543210Sym0KindInference
     type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
     instance PEnum T where
-      type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789876543210Sym0 a
-      type FromEnum (a :: T) = Apply FromEnum_0123456789876543210Sym0 a
+      type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
+      type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
     type family MinBound_0123456789876543210 :: T where
       = TSym0
     type MinBound_0123456789876543210Sym0 =
@@ -111,7 +111,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow T where
-      type ShowsPrec (a :: GHC.Types.Nat) (a :: T) (a :: GHC.Types.Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+      type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type family Equals_0123456789876543210 (a :: T) (b :: T) :: Bool where
       Equals_0123456789876543210 T T = TrueSym0
       Equals_0123456789876543210 (_ :: T) (_ :: T) = FalseSym0

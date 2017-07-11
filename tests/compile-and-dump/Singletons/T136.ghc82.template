@@ -96,10 +96,10 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         FromEnum_0123456789876543210Sym0KindInference
     type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
     instance PEnum [Bool] where
-      type Succ (a :: [Bool]) = Apply Succ_0123456789876543210Sym0 a
-      type Pred (a :: [Bool]) = Apply Pred_0123456789876543210Sym0 a
-      type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789876543210Sym0 a
-      type FromEnum (a :: [Bool]) = Apply FromEnum_0123456789876543210Sym0 a
+      type Succ a = Apply Succ_0123456789876543210Sym0 a
+      type Pred a = Apply Pred_0123456789876543210Sym0 a
+      type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
+      type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
     instance SEnum [Bool] where
       sSucc ::
         forall (t :: [Bool]).
