@@ -1,0 +1,152 @@
+Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| ($$:) :: ErrorMessage -> ErrorMessage -> ErrorMessage
+          x $$: y = x :$$: y
+          (<>:) :: ErrorMessage -> ErrorMessage -> ErrorMessage
+          x <>: y = x :<>: y
+          
+          data ErrorMessage
+            = ErrorMessage :$$: ErrorMessage |
+              ErrorMessage :<>: ErrorMessage |
+              EM [Bool] |]
+  ======>
+    data ErrorMessage
+      = ErrorMessage :$$: ErrorMessage |
+        ErrorMessage :<>: ErrorMessage |
+        EM [Bool]
+    ($$:) :: ErrorMessage -> ErrorMessage -> ErrorMessage
+    ($$:) x y = (x :$$: y)
+    (<>:) :: ErrorMessage -> ErrorMessage -> ErrorMessage
+    (<>:) x y = (x :<>: y)
+    type (:$$:@#@$$$) (t :: ErrorMessage) (t :: ErrorMessage) =
+        (:$$:) t t
+    instance SuppressUnusedWarnings (:$$:@#@$$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (::$$:@#@$$###)) GHC.Tuple.())
+    data (:$$:@#@$$) (l :: ErrorMessage) (l :: TyFun ErrorMessage ErrorMessage)
+      = forall arg. SameKind (Apply ((:$$:@#@$$) l) arg) ((:$$:@#@$$$) l arg) =>
+        (::$$:@#@$$###)
+    type instance Apply ((:$$:@#@$$) l) l = (:$$:) l l
+    instance SuppressUnusedWarnings (:$$:@#@$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (::$$:@#@$###)) GHC.Tuple.())
+    data (:$$:@#@$) (l :: TyFun ErrorMessage (TyFun ErrorMessage ErrorMessage
+                                              -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:$$:@#@$) arg) ((:$$:@#@$$) arg) =>
+        (::$$:@#@$###)
+    type instance Apply (:$$:@#@$) l = (:$$:@#@$$) l
+    type (:<>:@#@$$$) (t :: ErrorMessage) (t :: ErrorMessage) =
+        (:<>:) t t
+    instance SuppressUnusedWarnings (:<>:@#@$$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (::<>:@#@$$###)) GHC.Tuple.())
+    data (:<>:@#@$$) (l :: ErrorMessage) (l :: TyFun ErrorMessage ErrorMessage)
+      = forall arg. SameKind (Apply ((:<>:@#@$$) l) arg) ((:<>:@#@$$$) l arg) =>
+        (::<>:@#@$$###)
+    type instance Apply ((:<>:@#@$$) l) l = (:<>:) l l
+    instance SuppressUnusedWarnings (:<>:@#@$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (::<>:@#@$###)) GHC.Tuple.())
+    data (:<>:@#@$) (l :: TyFun ErrorMessage (TyFun ErrorMessage ErrorMessage
+                                              -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (:<>:@#@$) arg) ((:<>:@#@$$) arg) =>
+        (::<>:@#@$###)
+    type instance Apply (:<>:@#@$) l = (:<>:@#@$$) l
+    type EMSym1 (t :: [Bool]) = EM t
+    instance SuppressUnusedWarnings EMSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) EMSym0KindInference) GHC.Tuple.())
+    data EMSym0 (l :: TyFun [Bool] ErrorMessage)
+      = forall arg. SameKind (Apply EMSym0 arg) (EMSym1 arg) =>
+        EMSym0KindInference
+    type instance Apply EMSym0 l = EM l
+    type (<>:@#@$$$) (t :: ErrorMessage) (t :: ErrorMessage) =
+        (<>:) t t
+    instance SuppressUnusedWarnings (<>:@#@$$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (:<>:@#@$$###)) GHC.Tuple.())
+    data (<>:@#@$$) (l :: ErrorMessage) (l :: TyFun ErrorMessage ErrorMessage)
+      = forall arg. SameKind (Apply ((<>:@#@$$) l) arg) ((<>:@#@$$$) l arg) =>
+        (:<>:@#@$$###)
+    type instance Apply ((<>:@#@$$) l) l = (<>:) l l
+    instance SuppressUnusedWarnings (<>:@#@$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (:<>:@#@$###)) GHC.Tuple.())
+    data (<>:@#@$) (l :: TyFun ErrorMessage (TyFun ErrorMessage ErrorMessage
+                                             -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (<>:@#@$) arg) ((<>:@#@$$) arg) =>
+        (:<>:@#@$###)
+    type instance Apply (<>:@#@$) l = (<>:@#@$$) l
+    type ($$:@#@$$$) (t :: ErrorMessage) (t :: ErrorMessage) =
+        ($$:) t t
+    instance SuppressUnusedWarnings ($$:@#@$$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (:$$:@#@$$###)) GHC.Tuple.())
+    data ($$:@#@$$) (l :: ErrorMessage) (l :: TyFun ErrorMessage ErrorMessage)
+      = forall arg. SameKind (Apply (($$:@#@$$) l) arg) (($$:@#@$$$) l arg) =>
+        (:$$:@#@$$###)
+    type instance Apply (($$:@#@$$) l) l = ($$:) l l
+    instance SuppressUnusedWarnings ($$:@#@$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (:$$:@#@$###)) GHC.Tuple.())
+    data ($$:@#@$) (l :: TyFun ErrorMessage (TyFun ErrorMessage ErrorMessage
+                                             -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
+        (:$$:@#@$###)
+    type instance Apply ($$:@#@$) l = ($$:@#@$$) l
+    type family (<>:) (a :: ErrorMessage) (a :: ErrorMessage) :: ErrorMessage where
+      (<>:) x y = Apply (Apply (:<>:@#@$) x) y
+    type family ($$:) (a :: ErrorMessage) (a :: ErrorMessage) :: ErrorMessage where
+      ($$:) x y = Apply (Apply (:$$:@#@$) x) y
+    (%<>:) ::
+      forall (t :: ErrorMessage) (t :: ErrorMessage).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply (<>:@#@$) t) t :: ErrorMessage)
+    (%$$:) ::
+      forall (t :: ErrorMessage) (t :: ErrorMessage).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply ($$:@#@$) t) t :: ErrorMessage)
+    (%<>:) (sX :: Sing x) (sY :: Sing y)
+      = (applySing ((applySing ((singFun2 @(:<>:@#@$)) (:%<>:))) sX)) sY
+    (%$$:) (sX :: Sing x) (sY :: Sing y)
+      = (applySing ((applySing ((singFun2 @(:$$:@#@$)) (:%$$:))) sX)) sY
+    data instance Sing (z :: ErrorMessage)
+      where
+        (:%$$:) :: forall (n :: ErrorMessage) (n :: ErrorMessage).
+                   (Sing (n :: ErrorMessage))
+                   -> (Sing (n :: ErrorMessage)) -> Sing ((:$$:) n n)
+        (:%<>:) :: forall (n :: ErrorMessage) (n :: ErrorMessage).
+                   (Sing (n :: ErrorMessage))
+                   -> (Sing (n :: ErrorMessage)) -> Sing ((:<>:) n n)
+        SEM :: forall (n :: [Bool]). (Sing (n :: [Bool])) -> Sing (EM n)
+    type SErrorMessage = (Sing :: ErrorMessage -> GHC.Types.Type)
+    instance SingKind ErrorMessage where
+      type Demote ErrorMessage = ErrorMessage
+      fromSing ((:%$$:) b b) = ((:$$:) (fromSing b)) (fromSing b)
+      fromSing ((:%<>:) b b) = ((:<>:) (fromSing b)) (fromSing b)
+      fromSing (SEM b) = EM (fromSing b)
+      toSing ((:$$:) b b)
+        = case
+              (GHC.Tuple.(,) (toSing b :: SomeSing ErrorMessage))
+                (toSing b :: SomeSing ErrorMessage)
+          of {
+            GHC.Tuple.(,) (SomeSing c) (SomeSing c)
+              -> SomeSing (((:%$$:) c) c) }
+      toSing ((:<>:) b b)
+        = case
+              (GHC.Tuple.(,) (toSing b :: SomeSing ErrorMessage))
+                (toSing b :: SomeSing ErrorMessage)
+          of {
+            GHC.Tuple.(,) (SomeSing c) (SomeSing c)
+              -> SomeSing (((:%<>:) c) c) }
+      toSing (EM b)
+        = case toSing b :: SomeSing [Bool] of {
+            SomeSing c -> SomeSing (SEM c) }
+    instance (SingI n, SingI n) =>
+             SingI ((:$$:) (n :: ErrorMessage) (n :: ErrorMessage)) where
+      sing = ((:%$$:) sing) sing
+    instance (SingI n, SingI n) =>
+             SingI ((:<>:) (n :: ErrorMessage) (n :: ErrorMessage)) where
+      sing = ((:%<>:) sing) sing
+    instance SingI n => SingI (EM (n :: [Bool])) where
+      sing = SEM sing

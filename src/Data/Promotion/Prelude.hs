@@ -15,7 +15,7 @@
 module Data.Promotion.Prelude (
   -- * Standard types, classes and related functions
   -- ** Basic data types
-  If, Not, (:&&), (:||), Otherwise,
+  If, Not, type (&&), type (||), Otherwise,
 
   maybe_, Maybe_, either_, Either_,
 
@@ -41,16 +41,17 @@ module Data.Promotion.Prelude (
 
   -- * Promoted numbers
   module Data.Promotion.Prelude.Num,
+  type (^),
 
   -- * Promoted 'Show'
-  PShow(..), ShowS, SChar, show_, (:<>), Shows, ShowChar, ShowString, ShowParen,
+  PShow(..), ShowS, SChar, show_, type (<>), Shows, ShowChar, ShowString, ShowParen,
 
   -- ** Miscellaneous functions
-  Id, Const, (:.), (:$), (:$!), Flip, AsTypeOf, Until, Seq,
+  Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Until, Seq,
 
   -- * List operations
-  Map, (:++), Filter,
-  Head, Last, Tail, Init, Null, Length, (:!!),
+  Map, type (++), Filter,
+  Head, Last, Tail, Init, Null, Length, type (!!),
   Reverse,
   -- ** Reducing lists (folds)
   Foldl, Foldl1, Foldr, Foldr1,
@@ -78,8 +79,8 @@ module Data.Promotion.Prelude (
   -- * Defunctionalization symbols
   FalseSym0, TrueSym0,
   NotSym0, NotSym1,
-  (:&&@#@$), (:&&@#@$$), (:&&@#@$$$),
-  (:||@#@$), (:||@#@$$), (:||@#@$$$),
+  type (&&@#@$), type (&&@#@$$), type (&&@#@$$$),
+  type (||@#@$), type (||@#@$$), type (||@#@$$$),
   OtherwiseSym0,
 
   NothingSym0, JustSym0, JustSym1,
@@ -101,27 +102,27 @@ module Data.Promotion.Prelude (
 
   ErrorSym0, ErrorSym1, UndefinedSym0,
 
-  (:^@#@$), (:^@#@$$), (:^@#@$$$),
+  type (^@#@$), type (^@#@$$), type (^@#@$$$),
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$),
+  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowStringSym0, ShowStringSym1, ShowStringSym2,
   ShowParenSym0, ShowParenSym1, ShowParenSym2,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
-  (:.@#@$), (:.@#@$$), (:.@#@$$$),
-  (:$@#@$),  (:$@#@$$),  (:$@#@$$$),
-  (:$!@#@$), (:$!@#@$$), (:$!@#@$$$),
+  type (.@#@$), type (.@#@$$), type (.@#@$$$),
+  type ($@#@$),  type ($@#@$$),  type ($@#@$$$),
+  type ($!@#@$), type ($!@#@$$), type ($!@#@$$$),
   FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
 
-  (:@#@$), (:@#@$$), (:@#@$$$), NilSym0,
+  type (:@#@$), type (:@#@$$), type (:@#@$$$), NilSym0,
   MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
-  (:++@#@$$), (:++@#@$), HeadSym0, HeadSym1, LastSym0, LastSym1,
+  type (++@#@$$), type (++@#@$), HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
 
   FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,
@@ -167,7 +168,7 @@ module Data.Promotion.Prelude (
   BreakSym0, BreakSym1, BreakSym2,
   LookupSym0, LookupSym1, LookupSym2,
   FilterSym0, FilterSym1, FilterSym2,
-  (:!!@#@$), (:!!@#@$$), (:!!@#@$$$),
+  type (!!@#@$), type (!!@#@$$), type (!!@#@$$$),
   ) where
 
 import Data.Promotion.Prelude.Base

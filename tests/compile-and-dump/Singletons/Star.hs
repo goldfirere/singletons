@@ -8,7 +8,7 @@ import Data.Singletons.CustomStar
 import Singletons.Nat
 import Data.Kind
 
-data Vec :: * -> Nat -> * where
+data Vec :: Type -> Nat -> Type where
   VNil :: Vec a Zero
   VCons :: a -> Vec a n -> Vec a (Succ n)
 

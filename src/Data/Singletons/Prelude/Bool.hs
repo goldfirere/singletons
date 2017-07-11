@@ -38,7 +38,7 @@ module Data.Singletons.Prelude.Bool (
   If, sIf,
 
   -- * Singletons from @Data.Bool@
-  Not, sNot, (:&&), (:||), (%:&&), (%:||),
+  Not, sNot, type (&&), type (||), (%&&), (%||),
 
   -- | The following are derived from the function 'bool' in @Data.Bool@. The extra
   -- underscore is to avoid name clashes with the type 'Bool'.
@@ -48,16 +48,17 @@ module Data.Singletons.Prelude.Bool (
   TrueSym0, FalseSym0,
 
   NotSym0, NotSym1,
-  (:&&@#@$), (:&&@#@$$), (:&&@#@$$$),
-  (:||@#@$), (:||@#@$$), (:||@#@$$$),
+  type (&&@#@$), type (&&@#@$$), type (&&@#@$$$),
+  type (||@#@$), type (||@#@$$), type (||@#@$$$),
   Bool_Sym0, Bool_Sym1, Bool_Sym2, Bool_Sym3,
   OtherwiseSym0
   ) where
 
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Instances
+import Data.Singletons.Promote
 import Data.Singletons.Single
-import Data.Type.Bool ( If )
+import Data.Type.Bool ( If, type (&&), type (||), Not )
 
 $(singletons [d|
   bool_ :: a -> a -> Bool -> a
@@ -66,23 +67,29 @@ $(singletons [d|
  |])
 
 $(singletonsOnly [d|
-  (&&) :: Bool -> Bool -> Bool
-  False && _ = False
-  True  && x = x
-  infixr 3 &&
-
-  (||) :: Bool -> Bool -> Bool
-  False || x = x
-  True  || _ = True
-  infixr 2 ||
-
-  not :: Bool -> Bool
-  not False = True
-  not True = False
-
   otherwise               :: Bool
   otherwise               =  True
   |])
+
+-- | Conjunction of singletons
+(%&&) :: Sing a -> Sing b -> Sing (a && b)
+SFalse %&& _ = SFalse
+STrue  %&& a = a
+infixr 3 %&&
+$(genDefunSymbols [''(&&)])
+
+-- | Disjunction of singletons
+(%||) :: Sing a -> Sing b -> Sing (a || b)
+SFalse %|| a = a
+STrue  %|| _ = STrue
+infixr 2 %||
+$(genDefunSymbols [''(||)])
+
+-- | Negation of a singleton
+sNot :: Sing a -> Sing (Not a)
+sNot SFalse = STrue
+sNot STrue  = SFalse
+$(genDefunSymbols [''Not])
 
 -- | Conditional over singletons
 sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)

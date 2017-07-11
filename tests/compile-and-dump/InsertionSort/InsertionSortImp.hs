@@ -34,7 +34,7 @@ unambiguous.
 
 module InsertionSort.InsertionSortImp where
 
-import Data.Kind (type (*))
+import Data.Kind (Type)
 import Data.Singletons.Prelude
 import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
@@ -63,7 +63,7 @@ instance Zero :<=: a
 instance (a :<=: b) => (Succ a) :<=: (Succ b)
 
 -- A proof term asserting that a list of naturals is in ascending order
-data AscendingProof :: [Nat] -> * where
+data AscendingProof :: [Nat] -> Type where
   AscEmpty :: AscendingProof '[]
   AscOne :: AscendingProof '[n]
   AscCons :: (a :<=: b, AscendingC (b ': rest)) => AscendingProof (a ': b ': rest)

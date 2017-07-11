@@ -5,10 +5,16 @@
 
 module ByHand2 where
 
-import Prelude hiding ( Eq(..), Ord(..) )
-import Data.Singletons
+import Prelude hiding ( Eq(..), Ord(..), Bool(..), Ordering(..), not )
+import Data.Singletons (Sing)
 
 data Nat = Zero | Succ Nat
+data Bool = False | True
+data Ordering = LT | EQ | GT
+
+not :: Bool -> Bool
+not False = True
+not True  = False
 
 class Eq a where
   (==) :: a -> a -> Bool

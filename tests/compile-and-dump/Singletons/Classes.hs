@@ -91,7 +91,7 @@ foo3a = Proxy
 foo3b :: Proxy EQ
 foo3b = foo3a
 
-foo4a :: Proxy (Succ' Zero' :<=> Zero')
+foo4a :: Proxy (Succ' Zero' <=> Zero')
 foo4a = Proxy
 
 foo4b :: Proxy GT

@@ -1,3 +1,5 @@
+{-# LANGUAGE ExplicitNamespaces #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Promotion.Prelude.Ord
@@ -21,10 +23,10 @@ module Data.Promotion.Prelude.Ord (
   ThenCmpSym0, ThenCmpSym1, ThenCmpSym2,
   LTSym0, EQSym0, GTSym0,
   CompareSym0, CompareSym1, CompareSym2,
-  (:<@#@$),  (:<@#@$$),  (:<@#@$$$),
-  (:<=@#@$), (:<=@#@$$), (:<=@#@$$$),
-  (:>@#@$),  (:>@#@$$),  (:>@#@$$$),
-  (:>=@#@$), (:>=@#@$$), (:>=@#@$$$),
+  type (<@#@$),  type (<@#@$$),  type (<@#@$$$),
+  type (<=@#@$), type (<=@#@$$), type (<=@#@$$$),
+  type (>@#@$),  type (>@#@$$),  type (>@#@$$$),
+  type (>=@#@$), type (>=@#@$$), type (>=@#@$$$),
   MaxSym0, MaxSym1, MaxSym2,
   MinSym0, MinSym1, MinSym2,
   ComparingSym0, ComparingSym1, ComparingSym2, ComparingSym3

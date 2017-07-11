@@ -27,7 +27,10 @@ import Data.Singletons.Partition
 import Data.Singletons.Util
 import Data.Singletons.Syntax
 import Prelude hiding (exp)
+import Control.Applicative (Alternative(..))
 import Control.Monad
+import Control.Monad.Trans.Class (MonadTrans(..))
+import Control.Monad.Trans.Maybe
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Data.Maybe
@@ -68,7 +71,7 @@ genDefunSymbols names = do
   decs <- promoteMDecs [] $ concatMapM defunInfo infos
   return $ decsToTH decs
 
--- | Produce instances for '(:==)' (type-level equality) from the given types
+-- | Produce instances for @(==)@ (type-level equality) from the given types
 promoteEqInstances :: DsMonad q => [Name] -> q [Dec]
 promoteEqInstances = concatMapM promoteEqInstance
 
@@ -104,10 +107,10 @@ promoteShowInstances = concatMapM promoteShowInstance
 promoteShowInstance :: DsMonad q => Name -> q [Dec]
 promoteShowInstance = promoteInstance mkShowInstance "Show"
 
--- | Produce an instance for '(:==)' (type-level equality) from the given type
+-- | Produce an instance for @(==)@ (type-level equality) from the given type
 promoteEqInstance :: DsMonad q => Name -> q [Dec]
 promoteEqInstance name = do
-  (tvbs, cons) <- getDataD "I cannot make an instance of (:==) for it." name
+  (tvbs, cons) <- getDataD "I cannot make an instance of (==) for it." name
   cons' <- concatMapM dsCon cons
   tvbs' <- mapM dsTvb tvbs
   kind <- promoteType (foldType (DConT name) (map tvbToType tvbs'))
@@ -325,14 +328,55 @@ promoteInstanceDec meth_sigs
 
     lookup_cls_tvb_names :: PrM [Name]
     lookup_cls_tvb_names = do
-      mb_info <- dsReify pClsName
+      let mk_tvb_names = extract_tvb_names (dsReifyTypeNameInfo pClsName)
+                     <|> extract_tvb_names (dsReifyTypeNameInfo cls_name)
+                      -- See Note [Using dsReifyTypeNameInfo when promoting instances]
+      mb_tvb_names <- runMaybeT mk_tvb_names
+      case mb_tvb_names of
+        Just tvb_names -> pure tvb_names
+        Nothing -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
+
+    extract_tvb_names :: PrM (Maybe DInfo) -> MaybeT PrM [Name]
+    extract_tvb_names reify_info = do
+      mb_info <- lift reify_info
       case mb_info of
-        Just (DTyConI (DClassD _ _ tvbs _ _) _) -> return (map extractTvbName tvbs)
-        _ -> do
-          mb_info' <- dsReify cls_name
-          case mb_info' of
-            Just (DTyConI (DClassD _ _ tvbs _ _) _) -> return (map extractTvbName tvbs)
-            _ -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
+        Just (DTyConI (DClassD _ _ tvbs _ _) _)
+          -> pure $ map extractTvbName tvbs
+        _ -> empty
+
+{-
+Note [Using dsReifyTypeNameInfo when promoting instances]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+During the promotion of a class instance, it becomes necessary to reify the
+original promoted class's info to learn various things. It's tempting to think
+that just calling dsReify on the class name will be sufficient, but it's not.
+Consider this class and its promotion:
+
+  class Eq a where
+    (==) :: a -> a -> Bool
+
+  class PEq a where
+    type (==) (x :: a) (y :: a) :: Bool
+
+Notice how both of these classes have an identifier named (==), one at the
+value level, and one at the type level. Now imagine what happens when you
+attempt to promote this Template Haskell declaration:
+
+   [d| f :: Bool
+       f = () == () |]
+
+When promoting ==, singletons will come up with its promoted equivalent (which also
+happens to be ==). However, this promoted name is a raw Name, since it is created
+with mkName. This becomes an issue when we call dsReify the raw "==" Name, as
+Template Haskell has to arbitrarily choose between reifying the info for the
+value-level (==) and the type-level (==), and in this case, it happens to pick the
+value-level (==) info. We want the type-level (==) info, however, because we care
+about the promoted version of (==).
+
+Fortunately, there's a serviceable workaround. Instead of dsReify, we can use
+dsReifyTypeNameInfo, which first calls lookupTypeName (to ensure we can find a Name
+that's in the type namespace) and _then_ reifies it.
+-}
 
 promoteMethod :: Maybe (Map Name DKind)
                     -- ^ instantiations for class tyvars (Nothing for default decls)
@@ -391,12 +435,13 @@ promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
     lookup_meth_ty :: PrM ([DKind], DKind)
     lookup_meth_ty = case Map.lookup meth_name sigs_map of
       Nothing -> do
-        mb_info <- dsReify proName
+        mb_info <- dsReifyTypeNameInfo proName
+                   -- See Note [Using dsReifyTypeNameInfo when promoting instances]
         case mb_info of
           Just (DTyConI (DOpenTypeFamilyD (DTypeFamilyHead _ tvbs mb_res_ki _)) _)
             -> let arg_kis = map (default_to_star . extractTvbKind) tvbs
                    res_ki  = default_to_star (resultSigToMaybeKind mb_res_ki)
-               in return (arg_kis, res_ki)
+                in return (arg_kis, res_ki)
           _ -> fail $ "Cannot find type annotation for " ++ show proName
       Just ty -> promoteUnraveled ty
 
@@ -465,8 +510,10 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
 
 promoteInfixDecl :: Fixity -> Name -> Maybe DDec
 promoteInfixDecl fixity name
- | isUpcase name
- = Nothing   -- no need to promote the decl
+ | isDataConName name || not (isHsLetter (head (nameBase name)))
+ = Nothing -- No need to promote fixity declarations for constructor names or
+           -- infix names, as those fixity declarations apply to both
+           -- the value and type namespaces.
  | otherwise
  = Just $ DLetDec $ DInfixD fixity (promoteValNameLhs name)
 
@@ -649,7 +696,7 @@ promoteExp (DCaseE exp matches) = do
          , ADCaseE ann_exp ann_matches applied_case )
 promoteExp (DLetE decs exp) = do
   unique <- qNewUnique
-  let letPrefixes = uniquePrefixes "Let" ":<<<" unique
+  let letPrefixes = uniquePrefixes "Let" "<<<" unique
   (binds, ann_env) <- promoteLetDecs letPrefixes decs
   (exp', ann_exp) <- letBind binds $ promoteExp exp
   return (exp', ADLetE ann_env ann_exp)

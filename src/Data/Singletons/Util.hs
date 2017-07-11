@@ -100,11 +100,22 @@ isInfixDataCon :: String -> Bool
 isInfixDataCon (':':_) = True
 isInfixDataCon _       = False
 
--- is an identifier uppercase?
-isUpcase :: Name -> Bool
-isUpcase n = let first = head (nameBase n) in isUpper first || first == ':'
+-- | Is an identifier a legal data constructor name in Haskell? That is, is its
+-- first character an uppercase letter (prefix) or a colon (infix)?
+isDataConName :: Name -> Bool
+isDataConName n = let first = head (nameBase n) in isUpper first || first == ':'
 
--- make an identifier uppercase
+-- | Is an identifier uppercase?
+--
+-- Note that this will always return 'False' for infix names, since the concept
+-- of upper- and lower-case doesn't make sense for non-alphabetic characters.
+-- If you want to check if a name is legal as a data constructor, use the
+-- 'isDataConName' function.
+isUpcase :: Name -> Bool
+isUpcase n = let first = head (nameBase n) in isUpper first
+
+-- Make an identifier uppercase. If the identifier is infix, this acts as the
+-- identity function.
 upcase :: Name -> Name
 upcase = mkName . toUpcaseStr noPrefix
 
@@ -123,50 +134,34 @@ toUpcaseStr (alpha, symb) n
     first = head str
 
     upcase_alpha = alpha ++ (toUpper first) : tail str
-
-    upcase_symb
-      | first == ':'
-      = symb ++ str
-      | otherwise
-      = symb ++ ':' : str
-
--- Ensures that the name is a suitable name for a data constructor
-toDataConName :: Name -> Name
-toDataConName n
-  | isUpcase n                  = n
-  | str@('$' : _) <- nameBase n = mkName (':' : str)
-  | otherwise                   = upcase n
-
+    upcase_symb = symb ++ str
 
 noPrefix :: (String, String)
 noPrefix = ("", "")
 
--- make an identifier lowercase
-locase :: Name -> Name
-locase n =
-  let str = nameBase n
-      first = head str in
-    if isHsLetter first
-     then mkName ((toLower first) : tail str)
-     else mkName (tail str) -- remove the ":"
-
--- put an uppercase prefix on a name. Takes two prefixes: one for identifiers
--- and one for symbols
-prefixUCName :: String -> String -> Name -> Name
-prefixUCName pre tyPre n = case (nameBase n) of
-    (':' : rest) -> mkName (tyPre ++ rest)
+-- Put an uppercase prefix on a constructor name. Takes two prefixes:
+-- one for identifiers and one for symbols.
+--
+-- This is different from 'prefixName' in that infix constructor names always
+-- start with a colon, so we must insert the prefix after the colon in order
+-- for the new name to be syntactically valid.
+prefixConName :: String -> String -> Name -> Name
+prefixConName pre tyPre n = case (nameBase n) of
+    (':' : rest) -> mkName (':' : tyPre ++ rest)
     alpha -> mkName (pre ++ alpha)
 
--- put a lowercase prefix on a name. Takes two prefixes: one for identifiers
--- and one for symbols
-prefixLCName :: String -> String -> Name -> Name
-prefixLCName pre tyPre n =
+-- Put a prefix on a name. Takes two prefixes: one for identifiers
+-- and one for symbols.
+prefixName :: String -> String -> Name -> Name
+prefixName pre tyPre n =
   let str = nameBase n
       first = head str in
     if isHsLetter first
      then mkName (pre ++ str)
      else mkName (tyPre ++ str)
 
+-- Put a suffix on a name. Takes two suffixes: one for identifiers
+-- and one for symbols.
 suffixName :: String -> String -> Name -> Name
 suffixName ident symb n =
   let str = nameBase n
@@ -444,6 +439,18 @@ addBinding k v = tell (Map.singleton k v)
 -- in a computation with an auxiliar list, add an element to the list
 addElement :: Quasi q => elt -> QWithAux [elt] q ()
 addElement elt = tell [elt]
+
+-- | Call 'lookupTypeNameWithLocals' first to ensure we have a 'Name' in the
+-- type namespace, then call 'dsReify'.
+
+-- See also Note [Using dsReifyTypeNameInfo when promoting instances]
+-- in Data.Singletons.Promote.
+dsReifyTypeNameInfo :: DsMonad q => Name -> q (Maybe DInfo)
+dsReifyTypeNameInfo ty_name = do
+  mb_name <- lookupTypeNameWithLocals (nameBase ty_name)
+  case mb_name of
+    Just n  -> dsReify n
+    Nothing -> pure Nothing
 
 -- lift concatMap into a monad
 -- could this be more efficient?

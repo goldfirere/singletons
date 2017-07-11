@@ -38,11 +38,11 @@ Singletons/Star.hs:0:0:: Splicing declarations
       Equals_0123456789876543210 Nat Nat = TrueSym0
       Equals_0123456789876543210 Int Int = TrueSym0
       Equals_0123456789876543210 String String = TrueSym0
-      Equals_0123456789876543210 (Maybe a) (Maybe b) = (:==) a b
-      Equals_0123456789876543210 (Vec a a) (Vec b b) = (:&&) ((:==) a b) ((:==) a b)
+      Equals_0123456789876543210 (Maybe a) (Maybe b) = (==) a b
+      Equals_0123456789876543210 (Vec a a) (Vec b b) = (&&) ((==) a b) ((==) a b)
       Equals_0123456789876543210 (_ :: Type) (_ :: Type) = FalseSym0
     instance PEq Type where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type (==) a b = Equals_0123456789876543210 a b
     type family Compare_0123456789876543210 (a :: Type) (a :: Type) :: Ordering where
       Compare_0123456789876543210 Nat Nat = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
       Compare_0123456789876543210 Int Int = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
@@ -210,32 +210,31 @@ Singletons/Star.hs:0:0:: Splicing declarations
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing ((SVec c) c) }
     instance SEq Type where
-      (%:==) SNat SNat = STrue
-      (%:==) SNat SInt = SFalse
-      (%:==) SNat SString = SFalse
-      (%:==) SNat (SMaybe _) = SFalse
-      (%:==) SNat (SVec _ _) = SFalse
-      (%:==) SInt SNat = SFalse
-      (%:==) SInt SInt = STrue
-      (%:==) SInt SString = SFalse
-      (%:==) SInt (SMaybe _) = SFalse
-      (%:==) SInt (SVec _ _) = SFalse
-      (%:==) SString SNat = SFalse
-      (%:==) SString SInt = SFalse
-      (%:==) SString SString = STrue
-      (%:==) SString (SMaybe _) = SFalse
-      (%:==) SString (SVec _ _) = SFalse
-      (%:==) (SMaybe _) SNat = SFalse
-      (%:==) (SMaybe _) SInt = SFalse
-      (%:==) (SMaybe _) SString = SFalse
-      (%:==) (SMaybe a) (SMaybe b) = ((%:==) a) b
-      (%:==) (SMaybe _) (SVec _ _) = SFalse
-      (%:==) (SVec _ _) SNat = SFalse
-      (%:==) (SVec _ _) SInt = SFalse
-      (%:==) (SVec _ _) SString = SFalse
-      (%:==) (SVec _ _) (SMaybe _) = SFalse
-      (%:==) (SVec a a) (SVec b b)
-        = ((%:&&) (((%:==) a) b)) (((%:==) a) b)
+      (%==) SNat SNat = STrue
+      (%==) SNat SInt = SFalse
+      (%==) SNat SString = SFalse
+      (%==) SNat (SMaybe _) = SFalse
+      (%==) SNat (SVec _ _) = SFalse
+      (%==) SInt SNat = SFalse
+      (%==) SInt SInt = STrue
+      (%==) SInt SString = SFalse
+      (%==) SInt (SMaybe _) = SFalse
+      (%==) SInt (SVec _ _) = SFalse
+      (%==) SString SNat = SFalse
+      (%==) SString SInt = SFalse
+      (%==) SString SString = STrue
+      (%==) SString (SMaybe _) = SFalse
+      (%==) SString (SVec _ _) = SFalse
+      (%==) (SMaybe _) SNat = SFalse
+      (%==) (SMaybe _) SInt = SFalse
+      (%==) (SMaybe _) SString = SFalse
+      (%==) (SMaybe a) (SMaybe b) = ((%==) a) b
+      (%==) (SMaybe _) (SVec _ _) = SFalse
+      (%==) (SVec _ _) SNat = SFalse
+      (%==) (SVec _ _) SInt = SFalse
+      (%==) (SVec _ _) SString = SFalse
+      (%==) (SVec _ _) (SMaybe _) = SFalse
+      (%==) (SVec a a) (SVec b b) = ((%&&) (((%==) a) b)) (((%==) a) b)
     instance SDecide Type where
       (%~) SNat SNat = Proved Refl
       (%~) SNat SInt = Disproved (\ x -> case x of)

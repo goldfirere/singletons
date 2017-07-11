@@ -61,17 +61,17 @@ Singletons/T159.hs:0:0:: Splicing declarations
     type (:&&@#@$$$) (t :: T0) (t :: T1) = (:&&) t t
     instance SuppressUnusedWarnings (:&&@#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:&&@#@$$###)) GHC.Tuple.())
+        = snd ((GHC.Tuple.(,) (::&&@#@$$###)) GHC.Tuple.())
     data (:&&@#@$$) (l :: T0) (l :: TyFun T1 T1)
       = forall arg. SameKind (Apply ((:&&@#@$$) l) arg) ((:&&@#@$$$) l arg) =>
-        (:&&@#@$$###)
+        (::&&@#@$$###)
     type instance Apply ((:&&@#@$$) l) l = (:&&) l l
     instance SuppressUnusedWarnings (:&&@#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:&&@#@$###)) GHC.Tuple.())
+        = snd ((GHC.Tuple.(,) (::&&@#@$###)) GHC.Tuple.())
     data (:&&@#@$) (l :: TyFun T0 (TyFun T1 T1 -> GHC.Types.Type))
       = forall arg. SameKind (Apply (:&&@#@$) arg) ((:&&@#@$$) arg) =>
-        (:&&@#@$###)
+        (::&&@#@$###)
     type instance Apply (:&&@#@$) l = (:&&@#@$$) l
     data instance Sing (z :: T1)
       where
@@ -136,17 +136,17 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
     type (:||@#@$$$) (t :: T0) (t :: T2) = (:||) t t
     instance SuppressUnusedWarnings (:||@#@$$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:||@#@$$###)) GHC.Tuple.())
+        = snd ((GHC.Tuple.(,) (::||@#@$$###)) GHC.Tuple.())
     data (:||@#@$$) (l :: T0) (l :: TyFun T2 T2)
       = forall arg. SameKind (Apply ((:||@#@$$) l) arg) ((:||@#@$$$) l arg) =>
-        (:||@#@$$###)
+        (::||@#@$$###)
     type instance Apply ((:||@#@$$) l) l = (:||) l l
     instance SuppressUnusedWarnings (:||@#@$) where
       suppressUnusedWarnings
-        = snd ((GHC.Tuple.(,) (:||@#@$###)) GHC.Tuple.())
+        = snd ((GHC.Tuple.(,) (::||@#@$###)) GHC.Tuple.())
     data (:||@#@$) (l :: TyFun T0 (TyFun T2 T2 -> GHC.Types.Type))
       = forall arg. SameKind (Apply (:||@#@$) arg) ((:||@#@$$) arg) =>
-        (:||@#@$###)
+        (::||@#@$###)
     type instance Apply (:||@#@$) l = (:||@#@$$) l
     infixr 5 :%||
     infixr 5 `SC2`

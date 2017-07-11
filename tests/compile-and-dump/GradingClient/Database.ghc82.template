@@ -46,10 +46,10 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Equals_0123456789876543210 (a :: Nat) (b :: Nat) :: Bool where
       Equals_0123456789876543210 Zero Zero = TrueSym0
-      Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
+      Equals_0123456789876543210 (Succ a) (Succ b) = (==) a b
       Equals_0123456789876543210 (_ :: Nat) (_ :: Nat) = FalseSym0
     instance PEq Nat where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type (==) a b = Equals_0123456789876543210 a b
     data instance Sing (z :: Nat)
       where
         SZero :: Sing Zero
@@ -97,10 +97,10 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sCompare SZero (SSucc _) = SLT
       sCompare (SSucc _) SZero = SGT
     instance SEq Nat where
-      (%:==) SZero SZero = STrue
-      (%:==) SZero (SSucc _) = SFalse
-      (%:==) (SSucc _) SZero = SFalse
-      (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
+      (%==) SZero SZero = STrue
+      (%==) SZero (SSucc _) = SFalse
+      (%==) (SSucc _) SZero = SFalse
+      (%==) (SSucc a) (SSucc b) = ((%==) a) b
     instance SDecide Nat where
       (%~) SZero SZero = Proved Refl
       (%~) SZero (SSucc _) = Disproved (\ x -> case x of)
@@ -329,7 +329,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference
     type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 l = Let0123456789876543210Scrutinee_0123456789876543210Sym1 l
     type family Let0123456789876543210Scrutinee_0123456789876543210 name name' u attrs where
-      Let0123456789876543210Scrutinee_0123456789876543210 name name' u attrs = Apply (Apply (:==@#@$) name) name'
+      Let0123456789876543210Scrutinee_0123456789876543210 name name' u attrs = Apply (Apply (==@#@$) name) name'
     type family Case_0123456789876543210 name name' u attrs t where
       Case_0123456789876543210 name name' u attrs True = u
       Case_0123456789876543210 name name' u attrs False = Apply (Apply LookupSym0 name) (Apply SchSym0 attrs)
@@ -414,20 +414,20 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Lookup name (Sch ((:) (Attr name' u) attrs)) = Case_0123456789876543210 name name' u attrs (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs)
     type family Occurs (a :: [AChar]) (a :: Schema) :: Bool where
       Occurs _ (Sch '[]) = FalseSym0
-      Occurs name (Sch ((:) (Attr name' _) attrs)) = Apply (Apply (:||@#@$) (Apply (Apply (:==@#@$) name) name')) (Apply (Apply OccursSym0 name) (Apply SchSym0 attrs))
+      Occurs name (Sch ((:) (Attr name' _) attrs)) = Apply (Apply (||@#@$) (Apply (Apply (==@#@$) name) name')) (Apply (Apply OccursSym0 name) (Apply SchSym0 attrs))
     type family AttrNotIn (a :: Attribute) (a :: Schema) :: Bool where
       AttrNotIn _ (Sch '[]) = TrueSym0
-      AttrNotIn (Attr name u) (Sch ((:) (Attr name' _) t)) = Apply (Apply (:&&@#@$) (Apply (Apply (:/=@#@$) name) name')) (Apply (Apply AttrNotInSym0 (Apply (Apply AttrSym0 name) u)) (Apply SchSym0 t))
+      AttrNotIn (Attr name u) (Sch ((:) (Attr name' _) t)) = Apply (Apply (&&@#@$) (Apply (Apply (/=@#@$) name) name')) (Apply (Apply AttrNotInSym0 (Apply (Apply AttrSym0 name) u)) (Apply SchSym0 t))
     type family Disjoint (a :: Schema) (a :: Schema) :: Bool where
       Disjoint (Sch '[]) _ = TrueSym0
-      Disjoint (Sch ((:) h t)) s = Apply (Apply (:&&@#@$) (Apply (Apply AttrNotInSym0 h) s)) (Apply (Apply DisjointSym0 (Apply SchSym0 t)) s)
+      Disjoint (Sch ((:) h t)) s = Apply (Apply (&&@#@$) (Apply (Apply AttrNotInSym0 h) s)) (Apply (Apply DisjointSym0 (Apply SchSym0 t)) s)
     type family Append (a :: Schema) (a :: Schema) :: Schema where
-      Append (Sch s1) (Sch s2) = Apply SchSym0 (Apply (Apply (:++@#@$) s1) s2)
+      Append (Sch s1) (Sch s2) = Apply SchSym0 (Apply (Apply (++@#@$) s1) s2)
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: U) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ BOOL a_0123456789876543210 = Apply (Apply ShowStringSym0 "BOOL") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ STRING a_0123456789876543210 = Apply (Apply ShowStringSym0 "STRING") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ NAT a_0123456789876543210 = Apply (Apply ShowStringSym0 "NAT") a_0123456789876543210
-      ShowsPrec_0123456789876543210 p_0123456789876543210 (VEC arg_0123456789876543210 arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (:>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (:.@#@$) (Apply ShowStringSym0 "VEC ")) (Apply (Apply (:.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210)) (Apply (Apply (:.@#@$) ShowSpaceSym0) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))))) a_0123456789876543210
+      ShowsPrec_0123456789876543210 p_0123456789876543210 (VEC arg_0123456789876543210 arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "VEC ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210)) (Apply (Apply (.@#@$) ShowSpaceSym0) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))))) a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym3 (t :: GHC.Types.Nat) (t :: U) (t :: Symbol) =
         ShowsPrec_0123456789876543210 t t t
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym2 where
@@ -527,10 +527,10 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 BOOL BOOL = TrueSym0
       Equals_0123456789876543210 STRING STRING = TrueSym0
       Equals_0123456789876543210 NAT NAT = TrueSym0
-      Equals_0123456789876543210 (VEC a a) (VEC b b) = (:&&) ((:==) a b) ((:==) a b)
+      Equals_0123456789876543210 (VEC a a) (VEC b b) = (&&) ((==) a b) ((==) a b)
       Equals_0123456789876543210 (_ :: U) (_ :: U) = FalseSym0
     instance PEq U where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type (==) a b = Equals_0123456789876543210 a b
     type family Equals_0123456789876543210 (a :: AChar) (b :: AChar) :: Bool where
       Equals_0123456789876543210 CA CA = TrueSym0
       Equals_0123456789876543210 CB CB = TrueSym0
@@ -560,7 +560,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 CZ CZ = TrueSym0
       Equals_0123456789876543210 (_ :: AChar) (_ :: AChar) = FalseSym0
     instance PEq AChar where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type (==) a b = Equals_0123456789876543210 a b
     sLookup ::
       forall (t :: [AChar]) (t :: Schema).
       Sing t -> Sing t -> Sing (Apply (Apply LookupSym0 t) t :: U)
@@ -585,7 +585,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
           sScrutinee_0123456789876543210 ::
             Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs)
           sScrutinee_0123456789876543210
-            = (applySing ((applySing ((singFun2 @(:==@#@$)) (%:==))) sName))
+            = (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sName))
                 sName'
         in  case sScrutinee_0123456789876543210 of
               STrue -> sU
@@ -599,8 +599,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (SSch (SCons (SAttr (sName' :: Sing name') _)
                    (sAttrs :: Sing attrs)))
       = (applySing
-           ((applySing ((singFun2 @(:||@#@$)) (%:||)))
-              ((applySing ((applySing ((singFun2 @(:==@#@$)) (%:==))) sName))
+           ((applySing ((singFun2 @(||@#@$)) (%||)))
+              ((applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sName))
                  sName')))
           ((applySing ((applySing ((singFun2 @OccursSym0) sOccurs)) sName))
              ((applySing ((singFun1 @SchSym0) SSch)) sAttrs))
@@ -609,8 +609,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (SAttr (sName :: Sing name) (sU :: Sing u))
       (SSch (SCons (SAttr (sName' :: Sing name') _) (sT :: Sing t)))
       = (applySing
-           ((applySing ((singFun2 @(:&&@#@$)) (%:&&)))
-              ((applySing ((applySing ((singFun2 @(:/=@#@$)) (%:/=))) sName))
+           ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+              ((applySing ((applySing ((singFun2 @(/=@#@$)) (%/=))) sName))
                  sName')))
           ((applySing
               ((applySing ((singFun2 @AttrNotInSym0) sAttrNotIn))
@@ -621,7 +621,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (SSch (SCons (sH :: Sing h) (sT :: Sing t)))
       (sS :: Sing s)
       = (applySing
-           ((applySing ((singFun2 @(:&&@#@$)) (%:&&)))
+           ((applySing ((singFun2 @(&&@#@$)) (%&&)))
               ((applySing
                   ((applySing ((singFun2 @AttrNotInSym0) sAttrNotIn)) sH))
                  sS)))
@@ -631,7 +631,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
              sS)
     sAppend (SSch (sS1 :: Sing s1)) (SSch (sS2 :: Sing s2))
       = (applySing ((singFun1 @SchSym0) SSch))
-          ((applySing ((applySing ((singFun2 @(:++@#@$)) (%:++))) sS1)) sS2)
+          ((applySing ((applySing ((singFun2 @(++@#@$)) (%++))) sS1)) sS2)
     data instance Sing (z :: U)
       where
         SBOOL :: Sing BOOL
@@ -808,20 +808,20 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
              ((applySing
                  ((applySing ((singFun3 @ShowParenSym0) sShowParen))
                     ((applySing
-                        ((applySing ((singFun2 @(:>@#@$)) (%:>))) sP_0123456789876543210))
+                        ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
                        (sFromInteger (sing :: Sing 10)))))
                 ((applySing
-                    ((applySing ((singFun3 @(:.@#@$)) (%:.)))
+                    ((applySing ((singFun3 @(.@#@$)) (%.)))
                        ((applySing ((singFun2 @ShowStringSym0) sShowString))
                           (sing :: Sing "VEC "))))
                    ((applySing
-                       ((applySing ((singFun3 @(:.@#@$)) (%:.)))
+                       ((applySing ((singFun3 @(.@#@$)) (%.)))
                           ((applySing
                               ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
                                  (sFromInteger (sing :: Sing 11))))
                              sArg_0123456789876543210)))
                       ((applySing
-                          ((applySing ((singFun3 @(:.@#@$)) (%:.)))
+                          ((applySing ((singFun3 @(.@#@$)) (%.)))
                              ((singFun1 @ShowSpaceSym0) sShowSpace)))
                          ((applySing
                              ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
@@ -1050,23 +1050,22 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                 (sing :: Sing "CZ")))
             sA_0123456789876543210
     instance SEq U where
-      (%:==) SBOOL SBOOL = STrue
-      (%:==) SBOOL SSTRING = SFalse
-      (%:==) SBOOL SNAT = SFalse
-      (%:==) SBOOL (SVEC _ _) = SFalse
-      (%:==) SSTRING SBOOL = SFalse
-      (%:==) SSTRING SSTRING = STrue
-      (%:==) SSTRING SNAT = SFalse
-      (%:==) SSTRING (SVEC _ _) = SFalse
-      (%:==) SNAT SBOOL = SFalse
-      (%:==) SNAT SSTRING = SFalse
-      (%:==) SNAT SNAT = STrue
-      (%:==) SNAT (SVEC _ _) = SFalse
-      (%:==) (SVEC _ _) SBOOL = SFalse
-      (%:==) (SVEC _ _) SSTRING = SFalse
-      (%:==) (SVEC _ _) SNAT = SFalse
-      (%:==) (SVEC a a) (SVEC b b)
-        = ((%:&&) (((%:==) a) b)) (((%:==) a) b)
+      (%==) SBOOL SBOOL = STrue
+      (%==) SBOOL SSTRING = SFalse
+      (%==) SBOOL SNAT = SFalse
+      (%==) SBOOL (SVEC _ _) = SFalse
+      (%==) SSTRING SBOOL = SFalse
+      (%==) SSTRING SSTRING = STrue
+      (%==) SSTRING SNAT = SFalse
+      (%==) SSTRING (SVEC _ _) = SFalse
+      (%==) SNAT SBOOL = SFalse
+      (%==) SNAT SSTRING = SFalse
+      (%==) SNAT SNAT = STrue
+      (%==) SNAT (SVEC _ _) = SFalse
+      (%==) (SVEC _ _) SBOOL = SFalse
+      (%==) (SVEC _ _) SSTRING = SFalse
+      (%==) (SVEC _ _) SNAT = SFalse
+      (%==) (SVEC a a) (SVEC b b) = ((%&&) (((%==) a) b)) (((%==) a) b)
     instance SDecide U where
       (%~) SBOOL SBOOL = Proved Refl
       (%~) SBOOL SSTRING = Disproved (\ x -> case x of)
@@ -1091,682 +1090,682 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
             GHC.Tuple.(,) _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
     instance SEq AChar where
-      (%:==) SCA SCA = STrue
-      (%:==) SCA SCB = SFalse
-      (%:==) SCA SCC = SFalse
-      (%:==) SCA SCD = SFalse
-      (%:==) SCA SCE = SFalse
-      (%:==) SCA SCF = SFalse
-      (%:==) SCA SCG = SFalse
-      (%:==) SCA SCH = SFalse
-      (%:==) SCA SCI = SFalse
-      (%:==) SCA SCJ = SFalse
-      (%:==) SCA SCK = SFalse
-      (%:==) SCA SCL = SFalse
-      (%:==) SCA SCM = SFalse
-      (%:==) SCA SCN = SFalse
-      (%:==) SCA SCO = SFalse
-      (%:==) SCA SCP = SFalse
-      (%:==) SCA SCQ = SFalse
-      (%:==) SCA SCR = SFalse
-      (%:==) SCA SCS = SFalse
-      (%:==) SCA SCT = SFalse
-      (%:==) SCA SCU = SFalse
-      (%:==) SCA SCV = SFalse
-      (%:==) SCA SCW = SFalse
-      (%:==) SCA SCX = SFalse
-      (%:==) SCA SCY = SFalse
-      (%:==) SCA SCZ = SFalse
-      (%:==) SCB SCA = SFalse
-      (%:==) SCB SCB = STrue
-      (%:==) SCB SCC = SFalse
-      (%:==) SCB SCD = SFalse
-      (%:==) SCB SCE = SFalse
-      (%:==) SCB SCF = SFalse
-      (%:==) SCB SCG = SFalse
-      (%:==) SCB SCH = SFalse
-      (%:==) SCB SCI = SFalse
-      (%:==) SCB SCJ = SFalse
-      (%:==) SCB SCK = SFalse
-      (%:==) SCB SCL = SFalse
-      (%:==) SCB SCM = SFalse
-      (%:==) SCB SCN = SFalse
-      (%:==) SCB SCO = SFalse
-      (%:==) SCB SCP = SFalse
-      (%:==) SCB SCQ = SFalse
-      (%:==) SCB SCR = SFalse
-      (%:==) SCB SCS = SFalse
-      (%:==) SCB SCT = SFalse
-      (%:==) SCB SCU = SFalse
-      (%:==) SCB SCV = SFalse
-      (%:==) SCB SCW = SFalse
-      (%:==) SCB SCX = SFalse
-      (%:==) SCB SCY = SFalse
-      (%:==) SCB SCZ = SFalse
-      (%:==) SCC SCA = SFalse
-      (%:==) SCC SCB = SFalse
-      (%:==) SCC SCC = STrue
-      (%:==) SCC SCD = SFalse
-      (%:==) SCC SCE = SFalse
-      (%:==) SCC SCF = SFalse
-      (%:==) SCC SCG = SFalse
-      (%:==) SCC SCH = SFalse
-      (%:==) SCC SCI = SFalse
-      (%:==) SCC SCJ = SFalse
-      (%:==) SCC SCK = SFalse
-      (%:==) SCC SCL = SFalse
-      (%:==) SCC SCM = SFalse
-      (%:==) SCC SCN = SFalse
-      (%:==) SCC SCO = SFalse
-      (%:==) SCC SCP = SFalse
-      (%:==) SCC SCQ = SFalse
-      (%:==) SCC SCR = SFalse
-      (%:==) SCC SCS = SFalse
-      (%:==) SCC SCT = SFalse
-      (%:==) SCC SCU = SFalse
-      (%:==) SCC SCV = SFalse
-      (%:==) SCC SCW = SFalse
-      (%:==) SCC SCX = SFalse
-      (%:==) SCC SCY = SFalse
-      (%:==) SCC SCZ = SFalse
-      (%:==) SCD SCA = SFalse
-      (%:==) SCD SCB = SFalse
-      (%:==) SCD SCC = SFalse
-      (%:==) SCD SCD = STrue
-      (%:==) SCD SCE = SFalse
-      (%:==) SCD SCF = SFalse
-      (%:==) SCD SCG = SFalse
-      (%:==) SCD SCH = SFalse
-      (%:==) SCD SCI = SFalse
-      (%:==) SCD SCJ = SFalse
-      (%:==) SCD SCK = SFalse
-      (%:==) SCD SCL = SFalse
-      (%:==) SCD SCM = SFalse
-      (%:==) SCD SCN = SFalse
-      (%:==) SCD SCO = SFalse
-      (%:==) SCD SCP = SFalse
-      (%:==) SCD SCQ = SFalse
-      (%:==) SCD SCR = SFalse
-      (%:==) SCD SCS = SFalse
-      (%:==) SCD SCT = SFalse
-      (%:==) SCD SCU = SFalse
-      (%:==) SCD SCV = SFalse
-      (%:==) SCD SCW = SFalse
-      (%:==) SCD SCX = SFalse
-      (%:==) SCD SCY = SFalse
-      (%:==) SCD SCZ = SFalse
-      (%:==) SCE SCA = SFalse
-      (%:==) SCE SCB = SFalse
-      (%:==) SCE SCC = SFalse
-      (%:==) SCE SCD = SFalse
-      (%:==) SCE SCE = STrue
-      (%:==) SCE SCF = SFalse
-      (%:==) SCE SCG = SFalse
-      (%:==) SCE SCH = SFalse
-      (%:==) SCE SCI = SFalse
-      (%:==) SCE SCJ = SFalse
-      (%:==) SCE SCK = SFalse
-      (%:==) SCE SCL = SFalse
-      (%:==) SCE SCM = SFalse
-      (%:==) SCE SCN = SFalse
-      (%:==) SCE SCO = SFalse
-      (%:==) SCE SCP = SFalse
-      (%:==) SCE SCQ = SFalse
-      (%:==) SCE SCR = SFalse
-      (%:==) SCE SCS = SFalse
-      (%:==) SCE SCT = SFalse
-      (%:==) SCE SCU = SFalse
-      (%:==) SCE SCV = SFalse
-      (%:==) SCE SCW = SFalse
-      (%:==) SCE SCX = SFalse
-      (%:==) SCE SCY = SFalse
-      (%:==) SCE SCZ = SFalse
-      (%:==) SCF SCA = SFalse
-      (%:==) SCF SCB = SFalse
-      (%:==) SCF SCC = SFalse
-      (%:==) SCF SCD = SFalse
-      (%:==) SCF SCE = SFalse
-      (%:==) SCF SCF = STrue
-      (%:==) SCF SCG = SFalse
-      (%:==) SCF SCH = SFalse
-      (%:==) SCF SCI = SFalse
-      (%:==) SCF SCJ = SFalse
-      (%:==) SCF SCK = SFalse
-      (%:==) SCF SCL = SFalse
-      (%:==) SCF SCM = SFalse
-      (%:==) SCF SCN = SFalse
-      (%:==) SCF SCO = SFalse
-      (%:==) SCF SCP = SFalse
-      (%:==) SCF SCQ = SFalse
-      (%:==) SCF SCR = SFalse
-      (%:==) SCF SCS = SFalse
-      (%:==) SCF SCT = SFalse
-      (%:==) SCF SCU = SFalse
-      (%:==) SCF SCV = SFalse
-      (%:==) SCF SCW = SFalse
-      (%:==) SCF SCX = SFalse
-      (%:==) SCF SCY = SFalse
-      (%:==) SCF SCZ = SFalse
-      (%:==) SCG SCA = SFalse
-      (%:==) SCG SCB = SFalse
-      (%:==) SCG SCC = SFalse
-      (%:==) SCG SCD = SFalse
-      (%:==) SCG SCE = SFalse
-      (%:==) SCG SCF = SFalse
-      (%:==) SCG SCG = STrue
-      (%:==) SCG SCH = SFalse
-      (%:==) SCG SCI = SFalse
-      (%:==) SCG SCJ = SFalse
-      (%:==) SCG SCK = SFalse
-      (%:==) SCG SCL = SFalse
-      (%:==) SCG SCM = SFalse
-      (%:==) SCG SCN = SFalse
-      (%:==) SCG SCO = SFalse
-      (%:==) SCG SCP = SFalse
-      (%:==) SCG SCQ = SFalse
-      (%:==) SCG SCR = SFalse
-      (%:==) SCG SCS = SFalse
-      (%:==) SCG SCT = SFalse
-      (%:==) SCG SCU = SFalse
-      (%:==) SCG SCV = SFalse
-      (%:==) SCG SCW = SFalse
-      (%:==) SCG SCX = SFalse
-      (%:==) SCG SCY = SFalse
-      (%:==) SCG SCZ = SFalse
-      (%:==) SCH SCA = SFalse
-      (%:==) SCH SCB = SFalse
-      (%:==) SCH SCC = SFalse
-      (%:==) SCH SCD = SFalse
-      (%:==) SCH SCE = SFalse
-      (%:==) SCH SCF = SFalse
-      (%:==) SCH SCG = SFalse
-      (%:==) SCH SCH = STrue
-      (%:==) SCH SCI = SFalse
-      (%:==) SCH SCJ = SFalse
-      (%:==) SCH SCK = SFalse
-      (%:==) SCH SCL = SFalse
-      (%:==) SCH SCM = SFalse
-      (%:==) SCH SCN = SFalse
-      (%:==) SCH SCO = SFalse
-      (%:==) SCH SCP = SFalse
-      (%:==) SCH SCQ = SFalse
-      (%:==) SCH SCR = SFalse
-      (%:==) SCH SCS = SFalse
-      (%:==) SCH SCT = SFalse
-      (%:==) SCH SCU = SFalse
-      (%:==) SCH SCV = SFalse
-      (%:==) SCH SCW = SFalse
-      (%:==) SCH SCX = SFalse
-      (%:==) SCH SCY = SFalse
-      (%:==) SCH SCZ = SFalse
-      (%:==) SCI SCA = SFalse
-      (%:==) SCI SCB = SFalse
-      (%:==) SCI SCC = SFalse
-      (%:==) SCI SCD = SFalse
-      (%:==) SCI SCE = SFalse
-      (%:==) SCI SCF = SFalse
-      (%:==) SCI SCG = SFalse
-      (%:==) SCI SCH = SFalse
-      (%:==) SCI SCI = STrue
-      (%:==) SCI SCJ = SFalse
-      (%:==) SCI SCK = SFalse
-      (%:==) SCI SCL = SFalse
-      (%:==) SCI SCM = SFalse
-      (%:==) SCI SCN = SFalse
-      (%:==) SCI SCO = SFalse
-      (%:==) SCI SCP = SFalse
-      (%:==) SCI SCQ = SFalse
-      (%:==) SCI SCR = SFalse
-      (%:==) SCI SCS = SFalse
-      (%:==) SCI SCT = SFalse
-      (%:==) SCI SCU = SFalse
-      (%:==) SCI SCV = SFalse
-      (%:==) SCI SCW = SFalse
-      (%:==) SCI SCX = SFalse
-      (%:==) SCI SCY = SFalse
-      (%:==) SCI SCZ = SFalse
-      (%:==) SCJ SCA = SFalse
-      (%:==) SCJ SCB = SFalse
-      (%:==) SCJ SCC = SFalse
-      (%:==) SCJ SCD = SFalse
-      (%:==) SCJ SCE = SFalse
-      (%:==) SCJ SCF = SFalse
-      (%:==) SCJ SCG = SFalse
-      (%:==) SCJ SCH = SFalse
-      (%:==) SCJ SCI = SFalse
-      (%:==) SCJ SCJ = STrue
-      (%:==) SCJ SCK = SFalse
-      (%:==) SCJ SCL = SFalse
-      (%:==) SCJ SCM = SFalse
-      (%:==) SCJ SCN = SFalse
-      (%:==) SCJ SCO = SFalse
-      (%:==) SCJ SCP = SFalse
-      (%:==) SCJ SCQ = SFalse
-      (%:==) SCJ SCR = SFalse
-      (%:==) SCJ SCS = SFalse
-      (%:==) SCJ SCT = SFalse
-      (%:==) SCJ SCU = SFalse
-      (%:==) SCJ SCV = SFalse
-      (%:==) SCJ SCW = SFalse
-      (%:==) SCJ SCX = SFalse
-      (%:==) SCJ SCY = SFalse
-      (%:==) SCJ SCZ = SFalse
-      (%:==) SCK SCA = SFalse
-      (%:==) SCK SCB = SFalse
-      (%:==) SCK SCC = SFalse
-      (%:==) SCK SCD = SFalse
-      (%:==) SCK SCE = SFalse
-      (%:==) SCK SCF = SFalse
-      (%:==) SCK SCG = SFalse
-      (%:==) SCK SCH = SFalse
-      (%:==) SCK SCI = SFalse
-      (%:==) SCK SCJ = SFalse
-      (%:==) SCK SCK = STrue
-      (%:==) SCK SCL = SFalse
-      (%:==) SCK SCM = SFalse
-      (%:==) SCK SCN = SFalse
-      (%:==) SCK SCO = SFalse
-      (%:==) SCK SCP = SFalse
-      (%:==) SCK SCQ = SFalse
-      (%:==) SCK SCR = SFalse
-      (%:==) SCK SCS = SFalse
-      (%:==) SCK SCT = SFalse
-      (%:==) SCK SCU = SFalse
-      (%:==) SCK SCV = SFalse
-      (%:==) SCK SCW = SFalse
-      (%:==) SCK SCX = SFalse
-      (%:==) SCK SCY = SFalse
-      (%:==) SCK SCZ = SFalse
-      (%:==) SCL SCA = SFalse
-      (%:==) SCL SCB = SFalse
-      (%:==) SCL SCC = SFalse
-      (%:==) SCL SCD = SFalse
-      (%:==) SCL SCE = SFalse
-      (%:==) SCL SCF = SFalse
-      (%:==) SCL SCG = SFalse
-      (%:==) SCL SCH = SFalse
-      (%:==) SCL SCI = SFalse
-      (%:==) SCL SCJ = SFalse
-      (%:==) SCL SCK = SFalse
-      (%:==) SCL SCL = STrue
-      (%:==) SCL SCM = SFalse
-      (%:==) SCL SCN = SFalse
-      (%:==) SCL SCO = SFalse
-      (%:==) SCL SCP = SFalse
-      (%:==) SCL SCQ = SFalse
-      (%:==) SCL SCR = SFalse
-      (%:==) SCL SCS = SFalse
-      (%:==) SCL SCT = SFalse
-      (%:==) SCL SCU = SFalse
-      (%:==) SCL SCV = SFalse
-      (%:==) SCL SCW = SFalse
-      (%:==) SCL SCX = SFalse
-      (%:==) SCL SCY = SFalse
-      (%:==) SCL SCZ = SFalse
-      (%:==) SCM SCA = SFalse
-      (%:==) SCM SCB = SFalse
-      (%:==) SCM SCC = SFalse
-      (%:==) SCM SCD = SFalse
-      (%:==) SCM SCE = SFalse
-      (%:==) SCM SCF = SFalse
-      (%:==) SCM SCG = SFalse
-      (%:==) SCM SCH = SFalse
-      (%:==) SCM SCI = SFalse
-      (%:==) SCM SCJ = SFalse
-      (%:==) SCM SCK = SFalse
-      (%:==) SCM SCL = SFalse
-      (%:==) SCM SCM = STrue
-      (%:==) SCM SCN = SFalse
-      (%:==) SCM SCO = SFalse
-      (%:==) SCM SCP = SFalse
-      (%:==) SCM SCQ = SFalse
-      (%:==) SCM SCR = SFalse
-      (%:==) SCM SCS = SFalse
-      (%:==) SCM SCT = SFalse
-      (%:==) SCM SCU = SFalse
-      (%:==) SCM SCV = SFalse
-      (%:==) SCM SCW = SFalse
-      (%:==) SCM SCX = SFalse
-      (%:==) SCM SCY = SFalse
-      (%:==) SCM SCZ = SFalse
-      (%:==) SCN SCA = SFalse
-      (%:==) SCN SCB = SFalse
-      (%:==) SCN SCC = SFalse
-      (%:==) SCN SCD = SFalse
-      (%:==) SCN SCE = SFalse
-      (%:==) SCN SCF = SFalse
-      (%:==) SCN SCG = SFalse
-      (%:==) SCN SCH = SFalse
-      (%:==) SCN SCI = SFalse
-      (%:==) SCN SCJ = SFalse
-      (%:==) SCN SCK = SFalse
-      (%:==) SCN SCL = SFalse
-      (%:==) SCN SCM = SFalse
-      (%:==) SCN SCN = STrue
-      (%:==) SCN SCO = SFalse
-      (%:==) SCN SCP = SFalse
-      (%:==) SCN SCQ = SFalse
-      (%:==) SCN SCR = SFalse
-      (%:==) SCN SCS = SFalse
-      (%:==) SCN SCT = SFalse
-      (%:==) SCN SCU = SFalse
-      (%:==) SCN SCV = SFalse
-      (%:==) SCN SCW = SFalse
-      (%:==) SCN SCX = SFalse
-      (%:==) SCN SCY = SFalse
-      (%:==) SCN SCZ = SFalse
-      (%:==) SCO SCA = SFalse
-      (%:==) SCO SCB = SFalse
-      (%:==) SCO SCC = SFalse
-      (%:==) SCO SCD = SFalse
-      (%:==) SCO SCE = SFalse
-      (%:==) SCO SCF = SFalse
-      (%:==) SCO SCG = SFalse
-      (%:==) SCO SCH = SFalse
-      (%:==) SCO SCI = SFalse
-      (%:==) SCO SCJ = SFalse
-      (%:==) SCO SCK = SFalse
-      (%:==) SCO SCL = SFalse
-      (%:==) SCO SCM = SFalse
-      (%:==) SCO SCN = SFalse
-      (%:==) SCO SCO = STrue
-      (%:==) SCO SCP = SFalse
-      (%:==) SCO SCQ = SFalse
-      (%:==) SCO SCR = SFalse
-      (%:==) SCO SCS = SFalse
-      (%:==) SCO SCT = SFalse
-      (%:==) SCO SCU = SFalse
-      (%:==) SCO SCV = SFalse
-      (%:==) SCO SCW = SFalse
-      (%:==) SCO SCX = SFalse
-      (%:==) SCO SCY = SFalse
-      (%:==) SCO SCZ = SFalse
-      (%:==) SCP SCA = SFalse
-      (%:==) SCP SCB = SFalse
-      (%:==) SCP SCC = SFalse
-      (%:==) SCP SCD = SFalse
-      (%:==) SCP SCE = SFalse
-      (%:==) SCP SCF = SFalse
-      (%:==) SCP SCG = SFalse
-      (%:==) SCP SCH = SFalse
-      (%:==) SCP SCI = SFalse
-      (%:==) SCP SCJ = SFalse
-      (%:==) SCP SCK = SFalse
-      (%:==) SCP SCL = SFalse
-      (%:==) SCP SCM = SFalse
-      (%:==) SCP SCN = SFalse
-      (%:==) SCP SCO = SFalse
-      (%:==) SCP SCP = STrue
-      (%:==) SCP SCQ = SFalse
-      (%:==) SCP SCR = SFalse
-      (%:==) SCP SCS = SFalse
-      (%:==) SCP SCT = SFalse
-      (%:==) SCP SCU = SFalse
-      (%:==) SCP SCV = SFalse
-      (%:==) SCP SCW = SFalse
-      (%:==) SCP SCX = SFalse
-      (%:==) SCP SCY = SFalse
-      (%:==) SCP SCZ = SFalse
-      (%:==) SCQ SCA = SFalse
-      (%:==) SCQ SCB = SFalse
-      (%:==) SCQ SCC = SFalse
-      (%:==) SCQ SCD = SFalse
-      (%:==) SCQ SCE = SFalse
-      (%:==) SCQ SCF = SFalse
-      (%:==) SCQ SCG = SFalse
-      (%:==) SCQ SCH = SFalse
-      (%:==) SCQ SCI = SFalse
-      (%:==) SCQ SCJ = SFalse
-      (%:==) SCQ SCK = SFalse
-      (%:==) SCQ SCL = SFalse
-      (%:==) SCQ SCM = SFalse
-      (%:==) SCQ SCN = SFalse
-      (%:==) SCQ SCO = SFalse
-      (%:==) SCQ SCP = SFalse
-      (%:==) SCQ SCQ = STrue
-      (%:==) SCQ SCR = SFalse
-      (%:==) SCQ SCS = SFalse
-      (%:==) SCQ SCT = SFalse
-      (%:==) SCQ SCU = SFalse
-      (%:==) SCQ SCV = SFalse
-      (%:==) SCQ SCW = SFalse
-      (%:==) SCQ SCX = SFalse
-      (%:==) SCQ SCY = SFalse
-      (%:==) SCQ SCZ = SFalse
-      (%:==) SCR SCA = SFalse
-      (%:==) SCR SCB = SFalse
-      (%:==) SCR SCC = SFalse
-      (%:==) SCR SCD = SFalse
-      (%:==) SCR SCE = SFalse
-      (%:==) SCR SCF = SFalse
-      (%:==) SCR SCG = SFalse
-      (%:==) SCR SCH = SFalse
-      (%:==) SCR SCI = SFalse
-      (%:==) SCR SCJ = SFalse
-      (%:==) SCR SCK = SFalse
-      (%:==) SCR SCL = SFalse
-      (%:==) SCR SCM = SFalse
-      (%:==) SCR SCN = SFalse
-      (%:==) SCR SCO = SFalse
-      (%:==) SCR SCP = SFalse
-      (%:==) SCR SCQ = SFalse
-      (%:==) SCR SCR = STrue
-      (%:==) SCR SCS = SFalse
-      (%:==) SCR SCT = SFalse
-      (%:==) SCR SCU = SFalse
-      (%:==) SCR SCV = SFalse
-      (%:==) SCR SCW = SFalse
-      (%:==) SCR SCX = SFalse
-      (%:==) SCR SCY = SFalse
-      (%:==) SCR SCZ = SFalse
-      (%:==) SCS SCA = SFalse
-      (%:==) SCS SCB = SFalse
-      (%:==) SCS SCC = SFalse
-      (%:==) SCS SCD = SFalse
-      (%:==) SCS SCE = SFalse
-      (%:==) SCS SCF = SFalse
-      (%:==) SCS SCG = SFalse
-      (%:==) SCS SCH = SFalse
-      (%:==) SCS SCI = SFalse
-      (%:==) SCS SCJ = SFalse
-      (%:==) SCS SCK = SFalse
-      (%:==) SCS SCL = SFalse
-      (%:==) SCS SCM = SFalse
-      (%:==) SCS SCN = SFalse
-      (%:==) SCS SCO = SFalse
-      (%:==) SCS SCP = SFalse
-      (%:==) SCS SCQ = SFalse
-      (%:==) SCS SCR = SFalse
-      (%:==) SCS SCS = STrue
-      (%:==) SCS SCT = SFalse
-      (%:==) SCS SCU = SFalse
-      (%:==) SCS SCV = SFalse
-      (%:==) SCS SCW = SFalse
-      (%:==) SCS SCX = SFalse
-      (%:==) SCS SCY = SFalse
-      (%:==) SCS SCZ = SFalse
-      (%:==) SCT SCA = SFalse
-      (%:==) SCT SCB = SFalse
-      (%:==) SCT SCC = SFalse
-      (%:==) SCT SCD = SFalse
-      (%:==) SCT SCE = SFalse
-      (%:==) SCT SCF = SFalse
-      (%:==) SCT SCG = SFalse
-      (%:==) SCT SCH = SFalse
-      (%:==) SCT SCI = SFalse
-      (%:==) SCT SCJ = SFalse
-      (%:==) SCT SCK = SFalse
-      (%:==) SCT SCL = SFalse
-      (%:==) SCT SCM = SFalse
-      (%:==) SCT SCN = SFalse
-      (%:==) SCT SCO = SFalse
-      (%:==) SCT SCP = SFalse
-      (%:==) SCT SCQ = SFalse
-      (%:==) SCT SCR = SFalse
-      (%:==) SCT SCS = SFalse
-      (%:==) SCT SCT = STrue
-      (%:==) SCT SCU = SFalse
-      (%:==) SCT SCV = SFalse
-      (%:==) SCT SCW = SFalse
-      (%:==) SCT SCX = SFalse
-      (%:==) SCT SCY = SFalse
-      (%:==) SCT SCZ = SFalse
-      (%:==) SCU SCA = SFalse
-      (%:==) SCU SCB = SFalse
-      (%:==) SCU SCC = SFalse
-      (%:==) SCU SCD = SFalse
-      (%:==) SCU SCE = SFalse
-      (%:==) SCU SCF = SFalse
-      (%:==) SCU SCG = SFalse
-      (%:==) SCU SCH = SFalse
-      (%:==) SCU SCI = SFalse
-      (%:==) SCU SCJ = SFalse
-      (%:==) SCU SCK = SFalse
-      (%:==) SCU SCL = SFalse
-      (%:==) SCU SCM = SFalse
-      (%:==) SCU SCN = SFalse
-      (%:==) SCU SCO = SFalse
-      (%:==) SCU SCP = SFalse
-      (%:==) SCU SCQ = SFalse
-      (%:==) SCU SCR = SFalse
-      (%:==) SCU SCS = SFalse
-      (%:==) SCU SCT = SFalse
-      (%:==) SCU SCU = STrue
-      (%:==) SCU SCV = SFalse
-      (%:==) SCU SCW = SFalse
-      (%:==) SCU SCX = SFalse
-      (%:==) SCU SCY = SFalse
-      (%:==) SCU SCZ = SFalse
-      (%:==) SCV SCA = SFalse
-      (%:==) SCV SCB = SFalse
-      (%:==) SCV SCC = SFalse
-      (%:==) SCV SCD = SFalse
-      (%:==) SCV SCE = SFalse
-      (%:==) SCV SCF = SFalse
-      (%:==) SCV SCG = SFalse
-      (%:==) SCV SCH = SFalse
-      (%:==) SCV SCI = SFalse
-      (%:==) SCV SCJ = SFalse
-      (%:==) SCV SCK = SFalse
-      (%:==) SCV SCL = SFalse
-      (%:==) SCV SCM = SFalse
-      (%:==) SCV SCN = SFalse
-      (%:==) SCV SCO = SFalse
-      (%:==) SCV SCP = SFalse
-      (%:==) SCV SCQ = SFalse
-      (%:==) SCV SCR = SFalse
-      (%:==) SCV SCS = SFalse
-      (%:==) SCV SCT = SFalse
-      (%:==) SCV SCU = SFalse
-      (%:==) SCV SCV = STrue
-      (%:==) SCV SCW = SFalse
-      (%:==) SCV SCX = SFalse
-      (%:==) SCV SCY = SFalse
-      (%:==) SCV SCZ = SFalse
-      (%:==) SCW SCA = SFalse
-      (%:==) SCW SCB = SFalse
-      (%:==) SCW SCC = SFalse
-      (%:==) SCW SCD = SFalse
-      (%:==) SCW SCE = SFalse
-      (%:==) SCW SCF = SFalse
-      (%:==) SCW SCG = SFalse
-      (%:==) SCW SCH = SFalse
-      (%:==) SCW SCI = SFalse
-      (%:==) SCW SCJ = SFalse
-      (%:==) SCW SCK = SFalse
-      (%:==) SCW SCL = SFalse
-      (%:==) SCW SCM = SFalse
-      (%:==) SCW SCN = SFalse
-      (%:==) SCW SCO = SFalse
-      (%:==) SCW SCP = SFalse
-      (%:==) SCW SCQ = SFalse
-      (%:==) SCW SCR = SFalse
-      (%:==) SCW SCS = SFalse
-      (%:==) SCW SCT = SFalse
-      (%:==) SCW SCU = SFalse
-      (%:==) SCW SCV = SFalse
-      (%:==) SCW SCW = STrue
-      (%:==) SCW SCX = SFalse
-      (%:==) SCW SCY = SFalse
-      (%:==) SCW SCZ = SFalse
-      (%:==) SCX SCA = SFalse
-      (%:==) SCX SCB = SFalse
-      (%:==) SCX SCC = SFalse
-      (%:==) SCX SCD = SFalse
-      (%:==) SCX SCE = SFalse
-      (%:==) SCX SCF = SFalse
-      (%:==) SCX SCG = SFalse
-      (%:==) SCX SCH = SFalse
-      (%:==) SCX SCI = SFalse
-      (%:==) SCX SCJ = SFalse
-      (%:==) SCX SCK = SFalse
-      (%:==) SCX SCL = SFalse
-      (%:==) SCX SCM = SFalse
-      (%:==) SCX SCN = SFalse
-      (%:==) SCX SCO = SFalse
-      (%:==) SCX SCP = SFalse
-      (%:==) SCX SCQ = SFalse
-      (%:==) SCX SCR = SFalse
-      (%:==) SCX SCS = SFalse
-      (%:==) SCX SCT = SFalse
-      (%:==) SCX SCU = SFalse
-      (%:==) SCX SCV = SFalse
-      (%:==) SCX SCW = SFalse
-      (%:==) SCX SCX = STrue
-      (%:==) SCX SCY = SFalse
-      (%:==) SCX SCZ = SFalse
-      (%:==) SCY SCA = SFalse
-      (%:==) SCY SCB = SFalse
-      (%:==) SCY SCC = SFalse
-      (%:==) SCY SCD = SFalse
-      (%:==) SCY SCE = SFalse
-      (%:==) SCY SCF = SFalse
-      (%:==) SCY SCG = SFalse
-      (%:==) SCY SCH = SFalse
-      (%:==) SCY SCI = SFalse
-      (%:==) SCY SCJ = SFalse
-      (%:==) SCY SCK = SFalse
-      (%:==) SCY SCL = SFalse
-      (%:==) SCY SCM = SFalse
-      (%:==) SCY SCN = SFalse
-      (%:==) SCY SCO = SFalse
-      (%:==) SCY SCP = SFalse
-      (%:==) SCY SCQ = SFalse
-      (%:==) SCY SCR = SFalse
-      (%:==) SCY SCS = SFalse
-      (%:==) SCY SCT = SFalse
-      (%:==) SCY SCU = SFalse
-      (%:==) SCY SCV = SFalse
-      (%:==) SCY SCW = SFalse
-      (%:==) SCY SCX = SFalse
-      (%:==) SCY SCY = STrue
-      (%:==) SCY SCZ = SFalse
-      (%:==) SCZ SCA = SFalse
-      (%:==) SCZ SCB = SFalse
-      (%:==) SCZ SCC = SFalse
-      (%:==) SCZ SCD = SFalse
-      (%:==) SCZ SCE = SFalse
-      (%:==) SCZ SCF = SFalse
-      (%:==) SCZ SCG = SFalse
-      (%:==) SCZ SCH = SFalse
-      (%:==) SCZ SCI = SFalse
-      (%:==) SCZ SCJ = SFalse
-      (%:==) SCZ SCK = SFalse
-      (%:==) SCZ SCL = SFalse
-      (%:==) SCZ SCM = SFalse
-      (%:==) SCZ SCN = SFalse
-      (%:==) SCZ SCO = SFalse
-      (%:==) SCZ SCP = SFalse
-      (%:==) SCZ SCQ = SFalse
-      (%:==) SCZ SCR = SFalse
-      (%:==) SCZ SCS = SFalse
-      (%:==) SCZ SCT = SFalse
-      (%:==) SCZ SCU = SFalse
-      (%:==) SCZ SCV = SFalse
-      (%:==) SCZ SCW = SFalse
-      (%:==) SCZ SCX = SFalse
-      (%:==) SCZ SCY = SFalse
-      (%:==) SCZ SCZ = STrue
+      (%==) SCA SCA = STrue
+      (%==) SCA SCB = SFalse
+      (%==) SCA SCC = SFalse
+      (%==) SCA SCD = SFalse
+      (%==) SCA SCE = SFalse
+      (%==) SCA SCF = SFalse
+      (%==) SCA SCG = SFalse
+      (%==) SCA SCH = SFalse
+      (%==) SCA SCI = SFalse
+      (%==) SCA SCJ = SFalse
+      (%==) SCA SCK = SFalse
+      (%==) SCA SCL = SFalse
+      (%==) SCA SCM = SFalse
+      (%==) SCA SCN = SFalse
+      (%==) SCA SCO = SFalse
+      (%==) SCA SCP = SFalse
+      (%==) SCA SCQ = SFalse
+      (%==) SCA SCR = SFalse
+      (%==) SCA SCS = SFalse
+      (%==) SCA SCT = SFalse
+      (%==) SCA SCU = SFalse
+      (%==) SCA SCV = SFalse
+      (%==) SCA SCW = SFalse
+      (%==) SCA SCX = SFalse
+      (%==) SCA SCY = SFalse
+      (%==) SCA SCZ = SFalse
+      (%==) SCB SCA = SFalse
+      (%==) SCB SCB = STrue
+      (%==) SCB SCC = SFalse
+      (%==) SCB SCD = SFalse
+      (%==) SCB SCE = SFalse
+      (%==) SCB SCF = SFalse
+      (%==) SCB SCG = SFalse
+      (%==) SCB SCH = SFalse
+      (%==) SCB SCI = SFalse
+      (%==) SCB SCJ = SFalse
+      (%==) SCB SCK = SFalse
+      (%==) SCB SCL = SFalse
+      (%==) SCB SCM = SFalse
+      (%==) SCB SCN = SFalse
+      (%==) SCB SCO = SFalse
+      (%==) SCB SCP = SFalse
+      (%==) SCB SCQ = SFalse
+      (%==) SCB SCR = SFalse
+      (%==) SCB SCS = SFalse
+      (%==) SCB SCT = SFalse
+      (%==) SCB SCU = SFalse
+      (%==) SCB SCV = SFalse
+      (%==) SCB SCW = SFalse
+      (%==) SCB SCX = SFalse
+      (%==) SCB SCY = SFalse
+      (%==) SCB SCZ = SFalse
+      (%==) SCC SCA = SFalse
+      (%==) SCC SCB = SFalse
+      (%==) SCC SCC = STrue
+      (%==) SCC SCD = SFalse
+      (%==) SCC SCE = SFalse
+      (%==) SCC SCF = SFalse
+      (%==) SCC SCG = SFalse
+      (%==) SCC SCH = SFalse
+      (%==) SCC SCI = SFalse
+      (%==) SCC SCJ = SFalse
+      (%==) SCC SCK = SFalse
+      (%==) SCC SCL = SFalse
+      (%==) SCC SCM = SFalse
+      (%==) SCC SCN = SFalse
+      (%==) SCC SCO = SFalse
+      (%==) SCC SCP = SFalse
+      (%==) SCC SCQ = SFalse
+      (%==) SCC SCR = SFalse
+      (%==) SCC SCS = SFalse
+      (%==) SCC SCT = SFalse
+      (%==) SCC SCU = SFalse
+      (%==) SCC SCV = SFalse
+      (%==) SCC SCW = SFalse
+      (%==) SCC SCX = SFalse
+      (%==) SCC SCY = SFalse
+      (%==) SCC SCZ = SFalse
+      (%==) SCD SCA = SFalse
+      (%==) SCD SCB = SFalse
+      (%==) SCD SCC = SFalse
+      (%==) SCD SCD = STrue
+      (%==) SCD SCE = SFalse
+      (%==) SCD SCF = SFalse
+      (%==) SCD SCG = SFalse
+      (%==) SCD SCH = SFalse
+      (%==) SCD SCI = SFalse
+      (%==) SCD SCJ = SFalse
+      (%==) SCD SCK = SFalse
+      (%==) SCD SCL = SFalse
+      (%==) SCD SCM = SFalse
+      (%==) SCD SCN = SFalse
+      (%==) SCD SCO = SFalse
+      (%==) SCD SCP = SFalse
+      (%==) SCD SCQ = SFalse
+      (%==) SCD SCR = SFalse
+      (%==) SCD SCS = SFalse
+      (%==) SCD SCT = SFalse
+      (%==) SCD SCU = SFalse
+      (%==) SCD SCV = SFalse
+      (%==) SCD SCW = SFalse
+      (%==) SCD SCX = SFalse
+      (%==) SCD SCY = SFalse
+      (%==) SCD SCZ = SFalse
+      (%==) SCE SCA = SFalse
+      (%==) SCE SCB = SFalse
+      (%==) SCE SCC = SFalse
+      (%==) SCE SCD = SFalse
+      (%==) SCE SCE = STrue
+      (%==) SCE SCF = SFalse
+      (%==) SCE SCG = SFalse
+      (%==) SCE SCH = SFalse
+      (%==) SCE SCI = SFalse
+      (%==) SCE SCJ = SFalse
+      (%==) SCE SCK = SFalse
+      (%==) SCE SCL = SFalse
+      (%==) SCE SCM = SFalse
+      (%==) SCE SCN = SFalse
+      (%==) SCE SCO = SFalse
+      (%==) SCE SCP = SFalse
+      (%==) SCE SCQ = SFalse
+      (%==) SCE SCR = SFalse
+      (%==) SCE SCS = SFalse
+      (%==) SCE SCT = SFalse
+      (%==) SCE SCU = SFalse
+      (%==) SCE SCV = SFalse
+      (%==) SCE SCW = SFalse
+      (%==) SCE SCX = SFalse
+      (%==) SCE SCY = SFalse
+      (%==) SCE SCZ = SFalse
+      (%==) SCF SCA = SFalse
+      (%==) SCF SCB = SFalse
+      (%==) SCF SCC = SFalse
+      (%==) SCF SCD = SFalse
+      (%==) SCF SCE = SFalse
+      (%==) SCF SCF = STrue
+      (%==) SCF SCG = SFalse
+      (%==) SCF SCH = SFalse
+      (%==) SCF SCI = SFalse
+      (%==) SCF SCJ = SFalse
+      (%==) SCF SCK = SFalse
+      (%==) SCF SCL = SFalse
+      (%==) SCF SCM = SFalse
+      (%==) SCF SCN = SFalse
+      (%==) SCF SCO = SFalse
+      (%==) SCF SCP = SFalse
+      (%==) SCF SCQ = SFalse
+      (%==) SCF SCR = SFalse
+      (%==) SCF SCS = SFalse
+      (%==) SCF SCT = SFalse
+      (%==) SCF SCU = SFalse
+      (%==) SCF SCV = SFalse
+      (%==) SCF SCW = SFalse
+      (%==) SCF SCX = SFalse
+      (%==) SCF SCY = SFalse
+      (%==) SCF SCZ = SFalse
+      (%==) SCG SCA = SFalse
+      (%==) SCG SCB = SFalse
+      (%==) SCG SCC = SFalse
+      (%==) SCG SCD = SFalse
+      (%==) SCG SCE = SFalse
+      (%==) SCG SCF = SFalse
+      (%==) SCG SCG = STrue
+      (%==) SCG SCH = SFalse
+      (%==) SCG SCI = SFalse
+      (%==) SCG SCJ = SFalse
+      (%==) SCG SCK = SFalse
+      (%==) SCG SCL = SFalse
+      (%==) SCG SCM = SFalse
+      (%==) SCG SCN = SFalse
+      (%==) SCG SCO = SFalse
+      (%==) SCG SCP = SFalse
+      (%==) SCG SCQ = SFalse
+      (%==) SCG SCR = SFalse
+      (%==) SCG SCS = SFalse
+      (%==) SCG SCT = SFalse
+      (%==) SCG SCU = SFalse
+      (%==) SCG SCV = SFalse
+      (%==) SCG SCW = SFalse
+      (%==) SCG SCX = SFalse
+      (%==) SCG SCY = SFalse
+      (%==) SCG SCZ = SFalse
+      (%==) SCH SCA = SFalse
+      (%==) SCH SCB = SFalse
+      (%==) SCH SCC = SFalse
+      (%==) SCH SCD = SFalse
+      (%==) SCH SCE = SFalse
+      (%==) SCH SCF = SFalse
+      (%==) SCH SCG = SFalse
+      (%==) SCH SCH = STrue
+      (%==) SCH SCI = SFalse
+      (%==) SCH SCJ = SFalse
+      (%==) SCH SCK = SFalse
+      (%==) SCH SCL = SFalse
+      (%==) SCH SCM = SFalse
+      (%==) SCH SCN = SFalse
+      (%==) SCH SCO = SFalse
+      (%==) SCH SCP = SFalse
+      (%==) SCH SCQ = SFalse
+      (%==) SCH SCR = SFalse
+      (%==) SCH SCS = SFalse
+      (%==) SCH SCT = SFalse
+      (%==) SCH SCU = SFalse
+      (%==) SCH SCV = SFalse
+      (%==) SCH SCW = SFalse
+      (%==) SCH SCX = SFalse
+      (%==) SCH SCY = SFalse
+      (%==) SCH SCZ = SFalse
+      (%==) SCI SCA = SFalse
+      (%==) SCI SCB = SFalse
+      (%==) SCI SCC = SFalse
+      (%==) SCI SCD = SFalse
+      (%==) SCI SCE = SFalse
+      (%==) SCI SCF = SFalse
+      (%==) SCI SCG = SFalse
+      (%==) SCI SCH = SFalse
+      (%==) SCI SCI = STrue
+      (%==) SCI SCJ = SFalse
+      (%==) SCI SCK = SFalse
+      (%==) SCI SCL = SFalse
+      (%==) SCI SCM = SFalse
+      (%==) SCI SCN = SFalse
+      (%==) SCI SCO = SFalse
+      (%==) SCI SCP = SFalse
+      (%==) SCI SCQ = SFalse
+      (%==) SCI SCR = SFalse
+      (%==) SCI SCS = SFalse
+      (%==) SCI SCT = SFalse
+      (%==) SCI SCU = SFalse
+      (%==) SCI SCV = SFalse
+      (%==) SCI SCW = SFalse
+      (%==) SCI SCX = SFalse
+      (%==) SCI SCY = SFalse
+      (%==) SCI SCZ = SFalse
+      (%==) SCJ SCA = SFalse
+      (%==) SCJ SCB = SFalse
+      (%==) SCJ SCC = SFalse
+      (%==) SCJ SCD = SFalse
+      (%==) SCJ SCE = SFalse
+      (%==) SCJ SCF = SFalse
+      (%==) SCJ SCG = SFalse
+      (%==) SCJ SCH = SFalse
+      (%==) SCJ SCI = SFalse
+      (%==) SCJ SCJ = STrue
+      (%==) SCJ SCK = SFalse
+      (%==) SCJ SCL = SFalse
+      (%==) SCJ SCM = SFalse
+      (%==) SCJ SCN = SFalse
+      (%==) SCJ SCO = SFalse
+      (%==) SCJ SCP = SFalse
+      (%==) SCJ SCQ = SFalse
+      (%==) SCJ SCR = SFalse
+      (%==) SCJ SCS = SFalse
+      (%==) SCJ SCT = SFalse
+      (%==) SCJ SCU = SFalse
+      (%==) SCJ SCV = SFalse
+      (%==) SCJ SCW = SFalse
+      (%==) SCJ SCX = SFalse
+      (%==) SCJ SCY = SFalse
+      (%==) SCJ SCZ = SFalse
+      (%==) SCK SCA = SFalse
+      (%==) SCK SCB = SFalse
+      (%==) SCK SCC = SFalse
+      (%==) SCK SCD = SFalse
+      (%==) SCK SCE = SFalse
+      (%==) SCK SCF = SFalse
+      (%==) SCK SCG = SFalse
+      (%==) SCK SCH = SFalse
+      (%==) SCK SCI = SFalse
+      (%==) SCK SCJ = SFalse
+      (%==) SCK SCK = STrue
+      (%==) SCK SCL = SFalse
+      (%==) SCK SCM = SFalse
+      (%==) SCK SCN = SFalse
+      (%==) SCK SCO = SFalse
+      (%==) SCK SCP = SFalse
+      (%==) SCK SCQ = SFalse
+      (%==) SCK SCR = SFalse
+      (%==) SCK SCS = SFalse
+      (%==) SCK SCT = SFalse
+      (%==) SCK SCU = SFalse
+      (%==) SCK SCV = SFalse
+      (%==) SCK SCW = SFalse
+      (%==) SCK SCX = SFalse
+      (%==) SCK SCY = SFalse
+      (%==) SCK SCZ = SFalse
+      (%==) SCL SCA = SFalse
+      (%==) SCL SCB = SFalse
+      (%==) SCL SCC = SFalse
+      (%==) SCL SCD = SFalse
+      (%==) SCL SCE = SFalse
+      (%==) SCL SCF = SFalse
+      (%==) SCL SCG = SFalse
+      (%==) SCL SCH = SFalse
+      (%==) SCL SCI = SFalse
+      (%==) SCL SCJ = SFalse
+      (%==) SCL SCK = SFalse
+      (%==) SCL SCL = STrue
+      (%==) SCL SCM = SFalse
+      (%==) SCL SCN = SFalse
+      (%==) SCL SCO = SFalse
+      (%==) SCL SCP = SFalse
+      (%==) SCL SCQ = SFalse
+      (%==) SCL SCR = SFalse
+      (%==) SCL SCS = SFalse
+      (%==) SCL SCT = SFalse
+      (%==) SCL SCU = SFalse
+      (%==) SCL SCV = SFalse
+      (%==) SCL SCW = SFalse
+      (%==) SCL SCX = SFalse
+      (%==) SCL SCY = SFalse
+      (%==) SCL SCZ = SFalse
+      (%==) SCM SCA = SFalse
+      (%==) SCM SCB = SFalse
+      (%==) SCM SCC = SFalse
+      (%==) SCM SCD = SFalse
+      (%==) SCM SCE = SFalse
+      (%==) SCM SCF = SFalse
+      (%==) SCM SCG = SFalse
+      (%==) SCM SCH = SFalse
+      (%==) SCM SCI = SFalse
+      (%==) SCM SCJ = SFalse
+      (%==) SCM SCK = SFalse
+      (%==) SCM SCL = SFalse
+      (%==) SCM SCM = STrue
+      (%==) SCM SCN = SFalse
+      (%==) SCM SCO = SFalse
+      (%==) SCM SCP = SFalse
+      (%==) SCM SCQ = SFalse
+      (%==) SCM SCR = SFalse
+      (%==) SCM SCS = SFalse
+      (%==) SCM SCT = SFalse
+      (%==) SCM SCU = SFalse
+      (%==) SCM SCV = SFalse
+      (%==) SCM SCW = SFalse
+      (%==) SCM SCX = SFalse
+      (%==) SCM SCY = SFalse
+      (%==) SCM SCZ = SFalse
+      (%==) SCN SCA = SFalse
+      (%==) SCN SCB = SFalse
+      (%==) SCN SCC = SFalse
+      (%==) SCN SCD = SFalse
+      (%==) SCN SCE = SFalse
+      (%==) SCN SCF = SFalse
+      (%==) SCN SCG = SFalse
+      (%==) SCN SCH = SFalse
+      (%==) SCN SCI = SFalse
+      (%==) SCN SCJ = SFalse
+      (%==) SCN SCK = SFalse
+      (%==) SCN SCL = SFalse
+      (%==) SCN SCM = SFalse
+      (%==) SCN SCN = STrue
+      (%==) SCN SCO = SFalse
+      (%==) SCN SCP = SFalse
+      (%==) SCN SCQ = SFalse
+      (%==) SCN SCR = SFalse
+      (%==) SCN SCS = SFalse
+      (%==) SCN SCT = SFalse
+      (%==) SCN SCU = SFalse
+      (%==) SCN SCV = SFalse
+      (%==) SCN SCW = SFalse
+      (%==) SCN SCX = SFalse
+      (%==) SCN SCY = SFalse
+      (%==) SCN SCZ = SFalse
+      (%==) SCO SCA = SFalse
+      (%==) SCO SCB = SFalse
+      (%==) SCO SCC = SFalse
+      (%==) SCO SCD = SFalse
+      (%==) SCO SCE = SFalse
+      (%==) SCO SCF = SFalse
+      (%==) SCO SCG = SFalse
+      (%==) SCO SCH = SFalse
+      (%==) SCO SCI = SFalse
+      (%==) SCO SCJ = SFalse
+      (%==) SCO SCK = SFalse
+      (%==) SCO SCL = SFalse
+      (%==) SCO SCM = SFalse
+      (%==) SCO SCN = SFalse
+      (%==) SCO SCO = STrue
+      (%==) SCO SCP = SFalse
+      (%==) SCO SCQ = SFalse
+      (%==) SCO SCR = SFalse
+      (%==) SCO SCS = SFalse
+      (%==) SCO SCT = SFalse
+      (%==) SCO SCU = SFalse
+      (%==) SCO SCV = SFalse
+      (%==) SCO SCW = SFalse
+      (%==) SCO SCX = SFalse
+      (%==) SCO SCY = SFalse
+      (%==) SCO SCZ = SFalse
+      (%==) SCP SCA = SFalse
+      (%==) SCP SCB = SFalse
+      (%==) SCP SCC = SFalse
+      (%==) SCP SCD = SFalse
+      (%==) SCP SCE = SFalse
+      (%==) SCP SCF = SFalse
+      (%==) SCP SCG = SFalse
+      (%==) SCP SCH = SFalse
+      (%==) SCP SCI = SFalse
+      (%==) SCP SCJ = SFalse
+      (%==) SCP SCK = SFalse
+      (%==) SCP SCL = SFalse
+      (%==) SCP SCM = SFalse
+      (%==) SCP SCN = SFalse
+      (%==) SCP SCO = SFalse
+      (%==) SCP SCP = STrue
+      (%==) SCP SCQ = SFalse
+      (%==) SCP SCR = SFalse
+      (%==) SCP SCS = SFalse
+      (%==) SCP SCT = SFalse
+      (%==) SCP SCU = SFalse
+      (%==) SCP SCV = SFalse
+      (%==) SCP SCW = SFalse
+      (%==) SCP SCX = SFalse
+      (%==) SCP SCY = SFalse
+      (%==) SCP SCZ = SFalse
+      (%==) SCQ SCA = SFalse
+      (%==) SCQ SCB = SFalse
+      (%==) SCQ SCC = SFalse
+      (%==) SCQ SCD = SFalse
+      (%==) SCQ SCE = SFalse
+      (%==) SCQ SCF = SFalse
+      (%==) SCQ SCG = SFalse
+      (%==) SCQ SCH = SFalse
+      (%==) SCQ SCI = SFalse
+      (%==) SCQ SCJ = SFalse
+      (%==) SCQ SCK = SFalse
+      (%==) SCQ SCL = SFalse
+      (%==) SCQ SCM = SFalse
+      (%==) SCQ SCN = SFalse
+      (%==) SCQ SCO = SFalse
+      (%==) SCQ SCP = SFalse
+      (%==) SCQ SCQ = STrue
+      (%==) SCQ SCR = SFalse
+      (%==) SCQ SCS = SFalse
+      (%==) SCQ SCT = SFalse
+      (%==) SCQ SCU = SFalse
+      (%==) SCQ SCV = SFalse
+      (%==) SCQ SCW = SFalse
+      (%==) SCQ SCX = SFalse
+      (%==) SCQ SCY = SFalse
+      (%==) SCQ SCZ = SFalse
+      (%==) SCR SCA = SFalse
+      (%==) SCR SCB = SFalse
+      (%==) SCR SCC = SFalse
+      (%==) SCR SCD = SFalse
+      (%==) SCR SCE = SFalse
+      (%==) SCR SCF = SFalse
+      (%==) SCR SCG = SFalse
+      (%==) SCR SCH = SFalse
+      (%==) SCR SCI = SFalse
+      (%==) SCR SCJ = SFalse
+      (%==) SCR SCK = SFalse
+      (%==) SCR SCL = SFalse
+      (%==) SCR SCM = SFalse
+      (%==) SCR SCN = SFalse
+      (%==) SCR SCO = SFalse
+      (%==) SCR SCP = SFalse
+      (%==) SCR SCQ = SFalse
+      (%==) SCR SCR = STrue
+      (%==) SCR SCS = SFalse
+      (%==) SCR SCT = SFalse
+      (%==) SCR SCU = SFalse
+      (%==) SCR SCV = SFalse
+      (%==) SCR SCW = SFalse
+      (%==) SCR SCX = SFalse
+      (%==) SCR SCY = SFalse
+      (%==) SCR SCZ = SFalse
+      (%==) SCS SCA = SFalse
+      (%==) SCS SCB = SFalse
+      (%==) SCS SCC = SFalse
+      (%==) SCS SCD = SFalse
+      (%==) SCS SCE = SFalse
+      (%==) SCS SCF = SFalse
+      (%==) SCS SCG = SFalse
+      (%==) SCS SCH = SFalse
+      (%==) SCS SCI = SFalse
+      (%==) SCS SCJ = SFalse
+      (%==) SCS SCK = SFalse
+      (%==) SCS SCL = SFalse
+      (%==) SCS SCM = SFalse
+      (%==) SCS SCN = SFalse
+      (%==) SCS SCO = SFalse
+      (%==) SCS SCP = SFalse
+      (%==) SCS SCQ = SFalse
+      (%==) SCS SCR = SFalse
+      (%==) SCS SCS = STrue
+      (%==) SCS SCT = SFalse
+      (%==) SCS SCU = SFalse
+      (%==) SCS SCV = SFalse
+      (%==) SCS SCW = SFalse
+      (%==) SCS SCX = SFalse
+      (%==) SCS SCY = SFalse
+      (%==) SCS SCZ = SFalse
+      (%==) SCT SCA = SFalse
+      (%==) SCT SCB = SFalse
+      (%==) SCT SCC = SFalse
+      (%==) SCT SCD = SFalse
+      (%==) SCT SCE = SFalse
+      (%==) SCT SCF = SFalse
+      (%==) SCT SCG = SFalse
+      (%==) SCT SCH = SFalse
+      (%==) SCT SCI = SFalse
+      (%==) SCT SCJ = SFalse
+      (%==) SCT SCK = SFalse
+      (%==) SCT SCL = SFalse
+      (%==) SCT SCM = SFalse
+      (%==) SCT SCN = SFalse
+      (%==) SCT SCO = SFalse
+      (%==) SCT SCP = SFalse
+      (%==) SCT SCQ = SFalse
+      (%==) SCT SCR = SFalse
+      (%==) SCT SCS = SFalse
+      (%==) SCT SCT = STrue
+      (%==) SCT SCU = SFalse
+      (%==) SCT SCV = SFalse
+      (%==) SCT SCW = SFalse
+      (%==) SCT SCX = SFalse
+      (%==) SCT SCY = SFalse
+      (%==) SCT SCZ = SFalse
+      (%==) SCU SCA = SFalse
+      (%==) SCU SCB = SFalse
+      (%==) SCU SCC = SFalse
+      (%==) SCU SCD = SFalse
+      (%==) SCU SCE = SFalse
+      (%==) SCU SCF = SFalse
+      (%==) SCU SCG = SFalse
+      (%==) SCU SCH = SFalse
+      (%==) SCU SCI = SFalse
+      (%==) SCU SCJ = SFalse
+      (%==) SCU SCK = SFalse
+      (%==) SCU SCL = SFalse
+      (%==) SCU SCM = SFalse
+      (%==) SCU SCN = SFalse
+      (%==) SCU SCO = SFalse
+      (%==) SCU SCP = SFalse
+      (%==) SCU SCQ = SFalse
+      (%==) SCU SCR = SFalse
+      (%==) SCU SCS = SFalse
+      (%==) SCU SCT = SFalse
+      (%==) SCU SCU = STrue
+      (%==) SCU SCV = SFalse
+      (%==) SCU SCW = SFalse
+      (%==) SCU SCX = SFalse
+      (%==) SCU SCY = SFalse
+      (%==) SCU SCZ = SFalse
+      (%==) SCV SCA = SFalse
+      (%==) SCV SCB = SFalse
+      (%==) SCV SCC = SFalse
+      (%==) SCV SCD = SFalse
+      (%==) SCV SCE = SFalse
+      (%==) SCV SCF = SFalse
+      (%==) SCV SCG = SFalse
+      (%==) SCV SCH = SFalse
+      (%==) SCV SCI = SFalse
+      (%==) SCV SCJ = SFalse
+      (%==) SCV SCK = SFalse
+      (%==) SCV SCL = SFalse
+      (%==) SCV SCM = SFalse
+      (%==) SCV SCN = SFalse
+      (%==) SCV SCO = SFalse
+      (%==) SCV SCP = SFalse
+      (%==) SCV SCQ = SFalse
+      (%==) SCV SCR = SFalse
+      (%==) SCV SCS = SFalse
+      (%==) SCV SCT = SFalse
+      (%==) SCV SCU = SFalse
+      (%==) SCV SCV = STrue
+      (%==) SCV SCW = SFalse
+      (%==) SCV SCX = SFalse
+      (%==) SCV SCY = SFalse
+      (%==) SCV SCZ = SFalse
+      (%==) SCW SCA = SFalse
+      (%==) SCW SCB = SFalse
+      (%==) SCW SCC = SFalse
+      (%==) SCW SCD = SFalse
+      (%==) SCW SCE = SFalse
+      (%==) SCW SCF = SFalse
+      (%==) SCW SCG = SFalse
+      (%==) SCW SCH = SFalse
+      (%==) SCW SCI = SFalse
+      (%==) SCW SCJ = SFalse
+      (%==) SCW SCK = SFalse
+      (%==) SCW SCL = SFalse
+      (%==) SCW SCM = SFalse
+      (%==) SCW SCN = SFalse
+      (%==) SCW SCO = SFalse
+      (%==) SCW SCP = SFalse
+      (%==) SCW SCQ = SFalse
+      (%==) SCW SCR = SFalse
+      (%==) SCW SCS = SFalse
+      (%==) SCW SCT = SFalse
+      (%==) SCW SCU = SFalse
+      (%==) SCW SCV = SFalse
+      (%==) SCW SCW = STrue
+      (%==) SCW SCX = SFalse
+      (%==) SCW SCY = SFalse
+      (%==) SCW SCZ = SFalse
+      (%==) SCX SCA = SFalse
+      (%==) SCX SCB = SFalse
+      (%==) SCX SCC = SFalse
+      (%==) SCX SCD = SFalse
+      (%==) SCX SCE = SFalse
+      (%==) SCX SCF = SFalse
+      (%==) SCX SCG = SFalse
+      (%==) SCX SCH = SFalse
+      (%==) SCX SCI = SFalse
+      (%==) SCX SCJ = SFalse
+      (%==) SCX SCK = SFalse
+      (%==) SCX SCL = SFalse
+      (%==) SCX SCM = SFalse
+      (%==) SCX SCN = SFalse
+      (%==) SCX SCO = SFalse
+      (%==) SCX SCP = SFalse
+      (%==) SCX SCQ = SFalse
+      (%==) SCX SCR = SFalse
+      (%==) SCX SCS = SFalse
+      (%==) SCX SCT = SFalse
+      (%==) SCX SCU = SFalse
+      (%==) SCX SCV = SFalse
+      (%==) SCX SCW = SFalse
+      (%==) SCX SCX = STrue
+      (%==) SCX SCY = SFalse
+      (%==) SCX SCZ = SFalse
+      (%==) SCY SCA = SFalse
+      (%==) SCY SCB = SFalse
+      (%==) SCY SCC = SFalse
+      (%==) SCY SCD = SFalse
+      (%==) SCY SCE = SFalse
+      (%==) SCY SCF = SFalse
+      (%==) SCY SCG = SFalse
+      (%==) SCY SCH = SFalse
+      (%==) SCY SCI = SFalse
+      (%==) SCY SCJ = SFalse
+      (%==) SCY SCK = SFalse
+      (%==) SCY SCL = SFalse
+      (%==) SCY SCM = SFalse
+      (%==) SCY SCN = SFalse
+      (%==) SCY SCO = SFalse
+      (%==) SCY SCP = SFalse
+      (%==) SCY SCQ = SFalse
+      (%==) SCY SCR = SFalse
+      (%==) SCY SCS = SFalse
+      (%==) SCY SCT = SFalse
+      (%==) SCY SCU = SFalse
+      (%==) SCY SCV = SFalse
+      (%==) SCY SCW = SFalse
+      (%==) SCY SCX = SFalse
+      (%==) SCY SCY = STrue
+      (%==) SCY SCZ = SFalse
+      (%==) SCZ SCA = SFalse
+      (%==) SCZ SCB = SFalse
+      (%==) SCZ SCC = SFalse
+      (%==) SCZ SCD = SFalse
+      (%==) SCZ SCE = SFalse
+      (%==) SCZ SCF = SFalse
+      (%==) SCZ SCG = SFalse
+      (%==) SCZ SCH = SFalse
+      (%==) SCZ SCI = SFalse
+      (%==) SCZ SCJ = SFalse
+      (%==) SCZ SCK = SFalse
+      (%==) SCZ SCL = SFalse
+      (%==) SCZ SCM = SFalse
+      (%==) SCZ SCN = SFalse
+      (%==) SCZ SCO = SFalse
+      (%==) SCZ SCP = SFalse
+      (%==) SCZ SCQ = SFalse
+      (%==) SCZ SCR = SFalse
+      (%==) SCZ SCS = SFalse
+      (%==) SCZ SCT = SFalse
+      (%==) SCZ SCU = SFalse
+      (%==) SCZ SCV = SFalse
+      (%==) SCZ SCW = SFalse
+      (%==) SCZ SCX = SFalse
+      (%==) SCZ SCY = SFalse
+      (%==) SCZ SCZ = STrue
     instance SDecide AChar where
       (%~) SCA SCA = Proved Refl
       (%~) SCA SCB = Disproved (\ x -> case x of)

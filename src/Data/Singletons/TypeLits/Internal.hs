@@ -27,13 +27,13 @@ module Data.Singletons.TypeLits.Internal (
   Error, sError,
   Undefined, sUndefined,
   KnownNat, natVal, KnownSymbol, symbolVal,
-  (:^), (%:^),
-  (:<>), (%:<>),
+  type (^), (%^),
+  type (<>), (%<>),
 
   -- * Defunctionalization symbols
   ErrorSym0, ErrorSym1, UndefinedSym0,
-  (:^@#@$), (:^@#@$$), (:^@#@$$$),
-  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$)
+  type (^@#@$),  type (^@#@$$),  type (^@#@$$$),
+  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$)
   ) where
 
 import Data.Singletons.Promote
@@ -45,7 +45,8 @@ import Data.Singletons.Prelude.Bool
 import GHC.TypeLits as TL
 import qualified GHC.TypeNats as TN
 import Data.Monoid ((<>))
-import Data.Type.Equality
+import qualified Data.Type.Equality as DTE
+import Data.Type.Equality ((:~:)(..))
 import Data.Proxy ( Proxy(..) )
 import Numeric.Natural (Natural)
 import Unsafe.Coerce
@@ -98,18 +99,18 @@ instance SDecide Symbol where
 
 -- PEq instances
 instance PEq Nat where
-  type (a :: Nat) :== (b :: Nat) = a == b
+  type (a :: Nat) == (b :: Nat) = a DTE.== b
 instance PEq Symbol where
-  type (a :: Symbol) :== (b :: Symbol) = a == b
+  type (a :: Symbol) == (b :: Symbol) = a DTE.== b
 
 -- need SEq instances for TypeLits kinds
 instance SEq Nat where
-  a %:== b
+  a %== b
     | fromSing a == fromSing b    = unsafeCoerce STrue
     | otherwise                   = unsafeCoerce SFalse
 
 instance SEq Symbol where
-  a %:== b
+  a %== b
     | fromSing a == fromSing b    = unsafeCoerce STrue
     | otherwise                   = unsafeCoerce SFalse
 
@@ -168,39 +169,36 @@ $(genDefunSymbols [''Undefined])
 sUndefined :: a
 sUndefined = undefined
 
--- TODO: move this to a better home:
-type a :^ b = a ^ b
-infixr 8 :^
-
 -- | The singleton analogue of '(TL.^)' for 'Nat's.
-(%:^) :: Sing a -> Sing b -> Sing (a :^ b)
-sa %:^ sb =
+(%^) :: Sing a -> Sing b -> Sing (a ^ b)
+sa %^ sb =
   let a = fromSing sa
       b = fromSing sb
       ex = TN.someNatVal (a ^ b)
   in
   case ex of
     SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
-infixr 8 %:^
+infixr 8 %^
 
-$(genDefunSymbols [''(:^)])
+-- Defunctionalization symbols for type-level (^)
+$(genDefunSymbols [''(^)])
 
 -- | The promoted analogue of '(<>)' for 'Symbol's. This uses the special
 -- 'TL.AppendSymbol' type family from "GHC.TypeLits".
-type a :<> b = TL.AppendSymbol a b
-infixr 6 :<>
+type a <> b = TL.AppendSymbol a b
+infixr 6 <>
 
 -- | The singleton analogue of '(<>)' for 'Symbol's.
-(%:<>) :: Sing a -> Sing b -> Sing (a :<> b)
-sa %:<> sb =
+(%<>) :: Sing a -> Sing b -> Sing (a <> b)
+sa %<> sb =
     let a  = fromSing sa
         b  = fromSing sb
         ex = someSymbolVal $ T.unpack $ a <> b
     in case ex of
          SomeSymbol (_ :: Proxy ab) -> unsafeCoerce (SSym :: Sing ab)
-infixr 6 %:<>
+infixr 6 %<>
 
-$(genDefunSymbols [''(:<>)])
+$(genDefunSymbols [''(<>)])
 
 ------------------------------------------------------------
 -- TypeLits singleton non-singleton instances

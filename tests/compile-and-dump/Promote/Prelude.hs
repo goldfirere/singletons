@@ -77,13 +77,13 @@ splitAtTest2a = splitAtTest2b
 splitAtTest2b :: Proxy ( '( '[], '[] ) )
 splitAtTest2b = Proxy
 
-indexingTest1a :: Proxy ('[4, 3, 2, 1] :!! 1)
+indexingTest1a :: Proxy ('[4, 3, 2, 1] !! 1)
 indexingTest1a = Proxy
 
 indexingTest1b :: Proxy 3
 indexingTest1b = indexingTest1a
 
-indexingTest2a :: Proxy ('[] :!! 0)
+indexingTest2a :: Proxy ('[] !! 0)
 indexingTest2a = Proxy
 
 indexingTest2b :: Proxy (Error "Data.Singletons.List.!!: index too large")

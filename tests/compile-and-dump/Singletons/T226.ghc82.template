@@ -1,0 +1,6 @@
+Singletons/T226.hs:0:0:: Splicing declarations
+    singletons [d| class a ~> b |]
+  ======>
+    class (~>) a b
+    class (#~>) (a :: GHC.Types.Type) (b :: GHC.Types.Type)
+    class (%~>) a b

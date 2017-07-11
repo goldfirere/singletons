@@ -15,15 +15,18 @@
 -- Defines and exports promoted and singleton versions of definitions from
 -- GHC.Num.
 --
+-- Be warned that some of the associated type families in the 'PNum' class
+-- (@(+)@, @(-)@, and @(*)@) clash with their counterparts for 'Nat' in the
+-- "GHC.TypeLits" module.
 ----------------------------------------------------------------------------
 
 module Data.Singletons.Prelude.Num (
   PNum(..), SNum(..), Subtract, sSubtract,
 
   -- ** Defunctionalization symbols
-  (:+@#@$), (:+@#@$$), (:+@#@$$$),
-  (:-@#@$), (:-@#@$$), (:-@#@$$$),
-  (:*@#@$), (:*@#@$$), (:*@#@$$$),
+  type (+@#@$), type (+@#@$$), type (+@#@$$$),
+  type (-@#@$), type (-@#@$$), type (-@#@$$$),
+  type (*@#@$), type (*@#@$$), type (*@#@$$$),
   NegateSym0, NegateSym1,
   AbsSym0, AbsSym1,
   SignumSym0, SignumSym1,
@@ -35,8 +38,8 @@ import Data.Singletons.Single
 import Data.Singletons.Internal
 import Data.Singletons.TypeLits.Internal
 import Data.Singletons.Decide
-import GHC.TypeLits
 import qualified GHC.TypeNats as TN
+import GHC.TypeNats (Nat, SomeNat(..), someNatVal)
 import Unsafe.Coerce
 
 $(singletonsOnly [d|
@@ -74,9 +77,9 @@ type family SignumNat (a :: Nat) :: Nat where
   SignumNat x = 1
 
 instance PNum Nat where
-  type a :+ b = a + b
-  type a :- b = a - b
-  type a :* b = a * b
+  type a + b = a TN.+ b
+  type a - b = a TN.- b
+  type a * b = a TN.* b
   type Negate (a :: Nat) = Error "Cannot negate a natural number"
   type Abs (a :: Nat) = a
   type Signum a = SignumNat a
@@ -84,26 +87,26 @@ instance PNum Nat where
 
 -- SNum instance
 instance SNum Nat where
-  sa %:+ sb =
+  sa %+ sb =
     let a = fromSing sa
         b = fromSing sb
-        ex = TN.someNatVal (a + b)
+        ex = someNatVal (a + b)
     in
     case ex of
       SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
 
-  sa %:- sb =
+  sa %- sb =
     let a = fromSing sa
         b = fromSing sb
-        ex = TN.someNatVal (a - b)
+        ex = someNatVal (a - b)
     in
     case ex of
       SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
 
-  sa %:* sb =
+  sa %* sb =
     let a = fromSing sa
         b = fromSing sb
-        ex = TN.someNatVal (a * b)
+        ex = someNatVal (a * b)
     in
     case ex of
       SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)

@@ -5,21 +5,32 @@ next
 ----
 * `Demote Nat` is now `Natural` (from `Numeric.Natural`) instead of `Integer`.
 
+* The naming conventions for infix identifiers (e.g., `(&*)`) have been overhauled.
+  * Infix functions (that are not constructors) are no longer prepended with a
+    colon when promoted to type families. For instance, the promoted version of
+    `(&*)` is now called `(&*)` as well, instead of `(:&*)` as before.
+
+    There is one exception to this rule: the `(.)` function, which is promoted
+    as `(:.)`. The reason is that one cannot write `(.)` at the type level.
+  * Singletons for infix functions are now always prepended with `%` instead of `%:`.
+  * Singletons for infix classes are now always prepended with `%` instead of `:%`.
+  * Singletons for infix datatypes are now always prepended with a `%`.
+
+    (Before, there was an unspoken requirement that singling an infix datatype
+    required that name to begin with a colon, and the singleton type would begin
+    with `:%`. But now that infix datatype names can be things like `(+)`, this
+    requirement became obsolete.)
+
+  The upshot is that most infix names can now be promoted using the same name, and
+  singled by simply prepending the name with `%`.
+
 * The suffix for defunctionalized names of symbolic functions (e.g., `(+)`) has
   changed. Before, the promoted type name would be suffixed with some number of
-  dollar signs (e.g., `(:+$)` and `(:+$$)`) to indicate defunctionalization
+  dollar signs (e.g., `(+$)` and `(+$$)`) to indicate defunctionalization
   symbols. Now, the promoted type name is first suffixed with `@#@` and
-  _then_ followed by dollar signs (e.g., `(:+@#@$)` and `(:+@#@$$)`).
+  _then_ followed by dollar signs (e.g., `(+@#@$)` and `(+@#@$$)`).
   Adopting this conventional eliminates naming conflicts that could arise for
   functions that consisted of solely `$` symbols.
-
-* The promoted/singled/defunctionalized symbols for `($)` have changed:
-
-  * `($)`  is now `(:$)`
-  * `(%$)` is now `(%:$)`
-  * `($$)` is now `($@#@$)`, and `($$$)` is now `($@#@$$)`
-
-  This makes the treatment of `($)` consistent with other symbolic functions.
 
 * The treatment of `undefined` is less magical. Before, all uses of `undefined`
   would be promoted to `GHC.Exts.Any` and singled to `undefined`. Now, there is
@@ -40,10 +51,10 @@ next
 
 * Add `Data.Singletons.Prelude.Void`.
 
-* Add `(:<>)` and `(%:<>)`, the promoted and singled versions of `AppendSymbol`
+* Add `(<>)` and `(%<>)`, the promoted and singled versions of `AppendSymbol`
   from `GHC.TypeLits`.
 
-* Add `(%:^)`, the singleton version of `GHC.TypeLits.^`.
+* Add `(%^)`, the singleton version of `GHC.TypeLits.^`.
 
 * Add `unlines` and `unwords` to `Data.Singletons.Prelude.List`.
 
