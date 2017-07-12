@@ -454,6 +454,13 @@ singClause prom_fun num_arrows bound_names res_ki
                  (foldl apply prom_fun (map DVarT pattern_bound_names)) sBody
   return $ DClause sPats sBody'
 
+-- we need to know where a pattern is to anticipate when
+-- GHC's brain might explode
+data PatternContext = LetBinding
+                    | CaseStatement
+                    | Parameter
+                    deriving Eq
+
 singPat :: Map Name Name   -- from term-level names to type-level names
         -> DPat
         -> SgM DPat
@@ -465,8 +472,8 @@ singPat var_proms (DVarPa name) = do
                 fail "Internal error: unknown variable when singling pattern"
               Just tyname -> return tyname
   return $ DVarPa (singValName name) `DSigPa` (singFamily `DAppT` DVarT tyname)
-singPat var_proms (DConPa name pats) = do
-  pats' <- mapM (singPat var_proms) pats
+singPat var_proms patCxt (DConPa name pats) = do
+  pats' <- mapM (singPat var_proms patCxt) pats
   return $ DConPa (singDataConName name) pats'
 singPat var_proms (DTildePa pat) = do
   qReportWarning
