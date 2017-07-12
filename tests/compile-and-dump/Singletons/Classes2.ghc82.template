@@ -50,7 +50,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789876543210Sym0KindInference
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
     instance PMyOrd NatFoo where
-      type Mycompare (a :: NatFoo) (a :: NatFoo) = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     data instance Sing (z :: NatFoo)
       where
         SZeroFoo :: Sing ZeroFoo

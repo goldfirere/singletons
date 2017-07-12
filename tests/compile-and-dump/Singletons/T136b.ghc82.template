@@ -38,7 +38,7 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
         Meth_0123456789876543210Sym0KindInference
     type instance Apply Meth_0123456789876543210Sym0 l = Meth_0123456789876543210 l
     instance PC Bool where
-      type Meth (a :: Bool) = Apply Meth_0123456789876543210Sym0 a
+      type Meth a = Apply Meth_0123456789876543210Sym0 a
     instance SC Bool where
       sMeth ::
         forall (t :: Bool).

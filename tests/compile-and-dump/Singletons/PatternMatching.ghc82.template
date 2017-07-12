@@ -80,7 +80,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow (Pair a b) where
-      type ShowsPrec (a :: GHC.Types.Nat) (a :: Pair a b) (a :: Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+      type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     sAList :: Sing AListSym0
     sTuple :: Sing TupleSym0
     sComplex :: Sing ComplexSym0

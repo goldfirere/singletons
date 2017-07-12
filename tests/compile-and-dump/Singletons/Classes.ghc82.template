@@ -194,7 +194,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789876543210Sym0KindInference
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
     instance PMyOrd Nat where
-      type Mycompare (a :: Nat) (a :: Nat) = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     type family Mycompare_0123456789876543210 (a :: ()) (a :: ()) :: Ordering where
       Mycompare_0123456789876543210 _ a_0123456789876543210 = Apply (Apply ConstSym0 EQSym0) a_0123456789876543210
     type Mycompare_0123456789876543210Sym2 (t :: ()) (t :: ()) =
@@ -219,7 +219,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789876543210Sym0KindInference
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
     instance PMyOrd () where
-      type Mycompare (a :: ()) (a :: ()) = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     type family Mycompare_0123456789876543210 (a :: Foo) (a :: Foo) :: Ordering where
       Mycompare_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply FooCompareSym0 a_0123456789876543210) a_0123456789876543210
     type Mycompare_0123456789876543210Sym2 (t :: Foo) (t :: Foo) =
@@ -244,7 +244,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789876543210Sym0KindInference
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
     instance PMyOrd Foo where
-      type Mycompare (a :: Foo) (a :: Foo) = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     type family TFHelper_0123456789876543210 (a :: Foo2) (a :: Foo2) :: Bool where
       TFHelper_0123456789876543210 F F = TrueSym0
       TFHelper_0123456789876543210 G G = TrueSym0
@@ -272,7 +272,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         TFHelper_0123456789876543210Sym0KindInference
     type instance Apply TFHelper_0123456789876543210Sym0 l = TFHelper_0123456789876543210Sym1 l
     instance PEq Foo2 where
-      type (:==) (a :: Foo2) (a :: Foo2) = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
+      type (:==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     infix 4 %:<=>
     sFooCompare ::
       forall (t :: Foo) (t :: Foo).
@@ -420,7 +420,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789876543210Sym0KindInference
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
     instance PMyOrd Foo2 where
-      type Mycompare (a :: Foo2) (a :: Foo2) = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     type family Compare_0123456789876543210 (a :: Foo2) (a :: Foo2) :: Ordering where
       Compare_0123456789876543210 F F = EQSym0
       Compare_0123456789876543210 F _ = LTSym0
@@ -447,7 +447,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd Foo2 where
-      type Compare (a :: Foo2) (a :: Foo2) = Apply (Apply Compare_0123456789876543210Sym0 a) a
+      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
 Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| data Nat' = Zero' | Succ' Nat'
@@ -500,7 +500,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Mycompare_0123456789876543210Sym0KindInference
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
     instance PMyOrd Nat' where
-      type Mycompare (a :: Nat') (a :: Nat') = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     data instance Sing (z :: Nat')
       where
         SZero' :: Sing Zero'

@@ -91,7 +91,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd Type where
-      type Compare (a :: Type) (a :: Type) = Apply (Apply Compare_0123456789876543210Sym0 a) a
+      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     instance (SOrd Type, SOrd Nat) => SOrd Type where
       sCompare ::
         forall (t1 :: Type) (t2 :: Type).

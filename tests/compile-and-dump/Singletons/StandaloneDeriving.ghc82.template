@@ -68,7 +68,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd (T a ()) where
-      type Compare (a :: T a ()) (a :: T a ()) = Apply (Apply Compare_0123456789876543210Sym0 a) a
+      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: T a ()) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 p_0123456789876543210 ((:*:) argL_0123456789876543210 argR_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (:>@#@$) p_0123456789876543210) (FromInteger 6))) (Apply (Apply (:.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argL_0123456789876543210)) (Apply (Apply (:.@#@$) (Apply ShowStringSym0 " :*: ")) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argR_0123456789876543210)))) a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym3 (t :: GHC.Types.Nat) (t :: T a0123456789876543210 ()) (t :: Symbol) =
@@ -104,7 +104,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow (T a ()) where
-      type ShowsPrec (a :: GHC.Types.Nat) (a :: T a ()) (a :: Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+      type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type family Compare_0123456789876543210 (a :: S) (a :: S) :: Ordering where
       Compare_0123456789876543210 S1 S1 = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
       Compare_0123456789876543210 S2 S2 = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
@@ -132,7 +132,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd S where
-      type Compare (a :: S) (a :: S) = Apply (Apply Compare_0123456789876543210Sym0 a) a
+      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: S) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ S1 a_0123456789876543210 = Apply (Apply ShowStringSym0 "S1") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ S2 a_0123456789876543210 = Apply (Apply ShowStringSym0 "S2") a_0123456789876543210
@@ -169,7 +169,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow S where
-      type ShowsPrec (a :: GHC.Types.Nat) (a :: S) (a :: Symbol) = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+      type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type family MinBound_0123456789876543210 :: S where
       = S1Sym0
     type MinBound_0123456789876543210Sym0 =
@@ -215,8 +215,8 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         FromEnum_0123456789876543210Sym0KindInference
     type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
     instance PEnum S where
-      type ToEnum (a :: GHC.Types.Nat) = Apply ToEnum_0123456789876543210Sym0 a
-      type FromEnum (a :: S) = Apply FromEnum_0123456789876543210Sym0 a
+      type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
+      type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
     type family Equals_0123456789876543210 (a :: T a ()) (b :: T a ()) :: Bool where
       Equals_0123456789876543210 ((:*:) a a) ((:*:) b b) = (:&&) ((:==) a b) ((:==) a b)
       Equals_0123456789876543210 (_ :: T a ()) (_ :: T a ()) = FalseSym0
