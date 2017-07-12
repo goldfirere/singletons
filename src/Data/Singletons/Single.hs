@@ -461,13 +461,6 @@ data PatternContext = LetBinding
                     | Parameter
                     deriving Eq
 
-checkIfBrainWillExplode :: Monad m => PatternContext -> m ()
-checkIfBrainWillExplode CaseStatement = return ()
-checkIfBrainWillExplode Parameter = return ()
-checkIfBrainWillExplode _ =
-  fail $ "Can't use a singleton pattern outside of a case-statement or\n" ++
-         "do expression: GHC's brain will explode if you try. (Do try it!)"
-
 singPat :: Map Name Name   -- from term-level names to type-level names
         -> PatternContext
         -> DPat
@@ -481,7 +474,6 @@ singPat var_proms _patCxt (DVarPa name) = do
               Just tyname -> return tyname
   return $ DVarPa (singValName name) `DSigPa` (singFamily `DAppT` DVarT tyname)
 singPat var_proms patCxt (DConPa name pats) = do
-  checkIfBrainWillExplode patCxt
   pats' <- mapM (singPat var_proms patCxt) pats
   return $ DConPa (singDataConName name) pats'
 singPat var_proms patCxt (DTildePa pat) = do
