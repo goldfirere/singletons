@@ -334,15 +334,9 @@ promoteInstanceDec meth_sigs
             Just (DTyConI (DClassD _ _ tvbs _ _) _) -> return (map extractTvbName tvbs)
             _ -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
 
--- promoteMethod needs to substitute in a method's kind because GHC does not do
--- enough kind checking of associated types. See GHC#9063. When that bug is fixed,
--- the substitution code can be removed.
--- Bug is fixed, but only in HEAD, naturally. When we stop supporting 7.8,
--- this can be rewritten more cleanly, I imagine.
--- UPDATE: GHC 7.10.2 didn't fully solve GHC#9063. Urgh.
-
 promoteMethod :: Maybe (Map Name DKind)
                     -- ^ instantiations for class tyvars (Nothing for default decls)
+                    --   See Note [Promoted class method kinds]
               -> Map Name DType     -- method types
               -> (Name, ULetDecRHS)
               -> PrM (DDec, ALetDecRHS, DType)
@@ -352,18 +346,31 @@ promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
   ((_, _, _, eqns), _defuns, ann_rhs)
     <- promoteLetDecRHS (Just (arg_kis, res_ki)) sigs_map noPrefix meth_name meth_rhs
   meth_arg_tvs <- mapM (const $ qNewName "a") arg_kis
-  let do_subst      = maybe id substKind m_subst
+  let -- If we're dealing with an associated type family instance, substitute
+      -- in the kind of the instance for better kind information in the RHS
+      -- helper function. If we're dealing with a default family implementation
+      -- (m_subst = Nothing), there's no need for a substitution.
+      -- See Note [Promoted class method kinds]
+      do_subst      = maybe id substKind m_subst
       meth_arg_kis' = map do_subst arg_kis
       meth_res_ki'  = do_subst res_ki
       helperNameBase = case nameBase proName of
                          first:_ | not (isHsLetter first) -> "TFHelper"
                          alpha                            -> alpha
-      family_args
-    -- GHC 8 requires bare tyvars to the left of a type family default
-        | Nothing <- m_subst
-        = map DVarT meth_arg_tvs
-        | otherwise
-        = zipWith (DSigT . DVarT) meth_arg_tvs meth_arg_kis'
+
+      -- family_args are the type variables in a promoted class's
+      -- associated type family instance (or default implementation), e.g.,
+      --
+      --   class C k where
+      --     type T (a :: k) (b :: Bool)
+      --     type T a b = THelper1 a b        -- family_args = [a, b]
+      --
+      --   instance C Bool where
+      --     type T a b = THelper2 a b        -- family_args = [a, b]
+      --
+      -- We could annotate these variables with explicit kinds, but it's not
+      -- strictly necessary, as kind inference can figure them out just as well.
+      family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
   emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
                                   helperName
@@ -395,6 +402,38 @@ promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
 
     default_to_star Nothing  = DStarT
     default_to_star (Just k) = k
+
+{-
+Note [Promoted class method kinds]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Consider this example of a type class (and instance):
+
+  class C a where
+    m :: a -> Bool -> Bool
+    m _ x = x
+
+  instance C [a] where
+    m l _ = null l
+
+The promoted version of these declarations would be:
+
+  class PC a where
+    type M (x :: a) (y :: Bool) (z :: Bool)
+    type M x y z = MHelper1 x y z
+
+  instance PC [a] where
+    type M x y z = MHelper2 x y z
+
+  type family MHelper1 (x :: a)   (y :: Bool) (z :: Bool) where ...
+  type family MHelper2 (x :: [a]) (y :: Bool) (z :: Bool) where ...
+
+Getting the kind signature for MHelper1 (the promoted default implementation of
+M) is quite simple, as it corresponds exactly to the kind of M. We might even
+choose to make that the kind of MHelper2, but then it would be overly general
+(and more difficult to find in -ddump-splices output). For this reason, we
+substitute in the kinds of the instance itself to determine the kinds of
+promoted method implementations like MHelper2.
+-}
 
 promoteLetDecEnv :: (String, String) -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env

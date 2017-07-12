@@ -32,7 +32,7 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd Empty where
-      type Compare (a :: Empty) (a :: Empty) = Apply (Apply Compare_0123456789876543210Sym0 a) a
+      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Equals_0123456789876543210 (a :: Empty) (b :: Empty) :: Bool where
       Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = TrueSym0
     instance PEq Empty where
