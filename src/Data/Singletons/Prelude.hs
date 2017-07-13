@@ -74,6 +74,11 @@ module Data.Singletons.Prelude (
   Concat, sConcat, ConcatMap, sConcatMap,
   -- *** Scans
   Scanl, sScanl, Scanl1, sScanl1, Scanr, sScanr, Scanr1, sScanr1,
+  -- *** Infinite lists
+  Replicate, sReplicate,
+  -- ** Sublists
+  Take, sTake, Drop, sDrop, SplitAt, sSplitAt, TakeWhile, sTakeWhile,
+  Span, sSpan, Break, sBreak,
   -- ** Searching lists
   Elem, sElem, NotElem, sNotElem, Lookup, sLookup,
   -- ** Zipping and unzipping lists
@@ -156,6 +161,17 @@ module Data.Singletons.Prelude (
   Scanl1Sym0, Scanl1Sym1, Scanl1Sym2,
   ScanrSym0, ScanrSym1, ScanrSym2, ScanrSym3,
   Scanr1Sym0, Scanr1Sym1, Scanr1Sym2,
+
+  ReplicateSym0, ReplicateSym1, ReplicateSym2,
+
+  TakeSym0, TakeSym1, TakeSym2,
+  DropSym0, DropSym1, DropSym2,
+  SplitAtSym0, SplitAtSym1, SplitAtSym2,
+  TakeWhileSym0, TakeWhileSym1, TakeWhileSym2,
+  DropWhileSym0, DropWhileSym1, DropWhileSym2,
+  DropWhileEndSym0, DropWhileEndSym1, DropWhileEndSym2,
+  SpanSym0, SpanSym1, SpanSym2,
+  BreakSym0, BreakSym1, BreakSym2,
 
   ElemSym0, ElemSym1, ElemSym2,
   NotElemSym0, NotElemSym1, NotElemSym2,
