@@ -181,6 +181,7 @@ sa %:^ sb =
   case ex of
     Just (SomeNat (_ :: Proxy ab)) -> unsafeCoerce (SNat :: Sing ab)
     Nothing                        -> error "Two naturals exponentiated to a negative?"
+infixr 8 %:^
 
 $(genDefunSymbols [''(:^)])
 
