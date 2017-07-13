@@ -54,6 +54,7 @@ module Data.Singletons.Prelude (
 
   -- * Singletons numbers
   module Data.Singletons.Prelude.Num,
+  (:^), (%:^),
 
   -- * Singleton 'Show'
   PShow(..), SShow(..), ShowS, SChar, (:<>), (%:<>),
@@ -124,6 +125,8 @@ module Data.Singletons.Prelude (
   UncurrySym0, UncurrySym1, UncurrySym2,
 
   ErrorSym0, ErrorSym1, UndefinedSym0,
+
+  (:^@#@$), (:^@#@$$), (:^@#@$$$),
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,

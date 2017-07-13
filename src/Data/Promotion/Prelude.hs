@@ -101,7 +101,7 @@ module Data.Promotion.Prelude (
 
   ErrorSym0, ErrorSym1, UndefinedSym0,
 
-  (:^@#@$), (:^@#@$$),
+  (:^@#@$), (:^@#@$$), (:^@#@$$$),
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,

@@ -41,6 +41,8 @@ next
 * Add `(:<>)` and `(%:<>)`, the promoted and singled versions of `AppendSymbol`
   from `GHC.TypeLits`.
 
+* Add `(%:^)`, the singleton version of `GHC.TypeLits.^`.
+
 * Add `unlines` and `unwords` to `Data.Singletons.Prelude.List`.
 
 * Add promoted and singled versions of `Show`, including `deriving` support.
