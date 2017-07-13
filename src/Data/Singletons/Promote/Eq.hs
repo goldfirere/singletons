@@ -28,13 +28,16 @@ mkEqTypeInstance kind cons = do
       branches | null cons = [null_branch]
                | otherwise = true_branches ++ [false_branch]
       closedFam = DClosedTypeFamilyD (DTypeFamilyHead helperName
+                                                        -- We opt to give explicit kinds for the tyvars
+                                                        -- in the helper type family.
+                                                        -- See Note [Promoted class method kinds]
+                                                        -- in Data.Singletons.Promote.
                                                       [ DKindedTV aName kind
                                                       , DKindedTV bName kind ]
                                                       (DKindSig boolKi)
                                                       Nothing)
                                      branches
-      eqInst = DTySynInstD tyEqName (DTySynEqn [ DSigT (DVarT aName) kind
-                                               , DSigT (DVarT bName) kind ]
+      eqInst = DTySynInstD tyEqName (DTySynEqn [DVarT aName, DVarT bName]
                                              (foldType (DConT helperName)
                                                        [DVarT aName, DVarT bName]))
       inst = DInstanceD Nothing [] ((DConT $ promoteClassName eqName) `DAppT`

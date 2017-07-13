@@ -104,7 +104,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
       Equals_0123456789876543210 (_ :: Nat) (_ :: Nat) = FalseSym0
     instance PEq Nat where
-      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789876543210 a b
+      type (:==) a b = Equals_0123456789876543210 a b
     sPred ::
       forall (t :: Nat). Sing t -> Sing (Apply PredSym0 t :: Nat)
     sPlus ::

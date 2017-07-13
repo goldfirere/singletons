@@ -116,7 +116,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       Equals_0123456789876543210 T T = TrueSym0
       Equals_0123456789876543210 (_ :: T) (_ :: T) = FalseSym0
     instance PEq T where
-      type (:==) (a :: T) (b :: T) = Equals_0123456789876543210 a b
+      type (:==) a b = Equals_0123456789876543210 a b
     data instance Sing (z :: T) where ST :: Sing T
     type ST = (Sing :: T -> GHC.Types.Type)
     instance SingKind T where
