@@ -25,7 +25,7 @@ module Data.Singletons.TypeLits (
   KnownNat, natVal,
   KnownSymbol, symbolVal,
 
-  (:^),
+  (:^), (%:^),
   (:<>), (%:<>),
 
   -- * Defunctionalization symbols

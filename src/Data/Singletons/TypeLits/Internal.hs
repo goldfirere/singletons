@@ -27,7 +27,7 @@ module Data.Singletons.TypeLits.Internal (
   Error, sError,
   Undefined, sUndefined,
   KnownNat, natVal, KnownSymbol, symbolVal,
-  (:^),
+  (:^), (%:^),
   (:<>), (%:<>),
 
   -- * Defunctionalization symbols
@@ -170,6 +170,18 @@ sUndefined = undefined
 -- TODO: move this to a better home:
 type a :^ b = a ^ b
 infixr 8 :^
+
+-- | The singleton analogue of '(TL.^)' for 'Nat's.
+(%:^) :: Sing a -> Sing b -> Sing (a :^ b)
+sa %:^ sb =
+  let a = fromSing sa
+      b = fromSing sb
+      ex = someNatVal (a ^ b)
+  in
+  case ex of
+    Just (SomeNat (_ :: Proxy ab)) -> unsafeCoerce (SNat :: Sing ab)
+    Nothing                        -> error "Two naturals exponentiated to a negative?"
+
 $(genDefunSymbols [''(:^)])
 
 -- | The promoted analogue of '(<>)' for 'Symbol's. This uses the special
