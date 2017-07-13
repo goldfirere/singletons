@@ -27,7 +27,7 @@ module Data.Singletons.TypeLits.Internal (
   Error, sError,
   Undefined, sUndefined,
   KnownNat, natVal, KnownSymbol, symbolVal,
-  (:^),
+  (:^), (%:^),
   (:<>), (%:<>),
 
   -- * Defunctionalization symbols
@@ -176,11 +176,11 @@ infixr 8 :^
 sa %:^ sb =
   let a = fromSing sa
       b = fromSing sb
-      ex = TN.someNatVal (a ^ b)
+      ex = someNatVal (a ^ b)
   in
   case ex of
-    SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
-infixr 8 %:^
+    Just (SomeNat (_ :: Proxy ab)) -> unsafeCoerce (SNat :: Sing ab)
+    Nothing                        -> error "Two naturals exponentiated to a negative?"
 
 $(genDefunSymbols [''(:^)])
 
