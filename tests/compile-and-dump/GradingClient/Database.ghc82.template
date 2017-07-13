@@ -49,7 +49,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
       Equals_0123456789876543210 (_ :: Nat) (_ :: Nat) = FalseSym0
     instance PEq Nat where
-      type (:==) (a :: Nat) (b :: Nat) = Equals_0123456789876543210 a b
+      type (:==) a b = Equals_0123456789876543210 a b
     data instance Sing (z :: Nat)
       where
         SZero :: Sing Zero
@@ -530,7 +530,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (VEC a a) (VEC b b) = (:&&) ((:==) a b) ((:==) a b)
       Equals_0123456789876543210 (_ :: U) (_ :: U) = FalseSym0
     instance PEq U where
-      type (:==) (a :: U) (b :: U) = Equals_0123456789876543210 a b
+      type (:==) a b = Equals_0123456789876543210 a b
     type family Equals_0123456789876543210 (a :: AChar) (b :: AChar) :: Bool where
       Equals_0123456789876543210 CA CA = TrueSym0
       Equals_0123456789876543210 CB CB = TrueSym0
@@ -560,7 +560,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 CZ CZ = TrueSym0
       Equals_0123456789876543210 (_ :: AChar) (_ :: AChar) = FalseSym0
     instance PEq AChar where
-      type (:==) (a :: AChar) (b :: AChar) = Equals_0123456789876543210 a b
+      type (:==) a b = Equals_0123456789876543210 a b
     sLookup ::
       forall (t :: [AChar]) (t :: Schema).
       Sing t -> Sing t -> Sing (Apply (Apply LookupSym0 t) t :: U)
