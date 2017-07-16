@@ -494,6 +494,16 @@ needs a little help around kind inference here. See
 [this pull request](https://github.com/goldfirere/singletons/pull/171) for more
 background.
 
+`singletons` is slightly more conservative with respect to `deriving` than GHC is.
+The stock classes listed above (`Eq`, `Ord`, `Show`, `Bounded`, and `Enum`) are
+the only ones that `singletons` will derive without an explicit deriving strategy.
+To do anything more exotic, one must explicitly indicate one's intentions by
+using the `DerivingStrategies` extension.
+
+`singletons` fully supports the `anyclass` strategy as well as the `stock` strategy
+(at least, for the classes listed above). `singletons` does not support the
+`newtype` strategy, as there is not an equivalent of `coerce` at the type level.
+
 The following constructs are supported for promotion but not singleton generation:
 
 * scoped type variables
