@@ -444,7 +444,7 @@ singClause prom_fun num_arrows bound_names res_ki
     fail $ "Function being promoted to " ++ (pprint (typeToTH prom_fun)) ++
            " has too many arguments."
 
-  sPats <- mapM (singPat (Map.fromList var_proms) Parameter) pats
+  sPats <- mapM (singPat (Map.fromList var_proms)) pats
   sBody <- singExp exp res_ki
     -- when calling unSingFun, the promoted pats aren't in scope, so we use the
     -- bound_names instead
@@ -454,37 +454,29 @@ singClause prom_fun num_arrows bound_names res_ki
                  (foldl apply prom_fun (map DVarT pattern_bound_names)) sBody
   return $ DClause sPats sBody'
 
--- we need to know where a pattern is to anticipate when
--- GHC's brain might explode
-data PatternContext = LetBinding
-                    | CaseStatement
-                    | Parameter
-                    deriving Eq
-
 singPat :: Map Name Name   -- from term-level names to type-level names
-        -> PatternContext
         -> DPat
         -> SgM DPat
-singPat _var_proms _patCxt (DLitPa _lit) =
+singPat _var_proms (DLitPa _lit) =
   fail "Singling of literal patterns not yet supported"
-singPat var_proms _patCxt (DVarPa name) = do
+singPat var_proms (DVarPa name) = do
   tyname <- case Map.lookup name var_proms of
               Nothing     ->
                 fail "Internal error: unknown variable when singling pattern"
               Just tyname -> return tyname
   return $ DVarPa (singValName name) `DSigPa` (singFamily `DAppT` DVarT tyname)
-singPat var_proms patCxt (DConPa name pats) = do
-  pats' <- mapM (singPat var_proms patCxt) pats
+singPat var_proms (DConPa name pats) = do
+  pats' <- mapM (singPat var_proms) pats
   return $ DConPa (singDataConName name) pats'
-singPat var_proms patCxt (DTildePa pat) = do
+singPat var_proms (DTildePa pat) = do
   qReportWarning
     "Lazy pattern converted into regular pattern during singleton generation."
-  singPat var_proms patCxt pat
-singPat var_proms patCxt (DBangPa pat) = do
-  pat' <- singPat var_proms patCxt pat
+  singPat var_proms pat
+singPat var_proms (DBangPa pat) = do
+  pat' <- singPat var_proms pat
   return $ DBangPa pat'
-singPat _var_proms _patCxt (DSigPa _pat _ty) = error "TODO: Handle SigPa. See Issue #183."
-singPat _var_proms _patCxt DWildPa = return DWildPa
+singPat _var_proms (DSigPa _pat _ty) = error "TODO: Handle SigPa. See Issue #183."
+singPat _var_proms DWildPa = return DWildPa
 
 
 -- Note [Annotate case return type]
@@ -597,7 +589,7 @@ isException (DStaticE e)          = isException e
 singMatch :: Maybe DKind  -- ^ the result kind, if known
           -> ADMatch -> SgM DMatch
 singMatch res_ki (ADMatch var_proms pat exp) = do
-  sPat <- singPat (Map.fromList var_proms) CaseStatement pat
+  sPat <- singPat (Map.fromList var_proms) pat
   sExp <- singExp exp res_ki
   return $ DMatch sPat sExp
 
