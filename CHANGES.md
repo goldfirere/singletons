@@ -57,6 +57,30 @@ next
   leverage the `SEq`, `SOrd`, `SNum`, `SEnum`, and `SBounded` instances,
   respectively, for the underlying `Sing`.
 
+* Rework the `Sing (a :: *)` instance in `Data.Singletons.TypeRepStar` such
+  that it now uses type-indexed `Typeable`. The new `Sing` instance is now:
+
+  ```haskell
+  newtype instance Sing (a :: *) where
+    STypeRep :: TypeRep a -> Sing a
+  ```
+
+  Accordingly, the `SingKind` instance has also been changed:
+
+  ```haskell
+  instance SingKind Type where
+    type Demote Type = SomeTypeRepStar
+    ...
+
+  data SomeTypeRepStar where
+    SomeTypeRepStar :: forall (a :: *). !(TypeRep a) -> SomeTypeRepStar
+  ```
+
+  Aside from cleaning up some implementation details, this change assures
+  that `toSing` can only be called on `TypeRep`s whose kind is of kind `*`.
+  The previous implementation did not enforce this, which could lead to
+  segfaults if used carelessly.
+
 2.3.1
 -----
 * Fix the Haddock build, thanks to @christiaanb.
