@@ -51,6 +51,8 @@ next
 
 * Permit standalone `deriving` declarations.
 
+* Permit `DeriveAnyClass` (through the `anyclass` keyword of `DerivingStrategies`)
+
 * Add a value-level `(@@)`, which is a synonym for `applySing`.
 
 * Add `Eq`, `Ord`, `Num`, `Enum`, and `Bounded` instances for `SomeSing`, which
