@@ -239,7 +239,13 @@ ravel :: [DType] -> DType -> DType
 ravel []    res  = res
 ravel (h:t) res = DAppT (DAppT DArrowT h) (ravel t res)
 
-
+-- | Convert a 'DPred' to a 'DType'.
+predToType :: DPred -> DType
+predToType (DAppPr p t) = DAppT (predToType p) t
+predToType (DSigPr p k) = DSigT (predToType p) k
+predToType (DVarPr n)   = DVarT n
+predToType (DConPr n)   = DConT n
+predToType DWildCardPr  = DWildCardT
 
 -- count the number of arguments in a type
 countArgs :: DType -> Int
