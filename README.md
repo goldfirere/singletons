@@ -585,10 +585,12 @@ experiment with this feature have two options:
 making `*` the promoted version of `TypeRep`, as `TypeRep` is currently implemented.
 The singleton associated with `TypeRep` has one constructor:
 
+    ```haskell
     newtype instance Sing (a :: *) where
       STypeRep :: TypeRep a -> Sing a
+    ```
 
-Thus, a `TypeRep` is stored in the singleton constructor. However,
+   Thus, a `TypeRep` is stored in the singleton constructor. However,
 any datatypes that store `TypeRep`s will not generally work as expected; the
 built-in promotion mechanism will not promote `TypeRep` to `*`.
 
