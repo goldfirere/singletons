@@ -569,7 +569,7 @@ A promoted and singled `Show` instance is provided for `Symbol`, but it is only
 a crude approximation of the value-level `Show` instance for `String`. On the
 value level, showing `String`s escapes special characters (such as double
 quotes), but implementing this requires pattern-matching on character literals,
-something which is currently impossible at the level. As a consequence, the
+something which is currently impossible at the type level. As a consequence, the
 type-level `Show` instance for `Symbol`s does not do any character escaping.
 
 Support for `*`
