@@ -535,7 +535,7 @@ Why are these out of reach? The first two depend on monads, which mention a
 higher-kinded type variable. GHC did not support higher-sorted kind variables,
 which are be necessary to promote/singletonize monads, and `singletons` has
 not be rewritten to accommodate this new ability. [This bug
-report](https://github.com/goldfirere/singletons/issues/37) is a feature request
+report](https://github.com/goldfirere/singletons/issues/184) is a feature request
 looking for support for these constructs.
 
 Arithmetic sequences are defined using `Enum` typeclass, which uses infinite
