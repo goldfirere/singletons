@@ -92,7 +92,7 @@ class SingI (a :: k) where
 class SingKind k where
   -- | Get a base type from the promoted kind. For example,
   -- @Demote Bool@ will be the type @Bool@. Rarely, the type and kind do not
-  -- match. For example, @Demote Nat@ is @Integer@.
+  -- match. For example, @Demote Nat@ is @Natural@.
   type Demote k = (r :: *) | r -> k
 
   -- | Convert a singleton to its unrefined version.

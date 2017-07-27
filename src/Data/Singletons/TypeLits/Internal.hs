@@ -43,9 +43,11 @@ import Data.Singletons.Prelude.Ord
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
 import GHC.TypeLits as TL
+import qualified GHC.TypeNats as TN
 import Data.Monoid ((<>))
 import Data.Type.Equality
 import Data.Proxy ( Proxy(..) )
+import Numeric.Natural (Natural)
 import Unsafe.Coerce
 
 import qualified Data.Text as T
@@ -61,11 +63,10 @@ instance KnownNat n => SingI n where
   sing = SNat
 
 instance SingKind Nat where
-  type Demote Nat = Integer
-  fromSing (SNat :: Sing n) = natVal (Proxy :: Proxy n)
-  toSing n = case someNatVal n of
-               Just (SomeNat (_ :: Proxy n)) -> SomeSing (SNat :: Sing n)
-               Nothing -> error "Negative singleton nat"
+  type Demote Nat = Natural
+  fromSing (SNat :: Sing n) = TN.natVal (Proxy :: Proxy n)
+  toSing n = case TN.someNatVal n of
+               SomeNat (_ :: Proxy n) -> SomeSing (SNat :: Sing n)
 
 data instance Sing (n :: Symbol) = KnownSymbol n => SSym
 
@@ -81,7 +82,7 @@ instance SingKind Symbol where
 -- SDecide instances:
 instance SDecide Nat where
   (SNat :: Sing n) %~ (SNat :: Sing m)
-    | natVal (Proxy :: Proxy n) == natVal (Proxy :: Proxy m)
+    | TN.natVal (Proxy :: Proxy n) == TN.natVal (Proxy :: Proxy m)
     = Proved $ unsafeCoerce Refl
     | otherwise
     = Disproved (\_ -> error errStr)
@@ -176,11 +177,10 @@ infixr 8 :^
 sa %:^ sb =
   let a = fromSing sa
       b = fromSing sb
-      ex = someNatVal (a ^ b)
+      ex = TN.someNatVal (a ^ b)
   in
   case ex of
-    Just (SomeNat (_ :: Proxy ab)) -> unsafeCoerce (SNat :: Sing ab)
-    Nothing                        -> error "Two naturals exponentiated to a negative?"
+    SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
 infixr 8 %:^
 
 $(genDefunSymbols [''(:^)])
@@ -212,7 +212,7 @@ instance Show (SNat n) where
   showsPrec p n@SNat
     = showParen (p > atPrec)
       ( showString "SNat @"
-        . showsPrec (atPrec + 1) (natVal n)
+        . showsPrec (atPrec + 1) (TN.natVal n)
       )
     where atPrec = 10
 

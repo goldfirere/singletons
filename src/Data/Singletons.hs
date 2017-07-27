@@ -101,4 +101,4 @@ instance SNum k => Num (SomeSing k) where
   negate (SomeSing a) = SomeSing (sNegate a)
   abs    (SomeSing a) = SomeSing (sAbs a)
   signum (SomeSing a) = SomeSing (sSignum a)
-  fromInteger n = withSomeSing n (SomeSing . sFromInteger)
+  fromInteger n = withSomeSing (fromIntegral n) (SomeSing . sFromInteger)
