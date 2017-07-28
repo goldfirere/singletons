@@ -1,7 +1,8 @@
 {-# LANGUAGE MagicHash, RankNTypes, PolyKinds, GADTs, DataKinds,
              FlexibleContexts, FlexibleInstances,
              TypeFamilies, TypeOperators, TypeFamilyDependencies,
-             UndecidableInstances, TypeInType, ConstraintKinds #-}
+             UndecidableInstances, TypeInType, ConstraintKinds,
+             ScopedTypeVariables, TypeApplications #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -89,6 +90,13 @@ class SingI (a :: k) where
 -- | The 'SingKind' class is a /kind/ class. It classifies all kinds
 -- for which singletons are defined. The class supports converting between a singleton
 -- type and the base (unrefined) type which it is built from.
+--
+-- For a 'SingKind' instance to be well behaved, it should obey the following laws:
+--
+-- @
+-- 'toSing' . 'fromSing' ≡ 'SomeSing'
+-- (\\x -> 'withSomeSing' x 'fromSing') ≡ 'id'
+-- @
 class SingKind k where
   -- | Get a base type from the promoted kind. For example,
   -- @Demote Bool@ will be the type @Bool@. Rarely, the type and kind do not
@@ -199,10 +207,28 @@ newtype instance Sing (f :: k1 ~> k2) =
 (@@) :: forall (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)
 (@@) = applySing
 
+-- | Note that this instance's 'toSing' implementation crucially relies on the fact
+-- that the 'SingKind' instances for 'k1' and 'k2' both satisfy the 'SingKind' laws.
+-- If they don't, 'toSing' might produce strange results!
 instance (SingKind k1, SingKind k2) => SingKind (k1 ~> k2) where
   type Demote (k1 ~> k2) = Demote k1 -> Demote k2
   fromSing sFun x = withSomeSing x (fromSing . applySing sFun)
-  toSing _ = error "Cannot create existentially-quantified singleton functions."
+  toSing f = SomeSing slam
+    where
+      -- Here, we are essentially "manufacturing" a type-level version of the
+      -- function f. As long as k1 and k2 obey the SingKind laws, this is a
+      -- perfectly fine thing to do, since the computational content of Sing f
+      -- will be isomorphic to that of the function f.
+      slam :: forall (f :: k1 ~> k2). Sing f
+      slam = singFun1 @f lam
+        where
+          -- Here's the tricky part. We need to demote the argument Sing, apply the
+          -- term-level function f to it, and promote it back to a Sing. However,
+          -- we don't have a way to convince the typechecker that for all argument
+          -- types t, f @@ t should be the same thing as res, which motivates the
+          -- use of unsafeCoerce.
+          lam :: forall (t :: k1). Sing t -> Sing (f @@ t)
+          lam x = withSomeSing (f (fromSing x)) (\(r :: Sing res) -> unsafeCoerce r)
 
 type SingFunction1 f = forall t. Sing t -> Sing (f @@ t)
 
