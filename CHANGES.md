@@ -85,6 +85,10 @@ next
   The previous implementation did not enforce this, which could lead to
   segfaults if used carelessly.
 
+* Instead of `error`ing, the `toSing` implementation in the `SingKind (k1 ~> k2)`
+  instance now works as one would expect (provided the user adheres to some
+  common-sense `SingKind` laws, which are now documented).
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.
