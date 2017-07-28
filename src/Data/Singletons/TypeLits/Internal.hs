@@ -43,6 +43,7 @@ import Data.Singletons.Prelude.Ord
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
 import GHC.TypeLits as TL
+import qualified GHC.TypeNats as TN
 import Data.Monoid ((<>))
 import Data.Type.Equality
 import Data.Proxy ( Proxy(..) )
@@ -176,11 +177,10 @@ infixr 8 :^
 sa %:^ sb =
   let a = fromSing sa
       b = fromSing sb
-      ex = someNatVal (a ^ b)
+      ex = TN.someNatVal (a ^ b)
   in
   case ex of
-    Just (SomeNat (_ :: Proxy ab)) -> unsafeCoerce (SNat :: Sing ab)
-    Nothing                        -> error "Two naturals exponentiated to a negative?"
+    SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
 infixr 8 %:^
 
 $(genDefunSymbols [''(:^)])
