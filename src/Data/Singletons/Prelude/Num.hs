@@ -36,6 +36,7 @@ import Data.Singletons.Internal
 import Data.Singletons.TypeLits.Internal
 import Data.Singletons.Decide
 import GHC.TypeLits
+import qualified GHC.TypeNats as TN
 import Unsafe.Coerce
 
 $(singletonsOnly [d|
@@ -86,31 +87,26 @@ instance SNum Nat where
   sa %:+ sb =
     let a = fromSing sa
         b = fromSing sb
-        ex = someNatVal (a + b)
+        ex = TN.someNatVal (a + b)
     in
     case ex of
-      Just (SomeNat (_ :: Proxy ab)) -> unsafeCoerce (SNat :: Sing ab)
-      Nothing                        -> error "Two naturals added to a negative?"
+      SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
 
   sa %:- sb =
     let a = fromSing sa
         b = fromSing sb
-        ex = someNatVal (a - b)
+        ex = TN.someNatVal (a - b)
     in
     case ex of
-      Just (SomeNat (_ :: Proxy ab)) -> unsafeCoerce (SNat :: Sing ab)
-      Nothing                        ->
-        error "Negative natural-number singletons are naturally not allowed."
+      SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
 
   sa %:* sb =
     let a = fromSing sa
         b = fromSing sb
-        ex = someNatVal (a * b)
+        ex = TN.someNatVal (a * b)
     in
     case ex of
-      Just (SomeNat (_ :: Proxy ab)) -> unsafeCoerce (SNat :: Sing ab)
-      Nothing                        ->
-        error "Two naturals multiplied to a negative?"
+      SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
 
   sNegate _ = error "Cannot call sNegate on a natural number singleton."
 

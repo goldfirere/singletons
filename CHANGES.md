@@ -3,6 +3,8 @@ Changelog for singletons project
 
 next
 ----
+* `Demote Nat` is now `Natural` (from `Numeric.Natural`) instead of `Integer`.
+
 * The suffix for defunctionalized names of symbolic functions (e.g., `(+)`) has
   changed. Before, the promoted type name would be suffixed with some number of
   dollar signs (e.g., `(:+$)` and `(:+$$)`) to indicate defunctionalization
