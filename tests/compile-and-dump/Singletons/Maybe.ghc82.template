@@ -128,6 +128,20 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance Data.Singletons.ShowSing.ShowSing a =>
+             Data.Singletons.ShowSing.ShowSing (Maybe a) where
+      Data.Singletons.ShowSing.showsSingPrec _ SNothing
+        = showString "SNothing"
+      Data.Singletons.ShowSing.showsSingPrec
+        p_0123456789876543210
+        (SJust arg_0123456789876543210)
+        = (showParen (((>) p_0123456789876543210) 10))
+            (((.) (showString "SJust "))
+               ((Data.Singletons.ShowSing.showsSingPrec 11)
+                  arg_0123456789876543210))
+    instance Data.Singletons.ShowSing.ShowSing a =>
+             Show (Sing (z :: Maybe a)) where
+      showsPrec = Data.Singletons.ShowSing.showsSingPrec
     instance SingI Nothing where
       sing = SNothing
     instance SingI n => SingI (Just (n :: a)) where

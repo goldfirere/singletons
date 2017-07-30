@@ -63,6 +63,9 @@ next
 
 * Add promoted and singled versions of `Show`, including `deriving` support.
 
+* Add a `ShowSing` class, which facilitates the ability to write `Show` instances
+  for `Sing` instances.
+
 * Permit derived `Ord` instances for empty datatypes.
 
 * Permit standalone `deriving` declarations.

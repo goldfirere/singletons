@@ -76,7 +76,7 @@ singletonStar names = do
   fakeCtors <- zipWithM (mkCtor False) names kinds
   let dataDecl = DataDecl Data repName [] fakeCtors
                           [DConPr ''Show, DConPr ''Read]
-      dataDeclEqInst = DerivedEqDecl Nothing (DConT repName) fakeCtors
+      dataDeclEqInst = DerivedDecl Nothing (DConT repName) fakeCtors
   ordInst <- mkOrdInstance Nothing (DConT repName) fakeCtors
   (pOrdInst, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
                                             promoteDerivedEqDec dataDeclEqInst

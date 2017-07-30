@@ -183,6 +183,19 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance Data.Singletons.ShowSing.ShowSing Nat =>
+             Data.Singletons.ShowSing.ShowSing Nat where
+      Data.Singletons.ShowSing.showsSingPrec _ SZero = showString "SZero"
+      Data.Singletons.ShowSing.showsSingPrec
+        p_0123456789876543210
+        (SSucc arg_0123456789876543210)
+        = (showParen (((>) p_0123456789876543210) 10))
+            (((.) (showString "SSucc "))
+               ((Data.Singletons.ShowSing.showsSingPrec 11)
+                  arg_0123456789876543210))
+    instance Data.Singletons.ShowSing.ShowSing Nat =>
+             Show (Sing (z :: Nat)) where
+      showsPrec = Data.Singletons.ShowSing.showsSingPrec
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where
