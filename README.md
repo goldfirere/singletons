@@ -1,5 +1,5 @@
-singletons 2.3
-==============
+singletons 2.3.1
+================
 
 [![Build Status](https://travis-ci.org/goldfirere/singletons.svg?branch=master)](https://travis-ci.org/goldfirere/singletons)
 

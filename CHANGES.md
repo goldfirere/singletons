@@ -1,6 +1,10 @@
 Changelog for singletons project
 ================================
 
+2.3.1
+-----
+* Fix the Haddock build, thanks to @christiaanb.
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.
@@ -16,7 +20,7 @@ removed. `DemoteRep` has been renamed `Demote`.
 
 * Generating singletons also now generates fixity declarations for the singletonized
   definitions, thanks to @int-index.
-  
+
 * Though more an implementation detail: singletons no longer uses kind-level proxies anywhere,
   thanks again to @int-index.
 
