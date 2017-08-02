@@ -25,7 +25,7 @@
 module Data.Singletons (
   -- * Main singleton definitions
 
-  Sing(..), (@@),
+  Sing(SLambda, applySing), (@@),
 
   SingI(..), SingKind(..),
 
