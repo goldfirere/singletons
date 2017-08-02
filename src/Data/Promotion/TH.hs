@@ -73,7 +73,7 @@ module Data.Promotion.TH (
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowCommaSpaceSym0, ShowCommaSpaceSym1,
   type (.@#@$), type (.@#@$$), type (.@#@$$$), type (.@#@$$$$),
-  type (:@#@$), type (:@#@$$), type (:@#@$$$),
+  (:@#@$), (:@#@$$), (:@#@$$$),
 
   SuppressUnusedWarnings(..)
 

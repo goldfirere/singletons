@@ -71,7 +71,7 @@ module Data.Promotion.Prelude.List.NonEmpty (
   Xor,
 
   -- * Defunctionalization symbols
-  type (:|@#@$), type (:|@#@$$), type (:|@#@$$$),
+  (:|@#@$), (:|@#@$$), (:|@#@$$$),
   MapSym0, MapSym1, MapSym2,
   IntersperseSym0, IntersperseSym1, IntersperseSym2,
   ScanlSym0, ScanlSym1, ScanlSym2, ScanlSym3,

@@ -90,7 +90,7 @@ module Data.Singletons.Prelude.List.NonEmpty (
   Xor, sXor,
 
   -- * Defunctionalization symbols
-  type (:|@#@$), type (:|@#@$$), type (:|@#@$$$),
+  (:|@#@$), (:|@#@$$), (:|@#@$$$),
   MapSym0, MapSym1, MapSym2,
   IntersperseSym0, IntersperseSym1, IntersperseSym2,
   ScanlSym0, ScanlSym1, ScanlSym2, ScanlSym3,

@@ -104,7 +104,7 @@ module Data.Promotion.Prelude.List (
 
   -- * Defunctionalization symbols
   NilSym0,
-  type (:@#@$), type (:@#@$$), type (:@#@$$$),
+  (:@#@$), (:@#@$$), (:@#@$$$),
 
   type (++@#@$$$), type (++@#@$$), type (++@#@$),
   HeadSym0, HeadSym1, LastSym0, LastSym1,
