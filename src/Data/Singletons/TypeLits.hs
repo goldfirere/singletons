@@ -28,7 +28,7 @@ module Data.Singletons.TypeLits (
   type (^), (%^),
   type (<>), (%<>),
 
-  Div, Mod, DivMod,
+  Div, Mod, DivMod, Quot, Rem, QuotRem,
 
   -- * Defunctionalization symbols
   ErrorSym0, ErrorSym1, UndefinedSym0,
@@ -38,7 +38,10 @@ module Data.Singletons.TypeLits (
   type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
   DivSym0, DivSym1, DivSym2,
   ModSym0, ModSym1, ModSym2,
-  DivModSym0, DivModSym1, DivModSym2
+  DivModSym0, DivModSym1, DivModSym2,
+  QuotSym0, QuotSym1, QuotSym2,
+  RemSym0, RemSym1, RemSym2,
+  QuotRemSym0, QuotRemSym1, QuotRemSym2
   ) where
 
 import Data.Singletons.TypeLits.Internal
@@ -109,5 +112,13 @@ $(promoteOnly [d|
   mod _ 0 = error "Division by zero."
   mod x y = snd (divMod x y)
 
+  quotRem :: Nat -> Nat -> (Nat, Nat)
+  quotRem = divMod
+
+  quot :: Nat -> Nat -> Nat
+  quot = div
+
+  rem :: Nat -> Nat -> Nat
+  rem = mod
   |])
   

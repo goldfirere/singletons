@@ -3,7 +3,7 @@ Changelog for singletons project
 
 next
 ----
-* Add `Div`, `Mod`, `DivMod` to `Data.Singletons.TypeLits`.
+* Add `Div`, `Mod`, `DivMod`, `Quot`, `Rem`, `QuotRem` to `Data.Singletons.TypeLits`.
 
 * `Demote Nat` is now `Natural` (from `Numeric.Natural`) instead of `Integer`.
 
