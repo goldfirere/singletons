@@ -1,3 +1,5 @@
+{-# LANGUAGE ExplicitNamespaces #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Promotion.Prelude.List.NonEmpty
@@ -29,7 +31,7 @@ module Data.Promotion.Prelude.List.NonEmpty (
   Tail,
   Last,
   Init,
-  (:<|),
+  type (<|),
   Cons,
   Uncons,
   Unfoldr,
@@ -59,7 +61,7 @@ module Data.Promotion.Prelude.List.NonEmpty (
   IsPrefixOf,
   Nub,
   NubBy,
-  (:!!),
+  type (!!),
   Zip,
   ZipWith,
   Unzip,
@@ -84,7 +86,7 @@ module Data.Promotion.Prelude.List.NonEmpty (
   TailSym0, TailSym1,
   LastSym0, LastSym1,
   InitSym0, InitSym1,
-  (:<|@#@$), (:<|@#@$$), (:<|@#@$$$),
+  type (<|@#@$), type (<|@#@$$), type (<|@#@$$$),
   ConsSym0, ConsSym1, ConsSym2,
   UnconsSym0, UnconsSym1,
   UnfoldrSym0, UnfoldrSym1, UnfoldrSym2,
@@ -114,7 +116,7 @@ module Data.Promotion.Prelude.List.NonEmpty (
   IsPrefixOfSym0, IsPrefixOfSym1, IsPrefixOfSym2,
   NubSym0, NubSym1,
   NubBySym0, NubBySym1, NubBySym2,
-  (:!!@#@$), (:!!@#@$$), (:!!@#@$$$),
+  type (!!@#@$), type (!!@#@$$), type (!!@#@$$$),
   ZipSym0, ZipSym1, ZipSym2,
   ZipWithSym0, ZipWithSym1, ZipWithSym2, ZipWithSym3,
   UnzipSym0, UnzipSym1,

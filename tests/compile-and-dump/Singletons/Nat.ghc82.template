@@ -64,7 +64,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       Plus (Succ n) m = Apply SuccSym0 (Apply (Apply PlusSym0 n) m)
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Nat) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210 _ Zero a_0123456789876543210 = Apply (Apply ShowStringSym0 "Zero") a_0123456789876543210
-      ShowsPrec_0123456789876543210 p_0123456789876543210 (Succ arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (:>@#@$) p_0123456789876543210) (Data.Singletons.Prelude.Num.FromInteger 10))) (Apply (Apply (:.@#@$) (Apply ShowStringSym0 "Succ ")) (Apply (Apply ShowsPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
+      ShowsPrec_0123456789876543210 p_0123456789876543210 (Succ arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (Data.Singletons.Prelude.Num.FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Succ ")) (Apply (Apply ShowsPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym3 (t :: GHC.Types.Nat) (t :: Nat) (t :: GHC.Types.Symbol) =
         ShowsPrec_0123456789876543210 t t t
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym2 where
@@ -101,10 +101,10 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type family Equals_0123456789876543210 (a :: Nat) (b :: Nat) :: Bool where
       Equals_0123456789876543210 Zero Zero = TrueSym0
-      Equals_0123456789876543210 (Succ a) (Succ b) = (:==) a b
+      Equals_0123456789876543210 (Succ a) (Succ b) = (==) a b
       Equals_0123456789876543210 (_ :: Nat) (_ :: Nat) = FalseSym0
     instance PEq Nat where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type (==) a b = Equals_0123456789876543210 a b
     sPred ::
       forall (t :: Nat). Sing t -> Sing (Apply PredSym0 t :: Nat)
     sPlus ::
@@ -158,10 +158,10 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
              ((applySing
                  ((applySing ((singFun3 @ShowParenSym0) sShowParen))
                     ((applySing
-                        ((applySing ((singFun2 @(:>@#@$)) (%:>))) sP_0123456789876543210))
+                        ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
                        (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 10)))))
                 ((applySing
-                    ((applySing ((singFun3 @(:.@#@$)) (%:.)))
+                    ((applySing ((singFun3 @(.@#@$)) (%.)))
                        ((applySing ((singFun2 @ShowStringSym0) sShowString))
                           (sing :: Sing "Succ "))))
                    ((applySing
@@ -170,10 +170,10 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
                       sArg_0123456789876543210))))
             sA_0123456789876543210
     instance SEq Nat where
-      (%:==) SZero SZero = STrue
-      (%:==) SZero (SSucc _) = SFalse
-      (%:==) (SSucc _) SZero = SFalse
-      (%:==) (SSucc a) (SSucc b) = ((%:==) a) b
+      (%==) SZero SZero = STrue
+      (%==) SZero (SSucc _) = SFalse
+      (%==) (SSucc _) SZero = SFalse
+      (%==) (SSucc a) (SSucc b) = ((%==) a) b
     instance SDecide Nat where
       (%~) SZero SZero = Proved Refl
       (%~) SZero (SSucc _) = Disproved (\ x -> case x of)

@@ -15,7 +15,7 @@ $(singletons [d|
                    | F a b c d deriving (Eq,Ord)
   |])
 
-foo1a :: Proxy (Zero :< Succ Zero)
+foo1a :: Proxy (Zero < Succ Zero)
 foo1a = Proxy
 
 foo1b :: Proxy True

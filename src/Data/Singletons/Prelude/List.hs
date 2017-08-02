@@ -36,7 +36,7 @@ module Data.Singletons.Prelude.List (
   -- | 'SList' is a kind-restricted synonym for 'Sing': @type SList (a :: [k]) = Sing a@
 
   -- * Basic functions
-  (:++), (%:++), Head, sHead, Last, sLast, Tail, sTail, Init, sInit,
+  type (++), (%++), Head, sHead, Last, sLast, Tail, sTail, Init, sInit,
   Null, sNull, Length, sLength,
 
    -- * List transformations
@@ -88,7 +88,7 @@ module Data.Singletons.Prelude.List (
   Find, sFind, Filter, sFilter, Partition, sPartition,
 
   -- * Indexing lists
-  (:!!), (%:!!),
+  type (!!), (%!!),
   ElemIndex, sElemIndex, ElemIndices, sElemIndices,
   FindIndex, sFindIndex, FindIndices, sFindIndices,
 
@@ -104,7 +104,7 @@ module Data.Singletons.Prelude.List (
   Unwords, sUnwords,
 
   -- ** \"Set\" operations
-  Nub, sNub, Delete, sDelete, (:\\), (%:\\),
+  Nub, sNub, Delete, sDelete, type (\\), (%\\),
   Union, sUnion, Intersect, sIntersect,
 
   -- ** Ordered lists
@@ -135,7 +135,7 @@ module Data.Singletons.Prelude.List (
   NilSym0,
   (:@#@$), (:@#@$$), (:@#@$$$),
 
-  (:++@#@$$$), (:++@#@$$), (:++@#@$),
+  type (++@#@$$$), type (++@#@$$), type (++@#@$),
   HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
   LengthSym0, LengthSym1,
@@ -199,7 +199,7 @@ module Data.Singletons.Prelude.List (
   FilterSym0, FilterSym1, FilterSym2,
   PartitionSym0, PartitionSym1, PartitionSym2,
 
-  (:!!@#@$), (:!!@#@$$), (:!!@#@$$$),
+  type (!!@#@$), type (!!@#@$$), type (!!@#@$$$),
   ElemIndexSym0, ElemIndexSym1, ElemIndexSym2,
   ElemIndicesSym0, ElemIndicesSym1, ElemIndicesSym2,
   FindIndexSym0, FindIndexSym1, FindIndexSym2,
@@ -221,7 +221,7 @@ module Data.Singletons.Prelude.List (
 
   NubSym0, NubSym1,
   DeleteSym0, DeleteSym1, DeleteSym2,
-  (:\\@#@$), (:\\@#@$$), (:\\@#@$$$),
+  type (\\@#@$), type (\\@#@$$), type (\\@#@$$$),
   UnionSym0, UnionSym1, UnionSym2,
   IntersectSym0, IntersectSym1, IntersectSym2,
 

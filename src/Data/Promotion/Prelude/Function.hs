@@ -1,3 +1,5 @@
+{-# LANGUAGE ExplicitNamespaces #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Promotion.Prelude.Function
@@ -21,17 +23,17 @@
 
 module Data.Promotion.Prelude.Function (
     -- * "Prelude" re-exports
-    Id, Const, (:.), Flip, (:$)
+    Id, Const, (:.), Flip, type ($)
     -- * Other combinators
-  , (:&), On
+  , type (&), On
 
     -- * Defunctionalization symbols
   , IdSym0, IdSym1
   , ConstSym0, ConstSym1, ConstSym2
-  , (:.@#@$), (:.@#@$$), (:.@#@$$$), (:.@#@$$$$)
+  , type (.@#@$), type (.@#@$$), type (.@#@$$$), type (.@#@$$$$)
   , FlipSym0, FlipSym1, FlipSym2, FlipSym3
-  , (:$@#@$), (:$@#@$$), (:$@#@$$$)
-  , (:&@#@$), (:&@#@$$), (:&@#@$$$)
+  , type ($@#@$), type ($@#@$$), type ($@#@$$$)
+  , type (&@#@$), type (&@#@$$), type (&@#@$$$)
   , OnSym0, OnSym1, OnSym2, OnSym3, OnSym4
   ) where
 

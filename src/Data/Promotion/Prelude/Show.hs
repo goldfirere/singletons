@@ -1,3 +1,5 @@
+{-# LANGUAGE ExplicitNamespaces #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Promotion.Prelude.Show
@@ -12,7 +14,7 @@
 -----------------------------------------------------------------------------
 
 module Data.Promotion.Prelude.Show (
-  PShow(..), SymbolS, SChar, show_, (:<>),
+  PShow(..), SymbolS, SChar, show_, type (<>),
   Shows, ShowListWith, ShowChar, ShowString, ShowParen,
   ShowSpace, ShowCommaSpace, AppPrec, AppPrec1,
 
@@ -20,7 +22,7 @@ module Data.Promotion.Prelude.Show (
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$),
+  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowListWithSym0, ShowListWithSym1, ShowListWithSym2, ShowListWithSym3,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,

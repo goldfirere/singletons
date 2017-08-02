@@ -99,23 +99,23 @@ singletons qdecs = do
 singletonsOnly :: DsMonad q => q [Dec] -> q [Dec]
 singletonsOnly = (>>= wrapDesugar singTopLevelDecs)
 
--- | Create instances of 'SEq' and type-level '(:==)' for each type in the list
+-- | Create instances of 'SEq' and type-level @(==)@ for each type in the list
 singEqInstances :: DsMonad q => [Name] -> q [Dec]
 singEqInstances = concatMapM singEqInstance
 
--- | Create instance of 'SEq' and type-level '(:==)' for the given type
+-- | Create instance of 'SEq' and type-level @(==)@ for the given type
 singEqInstance :: DsMonad q => Name -> q [Dec]
 singEqInstance name = do
   promotion <- promoteEqInstance name
   dec <- singEqualityInstance sEqClassDesc name
   return $ dec ++ promotion
 
--- | Create instances of 'SEq' (only -- no instance for '(:==)', which 'SEq' generally
+-- | Create instances of 'SEq' (only -- no instance for @(==)@, which 'SEq' generally
 -- relies on) for each type in the list
 singEqInstancesOnly :: DsMonad q => [Name] -> q [Dec]
 singEqInstancesOnly = concatMapM singEqInstanceOnly
 
--- | Create instances of 'SEq' (only -- no instance for '(:==)', which 'SEq' generally
+-- | Create instances of 'SEq' (only -- no instance for @(==)@, which 'SEq' generally
 -- relies on) for the given type
 singEqInstanceOnly :: DsMonad q => Name -> q [Dec]
 singEqInstanceOnly name = singEqualityInstance sEqClassDesc name
@@ -275,7 +275,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
   sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList tyvar_names)
                                              res_ki_map))
                      (Map.toList default_defns)
-  let fixities' = map (uncurry singInfixDecl) fixities
+  fixities' <- traverse (uncurry singInfixDecl) fixities
   cls_cxt' <- mapM singPred cls_cxt
   return $ DClassD cls_cxt'
                    (singClassName cls_name)
@@ -361,9 +361,9 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
   let prom_list = Map.toList proms
   (typeSigs, letBinds, tyvarNames, res_kis)
     <- unzip4 <$> mapM (uncurry (singTySig defns types)) prom_list
-  let infix_decls' = map (uncurry singInfixDecl) infix_decls
-      res_ki_map   = Map.fromList [ (name, res_ki) | ((name, _), Just res_ki)
-                                                       <- zip prom_list res_kis ]
+  infix_decls' <- traverse (uncurry singInfixDecl) infix_decls
+  let res_ki_map = Map.fromList [ (name, res_ki) | ((name, _), Just res_ki)
+                                                     <- zip prom_list res_kis ]
   bindLets letBinds $ do
     let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList tyvarNames) res_ki_map))
                      (Map.toList defns)

@@ -37,7 +37,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       Case_0123456789876543210 n True = TSym0
       Case_0123456789876543210 n False = Apply ErrorSym0 "toEnum: bad argument"
     type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: T where
-      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0))
+      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0))
     type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
         ToEnum_0123456789876543210 t
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
@@ -116,7 +116,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       Equals_0123456789876543210 T T = TrueSym0
       Equals_0123456789876543210 (_ :: T) (_ :: T) = FalseSym0
     instance PEq T where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type (==) a b = Equals_0123456789876543210 a b
     data instance Sing (z :: T) where ST :: Sing T
     type ST = (Sing :: T -> GHC.Types.Type)
     instance SingKind T where
@@ -152,12 +152,12 @@ Singletons/T190.hs:0:0:: Splicing declarations
                                                                      -> GHC.Types.Type) t :: GHC.Types.Nat)
       sToEnum (sN :: Sing n)
         = case
-              (applySing ((applySing ((singFun2 @(:==@#@$)) (%:==))) sN))
+              (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
                 (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))
           of
             STrue -> ST
             SFalse -> sError (sing :: Sing "toEnum: bad argument") ::
-            Sing (Case_0123456789876543210 n (Apply (Apply (:==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)) :: T)
+            Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)) :: T)
       sFromEnum ST
         = Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0)
     instance SBounded T where
@@ -187,7 +187,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
                 (sing :: Sing "T")))
             sA_0123456789876543210
     instance SEq T where
-      (%:==) ST ST = STrue
+      (%==) ST ST = STrue
     instance SDecide T where
       (%~) ST ST = Proved Refl
     instance SingI T where

@@ -350,12 +350,11 @@ generates. Here are some examples showing how this is done:
    singleton type: `SNat` (which is really a synonym for `Sing`)
 
 
-2. original datatype: `:/\:`
+2. original datatype: `/\`
 
-   promoted kind: `:/\:`
+   promoted kind: `/\`
 
-   singleton type: `:%/\:`
-
+   singleton type: `%/\`
 
 
 3. original constructor: `Succ`
@@ -387,11 +386,11 @@ generates. Here are some examples showing how this is done:
 
 6. original value: `+`
 
-   promoted type: `:+`
+   promoted type: `+`
 
-   singleton value: `%:+`
+   singleton value: `%+`
 
-   symbols: `:+@#@$`, `:+@#@$$`, `:+@#@$$$`
+   symbols: `+@#@$`, `+@#@$$`, `+@#@$$$`
 
 
 7. original class: `Num`
@@ -401,11 +400,11 @@ generates. Here are some examples showing how this is done:
    singleton class: `SNum`
 
 
-8. original class: `:~>`
+8. original class: `~>`
 
    promoted class: `#~>`
 
-   singleton class: `:%~>`
+   singleton class: `%~>`
 
 
 Special names
@@ -456,6 +455,25 @@ treatment):
 
    All tuples (including the 0-tuple, unit) are treated similarly.
 
+
+6. original value: `(.)`
+
+   promoted type\*: `(:.)`
+
+   singleton value: `(%.)`
+
+   symbols: `(.@#@$)`, `(.@#@$$)`, `(.@#@$$$)`
+
+
+7. original value: `(!)`
+
+   promoted type\*: `(:!)`
+
+   singleton value: `(%!)`
+
+   symbols: `(!@#@$)`, `(!@#@$$)`, `(!@#@$$$)`
+
+
 Supported Haskell constructs
 ----------------------------
 
@@ -465,7 +483,7 @@ The following constructs are fully supported:
 * tuples
 * constructors
 * if statements
-* infix expressions
+* infix expressions and types
 * `_` patterns
 * aliased patterns
 * lists
@@ -529,7 +547,6 @@ The following constructs are not supported:
 * arithmetic sequences
 * datatypes that store arrows, `Nat`, or `Symbol`
 * literals (limited support)
-* symbolic (as opposed to alphanumeric) types
 
 Why are these out of reach? The first two depend on monads, which mention a
 higher-kinded type variable. GHC did not support higher-sorted kind variables,
@@ -558,12 +575,6 @@ use the promoted definition, but not the original, term-level one.
 This is the same line of reasoning that forbids the use of `Nat` or `Symbol`
 in datatype definitions. But, see [this bug
 report](https://github.com/goldfirere/singletons/issues/76) for a workaround.
-
-Symbolic types used in kinds were not supported in GHC, but now are. However,
-`singletons` still does not support them, mostly because of challenges around
-telling datacon names apart from tycon names. [This
-issue](https://github.com/goldfirere/singletons/issues/163) tracks adding
-this feature.
 
 A promoted and singled `Show` instance is provided for `Symbol`, but it is only
 a crude approximation of the value-level `Show` instance for `String`. On the

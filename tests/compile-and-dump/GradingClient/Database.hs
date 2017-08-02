@@ -103,14 +103,14 @@ $(singletons [d|
 
 -- The El type family gives us the type associated with a constructor
 -- of U:
-type family El (u :: U) :: *
+type family El (u :: U) :: Type
 type instance El BOOL = Bool
 type instance El STRING = String
 type instance El NAT  = Nat
 type instance El (VEC u n) = Vec (El u) n
 
 -- Length-indexed vectors
-data Vec :: * -> Nat -> * where
+data Vec :: Type -> Nat -> Type where
   VNil :: Vec a Zero
   VCons :: a -> Vec a n -> Vec a (Succ n)
 
@@ -176,7 +176,7 @@ showAttrProof :: Sing (Attr nm u) -> ElUShowInstance u
 showAttrProof (SAttr _ u) = elUShowInstance u
 
 -- A Row is one row of our database table, keyed by its schema.
-data Row :: Schema -> * where
+data Row :: Schema -> Type where
   EmptyRow :: [Int] -> Row (Sch '[]) -- the Ints are the unique id of the row
   ConsRow :: El u -> Row (Sch s) -> Row (Sch ((Attr name u) ': s))
 
@@ -193,7 +193,7 @@ instance (Show (El u), Show (Row (Sch attrs))) =>
 -- The constructor is not exported. In our simplistic case, we
 -- just store the list of rows. A more sophisticated implementation
 -- could store some identifier to the connection to an external database.
-data Handle :: Schema -> * where
+data Handle :: Schema -> Type where
   Handle :: [Row s] -> Handle s
 
 -- The following functions parse our very simple flat file database format.
@@ -261,11 +261,11 @@ connect name schema = do
 -- propositions. In Haskell, these inductively defined propositions take the form of
 -- GADTs. In their original form, they would look like this:
 {-
-data InProof :: Attribute -> Schema -> * where
+data InProof :: Attribute -> Schema -> Type where
   InElt :: InProof attr (Sch (attr ': schTail))
   InTail :: InProof attr (Sch attrs) -> InProof attr (Sch (a ': attrs))
 
-data SubsetProof :: Schema -> Schema -> * where
+data SubsetProof :: Schema -> Schema -> Type where
   SubsetEmpty :: SubsetProof (Sch '[]) s'
   SubsetCons :: InProof attr s' -> SubsetProof (Sch attrs) s' ->
                   SubsetProof (Sch (attr ': attrs)) s'
@@ -276,7 +276,7 @@ data SubsetProof :: Schema -> Schema -> * where
 -- make the parameters to the proof GADT constructors implicit -- i.e. in the form
 -- of type class constraints.
 
-data InProof :: Attribute -> Schema -> * where
+data InProof :: Attribute -> Schema -> Type where
   InElt :: InProof attr (Sch (attr ': schTail))
   InTail :: InC name u (Sch attrs) => InProof (Attr name u) (Sch (a ': attrs))
 
@@ -287,7 +287,7 @@ instance InC name u (Sch ((Attr name u) ': schTail)) where
 instance InC name u (Sch attrs) => InC name u (Sch (a ': attrs)) where
   inProof = InTail
 
-data SubsetProof :: Schema -> Schema -> * where
+data SubsetProof :: Schema -> Schema -> Type where
   SubsetEmpty :: SubsetProof (Sch '[]) s'
   SubsetCons :: (InC name u s', SubsetC (Sch attrs) s') =>
                   SubsetProof (Sch ((Attr name u) ': attrs)) s'
@@ -304,7 +304,7 @@ instance (InC name u s', SubsetC (Sch attrs) s') =>
 -- To access the data in a structured (and well-typed!) way, we use
 -- an RA (short for Relational Algebra). An RA is indexed by the schema
 -- of the data it produces.
-data RA :: Schema -> * where
+data RA :: Schema -> Type where
   -- The RA includes all data represented by the handle.
   Read :: Handle s -> RA s
 
@@ -342,7 +342,7 @@ data RA :: Schema -> * where
 -- subset of rows from a table. Expressions are indexed by the
 -- schema over which they operate and the return value they
 -- produce.
-data Expr :: Schema -> U -> * where
+data Expr :: Schema -> U -> Type where
   -- Equality among two elements
   Equal :: Eq (El u) => Expr s u -> Expr s u -> Expr s BOOL
 
@@ -515,7 +515,7 @@ query (Select expr r) = do
                 case sing :: Sing s' of
                   -- SSch SNil -> undefined <== IMPOSSIBLE
                   SSch (SCons (SAttr name' _) stail) ->
-                    case name %:== name' of
+                    case name %== name' of
                       STrue -> h
                       SFalse -> withSingI stail (eval (Element (SSch stail) name) t)
 

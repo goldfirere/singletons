@@ -33,7 +33,7 @@ module Data.Singletons.Prelude (
   STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
 
   -- * Functions working with 'Bool'
-  If, sIf, Not, sNot, (:&&), (:||), (%:&&), (%:||), Otherwise, sOtherwise,
+  If, sIf, Not, sNot, type (&&), type (||), (%&&), (%||), Otherwise, sOtherwise,
 
   -- * Error reporting
   Error, sError,
@@ -54,19 +54,19 @@ module Data.Singletons.Prelude (
 
   -- * Singletons numbers
   module Data.Singletons.Prelude.Num,
-  (:^), (%:^),
+  type (^), (%^),
 
   -- * Singleton 'Show'
-  PShow(..), SShow(..), ShowS, SChar, (:<>), (%:<>),
+  PShow(..), SShow(..), ShowS, SChar, type (<>), (%<>),
   Shows, sShows, ShowChar, sShowChar, ShowString, sShowString, ShowParen, sShowParen,
 
   -- ** Miscellaneous functions
-  Id, sId, Const, sConst, (:.), (%:.), (:$), (%:$), (:$!), (%:$!),
+  Id, sId, Const, sConst, (:.), (%.), type ($), (%$), type ($!), (%$!),
   Flip, sFlip, AsTypeOf, sAsTypeOf,
   Seq, sSeq,
 
   -- * List operations
-  Map, sMap, (:++), (%:++), Head, sHead, Last, sLast, Tail, sTail,
+  Map, sMap, type (++), (%++), Head, sHead, Last, sLast, Tail, sTail,
   Init, sInit, Null, sNull, Reverse, sReverse,
   -- ** Reducing lists (folds)
   Foldl, sFoldl, Foldl1, sFoldl1, Foldr, sFoldr, Foldr1, sFoldr1,
@@ -103,8 +103,8 @@ module Data.Singletons.Prelude (
   -- * Defunctionalization symbols
   FalseSym0, TrueSym0,
   NotSym0, NotSym1,
-  (:&&@#@$), (:&&@#@$$), (:&&@#@$$$),
-  (:||@#@$), (:||@#@$$), (:||@#@$$$),
+  type (&&@#@$), type (&&@#@$$), type (&&@#@$$$),
+  type (||@#@$), type (||@#@$$), type (||@#@$$$),
   OtherwiseSym0,
 
   NothingSym0, JustSym0, JustSym1,
@@ -126,27 +126,27 @@ module Data.Singletons.Prelude (
 
   ErrorSym0, ErrorSym1, UndefinedSym0,
 
-  (:^@#@$), (:^@#@$$), (:^@#@$$$),
+  type (^@#@$), type (^@#@$$), type (^@#@$$$),
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  (:<>@#@$), (:<>@#@$$), (:<>@#@$$$),
+  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowStringSym0, ShowStringSym1, ShowStringSym2,
   ShowParenSym0, ShowParenSym1, ShowParenSym2,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
-  (:.@#@$), (:.@#@$$), (:.@#@$$$),
-  (:$@#@$),  (:$@#@$$),  (:$@#@$$$),
-  (:$!@#@$), (:$!@#@$$), (:$!@#@$$$),
+  type (.@#@$),  type (.@#@$$),  type (.@#@$$$),
+  type ($@#@$),  type ($@#@$$),  type ($@#@$$$),
+  type ($!@#@$), type ($!@#@$$), type ($!@#@$$$),
   FlipSym0, FlipSym1, FlipSym2,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
 
   (:@#@$), (:@#@$$), (:@#@$$$), NilSym0,
   MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
-  (:++@#@$$), (:++@#@$), HeadSym0, HeadSym1, LastSym0, LastSym1,
+  type (++@#@$$), type (++@#@$), HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
 
   FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,

@@ -9,7 +9,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
           data Foo3 a
             = Foo3 a
             deriving Bounded
-          data Foo4 (a :: *) (b :: *)
+          data Foo4 (a :: Type) (b :: Type)
             = Foo41 | Foo42
             deriving Bounded
           data Pair

@@ -2,26 +2,29 @@ module Data.Singletons.Single.Fixity where
 
 import Prelude hiding ( exp )
 import Language.Haskell.TH hiding ( cxt )
-import Language.Haskell.TH.Syntax (Quasi(..))
+import Language.Haskell.TH.Syntax (NameSpace(..), Quasi(..))
 import Data.Singletons.Util
 import Data.Singletons.Names
 import Language.Haskell.TH.Desugar
 
-singInfixDecl :: Fixity -> Name -> DLetDec
-singInfixDecl fixity name
-  | isUpcase name =
-    -- is it a tycon name or a datacon name??
-    -- it *must* be a datacon name, because symbolic tycons
-    -- can't be promoted. This is terrible.
-    DInfixD fixity (singDataConName name)
-  | otherwise = DInfixD fixity (singValName name)
+singInfixDecl :: DsMonad q => Fixity -> Name -> q DLetDec
+singInfixDecl fixity name = do
+  mb_ns <- reifyNameSpace name
+  pure $ DInfixD fixity
+       $ case mb_ns of
+           Just TcClsName -> singTyConName name
+           Just DataName  -> singDataConName name
+           Just VarName   -> singValName name
+           -- If we can't find the Name for some odd reason,
+           -- fall back to singValName
+           Nothing        -> singValName name
 
 singFixityDeclaration :: DsMonad q => Name -> q [DDec]
 singFixityDeclaration name = do
   mFixity <- qReifyFixity name
-  return $ case mFixity of
-    Nothing     -> []
-    Just fixity -> [DLetDec $ singInfixDecl fixity name]
+  case mFixity of
+    Nothing     -> pure []
+    Just fixity -> sequenceA [DLetDec <$> singInfixDecl fixity name]
 
 singFixityDeclarations :: DsMonad q => [Name] -> q [DDec]
 singFixityDeclarations = concatMapM trySingFixityDeclaration

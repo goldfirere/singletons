@@ -16,7 +16,7 @@ import Data.Singletons.Util
 import Control.Monad
 
 -- produce a closed type family helper and the instance
--- for (:==) over the given list of ctors
+-- for (==) over the given list of ctors
 mkEqTypeInstance :: Quasi q => DKind -> [DCon] -> q [DDec]
 mkEqTypeInstance kind cons = do
   helperName <- newUniqueName "Equals"

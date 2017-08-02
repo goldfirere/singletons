@@ -36,7 +36,7 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     type family Equals_0123456789876543210 (a :: Empty) (b :: Empty) :: Bool where
       Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = TrueSym0
     instance PEq Empty where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type (==) a b = Equals_0123456789876543210 a b
     data instance Sing (z :: Empty)
     type SEmpty = (Sing :: Empty -> GHC.Types.Type)
     instance SingKind Empty where
@@ -54,6 +54,6 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
                                                                           -> GHC.Types.Type) t2 :: Ordering)
       sCompare _ _ = SEQ
     instance SEq Empty where
-      (%:==) _ _ = STrue
+      (%==) _ _ = STrue
     instance SDecide Empty where
       (%~) x _ = Proved (case x of)

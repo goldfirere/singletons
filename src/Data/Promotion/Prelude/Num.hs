@@ -1,3 +1,5 @@
+{-# LANGUAGE ExplicitNamespaces #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Promotion.Prelude.Num
@@ -16,9 +18,9 @@ module Data.Promotion.Prelude.Num (
   PNum(..), Subtract,
 
   -- ** Defunctionalization symbols
-  (:+@#@$), (:+@#@$$), (:+@#@$$$),
-  (:-@#@$), (:-@#@$$), (:-@#@$$$),
-  (:*@#@$), (:*@#@$$), (:*@#@$$$),
+  type (+@#@$), type (+@#@$$), type (+@#@$$$),
+  type (-@#@$), type (-@#@$$), type (-@#@$$$),
+  type (*@#@$), type (*@#@$$), type (*@#@$$$),
   NegateSym0, NegateSym1,
   AbsSym0, AbsSym1,
   SignumSym0, SignumSym1,

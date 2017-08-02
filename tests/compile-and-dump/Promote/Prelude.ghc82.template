@@ -14,4 +14,4 @@ Promote/Prelude.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply OddSym0 l = Odd l
     type family Odd (a :: Nat) :: Bool where
       Odd 0 = FalseSym0
-      Odd n = Apply (Apply (:$@#@$) (Apply (Apply (:.@#@$) NotSym0) OddSym0)) (Apply (Apply (:-@#@$) n) (FromInteger 1))
+      Odd n = Apply (Apply ($@#@$) (Apply (Apply (.@#@$) NotSym0) OddSym0)) (Apply (Apply (-@#@$) n) (FromInteger 1))

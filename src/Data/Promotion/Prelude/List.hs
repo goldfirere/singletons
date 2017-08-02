@@ -24,7 +24,7 @@
 
 module Data.Promotion.Prelude.List (
   -- * Basic functions
-  (:++), Head, Last, Tail, Init, Null, Length,
+  type (++), Head, Last, Tail, Init, Null, Length,
 
    -- * List transformations
   Map, Reverse, Intersperse, Intercalate, Transpose, Subsequences, Permutations,
@@ -70,7 +70,7 @@ module Data.Promotion.Prelude.List (
   Find, Filter, Partition,
 
   -- * Indexing lists
-  (:!!), ElemIndex, ElemIndices, FindIndex, FindIndices,
+  type (!!), ElemIndex, ElemIndices, FindIndex, FindIndices,
 
   -- * Zipping and unzipping lists
   Zip, Zip3, Zip4, Zip5, Zip6, Zip7,
@@ -83,7 +83,7 @@ module Data.Promotion.Prelude.List (
   Unlines, Unwords,
 
   -- ** \"Set\" operations
-  Nub, Delete, (:\\), Union, Intersect,
+  Nub, Delete, type (\\), Union, Intersect,
 
   -- ** Ordered lists
   Sort, Insert,
@@ -106,7 +106,7 @@ module Data.Promotion.Prelude.List (
   NilSym0,
   (:@#@$), (:@#@$$), (:@#@$$$),
 
-  (:++@#@$$$), (:++@#@$$), (:++@#@$),
+  type (++@#@$$$), type (++@#@$$), type (++@#@$),
   HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
 
@@ -160,7 +160,7 @@ module Data.Promotion.Prelude.List (
   Unzip7Sym0, Unzip7Sym1,
 
   DeleteSym0, DeleteSym1, DeleteSym2,
-  (:\\@#@$), (:\\@#@$$), (:\\@#@$$$),
+  type (\\@#@$), type (\\@#@$$), type (\\@#@$$$),
   IntersectSym0, IntersectSym1, IntersectSym2,
 
   InsertSym0, InsertSym1, InsertSym2,
@@ -196,7 +196,7 @@ module Data.Promotion.Prelude.List (
   FilterSym0, FilterSym1, FilterSym2,
   PartitionSym0, PartitionSym1, PartitionSym2,
 
-  (:!!@#@$), (:!!@#@$$), (:!!@#@$$$),
+  type (!!@#@$), type (!!@#@$$), type (!!@#@$$$),
 
   ElemIndexSym0, ElemIndexSym1, ElemIndexSym2,
   ElemIndicesSym0, ElemIndicesSym1, ElemIndicesSym2,

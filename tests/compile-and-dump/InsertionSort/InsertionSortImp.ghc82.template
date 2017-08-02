@@ -15,7 +15,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       where
         SZero :: Sing Zero
         SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> Sing (Succ n)
-    type SNat = (Sing :: Nat -> GHC.Types.Type)
+    type SNat = (Sing :: Nat -> Type)
     instance SingKind Nat where
       type Demote Nat = Nat
       fromSing SZero = Zero
@@ -104,7 +104,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings LeqSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) LeqSym0KindInference) GHC.Tuple.())
-    data LeqSym0 (l :: TyFun Nat (TyFun Nat Bool -> GHC.Types.Type))
+    data LeqSym0 (l :: TyFun Nat (TyFun Nat Bool -> Type))
       = forall arg. SameKind (Apply LeqSym0 arg) (LeqSym1 arg) =>
         LeqSym0KindInference
     type instance Apply LeqSym0 l = LeqSym1 l
@@ -119,8 +119,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings InsertSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) InsertSym0KindInference) GHC.Tuple.())
-    data InsertSym0 (l :: TyFun Nat (TyFun [Nat] [Nat]
-                                     -> GHC.Types.Type))
+    data InsertSym0 (l :: TyFun Nat (TyFun [Nat] [Nat] -> Type))
       = forall arg. SameKind (Apply InsertSym0 arg) (InsertSym1 arg) =>
         InsertSym0KindInference
     type instance Apply InsertSym0 l = InsertSym1 l

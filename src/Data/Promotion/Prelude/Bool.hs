@@ -1,3 +1,5 @@
+{-# LANGUAGE ExplicitNamespaces #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Promotion.Prelude.Bool
@@ -27,14 +29,14 @@ module Data.Promotion.Prelude.Bool (
   -- @Data.Bool@. The extra underscore is to avoid name clashes with the type
   -- 'Bool'.
 
-  Not, (:&&), (:||), Otherwise,
+  Not, type (&&), type (||), Otherwise,
 
   -- * Defunctionalization symbols
   TrueSym0, FalseSym0,
 
   NotSym0, NotSym1,
-  (:&&@#@$), (:&&@#@$$), (:&&@#@$$$),
-  (:||@#@$), (:||@#@$$), (:||@#@$$$),
+  type (&&@#@$), type (&&@#@$$), type (&&@#@$$$),
+  type (||@#@$), type (||@#@$$), type (||@#@$$$),
   Bool_Sym0, Bool_Sym1, Bool_Sym2, Bool_Sym3,
   OtherwiseSym0
   ) where

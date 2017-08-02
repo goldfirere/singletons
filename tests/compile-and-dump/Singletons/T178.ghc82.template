@@ -97,7 +97,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 Many Many = TrueSym0
       Equals_0123456789876543210 (_ :: Occ) (_ :: Occ) = FalseSym0
     instance PEq Occ where
-      type (:==) a b = Equals_0123456789876543210 a b
+      type (==) a b = Equals_0123456789876543210 a b
     sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)])
     sEmpty = Data.Singletons.Prelude.Instances.SNil
     data instance Sing (z :: Occ)
@@ -188,15 +188,15 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
                 (sing :: Sing "Many")))
             sA_0123456789876543210
     instance SEq Occ where
-      (%:==) SStr SStr = STrue
-      (%:==) SStr SOpt = SFalse
-      (%:==) SStr SMany = SFalse
-      (%:==) SOpt SStr = SFalse
-      (%:==) SOpt SOpt = STrue
-      (%:==) SOpt SMany = SFalse
-      (%:==) SMany SStr = SFalse
-      (%:==) SMany SOpt = SFalse
-      (%:==) SMany SMany = STrue
+      (%==) SStr SStr = STrue
+      (%==) SStr SOpt = SFalse
+      (%==) SStr SMany = SFalse
+      (%==) SOpt SStr = SFalse
+      (%==) SOpt SOpt = STrue
+      (%==) SOpt SMany = SFalse
+      (%==) SMany SStr = SFalse
+      (%==) SMany SOpt = SFalse
+      (%==) SMany SMany = STrue
     instance SDecide Occ where
       (%~) SStr SStr = Proved Refl
       (%~) SStr SOpt = Disproved (\ x -> case x of)

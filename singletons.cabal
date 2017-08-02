@@ -49,7 +49,8 @@ library
                       containers >= 0.5,
                       th-desugar >= 1.8 && < 1.9,
                       syb >= 0.4,
-                      text >= 1.2
+                      text >= 1.2,
+                      transformers >= 0.5.2
   default-language:   Haskell2010
   other-extensions:   TemplateHaskell
         -- TemplateHaskell must be listed in cabal file to work with

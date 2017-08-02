@@ -46,7 +46,7 @@ andName = '(&&)
 compareName = 'compare
 minBoundName = 'minBound
 maxBoundName = 'maxBound
-tyEqName = mk_name_tc "Data.Singletons.Prelude.Eq" ":=="
+tyEqName = mk_name_tc "Data.Singletons.Prelude.Eq" "=="
 repName = mkName "Rep"   -- this is actually defined in client code!
 nilName = '[]
 consName = '(:)
@@ -69,7 +69,7 @@ fromSingName = 'fromSing
 demoteName = ''Demote
 singKindClassName = ''SingKind
 sEqClassName = mk_name_tc "Data.Singletons.Prelude.Eq" "SEq"
-sEqMethName = mk_name_v "Data.Singletons.Prelude.Eq" "%:=="
+sEqMethName = mk_name_v "Data.Singletons.Prelude.Eq" "%=="
 sIfName = mk_name_v "Data.Singletons.Prelude.Bool" "sIf"
 sconsName = mk_name_d "Data.Singletons.Prelude.Instances" "SCons"
 snilName = mk_name_d "Data.Singletons.Prelude.Instances" "SNil"
@@ -136,11 +136,19 @@ mkTupleDataName n = mk_name_d "Data.Singletons.Prelude.Instances" $
 -- used when a value name appears in a pattern context
 -- works only for proper variables (lower-case names)
 promoteValNameLhs :: Name -> Name
-promoteValNameLhs = upcase
+promoteValNameLhs = promoteValNameLhsPrefix noPrefix
 
 -- like promoteValNameLhs, but adds a prefix to the promoted name
 promoteValNameLhsPrefix :: (String, String) -> Name -> Name
-promoteValNameLhsPrefix pres n = mkName $ toUpcaseStr pres n
+promoteValNameLhsPrefix pres@(_, symb) n
+  | nameBase n == "."
+  = mkName $ symb ++ ":."
+  | nameBase n == "!"
+  = mkName $ symb ++ ":!"
+    -- See Note [Special cases for (.) and (!)]
+
+  | otherwise
+  = mkName $ toUpcaseStr pres n
 
 -- used when a value name appears in an expression context
 -- works for both variables and datacons
@@ -158,6 +166,15 @@ promoteValRhs name
 -- names.
 promoteTySym :: Name -> Int -> Name
 promoteTySym name sat
+    | nameBase name == ":."
+    = default_case (mkName ".")
+    | nameBase name == ":!"
+    = default_case (mkName "!")
+      -- Although (:.) and (:!) are special cases, we need not have a colon in
+      -- front of their defunctionalization symbols, since only the names
+      -- (.) and (!) are problematic for the parser.
+      -- See Note [Special cases for (.) and (!)]
+
     | name == nilName
     = mkName $ "NilSym" ++ (show sat)
 
@@ -168,14 +185,18 @@ promoteTySym name sat
                  "Tuple" ++ show degree ++ "Sym" ++ (show sat)
 
     | otherwise
-    = let capped = toUpcaseStr noPrefix name in
+    = default_case name
+  where
+    default_case :: Name -> Name
+    default_case name' =
+      let capped = toUpcaseStr noPrefix name' in
       if isHsLetter (head capped)
       then mkName (capped ++ "Sym" ++ (show sat))
       else mkName (capped ++ "@#@" -- See Note [Defunctionalization symbol suffixes]
                           ++ (replicate (sat + 1) '$'))
 
 promoteClassName :: Name -> Name
-promoteClassName = prefixUCName "P" "#"
+promoteClassName = prefixName "P" "#"
 
 mkTyName :: Quasi q => Name -> q Name
 mkTyName tmName = do
@@ -203,14 +224,14 @@ singDataConName nm
   | nm == consName                                 = sconsName
   | Just degree <- tupleNameDegree_maybe nm        = mkTupleDataName degree
   | Just degree <- unboxedTupleNameDegree_maybe nm = mkTupleDataName degree
-  | otherwise                                      = prefixUCName "S" ":%" nm
+  | otherwise                                      = prefixConName "S" "%" nm
 
 singTyConName :: Name -> Name
 singTyConName name
   | name == listName                                 = sListName
   | Just degree <- tupleNameDegree_maybe name        = mkTupleTypeName degree
   | Just degree <- unboxedTupleNameDegree_maybe name = mkTupleTypeName degree
-  | otherwise                                        = prefixUCName "S" ":%" name
+  | otherwise                                        = prefixName "S" "%" name
 
 singClassName :: Name -> Name
 singClassName = singTyConName
@@ -218,8 +239,8 @@ singClassName = singTyConName
 singValName :: Name -> Name
 singValName n
      -- avoid unused variable warnings
-  | head (nameBase n) == '_' = (prefixLCName "_s" "%") $ n
-  | otherwise                = (prefixLCName "s" "%") $ upcase n
+  | head (nameBase n) == '_' = (prefixName "_s" "%") $ n
+  | otherwise                = (prefixName "s" "%") $ upcase n
 
 singFamily :: DType
 singFamily = DConT singFamilyName
@@ -250,25 +271,33 @@ mkEqPred ty1 ty2 = foldl DAppPr (DConPr equalityName) [ty1, ty2]
 Note [Defunctionalization symbol suffixes]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Before, we used to denote defunctionalization symbols by simply appending dollar
-signs at the end (e.g., (:+$) and (:+$$)). But this can lead to ambiguity when you
+signs at the end (e.g., (+$) and (+$$)). But this can lead to ambiguity when you
 have function names that consist of solely $ characters. For instance, if you
 tried to promote ($) and ($$) simultaneously, you'd get these promoted types:
 
-:$
-:$$
+$
+$$
 
 And these defunctionalization symbols:
 
-:$$
-:$$$
+$$
+$$$
 
 But now there's a name clash between the promoted type for ($) and the
 defunctionalization symbol for ($$)! The solution is to use a precede these
 defunctionalization dollar signs with another string (we choose @#@).
 So now the new defunctionalization symbols would be:
 
-:$@#@$
-:$@#@$$
+$@#@$
+$@#@$$
 
 And there is no conflict.
+
+Note [Special cases for (.) and (!)]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Almost every infix value name can be promoted trivially. For example, (+) works
+both at the value- and type-level. The two exceptions to this rule are (.) and (!),
+which we promote to the special type names (:.) and (:!), respectively.
+This is necessary since one cannot define or apply (.) or (!) at the type level --
+they simply won't parse. Bummer.
 -}

@@ -70,15 +70,15 @@ import Data.Singletons.Prelude.Num
 ----------------------------------------------------------------------
 
 instance SEq k => Eq (SomeSing k) where
-  SomeSing a == SomeSing b = fromSing (a %:== b)
-  SomeSing a /= SomeSing b = fromSing (a %:/= b)
+  SomeSing a == SomeSing b = fromSing (a %== b)
+  SomeSing a /= SomeSing b = fromSing (a %/= b)
 
 instance SOrd k => Ord (SomeSing k) where
   SomeSing a `compare` SomeSing b = fromSing (a `sCompare` b)
-  SomeSing a <         SomeSing b = fromSing (a %:<  b)
-  SomeSing a <=        SomeSing b = fromSing (a %:<= b)
-  SomeSing a >         SomeSing b = fromSing (a %:>  b)
-  SomeSing a >=        SomeSing b = fromSing (a %:>= b)
+  SomeSing a <         SomeSing b = fromSing (a %<  b)
+  SomeSing a <=        SomeSing b = fromSing (a %<= b)
+  SomeSing a >         SomeSing b = fromSing (a %>  b)
+  SomeSing a >=        SomeSing b = fromSing (a %>= b)
 
 instance SBounded k => Bounded (SomeSing k) where
   minBound = SomeSing sMinBound
@@ -95,9 +95,9 @@ instance (SEnum k, SingKind k) => Enum (SomeSing k) where
     map toSing (fromSing (sEnumFromThenTo from then_ to))
 
 instance SNum k => Num (SomeSing k) where
-  SomeSing a + SomeSing b = SomeSing (a %:+ b)
-  SomeSing a - SomeSing b = SomeSing (a %:- b)
-  SomeSing a * SomeSing b = SomeSing (a %:* b)
+  SomeSing a + SomeSing b = SomeSing (a %+ b)
+  SomeSing a - SomeSing b = SomeSing (a %- b)
+  SomeSing a * SomeSing b = SomeSing (a %* b)
   negate (SomeSing a) = SomeSing (sNegate a)
   abs    (SomeSing a) = SomeSing (sAbs a)
   signum (SomeSing a) = SomeSing (sSignum a)
