@@ -464,6 +464,7 @@ treatment):
 
    symbols: `(.@#@$)`, `(.@#@$$)`, `(.@#@$$$)`
 
+   The promoted type is special because GHC can't parse a type named `(.)`.
 
 7. original value: `(!)`
 
@@ -473,6 +474,7 @@ treatment):
 
    symbols: `(!@#@$)`, `(!@#@$$)`, `(!@#@$$$)`
 
+   The promoted type is special because GHC can't parse a type named `(!)`.
 
 8. original value: `___foo`
 
