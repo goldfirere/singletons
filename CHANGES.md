@@ -3,8 +3,6 @@ Changelog for singletons project
 
 next
 ----
-* Add `Div`, `Mod`, `DivMod`, `Quot`, `Rem`, `QuotRem` to `Data.Singletons.TypeLits`.
-
 * `Demote Nat` is now `Natural` (from `Numeric.Natural`) instead of `Integer`.
 
 * The naming conventions for infix identifiers (e.g., `(&*)`) have been overhauled.
@@ -52,6 +50,9 @@ next
     where `bottom` is a divergent computation, instead of `error`ing.
 
 * Add `Data.Singletons.Prelude.Void`.
+
+* Add promoted and singled versions of `div`, `mod`, `divMod`, `quot`, `rem`,
+  and `quotRem` to `Data.Singletons.TypeLits`.
 
 * Add `(<>)` and `(%<>)`, the promoted and singled versions of `AppendSymbol`
   from `GHC.TypeLits`.

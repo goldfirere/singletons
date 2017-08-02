@@ -28,7 +28,8 @@ module Data.Singletons.TypeLits (
   type (^), (%^),
   type (<>), (%<>),
 
-  Div, Mod, DivMod, Quot, Rem, QuotRem,
+  Div, sDiv, Mod, sMod, DivMod, sDivMod,
+  Quot, sQuot, Rem, sRem, QuotRem, sQuotRem,
 
   -- * Defunctionalization symbols
   ErrorSym0, ErrorSym1, UndefinedSym0,
@@ -44,11 +45,16 @@ module Data.Singletons.TypeLits (
   QuotRemSym0, QuotRemSym1, QuotRemSym2
   ) where
 
-import Data.Singletons.TypeLits.Internal
+import Data.Singletons.Internal
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Tuple
-
 import Data.Singletons.Promote
+import Data.Singletons.TypeLits.Internal
+
+import qualified GHC.TypeNats as TN
+import GHC.TypeNats (SomeNat(..))
+
+import Unsafe.Coerce
 
 -- | This bogus 'Num' instance is helpful for people who want to define
 -- functions over Nats that will only be used at the type level or
@@ -88,8 +94,9 @@ no_term_level_syms = error "The kind `Symbol` may not be used at the term level.
 $(genDefunSymbols [''KnownNat, ''KnownSymbol])
 
 ------------------------------------------------------------
--- Div, Mod, DivMod type families.
+-- Div, Mod, DivMod, and friends
 ------------------------------------------------------------
+
 $(promoteOnly [d|
   -- https://ghc.haskell.org/trac/ghc/ticket/13652 asks for these in GHC.TypeLits.
   -- That would be nice, since this implementation is horribly slow.
@@ -107,18 +114,61 @@ $(promoteOnly [d|
   div :: Nat -> Nat -> Nat
   div _ 0 = error "Division by zero."
   div x y = fst (divMod x y)
+  infixl 7 `div`
 
   mod :: Nat -> Nat -> Nat
   mod _ 0 = error "Division by zero."
   mod x y = snd (divMod x y)
+  infixl 7 `mod`
 
   quotRem :: Nat -> Nat -> (Nat, Nat)
   quotRem = divMod
 
   quot :: Nat -> Nat -> Nat
   quot = div
+  infixl 7 `quot`
 
   rem :: Nat -> Nat -> Nat
   rem = mod
+  infixl 7 `rem`
   |])
-  
+
+sDivMod :: Sing x -> Sing y -> Sing (DivMod x y)
+sDivMod sx sy =
+    let x     = fromSing sx
+        y     = fromSing sy
+        (q,r) = x `divMod` y
+        qRes  = TN.someNatVal q
+        rRes  = TN.someNatVal r
+    in case (qRes, rRes) of
+         (SomeNat (_ :: Proxy q), SomeNat (_ :: Proxy r))
+           -> unsafeCoerce (STuple2 (SNat :: Sing q) (SNat :: Sing r))
+
+sDiv :: Sing x -> Sing y -> Sing (Div x y)
+sDiv sx sy =
+    let x   = fromSing sx
+        y   = fromSing sy
+        res = TN.someNatVal (x `div` y)
+    in case res of
+         SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
+infixl 7 `sDiv`
+
+sMod :: Sing x -> Sing y -> Sing (Mod x y)
+sMod sx sy =
+    let x   = fromSing sx
+        y   = fromSing sy
+        res = TN.someNatVal (x `mod` y)
+    in case res of
+         SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
+infixl 7 `sMod`
+
+sQuotRem :: Sing x -> Sing y -> Sing (QuotRem x y)
+sQuotRem = sDivMod
+
+sQuot :: Sing x -> Sing y -> Sing (Quot x y)
+sQuot = sDiv
+infixl 7 `sQuot`
+
+sRem :: Sing x -> Sing y -> Sing (Rem x y)
+sRem = sMod
+infixl 7 `sRem`
