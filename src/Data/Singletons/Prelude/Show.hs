@@ -57,9 +57,7 @@ import           Data.Singletons.Internal
 import           Data.Singletons.Prelude.Base
 import           Data.Singletons.Prelude.Instances
 import           Data.Singletons.Prelude.List
-import           Data.Singletons.Prelude.Num
 import           Data.Singletons.Prelude.Ord
-import           Data.Singletons.Prelude.Tuple
 import           Data.Singletons.Prelude.Void
 import           Data.Singletons.Promote
 import           Data.Singletons.Single
@@ -174,22 +172,6 @@ $(promoteOnly [d|
   showsNat 8 = showChar "8"
   showsNat 9 = showChar "9"
   showsNat n = showsNat (n `div` 10) . showsNat (n `mod` 10)
-
-  -- https://ghc.haskell.org/trac/ghc/ticket/13652 asks for these in GHC.TypeLits.
-  -- That would be nice, since this implementation is horribly slow.
-  divmod :: Nat -> Nat -> Nat -> Nat -> (Nat, Nat)
-  divmod 0 _ q u = (q, u)
-  divmod n y q 0 = divmod (n-1) y (q+1) y
-  divmod n y q u = divmod (n-1) y q     (u-1)
-
-  div :: Nat -> Nat -> Nat
-  div _ 0 = 0
-  div x y = fst (divmod x (y-1) 0 (y-1))
-
-  mod :: Nat -> Nat -> Nat
-  mod _ 0 = 0
-  mod x y = (y-1) - snd (divmod x (y-1) 0 (y-1))
-
   |])
 
 -- | Note that this instance is really, really slow, since it uses an inefficient,
