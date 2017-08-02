@@ -57,9 +57,7 @@ import           Data.Singletons.Internal
 import           Data.Singletons.Prelude.Base
 import           Data.Singletons.Prelude.Instances
 import           Data.Singletons.Prelude.List
-import           Data.Singletons.Prelude.Num
 import           Data.Singletons.Prelude.Ord
-import           Data.Singletons.Prelude.Tuple
 import           Data.Singletons.Prelude.Void
 import           Data.Singletons.Promote
 import           Data.Singletons.Single
