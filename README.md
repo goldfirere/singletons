@@ -474,6 +474,16 @@ treatment):
    symbols: `(!@#@$)`, `(!@#@$$)`, `(!@#@$$$)`
 
 
+8. original value: `___foo`
+
+   promoted type\*: `US___foo` ("`US`" stands for "underscore")
+
+   singleton value\*: `___sfoo`
+
+   symbols\*: `US___fooSym0`
+
+   All functions that begin with leading underscores are treated similarly.
+
 Supported Haskell constructs
 ----------------------------
 

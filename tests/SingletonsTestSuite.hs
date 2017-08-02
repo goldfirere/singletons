@@ -80,6 +80,7 @@ tests =
     , compileAndDumpStdTest "T206"
     , compileAndDumpStdTest "T209"
     , compileAndDumpStdTest "T226"
+    , compileAndDumpStdTest "T229"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

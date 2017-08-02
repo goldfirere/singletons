@@ -1,0 +1,20 @@
+Singletons/T229.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| ___foo :: Bool -> Bool
+          ___foo _ = True |]
+  ======>
+    ___foo :: Bool -> Bool
+    ___foo _ = True
+    type US___fooSym1 (t :: Bool) = US___foo t
+    instance SuppressUnusedWarnings US___fooSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) US___fooSym0KindInference) GHC.Tuple.())
+    data US___fooSym0 (l :: TyFun Bool Bool)
+      = forall arg. SameKind (Apply US___fooSym0 arg) (US___fooSym1 arg) =>
+        US___fooSym0KindInference
+    type instance Apply US___fooSym0 l = US___foo l
+    type family US___foo (a :: Bool) :: Bool where
+      US___foo _ = TrueSym0
+    ___sfoo ::
+      forall (t :: Bool). Sing t -> Sing (Apply US___fooSym0 t :: Bool)
+    ___sfoo _ = STrue

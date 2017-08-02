@@ -140,12 +140,18 @@ promoteValNameLhs = promoteValNameLhsPrefix noPrefix
 
 -- like promoteValNameLhs, but adds a prefix to the promoted name
 promoteValNameLhsPrefix :: (String, String) -> Name -> Name
-promoteValNameLhsPrefix pres@(_, symb) n
+promoteValNameLhsPrefix pres@(alpha, symb) n
   | nameBase n == "."
   = mkName $ symb ++ ":."
   | nameBase n == "!"
   = mkName $ symb ++ ":!"
     -- See Note [Special cases for (.) and (!)]
+
+    -- We can't promote promote idenitifers beginning with underscores to
+    -- type names, so we work around the issue by prepending "US" at the
+    -- front of the name (#229).
+  | Just (us, rest) <- splitUnderscores (nameBase n)
+  = mkName $ alpha ++ "US" ++ us ++ rest
 
   | otherwise
   = mkName $ toUpcaseStr pres n
@@ -238,9 +244,12 @@ singClassName = singTyConName
 
 singValName :: Name -> Name
 singValName n
-     -- avoid unused variable warnings
-  | head (nameBase n) == '_' = (prefixName "_s" "%") $ n
-  | otherwise                = (prefixName "s" "%") $ upcase n
+     -- Push the 's' past the underscores, as this lets us avoid some unused
+     -- variable warnings (#229).
+  | Just (us, rest) <- splitUnderscores (nameBase n)
+  = prefixName (us ++ "s") "%" $ mkName rest
+  | otherwise
+  = prefixName "s" "%" $ upcase n
 
 singFamily :: DType
 singFamily = DConT singFamilyName
@@ -266,6 +275,15 @@ foldApply = foldl apply
 -- make and equality predicate
 mkEqPred :: DType -> DType -> DPred
 mkEqPred ty1 ty2 = foldl DAppPr (DConPr equalityName) [ty1, ty2]
+
+-- | If a 'String' begins with one or more underscores, return
+-- @'Just' (us, rest)@, where @us@ contain all of the underscores at the
+-- beginning of the 'String' and @rest@ contains the remainder of the 'String'.
+-- Otherwise, return 'Nothing'.
+splitUnderscores :: String -> Maybe (String, String)
+splitUnderscores s = case span (== '_') s of
+                       ([], _) -> Nothing
+                       res     -> Just res
 
 {-
 Note [Defunctionalization symbol suffixes]
