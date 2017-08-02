@@ -3,6 +3,8 @@ Changelog for singletons project
 
 next
 ----
+* Add `Div`, `Mod`, `DivMod` to `Data.Singletons.TypeLits`.
+
 * `Demote Nat` is now `Natural` (from `Numeric.Natural`) instead of `Integer`.
 
 * The naming conventions for infix identifiers (e.g., `(&*)`) have been overhauled.
