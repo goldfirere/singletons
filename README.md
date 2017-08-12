@@ -213,12 +213,12 @@ addition, there is a `ShowSing` class provided in the
 `Show` instances for `Sing` instances.
 
 What is the difference between the two? Let's use the `False` constructor as an
-example. If you used the `PShow Bool`, then the output of calling `Show_` on
-`False` is `"False"`, much like the value-level `Show Bool` instance (similarly
-for the `SShow Bool` instance). However, the `ShowSing Bool` instance is
-intended for printing the value of the _singleton_ constructor `SFalse`, so
-calling `showsSingPrec 0 SFalse` yields `"SFalse"` (simiarly for the
-`Show (Sing (SBool z))` instance).
+example. If you used the `PShow Bool` instance, then the output of calling
+`Show_` on `False` is `"False"`, much like the value-level `Show Bool` instance
+(similarly for the `SShow Bool` instance). However, the `ShowSing Bool`
+instance is intended for printing the value of the _singleton_ constructor
+`SFalse`, so calling `showsSingPrec 0 SFalse` yields `"SFalse"` (simiarly for
+the `Show (Sing (SBool z))` instance).
 
 Instance of `PShow`, `SShow`, `ShowSing`, and `Show` (for the singleton type)
 are generated when `singletons` is called on a datatype that has
