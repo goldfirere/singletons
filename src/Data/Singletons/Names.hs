@@ -40,7 +40,8 @@ boolName, andName, tyEqName, compareName, minBoundName,
   singletonsToEnumName, singletonsFromEnumName, enumName, singletonsEnumName,
   equalsName, constraintName,
   showName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
-  showSpaceName, showStringName, composeName, gtName :: Name
+  showSpaceName, showStringName, showSingName, showsSingPrecName,
+  composeName, gtName :: Name
 boolName = ''Bool
 andName = '(&&)
 compareName = 'compare
@@ -109,6 +110,8 @@ showParenName = 'showParen
 showSpaceName = 'showSpace
 showsPrecName = 'showsPrec
 showStringName = 'showString
+showSingName = mk_name_tc "Data.Singletons.ShowSing" "ShowSing"
+showsSingPrecName = mk_name_v "Data.Singletons.ShowSing" "showsSingPrec"
 composeName = '(.)
 gtName = '(>)
 showCommaSpaceName = 'showCommaSpace
@@ -284,6 +287,16 @@ splitUnderscores :: String -> Maybe (String, String)
 splitUnderscores s = case span (== '_') s of
                        ([], _) -> Nothing
                        res     -> Just res
+
+-- Walk a DPred, applying a function to all occurrences of constructor names.
+modifyConNameDPred :: (Name -> Name) -> DPred -> DPred
+modifyConNameDPred mod_con_name = go
+  where
+    go (DAppPr p t)  = DAppPr (go p) t
+    go (DSigPr p k)  = DSigPr (go p) k
+    go p@(DVarPr _)  = p
+    go (DConPr n)    = DConPr (mod_con_name n)
+    go p@DWildCardPr = p
 
 {-
 Note [Defunctionalization symbol suffixes]

@@ -64,6 +64,7 @@ import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Num
+import Data.Singletons.ShowSing
 
 ----------------------------------------------------------------------
 ---- SomeSing instances ----------------------------------------------
@@ -102,3 +103,7 @@ instance SNum k => Num (SomeSing k) where
   abs    (SomeSing a) = SomeSing (sAbs a)
   signum (SomeSing a) = SomeSing (sSignum a)
   fromInteger n = withSomeSing (fromIntegral n) (SomeSing . sFromInteger)
+
+instance ShowSing k => Show (SomeSing k) where
+  showsPrec p (SomeSing s) =
+    showParen (p > 10) $ showString "SomeSing " . showsSingPrec 11 s

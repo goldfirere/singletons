@@ -2443,6 +2443,57 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (%~) SCZ SCX = Disproved (\ x -> case x of)
       (%~) SCZ SCY = Disproved (\ x -> case x of)
       (%~) SCZ SCZ = Proved Refl
+    instance (Data.Singletons.ShowSing.ShowSing U,
+              Data.Singletons.ShowSing.ShowSing Nat) =>
+             Data.Singletons.ShowSing.ShowSing U where
+      Data.Singletons.ShowSing.showsSingPrec _ SBOOL = showString "SBOOL"
+      Data.Singletons.ShowSing.showsSingPrec _ SSTRING
+        = showString "SSTRING"
+      Data.Singletons.ShowSing.showsSingPrec _ SNAT = showString "SNAT"
+      Data.Singletons.ShowSing.showsSingPrec
+        p_0123456789876543210
+        (SVEC arg_0123456789876543210 arg_0123456789876543210)
+        = (showParen (((>) p_0123456789876543210) 10))
+            (((.) (showString "SVEC "))
+               (((.)
+                   ((Data.Singletons.ShowSing.showsSingPrec 11)
+                      arg_0123456789876543210))
+                  (((.) GHC.Show.showSpace)
+                     ((Data.Singletons.ShowSing.showsSingPrec 11)
+                        arg_0123456789876543210))))
+    instance (Data.Singletons.ShowSing.ShowSing U,
+              Data.Singletons.ShowSing.ShowSing Nat) =>
+             Show (Sing (z :: U)) where
+      showsPrec = Data.Singletons.ShowSing.showsSingPrec
+    instance Data.Singletons.ShowSing.ShowSing AChar where
+      Data.Singletons.ShowSing.showsSingPrec _ SCA = showString "SCA"
+      Data.Singletons.ShowSing.showsSingPrec _ SCB = showString "SCB"
+      Data.Singletons.ShowSing.showsSingPrec _ SCC = showString "SCC"
+      Data.Singletons.ShowSing.showsSingPrec _ SCD = showString "SCD"
+      Data.Singletons.ShowSing.showsSingPrec _ SCE = showString "SCE"
+      Data.Singletons.ShowSing.showsSingPrec _ SCF = showString "SCF"
+      Data.Singletons.ShowSing.showsSingPrec _ SCG = showString "SCG"
+      Data.Singletons.ShowSing.showsSingPrec _ SCH = showString "SCH"
+      Data.Singletons.ShowSing.showsSingPrec _ SCI = showString "SCI"
+      Data.Singletons.ShowSing.showsSingPrec _ SCJ = showString "SCJ"
+      Data.Singletons.ShowSing.showsSingPrec _ SCK = showString "SCK"
+      Data.Singletons.ShowSing.showsSingPrec _ SCL = showString "SCL"
+      Data.Singletons.ShowSing.showsSingPrec _ SCM = showString "SCM"
+      Data.Singletons.ShowSing.showsSingPrec _ SCN = showString "SCN"
+      Data.Singletons.ShowSing.showsSingPrec _ SCO = showString "SCO"
+      Data.Singletons.ShowSing.showsSingPrec _ SCP = showString "SCP"
+      Data.Singletons.ShowSing.showsSingPrec _ SCQ = showString "SCQ"
+      Data.Singletons.ShowSing.showsSingPrec _ SCR = showString "SCR"
+      Data.Singletons.ShowSing.showsSingPrec _ SCS = showString "SCS"
+      Data.Singletons.ShowSing.showsSingPrec _ SCT = showString "SCT"
+      Data.Singletons.ShowSing.showsSingPrec _ SCU = showString "SCU"
+      Data.Singletons.ShowSing.showsSingPrec _ SCV = showString "SCV"
+      Data.Singletons.ShowSing.showsSingPrec _ SCW = showString "SCW"
+      Data.Singletons.ShowSing.showsSingPrec _ SCX = showString "SCX"
+      Data.Singletons.ShowSing.showsSingPrec _ SCY = showString "SCY"
+      Data.Singletons.ShowSing.showsSingPrec _ SCZ = showString "SCZ"
+    instance Show (Sing (z :: AChar)) where
+      showsPrec = Data.Singletons.ShowSing.showsSingPrec
     instance SingI BOOL where
       sing = SBOOL
     instance SingI STRING where

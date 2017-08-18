@@ -203,6 +203,36 @@ on a datatype that has `deriving Eq`. You can also generate these instances
 directly through functions exported from `Data.Singletons.TH`.
 
 
+`Show` classes
+--------------
+
+Promoted and singled versions of the `Show` class (`PShow` and `SShow`,
+respectively) are provided in the `Data.Singletons.Prelude.Show` module. In
+addition, there is a `ShowSing` class provided in the
+`Data.Singletons.ShowSing` module, which facilitates the ability to write
+`Show` instances for `Sing` instances.
+
+What is the difference between the two? Let's use the `False` constructor as an
+example. If you used the `PShow Bool` instance, then the output of calling
+`Show_` on `False` is `"False"`, much like the value-level `Show Bool` instance
+(similarly for the `SShow Bool` instance). However, the `ShowSing Bool`
+instance is intended for printing the value of the _singleton_ constructor
+`SFalse`, so calling `showsSingPrec 0 SFalse` yields `"SFalse"` (simiarly for
+the `Show (Sing (SBool z))` instance).
+
+Instance of `PShow`, `SShow`, `ShowSing`, and `Show` (for the singleton type)
+are generated when `singletons` is called on a datatype that has
+`deriving Show`. You can also generate these instances directly through
+functions exported from `Data.Singletons.TH`.
+
+A promoted and singled `Show` instance is provided for `Symbol`, but it is only
+a crude approximation of the value-level `Show` instance for `String`. On the
+value level, showing `String`s escapes special characters (such as double
+quotes), but implementing this requires pattern-matching on character literals,
+something which is currently impossible at the type level. As a consequence, the
+type-level `Show` instance for `Symbol`s does not do any character escaping.
+
+
 Pre-defined singletons
 ----------------------
 
@@ -587,13 +617,6 @@ use the promoted definition, but not the original, term-level one.
 This is the same line of reasoning that forbids the use of `Nat` or `Symbol`
 in datatype definitions. But, see [this bug
 report](https://github.com/goldfirere/singletons/issues/76) for a workaround.
-
-A promoted and singled `Show` instance is provided for `Symbol`, but it is only
-a crude approximation of the value-level `Show` instance for `String`. On the
-value level, showing `String`s escapes special characters (such as double
-quotes), but implementing this requires pattern-matching on character literals,
-something which is currently impossible at the type level. As a consequence, the
-type-level `Show` instance for `Symbol`s does not do any character escaping.
 
 Support for `*`
 ---------------

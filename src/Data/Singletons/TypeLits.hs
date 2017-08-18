@@ -49,6 +49,7 @@ import Data.Singletons.Internal
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Tuple
 import Data.Singletons.Promote
+import Data.Singletons.ShowSing ()      -- for ShowSing/Show instances
 import Data.Singletons.TypeLits.Internal
 
 import qualified GHC.TypeNats as TN

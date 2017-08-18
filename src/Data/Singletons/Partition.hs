@@ -38,12 +38,13 @@ data PartitionedDecs =
         , pd_instance_decs :: [UInstDecl]
         , pd_data_decs :: [DataDecl]
         , pd_derived_eq_decs :: [DerivedEqDecl]
+        , pd_derived_show_decs :: [DerivedShowDecl]
         }
 
 instance Monoid PartitionedDecs where
-  mempty = PDecs [] [] [] [] []
-  mappend (PDecs a1 b1 c1 d1 e1) (PDecs a2 b2 c2 d2 e2) =
-    PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2) (e1 <> e2)
+  mempty = PDecs [] [] [] [] [] []
+  mappend (PDecs a1 b1 c1 d1 e1 f1) (PDecs a2 b2 c2 d2 e2 f2) =
+    PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2) (e1 <> e2) (f1 <> f2)
 
 -- | Split up a @[DDec]@ into its pieces, extracting 'Ord' instances
 -- from deriving clauses
@@ -179,17 +180,20 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty cons =
        , deriv_name == enumName
       -> mk_derived_inst <$> mkEnumInstance mb_ctxt ty cons
 
-       | stock_or_default
-       , deriv_name == showName
-      -> mk_derived_inst <$> mkShowInstance mb_ctxt ty cons
-
-         -- See Note [Derived Eq instances] in Data.Singletons.Syntax
+         -- See Note [DerivedDecl] in Data.Singletons.Syntax
        | stock_or_default
        , deriv_name == eqName
-      -> return $ mk_derived_eq_inst
-           DerivedEqDecl { ded_mb_cxt = mb_ctxt
-                         , ded_type   = ty
-                         , ded_cons   = cons }
+      -> return $ mk_derived_eq_inst $ mk_derived_decl mb_ctxt ty cons
+
+         -- See Note [DerivedDecl] in Data.Singletons.Syntax
+       | stock_or_default
+       , deriv_name == showName
+      -> do -- This will become PShow/SShow instances...
+            inst_for_promotion <- mkShowInstance ForPromotion mb_ctxt ty cons
+            -- ...and this will become ShowSing/Show instances.
+            let inst_for_ShowSing = mk_derived_decl mb_ctxt ty cons
+            pure $ mempty { pd_instance_decs     = [inst_for_promotion]
+                          , pd_derived_show_decs = [inst_for_ShowSing] }
 
          -- If we can't find a stock class, but the user bothered to use an
          -- explicit stock keyword, we can at least warn them about it.
@@ -202,6 +206,9 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty cons =
   where
       mk_derived_inst    dec = mempty { pd_instance_decs   = [dec] }
       mk_derived_eq_inst dec = mempty { pd_derived_eq_decs = [dec] }
+      mk_derived_decl mb_ctxt' ty' cons' = DerivedDecl { ded_mb_cxt = mb_ctxt'
+                                                       , ded_type   = ty'
+                                                       , ded_cons   = cons' }
       stock_or_default = isStockOrDefault mb_strat
 
 -- Is this being used with an explicit stock strategy, or no strategy at all?

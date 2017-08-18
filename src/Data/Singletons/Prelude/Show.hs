@@ -1,5 +1,6 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DefaultSignatures #-}
+{-# LANGUAGE EmptyCase #-}
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE PolyKinds #-}
@@ -58,7 +59,6 @@ import           Data.Singletons.Prelude.Base
 import           Data.Singletons.Prelude.Instances
 import           Data.Singletons.Prelude.List
 import           Data.Singletons.Prelude.Ord
-import           Data.Singletons.Prelude.Void
 import           Data.Singletons.Promote
 import           Data.Singletons.Single
 import           Data.Singletons.TypeLits
@@ -154,9 +154,6 @@ $(singletonsOnly [d|
           => Show (a,b,c,d,e,f,g) where
     showsPrec _ (a,b,c,d,e,f,g) s
           = show_tuple [shows a, shows b, shows c, shows d, shows e, shows f, shows g] s
-
-  instance Show Void where
-    showsPrec _ = absurd
   |])
 
 $(promoteOnly [d|
@@ -193,4 +190,5 @@ instance SShow Nat where
 show_ :: P.Show a => a -> String
 show_ = P.show
 
-$(singShowInstances [ ''(), ''Maybe, ''Either, ''NonEmpty, ''Bool, ''Ordering ])
+$(singShowInstances [ ''(), ''Maybe, ''Either, ''NonEmpty, ''Bool,
+                      ''Ordering, ''Void ])

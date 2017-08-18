@@ -105,7 +105,7 @@ promoteShowInstances = concatMapM promoteShowInstance
 
 -- | Produce an instance for 'PShow' from the given type
 promoteShowInstance :: DsMonad q => Name -> q [Dec]
-promoteShowInstance = promoteInstance mkShowInstance "Show"
+promoteShowInstance = promoteInstance (mkShowInstance ForPromotion) "Show"
 
 -- | Produce an instance for @(==)@ (type-level equality) from the given type
 promoteEqInstance :: DsMonad q => Name -> q [Dec]
@@ -180,18 +180,18 @@ promoteDecs :: [DDec] -> PrM ()
 promoteDecs raw_decls = do
   decls <- expand raw_decls     -- expand type synonyms
   checkForRepInDecls decls
-  PDecs { pd_let_decs        = let_decs
-        , pd_class_decs      = classes
-        , pd_instance_decs   = insts
-        , pd_data_decs       = datas
-        , pd_derived_eq_decs = derived_eq_decs } <- partitionDecs decls
+  PDecs { pd_let_decs          = let_decs
+        , pd_class_decs        = classes
+        , pd_instance_decs     = insts
+        , pd_data_decs         = datas
+        , pd_derived_eq_decs   = derived_eq_decs } <- partitionDecs decls
 
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
   mapM_ promoteClassDec classes
   let all_meth_sigs = foldMap (lde_types . cd_lde) classes
   mapM_ (promoteInstanceDec all_meth_sigs) insts
-  mapM_ promoteDerivedEqDec derived_eq_decs
+  mapM_ promoteDerivedEqDec   derived_eq_decs
   promoteDataDecs datas
 
 promoteDataDecs :: [DataDecl] -> PrM ()
@@ -725,9 +725,9 @@ promoteLitPat (StringL str) = return $ DLitT (StrTyLit str)
 promoteLitPat lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
 
--- See Note [Derived Eq instances]
+-- See Note [DerivedDecl]
 promoteDerivedEqDec :: DerivedEqDecl -> PrM ()
-promoteDerivedEqDec (DerivedEqDecl { ded_type = ty, ded_cons = cons }) = do
+promoteDerivedEqDec (DerivedDecl { ded_type = ty, ded_cons = cons }) = do
   kind <- promoteType ty
   inst_decs <- mkEqTypeInstance kind cons
   emitDecs inst_decs

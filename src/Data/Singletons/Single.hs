@@ -13,6 +13,7 @@ module Data.Singletons.Single where
 import Prelude hiding ( exp )
 import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (Quasi(..))
+import Data.Singletons.Deriving.Infer
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Deriving.Enum
@@ -166,12 +167,41 @@ singEnumInstance :: DsMonad q => Name -> q [Dec]
 singEnumInstance = singInstance mkEnumInstance "Enum"
 
 -- | Create instance of 'SShow' for the given type
+--
+-- (Not to be confused with 'showShowInstance'.)
 singShowInstance :: DsMonad q => Name -> q [Dec]
-singShowInstance = singInstance mkShowInstance "Show"
+singShowInstance = singInstance (mkShowInstance ForPromotion) "Show"
 
 -- | Create instances of 'SShow' for the given types
+--
+-- (Not to be confused with 'showSingInstances'.)
 singShowInstances :: DsMonad q => [Name] -> q [Dec]
 singShowInstances = concatMapM singShowInstance
+
+-- | Create instance of 'ShowSing' for the given type
+--
+-- (Not to be confused with 'singShowInstance'.)
+
+-- (We can't simply use singInstance to create ShowSing instances, because
+-- there's no promoted counterpart. So we use this instead.)
+showSingInstance :: DsMonad q => Name -> q [Dec]
+showSingInstance name = do
+  (tvbs, cons) <- getDataD ("I cannot make an instance of ShowSing for it.") name
+  dtvbs <- mapM dsTvb tvbs
+  dcons <- concatMapM dsCon cons
+  let tyvars = map (DVarT . extractTvbName) dtvbs
+      kind = foldType (DConT name) tyvars
+      deriv_show_decl = DerivedDecl { ded_mb_cxt = Nothing
+                                    , ded_type   = kind
+                                    , ded_cons   = dcons }
+  (show_insts, _) <- singM [] $ singDerivedShowDecs deriv_show_decl
+  pure $ decsToTH show_insts
+
+-- | Create instances of 'ShowSing' for the given types
+--
+-- (Not to be confused with 'singShowInstances'.)
+showSingInstances :: DsMonad q => [Name] -> q [Dec]
+showSingInstances = concatMapM showSingInstance
 
 singInstance :: DsMonad q
              => (Maybe DCxt -> DType -> [DCon] -> q UInstDecl)
@@ -202,11 +232,12 @@ singInfo (DPatSynI {}) =
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
 singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
   decls <- expand raw_decls     -- expand type synonyms
-  PDecs { pd_let_decs        = letDecls
-        , pd_class_decs      = classes
-        , pd_instance_decs   = insts
-        , pd_data_decs       = datas
-        , pd_derived_eq_decs = derivedEqDecs } <- partitionDecs decls
+  PDecs { pd_let_decs          = letDecls
+        , pd_class_decs        = classes
+        , pd_instance_decs     = insts
+        , pd_data_decs         = datas
+        , pd_derived_eq_decs   = derivedEqDecs
+        , pd_derived_show_decs = derivedShowDecs } <- partitionDecs decls
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
     promoteDataDecs datas
@@ -226,7 +257,11 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
                                  newClassDecls <- mapM singClassD classes'
                                  newInstDecls <- mapM singInstD insts'
                                  newDerivedEqDecs <- concatMapM singDerivedEqDecs derivedEqDecs
-                                 return (newDataDecls ++ newClassDecls ++ newInstDecls ++ newDerivedEqDecs)
+                                 newDerivedShowDecs <- concatMapM singDerivedShowDecs derivedShowDecs
+                                 return $ newDataDecls ++ newClassDecls
+                                                       ++ newInstDecls
+                                                       ++ newDerivedEqDecs
+                                                       ++ newDerivedShowDecs
     return $ promDecls ++ (map DLetDec newLetDecls) ++ newDecls
 
 -- see comment at top of file
@@ -540,11 +575,11 @@ singExp (ADLetE env exp) res_ki =
 singExp (ADSigE {}) _ =
   fail "Singling of explicit type annotations not yet supported."
 
--- See Note [Derived Eq instances]
+-- See Note [DerivedDecl]
 singDerivedEqDecs :: DerivedEqDecl -> SgM [DDec]
-singDerivedEqDecs (DerivedEqDecl { ded_mb_cxt = mb_ctxt
-                                 , ded_type   = ty
-                                 , ded_cons   = cons }) = do
+singDerivedEqDecs (DerivedDecl { ded_mb_cxt = mb_ctxt
+                               , ded_type   = ty
+                               , ded_cons   = cons }) = do
   (scons, _) <- singM [] $ mapM singCtor cons
   mb_sctxt <- mapM (mapM singPred) mb_ctxt
   kind <- promoteType ty
@@ -562,16 +597,46 @@ singDerivedEqDecs (DerivedEqDecl { ded_mb_cxt = mb_ctxt
 
 -- Walk a DPred, replacing all occurrences of SEq with SDecide.
 sEqToSDecide :: DPred -> DPred
-sEqToSDecide (DAppPr p t) = DAppPr (sEqToSDecide p) t
-sEqToSDecide (DSigPr p k) = DSigPr (sEqToSDecide p) k
-sEqToSDecide p@(DVarPr _) = p
-sEqToSDecide p@(DConPr n)
-    -- Why don't we directly compare n to sEqClassName? Because n is almost certainly
-    -- produced from a call to singClassName, which uses unqualified Names. Ugh.
-  | nameBase n == nameBase sEqClassName
-  = DConPr sDecideClassName
-  | otherwise = p
-sEqToSDecide DWildCardPr = DWildCardPr
+sEqToSDecide = modifyConNameDPred $ \n ->
+  -- Why don't we directly compare n to sEqClassName? Because n is almost certainly
+  -- produced from a call to singClassName, which uses unqualified Names. Ugh.
+  if nameBase n == nameBase sEqClassName
+     then sDecideClassName
+     else n
+
+-- See Note [DerivedDecl]
+singDerivedShowDecs :: DerivedShowDecl -> SgM [DDec]
+singDerivedShowDecs (DerivedDecl { ded_mb_cxt = mb_cxt
+                                 , ded_type   = ty
+                                 , ded_cons   = cons }) = do
+    -- First, generate the ShowSing instance.
+    show_sing_inst <- mkShowInstance ForShowSing mb_cxt ty cons
+    z <- qNewName "z"
+    -- Next, the Show instance for the singleton type, like this:
+    --
+    --   instance (ShowSing a, ShowSing b) => Sing (Sing (z :: Either a b)) where
+    --     showsPrec = showsSingPrec
+    --
+    -- Be careful: we want to generate an instance context that uses ShowSing,
+    -- not Show, because we are reusing the ShowSing instance.
+    let show_cxt  = inferConstraintsDef (fmap (mkShowContext ForShowSing) mb_cxt)
+                                        (DConPr showSingName)
+                                        cons
+        show_inst = DInstanceD Nothing show_cxt
+                               (DConT showName `DAppT` (singFamily `DAppT` DSigT (DVarT z) ty))
+                               [DLetDec (DFunD showsPrecName
+                                               [DClause [] (DVarE showsSingPrecName)])]
+    pure [toInstanceD show_sing_inst, show_inst]
+  where
+    toInstanceD :: UInstDecl -> DDec
+    toInstanceD (InstDecl { id_cxt = cxt, id_name = inst_name
+                     , id_arg_tys = inst_tys, id_meths = ann_meths }) =
+      DInstanceD Nothing cxt (foldType (DConT inst_name) inst_tys)
+                         (map (DLetDec . toFunD) ann_meths)
+
+    toFunD :: (Name, ULetDecRHS) -> DLetDec
+    toFunD (fun_name, UFunction clauses) = DFunD fun_name clauses
+    toFunD (val_name, UValue rhs)        = DValD (DVarPa val_name) rhs
 
 isException :: DExp -> Bool
 isException (DVarE n)             = nameBase n == "sUndefined"

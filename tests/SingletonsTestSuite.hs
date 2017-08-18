@@ -72,7 +72,7 @@ tests =
     , compileAndDumpStdTest "T187"
     , compileAndDumpStdTest "T190"
     , compileAndDumpStdTest "ShowDeriving"
-    , compileAndDumpStdTest "BadShowDeriving"
+    , compileAndDumpStdTest "EmptyShowDeriving"
     , compileAndDumpStdTest "StandaloneDeriving"
     , compileAndDumpStdTest "T197"
     , compileAndDumpStdTest "T197b"

@@ -8,13 +8,14 @@ and contains various other AST definitions.
 -}
 
 {-# LANGUAGE DataKinds, TypeFamilies, PolyKinds, DeriveDataTypeable,
-             StandaloneDeriving, FlexibleInstances #-}
+             StandaloneDeriving, FlexibleInstances, ConstraintKinds #-}
 
 module Data.Singletons.Syntax where
 
 import Prelude hiding ( exp )
+import Data.Kind
 import Data.Monoid
-import Language.Haskell.TH.Syntax
+import Language.Haskell.TH.Syntax hiding (Type)
 import Language.Haskell.TH.Desugar
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
@@ -133,29 +134,45 @@ buildLetDecEnv = go emptyLetDecEnv
       go (infixDecl f n <> acc) rest
     go acc (DPragmaD{} : rest) = go acc rest
 
--- See Note [Derived Eq instances]
-data DerivedEqDecl = DerivedEqDecl
-  { ded_mb_cxt:: Maybe DCxt
-  , ded_type  :: DType
-  , ded_cons  :: [DCon]
+-- See Note [DerivedDecl]
+data DerivedDecl (cls :: Type -> Constraint) = DerivedDecl
+  { ded_mb_cxt :: Maybe DCxt
+  , ded_type   :: DType
+  , ded_cons   :: [DCon]
   }
 
-{- Note [Derived Eq instances]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Most derived instances are handled in Data.Singletons.Partition.partitionDecs.
-There is one notable exception to this rule, however: Eq instances.
-The reason is because deriving Eq in singletons not only derives PEq/SEq instances,
-but it also derives SDecide instances. This additional complication makes Eq
-difficult to integrate with the other deriving machinery, so we handle it
-specially in Data.Singletons.Promote and Data.Singletons.Single
-(depending on the task at hand).
+type DerivedEqDecl   = DerivedDecl Eq
+type DerivedShowDecl = DerivedDecl Show
 
-The DerivedEqDecl type encodes just enough information to recreate
-the derived Eq instance:
+{- Note [DerivedDecl]
+~~~~~~~~~~~~~~~~~~~~~
+Most derived instances are wholly handled in
+Data.Singletons.Partition.partitionDecs. There are two notable exceptions to
+this rule, however:
+
+* Eq instances (which are handled entirely outside of partitionDecs)
+* Show instances (which are partially handled outside of partitionDecs)
+
+For these instances, we use a DerivedDecl data type to encode just enough
+information to recreate the derived instance:
 
 1. Just the instance context, if it's standalone-derived, or Nothing if it's in
    a deriving clause (ded_mb_cxt)
 2. The datatype, applied to some number of type arguments, as in the
    instance declaration (ded_type)
 3. The datatype's constructors (ded_cons)
+
+Why are these instances handled outside of partitionDecs?
+
+* Deriving Eq in singletons not only derives PEq/SEq instances, but it also
+  derives SDecide instances. This additional complication makes Eq difficult
+  to integrate with the other deriving machinery, so we handle it specially
+  in Data.Singletons.Promote and Data.Singletons.Single (depending on the task
+  at hand).
+* Deriving Show in singletons not only derives PShow/SShow instances, but it
+  also derives ShowSing/Sing instances for singletons types. To make this work,
+  we let partitionDecs handle the PShow/SShow instances, but we also stick the
+  relevant info into a DerivedDecl value for later use in
+  Data.Singletons.Single, where we additionally generate ShowSing/Show
+  instances.
 -}

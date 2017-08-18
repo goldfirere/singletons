@@ -35,6 +35,7 @@ import Data.Singletons.Prelude.Instances
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Decide
+import Data.Singletons.ShowSing
 import Type.Reflection
 import Unsafe.Coerce
 
@@ -45,6 +46,7 @@ import Data.Type.Equality ((:~:)(..))
 
 newtype instance Sing (a :: *) where
   STypeRep :: TypeRep a -> Sing a
+    deriving Show
 
 -- | A variant of 'SomeTypeRep' whose underlying 'TypeRep' is restricted to
 -- kind @*@.
@@ -74,6 +76,9 @@ instance SDecide Type where
     case eqTypeRep tra trb of
       Just HRefl -> Proved Refl
       Nothing    -> Disproved (\Refl -> error "Type.Reflection.eqTypeRep failed")
+
+instance ShowSing Type where
+  showsSingPrec = showsPrec
 
 -- TestEquality instance already defined, but we need this one:
 instance TestCoercion Sing where
