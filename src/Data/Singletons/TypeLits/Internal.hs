@@ -26,7 +26,7 @@ module Data.Singletons.TypeLits.Internal (
   SNat, SSymbol, withKnownNat, withKnownSymbol,
   Error, sError,
   Undefined, sUndefined,
-  KnownNat, natVal, KnownSymbol, symbolVal,
+  KnownNat, TN.natVal, KnownSymbol, symbolVal,
   type (^), (%^),
   type (<>), (%<>),
 
@@ -116,7 +116,7 @@ instance SEq Symbol where
 
 -- POrd instances
 instance POrd Nat where
-  type (a :: Nat) `Compare` (b :: Nat) = a `TL.CmpNat` b
+  type (a :: Nat) `Compare` (b :: Nat) = a `TN.CmpNat` b
 
 instance POrd Symbol where
   type (a :: Symbol) `Compare` (b :: Symbol) = a `TL.CmpSymbol` b

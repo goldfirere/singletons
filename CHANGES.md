@@ -4,6 +4,9 @@ Changelog for singletons project
 next
 ----
 * `Demote Nat` is now `Natural` (from `Numeric.Natural`) instead of `Integer`.
+  In accordance with this change, `Data.Singletons.TypeLits` now exposes
+  `GHC.TypeNats.natVal` (which returns a `Natural`) instead of
+  `GHC.TypeLits.natVal` (which returns an `Integer`).
 
 * The naming conventions for infix identifiers (e.g., `(&*)`) have been overhauled.
   * Infix functions (that are not constructors) are no longer prepended with a
