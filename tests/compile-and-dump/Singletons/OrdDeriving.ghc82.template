@@ -362,7 +362,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       fromSing SZero = Zero
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
-      toSing (Succ b)
+      toSing (Succ (b :: Demote Nat))
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
     data instance Sing (z :: Foo a b c d)
@@ -407,7 +407,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         = (((E (fromSing b)) (fromSing b)) (fromSing b)) (fromSing b)
       fromSing (SF b b b b)
         = (((F (fromSing b)) (fromSing b)) (fromSing b)) (fromSing b)
-      toSing (A b b b b)
+      toSing
+        (A (b :: Demote a) (b :: Demote b) (b :: Demote c) (b :: Demote d))
         = case
               (((GHC.Tuple.(,,,) (toSing b :: SomeSing a))
                   (toSing b :: SomeSing b))
@@ -416,7 +417,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing ((((SA c) c) c) c) }
-      toSing (B b b b b)
+      toSing
+        (B (b :: Demote a) (b :: Demote b) (b :: Demote c) (b :: Demote d))
         = case
               (((GHC.Tuple.(,,,) (toSing b :: SomeSing a))
                   (toSing b :: SomeSing b))
@@ -425,7 +427,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing ((((SB c) c) c) c) }
-      toSing (C b b b b)
+      toSing
+        (C (b :: Demote a) (b :: Demote b) (b :: Demote c) (b :: Demote d))
         = case
               (((GHC.Tuple.(,,,) (toSing b :: SomeSing a))
                   (toSing b :: SomeSing b))
@@ -434,7 +437,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing ((((SC c) c) c) c) }
-      toSing (D b b b b)
+      toSing
+        (D (b :: Demote a) (b :: Demote b) (b :: Demote c) (b :: Demote d))
         = case
               (((GHC.Tuple.(,,,) (toSing b :: SomeSing a))
                   (toSing b :: SomeSing b))
@@ -443,7 +447,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing ((((SD c) c) c) c) }
-      toSing (E b b b b)
+      toSing
+        (E (b :: Demote a) (b :: Demote b) (b :: Demote c) (b :: Demote d))
         = case
               (((GHC.Tuple.(,,,) (toSing b :: SomeSing a))
                   (toSing b :: SomeSing b))
@@ -452,7 +457,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
           of {
             GHC.Tuple.(,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing ((((SE c) c) c) c) }
-      toSing (F b b b b)
+      toSing
+        (F (b :: Demote a) (b :: Demote b) (b :: Demote c) (b :: Demote d))
         = case
               (((GHC.Tuple.(,,,) (toSing b :: SomeSing a))
                   (toSing b :: SomeSing b))

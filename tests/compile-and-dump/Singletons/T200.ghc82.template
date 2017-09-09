@@ -125,21 +125,23 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
       fromSing ((:%$$:) b b) = ((:$$:) (fromSing b)) (fromSing b)
       fromSing ((:%<>:) b b) = ((:<>:) (fromSing b)) (fromSing b)
       fromSing (SEM b) = EM (fromSing b)
-      toSing ((:$$:) b b)
+      toSing
+        ((:$$:) (b :: Demote ErrorMessage) (b :: Demote ErrorMessage))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing ErrorMessage))
                 (toSing b :: SomeSing ErrorMessage)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c)
               -> SomeSing (((:%$$:) c) c) }
-      toSing ((:<>:) b b)
+      toSing
+        ((:<>:) (b :: Demote ErrorMessage) (b :: Demote ErrorMessage))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing ErrorMessage))
                 (toSing b :: SomeSing ErrorMessage)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c)
               -> SomeSing (((:%<>:) c) c) }
-      toSing (EM b)
+      toSing (EM (b :: Demote [Bool]))
         = case toSing b :: SomeSing [Bool] of {
             SomeSing c -> SomeSing (SEM c) }
     instance (SingI n, SingI n) =>

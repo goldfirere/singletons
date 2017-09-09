@@ -92,15 +92,20 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
           svarNames <- mapM (const $ qNewName "c") types
           promoted  <- mapM promoteType types
           cname' <- mkConName cname
-          let recursiveCalls = zipWith mkRecursiveCall varNames promoted
+          let varPats        = zipWith mkToSingVarPat varNames promoted
+              recursiveCalls = zipWith mkRecursiveCall varNames promoted
           return $
-            DClause [DConPa cname' (map DVarPa varNames)]
+            DClause [DConPa cname' varPats]
                     (multiCase recursiveCalls
                                (map (DConPa someSingDataName . listify . DVarPa)
                                     svarNames)
                                (DAppE (DConE someSingDataName)
                                          (foldExp (DConE (singDataConName cname))
                                                   (map DVarE svarNames))))
+
+        mkToSingVarPat :: Name -> DKind -> DPat
+        mkToSingVarPat varName ki =
+          DSigPa (DVarPa varName) (DAppT (DConT demoteName) ki)
 
         mkRecursiveCall :: Name -> DKind -> DExp
         mkRecursiveCall var_name ki =

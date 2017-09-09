@@ -89,7 +89,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       fromSing SFLeaf = FLeaf
       fromSing ((:%+:) b b) = ((:+:) (fromSing b)) (fromSing b)
       toSing FLeaf = SomeSing SFLeaf
-      toSing ((:+:) b b)
+      toSing ((:+:) (b :: Demote Foo) (b :: Demote Foo))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing Foo))
                 (toSing b :: SomeSing Foo)

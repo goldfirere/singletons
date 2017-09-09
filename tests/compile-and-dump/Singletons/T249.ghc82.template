@@ -1,0 +1,69 @@
+Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| data Foo1 a = MkFoo1 a
+          data Foo2 a where MkFoo2 :: x -> Foo2 x
+          data Foo3 a where MkFoo3 :: forall x. x -> Foo3 x |]
+  ======>
+    data Foo1 a = MkFoo1 a
+    data Foo2 a where MkFoo2 :: x -> Foo2 x
+    data Foo3 a where MkFoo3 :: forall x. x -> Foo3 x
+    type MkFoo1Sym1 (t :: a0123456789876543210) = MkFoo1 t
+    instance SuppressUnusedWarnings MkFoo1Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) MkFoo1Sym0KindInference) GHC.Tuple.())
+    data MkFoo1Sym0 (l :: TyFun a0123456789876543210 (Foo1 a0123456789876543210))
+      = forall arg. SameKind (Apply MkFoo1Sym0 arg) (MkFoo1Sym1 arg) =>
+        MkFoo1Sym0KindInference
+    type instance Apply MkFoo1Sym0 l = MkFoo1 l
+    type MkFoo2Sym1 (t :: x0123456789876543210) = MkFoo2 t
+    instance SuppressUnusedWarnings MkFoo2Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) MkFoo2Sym0KindInference) GHC.Tuple.())
+    data MkFoo2Sym0 (l :: TyFun x0123456789876543210 (Foo2 a0123456789876543210))
+      = forall arg. SameKind (Apply MkFoo2Sym0 arg) (MkFoo2Sym1 arg) =>
+        MkFoo2Sym0KindInference
+    type instance Apply MkFoo2Sym0 l = MkFoo2 l
+    type MkFoo3Sym1 (t :: x0123456789876543210) = MkFoo3 t
+    instance SuppressUnusedWarnings MkFoo3Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) MkFoo3Sym0KindInference) GHC.Tuple.())
+    data MkFoo3Sym0 (l :: TyFun x0123456789876543210 (Foo3 a0123456789876543210))
+      = forall arg. SameKind (Apply MkFoo3Sym0 arg) (MkFoo3Sym1 arg) =>
+        MkFoo3Sym0KindInference
+    type instance Apply MkFoo3Sym0 l = MkFoo3 l
+    data instance Sing (z :: Foo1 a)
+      where
+        SMkFoo1 :: forall (n :: a). (Sing (n :: a)) -> Sing (MkFoo1 n)
+    type SFoo1 = (Sing :: Foo1 a -> Type)
+    instance SingKind a => SingKind (Foo1 a) where
+      type Demote (Foo1 a) = Foo1 (Demote a)
+      fromSing (SMkFoo1 b) = MkFoo1 (fromSing b)
+      toSing (MkFoo1 (b :: Demote a))
+        = case toSing b :: SomeSing a of {
+            SomeSing c -> SomeSing (SMkFoo1 c) }
+    data instance Sing (z :: Foo2 a)
+      where
+        SMkFoo2 :: forall (n :: x). (Sing (n :: x)) -> Sing (MkFoo2 n)
+    type SFoo2 = (Sing :: Foo2 a -> Type)
+    instance SingKind a => SingKind (Foo2 a) where
+      type Demote (Foo2 a) = Foo2 (Demote a)
+      fromSing (SMkFoo2 b) = MkFoo2 (fromSing b)
+      toSing (MkFoo2 (b :: Demote x))
+        = case toSing b :: SomeSing x of {
+            SomeSing c -> SomeSing (SMkFoo2 c) }
+    data instance Sing (z :: Foo3 a)
+      where
+        SMkFoo3 :: forall (n :: x). (Sing (n :: x)) -> Sing (MkFoo3 n)
+    type SFoo3 = (Sing :: Foo3 a -> Type)
+    instance SingKind a => SingKind (Foo3 a) where
+      type Demote (Foo3 a) = Foo3 (Demote a)
+      fromSing (SMkFoo3 b) = MkFoo3 (fromSing b)
+      toSing (MkFoo3 (b :: Demote x))
+        = case toSing b :: SomeSing x of {
+            SomeSing c -> SomeSing (SMkFoo3 c) }
+    instance SingI n => SingI (MkFoo1 (n :: a)) where
+      sing = SMkFoo1 sing
+    instance SingI n => SingI (MkFoo2 (n :: x)) where
+      sing = SMkFoo2 sing
+    instance SingI n => SingI (MkFoo3 (n :: x)) where
+      sing = SMkFoo3 sing

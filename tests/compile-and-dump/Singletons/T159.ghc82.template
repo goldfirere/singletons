@@ -87,12 +87,12 @@ Singletons/T159.hs:0:0:: Splicing declarations
       fromSing (SC1 b b) = (C1 (fromSing b)) (fromSing b)
       fromSing ((:%&&) b b) = ((:&&) (fromSing b)) (fromSing b)
       toSing N1 = SomeSing SN1
-      toSing (C1 b b)
+      toSing (C1 (b :: Demote T0) (b :: Demote T1))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T1)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing ((SC1 c) c) }
-      toSing ((:&&) b b)
+      toSing ((:&&) (b :: Demote T0) (b :: Demote T1))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T1)
           of {
@@ -164,12 +164,12 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SC2 b b) = (C2 (fromSing b)) (fromSing b)
       fromSing ((:%||) b b) = ((:||) (fromSing b)) (fromSing b)
       toSing N2 = SomeSing SN2
-      toSing (C2 b b)
+      toSing (C2 (b :: Demote T0) (b :: Demote T2))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T2)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing ((SC2 c) c) }
-      toSing ((:||) b b)
+      toSing ((:||) (b :: Demote T0) (b :: Demote T2))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T2)
           of {

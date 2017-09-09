@@ -43,7 +43,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     instance SingKind Foo where
       type Demote Foo = Foo
       fromSing (SBar b b) = (Bar (fromSing b)) (fromSing b)
-      toSing (Bar b b)
+      toSing (Bar (b :: Demote Bool) (b :: Demote Bool))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing Bool))
                 (toSing b :: SomeSing Bool)

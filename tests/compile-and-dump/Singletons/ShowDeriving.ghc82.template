@@ -268,25 +268,25 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SMkFoo2b b b) = (MkFoo2b (fromSing b)) (fromSing b)
       fromSing ((:%*:) b b) = ((:*:) (fromSing b)) (fromSing b)
       fromSing ((:%&:) b b) = ((:&:) (fromSing b)) (fromSing b)
-      toSing (MkFoo2a b b)
+      toSing (MkFoo2a (b :: Demote a) (b :: Demote a))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c)
               -> SomeSing ((SMkFoo2a c) c) }
-      toSing (MkFoo2b b b)
+      toSing (MkFoo2b (b :: Demote a) (b :: Demote a))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c)
               -> SomeSing ((SMkFoo2b c) c) }
-      toSing ((:*:) b b)
+      toSing ((:*:) (b :: Demote a) (b :: Demote a))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c)
               -> SomeSing (((:%*:) c) c) }
-      toSing ((:&:) b b)
+      toSing ((:&:) (b :: Demote a) (b :: Demote a))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a)
           of {
@@ -301,7 +301,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SingKind Foo3 where
       type Demote Foo3 = Foo3
       fromSing (SMkFoo3 b b) = (MkFoo3 (fromSing b)) (fromSing b)
-      toSing (MkFoo3 b b)
+      toSing (MkFoo3 (b :: Demote Bool) (b :: Demote Bool))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing Bool))
                 (toSing b :: SomeSing Bool)
