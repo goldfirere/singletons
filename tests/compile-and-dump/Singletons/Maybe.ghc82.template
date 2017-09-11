@@ -69,7 +69,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       fromSing SNothing = Nothing
       fromSing (SJust b) = Just (fromSing b)
       toSing Nothing = SomeSing SNothing
-      toSing (Just b)
+      toSing (Just (b :: Demote a))
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SJust c) }
     instance SShow a => SShow (Maybe a) where

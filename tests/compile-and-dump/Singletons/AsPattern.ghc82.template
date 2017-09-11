@@ -339,7 +339,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       type Demote Baz = Baz
       fromSing (SBaz b b b)
         = ((Baz (fromSing b)) (fromSing b)) (fromSing b)
-      toSing (Baz b b b)
+      toSing (Baz (b :: Demote Nat) (b :: Demote Nat) (b :: Demote Nat))
         = case
               ((GHC.Tuple.(,,) (toSing b :: SomeSing Nat))
                  (toSing b :: SomeSing Nat))

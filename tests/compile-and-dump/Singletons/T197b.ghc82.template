@@ -54,7 +54,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     instance (SingKind a, SingKind b) => SingKind ((:*:) a b) where
       type Demote ((:*:) a b) = (:*:) (Demote a) (Demote b)
       fromSing ((:%*:) b b) = ((:*:) (fromSing b)) (fromSing b)
-      toSing ((:*:) b b)
+      toSing ((:*:) (b :: Demote a) (b :: Demote b))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b)
           of {
@@ -68,7 +68,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     instance (SingKind a, SingKind b) => SingKind (Pair a b) where
       type Demote (Pair a b) = Pair (Demote a) (Demote b)
       fromSing (SMkPair b b) = (MkPair (fromSing b)) (fromSing b)
-      toSing (MkPair b b)
+      toSing (MkPair (b :: Demote a) (b :: Demote b))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b)
           of {

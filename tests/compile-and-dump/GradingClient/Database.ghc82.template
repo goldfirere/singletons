@@ -60,7 +60,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       fromSing SZero = Zero
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
-      toSing (Succ b)
+      toSing (Succ (b :: Demote Nat))
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
     instance SOrd Nat => SOrd Nat where
@@ -649,7 +649,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       toSing BOOL = SomeSing SBOOL
       toSing STRING = SomeSing SSTRING
       toSing NAT = SomeSing SNAT
-      toSing (VEC b b)
+      toSing (VEC (b :: Demote U) (b :: Demote Nat))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing U)) (toSing b :: SomeSing Nat)
           of {
@@ -745,7 +745,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SingKind Attribute where
       type Demote Attribute = Attribute
       fromSing (SAttr b b) = (Attr (fromSing b)) (fromSing b)
-      toSing (Attr b b)
+      toSing (Attr (b :: Demote [AChar]) (b :: Demote U))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing [AChar]))
                 (toSing b :: SomeSing U)
@@ -759,7 +759,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SingKind Schema where
       type Demote Schema = Schema
       fromSing (SSch b) = Sch (fromSing b)
-      toSing (Sch b)
+      toSing (Sch (b :: Demote [Attribute]))
         = case toSing b :: SomeSing [Attribute] of {
             SomeSing c -> SomeSing (SSch c) }
     instance (SShow U, SShow Nat) => SShow U where

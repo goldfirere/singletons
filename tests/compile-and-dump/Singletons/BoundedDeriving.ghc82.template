@@ -149,7 +149,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SingKind a => SingKind (Foo3 a) where
       type Demote (Foo3 a) = Foo3 (Demote a)
       fromSing (SFoo3 b) = Foo3 (fromSing b)
-      toSing (Foo3 b)
+      toSing (Foo3 (b :: Demote a))
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SFoo3 c) }
     data instance Sing (z :: Foo4 a b)
@@ -171,7 +171,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SingKind Pair where
       type Demote Pair = Pair
       fromSing (SPair b b) = (Pair (fromSing b)) (fromSing b)
-      toSing (Pair b b)
+      toSing (Pair (b :: Demote Bool) (b :: Demote Bool))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing Bool))
                 (toSing b :: SomeSing Bool)

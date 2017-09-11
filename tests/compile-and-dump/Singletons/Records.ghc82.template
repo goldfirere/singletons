@@ -49,7 +49,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     instance SingKind a => SingKind (Record a) where
       type Demote (Record a) = Record (Demote a)
       fromSing (SMkRecord b b) = (MkRecord (fromSing b)) (fromSing b)
-      toSing (MkRecord b b)
+      toSing (MkRecord (b :: Demote a) (b :: Demote Bool))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing a))
                 (toSing b :: SomeSing Bool)

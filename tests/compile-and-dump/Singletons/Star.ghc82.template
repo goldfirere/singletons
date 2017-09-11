@@ -200,10 +200,10 @@ Singletons/Star.hs:0:0:: Splicing declarations
       toSing Singletons.Star.Nat = SomeSing SNat
       toSing Singletons.Star.Int = SomeSing SInt
       toSing Singletons.Star.String = SomeSing SString
-      toSing (Singletons.Star.Maybe b)
+      toSing (Singletons.Star.Maybe (b :: Demote Type))
         = case toSing b :: SomeSing Type of {
             SomeSing c -> SomeSing (SMaybe c) }
-      toSing (Singletons.Star.Vec b b)
+      toSing (Singletons.Star.Vec (b :: Demote Type) (b :: Demote Nat))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing Type))
                 (toSing b :: SomeSing Nat)

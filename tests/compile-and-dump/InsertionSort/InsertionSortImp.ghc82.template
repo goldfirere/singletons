@@ -21,7 +21,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       fromSing SZero = Zero
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
-      toSing (Succ b)
+      toSing (Succ (b :: Demote Nat))
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
     instance SingI Zero where

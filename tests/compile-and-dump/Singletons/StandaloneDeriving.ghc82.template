@@ -237,7 +237,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance (SingKind a, SingKind b) => SingKind (T a b) where
       type Demote (T a b) = T (Demote a) (Demote b)
       fromSing ((:%*:) b b) = ((:*:) (fromSing b)) (fromSing b)
-      toSing ((:*:) b b)
+      toSing ((:*:) (b :: Demote a) (b :: Demote b))
         = case
               (GHC.Tuple.(,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b)
           of {

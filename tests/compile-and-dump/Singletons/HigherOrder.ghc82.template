@@ -412,10 +412,10 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Either a b) = Either (Demote a) (Demote b)
       fromSing (SLeft b) = Left (fromSing b)
       fromSing (SRight b) = Right (fromSing b)
-      toSing (Left b)
+      toSing (Left (b :: Demote a))
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SLeft c) }
-      toSing (Right b)
+      toSing (Right (b :: Demote b))
         = case toSing b :: SomeSing b of {
             SomeSing c -> SomeSing (SRight c) }
     instance SingI n => SingI (Left (n :: a)) where
