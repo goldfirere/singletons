@@ -19,3 +19,12 @@ Main
 # cabal sandboxes
 cabal.sandbox.config
 .cabal-sandbox
+
+# cabal new-build
+dist-*
+cabal.project.local
+cabal.project.local~
+.ghc.environment.*
+
+# stack
+.stack-work/
