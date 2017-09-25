@@ -109,6 +109,8 @@ next
   instance now works as one would expect (provided the user adheres to some
   common-sense `SingKind` laws, which are now documented).
 
+* Add a `demote` function, which is a convenient shorthand for `fromSing sing`.
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.

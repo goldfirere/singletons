@@ -2,7 +2,7 @@
              FlexibleContexts, FlexibleInstances,
              TypeFamilies, TypeOperators, TypeFamilyDependencies,
              UndecidableInstances, TypeInType, ConstraintKinds,
-             ScopedTypeVariables, TypeApplications #-}
+             ScopedTypeVariables, TypeApplications, AllowAmbiguousTypes #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -30,7 +30,7 @@ module Data.Singletons.Internal (
   -- * Working with singletons
   KindOf, SameKind,
   SingInstance(..), SomeSing(..),
-  singInstance, withSingI, withSomeSing, singByProxy,
+  singInstance, withSingI, withSomeSing, singByProxy, demote,
 
   singByProxy#,
   withSing, singThat,
@@ -342,3 +342,17 @@ singByProxy _ = sing
 -- | Allows creation of a singleton when a @proxy#@ is at hand.
 singByProxy# :: SingI a => Proxy# a -> Sing a
 singByProxy# _ = sing
+
+-- | A convenience function that takes a type as input and demotes it to its
+-- value-level counterpart as output. This uses 'SingKind' and 'SingI' behind
+-- the scenes, so @'demote' = 'fromSing' 'sing'@.
+--
+-- This function is intended to be used with @TypeApplications@. For example:
+--
+-- >>> demote @_ @True
+-- True
+--
+-- >>> demote @(Maybe Ordering) @Nothing
+-- Nothing
+demote :: forall k (a :: k). (SingKind k, SingI a) => Demote k
+demote = fromSing (sing @k @a)
