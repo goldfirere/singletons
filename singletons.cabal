@@ -56,69 +56,69 @@ library
         -- TemplateHaskell must be listed in cabal file to work with
         -- ghc7.8+
 
-  exposed-modules:    Data.Singletons,
-                      Data.Singletons.CustomStar,
-                      Data.Singletons.TypeRepStar,
-                      Data.Singletons.TH,
-                      Data.Singletons.Prelude,
-                      Data.Singletons.Prelude.Base,
-                      Data.Singletons.Prelude.Bool,
-                      Data.Singletons.Prelude.Either,
-                      Data.Singletons.Prelude.Enum,
-                      Data.Singletons.Prelude.Eq,
-                      Data.Singletons.Prelude.Function,
-                      Data.Singletons.Prelude.Ord,
-                      Data.Singletons.Prelude.List,
-                      Data.Singletons.Prelude.List.NonEmpty,
-                      Data.Singletons.Prelude.Maybe,
+  exposed-modules:    Data.Singletons
+                      Data.Singletons.CustomStar
+                      Data.Singletons.TypeRepStar
+                      Data.Singletons.TH
+                      Data.Singletons.Prelude
+                      Data.Singletons.Prelude.Base
+                      Data.Singletons.Prelude.Bool
+                      Data.Singletons.Prelude.Either
+                      Data.Singletons.Prelude.Enum
+                      Data.Singletons.Prelude.Eq
+                      Data.Singletons.Prelude.Function
+                      Data.Singletons.Prelude.Ord
+                      Data.Singletons.Prelude.List
+                      Data.Singletons.Prelude.List.NonEmpty
+                      Data.Singletons.Prelude.Maybe
                       Data.Singletons.Prelude.Num
-                      Data.Singletons.Prelude.Show,
-                      Data.Singletons.Prelude.Tuple,
-                      Data.Singletons.Prelude.Void,
-                      Data.Promotion.Prelude,
-                      Data.Promotion.TH,
-                      Data.Promotion.Prelude.Base,
-                      Data.Promotion.Prelude.Bool,
-                      Data.Promotion.Prelude.Either,
-                      Data.Promotion.Prelude.Eq,
-                      Data.Promotion.Prelude.Function,
-                      Data.Promotion.Prelude.Ord,
-                      Data.Promotion.Prelude.Enum,
-                      Data.Promotion.Prelude.List,
-                      Data.Promotion.Prelude.List.NonEmpty,
-                      Data.Promotion.Prelude.Maybe,
-                      Data.Promotion.Prelude.Num,
-                      Data.Promotion.Prelude.Show,
-                      Data.Promotion.Prelude.Tuple,
-                      Data.Promotion.Prelude.Void,
-                      Data.Singletons.TypeLits,
-                      Data.Singletons.Decide,
-                      Data.Singletons.ShowSing,
+                      Data.Singletons.Prelude.Show
+                      Data.Singletons.Prelude.Tuple
+                      Data.Singletons.Prelude.Void
+                      Data.Promotion.Prelude
+                      Data.Promotion.TH
+                      Data.Promotion.Prelude.Base
+                      Data.Promotion.Prelude.Bool
+                      Data.Promotion.Prelude.Either
+                      Data.Promotion.Prelude.Eq
+                      Data.Promotion.Prelude.Function
+                      Data.Promotion.Prelude.Ord
+                      Data.Promotion.Prelude.Enum
+                      Data.Promotion.Prelude.List
+                      Data.Promotion.Prelude.List.NonEmpty
+                      Data.Promotion.Prelude.Maybe
+                      Data.Promotion.Prelude.Num
+                      Data.Promotion.Prelude.Show
+                      Data.Promotion.Prelude.Tuple
+                      Data.Promotion.Prelude.Void
+                      Data.Singletons.TypeLits
+                      Data.Singletons.Decide
+                      Data.Singletons.ShowSing
                       Data.Singletons.SuppressUnusedWarnings
 
-  other-modules:      Data.Singletons.Deriving.Infer,
-                      Data.Singletons.Deriving.Bounded,
-                      Data.Singletons.Deriving.Enum,
-                      Data.Singletons.Deriving.Ord,
-                      Data.Singletons.Deriving.Show,
-                      Data.Singletons.Internal,
-                      Data.Singletons.Prelude.List.NonEmpty.Internal,
-                      Data.Singletons.Promote,
-                      Data.Singletons.Promote.Monad,
-                      Data.Singletons.Promote.Eq,
-                      Data.Singletons.Promote.Type,
-                      Data.Singletons.Promote.Defun,
-                      Data.Singletons.Util,
-                      Data.Singletons.Partition,
-                      Data.Singletons.Prelude.Instances,
-                      Data.Singletons.Names,
-                      Data.Singletons.Single.Monad,
-                      Data.Singletons.Single.Type,
-                      Data.Singletons.Single.Eq,
-                      Data.Singletons.Single.Data,
-                      Data.Singletons.Single.Fixity,
-                      Data.Singletons.Single,
-                      Data.Singletons.TypeLits.Internal,
+  other-modules:      Data.Singletons.Deriving.Infer
+                      Data.Singletons.Deriving.Bounded
+                      Data.Singletons.Deriving.Enum
+                      Data.Singletons.Deriving.Ord
+                      Data.Singletons.Deriving.Show
+                      Data.Singletons.Internal
+                      Data.Singletons.Prelude.List.NonEmpty.Internal
+                      Data.Singletons.Promote
+                      Data.Singletons.Promote.Monad
+                      Data.Singletons.Promote.Eq
+                      Data.Singletons.Promote.Type
+                      Data.Singletons.Promote.Defun
+                      Data.Singletons.Util
+                      Data.Singletons.Partition
+                      Data.Singletons.Prelude.Instances
+                      Data.Singletons.Names
+                      Data.Singletons.Single.Monad
+                      Data.Singletons.Single.Type
+                      Data.Singletons.Single.Eq
+                      Data.Singletons.Single.Data
+                      Data.Singletons.Single.Fixity
+                      Data.Singletons.Single
+                      Data.Singletons.TypeLits.Internal
                       Data.Singletons.Syntax
 
   ghc-options:        -Wall -Wno-redundant-constraints
