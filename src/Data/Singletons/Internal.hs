@@ -349,10 +349,10 @@ singByProxy# _ = sing
 --
 -- This function is intended to be used with @TypeApplications@. For example:
 --
--- >>> demote @_ @True
+-- >>> demote @True
 -- True
 --
--- >>> demote @(Maybe Ordering) @Nothing
+-- >>> demote @(Nothing :: Maybe Ordering)
 -- Nothing
-demote :: forall k (a :: k). (SingKind k, SingI a) => Demote k
-demote = fromSing (sing @k @a)
+demote :: forall a. (SingKind (KindOf a), SingI a) => Demote (KindOf a)
+demote = fromSing (sing @(KindOf a) @a)
