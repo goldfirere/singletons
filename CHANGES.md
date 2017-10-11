@@ -111,6 +111,9 @@ next
 
 * Add a `demote` function, which is a convenient shorthand for `fromSing sing`.
 
+* Export defunctionalization symbols for `SameKind, `KindOf`, `(~>)`, and `(@@)`
+  from `Data.Singletons`.
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.

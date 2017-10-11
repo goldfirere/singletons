@@ -1,5 +1,11 @@
+{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE ExplicitNamespaces #-}
 {-# LANGUAGE MagicHash #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE TypeInType #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------
@@ -56,9 +62,16 @@ module Data.Singletons (
   SingFunction6, SingFunction7, SingFunction8,
 
   -- * Auxiliary functions
-  Proxy(..)
+  Proxy(..),
+
+  -- * Defunctionalization symbols
+  SameKindSym0, SameKindSym1, SameKindSym2,
+  KindOfSym0, KindOfSym1,
+  type (~>@#@$), type (~>@#@$$), type (~>@#@$$$),
+  type (@@@#@$), type (@@@#@$$), type (@@@#@$$$)
   ) where
 
+import Data.Singletons.Promote
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
@@ -107,3 +120,10 @@ instance SNum k => Num (SomeSing k) where
 instance ShowSing k => Show (SomeSing k) where
   showsPrec p (SomeSing s) =
     showParen (p > 10) $ showString "SomeSing " . showsSingPrec 11 s
+
+----------------------------------------------------------------------
+---- Defunctionalization symbols -------------------------------------
+----------------------------------------------------------------------
+
+$(genDefunSymbols [''SameKind, ''KindOf, ''(~>), ''(@@)])
+-- SingFunction1 et al. are not defunctionalizable at the moment due to #198
