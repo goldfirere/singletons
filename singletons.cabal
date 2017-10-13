@@ -94,6 +94,7 @@ library
                       Data.Singletons.TypeLits
                       Data.Singletons.Decide
                       Data.Singletons.ShowSing
+                      Data.Singletons.Sigma
                       Data.Singletons.SuppressUnusedWarnings
 
   other-modules:      Data.Singletons.Deriving.Infer

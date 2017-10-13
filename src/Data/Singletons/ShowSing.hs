@@ -9,8 +9,8 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Showsing
--- Copyright   :  (C) 2017 Ryan Scot
+-- Module      :  Data.Singletons.ShowSing
+-- Copyright   :  (C) 2017 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
 -- Stability   :  experimental

@@ -111,6 +111,8 @@ next
 
 * Add a `demote` function, which is a convenient shorthand for `fromSing sing`.
 
+* Add a `Data.Singletons.Sigma` module with a `Sigma` (dependent pair) data type.
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.
