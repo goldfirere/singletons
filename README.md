@@ -114,7 +114,9 @@ The top-level functions used to generate singletons are documented in the
 `Data.Singletons.TH` module. The most common case is just calling `singletons`,
 which I'll describe here:
 
-    singletons :: Q [Dec] -> Q [Dec]
+```haskell
+singletons :: Q [Dec] -> Q [Dec]
+```
 
 Generates singletons from the definitions given. Because singleton generation
 requires promotion, this also promotes all of the definitions given to the
@@ -137,29 +139,37 @@ Definitions used to support singletons
 Please refer to the singletons paper for a more in-depth explanation of these
 definitions. Many of the definitions were developed in tandem with Iavor Diatchki.
 
-    data family Sing (a :: k)
+```haskell
+data family Sing (a :: k)
+```
 
 The data family of singleton types. A new instance of this data family is
 generated for every new singleton type.
 
-    class SingI (a :: k) where
-      sing :: Sing a
+```haskell
+class SingI (a :: k) where
+  sing :: Sing a
+```
 
 A class used to pass singleton values implicitly. The `sing` method produces
 an explicit singleton value.
 
-    data SomeSing k where
-      SomeSing :: Sing (a :: k) -> SomeSing k
+```haskell
+data SomeSing k where
+  SomeSing :: Sing (a :: k) -> SomeSing k
+```
 
 The `SomeSing` type wraps up an _existentially-quantified_ singleton. Note that
 the type parameter `a` does not appear in the `SomeSing` type. Thus, this type
 can be used when you have a singleton, but you don't know at compile time what
 it will be. `SomeSing Thing` is isomorphic to `Thing`.
 
-    class SingKind k where
-      type Demote k :: *
-      fromSing :: Sing (a :: k) -> Demote k
-      toSing   :: Demote k -> SomeSing k
+```haskell
+class SingKind k where
+  type Demote k :: *
+  fromSing :: Sing (a :: k) -> Demote k
+  toSing   :: Demote k -> SomeSing k
+```
 
 This class is used to convert a singleton value back to a value in the
 original, unrefined ADT. The `fromSing` method converts, say, a
@@ -168,9 +178,11 @@ an existentially-quantified singleton, wrapped up in a `SomeSing`.
 The `Demote` associated
 kind-indexed type family maps the kind `Nat` back to the type `Nat`.
 
-    data SingInstance (a :: k) where
-      SingInstance :: SingI a => SingInstance a
-    singInstance :: Sing a -> SingInstance a
+```haskell
+data SingInstance (a :: k) where
+  SingInstance :: SingI a => SingInstance a
+singInstance :: Sing a -> SingInstance a
+```
 
 Sometimes you have an explicit singleton (a `Sing`) where you need an implicit
 one (a dictionary for `SingI`). The `SingInstance` type simply wraps a `SingI`
@@ -603,7 +615,9 @@ lists.
 As described in the promotion paper, promotion of datatypes that store arrows is
 currently impossible. So if you have a declaration such as
 
-    data Foo = Bar (Bool -> Maybe Bool)
+```haskell
+data Foo = Bar (Bool -> Maybe Bool)
+```
 
 you will quickly run into errors.
 
