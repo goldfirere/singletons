@@ -68,6 +68,7 @@ module Data.Singletons (
   SameKindSym0, SameKindSym1, SameKindSym2,
   KindOfSym0, KindOfSym1,
   type (~>@#@$), type (~>@#@$$), type (~>@#@$$$),
+  ApplySym0, ApplySym1, ApplySym2,
   type (@@@#@$), type (@@@#@$$), type (@@@#@$$$)
   ) where
 
@@ -125,5 +126,5 @@ instance ShowSing k => Show (SomeSing k) where
 ---- Defunctionalization symbols -------------------------------------
 ----------------------------------------------------------------------
 
-$(genDefunSymbols [''SameKind, ''KindOf, ''(~>), ''(@@)])
+$(genDefunSymbols [''SameKind, ''KindOf, ''(~>), ''Apply, ''(@@)])
 -- SingFunction1 et al. are not defunctionalizable at the moment due to #198
