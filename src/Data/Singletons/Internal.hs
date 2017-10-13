@@ -21,40 +21,8 @@
 ----------------------------------------------------------------------------
 
 module Data.Singletons.Internal (
-  -- * Main singleton definitions
-
-  Sing(SLambda, applySing), (@@),
-
-  SingI(..), SingKind(..),
-
-  -- * Working with singletons
-  KindOf, SameKind,
-  SingInstance(..), SomeSing(..),
-  singInstance, withSingI, withSomeSing, singByProxy, demote,
-
-  singByProxy#,
-  withSing, singThat,
-
-  -- ** Defunctionalization
-  TyFun, type (~>),
-  TyCon1, TyCon2, TyCon3, TyCon4, TyCon5, TyCon6, TyCon7, TyCon8,
-  Apply, type (@@),
-
-  -- ** Defunctionalized singletons
-  -- | When calling a higher-order singleton function, you need to use a
-  -- @singFun...@ function to wrap it. See 'singFun1'.
-  singFun1, singFun2, singFun3, singFun4, singFun5, singFun6, singFun7,
-  singFun8,
-  unSingFun1, unSingFun2, unSingFun3, unSingFun4, unSingFun5,
-  unSingFun6, unSingFun7, unSingFun8,
-
-  -- | These type synonyms are exported only to improve error messages; users
-  -- should not have to mention them.
-  SingFunction1, SingFunction2, SingFunction3, SingFunction4, SingFunction5,
-  SingFunction6, SingFunction7, SingFunction8,
-
-  -- * Auxiliary functions
-  Proxy(..)
+    module Data.Singletons.Internal
+  , Proxy(..)
   ) where
 
 import Data.Kind

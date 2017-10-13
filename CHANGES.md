@@ -113,6 +113,9 @@ next
 
 * Add a `Data.Singletons.Sigma` module with a `Sigma` (dependent pair) data type.
 
+* Export defunctionalization symbols for `SameKind, `KindOf`, `(~>)`, and `(@@)`
+  from `Data.Singletons`.
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.
