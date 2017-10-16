@@ -20,12 +20,14 @@ module Data.Singletons.CustomStar (
   singletonStar,
 
   module Data.Singletons.Prelude.Eq,
-  module Data.Singletons.Prelude.Bool
+  module Data.Singletons.Prelude.Bool,
+  module Data.Singletons.TH
   ) where
 
 import Language.Haskell.TH
 import Data.Singletons.Util
 import Data.Singletons.Deriving.Ord
+import Data.Singletons.Deriving.Show
 import Data.Singletons.Promote
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Single.Monad
@@ -33,6 +35,7 @@ import Data.Singletons.Single.Data
 import Data.Singletons.Single
 import Data.Singletons.Syntax
 import Data.Singletons.Names
+import Data.Singletons.TH
 import Control.Monad
 import Data.Maybe
 import Language.Haskell.TH.Desugar
@@ -51,7 +54,7 @@ import Data.Singletons.Prelude.Bool
 --
 -- generates the following:
 --
--- > data Rep = Nat | Bool | Maybe Rep deriving (Eq, Show, Read)
+-- > data Rep = Nat | Bool | Maybe Rep deriving (Eq, Ord, Read, Show)
 --
 -- and its singleton. However, because @Rep@ is promoted to @*@, the singleton
 -- is perhaps slightly unexpected:
@@ -59,7 +62,7 @@ import Data.Singletons.Prelude.Bool
 -- > data instance Sing (a :: *) where
 -- >   SNat :: Sing Nat
 -- >   SBool :: Sing Bool
--- >   SMaybe :: SingRep a => Sing a -> Sing (Maybe a)
+-- >   SMaybe :: Sing a -> Sing (Maybe a)
 --
 -- The unexpected part is that @Nat@, @Bool@, and @Maybe@ above are the real @Nat@,
 -- @Bool@, and @Maybe@, not just promoted data constructors.
@@ -72,19 +75,21 @@ singletonStar names = do
   kinds <- mapM getKind names
   ctors <- zipWithM (mkCtor True) names kinds
   let repDecl = DDataD Data [] repName [] ctors
-                         [DDerivClause Nothing [DConPr ''Eq, DConPr ''Show, DConPr ''Read]]
+                         [DDerivClause Nothing (map DConPr [''Eq, ''Ord, ''Read, ''Show])]
   fakeCtors <- zipWithM (mkCtor False) names kinds
   let dataDecl = DataDecl Data repName [] fakeCtors
                           [DConPr ''Show, DConPr ''Read]
       dataDeclEqInst = DerivedDecl Nothing (DConT repName) fakeCtors
-  ordInst <- mkOrdInstance Nothing (DConT repName) fakeCtors
-  (pOrdInst, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
-                                            promoteDerivedEqDec dataDeclEqInst
-                                            promoteInstanceDec mempty ordInst
+  ordInst  <- mkOrdInstance Nothing (DConT repName) fakeCtors
+  showInst <- mkShowInstance ForPromotion Nothing (DConT repName) fakeCtors
+  (pInsts, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
+                                          promoteDerivedEqDec dataDeclEqInst
+                                          traverse (promoteInstanceDec mempty)
+                                            [ordInst, showInst]
   singletonDecls <- singDecsM [] $ do decs1 <- singDataD dataDecl
                                       decs2 <- singDerivedEqDecs dataDeclEqInst
-                                      dec3  <- singInstD pOrdInst
-                                      return (dec3 : decs1 ++ decs2)
+                                      decs3 <- traverse singInstD pInsts
+                                      return (decs1 ++ decs2 ++ decs3)
   return $ decsToTH $ repDecl :
                       promDecls ++
                       singletonDecls
