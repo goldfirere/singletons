@@ -37,6 +37,7 @@ import Data.Singletons.Prelude.Eq
 import Data.Singletons.Decide
 import Data.Singletons.ShowSing
 import Type.Reflection
+import Type.Reflection.Unsafe
 import Unsafe.Coerce
 
 import Data.Kind
@@ -46,12 +47,25 @@ import Data.Type.Equality ((:~:)(..))
 
 newtype instance Sing (a :: *) where
   STypeRep :: TypeRep a -> Sing a
-    deriving Show
+    deriving (Eq, Ord, Show)
 
 -- | A variant of 'SomeTypeRep' whose underlying 'TypeRep' is restricted to
 -- kind @*@.
 data SomeTypeRepStar where
   SomeTypeRepStar :: forall (a :: *). !(TypeRep a) -> SomeTypeRepStar
+
+instance Eq SomeTypeRepStar where
+  SomeTypeRepStar a == SomeTypeRepStar b =
+    case eqTypeRep a b of
+      Just HRefl -> True
+      Nothing    -> False
+
+instance Ord SomeTypeRepStar where
+  SomeTypeRepStar a `compare` SomeTypeRepStar b =
+    typeRepFingerprint a `compare` typeRepFingerprint b
+
+instance Show SomeTypeRepStar where
+  showsPrec p (SomeTypeRepStar ty) = showsPrec p ty
 
 instance Typeable a => SingI (a :: *) where
   sing = STypeRep typeRep
