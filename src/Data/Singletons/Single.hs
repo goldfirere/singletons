@@ -551,9 +551,9 @@ singExp (ADAppE e1 e2) _res_ki = do
   e1' <- singExp e1 Nothing
   e2' <- singExp e2 Nothing
   -- `applySing undefined x` kills type inference, because GHC can't figure
-  -- out the type of `undefined`. So we don't emit that code.
+  -- out the type of `undefined`. So we don't emit `applySing` there.
   if isException e1'
-  then return e1'
+  then return $ e1' `DAppE` e2'
   else return $ (DVarE applySingName) `DAppE` e1' `DAppE` e2'
 singExp (ADLamE ty_names prom_lam names exp) _res_ki = do
   let sNames = map singValName names
