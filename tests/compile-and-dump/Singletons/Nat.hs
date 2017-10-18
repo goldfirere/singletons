@@ -6,7 +6,7 @@ $(singletons [d|
   data Nat where
     Zero :: Nat
     Succ :: Nat -> Nat
-      deriving (Eq, Show, Read)
+      deriving (Eq, Show, Read, Ord)
 
   plus :: Nat -> Nat -> Nat
   plus Zero m = m
