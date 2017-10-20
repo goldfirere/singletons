@@ -67,6 +67,7 @@ library
                       Data.Singletons.Prelude.Enum
                       Data.Singletons.Prelude.Eq
                       Data.Singletons.Prelude.Function
+                      Data.Singletons.Prelude.IsString
                       Data.Singletons.Prelude.Ord
                       Data.Singletons.Prelude.List
                       Data.Singletons.Prelude.List.NonEmpty
@@ -82,6 +83,7 @@ library
                       Data.Promotion.Prelude.Either
                       Data.Promotion.Prelude.Eq
                       Data.Promotion.Prelude.Function
+                      Data.Promotion.Prelude.IsString
                       Data.Promotion.Prelude.Ord
                       Data.Promotion.Prelude.Enum
                       Data.Promotion.Prelude.List

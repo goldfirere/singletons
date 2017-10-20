@@ -52,6 +52,12 @@ next
   * Derived `SDecide` instances for empty data types now return `Proved bottom`,
     where `bottom` is a divergent computation, instead of `error`ing.
 
+* Add `Data.Singletons.Prelude.IsString` and `Data.Promotion.Prelude.IsString`
+  modules. `IsString.fromString` is now used when promoting or singling
+  string literals when the `-XOverloadedStrings` extension is enabled
+  (similarly to how `Num.fromInteger` is currently used when promoting or
+  singling numeric literals).
+
 * Add `Data.Singletons.Prelude.Void`.
 
 * Add promoted and singled versions of `div`, `mod`, `divMod`, `quot`, `rem`,

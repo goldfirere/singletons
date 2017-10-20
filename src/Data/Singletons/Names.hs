@@ -41,7 +41,7 @@ boolName, andName, tyEqName, compareName, minBoundName,
   equalsName, constraintName,
   showName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
   showSpaceName, showStringName, showSingName, showsSingPrecName,
-  composeName, gtName :: Name
+  composeName, gtName, tyFromStringName, sFromStringName :: Name
 boolName = ''Bool
 andName = '(&&)
 compareName = 'compare
@@ -115,6 +115,8 @@ showsSingPrecName = mk_name_v "Data.Singletons.ShowSing" "showsSingPrec"
 composeName = '(.)
 gtName = '(>)
 showCommaSpaceName = 'showCommaSpace
+tyFromStringName = mk_name_tc "Data.Singletons.Prelude.IsString" "FromString"
+sFromStringName = mk_name_v "Data.Singletons.Prelude.IsString" "sFromString"
 
 singPkg :: String
 singPkg = $( (LitE . StringL . loc_package) `liftM` location )

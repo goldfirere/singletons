@@ -52,6 +52,7 @@ import Data.Singletons.Promote
 import Data.Singletons.ShowSing ()      -- for ShowSing/Show instances
 import Data.Singletons.TypeLits.Internal
 
+import Data.String (IsString(..))
 import qualified GHC.TypeNats as TN
 import GHC.TypeNats (SomeNat(..))
 
@@ -84,6 +85,8 @@ instance Eq Symbol where
 instance Ord Symbol where
   compare     = no_term_level_syms
 
+instance IsString Symbol where
+  fromString  = no_term_level_syms
 
 no_term_level_nats :: a
 no_term_level_nats = error "The kind `Nat` may not be used at the term level."
