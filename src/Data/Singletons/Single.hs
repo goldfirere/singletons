@@ -674,9 +674,8 @@ singLit (StringL str) = do
   pure $ if os_enabled
          then DVarE sFromStringName `DAppE` sing_str_lit
          else sing_str_lit
-singLit lit = do
-  prom_lit <- promoteLitExp lit
-  return $ DVarE singMethName `DSigE` (singFamily `DAppT` prom_lit)
+singLit lit =
+  fail ("Only string and natural number literals can be singled: " ++ show lit)
 
 maybeSigT :: DType -> Maybe DKind -> DType
 maybeSigT ty Nothing   = ty
