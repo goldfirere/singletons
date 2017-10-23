@@ -36,6 +36,7 @@ import Data.Map.Strict ( Map )
 import Data.Maybe
 import Control.Monad
 import Data.List
+import qualified GHC.LanguageExtensions.Type as LangExt
 
 {-
 How singletons works
@@ -666,9 +667,15 @@ singLit (IntegerL n)
                  (singFamily `DAppT` DLitT (NumTyLit n)))
   | otherwise = do sLit <- singLit (IntegerL (-n))
                    return $ DVarE sNegateName `DAppE` sLit
-singLit lit = do
-  prom_lit <- promoteLitExp lit
-  return $ DVarE singMethName `DSigE` (singFamily `DAppT` prom_lit)
+singLit (StringL str) = do
+  let sing_str_lit = DVarE singMethName `DSigE`
+                     (singFamily `DAppT` DLitT (StrTyLit str))
+  os_enabled <- qIsExtEnabled LangExt.OverloadedStrings
+  pure $ if os_enabled
+         then DVarE sFromStringName `DAppE` sing_str_lit
+         else sing_str_lit
+singLit lit =
+  fail ("Only string and natural number literals can be singled: " ++ show lit)
 
 maybeSigT :: DType -> Maybe DKind -> DType
 maybeSigT ty Nothing   = ty

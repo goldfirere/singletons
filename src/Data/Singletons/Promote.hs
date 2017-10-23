@@ -34,6 +34,7 @@ import Control.Monad.Trans.Maybe
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Data.Maybe
+import qualified GHC.LanguageExtensions.Type as LangExt
 
 -- | Generate promoted definitions from a type that is already defined.
 -- This is generally only useful with classes.
@@ -706,12 +707,17 @@ promoteExp (DSigE exp ty) = do
   return (DSigT exp' ty', ADSigE ann_exp ty)
 promoteExp e@(DStaticE _) = fail ("Static expressions cannot be promoted: " ++ show e)
 
-promoteLitExp :: Monad m => Lit -> m DType
+promoteLitExp :: Quasi q => Lit -> q DType
 promoteLitExp (IntegerL n)
   | n >= 0    = return $ (DConT tyFromIntegerName `DAppT` DLitT (NumTyLit n))
   | otherwise = return $ (DConT tyNegateName `DAppT`
                           (DConT tyFromIntegerName `DAppT` DLitT (NumTyLit (-n))))
-promoteLitExp (StringL str) = return $ DLitT (StrTyLit str)
+promoteLitExp (StringL str) = do
+  let prom_str_lit = DLitT (StrTyLit str)
+  os_enabled <- qIsExtEnabled LangExt.OverloadedStrings
+  pure $ if os_enabled
+         then DConT tyFromStringName `DAppT` prom_str_lit
+         else prom_str_lit
 promoteLitExp lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
 
