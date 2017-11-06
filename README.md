@@ -11,10 +11,10 @@ The singletons library was written by Richard Eisenberg, <rae@cs.brynmawr.edu>, 
 with significant contributions by Jan Stolarek, <jan.stolarek@p.lodz.pl>.  There
 are two papers that describe the library. Original one, _Dependently typed
 programming with singletons_, is available
-[here](http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf) and will
+[here](https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf) and will
 be referenced in this documentation as the "singletons paper". A follow-up
 paper, _Promoting Functions to Type Families in Haskell_, is available
-[here](http://www.cis.upenn.edu/~eir/papers/2014/promotion/promotion.pdf)
+[here](https://cs.brynmawr.edu/~rae/papers/2014/promotion/promotion.pdf)
 and will be referenced in this documentation as the
 "promotion paper".
 

@@ -29,11 +29,11 @@ description:
     to use dependently typed programming techniques. The library was originally
     presented in /Dependently Typed Programming with Singletons/, published
     at the Haskell Symposium, 2012.
-    (<http://www.cis.upenn.edu/~eir/papers/2012/singletons/paper.pdf>)
+    (<https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf>)
 
     Version 1.0 and onwards works a lot harder to promote functions. See the
     paper published at Haskell Symposium, 2014:
-    <http://www.cis.upenn.edu/~eir/papers/2014/promotion/promotion.pdf>.
+    <https://cs.brynmawr.edu/~rae/papers/2014/promotion/promotion.pdf>.
 
 source-repository this
   type:     git
