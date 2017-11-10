@@ -27,10 +27,10 @@ import Language.Haskell.TH.Ppr
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
 
-import Data.Monoid
 import Control.Monad
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Maybe
+import Data.Semigroup (Semigroup(..))
 
 data PartitionedDecs =
   PDecs { pd_let_decs :: [DLetDec]
@@ -41,10 +41,13 @@ data PartitionedDecs =
         , pd_derived_show_decs :: [DerivedShowDecl]
         }
 
+instance Semigroup PartitionedDecs where
+  PDecs a1 b1 c1 d1 e1 f1 <> PDecs a2 b2 c2 d2 e2 f2 =
+    PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2) (e1 <> e2) (f1 <> f2)
+
 instance Monoid PartitionedDecs where
   mempty = PDecs [] [] [] [] [] []
-  mappend (PDecs a1 b1 c1 d1 e1 f1) (PDecs a2 b2 c2 d2 e2 f2) =
-    PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2) (e1 <> e2) (f1 <> f2)
+  mappend = (<>)
 
 -- | Split up a @[DDec]@ into its pieces, extracting 'Ord' instances
 -- from deriving clauses
