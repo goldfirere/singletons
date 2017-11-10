@@ -42,7 +42,6 @@ import Unsafe.Coerce
 
 import Data.Kind
 import Data.Type.Coercion
-import qualified Data.Type.Equality as DTE
 import Data.Type.Equality ((:~:)(..))
 
 newtype instance Sing (a :: *) where
@@ -75,7 +74,11 @@ instance SingKind Type where
   toSing (SomeTypeRepStar tr) = SomeSing $ STypeRep tr
 
 instance PEq Type where
-  type (a :: *) == (b :: *) = a DTE.== b
+  type (a :: *) == (b :: *) = EqType a b
+
+type family EqType (a :: Type) (b :: Type) where
+  EqType a a = 'True
+  EqType a b = 'False
 
 instance SEq Type where
   STypeRep tra %== STypeRep trb =
