@@ -2,7 +2,13 @@
              FlexibleContexts, FlexibleInstances,
              TypeFamilies, TypeOperators, TypeFamilyDependencies,
              UndecidableInstances, TypeInType, ConstraintKinds,
-             ScopedTypeVariables, TypeApplications, AllowAmbiguousTypes #-}
+             ScopedTypeVariables, TypeApplications, AllowAmbiguousTypes,
+             CPP #-}
+
+#if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 710
+{-# LANGUAGE PatternSynonyms #-}
+{-# LANGUAGE ViewPatterns #-}
+#endif
 
 -----------------------------------------------------------------------------
 -- |
@@ -49,11 +55,23 @@ data family Sing (a :: k)
 
 -- | A 'SingI' constraint is essentially an implicitly-passed singleton.
 -- If you need to satisfy this constraint with an explicit singleton, please
--- see 'withSingI'.
+-- see 'withSingI' or pattern match using the 'SingI' pattern synonym.
 class SingI (a :: k) where
   -- | Produce the singleton explicitly. You will likely need the @ScopedTypeVariables@
   -- extension to use this method the way you want.
   sing :: Sing a
+
+#if __GLASGOW_HASKELL__ >= 710
+-- | Pattern matching on an explicit @Sing a@ to get an implicit
+-- @SingI a@ constraint.
+--
+-- /Since: 2.4/
+#if __GLASGOW_HASKELL__ >= 800
+pattern SingI :: forall (a::k). () => SingI a => Sing a
+#endif
+pattern SingI <- (singInstance -> SingInstance)
+  where SingI = sing
+#endif
 
 -- | The 'SingKind' class is a /kind/ class. It classifies all kinds
 -- for which singletons are defined. The class supports converting between a singleton

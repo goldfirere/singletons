@@ -3,6 +3,9 @@ Changelog for singletons project
 
 next
 ----
+* Pattern synonym `SingI` for getting `SingI ty` constraint from a
+  singleton `Sing ty`.
+
 * `Demote Nat` is now `Natural` (from `Numeric.Natural`) instead of `Integer`.
   In accordance with this change, `Data.Singletons.TypeLits` now exposes
   `GHC.TypeNats.natVal` (which returns a `Natural`) instead of
