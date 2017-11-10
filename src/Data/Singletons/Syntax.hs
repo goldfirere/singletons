@@ -14,11 +14,11 @@ module Data.Singletons.Syntax where
 
 import Prelude hiding ( exp )
 import Data.Kind
-import Data.Monoid
 import Language.Haskell.TH.Syntax hiding (Type)
 import Language.Haskell.TH.Desugar
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
+import Data.Semigroup (Semigroup(..))
 
 type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
 
@@ -100,10 +100,13 @@ data LetDecEnv ann = LetDecEnv
 type ALetDecEnv = LetDecEnv Annotated
 type ULetDecEnv = LetDecEnv Unannotated
 
+instance Semigroup ULetDecEnv where
+  LetDecEnv defns1 types1 infx1 _ <> LetDecEnv defns2 types2 infx2 _ =
+    LetDecEnv (defns1 <> defns2) (types1 <> types2) (infx1 <> infx2) ()
+
 instance Monoid ULetDecEnv where
   mempty = LetDecEnv Map.empty Map.empty [] ()
-  mappend (LetDecEnv defns1 types1 infx1 _) (LetDecEnv defns2 types2 infx2 _) =
-    LetDecEnv (defns1 <> defns2) (types1 <> types2) (infx1 <> infx2) ()
+  mappend = (<>)
 
 valueBinding :: Name -> ULetDecRHS -> ULetDecEnv
 valueBinding n v = emptyLetDecEnv { lde_defns = Map.singleton n v }
