@@ -142,8 +142,8 @@ data SomeSing k where
 --
 -- /Since: 2.4/
 pattern AsSing :: SingKind k => forall (a :: k). Sing a -> Demote k
-pattern AsSing sing <- ((\demote -> withSomeSing demote SomeSing) -> SomeSing sing)
-  where AsSing sing = fromSing sing
+pattern AsSing sng <- ((\demotedVal -> withSomeSing demotedVal SomeSing) -> SomeSing sng)
+  where AsSing sng = fromSing sng
 
 ----------------------------------------------------------------------
 ---- SingInstance ----------------------------------------------------
