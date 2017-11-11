@@ -6,10 +6,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE TypeInType #-}
-{-# LANGUAGE CPP #-}
-#if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 710
 {-# LANGUAGE PatternSynonyms #-}
-#endif 
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------
@@ -40,15 +37,12 @@ module Data.Singletons (
   SingI(..), SingKind(..),
 
   -- * Working with singletons
-  KindOf, SameKind,
-  SingInstance(..), SomeSing(..),
-  singInstance, withSingI, withSomeSing, singByProxy, demote,
-#if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 710
+  KindOf, SomeSing(..), SameKind,
+  SingInstance(..), singInstance, 
   pattern SingI,
-#endif
 
-  singByProxy#,
-  withSing, singThat,
+  withSingI, withSomeSing, singByProxy, demote,
+  singByProxy#, withSing, singThat,
 
   -- ** Defunctionalization
   TyFun, type (~>),
