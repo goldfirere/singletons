@@ -56,8 +56,15 @@ class SingI (a :: k) where
   -- extension to use this method the way you want.
   sing :: Sing a
 
--- | Permits pattern matching on an explicit @Sing a@ value to bring an
--- implicit @SingI a@ constraint into scope.
+-- | A pattern synonym for implicit singletons.
+--
+-- As a pattern: We can match on an explicit @Sing a@ witness to bring
+-- an implicit @SingI a@ constraint into scope.
+--
+-- As a constructor: It constructs a singleton @Sing a@ as long as we
+-- have an implicit singleton constraint @SingI a@.
+--
+-- /Since: 2.4/
 pattern SingI :: forall (a :: k). () => SingI a => Sing a
 pattern SingI <- (singInstance -> SingInstance)
   where SingI = sing
@@ -71,6 +78,13 @@ pattern SingI <- (singInstance -> SingInstance)
 -- @
 -- 'toSing' . 'fromSing' ≡ 'SomeSing'
 -- (\\x -> 'withSomeSing' x 'fromSing') ≡ 'id'
+-- @
+--
+-- The final law can be expressed in terms of the 'AsSing' pattern
+-- synonym:
+--
+-- @
+-- (\\(AsSing sing) -> 'fromSing' sing) ≡ 'id'
 -- @
 class SingKind k where
   -- | Get a base type from the promoted kind. For example,
@@ -96,6 +110,40 @@ class SingKind k where
 -- An example like the one above may be easier to write using 'withSomeSing'.
 data SomeSing k where
   SomeSing :: Sing (a :: k) -> SomeSing k
+
+-- | A pattern synonym for going between a term and the corresponding
+--
+-- As a constructor: this takes a singleton to its demoted (base)
+-- type.
+--
+-- >>> :t AsSing @Bool
+-- AsSing @Bool :: Sing a -> Bool
+-- >>> AsSing SFalse
+-- False
+--
+-- As a pattern: It extracts a singleton from its demoted (base) type.
+--
+-- @
+-- singAnd :: Bool -> Bool -> SomeSing Bool
+-- singAnd bool1 bool2
+--   | AsSing singBool1 <- bool1
+--   , AsSing singBool2 <- bool2
+--   = SomeSing (singBool1 %:&& singBool2)
+-- @
+--
+-- instead of writing it with 'withSomeSing'
+--
+-- @
+-- singAnd bool1 bool2 =
+--   withSomeSing bool1 $ \sBool1 ->
+--     withSomeSing bool2 $ \sBool2 ->
+--       SomeSing (sBool1 %:&& sBool2)
+-- @
+--
+-- /Since: 2.4/
+pattern AsSing :: SingKind k => forall (a :: k). Sing a -> Demote k
+pattern AsSing sing <- ((\demote -> withSomeSing demote SomeSing) -> SomeSing sing)
+  where AsSing sing = fromSing sing
 
 ----------------------------------------------------------------------
 ---- SingInstance ----------------------------------------------------

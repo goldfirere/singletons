@@ -35,6 +35,7 @@ module Data.Singletons (
   Sing(SLambda, applySing), (@@),
 
   SingI(..), SingKind(..),
+  pattern AsSing,
 
   -- * Working with singletons
   KindOf, SameKind,

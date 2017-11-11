@@ -125,6 +125,8 @@ next
 * Add a pattern synonym `SingI`. Pattern matching on `SingI` brings a
  `SingI ty` constraint into scope from a singleton `Sing ty`.
 
+* Add a pattern synonym `AsSing`. Pattern matching on any demoted (base) type gives us the corresponding singleton.
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.
