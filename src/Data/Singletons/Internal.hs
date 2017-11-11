@@ -2,7 +2,8 @@
              FlexibleContexts, FlexibleInstances,
              TypeFamilies, TypeOperators, TypeFamilyDependencies,
              UndecidableInstances, TypeInType, ConstraintKinds,
-             ScopedTypeVariables, TypeApplications, AllowAmbiguousTypes #-}
+             ScopedTypeVariables, TypeApplications, AllowAmbiguousTypes,
+             PatternSynonyms, ViewPatterns #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -49,11 +50,17 @@ data family Sing (a :: k)
 
 -- | A 'SingI' constraint is essentially an implicitly-passed singleton.
 -- If you need to satisfy this constraint with an explicit singleton, please
--- see 'withSingI'.
+-- see 'withSingI' or the 'SingI' pattern synonym.
 class SingI (a :: k) where
   -- | Produce the singleton explicitly. You will likely need the @ScopedTypeVariables@
   -- extension to use this method the way you want.
   sing :: Sing a
+
+-- | Permits pattern matching on an explicit @Sing a@ value to bring an
+-- implicit @SingI a@ constraint into scope.
+pattern SingI :: forall (a :: k). () => SingI a => Sing a
+pattern SingI <- (singInstance -> SingInstance)
+  where SingI = sing
 
 -- | The 'SingKind' class is a /kind/ class. It classifies all kinds
 -- for which singletons are defined. The class supports converting between a singleton
