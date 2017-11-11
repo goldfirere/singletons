@@ -135,9 +135,9 @@ data SomeSing k where
 --
 -- @
 -- singAnd bool1 bool2 =
---   withSomeSing bool1 $ \sBool1 ->
---     withSomeSing bool2 $ \sBool2 ->
---       SomeSing (sBool1 %:&& sBool2)
+--   withSomeSing bool1 $ \singBool1 ->
+--     withSomeSing bool2 $ \singBool2 ->
+--       SomeSing (singBool1 %:&& singBool2)
 -- @
 --
 -- /Since: 2.4/
