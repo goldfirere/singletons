@@ -122,6 +122,9 @@ next
 * Export defunctionalization symbols for `Demote`, `SameKind, `KindOf`, `(~>)`,
   `Apply`, and `(@@)` from `Data.Singletons`.
 
+* Add a pattern synonym `SingI`. Pattern matching on `SingI` brings a
+ `SingI ty` constraint into scope from a singleton `Sing ty`.
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.
