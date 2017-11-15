@@ -83,6 +83,7 @@ tests =
     , compileAndDumpStdTest "T229"
     , compileAndDumpStdTest "T249"
     , compileAndDumpStdTest "OverloadedStrings"
+    , compileAndDumpStdTest "T271"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

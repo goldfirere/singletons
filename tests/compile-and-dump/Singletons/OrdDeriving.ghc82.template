@@ -774,12 +774,12 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       sCompare (SF _ _ _ _) (SC _ _ _ _) = SGT
       sCompare (SF _ _ _ _) (SD _ _ _ _) = SGT
       sCompare (SF _ _ _ _) (SE _ _ _ _) = SGT
-    instance SEq Nat where
+    instance SEq Nat => SEq Nat where
       (%==) SZero SZero = STrue
       (%==) SZero (SSucc _) = SFalse
       (%==) (SSucc _) SZero = SFalse
       (%==) (SSucc a) (SSucc b) = ((%==) a) b
-    instance SDecide Nat where
+    instance SDecide Nat => SDecide Nat where
       (%~) SZero SZero = Proved Refl
       (%~) SZero (SSucc _) = Disproved (\ x -> case x of)
       (%~) (SSucc _) SZero = Disproved (\ x -> case x of)

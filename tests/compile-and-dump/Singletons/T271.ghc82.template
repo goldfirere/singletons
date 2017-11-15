@@ -1,0 +1,181 @@
+Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| newtype Constant (a :: Type) (b :: Type)
+            = Constant a
+            deriving (Eq, Ord)
+          data Identity :: Type -> Type
+            where Identity :: a -> Identity a
+            deriving (Eq, Ord) |]
+  ======>
+    newtype Constant (a :: Type) (b :: Type)
+      = Constant a
+      deriving (Eq, Ord)
+    data Identity :: Type -> Type
+      where Identity :: a -> Identity a
+      deriving (Eq, Ord)
+    type ConstantSym1 (t :: a0123456789876543210) = Constant t
+    instance SuppressUnusedWarnings ConstantSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) ConstantSym0KindInference) GHC.Tuple.())
+    data ConstantSym0 (l :: TyFun a0123456789876543210 (Constant a0123456789876543210 b0123456789876543210))
+      = forall arg. SameKind (Apply ConstantSym0 arg) (ConstantSym1 arg) =>
+        ConstantSym0KindInference
+    type instance Apply ConstantSym0 l = Constant l
+    type IdentitySym1 (t :: a0123456789876543210) = Identity t
+    instance SuppressUnusedWarnings IdentitySym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) IdentitySym0KindInference) GHC.Tuple.())
+    data IdentitySym0 (l :: TyFun a0123456789876543210 (Identity a0123456789876543210))
+      = forall arg. SameKind (Apply IdentitySym0 arg) (IdentitySym1 arg) =>
+        IdentitySym0KindInference
+    type instance Apply IdentitySym0 l = Identity l
+    type family Compare_0123456789876543210 (a :: Constant a b) (a :: Constant a b) :: Ordering where
+      Compare_0123456789876543210 (Constant a_0123456789876543210) (Constant b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
+    type Compare_0123456789876543210Sym2 (t :: Constant a0123456789876543210 b0123456789876543210) (t :: Constant a0123456789876543210 b0123456789876543210) =
+        Compare_0123456789876543210 t t
+    instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Compare_0123456789876543210Sym1 (l :: Constant a0123456789876543210 b0123456789876543210) (l :: TyFun (Constant a0123456789876543210 b0123456789876543210) Ordering)
+      = forall arg. SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
+        Compare_0123456789876543210Sym1KindInference
+    type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
+    instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Compare_0123456789876543210Sym0 (l :: TyFun (Constant a0123456789876543210 b0123456789876543210) (TyFun (Constant a0123456789876543210 b0123456789876543210) Ordering
+                                                                                                           -> Type))
+      = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
+        Compare_0123456789876543210Sym0KindInference
+    type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
+    instance POrd (Constant a b) where
+      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
+    type family Compare_0123456789876543210 (a :: Identity a) (a :: Identity a) :: Ordering where
+      Compare_0123456789876543210 (Identity a_0123456789876543210) (Identity b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
+    type Compare_0123456789876543210Sym2 (t :: Identity a0123456789876543210) (t :: Identity a0123456789876543210) =
+        Compare_0123456789876543210 t t
+    instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Compare_0123456789876543210Sym1 (l :: Identity a0123456789876543210) (l :: TyFun (Identity a0123456789876543210) Ordering)
+      = forall arg. SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
+        Compare_0123456789876543210Sym1KindInference
+    type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
+    instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Compare_0123456789876543210Sym0 (l :: TyFun (Identity a0123456789876543210) (TyFun (Identity a0123456789876543210) Ordering
+                                                                                      -> Type))
+      = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
+        Compare_0123456789876543210Sym0KindInference
+    type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
+    instance POrd (Identity a) where
+      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
+    type family Equals_0123456789876543210 (a :: Constant a b) (b :: Constant a b) :: Bool where
+      Equals_0123456789876543210 (Constant a) (Constant b) = (==) a b
+      Equals_0123456789876543210 (_ :: Constant a b) (_ :: Constant a b) = FalseSym0
+    instance PEq (Constant a b) where
+      type (==) a b = Equals_0123456789876543210 a b
+    type family Equals_0123456789876543210 (a :: Identity a) (b :: Identity a) :: Bool where
+      Equals_0123456789876543210 (Identity a) (Identity b) = (==) a b
+      Equals_0123456789876543210 (_ :: Identity a) (_ :: Identity a) = FalseSym0
+    instance PEq (Identity a) where
+      type (==) a b = Equals_0123456789876543210 a b
+    data instance Sing (z :: Constant a b)
+      where
+        SConstant :: forall (n :: a). (Sing (n :: a)) -> Sing (Constant n)
+    type SConstant = (Sing :: Constant a b -> Type)
+    instance (SingKind a, SingKind b) => SingKind (Constant a b) where
+      type Demote (Constant a b) = Constant (Demote a) (Demote b)
+      fromSing (SConstant b) = Constant (fromSing b)
+      toSing (Constant (b :: Demote a))
+        = case toSing b :: SomeSing a of {
+            SomeSing c -> SomeSing (SConstant c) }
+    data instance Sing (z :: Identity a)
+      where
+        SIdentity :: forall (n :: a). (Sing (n :: a)) -> Sing (Identity n)
+    type SIdentity = (Sing :: Identity a -> Type)
+    instance SingKind a => SingKind (Identity a) where
+      type Demote (Identity a) = Identity (Demote a)
+      fromSing (SIdentity b) = Identity (fromSing b)
+      toSing (Identity (b :: Demote a))
+        = case toSing b :: SomeSing a of {
+            SomeSing c -> SomeSing (SIdentity c) }
+    instance SOrd a => SOrd (Constant a b) where
+      sCompare ::
+        forall (t1 :: Constant a b) (t2 :: Constant a b).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Constant a b) (TyFun (Constant a b) Ordering
+                                                                       -> Type)
+                                                 -> Type) t1 :: TyFun (Constant a b) Ordering
+                                                                -> Type) t2 :: Ordering)
+      sCompare
+        (SConstant (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SConstant (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing
+                    ((singFun2 @(:@#@$)) Data.Singletons.Prelude.Instances.SCons))
+                   ((applySing
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               Data.Singletons.Prelude.Instances.SNil)
+    instance SOrd a => SOrd (Identity a) where
+      sCompare ::
+        forall (t1 :: Identity a) (t2 :: Identity a).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Identity a) (TyFun (Identity a) Ordering
+                                                                     -> Type)
+                                                 -> Type) t1 :: TyFun (Identity a) Ordering
+                                                                -> Type) t2 :: Ordering)
+      sCompare
+        (SIdentity (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SIdentity (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            ((applySing
+                ((applySing
+                    ((singFun2 @(:@#@$)) Data.Singletons.Prelude.Instances.SCons))
+                   ((applySing
+                       ((applySing ((singFun2 @CompareSym0) sCompare))
+                          sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               Data.Singletons.Prelude.Instances.SNil)
+    instance SEq a => SEq (Constant a b) where
+      (%==) (SConstant a) (SConstant b) = ((%==) a) b
+    instance SDecide a => SDecide (Constant a b) where
+      (%~) (SConstant a) (SConstant b)
+        = case ((%~) a) b of
+            Proved Refl -> Proved Refl
+            Disproved contra
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance SEq a => SEq (Identity a) where
+      (%==) (SIdentity a) (SIdentity b) = ((%==) a) b
+    instance SDecide a => SDecide (Identity a) where
+      (%~) (SIdentity a) (SIdentity b)
+        = case ((%~) a) b of
+            Proved Refl -> Proved Refl
+            Disproved contra
+              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance SingI n => SingI (Constant (n :: a)) where
+      sing = SConstant sing
+    instance SingI n => SingI (Identity (n :: a)) where
+      sing = SIdentity sing

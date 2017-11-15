@@ -270,6 +270,8 @@ noExactTyVars = everywhere go
 substKind :: Map Name DKind -> DKind -> DKind
 substKind = substType
 
+-- | Non–capture-avoiding substitution. (If you want capture-avoiding
+-- substitution, use @substTy@ from "Language.Haskell.TH.Desugar.Expand".
 substType :: Map Name DType -> DType -> DType
 substType subst ty | Map.null subst = ty
 substType subst (DForallT tvbs cxt inner_ty)

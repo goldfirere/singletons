@@ -161,7 +161,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
                 (toSing b :: SomeSing Nat)
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing ((SVec c) c) }
-    instance SEq Type where
+    instance (SEq Type, SEq Nat) => SEq Type where
       (%==) SNat SNat = STrue
       (%==) SNat SInt = SFalse
       (%==) SNat SString = SFalse
@@ -187,7 +187,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
       (%==) (SVec _ _) SString = SFalse
       (%==) (SVec _ _) (SMaybe _) = SFalse
       (%==) (SVec a a) (SVec b b) = ((%&&) (((%==) a) b)) (((%==) a) b)
-    instance SDecide Type where
+    instance (SDecide Type, SDecide Nat) => SDecide Type where
       (%~) SNat SNat = Proved Refl
       (%~) SNat SInt = Disproved (\ x -> case x of)
       (%~) SNat SString = Disproved (\ x -> case x of)
