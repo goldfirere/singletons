@@ -125,6 +125,10 @@ next
 * Add a pattern synonym `SingI`. Pattern matching on `SingI` brings a
  `SingI ty` constraint into scope from a singleton `Sing ty`.
 
+* `SingKind k` is often used with its associated type family `Demote k`:
+  added a constraint `SingKindOf demote k` as a synonym for
+  `(SingKind k, Demote k ~ demote)`.
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.

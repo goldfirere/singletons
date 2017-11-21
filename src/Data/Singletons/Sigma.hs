@@ -39,7 +39,7 @@ type Σ (s :: Type) (t :: s ~> Type) = Sigma s t
 -- to #216
 
 -- | Project the first element out of a dependent pair.
-projSigma1 :: forall s t. SingKind s => Sigma s t -> Demote s
+projSigma1 :: forall s t demoted. SingKindOf demoted s => Sigma s t -> demoted
 projSigma1 (a :&: _) = fromSing a
 
 -- | Project the second element out of a dependent pair.

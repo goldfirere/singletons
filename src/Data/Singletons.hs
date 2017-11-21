@@ -7,6 +7,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE TypeInType #-}
+{-# LANGUAGE PatternSynonyms #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------
@@ -41,9 +42,7 @@ module Data.Singletons (
   SingInstance(..), SomeSing(..),
   singInstance, pattern SingI,
   withSingI, withSomeSing, singByProxy, demote,
-
-  singByProxy#,
-  withSing, singThat,
+  singByProxy#, withSing, singThat,
 
   -- ** Defunctionalization
   TyFun, type (~>),

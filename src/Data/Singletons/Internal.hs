@@ -3,7 +3,7 @@
              TypeFamilies, TypeOperators, TypeFamilyDependencies,
              UndecidableInstances, TypeInType, ConstraintKinds,
              ScopedTypeVariables, TypeApplications, AllowAmbiguousTypes,
-             PatternSynonyms, ViewPatterns #-}
+             PatternSynonyms, ViewPatterns, MultiParamTypeClasses #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -83,6 +83,24 @@ class SingKind k where
 
   -- | Convert an unrefined type to an existentially-quantified singleton type.
   toSing   :: Demote k -> SomeSing k
+
+-- | @SingKindOf demoted k@ is shorthand for @(SingKind k, Demote k ~
+-- demoted)@.
+-- 
+-- The type of 'demote'
+-- 
+-- @
+-- demote :: forall a. (SingKindOf demoted (KindOf a), SingI a) => demoted
+-- demote = fromSing (sing @(KindOf a) @a)
+-- @
+-- 
+-- becomes
+-- 
+-- @
+-- demote :: forall a. (SingKind (KindOf a), SingI a) => Demote (KindOf a)
+-- @
+class    (SingKind k, Demote k ~ demoted) => SingKindOf demoted k
+instance (SingKind k, Demote k ~ demoted) => SingKindOf demoted k
 
 -- | An /existentially-quantified/ singleton. This type is useful when you want a
 -- singleton type, but there is no way of knowing, at compile-time, what the type
@@ -286,9 +304,9 @@ withSingI sn r =
 
 -- | Convert a normal datatype (like 'Bool') to a singleton for that datatype,
 -- passing it into a continuation.
-withSomeSing :: forall k r
-              . SingKind k
-             => Demote k                          -- ^ The original datatype
+withSomeSing :: forall k r demoted
+              . SingKindOf demoted k
+             => demoted                           -- ^ The original datatype
              -> (forall (a :: k). Sing a -> r)    -- ^ Function expecting a singleton
              -> r
 withSomeSing x f =
@@ -306,8 +324,8 @@ withSing f = f sing
 -- property.  If the singleton does not satisfy the property, then the function
 -- returns 'Nothing'. The property is expressed in terms of the underlying
 -- representation of the singleton.
-singThat :: forall (a :: k). (SingKind k, SingI a)
-         => (Demote k -> Bool) -> Maybe (Sing a)
+singThat :: forall (a :: k) demoted. (SingKindOf demoted k, SingI a)
+         => (demoted -> Bool) -> Maybe (Sing a)
 singThat p = withSing $ \x -> if p (fromSing x) then Just x else Nothing
 
 -- | Allows creation of a singleton when a proxy is at hand.
@@ -329,5 +347,5 @@ singByProxy# _ = sing
 --
 -- >>> demote @(Nothing :: Maybe Ordering)
 -- Nothing
-demote :: forall a. (SingKind (KindOf a), SingI a) => Demote (KindOf a)
+demote :: forall a demoted. (SingKindOf demoted (KindOf a), SingI a) => demoted
 demote = fromSing (sing @(KindOf a) @a)
