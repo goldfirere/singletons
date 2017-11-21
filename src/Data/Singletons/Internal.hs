@@ -86,18 +86,18 @@ class SingKind k where
 
 -- | @SingKindOf demoted k@ is shorthand for @(SingKind k, Demote k ~
 -- demoted)@.
---
--- It lets us write 'projSigma1' from @Data.Singletons.Sigma@ can be written
---
+-- 
+-- The type of 'demote'
+-- 
 -- @
 -- demote :: forall a. (SingKindOf demoted (KindOf a), SingI a) => demoted
 -- demote = fromSing (sing @(KindOf a) @a)
 -- @
---
--- instead of
---
+-- 
+-- becomes
+-- 
 -- @
--- demote :: forall a. (SingKind (KindOf a), SingI a) => Demote (Demote (KindOf a))
+-- demote :: forall a. (SingKind (KindOf a), SingI a) => Demote (KindOf a)
 -- @
 class    (SingKind k, Demote k ~ demoted) => SingKindOf demoted k
 instance (SingKind k, Demote k ~ demoted) => SingKindOf demoted k
