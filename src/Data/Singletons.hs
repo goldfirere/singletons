@@ -2,6 +2,7 @@
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE ExplicitNamespaces #-}
 {-# LANGUAGE MagicHash #-}
+{-# LANGUAGE PatternSynonyms #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
@@ -37,10 +38,9 @@ module Data.Singletons (
   SingI(..), SingKind(..),
 
   -- * Working with singletons
-  KindOf, SomeSing(..), SameKind,
-  SingInstance(..), singInstance, 
-  pattern SingI,
-
+  KindOf, SameKind,
+  SingInstance(..), SomeSing(..),
+  singInstance, pattern SingI,
   withSingI, withSomeSing, singByProxy, demote,
   singByProxy#, withSing, singThat,
 

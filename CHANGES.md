@@ -3,9 +3,6 @@ Changelog for singletons project
 
 next
 ----
-* Pattern synonym `SingI` for getting `SingI ty` constraint from a
-  singleton `Sing ty`.
-
 * `Demote Nat` is now `Natural` (from `Numeric.Natural`) instead of `Integer`.
   In accordance with this change, `Data.Singletons.TypeLits` now exposes
   `GHC.TypeNats.natVal` (which returns a `Natural`) instead of
@@ -124,6 +121,13 @@ next
 
 * Export defunctionalization symbols for `Demote`, `SameKind, `KindOf`, `(~>)`,
   `Apply`, and `(@@)` from `Data.Singletons`.
+
+* Add a pattern synonym `SingI`. Pattern matching on `SingI` brings a
+ `SingI ty` constraint into scope from a singleton `Sing ty`.
+
+* `SingKind k` is often used with its associated type family `Demote k`:
+  added a constraint `SingKindOf demote k` as a synonym for
+  `(SingKind k, Demote k ~ demote)`.
 
 2.3
 ---
