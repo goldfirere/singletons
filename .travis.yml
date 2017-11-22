@@ -6,7 +6,7 @@ sudo: required
 
 # The following enables several GHC versions to be tested; often it's enough to test only against the last release in a major GHC version. Feel free to omit lines listings versions you don't need/want testing for.
 env:
- - CABALVER=2.0 GHCVER=8.2.1
+ - CABALVER=2.0 GHCVER=8.2.2
  - CABALVER=head GHCVER=head   # see section about GHC HEAD snapshots
 
 matrix:
