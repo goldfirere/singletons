@@ -41,7 +41,6 @@ import Type.Reflection.Unsafe
 import Unsafe.Coerce
 
 import Data.Kind
-import Data.Type.Coercion
 import Data.Type.Equality ((:~:)(..))
 
 newtype instance Sing (a :: *) where
@@ -96,10 +95,3 @@ instance SDecide Type where
 
 instance ShowSing Type where
   showsSingPrec = showsPrec
-
--- TestEquality instance already defined, but we need this one:
-instance TestCoercion Sing where
-  testCoercion (STypeRep tra) (STypeRep trb) =
-    case eqTypeRep tra trb of
-      Just HRefl -> Just Coercion
-      Nothing    -> Nothing
