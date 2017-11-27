@@ -25,6 +25,7 @@ module Data.Singletons.Decide (
 
 import Data.Kind
 import Data.Singletons.Internal
+import Data.Type.Coercion
 import Data.Type.Equality
 import Data.Void
 
@@ -54,4 +55,10 @@ instance SDecide k => TestEquality (Sing :: k -> Type) where
   testEquality a b =
     case a %~ b of
       Proved Refl -> Just Refl
+      Disproved _ -> Nothing
+
+instance SDecide k => TestCoercion (Sing :: k -> Type) where
+  testCoercion a b =
+    case a %~ b of
+      Proved Refl -> Just Coercion
       Disproved _ -> Nothing
