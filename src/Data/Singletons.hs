@@ -39,8 +39,9 @@ module Data.Singletons (
   -- * Working with singletons
   KindOf, SameKind,
   SingInstance(..), SomeSing(..),
-  singInstance, pattern SingI,
-  withSingI, withSomeSing, singByProxy, demote,
+  singInstance, pattern Sing, withSingI,
+  withSomeSing, pattern FromSing,
+  singByProxy, demote,
 
   singByProxy#,
   withSing, singThat,
@@ -57,6 +58,9 @@ module Data.Singletons (
   singFun8,
   unSingFun1, unSingFun2, unSingFun3, unSingFun4, unSingFun5,
   unSingFun6, unSingFun7, unSingFun8,
+  -- $SLambdaPatternSynonyms
+  pattern SLambda2, pattern SLambda3, pattern SLambda4, pattern SLambda5,
+  pattern SLambda6, pattern SLambda7, pattern SLambda8,
 
   -- | These type synonyms are exported only to improve error messages; users
   -- should not have to mention them.
