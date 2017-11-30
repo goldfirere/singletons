@@ -39,8 +39,8 @@ module Data.Singletons (
   -- * Working with singletons
   KindOf, SameKind,
   SingInstance(..), SomeSing(..),
-  singInstance, pattern SingI, withSingI,
-  withSomeSing, pattern AsSing,
+  singInstance, pattern Sing, withSingI,
+  withSomeSing, pattern FromSing,
   singByProxy, demote,
 
   singByProxy#,

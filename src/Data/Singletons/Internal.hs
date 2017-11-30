@@ -115,8 +115,8 @@ data SomeSing k where
 -- As an __expression__: this takes a singleton to its demoted (base)
 -- type.
 --
--- >>> :t AsSing \@Bool
--- AsSing \@Bool :: Sing a -> Bool
+-- >>> :t FromSing \@Bool
+-- FromSing \@Bool :: Sing a -> Bool
 -- >>> FromSing SFalse
 -- False
 --
