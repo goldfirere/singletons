@@ -56,7 +56,7 @@ class SingI (a :: k) where
   -- extension to use this method the way you want.
   sing :: Sing a
 
--- | An (explicitly bidirectional) pattern synonym for implicit singletons.
+-- | An explicitly bidirectional pattern synonym for implicit singletons.
 --
 -- As an __expression__: Constructs a singleton @Sing a@ given a
 -- implicit singleton constraint @SingI a@.
