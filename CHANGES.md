@@ -122,19 +122,17 @@ next
 * Export defunctionalization symbols for `Demote`, `SameKind, `KindOf`, `(~>)`,
   `Apply`, and `(@@)` from `Data.Singletons`.
 
-* Add explicitly bidirectional pattern synonym `SingI`. Pattern
-  matching on `SingI` brings a `SingI ty` constraint into scope from a
+* Add explicitly bidirectional pattern synonym `Sing`. Pattern
+  matching on `Sing` brings a `SingI ty` constraint into scope from a
   singleton `Sing ty`.
 
-* Add explicitly bidirectional pattern synonym `AsSing`. Pattern
+* Add explicitly bidirectional pattern synonym `FromSing`. Pattern
   matching on any demoted (base) type gives us the corresponding
   singleton.
 
 * Add explicitly bidirectional pattern synonym
   `SLambda{2..8}`. Pattern matching on any defunctionalized singleton
-  yields a term-level Haskell function on singletons. Equals the
-  expression `singFun2`, `singFun{3..8}` and accessor `unSingFun2`,
-  `unSingFun{3..8}`.
+  yields a term-level Haskell function on singletons.
 
 2.3
 ---

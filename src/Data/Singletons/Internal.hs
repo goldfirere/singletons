@@ -50,7 +50,7 @@ data family Sing (a :: k)
 
 -- | A 'SingI' constraint is essentially an implicitly-passed singleton.
 -- If you need to satisfy this constraint with an explicit singleton, please
--- see 'withSingI' or the 'SingI' pattern synonym.
+-- see 'withSingI' or the 'Sing' pattern synonym.
 class SingI (a :: k) where
   -- | Produce the singleton explicitly. You will likely need the @ScopedTypeVariables@
   -- extension to use this method the way you want.
@@ -63,9 +63,9 @@ class SingI (a :: k) where
 --
 -- As a __pattern__: Matches on an explicit @Sing a@ witness bringing
 -- an implicit @SingI a@ constraint into scope.
-pattern SingI :: forall (a :: k). () => SingI a => Sing a
-pattern SingI <- (singInstance -> SingInstance)
-  where SingI = sing
+pattern Sing :: forall (a :: k). () => SingI a => Sing a
+pattern Sing <- (singInstance -> SingInstance)
+  where Sing = sing
 
 -- | The 'SingKind' class is a /kind/ class. It classifies all kinds
 -- for which singletons are defined. The class supports converting between a singleton
@@ -78,11 +78,11 @@ pattern SingI <- (singInstance -> SingInstance)
 -- (\\x -> 'withSomeSing' x 'fromSing') ≡ 'id'
 -- @
 --
--- The final law can be expressed in terms of the 'AsSing' pattern
+-- The final law can be expressed in terms of the 'FromSing' pattern
 -- synonym:
 --
 -- @
--- (\\(AsSing sing) -> 'fromSing' sing) ≡ 'id'
+-- (\\(FromSing sing) -> 'FromSing' sing) ≡ 'id'
 -- @
 class SingKind k where
   -- | Get a base type from the promoted kind. For example,
@@ -117,7 +117,7 @@ data SomeSing k where
 --
 -- >>> :t AsSing \@Bool
 -- AsSing \@Bool :: Sing a -> Bool
--- >>> AsSing SFalse
+-- >>> FromSing SFalse
 -- False
 --
 -- As a __pattern__: It extracts a singleton from its demoted (base)
@@ -125,7 +125,7 @@ data SomeSing k where
 --
 -- @
 -- singAnd :: Bool -> Bool -> SomeSing Bool
--- singAnd (AsSing singBool1) (AsSing singBool2) =
+-- singAnd (FromSing singBool1) (FromSing singBool2) =
 --   SomeSing (singBool1 %&& singBool2)
 -- @
 --
@@ -137,9 +137,9 @@ data SomeSing k where
 --     withSomeSing bool2 $ \singBool2 ->
 --       SomeSing (singBool1 %&& singBool2)
 -- @
-pattern AsSing :: SingKind k => forall (a :: k). Sing a -> Demote k
-pattern AsSing sng <- ((\demotedVal -> withSomeSing demotedVal SomeSing) -> SomeSing sng)
-  where AsSing sng = fromSing sng
+pattern FromSing :: SingKind k => forall (a :: k). Sing a -> Demote k
+pattern FromSing sng <- ((\demotedVal -> withSomeSing demotedVal SomeSing) -> SomeSing sng)
+  where FromSing sng = fromSing sng
 
 ----------------------------------------------------------------------
 ---- SingInstance ----------------------------------------------------
