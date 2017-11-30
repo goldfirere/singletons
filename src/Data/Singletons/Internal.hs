@@ -50,17 +50,22 @@ data family Sing (a :: k)
 
 -- | A 'SingI' constraint is essentially an implicitly-passed singleton.
 -- If you need to satisfy this constraint with an explicit singleton, please
--- see 'withSingI' or the 'SingI' pattern synonym.
+-- see 'withSingI' or the 'Sing' pattern synonym.
 class SingI (a :: k) where
   -- | Produce the singleton explicitly. You will likely need the @ScopedTypeVariables@
   -- extension to use this method the way you want.
   sing :: Sing a
 
--- | Permits pattern matching on an explicit @Sing a@ value to bring an
--- implicit @SingI a@ constraint into scope.
-pattern SingI :: forall (a :: k). () => SingI a => Sing a
-pattern SingI <- (singInstance -> SingInstance)
-  where SingI = sing
+-- | An explicitly bidirectional pattern synonym for implicit singletons.
+--
+-- As an __expression__: Constructs a singleton @Sing a@ given a
+-- implicit singleton constraint @SingI a@.
+--
+-- As a __pattern__: Matches on an explicit @Sing a@ witness bringing
+-- an implicit @SingI a@ constraint into scope.
+pattern Sing :: forall (a :: k). () => SingI a => Sing a
+pattern Sing <- (singInstance -> SingInstance)
+  where Sing = sing
 
 -- | The 'SingKind' class is a /kind/ class. It classifies all kinds
 -- for which singletons are defined. The class supports converting between a singleton
@@ -71,6 +76,13 @@ pattern SingI <- (singInstance -> SingInstance)
 -- @
 -- 'toSing' . 'fromSing' ≡ 'SomeSing'
 -- (\\x -> 'withSomeSing' x 'fromSing') ≡ 'id'
+-- @
+--
+-- The final law can also be expressed in terms of the 'FromSing' pattern
+-- synonym:
+--
+-- @
+-- (\\('FromSing' sing) -> 'FromSing' sing) ≡ 'id'
 -- @
 class SingKind k where
   -- | Get a base type from the promoted kind. For example,
@@ -96,6 +108,38 @@ class SingKind k where
 -- An example like the one above may be easier to write using 'withSomeSing'.
 data SomeSing k where
   SomeSing :: Sing (a :: k) -> SomeSing k
+
+-- | An explicitly bidirectional pattern synonym for going between a
+-- singleton and the corresponding demoted term.
+--
+-- As an __expression__: this takes a singleton to its demoted (base)
+-- type.
+--
+-- >>> :t FromSing \@Bool
+-- FromSing \@Bool :: Sing a -> Bool
+-- >>> FromSing SFalse
+-- False
+--
+-- As a __pattern__: It extracts a singleton from its demoted (base)
+-- type.
+--
+-- @
+-- singAnd :: 'Bool' -> 'Bool' -> 'SomeSing' 'Bool'
+-- singAnd ('FromSing' singBool1) ('FromSing' singBool2) =
+--   'SomeSing' (singBool1 %&& singBool2)
+-- @
+--
+-- instead of writing it with 'withSomeSing':
+--
+-- @
+-- singAnd bool1 bool2 =
+--   'withSomeSing' bool1 $ \singBool1 ->
+--     'withSomeSing' bool2 $ \singBool2 ->
+--       'SomeSing' (singBool1 %&& singBool2)
+-- @
+pattern FromSing :: SingKind k => forall (a :: k). Sing a -> Demote k
+pattern FromSing sng <- ((\demotedVal -> withSomeSing demotedVal SomeSing) -> SomeSing sng)
+  where FromSing sng = fromSing sng
 
 ----------------------------------------------------------------------
 ---- SingInstance ----------------------------------------------------
@@ -272,6 +316,41 @@ unSingFun7 sf x = unSingFun6 (sf @@ x)
 
 unSingFun8 :: forall f. Sing f -> SingFunction8 f
 unSingFun8 sf x = unSingFun7 (sf @@ x)
+
+{-# COMPLETE SLambda2 #-}
+pattern SLambda2 :: forall f. SingFunction2 f -> Sing f
+pattern SLambda2 {applySing2} <- (unSingFun2 -> applySing2)
+  where SLambda2 lam2         = singFun2 lam2
+
+{-# COMPLETE SLambda3 #-}
+pattern SLambda3 :: forall f. SingFunction3 f -> Sing f
+pattern SLambda3 {applySing3} <- (unSingFun3 -> applySing3)
+  where SLambda3 lam3         = singFun3 lam3
+
+{-# COMPLETE SLambda4 #-}
+pattern SLambda4 :: forall f. SingFunction4 f -> Sing f
+pattern SLambda4 {applySing4} <- (unSingFun4 -> applySing4)
+  where SLambda4 lam4         = singFun4 lam4
+
+{-# COMPLETE SLambda5 #-}
+pattern SLambda5 :: forall f. SingFunction5 f -> Sing f
+pattern SLambda5 {applySing5} <- (unSingFun5 -> applySing5)
+  where SLambda5 lam5         = singFun5 lam5
+
+{-# COMPLETE SLambda6 #-}
+pattern SLambda6 :: forall f. SingFunction6 f -> Sing f
+pattern SLambda6 {applySing6} <- (unSingFun6 -> applySing6)
+  where SLambda6 lam6         = singFun6 lam6
+
+{-# COMPLETE SLambda7 #-}
+pattern SLambda7 :: forall f. SingFunction7 f -> Sing f
+pattern SLambda7 {applySing7} <- (unSingFun7 -> applySing7)
+  where SLambda7 lam7         = singFun7 lam7
+
+{-# COMPLETE SLambda8 #-}
+pattern SLambda8 :: forall f. SingFunction8 f -> Sing f
+pattern SLambda8 {applySing8} <- (unSingFun8 -> applySing8)
+  where SLambda8 lam8         = singFun8 lam8
 
 ----------------------------------------------------------------------
 ---- Convenience -----------------------------------------------------
