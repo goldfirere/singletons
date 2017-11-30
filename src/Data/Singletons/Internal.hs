@@ -109,8 +109,8 @@ class SingKind k where
 data SomeSing k where
   SomeSing :: Sing (a :: k) -> SomeSing k
 
--- | An (explicitly bidirectional) pattern synonym for going between a
--- term and the corresponding demoted term.
+-- | An explicitly bidirectional pattern synonym for going between a
+-- singleton and the corresponding demoted term.
 --
 -- As an __expression__: this takes a singleton to its demoted (base)
 -- type.
@@ -222,72 +222,6 @@ infixl 9 @@
 newtype instance Sing (f :: k1 ~> k2) =
   SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
 
--- | An (explicitly bidirectional) pattern synonym for
--- defunctionalized singletons (@Sing (f :: k ~> k' ~>
--- k'')@).
--- 
--- As a __constructor__: Same as 'singFun2'. Turns a binary function
--- on singletons @sTake :: SingFunction2 TakeSym0@ into a
--- defunctionalized singleton @Sing (TakeSym :: Nat ~> [a] ~> [a])@.
--- 
--- @
--- >>> import Data.Singletons.Prelude.List
--- >>> :set -XTypeApplications
--- >>> 
--- >>> :t SLambda2
--- SLambda2 :: SingFunction2 f -> Sing f
--- >>> :t SLambda2 \@TakeSym0
--- SLambda2 :: SingFunction2 TakeSym0 -> Sing TakeSym0
--- >>> :t SLambda2 \@TakeSym0 sTake
--- SLambda2 :: Sing TakeSym0
--- @
--- 
--- This is useful for functions on singletons @sZipWith ::
--- SingFunction3 ZipWithSym0@ that expect a defunctionalized singleton
--- as an argument
--- 
--- @
--- sZipWith :: Sing (f::a ~> b ~> c) -> Sing (xs::[a]) -> Sing (ys::[b]) -> Sing (ZipWith f xs ys::[c])
--- 
--- sZipWith (SLambda2 \@TakeSym0 sTake) :: Sing (xs::[Nat]) -> Sing (ys::[[a]]) -> Sing (ZipWith TakeSym0 xs ys::[[a]])
--- @
--- 
--- As a __pattern__: Same as 'unSingFun2'. Gets a binary term-level
--- Haskell function on singletons @Sing (x :: k) -> Sing (y :: k') ->
--- Sing (f \@\@ x \@\@ y)@ from a defunctionalised @Sing
--- f@. Alternatively as a record field accessor
---
--- @
--- applySing2 :: Sing (f :: k ~> k' ~> k'') -> SingFunction2 f
--- @
-pattern SLambda2 :: forall f. SingFunction2 f -> Sing f
-pattern SLambda2 {applySing2} <- (unSingFun2 -> applySing2)
-  where SLambda2 lam2         = singFun2 lam2
-
-pattern SLambda3 :: forall f. SingFunction3 f -> Sing f
-pattern SLambda3 {applySing3} <- (unSingFun3 -> applySing3)
-  where SLambda3 lam3         = singFun3 lam3
-
-pattern SLambda4 :: forall f. SingFunction4 f -> Sing f
-pattern SLambda4 {applySing4} <- (unSingFun4 -> applySing4)
-  where SLambda4 lam4         = singFun4 lam4
-
-pattern SLambda5 :: forall f. SingFunction5 f -> Sing f
-pattern SLambda5 {applySing5} <- (unSingFun5 -> applySing5)
-  where SLambda5 lam5         = singFun5 lam5
-
-pattern SLambda6 :: forall f. SingFunction6 f -> Sing f
-pattern SLambda6 {applySing6} <- (unSingFun6 -> applySing6)
-  where SLambda6 lam6         = singFun6 lam6
-
-pattern SLambda7 :: forall f. SingFunction7 f -> Sing f
-pattern SLambda7 {applySing7} <- (unSingFun7 -> applySing7)
-  where SLambda7 lam7         = singFun7 lam7
-
-pattern SLambda8 :: forall f. SingFunction8 f -> Sing f
-pattern SLambda8 {applySing8} <- (unSingFun8 -> applySing8)
-  where SLambda8 lam8         = singFun8 lam8
-
 -- | An infix synonym for `applySing`
 (@@) :: forall (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)
 (@@) = applySing
@@ -382,6 +316,80 @@ unSingFun7 sf x = unSingFun6 (sf @@ x)
 
 unSingFun8 :: forall f. Sing f -> SingFunction8 f
 unSingFun8 sf x = unSingFun7 (sf @@ x)
+
+{- $SLambdaPatternSynonyms
+@SLambda{2...8}@ are explicitly bidirectional pattern synonyms defunctionalized
+singletons (@Sing (f :: k ~> k' ~> k'')@).
+
+As a __constructor__: Same as 'singFun2'. Turns a binary function
+on singletons @sTake :: SingFunction2 TakeSym0@ into a
+defunctionalized singleton @Sing (TakeSym :: Nat ~> [a] ~> [a])@.
+ 
+@
+>>> import Data.Singletons.Prelude.List
+>>> :set -XTypeApplications
+>>> 
+>>> :t SLambda2
+SLambda2 :: SingFunction2 f -> Sing f
+>>> :t SLambda2 \@TakeSym0
+SLambda2 :: SingFunction2 TakeSym0 -> Sing TakeSym0
+>>> :t SLambda2 \@TakeSym0 sTake
+SLambda2 :: Sing TakeSym0
+@
+
+This is useful for functions on singletons @sZipWith ::
+SingFunction3 ZipWithSym0@ that expect a defunctionalized singleton
+as an argument
+ 
+@
+sZipWith :: Sing (f::a ~> b ~> c) -> Sing (xs::[a]) -> Sing (ys::[b]) -> Sing (ZipWith f xs ys::[c])
+
+sZipWith (SLambda2 \@TakeSym0 sTake) :: Sing (xs::[Nat]) -> Sing (ys::[[a]]) -> Sing (ZipWith TakeSym0 xs ys::[[a]])
+@
+
+As a __pattern__: Same as 'unSingFun2'. Gets a binary term-level
+Haskell function on singletons @Sing (x :: k) -> Sing (y :: k') ->
+Sing (f \@\@ x \@\@ y)@ from a defunctionalised @Sing
+f@. Alternatively as a record field accessor
+
+@
+applySing2 :: Sing (f :: k ~> k' ~> k'') -> SingFunction2 f
+@
+-}
+{-# COMPLETE SLambda2 #-}
+pattern SLambda2 :: forall f. SingFunction2 f -> Sing f
+pattern SLambda2 {applySing2} <- (unSingFun2 -> applySing2)
+  where SLambda2 lam2         = singFun2 lam2
+
+{-# COMPLETE SLambda3 #-}
+pattern SLambda3 :: forall f. SingFunction3 f -> Sing f
+pattern SLambda3 {applySing3} <- (unSingFun3 -> applySing3)
+  where SLambda3 lam3         = singFun3 lam3
+
+{-# COMPLETE SLambda4 #-}
+pattern SLambda4 :: forall f. SingFunction4 f -> Sing f
+pattern SLambda4 {applySing4} <- (unSingFun4 -> applySing4)
+  where SLambda4 lam4         = singFun4 lam4
+
+{-# COMPLETE SLambda5 #-}
+pattern SLambda5 :: forall f. SingFunction5 f -> Sing f
+pattern SLambda5 {applySing5} <- (unSingFun5 -> applySing5)
+  where SLambda5 lam5         = singFun5 lam5
+
+{-# COMPLETE SLambda6 #-}
+pattern SLambda6 :: forall f. SingFunction6 f -> Sing f
+pattern SLambda6 {applySing6} <- (unSingFun6 -> applySing6)
+  where SLambda6 lam6         = singFun6 lam6
+
+{-# COMPLETE SLambda7 #-}
+pattern SLambda7 :: forall f. SingFunction7 f -> Sing f
+pattern SLambda7 {applySing7} <- (unSingFun7 -> applySing7)
+  where SLambda7 lam7         = singFun7 lam7
+
+{-# COMPLETE SLambda8 #-}
+pattern SLambda8 :: forall f. SingFunction8 f -> Sing f
+pattern SLambda8 {applySing8} <- (unSingFun8 -> applySing8)
+  where SLambda8 lam8         = singFun8 lam8
 
 ----------------------------------------------------------------------
 ---- Convenience -----------------------------------------------------

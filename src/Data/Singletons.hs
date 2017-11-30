@@ -54,13 +54,13 @@ module Data.Singletons (
   -- ** Defunctionalized singletons
   -- | When calling a higher-order singleton function, you need to use a
   -- @singFun...@ function to wrap it. See 'singFun1'.
-  pattern SLambda2, pattern SLambda3, pattern SLambda4, pattern SLambda5,
-  pattern SLambda6, pattern SLambda7, pattern SLambda8,
-
   singFun1, singFun2, singFun3, singFun4, singFun5, singFun6, singFun7,
   singFun8,
   unSingFun1, unSingFun2, unSingFun3, unSingFun4, unSingFun5,
   unSingFun6, unSingFun7, unSingFun8,
+  -- $SLambdaPatternSynonyms
+  pattern SLambda2, pattern SLambda3, pattern SLambda4, pattern SLambda5,
+  pattern SLambda6, pattern SLambda7, pattern SLambda8,
 
   -- | These type synonyms are exported only to improve error messages; users
   -- should not have to mention them.
