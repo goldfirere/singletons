@@ -34,6 +34,7 @@ import Control.Monad.Trans.Maybe
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Data.Maybe
+import Data.Singletons.Internal (wrap)
 import qualified GHC.LanguageExtensions.Type as LangExt
 
 -- | Generate promoted definitions from a type that is already defined.
@@ -179,7 +180,7 @@ promoteInfo (DPatSynI {}) =
 -- Promote a list of top-level declarations.
 promoteDecs :: [DDec] -> PrM ()
 promoteDecs raw_decls = do
-  decls <- expand raw_decls     -- expand type synonyms
+  decls <- expand (wrap raw_decls)     -- expand type synonyms
   checkForRepInDecls decls
   PDecs { pd_let_decs          = let_decs
         , pd_class_decs        = classes
@@ -195,10 +196,34 @@ promoteDecs raw_decls = do
   mapM_ promoteDerivedEqDec   derived_eq_decs
   promoteDataDecs datas
 
+-- data OrigMyFn = MyFn (Int -> Bool)
+-- data MyFn' a = MyFn' a
+-- type MyFn = MyFn' (Int -> Bool)
+
+-- rewriteInnerFunction :: DataDecl -> DataDecl
+-- rewriteInnerFunction (DataDecl _nd data_name nvps cons _derivings) =
+--     DataDecl _nd data_name nvps (catMaybes cons') _derivings
+--     where
+--         cons' :: [Maybe DCon]
+--         cons' = flip map cons $ \d@(DCon _ _ _ _ c) -> case c of
+--            Just (DAppT (DAppT DArrowT _) _) -> Nothing
+--            _                      -> Just d
+
+-- hasPromotableFields :: DataDecl -> PrM Bool
+-- hasPromotableFields (DataDecl _nd data_name tvbs cons _derivings) = do
+--     qRunIO $ putStrLn $ unlines ["_nd: " ++ show _nd
+--                                 ,"data_name" ++ show data_name
+--                                 ,"tvbs" ++ show tvbs
+--                                 ,"cons" ++ show cons
+--                                 ,"_derivings" ++ show _derivings]
+--     return False
+
 promoteDataDecs :: [DataDecl] -> PrM ()
 promoteDataDecs data_decs = do
+  -- let data_decs' = rewriteInnerFunction <$> data_decs
   rec_selectors <- concatMapM extract_rec_selectors data_decs
   _ <- promoteLetDecs noPrefix rec_selectors
+  -- mapM_ hasPromotableFields data_decs
   mapM_ promoteDataDec data_decs
   where
     extract_rec_selectors :: DataDecl -> PrM [DLetDec]
@@ -233,7 +258,7 @@ promoteLetDecs prefixes decls = do
 --  * for each data constructor with arity greater than 0 we generate type level
 --    symbols for use with Apply type family. In this way promoted data
 --    constructors and promoted functions can be used in a uniform way at the
---    type level in the same way they can be used uniformly at the type level.
+--    type level in the same way they can be used uniformly at the value level.
 --
 --  * for each nullary data constructor we generate a type synonym
 promoteDataDec :: DataDecl -> PrM ()

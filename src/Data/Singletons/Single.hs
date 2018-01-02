@@ -36,6 +36,7 @@ import Data.Map.Strict ( Map )
 import Data.Maybe
 import Control.Monad
 import Data.List
+import Data.Singletons.Internal (wrap)
 import qualified GHC.LanguageExtensions.Type as LangExt
 
 {-
@@ -232,7 +233,8 @@ singInfo (DPatSynI {}) =
 
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
 singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
-  decls <- expand raw_decls     -- expand type synonyms
+  let raw_decls' = wrap raw_decls
+  decls <- expand raw_decls'     -- expand type synonyms
   PDecs { pd_let_decs          = letDecls
         , pd_class_decs        = classes
         , pd_instance_decs     = insts
@@ -241,6 +243,7 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
         , pd_derived_show_decs = derivedShowDecs } <- partitionDecs decls
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
+
     promoteDataDecs datas
     (_, letDecEnv) <- promoteLetDecs noPrefix letDecls
     classes' <- mapM promoteClassDec classes
@@ -264,6 +267,32 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
                                                        ++ newDerivedEqDecs
                                                        ++ newDerivedShowDecs
     return $ promDecls ++ (map DLetDec newLetDecls) ++ newDecls
+
+-- rewriteDeclInnerFn  :: DDec -> DDec
+-- rewriteDeclInnerFn d@(DDataDecl _ _ _ _ _) -> rewriteInnerFunction d
+
+-- rewriteInnerFunction' :: DDec -> DDec
+-- rewriteInnerFunction' (DDataD _nd ctx data_name nvps cons _derivings) =
+--     DDataD _nd ctx data_name nvps (catMaybes cons') _derivings
+--     where
+--         cons' :: [Maybe DCon]
+--         cons' = flip map cons $ \d@(DCon _ _ _ _ c) -> case c of
+--            Just (DAppT (DAppT DArrowT _) _) -> Nothing
+--            _                      -> Just d
+-- rewriteInnerFunction' x = x
+
+
+-- rewriteInnerFunction'' :: Dec -> Dec
+-- rewriteInnerFunction'' (DataD _nd ctx data_name nvps cons _derivings) =
+--     DataD _nd ctx data_name nvps (catMaybes cons') _derivings
+--     where
+--         -- cons' :: 
+--         -- cons' = flip map cons $ \case
+--             -- NormalC nm ts -> NormalC 
+--         cons' = flip map cons $ \d@(Con _ _ _ _ c) -> case c of
+--            Just (AppT (AppT ArrowT _) _) -> Nothing
+--            _                      -> Just d
+-- rewriteInnerFunction'' x = x
 
 -- see comment at top of file
 buildDataLets :: DataDecl -> [(Name, DExp)]
