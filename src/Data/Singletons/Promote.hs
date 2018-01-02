@@ -34,7 +34,7 @@ import Control.Monad.Trans.Maybe
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Data.Maybe
-import Data.Singletons.Internal (wrap)
+import Data.Singletons.Internal (mangleDeclsWithTypes)
 import qualified GHC.LanguageExtensions.Type as LangExt
 
 -- | Generate promoted definitions from a type that is already defined.
@@ -180,7 +180,7 @@ promoteInfo (DPatSynI {}) =
 -- Promote a list of top-level declarations.
 promoteDecs :: [DDec] -> PrM ()
 promoteDecs raw_decls = do
-  decls <- expand (wrap raw_decls)     -- expand type synonyms
+  decls <- expand (mangleDeclsWithTypes raw_decls)     -- expand type synonyms
   checkForRepInDecls decls
   PDecs { pd_let_decs          = let_decs
         , pd_class_decs        = classes

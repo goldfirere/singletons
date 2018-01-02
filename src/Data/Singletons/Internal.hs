@@ -24,7 +24,7 @@
 module Data.Singletons.Internal (
     module Data.Singletons.Internal
   , Proxy(..)
-  , wrap
+  , mangleDeclsWithTypes
   ) where
 
 import Data.Bool
@@ -420,84 +420,8 @@ demote :: forall a. (SingKind (KindOf a), SingI a) => Demote (KindOf a)
 demote = fromSing (sing @(KindOf a) @a)
 
 
--- class FunExtract a where
---     type ExtractTy  a :: *
---     type ExtractCon a :: *
---     type ExtractTVBinder a :: *
-
---     isArrow        :: ExtractTy a -> Bool
---     getDeclName    :: a -> String
---     conTy          :: Proxy a -> ExtractCon a -> [ExtractTy a]
---     mkTyVar        :: String -> ExtractTy a
---     getCons        :: a -> [ ExtractCon a ]
---     setCons        :: [[ Maybe (ExtractTy a) ]] -> a -> a
---     setConTys      :: [ Maybe (String, ExtractTy a) ] -> ExtractCon a -> ExtractCon a
---     tyLabel        :: ExtractTy a -> Maybe String
---     mkTyDecl       :: a -> a
---     mkTyVarBinder  :: String -> ExtractTVBinder a
---     modifyDeclName :: (String -> String) -> a -> a
---     modifyTyVars   :: ([ExtractTVBinder a] -> [ExtractTVBinder a]) -> a -> a
-
--- tyPairName :: (Int, D.DTyVarBndr) -> String
--- tyPairName (i,T.Name t) = fromMaybe ("pos" ++ show i) (tyLabel t)
 
 
--- data ...
---    ConA Int Bool (Int -> Int) b
---    >=>
---    [(ConA Int Bool _my_ConA_ty_var, Int -> Int)]
--- runFunExtrConn
---     :: forall a. FunExtract a
---     => Proxy a
---     -> String
---     -> ExtractCon a
---     -> (ExtractCon a, [(String, ExtractTy a)])
--- runFunExtrConn p dataName con =
-
---     let replacement
---             :: (FunExtract b)
---             => Proxy b
---             -> (Int, ExtractTy b)
---             -> Maybe (String, ExtractTy b)
---         replacement (p :: Proxy b) (i,t) =
---             if   isArrow @b t
---             then Just (concat ["__", dataName, "_", tyPairName @b (i,t)], t)
---             else Nothing
-
---         replacements :: [Maybe (String, ExtractTy a)]
---         replacements = fmap (replacement p) (zip [0..] $ conTy p con)
-
---         conTypes :: [ExtractTy a]
---         conTypes = zipWith (\t t' -> maybe t (mkTyVar @a . fst) t')
---                            (conTy @a p con) replacements
-
---         positiveReplacements = catMaybes replacements
---         con' = if   null positiveReplacements
---                then con
---                else setConTys @a replacements con
-
---     in (con', positiveReplacements)
-
-isArrow :: Either D.DBangType D.DVarBangType -> Bool
-isArrow t = case t of
-    Left  (_,t')   -> tIsArrow t'
-    Right (_,_,t') -> tIsArrow t'
-    where
-        tIsArrow = \case
-            D.DForallT _ _ t''              -> tIsArrow t''
-            D.DAppT (D.DAppT D.DArrowT _) _ -> True
-            _                               -> False
-
-unsafeName :: String -> T.Name
-unsafeName s = T.Name (T.OccName s) T.NameS
-
-tyPairName :: String -> (Int, Either D.DBangType D.DVarBangType) -> String
-tyPairName d (i, Left (_, _))                       = d ++ "_pos_" ++ show i
-tyPairName d (i, Right (T.Name (T.OccName nm) _,_,_)) = d ++ "_rec_" ++ nm
-tyPairName _ (_, t) = error $ "Couldn't get the name for " ++ show t
-
-setConTys :: D.DConFields -> D.DCon -> D.DCon
-setConTys flds (D.DCon bs c n _ m) = D.DCon bs c n flds m
 
 runFunExtrConn
     :: String
@@ -539,23 +463,7 @@ runFunExtrConn dataName con =
                else setConTys conTypes con
 
     in (con', positiveReplacements)
--- -- type MyType = MyType'
--- sanitizeDataDecl :: forall a.FunExtract a => a -> [(String, ExtractTy a)] -> [a]
--- sanitizeDataDecl d [] = [d]
--- sanitizeDataDecl d xs = [dataPart, typeAliasPart]
---     where
---         pName         = getDeclName d
---         dataPart      = modifyDeclName (++ "'") .
---                         modifyTyVars (++ fmap (mkTyVarBinder @a . fst) xs) $
---                         d
---         typeAliasPart = undefined
 
-modifyDataDeclName :: (String -> String) -> D.DDec -> D.DDec
-modifyDataDeclName f d@(D.DDataD nt ct (T.Name (T.OccName n) fl) bs cs ds) =
-    D.DDataD nt ct (T.Name (T.OccName (f n)) fl) bs cs ds
-
-modifyDataDeclTVs :: ([D.DTyVarBndr] -> [D.DTyVarBndr]) -> D.DDec -> D.DDec
-modifyDataDeclTVs f (D.DDataD nt ct n bs cs ds) = D.DDataD nt ct n (f bs) cs ds
 
 sanitizeDataDecl :: D.DDec -> [(String, Either D.DBangType D.DVarBangType)] -> [D.DDec]
 sanitizeDataDecl d [] = [d]
@@ -575,13 +483,6 @@ sanitizeDataDecl d@(D.DDataD nOrD dCtx n@(T.Name (T.OccName nm) nfl) bndrs cs dr
         typeDeclPart = D.DTySynD n (bndrs)  (foldl' @[] D.DAppT (D.DConT newBaseName) newTypes)
 sanitizeDataDecl d _ = [d]
 
--- [("a", Int -> Bool), ("b", Bool -> Bool)]
--- Foo a b c d
--- ("Foo", ["a","b","c","d"])
--- App (App (App (App Foo "a") "b") "c") "d"
-
-data Foo' a b = Foo a b
-type Foo a = Foo' a (Int-> Bool)
 
 runFunExtraction :: D.DDec -> [D.DDec] -- (a, Maybe a)
 runFunExtraction dec = sanitizeDataDecl (setCons cons dec) replacements
@@ -590,8 +491,8 @@ runFunExtraction dec = sanitizeDataDecl (setCons cons dec) replacements
             unzip $ fmap (runFunExtrConn "tmp") (getCons dec)
         replacements = concat replacementss
 
-wrap :: [D.DDec] -> [D.DDec]
-wrap ds = concat $ map runFunExtraction ds
+mangleDeclsWithTypes :: [D.DDec] -> [D.DDec]
+mangleDeclsWithTypes ds = concat $ map runFunExtraction ds
 
 getCons :: D.DDec -> [D.DCon]
 getCons (D.DDataD _ _ _ _ dCons _ ) = dCons
@@ -601,10 +502,30 @@ setCons :: [D.DCon] -> D.DDec -> D.DDec
 setCons dCons (D.DDataD a b c d _ f) = D.DDataD a b c d dCons f
 setCons _ d = d
 
--- instance FunExtract T.Dec where
---     funExtraction (T.DDec _nd ctx dataName nvps cons _derivings) =
---         ffor cons $ \case
---           T.NormalC conName cs -> ffor (zipWith [0..] cs) $ \(ind, (b, ty)) -> case ty of
---               T.TApp (T.AppT T.ArrowT _ ) _ -> "a__" <> dataName <> "_" <> conName <> "_" <> show ind
---               T.ForallT (T.AppT (T.AppT T.ArrowT _) _) -> "a__" <> dataName <> "_" <> conName <> "_" <> show ind
+unsafeName :: String -> T.Name
+unsafeName s = T.Name (T.OccName s) T.NameS
 
+tyPairName :: String -> (Int, Either D.DBangType D.DVarBangType) -> String
+tyPairName d (i, Left (_, _))                       = d ++ "_pos_" ++ show i
+tyPairName d (i, Right (T.Name (T.OccName nm) _,_,_)) = d ++ "_rec_" ++ nm
+tyPairName _ (_, t) = error $ "Couldn't get the name for " ++ show t
+
+setConTys :: D.DConFields -> D.DCon -> D.DCon
+setConTys flds (D.DCon bs c n _ m) = D.DCon bs c n flds m
+
+modifyDataDeclName :: (String -> String) -> D.DDec -> D.DDec
+modifyDataDeclName f d@(D.DDataD nt ct (T.Name (T.OccName n) fl) bs cs ds) =
+    D.DDataD nt ct (T.Name (T.OccName (f n)) fl) bs cs ds
+
+modifyDataDeclTVs :: ([D.DTyVarBndr] -> [D.DTyVarBndr]) -> D.DDec -> D.DDec
+modifyDataDeclTVs f (D.DDataD nt ct n bs cs ds) = D.DDataD nt ct n (f bs) cs ds
+
+isArrow :: Either D.DBangType D.DVarBangType -> Bool
+isArrow t = case t of
+    Left  (_,t')   -> tIsArrow t'
+    Right (_,_,t') -> tIsArrow t'
+    where
+        tIsArrow = \case
+            D.DForallT _ _ t''              -> tIsArrow t''
+            D.DAppT (D.DAppT D.DArrowT _) _ -> True
+            _                               -> False

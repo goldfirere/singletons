@@ -36,7 +36,7 @@ import Data.Map.Strict ( Map )
 import Data.Maybe
 import Control.Monad
 import Data.List
-import Data.Singletons.Internal (wrap)
+import Data.Singletons.Internal (mangleDeclsWithTypes)
 import qualified GHC.LanguageExtensions.Type as LangExt
 
 {-
@@ -233,7 +233,7 @@ singInfo (DPatSynI {}) =
 
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
 singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
-  let raw_decls' = wrap raw_decls
+  let raw_decls' = mangleDeclsWithTypes  raw_decls
   decls <- expand raw_decls'     -- expand type synonyms
   PDecs { pd_let_decs          = letDecls
         , pd_class_decs        = classes
