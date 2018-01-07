@@ -1,8 +1,8 @@
 Changelog for singletons project
 ================================
 
-next
-----
+2.4
+---
 * `Demote Nat` is now `Natural` (from `Numeric.Natural`) instead of `Integer`.
   In accordance with this change, `Data.Singletons.TypeLits` now exposes
   `GHC.TypeNats.natVal` (which returns a `Natural`) instead of
