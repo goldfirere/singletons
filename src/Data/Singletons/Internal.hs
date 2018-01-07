@@ -174,6 +174,13 @@ data TyFun :: * -> * -> *
 type a ~> b = TyFun a b -> *
 infixr 0 ~>
 
+-- | Type level function application
+type family Apply (f :: k1 ~> k2) (x :: k1) :: k2
+
+-- | An infix synonym for `Apply`
+type a @@ b = Apply a b
+infixl 9 @@
+
 -- | Wrapper for converting the normal type-level arrow into a '~>'.
 -- For example, given:
 --
@@ -184,36 +191,23 @@ infixr 0 ~>
 --
 -- We can write:
 --
--- > Map (TyCon1 Succ) [Zero, Succ Zero]
-data TyCon1 :: (k1 -> k2) -> (k1 ~> k2)
+-- > Map (TyCon Succ) [Zero, Succ Zero]
+data family TyCon :: (k1 -> k2) -> unmatchable_fun
+-- That unmatchable_fun should really be a function of k1 and k2,
+-- but GHC 8.4 doesn't support type family calls in the result kind
+-- of a data family. It should. See GHC#14645.
 
--- | Similar to 'TyCon1', but for two-parameter type constructors.
-data TyCon2 :: (k1 -> k2 -> k3) -> (k1 ~> k2 ~> k3)
-data TyCon3 :: (k1 -> k2 -> k3 -> k4) -> (k1 ~> k2 ~> k3 ~> k4)
-data TyCon4 :: (k1 -> k2 -> k3 -> k4 -> k5) -> (k1 ~> k2 ~> k3 ~> k4 ~> k5)
-data TyCon5 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6)
-            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6)
-data TyCon6 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7)
-            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7)
-data TyCon7 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8)
-            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8)
-data TyCon8 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9)
-            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8 ~> k9)
+-- The result kind of this is also a bit wrong; it should line
+-- up with unmatchable_fun above. However, we can't do that
+-- because GHC is too stupid to remember that f's kind can't
+-- have more than one argument when kind-checking the RHS of
+-- the second equation. Note that this infelicity is independent
+-- of the problem in the kind of TyCon
+type family ApplyTyCon (f :: k1 -> k2) (x :: k1) :: k3 where
+  ApplyTyCon (f :: k1 -> k2 -> k3) x = TyCon (f x)
+  ApplyTyCon f x                     = f x
 
--- | Type level function application
-type family Apply (f :: k1 ~> k2) (x :: k1) :: k2
-type instance Apply (TyCon1 f) x = f x
-type instance Apply (TyCon2 f) x = TyCon1 (f x)
-type instance Apply (TyCon3 f) x = TyCon2 (f x)
-type instance Apply (TyCon4 f) x = TyCon3 (f x)
-type instance Apply (TyCon5 f) x = TyCon4 (f x)
-type instance Apply (TyCon6 f) x = TyCon5 (f x)
-type instance Apply (TyCon7 f) x = TyCon6 (f x)
-type instance Apply (TyCon8 f) x = TyCon7 (f x)
-
--- | An infix synonym for `Apply`
-type a @@ b = Apply a b
-infixl 9 @@
+type instance Apply (TyCon f) x = ApplyTyCon f x
 
 ----------------------------------------------------------------------
 ---- Defunctionalized Sing instance and utilities --------------------
