@@ -38,13 +38,13 @@ $(singletons [d|
 
  |])
 
-foo1a :: Proxy (ZipWith (TyCon2 Either) '[Int, Bool] '[Char, Double])
+foo1a :: Proxy (ZipWith (TyCon Either) '[Int, Bool] '[Char, Double])
 foo1a = Proxy
 
 foo1b :: Proxy ('[Either Int Char, Either Bool Double])
 foo1b = foo1a
 
-foo2a :: Proxy (Map (TyCon1 (Either Int)) '[Bool, Double])
+foo2a :: Proxy (Map (TyCon (Either Int)) '[Bool, Double])
 foo2a = Proxy
 
 foo2b :: Proxy ('[Either Int Bool, Either Int Double])
