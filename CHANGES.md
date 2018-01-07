@@ -138,6 +138,9 @@ Changelog for singletons project
   `SLambda{2..8}`. Pattern matching on any defunctionalized singleton
   yields a term-level Haskell function on singletons.
 
+* Remove the family of `TyCon1`, `TyCon2`, ..., in favor of just `TyCon`.
+  GHC 8.4's type system is powerful enough to allow this nice simplification.
+
 2.3
 ---
 * Documentation clarifiation in `Data.Singletons.TypeLits`, thanks to @ivan-m.
