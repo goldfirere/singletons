@@ -88,7 +88,7 @@ sIf SFalse _ c = c
 
 -- Nat
 
-data instance Sing (a :: Nat) where
+data instance Sing :: Nat -> Type where
   SZero :: Sing Zero
   SSucc :: Sing n -> Sing (Succ n)
 
@@ -130,7 +130,7 @@ instance SingKind Nat where
 
 -- Bool
 
-data instance Sing (a :: Bool) where
+data instance Sing :: Bool -> Type where
   SFalse :: Sing False
   STrue :: Sing True
 
@@ -161,7 +161,7 @@ instance SingKind Bool where
 
 -- Maybe
 
-data instance Sing (a :: Maybe k) where
+data instance Sing :: Maybe k -> Type where
   SNothing :: Sing Nothing
   SJust :: forall (a :: k). Sing a -> Sing (Just a)
 
@@ -202,7 +202,7 @@ instance SingKind k => SingKind (Maybe k) where
 
 -- List
 
-data instance Sing (a :: List k) where
+data instance Sing :: List k -> Type where
   SNil :: Sing Nil
   SCons :: forall (h :: k) (t :: List k). Sing h -> Sing t -> Sing (Cons h t)
 
@@ -256,7 +256,7 @@ instance SingKind k => SingKind (List k) where
 
 -- Either
 
-data instance Sing (a :: Either k1 k2) where
+data instance Sing :: Either k1 k2 -> Type where
   SLeft :: forall (a :: k1). Sing a -> Sing (Left a)
   SRight :: forall (b :: k2). Sing b -> Sing (Right b)
 
@@ -292,7 +292,7 @@ instance (SDecide k1, SDecide k2) => SDecide (Either k1 k2) where
 data Composite :: * -> * -> * where
   MkComp :: Either (Maybe a) b -> Composite a b
 
-data instance Sing (a :: Composite k1 k2) where
+data instance Sing :: Composite k1 k2 -> Type where
   SMkComp :: forall (a :: Either (Maybe k1) k2). Sing a -> Sing (MkComp a)
 
 instance SingI a => SingI (MkComp (a :: Either (Maybe k1) k2)) where
@@ -314,7 +314,7 @@ instance (SDecide k1, SDecide k2) => SDecide (Composite k1 k2) where
 -- Empty
 
 data Empty
-data instance Sing (a :: Empty)
+data instance Sing :: Empty -> Type
 instance SingKind Empty where
   type Demote Empty = Empty
   fromSing = \case
@@ -328,7 +328,7 @@ data Vec :: * -> Nat -> * where
 
 data Rep = Nat | Maybe Rep | Vec Rep Nat
 
-data instance Sing (a :: *) where
+data instance Sing :: Type -> Type where
   SNat :: Sing Nat
   SMaybe :: Sing a -> Sing (Maybe a)
   SVec :: Sing a -> Sing n -> Sing (Vec a n)
@@ -877,5 +877,5 @@ sFI = unSingFun2 (singFun2 @FI (\p ls ->
 data G a where
   MkG :: G Bool
 
-data instance Sing (x :: G a) where
+data instance Sing :: G a -> Type where
   SMkG :: Sing MkG

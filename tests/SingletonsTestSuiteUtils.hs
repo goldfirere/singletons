@@ -47,7 +47,7 @@ includePath :: FilePath
 includePath = "../../dist/build"
 
 ghcVersion :: String
-ghcVersion = ".ghc82"
+ghcVersion = ".ghc84"
 
 -- If a cabal sandbox is present, use its package database instead of the global one.
 extraOpts :: [String]

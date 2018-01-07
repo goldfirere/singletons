@@ -1,0 +1,113 @@
+Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| (+) :: Nat -> Nat -> Nat
+          Zero + m = m
+          (Succ n) + m = Succ (n + m)
+          foo1 :: [Nat]
+          foo1 = map ((Succ Zero) +) [Zero, Succ Zero]
+          foo2 :: [Nat]
+          foo2 = map (+ (Succ Zero)) [Zero, Succ Zero]
+          foo3 :: [Nat]
+          foo3 = zipWith (+) [Succ Zero, Succ Zero] [Zero, Succ Zero] |]
+  ======>
+    (+) :: Nat -> Nat -> Nat
+    (+) Zero m = m
+    (+) (Succ n) m = Succ (n + m)
+    foo1 :: [Nat]
+    foo1 = (map (Succ Zero +)) [Zero, Succ Zero]
+    foo2 :: [Nat]
+    foo2 = (map (+ Succ Zero)) [Zero, Succ Zero]
+    foo3 :: [Nat]
+    foo3 = ((zipWith (+)) [Succ Zero, Succ Zero]) [Zero, Succ Zero]
+    type family Lambda_0123456789876543210 t where
+      Lambda_0123456789876543210 lhs_0123456789876543210 = Apply (Apply (+@#@$) lhs_0123456789876543210) (Apply SuccSym0 ZeroSym0)
+    type Lambda_0123456789876543210Sym1 t =
+        Lambda_0123456789876543210 t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l
+      = forall arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+        Lambda_0123456789876543210Sym0KindInference
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210 l
+    type (+@#@$$$) (t :: Nat) (t :: Nat) = (+) t t
+    instance SuppressUnusedWarnings (+@#@$$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (:+@#@$$###)) GHC.Tuple.())
+    data (+@#@$$) (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply ((+@#@$$) l) arg) ((+@#@$$$) l arg) =>
+        (:+@#@$$###)
+    type instance Apply ((+@#@$$) l) l = (+) l l
+    instance SuppressUnusedWarnings (+@#@$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (:+@#@$###)) GHC.Tuple.())
+    data (+@#@$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
+        (:+@#@$###)
+    type instance Apply (+@#@$) l = (+@#@$$) l
+    type Foo1Sym0 = Foo1
+    type Foo2Sym0 = Foo2
+    type Foo3Sym0 = Foo3
+    type family (+) (a :: Nat) (a :: Nat) :: Nat where
+      (+) Zero m = m
+      (+) (Succ n) m = Apply SuccSym0 (Apply (Apply (+@#@$) n) m)
+    type family Foo1 :: [Nat] where
+      Foo1 = Apply (Apply MapSym0 (Apply (+@#@$) (Apply SuccSym0 ZeroSym0))) (Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) '[]))
+    type family Foo2 :: [Nat] where
+      Foo2 = Apply (Apply MapSym0 Lambda_0123456789876543210Sym0) (Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) '[]))
+    type family Foo3 :: [Nat] where
+      Foo3 = Apply (Apply (Apply ZipWithSym0 (+@#@$)) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) '[]))) (Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) '[]))
+    (%+) ::
+      forall (t :: Nat) (t :: Nat).
+      Sing t -> Sing t -> Sing (Apply (Apply (+@#@$) t) t :: Nat)
+    sFoo1 :: Sing (Foo1Sym0 :: [Nat])
+    sFoo2 :: Sing (Foo2Sym0 :: [Nat])
+    sFoo3 :: Sing (Foo3Sym0 :: [Nat])
+    (%+) SZero (sM :: Sing m) = sM
+    (%+) (SSucc (sN :: Sing n)) (sM :: Sing m)
+      = (applySing ((singFun1 @SuccSym0) SSucc))
+          ((applySing ((applySing ((singFun2 @(+@#@$)) (%+))) sN)) sM)
+    sFoo1
+      = (applySing
+           ((applySing ((singFun2 @MapSym0) sMap))
+              ((applySing ((singFun2 @(+@#@$)) (%+)))
+                 ((applySing ((singFun1 @SuccSym0) SSucc)) SZero))))
+          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SZero))
+             ((applySing
+                 ((applySing ((singFun2 @(:@#@$)) SCons))
+                    ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
+                SNil))
+    sFoo2
+      = (applySing
+           ((applySing ((singFun2 @MapSym0) sMap))
+              ((singFun1 @Lambda_0123456789876543210Sym0)
+                 (\ sLhs_0123456789876543210
+                    -> case sLhs_0123456789876543210 of {
+                         _ :: Sing lhs_0123456789876543210
+                           -> (applySing
+                                 ((applySing ((singFun2 @(+@#@$)) (%+))) sLhs_0123456789876543210))
+                                ((applySing ((singFun1 @SuccSym0) SSucc)) SZero) }))))
+          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SZero))
+             ((applySing
+                 ((applySing ((singFun2 @(:@#@$)) SCons))
+                    ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
+                SNil))
+    sFoo3
+      = (applySing
+           ((applySing
+               ((applySing ((singFun3 @ZipWithSym0) sZipWith))
+                  ((singFun2 @(+@#@$)) (%+))))
+              ((applySing
+                  ((applySing ((singFun2 @(:@#@$)) SCons))
+                     ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
+                 ((applySing
+                     ((applySing ((singFun2 @(:@#@$)) SCons))
+                        ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
+                    SNil))))
+          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SZero))
+             ((applySing
+                 ((applySing ((singFun2 @(:@#@$)) SCons))
+                    ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
+                SNil))

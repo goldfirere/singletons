@@ -36,7 +36,7 @@ paper for a more thorough introduction.
 Compatibility
 -------------
 
-The singletons library requires GHC 8.2.1 or greater. Any code that uses the
+The singletons library requires GHC 8.4.1 or greater. Any code that uses the
 singleton generation primitives needs to enable a long list of GHC
 extensions. This list includes, but is not necessarily limited to, the
 following:
@@ -646,7 +646,7 @@ making `*` the promoted version of `TypeRep`, as `TypeRep` is currently implemen
 The singleton associated with `TypeRep` has one constructor:
 
     ```haskell
-    newtype instance Sing (a :: *) where
+    newtype instance Sing :: Type -> Type where
       STypeRep :: TypeRep a -> Sing a
     ```
 

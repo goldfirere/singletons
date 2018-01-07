@@ -1,0 +1,58 @@
+Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| data Empty
+          
+          deriving instance Ord Empty
+          deriving instance Eq Empty |]
+  ======>
+    data Empty
+    deriving instance Eq Empty
+    deriving instance Ord Empty
+    type family Compare_0123456789876543210 (a :: Empty) (a :: Empty) :: Ordering where
+      Compare_0123456789876543210 _ _ = EQSym0
+    type Compare_0123456789876543210Sym2 (t :: Empty) (t :: Empty) =
+        Compare_0123456789876543210 t t
+    instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Compare_0123456789876543210Sym1 (l :: Empty) (l :: TyFun Empty Ordering)
+      = forall arg. SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
+        Compare_0123456789876543210Sym1KindInference
+    type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
+    instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Compare_0123456789876543210Sym0 (l :: TyFun Empty (TyFun Empty Ordering
+                                                            -> GHC.Types.Type))
+      = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
+        Compare_0123456789876543210Sym0KindInference
+    type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
+    instance POrd Empty where
+      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
+    type family Equals_0123456789876543210 (a :: Empty) (b :: Empty) :: Bool where
+      Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = TrueSym0
+    instance PEq Empty where
+      type (==) a b = Equals_0123456789876543210 a b
+    data instance Sing (z :: Empty)
+    type SEmpty = (Sing :: Empty -> GHC.Types.Type)
+    instance SingKind Empty where
+      type Demote Empty = Empty
+      fromSing x = case x of
+      toSing x = SomeSing (case x of)
+    instance SOrd Empty where
+      sCompare ::
+        forall (t1 :: Empty) (t2 :: Empty).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun Empty (TyFun Empty Ordering
+                                                              -> GHC.Types.Type)
+                                                 -> GHC.Types.Type) t1) t2)
+      sCompare _ _ = SEQ
+    instance SEq Empty where
+      (%==) _ _ = STrue
+    instance SDecide Empty where
+      (%~) x _ = Proved (case x of)

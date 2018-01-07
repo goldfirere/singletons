@@ -1,8 +1,10 @@
 Changelog for singletons project
 ================================
 
-next
-----
+2.4
+---
+* Require GHC 8.4.
+
 * `Demote Nat` is now `Natural` (from `Numeric.Natural`) instead of `Integer`.
   In accordance with this change, `Data.Singletons.TypeLits` now exposes
   `GHC.TypeNats.natVal` (which returns a `Natural`) instead of
@@ -61,7 +63,9 @@ next
 * Add `Data.Singletons.Prelude.Void`.
 
 * Add promoted and singled versions of `div`, `mod`, `divMod`, `quot`, `rem`,
-  and `quotRem` to `Data.Singletons.TypeLits`.
+  and `quotRem` to `Data.Singletons.TypeLits` that utilize the efficient `Div`
+  and `Mod` type families from `GHC.TypeNats`. Also add `sLog2` and
+  defunctionalization symbols for `Log2` from `GHC.TypeNats`.
 
 * Add `(<>)` and `(%<>)`, the promoted and singled versions of `AppendSymbol`
   from `GHC.TypeLits`.
@@ -91,7 +95,7 @@ next
   that it now uses type-indexed `Typeable`. The new `Sing` instance is now:
 
   ```haskell
-  newtype instance Sing (a :: *) where
+  newtype instance Sing :: Type -> Type where
     STypeRep :: TypeRep a -> Sing a
   ```
 

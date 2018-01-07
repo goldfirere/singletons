@@ -9,17 +9,17 @@ author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stola
 maintainer:     Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC == 8.2.2
+tested-with:    GHC == 8.4.1
 extra-source-files: README.md, CHANGES.md,
                     tests/compile-and-dump/buildGoldenFiles.awk,
                     tests/compile-and-dump/GradingClient/*.hs,
                     tests/compile-and-dump/InsertionSort/*.hs,
                     tests/compile-and-dump/Promote/*.hs,
                     tests/compile-and-dump/Singletons/*.hs
-                    tests/compile-and-dump/GradingClient/*.ghc82.template,
-                    tests/compile-and-dump/InsertionSort/*.ghc82.template,
-                    tests/compile-and-dump/Promote/*.ghc82.template,
-                    tests/compile-and-dump/Singletons/*.ghc82.template
+                    tests/compile-and-dump/GradingClient/*.ghc84.template,
+                    tests/compile-and-dump/InsertionSort/*.ghc84.template,
+                    tests/compile-and-dump/Promote/*.ghc84.template,
+                    tests/compile-and-dump/Singletons/*.ghc84.template
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -42,7 +42,7 @@ source-repository this
 
 library
   hs-source-dirs:     src
-  build-depends:      base >= 4.10 && < 5,
+  build-depends:      base >= 4.11 && < 4.12,
                       mtl >= 2.2.1,
                       ghc-boot-th,
                       template-haskell,
@@ -134,7 +134,7 @@ test-suite singletons-test-suite
   main-is:            SingletonsTestSuite.hs
   other-modules:      SingletonsTestSuiteUtils
 
-  build-depends:      base >= 4.10 && < 5,
+  build-depends:      base >= 4.11 && < 4.12,
                       filepath >= 1.3,
                       process >= 1.1,
                       singletons,

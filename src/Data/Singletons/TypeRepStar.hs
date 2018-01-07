@@ -22,7 +22,7 @@ module Data.Singletons.TypeRepStar (
   Sing(STypeRep),
   -- | Here is the definition of the singleton for @*@:
   --
-  -- > newtype instance Sing (a :: *) where
+  -- > newtype instance Sing :: Type -> Type where
   -- >   STypeRep :: TypeRep a -> Sing a
   --
   -- Instances for 'SingI', 'SingKind', 'SEq', 'SDecide', and 'TestCoercion' are
@@ -43,7 +43,7 @@ import Unsafe.Coerce
 import Data.Kind
 import Data.Type.Equality ((:~:)(..))
 
-newtype instance Sing (a :: *) where
+newtype instance Sing :: Type -> Type where
   STypeRep :: TypeRep a -> Sing a
     deriving (Eq, Ord, Show)
 
