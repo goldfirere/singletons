@@ -380,7 +380,7 @@ wrapDesugar f th = do
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
   deriving ( Functor, Applicative, Monad, MonadTrans
            , MonadWriter m, MonadReader r
-           , MonadFail )
+           , MonadFail, MonadIO )
 
 -- make a Quasi instance for easy lifting
 instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
@@ -405,6 +405,7 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
   qIsExtEnabled       = lift `comp1` qIsExtEnabled
   qExtsEnabled        = lift qExtsEnabled
   qAddForeignFile     = lift `comp2` qAddForeignFile
+  qAddCorePlugin      = lift `comp1` qAddCorePlugin
 
   qRecover exp handler = do
     (result, aux) <- lift $ qRecover (evalForPair exp) (evalForPair handler)

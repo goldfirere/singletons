@@ -46,7 +46,7 @@ emptySgEnv = SgEnv { sg_let_binds   = Map.empty
 newtype SgM a = SgM (ReaderT SgEnv (WriterT [DDec] Q) a)
   deriving ( Functor, Applicative, Monad
            , MonadReader SgEnv, MonadWriter [DDec]
-           , MonadFail )
+           , MonadFail, MonadIO )
 
 liftSgM :: Q a -> SgM a
 liftSgM = SgM . lift . lift
@@ -73,6 +73,7 @@ instance Quasi SgM where
   qIsExtEnabled       = liftSgM `comp1` qIsExtEnabled
   qExtsEnabled        = liftSgM qExtsEnabled
   qAddForeignFile     = liftSgM `comp2` qAddForeignFile
+  qAddCorePlugin      = liftSgM `comp1` qAddCorePlugin
 
   qRecover (SgM handler) (SgM body) = do
     env <- ask

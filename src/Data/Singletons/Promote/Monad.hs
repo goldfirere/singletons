@@ -46,7 +46,7 @@ emptyPrEnv = PrEnv { pr_lambda_bound = Map.empty
 newtype PrM a = PrM (ReaderT PrEnv (WriterT [DDec] Q) a)
   deriving ( Functor, Applicative, Monad, Quasi
            , MonadReader PrEnv, MonadWriter [DDec]
-           , MonadFail )
+           , MonadFail, MonadIO )
 
 instance DsMonad PrM where
   localDeclarations = asks pr_local_decls
