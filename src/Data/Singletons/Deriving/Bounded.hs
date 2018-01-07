@@ -13,7 +13,6 @@
 
 module Data.Singletons.Deriving.Bounded where
 
-import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Ppr
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
@@ -24,7 +23,7 @@ import Control.Monad
 
 -- monadic only for failure and parallelism with other functions
 -- that make instances
-mkBoundedInstance :: Quasi q => Maybe DCxt -> DType -> [DCon] -> q UInstDecl
+mkBoundedInstance :: DsMonad q => Maybe DCxt -> DType -> [DCon] -> q UInstDecl
 mkBoundedInstance mb_ctxt ty cons = do
   -- We can derive instance of Bounded if datatype is an enumeration (all
   -- constructors must be nullary) or has only one constructor. See Section 11
@@ -50,7 +49,8 @@ mkBoundedInstance mb_ctxt ty cons = do
           in (minEqnRHS, maxEqnRHS)
 
       mk_rhs rhs = UFunction [DClause [] rhs]
-  return $ InstDecl { id_cxt = inferConstraintsDef mb_ctxt (DConPr boundedName) cons
+  constraints <- inferConstraintsDef mb_ctxt (DConPr boundedName) ty cons
+  return $ InstDecl { id_cxt = constraints
                     , id_name = boundedName
                     , id_arg_tys = [ty]
                     , id_meths = [ (minBoundName, mk_rhs minRHS)

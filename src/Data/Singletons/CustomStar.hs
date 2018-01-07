@@ -26,6 +26,7 @@ module Data.Singletons.CustomStar (
 
 import Language.Haskell.TH
 import Data.Singletons.Util
+import Data.Singletons.Deriving.Infer
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Show
 import Data.Singletons.Promote
@@ -79,7 +80,10 @@ singletonStar names = do
   fakeCtors <- zipWithM (mkCtor False) names kinds
   let dataDecl = DataDecl Data repName [] fakeCtors
                           [DConPr ''Show, DConPr ''Read]
-      dataDeclEqInst = DerivedDecl Nothing (DConT repName) fakeCtors
+  -- We opt to infer the constraints for the Eq instance here so that when it's
+  -- promoted, Rep will be promoted to Type.
+  dataDeclEqCxt <- inferConstraints (DConPr ''Eq) (DConT repName) fakeCtors
+  let dataDeclEqInst = DerivedDecl (Just dataDeclEqCxt) (DConT repName) fakeCtors
   ordInst  <- mkOrdInstance Nothing (DConT repName) fakeCtors
   showInst <- mkShowInstance ForPromotion Nothing (DConT repName) fakeCtors
   (pInsts, promDecls) <- promoteM [] $ do promoteDataDec dataDecl

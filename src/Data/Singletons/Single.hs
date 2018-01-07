@@ -140,7 +140,7 @@ singEqualityInstance desc@(_, _, className, _) name = do
   let tyvars = map (DVarT . extractTvbName) dtvbs
       kind = foldType (DConT name) tyvars
   (scons, _) <- singM [] $ mapM singCtor dcons
-  eqInstance <- mkEqualityInstance Nothing kind scons desc
+  eqInstance <- mkEqualityInstance Nothing kind dcons scons desc
   return $ decToTH eqInstance
 
 -- | Create instances of 'SOrd' for the given types
@@ -584,7 +584,7 @@ singDerivedEqDecs (DerivedDecl { ded_mb_cxt = mb_ctxt
   (scons, _) <- singM [] $ mapM singCtor cons
   mb_sctxt <- mapM (mapM singPred) mb_ctxt
   kind <- promoteType ty
-  sEqInst <- mkEqualityInstance mb_sctxt kind scons sEqClassDesc
+  sEqInst <- mkEqualityInstance mb_sctxt kind cons scons sEqClassDesc
   -- Beware! The user might have specified an instance context like this:
   --
   --   deriving instance Eq a => Eq (T a Int)
@@ -593,7 +593,7 @@ singDerivedEqDecs (DerivedDecl { ded_mb_cxt = mb_ctxt
   -- this for the SDecide instance! The simplest solution is to simply replace
   -- all occurrences of SEq with SDecide in the context.
   let mb_sctxtDecide = fmap (map sEqToSDecide) mb_sctxt
-  sDecideInst <- mkEqualityInstance mb_sctxtDecide kind scons sDecideClassDesc
+  sDecideInst <- mkEqualityInstance mb_sctxtDecide kind cons scons sDecideClassDesc
   return [sEqInst, sDecideInst]
 
 -- Walk a DPred, replacing all occurrences of SEq with SDecide.
@@ -620,10 +620,10 @@ singDerivedShowDecs (DerivedDecl { ded_mb_cxt = mb_cxt
     --
     -- Be careful: we want to generate an instance context that uses ShowSing,
     -- not Show, because we are reusing the ShowSing instance.
-    let show_cxt  = inferConstraintsDef (fmap (mkShowContext ForShowSing) mb_cxt)
-                                        (DConPr showSingName)
-                                        cons
-        show_inst = DInstanceD Nothing show_cxt
+    show_cxt <- inferConstraintsDef (fmap (mkShowContext ForShowSing) mb_cxt)
+                                    (DConPr showSingName)
+                                    ty cons
+    let show_inst = DInstanceD Nothing show_cxt
                                (DConT showName `DAppT` (singFamily `DAppT` DSigT (DVarT z) ty))
                                [DLetDec (DFunD showsPrecName
                                                [DClause [] (DVarE showsSingPrecName)])]

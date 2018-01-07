@@ -1,7 +1,7 @@
 Singletons/EqInstances.hs:0:0:: Splicing declarations
     singEqInstances [''Foo, ''Empty]
   ======>
-    instance SEq Foo where
+    instance SEq Foo => SEq Foo where
       (%==) SFLeaf SFLeaf = STrue
       (%==) SFLeaf ((:%+:) _ _) = SFalse
       (%==) ((:%+:) _ _) SFLeaf = SFalse

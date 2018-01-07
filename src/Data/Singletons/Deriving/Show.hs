@@ -32,9 +32,10 @@ mkShowInstance :: DsMonad q
                -> q UInstDecl
 mkShowInstance mode mb_ctxt ty cons = do
   clauses <- mk_showsPrec mode cons
-  return $ InstDecl { id_cxt = inferConstraintsDef (fmap (mkShowContext mode) mb_ctxt)
-                                                   (DConPr (mk_Show_name mode))
-                                                   cons
+  constraints <- inferConstraintsDef (fmap (mkShowContext mode) mb_ctxt)
+                                     (DConPr (mk_Show_name mode))
+                                     ty cons
+  return $ InstDecl { id_cxt = constraints
                     , id_name = mk_Show_name mode
                     , id_arg_tys = [ty]
                     , id_meths = [ (mk_showsPrec_name mode, UFunction clauses) ] }

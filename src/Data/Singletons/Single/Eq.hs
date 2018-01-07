@@ -10,10 +10,10 @@ module Data.Singletons.Single.Eq where
 
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
+import Data.Singletons.Deriving.Infer
 import Data.Singletons.Util
 import Data.Singletons.Names
 import Control.Monad
-import Data.Maybe (fromMaybe)
 
 -- making the SEq instance and the SDecide instance are rather similar,
 -- so we generalize
@@ -22,26 +22,20 @@ sEqClassDesc, sDecideClassDesc :: Quasi q => EqualityClassDesc q
 sEqClassDesc = (mkEqMethClause, mkEmptyEqMethClause, sEqClassName, sEqMethName)
 sDecideClassDesc = (mkDecideMethClause, mkEmptyDecideMethClause, sDecideClassName, sDecideMethName)
 
--- pass the *singleton* constructors, not the originals
-mkEqualityInstance :: Quasi q => Maybe DCxt -> DKind -> [DCon]
+mkEqualityInstance :: DsMonad q => Maybe DCxt -> DKind
+                   -> [DCon] -- ^ The /original/ constructors (for inferring the instance context)
+                   -> [DCon] -- ^ The /singletons/ constructors
                    -> EqualityClassDesc q -> q DDec
-mkEqualityInstance mb_ctxt k ctors (mkMeth, mkEmpty, className, methName) = do
-  let ctorPairs = [ (c1, c2) | c1 <- ctors, c2 <- ctors ]
-  methClauses <- if null ctors
+mkEqualityInstance mb_ctxt k ctors sctors (mkMeth, mkEmpty, className, methName) = do
+  let sctorPairs = [ (sc1, sc2) | sc1 <- sctors, sc2 <- sctors ]
+  methClauses <- if null sctors
                  then (:[]) <$> mkEmpty
-                 else mapM mkMeth ctorPairs
+                 else mapM mkMeth sctorPairs
+  constraints <- inferConstraintsDef mb_ctxt (DConPr className) k ctors
   return $ DInstanceD Nothing
-                     (fromMaybe (map (DAppPr (DConPr className)) (getKindVars k)) mb_ctxt)
+                     constraints
                      (DAppT (DConT className) k)
                      [DLetDec $ DFunD methName methClauses]
-  where getKindVars :: DKind -> [DKind]
-        getKindVars (DVarT x)         = [DVarT x]
-        getKindVars (DAppT f a)       = concatMap getKindVars [f, a]
-        getKindVars (DConT {})        = []
-        getKindVars DStarT            = []
-        getKindVars DArrowT           = []
-        getKindVars other             =
-          error ("getKindVars sees an unusual kind: " ++ show other)
 
 mkEqMethClause :: Quasi q => (DCon, DCon) -> q DClause
 mkEqMethClause (c1, c2)
