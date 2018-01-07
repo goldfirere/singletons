@@ -6,6 +6,7 @@
 module ByHand2 where
 
 import Prelude hiding ( Eq(..), Ord(..), Bool(..), Ordering(..), not )
+import Data.Kind (Type)
 import Data.Singletons (Sing)
 
 data Nat = Zero | Succ Nat
@@ -30,11 +31,11 @@ instance Eq Nat where
   Succ _ == Zero = False
   Succ x == Succ y = x == y
 
-data instance Sing (b :: Bool) where
+data instance Sing :: Bool -> Type where
   SFalse :: Sing 'False
   STrue  :: Sing 'True
 
-data instance Sing (n :: Nat) where
+data instance Sing :: Nat -> Type where
   SZero :: Sing 'Zero
   SSucc :: Sing n -> Sing ('Succ n)
 
@@ -112,7 +113,7 @@ instance POrd Nat where
   type Compare ('Succ x) 'Zero = 'GT
   type Compare ('Succ x) ('Succ y) = Compare x y
 
-data instance Sing (o :: Ordering) where
+data instance Sing :: Ordering -> Type where
   SLT :: Sing 'LT
   SEQ :: Sing 'EQ
   SGT :: Sing 'GT

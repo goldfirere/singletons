@@ -646,7 +646,7 @@ making `*` the promoted version of `TypeRep`, as `TypeRep` is currently implemen
 The singleton associated with `TypeRep` has one constructor:
 
     ```haskell
-    newtype instance Sing (a :: *) where
+    newtype instance Sing :: Type -> Type where
       STypeRep :: TypeRep a -> Sing a
     ```
 

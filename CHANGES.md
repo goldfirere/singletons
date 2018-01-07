@@ -91,7 +91,7 @@ Changelog for singletons project
   that it now uses type-indexed `Typeable`. The new `Sing` instance is now:
 
   ```haskell
-  newtype instance Sing (a :: *) where
+  newtype instance Sing :: Type -> Type where
     STypeRep :: TypeRep a -> Sing a
   ```
 
