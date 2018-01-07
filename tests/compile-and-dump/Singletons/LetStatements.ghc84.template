@@ -1,0 +1,908 @@
+Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| foo1 :: Nat -> Nat
+          foo1 x
+            = let
+                y :: Nat
+                y = Succ Zero
+              in y
+          foo2 :: Nat
+          foo2
+            = let
+                y = Succ Zero
+                z = Succ y
+              in z
+          foo3 :: Nat -> Nat
+          foo3 x
+            = let
+                y :: Nat
+                y = Succ x
+              in y
+          foo4 :: Nat -> Nat
+          foo4 x
+            = let
+                f :: Nat -> Nat
+                f y = Succ y
+              in f x
+          foo5 :: Nat -> Nat
+          foo5 x
+            = let
+                f :: Nat -> Nat
+                f y
+                  = let
+                      z :: Nat
+                      z = Succ y
+                    in Succ z
+              in f x
+          foo6 :: Nat -> Nat
+          foo6 x
+            = let
+                f :: Nat -> Nat
+                f y = Succ y in
+              let
+                z :: Nat
+                z = f x
+              in z
+          foo7 :: Nat -> Nat
+          foo7 x
+            = let
+                x :: Nat
+                x = Zero
+              in x
+          foo8 :: Nat -> Nat
+          foo8 x
+            = let
+                z :: Nat
+                z = (\ x -> x) Zero
+              in z
+          foo9 :: Nat -> Nat
+          foo9 x
+            = let
+                z :: Nat -> Nat
+                z = (\ x -> x)
+              in z x
+          foo10 :: Nat -> Nat
+          foo10 x
+            = let
+                (+) :: Nat -> Nat -> Nat
+                Zero + m = m
+                (Succ n) + m = Succ (n + m)
+              in (Succ Zero) + x
+          foo11 :: Nat -> Nat
+          foo11 x
+            = let
+                (+) :: Nat -> Nat -> Nat
+                Zero + m = m
+                (Succ n) + m = Succ (n + m)
+                z :: Nat
+                z = x
+              in (Succ Zero) + z
+          foo12 :: Nat -> Nat
+          foo12 x
+            = let
+                (+) :: Nat -> Nat -> Nat
+                Zero + m = m
+                (Succ n) + m = Succ (n + x)
+              in x + (Succ (Succ Zero))
+          foo13 :: forall a. a -> a
+          foo13 x
+            = let
+                bar :: a
+                bar = x
+              in foo13_ bar
+          foo13_ :: a -> a
+          foo13_ y = y
+          foo14 :: Nat -> (Nat, Nat)
+          foo14 x = let (y, z) = (Succ x, x) in (z, y) |]
+  ======>
+    foo1 :: Nat -> Nat
+    foo1 x
+      = let
+          y :: Nat
+          y = Succ Zero
+        in y
+    foo2 :: Nat
+    foo2
+      = let
+          y = Succ Zero
+          z = Succ y
+        in z
+    foo3 :: Nat -> Nat
+    foo3 x
+      = let
+          y :: Nat
+          y = Succ x
+        in y
+    foo4 :: Nat -> Nat
+    foo4 x
+      = let
+          f :: Nat -> Nat
+          f y = Succ y
+        in f x
+    foo5 :: Nat -> Nat
+    foo5 x
+      = let
+          f :: Nat -> Nat
+          f y
+            = let
+                z :: Nat
+                z = Succ y
+              in Succ z
+        in f x
+    foo6 :: Nat -> Nat
+    foo6 x
+      = let
+          f :: Nat -> Nat
+          f y = Succ y in
+        let
+          z :: Nat
+          z = f x
+        in z
+    foo7 :: Nat -> Nat
+    foo7 x
+      = let
+          x :: Nat
+          x = Zero
+        in x
+    foo8 :: Nat -> Nat
+    foo8 x
+      = let
+          z :: Nat
+          z = (\ x -> x) Zero
+        in z
+    foo9 :: Nat -> Nat
+    foo9 x
+      = let
+          z :: Nat -> Nat
+          z = \ x -> x
+        in z x
+    foo10 :: Nat -> Nat
+    foo10 x
+      = let
+          (+) :: Nat -> Nat -> Nat
+          (+) Zero m = m
+          (+) (Succ n) m = Succ (n + m)
+        in ((Succ Zero) + x)
+    foo11 :: Nat -> Nat
+    foo11 x
+      = let
+          (+) :: Nat -> Nat -> Nat
+          z :: Nat
+          (+) Zero m = m
+          (+) (Succ n) m = Succ (n + m)
+          z = x
+        in ((Succ Zero) + z)
+    foo12 :: Nat -> Nat
+    foo12 x
+      = let
+          (+) :: Nat -> Nat -> Nat
+          (+) Zero m = m
+          (+) (Succ n) m = Succ (n + x)
+        in (x + (Succ (Succ Zero)))
+    foo13 :: forall a. a -> a
+    foo13 x
+      = let
+          bar :: a
+          bar = x
+        in foo13_ bar
+    foo13_ :: a -> a
+    foo13_ y = y
+    foo14 :: Nat -> (Nat, Nat)
+    foo14 x = let (y, z) = (Succ x, x) in (z, y)
+    type family Case_0123456789876543210 x t where
+      Case_0123456789876543210 x '(y_0123456789876543210,
+                                   _) = y_0123456789876543210
+    type family Case_0123456789876543210 x t where
+      Case_0123456789876543210 x '(_,
+                                   y_0123456789876543210) = y_0123456789876543210
+    type Let0123456789876543210YSym1 t = Let0123456789876543210Y t
+    instance SuppressUnusedWarnings Let0123456789876543210YSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210YSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210YSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210YSym0 arg) (Let0123456789876543210YSym1 arg) =>
+        Let0123456789876543210YSym0KindInference
+    type instance Apply Let0123456789876543210YSym0 l = Let0123456789876543210Y l
+    type Let0123456789876543210ZSym1 t = Let0123456789876543210Z t
+    instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210ZSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210ZSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210ZSym0 arg) (Let0123456789876543210ZSym1 arg) =>
+        Let0123456789876543210ZSym0KindInference
+    type instance Apply Let0123456789876543210ZSym0 l = Let0123456789876543210Z l
+    type Let0123456789876543210X_0123456789876543210Sym1 t =
+        Let0123456789876543210X_0123456789876543210 t
+    instance SuppressUnusedWarnings Let0123456789876543210X_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,)
+                Let0123456789876543210X_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210X_0123456789876543210Sym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210X_0123456789876543210Sym0 arg) (Let0123456789876543210X_0123456789876543210Sym1 arg) =>
+        Let0123456789876543210X_0123456789876543210Sym0KindInference
+    type instance Apply Let0123456789876543210X_0123456789876543210Sym0 l = Let0123456789876543210X_0123456789876543210 l
+    type family Let0123456789876543210Y x where
+      Let0123456789876543210Y x = Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x)
+    type family Let0123456789876543210Z x where
+      Let0123456789876543210Z x = Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x)
+    type family Let0123456789876543210X_0123456789876543210 x where
+      Let0123456789876543210X_0123456789876543210 x = Apply (Apply Tuple2Sym0 (Apply SuccSym0 x)) x
+    type Let0123456789876543210BarSym1 t = Let0123456789876543210Bar t
+    instance SuppressUnusedWarnings Let0123456789876543210BarSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210BarSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210BarSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210BarSym0 arg) (Let0123456789876543210BarSym1 arg) =>
+        Let0123456789876543210BarSym0KindInference
+    type instance Apply Let0123456789876543210BarSym0 l = Let0123456789876543210Bar l
+    type family Let0123456789876543210Bar x :: a where
+      Let0123456789876543210Bar x = x
+    type (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) t (t :: Nat) (t :: Nat) =
+        (<<<%%%%%%%%%%%%%%%%%%%%) t t t
+    instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###)) GHC.Tuple.())
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) l l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###)
+    type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l) l = (<<<%%%%%%%%%%%%%%%%%%%%) l l l
+    instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)) GHC.Tuple.())
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l (l :: TyFun Nat (TyFun Nat Nat
+                                                           -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)
+    type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) l = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l
+    instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$) where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###)) GHC.Tuple.())
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$) l
+      = forall arg. SameKind (Apply (<<<%%%%%%%%%%%%%%%%%%%%@#@$) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###)
+    type instance Apply (<<<%%%%%%%%%%%%%%%%%%%%@#@$) l = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l
+    type family (<<<%%%%%%%%%%%%%%%%%%%%) x (a :: Nat) (a :: Nat) :: Nat where
+      (<<<%%%%%%%%%%%%%%%%%%%%) x Zero m = m
+      (<<<%%%%%%%%%%%%%%%%%%%%) x (Succ n) m = Apply SuccSym0 (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) n) x)
+    type Let0123456789876543210ZSym1 t = Let0123456789876543210Z t
+    instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210ZSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210ZSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210ZSym0 arg) (Let0123456789876543210ZSym1 arg) =>
+        Let0123456789876543210ZSym0KindInference
+    type instance Apply Let0123456789876543210ZSym0 l = Let0123456789876543210Z l
+    type (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) t (t :: Nat) (t :: Nat) =
+        (<<<%%%%%%%%%%%%%%%%%%%%) t t t
+    instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###)) GHC.Tuple.())
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) l l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###)
+    type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l) l = (<<<%%%%%%%%%%%%%%%%%%%%) l l l
+    instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)) GHC.Tuple.())
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l (l :: TyFun Nat (TyFun Nat Nat
+                                                           -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)
+    type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) l = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l
+    instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$) where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###)) GHC.Tuple.())
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$) l
+      = forall arg. SameKind (Apply (<<<%%%%%%%%%%%%%%%%%%%%@#@$) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###)
+    type instance Apply (<<<%%%%%%%%%%%%%%%%%%%%@#@$) l = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l
+    type family Let0123456789876543210Z x :: Nat where
+      Let0123456789876543210Z x = x
+    type family (<<<%%%%%%%%%%%%%%%%%%%%) x (a :: Nat) (a :: Nat) :: Nat where
+      (<<<%%%%%%%%%%%%%%%%%%%%) x Zero m = m
+      (<<<%%%%%%%%%%%%%%%%%%%%) x (Succ n) m = Apply SuccSym0 (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) n) m)
+    type (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) t (t :: Nat) (t :: Nat) =
+        (<<<%%%%%%%%%%%%%%%%%%%%) t t t
+    instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###)) GHC.Tuple.())
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l (l :: Nat) (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) l l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###)
+    type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l) l = (<<<%%%%%%%%%%%%%%%%%%%%) l l l
+    instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)) GHC.Tuple.())
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l (l :: TyFun Nat (TyFun Nat Nat
+                                                           -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)
+    type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) l = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l
+    instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$) where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###)) GHC.Tuple.())
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$) l
+      = forall arg. SameKind (Apply (<<<%%%%%%%%%%%%%%%%%%%%@#@$) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) arg) =>
+        (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###)
+    type instance Apply (<<<%%%%%%%%%%%%%%%%%%%%@#@$) l = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l
+    type family (<<<%%%%%%%%%%%%%%%%%%%%) x (a :: Nat) (a :: Nat) :: Nat where
+      (<<<%%%%%%%%%%%%%%%%%%%%) x Zero m = m
+      (<<<%%%%%%%%%%%%%%%%%%%%) x (Succ n) m = Apply SuccSym0 (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) n) m)
+    type family Lambda_0123456789876543210 x a_0123456789876543210 t where
+      Lambda_0123456789876543210 x a_0123456789876543210 x = x
+    type Lambda_0123456789876543210Sym3 t t t =
+        Lambda_0123456789876543210 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym2 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym2 l l l
+      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym2 l l) arg) (Lambda_0123456789876543210Sym3 l l arg) =>
+        Lambda_0123456789876543210Sym2KindInference
+    type instance Apply (Lambda_0123456789876543210Sym2 l l) l = Lambda_0123456789876543210 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l
+      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+        Lambda_0123456789876543210Sym1KindInference
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l
+      = forall arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+        Lambda_0123456789876543210Sym0KindInference
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type Let0123456789876543210ZSym2 t (t :: Nat) =
+        Let0123456789876543210Z t t
+    instance SuppressUnusedWarnings Let0123456789876543210ZSym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210ZSym1KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210ZSym1 l (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply (Let0123456789876543210ZSym1 l) arg) (Let0123456789876543210ZSym2 l arg) =>
+        Let0123456789876543210ZSym1KindInference
+    type instance Apply (Let0123456789876543210ZSym1 l) l = Let0123456789876543210Z l l
+    instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210ZSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210ZSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210ZSym0 arg) (Let0123456789876543210ZSym1 arg) =>
+        Let0123456789876543210ZSym0KindInference
+    type instance Apply Let0123456789876543210ZSym0 l = Let0123456789876543210ZSym1 l
+    type family Let0123456789876543210Z x (a :: Nat) :: Nat where
+      Let0123456789876543210Z x a_0123456789876543210 = Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) a_0123456789876543210) a_0123456789876543210
+    type family Lambda_0123456789876543210 x t where
+      Lambda_0123456789876543210 x x = x
+    type Lambda_0123456789876543210Sym2 t t =
+        Lambda_0123456789876543210 t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l
+      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+        Lambda_0123456789876543210Sym1KindInference
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l
+      = forall arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+        Lambda_0123456789876543210Sym0KindInference
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type Let0123456789876543210ZSym1 t = Let0123456789876543210Z t
+    instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210ZSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210ZSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210ZSym0 arg) (Let0123456789876543210ZSym1 arg) =>
+        Let0123456789876543210ZSym0KindInference
+    type instance Apply Let0123456789876543210ZSym0 l = Let0123456789876543210Z l
+    type family Let0123456789876543210Z x :: Nat where
+      Let0123456789876543210Z x = Apply (Apply Lambda_0123456789876543210Sym0 x) ZeroSym0
+    type Let0123456789876543210XSym1 t = Let0123456789876543210X t
+    instance SuppressUnusedWarnings Let0123456789876543210XSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210XSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210XSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210XSym0 arg) (Let0123456789876543210XSym1 arg) =>
+        Let0123456789876543210XSym0KindInference
+    type instance Apply Let0123456789876543210XSym0 l = Let0123456789876543210X l
+    type family Let0123456789876543210X x :: Nat where
+      Let0123456789876543210X x = ZeroSym0
+    type Let0123456789876543210FSym2 t (t :: Nat) =
+        Let0123456789876543210F t t
+    instance SuppressUnusedWarnings Let0123456789876543210FSym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210FSym1KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210FSym1 l (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply (Let0123456789876543210FSym1 l) arg) (Let0123456789876543210FSym2 l arg) =>
+        Let0123456789876543210FSym1KindInference
+    type instance Apply (Let0123456789876543210FSym1 l) l = Let0123456789876543210F l l
+    instance SuppressUnusedWarnings Let0123456789876543210FSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210FSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210FSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210FSym0 arg) (Let0123456789876543210FSym1 arg) =>
+        Let0123456789876543210FSym0KindInference
+    type instance Apply Let0123456789876543210FSym0 l = Let0123456789876543210FSym1 l
+    type family Let0123456789876543210F x (a :: Nat) :: Nat where
+      Let0123456789876543210F x y = Apply SuccSym0 y
+    type Let0123456789876543210ZSym1 t = Let0123456789876543210Z t
+    instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210ZSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210ZSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210ZSym0 arg) (Let0123456789876543210ZSym1 arg) =>
+        Let0123456789876543210ZSym0KindInference
+    type instance Apply Let0123456789876543210ZSym0 l = Let0123456789876543210Z l
+    type family Let0123456789876543210Z x :: Nat where
+      Let0123456789876543210Z x = Apply (Let0123456789876543210FSym1 x) x
+    type Let0123456789876543210ZSym2 t t = Let0123456789876543210Z t t
+    instance SuppressUnusedWarnings Let0123456789876543210ZSym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210ZSym1KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210ZSym1 l l
+      = forall arg. SameKind (Apply (Let0123456789876543210ZSym1 l) arg) (Let0123456789876543210ZSym2 l arg) =>
+        Let0123456789876543210ZSym1KindInference
+    type instance Apply (Let0123456789876543210ZSym1 l) l = Let0123456789876543210Z l l
+    instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210ZSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210ZSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210ZSym0 arg) (Let0123456789876543210ZSym1 arg) =>
+        Let0123456789876543210ZSym0KindInference
+    type instance Apply Let0123456789876543210ZSym0 l = Let0123456789876543210ZSym1 l
+    type family Let0123456789876543210Z x y :: Nat where
+      Let0123456789876543210Z x y = Apply SuccSym0 y
+    type Let0123456789876543210FSym2 t (t :: Nat) =
+        Let0123456789876543210F t t
+    instance SuppressUnusedWarnings Let0123456789876543210FSym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210FSym1KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210FSym1 l (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply (Let0123456789876543210FSym1 l) arg) (Let0123456789876543210FSym2 l arg) =>
+        Let0123456789876543210FSym1KindInference
+    type instance Apply (Let0123456789876543210FSym1 l) l = Let0123456789876543210F l l
+    instance SuppressUnusedWarnings Let0123456789876543210FSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210FSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210FSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210FSym0 arg) (Let0123456789876543210FSym1 arg) =>
+        Let0123456789876543210FSym0KindInference
+    type instance Apply Let0123456789876543210FSym0 l = Let0123456789876543210FSym1 l
+    type family Let0123456789876543210F x (a :: Nat) :: Nat where
+      Let0123456789876543210F x y = Apply SuccSym0 (Let0123456789876543210ZSym2 x y)
+    type Let0123456789876543210FSym2 t (t :: Nat) =
+        Let0123456789876543210F t t
+    instance SuppressUnusedWarnings Let0123456789876543210FSym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210FSym1KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210FSym1 l (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply (Let0123456789876543210FSym1 l) arg) (Let0123456789876543210FSym2 l arg) =>
+        Let0123456789876543210FSym1KindInference
+    type instance Apply (Let0123456789876543210FSym1 l) l = Let0123456789876543210F l l
+    instance SuppressUnusedWarnings Let0123456789876543210FSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210FSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210FSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210FSym0 arg) (Let0123456789876543210FSym1 arg) =>
+        Let0123456789876543210FSym0KindInference
+    type instance Apply Let0123456789876543210FSym0 l = Let0123456789876543210FSym1 l
+    type family Let0123456789876543210F x (a :: Nat) :: Nat where
+      Let0123456789876543210F x y = Apply SuccSym0 y
+    type Let0123456789876543210YSym1 t = Let0123456789876543210Y t
+    instance SuppressUnusedWarnings Let0123456789876543210YSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210YSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210YSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210YSym0 arg) (Let0123456789876543210YSym1 arg) =>
+        Let0123456789876543210YSym0KindInference
+    type instance Apply Let0123456789876543210YSym0 l = Let0123456789876543210Y l
+    type family Let0123456789876543210Y x :: Nat where
+      Let0123456789876543210Y x = Apply SuccSym0 x
+    type Let0123456789876543210YSym0 = Let0123456789876543210Y
+    type Let0123456789876543210ZSym0 = Let0123456789876543210Z
+    type family Let0123456789876543210Y where
+      Let0123456789876543210Y = Apply SuccSym0 ZeroSym0
+    type family Let0123456789876543210Z where
+      Let0123456789876543210Z = Apply SuccSym0 Let0123456789876543210YSym0
+    type Let0123456789876543210YSym1 t = Let0123456789876543210Y t
+    instance SuppressUnusedWarnings Let0123456789876543210YSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210YSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210YSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210YSym0 arg) (Let0123456789876543210YSym1 arg) =>
+        Let0123456789876543210YSym0KindInference
+    type instance Apply Let0123456789876543210YSym0 l = Let0123456789876543210Y l
+    type family Let0123456789876543210Y x :: Nat where
+      Let0123456789876543210Y x = Apply SuccSym0 ZeroSym0
+    type Foo14Sym1 (t :: Nat) = Foo14 t
+    instance SuppressUnusedWarnings Foo14Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo14Sym0KindInference) GHC.Tuple.())
+    data Foo14Sym0 (l :: TyFun Nat (Nat, Nat))
+      = forall arg. SameKind (Apply Foo14Sym0 arg) (Foo14Sym1 arg) =>
+        Foo14Sym0KindInference
+    type instance Apply Foo14Sym0 l = Foo14 l
+    type Foo13_Sym1 (t :: a0123456789876543210) = Foo13_ t
+    instance SuppressUnusedWarnings Foo13_Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo13_Sym0KindInference) GHC.Tuple.())
+    data Foo13_Sym0 (l :: TyFun a0123456789876543210 a0123456789876543210)
+      = forall arg. SameKind (Apply Foo13_Sym0 arg) (Foo13_Sym1 arg) =>
+        Foo13_Sym0KindInference
+    type instance Apply Foo13_Sym0 l = Foo13_ l
+    type Foo13Sym1 (t :: a0123456789876543210) = Foo13 t
+    instance SuppressUnusedWarnings Foo13Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo13Sym0KindInference) GHC.Tuple.())
+    data Foo13Sym0 (l :: TyFun a0123456789876543210 a0123456789876543210)
+      = forall arg. SameKind (Apply Foo13Sym0 arg) (Foo13Sym1 arg) =>
+        Foo13Sym0KindInference
+    type instance Apply Foo13Sym0 l = Foo13 l
+    type Foo12Sym1 (t :: Nat) = Foo12 t
+    instance SuppressUnusedWarnings Foo12Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo12Sym0KindInference) GHC.Tuple.())
+    data Foo12Sym0 (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply Foo12Sym0 arg) (Foo12Sym1 arg) =>
+        Foo12Sym0KindInference
+    type instance Apply Foo12Sym0 l = Foo12 l
+    type Foo11Sym1 (t :: Nat) = Foo11 t
+    instance SuppressUnusedWarnings Foo11Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo11Sym0KindInference) GHC.Tuple.())
+    data Foo11Sym0 (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply Foo11Sym0 arg) (Foo11Sym1 arg) =>
+        Foo11Sym0KindInference
+    type instance Apply Foo11Sym0 l = Foo11 l
+    type Foo10Sym1 (t :: Nat) = Foo10 t
+    instance SuppressUnusedWarnings Foo10Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo10Sym0KindInference) GHC.Tuple.())
+    data Foo10Sym0 (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply Foo10Sym0 arg) (Foo10Sym1 arg) =>
+        Foo10Sym0KindInference
+    type instance Apply Foo10Sym0 l = Foo10 l
+    type Foo9Sym1 (t :: Nat) = Foo9 t
+    instance SuppressUnusedWarnings Foo9Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo9Sym0KindInference) GHC.Tuple.())
+    data Foo9Sym0 (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply Foo9Sym0 arg) (Foo9Sym1 arg) =>
+        Foo9Sym0KindInference
+    type instance Apply Foo9Sym0 l = Foo9 l
+    type Foo8Sym1 (t :: Nat) = Foo8 t
+    instance SuppressUnusedWarnings Foo8Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo8Sym0KindInference) GHC.Tuple.())
+    data Foo8Sym0 (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply Foo8Sym0 arg) (Foo8Sym1 arg) =>
+        Foo8Sym0KindInference
+    type instance Apply Foo8Sym0 l = Foo8 l
+    type Foo7Sym1 (t :: Nat) = Foo7 t
+    instance SuppressUnusedWarnings Foo7Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo7Sym0KindInference) GHC.Tuple.())
+    data Foo7Sym0 (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply Foo7Sym0 arg) (Foo7Sym1 arg) =>
+        Foo7Sym0KindInference
+    type instance Apply Foo7Sym0 l = Foo7 l
+    type Foo6Sym1 (t :: Nat) = Foo6 t
+    instance SuppressUnusedWarnings Foo6Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo6Sym0KindInference) GHC.Tuple.())
+    data Foo6Sym0 (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply Foo6Sym0 arg) (Foo6Sym1 arg) =>
+        Foo6Sym0KindInference
+    type instance Apply Foo6Sym0 l = Foo6 l
+    type Foo5Sym1 (t :: Nat) = Foo5 t
+    instance SuppressUnusedWarnings Foo5Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo5Sym0KindInference) GHC.Tuple.())
+    data Foo5Sym0 (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply Foo5Sym0 arg) (Foo5Sym1 arg) =>
+        Foo5Sym0KindInference
+    type instance Apply Foo5Sym0 l = Foo5 l
+    type Foo4Sym1 (t :: Nat) = Foo4 t
+    instance SuppressUnusedWarnings Foo4Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo4Sym0KindInference) GHC.Tuple.())
+    data Foo4Sym0 (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply Foo4Sym0 arg) (Foo4Sym1 arg) =>
+        Foo4Sym0KindInference
+    type instance Apply Foo4Sym0 l = Foo4 l
+    type Foo3Sym1 (t :: Nat) = Foo3 t
+    instance SuppressUnusedWarnings Foo3Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo3Sym0KindInference) GHC.Tuple.())
+    data Foo3Sym0 (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
+        Foo3Sym0KindInference
+    type instance Apply Foo3Sym0 l = Foo3 l
+    type Foo2Sym0 = Foo2
+    type Foo1Sym1 (t :: Nat) = Foo1 t
+    instance SuppressUnusedWarnings Foo1Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo1Sym0KindInference) GHC.Tuple.())
+    data Foo1Sym0 (l :: TyFun Nat Nat)
+      = forall arg. SameKind (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
+        Foo1Sym0KindInference
+    type instance Apply Foo1Sym0 l = Foo1 l
+    type family Foo14 (a :: Nat) :: (Nat, Nat) where
+      Foo14 x = Apply (Apply Tuple2Sym0 (Let0123456789876543210ZSym1 x)) (Let0123456789876543210YSym1 x)
+    type family Foo13_ (a :: a) :: a where
+      Foo13_ y = y
+    type family Foo13 (a :: a) :: a where
+      Foo13 x = Apply Foo13_Sym0 (Let0123456789876543210BarSym1 x)
+    type family Foo12 (a :: Nat) :: Nat where
+      Foo12 x = Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) x) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))
+    type family Foo11 (a :: Nat) :: Nat where
+      Foo11 x = Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) (Apply SuccSym0 ZeroSym0)) (Let0123456789876543210ZSym1 x)
+    type family Foo10 (a :: Nat) :: Nat where
+      Foo10 x = Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) (Apply SuccSym0 ZeroSym0)) x
+    type family Foo9 (a :: Nat) :: Nat where
+      Foo9 x = Apply (Let0123456789876543210ZSym1 x) x
+    type family Foo8 (a :: Nat) :: Nat where
+      Foo8 x = Let0123456789876543210ZSym1 x
+    type family Foo7 (a :: Nat) :: Nat where
+      Foo7 x = Let0123456789876543210XSym1 x
+    type family Foo6 (a :: Nat) :: Nat where
+      Foo6 x = Let0123456789876543210ZSym1 x
+    type family Foo5 (a :: Nat) :: Nat where
+      Foo5 x = Apply (Let0123456789876543210FSym1 x) x
+    type family Foo4 (a :: Nat) :: Nat where
+      Foo4 x = Apply (Let0123456789876543210FSym1 x) x
+    type family Foo3 (a :: Nat) :: Nat where
+      Foo3 x = Let0123456789876543210YSym1 x
+    type family Foo2 :: Nat where
+      Foo2 = Let0123456789876543210ZSym0
+    type family Foo1 (a :: Nat) :: Nat where
+      Foo1 x = Let0123456789876543210YSym1 x
+    sFoo14 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo14Sym0 t :: (Nat, Nat))
+    sFoo13_ ::
+      forall (t :: a). Sing t -> Sing (Apply Foo13_Sym0 t :: a)
+    sFoo13 :: forall (t :: a). Sing t -> Sing (Apply Foo13Sym0 t :: a)
+    sFoo12 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo12Sym0 t :: Nat)
+    sFoo11 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo11Sym0 t :: Nat)
+    sFoo10 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo10Sym0 t :: Nat)
+    sFoo9 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo9Sym0 t :: Nat)
+    sFoo8 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo8Sym0 t :: Nat)
+    sFoo7 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo7Sym0 t :: Nat)
+    sFoo6 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo6Sym0 t :: Nat)
+    sFoo5 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo5Sym0 t :: Nat)
+    sFoo4 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo4Sym0 t :: Nat)
+    sFoo3 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo3Sym0 t :: Nat)
+    sFoo2 :: Sing (Foo2Sym0 :: Nat)
+    sFoo1 ::
+      forall (t :: Nat). Sing t -> Sing (Apply Foo1Sym0 t :: Nat)
+    sFoo14 (sX :: Sing x)
+      = let
+          sY :: Sing (Let0123456789876543210YSym1 x)
+          sZ :: Sing (Let0123456789876543210ZSym1 x)
+          sX_0123456789876543210 ::
+            Sing (Let0123456789876543210X_0123456789876543210Sym1 x)
+          sY
+            = case sX_0123456789876543210 of {
+                STuple2 (sY_0123456789876543210 :: Sing y_0123456789876543210) _
+                  -> sY_0123456789876543210 } ::
+                Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x))
+          sZ
+            = case sX_0123456789876543210 of {
+                STuple2 _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
+                  -> sY_0123456789876543210 } ::
+                Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x))
+          sX_0123456789876543210
+            = (applySing
+                 ((applySing ((singFun2 @Tuple2Sym0) STuple2))
+                    ((applySing ((singFun1 @SuccSym0) SSucc)) sX)))
+                sX
+        in (applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sZ)) sY
+    sFoo13_ (sY :: Sing y) = sY
+    sFoo13 (sX :: Sing x)
+      = let
+          sBar :: Sing (Let0123456789876543210BarSym1 x :: a)
+          sBar = sX
+        in (applySing ((singFun1 @Foo13_Sym0) sFoo13_)) sBar
+    sFoo12 (sX :: Sing x)
+      = let
+          (%+) ::
+            forall (t :: Nat) (t :: Nat).
+            Sing t
+            -> Sing t
+               -> Sing (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) t) t :: Nat)
+          (%+) SZero (sM :: Sing m) = sM
+          (%+) (SSucc (sN :: Sing n)) (sM :: Sing m)
+            = (applySing ((singFun1 @SuccSym0) SSucc))
+                ((applySing
+                    ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
+                       sN))
+                   sX)
+        in
+          (applySing
+             ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
+                sX))
+            ((applySing ((singFun1 @SuccSym0) SSucc))
+               ((applySing ((singFun1 @SuccSym0) SSucc)) SZero))
+    sFoo11 (sX :: Sing x)
+      = let
+          sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
+          (%+) ::
+            forall (t :: Nat) (t :: Nat).
+            Sing t
+            -> Sing t
+               -> Sing (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) t) t :: Nat)
+          sZ = sX
+          (%+) SZero (sM :: Sing m) = sM
+          (%+) (SSucc (sN :: Sing n)) (sM :: Sing m)
+            = (applySing ((singFun1 @SuccSym0) SSucc))
+                ((applySing
+                    ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
+                       sN))
+                   sM)
+        in
+          (applySing
+             ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
+                ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
+            sZ
+    sFoo10 (sX :: Sing x)
+      = let
+          (%+) ::
+            forall (t :: Nat) (t :: Nat).
+            Sing t
+            -> Sing t
+               -> Sing (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) t) t :: Nat)
+          (%+) SZero (sM :: Sing m) = sM
+          (%+) (SSucc (sN :: Sing n)) (sM :: Sing m)
+            = (applySing ((singFun1 @SuccSym0) SSucc))
+                ((applySing
+                    ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
+                       sN))
+                   sM)
+        in
+          (applySing
+             ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
+                ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
+            sX
+    sFoo9 (sX :: Sing x)
+      = let
+          sZ ::
+            forall (t :: Nat).
+            Sing t -> Sing (Apply (Let0123456789876543210ZSym1 x) t :: Nat)
+          sZ (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            = (applySing
+                 ((singFun1
+                     @(Apply (Apply Lambda_0123456789876543210Sym0 x) a_0123456789876543210))
+                    (\ sX -> case sX of { _ :: Sing x -> sX })))
+                sA_0123456789876543210
+        in (applySing ((singFun1 @(Let0123456789876543210ZSym1 x)) sZ)) sX
+    sFoo8 (sX :: Sing x)
+      = let
+          sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
+          sZ
+            = (applySing
+                 ((singFun1 @(Apply Lambda_0123456789876543210Sym0 x))
+                    (\ sX -> case sX of { _ :: Sing x -> sX })))
+                SZero
+        in sZ
+    sFoo7 (sX :: Sing x)
+      = let
+          sX :: Sing (Let0123456789876543210XSym1 x :: Nat)
+          sX = SZero
+        in sX
+    sFoo6 (sX :: Sing x)
+      = let
+          sF ::
+            forall (t :: Nat).
+            Sing t -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
+          sF (sY :: Sing y) = (applySing ((singFun1 @SuccSym0) SSucc)) sY in
+        let
+          sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat)
+          sZ
+            = (applySing ((singFun1 @(Let0123456789876543210FSym1 x)) sF)) sX
+        in sZ
+    sFoo5 (sX :: Sing x)
+      = let
+          sF ::
+            forall (t :: Nat).
+            Sing t -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
+          sF (sY :: Sing y)
+            = let
+                sZ :: Sing (Let0123456789876543210ZSym2 x y :: Nat)
+                sZ = (applySing ((singFun1 @SuccSym0) SSucc)) sY
+              in (applySing ((singFun1 @SuccSym0) SSucc)) sZ
+        in (applySing ((singFun1 @(Let0123456789876543210FSym1 x)) sF)) sX
+    sFoo4 (sX :: Sing x)
+      = let
+          sF ::
+            forall (t :: Nat).
+            Sing t -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat)
+          sF (sY :: Sing y) = (applySing ((singFun1 @SuccSym0) SSucc)) sY
+        in (applySing ((singFun1 @(Let0123456789876543210FSym1 x)) sF)) sX
+    sFoo3 (sX :: Sing x)
+      = let
+          sY :: Sing (Let0123456789876543210YSym1 x :: Nat)
+          sY = (applySing ((singFun1 @SuccSym0) SSucc)) sX
+        in sY
+    sFoo2
+      = let
+          sY :: Sing Let0123456789876543210YSym0
+          sZ :: Sing Let0123456789876543210ZSym0
+          sY = (applySing ((singFun1 @SuccSym0) SSucc)) SZero
+          sZ = (applySing ((singFun1 @SuccSym0) SSucc)) sY
+        in sZ
+    sFoo1 (sX :: Sing x)
+      = let
+          sY :: Sing (Let0123456789876543210YSym1 x :: Nat)
+          sY = (applySing ((singFun1 @SuccSym0) SSucc)) SZero
+        in sY

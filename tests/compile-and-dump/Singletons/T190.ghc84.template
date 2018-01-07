@@ -1,0 +1,194 @@
+Singletons/T190.hs:0:0:: Splicing declarations
+    singletons
+      [d| data T
+            = T
+            deriving (Eq, Ord, Enum, Bounded, Show) |]
+  ======>
+    data T
+      = T
+      deriving (Eq, Ord, Enum, Bounded, Show)
+    type TSym0 = T
+    type family Compare_0123456789876543210 (a :: T) (a :: T) :: Ordering where
+      Compare_0123456789876543210 T T = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
+    type Compare_0123456789876543210Sym2 (t :: T) (t :: T) =
+        Compare_0123456789876543210 t t
+    instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Compare_0123456789876543210Sym1 (l :: T) (l :: TyFun T Ordering)
+      = forall arg. SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
+        Compare_0123456789876543210Sym1KindInference
+    type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
+    instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Compare_0123456789876543210Sym0 (l :: TyFun T (TyFun T Ordering
+                                                        -> GHC.Types.Type))
+      = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
+        Compare_0123456789876543210Sym0KindInference
+    type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
+    instance POrd T where
+      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
+    type family Case_0123456789876543210 n t where
+      Case_0123456789876543210 n True = TSym0
+      Case_0123456789876543210 n False = Apply ErrorSym0 "toEnum: bad argument"
+    type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: T where
+      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0))
+    type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
+        ToEnum_0123456789876543210 t
+    instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) ToEnum_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data ToEnum_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat T)
+      = forall arg. SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
+        ToEnum_0123456789876543210Sym0KindInference
+    type instance Apply ToEnum_0123456789876543210Sym0 l = ToEnum_0123456789876543210 l
+    type family FromEnum_0123456789876543210 (a :: T) :: GHC.Types.Nat where
+      FromEnum_0123456789876543210 T = Data.Singletons.Prelude.Num.FromInteger 0
+    type FromEnum_0123456789876543210Sym1 (t :: T) =
+        FromEnum_0123456789876543210 t
+    instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) FromEnum_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data FromEnum_0123456789876543210Sym0 (l :: TyFun T GHC.Types.Nat)
+      = forall arg. SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
+        FromEnum_0123456789876543210Sym0KindInference
+    type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
+    instance PEnum T where
+      type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
+      type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
+    type family MinBound_0123456789876543210 :: T where
+      MinBound_0123456789876543210 = TSym0
+    type MinBound_0123456789876543210Sym0 =
+        MinBound_0123456789876543210
+    type family MaxBound_0123456789876543210 :: T where
+      MaxBound_0123456789876543210 = TSym0
+    type MaxBound_0123456789876543210Sym0 =
+        MaxBound_0123456789876543210
+    instance PBounded T where
+      type MinBound = MinBound_0123456789876543210Sym0
+      type MaxBound = MaxBound_0123456789876543210Sym0
+    type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: T) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
+      ShowsPrec_0123456789876543210 _ T a_0123456789876543210 = Apply (Apply ShowStringSym0 "T") a_0123456789876543210
+    type ShowsPrec_0123456789876543210Sym3 (t :: GHC.Types.Nat) (t :: T) (t :: GHC.Types.Symbol) =
+        ShowsPrec_0123456789876543210 t t t
+    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym2 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data ShowsPrec_0123456789876543210Sym2 (l :: GHC.Types.Nat) (l :: T) (l :: TyFun GHC.Types.Symbol GHC.Types.Symbol)
+      = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym2 l l) arg) (ShowsPrec_0123456789876543210Sym3 l l arg) =>
+        ShowsPrec_0123456789876543210Sym2KindInference
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 l l) l = ShowsPrec_0123456789876543210 l l l
+    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun T (TyFun GHC.Types.Symbol GHC.Types.Symbol
+                                                                               -> GHC.Types.Type))
+      = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym1 l) arg) (ShowsPrec_0123456789876543210Sym2 l arg) =>
+        ShowsPrec_0123456789876543210Sym1KindInference
+    type instance Apply (ShowsPrec_0123456789876543210Sym1 l) l = ShowsPrec_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat (TyFun T (TyFun GHC.Types.Symbol GHC.Types.Symbol
+                                                                               -> GHC.Types.Type)
+                                                                      -> GHC.Types.Type))
+      = forall arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
+        ShowsPrec_0123456789876543210Sym0KindInference
+    type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
+    instance PShow T where
+      type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+    type family Equals_0123456789876543210 (a :: T) (b :: T) :: Bool where
+      Equals_0123456789876543210 T T = TrueSym0
+      Equals_0123456789876543210 (_ :: T) (_ :: T) = FalseSym0
+    instance PEq T where
+      type (==) a b = Equals_0123456789876543210 a b
+    data instance Sing (z :: T) where ST :: Sing T
+    type ST = (Sing :: T -> GHC.Types.Type)
+    instance SingKind T where
+      type Demote T = T
+      fromSing ST = T
+      toSing T = SomeSing ST
+    instance SOrd T where
+      sCompare ::
+        forall (t1 :: T) (t2 :: T).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun T (TyFun T Ordering
+                                                          -> GHC.Types.Type)
+                                                 -> GHC.Types.Type) t1) t2)
+      sCompare ST ST
+        = (applySing
+             ((applySing
+                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
+                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                SEQ))
+            Data.Singletons.Prelude.Instances.SNil
+    instance SEnum T where
+      sToEnum ::
+        forall (t :: GHC.Types.Nat).
+        Sing t
+        -> Sing (Apply (Data.Singletons.Prelude.Enum.ToEnumSym0 :: TyFun GHC.Types.Nat T
+                                                                   -> GHC.Types.Type) t)
+      sFromEnum ::
+        forall (t :: T).
+        Sing t
+        -> Sing (Apply (Data.Singletons.Prelude.Enum.FromEnumSym0 :: TyFun T GHC.Types.Nat
+                                                                     -> GHC.Types.Type) t)
+      sToEnum (sN :: Sing n)
+        = case
+              (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
+                (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))
+          of
+            STrue -> ST
+            SFalse -> sError (sing :: Sing "toEnum: bad argument") ::
+            Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)))
+      sFromEnum ST
+        = Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0)
+    instance SBounded T where
+      sMinBound :: Sing (MinBoundSym0 :: T)
+      sMaxBound :: Sing (MaxBoundSym0 :: T)
+      sMinBound = ST
+      sMaxBound = ST
+    instance SShow T where
+      sShowsPrec ::
+        forall (t1 :: GHC.Types.Nat) (t2 :: T) (t3 :: GHC.Types.Symbol).
+        Sing t1
+        -> Sing t2
+           -> Sing t3
+              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun T (TyFun GHC.Types.Symbol GHC.Types.Symbol
+                                                                                           -> GHC.Types.Type)
+                                                                                  -> GHC.Types.Type)
+                                                             -> GHC.Types.Type) t1) t2) t3)
+      sShowsPrec
+        _
+        ST
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @ShowStringSym0) sShowString))
+                (sing :: Sing "T")))
+            sA_0123456789876543210
+    instance SEq T where
+      (%==) ST ST = STrue
+    instance SDecide T where
+      (%~) ST ST = Proved Refl
+    instance Data.Singletons.ShowSing.ShowSing T where
+      Data.Singletons.ShowSing.showsSingPrec _ ST = showString "ST"
+    instance Show (Sing (z :: T)) where
+      showsPrec = Data.Singletons.ShowSing.showsSingPrec
+    instance SingI T where
+      sing = ST
