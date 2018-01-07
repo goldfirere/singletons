@@ -202,7 +202,10 @@ data family TyCon :: (k1 -> k2) -> unmatchable_fun
 -- because GHC is too stupid to remember that f's kind can't
 -- have more than one argument when kind-checking the RHS of
 -- the second equation. Note that this infelicity is independent
--- of the problem in the kind of TyCon
+-- of the problem in the kind of TyCon. There is no GHC ticket
+-- here because dealing with inequality like this is hard, and
+-- I (Richard) wasn't sure what concrete value the ticket would
+-- have, given that we don't know how to begin fixing it.
 type family ApplyTyCon (f :: k1 -> k2) (x :: k1) :: k3 where
   ApplyTyCon (f :: k1 -> k2 -> k3) x = TyCon (f x)
   ApplyTyCon f x                     = f x
