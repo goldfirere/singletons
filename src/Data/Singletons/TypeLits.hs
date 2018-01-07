@@ -28,6 +28,7 @@ module Data.Singletons.TypeLits (
   type (^), (%^),
   type (<>), (%<>),
 
+  TN.Log2, sLog2,
   Div, sDiv, Mod, sMod, DivMod, sDivMod,
   Quot, sQuot, Rem, sRem, QuotRem, sQuotRem,
 
@@ -37,6 +38,7 @@ module Data.Singletons.TypeLits (
   KnownSymbolSym0, KnownSymbolSym1,
   type (^@#@$), type (^@#@$$), type (^@#@$$$),
   type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
+  Log2Sym0, Log2Sym1,
   DivSym0, DivSym1, DivSym2,
   ModSym0, ModSym1, ModSym2,
   DivModSym0, DivModSym1, DivModSym2,
@@ -46,7 +48,6 @@ module Data.Singletons.TypeLits (
   ) where
 
 import Data.Singletons.Internal
-import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Tuple
 import Data.Singletons.Promote
 import Data.Singletons.ShowSing ()      -- for ShowSing/Show instances
@@ -54,7 +55,8 @@ import Data.Singletons.TypeLits.Internal
 
 import Data.String (IsString(..))
 import qualified GHC.TypeNats as TN
-import GHC.TypeNats (SomeNat(..))
+import GHC.TypeNats (Div, Mod, SomeNat(..))
+import Numeric.Natural (Natural)
 
 import Unsafe.Coerce
 
@@ -98,32 +100,63 @@ no_term_level_syms = error "The kind `Symbol` may not be used at the term level.
 $(genDefunSymbols [''KnownNat, ''KnownSymbol])
 
 ------------------------------------------------------------
--- Div, Mod, DivMod, and friends
+-- Log2, Div, Mod, DivMod, and friends
 ------------------------------------------------------------
 
+{- | Adapted from GHC's source code.
+
+Compute the logarithm of a number in the given base, rounded down to the
+closest integer. -}
+genLog2 :: Natural -> Natural
+genLog2 x = exactLoop 0 x
+  where
+  exactLoop s i
+    | i == 1     = s
+    | i < 2      = s
+    | otherwise  =
+        let s1 = s + 1
+        in s1 `seq` case divMod i 2 of
+                      (j,r)
+                        | r == 0    -> exactLoop s1 j
+                        | otherwise -> underLoop s1 j
+
+  underLoop s i
+    | i < 2  = s
+    | otherwise = let s1 = s + 1 in s1 `seq` underLoop s1 (div i 2)
+
+
+sLog2 :: Sing x -> Sing (TN.Log2 x)
+sLog2 sx =
+    let x   = fromSing sx
+    in case x of
+         0 -> error "log2 of 0"
+         _ -> case TN.someNatVal (genLog2 x) of
+                SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
+$(genDefunSymbols [''TN.Log2])
+
+sDiv :: Sing x -> Sing y -> Sing (Div x y)
+sDiv sx sy =
+    let x   = fromSing sx
+        y   = fromSing sy
+        res = TN.someNatVal (x `div` y)
+    in case res of
+         SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
+infixl 7 `sDiv`
+$(genDefunSymbols [''Div])
+
+sMod :: Sing x -> Sing y -> Sing (Mod x y)
+sMod sx sy =
+    let x   = fromSing sx
+        y   = fromSing sy
+        res = TN.someNatVal (x `mod` y)
+    in case res of
+         SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
+infixl 7 `sMod`
+$(genDefunSymbols [''Mod])
+
 $(promoteOnly [d|
-  -- https://ghc.haskell.org/trac/ghc/ticket/13652 asks for these in GHC.TypeLits.
-  -- That would be nice, since this implementation is horribly slow.
   divMod :: Nat -> Nat -> (Nat, Nat)
-  divMod _ 0 = error "Division by zero."
-  divMod x y =
-    let (d, m) = (divMod' x (y-1) 0 (y-1))
-    in (d, (y-1) - m)
-
-  divMod' :: Nat -> Nat -> Nat -> Nat -> (Nat, Nat)
-  divMod' 0 _ q u = (q, u)
-  divMod' n y q 0 = divMod' (n-1) y (q+1) y
-  divMod' n y q u = divMod' (n-1) y q     (u-1)
-
-  div :: Nat -> Nat -> Nat
-  div _ 0 = error "Division by zero."
-  div x y = fst (divMod x y)
-  infixl 7 `div`
-
-  mod :: Nat -> Nat -> Nat
-  mod _ 0 = error "Division by zero."
-  mod x y = snd (divMod x y)
-  infixl 7 `mod`
+  divMod x y = (div x y, mod x y)
 
   quotRem :: Nat -> Nat -> (Nat, Nat)
   quotRem = divMod
@@ -147,24 +180,6 @@ sDivMod sx sy =
     in case (qRes, rRes) of
          (SomeNat (_ :: Proxy q), SomeNat (_ :: Proxy r))
            -> unsafeCoerce (STuple2 (SNat :: Sing q) (SNat :: Sing r))
-
-sDiv :: Sing x -> Sing y -> Sing (Div x y)
-sDiv sx sy =
-    let x   = fromSing sx
-        y   = fromSing sy
-        res = TN.someNatVal (x `div` y)
-    in case res of
-         SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
-infixl 7 `sDiv`
-
-sMod :: Sing x -> Sing y -> Sing (Mod x y)
-sMod sx sy =
-    let x   = fromSing sx
-        y   = fromSing sy
-        res = TN.someNatVal (x `mod` y)
-    in case res of
-         SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
-infixl 7 `sMod`
 
 sQuotRem :: Sing x -> Sing y -> Sing (QuotRem x y)
 sQuotRem = sDivMod

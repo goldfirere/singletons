@@ -61,7 +61,9 @@ Changelog for singletons project
 * Add `Data.Singletons.Prelude.Void`.
 
 * Add promoted and singled versions of `div`, `mod`, `divMod`, `quot`, `rem`,
-  and `quotRem` to `Data.Singletons.TypeLits`.
+  and `quotRem` to `Data.Singletons.TypeLits` that utilize the efficient `Div`
+  and `Mod` type families from `GHC.TypeNats`. Also add `sLog2` and
+  defunctionalization symbols for `Log2` from `GHC.TypeNats`.
 
 * Add `(<>)` and `(%<>)`, the promoted and singled versions of `AppendSymbol`
   from `GHC.TypeLits`.
