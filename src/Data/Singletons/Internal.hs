@@ -181,17 +181,10 @@ type family Apply (f :: k1 ~> k2) (x :: k1) :: k2
 type a @@ b = Apply a b
 infixl 9 @@
 
--- | Wrapper for converting the normal type-level arrow into a '~>'.
--- For example, given:
---
--- > data Nat = Zero | Succ Nat
--- > type family Map (a :: a ~> b) (a :: [a]) :: [b]
--- >   Map f '[] = '[]
--- >   Map f (x ': xs) = Apply f x ': Map f xs
---
--- We can write:
---
--- > Map (TyCon Succ) [Zero, Succ Zero]
+-- | Workhorse for the 'TyCon1', etc., types. This can be used directly
+-- in place of any of the @TyConN@ types, but it will work only with
+-- /monomorphic/ types. When GHC#14645 is fixed, this should fully supersede
+-- the @TyConN@ types.
 data family TyCon :: (k1 -> k2) -> unmatchable_fun
 -- That unmatchable_fun should really be a function of k1 and k2,
 -- but GHC 8.4 doesn't support type family calls in the result kind
@@ -211,6 +204,32 @@ type family ApplyTyCon (f :: k1 -> k2) (x :: k1) :: k3 where
   ApplyTyCon f x                     = f x
 
 type instance Apply (TyCon f) x = ApplyTyCon f x
+
+-- | Wrapper for converting the normal type-level arrow into a '~>'.
+-- For example, given:
+--
+-- > data Nat = Zero | Succ Nat
+-- > type family Map (a :: a ~> b) (a :: [a]) :: [b]
+-- >   Map f '[] = '[]
+-- >   Map f (x ': xs) = Apply f x ': Map f xs
+--
+-- We can write:
+--
+-- > Map (TyCon1 Succ) [Zero, Succ Zero]
+type TyCon1 = (TyCon :: (k1 -> k2) -> (k1 ~> k2))
+
+-- | Similar to 'TyCon1', but for two-parameter type constructors.
+type TyCon2 = (TyCon :: (k1 -> k2 -> k3) -> (k1 ~> k2 ~> k3))
+type TyCon3 = (TyCon :: (k1 -> k2 -> k3 -> k4) -> (k1 ~> k2 ~> k3 ~> k4))
+type TyCon4 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5) -> (k1 ~> k2 ~> k3 ~> k4 ~> k5))
+type TyCon5 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6)
+                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6))
+type TyCon6 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7)
+                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7))
+type TyCon7 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8)
+                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8))
+type TyCon8 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9)
+                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8 ~> k9))
 
 ----------------------------------------------------------------------
 ---- Defunctionalized Sing instance and utilities --------------------
