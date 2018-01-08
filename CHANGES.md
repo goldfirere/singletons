@@ -1,6 +1,11 @@
 Changelog for singletons project
 ================================
 
+2.4.1
+-----
+* Restore the `TyCon1`, `TyCon2`, etc. types. It turns out that the new
+`TyCon` doesn't work with kind-polymorphic tycons.
+
 2.4
 ---
 * Require GHC 8.4.
