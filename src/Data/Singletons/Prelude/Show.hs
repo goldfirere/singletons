@@ -26,7 +26,6 @@
 
 module Data.Singletons.Prelude.Show (
   PShow(..), SShow(..), SymbolS, SChar, show_,
-  type (<>), (%<>),
   Shows, sShows,
   ShowListWith, sShowListWith,
   ShowChar, sShowChar,
@@ -41,7 +40,6 @@ module Data.Singletons.Prelude.Show (
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowListWithSym0, ShowListWithSym1, ShowListWithSym2, ShowListWithSym3,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
@@ -59,6 +57,7 @@ import           Data.Singletons.Prelude.Base
 import           Data.Singletons.Prelude.Instances
 import           Data.Singletons.Prelude.List
 import           Data.Singletons.Prelude.Ord
+import           Data.Singletons.Prelude.Semigroup
 import           Data.Singletons.Promote
 import           Data.Singletons.Single
 import           Data.Singletons.TypeLits

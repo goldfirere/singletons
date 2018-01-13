@@ -15,6 +15,14 @@ next
 * Add `(%<=?)`, a singled version of `(<=?)` from `GHC.TypeNats`, as well as
   defunctionalization symbols for `(<=?)`, to `Data.Singletons.TypeLits`.
 
+* Add `Data.{Promotion,Singletons}.Prelude.{Semigroup,Monoid}`, which define
+  promoted and singled versions of the `Semigroup` and `Monoid` type classes.
+
+  `Symbol` is now has promoted `Semigroup` and `Monoid` instances as well.
+  As a consequence, `Data.Singletons.TypeLits` no longer exports `(<>)` or
+  `(%<>)`, as they are superseded by the corresponding methods from
+  `PSemigroup` and `SSemigroup`.
+
 2.4.1
 -----
 * Restore the `TyCon1`, `TyCon2`, etc. types. It turns out that the new

@@ -72,7 +72,9 @@ library
                       Data.Singletons.Prelude.List
                       Data.Singletons.Prelude.List.NonEmpty
                       Data.Singletons.Prelude.Maybe
+                      Data.Singletons.Prelude.Monoid
                       Data.Singletons.Prelude.Num
+                      Data.Singletons.Prelude.Semigroup
                       Data.Singletons.Prelude.Show
                       Data.Singletons.Prelude.Tuple
                       Data.Singletons.Prelude.Void
@@ -89,7 +91,9 @@ library
                       Data.Promotion.Prelude.List
                       Data.Promotion.Prelude.List.NonEmpty
                       Data.Promotion.Prelude.Maybe
+                      Data.Promotion.Prelude.Monoid
                       Data.Promotion.Prelude.Num
+                      Data.Promotion.Prelude.Semigroup
                       Data.Promotion.Prelude.Show
                       Data.Promotion.Prelude.Tuple
                       Data.Promotion.Prelude.Void

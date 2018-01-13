@@ -57,8 +57,12 @@ module Data.Singletons.Prelude (
   type (^), (%^),
 
   -- * Singleton 'Show'
-  PShow(..), SShow(..), ShowS, SChar, type (<>), (%<>),
+  PShow(..), SShow(..), ShowS, SChar,
   Shows, sShows, ShowChar, sShowChar, ShowString, sShowString, ShowParen, sShowParen,
+
+  -- * Singleton 'Semigroup' and 'Monoid'
+  PSemigroup(..), SSemigroup(..),
+  PMonoid(..), SMonoid(..),
 
   -- ** Miscellaneous functions
   Id, sId, Const, sConst, (:.), (%.), type ($), (%$), type ($!), (%$!),
@@ -131,11 +135,16 @@ module Data.Singletons.Prelude (
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowStringSym0, ShowStringSym1, ShowStringSym2,
   ShowParenSym0, ShowParenSym1, ShowParenSym2,
+
+  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
+  SconcatSym0, SconcatSym1,
+  MemptySym0,
+  MappendSym0, MappendSym1, MappendSym2,
+  MconcatSym0, MconcatSym1,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   type (.@#@$),  type (.@#@$$),  type (.@#@$$$),
@@ -200,6 +209,8 @@ import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Enum
   hiding (Succ, Pred, SuccSym0, SuccSym1, PredSym0, PredSym1, sSucc, sPred)
+import Data.Singletons.Prelude.Monoid
 import Data.Singletons.Prelude.Num
+import Data.Singletons.Prelude.Semigroup
 import Data.Singletons.Prelude.Show
 import Data.Singletons.TypeLits

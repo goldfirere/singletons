@@ -27,7 +27,6 @@ module Data.Singletons.TypeLits (
 
   type (^), (%^),
   type (<=?), (%<=?),
-  type (<>), (%<>),
 
   TN.Log2, sLog2,
   Div, sDiv, Mod, sMod, DivMod, sDivMod,
@@ -39,7 +38,6 @@ module Data.Singletons.TypeLits (
   KnownSymbolSym0, KnownSymbolSym1,
   type (^@#@$), type (^@#@$$), type (^@#@$$$),
   type (<=?@#@$), type (<=?@#@$$), type (<=?@#@$$$),
-  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
   Log2Sym0, Log2Sym1,
   DivSym0, DivSym1, DivSym2,
   ModSym0, ModSym1, ModSym2,
@@ -91,6 +89,12 @@ instance Ord Symbol where
 
 instance IsString Symbol where
   fromString  = no_term_level_syms
+
+instance Semigroup Symbol where
+  (<>) = no_term_level_syms
+
+instance Monoid Symbol where
+  mempty = no_term_level_syms
 
 no_term_level_nats :: a
 no_term_level_nats = error "The kind `Nat` may not be used at the term level."
