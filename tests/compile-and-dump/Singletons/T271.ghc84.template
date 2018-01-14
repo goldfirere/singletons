@@ -47,8 +47,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun (Constant a0123456789876543210 b0123456789876543210) (TyFun (Constant a0123456789876543210 b0123456789876543210) Ordering
-                                                                                                           -> Type))
+    data Compare_0123456789876543210Sym0 (l :: TyFun (Constant a0123456789876543210 b0123456789876543210) ((~>) (Constant a0123456789876543210 b0123456789876543210) Ordering))
       = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
@@ -72,8 +71,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun (Identity a0123456789876543210) (TyFun (Identity a0123456789876543210) Ordering
-                                                                                      -> Type))
+    data Compare_0123456789876543210Sym0 (l :: TyFun (Identity a0123456789876543210) ((~>) (Identity a0123456789876543210) Ordering))
       = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
@@ -114,8 +112,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Constant a b) (t2 :: Constant a b).
         Sing t1
         -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Constant a b) (TyFun (Constant a b) Ordering
-                                                                       -> Type)
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Constant a b) ((~>) (Constant a b) Ordering)
                                                  -> Type) t1) t2)
       sCompare
         (SConstant (sA_0123456789876543210 :: Sing a_0123456789876543210))
@@ -139,8 +136,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Identity a) (t2 :: Identity a).
         Sing t1
         -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Identity a) (TyFun (Identity a) Ordering
-                                                                     -> Type)
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Identity a) ((~>) (Identity a) Ordering)
                                                  -> Type) t1) t2)
       sCompare
         (SIdentity (sA_0123456789876543210 :: Sing a_0123456789876543210))

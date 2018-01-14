@@ -34,7 +34,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (:+:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::+:@#@$###)) GHC.Tuple.())
-    data (:+:@#@$) (l :: TyFun Foo (TyFun Foo Foo -> GHC.Types.Type))
+    data (:+:@#@$) (l :: TyFun Foo ((~>) Foo Foo))
       = forall arg. SameKind (Apply (:+:@#@$) arg) ((:+:@#@$$) arg) =>
         (::+:@#@$###)
     type instance Apply (:+:@#@$) l = (:+:@#@$$) l
@@ -49,7 +49,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (+@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+@#@$###)) GHC.Tuple.())
-    data (+@#@$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
+    data (+@#@$) (l :: TyFun Nat ((~>) Nat Nat))
       = forall arg. SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
         (:+@#@$###)
     type instance Apply (+@#@$) l = (+@#@$$) l

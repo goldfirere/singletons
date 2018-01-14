@@ -37,8 +37,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun Nat (TyFun Nat Ordering
-                                                          -> Type))
+    data Compare_0123456789876543210Sym0 (l :: TyFun Nat ((~>) Nat Ordering))
       = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
@@ -68,8 +67,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Nat) (t2 :: Nat).
         Sing t1
         -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat (TyFun Nat Ordering
-                                                            -> Type)
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat ((~>) Nat Ordering)
                                                  -> Type) t1) t2)
       sCompare SZero SZero
         = (applySing
@@ -232,7 +230,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings VECSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) VECSym0KindInference) GHC.Tuple.())
-    data VECSym0 (l :: TyFun U (TyFun Nat U -> Type))
+    data VECSym0 (l :: TyFun U ((~>) Nat U))
       = forall arg. SameKind (Apply VECSym0 arg) (VECSym1 arg) =>
         VECSym0KindInference
     type instance Apply VECSym0 l = VECSym1 l
@@ -273,7 +271,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings AttrSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) AttrSym0KindInference) GHC.Tuple.())
-    data AttrSym0 (l :: TyFun [AChar] (TyFun U Attribute -> Type))
+    data AttrSym0 (l :: TyFun [AChar] ((~>) U Attribute))
       = forall arg. SameKind (Apply AttrSym0 arg) (AttrSym1 arg) =>
         AttrSym0KindInference
     type instance Apply AttrSym0 l = AttrSym1 l
@@ -343,7 +341,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings LookupSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) LookupSym0KindInference) GHC.Tuple.())
-    data LookupSym0 (l :: TyFun [AChar] (TyFun Schema U -> Type))
+    data LookupSym0 (l :: TyFun [AChar] ((~>) Schema U))
       = forall arg. SameKind (Apply LookupSym0 arg) (LookupSym1 arg) =>
         LookupSym0KindInference
     type instance Apply LookupSym0 l = LookupSym1 l
@@ -358,7 +356,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings OccursSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) OccursSym0KindInference) GHC.Tuple.())
-    data OccursSym0 (l :: TyFun [AChar] (TyFun Schema Bool -> Type))
+    data OccursSym0 (l :: TyFun [AChar] ((~>) Schema Bool))
       = forall arg. SameKind (Apply OccursSym0 arg) (OccursSym1 arg) =>
         OccursSym0KindInference
     type instance Apply OccursSym0 l = OccursSym1 l
@@ -373,8 +371,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings AttrNotInSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) AttrNotInSym0KindInference) GHC.Tuple.())
-    data AttrNotInSym0 (l :: TyFun Attribute (TyFun Schema Bool
-                                              -> Type))
+    data AttrNotInSym0 (l :: TyFun Attribute ((~>) Schema Bool))
       = forall arg. SameKind (Apply AttrNotInSym0 arg) (AttrNotInSym1 arg) =>
         AttrNotInSym0KindInference
     type instance Apply AttrNotInSym0 l = AttrNotInSym1 l
@@ -389,7 +386,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings DisjointSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) DisjointSym0KindInference) GHC.Tuple.())
-    data DisjointSym0 (l :: TyFun Schema (TyFun Schema Bool -> Type))
+    data DisjointSym0 (l :: TyFun Schema ((~>) Schema Bool))
       = forall arg. SameKind (Apply DisjointSym0 arg) (DisjointSym1 arg) =>
         DisjointSym0KindInference
     type instance Apply DisjointSym0 l = DisjointSym1 l
@@ -404,7 +401,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings AppendSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) AppendSym0KindInference) GHC.Tuple.())
-    data AppendSym0 (l :: TyFun Schema (TyFun Schema Schema -> Type))
+    data AppendSym0 (l :: TyFun Schema ((~>) Schema Schema))
       = forall arg. SameKind (Apply AppendSym0 arg) (AppendSym1 arg) =>
         AppendSym0KindInference
     type instance Apply AppendSym0 l = AppendSym1 l
@@ -443,8 +440,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun U (TyFun Symbol Symbol
-                                                                               -> Type))
+    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun U ((~>) Symbol Symbol))
       = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym1 l) arg) (ShowsPrec_0123456789876543210Sym2 l arg) =>
         ShowsPrec_0123456789876543210Sym1KindInference
     type instance Apply (ShowsPrec_0123456789876543210Sym1 l) l = ShowsPrec_0123456789876543210Sym2 l l
@@ -453,9 +449,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat (TyFun U (TyFun Symbol Symbol
-                                                                               -> Type)
-                                                                      -> Type))
+    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat ((~>) U ((~>) Symbol Symbol)))
       = forall arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
@@ -504,8 +498,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun AChar (TyFun Symbol Symbol
-                                                                                   -> Type))
+    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun AChar ((~>) Symbol Symbol))
       = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym1 l) arg) (ShowsPrec_0123456789876543210Sym2 l arg) =>
         ShowsPrec_0123456789876543210Sym1KindInference
     type instance Apply (ShowsPrec_0123456789876543210Sym1 l) l = ShowsPrec_0123456789876543210Sym2 l l
@@ -514,9 +507,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat (TyFun AChar (TyFun Symbol Symbol
-                                                                                   -> Type)
-                                                                      -> Type))
+    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat ((~>) AChar ((~>) Symbol Symbol)))
       = forall arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
@@ -767,9 +758,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         Sing t1
         -> Sing t2
            -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun U (TyFun Symbol Symbol
-                                                                                           -> Type)
-                                                                                  -> Type)
+              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat ((~>) U ((~>) Symbol Symbol))
                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _
@@ -830,9 +819,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         Sing t1
         -> Sing t2
            -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun AChar (TyFun Symbol Symbol
-                                                                                               -> Type)
-                                                                                  -> Type)
+              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat ((~>) AChar ((~>) Symbol Symbol))
                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _

@@ -26,8 +26,7 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun Empty (TyFun Empty Ordering
-                                                            -> GHC.Types.Type))
+    data Compare_0123456789876543210Sym0 (l :: TyFun Empty ((~>) Empty Ordering))
       = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
@@ -48,8 +47,7 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Empty) (t2 :: Empty).
         Sing t1
         -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun Empty (TyFun Empty Ordering
-                                                              -> GHC.Types.Type)
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun Empty ((~>) Empty Ordering)
                                                  -> GHC.Types.Type) t1) t2)
       sCompare _ _ = SEQ
     instance SEq Empty where

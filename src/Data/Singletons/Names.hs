@@ -24,7 +24,7 @@ import Control.Monad
 
 boolName, andName, tyEqName, compareName, minBoundName,
   maxBoundName, repName,
-  nilName, consName, listName, tyFunName,
+  nilName, consName, listName, tyFunName, tyFunArrowName,
   applyName, natName, symbolName, typeRepName, stringName,
   eqName, ordName, boundedName, orderingName,
   singFamilyName, singIName, singMethName, demoteName,
@@ -53,6 +53,7 @@ nilName = '[]
 consName = '(:)
 listName = ''[]
 tyFunName = ''TyFun
+tyFunArrowName = ''(~>)
 applyName = ''Apply
 symbolName = ''Symbol
 natName = ''Nat

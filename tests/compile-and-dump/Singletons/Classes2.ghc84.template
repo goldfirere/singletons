@@ -44,8 +44,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Mycompare_0123456789876543210Sym0 (l :: TyFun NatFoo (TyFun NatFoo Ordering
-                                                               -> GHC.Types.Type))
+    data Mycompare_0123456789876543210Sym0 (l :: TyFun NatFoo ((~>) NatFoo Ordering))
       = forall arg. SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
         Mycompare_0123456789876543210Sym0KindInference
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
@@ -70,8 +69,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: NatFoo) (t2 :: NatFoo).
         Sing t1
         -> Sing t2
-           -> Sing (Apply (Apply (MycompareSym0 :: TyFun NatFoo (TyFun NatFoo Ordering
-                                                                 -> GHC.Types.Type)
+           -> Sing (Apply (Apply (MycompareSym0 :: TyFun NatFoo ((~>) NatFoo Ordering)
                                                    -> GHC.Types.Type) t1) t2)
       sMycompare SZeroFoo SZeroFoo = SEQ
       sMycompare SZeroFoo (SSuccFoo _) = SLT

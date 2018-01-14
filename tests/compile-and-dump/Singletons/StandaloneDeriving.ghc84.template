@@ -37,8 +37,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (:*:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::*:@#@$###)) GHC.Tuple.())
-    data (:*:@#@$) (l :: TyFun a0123456789876543210 (TyFun b0123456789876543210 (T a0123456789876543210 b0123456789876543210)
-                                                     -> GHC.Types.Type))
+    data (:*:@#@$) (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 (T a0123456789876543210 b0123456789876543210)))
       = forall arg. SameKind (Apply (:*:@#@$) arg) ((:*:@#@$$) arg) =>
         (::*:@#@$###)
     type instance Apply (:*:@#@$) l = (:*:@#@$$) l
@@ -62,8 +61,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun (T a0123456789876543210 ()) (TyFun (T a0123456789876543210 ()) Ordering
-                                                                                  -> GHC.Types.Type))
+    data Compare_0123456789876543210Sym0 (l :: TyFun (T a0123456789876543210 ()) ((~>) (T a0123456789876543210 ()) Ordering))
       = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
@@ -87,8 +85,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun (T a0123456789876543210 ()) (TyFun Symbol Symbol
-                                                                                                         -> GHC.Types.Type))
+    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun (T a0123456789876543210 ()) ((~>) Symbol Symbol))
       = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym1 l) arg) (ShowsPrec_0123456789876543210Sym2 l arg) =>
         ShowsPrec_0123456789876543210Sym1KindInference
     type instance Apply (ShowsPrec_0123456789876543210Sym1 l) l = ShowsPrec_0123456789876543210Sym2 l l
@@ -97,9 +94,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat (TyFun (T a0123456789876543210 ()) (TyFun Symbol Symbol
-                                                                                                         -> GHC.Types.Type)
-                                                                      -> GHC.Types.Type))
+    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat ((~>) (T a0123456789876543210 ()) ((~>) Symbol Symbol)))
       = forall arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
@@ -126,8 +121,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun S (TyFun S Ordering
-                                                        -> GHC.Types.Type))
+    data Compare_0123456789876543210Sym0 (l :: TyFun S ((~>) S Ordering))
       = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
@@ -152,8 +146,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun S (TyFun Symbol Symbol
-                                                                               -> GHC.Types.Type))
+    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun S ((~>) Symbol Symbol))
       = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym1 l) arg) (ShowsPrec_0123456789876543210Sym2 l arg) =>
         ShowsPrec_0123456789876543210Sym1KindInference
     type instance Apply (ShowsPrec_0123456789876543210Sym1 l) l = ShowsPrec_0123456789876543210Sym2 l l
@@ -162,9 +155,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat (TyFun S (TyFun Symbol Symbol
-                                                                               -> GHC.Types.Type)
-                                                                      -> GHC.Types.Type))
+    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat ((~>) S ((~>) Symbol Symbol)))
       = forall arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
@@ -259,8 +250,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: T a ()) (t2 :: T a ()).
         Sing t1
         -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun (T a ()) (TyFun (T a ()) Ordering
-                                                                 -> GHC.Types.Type)
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun (T a ()) ((~>) (T a ()) Ordering)
                                                  -> GHC.Types.Type) t1) t2)
       sCompare
         ((:%*:) (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -291,9 +281,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         Sing t1
         -> Sing t2
            -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun (T a ()) (TyFun Symbol Symbol
-                                                                                                  -> GHC.Types.Type)
-                                                                                  -> GHC.Types.Type)
+              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat ((~>) (T a ()) ((~>) Symbol Symbol))
                                                              -> GHC.Types.Type) t1) t2) t3)
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
@@ -326,8 +314,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: S) (t2 :: S).
         Sing t1
         -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun S (TyFun S Ordering
-                                                          -> GHC.Types.Type)
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun S ((~>) S Ordering)
                                                  -> GHC.Types.Type) t1) t2)
       sCompare SS1 SS1
         = (applySing
@@ -351,9 +338,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         Sing t1
         -> Sing t2
            -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun S (TyFun Symbol Symbol
-                                                                                           -> GHC.Types.Type)
-                                                                                  -> GHC.Types.Type)
+              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat ((~>) S ((~>) Symbol Symbol))
                                                              -> GHC.Types.Type) t1) t2) t3)
       sShowsPrec
         _

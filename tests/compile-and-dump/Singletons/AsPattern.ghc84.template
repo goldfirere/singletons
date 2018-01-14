@@ -45,17 +45,14 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings BazSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BazSym1KindInference) GHC.Tuple.())
-    data BazSym1 (l :: Nat) (l :: TyFun Nat (TyFun Nat Baz
-                                             -> GHC.Types.Type))
+    data BazSym1 (l :: Nat) (l :: TyFun Nat ((~>) Nat Baz))
       = forall arg. SameKind (Apply (BazSym1 l) arg) (BazSym2 l arg) =>
         BazSym1KindInference
     type instance Apply (BazSym1 l) l = BazSym2 l l
     instance SuppressUnusedWarnings BazSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BazSym0KindInference) GHC.Tuple.())
-    data BazSym0 (l :: TyFun Nat (TyFun Nat (TyFun Nat Baz
-                                             -> GHC.Types.Type)
-                                  -> GHC.Types.Type))
+    data BazSym0 (l :: TyFun Nat ((~>) Nat ((~>) Nat Baz)))
       = forall arg. SameKind (Apply BazSym0 arg) (BazSym1 arg) =>
         BazSym0KindInference
     type instance Apply BazSym0 l = BazSym1 l

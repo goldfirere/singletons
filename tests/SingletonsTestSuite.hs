@@ -94,6 +94,7 @@ tests rootDir =
     , stdTest "T249"
     , stdTest "OverloadedStrings"
     , stdTest "T271"
+    , stdTest "T287"
     ],
     testCompileAndDumpGroup "Promote"
     [ stdTest "Constructors"

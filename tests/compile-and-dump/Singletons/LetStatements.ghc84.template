@@ -259,8 +259,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)) GHC.Tuple.())
-    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l (l :: TyFun Nat (TyFun Nat Nat
-                                                           -> GHC.Types.Type))
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l (l :: TyFun Nat ((~>) Nat Nat))
       = forall arg. SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l arg) =>
         (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)
     type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) l = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l
@@ -299,8 +298,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)) GHC.Tuple.())
-    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l (l :: TyFun Nat (TyFun Nat Nat
-                                                           -> GHC.Types.Type))
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l (l :: TyFun Nat ((~>) Nat Nat))
       = forall arg. SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l arg) =>
         (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)
     type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) l = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l
@@ -331,8 +329,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)) GHC.Tuple.())
-    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l (l :: TyFun Nat (TyFun Nat Nat
-                                                           -> GHC.Types.Type))
+    data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l (l :: TyFun Nat ((~>) Nat Nat))
       = forall arg. SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l arg) =>
         (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)
     type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) l) l = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) l l

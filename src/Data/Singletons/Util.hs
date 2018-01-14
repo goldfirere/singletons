@@ -319,12 +319,6 @@ substKindInTvb :: Map Name DKind -> DTyVarBndr -> DTyVarBndr
 substKindInTvb _ tvb@(DPlainTV _) = tvb
 substKindInTvb subst (DKindedTV n ki) = DKindedTV n (substKind subst ki)
 
-addStar :: DKind -> DKind
-addStar t = DAppT (DAppT DArrowT t) DStarT
-
-addStar_maybe :: Maybe DKind -> Maybe DKind
-addStar_maybe = fmap addStar
-
 -- apply a type to a list of types
 foldType :: DType -> [DType] -> DType
 foldType = foldl DAppT

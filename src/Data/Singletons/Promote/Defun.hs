@@ -158,9 +158,24 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
 
           mk_rhs' ns  = foldType (DConT data_name) (map DVarT ns)
 
-      decls <- go (n - 1) m_args (addStar_maybe (buildTyFun_maybe m_arg m_result)) mk_rhs'
+      decls <- go (n - 1) m_args (buildTyFunArrow_maybe m_arg m_result) mk_rhs'
       return $ suppress : data_decl : app_decl : decls
 
+-- Shorthand for building (k1 ~> k2)
+buildTyFunArrow :: DKind -> DKind -> DKind
+buildTyFunArrow k1 k2 = DConT tyFunArrowName `DAppT` k1 `DAppT` k2
+
+buildTyFunArrow_maybe :: Maybe DKind -> Maybe DKind -> Maybe DKind
+buildTyFunArrow_maybe m_k1 m_k2 = do
+  k1 <- m_k1
+  k2 <- m_k2
+  return $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
+
+-- Shorthand for building (TyFun k1 k2 ~> Type)
+--
+-- We'd like to replace all uses of this with `buildTyFunArrow`, but we can't
+-- do this until https://github.com/goldfirere/th-desugar/issues/68
+-- is implemented.
 buildTyFun :: DKind -> DKind -> DKind
 buildTyFun k1 k2 = DConT tyFunName `DAppT` k1 `DAppT` k2
 
@@ -168,7 +183,7 @@ buildTyFun_maybe :: Maybe DKind -> Maybe DKind -> Maybe DKind
 buildTyFun_maybe m_k1 m_k2 = do
   k1 <- m_k1
   k2 <- m_k2
-  return $ DConT tyFunName `DAppT` k1 `DAppT` k2
+  return $ buildTyFun k1 k2
 
 -- Counts the arity of type level function represented with TyFun constructors
 tyFunArity :: DKind -> Int
@@ -177,18 +192,11 @@ tyFunArity (DArrowT `DAppT` (DConT tyFunNm `DAppT` _ `DAppT` b) `DAppT` DStarT)
   = 1 + tyFunArity b
 tyFunArity _ = 0
 
--- Checks if type is (TyFun a b -> *)
-isTyFun :: DKind -> Bool
-isTyFun (DArrowT `DAppT` (DConT tyFunNm `DAppT` _ `DAppT` _) `DAppT` DStarT)
-  | tyFunName == tyFunNm
-  = True
-isTyFun _ = False
-
--- Build TyFun kind from the list of kinds
+-- Build (~>) kind from the list of kinds
 ravelTyFun :: [DKind] -> DKind
 ravelTyFun []    = error "Internal error: TyFun raveling nil"
 ravelTyFun [k]   = k
-ravelTyFun kinds = go tailK (buildTyFun k2 k1)
+ravelTyFun kinds = go tailK (buildTyFunArrow k2 k1)
     where (k1 : k2 : tailK) = reverse kinds
-          go []     acc = addStar acc
-          go (k:ks) acc = go ks (buildTyFun k (addStar acc))
+          go []     acc = acc
+          go (k:ks) acc = go ks (buildTyFunArrow k acc)

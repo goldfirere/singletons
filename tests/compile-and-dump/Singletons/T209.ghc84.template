@@ -30,17 +30,14 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MSym1KindInference) GHC.Tuple.())
-    data MSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 (TyFun Bool Bool
-                                                                             -> GHC.Types.Type))
+    data MSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 ((~>) Bool Bool))
       = forall arg. SameKind (Apply (MSym1 l) arg) (MSym2 l arg) =>
         MSym1KindInference
     type instance Apply (MSym1 l) l = MSym2 l l
     instance SuppressUnusedWarnings MSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MSym0KindInference) GHC.Tuple.())
-    data MSym0 (l :: TyFun a0123456789876543210 (TyFun b0123456789876543210 (TyFun Bool Bool
-                                                                             -> GHC.Types.Type)
-                                                 -> GHC.Types.Type))
+    data MSym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 ((~>) Bool Bool)))
       = forall arg. SameKind (Apply MSym0 arg) (MSym1 arg) =>
         MSym0KindInference
     type instance Apply MSym0 l = MSym1 l
