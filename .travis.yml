@@ -46,7 +46,7 @@ before_install:
   - unset CC
   - ROOTDIR=$(pwd)
   - mkdir -p $HOME/.local/bin
-  - "PATH=/opt/ghc/${HCVER}/bin:/opt/ghc/bin:/opt/ghc-ppa-tools/bin:$HOME/local/bin:$PATH"
+  - "PATH=/opt/ghc/bin:/opt/ghc-ppa-tools/bin:$HOME/local/bin:$PATH"
   - HCNUMVER=$(( $(${HC} --numeric-version|sed -E 's/([0-9]+)\.([0-9]+)\.([0-9]+).*/\1 * 10000 + \2 * 100 + \3/') ))
   - echo $HCNUMVER
 
@@ -87,7 +87,8 @@ install:
       (cd "./th-desugar" && autoreconf -i);
     fi
   - rm -f cabal.project.freeze
-  - cabal new-build -w ${HC} ${TEST} ${BENCH} --project-file="cabal.project" --dep -j2 ${TARGETS}
+  - cabal new-configure -w ${HC} ${TEST} ${BENCH} --project-file="cabal.project"
+  - cabal new-build --dep -j2 ${TARGETS}
   - rm -rf "."/.ghc.environment.* "./th-desugar"/.ghc.environment.* "."/dist "./th-desugar"/dist
   - DISTDIR=$(mktemp -d /tmp/dist-test.XXXX)
 
@@ -105,7 +106,7 @@ script:
 
 
   # build & run tests, build benchmarks
-  - cabal new-build -w ${HC} ${TEST} ${BENCH} ${TARGETS}
+  - cabal new-build ${TARGETS}
   - |
     if [ "x$TEST" = "x--enable-tests" ]; then
       # Why not use `cabal new-test` here? Sadly, it's because `new-test` does
@@ -120,7 +121,7 @@ script:
 
   # haddock
   - rm -rf ./dist-newstyle
-  - if $HADDOCK; then cabal new-haddock -w ${HC} ${TEST} ${BENCH} ${TARGETS}; else echo "Skipping haddock generation";fi
+  - if $HADDOCK; then cabal new-haddock ${TARGETS}; else echo "Skipping haddock generation";fi
 
 # REGENDATA ["-o",".travis.yml","--no-no-tests-no-bench","--no-installed","cabal.project"]
 # EOF
