@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-unused-imports #-}
-
 module Singletons.ReturnFunc where
 
 import Data.Singletons

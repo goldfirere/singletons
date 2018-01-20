@@ -99,7 +99,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     instance PEq Occ where
       type (==) a b = Equals_0123456789876543210 a b
     sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)])
-    sEmpty = Data.Singletons.Prelude.Instances.SNil
+    sEmpty = singletons-2.4.1:Data.Singletons.Prelude.Instances.SNil
     data instance Sing (z :: Occ)
       where
         SStr :: Sing Str
@@ -128,21 +128,21 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
-            Data.Singletons.Prelude.Instances.SNil
+            singletons-2.4.1:Data.Singletons.Prelude.Instances.SNil
       sCompare SOpt SOpt
         = (applySing
              ((applySing
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
-            Data.Singletons.Prelude.Instances.SNil
+            singletons-2.4.1:Data.Singletons.Prelude.Instances.SNil
       sCompare SMany SMany
         = (applySing
              ((applySing
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
-            Data.Singletons.Prelude.Instances.SNil
+            singletons-2.4.1:Data.Singletons.Prelude.Instances.SNil
       sCompare SStr SOpt = SLT
       sCompare SStr SMany = SLT
       sCompare SOpt SStr = SGT

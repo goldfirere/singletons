@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wno-unused-binds   -Wno-unused-matches
-                -Wno-name-shadowing -Wno-unused-imports #-}
+                -Wno-name-shadowing #-}
 
 module Singletons.LetStatements where
 

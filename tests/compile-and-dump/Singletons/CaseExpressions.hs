@@ -1,5 +1,4 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-{-# OPTIONS_GHC -Wno-unused-imports #-}
 
 module Singletons.CaseExpressions where
 
