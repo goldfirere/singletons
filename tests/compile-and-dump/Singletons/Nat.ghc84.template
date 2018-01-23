@@ -208,7 +208,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
-            singletons-2.4.1:Data.Singletons.Prelude.Instances.SNil
+            Data.Singletons.Prelude.Instances.SNil
       sCompare
         (SSucc (sA_0123456789876543210 :: Sing a_0123456789876543210))
         (SSucc (sB_0123456789876543210 :: Sing b_0123456789876543210))
@@ -220,12 +220,12 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
             ((applySing
                 ((applySing
                     ((singFun2 @(:@#@$))
-                       singletons-2.4.1:Data.Singletons.Prelude.Instances.SCons))
+                       Data.Singletons.Prelude.Instances.SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
-               singletons-2.4.1:Data.Singletons.Prelude.Instances.SNil)
+               Data.Singletons.Prelude.Instances.SNil)
       sCompare SZero (SSucc _) = SLT
       sCompare (SSucc _) SZero = SGT
     instance SEq Nat => SEq Nat where

@@ -137,7 +137,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
-            singletons-2.4.1:Data.Singletons.Prelude.Instances.SNil
+            Data.Singletons.Prelude.Instances.SNil
     instance SEnum T where
       sToEnum ::
         forall (t :: GHC.Types.Nat).

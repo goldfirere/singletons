@@ -211,6 +211,10 @@ filterWithSed file = runProcessWithOpts CreatePipe "sed"
   , "-e", "'s/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/0123456789876543210/g'"
   , "-e", "'s/[!#$%&*+./>]\\{10\\}/%%%%%%%%%%/g'"
   , "-e", "'s/[!#$%&*+./>]\\{19\\}/%%%%%%%%%%%%%%%%%%%/g'"
+    -- Remove pretty-printed references to the singletons package
+    -- (e.g., turn `singletons-2.4.1:Sing` into `Sing`) to make the output
+    -- more stable.
+  , "-e", "'s/singletons-[0-9]\\+\\(\\.[0-9]\\+\\)*://g'"
   , file
   ]
 

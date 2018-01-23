@@ -128,12 +128,12 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
             ((applySing
                 ((applySing
                     ((singFun2 @(:@#@$))
-                       singletons-2.4.1:Data.Singletons.Prelude.Instances.SCons))
+                       Data.Singletons.Prelude.Instances.SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
-               singletons-2.4.1:Data.Singletons.Prelude.Instances.SNil)
+               Data.Singletons.Prelude.Instances.SNil)
     instance SOrd a => SOrd (Identity a) where
       sCompare ::
         forall (t1 :: Identity a) (t2 :: Identity a).
@@ -153,12 +153,12 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
             ((applySing
                 ((applySing
                     ((singFun2 @(:@#@$))
-                       singletons-2.4.1:Data.Singletons.Prelude.Instances.SCons))
+                       Data.Singletons.Prelude.Instances.SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
-               singletons-2.4.1:Data.Singletons.Prelude.Instances.SNil)
+               Data.Singletons.Prelude.Instances.SNil)
     instance SEq a => SEq (Constant a b) where
       (%==) (SConstant a) (SConstant b) = ((%==) a) b
     instance SDecide a => SDecide (Constant a b) where
