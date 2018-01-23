@@ -28,11 +28,13 @@ module Data.Singletons.TypeLits.Internal (
   Undefined, sUndefined,
   KnownNat, TN.natVal, KnownSymbol, symbolVal,
   type (^), (%^),
+  type (<=?), (%<=?),
   type (<>), (%<>),
 
   -- * Defunctionalization symbols
   ErrorSym0, ErrorSym1, UndefinedSym0,
   type (^@#@$),  type (^@#@$$),  type (^@#@$$$),
+  type (<=?@#@$),  type (<=?@#@$$),  type (<=?@#@$$$),
   type (<>@#@$), type (<>@#@$$), type (<>@#@$$$)
   ) where
 
@@ -169,7 +171,7 @@ $(genDefunSymbols [''Undefined])
 sUndefined :: a
 sUndefined = undefined
 
--- | The singleton analogue of '(TL.^)' for 'Nat's.
+-- | The singleton analogue of '(TN.^)' for 'Nat's.
 (%^) :: Sing a -> Sing b -> Sing (a ^ b)
 sa %^ sb =
   let a = fromSing sa
@@ -182,6 +184,14 @@ infixr 8 %^
 
 -- Defunctionalization symbols for type-level (^)
 $(genDefunSymbols [''(^)])
+
+-- | The singleton analogue of 'TN.<=?' 
+(%<=?) :: Sing a -> Sing b -> Sing (a <=? b)
+sa %<=? sb = unsafeCoerce (sa %<= sb)
+infix 4 %<=?
+
+-- Defunctionalization symbols for (<=?)
+$(genDefunSymbols [''(<=?)])
 
 -- | The promoted analogue of '(<>)' for 'Symbol's. This uses the special
 -- 'TL.AppendSymbol' type family from "GHC.TypeLits".
