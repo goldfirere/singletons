@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-unused-imports #-}
-
 module Singletons.BoxUnBox where
 
 import Data.Singletons.TH

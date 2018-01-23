@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-unused-imports #-}
-
 module Singletons.Star where
 
 import Data.Singletons.Prelude

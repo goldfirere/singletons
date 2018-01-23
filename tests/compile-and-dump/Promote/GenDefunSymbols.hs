@@ -1,10 +1,8 @@
-{-# OPTIONS_GHC -Wno-unused-imports #-}
-
 module Promote.GenDefunSymbols where
 
 import Data.Singletons (Apply, TyFun)
-import Data.Singletons.Promote
 import Data.Singletons.SuppressUnusedWarnings
+import Data.Singletons.TH (genDefunSymbols)
 import GHC.TypeLits hiding (type (*))
 import Data.Kind
 

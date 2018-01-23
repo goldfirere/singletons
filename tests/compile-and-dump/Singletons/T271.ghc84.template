@@ -127,7 +127,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                 SEQ))
             ((applySing
                 ((applySing
-                    ((singFun2 @(:@#@$)) Data.Singletons.Prelude.Instances.SCons))
+                    ((singFun2 @(:@#@$))
+                       Data.Singletons.Prelude.Instances.SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
@@ -151,7 +152,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                 SEQ))
             ((applySing
                 ((applySing
-                    ((singFun2 @(:@#@$)) Data.Singletons.Prelude.Instances.SCons))
+                    ((singFun2 @(:@#@$))
+                       Data.Singletons.Prelude.Instances.SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))

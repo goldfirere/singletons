@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -Wno-unused-imports #-}
 module Singletons.Records where
 
 import Data.Singletons.SuppressUnusedWarnings

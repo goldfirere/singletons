@@ -39,7 +39,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     foo7 x y = (\ (_, b) -> b) (x, y)
     data Foo a b = Foo a b
     foo8 :: Foo a b -> a
-    foo8 x = (\ Foo a _ -> a) x
+    foo8 x = (\ (Foo a _) -> a) x
     type FooSym2 (t :: a0123456789876543210) (t :: b0123456789876543210) =
         Foo t t
     instance SuppressUnusedWarnings FooSym1 where

@@ -1,103 +1,113 @@
+{-# LANGUAGE TypeApplications #-}
 module Main (
     main
  ) where
 
-import Test.Tasty               ( TestTree, defaultMain, testGroup          )
+import Data.Proxy               ( Proxy(..)                                 )
 import SingletonsTestSuiteUtils ( compileAndDumpStdTest, compileAndDumpTest
-                                , testCompileAndDumpGroup, ghcOpts
+                                , testCompileAndDumpGroup, cabalArgs
+                                , RootDir(..)
                              --   , cleanFiles
                                 )
+import Test.Tasty               ( TestTree, askOption, defaultIngredients
+                                , defaultMainWithIngredients
+                                , includingOptions, testGroup               )
+import Test.Tasty.Options       ( OptionDescription(..)                     )
 
 main :: IO ()
 main = do
---  cleanFiles    We really need to parallelize the testsuite.
-  defaultMain tests
+--    cleanFiles    We really need to parallelize the testsuite.
+    defaultMainWithIngredients ings $ askOption $ \(RootDir rootDir) -> tests rootDir
+  where
+    ings = includingOptions [Option (Proxy @RootDir)] : defaultIngredients
 
-tests :: TestTree
-tests =
-    testGroup "Testsuite" $ [
+tests :: FilePath -> TestTree
+tests rootDir =
+ let stdTest   = compileAndDumpStdTest rootDir
+     test name = compileAndDumpTest rootDir name $ cabalArgs rootDir
+ in testGroup "Testsuite" $ [
     testCompileAndDumpGroup "Singletons"
-    [ compileAndDumpStdTest "Nat"
-    , compileAndDumpStdTest "Empty"
-    , compileAndDumpStdTest "Maybe"
-    , compileAndDumpStdTest "BoxUnBox"
-    , compileAndDumpStdTest "Operators"
-    , compileAndDumpStdTest "HigherOrder"
-    , compileAndDumpStdTest "Contains"
-    , compileAndDumpStdTest "AsPattern"
-    , compileAndDumpStdTest "DataValues"
-    , compileAndDumpStdTest "EqInstances"
-    , compileAndDumpStdTest "CaseExpressions"
-    , compileAndDumpStdTest "Star"
-    , compileAndDumpStdTest "ReturnFunc"
-    , compileAndDumpStdTest "Lambdas"
-    , compileAndDumpStdTest "LambdasComprehensive"
-    , compileAndDumpStdTest "Error"
-    , compileAndDumpStdTest "TopLevelPatterns"
-    , compileAndDumpStdTest "LetStatements"
-    , compileAndDumpStdTest "LambdaCase"
-    , compileAndDumpStdTest "Sections"
-    , compileAndDumpStdTest "PatternMatching"
-    , compileAndDumpStdTest "Records"
-    , compileAndDumpStdTest "T29"
-    , compileAndDumpStdTest "T33"
-    , compileAndDumpStdTest "T54"
-    , compileAndDumpStdTest "Classes"
-    , compileAndDumpStdTest "Classes2"
-    , compileAndDumpStdTest "FunDeps"
-    , compileAndDumpStdTest "T78"
-    , compileAndDumpStdTest "OrdDeriving"
-    , compileAndDumpStdTest "BoundedDeriving"
-    , compileAndDumpStdTest "BadBoundedDeriving"
-    , compileAndDumpStdTest "EnumDeriving"
-    , compileAndDumpStdTest "BadEnumDeriving"
-    , compileAndDumpStdTest "Fixity"
-    , compileAndDumpStdTest "Undef"
-    , compileAndDumpStdTest "T124"
-    , compileAndDumpStdTest "T136"
-    , compileAndDumpStdTest "T136b"
-    , compileAndDumpStdTest "T153"
-    , compileAndDumpStdTest "T157"
-    , compileAndDumpStdTest "T159"
-    , compileAndDumpStdTest "T167"
-    , compileAndDumpStdTest "T145"
-    , compileAndDumpStdTest "PolyKinds"
-    , compileAndDumpStdTest "PolyKindsApp"
-    , compileAndDumpStdTest "T163"
-    , compileAndDumpStdTest "T166"
-    , compileAndDumpStdTest "T172"
-    , compileAndDumpStdTest "T175"
-    , compileAndDumpStdTest "T176"
-    , compileAndDumpStdTest "T178"
-    , compileAndDumpStdTest "T187"
-    , compileAndDumpStdTest "T190"
-    , compileAndDumpStdTest "ShowDeriving"
-    , compileAndDumpStdTest "EmptyShowDeriving"
-    , compileAndDumpStdTest "StandaloneDeriving"
-    , compileAndDumpStdTest "T197"
-    , compileAndDumpStdTest "T197b"
-    , compileAndDumpStdTest "T200"
-    , compileAndDumpStdTest "T206"
-    , compileAndDumpStdTest "T209"
-    , compileAndDumpStdTest "T226"
-    , compileAndDumpStdTest "T229"
-    , compileAndDumpStdTest "T249"
-    , compileAndDumpStdTest "OverloadedStrings"
-    , compileAndDumpStdTest "T271"
+    [ stdTest "Nat"
+    , stdTest "Empty"
+    , stdTest "Maybe"
+    , stdTest "BoxUnBox"
+    , stdTest "Operators"
+    , stdTest "HigherOrder"
+    , stdTest "Contains"
+    , stdTest "AsPattern"
+    , stdTest "DataValues"
+    , stdTest "EqInstances"
+    , stdTest "CaseExpressions"
+    , stdTest "Star"
+    , stdTest "ReturnFunc"
+    , stdTest "Lambdas"
+    , stdTest "LambdasComprehensive"
+    , stdTest "Error"
+    , stdTest "TopLevelPatterns"
+    , stdTest "LetStatements"
+    , stdTest "LambdaCase"
+    , stdTest "Sections"
+    , stdTest "PatternMatching"
+    , stdTest "Records"
+    , stdTest "T29"
+    , stdTest "T33"
+    , stdTest "T54"
+    , stdTest "Classes"
+    , stdTest "Classes2"
+    , stdTest "FunDeps"
+    , stdTest "T78"
+    , stdTest "OrdDeriving"
+    , stdTest "BoundedDeriving"
+    , stdTest "BadBoundedDeriving"
+    , stdTest "EnumDeriving"
+    , stdTest "BadEnumDeriving"
+    , stdTest "Fixity"
+    , stdTest "Undef"
+    , stdTest "T124"
+    , stdTest "T136"
+    , stdTest "T136b"
+    , stdTest "T153"
+    , stdTest "T157"
+    , stdTest "T159"
+    , stdTest "T167"
+    , stdTest "T145"
+    , stdTest "PolyKinds"
+    , stdTest "PolyKindsApp"
+    , stdTest "T163"
+    , stdTest "T166"
+    , stdTest "T172"
+    , stdTest "T175"
+    , stdTest "T176"
+    , stdTest "T178"
+    , stdTest "T187"
+    , stdTest "T190"
+    , stdTest "ShowDeriving"
+    , stdTest "EmptyShowDeriving"
+    , stdTest "StandaloneDeriving"
+    , stdTest "T197"
+    , stdTest "T197b"
+    , stdTest "T200"
+    , stdTest "T206"
+    , stdTest "T209"
+    , stdTest "T226"
+    , stdTest "T229"
+    , stdTest "T249"
+    , stdTest "OverloadedStrings"
+    , stdTest "T271"
     ],
     testCompileAndDumpGroup "Promote"
-    [ compileAndDumpStdTest "Constructors"
-    , compileAndDumpStdTest "GenDefunSymbols"
-    , compileAndDumpStdTest "Newtypes"
-    , compileAndDumpStdTest "Pragmas"
-    , compileAndDumpStdTest "Prelude"
-    , compileAndDumpStdTest "T180"
+    [ stdTest "Constructors"
+    , stdTest "GenDefunSymbols"
+    , stdTest "Newtypes"
+    , stdTest "Pragmas"
+    , stdTest "Prelude"
+    , stdTest "T180"
     ],
     testGroup "Database client"
-    [ compileAndDumpTest "GradingClient/Database" ghcOpts
-    , compileAndDumpTest "GradingClient/Main"     ghcOpts
+    [ test "GradingClient/Database"
+    , test "GradingClient/Main"
     ],
     testCompileAndDumpGroup "InsertionSort"
-    [ compileAndDumpStdTest "InsertionSortImp"
+    [ stdTest "InsertionSortImp"
     ]
   ]

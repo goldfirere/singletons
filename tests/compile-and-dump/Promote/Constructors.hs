@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-unused-imports #-}
-
 module Promote.Constructors where
 
 import Data.Singletons.SuppressUnusedWarnings
