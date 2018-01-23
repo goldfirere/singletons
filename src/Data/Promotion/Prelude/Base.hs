@@ -1,5 +1,5 @@
-{-# LANGUAGE TemplateHaskell, KindSignatures, PolyKinds, TypeOperators,
-             DataKinds, ScopedTypeVariables, TypeFamilies, GADTs,
+{-# LANGUAGE TemplateHaskell, TypeInType, TypeOperators,
+             ScopedTypeVariables, TypeFamilies, GADTs,
              UndecidableInstances #-}
 
 -----------------------------------------------------------------------------

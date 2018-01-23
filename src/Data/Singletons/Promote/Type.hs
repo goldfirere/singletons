@@ -49,7 +49,7 @@ promoteType = go []
       = return $ foldType (DConT (tupleTypeName n)) args
       | otherwise
       = return $ foldType (DConT name) args
-    go [k1, k2] DArrowT = return $ addStar (DConT tyFunName `DAppT` k1 `DAppT` k2)
+    go [k1, k2] DArrowT = return $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
     go _ (DLitT _) = fail "Cannot promote a type-level literal"
 
     go args     hd = fail $ "Illegal Haskell construct encountered:\n" ++

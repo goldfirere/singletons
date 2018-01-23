@@ -28,8 +28,7 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings PairSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PairSym0KindInference) GHC.Tuple.())
-    data PairSym0 (l :: TyFun a0123456789876543210 (TyFun b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210)
-                                                    -> GHC.Types.Type))
+    data PairSym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210)))
       = forall arg. SameKind (Apply PairSym0 arg) (PairSym1 arg) =>
         PairSym0KindInference
     type instance Apply PairSym0 l = PairSym1 l
@@ -63,8 +62,7 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun (Pair a0123456789876543210 b0123456789876543210) (TyFun Symbol Symbol
-                                                                                                                              -> GHC.Types.Type))
+    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun (Pair a0123456789876543210 b0123456789876543210) ((~>) Symbol Symbol))
       = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym1 l) arg) (ShowsPrec_0123456789876543210Sym2 l arg) =>
         ShowsPrec_0123456789876543210Sym1KindInference
     type instance Apply (ShowsPrec_0123456789876543210Sym1 l) l = ShowsPrec_0123456789876543210Sym2 l l
@@ -73,9 +71,7 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat (TyFun (Pair a0123456789876543210 b0123456789876543210) (TyFun Symbol Symbol
-                                                                                                                              -> GHC.Types.Type)
-                                                                      -> GHC.Types.Type))
+    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat ((~>) (Pair a0123456789876543210 b0123456789876543210) ((~>) Symbol Symbol)))
       = forall arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
@@ -132,9 +128,7 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
         Sing t1
         -> Sing t2
            -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun (Pair a b) (TyFun Symbol Symbol
-                                                                                                    -> GHC.Types.Type)
-                                                                                  -> GHC.Types.Type)
+              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat ((~>) (Pair a b) ((~>) Symbol Symbol))
                                                              -> GHC.Types.Type) t1) t2) t3)
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)

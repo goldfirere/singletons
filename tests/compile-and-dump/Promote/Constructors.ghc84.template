@@ -17,7 +17,7 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (:+@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::+@#@$###)) GHC.Tuple.())
-    data (:+@#@$) (l :: TyFun Foo (TyFun Foo Foo -> GHC.Types.Type))
+    data (:+@#@$) (l :: TyFun Foo ((~>) Foo Foo))
       = forall arg. SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
         (::+@#@$###)
     type instance Apply (:+@#@$) l = (:+@#@$$) l
@@ -33,38 +33,28 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings BarSym3 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BarSym3KindInference) GHC.Tuple.())
-    data BarSym3 (l :: Bar) (l :: Bar) (l :: Bar) (l :: TyFun Bar (TyFun Foo Bar
-                                                                   -> GHC.Types.Type))
+    data BarSym3 (l :: Bar) (l :: Bar) (l :: Bar) (l :: TyFun Bar ((~>) Foo Bar))
       = forall arg. SameKind (Apply (BarSym3 l l l) arg) (BarSym4 l l l arg) =>
         BarSym3KindInference
     type instance Apply (BarSym3 l l l) l = BarSym4 l l l l
     instance SuppressUnusedWarnings BarSym2 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BarSym2KindInference) GHC.Tuple.())
-    data BarSym2 (l :: Bar) (l :: Bar) (l :: TyFun Bar (TyFun Bar (TyFun Foo Bar
-                                                                   -> GHC.Types.Type)
-                                                        -> GHC.Types.Type))
+    data BarSym2 (l :: Bar) (l :: Bar) (l :: TyFun Bar ((~>) Bar ((~>) Foo Bar)))
       = forall arg. SameKind (Apply (BarSym2 l l) arg) (BarSym3 l l arg) =>
         BarSym2KindInference
     type instance Apply (BarSym2 l l) l = BarSym3 l l l
     instance SuppressUnusedWarnings BarSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BarSym1KindInference) GHC.Tuple.())
-    data BarSym1 (l :: Bar) (l :: TyFun Bar (TyFun Bar (TyFun Bar (TyFun Foo Bar
-                                                                   -> GHC.Types.Type)
-                                                        -> GHC.Types.Type)
-                                             -> GHC.Types.Type))
+    data BarSym1 (l :: Bar) (l :: TyFun Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar))))
       = forall arg. SameKind (Apply (BarSym1 l) arg) (BarSym2 l arg) =>
         BarSym1KindInference
     type instance Apply (BarSym1 l) l = BarSym2 l l
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BarSym0KindInference) GHC.Tuple.())
-    data BarSym0 (l :: TyFun Bar (TyFun Bar (TyFun Bar (TyFun Bar (TyFun Foo Bar
-                                                                   -> GHC.Types.Type)
-                                                        -> GHC.Types.Type)
-                                             -> GHC.Types.Type)
-                                  -> GHC.Types.Type))
+    data BarSym0 (l :: TyFun Bar ((~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar)))))
       = forall arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
         BarSym0KindInference
     type instance Apply BarSym0 l = BarSym1 l

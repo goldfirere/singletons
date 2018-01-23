@@ -66,29 +66,25 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       Quux2 x = Apply (Apply Bar2Sym0 x) Baz2Sym0
     type family Quux1 (a :: a) :: a where
       Quux1 x = Apply (Apply Bar1Sym0 x) (Apply Lambda_0123456789876543210Sym0 x)
-    type Bar1Sym2 (t :: a0123456789876543210) (t :: TyFun a0123456789876543210 b0123456789876543210
-                                                    -> Type) =
+    type Bar1Sym2 (t :: a0123456789876543210) (t :: (~>) a0123456789876543210 b0123456789876543210) =
         Bar1 t t
     instance SuppressUnusedWarnings Bar1Sym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) Bar1Sym1KindInference) GHC.Tuple.())
-    data Bar1Sym1 (l :: a0123456789876543210) (l :: TyFun (TyFun a0123456789876543210 b0123456789876543210
-                                                           -> Type) b0123456789876543210)
+    data Bar1Sym1 (l :: a0123456789876543210) (l :: TyFun ((~>) a0123456789876543210 b0123456789876543210) b0123456789876543210)
       = forall arg. SameKind (Apply (Bar1Sym1 l) arg) (Bar1Sym2 l arg) =>
         Bar1Sym1KindInference
     type instance Apply (Bar1Sym1 l) l = Bar1 l l
     instance SuppressUnusedWarnings Bar1Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) Bar1Sym0KindInference) GHC.Tuple.())
-    data Bar1Sym0 (l :: TyFun a0123456789876543210 (TyFun (TyFun a0123456789876543210 b0123456789876543210
-                                                           -> Type) b0123456789876543210
-                                                    -> Type))
+    data Bar1Sym0 (l :: TyFun a0123456789876543210 ((~>) ((~>) a0123456789876543210 b0123456789876543210) b0123456789876543210))
       = forall arg. SameKind (Apply Bar1Sym0 arg) (Bar1Sym1 arg) =>
         Bar1Sym0KindInference
     type instance Apply Bar1Sym0 l = Bar1Sym1 l
     type Baz1Sym0 = Baz1
     class PFoo1 (a :: Type) where
-      type Bar1 (arg :: a) (arg :: TyFun a b -> Type) :: b
+      type Bar1 (arg :: a) (arg :: (~>) a b) :: b
       type Baz1 :: a
     type Bar2Sym2 (t :: a0123456789876543210) (t :: b0123456789876543210) =
         Bar2 t t
@@ -102,8 +98,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Bar2Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) Bar2Sym0KindInference) GHC.Tuple.())
-    data Bar2Sym0 (l :: TyFun a0123456789876543210 (TyFun b0123456789876543210 b0123456789876543210
-                                                    -> Type))
+    data Bar2Sym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210))
       = forall arg. SameKind (Apply Bar2Sym0 arg) (Bar2Sym1 arg) =>
         Bar2Sym0KindInference
     type instance Apply Bar2Sym0 l = Bar2Sym1 l
@@ -127,7 +122,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                             Sing (Case_0123456789876543210 x arg_0123456789876543210 arg_0123456789876543210) }))
     class SFoo1 a where
       sBar1 ::
-        forall (t :: a) (t :: TyFun a b -> Type).
+        forall (t :: a) (t :: (~>) a b).
         Sing t -> Sing t -> Sing (Apply (Apply Bar1Sym0 t) t :: b)
       sBaz1 :: Sing (Baz1Sym0 :: a)
     class SFoo2 a where

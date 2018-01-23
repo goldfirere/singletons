@@ -35,8 +35,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MkRecordSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MkRecordSym0KindInference) GHC.Tuple.())
-    data MkRecordSym0 (l :: TyFun a0123456789876543210 (TyFun Bool (Record a0123456789876543210)
-                                                        -> GHC.Types.Type))
+    data MkRecordSym0 (l :: TyFun a0123456789876543210 ((~>) Bool (Record a0123456789876543210)))
       = forall arg. SameKind (Apply MkRecordSym0 arg) (MkRecordSym1 arg) =>
         MkRecordSym0KindInference
     type instance Apply MkRecordSym0 l = MkRecordSym1 l

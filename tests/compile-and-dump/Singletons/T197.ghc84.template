@@ -19,8 +19,7 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ($$:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:$$:@#@$###)) GHC.Tuple.())
-    data ($$:@#@$) (l :: TyFun Bool (TyFun Bool Bool
-                                     -> GHC.Types.Type))
+    data ($$:@#@$) (l :: TyFun Bool ((~>) Bool Bool))
       = forall arg. SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
         (:$$:@#@$###)
     type instance Apply ($$:@#@$) l = ($$:@#@$$) l

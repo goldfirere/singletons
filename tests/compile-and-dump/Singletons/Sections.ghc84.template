@@ -43,7 +43,7 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (+@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+@#@$###)) GHC.Tuple.())
-    data (+@#@$) (l :: TyFun Nat (TyFun Nat Nat -> GHC.Types.Type))
+    data (+@#@$) (l :: TyFun Nat ((~>) Nat Nat))
       = forall arg. SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
         (:+@#@$###)
     type instance Apply (+@#@$) l = (+@#@$$) l

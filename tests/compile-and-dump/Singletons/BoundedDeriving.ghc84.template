@@ -58,7 +58,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings PairSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PairSym0KindInference) GHC.Tuple.())
-    data PairSym0 (l :: TyFun Bool (TyFun Bool Pair -> Type))
+    data PairSym0 (l :: TyFun Bool ((~>) Bool Pair))
       = forall arg. SameKind (Apply PairSym0 arg) (PairSym1 arg) =>
         PairSym0KindInference
     type instance Apply PairSym0 l = PairSym1 l

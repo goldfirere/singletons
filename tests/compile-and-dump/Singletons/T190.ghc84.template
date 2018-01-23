@@ -26,8 +26,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun T (TyFun T Ordering
-                                                        -> GHC.Types.Type))
+    data Compare_0123456789876543210Sym0 (l :: TyFun T ((~>) T Ordering))
       = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
         Compare_0123456789876543210Sym0KindInference
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
@@ -94,8 +93,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun T (TyFun GHC.Types.Symbol GHC.Types.Symbol
-                                                                               -> GHC.Types.Type))
+    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun T ((~>) GHC.Types.Symbol GHC.Types.Symbol))
       = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym1 l) arg) (ShowsPrec_0123456789876543210Sym2 l arg) =>
         ShowsPrec_0123456789876543210Sym1KindInference
     type instance Apply (ShowsPrec_0123456789876543210Sym1 l) l = ShowsPrec_0123456789876543210Sym2 l l
@@ -104,9 +102,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat (TyFun T (TyFun GHC.Types.Symbol GHC.Types.Symbol
-                                                                               -> GHC.Types.Type)
-                                                                      -> GHC.Types.Type))
+    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat ((~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol)))
       = forall arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
         ShowsPrec_0123456789876543210Sym0KindInference
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
@@ -128,8 +124,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
         forall (t1 :: T) (t2 :: T).
         Sing t1
         -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun T (TyFun T Ordering
-                                                          -> GHC.Types.Type)
+           -> Sing (Apply (Apply (CompareSym0 :: TyFun T ((~>) T Ordering)
                                                  -> GHC.Types.Type) t1) t2)
       sCompare ST ST
         = (applySing
@@ -170,9 +165,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
         Sing t1
         -> Sing t2
            -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat (TyFun T (TyFun GHC.Types.Symbol GHC.Types.Symbol
-                                                                                           -> GHC.Types.Type)
-                                                                                  -> GHC.Types.Type)
+              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat ((~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol))
                                                              -> GHC.Types.Type) t1) t2) t3)
       sShowsPrec
         _

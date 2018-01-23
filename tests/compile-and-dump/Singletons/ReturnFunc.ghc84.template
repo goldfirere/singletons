@@ -33,8 +33,7 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings IdFooSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) IdFooSym0KindInference) GHC.Tuple.())
-    data IdFooSym0 (l :: TyFun c0123456789876543210 (TyFun a0123456789876543210 a0123456789876543210
-                                                     -> GHC.Types.Type))
+    data IdFooSym0 (l :: TyFun c0123456789876543210 ((~>) a0123456789876543210 a0123456789876543210))
       = forall arg. SameKind (Apply IdFooSym0 arg) (IdFooSym1 arg) =>
         IdFooSym0KindInference
     type instance Apply IdFooSym0 l = IdFooSym1 l
@@ -49,8 +48,7 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ReturnFuncSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ReturnFuncSym0KindInference) GHC.Tuple.())
-    data ReturnFuncSym0 (l :: TyFun Nat (TyFun Nat Nat
-                                         -> GHC.Types.Type))
+    data ReturnFuncSym0 (l :: TyFun Nat ((~>) Nat Nat))
       = forall arg. SameKind (Apply ReturnFuncSym0 arg) (ReturnFuncSym1 arg) =>
         ReturnFuncSym0KindInference
     type instance Apply ReturnFuncSym0 l = ReturnFuncSym1 l

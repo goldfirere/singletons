@@ -20,17 +20,14 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FoosPrecSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FoosPrecSym1KindInference) GHC.Tuple.())
-    data FoosPrecSym1 (l :: Nat) (l :: TyFun a0123456789876543210 (TyFun [Bool] [Bool]
-                                                                   -> GHC.Types.Type))
+    data FoosPrecSym1 (l :: Nat) (l :: TyFun a0123456789876543210 ((~>) [Bool] [Bool]))
       = forall arg. SameKind (Apply (FoosPrecSym1 l) arg) (FoosPrecSym2 l arg) =>
         FoosPrecSym1KindInference
     type instance Apply (FoosPrecSym1 l) l = FoosPrecSym2 l l
     instance SuppressUnusedWarnings FoosPrecSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FoosPrecSym0KindInference) GHC.Tuple.())
-    data FoosPrecSym0 (l :: TyFun Nat (TyFun a0123456789876543210 (TyFun [Bool] [Bool]
-                                                                   -> GHC.Types.Type)
-                                       -> GHC.Types.Type))
+    data FoosPrecSym0 (l :: TyFun Nat ((~>) a0123456789876543210 ((~>) [Bool] [Bool])))
       = forall arg. SameKind (Apply FoosPrecSym0 arg) (FoosPrecSym1 arg) =>
         FoosPrecSym0KindInference
     type instance Apply FoosPrecSym0 l = FoosPrecSym1 l
@@ -46,8 +43,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FooListSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooListSym0KindInference) GHC.Tuple.())
-    data FooListSym0 (l :: TyFun a0123456789876543210 (TyFun [Bool] [Bool]
-                                                       -> GHC.Types.Type))
+    data FooListSym0 (l :: TyFun a0123456789876543210 ((~>) [Bool] [Bool]))
       = forall arg. SameKind (Apply FooListSym0 arg) (FooListSym1 arg) =>
         FooListSym0KindInference
     type instance Apply FooListSym0 l = FooListSym1 l
@@ -69,8 +65,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) FooList_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data FooList_0123456789876543210Sym0 (l :: TyFun a0123456789876543210 (TyFun [Bool] [Bool]
-                                                                           -> GHC.Types.Type))
+    data FooList_0123456789876543210Sym0 (l :: TyFun a0123456789876543210 ((~>) [Bool] [Bool]))
       = forall arg. SameKind (Apply FooList_0123456789876543210Sym0 arg) (FooList_0123456789876543210Sym1 arg) =>
         FooList_0123456789876543210Sym0KindInference
     type instance Apply FooList_0123456789876543210Sym0 l = FooList_0123456789876543210Sym1 l
@@ -96,8 +91,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) FoosPrec_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data FoosPrec_0123456789876543210Sym1 (l :: Nat) (l :: TyFun [a0123456789876543210] (TyFun [Bool] [Bool]
-                                                                                         -> GHC.Types.Type))
+    data FoosPrec_0123456789876543210Sym1 (l :: Nat) (l :: TyFun [a0123456789876543210] ((~>) [Bool] [Bool]))
       = forall arg. SameKind (Apply (FoosPrec_0123456789876543210Sym1 l) arg) (FoosPrec_0123456789876543210Sym2 l arg) =>
         FoosPrec_0123456789876543210Sym1KindInference
     type instance Apply (FoosPrec_0123456789876543210Sym1 l) l = FoosPrec_0123456789876543210Sym2 l l
@@ -106,9 +100,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) FoosPrec_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data FoosPrec_0123456789876543210Sym0 (l :: TyFun Nat (TyFun [a0123456789876543210] (TyFun [Bool] [Bool]
-                                                                                         -> GHC.Types.Type)
-                                                           -> GHC.Types.Type))
+    data FoosPrec_0123456789876543210Sym0 (l :: TyFun Nat ((~>) [a0123456789876543210] ((~>) [Bool] [Bool])))
       = forall arg. SameKind (Apply FoosPrec_0123456789876543210Sym0 arg) (FoosPrec_0123456789876543210Sym1 arg) =>
         FoosPrec_0123456789876543210Sym0KindInference
     type instance Apply FoosPrec_0123456789876543210Sym0 l = FoosPrec_0123456789876543210Sym1 l

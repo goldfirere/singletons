@@ -16,8 +16,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) LiftMaybeSym0KindInference) GHC.Tuple.())
     data LiftMaybeSym0 (l :: TyFun (TyFun a0123456789876543210 b0123456789876543210
-                                    -> Type) (TyFun (Maybe a0123456789876543210) (Maybe b0123456789876543210)
-                                              -> Type))
+                                    -> Type) ((Data.Singletons.Internal.~>) (Maybe a0123456789876543210) (Maybe b0123456789876543210)))
       = forall arg. Data.Singletons.Internal.SameKind (Apply LiftMaybeSym0 arg) (LiftMaybeSym1 arg) =>
         LiftMaybeSym0KindInference
     type instance Apply LiftMaybeSym0 l = LiftMaybeSym1 l

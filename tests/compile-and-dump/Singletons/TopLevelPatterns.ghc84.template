@@ -20,7 +20,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = Data.Tuple.snd
             ((GHC.Tuple.(,) BarSym0KindInference) GHC.Tuple.())
-    data BarSym0 (l :: TyFun Bool (TyFun Bool Foo -> GHC.Types.Type))
+    data BarSym0 (l :: TyFun Bool ((~>) Bool Foo))
       = forall arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
         BarSym0KindInference
     type instance Apply BarSym0 l = BarSym1 l

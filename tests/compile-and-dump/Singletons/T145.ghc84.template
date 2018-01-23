@@ -17,8 +17,7 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ColSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ColSym0KindInference) GHC.Tuple.())
-    data ColSym0 (l :: TyFun (f0123456789876543210 a0123456789876543210) (TyFun a0123456789876543210 Bool
-                                                                          -> Type))
+    data ColSym0 (l :: TyFun (f0123456789876543210 a0123456789876543210) ((~>) a0123456789876543210 Bool))
       = forall arg. SameKind (Apply ColSym0 arg) (ColSym1 arg) =>
         ColSym0KindInference
     type instance Apply ColSym0 l = ColSym1 l
