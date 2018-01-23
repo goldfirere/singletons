@@ -7,6 +7,11 @@ next
   possible. This may require enabling `TypeInType` in code which did not
   previously need it.
 
+* Rename `Data.Singletons.TypeRepStar` to `Data.Singletons.TypeRepTYPE`, and
+  generalize the `Sing :: Type -> Type` instance to `Sing :: TYPE rep -> Type`,
+  allowing it to work over more open kinds. Also rename `SomeTypeRepStar` to
+  `SomeTypeRepTYPE`, and change its definition accordingly.
+
 2.4.1
 -----
 * Restore the `TyCon1`, `TyCon2`, etc. types. It turns out that the new

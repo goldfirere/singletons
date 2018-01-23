@@ -641,18 +641,19 @@ of `TypeRep` would yield `*`, but the implementation of TypeRep would have to be
 updated for this to really work out. In the meantime, users who wish to
 experiment with this feature have two options:
 
-1) The module `Data.Singletons.TypeRepStar` has all the definitions possible for
+1) The module `Data.Singletons.TypeRepTYPE` has all the definitions possible for
 making `*` the promoted version of `TypeRep`, as `TypeRep` is currently implemented.
 The singleton associated with `TypeRep` has one constructor:
 
     ```haskell
-    newtype instance Sing :: Type -> Type where
-      STypeRep :: TypeRep a -> Sing a
+    newtype instance Sing :: forall (rep :: RuntimeRep). TYPE rep -> Type where
+      STypeRep :: forall (rep :: RuntimeRep). (a :: TYPE rep). TypeRep a -> Sing a
     ```
 
-   Thus, a `TypeRep` is stored in the singleton constructor. However,
-any datatypes that store `TypeRep`s will not generally work as expected; the
-built-in promotion mechanism will not promote `TypeRep` to `*`.
+   (Recall that `type * = TYPE LiftedRep`.) Thus, a `TypeRep` is stored in the
+singleton constructor. However, any datatypes that store `TypeRep`s will not
+generally work as expected; the built-in promotion mechanism will not promote
+`TypeRep` to `*`.
 
 2) The module `Data.Singletons.CustomStar` allows the programmer to define a subset
 of types with which to work. See the Haddock documentation for the function

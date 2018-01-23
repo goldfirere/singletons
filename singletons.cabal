@@ -58,7 +58,7 @@ library
 
   exposed-modules:    Data.Singletons
                       Data.Singletons.CustomStar
-                      Data.Singletons.TypeRepStar
+                      Data.Singletons.TypeRepTYPE
                       Data.Singletons.TH
                       Data.Singletons.Prelude
                       Data.Singletons.Prelude.Base
