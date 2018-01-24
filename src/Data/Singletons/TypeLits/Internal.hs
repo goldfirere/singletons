@@ -28,18 +28,20 @@ module Data.Singletons.TypeLits.Internal (
   Undefined, sUndefined,
   KnownNat, TN.natVal, KnownSymbol, symbolVal,
   type (^), (%^),
+  type (<=?), (%<=?),
   type (<>), (%<>),
 
   -- * Defunctionalization symbols
   ErrorSym0, ErrorSym1, UndefinedSym0,
   type (^@#@$),  type (^@#@$$),  type (^@#@$$$),
+  type (<=?@#@$),  type (<=?@#@$$),  type (<=?@#@$$$),
   type (<>@#@$), type (<>@#@$$), type (<>@#@$$$)
   ) where
 
 import Data.Singletons.Promote
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Eq
-import Data.Singletons.Prelude.Ord
+import Data.Singletons.Prelude.Ord as O
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
 import GHC.TypeLits as TL
@@ -169,7 +171,7 @@ $(genDefunSymbols [''Undefined])
 sUndefined :: a
 sUndefined = undefined
 
--- | The singleton analogue of '(TL.^)' for 'Nat's.
+-- | The singleton analogue of '(TN.^)' for 'Nat's.
 (%^) :: Sing a -> Sing b -> Sing (a ^ b)
 sa %^ sb =
   let a = fromSing sa
@@ -182,6 +184,30 @@ infixr 8 %^
 
 -- Defunctionalization symbols for type-level (^)
 $(genDefunSymbols [''(^)])
+
+-- | The singleton analogue of 'TN.<=?' 
+--
+-- Note that, because of historical reasons in GHC's 'TN.Nat' API, 'TN.<=?'
+-- is incompatible (unification-wise) with 'O.<=' and the 'PEq', 'SEq',
+-- 'POrd', and 'SOrd' instances for 'Nat'.  @(a '<=?' b) ~ 'True@ does not
+-- imply anything about @a 'O.<=' b@ or any other 'PEq' / 'POrd'
+-- relationships.
+--
+-- (Be aware that 'O.<=' in the paragraph above refers to 'O.<=' from the
+-- 'POrd' typeclass, exported from "Data.Singletons.Prelude.Ord", and /not/
+-- the 'TN.<=' from "GHC.TypeNats".  The latter is simply a type alias for
+-- @(a 'TN.<=?' b) ~ 'True@.)
+--
+-- This is provided here for the sake of completeness and for compatibility
+-- with libraries with APIs built around '<=?'.  New code should use
+-- 'CmpNat', exposed through this library through the 'POrd' and 'SOrd'
+-- instances for 'Nat'.
+(%<=?) :: Sing a -> Sing b -> Sing (a <=? b)
+sa %<=? sb = unsafeCoerce (sa %<= sb)
+infix 4 %<=?
+
+-- Defunctionalization symbols for (<=?)
+$(genDefunSymbols [''(<=?)])
 
 -- | The promoted analogue of '(<>)' for 'Symbol's. This uses the special
 -- 'TL.AppendSymbol' type family from "GHC.TypeLits".

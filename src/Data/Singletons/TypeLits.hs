@@ -26,6 +26,7 @@ module Data.Singletons.TypeLits (
   KnownSymbol, symbolVal,
 
   type (^), (%^),
+  type (<=?), (%<=?),
   type (<>), (%<>),
 
   TN.Log2, sLog2,
@@ -37,6 +38,7 @@ module Data.Singletons.TypeLits (
   KnownNatSym0, KnownNatSym1,
   KnownSymbolSym0, KnownSymbolSym1,
   type (^@#@$), type (^@#@$$), type (^@#@$$$),
+  type (<=?@#@$), type (<=?@#@$$), type (<=?@#@$$$),
   type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
   Log2Sym0, Log2Sym1,
   DivSym0, DivSym1, DivSym2,
