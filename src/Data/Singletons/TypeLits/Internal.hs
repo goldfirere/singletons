@@ -186,6 +186,16 @@ infixr 8 %^
 $(genDefunSymbols [''(^)])
 
 -- | The singleton analogue of 'TN.<=?' 
+--
+-- Note that, because of historical reasons in GHC's 'TN.Nat' API, 'TN.<=?'
+-- is incompatible (unification-wise) with '<=' and the 'PEq', 'SEq',
+-- 'POrd', and 'SOrd' instances for 'Nat'.  @(a '<=?' b) ~ 'True@ does not
+-- imply anything about @a '<=' b@ or any other 'PEq'/'POrd' relationships.
+--
+-- This is provided for the sake of completeness and for compatibility with
+-- libraries with APIs built around '<=?'.  Newer codebases should use
+-- 'CmpNat', exposed through this library through the 'POrd' and 'SOrd'
+-- instances for 'Nat'.
 (%<=?) :: Sing a -> Sing b -> Sing (a <=? b)
 sa %<=? sb = unsafeCoerce (sa %<= sb)
 infix 4 %<=?
