@@ -11,6 +11,9 @@ next
   generalize the `Sing :: Type -> Type` instance to `Sing :: TYPE rep -> Type`,
   allowing it to work over more open kinds. Also rename `SomeTypeRepStar` to
   `SomeTypeRepTYPE`, and change its definition accordingly.
+  
+* Add `(%<=?)`, a singled version of `(<=?)` from `GHC.TypeNats`, as well as
+  defunctionalization symbols for `(<=?)`, to `Data.Singletons.TypeLits`.
 
 2.4.1
 -----
