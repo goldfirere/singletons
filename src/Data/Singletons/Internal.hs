@@ -46,7 +46,7 @@ type SameKind (a :: k) (b :: k) = (() :: Constraint)
 ----------------------------------------------------------------------
 
 -- | The singleton kind-indexed data family.
-data family Sing (a :: k)
+data family Sing :: k -> Type
 
 -- | A 'SingI' constraint is essentially an implicitly-passed singleton.
 -- If you need to satisfy this constraint with an explicit singleton, please
