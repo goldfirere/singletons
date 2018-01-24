@@ -41,7 +41,7 @@ module Data.Singletons.TypeLits.Internal (
 import Data.Singletons.Promote
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Eq
-import Data.Singletons.Prelude.Ord
+import Data.Singletons.Prelude.Ord as O
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
 import GHC.TypeLits as TL
@@ -188,12 +188,18 @@ $(genDefunSymbols [''(^)])
 -- | The singleton analogue of 'TN.<=?' 
 --
 -- Note that, because of historical reasons in GHC's 'TN.Nat' API, 'TN.<=?'
--- is incompatible (unification-wise) with '<=' and the 'PEq', 'SEq',
+-- is incompatible (unification-wise) with 'O.<=' and the 'PEq', 'SEq',
 -- 'POrd', and 'SOrd' instances for 'Nat'.  @(a '<=?' b) ~ 'True@ does not
--- imply anything about @a '<=' b@ or any other 'PEq'/'POrd' relationships.
+-- imply anything about @a 'O.<=' b@ or any other 'PEq' / 'POrd'
+-- relationships.
 --
--- This is provided for the sake of completeness and for compatibility with
--- libraries with APIs built around '<=?'.  Newer codebases should use
+-- (Be aware that 'O.<=' in the paragraph above refers to 'O.<=' from the
+-- 'POrd' typeclass, exported from "Data.Singletons.Prelude.Ord", and /not/
+-- the 'TN.<=' from "GHC.TypeNats".  The latter is simply a type alias for
+-- @(a 'TN.<=?' b) ~ 'True@.)
+--
+-- This is provided here for the sake of completeness and for compatibility
+-- with libraries with APIs built around '<=?'.  New code should use
 -- 'CmpNat', exposed through this library through the 'POrd' and 'SOrd'
 -- instances for 'Nat'.
 (%<=?) :: Sing a -> Sing b -> Sing (a <=? b)
