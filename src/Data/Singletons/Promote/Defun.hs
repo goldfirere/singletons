@@ -185,13 +185,6 @@ buildTyFun_maybe m_k1 m_k2 = do
   k2 <- m_k2
   return $ buildTyFun k1 k2
 
--- Counts the arity of type level function represented with TyFun constructors
-tyFunArity :: DKind -> Int
-tyFunArity (DArrowT `DAppT` (DConT tyFunNm `DAppT` _ `DAppT` b) `DAppT` DStarT)
-  | tyFunName == tyFunNm
-  = 1 + tyFunArity b
-tyFunArity _ = 0
-
 -- Build (~>) kind from the list of kinds
 ravelTyFun :: [DKind] -> DKind
 ravelTyFun []    = error "Internal error: TyFun raveling nil"
