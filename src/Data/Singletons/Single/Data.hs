@@ -62,7 +62,7 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
   let kindedSynInst =
         DTySynD (singTyConName name)
                 []
-                (singFamily `DSigT` (DArrowT `DAppT` k `DAppT` DStarT))
+                (singFamily `DSigT` (DArrowT `DAppT` k `DAppT` DConT typeKindName))
 
   return $ (DDataInstD Data [] singFamilyName [DSigT (DVarT aName) k] ctors' []) :
            kindedSynInst :

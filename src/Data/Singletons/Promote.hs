@@ -268,7 +268,7 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
   let
     -- a workaround for GHC Trac #12928; see Note [CUSKification]
     cuskify :: DTyVarBndr -> DTyVarBndr
-    cuskify (DPlainTV tvname) = DKindedTV tvname DStarT
+    cuskify (DPlainTV tvname) = DKindedTV tvname $ DConT typeKindName
     cuskify tv                = tv
     tvbs = map cuskify tvbs'
   let pClsName = promoteClassName cls_name
@@ -446,7 +446,7 @@ promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
           _ -> fail $ "Cannot find type annotation for " ++ show proName
       Just ty -> promoteUnraveled ty
 
-    default_to_star Nothing  = DStarT
+    default_to_star Nothing  = DConT typeKindName
     default_to_star (Just k) = k
 
 {-

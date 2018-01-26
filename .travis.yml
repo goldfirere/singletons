@@ -111,7 +111,7 @@ script:
       # Why not use `cabal new-test` here? Sadly, it's because `new-test` does
       # not yet support passing arguments to test suite executables.
       # See https://github.com/haskell/cabal/issues/4643.
-      CMD="$(find dist-newstyle -type f -iname "singletons-test-suite" -print -quit)" && ${CMD} --rootdir singletons-2.4.1
+      CMD="$(find dist-newstyle -type f -iname "singletons-test-suite" -print -quit)" && ${CMD} --rootdir singletons-2.5
     fi
 
   # cabal check

@@ -39,7 +39,7 @@ buildDefunSyms (DClosedTypeFamilyD (DTypeFamilyHead name tvbs result_sig _) _) =
 buildDefunSyms (DOpenTypeFamilyD (DTypeFamilyHead name tvbs result_sig _)) = do
   let arg_kinds = map (default_to_star . extractTvbKind) tvbs
       res_kind  = default_to_star (resultSigToMaybeKind result_sig)
-      default_to_star Nothing  = Just DStarT
+      default_to_star Nothing  = Just $ DConT typeKindName
       default_to_star (Just k) = Just k
   defunctionalize name arg_kinds res_kind
 buildDefunSyms (DTySynD name tvbs _type) = do

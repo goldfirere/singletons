@@ -1,4 +1,4 @@
-version=2.4.1
+version=2.5
 source=src/Data/Singletons.hs src/Data/Singletons/*.hs src/Data/Singletons/Prelude/* src/Data/Singletons/Promote/* src/Data/Singletons/Single/* src/Data/Promotion/* src/Data/Promotion/Prelude/*
 test-suite=tests/SingletonsTestSuite.hs tests/SingletonsTestSuiteUtils.hs
 test-byhand=tests/ByHand.hs tests/ByHandAux.hs

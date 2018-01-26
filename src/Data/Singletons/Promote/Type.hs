@@ -41,9 +41,9 @@ promoteType = go []
       return $ foldType (DSigT ty' ki) args
     go args     (DVarT name) = return $ foldType (DVarT name) args
     go []       (DConT name)
-      | name == typeRepName               = return DStarT
+      | name == typeRepName               = return $ DConT typeKindName
       | name == stringName                = return $ DConT symbolName
-      | nameBase name == nameBase repName = return DStarT
+      | nameBase name == nameBase repName = return $ DConT typeKindName
     go args     (DConT name)
       | Just n <- unboxedTupleNameDegree_maybe name
       = return $ foldType (DConT (tupleTypeName n)) args

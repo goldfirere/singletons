@@ -1,8 +1,8 @@
 Changelog for singletons project
 ================================
 
-next
-----
+2.5
+---
 * `singletons` now generates `a ~> b` instead of `TyFun a b -> Type` whenever
   possible. This may require enabling `TypeInType` in code which did not
   previously need it.

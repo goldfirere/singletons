@@ -106,11 +106,11 @@ singletonStar names = do
             DTyConI (DDataD _ (_:_) _ _ _ _) _ ->
                fail "Cannot make a representation of a constrainted data type"
             DTyConI (DDataD _ [] _ tvbs _ _) _ ->
-               return $ map (fromMaybe DStarT . extractTvbKind) tvbs
+               return $ map (fromMaybe (DConT typeKindName) . extractTvbKind) tvbs
             DTyConI (DTySynD _ tvbs _) _ ->
-               return $ map (fromMaybe DStarT . extractTvbKind) tvbs
+               return $ map (fromMaybe (DConT typeKindName) . extractTvbKind) tvbs
             DPrimTyConI _ n _ ->
-               return $ replicate n DStarT
+               return $ replicate n $ DConT typeKindName
             _ -> fail $ "Invalid thing for representation: " ++ (show name)
 
         -- first parameter is whether this is a real ctor (with a fresh name)
@@ -138,8 +138,9 @@ singletonStar names = do
         kindToType args (DVarT n) = do
           addElement n
           return $ DVarT n `foldType` args
-        kindToType args (DConT n)    = return $ DConT n       `foldType` args
+        kindToType args (DConT n)    = return $ DConT name    `foldType` args
+          where name | isTypeKindName n = repName
+                     | otherwise        = n
         kindToType args DArrowT      = return $ DArrowT       `foldType` args
         kindToType args k@(DLitT {}) = return $ k             `foldType` args
         kindToType args DWildCardT   = return $ DWildCardT    `foldType` args
-        kindToType args DStarT       = return $ DConT repName `foldType` args

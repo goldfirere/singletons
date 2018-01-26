@@ -294,7 +294,6 @@ substType _ ty@(DConT {}) = ty
 substType _ ty@(DArrowT)  = ty
 substType _ ty@(DLitT {}) = ty
 substType _ ty@DWildCardT = ty
-substType _ ty@DStarT     = ty
 
 substPred :: Map Name DType -> DPred -> DPred
 substPred subst pred | Map.null subst = pred
