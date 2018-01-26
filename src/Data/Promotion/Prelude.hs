@@ -44,7 +44,10 @@ module Data.Promotion.Prelude (
   type (^),
 
   -- * Promoted 'Show'
-  PShow(..), ShowS, SChar, show_, type (<>), Shows, ShowChar, ShowString, ShowParen,
+  PShow(..), ShowS, SChar, show_, Shows, ShowChar, ShowString, ShowParen,
+
+  -- * Promoted 'Semigroup' and 'Monoid'
+  PSemigroup(..), PMonoid(..),
 
   -- ** Miscellaneous functions
   Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Until, Seq,
@@ -107,11 +110,16 @@ module Data.Promotion.Prelude (
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
   Show_Sym0, Show_Sym1,
   ShowListSym0, ShowListSym1, ShowListSym2,
-  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
   ShowsSym0, ShowsSym1, ShowsSym2,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowStringSym0, ShowStringSym1, ShowStringSym2,
   ShowParenSym0, ShowParenSym1, ShowParenSym2,
+
+  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
+  SconcatSym0, SconcatSym1,
+  MemptySym0,
+  MappendSym0, MappendSym1, MappendSym2,
+  MconcatSym0, MconcatSym1,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   type (.@#@$), type (.@#@$$), type (.@#@$$$),
@@ -181,6 +189,8 @@ import Data.Promotion.Prelude.Eq
 import Data.Promotion.Prelude.Ord
 import Data.Promotion.Prelude.Enum
   hiding (Succ, Pred, SuccSym0, SuccSym1, PredSym0, PredSym1)
+import Data.Promotion.Prelude.Monoid
 import Data.Promotion.Prelude.Num
+import Data.Promotion.Prelude.Semigroup
 import Data.Promotion.Prelude.Show
 import Data.Singletons.TypeLits

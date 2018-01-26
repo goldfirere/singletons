@@ -16,7 +16,8 @@
 {-# LANGUAGE PolyKinds, DataKinds, TypeFamilies, FlexibleInstances,
              UndecidableInstances, ScopedTypeVariables, RankNTypes,
              GADTs, FlexibleContexts, TypeOperators, ConstraintKinds,
-             TypeInType, TemplateHaskell, StandaloneDeriving #-}
+             TypeInType, TemplateHaskell, StandaloneDeriving,
+             TypeApplications #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Singletons.TypeLits.Internal (
@@ -29,19 +30,19 @@ module Data.Singletons.TypeLits.Internal (
   KnownNat, TN.natVal, KnownSymbol, symbolVal,
   type (^), (%^),
   type (<=?), (%<=?),
-  type (<>), (%<>),
 
   -- * Defunctionalization symbols
   ErrorSym0, ErrorSym1, UndefinedSym0,
   type (^@#@$),  type (^@#@$$),  type (^@#@$$$),
-  type (<=?@#@$),  type (<=?@#@$$),  type (<=?@#@$$$),
-  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$)
+  type (<=?@#@$),  type (<=?@#@$$),  type (<=?@#@$$$)
   ) where
 
 import Data.Singletons.Promote
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord as O
+import Data.Singletons.Prelude.Monoid
+import Data.Singletons.Prelude.Semigroup
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
 import GHC.TypeLits as TL
@@ -142,6 +143,27 @@ instance SOrd Symbol where
                      EQ -> unsafeCoerce SEQ
                      GT -> unsafeCoerce SGT
 
+-- PSemigroup Symbol instance
+instance PSemigroup Symbol where
+  type a <> b = TL.AppendSymbol a b
+
+-- SSemigroup Symbol instance
+instance SSemigroup Symbol where
+  sa %<> sb =
+    let a  = fromSing sa
+        b  = fromSing sb
+        ex = someSymbolVal $ T.unpack $ a <> b
+    in case ex of
+         SomeSymbol (_ :: Proxy ab) -> unsafeCoerce (SSym :: Sing ab)
+
+-- PMonoid Symbol instance
+instance PMonoid Symbol where
+  type Mempty = ""
+
+-- SMonoid Symbol instance
+instance SMonoid Symbol where
+  sMempty = SSym @""
+
 -- Convenience functions
 
 -- | Given a singleton for @Nat@, call something requiring a
@@ -185,7 +207,7 @@ infixr 8 %^
 -- Defunctionalization symbols for type-level (^)
 $(genDefunSymbols [''(^)])
 
--- | The singleton analogue of 'TN.<=?' 
+-- | The singleton analogue of 'TN.<=?'
 --
 -- Note that, because of historical reasons in GHC's 'TN.Nat' API, 'TN.<=?'
 -- is incompatible (unification-wise) with 'O.<=' and the 'PEq', 'SEq',
@@ -208,20 +230,3 @@ infix 4 %<=?
 
 -- Defunctionalization symbols for (<=?)
 $(genDefunSymbols [''(<=?)])
-
--- | The promoted analogue of '(<>)' for 'Symbol's. This uses the special
--- 'TL.AppendSymbol' type family from "GHC.TypeLits".
-type a <> b = TL.AppendSymbol a b
-infixr 6 <>
-
--- | The singleton analogue of '(<>)' for 'Symbol's.
-(%<>) :: Sing a -> Sing b -> Sing (a <> b)
-sa %<> sb =
-    let a  = fromSing sa
-        b  = fromSing sb
-        ex = someSymbolVal $ T.unpack $ a <> b
-    in case ex of
-         SomeSymbol (_ :: Proxy ab) -> unsafeCoerce (SSym :: Sing ab)
-infixr 6 %<>
-
-$(genDefunSymbols [''(<>)])
