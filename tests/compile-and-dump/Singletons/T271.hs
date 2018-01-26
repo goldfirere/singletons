@@ -1,6 +1,6 @@
 module T271 where
 
-import Data.Kind
+import Data.Kind (Type)
 import Data.Singletons.TH
 
 $(singletons

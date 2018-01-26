@@ -4,9 +4,9 @@ import Data.Singletons (Apply, TyFun)
 import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH (genDefunSymbols)
 import GHC.TypeLits hiding (type (*))
-import Data.Kind
+import Data.Kind (Type)
 
-type family LiftMaybe (f :: TyFun a b -> *) (x :: Maybe a) :: Maybe b where
+type family LiftMaybe (f :: TyFun a b -> Type) (x :: Maybe a) :: Maybe b where
     LiftMaybe f Nothing = Nothing
     LiftMaybe f (Just a) = Just (Apply f a)
 

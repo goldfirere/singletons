@@ -58,7 +58,7 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
                    , DLetDec $ DFunD toSingName
                                (toSingClauses   `orIfEmpty` [emptyToSingClause]) ]
 
-  -- e.g. type SNat = Sing :: Nat -> *
+  -- e.g. type SNat = (Sing :: Nat -> Type)
   let kindedSynInst =
         DTySynD (singTyConName name)
                 []

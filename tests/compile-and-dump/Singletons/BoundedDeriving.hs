@@ -2,7 +2,7 @@ module Singletons.BoundedDeriving where
 
 import Data.Singletons.Prelude
 import Data.Singletons.TH
-import Data.Kind
+import Data.Kind (Type)
 
 $(singletons [d|
   data Foo1 = Foo1 deriving (Bounded)

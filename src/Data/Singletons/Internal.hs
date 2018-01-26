@@ -26,7 +26,7 @@ module Data.Singletons.Internal (
   , Proxy(..)
   ) where
 
-import Data.Kind
+import Data.Kind (Type)
 import Unsafe.Coerce
 import Data.Proxy ( Proxy(..) )
 import GHC.Exts ( Proxy#, Constraint )
@@ -88,7 +88,7 @@ class SingKind k where
   -- | Get a base type from the promoted kind. For example,
   -- @Demote Bool@ will be the type @Bool@. Rarely, the type and kind do not
   -- match. For example, @Demote Nat@ is @Natural@.
-  type Demote k = (r :: *) | r -> k
+  type Demote k = (r :: Type) | r -> k
 
   -- | Convert a singleton to its unrefined version.
   fromSing :: Sing (a :: k) -> Demote k
@@ -167,11 +167,11 @@ singInstance s = with_sing_i SingInstance
 -- between term-level arrows and this type-level arrow is that at the term
 -- level applications can be unsaturated, whereas at the type level all
 -- applications have to be fully saturated.
-data TyFun :: * -> * -> *
+data TyFun :: Type -> Type -> Type
 
 -- | Something of kind `a ~> b` is a defunctionalized type function that is
 -- not necessarily generative or injective.
-type a ~> b = TyFun a b -> *
+type a ~> b = TyFun a b -> Type
 infixr 0 ~>
 
 -- | Type level function application

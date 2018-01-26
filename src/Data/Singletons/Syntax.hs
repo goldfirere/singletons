@@ -13,7 +13,7 @@ and contains various other AST definitions.
 module Data.Singletons.Syntax where
 
 import Prelude hiding ( exp )
-import Data.Kind
+import Data.Kind (Constraint, Type)
 import Language.Haskell.TH.Syntax hiding (Type)
 import Language.Haskell.TH.Desugar
 import Data.Map.Strict ( Map )

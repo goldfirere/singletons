@@ -167,7 +167,7 @@ promoteInfo (DPatSynI {}) =
 -- each defining equation of foo uses it the same way. The foo
 -- function will be promoted to a type familty Foo like this:
 --
---   type family Foo (n :: Nat) :: TyFun Bool Bool -> * where
+--   type family Foo (n :: Nat) :: Bool ~> Bool where
 --      Foo Zero = Id
 --      Foo a    = Not
 --

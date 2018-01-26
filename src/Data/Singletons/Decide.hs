@@ -23,7 +23,7 @@ module Data.Singletons.Decide (
   (:~:)(..), Void, Refuted, Decision(..)
   ) where
 
-import Data.Kind
+import Data.Kind (Type)
 import Data.Singletons.Internal
 import Data.Type.Coercion
 import Data.Type.Equality

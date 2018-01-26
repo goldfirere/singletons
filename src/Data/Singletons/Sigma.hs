@@ -25,7 +25,7 @@ module Data.Singletons.Sigma
     , mapSigma, zipSigma
     ) where
 
-import Data.Kind
+import Data.Kind (Type)
 import Data.Singletons.Internal
 
 -- | A dependent pair.

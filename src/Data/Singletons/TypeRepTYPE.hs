@@ -32,7 +32,7 @@ module Data.Singletons.TypeRepTYPE (
   SomeTypeRepTYPE(..)
   ) where
 
-import Data.Kind
+import Data.Kind (Type)
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Eq

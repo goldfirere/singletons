@@ -1,7 +1,7 @@
 {-# LANGUAGE MagicHash #-}
 module TypeRepTYPE where
 
-import Data.Kind
+import Data.Kind (Type)
 import Data.Singletons.Decide
 import Data.Singletons.Prelude
 import Data.Singletons.TypeRepTYPE

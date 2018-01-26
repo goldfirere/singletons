@@ -4,7 +4,7 @@ import Data.Singletons.Prelude
 import Data.Singletons.Decide
 import Data.Singletons.CustomStar
 import Singletons.Nat
-import Data.Kind
+import Data.Kind (Type)
 
 data Vec :: Type -> Nat -> Type where
   VNil :: Vec a Zero

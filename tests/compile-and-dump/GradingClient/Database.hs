@@ -30,7 +30,7 @@ import Data.Singletons.TH
 import Control.Monad
 import Control.Monad.Except  ( throwError )
 import Data.List hiding ( tail )
-import Data.Kind
+import Data.Kind (Type)
 
 $(singletons [d|
   -- Basic Nat type
