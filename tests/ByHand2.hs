@@ -2,7 +2,7 @@
              DefaultSignatures, ScopedTypeVariables, InstanceSigs,
              MultiParamTypeClasses, FunctionalDependencies,
              UndecidableInstances, TypeInType #-}
-
+{-# OPTIONS_GHC -Wno-missing-signatures #-}
 module ByHand2 where
 
 import Prelude hiding ( Eq(..), Ord(..), Bool(..), Ordering(..), not )

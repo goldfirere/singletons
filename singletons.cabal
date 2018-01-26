@@ -128,11 +128,13 @@ library
 
 test-suite singletons-test-suite
   type:               exitcode-stdio-1.0
-  hs-source-dirs:     src, tests
+  hs-source-dirs:     tests
   ghc-options:        -Wall
   default-language:   Haskell2010
   main-is:            SingletonsTestSuite.hs
-  other-modules:      SingletonsTestSuiteUtils
+  other-modules:      ByHand
+                      ByHand2
+                      SingletonsTestSuiteUtils
 
   build-depends:      base >= 4.11 && < 4.12,
                       filepath >= 1.3,
