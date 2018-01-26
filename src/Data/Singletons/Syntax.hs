@@ -77,7 +77,7 @@ type family IfAnn (ann :: AnnotationFlag) (yes :: k) (no :: k) :: k where
   IfAnn Annotated   yes no = yes
   IfAnn Unannotated yes no = no
 
-data family LetDecRHS (ann :: AnnotationFlag)
+data family LetDecRHS :: AnnotationFlag -> Type
 data instance LetDecRHS Annotated
   = AFunction DType  -- promote function (unapplied)
     Int    -- number of arrows in type
