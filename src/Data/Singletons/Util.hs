@@ -25,6 +25,8 @@ import Control.Monad.Reader hiding ( mapM )
 import qualified Data.Map as Map
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Map ( Map )
+import qualified Data.Monoid as Monoid
+import Data.Semigroup as Semigroup
 import Data.Foldable
 import Data.Traversable
 import Data.Generics
@@ -42,7 +44,7 @@ basicTypes = [ ''Maybe
 
 boundedBasicTypes :: [Name]
 boundedBasicTypes =
-            [  ''(,)
+            [ ''(,)
             , ''(,,)
             , ''(,,,)
             , ''(,,,,)
@@ -52,6 +54,31 @@ boundedBasicTypes =
 
 enumBasicTypes :: [Name]
 enumBasicTypes = [ ''Bool, ''Ordering, ''() ]
+
+semigroupBasicTypes :: [Name]
+semigroupBasicTypes
+  = [ ''Dual
+    , ''All
+    , ''Any
+    , ''Sum
+    , ''Product
+    -- , ''Endo      see https://github.com/goldfirere/singletons/issues/82
+    {- , ''Alt       singletons doesn't support higher kinds :(
+                     see https://github.com/goldfirere/singletons/issues/150
+    -}
+
+    , ''Min
+    , ''Max
+    , ''Semigroup.First
+    , ''Semigroup.Last
+    , ''WrappedMonoid
+    ]
+
+monoidBasicTypes :: [Name]
+monoidBasicTypes
+  = [ ''Monoid.First
+    , ''Monoid.Last
+    ]
 
 -- like reportWarning, but generalized to any Quasi
 qReportWarning :: Quasi q => String -> q ()

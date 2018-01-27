@@ -5,6 +5,7 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeInType #-}
@@ -51,13 +52,14 @@ module Data.Singletons.Prelude.Show (
   ) where
 
 import           Data.List.NonEmpty (NonEmpty)
+import           Data.Ord (Down)
 import           Data.Proxy
 import           Data.Singletons.Internal
 import           Data.Singletons.Prelude.Base
 import           Data.Singletons.Prelude.Instances
 import           Data.Singletons.Prelude.List
 import           Data.Singletons.Prelude.Ord
-import           Data.Singletons.Prelude.Semigroup
+import           Data.Singletons.Prelude.Semigroup.Internal
 import           Data.Singletons.Promote
 import           Data.Singletons.Single
 import           Data.Singletons.TypeLits
@@ -153,6 +155,8 @@ $(singletonsOnly [d|
           => Show (a,b,c,d,e,f,g) where
     showsPrec _ (a,b,c,d,e,f,g) s
           = show_tuple [shows a, shows b, shows c, shows d, shows e, shows f, shows g] s
+
+  deriving instance Show a => Show (Down a)
   |])
 
 $(promoteOnly [d|
@@ -170,8 +174,6 @@ $(promoteOnly [d|
   showsNat n = showsNat (n `div` 10) . showsNat (n `mod` 10)
   |])
 
--- | Note that this instance is really, really slow, since it uses an inefficient,
--- inductive definition of division behind the hood.
 instance PShow Nat where
   type ShowsPrec _ n x = ShowsNat n x
 

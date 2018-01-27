@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, PolyKinds, DataKinds, TypeFamilies, TypeInType,
              TypeOperators, GADTs, ScopedTypeVariables, UndecidableInstances,
-             DefaultSignatures, FlexibleContexts
+             DefaultSignatures, FlexibleContexts, InstanceSigs
   #-}
 
 -----------------------------------------------------------------------------
@@ -34,8 +34,10 @@ module Data.Singletons.Prelude.Num (
   SubtractSym0, SubtractSym1, SubtractSym2
   ) where
 
+import Data.Ord (Down(..))
 import Data.Singletons.Single
 import Data.Singletons.Internal
+import Data.Singletons.Prelude.Ord
 import Data.Singletons.TypeLits.Internal
 import Data.Singletons.Decide
 import qualified GHC.TypeNats as TN
@@ -69,6 +71,16 @@ $(singletonsOnly [d|
       x - y               = x + negate y
 
       negate x            = 0 - x
+
+  -- deriving newtype instance Num a => Num (Down a)
+  instance Num a => Num (Down a) where
+      Down a + Down b = Down (a + b)
+      Down a - Down b = Down (a - b)
+      Down a * Down b = Down (a * b)
+      negate (Down a) = Down (negate a)
+      abs    (Down a) = Down (abs a)
+      signum (Down a) = Down (signum a)
+      fromInteger n   = Down (fromInteger n)
   |])
 
 -- PNum instance

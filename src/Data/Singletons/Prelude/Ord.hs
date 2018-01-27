@@ -1,6 +1,8 @@
 {-# LANGUAGE TemplateHaskell, DataKinds, PolyKinds, ScopedTypeVariables,
              TypeFamilies, TypeOperators, GADTs, UndecidableInstances,
-             FlexibleContexts, DefaultSignatures, InstanceSigs, TypeInType #-}
+             FlexibleContexts, DefaultSignatures, InstanceSigs, TypeInType,
+             StandaloneDeriving #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -25,7 +27,9 @@ module Data.Singletons.Prelude.Ord (
   -- it returns its first argument.
   thenCmp, ThenCmp, sThenCmp,
 
-  Sing(SLT, SEQ, SGT),
+  Sing(SLT, SEQ, SGT, SDown),
+
+  SOrdering, SDown,
 
   -- ** Defunctionalization symbols
   ThenCmpSym0, ThenCmpSym1, ThenCmpSym2,
@@ -37,9 +41,11 @@ module Data.Singletons.Prelude.Ord (
   type (>=@#@$), type (>=@#@$$), type (>=@#@$$$),
   MaxSym0, MaxSym1, MaxSym2,
   MinSym0, MinSym1, MinSym2,
-  ComparingSym0, ComparingSym1, ComparingSym2, ComparingSym3
+  ComparingSym0, ComparingSym1, ComparingSym2, ComparingSym3,
+  DownSym0, DownSym1
   ) where
 
+import Data.Ord (Down(..))
 import Data.Singletons.Single
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
@@ -82,6 +88,15 @@ $(singletonsOnly [d|
   -- >   ... sortBy (comparing fst) ...
   comparing :: (Ord a) => (b -> a) -> b -> b -> Ordering
   comparing p x y = compare (p x) (p y)
+  |])
+
+$(genSingletons [''Down])
+
+$(singletonsOnly [d|
+  deriving instance Eq a => Eq (Down a)
+
+  instance Ord a => Ord (Down a) where
+      compare (Down x) (Down y) = y `compare` x
   |])
 
 $(singletons [d|

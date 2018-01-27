@@ -110,6 +110,7 @@ library
                       Data.Singletons.Deriving.Show
                       Data.Singletons.Internal
                       Data.Singletons.Prelude.List.NonEmpty.Internal
+                      Data.Singletons.Prelude.Semigroup.Internal
                       Data.Singletons.Promote
                       Data.Singletons.Promote.Monad
                       Data.Singletons.Promote.Eq
