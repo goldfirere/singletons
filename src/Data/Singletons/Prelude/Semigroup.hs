@@ -3,11 +3,13 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeInType #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -26,98 +28,170 @@
 module Data.Singletons.Prelude.Semigroup (
   PSemigroup(..), SSemigroup(..),
 
+  Sing(SMin, sGetMin, SMax, sGetMax,
+       SFirst, sGetFirst, SLast, sGetLast,
+       SWrapMonoid, sUnwrapMonoid, SDual, sGetDual,
+       SAll, sGetAll, SAny, sGetAny,
+       SSum, sGetSum, SProduct, sGetProduct,
+       SOption, sGetOption, SArg),
+  GetMin, GetMax, GetFirst, GetLast, GetDual,
+  GetAll, GetAny, GetSum, GetProduct, GetOption,
+
+  SMin, SMax, SFirst, SLast, SWrappedMonoid, SDual,
+  SAll, SAny, SSum, SProduct, SOption, SArg,
+
+  option_, sOption_, Option_,
+
   -- ** Defunctionalization symbols
   type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
-  SconcatSym0, SconcatSym1
+  SconcatSym0, SconcatSym1,
+  MinSym0, MinSym1, GetMinSym0, GetMinSym1,
+  MaxSym0, MaxSym1, GetMaxSym0, GetMaxSym1,
+  FirstSym0, FirstSym1, GetFirstSym0, GetFirstSym1,
+  LastSym0, LastSym1, GetLastSym0, GetLastSym1,
+  WrapMonoidSym0, WrapMonoidSym1, UnwrapMonoidSym0, UnwrapMonoidSym1,
+  DualSym0, DualSym1, GetDualSym0, GetDualSym1,
+  AllSym0, AllSym1, GetAllSym0, GetAllSym1,
+  AnySym0, AnySym1, GetAnySym0, GetAnySym1,
+  SumSym0, SumSym1, GetSumSym0, GetSumSym1,
+  ProductSym0, ProductSym1, GetProductSym0, GetProductSym1,
+  OptionSym0, OptionSym1, GetOptionSym0, GetOptionSym1,
+  ArgSym0, ArgSym1, ArgSym2
   ) where
 
-import Data.List.NonEmpty (NonEmpty(..))
+import qualified Data.Semigroup as Semi (Min(..), Max(..))
+import Data.Semigroup (First(..), Last(..), WrappedMonoid(..), Option(..), Arg(..))
 import Data.Singletons.Prelude.Base
+import Data.Singletons.Prelude.Enum
+import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
+import Data.Singletons.Prelude.Maybe
+import Data.Singletons.Prelude.Monoid hiding
+       (Sing(SFirst, SLast), SFirst, sGetFirst, SLast, sGetLast,
+        FirstSym0, FirstSym1, LastSym0, LastSym1,
+        GetFirst,  GetFirstSym0, GetFirstSym1,
+        GetLast,   GetLastSym0,  GetLastSym1)
+import Data.Singletons.Prelude.Num
+import Data.Singletons.Prelude.Ord hiding
+       (MinSym0, MinSym1, MaxSym0, MaxSym1)
+import Data.Singletons.Prelude.Semigroup.Internal
+import Data.Singletons.Prelude.Show
 import Data.Singletons.Single
-import Data.Void (Void)
+import Data.Singletons.Util
+
+$(genSingletons [''Arg])
+$(showSingInstances $ ''Option : semigroupBasicTypes)
+$(singShowInstances $ ''Option : semigroupBasicTypes)
 
 $(singletonsOnly [d|
-  -- -| The class of semigroups (types with an associative binary operation).
-  --
-  -- Instances should satisfy the associativity law:
-  --
-  --  * @x '<>' (y '<>' z) = (x '<>' y) '<>' z@
-  class Semigroup a where
-        -- -| An associative operation.
-        (<>) :: a -> a -> a
-        infixr 6 <>
+  instance Enum a => Enum (Semi.Min a) where
+    succ (Semi.Min a) = Semi.Min (succ a)
+    pred (Semi.Min a) = Semi.Min (pred a)
+    toEnum = Semi.Min . toEnum
+    fromEnum (Semi.Min a) = fromEnum a
+    enumFromTo (Semi.Min a) (Semi.Min b) = Semi.Min `map` enumFromTo a b
+    enumFromThenTo (Semi.Min a) (Semi.Min b) (Semi.Min c) = Semi.Min `map` enumFromThenTo a b c
 
-        -- -| Reduce a non-empty list with @\<\>@
-        --
-        -- The default definition should be sufficient, but this can be
-        -- overridden for efficiency.
-        --
-        sconcat :: NonEmpty a -> a
-        sconcat (a :| as) = go a as where
-          go b (c:cs) = b <> go c cs
-          go b []     = b
+  instance Ord a => Semigroup (Semi.Min a) where
+    Semi.Min a <> Semi.Min b = Semi.Min (a `min_` b)
 
-        {-
-        Can't single 'stimes', since there's no singled 'Integral' class.
+  instance (Ord a, Bounded a) => Monoid (Semi.Min a) where
+    mempty = maxBound
 
-        -- -| Repeat a value @n@ times.
-        --
-        -- Given that this works on a 'Semigroup' it is allowed to fail if
-        -- you request 0 or fewer repetitions, and the default definition
-        -- will do so.
-        --
-        -- By making this a member of the class, idempotent semigroups
-        -- and monoids can upgrade this to execute in /O(1)/ by
-        -- picking @stimes = 'stimesIdempotent'@ or @stimes =
-        -- 'stimesIdempotentMonoid'@ respectively.
-        stimes :: Integral b => b -> a -> a
-        stimes = stimesDefault
-        -}
+  instance Num a => Num (Semi.Min a) where
+    (Semi.Min a) + (Semi.Min b) = Semi.Min (a + b)
+    (Semi.Min a) * (Semi.Min b) = Semi.Min (a * b)
+    (Semi.Min a) - (Semi.Min b) = Semi.Min (a - b)
+    negate (Semi.Min a) = Semi.Min (negate a)
+    abs    (Semi.Min a) = Semi.Min (abs a)
+    signum (Semi.Min a) = Semi.Min (signum a)
+    fromInteger         = Semi.Min . fromInteger
 
+  instance Enum a => Enum (Semi.Max a) where
+    succ (Semi.Max a) = Semi.Max (succ a)
+    pred (Semi.Max a) = Semi.Max (pred a)
+    toEnum = Semi.Max . toEnum
+    fromEnum (Semi.Max a) = fromEnum a
+    enumFromTo (Semi.Max a) (Semi.Max b) = Semi.Max `map` enumFromTo a b
+    enumFromThenTo (Semi.Max a) (Semi.Max b) (Semi.Max c) = Semi.Max `map` enumFromThenTo a b c
 
-  instance Semigroup [a] where
-        (<>) = (++)
+  instance Ord a => Semigroup (Semi.Max a) where
+    Semi.Max a <> Semi.Max b = Semi.Max (a `max_` b)
 
-  instance Semigroup (NonEmpty a) where
-        (a :| as) <> (b :| bs) = a :| (as ++ b : bs)
+  instance (Ord a, Bounded a) => Monoid (Semi.Max a) where
+    mempty = minBound
 
-  instance Semigroup b => Semigroup (a -> b) where
-        f <> g = \x -> f x <> g x
+  instance Num a => Num (Semi.Max a) where
+    (Semi.Max a) + (Semi.Max b) = Semi.Max (a + b)
+    (Semi.Max a) * (Semi.Max b) = Semi.Max (a * b)
+    (Semi.Max a) - (Semi.Max b) = Semi.Max (a - b)
+    negate (Semi.Max a) = Semi.Max (negate a)
+    abs    (Semi.Max a) = Semi.Max (abs a)
+    signum (Semi.Max a) = Semi.Max (signum a)
+    fromInteger         = Semi.Max . fromInteger
 
-  instance Semigroup () where
-        _ <> _      = ()
-        sconcat _   = ()
+  instance Eq a => Eq (Arg a b) where
+    Arg a _ == Arg b _ = a == b
 
-  instance (Semigroup a, Semigroup b) => Semigroup (a, b) where
-        (a,b) <> (a',b') = (a<>a',b<>b')
+  instance Ord a => Ord (Arg a b) where
+    Arg a _ `compare` Arg b _ = compare a b
+    min x@(Arg a _) y@(Arg b _)
+      | a <= b    = x
+      | otherwise = y
+    max x@(Arg a _) y@(Arg b _)
+      | a >= b    = x
+      | otherwise = y
 
-  instance (Semigroup a, Semigroup b, Semigroup c) => Semigroup (a, b, c) where
-        (a,b,c) <> (a',b',c') = (a<>a',b<>b',c<>c')
+  deriving instance (Show a, Show b) => Show (Arg a b)
 
-  instance (Semigroup a, Semigroup b, Semigroup c, Semigroup d)
-         => Semigroup (a, b, c, d) where
-        (a,b,c,d) <> (a',b',c',d') = (a<>a',b<>b',c<>c',d<>d')
+  instance Enum a => Enum (First a) where
+    succ (First a) = First (succ a)
+    pred (First a) = First (pred a)
+    toEnum = First . toEnum
+    fromEnum (First a) = fromEnum a
+    enumFromTo (First a) (First b) = First `map` enumFromTo a b
+    enumFromThenTo (First a) (First b) (First c) = First `map` enumFromThenTo a b c
 
-  instance (Semigroup a, Semigroup b, Semigroup c, Semigroup d, Semigroup e)
-         => Semigroup (a, b, c, d, e) where
-        (a,b,c,d,e) <> (a',b',c',d',e') = (a<>a',b<>b',c<>c',d<>d',e<>e')
-
-  instance Semigroup Ordering where
-    LT <> _ = LT
-    EQ <> y = y
-    GT <> _ = GT
-
-  instance Semigroup a => Semigroup (Maybe a) where
-    Nothing <> b       = b
-    a       <> Nothing = a
-    Just a  <> Just b  = Just (a <> b)
-
-  instance Semigroup (Either a b) where
-    Left _    <> b = b
-    -- a      <> _ = a
-    a@Right{} <> _ = a
-
-  instance Semigroup Void where
+  instance Semigroup (First a) where
     a <> _ = a
+
+  instance Enum a => Enum (Last a) where
+    succ (Last a) = Last (succ a)
+    pred (Last a) = Last (pred a)
+    toEnum = Last . toEnum
+    fromEnum (Last a) = fromEnum a
+    enumFromTo (Last a) (Last b) = Last `map` enumFromTo a b
+    enumFromThenTo (Last a) (Last b) (Last c) = Last `map` enumFromThenTo a b c
+
+  instance Semigroup (Last a) where
+    _ <> b = b
+
+  instance Monoid m => Semigroup (WrappedMonoid m) where
+    WrapMonoid a <> WrapMonoid b = WrapMonoid (a `mappend` b)
+
+  instance Monoid m => Monoid (WrappedMonoid m) where
+    mempty = WrapMonoid mempty
+
+  instance Enum a => Enum (WrappedMonoid a) where
+    succ (WrapMonoid a) = WrapMonoid (succ a)
+    pred (WrapMonoid a) = WrapMonoid (pred a)
+    toEnum = WrapMonoid . toEnum
+    fromEnum (WrapMonoid a) = fromEnum a
+    enumFromTo (WrapMonoid a) (WrapMonoid b) = WrapMonoid `map` enumFromTo a b
+    enumFromThenTo (WrapMonoid a) (WrapMonoid b) (WrapMonoid c) =
+        WrapMonoid `map` enumFromThenTo a b c
+
+  -- deriving newtype instance Semigroup a => Semigroup (Option a)
+  instance Semigroup a => Semigroup (Option a) where
+    Option a <> Option b = Option (a <> b)
+
+  instance Semigroup a => Monoid (Option a) where
+    mempty = Option Nothing
+  |])
+
+$(singletons [d|
+  -- Renamed to avoid name clash
+  -- -| Fold an 'Option' case-wise, just like 'maybe'.
+  option_ :: b -> (a -> b) -> Option a -> b
+  option_ n j (Option m) = maybe_ n j m
   |])

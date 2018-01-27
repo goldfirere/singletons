@@ -41,13 +41,10 @@ import Data.Singletons.Promote
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord as O
-import Data.Singletons.Prelude.Monoid
-import Data.Singletons.Prelude.Semigroup
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
 import GHC.TypeLits as TL
 import qualified GHC.TypeNats as TN
-import Data.Monoid ((<>))
 import qualified Data.Type.Equality as DTE
 import Data.Type.Equality ((:~:)(..))
 import Data.Proxy ( Proxy(..) )
@@ -142,27 +139,6 @@ instance SOrd Symbol where
                      LT -> unsafeCoerce SLT
                      EQ -> unsafeCoerce SEQ
                      GT -> unsafeCoerce SGT
-
--- PSemigroup Symbol instance
-instance PSemigroup Symbol where
-  type a <> b = TL.AppendSymbol a b
-
--- SSemigroup Symbol instance
-instance SSemigroup Symbol where
-  sa %<> sb =
-    let a  = fromSing sa
-        b  = fromSing sb
-        ex = someSymbolVal $ T.unpack $ a <> b
-    in case ex of
-         SomeSymbol (_ :: Proxy ab) -> unsafeCoerce (SSym :: Sing ab)
-
--- PMonoid Symbol instance
-instance PMonoid Symbol where
-  type Mempty = ""
-
--- SMonoid Symbol instance
-instance SMonoid Symbol where
-  sMempty = SSym @""
 
 -- Convenience functions
 

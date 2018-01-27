@@ -29,7 +29,8 @@ module Data.Promotion.Prelude.Ord (
   type (>=@#@$), type (>=@#@$$), type (>=@#@$$$),
   MaxSym0, MaxSym1, MaxSym2,
   MinSym0, MinSym1, MinSym2,
-  ComparingSym0, ComparingSym1, ComparingSym2, ComparingSym3
+  ComparingSym0, ComparingSym1, ComparingSym2, ComparingSym3,
+  DownSym0, DownSym1
   ) where
 
 import Data.Singletons.Prelude.Ord

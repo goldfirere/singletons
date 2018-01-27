@@ -251,7 +251,7 @@ import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Maybe
-import Data.Singletons.Prelude.Semigroup
+import Data.Singletons.Prelude.Semigroup.Internal (SSemigroup(..), type (<>@#@$))
 import Data.Singletons.Prelude.Tuple
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Ord

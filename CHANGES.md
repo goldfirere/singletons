@@ -11,17 +11,24 @@ Changelog for singletons project
   generalize the `Sing :: Type -> Type` instance to `Sing :: TYPE rep -> Type`,
   allowing it to work over more open kinds. Also rename `SomeTypeRepStar` to
   `SomeTypeRepTYPE`, and change its definition accordingly.
-  
+
 * Add `(%<=?)`, a singled version of `(<=?)` from `GHC.TypeNats`, as well as
   defunctionalization symbols for `(<=?)`, to `Data.Singletons.TypeLits`.
 
 * Add `Data.{Promotion,Singletons}.Prelude.{Semigroup,Monoid}`, which define
-  promoted and singled versions of the `Semigroup` and `Monoid` type classes.
+  promoted and singled versions of the `Semigroup` and `Monoid` type classes,
+  as well as various newtype modifiers.
 
   `Symbol` is now has promoted `Semigroup` and `Monoid` instances as well.
   As a consequence, `Data.Singletons.TypeLits` no longer exports `(<>)` or
   `(%<>)`, as they are superseded by the corresponding methods from
   `PSemigroup` and `SSemigroup`.
+
+* Promote and single the `Down` newtype in `Data.Singletons.Prelude.Ord`.
+
+* To match the `base` library, the promoted/singled versions of `comparing`
+  and `thenCmp` are no longer exported from `Data.Singletons.Prelude`. (They
+  continue to live in `Data.Singletons.Prelude.Ord`.)
 
 2.4.1
 -----

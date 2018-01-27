@@ -30,7 +30,7 @@ module Data.Promotion.Prelude (
   module Data.Promotion.Prelude.Eq,
 
   -- * Promoted comparisons
-  module Data.Promotion.Prelude.Ord,
+  POrd(..),
 
   -- * Promoted enumerations
   -- | As a matter of convenience, the promoted Prelude does /not/ export
@@ -104,6 +104,15 @@ module Data.Promotion.Prelude (
   UncurrySym0, UncurrySym1, UncurrySym2,
 
   ErrorSym0, ErrorSym1, UndefinedSym0,
+
+  LTSym0, EQSym0, GTSym0,
+  CompareSym0, CompareSym1, CompareSym2,
+  type (<@#@$),  type (<@#@$$),  type (<@#@$$$),
+  type (<=@#@$), type (<=@#@$$), type (<=@#@$$$),
+  type (>@#@$),  type (>@#@$$),  type (>@#@$$$),
+  type (>=@#@$), type (>=@#@$$), type (>=@#@$$$),
+  MaxSym0, MaxSym1, MaxSym2,
+  MinSym0, MinSym1, MinSym2,
 
   type (^@#@$), type (^@#@$$), type (^@#@$$$),
 
@@ -190,7 +199,11 @@ import Data.Promotion.Prelude.Ord
 import Data.Promotion.Prelude.Enum
   hiding (Succ, Pred, SuccSym0, SuccSym1, PredSym0, PredSym1)
 import Data.Promotion.Prelude.Monoid
+       ( PMonoid(..), MemptySym0, MappendSym0
+       , MappendSym1, MappendSym2, MconcatSym0, MconcatSym1)
 import Data.Promotion.Prelude.Num
 import Data.Promotion.Prelude.Semigroup
+       ( PSemigroup(..), type (<>@#@$), type (<>@#@$$), type (<>@#@$$$)
+       , SconcatSym0, SconcatSym1)
 import Data.Promotion.Prelude.Show
 import Data.Singletons.TypeLits

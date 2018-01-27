@@ -43,7 +43,7 @@ module Data.Singletons.Prelude (
   module Data.Singletons.Prelude.Eq,
 
   -- * Singleton comparisons
-  module Data.Singletons.Prelude.Ord,
+  POrd(..), SOrd(..),
 
   -- * Singleton Enum and Bounded
   -- | As a matter of convenience, the singletons Prelude does /not/ export
@@ -130,6 +130,15 @@ module Data.Singletons.Prelude (
 
   ErrorSym0, ErrorSym1, UndefinedSym0,
 
+  LTSym0, EQSym0, GTSym0,
+  CompareSym0, CompareSym1, CompareSym2,
+  type (<@#@$),  type (<@#@$$),  type (<@#@$$$),
+  type (<=@#@$), type (<=@#@$$), type (<=@#@$$$),
+  type (>@#@$),  type (>@#@$$),  type (>@#@$$$),
+  type (>=@#@$), type (>=@#@$$), type (>=@#@$$$),
+  MaxSym0, MaxSym1, MaxSym2,
+  MinSym0, MinSym1, MinSym2,
+
   type (^@#@$), type (^@#@$$), type (^@#@$$$),
 
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
@@ -206,11 +215,15 @@ import Data.Singletons.Prelude.Maybe
 import Data.Singletons.Prelude.Tuple
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord
-import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Enum
   hiding (Succ, Pred, SuccSym0, SuccSym1, PredSym0, PredSym1, sSucc, sPred)
 import Data.Singletons.Prelude.Monoid
+       ( PMonoid(..), SMonoid(..), MemptySym0, MappendSym0
+       , MappendSym1, MappendSym2, MconcatSym0, MconcatSym1)
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Semigroup
+       ( PSemigroup(..), SSemigroup(..)
+       , type (<>@#@$), type (<>@#@$$), type (<>@#@$$$)
+       , SconcatSym0, SconcatSym1)
 import Data.Singletons.Prelude.Show
 import Data.Singletons.TypeLits
