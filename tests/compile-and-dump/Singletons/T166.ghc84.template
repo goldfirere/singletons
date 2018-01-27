@@ -1,11 +1,114 @@
+Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
+    singletonsOnly
+      [d| class Foo a where
+            foosPrec :: Nat -> a -> [Bool] -> [Bool]
+            foo :: a -> [Bool]
+            foo x s = foosPrec 0 x s |]
+  ======>
+    type FoosPrecSym3 (t :: Nat) (t :: a0123456789876543210) (t :: [Bool]) =
+        FoosPrec t t t
+    instance SuppressUnusedWarnings FoosPrecSym2 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) FoosPrecSym2KindInference) GHC.Tuple.())
+    data FoosPrecSym2 (l :: Nat) (l :: a0123456789876543210) (l :: TyFun [Bool] [Bool])
+      = forall arg. SameKind (Apply (FoosPrecSym2 l l) arg) (FoosPrecSym3 l l arg) =>
+        FoosPrecSym2KindInference
+    type instance Apply (FoosPrecSym2 l l) l = FoosPrec l l l
+    instance SuppressUnusedWarnings FoosPrecSym1 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) FoosPrecSym1KindInference) GHC.Tuple.())
+    data FoosPrecSym1 (l :: Nat) (l :: TyFun a0123456789876543210 ((~>) [Bool] [Bool]))
+      = forall arg. SameKind (Apply (FoosPrecSym1 l) arg) (FoosPrecSym2 l arg) =>
+        FoosPrecSym1KindInference
+    type instance Apply (FoosPrecSym1 l) l = FoosPrecSym2 l l
+    instance SuppressUnusedWarnings FoosPrecSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) FoosPrecSym0KindInference) GHC.Tuple.())
+    data FoosPrecSym0 (l :: TyFun Nat ((~>) a0123456789876543210 ((~>) [Bool] [Bool])))
+      = forall arg. SameKind (Apply FoosPrecSym0 arg) (FoosPrecSym1 arg) =>
+        FoosPrecSym0KindInference
+    type instance Apply FoosPrecSym0 l = FoosPrecSym1 l
+    type FooSym1 (t :: a0123456789876543210) = Foo t
+    instance SuppressUnusedWarnings FooSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) FooSym0KindInference) GHC.Tuple.())
+    data FooSym0 (l :: TyFun a0123456789876543210 [Bool])
+      = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
+        FooSym0KindInference
+    type instance Apply FooSym0 l = Foo l
+    type family Lambda_0123456789876543210 x t where
+      Lambda_0123456789876543210 x s = Apply (Apply (Apply FoosPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 0)) x) s
+    type Lambda_0123456789876543210Sym2 t t =
+        Lambda_0123456789876543210 t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l
+      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+        Lambda_0123456789876543210Sym1KindInference
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l
+      = forall arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+        Lambda_0123456789876543210Sym0KindInference
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type family Foo_0123456789876543210 (a :: a) :: [Bool] where
+      Foo_0123456789876543210 x = Apply Lambda_0123456789876543210Sym0 x
+    type Foo_0123456789876543210Sym1 (t :: a0123456789876543210) =
+        Foo_0123456789876543210 t
+    instance SuppressUnusedWarnings Foo_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Foo_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Foo_0123456789876543210Sym0 (l :: TyFun a0123456789876543210 [Bool])
+      = forall arg. SameKind (Apply Foo_0123456789876543210Sym0 arg) (Foo_0123456789876543210Sym1 arg) =>
+        Foo_0123456789876543210Sym0KindInference
+    type instance Apply Foo_0123456789876543210Sym0 l = Foo_0123456789876543210 l
+    class PFoo (a :: GHC.Types.Type) where
+      type FoosPrec (arg :: Nat) (arg :: a) (arg :: [Bool]) :: [Bool]
+      type Foo (arg :: a) :: [Bool]
+      type Foo a = Apply Foo_0123456789876543210Sym0 a
+    class SFoo a where
+      sFoosPrec ::
+        forall (t :: Nat) (t :: a) (t :: [Bool]).
+        Sing t
+        -> Sing t
+           -> Sing t
+              -> Sing (Apply (Apply (Apply FoosPrecSym0 t) t) t :: [Bool])
+      sFoo :: forall (t :: a). Sing t -> Sing (Apply FooSym0 t :: [Bool])
+      default sFoo ::
+                forall (t :: a).
+                (Apply FooSym0 t :: [Bool]) ~ Apply Foo_0123456789876543210Sym0 t =>
+                Sing t -> Sing (Apply FooSym0 t :: [Bool])
+      sFoo (sX :: Sing x)
+        = (singFun1 @(Apply Lambda_0123456789876543210Sym0 x))
+            (\ sS
+               -> case sS of {
+                    _ :: Sing s
+                      -> (applySing
+                            ((applySing
+                                ((applySing ((singFun3 @FoosPrecSym0) sFoosPrec))
+                                   (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))))
+                               sX))
+                           sS })
 
 Singletons/T166.hs:0:0: error:
-    Function being promoted to FooSym0 has too many arguments.
-   |
-14 | $(singletonsOnly [d|
-   |   ^^^^^^^^^^^^^^^^^^...
-
-Singletons/T166.hs:0:0: error: Q monad failure
+    • Expecting one more argument to ‘Lambda_0123456789876543210Sym1 arg’
+      Expected kind ‘[Bool]’,
+        but ‘Lambda_0123456789876543210Sym1 arg’ has kind ‘TyFun
+                                                             [Bool] [Bool]
+                                                           -> *’
+    • In the second argument of ‘SameKind’, namely
+        ‘(Lambda_0123456789876543210Sym1 arg)’
+      In the definition of data constructor ‘Lambda_0123456789876543210Sym0KindInference’
+      In the data declaration for ‘Lambda_0123456789876543210Sym0’
    |
 14 | $(singletonsOnly [d|
    |   ^^^^^^^^^^^^^^^^^^...

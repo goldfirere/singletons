@@ -109,7 +109,7 @@ $(singletonsOnly [d|
         -- mconcat xss = [x | xs <- xss, x <- xs]
 
   instance Monoid b => Monoid (a -> b) where
-        mempty = \_ -> mempty
+        mempty _ = mempty
 
   instance Monoid () where
         -- Should it be strict?

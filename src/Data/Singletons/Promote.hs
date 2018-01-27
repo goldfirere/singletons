@@ -579,7 +579,7 @@ promoteLetDecRHS m_rhs_ki type_env prefixes name (UFunction clauses) = do
                 (map (const Nothing) all_locals ++ m_argKs) m_resK
   let local_tvbs = map DPlainTV all_locals
   tyvarNames <- mapM (const $ qNewName "a") m_argKs
-  expClauses <- mapM (etaExpand (ty_num_args - numArgs)) clauses
+  expClauses <- mapM (etaContractOrExpand ty_num_args numArgs) clauses
   (eqns, ann_clauses) <- mapAndUnzipM promoteClause expClauses
   prom_fun <- lookupVarE name
   let args     = zipWith inferMaybeKindTV tyvarNames m_argKs
@@ -589,12 +589,19 @@ promoteLetDecRHS m_rhs_ki type_env prefixes name (UFunction clauses) = do
          , AFunction prom_fun ty_num_args ann_clauses )
 
   where
-    etaExpand :: Int -> DClause -> PrM DClause
-    etaExpand n (DClause pats exp) = do
-      names <- replicateM n (newUniqueName "a")
-      let newPats = map DVarPa names
-          newArgs = map DVarE  names
-      return $ DClause (pats ++ newPats) (foldExp exp newArgs)
+    etaContractOrExpand :: Int -> Int -> DClause -> PrM DClause
+    etaContractOrExpand ty_num_args clause_num_args (DClause pats exp)
+      | n >= 0 = do -- Eta-expand
+          names <- replicateM n (newUniqueName "a")
+          let newPats = map DVarPa names
+              newArgs = map DVarE  names
+          return $ DClause (pats ++ newPats) (foldExp exp newArgs)
+      | otherwise = do -- Eta-contract
+          let (clausePats, lamPats) = splitAt ty_num_args pats
+          lamExp <- mkDLamEFromDPats lamPats exp
+          return $ DClause clausePats lamExp
+      where
+        n = ty_num_args - clause_num_args
 
     count_args (DClause pats _ : _) = return $ length pats
     count_args _ = fail $ "Impossible! A function without clauses."
