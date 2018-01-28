@@ -30,6 +30,8 @@ Changelog for singletons project
   and `thenCmp` are no longer exported from `Data.Singletons.Prelude`. (They
   continue to live in `Data.Singletons.Prelude.Ord`.)
 
+* Permit singling of expression and pattern signatures.
+
 2.4.1
 -----
 * Restore the `TyCon1`, `TyCon2`, etc. types. It turns out that the new

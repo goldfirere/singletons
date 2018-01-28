@@ -22,6 +22,12 @@ import Data.Semigroup (Semigroup(..))
 
 type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
 
+-- A list of 'DSigPaInfos' is produced when singling pattern signatures, as we
+-- must case on the 'DExp's and match on them using the supplied 'DType's to
+-- bring the necessary singleton equality constraints into scope.
+-- See @Note [Singling pattern signatures]@.
+type DSigPaInfos = [(DExp, DType)]
+
   -- the relevant part of declarations
 data DataDecl      = DataDecl NewOrData Name [DTyVarBndr] [DCon] [DPred]
 
@@ -50,7 +56,8 @@ for lets, cases, and lambdas. So, we put these promotions into an annotated AST
 so that Single can use the right promotions.
 -}
 
--- A DExp with let and lambda nodes annotated with their type-level equivalents
+-- A DExp with let, lambda, and type-signature nodes annotated with their
+-- type-level equivalents
 data ADExp = ADVarE Name
            | ADConE Name
            | ADLitE Lit
@@ -61,11 +68,23 @@ data ADExp = ADVarE Name
            | ADCaseE ADExp [ADMatch] DType
                -- the type is the return type
            | ADLetE ALetDecEnv ADExp
-           | ADSigE ADExp DType
+           | ADSigE DType          -- the promoted expression
+                    ADExp DType
 
-data ADMatch = ADMatch VarPromotions DPat ADExp
+-- A DPat with a pattern-signature node annotated with its type-level equivalent
+data ADPat = ADLitPa Lit
+           | ADVarPa Name
+           | ADConPa Name [ADPat]
+           | ADTildePa ADPat
+           | ADBangPa ADPat
+           | ADSigPa DType -- The promoted pattern. Will not contain any wildcards,
+                           -- as per Note [Singling pattern signatures]
+                     ADPat DType
+           | ADWildPa
+
+data ADMatch = ADMatch VarPromotions ADPat ADExp
 data ADClause = ADClause VarPromotions
-                         [DPat] ADExp
+                         [ADPat] ADExp
 
 data AnnotationFlag = Annotated | Unannotated
 

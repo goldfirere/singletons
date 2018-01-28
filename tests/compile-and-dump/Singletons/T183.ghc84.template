@@ -1,0 +1,370 @@
+Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| f1 (x :: Maybe Bool) = (x :: Maybe Bool)
+          f2 (x :: Maybe a) = (x :: Maybe a)
+          f3 (Just a :: Maybe Bool) = "hi"
+          g x = case Just x of { (Just y :: Maybe Bool) -> (y :: Bool) }
+          foo1 :: Maybe a -> a
+          foo1 (Just x :: Maybe a) = (x :: a)
+          foo2, foo3 :: forall a. Maybe a -> a
+          foo2 (Just x :: Maybe a) = (x :: a)
+          foo3 (Just x) = (x :: a)
+          foo4 :: (a, b) -> (b, a)
+          foo4 = \ (x :: a, y :: b) -> (y :: b, x :: a)
+          foo5, foo6 :: Maybe (Maybe a) -> Maybe (Maybe a)
+          foo5 (Just (Just (x :: a) :: Maybe a) :: Maybe (Maybe a))
+            = Just (Just (x :: a) :: Maybe a) :: Maybe (Maybe a)
+          foo6 (Just x :: Maybe (Maybe a))
+            = case x :: Maybe a of {
+                (Just (y :: a) :: Maybe a) -> Just (Just (y :: a) :: Maybe a) }
+          foo7 :: a -> b -> a
+          foo7 (x :: a) (_ :: b) = (x :: a)
+          foo8 :: forall a. Maybe a -> Maybe a
+          foo8 x@(Just (_ :: a) :: Maybe a) = x |]
+  ======>
+    f1 (x :: Maybe Bool) = x :: Maybe Bool
+    f2 (x :: Maybe a) = x :: Maybe a
+    f3 (Just a :: Maybe Bool) = "hi"
+    g x = case Just x of { Just y :: Maybe Bool -> y :: Bool }
+    foo1 :: Maybe a -> a
+    foo1 (Just x :: Maybe a) = x :: a
+    foo2 :: forall a. Maybe a -> a
+    foo3 :: forall a. Maybe a -> a
+    foo2 (Just x :: Maybe a) = x :: a
+    foo3 (Just x) = x :: a
+    foo4 :: (a, b) -> (b, a)
+    foo4 = \ (x :: a, y :: b) -> (y :: b, x :: a)
+    foo5 :: Maybe (Maybe a) -> Maybe (Maybe a)
+    foo6 :: Maybe (Maybe a) -> Maybe (Maybe a)
+    foo5 (Just (Just (x :: a) :: Maybe a) :: Maybe (Maybe a))
+      = Just (Just (x :: a) :: Maybe a) :: Maybe (Maybe a)
+    foo6 (Just x :: Maybe (Maybe a))
+      = case x :: Maybe a of {
+          Just (y :: a) :: Maybe a -> Just (Just (y :: a) :: Maybe a) }
+    foo7 :: a -> b -> a
+    foo7 (x :: a) (_ :: b) = x :: a
+    foo8 :: forall a. Maybe a -> Maybe a
+    foo8 x@(Just (_ :: a) :: Maybe a) = x
+    type Let0123456789876543210XSym1 t = Let0123456789876543210X t
+    instance SuppressUnusedWarnings Let0123456789876543210XSym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Let0123456789876543210XSym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210XSym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210XSym0 arg) (Let0123456789876543210XSym1 arg) =>
+        Let0123456789876543210XSym0KindInference
+    type instance Apply Let0123456789876543210XSym0 l = Let0123456789876543210X l
+    type family Let0123456789876543210X wild_0123456789876543210 where
+      Let0123456789876543210X wild_0123456789876543210 = (Apply JustSym0 (wild_0123456789876543210 :: a) :: Maybe a)
+    type Let0123456789876543210Scrutinee_0123456789876543210Sym1 t =
+        Let0123456789876543210Scrutinee_0123456789876543210 t
+    instance SuppressUnusedWarnings Let0123456789876543210Scrutinee_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,)
+                Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210Scrutinee_0123456789876543210Sym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
+        Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference
+    type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 l = Let0123456789876543210Scrutinee_0123456789876543210 l
+    type family Let0123456789876543210Scrutinee_0123456789876543210 x where
+      Let0123456789876543210Scrutinee_0123456789876543210 x = (x :: Maybe a)
+    type family Case_0123456789876543210 x t where
+      Case_0123456789876543210 x (Just (y :: a) :: Maybe a) = Apply JustSym0 (Apply JustSym0 (y :: a) :: Maybe a)
+    type family Case_0123456789876543210 arg_0123456789876543210 a_0123456789876543210 t where
+      Case_0123456789876543210 arg_0123456789876543210 a_0123456789876543210 '((x :: a),
+                                                                               (y :: b)) = Apply (Apply Tuple2Sym0 (y :: b)) (x :: a)
+    type family Lambda_0123456789876543210 a_0123456789876543210 t where
+      Lambda_0123456789876543210 a_0123456789876543210 arg_0123456789876543210 = Case_0123456789876543210 arg_0123456789876543210 a_0123456789876543210 arg_0123456789876543210
+    type Lambda_0123456789876543210Sym2 t t =
+        Lambda_0123456789876543210 t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l
+      = forall arg. SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+        Lambda_0123456789876543210Sym1KindInference
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l
+      = forall arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+        Lambda_0123456789876543210Sym0KindInference
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type Let0123456789876543210Scrutinee_0123456789876543210Sym1 t =
+        Let0123456789876543210Scrutinee_0123456789876543210 t
+    instance SuppressUnusedWarnings Let0123456789876543210Scrutinee_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,)
+                Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Let0123456789876543210Scrutinee_0123456789876543210Sym0 l
+      = forall arg. SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
+        Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference
+    type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 l = Let0123456789876543210Scrutinee_0123456789876543210 l
+    type family Let0123456789876543210Scrutinee_0123456789876543210 x where
+      Let0123456789876543210Scrutinee_0123456789876543210 x = Apply JustSym0 x
+    type family Case_0123456789876543210 x t where
+      Case_0123456789876543210 x (Just y :: Maybe Bool) = (y :: Bool)
+    type Foo8Sym1 (t :: Maybe a0123456789876543210) = Foo8 t
+    instance SuppressUnusedWarnings Foo8Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo8Sym0KindInference) GHC.Tuple.())
+    data Foo8Sym0 (l :: TyFun (Maybe a0123456789876543210) (Maybe a0123456789876543210))
+      = forall arg. SameKind (Apply Foo8Sym0 arg) (Foo8Sym1 arg) =>
+        Foo8Sym0KindInference
+    type instance Apply Foo8Sym0 l = Foo8 l
+    type Foo7Sym2 (t :: a0123456789876543210) (t :: b0123456789876543210) =
+        Foo7 t t
+    instance SuppressUnusedWarnings Foo7Sym1 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo7Sym1KindInference) GHC.Tuple.())
+    data Foo7Sym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 a0123456789876543210)
+      = forall arg. SameKind (Apply (Foo7Sym1 l) arg) (Foo7Sym2 l arg) =>
+        Foo7Sym1KindInference
+    type instance Apply (Foo7Sym1 l) l = Foo7 l l
+    instance SuppressUnusedWarnings Foo7Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo7Sym0KindInference) GHC.Tuple.())
+    data Foo7Sym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 a0123456789876543210))
+      = forall arg. SameKind (Apply Foo7Sym0 arg) (Foo7Sym1 arg) =>
+        Foo7Sym0KindInference
+    type instance Apply Foo7Sym0 l = Foo7Sym1 l
+    type Foo6Sym1 (t :: Maybe (Maybe a0123456789876543210)) = Foo6 t
+    instance SuppressUnusedWarnings Foo6Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo6Sym0KindInference) GHC.Tuple.())
+    data Foo6Sym0 (l :: TyFun (Maybe (Maybe a0123456789876543210)) (Maybe (Maybe a0123456789876543210)))
+      = forall arg. SameKind (Apply Foo6Sym0 arg) (Foo6Sym1 arg) =>
+        Foo6Sym0KindInference
+    type instance Apply Foo6Sym0 l = Foo6 l
+    type Foo5Sym1 (t :: Maybe (Maybe a0123456789876543210)) = Foo5 t
+    instance SuppressUnusedWarnings Foo5Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo5Sym0KindInference) GHC.Tuple.())
+    data Foo5Sym0 (l :: TyFun (Maybe (Maybe a0123456789876543210)) (Maybe (Maybe a0123456789876543210)))
+      = forall arg. SameKind (Apply Foo5Sym0 arg) (Foo5Sym1 arg) =>
+        Foo5Sym0KindInference
+    type instance Apply Foo5Sym0 l = Foo5 l
+    type Foo4Sym1 (t :: (a0123456789876543210, b0123456789876543210)) =
+        Foo4 t
+    instance SuppressUnusedWarnings Foo4Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo4Sym0KindInference) GHC.Tuple.())
+    data Foo4Sym0 (l :: TyFun (a0123456789876543210,
+                               b0123456789876543210) (b0123456789876543210, a0123456789876543210))
+      = forall arg. SameKind (Apply Foo4Sym0 arg) (Foo4Sym1 arg) =>
+        Foo4Sym0KindInference
+    type instance Apply Foo4Sym0 l = Foo4 l
+    type Foo3Sym1 (t :: Maybe a0123456789876543210) = Foo3 t
+    instance SuppressUnusedWarnings Foo3Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo3Sym0KindInference) GHC.Tuple.())
+    data Foo3Sym0 (l :: TyFun (Maybe a0123456789876543210) a0123456789876543210)
+      = forall arg. SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
+        Foo3Sym0KindInference
+    type instance Apply Foo3Sym0 l = Foo3 l
+    type Foo2Sym1 (t :: Maybe a0123456789876543210) = Foo2 t
+    instance SuppressUnusedWarnings Foo2Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo2Sym0KindInference) GHC.Tuple.())
+    data Foo2Sym0 (l :: TyFun (Maybe a0123456789876543210) a0123456789876543210)
+      = forall arg. SameKind (Apply Foo2Sym0 arg) (Foo2Sym1 arg) =>
+        Foo2Sym0KindInference
+    type instance Apply Foo2Sym0 l = Foo2 l
+    type Foo1Sym1 (t :: Maybe a0123456789876543210) = Foo1 t
+    instance SuppressUnusedWarnings Foo1Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Foo1Sym0KindInference) GHC.Tuple.())
+    data Foo1Sym0 (l :: TyFun (Maybe a0123456789876543210) a0123456789876543210)
+      = forall arg. SameKind (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
+        Foo1Sym0KindInference
+    type instance Apply Foo1Sym0 l = Foo1 l
+    type GSym1 t = G t
+    instance SuppressUnusedWarnings GSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) GSym0KindInference) GHC.Tuple.())
+    data GSym0 l
+      = forall arg. SameKind (Apply GSym0 arg) (GSym1 arg) =>
+        GSym0KindInference
+    type instance Apply GSym0 l = G l
+    type F3Sym1 t = F3 t
+    instance SuppressUnusedWarnings F3Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) F3Sym0KindInference) GHC.Tuple.())
+    data F3Sym0 l
+      = forall arg. SameKind (Apply F3Sym0 arg) (F3Sym1 arg) =>
+        F3Sym0KindInference
+    type instance Apply F3Sym0 l = F3 l
+    type F2Sym1 t = F2 t
+    instance SuppressUnusedWarnings F2Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) F2Sym0KindInference) GHC.Tuple.())
+    data F2Sym0 l
+      = forall arg. SameKind (Apply F2Sym0 arg) (F2Sym1 arg) =>
+        F2Sym0KindInference
+    type instance Apply F2Sym0 l = F2 l
+    type F1Sym1 t = F1 t
+    instance SuppressUnusedWarnings F1Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) F1Sym0KindInference) GHC.Tuple.())
+    data F1Sym0 l
+      = forall arg. SameKind (Apply F1Sym0 arg) (F1Sym1 arg) =>
+        F1Sym0KindInference
+    type instance Apply F1Sym0 l = F1 l
+    type family Foo8 (a :: Maybe a) :: Maybe a where
+      Foo8 (Just (wild_0123456789876543210 :: a) :: Maybe a) = Let0123456789876543210XSym1 wild_0123456789876543210
+    type family Foo7 (a :: a) (a :: b) :: a where
+      Foo7 (x :: a) (wild_0123456789876543210 :: b) = (x :: a)
+    type family Foo6 (a :: Maybe (Maybe a)) :: Maybe (Maybe a) where
+      Foo6 (Just x :: Maybe (Maybe a)) = Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
+    type family Foo5 (a :: Maybe (Maybe a)) :: Maybe (Maybe a) where
+      Foo5 (Just (Just (x :: a) :: Maybe a) :: Maybe (Maybe a)) = (Apply JustSym0 (Apply JustSym0 (x :: a) :: Maybe a) :: Maybe (Maybe a))
+    type family Foo4 (a :: (a, b)) :: (b, a) where
+      Foo4 a_0123456789876543210 = Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210
+    type family Foo3 (a :: Maybe a) :: a where
+      Foo3 (Just x) = (x :: a)
+    type family Foo2 (a :: Maybe a) :: a where
+      Foo2 (Just x :: Maybe a) = (x :: a)
+    type family Foo1 (a :: Maybe a) :: a where
+      Foo1 (Just x :: Maybe a) = (x :: a)
+    type family G a where
+      G x = Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
+    type family F3 a where
+      F3 (Just a :: Maybe Bool) = "hi"
+    type family F2 a where
+      F2 (x :: Maybe a) = (x :: Maybe a)
+    type family F1 a where
+      F1 (x :: Maybe Bool) = (x :: Maybe Bool)
+    sFoo8 ::
+      forall (t :: Maybe a). Sing t -> Sing (Apply Foo8Sym0 t :: Maybe a)
+    sFoo7 ::
+      forall (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply Foo7Sym0 t) t :: a)
+    sFoo6 ::
+      forall (t :: Maybe (Maybe a)).
+      Sing t -> Sing (Apply Foo6Sym0 t :: Maybe (Maybe a))
+    sFoo5 ::
+      forall (t :: Maybe (Maybe a)).
+      Sing t -> Sing (Apply Foo5Sym0 t :: Maybe (Maybe a))
+    sFoo4 ::
+      forall (t :: (a, b)). Sing t -> Sing (Apply Foo4Sym0 t :: (b, a))
+    sFoo3 ::
+      forall (t :: Maybe a). Sing t -> Sing (Apply Foo3Sym0 t :: a)
+    sFoo2 ::
+      forall (t :: Maybe a). Sing t -> Sing (Apply Foo2Sym0 t :: a)
+    sFoo1 ::
+      forall (t :: Maybe a). Sing t -> Sing (Apply Foo1Sym0 t :: a)
+    sG :: forall arg. Sing arg -> Sing (Apply GSym0 arg)
+    sF3 :: forall arg. Sing arg -> Sing (Apply F3Sym0 arg)
+    sF2 :: forall arg. Sing arg -> Sing (Apply F2Sym0 arg)
+    sF1 :: forall arg. Sing arg -> Sing (Apply F1Sym0 arg)
+    sFoo8
+      (SJust (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
+      = case
+            (GHC.Tuple.(,)
+               (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
+              (SJust
+                 (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
+        of {
+          GHC.Tuple.(,) (_ :: Sing (wild_0123456789876543210 :: a))
+                        (_ :: Sing (Just (wild_0123456789876543210 :: a) :: Maybe a))
+            -> let
+                 sX :: Sing (Let0123456789876543210XSym1 wild_0123456789876543210)
+                 sX
+                   = (applySing ((singFun1 @JustSym0) SJust))
+                       (sWild_0123456789876543210 ::
+                          Sing (wild_0123456789876543210 :: a)) ::
+                       Sing (Apply JustSym0 (wild_0123456789876543210 :: a) :: Maybe a)
+               in sX }
+    sFoo7
+      (sX :: Sing x)
+      (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
+      = case
+            (GHC.Tuple.(,) (sX :: Sing x))
+              (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
+        of {
+          GHC.Tuple.(,) (_ :: Sing (x :: a))
+                        (_ :: Sing (wild_0123456789876543210 :: b))
+            -> sX :: Sing (x :: a) }
+    sFoo6 (SJust (sX :: Sing x))
+      = case SJust (sX :: Sing x) of {
+          _ :: Sing (Just x :: Maybe (Maybe a))
+            -> let
+                 sScrutinee_0123456789876543210 ::
+                   Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
+                 sScrutinee_0123456789876543210 = sX :: Sing (x :: Maybe a)
+               in  case sScrutinee_0123456789876543210 of {
+                     SJust (sY :: Sing y)
+                       -> case (GHC.Tuple.(,) (sY :: Sing y)) (SJust (sY :: Sing y)) of {
+                            GHC.Tuple.(,) (_ :: Sing (y :: a))
+                                          (_ :: Sing (Just (y :: a) :: Maybe a))
+                              -> (applySing ((singFun1 @JustSym0) SJust))
+                                   ((applySing ((singFun1 @JustSym0) SJust))
+                                      (sY :: Sing (y :: a)) ::
+                                      Sing (Apply JustSym0 (y :: a) :: Maybe a)) } } ::
+                     Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x) :: Maybe (Maybe a)) }
+    sFoo5 (SJust (SJust (sX :: Sing x)))
+      = case
+            ((GHC.Tuple.(,,) (sX :: Sing x)) (SJust (sX :: Sing x)))
+              (SJust (SJust (sX :: Sing x)))
+        of {
+          GHC.Tuple.(,,) (_ :: Sing (x :: a))
+                         (_ :: Sing (Just (x :: a) :: Maybe a))
+                         (_ :: Sing (Just (Just (x :: a) :: Maybe a) :: Maybe (Maybe a)))
+            -> (applySing ((singFun1 @JustSym0) SJust))
+                 ((applySing ((singFun1 @JustSym0) SJust)) (sX :: Sing (x :: a)) ::
+                    Sing (Apply JustSym0 (x :: a) :: Maybe a)) ::
+                 Sing (Apply JustSym0 (Apply JustSym0 (x :: a) :: Maybe a) :: Maybe (Maybe a)) }
+    sFoo4 (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      = (applySing
+           ((singFun1
+               @(Apply Lambda_0123456789876543210Sym0 a_0123456789876543210))
+              (\ sArg_0123456789876543210
+                 -> case sArg_0123456789876543210 of {
+                      _ :: Sing arg_0123456789876543210
+                        -> case sArg_0123456789876543210 of {
+                             STuple2 (sX :: Sing x) (sY :: Sing y)
+                               -> case (GHC.Tuple.(,) (sX :: Sing x)) (sY :: Sing y) of {
+                                    GHC.Tuple.(,) (_ :: Sing (x :: a)) (_ :: Sing (y :: b))
+                                      -> (applySing
+                                            ((applySing ((singFun2 @Tuple2Sym0) STuple2))
+                                               (sY :: Sing (y :: b))))
+                                           (sX :: Sing (x :: a)) } } ::
+                             Sing (Case_0123456789876543210 arg_0123456789876543210 a_0123456789876543210 arg_0123456789876543210) })))
+          sA_0123456789876543210
+    sFoo3 (SJust (sX :: Sing x)) = sX :: Sing (x :: a)
+    sFoo2 (SJust (sX :: Sing x))
+      = case SJust (sX :: Sing x) of {
+          _ :: Sing (Just x :: Maybe a) -> sX :: Sing (x :: a) }
+    sFoo1 (SJust (sX :: Sing x))
+      = case SJust (sX :: Sing x) of {
+          _ :: Sing (Just x :: Maybe a) -> sX :: Sing (x :: a) }
+    sG (sX :: Sing x)
+      = let
+          sScrutinee_0123456789876543210 ::
+            Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
+          sScrutinee_0123456789876543210
+            = (applySing ((singFun1 @JustSym0) SJust)) sX
+        in  case sScrutinee_0123456789876543210 of {
+              SJust (sY :: Sing y)
+                -> case SJust (sY :: Sing y) of {
+                     _ :: Sing (Just y :: Maybe Bool) -> sY :: Sing (y :: Bool) } } ::
+              Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x))
+    sF3 (SJust (sA :: Sing a))
+      = case SJust (sA :: Sing a) of {
+          _ :: Sing (Just a :: Maybe Bool) -> sing :: Sing "hi" }
+    sF2 (sX :: Sing x)
+      = case sX :: Sing x of {
+          _ :: Sing (x :: Maybe a) -> sX :: Sing (x :: Maybe a) }
+    sF1 (sX :: Sing x)
+      = case sX :: Sing x of {
+          _ :: Sing (x :: Maybe Bool) -> sX :: Sing (x :: Maybe Bool) }
