@@ -555,6 +555,8 @@ The following constructs are fully supported:
 * lambda expressions
 * `!` and `~` patterns (silently but successfully ignored during promotion)
 * class and instance declarations
+* scoped type variables
+* signatures (e.g., `(x :: Maybe a)`) in expressions and patterns
 * higher-kinded type variables (see below)
 * functional dependencies (with limitations -- see below)
 
@@ -579,7 +581,6 @@ using the `DerivingStrategies` extension.
 
 The following constructs are supported for promotion but not singleton generation:
 
-* scoped type variables
 * overlapping patterns. Note that overlapping patterns are
   sometimes not obvious. For example, the `filter` function does not
   singletonize due
