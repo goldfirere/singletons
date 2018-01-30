@@ -63,7 +63,7 @@ class SingI (a :: k) where
 --
 -- As a __pattern__: Matches on an explicit @Sing a@ witness bringing
 -- an implicit @SingI a@ constraint into scope.
-pattern Sing :: forall (a :: k). () => SingI a => Sing a
+pattern Sing :: forall k (a :: k). () => SingI a => Sing a
 pattern Sing <- (singInstance -> SingInstance)
   where Sing = sing
 
@@ -153,7 +153,7 @@ data SingInstance (a :: k) where
 newtype DI a = Don'tInstantiate (SingI a => SingInstance a)
 
 -- | Get an implicit singleton (a 'SingI' instance) from an explicit one.
-singInstance :: forall (a :: k). Sing a -> SingInstance a
+singInstance :: forall k (a :: k). Sing a -> SingInstance a
 singInstance s = with_sing_i SingInstance
   where
     with_sing_i :: (SingI a => SingInstance a) -> SingInstance a
@@ -239,7 +239,7 @@ newtype instance Sing (f :: k1 ~> k2) =
   SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
 
 -- | An infix synonym for `applySing`
-(@@) :: forall (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)
+(@@) :: forall k1 k2 (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)
 (@@) = applySing
 
 -- | Note that this instance's 'toSing' implementation crucially relies on the fact
@@ -401,7 +401,7 @@ withSing f = f sing
 -- property.  If the singleton does not satisfy the property, then the function
 -- returns 'Nothing'. The property is expressed in terms of the underlying
 -- representation of the singleton.
-singThat :: forall (a :: k). (SingKind k, SingI a)
+singThat :: forall k (a :: k). (SingKind k, SingI a)
          => (Demote k -> Bool) -> Maybe (Sing a)
 singThat p = withSing $ \x -> if p (fromSing x) then Just x else Nothing
 
