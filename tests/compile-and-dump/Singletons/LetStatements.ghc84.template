@@ -718,8 +718,9 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo14 ::
       forall (t :: Nat). Sing t -> Sing (Apply Foo14Sym0 t :: (Nat, Nat))
     sFoo13_ ::
-      forall (t :: a). Sing t -> Sing (Apply Foo13_Sym0 t :: a)
-    sFoo13 :: forall (t :: a). Sing t -> Sing (Apply Foo13Sym0 t :: a)
+      forall a (t :: a). Sing t -> Sing (Apply Foo13_Sym0 t :: a)
+    sFoo13 ::
+      forall a (t :: a). Sing t -> Sing (Apply Foo13Sym0 t :: a)
     sFoo12 ::
       forall (t :: Nat). Sing t -> Sing (Apply Foo12Sym0 t :: Nat)
     sFoo11 ::

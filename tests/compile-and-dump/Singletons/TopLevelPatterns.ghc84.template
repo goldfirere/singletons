@@ -212,7 +212,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     sFalse_ :: Sing False_Sym0
     sNot ::
       forall (t :: Bool). Sing t -> Sing (Apply NotSym0 t :: Bool)
-    sId :: forall (t :: a). Sing t -> Sing (Apply IdSym0 t :: a)
+    sId :: forall a (t :: a). Sing t -> Sing (Apply IdSym0 t :: a)
     sF :: forall (t :: Bool). Sing t -> Sing (Apply FSym0 t :: Bool)
     sG :: forall (t :: Bool). Sing t -> Sing (Apply GSym0 t :: Bool)
     sH :: forall (t :: Bool). Sing t -> Sing (Apply HSym0 t :: Bool)

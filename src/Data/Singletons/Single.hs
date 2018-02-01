@@ -34,6 +34,8 @@ import Language.Haskell.TH.Desugar
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Data.Maybe
+import qualified Data.Set as Set
+import Data.Set ( Set )
 import Control.Monad
 import Data.List
 import qualified GHC.LanguageExtensions.Type as LangExt
@@ -302,22 +304,26 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                             , lde_types = meth_sigs
                                             , lde_infix = fixities
                                             , lde_proms = promoted_defaults } }) = do
-  (sing_sigs, _, tyvar_names, res_kis)
-    <- unzip4 <$> zipWithM (singTySig no_meth_defns meth_sigs)
-                           meth_names (map promoteValRhs meth_names)
-  let default_sigs = catMaybes $ zipWith3 mk_default_sig meth_names sing_sigs res_kis
-      res_ki_map   = Map.fromList (zip meth_names
-                                       (map (fromMaybe always_sig) res_kis))
-  sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList tyvar_names)
-                                             res_ki_map))
-                     (Map.toList default_defns)
-  fixities' <- traverse (uncurry singInfixDecl) fixities
-  cls_cxt' <- mapM singPred cls_cxt
-  return $ DClassD cls_cxt'
-                   (singClassName cls_name)
-                   cls_tvbs
-                   cls_fundeps   -- they are fine without modification
-                   (map DLetDec (sing_sigs ++ sing_meths ++ fixities') ++ default_sigs)
+  let cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
+      cls_tvb_names = Set.fromList $ map extractTvbName cls_tvbs
+  bindKindVars (cls_kvb_names `Set.union` cls_tvb_names) $ do
+    (sing_sigs, _, tyvar_names, kvs_to_bind, res_kis)
+      <- unzip5 <$> zipWithM (singTySig no_meth_defns meth_sigs)
+                             meth_names (map promoteValRhs meth_names)
+    let default_sigs = catMaybes $ zipWith3 mk_default_sig meth_names sing_sigs res_kis
+        res_ki_map   = Map.fromList (zip meth_names
+                                         (map (fromMaybe always_sig) res_kis))
+    sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList tyvar_names)
+                                               (Map.fromList kvs_to_bind)
+                                               res_ki_map))
+                       (Map.toList default_defns)
+    fixities' <- traverse (uncurry singInfixDecl) fixities
+    cls_cxt' <- mapM singPred cls_cxt
+    return $ DClassD cls_cxt'
+                     (singClassName cls_name)
+                     cls_tvbs
+                     cls_fundeps   -- they are fine without modification
+                     (map DLetDec (sing_sigs ++ sing_meths ++ fixities') ++ default_sigs)
   where
     no_meth_defns = error "Internal error: can't find declared method type"
     always_sig    = error "Internal error: no signature for default method"
@@ -343,14 +349,15 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
 
 singInstD :: AInstDecl -> SgM DDec
 singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
-                    , id_arg_tys = inst_tys, id_meths = ann_meths }) = do
-  cxt' <- mapM singPred cxt
-  inst_kis <- mapM promoteType inst_tys
-  meths <- concatMapM (uncurry sing_meth) ann_meths
-  return (DInstanceD Nothing
-                     cxt'
-                     (foldl DAppT (DConT s_inst_name) inst_kis)
-                     meths)
+                    , id_arg_tys = inst_tys, id_meths = ann_meths }) =
+  bindKindVars (foldMap fvDType inst_tys) $ do
+    cxt' <- mapM singPred cxt
+    inst_kis <- mapM promoteType inst_tys
+    meths <- concatMapM (uncurry sing_meth) ann_meths
+    return (DInstanceD Nothing
+                       cxt'
+                       (foldl DAppT (DConT s_inst_name) inst_kis)
+                       meths)
 
   where
     s_inst_name = singClassName inst_name
@@ -360,29 +367,35 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
       mb_s_info <- dsReify (singValName name)
       inst_kis <- mapM promoteType inst_tys
       let mk_subst cls_tvbs = Map.fromList (zip (map extractTvbName cls_tvbs) inst_kis)
-      (s_ty, tyvar_names, m_res_ki) <- case mb_s_info of
+      (s_ty, tyvar_names, kvs_to_bind, m_res_ki) <- case mb_s_info of
         Just (DVarI _ (DForallT cls_tvbs _cls_pred s_ty) _) -> do
           let subst = mk_subst cls_tvbs
               (sing_tvbs, _pred, _args, res_ty) = unravel s_ty
+              sing_tvb_kvs = foldMap (foldMap fvDType . extractTvbKind) sing_tvbs
               m_res_ki = case res_ty of
                 _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substKind subst res_ki)
                 _                                         -> Nothing
 
-          return (substType subst s_ty, map extractTvbName sing_tvbs, m_res_ki)
+          return (substType subst s_ty, map extractTvbName sing_tvbs, sing_tvb_kvs, m_res_ki)
         _ -> do
           mb_info <- dsReify name
           case mb_info of
             Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _) -> do
               let subst = mk_subst cls_tvbs
+                  cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
+                  cls_tvb_names = Set.fromList $ map extractTvbName cls_tvbs
               -- Make sure to expand through type synonyms here! Not doing so
               -- resulted in #167.
               raw_ty <- expand inner_ty
-              (s_ty, _num_args, tyvar_names, res_ki) <- singType (promoteValRhs name) raw_ty
-              return (substType subst s_ty, tyvar_names, Just (substKind subst res_ki))
+              (s_ty, _num_args, tyvar_names, kvs_to_bind, res_ki)
+                <- bindKindVars (cls_kvb_names `Set.union` cls_tvb_names) $
+                   singType (promoteValRhs name) raw_ty
+              return (substType subst s_ty, tyvar_names, kvs_to_bind, Just (substKind subst res_ki))
             _ -> fail $ "Cannot find type of method " ++ show name
 
       let kind_map = maybe Map.empty (Map.singleton name) m_res_ki
       meth' <- singLetDecRHS (Map.singleton name tyvar_names)
+                             (Map.singleton name kvs_to_bind)
                              kind_map name rhs
       return $ map DLetDec [DSigD (singValName name) s_ty, meth']
 
@@ -393,13 +406,15 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
                          , lde_proms = proms })
               thing_inside = do
   let prom_list = Map.toList proms
-  (typeSigs, letBinds, tyvarNames, res_kis)
-    <- unzip4 <$> mapM (uncurry (singTySig defns types)) prom_list
+  (typeSigs, letBinds, tyvarNames, kvs_to_bind, res_kis)
+    <- unzip5 <$> mapM (uncurry (singTySig defns types)) prom_list
   infix_decls' <- traverse (uncurry singInfixDecl) infix_decls
   let res_ki_map = Map.fromList [ (name, res_ki) | ((name, _), Just res_ki)
                                                      <- zip prom_list res_kis ]
   bindLets letBinds $ do
-    let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList tyvarNames) res_ki_map))
+    let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList tyvarNames)
+                                             (Map.fromList kvs_to_bind)
+                                             res_ki_map))
                      (Map.toList defns)
     thing <- thing_inside
     return (infix_decls' ++ typeSigs ++ let_decs, thing)
@@ -410,6 +425,7 @@ singTySig :: Map Name ALetDecRHS  -- definitions
           -> SgM ( DLetDec               -- the new type signature
                  , (Name, DExp)          -- the let-bind entry
                  , (Name, [Name])        -- the scoped tyvar names in the tysig
+                 , (Name, Set Name)
                  , Maybe DKind           -- the result kind in the tysig
                  )
 singTySig defns types name prom_ty =
@@ -421,12 +437,14 @@ singTySig defns types name prom_ty =
       return ( DSigD sName sty
              , (name, wrapSingFun num_args prom_ty (DVarE sName))
              , (name, tyvar_names)
+             , (name, Set.empty)
              , Nothing )
     Just ty -> do
-      (sty, num_args, tyvar_names, res_ki) <- singType prom_ty ty
+      (sty, num_args, tyvar_names, kvs_to_bind, res_ki) <- singType prom_ty ty
       return ( DSigD sName sty
              , (name, wrapSingFun num_args prom_ty (DVarE sName))
              , (name, tyvar_names)
+             , (name, kvs_to_bind)
              , Just res_ki )
   where
     guess_num_args :: SgM Int
@@ -447,19 +465,24 @@ singTySig defns types name prom_ty =
              , arg_names )
 
 singLetDecRHS :: Map Name [Name]
+              -> Map Name (Set Name)
               -> Map Name DKind   -- result kind (might not be known)
               -> Name -> ALetDecRHS -> SgM DLetDec
-singLetDecRHS _bound_names res_kis name (AValue prom num_arrows exp) =
-  DValD (DVarPa (singValName name)) <$>
-  (wrapUnSingFun num_arrows prom <$> singExp exp (Map.lookup name res_kis))
-singLetDecRHS bound_names res_kis name (AFunction prom_fun num_arrows clauses) =
-  let tyvar_names = case Map.lookup name bound_names of
-                      Nothing -> []
-                      Just ns -> ns
-      res_ki = Map.lookup name res_kis
-  in
-  DFunD (singValName name) <$>
-        mapM (singClause prom_fun num_arrows tyvar_names res_ki) clauses
+singLetDecRHS bound_names kvs_to_bind res_kis name =
+  bindKindVars (fromMaybe Set.empty (Map.lookup name kvs_to_bind)) . go
+  where
+    go :: ALetDecRHS -> SgM DLetDec
+    go (AValue prom num_arrows exp) =
+      DValD (DVarPa (singValName name)) <$>
+      (wrapUnSingFun num_arrows prom <$> singExp exp (Map.lookup name res_kis))
+    go (AFunction prom_fun num_arrows clauses) =
+      let tyvar_names = case Map.lookup name bound_names of
+                          Nothing -> []
+                          Just ns -> ns
+          res_ki = Map.lookup name res_kis
+      in
+      DFunD (singValName name) <$>
+            mapM (singClause prom_fun num_arrows tyvar_names res_ki) clauses
 
 singClause :: DType   -- the promoted function
            -> Int     -- the number of arrows in the type. If this is more

@@ -168,7 +168,7 @@ singCtor (DCon _tvbs cxt name fields _rty)
                 (Just (DConT singFamilyName `DAppT` foldType pCon indices))
   where buildArgType :: DType -> DType -> SgM DType
         buildArgType ty index = do
-          (ty', _, _, _) <- singType index ty
+          (ty', _, _, _, _) <- singType index ty
           return ty'
 
         isEqPred :: DPred -> Bool

@@ -10,6 +10,8 @@ module Data.Singletons.Single.Type where
 
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
+import qualified Data.Set as Set
+import Data.Set (Set)
 import Data.Singletons.Names
 import Data.Singletons.Single.Monad
 import Data.Singletons.Promote.Type
@@ -21,6 +23,8 @@ singType :: DType          -- the promoted version of the thing classified by...
          -> SgM ( DType    -- the singletonized type
                 , Int      -- the number of arguments
                 , [Name]   -- the names of the tyvars used in the sing'd type
+                , Set Name -- the set of kind variables this type signature binds
+                           -- see Note [Explicitly binding kind variables] in Data.Singletons.Single.Monad
                 , DKind )  -- the kind of the result type
 singType prom ty = do
   let (_, cxt, args, res) = unravel ty
@@ -28,13 +32,18 @@ singType prom ty = do
   cxt' <- mapM singPred cxt
   arg_names <- replicateM num_args (qNewName "t")
   prom_args <- mapM promoteType args
+  bound_kv_names <- allBoundKindVars
+  -- Make sure to subtract out the bound variables currently in scope, lest we
+  -- accidentally shadow them in this type signature.
+  let kv_names_to_bind = foldMap fvDType prom_args Set.\\ bound_kv_names
+      kvs_to_bind      = Set.toList kv_names_to_bind
   prom_res  <- promoteType res
   let args' = map (\n -> singFamily `DAppT` (DVarT n)) arg_names
       res'  = singFamily `DAppT` (foldl apply prom (map DVarT arg_names) `DSigT` prom_res)
       tau   = ravel args' res'
-  let ty' = DForallT (zipWith DKindedTV arg_names prom_args)
+  let ty' = DForallT (map DPlainTV kvs_to_bind ++ zipWith DKindedTV arg_names prom_args)
                      cxt' tau
-  return (ty', num_args, arg_names, prom_res)
+  return (ty', num_args, arg_names, kv_names_to_bind, prom_res)
 
 singPred :: DPred -> SgM DPred
 singPred = singPredRec []
