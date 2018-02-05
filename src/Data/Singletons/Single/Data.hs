@@ -12,6 +12,7 @@ module Data.Singletons.Single.Data where
 
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
+import qualified Data.Set as Set
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
 import Data.Singletons.Single.Fixity
@@ -141,8 +142,9 @@ singCtor (DCon _tvbs cxt name fields _rty)
   indexNames <- mapM (const $ qNewName "n") types
   let indices = map DVarT indexNames
   kinds <- mapM promoteType types
-  args <- zipWithM buildArgType types indices
-  let tvbs = zipWith DKindedTV indexNames kinds
+  let bound_kvs = foldMap fvDType kinds
+  args <- bindKindVars bound_kvs $ zipWithM buildArgType types indices
+  let tvbs = map DPlainTV (Set.toList bound_kvs) ++ zipWith DKindedTV indexNames kinds
       kindedIndices = zipWith DSigT indices kinds
 
   -- SingI instance

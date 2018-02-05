@@ -33,7 +33,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply MkFoo3Sym0 l = MkFoo3 l
     data instance Sing (z :: Foo1 a)
       where
-        SMkFoo1 :: forall (n :: a). (Sing (n :: a)) -> Sing (MkFoo1 n)
+        SMkFoo1 :: forall a (n :: a). (Sing (n :: a)) -> Sing (MkFoo1 n)
     type SFoo1 = (Sing :: Foo1 a -> Type)
     instance SingKind a => SingKind (Foo1 a) where
       type Demote (Foo1 a) = Foo1 (Demote a)
@@ -43,7 +43,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SMkFoo1 c) }
     data instance Sing (z :: Foo2 a)
       where
-        SMkFoo2 :: forall (n :: x). (Sing (n :: x)) -> Sing (MkFoo2 n)
+        SMkFoo2 :: forall x (n :: x). (Sing (n :: x)) -> Sing (MkFoo2 n)
     type SFoo2 = (Sing :: Foo2 a -> Type)
     instance SingKind a => SingKind (Foo2 a) where
       type Demote (Foo2 a) = Foo2 (Demote a)
@@ -53,7 +53,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SMkFoo2 c) }
     data instance Sing (z :: Foo3 a)
       where
-        SMkFoo3 :: forall (n :: x). (Sing (n :: x)) -> Sing (MkFoo3 n)
+        SMkFoo3 :: forall x (n :: x). (Sing (n :: x)) -> Sing (MkFoo3 n)
     type SFoo3 = (Sing :: Foo3 a -> Type)
     instance SingKind a => SingKind (Foo3 a) where
       type Demote (Foo3 a) = Foo3 (Demote a)

@@ -33,14 +33,15 @@ singType prom ty = do
   arg_names <- replicateM num_args (qNewName "t")
   prom_args <- mapM promoteType args
   bound_kv_names <- allBoundKindVars
-  -- Make sure to subtract out the bound variables currently in scope, lest we
-  -- accidentally shadow them in this type signature.
-  let kv_names_to_bind = foldMap fvDType prom_args Set.\\ bound_kv_names
-      kvs_to_bind      = Set.toList kv_names_to_bind
   prom_res  <- promoteType res
   let args' = map (\n -> singFamily `DAppT` (DVarT n)) arg_names
       res'  = singFamily `DAppT` (foldl apply prom (map DVarT arg_names) `DSigT` prom_res)
       tau   = ravel args' res'
+      -- Make sure to subtract out the bound variables currently in scope, lest we
+      -- accidentally shadow them in this type signature.
+      kv_names_to_bind = foldMap fvDType (prom_args ++ map predToType cxt' ++ [prom_res])
+                             Set.\\ bound_kv_names
+      kvs_to_bind      = Set.toList kv_names_to_bind
   let ty' = DForallT (map DPlainTV kvs_to_bind ++ zipWith DKindedTV arg_names prom_args)
                      cxt' tau
   return (ty', num_args, arg_names, kv_names_to_bind, prom_res)

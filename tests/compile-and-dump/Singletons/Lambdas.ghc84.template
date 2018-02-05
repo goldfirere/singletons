@@ -679,7 +679,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
           sA_0123456789876543210
     data instance Sing (z :: Foo a b)
       where
-        SFoo :: forall (n :: a) (n :: b).
+        SFoo :: forall a b (n :: a) (n :: b).
                 (Sing (n :: a)) -> (Sing (n :: b)) -> Sing (Foo n n)
     type SFoo = (Sing :: Foo a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind (Foo a b) where

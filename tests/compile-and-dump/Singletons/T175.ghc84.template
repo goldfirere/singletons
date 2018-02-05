@@ -32,7 +32,7 @@ Singletons/T175.hs:(0,0)-(0,0): Splicing declarations
       type Quux1 :: a
       type Quux1 = Quux1_0123456789876543210Sym0
     class PFoo a => PBar2 (a :: GHC.Types.Type)
-    sQuux2 :: SBar2 a => Sing (Quux2Sym0 :: a)
+    sQuux2 :: forall a. SBar2 a => Sing (Quux2Sym0 :: a)
     sQuux2 = sBaz
     class SFoo a where
       sBaz :: Sing (BazSym0 :: a)
