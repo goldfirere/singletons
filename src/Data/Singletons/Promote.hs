@@ -28,6 +28,7 @@ import Data.Singletons.Util
 import Data.Singletons.Syntax
 import Prelude hiding (exp)
 import Control.Applicative (Alternative(..))
+import Control.Arrow (second)
 import Control.Monad
 import Control.Monad.Trans.Class (MonadTrans(..))
 import Control.Monad.Trans.Maybe
@@ -644,10 +645,10 @@ promotePat (DConPa name pats) = do
       | otherwise                                  = n
 promotePat (DTildePa pat) = do
   qReportWarning "Lazy pattern converted into regular pattern in promotion"
-  fmap ADTildePa <$> promotePat pat
+  second ADTildePa <$> promotePat pat
 promotePat (DBangPa pat) = do
   qReportWarning "Strict pattern converted into regular pattern in promotion"
-  fmap ADBangPa <$> promotePat pat
+  second ADBangPa <$> promotePat pat
 promotePat (DSigPa pat ty) = do
   -- We must maintain the invariant that any promoted pattern signature must
   -- not have any wildcards in the underlying pattern.
