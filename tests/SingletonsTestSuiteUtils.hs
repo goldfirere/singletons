@@ -6,83 +6,46 @@ module SingletonsTestSuiteUtils (
    compileAndDumpTest
  , compileAndDumpStdTest
  , testCompileAndDumpGroup
- , cabalArgs
+ , ghcOpts
  , cleanFiles
- , RootDir(..)
  ) where
 
+import Build_singletons   ( ghcPath, ghcFlags, rootDir          )
 import Control.Exception  ( Exception, throw                    )
 import Data.List          ( intercalate                         )
 import System.Exit        ( ExitCode(..)                        )
-import System.FilePath    ( (</>), pathSeparator, takeBaseName  )
+import System.FilePath    ( takeBaseName, pathSeparator         )
 import System.IO          ( IOMode(..), hGetContents, openFile  )
+import System.FilePath    ( (</>)                               )
 import System.Process     ( CreateProcess(..), StdStream(..)
                           , createProcess, proc, waitForProcess
                           , callCommand                         )
 import Test.Tasty         ( TestTree, testGroup                 )
 import Test.Tasty.Golden  ( goldenVsFileDiff                    )
-import Test.Tasty.Options ( IsOption(..)                        )
-
-{-
-We augment the normal @tasty@ command-line options with one extra option:
-rootdir, which allows a user to specify where the @singletons.cabal@ file
-lives. One might think this would be unnecessary, since 90% of the time, a
-user is going to run the tests from that very directory. But in a new-build
-world, this assumption doesn't always hold true. In fact, it doesn't when
-we test this very library on Travis, as we invoke the tests from a directory
-/above/ the one that contains @singletons.cabal@!
-
-Despite my best efforts, I (RGS) have not found a reliable way to automatically
-detect where this directory lives, so in these 10% of cases, the simplest
-solution is to allow the user to tell the test suite where this directory is
-using a --rootdir flag. The code below accomplishes this.
--}
-newtype RootDir = RootDir FilePath
-  deriving stock Show
-  deriving newtype (Eq, Ord)
-
-instance IsOption RootDir where
-  defaultValue = RootDir "."
-  parseValue = Just . RootDir
-  optionName = pure "rootdir"
-  optionHelp = pure "Where singletons.cabal lives"
 
 -- Some infractructure for handling external process errors
 newtype ProcessException = ProcessException String
   deriving newtype (Eq, Ord, Show)
   deriving anyclass Exception
 
-
--- cabal executable name (if on path) or full path
-cabalPath :: FilePath
-cabalPath = "cabal"
-
--- The secret sauce to invoking ghc using a new-style store.
-cabalArgs :: FilePath -> [String]
-cabalArgs rootDir =
-  [ "new-exec"
-  , "ghc"
-  , "--"
-  ] ++ ghcOpts rootDir
-
 -- directory storing compile-and-run tests and golden files
-goldenPath :: FilePath -> FilePath
-goldenPath rootDir = rootDir </> "tests/compile-and-dump/"
+goldenPath :: FilePath
+goldenPath = rootDir </> "tests/compile-and-dump/"
 
 ghcVersion :: String
 ghcVersion = ".ghc84"
 
 -- GHC options used when running the tests
-ghcOpts :: FilePath -> [String]
-ghcOpts rootDir =
-  [ "-v0"
+ghcOpts :: [String]
+ghcOpts = ghcFlags ++ [
+    "-v0"
   , "-c"
   , "-ddump-splices"
   , "-dsuppress-uniques"
   , "-fforce-recomp"
   , "-fprint-explicit-kinds"
   , "-O0"
-  , "-i" ++ rootDir </> "tests/compile-and-dump"
+  , "-i" ++ goldenPath
   , "-XTemplateHaskell"
   , "-XDataKinds"
   , "-XKindSignatures"
@@ -115,8 +78,8 @@ ghcOpts rootDir =
 --
 -- First parameter is a path to the test file relative to goldenPath directory
 -- with no ".hs".
-compileAndDumpTest :: FilePath -> FilePath -> [String] -> TestTree
-compileAndDumpTest rootDir testName opts =
+compileAndDumpTest :: FilePath -> [String] -> TestTree
+compileAndDumpTest testName opts =
     goldenVsFileDiff
       (takeBaseName testName)
       (\ref new -> ["diff", "-w", "-B", ref, new]) -- see Note [Diff options]
@@ -124,22 +87,21 @@ compileAndDumpTest rootDir testName opts =
       actualFilePath
       compileWithGHC
   where
-    goldenDir        = goldenPath rootDir
     testPath         = testName ++ ".hs"
-    templateFilePath = goldenDir ++ testName ++ ghcVersion ++ ".template"
-    goldenFilePath   = goldenDir ++ testName ++ ".golden"
-    actualFilePath   = goldenDir ++ testName ++ ".actual"
+    templateFilePath = goldenPath ++ testName ++ ghcVersion ++ ".template"
+    goldenFilePath   = goldenPath ++ testName ++ ".golden"
+    actualFilePath   = goldenPath ++ testName ++ ".actual"
 
     compileWithGHC :: IO ()
     compileWithGHC = do
       hActualFile <- openFile actualFilePath WriteMode
-      (_, _, _, pid) <- createProcess (proc cabalPath (opts ++ [testPath]))
+      (_, _, _, pid) <- createProcess (proc ghcPath (testPath : opts))
                                               { std_out = UseHandle hActualFile
                                               , std_err = UseHandle hActualFile
-                                              , cwd     = Just goldenDir }
+                                              , cwd     = Just goldenPath }
       _ <- waitForProcess pid      -- see Note [Ignore exit code]
       filterWithSed actualFilePath -- see Note [Normalization with sed]
-      buildGoldenFile rootDir templateFilePath goldenFilePath
+      buildGoldenFile templateFilePath goldenFilePath
       return ()
 
 -- Compile-and-dump test using standard GHC options defined by the testsuite.
@@ -147,10 +109,9 @@ compileAndDumpTest rootDir testName opts =
 -- extension) and directory where the test is located (relative to
 -- goldenPath). Test name and path are passed separately so that this function
 -- can be used easily with testCompileAndDumpGroup.
-compileAndDumpStdTest :: FilePath -> FilePath -> FilePath -> TestTree
-compileAndDumpStdTest rootDir testName testPath =
-    compileAndDumpTest rootDir (testPath ++ (pathSeparator : testName)) $
-    cabalArgs rootDir
+compileAndDumpStdTest :: FilePath -> FilePath -> TestTree
+compileAndDumpStdTest testName testPath =
+    compileAndDumpTest (testPath ++ (pathSeparator : testName)) ghcOpts
 
 -- A convenience function for defining a group of compile-and-dump tests stored
 -- in the same subdirectory. It takes the name of subdirectory and list of
@@ -218,11 +179,11 @@ filterWithSed file = runProcessWithOpts CreatePipe "sed"
   , file
   ]
 
-buildGoldenFile :: FilePath -> FilePath -> FilePath -> IO ()
-buildGoldenFile rootDir templateFilePath goldenFilePath = do
+buildGoldenFile :: FilePath -> FilePath -> IO ()
+buildGoldenFile templateFilePath goldenFilePath = do
   hGoldenFile <- openFile goldenFilePath WriteMode
   runProcessWithOpts (UseHandle hGoldenFile) "awk"
-            [ "-f", rootDir </> "tests/compile-and-dump/buildGoldenFiles.awk"
+            [ "-f", goldenPath </> "buildGoldenFiles.awk"
             , templateFilePath
             ]
 
@@ -240,5 +201,5 @@ runProcessWithOpts stdout program opts = do
                                 -- a corner case so probably not worth it.
        throw $ ProcessException ("Error when running " ++ program ++ ":\n" ++ err)
 
-cleanFiles :: FilePath -> IO ()
-cleanFiles rootDir = callCommand $ "rm -f " ++ rootDir </> "tests/compile-and-dump/*/*.{hi,o}"
+cleanFiles :: IO ()
+cleanFiles = callCommand $ "rm -f " ++ rootDir </> "tests/compile-and-dump/*/*.{hi,o}"
