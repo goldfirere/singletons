@@ -30,15 +30,10 @@ tests:
       make clean-tests
       ```
 
- * Running the testsuite currently requires `cabal-install-2.1` later, as it
-   makes extensive use of the `new-exec` feature to invoke `ghc` using the
-   in-tree `singletons` library. Make sure this version of `cabal` is on your
-   `PATH` before invoking the tests.
-
-   Running the testsuite also requires `awk`, `sed` and `diff`. `awk` is used
-   to generate golden files from templates (see below). `sed` is used to
-   normalize output from GHC (see Note [Normalization with sed]).`diff` is used
-   to compare golden and actual files.
+ * Running the testsuite requires `awk`, `sed` and `diff`. `awk` is used to
+   generate golden files from templates (see below). `sed` is used to normalize
+   output from GHC (see Note [Normalization with sed]).`diff` is used to compare
+   golden and actual files.
 
  * Each compile-and-dump test requires a set of GHC options to be used for
    compilation. Testsuite defines a default set of options that enable on the

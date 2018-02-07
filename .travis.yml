@@ -106,13 +106,7 @@ script:
 
   # build & run tests, build benchmarks
   - cabal new-build ${TARGETS}
-  - |
-    if [ "x$TEST" = "x--enable-tests" ]; then
-      # Why not use `cabal new-test` here? Sadly, it's because `new-test` does
-      # not yet support passing arguments to test suite executables.
-      # See https://github.com/haskell/cabal/issues/4643.
-      CMD="$(find dist-newstyle -type f -iname "singletons-test-suite" -print -quit)" && ${CMD} --rootdir singletons-2.5
-    fi
+  - if [ "x$TEST" = "x--enable-tests" ]; then cabal new-test -w ${HC} ${TEST} ${BENCH} all; fi
 
   # cabal check
   - (cd singletons-* && cabal check)
