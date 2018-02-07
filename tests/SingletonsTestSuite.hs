@@ -4,14 +4,10 @@ module Main (
 
 import Test.Tasty               ( TestTree, defaultMain, testGroup          )
 import SingletonsTestSuiteUtils ( compileAndDumpStdTest, compileAndDumpTest
-                                , testCompileAndDumpGroup, ghcOpts
-                             --   , cleanFiles
-                                )
+                                , testCompileAndDumpGroup, ghcOpts          )
 
 main :: IO ()
-main = do
---  cleanFiles    We really need to parallelize the testsuite.
-  defaultMain tests
+main = defaultMain tests
 
 tests :: TestTree
 tests =
