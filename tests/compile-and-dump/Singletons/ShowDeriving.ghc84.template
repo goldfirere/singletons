@@ -237,13 +237,13 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing MkFoo1 = SomeSing SMkFoo1
     data instance Sing (z :: Foo2 a)
       where
-        SMkFoo2a :: forall (n :: a) (n :: a).
+        SMkFoo2a :: forall a (n :: a) (n :: a).
                     (Sing (n :: a)) -> (Sing (n :: a)) -> Sing (MkFoo2a n n)
-        SMkFoo2b :: forall (n :: a) (n :: a).
+        SMkFoo2b :: forall a (n :: a) (n :: a).
                     (Sing (n :: a)) -> (Sing (n :: a)) -> Sing (MkFoo2b n n)
-        (:%*:) :: forall (n :: a) (n :: a).
+        (:%*:) :: forall a (n :: a) (n :: a).
                   (Sing (n :: a)) -> (Sing (n :: a)) -> Sing ((:*:) n n)
-        (:%&:) :: forall (n :: a) (n :: a).
+        (:%&:) :: forall a (n :: a) (n :: a).
                   (Sing (n :: a)) -> (Sing (n :: a)) -> Sing ((:&:) n n)
     type SFoo2 = (Sing :: Foo2 a -> GHC.Types.Type)
     instance SingKind a => SingKind (Foo2 a) where

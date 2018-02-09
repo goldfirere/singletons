@@ -3,9 +3,12 @@ Changelog for singletons project
 
 2.5
 ---
-* `singletons` now generates `a ~> b` instead of `TyFun a b -> Type` whenever
-  possible. This may require enabling `TypeInType` in code which did not
-  previously need it.
+* Template Haskell-generated code may require `TypeInType` in scenarios which
+  did not previously require it:
+  * `singletons` now explicitly quantifies all kind variables used in explicit
+    `forall`s.
+  * `singletons` now generates `a ~> b` instead of `TyFun a b -> Type` whenever
+    possible.
 
 * Rename `Data.Singletons.TypeRepStar` to `Data.Singletons.TypeRepTYPE`, and
   generalize the `Sing :: Type -> Type` instance to `Sing :: TYPE rep -> Type`,

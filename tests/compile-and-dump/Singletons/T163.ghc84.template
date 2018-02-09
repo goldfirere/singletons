@@ -20,8 +20,8 @@ Singletons/T163.hs:0:0:: Splicing declarations
     type instance Apply RSym0 l = R l
     data instance Sing (z :: (+) a b)
       where
-        SL :: forall (n :: a). (Sing (n :: a)) -> Sing (L n)
-        SR :: forall (n :: b). (Sing (n :: b)) -> Sing (R n)
+        SL :: forall a (n :: a). (Sing (n :: a)) -> Sing (L n)
+        SR :: forall b (n :: b). (Sing (n :: b)) -> Sing (R n)
     type %+ = (Sing :: (+) a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind ((+) a b) where
       type Demote ((+) a b) = (+) (Demote a) (Demote b)

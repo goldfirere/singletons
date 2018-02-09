@@ -25,5 +25,5 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
       type Col (arg :: f a) (arg :: a) :: Bool
     class SColumn (f :: Type -> Type) where
       sCol ::
-        forall (t :: f a) (t :: a).
+        forall a (t :: f a) (t :: a).
         Sing t -> Sing t -> Sing (Apply (Apply ColSym0 t) t :: Bool)
