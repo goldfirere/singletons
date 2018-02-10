@@ -107,9 +107,11 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       type Bar2 (arg :: a) (arg :: b) :: b
       type Baz2 :: a
     sQuux2 ::
-      forall (t :: a). SFoo2 a => Sing t -> Sing (Apply Quux2Sym0 t :: a)
+      forall a (t :: a).
+      SFoo2 a => Sing t -> Sing (Apply Quux2Sym0 t :: a)
     sQuux1 ::
-      forall (t :: a). SFoo1 a => Sing t -> Sing (Apply Quux1Sym0 t :: a)
+      forall a (t :: a).
+      SFoo1 a => Sing t -> Sing (Apply Quux1Sym0 t :: a)
     sQuux2 (sX :: Sing x)
       = (applySing ((applySing ((singFun2 @Bar2Sym0) sBar2)) sX)) sBaz2
     sQuux1 (sX :: Sing x)

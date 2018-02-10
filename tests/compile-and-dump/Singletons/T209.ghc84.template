@@ -47,7 +47,7 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
     instance PC Bool Hm
     instance PC a (Maybe a)
     sM ::
-      forall (t :: a) (t :: b) (t :: Bool).
+      forall a b (t :: a) (t :: b) (t :: Bool).
       Sing t
       -> Sing t
          -> Sing t -> Sing (Apply (Apply (Apply MSym0 t) t) t :: Bool)

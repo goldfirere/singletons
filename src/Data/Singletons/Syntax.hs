@@ -18,15 +18,32 @@ import Language.Haskell.TH.Syntax hiding (Type)
 import Language.Haskell.TH.Desugar
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
+import Data.Set ( Set )
 import Data.Semigroup (Semigroup(..))
 
-type VarPromotions = [(Name, Name)]  -- from term-level name to type-level name
+type VarPromotions = [(Name, Name)] -- from term-level name to type-level name
 
--- A list of 'DSigPaInfos' is produced when singling pattern signatures, as we
+-- Information that is accumulated when promoting patterns.
+data PromDPatInfos = PromDPatInfos
+  { prom_dpat_vars    :: VarPromotions
+      -- Maps term-level pattern variables to their promoted, type-level counterparts.
+  , prom_dpat_sig_kvs :: Set Name
+      -- Kind variables bound by DSigPas.
+      -- See Note [Explicitly binding kind variables] in Data.Singletons.Promote.Monad
+  }
+
+instance Semigroup PromDPatInfos where
+  PromDPatInfos vars1 sig_kvs1 <> PromDPatInfos vars2 sig_kvs2
+    = PromDPatInfos (vars1 <> vars2) (sig_kvs1 <> sig_kvs2)
+
+instance Monoid PromDPatInfos where
+  mempty = PromDPatInfos mempty mempty
+
+-- A list of 'SingDSigPaInfos' is produced when singling pattern signatures, as we
 -- must case on the 'DExp's and match on them using the supplied 'DType's to
 -- bring the necessary singleton equality constraints into scope.
 -- See @Note [Singling pattern signatures]@.
-type DSigPaInfos = [(DExp, DType)]
+type SingDSigPaInfos = [(DExp, DType)]
 
   -- the relevant part of declarations
 data DataDecl      = DataDecl NewOrData Name [DTyVarBndr] [DCon] [DPred]
@@ -35,7 +52,17 @@ data ClassDecl ann = ClassDecl { cd_cxt  :: DCxt
                                , cd_name :: Name
                                , cd_tvbs :: [DTyVarBndr]
                                , cd_fds  :: [FunDep]
-                               , cd_lde  :: LetDecEnv ann }
+                               , cd_lde  :: LetDecEnv ann
+                               , cd_bound_kvs :: IfAnn ann (Set Name) ()
+                               }
+
+{-
+NB: ClassDecl doesn't strictly /need/ cd_bound_kvs to keep track of the kind
+variables it binds when promoted, because class declarations can only appear at
+the top level, and thus it's always possible to reverse engineer the bound kind
+variables from cd_tvbs. But if we got rid of it, we'd have to calculate this
+twice—once during promotion, and once during singling—so it's handy to cache.
+-}
 
 data InstDecl  ann = InstDecl { id_cxt     :: DCxt
                               , id_name    :: Name
@@ -115,17 +142,20 @@ data LetDecEnv ann = LetDecEnv
                    , lde_types :: Map Name DType   -- type signatures
                    , lde_infix :: [(Fixity, Name)] -- infix declarations
                    , lde_proms :: IfAnn ann (Map Name DType) () -- possibly, promotions
+                   , lde_bound_kvs :: IfAnn ann (Map Name (Set Name)) ()
+                     -- The set of bound variables in scope.
+                     -- See Note [Explicitly binding kind variables]
+                     -- in Data.Singletons.Promote.Monad
                    }
 type ALetDecEnv = LetDecEnv Annotated
 type ULetDecEnv = LetDecEnv Unannotated
 
 instance Semigroup ULetDecEnv where
-  LetDecEnv defns1 types1 infx1 _ <> LetDecEnv defns2 types2 infx2 _ =
-    LetDecEnv (defns1 <> defns2) (types1 <> types2) (infx1 <> infx2) ()
+  LetDecEnv defns1 types1 infx1 _ _ <> LetDecEnv defns2 types2 infx2 _ _ =
+    LetDecEnv (defns1 <> defns2) (types1 <> types2) (infx1 <> infx2) () ()
 
 instance Monoid ULetDecEnv where
-  mempty = LetDecEnv Map.empty Map.empty [] ()
-  mappend = (<>)
+  mempty = LetDecEnv Map.empty Map.empty [] () ()
 
 valueBinding :: Name -> ULetDecRHS -> ULetDecEnv
 valueBinding n v = emptyLetDecEnv { lde_defns = Map.singleton n v }

@@ -20,6 +20,8 @@ import Data.Singletons.Util
 import Data.Singletons.Names
 import Data.Singletons.Syntax
 import Control.Monad
+import qualified Data.Set as Set
+import Data.Set (Set)
 
 -- We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
@@ -141,8 +143,9 @@ singCtor (DCon _tvbs cxt name fields _rty)
   indexNames <- mapM (const $ qNewName "n") types
   let indices = map DVarT indexNames
   kinds <- mapM promoteType types
-  args <- zipWithM buildArgType types indices
-  let tvbs = zipWith DKindedTV indexNames kinds
+  let bound_kvs = foldMap fvDType kinds
+  args <- zipWithM (buildArgType bound_kvs) types indices
+  let tvbs = map DPlainTV (Set.toList bound_kvs) ++ zipWith DKindedTV indexNames kinds
       kindedIndices = zipWith DSigT indices kinds
 
   -- SingI instance
@@ -166,9 +169,9 @@ singCtor (DCon _tvbs cxt name fields _rty)
                 sName
                 conFields
                 (Just (DConT singFamilyName `DAppT` foldType pCon indices))
-  where buildArgType :: DType -> DType -> SgM DType
-        buildArgType ty index = do
-          (ty', _, _, _) <- singType index ty
+  where buildArgType :: Set Name -> DType -> DType -> SgM DType
+        buildArgType bound_kvs ty index = do
+          (ty', _, _, _) <- singType bound_kvs index ty
           return ty'
 
         isEqPred :: DPred -> Bool

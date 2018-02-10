@@ -32,8 +32,11 @@ import Control.Arrow (second)
 import Control.Monad
 import Control.Monad.Trans.Class (MonadTrans(..))
 import Control.Monad.Trans.Maybe
+import Control.Monad.Writer
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
+import qualified Data.Set as Set
+import Data.Set ( Set )
 import Data.Maybe
 import qualified GHC.LanguageExtensions.Type as LangExt
 
@@ -274,33 +277,46 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
     tvbs = map cuskify tvbs'
   let pClsName = promoteClassName cls_name
   pCxt <- mapM promote_superclass_pred cxt
-  sig_decs <- mapM (uncurry promote_sig) (Map.toList meth_sigs)
-  let defaults_list  = Map.toList defaults
-      defaults_names = map fst defaults_list
-  (default_decs, ann_rhss, prom_rhss)
-    <- mapAndUnzip3M (promoteMethod Nothing meth_sigs) defaults_list
+  forallBind cls_kvs_to_bind $ do
+    (sig_decs, meth_kvs_to_bind)
+      <- mapAndUnzipM (uncurry promote_sig) (Map.toList meth_sigs)
+    let defaults_list  = Map.toList defaults
+        defaults_names = map fst defaults_list
+    (default_decs, ann_rhss, prom_rhss)
+      <- mapAndUnzip3M (promoteMethod Nothing meth_sigs) defaults_list
 
-  let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
+    let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
 
-  -- no need to do anything to the fundeps. They work as is!
-  emitDecs [DClassD pCxt pClsName tvbs fundeps
-                    (sig_decs ++ default_decs ++ infix_decls')]
-  let defaults_list' = zip defaults_names ann_rhss
-      proms          = zip defaults_names prom_rhss
-  return (decl { cd_lde = lde { lde_defns = Map.fromList defaults_list'
-                              , lde_proms = Map.fromList proms } })
+    -- no need to do anything to the fundeps. They work as is!
+    emitDecs [DClassD pCxt pClsName tvbs fundeps
+                      (sig_decs ++ default_decs ++ infix_decls')]
+    let defaults_list'    = zip defaults_names       ann_rhss
+        proms             = zip defaults_names       prom_rhss
+        meth_kvs_to_bind' = zip (Map.keys meth_sigs) meth_kvs_to_bind
+    return (decl { cd_lde = lde { lde_defns     = Map.fromList defaults_list'
+                                , lde_proms     = Map.fromList proms
+                                , lde_bound_kvs = Map.fromList meth_kvs_to_bind' }
+                 , cd_bound_kvs = cls_kvs_to_bind
+                 })
   where
-    promote_sig :: Name -> DType -> PrM DDec
+    cls_kvb_names, cls_tvb_names, cls_kvs_to_bind :: Set Name
+    cls_kvb_names   = foldMap (foldMap fvDType . extractTvbKind) tvbs'
+    cls_tvb_names   = Set.fromList $ map extractTvbName tvbs'
+    cls_kvs_to_bind = cls_kvb_names `Set.union` cls_tvb_names
+
+    promote_sig :: Name -> DType -> PrM (DDec, Set Name)
     promote_sig name ty = do
       let proName = promoteValNameLhs name
       (argKs, resK) <- promoteUnraveled ty
       args <- mapM (const $ qNewName "arg") argKs
       emitDecsM $ defunctionalize proName (map Just argKs) (Just resK)
 
-      return $ DOpenTypeFamilyD (DTypeFamilyHead proName
+      return ( DOpenTypeFamilyD (DTypeFamilyHead proName
                                                  (zipWith DKindedTV args argKs)
                                                  (DKindSig resK)
                                                  Nothing)
+             , cls_kvs_to_bind `Set.union` foldMap fvDType argKs
+                               `Set.union` fvDType resK )
 
     promote_superclass_pred :: DPred -> PrM DPred
     promote_superclass_pred = go
@@ -320,11 +336,13 @@ promoteInstanceDec meth_sigs
                                   , id_meths    = meths }) = do
   cls_tvb_names <- lookup_cls_tvb_names
   inst_kis <- mapM promoteType inst_tys
-  let subst = Map.fromList $ zip cls_tvb_names inst_kis
-  (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod (Just subst) meth_sigs) meths
-  emitDecs [DInstanceD Nothing [] (foldType (DConT pClsName)
-                                    inst_kis) meths']
-  return (decl { id_meths = zip (map fst meths) ann_rhss })
+  let kvs_to_bind = foldMap fvDType inst_kis
+  forallBind kvs_to_bind $ do
+    let subst = Map.fromList $ zip cls_tvb_names inst_kis
+    (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod (Just subst) meth_sigs) meths
+    emitDecs [DInstanceD Nothing [] (foldType (DConT pClsName)
+                                      inst_kis) meths']
+    return (decl { id_meths = zip (map fst meths) ann_rhss })
   where
     pClsName = promoteClassName cls_name
 
@@ -494,13 +512,15 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
     <- fmap unzip3 $ zipWithM (promoteLetDecRHS Nothing type_env prefixes) names rhss
 
   emitDecs $ concat defun_decss
+  bound_kvs <- allBoundKindVars
   let decs = map payload_to_dec payloads ++ infix_decls'
 
     -- build the ALetDecEnv
-  let let_dec_env' = LetDecEnv { lde_defns = Map.fromList $ zip names ann_rhss
-                               , lde_types = type_env
-                               , lde_infix = infix_decls
-                               , lde_proms = Map.empty }  -- filled in promoteLetDecs
+  let let_dec_env' = LetDecEnv { lde_defns     = Map.fromList $ zip names ann_rhss
+                               , lde_types     = type_env
+                               , lde_infix     = infix_decls
+                               , lde_proms     = Map.empty   -- filled in promoteLetDecs
+                               , lde_bound_kvs = Map.fromList $ map (, bound_kvs) names }
 
   return (decs, let_dec_env')
   where
@@ -544,7 +564,8 @@ promoteLetDecRHS m_rhs_ki type_env prefixes name (UValue exp) = do
   case num_arrows of
     0 -> do
       all_locals <- allLocals
-      (exp', ann_exp) <- promoteExp exp
+      let lde_kvs_to_bind = foldMap fvDType res_kind
+      (exp', ann_exp) <- forallBind lde_kvs_to_bind $ promoteExp exp
       let proName = promoteValNameLhsPrefix prefixes name
       defuns <- defunctionalize proName (map (const Nothing) all_locals) res_kind
       return ( ( proName, map DPlainTV all_locals, res_kind
@@ -581,7 +602,9 @@ promoteLetDecRHS m_rhs_ki type_env prefixes name (UFunction clauses) = do
   let local_tvbs = map DPlainTV all_locals
   tyvarNames <- mapM (const $ qNewName "a") m_argKs
   expClauses <- mapM (etaContractOrExpand ty_num_args numArgs) clauses
-  (eqns, ann_clauses) <- mapAndUnzipM promoteClause expClauses
+  let lde_kvs_to_bind = foldMap (foldMap fvDType) m_argKs <> foldMap fvDType m_resK
+  (eqns, ann_clauses) <- forallBind lde_kvs_to_bind $
+                         mapAndUnzipM promoteClause expClauses
   prom_fun <- lookupVarE name
   let args     = zipWith inferMaybeKindTV tyvarNames m_argKs
       all_args = local_tvbs ++ args
@@ -611,8 +634,12 @@ promoteClause :: DClause -> PrM (DTySynEqn, ADClause)
 promoteClause (DClause pats exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  ((types, pats'), new_vars) <- evalForPair $ mapAndUnzipM promotePat pats
-  (ty, ann_exp) <- lambdaBind new_vars $ promoteExp exp
+  ((types, pats'), prom_pat_infos) <- evalForPair $ mapAndUnzipM promotePat pats
+  let PromDPatInfos { prom_dpat_vars    = new_vars
+                    , prom_dpat_sig_kvs = sig_kvs } = prom_pat_infos
+  (ty, ann_exp) <- forallBind sig_kvs $
+                   lambdaBind new_vars $
+                   promoteExp exp
   all_locals <- allLocals   -- these are bound *outside* of this clause
   return ( DTySynEqn (map DVarT all_locals ++ types) ty
          , ADClause new_vars pats' ann_exp )
@@ -621,19 +648,23 @@ promoteMatch :: DMatch -> PrM (DTySynEqn, ADMatch)
 promoteMatch (DMatch pat exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  ((ty, pat'), new_vars) <- evalForPair $ promotePat pat
-  (rhs, ann_exp) <- lambdaBind new_vars $ promoteExp exp
+  ((ty, pat'), prom_pat_infos) <- evalForPair $ promotePat pat
+  let PromDPatInfos { prom_dpat_vars    = new_vars
+                    , prom_dpat_sig_kvs = sig_kvs } = prom_pat_infos
+  (rhs, ann_exp) <- forallBind sig_kvs $
+                    lambdaBind new_vars $
+                    promoteExp exp
   all_locals <- allLocals
   return $ ( DTySynEqn (map DVarT all_locals ++ [ty]) rhs
            , ADMatch new_vars pat' ann_exp)
 
 -- promotes a term pattern into a type pattern, accumulating bound variable names
-promotePat :: DPat -> QWithAux VarPromotions PrM (DType, ADPat)
+promotePat :: DPat -> QWithAux PromDPatInfos PrM (DType, ADPat)
 promotePat (DLitPa lit) = (, ADLitPa lit) <$> promoteLitPat lit
 promotePat (DVarPa name) = do
       -- term vars can be symbols... type vars can't!
   tyName <- mkTyName name
-  addElement (name, tyName)
+  tell $ PromDPatInfos [(name, tyName)] Set.empty
   return (DVarT tyName, ADVarPa name)
 promotePat (DConPa name pats) = do
   (types, pats') <- mapAndUnzipM promotePat pats
@@ -656,6 +687,7 @@ promotePat (DSigPa pat ty) = do
   wildless_pat <- removeWilds pat
   (promoted, pat') <- promotePat wildless_pat
   ki <- promoteType ty
+  tell $ PromDPatInfos [] (fvDType ki)
   return (DSigT promoted ki, ADSigPa promoted pat' ki)
 promotePat DWildPa = return (DWildCardT, ADWildPa)
 

@@ -1,0 +1,55 @@
+Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| f MyProxy
+            = let
+                x = let
+                      z :: MyProxy a
+                      z = MyProxy
+                    in z
+              in x
+          
+          data MyProxy (a :: Type) = MyProxy |]
+  ======>
+    data MyProxy (a :: Type) = MyProxy
+    f MyProxy
+      = let
+          x = let
+                z :: MyProxy a
+                z = MyProxy
+              in z
+        in x
+    type MyProxySym0 = MyProxy
+    type Let0123456789876543210ZSym0 = Let0123456789876543210Z
+    type family Let0123456789876543210Z :: MyProxy a where
+      Let0123456789876543210Z = MyProxySym0
+    type Let0123456789876543210XSym0 = Let0123456789876543210X
+    type family Let0123456789876543210X where
+      Let0123456789876543210X = Let0123456789876543210ZSym0
+    type FSym1 t = F t
+    instance SuppressUnusedWarnings FSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) FSym0KindInference) GHC.Tuple.())
+    data FSym0 l
+      = forall arg. SameKind (Apply FSym0 arg) (FSym1 arg) =>
+        FSym0KindInference
+    type instance Apply FSym0 l = F l
+    type family F a where
+      F MyProxy = Let0123456789876543210XSym0
+    sF :: forall arg. Sing arg -> Sing (Apply FSym0 arg)
+    sF SMyProxy
+      = let
+          sX :: Sing Let0123456789876543210XSym0
+          sX
+            = let
+                sZ :: forall a. Sing (Let0123456789876543210ZSym0 :: MyProxy a)
+                sZ = SMyProxy
+              in sZ
+        in sX
+    data instance Sing (z :: MyProxy a) where SMyProxy :: Sing MyProxy
+    type SMyProxy = (Sing :: MyProxy a -> Type)
+    instance SingKind a => SingKind (MyProxy a) where
+      type Demote (MyProxy a) = MyProxy (Demote a)
+      fromSing SMyProxy = MyProxy
+      toSing MyProxy = SomeSing SMyProxy
+    instance SingI MyProxy where
+      sing = SMyProxy

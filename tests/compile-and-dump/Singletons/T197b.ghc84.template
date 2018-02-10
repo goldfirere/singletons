@@ -45,7 +45,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     infixr 9 `SPair`
     data instance Sing (z :: (:*:) a b)
       where
-        (:%*:) :: forall (n :: a) (n :: b).
+        (:%*:) :: forall a b (n :: a) (n :: b).
                   (Sing (n :: a)) -> (Sing (n :: b)) -> Sing ((:*:) n n)
     type %:*: = (Sing :: (:*:) a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind ((:*:) a b) where
@@ -59,7 +59,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
               -> SomeSing (((:%*:) c) c) }
     data instance Sing (z :: Pair a b)
       where
-        SMkPair :: forall (n :: a) (n :: b).
+        SMkPair :: forall a b (n :: a) (n :: b).
                    (Sing (n :: a)) -> (Sing (n :: b)) -> Sing (MkPair n n)
     type SPair = (Sing :: Pair a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind (Pair a b) where

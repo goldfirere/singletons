@@ -34,8 +34,9 @@ import Language.Haskell.TH.Desugar
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Data.Maybe
+import qualified Data.Set as Set
+import Data.Set ( Set )
 import Control.Monad
-import Control.Monad.Writer
 import Data.List
 import qualified GHC.LanguageExtensions.Type as LangExt
 
@@ -299,12 +300,13 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                       , cd_name = cls_name
                       , cd_tvbs = cls_tvbs
                       , cd_fds  = cls_fundeps
-                      , cd_lde  = LetDecEnv { lde_defns = default_defns
-                                            , lde_types = meth_sigs
-                                            , lde_infix = fixities
-                                            , lde_proms = promoted_defaults } }) = do
+                      , cd_lde  = LetDecEnv { lde_defns     = default_defns
+                                            , lde_types     = meth_sigs
+                                            , lde_infix     = fixities
+                                            , lde_proms     = promoted_defaults
+                                            , lde_bound_kvs = meth_bound_kvs } }) = do
   (sing_sigs, _, tyvar_names, res_kis)
-    <- unzip4 <$> zipWithM (singTySig no_meth_defns meth_sigs)
+    <- unzip4 <$> zipWithM (singTySig no_meth_defns meth_sigs meth_bound_kvs)
                            meth_names (map promoteValRhs meth_names)
   let default_sigs = catMaybes $ zipWith3 mk_default_sig meth_names sing_sigs res_kis
       res_ki_map   = Map.fromList (zip meth_names
@@ -375,10 +377,14 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
           case mb_info of
             Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _) -> do
               let subst = mk_subst cls_tvbs
+                  cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
+                  cls_tvb_names = Set.fromList $ map extractTvbName cls_tvbs
+                  cls_bound     = cls_kvb_names `Set.union` cls_tvb_names
               -- Make sure to expand through type synonyms here! Not doing so
               -- resulted in #167.
               raw_ty <- expand inner_ty
-              (s_ty, _num_args, tyvar_names, res_ki) <- singType (promoteValRhs name) raw_ty
+              (s_ty, _num_args, tyvar_names, res_ki)
+                <- singType cls_bound (promoteValRhs name) raw_ty
               return (substType subst s_ty, tyvar_names, Just (substKind subst res_ki))
             _ -> fail $ "Cannot find type of method " ++ show name
 
@@ -388,14 +394,15 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
       return $ map DLetDec [DSigD (singValName name) s_ty, meth']
 
 singLetDecEnv :: ALetDecEnv -> SgM a -> SgM ([DLetDec], a)
-singLetDecEnv (LetDecEnv { lde_defns = defns
-                         , lde_types = types
-                         , lde_infix = infix_decls
-                         , lde_proms = proms })
+singLetDecEnv (LetDecEnv { lde_defns     = defns
+                         , lde_types     = types
+                         , lde_infix     = infix_decls
+                         , lde_proms     = proms
+                         , lde_bound_kvs = bound_kvs })
               thing_inside = do
   let prom_list = Map.toList proms
   (typeSigs, letBinds, tyvarNames, res_kis)
-    <- unzip4 <$> mapM (uncurry (singTySig defns types)) prom_list
+    <- unzip4 <$> mapM (uncurry (singTySig defns types bound_kvs)) prom_list
   infix_decls' <- traverse (uncurry singInfixDecl) infix_decls
   let res_ki_map = Map.fromList [ (name, res_ki) | ((name, _), Just res_ki)
                                                      <- zip prom_list res_kis ]
@@ -407,13 +414,14 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
 
 singTySig :: Map Name ALetDecRHS  -- definitions
           -> Map Name DType       -- type signatures
+          -> Map Name (Set Name)  -- bound kind variables
           -> Name -> DType   -- the type is the promoted type, not the type sig!
           -> SgM ( DLetDec               -- the new type signature
                  , (Name, DExp)          -- the let-bind entry
                  , (Name, [Name])        -- the scoped tyvar names in the tysig
                  , Maybe DKind           -- the result kind in the tysig
                  )
-singTySig defns types name prom_ty =
+singTySig defns types bound_kvs name prom_ty =
   let sName = singValName name in
   case Map.lookup name types of
     Nothing -> do
@@ -424,7 +432,8 @@ singTySig defns types name prom_ty =
              , (name, tyvar_names)
              , Nothing )
     Just ty -> do
-      (sty, num_args, tyvar_names, res_ki) <- singType prom_ty ty
+      all_bound_kvs <- lookup_bound_kvs
+      (sty, num_args, tyvar_names, res_ki) <- singType all_bound_kvs prom_ty ty
       return ( DSigD sName sty
              , (name, wrapSingFun num_args prom_ty (DVarE sName))
              , (name, tyvar_names)
@@ -436,6 +445,13 @@ singTySig defns types name prom_ty =
         Nothing -> fail "Internal error: promotion known for something not let-bound."
         Just (AValue _ n _) -> return n
         Just (AFunction _ n _) -> return n
+
+    lookup_bound_kvs :: SgM (Set Name)
+    lookup_bound_kvs =
+      case Map.lookup name bound_kvs of
+        Nothing -> fail $ "Internal error: " ++ nameBase name ++ " has no type variable "
+                          ++ "bindings, despite having a type signature"
+        Just kvs -> pure kvs
 
       -- create a Sing t1 -> Sing t2 -> ... type of a given arity and result type
     mk_sing_ty :: Int -> SgM (DType, [Name])
@@ -491,10 +507,10 @@ singClause prom_fun num_arrows bound_names res_ki
 
 singPat :: Map Name Name   -- from term-level names to type-level names
         -> ADPat
-        -> QWithAux DSigPaInfos SgM DPat
+        -> QWithAux SingDSigPaInfos SgM DPat
 singPat var_proms = go
   where
-    go :: ADPat -> QWithAux DSigPaInfos SgM DPat
+    go :: ADPat -> QWithAux SingDSigPaInfos SgM DPat
     go (ADLitPa _lit) =
       fail "Singling of literal patterns not yet supported"
     go (ADVarPa name) = do
@@ -517,14 +533,14 @@ singPat var_proms = go
       -- an invariant that any promoted pattern signatures will be free of
       -- wildcard patterns in the underlying pattern.
       -- See Note [Singling pattern signatures].
-      tell [(dPatToDExp pat', DSigT prom_pat ty)]
+      addElement (dPatToDExp pat', DSigT prom_pat ty)
       pure pat'
     go ADWildPa = pure DWildPa
 
--- | If given a non-empty list of 'DSigPaInfos', construct a case expression
+-- | If given a non-empty list of 'SingDSigPaInfos', construct a case expression
 -- that brings singleton equality constraints into scope via pattern-matching.
 -- See @Note [Singling pattern signatures]@.
-mkSigPaCaseE :: DSigPaInfos -> DExp -> DExp
+mkSigPaCaseE :: SingDSigPaInfos -> DExp -> DExp
 mkSigPaCaseE exps_with_sigs exp
   | null exps_with_sigs = exp
   | otherwise =
@@ -585,16 +601,16 @@ mkSigPaCaseE exps_with_sigs exp
 --
 -- Now GHC accepts the fact that `z` is `Just x`, and all is well. In order
 -- to support this construction, the type of singPat is augmented with some
--- extra information in the form of DSigPaInfos:
+-- extra information in the form of SingDSigPaInfos:
 --
---   type DSigPaInfos = [(DExp, DType)]
+--   type SingDSigPaInfos = [(DExp, DType)]
 --
 -- Where the DExps corresponds to the expressions we case on just after the
 -- patterns (`SJust sX :: Sing x`, in the example above), and the DTypes
 -- correspond to the singled pattern signatures to use in the case alternative
 -- (`Sing (Just x :: Maybe a)` in the example above). singPat appends to the
--- list of DSigPaInfos whenever it processes a DSigPa (pattern signature),
--- and call sites can pass these DSigPaInfos to mkSigPaCaseE to construct a
+-- list of SingDSigPaInfos whenever it processes a DSigPa (pattern signature),
+-- and call sites can pass these SingDSigPaInfos to mkSigPaCaseE to construct a
 -- case expression like the one featured above.
 --
 -- Some interesting consequences of this design:
