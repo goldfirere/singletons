@@ -214,16 +214,16 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
       Foo2 d _ = Case_0123456789876543210 d (Let0123456789876543210Scrutinee_0123456789876543210Sym1 d)
     type family Foo1 (a :: a) (a :: Maybe a) :: a where
       Foo1 d x = Case_0123456789876543210 d x x
-    sFoo5 :: forall (t :: a). Sing t -> Sing (Apply Foo5Sym0 t :: a)
-    sFoo4 :: forall (t :: a). Sing t -> Sing (Apply Foo4Sym0 t :: a)
+    sFoo5 :: forall a (t :: a). Sing t -> Sing (Apply Foo5Sym0 t :: a)
+    sFoo4 :: forall a (t :: a). Sing t -> Sing (Apply Foo4Sym0 t :: a)
     sFoo3 ::
-      forall (t :: a) (t :: b).
+      forall a b (t :: a) (t :: b).
       Sing t -> Sing t -> Sing (Apply (Apply Foo3Sym0 t) t :: a)
     sFoo2 ::
-      forall (t :: a) (t :: Maybe a).
+      forall a (t :: a) (t :: Maybe a).
       Sing t -> Sing t -> Sing (Apply (Apply Foo2Sym0 t) t :: a)
     sFoo1 ::
-      forall (t :: a) (t :: Maybe a).
+      forall a (t :: a) (t :: Maybe a).
       Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a)
     sFoo5 (sX :: Sing x)
       = case sX of {

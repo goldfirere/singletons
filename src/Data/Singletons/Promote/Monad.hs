@@ -15,13 +15,15 @@ of DDec, and is wrapped around a Q.
 module Data.Singletons.Promote.Monad (
   PrM, promoteM, promoteM_, promoteMDecs, VarPromotions,
   allLocals, emitDecs, emitDecsM,
-  lambdaBind, LetBind, letBind, lookupVarE
+  lambdaBind, LetBind, letBind, lookupVarE, forallBind, allBoundKindVars
   ) where
 
 import Control.Monad.Reader
 import Control.Monad.Writer
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
+import qualified Data.Set as Set
+import Data.Set ( Set )
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
@@ -34,12 +36,14 @@ type LetExpansions = Map Name DType  -- from **term-level** name
 data PrEnv =
   PrEnv { pr_lambda_bound :: Map Name Name
         , pr_let_bound    :: LetExpansions
+        , pr_forall_bound :: Set Name -- See Note [Explicitly quantifying kinds variables]
         , pr_local_decls  :: [Dec]
         }
 
 emptyPrEnv :: PrEnv
 emptyPrEnv = PrEnv { pr_lambda_bound = Map.empty
                    , pr_let_bound    = Map.empty
+                   , pr_forall_bound = Set.empty
                    , pr_local_decls  = [] }
 
 -- the promotion monad
@@ -94,6 +98,18 @@ lookupVarE n = do
     Just ty -> return ty
     Nothing -> return $ promoteValRhs n
 
+-- Add to the set of bound kind variables currently in scope.
+-- See Note [Explicitly binding kind variables]
+forallBind :: Set Name -> PrM a -> PrM a
+forallBind kvs1 =
+  local (\env@(PrEnv { pr_forall_bound = kvs2 }) ->
+    env { pr_forall_bound = kvs1 `Set.union` kvs2 })
+
+-- Look up the set of bound kind variables currently in scope.
+-- See Note [Explicitly binding kind variables]
+allBoundKindVars :: PrM (Set Name)
+allBoundKindVars = asks pr_forall_bound
+
 promoteM :: DsMonad q => [Dec] -> PrM a -> q (a, [DDec])
 promoteM locals (PrM rdr) = do
   other_locals <- localDeclarations
@@ -111,3 +127,62 @@ promoteMDecs :: DsMonad q => [Dec] -> PrM [DDec] -> q [DDec]
 promoteMDecs locals thing = do
   (decs1, decs2) <- promoteM locals thing
   return $ decs1 ++ decs2
+
+{-
+Note [Explicitly binding kind variables]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+We want to ensure that when we single type signatures for functions, we should
+explicitly quantify every kind variable bound by a forall. For example, if we
+were to single the identity function:
+
+  identity :: forall a. a -> a
+  identity x = x
+
+We want the final result to be:
+
+  sIdentity :: forall a (x :: a). Sing x -> Sing (Identity x)
+  sIdentity sX = sX
+
+Accomplishing this takes a bit of care during promotion. When promoting a
+function, we determine what set of kind variables are currently bound at that
+point and store them in an ALetDecEnv (as lde_bound_kvs), which in turn is
+singled. Then, during singling, we extract every kind variable in a singled
+type signature, subtract the lde_bound_kvs, and explicitly bind the variables
+that remain.
+
+For a top-level function like identity, lde_bound_kvs is the empty set. But
+consider this more complicated example:
+
+  f :: forall a. a -> a
+  f = g
+    where
+      g :: a -> a
+      g x = x
+
+When singling, we would eventually end up in this spot:
+
+  sF :: forall a (x :: a). Sing a -> Sing (F a)
+  sF = sG
+    where
+      sG :: _
+      sG x = x
+
+We must make sure /not/ to fill in the following type for _:
+
+  sF :: forall a (x :: a). Sing a -> Sing (F a)
+  sF = sG
+    where
+      sG :: forall a (y :: a). Sing a -> Sing (G a)
+      sG x = x
+
+This would be incorrect, as the `a` bound by sF /must/ be the same one used in
+sG, as per the scoping of the original `f` function. Thus, we ensure that the
+bound variables from `f` are put into lde_bound_kvs when promoting `g` so
+that we subtract out `a` and are left with the correct result:
+
+  sF :: forall a (x :: a). Sing a -> Sing (F a)
+  sF = sG
+    where
+      sG :: forall (y :: a). Sing a -> Sing (G a)
+      sG x = x
+-}

@@ -73,18 +73,19 @@ partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
 
 partitionDec (DClassD cxt name tvbs fds decs) = do
   env <- concatMapM partitionClassDec decs
-  return $ mempty { pd_class_decs = [ClassDecl { cd_cxt  = cxt
-                                               , cd_name = name
-                                               , cd_tvbs = tvbs
-                                               , cd_fds  = fds
-                                               , cd_lde  = env }] }
+  return $ mempty { pd_class_decs = [ClassDecl { cd_cxt       = cxt
+                                               , cd_name      = name
+                                               , cd_tvbs      = tvbs
+                                               , cd_fds       = fds
+                                               , cd_lde       = env
+                                               , cd_bound_kvs = () }] }
 partitionDec (DInstanceD _ cxt ty decs) = do
   defns <- liftM catMaybes $ mapM partitionInstanceDec decs
   (name, tys) <- split_app_tys [] ty
-  return $ mempty { pd_instance_decs = [InstDecl { id_cxt = cxt
-                                                 , id_name = name
-                                                 , id_arg_tys = tys
-                                                 , id_meths = defns }] }
+  return $ mempty { pd_instance_decs = [InstDecl { id_cxt       = cxt
+                                                 , id_name      = name
+                                                 , id_arg_tys   = tys
+                                                 , id_meths     = defns }] }
   where
     split_app_tys acc (DAppT t1 t2) = split_app_tys (t2:acc) t1
     split_app_tys acc (DConT name)  = return (name, acc)
@@ -158,9 +159,9 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty cons =
                       -- (Of course, if a user specifies a context with
                       -- StandaloneDeriving, use that.)
 
-                    , id_name    = deriv_name
-                    , id_arg_tys = arg_tys ++ [ty]
-                    , id_meths   = [] }
+                    , id_name      = deriv_name
+                    , id_arg_tys   = arg_tys ++ [ty]
+                    , id_meths     = [] }
 
        | Just NewtypeStrategy <- mb_strat
       -> do qReportWarning "GeneralizedNewtypeDeriving is ignored by `singletons`."

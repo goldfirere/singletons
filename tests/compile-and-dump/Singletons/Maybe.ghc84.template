@@ -59,7 +59,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     data instance Sing (z :: Maybe a)
       where
         SNothing :: Sing Nothing
-        SJust :: forall (n :: a). (Sing (n :: a)) -> Sing (Just n)
+        SJust :: forall a (n :: a). (Sing (n :: a)) -> Sing (Just n)
     type SMaybe = (Sing :: Maybe a -> GHC.Types.Type)
     instance SingKind a => SingKind (Maybe a) where
       type Demote (Maybe a) = Maybe (Demote a)

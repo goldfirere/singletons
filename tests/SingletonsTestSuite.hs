@@ -69,6 +69,7 @@ tests =
     , compileAndDumpStdTest "T175"
     , compileAndDumpStdTest "T176"
     , compileAndDumpStdTest "T178"
+    , compileAndDumpStdTest "T183"
     , compileAndDumpStdTest "T187"
     , compileAndDumpStdTest "T190"
     , compileAndDumpStdTest "ShowDeriving"
@@ -86,6 +87,7 @@ tests =
     , compileAndDumpStdTest "T271"
     , compileAndDumpStdTest "T287"
     , compileAndDumpStdTest "TypeRepTYPE"
+    , compileAndDumpStdTest "T297"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

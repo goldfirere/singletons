@@ -222,7 +222,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     infixl 6 :%*:
     data instance Sing (z :: T a b)
       where
-        (:%*:) :: forall (n :: a) (n :: b).
+        (:%*:) :: forall a b (n :: a) (n :: b).
                   (Sing (n :: a)) -> (Sing (n :: b)) -> Sing ((:*:) n n)
     type ST = (Sing :: T a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind (T a b) where

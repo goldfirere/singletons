@@ -144,7 +144,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing D = SomeSing SD
       toSing E = SomeSing SE
     data instance Sing (z :: Foo3 a)
-      where SFoo3 :: forall (n :: a). (Sing (n :: a)) -> Sing (Foo3 n)
+      where SFoo3 :: forall a (n :: a). (Sing (n :: a)) -> Sing (Foo3 n)
     type SFoo3 = (Sing :: Foo3 a -> Type)
     instance SingKind a => SingKind (Foo3 a) where
       type Demote (Foo3 a) = Foo3 (Demote a)

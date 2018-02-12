@@ -269,12 +269,16 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       Map _ '[] = '[]
       Map f ((:) h t) = Apply (Apply (:@#@$) (Apply f h)) (Apply (Apply MapSym0 f) t)
     sFoo ::
-      forall (t :: (~>) ((~>) a b) ((~>) a b)) (t :: (~>) a b) (t :: a).
+      forall a
+             b
+             (t :: (~>) ((~>) a b) ((~>) a b))
+             (t :: (~>) a b)
+             (t :: a).
       Sing t
       -> Sing t
          -> Sing t -> Sing (Apply (Apply (Apply FooSym0 t) t) t :: b)
     sZipWith ::
-      forall (t :: (~>) a ((~>) b c)) (t :: [a]) (t :: [b]).
+      forall a b c (t :: (~>) a ((~>) b c)) (t :: [a]) (t :: [b]).
       Sing t
       -> Sing t
          -> Sing t -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
@@ -285,11 +289,11 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       forall (t :: [Nat]) (t :: [Bool]).
       Sing t -> Sing t -> Sing (Apply (Apply EtadSym0 t) t :: [Nat])
     sLiftMaybe ::
-      forall (t :: (~>) a b) (t :: Maybe a).
+      forall a b (t :: (~>) a b) (t :: Maybe a).
       Sing t
       -> Sing t -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
     sMap ::
-      forall (t :: (~>) a b) (t :: [a]).
+      forall a b (t :: (~>) a b) (t :: [a]).
       Sing t -> Sing t -> Sing (Apply (Apply MapSym0 t) t :: [b])
     sFoo (sF :: Sing f) (sG :: Sing g) (sA :: Sing a)
       = (applySing ((applySing sF) sG)) sA
@@ -352,8 +356,8 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
           ((applySing ((applySing ((singFun2 @MapSym0) sMap)) sF)) sT)
     data instance Sing (z :: Either a b)
       where
-        SLeft :: forall (n :: a). (Sing (n :: a)) -> Sing (Left n)
-        SRight :: forall (n :: b). (Sing (n :: b)) -> Sing (Right n)
+        SLeft :: forall a (n :: a). (Sing (n :: a)) -> Sing (Left n)
+        SRight :: forall b (n :: b). (Sing (n :: b)) -> Sing (Right n)
     type SEither = (Sing :: Either a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind (Either a b) where
       type Demote (Either a b) = Either (Demote a) (Demote b)

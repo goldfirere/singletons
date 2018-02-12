@@ -269,7 +269,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       Sing t
       -> Sing t -> Sing (Apply (Apply FooCompareSym0 t) t :: Ordering)
     sConst ::
-      forall (t :: a) (t :: b).
+      forall a b (t :: a) (t :: b).
       Sing t -> Sing t -> Sing (Apply (Apply ConstSym0 t) t :: a)
     sFooCompare SA SA = SEQ
     sFooCompare SA SB = SLT

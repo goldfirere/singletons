@@ -15,14 +15,19 @@ import Data.Singletons.Single.Monad
 import Data.Singletons.Promote.Type
 import Data.Singletons.Util
 import Control.Monad
+import qualified Data.Set as Set
+import Data.Set (Set)
 
-singType :: DType          -- the promoted version of the thing classified by...
+singType :: Set Name       -- the set of bound kind variables in this scope
+                           -- see Note [Explicitly binding kind variables]
+                           -- in Data.Singletons.Promote.Monad
+         -> DType          -- the promoted version of the thing classified by...
          -> DType          -- ... this type
          -> SgM ( DType    -- the singletonized type
                 , Int      -- the number of arguments
                 , [Name]   -- the names of the tyvars used in the sing'd type
                 , DKind )  -- the kind of the result type
-singType prom ty = do
+singType bound_kvs prom ty = do
   let (_, cxt, args, res) = unravel ty
       num_args            = length args
   cxt' <- mapM singPred cxt
@@ -32,7 +37,12 @@ singType prom ty = do
   let args' = map (\n -> singFamily `DAppT` (DVarT n)) arg_names
       res'  = singFamily `DAppT` (foldl apply prom (map DVarT arg_names) `DSigT` prom_res)
       tau   = ravel args' res'
-  let ty' = DForallT (zipWith DKindedTV arg_names prom_args)
+      -- Make sure to subtract out the bound variables currently in scope, lest we
+      -- accidentally shadow them in this type signature.
+      kv_names_to_bind = foldMap fvDType (prom_args ++ map predToType cxt' ++ [prom_res])
+                             Set.\\ bound_kvs
+      kvs_to_bind      = Set.toList kv_names_to_bind
+  let ty' = DForallT (map DPlainTV kvs_to_bind ++ zipWith DKindedTV arg_names prom_args)
                      cxt' tau
   return (ty', num_args, arg_names, prom_res)
 

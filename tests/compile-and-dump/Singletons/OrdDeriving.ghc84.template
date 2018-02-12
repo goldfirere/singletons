@@ -329,27 +329,27 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SSucc c) }
     data instance Sing (z :: Foo a b c d)
       where
-        SA :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+        SA :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
                  -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (A n n n n)
-        SB :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+        SB :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
                  -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (B n n n n)
-        SC :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+        SC :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
                  -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (C n n n n)
-        SD :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+        SD :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
                  -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (D n n n n)
-        SE :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+        SE :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
                  -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (E n n n n)
-        SF :: forall (n :: a) (n :: b) (n :: c) (n :: d).
+        SF :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
                  -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (F n n n n)

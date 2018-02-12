@@ -3,9 +3,12 @@ Changelog for singletons project
 
 2.5
 ---
-* `singletons` now generates `a ~> b` instead of `TyFun a b -> Type` whenever
-  possible. This may require enabling `TypeInType` in code which did not
-  previously need it.
+* Template Haskell-generated code may require `TypeInType` in scenarios which
+  did not previously require it:
+  * `singletons` now explicitly quantifies all kind variables used in explicit
+    `forall`s.
+  * `singletons` now generates `a ~> b` instead of `TyFun a b -> Type` whenever
+    possible.
 
 * Rename `Data.Singletons.TypeRepStar` to `Data.Singletons.TypeRepTYPE`, and
   generalize the `Sing :: Type -> Type` instance to `Sing :: TYPE rep -> Type`,
@@ -29,6 +32,8 @@ Changelog for singletons project
 * To match the `base` library, the promoted/singled versions of `comparing`
   and `thenCmp` are no longer exported from `Data.Singletons.Prelude`. (They
   continue to live in `Data.Singletons.Prelude.Ord`.)
+
+* Permit singling of expression and pattern signatures.
 
 2.4.1
 -----
