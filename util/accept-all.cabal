@@ -11,14 +11,15 @@ tested-with:    GHC == 8.4.1
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
-synopsis:       TODO RGS
-description:    TODO RGS
+synopsis:       Accept all test files
+description:    After running the @singletons@ tests, run this executable
+                to accept the new output.
 
-source-repository this
+source-repository head
   type:     git
   location: https://github.com/goldfirere/singletons.git
 
-executable singletons-test-suite
+executable accept-all
   hs-source-dirs:     .
   ghc-options:        -Wall -threaded
   default-language:   Haskell2010
