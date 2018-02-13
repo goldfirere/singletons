@@ -1,0 +1,28 @@
+name:           accept-all
+version:        0.1
+cabal-version:  >= 1.10
+homepage:       http://www.github.com/goldfirere/singletons
+category:       Dependent Types
+author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
+maintainer:     Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
+bug-reports:    https://github.com/goldfirere/singletons/issues
+stability:      stable
+tested-with:    GHC == 8.4.1
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+synopsis:       TODO RGS
+description:    TODO RGS
+
+source-repository this
+  type:     git
+  location: https://github.com/goldfirere/singletons.git
+
+executable singletons-test-suite
+  hs-source-dirs:     .
+  ghc-options:        -Wall -threaded
+  default-language:   Haskell2010
+  main-is:            AcceptAll.hs
+  build-depends:      base >= 4.6 && < 5,
+                      text >= 1.2,
+                      turtle >= 1.5
