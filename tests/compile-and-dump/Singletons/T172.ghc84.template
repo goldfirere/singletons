@@ -7,16 +7,19 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ($>@#@$$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:$>@#@$$###)) GHC.Tuple.())
-    data ($>@#@$$) (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply (($>@#@$$) l) arg) (($>@#@$$$) l arg) =>
-        (:$>@#@$$###)
+    data ($>@#@$$) (l :: Nat) (l :: TyFun Nat Nat) :: GHC.Types.Type
+      where
+        (:$>@#@$$###) :: forall l l arg.
+                         SameKind (Apply (($>@#@$$) l) arg) (($>@#@$$$) l arg) =>
+                         ($>@#@$$) l l
     type instance Apply (($>@#@$$) l) l = ($>) l l
     instance SuppressUnusedWarnings ($>@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:$>@#@$###)) GHC.Tuple.())
-    data ($>@#@$) (l :: TyFun Nat ((~>) Nat Nat))
-      = forall arg. SameKind (Apply ($>@#@$) arg) (($>@#@$$) arg) =>
-        (:$>@#@$###)
+    data ($>@#@$) (l :: TyFun Nat ((~>) Nat Nat)) :: GHC.Types.Type
+      where
+        (:$>@#@$###) :: forall l arg.
+                        SameKind (Apply ($>@#@$) arg) (($>@#@$$) arg) => ($>@#@$) l
     type instance Apply ($>@#@$) l = ($>@#@$$) l
     type family ($>) (a :: Nat) (a :: Nat) :: Nat where
       ($>) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (+@#@$) a_0123456789876543210) a_0123456789876543210

@@ -12,19 +12,22 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = Data.Tuple.snd
             ((GHC.Tuple.(,) BarSym1KindInference) GHC.Tuple.())
-    data BarSym1 (l :: Bool) (l :: TyFun Bool Foo)
-      = forall arg. SameKind (Apply (BarSym1 l) arg) (BarSym2 l arg) =>
-        BarSym1KindInference
+    data BarSym1 (l :: Bool) (l :: TyFun Bool Foo) :: GHC.Types.Type
+      where
+        BarSym1KindInference :: forall l l arg.
+                                SameKind (Apply (BarSym1 l) arg) (BarSym2 l arg) => BarSym1 l l
     type instance Apply (BarSym1 l) l = Bar l l
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd
             ((GHC.Tuple.(,) BarSym0KindInference) GHC.Tuple.())
-    data BarSym0 (l :: TyFun Bool ((~>) Bool Foo))
-      = forall arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
-        BarSym0KindInference
+    data BarSym0 (l :: TyFun Bool ((~>) Bool Foo)) :: GHC.Types.Type
+      where
+        BarSym0KindInference :: forall l arg.
+                                SameKind (Apply BarSym0 arg) (BarSym1 arg) => BarSym0 l
     type instance Apply BarSym0 l = BarSym1 l
-    data instance Sing (z :: Bool)
+    data instance Sing :: Bool -> GHC.Types.Type :: Bool
+                                                    -> GHC.Types.Type
       where
         SFalse :: Sing False
         STrue :: Sing True
@@ -35,7 +38,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       fromSing STrue = True
       toSing False = SomeSing SFalse
       toSing True = SomeSing STrue
-    data instance Sing (z :: Foo)
+    data instance Sing :: Foo -> GHC.Types.Type :: Foo
+                                                   -> GHC.Types.Type
       where
         SBar :: forall (n :: Bool) (n :: Bool).
                 (Sing (n :: Bool)) -> (Sing (n :: Bool)) -> Sing (Bar n n)
@@ -123,49 +127,55 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = Data.Tuple.snd
             ((GHC.Tuple.(,) NotSym0KindInference) GHC.Tuple.())
-    data NotSym0 (l :: TyFun Bool Bool)
-      = forall arg. SameKind (Apply NotSym0 arg) (NotSym1 arg) =>
-        NotSym0KindInference
+    data NotSym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+      where
+        NotSym0KindInference :: forall l arg.
+                                SameKind (Apply NotSym0 arg) (NotSym1 arg) => NotSym0 l
     type instance Apply NotSym0 l = Not l
     type IdSym1 (t :: a0123456789876543210) = Id t
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd ((GHC.Tuple.(,) IdSym0KindInference) GHC.Tuple.())
-    data IdSym0 (l :: TyFun a0123456789876543210 a0123456789876543210)
-      = forall arg. SameKind (Apply IdSym0 arg) (IdSym1 arg) =>
-        IdSym0KindInference
+    data IdSym0 (l :: TyFun a0123456789876543210 a0123456789876543210) :: GHC.Types.Type
+      where
+        IdSym0KindInference :: forall l arg.
+                               SameKind (Apply IdSym0 arg) (IdSym1 arg) => IdSym0 l
     type instance Apply IdSym0 l = Id l
     type FSym1 (t :: Bool) = F t
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd ((GHC.Tuple.(,) FSym0KindInference) GHC.Tuple.())
-    data FSym0 (l :: TyFun Bool Bool)
-      = forall arg. SameKind (Apply FSym0 arg) (FSym1 arg) =>
-        FSym0KindInference
+    data FSym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+      where
+        FSym0KindInference :: forall l arg.
+                              SameKind (Apply FSym0 arg) (FSym1 arg) => FSym0 l
     type instance Apply FSym0 l = F l
     type GSym1 (t :: Bool) = G t
     instance SuppressUnusedWarnings GSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd ((GHC.Tuple.(,) GSym0KindInference) GHC.Tuple.())
-    data GSym0 (l :: TyFun Bool Bool)
-      = forall arg. SameKind (Apply GSym0 arg) (GSym1 arg) =>
-        GSym0KindInference
+    data GSym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+      where
+        GSym0KindInference :: forall l arg.
+                              SameKind (Apply GSym0 arg) (GSym1 arg) => GSym0 l
     type instance Apply GSym0 l = G l
     type HSym1 (t :: Bool) = H t
     instance SuppressUnusedWarnings HSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd ((GHC.Tuple.(,) HSym0KindInference) GHC.Tuple.())
-    data HSym0 (l :: TyFun Bool Bool)
-      = forall arg. SameKind (Apply HSym0 arg) (HSym1 arg) =>
-        HSym0KindInference
+    data HSym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+      where
+        HSym0KindInference :: forall l arg.
+                              SameKind (Apply HSym0 arg) (HSym1 arg) => HSym0 l
     type instance Apply HSym0 l = H l
     type ISym1 (t :: Bool) = I t
     instance SuppressUnusedWarnings ISym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd ((GHC.Tuple.(,) ISym0KindInference) GHC.Tuple.())
-    data ISym0 (l :: TyFun Bool Bool)
-      = forall arg. SameKind (Apply ISym0 arg) (ISym1 arg) =>
-        ISym0KindInference
+    data ISym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+      where
+        ISym0KindInference :: forall l arg.
+                              SameKind (Apply ISym0 arg) (ISym1 arg) => ISym0 l
     type instance Apply ISym0 l = I l
     type JSym0 = J
     type KSym0 = K

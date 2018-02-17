@@ -18,9 +18,10 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings UnBarSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) UnBarSym0KindInference) GHC.Tuple.())
-    data UnBarSym0 (l :: TyFun Bar Nat)
-      = forall arg. SameKind (Apply UnBarSym0 arg) (UnBarSym1 arg) =>
-        UnBarSym0KindInference
+    data UnBarSym0 (l :: TyFun Bar Nat) :: GHC.Types.Type
+      where
+        UnBarSym0KindInference :: forall l arg.
+                                  SameKind (Apply UnBarSym0 arg) (UnBarSym1 arg) => UnBarSym0 l
     type instance Apply UnBarSym0 l = UnBar l
     type family UnBar (a :: Bar) :: Nat where
       UnBar (Bar field) = field
@@ -28,15 +29,17 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooSym0KindInference) GHC.Tuple.())
-    data FooSym0 (l :: TyFun Nat Foo)
-      = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
-        FooSym0KindInference
+    data FooSym0 (l :: TyFun Nat Foo) :: GHC.Types.Type
+      where
+        FooSym0KindInference :: forall l arg.
+                                SameKind (Apply FooSym0 arg) (FooSym1 arg) => FooSym0 l
     type instance Apply FooSym0 l = Foo l
     type BarSym1 (t :: Nat) = Bar t
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BarSym0KindInference) GHC.Tuple.())
-    data BarSym0 (l :: TyFun Nat Bar)
-      = forall arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
-        BarSym0KindInference
+    data BarSym0 (l :: TyFun Nat Bar) :: GHC.Types.Type
+      where
+        BarSym0KindInference :: forall l arg.
+                                SameKind (Apply BarSym0 arg) (BarSym1 arg) => BarSym0 l
     type instance Apply BarSym0 l = Bar l

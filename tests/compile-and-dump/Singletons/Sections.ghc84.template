@@ -28,24 +28,28 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Lambda_0123456789876543210Sym0 l
-      = forall arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
-        Lambda_0123456789876543210Sym0KindInference
+    data Lambda_0123456789876543210Sym0 l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym0KindInference :: forall l arg.
+                                                       SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 l
     type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210 l
     type (+@#@$$$) (t :: Nat) (t :: Nat) = (+) t t
     instance SuppressUnusedWarnings (+@#@$$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+@#@$$###)) GHC.Tuple.())
-    data (+@#@$$) (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply ((+@#@$$) l) arg) ((+@#@$$$) l arg) =>
-        (:+@#@$$###)
+    data (+@#@$$) (l :: Nat) (l :: TyFun Nat Nat) :: GHC.Types.Type
+      where
+        (:+@#@$$###) :: forall l l arg.
+                        SameKind (Apply ((+@#@$$) l) arg) ((+@#@$$$) l arg) => (+@#@$$) l l
     type instance Apply ((+@#@$$) l) l = (+) l l
     instance SuppressUnusedWarnings (+@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+@#@$###)) GHC.Tuple.())
-    data (+@#@$) (l :: TyFun Nat ((~>) Nat Nat))
-      = forall arg. SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
-        (:+@#@$###)
+    data (+@#@$) (l :: TyFun Nat ((~>) Nat Nat)) :: GHC.Types.Type
+      where
+        (:+@#@$###) :: forall l arg.
+                       SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) => (+@#@$) l
     type instance Apply (+@#@$) l = (+@#@$$) l
     type Foo1Sym0 = Foo1
     type Foo2Sym0 = Foo2

@@ -69,32 +69,39 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FooCompareSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooCompareSym1KindInference) GHC.Tuple.())
-    data FooCompareSym1 (l :: Foo) (l :: TyFun Foo Ordering)
-      = forall arg. SameKind (Apply (FooCompareSym1 l) arg) (FooCompareSym2 l arg) =>
-        FooCompareSym1KindInference
+    data FooCompareSym1 (l :: Foo) (l :: TyFun Foo Ordering) :: GHC.Types.Type
+      where
+        FooCompareSym1KindInference :: forall l l arg.
+                                       SameKind (Apply (FooCompareSym1 l) arg) (FooCompareSym2 l arg) =>
+                                       FooCompareSym1 l l
     type instance Apply (FooCompareSym1 l) l = FooCompare l l
     instance SuppressUnusedWarnings FooCompareSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooCompareSym0KindInference) GHC.Tuple.())
-    data FooCompareSym0 (l :: TyFun Foo ((~>) Foo Ordering))
-      = forall arg. SameKind (Apply FooCompareSym0 arg) (FooCompareSym1 arg) =>
-        FooCompareSym0KindInference
+    data FooCompareSym0 (l :: TyFun Foo ((~>) Foo Ordering)) :: GHC.Types.Type
+      where
+        FooCompareSym0KindInference :: forall l arg.
+                                       SameKind (Apply FooCompareSym0 arg) (FooCompareSym1 arg) =>
+                                       FooCompareSym0 l
     type instance Apply FooCompareSym0 l = FooCompareSym1 l
     type ConstSym2 (t :: a0123456789876543210) (t :: b0123456789876543210) =
         Const t t
     instance SuppressUnusedWarnings ConstSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ConstSym1KindInference) GHC.Tuple.())
-    data ConstSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 a0123456789876543210)
-      = forall arg. SameKind (Apply (ConstSym1 l) arg) (ConstSym2 l arg) =>
-        ConstSym1KindInference
+    data ConstSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 a0123456789876543210) :: GHC.Types.Type
+      where
+        ConstSym1KindInference :: forall l l arg.
+                                  SameKind (Apply (ConstSym1 l) arg) (ConstSym2 l arg) =>
+                                  ConstSym1 l l
     type instance Apply (ConstSym1 l) l = Const l l
     instance SuppressUnusedWarnings ConstSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ConstSym0KindInference) GHC.Tuple.())
-    data ConstSym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 a0123456789876543210))
-      = forall arg. SameKind (Apply ConstSym0 arg) (ConstSym1 arg) =>
-        ConstSym0KindInference
+    data ConstSym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 a0123456789876543210)) :: GHC.Types.Type
+      where
+        ConstSym0KindInference :: forall l arg.
+                                  SameKind (Apply ConstSym0 arg) (ConstSym1 arg) => ConstSym0 l
     type instance Apply ConstSym0 l = ConstSym1 l
     type family FooCompare (a :: Foo) (a :: Foo) :: Ordering where
       FooCompare A A = EQSym0
@@ -108,32 +115,39 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MycompareSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MycompareSym1KindInference) GHC.Tuple.())
-    data MycompareSym1 (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering)
-      = forall arg. SameKind (Apply (MycompareSym1 l) arg) (MycompareSym2 l arg) =>
-        MycompareSym1KindInference
+    data MycompareSym1 (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering) :: GHC.Types.Type
+      where
+        MycompareSym1KindInference :: forall l l arg.
+                                      SameKind (Apply (MycompareSym1 l) arg) (MycompareSym2 l arg) =>
+                                      MycompareSym1 l l
     type instance Apply (MycompareSym1 l) l = Mycompare l l
     instance SuppressUnusedWarnings MycompareSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MycompareSym0KindInference) GHC.Tuple.())
-    data MycompareSym0 (l :: TyFun a0123456789876543210 ((~>) a0123456789876543210 Ordering))
-      = forall arg. SameKind (Apply MycompareSym0 arg) (MycompareSym1 arg) =>
-        MycompareSym0KindInference
+    data MycompareSym0 (l :: TyFun a0123456789876543210 ((~>) a0123456789876543210 Ordering)) :: GHC.Types.Type
+      where
+        MycompareSym0KindInference :: forall l arg.
+                                      SameKind (Apply MycompareSym0 arg) (MycompareSym1 arg) =>
+                                      MycompareSym0 l
     type instance Apply MycompareSym0 l = MycompareSym1 l
     type (<=>@#@$$$) (t :: a0123456789876543210) (t :: a0123456789876543210) =
         (<=>) t t
     instance SuppressUnusedWarnings (<=>@#@$$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:<=>@#@$$###)) GHC.Tuple.())
-    data (<=>@#@$$) (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering)
-      = forall arg. SameKind (Apply ((<=>@#@$$) l) arg) ((<=>@#@$$$) l arg) =>
-        (:<=>@#@$$###)
+    data (<=>@#@$$) (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering) :: GHC.Types.Type
+      where
+        (:<=>@#@$$###) :: forall l l arg.
+                          SameKind (Apply ((<=>@#@$$) l) arg) ((<=>@#@$$$) l arg) =>
+                          (<=>@#@$$) l l
     type instance Apply ((<=>@#@$$) l) l = (<=>) l l
     instance SuppressUnusedWarnings (<=>@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:<=>@#@$###)) GHC.Tuple.())
-    data (<=>@#@$) (l :: TyFun a0123456789876543210 ((~>) a0123456789876543210 Ordering))
-      = forall arg. SameKind (Apply (<=>@#@$) arg) ((<=>@#@$$) arg) =>
-        (:<=>@#@$###)
+    data (<=>@#@$) (l :: TyFun a0123456789876543210 ((~>) a0123456789876543210 Ordering)) :: GHC.Types.Type
+      where
+        (:<=>@#@$###) :: forall l arg.
+                         SameKind (Apply (<=>@#@$) arg) ((<=>@#@$$) arg) => (<=>@#@$) l
     type instance Apply (<=>@#@$) l = (<=>@#@$$) l
     type family TFHelper_0123456789876543210 (a :: a) (a :: a) :: Ordering where
       TFHelper_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply MycompareSym0 a_0123456789876543210) a_0123456789876543210
@@ -144,18 +158,22 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) TFHelper_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data TFHelper_0123456789876543210Sym1 (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering)
-      = forall arg. SameKind (Apply (TFHelper_0123456789876543210Sym1 l) arg) (TFHelper_0123456789876543210Sym2 l arg) =>
-        TFHelper_0123456789876543210Sym1KindInference
+    data TFHelper_0123456789876543210Sym1 (l :: a0123456789876543210) (l :: TyFun a0123456789876543210 Ordering) :: GHC.Types.Type
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                         SameKind (Apply (TFHelper_0123456789876543210Sym1 l) arg) (TFHelper_0123456789876543210Sym2 l arg) =>
+                                                         TFHelper_0123456789876543210Sym1 l l
     type instance Apply (TFHelper_0123456789876543210Sym1 l) l = TFHelper_0123456789876543210 l l
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) TFHelper_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data TFHelper_0123456789876543210Sym0 (l :: TyFun a0123456789876543210 ((~>) a0123456789876543210 Ordering))
-      = forall arg. SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
-        TFHelper_0123456789876543210Sym0KindInference
+    data TFHelper_0123456789876543210Sym0 (l :: TyFun a0123456789876543210 ((~>) a0123456789876543210 Ordering)) :: GHC.Types.Type
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: forall l arg.
+                                                         SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 l
     type instance Apply TFHelper_0123456789876543210Sym0 l = TFHelper_0123456789876543210Sym1 l
     class PMyOrd (a :: GHC.Types.Type) where
       type Mycompare (arg :: a) (arg :: a) :: Ordering
@@ -173,18 +191,22 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data Mycompare_0123456789876543210Sym1 (l :: Nat) (l :: TyFun Nat Ordering)
-      = forall arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 l) arg) (Mycompare_0123456789876543210Sym2 l arg) =>
-        Mycompare_0123456789876543210Sym1KindInference
+    data Mycompare_0123456789876543210Sym1 (l :: Nat) (l :: TyFun Nat Ordering) :: GHC.Types.Type
+      where
+        Mycompare_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                          SameKind (Apply (Mycompare_0123456789876543210Sym1 l) arg) (Mycompare_0123456789876543210Sym2 l arg) =>
+                                                          Mycompare_0123456789876543210Sym1 l l
     type instance Apply (Mycompare_0123456789876543210Sym1 l) l = Mycompare_0123456789876543210 l l
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Mycompare_0123456789876543210Sym0 (l :: TyFun Nat ((~>) Nat Ordering))
-      = forall arg. SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
-        Mycompare_0123456789876543210Sym0KindInference
+    data Mycompare_0123456789876543210Sym0 (l :: TyFun Nat ((~>) Nat Ordering)) :: GHC.Types.Type
+      where
+        Mycompare_0123456789876543210Sym0KindInference :: forall l arg.
+                                                          SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
+                                                          Mycompare_0123456789876543210Sym0 l
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
     instance PMyOrd Nat where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
@@ -197,18 +219,22 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data Mycompare_0123456789876543210Sym1 (l :: ()) (l :: TyFun () Ordering)
-      = forall arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 l) arg) (Mycompare_0123456789876543210Sym2 l arg) =>
-        Mycompare_0123456789876543210Sym1KindInference
+    data Mycompare_0123456789876543210Sym1 (l :: ()) (l :: TyFun () Ordering) :: GHC.Types.Type
+      where
+        Mycompare_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                          SameKind (Apply (Mycompare_0123456789876543210Sym1 l) arg) (Mycompare_0123456789876543210Sym2 l arg) =>
+                                                          Mycompare_0123456789876543210Sym1 l l
     type instance Apply (Mycompare_0123456789876543210Sym1 l) l = Mycompare_0123456789876543210 l l
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Mycompare_0123456789876543210Sym0 (l :: TyFun () ((~>) () Ordering))
-      = forall arg. SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
-        Mycompare_0123456789876543210Sym0KindInference
+    data Mycompare_0123456789876543210Sym0 (l :: TyFun () ((~>) () Ordering)) :: GHC.Types.Type
+      where
+        Mycompare_0123456789876543210Sym0KindInference :: forall l arg.
+                                                          SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
+                                                          Mycompare_0123456789876543210Sym0 l
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
     instance PMyOrd () where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
@@ -221,18 +247,22 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data Mycompare_0123456789876543210Sym1 (l :: Foo) (l :: TyFun Foo Ordering)
-      = forall arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 l) arg) (Mycompare_0123456789876543210Sym2 l arg) =>
-        Mycompare_0123456789876543210Sym1KindInference
+    data Mycompare_0123456789876543210Sym1 (l :: Foo) (l :: TyFun Foo Ordering) :: GHC.Types.Type
+      where
+        Mycompare_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                          SameKind (Apply (Mycompare_0123456789876543210Sym1 l) arg) (Mycompare_0123456789876543210Sym2 l arg) =>
+                                                          Mycompare_0123456789876543210Sym1 l l
     type instance Apply (Mycompare_0123456789876543210Sym1 l) l = Mycompare_0123456789876543210 l l
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Mycompare_0123456789876543210Sym0 (l :: TyFun Foo ((~>) Foo Ordering))
-      = forall arg. SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
-        Mycompare_0123456789876543210Sym0KindInference
+    data Mycompare_0123456789876543210Sym0 (l :: TyFun Foo ((~>) Foo Ordering)) :: GHC.Types.Type
+      where
+        Mycompare_0123456789876543210Sym0KindInference :: forall l arg.
+                                                          SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
+                                                          Mycompare_0123456789876543210Sym0 l
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
     instance PMyOrd Foo where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
@@ -248,18 +278,22 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) TFHelper_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data TFHelper_0123456789876543210Sym1 (l :: Foo2) (l :: TyFun Foo2 Bool)
-      = forall arg. SameKind (Apply (TFHelper_0123456789876543210Sym1 l) arg) (TFHelper_0123456789876543210Sym2 l arg) =>
-        TFHelper_0123456789876543210Sym1KindInference
+    data TFHelper_0123456789876543210Sym1 (l :: Foo2) (l :: TyFun Foo2 Bool) :: GHC.Types.Type
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                         SameKind (Apply (TFHelper_0123456789876543210Sym1 l) arg) (TFHelper_0123456789876543210Sym2 l arg) =>
+                                                         TFHelper_0123456789876543210Sym1 l l
     type instance Apply (TFHelper_0123456789876543210Sym1 l) l = TFHelper_0123456789876543210 l l
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) TFHelper_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data TFHelper_0123456789876543210Sym0 (l :: TyFun Foo2 ((~>) Foo2 Bool))
-      = forall arg. SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
-        TFHelper_0123456789876543210Sym0KindInference
+    data TFHelper_0123456789876543210Sym0 (l :: TyFun Foo2 ((~>) Foo2 Bool)) :: GHC.Types.Type
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: forall l arg.
+                                                         SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 l
     type instance Apply TFHelper_0123456789876543210Sym0 l = TFHelper_0123456789876543210Sym1 l
     instance PEq Foo2 where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
@@ -276,7 +310,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     sFooCompare SB SB = SGT
     sFooCompare SB SA = SEQ
     sConst (sX :: Sing x) _ = sX
-    data instance Sing (z :: Foo)
+    data instance Sing :: Foo -> GHC.Types.Type :: Foo
+                                                   -> GHC.Types.Type
       where
         SA :: Sing A
         SB :: Sing B
@@ -287,7 +322,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       fromSing SB = B
       toSing A = SomeSing SA
       toSing B = SomeSing SB
-    data instance Sing (z :: Foo2)
+    data instance Sing :: Foo2 -> GHC.Types.Type :: Foo2
+                                                    -> GHC.Types.Type
       where
         SF :: Sing F
         SG :: Sing G
@@ -394,18 +430,22 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data Mycompare_0123456789876543210Sym1 (l :: Foo2) (l :: TyFun Foo2 Ordering)
-      = forall arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 l) arg) (Mycompare_0123456789876543210Sym2 l arg) =>
-        Mycompare_0123456789876543210Sym1KindInference
+    data Mycompare_0123456789876543210Sym1 (l :: Foo2) (l :: TyFun Foo2 Ordering) :: GHC.Types.Type
+      where
+        Mycompare_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                          SameKind (Apply (Mycompare_0123456789876543210Sym1 l) arg) (Mycompare_0123456789876543210Sym2 l arg) =>
+                                                          Mycompare_0123456789876543210Sym1 l l
     type instance Apply (Mycompare_0123456789876543210Sym1 l) l = Mycompare_0123456789876543210 l l
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Mycompare_0123456789876543210Sym0 (l :: TyFun Foo2 ((~>) Foo2 Ordering))
-      = forall arg. SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
-        Mycompare_0123456789876543210Sym0KindInference
+    data Mycompare_0123456789876543210Sym0 (l :: TyFun Foo2 ((~>) Foo2 Ordering)) :: GHC.Types.Type
+      where
+        Mycompare_0123456789876543210Sym0KindInference :: forall l arg.
+                                                          SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
+                                                          Mycompare_0123456789876543210Sym0 l
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
     instance PMyOrd Foo2 where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
@@ -420,18 +460,22 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym1 (l :: Foo2) (l :: TyFun Foo2 Ordering)
-      = forall arg. SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
-        Compare_0123456789876543210Sym1KindInference
+    data Compare_0123456789876543210Sym1 (l :: Foo2) (l :: TyFun Foo2 Ordering) :: GHC.Types.Type
+      where
+        Compare_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                        SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
+                                                        Compare_0123456789876543210Sym1 l l
     type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun Foo2 ((~>) Foo2 Ordering))
-      = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
-        Compare_0123456789876543210Sym0KindInference
+    data Compare_0123456789876543210Sym0 (l :: TyFun Foo2 ((~>) Foo2 Ordering)) :: GHC.Types.Type
+      where
+        Compare_0123456789876543210Sym0KindInference :: forall l arg.
+                                                        SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
+                                                        Compare_0123456789876543210Sym0 l
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd Foo2 where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
@@ -456,9 +500,10 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Succ'Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) Succ'Sym0KindInference) GHC.Tuple.())
-    data Succ'Sym0 (l :: TyFun Nat' Nat')
-      = forall arg. SameKind (Apply Succ'Sym0 arg) (Succ'Sym1 arg) =>
-        Succ'Sym0KindInference
+    data Succ'Sym0 (l :: TyFun Nat' Nat') :: GHC.Types.Type
+      where
+        Succ'Sym0KindInference :: forall l arg.
+                                  SameKind (Apply Succ'Sym0 arg) (Succ'Sym1 arg) => Succ'Sym0 l
     type instance Apply Succ'Sym0 l = Succ' l
     type family Mycompare_0123456789876543210 (a :: Nat') (a :: Nat') :: Ordering where
       Mycompare_0123456789876543210 Zero' Zero' = EQSym0
@@ -472,22 +517,27 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data Mycompare_0123456789876543210Sym1 (l :: Nat') (l :: TyFun Nat' Ordering)
-      = forall arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 l) arg) (Mycompare_0123456789876543210Sym2 l arg) =>
-        Mycompare_0123456789876543210Sym1KindInference
+    data Mycompare_0123456789876543210Sym1 (l :: Nat') (l :: TyFun Nat' Ordering) :: GHC.Types.Type
+      where
+        Mycompare_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                          SameKind (Apply (Mycompare_0123456789876543210Sym1 l) arg) (Mycompare_0123456789876543210Sym2 l arg) =>
+                                                          Mycompare_0123456789876543210Sym1 l l
     type instance Apply (Mycompare_0123456789876543210Sym1 l) l = Mycompare_0123456789876543210 l l
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Mycompare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Mycompare_0123456789876543210Sym0 (l :: TyFun Nat' ((~>) Nat' Ordering))
-      = forall arg. SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
-        Mycompare_0123456789876543210Sym0KindInference
+    data Mycompare_0123456789876543210Sym0 (l :: TyFun Nat' ((~>) Nat' Ordering)) :: GHC.Types.Type
+      where
+        Mycompare_0123456789876543210Sym0KindInference :: forall l arg.
+                                                          SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
+                                                          Mycompare_0123456789876543210Sym0 l
     type instance Apply Mycompare_0123456789876543210Sym0 l = Mycompare_0123456789876543210Sym1 l
     instance PMyOrd Nat' where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
-    data instance Sing (z :: Nat')
+    data instance Sing :: Nat' -> GHC.Types.Type :: Nat'
+                                                    -> GHC.Types.Type
       where
         SZero' :: Sing Zero'
         SSucc' :: forall (n :: Nat'). (Sing (n :: Nat')) -> Sing (Succ' n)

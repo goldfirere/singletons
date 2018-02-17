@@ -11,9 +11,10 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings HeadSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) HeadSym0KindInference) GHC.Tuple.())
-    data HeadSym0 (l :: TyFun [a0123456789876543210] a0123456789876543210)
-      = forall arg. SameKind (Apply HeadSym0 arg) (HeadSym1 arg) =>
-        HeadSym0KindInference
+    data HeadSym0 (l :: TyFun [a0123456789876543210] a0123456789876543210) :: GHC.Types.Type
+      where
+        HeadSym0KindInference :: forall l arg.
+                                 SameKind (Apply HeadSym0 arg) (HeadSym1 arg) => HeadSym0 l
     type instance Apply HeadSym0 l = Head l
     type family Head (a :: [a]) :: a where
       Head ((:) a _) = a

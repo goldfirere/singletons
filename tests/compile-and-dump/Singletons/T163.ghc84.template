@@ -6,19 +6,22 @@ Singletons/T163.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings LSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) LSym0KindInference) GHC.Tuple.())
-    data LSym0 (l :: TyFun a0123456789876543210 ((+) a0123456789876543210 b0123456789876543210))
-      = forall arg. SameKind (Apply LSym0 arg) (LSym1 arg) =>
-        LSym0KindInference
+    data LSym0 (l :: TyFun a0123456789876543210 ((+) a0123456789876543210 b0123456789876543210)) :: GHC.Types.Type
+      where
+        LSym0KindInference :: forall l arg.
+                              SameKind (Apply LSym0 arg) (LSym1 arg) => LSym0 l
     type instance Apply LSym0 l = L l
     type RSym1 (t :: b0123456789876543210) = R t
     instance SuppressUnusedWarnings RSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) RSym0KindInference) GHC.Tuple.())
-    data RSym0 (l :: TyFun b0123456789876543210 ((+) a0123456789876543210 b0123456789876543210))
-      = forall arg. SameKind (Apply RSym0 arg) (RSym1 arg) =>
-        RSym0KindInference
+    data RSym0 (l :: TyFun b0123456789876543210 ((+) a0123456789876543210 b0123456789876543210)) :: GHC.Types.Type
+      where
+        RSym0KindInference :: forall l arg.
+                              SameKind (Apply RSym0 arg) (RSym1 arg) => RSym0 l
     type instance Apply RSym0 l = R l
-    data instance Sing (z :: (+) a b)
+    data instance Sing :: (+) a b -> GHC.Types.Type :: (+) a b
+                                                       -> GHC.Types.Type
       where
         SL :: forall a (n :: a). (Sing (n :: a)) -> Sing (L n)
         SR :: forall b (n :: b). (Sing (n :: b)) -> Sing (R n)

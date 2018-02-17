@@ -245,17 +245,6 @@ resultSigToMaybeKind (DKindSig k)                = Just k
 resultSigToMaybeKind (DTyVarSig (DPlainTV _))    = Nothing
 resultSigToMaybeKind (DTyVarSig (DKindedTV _ k)) = Just k
 
--- Get argument types from an arrow type. Removing ForallT is an
--- important preprocessing step required by promoteType.
-unravel :: DType -> ([DTyVarBndr], [DPred], [DType], DType)
-unravel (DForallT tvbs cxt ty) =
-  let (tvbs', cxt', tys, res) = unravel ty in
-  (tvbs ++ tvbs', cxt ++ cxt', tys, res)
-unravel (DAppT (DAppT DArrowT t1) t2) =
-  let (tvbs, cxt, tys, res) = unravel t2 in
-  (tvbs, cxt, t1 : tys, res)
-unravel t = ([], [], [], t)
-
 -- Reconstruct arrow kind from the list of kinds
 ravel :: [DType] -> DType -> DType
 ravel []    res  = res
@@ -348,6 +337,10 @@ substKindInTvb subst (DKindedTV n ki) = DKindedTV n (substKind subst ki)
 -- apply a type to a list of types
 foldType :: DType -> [DType] -> DType
 foldType = foldl DAppT
+
+-- apply a type to a list of type variable binders
+foldTypeTvbs :: DType -> [DTyVarBndr] -> DType
+foldTypeTvbs ty = foldType ty . map tvbToType
 
 -- | Decompose an applied type into its individual components. For example, this:
 --

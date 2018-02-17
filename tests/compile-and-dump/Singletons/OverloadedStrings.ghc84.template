@@ -13,9 +13,10 @@ Singletons/OverloadedStrings.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings SymIdSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) SymIdSym0KindInference) GHC.Tuple.())
-    data SymIdSym0 (l :: TyFun Symbol Symbol)
-      = forall arg. SameKind (Apply SymIdSym0 arg) (SymIdSym1 arg) =>
-        SymIdSym0KindInference
+    data SymIdSym0 (l :: TyFun Symbol Symbol) :: GHC.Types.Type
+      where
+        SymIdSym0KindInference :: forall l arg.
+                                  SameKind (Apply SymIdSym0 arg) (SymIdSym1 arg) => SymIdSym0 l
     type instance Apply SymIdSym0 l = SymId l
     type FooSym0 = Foo
     type family SymId (a :: Symbol) :: Symbol where

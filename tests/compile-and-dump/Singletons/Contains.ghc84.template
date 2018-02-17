@@ -12,16 +12,20 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ContainsSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ContainsSym1KindInference) GHC.Tuple.())
-    data ContainsSym1 (l :: a0123456789876543210) (l :: TyFun [a0123456789876543210] Bool)
-      = forall arg. SameKind (Apply (ContainsSym1 l) arg) (ContainsSym2 l arg) =>
-        ContainsSym1KindInference
+    data ContainsSym1 (l :: a0123456789876543210) (l :: TyFun [a0123456789876543210] Bool) :: GHC.Types.Type
+      where
+        ContainsSym1KindInference :: forall l l arg.
+                                     SameKind (Apply (ContainsSym1 l) arg) (ContainsSym2 l arg) =>
+                                     ContainsSym1 l l
     type instance Apply (ContainsSym1 l) l = Contains l l
     instance SuppressUnusedWarnings ContainsSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ContainsSym0KindInference) GHC.Tuple.())
-    data ContainsSym0 (l :: TyFun a0123456789876543210 ((~>) [a0123456789876543210] Bool))
-      = forall arg. SameKind (Apply ContainsSym0 arg) (ContainsSym1 arg) =>
-        ContainsSym0KindInference
+    data ContainsSym0 (l :: TyFun a0123456789876543210 ((~>) [a0123456789876543210] Bool)) :: GHC.Types.Type
+      where
+        ContainsSym0KindInference :: forall l arg.
+                                     SameKind (Apply ContainsSym0 arg) (ContainsSym1 arg) =>
+                                     ContainsSym0 l
     type instance Apply ContainsSym0 l = ContainsSym1 l
     type family Contains (a :: a) (a :: [a]) :: Bool where
       Contains _ '[] = FalseSym0

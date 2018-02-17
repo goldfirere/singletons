@@ -29,32 +29,36 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings SuccSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) SuccSym0KindInference) GHC.Tuple.())
-    data SuccSym0 (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
-        SuccSym0KindInference
+    data SuccSym0 (l :: TyFun Nat Nat) :: GHC.Types.Type
+      where
+        SuccSym0KindInference :: forall l arg.
+                                 SameKind (Apply SuccSym0 arg) (SuccSym1 arg) => SuccSym0 l
     type instance Apply SuccSym0 l = Succ l
     type PredSym1 (t :: Nat) = Pred t
     instance SuppressUnusedWarnings PredSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PredSym0KindInference) GHC.Tuple.())
-    data PredSym0 (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply PredSym0 arg) (PredSym1 arg) =>
-        PredSym0KindInference
+    data PredSym0 (l :: TyFun Nat Nat) :: GHC.Types.Type
+      where
+        PredSym0KindInference :: forall l arg.
+                                 SameKind (Apply PredSym0 arg) (PredSym1 arg) => PredSym0 l
     type instance Apply PredSym0 l = Pred l
     type PlusSym2 (t :: Nat) (t :: Nat) = Plus t t
     instance SuppressUnusedWarnings PlusSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PlusSym1KindInference) GHC.Tuple.())
-    data PlusSym1 (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply (PlusSym1 l) arg) (PlusSym2 l arg) =>
-        PlusSym1KindInference
+    data PlusSym1 (l :: Nat) (l :: TyFun Nat Nat) :: GHC.Types.Type
+      where
+        PlusSym1KindInference :: forall l l arg.
+                                 SameKind (Apply (PlusSym1 l) arg) (PlusSym2 l arg) => PlusSym1 l l
     type instance Apply (PlusSym1 l) l = Plus l l
     instance SuppressUnusedWarnings PlusSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PlusSym0KindInference) GHC.Tuple.())
-    data PlusSym0 (l :: TyFun Nat ((~>) Nat Nat))
-      = forall arg. SameKind (Apply PlusSym0 arg) (PlusSym1 arg) =>
-        PlusSym0KindInference
+    data PlusSym0 (l :: TyFun Nat ((~>) Nat Nat)) :: GHC.Types.Type
+      where
+        PlusSym0KindInference :: forall l arg.
+                                 SameKind (Apply PlusSym0 arg) (PlusSym1 arg) => PlusSym0 l
     type instance Apply PlusSym0 l = PlusSym1 l
     type family Pred (a :: Nat) :: Nat where
       Pred Zero = ZeroSym0
@@ -72,27 +76,33 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym2KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym2 (l :: GHC.Types.Nat) (l :: Nat) (l :: TyFun GHC.Types.Symbol GHC.Types.Symbol)
-      = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym2 l l) arg) (ShowsPrec_0123456789876543210Sym3 l l arg) =>
-        ShowsPrec_0123456789876543210Sym2KindInference
+    data ShowsPrec_0123456789876543210Sym2 (l :: GHC.Types.Nat) (l :: Nat) (l :: TyFun GHC.Types.Symbol GHC.Types.Symbol) :: GHC.Types.Type
+      where
+        ShowsPrec_0123456789876543210Sym2KindInference :: forall l l l arg.
+                                                          SameKind (Apply (ShowsPrec_0123456789876543210Sym2 l l) arg) (ShowsPrec_0123456789876543210Sym3 l l arg) =>
+                                                          ShowsPrec_0123456789876543210Sym2 l l l
     type instance Apply (ShowsPrec_0123456789876543210Sym2 l l) l = ShowsPrec_0123456789876543210 l l l
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym1 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun Nat ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-      = forall arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym1 l) arg) (ShowsPrec_0123456789876543210Sym2 l arg) =>
-        ShowsPrec_0123456789876543210Sym1KindInference
+    data ShowsPrec_0123456789876543210Sym1 (l :: GHC.Types.Nat) (l :: TyFun Nat ((~>) GHC.Types.Symbol GHC.Types.Symbol)) :: GHC.Types.Type
+      where
+        ShowsPrec_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                          SameKind (Apply (ShowsPrec_0123456789876543210Sym1 l) arg) (ShowsPrec_0123456789876543210Sym2 l arg) =>
+                                                          ShowsPrec_0123456789876543210Sym1 l l
     type instance Apply (ShowsPrec_0123456789876543210Sym1 l) l = ShowsPrec_0123456789876543210Sym2 l l
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat ((~>) Nat ((~>) GHC.Types.Symbol GHC.Types.Symbol)))
-      = forall arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
-        ShowsPrec_0123456789876543210Sym0KindInference
+    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat ((~>) Nat ((~>) GHC.Types.Symbol GHC.Types.Symbol))) :: GHC.Types.Type
+      where
+        ShowsPrec_0123456789876543210Sym0KindInference :: forall l arg.
+                                                          SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
+                                                          ShowsPrec_0123456789876543210Sym0 l
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow Nat where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
@@ -108,18 +118,22 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym1 (l :: Nat) (l :: TyFun Nat Ordering)
-      = forall arg. SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
-        Compare_0123456789876543210Sym1KindInference
+    data Compare_0123456789876543210Sym1 (l :: Nat) (l :: TyFun Nat Ordering) :: GHC.Types.Type
+      where
+        Compare_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                        SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
+                                                        Compare_0123456789876543210Sym1 l l
     type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun Nat ((~>) Nat Ordering))
-      = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
-        Compare_0123456789876543210Sym0KindInference
+    data Compare_0123456789876543210Sym0 (l :: TyFun Nat ((~>) Nat Ordering)) :: GHC.Types.Type
+      where
+        Compare_0123456789876543210Sym0KindInference :: forall l arg.
+                                                        SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
+                                                        Compare_0123456789876543210Sym0 l
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd Nat where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
@@ -140,7 +154,8 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     sPlus (SSucc (sN :: Sing n)) (sM :: Sing m)
       = (applySing ((singFun1 @SuccSym0) SSucc))
           ((applySing ((applySing ((singFun2 @PlusSym0) sPlus)) sN)) sM)
-    data instance Sing (z :: Nat)
+    data instance Sing :: Nat -> GHC.Types.Type :: Nat
+                                                   -> GHC.Types.Type
       where
         SZero :: Sing Zero
         SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> Sing (Succ n)

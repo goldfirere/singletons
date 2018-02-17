@@ -23,23 +23,26 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MSym2 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MSym2KindInference) GHC.Tuple.())
-    data MSym2 (l :: a0123456789876543210) (l :: b0123456789876543210) (l :: TyFun Bool Bool)
-      = forall arg. SameKind (Apply (MSym2 l l) arg) (MSym3 l l arg) =>
-        MSym2KindInference
+    data MSym2 (l :: a0123456789876543210) (l :: b0123456789876543210) (l :: TyFun Bool Bool) :: GHC.Types.Type
+      where
+        MSym2KindInference :: forall l l l arg.
+                              SameKind (Apply (MSym2 l l) arg) (MSym3 l l arg) => MSym2 l l l
     type instance Apply (MSym2 l l) l = M l l l
     instance SuppressUnusedWarnings MSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MSym1KindInference) GHC.Tuple.())
-    data MSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 ((~>) Bool Bool))
-      = forall arg. SameKind (Apply (MSym1 l) arg) (MSym2 l arg) =>
-        MSym1KindInference
+    data MSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 ((~>) Bool Bool)) :: GHC.Types.Type
+      where
+        MSym1KindInference :: forall l l arg.
+                              SameKind (Apply (MSym1 l) arg) (MSym2 l arg) => MSym1 l l
     type instance Apply (MSym1 l) l = MSym2 l l
     instance SuppressUnusedWarnings MSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MSym0KindInference) GHC.Tuple.())
-    data MSym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 ((~>) Bool Bool)))
-      = forall arg. SameKind (Apply MSym0 arg) (MSym1 arg) =>
-        MSym0KindInference
+    data MSym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 ((~>) Bool Bool))) :: GHC.Types.Type
+      where
+        MSym0KindInference :: forall l arg.
+                              SameKind (Apply MSym0 arg) (MSym1 arg) => MSym0 l
     type instance Apply MSym0 l = MSym1 l
     type family M (a :: a) (a :: b) (a :: Bool) :: Bool where
       M _ _ x = x
@@ -52,7 +55,8 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
       -> Sing t
          -> Sing t -> Sing (Apply (Apply (Apply MSym0 t) t) t :: Bool)
     sM _ _ (sX :: Sing x) = sX
-    data instance Sing (z :: Hm) where SHm :: Sing Hm
+    data instance Sing :: Hm -> GHC.Types.Type :: Hm -> GHC.Types.Type
+      where SHm :: Sing Hm
     type SHm = (Sing :: Hm -> GHC.Types.Type)
     instance SingKind Hm where
       type Demote Hm = Hm

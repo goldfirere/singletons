@@ -40,9 +40,11 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Succ_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Succ_0123456789876543210Sym0 (l :: TyFun [Bool] [Bool])
-      = forall arg. SameKind (Apply Succ_0123456789876543210Sym0 arg) (Succ_0123456789876543210Sym1 arg) =>
-        Succ_0123456789876543210Sym0KindInference
+    data Succ_0123456789876543210Sym0 (l :: TyFun [Bool] [Bool]) :: GHC.Types.Type
+      where
+        Succ_0123456789876543210Sym0KindInference :: forall l arg.
+                                                     SameKind (Apply Succ_0123456789876543210Sym0 arg) (Succ_0123456789876543210Sym1 arg) =>
+                                                     Succ_0123456789876543210Sym0 l
     type instance Apply Succ_0123456789876543210Sym0 l = Succ_0123456789876543210 l
     type family Pred_0123456789876543210 (a :: [Bool]) :: [Bool] where
       Pred_0123456789876543210 '[] = Apply ErrorSym0 "pred 0"
@@ -55,9 +57,11 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Pred_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Pred_0123456789876543210Sym0 (l :: TyFun [Bool] [Bool])
-      = forall arg. SameKind (Apply Pred_0123456789876543210Sym0 arg) (Pred_0123456789876543210Sym1 arg) =>
-        Pred_0123456789876543210Sym0KindInference
+    data Pred_0123456789876543210Sym0 (l :: TyFun [Bool] [Bool]) :: GHC.Types.Type
+      where
+        Pred_0123456789876543210Sym0KindInference :: forall l arg.
+                                                     SameKind (Apply Pred_0123456789876543210Sym0 arg) (Pred_0123456789876543210Sym1 arg) =>
+                                                     Pred_0123456789876543210Sym0 l
     type instance Apply Pred_0123456789876543210Sym0 l = Pred_0123456789876543210 l
     type family Case_0123456789876543210 i arg_0123456789876543210 t where
       Case_0123456789876543210 i arg_0123456789876543210 True = '[]
@@ -76,9 +80,11 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ToEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ToEnum_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat [Bool])
-      = forall arg. SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
-        ToEnum_0123456789876543210Sym0KindInference
+    data ToEnum_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat [Bool]) :: GHC.Types.Type
+      where
+        ToEnum_0123456789876543210Sym0KindInference :: forall l arg.
+                                                       SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
+                                                       ToEnum_0123456789876543210Sym0 l
     type instance Apply ToEnum_0123456789876543210Sym0 l = ToEnum_0123456789876543210 l
     type family FromEnum_0123456789876543210 (a :: [Bool]) :: GHC.Types.Nat where
       FromEnum_0123456789876543210 '[] = FromInteger 0
@@ -91,9 +97,11 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) FromEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data FromEnum_0123456789876543210Sym0 (l :: TyFun [Bool] GHC.Types.Nat)
-      = forall arg. SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
-        FromEnum_0123456789876543210Sym0KindInference
+    data FromEnum_0123456789876543210Sym0 (l :: TyFun [Bool] GHC.Types.Nat) :: GHC.Types.Type
+      where
+        FromEnum_0123456789876543210Sym0KindInference :: forall l arg.
+                                                         SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
+                                                         FromEnum_0123456789876543210Sym0 l
     type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
     instance PEnum [Bool] where
       type Succ a = Apply Succ_0123456789876543210Sym0 a

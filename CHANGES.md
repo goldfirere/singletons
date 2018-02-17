@@ -10,6 +10,10 @@ Changelog for singletons project
   * `singletons` now generates `a ~> b` instead of `TyFun a b -> Type` whenever
     possible.
 
+* Since `th-desugar` now desugars all data types to GADT syntax, Template
+  Haskell-generated code may require `GADTs` in situations that didn't require
+  it before.
+
 * Rename `Data.Singletons.TypeRepStar` to `Data.Singletons.TypeRepTYPE`, and
   generalize the `Sing :: Type -> Type` instance to `Sing :: TYPE rep -> Type`,
   allowing it to work over more open kinds. Also rename `SomeTypeRepStar` to

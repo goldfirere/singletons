@@ -75,38 +75,44 @@ singletonStar :: DsMonad q
 singletonStar names = do
   kinds <- mapM getKind names
   ctors <- zipWithM (mkCtor True) names kinds
-  let repDecl = DDataD Data [] repName [] ctors
+  let repDecl = DDataD Data [] repName [] (DConT typeKindName) ctors
                          [DDerivClause Nothing (map DConPr [''Eq, ''Ord, ''Read, ''Show])]
   fakeCtors <- zipWithM (mkCtor False) names kinds
   let dataDecl = DataDecl Data repName [] fakeCtors
                           [DConPr ''Show, DConPr ''Read]
-  -- We opt to infer the constraints for the Eq instance here so that when it's
-  -- promoted, Rep will be promoted to Type.
-  dataDeclEqCxt <- inferConstraints (DConPr ''Eq) (DConT repName) fakeCtors
-  let dataDeclEqInst = DerivedDecl (Just dataDeclEqCxt) (DConT repName) fakeCtors
-  ordInst  <- mkOrdInstance Nothing (DConT repName) fakeCtors
-  showInst <- mkShowInstance ForPromotion Nothing (DConT repName) fakeCtors
-  (pInsts, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
-                                          promoteDerivedEqDec dataDeclEqInst
-                                          traverse (promoteInstanceDec mempty)
-                                            [ordInst, showInst]
-  singletonDecls <- singDecsM [] $ do decs1 <- singDataD dataDecl
-                                      decs2 <- singDerivedEqDecs dataDeclEqInst
-                                      decs3 <- traverse singInstD pInsts
-                                      return (decs1 ++ decs2 ++ decs3)
-  return $ decsToTH $ repDecl :
-                      promDecls ++
-                      singletonDecls
+  -- Why do we need withLocalDeclarations here? It's because we end up
+  -- expanding type synonyms when deriving instances for Rep, which requires
+  -- reifying Rep itself. Since Rep hasn't been spliced in yet, we must put it
+  -- into the local declarations.
+  withLocalDeclarations (decToTH repDecl) $ do
+    -- We opt to infer the constraints for the Eq instance here so that when it's
+    -- promoted, Rep will be promoted to Type.
+    dataDeclEqCxt <- inferConstraints (DConPr ''Eq) (DConT repName) fakeCtors
+    let dataDeclEqInst = DerivedDecl (Just dataDeclEqCxt) (DConT repName) fakeCtors
+    ordInst  <- mkOrdInstance Nothing (DConT repName) fakeCtors
+    showInst <- mkShowInstance ForPromotion Nothing (DConT repName) fakeCtors
+    (pInsts, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
+                                            promoteDerivedEqDec dataDeclEqInst
+                                            traverse (promoteInstanceDec mempty)
+                                              [ordInst, showInst]
+    singletonDecls <- singDecsM [] $ do decs1 <- singDataD dataDecl
+                                        decs2 <- singDerivedEqDecs dataDeclEqInst
+                                        decs3 <- traverse singInstD pInsts
+                                        return (decs1 ++ decs2 ++ decs3)
+    return $ decsToTH $ repDecl :
+                        promDecls ++
+                        singletonDecls
   where -- get the kinds of the arguments to the tycon with the given name
         getKind :: DsMonad q => Name -> q [DKind]
         getKind name = do
           info <- reifyWithWarning name
           dinfo <- dsInfo info
           case dinfo of
-            DTyConI (DDataD _ (_:_) _ _ _ _) _ ->
-               fail "Cannot make a representation of a constrainted data type"
-            DTyConI (DDataD _ [] _ tvbs _ _) _ ->
-               return $ map (fromMaybe (DConT typeKindName) . extractTvbKind) tvbs
+            DTyConI (DDataD _ (_:_) _ _ _ _ _) _ ->
+               fail "Cannot make a representation of a constrained data type"
+            DTyConI (DDataD _ [] _ tvbs k _ _) _ ->
+               let (_, _, k_args, _) = unravel k in
+               return $ map (fromMaybe (DConT typeKindName) . extractTvbKind) tvbs ++ k_args
             DTyConI (DTySynD _ tvbs _) _ ->
                return $ map (fromMaybe (DConT typeKindName) . extractTvbKind) tvbs
             DPrimTyConI _ n _ ->
@@ -121,7 +127,7 @@ singletonStar names = do
           dataName <- if real then mkDataName (nameBase name) else return name
           return $ DCon (map DPlainTV vars) [] dataName
                         (DNormalC False (map (\ty -> (noBang, ty)) types))
-                        Nothing
+                        (DConT repName)
             where
               noBang = Bang NoSourceUnpackedness NoSourceStrictness
 

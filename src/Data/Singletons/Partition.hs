@@ -11,6 +11,7 @@
 --
 ----------------------------------------------------------------------------
 
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TupleSections #-}
 
 module Data.Singletons.Partition where
@@ -58,15 +59,17 @@ partitionDec :: DsMonad m => DDec -> m PartitionedDecs
 partitionDec (DLetDec (DPragmaD {})) = return mempty
 partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
 
-partitionDec (DDataD nd _cxt name tvbs cons derivings) = do
+partitionDec (DDataD nd _cxt name tvbs k cons derivings) = do
+  extra_tvbs <- mkExtraDKindBinders k
+  let all_tvbs = tvbs ++ extra_tvbs
+      data_dec = mempty { pd_data_decs = [DataDecl nd name all_tvbs cons []] }
+      ty = foldTypeTvbs (DConT name) all_tvbs
+  is_gadt <- isProperGADT ty cons
   derived_decs
-    <- mapM (\(strat, deriv_pred) -> partitionDeriving strat deriv_pred Nothing ty cons)
+    <- mapM (\(strat, deriv_pred) -> partitionDeriving strat deriv_pred Nothing ty is_gadt cons)
       $ concatMap flatten_clause derivings
   return $ mconcat $ data_dec : derived_decs
   where
-    data_dec = mempty { pd_data_decs = [DataDecl nd name tvbs cons []] }
-    ty = foldType (DConT name) (map tvbToType tvbs)
-
     flatten_clause :: DDerivClause -> [(Maybe DerivStrategy, DType)]
     flatten_clause (DDerivClause strat preds) =
       map (\p -> (strat, predToType p)) preds
@@ -106,8 +109,10 @@ partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
       -> do let cls_pred = foldType cls_pred_ty cls_arg_tys
             dinfo <- dsReify data_tycon
             case dinfo of
-              Just (DTyConI (DDataD _ _ _ _ cons _) _) -> do
-                partitionDeriving mb_strat cls_pred (Just ctxt) data_ty cons
+              Just (DTyConI (DDataD _ _ dn dtvbs dk dcons _) _) -> do
+                orig_data_ty <- buildDataDType dn dtvbs dk
+                is_gadt      <- isProperGADT orig_data_ty dcons
+                partitionDeriving mb_strat cls_pred (Just ctxt) data_ty is_gadt dcons
               Just _ ->
                 fail $ "Standalone derived instance for something other than a datatype: "
                        ++ show data_ty
@@ -137,9 +142,13 @@ partitionInstanceDec (DLetDec (DPragmaD {})) = return Nothing
 partitionInstanceDec _ =
   fail "Only method bodies can be promoted within an instance."
 
-partitionDeriving :: DsMonad m => Maybe DerivStrategy -> DType -> Maybe DCxt -> DType -> [DCon]
+partitionDeriving :: forall m. DsMonad m
+                  => Maybe DerivStrategy -> DType -> Maybe DCxt -> DType
+                  -> Bool -- Is this function a /proper/ GADT? See the
+                          -- documentation for 'isProperGADT'.
+                  -> [DCon]
                   -> m PartitionedDecs
-partitionDeriving mb_strat deriv_pred mb_ctxt ty cons =
+partitionDeriving mb_strat deriv_pred mb_ctxt ty is_gadt cons =
   case unfoldType deriv_pred of
     DConT deriv_name :| arg_tys
          -- Here, we are more conservative than GHC: DeriveAnyClass only kicks
@@ -173,15 +182,15 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty cons =
                            -- type itself)
        | stock_or_default
        , deriv_name == ordName
-      -> mk_derived_inst <$> mkOrdInstance mb_ctxt ty cons
+      -> mk_derived_inst <$> mk_instance' mkOrdInstance
 
        | stock_or_default
        , deriv_name == boundedName
-      -> mk_derived_inst <$> mkBoundedInstance mb_ctxt ty cons
+      -> mk_derived_inst <$> mk_instance' mkBoundedInstance
 
        | stock_or_default
        , deriv_name == enumName
-      -> mk_derived_inst <$> mkEnumInstance mb_ctxt ty cons
+      -> mk_derived_inst <$> mk_instance mkEnumInstance
 
          -- See Note [DerivedDecl] in Data.Singletons.Syntax
        | stock_or_default
@@ -192,7 +201,7 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty cons =
        | stock_or_default
        , deriv_name == showName
       -> do -- This will become PShow/SShow instances...
-            inst_for_promotion <- mkShowInstance ForPromotion mb_ctxt ty cons
+            inst_for_promotion <- mk_instance' (mkShowInstance ForPromotion)
             -- ...and this will become ShowSing/Show instances.
             let inst_for_ShowSing = mk_derived_decl mb_ctxt ty cons
             pure $ mempty { pd_instance_decs     = [inst_for_promotion]
@@ -207,6 +216,11 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty cons =
 
     _ -> return mempty -- singletons doesn't support deriving this instance
   where
+      mk_instance maker = maker is_gadt mb_ctxt ty cons
+      -- A variant of mk_instance that doesn't care whether the data type is
+      -- a proper GADT.
+      mk_instance' maker = mk_instance (const maker)
+
       mk_derived_inst    dec = mempty { pd_instance_decs   = [dec] }
       mk_derived_eq_inst dec = mempty { pd_derived_eq_decs = [dec] }
       mk_derived_decl mb_ctxt' ty' cons' = DerivedDecl { ded_mb_cxt = mb_ctxt'
@@ -219,3 +233,60 @@ isStockOrDefault :: Maybe DerivStrategy -> Bool
 isStockOrDefault Nothing              = True
 isStockOrDefault (Just StockStrategy) = True
 isStockOrDefault (Just _)             = False
+
+buildDataDType :: DsMonad q => Name -> [DTyVarBndr] -> DKind -> q DType
+buildDataDType n tvbs k = do
+  extra_tvbs <- mkExtraDKindBinders k
+  let all_tvbs = tvbs ++ extra_tvbs
+  pure $ foldTypeTvbs (DConT n) all_tvbs
+
+-- | Is this data type a /proper/ GADT? On the surface, this might seem like a
+-- strange question to ask, since @th-desugar@ desugars all data types to GADT
+-- syntax. But there is a subset of GADTs that cannot be expressed as an
+-- equivalent data type using Haskell98 syntax. For instance, this GADT:
+--
+-- @
+-- data Foo :: Type -> Type where
+--   MkFoo :: forall a. a -> Foo a
+-- @
+--
+-- Is equivalent to this Haskell98 data type:
+--
+-- @
+-- data Foo a = MkFoo a
+-- @
+--
+-- However, the following example is a proper GADT:
+--
+-- @
+-- data Bar :: Type -> Type where
+--   MkBar :: Int -> Bar Int
+-- @
+--
+-- Since there is no equivalent Haskell98 data type. The closest you could get
+-- is this:
+--
+-- @
+-- data Bar a = (a ~ Int) => MkBar Int
+-- @
+--
+-- Which requires language extensions to write.
+--
+-- A data type is a proper GADT if one of the following conditions are met:
+--
+-- 1. A constructor has any existentially quantified type variables.
+--
+-- 2. A constructor has a context.
+--
+-- We care about this because some derivable stock classes, such as 'Enum',
+-- forbid derived instances for proper GADTs.
+isProperGADT :: forall q. DsMonad q => DType -> [DCon] -> q Bool
+isProperGADT data_ty = anyM $ \con@(DCon _ ctxt _ _ _) -> do
+    ex_tvbs <- conExistentialTvbs data_ty con
+    return $ not $ null ex_tvbs && null ctxt
+  where
+    anyM :: (a -> q Bool) -> [a] -> q Bool
+    anyM _ [] = return False
+    anyM p (x:xs) = do
+      b <- p x
+      if b then return True else anyM p xs
