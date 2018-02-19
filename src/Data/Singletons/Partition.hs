@@ -64,9 +64,10 @@ partitionDec (DDataD nd _cxt name tvbs k cons derivings) = do
   let all_tvbs = tvbs ++ extra_tvbs
       data_dec = mempty { pd_data_decs = [DataDecl nd name all_tvbs cons []] }
       ty = foldTypeTvbs (DConT name) all_tvbs
-  is_gadt <- isProperGADT ty cons
+  non_vanilla <- isNonVanillaDataType ty cons
   derived_decs
-    <- mapM (\(strat, deriv_pred) -> partitionDeriving strat deriv_pred Nothing ty is_gadt cons)
+    <- mapM (\(strat, deriv_pred) -> partitionDeriving strat deriv_pred Nothing ty
+                                                       non_vanilla cons)
       $ concatMap flatten_clause derivings
   return $ mconcat $ data_dec : derived_decs
   where
@@ -111,8 +112,8 @@ partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
             case dinfo of
               Just (DTyConI (DDataD _ _ dn dtvbs dk dcons _) _) -> do
                 orig_data_ty <- buildDataDType dn dtvbs dk
-                is_gadt      <- isProperGADT orig_data_ty dcons
-                partitionDeriving mb_strat cls_pred (Just ctxt) data_ty is_gadt dcons
+                non_vanilla  <- isNonVanillaDataType orig_data_ty dcons
+                partitionDeriving mb_strat cls_pred (Just ctxt) data_ty non_vanilla dcons
               Just _ ->
                 fail $ "Standalone derived instance for something other than a datatype: "
                        ++ show data_ty
@@ -144,11 +145,11 @@ partitionInstanceDec _ =
 
 partitionDeriving :: forall m. DsMonad m
                   => Maybe DerivStrategy -> DType -> Maybe DCxt -> DType
-                  -> Bool -- Is this function a /proper/ GADT? See the
-                          -- documentation for 'isProperGADT'.
+                  -> Bool -- Is this a non-vanilla data type? (See the
+                          -- documentation for 'isNonVanillaDataType'.)
                   -> [DCon]
                   -> m PartitionedDecs
-partitionDeriving mb_strat deriv_pred mb_ctxt ty is_gadt cons =
+partitionDeriving mb_strat deriv_pred mb_ctxt ty non_vanilla cons =
   case unfoldType deriv_pred of
     DConT deriv_name :| arg_tys
          -- Here, we are more conservative than GHC: DeriveAnyClass only kicks
@@ -216,9 +217,9 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty is_gadt cons =
 
     _ -> return mempty -- singletons doesn't support deriving this instance
   where
-      mk_instance maker = maker is_gadt mb_ctxt ty cons
+      mk_instance maker = maker non_vanilla mb_ctxt ty cons
       -- A variant of mk_instance that doesn't care whether the data type is
-      -- a proper GADT.
+      -- a vanilla data type.
       mk_instance' maker = mk_instance (const maker)
 
       mk_derived_inst    dec = mempty { pd_instance_decs   = [dec] }
@@ -240,10 +241,9 @@ buildDataDType n tvbs k = do
   let all_tvbs = tvbs ++ extra_tvbs
   pure $ foldTypeTvbs (DConT n) all_tvbs
 
--- | Is this data type a /proper/ GADT? On the surface, this might seem like a
--- strange question to ask, since @th-desugar@ desugars all data types to GADT
--- syntax. But there is a subset of GADTs that cannot be expressed as an
--- equivalent data type using Haskell98 syntax. For instance, this GADT:
+-- | Is this data type a non-vanilla data type? Here, \"non-vanilla\" refers to
+-- any data type that cannot be expressed using Haskell98 syntax. For instance,
+-- this GADT:
 --
 -- @
 -- data Foo :: Type -> Type where
@@ -256,7 +256,7 @@ buildDataDType n tvbs k = do
 -- data Foo a = MkFoo a
 -- @
 --
--- However, the following example is a proper GADT:
+-- However, the following GADT is non-vanilla:
 --
 -- @
 -- data Bar :: Type -> Type where
@@ -272,16 +272,16 @@ buildDataDType n tvbs k = do
 --
 -- Which requires language extensions to write.
 --
--- A data type is a proper GADT if one of the following conditions are met:
+-- A data type is a non-vanilla if one of the following conditions are met:
 --
 -- 1. A constructor has any existentially quantified type variables.
 --
 -- 2. A constructor has a context.
 --
 -- We care about this because some derivable stock classes, such as 'Enum',
--- forbid derived instances for proper GADTs.
-isProperGADT :: forall q. DsMonad q => DType -> [DCon] -> q Bool
-isProperGADT data_ty = anyM $ \con@(DCon _ ctxt _ _ _) -> do
+-- forbid derived instances for non-vanilla data types.
+isNonVanillaDataType :: forall q. DsMonad q => DType -> [DCon] -> q Bool
+isNonVanillaDataType data_ty = anyM $ \con@(DCon _ ctxt _ _ _) -> do
     ex_tvbs <- conExistentialTvbs data_ty con
     return $ not $ null ex_tvbs && null ctxt
   where

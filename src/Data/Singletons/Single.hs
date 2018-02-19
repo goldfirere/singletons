@@ -217,8 +217,8 @@ singInstance mk_inst inst_name name = do
   dtvbs <- mapM dsTvb tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
-  is_gadt <- isProperGADT data_ty dcons
-  raw_inst <- mk_inst is_gadt Nothing (foldTypeTvbs (DConT name) dtvbs) dcons
+  non_vanilla <- isNonVanillaDataType data_ty dcons
+  raw_inst <- mk_inst non_vanilla Nothing (foldTypeTvbs (DConT name) dtvbs) dcons
   (a_inst, decs) <- promoteM [] $
                     promoteInstanceDec Map.empty raw_inst
   decs' <- singDecsM [] $ (:[]) <$> singInstD a_inst

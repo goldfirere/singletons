@@ -131,8 +131,8 @@ promoteInstance mk_inst class_name name = do
   tvbs' <- mapM dsTvb tvbs
   let data_ty = foldTypeTvbs (DConT name) tvbs'
   cons' <- concatMapM (dsCon tvbs' data_ty) cons
-  is_gadt <- isProperGADT data_ty cons'
-  raw_inst <- mk_inst is_gadt Nothing (foldTypeTvbs (DConT name) tvbs') cons'
+  non_vanilla <- isNonVanillaDataType data_ty cons'
+  raw_inst <- mk_inst non_vanilla Nothing (foldTypeTvbs (DConT name) tvbs') cons'
   decs <- promoteM_ [] $ void $ promoteInstanceDec Map.empty raw_inst
   return $ decsToTH decs
 

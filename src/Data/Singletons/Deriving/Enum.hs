@@ -24,10 +24,10 @@ import Data.Maybe
 
 -- monadic for failure only
 mkEnumInstance :: Quasi q => Bool -> Maybe DCxt -> DType -> [DCon] -> q UInstDecl
-mkEnumInstance is_gadt mb_ctxt ty cons = do
+mkEnumInstance non_vanilla mb_ctxt ty cons = do
   when (null cons ||
         any (\(DCon _ _ _ f _) ->
-              is_gadt || not (null $ tysOfConFields f)) cons) $
+              non_vanilla || not (null $ tysOfConFields f)) cons) $
     fail ("Can't derive Enum instance for " ++ pprint (typeToTH ty) ++ ".")
   n <- qNewName "n"
   let to_enum = UFunction [DClause [DVarPa n] (to_enum_rhs cons [0..])]
