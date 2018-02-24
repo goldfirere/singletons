@@ -244,6 +244,27 @@ quotes), but implementing this requires pattern-matching on character literals,
 something which is currently impossible at the type level. As a consequence, the
 type-level `Show` instance for `Symbol`s does not do any character escaping.
 
+Errors
+------
+
+The `singletons` library provides two different ways to handle errors:
+
+* The `Error` type family, from `Data.Singletons.TypeLits`:
+
+  ```haskell
+  type family Error (str :: a) :: k where {}
+  ```
+
+  This is simply an empty, closed type family, which means that it will fail
+  to reduce regardless of its input. The typical use case is giving it a
+  `Symbol` as an argument, so that something akin to
+  `Error "This is an error message"` appears in error messages.
+* The `TypeError` type family, from `Data.Singletons.TypeError`. This is a
+  drop-in replacement for `TypeError` from `GHC.TypeLits` which can be used
+  at both the type level and the value level (via the `typeError` function).
+
+  Unlike `Error`, `TypeError` will result in an actual compile-time error
+  message, which may be more desirable depending on the use case.
 
 Pre-defined singletons
 ----------------------

@@ -35,6 +35,9 @@ Changelog for singletons project
 
 * Permit singling of expression and pattern signatures.
 
+* Add `Data.Singletons.TypeError`, which provides a drop-in replacement for
+  `GHC.TypeLits.TypeError` which can be used at both the value- and type-level.
+
 2.4.1
 -----
 * Restore the `TyCon1`, `TyCon2`, etc. types. It turns out that the new
