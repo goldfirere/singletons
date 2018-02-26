@@ -47,36 +47,35 @@ sNot :: Sing b -> Sing (Not b)
 sNot STrue = SFalse
 sNot SFalse = STrue
 
-infix 4 :==, :/=
 class PEq a where
-  type (:==) (x :: a) (y :: a) :: Bool
-  type (:/=) (x :: a) (y :: a) :: Bool
+  type (==) (x :: a) (y :: a) :: Bool
+  type (/=) (x :: a) (y :: a) :: Bool
 
-  type x :== y = Not (x :/= y)
-  type x :/= y = Not (x :== y)
+  type x == y = Not (x /= y)
+  type x /= y = Not (x == y)
 
 instance PEq Nat where
-  type 'Zero :== 'Zero = 'True
-  type 'Succ x :== 'Zero = 'False
-  type 'Zero :== 'Succ x = 'False
-  type 'Succ x :== 'Succ y = x :== y
+  type 'Zero   == 'Zero   = 'True
+  type 'Succ x == 'Zero   = 'False
+  type 'Zero   == 'Succ x = 'False
+  type 'Succ x == 'Succ y = x == y
 
 class SEq a where
-  (%:==) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x :== y)
-  (%:/=) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x :/= y)
+  (%==) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x == y)
+  (%/=) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x /= y)
 
-  default (%:==) :: ((x :== y) ~ (Not (x :/= y))) => Sing (x :: a) -> Sing (y :: a) -> Sing (x :== y)
-  x %:== y = sNot (x %:/= y)
+  default (%==) :: ((x == y) ~ (Not (x /= y))) => Sing (x :: a) -> Sing (y :: a) -> Sing (x == y)
+  x %== y = sNot (x %/= y)
 
-  default (%:/=) :: ((x :/= y) ~ (Not (x :== y))) => Sing (x :: a) -> Sing (y :: a) -> Sing (x :/= y)
-  x %:/= y = sNot (x %:== y)
+  default (%/=) :: ((x /= y) ~ (Not (x == y))) => Sing (x :: a) -> Sing (y :: a) -> Sing (x /= y)
+  x %/= y = sNot (x %== y)
 
 instance SEq Nat where
-  (%:==) :: forall (x :: Nat) (y :: Nat). Sing x -> Sing y -> Sing (x :== y)
-  SZero %:== SZero = STrue
-  SSucc _ %:== SZero = SFalse
-  SZero %:== SSucc _ = SFalse
-  SSucc x %:== SSucc y = x %:== y
+  (%==) :: forall (x :: Nat) (y :: Nat). Sing x -> Sing y -> Sing (x == y)
+  SZero   %== SZero   = STrue
+  SSucc _ %== SZero   = SFalse
+  SZero   %== SSucc _ = SFalse
+  SSucc x %== SSucc y = x %== y
 
 instance Eq Ordering where
   LT == LT = True
@@ -97,9 +96,9 @@ class Eq a => Ord a where
 
 class PEq a => POrd a where
   type Compare (x :: a) (y :: a) :: Ordering
-  type (:<) (x :: a) (y :: a) :: Bool
+  type (<) (x :: a) (y :: a) :: Bool
 
-  type x :< y = Compare x y :== 'LT
+  type x < y = Compare x y == 'LT
 
 instance Ord Nat where
   compare Zero Zero = EQ
@@ -108,9 +107,9 @@ instance Ord Nat where
   compare (Succ a) (Succ b) = compare a b
 
 instance POrd Nat where
-  type Compare 'Zero 'Zero = 'EQ
-  type Compare 'Zero ('Succ x) = 'LT
-  type Compare ('Succ x) 'Zero = 'GT
+  type Compare 'Zero     'Zero     = 'EQ
+  type Compare 'Zero     ('Succ x) = 'LT
+  type Compare ('Succ x) 'Zero     = 'GT
   type Compare ('Succ x) ('Succ y) = Compare x y
 
 data instance Sing :: Ordering -> Type where
@@ -119,33 +118,33 @@ data instance Sing :: Ordering -> Type where
   SGT :: Sing 'GT
 
 instance PEq Ordering where
-  type 'LT :== 'LT = 'True
-  type 'LT :== 'EQ = 'False
-  type 'LT :== 'GT = 'False
-  type 'EQ :== 'LT = 'False
-  type 'EQ :== 'EQ = 'True
-  type 'EQ :== 'GT = 'False
-  type 'GT :== 'LT = 'False
-  type 'GT :== 'EQ = 'False
-  type 'GT :== 'GT = 'True
+  type 'LT == 'LT = 'True
+  type 'LT == 'EQ = 'False
+  type 'LT == 'GT = 'False
+  type 'EQ == 'LT = 'False
+  type 'EQ == 'EQ = 'True
+  type 'EQ == 'GT = 'False
+  type 'GT == 'LT = 'False
+  type 'GT == 'EQ = 'False
+  type 'GT == 'GT = 'True
 
 instance SEq Ordering where
-  SLT %:== SLT = STrue
-  SLT %:== SEQ = SFalse
-  SLT %:== SGT = SFalse
-  SEQ %:== SLT = SFalse
-  SEQ %:== SEQ = STrue
-  SEQ %:== SGT = SFalse
-  SGT %:== SLT = SFalse
-  SGT %:== SEQ = SFalse
-  SGT %:== SGT = STrue
+  SLT %== SLT = STrue
+  SLT %== SEQ = SFalse
+  SLT %== SGT = SFalse
+  SEQ %== SLT = SFalse
+  SEQ %== SEQ = STrue
+  SEQ %== SGT = SFalse
+  SGT %== SLT = SFalse
+  SGT %== SEQ = SFalse
+  SGT %== SGT = STrue
 
 class SEq a => SOrd a where
   sCompare :: Sing (x :: a) -> Sing (y :: a) -> Sing (Compare x y)
-  (%:<) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x :< y)
+  (%<) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x < y)
 
-  default (%:<) :: ((x :< y) ~ (Compare x y :== 'LT)) => Sing (x :: a) -> Sing (y :: a) -> Sing (x :< y)
-  x %:< y = sCompare x y %:== SLT
+  default (%<) :: ((x < y) ~ (Compare x y == 'LT)) => Sing (x :: a) -> Sing (y :: a) -> Sing (x < y)
+  x %< y = sCompare x y %== SLT
 
 instance SOrd Nat where
   sCompare SZero SZero = SEQ
