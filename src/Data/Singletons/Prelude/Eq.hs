@@ -40,8 +40,8 @@ class PEq a where
   type (x :: a) == (y :: a) = x DTE.== y
   type (x :: a) /= (y :: a) = Not (x == y)
 
-infix 4 ==
-infix 4 /=
+  infix 4 ==
+  infix 4 /=
 
 $(genDefunSymbols [''(==), ''(/=)])
 
