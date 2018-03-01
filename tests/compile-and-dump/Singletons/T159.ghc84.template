@@ -113,9 +113,28 @@ Singletons/T159.hs:0:0:: Splicing declarations
       sing = SN1
     instance (SingI n, SingI n) => SingI (C1 (n :: T0) (n :: T1)) where
       sing = (SC1 sing) sing
+    instance SingI (C1Sym0 :: (~>) T0 ((~>) T1 T1)) where
+      sing = (singFun2 @C1Sym0) SC1
+    instance SingI (TyCon2 C1 :: (~>) T0 ((~>) T1 T1)) where
+      sing = (singFun2 @(TyCon2 C1)) SC1
+    instance SingI d => SingI (C1Sym1 (d :: T0) :: (~>) T1 T1) where
+      sing = (singFun1 @(C1Sym1 (d :: T0))) (SC1 (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (C1 (d :: T0)) :: (~>) T1 T1) where
+      sing = (singFun1 @(TyCon1 (C1 (d :: T0)))) (SC1 (sing @_ @d))
     instance (SingI n, SingI n) =>
              SingI ((:&&) (n :: T0) (n :: T1)) where
       sing = ((:%&&) sing) sing
+    instance SingI ((:&&@#@$) :: (~>) T0 ((~>) T1 T1)) where
+      sing = (singFun2 @(:&&@#@$)) (:%&&)
+    instance SingI (TyCon2 (:&&) :: (~>) T0 ((~>) T1 T1)) where
+      sing = (singFun2 @(TyCon2 (:&&))) (:%&&)
+    instance SingI d =>
+             SingI ((:&&@#@$$) (d :: T0) :: (~>) T1 T1) where
+      sing = (singFun1 @((:&&@#@$$) (d :: T0))) ((:%&&) (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 ((:&&) (d :: T0)) :: (~>) T1 T1) where
+      sing = (singFun1 @(TyCon1 ((:&&) (d :: T0)))) ((:%&&) (sing @_ @d))
 Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| infixr 5 :||
@@ -197,6 +216,25 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       sing = SN2
     instance (SingI n, SingI n) => SingI (C2 (n :: T0) (n :: T2)) where
       sing = (SC2 sing) sing
+    instance SingI (C2Sym0 :: (~>) T0 ((~>) T2 T2)) where
+      sing = (singFun2 @C2Sym0) SC2
+    instance SingI (TyCon2 C2 :: (~>) T0 ((~>) T2 T2)) where
+      sing = (singFun2 @(TyCon2 C2)) SC2
+    instance SingI d => SingI (C2Sym1 (d :: T0) :: (~>) T2 T2) where
+      sing = (singFun1 @(C2Sym1 (d :: T0))) (SC2 (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (C2 (d :: T0)) :: (~>) T2 T2) where
+      sing = (singFun1 @(TyCon1 (C2 (d :: T0)))) (SC2 (sing @_ @d))
     instance (SingI n, SingI n) =>
              SingI ((:||) (n :: T0) (n :: T2)) where
       sing = ((:%||) sing) sing
+    instance SingI ((:||@#@$) :: (~>) T0 ((~>) T2 T2)) where
+      sing = (singFun2 @(:||@#@$)) (:%||)
+    instance SingI (TyCon2 (:||) :: (~>) T0 ((~>) T2 T2)) where
+      sing = (singFun2 @(TyCon2 (:||))) (:%||)
+    instance SingI d =>
+             SingI ((:||@#@$$) (d :: T0) :: (~>) T2 T2) where
+      sing = (singFun1 @((:||@#@$$) (d :: T0))) ((:%||) (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 ((:||) (d :: T0)) :: (~>) T2 T2) where
+      sing = (singFun1 @(TyCon1 ((:||) (d :: T0)))) ((:%||) (sing @_ @d))

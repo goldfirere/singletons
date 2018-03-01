@@ -296,3 +296,21 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
           SJust (sY :: Sing y) -> sY
           SNothing -> sD ::
           Sing (Case_0123456789876543210 d x x :: a)
+    instance SingI (Foo5Sym0 :: (~>) a a) where
+      sing = (singFun1 @Foo5Sym0) sFoo5
+    instance SingI (Foo4Sym0 :: (~>) a a) where
+      sing = (singFun1 @Foo4Sym0) sFoo4
+    instance SingI (Foo3Sym0 :: (~>) a ((~>) b a)) where
+      sing = (singFun2 @Foo3Sym0) sFoo3
+    instance SingI d => SingI (Foo3Sym1 (d :: a) :: (~>) b a) where
+      sing = (singFun1 @(Foo3Sym1 (d :: a))) (sFoo3 (sing @_ @d))
+    instance SingI (Foo2Sym0 :: (~>) a ((~>) (Maybe a) a)) where
+      sing = (singFun2 @Foo2Sym0) sFoo2
+    instance SingI d =>
+             SingI (Foo2Sym1 (d :: a) :: (~>) (Maybe a) a) where
+      sing = (singFun1 @(Foo2Sym1 (d :: a))) (sFoo2 (sing @_ @d))
+    instance SingI (Foo1Sym0 :: (~>) a ((~>) (Maybe a) a)) where
+      sing = (singFun2 @Foo1Sym0) sFoo1
+    instance SingI d =>
+             SingI (Foo1Sym1 (d :: a) :: (~>) (Maybe a) a) where
+      sing = (singFun1 @(Foo1Sym1 (d :: a))) (sFoo1 (sing @_ @d))

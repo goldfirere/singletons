@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, TypeFamilies, TypeInType, TypeOperators,
+{-# LANGUAGE TemplateHaskell, TypeApplications, TypeFamilies, TypeInType, TypeOperators,
              GADTs, ScopedTypeVariables, DeriveDataTypeable, UndecidableInstances #-}
 
 -----------------------------------------------------------------------------
@@ -77,6 +77,10 @@ SFalse %&& _ = SFalse
 STrue  %&& a = a
 infixr 3 %&&
 $(genDefunSymbols [''(&&)])
+instance SingI (&&@#@$) where
+  sing = singFun2 (%&&)
+instance SingI x => SingI ((&&@#@$$) x) where
+  sing = singFun1 (sing @_ @x  %&&)
 
 -- | Disjunction of singletons
 (%||) :: Sing a -> Sing b -> Sing (a || b)
@@ -84,12 +88,18 @@ SFalse %|| a = a
 STrue  %|| _ = STrue
 infixr 2 %||
 $(genDefunSymbols [''(||)])
+instance SingI (||@#@$) where
+  sing = singFun2 (%||)
+instance SingI x => SingI ((||@#@$$) x) where
+  sing = singFun1 (sing @_ @x %||)
 
 -- | Negation of a singleton
 sNot :: Sing a -> Sing (Not a)
 sNot SFalse = STrue
 sNot STrue  = SFalse
 $(genDefunSymbols [''Not])
+instance SingI NotSym0 where
+  sing = singFun1 sNot
 
 -- | Conditional over singletons
 sIf :: Sing a -> Sing b -> Sing c -> Sing (If a b c)

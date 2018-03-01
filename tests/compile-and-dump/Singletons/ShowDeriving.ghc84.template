@@ -605,15 +605,68 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI (MkFoo2a (n :: a) (n :: a)) where
       sing = (SMkFoo2a sing) sing
+    instance SingI (MkFoo2aSym0 :: (~>) a ((~>) a (Foo2 a))) where
+      sing = (singFun2 @MkFoo2aSym0) SMkFoo2a
+    instance SingI (TyCon2 MkFoo2a :: (~>) a ((~>) a (Foo2 a))) where
+      sing = (singFun2 @(TyCon2 MkFoo2a)) SMkFoo2a
+    instance SingI d =>
+             SingI (MkFoo2aSym1 (d :: a) :: (~>) a (Foo2 a)) where
+      sing = (singFun1 @(MkFoo2aSym1 (d :: a))) (SMkFoo2a (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (MkFoo2a (d :: a)) :: (~>) a (Foo2 a)) where
+      sing
+        = (singFun1 @(TyCon1 (MkFoo2a (d :: a)))) (SMkFoo2a (sing @_ @d))
     instance (SingI n, SingI n) =>
              SingI (MkFoo2b (n :: a) (n :: a)) where
       sing = (SMkFoo2b sing) sing
+    instance SingI (MkFoo2bSym0 :: (~>) a ((~>) a (Foo2 a))) where
+      sing = (singFun2 @MkFoo2bSym0) SMkFoo2b
+    instance SingI (TyCon2 MkFoo2b :: (~>) a ((~>) a (Foo2 a))) where
+      sing = (singFun2 @(TyCon2 MkFoo2b)) SMkFoo2b
+    instance SingI d =>
+             SingI (MkFoo2bSym1 (d :: a) :: (~>) a (Foo2 a)) where
+      sing = (singFun1 @(MkFoo2bSym1 (d :: a))) (SMkFoo2b (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (MkFoo2b (d :: a)) :: (~>) a (Foo2 a)) where
+      sing
+        = (singFun1 @(TyCon1 (MkFoo2b (d :: a)))) (SMkFoo2b (sing @_ @d))
     instance (SingI n, SingI n) =>
              SingI ((:*:) (n :: a) (n :: a)) where
       sing = ((:%*:) sing) sing
+    instance SingI ((:*:@#@$) :: (~>) a ((~>) a (Foo2 a))) where
+      sing = (singFun2 @(:*:@#@$)) (:%*:)
+    instance SingI (TyCon2 (:*:) :: (~>) a ((~>) a (Foo2 a))) where
+      sing = (singFun2 @(TyCon2 (:*:))) (:%*:)
+    instance SingI d =>
+             SingI ((:*:@#@$$) (d :: a) :: (~>) a (Foo2 a)) where
+      sing = (singFun1 @((:*:@#@$$) (d :: a))) ((:%*:) (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 ((:*:) (d :: a)) :: (~>) a (Foo2 a)) where
+      sing = (singFun1 @(TyCon1 ((:*:) (d :: a)))) ((:%*:) (sing @_ @d))
     instance (SingI n, SingI n) =>
              SingI ((:&:) (n :: a) (n :: a)) where
       sing = ((:%&:) sing) sing
+    instance SingI ((:&:@#@$) :: (~>) a ((~>) a (Foo2 a))) where
+      sing = (singFun2 @(:&:@#@$)) (:%&:)
+    instance SingI (TyCon2 (:&:) :: (~>) a ((~>) a (Foo2 a))) where
+      sing = (singFun2 @(TyCon2 (:&:))) (:%&:)
+    instance SingI d =>
+             SingI ((:&:@#@$$) (d :: a) :: (~>) a (Foo2 a)) where
+      sing = (singFun1 @((:&:@#@$$) (d :: a))) ((:%&:) (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 ((:&:) (d :: a)) :: (~>) a (Foo2 a)) where
+      sing = (singFun1 @(TyCon1 ((:&:) (d :: a)))) ((:%&:) (sing @_ @d))
     instance (SingI n, SingI n) =>
              SingI (MkFoo3 (n :: Bool) (n :: Bool)) where
       sing = (SMkFoo3 sing) sing
+    instance SingI (MkFoo3Sym0 :: (~>) Bool ((~>) Bool Foo3)) where
+      sing = (singFun2 @MkFoo3Sym0) SMkFoo3
+    instance SingI (TyCon2 MkFoo3 :: (~>) Bool ((~>) Bool Foo3)) where
+      sing = (singFun2 @(TyCon2 MkFoo3)) SMkFoo3
+    instance SingI d =>
+             SingI (MkFoo3Sym1 (d :: Bool) :: (~>) Bool Foo3) where
+      sing = (singFun1 @(MkFoo3Sym1 (d :: Bool))) (SMkFoo3 (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (MkFoo3 (d :: Bool)) :: (~>) Bool Foo3) where
+      sing
+        = (singFun1 @(TyCon1 (MkFoo3 (d :: Bool)))) (SMkFoo3 (sing @_ @d))

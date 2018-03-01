@@ -355,6 +355,16 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
           sP :: Sing Let0123456789876543210PSym0
           sP = SNothing
         in sP
+    instance SingI (FooSym0 :: (~>) [Nat] [Nat]) where
+      sing = (singFun1 @FooSym0) sFoo
+    instance SingI (TupSym0 :: (~>) (Nat, Nat) (Nat, Nat)) where
+      sing = (singFun1 @TupSym0) sTup
+    instance SingI (Baz_Sym0 :: (~>) (Maybe Baz) (Maybe Baz)) where
+      sing = (singFun1 @Baz_Sym0) sBaz_
+    instance SingI (BarSym0 :: (~>) (Maybe Nat) (Maybe Nat)) where
+      sing = (singFun1 @BarSym0) sBar
+    instance SingI (MaybePlusSym0 :: (~>) (Maybe Nat) (Maybe Nat)) where
+      sing = (singFun1 @MaybePlusSym0) sMaybePlus
     data instance Sing :: Baz -> GHC.Types.Type :: Baz
                                                    -> GHC.Types.Type
       where
@@ -377,3 +387,23 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n, SingI n) =>
              SingI (Baz (n :: Nat) (n :: Nat) (n :: Nat)) where
       sing = ((SBaz sing) sing) sing
+    instance SingI (BazSym0 :: (~>) Nat ((~>) Nat ((~>) Nat Baz))) where
+      sing = (singFun3 @BazSym0) SBaz
+    instance SingI (TyCon3 Baz :: (~>) Nat ((~>) Nat ((~>) Nat Baz))) where
+      sing = (singFun3 @(TyCon3 Baz)) SBaz
+    instance SingI d =>
+             SingI (BazSym1 (d :: Nat) :: (~>) Nat ((~>) Nat Baz)) where
+      sing = (singFun2 @(BazSym1 (d :: Nat))) (SBaz (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon2 (Baz (d :: Nat)) :: (~>) Nat ((~>) Nat Baz)) where
+      sing = (singFun2 @(TyCon2 (Baz (d :: Nat)))) (SBaz (sing @_ @d))
+    instance (SingI d, SingI d) =>
+             SingI (BazSym2 (d :: Nat) (d :: Nat) :: (~>) Nat Baz) where
+      sing
+        = (singFun1 @(BazSym2 (d :: Nat) (d :: Nat)))
+            ((SBaz (sing @_ @d)) (sing @_ @d))
+    instance (SingI d, SingI d) =>
+             SingI (TyCon1 (Baz (d :: Nat) (d :: Nat)) :: (~>) Nat Baz) where
+      sing
+        = (singFun1 @(TyCon1 (Baz (d :: Nat) (d :: Nat))))
+            ((SBaz (sing @_ @d)) (sing @_ @d))

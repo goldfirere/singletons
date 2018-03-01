@@ -159,3 +159,21 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
              ((applySing ((singFun2 @FooListSym0) sFooList))
                 sA_0123456789876543210))
             sA_0123456789876543210
+    instance SFoo a =>
+             SingI (FoosPrecSym0 :: (~>) Nat ((~>) a ((~>) [Bool] [Bool]))) where
+      sing = (singFun3 @FoosPrecSym0) sFoosPrec
+    instance (SFoo a, SingI d) =>
+             SingI (FoosPrecSym1 (d :: Nat) :: (~>) a ((~>) [Bool] [Bool])) where
+      sing
+        = (singFun2 @(FoosPrecSym1 (d :: Nat))) (sFoosPrec (sing @_ @d))
+    instance (SFoo a, SingI d, SingI d) =>
+             SingI (FoosPrecSym2 (d :: Nat) (d :: a) :: (~>) [Bool] [Bool]) where
+      sing
+        = (singFun1 @(FoosPrecSym2 (d :: Nat) (d :: a)))
+            ((sFoosPrec (sing @_ @d)) (sing @_ @d))
+    instance SFoo a =>
+             SingI (FooListSym0 :: (~>) a ((~>) [Bool] [Bool])) where
+      sing = (singFun2 @FooListSym0) sFooList
+    instance (SFoo a, SingI d) =>
+             SingI (FooListSym1 (d :: a) :: (~>) [Bool] [Bool]) where
+      sing = (singFun1 @(FooListSym1 (d :: a))) (sFooList (sing @_ @d))

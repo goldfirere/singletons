@@ -188,3 +188,13 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
       showsPrec = Data.Singletons.ShowSing.showsSingPrec
     instance (SingI n, SingI n) => SingI (Pair (n :: a) (n :: b)) where
       sing = (SPair sing) sing
+    instance SingI (PairSym0 :: (~>) a ((~>) b (Pair a b))) where
+      sing = (singFun2 @PairSym0) SPair
+    instance SingI (TyCon2 Pair :: (~>) a ((~>) b (Pair a b))) where
+      sing = (singFun2 @(TyCon2 Pair)) SPair
+    instance SingI d =>
+             SingI (PairSym1 (d :: a) :: (~>) b (Pair a b)) where
+      sing = (singFun1 @(PairSym1 (d :: a))) (SPair (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (Pair (d :: a)) :: (~>) b (Pair a b)) where
+      sing = (singFun1 @(TyCon1 (Pair (d :: a)))) (SPair (sing @_ @d))

@@ -65,3 +65,14 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI (MkRecord (n :: a) (n :: Bool)) where
       sing = (SMkRecord sing) sing
+    instance SingI (MkRecordSym0 :: (~>) a ((~>) Bool (Record a))) where
+      sing = (singFun2 @MkRecordSym0) SMkRecord
+    instance SingI (TyCon2 MkRecord :: (~>) a ((~>) Bool (Record a))) where
+      sing = (singFun2 @(TyCon2 MkRecord)) SMkRecord
+    instance SingI d =>
+             SingI (MkRecordSym1 (d :: a) :: (~>) Bool (Record a)) where
+      sing = (singFun1 @(MkRecordSym1 (d :: a))) (SMkRecord (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (MkRecord (d :: a)) :: (~>) Bool (Record a)) where
+      sing
+        = (singFun1 @(TyCon1 (MkRecord (d :: a)))) (SMkRecord (sing @_ @d))

@@ -68,7 +68,17 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
       forall a (t :: a) (t :: a).
       Sing t -> Sing t -> Sing (Apply (Apply (====@#@$) t) t :: a)
     (%====) (sA :: Sing a) _ = sA
+    instance SingI ((====@#@$) :: (~>) a ((~>) a a)) where
+      sing = (singFun2 @(====@#@$)) (%====)
+    instance SingI d => SingI ((====@#@$$) (d :: a) :: (~>) a a) where
+      sing = (singFun1 @((====@#@$$) (d :: a))) ((%====) (sing @_ @d))
     class SMyOrd a where
       (%<=>) ::
         forall (t :: a) (t :: a).
         Sing t -> Sing t -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering)
+    instance SMyOrd a =>
+             SingI ((<=>@#@$) :: (~>) a ((~>) a Ordering)) where
+      sing = (singFun2 @(<=>@#@$)) (%<=>)
+    instance (SMyOrd a, SingI d) =>
+             SingI ((<=>@#@$$) (d :: a) :: (~>) a Ordering) where
+      sing = (singFun1 @((<=>@#@$$) (d :: a))) ((%<=>) (sing @_ @d))

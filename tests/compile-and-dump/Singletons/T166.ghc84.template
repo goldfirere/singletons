@@ -111,6 +111,20 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
                                    (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))))
                                sX))
                            sS })
+    instance SFoo a =>
+             SingI (FoosPrecSym0 :: (~>) Nat ((~>) a ((~>) [Bool] [Bool]))) where
+      sing = (singFun3 @FoosPrecSym0) sFoosPrec
+    instance (SFoo a, SingI d) =>
+             SingI (FoosPrecSym1 (d :: Nat) :: (~>) a ((~>) [Bool] [Bool])) where
+      sing
+        = (singFun2 @(FoosPrecSym1 (d :: Nat))) (sFoosPrec (sing @_ @d))
+    instance (SFoo a, SingI d, SingI d) =>
+             SingI (FoosPrecSym2 (d :: Nat) (d :: a) :: (~>) [Bool] [Bool]) where
+      sing
+        = (singFun1 @(FoosPrecSym2 (d :: Nat) (d :: a)))
+            ((sFoosPrec (sing @_ @d)) (sing @_ @d))
+    instance SFoo a => SingI (FooSym0 :: (~>) a [Bool]) where
+      sing = (singFun1 @FooSym0) sFoo
 
 Singletons/T166.hs:0:0: error:
     • Expecting one more argument to ‘Lambda_0123456789876543210Sym1 arg’

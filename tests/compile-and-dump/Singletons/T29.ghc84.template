@@ -101,3 +101,11 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
            ((applySing ((singFun2 @($@#@$)) (%$)))
               ((singFun1 @NotSym0) sNot)))
           sX
+    instance SingI (BanSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @BanSym0) sBan
+    instance SingI (BazSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @BazSym0) sBaz
+    instance SingI (BarSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @BarSym0) sBar
+    instance SingI (FooSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @FooSym0) sFoo

@@ -985,3 +985,31 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
           sY :: Sing (Let0123456789876543210YSym1 x :: Nat)
           sY = (applySing ((singFun1 @SuccSym0) SSucc)) SZero
         in sY
+    instance SingI (Foo14Sym0 :: (~>) Nat (Nat, Nat)) where
+      sing = (singFun1 @Foo14Sym0) sFoo14
+    instance SingI (Foo13_Sym0 :: (~>) a a) where
+      sing = (singFun1 @Foo13_Sym0) sFoo13_
+    instance SingI (Foo13Sym0 :: (~>) a a) where
+      sing = (singFun1 @Foo13Sym0) sFoo13
+    instance SingI (Foo12Sym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @Foo12Sym0) sFoo12
+    instance SingI (Foo11Sym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @Foo11Sym0) sFoo11
+    instance SingI (Foo10Sym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @Foo10Sym0) sFoo10
+    instance SingI (Foo9Sym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @Foo9Sym0) sFoo9
+    instance SingI (Foo8Sym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @Foo8Sym0) sFoo8
+    instance SingI (Foo7Sym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @Foo7Sym0) sFoo7
+    instance SingI (Foo6Sym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @Foo6Sym0) sFoo6
+    instance SingI (Foo5Sym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @Foo5Sym0) sFoo5
+    instance SingI (Foo4Sym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @Foo4Sym0) sFoo4
+    instance SingI (Foo3Sym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @Foo3Sym0) sFoo3
+    instance SingI (Foo1Sym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @Foo1Sym0) sFoo1

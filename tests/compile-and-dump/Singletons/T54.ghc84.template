@@ -50,3 +50,5 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
                   SCons _ SNil -> (singFun1 @NotSym0) sNot } ::
                   Sing (Case_0123456789876543210 e (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e))))
           sE
+    instance SingI (GSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @GSym0) sG

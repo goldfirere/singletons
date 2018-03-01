@@ -60,6 +60,16 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI (Bar (n :: Bool) (n :: Bool)) where
       sing = (SBar sing) sing
+    instance SingI (BarSym0 :: (~>) Bool ((~>) Bool Foo)) where
+      sing = (singFun2 @BarSym0) SBar
+    instance SingI (TyCon2 Bar :: (~>) Bool ((~>) Bool Foo)) where
+      sing = (singFun2 @(TyCon2 Bar)) SBar
+    instance SingI d =>
+             SingI (BarSym1 (d :: Bool) :: (~>) Bool Foo) where
+      sing = (singFun1 @(BarSym1 (d :: Bool))) (SBar (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (Bar (d :: Bool)) :: (~>) Bool Foo) where
+      sing = (singFun1 @(TyCon1 (Bar (d :: Bool)))) (SBar (sing @_ @d))
 Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| otherwise :: Bool
@@ -314,3 +324,15 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
               ((applySing ((singFun2 @(:@#@$)) SCons))
                  ((applySing ((singFun1 @IdSym0) sId)) SFalse)))
              SNil)
+    instance SingI (NotSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @NotSym0) sNot
+    instance SingI (IdSym0 :: (~>) a a) where
+      sing = (singFun1 @IdSym0) sId
+    instance SingI (FSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @FSym0) sF
+    instance SingI (GSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @GSym0) sG
+    instance SingI (HSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @HSym0) sH
+    instance SingI (ISym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @ISym0) sI

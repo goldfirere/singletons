@@ -765,6 +765,44 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                           GHC.Tuple.(,) (_ :: Sing x) (_ :: Sing y) -> sX })))
               sA_0123456789876543210))
           sA_0123456789876543210
+    instance SingI (Foo8Sym0 :: (~>) (Foo a b) a) where
+      sing = (singFun1 @Foo8Sym0) sFoo8
+    instance SingI (Foo7Sym0 :: (~>) a ((~>) b b)) where
+      sing = (singFun2 @Foo7Sym0) sFoo7
+    instance SingI d => SingI (Foo7Sym1 (d :: a) :: (~>) b b) where
+      sing = (singFun1 @(Foo7Sym1 (d :: a))) (sFoo7 (sing @_ @d))
+    instance SingI (Foo6Sym0 :: (~>) a ((~>) b a)) where
+      sing = (singFun2 @Foo6Sym0) sFoo6
+    instance SingI d => SingI (Foo6Sym1 (d :: a) :: (~>) b a) where
+      sing = (singFun1 @(Foo6Sym1 (d :: a))) (sFoo6 (sing @_ @d))
+    instance SingI (Foo5Sym0 :: (~>) a ((~>) b b)) where
+      sing = (singFun2 @Foo5Sym0) sFoo5
+    instance SingI d => SingI (Foo5Sym1 (d :: a) :: (~>) b b) where
+      sing = (singFun1 @(Foo5Sym1 (d :: a))) (sFoo5 (sing @_ @d))
+    instance SingI (Foo4Sym0 :: (~>) a ((~>) b ((~>) c a))) where
+      sing = (singFun3 @Foo4Sym0) sFoo4
+    instance SingI d =>
+             SingI (Foo4Sym1 (d :: a) :: (~>) b ((~>) c a)) where
+      sing = (singFun2 @(Foo4Sym1 (d :: a))) (sFoo4 (sing @_ @d))
+    instance (SingI d, SingI d) =>
+             SingI (Foo4Sym2 (d :: a) (d :: b) :: (~>) c a) where
+      sing
+        = (singFun1 @(Foo4Sym2 (d :: a) (d :: b)))
+            ((sFoo4 (sing @_ @d)) (sing @_ @d))
+    instance SingI (Foo3Sym0 :: (~>) a a) where
+      sing = (singFun1 @Foo3Sym0) sFoo3
+    instance SingI (Foo2Sym0 :: (~>) a ((~>) b a)) where
+      sing = (singFun2 @Foo2Sym0) sFoo2
+    instance SingI d => SingI (Foo2Sym1 (d :: a) :: (~>) b a) where
+      sing = (singFun1 @(Foo2Sym1 (d :: a))) (sFoo2 (sing @_ @d))
+    instance SingI (Foo1Sym0 :: (~>) a ((~>) b a)) where
+      sing = (singFun2 @Foo1Sym0) sFoo1
+    instance SingI d => SingI (Foo1Sym1 (d :: a) :: (~>) b a) where
+      sing = (singFun1 @(Foo1Sym1 (d :: a))) (sFoo1 (sing @_ @d))
+    instance SingI (Foo0Sym0 :: (~>) a ((~>) b a)) where
+      sing = (singFun2 @Foo0Sym0) sFoo0
+    instance SingI d => SingI (Foo0Sym1 (d :: a) :: (~>) b a) where
+      sing = (singFun1 @(Foo0Sym1 (d :: a))) (sFoo0 (sing @_ @d))
     data instance Sing :: Foo a b -> GHC.Types.Type :: Foo a b
                                                        -> GHC.Types.Type
       where
@@ -781,3 +819,13 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
             GHC.Tuple.(,) (SomeSing c) (SomeSing c) -> SomeSing ((SFoo c) c) }
     instance (SingI n, SingI n) => SingI (Foo (n :: a) (n :: b)) where
       sing = (SFoo sing) sing
+    instance SingI (FooSym0 :: (~>) a ((~>) b (Foo a b))) where
+      sing = (singFun2 @FooSym0) SFoo
+    instance SingI (TyCon2 Foo :: (~>) a ((~>) b (Foo a b))) where
+      sing = (singFun2 @(TyCon2 Foo)) SFoo
+    instance SingI d =>
+             SingI (FooSym1 (d :: a) :: (~>) b (Foo a b)) where
+      sing = (singFun1 @(FooSym1 (d :: a))) (SFoo (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (Foo (d :: a)) :: (~>) b (Foo a b)) where
+      sing = (singFun1 @(TyCon1 (Foo (d :: a)))) (SFoo (sing @_ @d))

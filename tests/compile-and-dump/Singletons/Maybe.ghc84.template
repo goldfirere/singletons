@@ -146,3 +146,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       sing = SNothing
     instance SingI n => SingI (Just (n :: a)) where
       sing = SJust sing
+    instance SingI (JustSym0 :: (~>) a (Maybe a)) where
+      sing = (singFun1 @JustSym0) SJust
+    instance SingI (TyCon1 Just :: (~>) a (Maybe a)) where
+      sing = (singFun1 @(TyCon1 Just)) SJust

@@ -139,6 +139,7 @@ library
                       Data.Singletons.Single.Type
                       Data.Singletons.Single.Eq
                       Data.Singletons.Single.Data
+                      Data.Singletons.Single.Defun
                       Data.Singletons.Single.Fixity
                       Data.Singletons.Single
                       Data.Singletons.TypeLits.Internal

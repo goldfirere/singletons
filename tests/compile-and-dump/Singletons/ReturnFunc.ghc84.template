@@ -80,3 +80,16 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
       _
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = (applySing ((singFun1 @SuccSym0) SSucc)) sA_0123456789876543210
+    instance SingI (IdSym0 :: (~>) a a) where
+      sing = (singFun1 @IdSym0) sId
+    instance SingI (IdFooSym0 :: (~>) c ((~>) a a)) where
+      sing = (singFun2 @IdFooSym0) sIdFoo
+    instance SingI d => SingI (IdFooSym1 (d :: c) :: (~>) a a) where
+      sing = (singFun1 @(IdFooSym1 (d :: c))) (sIdFoo (sing @_ @d))
+    instance SingI (ReturnFuncSym0 :: (~>) Nat ((~>) Nat Nat)) where
+      sing = (singFun2 @ReturnFuncSym0) sReturnFunc
+    instance SingI d =>
+             SingI (ReturnFuncSym1 (d :: Nat) :: (~>) Nat Nat) where
+      sing
+        = (singFun1 @(ReturnFuncSym1 (d :: Nat)))
+            (sReturnFunc (sing @_ @d))

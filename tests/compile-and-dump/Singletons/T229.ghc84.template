@@ -20,3 +20,5 @@ Singletons/T229.hs:(0,0)-(0,0): Splicing declarations
     ___sfoo ::
       forall (t :: Bool). Sing t -> Sing (Apply US___fooSym0 t :: Bool)
     ___sfoo _ = STrue
+    instance SingI (US___fooSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @US___fooSym0) ___sfoo

@@ -90,3 +90,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
         = (applySing ((singFun1 @NotSym0) sNot)) sA_0123456789876543210
       sL2r SFalse = sFromInteger (sing :: Sing 0)
       sL2r STrue = sFromInteger (sing :: Sing 1)
+    instance SFD a b => SingI (MethSym0 :: (~>) a a) where
+      sing = (singFun1 @MethSym0) sMeth
+    instance SFD a b => SingI (L2rSym0 :: (~>) a b) where
+      sing = (singFun1 @L2rSym0) sL2r

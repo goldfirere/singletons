@@ -132,6 +132,10 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                      _ :: Sing arg_0123456789876543210
                        -> case sArg_0123456789876543210 of { _ -> sBaz1 } ::
                             Sing (Case_0123456789876543210 x arg_0123456789876543210 arg_0123456789876543210) }))
+    instance SFoo2 a => SingI (Quux2Sym0 :: (~>) a a) where
+      sing = (singFun1 @Quux2Sym0) sQuux2
+    instance SFoo1 a => SingI (Quux1Sym0 :: (~>) a a) where
+      sing = (singFun1 @Quux1Sym0) sQuux1
     class SFoo1 a where
       sBar1 ::
         forall b (t :: a) (t :: (~>) a b).
@@ -142,3 +146,14 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
         forall b (t :: a) (t :: b).
         Sing t -> Sing t -> Sing (Apply (Apply Bar2Sym0 t) t :: b)
       sBaz2 :: Sing (Baz2Sym0 :: a)
+    instance SFoo1 a =>
+             SingI (Bar1Sym0 :: (~>) a ((~>) ((~>) a b) b)) where
+      sing = (singFun2 @Bar1Sym0) sBar1
+    instance (SFoo1 a, SingI d) =>
+             SingI (Bar1Sym1 (d :: a) :: (~>) ((~>) a b) b) where
+      sing = (singFun1 @(Bar1Sym1 (d :: a))) (sBar1 (sing @_ @d))
+    instance SFoo2 a => SingI (Bar2Sym0 :: (~>) a ((~>) b b)) where
+      sing = (singFun2 @Bar2Sym0) sBar2
+    instance (SFoo2 a, SingI d) =>
+             SingI (Bar2Sym1 (d :: a) :: (~>) b b) where
+      sing = (singFun1 @(Bar2Sym1 (d :: a))) (sBar2 (sing @_ @d))

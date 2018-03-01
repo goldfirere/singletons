@@ -115,3 +115,8 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
                  ((applySing ((singFun2 @(:@#@$)) SCons))
                     ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
                 SNil))
+    instance SingI ((+@#@$) :: (~>) Nat ((~>) Nat Nat)) where
+      sing = (singFun2 @(+@#@$)) (%+)
+    instance SingI d =>
+             SingI ((+@#@$$) (d :: Nat) :: (~>) Nat Nat) where
+      sing = (singFun1 @((+@#@$$) (d :: Nat))) ((%+) (sing @_ @d))

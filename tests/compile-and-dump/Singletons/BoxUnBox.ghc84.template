@@ -31,6 +31,8 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
     sUnBox ::
       forall a (t :: Box a). Sing t -> Sing (Apply UnBoxSym0 t :: a)
     sUnBox (SFBox (sA :: Sing a)) = sA
+    instance SingI (UnBoxSym0 :: (~>) (Box a) a) where
+      sing = (singFun1 @UnBoxSym0) sUnBox
     data instance Sing :: Box a -> GHC.Types.Type :: Box a
                                                      -> GHC.Types.Type
       where SFBox :: forall a (n :: a). (Sing (n :: a)) -> Sing (FBox n)
@@ -43,3 +45,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SFBox c) }
     instance SingI n => SingI (FBox (n :: a)) where
       sing = SFBox sing
+    instance SingI (FBoxSym0 :: (~>) a (Box a)) where
+      sing = (singFun1 @FBoxSym0) SFBox
+    instance SingI (TyCon1 FBox :: (~>) a (Box a)) where
+      sing = (singFun1 @(TyCon1 FBox)) SFBox

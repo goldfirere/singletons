@@ -26,6 +26,8 @@ singType :: Set Name       -- the set of bound kind variables in this scope
          -> SgM ( DType    -- the singletonized type
                 , Int      -- the number of arguments
                 , [Name]   -- the names of the tyvars used in the sing'd type
+                , DCxt     -- the context of the singletonized type
+                , [DKind]  -- the kinds of the argument types
                 , DKind )  -- the kind of the result type
 singType bound_kvs prom ty = do
   let (_, cxt, args, res) = unravel ty
@@ -44,7 +46,7 @@ singType bound_kvs prom ty = do
       kvs_to_bind      = Set.toList kv_names_to_bind
   let ty' = DForallT (map DPlainTV kvs_to_bind ++ zipWith DKindedTV arg_names prom_args)
                      cxt' tau
-  return (ty', num_args, arg_names, prom_res)
+  return (ty', num_args, arg_names, cxt, prom_args, prom_res)
 
 singPred :: DPred -> SgM DPred
 singPred = singPredRec []
@@ -61,5 +63,5 @@ singPredRec ctx (DConPr n)
   | otherwise = do
     kis <- mapM promoteType ctx
     let sName = singClassName n
-    return $ foldl DAppPr (DConPr sName) kis
+    return $ foldPred (DConPr sName) kis
 singPredRec _ctx DWildCardPr = return DWildCardPr  -- it just might work

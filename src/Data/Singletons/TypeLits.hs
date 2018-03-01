@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeInType, ConstraintKinds,
-             GADTs, TypeFamilies, UndecidableInstances #-}
+             GADTs, TypeApplications, TypeFamilies, UndecidableInstances #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -142,6 +142,8 @@ sLog2 sx =
          _ -> case TN.someNatVal (genLog2 x) of
                 SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
 $(genDefunSymbols [''TN.Log2])
+instance SingI Log2Sym0 where
+  sing = singFun1 sLog2
 
 sDiv :: Sing x -> Sing y -> Sing (Div x y)
 sDiv sx sy =
@@ -152,6 +154,10 @@ sDiv sx sy =
          SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
 infixl 7 `sDiv`
 $(genDefunSymbols [''Div])
+instance SingI DivSym0 where
+  sing = singFun2 sDiv
+instance SingI x => SingI (DivSym1 x) where
+  sing = singFun1 $ sDiv (sing @_ @x)
 
 sMod :: Sing x -> Sing y -> Sing (Mod x y)
 sMod sx sy =
@@ -162,6 +168,10 @@ sMod sx sy =
          SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
 infixl 7 `sMod`
 $(genDefunSymbols [''Mod])
+instance SingI ModSym0 where
+  sing = singFun2 sMod
+instance SingI x => SingI (ModSym1 x) where
+  sing = singFun1 $ sMod $ sing @_ @x
 
 $(promoteOnly [d|
   divMod :: Nat -> Nat -> (Nat, Nat)

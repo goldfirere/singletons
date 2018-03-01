@@ -407,6 +407,20 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sing = SString
     instance SingI n => SingI (Maybe (n :: Type)) where
       sing = SMaybe sing
+    instance SingI (MaybeSym0 :: (~>) Type Type) where
+      sing = (singFun1 @MaybeSym0) SMaybe
+    instance SingI (TyCon1 Maybe :: (~>) Type Type) where
+      sing = (singFun1 @(TyCon1 Maybe)) SMaybe
     instance (SingI n, SingI n) =>
              SingI (Vec (n :: Type) (n :: Nat)) where
       sing = (SVec sing) sing
+    instance SingI (VecSym0 :: (~>) Type ((~>) Nat Type)) where
+      sing = (singFun2 @VecSym0) SVec
+    instance SingI (TyCon2 Vec :: (~>) Type ((~>) Nat Type)) where
+      sing = (singFun2 @(TyCon2 Vec)) SVec
+    instance SingI d =>
+             SingI (VecSym1 (d :: Type) :: (~>) Nat Type) where
+      sing = (singFun1 @(VecSym1 (d :: Type))) (SVec (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (Vec (d :: Type)) :: (~>) Nat Type) where
+      sing = (singFun1 @(TyCon1 (Vec (d :: Type)))) (SVec (sing @_ @d))

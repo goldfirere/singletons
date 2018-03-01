@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, DataKinds, PolyKinds, ScopedTypeVariables,
              TypeFamilies, TypeOperators, GADTs, UndecidableInstances,
              FlexibleContexts, DefaultSignatures, InstanceSigs, TypeInType,
-             StandaloneDeriving #-}
+             StandaloneDeriving, FlexibleInstances #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------

@@ -4,6 +4,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeInType #-}
 {-# LANGUAGE TypeOperators #-}
@@ -153,3 +154,34 @@ sTypeError :: HasCallStack => Sing err -> Sing (TypeError err)
 sTypeError = typeError . fromSing
 
 $(genDefunSymbols [''ErrorMessage', ''TypeError])
+
+instance SingI (TextSym0 :: Symbol ~> PErrorMessage) where
+  sing = singFun1 SText
+instance SingI (TyCon1 'Text :: Symbol ~> PErrorMessage) where
+  sing = singFun1 SText
+
+instance SingI (ShowTypeSym0 :: t ~> PErrorMessage) where
+  sing = singFun1 SShowType
+instance SingI (TyCon1 'ShowType :: t ~> PErrorMessage) where
+  sing = singFun1 SShowType
+
+instance SingI ((:<>:@#@$) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
+  sing = singFun2 (:%<>:)
+instance SingI (TyCon2 '(:<>:) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
+  sing = singFun2 (:%<>:)
+instance SingI x => SingI ((:<>:@#@$$) x :: PErrorMessage ~> PErrorMessage) where
+  sing = singFun1 (sing @_ @x :%<>:)
+instance SingI x => SingI (TyCon1 ('(:<>:) x) :: PErrorMessage ~> PErrorMessage) where
+  sing = singFun1 (sing @_ @x :%<>:)
+
+instance SingI ((:$$:@#@$) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
+  sing = singFun2 (:%$$:)
+instance SingI (TyCon2 '(:$$:) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
+  sing = singFun2 (:%$$:)
+instance SingI x => SingI ((:$$:@#@$$) x :: PErrorMessage ~> PErrorMessage) where
+  sing = singFun1 (sing @_ @x :%$$:)
+instance SingI x => SingI (TyCon1 ('(:$$:) x) :: PErrorMessage ~> PErrorMessage) where
+  sing = singFun1 (sing @_ @x :%$$:)
+
+instance SingI TypeErrorSym0 where
+  sing = singFun1 sTypeError

@@ -160,6 +160,8 @@ withKnownSymbol SSym f = f
 -- easier use.
 type family Error (str :: k0) :: k where {}
 $(genDefunSymbols [''Error])
+instance SingI (ErrorSym0 :: Symbol ~> a) where
+  sing = singFun1 sError
 
 -- | The singleton for 'error'
 sError :: HasCallStack => Sing (str :: Symbol) -> a
@@ -169,6 +171,8 @@ sError sstr = error (T.unpack (fromSing sstr))
 -- poly-kinded for easier use.
 type family ErrorWithoutStackTrace (str :: k0) :: k where {}
 $(genDefunSymbols [''ErrorWithoutStackTrace])
+instance SingI (ErrorWithoutStackTraceSym0 :: Symbol ~> a) where
+  sing = singFun1 sErrorWithoutStackTrace
 
 -- | The singleton for 'errorWithoutStackTrace'.
 sErrorWithoutStackTrace :: Sing (str :: Symbol) -> a
@@ -195,6 +199,10 @@ infixr 8 %^
 
 -- Defunctionalization symbols for type-level (^)
 $(genDefunSymbols [''(^)])
+instance SingI (^@#@$) where
+  sing = singFun2 (%^)
+instance SingI x => SingI ((^@#@$$) x) where
+  sing = singFun1 (sing @_ @x %^)
 
 -- | The singleton analogue of 'TN.<=?'
 --
@@ -219,3 +227,7 @@ infix 4 %<=?
 
 -- Defunctionalization symbols for (<=?)
 $(genDefunSymbols [''(<=?)])
+instance SingI (<=?@#@$) where
+  sing = singFun2 (%<=?)
+instance SingI x => SingI ((<=?@#@$$) x) where
+  sing = singFun1 (sing @_ @x %<=?)

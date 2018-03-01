@@ -84,6 +84,27 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI ((:*:) (n :: a) (n :: b)) where
       sing = ((:%*:) sing) sing
+    instance SingI ((:*:@#@$) :: (~>) a ((~>) b ((:*:) a b))) where
+      sing = (singFun2 @(:*:@#@$)) (:%*:)
+    instance SingI (TyCon2 (:*:) :: (~>) a ((~>) b ((:*:) a b))) where
+      sing = (singFun2 @(TyCon2 (:*:))) (:%*:)
+    instance SingI d =>
+             SingI ((:*:@#@$$) (d :: a) :: (~>) b ((:*:) a b)) where
+      sing = (singFun1 @((:*:@#@$$) (d :: a))) ((:%*:) (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 ((:*:) (d :: a)) :: (~>) b ((:*:) a b)) where
+      sing = (singFun1 @(TyCon1 ((:*:) (d :: a)))) ((:%*:) (sing @_ @d))
     instance (SingI n, SingI n) =>
              SingI (MkPair (n :: a) (n :: b)) where
       sing = (SMkPair sing) sing
+    instance SingI (MkPairSym0 :: (~>) a ((~>) b (Pair a b))) where
+      sing = (singFun2 @MkPairSym0) SMkPair
+    instance SingI (TyCon2 MkPair :: (~>) a ((~>) b (Pair a b))) where
+      sing = (singFun2 @(TyCon2 MkPair)) SMkPair
+    instance SingI d =>
+             SingI (MkPairSym1 (d :: a) :: (~>) b (Pair a b)) where
+      sing = (singFun1 @(MkPairSym1 (d :: a))) (SMkPair (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (MkPair (d :: a)) :: (~>) b (Pair a b)) where
+      sing
+        = (singFun1 @(TyCon1 (MkPair (d :: a)))) (SMkPair (sing @_ @d))

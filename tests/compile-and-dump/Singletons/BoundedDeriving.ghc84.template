@@ -224,6 +224,10 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       sing = SE
     instance SingI n => SingI (Foo3 (n :: a)) where
       sing = SFoo3 sing
+    instance SingI (Foo3Sym0 :: (~>) a (Foo3 a)) where
+      sing = (singFun1 @Foo3Sym0) SFoo3
+    instance SingI (TyCon1 Foo3 :: (~>) a (Foo3 a)) where
+      sing = (singFun1 @(TyCon1 Foo3)) SFoo3
     instance SingI Foo41 where
       sing = SFoo41
     instance SingI Foo42 where
@@ -231,3 +235,13 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI (Pair (n :: Bool) (n :: Bool)) where
       sing = (SPair sing) sing
+    instance SingI (PairSym0 :: (~>) Bool ((~>) Bool Pair)) where
+      sing = (singFun2 @PairSym0) SPair
+    instance SingI (TyCon2 Pair :: (~>) Bool ((~>) Bool Pair)) where
+      sing = (singFun2 @(TyCon2 Pair)) SPair
+    instance SingI d =>
+             SingI (PairSym1 (d :: Bool) :: (~>) Bool Pair) where
+      sing = (singFun1 @(PairSym1 (d :: Bool))) (SPair (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 (Pair (d :: Bool)) :: (~>) Bool Pair) where
+      sing = (singFun1 @(TyCon1 (Pair (d :: Bool)))) (SPair (sing @_ @d))

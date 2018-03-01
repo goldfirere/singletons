@@ -22,6 +22,8 @@ Singletons/T124.hs:(0,0)-(0,0): Splicing declarations
     sFoo :: forall (t :: Bool). Sing t -> Sing (Apply FooSym0 t :: ())
     sFoo STrue = STuple0
     sFoo SFalse = STuple0
+    instance SingI (FooSym0 :: (~>) Bool ()) where
+      sing = (singFun1 @FooSym0) sFoo
 Singletons/T124.hs:0:0:: Splicing expression
     sCases ''Bool [| b |] [| STuple0 |]
   ======>

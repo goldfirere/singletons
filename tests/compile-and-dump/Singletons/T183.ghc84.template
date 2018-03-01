@@ -470,3 +470,31 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
     sF1 (sX :: Sing x)
       = case sX :: Sing x of {
           _ :: Sing (x :: Maybe Bool) -> sX :: Sing (x :: Maybe Bool) }
+    instance SingI (Foo9Sym0 :: (~>) a a) where
+      sing = (singFun1 @Foo9Sym0) sFoo9
+    instance SingI (Foo8Sym0 :: (~>) (Maybe a) (Maybe a)) where
+      sing = (singFun1 @Foo8Sym0) sFoo8
+    instance SingI (Foo7Sym0 :: (~>) a ((~>) b a)) where
+      sing = (singFun2 @Foo7Sym0) sFoo7
+    instance SingI d => SingI (Foo7Sym1 (d :: a) :: (~>) b a) where
+      sing = (singFun1 @(Foo7Sym1 (d :: a))) (sFoo7 (sing @_ @d))
+    instance SingI (Foo6Sym0 :: (~>) (Maybe (Maybe a)) (Maybe (Maybe a))) where
+      sing = (singFun1 @Foo6Sym0) sFoo6
+    instance SingI (Foo5Sym0 :: (~>) (Maybe (Maybe a)) (Maybe (Maybe a))) where
+      sing = (singFun1 @Foo5Sym0) sFoo5
+    instance SingI (Foo4Sym0 :: (~>) (a, b) (b, a)) where
+      sing = (singFun1 @Foo4Sym0) sFoo4
+    instance SingI (Foo3Sym0 :: (~>) (Maybe a) a) where
+      sing = (singFun1 @Foo3Sym0) sFoo3
+    instance SingI (Foo2Sym0 :: (~>) (Maybe a) a) where
+      sing = (singFun1 @Foo2Sym0) sFoo2
+    instance SingI (Foo1Sym0 :: (~>) (Maybe a) a) where
+      sing = (singFun1 @Foo1Sym0) sFoo1
+    instance SingI GSym0 where
+      sing = (singFun1 @GSym0) sG
+    instance SingI F3Sym0 where
+      sing = (singFun1 @F3Sym0) sF3
+    instance SingI F2Sym0 where
+      sing = (singFun1 @F2Sym0) sF2
+    instance SingI F1Sym0 where
+      sing = (singFun1 @F1Sym0) sF1

@@ -1,6 +1,7 @@
 {-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies, TypeInType,
              RankNTypes, FlexibleContexts, TemplateHaskell,
-             UndecidableInstances, GADTs, DefaultSignatures #-}
+             UndecidableInstances, GADTs, DefaultSignatures,
+             ScopedTypeVariables, TypeApplications #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -21,6 +22,7 @@ module Data.Singletons.Prelude.Eq (
   type (/=@#@$), type (/=@#@$$), type (/=@#@$$$)
   ) where
 
+import Data.Singletons.Internal
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Single
 import Data.Singletons.Prelude.Instances
@@ -61,3 +63,13 @@ class SEq k where
   infix 4 %/=
 
 $(singEqInstances basicTypes)
+
+instance SEq a => SingI ((==@#@$) :: a ~> a ~> Bool) where
+  sing = singFun2 (%==)
+instance (SEq a, SingI x) => SingI ((==@#@$$) x :: a ~> Bool) where
+  sing = singFun1 (sing @_ @x %==)
+
+instance SEq a => SingI ((/=@#@$) :: a ~> a ~> Bool) where
+  sing = singFun2 (%/=)
+instance (SEq a, SingI x) => SingI ((/=@#@$$) x :: a ~> Bool) where
+  sing = singFun1 (sing @_ @x %/=)

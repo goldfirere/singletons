@@ -42,3 +42,9 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
           ((applySing
               ((applySing ((singFun2 @ContainsSym0) sContains)) sElt))
              sT)
+    instance SEq a =>
+             SingI (ContainsSym0 :: (~>) a ((~>) [a] Bool)) where
+      sing = (singFun2 @ContainsSym0) sContains
+    instance (SEq a, SingI d) =>
+             SingI (ContainsSym1 (d :: a) :: (~>) [a] Bool) where
+      sing = (singFun1 @(ContainsSym1 (d :: a))) (sContains (sing @_ @d))

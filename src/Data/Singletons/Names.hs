@@ -187,6 +187,12 @@ promoteTySym name sat
       -- (.) and (!) are problematic for the parser.
       -- See Note [Special cases for (.) and (!)]
 
+      -- We can't promote promote idenitifers beginning with underscores to
+      -- type names, so we work around the issue by prepending "US" at the
+      -- front of the name (#229).
+    | Just (us, rest) <- splitUnderscores (nameBase name)
+    = default_case (mkName $ "US" ++ us ++ rest)
+
     | name == nilName
     = mkName $ "NilSym" ++ (show sat)
 
@@ -215,6 +221,9 @@ mkTyName tmName = do
   let nameStr  = nameBase tmName
       symbolic = not (isHsLetter (head nameStr))
   qNewName (if symbolic then "ty" else nameStr)
+
+mkTyConName :: Int -> Name
+mkTyConName i = mk_name_tc "Data.Singletons.Internal" $ "TyCon" ++ show i
 
 falseTySym :: DType
 falseTySym = promoteValRhs falseName
@@ -280,7 +289,7 @@ foldApply = foldl apply
 
 -- make and equality predicate
 mkEqPred :: DType -> DType -> DPred
-mkEqPred ty1 ty2 = foldl DAppPr (DConPr equalityName) [ty1, ty2]
+mkEqPred ty1 ty2 = foldPred (DConPr equalityName) [ty1, ty2]
 
 -- | If a 'String' begins with one or more underscores, return
 -- @'Just' (us, rest)@, where @us@ contain all of the underscores at the

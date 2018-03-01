@@ -394,6 +394,54 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       = (applySing
            ((applySing ((singFun2 @(:@#@$)) SCons)) ((applySing sF) sH)))
           ((applySing ((applySing ((singFun2 @MapSym0) sMap)) sF)) sT)
+    instance SingI (FooSym0 :: (~>) ((~>) ((~>) a b) ((~>) a b)) ((~>) ((~>) a b) ((~>) a b))) where
+      sing = (singFun3 @FooSym0) sFoo
+    instance SingI d =>
+             SingI (FooSym1 (d :: (~>) ((~>) a b) ((~>) a b)) :: (~>) ((~>) a b) ((~>) a b)) where
+      sing
+        = (singFun2 @(FooSym1 (d :: (~>) ((~>) a b) ((~>) a b))))
+            (sFoo (sing @_ @d))
+    instance (SingI d, SingI d) =>
+             SingI (FooSym2 (d :: (~>) ((~>) a b) ((~>) a b)) (d :: (~>) a b) :: (~>) a b) where
+      sing
+        = (singFun1
+             @(FooSym2 (d :: (~>) ((~>) a b) ((~>) a b)) (d :: (~>) a b)))
+            ((sFoo (sing @_ @d)) (sing @_ @d))
+    instance SingI (ZipWithSym0 :: (~>) ((~>) a ((~>) b c)) ((~>) [a] ((~>) [b] [c]))) where
+      sing = (singFun3 @ZipWithSym0) sZipWith
+    instance SingI d =>
+             SingI (ZipWithSym1 (d :: (~>) a ((~>) b c)) :: (~>) [a] ((~>) [b] [c])) where
+      sing
+        = (singFun2 @(ZipWithSym1 (d :: (~>) a ((~>) b c))))
+            (sZipWith (sing @_ @d))
+    instance (SingI d, SingI d) =>
+             SingI (ZipWithSym2 (d :: (~>) a ((~>) b c)) (d :: [a]) :: (~>) [b] [c]) where
+      sing
+        = (singFun1 @(ZipWithSym2 (d :: (~>) a ((~>) b c)) (d :: [a])))
+            ((sZipWith (sing @_ @d)) (sing @_ @d))
+    instance SingI (SplungeSym0 :: (~>) [Nat] ((~>) [Bool] [Nat])) where
+      sing = (singFun2 @SplungeSym0) sSplunge
+    instance SingI d =>
+             SingI (SplungeSym1 (d :: [Nat]) :: (~>) [Bool] [Nat]) where
+      sing
+        = (singFun1 @(SplungeSym1 (d :: [Nat]))) (sSplunge (sing @_ @d))
+    instance SingI (EtadSym0 :: (~>) [Nat] ((~>) [Bool] [Nat])) where
+      sing = (singFun2 @EtadSym0) sEtad
+    instance SingI d =>
+             SingI (EtadSym1 (d :: [Nat]) :: (~>) [Bool] [Nat]) where
+      sing = (singFun1 @(EtadSym1 (d :: [Nat]))) (sEtad (sing @_ @d))
+    instance SingI (LiftMaybeSym0 :: (~>) ((~>) a b) ((~>) (Maybe a) (Maybe b))) where
+      sing = (singFun2 @LiftMaybeSym0) sLiftMaybe
+    instance SingI d =>
+             SingI (LiftMaybeSym1 (d :: (~>) a b) :: (~>) (Maybe a) (Maybe b)) where
+      sing
+        = (singFun1 @(LiftMaybeSym1 (d :: (~>) a b)))
+            (sLiftMaybe (sing @_ @d))
+    instance SingI (MapSym0 :: (~>) ((~>) a b) ((~>) [a] [b])) where
+      sing = (singFun2 @MapSym0) sMap
+    instance SingI d =>
+             SingI (MapSym1 (d :: (~>) a b) :: (~>) [a] [b]) where
+      sing = (singFun1 @(MapSym1 (d :: (~>) a b))) (sMap (sing @_ @d))
     data instance Sing :: Either a b -> GHC.Types.Type :: Either a b
                                                           -> GHC.Types.Type
       where
@@ -412,5 +460,13 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SRight c) }
     instance SingI n => SingI (Left (n :: a)) where
       sing = SLeft sing
+    instance SingI (LeftSym0 :: (~>) a (Either a b)) where
+      sing = (singFun1 @LeftSym0) SLeft
+    instance SingI (TyCon1 Left :: (~>) a (Either a b)) where
+      sing = (singFun1 @(TyCon1 Left)) SLeft
     instance SingI n => SingI (Right (n :: b)) where
       sing = SRight sing
+    instance SingI (RightSym0 :: (~>) b (Either a b)) where
+      sing = (singFun1 @RightSym0) SRight
+    instance SingI (TyCon1 Right :: (~>) b (Either a b)) where
+      sing = (singFun1 @(TyCon1 Right)) SRight

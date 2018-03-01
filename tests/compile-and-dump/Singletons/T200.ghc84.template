@@ -119,6 +119,20 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
       = (applySing ((applySing ((singFun2 @(:<>:@#@$)) (:%<>:))) sX)) sY
     (%$$:) (sX :: Sing x) (sY :: Sing y)
       = (applySing ((applySing ((singFun2 @(:$$:@#@$)) (:%$$:))) sX)) sY
+    instance SingI ((<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
+      sing = (singFun2 @(<>:@#@$)) (%<>:)
+    instance SingI d =>
+             SingI ((<>:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
+      sing
+        = (singFun1 @((<>:@#@$$) (d :: ErrorMessage)))
+            ((%<>:) (sing @_ @d))
+    instance SingI (($$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
+      sing = (singFun2 @($$:@#@$)) (%$$:)
+    instance SingI d =>
+             SingI (($$:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
+      sing
+        = (singFun1 @(($$:@#@$$) (d :: ErrorMessage)))
+            ((%$$:) (sing @_ @d))
     data instance Sing :: ErrorMessage
                           -> GHC.Types.Type :: ErrorMessage -> GHC.Types.Type
       where
@@ -157,8 +171,40 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI ((:$$:) (n :: ErrorMessage) (n :: ErrorMessage)) where
       sing = ((:%$$:) sing) sing
+    instance SingI ((:$$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
+      sing = (singFun2 @(:$$:@#@$)) (:%$$:)
+    instance SingI (TyCon2 (:$$:) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
+      sing = (singFun2 @(TyCon2 (:$$:))) (:%$$:)
+    instance SingI d =>
+             SingI ((:$$:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
+      sing
+        = (singFun1 @((:$$:@#@$$) (d :: ErrorMessage)))
+            ((:%$$:) (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 ((:$$:) (d :: ErrorMessage)) :: (~>) ErrorMessage ErrorMessage) where
+      sing
+        = (singFun1 @(TyCon1 ((:$$:) (d :: ErrorMessage))))
+            ((:%$$:) (sing @_ @d))
     instance (SingI n, SingI n) =>
              SingI ((:<>:) (n :: ErrorMessage) (n :: ErrorMessage)) where
       sing = ((:%<>:) sing) sing
+    instance SingI ((:<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
+      sing = (singFun2 @(:<>:@#@$)) (:%<>:)
+    instance SingI (TyCon2 (:<>:) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
+      sing = (singFun2 @(TyCon2 (:<>:))) (:%<>:)
+    instance SingI d =>
+             SingI ((:<>:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
+      sing
+        = (singFun1 @((:<>:@#@$$) (d :: ErrorMessage)))
+            ((:%<>:) (sing @_ @d))
+    instance SingI d =>
+             SingI (TyCon1 ((:<>:) (d :: ErrorMessage)) :: (~>) ErrorMessage ErrorMessage) where
+      sing
+        = (singFun1 @(TyCon1 ((:<>:) (d :: ErrorMessage))))
+            ((:%<>:) (sing @_ @d))
     instance SingI n => SingI (EM (n :: [Bool])) where
       sing = SEM sing
+    instance SingI (EMSym0 :: (~>) [Bool] ErrorMessage) where
+      sing = (singFun1 @EMSym0) SEM
+    instance SingI (TyCon1 EM :: (~>) [Bool] ErrorMessage) where
+      sing = (singFun1 @(TyCon1 EM)) SEM

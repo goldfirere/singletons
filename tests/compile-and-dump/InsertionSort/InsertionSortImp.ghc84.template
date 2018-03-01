@@ -29,6 +29,10 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where
       sing = SSucc sing
+    instance SingI (SuccSym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @SuccSym0) SSucc
+    instance SingI (TyCon1 Succ :: (~>) Nat Nat) where
+      sing = (singFun1 @(TyCon1 Succ)) SSucc
 InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| leq :: Nat -> Nat -> Bool
@@ -195,3 +199,15 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     sInsertionSort (SCons (sH :: Sing h) (sT :: Sing t))
       = (applySing ((applySing ((singFun2 @InsertSym0) sInsert)) sH))
           ((applySing ((singFun1 @InsertionSortSym0) sInsertionSort)) sT)
+    instance SingI (LeqSym0 :: (~>) Nat ((~>) Nat Bool)) where
+      sing = (singFun2 @LeqSym0) sLeq
+    instance SingI d =>
+             SingI (LeqSym1 (d :: Nat) :: (~>) Nat Bool) where
+      sing = (singFun1 @(LeqSym1 (d :: Nat))) (sLeq (sing @_ @d))
+    instance SingI (InsertSym0 :: (~>) Nat ((~>) [Nat] [Nat])) where
+      sing = (singFun2 @InsertSym0) sInsert
+    instance SingI d =>
+             SingI (InsertSym1 (d :: Nat) :: (~>) [Nat] [Nat]) where
+      sing = (singFun1 @(InsertSym1 (d :: Nat))) (sInsert (sing @_ @d))
+    instance SingI (InsertionSortSym0 :: (~>) [Nat] [Nat]) where
+      sing = (singFun1 @InsertionSortSym0) sInsertionSort

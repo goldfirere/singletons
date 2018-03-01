@@ -35,3 +35,8 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
       forall (t :: Bool) (t :: Bool).
       Sing t -> Sing t -> Sing (Apply (Apply ($$:@#@$) t) t :: Bool)
     (%$$:) _ _ = SFalse
+    instance SingI (($$:@#@$) :: (~>) Bool ((~>) Bool Bool)) where
+      sing = (singFun2 @($$:@#@$)) (%$$:)
+    instance SingI d =>
+             SingI (($$:@#@$$) (d :: Bool) :: (~>) Bool Bool) where
+      sing = (singFun1 @(($$:@#@$$) (d :: Bool))) ((%$$:) (sing @_ @d))

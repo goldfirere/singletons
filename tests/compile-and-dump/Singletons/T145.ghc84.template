@@ -29,3 +29,9 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
       sCol ::
         forall a (t :: f a) (t :: a).
         Sing t -> Sing t -> Sing (Apply (Apply ColSym0 t) t :: Bool)
+    instance SColumn f =>
+             SingI (ColSym0 :: (~>) (f a) ((~>) a Bool)) where
+      sing = (singFun2 @ColSym0) sCol
+    instance (SColumn f, SingI d) =>
+             SingI (ColSym1 (d :: f a) :: (~>) a Bool) where
+      sing = (singFun1 @(ColSym1 (d :: f a))) (sCol (sing @_ @d))

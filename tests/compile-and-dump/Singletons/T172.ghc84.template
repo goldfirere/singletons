@@ -32,3 +32,8 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
       = (applySing
            ((applySing ((singFun2 @(+@#@$)) (%+))) sA_0123456789876543210))
           sA_0123456789876543210
+    instance SingI (($>@#@$) :: (~>) Nat ((~>) Nat Nat)) where
+      sing = (singFun2 @($>@#@$)) (%$>)
+    instance SingI d =>
+             SingI (($>@#@$$) (d :: Nat) :: (~>) Nat Nat) where
+      sing = (singFun1 @(($>@#@$$) (d :: Nat))) ((%$>) (sing @_ @d))

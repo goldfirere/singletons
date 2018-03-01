@@ -66,7 +66,19 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SMkFoo3 c) }
     instance SingI n => SingI (MkFoo1 (n :: a)) where
       sing = SMkFoo1 sing
+    instance SingI (MkFoo1Sym0 :: (~>) a (Foo1 a)) where
+      sing = (singFun1 @MkFoo1Sym0) SMkFoo1
+    instance SingI (TyCon1 MkFoo1 :: (~>) a (Foo1 a)) where
+      sing = (singFun1 @(TyCon1 MkFoo1)) SMkFoo1
     instance SingI n => SingI (MkFoo2 (n :: x)) where
       sing = SMkFoo2 sing
+    instance SingI (MkFoo2Sym0 :: (~>) x (Foo2 x)) where
+      sing = (singFun1 @MkFoo2Sym0) SMkFoo2
+    instance SingI (TyCon1 MkFoo2 :: (~>) x (Foo2 x)) where
+      sing = (singFun1 @(TyCon1 MkFoo2)) SMkFoo2
     instance SingI n => SingI (MkFoo3 (n :: x)) where
       sing = SMkFoo3 sing
+    instance SingI (MkFoo3Sym0 :: (~>) x (Foo3 x)) where
+      sing = (singFun1 @MkFoo3Sym0) SMkFoo3
+    instance SingI (TyCon1 MkFoo3 :: (~>) x (Foo3 x)) where
+      sing = (singFun1 @(TyCon1 MkFoo3)) SMkFoo3
