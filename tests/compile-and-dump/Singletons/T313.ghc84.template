@@ -22,42 +22,48 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       type PFoo4 a = Maybe a
     instance PC a where
       type PFoo4 a = Maybe a
-    type PFoo1Sym1 t = PFoo1 t
+    type PFoo1Sym1 a0123456789876543210 = PFoo1 a0123456789876543210
     instance SuppressUnusedWarnings PFoo1Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PFoo1Sym0KindInference) GHC.Tuple.())
-    data PFoo1Sym0 l :: Type
+    data PFoo1Sym0 a0123456789876543210
       where
-        PFoo1Sym0KindInference :: forall l arg.
-                                  SameKind (Apply PFoo1Sym0 arg) (PFoo1Sym1 arg) => PFoo1Sym0 l
-    type instance Apply PFoo1Sym0 l = PFoo1 l
-    type PFoo3Sym1 t = PFoo3 t
+        PFoo1Sym0KindInference :: forall a0123456789876543210 arg.
+                                  SameKind (Apply PFoo1Sym0 arg) (PFoo1Sym1 arg) =>
+                                  PFoo1Sym0 a0123456789876543210
+    type instance Apply PFoo1Sym0 a0123456789876543210 = PFoo1 a0123456789876543210
+    type PFoo3Sym1 a0123456789876543210 = PFoo3 a0123456789876543210
     instance SuppressUnusedWarnings PFoo3Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PFoo3Sym0KindInference) GHC.Tuple.())
-    data PFoo3Sym0 l :: Type
+    data PFoo3Sym0 a0123456789876543210
       where
-        PFoo3Sym0KindInference :: forall l arg.
-                                  SameKind (Apply PFoo3Sym0 arg) (PFoo3Sym1 arg) => PFoo3Sym0 l
-    type instance Apply PFoo3Sym0 l = PFoo3 l
-    type PFoo2Sym1 (t :: Type) = PFoo2 t
+        PFoo3Sym0KindInference :: forall a0123456789876543210 arg.
+                                  SameKind (Apply PFoo3Sym0 arg) (PFoo3Sym1 arg) =>
+                                  PFoo3Sym0 a0123456789876543210
+    type instance Apply PFoo3Sym0 a0123456789876543210 = PFoo3 a0123456789876543210
+    type PFoo2Sym1 (a0123456789876543210 :: Type) =
+        PFoo2 a0123456789876543210
     instance SuppressUnusedWarnings PFoo2Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PFoo2Sym0KindInference) GHC.Tuple.())
-    data PFoo2Sym0 (l :: TyFun Type Type) :: Type
+    data PFoo2Sym0 :: (~>) Type Type
       where
-        PFoo2Sym0KindInference :: forall l arg.
-                                  SameKind (Apply PFoo2Sym0 arg) (PFoo2Sym1 arg) => PFoo2Sym0 l
-    type instance Apply PFoo2Sym0 l = PFoo2 l
-    type PFoo4Sym1 (t :: Type) = PFoo4 t
+        PFoo2Sym0KindInference :: forall a0123456789876543210 arg.
+                                  SameKind (Apply PFoo2Sym0 arg) (PFoo2Sym1 arg) =>
+                                  PFoo2Sym0 a0123456789876543210
+    type instance Apply PFoo2Sym0 a0123456789876543210 = PFoo2 a0123456789876543210
+    type PFoo4Sym1 (a0123456789876543210 :: Type) =
+        PFoo4 a0123456789876543210
     instance SuppressUnusedWarnings PFoo4Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PFoo4Sym0KindInference) GHC.Tuple.())
-    data PFoo4Sym0 (l :: TyFun Type Type) :: Type
+    data PFoo4Sym0 :: (~>) Type Type
       where
-        PFoo4Sym0KindInference :: forall l arg.
-                                  SameKind (Apply PFoo4Sym0 arg) (PFoo4Sym1 arg) => PFoo4Sym0 l
-    type instance Apply PFoo4Sym0 l = PFoo4 l
+        PFoo4Sym0KindInference :: forall a0123456789876543210 arg.
+                                  SameKind (Apply PFoo4Sym0 arg) (PFoo4Sym1 arg) =>
+                                  PFoo4Sym0 a0123456789876543210
+    type instance Apply PFoo4Sym0 a0123456789876543210 = PFoo4 a0123456789876543210
     class PPC (a :: Type)
     instance PPC a
 Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
@@ -84,42 +90,48 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       type SFoo4 a = Maybe a
     instance SC a where
       type SFoo4 a = Maybe a
-    type SFoo1Sym1 t = SFoo1 t
+    type SFoo1Sym1 a0123456789876543210 = SFoo1 a0123456789876543210
     instance SuppressUnusedWarnings SFoo1Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) SFoo1Sym0KindInference) GHC.Tuple.())
-    data SFoo1Sym0 l :: Type
+    data SFoo1Sym0 a0123456789876543210
       where
-        SFoo1Sym0KindInference :: forall l arg.
-                                  SameKind (Apply SFoo1Sym0 arg) (SFoo1Sym1 arg) => SFoo1Sym0 l
-    type instance Apply SFoo1Sym0 l = SFoo1 l
-    type SFoo3Sym1 t = SFoo3 t
+        SFoo1Sym0KindInference :: forall a0123456789876543210 arg.
+                                  SameKind (Apply SFoo1Sym0 arg) (SFoo1Sym1 arg) =>
+                                  SFoo1Sym0 a0123456789876543210
+    type instance Apply SFoo1Sym0 a0123456789876543210 = SFoo1 a0123456789876543210
+    type SFoo3Sym1 a0123456789876543210 = SFoo3 a0123456789876543210
     instance SuppressUnusedWarnings SFoo3Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) SFoo3Sym0KindInference) GHC.Tuple.())
-    data SFoo3Sym0 l :: Type
+    data SFoo3Sym0 a0123456789876543210
       where
-        SFoo3Sym0KindInference :: forall l arg.
-                                  SameKind (Apply SFoo3Sym0 arg) (SFoo3Sym1 arg) => SFoo3Sym0 l
-    type instance Apply SFoo3Sym0 l = SFoo3 l
-    type SFoo2Sym1 (t :: Type) = SFoo2 t
+        SFoo3Sym0KindInference :: forall a0123456789876543210 arg.
+                                  SameKind (Apply SFoo3Sym0 arg) (SFoo3Sym1 arg) =>
+                                  SFoo3Sym0 a0123456789876543210
+    type instance Apply SFoo3Sym0 a0123456789876543210 = SFoo3 a0123456789876543210
+    type SFoo2Sym1 (a0123456789876543210 :: Type) =
+        SFoo2 a0123456789876543210
     instance SuppressUnusedWarnings SFoo2Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) SFoo2Sym0KindInference) GHC.Tuple.())
-    data SFoo2Sym0 (l :: TyFun Type Type) :: Type
+    data SFoo2Sym0 :: (~>) Type Type
       where
-        SFoo2Sym0KindInference :: forall l arg.
-                                  SameKind (Apply SFoo2Sym0 arg) (SFoo2Sym1 arg) => SFoo2Sym0 l
-    type instance Apply SFoo2Sym0 l = SFoo2 l
-    type SFoo4Sym1 (t :: Type) = SFoo4 t
+        SFoo2Sym0KindInference :: forall a0123456789876543210 arg.
+                                  SameKind (Apply SFoo2Sym0 arg) (SFoo2Sym1 arg) =>
+                                  SFoo2Sym0 a0123456789876543210
+    type instance Apply SFoo2Sym0 a0123456789876543210 = SFoo2 a0123456789876543210
+    type SFoo4Sym1 (a0123456789876543210 :: Type) =
+        SFoo4 a0123456789876543210
     instance SuppressUnusedWarnings SFoo4Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) SFoo4Sym0KindInference) GHC.Tuple.())
-    data SFoo4Sym0 (l :: TyFun Type Type) :: Type
+    data SFoo4Sym0 :: (~>) Type Type
       where
-        SFoo4Sym0KindInference :: forall l arg.
-                                  SameKind (Apply SFoo4Sym0 arg) (SFoo4Sym1 arg) => SFoo4Sym0 l
-    type instance Apply SFoo4Sym0 l = SFoo4 l
+        SFoo4Sym0KindInference :: forall a0123456789876543210 arg.
+                                  SameKind (Apply SFoo4Sym0 arg) (SFoo4Sym1 arg) =>
+                                  SFoo4Sym0 a0123456789876543210
+    type instance Apply SFoo4Sym0 a0123456789876543210 = SFoo4 a0123456789876543210
     class PSC (a :: Type)
     instance PSC a
     class SSC (a :: Type)

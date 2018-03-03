@@ -2,24 +2,30 @@ Singletons/T163.hs:0:0:: Splicing declarations
     singletons [d| data a + b = L a | R b |]
   ======>
     data (+) a b = L a | R b
-    type LSym1 (t :: a0123456789876543210) = L t
+    type LSym1 (t0123456789876543210 :: a0123456789876543210) =
+        L t0123456789876543210
     instance SuppressUnusedWarnings LSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) LSym0KindInference) GHC.Tuple.())
-    data LSym0 (l :: TyFun a0123456789876543210 ((+) a0123456789876543210 b0123456789876543210)) :: GHC.Types.Type
+    data LSym0 :: forall a0123456789876543210 b0123456789876543210.
+                  (~>) a0123456789876543210 ((+) a0123456789876543210 b0123456789876543210)
       where
-        LSym0KindInference :: forall l arg.
-                              SameKind (Apply LSym0 arg) (LSym1 arg) => LSym0 l
-    type instance Apply LSym0 l = L l
-    type RSym1 (t :: b0123456789876543210) = R t
+        LSym0KindInference :: forall t0123456789876543210 arg.
+                              SameKind (Apply LSym0 arg) (LSym1 arg) =>
+                              LSym0 t0123456789876543210
+    type instance Apply LSym0 t0123456789876543210 = L t0123456789876543210
+    type RSym1 (t0123456789876543210 :: b0123456789876543210) =
+        R t0123456789876543210
     instance SuppressUnusedWarnings RSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) RSym0KindInference) GHC.Tuple.())
-    data RSym0 (l :: TyFun b0123456789876543210 ((+) a0123456789876543210 b0123456789876543210)) :: GHC.Types.Type
+    data RSym0 :: forall a0123456789876543210 b0123456789876543210.
+                  (~>) b0123456789876543210 ((+) a0123456789876543210 b0123456789876543210)
       where
-        RSym0KindInference :: forall l arg.
-                              SameKind (Apply RSym0 arg) (RSym1 arg) => RSym0 l
-    type instance Apply RSym0 l = R l
+        RSym0KindInference :: forall t0123456789876543210 arg.
+                              SameKind (Apply RSym0 arg) (RSym1 arg) =>
+                              RSym0 t0123456789876543210
+    type instance Apply RSym0 t0123456789876543210 = R t0123456789876543210
     data instance Sing :: (+) a b -> GHC.Types.Type :: (+) a b
                                                        -> GHC.Types.Type
       where

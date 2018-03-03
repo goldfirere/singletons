@@ -5,35 +5,38 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
   ======>
     foo :: (Num a, Eq a) => a -> a
     foo x = if (x == 0) then 1 else (typeError $ (ShowType x))
-    type Let0123456789876543210Scrutinee_0123456789876543210Sym1 t =
-        Let0123456789876543210Scrutinee_0123456789876543210 t
+    type Let0123456789876543210Scrutinee_0123456789876543210Sym1 x0123456789876543210 =
+        Let0123456789876543210Scrutinee_0123456789876543210 x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210Scrutinee_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,)
                 Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Let0123456789876543210Scrutinee_0123456789876543210Sym0 l :: GHC.Types.Type
+    data Let0123456789876543210Scrutinee_0123456789876543210Sym0 x0123456789876543210
       where
-        Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference :: forall l
+        Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference :: forall x0123456789876543210
                                                                                        arg.
                                                                                 SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
-                                                                                Let0123456789876543210Scrutinee_0123456789876543210Sym0 l
-    type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 l = Let0123456789876543210Scrutinee_0123456789876543210 l
+                                                                                Let0123456789876543210Scrutinee_0123456789876543210Sym0 x0123456789876543210
+    type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 x0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210 x0123456789876543210
     type family Let0123456789876543210Scrutinee_0123456789876543210 x where
       Let0123456789876543210Scrutinee_0123456789876543210 x = Apply (Apply (==@#@$) x) (FromInteger 0)
     type family Case_0123456789876543210 x t where
       Case_0123456789876543210 x True = FromInteger 1
       Case_0123456789876543210 x False = Apply (Apply ($@#@$) TypeErrorSym0) (Apply ShowTypeSym0 x)
-    type FooSym1 (t :: a0123456789876543210) = Foo t
+    type FooSym1 (a0123456789876543210 :: a0123456789876543210) =
+        Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooSym0KindInference) GHC.Tuple.())
-    data FooSym0 (l :: TyFun a0123456789876543210 a0123456789876543210) :: GHC.Types.Type
+    data FooSym0 :: forall a0123456789876543210.
+                    (~>) a0123456789876543210 a0123456789876543210
       where
-        FooSym0KindInference :: forall l arg.
-                                SameKind (Apply FooSym0 arg) (FooSym1 arg) => FooSym0 l
-    type instance Apply FooSym0 l = Foo l
+        FooSym0KindInference :: forall a0123456789876543210 arg.
+                                SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
+                                FooSym0 a0123456789876543210
+    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
     type family Foo (a :: a) :: a where
       Foo x = Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
     sFoo ::

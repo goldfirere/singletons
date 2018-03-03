@@ -18,91 +18,105 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     ($$:) x y = (x :$$: y)
     (<>:) :: ErrorMessage -> ErrorMessage -> ErrorMessage
     (<>:) x y = (x :<>: y)
-    type (:$$:@#@$$$) (t :: ErrorMessage) (t :: ErrorMessage) =
-        (:$$:) t t
-    instance SuppressUnusedWarnings (:$$:@#@$$) where
+    type (:$$:@#@$$$) (t0123456789876543210 :: ErrorMessage) (t0123456789876543210 :: ErrorMessage) =
+        (:$$:) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings ((:$$:@#@$$) t0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::$$:@#@$$###)) GHC.Tuple.())
-    data (:$$:@#@$$) (l :: ErrorMessage) (l :: TyFun ErrorMessage ErrorMessage) :: GHC.Types.Type
+    data (:$$:@#@$$) (t0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
-        (::$$:@#@$$###) :: forall l l arg.
-                           SameKind (Apply ((:$$:@#@$$) l) arg) ((:$$:@#@$$$) l arg) =>
-                           (:$$:@#@$$) l l
-    type instance Apply ((:$$:@#@$$) l) l = (:$$:) l l
+        (::$$:@#@$$###) :: forall t0123456789876543210
+                                  t0123456789876543210
+                                  arg.
+                           SameKind (Apply ((:$$:@#@$$) t0123456789876543210) arg) ((:$$:@#@$$$) t0123456789876543210 arg) =>
+                           (:$$:@#@$$) t0123456789876543210 t0123456789876543210
+    type instance Apply ((:$$:@#@$$) t0123456789876543210) t0123456789876543210 = (:$$:) t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (:$$:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::$$:@#@$###)) GHC.Tuple.())
-    data (:$$:@#@$) (l :: TyFun ErrorMessage ((~>) ErrorMessage ErrorMessage)) :: GHC.Types.Type
+    data :$$:@#@$ :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
-        (::$$:@#@$###) :: forall l arg.
-                          SameKind (Apply (:$$:@#@$) arg) ((:$$:@#@$$) arg) => (:$$:@#@$) l
-    type instance Apply (:$$:@#@$) l = (:$$:@#@$$) l
-    type (:<>:@#@$$$) (t :: ErrorMessage) (t :: ErrorMessage) =
-        (:<>:) t t
-    instance SuppressUnusedWarnings (:<>:@#@$$) where
+        (::$$:@#@$###) :: forall t0123456789876543210 arg.
+                          SameKind (Apply (:$$:@#@$) arg) ((:$$:@#@$$) arg) =>
+                          (:$$:@#@$) t0123456789876543210
+    type instance Apply (:$$:@#@$) t0123456789876543210 = (:$$:@#@$$) t0123456789876543210
+    type (:<>:@#@$$$) (t0123456789876543210 :: ErrorMessage) (t0123456789876543210 :: ErrorMessage) =
+        (:<>:) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings ((:<>:@#@$$) t0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::<>:@#@$$###)) GHC.Tuple.())
-    data (:<>:@#@$$) (l :: ErrorMessage) (l :: TyFun ErrorMessage ErrorMessage) :: GHC.Types.Type
+    data (:<>:@#@$$) (t0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
-        (::<>:@#@$$###) :: forall l l arg.
-                           SameKind (Apply ((:<>:@#@$$) l) arg) ((:<>:@#@$$$) l arg) =>
-                           (:<>:@#@$$) l l
-    type instance Apply ((:<>:@#@$$) l) l = (:<>:) l l
+        (::<>:@#@$$###) :: forall t0123456789876543210
+                                  t0123456789876543210
+                                  arg.
+                           SameKind (Apply ((:<>:@#@$$) t0123456789876543210) arg) ((:<>:@#@$$$) t0123456789876543210 arg) =>
+                           (:<>:@#@$$) t0123456789876543210 t0123456789876543210
+    type instance Apply ((:<>:@#@$$) t0123456789876543210) t0123456789876543210 = (:<>:) t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (:<>:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::<>:@#@$###)) GHC.Tuple.())
-    data (:<>:@#@$) (l :: TyFun ErrorMessage ((~>) ErrorMessage ErrorMessage)) :: GHC.Types.Type
+    data :<>:@#@$ :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
-        (::<>:@#@$###) :: forall l arg.
-                          SameKind (Apply (:<>:@#@$) arg) ((:<>:@#@$$) arg) => (:<>:@#@$) l
-    type instance Apply (:<>:@#@$) l = (:<>:@#@$$) l
-    type EMSym1 (t :: [Bool]) = EM t
+        (::<>:@#@$###) :: forall t0123456789876543210 arg.
+                          SameKind (Apply (:<>:@#@$) arg) ((:<>:@#@$$) arg) =>
+                          (:<>:@#@$) t0123456789876543210
+    type instance Apply (:<>:@#@$) t0123456789876543210 = (:<>:@#@$$) t0123456789876543210
+    type EMSym1 (t0123456789876543210 :: [Bool]) =
+        EM t0123456789876543210
     instance SuppressUnusedWarnings EMSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) EMSym0KindInference) GHC.Tuple.())
-    data EMSym0 (l :: TyFun [Bool] ErrorMessage) :: GHC.Types.Type
+    data EMSym0 :: (~>) [Bool] ErrorMessage
       where
-        EMSym0KindInference :: forall l arg.
-                               SameKind (Apply EMSym0 arg) (EMSym1 arg) => EMSym0 l
-    type instance Apply EMSym0 l = EM l
-    type (<>:@#@$$$) (t :: ErrorMessage) (t :: ErrorMessage) =
-        (<>:) t t
-    instance SuppressUnusedWarnings (<>:@#@$$) where
+        EMSym0KindInference :: forall t0123456789876543210 arg.
+                               SameKind (Apply EMSym0 arg) (EMSym1 arg) =>
+                               EMSym0 t0123456789876543210
+    type instance Apply EMSym0 t0123456789876543210 = EM t0123456789876543210
+    type (<>:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) =
+        (<>:) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings ((<>:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:<>:@#@$$###)) GHC.Tuple.())
-    data (<>:@#@$$) (l :: ErrorMessage) (l :: TyFun ErrorMessage ErrorMessage) :: GHC.Types.Type
+    data (<>:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
-        (:<>:@#@$$###) :: forall l l arg.
-                          SameKind (Apply ((<>:@#@$$) l) arg) ((<>:@#@$$$) l arg) =>
-                          (<>:@#@$$) l l
-    type instance Apply ((<>:@#@$$) l) l = (<>:) l l
+        (:<>:@#@$$###) :: forall a0123456789876543210
+                                 a0123456789876543210
+                                 arg.
+                          SameKind (Apply ((<>:@#@$$) a0123456789876543210) arg) ((<>:@#@$$$) a0123456789876543210 arg) =>
+                          (<>:@#@$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((<>:@#@$$) a0123456789876543210) a0123456789876543210 = (<>:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (<>:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:<>:@#@$###)) GHC.Tuple.())
-    data (<>:@#@$) (l :: TyFun ErrorMessage ((~>) ErrorMessage ErrorMessage)) :: GHC.Types.Type
+    data <>:@#@$ :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
-        (:<>:@#@$###) :: forall l arg.
-                         SameKind (Apply (<>:@#@$) arg) ((<>:@#@$$) arg) => (<>:@#@$) l
-    type instance Apply (<>:@#@$) l = (<>:@#@$$) l
-    type ($$:@#@$$$) (t :: ErrorMessage) (t :: ErrorMessage) =
-        ($$:) t t
-    instance SuppressUnusedWarnings ($$:@#@$$) where
+        (:<>:@#@$###) :: forall a0123456789876543210 arg.
+                         SameKind (Apply (<>:@#@$) arg) ((<>:@#@$$) arg) =>
+                         (<>:@#@$) a0123456789876543210
+    type instance Apply (<>:@#@$) a0123456789876543210 = (<>:@#@$$) a0123456789876543210
+    type ($$:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) =
+        ($$:) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (($$:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:$$:@#@$$###)) GHC.Tuple.())
-    data ($$:@#@$$) (l :: ErrorMessage) (l :: TyFun ErrorMessage ErrorMessage) :: GHC.Types.Type
+    data ($$:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
-        (:$$:@#@$$###) :: forall l l arg.
-                          SameKind (Apply (($$:@#@$$) l) arg) (($$:@#@$$$) l arg) =>
-                          ($$:@#@$$) l l
-    type instance Apply (($$:@#@$$) l) l = ($$:) l l
+        (:$$:@#@$$###) :: forall a0123456789876543210
+                                 a0123456789876543210
+                                 arg.
+                          SameKind (Apply (($$:@#@$$) a0123456789876543210) arg) (($$:@#@$$$) a0123456789876543210 arg) =>
+                          ($$:@#@$$) a0123456789876543210 a0123456789876543210
+    type instance Apply (($$:@#@$$) a0123456789876543210) a0123456789876543210 = ($$:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ($$:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:$$:@#@$###)) GHC.Tuple.())
-    data ($$:@#@$) (l :: TyFun ErrorMessage ((~>) ErrorMessage ErrorMessage)) :: GHC.Types.Type
+    data $$:@#@$ :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
-        (:$$:@#@$###) :: forall l arg.
-                         SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) => ($$:@#@$) l
-    type instance Apply ($$:@#@$) l = ($$:@#@$$) l
+        (:$$:@#@$###) :: forall a0123456789876543210 arg.
+                         SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
+                         ($$:@#@$) a0123456789876543210
+    type instance Apply ($$:@#@$) a0123456789876543210 = ($$:@#@$$) a0123456789876543210
     type family (<>:) (a :: ErrorMessage) (a :: ErrorMessage) :: ErrorMessage where
       (<>:) x y = Apply (Apply (:<>:@#@$) x) y
     type family ($$:) (a :: ErrorMessage) (a :: ErrorMessage) :: ErrorMessage where

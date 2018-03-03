@@ -13,80 +13,94 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     data Identity :: Type -> Type
       where Identity :: a -> Identity a
       deriving (Eq, Ord)
-    type ConstantSym1 (t :: a0123456789876543210) = Constant t
+    type ConstantSym1 (t0123456789876543210 :: a0123456789876543210) =
+        Constant t0123456789876543210
     instance SuppressUnusedWarnings ConstantSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ConstantSym0KindInference) GHC.Tuple.())
-    data ConstantSym0 (l :: TyFun a0123456789876543210 (Constant (a0123456789876543210 :: Type) (b0123456789876543210 :: Type))) :: Type
+    data ConstantSym0 :: forall a0123456789876543210
+                                b0123456789876543210.
+                         (~>) a0123456789876543210 (Constant (a0123456789876543210 :: Type) (b0123456789876543210 :: Type))
       where
-        ConstantSym0KindInference :: forall l arg.
+        ConstantSym0KindInference :: forall t0123456789876543210 arg.
                                      SameKind (Apply ConstantSym0 arg) (ConstantSym1 arg) =>
-                                     ConstantSym0 l
-    type instance Apply ConstantSym0 l = Constant l
-    type IdentitySym1 (t :: a0123456789876543210) = Identity t
+                                     ConstantSym0 t0123456789876543210
+    type instance Apply ConstantSym0 t0123456789876543210 = Constant t0123456789876543210
+    type IdentitySym1 (t0123456789876543210 :: a0123456789876543210) =
+        Identity t0123456789876543210
     instance SuppressUnusedWarnings IdentitySym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) IdentitySym0KindInference) GHC.Tuple.())
-    data IdentitySym0 (l :: TyFun a0123456789876543210 (Identity a0123456789876543210)) :: Type
+    data IdentitySym0 :: forall a0123456789876543210.
+                         (~>) a0123456789876543210 (Identity a0123456789876543210)
       where
-        IdentitySym0KindInference :: forall l arg.
+        IdentitySym0KindInference :: forall t0123456789876543210 arg.
                                      SameKind (Apply IdentitySym0 arg) (IdentitySym1 arg) =>
-                                     IdentitySym0 l
-    type instance Apply IdentitySym0 l = Identity l
+                                     IdentitySym0 t0123456789876543210
+    type instance Apply IdentitySym0 t0123456789876543210 = Identity t0123456789876543210
     type family Compare_0123456789876543210 (a :: Constant a b) (a :: Constant a b) :: Ordering where
       Compare_0123456789876543210 (Constant a_0123456789876543210) (Constant b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
-    type Compare_0123456789876543210Sym2 (t :: Constant a0123456789876543210 b0123456789876543210) (t :: Constant a0123456789876543210 b0123456789876543210) =
-        Compare_0123456789876543210 t t
-    instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
+    type Compare_0123456789876543210Sym2 (a0123456789876543210 :: Constant a0123456789876543210 b0123456789876543210) (a0123456789876543210 :: Constant a0123456789876543210 b0123456789876543210) =
+        Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym1 (l :: Constant a0123456789876543210 b0123456789876543210) (l :: TyFun (Constant a0123456789876543210 b0123456789876543210) Ordering) :: Type
+    data Compare_0123456789876543210Sym1 (a0123456789876543210 :: Constant a0123456789876543210 b0123456789876543210) :: (~>) (Constant a0123456789876543210 b0123456789876543210) Ordering
       where
-        Compare_0123456789876543210Sym1KindInference :: forall l l arg.
-                                                        SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
-                                                        Compare_0123456789876543210Sym1 l l
-    type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
+        Compare_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                               a0123456789876543210
+                                                               arg.
+                                                        SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                        Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun (Constant a0123456789876543210 b0123456789876543210) ((~>) (Constant a0123456789876543210 b0123456789876543210) Ordering)) :: Type
+    data Compare_0123456789876543210Sym0 :: forall a0123456789876543210
+                                                   b0123456789876543210.
+                                            (~>) (Constant a0123456789876543210 b0123456789876543210) ((~>) (Constant a0123456789876543210 b0123456789876543210) Ordering)
       where
-        Compare_0123456789876543210Sym0KindInference :: forall l arg.
+        Compare_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                               arg.
                                                         SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
-                                                        Compare_0123456789876543210Sym0 l
-    type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
+                                                        Compare_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
     instance POrd (Constant a b) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Compare_0123456789876543210 (a :: Identity a) (a :: Identity a) :: Ordering where
       Compare_0123456789876543210 (Identity a_0123456789876543210) (Identity b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
-    type Compare_0123456789876543210Sym2 (t :: Identity a0123456789876543210) (t :: Identity a0123456789876543210) =
-        Compare_0123456789876543210 t t
-    instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
+    type Compare_0123456789876543210Sym2 (a0123456789876543210 :: Identity a0123456789876543210) (a0123456789876543210 :: Identity a0123456789876543210) =
+        Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym1 (l :: Identity a0123456789876543210) (l :: TyFun (Identity a0123456789876543210) Ordering) :: Type
+    data Compare_0123456789876543210Sym1 (a0123456789876543210 :: Identity a0123456789876543210) :: (~>) (Identity a0123456789876543210) Ordering
       where
-        Compare_0123456789876543210Sym1KindInference :: forall l l arg.
-                                                        SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
-                                                        Compare_0123456789876543210Sym1 l l
-    type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
+        Compare_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                               a0123456789876543210
+                                                               arg.
+                                                        SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                        Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun (Identity a0123456789876543210) ((~>) (Identity a0123456789876543210) Ordering)) :: Type
+    data Compare_0123456789876543210Sym0 :: forall a0123456789876543210.
+                                            (~>) (Identity a0123456789876543210) ((~>) (Identity a0123456789876543210) Ordering)
       where
-        Compare_0123456789876543210Sym0KindInference :: forall l arg.
+        Compare_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                               arg.
                                                         SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
-                                                        Compare_0123456789876543210Sym0 l
-    type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
+                                                        Compare_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
     instance POrd (Identity a) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Equals_0123456789876543210 (a :: Constant a b) (b :: Constant a b) :: Bool where

@@ -3,48 +3,57 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       [d| data Record a = MkRecord {field1 :: a, field2 :: Bool} |]
   ======>
     data Record a = MkRecord {field1 :: a, field2 :: Bool}
-    type Field1Sym1 (t :: Record a0123456789876543210) = Field1 t
+    type Field1Sym1 (a0123456789876543210 :: Record a0123456789876543210) =
+        Field1 a0123456789876543210
     instance SuppressUnusedWarnings Field1Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) Field1Sym0KindInference) GHC.Tuple.())
-    data Field1Sym0 (l :: TyFun (Record a0123456789876543210) a0123456789876543210) :: GHC.Types.Type
+    data Field1Sym0 :: forall a0123456789876543210.
+                       (~>) (Record a0123456789876543210) a0123456789876543210
       where
-        Field1Sym0KindInference :: forall l arg.
-                                   SameKind (Apply Field1Sym0 arg) (Field1Sym1 arg) => Field1Sym0 l
-    type instance Apply Field1Sym0 l = Field1 l
-    type Field2Sym1 (t :: Record a0123456789876543210) = Field2 t
+        Field1Sym0KindInference :: forall a0123456789876543210 arg.
+                                   SameKind (Apply Field1Sym0 arg) (Field1Sym1 arg) =>
+                                   Field1Sym0 a0123456789876543210
+    type instance Apply Field1Sym0 a0123456789876543210 = Field1 a0123456789876543210
+    type Field2Sym1 (a0123456789876543210 :: Record a0123456789876543210) =
+        Field2 a0123456789876543210
     instance SuppressUnusedWarnings Field2Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) Field2Sym0KindInference) GHC.Tuple.())
-    data Field2Sym0 (l :: TyFun (Record a0123456789876543210) Bool) :: GHC.Types.Type
+    data Field2Sym0 :: forall a0123456789876543210.
+                       (~>) (Record a0123456789876543210) Bool
       where
-        Field2Sym0KindInference :: forall l arg.
-                                   SameKind (Apply Field2Sym0 arg) (Field2Sym1 arg) => Field2Sym0 l
-    type instance Apply Field2Sym0 l = Field2 l
+        Field2Sym0KindInference :: forall a0123456789876543210 arg.
+                                   SameKind (Apply Field2Sym0 arg) (Field2Sym1 arg) =>
+                                   Field2Sym0 a0123456789876543210
+    type instance Apply Field2Sym0 a0123456789876543210 = Field2 a0123456789876543210
     type family Field1 (a :: Record a) :: a where
       Field1 (MkRecord field _) = field
     type family Field2 (a :: Record a) :: Bool where
       Field2 (MkRecord _ field) = field
-    type MkRecordSym2 (t :: a0123456789876543210) (t :: Bool) =
-        MkRecord t t
-    instance SuppressUnusedWarnings MkRecordSym1 where
+    type MkRecordSym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: Bool) =
+        MkRecord t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (MkRecordSym1 t0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MkRecordSym1KindInference) GHC.Tuple.())
-    data MkRecordSym1 (l :: a0123456789876543210) (l :: TyFun Bool (Record a0123456789876543210)) :: GHC.Types.Type
+    data MkRecordSym1 (t0123456789876543210 :: a0123456789876543210) :: (~>) Bool (Record a0123456789876543210)
       where
-        MkRecordSym1KindInference :: forall l l arg.
-                                     SameKind (Apply (MkRecordSym1 l) arg) (MkRecordSym2 l arg) =>
-                                     MkRecordSym1 l l
-    type instance Apply (MkRecordSym1 l) l = MkRecord l l
+        MkRecordSym1KindInference :: forall t0123456789876543210
+                                            t0123456789876543210
+                                            arg.
+                                     SameKind (Apply (MkRecordSym1 t0123456789876543210) arg) (MkRecordSym2 t0123456789876543210 arg) =>
+                                     MkRecordSym1 t0123456789876543210 t0123456789876543210
+    type instance Apply (MkRecordSym1 t0123456789876543210) t0123456789876543210 = MkRecord t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings MkRecordSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MkRecordSym0KindInference) GHC.Tuple.())
-    data MkRecordSym0 (l :: TyFun a0123456789876543210 ((~>) Bool (Record a0123456789876543210))) :: GHC.Types.Type
+    data MkRecordSym0 :: forall a0123456789876543210.
+                         (~>) a0123456789876543210 ((~>) Bool (Record a0123456789876543210))
       where
-        MkRecordSym0KindInference :: forall l arg.
+        MkRecordSym0KindInference :: forall t0123456789876543210 arg.
                                      SameKind (Apply MkRecordSym0 arg) (MkRecordSym1 arg) =>
-                                     MkRecordSym0 l
-    type instance Apply MkRecordSym0 l = MkRecordSym1 l
+                                     MkRecordSym0 t0123456789876543210
+    type instance Apply MkRecordSym0 t0123456789876543210 = MkRecordSym1 t0123456789876543210
     data instance Sing :: Record a -> GHC.Types.Type :: Record a
                                                         -> GHC.Types.Type
       where

@@ -14,19 +14,20 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
     bar = (map ((either_ pred) Succ)) [Left Zero, Right (Succ Zero)]
     type family Lambda_0123456789876543210 t where
       Lambda_0123456789876543210 x = Apply (Apply (Apply Either_Sym0 PredSym0) SuccSym0) x
-    type Lambda_0123456789876543210Sym1 t =
-        Lambda_0123456789876543210 t
+    type Lambda_0123456789876543210Sym1 t0123456789876543210 =
+        Lambda_0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Lambda_0123456789876543210Sym0 l :: GHC.Types.Type
+    data Lambda_0123456789876543210Sym0 t0123456789876543210
       where
-        Lambda_0123456789876543210Sym0KindInference :: forall l arg.
+        Lambda_0123456789876543210Sym0KindInference :: forall t0123456789876543210
+                                                              arg.
                                                        SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
-                                                       Lambda_0123456789876543210Sym0 l
-    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210 l
+                                                       Lambda_0123456789876543210Sym0 t0123456789876543210
+    type instance Apply Lambda_0123456789876543210Sym0 t0123456789876543210 = Lambda_0123456789876543210 t0123456789876543210
     type BarSym0 = Bar
     type FooSym0 = Foo
     type family Bar :: [Nat] where

@@ -9,15 +9,17 @@ Singletons/OverloadedStrings.hs:(0,0)-(0,0): Splicing declarations
     symId x = x
     foo :: Symbol
     foo = symId "foo"
-    type SymIdSym1 (t :: Symbol) = SymId t
+    type SymIdSym1 (a0123456789876543210 :: Symbol) =
+        SymId a0123456789876543210
     instance SuppressUnusedWarnings SymIdSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) SymIdSym0KindInference) GHC.Tuple.())
-    data SymIdSym0 (l :: TyFun Symbol Symbol) :: GHC.Types.Type
+    data SymIdSym0 :: (~>) Symbol Symbol
       where
-        SymIdSym0KindInference :: forall l arg.
-                                  SameKind (Apply SymIdSym0 arg) (SymIdSym1 arg) => SymIdSym0 l
-    type instance Apply SymIdSym0 l = SymId l
+        SymIdSym0KindInference :: forall a0123456789876543210 arg.
+                                  SameKind (Apply SymIdSym0 arg) (SymIdSym1 arg) =>
+                                  SymIdSym0 a0123456789876543210
+    type instance Apply SymIdSym0 a0123456789876543210 = SymId a0123456789876543210
     type FooSym0 = Foo
     type family SymId (a :: Symbol) :: Symbol where
       SymId x = x

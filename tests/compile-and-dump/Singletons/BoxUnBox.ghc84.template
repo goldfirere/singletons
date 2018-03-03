@@ -8,24 +8,30 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
     data Box a = FBox a
     unBox :: Box a -> a
     unBox (FBox a) = a
-    type FBoxSym1 (t :: a0123456789876543210) = FBox t
+    type FBoxSym1 (t0123456789876543210 :: a0123456789876543210) =
+        FBox t0123456789876543210
     instance SuppressUnusedWarnings FBoxSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FBoxSym0KindInference) GHC.Tuple.())
-    data FBoxSym0 (l :: TyFun a0123456789876543210 (Box a0123456789876543210)) :: GHC.Types.Type
+    data FBoxSym0 :: forall a0123456789876543210.
+                     (~>) a0123456789876543210 (Box a0123456789876543210)
       where
-        FBoxSym0KindInference :: forall l arg.
-                                 SameKind (Apply FBoxSym0 arg) (FBoxSym1 arg) => FBoxSym0 l
-    type instance Apply FBoxSym0 l = FBox l
-    type UnBoxSym1 (t :: Box a0123456789876543210) = UnBox t
+        FBoxSym0KindInference :: forall t0123456789876543210 arg.
+                                 SameKind (Apply FBoxSym0 arg) (FBoxSym1 arg) =>
+                                 FBoxSym0 t0123456789876543210
+    type instance Apply FBoxSym0 t0123456789876543210 = FBox t0123456789876543210
+    type UnBoxSym1 (a0123456789876543210 :: Box a0123456789876543210) =
+        UnBox a0123456789876543210
     instance SuppressUnusedWarnings UnBoxSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) UnBoxSym0KindInference) GHC.Tuple.())
-    data UnBoxSym0 (l :: TyFun (Box a0123456789876543210) a0123456789876543210) :: GHC.Types.Type
+    data UnBoxSym0 :: forall a0123456789876543210.
+                      (~>) (Box a0123456789876543210) a0123456789876543210
       where
-        UnBoxSym0KindInference :: forall l arg.
-                                  SameKind (Apply UnBoxSym0 arg) (UnBoxSym1 arg) => UnBoxSym0 l
-    type instance Apply UnBoxSym0 l = UnBox l
+        UnBoxSym0KindInference :: forall a0123456789876543210 arg.
+                                  SameKind (Apply UnBoxSym0 arg) (UnBoxSym1 arg) =>
+                                  UnBoxSym0 a0123456789876543210
+    type instance Apply UnBoxSym0 a0123456789876543210 = UnBox a0123456789876543210
     type family UnBox (a :: Box a) :: a where
       UnBox (FBox a) = a
     sUnBox ::

@@ -24,7 +24,7 @@ import Control.Monad
 
 boolName, andName, tyEqName, compareName, minBoundName,
   maxBoundName, repName,
-  nilName, consName, listName, tyFunName, tyFunArrowName,
+  nilName, consName, listName, tyFunArrowName,
   applyName, natName, symbolName, typeRepName, stringName,
   eqName, ordName, boundedName, orderingName,
   singFamilyName, singIName, singMethName, demoteName,
@@ -52,7 +52,6 @@ repName = mkName "Rep"   -- this is actually defined in client code!
 nilName = '[]
 consName = '(:)
 listName = ''[]
-tyFunName = ''TyFun
 tyFunArrowName = ''(~>)
 applyName = ''Apply
 symbolName = ''Symbol

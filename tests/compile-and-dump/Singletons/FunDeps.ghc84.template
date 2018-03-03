@@ -22,58 +22,66 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     type T1Sym0 = T1
     type family T1 where
       T1 = Apply MethSym0 TrueSym0
-    type MethSym1 (t :: a0123456789876543210) = Meth t
+    type MethSym1 (arg0123456789876543210 :: a0123456789876543210) =
+        Meth arg0123456789876543210
     instance SuppressUnusedWarnings MethSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MethSym0KindInference) GHC.Tuple.())
-    data MethSym0 (l :: TyFun a0123456789876543210 a0123456789876543210) :: GHC.Types.Type
+    data MethSym0 :: forall a0123456789876543210.
+                     (~>) a0123456789876543210 a0123456789876543210
       where
-        MethSym0KindInference :: forall l arg.
-                                 SameKind (Apply MethSym0 arg) (MethSym1 arg) => MethSym0 l
-    type instance Apply MethSym0 l = Meth l
-    type L2rSym1 (t :: a0123456789876543210) = L2r t
+        MethSym0KindInference :: forall arg0123456789876543210 arg.
+                                 SameKind (Apply MethSym0 arg) (MethSym1 arg) =>
+                                 MethSym0 arg0123456789876543210
+    type instance Apply MethSym0 arg0123456789876543210 = Meth arg0123456789876543210
+    type L2rSym1 (arg0123456789876543210 :: a0123456789876543210) =
+        L2r arg0123456789876543210
     instance SuppressUnusedWarnings L2rSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) L2rSym0KindInference) GHC.Tuple.())
-    data L2rSym0 (l :: TyFun a0123456789876543210 b0123456789876543210) :: GHC.Types.Type
+    data L2rSym0 :: forall a0123456789876543210 b0123456789876543210.
+                    (~>) a0123456789876543210 b0123456789876543210
       where
-        L2rSym0KindInference :: forall l arg.
-                                SameKind (Apply L2rSym0 arg) (L2rSym1 arg) => L2rSym0 l
-    type instance Apply L2rSym0 l = L2r l
+        L2rSym0KindInference :: forall arg0123456789876543210 arg.
+                                SameKind (Apply L2rSym0 arg) (L2rSym1 arg) =>
+                                L2rSym0 arg0123456789876543210
+    type instance Apply L2rSym0 arg0123456789876543210 = L2r arg0123456789876543210
     class PFD (a :: GHC.Types.Type) (b :: GHC.Types.Type) | a -> b where
       type Meth (arg :: a) :: a
       type L2r (arg :: a) :: b
     type family Meth_0123456789876543210 (a :: Bool) :: Bool where
       Meth_0123456789876543210 a_0123456789876543210 = Apply NotSym0 a_0123456789876543210
-    type Meth_0123456789876543210Sym1 (t :: Bool) =
-        Meth_0123456789876543210 t
+    type Meth_0123456789876543210Sym1 (a0123456789876543210 :: Bool) =
+        Meth_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Meth_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Meth_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Meth_0123456789876543210Sym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+    data Meth_0123456789876543210Sym0 :: (~>) Bool Bool
       where
-        Meth_0123456789876543210Sym0KindInference :: forall l arg.
+        Meth_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                            arg.
                                                      SameKind (Apply Meth_0123456789876543210Sym0 arg) (Meth_0123456789876543210Sym1 arg) =>
-                                                     Meth_0123456789876543210Sym0 l
-    type instance Apply Meth_0123456789876543210Sym0 l = Meth_0123456789876543210 l
+                                                     Meth_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Meth_0123456789876543210Sym0 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
     type family L2r_0123456789876543210 (a :: Bool) :: Nat where
       L2r_0123456789876543210 False = FromInteger 0
       L2r_0123456789876543210 True = FromInteger 1
-    type L2r_0123456789876543210Sym1 (t :: Bool) =
-        L2r_0123456789876543210 t
+    type L2r_0123456789876543210Sym1 (a0123456789876543210 :: Bool) =
+        L2r_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings L2r_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) L2r_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data L2r_0123456789876543210Sym0 (l :: TyFun Bool Nat) :: GHC.Types.Type
+    data L2r_0123456789876543210Sym0 :: (~>) Bool Nat
       where
-        L2r_0123456789876543210Sym0KindInference :: forall l arg.
+        L2r_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                           arg.
                                                     SameKind (Apply L2r_0123456789876543210Sym0 arg) (L2r_0123456789876543210Sym1 arg) =>
-                                                    L2r_0123456789876543210Sym0 l
-    type instance Apply L2r_0123456789876543210Sym0 l = L2r_0123456789876543210 l
+                                                    L2r_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply L2r_0123456789876543210Sym0 a0123456789876543210 = L2r_0123456789876543210 a0123456789876543210
     instance PFD Bool Nat where
       type Meth a = Apply Meth_0123456789876543210Sym0 a
       type L2r a = Apply L2r_0123456789876543210Sym0 a

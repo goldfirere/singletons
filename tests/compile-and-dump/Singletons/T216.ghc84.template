@@ -1,0 +1,64 @@
+Singletons/T216.hs:0:0:: Splicing declarations
+    genDefunSymbols [''MyProxy, ''Symmetry]
+  ======>
+    type MyProxySym2 (k0123456789876543210 :: Type) (a0123456789876543210 :: k0123456789876543210) =
+        MyProxy k0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (MyProxySym1 k0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) MyProxySym1KindInference) GHC.Tuple.())
+    data MyProxySym1 (k0123456789876543210 :: Type) :: (~>) k0123456789876543210 Type
+      where
+        MyProxySym1KindInference :: forall k0123456789876543210
+                                           a0123456789876543210
+                                           arg.
+                                    SameKind (Apply (MyProxySym1 k0123456789876543210) arg) (MyProxySym2 k0123456789876543210 arg) =>
+                                    MyProxySym1 k0123456789876543210 a0123456789876543210
+    type instance Apply (MyProxySym1 k0123456789876543210) a0123456789876543210 = MyProxy k0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings MyProxySym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) MyProxySym0KindInference) GHC.Tuple.())
+    data MyProxySym0 :: forall (k0123456789876543210 :: Type).
+                        (~>) Type ((~>) k0123456789876543210 Type)
+      where
+        MyProxySym0KindInference :: forall k0123456789876543210 arg.
+                                    SameKind (Apply MyProxySym0 arg) (MyProxySym1 arg) =>
+                                    MyProxySym0 k0123456789876543210
+    type instance Apply MyProxySym0 k0123456789876543210 = MyProxySym1 k0123456789876543210
+    type SymmetrySym3 (a0123456789876543210 :: t0123456789876543210) (y0123456789876543210 :: t0123456789876543210) (e0123456789876543210 :: (:~:) a0123456789876543210 y0123456789876543210) =
+        Symmetry a0123456789876543210 y0123456789876543210 e0123456789876543210
+    instance SuppressUnusedWarnings (SymmetrySym2 y0123456789876543210 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) SymmetrySym2KindInference) GHC.Tuple.())
+    data SymmetrySym2 (a0123456789876543210 :: t0123456789876543210) (y0123456789876543210 :: t0123456789876543210) :: (~>) ((:~:) a0123456789876543210 y0123456789876543210) Type
+      where
+        SymmetrySym2KindInference :: forall a0123456789876543210
+                                            y0123456789876543210
+                                            e0123456789876543210
+                                            arg.
+                                     SameKind (Apply (SymmetrySym2 a0123456789876543210 y0123456789876543210) arg) (SymmetrySym3 a0123456789876543210 y0123456789876543210 arg) =>
+                                     SymmetrySym2 a0123456789876543210 y0123456789876543210 e0123456789876543210
+    type instance Apply (SymmetrySym2 y0123456789876543210 a0123456789876543210) e0123456789876543210 = Symmetry y0123456789876543210 a0123456789876543210 e0123456789876543210
+    instance SuppressUnusedWarnings (SymmetrySym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) SymmetrySym1KindInference) GHC.Tuple.())
+    data SymmetrySym1 (a0123456789876543210 :: t0123456789876543210) :: forall (y0123456789876543210 :: t0123456789876543210).
+                                                                        (~>) t0123456789876543210 ((~>) ((:~:) a0123456789876543210 y0123456789876543210) Type)
+      where
+        SymmetrySym1KindInference :: forall a0123456789876543210
+                                            y0123456789876543210
+                                            arg.
+                                     SameKind (Apply (SymmetrySym1 a0123456789876543210) arg) (SymmetrySym2 a0123456789876543210 arg) =>
+                                     SymmetrySym1 a0123456789876543210 y0123456789876543210
+    type instance Apply (SymmetrySym1 a0123456789876543210) y0123456789876543210 = SymmetrySym2 a0123456789876543210 y0123456789876543210
+    instance SuppressUnusedWarnings SymmetrySym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) SymmetrySym0KindInference) GHC.Tuple.())
+    data SymmetrySym0 :: forall t0123456789876543210
+                                (a0123456789876543210 :: t0123456789876543210)
+                                (y0123456789876543210 :: t0123456789876543210).
+                         (~>) t0123456789876543210 ((~>) t0123456789876543210 ((~>) ((:~:) a0123456789876543210 y0123456789876543210) Type))
+      where
+        SymmetrySym0KindInference :: forall a0123456789876543210 arg.
+                                     SameKind (Apply SymmetrySym0 arg) (SymmetrySym1 arg) =>
+                                     SymmetrySym0 a0123456789876543210
+    type instance Apply SymmetrySym0 a0123456789876543210 = SymmetrySym1 a0123456789876543210

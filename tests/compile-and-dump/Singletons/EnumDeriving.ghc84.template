@@ -25,36 +25,38 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 1))
     type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: Foo where
       ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0))
-    type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
-        ToEnum_0123456789876543210 t
+    type ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) =
+        ToEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ToEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ToEnum_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat Foo) :: GHC.Types.Type
+    data ToEnum_0123456789876543210Sym0 :: (~>) GHC.Types.Nat Foo
       where
-        ToEnum_0123456789876543210Sym0KindInference :: forall l arg.
+        ToEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                              arg.
                                                        SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
-                                                       ToEnum_0123456789876543210Sym0 l
-    type instance Apply ToEnum_0123456789876543210Sym0 l = ToEnum_0123456789876543210 l
+                                                       ToEnum_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     type family FromEnum_0123456789876543210 (a :: Foo) :: GHC.Types.Nat where
       FromEnum_0123456789876543210 Bar = Data.Singletons.Prelude.Num.FromInteger 0
       FromEnum_0123456789876543210 Baz = Data.Singletons.Prelude.Num.FromInteger 1
       FromEnum_0123456789876543210 Bum = Data.Singletons.Prelude.Num.FromInteger 2
-    type FromEnum_0123456789876543210Sym1 (t :: Foo) =
-        FromEnum_0123456789876543210 t
+    type FromEnum_0123456789876543210Sym1 (a0123456789876543210 :: Foo) =
+        FromEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) FromEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data FromEnum_0123456789876543210Sym0 (l :: TyFun Foo GHC.Types.Nat) :: GHC.Types.Type
+    data FromEnum_0123456789876543210Sym0 :: (~>) Foo GHC.Types.Nat
       where
-        FromEnum_0123456789876543210Sym0KindInference :: forall l arg.
+        FromEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                arg.
                                                          SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
-                                                         FromEnum_0123456789876543210Sym0 l
-    type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
+                                                         FromEnum_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance PEnum Foo where
       type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
       type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
@@ -145,35 +147,37 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 1))
     type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: Quux where
       ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0))
-    type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
-        ToEnum_0123456789876543210 t
+    type ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) =
+        ToEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ToEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ToEnum_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat Quux) :: GHC.Types.Type
+    data ToEnum_0123456789876543210Sym0 :: (~>) GHC.Types.Nat Quux
       where
-        ToEnum_0123456789876543210Sym0KindInference :: forall l arg.
+        ToEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                              arg.
                                                        SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
-                                                       ToEnum_0123456789876543210Sym0 l
-    type instance Apply ToEnum_0123456789876543210Sym0 l = ToEnum_0123456789876543210 l
+                                                       ToEnum_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     type family FromEnum_0123456789876543210 (a :: Quux) :: GHC.Types.Nat where
       FromEnum_0123456789876543210 Q1 = Data.Singletons.Prelude.Num.FromInteger 0
       FromEnum_0123456789876543210 Q2 = Data.Singletons.Prelude.Num.FromInteger 1
-    type FromEnum_0123456789876543210Sym1 (t :: Quux) =
-        FromEnum_0123456789876543210 t
+    type FromEnum_0123456789876543210Sym1 (a0123456789876543210 :: Quux) =
+        FromEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) FromEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data FromEnum_0123456789876543210Sym0 (l :: TyFun Quux GHC.Types.Nat) :: GHC.Types.Type
+    data FromEnum_0123456789876543210Sym0 :: (~>) Quux GHC.Types.Nat
       where
-        FromEnum_0123456789876543210Sym0KindInference :: forall l arg.
+        FromEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                arg.
                                                          SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
-                                                         FromEnum_0123456789876543210Sym0 l
-    type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
+                                                         FromEnum_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance PEnum Quux where
       type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
       type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a

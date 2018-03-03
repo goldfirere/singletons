@@ -31,71 +31,80 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210 Opt Many = LTSym0
       Compare_0123456789876543210 Many Str = GTSym0
       Compare_0123456789876543210 Many Opt = GTSym0
-    type Compare_0123456789876543210Sym2 (t :: Occ) (t :: Occ) =
-        Compare_0123456789876543210 t t
-    instance SuppressUnusedWarnings Compare_0123456789876543210Sym1 where
+    type Compare_0123456789876543210Sym2 (a0123456789876543210 :: Occ) (a0123456789876543210 :: Occ) =
+        Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym1 (l :: Occ) (l :: TyFun Occ Ordering) :: GHC.Types.Type
+    data Compare_0123456789876543210Sym1 (a0123456789876543210 :: Occ) :: (~>) Occ Ordering
       where
-        Compare_0123456789876543210Sym1KindInference :: forall l l arg.
-                                                        SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
-                                                        Compare_0123456789876543210Sym1 l l
-    type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
+        Compare_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                               a0123456789876543210
+                                                               arg.
+                                                        SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                        Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun Occ ((~>) Occ Ordering)) :: GHC.Types.Type
+    data Compare_0123456789876543210Sym0 :: (~>) Occ ((~>) Occ Ordering)
       where
-        Compare_0123456789876543210Sym0KindInference :: forall l arg.
+        Compare_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                               arg.
                                                         SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
-                                                        Compare_0123456789876543210Sym0 l
-    type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
+                                                        Compare_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
     instance POrd Occ where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family ShowsPrec_0123456789876543210 (a :: Nat) (a :: Occ) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ Str a_0123456789876543210 = Apply (Apply ShowStringSym0 "Str") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ Opt a_0123456789876543210 = Apply (Apply ShowStringSym0 "Opt") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ Many a_0123456789876543210 = Apply (Apply ShowStringSym0 "Many") a_0123456789876543210
-    type ShowsPrec_0123456789876543210Sym3 (t :: Nat) (t :: Occ) (t :: Symbol) =
-        ShowsPrec_0123456789876543210 t t t
-    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym2 where
+    type ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Occ) (a0123456789876543210 :: Symbol) =
+        ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym2KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym2 (l :: Nat) (l :: Occ) (l :: TyFun Symbol Symbol) :: GHC.Types.Type
+    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Occ) :: (~>) Symbol Symbol
       where
-        ShowsPrec_0123456789876543210Sym2KindInference :: forall l l l arg.
-                                                          SameKind (Apply (ShowsPrec_0123456789876543210Sym2 l l) arg) (ShowsPrec_0123456789876543210Sym3 l l arg) =>
-                                                          ShowsPrec_0123456789876543210Sym2 l l l
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 l l) l = ShowsPrec_0123456789876543210 l l l
-    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym1 where
+        ShowsPrec_0123456789876543210Sym2KindInference :: forall a0123456789876543210
+                                                                 a0123456789876543210
+                                                                 a0123456789876543210
+                                                                 arg.
+                                                          SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
+                                                          ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym1 (l :: Nat) (l :: TyFun Occ ((~>) Symbol Symbol)) :: GHC.Types.Type
+    data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: Nat) :: (~>) Occ ((~>) Symbol Symbol)
       where
-        ShowsPrec_0123456789876543210Sym1KindInference :: forall l l arg.
-                                                          SameKind (Apply (ShowsPrec_0123456789876543210Sym1 l) arg) (ShowsPrec_0123456789876543210Sym2 l arg) =>
-                                                          ShowsPrec_0123456789876543210Sym1 l l
-    type instance Apply (ShowsPrec_0123456789876543210Sym1 l) l = ShowsPrec_0123456789876543210Sym2 l l
+        ShowsPrec_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                                 a0123456789876543210
+                                                                 arg.
+                                                          SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                          ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ShowsPrec_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ShowsPrec_0123456789876543210Sym0 (l :: TyFun Nat ((~>) Occ ((~>) Symbol Symbol))) :: GHC.Types.Type
+    data ShowsPrec_0123456789876543210Sym0 :: (~>) Nat ((~>) Occ ((~>) Symbol Symbol))
       where
-        ShowsPrec_0123456789876543210Sym0KindInference :: forall l arg.
+        ShowsPrec_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                 arg.
                                                           SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
-                                                          ShowsPrec_0123456789876543210Sym0 l
-    type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
+                                                          ShowsPrec_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance PShow Occ where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type family Equals_0123456789876543210 (a :: Occ) (b :: Occ) :: Bool where
