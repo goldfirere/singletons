@@ -53,16 +53,7 @@ data ClassDecl ann = ClassDecl { cd_cxt  :: DCxt
                                , cd_tvbs :: [DTyVarBndr]
                                , cd_fds  :: [FunDep]
                                , cd_lde  :: LetDecEnv ann
-                               , cd_bound_kvs :: IfAnn ann (Set Name) ()
                                }
-
-{-
-NB: ClassDecl doesn't strictly /need/ cd_bound_kvs to keep track of the kind
-variables it binds when promoted, because class declarations can only appear at
-the top level, and thus it's always possible to reverse engineer the bound kind
-variables from cd_tvbs. But if we got rid of it, we'd have to calculate this
-twice—once during promotion, and once during singling—so it's handy to cache.
--}
 
 data InstDecl  ann = InstDecl { id_cxt     :: DCxt
                               , id_name    :: Name

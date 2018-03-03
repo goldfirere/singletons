@@ -124,11 +124,11 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                             Sing (Case_0123456789876543210 x arg_0123456789876543210 arg_0123456789876543210) }))
     class SFoo1 a where
       sBar1 ::
-        forall (t :: a) (t :: (~>) a b).
+        forall b (t :: a) (t :: (~>) a b).
         Sing t -> Sing t -> Sing (Apply (Apply Bar1Sym0 t) t :: b)
       sBaz1 :: Sing (Baz1Sym0 :: a)
     class SFoo2 a where
       sBar2 ::
-        forall (t :: a) (t :: b).
+        forall b (t :: a) (t :: b).
         Sing t -> Sing t -> Sing (Apply (Apply Bar2Sym0 t) t :: b)
       sBaz2 :: Sing (Baz2Sym0 :: a)

@@ -77,8 +77,7 @@ partitionDec (DClassD cxt name tvbs fds decs) = do
                                                , cd_name      = name
                                                , cd_tvbs      = tvbs
                                                , cd_fds       = fds
-                                               , cd_lde       = env
-                                               , cd_bound_kvs = () }] }
+                                               , cd_lde       = env }] }
 partitionDec (DInstanceD _ cxt ty decs) = do
   defns <- liftM catMaybes $ mapM partitionInstanceDec decs
   (name, tys) <- split_app_tys [] ty

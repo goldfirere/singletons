@@ -278,8 +278,7 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
   let pClsName = promoteClassName cls_name
   pCxt <- mapM promote_superclass_pred cxt
   forallBind cls_kvs_to_bind $ do
-    (sig_decs, meth_kvs_to_bind)
-      <- mapAndUnzipM (uncurry promote_sig) (Map.toList meth_sigs)
+    sig_decs <- mapM (uncurry promote_sig) (Map.toList meth_sigs)
     let defaults_list  = Map.toList defaults
         defaults_names = map fst defaults_list
     (default_decs, ann_rhss, prom_rhss)
@@ -290,33 +289,29 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
     -- no need to do anything to the fundeps. They work as is!
     emitDecs [DClassD pCxt pClsName tvbs fundeps
                       (sig_decs ++ default_decs ++ infix_decls')]
-    let defaults_list'    = zip defaults_names       ann_rhss
-        proms             = zip defaults_names       prom_rhss
-        meth_kvs_to_bind' = zip (Map.keys meth_sigs) meth_kvs_to_bind
+    let defaults_list'   = zip defaults_names ann_rhss
+        proms            = zip defaults_names prom_rhss
+        cls_kvs_to_bind' = cls_kvs_to_bind <$ meth_sigs
     return (decl { cd_lde = lde { lde_defns     = Map.fromList defaults_list'
                                 , lde_proms     = Map.fromList proms
-                                , lde_bound_kvs = Map.fromList meth_kvs_to_bind' }
-                 , cd_bound_kvs = cls_kvs_to_bind
-                 })
+                                , lde_bound_kvs = cls_kvs_to_bind' } })
   where
     cls_kvb_names, cls_tvb_names, cls_kvs_to_bind :: Set Name
     cls_kvb_names   = foldMap (foldMap fvDType . extractTvbKind) tvbs'
     cls_tvb_names   = Set.fromList $ map extractTvbName tvbs'
     cls_kvs_to_bind = cls_kvb_names `Set.union` cls_tvb_names
 
-    promote_sig :: Name -> DType -> PrM (DDec, Set Name)
+    promote_sig :: Name -> DType -> PrM DDec
     promote_sig name ty = do
       let proName = promoteValNameLhs name
       (argKs, resK) <- promoteUnraveled ty
       args <- mapM (const $ qNewName "arg") argKs
       emitDecsM $ defunctionalize proName (map Just argKs) (Just resK)
 
-      return ( DOpenTypeFamilyD (DTypeFamilyHead proName
+      return $ DOpenTypeFamilyD (DTypeFamilyHead proName
                                                  (zipWith DKindedTV args argKs)
                                                  (DKindSig resK)
                                                  Nothing)
-             , cls_kvs_to_bind `Set.union` foldMap fvDType argKs
-                               `Set.union` fvDType resK )
 
     promote_superclass_pred :: DPred -> PrM DPred
     promote_superclass_pred = go
