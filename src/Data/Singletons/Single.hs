@@ -308,7 +308,8 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
   (sing_sigs, _, tyvar_names, res_kis)
     <- unzip4 <$> zipWithM (singTySig no_meth_defns meth_sigs meth_bound_kvs)
                            meth_names (map promoteValRhs meth_names)
-  let default_sigs = catMaybes $ zipWith3 mk_default_sig meth_names sing_sigs res_kis
+  let default_sigs = catMaybes $
+                     zipWith4 mk_default_sig meth_names sing_sigs tyvar_names res_kis
       res_ki_map   = Map.fromList (zip meth_names
                                        (map (fromMaybe always_sig) res_kis))
   sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList tyvar_names)
@@ -326,11 +327,11 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
     always_sig    = error "Internal error: no signature for default method"
     meth_names    = Map.keys meth_sigs
 
-    mk_default_sig meth_name (DSigD s_name sty) (Just res_ki) =
-      DDefaultSigD s_name <$> add_constraints meth_name sty res_ki
-    mk_default_sig _ _ _ = error "Internal error: a singled signature isn't a signature."
+    mk_default_sig meth_name (DSigD s_name sty) bound_kvs (Just res_ki) =
+      DDefaultSigD s_name <$> add_constraints meth_name sty bound_kvs res_ki
+    mk_default_sig _ _ _ _ = error "Internal error: a singled signature isn't a signature."
 
-    add_constraints meth_name sty res_ki = do  -- Maybe monad
+    add_constraints meth_name sty (_, bound_kvs) res_ki = do  -- Maybe monad
       prom_dflt <- Map.lookup meth_name promoted_defaults
       let default_pred = foldl DAppPr (DConPr equalityName)
                                 -- NB: Need the res_ki here to prevent ambiguous
@@ -341,7 +342,24 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
       return $ DForallT tvbs (default_pred : cxt) (ravel args res)
       where
         (tvbs, cxt, args, res) = unravel sty
-        tvs                    = map tvbToType tvbs
+        bound_kv_set = Set.fromList bound_kvs
+        -- Filter out explicitly bound kind variables. Otherwise, if you had
+        -- the following class (#312):
+        --
+        --  class Foo a where
+        --    bar :: a -> b -> b
+        --    bar _ x = x
+        --
+        -- Then it would be singled to:
+        --
+        --  class SFoo a where
+        --    sBar :: forall b (x :: a) (y :: b). Sing x -> Sing y -> Sing (sBar x y)
+        --    default :: forall b (x :: a) (y :: b).
+        --               (Bar b x y) ~ (BarDefault b x y) => ...
+        --
+        -- Which applies Bar/BarDefault to b, which shouldn't happen.
+        tvs = map tvbToType $
+              filter (\tvb -> extractTvbName tvb `Set.member` bound_kv_set) tvbs
 
 
 singInstD :: AInstDecl -> SgM DDec

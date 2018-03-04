@@ -88,6 +88,7 @@ tests =
     , compileAndDumpStdTest "T287"
     , compileAndDumpStdTest "TypeRepTYPE"
     , compileAndDumpStdTest "T297"
+    , compileAndDumpStdTest "T312"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"
