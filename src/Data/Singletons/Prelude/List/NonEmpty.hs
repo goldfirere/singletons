@@ -1,5 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeInType, TypeOperators,
-             TypeFamilies, GADTs, UndecidableInstances #-}
+             TypeFamilies, GADTs, UndecidableInstances, InstanceSigs #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -145,6 +146,7 @@ module Data.Singletons.Prelude.List.NonEmpty (
   XorSym0, XorSym1
   ) where
 
+import Control.Monad.Zip
 import Data.List.NonEmpty
 import Data.Singletons.Prelude.List.NonEmpty.Internal
 import Data.Singletons.Prelude.Instances
@@ -153,6 +155,7 @@ import Data.Singletons.Prelude.Maybe
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Eq
+import Data.Singletons.Prelude.Monad.Zip
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Function
 import Data.Function
@@ -172,13 +175,12 @@ $(singletonsOnly [d|
   instance MonadFix NonEmpty where
     mfix f = case fix (f . head) of
                ~(x :| _) -> x :| mfix (tail . f)
+  -}
 
-  -- | @since 4.9.0.0
   instance MonadZip NonEmpty where
     mzip     = zip
     mzipWith = zipWith
     munzip   = unzip
-  -}
 
   -- needed to implement other functions
   fmap :: (a -> b) -> NonEmpty a -> NonEmpty b

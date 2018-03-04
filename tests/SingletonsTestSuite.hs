@@ -71,6 +71,7 @@ tests =
     , compileAndDumpStdTest "T176"
     , compileAndDumpStdTest "T178"
     , compileAndDumpStdTest "T183"
+    , compileAndDumpStdTest "T184"
     , compileAndDumpStdTest "T187"
     , compileAndDumpStdTest "T190"
     , compileAndDumpStdTest "ShowDeriving"

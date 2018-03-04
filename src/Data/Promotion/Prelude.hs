@@ -49,6 +49,13 @@ module Data.Promotion.Prelude (
   -- * Promoted 'Semigroup' and 'Monoid'
   PSemigroup(type (<>)), PMonoid(..),
 
+  -- * Promoted 'Functor', 'Applicative', and 'Monad'
+  PFunctor(Fmap, type (<$)),
+  PApplicative(Pure, type (<*>), type (*>), type (<*)),
+  PMonad(type (>>=), type (>>), Return, Fail),
+  -- MapM_,
+  type (=<<),
+
   -- ** Miscellaneous functions
   Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Until, Seq,
 
@@ -131,6 +138,18 @@ module Data.Promotion.Prelude (
   MappendSym0, MappendSym1, MappendSym2,
   MconcatSym0, MconcatSym1,
 
+  FmapSym0, FmapSym1, FmapSym2,
+  type (<$@#@$),  type (<$@#@$$),  type (<$@#@$$$),
+  type (<$>@#@$), type (<$>@#@$$), type (<$>@#@$$$),
+  PureSym0, PureSym1,
+  type (<*>@#@$), type (<*>@#@$$), type (<*>@#@$$$),
+  type (*>@#@$),  type (*>@#@$$),  type (*>@#@$$$),
+  type (<*@#@$),  type (<*@#@$$),  type (<*@#@$$$),
+  type (>>=@#@$), type (>>=@#@$$), type (>>=@#@$$$),
+  type (>>@#@$),  type (>>@#@$$),  type (>>@#@$$$),
+  ReturnSym0, ReturnSym1, FailSym0, FailSym1,
+  type (=<<@#@$), type (=<<@#@$$), type (=<<@#@$$$),
+
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   type (.@#@$), type (.@#@$$), type (.@#@$$$),
   type ($@#@$),  type ($@#@$$),  type ($@#@$$$),
@@ -189,11 +208,14 @@ module Data.Promotion.Prelude (
   type (!!@#@$), type (!!@#@$$), type (!!@#@$$$),
   ) where
 
+import Data.Promotion.Prelude.Applicative
 import Data.Promotion.Prelude.Base
 import Data.Promotion.Prelude.Bool
 import Data.Promotion.Prelude.Either
+import Data.Promotion.Prelude.Functor
 import Data.Promotion.Prelude.List
 import Data.Promotion.Prelude.Maybe
+import Data.Promotion.Prelude.Monad
 import Data.Promotion.Prelude.Tuple
 import Data.Promotion.Prelude.Eq
 import Data.Promotion.Prelude.Ord

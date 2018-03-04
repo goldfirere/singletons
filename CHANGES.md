@@ -54,6 +54,10 @@ Changelog for singletons project
   `(%<>)`, as they are superseded by the corresponding methods from
   `PSemigroup` and `SSemigroup`.
 
+* Add promoted and singled versions of the `Functor`, `Applicative`,
+  `Alternative`, `Monad`, `MonadPlus`, and `MonadZip`. This grants the ability
+  to promote or single `do`-notation and list comprehensions.
+
 * Promote and single the `Down` newtype in `Data.Singletons.Prelude.Ord`.
 
 * To match the `base` library, the promoted/singled versions of `comparing`

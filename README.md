@@ -561,7 +561,8 @@ The following constructs are fully supported:
 * infix expressions and types
 * `_` patterns
 * aliased patterns
-* lists
+* lists (including list comprehensions)
+* `do`-notation
 * sections
 * undefined
 * error
@@ -618,18 +619,11 @@ overlaps with `pred x` guard.
 
 The following constructs are not supported:
 
-* list comprehensions
-* do
 * arithmetic sequences
 * datatypes that store arrows, `Nat`, or `Symbol`
 * literals (limited support)
 
-Why are these out of reach? The first two depend on monads, which mention a
-higher-kinded type variable. GHC did not support higher-sorted kind variables,
-which are be necessary to promote/singletonize monads, and `singletons` has
-not be rewritten to accommodate this new ability. [This bug
-report](https://github.com/goldfirere/singletons/issues/184) is a feature request
-looking for support for these constructs.
+Why are these out of reach?
 
 Arithmetic sequences are defined using `Enum` typeclass, which uses infinite
 lists.

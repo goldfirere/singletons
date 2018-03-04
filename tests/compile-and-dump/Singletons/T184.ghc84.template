@@ -1,0 +1,496 @@
+Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| boogie :: Maybe a -> Maybe Bool -> Maybe a
+          boogie ma mb
+            = do a <- ma
+                 b <- mb
+                 guard b
+                 return a
+          zip' :: [a] -> [b] -> [(a, b)]
+          zip' xs ys = [(x, y) | x <- xs |  y <- ys]
+          cartProd :: [a] -> [b] -> [(a, b)]
+          cartProd xs ys = [(x, y) | x <- xs, y <- ys]
+          trues :: [Bool] -> [Bool]
+          trues xs = [x | x <- xs, x] |]
+  ======>
+    boogie :: Maybe a -> Maybe Bool -> Maybe a
+    boogie ma mb
+      = do a <- ma
+           b <- mb
+           guard b
+           return a
+    zip' :: [a] -> [b] -> [(a, b)]
+    zip' xs ys = [(x, y) | x <- xs |  y <- ys]
+    cartProd :: [a] -> [b] -> [(a, b)]
+    cartProd xs ys = [(x, y) | x <- xs, y <- ys]
+    trues :: [Bool] -> [Bool]
+    trues xs = [x | x <- xs, x]
+    type family Lambda_0123456789876543210 xs t where
+      Lambda_0123456789876543210 xs x = Apply (Apply (>>@#@$) (Apply GuardSym0 x)) (Apply ReturnSym0 x)
+    type Lambda_0123456789876543210Sym2 t t =
+        Lambda_0123456789876543210 t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+                                                       Lambda_0123456789876543210Sym1 l l
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym0KindInference :: forall l arg.
+                                                       SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 l
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type family Lambda_0123456789876543210 xs ys x t where
+      Lambda_0123456789876543210 xs ys x y = Apply ReturnSym0 (Apply (Apply Tuple2Sym0 x) y)
+    type Lambda_0123456789876543210Sym4 t t t t =
+        Lambda_0123456789876543210 t t t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym3 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym3KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym3 l l l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym3KindInference :: forall l l l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym3 l l l) arg) (Lambda_0123456789876543210Sym4 l l l arg) =>
+                                                       Lambda_0123456789876543210Sym3 l l l l
+    type instance Apply (Lambda_0123456789876543210Sym3 l l l) l = Lambda_0123456789876543210 l l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym2 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym2 l l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym2KindInference :: forall l l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym2 l l) arg) (Lambda_0123456789876543210Sym3 l l arg) =>
+                                                       Lambda_0123456789876543210Sym2 l l l
+    type instance Apply (Lambda_0123456789876543210Sym2 l l) l = Lambda_0123456789876543210Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+                                                       Lambda_0123456789876543210Sym1 l l
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym0KindInference :: forall l arg.
+                                                       SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 l
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type family Lambda_0123456789876543210 xs ys t where
+      Lambda_0123456789876543210 xs ys x = Apply (Apply (>>=@#@$) ys) (Apply (Apply (Apply Lambda_0123456789876543210Sym0 xs) ys) x)
+    type Lambda_0123456789876543210Sym3 t t t =
+        Lambda_0123456789876543210 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym2 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym2 l l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym2KindInference :: forall l l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym2 l l) arg) (Lambda_0123456789876543210Sym3 l l arg) =>
+                                                       Lambda_0123456789876543210Sym2 l l l
+    type instance Apply (Lambda_0123456789876543210Sym2 l l) l = Lambda_0123456789876543210 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+                                                       Lambda_0123456789876543210Sym1 l l
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym0KindInference :: forall l arg.
+                                                       SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 l
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type family Lambda_0123456789876543210 xs ys t where
+      Lambda_0123456789876543210 xs ys x = Apply ReturnSym0 x
+    type Lambda_0123456789876543210Sym3 t t t =
+        Lambda_0123456789876543210 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym2 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym2 l l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym2KindInference :: forall l l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym2 l l) arg) (Lambda_0123456789876543210Sym3 l l arg) =>
+                                                       Lambda_0123456789876543210Sym2 l l l
+    type instance Apply (Lambda_0123456789876543210Sym2 l l) l = Lambda_0123456789876543210 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+                                                       Lambda_0123456789876543210Sym1 l l
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym0KindInference :: forall l arg.
+                                                       SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 l
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type family Lambda_0123456789876543210 xs ys t where
+      Lambda_0123456789876543210 xs ys y = Apply ReturnSym0 y
+    type Lambda_0123456789876543210Sym3 t t t =
+        Lambda_0123456789876543210 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym2 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym2 l l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym2KindInference :: forall l l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym2 l l) arg) (Lambda_0123456789876543210Sym3 l l arg) =>
+                                                       Lambda_0123456789876543210Sym2 l l l
+    type instance Apply (Lambda_0123456789876543210Sym2 l l) l = Lambda_0123456789876543210 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+                                                       Lambda_0123456789876543210Sym1 l l
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym0KindInference :: forall l arg.
+                                                       SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 l
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type family Case_0123456789876543210 xs ys arg_0123456789876543210 t where
+      Case_0123456789876543210 xs ys arg_0123456789876543210 (GHC.Tuple.(,) x y) = Apply ReturnSym0 (Apply (Apply Tuple2Sym0 x) y)
+    type family Lambda_0123456789876543210 xs ys t where
+      Lambda_0123456789876543210 xs ys arg_0123456789876543210 = Case_0123456789876543210 xs ys arg_0123456789876543210 arg_0123456789876543210
+    type Lambda_0123456789876543210Sym3 t t t =
+        Lambda_0123456789876543210 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym2 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym2 l l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym2KindInference :: forall l l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym2 l l) arg) (Lambda_0123456789876543210Sym3 l l arg) =>
+                                                       Lambda_0123456789876543210Sym2 l l l
+    type instance Apply (Lambda_0123456789876543210Sym2 l l) l = Lambda_0123456789876543210 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+                                                       Lambda_0123456789876543210Sym1 l l
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym0KindInference :: forall l arg.
+                                                       SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 l
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type family Lambda_0123456789876543210 ma mb a t where
+      Lambda_0123456789876543210 ma mb a b = Apply (Apply (>>@#@$) (Apply GuardSym0 b)) (Apply ReturnSym0 a)
+    type Lambda_0123456789876543210Sym4 t t t t =
+        Lambda_0123456789876543210 t t t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym3 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym3KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym3 l l l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym3KindInference :: forall l l l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym3 l l l) arg) (Lambda_0123456789876543210Sym4 l l l arg) =>
+                                                       Lambda_0123456789876543210Sym3 l l l l
+    type instance Apply (Lambda_0123456789876543210Sym3 l l l) l = Lambda_0123456789876543210 l l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym2 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym2 l l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym2KindInference :: forall l l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym2 l l) arg) (Lambda_0123456789876543210Sym3 l l arg) =>
+                                                       Lambda_0123456789876543210Sym2 l l l
+    type instance Apply (Lambda_0123456789876543210Sym2 l l) l = Lambda_0123456789876543210Sym3 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+                                                       Lambda_0123456789876543210Sym1 l l
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym0KindInference :: forall l arg.
+                                                       SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 l
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type family Lambda_0123456789876543210 ma mb t where
+      Lambda_0123456789876543210 ma mb a = Apply (Apply (>>=@#@$) mb) (Apply (Apply (Apply Lambda_0123456789876543210Sym0 ma) mb) a)
+    type Lambda_0123456789876543210Sym3 t t t =
+        Lambda_0123456789876543210 t t t
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym2 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym2KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym2 l l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym2KindInference :: forall l l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym2 l l) arg) (Lambda_0123456789876543210Sym3 l l arg) =>
+                                                       Lambda_0123456789876543210Sym2 l l l
+    type instance Apply (Lambda_0123456789876543210Sym2 l l) l = Lambda_0123456789876543210 l l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym1 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym1KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym1 l l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                       SameKind (Apply (Lambda_0123456789876543210Sym1 l) arg) (Lambda_0123456789876543210Sym2 l arg) =>
+                                                       Lambda_0123456789876543210Sym1 l l
+    type instance Apply (Lambda_0123456789876543210Sym1 l) l = Lambda_0123456789876543210Sym2 l l
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
+               GHC.Tuple.())
+    data Lambda_0123456789876543210Sym0 l :: GHC.Types.Type
+      where
+        Lambda_0123456789876543210Sym0KindInference :: forall l arg.
+                                                       SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 l
+    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
+    type TruesSym1 (t :: [Bool]) = Trues t
+    instance SuppressUnusedWarnings TruesSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) TruesSym0KindInference) GHC.Tuple.())
+    data TruesSym0 (l :: TyFun [Bool] [Bool]) :: GHC.Types.Type
+      where
+        TruesSym0KindInference :: forall l arg.
+                                  SameKind (Apply TruesSym0 arg) (TruesSym1 arg) => TruesSym0 l
+    type instance Apply TruesSym0 l = Trues l
+    type CartProdSym2 (t :: [a0123456789876543210]) (t :: [b0123456789876543210]) =
+        CartProd t t
+    instance SuppressUnusedWarnings CartProdSym1 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) CartProdSym1KindInference) GHC.Tuple.())
+    data CartProdSym1 (l :: [a0123456789876543210]) (l :: TyFun [b0123456789876543210] [(a0123456789876543210,
+                                                                                         b0123456789876543210)]) :: GHC.Types.Type
+      where
+        CartProdSym1KindInference :: forall l l arg.
+                                     SameKind (Apply (CartProdSym1 l) arg) (CartProdSym2 l arg) =>
+                                     CartProdSym1 l l
+    type instance Apply (CartProdSym1 l) l = CartProd l l
+    instance SuppressUnusedWarnings CartProdSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) CartProdSym0KindInference) GHC.Tuple.())
+    data CartProdSym0 (l :: TyFun [a0123456789876543210] ((~>) [b0123456789876543210] [(a0123456789876543210,
+                                                                                        b0123456789876543210)])) :: GHC.Types.Type
+      where
+        CartProdSym0KindInference :: forall l arg.
+                                     SameKind (Apply CartProdSym0 arg) (CartProdSym1 arg) =>
+                                     CartProdSym0 l
+    type instance Apply CartProdSym0 l = CartProdSym1 l
+    type Zip'Sym2 (t :: [a0123456789876543210]) (t :: [b0123456789876543210]) =
+        Zip' t t
+    instance SuppressUnusedWarnings Zip'Sym1 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Zip'Sym1KindInference) GHC.Tuple.())
+    data Zip'Sym1 (l :: [a0123456789876543210]) (l :: TyFun [b0123456789876543210] [(a0123456789876543210,
+                                                                                     b0123456789876543210)]) :: GHC.Types.Type
+      where
+        Zip'Sym1KindInference :: forall l l arg.
+                                 SameKind (Apply (Zip'Sym1 l) arg) (Zip'Sym2 l arg) => Zip'Sym1 l l
+    type instance Apply (Zip'Sym1 l) l = Zip' l l
+    instance SuppressUnusedWarnings Zip'Sym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) Zip'Sym0KindInference) GHC.Tuple.())
+    data Zip'Sym0 (l :: TyFun [a0123456789876543210] ((~>) [b0123456789876543210] [(a0123456789876543210,
+                                                                                    b0123456789876543210)])) :: GHC.Types.Type
+      where
+        Zip'Sym0KindInference :: forall l arg.
+                                 SameKind (Apply Zip'Sym0 arg) (Zip'Sym1 arg) => Zip'Sym0 l
+    type instance Apply Zip'Sym0 l = Zip'Sym1 l
+    type BoogieSym2 (t :: Maybe a0123456789876543210) (t :: Maybe Bool) =
+        Boogie t t
+    instance SuppressUnusedWarnings BoogieSym1 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) BoogieSym1KindInference) GHC.Tuple.())
+    data BoogieSym1 (l :: Maybe a0123456789876543210) (l :: TyFun (Maybe Bool) (Maybe a0123456789876543210)) :: GHC.Types.Type
+      where
+        BoogieSym1KindInference :: forall l l arg.
+                                   SameKind (Apply (BoogieSym1 l) arg) (BoogieSym2 l arg) =>
+                                   BoogieSym1 l l
+    type instance Apply (BoogieSym1 l) l = Boogie l l
+    instance SuppressUnusedWarnings BoogieSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) BoogieSym0KindInference) GHC.Tuple.())
+    data BoogieSym0 (l :: TyFun (Maybe a0123456789876543210) ((~>) (Maybe Bool) (Maybe a0123456789876543210))) :: GHC.Types.Type
+      where
+        BoogieSym0KindInference :: forall l arg.
+                                   SameKind (Apply BoogieSym0 arg) (BoogieSym1 arg) => BoogieSym0 l
+    type instance Apply BoogieSym0 l = BoogieSym1 l
+    type family Trues (a :: [Bool]) :: [Bool] where
+      Trues xs = Apply (Apply (>>=@#@$) xs) (Apply Lambda_0123456789876543210Sym0 xs)
+    type family CartProd (a :: [a]) (a :: [b]) :: [(a, b)] where
+      CartProd xs ys = Apply (Apply (>>=@#@$) xs) (Apply (Apply Lambda_0123456789876543210Sym0 xs) ys)
+    type family Zip' (a :: [a]) (a :: [b]) :: [(a, b)] where
+      Zip' xs ys = Apply (Apply (>>=@#@$) (Apply (Apply MzipSym0 (Apply (Apply (>>=@#@$) xs) (Apply (Apply Lambda_0123456789876543210Sym0 xs) ys))) (Apply (Apply (>>=@#@$) ys) (Apply (Apply Lambda_0123456789876543210Sym0 xs) ys)))) (Apply (Apply Lambda_0123456789876543210Sym0 xs) ys)
+    type family Boogie (a :: Maybe a) (a :: Maybe Bool) :: Maybe a where
+      Boogie ma mb = Apply (Apply (>>=@#@$) ma) (Apply (Apply Lambda_0123456789876543210Sym0 ma) mb)
+    sTrues ::
+      forall (t :: [Bool]). Sing t -> Sing (Apply TruesSym0 t :: [Bool])
+    sCartProd ::
+      forall a b (t :: [a]) (t :: [b]).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply CartProdSym0 t) t :: [(a, b)])
+    sZip' ::
+      forall a b (t :: [a]) (t :: [b]).
+      Sing t -> Sing t -> Sing (Apply (Apply Zip'Sym0 t) t :: [(a, b)])
+    sBoogie ::
+      forall a (t :: Maybe a) (t :: Maybe Bool).
+      Sing t -> Sing t -> Sing (Apply (Apply BoogieSym0 t) t :: Maybe a)
+    sTrues (sXs :: Sing xs)
+      = (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sXs))
+          ((singFun1 @(Apply Lambda_0123456789876543210Sym0 xs))
+             (\ sX
+                -> case sX of {
+                     _ :: Sing x
+                       -> (applySing
+                             ((applySing ((singFun2 @(>>@#@$)) (%>>)))
+                                ((applySing ((singFun1 @GuardSym0) sGuard)) sX)))
+                            ((applySing ((singFun1 @ReturnSym0) sReturn)) sX) }))
+    sCartProd (sXs :: Sing xs) (sYs :: Sing ys)
+      = (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sXs))
+          ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 xs) ys))
+             (\ sX
+                -> case sX of {
+                     _ :: Sing x
+                       -> (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sYs))
+                            ((singFun1
+                                @(Apply (Apply (Apply Lambda_0123456789876543210Sym0 xs) ys) x))
+                               (\ sY
+                                  -> case sY of {
+                                       _ :: Sing y
+                                         -> (applySing ((singFun1 @ReturnSym0) sReturn))
+                                              ((applySing
+                                                  ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX))
+                                                 sY) })) }))
+    sZip' (sXs :: Sing xs) (sYs :: Sing ys)
+      = (applySing
+           ((applySing ((singFun2 @(>>=@#@$)) (%>>=)))
+              ((applySing
+                  ((applySing ((singFun2 @MzipSym0) sMzip))
+                     ((applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sXs))
+                        ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 xs) ys))
+                           (\ sX
+                              -> case sX of {
+                                   _ :: Sing x
+                                     -> (applySing ((singFun1 @ReturnSym0) sReturn)) sX })))))
+                 ((applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sYs))
+                    ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 xs) ys))
+                       (\ sY
+                          -> case sY of {
+                               _ :: Sing y
+                                 -> (applySing ((singFun1 @ReturnSym0) sReturn)) sY }))))))
+          ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 xs) ys))
+             (\ sArg_0123456789876543210
+                -> case sArg_0123456789876543210 of {
+                     _ :: Sing arg_0123456789876543210
+                       -> case sArg_0123456789876543210 of {
+                            STuple2 (sX :: Sing x) (sY :: Sing y)
+                              -> (applySing ((singFun1 @ReturnSym0) sReturn))
+                                   ((applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX))
+                                      sY) } ::
+                            Sing (Case_0123456789876543210 xs ys arg_0123456789876543210 arg_0123456789876543210) }))
+    sBoogie (sMa :: Sing ma) (sMb :: Sing mb)
+      = (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sMa))
+          ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 ma) mb))
+             (\ sA
+                -> case sA of {
+                     _ :: Sing a
+                       -> (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sMb))
+                            ((singFun1
+                                @(Apply (Apply (Apply Lambda_0123456789876543210Sym0 ma) mb) a))
+                               (\ sB
+                                  -> case sB of {
+                                       _ :: Sing b
+                                         -> (applySing
+                                               ((applySing ((singFun2 @(>>@#@$)) (%>>)))
+                                                  ((applySing ((singFun1 @GuardSym0) sGuard)) sB)))
+                                              ((applySing ((singFun1 @ReturnSym0) sReturn))
+                                                 sA) })) }))
