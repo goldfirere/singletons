@@ -27,21 +27,16 @@ module Data.Singletons.Prelude.Monad (
   PFunctor(Fmap), SFunctor(sFmap),
   PMonad(..), SMonad(..), PMonadPlus(..), SMonadPlus(..),
 
-  {-
   MapM, sMapM, MapM_, sMapM_, ForM, sForM,
   Sequence, sSequence, Sequence_, sSequence_,
-  -}
   type (=<<), (%=<<), type (>=>), (%>=>), type (<=<), (%<=<),
-  -- Forever, sForever,
   Void, sVoid,
 
   Join, sJoin,
-  -- Msum, sMsum,
+  Msum, sMsum,
   Mfilter, sMfilter, FilterM, sFilterM,
-  {-
   MapAndUnzipM, sMapAndUnzipM, ZipWithM, sZipWithM,
   ZipWithM_, sZipWithM_, FoldlM, sFoldlM,
-  -}
   ReplicateM, sReplicateM, ReplicateM_, sReplicateM_,
 
   Guard, sGuard, When, sWhen, Unless, sUnless,
@@ -58,29 +53,24 @@ module Data.Singletons.Prelude.Monad (
   ReturnSym0, ReturnSym1, FailSym0, FailSym1,
   MzeroSym0, MplusSym0, MplusSym1, MplusSym2,
 
-  {-
   MapMSym0,  MapMSym1,  MapMSym2,
   MapM_Sym0, MapM_Sym1, MapM_Sym2,
   ForMSym0,  ForMSym1,  ForMSym2,
   SequenceSym0,  SequenceSym1,
   Sequence_Sym0, Sequence_Sym1,
-  -}
   type (=<<@#@$), type (=<<@#@$$), type (=<<@#@$$$),
   type (>=>@#@$), type (>=>@#@$$), type (>=>@#@$$$),
   type (<=<@#@$), type (<=<@#@$$), type (<=<@#@$$$),
-  -- ForeverSym0, ForeverSym1,
   VoidSym0, VoidSym1,
 
   JoinSym0, JoinSym1,
-  -- MsumSym0, MsumSym1,
+  MsumSym0, MsumSym1,
   MfilterSym0, MfilterSym1, MfilterSym2,
   FilterMSym0, FilterMSym1, FilterMSym2,
-  {-
   MapAndUnzipMSym0, MapAndUnzipMSym1, MapAndUnzipMSym2,
   ZipWithMSym0,  ZipWithMSym1,  ZipWithMSym2,  ZipWithMSym3,
   ZipWithM_Sym0, ZipWithM_Sym1, ZipWithM_Sym2, ZipWithM_Sym3,
   FoldlMSym0,    FoldlMSym1,    FoldlMSym2,    FoldlMSym3,
-  -}
   ReplicateMSym0,  ReplicateMSym1,  ReplicateMSym2,
   ReplicateM_Sym0, ReplicateM_Sym1, ReplicateM_Sym2,
 
@@ -102,13 +92,16 @@ import Control.Applicative
 import Control.Monad
 import Data.Ord (Down(..))
 import Data.Singletons.Prelude.Applicative ()
-import Data.Singletons.Prelude.Base
+import Data.Singletons.Prelude.Base hiding (Foldr, FoldrSym0, sFoldr)
+import Data.Singletons.Prelude.Foldable
 import Data.Singletons.Prelude.Functor
 import Data.Singletons.Prelude.Instances
+import Data.Singletons.Prelude.List (UnzipSym0, sUnzip, ZipWithSym0, sZipWith)
 import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Prelude.Monoid
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Ord
+import Data.Singletons.Prelude.Traversable
 import Data.Singletons.Single
 import GHC.TypeNats
 
@@ -155,7 +148,6 @@ $(singletonsOnly [d|
   -- -----------------------------------------------------------------------------
   -- Other monad functions
 
-  {-
   -- -| The 'mapAndUnzipM' function maps its first argument over a list, returning
   -- the result as a pair of lists. This function is mainly used with complicated
   -- data structures or a state-transforming monad.
@@ -197,7 +189,6 @@ $(singletonsOnly [d|
   -- -| Like 'foldM', but discards the result.
   foldM_         :: (Foldable t, Monad m) => (b -> a -> m b) -> b -> t a -> m ()
   foldM_ f a xs  = foldlM f a xs >> return ()
-  -}
 
   {-
   Note [Worker/wrapper transform on replicateM/replicateM_]

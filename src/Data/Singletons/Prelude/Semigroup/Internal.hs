@@ -246,8 +246,39 @@ type Min_ x y = Min x y
 type Max_ x y = Max x y
 $(genDefunSymbols [''Min_, ''Max_])
 
-sMin_ :: forall a (x :: a) (y :: a). SOrd a => Sing x -> Sing y -> Sing (x `Min` y)
+sMin_ :: forall a (x :: a) (y :: a). SOrd a => Sing x -> Sing y -> Sing (x `Min_` y)
 sMin_ = sMin
 
-sMax_ :: forall a (x :: a) (y :: a). SOrd a => Sing x -> Sing y -> Sing (x `Max` y)
+sMax_ :: forall a (x :: a) (y :: a). SOrd a => Sing x -> Sing y -> Sing (x `Max_` y)
 sMax_ = sMax
+
+-- We need these in Data.Singletons.Prelude.Foldable.
+all_ :: Bool -> All
+all_ = All
+
+any_ :: Bool -> Any
+any_ = Any
+
+sum_ :: a -> Sum a
+sum_ = Sum
+
+product_ :: a -> Product a
+product_ = Product
+
+type All_     a = 'All a
+type Any_     a = 'Any a
+type Sum_     a = 'Sum a
+type Product_ a = 'Product a
+$(genDefunSymbols [''All_, ''Any_, ''Sum_, ''Product_])
+
+sAll_ :: forall (x :: Bool). Sing x -> Sing (All_ x)
+sAll_ = SAll
+
+sAny_ :: forall (x :: Bool). Sing x -> Sing (Any_ x)
+sAny_ = SAny
+
+sSum_ :: forall a (x :: a). Sing x -> Sing (Sum_ x)
+sSum_ = SSum
+
+sProduct_ :: forall a (x :: a). Sing x -> Sing (Product_ x)
+sProduct_ = SProduct

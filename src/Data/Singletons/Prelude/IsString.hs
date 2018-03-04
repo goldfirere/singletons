@@ -1,7 +1,10 @@
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeInType #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -23,6 +26,10 @@ module Data.Singletons.Prelude.IsString (
   FromStringSym0, FromStringSym1
   ) where
 
+import Data.Functor.Const
+import Data.Functor.Identity
+import Data.Singletons.Prelude.Const
+import Data.Singletons.Prelude.Identity
 import Data.Singletons.Single
 import Data.Singletons.TypeLits ()   -- for the IsString instance!
 import GHC.TypeLits (Symbol)
@@ -32,6 +39,14 @@ $(singletonsOnly [d|
   --    extension (-XOverloadedStrings in GHC).
   class IsString a where
       fromString :: Symbol -> a
+
+  -- deriving instance IsString a => IsString (Const a (b :: k))
+  instance IsString a => IsString (Const a (b :: k)) where
+    fromString x = Const (fromString x)
+
+  -- deriving instance IsString a => IsString (Identity a)
+  instance IsString a => IsString (Identity a) where
+    fromString x = Identity (fromString x)
   |])
 
 -- PIsString instance

@@ -66,6 +66,12 @@ import Data.Semigroup (First(..), Last(..), WrappedMonoid(..), Option(..), Arg(.
 import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
+import Data.Singletons.Prelude.Foldable hiding
+       ( All,     AllSym0,     AllSym1
+       , Any,     AnySym0,     AnySym1
+       , Product, ProductSym0, ProductSym1
+       , Sum,     SumSym0,     SumSym1 )
+import Data.Singletons.Prelude.Functor
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Maybe
 import Data.Singletons.Prelude.Monad.Internal
@@ -79,6 +85,7 @@ import Data.Singletons.Prelude.Ord hiding
        (MinSym0, MinSym1, MaxSym0, MaxSym1)
 import Data.Singletons.Prelude.Semigroup.Internal
 import Data.Singletons.Prelude.Show
+import Data.Singletons.Prelude.Traversable
 import Data.Singletons.Single
 import Data.Singletons.Util
 
@@ -125,6 +132,14 @@ $(singletonsOnly [d|
     signum (Semi.Min a) = Semi.Min (signum a)
     fromInteger         = Semi.Min . fromInteger
 
+  -- deriving instance Foldable Semi.Min
+  instance Foldable Semi.Min where
+    foldMap f (Semi.Min a) = f a
+
+  -- deriving instance Traversable Semi.Min
+  instance Traversable Semi.Min where
+    traverse f (Semi.Min a) = Semi.Min <$> f a
+
   instance Applicative Semi.Max where
     pure = Semi.Max
     a <* _ = a
@@ -163,6 +178,14 @@ $(singletonsOnly [d|
     signum (Semi.Max a) = Semi.Max (signum a)
     fromInteger         = Semi.Max . fromInteger
 
+  -- deriving instance Foldable Semi.Max
+  instance Foldable Semi.Max where
+    foldMap f (Semi.Max a) = f a
+
+  -- deriving instance Traversable Semi.Max
+  instance Traversable Semi.Max where
+    traverse f (Semi.Max a) = Semi.Max <$> f a
+
   instance Eq a => Eq (Arg a b) where
     Arg a _ == Arg b _ = a == b
 
@@ -180,6 +203,14 @@ $(singletonsOnly [d|
       | otherwise = y
 
   deriving instance (Show a, Show b) => Show (Arg a b)
+
+  -- deriving instance Foldable (Arg a)
+  instance Foldable (Arg a) where
+    foldMap f (Arg _ a) = f a
+
+  -- deriving instance Traversable (Arg a)
+  instance Traversable (Arg a) where
+    traverse f (Arg x a) = Arg x <$> f a
 
   instance Applicative First where
     pure x = First x
@@ -207,6 +238,14 @@ $(singletonsOnly [d|
   instance Semigroup (First a) where
     a <> _ = a
 
+  -- deriving instance Foldable First
+  instance Foldable First where
+    foldMap f (First a) = f a
+
+  -- deriving instance Traversable First
+  instance Traversable First where
+    traverse f (First a) = First <$> f a
+
   instance Applicative Last where
     pure x = Last x
     a <* _ = a
@@ -233,6 +272,14 @@ $(singletonsOnly [d|
 
   instance Semigroup (Last a) where
     _ <> b = b
+
+  -- deriving instance Foldable Last
+  instance Foldable Last where
+    foldMap f (Last a) = f a
+
+  -- deriving instance Traversable Last
+  instance Traversable Last where
+    traverse f (Last a) = Last <$> f a
 
   instance Monoid m => Semigroup (WrappedMonoid m) where
     WrapMonoid a <> WrapMonoid b = WrapMonoid (a `mappend` b)
@@ -279,6 +326,14 @@ $(singletonsOnly [d|
 
   instance Semigroup a => Monoid (Option a) where
     mempty = Option Nothing
+
+  instance Foldable Option where
+    foldMap f (Option (Just m)) = f m
+    foldMap _ (Option Nothing)  = mempty
+
+  instance Traversable Option where
+    traverse f (Option (Just a)) = Option . Just <$> f a
+    traverse _ (Option Nothing)  = pure (Option Nothing)
   |])
 
 $(singletons [d|

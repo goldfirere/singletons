@@ -72,9 +72,17 @@ Changelog for singletons project
   `(%<>)`, as they are superseded by the corresponding methods from
   `PSemigroup` and `SSemigroup`.
 
-* Add promoted and singled versions of the `Functor`, `Applicative`,
-  `Alternative`, `Monad`, `MonadPlus`, and `MonadZip`. This grants the ability
-  to promote or single `do`-notation and list comprehensions.
+* Add promoted and singled versions of the `Functor`, `Foldable`,
+  `Traversable`, `Applicative`, `Alternative`, `Monad`, `MonadPlus`, and
+  `MonadZip` classes. Among other things, this grants the ability to promote
+  or single `do`-notation and list comprehensions.
+  * `Data.{Promotion,Singletons}.Prelude.List` now reexports more general
+    `Foldable`/`Traversable` functions wherever possible, just as `Data.List`
+    does.
+
+* Add `Data.{Promotion,Singletons}.Prelude.{Const,Identity}`, which define
+  promoted and singled version of the `Const` and `Identity` data types,
+  respectively.
 
 * Promote and single the `Down` newtype in `Data.Singletons.Prelude.Ord`.
 

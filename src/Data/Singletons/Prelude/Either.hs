@@ -52,8 +52,8 @@ module Data.Singletons.Prelude.Either (
   ) where
 
 import Data.Singletons.Prelude.Instances
-import Data.Singletons.TH
 import Data.Singletons.Prelude.Base
+import Data.Singletons.Single
 
 -- NB: The haddock comments are disabled because TH can't deal with them.
 

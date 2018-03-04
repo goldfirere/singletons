@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Prelude.List.NonEmpty.Internal
+-- Module      :  Data.Singletons.Prelude.List.Internal.Disambiguation
 -- Copyright   :  (C) 2016 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -16,10 +16,13 @@
              UndecidableInstances, GADTs #-}
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
 
-module Data.Singletons.Prelude.List.NonEmpty.Internal where
+module Data.Singletons.Prelude.List.Internal.Disambiguation where
 
 import Data.Singletons.Single
-import Data.Singletons.Prelude.List
+import Data.Singletons.Prelude.Base
+import Data.Singletons.Prelude.Instances
+import Data.Singletons.Prelude.List.Internal
+import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Eq
 import Data.List
@@ -98,6 +101,39 @@ $(singletons [d|
 
   listmap :: (a -> b) -> [a] -> [b]
   listmap = map
+
+  listelem :: Eq a => a -> [a] -> Bool
+  listelem = elem
+
+  listfoldl :: (b -> a -> b) -> b -> [a] -> b
+  listfoldl = foldl
+
+  listfoldl' :: (b -> a -> b) -> b -> [a] -> b
+  listfoldl' = foldl'
+
+  listfoldl1 :: (a -> a -> a) -> [a] -> a
+  listfoldl1 = foldl1
+
+  listfoldr :: (a -> b -> b) -> b -> [a] -> b
+  listfoldr = foldr
+
+  listfoldr1 :: (a -> a -> a) -> [a] -> a
+  listfoldr1 = foldr1
+
+  listmaximum :: Ord a => [a] -> a
+  listmaximum = maximum
+
+  listminimum :: Ord a => [a] -> a
+  listminimum = minimum
+
+  listnull :: [a] -> Bool
+  listnull = null
+
+  listproduct :: Num a => [a] -> a
+  listproduct = product
+
+  listsum :: Num a => [a] -> a
+  listsum = sum
   |])
 
 $(singletonsOnly [d|

@@ -32,8 +32,10 @@ module Data.Singletons.Prelude.Monad.Zip (
   ) where
 
 import Control.Monad.Zip
+import Data.Functor.Identity
 import Data.Kind
 import Data.Monoid
+import Data.Singletons.Prelude.Identity
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.List
        ( ZipSym0, ZipWithSym0, UnzipSym0
@@ -77,6 +79,10 @@ $(singletonsOnly [d|
       mzip     = zip
       mzipWith = zipWith
       munzip   = unzip
+
+  instance MonadZip Identity where
+      mzipWith = liftM2
+      munzip (Identity (a, b)) = (Identity a, Identity b)
 
   instance MonadZip Dual where
       -- Cannot use coerce, it's unsafe

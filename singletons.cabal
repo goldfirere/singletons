@@ -77,12 +77,15 @@ library
                       Data.Singletons.Prelude.Applicative
                       Data.Singletons.Prelude.Base
                       Data.Singletons.Prelude.Bool
+                      Data.Singletons.Prelude.Const
                       Data.Singletons.Prelude.Either
                       Data.Singletons.Prelude.Enum
                       Data.Singletons.Prelude.Eq
+                      Data.Singletons.Prelude.Foldable
                       Data.Singletons.Prelude.Function
                       Data.Singletons.Prelude.Functor
                       Data.Singletons.Prelude.IsString
+                      Data.Singletons.Prelude.Identity
                       Data.Singletons.Prelude.Ord
                       Data.Singletons.Prelude.List
                       Data.Singletons.Prelude.List.NonEmpty
@@ -93,6 +96,7 @@ library
                       Data.Singletons.Prelude.Num
                       Data.Singletons.Prelude.Semigroup
                       Data.Singletons.Prelude.Show
+                      Data.Singletons.Prelude.Traversable
                       Data.Singletons.Prelude.Tuple
                       Data.Singletons.Prelude.Void
                       Data.Promotion.Prelude
@@ -100,10 +104,13 @@ library
                       Data.Promotion.Prelude.Applicative
                       Data.Promotion.Prelude.Base
                       Data.Promotion.Prelude.Bool
+                      Data.Promotion.Prelude.Const
                       Data.Promotion.Prelude.Either
                       Data.Promotion.Prelude.Eq
+                      Data.Promotion.Prelude.Foldable
                       Data.Promotion.Prelude.Function
                       Data.Promotion.Prelude.Functor
+                      Data.Promotion.Prelude.Identity
                       Data.Promotion.Prelude.IsString
                       Data.Promotion.Prelude.Ord
                       Data.Promotion.Prelude.Enum
@@ -116,6 +123,7 @@ library
                       Data.Promotion.Prelude.Num
                       Data.Promotion.Prelude.Semigroup
                       Data.Promotion.Prelude.Show
+                      Data.Promotion.Prelude.Traversable
                       Data.Promotion.Prelude.Tuple
                       Data.Promotion.Prelude.Void
                       Data.Singletons.TypeError
@@ -132,7 +140,8 @@ library
                       Data.Singletons.Deriving.Show
                       Data.Singletons.Deriving.Util
                       Data.Singletons.Internal
-                      Data.Singletons.Prelude.List.NonEmpty.Internal
+                      Data.Singletons.Prelude.List.Internal
+                      Data.Singletons.Prelude.List.Internal.Disambiguation
                       Data.Singletons.Prelude.Monad.Internal
                       Data.Singletons.Prelude.Semigroup.Internal
                       Data.Singletons.Promote
