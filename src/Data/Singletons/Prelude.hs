@@ -61,7 +61,7 @@ module Data.Singletons.Prelude (
   Shows, sShows, ShowChar, sShowChar, ShowString, sShowString, ShowParen, sShowParen,
 
   -- * Singleton 'Semigroup' and 'Monoid'
-  PSemigroup(..), SSemigroup(..),
+  PSemigroup(type (<>)), SSemigroup((%<>)),
   PMonoid(..), SMonoid(..),
 
   -- ** Miscellaneous functions
@@ -150,7 +150,6 @@ module Data.Singletons.Prelude (
   ShowParenSym0, ShowParenSym1, ShowParenSym2,
 
   type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
-  SconcatSym0, SconcatSym1,
   MemptySym0,
   MappendSym0, MappendSym1, MappendSym2,
   MconcatSym0, MconcatSym1,

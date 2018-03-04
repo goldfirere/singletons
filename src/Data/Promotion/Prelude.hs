@@ -47,7 +47,7 @@ module Data.Promotion.Prelude (
   PShow(..), ShowS, SChar, show_, Shows, ShowChar, ShowString, ShowParen,
 
   -- * Promoted 'Semigroup' and 'Monoid'
-  PSemigroup(..), PMonoid(..),
+  PSemigroup(type (<>)), PMonoid(..),
 
   -- ** Miscellaneous functions
   Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Until, Seq,
@@ -125,7 +125,6 @@ module Data.Promotion.Prelude (
   ShowParenSym0, ShowParenSym1, ShowParenSym2,
 
   type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
-  SconcatSym0, SconcatSym1,
   MemptySym0,
   MappendSym0, MappendSym1, MappendSym2,
   MconcatSym0, MconcatSym1,
