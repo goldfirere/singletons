@@ -202,7 +202,6 @@ import Data.Promotion.Prelude.Monoid
        , MappendSym1, MappendSym2, MconcatSym0, MconcatSym1)
 import Data.Promotion.Prelude.Num
 import Data.Promotion.Prelude.Semigroup
-       ( PSemigroup(..), type (<>@#@$), type (<>@#@$$), type (<>@#@$$$)
-       , SconcatSym0, SconcatSym1)
+       ( PSemigroup(..), type (<>@#@$), type (<>@#@$$), type (<>@#@$$$) )
 import Data.Promotion.Prelude.Show
 import Data.Singletons.TypeLits

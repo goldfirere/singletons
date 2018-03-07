@@ -222,7 +222,6 @@ import Data.Singletons.Prelude.Monoid
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Semigroup
        ( PSemigroup(..), SSemigroup(..)
-       , type (<>@#@$), type (<>@#@$$), type (<>@#@$$$)
-       , SconcatSym0, SconcatSym1)
+       , type (<>@#@$), type (<>@#@$$), type (<>@#@$$$) )
 import Data.Singletons.Prelude.Show
 import Data.Singletons.TypeLits
