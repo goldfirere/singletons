@@ -21,6 +21,7 @@ module Data.Singletons.TypeLits (
   Sing(SNat, SSym),
   SNat, SSymbol, withKnownNat, withKnownSymbol,
   Error, sError,
+  ErrorWithoutStackTrace, sErrorWithoutStackTrace,
   Undefined, sUndefined,
   KnownNat, natVal,
   KnownSymbol, symbolVal,
@@ -33,7 +34,9 @@ module Data.Singletons.TypeLits (
   Quot, sQuot, Rem, sRem, QuotRem, sQuotRem,
 
   -- * Defunctionalization symbols
-  ErrorSym0, ErrorSym1, UndefinedSym0,
+  ErrorSym0, ErrorSym1,
+  ErrorWithoutStackTraceSym0, ErrorWithoutStackTraceSym1,
+  UndefinedSym0,
   KnownNatSym0, KnownNatSym1,
   KnownSymbolSym0, KnownSymbolSym1,
   type (^@#@$), type (^@#@$$), type (^@#@$$$),

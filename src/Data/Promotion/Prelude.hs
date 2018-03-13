@@ -24,7 +24,7 @@ module Data.Promotion.Prelude (
   Fst, Snd, Curry, Uncurry,
 
   -- * Error reporting
-  Error, Undefined,
+  Error, ErrorWithoutStackTrace, Undefined,
 
   -- * Promoted equality
   module Data.Promotion.Prelude.Eq,
@@ -103,7 +103,9 @@ module Data.Promotion.Prelude (
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
 
-  ErrorSym0, ErrorSym1, UndefinedSym0,
+  ErrorSym0, ErrorSym1,
+  ErrorWithoutStackTraceSym0, ErrorWithoutStackTraceSym1,
+  UndefinedSym0,
 
   LTSym0, EQSym0, GTSym0,
   CompareSym0, CompareSym1, CompareSym2,

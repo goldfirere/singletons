@@ -37,6 +37,7 @@ module Data.Singletons.Prelude (
 
   -- * Error reporting
   Error, sError,
+  ErrorWithoutStackTrace, sErrorWithoutStackTrace,
   Undefined, sUndefined,
 
   -- * Singleton equality
@@ -128,7 +129,9 @@ module Data.Singletons.Prelude (
   CurrySym0, CurrySym1, CurrySym2, CurrySym3,
   UncurrySym0, UncurrySym1, UncurrySym2,
 
-  ErrorSym0, ErrorSym1, UndefinedSym0,
+  ErrorSym0, ErrorSym1,
+  ErrorWithoutStackTraceSym0, ErrorWithoutStackTraceSym1,
+  UndefinedSym0,
 
   LTSym0, EQSym0, GTSym0,
   CompareSym0, CompareSym1, CompareSym2,
