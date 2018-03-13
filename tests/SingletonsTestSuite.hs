@@ -63,6 +63,7 @@ tests =
     , compileAndDumpStdTest "T145"
     , compileAndDumpStdTest "PolyKinds"
     , compileAndDumpStdTest "PolyKindsApp"
+    , compileAndDumpStdTest "T160"
     , compileAndDumpStdTest "T163"
     , compileAndDumpStdTest "T166"
     , compileAndDumpStdTest "T172"

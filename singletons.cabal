@@ -55,6 +55,7 @@ library
                       template-haskell,
                       containers >= 0.5,
                       th-desugar >= 1.9 && < 1.10,
+                      pretty,
                       syb >= 0.4,
                       text >= 1.2,
                       transformers >= 0.5.2
@@ -104,6 +105,7 @@ library
                       Data.Promotion.Prelude.Show
                       Data.Promotion.Prelude.Tuple
                       Data.Promotion.Prelude.Void
+                      Data.Singletons.TypeError
                       Data.Singletons.TypeLits
                       Data.Singletons.Decide
                       Data.Singletons.ShowSing
