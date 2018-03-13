@@ -35,6 +35,11 @@ Changelog for singletons project
 
 * Permit singling of expression and pattern signatures.
 
+* `sError` and `sUndefined` now have `HasCallStack` constraints, like their
+  counterparts `error` and `undefined`. The promoted and singled counterparts
+  to `errorWithoutStackTrace` have also been added in case you do not want
+  this behavior.
+
 * Add `Data.Singletons.TypeError`, which provides a drop-in replacement for
   `GHC.TypeLits.TypeError` which can be used at both the value- and type-level.
 

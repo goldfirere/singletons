@@ -26,13 +26,16 @@ module Data.Singletons.TypeLits.Internal (
   Nat, Symbol,
   SNat, SSymbol, withKnownNat, withKnownSymbol,
   Error, sError,
+  ErrorWithoutStackTrace, sErrorWithoutStackTrace,
   Undefined, sUndefined,
   KnownNat, TN.natVal, KnownSymbol, symbolVal,
   type (^), (%^),
   type (<=?), (%<=?),
 
   -- * Defunctionalization symbols
-  ErrorSym0, ErrorSym1, UndefinedSym0,
+  ErrorSym0, ErrorSym1,
+  ErrorWithoutStackTraceSym0, ErrorWithoutStackTraceSym1,
+  UndefinedSym0,
   type (^@#@$),  type (^@#@$$),  type (^@#@$$$),
   type (<=?@#@$),  type (<=?@#@$$),  type (<=?@#@$$$)
   ) where
@@ -43,6 +46,7 @@ import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord as O
 import Data.Singletons.Decide
 import Data.Singletons.Prelude.Bool
+import GHC.Stack (HasCallStack)
 import GHC.TypeLits as TL
 import qualified GHC.TypeNats as TN
 import qualified Data.Type.Equality as DTE
@@ -158,15 +162,24 @@ type family Error (str :: k0) :: k where {}
 $(genDefunSymbols [''Error])
 
 -- | The singleton for 'error'
-sError :: Sing (str :: Symbol) -> a
+sError :: HasCallStack => Sing (str :: Symbol) -> a
 sError sstr = error (T.unpack (fromSing sstr))
+
+-- | The promotion of 'errorWithoutStackTrace'. This version is more
+-- poly-kinded for easier use.
+type family ErrorWithoutStackTrace (str :: k0) :: k where {}
+$(genDefunSymbols [''ErrorWithoutStackTrace])
+
+-- | The singleton for 'errorWithoutStackTrace'.
+sErrorWithoutStackTrace :: Sing (str :: Symbol) -> a
+sErrorWithoutStackTrace sstr = errorWithoutStackTrace (T.unpack (fromSing sstr))
 
 -- | The promotion of 'undefined'.
 type family Undefined :: k where {}
 $(genDefunSymbols [''Undefined])
 
 -- | The singleton for 'undefined'.
-sUndefined :: a
+sUndefined :: HasCallStack => a
 sUndefined = undefined
 
 -- | The singleton analogue of '(TN.^)' for 'Nat's.

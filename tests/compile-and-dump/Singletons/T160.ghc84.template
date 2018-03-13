@@ -45,11 +45,29 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
         in  case sScrutinee_0123456789876543210 of
               STrue -> sFromInteger (sing :: Sing 1)
               SFalse
-                -> (applySing
-                      ((applySing ((singFun2 @($@#@$)) (%$)))
-                         ((singFun1 @TypeErrorSym0) sTypeError)))
+                -> (applySing ((applySing ((singFun2 @($@#@$)) (%$))) sTypeError))
                      ((applySing ((singFun1 @ShowTypeSym0) SShowType)) sX) ::
               Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x) :: a)
+
+Singletons/T160.hs:0:0: error:
+    • t
+    • In the expression:
+        (applySing ((applySing ((singFun2 @($@#@$)) (%$))) sTypeError))
+          ((applySing ((singFun1 @ShowTypeSym0) SShowType)) sX)
+      In a case alternative:
+          SFalse
+            -> (applySing ((applySing ((singFun2 @($@#@$)) (%$))) sTypeError))
+                 ((applySing ((singFun1 @ShowTypeSym0) SShowType)) sX)
+      In the expression:
+          case sScrutinee_0123456789876543210 of
+            STrue -> sFromInteger (sing :: Sing 1)
+            SFalse
+              -> (applySing ((applySing ((singFun2 @($@#@$)) (%$))) sTypeError))
+                   ((applySing ((singFun1 @ShowTypeSym0) SShowType)) sX) ::
+            Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x) :: a)
+  |
+7 | $(singletons
+  |   ^^^^^^^^^^...
 
 Singletons/T160.hs:0:0: error:
     • 1

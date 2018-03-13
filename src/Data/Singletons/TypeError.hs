@@ -42,6 +42,7 @@ import Data.Kind
 import Data.Singletons.TH
 import qualified Data.Text as Text
 import qualified GHC.TypeLits as TL (ErrorMessage(..), TypeError)
+import GHC.Stack (HasCallStack)
 import GHC.TypeLits hiding (ErrorMessage(..), TypeError)
 import Prelude hiding ((<>))
 import Text.PrettyPrint (Doc, text, (<>), ($$))
@@ -128,7 +129,7 @@ showErrorMessage = show . go
 -- Note that this is not quite as expressive as 'TypeError', as it is unable
 -- to print the contents of 'ShowType' constructors (it will simply print
 -- @\"\<type\>\"@ in their place).
-typeError :: ErrorMessage -> a
+typeError :: HasCallStack => ErrorMessage -> a
 typeError = error . showErrorMessage
 
 -- | Convert a 'PErrorMessage' to a 'TL.ErrorMessage' from "GHC.TypeLits".
@@ -148,7 +149,7 @@ type family TypeError (a :: PErrorMessage) :: b where
 --
 -- Note that this is not quite as expressive as 'TypeError', as it is unable
 -- to handle 'ShowType' constructors at all.
-sTypeError :: Sing err -> Sing (TypeError err)
+sTypeError :: HasCallStack => Sing err -> Sing (TypeError err)
 sTypeError = typeError . fromSing
 
 $(genDefunSymbols [''ErrorMessage', ''TypeError])
