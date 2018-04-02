@@ -141,7 +141,8 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
                              con_name
                              (DNormalC False [])
                              (foldTypeTvbs (DConT data_name) params)
-          data_decl   = DDataD Data [] data_name params (DConT typeKindName) [con_decl] []
+          data_decl   = DDataD Data [] data_name params
+                               (Just (DConT typeKindName)) [con_decl] []
           app_eqn     = DTySynEqn [ foldType (DConT data_name)
                                              (map DVarT rest_names)
                                   , DVarT fst_name ]

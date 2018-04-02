@@ -87,7 +87,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                                                        Lambda_0123456789876543210Sym0 l
     type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
     type family Case_0123456789876543210 x y arg_0123456789876543210 t where
-      Case_0123456789876543210 x y arg_0123456789876543210 '(_, b) = b
+      Case_0123456789876543210 x y arg_0123456789876543210 (GHC.Tuple.(,) _ b) = b
     type family Lambda_0123456789876543210 x y t where
       Lambda_0123456789876543210 x y arg_0123456789876543210 = Case_0123456789876543210 x y arg_0123456789876543210 arg_0123456789876543210
     type Lambda_0123456789876543210Sym3 t t t =
@@ -250,8 +250,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                                                        Lambda_0123456789876543210Sym0 l
     type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
     type family Case_0123456789876543210 x y z arg_0123456789876543210 arg_0123456789876543210 t where
-      Case_0123456789876543210 x y z arg_0123456789876543210 arg_0123456789876543210 '(_,
-                                                                                       _) = x
+      Case_0123456789876543210 x y z arg_0123456789876543210 arg_0123456789876543210 (GHC.Tuple.(,) _ _) = x
     type family Lambda_0123456789876543210 x y z t t where
       Lambda_0123456789876543210 x y z arg_0123456789876543210 arg_0123456789876543210 = Case_0123456789876543210 x y z arg_0123456789876543210 arg_0123456789876543210 (Apply (Apply Tuple2Sym0 arg_0123456789876543210) arg_0123456789876543210)
     type Lambda_0123456789876543210Sym5 t t t t t =

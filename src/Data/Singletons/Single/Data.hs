@@ -66,7 +66,7 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
                 []
                 (singFamily `DSigT` kindedSingTy)
 
-  return $ (DDataInstD Data [] singFamilyName [] kindedSingTy ctors' []) :
+  return $ (DDataInstD Data [] singFamilyName [] (Just kindedSingTy) ctors' []) :
            kindedSynInst :
            singKindInst :
            ctorFixities

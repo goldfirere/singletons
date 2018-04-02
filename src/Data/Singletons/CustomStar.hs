@@ -75,7 +75,7 @@ singletonStar :: DsMonad q
 singletonStar names = do
   kinds <- mapM getKind names
   ctors <- zipWithM (mkCtor True) names kinds
-  let repDecl = DDataD Data [] repName [] (DConT typeKindName) ctors
+  let repDecl = DDataD Data [] repName [] (Just (DConT typeKindName)) ctors
                          [DDerivClause Nothing (map DConPr [''Eq, ''Ord, ''Read, ''Show])]
   fakeCtors <- zipWithM (mkCtor False) names kinds
   let dataDecl = DataDecl Data repName [] fakeCtors
@@ -110,9 +110,10 @@ singletonStar names = do
           case dinfo of
             DTyConI (DDataD _ (_:_) _ _ _ _ _) _ ->
                fail "Cannot make a representation of a constrained data type"
-            DTyConI (DDataD _ [] _ tvbs k _ _) _ ->
-               let (_, _, k_args, _) = unravel k in
-               return $ map (fromMaybe (DConT typeKindName) . extractTvbKind) tvbs ++ k_args
+            DTyConI (DDataD _ [] _ tvbs mk _ _) _ -> do
+               extra_tvbs <- mkExtraDKindBinders $ fromMaybe (DConT typeKindName) mk
+               return $ map (fromMaybe (DConT typeKindName) . extractTvbKind)
+                      $ tvbs ++ extra_tvbs
             DTyConI (DTySynD _ tvbs _) _ ->
                return $ map (fromMaybe (DConT typeKindName) . extractTvbKind) tvbs
             DPrimTyConI _ n _ ->

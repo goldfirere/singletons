@@ -59,8 +59,8 @@ partitionDec :: DsMonad m => DDec -> m PartitionedDecs
 partitionDec (DLetDec (DPragmaD {})) = return mempty
 partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
 
-partitionDec (DDataD nd _cxt name tvbs k cons derivings) = do
-  extra_tvbs <- mkExtraDKindBinders k
+partitionDec (DDataD nd _cxt name tvbs mk cons derivings) = do
+  extra_tvbs <- mkExtraDKindBinders $ fromMaybe (DConT typeKindName) mk
   let all_tvbs = tvbs ++ extra_tvbs
       data_dec = mempty { pd_data_decs = [DataDecl nd name all_tvbs cons []] }
       ty = foldTypeTvbs (DConT name) all_tvbs
@@ -235,9 +235,9 @@ isStockOrDefault Nothing              = True
 isStockOrDefault (Just StockStrategy) = True
 isStockOrDefault (Just _)             = False
 
-buildDataDType :: DsMonad q => Name -> [DTyVarBndr] -> DKind -> q DType
-buildDataDType n tvbs k = do
-  extra_tvbs <- mkExtraDKindBinders k
+buildDataDType :: DsMonad q => Name -> [DTyVarBndr] -> Maybe DKind -> q DType
+buildDataDType n tvbs mk = do
+  extra_tvbs <- mkExtraDKindBinders $ fromMaybe (DConT typeKindName) mk
   let all_tvbs = tvbs ++ extra_tvbs
   pure $ foldTypeTvbs (DConT n) all_tvbs
 

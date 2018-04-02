@@ -309,8 +309,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                                        Lambda_0123456789876543210Sym0 l
     type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210Sym1 l
     type family Case_0123456789876543210 x y t where
-      Case_0123456789876543210 x y '(a,
-                                     b) = Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) a) b) b
+      Case_0123456789876543210 x y (GHC.Tuple.(,) a b) = Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) a) b) b
     type family Case_0123456789876543210 x y arg_0123456789876543210 t where
       Case_0123456789876543210 x y arg_0123456789876543210 _ = x
     type family Lambda_0123456789876543210 x y t where
@@ -359,17 +358,11 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                  _,
                                  Succ y_0123456789876543210] = y_0123456789876543210
     type family Case_0123456789876543210 t where
-      Case_0123456789876543210 '(y_0123456789876543210,
-                                 _,
-                                 _) = y_0123456789876543210
+      Case_0123456789876543210 (GHC.Tuple.(,,) y_0123456789876543210 _ _) = y_0123456789876543210
     type family Case_0123456789876543210 t where
-      Case_0123456789876543210 '(_,
-                                 y_0123456789876543210,
-                                 _) = y_0123456789876543210
+      Case_0123456789876543210 (GHC.Tuple.(,,) _ y_0123456789876543210 _) = y_0123456789876543210
     type family Case_0123456789876543210 t where
-      Case_0123456789876543210 '(_,
-                                 _,
-                                 y_0123456789876543210) = y_0123456789876543210
+      Case_0123456789876543210 (GHC.Tuple.(,,) _ _ y_0123456789876543210) = y_0123456789876543210
     type family Case_0123456789876543210 t where
       Case_0123456789876543210 (Pair (Pair y_0123456789876543210 _) _) = y_0123456789876543210
     type family Case_0123456789876543210 t where
@@ -428,11 +421,9 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type family Silly (a :: a) :: () where
       Silly x = Case_0123456789876543210 x x
     type family Foo2 (a :: (a, b)) :: a where
-      Foo2 '(x,
-             y) = Case_0123456789876543210 x y (Let0123456789876543210TSym2 x y)
+      Foo2 (GHC.Tuple.(,) x y) = Case_0123456789876543210 x y (Let0123456789876543210TSym2 x y)
     type family Foo1 (a :: (a, b)) :: a where
-      Foo1 '(x,
-             y) = Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) y
+      Foo1 (GHC.Tuple.(,) x y) = Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) y
     type family Lsz :: Nat where
       Lsz = Case_0123456789876543210 X_0123456789876543210Sym0
     type family Blimy where
