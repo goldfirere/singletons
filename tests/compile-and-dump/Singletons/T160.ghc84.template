@@ -13,9 +13,12 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
             ((GHC.Tuple.(,)
                 Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Let0123456789876543210Scrutinee_0123456789876543210Sym0 l
-      = forall arg. SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
-        Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference
+    data Let0123456789876543210Scrutinee_0123456789876543210Sym0 l :: GHC.Types.Type
+      where
+        Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference :: forall l
+                                                                                       arg.
+                                                                                SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
+                                                                                Let0123456789876543210Scrutinee_0123456789876543210Sym0 l
     type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 l = Let0123456789876543210Scrutinee_0123456789876543210 l
     type family Let0123456789876543210Scrutinee_0123456789876543210 x where
       Let0123456789876543210Scrutinee_0123456789876543210 x = Apply (Apply (==@#@$) x) (FromInteger 0)
@@ -26,9 +29,10 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooSym0KindInference) GHC.Tuple.())
-    data FooSym0 (l :: TyFun a0123456789876543210 a0123456789876543210)
-      = forall arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
-        FooSym0KindInference
+    data FooSym0 (l :: TyFun a0123456789876543210 a0123456789876543210) :: GHC.Types.Type
+      where
+        FooSym0KindInference :: forall l arg.
+                                SameKind (Apply FooSym0 arg) (FooSym1 arg) => FooSym0 l
     type instance Apply FooSym0 l = Foo l
     type family Foo (a :: a) :: a where
       Foo x = Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
