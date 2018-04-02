@@ -13,9 +13,12 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
             ((GHC.Tuple.(,)
                 Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Let0123456789876543210Scrutinee_0123456789876543210Sym0 l
-      = forall arg. SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
-        Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference
+    data Let0123456789876543210Scrutinee_0123456789876543210Sym0 l :: GHC.Types.Type
+      where
+        Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference :: forall l
+                                                                                       arg.
+                                                                                SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
+                                                                                Let0123456789876543210Scrutinee_0123456789876543210Sym0 l
     type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 l = Let0123456789876543210Scrutinee_0123456789876543210 l
     type family Let0123456789876543210Scrutinee_0123456789876543210 e where
       Let0123456789876543210Scrutinee_0123456789876543210 e = Apply (Apply (:@#@$) NotSym0) '[]
@@ -25,9 +28,10 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings GSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) GSym0KindInference) GHC.Tuple.())
-    data GSym0 (l :: TyFun Bool Bool)
-      = forall arg. SameKind (Apply GSym0 arg) (GSym1 arg) =>
-        GSym0KindInference
+    data GSym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+      where
+        GSym0KindInference :: forall l arg.
+                              SameKind (Apply GSym0 arg) (GSym1 arg) => GSym0 l
     type instance Apply GSym0 l = G l
     type family G (a :: Bool) :: Bool where
       G e = Apply (Case_0123456789876543210 e (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e)) e

@@ -86,7 +86,7 @@ promoteOrdInstances = concatMapM promoteOrdInstance
 
 -- | Produce an instance for 'POrd' from the given type
 promoteOrdInstance :: DsMonad q => Name -> q [Dec]
-promoteOrdInstance = promoteInstance mkOrdInstance "Ord"
+promoteOrdInstance = promoteInstance (const mkOrdInstance) "Ord"
 
 -- | Produce instances for 'PBounded' from the given types
 promoteBoundedInstances :: DsMonad q => [Name] -> q [Dec]
@@ -94,7 +94,7 @@ promoteBoundedInstances = concatMapM promoteBoundedInstance
 
 -- | Produce an instance for 'PBounded' from the given type
 promoteBoundedInstance :: DsMonad q => Name -> q [Dec]
-promoteBoundedInstance = promoteInstance mkBoundedInstance "Bounded"
+promoteBoundedInstance = promoteInstance (const mkBoundedInstance) "Bounded"
 
 -- | Produce instances for 'PEnum' from the given types
 promoteEnumInstances :: DsMonad q => [Name] -> q [Dec]
@@ -110,26 +110,29 @@ promoteShowInstances = concatMapM promoteShowInstance
 
 -- | Produce an instance for 'PShow' from the given type
 promoteShowInstance :: DsMonad q => Name -> q [Dec]
-promoteShowInstance = promoteInstance (mkShowInstance ForPromotion) "Show"
+promoteShowInstance = promoteInstance (const $ mkShowInstance ForPromotion) "Show"
 
 -- | Produce an instance for @(==)@ (type-level equality) from the given type
 promoteEqInstance :: DsMonad q => Name -> q [Dec]
 promoteEqInstance name = do
   (tvbs, cons) <- getDataD "I cannot make an instance of (==) for it." name
-  cons' <- concatMapM dsCon cons
   tvbs' <- mapM dsTvb tvbs
-  kind <- promoteType (foldType (DConT name) (map tvbToType tvbs'))
+  let data_ty = foldTypeTvbs (DConT name) tvbs'
+  cons' <- concatMapM (dsCon tvbs' data_ty) cons
+  kind <- promoteType (foldTypeTvbs (DConT name) tvbs')
   inst_decs <- mkEqTypeInstance kind cons'
   return $ decsToTH inst_decs
 
-promoteInstance :: DsMonad q => (Maybe DCxt -> DType -> [DCon] -> q UInstDecl)
+promoteInstance :: DsMonad q => (Bool -> Maybe DCxt -> DType -> [DCon] -> q UInstDecl)
                 -> String -> Name -> q [Dec]
 promoteInstance mk_inst class_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
                             ++ " for it.") name
-  cons' <- concatMapM dsCon cons
   tvbs' <- mapM dsTvb tvbs
-  raw_inst <- mk_inst Nothing (foldType (DConT name) (map tvbToType tvbs')) cons'
+  let data_ty = foldTypeTvbs (DConT name) tvbs'
+  cons' <- concatMapM (dsCon tvbs' data_ty) cons
+  non_vanilla <- isNonVanillaDataType data_ty cons'
+  raw_inst <- mk_inst non_vanilla Nothing (foldTypeTvbs (DConT name) tvbs') cons'
   decs <- promoteM_ [] $ void $ promoteInstanceDec Map.empty raw_inst
   return $ decsToTH decs
 
@@ -207,8 +210,7 @@ promoteDataDecs data_decs = do
   where
     extract_rec_selectors :: DataDecl -> PrM [DLetDec]
     extract_rec_selectors (DataDecl _nd data_name tvbs cons _derivings) =
-      let arg_ty = foldType (DConT data_name)
-                            (map tvbToType tvbs)
+      let arg_ty = foldTypeTvbs (DConT data_name) tvbs
       in
       getRecordSelectors arg_ty cons
 
@@ -241,8 +243,8 @@ promoteLetDecs prefixes decls = do
 --
 --  * for each nullary data constructor we generate a type synonym
 promoteDataDec :: DataDecl -> PrM ()
-promoteDataDec (DataDecl _nd name tvbs ctors _derivings) = do
-  ctorSyms <- buildDefunSymsDataD name tvbs ctors
+promoteDataDec (DataDecl _nd _name _tvbs ctors _derivings) = do
+  ctorSyms <- buildDefunSymsDataD ctors
   emitDecs ctorSyms
 
 -- Note [CUSKification]

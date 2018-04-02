@@ -17,18 +17,22 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym1KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym1 (l :: Empty) (l :: TyFun Empty Ordering)
-      = forall arg. SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
-        Compare_0123456789876543210Sym1KindInference
+    data Compare_0123456789876543210Sym1 (l :: Empty) (l :: TyFun Empty Ordering) :: GHC.Types.Type
+      where
+        Compare_0123456789876543210Sym1KindInference :: forall l l arg.
+                                                        SameKind (Apply (Compare_0123456789876543210Sym1 l) arg) (Compare_0123456789876543210Sym2 l arg) =>
+                                                        Compare_0123456789876543210Sym1 l l
     type instance Apply (Compare_0123456789876543210Sym1 l) l = Compare_0123456789876543210 l l
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Compare_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Compare_0123456789876543210Sym0 (l :: TyFun Empty ((~>) Empty Ordering))
-      = forall arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
-        Compare_0123456789876543210Sym0KindInference
+    data Compare_0123456789876543210Sym0 (l :: TyFun Empty ((~>) Empty Ordering)) :: GHC.Types.Type
+      where
+        Compare_0123456789876543210Sym0KindInference :: forall l arg.
+                                                        SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
+                                                        Compare_0123456789876543210Sym0 l
     type instance Apply Compare_0123456789876543210Sym0 l = Compare_0123456789876543210Sym1 l
     instance POrd Empty where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
@@ -36,7 +40,8 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = TrueSym0
     instance PEq Empty where
       type (==) a b = Equals_0123456789876543210 a b
-    data instance Sing (z :: Empty)
+    data instance Sing :: Empty -> GHC.Types.Type :: Empty
+                                                     -> GHC.Types.Type
     type SEmpty = (Sing :: Empty -> GHC.Types.Type)
     instance SingKind Empty where
       type Demote Empty = Empty

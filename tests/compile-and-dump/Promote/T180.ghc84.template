@@ -12,9 +12,10 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ZSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ZSym0KindInference) GHC.Tuple.())
-    data ZSym0 l
-      = forall arg. SameKind (Apply ZSym0 arg) (ZSym1 arg) =>
-        ZSym0KindInference
+    data ZSym0 l :: GHC.Types.Type
+      where
+        ZSym0KindInference :: forall l arg.
+                              SameKind (Apply ZSym0 arg) (ZSym1 arg) => ZSym0 l
     type instance Apply ZSym0 l = Z l
     type family Z a where
       Z (X1 x) = x
@@ -23,9 +24,10 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings YSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) YSym0KindInference) GHC.Tuple.())
-    data YSym0 (l :: TyFun X Symbol)
-      = forall arg. SameKind (Apply YSym0 arg) (YSym1 arg) =>
-        YSym0KindInference
+    data YSym0 (l :: TyFun X Symbol) :: GHC.Types.Type
+      where
+        YSym0KindInference :: forall l arg.
+                              SameKind (Apply YSym0 arg) (YSym1 arg) => YSym0 l
     type instance Apply YSym0 l = Y l
     type family Y (a :: X) :: Symbol where
       Y (X1 field) = field
@@ -34,15 +36,17 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings X1Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) X1Sym0KindInference) GHC.Tuple.())
-    data X1Sym0 (l :: TyFun Symbol X)
-      = forall arg. SameKind (Apply X1Sym0 arg) (X1Sym1 arg) =>
-        X1Sym0KindInference
+    data X1Sym0 (l :: TyFun Symbol X) :: GHC.Types.Type
+      where
+        X1Sym0KindInference :: forall l arg.
+                               SameKind (Apply X1Sym0 arg) (X1Sym1 arg) => X1Sym0 l
     type instance Apply X1Sym0 l = X1 l
     type X2Sym1 (t :: Symbol) = X2 t
     instance SuppressUnusedWarnings X2Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) X2Sym0KindInference) GHC.Tuple.())
-    data X2Sym0 (l :: TyFun Symbol X)
-      = forall arg. SameKind (Apply X2Sym0 arg) (X2Sym1 arg) =>
-        X2Sym0KindInference
+    data X2Sym0 (l :: TyFun Symbol X) :: GHC.Types.Type
+      where
+        X2Sym0KindInference :: forall l arg.
+                               SameKind (Apply X2Sym0 arg) (X2Sym1 arg) => X2Sym0 l
     type instance Apply X2Sym0 l = X2 l

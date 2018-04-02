@@ -41,9 +41,10 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo3Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) Foo3Sym0KindInference) GHC.Tuple.())
-    data Foo3Sym0 (l :: TyFun a0123456789876543210 (Foo3 a0123456789876543210))
-      = forall arg. SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
-        Foo3Sym0KindInference
+    data Foo3Sym0 (l :: TyFun a0123456789876543210 (Foo3 a0123456789876543210)) :: Type
+      where
+        Foo3Sym0KindInference :: forall l arg.
+                                 SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) => Foo3Sym0 l
     type instance Apply Foo3Sym0 l = Foo3 l
     type Foo41Sym0 = Foo41
     type Foo42Sym0 = Foo42
@@ -51,16 +52,18 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings PairSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PairSym1KindInference) GHC.Tuple.())
-    data PairSym1 (l :: Bool) (l :: TyFun Bool Pair)
-      = forall arg. SameKind (Apply (PairSym1 l) arg) (PairSym2 l arg) =>
-        PairSym1KindInference
+    data PairSym1 (l :: Bool) (l :: TyFun Bool Pair) :: Type
+      where
+        PairSym1KindInference :: forall l l arg.
+                                 SameKind (Apply (PairSym1 l) arg) (PairSym2 l arg) => PairSym1 l l
     type instance Apply (PairSym1 l) l = Pair l l
     instance SuppressUnusedWarnings PairSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) PairSym0KindInference) GHC.Tuple.())
-    data PairSym0 (l :: TyFun Bool ((~>) Bool Pair))
-      = forall arg. SameKind (Apply PairSym0 arg) (PairSym1 arg) =>
-        PairSym0KindInference
+    data PairSym0 (l :: TyFun Bool ((~>) Bool Pair)) :: Type
+      where
+        PairSym0KindInference :: forall l arg.
+                                 SameKind (Apply PairSym0 arg) (PairSym1 arg) => PairSym0 l
     type instance Apply PairSym0 l = PairSym1 l
     type family MinBound_0123456789876543210 :: Foo1 where
       MinBound_0123456789876543210 = Foo1Sym0
@@ -117,13 +120,14 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance PBounded Pair where
       type MinBound = MinBound_0123456789876543210Sym0
       type MaxBound = MaxBound_0123456789876543210Sym0
-    data instance Sing (z :: Foo1) where SFoo1 :: Sing Foo1
+    data instance Sing :: Foo1 -> Type :: Foo1 -> Type
+      where SFoo1 :: Sing Foo1
     type SFoo1 = (Sing :: Foo1 -> Type)
     instance SingKind Foo1 where
       type Demote Foo1 = Foo1
       fromSing SFoo1 = Foo1
       toSing Foo1 = SomeSing SFoo1
-    data instance Sing (z :: Foo2)
+    data instance Sing :: Foo2 -> Type :: Foo2 -> Type
       where
         SA :: Sing A
         SB :: Sing B
@@ -143,7 +147,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing C = SomeSing SC
       toSing D = SomeSing SD
       toSing E = SomeSing SE
-    data instance Sing (z :: Foo3 a)
+    data instance Sing :: Foo3 a -> Type :: Foo3 a -> Type
       where SFoo3 :: forall a (n :: a). (Sing (n :: a)) -> Sing (Foo3 n)
     type SFoo3 = (Sing :: Foo3 a -> Type)
     instance SingKind a => SingKind (Foo3 a) where
@@ -152,7 +156,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Foo3 (b :: Demote a))
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SFoo3 c) }
-    data instance Sing (z :: Foo4 a b)
+    data instance Sing :: Foo4 a b -> Type :: Foo4 a b -> Type
       where
         SFoo41 :: Sing Foo41
         SFoo42 :: Sing Foo42
@@ -163,7 +167,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       fromSing SFoo42 = Foo42
       toSing Foo41 = SomeSing SFoo41
       toSing Foo42 = SomeSing SFoo42
-    data instance Sing (z :: Pair)
+    data instance Sing :: Pair -> Type :: Pair -> Type
       where
         SPair :: forall (n :: Bool) (n :: Bool).
                  (Sing (n :: Bool)) -> (Sing (n :: Bool)) -> Sing (Pair n n)

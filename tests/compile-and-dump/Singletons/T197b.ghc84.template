@@ -14,36 +14,43 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (:*:@#@$$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::*:@#@$$###)) GHC.Tuple.())
-    data (:*:@#@$$) (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 ((:*:) a0123456789876543210 b0123456789876543210))
-      = forall arg. SameKind (Apply ((:*:@#@$$) l) arg) ((:*:@#@$$$) l arg) =>
-        (::*:@#@$$###)
+    data (:*:@#@$$) (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 ((:*:) a0123456789876543210 b0123456789876543210)) :: GHC.Types.Type
+      where
+        (::*:@#@$$###) :: forall l l arg.
+                          SameKind (Apply ((:*:@#@$$) l) arg) ((:*:@#@$$$) l arg) =>
+                          (:*:@#@$$) l l
     type instance Apply ((:*:@#@$$) l) l = (:*:) l l
     instance SuppressUnusedWarnings (:*:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::*:@#@$###)) GHC.Tuple.())
-    data (:*:@#@$) (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 ((:*:) a0123456789876543210 b0123456789876543210)))
-      = forall arg. SameKind (Apply (:*:@#@$) arg) ((:*:@#@$$) arg) =>
-        (::*:@#@$###)
+    data (:*:@#@$) (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 ((:*:) a0123456789876543210 b0123456789876543210))) :: GHC.Types.Type
+      where
+        (::*:@#@$###) :: forall l arg.
+                         SameKind (Apply (:*:@#@$) arg) ((:*:@#@$$) arg) => (:*:@#@$) l
     type instance Apply (:*:@#@$) l = (:*:@#@$$) l
     type MkPairSym2 (t :: a0123456789876543210) (t :: b0123456789876543210) =
         MkPair t t
     instance SuppressUnusedWarnings MkPairSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MkPairSym1KindInference) GHC.Tuple.())
-    data MkPairSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210))
-      = forall arg. SameKind (Apply (MkPairSym1 l) arg) (MkPairSym2 l arg) =>
-        MkPairSym1KindInference
+    data MkPairSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210)) :: GHC.Types.Type
+      where
+        MkPairSym1KindInference :: forall l l arg.
+                                   SameKind (Apply (MkPairSym1 l) arg) (MkPairSym2 l arg) =>
+                                   MkPairSym1 l l
     type instance Apply (MkPairSym1 l) l = MkPair l l
     instance SuppressUnusedWarnings MkPairSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MkPairSym0KindInference) GHC.Tuple.())
-    data MkPairSym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210)))
-      = forall arg. SameKind (Apply MkPairSym0 arg) (MkPairSym1 arg) =>
-        MkPairSym0KindInference
+    data MkPairSym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210))) :: GHC.Types.Type
+      where
+        MkPairSym0KindInference :: forall l arg.
+                                   SameKind (Apply MkPairSym0 arg) (MkPairSym1 arg) => MkPairSym0 l
     type instance Apply MkPairSym0 l = MkPairSym1 l
     infixr 9 `SMkPair`
     infixr 9 `SPair`
-    data instance Sing (z :: (:*:) a b)
+    data instance Sing :: (:*:) a b -> GHC.Types.Type :: (:*:) a b
+                                                         -> GHC.Types.Type
       where
         (:%*:) :: forall a b (n :: a) (n :: b).
                   (Sing (n :: a)) -> (Sing (n :: b)) -> Sing ((:*:) n n)
@@ -57,7 +64,8 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
           of {
             GHC.Tuple.(,) (SomeSing c) (SomeSing c)
               -> SomeSing (((:%*:) c) c) }
-    data instance Sing (z :: Pair a b)
+    data instance Sing :: Pair a b -> GHC.Types.Type :: Pair a b
+                                                        -> GHC.Types.Type
       where
         SMkPair :: forall a b (n :: a) (n :: b).
                    (Sing (n :: a)) -> (Sing (n :: b)) -> Sing (MkPair n n)

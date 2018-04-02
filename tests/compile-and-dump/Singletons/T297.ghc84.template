@@ -29,9 +29,10 @@ Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FSym0KindInference) GHC.Tuple.())
-    data FSym0 l
-      = forall arg. SameKind (Apply FSym0 arg) (FSym1 arg) =>
-        FSym0KindInference
+    data FSym0 l :: Type
+      where
+        FSym0KindInference :: forall l arg.
+                              SameKind (Apply FSym0 arg) (FSym1 arg) => FSym0 l
     type instance Apply FSym0 l = F l
     type family F a where
       F MyProxy = Let0123456789876543210XSym0
@@ -45,7 +46,8 @@ Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
                 sZ = SMyProxy
               in sZ
         in sX
-    data instance Sing (z :: MyProxy a) where SMyProxy :: Sing MyProxy
+    data instance Sing :: MyProxy a -> Type :: MyProxy a -> Type
+      where SMyProxy :: Sing MyProxy
     type SMyProxy = (Sing :: MyProxy a -> Type)
     instance SingKind a => SingKind (MyProxy a) where
       type Demote (MyProxy a) = MyProxy (Demote a)

@@ -91,20 +91,17 @@ inferConstraints pr inst_ty = fmap (nubBy geq) . concatMapM infer_ct
     -- After this renaming, the algorithm will produce an instance context of
     -- @Show a@ (since @b@ was renamed to @a@), as expected.
     infer_ct :: DCon -> q DCxt
-    infer_ct (DCon _ _ _ fields mb_res_ty) = do
+    infer_ct (DCon _ _ _ fields res_ty) = do
       let field_tys = tysOfConFields fields
-      field_tys' <- case mb_res_ty of
-                      Nothing -> pure field_tys
-                      Just res_ty -> do
-                        res_ty'  <- expandType res_ty
-                        inst_ty' <- expandType inst_ty
-                        case matchTy YesIgnore res_ty' inst_ty of
-                          Nothing -> fail $ showString "Unable to match type "
-                                          . showsPrec 11 res_ty'
-                                          . showString " with "
-                                          . showsPrec 11 inst_ty'
-                                          $ ""
-                          Just subst -> traverse (substTy subst) field_tys
+      res_ty'  <- expandType res_ty
+      inst_ty' <- expandType inst_ty
+      field_tys' <- case matchTy YesIgnore res_ty' inst_ty' of
+                      Nothing -> fail $ showString "Unable to match type "
+                                      . showsPrec 11 res_ty'
+                                      . showString " with "
+                                      . showsPrec 11 inst_ty'
+                                      $ ""
+                      Just subst -> traverse (substTy subst) field_tys
       pure $ map (pr `DAppPr`) field_tys'
 
 -- For @inferConstraintsDef mb_cxt@, if @mb_cxt@ is 'Just' a context, then it will

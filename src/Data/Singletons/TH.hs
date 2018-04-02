@@ -128,7 +128,7 @@ cases :: DsMonad q
 cases tyName expq bodyq = do
   dinfo <- dsReify tyName
   case dinfo of
-    Just (DTyConI (DDataD _ _ _ _ ctors _) _) ->
+    Just (DTyConI (DDataD _ _ _ _ _ ctors _) _) ->
       expToTH <$> buildCases (map extractNameArgs ctors) expq bodyq
     Just _ ->
       fail $ "Using <<cases>> with something other than a type constructor: "
@@ -150,7 +150,7 @@ sCases :: DsMonad q
 sCases tyName expq bodyq = do
   dinfo <- dsReify tyName
   case dinfo of
-    Just (DTyConI (DDataD _ _ _ _ ctors _) _) ->
+    Just (DTyConI (DDataD _ _ _ _ _ ctors _) _) ->
       let ctor_stuff = map (first singDataConName . extractNameArgs) ctors in
       expToTH <$> buildCases ctor_stuff expq bodyq
     Just _ ->

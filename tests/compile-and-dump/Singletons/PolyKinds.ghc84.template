@@ -10,9 +10,10 @@ Singletons/PolyKinds.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FffSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FffSym0KindInference) GHC.Tuple.())
-    data FffSym0 (l :: TyFun (Proxy (a0123456789876543210 :: k0123456789876543210)) ())
-      = forall arg. SameKind (Apply FffSym0 arg) (FffSym1 arg) =>
-        FffSym0KindInference
+    data FffSym0 (l :: TyFun (Proxy (a0123456789876543210 :: k0123456789876543210)) ()) :: GHC.Types.Type
+      where
+        FffSym0KindInference :: forall l arg.
+                                SameKind (Apply FffSym0 arg) (FffSym1 arg) => FffSym0 l
     type instance Apply FffSym0 l = Fff l
     class PCls (a :: k) where
       type Fff (arg :: Proxy (a :: k)) :: ()

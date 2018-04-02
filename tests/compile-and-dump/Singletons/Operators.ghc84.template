@@ -27,39 +27,45 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (:+:@#@$$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::+:@#@$$###)) GHC.Tuple.())
-    data (:+:@#@$$) (l :: Foo) (l :: TyFun Foo Foo)
-      = forall arg. SameKind (Apply ((:+:@#@$$) l) arg) ((:+:@#@$$$) l arg) =>
-        (::+:@#@$$###)
+    data (:+:@#@$$) (l :: Foo) (l :: TyFun Foo Foo) :: GHC.Types.Type
+      where
+        (::+:@#@$$###) :: forall l l arg.
+                          SameKind (Apply ((:+:@#@$$) l) arg) ((:+:@#@$$$) l arg) =>
+                          (:+:@#@$$) l l
     type instance Apply ((:+:@#@$$) l) l = (:+:) l l
     instance SuppressUnusedWarnings (:+:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::+:@#@$###)) GHC.Tuple.())
-    data (:+:@#@$) (l :: TyFun Foo ((~>) Foo Foo))
-      = forall arg. SameKind (Apply (:+:@#@$) arg) ((:+:@#@$$) arg) =>
-        (::+:@#@$###)
+    data (:+:@#@$) (l :: TyFun Foo ((~>) Foo Foo)) :: GHC.Types.Type
+      where
+        (::+:@#@$###) :: forall l arg.
+                         SameKind (Apply (:+:@#@$) arg) ((:+:@#@$$) arg) => (:+:@#@$) l
     type instance Apply (:+:@#@$) l = (:+:@#@$$) l
     type (+@#@$$$) (t :: Nat) (t :: Nat) = (+) t t
     instance SuppressUnusedWarnings (+@#@$$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+@#@$$###)) GHC.Tuple.())
-    data (+@#@$$) (l :: Nat) (l :: TyFun Nat Nat)
-      = forall arg. SameKind (Apply ((+@#@$$) l) arg) ((+@#@$$$) l arg) =>
-        (:+@#@$$###)
+    data (+@#@$$) (l :: Nat) (l :: TyFun Nat Nat) :: GHC.Types.Type
+      where
+        (:+@#@$$###) :: forall l l arg.
+                        SameKind (Apply ((+@#@$$) l) arg) ((+@#@$$$) l arg) => (+@#@$$) l l
     type instance Apply ((+@#@$$) l) l = (+) l l
     instance SuppressUnusedWarnings (+@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+@#@$###)) GHC.Tuple.())
-    data (+@#@$) (l :: TyFun Nat ((~>) Nat Nat))
-      = forall arg. SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
-        (:+@#@$###)
+    data (+@#@$) (l :: TyFun Nat ((~>) Nat Nat)) :: GHC.Types.Type
+      where
+        (:+@#@$###) :: forall l arg.
+                       SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) => (+@#@$) l
     type instance Apply (+@#@$) l = (+@#@$$) l
     type ChildSym1 (t :: Foo) = Child t
     instance SuppressUnusedWarnings ChildSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ChildSym0KindInference) GHC.Tuple.())
-    data ChildSym0 (l :: TyFun Foo Foo)
-      = forall arg. SameKind (Apply ChildSym0 arg) (ChildSym1 arg) =>
-        ChildSym0KindInference
+    data ChildSym0 (l :: TyFun Foo Foo) :: GHC.Types.Type
+      where
+        ChildSym0KindInference :: forall l arg.
+                                  SameKind (Apply ChildSym0 arg) (ChildSym1 arg) => ChildSym0 l
     type instance Apply ChildSym0 l = Child l
     type family (+) (a :: Nat) (a :: Nat) :: Nat where
       (+) Zero m = m
@@ -78,7 +84,8 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
           ((applySing ((applySing ((singFun2 @(+@#@$)) (%+))) sN)) sM)
     sChild SFLeaf = SFLeaf
     sChild ((:%+:) (sA :: Sing a) _) = sA
-    data instance Sing (z :: Foo)
+    data instance Sing :: Foo -> GHC.Types.Type :: Foo
+                                                   -> GHC.Types.Type
       where
         SFLeaf :: Sing FLeaf
         (:%+:) :: forall (n :: Foo) (n :: Foo).

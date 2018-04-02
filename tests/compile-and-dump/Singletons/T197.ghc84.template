@@ -12,16 +12,19 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ($$:@#@$$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:$$:@#@$$###)) GHC.Tuple.())
-    data ($$:@#@$$) (l :: Bool) (l :: TyFun Bool Bool)
-      = forall arg. SameKind (Apply (($$:@#@$$) l) arg) (($$:@#@$$$) l arg) =>
-        (:$$:@#@$$###)
+    data ($$:@#@$$) (l :: Bool) (l :: TyFun Bool Bool) :: GHC.Types.Type
+      where
+        (:$$:@#@$$###) :: forall l l arg.
+                          SameKind (Apply (($$:@#@$$) l) arg) (($$:@#@$$$) l arg) =>
+                          ($$:@#@$$) l l
     type instance Apply (($$:@#@$$) l) l = ($$:) l l
     instance SuppressUnusedWarnings ($$:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:$$:@#@$###)) GHC.Tuple.())
-    data ($$:@#@$) (l :: TyFun Bool ((~>) Bool Bool))
-      = forall arg. SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
-        (:$$:@#@$###)
+    data ($$:@#@$) (l :: TyFun Bool ((~>) Bool Bool)) :: GHC.Types.Type
+      where
+        (:$$:@#@$###) :: forall l arg.
+                         SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) => ($$:@#@$) l
     type instance Apply ($$:@#@$) l = ($$:@#@$$) l
     type family ($$:) (a :: Bool) (a :: Bool) :: Bool where
       ($$:) _ _ = FalseSym0

@@ -138,7 +138,8 @@ singEqualityInstance desc@(_, _, className, _) name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
                             show className ++ " for it.") name
   dtvbs <- mapM dsTvb tvbs
-  dcons <- concatMapM dsCon cons
+  let data_ty = foldTypeTvbs (DConT name) dtvbs
+  dcons <- concatMapM (dsCon dtvbs data_ty) cons
   let tyvars = map (DVarT . extractTvbName) dtvbs
       kind = foldType (DConT name) tyvars
   (scons, _) <- singM [] $ mapM singCtor dcons
@@ -151,7 +152,7 @@ singOrdInstances = concatMapM singOrdInstance
 
 -- | Create instance of 'SOrd' for the given type
 singOrdInstance :: DsMonad q => Name -> q [Dec]
-singOrdInstance = singInstance mkOrdInstance "Ord"
+singOrdInstance = singInstance (const mkOrdInstance) "Ord"
 
 -- | Create instances of 'SBounded' for the given types
 singBoundedInstances :: DsMonad q => [Name] -> q [Dec]
@@ -159,7 +160,7 @@ singBoundedInstances = concatMapM singBoundedInstance
 
 -- | Create instance of 'SBounded' for the given type
 singBoundedInstance :: DsMonad q => Name -> q [Dec]
-singBoundedInstance = singInstance mkBoundedInstance "Bounded"
+singBoundedInstance = singInstance (const mkBoundedInstance) "Bounded"
 
 -- | Create instances of 'SEnum' for the given types
 singEnumInstances :: DsMonad q => [Name] -> q [Dec]
@@ -173,7 +174,7 @@ singEnumInstance = singInstance mkEnumInstance "Enum"
 --
 -- (Not to be confused with 'showShowInstance'.)
 singShowInstance :: DsMonad q => Name -> q [Dec]
-singShowInstance = singInstance (mkShowInstance ForPromotion) "Show"
+singShowInstance = singInstance (const $ mkShowInstance ForPromotion) "Show"
 
 -- | Create instances of 'SShow' for the given types
 --
@@ -191,7 +192,8 @@ showSingInstance :: DsMonad q => Name -> q [Dec]
 showSingInstance name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of ShowSing for it.") name
   dtvbs <- mapM dsTvb tvbs
-  dcons <- concatMapM dsCon cons
+  let data_ty = foldTypeTvbs (DConT name) dtvbs
+  dcons <- concatMapM (dsCon dtvbs data_ty) cons
   let tyvars = map (DVarT . extractTvbName) dtvbs
       kind = foldType (DConT name) tyvars
       deriv_show_decl = DerivedDecl { ded_mb_cxt = Nothing
@@ -207,14 +209,16 @@ showSingInstances :: DsMonad q => [Name] -> q [Dec]
 showSingInstances = concatMapM showSingInstance
 
 singInstance :: DsMonad q
-             => (Maybe DCxt -> DType -> [DCon] -> q UInstDecl)
+             => (Bool -> Maybe DCxt -> DType -> [DCon] -> q UInstDecl)
              -> String -> Name -> q [Dec]
 singInstance mk_inst inst_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
                             ++ " for it.") name
   dtvbs <- mapM dsTvb tvbs
-  dcons <- concatMapM dsCon cons
-  raw_inst <- mk_inst Nothing (foldType (DConT name) (map tvbToType dtvbs)) dcons
+  let data_ty = foldTypeTvbs (DConT name) dtvbs
+  dcons <- concatMapM (dsCon dtvbs data_ty) cons
+  non_vanilla <- isNonVanillaDataType data_ty dcons
+  raw_inst <- mk_inst non_vanilla Nothing (foldTypeTvbs (DConT name) dtvbs) dcons
   (a_inst, decs) <- promoteM [] $
                     promoteInstanceDec Map.empty raw_inst
   decs' <- singDecsM [] $ (:[]) <$> singInstD a_inst

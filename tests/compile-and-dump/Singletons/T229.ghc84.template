@@ -9,9 +9,11 @@ Singletons/T229.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings US___fooSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) US___fooSym0KindInference) GHC.Tuple.())
-    data US___fooSym0 (l :: TyFun Bool Bool)
-      = forall arg. SameKind (Apply US___fooSym0 arg) (US___fooSym1 arg) =>
-        US___fooSym0KindInference
+    data US___fooSym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+      where
+        US___fooSym0KindInference :: forall l arg.
+                                     SameKind (Apply US___fooSym0 arg) (US___fooSym1 arg) =>
+                                     US___fooSym0 l
     type instance Apply US___fooSym0 l = US___foo l
     type family US___foo (a :: Bool) :: Bool where
       US___foo _ = TrueSym0

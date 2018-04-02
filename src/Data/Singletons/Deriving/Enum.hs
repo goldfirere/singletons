@@ -23,13 +23,11 @@ import Control.Monad
 import Data.Maybe
 
 -- monadic for failure only
-mkEnumInstance :: Quasi q => Maybe DCxt -> DType -> [DCon] -> q UInstDecl
-mkEnumInstance mb_ctxt ty cons = do
+mkEnumInstance :: Quasi q => Bool -> Maybe DCxt -> DType -> [DCon] -> q UInstDecl
+mkEnumInstance non_vanilla mb_ctxt ty cons = do
   when (null cons ||
-        any (\(DCon tvbs cxt _ f rty) -> or [ not $ null $ tysOfConFields f
-                                            , not $ null tvbs
-                                            , not $ null cxt
-                                            , isJust rty ]) cons) $
+        any (\(DCon _ _ _ f _) ->
+              non_vanilla || not (null $ tysOfConFields f)) cons) $
     fail ("Can't derive Enum instance for " ++ pprint (typeToTH ty) ++ ".")
   n <- qNewName "n"
   let to_enum = UFunction [DClause [DVarPa n] (to_enum_rhs cons [0..])]

@@ -31,8 +31,8 @@ defunInfo (DPatSynI {}) =
   fail "Building defunctionalization symbols of pattern synonyms not supported"
 
 buildDefunSyms :: DDec -> PrM [DDec]
-buildDefunSyms (DDataD _new_or_data _cxt tyName tvbs ctors _derivings) =
-  buildDefunSymsDataD tyName tvbs ctors
+buildDefunSyms (DDataD _new_or_data _cxt _tyName _tvbs _k ctors _derivings) =
+  buildDefunSymsDataD ctors
 buildDefunSyms (DClosedTypeFamilyD (DTypeFamilyHead name tvbs result_sig _) _) = do
   let arg_m_kinds = map extractTvbKind tvbs
   defunctionalize name arg_m_kinds (resultSigToMaybeKind result_sig)
@@ -51,17 +51,16 @@ buildDefunSyms (DClassD _cxt name tvbs _fundeps _members) = do
 buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
                           "type families and data declarations"
 
-buildDefunSymsDataD :: Name -> [DTyVarBndr] -> [DCon] -> PrM [DDec]
-buildDefunSymsDataD tyName tvbs ctors = do
-  let res_ty = foldType (DConT tyName) (map tvbToType tvbs)
-  res_ki <- promoteType res_ty
-  concatMapM (promoteCtor res_ki) ctors
+buildDefunSymsDataD :: [DCon] -> PrM [DDec]
+buildDefunSymsDataD ctors =
+  concatMapM promoteCtor ctors
   where
-    promoteCtor :: DKind -> DCon -> PrM [DDec]
-    promoteCtor promotedKind ctor = do
+    promoteCtor :: DCon -> PrM [DDec]
+    promoteCtor ctor@(DCon _ _ _ _ res_ty) = do
       let (name, arg_tys) = extractNameTypes ctor
       arg_kis <- mapM promoteType arg_tys
-      defunctionalize name (map Just arg_kis) (Just promotedKind)
+      res_ki <- promoteType res_ty
+      defunctionalize name (map Just arg_kis) (Just res_ki)
 
 -- Generate data declarations and apply instances
 -- required for defunctionalization.
@@ -137,12 +136,13 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
             where
               lhs = foldType (DConT data_name) (map DVarT arg_names) `apply` (DVarT extra_name)
               rhs = foldType (DConT next_name) (map DVarT (arg_names ++ [extra_name]))
-          con_decl    = DCon [DPlainTV extra_name]
+          con_decl    = DCon (map dropTvbKind params ++ [DPlainTV extra_name])
                              [con_eq_ct]
                              con_name
                              (DNormalC False [])
-                             Nothing
-          data_decl   = DDataD Data [] data_name params [con_decl] []
+                             (foldTypeTvbs (DConT data_name) params)
+          data_decl   = DDataD Data [] data_name params
+                               (Just (DConT typeKindName)) [con_decl] []
           app_eqn     = DTySynEqn [ foldType (DConT data_name)
                                              (map DVarT rest_names)
                                   , DVarT fst_name ]
@@ -160,6 +160,47 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
 
       decls <- go (n - 1) m_args (buildTyFunArrow_maybe m_arg m_result) mk_rhs'
       return $ suppress : data_decl : app_decl : decls
+
+-- This is a small function with large importance. When generating
+-- defunctionalization data types, we often need to fill in the blank in the
+-- sort of code exemplified below:
+--
+-- @
+-- data FooSym2 a (b :: x) (c :: TyFun y z) where
+--   FooSym2KindInference :: _
+-- @
+--
+-- Where the kind of @a@ is not known. It's extremely tempting to just
+-- copy-and-paste the type variable binders from the data type itself to the
+-- constructor, like so:
+--
+-- @
+-- data FooSym2 a (b :: x) (c :: TyFun y z) where
+--   FooSym2KindInference :: forall a (b :: x) (c :: TyFun y z).
+--                           SameKind (...) (...).
+--                           FooSym2KindInference a b c
+-- @
+--
+-- But this ends up being an untenable approach. Because @a@ lacks a kind
+-- signature, @FooSym2@ does not have a complete, user-specified kind signature
+-- (or CUSK), so GHC will fail to typecheck @FooSym2KindInference@.
+--
+-- Thankfully, there's a workaround—just don't give any of the constructor's
+-- type variable binders any kinds:
+--
+-- @
+-- data FooSym2 a (b :: x) (c :: TyFun y z) where
+--   FooSym2KindInference :: forall a b c
+--                           SameKind (...) (...).
+--                           FooSym2KindInference a b c
+-- @
+--
+-- GHC may be moody when it comes to CUSKs, but it's at least understanding
+-- enough to typecheck this without issue. The 'dropTvbKind' function is
+-- what removes the kinds used in the kind inference constructor.
+dropTvbKind :: DTyVarBndr -> DTyVarBndr
+dropTvbKind tvb@(DPlainTV {}) = tvb
+dropTvbKind (DKindedTV n _)   = DPlainTV n
 
 -- Shorthand for building (k1 ~> k2)
 buildTyFunArrow :: DKind -> DKind -> DKind

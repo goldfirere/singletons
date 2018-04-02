@@ -6,38 +6,48 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings LiftMaybeSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) LiftMaybeSym1KindInference) GHC.Tuple.())
-    data LiftMaybeSym1 (l :: (~>) a0123456789876543210 b0123456789876543210) (l :: Data.Singletons.Internal.TyFun (Maybe a0123456789876543210) (Maybe b0123456789876543210))
-      = forall arg. Data.Singletons.Internal.SameKind (Apply (LiftMaybeSym1 l) arg) (LiftMaybeSym2 l arg) =>
-        LiftMaybeSym1KindInference
+    data LiftMaybeSym1 (l :: (~>) a0123456789876543210 b0123456789876543210) (l :: Data.Singletons.Internal.TyFun (Maybe a0123456789876543210) (Maybe b0123456789876543210)) :: Type
+      where
+        LiftMaybeSym1KindInference :: forall l l arg.
+                                      Data.Singletons.Internal.SameKind (Apply (LiftMaybeSym1 l) arg) (LiftMaybeSym2 l arg) =>
+                                      LiftMaybeSym1 l l
     type instance Apply (LiftMaybeSym1 l) l = LiftMaybe l l
     instance SuppressUnusedWarnings LiftMaybeSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) LiftMaybeSym0KindInference) GHC.Tuple.())
-    data LiftMaybeSym0 (l :: Data.Singletons.Internal.TyFun ((~>) a0123456789876543210 b0123456789876543210) ((~>) (Maybe a0123456789876543210) (Maybe b0123456789876543210)))
-      = forall arg. Data.Singletons.Internal.SameKind (Apply LiftMaybeSym0 arg) (LiftMaybeSym1 arg) =>
-        LiftMaybeSym0KindInference
+    data LiftMaybeSym0 (l :: Data.Singletons.Internal.TyFun ((~>) a0123456789876543210 b0123456789876543210) ((~>) (Maybe a0123456789876543210) (Maybe b0123456789876543210))) :: Type
+      where
+        LiftMaybeSym0KindInference :: forall l arg.
+                                      Data.Singletons.Internal.SameKind (Apply LiftMaybeSym0 arg) (LiftMaybeSym1 arg) =>
+                                      LiftMaybeSym0 l
     type instance Apply LiftMaybeSym0 l = LiftMaybeSym1 l
     type ZeroSym0 = Zero
     type SuccSym1 (t :: NatT) = Succ t
     instance SuppressUnusedWarnings SuccSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) SuccSym0KindInference) GHC.Tuple.())
-    data SuccSym0 (l :: Data.Singletons.Internal.TyFun NatT NatT)
-      = forall arg. Data.Singletons.Internal.SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
-        SuccSym0KindInference
+    data SuccSym0 (l :: Data.Singletons.Internal.TyFun NatT NatT) :: Type
+      where
+        SuccSym0KindInference :: forall l arg.
+                                 Data.Singletons.Internal.SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
+                                 SuccSym0 l
     type instance Apply SuccSym0 l = Succ l
     type (:+@#@$$$) (t :: Nat) (t :: Nat) = (:+) t t
     instance SuppressUnusedWarnings (:+@#@$$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::+@#@$$###)) GHC.Tuple.())
-    data (:+@#@$$) (l :: Nat) l
-      = forall arg. Data.Singletons.Internal.SameKind (Apply ((:+@#@$$) l) arg) ((:+@#@$$$) l arg) =>
-        (::+@#@$$###)
+    data (:+@#@$$) (l :: Nat) l :: Type
+      where
+        (::+@#@$$###) :: forall l l arg.
+                         Data.Singletons.Internal.SameKind (Apply ((:+@#@$$) l) arg) ((:+@#@$$$) l arg) =>
+                         (:+@#@$$) l l
     type instance Apply ((:+@#@$$) l) l = (:+) l l
     instance SuppressUnusedWarnings (:+@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::+@#@$###)) GHC.Tuple.())
-    data (:+@#@$) l
-      = forall arg. Data.Singletons.Internal.SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
-        (::+@#@$###)
+    data (:+@#@$) l :: Type
+      where
+        (::+@#@$###) :: forall l arg.
+                        Data.Singletons.Internal.SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
+                        (:+@#@$) l
     type instance Apply (:+@#@$) l = (:+@#@$$) l

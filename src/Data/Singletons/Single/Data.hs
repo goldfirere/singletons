@@ -27,7 +27,6 @@ import Data.Set (Set)
 -- not a promoted data constructor.
 singDataD :: DataDecl -> SgM [DDec]
 singDataD (DataDecl _nd name tvbs ctors _derivings) = do
-  aName <- qNewName "z"
   let tvbNames = map extractTvbName tvbs
   k <- promoteType (foldType (DConT name) (map DVarT tvbNames))
   ctors' <- mapM singCtor ctors
@@ -61,12 +60,13 @@ singDataD (DataDecl _nd name tvbs ctors _derivings) = do
                                (toSingClauses   `orIfEmpty` [emptyToSingClause]) ]
 
   -- e.g. type SNat = (Sing :: Nat -> Type)
-  let kindedSynInst =
+  let kindedSingTy = DArrowT `DAppT` k `DAppT` DConT typeKindName
+      kindedSynInst =
         DTySynD (singTyConName name)
                 []
-                (singFamily `DSigT` (DArrowT `DAppT` k `DAppT` DConT typeKindName))
+                (singFamily `DSigT` kindedSingTy)
 
-  return $ (DDataInstD Data [] singFamilyName [DSigT (DVarT aName) k] ctors' []) :
+  return $ (DDataInstD Data [] singFamilyName [] (Just kindedSingTy) ctors' []) :
            kindedSynInst :
            singKindInst :
            ctorFixities
@@ -168,7 +168,7 @@ singCtor (DCon _tvbs cxt name fields _rty)
                 []
                 sName
                 conFields
-                (Just (DConT singFamilyName `DAppT` foldType pCon indices))
+                (DConT singFamilyName `DAppT` foldType pCon indices)
   where buildArgType :: Set Name -> DType -> DType -> SgM DType
         buildArgType bound_kvs ty index = do
           (ty', _, _, _) <- singType bound_kvs index ty

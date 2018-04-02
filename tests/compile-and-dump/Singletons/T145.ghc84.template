@@ -10,16 +10,18 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ColSym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ColSym1KindInference) GHC.Tuple.())
-    data ColSym1 (l :: f0123456789876543210 a0123456789876543210) (l :: TyFun a0123456789876543210 Bool)
-      = forall arg. SameKind (Apply (ColSym1 l) arg) (ColSym2 l arg) =>
-        ColSym1KindInference
+    data ColSym1 (l :: f0123456789876543210 a0123456789876543210) (l :: TyFun a0123456789876543210 Bool) :: Type
+      where
+        ColSym1KindInference :: forall l l arg.
+                                SameKind (Apply (ColSym1 l) arg) (ColSym2 l arg) => ColSym1 l l
     type instance Apply (ColSym1 l) l = Col l l
     instance SuppressUnusedWarnings ColSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ColSym0KindInference) GHC.Tuple.())
-    data ColSym0 (l :: TyFun (f0123456789876543210 a0123456789876543210) ((~>) a0123456789876543210 Bool))
-      = forall arg. SameKind (Apply ColSym0 arg) (ColSym1 arg) =>
-        ColSym0KindInference
+    data ColSym0 (l :: TyFun (f0123456789876543210 a0123456789876543210) ((~>) a0123456789876543210 Bool)) :: Type
+      where
+        ColSym0KindInference :: forall l arg.
+                                SameKind (Apply ColSym0 arg) (ColSym1 arg) => ColSym0 l
     type instance Apply ColSym0 l = ColSym1 l
     class PColumn (f :: Type -> Type) where
       type Col (arg :: f a) (arg :: a) :: Bool

@@ -7,7 +7,7 @@ Singletons/T159.hs:0:0:: Splicing declarations
     type DSym0 = D
     type ESym0 = E
     type FSym0 = F
-    data instance Sing (z :: T0)
+    data instance Sing :: T0 -> GHC.Types.Type :: T0 -> GHC.Types.Type
       where
         SA :: Sing A
         SB :: Sing B
@@ -47,33 +47,38 @@ Singletons/T159.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings C1Sym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) C1Sym1KindInference) GHC.Tuple.())
-    data C1Sym1 (l :: T0) (l :: TyFun T1 T1)
-      = forall arg. SameKind (Apply (C1Sym1 l) arg) (C1Sym2 l arg) =>
-        C1Sym1KindInference
+    data C1Sym1 (l :: T0) (l :: TyFun T1 T1) :: GHC.Types.Type
+      where
+        C1Sym1KindInference :: forall l l arg.
+                               SameKind (Apply (C1Sym1 l) arg) (C1Sym2 l arg) => C1Sym1 l l
     type instance Apply (C1Sym1 l) l = C1 l l
     instance SuppressUnusedWarnings C1Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) C1Sym0KindInference) GHC.Tuple.())
-    data C1Sym0 (l :: TyFun T0 ((~>) T1 T1))
-      = forall arg. SameKind (Apply C1Sym0 arg) (C1Sym1 arg) =>
-        C1Sym0KindInference
+    data C1Sym0 (l :: TyFun T0 ((~>) T1 T1)) :: GHC.Types.Type
+      where
+        C1Sym0KindInference :: forall l arg.
+                               SameKind (Apply C1Sym0 arg) (C1Sym1 arg) => C1Sym0 l
     type instance Apply C1Sym0 l = C1Sym1 l
     type (:&&@#@$$$) (t :: T0) (t :: T1) = (:&&) t t
     instance SuppressUnusedWarnings (:&&@#@$$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::&&@#@$$###)) GHC.Tuple.())
-    data (:&&@#@$$) (l :: T0) (l :: TyFun T1 T1)
-      = forall arg. SameKind (Apply ((:&&@#@$$) l) arg) ((:&&@#@$$$) l arg) =>
-        (::&&@#@$$###)
+    data (:&&@#@$$) (l :: T0) (l :: TyFun T1 T1) :: GHC.Types.Type
+      where
+        (::&&@#@$$###) :: forall l l arg.
+                          SameKind (Apply ((:&&@#@$$) l) arg) ((:&&@#@$$$) l arg) =>
+                          (:&&@#@$$) l l
     type instance Apply ((:&&@#@$$) l) l = (:&&) l l
     instance SuppressUnusedWarnings (:&&@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::&&@#@$###)) GHC.Tuple.())
-    data (:&&@#@$) (l :: TyFun T0 ((~>) T1 T1))
-      = forall arg. SameKind (Apply (:&&@#@$) arg) ((:&&@#@$$) arg) =>
-        (::&&@#@$###)
+    data (:&&@#@$) (l :: TyFun T0 ((~>) T1 T1)) :: GHC.Types.Type
+      where
+        (::&&@#@$###) :: forall l arg.
+                         SameKind (Apply (:&&@#@$) arg) ((:&&@#@$$) arg) => (:&&@#@$) l
     type instance Apply (:&&@#@$) l = (:&&@#@$$) l
-    data instance Sing (z :: T1)
+    data instance Sing :: T1 -> GHC.Types.Type :: T1 -> GHC.Types.Type
       where
         SN1 :: Sing N1
         SC1 :: forall (n :: T0) (n :: T1).
@@ -122,35 +127,40 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings C2Sym1 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) C2Sym1KindInference) GHC.Tuple.())
-    data C2Sym1 (l :: T0) (l :: TyFun T2 T2)
-      = forall arg. SameKind (Apply (C2Sym1 l) arg) (C2Sym2 l arg) =>
-        C2Sym1KindInference
+    data C2Sym1 (l :: T0) (l :: TyFun T2 T2) :: GHC.Types.Type
+      where
+        C2Sym1KindInference :: forall l l arg.
+                               SameKind (Apply (C2Sym1 l) arg) (C2Sym2 l arg) => C2Sym1 l l
     type instance Apply (C2Sym1 l) l = C2 l l
     instance SuppressUnusedWarnings C2Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) C2Sym0KindInference) GHC.Tuple.())
-    data C2Sym0 (l :: TyFun T0 ((~>) T2 T2))
-      = forall arg. SameKind (Apply C2Sym0 arg) (C2Sym1 arg) =>
-        C2Sym0KindInference
+    data C2Sym0 (l :: TyFun T0 ((~>) T2 T2)) :: GHC.Types.Type
+      where
+        C2Sym0KindInference :: forall l arg.
+                               SameKind (Apply C2Sym0 arg) (C2Sym1 arg) => C2Sym0 l
     type instance Apply C2Sym0 l = C2Sym1 l
     type (:||@#@$$$) (t :: T0) (t :: T2) = (:||) t t
     instance SuppressUnusedWarnings (:||@#@$$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::||@#@$$###)) GHC.Tuple.())
-    data (:||@#@$$) (l :: T0) (l :: TyFun T2 T2)
-      = forall arg. SameKind (Apply ((:||@#@$$) l) arg) ((:||@#@$$$) l arg) =>
-        (::||@#@$$###)
+    data (:||@#@$$) (l :: T0) (l :: TyFun T2 T2) :: GHC.Types.Type
+      where
+        (::||@#@$$###) :: forall l l arg.
+                          SameKind (Apply ((:||@#@$$) l) arg) ((:||@#@$$$) l arg) =>
+                          (:||@#@$$) l l
     type instance Apply ((:||@#@$$) l) l = (:||) l l
     instance SuppressUnusedWarnings (:||@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::||@#@$###)) GHC.Tuple.())
-    data (:||@#@$) (l :: TyFun T0 ((~>) T2 T2))
-      = forall arg. SameKind (Apply (:||@#@$) arg) ((:||@#@$$) arg) =>
-        (::||@#@$###)
+    data (:||@#@$) (l :: TyFun T0 ((~>) T2 T2)) :: GHC.Types.Type
+      where
+        (::||@#@$###) :: forall l arg.
+                         SameKind (Apply (:||@#@$) arg) ((:||@#@$$) arg) => (:||@#@$) l
     type instance Apply (:||@#@$) l = (:||@#@$$) l
     infixr 5 :%||
     infixr 5 `SC2`
-    data instance Sing (z :: T2)
+    data instance Sing :: T2 -> GHC.Types.Type :: T2 -> GHC.Types.Type
       where
         SN2 :: Sing N2
         SC2 :: forall (n :: T0) (n :: T2).
