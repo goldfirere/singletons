@@ -11,7 +11,7 @@ Users of the package should not need to consult this file.
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses, StandaloneDeriving,
              UndecidableInstances, MagicHash, UnboxedTuples,
-             LambdaCase, NoMonomorphismRestriction #-}
+             LambdaCase, NoMonomorphismRestriction, CPP #-}
 
 module Data.Singletons.Util where
 
@@ -417,7 +417,12 @@ instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
   qReifyConStrictness = lift `comp1` qReifyConStrictness
   qIsExtEnabled       = lift `comp1` qIsExtEnabled
   qExtsEnabled        = lift qExtsEnabled
+#if MIN_VERSION_template_haskell(2,14,0)
+  qAddForeignFilePath = lift `comp2` qAddForeignFilePath
+  qAddTempFile        = lift `comp1` qAddTempFile
+#else
   qAddForeignFile     = lift `comp2` qAddForeignFile
+#endif
   qAddCorePlugin      = lift `comp1` qAddCorePlugin
 
   qRecover exp handler = do
