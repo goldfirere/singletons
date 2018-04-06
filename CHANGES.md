@@ -19,6 +19,11 @@ Changelog for singletons project
   allowing it to work over more open kinds. Also rename `SomeTypeRepStar` to
   `SomeTypeRepTYPE`, and change its definition accordingly.
 
+* Promoting or singling a type synonym or type family declaration now produces
+  defunctionalization symbols for it. (Previously, promoting or singling a type
+  synonym did nothing whatsoever, and promoting or singling a type family
+  produced an error.)
+
 * Add `(%<=?)`, a singled version of `(<=?)` from `GHC.TypeNats`, as well as
   defunctionalization symbols for `(<=?)`, to `Data.Singletons.TypeLits`.
 

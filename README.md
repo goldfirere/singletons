@@ -689,3 +689,6 @@ Known bugs
   problem is that a use of an associated type family tied to a class with
   fundeps doesn't provoke the fundep to kick in. This is GHC's problem, in
   the end.
+* Singled code that contains uses type families is likely to fail due to GHC
+  Trac #12564. Note that singling type family declarations themselves is fine
+  (and often desired, since that produces defunctionalization symbols for them).
