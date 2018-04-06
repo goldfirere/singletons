@@ -20,6 +20,7 @@ import Data.Singletons.Deriving.Enum
 import Data.Singletons.Deriving.Show
 import Data.Singletons.Util
 import Data.Singletons.Promote
+import Data.Singletons.Promote.Defun
 import Data.Singletons.Promote.Monad ( promoteM )
 import Data.Singletons.Promote.Type
 import Data.Singletons.Names
@@ -239,14 +240,18 @@ singInfo (DPatSynI {}) =
 singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
 singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
   decls <- expand raw_decls     -- expand type synonyms
-  PDecs { pd_let_decs          = letDecls
-        , pd_class_decs        = classes
-        , pd_instance_decs     = insts
-        , pd_data_decs         = datas
-        , pd_derived_eq_decs   = derivedEqDecs
-        , pd_derived_show_decs = derivedShowDecs } <- partitionDecs decls
+  PDecs { pd_let_decs                = letDecls
+        , pd_class_decs              = classes
+        , pd_instance_decs           = insts
+        , pd_data_decs               = datas
+        , pd_ty_syn_decs             = ty_syns
+        , pd_open_type_family_decs   = o_tyfams
+        , pd_closed_type_family_decs = c_tyfams
+        , pd_derived_eq_decs         = derivedEqDecs
+        , pd_derived_show_decs       = derivedShowDecs } <- partitionDecs decls
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
+    defunTypeDecls ty_syns c_tyfams o_tyfams
     promoteDataDecs datas
     (_, letDecEnv) <- promoteLetDecs noPrefix letDecls
     classes' <- mapM promoteClassDec classes

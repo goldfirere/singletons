@@ -38,16 +38,20 @@ data PartitionedDecs =
         , pd_class_decs :: [UClassDecl]
         , pd_instance_decs :: [UInstDecl]
         , pd_data_decs :: [DataDecl]
+        , pd_ty_syn_decs :: [TySynDecl]
+        , pd_open_type_family_decs :: [OpenTypeFamilyDecl]
+        , pd_closed_type_family_decs :: [ClosedTypeFamilyDecl]
         , pd_derived_eq_decs :: [DerivedEqDecl]
         , pd_derived_show_decs :: [DerivedShowDecl]
         }
 
 instance Semigroup PartitionedDecs where
-  PDecs a1 b1 c1 d1 e1 f1 <> PDecs a2 b2 c2 d2 e2 f2 =
+  PDecs a1 b1 c1 d1 e1 f1 g1 h1 i1 <> PDecs a2 b2 c2 d2 e2 f2 g2 h2 i2 =
     PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2) (e1 <> e2) (f1 <> f2)
+          (g1 <> g2) (h1 <> h2) (i1 <> i2)
 
 instance Monoid PartitionedDecs where
-  mempty = PDecs [] [] [] [] [] []
+  mempty = PDecs [] [] [] [] [] [] [] [] []
   mappend = (<>)
 
 -- | Split up a @[DDec]@ into its pieces, extracting 'Ord' instances
@@ -76,12 +80,13 @@ partitionDec (DDataD nd _cxt name tvbs mk cons derivings) = do
       map (\p -> (strat, predToType p)) preds
 
 partitionDec (DClassD cxt name tvbs fds decs) = do
-  env <- concatMapM partitionClassDec decs
+  (lde, otfs) <- concatMapM partitionClassDec decs
   return $ mempty { pd_class_decs = [ClassDecl { cd_cxt       = cxt
                                                , cd_name      = name
                                                , cd_tvbs      = tvbs
                                                , cd_fds       = fds
-                                               , cd_lde       = env }] }
+                                               , cd_lde       = lde }]
+                  , pd_open_type_family_decs = otfs }
 partitionDec (DInstanceD _ cxt ty decs) = do
   defns <- liftM catMaybes $ mapM partitionInstanceDec decs
   (name, tys) <- split_app_tys [] ty
@@ -95,9 +100,18 @@ partitionDec (DInstanceD _ cxt ty decs) = do
     split_app_tys acc (DSigT t _)   = split_app_tys acc t
     split_app_tys _ _ = fail $ "Illegal instance head: " ++ show ty
 partitionDec (DRoleAnnotD {}) = return mempty  -- ignore these
-partitionDec (DTySynD {})     = return mempty  -- ignore type synonyms;
-                                               -- promotion is a no-op, and
-                                               -- singling expands all syns
+partitionDec (DTySynD name tvbs _type) =
+  -- See Note [Partitioning, type synonyms, and type families]
+  pure $ mempty { pd_ty_syn_decs = [TySynDecl name tvbs] }
+partitionDec (DClosedTypeFamilyD tf_head _) =
+  -- See Note [Partitioning, type synonyms, and type families]
+  pure $ mempty { pd_closed_type_family_decs = [TypeFamilyDecl tf_head] }
+partitionDec (DOpenTypeFamilyD tf_head) =
+  -- See Note [Partitioning, type synonyms, and type families]
+  pure $ mempty { pd_open_type_family_decs = [TypeFamilyDecl tf_head] }
+partitionDec (DTySynInstD {}) = pure mempty
+  -- There's no need to track type family instances, since
+  -- we already record the type family itself separately.
 partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
   case unfoldType ty of
     cls_pred_ty :| cls_tys
@@ -122,15 +136,24 @@ partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
 partitionDec dec =
   fail $ "Declaration cannot be promoted: " ++ pprint (decToTH dec)
 
-partitionClassDec :: Monad m => DDec -> m ULetDecEnv
-partitionClassDec (DLetDec (DSigD name ty)) = return $ typeBinding name ty
+partitionClassDec :: Monad m => DDec -> m (ULetDecEnv, [OpenTypeFamilyDecl])
+partitionClassDec (DLetDec (DSigD name ty)) =
+  pure (typeBinding name ty, mempty)
 partitionClassDec (DLetDec (DValD (DVarPa name) exp)) =
-  return $ valueBinding name (UValue exp)
+  pure (valueBinding name (UValue exp), mempty)
 partitionClassDec (DLetDec (DFunD name clauses)) =
-  return $ valueBinding name (UFunction clauses)
+  pure (valueBinding name (UFunction clauses), mempty)
 partitionClassDec (DLetDec (DInfixD fixity name)) =
-  return $ infixDecl fixity name
-partitionClassDec (DLetDec (DPragmaD {})) = return mempty
+  pure (infixDecl fixity name, mempty)
+partitionClassDec (DLetDec (DPragmaD {})) =
+  pure (mempty, mempty)
+partitionClassDec (DOpenTypeFamilyD tf_head) =
+  -- See Note [Partitioning, type synonyms, and type families]
+  pure (mempty, [TypeFamilyDecl tf_head])
+partitionClassDec (DTySynInstD {}) =
+  -- There's no need to track associated type family default equations, since
+  -- we already record the type family itself separately.
+  pure (mempty, mempty)
 partitionClassDec _ =
   fail "Only method declarations can be promoted within a class."
 
@@ -140,6 +163,9 @@ partitionInstanceDec (DLetDec (DValD (DVarPa name) exp)) =
 partitionInstanceDec (DLetDec (DFunD name clauses)) =
   return $ Just (name, UFunction clauses)
 partitionInstanceDec (DLetDec (DPragmaD {})) = return Nothing
+partitionInstanceDec (DTySynInstD {}) = pure Nothing
+  -- There's no need to track associated type family instances, since
+  -- we already record the type family itself separately.
 partitionInstanceDec _ =
   fail "Only method bodies can be promoted within an instance."
 
@@ -290,3 +316,18 @@ isNonVanillaDataType data_ty = anyM $ \con@(DCon _ ctxt _ _ _) -> do
     anyM p (x:xs) = do
       b <- p x
       if b then return True else anyM p xs
+
+{-
+Note [Partitioning, type synonyms, and type families]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The process of singling does not produce any new declarations corresponding to
+type synonyms or type families, so they are "ignored" in a sense. Nevertheless,
+we explicitly track them during partitioning, since we want to create
+defunctionalization symbols for them.
+
+Also note that:
+
+1. Other uses of type synonyms in singled code will be expanded away.
+2. Other uses of type families in singled code are unlikely to work at present
+   due to Trac #12564.
+-}

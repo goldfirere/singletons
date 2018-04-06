@@ -15,6 +15,7 @@ import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Type
 import Data.Singletons.Names
 import Language.Haskell.TH.Syntax
+import Data.Singletons.Syntax
 import Data.Singletons.Util
 import Control.Monad
 
@@ -30,26 +31,55 @@ defunInfo (DTyVarI _name _ty) =
 defunInfo (DPatSynI {}) =
   fail "Building defunctionalization symbols of pattern synonyms not supported"
 
+defunTypeDecls :: [TySynDecl]
+               -> [ClosedTypeFamilyDecl]
+               -> [OpenTypeFamilyDecl]
+               -> PrM ()
+defunTypeDecls ty_syns c_tyfams o_tyfams = do
+  defun_ty_syns <-
+    concatMapM (\(TySynDecl name tvbs) -> buildDefunSymsTySynD name tvbs) ty_syns
+  defun_c_tyfams <-
+    concatMapM (buildDefunSymsClosedTypeFamilyD . getTypeFamilyDecl) c_tyfams
+  defun_o_tyfams <-
+    concatMapM (buildDefunSymsOpenTypeFamilyD . getTypeFamilyDecl) o_tyfams
+  emitDecs $ defun_ty_syns ++ defun_c_tyfams ++ defun_o_tyfams
+
 buildDefunSyms :: DDec -> PrM [DDec]
 buildDefunSyms (DDataD _new_or_data _cxt _tyName _tvbs _k ctors _derivings) =
   buildDefunSymsDataD ctors
-buildDefunSyms (DClosedTypeFamilyD (DTypeFamilyHead name tvbs result_sig _) _) = do
-  let arg_m_kinds = map extractTvbKind tvbs
-  defunctionalize name arg_m_kinds (resultSigToMaybeKind result_sig)
-buildDefunSyms (DOpenTypeFamilyD (DTypeFamilyHead name tvbs result_sig _)) = do
-  let arg_kinds = map (default_to_star . extractTvbKind) tvbs
-      res_kind  = default_to_star (resultSigToMaybeKind result_sig)
-      default_to_star Nothing  = Just $ DConT typeKindName
-      default_to_star (Just k) = Just k
-  defunctionalize name arg_kinds res_kind
-buildDefunSyms (DTySynD name tvbs _type) = do
-  let arg_m_kinds = map extractTvbKind tvbs
-  defunctionalize name arg_m_kinds Nothing
+buildDefunSyms (DClosedTypeFamilyD tf_head _) =
+  buildDefunSymsClosedTypeFamilyD tf_head
+buildDefunSyms (DOpenTypeFamilyD tf_head) =
+  buildDefunSymsOpenTypeFamilyD tf_head
+buildDefunSyms (DTySynD name tvbs _type) =
+  buildDefunSymsTySynD name tvbs
 buildDefunSyms (DClassD _cxt name tvbs _fundeps _members) = do
   let arg_m_kinds = map extractTvbKind tvbs
   defunctionalize name arg_m_kinds (Just (DConT constraintName))
 buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
                           "type families and data declarations"
+
+buildDefunSymsClosedTypeFamilyD :: DTypeFamilyHead -> PrM [DDec]
+buildDefunSymsClosedTypeFamilyD = buildDefunSymsTypeFamilyHead id
+
+buildDefunSymsOpenTypeFamilyD :: DTypeFamilyHead -> PrM [DDec]
+buildDefunSymsOpenTypeFamilyD = buildDefunSymsTypeFamilyHead default_to_star
+  where
+    default_to_star :: Maybe DKind -> Maybe DKind
+    default_to_star Nothing  = Just $ DConT typeKindName
+    default_to_star (Just k) = Just k
+
+buildDefunSymsTypeFamilyHead
+  :: (Maybe DKind -> Maybe DKind) -> DTypeFamilyHead -> PrM [DDec]
+buildDefunSymsTypeFamilyHead default_kind (DTypeFamilyHead name tvbs result_sig _) = do
+  let arg_kinds = map (default_kind . extractTvbKind) tvbs
+      res_kind  = default_kind (resultSigToMaybeKind result_sig)
+  defunctionalize name arg_kinds res_kind
+
+buildDefunSymsTySynD :: Name -> [DTyVarBndr] -> PrM [DDec]
+buildDefunSymsTySynD name tvbs = do
+  let arg_m_kinds = map extractTvbKind tvbs
+  defunctionalize name arg_m_kinds Nothing
 
 buildDefunSymsDataD :: [DCon] -> PrM [DDec]
 buildDefunSymsDataD ctors =

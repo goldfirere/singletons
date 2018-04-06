@@ -188,12 +188,16 @@ promoteDecs :: [DDec] -> PrM ()
 promoteDecs raw_decls = do
   decls <- expand raw_decls     -- expand type synonyms
   checkForRepInDecls decls
-  PDecs { pd_let_decs          = let_decs
-        , pd_class_decs        = classes
-        , pd_instance_decs     = insts
-        , pd_data_decs         = datas
-        , pd_derived_eq_decs   = derived_eq_decs } <- partitionDecs decls
+  PDecs { pd_let_decs                = let_decs
+        , pd_class_decs              = classes
+        , pd_instance_decs           = insts
+        , pd_data_decs               = datas
+        , pd_ty_syn_decs             = ty_syns
+        , pd_open_type_family_decs   = o_tyfams
+        , pd_closed_type_family_decs = c_tyfams
+        , pd_derived_eq_decs         = derived_eq_decs } <- partitionDecs decls
 
+  defunTypeDecls ty_syns c_tyfams o_tyfams
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
   mapM_ promoteClassDec classes
