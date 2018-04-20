@@ -533,12 +533,17 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
 
 promoteInfixDecl :: Fixity -> Name -> Maybe DDec
 promoteInfixDecl fixity name
- | isDataConName name || not (isHsLetter (head (nameBase name)))
- = Nothing -- No need to promote fixity declarations for constructor names or
-           -- infix names, as those fixity declarations apply to both
-           -- the value and type namespaces.
+ | isDataConName name
+   || not (isHsLetter (head nb)) && nb `notElem` [".","!"]
+ = Nothing -- No need to promote fixity declarations for constructor names,
+           -- as those fixity declarations apply to both
+           -- the value and type namespaces. The same reasoning applies to
+           -- infix names, with the exceptions of (.) and (!).
+           -- See Note [Special cases for (.) and (!)] in Data.Singletons.Names.
  | otherwise
  = Just $ DLetDec $ DInfixD fixity (promoteValNameLhs name)
+ where
+  nb = nameBase name
 
 -- This function is used both to promote class method defaults and normal
 -- let bindings. Thus, it can't quite do all the work locally and returns

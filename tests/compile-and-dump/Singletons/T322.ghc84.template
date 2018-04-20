@@ -1,0 +1,40 @@
+Singletons/T322.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| infixr 2 !
+          
+          (!) :: Bool -> Bool -> Bool
+          (!) = (||) |]
+  ======>
+    (!) :: Bool -> Bool -> Bool
+    (!) = (||)
+    infixr 2 !
+    type (!@#@$$$) (t :: Bool) (t :: Bool) = (:!) t t
+    instance SuppressUnusedWarnings (!@#@$$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (:!@#@$$###)) GHC.Tuple.())
+    data (!@#@$$) (l :: Bool) (l :: TyFun Bool Bool) :: GHC.Types.Type
+      where
+        (:!@#@$$###) :: forall l l arg.
+                        SameKind (Apply ((!@#@$$) l) arg) ((!@#@$$$) l arg) => (!@#@$$) l l
+    type instance Apply ((!@#@$$) l) l = (:!) l l
+    instance SuppressUnusedWarnings (!@#@$) where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) (:!@#@$###)) GHC.Tuple.())
+    data (!@#@$) (l :: TyFun Bool ((~>) Bool Bool)) :: GHC.Types.Type
+      where
+        (:!@#@$###) :: forall l arg.
+                       SameKind (Apply (!@#@$) arg) ((!@#@$$) arg) => (!@#@$) l
+    type instance Apply (!@#@$) l = (!@#@$$) l
+    type family (:!) (a :: Bool) (a :: Bool) :: Bool where
+      (:!) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (||@#@$) a_0123456789876543210) a_0123456789876543210
+    infixr 2 :!
+    infixr 2 %!
+    (%!) ::
+      forall (t :: Bool) (t :: Bool).
+      Sing t -> Sing t -> Sing (Apply (Apply (!@#@$) t) t :: Bool)
+    (%!)
+      (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      = (applySing
+           ((applySing ((singFun2 @(||@#@$)) (%||))) sA_0123456789876543210))
+          sA_0123456789876543210
