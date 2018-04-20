@@ -9,7 +9,7 @@ author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stola
 maintainer:     Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC == 8.4.1
+tested-with:    GHC == 8.4.2
 extra-source-files: README.md, CHANGES.md,
                     tests/compile-and-dump/buildGoldenFiles.awk,
                     tests/compile-and-dump/GradingClient/*.hs,
