@@ -40,6 +40,11 @@ source-repository this
   location: https://github.com/goldfirere/singletons.git
   tag:      v2.5
 
+source-repository head
+  type:     git
+  location: https://github.com/goldfirere/singletons.git
+  branch:   master
+
 custom-setup
   setup-depends:
     base      >= 4.11 && < 4.12,
