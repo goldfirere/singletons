@@ -817,3 +817,7 @@ $(singletonsOnly [d|
   genericLength (_:xs) = 1 + genericLength xs
 
   |])
+
+-- Workaround for #326
+infix 5 \\      -- This comment is necessary so CPP doesn't treat the
+infixl 9 !!

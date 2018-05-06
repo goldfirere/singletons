@@ -143,6 +143,9 @@ $(singletonsOnly [d|
     Down a <> Down b = Down (a <> b)
   |])
 
+-- Workaround for #326
+infixr 6 <>
+
 $(genSingletons       $ ''Option : semigroupBasicTypes)
 $(singBoundedInstances             semigroupBasicTypes)
 $(singEqInstances     $ ''Option : semigroupBasicTypes)

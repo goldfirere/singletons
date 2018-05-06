@@ -83,6 +83,11 @@ $(singletonsOnly [d|
       fromInteger n   = Down (fromInteger n)
   |])
 
+-- Workaround for #326
+infixl 6 +
+infixl 6 -
+infixl 7 *
+
 -- PNum instance
 type family SignumNat (a :: Nat) :: Nat where
   SignumNat 0 = 0
