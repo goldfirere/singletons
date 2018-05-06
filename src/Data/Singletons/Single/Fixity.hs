@@ -7,8 +7,8 @@ import Data.Singletons.Util
 import Data.Singletons.Names
 import Language.Haskell.TH.Desugar
 
-singInfixDecl :: DsMonad q => Fixity -> Name -> q DLetDec
-singInfixDecl fixity name = do
+singInfixDecl :: DsMonad q => Name -> Fixity -> q DLetDec
+singInfixDecl name fixity = do
   mb_ns <- reifyNameSpace name
   pure $ DInfixD fixity
        $ case mb_ns of
@@ -24,7 +24,7 @@ singFixityDeclaration name = do
   mFixity <- qReifyFixity name
   case mFixity of
     Nothing     -> pure []
-    Just fixity -> sequenceA [DLetDec <$> singInfixDecl fixity name]
+    Just fixity -> sequenceA [DLetDec <$> singInfixDecl name fixity]
 
 singFixityDeclarations :: DsMonad q => [Name] -> q [DDec]
 singFixityDeclarations = concatMapM trySingFixityDeclaration

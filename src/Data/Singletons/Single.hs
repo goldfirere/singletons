@@ -324,7 +324,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
   sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList tyvar_names)
                                              res_ki_map))
                      (Map.toList default_defns)
-  fixities' <- traverse (uncurry singInfixDecl) fixities
+  fixities' <- traverse (uncurry singInfixDecl) $ Map.toList fixities
   cls_cxt' <- mapM singPred cls_cxt
   return $ DClassD cls_cxt'
                    (singClassName cls_name)
@@ -430,7 +430,7 @@ singLetDecEnv (LetDecEnv { lde_defns     = defns
   let prom_list = Map.toList proms
   (typeSigs, letBinds, tyvarNames, res_kis)
     <- unzip4 <$> mapM (uncurry (singTySig defns types bound_kvs)) prom_list
-  infix_decls' <- traverse (uncurry singInfixDecl) infix_decls
+  infix_decls' <- traverse (uncurry singInfixDecl) $ Map.toList infix_decls
   let res_ki_map = Map.fromList [ (name, res_ki) | ((name, _), Just res_ki)
                                                      <- zip prom_list res_kis ]
   bindLets letBinds $ do

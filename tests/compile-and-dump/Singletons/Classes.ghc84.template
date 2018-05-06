@@ -141,6 +141,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                           SameKind (Apply ((<=>@#@$$) l) arg) ((<=>@#@$$$) l arg) =>
                           (<=>@#@$$) l l
     type instance Apply ((<=>@#@$$) l) l = (<=>) l l
+    infix 4 <=>@#@$$
     instance SuppressUnusedWarnings (<=>@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:<=>@#@$###)) GHC.Tuple.())
@@ -149,6 +150,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         (:<=>@#@$###) :: forall l arg.
                          SameKind (Apply (<=>@#@$) arg) ((<=>@#@$$) arg) => (<=>@#@$) l
     type instance Apply (<=>@#@$) l = (<=>@#@$$) l
+    infix 4 <=>@#@$
     type family TFHelper_0123456789876543210 (a :: a) (a :: a) :: Ordering where
       TFHelper_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply MycompareSym0 a_0123456789876543210) a_0123456789876543210
     type TFHelper_0123456789876543210Sym2 (t :: a0123456789876543210) (t :: a0123456789876543210) =

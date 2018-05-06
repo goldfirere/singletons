@@ -27,6 +27,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
                            SameKind (Apply ((====@#@$$) l) arg) ((====@#@$$$) l arg) =>
                            (====@#@$$) l l
     type instance Apply ((====@#@$$) l) l = (====) l l
+    infix 4 ====@#@$$
     instance SuppressUnusedWarnings (====@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:====@#@$###)) GHC.Tuple.())
@@ -35,6 +36,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
         (:====@#@$###) :: forall l arg.
                           SameKind (Apply (====@#@$) arg) ((====@#@$$) arg) => (====@#@$) l
     type instance Apply (====@#@$) l = (====@#@$$) l
+    infix 4 ====@#@$
     type family (====) (a :: a) (a :: a) :: a where
       (====) a _ = a
     type (<=>@#@$$$) (t :: a0123456789876543210) (t :: a0123456789876543210) =
@@ -48,6 +50,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
                           SameKind (Apply ((<=>@#@$$) l) arg) ((<=>@#@$$$) l arg) =>
                           (<=>@#@$$) l l
     type instance Apply ((<=>@#@$$) l) l = (<=>) l l
+    infix 4 <=>@#@$$
     instance SuppressUnusedWarnings (<=>@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:<=>@#@$###)) GHC.Tuple.())
@@ -56,6 +59,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
         (:<=>@#@$###) :: forall l arg.
                          SameKind (Apply (<=>@#@$) arg) ((<=>@#@$$) arg) => (<=>@#@$) l
     type instance Apply (<=>@#@$) l = (<=>@#@$$) l
+    infix 4 <=>@#@$
     class PMyOrd (a :: GHC.Types.Type) where
       type (<=>) (arg :: a) (arg :: a) :: Ordering
     infix 4 %====

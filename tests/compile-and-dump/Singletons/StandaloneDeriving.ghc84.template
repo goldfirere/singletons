@@ -36,6 +36,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                           SameKind (Apply ((:*:@#@$$) l) arg) ((:*:@#@$$$) l arg) =>
                           (:*:@#@$$) l l
     type instance Apply ((:*:@#@$$) l) l = (:*:) l l
+    infixl 6 :*:@#@$$
     instance SuppressUnusedWarnings (:*:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::*:@#@$###)) GHC.Tuple.())
@@ -44,6 +45,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         (::*:@#@$###) :: forall l arg.
                          SameKind (Apply (:*:@#@$) arg) ((:*:@#@$$) arg) => (:*:@#@$) l
     type instance Apply (:*:@#@$) l = (:*:@#@$$) l
+    infixl 6 :*:@#@$
     type S1Sym0 = S1
     type S2Sym0 = S2
     type family Compare_0123456789876543210 (a :: T a ()) (a :: T a ()) :: Ordering where

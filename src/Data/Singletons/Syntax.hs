@@ -146,7 +146,7 @@ type ULetDecRHS = LetDecRHS Unannotated
 data LetDecEnv ann = LetDecEnv
                    { lde_defns :: Map Name (LetDecRHS ann)
                    , lde_types :: Map Name DType   -- type signatures
-                   , lde_infix :: [(Fixity, Name)] -- infix declarations
+                   , lde_infix :: Map Name Fixity  -- infix declarations
                    , lde_proms :: IfAnn ann (Map Name DType) () -- possibly, promotions
                    , lde_bound_kvs :: IfAnn ann (Map Name (Set Name)) ()
                      -- The set of bound variables in scope.
@@ -161,7 +161,7 @@ instance Semigroup ULetDecEnv where
     LetDecEnv (defns1 <> defns2) (types1 <> types2) (infx1 <> infx2) () ()
 
 instance Monoid ULetDecEnv where
-  mempty = LetDecEnv Map.empty Map.empty [] () ()
+  mempty = LetDecEnv Map.empty Map.empty Map.empty () ()
 
 valueBinding :: Name -> ULetDecRHS -> ULetDecEnv
 valueBinding n v = emptyLetDecEnv { lde_defns = Map.singleton n v }
@@ -170,7 +170,7 @@ typeBinding :: Name -> DType -> ULetDecEnv
 typeBinding n t = emptyLetDecEnv { lde_types = Map.singleton n t }
 
 infixDecl :: Fixity -> Name -> ULetDecEnv
-infixDecl f n = emptyLetDecEnv { lde_infix = [(f,n)] }
+infixDecl f n = emptyLetDecEnv { lde_infix = Map.singleton n f }
 
 emptyLetDecEnv :: ULetDecEnv
 emptyLetDecEnv = mempty

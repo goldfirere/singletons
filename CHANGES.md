@@ -30,6 +30,9 @@ Changelog for singletons project
   synonym did nothing whatsoever, and promoting or singling a type family
   produced an error.)
 
+* `singletons` now produces fixity declarations for defunctionalization
+  symbols when appropriate.
+
 * Add `(%<=?)`, a singled version of `(<=?)` from `GHC.TypeNats`, as well as
   defunctionalization symbols for `(<=?)`, to `Data.Singletons.TypeLits`.
 
