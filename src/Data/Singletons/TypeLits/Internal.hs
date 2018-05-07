@@ -49,7 +49,6 @@ import Data.Singletons.Prelude.Bool
 import GHC.Stack (HasCallStack)
 import GHC.TypeLits as TL
 import qualified GHC.TypeNats as TN
-import Data.Type.Equality ((:~:)(..))
 import Data.Proxy ( Proxy(..) )
 import Numeric.Natural (Natural)
 import Unsafe.Coerce
@@ -86,16 +85,16 @@ instance SingKind Symbol where
 -- SDecide instances:
 instance SDecide Nat where
   (SNat :: Sing n) %~ (SNat :: Sing m)
-    | TN.natVal (Proxy :: Proxy n) == TN.natVal (Proxy :: Proxy m)
-    = Proved $ unsafeCoerce Refl
+    | Just r <- TN.sameNat (Proxy :: Proxy n) (Proxy :: Proxy m)
+    = Proved r
     | otherwise
     = Disproved (\_ -> error errStr)
     where errStr = "Broken Nat singletons"
 
 instance SDecide Symbol where
   (SSym :: Sing n) %~ (SSym :: Sing m)
-    | symbolVal (Proxy :: Proxy n) == symbolVal (Proxy :: Proxy m)
-    = Proved $ unsafeCoerce Refl
+    | Just r <- sameSymbol (Proxy :: Proxy n) (Proxy :: Proxy m)
+    = Proved r
     | otherwise
     = Disproved (\_ -> error errStr)
     where errStr = "Broken Symbol singletons"
@@ -108,14 +107,16 @@ instance PEq Symbol where
 
 -- need SEq instances for TypeLits kinds
 instance SEq Nat where
-  a %== b
-    | fromSing a == fromSing b    = unsafeCoerce STrue
-    | otherwise                   = unsafeCoerce SFalse
+  (SNat :: Sing n) %== (SNat :: Sing m)
+    = case sameNat (Proxy :: Proxy n) (Proxy :: Proxy m) of
+        Just Refl -> STrue
+        Nothing   -> unsafeCoerce SFalse
 
 instance SEq Symbol where
-  a %== b
-    | fromSing a == fromSing b    = unsafeCoerce STrue
-    | otherwise                   = unsafeCoerce SFalse
+  (SSym :: Sing n) %== (SSym :: Sing m)
+    = case sameSymbol (Proxy :: Proxy n) (Proxy :: Proxy m) of
+        Just Refl -> STrue
+        Nothing   -> unsafeCoerce SFalse
 
 -- POrd instances
 instance POrd Nat where
