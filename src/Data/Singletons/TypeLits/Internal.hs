@@ -49,7 +49,6 @@ import Data.Singletons.Prelude.Bool
 import GHC.Stack (HasCallStack)
 import GHC.TypeLits as TL
 import qualified GHC.TypeNats as TN
-import qualified Data.Type.Equality as DTE
 import Data.Type.Equality ((:~:)(..))
 import Data.Proxy ( Proxy(..) )
 import Numeric.Natural (Natural)
@@ -103,9 +102,9 @@ instance SDecide Symbol where
 
 -- PEq instances
 instance PEq Nat where
-  type (a :: Nat) == (b :: Nat) = a DTE.== b
+  type (a :: Nat) == (b :: Nat) = TL.CmpNat a b == 'EQ
 instance PEq Symbol where
-  type (a :: Symbol) == (b :: Symbol) = a DTE.== b
+  type (a :: Symbol) == (b :: Symbol) = TL.CmpSymbol a b == 'EQ
 
 -- need SEq instances for TypeLits kinds
 instance SEq Nat where

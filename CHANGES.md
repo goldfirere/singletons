@@ -6,6 +6,9 @@ Changelog for singletons project
 * Fix a regression in which certain infix type families, such as `(++)`, `($)`,
   `(+)`, and others, did not have the correct fixities.
 
+* Fix a regression in which `a == a` no longer held when `a` was a `Nat` or a
+  `Symbol`.
+
 * Template Haskell-generated code may require `TypeInType` in scenarios which
   did not previously require it:
   * `singletons` now explicitly quantifies all kind variables used in explicit
