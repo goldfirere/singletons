@@ -52,6 +52,7 @@ Singletons/T159.hs:0:0:: Splicing declarations
         C1Sym1KindInference :: forall l l arg.
                                SameKind (Apply (C1Sym1 l) arg) (C1Sym2 l arg) => C1Sym1 l l
     type instance Apply (C1Sym1 l) l = C1 l l
+    infixr 5 `C1Sym1`
     instance SuppressUnusedWarnings C1Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) C1Sym0KindInference) GHC.Tuple.())
@@ -60,6 +61,7 @@ Singletons/T159.hs:0:0:: Splicing declarations
         C1Sym0KindInference :: forall l arg.
                                SameKind (Apply C1Sym0 arg) (C1Sym1 arg) => C1Sym0 l
     type instance Apply C1Sym0 l = C1Sym1 l
+    infixr 5 `C1Sym0`
     type (:&&@#@$$$) (t :: T0) (t :: T1) = (:&&) t t
     instance SuppressUnusedWarnings (:&&@#@$$) where
       suppressUnusedWarnings
@@ -70,6 +72,7 @@ Singletons/T159.hs:0:0:: Splicing declarations
                           SameKind (Apply ((:&&@#@$$) l) arg) ((:&&@#@$$$) l arg) =>
                           (:&&@#@$$) l l
     type instance Apply ((:&&@#@$$) l) l = (:&&) l l
+    infixr 5 :&&@#@$$
     instance SuppressUnusedWarnings (:&&@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::&&@#@$###)) GHC.Tuple.())
@@ -78,6 +81,7 @@ Singletons/T159.hs:0:0:: Splicing declarations
         (::&&@#@$###) :: forall l arg.
                          SameKind (Apply (:&&@#@$) arg) ((:&&@#@$$) arg) => (:&&@#@$) l
     type instance Apply (:&&@#@$) l = (:&&@#@$$) l
+    infixr 5 :&&@#@$
     data instance Sing :: T1 -> GHC.Types.Type :: T1 -> GHC.Types.Type
       where
         SN1 :: Sing N1
@@ -132,6 +136,7 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
         C2Sym1KindInference :: forall l l arg.
                                SameKind (Apply (C2Sym1 l) arg) (C2Sym2 l arg) => C2Sym1 l l
     type instance Apply (C2Sym1 l) l = C2 l l
+    infixr 5 `C2Sym1`
     instance SuppressUnusedWarnings C2Sym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) C2Sym0KindInference) GHC.Tuple.())
@@ -140,6 +145,7 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
         C2Sym0KindInference :: forall l arg.
                                SameKind (Apply C2Sym0 arg) (C2Sym1 arg) => C2Sym0 l
     type instance Apply C2Sym0 l = C2Sym1 l
+    infixr 5 `C2Sym0`
     type (:||@#@$$$) (t :: T0) (t :: T2) = (:||) t t
     instance SuppressUnusedWarnings (:||@#@$$) where
       suppressUnusedWarnings
@@ -150,6 +156,7 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
                           SameKind (Apply ((:||@#@$$) l) arg) ((:||@#@$$$) l arg) =>
                           (:||@#@$$) l l
     type instance Apply ((:||@#@$$) l) l = (:||) l l
+    infixr 5 :||@#@$$
     instance SuppressUnusedWarnings (:||@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::||@#@$###)) GHC.Tuple.())
@@ -158,8 +165,9 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
         (::||@#@$###) :: forall l arg.
                          SameKind (Apply (:||@#@$) arg) ((:||@#@$$) arg) => (:||@#@$) l
     type instance Apply (:||@#@$) l = (:||@#@$$) l
-    infixr 5 :%||
+    infixr 5 :||@#@$
     infixr 5 `SC2`
+    infixr 5 :%||
     data instance Sing :: T2 -> GHC.Types.Type :: T2 -> GHC.Types.Type
       where
         SN2 :: Sing N2

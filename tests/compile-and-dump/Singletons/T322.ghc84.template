@@ -17,6 +17,7 @@ Singletons/T322.hs:(0,0)-(0,0): Splicing declarations
         (:!@#@$$###) :: forall l l arg.
                         SameKind (Apply ((!@#@$$) l) arg) ((!@#@$$$) l arg) => (!@#@$$) l l
     type instance Apply ((!@#@$$) l) l = (:!) l l
+    infixr 2 !@#@$$
     instance SuppressUnusedWarnings (!@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:!@#@$###)) GHC.Tuple.())
@@ -25,6 +26,7 @@ Singletons/T322.hs:(0,0)-(0,0): Splicing declarations
         (:!@#@$###) :: forall l arg.
                        SameKind (Apply (!@#@$) arg) ((!@#@$$) arg) => (!@#@$) l
     type instance Apply (!@#@$) l = (!@#@$$) l
+    infixr 2 !@#@$
     type family (:!) (a :: Bool) (a :: Bool) :: Bool where
       (:!) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (||@#@$) a_0123456789876543210) a_0123456789876543210
     infixr 2 :!

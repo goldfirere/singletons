@@ -290,7 +290,8 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
     (default_decs, ann_rhss, prom_rhss)
       <- mapAndUnzip3M (promoteMethod Nothing meth_sigs) defaults_list
 
-    let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
+    let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl)
+                                 $ Map.toList infix_decls
 
     -- no need to do anything to the fundeps. They work as is!
     emitDecs [DClassD pCxt pClsName tvbs fundeps
@@ -312,7 +313,7 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
       let proName = promoteValNameLhs name
       (argKs, resK) <- promoteUnraveled ty
       args <- mapM (const $ qNewName "arg") argKs
-      emitDecsM $ defunctionalize proName (map Just argKs) (Just resK)
+      emitDecsM $ defunReifyFixity proName (map Just argKs) (Just resK)
 
       return $ DOpenTypeFamilyD (DTypeFamilyHead proName
                                                  (zipWith DKindedTV args argKs)
@@ -409,7 +410,8 @@ promoteMethod :: Maybe (Map Name DKind)
 promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
   (arg_kis, res_ki) <- lookup_meth_ty
   ((_, _, _, eqns), _defuns, ann_rhs)
-    <- promoteLetDecRHS (Just (arg_kis, res_ki)) sigs_map noPrefix meth_name meth_rhs
+    <- promoteLetDecRHS (Just (arg_kis, res_ki)) sigs_map Map.empty
+                        noPrefix meth_name meth_rhs
   meth_arg_tvs <- mapM (const $ qNewName "a") arg_kis
   let -- If we're dealing with an associated type family instance, substitute
       -- in the kind of the instance for better kind information in the RHS
@@ -443,7 +445,7 @@ promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
                                   (DKindSig meth_res_ki')
                                   Nothing)
                                eqns]
-  emitDecsM (defunctionalize helperName (map Just meth_arg_kis') (Just meth_res_ki'))
+  emitDecsM (defunctionalize helperName Nothing (map Just meth_arg_kis') (Just meth_res_ki'))
   return ( DTySynInstD
              proName
              (DTySynEqn family_args
@@ -504,22 +506,23 @@ promoted method implementations like MHelper2.
 promoteLetDecEnv :: (String, String) -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
                                      , lde_types = type_env
-                                     , lde_infix = infix_decls }) = do
-  let infix_decls'  = catMaybes $ map (uncurry promoteInfixDecl) infix_decls
+                                     , lde_infix = fix_env }) = do
+  let infix_decls = catMaybes $ map (uncurry promoteInfixDecl)
+                              $ Map.toList fix_env
 
     -- promote all the declarations, producing annotated declarations
   let (names, rhss) = unzip $ Map.toList value_env
   (payloads, defun_decss, ann_rhss)
-    <- fmap unzip3 $ zipWithM (promoteLetDecRHS Nothing type_env prefixes) names rhss
+    <- fmap unzip3 $ zipWithM (promoteLetDecRHS Nothing type_env fix_env prefixes) names rhss
 
   emitDecs $ concat defun_decss
   bound_kvs <- allBoundKindVars
-  let decs = map payload_to_dec payloads ++ infix_decls'
+  let decs = map payload_to_dec payloads ++ infix_decls
 
     -- build the ALetDecEnv
   let let_dec_env' = LetDecEnv { lde_defns     = Map.fromList $ zip names ann_rhss
                                , lde_types     = type_env
-                               , lde_infix     = infix_decls
+                               , lde_infix     = fix_env
                                , lde_proms     = Map.empty   -- filled in promoteLetDecs
                                , lde_bound_kvs = Map.fromList $ map (, bound_kvs) names }
 
@@ -531,8 +534,8 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
       where
         sig = maybe DNoSig DKindSig m_ki
 
-promoteInfixDecl :: Fixity -> Name -> Maybe DDec
-promoteInfixDecl fixity name
+promoteInfixDecl :: Name -> Fixity -> Maybe DDec
+promoteInfixDecl name fixity
  | nameBase name == nameBase promoted_name
    -- If a name and its promoted counterpart are the same (modulo module
    -- prefixes), then there's no need to promote a fixity declaration for
@@ -554,13 +557,14 @@ promoteInfixDecl fixity name
 promoteLetDecRHS :: Maybe ([DKind], DKind)  -- the promoted type of the RHS (if known)
                                             -- needed to fix #136
                  -> Map Name DType       -- local type env't
+                 -> Map Name Fixity      -- local fixity env't
                  -> (String, String)     -- let-binding prefixes
                  -> Name                 -- name of the thing being promoted
                  -> ULetDecRHS           -- body of the thing
                  -> PrM ( (Name, [DTyVarBndr], Maybe DKind, [DTySynEqn]) -- "type family"
                         , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
-promoteLetDecRHS m_rhs_ki type_env prefixes name (UValue exp) = do
+promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UValue exp) = do
   (res_kind, num_arrows)
     <- case m_rhs_ki of
          Just (arg_kis, res_ki) -> return ( Just (ravelTyFun (arg_kis ++ [res_ki]))
@@ -575,8 +579,9 @@ promoteLetDecRHS m_rhs_ki type_env prefixes name (UValue exp) = do
       all_locals <- allLocals
       let lde_kvs_to_bind = foldMap fvDType res_kind
       (exp', ann_exp) <- forallBind lde_kvs_to_bind $ promoteExp exp
-      let proName = promoteValNameLhsPrefix prefixes name
-      defuns <- defunctionalize proName (map (const Nothing) all_locals) res_kind
+      let proName  = promoteValNameLhsPrefix prefixes name
+          m_fixity = Map.lookup name fix_env
+      defuns <- defunctionalize proName m_fixity (map (const Nothing) all_locals) res_kind
       return ( ( proName, map DPlainTV all_locals, res_kind
                , [DTySynEqn (map DVarT all_locals) exp'] )
              , defuns
@@ -586,10 +591,10 @@ promoteLetDecRHS m_rhs_ki type_env prefixes name (UValue exp) = do
       names <- replicateM num_arrows (newUniqueName "a")
       let pats    = map DVarPa names
           newArgs = map DVarE  names
-      promoteLetDecRHS m_rhs_ki type_env prefixes name
+      promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name
                        (UFunction [DClause pats (foldExp exp newArgs)])
 
-promoteLetDecRHS m_rhs_ki type_env prefixes name (UFunction clauses) = do
+promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UFunction clauses) = do
   numArgs <- count_args clauses
   (m_argKs, m_resK, ty_num_args) <- case m_rhs_ki of
     Just (arg_kis, res_ki) -> return (map Just arg_kis, Just res_ki, length arg_kis)
@@ -604,9 +609,10 @@ promoteLetDecRHS m_rhs_ki type_env prefixes name (UFunction clauses) = do
 
       |  otherwise
       -> return (replicate numArgs Nothing, Nothing, numArgs)
-  let proName = promoteValNameLhsPrefix prefixes name
+  let proName  = promoteValNameLhsPrefix prefixes name
+      m_fixity = Map.lookup name fix_env
   all_locals <- allLocals
-  defun_decs <- defunctionalize proName
+  defun_decs <- defunctionalize proName m_fixity
                 (map (const Nothing) all_locals ++ m_argKs) m_resK
   let local_tvbs = map DPlainTV all_locals
   tyvarNames <- mapM (const $ qNewName "a") m_argKs
@@ -728,7 +734,7 @@ promoteExp (DLamE names exp) = do
                                  Nothing)
                                [DTySynEqn (map DVarT (all_locals ++ tyNames))
                                           rhs]]
-  emitDecsM $ defunctionalize lambdaName (map (const Nothing) all_args) Nothing
+  emitDecsM $ defunctionalize lambdaName Nothing (map (const Nothing) all_args) Nothing
   let promLambda = foldl apply (DConT (promoteTySym lambdaName 0))
                                (map DVarT all_locals)
   return (promLambda, ADLamE tyNames promLambda names ann_exp)

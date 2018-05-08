@@ -39,6 +39,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
                                    SameKind (Apply (MkPairSym1 l) arg) (MkPairSym2 l arg) =>
                                    MkPairSym1 l l
     type instance Apply (MkPairSym1 l) l = MkPair l l
+    infixr 9 `MkPairSym1`
     instance SuppressUnusedWarnings MkPairSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MkPairSym0KindInference) GHC.Tuple.())
@@ -47,8 +48,9 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
         MkPairSym0KindInference :: forall l arg.
                                    SameKind (Apply MkPairSym0 arg) (MkPairSym1 arg) => MkPairSym0 l
     type instance Apply MkPairSym0 l = MkPairSym1 l
-    infixr 9 `SMkPair`
+    infixr 9 `MkPairSym0`
     infixr 9 `SPair`
+    infixr 9 `SMkPair`
     data instance Sing :: (:*:) a b -> GHC.Types.Type :: (:*:) a b
                                                          -> GHC.Types.Type
       where

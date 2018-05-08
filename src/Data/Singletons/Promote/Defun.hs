@@ -18,6 +18,7 @@ import Language.Haskell.TH.Syntax
 import Data.Singletons.Syntax
 import Data.Singletons.Util
 import Control.Monad
+import Data.Maybe
 
 defunInfo :: DInfo -> PrM [DDec]
 defunInfo (DTyConI dec _instances) = buildDefunSyms dec
@@ -55,7 +56,7 @@ buildDefunSyms (DTySynD name tvbs _type) =
   buildDefunSymsTySynD name tvbs
 buildDefunSyms (DClassD _cxt name tvbs _fundeps _members) = do
   let arg_m_kinds = map extractTvbKind tvbs
-  defunctionalize name arg_m_kinds (Just (DConT constraintName))
+  defunReifyFixity name arg_m_kinds (Just (DConT constraintName))
 buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
                           "type families and data declarations"
 
@@ -74,12 +75,12 @@ buildDefunSymsTypeFamilyHead
 buildDefunSymsTypeFamilyHead default_kind (DTypeFamilyHead name tvbs result_sig _) = do
   let arg_kinds = map (default_kind . extractTvbKind) tvbs
       res_kind  = default_kind (resultSigToMaybeKind result_sig)
-  defunctionalize name arg_kinds res_kind
+  defunReifyFixity name arg_kinds res_kind
 
 buildDefunSymsTySynD :: Name -> [DTyVarBndr] -> PrM [DDec]
 buildDefunSymsTySynD name tvbs = do
   let arg_m_kinds = map extractTvbKind tvbs
-  defunctionalize name arg_m_kinds Nothing
+  defunReifyFixity name arg_m_kinds Nothing
 
 buildDefunSymsDataD :: [DCon] -> PrM [DDec]
 buildDefunSymsDataD ctors =
@@ -90,7 +91,15 @@ buildDefunSymsDataD ctors =
       let (name, arg_tys) = extractNameTypes ctor
       arg_kis <- mapM promoteType arg_tys
       res_ki <- promoteType res_ty
-      defunctionalize name (map Just arg_kis) (Just res_ki)
+      defunReifyFixity name (map Just arg_kis) (Just res_ki)
+
+-- Generate defunctionalization symbols for a name, using reifyFixityWithLocals
+-- to determine what the fixity of each symbol should be.
+-- See Note [Fixity declarations for defunctionalization symbols]
+defunReifyFixity :: Name -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
+defunReifyFixity name m_arg_kinds m_res_kind = do
+  m_fixity <- reifyFixityWithLocals name
+  defunctionalize name m_fixity m_arg_kinds m_res_kind
 
 -- Generate data declarations and apply instances
 -- required for defunctionalization.
@@ -125,8 +134,10 @@ buildDefunSymsDataD ctors =
 --
 -- The defunctionalize function takes Maybe DKinds so that the caller can
 -- indicate which kinds are known and which need to be inferred.
-defunctionalize :: Name -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
-defunctionalize name m_arg_kinds' m_res_kind' = do
+defunctionalize :: Name
+                -> Maybe Fixity -- The name's fixity, if one was declared.
+                -> [Maybe DKind] -> Maybe DKind -> PrM [DDec]
+defunctionalize name m_fixity m_arg_kinds' m_res_kind' = do
   let (m_arg_kinds, m_res_kind) = eta_expand (noExactTyVars m_arg_kinds')
                                              (noExactTyVars m_res_kind')
       num_args = length m_arg_kinds
@@ -188,8 +199,12 @@ defunctionalize name m_arg_kinds' m_res_kind' = do
 
           mk_rhs' ns  = foldType (DConT data_name) (map DVarT ns)
 
+          -- See Note [Fixity declarations for defunctionalization symbols]
+          mk_fix_decl f = DLetDec $ DInfixD f data_name
+          fixity_decl   = maybeToList $ fmap mk_fix_decl m_fixity
+
       decls <- go (n - 1) m_args (buildTyFunArrow_maybe m_arg m_result) mk_rhs'
-      return $ suppress : data_decl : app_decl : decls
+      return $ suppress : data_decl : app_decl : fixity_decl ++ decls
 
 -- This is a small function with large importance. When generating
 -- defunctionalization data types, we often need to fill in the blank in the
@@ -264,3 +279,25 @@ ravelTyFun kinds = go tailK (buildTyFunArrow k2 k1)
     where (k1 : k2 : tailK) = reverse kinds
           go []     acc = acc
           go (k:ks) acc = go ks (buildTyFunArrow k acc)
+
+{-
+Note [Fixity declarations for defunctionalization symbols]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Just like we promote fixity declarations, we should also generate fixity
+declarations for defunctionaliztion symbols. A primary use case is the
+following scenario:
+
+  (.) :: (b -> c) -> (a -> b) -> (a -> c)
+  (f . g) x = f (g x)
+  infixr 9 .
+
+One often writes (f . g . h) at the value level, but because (.) is promoted
+to a type family with three arguments, this doesn't directly translate to the
+type level. Instead, one must write this:
+
+  f .@#@$$$ g .@#@$$$ h
+
+But in order to ensure that this associates to the right as expected, one must
+generate an `infixr 9 .@#@#$$$` declaration. This is why defunctionalize accepts
+a Maybe Fixity argument.
+-}

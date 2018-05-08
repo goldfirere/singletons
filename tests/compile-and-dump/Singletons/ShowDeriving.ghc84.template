@@ -79,6 +79,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                     SameKind (Apply (MkFoo2bSym1 l) arg) (MkFoo2bSym2 l arg) =>
                                     MkFoo2bSym1 l l
     type instance Apply (MkFoo2bSym1 l) l = MkFoo2b l l
+    infixl 5 `MkFoo2bSym1`
     instance SuppressUnusedWarnings MkFoo2bSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MkFoo2bSym0KindInference) GHC.Tuple.())
@@ -88,6 +89,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                     SameKind (Apply MkFoo2bSym0 arg) (MkFoo2bSym1 arg) =>
                                     MkFoo2bSym0 l
     type instance Apply MkFoo2bSym0 l = MkFoo2bSym1 l
+    infixl 5 `MkFoo2bSym0`
     type (:*:@#@$$$) (t :: a0123456789876543210) (t :: a0123456789876543210) =
         (:*:) t t
     instance SuppressUnusedWarnings (:*:@#@$$) where
@@ -99,6 +101,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                           SameKind (Apply ((:*:@#@$$) l) arg) ((:*:@#@$$$) l arg) =>
                           (:*:@#@$$) l l
     type instance Apply ((:*:@#@$$) l) l = (:*:) l l
+    infixl 5 :*:@#@$$
     instance SuppressUnusedWarnings (:*:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::*:@#@$###)) GHC.Tuple.())
@@ -107,6 +110,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         (::*:@#@$###) :: forall l arg.
                          SameKind (Apply (:*:@#@$) arg) ((:*:@#@$$) arg) => (:*:@#@$) l
     type instance Apply (:*:@#@$) l = (:*:@#@$$) l
+    infixl 5 :*:@#@$
     type (:&:@#@$$$) (t :: a0123456789876543210) (t :: a0123456789876543210) =
         (:&:) t t
     instance SuppressUnusedWarnings (:&:@#@$$) where
@@ -118,6 +122,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                           SameKind (Apply ((:&:@#@$$) l) arg) ((:&:@#@$$$) l arg) =>
                           (:&:@#@$$) l l
     type instance Apply ((:&:@#@$$) l) l = (:&:) l l
+    infixl 5 :&:@#@$$
     instance SuppressUnusedWarnings (:&:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::&:@#@$###)) GHC.Tuple.())
@@ -126,6 +131,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         (::&:@#@$###) :: forall l arg.
                          SameKind (Apply (:&:@#@$) arg) ((:&:@#@$$) arg) => (:&:@#@$) l
     type instance Apply (:&:@#@$) l = (:&:@#@$$) l
+    infixl 5 :&:@#@$
     type MkFoo3Sym2 (t :: Bool) (t :: Bool) = MkFoo3 t t
     instance SuppressUnusedWarnings MkFoo3Sym1 where
       suppressUnusedWarnings
@@ -264,9 +270,9 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 l = ShowsPrec_0123456789876543210Sym1 l
     instance PShow Foo3 where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    infixl 5 :%&:
-    infixl 5 :%*:
     infixl 5 `SMkFoo2b`
+    infixl 5 :%*:
+    infixl 5 :%&:
     data instance Sing :: Foo1 -> GHC.Types.Type :: Foo1
                                                     -> GHC.Types.Type
       where SMkFoo1 :: Sing MkFoo1

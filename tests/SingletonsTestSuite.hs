@@ -94,6 +94,7 @@ tests =
     , compileAndDumpStdTest "T316"
     , compileAndDumpStdTest "T322"
     , compileAndDumpStdTest "NatSymbolReflexive"
+    , compileAndDumpStdTest "T323"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"
