@@ -79,12 +79,14 @@ module Data.Singletons (
   type (@@@#@$), type (@@@#@$$), type (@@@#@$$$)
   ) where
 
-import Data.Singletons.Promote
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
-import Data.Singletons.Prelude.Ord
+import Data.Singletons.Prelude.Monoid
 import Data.Singletons.Prelude.Num
+import Data.Singletons.Prelude.Ord
+import Data.Singletons.Prelude.Semigroup
+import Data.Singletons.Promote
 import Data.Singletons.ShowSing
 
 ----------------------------------------------------------------------
@@ -128,6 +130,12 @@ instance SNum k => Num (SomeSing k) where
 instance ShowSing k => Show (SomeSing k) where
   showsPrec p (SomeSing s) =
     showParen (p > 10) $ showString "SomeSing " . showsSingPrec 11 s
+
+instance SSemigroup k => Semigroup (SomeSing k) where
+  SomeSing a <> SomeSing b = SomeSing (a %<> b)
+
+instance SMonoid k => Monoid (SomeSing k) where
+  mempty = SomeSing sMempty
 
 ----------------------------------------------------------------------
 ---- Defunctionalization symbols -------------------------------------
