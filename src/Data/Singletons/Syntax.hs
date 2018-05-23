@@ -46,7 +46,7 @@ instance Monoid PromDPatInfos where
 type SingDSigPaInfos = [(DExp, DType)]
 
 -- The parts of data declarations that are relevant to singletons.
-data DataDecl = DataDecl NewOrData Name [DTyVarBndr] [DCon] [DPred]
+data DataDecl = DataDecl Name [DTyVarBndr] [DCon]
 
 -- The parts of type synonyms that are relevant to singletons.
 data TySynDecl = TySynDecl Name [DTyVarBndr]
@@ -196,7 +196,7 @@ buildLetDecEnv = go emptyLetDecEnv
 data DerivedDecl (cls :: Type -> Constraint) = DerivedDecl
   { ded_mb_cxt :: Maybe DCxt
   , ded_type   :: DType
-  , ded_cons   :: [DCon]
+  , ded_decl   :: DataDecl
   }
 
 type DerivedEqDecl   = DerivedDecl Eq
@@ -218,7 +218,7 @@ information to recreate the derived instance:
    a deriving clause (ded_mb_cxt)
 2. The datatype, applied to some number of type arguments, as in the
    instance declaration (ded_type)
-3. The datatype's constructors (ded_cons)
+3. The datatype's original information, as provided through DataDecl (ded_decl)
 
 Why are these instances handled outside of partitionDecs?
 

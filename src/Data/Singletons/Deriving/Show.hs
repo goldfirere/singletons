@@ -23,14 +23,13 @@ import Data.Singletons.Names
 import Data.Singletons.Util
 import Data.Singletons.Syntax
 import Data.Singletons.Deriving.Infer
+import Data.Singletons.Deriving.Util
 import Data.Maybe (fromMaybe)
 import GHC.Lexeme (startsConSym, startsVarSym)
 import GHC.Show (appPrec, appPrec1)
 
-mkShowInstance :: DsMonad q
-               => ShowMode -> Maybe DCxt -> DType -> [DCon]
-               -> q UInstDecl
-mkShowInstance mode mb_ctxt ty cons = do
+mkShowInstance :: DsMonad q => ShowMode -> DerivDesc q
+mkShowInstance mode mb_ctxt ty (DataDecl _ _ cons) = do
   clauses <- mk_showsPrec mode cons
   constraints <- inferConstraintsDef (fmap (mkShowContext mode) mb_ctxt)
                                      (DConPr (mk_Show_name mode))

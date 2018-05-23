@@ -3,7 +3,7 @@
 -- Module      :  Data.Singletons.Deriving.Bounded
 -- Copyright   :  (C) 2015 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
--- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu
+-- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
@@ -19,12 +19,13 @@ import Data.Singletons.Names
 import Data.Singletons.Util
 import Data.Singletons.Syntax
 import Data.Singletons.Deriving.Infer
+import Data.Singletons.Deriving.Util
 import Control.Monad
 
 -- monadic only for failure and parallelism with other functions
 -- that make instances
-mkBoundedInstance :: DsMonad q => Maybe DCxt -> DType -> [DCon] -> q UInstDecl
-mkBoundedInstance mb_ctxt ty cons = do
+mkBoundedInstance :: DsMonad q => DerivDesc q
+mkBoundedInstance mb_ctxt ty (DataDecl _ _ cons) = do
   -- We can derive instance of Bounded if datatype is an enumeration (all
   -- constructors must be nullary) or has only one constructor. See Section 11
   -- of Haskell 2010 Language Report.

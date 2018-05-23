@@ -122,6 +122,7 @@ library
                       Data.Singletons.Deriving.Enum
                       Data.Singletons.Deriving.Ord
                       Data.Singletons.Deriving.Show
+                      Data.Singletons.Deriving.Util
                       Data.Singletons.Internal
                       Data.Singletons.Prelude.List.NonEmpty.Internal
                       Data.Singletons.Prelude.Semigroup.Internal

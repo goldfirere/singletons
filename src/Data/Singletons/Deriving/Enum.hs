@@ -16,6 +16,7 @@ module Data.Singletons.Deriving.Enum ( mkEnumInstance ) where
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Ppr
 import Language.Haskell.TH.Desugar
+import Data.Singletons.Deriving.Util
 import Data.Singletons.Syntax
 import Data.Singletons.Util
 import Data.Singletons.Names
@@ -23,8 +24,10 @@ import Control.Monad
 import Data.Maybe
 
 -- monadic for failure only
-mkEnumInstance :: Quasi q => Bool -> Maybe DCxt -> DType -> [DCon] -> q UInstDecl
-mkEnumInstance non_vanilla mb_ctxt ty cons = do
+mkEnumInstance :: DsMonad q => DerivDesc q
+mkEnumInstance mb_ctxt ty (DataDecl data_name tvbs cons) = do
+  let data_ty = foldTypeTvbs (DConT data_name) tvbs
+  non_vanilla <- isNonVanillaDataType data_ty cons
   when (null cons ||
         any (\(DCon _ _ _ f _) ->
               non_vanilla || not (null $ tysOfConFields f)) cons) $

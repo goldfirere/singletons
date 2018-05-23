@@ -3,7 +3,7 @@
 -- Module      :  Data.Singletons.Partition
 -- Copyright   :  (C) 2015 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
--- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu
+-- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
@@ -22,6 +22,7 @@ import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Deriving.Enum
 import Data.Singletons.Deriving.Show
+import Data.Singletons.Deriving.Util
 import Data.Singletons.Names
 import Language.Haskell.TH.Syntax hiding (showName)
 import Language.Haskell.TH.Ppr
@@ -63,17 +64,16 @@ partitionDec :: DsMonad m => DDec -> m PartitionedDecs
 partitionDec (DLetDec (DPragmaD {})) = return mempty
 partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
 
-partitionDec (DDataD nd _cxt name tvbs mk cons derivings) = do
-  extra_tvbs <- mkExtraDKindBinders $ fromMaybe (DConT typeKindName) mk
-  let all_tvbs = tvbs ++ extra_tvbs
-      data_dec = mempty { pd_data_decs = [DataDecl nd name all_tvbs cons []] }
+partitionDec (DDataD _nd _cxt name tvbs mk cons derivings) = do
+  all_tvbs <- buildDataDTvbs tvbs mk
+  let data_decl   = DataDecl name all_tvbs cons
+      derived_dec = mempty { pd_data_decs = [data_decl] }
       ty = foldTypeTvbs (DConT name) all_tvbs
-  non_vanilla <- isNonVanillaDataType ty cons
   derived_decs
-    <- mapM (\(strat, deriv_pred) -> partitionDeriving strat deriv_pred Nothing ty
-                                                       non_vanilla cons)
+    <- mapM (\(strat, deriv_pred) ->
+              partitionDeriving strat deriv_pred Nothing ty data_decl)
       $ concatMap flatten_clause derivings
-  return $ mconcat $ data_dec : derived_decs
+  return $ mconcat $ derived_dec : derived_decs
   where
     flatten_clause :: DDerivClause -> [(Maybe DerivStrategy, DType)]
     flatten_clause (DDerivClause strat preds) =
@@ -125,9 +125,9 @@ partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
             dinfo <- dsReify data_tycon
             case dinfo of
               Just (DTyConI (DDataD _ _ dn dtvbs dk dcons _) _) -> do
-                orig_data_ty <- buildDataDType dn dtvbs dk
-                non_vanilla  <- isNonVanillaDataType orig_data_ty dcons
-                partitionDeriving mb_strat cls_pred (Just ctxt) data_ty non_vanilla dcons
+                all_tvbs <- buildDataDTvbs dtvbs dk
+                let data_decl = DataDecl dn all_tvbs dcons
+                partitionDeriving mb_strat cls_pred (Just ctxt) data_ty data_decl
               Just _ ->
                 fail $ "Standalone derived instance for something other than a datatype: "
                        ++ show data_ty
@@ -169,13 +169,18 @@ partitionInstanceDec (DTySynInstD {}) = pure Nothing
 partitionInstanceDec _ =
   fail "Only method bodies can be promoted within an instance."
 
-partitionDeriving :: forall m. DsMonad m
-                  => Maybe DerivStrategy -> DType -> Maybe DCxt -> DType
-                  -> Bool -- Is this a non-vanilla data type? (See the
-                          -- documentation for 'isNonVanillaDataType'.)
-                  -> [DCon]
-                  -> m PartitionedDecs
-partitionDeriving mb_strat deriv_pred mb_ctxt ty non_vanilla cons =
+partitionDeriving
+  :: forall m. DsMonad m
+  => Maybe DerivStrategy
+                -- ^ The deriving strategy, if present.
+  -> DType      -- ^ The class being derived (e.g., 'Eq'), possibly applied to
+                --   some number of arguments (e.g., @C Int Bool@).
+  -> Maybe DCxt -- ^ @'Just' ctx@ if @ctx@ was provided via @StandaloneDeriving@.
+                --   'Nothing' if using a @deriving@ clause.
+  -> DType      -- ^ The data type argument to the class.
+  -> DataDecl   -- ^ The original data type information (e.g., its constructors).
+  -> m PartitionedDecs
+partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
   case unfoldType deriv_pred of
     DConT deriv_name :| arg_tys
          -- Here, we are more conservative than GHC: DeriveAnyClass only kicks
@@ -209,11 +214,11 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty non_vanilla cons =
                            -- type itself)
        | stock_or_default
        , deriv_name == ordName
-      -> mk_derived_inst <$> mk_instance' mkOrdInstance
+      -> mk_derived_inst <$> mk_instance mkOrdInstance
 
        | stock_or_default
        , deriv_name == boundedName
-      -> mk_derived_inst <$> mk_instance' mkBoundedInstance
+      -> mk_derived_inst <$> mk_instance mkBoundedInstance
 
        | stock_or_default
        , deriv_name == enumName
@@ -222,15 +227,15 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty non_vanilla cons =
          -- See Note [DerivedDecl] in Data.Singletons.Syntax
        | stock_or_default
        , deriv_name == eqName
-      -> return $ mk_derived_eq_inst $ mk_derived_decl mb_ctxt ty cons
+      -> return $ mk_derived_eq_inst derived_decl
 
          -- See Note [DerivedDecl] in Data.Singletons.Syntax
        | stock_or_default
        , deriv_name == showName
       -> do -- This will become PShow/SShow instances...
-            inst_for_promotion <- mk_instance' (mkShowInstance ForPromotion)
+            inst_for_promotion <- mk_instance (mkShowInstance ForPromotion)
             -- ...and this will become ShowSing/Show instances.
-            let inst_for_ShowSing = mk_derived_decl mb_ctxt ty cons
+            let inst_for_ShowSing = derived_decl
             pure $ mempty { pd_instance_decs     = [inst_for_promotion]
                           , pd_derived_show_decs = [inst_for_ShowSing] }
 
@@ -243,16 +248,14 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty non_vanilla cons =
 
     _ -> return mempty -- singletons doesn't support deriving this instance
   where
-      mk_instance maker = maker non_vanilla mb_ctxt ty cons
-      -- A variant of mk_instance that doesn't care whether the data type is
-      -- a vanilla data type.
-      mk_instance' maker = mk_instance (const maker)
+      mk_instance :: DerivDesc m -> m UInstDecl
+      mk_instance maker = maker mb_ctxt ty data_decl
 
       mk_derived_inst    dec = mempty { pd_instance_decs   = [dec] }
       mk_derived_eq_inst dec = mempty { pd_derived_eq_decs = [dec] }
-      mk_derived_decl mb_ctxt' ty' cons' = DerivedDecl { ded_mb_cxt = mb_ctxt'
-                                                       , ded_type   = ty'
-                                                       , ded_cons   = cons' }
+      derived_decl = DerivedDecl { ded_mb_cxt = mb_ctxt
+                                 , ded_type   = ty
+                                 , ded_decl   = data_decl }
       stock_or_default = isStockOrDefault mb_strat
 
 -- Is this being used with an explicit stock strategy, or no strategy at all?
@@ -260,62 +263,6 @@ isStockOrDefault :: Maybe DerivStrategy -> Bool
 isStockOrDefault Nothing              = True
 isStockOrDefault (Just StockStrategy) = True
 isStockOrDefault (Just _)             = False
-
-buildDataDType :: DsMonad q => Name -> [DTyVarBndr] -> Maybe DKind -> q DType
-buildDataDType n tvbs mk = do
-  extra_tvbs <- mkExtraDKindBinders $ fromMaybe (DConT typeKindName) mk
-  let all_tvbs = tvbs ++ extra_tvbs
-  pure $ foldTypeTvbs (DConT n) all_tvbs
-
--- | Is this data type a non-vanilla data type? Here, \"non-vanilla\" refers to
--- any data type that cannot be expressed using Haskell98 syntax. For instance,
--- this GADT:
---
--- @
--- data Foo :: Type -> Type where
---   MkFoo :: forall a. a -> Foo a
--- @
---
--- Is equivalent to this Haskell98 data type:
---
--- @
--- data Foo a = MkFoo a
--- @
---
--- However, the following GADT is non-vanilla:
---
--- @
--- data Bar :: Type -> Type where
---   MkBar :: Int -> Bar Int
--- @
---
--- Since there is no equivalent Haskell98 data type. The closest you could get
--- is this:
---
--- @
--- data Bar a = (a ~ Int) => MkBar Int
--- @
---
--- Which requires language extensions to write.
---
--- A data type is a non-vanilla if one of the following conditions are met:
---
--- 1. A constructor has any existentially quantified type variables.
---
--- 2. A constructor has a context.
---
--- We care about this because some derivable stock classes, such as 'Enum',
--- forbid derived instances for non-vanilla data types.
-isNonVanillaDataType :: forall q. DsMonad q => DType -> [DCon] -> q Bool
-isNonVanillaDataType data_ty = anyM $ \con@(DCon _ ctxt _ _ _) -> do
-    ex_tvbs <- conExistentialTvbs data_ty con
-    return $ not $ null ex_tvbs && null ctxt
-  where
-    anyM :: (a -> q Bool) -> [a] -> q Bool
-    anyM _ [] = return False
-    anyM p (x:xs) = do
-      b <- p x
-      if b then return True else anyM p xs
 
 {-
 Note [Partitioning, type synonyms, and type families]

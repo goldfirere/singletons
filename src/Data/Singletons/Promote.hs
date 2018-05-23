@@ -23,6 +23,7 @@ import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Deriving.Enum
 import Data.Singletons.Deriving.Show
+import Data.Singletons.Deriving.Util
 import Data.Singletons.Partition
 import Data.Singletons.Util
 import Data.Singletons.Syntax
@@ -86,7 +87,7 @@ promoteOrdInstances = concatMapM promoteOrdInstance
 
 -- | Produce an instance for 'POrd' from the given type
 promoteOrdInstance :: DsMonad q => Name -> q [Dec]
-promoteOrdInstance = promoteInstance (const mkOrdInstance) "Ord"
+promoteOrdInstance = promoteInstance mkOrdInstance "Ord"
 
 -- | Produce instances for 'PBounded' from the given types
 promoteBoundedInstances :: DsMonad q => [Name] -> q [Dec]
@@ -94,7 +95,7 @@ promoteBoundedInstances = concatMapM promoteBoundedInstance
 
 -- | Produce an instance for 'PBounded' from the given type
 promoteBoundedInstance :: DsMonad q => Name -> q [Dec]
-promoteBoundedInstance = promoteInstance (const mkBoundedInstance) "Bounded"
+promoteBoundedInstance = promoteInstance mkBoundedInstance "Bounded"
 
 -- | Produce instances for 'PEnum' from the given types
 promoteEnumInstances :: DsMonad q => [Name] -> q [Dec]
@@ -110,7 +111,7 @@ promoteShowInstances = concatMapM promoteShowInstance
 
 -- | Produce an instance for 'PShow' from the given type
 promoteShowInstance :: DsMonad q => Name -> q [Dec]
-promoteShowInstance = promoteInstance (const $ mkShowInstance ForPromotion) "Show"
+promoteShowInstance = promoteInstance (mkShowInstance ForPromotion) "Show"
 
 -- | Produce an instance for @(==)@ (type-level equality) from the given type
 promoteEqInstance :: DsMonad q => Name -> q [Dec]
@@ -123,16 +124,15 @@ promoteEqInstance name = do
   inst_decs <- mkEqTypeInstance kind cons'
   return $ decsToTH inst_decs
 
-promoteInstance :: DsMonad q => (Bool -> Maybe DCxt -> DType -> [DCon] -> q UInstDecl)
-                -> String -> Name -> q [Dec]
+promoteInstance :: DsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 promoteInstance mk_inst class_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
                             ++ " for it.") name
   tvbs' <- mapM dsTvb tvbs
-  let data_ty = foldTypeTvbs (DConT name) tvbs'
+  let data_ty   = foldTypeTvbs (DConT name) tvbs'
   cons' <- concatMapM (dsCon tvbs' data_ty) cons
-  non_vanilla <- isNonVanillaDataType data_ty cons'
-  raw_inst <- mk_inst non_vanilla Nothing (foldTypeTvbs (DConT name) tvbs') cons'
+  let data_decl = DataDecl name tvbs' cons'
+  raw_inst <- mk_inst Nothing data_ty data_decl
   decs <- promoteM_ [] $ void $ promoteInstanceDec Map.empty raw_inst
   return $ decsToTH decs
 
@@ -213,7 +213,7 @@ promoteDataDecs data_decs = do
   mapM_ promoteDataDec data_decs
   where
     extract_rec_selectors :: DataDecl -> PrM [DLetDec]
-    extract_rec_selectors (DataDecl _nd data_name tvbs cons _derivings) =
+    extract_rec_selectors (DataDecl data_name tvbs cons) =
       let arg_ty = foldTypeTvbs (DConT data_name) tvbs
       in
       getRecordSelectors arg_ty cons
@@ -247,7 +247,7 @@ promoteLetDecs prefixes decls = do
 --
 --  * for each nullary data constructor we generate a type synonym
 promoteDataDec :: DataDecl -> PrM ()
-promoteDataDec (DataDecl _nd _name _tvbs ctors _derivings) = do
+promoteDataDec (DataDecl _name _tvbs ctors) = do
   ctorSyms <- buildDefunSymsDataD ctors
   emitDecs ctorSyms
 
@@ -790,7 +790,8 @@ promoteLitPat lit =
 
 -- See Note [DerivedDecl]
 promoteDerivedEqDec :: DerivedEqDecl -> PrM ()
-promoteDerivedEqDec (DerivedDecl { ded_type = ty, ded_cons = cons }) = do
+promoteDerivedEqDec (DerivedDecl { ded_type = ty
+                                 , ded_decl = DataDecl _ _ cons }) = do
   kind <- promoteType ty
   inst_decs <- mkEqTypeInstance kind cons
   emitDecs inst_decs
