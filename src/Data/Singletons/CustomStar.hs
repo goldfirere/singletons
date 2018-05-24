@@ -78,8 +78,7 @@ singletonStar names = do
   let repDecl = DDataD Data [] repName [] (Just (DConT typeKindName)) ctors
                          [DDerivClause Nothing (map DConPr [''Eq, ''Ord, ''Read, ''Show])]
   fakeCtors <- zipWithM (mkCtor False) names kinds
-  let dataDecl = DataDecl Data repName [] fakeCtors
-                          [DConPr ''Show, DConPr ''Read]
+  let dataDecl = DataDecl repName [] fakeCtors
   -- Why do we need withLocalDeclarations here? It's because we end up
   -- expanding type synonyms when deriving instances for Rep, which requires
   -- reifying Rep itself. Since Rep hasn't been spliced in yet, we must put it
@@ -88,9 +87,9 @@ singletonStar names = do
     -- We opt to infer the constraints for the Eq instance here so that when it's
     -- promoted, Rep will be promoted to Type.
     dataDeclEqCxt <- inferConstraints (DConPr ''Eq) (DConT repName) fakeCtors
-    let dataDeclEqInst = DerivedDecl (Just dataDeclEqCxt) (DConT repName) fakeCtors
-    ordInst  <- mkOrdInstance Nothing (DConT repName) fakeCtors
-    showInst <- mkShowInstance ForPromotion Nothing (DConT repName) fakeCtors
+    let dataDeclEqInst = DerivedDecl (Just dataDeclEqCxt) (DConT repName) dataDecl
+    ordInst  <- mkOrdInstance Nothing (DConT repName) dataDecl
+    showInst <- mkShowInstance ForPromotion Nothing (DConT repName) dataDecl
     (pInsts, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
                                             promoteDerivedEqDec dataDeclEqInst
                                             traverse (promoteInstanceDec mempty)
@@ -111,9 +110,8 @@ singletonStar names = do
             DTyConI (DDataD _ (_:_) _ _ _ _ _) _ ->
                fail "Cannot make a representation of a constrained data type"
             DTyConI (DDataD _ [] _ tvbs mk _ _) _ -> do
-               extra_tvbs <- mkExtraDKindBinders $ fromMaybe (DConT typeKindName) mk
-               return $ map (fromMaybe (DConT typeKindName) . extractTvbKind)
-                      $ tvbs ++ extra_tvbs
+               all_tvbs <- buildDataDTvbs tvbs mk
+               return $ map (fromMaybe (DConT typeKindName) . extractTvbKind) all_tvbs
             DTyConI (DTySynD _ tvbs _) _ ->
                return $ map (fromMaybe (DConT typeKindName) . extractTvbKind) tvbs
             DPrimTyConI _ n _ ->

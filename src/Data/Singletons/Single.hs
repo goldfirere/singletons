@@ -18,6 +18,7 @@ import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Deriving.Enum
 import Data.Singletons.Deriving.Show
+import Data.Singletons.Deriving.Util
 import Data.Singletons.Util
 import Data.Singletons.Promote
 import Data.Singletons.Promote.Defun
@@ -153,7 +154,7 @@ singOrdInstances = concatMapM singOrdInstance
 
 -- | Create instance of 'SOrd' for the given type
 singOrdInstance :: DsMonad q => Name -> q [Dec]
-singOrdInstance = singInstance (const mkOrdInstance) "Ord"
+singOrdInstance = singInstance mkOrdInstance "Ord"
 
 -- | Create instances of 'SBounded' for the given types
 singBoundedInstances :: DsMonad q => [Name] -> q [Dec]
@@ -161,7 +162,7 @@ singBoundedInstances = concatMapM singBoundedInstance
 
 -- | Create instance of 'SBounded' for the given type
 singBoundedInstance :: DsMonad q => Name -> q [Dec]
-singBoundedInstance = singInstance (const mkBoundedInstance) "Bounded"
+singBoundedInstance = singInstance mkBoundedInstance "Bounded"
 
 -- | Create instances of 'SEnum' for the given types
 singEnumInstances :: DsMonad q => [Name] -> q [Dec]
@@ -175,7 +176,7 @@ singEnumInstance = singInstance mkEnumInstance "Enum"
 --
 -- (Not to be confused with 'showShowInstance'.)
 singShowInstance :: DsMonad q => Name -> q [Dec]
-singShowInstance = singInstance (const $ mkShowInstance ForPromotion) "Show"
+singShowInstance = singInstance (mkShowInstance ForPromotion) "Show"
 
 -- | Create instances of 'SShow' for the given types
 --
@@ -195,11 +196,12 @@ showSingInstance name = do
   dtvbs <- mapM dsTvb tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
-  let tyvars = map (DVarT . extractTvbName) dtvbs
-      kind = foldType (DConT name) tyvars
+  let tyvars    = map (DVarT . extractTvbName) dtvbs
+      kind      = foldType (DConT name) tyvars
+      data_decl = DataDecl name dtvbs dcons
       deriv_show_decl = DerivedDecl { ded_mb_cxt = Nothing
                                     , ded_type   = kind
-                                    , ded_cons   = dcons }
+                                    , ded_decl   = data_decl }
   (show_insts, _) <- singM [] $ singDerivedShowDecs deriv_show_decl
   pure $ decsToTH show_insts
 
@@ -209,17 +211,15 @@ showSingInstance name = do
 showSingInstances :: DsMonad q => [Name] -> q [Dec]
 showSingInstances = concatMapM showSingInstance
 
-singInstance :: DsMonad q
-             => (Bool -> Maybe DCxt -> DType -> [DCon] -> q UInstDecl)
-             -> String -> Name -> q [Dec]
+singInstance :: DsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 singInstance mk_inst inst_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
                             ++ " for it.") name
   dtvbs <- mapM dsTvb tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
-  non_vanilla <- isNonVanillaDataType data_ty dcons
-  raw_inst <- mk_inst non_vanilla Nothing (foldTypeTvbs (DConT name) dtvbs) dcons
+  let data_decl = DataDecl name dtvbs dcons
+  raw_inst <- mk_inst Nothing data_ty data_decl
   (a_inst, decs) <- promoteM [] $
                     promoteInstanceDec Map.empty raw_inst
   decs' <- singDecsM [] $ (:[]) <$> singInstD a_inst
@@ -278,7 +278,7 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
 
 -- see comment at top of file
 buildDataLets :: DataDecl -> [(Name, DExp)]
-buildDataLets (DataDecl _nd _name _tvbs cons _derivings) =
+buildDataLets (DataDecl _name _tvbs cons) =
   concatMap con_num_args cons
   where
     con_num_args :: DCon -> [(Name, DExp)]
@@ -718,7 +718,7 @@ singExp (ADSigE prom_exp exp ty) _ = do
 singDerivedEqDecs :: DerivedEqDecl -> SgM [DDec]
 singDerivedEqDecs (DerivedDecl { ded_mb_cxt = mb_ctxt
                                , ded_type   = ty
-                               , ded_cons   = cons }) = do
+                               , ded_decl   = DataDecl _ _ cons }) = do
   (scons, _) <- singM [] $ mapM singCtor cons
   mb_sctxt <- mapM (mapM singPred) mb_ctxt
   kind <- promoteType ty
@@ -747,9 +747,9 @@ sEqToSDecide = modifyConNameDPred $ \n ->
 singDerivedShowDecs :: DerivedShowDecl -> SgM [DDec]
 singDerivedShowDecs (DerivedDecl { ded_mb_cxt = mb_cxt
                                  , ded_type   = ty
-                                 , ded_cons   = cons }) = do
+                                 , ded_decl   = data_decl@(DataDecl _ _ cons) }) = do
     -- First, generate the ShowSing instance.
-    show_sing_inst <- mkShowInstance ForShowSing mb_cxt ty cons
+    show_sing_inst <- mkShowInstance ForShowSing mb_cxt ty data_decl
     z <- qNewName "z"
     -- Next, the Show instance for the singleton type, like this:
     --

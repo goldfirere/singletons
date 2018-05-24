@@ -3,7 +3,7 @@
 -- Module      :  Data.Singletons.Deriving.Ord
 -- Copyright   :  (C) 2015 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
--- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu
+-- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
@@ -18,11 +18,12 @@ import Data.Singletons.Names
 import Data.Singletons.Util
 import Language.Haskell.TH.Syntax
 import Data.Singletons.Deriving.Infer
+import Data.Singletons.Deriving.Util
 import Data.Singletons.Syntax
 
 -- | Make a *non-singleton* Ord instance
-mkOrdInstance :: DsMonad q => Maybe DCxt -> DType -> [DCon] -> q UInstDecl
-mkOrdInstance mb_ctxt ty cons = do
+mkOrdInstance :: DsMonad q => DerivDesc q
+mkOrdInstance mb_ctxt ty (DataDecl _ _ cons) = do
   constraints <- inferConstraintsDef mb_ctxt (DConPr ordName) ty cons
   compare_eq_clauses <- mapM mk_equal_clause cons
   let compare_noneq_clauses = map (uncurry mk_nonequal_clause)

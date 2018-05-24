@@ -30,6 +30,7 @@ import Data.Semigroup as Semigroup
 import Data.Foldable
 import Data.Traversable
 import Data.Generics
+import Data.Maybe
 import Data.Void
 import Control.Monad.Fail ( MonadFail )
 
@@ -361,6 +362,13 @@ unfoldType = go []
     go acc (DSigT t _)      = go acc t
     go acc (DForallT _ _ t) = go acc t
     go acc t                = t :| acc
+
+-- Construct a data type's variable binders, possibly using fresh variables
+-- from the data type's kind signature.
+buildDataDTvbs :: DsMonad q => [DTyVarBndr] -> Maybe DKind -> q [DTyVarBndr]
+buildDataDTvbs tvbs mk = do
+  extra_tvbs <- mkExtraDKindBinders $ fromMaybe (DConT typeKindName) mk
+  pure $ tvbs ++ extra_tvbs
 
 -- apply an expression to a list of expressions
 foldExp :: DExp -> [DExp] -> DExp

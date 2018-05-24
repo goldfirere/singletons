@@ -26,7 +26,7 @@ import Data.Set (Set)
 -- We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
 singDataD :: DataDecl -> SgM [DDec]
-singDataD (DataDecl _nd name tvbs ctors _derivings) = do
+singDataD (DataDecl name tvbs ctors) = do
   let tvbNames = map extractTvbName tvbs
   k <- promoteType (foldType (DConT name) (map DVarT tvbNames))
   ctors' <- mapM singCtor ctors
