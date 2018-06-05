@@ -74,17 +74,21 @@ library
                       Data.Singletons.TypeRepTYPE
                       Data.Singletons.TH
                       Data.Singletons.Prelude
+                      Data.Singletons.Prelude.Applicative
                       Data.Singletons.Prelude.Base
                       Data.Singletons.Prelude.Bool
                       Data.Singletons.Prelude.Either
                       Data.Singletons.Prelude.Enum
                       Data.Singletons.Prelude.Eq
                       Data.Singletons.Prelude.Function
+                      Data.Singletons.Prelude.Functor
                       Data.Singletons.Prelude.IsString
                       Data.Singletons.Prelude.Ord
                       Data.Singletons.Prelude.List
                       Data.Singletons.Prelude.List.NonEmpty
                       Data.Singletons.Prelude.Maybe
+                      Data.Singletons.Prelude.Monad
+                      Data.Singletons.Prelude.Monad.Zip
                       Data.Singletons.Prelude.Monoid
                       Data.Singletons.Prelude.Num
                       Data.Singletons.Prelude.Semigroup
@@ -93,17 +97,21 @@ library
                       Data.Singletons.Prelude.Void
                       Data.Promotion.Prelude
                       Data.Promotion.TH
+                      Data.Promotion.Prelude.Applicative
                       Data.Promotion.Prelude.Base
                       Data.Promotion.Prelude.Bool
                       Data.Promotion.Prelude.Either
                       Data.Promotion.Prelude.Eq
                       Data.Promotion.Prelude.Function
+                      Data.Promotion.Prelude.Functor
                       Data.Promotion.Prelude.IsString
                       Data.Promotion.Prelude.Ord
                       Data.Promotion.Prelude.Enum
                       Data.Promotion.Prelude.List
                       Data.Promotion.Prelude.List.NonEmpty
                       Data.Promotion.Prelude.Maybe
+                      Data.Promotion.Prelude.Monad
+                      Data.Promotion.Prelude.Monad.Zip
                       Data.Promotion.Prelude.Monoid
                       Data.Promotion.Prelude.Num
                       Data.Promotion.Prelude.Semigroup
@@ -125,6 +133,7 @@ library
                       Data.Singletons.Deriving.Util
                       Data.Singletons.Internal
                       Data.Singletons.Prelude.List.NonEmpty.Internal
+                      Data.Singletons.Prelude.Monad.Internal
                       Data.Singletons.Prelude.Semigroup.Internal
                       Data.Singletons.Promote
                       Data.Singletons.Promote.Monad

@@ -59,6 +59,8 @@ module Data.Singletons.Prelude.Semigroup (
   ArgSym0, ArgSym1, ArgSym2
   ) where
 
+import Control.Applicative
+import Control.Monad
 import qualified Data.Semigroup as Semi (Min(..), Max(..))
 import Data.Semigroup (First(..), Last(..), WrappedMonoid(..), Option(..), Arg(..))
 import Data.Singletons.Prelude.Base
@@ -66,6 +68,7 @@ import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Maybe
+import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Prelude.Monoid hiding
        (Sing(SFirst, SLast), SFirst, sGetFirst, SLast, sGetLast,
         FirstSym0, FirstSym1, LastSym0, LastSym1,
@@ -84,6 +87,13 @@ $(showSingInstances $ ''Option : semigroupBasicTypes)
 $(singShowInstances $ ''Option : semigroupBasicTypes)
 
 $(singletonsOnly [d|
+  instance Applicative Semi.Min where
+    pure = Semi.Min
+    a <* _ = a
+    _ *> a = a
+    Semi.Min f <*> Semi.Min x = Semi.Min (f x)
+    liftA2 f (Semi.Min a) (Semi.Min b) = Semi.Min (f a b)
+
   instance Enum a => Enum (Semi.Min a) where
     succ (Semi.Min a) = Semi.Min (succ a)
     pred (Semi.Min a) = Semi.Min (pred a)
@@ -91,6 +101,14 @@ $(singletonsOnly [d|
     fromEnum (Semi.Min a) = fromEnum a
     enumFromTo (Semi.Min a) (Semi.Min b) = Semi.Min `map` enumFromTo a b
     enumFromThenTo (Semi.Min a) (Semi.Min b) (Semi.Min c) = Semi.Min `map` enumFromThenTo a b c
+
+  -- deriving instance Functor Semi.Min
+  instance Functor Semi.Min where
+    fmap f (Semi.Min x) = Semi.Min (f x)
+
+  instance Monad Semi.Min where
+    (>>) = (*>)
+    Semi.Min a >>= f = f a
 
   instance Ord a => Semigroup (Semi.Min a) where
     Semi.Min a <> Semi.Min b = Semi.Min (a `min_` b)
@@ -107,6 +125,13 @@ $(singletonsOnly [d|
     signum (Semi.Min a) = Semi.Min (signum a)
     fromInteger         = Semi.Min . fromInteger
 
+  instance Applicative Semi.Max where
+    pure = Semi.Max
+    a <* _ = a
+    _ *> a = a
+    Semi.Max f <*> Semi.Max x = Semi.Max (f x)
+    liftA2 f (Semi.Max a) (Semi.Max b) = Semi.Max (f a b)
+
   instance Enum a => Enum (Semi.Max a) where
     succ (Semi.Max a) = Semi.Max (succ a)
     pred (Semi.Max a) = Semi.Max (pred a)
@@ -114,6 +139,14 @@ $(singletonsOnly [d|
     fromEnum (Semi.Max a) = fromEnum a
     enumFromTo (Semi.Max a) (Semi.Max b) = Semi.Max `map` enumFromTo a b
     enumFromThenTo (Semi.Max a) (Semi.Max b) (Semi.Max c) = Semi.Max `map` enumFromThenTo a b c
+
+  -- deriving instance Functor Semi.Max
+  instance Functor Semi.Max where
+    fmap f (Semi.Max x) = Semi.Max (f x)
+
+  instance Monad Semi.Max where
+    (>>) = (*>)
+    Semi.Max a >>= f = f a
 
   instance Ord a => Semigroup (Semi.Max a) where
     Semi.Max a <> Semi.Max b = Semi.Max (a `max_` b)
@@ -133,6 +166,10 @@ $(singletonsOnly [d|
   instance Eq a => Eq (Arg a b) where
     Arg a _ == Arg b _ = a == b
 
+  -- deriving instance Functor (Arg a)
+  instance Functor (Arg a) where
+    fmap f (Arg x a) = Arg x (f a)
+
   instance Ord a => Ord (Arg a b) where
     Arg a _ `compare` Arg b _ = compare a b
     min x@(Arg a _) y@(Arg b _)
@@ -144,6 +181,13 @@ $(singletonsOnly [d|
 
   deriving instance (Show a, Show b) => Show (Arg a b)
 
+  instance Applicative First where
+    pure x = First x
+    a <* _ = a
+    _ *> a = a
+    First f <*> First x = First (f x)
+    liftA2 f (First a) (First b) = First (f a b)
+
   instance Enum a => Enum (First a) where
     succ (First a) = First (succ a)
     pred (First a) = First (pred a)
@@ -152,8 +196,23 @@ $(singletonsOnly [d|
     enumFromTo (First a) (First b) = First `map` enumFromTo a b
     enumFromThenTo (First a) (First b) (First c) = First `map` enumFromThenTo a b c
 
+  -- deriving instance Functor First
+  instance Functor First where
+    fmap f (First x) = First (f x)
+
+  instance Monad First where
+    (>>) = (*>)
+    First a >>= f = f a
+
   instance Semigroup (First a) where
     a <> _ = a
+
+  instance Applicative Last where
+    pure x = Last x
+    a <* _ = a
+    _ *> a = a
+    Last f <*> Last x = Last (f x)
+    liftA2 f (Last a) (Last b) = Last (f a b)
 
   instance Enum a => Enum (Last a) where
     succ (Last a) = Last (succ a)
@@ -162,6 +221,15 @@ $(singletonsOnly [d|
     fromEnum (Last a) = fromEnum a
     enumFromTo (Last a) (Last b) = Last `map` enumFromTo a b
     enumFromThenTo (Last a) (Last b) (Last c) = Last `map` enumFromThenTo a b c
+
+  -- deriving instance Functor Last
+  instance Functor Last where
+    fmap f (Last x) = Last (f x)
+    a <$ _ = Last a
+
+  instance Monad Last where
+    (>>) = (*>)
+    Last a >>= f = f a
 
   instance Semigroup (Last a) where
     _ <> b = b
@@ -180,6 +248,30 @@ $(singletonsOnly [d|
     enumFromTo (WrapMonoid a) (WrapMonoid b) = WrapMonoid `map` enumFromTo a b
     enumFromThenTo (WrapMonoid a) (WrapMonoid b) (WrapMonoid c) =
         WrapMonoid `map` enumFromThenTo a b c
+
+  instance Alternative Option where
+    empty = Option Nothing
+    Option Nothing    <|> b = b
+    a@(Option Just{}) <|> _ = a
+
+  instance Applicative Option where
+    pure a = Option (Just a)
+    Option a <*> Option b = Option (a <*> b)
+    liftA2 f (Option x) (Option y) = Option (liftA2 f x y)
+
+    Option Nothing  *>  _ = Option Nothing
+    Option Just{}   *>  b = b
+
+  -- deriving instance Functor Option
+  instance Functor Option where
+    fmap f (Option a) = Option (fmap f a)
+
+  instance Monad Option where
+    Option (Just a) >>= k = k a
+    Option Nothing  >>= _ = Option Nothing
+    (>>) = (*>)
+
+  instance MonadPlus Option
 
   -- deriving newtype instance Semigroup a => Semigroup (Option a)
   instance Semigroup a => Semigroup (Option a) where

@@ -41,6 +41,7 @@ import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
+import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Ord hiding (MinSym0, MinSym1, MaxSym0, MaxSym1)
 import Data.Singletons.Promote
@@ -153,6 +154,17 @@ $(singDecideInstances $ ''Option : semigroupBasicTypes)
 $(singOrdInstances    $ ''Option : semigroupBasicTypes)
 
 $(singletonsOnly [d|
+  instance Applicative Dual where
+    pure = Dual
+    Dual f <*> Dual x = Dual (f x)
+
+  -- deriving instance Functor Dual
+  instance Functor Dual where
+    fmap f (Dual x) = Dual (f x)
+
+  instance Monad Dual where
+    Dual a >>= k = k a
+
   instance Semigroup a => Semigroup (Dual a) where
           Dual a <> Dual b = Dual (b <> a)
 
@@ -161,6 +173,17 @@ $(singletonsOnly [d|
 
   instance Semigroup Any where
           Any a <> Any b = Any (a || b)
+
+  instance Applicative Sum where
+    pure = Sum
+    Sum f <*> Sum x = Sum (f x)
+
+  -- deriving instance Functor Sum
+  instance Functor Sum where
+    fmap f (Sum x) = Sum (f x)
+
+  instance Monad Sum where
+    Sum a >>= k = k a
 
   instance Num a => Semigroup (Sum a) where
           Sum a <> Sum b = Sum (a + b)
@@ -174,6 +197,17 @@ $(singletonsOnly [d|
       abs    (Sum a) = Sum (abs a)
       signum (Sum a) = Sum (signum a)
       fromInteger n  = Sum (fromInteger n)
+
+  instance Applicative Product where
+    pure = Product
+    Product f <*> Product x = Product (f x)
+
+  -- deriving instance Functor Product
+  instance Functor Product where
+    fmap f (Product x) = Product (f x)
+
+  instance Monad Product where
+    Product a >>= k = k a
 
   instance Num a => Semigroup (Product a) where
           Product a <> Product b = Product (a * b)

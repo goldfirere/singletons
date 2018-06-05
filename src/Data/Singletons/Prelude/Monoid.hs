@@ -52,6 +52,7 @@ import Data.Semigroup hiding (First(..), Last(..))
 import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
+import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Semigroup.Internal hiding
@@ -172,12 +173,38 @@ $(singletonsOnly [d|
       mempty = Down mempty
       Down a `mappend` Down b = Down (a `mappend` b)
 
+  -- deriving newtype instance Applicative First
+  instance Applicative First where
+    pure = First . pure
+    First f <*> First x = First (f <*> x)
+
+  -- deriving instance Functor First
+  instance Functor First where
+    fmap f (First x) = First (fmap f x)
+
+  -- deriving newtype instance Monad First
+  instance Monad First where
+    First a >>= k = First (a >>= \x -> case k x of First y -> y)
+
   instance Semigroup (First a) where
           First Nothing    <> b = b
           a@(First Just{}) <> _ = a
 
   instance Monoid (First a) where
           mempty = First Nothing
+
+  -- deriving newtype instance Applicative Last
+  instance Applicative Last where
+    pure = Last . pure
+    Last f <*> Last x = Last (f <*> x)
+
+  -- deriving instance Functor Last
+  instance Functor Last where
+    fmap f (Last x) = Last (fmap f x)
+
+  -- deriving newtype instance Monad Last
+  instance Monad Last where
+    Last a >>= k = Last (a >>= \x -> case k x of Last y -> y)
 
   instance Semigroup (Last a) where
           a <> Last Nothing     = a

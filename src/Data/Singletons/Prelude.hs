@@ -65,6 +65,15 @@ module Data.Singletons.Prelude (
   PSemigroup(type (<>)), SSemigroup((%<>)),
   PMonoid(..), SMonoid(..),
 
+  -- * Singleton 'Functor', 'Applicative', and 'Monad'
+  PFunctor(Fmap, type (<$)), SFunctor(sFmap, (%<$)), type (<$>), (%<$>),
+  PApplicative(Pure, type (<*>), type (*>), type (<*)),
+  SApplicative(sPure, (%<*>), (%*>), (%<*)),
+  PMonad(type (>>=), type (>>), Return, Fail),
+  SMonad((%>>=), (%>>), sReturn, sFail),
+  -- MapM_, sMapM_,
+  type (=<<), (%=<<),
+
   -- ** Miscellaneous functions
   Id, sId, Const, sConst, (:.), (%.), type ($), (%$), type ($!), (%$!),
   Flip, sFlip, AsTypeOf, sAsTypeOf,
@@ -157,6 +166,18 @@ module Data.Singletons.Prelude (
   MappendSym0, MappendSym1, MappendSym2,
   MconcatSym0, MconcatSym1,
 
+  FmapSym0, FmapSym1, FmapSym2,
+  type (<$@#@$),  type (<$@#@$$),  type (<$@#@$$$),
+  type (<$>@#@$), type (<$>@#@$$), type (<$>@#@$$$),
+  PureSym0, PureSym1,
+  type (<*>@#@$), type (<*>@#@$$), type (<*>@#@$$$),
+  type (*>@#@$),  type (*>@#@$$),  type (*>@#@$$$),
+  type (<*@#@$),  type (<*@#@$$),  type (<*@#@$$$),
+  type (>>=@#@$), type (>>=@#@$$), type (>>=@#@$$$),
+  type (>>@#@$),  type (>>@#@$$),  type (>>@#@$$$),
+  ReturnSym0, ReturnSym1, FailSym0, FailSym1,
+  type (=<<@#@$), type (=<<@#@$$), type (=<<@#@$$$),
+
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   type (.@#@$),  type (.@#@$$),  type (.@#@$$$),
   type ($@#@$),  type ($@#@$$),  type ($@#@$$$),
@@ -209,11 +230,14 @@ module Data.Singletons.Prelude (
   ) where
 
 import Data.Singletons
+import Data.Singletons.Prelude.Applicative
 import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Either
+import Data.Singletons.Prelude.Functor
 import Data.Singletons.Prelude.List
 import Data.Singletons.Prelude.Maybe
+import Data.Singletons.Prelude.Monad
 import Data.Singletons.Prelude.Tuple
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Ord
