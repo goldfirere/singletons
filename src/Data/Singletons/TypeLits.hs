@@ -81,6 +81,15 @@ instance Eq Nat where
 instance Ord Nat where
   compare     = no_term_level_nats
 
+instance Enum Nat where
+  toEnum         = no_term_level_nats
+  fromEnum       = no_term_level_nats
+  enumFromTo     = no_term_level_nats
+  enumFromThenTo = no_term_level_nats
+
+instance Show Nat where
+  showsPrec      = no_term_level_nats
+
 -- | This bogus instance is helpful for people who want to define
 -- functions over Symbols that will only be used at the type level or
 -- as singletons.
@@ -98,6 +107,9 @@ instance Semigroup Symbol where
 
 instance Monoid Symbol where
   mempty = no_term_level_syms
+
+instance Show Symbol where
+  showsPrec = no_term_level_syms
 
 no_term_level_nats :: a
 no_term_level_nats = error "The kind `Nat` may not be used at the term level."

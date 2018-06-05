@@ -9,6 +9,9 @@ Changelog for singletons project
 * Fix a regression in which `a == a` no longer held when `a` was a `Nat` or a
   `Symbol`.
 
+* Add `Enum Nat`, `Show Nat`, and `Show Symbol` instances to
+  `Data.Singletons.TypeLits`.
+
 * Template Haskell-generated code may require `TypeInType` in scenarios which
   did not previously require it:
   * `singletons` now explicitly quantifies all kind variables used in explicit
