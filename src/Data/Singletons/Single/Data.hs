@@ -133,7 +133,7 @@ singCtor :: DCon -> SgM DCon
  -- like monomorphic ones -- the polymorphism in
  -- the kind is automatic
 singCtor (DCon _tvbs cxt name fields rty)
-  | not (null (filter (not . isEqPred) cxt))
+  | not (null cxt)
   = fail "Singling of constrained constructors not yet supported"
   | otherwise
   = do
@@ -158,7 +158,9 @@ singCtor (DCon _tvbs cxt name fields rty)
                        (foldType pCon kindedIndices))
                 [DLetDec $ DValD (DVarPa singMethName)
                        (foldExp sCon (map (const $ DVarE singMethName) types))]]
-  -- SingI instances for defunctionalization symbols
+  -- SingI instances for defunctionalization symbols. Note that we don't
+  -- support contexts in constructors at the moment, so it's fine for now to
+  -- just assume that the context is always ().
   emitDecs =<< singDefuns name DataName [] (map Just kinds) (Just rty')
 
   let noBang    = Bang NoSourceUnpackedness NoSourceStrictness
@@ -177,10 +179,3 @@ singCtor (DCon _tvbs cxt name fields rty)
         buildArgType bound_kvs ty index = do
           (ty', _, _, _, _, _) <- singType bound_kvs index ty
           return ty'
-
-        isEqPred :: DPred -> Bool
-        isEqPred (DAppPr f _) = isEqPred f
-        isEqPred (DSigPr p _) = isEqPred p
-        isEqPred (DVarPr _)   = False
-        isEqPred (DConPr n)   = n == equalityName
-        isEqPred DWildCardPr  = False

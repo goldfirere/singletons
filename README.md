@@ -566,7 +566,8 @@ The following constructs are fully supported:
 * sections
 * undefined
 * error
-* deriving `Eq`, `Ord`, `Show`, `Bounded`, and `Enum`
+* deriving `Eq`, `Ord`, `Show`, `Bounded`, and `Enum`, as well as the
+  `stock` and `anyclass` deriving strategies
 * class constraints (though these sometimes fail with `let`, `lambda`, and `case`)
 * literals (for `Nat` and `Symbol`), including overloaded number literals
 * unboxed tuples (which are treated as normal tuples)
@@ -580,7 +581,9 @@ The following constructs are fully supported:
 * scoped type variables
 * signatures (e.g., `(x :: Maybe a)`) in expressions and patterns
 * higher-kinded type variables (see below)
+* finite arithmetic sequences (see below)
 * functional dependencies (with limitations -- see below)
+* type families (with limitations -- see below)
 
 Higher-kinded type variables in `class`/`data` declarations must be annotated
 explicitly. This is due to GHC's handling of *complete
@@ -601,32 +604,49 @@ using the `DerivingStrategies` extension.
 (at least, for the classes listed above). `singletons` does not support the
 `newtype` strategy, as there is not an equivalent of `coerce` at the type level.
 
+`singletons` has partial support for arithmetic sequences (which desugar to
+methods from the `Enum` class under the hood). _Finite_ sequences (e.g.,
+[0..42]) are fully supported. However, _infinite_ sequences (e.g., [0..]),
+which desugar to calls to `enumFromTo` or `enumFromThenTo`, are not supported,
+as these would require using infinite lists at the type level.
+
 The following constructs are supported for promotion but not singleton generation:
+
+* datatypes with constructors which have contexts. For example, the following
+  datatype does not singletonize:
+
+    ```haskell
+    data T a where
+      MkT :: Show a => a -> T a
+    ```
+
+  Constructors like these do not interact well with the current design of the
+  `SingKind` class. But see
+  [this bug report](https://github.com/goldfirere/singletons/issues/150), which
+  proposes a redesign for `SingKind` (in a future version of GHC with certain
+  bugfixes) which could permit constructors with equality constraints.
 
 * overlapping patterns. Note that overlapping patterns are
   sometimes not obvious. For example, the `filter` function does not
   singletonize due
   to overlapping patterns:
-```haskell
-filter :: (a -> Bool) -> [a] -> [a]
-filter _pred []    = []
-filter pred (x:xs)
-  | pred x         = x : filter pred xs
-  | otherwise      = filter pred xs
-```
-Overlap is caused by `otherwise` catch-all guard, which is always true and thus
+
+    ```haskell
+    filter :: (a -> Bool) -> [a] -> [a]
+    filter _pred []    = []
+    filter pred (x:xs)
+      | pred x         = x : filter pred xs
+      | otherwise      = filter pred xs
+    ```
+  Overlap is caused by `otherwise` catch-all guard, which is always true and thus
 overlaps with `pred x` guard.
 
 The following constructs are not supported:
 
-* arithmetic sequences
 * datatypes that store arrows, `Nat`, or `Symbol`
 * literals (limited support)
 
 Why are these out of reach?
-
-Arithmetic sequences are defined using `Enum` typeclass, which uses infinite
-lists.
 
 As described in the promotion paper, promotion of datatypes that store arrows is
 currently impossible. So if you have a declaration such as
