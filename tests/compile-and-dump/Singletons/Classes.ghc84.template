@@ -317,12 +317,11 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (FooCompareSym1 (d :: Foo) :: (~>) Foo Ordering) where
       sing
-        = (singFun1 @(FooCompareSym1 (d :: Foo)))
-            (sFooCompare (sing @_ @d))
+        = (singFun1 @(FooCompareSym1 (d :: Foo))) (sFooCompare (sing @d))
     instance SingI (ConstSym0 :: (~>) a ((~>) b a)) where
       sing = (singFun2 @ConstSym0) sConst
     instance SingI d => SingI (ConstSym1 (d :: a) :: (~>) b a) where
-      sing = (singFun1 @(ConstSym1 (d :: a))) (sConst (sing @_ @d))
+      sing = (singFun1 @(ConstSym1 (d :: a))) (sConst (sing @d))
     data instance Sing :: Foo -> GHC.Types.Type :: Foo
                                                    -> GHC.Types.Type
       where
@@ -418,14 +417,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @MycompareSym0) sMycompare
     instance (SMyOrd a, SingI d) =>
              SingI (MycompareSym1 (d :: a) :: (~>) a Ordering) where
-      sing
-        = (singFun1 @(MycompareSym1 (d :: a))) (sMycompare (sing @_ @d))
+      sing = (singFun1 @(MycompareSym1 (d :: a))) (sMycompare (sing @d))
     instance SMyOrd a =>
              SingI ((<=>@#@$) :: (~>) a ((~>) a Ordering)) where
       sing = (singFun2 @(<=>@#@$)) (%<=>)
     instance (SMyOrd a, SingI d) =>
              SingI ((<=>@#@$$) (d :: a) :: (~>) a Ordering) where
-      sing = (singFun1 @((<=>@#@$$) (d :: a))) ((%<=>) (sing @_ @d))
+      sing = (singFun1 @((<=>@#@$$) (d :: a))) ((%<=>) (sing @d))
 Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     promote
       [d| instance Ord Foo2 where

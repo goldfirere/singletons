@@ -85,11 +85,10 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     instance SingI (IdFooSym0 :: (~>) c ((~>) a a)) where
       sing = (singFun2 @IdFooSym0) sIdFoo
     instance SingI d => SingI (IdFooSym1 (d :: c) :: (~>) a a) where
-      sing = (singFun1 @(IdFooSym1 (d :: c))) (sIdFoo (sing @_ @d))
+      sing = (singFun1 @(IdFooSym1 (d :: c))) (sIdFoo (sing @d))
     instance SingI (ReturnFuncSym0 :: (~>) Nat ((~>) Nat Nat)) where
       sing = (singFun2 @ReturnFuncSym0) sReturnFunc
     instance SingI d =>
              SingI (ReturnFuncSym1 (d :: Nat) :: (~>) Nat Nat) where
       sing
-        = (singFun1 @(ReturnFuncSym1 (d :: Nat)))
-            (sReturnFunc (sing @_ @d))
+        = (singFun1 @(ReturnFuncSym1 (d :: Nat))) (sReturnFunc (sing @d))

@@ -67,9 +67,9 @@ $(singEqInstances basicTypes)
 instance SEq a => SingI ((==@#@$) :: a ~> a ~> Bool) where
   sing = singFun2 (%==)
 instance (SEq a, SingI x) => SingI ((==@#@$$) x :: a ~> Bool) where
-  sing = singFun1 (sing @_ @x %==)
+  sing = singFun1 (sing @x %==)
 
 instance SEq a => SingI ((/=@#@$) :: a ~> a ~> Bool) where
   sing = singFun2 (%/=)
 instance (SEq a, SingI x) => SingI ((/=@#@$$) x :: a ~> Bool) where
-  sing = singFun1 (sing @_ @x %/=)
+  sing = singFun1 (sing @x %/=)

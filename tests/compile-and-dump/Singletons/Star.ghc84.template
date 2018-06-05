@@ -420,7 +420,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sing = (singFun2 @(TyCon2 Vec)) SVec
     instance SingI d =>
              SingI (VecSym1 (d :: Type) :: (~>) Nat Type) where
-      sing = (singFun1 @(VecSym1 (d :: Type))) (SVec (sing @_ @d))
+      sing = (singFun1 @(VecSym1 (d :: Type))) (SVec (sing @d))
     instance SingI d =>
              SingI (TyCon1 (Vec (d :: Type)) :: (~>) Nat Type) where
-      sing = (singFun1 @(TyCon1 (Vec (d :: Type)))) (SVec (sing @_ @d))
+      sing = (singFun1 @(TyCon1 (Vec (d :: Type)))) (SVec (sing @d))

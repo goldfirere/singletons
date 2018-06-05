@@ -203,11 +203,11 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @LeqSym0) sLeq
     instance SingI d =>
              SingI (LeqSym1 (d :: Nat) :: (~>) Nat Bool) where
-      sing = (singFun1 @(LeqSym1 (d :: Nat))) (sLeq (sing @_ @d))
+      sing = (singFun1 @(LeqSym1 (d :: Nat))) (sLeq (sing @d))
     instance SingI (InsertSym0 :: (~>) Nat ((~>) [Nat] [Nat])) where
       sing = (singFun2 @InsertSym0) sInsert
     instance SingI d =>
              SingI (InsertSym1 (d :: Nat) :: (~>) [Nat] [Nat]) where
-      sing = (singFun1 @(InsertSym1 (d :: Nat))) (sInsert (sing @_ @d))
+      sing = (singFun1 @(InsertSym1 (d :: Nat))) (sInsert (sing @d))
     instance SingI (InsertionSortSym0 :: (~>) [Nat] [Nat]) where
       sing = (singFun1 @InsertionSortSym0) sInsertionSort

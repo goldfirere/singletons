@@ -400,48 +400,47 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
              SingI (FooSym1 (d :: (~>) ((~>) a b) ((~>) a b)) :: (~>) ((~>) a b) ((~>) a b)) where
       sing
         = (singFun2 @(FooSym1 (d :: (~>) ((~>) a b) ((~>) a b))))
-            (sFoo (sing @_ @d))
+            (sFoo (sing @d))
     instance (SingI d, SingI d) =>
              SingI (FooSym2 (d :: (~>) ((~>) a b) ((~>) a b)) (d :: (~>) a b) :: (~>) a b) where
       sing
         = (singFun1
              @(FooSym2 (d :: (~>) ((~>) a b) ((~>) a b)) (d :: (~>) a b)))
-            ((sFoo (sing @_ @d)) (sing @_ @d))
+            ((sFoo (sing @d)) (sing @d))
     instance SingI (ZipWithSym0 :: (~>) ((~>) a ((~>) b c)) ((~>) [a] ((~>) [b] [c]))) where
       sing = (singFun3 @ZipWithSym0) sZipWith
     instance SingI d =>
              SingI (ZipWithSym1 (d :: (~>) a ((~>) b c)) :: (~>) [a] ((~>) [b] [c])) where
       sing
         = (singFun2 @(ZipWithSym1 (d :: (~>) a ((~>) b c))))
-            (sZipWith (sing @_ @d))
+            (sZipWith (sing @d))
     instance (SingI d, SingI d) =>
              SingI (ZipWithSym2 (d :: (~>) a ((~>) b c)) (d :: [a]) :: (~>) [b] [c]) where
       sing
         = (singFun1 @(ZipWithSym2 (d :: (~>) a ((~>) b c)) (d :: [a])))
-            ((sZipWith (sing @_ @d)) (sing @_ @d))
+            ((sZipWith (sing @d)) (sing @d))
     instance SingI (SplungeSym0 :: (~>) [Nat] ((~>) [Bool] [Nat])) where
       sing = (singFun2 @SplungeSym0) sSplunge
     instance SingI d =>
              SingI (SplungeSym1 (d :: [Nat]) :: (~>) [Bool] [Nat]) where
-      sing
-        = (singFun1 @(SplungeSym1 (d :: [Nat]))) (sSplunge (sing @_ @d))
+      sing = (singFun1 @(SplungeSym1 (d :: [Nat]))) (sSplunge (sing @d))
     instance SingI (EtadSym0 :: (~>) [Nat] ((~>) [Bool] [Nat])) where
       sing = (singFun2 @EtadSym0) sEtad
     instance SingI d =>
              SingI (EtadSym1 (d :: [Nat]) :: (~>) [Bool] [Nat]) where
-      sing = (singFun1 @(EtadSym1 (d :: [Nat]))) (sEtad (sing @_ @d))
+      sing = (singFun1 @(EtadSym1 (d :: [Nat]))) (sEtad (sing @d))
     instance SingI (LiftMaybeSym0 :: (~>) ((~>) a b) ((~>) (Maybe a) (Maybe b))) where
       sing = (singFun2 @LiftMaybeSym0) sLiftMaybe
     instance SingI d =>
              SingI (LiftMaybeSym1 (d :: (~>) a b) :: (~>) (Maybe a) (Maybe b)) where
       sing
         = (singFun1 @(LiftMaybeSym1 (d :: (~>) a b)))
-            (sLiftMaybe (sing @_ @d))
+            (sLiftMaybe (sing @d))
     instance SingI (MapSym0 :: (~>) ((~>) a b) ((~>) [a] [b])) where
       sing = (singFun2 @MapSym0) sMap
     instance SingI d =>
              SingI (MapSym1 (d :: (~>) a b) :: (~>) [a] [b]) where
-      sing = (singFun1 @(MapSym1 (d :: (~>) a b))) (sMap (sing @_ @d))
+      sing = (singFun1 @(MapSym1 (d :: (~>) a b))) (sMap (sing @d))
     data instance Sing :: Either a b -> GHC.Types.Type :: Either a b
                                                           -> GHC.Types.Type
       where

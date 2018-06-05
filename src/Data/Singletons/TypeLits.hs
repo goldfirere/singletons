@@ -157,7 +157,7 @@ $(genDefunSymbols [''Div])
 instance SingI DivSym0 where
   sing = singFun2 sDiv
 instance SingI x => SingI (DivSym1 x) where
-  sing = singFun1 $ sDiv (sing @_ @x)
+  sing = singFun1 $ sDiv (sing @x)
 
 sMod :: Sing x -> Sing y -> Sing (Mod x y)
 sMod sx sy =
@@ -171,7 +171,7 @@ $(genDefunSymbols [''Mod])
 instance SingI ModSym0 where
   sing = singFun2 sMod
 instance SingI x => SingI (ModSym1 x) where
-  sing = singFun1 $ sMod $ sing @_ @x
+  sing = singFun1 $ sMod $ sing @x
 
 $(promoteOnly [d|
   divMod :: Nat -> Nat -> (Nat, Nat)

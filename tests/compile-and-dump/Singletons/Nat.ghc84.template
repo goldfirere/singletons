@@ -160,7 +160,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @PlusSym0) sPlus
     instance SingI d =>
              SingI (PlusSym1 (d :: Nat) :: (~>) Nat Nat) where
-      sing = (singFun1 @(PlusSym1 (d :: Nat))) (sPlus (sing @_ @d))
+      sing = (singFun1 @(PlusSym1 (d :: Nat))) (sPlus (sing @d))
     data instance Sing :: Nat -> GHC.Types.Type :: Nat
                                                    -> GHC.Types.Type
       where

@@ -477,7 +477,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
     instance SingI (Foo7Sym0 :: (~>) a ((~>) b a)) where
       sing = (singFun2 @Foo7Sym0) sFoo7
     instance SingI d => SingI (Foo7Sym1 (d :: a) :: (~>) b a) where
-      sing = (singFun1 @(Foo7Sym1 (d :: a))) (sFoo7 (sing @_ @d))
+      sing = (singFun1 @(Foo7Sym1 (d :: a))) (sFoo7 (sing @d))
     instance SingI (Foo6Sym0 :: (~>) (Maybe (Maybe a)) (Maybe (Maybe a))) where
       sing = (singFun1 @Foo6Sym0) sFoo6
     instance SingI (Foo5Sym0 :: (~>) (Maybe (Maybe a)) (Maybe (Maybe a))) where

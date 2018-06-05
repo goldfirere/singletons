@@ -241,7 +241,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @(TyCon2 Pair)) SPair
     instance SingI d =>
              SingI (PairSym1 (d :: Bool) :: (~>) Bool Pair) where
-      sing = (singFun1 @(PairSym1 (d :: Bool))) (SPair (sing @_ @d))
+      sing = (singFun1 @(PairSym1 (d :: Bool))) (SPair (sing @d))
     instance SingI d =>
              SingI (TyCon1 (Pair (d :: Bool)) :: (~>) Bool Pair) where
-      sing = (singFun1 @(TyCon1 (Pair (d :: Bool)))) (SPair (sing @_ @d))
+      sing = (singFun1 @(TyCon1 (Pair (d :: Bool)))) (SPair (sing @d))

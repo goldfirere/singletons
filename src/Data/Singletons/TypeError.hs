@@ -170,18 +170,18 @@ instance SingI ((:<>:@#@$) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) w
 instance SingI (TyCon2 '(:<>:) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
   sing = singFun2 (:%<>:)
 instance SingI x => SingI ((:<>:@#@$$) x :: PErrorMessage ~> PErrorMessage) where
-  sing = singFun1 (sing @_ @x :%<>:)
+  sing = singFun1 (sing @x :%<>:)
 instance SingI x => SingI (TyCon1 ('(:<>:) x) :: PErrorMessage ~> PErrorMessage) where
-  sing = singFun1 (sing @_ @x :%<>:)
+  sing = singFun1 (sing @x :%<>:)
 
 instance SingI ((:$$:@#@$) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
   sing = singFun2 (:%$$:)
 instance SingI (TyCon2 '(:$$:) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
   sing = singFun2 (:%$$:)
 instance SingI x => SingI ((:$$:@#@$$) x :: PErrorMessage ~> PErrorMessage) where
-  sing = singFun1 (sing @_ @x :%$$:)
+  sing = singFun1 (sing @x :%$$:)
 instance SingI x => SingI (TyCon1 ('(:$$:) x) :: PErrorMessage ~> PErrorMessage) where
-  sing = singFun1 (sing @_ @x :%$$:)
+  sing = singFun1 (sing @x :%$$:)
 
 instance SingI TypeErrorSym0 where
   sing = singFun1 sTypeError

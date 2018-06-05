@@ -531,20 +531,19 @@ singLetDecRHS :: Map Name [Name]
               -> Map Name DKind   -- result kind (might not be known)
               -> Name -> ALetDecRHS -> SgM DLetDec
 singLetDecRHS bound_names cxts res_kis name ld_rhs =
-  bindContext (Map.findWithDefault [] name cxts) $ go ld_rhs
-  where
-    go :: ALetDecRHS -> SgM DLetDec
-    go  (AValue prom num_arrows exp) =
-      DValD (DVarPa (singValName name)) <$>
-      (wrapUnSingFun num_arrows prom <$> singExp exp (Map.lookup name res_kis))
-    go (AFunction prom_fun num_arrows clauses) =
-      let tyvar_names = case Map.lookup name bound_names of
-                          Nothing -> []
-                          Just ns -> ns
-          res_ki = Map.lookup name res_kis
-      in
-      DFunD (singValName name) <$>
-            mapM (singClause prom_fun num_arrows tyvar_names res_ki) clauses
+  bindContext (Map.findWithDefault [] name cxts) $
+    case ld_rhs of
+      AValue prom num_arrows exp ->
+        DValD (DVarPa (singValName name)) <$>
+        (wrapUnSingFun num_arrows prom <$> singExp exp (Map.lookup name res_kis))
+      AFunction prom_fun num_arrows clauses ->
+        let tyvar_names = case Map.lookup name bound_names of
+                            Nothing -> []
+                            Just ns -> ns
+            res_ki = Map.lookup name res_kis
+        in
+        DFunD (singValName name) <$>
+              mapM (singClause prom_fun num_arrows tyvar_names res_ki) clauses
 
 singClause :: DType   -- the promoted function
            -> Int     -- the number of arrows in the type. If this is more

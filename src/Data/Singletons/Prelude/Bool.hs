@@ -80,7 +80,7 @@ $(genDefunSymbols [''(&&)])
 instance SingI (&&@#@$) where
   sing = singFun2 (%&&)
 instance SingI x => SingI ((&&@#@$$) x) where
-  sing = singFun1 (sing @_ @x  %&&)
+  sing = singFun1 (sing @x %&&)
 
 -- | Disjunction of singletons
 (%||) :: Sing a -> Sing b -> Sing (a || b)
@@ -91,7 +91,7 @@ $(genDefunSymbols [''(||)])
 instance SingI (||@#@$) where
   sing = singFun2 (%||)
 instance SingI x => SingI ((||@#@$$) x) where
-  sing = singFun1 (sing @_ @x %||)
+  sing = singFun1 (sing @x %||)
 
 -- | Negation of a singleton
 sNot :: Sing a -> Sing (Not a)

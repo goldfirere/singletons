@@ -16,9 +16,9 @@ eqTYPETest2 = Refl
 
 f :: Sing (a :: Type) -> Maybe a
 f tr
-  | Proved Refl <- tr %~ sing @Type @Bool
+  | Proved Refl <- tr %~ sing @Bool
   = Just True
-  | Proved Refl <- tr %~ sing @Type @Ordering
+  | Proved Refl <- tr %~ sing @Ordering
   = Just EQ
   | otherwise
   = Nothing
@@ -29,9 +29,9 @@ data MaybeWordRep (a :: TYPE 'WordRep)
 
 g :: Sing (a :: TYPE 'WordRep) -> MaybeWordRep a
 g tr
-  | Proved Refl <- tr %~ sing @(TYPE 'WordRep) @Word#
+  | Proved Refl <- tr %~ sing @Word#
   = JustWordRep 42##
-  | Proved Refl <- tr %~ sing @(TYPE 'WordRep) @Char#
+  | Proved Refl <- tr %~ sing @Char#
   = JustWordRep 'j'#
   | otherwise
   = NothingWordRep

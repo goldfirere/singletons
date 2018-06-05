@@ -36,7 +36,7 @@ import Language.Haskell.TH.Syntax
 --
 -- We can declare SingI instances for these two symbols like so:
 --
---   instance SEq a => Sing (FooSym0 :: a ~> a ~> Bool) where
+--   instance SEq a => SingI (FooSym0 :: a ~> a ~> Bool) where
 --     sing = singFun2 sFoo
 --
 --   instance (SEq a, SingI x) => SingI (FooSym1 x :: a ~> Bool) where
@@ -93,9 +93,7 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
 
         mk_sing_fun_expr :: DExp -> DExp
         mk_sing_fun_expr sing_expr =
-          foldl' (\f tvb_n -> f `DAppE` (DVarE singMethName
-                                          `DAppTypeE` DWildCardT
-                                          `DAppTypeE` DVarT tvb_n))
+          foldl' (\f tvb_n -> f `DAppE` (DVarE singMethName `DAppTypeE` DVarT tvb_n))
                  sing_expr
                  (map extractTvbName tvbs)
 

@@ -202,7 +202,7 @@ $(genDefunSymbols [''(^)])
 instance SingI (^@#@$) where
   sing = singFun2 (%^)
 instance SingI x => SingI ((^@#@$$) x) where
-  sing = singFun1 (sing @_ @x %^)
+  sing = singFun1 (sing @x %^)
 
 -- | The singleton analogue of 'TN.<=?'
 --
@@ -230,4 +230,4 @@ $(genDefunSymbols [''(<=?)])
 instance SingI (<=?@#@$) where
   sing = singFun2 (%<=?)
 instance SingI x => SingI ((<=?@#@$$) x) where
-  sing = singFun1 (sing @_ @x %<=?)
+  sing = singFun1 (sing @x %<=?)

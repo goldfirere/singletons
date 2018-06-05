@@ -393,17 +393,17 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun3 @(TyCon3 Baz)) SBaz
     instance SingI d =>
              SingI (BazSym1 (d :: Nat) :: (~>) Nat ((~>) Nat Baz)) where
-      sing = (singFun2 @(BazSym1 (d :: Nat))) (SBaz (sing @_ @d))
+      sing = (singFun2 @(BazSym1 (d :: Nat))) (SBaz (sing @d))
     instance SingI d =>
              SingI (TyCon2 (Baz (d :: Nat)) :: (~>) Nat ((~>) Nat Baz)) where
-      sing = (singFun2 @(TyCon2 (Baz (d :: Nat)))) (SBaz (sing @_ @d))
+      sing = (singFun2 @(TyCon2 (Baz (d :: Nat)))) (SBaz (sing @d))
     instance (SingI d, SingI d) =>
              SingI (BazSym2 (d :: Nat) (d :: Nat) :: (~>) Nat Baz) where
       sing
         = (singFun1 @(BazSym2 (d :: Nat) (d :: Nat)))
-            ((SBaz (sing @_ @d)) (sing @_ @d))
+            ((SBaz (sing @d)) (sing @d))
     instance (SingI d, SingI d) =>
              SingI (TyCon1 (Baz (d :: Nat) (d :: Nat)) :: (~>) Nat Baz) where
       sing
         = (singFun1 @(TyCon1 (Baz (d :: Nat) (d :: Nat))))
-            ((SBaz (sing @_ @d)) (sing @_ @d))
+            ((SBaz (sing @d)) (sing @d))

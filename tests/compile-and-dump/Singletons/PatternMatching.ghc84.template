@@ -194,10 +194,10 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @(TyCon2 Pair)) SPair
     instance SingI d =>
              SingI (PairSym1 (d :: a) :: (~>) b (Pair a b)) where
-      sing = (singFun1 @(PairSym1 (d :: a))) (SPair (sing @_ @d))
+      sing = (singFun1 @(PairSym1 (d :: a))) (SPair (sing @d))
     instance SingI d =>
              SingI (TyCon1 (Pair (d :: a)) :: (~>) b (Pair a b)) where
-      sing = (singFun1 @(TyCon1 (Pair (d :: a)))) (SPair (sing @_ @d))
+      sing = (singFun1 @(TyCon1 (Pair (d :: a)))) (SPair (sing @d))
 Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| Pair sz lz = pr

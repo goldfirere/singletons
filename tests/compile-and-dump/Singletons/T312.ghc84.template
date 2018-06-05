@@ -67,4 +67,4 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @BarSym0) sBar
     instance (SFoo a, SingI d) =>
              SingI (BarSym1 (d :: a) :: (~>) b b) where
-      sing = (singFun1 @(BarSym1 (d :: a))) (sBar (sing @_ @d))
+      sing = (singFun1 @(BarSym1 (d :: a))) (sBar (sing @d))
