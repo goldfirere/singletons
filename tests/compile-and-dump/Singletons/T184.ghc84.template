@@ -494,3 +494,20 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
                                                   ((applySing ((singFun1 @GuardSym0) sGuard)) sB)))
                                               ((applySing ((singFun1 @ReturnSym0) sReturn))
                                                  sA) })) }))
+    instance SingI (TruesSym0 :: (~>) [Bool] [Bool]) where
+      sing = (singFun1 @TruesSym0) sTrues
+    instance SingI (CartProdSym0 :: (~>) [a] ((~>) [b] [(a, b)])) where
+      sing = (singFun2 @CartProdSym0) sCartProd
+    instance SingI d =>
+             SingI (CartProdSym1 (d :: [a]) :: (~>) [b] [(a, b)]) where
+      sing = (singFun1 @(CartProdSym1 (d :: [a]))) (sCartProd (sing @d))
+    instance SingI (Zip'Sym0 :: (~>) [a] ((~>) [b] [(a, b)])) where
+      sing = (singFun2 @Zip'Sym0) sZip'
+    instance SingI d =>
+             SingI (Zip'Sym1 (d :: [a]) :: (~>) [b] [(a, b)]) where
+      sing = (singFun1 @(Zip'Sym1 (d :: [a]))) (sZip' (sing @d))
+    instance SingI (BoogieSym0 :: (~>) (Maybe a) ((~>) (Maybe Bool) (Maybe a))) where
+      sing = (singFun2 @BoogieSym0) sBoogie
+    instance SingI d =>
+             SingI (BoogieSym1 (d :: Maybe a) :: (~>) (Maybe Bool) (Maybe a)) where
+      sing = (singFun1 @(BoogieSym1 (d :: Maybe a))) (sBoogie (sing @d))

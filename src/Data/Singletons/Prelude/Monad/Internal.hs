@@ -41,6 +41,35 @@ import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
 import Data.Singletons.TypeLits.Internal
 
+{-
+Note [How to get the right kinds when promoting Functor and friends]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Promoting Functor, Applicative, Monad, etc. can be tricky, since the code
+that singletons wants to generate often falls into certain pitfalls:
+
+1. To avoid running afoul of a CUSK validity check (see Note [CUSKification]),
+   classes with type parameters that lack explicit kind signatures will
+   be defaulted to be of kind Type. This is not what you want for
+   Functor, however, since its argument is of kind (Type -> Type), so
+   we must explicitly use this kind when declaring the Functor class
+   (and other classes in this module).
+
+2. Certain methods do not have enough kind information to avoid running
+   into a separate CUSK validity check when being defunctionalized. For
+   instance, for consider the following method of Applicative:
+
+      (*>) :: f a -> f b -> f b
+
+   When defunctionalized, this will have a return kind that looks roughly like
+   (:: forall f a. f a ~> f b ~> f b). While this is a CUSK, the variables
+   `a` and `b` are undeterdetermined, so this will error. To avoid this, we
+   provide an additional kind signature on `f`, like so:
+
+      (*>) :: (f :: Type -> Type) a -> f b -> f b
+
+   This trick is used in several places throughout this module.
+-}
+
 $(singletonsOnly [d|
   infixl 4  <$
 
