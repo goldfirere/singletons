@@ -3,7 +3,7 @@
 -- Module      :  Data.Promotion.Prelude.IsString
 -- Copyright   :  (C) 2017 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
--- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
+-- Maintainer  :  Ryan Scott
 -- Stability   :  experimental
 -- Portability :  non-portable
 --

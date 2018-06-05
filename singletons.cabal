@@ -6,7 +6,7 @@ synopsis:       A framework for generating singleton types
 homepage:       http://www.github.com/goldfirere/singletons
 category:       Dependent Types
 author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
-maintainer:     Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
+maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
 tested-with:    GHC == 8.4.3

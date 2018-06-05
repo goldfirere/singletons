@@ -5,7 +5,7 @@
 -- Module      :  Data.Singletons.Deriving.Util
 -- Copyright   :  (C) 2018 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
--- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
+-- Maintainer  :  Ryan Scott
 -- Stability   :  experimental
 -- Portability :  non-portable
 --

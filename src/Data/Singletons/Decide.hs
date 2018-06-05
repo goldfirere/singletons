@@ -7,7 +7,7 @@
 -- Module      :  Data.Singletons.Decide
 -- Copyright   :  (C) 2013 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
--- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
+-- Maintainer  :  Ryan Scott
 -- Stability   :  experimental
 -- Portability :  non-portable
 --

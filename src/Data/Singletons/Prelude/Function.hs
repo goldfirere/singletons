@@ -3,7 +3,7 @@
 -- Module      :  Data.Singletons.Prelude.Function
 -- Copyright   :  (C) 2016 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
--- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
+-- Maintainer  :  Ryan Scott
 -- Stability   :  experimental
 -- Portability :  non-portable
 --

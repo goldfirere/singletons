@@ -8,7 +8,7 @@
 -- Module      :  Data.Singletons.Prelude.Num
 -- Copyright   :  (C) 2014 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
--- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
+-- Maintainer  :  Ryan Scott
 -- Stability   :  experimental
 -- Portability :  non-portable
 --

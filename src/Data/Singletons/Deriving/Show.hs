@@ -3,7 +3,7 @@
 -- Module      :  Data.Singletons.Deriving.Show
 -- Copyright   :  (C) 2017 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
--- Maintainer  :  Richard Eisenberg (rae@cs.brynmawr.edu)
+-- Maintainer  :  Ryan Scott
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
