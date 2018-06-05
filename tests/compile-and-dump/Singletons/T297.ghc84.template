@@ -25,15 +25,16 @@ Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
     type Let0123456789876543210XSym0 = Let0123456789876543210X
     type family Let0123456789876543210X where
       Let0123456789876543210X = Let0123456789876543210ZSym0
-    type FSym1 t = F t
+    type FSym1 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FSym0KindInference) GHC.Tuple.())
-    data FSym0 l :: Type
+    data FSym0 a0123456789876543210
       where
-        FSym0KindInference :: forall l arg.
-                              SameKind (Apply FSym0 arg) (FSym1 arg) => FSym0 l
-    type instance Apply FSym0 l = F l
+        FSym0KindInference :: forall a0123456789876543210 arg.
+                              SameKind (Apply FSym0 arg) (FSym1 arg) =>
+                              FSym0 a0123456789876543210
+    type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
     type family F a where
       F MyProxy = Let0123456789876543210XSym0
     sF :: forall arg. Sing arg -> Sing (Apply FSym0 arg)

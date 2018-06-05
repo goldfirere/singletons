@@ -142,11 +142,6 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
             tycon_inst_ty = DConT (mkTyConName sing_fun_num) `DAppT`
                             foldType (DConT n) tvb_tys
 
--- | Convert a 'DTyVarBndr' into a 'DType'.
-dTyVarBndrToDType :: DTyVarBndr -> DType
-dTyVarBndrToDType (DPlainTV a)    = DVarT a
-dTyVarBndrToDType (DKindedTV a k) = DVarT a `DSigT` k
-
 {-
 Note [singDefuns and type inference]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

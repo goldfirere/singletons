@@ -29,6 +29,16 @@ Changelog for singletons project
   through Template Haskell. As a result, you may need to enable
   `FlexibleInstances` in more places.
 
+* `genDefunSymbols` is now more robust with respect to types that use
+  dependent quantification à la `TypeInType`, such as:
+
+  ```haskell
+  type family MyProxy k (a :: k) :: Type where
+    MyProxy k (a :: k) = Proxy a
+  ```
+
+  See the documentation for `genDefunSymbols` for limitations to this.
+
 * Rename `Data.Singletons.TypeRepStar` to `Data.Singletons.TypeRepTYPE`, and
   generalize the `Sing :: Type -> Type` instance to `Sing :: TYPE rep -> Type`,
   allowing it to work over more open kinds. Also rename `SomeTypeRepStar` to

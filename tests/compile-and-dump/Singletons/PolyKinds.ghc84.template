@@ -5,16 +5,19 @@ Singletons/PolyKinds.hs:(0,0)-(0,0): Splicing declarations
   ======>
     class Cls (a :: k) where
       fff :: Proxy (a :: k) -> ()
-    type FffSym1 (t :: Proxy (a0123456789876543210 :: k0123456789876543210)) =
-        Fff t
+    type FffSym1 (arg0123456789876543210 :: Proxy (a0123456789876543210 :: k0123456789876543210)) =
+        Fff arg0123456789876543210
     instance SuppressUnusedWarnings FffSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FffSym0KindInference) GHC.Tuple.())
-    data FffSym0 (l :: TyFun (Proxy (a0123456789876543210 :: k0123456789876543210)) ()) :: GHC.Types.Type
+    data FffSym0 :: forall k0123456789876543210
+                           (a0123456789876543210 :: k0123456789876543210).
+                    (~>) (Proxy (a0123456789876543210 :: k0123456789876543210)) ()
       where
-        FffSym0KindInference :: forall l arg.
-                                SameKind (Apply FffSym0 arg) (FffSym1 arg) => FffSym0 l
-    type instance Apply FffSym0 l = Fff l
+        FffSym0KindInference :: forall arg0123456789876543210 arg.
+                                SameKind (Apply FffSym0 arg) (FffSym1 arg) =>
+                                FffSym0 arg0123456789876543210
+    type instance Apply FffSym0 arg0123456789876543210 = Fff arg0123456789876543210
     class PCls (a :: k) where
       type Fff (arg :: Proxy (a :: k)) :: ()
     class SCls (a :: k) where

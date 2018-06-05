@@ -17,42 +17,50 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
     baz x = (not $! x)
     ban :: Bool -> Bool
     ban x = ((not . (not . not)) $! x)
-    type BanSym1 (t :: Bool) = Ban t
+    type BanSym1 (a0123456789876543210 :: Bool) =
+        Ban a0123456789876543210
     instance SuppressUnusedWarnings BanSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BanSym0KindInference) GHC.Tuple.())
-    data BanSym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+    data BanSym0 :: (~>) Bool Bool
       where
-        BanSym0KindInference :: forall l arg.
-                                SameKind (Apply BanSym0 arg) (BanSym1 arg) => BanSym0 l
-    type instance Apply BanSym0 l = Ban l
-    type BazSym1 (t :: Bool) = Baz t
+        BanSym0KindInference :: forall a0123456789876543210 arg.
+                                SameKind (Apply BanSym0 arg) (BanSym1 arg) =>
+                                BanSym0 a0123456789876543210
+    type instance Apply BanSym0 a0123456789876543210 = Ban a0123456789876543210
+    type BazSym1 (a0123456789876543210 :: Bool) =
+        Baz a0123456789876543210
     instance SuppressUnusedWarnings BazSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BazSym0KindInference) GHC.Tuple.())
-    data BazSym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+    data BazSym0 :: (~>) Bool Bool
       where
-        BazSym0KindInference :: forall l arg.
-                                SameKind (Apply BazSym0 arg) (BazSym1 arg) => BazSym0 l
-    type instance Apply BazSym0 l = Baz l
-    type BarSym1 (t :: Bool) = Bar t
+        BazSym0KindInference :: forall a0123456789876543210 arg.
+                                SameKind (Apply BazSym0 arg) (BazSym1 arg) =>
+                                BazSym0 a0123456789876543210
+    type instance Apply BazSym0 a0123456789876543210 = Baz a0123456789876543210
+    type BarSym1 (a0123456789876543210 :: Bool) =
+        Bar a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) BarSym0KindInference) GHC.Tuple.())
-    data BarSym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+    data BarSym0 :: (~>) Bool Bool
       where
-        BarSym0KindInference :: forall l arg.
-                                SameKind (Apply BarSym0 arg) (BarSym1 arg) => BarSym0 l
-    type instance Apply BarSym0 l = Bar l
-    type FooSym1 (t :: Bool) = Foo t
+        BarSym0KindInference :: forall a0123456789876543210 arg.
+                                SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
+                                BarSym0 a0123456789876543210
+    type instance Apply BarSym0 a0123456789876543210 = Bar a0123456789876543210
+    type FooSym1 (a0123456789876543210 :: Bool) =
+        Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooSym0KindInference) GHC.Tuple.())
-    data FooSym0 (l :: TyFun Bool Bool) :: GHC.Types.Type
+    data FooSym0 :: (~>) Bool Bool
       where
-        FooSym0KindInference :: forall l arg.
-                                SameKind (Apply FooSym0 arg) (FooSym1 arg) => FooSym0 l
-    type instance Apply FooSym0 l = Foo l
+        FooSym0KindInference :: forall a0123456789876543210 arg.
+                                SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
+                                FooSym0 a0123456789876543210
+    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
     type family Ban (a :: Bool) :: Bool where
       Ban x = Apply (Apply ($!@#@$) (Apply (Apply (.@#@$) NotSym0) (Apply (Apply (.@#@$) NotSym0) NotSym0))) x
     type family Baz (a :: Bool) :: Bool where

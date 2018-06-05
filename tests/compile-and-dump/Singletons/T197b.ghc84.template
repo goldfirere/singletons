@@ -9,45 +9,56 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     data Pair a b = MkPair a b
     infixr 9 `Pair`
     infixr 9 `MkPair`
-    type (:*:@#@$$$) (t :: a0123456789876543210) (t :: b0123456789876543210) =
-        (:*:) t t
-    instance SuppressUnusedWarnings (:*:@#@$$) where
+    type (:*:@#@$$$) (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: b0123456789876543210) =
+        (:*:) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings ((:*:@#@$$) t0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::*:@#@$$###)) GHC.Tuple.())
-    data (:*:@#@$$) (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 ((:*:) a0123456789876543210 b0123456789876543210)) :: GHC.Types.Type
+    data (:*:@#@$$) (t0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
+                                                                      (~>) b0123456789876543210 ((:*:) a0123456789876543210 b0123456789876543210)
       where
-        (::*:@#@$$###) :: forall l l arg.
-                          SameKind (Apply ((:*:@#@$$) l) arg) ((:*:@#@$$$) l arg) =>
-                          (:*:@#@$$) l l
-    type instance Apply ((:*:@#@$$) l) l = (:*:) l l
+        (::*:@#@$$###) :: forall t0123456789876543210
+                                 t0123456789876543210
+                                 arg.
+                          SameKind (Apply ((:*:@#@$$) t0123456789876543210) arg) ((:*:@#@$$$) t0123456789876543210 arg) =>
+                          (:*:@#@$$) t0123456789876543210 t0123456789876543210
+    type instance Apply ((:*:@#@$$) t0123456789876543210) t0123456789876543210 = (:*:) t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (:*:@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (::*:@#@$###)) GHC.Tuple.())
-    data (:*:@#@$) (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 ((:*:) a0123456789876543210 b0123456789876543210))) :: GHC.Types.Type
+    data :*:@#@$ :: forall a0123456789876543210 b0123456789876543210.
+                    (~>) a0123456789876543210 ((~>) b0123456789876543210 ((:*:) a0123456789876543210 b0123456789876543210))
       where
-        (::*:@#@$###) :: forall l arg.
-                         SameKind (Apply (:*:@#@$) arg) ((:*:@#@$$) arg) => (:*:@#@$) l
-    type instance Apply (:*:@#@$) l = (:*:@#@$$) l
-    type MkPairSym2 (t :: a0123456789876543210) (t :: b0123456789876543210) =
-        MkPair t t
-    instance SuppressUnusedWarnings MkPairSym1 where
+        (::*:@#@$###) :: forall t0123456789876543210 arg.
+                         SameKind (Apply (:*:@#@$) arg) ((:*:@#@$$) arg) =>
+                         (:*:@#@$) t0123456789876543210
+    type instance Apply (:*:@#@$) t0123456789876543210 = (:*:@#@$$) t0123456789876543210
+    type MkPairSym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: b0123456789876543210) =
+        MkPair t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (MkPairSym1 t0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MkPairSym1KindInference) GHC.Tuple.())
-    data MkPairSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210)) :: GHC.Types.Type
+    data MkPairSym1 (t0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
+                                                                      (~>) b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210)
       where
-        MkPairSym1KindInference :: forall l l arg.
-                                   SameKind (Apply (MkPairSym1 l) arg) (MkPairSym2 l arg) =>
-                                   MkPairSym1 l l
-    type instance Apply (MkPairSym1 l) l = MkPair l l
+        MkPairSym1KindInference :: forall t0123456789876543210
+                                          t0123456789876543210
+                                          arg.
+                                   SameKind (Apply (MkPairSym1 t0123456789876543210) arg) (MkPairSym2 t0123456789876543210 arg) =>
+                                   MkPairSym1 t0123456789876543210 t0123456789876543210
+    type instance Apply (MkPairSym1 t0123456789876543210) t0123456789876543210 = MkPair t0123456789876543210 t0123456789876543210
     infixr 9 `MkPairSym1`
     instance SuppressUnusedWarnings MkPairSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MkPairSym0KindInference) GHC.Tuple.())
-    data MkPairSym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210))) :: GHC.Types.Type
+    data MkPairSym0 :: forall a0123456789876543210
+                              b0123456789876543210.
+                       (~>) a0123456789876543210 ((~>) b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210))
       where
-        MkPairSym0KindInference :: forall l arg.
-                                   SameKind (Apply MkPairSym0 arg) (MkPairSym1 arg) => MkPairSym0 l
-    type instance Apply MkPairSym0 l = MkPairSym1 l
+        MkPairSym0KindInference :: forall t0123456789876543210 arg.
+                                   SameKind (Apply MkPairSym0 arg) (MkPairSym1 arg) =>
+                                   MkPairSym0 t0123456789876543210
+    type instance Apply MkPairSym0 t0123456789876543210 = MkPairSym1 t0123456789876543210
     infixr 9 `MkPairSym0`
     infixr 9 `SPair`
     infixr 9 `SMkPair`

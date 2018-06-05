@@ -4,16 +4,17 @@ Promote/Prelude.hs:(0,0)-(0,0): Splicing declarations
           odd 0 = False
           odd n = not . odd $ n - 1 |]
   ======>
-    type OddSym1 (t :: Nat) = Odd t
+    type OddSym1 (a0123456789876543210 :: Nat) =
+        Odd a0123456789876543210
     instance SuppressUnusedWarnings OddSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) OddSym0KindInference) GHC.Tuple.())
-    data OddSym0 (l :: TyFun Nat Bool) :: GHC.Types.Type
+    data OddSym0 :: (Data.Singletons.Internal.~>) Nat Bool
       where
-        OddSym0KindInference :: forall l arg.
+        OddSym0KindInference :: forall a0123456789876543210 arg.
                                 Data.Singletons.Internal.SameKind (Apply OddSym0 arg) (OddSym1 arg) =>
-                                OddSym0 l
-    type instance Apply OddSym0 l = Odd l
+                                OddSym0 a0123456789876543210
+    type instance Apply OddSym0 a0123456789876543210 = Odd a0123456789876543210
     type family Odd (a :: Nat) :: Bool where
       Odd 0 = FalseSym0
       Odd n = Apply (Apply ($@#@$) (Apply (Apply (.@#@$) NotSym0) OddSym0)) (Apply (Apply (-@#@$) n) (FromInteger 1))

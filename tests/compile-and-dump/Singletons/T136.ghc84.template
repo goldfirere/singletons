@@ -33,36 +33,38 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
       Succ_0123456789876543210 '[] = Apply (Apply (:@#@$) TrueSym0) '[]
       Succ_0123456789876543210 ((:) False as) = Apply (Apply (:@#@$) TrueSym0) as
       Succ_0123456789876543210 ((:) True as) = Apply (Apply (:@#@$) FalseSym0) (Apply SuccSym0 as)
-    type Succ_0123456789876543210Sym1 (t :: [Bool]) =
-        Succ_0123456789876543210 t
+    type Succ_0123456789876543210Sym1 (a0123456789876543210 :: [Bool]) =
+        Succ_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Succ_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Succ_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Succ_0123456789876543210Sym0 (l :: TyFun [Bool] [Bool]) :: GHC.Types.Type
+    data Succ_0123456789876543210Sym0 :: (~>) [Bool] [Bool]
       where
-        Succ_0123456789876543210Sym0KindInference :: forall l arg.
+        Succ_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                            arg.
                                                      SameKind (Apply Succ_0123456789876543210Sym0 arg) (Succ_0123456789876543210Sym1 arg) =>
-                                                     Succ_0123456789876543210Sym0 l
-    type instance Apply Succ_0123456789876543210Sym0 l = Succ_0123456789876543210 l
+                                                     Succ_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Succ_0123456789876543210Sym0 a0123456789876543210 = Succ_0123456789876543210 a0123456789876543210
     type family Pred_0123456789876543210 (a :: [Bool]) :: [Bool] where
       Pred_0123456789876543210 '[] = Apply ErrorSym0 "pred 0"
       Pred_0123456789876543210 ((:) False as) = Apply (Apply (:@#@$) TrueSym0) (Apply PredSym0 as)
       Pred_0123456789876543210 ((:) True as) = Apply (Apply (:@#@$) FalseSym0) as
-    type Pred_0123456789876543210Sym1 (t :: [Bool]) =
-        Pred_0123456789876543210 t
+    type Pred_0123456789876543210Sym1 (a0123456789876543210 :: [Bool]) =
+        Pred_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Pred_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Pred_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Pred_0123456789876543210Sym0 (l :: TyFun [Bool] [Bool]) :: GHC.Types.Type
+    data Pred_0123456789876543210Sym0 :: (~>) [Bool] [Bool]
       where
-        Pred_0123456789876543210Sym0KindInference :: forall l arg.
+        Pred_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                            arg.
                                                      SameKind (Apply Pred_0123456789876543210Sym0 arg) (Pred_0123456789876543210Sym1 arg) =>
-                                                     Pred_0123456789876543210Sym0 l
-    type instance Apply Pred_0123456789876543210Sym0 l = Pred_0123456789876543210 l
+                                                     Pred_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Pred_0123456789876543210Sym0 a0123456789876543210 = Pred_0123456789876543210 a0123456789876543210
     type family Case_0123456789876543210 i arg_0123456789876543210 t where
       Case_0123456789876543210 i arg_0123456789876543210 True = '[]
       Case_0123456789876543210 i arg_0123456789876543210 False = Apply SuccSym0 (Apply ToEnumSym0 (Apply PredSym0 i))
@@ -73,36 +75,38 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 arg_0123456789876543210 i = Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (<@#@$) i) (FromInteger 0))
     type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: [Bool] where
       ToEnum_0123456789876543210 arg_0123456789876543210 = Case_0123456789876543210 arg_0123456789876543210 arg_0123456789876543210
-    type ToEnum_0123456789876543210Sym1 (t :: GHC.Types.Nat) =
-        ToEnum_0123456789876543210 t
+    type ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) =
+        ToEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ToEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data ToEnum_0123456789876543210Sym0 (l :: TyFun GHC.Types.Nat [Bool]) :: GHC.Types.Type
+    data ToEnum_0123456789876543210Sym0 :: (~>) GHC.Types.Nat [Bool]
       where
-        ToEnum_0123456789876543210Sym0KindInference :: forall l arg.
+        ToEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                              arg.
                                                        SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
-                                                       ToEnum_0123456789876543210Sym0 l
-    type instance Apply ToEnum_0123456789876543210Sym0 l = ToEnum_0123456789876543210 l
+                                                       ToEnum_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     type family FromEnum_0123456789876543210 (a :: [Bool]) :: GHC.Types.Nat where
       FromEnum_0123456789876543210 '[] = FromInteger 0
       FromEnum_0123456789876543210 ((:) False as) = Apply (Apply (*@#@$) (FromInteger 2)) (Apply FromEnumSym0 as)
       FromEnum_0123456789876543210 ((:) True as) = Apply (Apply (+@#@$) (FromInteger 1)) (Apply (Apply (*@#@$) (FromInteger 2)) (Apply FromEnumSym0 as))
-    type FromEnum_0123456789876543210Sym1 (t :: [Bool]) =
-        FromEnum_0123456789876543210 t
+    type FromEnum_0123456789876543210Sym1 (a0123456789876543210 :: [Bool]) =
+        FromEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) FromEnum_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data FromEnum_0123456789876543210Sym0 (l :: TyFun [Bool] GHC.Types.Nat) :: GHC.Types.Type
+    data FromEnum_0123456789876543210Sym0 :: (~>) [Bool] GHC.Types.Nat
       where
-        FromEnum_0123456789876543210Sym0KindInference :: forall l arg.
+        FromEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                arg.
                                                          SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
-                                                         FromEnum_0123456789876543210Sym0 l
-    type instance Apply FromEnum_0123456789876543210Sym0 l = FromEnum_0123456789876543210 l
+                                                         FromEnum_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance PEnum [Bool] where
       type Succ a = Apply Succ_0123456789876543210Sym0 a
       type Pred a = Apply Pred_0123456789876543210Sym0 a

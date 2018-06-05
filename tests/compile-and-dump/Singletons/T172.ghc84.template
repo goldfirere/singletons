@@ -3,24 +3,28 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
       [d| ($>) :: Nat -> Nat -> Nat
           ($>) = (+) |]
   ======>
-    type ($>@#@$$$) (t :: Nat) (t :: Nat) = ($>) t t
-    instance SuppressUnusedWarnings ($>@#@$$) where
+    type ($>@#@$$$) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
+        ($>) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (($>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:$>@#@$$###)) GHC.Tuple.())
-    data ($>@#@$$) (l :: Nat) (l :: TyFun Nat Nat) :: GHC.Types.Type
+    data ($>@#@$$) (a0123456789876543210 :: Nat) :: (~>) Nat Nat
       where
-        (:$>@#@$$###) :: forall l l arg.
-                         SameKind (Apply (($>@#@$$) l) arg) (($>@#@$$$) l arg) =>
-                         ($>@#@$$) l l
-    type instance Apply (($>@#@$$) l) l = ($>) l l
+        (:$>@#@$$###) :: forall a0123456789876543210
+                                a0123456789876543210
+                                arg.
+                         SameKind (Apply (($>@#@$$) a0123456789876543210) arg) (($>@#@$$$) a0123456789876543210 arg) =>
+                         ($>@#@$$) a0123456789876543210 a0123456789876543210
+    type instance Apply (($>@#@$$) a0123456789876543210) a0123456789876543210 = ($>) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ($>@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:$>@#@$###)) GHC.Tuple.())
-    data ($>@#@$) (l :: TyFun Nat ((~>) Nat Nat)) :: GHC.Types.Type
+    data $>@#@$ :: (~>) Nat ((~>) Nat Nat)
       where
-        (:$>@#@$###) :: forall l arg.
-                        SameKind (Apply ($>@#@$) arg) (($>@#@$$) arg) => ($>@#@$) l
-    type instance Apply ($>@#@$) l = ($>@#@$$) l
+        (:$>@#@$###) :: forall a0123456789876543210 arg.
+                        SameKind (Apply ($>@#@$) arg) (($>@#@$$) arg) =>
+                        ($>@#@$) a0123456789876543210
+    type instance Apply ($>@#@$) a0123456789876543210 = ($>@#@$$) a0123456789876543210
     type family ($>) (a :: Nat) (a :: Nat) :: Nat where
       ($>) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (+@#@$) a_0123456789876543210) a_0123456789876543210
     (%$>) ::

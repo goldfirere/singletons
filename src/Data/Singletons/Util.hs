@@ -335,6 +335,10 @@ substKindInTvb :: Map Name DKind -> DTyVarBndr -> DTyVarBndr
 substKindInTvb _ tvb@(DPlainTV _) = tvb
 substKindInTvb subst (DKindedTV n ki) = DKindedTV n (substKind subst ki)
 
+cuskify :: DTyVarBndr -> DTyVarBndr
+cuskify (DPlainTV tvname) = DKindedTV tvname $ DConT typeKindName
+cuskify tvb               = tvb
+
 -- apply a type to a list of types
 foldType :: DType -> [DType] -> DType
 foldType = foldl DAppT

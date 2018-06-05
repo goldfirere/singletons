@@ -7,26 +7,29 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
     contains :: Eq a => a -> [a] -> Bool
     contains _ GHC.Types.[] = False
     contains elt (h GHC.Types.: t) = ((elt == h) || ((contains elt) t))
-    type ContainsSym2 (t :: a0123456789876543210) (t :: [a0123456789876543210]) =
-        Contains t t
-    instance SuppressUnusedWarnings ContainsSym1 where
+    type ContainsSym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: [a0123456789876543210]) =
+        Contains a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (ContainsSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ContainsSym1KindInference) GHC.Tuple.())
-    data ContainsSym1 (l :: a0123456789876543210) (l :: TyFun [a0123456789876543210] Bool) :: GHC.Types.Type
+    data ContainsSym1 (a0123456789876543210 :: a0123456789876543210) :: (~>) [a0123456789876543210] Bool
       where
-        ContainsSym1KindInference :: forall l l arg.
-                                     SameKind (Apply (ContainsSym1 l) arg) (ContainsSym2 l arg) =>
-                                     ContainsSym1 l l
-    type instance Apply (ContainsSym1 l) l = Contains l l
+        ContainsSym1KindInference :: forall a0123456789876543210
+                                            a0123456789876543210
+                                            arg.
+                                     SameKind (Apply (ContainsSym1 a0123456789876543210) arg) (ContainsSym2 a0123456789876543210 arg) =>
+                                     ContainsSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (ContainsSym1 a0123456789876543210) a0123456789876543210 = Contains a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ContainsSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ContainsSym0KindInference) GHC.Tuple.())
-    data ContainsSym0 (l :: TyFun a0123456789876543210 ((~>) [a0123456789876543210] Bool)) :: GHC.Types.Type
+    data ContainsSym0 :: forall a0123456789876543210.
+                         (~>) a0123456789876543210 ((~>) [a0123456789876543210] Bool)
       where
-        ContainsSym0KindInference :: forall l arg.
+        ContainsSym0KindInference :: forall a0123456789876543210 arg.
                                      SameKind (Apply ContainsSym0 arg) (ContainsSym1 arg) =>
-                                     ContainsSym0 l
-    type instance Apply ContainsSym0 l = ContainsSym1 l
+                                     ContainsSym0 a0123456789876543210
+    type instance Apply ContainsSym0 a0123456789876543210 = ContainsSym1 a0123456789876543210
     type family Contains (a :: a) (a :: [a]) :: Bool where
       Contains _ '[] = FalseSym0
       Contains elt ((:) h t) = Apply (Apply (||@#@$) (Apply (Apply (==@#@$) elt) h)) (Apply (Apply ContainsSym0 elt) t)

@@ -21,36 +21,42 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
     foo3 = ((zipWith (+)) [Succ Zero, Succ Zero]) [Zero, Succ Zero]
     type family Lambda_0123456789876543210 t where
       Lambda_0123456789876543210 lhs_0123456789876543210 = Apply (Apply (+@#@$) lhs_0123456789876543210) (Apply SuccSym0 ZeroSym0)
-    type Lambda_0123456789876543210Sym1 t =
-        Lambda_0123456789876543210 t
+    type Lambda_0123456789876543210Sym1 t0123456789876543210 =
+        Lambda_0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) Lambda_0123456789876543210Sym0KindInference)
                GHC.Tuple.())
-    data Lambda_0123456789876543210Sym0 l :: GHC.Types.Type
+    data Lambda_0123456789876543210Sym0 t0123456789876543210
       where
-        Lambda_0123456789876543210Sym0KindInference :: forall l arg.
+        Lambda_0123456789876543210Sym0KindInference :: forall t0123456789876543210
+                                                              arg.
                                                        SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
-                                                       Lambda_0123456789876543210Sym0 l
-    type instance Apply Lambda_0123456789876543210Sym0 l = Lambda_0123456789876543210 l
-    type (+@#@$$$) (t :: Nat) (t :: Nat) = (+) t t
-    instance SuppressUnusedWarnings (+@#@$$) where
+                                                       Lambda_0123456789876543210Sym0 t0123456789876543210
+    type instance Apply Lambda_0123456789876543210Sym0 t0123456789876543210 = Lambda_0123456789876543210 t0123456789876543210
+    type (+@#@$$$) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
+        (+) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings ((+@#@$$) a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+@#@$$###)) GHC.Tuple.())
-    data (+@#@$$) (l :: Nat) (l :: TyFun Nat Nat) :: GHC.Types.Type
+    data (+@#@$$) (a0123456789876543210 :: Nat) :: (~>) Nat Nat
       where
-        (:+@#@$$###) :: forall l l arg.
-                        SameKind (Apply ((+@#@$$) l) arg) ((+@#@$$$) l arg) => (+@#@$$) l l
-    type instance Apply ((+@#@$$) l) l = (+) l l
+        (:+@#@$$###) :: forall a0123456789876543210
+                               a0123456789876543210
+                               arg.
+                        SameKind (Apply ((+@#@$$) a0123456789876543210) arg) ((+@#@$$$) a0123456789876543210 arg) =>
+                        (+@#@$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((+@#@$$) a0123456789876543210) a0123456789876543210 = (+) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (+@#@$) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) (:+@#@$###)) GHC.Tuple.())
-    data (+@#@$) (l :: TyFun Nat ((~>) Nat Nat)) :: GHC.Types.Type
+    data +@#@$ :: (~>) Nat ((~>) Nat Nat)
       where
-        (:+@#@$###) :: forall l arg.
-                       SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) => (+@#@$) l
-    type instance Apply (+@#@$) l = (+@#@$$) l
+        (:+@#@$###) :: forall a0123456789876543210 arg.
+                       SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
+                       (+@#@$) a0123456789876543210
+    type instance Apply (+@#@$) a0123456789876543210 = (+@#@$$) a0123456789876543210
     type Foo1Sym0 = Foo1
     type Foo2Sym0 = Foo2
     type Foo3Sym0 = Foo3

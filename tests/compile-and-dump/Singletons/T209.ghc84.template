@@ -18,32 +18,42 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
       deriving anyclass (C Bool)
     deriving anyclass instance C a a => C a (Maybe a)
     type HmSym0 = Hm
-    type MSym3 (t :: a0123456789876543210) (t :: b0123456789876543210) (t :: Bool) =
-        M t t t
-    instance SuppressUnusedWarnings MSym2 where
+    type MSym3 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: b0123456789876543210) (a0123456789876543210 :: Bool) =
+        M a0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (MSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MSym2KindInference) GHC.Tuple.())
-    data MSym2 (l :: a0123456789876543210) (l :: b0123456789876543210) (l :: TyFun Bool Bool) :: GHC.Types.Type
+    data MSym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: b0123456789876543210) :: (~>) Bool Bool
       where
-        MSym2KindInference :: forall l l l arg.
-                              SameKind (Apply (MSym2 l l) arg) (MSym3 l l arg) => MSym2 l l l
-    type instance Apply (MSym2 l l) l = M l l l
-    instance SuppressUnusedWarnings MSym1 where
+        MSym2KindInference :: forall a0123456789876543210
+                                     a0123456789876543210
+                                     a0123456789876543210
+                                     arg.
+                              SameKind (Apply (MSym2 a0123456789876543210 a0123456789876543210) arg) (MSym3 a0123456789876543210 a0123456789876543210 arg) =>
+                              MSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (MSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = M a0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (MSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MSym1KindInference) GHC.Tuple.())
-    data MSym1 (l :: a0123456789876543210) (l :: TyFun b0123456789876543210 ((~>) Bool Bool)) :: GHC.Types.Type
+    data MSym1 (a0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
+                                                                 (~>) b0123456789876543210 ((~>) Bool Bool)
       where
-        MSym1KindInference :: forall l l arg.
-                              SameKind (Apply (MSym1 l) arg) (MSym2 l arg) => MSym1 l l
-    type instance Apply (MSym1 l) l = MSym2 l l
+        MSym1KindInference :: forall a0123456789876543210
+                                     a0123456789876543210
+                                     arg.
+                              SameKind (Apply (MSym1 a0123456789876543210) arg) (MSym2 a0123456789876543210 arg) =>
+                              MSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (MSym1 a0123456789876543210) a0123456789876543210 = MSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings MSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) MSym0KindInference) GHC.Tuple.())
-    data MSym0 (l :: TyFun a0123456789876543210 ((~>) b0123456789876543210 ((~>) Bool Bool))) :: GHC.Types.Type
+    data MSym0 :: forall a0123456789876543210 b0123456789876543210.
+                  (~>) a0123456789876543210 ((~>) b0123456789876543210 ((~>) Bool Bool))
       where
-        MSym0KindInference :: forall l arg.
-                              SameKind (Apply MSym0 arg) (MSym1 arg) => MSym0 l
-    type instance Apply MSym0 l = MSym1 l
+        MSym0KindInference :: forall a0123456789876543210 arg.
+                              SameKind (Apply MSym0 arg) (MSym1 arg) =>
+                              MSym0 a0123456789876543210
+    type instance Apply MSym0 a0123456789876543210 = MSym1 a0123456789876543210
     type family M (a :: a) (a :: b) (a :: Bool) :: Bool where
       M _ _ x = x
     class PC (a :: GHC.Types.Type) (b :: GHC.Types.Type)

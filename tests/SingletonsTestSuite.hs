@@ -82,6 +82,7 @@ tests =
     , compileAndDumpStdTest "T200"
     , compileAndDumpStdTest "T206"
     , compileAndDumpStdTest "T209"
+    , compileAndDumpStdTest "T216"
     , compileAndDumpStdTest "T226"
     , compileAndDumpStdTest "T229"
     , compileAndDumpStdTest "T249"

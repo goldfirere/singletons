@@ -5,24 +5,29 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
   ======>
     class Column (f :: Type -> Type) where
       col :: f a -> a -> Bool
-    type ColSym2 (t :: f0123456789876543210 a0123456789876543210) (t :: a0123456789876543210) =
-        Col t t
-    instance SuppressUnusedWarnings ColSym1 where
+    type ColSym2 (arg0123456789876543210 :: f0123456789876543210 a0123456789876543210) (arg0123456789876543210 :: a0123456789876543210) =
+        Col arg0123456789876543210 arg0123456789876543210
+    instance SuppressUnusedWarnings (ColSym1 arg0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ColSym1KindInference) GHC.Tuple.())
-    data ColSym1 (l :: f0123456789876543210 a0123456789876543210) (l :: TyFun a0123456789876543210 Bool) :: Type
+    data ColSym1 (arg0123456789876543210 :: f0123456789876543210 a0123456789876543210) :: (~>) a0123456789876543210 Bool
       where
-        ColSym1KindInference :: forall l l arg.
-                                SameKind (Apply (ColSym1 l) arg) (ColSym2 l arg) => ColSym1 l l
-    type instance Apply (ColSym1 l) l = Col l l
+        ColSym1KindInference :: forall arg0123456789876543210
+                                       arg0123456789876543210
+                                       arg.
+                                SameKind (Apply (ColSym1 arg0123456789876543210) arg) (ColSym2 arg0123456789876543210 arg) =>
+                                ColSym1 arg0123456789876543210 arg0123456789876543210
+    type instance Apply (ColSym1 arg0123456789876543210) arg0123456789876543210 = Col arg0123456789876543210 arg0123456789876543210
     instance SuppressUnusedWarnings ColSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ColSym0KindInference) GHC.Tuple.())
-    data ColSym0 (l :: TyFun (f0123456789876543210 a0123456789876543210) ((~>) a0123456789876543210 Bool)) :: Type
+    data ColSym0 :: forall a0123456789876543210 f0123456789876543210.
+                    (~>) (f0123456789876543210 a0123456789876543210) ((~>) a0123456789876543210 Bool)
       where
-        ColSym0KindInference :: forall l arg.
-                                SameKind (Apply ColSym0 arg) (ColSym1 arg) => ColSym0 l
-    type instance Apply ColSym0 l = ColSym1 l
+        ColSym0KindInference :: forall arg0123456789876543210 arg.
+                                SameKind (Apply ColSym0 arg) (ColSym1 arg) =>
+                                ColSym0 arg0123456789876543210
+    type instance Apply ColSym0 arg0123456789876543210 = ColSym1 arg0123456789876543210
     class PColumn (f :: Type -> Type) where
       type Col (arg :: f a) (arg :: a) :: Bool
     class SColumn (f :: Type -> Type) where

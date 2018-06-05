@@ -9,15 +9,17 @@ Singletons/T78.hs:(0,0)-(0,0): Splicing declarations
     foo (Just False) = False
     foo (Just True) = True
     foo Nothing = False
-    type FooSym1 (t :: Maybe Bool) = Foo t
+    type FooSym1 (a0123456789876543210 :: Maybe Bool) =
+        Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) FooSym0KindInference) GHC.Tuple.())
-    data FooSym0 (l :: TyFun (Maybe Bool) Bool) :: GHC.Types.Type
+    data FooSym0 :: (~>) (Maybe Bool) Bool
       where
-        FooSym0KindInference :: forall l arg.
-                                SameKind (Apply FooSym0 arg) (FooSym1 arg) => FooSym0 l
-    type instance Apply FooSym0 l = Foo l
+        FooSym0KindInference :: forall a0123456789876543210 arg.
+                                SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
+                                FooSym0 a0123456789876543210
+    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
     type family Foo (a :: Maybe Bool) :: Bool where
       Foo (Just False) = FalseSym0
       Foo (Just True) = TrueSym0

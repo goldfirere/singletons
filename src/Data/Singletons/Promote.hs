@@ -69,7 +69,37 @@ promoteOnly qdec = do
   promDecls <- promoteM_ decls $ promoteDecs ddecls
   return $ decsToTH promDecls
 
--- | Generate defunctionalization symbols for existing type family
+-- | Generate defunctionalization symbols for existing type families.
+--
+-- 'genDefunSymbols' has reasonable support for type families that use
+-- dependent quantification à la @TypeInType@. For instance, this:
+--
+-- @
+-- type family MyProxy k (a :: k) :: Type where
+--   MyProxy k (a :: k) = Proxy a
+--
+-- $('genDefunSymbols' [''MyProxy])
+-- @
+--
+-- Will generate the following defunctionalization symbols:
+--
+-- @
+-- data MyProxySym0     :: Type  ~> k ~> Type
+-- data MyProxySym1 (k  :: Type) :: k ~> Type
+-- @
+--
+-- Note that @MyProxySym0@ is a bit more general than it ought to be, since
+-- there is no dependency between the first kind (@Type@) and the second kind
+-- (@k@). But this would require the ability to write something like:
+--
+-- @
+-- data MyProxySym0 :: forall (k :: Type) ~> k ~> Type
+-- @
+--
+-- Which currently isn't possible. So for the time being, the kind of
+-- @MyProxySym0@ will be slightly more general, which means that under rare
+-- circumstances, you may have to provide extra type signatures if you write
+-- code which exploits the dependency in @MyProxy@'s kind.
 genDefunSymbols :: DsMonad q => [Name] -> q [Dec]
 genDefunSymbols names = do
   checkForRep names
@@ -277,9 +307,6 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
                                     , lde_infix = infix_decls } }) = do
   let
     -- a workaround for GHC Trac #12928; see Note [CUSKification]
-    cuskify :: DTyVarBndr -> DTyVarBndr
-    cuskify (DPlainTV tvname) = DKindedTV tvname $ DConT typeKindName
-    cuskify tv                = tv
     tvbs = map cuskify tvbs'
   let pClsName = promoteClassName cls_name
   pCxt <- mapM promote_superclass_pred cxt
@@ -313,10 +340,11 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
       let proName = promoteValNameLhs name
       (argKs, resK) <- promoteUnraveled ty
       args <- mapM (const $ qNewName "arg") argKs
-      emitDecsM $ defunReifyFixity proName (map Just argKs) (Just resK)
+      let tvbs = zipWith DKindedTV args argKs
+      emitDecsM $ defunReifyFixity proName tvbs (Just resK)
 
       return $ DOpenTypeFamilyD (DTypeFamilyHead proName
-                                                 (zipWith DKindedTV args argKs)
+                                                 tvbs
                                                  (DKindSig resK)
                                                  Nothing)
 
@@ -439,13 +467,14 @@ promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
       -- strictly necessary, as kind inference can figure them out just as well.
       family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
+  let tvbs = zipWith DKindedTV meth_arg_tvs meth_arg_kis'
   emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
                                   helperName
-                                  (zipWith DKindedTV meth_arg_tvs meth_arg_kis')
+                                  tvbs
                                   (DKindSig meth_res_ki')
                                   Nothing)
                                eqns]
-  emitDecsM (defunctionalize helperName Nothing (map Just meth_arg_kis') (Just meth_res_ki'))
+  emitDecsM (defunctionalize helperName Nothing tvbs (Just meth_res_ki'))
   return ( DTySynInstD
              proName
              (DTySynEqn family_args
@@ -579,10 +608,11 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UValue exp) = do
       all_locals <- allLocals
       let lde_kvs_to_bind = foldMap fvDType res_kind
       (exp', ann_exp) <- forallBind lde_kvs_to_bind $ promoteExp exp
-      let proName  = promoteValNameLhsPrefix prefixes name
+      let proName = promoteValNameLhsPrefix prefixes name
           m_fixity = Map.lookup name fix_env
-      defuns <- defunctionalize proName m_fixity (map (const Nothing) all_locals) res_kind
-      return ( ( proName, map DPlainTV all_locals, res_kind
+          tvbs = map DPlainTV all_locals
+      defuns <- defunctionalize proName m_fixity tvbs res_kind
+      return ( ( proName, tvbs, res_kind
                , [DTySynEqn (map DVarT all_locals) exp'] )
              , defuns
              , AValue (foldType (DConT proName) (map DVarT all_locals))
@@ -612,17 +642,16 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UFunction clauses) = d
   let proName  = promoteValNameLhsPrefix prefixes name
       m_fixity = Map.lookup name fix_env
   all_locals <- allLocals
-  defun_decs <- defunctionalize proName m_fixity
-                (map (const Nothing) all_locals ++ m_argKs) m_resK
   let local_tvbs = map DPlainTV all_locals
   tyvarNames <- mapM (const $ qNewName "a") m_argKs
+  let args     = zipWith inferMaybeKindTV tyvarNames m_argKs
+      all_args = local_tvbs ++ args
+  defun_decs <- defunctionalize proName m_fixity all_args m_resK
   expClauses <- mapM (etaContractOrExpand ty_num_args numArgs) clauses
   let lde_kvs_to_bind = foldMap (foldMap fvDType) m_argKs <> foldMap fvDType m_resK
   (eqns, ann_clauses) <- forallBind lde_kvs_to_bind $
                          mapAndUnzipM promoteClause expClauses
   prom_fun <- lookupVarE name
-  let args     = zipWith inferMaybeKindTV tyvarNames m_argKs
-      all_args = local_tvbs ++ args
   return ( (proName, all_args, m_resK, eqns)
          , defun_decs
          , AFunction prom_fun ty_num_args ann_clauses )
@@ -734,7 +763,7 @@ promoteExp (DLamE names exp) = do
                                  Nothing)
                                [DTySynEqn (map DVarT (all_locals ++ tyNames))
                                           rhs]]
-  emitDecsM $ defunctionalize lambdaName Nothing (map (const Nothing) all_args) Nothing
+  emitDecsM $ defunctionalize lambdaName Nothing tvbs Nothing
   let promLambda = foldl apply (DConT (promoteTySym lambdaName 0))
                                (map DVarT all_locals)
   return (promLambda, ADLamE tyNames promLambda names ann_exp)

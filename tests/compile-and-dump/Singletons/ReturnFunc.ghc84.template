@@ -13,53 +13,64 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     id x = x
     idFoo :: c -> a -> a
     idFoo _ = id
-    type IdSym1 (t :: a0123456789876543210) = Id t
+    type IdSym1 (a0123456789876543210 :: a0123456789876543210) =
+        Id a0123456789876543210
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) IdSym0KindInference) GHC.Tuple.())
-    data IdSym0 (l :: TyFun a0123456789876543210 a0123456789876543210) :: GHC.Types.Type
+    data IdSym0 :: forall a0123456789876543210.
+                   (~>) a0123456789876543210 a0123456789876543210
       where
-        IdSym0KindInference :: forall l arg.
-                               SameKind (Apply IdSym0 arg) (IdSym1 arg) => IdSym0 l
-    type instance Apply IdSym0 l = Id l
-    type IdFooSym2 (t :: c0123456789876543210) (t :: a0123456789876543210) =
-        IdFoo t t
-    instance SuppressUnusedWarnings IdFooSym1 where
+        IdSym0KindInference :: forall a0123456789876543210 arg.
+                               SameKind (Apply IdSym0 arg) (IdSym1 arg) =>
+                               IdSym0 a0123456789876543210
+    type instance Apply IdSym0 a0123456789876543210 = Id a0123456789876543210
+    type IdFooSym2 (a0123456789876543210 :: c0123456789876543210) (a0123456789876543210 :: a0123456789876543210) =
+        IdFoo a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (IdFooSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) IdFooSym1KindInference) GHC.Tuple.())
-    data IdFooSym1 (l :: c0123456789876543210) (l :: TyFun a0123456789876543210 a0123456789876543210) :: GHC.Types.Type
+    data IdFooSym1 (a0123456789876543210 :: c0123456789876543210) :: forall a0123456789876543210.
+                                                                     (~>) a0123456789876543210 a0123456789876543210
       where
-        IdFooSym1KindInference :: forall l l arg.
-                                  SameKind (Apply (IdFooSym1 l) arg) (IdFooSym2 l arg) =>
-                                  IdFooSym1 l l
-    type instance Apply (IdFooSym1 l) l = IdFoo l l
+        IdFooSym1KindInference :: forall a0123456789876543210
+                                         a0123456789876543210
+                                         arg.
+                                  SameKind (Apply (IdFooSym1 a0123456789876543210) arg) (IdFooSym2 a0123456789876543210 arg) =>
+                                  IdFooSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (IdFooSym1 a0123456789876543210) a0123456789876543210 = IdFoo a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings IdFooSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) IdFooSym0KindInference) GHC.Tuple.())
-    data IdFooSym0 (l :: TyFun c0123456789876543210 ((~>) a0123456789876543210 a0123456789876543210)) :: GHC.Types.Type
+    data IdFooSym0 :: forall a0123456789876543210 c0123456789876543210.
+                      (~>) c0123456789876543210 ((~>) a0123456789876543210 a0123456789876543210)
       where
-        IdFooSym0KindInference :: forall l arg.
-                                  SameKind (Apply IdFooSym0 arg) (IdFooSym1 arg) => IdFooSym0 l
-    type instance Apply IdFooSym0 l = IdFooSym1 l
-    type ReturnFuncSym2 (t :: Nat) (t :: Nat) = ReturnFunc t t
-    instance SuppressUnusedWarnings ReturnFuncSym1 where
+        IdFooSym0KindInference :: forall a0123456789876543210 arg.
+                                  SameKind (Apply IdFooSym0 arg) (IdFooSym1 arg) =>
+                                  IdFooSym0 a0123456789876543210
+    type instance Apply IdFooSym0 a0123456789876543210 = IdFooSym1 a0123456789876543210
+    type ReturnFuncSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
+        ReturnFunc a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (ReturnFuncSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ReturnFuncSym1KindInference) GHC.Tuple.())
-    data ReturnFuncSym1 (l :: Nat) (l :: TyFun Nat Nat) :: GHC.Types.Type
+    data ReturnFuncSym1 (a0123456789876543210 :: Nat) :: (~>) Nat Nat
       where
-        ReturnFuncSym1KindInference :: forall l l arg.
-                                       SameKind (Apply (ReturnFuncSym1 l) arg) (ReturnFuncSym2 l arg) =>
-                                       ReturnFuncSym1 l l
-    type instance Apply (ReturnFuncSym1 l) l = ReturnFunc l l
+        ReturnFuncSym1KindInference :: forall a0123456789876543210
+                                              a0123456789876543210
+                                              arg.
+                                       SameKind (Apply (ReturnFuncSym1 a0123456789876543210) arg) (ReturnFuncSym2 a0123456789876543210 arg) =>
+                                       ReturnFuncSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (ReturnFuncSym1 a0123456789876543210) a0123456789876543210 = ReturnFunc a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ReturnFuncSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ReturnFuncSym0KindInference) GHC.Tuple.())
-    data ReturnFuncSym0 (l :: TyFun Nat ((~>) Nat Nat)) :: GHC.Types.Type
+    data ReturnFuncSym0 :: (~>) Nat ((~>) Nat Nat)
       where
-        ReturnFuncSym0KindInference :: forall l arg.
+        ReturnFuncSym0KindInference :: forall a0123456789876543210 arg.
                                        SameKind (Apply ReturnFuncSym0 arg) (ReturnFuncSym1 arg) =>
-                                       ReturnFuncSym0 l
-    type instance Apply ReturnFuncSym0 l = ReturnFuncSym1 l
+                                       ReturnFuncSym0 a0123456789876543210
+    type instance Apply ReturnFuncSym0 a0123456789876543210 = ReturnFuncSym1 a0123456789876543210
     type family Id (a :: a) :: a where
       Id x = x
     type family IdFoo (a :: c) (a :: a) :: a where
