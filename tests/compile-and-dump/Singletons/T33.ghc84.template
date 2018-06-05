@@ -19,6 +19,8 @@ Singletons/T33.hs:(0,0)-(0,0): Splicing declarations
     sFoo ::
       forall (t :: (Bool, Bool)). Sing t -> Sing (Apply FooSym0 t :: ())
     sFoo (STuple2 _ _) = STuple0
+    instance SingI (FooSym0 :: (~>) (Bool, Bool) ()) where
+      sing = (singFun1 @FooSym0) sFoo
 
 Singletons/T33.hs:0:0: warning:
     Lazy pattern converted into regular pattern in promotion

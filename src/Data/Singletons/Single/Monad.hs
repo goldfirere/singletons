@@ -11,7 +11,7 @@ The SgM monad allows reading from a SgEnv environment and is wrapped around a Q.
 {-# LANGUAGE GeneralizedNewtypeDeriving, ParallelListComp, TemplateHaskell, CPP #-}
 
 module Data.Singletons.Single.Monad (
-  SgM, bindLets, lookupVarE, lookupConE,
+  SgM, bindLets, bindContext, askContext, lookupVarE, lookupConE,
   wrapSingFun, wrapUnSingFun,
   singM, singDecsM,
   emitDecs, emitDecsM
@@ -34,11 +34,13 @@ import Control.Monad.Fail
 -- environment during singling
 data SgEnv =
   SgEnv { sg_let_binds   :: Map Name DExp   -- from the *original* name
+        , sg_context     :: DCxt -- See Note [Tracking the current type signature context]
         , sg_local_decls :: [Dec]
         }
 
 emptySgEnv :: SgEnv
 emptySgEnv = SgEnv { sg_let_binds   = Map.empty
+                   , sg_context     = []
                    , sg_local_decls = []
                    }
 
@@ -95,6 +97,18 @@ bindLets :: [(Name, DExp)] -> SgM a -> SgM a
 bindLets lets1 =
   local (\env@(SgEnv { sg_let_binds = lets2 }) ->
                env { sg_let_binds = (Map.fromList lets1) `Map.union` lets2 })
+
+-- Add some constraints to the current type signature context.
+-- See Note [Tracking the current type signature context]
+bindContext :: DCxt -> SgM a -> SgM a
+bindContext ctxt1
+  = local (\env@(SgEnv { sg_context = ctxt2 }) ->
+                 env { sg_context = ctxt1 ++ ctxt2 })
+
+-- Retrieve the current type signature context.
+-- See Note [Tracking the current type signature context]
+askContext :: SgM DCxt
+askContext = asks sg_context
 
 lookupVarE :: Name -> SgM DExp
 lookupVarE = lookup_var_con singValName (DVarE . singValName)
@@ -159,3 +173,49 @@ singDecsM :: DsMonad q => [Dec] -> SgM [DDec] -> q [DDec]
 singDecsM locals thing = do
   (decs1, decs2) <- singM locals thing
   return $ decs1 ++ decs2
+
+{-
+Note [Tracking the current type signature context]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Much like we track the let-bound names in scope, we also track the current
+context. For instance, in the following program:
+
+  -- (1)
+  f :: forall a. Show a => a -> String -> Bool
+  f x y = g (show x) y
+    where
+      -- (2)
+      g :: forall b. Eq b => b -> b -> Bool
+      g = h
+        where
+          -- (3)
+          h :: b -> b -> Bool
+          h = (==)
+
+Here is the context at various points:
+
+(1) ()
+(2) (Show a)
+(3) (Show a, Eq b)
+
+We track this informating during singling instead of during promotion, as the
+promoted versions of things are often type families, which do not have
+contexts.
+
+Why do we bother tracking this at all? Ultimately, because singDefuns (from
+Data.Singletons.Single.Defun) needs to know the current context in order to
+generate a correctly typed SingI instance. For instance, if you called
+singDefuns on the class method bar:
+
+  class Foo a where
+    bar :: Eq a => a -> Bool
+
+Then if you only grabbed the context of `bar` itself, then you'd end up
+generating the following SingI instance for BarSym0:
+
+  instance SEq a => SingI (FooSym0 :: a ~> Bool) where ...
+
+Which is incorrect—there needs to be an (SFoo a) constraint as well! If we
+track the current context when singling Foo, then we will correctly propagate
+this information to singDefuns.
+-}

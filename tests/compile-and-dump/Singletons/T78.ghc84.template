@@ -27,3 +27,5 @@ Singletons/T78.hs:(0,0)-(0,0): Splicing declarations
     sFoo (SJust SFalse) = SFalse
     sFoo (SJust STrue) = STrue
     sFoo SNothing = SFalse
+    instance SingI (FooSym0 :: (~>) (Maybe Bool) Bool) where
+      sing = (singFun1 @FooSym0) sFoo

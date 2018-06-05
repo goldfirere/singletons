@@ -343,6 +343,14 @@ foldType = foldl DAppT
 foldTypeTvbs :: DType -> [DTyVarBndr] -> DType
 foldTypeTvbs ty = foldType ty . map tvbToType
 
+-- apply a pred to a list of types
+foldPred :: DPred -> [DType] -> DPred
+foldPred = foldl DAppPr
+
+-- apply a pred to a list of type variable binders
+foldPredTvbs :: DPred -> [DTyVarBndr] -> DPred
+foldPredTvbs pr = foldPred pr . map tvbToType
+
 -- | Decompose an applied type into its individual components. For example, this:
 --
 -- @

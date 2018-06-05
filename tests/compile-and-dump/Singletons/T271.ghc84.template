@@ -187,5 +187,13 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
     instance SingI n => SingI (Constant (n :: a)) where
       sing = SConstant sing
+    instance SingI (ConstantSym0 :: (~>) a (Constant (a :: Type) (b :: Type))) where
+      sing = (singFun1 @ConstantSym0) SConstant
+    instance SingI (TyCon1 Constant :: (~>) a (Constant (a :: Type) (b :: Type))) where
+      sing = (singFun1 @(TyCon1 Constant)) SConstant
     instance SingI n => SingI (Identity (n :: a)) where
       sing = SIdentity sing
+    instance SingI (IdentitySym0 :: (~>) a (Identity a)) where
+      sing = (singFun1 @IdentitySym0) SIdentity
+    instance SingI (TyCon1 Identity :: (~>) a (Identity a)) where
+      sing = (singFun1 @(TyCon1 Identity)) SIdentity

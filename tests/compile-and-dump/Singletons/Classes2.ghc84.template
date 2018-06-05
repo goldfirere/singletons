@@ -89,3 +89,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       sing = SZeroFoo
     instance SingI n => SingI (SuccFoo (n :: NatFoo)) where
       sing = SSuccFoo sing
+    instance SingI (SuccFooSym0 :: (~>) NatFoo NatFoo) where
+      sing = (singFun1 @SuccFooSym0) SSuccFoo
+    instance SingI (TyCon1 SuccFoo :: (~>) NatFoo NatFoo) where
+      sing = (singFun1 @(TyCon1 SuccFoo)) SSuccFoo

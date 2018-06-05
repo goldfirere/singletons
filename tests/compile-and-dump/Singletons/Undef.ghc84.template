@@ -39,3 +39,7 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
       = (sError (sing :: Sing "urk")) sA_0123456789876543210
     sFoo (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = sUndefined sA_0123456789876543210
+    instance SingI (BarSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @BarSym0) sBar
+    instance SingI (FooSym0 :: (~>) Bool Bool) where
+      sing = (singFun1 @FooSym0) sFoo

@@ -52,6 +52,8 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
                 -> (applySing ((applySing ((singFun2 @($@#@$)) (%$))) sTypeError))
                      ((applySing ((singFun1 @ShowTypeSym0) SShowType)) sX) ::
               Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x) :: a)
+    instance (SNum a, SEq a) => SingI (FooSym0 :: (~>) a a) where
+      sing = (singFun1 @FooSym0) sFoo
 
 Singletons/T160.hs:0:0: error:
     • t

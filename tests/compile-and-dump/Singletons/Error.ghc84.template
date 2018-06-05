@@ -24,3 +24,5 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     sHead (SCons (sA :: Sing a) _) = sA
     sHead SNil
       = sError (sing :: Sing "Data.Singletons.List.head: empty list")
+    instance SingI (HeadSym0 :: (~>) [a] a) where
+      sing = (singFun1 @HeadSym0) sHead

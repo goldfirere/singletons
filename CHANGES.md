@@ -20,6 +20,15 @@ Changelog for singletons project
   Haskell-generated code may require `GADTs` in situations that didn't require
   it before.
 
+* The kind of the type parameter to `SingI` is no longer specified. This only
+  affects you if you were using the `sing` method with `TypeApplications`. For
+  instance, if you were using `sing @Bool @True` before, then you will now need
+  to now use `sing @Bool` instead.
+
+* `singletons` now generates `SingI` instances for defunctionalization symbols
+  through Template Haskell. As a result, you may need to enable
+  `FlexibleInstances` in more places.
+
 * Rename `Data.Singletons.TypeRepStar` to `Data.Singletons.TypeRepTYPE`, and
   generalize the `Sing :: Type -> Type` instance to `Sing :: TYPE rep -> Type`,
   allowing it to work over more open kinds. Also rename `SomeTypeRepStar` to

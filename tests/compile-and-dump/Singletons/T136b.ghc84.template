@@ -18,6 +18,8 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
       type Meth (arg :: a) :: a
     class SC a where
       sMeth :: forall (t :: a). Sing t -> Sing (Apply MethSym0 t :: a)
+    instance SC a => SingI (MethSym0 :: (~>) a a) where
+      sing = (singFun1 @MethSym0) sMeth
 Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| instance C Bool where

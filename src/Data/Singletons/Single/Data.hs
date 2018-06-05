@@ -12,6 +12,7 @@ module Data.Singletons.Single.Data where
 
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
+import Data.Singletons.Single.Defun
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
 import Data.Singletons.Single.Fixity
@@ -131,7 +132,7 @@ singCtor :: DCon -> SgM DCon
  -- polymorphic constructors are handled just
  -- like monomorphic ones -- the polymorphism in
  -- the kind is automatic
-singCtor (DCon _tvbs cxt name fields _rty)
+singCtor (DCon _tvbs cxt name fields rty)
   | not (null (filter (not . isEqPred) cxt))
   = fail "Singling of constrained constructors not yet supported"
   | otherwise
@@ -145,10 +146,11 @@ singCtor (DCon _tvbs cxt name fields _rty)
   kinds <- mapM promoteType types
   let bound_kvs = foldMap fvDType kinds
   args <- zipWithM (buildArgType bound_kvs) types indices
+  rty' <- promoteType rty
   let tvbs = map DPlainTV (Set.toList bound_kvs) ++ zipWith DKindedTV indexNames kinds
       kindedIndices = zipWith DSigT indices kinds
 
-  -- SingI instance
+  -- SingI instance for data constructor
   emitDecs
     [DInstanceD Nothing
                 (map (DAppPr (DConPr singIName)) indices)
@@ -156,6 +158,8 @@ singCtor (DCon _tvbs cxt name fields _rty)
                        (foldType pCon kindedIndices))
                 [DLetDec $ DValD (DVarPa singMethName)
                        (foldExp sCon (map (const $ DVarE singMethName) types))]]
+  -- SingI instances for defunctionalization symbols
+  emitDecs =<< singDefuns name DataName [] (map Just kinds) (Just rty')
 
   let noBang    = Bang NoSourceUnpackedness NoSourceStrictness
       conFields = case fields of
@@ -171,7 +175,7 @@ singCtor (DCon _tvbs cxt name fields _rty)
                 (DConT singFamilyName `DAppT` foldType pCon indices)
   where buildArgType :: Set Name -> DType -> DType -> SgM DType
         buildArgType bound_kvs ty index = do
-          (ty', _, _, _) <- singType bound_kvs index ty
+          (ty', _, _, _, _, _) <- singType bound_kvs index ty
           return ty'
 
         isEqPred :: DPred -> Bool

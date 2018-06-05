@@ -30,3 +30,5 @@ Singletons/OverloadedStrings.hs:(0,0)-(0,0): Splicing declarations
     sFoo
       = (applySing ((singFun1 @SymIdSym0) sSymId))
           (Data.Singletons.Prelude.IsString.sFromString (sing :: Sing "foo"))
+    instance SingI (SymIdSym0 :: (~>) Symbol Symbol) where
+      sing = (singFun1 @SymIdSym0) sSymId

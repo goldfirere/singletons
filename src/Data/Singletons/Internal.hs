@@ -51,7 +51,7 @@ data family Sing :: k -> Type
 -- | A 'SingI' constraint is essentially an implicitly-passed singleton.
 -- If you need to satisfy this constraint with an explicit singleton, please
 -- see 'withSingI' or the 'Sing' pattern synonym.
-class SingI (a :: k) where
+class SingI a where
   -- | Produce the singleton explicitly. You will likely need the @ScopedTypeVariables@
   -- extension to use this method the way you want.
   sing :: Sing a
@@ -425,4 +425,4 @@ singByProxy# _ = sing
 -- >>> demote @(Nothing :: Maybe Ordering)
 -- Nothing
 demote :: forall a. (SingKind (KindOf a), SingI a) => Demote (KindOf a)
-demote = fromSing (sing @(KindOf a) @a)
+demote = fromSing (sing @a)
