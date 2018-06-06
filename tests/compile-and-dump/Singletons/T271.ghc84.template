@@ -18,8 +18,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ConstantSym0 where
       suppressUnusedWarnings
         = snd ((GHC.Tuple.(,) ConstantSym0KindInference) GHC.Tuple.())
-    data ConstantSym0 :: forall a0123456789876543210
-                                b0123456789876543210.
+    data ConstantSym0 :: forall (a0123456789876543210 :: Type)
+                                (b0123456789876543210 :: Type).
                          (~>) a0123456789876543210 (Constant (a0123456789876543210 :: Type) (b0123456789876543210 :: Type))
       where
         ConstantSym0KindInference :: forall t0123456789876543210 arg.

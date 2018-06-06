@@ -154,7 +154,8 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
       tvb_to_type_map = Map.fromList $                   -- (2)(i)(c)
                         map (\tvb -> (extractTvbName tvb, dTyVarBndrToDType tvb)) $
                         toposortTyVarsOf $               -- (2)(i)(b)
-                        map dTyVarBndrToDType m_arg_tvbs -- (2)(i)(a)
+                        map dTyVarBndrToDType m_arg_tvbs
+                          ++ maybeToList m_res_kind      -- (2)(i)(a)
 
       go :: Int -> [DTyVarBndr] -> Maybe DKind
          -> ([DTyVarBndr] -> DType)  -- given the argument tyvar binders,
@@ -329,8 +330,10 @@ Here is what is involved in making this happen:
 
        To construct this map, we:
 
-       (a) Grab the list of type variable binders. (This is given as an input
-           to defunctionalize, as discussed in part (1).)
+       (a) Grab the list of type variable binders (this is given as an input
+           to defunctionalize, as discussed in part (1)) and turn it into a list
+           of types. Also include the return kind (if there is one) in this
+           list, as it may also mention type variables with explicit kinds.
        (b) Construct a flat list of all type variables mentioned in this list.
            This may involve looking in the kinds of type variables binders.
            (Note that this part is crucial—the the Singletons/PolyKinds test
@@ -342,7 +345,10 @@ Here is what is involved in making this happen:
 
        (a) We grab the list of type variable binders
            [(a :: t), (y :: t), (e :: a :~: y)] from the Symmetry declaration.
-       (b) We flatten this into [t, (a :: t), (y :: t), (e :: a :~: y)].
+           Including the return kind Type, we get:
+           [(a :: t), (y :: t), (e :: a :~: y), Type]
+       (b) We flatten this list into its list of type variables:
+           [t, (a :: t), (y :: t), (e :: a :~: y)].
        (c) From this, we construct the map:
 
              { t :-> DVarT                     -- t
