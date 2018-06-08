@@ -100,10 +100,8 @@ instance SDecide Symbol where
     where errStr = "Broken Symbol singletons"
 
 -- PEq instances
-instance PEq Nat where
-  type (a :: Nat) == (b :: Nat) = TL.CmpNat a b == 'EQ
-instance PEq Symbol where
-  type (a :: Symbol) == (b :: Symbol) = TL.CmpSymbol a b == 'EQ
+instance PEq Nat
+instance PEq Symbol
 
 -- need SEq instances for TypeLits kinds
 instance SEq Nat where

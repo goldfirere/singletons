@@ -85,13 +85,7 @@ instance SingKind (TYPE rep) where
   fromSing (STypeRep tr) = SomeTypeRepTYPE tr
   toSing (SomeTypeRepTYPE tr) = SomeSing $ STypeRep tr
 
-instance PEq (TYPE rep) where
-  type a == b = EqTYPE a b
-
-type family EqTYPE (a :: TYPE rep) (b :: TYPE rep) where
-  EqTYPE (a :: TYPE rep) (a :: TYPE rep) = 'True
-  EqTYPE a               b               = 'False
-
+instance PEq (TYPE rep)
 instance SEq (TYPE rep) where
   STypeRep tra %== STypeRep trb =
     case eqTypeRep tra trb of
