@@ -6,8 +6,13 @@ Changelog for singletons project
 * Fix a regression in which certain infix type families, such as `(++)`, `($)`,
   `(+)`, and others, did not have the correct fixities.
 
-* Fix a regression in which `a == a` no longer held when `a` was a `Nat` or a
-  `Symbol`.
+* The default implementation of the `(==)` type in `PEq` was changed from
+  `(Data.Type.Equality.==)` to a custom type family, `DefaultEq`. The reason
+  for this change is that `(Data.Type.Equality.==)` is unable to conclude that
+  `a == a` reduces to `True` for any `a`. (As a result, the previous version of
+  `singletons` regressed in terms of type inference for the `PEq` instances
+  for `Nat` and `Symbol`, which used that default.) On the other hand,
+  `DefaultEq a a` _does_ reduce to `True` for all `a`.
 
 * Add `Enum Nat`, `Show Nat`, and `Show Symbol` instances to
   `Data.Singletons.TypeLits`.
