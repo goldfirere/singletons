@@ -96,8 +96,9 @@ genSingletons names = do
 singletons :: DsMonad q => q [Dec] -> q [Dec]
 singletons qdecs = do
   decs <- qdecs
-  singDecs <- wrapDesugar singTopLevelDecs decs
-  return (decs ++ singDecs)
+  ddecs <- withLocalDeclarations decs $ dsDecs decs
+  singDecs <- singTopLevelDecs decs ddecs
+  return (decs ++ decsToTH singDecs)
 
 -- | Make promoted and singleton versions of all declarations given, discarding
 -- the original declarations. Note that a singleton based on a datatype needs

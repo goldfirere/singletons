@@ -1,0 +1,60 @@
+Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
+    promote
+      [d| f :: Foo -> ()
+          f MkFoo {} = ()
+          
+          data Foo = MkFoo |]
+  ======>
+    data Foo = MkFoo
+    f :: Foo -> ()
+    f MkFoo {} = GHC.Tuple.()
+    type FSym1 (a0123456789876543210 :: Foo) = F a0123456789876543210
+    instance SuppressUnusedWarnings FSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) FSym0KindInference) GHC.Tuple.())
+    data FSym0 :: (~>) Foo ()
+      where
+        FSym0KindInference :: forall a0123456789876543210 arg.
+                              SameKind (Apply FSym0 arg) (FSym1 arg) =>
+                              FSym0 a0123456789876543210
+    type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
+    type family F (a :: Foo) :: () where
+      F MkFoo = Tuple0Sym0
+    type MkFooSym0 = MkFoo
+Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| b :: Bar -> ()
+          b MkBar {} = ()
+          
+          data Bar = MkBar |]
+  ======>
+    data Bar = MkBar
+    b :: Bar -> ()
+    b MkBar {} = GHC.Tuple.()
+    type MkBarSym0 = MkBar
+    type BSym1 (a0123456789876543210 :: Bar) = B a0123456789876543210
+    instance SuppressUnusedWarnings BSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) BSym0KindInference) GHC.Tuple.())
+    data BSym0 :: (~>) Bar ()
+      where
+        BSym0KindInference :: forall a0123456789876543210 arg.
+                              SameKind (Apply BSym0 arg) (BSym1 arg) =>
+                              BSym0 a0123456789876543210
+    type instance Apply BSym0 a0123456789876543210 = B a0123456789876543210
+    type family B (a :: Bar) :: () where
+      B MkBar = Tuple0Sym0
+    sB :: forall (t :: Bar). Sing t -> Sing (Apply BSym0 t :: ())
+    sB SMkBar = STuple0
+    instance SingI (BSym0 :: (~>) Bar ()) where
+      sing = (singFun1 @BSym0) sB
+    data instance Sing :: Bar -> GHC.Types.Type :: Bar
+                                                   -> GHC.Types.Type
+      where SMkBar :: Sing MkBar
+    type SBar = (Sing :: Bar -> GHC.Types.Type)
+    instance SingKind Bar where
+      type Demote Bar = Bar
+      fromSing SMkBar = MkBar
+      toSing MkBar = SomeSing SMkBar
+    instance SingI MkBar where
+      sing = SMkBar
