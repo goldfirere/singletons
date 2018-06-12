@@ -63,6 +63,7 @@ class SingI a where
 --
 -- As a __pattern__: Matches on an explicit @Sing a@ witness bringing
 -- an implicit @SingI a@ constraint into scope.
+{-# COMPLETE Sing #-}
 pattern Sing :: forall k (a :: k). () => SingI a => Sing a
 pattern Sing <- (singInstance -> SingInstance)
   where Sing = sing
@@ -137,6 +138,7 @@ data SomeSing k where
 --     'withSomeSing' bool2 $ \singBool2 ->
 --       'SomeSing' (singBool1 %&& singBool2)
 -- @
+{-# COMPLETE FromSing #-}
 pattern FromSing :: SingKind k => forall (a :: k). Sing a -> Demote k
 pattern FromSing sng <- ((\demotedVal -> withSomeSing demotedVal SomeSing) -> SomeSing sng)
   where FromSing sng = fromSing sng
