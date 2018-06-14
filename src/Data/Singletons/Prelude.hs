@@ -71,8 +71,17 @@ module Data.Singletons.Prelude (
   SApplicative(sPure, (%<*>), (%*>), (%<*)),
   PMonad(type (>>=), type (>>), Return, Fail),
   SMonad((%>>=), (%>>), sReturn, sFail),
-  -- MapM_, sMapM_,
+  MapM_, sMapM_,
+  Sequence_, sSequence_,
   type (=<<), (%=<<),
+
+  -- * Singleton 'Foldable' and 'Traversable'
+  PFoldable(Elem, FoldMap, Foldr, Foldl, Foldr1, Foldl1,
+            Maximum, Minimum, Product, Sum),
+  SFoldable(sElem, sFoldMap, sFoldr, sFoldl, sFoldr1, sFoldl1,
+            sMaximum, sMinimum, sProduct, sSum),
+  PTraversable(Traverse, SequenceA, MapM, Sequence),
+  STraversable(sTraverse, sSequenceA, sMapM, sSequence),
 
   -- ** Miscellaneous functions
   Id, sId, Const, sConst, (:.), (%.), type ($), (%$), type ($!), (%$!),
@@ -80,10 +89,9 @@ module Data.Singletons.Prelude (
   Seq, sSeq,
 
   -- * List operations
-  Map, sMap, type (++), (%++), Head, sHead, Last, sLast, Tail, sTail,
+  Map, sMap, type (++), (%++), Filter, sFilter,
+  Head, sHead, Last, sLast, Tail, sTail,
   Init, sInit, Null, sNull, Reverse, sReverse,
-  -- ** Reducing lists (folds)
-  Foldl, sFoldl, Foldl1, sFoldl1, Foldr, sFoldr, Foldr1, sFoldr1,
   -- *** Special folds
   And, sAnd, Or, sOr, Any, sAny, All, sAll,
   Concat, sConcat, ConcatMap, sConcatMap,
@@ -95,7 +103,7 @@ module Data.Singletons.Prelude (
   Take, sTake, Drop, sDrop, SplitAt, sSplitAt, TakeWhile, sTakeWhile,
   Span, sSpan, Break, sBreak,
   -- ** Searching lists
-  Elem, sElem, NotElem, sNotElem, Lookup, sLookup,
+  NotElem, sNotElem, Lookup, sLookup,
   -- ** Zipping and unzipping lists
   Zip, sZip, Zip3, sZip3, ZipWith, sZipWith, ZipWith3, sZipWith3,
   Unzip, sUnzip, Unzip3, sUnzip3,
@@ -176,7 +184,25 @@ module Data.Singletons.Prelude (
   type (>>=@#@$), type (>>=@#@$$), type (>>=@#@$$$),
   type (>>@#@$),  type (>>@#@$$),  type (>>@#@$$$),
   ReturnSym0, ReturnSym1, FailSym0, FailSym1,
+  MapM_Sym0, MapM_Sym1, MapM_Sym2,
+  Sequence_Sym0, Sequence_Sym1,
   type (=<<@#@$), type (=<<@#@$$), type (=<<@#@$$$),
+
+  ElemSym0, ElemSym1, ElemSym2,
+  FoldMapSym0, FoldMapSym1, FoldMapSym2,
+  FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
+  FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,
+  Foldr1Sym0, Foldr1Sym1, Foldr1Sym2,
+  Foldl1Sym0, Foldl1Sym1, Foldl1Sym2,
+  MaximumSym0, MaximumSym1,
+  MinimumSym0, MinimumSym1,
+  SumSym0, SumSym1,
+  ProductSym0, ProductSym1,
+
+  TraverseSym0, TraverseSym1, TraverseSym2,
+  SequenceASym0, SequenceASym1,
+  MapMSym0, MapMSym1, MapMSym2,
+  SequenceSym0, SequenceSym1,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   type (.@#@$),  type (.@#@$$),  type (.@#@$$$),
@@ -187,13 +213,9 @@ module Data.Singletons.Prelude (
 
   (:@#@$), (:@#@$$), (:@#@$$$), NilSym0,
   MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
-  type (++@#@$$), type (++@#@$), HeadSym0, HeadSym1, LastSym0, LastSym1,
+  type (++@#@$$), type (++@#@$), FilterSym0, FilterSym1, FilterSym2,
+  HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
-
-  FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,
-  Foldl1Sym0, Foldl1Sym1, Foldl1Sym2,
-  FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
-  Foldr1Sym0, Foldr1Sym1, Foldr1Sym2,
 
   ConcatSym0, ConcatSym1,
   ConcatMapSym0, ConcatMapSym1, ConcatMapSym2,
@@ -217,7 +239,6 @@ module Data.Singletons.Prelude (
   SpanSym0, SpanSym1, SpanSym2,
   BreakSym0, BreakSym1, BreakSym2,
 
-  ElemSym0, ElemSym1, ElemSym2,
   NotElemSym0, NotElemSym1, NotElemSym2,
 
   ZipSym0, ZipSym1, ZipSym2,
@@ -231,9 +252,12 @@ module Data.Singletons.Prelude (
 
 import Data.Singletons
 import Data.Singletons.Prelude.Applicative
+  hiding (Const, ConstSym0, ConstSym1)
 import Data.Singletons.Prelude.Base
+  hiding (Foldr, FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3, sFoldr)
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Either
+import Data.Singletons.Prelude.Foldable
 import Data.Singletons.Prelude.Functor
 import Data.Singletons.Prelude.List
 import Data.Singletons.Prelude.Maybe
@@ -245,10 +269,11 @@ import Data.Singletons.Prelude.Enum
   hiding (Succ, Pred, SuccSym0, SuccSym1, PredSym0, PredSym1, sSucc, sPred)
 import Data.Singletons.Prelude.Monoid
        ( PMonoid(..), SMonoid(..), MemptySym0, MappendSym0
-       , MappendSym1, MappendSym2, MconcatSym0, MconcatSym1)
+       , MappendSym1, MappendSym2, MconcatSym0, MconcatSym1 )
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Semigroup
        ( PSemigroup(..), SSemigroup(..)
        , type (<>@#@$), type (<>@#@$$), type (<>@#@$$$) )
 import Data.Singletons.Prelude.Show
+import Data.Singletons.Prelude.Traversable
 import Data.Singletons.TypeLits

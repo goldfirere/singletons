@@ -148,7 +148,7 @@ module Data.Singletons.Prelude.List.NonEmpty (
 
 import Control.Monad.Zip
 import Data.List.NonEmpty
-import Data.Singletons.Prelude.List.NonEmpty.Internal
+import Data.Singletons.Prelude.List.Internal.Disambiguation
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Base hiding ( MapSym0, MapSym1, MapSym2, Map, sMap )
 import Data.Singletons.Prelude.Maybe

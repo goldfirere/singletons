@@ -26,7 +26,7 @@
 module Data.Singletons.Prelude.Applicative (
   PApplicative(..), SApplicative(..),
   PAlternative(..), SAlternative(..),
-  -- Sing (SConst, sGetConst), SConst, Const, GetConst,
+  Sing (SConst, sGetConst), SConst, Const, GetConst,
   type (<$>), (%<$>), type (<$), (%<$), type (<**>), (%<**>),
   LiftA, sLiftA, LiftA3, sLiftA3, Optional, sOptional,
 
@@ -36,7 +36,7 @@ module Data.Singletons.Prelude.Applicative (
   type (*>@#@$),  type (*>@#@$$),  type (*>@#@$$$),
   type (<*@#@$),  type (<*@#@$$),  type (<*@#@$$$),
   EmptySym0, type (<|>@#@$), type (<|>@#@$$), type (<|>@#@$$$),
-  -- ConstSym0, ConstSym1, GetConstSym0, GetConstSym1,
+  ConstSym0, ConstSym1, GetConstSym0, GetConstSym1,
   type (<$>@#@$),  type (<$>@#@$$),  type (<$>@#@$$$),
   type (<$@#@$),   type (<$@#@$$),   type (<$@#@$$$),
   type (<**>@#@$), type (<**>@#@$$), type (<**>@#@$$$),
@@ -48,6 +48,7 @@ module Data.Singletons.Prelude.Applicative (
 
 import Control.Applicative
 import Data.Ord (Down(..))
+import Data.Singletons.Prelude.Const
 import Data.Singletons.Prelude.Functor
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Monad.Internal

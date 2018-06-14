@@ -53,8 +53,12 @@ module Data.Promotion.Prelude (
   PFunctor(Fmap, type (<$)),
   PApplicative(Pure, type (<*>), type (*>), type (<*)),
   PMonad(type (>>=), type (>>), Return, Fail),
-  -- MapM_,
-  type (=<<),
+  MapM_, Sequence_, type (=<<),
+
+  -- * Promoted 'Foldable' and 'Traversable'
+  PFoldable(Elem, FoldMap, Foldr, Foldl, Foldr1, Foldl1,
+            Maximum, Minimum, Product, Sum),
+  PTraversable(Traverse, SequenceA, MapM, Sequence),
 
   -- ** Miscellaneous functions
   Id, Const, (:.), type ($), type ($!), Flip, AsTypeOf, Until, Seq,
@@ -63,13 +67,9 @@ module Data.Promotion.Prelude (
   Map, type (++), Filter,
   Head, Last, Tail, Init, Null, Length, type (!!),
   Reverse,
-  -- ** Reducing lists (folds)
-  Foldl, Foldl1, Foldr, Foldr1,
   -- *** Special folds
   And, Or, Any, All,
-  Sum, Product,
   Concat, ConcatMap,
-  Maximum, Minimum,
   -- ** Building lists
   -- *** Scans
   Scanl, Scanl1, Scanr, Scanr1,
@@ -80,7 +80,7 @@ module Data.Promotion.Prelude (
   TakeWhile, DropWhile, Span, Break,
 
   -- ** Searching lists
-  Elem, NotElem, Lookup,
+  NotElem, Lookup,
   -- ** Zipping and unzipping lists
   Zip, Zip3, ZipWith, ZipWith3, Unzip, Unzip3,
   -- ** Functions on 'Symbol's
@@ -148,7 +148,25 @@ module Data.Promotion.Prelude (
   type (>>=@#@$), type (>>=@#@$$), type (>>=@#@$$$),
   type (>>@#@$),  type (>>@#@$$),  type (>>@#@$$$),
   ReturnSym0, ReturnSym1, FailSym0, FailSym1,
+  MapM_Sym0, MapM_Sym1, MapM_Sym2,
+  Sequence_Sym0, Sequence_Sym1,
   type (=<<@#@$), type (=<<@#@$$), type (=<<@#@$$$),
+
+  ElemSym0, ElemSym1, ElemSym2,
+  FoldMapSym0, FoldMapSym1, FoldMapSym2,
+  FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
+  FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,
+  Foldr1Sym0, Foldr1Sym1, Foldr1Sym2,
+  Foldl1Sym0, Foldl1Sym1, Foldl1Sym2,
+  MaximumSym0, MaximumSym1,
+  MinimumSym0, MinimumSym1,
+  SumSym0, SumSym1,
+  ProductSym0, ProductSym1,
+
+  TraverseSym0, TraverseSym1, TraverseSym2,
+  SequenceASym0, SequenceASym1,
+  MapMSym0, MapMSym1, MapMSym2,
+  SequenceSym0, SequenceSym1,
 
   IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
   type (.@#@$), type (.@#@$$), type (.@#@$$$),
@@ -161,11 +179,6 @@ module Data.Promotion.Prelude (
   MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
   type (++@#@$$), type (++@#@$), HeadSym0, HeadSym1, LastSym0, LastSym1,
   TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
-
-  FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,
-  Foldl1Sym0, Foldl1Sym1, Foldl1Sym2,
-  FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
-  Foldr1Sym0, Foldr1Sym1, Foldr1Sym2,
 
   ConcatSym0, ConcatSym1,
   ConcatMapSym0, ConcatMapSym1, ConcatMapSym2,
@@ -180,7 +193,6 @@ module Data.Promotion.Prelude (
   ScanrSym0, ScanrSym1, ScanrSym2, ScanrSym3,
   Scanr1Sym0, Scanr1Sym1, Scanr1Sym2,
 
-  ElemSym0, ElemSym1, ElemSym2,
   NotElemSym0, NotElemSym1, NotElemSym2,
 
   ZipSym0, ZipSym1, ZipSym2,
@@ -193,8 +205,6 @@ module Data.Promotion.Prelude (
 
   UntilSym0, UntilSym1, UntilSym2, UntilSym3,
   LengthSym0, LengthSym1,
-  SumSym0, SumSym1,
-  ProductSym0, ProductSym1,
   ReplicateSym0, ReplicateSym1, ReplicateSym2,
   TakeSym0, TakeSym1, TakeSym2,
   DropSym0, DropSym1, DropSym2,
@@ -210,8 +220,10 @@ module Data.Promotion.Prelude (
 
 import Data.Promotion.Prelude.Applicative
 import Data.Promotion.Prelude.Base
+  hiding (Foldr, FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3)
 import Data.Promotion.Prelude.Bool
 import Data.Promotion.Prelude.Either
+import Data.Promotion.Prelude.Foldable
 import Data.Promotion.Prelude.Functor
 import Data.Promotion.Prelude.List
 import Data.Promotion.Prelude.Maybe
@@ -228,4 +240,5 @@ import Data.Promotion.Prelude.Num
 import Data.Promotion.Prelude.Semigroup
        ( PSemigroup(..), type (<>@#@$), type (<>@#@$$), type (<>@#@$$$) )
 import Data.Promotion.Prelude.Show
+import Data.Promotion.Prelude.Traversable
 import Data.Singletons.TypeLits

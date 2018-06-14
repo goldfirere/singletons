@@ -230,11 +230,10 @@ module Data.Promotion.Prelude.List (
 
   ) where
 
-import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.List
 import Data.Singletons.Prelude.Maybe
-import Data.Singletons.TH
+import Data.Singletons.TH (promoteOnly)
 
 $(promoteOnly [d|
 

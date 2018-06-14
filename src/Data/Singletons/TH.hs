@@ -101,9 +101,11 @@ import Data.Singletons.Single
 import Data.Singletons.Promote
 import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Instances
+  hiding (Foldl, FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3, sFoldl)
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
+import Data.Singletons.Prelude.Foldable
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Show
 import Data.Singletons.Decide
