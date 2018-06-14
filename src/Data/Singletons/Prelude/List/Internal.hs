@@ -30,6 +30,7 @@ import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Maybe
+import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Prelude.Semigroup.Internal (SSemigroup(..), type (<>@#@$))
 import Data.Singletons.Prelude.Tuple
 import Data.Singletons.Prelude.Num
@@ -373,7 +374,7 @@ $(singletonsOnly [d|
   findIndex       :: (a -> Bool) -> [a] -> Maybe Nat
   findIndex p     = listToMaybe . findIndices p
 
--- Uses list comprehensions, infinite lists and and Ints
+-- Uses infinite lists and and Ints
 --  findIndices      :: (a -> Bool) -> [a] -> [Int]
 --  findIndices p xs = [ i | (x,i) <- zip xs [0..], p x]
 
@@ -384,22 +385,14 @@ $(singletonsOnly [d|
           buildList _ []     = []
           buildList a (_:rest) = a : buildList (a+1) rest
 
-  -- Relies on intersectBy, which does not singletonize
   intersect               :: (Eq a) => [a] -> [a] -> [a]
   intersect               =  intersectBy (==)
-
--- Uses list comprehensions.
---  intersectBy             :: (a -> a -> Bool) -> [a] -> [a] -> [a]
---  intersectBy _  [] []    =  []
---  intersectBy _  [] (_:_) =  []
---  intersectBy _  (_:_) [] =  []
---  intersectBy eq xs ys    =  [x | x <- xs, any (eq x) ys]
 
   intersectBy             :: (a -> a -> Bool) -> [a] -> [a] -> [a]
   intersectBy _  []       []       =  []
   intersectBy _  []       (_:_)    =  []
   intersectBy _  (_:_)    []       =  []
-  intersectBy eq xs@(_:_) ys@(_:_) =  filter (\x -> any (eq x) ys) xs
+  intersectBy eq xs@(_:_) ys@(_:_) =  [x | x <- xs, any (eq x) ys]
 
   takeWhile               :: (a -> Bool) -> [a] -> [a]
   takeWhile _ []          =  []
@@ -544,7 +537,8 @@ $(singletonsOnly [d|
   replicate               :: Nat -> a -> [a]
   replicate n x           = if n == 0 then [] else x : replicate (n-1) x
 
--- Uses list comprehensions
+-- Uses partial pattern-matching in a list comprehension
+-- (see https://github.com/goldfirere/th-desugar/issues/80)
 --  transpose               :: [[a]] -> [[a]]
 --  transpose []             = []
 --  transpose ([]   : xss)   = transpose xss

@@ -419,6 +419,12 @@ $(singletonsOnly [d|
           some_v = liftA2 (:) v many_v
       -}
 
+  -- -| @'guard' b@ is @'pure' ()@ if @b@ is 'True',
+  -- and 'empty' if @b@ is 'False'.
+  guard           :: (Alternative f) => Bool -> f ()
+  guard True      =  pure ()
+  guard False     =  empty
+
   -- -----------------------------------------------------------------------------
   -- The MonadPlus class definition
 

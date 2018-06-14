@@ -109,12 +109,6 @@ $(singletonsOnly [d|
   -- -----------------------------------------------------------------------------
   -- Functions mandated by the Prelude
 
-  -- -| @'guard' b@ is @'pure' ()@ if @b@ is 'True',
-  -- and 'empty' if @b@ is 'False'.
-  guard           :: (Alternative f) => Bool -> f ()
-  guard True      =  pure ()
-  guard False     =  empty
-
   -- -| This generalizes the list-based 'filter' function.
 
   filterM          :: (Applicative m) => (a -> m Bool) -> [a] -> m [a]
