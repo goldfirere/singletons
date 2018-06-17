@@ -641,6 +641,28 @@ The following constructs are supported for promotion but not singleton generatio
   Overlap is caused by `otherwise` catch-all guard, which is always true and thus
 overlaps with `pred x` guard.
 
+  Another non-obvious source of overlapping patterns comes from partial pattern
+  matches in `do`-notation. For example:
+
+    ```haskell
+    f :: [()]
+    f = do
+      Just () <- [Nothing]
+      return ()
+    ```
+
+  This has overlap because the partial pattern match desugars to the following:
+
+    ```haskell
+    f :: [()]
+    f = case [Nothing] of
+          Just () -> return ()
+          _ -> fail "Partial pattern match in do notation"
+    ```
+
+  Here, it is more evident that the catch-all pattern `_` overlaps with the
+  one above it.
+
 The following constructs are not supported:
 
 * datatypes that store arrows, `Nat`, or `Symbol`

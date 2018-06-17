@@ -538,7 +538,7 @@ $(singletonsOnly [d|
   replicate n x           = if n == 0 then [] else x : replicate (n-1) x
 
 -- Uses partial pattern-matching in a list comprehension
--- (see https://github.com/goldfirere/th-desugar/issues/80)
+-- (see https://github.com/goldfirere/singletons/issues/340)
 --  transpose               :: [[a]] -> [[a]]
 --  transpose []             = []
 --  transpose ([]   : xss)   = transpose xss
