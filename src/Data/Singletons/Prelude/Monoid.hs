@@ -3,6 +3,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeInType #-}
@@ -178,9 +179,7 @@ $(singletonsOnly [d|
     pure = First . pure
     First f <*> First x = First (f <*> x)
 
-  -- deriving instance Functor First
-  instance Functor First where
-    fmap f (First x) = First (fmap f x)
+  deriving instance Functor First
 
   -- deriving newtype instance Monad First
   instance Monad First where
@@ -198,9 +197,7 @@ $(singletonsOnly [d|
     pure = Last . pure
     Last f <*> Last x = Last (f <*> x)
 
-  -- deriving instance Functor Last
-  instance Functor Last where
-    fmap f (Last x) = Last (fmap f x)
+  deriving instance Functor Last
 
   -- deriving newtype instance Monad Last
   instance Monad Last where

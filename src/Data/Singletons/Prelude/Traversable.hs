@@ -57,7 +57,6 @@ import Data.Singletons.Prelude.Foldable (PFoldable, SFoldable)
 import Data.Singletons.Prelude.Functor
 import Data.Singletons.Prelude.Identity
 import Data.Singletons.Prelude.Instances
-import Data.Singletons.Prelude.List.Internal.Disambiguation
 import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Prelude.Monoid
 import Data.Singletons.Single
@@ -184,59 +183,23 @@ $(singletonsOnly [d|
       -- results see 'Data.Foldable.sequence_'.
       sequence :: Monad m => (t :: Type -> Type) (m a) -> m (t a)
       sequence = sequenceA
+  |])
 
+$(singletonsOnly [d|
   -- instances for Prelude types
 
-  -- deriving instance Traversable Maybe
-  instance Traversable Maybe where
-      traverse _ Nothing = pure Nothing
-      traverse f (Just x) = Just <$> f x
-
-  -- deriving instance Traversable []
-  instance Traversable [] where
-      traverse f = listfoldr cons_f (pure [])
-        where cons_f x ys = liftA2 (:) (f x) ys
-
-  -- deriving instance Traversable NonEmpty
-  instance Traversable NonEmpty where
-    traverse f (a :| as) = liftA2 (:|) (f a) (traverse f as)
-
-  -- deriving instance Traversable (Either a)
-  instance Traversable (Either a) where
-      traverse _ (Left x) = pure (Left x)
-      traverse f (Right y) = Right <$> f y
-
-  -- deriving instance Traversable ((,) a)
-  instance Traversable ((,) a) where
-      traverse f (x, y) = (,) x <$> f y
-
-  -- deriving instance Traversable (Const m)
-  instance Traversable (Const m) where
-      traverse _ (Const m) = pure $ Const m
-
-  -- deriving instance Traversable Dual
-  instance Traversable Dual where
-      traverse f (Dual x) = Dual <$> f x
-
-  -- deriving instance Traversable Sum
-  instance Traversable Sum where
-      traverse f (Sum x) = Sum <$> f x
-
-  -- deriving instance Traversable Product
-  instance Traversable Product where
-      traverse f (Product x) = Product <$> f x
-
-  -- deriving instance Traversable First
-  instance Traversable First where
-      traverse f (First x) = First <$> traverse f x
-
-  -- deriving instance Traversable Last
-  instance Traversable Last where
-      traverse f (Last x) = Last <$> traverse f x
-
-  -- deriving instance Traversable Identity
-  instance Traversable Identity where
-      traverse f (Identity x) = Identity <$> f x
+  deriving instance Traversable Maybe
+  deriving instance Traversable []
+  deriving instance Traversable NonEmpty
+  deriving instance Traversable (Either a)
+  deriving instance Traversable ((,) a)
+  deriving instance Traversable (Const m)
+  deriving instance Traversable Dual
+  deriving instance Traversable Sum
+  deriving instance Traversable Product
+  deriving instance Traversable First
+  deriving instance Traversable Last
+  deriving instance Traversable Identity
 
   -- general functions
 

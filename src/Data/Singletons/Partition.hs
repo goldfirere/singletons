@@ -21,7 +21,10 @@ import Data.Singletons.Syntax
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Deriving.Enum
+import Data.Singletons.Deriving.Foldable
+import Data.Singletons.Deriving.Functor
 import Data.Singletons.Deriving.Show
+import Data.Singletons.Deriving.Traversable
 import Data.Singletons.Deriving.Util
 import Data.Singletons.Names
 import Language.Haskell.TH.Syntax hiding (showName)
@@ -68,10 +71,18 @@ partitionDec (DDataD _nd _cxt name tvbs mk cons derivings) = do
   all_tvbs <- buildDataDTvbs tvbs mk
   let data_decl   = DataDecl name all_tvbs cons
       derived_dec = mempty { pd_data_decs = [data_decl] }
-      ty = foldTypeTvbs (DConT name) all_tvbs
   derived_decs
     <- mapM (\(strat, deriv_pred) ->
-              partitionDeriving strat deriv_pred Nothing ty data_decl)
+              let etad_tvbs
+                    | DConT pred_name :| _ <- unfoldType deriv_pred
+                    , isFunctorLikeClassName pred_name
+                      -- If deriving Functor, Foldable, or Traversable,
+                      -- we need to use one less type variable than we normally do.
+                    = take (length all_tvbs - 1) all_tvbs
+                    | otherwise
+                    = all_tvbs
+                  ty = foldTypeTvbs (DConT name) etad_tvbs
+              in partitionDeriving strat deriv_pred Nothing ty data_decl)
       $ concatMap flatten_clause derivings
   return $ mconcat $ derived_dec : derived_decs
   where
@@ -223,6 +234,18 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
        | stock_or_default
        , deriv_name == enumName
       -> mk_derived_inst <$> mk_instance mkEnumInstance
+
+       | stock_or_default
+       , deriv_name == functorName
+      -> mk_derived_inst <$> mk_instance mkFunctorInstance
+
+       | stock_or_default
+       , deriv_name == foldableName
+      -> mk_derived_inst <$> mk_instance mkFoldableInstance
+
+       | stock_or_default
+       , deriv_name == traversableName
+      -> mk_derived_inst <$> mk_instance mkTraversableInstance
 
          -- See Note [DerivedDecl] in Data.Singletons.Syntax
        | stock_or_default

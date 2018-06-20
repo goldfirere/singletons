@@ -566,8 +566,8 @@ The following constructs are fully supported:
 * sections
 * undefined
 * error
-* deriving `Eq`, `Ord`, `Show`, `Bounded`, and `Enum`, as well as the
-  `stock` and `anyclass` deriving strategies
+* deriving `Eq`, `Ord`, `Show`, `Bounded`, `Enum`, `Functor`, `Foldable`, and
+  `Traversable`, as well as the `stock` and `anyclass` deriving strategies
 * class constraints (though these sometimes fail with `let`, `lambda`, and `case`)
 * literals (for `Nat` and `Symbol`), including overloaded number literals
 * unboxed tuples (which are treated as normal tuples)
@@ -595,10 +595,10 @@ needs a little help around kind inference here. See
 background.
 
 `singletons` is slightly more conservative with respect to `deriving` than GHC is.
-The stock classes listed above (`Eq`, `Ord`, `Show`, `Bounded`, and `Enum`) are
-the only ones that `singletons` will derive without an explicit deriving strategy.
-To do anything more exotic, one must explicitly indicate one's intentions by
-using the `DerivingStrategies` extension.
+The stock classes listed above (`Eq`, `Ord`, `Show`, `Bounded`, `Enum`, `Functor`,
+`Foldable`, and `Traversable`) are the only ones that `singletons` will derive
+without an explicit deriving strategy. To do anything more exotic, one must
+explicitly indicate one's intentions by using the `DerivingStrategies` extension.
 
 `singletons` fully supports the `anyclass` strategy as well as the `stock` strategy
 (at least, for the classes listed above). `singletons` does not support the

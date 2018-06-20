@@ -3,6 +3,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeInType #-}
@@ -34,6 +35,8 @@
 
 module Data.Singletons.Prelude.Monad.Internal where
 
+import Control.Applicative
+import Control.Monad
 import Data.Kind
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Singletons.Prelude.Base
@@ -450,28 +453,23 @@ $(singletonsOnly [d|
      -- @
      mplus :: (m :: Type -> Type) a -> m a -> m a
      mplus = (<|>)
+  |])
 
+-- Workaround for #326
+infixl 4 <$
+infixl 4 <*>, <*, *>, <**>
+infixl 1 >>, >>=
+infixr 1 =<<
+infixl 3 <|>
+
+$(singletonsOnly [d|
   -------------------------------------------------------------------------------
   -- Instances
 
-  -- deriving instance Functor Maybe
-  instance  Functor Maybe  where
-      fmap _ Nothing       = Nothing
-      fmap f (Just a)      = Just (f a)
-
-  -- deriving instance Functor NonEmpty
-  instance Functor NonEmpty where
-    fmap f (a :| as) = f a :| fmap f as
-    b <$ (_ :| as)   = b   :| (b <$ as)
-
-  -- deriving instance Functor []
-  instance Functor [] where
-      fmap = map
-
-  -- deriving instance Functor (Either a)
-  instance Functor (Either a) where
-    fmap _ (Left x) = Left x
-    fmap f (Right y) = Right (f y)
+  deriving instance Functor Maybe
+  deriving instance Functor NonEmpty
+  deriving instance Functor []
+  deriving instance Functor (Either a)
 
   instance Applicative Maybe where
       pure = Just
@@ -537,10 +535,3 @@ $(singletonsOnly [d|
   instance MonadPlus Maybe
   instance MonadPlus []
   |])
-
--- Workaround for #326
-infixl 4 <$
-infixl 4 <*>, <*, *>, <**>
-infixl 1 >>, >>=
-infixr 1 =<<
-infixl 3 <|>

@@ -3,6 +3,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeInType #-}
@@ -194,13 +195,8 @@ $(singletonsOnly [d|
   void :: Functor f => f a -> f ()
   void x = () <$ x
 
-  -- deriving instance Functor ((,) a)
-  instance Functor ((,) a) where
-      fmap f (x,y) = (x, f y)
-
-  -- deriving instance Functor Down
-  instance Functor Down where
-    fmap f (Down x) = Down (f x)
+  deriving instance Functor ((,) a)
+  deriving instance Functor Down
   |])
 
 -- Workaround for #326

@@ -20,6 +20,7 @@ import GHC.Exts ( Constraint )
 import GHC.Show ( showCommaSpace, showSpace )
 import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
+import Control.Applicative
 import Control.Monad
 
 boolName, andName, tyEqName, compareName, minBoundName,
@@ -41,7 +42,10 @@ boolName, andName, tyEqName, compareName, minBoundName,
   equalsName, constraintName,
   showName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
   showSpaceName, showStringName, showSingName, showsSingPrecName,
-  composeName, gtName, tyFromStringName, sFromStringName :: Name
+  composeName, gtName, tyFromStringName, sFromStringName,
+  foldableName, foldMapName, memptyName, mappendName, foldrName,
+  functorName, fmapName, replaceName,
+  traversableName, traverseName, pureName, apName, liftA2Name :: Name
 boolName = ''Bool
 andName = '(&&)
 compareName = 'compare
@@ -117,6 +121,19 @@ gtName = '(>)
 showCommaSpaceName = 'showCommaSpace
 tyFromStringName = mk_name_tc "Data.Singletons.Prelude.IsString" "FromString"
 sFromStringName = mk_name_v "Data.Singletons.Prelude.IsString" "sFromString"
+foldableName = ''Foldable
+foldMapName = 'foldMap
+memptyName = 'mempty
+mappendName = 'mappend
+foldrName = 'foldr
+functorName = ''Functor
+fmapName = 'fmap
+replaceName = '(<$)
+traversableName = ''Traversable
+traverseName = 'traverse
+pureName = 'pure
+apName = '(<*>)
+liftA2Name = 'liftA2
 
 singPkg :: String
 singPkg = $( (LitE . StringL . loc_package) `liftM` location )

@@ -41,11 +41,14 @@ module Data.Promotion.TH (
   -- so they must be in scope.
 
   PEq(..), If, type (&&),
-  POrd(..), ThenCmp, Foldl,
+  POrd(..), ThenCmp,
   PBounded(..),
   PEnum(FromEnum, ToEnum),
   PShow(..),
   ShowString, ShowParen, ShowSpace, ShowChar, ShowCommaSpace,
+  PFunctor(..), SFunctor(..),
+  PFoldable(..), SFoldable(..), PMonoid(..), SMonoid(..),
+  PTraversable(..), STraversable(..), PApplicative(..), SApplicative(..),
   (:.),
   Proxy(..),
 
@@ -72,6 +75,16 @@ module Data.Promotion.TH (
   ShowSpaceSym0, ShowSpaceSym1,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowCommaSpaceSym0, ShowCommaSpaceSym1,
+  FmapSym0, FmapSym1, FmapSym2,
+  type (<$@#@$),  type (<$@#@$$),  type (<$@#@$$$),
+  FoldMapSym0, FoldMapSym1, FoldMapSym2,
+  MemptySym0,
+  MappendSym0, MappendSym1, MappendSym2,
+  FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
+  TraverseSym0, TraverseSym1, TraverseSym2,
+  PureSym0, PureSym1,
+  type (<*>@#@$), type (<*>@#@$$), type (<*>@#@$$$),
+  LiftA2Sym0, LiftA2Sym1, LiftA2Sym2, LiftA2Sym3,
   type (.@#@$), type (.@#@$$), type (.@#@$$$), type (.@#@$$$$),
   (:@#@$), (:@#@$$), (:@#@$$$),
 
@@ -81,12 +94,19 @@ module Data.Promotion.TH (
 
 import Data.Singletons.Internal
 import Data.Singletons.Promote
+import Data.Singletons.Prelude.Applicative
 import Data.Singletons.Prelude.Base
+  hiding (Foldr, FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3, sFoldr)
 import Data.Singletons.Prelude.Instances
+  hiding (Foldl, FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3, sFoldl)
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
+import Data.Singletons.Prelude.Foldable
+import Data.Singletons.Prelude.Functor
+import Data.Singletons.Prelude.Monoid
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Show
+import Data.Singletons.Prelude.Traversable
 import Data.Singletons.TypeLits
 import Data.Singletons.SuppressUnusedWarnings

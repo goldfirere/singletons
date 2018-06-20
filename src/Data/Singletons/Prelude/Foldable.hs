@@ -439,12 +439,6 @@ $(singletonsOnly [d|
 
       null             = isLeft
 
-  -- deriving instance Foldable ((,) a)
-  instance Foldable ((,) a) where
-      foldMap f (_, y) = f y
-
-      foldr f z (_, y) = f y z
-
   instance Foldable Dual where
       foldMap f (Dual x)  = f x
 
@@ -498,14 +492,6 @@ $(singletonsOnly [d|
       product (Monoid.Product x)    = x
       sum (Monoid.Product x)        = x
       toList (Monoid.Product x)     = [x]
-
-  -- deriving instance Foldable First
-  instance Foldable First where
-      foldMap f (First x) = foldMap f x
-
-  -- deriving instance Foldable Last
-  instance Foldable Last where
-      foldMap f (Last x) = foldMap f x
 
   -- -| Monadic fold over the elements of a structure,
   -- associating to the right, i.e. from right to left.
@@ -647,4 +633,12 @@ $(singletonsOnly [d|
   find :: Foldable t => (a -> Bool) -> t a -> Maybe a
   find p y = case foldMap (\ x -> First (if p x then Just x else Nothing)) y of
                First z -> z
+  |])
+
+$(singletonsOnly [d|
+  -- instances for Prelude types (part 2)
+
+  deriving instance Foldable ((,) a)
+  deriving instance Foldable First
+  deriving instance Foldable Last
   |])

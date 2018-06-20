@@ -3,6 +3,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeInType #-}
@@ -158,9 +159,7 @@ $(singletonsOnly [d|
     pure = Dual
     Dual f <*> Dual x = Dual (f x)
 
-  -- deriving instance Functor Dual
-  instance Functor Dual where
-    fmap f (Dual x) = Dual (f x)
+  deriving instance Functor Dual
 
   instance Monad Dual where
     Dual a >>= k = k a
@@ -178,9 +177,7 @@ $(singletonsOnly [d|
     pure = Sum
     Sum f <*> Sum x = Sum (f x)
 
-  -- deriving instance Functor Sum
-  instance Functor Sum where
-    fmap f (Sum x) = Sum (f x)
+  deriving instance Functor Sum
 
   instance Monad Sum where
     Sum a >>= k = k a
@@ -202,9 +199,7 @@ $(singletonsOnly [d|
     pure = Product
     Product f <*> Product x = Product (f x)
 
-  -- deriving instance Functor Product
-  instance Functor Product where
-    fmap f (Product x) = Product (f x)
+  deriving instance Functor Product
 
   instance Monad Product where
     Product a >>= k = k a

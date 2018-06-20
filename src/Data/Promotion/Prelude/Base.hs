@@ -42,8 +42,8 @@ module Data.Promotion.Prelude.Base (
   SeqSym0, SeqSym1, SeqSym2
   ) where
 
-import Data.Singletons.TH
 import Data.Singletons.Prelude.Base
+import Data.Singletons.Promote
 
 $(promoteOnly [d|
   -- Does not singletoznize. See #30
