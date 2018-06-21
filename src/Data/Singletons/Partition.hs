@@ -34,6 +34,8 @@ import Data.Singletons.Util
 
 import Control.Monad
 import Data.List.NonEmpty (NonEmpty(..))
+import qualified Data.Map as Map
+import Data.Map (Map)
 import Data.Maybe
 import Data.Semigroup (Semigroup(..))
 
@@ -224,43 +226,8 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
                            -- singletons take just one argument (the data
                            -- type itself)
        | stock_or_default
-       , deriv_name == ordName
-      -> mk_derived_inst <$> mk_instance mkOrdInstance
-
-       | stock_or_default
-       , deriv_name == boundedName
-      -> mk_derived_inst <$> mk_instance mkBoundedInstance
-
-       | stock_or_default
-       , deriv_name == enumName
-      -> mk_derived_inst <$> mk_instance mkEnumInstance
-
-       | stock_or_default
-       , deriv_name == functorName
-      -> mk_derived_inst <$> mk_instance mkFunctorInstance
-
-       | stock_or_default
-       , deriv_name == foldableName
-      -> mk_derived_inst <$> mk_instance mkFoldableInstance
-
-       | stock_or_default
-       , deriv_name == traversableName
-      -> mk_derived_inst <$> mk_instance mkTraversableInstance
-
-         -- See Note [DerivedDecl] in Data.Singletons.Syntax
-       | stock_or_default
-       , deriv_name == eqName
-      -> return $ mk_derived_eq_inst derived_decl
-
-         -- See Note [DerivedDecl] in Data.Singletons.Syntax
-       | stock_or_default
-       , deriv_name == showName
-      -> do -- This will become PShow/SShow instances...
-            inst_for_promotion <- mk_instance (mkShowInstance ForPromotion)
-            -- ...and this will become ShowSing/Show instances.
-            let inst_for_ShowSing = derived_decl
-            pure $ mempty { pd_instance_decs     = [inst_for_promotion]
-                          , pd_derived_show_decs = [inst_for_ShowSing] }
+       , Just decs <- Map.lookup deriv_name stock_map
+      -> decs
 
          -- If we can't find a stock class, but the user bothered to use an
          -- explicit stock keyword, we can at least warn them about it.
@@ -280,6 +247,27 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
                                  , ded_type   = ty
                                  , ded_decl   = data_decl }
       stock_or_default = isStockOrDefault mb_strat
+
+      -- A mapping from all stock derivable classes (that singletons supports)
+      -- to to derived code that they produce.
+      stock_map :: Map Name (m PartitionedDecs)
+      stock_map = Map.fromList
+        [ ( ordName,         mk_derived_inst <$> mk_instance mkOrdInstance )
+        , ( boundedName,     mk_derived_inst <$> mk_instance mkBoundedInstance )
+        , ( enumName,        mk_derived_inst <$> mk_instance mkEnumInstance )
+        , ( functorName,     mk_derived_inst <$> mk_instance mkFunctorInstance )
+        , ( foldableName,    mk_derived_inst <$> mk_instance mkFoldableInstance )
+        , ( traversableName, mk_derived_inst <$> mk_instance mkTraversableInstance )
+          -- See Note [DerivedDecl] in Data.Singletons.Syntax
+        , ( eqName, return $ mk_derived_eq_inst derived_decl )
+          -- See Note [DerivedDecl] in Data.Singletons.Syntax
+        , ( showName, do -- This will become PShow/SShow instances...
+                         inst_for_promotion <- mk_instance (mkShowInstance ForPromotion)
+                         -- ...and this will become ShowSing/Show instances.
+                         let inst_for_ShowSing = derived_decl
+                         pure $ mempty { pd_instance_decs     = [inst_for_promotion]
+                                       , pd_derived_show_decs = [inst_for_ShowSing] } )
+        ]
 
 -- Is this being used with an explicit stock strategy, or no strategy at all?
 isStockOrDefault :: Maybe DerivStrategy -> Bool
