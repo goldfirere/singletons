@@ -104,7 +104,7 @@ singletonStar names = do
   where -- get the kinds of the arguments to the tycon with the given name
         getKind :: DsMonad q => Name -> q [DKind]
         getKind name = do
-          info <- reifyWithWarning name
+          info <- reifyWithLocals name
           dinfo <- dsInfo info
           case dinfo of
             DTyConI (DDataD _ (_:_) _ _ _ _ _) _ ->
