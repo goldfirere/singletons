@@ -86,7 +86,7 @@ contract constructors. This is the point of buildDataLets.
 genSingletons :: DsMonad q => [Name] -> q [Dec]
 genSingletons names = do
   checkForRep names
-  ddecs <- concatMapM (singInfo <=< dsInfo <=< reifyWithWarning) names
+  ddecs <- concatMapM (singInfo <=< dsInfo <=< reifyWithLocals) names
   return $ decsToTH ddecs
 
 -- | Make promoted and singleton versions of all declarations given, retaining

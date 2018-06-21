@@ -1,0 +1,18 @@
+Singletons/T342.hs:(0,0)-(0,0): Splicing declarations
+    do synName <- newName "MyId"
+       a <- newName "a"
+       let syn = TySynD synName [PlainTV a] (VarT a)
+       defuns <- withLocalDeclarations [syn] $ genDefunSymbols [synName]
+       pure $ syn : defuns
+  ======>
+    type MyId a = a
+    type MyIdSym1 a0123456789876543210 = MyId a0123456789876543210
+    instance SuppressUnusedWarnings MyIdSym0 where
+      suppressUnusedWarnings
+        = snd ((GHC.Tuple.(,) MyIdSym0KindInference) GHC.Tuple.())
+    data MyIdSym0 a0123456789876543210
+      where
+        MyIdSym0KindInference :: forall a0123456789876543210 arg.
+                                 SameKind (Apply MyIdSym0 arg) (MyIdSym1 arg) =>
+                                 MyIdSym0 a0123456789876543210
+    type instance Apply MyIdSym0 a0123456789876543210 = MyId a0123456789876543210

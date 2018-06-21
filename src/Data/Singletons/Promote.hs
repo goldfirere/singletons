@@ -46,7 +46,7 @@ import qualified GHC.LanguageExtensions.Type as LangExt
 genPromotions :: DsMonad q => [Name] -> q [Dec]
 genPromotions names = do
   checkForRep names
-  infos <- mapM reifyWithWarning names
+  infos <- mapM reifyWithLocals names
   dinfos <- mapM dsInfo infos
   ddecs <- promoteM_ [] $ mapM_ promoteInfo dinfos
   return $ decsToTH ddecs
@@ -103,7 +103,7 @@ promoteOnly qdec = do
 genDefunSymbols :: DsMonad q => [Name] -> q [Dec]
 genDefunSymbols names = do
   checkForRep names
-  infos <- mapM (dsInfo <=< reifyWithWarning) names
+  infos <- mapM (dsInfo <=< reifyWithLocals) names
   decs <- promoteMDecs [] $ concatMapM defunInfo infos
   return $ decsToTH decs
 
