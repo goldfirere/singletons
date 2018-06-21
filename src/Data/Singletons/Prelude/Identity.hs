@@ -1,6 +1,8 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE MagicHash #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeInType #-}
@@ -81,9 +83,7 @@ $(singletonsOnly [d|
     showsPrec d (Identity x) = showParen (d > 10) $
       showString "Identity " . showsPrec 11 x
 
-  -- deriving instance Functor Identity
-  instance Functor Identity where
-    fmap f (Identity x) = Identity (f x)
+  deriving instance Functor Identity
 
   instance Foldable Identity where
       foldMap f (Identity x)  = f x

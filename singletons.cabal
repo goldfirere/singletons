@@ -136,8 +136,11 @@ library
   other-modules:      Data.Singletons.Deriving.Infer
                       Data.Singletons.Deriving.Bounded
                       Data.Singletons.Deriving.Enum
+                      Data.Singletons.Deriving.Foldable
+                      Data.Singletons.Deriving.Functor
                       Data.Singletons.Deriving.Ord
                       Data.Singletons.Deriving.Show
+                      Data.Singletons.Deriving.Traversable
                       Data.Singletons.Deriving.Util
                       Data.Singletons.Internal
                       Data.Singletons.Prelude.List.Internal

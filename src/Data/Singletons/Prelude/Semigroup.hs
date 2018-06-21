@@ -63,7 +63,8 @@ import Control.Applicative
 import Control.Monad
 import qualified Data.Semigroup as Semi (Min(..), Max(..))
 import Data.Semigroup (First(..), Last(..), WrappedMonoid(..), Option(..), Arg(..))
-import Data.Singletons.Prelude.Base
+import Data.Singletons.Prelude.Base hiding
+       (Foldr, FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3, sFoldr)
 import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Foldable hiding
@@ -109,9 +110,7 @@ $(singletonsOnly [d|
     enumFromTo (Semi.Min a) (Semi.Min b) = Semi.Min `map` enumFromTo a b
     enumFromThenTo (Semi.Min a) (Semi.Min b) (Semi.Min c) = Semi.Min `map` enumFromThenTo a b c
 
-  -- deriving instance Functor Semi.Min
-  instance Functor Semi.Min where
-    fmap f (Semi.Min x) = Semi.Min (f x)
+  deriving instance Functor Semi.Min
 
   instance Monad Semi.Min where
     (>>) = (*>)
@@ -132,13 +131,8 @@ $(singletonsOnly [d|
     signum (Semi.Min a) = Semi.Min (signum a)
     fromInteger         = Semi.Min . fromInteger
 
-  -- deriving instance Foldable Semi.Min
-  instance Foldable Semi.Min where
-    foldMap f (Semi.Min a) = f a
-
-  -- deriving instance Traversable Semi.Min
-  instance Traversable Semi.Min where
-    traverse f (Semi.Min a) = Semi.Min <$> f a
+  deriving instance Foldable Semi.Min
+  deriving instance Traversable Semi.Min
 
   instance Applicative Semi.Max where
     pure = Semi.Max
@@ -155,9 +149,7 @@ $(singletonsOnly [d|
     enumFromTo (Semi.Max a) (Semi.Max b) = Semi.Max `map` enumFromTo a b
     enumFromThenTo (Semi.Max a) (Semi.Max b) (Semi.Max c) = Semi.Max `map` enumFromThenTo a b c
 
-  -- deriving instance Functor Semi.Max
-  instance Functor Semi.Max where
-    fmap f (Semi.Max x) = Semi.Max (f x)
+  deriving instance Functor Semi.Max
 
   instance Monad Semi.Max where
     (>>) = (*>)
@@ -178,20 +170,13 @@ $(singletonsOnly [d|
     signum (Semi.Max a) = Semi.Max (signum a)
     fromInteger         = Semi.Max . fromInteger
 
-  -- deriving instance Foldable Semi.Max
-  instance Foldable Semi.Max where
-    foldMap f (Semi.Max a) = f a
-
-  -- deriving instance Traversable Semi.Max
-  instance Traversable Semi.Max where
-    traverse f (Semi.Max a) = Semi.Max <$> f a
+  deriving instance Foldable Semi.Max
+  deriving instance Traversable Semi.Max
 
   instance Eq a => Eq (Arg a b) where
     Arg a _ == Arg b _ = a == b
 
-  -- deriving instance Functor (Arg a)
-  instance Functor (Arg a) where
-    fmap f (Arg x a) = Arg x (f a)
+  deriving instance Functor (Arg a)
 
   instance Ord a => Ord (Arg a b) where
     Arg a _ `compare` Arg b _ = compare a b
@@ -203,14 +188,8 @@ $(singletonsOnly [d|
       | otherwise = y
 
   deriving instance (Show a, Show b) => Show (Arg a b)
-
-  -- deriving instance Foldable (Arg a)
-  instance Foldable (Arg a) where
-    foldMap f (Arg _ a) = f a
-
-  -- deriving instance Traversable (Arg a)
-  instance Traversable (Arg a) where
-    traverse f (Arg x a) = Arg x <$> f a
+  deriving instance Foldable (Arg a)
+  deriving instance Traversable (Arg a)
 
   instance Applicative First where
     pure x = First x
@@ -227,9 +206,7 @@ $(singletonsOnly [d|
     enumFromTo (First a) (First b) = First `map` enumFromTo a b
     enumFromThenTo (First a) (First b) (First c) = First `map` enumFromThenTo a b c
 
-  -- deriving instance Functor First
-  instance Functor First where
-    fmap f (First x) = First (f x)
+  deriving instance Functor First
 
   instance Monad First where
     (>>) = (*>)
@@ -238,13 +215,8 @@ $(singletonsOnly [d|
   instance Semigroup (First a) where
     a <> _ = a
 
-  -- deriving instance Foldable First
-  instance Foldable First where
-    foldMap f (First a) = f a
-
-  -- deriving instance Traversable First
-  instance Traversable First where
-    traverse f (First a) = First <$> f a
+  deriving instance Foldable First
+  deriving instance Traversable First
 
   instance Applicative Last where
     pure x = Last x
@@ -261,10 +233,7 @@ $(singletonsOnly [d|
     enumFromTo (Last a) (Last b) = Last `map` enumFromTo a b
     enumFromThenTo (Last a) (Last b) (Last c) = Last `map` enumFromThenTo a b c
 
-  -- deriving instance Functor Last
-  instance Functor Last where
-    fmap f (Last x) = Last (f x)
-    a <$ _ = Last a
+  deriving instance Functor Last
 
   instance Monad Last where
     (>>) = (*>)
@@ -273,13 +242,8 @@ $(singletonsOnly [d|
   instance Semigroup (Last a) where
     _ <> b = b
 
-  -- deriving instance Foldable Last
-  instance Foldable Last where
-    foldMap f (Last a) = f a
-
-  -- deriving instance Traversable Last
-  instance Traversable Last where
-    traverse f (Last a) = Last <$> f a
+  deriving instance Foldable Last
+  deriving instance Traversable Last
 
   instance Monoid m => Semigroup (WrappedMonoid m) where
     WrapMonoid a <> WrapMonoid b = WrapMonoid (a `mappend` b)
@@ -309,9 +273,7 @@ $(singletonsOnly [d|
     Option Nothing  *>  _ = Option Nothing
     Option Just{}   *>  b = b
 
-  -- deriving instance Functor Option
-  instance Functor Option where
-    fmap f (Option a) = Option (fmap f a)
+  deriving instance Functor Option
 
   instance Monad Option where
     Option (Just a) >>= k = k a

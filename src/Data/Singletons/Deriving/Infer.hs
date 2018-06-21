@@ -16,8 +16,11 @@
 module Data.Singletons.Deriving.Infer ( inferConstraints, inferConstraintsDef ) where
 
 import Language.Haskell.TH.Desugar
+import Language.Haskell.TH.Syntax
+import Data.Singletons.Deriving.Util
 import Data.Singletons.Util
 import Data.List
+import Data.List.NonEmpty (NonEmpty(..))
 import Data.Generics.Twins
 
 -- @inferConstraints cls inst_ty cons@ infers the instance context for a
@@ -93,8 +96,29 @@ inferConstraints pr inst_ty = fmap (nubBy geq) . concatMapM infer_ct
     infer_ct :: DCon -> q DCxt
     infer_ct (DCon _ _ _ fields res_ty) = do
       let field_tys = tysOfConFields fields
+          -- We need to match the constructor's result type with the type given
+          -- in the generated instance. But if we have:
+          --
+          --   data Foo a where
+          --     MkFoo :: a -> Foo a
+          --     deriving Functor
+          --
+          -- Then the generated instance will be:
+          --
+          --   instance Functor Foo where ...
+          --
+          -- Which means that if we're not careful, we might try to match the
+          -- types (Foo a) and (Foo), which will fail.
+          --
+          -- To avoid this, we employ a grimy hack where we pad the instance
+          -- type with an extra (dummy) type variable. It doesn't matter what
+          -- we name it, since none of the inferred constraints will mention
+          -- it anyway.
+          eta_expanded_inst_ty
+            | is_functor_like = inst_ty `DAppT` DVarT (mkName "dummy")
+            | otherwise       = inst_ty
       res_ty'  <- expandType res_ty
-      inst_ty' <- expandType inst_ty
+      inst_ty' <- expandType eta_expanded_inst_ty
       field_tys' <- case matchTy YesIgnore res_ty' inst_ty' of
                       Nothing -> fail $ showString "Unable to match type "
                                       . showsPrec 11 res_ty'
@@ -102,7 +126,34 @@ inferConstraints pr inst_ty = fmap (nubBy geq) . concatMapM infer_ct
                                       . showsPrec 11 inst_ty'
                                       $ ""
                       Just subst -> traverse (substTy subst) field_tys
-      pure $ map (pr `DAppPr`) field_tys'
+      if is_functor_like
+         then mk_functor_like_constraints field_tys' res_ty'
+         else pure $ map (pr `DAppPr`) field_tys'
+
+    -- If we derive a Functor-like class, e.g.,
+    --
+    --   data Foo f g h a = MkFoo (f a) (g (h a)) deriving Functor
+    --
+    -- Then we infer constraints by sticking Functor on the subtypes of kind
+    -- (Type -> Type). In the example above, that would give us
+    -- (Functor f, Functor g, Functor h).
+    mk_functor_like_constraints :: [DType] -> DType -> q DCxt
+    mk_functor_like_constraints fields res_ty = do
+      -- This function is partial. But that's OK, because
+      -- functorLikeValidityChecks ensures that this is total by the time
+      -- we invoke this.
+      let _ :| res_ty_args     = unfoldType res_ty
+          (_, last_res_ty_arg) = snocView res_ty_args
+          Just last_tv         = getDVarTName_maybe last_res_ty_arg
+      deep_subtypes <- concatMapM (deepSubtypesContaining last_tv) fields
+      pure $ map (pr `DAppPr`) deep_subtypes
+
+    is_functor_like :: Bool
+    is_functor_like
+      | DConT pr_class_name :| _ <- unfoldType (predToType pr)
+      = isFunctorLikeClassName pr_class_name
+      | otherwise
+      = False
 
 -- For @inferConstraintsDef mb_cxt@, if @mb_cxt@ is 'Just' a context, then it will
 -- simply return that context. Otherwise, if @mb_cxt@ is 'Nothing', then

@@ -36,7 +36,9 @@ module Data.Singletons.Prelude.Const (
 import Control.Applicative
 import Data.Kind (Type)
 import Data.Singletons.Internal
-import Data.Singletons.Prelude.Base hiding (Const, ConstSym0, ConstSym1)
+import Data.Singletons.Prelude.Base
+  hiding ( Const, ConstSym0, ConstSym1
+         , Foldr, FoldrSym0, sFoldr )
 import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Foldable
@@ -129,13 +131,8 @@ $(singletonsOnly [d|
       showsPrec d (Const x) = showParen (d > 10) $
                               showString "Const " . showsPrec 11 x
 
-  -- deriving instance Functor (Const m)
-  instance Functor (Const m) where
-      fmap _ (Const v) = Const v
-
-  -- deriving instance Foldable (Const m)
-  instance Foldable (Const m) where
-      foldMap _ _ = mempty
+  deriving instance Functor (Const m :: Type -> Type)
+  deriving instance Foldable (Const m)
 
   instance Monoid m => Applicative (Const m) where
       pure _ = Const mempty
