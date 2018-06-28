@@ -33,7 +33,6 @@ mkTraversableInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
                    , ft_ty_app = \_ g -> DAppE (DVarE traverseName) <$> g
                      -- traverse f = traverse g
                    , ft_forall = \_ g -> g
-                   , ft_sig    = \g _ -> g
                    , ft_bad_app = error "in other argument in ft_trav"
                    }
 

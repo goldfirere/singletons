@@ -34,7 +34,6 @@ mkFoldableInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
                       , ft_ty_app = \_ g -> DAppE (DVarE foldMapName) <$> g
                         -- foldMap f = foldMap g
                       , ft_forall  = \_ g -> g
-                      , ft_sig     = \g _ -> g
                       , ft_bad_app = error "in other argument in ft_foldMap"
                       }
 
@@ -48,7 +47,6 @@ mkFoldableInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
                         mkSimpleLam2 $ \x z' -> pure $
                           DVarE foldrName `DAppE` gg `DAppE` z' `DAppE` x
                       -- foldr f = (\x z -> foldr g z x)
-                    , ft_sig     = \g _ -> g
                     , ft_forall  = \_ g -> g
                     , ft_bad_app = error "in other argument in ft_foldr"
                     }

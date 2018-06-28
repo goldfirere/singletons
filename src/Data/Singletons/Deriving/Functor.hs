@@ -35,7 +35,6 @@ mkFunctorInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
                    , ft_ty_app = \_ g -> DAppE (DVarE fmapName) <$> g
                      -- fmap f = fmap g
                    , ft_forall = \_ g -> g
-                   , ft_sig    = \g _ -> g
                    , ft_bad_app = error "in other argument in ft_fmap"
                    }
 
@@ -50,7 +49,6 @@ mkFunctorInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
                             Nested g'   -> pure . Nested $ DVarE fmapName    `DAppE` g'
                             Immediate _ -> pure . Nested $ DVarE replaceName `DAppE` DVarE z
                         -- (p <$) = fmap (p <$)
-                      , ft_sig     = \g _ -> g
                       , ft_forall  = \_ g -> g
                       , ft_bad_app = error "in other argument in ft_replace"
                       }

@@ -92,8 +92,6 @@ data FFoldType a      -- Describes how to fold over a DType in a functor like wa
           -- ^ Does not contain variable
         , ft_var     :: a
           -- ^ The variable itself
-        , ft_sig     :: a -> DKind -> a
-          -- ^ Kind signature, variable only in the ascribed type
         , ft_ty_app  :: DType -> a -> a
           -- ^ Type app, variable only in last argument
         , ft_bad_app :: a
@@ -115,8 +113,8 @@ functorLikeTraverse :: forall q a.
                     -> DType       -- ^ Type to process
                     -> q a
 functorLikeTraverse var (FT { ft_triv = caseTrivial, ft_var = caseVar
-                            , ft_sig = caseSig, ft_ty_app = caseTyApp
-                            , ft_bad_app = caseWrongArg, ft_forall = caseForAll })
+                            , ft_ty_app = caseTyApp, ft_bad_app = caseWrongArg
+                            , ft_forall = caseForAll })
                     ty
   = do ty' <- expandType ty
        (res, _) <- go ty'
@@ -155,10 +153,7 @@ functorLikeTraverse var (FT { ft_triv = caseTrivial, ft_var = caseVar
       (_, kc) <- go k
       if kc
          then pure (caseWrongArg, True)
-         else do (tr, tc) <- go t
-                 if tc
-                    then pure (caseSig tr k, True)
-                    else trivial
+         else go t
     go (DVarT v)
       | v == var = pure (caseVar, True)
       | otherwise = trivial
@@ -225,7 +220,6 @@ functorLikeValidityChecks allowConstrainedLastTyVar (DataDecl n data_tvbs cons)
       FT { ft_triv    = pure ()
          , ft_var     = pure ()
          , ft_ty_app  = \_ x -> x
-         , ft_sig     = \x _ -> x
          , ft_bad_app = fail $ badCon con_name wrong_arg
          , ft_forall  = \_ x -> x
          }
@@ -246,7 +240,6 @@ deepSubtypesContaining tv
             , ft_var     = []
             , ft_ty_app  = (:)
             , ft_bad_app = error "in other argument in deepSubtypesContaining"
-            , ft_sig     = const
             , ft_forall  = \tvbs xs -> filter (\x -> all (not_in_ty x) tvbs) xs })
   where
     not_in_ty :: DType -> DTyVarBndr -> Bool
