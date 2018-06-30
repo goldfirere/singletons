@@ -2,6 +2,10 @@
              TypeOperators, GADTs, ScopedTypeVariables, UndecidableInstances,
              DefaultSignatures, FlexibleContexts, InstanceSigs
   #-}
+{-# LANGUAGE CPP #-}
+#if __GLASGOW_HASKELL__ >= 805
+{-# LANGUAGE NoStarIsType #-}
+#endif
 
 -----------------------------------------------------------------------------
 -- |
