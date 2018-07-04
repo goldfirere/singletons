@@ -50,8 +50,10 @@ following:
 * `InstanceSigs`
 * `KindSignatures`
 * `NoStarIsType`
+* `QuantifiedConstraints`
 * `RankNTypes`
 * `ScopedTypeVariables`
+* `StandaloneDeriving`
 * `TemplateHaskell`
 * `TypeFamilies`
 * `TypeInType`

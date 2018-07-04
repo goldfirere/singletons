@@ -183,9 +183,6 @@ Singletons/T190.hs:0:0:: Splicing declarations
       (%==) ST ST = STrue
     instance SDecide T where
       (%~) ST ST = Proved Refl
-    instance Data.Singletons.ShowSing.ShowSing T where
-      Data.Singletons.ShowSing.showsSingPrec _ ST = showString "ST"
-    instance Show (Sing (z :: T)) where
-      showsPrec = Data.Singletons.ShowSing.showsSingPrec
+    deriving instance Show (Sing (z :: T))
     instance SingI T where
       sing = ST

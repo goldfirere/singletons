@@ -53,7 +53,7 @@ module Data.Singletons.TypeLits (
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Tuple
 import Data.Singletons.Promote
-import Data.Singletons.ShowSing ()      -- for ShowSing/Show instances
+import Data.Singletons.ShowSing ()      -- for Show instances
 import Data.Singletons.TypeLits.Internal
 
 import Data.String (IsString(..))

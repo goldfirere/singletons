@@ -507,79 +507,11 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                      ((applySing ((singFun2 @ShowCharSym0) sShowChar))
                                         (sing :: Sing "}")))))))))))
             sA_0123456789876543210
-    instance Data.Singletons.ShowSing.ShowSing Foo1 where
-      Data.Singletons.ShowSing.showsSingPrec _ SMkFoo1
-        = showString "SMkFoo1"
-    instance Show (Sing (z :: Foo1)) where
-      showsPrec = Data.Singletons.ShowSing.showsSingPrec
-    instance Data.Singletons.ShowSing.ShowSing a =>
-             Data.Singletons.ShowSing.ShowSing (Foo2 a) where
-      Data.Singletons.ShowSing.showsSingPrec
-        p_0123456789876543210
-        (SMkFoo2a arg_0123456789876543210 arg_0123456789876543210)
-        = (showParen (((>) p_0123456789876543210) 10))
-            (((.) (showString "SMkFoo2a "))
-               (((.)
-                   ((Data.Singletons.ShowSing.showsSingPrec 11)
-                      arg_0123456789876543210))
-                  (((.) GHC.Show.showSpace)
-                     ((Data.Singletons.ShowSing.showsSingPrec 11)
-                        arg_0123456789876543210))))
-      Data.Singletons.ShowSing.showsSingPrec
-        p_0123456789876543210
-        (SMkFoo2b argL_0123456789876543210 argR_0123456789876543210)
-        = (showParen (((>) p_0123456789876543210) 9))
-            (((.)
-                ((Data.Singletons.ShowSing.showsSingPrec 10)
-                   argL_0123456789876543210))
-               (((.) (showString " `SMkFoo2b` "))
-                  ((Data.Singletons.ShowSing.showsSingPrec 10)
-                     argR_0123456789876543210)))
-      Data.Singletons.ShowSing.showsSingPrec
-        p_0123456789876543210
-        ((:%*:) arg_0123456789876543210 arg_0123456789876543210)
-        = (showParen (((>) p_0123456789876543210) 10))
-            (((.) (showString "(:%*:) "))
-               (((.)
-                   ((Data.Singletons.ShowSing.showsSingPrec 11)
-                      arg_0123456789876543210))
-                  (((.) GHC.Show.showSpace)
-                     ((Data.Singletons.ShowSing.showsSingPrec 11)
-                        arg_0123456789876543210))))
-      Data.Singletons.ShowSing.showsSingPrec
-        p_0123456789876543210
-        ((:%&:) argL_0123456789876543210 argR_0123456789876543210)
-        = (showParen (((>) p_0123456789876543210) 9))
-            (((.)
-                ((Data.Singletons.ShowSing.showsSingPrec 10)
-                   argL_0123456789876543210))
-               (((.) (showString " :%&: "))
-                  ((Data.Singletons.ShowSing.showsSingPrec 10)
-                     argR_0123456789876543210)))
-    instance Data.Singletons.ShowSing.ShowSing a =>
-             Show (Sing (z :: Foo2 a)) where
-      showsPrec = Data.Singletons.ShowSing.showsSingPrec
-    instance Data.Singletons.ShowSing.ShowSing Bool =>
-             Data.Singletons.ShowSing.ShowSing Foo3 where
-      Data.Singletons.ShowSing.showsSingPrec
-        p_0123456789876543210
-        (SMkFoo3 arg_0123456789876543210 arg_0123456789876543210)
-        = (showParen (((>) p_0123456789876543210) 10))
-            (((.) (showString "SMkFoo3 "))
-               (((.) (showChar '{'))
-                  (((.) (showString "sGetFoo3a = "))
-                     (((.)
-                         ((Data.Singletons.ShowSing.showsSingPrec 0)
-                            arg_0123456789876543210))
-                        (((.) GHC.Show.showCommaSpace)
-                           (((.) (showString "(%***) = "))
-                              (((.)
-                                  ((Data.Singletons.ShowSing.showsSingPrec 0)
-                                     arg_0123456789876543210))
-                                 (showChar '}'))))))))
-    instance Data.Singletons.ShowSing.ShowSing Bool =>
-             Show (Sing (z :: Foo3)) where
-      showsPrec = Data.Singletons.ShowSing.showsSingPrec
+    deriving instance Show (Sing (z :: Foo1))
+    deriving instance Data.Singletons.ShowSing.ShowSing a =>
+                      Show (Sing (z :: Foo2 a))
+    deriving instance Data.Singletons.ShowSing.ShowSing Bool =>
+                      Show (Sing (z :: Foo3))
     instance SingI MkFoo1 where
       sing = SMkFoo1
     instance (SingI n, SingI n) =>

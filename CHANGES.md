@@ -31,6 +31,22 @@ Changelog for singletons project
   Haskell-generated code may require `GADTs` in situations that didn't require
   it before.
 
+* Overhaul the way derived `Show` instances for singleton types works. Before,
+  there was an awkward `ShowSing` class (which was essentially a cargo-culted
+  version of `Show` specialized for `Sing`) that one had to create instances
+  for separately. Now that GHC has `QuantifiedConstraints`, we can scrap this
+  whole class and turn `ShowSing` into a simple type synonym:
+
+  ```haskell
+  type ShowSing k = forall z. Show (Sing (z :: k))
+  ```
+
+  Now, instead of generating a hand-written `ShowSing` and `Show` instance for
+  each singleton type, we only generate a single (derived!) `Show` instance.
+  As a result of this change, you will likely need to enable
+  `QuantifiedConstraints` and `StandaloneDeriving` if you single any derived
+  `Show` instances in your code.
+
 * The kind of the type parameter to `SingI` is no longer specified. This only
   affects you if you were using the `sing` method with `TypeApplications`. For
   instance, if you were using `sing @Bool @True` before, then you will now need

@@ -228,9 +228,9 @@ Why are these instances handled outside of partitionDecs?
   in Data.Singletons.Promote and Data.Singletons.Single (depending on the task
   at hand).
 * Deriving Show in singletons not only derives PShow/SShow instances, but it
-  also derives ShowSing/Sing instances for singletons types. To make this work,
+  also derives Show instances for singletons types. To make this work,
   we let partitionDecs handle the PShow/SShow instances, but we also stick the
   relevant info into a DerivedDecl value for later use in
-  Data.Singletons.Single, where we additionally generate ShowSing/Show
+  Data.Singletons.Single, where we additionally generate Show
   instances.
 -}

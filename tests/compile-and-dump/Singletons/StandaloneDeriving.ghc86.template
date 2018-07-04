@@ -425,26 +425,9 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       (%~) SS1 SS2 = Disproved (\ x -> case x of)
       (%~) SS2 SS1 = Disproved (\ x -> case x of)
       (%~) SS2 SS2 = Proved Refl
-    instance Data.Singletons.ShowSing.ShowSing a =>
-             Data.Singletons.ShowSing.ShowSing (T a ()) where
-      Data.Singletons.ShowSing.showsSingPrec
-        p_0123456789876543210
-        ((:%*:) argL_0123456789876543210 argR_0123456789876543210)
-        = (showParen (((>) p_0123456789876543210) 9))
-            (((.)
-                ((Data.Singletons.ShowSing.showsSingPrec 10)
-                   argL_0123456789876543210))
-               (((.) (showString " :%*: "))
-                  ((Data.Singletons.ShowSing.showsSingPrec 10)
-                     argR_0123456789876543210)))
-    instance Data.Singletons.ShowSing.ShowSing a =>
-             Show (Sing (z :: T a ())) where
-      showsPrec = Data.Singletons.ShowSing.showsSingPrec
-    instance Data.Singletons.ShowSing.ShowSing S where
-      Data.Singletons.ShowSing.showsSingPrec _ SS1 = showString "SS1"
-      Data.Singletons.ShowSing.showsSingPrec _ SS2 = showString "SS2"
-    instance Show (Sing (z :: S)) where
-      showsPrec = Data.Singletons.ShowSing.showsSingPrec
+    deriving instance Data.Singletons.ShowSing.ShowSing a =>
+                      Show (Sing (z :: T a ()))
+    deriving instance Show (Sing (z :: S))
     instance (SingI n, SingI n) =>
              SingI ((:*:) (n :: a) (n :: b)) where
       sing = ((:%*:) sing) sing
