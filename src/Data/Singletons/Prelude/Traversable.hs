@@ -169,7 +169,7 @@ $(singletonsOnly [d|
       -- -| Evaluate each action in the structure from left to right, and
       -- and collect the results. For a version that ignores the results
       -- see 'Data.Foldable.sequenceA_'.
-      sequenceA :: Applicative f => (t :: Type -> Type) (f a) -> f (t a)
+      sequenceA :: Applicative f => t (f a) -> f (t a)
       sequenceA = traverse id
 
       -- -| Map each element of a structure to a monadic action, evaluate
@@ -181,7 +181,7 @@ $(singletonsOnly [d|
       -- -| Evaluate each monadic action in the structure from left to
       -- right, and collect the results. For a version that ignores the
       -- results see 'Data.Foldable.sequence_'.
-      sequence :: Monad m => (t :: Type -> Type) (m a) -> m (t a)
+      sequence :: Monad m => t (m a) -> m (t a)
       sequence = sequenceA
   |])
 

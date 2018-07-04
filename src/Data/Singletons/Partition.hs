@@ -88,7 +88,7 @@ partitionDec (DDataD _nd _cxt name tvbs mk cons derivings) = do
       $ concatMap flatten_clause derivings
   return $ mconcat $ derived_dec : derived_decs
   where
-    flatten_clause :: DDerivClause -> [(Maybe DerivStrategy, DType)]
+    flatten_clause :: DDerivClause -> [(Maybe DDerivStrategy, DType)]
     flatten_clause (DDerivClause strat preds) =
       map (\p -> (strat, predToType p)) preds
 
@@ -184,7 +184,7 @@ partitionInstanceDec _ =
 
 partitionDeriving
   :: forall m. DsMonad m
-  => Maybe DerivStrategy
+  => Maybe DDerivStrategy
                 -- ^ The deriving strategy, if present.
   -> DType      -- ^ The class being derived (e.g., 'Eq'), possibly applied to
                 --   some number of arguments (e.g., @C Int Bool@).
@@ -199,7 +199,7 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
          -- Here, we are more conservative than GHC: DeriveAnyClass only kicks
          -- in if the user explicitly chooses to do so with the anyclass
          -- deriving strategy
-       | Just AnyclassStrategy <- mb_strat
+       | Just DAnyclassStrategy <- mb_strat
       -> return $ mk_derived_inst
            InstDecl { id_cxt = fromMaybe [] mb_ctxt
                       -- For now at least, there's no point in attempting to
@@ -216,8 +216,12 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
                     , id_arg_tys   = arg_tys ++ [ty]
                     , id_meths     = [] }
 
-       | Just NewtypeStrategy <- mb_strat
+       | Just DNewtypeStrategy <- mb_strat
       -> do qReportWarning "GeneralizedNewtypeDeriving is ignored by `singletons`."
+            return mempty
+
+       | Just (DViaStrategy {}) <- mb_strat
+      -> do qReportWarning "DerivingVia is ignored by `singletons`."
             return mempty
 
     -- Stock classes. These are derived only if `singletons` supports them
@@ -231,7 +235,7 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
 
          -- If we can't find a stock class, but the user bothered to use an
          -- explicit stock keyword, we can at least warn them about it.
-       | Just StockStrategy <- mb_strat
+       | Just DStockStrategy <- mb_strat
       -> do qReportWarning $ "`singletons` doesn't recognize the stock class "
                              ++ nameBase deriv_name
             return mempty
@@ -270,10 +274,10 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
         ]
 
 -- Is this being used with an explicit stock strategy, or no strategy at all?
-isStockOrDefault :: Maybe DerivStrategy -> Bool
-isStockOrDefault Nothing              = True
-isStockOrDefault (Just StockStrategy) = True
-isStockOrDefault (Just _)             = False
+isStockOrDefault :: Maybe DDerivStrategy -> Bool
+isStockOrDefault Nothing               = True
+isStockOrDefault (Just DStockStrategy) = True
+isStockOrDefault (Just _)              = False
 
 {-
 Note [Partitioning, type synonyms, and type families]

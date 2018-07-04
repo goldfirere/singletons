@@ -1,0 +1,130 @@
+Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
+    promote
+      [d| type PFoo1 a = Maybe a
+          type family PFoo2 a
+          type family PFoo3 a where
+            PFoo3 a = Maybe a
+          class PC (a :: Type) where
+            type PFoo4 a
+            type PFoo4 a = Maybe a
+          
+          type instance PFoo2 a = Maybe a
+          instance PC a where
+            type PFoo4 a = Maybe a |]
+  ======>
+    type PFoo1 a = Maybe a
+    type family PFoo2 a
+    type instance PFoo2 a = Maybe a
+    type family PFoo3 a where
+      PFoo3 a = Maybe a
+    class PC (a :: Type) where
+      type PFoo4 a
+      type PFoo4 a = Maybe a
+    instance PC a where
+      type PFoo4 a = Maybe a
+    type PFoo1Sym1 a0123456789876543210 = PFoo1 a0123456789876543210
+    instance SuppressUnusedWarnings PFoo1Sym0 where
+      suppressUnusedWarnings = snd (((,) PFoo1Sym0KindInference) ())
+    data PFoo1Sym0 a0123456789876543210
+      where
+        PFoo1Sym0KindInference :: forall a0123456789876543210
+                                         arg. SameKind (Apply PFoo1Sym0 arg) (PFoo1Sym1 arg) =>
+                                  PFoo1Sym0 a0123456789876543210
+    type instance Apply PFoo1Sym0 a0123456789876543210 = PFoo1 a0123456789876543210
+    type PFoo3Sym1 a0123456789876543210 = PFoo3 a0123456789876543210
+    instance SuppressUnusedWarnings PFoo3Sym0 where
+      suppressUnusedWarnings = snd (((,) PFoo3Sym0KindInference) ())
+    data PFoo3Sym0 a0123456789876543210
+      where
+        PFoo3Sym0KindInference :: forall a0123456789876543210
+                                         arg. SameKind (Apply PFoo3Sym0 arg) (PFoo3Sym1 arg) =>
+                                  PFoo3Sym0 a0123456789876543210
+    type instance Apply PFoo3Sym0 a0123456789876543210 = PFoo3 a0123456789876543210
+    type PFoo2Sym1 (a0123456789876543210 :: Type) =
+        PFoo2 a0123456789876543210
+    instance SuppressUnusedWarnings PFoo2Sym0 where
+      suppressUnusedWarnings = snd (((,) PFoo2Sym0KindInference) ())
+    data PFoo2Sym0 :: (~>) Type Type
+      where
+        PFoo2Sym0KindInference :: forall a0123456789876543210
+                                         arg. SameKind (Apply PFoo2Sym0 arg) (PFoo2Sym1 arg) =>
+                                  PFoo2Sym0 a0123456789876543210
+    type instance Apply PFoo2Sym0 a0123456789876543210 = PFoo2 a0123456789876543210
+    type PFoo4Sym1 (a0123456789876543210 :: Type) =
+        PFoo4 a0123456789876543210
+    instance SuppressUnusedWarnings PFoo4Sym0 where
+      suppressUnusedWarnings = snd (((,) PFoo4Sym0KindInference) ())
+    data PFoo4Sym0 :: (~>) Type Type
+      where
+        PFoo4Sym0KindInference :: forall a0123456789876543210
+                                         arg. SameKind (Apply PFoo4Sym0 arg) (PFoo4Sym1 arg) =>
+                                  PFoo4Sym0 a0123456789876543210
+    type instance Apply PFoo4Sym0 a0123456789876543210 = PFoo4 a0123456789876543210
+    class PPC (a :: Type)
+    instance PPC a
+Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| type SFoo1 a = Maybe a
+          type family SFoo2 a
+          type family SFoo3 a where
+            SFoo3 a = Maybe a
+          class SC (a :: Type) where
+            type SFoo4 a
+            type SFoo4 a = Maybe a
+          
+          type instance SFoo2 a = Maybe a
+          instance SC a where
+            type SFoo4 a = Maybe a |]
+  ======>
+    type SFoo1 a = Maybe a
+    type family SFoo2 a
+    type instance SFoo2 a = Maybe a
+    type family SFoo3 a where
+      SFoo3 a = Maybe a
+    class SC (a :: Type) where
+      type SFoo4 a
+      type SFoo4 a = Maybe a
+    instance SC a where
+      type SFoo4 a = Maybe a
+    type SFoo1Sym1 a0123456789876543210 = SFoo1 a0123456789876543210
+    instance SuppressUnusedWarnings SFoo1Sym0 where
+      suppressUnusedWarnings = snd (((,) SFoo1Sym0KindInference) ())
+    data SFoo1Sym0 a0123456789876543210
+      where
+        SFoo1Sym0KindInference :: forall a0123456789876543210
+                                         arg. SameKind (Apply SFoo1Sym0 arg) (SFoo1Sym1 arg) =>
+                                  SFoo1Sym0 a0123456789876543210
+    type instance Apply SFoo1Sym0 a0123456789876543210 = SFoo1 a0123456789876543210
+    type SFoo3Sym1 a0123456789876543210 = SFoo3 a0123456789876543210
+    instance SuppressUnusedWarnings SFoo3Sym0 where
+      suppressUnusedWarnings = snd (((,) SFoo3Sym0KindInference) ())
+    data SFoo3Sym0 a0123456789876543210
+      where
+        SFoo3Sym0KindInference :: forall a0123456789876543210
+                                         arg. SameKind (Apply SFoo3Sym0 arg) (SFoo3Sym1 arg) =>
+                                  SFoo3Sym0 a0123456789876543210
+    type instance Apply SFoo3Sym0 a0123456789876543210 = SFoo3 a0123456789876543210
+    type SFoo2Sym1 (a0123456789876543210 :: Type) =
+        SFoo2 a0123456789876543210
+    instance SuppressUnusedWarnings SFoo2Sym0 where
+      suppressUnusedWarnings = snd (((,) SFoo2Sym0KindInference) ())
+    data SFoo2Sym0 :: (~>) Type Type
+      where
+        SFoo2Sym0KindInference :: forall a0123456789876543210
+                                         arg. SameKind (Apply SFoo2Sym0 arg) (SFoo2Sym1 arg) =>
+                                  SFoo2Sym0 a0123456789876543210
+    type instance Apply SFoo2Sym0 a0123456789876543210 = SFoo2 a0123456789876543210
+    type SFoo4Sym1 (a0123456789876543210 :: Type) =
+        SFoo4 a0123456789876543210
+    instance SuppressUnusedWarnings SFoo4Sym0 where
+      suppressUnusedWarnings = snd (((,) SFoo4Sym0KindInference) ())
+    data SFoo4Sym0 :: (~>) Type Type
+      where
+        SFoo4Sym0KindInference :: forall a0123456789876543210
+                                         arg. SameKind (Apply SFoo4Sym0 arg) (SFoo4Sym1 arg) =>
+                                  SFoo4Sym0 a0123456789876543210
+    type instance Apply SFoo4Sym0 a0123456789876543210 = SFoo4 a0123456789876543210
+    class PSC (a :: Type)
+    instance PSC a
+    class SSC (a :: Type)
+    instance SSC a

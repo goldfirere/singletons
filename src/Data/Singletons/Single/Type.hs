@@ -52,6 +52,8 @@ singPred :: DPred -> SgM DPred
 singPred = singPredRec []
 
 singPredRec :: [DType] -> DPred -> SgM DPred
+singPredRec _cxt (DForallPr {}) =
+  fail "Singling of quantified constraints not yet supported"
 singPredRec ctx (DAppPr pr ty) = singPredRec (ty : ctx) pr
 singPredRec _ctx (DSigPr _pr _ki) =
   fail "Singling of constraints with explicit kinds not yet supported"

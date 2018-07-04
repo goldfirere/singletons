@@ -47,30 +47,11 @@ import Data.Singletons.TypeLits.Internal
 {-
 Note [How to get the right kinds when promoting Functor and friends]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Promoting Functor, Applicative, Monad, etc. can be tricky, since the code
-that singletons wants to generate often falls into certain pitfalls:
-
-1. To avoid running afoul of a CUSK validity check (see Note [CUSKification]),
-   classes with type parameters that lack explicit kind signatures will
-   be defaulted to be of kind Type. This is not what you want for
-   Functor, however, since its argument is of kind (Type -> Type), so
-   we must explicitly use this kind when declaring the Functor class
-   (and other classes in this module).
-
-2. Certain methods do not have enough kind information to avoid running
-   into a separate CUSK validity check when being defunctionalized. For
-   instance, for consider the following method of Applicative:
-
-      (*>) :: f a -> f b -> f b
-
-   When defunctionalized, this will have a return kind that looks roughly like
-   (:: forall f a. f a ~> f b ~> f b). While this is a CUSK, the variables
-   `a` and `b` are undeterdetermined, so this will error. To avoid this, we
-   provide an additional kind signature on `f`, like so:
-
-      (*>) :: (f :: Type -> Type) a -> f b -> f b
-
-   This trick is used in several places throughout this module.
+To avoid running afoul of a CUSK validity check (see Note [CUSKification]),
+classes with type parameters that lack explicit kind signatures will be
+defaulted to be of kind Type. This is not what you want for Functor, however,
+since its argument is of kind (Type -> Type), so we must explicitly use this
+kind when declaring the Functor class (and other classes in this module).
 -}
 
 $(singletonsOnly [d|
@@ -183,7 +164,7 @@ $(singletonsOnly [d|
       liftA2 f x = (<*>) (fmap f x)
 
       -- -| Sequence actions, discarding the value of the first argument.
-      (*>) :: (f :: Type -> Type) a -> f b -> f b
+      (*>) :: f a -> f b -> f b
       a1 *> a2 = (id <$ a1) <*> a2
       -- This is essentially the same as liftA2 (flip const), but if the
       -- Functor instance has an optimized (<$), it may be better to use
@@ -195,7 +176,7 @@ $(singletonsOnly [d|
       -- liftA2, it would likely be better to define (*>) using liftA2.
 
       -- -| Sequence actions, discarding the value of the second argument.
-      (<*) :: (f :: Type -> Type) a -> f b -> f a
+      (<*) :: f a -> f b -> f a
       (<*) = liftA2 const
 
   -- -| A variant of '<*>' with the arguments reversed.
@@ -286,7 +267,7 @@ $(singletonsOnly [d|
       -- -| Sequentially compose two actions, discarding any value produced
       -- by the first, like sequencing operators (such as the semicolon)
       -- in imperative languages.
-      (>>)        :: forall a b. (m :: Type -> Type) a -> m b -> m b
+      (>>)        :: forall a b. m a -> m b -> m b
       m >> k = m >>= \_ -> k -- See Note [Recursive bindings for Applicative/Monad]
 
       -- -| Inject a value into the monadic type.
@@ -301,7 +282,7 @@ $(singletonsOnly [d|
       -- to its own class 'MonadFail' (see "Control.Monad.Fail" for more
       -- details). The definition here will be removed in a future
       -- release.
-      fail        :: Symbol -> (m :: Type -> Type) a
+      fail        :: Symbol -> m a
       fail s      = error s
 
   {- Note [Recursive bindings for Applicative/Monad]
@@ -400,9 +381,9 @@ $(singletonsOnly [d|
   -- -* @'many' v = 'some' v '<|>' 'pure' []@
   class Applicative f => Alternative (f :: Type -> Type) where
       -- -| The identity of '<|>'
-      empty :: (f :: Type -> Type) a
+      empty :: f a
       -- -| An associative binary operation
-      (<|>) :: (f :: Type -> Type) a -> f a -> f a
+      (<|>) :: f a -> f a -> f a
 
       {-
       some and many rely on infinite lists
@@ -443,7 +424,7 @@ $(singletonsOnly [d|
      -- @
      -- mzero = 'empty'
      -- @
-     mzero :: (m :: Type -> Type) a
+     mzero :: m a
      mzero = empty
 
      -- -| An associative operation. The default definition is
@@ -451,7 +432,7 @@ $(singletonsOnly [d|
      -- @
      -- mplus = ('<|>')
      -- @
-     mplus :: (m :: Type -> Type) a -> m a -> m a
+     mplus :: m a -> m a -> m a
      mplus = (<|>)
   |])
 

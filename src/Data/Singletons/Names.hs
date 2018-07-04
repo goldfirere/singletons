@@ -320,11 +320,12 @@ splitUnderscores s = case span (== '_') s of
 modifyConNameDPred :: (Name -> Name) -> DPred -> DPred
 modifyConNameDPred mod_con_name = go
   where
-    go (DAppPr p t)  = DAppPr (go p) t
-    go (DSigPr p k)  = DSigPr (go p) k
-    go p@(DVarPr _)  = p
-    go (DConPr n)    = DConPr (mod_con_name n)
-    go p@DWildCardPr = p
+    go (DForallPr tvbs cxt p) = DForallPr tvbs (map go cxt) (go p)
+    go (DAppPr p t)           = DAppPr (go p) t
+    go (DSigPr p k)           = DSigPr (go p) k
+    go p@(DVarPr _)           = p
+    go (DConPr n)             = DConPr (mod_con_name n)
+    go p@DWildCardPr          = p
 
 {-
 Note [Defunctionalization symbol suffixes]
