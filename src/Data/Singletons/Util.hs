@@ -318,24 +318,11 @@ substPred :: Map Name DType -> DPred -> DPred
 substPred subst pred | Map.null subst = pred
 substPred subst (DAppPr pred ty) =
   DAppPr (substPred subst pred) (substType subst ty)
-substPred subst (DSigPr pred ki) = DSigPr (substPred subst pred) ki
+substPred subst (DSigPr pred ki) =
+  DSigPr (substPred subst pred) (substKind subst ki)
 substPred _ pred@(DVarPr {}) = pred
 substPred _ pred@(DConPr {}) = pred
 substPred _ pred@DWildCardPr = pred
-
-substKindInPred :: Map Name DKind -> DPred -> DPred
-substKindInPred subst pred | Map.null subst = pred
-substKindInPred subst (DAppPr pred ty) =
-  DAppPr (substKindInPred subst pred) (substType subst ty)
-substKindInPred subst (DSigPr pred ki) = DSigPr (substKindInPred subst pred)
-                                                (substKind subst ki)
-substKindInPred _ pred@(DVarPr {}) = pred
-substKindInPred _ pred@(DConPr {}) = pred
-substKindInPred _ pred@DWildCardPr = pred
-
-substKindInTvb :: Map Name DKind -> DTyVarBndr -> DTyVarBndr
-substKindInTvb _ tvb@(DPlainTV _) = tvb
-substKindInTvb subst (DKindedTV n ki) = DKindedTV n (substKind subst ki)
 
 cuskify :: DTyVarBndr -> DTyVarBndr
 cuskify (DPlainTV tvname) = DKindedTV tvname $ DConT typeKindName
