@@ -24,6 +24,7 @@
 module Data.Singletons.Prelude.List.Internal where
 
 import Data.Singletons.Prelude.Instances
+import Data.Singletons.Promote
 import Data.Singletons.Single
 import Data.Singletons.TypeLits
 import Data.Singletons.Prelude.Base
@@ -594,3 +595,76 @@ $(singletonsOnly [d|
 -- Workaround for #326
 infix 5 \\      -- This comment is necessary so CPP doesn't treat the
 infixl 9 !!
+
+-- The following functions are supported for promotion only.
+$(promoteOnly [d|
+
+  -- Overlapping patterns don't singletonize
+  stripPrefix :: Eq a => [a] -> [a] -> Maybe [a]
+  stripPrefix [] ys = Just ys
+  stripPrefix (x:xs) (y:ys)
+   | x == y = stripPrefix xs ys
+  stripPrefix _ _ = Nothing
+
+  -- To singletonize these we would need to rewrite all patterns
+  -- as non-overlapping. This means 2^7 equations for zipWith7.
+
+  zip4                    :: [a] -> [b] -> [c] -> [d] -> [(a,b,c,d)]
+  zip4                    =  zipWith4 (,,,)
+
+  zip5                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [(a,b,c,d,e)]
+  zip5                    =  zipWith5 (,,,,)
+
+  zip6                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [f] ->
+                              [(a,b,c,d,e,f)]
+  zip6                    =  zipWith6 (,,,,,)
+
+  zip7                    :: [a] -> [b] -> [c] -> [d] -> [e] -> [f] ->
+                              [g] -> [(a,b,c,d,e,f,g)]
+  zip7                    =  zipWith7 (,,,,,,)
+
+  zipWith4                :: (a->b->c->d->e) -> [a]->[b]->[c]->[d]->[e]
+  zipWith4 z (a:as) (b:bs) (c:cs) (d:ds)
+                          =  z a b c d : zipWith4 z as bs cs ds
+  zipWith4 _ _ _ _ _      =  []
+
+  zipWith5                :: (a->b->c->d->e->f) ->
+                             [a]->[b]->[c]->[d]->[e]->[f]
+  zipWith5 z (a:as) (b:bs) (c:cs) (d:ds) (e:es)
+                          =  z a b c d e : zipWith5 z as bs cs ds es
+  zipWith5 _ _ _ _ _ _    = []
+
+  zipWith6                :: (a->b->c->d->e->f->g) ->
+                             [a]->[b]->[c]->[d]->[e]->[f]->[g]
+  zipWith6 z (a:as) (b:bs) (c:cs) (d:ds) (e:es) (f:fs)
+                          =  z a b c d e f : zipWith6 z as bs cs ds es fs
+  zipWith6 _ _ _ _ _ _ _  = []
+
+  zipWith7                :: (a->b->c->d->e->f->g->h) ->
+                             [a]->[b]->[c]->[d]->[e]->[f]->[g]->[h]
+  zipWith7 z (a:as) (b:bs) (c:cs) (d:ds) (e:es) (f:fs) (g:gs)
+                     =  z a b c d e f g : zipWith7 z as bs cs ds es fs gs
+  zipWith7 _ _ _ _ _ _ _ _ = []
+
+-- These functions use Integral or Num typeclass instead of Int.
+--
+--  genericLength, genericTake, genericDrop, genericSplitAt, genericIndex
+--  genericReplicate
+--
+-- We provide aliases below to improve compatibility
+
+  genericTake :: (Integral i) => i -> [a] -> [a]
+  genericTake = take
+
+  genericDrop :: (Integral i) => i -> [a] -> [a]
+  genericDrop = drop
+
+  genericSplitAt :: (Integral i) => i -> [a] -> ([a], [a])
+  genericSplitAt = splitAt
+
+  genericIndex :: (Integral i) => [a] -> i -> a
+  genericIndex = (!!)
+
+  genericReplicate :: (Integral i) => i -> a -> [a]
+  genericReplicate = replicate
+ |])
