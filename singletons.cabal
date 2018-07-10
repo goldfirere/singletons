@@ -99,33 +99,6 @@ library
                       Data.Singletons.Prelude.Traversable
                       Data.Singletons.Prelude.Tuple
                       Data.Singletons.Prelude.Void
-                      Data.Promotion.Prelude
-                      Data.Promotion.TH
-                      Data.Promotion.Prelude.Applicative
-                      Data.Promotion.Prelude.Base
-                      Data.Promotion.Prelude.Bool
-                      Data.Promotion.Prelude.Const
-                      Data.Promotion.Prelude.Either
-                      Data.Promotion.Prelude.Eq
-                      Data.Promotion.Prelude.Foldable
-                      Data.Promotion.Prelude.Function
-                      Data.Promotion.Prelude.Functor
-                      Data.Promotion.Prelude.Identity
-                      Data.Promotion.Prelude.IsString
-                      Data.Promotion.Prelude.Ord
-                      Data.Promotion.Prelude.Enum
-                      Data.Promotion.Prelude.List
-                      Data.Promotion.Prelude.List.NonEmpty
-                      Data.Promotion.Prelude.Maybe
-                      Data.Promotion.Prelude.Monad
-                      Data.Promotion.Prelude.Monad.Zip
-                      Data.Promotion.Prelude.Monoid
-                      Data.Promotion.Prelude.Num
-                      Data.Promotion.Prelude.Semigroup
-                      Data.Promotion.Prelude.Show
-                      Data.Promotion.Prelude.Traversable
-                      Data.Promotion.Prelude.Tuple
-                      Data.Promotion.Prelude.Void
                       Data.Singletons.TypeError
                       Data.Singletons.TypeLits
                       Data.Singletons.Decide

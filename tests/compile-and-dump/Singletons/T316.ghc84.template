@@ -3,31 +3,31 @@ Singletons/T316.hs:(0,0)-(0,0): Splicing declarations
       [d| replaceAllGTypes :: (a -> Type -> a) -> [Type] -> [a] -> [a]
           replaceAllGTypes f types as = zipWith f as types |]
   ======>
-    type ReplaceAllGTypesSym3 (a0123456789876543210 :: (Data.Singletons.Internal.~>) a0123456789876543210 ((Data.Singletons.Internal.~>) Type a0123456789876543210)) (a0123456789876543210 :: [Type]) (a0123456789876543210 :: [a0123456789876543210]) =
+    type ReplaceAllGTypesSym3 (a0123456789876543210 :: (~>) a0123456789876543210 ((~>) Type a0123456789876543210)) (a0123456789876543210 :: [Type]) (a0123456789876543210 :: [a0123456789876543210]) =
         ReplaceAllGTypes a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ReplaceAllGTypesSym2KindInference) GHC.Tuple.())
-    data ReplaceAllGTypesSym2 (a0123456789876543210 :: (Data.Singletons.Internal.~>) a0123456789876543210 ((Data.Singletons.Internal.~>) Type a0123456789876543210)) (a0123456789876543210 :: [Type]) :: (Data.Singletons.Internal.~>) [a0123456789876543210] [a0123456789876543210]
+    data ReplaceAllGTypesSym2 (a0123456789876543210 :: (~>) a0123456789876543210 ((~>) Type a0123456789876543210)) (a0123456789876543210 :: [Type]) :: (~>) [a0123456789876543210] [a0123456789876543210]
       where
         ReplaceAllGTypesSym2KindInference :: forall a0123456789876543210
                                                     a0123456789876543210
                                                     a0123456789876543210
                                                     arg.
-                                             Data.Singletons.Internal.SameKind (Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) arg) (ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 arg) =>
+                                             SameKind (Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) arg) (ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 arg) =>
                                              ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
     type instance Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypes a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ReplaceAllGTypesSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd
             ((GHC.Tuple.(,) ReplaceAllGTypesSym1KindInference) GHC.Tuple.())
-    data ReplaceAllGTypesSym1 (a0123456789876543210 :: (Data.Singletons.Internal.~>) a0123456789876543210 ((Data.Singletons.Internal.~>) Type a0123456789876543210)) :: (Data.Singletons.Internal.~>) [Type] ((Data.Singletons.Internal.~>) [a0123456789876543210] [a0123456789876543210])
+    data ReplaceAllGTypesSym1 (a0123456789876543210 :: (~>) a0123456789876543210 ((~>) Type a0123456789876543210)) :: (~>) [Type] ((~>) [a0123456789876543210] [a0123456789876543210])
       where
         ReplaceAllGTypesSym1KindInference :: forall a0123456789876543210
                                                     a0123456789876543210
                                                     arg.
-                                             Data.Singletons.Internal.SameKind (Apply (ReplaceAllGTypesSym1 a0123456789876543210) arg) (ReplaceAllGTypesSym2 a0123456789876543210 arg) =>
+                                             SameKind (Apply (ReplaceAllGTypesSym1 a0123456789876543210) arg) (ReplaceAllGTypesSym2 a0123456789876543210 arg) =>
                                              ReplaceAllGTypesSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (ReplaceAllGTypesSym1 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ReplaceAllGTypesSym0 where
@@ -35,12 +35,12 @@ Singletons/T316.hs:(0,0)-(0,0): Splicing declarations
         = snd
             ((GHC.Tuple.(,) ReplaceAllGTypesSym0KindInference) GHC.Tuple.())
     data ReplaceAllGTypesSym0 :: forall a0123456789876543210.
-                                 (Data.Singletons.Internal.~>) ((Data.Singletons.Internal.~>) a0123456789876543210 ((Data.Singletons.Internal.~>) Type a0123456789876543210)) ((Data.Singletons.Internal.~>) [Type] ((Data.Singletons.Internal.~>) [a0123456789876543210] [a0123456789876543210]))
+                                 (~>) ((~>) a0123456789876543210 ((~>) Type a0123456789876543210)) ((~>) [Type] ((~>) [a0123456789876543210] [a0123456789876543210]))
       where
         ReplaceAllGTypesSym0KindInference :: forall a0123456789876543210
                                                     arg.
-                                             Data.Singletons.Internal.SameKind (Apply ReplaceAllGTypesSym0 arg) (ReplaceAllGTypesSym1 arg) =>
+                                             SameKind (Apply ReplaceAllGTypesSym0 arg) (ReplaceAllGTypesSym1 arg) =>
                                              ReplaceAllGTypesSym0 a0123456789876543210
     type instance Apply ReplaceAllGTypesSym0 a0123456789876543210 = ReplaceAllGTypesSym1 a0123456789876543210
-    type family ReplaceAllGTypes (a :: (Data.Singletons.Internal.~>) a ((Data.Singletons.Internal.~>) Type a)) (a :: [Type]) (a :: [a]) :: [a] where
+    type family ReplaceAllGTypes (a :: (~>) a ((~>) Type a)) (a :: [Type]) (a :: [a]) :: [a] where
       ReplaceAllGTypes f types as = Apply (Apply (Apply ZipWithSym0 f) as) types

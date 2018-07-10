@@ -3,6 +3,9 @@ Changelog for singletons project
 
 2.5
 ---
+* The `Data.Promotion.Prelude.*` namespace has been removed. Use the
+  corresponding modules in the `Data.Singletons.Prelude.*` namespace instead.
+
 * Fix a regression in which certain infix type families, such as `(++)`, `($)`,
   `(+)`, and others, did not have the correct fixities.
 
@@ -63,7 +66,7 @@ Changelog for singletons project
 * Add `(%<=?)`, a singled version of `(<=?)` from `GHC.TypeNats`, as well as
   defunctionalization symbols for `(<=?)`, to `Data.Singletons.TypeLits`.
 
-* Add `Data.{Promotion,Singletons}.Prelude.{Semigroup,Monoid}`, which define
+* Add `Data.Singletons.Prelude.{Semigroup,Monoid}`, which define
   promoted and singled versions of the `Semigroup` and `Monoid` type classes,
   as well as various newtype modifiers.
 
@@ -76,11 +79,11 @@ Changelog for singletons project
   `Traversable`, `Applicative`, `Alternative`, `Monad`, `MonadPlus`, and
   `MonadZip` classes. Among other things, this grants the ability to promote
   or single `do`-notation and list comprehensions.
-  * `Data.{Promotion,Singletons}.Prelude.List` now reexports more general
+  * `Data.Singletons.Prelude.List` now reexports more general
     `Foldable`/`Traversable` functions wherever possible, just as `Data.List`
     does.
 
-* Add `Data.{Promotion,Singletons}.Prelude.{Const,Identity}`, which define
+* Add `Data.Singletons.Prelude.{Const,Identity}`, which define
   promoted and singled version of the `Const` and `Identity` data types,
   respectively.
 

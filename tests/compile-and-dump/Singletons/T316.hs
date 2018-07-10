@@ -1,8 +1,8 @@
 module T316 where
 
 import Data.Kind
-import Data.Promotion.Prelude
-import Data.Promotion.TH
+import Data.Singletons.Prelude
+import Data.Singletons.TH
 
 $(promoteOnly [d|
     replaceAllGTypes :: (a -> Type -> a) -> [Type] -> [a] -> [a]

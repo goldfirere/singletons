@@ -25,7 +25,7 @@ module Data.Singletons.Prelude.Base (
   -- * Basic functions
   Foldr, sFoldr, Map, sMap, type (++), (%++), Otherwise, sOtherwise,
   Id, sId, Const, sConst, (:.), (%.), type ($), type ($!), (%$), (%$!),
-  Flip, sFlip, AsTypeOf, sAsTypeOf,
+  Until, sUntil, Flip, sFlip, AsTypeOf, sAsTypeOf,
   Seq, sSeq,
 
   -- * Defunctionalization symbols
@@ -38,6 +38,7 @@ module Data.Singletons.Prelude.Base (
   type (.@#@$),  type (.@#@$$),  type (.@#@$$$), type (.@#@$$$$),
   type ($@#@$),  type ($@#@$$),  type ($@#@$$$),
   type ($!@#@$), type ($!@#@$$), type ($!@#@$$$),
+  UntilSym0, UntilSym1, UntilSym2, UntilSym3,
   FlipSym0, FlipSym1, FlipSym2, FlipSym3,
   AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2,
   SeqSym0, SeqSym1, SeqSym2
@@ -90,6 +91,16 @@ $(singletonsOnly [d|
   ($!)                    :: (a -> b) -> a -> b
   f $! x                  = let {-!-}vx = x in f vx
   infixr 0 $!
+
+  until                   :: (a -> Bool) -> (a -> a) -> a -> a
+  until p f = go
+    where
+      -- Does not singletonize due to overlapping patterns.
+      {-
+      go x | p x          = x
+           | otherwise    = go (f x)
+      -}
+      go x = if p x then x else go (f x)
 
   -- This is not part of GHC.Base, but we need to emulate seq and this is a good
   -- place to do it.
