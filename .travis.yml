@@ -122,7 +122,7 @@ script:
 
   # haddock
   - rm -rf ./dist-newstyle
-  - if $HADDOCK; then cabal new-haddock -w ${HC} ${TEST} ${BENCH} ${TARGETS}; else echo "Skipping haddock generation";fi
+  - if $HADDOCK; then cabal new-haddock -w ${HC} ${TEST} ${BENCH} singletons; else echo "Skipping haddock generation";fi
 
 # REGENDATA ["-o",".travis.yml","--ghc-head","--no-no-tests-no-bench","--no-unconstrained","cabal.project"]
 # EOF
