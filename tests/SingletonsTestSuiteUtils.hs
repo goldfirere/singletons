@@ -70,6 +70,7 @@ ghcOpts = ghcFlags ++ [
   , "-XTypeApplications"
   , "-XEmptyCase"
   , "-XNoStarIsType"
+  , "-XQuantifiedConstraints"
   ]
 
 -- Compile a test using specified GHC options. Save output to file, filter with

@@ -41,7 +41,7 @@ boolName, andName, tyEqName, compareName, minBoundName,
   singletonsToEnumName, singletonsFromEnumName, enumName, singletonsEnumName,
   equalsName, constraintName,
   showName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
-  showSpaceName, showStringName, showSingName, showsSingPrecName,
+  showSpaceName, showStringName, showSingName,
   composeName, gtName, tyFromStringName, sFromStringName,
   foldableName, foldMapName, memptyName, mappendName, foldrName,
   functorName, fmapName, replaceName,
@@ -115,7 +115,6 @@ showSpaceName = 'showSpace
 showsPrecName = 'showsPrec
 showStringName = 'showString
 showSingName = mk_name_tc "Data.Singletons.ShowSing" "ShowSing"
-showsSingPrecName = mk_name_v "Data.Singletons.ShowSing" "showsSingPrec"
 composeName = '(.)
 gtName = '(>)
 showCommaSpaceName = 'showCommaSpace

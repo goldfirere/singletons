@@ -26,7 +26,7 @@ module Data.Singletons.TypeRepTYPE (
   -- > newtype instance Sing :: forall (rep :: RuntimeRep). TYPE rep -> Type where
   -- >   STypeRep :: forall (rep :: RuntimeRep) (a :: TYPE rep). TypeRep a -> Sing a
   --
-  -- Instances for 'SingI', 'SingKind', 'SEq', 'SDecide', 'ShowSing', and
+  -- Instances for 'SingI', 'SingKind', 'SEq', 'SDecide', and
   -- 'TestCoercion' are also supplied.
 
   SomeTypeRepTYPE(..)
@@ -37,7 +37,6 @@ import Data.Singletons.Prelude.Instances
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Decide
-import Data.Singletons.ShowSing
 import Data.Type.Equality ((:~:)(..))
 import GHC.Exts (RuntimeRep, TYPE)
 import Type.Reflection
@@ -99,6 +98,3 @@ instance SDecide (TYPE rep) where
     case eqTypeRep tra trb of
       Just HRefl -> Proved Refl
       Nothing    -> Disproved (\Refl -> error "Type.Reflection.eqTypeRep failed")
-
-instance ShowSing (TYPE rep) where
-  showsSingPrec = showsPrec

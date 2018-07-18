@@ -89,7 +89,7 @@ singletonStar names = do
     dataDeclEqCxt <- inferConstraints (DConPr ''Eq) (DConT repName) fakeCtors
     let dataDeclEqInst = DerivedDecl (Just dataDeclEqCxt) (DConT repName) dataDecl
     ordInst  <- mkOrdInstance Nothing (DConT repName) dataDecl
-    showInst <- mkShowInstance ForPromotion Nothing (DConT repName) dataDecl
+    showInst <- mkShowInstance Nothing (DConT repName) dataDecl
     (pInsts, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
                                             promoteDerivedEqDec dataDeclEqInst
                                             traverse (promoteInstanceDec mempty)

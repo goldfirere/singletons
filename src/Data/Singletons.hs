@@ -3,10 +3,13 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE MagicHash #-}
 {-# LANGUAGE PatternSynonyms #-}
+{-# LANGUAGE QuantifiedConstraints #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE TypeInType #-}
+{-# LANGUAGE UndecidableInstances #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------
@@ -127,9 +130,7 @@ instance SNum k => Num (SomeSing k) where
   signum (SomeSing a) = SomeSing (sSignum a)
   fromInteger n = withSomeSing (fromIntegral n) (SomeSing . sFromInteger)
 
-instance ShowSing k => Show (SomeSing k) where
-  showsPrec p (SomeSing s) =
-    showParen (p > 10) $ showString "SomeSing " . showsSingPrec 11 s
+deriving instance ShowSing k => Show (SomeSing k)
 
 instance SSemigroup k => Semigroup (SomeSing k) where
   SomeSing a <> SomeSing b = SomeSing (a %<> b)

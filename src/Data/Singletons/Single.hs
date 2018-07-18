@@ -178,7 +178,7 @@ singEnumInstance = singInstance mkEnumInstance "Enum"
 --
 -- (Not to be confused with 'showShowInstance'.)
 singShowInstance :: DsMonad q => Name -> q [Dec]
-singShowInstance = singInstance (mkShowInstance ForPromotion) "Show"
+singShowInstance = singInstance mkShowInstance "Show"
 
 -- | Create instances of 'SShow' for the given types
 --
@@ -186,15 +186,12 @@ singShowInstance = singInstance (mkShowInstance ForPromotion) "Show"
 singShowInstances :: DsMonad q => [Name] -> q [Dec]
 singShowInstances = concatMapM singShowInstance
 
--- | Create instance of 'ShowSing' for the given type
+-- | Create instance of 'Show' for the given singleton type
 --
 -- (Not to be confused with 'singShowInstance'.)
-
--- (We can't simply use singInstance to create ShowSing instances, because
--- there's no promoted counterpart. So we use this instead.)
 showSingInstance :: DsMonad q => Name -> q [Dec]
 showSingInstance name = do
-  (tvbs, cons) <- getDataD ("I cannot make an instance of ShowSing for it.") name
+  (tvbs, cons) <- getDataD ("I cannot make an instance of Show for it.") name
   dtvbs <- mapM dsTvb tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
@@ -207,7 +204,7 @@ showSingInstance name = do
   (show_insts, _) <- singM [] $ singDerivedShowDecs deriv_show_decl
   pure $ decsToTH show_insts
 
--- | Create instances of 'ShowSing' for the given types
+-- | Create instances of 'Show' for the given singleton types
 --
 -- (Not to be confused with 'singShowInstances'.)
 showSingInstances :: DsMonad q => [Name] -> q [Dec]
@@ -792,35 +789,20 @@ sEqToSDecide = modifyConNameDPred $ \n ->
 singDerivedShowDecs :: DerivedShowDecl -> SgM [DDec]
 singDerivedShowDecs (DerivedDecl { ded_mb_cxt = mb_cxt
                                  , ded_type   = ty
-                                 , ded_decl   = data_decl@(DataDecl _ _ cons) }) = do
-    -- First, generate the ShowSing instance.
-    show_sing_inst <- mkShowInstance ForShowSing mb_cxt ty data_decl
+                                 , ded_decl   = DataDecl _ _ cons }) = do
     z <- qNewName "z"
-    -- Next, the Show instance for the singleton type, like this:
+    -- Derive the Show instance for the singleton type, like this:
     --
-    --   instance (ShowSing a, ShowSing b) => Sing (Sing (z :: Either a b)) where
-    --     showsPrec = showsSingPrec
+    --   deriving instance (ShowSing a, ShowSing b) => Sing (Sing (z :: Either a b))
     --
     -- Be careful: we want to generate an instance context that uses ShowSing,
-    -- not Show, because we are reusing the ShowSing instance.
-    show_cxt <- inferConstraintsDef (fmap (mkShowContext ForShowSing) mb_cxt)
+    -- not SShow.
+    show_cxt <- inferConstraintsDef (fmap mkShowSingContext mb_cxt)
                                     (DConPr showSingName)
                                     ty cons
-    let show_inst = DInstanceD Nothing show_cxt
-                               (DConT showName `DAppT` (singFamily `DAppT` DSigT (DVarT z) ty))
-                               [DLetDec (DFunD showsPrecName
-                                               [DClause [] (DVarE showsSingPrecName)])]
-    pure [toInstanceD show_sing_inst, show_inst]
-  where
-    toInstanceD :: UInstDecl -> DDec
-    toInstanceD (InstDecl { id_cxt = cxt, id_name = inst_name
-                     , id_arg_tys = inst_tys, id_meths = ann_meths }) =
-      DInstanceD Nothing cxt (foldType (DConT inst_name) inst_tys)
-                         (map (DLetDec . toFunD) ann_meths)
-
-    toFunD :: (Name, ULetDecRHS) -> DLetDec
-    toFunD (fun_name, UFunction clauses) = DFunD fun_name clauses
-    toFunD (val_name, UValue rhs)        = DValD (DVarPa val_name) rhs
+    let show_inst = DStandaloneDerivD Nothing show_cxt
+                      (DConT showName `DAppT` (singFamily `DAppT` DSigT (DVarT z) ty))
+    pure [show_inst]
 
 isException :: DExp -> Bool
 isException (DVarE n)             = nameBase n == "sUndefined"

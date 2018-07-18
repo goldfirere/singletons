@@ -201,12 +201,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       (%~) SMany SStr = Disproved (\ x -> case x of)
       (%~) SMany SOpt = Disproved (\ x -> case x of)
       (%~) SMany SMany = Proved Refl
-    instance Data.Singletons.ShowSing.ShowSing Occ where
-      Data.Singletons.ShowSing.showsSingPrec _ SStr = showString "SStr"
-      Data.Singletons.ShowSing.showsSingPrec _ SOpt = showString "SOpt"
-      Data.Singletons.ShowSing.showsSingPrec _ SMany = showString "SMany"
-    instance Show (Sing (z :: Occ)) where
-      showsPrec = Data.Singletons.ShowSing.showsSingPrec
+    deriving instance Show (Sing (z :: Occ))
     instance SingI Str where
       sing = SStr
     instance SingI Opt where

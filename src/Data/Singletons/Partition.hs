@@ -265,12 +265,12 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
           -- See Note [DerivedDecl] in Data.Singletons.Syntax
         , ( eqName, return $ mk_derived_eq_inst derived_decl )
           -- See Note [DerivedDecl] in Data.Singletons.Syntax
-        , ( showName, do -- This will become PShow/SShow instances...
-                         inst_for_promotion <- mk_instance (mkShowInstance ForPromotion)
-                         -- ...and this will become ShowSing/Show instances.
-                         let inst_for_ShowSing = derived_decl
+        , ( showName, do -- These will become PShow/SShow instances...
+                         inst_for_promotion <- mk_instance mkShowInstance
+                         -- ...and this will become a Show instance.
+                         let inst_for_show = derived_decl
                          pure $ mempty { pd_instance_decs     = [inst_for_promotion]
-                                       , pd_derived_show_decs = [inst_for_ShowSing] } )
+                                       , pd_derived_show_decs = [inst_for_show] } )
         ]
 
 -- Is this being used with an explicit stock strategy, or no strategy at all?

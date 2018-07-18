@@ -169,24 +169,9 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                 (sFromInteger (sing :: Sing 11))))
                             sArg_0123456789876543210))))))
             sA_0123456789876543210
-    instance (Data.Singletons.ShowSing.ShowSing a,
-              Data.Singletons.ShowSing.ShowSing b) =>
-             Data.Singletons.ShowSing.ShowSing (Pair a b) where
-      Data.Singletons.ShowSing.showsSingPrec
-        p_0123456789876543210
-        (SPair arg_0123456789876543210 arg_0123456789876543210)
-        = (showParen (((>) p_0123456789876543210) 10))
-            (((.) (showString "SPair "))
-               (((.)
-                   ((Data.Singletons.ShowSing.showsSingPrec 11)
-                      arg_0123456789876543210))
-                  (((.) GHC.Show.showSpace)
-                     ((Data.Singletons.ShowSing.showsSingPrec 11)
-                        arg_0123456789876543210))))
-    instance (Data.Singletons.ShowSing.ShowSing a,
-              Data.Singletons.ShowSing.ShowSing b) =>
-             Show (Sing (z :: Pair a b)) where
-      showsPrec = Data.Singletons.ShowSing.showsSingPrec
+    deriving instance (Data.Singletons.ShowSing.ShowSing a,
+                       Data.Singletons.ShowSing.ShowSing b) =>
+                      Show (Sing (z :: Pair a b))
     instance (SingI n, SingI n) => SingI (Pair (n :: a) (n :: b)) where
       sing = (SPair sing) sing
     instance SingI (PairSym0 :: (~>) a ((~>) b (Pair a b))) where

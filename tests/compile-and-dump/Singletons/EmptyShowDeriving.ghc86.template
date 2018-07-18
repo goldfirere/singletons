@@ -65,8 +65,4 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
              ((case sV_0123456789876543210 of) ::
                 Sing (Case_0123456789876543210 v_0123456789876543210 a_0123456789876543210 v_0123456789876543210)))
             sA_0123456789876543210
-    instance Data.Singletons.ShowSing.ShowSing Foo where
-      Data.Singletons.ShowSing.showsSingPrec _ v_0123456789876543210
-        = case v_0123456789876543210 of
-    instance Show (Sing (z :: Foo)) where
-      showsPrec = Data.Singletons.ShowSing.showsSingPrec
+    deriving instance Show (Sing (z :: Foo))

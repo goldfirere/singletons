@@ -1,7 +1,9 @@
-{-# LANGUAGE EmptyCase #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE QuantifiedConstraints #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeInType #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -16,71 +18,75 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Defines the class 'ShowSing', allowing for conversion of 'Sing' values to
--- readable 'String's.
+-- Defines the class 'ShowSing' type synonym, which is useful for defining
+-- 'Show' instances for singleton types.
 --
 ----------------------------------------------------------------------------
 
 module Data.Singletons.ShowSing (
-  -- * The 'ShowSing' class
-  ShowSing(..),
+  -- * The 'ShowSing' type
+  ShowSing
   ) where
 
+import Data.Kind
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
 import Data.Singletons.TypeLits.Internal
 import Data.Singletons.Util
-
 import GHC.Show (appPrec, appPrec1)
-import GHC.TypeLits (symbolVal)
-import qualified GHC.TypeNats as TN (natVal)
+import qualified GHC.TypeNats as TN
 
-----------------------------------------------------------------------
----- ShowSing --------------------------------------------------------
-----------------------------------------------------------------------
-
--- | Members of the 'ShowSing' kind class can have their 'Sing' values
--- converted to 'String's in a fashion similar to that of the 'Show' class.
--- (In fact, this class only exists because one cannot write 'Show' instances
--- for 'Sing's of the form
--- @instance (forall z. Show (Sing (z :: k))) => Show (Sing (x :: [k]))@.)
+-- | In addition to the promoted and singled versions of the 'Show' class that
+-- @singletons@ provides, it is also useful to be able to directly define
+-- 'Show' instances for singleton types themselves. Doing so is almost entirely
+-- straightforward, as a derived 'Show' instance does 90 percent of the work.
+-- The last 10 percent—getting the right instance context—is a bit tricky, and
+-- that's where 'ShowSing' comes into play.
 --
--- This class should not be confused with the promoted or singled versions of
--- 'Show' from "Data.Singletons.Prelude.Show" (@PShow@ and @SShow@, respectively).
--- The output of 'ShowSing' is intended to reflect the singleton type, whereas
--- the output of @PShow@ and @SShow@ reflects the original type. That is, showing
--- @SFalse@ with 'ShowSing' would yield @\"SFalse\"@, whereas @PShow@ and @SShow@
--- would yield @\"False\"@.
---
--- Instances of this class are generated alongside singleton definitions for
--- datatypes that derive a 'Show' instance. Moreover, having a 'ShowSing'
--- instances makes it simple to define a 'Show' instance. For instance:
+-- As an example, let's consider the singleton type for lists. We want to write
+-- an instance with the following shape:
 --
 -- @
--- instance 'ShowSing' a => 'ShowSing' [a] where
---   'showsSingPrec' = ...
--- instance 'ShowSing' a => 'Show' ('Sing' (x :: [a])) where
---   'showsPrec' = 'showsSingPrec'
+-- deriving instance ??? => Show (Sing (x :: [k]))
 -- @
 --
--- As a result, singleton definitions for datatypes that derive a 'Show'
--- instance also get a 'Show' instance for the singleton type as well
--- (in addition to promoted and singled 'Show' instances).
+-- To figure out what should go in place of @???@, observe that we require the
+-- type of each field to also be 'Show' instances. In other words, we need
+-- something like @(Show (Sing (a :: k)))@. But this isn't quite right, as the
+-- type variable @a@ doesn't appear in the instance head. In fact, this @a@
+-- type is really referring to an existentially quantified type variable in the
+-- 'SCons' constructor, so it doesn't make sense to try and use it like this.
 --
--- To recap: 'singletons' will give you all of these for a datatype that derives
--- a 'Show' instance:
+-- Luckily, the @QuantifiedConstraints@ language extension provides a solution
+-- to this problem. This lets you write a context of the form
+-- @(forall a. Show (Sing (a :: k)))@, which demands that there be an instance
+-- for @Show (Sing (a :: k))@ that is parametric in the use of @a@. Thus, our
+-- final instance looks like:
+--
+-- @
+-- deriving instance (forall a. Show (Sing (a :: k))) => Show (Sing (x :: [k]))
+-- @
+--
+-- Because that quantified constraint is somewhat lengthy, we provide the
+-- 'ShowSing' type synonym as a convenient shorthand. Thus, the above instance
+-- is equivalent to:
+--
+-- @
+-- deriving instance ShowSing k => Show (Sing (x :: [k]))
+-- @
+--
+-- When singling a derived 'Show' instance, @singletons@ will also derive
+-- a 'Show' instance for the corresponding singleton type using 'ShowSing'.
+-- In other words, if you give @singletons@ a derived 'Show' instance, then
+-- you'll receive the following in return:
 --
 -- * A promoted (@PShow@) instance
 -- * A singled (@SShow@) instance
--- * A 'ShowSing' instance for the singleton type
 -- * A 'Show' instance for the singleton type
 --
 -- What a bargain!
-class ShowSing k where
-  -- | @'showsSingPrec' p s@ convert a 'Sing' value @p@ to a readable 'String'
-  -- with precedence @p@.
-  showsSingPrec :: Int -> Sing (a :: k) -> ShowS
+type ShowSing k = (forall z. Show (Sing (z :: k)) :: Constraint)
 
 ------------------------------------------------------------
 -- TypeLits instances
@@ -92,23 +98,19 @@ class ShowSing k where
 -- the type being used using visible type application. (Thanks to @cumber on #179
 -- for suggesting this implementation.)
 
-instance ShowSing Nat where
-  showsSingPrec p n@SNat
+instance Show (SNat n) where
+  showsPrec p n@SNat
     = showParen (p > appPrec)
       ( showString "SNat @"
         . showsPrec appPrec1 (TN.natVal n)
       )
-instance Show (SNat n) where
-  showsPrec = showsSingPrec
 
-instance ShowSing Symbol where
-  showsSingPrec p s@SSym
+instance Show (SSymbol s) where
+  showsPrec p s@SSym
     = showParen (p > appPrec)
       ( showString "SSym @"
         . showsPrec appPrec1 (symbolVal s)
       )
-instance Show (SSymbol s) where
-  showsPrec = showsSingPrec
 
 ------------------------------------------------------------
 -- Template Haskell-generated instances
