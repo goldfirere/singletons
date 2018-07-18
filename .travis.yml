@@ -93,7 +93,7 @@ install:
       (cd "./th-desugar" && autoreconf -i);
     fi
   - rm -f cabal.project.freeze
-  - cabal new-build -w ${HC} ${TEST} ${BENCH} --project-file="cabal.project" --dep -j2 ${TARGETS}
+  - cabal new-build -w ${HC} ${TEST} ${BENCH} --project-file="cabal.project" --dep -j2 all
   - rm -rf .ghc.environment.* "."/dist "./th-desugar"/dist
   - DISTDIR=$(mktemp -d /tmp/dist-test.XXXX)
 
