@@ -1,0 +1,30 @@
+Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| head :: [a] -> a
+          head (a : _) = a
+          head [] = error "Data.Singletons.List.head: empty list" |]
+  ======>
+    head :: [a] -> a
+    head (a : _) = a
+    head [] = error "Data.Singletons.List.head: empty list"
+    type HeadSym1 (a0123456789876543210 :: [a0123456789876543210]) =
+        Head a0123456789876543210
+    instance SuppressUnusedWarnings HeadSym0 where
+      suppressUnusedWarnings = snd (((,) HeadSym0KindInference) ())
+    data HeadSym0 :: forall a0123456789876543210.
+                     (~>) [a0123456789876543210] a0123456789876543210
+      where
+        HeadSym0KindInference :: forall a0123456789876543210
+                                        arg. SameKind (Apply HeadSym0 arg) (HeadSym1 arg) =>
+                                 HeadSym0 a0123456789876543210
+    type instance Apply HeadSym0 a0123456789876543210 = Head a0123456789876543210
+    type family Head (a :: [a]) :: a where
+      Head ( '(:) a _) = a
+      Head '[] = Apply ErrorSym0 "Data.Singletons.List.head: empty list"
+    sHead ::
+      forall a (t :: [a]). Sing t -> Sing (Apply HeadSym0 t :: a)
+    sHead (SCons (sA :: Sing a) _) = sA
+    sHead SNil
+      = sError (sing :: Sing "Data.Singletons.List.head: empty list")
+    instance SingI (HeadSym0 :: (~>) [a] a) where
+      sing = (singFun1 @HeadSym0) sHead

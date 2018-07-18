@@ -33,7 +33,7 @@ goldenPath :: FilePath
 goldenPath = rootDir </> "tests/compile-and-dump/"
 
 ghcVersion :: String
-ghcVersion = ".ghc84"
+ghcVersion = ".ghc86"
 
 -- GHC options used when running the tests
 ghcOpts :: [String]
@@ -69,6 +69,7 @@ ghcOpts = ghcFlags ++ [
   , "-XStandaloneDeriving"
   , "-XTypeApplications"
   , "-XEmptyCase"
+  , "-XNoStarIsType"
   ]
 
 -- Compile a test using specified GHC options. Save output to file, filter with

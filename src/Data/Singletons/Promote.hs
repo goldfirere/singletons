@@ -351,6 +351,7 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
     promote_superclass_pred :: DPred -> PrM DPred
     promote_superclass_pred = go
       where
+      go (DForallPr {}) = fail "Cannot promote quantified constraints"
       go (DAppPr pr ty) = DAppPr <$> go pr <*> promoteType ty
       go (DSigPr pr _k) = go pr    -- just ignore the kind; it can't matter
       go (DVarPr name)  = fail $ "Cannot promote ConstraintKinds variables like "

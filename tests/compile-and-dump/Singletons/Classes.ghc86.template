@@ -1,0 +1,577 @@
+Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| infix 4 <=>
+          
+          const :: a -> b -> a
+          const x _ = x
+          fooCompare :: Foo -> Foo -> Ordering
+          fooCompare A A = EQ
+          fooCompare A B = LT
+          fooCompare B B = GT
+          fooCompare B A = EQ
+          
+          class MyOrd a where
+            mycompare :: a -> a -> Ordering
+            (<=>) :: a -> a -> Ordering
+            (<=>) = mycompare
+            infix 4 <=>
+          data Foo = A | B
+          data Foo2 = F | G
+          
+          instance MyOrd () where
+            mycompare _ = const EQ
+          instance MyOrd Nat where
+            Zero `mycompare` Zero = EQ
+            Zero `mycompare` (Succ _) = LT
+            (Succ _) `mycompare` Zero = GT
+            (Succ n) `mycompare` (Succ m) = m `mycompare` n
+          instance MyOrd Foo where
+            mycompare = fooCompare
+          instance Eq Foo2 where
+            F == F = True
+            G == G = True
+            F == G = False
+            G == F = False |]
+  ======>
+    const :: a -> b -> a
+    const x _ = x
+    class MyOrd a where
+      mycompare :: a -> a -> Ordering
+      (<=>) :: a -> a -> Ordering
+      (<=>) = mycompare
+    infix 4 <=>
+    instance MyOrd Nat where
+      mycompare Zero Zero = EQ
+      mycompare Zero (Succ _) = LT
+      mycompare (Succ _) Zero = GT
+      mycompare (Succ n) (Succ m) = (m `mycompare` n)
+    instance MyOrd () where
+      mycompare _ = const EQ
+    data Foo = A | B
+    fooCompare :: Foo -> Foo -> Ordering
+    fooCompare A A = EQ
+    fooCompare A B = LT
+    fooCompare B B = GT
+    fooCompare B A = EQ
+    instance MyOrd Foo where
+      mycompare = fooCompare
+    data Foo2 = F | G
+    instance Eq Foo2 where
+      (==) F F = True
+      (==) G G = True
+      (==) F G = False
+      (==) G F = False
+    type ASym0 = A
+    type BSym0 = B
+    type FSym0 = F
+    type GSym0 = G
+    type FooCompareSym2 (a0123456789876543210 :: Foo) (a0123456789876543210 :: Foo) =
+        FooCompare a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (FooCompareSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) FooCompareSym1KindInference) ())
+    data FooCompareSym1 (a0123456789876543210 :: Foo) :: (~>) Foo Ordering
+      where
+        FooCompareSym1KindInference :: forall a0123456789876543210
+                                              a0123456789876543210
+                                              arg. SameKind (Apply (FooCompareSym1 a0123456789876543210) arg) (FooCompareSym2 a0123456789876543210 arg) =>
+                                       FooCompareSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (FooCompareSym1 a0123456789876543210) a0123456789876543210 = FooCompare a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings FooCompareSym0 where
+      suppressUnusedWarnings = snd (((,) FooCompareSym0KindInference) ())
+    data FooCompareSym0 :: (~>) Foo ((~>) Foo Ordering)
+      where
+        FooCompareSym0KindInference :: forall a0123456789876543210
+                                              arg. SameKind (Apply FooCompareSym0 arg) (FooCompareSym1 arg) =>
+                                       FooCompareSym0 a0123456789876543210
+    type instance Apply FooCompareSym0 a0123456789876543210 = FooCompareSym1 a0123456789876543210
+    type ConstSym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: b0123456789876543210) =
+        Const a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (ConstSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) ConstSym1KindInference) ())
+    data ConstSym1 (a0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
+                                                                     (~>) b0123456789876543210 a0123456789876543210
+      where
+        ConstSym1KindInference :: forall a0123456789876543210
+                                         a0123456789876543210
+                                         arg. SameKind (Apply (ConstSym1 a0123456789876543210) arg) (ConstSym2 a0123456789876543210 arg) =>
+                                  ConstSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (ConstSym1 a0123456789876543210) a0123456789876543210 = Const a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings ConstSym0 where
+      suppressUnusedWarnings = snd (((,) ConstSym0KindInference) ())
+    data ConstSym0 :: forall a0123456789876543210 b0123456789876543210.
+                      (~>) a0123456789876543210 ((~>) b0123456789876543210 a0123456789876543210)
+      where
+        ConstSym0KindInference :: forall a0123456789876543210
+                                         arg. SameKind (Apply ConstSym0 arg) (ConstSym1 arg) =>
+                                  ConstSym0 a0123456789876543210
+    type instance Apply ConstSym0 a0123456789876543210 = ConstSym1 a0123456789876543210
+    type family FooCompare (a :: Foo) (a :: Foo) :: Ordering where
+      FooCompare A A = EQSym0
+      FooCompare A B = LTSym0
+      FooCompare B B = GTSym0
+      FooCompare B A = EQSym0
+    type family Const (a :: a) (a :: b) :: a where
+      Const x _ = x
+    type MycompareSym2 (arg0123456789876543210 :: a0123456789876543210) (arg0123456789876543210 :: a0123456789876543210) =
+        Mycompare arg0123456789876543210 arg0123456789876543210
+    instance SuppressUnusedWarnings (MycompareSym1 arg0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) MycompareSym1KindInference) ())
+    data MycompareSym1 (arg0123456789876543210 :: a0123456789876543210) :: (~>) a0123456789876543210 Ordering
+      where
+        MycompareSym1KindInference :: forall arg0123456789876543210
+                                             arg0123456789876543210
+                                             arg. SameKind (Apply (MycompareSym1 arg0123456789876543210) arg) (MycompareSym2 arg0123456789876543210 arg) =>
+                                      MycompareSym1 arg0123456789876543210 arg0123456789876543210
+    type instance Apply (MycompareSym1 arg0123456789876543210) arg0123456789876543210 = Mycompare arg0123456789876543210 arg0123456789876543210
+    instance SuppressUnusedWarnings MycompareSym0 where
+      suppressUnusedWarnings = snd (((,) MycompareSym0KindInference) ())
+    data MycompareSym0 :: forall a0123456789876543210.
+                          (~>) a0123456789876543210 ((~>) a0123456789876543210 Ordering)
+      where
+        MycompareSym0KindInference :: forall arg0123456789876543210
+                                             arg. SameKind (Apply MycompareSym0 arg) (MycompareSym1 arg) =>
+                                      MycompareSym0 arg0123456789876543210
+    type instance Apply MycompareSym0 arg0123456789876543210 = MycompareSym1 arg0123456789876543210
+    type (<=>@#@$$$) (arg0123456789876543210 :: a0123456789876543210) (arg0123456789876543210 :: a0123456789876543210) =
+        (<=>) arg0123456789876543210 arg0123456789876543210
+    instance SuppressUnusedWarnings ((<=>@#@$$) arg0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (:<=>@#@$$###)) ())
+    data (<=>@#@$$) (arg0123456789876543210 :: a0123456789876543210) :: (~>) a0123456789876543210 Ordering
+      where
+        (:<=>@#@$$###) :: forall arg0123456789876543210
+                                 arg0123456789876543210
+                                 arg. SameKind (Apply ((<=>@#@$$) arg0123456789876543210) arg) ((<=>@#@$$$) arg0123456789876543210 arg) =>
+                          (<=>@#@$$) arg0123456789876543210 arg0123456789876543210
+    type instance Apply ((<=>@#@$$) arg0123456789876543210) arg0123456789876543210 = (<=>) arg0123456789876543210 arg0123456789876543210
+    infix 4 <=>@#@$$
+    instance SuppressUnusedWarnings (<=>@#@$) where
+      suppressUnusedWarnings = snd (((,) (:<=>@#@$###)) ())
+    data <=>@#@$ :: forall a0123456789876543210.
+                    (~>) a0123456789876543210 ((~>) a0123456789876543210 Ordering)
+      where
+        (:<=>@#@$###) :: forall arg0123456789876543210
+                                arg. SameKind (Apply (<=>@#@$) arg) ((<=>@#@$$) arg) =>
+                         (<=>@#@$) arg0123456789876543210
+    type instance Apply (<=>@#@$) arg0123456789876543210 = (<=>@#@$$) arg0123456789876543210
+    infix 4 <=>@#@$
+    type family TFHelper_0123456789876543210 (a :: a) (a :: a) :: Ordering where
+      TFHelper_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply MycompareSym0 a_0123456789876543210) a_0123456789876543210
+    type TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: a0123456789876543210) =
+        TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+    data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: a0123456789876543210) :: (~>) a0123456789876543210 Ordering
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                                a0123456789876543210
+                                                                arg. SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+    data TFHelper_0123456789876543210Sym0 :: forall a0123456789876543210.
+                                             (~>) a0123456789876543210 ((~>) a0123456789876543210 Ordering)
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                arg. SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    class PMyOrd (a :: GHC.Types.Type) where
+      type Mycompare (arg :: a) (arg :: a) :: Ordering
+      type (<=>) (arg :: a) (arg :: a) :: Ordering
+      type (<=>) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
+    type family Mycompare_0123456789876543210 (a :: Nat) (a :: Nat) :: Ordering where
+      Mycompare_0123456789876543210 Zero Zero = EQSym0
+      Mycompare_0123456789876543210 Zero (Succ _) = LTSym0
+      Mycompare_0123456789876543210 (Succ _) Zero = GTSym0
+      Mycompare_0123456789876543210 (Succ n) (Succ m) = Apply (Apply MycompareSym0 m) n
+    type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
+        Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) Mycompare_0123456789876543210Sym1KindInference) ())
+    data Mycompare_0123456789876543210Sym1 (a0123456789876543210 :: Nat) :: (~>) Nat Ordering
+      where
+        Mycompare_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                                 a0123456789876543210
+                                                                 arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                          Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())
+    data Mycompare_0123456789876543210Sym0 :: (~>) Nat ((~>) Nat Ordering)
+      where
+        Mycompare_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                 arg. SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
+                                                          Mycompare_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Mycompare_0123456789876543210Sym0 a0123456789876543210 = Mycompare_0123456789876543210Sym1 a0123456789876543210
+    instance PMyOrd Nat where
+      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+    type family Mycompare_0123456789876543210 (a :: ()) (a :: ()) :: Ordering where
+      Mycompare_0123456789876543210 _ a_0123456789876543210 = Apply (Apply ConstSym0 EQSym0) a_0123456789876543210
+    type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: ()) (a0123456789876543210 :: ()) =
+        Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) Mycompare_0123456789876543210Sym1KindInference) ())
+    data Mycompare_0123456789876543210Sym1 (a0123456789876543210 :: ()) :: (~>) () Ordering
+      where
+        Mycompare_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                                 a0123456789876543210
+                                                                 arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                          Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())
+    data Mycompare_0123456789876543210Sym0 :: (~>) () ((~>) () Ordering)
+      where
+        Mycompare_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                 arg. SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
+                                                          Mycompare_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Mycompare_0123456789876543210Sym0 a0123456789876543210 = Mycompare_0123456789876543210Sym1 a0123456789876543210
+    instance PMyOrd () where
+      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+    type family Mycompare_0123456789876543210 (a :: Foo) (a :: Foo) :: Ordering where
+      Mycompare_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply FooCompareSym0 a_0123456789876543210) a_0123456789876543210
+    type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: Foo) (a0123456789876543210 :: Foo) =
+        Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) Mycompare_0123456789876543210Sym1KindInference) ())
+    data Mycompare_0123456789876543210Sym1 (a0123456789876543210 :: Foo) :: (~>) Foo Ordering
+      where
+        Mycompare_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                                 a0123456789876543210
+                                                                 arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                          Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())
+    data Mycompare_0123456789876543210Sym0 :: (~>) Foo ((~>) Foo Ordering)
+      where
+        Mycompare_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                 arg. SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
+                                                          Mycompare_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Mycompare_0123456789876543210Sym0 a0123456789876543210 = Mycompare_0123456789876543210Sym1 a0123456789876543210
+    instance PMyOrd Foo where
+      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+    type family TFHelper_0123456789876543210 (a :: Foo2) (a :: Foo2) :: Bool where
+      TFHelper_0123456789876543210 F F = TrueSym0
+      TFHelper_0123456789876543210 G G = TrueSym0
+      TFHelper_0123456789876543210 F G = FalseSym0
+      TFHelper_0123456789876543210 G F = FalseSym0
+    type TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: Foo2) (a0123456789876543210 :: Foo2) =
+        TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+    data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: Foo2) :: (~>) Foo2 Bool
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                                a0123456789876543210
+                                                                arg. SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+    data TFHelper_0123456789876543210Sym0 :: (~>) Foo2 ((~>) Foo2 Bool)
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                arg. SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    instance PEq Foo2 where
+      type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
+    infix 4 %<=>
+    sFooCompare ::
+      forall (t :: Foo) (t :: Foo).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply FooCompareSym0 t) t :: Ordering)
+    sConst ::
+      forall a b (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply ConstSym0 t) t :: a)
+    sFooCompare SA SA = SEQ
+    sFooCompare SA SB = SLT
+    sFooCompare SB SB = SGT
+    sFooCompare SB SA = SEQ
+    sConst (sX :: Sing x) _ = sX
+    instance SingI (FooCompareSym0 :: (~>) Foo ((~>) Foo Ordering)) where
+      sing = (singFun2 @FooCompareSym0) sFooCompare
+    instance SingI d =>
+             SingI (FooCompareSym1 (d :: Foo) :: (~>) Foo Ordering) where
+      sing
+        = (singFun1 @(FooCompareSym1 (d :: Foo))) (sFooCompare (sing @d))
+    instance SingI (ConstSym0 :: (~>) a ((~>) b a)) where
+      sing = (singFun2 @ConstSym0) sConst
+    instance SingI d => SingI (ConstSym1 (d :: a) :: (~>) b a) where
+      sing = (singFun1 @(ConstSym1 (d :: a))) (sConst (sing @d))
+    data instance Sing :: Foo -> GHC.Types.Type
+      where
+        SA :: Sing A
+        SB :: Sing B
+    type SFoo = (Sing :: Foo -> GHC.Types.Type)
+    instance SingKind Foo where
+      type Demote Foo = Foo
+      fromSing SA = A
+      fromSing SB = B
+      toSing A = SomeSing SA
+      toSing B = SomeSing SB
+    data instance Sing :: Foo2 -> GHC.Types.Type
+      where
+        SF :: Sing F
+        SG :: Sing G
+    type SFoo2 = (Sing :: Foo2 -> GHC.Types.Type)
+    instance SingKind Foo2 where
+      type Demote Foo2 = Foo2
+      fromSing SF = F
+      fromSing SG = G
+      toSing F = SomeSing SF
+      toSing G = SomeSing SG
+    class SMyOrd a where
+      sMycompare ::
+        forall (t :: a) (t :: a).
+        Sing t
+        -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
+      (%<=>) ::
+        forall (t :: a) (t :: a).
+        Sing t -> Sing t -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering)
+      default (%<=>) ::
+                forall (t :: a) (t :: a).
+                (Apply (Apply (<=>@#@$) t) t :: Ordering)
+                ~ Apply (Apply TFHelper_0123456789876543210Sym0 t) t =>
+                Sing t -> Sing t -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering)
+      (%<=>)
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @MycompareSym0) sMycompare))
+                sA_0123456789876543210))
+            sA_0123456789876543210
+    instance SMyOrd Nat where
+      sMycompare ::
+        forall (t :: Nat) (t :: Nat).
+        Sing t
+        -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
+      sMycompare SZero SZero = SEQ
+      sMycompare SZero (SSucc _) = SLT
+      sMycompare (SSucc _) SZero = SGT
+      sMycompare (SSucc (sN :: Sing n)) (SSucc (sM :: Sing m))
+        = (applySing
+             ((applySing ((singFun2 @MycompareSym0) sMycompare)) sM))
+            sN
+    instance SMyOrd () where
+      sMycompare ::
+        forall (t :: ()) (t :: ()).
+        Sing t
+        -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
+      sMycompare _ (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing ((applySing ((singFun2 @ConstSym0) sConst)) SEQ))
+            sA_0123456789876543210
+    instance SMyOrd Foo where
+      sMycompare ::
+        forall (t :: Foo) (t :: Foo).
+        Sing t
+        -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
+      sMycompare
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        = (applySing
+             ((applySing ((singFun2 @FooCompareSym0) sFooCompare))
+                sA_0123456789876543210))
+            sA_0123456789876543210
+    instance SEq Foo2 where
+      (%==) ::
+        forall (a :: Foo2) (b :: Foo2). Sing a -> Sing b -> Sing ((==) a b)
+      (%==) SF SF = STrue
+      (%==) SG SG = STrue
+      (%==) SF SG = SFalse
+      (%==) SG SF = SFalse
+    instance SingI A where
+      sing = SA
+    instance SingI B where
+      sing = SB
+    instance SingI F where
+      sing = SF
+    instance SingI G where
+      sing = SG
+    instance SMyOrd a =>
+             SingI (MycompareSym0 :: (~>) a ((~>) a Ordering)) where
+      sing = (singFun2 @MycompareSym0) sMycompare
+    instance (SMyOrd a, SingI d) =>
+             SingI (MycompareSym1 (d :: a) :: (~>) a Ordering) where
+      sing = (singFun1 @(MycompareSym1 (d :: a))) (sMycompare (sing @d))
+    instance SMyOrd a =>
+             SingI ((<=>@#@$) :: (~>) a ((~>) a Ordering)) where
+      sing = (singFun2 @(<=>@#@$)) (%<=>)
+    instance (SMyOrd a, SingI d) =>
+             SingI ((<=>@#@$$) (d :: a) :: (~>) a Ordering) where
+      sing = (singFun1 @((<=>@#@$$) (d :: a))) ((%<=>) (sing @d))
+Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
+    promote
+      [d| instance Ord Foo2 where
+            F `compare` F = EQ
+            F `compare` _ = LT
+            _ `compare` _ = GT
+          instance MyOrd Foo2 where
+            F `mycompare` F = EQ
+            F `mycompare` _ = LT
+            _ `mycompare` _ = GT |]
+  ======>
+    instance MyOrd Foo2 where
+      mycompare F F = EQ
+      mycompare F _ = LT
+      mycompare _ _ = GT
+    instance Ord Foo2 where
+      compare F F = EQ
+      compare F _ = LT
+      compare _ _ = GT
+    type family Mycompare_0123456789876543210 (a :: Foo2) (a :: Foo2) :: Ordering where
+      Mycompare_0123456789876543210 F F = EQSym0
+      Mycompare_0123456789876543210 F _ = LTSym0
+      Mycompare_0123456789876543210 _ _ = GTSym0
+    type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: Foo2) (a0123456789876543210 :: Foo2) =
+        Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) Mycompare_0123456789876543210Sym1KindInference) ())
+    data Mycompare_0123456789876543210Sym1 (a0123456789876543210 :: Foo2) :: (~>) Foo2 Ordering
+      where
+        Mycompare_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                                 a0123456789876543210
+                                                                 arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                          Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())
+    data Mycompare_0123456789876543210Sym0 :: (~>) Foo2 ((~>) Foo2 Ordering)
+      where
+        Mycompare_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                 arg. SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
+                                                          Mycompare_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Mycompare_0123456789876543210Sym0 a0123456789876543210 = Mycompare_0123456789876543210Sym1 a0123456789876543210
+    instance PMyOrd Foo2 where
+      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+    type family Compare_0123456789876543210 (a :: Foo2) (a :: Foo2) :: Ordering where
+      Compare_0123456789876543210 F F = EQSym0
+      Compare_0123456789876543210 F _ = LTSym0
+      Compare_0123456789876543210 _ _ = GTSym0
+    type Compare_0123456789876543210Sym2 (a0123456789876543210 :: Foo2) (a0123456789876543210 :: Foo2) =
+        Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) Compare_0123456789876543210Sym1KindInference) ())
+    data Compare_0123456789876543210Sym1 (a0123456789876543210 :: Foo2) :: (~>) Foo2 Ordering
+      where
+        Compare_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                               a0123456789876543210
+                                                               arg. SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                        Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) Compare_0123456789876543210Sym0KindInference) ())
+    data Compare_0123456789876543210Sym0 :: (~>) Foo2 ((~>) Foo2 Ordering)
+      where
+        Compare_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                               arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
+                                                        Compare_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
+    instance POrd Foo2 where
+      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
+Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| data Nat' = Zero' | Succ' Nat'
+          
+          instance MyOrd Nat' where
+            Zero' `mycompare` Zero' = EQ
+            Zero' `mycompare` (Succ' _) = LT
+            (Succ' _) `mycompare` Zero' = GT
+            (Succ' n) `mycompare` (Succ' m) = m `mycompare` n |]
+  ======>
+    data Nat' = Zero' | Succ' Nat'
+    instance MyOrd Nat' where
+      mycompare Zero' Zero' = EQ
+      mycompare Zero' (Succ' _) = LT
+      mycompare (Succ' _) Zero' = GT
+      mycompare (Succ' n) (Succ' m) = (m `mycompare` n)
+    type Zero'Sym0 = Zero'
+    type Succ'Sym1 (t0123456789876543210 :: Nat') =
+        Succ' t0123456789876543210
+    instance SuppressUnusedWarnings Succ'Sym0 where
+      suppressUnusedWarnings = snd (((,) Succ'Sym0KindInference) ())
+    data Succ'Sym0 :: (~>) Nat' Nat'
+      where
+        Succ'Sym0KindInference :: forall t0123456789876543210
+                                         arg. SameKind (Apply Succ'Sym0 arg) (Succ'Sym1 arg) =>
+                                  Succ'Sym0 t0123456789876543210
+    type instance Apply Succ'Sym0 t0123456789876543210 = Succ' t0123456789876543210
+    type family Mycompare_0123456789876543210 (a :: Nat') (a :: Nat') :: Ordering where
+      Mycompare_0123456789876543210 Zero' Zero' = EQSym0
+      Mycompare_0123456789876543210 Zero' (Succ' _) = LTSym0
+      Mycompare_0123456789876543210 (Succ' _) Zero' = GTSym0
+      Mycompare_0123456789876543210 (Succ' n) (Succ' m) = Apply (Apply MycompareSym0 m) n
+    type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: Nat') (a0123456789876543210 :: Nat') =
+        Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) Mycompare_0123456789876543210Sym1KindInference) ())
+    data Mycompare_0123456789876543210Sym1 (a0123456789876543210 :: Nat') :: (~>) Nat' Ordering
+      where
+        Mycompare_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                                 a0123456789876543210
+                                                                 arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                          Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())
+    data Mycompare_0123456789876543210Sym0 :: (~>) Nat' ((~>) Nat' Ordering)
+      where
+        Mycompare_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                 arg. SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
+                                                          Mycompare_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Mycompare_0123456789876543210Sym0 a0123456789876543210 = Mycompare_0123456789876543210Sym1 a0123456789876543210
+    instance PMyOrd Nat' where
+      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+    data instance Sing :: Nat' -> GHC.Types.Type
+      where
+        SZero' :: Sing Zero'
+        SSucc' :: forall (n :: Nat'). (Sing (n :: Nat')) -> Sing (Succ' n)
+    type SNat' = (Sing :: Nat' -> GHC.Types.Type)
+    instance SingKind Nat' where
+      type Demote Nat' = Nat'
+      fromSing SZero' = Zero'
+      fromSing (SSucc' b) = Succ' (fromSing b)
+      toSing Zero' = SomeSing SZero'
+      toSing (Succ' (b :: Demote Nat'))
+        = case toSing b :: SomeSing Nat' of {
+            SomeSing c -> SomeSing (SSucc' c) }
+    instance SMyOrd Nat' where
+      sMycompare ::
+        forall (t :: Nat') (t :: Nat').
+        Sing t
+        -> Sing t
+           -> Sing (Apply (Apply (MycompareSym0 :: TyFun Nat' ((~>) Nat' Ordering)
+                                                   -> GHC.Types.Type) t) t)
+      sMycompare SZero' SZero' = SEQ
+      sMycompare SZero' (SSucc' _) = SLT
+      sMycompare (SSucc' _) SZero' = SGT
+      sMycompare (SSucc' (sN :: Sing n)) (SSucc' (sM :: Sing m))
+        = (applySing
+             ((applySing ((singFun2 @MycompareSym0) sMycompare)) sM))
+            sN
+    instance SingI Zero' where
+      sing = SZero'
+    instance SingI n => SingI (Succ' (n :: Nat')) where
+      sing = SSucc' sing
+    instance SingI (Succ'Sym0 :: (~>) Nat' Nat') where
+      sing = (singFun1 @Succ'Sym0) SSucc'
+    instance SingI (TyCon1 Succ' :: (~>) Nat' Nat') where
+      sing = (singFun1 @(TyCon1 Succ')) SSucc'

@@ -133,7 +133,7 @@ $(singletonsOnly [d|
   Relies on infinite lists
 
   -- -| @'forever' act@ repeats the action infinitely.
-  forever     :: (Applicative f) => (f :: Type -> Type) a -> f b
+  forever     :: (Applicative f) => f a -> f b
   forever a   = let a' = a *> a' in a'
   -- Use explicit sharing here, as it prevents a space leak regardless of
   -- optimizations.

@@ -36,7 +36,7 @@ paper for a more thorough introduction.
 Compatibility
 -------------
 
-The singletons library requires GHC 8.4.1 or greater. Any code that uses the
+The singletons library requires GHC 8.6.1 or greater. Any code that uses the
 singleton generation primitives needs to enable a long list of GHC
 extensions. This list includes, but is not necessarily limited to, the
 following:
@@ -49,6 +49,7 @@ following:
 * `GADTs`
 * `InstanceSigs`
 * `KindSignatures`
+* `NoStarIsType`
 * `RankNTypes`
 * `ScopedTypeVariables`
 * `TemplateHaskell`
@@ -56,6 +57,10 @@ following:
 * `TypeInType`
 * `TypeOperators`
 * `UndecidableInstances`
+
+In particular, `NoStarIsType` is needed to use the `*` type family from the
+`PNum` class because with `StarIsType` enabled, GHC thinks `*` is a synonym
+for `Type`.
 
 You may also want
 

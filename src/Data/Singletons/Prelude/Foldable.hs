@@ -340,13 +340,13 @@ $(singletonsOnly [d|
       -- -| Test whether the structure is empty. The default implementation is
       -- optimized for structures that are similar to cons-lists, because there
       -- is no general way to do better.
-      null :: (t :: Type -> Type) a -> Bool
+      null :: t a -> Bool
       null = foldr (\_ _ -> False) True
 
       -- -| Returns the size/length of a finite structure as an 'Int'.  The
       -- default implementation is optimized for structures that are similar to
       -- cons-lists, because there is no general way to do better.
-      length :: (t :: Type -> Type) a -> Nat
+      length :: t a -> Nat
       length = foldl' (\c _ -> c+1) 0
 
       -- -| Does the element occur in the structure?
@@ -558,12 +558,12 @@ $(singletonsOnly [d|
   --
   -- asum [Just "Hello", Nothing, Just "World"]
   -- Just "Hello"
-  asum :: (Foldable t, Alternative f) => t ((f :: Type -> Type) a) -> f a
+  asum :: (Foldable t, Alternative f) => t (f a) -> f a
   asum = foldr (<|>) empty
 
   -- -| The sum of a collection of actions, generalizing 'concat'.
   -- As of base 4.8.0.0, 'msum' is just 'asum', specialized to 'MonadPlus'.
-  msum :: (Foldable t, MonadPlus m) => t ((m :: Type -> Type) a) -> m a
+  msum :: (Foldable t, MonadPlus m) => t (m a) -> m a
   msum = asum
 
   -- -| The concatenation of all the elements of a container of lists.
