@@ -65,7 +65,6 @@ ghcOpts = ghcFlags ++ [
   , "-XInstanceSigs"
   , "-XDefaultSignatures"
   , "-XCPP"
-  , "-XTypeInType"
   , "-XStandaloneDeriving"
   , "-XTypeApplications"
   , "-XEmptyCase"

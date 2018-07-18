@@ -72,7 +72,7 @@ promoteOnly qdec = do
 -- | Generate defunctionalization symbols for existing type families.
 --
 -- 'genDefunSymbols' has reasonable support for type families that use
--- dependent quantification à la @TypeInType@. For instance, this:
+-- dependent quantification. For instance, this:
 --
 -- @
 -- type family MyProxy k (a :: k) :: Type where
@@ -288,7 +288,7 @@ promoteDataDec (DataDecl _name _tvbs ctors) = do
 -- seems to be no way to avoid this, so we embrace it:
 --
 --   * If a class type variable has no explicit kind, we make no effort to
---     guess it and default to *. This is OK because before TypeInType we were
+--     guess it and default to *. This is OK because before GHC 8.0, we were
 --     limited by KProxy anyway.
 --
 --   * If a class type variable has an explicit kind, it is preserved.

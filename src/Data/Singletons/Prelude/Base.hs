@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, TypeInType, TypeOperators,
+{-# LANGUAGE TemplateHaskell, TypeOperators, DataKinds, PolyKinds,
              ScopedTypeVariables, TypeFamilies, GADTs,
              UndecidableInstances, BangPatterns #-}
 

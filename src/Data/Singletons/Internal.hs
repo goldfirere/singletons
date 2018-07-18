@@ -1,7 +1,7 @@
 {-# LANGUAGE MagicHash, RankNTypes, PolyKinds, GADTs, DataKinds,
              FlexibleContexts, FlexibleInstances,
              TypeFamilies, TypeOperators, TypeFamilyDependencies,
-             UndecidableInstances, TypeInType, ConstraintKinds,
+             UndecidableInstances, ConstraintKinds,
              ScopedTypeVariables, TypeApplications, AllowAmbiguousTypes,
              PatternSynonyms, ViewPatterns #-}
 

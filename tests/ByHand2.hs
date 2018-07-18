@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds, PolyKinds, TypeFamilies, GADTs, TypeOperators,
              DefaultSignatures, ScopedTypeVariables, InstanceSigs,
              MultiParamTypeClasses, FunctionalDependencies,
-             UndecidableInstances, TypeInType #-}
+             UndecidableInstances #-}
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
 module ByHand2 where
 

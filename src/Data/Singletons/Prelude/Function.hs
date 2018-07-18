@@ -17,8 +17,9 @@
 --
 ----------------------------------------------------------------------------
 
-{-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeInType, TypeFamilies,
-             TypeOperators, UndecidableInstances, GADTs #-}
+{-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies,
+             TypeOperators, UndecidableInstances, GADTs,
+             DataKinds, PolyKinds #-}
 
 module Data.Singletons.Prelude.Function (
     -- * "Prelude" re-exports

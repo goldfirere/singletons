@@ -1,4 +1,4 @@
-{-# LANGUAGE LambdaCase, GADTs, ScopedTypeVariables, TypeInType,
+{-# LANGUAGE LambdaCase, GADTs, ScopedTypeVariables,
              TypeApplications, RankNTypes #-}
 
 module Singletons.T153 where

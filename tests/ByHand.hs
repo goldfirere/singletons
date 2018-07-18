@@ -14,7 +14,7 @@ This file is a great way to understand the singleton encoding better.
              FlexibleInstances, FlexibleContexts, UndecidableInstances,
              RankNTypes, TypeOperators, MultiParamTypeClasses,
              FunctionalDependencies, ScopedTypeVariables,
-             LambdaCase, TemplateHaskell, EmptyCase, TypeInType,
+             LambdaCase, TemplateHaskell, EmptyCase,
              AllowAmbiguousTypes, TypeApplications, EmptyCase
  #-}
 

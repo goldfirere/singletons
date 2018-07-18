@@ -16,7 +16,7 @@
 {-# LANGUAGE PolyKinds, DataKinds, TypeFamilies, FlexibleInstances,
              UndecidableInstances, ScopedTypeVariables, RankNTypes,
              GADTs, FlexibleContexts, TypeOperators, ConstraintKinds,
-             TypeInType, TemplateHaskell, StandaloneDeriving,
+             TemplateHaskell, StandaloneDeriving,
              TypeApplications #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 

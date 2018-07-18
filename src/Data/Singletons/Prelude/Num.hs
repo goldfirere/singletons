@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, PolyKinds, DataKinds, TypeFamilies, TypeInType,
+{-# LANGUAGE TemplateHaskell, PolyKinds, DataKinds, TypeFamilies,
              TypeOperators, GADTs, ScopedTypeVariables, UndecidableInstances,
              DefaultSignatures, FlexibleContexts, InstanceSigs, NoStarIsType
   #-}

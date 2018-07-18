@@ -1,4 +1,4 @@
-{-# LANGUAGE RankNTypes, PolyKinds, DataKinds, TypeOperators, TypeInType,
+{-# LANGUAGE RankNTypes, PolyKinds, DataKinds, TypeOperators,
              TypeFamilies, FlexibleContexts, UndecidableInstances, GADTs #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 

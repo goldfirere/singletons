@@ -41,6 +41,7 @@ singleton generation primitives needs to enable a long list of GHC
 extensions. This list includes, but is not necessarily limited to, the
 following:
 
+* `DataKinds`
 * `DefaultSignatures`
 * `EmptyCase`
 * `ExistentialQuantification`
@@ -50,13 +51,13 @@ following:
 * `InstanceSigs`
 * `KindSignatures`
 * `NoStarIsType`
+* `PolyKinds`
 * `QuantifiedConstraints`
 * `RankNTypes`
 * `ScopedTypeVariables`
 * `StandaloneDeriving`
 * `TemplateHaskell`
 * `TypeFamilies`
-* `TypeInType`
 * `TypeOperators`
 * `UndecidableInstances`
 

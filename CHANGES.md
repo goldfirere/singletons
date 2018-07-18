@@ -20,8 +20,8 @@ Changelog for singletons project
 * Add `Enum Nat`, `Show Nat`, and `Show Symbol` instances to
   `Data.Singletons.TypeLits`.
 
-* Template Haskell-generated code may require `TypeInType` in scenarios which
-  did not previously require it:
+* Template Haskell-generated code may require `DataKinds` and `PolyKinds` in
+  scenarios which did not previously require it:
   * `singletons` now explicitly quantifies all kind variables used in explicit
     `forall`s.
   * `singletons` now generates `a ~> b` instead of `TyFun a b -> Type` whenever
@@ -57,7 +57,7 @@ Changelog for singletons project
   `FlexibleInstances` in more places.
 
 * `genDefunSymbols` is now more robust with respect to types that use
-  dependent quantification à la `TypeInType`, such as:
+  dependent quantification, such as:
 
   ```haskell
   type family MyProxy k (a :: k) :: Type where

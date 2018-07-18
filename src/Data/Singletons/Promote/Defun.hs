@@ -141,7 +141,7 @@ defunReifyFixity name tvbs m_res_kind = do
 -- The defunctionalize function takes Maybe DKinds so that the caller can
 -- indicate which kinds are known and which need to be inferred.
 --
--- See also Note [Defunctionalization and TypeInType]
+-- See also Note [Defunctionalization and dependent quantification]
 defunctionalize :: Name
                 -> Maybe Fixity -- The name's fixity, if one was declared.
                 -> [DTyVarBndr] -> Maybe DKind -> PrM [DDec]
@@ -149,7 +149,7 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
   (m_arg_tvbs, m_res_kind) <- eta_expand (noExactTyVars m_arg_tvbs')
                                          (noExactTyVars m_res_kind')
 
-  let -- Implements part (2)(i) from Note [Defunctionalization and TypeInType]
+  let -- Implements part (2)(i) from Note [Defunctionalization and dependent quantification]
       tvb_to_type_map :: Map Name DType
       tvb_to_type_map = Map.fromList $                   -- (2)(i)(c)
                         map (\tvb -> (extractTvbName tvb, dTyVarBndrToDType tvb)) $
@@ -196,7 +196,7 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                             tvb_to_type tvb_name = fromMaybe (DVarT tvb_name) $
                                                    Map.lookup tvb_name tvb_to_type_map
                             -- Implements part (2)(ii) from
-                            -- Note [Defunctionalization and TypeInType]
+                            -- Note [Defunctionalization and dependent quantification]
                             tyfun_tvbs = filter not_bound $         -- (2)(ii)(d)
                                          toposortTyVarsOf $         -- (2)(ii)(c)
                                          map tvb_to_type $          -- (2)(ii)(b)
@@ -244,10 +244,10 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
         pure (m_arg_tvbs ++ res_kind_arg_tvbs, Just resultK)
 
 {-
-Note [Defunctionalization and TypeInType]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Note [Defunctionalization and dependent quantification]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The machinery in this module supports defunctionalizing types that use
-dependent quantification à la TypeInType, such as in the following example:
+dependent quantification, such as in the following example:
 
   type family Symmetry (a :: t) (y :: t) (e :: a :~: y) :: Type where
     Symmetry a y _ = y :~: a
