@@ -169,7 +169,10 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
             next_name   = promoteTySym name (n+1)
             con_name    = prefixName "" ":" $ suffixName "KindInference" "###" data_name
             m_tyfun     = buildTyFunArrow_maybe (extractTvbKind m_arg) m_result
-            arg_params  = reverse m_args
+            arg_params  = -- Implements part (2)(ii) from
+                          -- Note [Defunctionalization and dependent quantification]
+                          map (map_tvb_kind (substType tvb_to_type_map)) $
+                          reverse m_args
             tyfun_param = mk_tvb tyfun_name m_tyfun
             arg_names   = map extractTvbName arg_params
             params      = arg_params ++ [tyfun_param]
@@ -195,12 +198,12 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                             not_bound tvb = not (extractTvbName tvb `Set.member` bound_tvs)
                             tvb_to_type tvb_name = fromMaybe (DVarT tvb_name) $
                                                    Map.lookup tvb_name tvb_to_type_map
-                            -- Implements part (2)(ii) from
+                            -- Implements part (2)(iii) from
                             -- Note [Defunctionalization and dependent quantification]
-                            tyfun_tvbs = filter not_bound $         -- (2)(ii)(d)
-                                         toposortTyVarsOf $         -- (2)(ii)(c)
-                                         map tvb_to_type $          -- (2)(ii)(b)
-                                         Set.toList $ fvDType tyfun -- (2)(ii)(a)
+                            tyfun_tvbs = filter not_bound $         -- (2)(iii)(d)
+                                         toposortTyVarsOf $         -- (2)(iii)(c)
+                                         map tvb_to_type $          -- (2)(iii)(b)
+                                         Set.toList $ fvDType tyfun -- (2)(iii)(a)
                         in (arg_params, Just (DForallT tyfun_tvbs [] tyfun))
             app_data_ty = foldTypeTvbs (DConT data_name) m_args
             app_eqn     = DTySynEqn [app_data_ty, DVarT tyfun_name]
@@ -243,13 +246,18 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
         let res_kind_arg_tvbs = zipWith DKindedTV tvb_names argKs
         pure (m_arg_tvbs ++ res_kind_arg_tvbs, Just resultK)
 
+    map_tvb_kind :: (DKind -> DKind) -> DTyVarBndr -> DTyVarBndr
+    map_tvb_kind _ tvb@DPlainTV{}  = tvb
+    map_tvb_kind f (DKindedTV n k) = DKindedTV n (f k)
+
 {-
 Note [Defunctionalization and dependent quantification]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The machinery in this module supports defunctionalizing types that use
 dependent quantification, such as in the following example:
 
-  type family Symmetry (a :: t) (y :: t) (e :: a :~: y) :: Type where
+  type family Symmetry (a :: Proxy t) (y :: Proxy t)
+                       (e :: (a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k))) :: Type where
     Symmetry a y _ = y :~: a
 
 Here is what is involved in making this happen:
@@ -258,24 +266,25 @@ Here is what is involved in making this happen:
    the argument *kind variable binders*. This is essential since, for instance,
    Symmetry dependently quantifies `a` and `y` and uses them in the kind of
    `e`. If we did not track the original kind variable names, then instead of
-   generating this defunctinalization symbol for Symmetry:
+   generating this defunctionalization symbol for Symmetry:
 
-     data SymmetrySym2 (a :: t) (y :: t) :: (a :~: y) ~> Type
+     data SymmetrySym2 (a :: Proxy t) (y :: Proxy t) :: (a :~: y) ~> Type
 
    We would generate something more general, like this:
 
-     data SymmetrySym2 (abc1 :: t) (abc2 :: t) :: (a :~: y) ~> Type
+     data SymmetrySym2 (abc1 :: Proxy t) (abc2 :: Proxy t) :: (a :~: y) ~> Type
 
    Alas, there are times where will have no choice but to write a slightly
    more general kind than we should. For instance, consider this:
 
-     data SymmetrySym0 :: t ~> t ~> (a :~: y) ~> Type
+     data SymmetrySym0 :: Proxy t ~> Proxy t ~> (a :~: y) ~> Type
 
    This defunctionalization symbol doesn't capture the dependent quantification
    in the first and second argument kinds. But in order to do that properly,
    you'd need the ability to write something like:
 
-     data SymmetrySym0 :: forall t ~> forall t ~> (a :~: y) ~> Type
+     data SymmetrySym0 :: forall (a :: Proxy t) ~> forall (y :: Proxy t)
+                       ~> (a :~: y) ~> Type
 
    It is my (RGS's) belief that it is not possible to achieve something like
    this in today's GHC (see #304), so we'll just have to live with SymmetrySym0
@@ -285,48 +294,55 @@ Here is what is involved in making this happen:
 
 2. I pulled a fast one earlier by writing:
 
-     data SymmetrySym0 :: t ~> t ~> (a :~: y) ~> Type
+     data SymmetrySym0 :: Proxy t ~> Proxy t ~> (a :~: y) ~> Type
 
    GHC will actually reject this, because it does not have a CUSK. There are
    two glaring problems here:
 
    (a) The kind of `t` is underdetermined.
-   (b) `a` and `y` should have kind `t`, but this is not currently the case.
+   (b) `a` and `y` should have kind `Proxy t`, but this is not currently the case.
 
    Ultimately, the fix is to use explicit kind signatures. A naïve attempt
    would be something like this:
 
-     data SymmetrySym0 :: (t :: Type) ~> (t :: Type)
-                       ~> ((a :: t) :~: (y :: t)) ~> Type
+     data SymmetrySym0 :: Proxy (t :: (k :: Type)) ~> Proxy (t :: (k :: Type))
+                       ~> ((a :: Proxy (t :: (k :: Type))) :~: (y :: Proxy (t :: (k :: Type))))
+                       ~> Type
 
    While that works, it adds a nontrivial amount of clutter. Plus, it requires
    figuring out (in Template Haskell) which variables have underdetermined
    kinds and substituting for them. Blegh. A much cleaner approach is:
 
-     data SymmetrySym0 :: forall (t :: Type) (a :: t) (y :: t).
-                          t ~> t ~> (a :~: y) ~> Type
+     data SymmetrySym0 :: forall (k :: Type) (t :: k) (a :: Proxy t) (y :: Proxy t).
+                          Proxy t ~> Proxy t ~> (a :~: y) ~> Type
 
    This time, all we have to do is put an explicit `forall` in front, and we
-   achieve a CUSK without having to change the body of the type. It also has
-   the benefit of looking much nicer in generated code.
+   achieve a CUSK without having to muck up the body of return kind. It also
+   has the benefit of looking much nicer in generated code.
 
-   Let's talk about how to achieve this feat:
+   Let's talk about how to achieve this feat, using SymmetrySym1 as the
+   guiding example:
 
    (i) Before we begin defunctionalizing a type, we construct a mapping from
        variable names to their corresponding types, complete with kinds.
        For instance, in Symmetry, we would have the following map:
 
-         { t :-> DVarT t                   -- t
-         , a :-> DSigT (DVarT a) (DVarT t) -- (a :: t)
-         , y :-> DSigT (DVarT y) (DVarT y) -- (y :: t)
+         { k :-> DVarT k                                         -- k
+         , t :-> DSigT (DVarT t) (DVarT k)                       -- (t :: k)
+         , a :-> DSigT (DVarT a) (DConT ''Proxy `DAppT` DVarT t) -- (a :: Proxy t)
+         , y :-> DSigT (DVarT y) (DConT ''Proxy `DAppT` DVarT y) -- (y :: Proxy t)
+         , e :-> DSigT (DVarT e) (DConT ''(:~:)
+                                  `DAppT` DSigT (DVarT a) (DConT ''Proxy `DAppT` DSigT (DVarT t) (DVarT k))
+                                  `DAppT` DSigT (DVarT y) (DConT ''Proxy `DAppT` DSigT (DVarT t) (DVarT k)))
+                                                                 -- (e :: (a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
          }
 
        Why do this? Because when constructing the `forall` in the return kind
        of a defunctionalization symbol, it's convenient to be able to know
        the kinds of everything being bound at a glance. It's not always
        possible to recover the kinds of every variable (for instance, if
-       we're just given `t ~> t ~> (a :~: y) ~> Type`), so having this
-       information is handy.
+       we're just given `Proxy t ~> Proxy t ~> (a :~: y) ~> Type`), so having
+       this information is handy.
 
        To construct this map, we:
 
@@ -344,51 +360,93 @@ Here is what is involved in making this happen:
        To continue the Symmetry example:
 
        (a) We grab the list of type variable binders
-           [(a :: t), (y :: t), (e :: a :~: y)] from the Symmetry declaration.
-           Including the return kind Type, we get:
-           [(a :: t), (y :: t), (e :: a :~: y), Type]
-       (b) We flatten this list into its list of type variables:
-           [t, (a :: t), (y :: t), (e :: a :~: y)].
-       (c) From this, we construct the map:
 
-             { t :-> DVarT                     -- t
-             , a :-> DSigT (DVarT a) (DVarT t) -- (a :: t)
-             , y :-> DSigT (DVarT y) (DVarT t) -- (y :: t)
-             , e :-> DSigT (DVarT e) (DConT ''(:~:) `DAppT` DVarT a `DAppT` DVarT y)
-                                               -- (e :: a :~: y)
-             }
+             [ (a :: Proxy t)
+             , (y :: Proxy t)
+             , (e :: (a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
+             ]
 
-   (ii) When constructing each defunctionalization symbol, we will end up with
-        some remaining type variable binders and a return kind. For instance:
+           from the Symmetry declaration. Including the return kind (Type),
+           we get:
 
-          data SymmetrySym1 (a :: t) :: forall ???.
-                                        t ~> (a :~: y) ~> Type
+             [ (a :: Proxy t)
+             , (y :: Proxy t)
+             , (e :: (a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
+             , Type
+             ]
 
-        We must fill in the ??? part. Here is how we do so:
+       (b) We flatten this into a list of well scoped type variables:
 
-        (a) Collect all of the type variables mentioned in the return kind.
-        (b) Look up each type variable's corresponding type in the map (from
-            part (i)) to learn as much kind information as possible.
-        (c) Perform a reverse topological sort on these types to put the
-            types (and kind) variables in proper dependency order.
-        (d) Filter out any variables that are already bound by the type
-            variable binders that precede the return kind.
+             [ k
+             , (t :: k)
+             , (a :: Proxy t)
+             , (y :: Proxy t)
+             , (e :: (a :: Proxy (t :: k)) :~: (y :~: Proxy (t :: k)))
+             ]
 
-        After doing these steps, what remains goes in place of ???. Let's
-        explain this with the example above:
+       (c) From this, we construct the map shown at the beginning of (i).
 
-          data SymmetrySym1 (a :: t) :: forall ???.
-                                        t ~> (a :~: y) ~> Type
+   (ii) Using the map, we will annotate any kind variables in the LHS of the
+        declaration with their respective kinds. In this example, the LHS is:
 
-        (a) [t, a, y]
-        (b) [t, (a :: t), (y :: t)]
-        (c) [t, (a :: t), (y :: t)] (Thankfully, this was already sorted)
-        (d) [(y :: t)] (`t` and `a` were already bound)
+          data SymmetrySym1 (a :: Proxy t) :: ...
 
-        Therefore, we end up with:
+        Since `t` maps to simply `(t :: k)` in the map, the LHS becomes:
 
-          data SymmetrySym1 (a :: t) :: forall (y :: t).
-                                        t ~> (a :~: y) ~> Type
+          data SymmetrySym1 (a :: Proxy (t :: k)) :: ...
+
+        Why do this? Because we need to make it apparent that `k` is bound on
+        the LHS. If we don't, we might end up trying to quantify `k` in the
+        return kind (see #353 for an example of what goes wrong if you try to
+        do this).
+
+        Having to explicitly annotate each occurrence of every kind variable on
+        the LHS like this is a bit tiresome, especially since we don't have to
+        do this in the return kind. If GHC had syntax for visible dependent
+        quantification, we could avoid this step entirely and simply write:
+
+          data SymmetrySym1 :: forall k (t :: k). forall (a :: Proxy t) -> ...
+
+        Until GHC gains this syntax, this is the best alternative.
+
+   (iii) When constructing each defunctionalization symbol, we will end up with
+         some remaining type variable binders and a return kind. For instance:
+
+           data SymmetrySym1 (a :: Proxy (t :: k))
+             :: forall ???. Proxy t
+                         ~> ((a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
+                         ~> Type
+
+         We must fill in the ??? part. Here is how we do so:
+
+         (a) Collect all of the type variables mentioned in the return kind.
+         (b) Look up each type variable's corresponding type in the map (from
+             part (i)) to learn as much kind information as possible.
+         (c) Perform a reverse topological sort on these types to put the
+             types (and kind) variables in proper dependency order.
+         (d) Filter out any variables that are already bound by the type
+             variable binders that precede the return kind.
+
+         After doing these steps, what remains goes in place of ???. Let's
+         explain this with the example above:
+
+           data SymmetrySym1 (a :: Proxy (t :: k))
+             :: forall ???. Proxy t
+                         ~> ((a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
+                         ~> Type
+
+         (a) [t, a, k, y]
+         (b) [(t :: k), (a :: Proxy t), k, (y :: Proxy t)]
+         (c) [k, (t :: k), (a :: Proxy t), (y :: Proxy t)]
+         (d) [(y :: Proxy t)] (`k`, `t` and `a` were already bound)
+
+         Therefore, we end up with:
+
+           data SymmetrySym1 (a :: Proxy (t :: k))
+             :: forall (y :: Proxy t).
+                            Proxy t
+                         ~> ((a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
+                         ~> Type
 -}
 
 -- This is a small function with large importance. When generating
