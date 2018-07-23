@@ -228,22 +228,26 @@ directly through functions exported from `Data.Singletons.TH`.
 
 Promoted and singled versions of the `Show` class (`PShow` and `SShow`,
 respectively) are provided in the `Data.Singletons.Prelude.Show` module. In
-addition, there is a `ShowSing` class provided in the
-`Data.Singletons.ShowSing` module, which facilitates the ability to write
-`Show` instances for `Sing` instances.
+addition, there is a `ShowSing` constraint synonym provided in the
+`Data.Singletons.ShowSing` module:
 
-What is the difference between the two? Let's use the `False` constructor as an
-example. If you used the `PShow Bool` instance, then the output of calling
+```haskell
+type ShowSing k = (forall z. Show (Sing (z :: k))
+```
+
+This facilitates the ability to write `Show` instances for `Sing` instances.
+
+What distinguishes all of these `Show`s? Let's use the `False` constructor as
+an example. If you used the `PShow Bool` instance, then the output of calling
 `Show_` on `False` is `"False"`, much like the value-level `Show Bool` instance
-(similarly for the `SShow Bool` instance). However, the `ShowSing Bool`
-instance is intended for printing the value of the _singleton_ constructor
-`SFalse`, so calling `showsSingPrec 0 SFalse` yields `"SFalse"` (simiarly for
-the `Show (Sing (SBool z))` instance).
+(similarly for the `SShow Bool` instance). However, the `Show (Sing (z :: Bool))`
+instance (i.e., `ShowSing Bool`) is intended for printing the value of the
+_singleton_ constructor `SFalse`, so calling `show SFalse` yields `"SFalse"`.
 
-Instance of `PShow`, `SShow`, `ShowSing`, and `Show` (for the singleton type)
-are generated when `singletons` is called on a datatype that has
-`deriving Show`. You can also generate these instances directly through
-functions exported from `Data.Singletons.TH`.
+Instance of `PShow`, `SShow`, and `Show` (for the singleton type) are generated
+when `singletons` is called on a datatype that has `deriving Show`. You can also
+generate these instances directly through functions exported from
+`Data.Singletons.TH`.
 
 A promoted and singled `Show` instance is provided for `Symbol`, but it is only
 a crude approximation of the value-level `Show` instance for `String`. On the
@@ -713,7 +717,7 @@ The singleton associated with `TypeRep` has one constructor:
 
     ```haskell
     newtype instance Sing :: forall (rep :: RuntimeRep). TYPE rep -> Type where
-      STypeRep :: forall (rep :: RuntimeRep). (a :: TYPE rep). TypeRep a -> Sing a
+      STypeRep :: forall (rep :: RuntimeRep) (a :: TYPE rep). TypeRep a -> Sing a
     ```
 
    (Recall that `type * = TYPE LiftedRep`.) Thus, a `TypeRep` is stored in the
