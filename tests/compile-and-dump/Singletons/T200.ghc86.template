@@ -31,7 +31,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((:$$:@#@$$) t0123456789876543210) t0123456789876543210 = (:$$:) t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (:$$:@#@$) where
       suppressUnusedWarnings = snd (((,) (::$$:@#@$###)) ())
-    data :$$:@#@$ :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
+    data (:$$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
         (::$$:@#@$###) :: forall t0123456789876543210
                                  arg. SameKind (Apply (:$$:@#@$) arg) ((:$$:@#@$$) arg) =>
@@ -50,7 +50,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((:<>:@#@$$) t0123456789876543210) t0123456789876543210 = (:<>:) t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (:<>:@#@$) where
       suppressUnusedWarnings = snd (((,) (::<>:@#@$###)) ())
-    data :<>:@#@$ :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
+    data (:<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
         (::<>:@#@$###) :: forall t0123456789876543210
                                  arg. SameKind (Apply (:<>:@#@$) arg) ((:<>:@#@$$) arg) =>
@@ -79,7 +79,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((<>:@#@$$) a0123456789876543210) a0123456789876543210 = (<>:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (<>:@#@$) where
       suppressUnusedWarnings = snd (((,) (:<>:@#@$###)) ())
-    data <>:@#@$ :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
+    data (<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
         (:<>:@#@$###) :: forall a0123456789876543210
                                 arg. SameKind (Apply (<>:@#@$) arg) ((<>:@#@$$) arg) =>
@@ -98,7 +98,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (($$:@#@$$) a0123456789876543210) a0123456789876543210 = ($$:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ($$:@#@$) where
       suppressUnusedWarnings = snd (((,) (:$$:@#@$###)) ())
-    data $$:@#@$ :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
+    data ($$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
         (:$$:@#@$###) :: forall a0123456789876543210
                                 arg. SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>

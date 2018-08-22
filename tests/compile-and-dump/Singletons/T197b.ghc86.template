@@ -23,8 +23,8 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((:*:@#@$$) t0123456789876543210) t0123456789876543210 = (:*:) t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (:*:@#@$) where
       suppressUnusedWarnings = snd (((,) (::*:@#@$###)) ())
-    data :*:@#@$ :: forall a0123456789876543210 b0123456789876543210.
-                    (~>) a0123456789876543210 ((~>) b0123456789876543210 ((:*:) a0123456789876543210 b0123456789876543210))
+    data (:*:@#@$) :: forall a0123456789876543210 b0123456789876543210.
+                      (~>) a0123456789876543210 ((~>) b0123456789876543210 ((:*:) a0123456789876543210 b0123456789876543210))
       where
         (::*:@#@$###) :: forall t0123456789876543210
                                 arg. SameKind (Apply (:*:@#@$) arg) ((:*:@#@$$) arg) =>
@@ -60,7 +60,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
       where
         (:%*:) :: forall a b (n :: a) (n :: b).
                   (Sing (n :: a)) -> (Sing (n :: b)) -> Sing ((:*:) n n)
-    type %:*: = (Sing :: (:*:) a b -> GHC.Types.Type)
+    type (%:*:) = (Sing :: (:*:) a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind ((:*:) a b) where
       type Demote ((:*:) a b) = (:*:) (Demote a) (Demote b)
       fromSing ((:%*:) b b) = ((:*:) (fromSing b)) (fromSing b)

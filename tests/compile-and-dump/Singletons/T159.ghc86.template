@@ -78,7 +78,7 @@ Singletons/T159.hs:0:0:: Splicing declarations
     infixr 5 :&&@#@$$
     instance SuppressUnusedWarnings (:&&@#@$) where
       suppressUnusedWarnings = snd (((,) (::&&@#@$###)) ())
-    data :&&@#@$ :: (~>) T0 ((~>) T1 T1)
+    data (:&&@#@$) :: (~>) T0 ((~>) T1 T1)
       where
         (::&&@#@$###) :: forall t0123456789876543210
                                 arg. SameKind (Apply (:&&@#@$) arg) ((:&&@#@$$) arg) =>
@@ -183,7 +183,7 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
     infixr 5 :||@#@$$
     instance SuppressUnusedWarnings (:||@#@$) where
       suppressUnusedWarnings = snd (((,) (::||@#@$###)) ())
-    data :||@#@$ :: (~>) T0 ((~>) T2 T2)
+    data (:||@#@$) :: (~>) T0 ((~>) T2 T2)
       where
         (::||@#@$###) :: forall t0123456789876543210
                                 arg. SameKind (Apply (:||@#@$) arg) ((:||@#@$$) arg) =>

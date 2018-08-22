@@ -36,7 +36,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((:+:@#@$$) t0123456789876543210) t0123456789876543210 = (:+:) t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (:+:@#@$) where
       suppressUnusedWarnings = snd (((,) (::+:@#@$###)) ())
-    data :+:@#@$ :: (~>) Foo ((~>) Foo Foo)
+    data (:+:@#@$) :: (~>) Foo ((~>) Foo Foo)
       where
         (::+:@#@$###) :: forall t0123456789876543210
                                 arg. SameKind (Apply (:+:@#@$) arg) ((:+:@#@$$) arg) =>
@@ -55,7 +55,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((+@#@$$) a0123456789876543210) a0123456789876543210 = (+) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (+@#@$) where
       suppressUnusedWarnings = snd (((,) (:+@#@$###)) ())
-    data +@#@$ :: (~>) Nat ((~>) Nat Nat)
+    data (+@#@$) :: (~>) Nat ((~>) Nat Nat)
       where
         (:+@#@$###) :: forall a0123456789876543210
                               arg. SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>

@@ -19,7 +19,7 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((:+@#@$$) t0123456789876543210) t0123456789876543210 = (:+) t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (:+@#@$) where
       suppressUnusedWarnings = snd (((,) (::+@#@$###)) ())
-    data :+@#@$ :: (~>) Foo ((~>) Foo Foo)
+    data (:+@#@$) :: (~>) Foo ((~>) Foo Foo)
       where
         (::+@#@$###) :: forall t0123456789876543210
                                arg. SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>

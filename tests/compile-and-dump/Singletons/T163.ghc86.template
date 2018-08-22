@@ -28,7 +28,7 @@ Singletons/T163.hs:0:0:: Splicing declarations
       where
         SL :: forall a (n :: a). (Sing (n :: a)) -> Sing (L n)
         SR :: forall b (n :: b). (Sing (n :: b)) -> Sing (R n)
-    type %+ = (Sing :: (+) a b -> GHC.Types.Type)
+    type (%+) = (Sing :: (+) a b -> GHC.Types.Type)
     instance (SingKind a, SingKind b) => SingKind ((+) a b) where
       type Demote ((+) a b) = (+) (Demote a) (Demote b)
       fromSing (SL b) = L (fromSing b)

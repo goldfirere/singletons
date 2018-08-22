@@ -22,7 +22,7 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 $$:@#@$$
     instance SuppressUnusedWarnings ($$:@#@$) where
       suppressUnusedWarnings = snd (((,) (:$$:@#@$###)) ())
-    data $$:@#@$ :: (~>) Bool ((~>) Bool Bool)
+    data ($$:@#@$) :: (~>) Bool ((~>) Bool Bool)
       where
         (:$$:@#@$###) :: forall a0123456789876543210
                                 arg. SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>

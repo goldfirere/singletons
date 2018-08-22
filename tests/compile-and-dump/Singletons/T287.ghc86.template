@@ -23,8 +23,8 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((<<>>@#@$$) arg0123456789876543210) arg0123456789876543210 = (<<>>) arg0123456789876543210 arg0123456789876543210
     instance SuppressUnusedWarnings (<<>>@#@$) where
       suppressUnusedWarnings = snd (((,) (:<<>>@#@$###)) ())
-    data <<>>@#@$ :: forall a0123456789876543210.
-                     (~>) a0123456789876543210 ((~>) a0123456789876543210 a0123456789876543210)
+    data (<<>>@#@$) :: forall a0123456789876543210.
+                       (~>) a0123456789876543210 ((~>) a0123456789876543210 a0123456789876543210)
       where
         (:<<>>@#@$###) :: forall arg0123456789876543210
                                  arg. SameKind (Apply (<<>>@#@$) arg) ((<<>>@#@$$) arg) =>

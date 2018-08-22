@@ -30,8 +30,8 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     infix 4 ====@#@$$
     instance SuppressUnusedWarnings (====@#@$) where
       suppressUnusedWarnings = snd (((,) (:====@#@$###)) ())
-    data ====@#@$ :: forall a0123456789876543210.
-                     (~>) a0123456789876543210 ((~>) a0123456789876543210 a0123456789876543210)
+    data (====@#@$) :: forall a0123456789876543210.
+                       (~>) a0123456789876543210 ((~>) a0123456789876543210 a0123456789876543210)
       where
         (:====@#@$###) :: forall a0123456789876543210
                                  arg. SameKind (Apply (====@#@$) arg) ((====@#@$$) arg) =>
@@ -54,8 +54,8 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     infix 4 <=>@#@$$
     instance SuppressUnusedWarnings (<=>@#@$) where
       suppressUnusedWarnings = snd (((,) (:<=>@#@$###)) ())
-    data <=>@#@$ :: forall a0123456789876543210.
-                    (~>) a0123456789876543210 ((~>) a0123456789876543210 Ordering)
+    data (<=>@#@$) :: forall a0123456789876543210.
+                      (~>) a0123456789876543210 ((~>) a0123456789876543210 Ordering)
       where
         (:<=>@#@$###) :: forall arg0123456789876543210
                                 arg. SameKind (Apply (<=>@#@$) arg) ((<=>@#@$$) arg) =>

@@ -38,7 +38,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         (***) a0123456789876543210
     instance SuppressUnusedWarnings (***@#@$) where
       suppressUnusedWarnings = snd (((,) (:***@#@$###)) ())
-    data ***@#@$ :: (~>) Foo3 Bool
+    data (***@#@$) :: (~>) Foo3 Bool
       where
         (:***@#@$###) :: forall a0123456789876543210
                                 arg. SameKind (Apply (***@#@$) arg) ((***@#@$$) arg) =>
@@ -105,8 +105,8 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 :*:@#@$$
     instance SuppressUnusedWarnings (:*:@#@$) where
       suppressUnusedWarnings = snd (((,) (::*:@#@$###)) ())
-    data :*:@#@$ :: forall a0123456789876543210.
-                    (~>) a0123456789876543210 ((~>) a0123456789876543210 (Foo2 a0123456789876543210))
+    data (:*:@#@$) :: forall a0123456789876543210.
+                      (~>) a0123456789876543210 ((~>) a0123456789876543210 (Foo2 a0123456789876543210))
       where
         (::*:@#@$###) :: forall t0123456789876543210
                                 arg. SameKind (Apply (:*:@#@$) arg) ((:*:@#@$$) arg) =>
@@ -127,8 +127,8 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 :&:@#@$$
     instance SuppressUnusedWarnings (:&:@#@$) where
       suppressUnusedWarnings = snd (((,) (::&:@#@$###)) ())
-    data :&:@#@$ :: forall a0123456789876543210.
-                    (~>) a0123456789876543210 ((~>) a0123456789876543210 (Foo2 a0123456789876543210))
+    data (:&:@#@$) :: forall a0123456789876543210.
+                      (~>) a0123456789876543210 ((~>) a0123456789876543210 (Foo2 a0123456789876543210))
       where
         (::&:@#@$###) :: forall t0123456789876543210
                                 arg. SameKind (Apply (:&:@#@$) arg) ((:&:@#@$$) arg) =>
