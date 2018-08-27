@@ -25,6 +25,7 @@
 module Data.Singletons.Sigma
     ( Sigma(..), Σ
     , projSigma1, projSigma2
+    , currySigma, uncurrySigma
     , mapSigma, zipSigma
 
       -- * Defunctionalization symbols
@@ -59,6 +60,18 @@ projSigma1 (a :&: _) = fromSing a
 -- we do the next-best thing, which is to use Church-style elimination.
 projSigma2 :: forall s t r. (forall (fst :: s). t @@ fst -> r) -> Sigma s t -> r
 projSigma2 f ((_ :: Sing (fst :: s)) :&: b) = f @fst b
+
+-- | Witnessing an adjunction between 'Sigma' and 'ConstSym1'.
+currySigma
+  :: (Sigma k f -> b)
+  -> (forall (a::k). Sing a -> f@@a -> b)
+currySigma f sing fa = f (sing :&: fa)
+
+-- | Witnessing an adjunction between 'Sigma' and 'ConstSym1'.
+uncurrySigma
+  :: (forall (a::k). Sing a -> f@@a -> b)
+  -> (Sigma k f -> b)
+uncurrySigma f ((fst :: Sing fst) :&: f_fst) = f @fst fst f_st
 
 -- | Map across a 'Sigma' value in a dependent fashion.
 mapSigma :: Sing (f :: a ~> b) -> (forall (x :: a). p @@ x -> q @@ (f @@ x))

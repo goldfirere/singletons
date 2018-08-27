@@ -1,6 +1,10 @@
 Changelog for singletons project
 ================================
 
+2.6
+---
+* Witness adjunction between `Data.Singletons.Sigma` and `ConstSym1` with `currySigma` and `uncurrySigma`.
+
 2.5
 ---
 * The `Data.Promotion.Prelude.*` namespace has been removed. Use the
