@@ -109,6 +109,7 @@ tests =
     , compileAndDumpStdTest "Pragmas"
     , compileAndDumpStdTest "Prelude"
     , compileAndDumpStdTest "T180"
+    , compileAndDumpStdTest "T361"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts

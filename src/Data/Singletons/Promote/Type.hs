@@ -42,7 +42,6 @@ promoteType = go []
     go args     (DVarT name) = return $ foldType (DVarT name) args
     go []       (DConT name)
       | name == typeRepName               = return $ DConT typeKindName
-      | name == stringName                = return $ DConT symbolName
       | nameBase name == nameBase repName = return $ DConT typeKindName
     go args     (DConT name)
       | Just n <- unboxedTupleNameDegree_maybe name
@@ -50,7 +49,7 @@ promoteType = go []
       | otherwise
       = return $ foldType (DConT name) args
     go [k1, k2] DArrowT = return $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
-    go _ (DLitT _) = fail "Cannot promote a type-level literal"
+    go _        ty@DLitT{} = pure ty
 
     go args     hd = fail $ "Illegal Haskell construct encountered:\n" ++
                             "headed by: " ++ show hd ++ "\n" ++

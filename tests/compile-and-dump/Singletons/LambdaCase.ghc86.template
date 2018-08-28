@@ -18,17 +18,17 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
     foo1 :: a -> Maybe a -> a
     foo1 d x
       = (\case
-           \ (Just y) -> y
-           \ Nothing -> d)
+           Just y -> y
+           Nothing -> d)
           x
     foo2 :: a -> Maybe a -> a
     foo2 d _
       = (\case
-           \ (Just y) -> y
-           \ Nothing -> d)
+           Just y -> y
+           Nothing -> d)
           (Just d)
     foo3 :: a -> b -> a
-    foo3 a b = (\case \ (p, _) -> p) (a, b)
+    foo3 a b = (\case (p, _) -> p) (a, b)
     type family Case_0123456789876543210 a b x_0123456789876543210 t where
       Case_0123456789876543210 a b x_0123456789876543210 '(p, _) = p
     type family Lambda_0123456789876543210 a b t where
