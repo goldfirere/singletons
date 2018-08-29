@@ -34,6 +34,7 @@ mkShowInstance mb_ctxt ty (DataDecl _ _ cons) = do
   return $ InstDecl { id_cxt = constraints
                     , id_name = showName
                     , id_arg_tys = [ty]
+                    , id_sigs  = mempty
                     , id_meths = [ (showsPrecName, UFunction clauses) ] }
 
 mk_showsPrec :: DsMonad q => [DCon] -> q [DClause]

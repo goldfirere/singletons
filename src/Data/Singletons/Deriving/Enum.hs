@@ -50,5 +50,6 @@ mkEnumInstance mb_ctxt ty (DataDecl data_name tvbs cons) = do
                       -- to use Nat instead of Int
 
                    , id_arg_tys = [ty]
+                   , id_sigs    = mempty
                    , id_meths   = [ (singletonsToEnumName, to_enum)
                                   , (singletonsFromEnumName, from_enum) ] })

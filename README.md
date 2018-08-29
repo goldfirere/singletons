@@ -592,6 +592,7 @@ The following constructs are fully supported:
 * class and instance declarations
 * scoped type variables
 * signatures (e.g., `(x :: Maybe a)`) in expressions and patterns
+* `InstanceSigs`
 * higher-kinded type variables (see below)
 * finite arithmetic sequences (see below)
 * functional dependencies (with limitations -- see below)
@@ -740,3 +741,24 @@ Known bugs
 * Singled code that contains uses type families is likely to fail due to GHC
   Trac #12564. Note that singling type family declarations themselves is fine
   (and often desired, since that produces defunctionalization symbols for them).
+* Singling instances of poly-kinded type classes is likely to fail due to
+  [#358](https://github.com/goldfirere/singletons/issues/358).
+  However, one can often work around the issue by using `InstanceSigs`. For
+  instance, the following code will not single:
+
+  ```haskell
+  class C (f :: k -> Type) where
+    method :: f a
+
+  instance C [] where
+    method = []
+  ```
+
+  Adding a type signature for `method` in the `C []` is sufficient
+  to work around the issue, though:
+
+  ```haskell
+  instance C [] where
+    method :: [a]
+    method = []
+  ```

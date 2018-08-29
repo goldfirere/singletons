@@ -86,6 +86,7 @@ mkFunctorInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
   return $ InstDecl { id_cxt = constraints
                     , id_name = functorName
                     , id_arg_tys = [ty]
+                    , id_sigs  = mempty
                     , id_meths = [ (fmapName,    UFunction fmap_clauses)
                                  , (replaceName, UFunction replace_clauses)
                                  ] }

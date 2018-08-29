@@ -95,4 +95,5 @@ mkFoldableInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
   return $ InstDecl { id_cxt = constraints
                     , id_name = foldableName
                     , id_arg_tys = [ty]
+                    , id_sigs  = mempty
                     , id_meths = meths }

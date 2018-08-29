@@ -65,4 +65,5 @@ mkTraversableInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
   return $ InstDecl { id_cxt = constraints
                     , id_name = traversableName
                     , id_arg_tys = [ty]
+                    , id_sigs  = mempty
                     , id_meths = [ (traverseName, UFunction trav_clauses) ] }
