@@ -375,8 +375,8 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
 
 
 singInstD :: AInstDecl -> SgM DDec
-singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
-                    , id_arg_tys = inst_tys, id_meths = ann_meths }) = do
+singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
+                    , id_sigs = inst_sigs, id_meths = ann_meths }) = do
   bindContext cxt $ do
     cxt' <- mapM singPred cxt
     inst_kis <- mapM promoteType inst_tys
@@ -393,37 +393,64 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name
     sing_meth name rhs = do
       mb_s_info <- dsReify (singValName name)
       inst_kis <- mapM promoteType inst_tys
-      let mk_subst cls_tvbs = Map.fromList (zip (map extractTvbName cls_tvbs) inst_kis)
-      (s_ty, tyvar_names, ctxt, m_res_ki) <- case mb_s_info of
-        Just (DVarI _ (DForallT cls_tvbs _cls_pred s_ty) _) -> do
-          let subst = mk_subst cls_tvbs
-              (sing_tvbs, ctxt, _args, res_ty) = unravel s_ty
-              m_res_ki = case res_ty of
-                _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substKind subst res_ki)
-                _                                         -> Nothing
+      let mk_subst cls_tvbs = Map.fromList $ zip (map extractTvbName vis_cls_tvbs) inst_kis
+            where
+              -- This is a half-hearted attempt to address the underlying problem
+              -- in #358, where we can sometimes have more class type variables
+              -- (due to implicit kind arguments) than class arguments. This just
+              -- ensures that the explicit type variables are properly mapped
+              -- to the class arguments, leaving the implicit kind variables
+              -- unmapped. That could potentially cause *other* problems, but
+              -- those are perhaps best avoided by using InstanceSigs. At the
+              -- very least, this workaround will make error messages slightly
+              -- less confusing.
+              vis_cls_tvbs = drop (length cls_tvbs - length inst_kis) cls_tvbs
 
-          return ( substType subst s_ty
+          sing_meth_ty :: Set Name -> DType
+                       -> SgM (DType, [Name], DCxt, DKind)
+          sing_meth_ty bound_kvs inner_ty = do
+            -- Make sure to expand through type synonyms here! Not doing so
+            -- resulted in #167.
+            raw_ty <- expand inner_ty
+            (s_ty, _num_args, tyvar_names, ctxt, _arg_kis, res_ki)
+              <- singType bound_kvs (promoteValRhs name) raw_ty
+            pure (s_ty, tyvar_names, ctxt, res_ki)
+
+      (s_ty, tyvar_names, ctxt, m_res_ki) <- case Map.lookup name inst_sigs of
+        Just inst_sig -> do
+          -- We have an InstanceSig, so just single that type. Take care to
+          -- avoid binding the variables bound by the instance head as well.
+          let inst_bound = foldMap (fvDType . predToType) cxt <> foldMap fvDType inst_kis
+          (s_ty, tyvar_names, ctxt, res_ki) <- sing_meth_ty inst_bound inst_sig
+          pure (s_ty, tyvar_names, ctxt, Just res_ki)
+        Nothing -> case mb_s_info of
+          -- We don't have an InstanceSig, so we must compute the type to use
+          -- in the singled instance ourselves through reification.
+          Just (DVarI _ (DForallT cls_tvbs _cls_pred s_ty) _) -> do
+            let subst = mk_subst cls_tvbs
+                (sing_tvbs, ctxt, _args, res_ty) = unravel s_ty
+                m_res_ki = case res_ty of
+                  _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substKind subst res_ki)
+                  _                                         -> Nothing
+
+            pure ( substType subst s_ty
                  , map extractTvbName sing_tvbs
                  , map (substPred subst) ctxt
                  , m_res_ki )
-        _ -> do
-          mb_info <- dsReify name
-          case mb_info of
-            Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _) -> do
-              let subst = mk_subst cls_tvbs
-                  cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
-                  cls_tvb_names = Set.fromList $ map extractTvbName cls_tvbs
-                  cls_bound     = cls_kvb_names `Set.union` cls_tvb_names
-              -- Make sure to expand through type synonyms here! Not doing so
-              -- resulted in #167.
-              raw_ty <- expand inner_ty
-              (s_ty, _num_args, tyvar_names, ctxt, _arg_kis, res_ki)
-                <- singType cls_bound (promoteValRhs name) raw_ty
-              return ( substType subst s_ty
+          _ -> do
+            mb_info <- dsReify name
+            case mb_info of
+              Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _) -> do
+                let subst = mk_subst cls_tvbs
+                    cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
+                    cls_tvb_names = Set.fromList $ map extractTvbName cls_tvbs
+                    cls_bound     = cls_kvb_names `Set.union` cls_tvb_names
+                (s_ty, tyvar_names, ctxt, res_ki) <- sing_meth_ty cls_bound inner_ty
+                pure ( substType subst s_ty
                      , tyvar_names
                      , ctxt
                      , Just (substKind subst res_ki) )
-            _ -> fail $ "Cannot find type of method " ++ show name
+              _ -> fail $ "Cannot find type of method " ++ show name
 
       let kind_map = maybe Map.empty (Map.singleton name) m_res_ki
       meth' <- singLetDecRHS (Map.singleton name tyvar_names)

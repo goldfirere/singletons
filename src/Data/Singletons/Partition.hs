@@ -33,6 +33,7 @@ import Language.Haskell.TH.Desugar
 import Data.Singletons.Util
 
 import Control.Monad
+import Data.Bifunctor (bimap)
 import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.Map as Map
 import Data.Map (Map)
@@ -101,11 +102,13 @@ partitionDec (DClassD cxt name tvbs fds decs) = do
                                                , cd_lde       = lde }]
                   , pd_open_type_family_decs = otfs }
 partitionDec (DInstanceD _ cxt ty decs) = do
-  defns <- liftM catMaybes $ mapM partitionInstanceDec decs
+  (defns, sigs) <- liftM (bimap catMaybes mconcat) $
+                   mapAndUnzipM partitionInstanceDec decs
   (name, tys) <- split_app_tys [] ty
   return $ mempty { pd_instance_decs = [InstDecl { id_cxt       = cxt
                                                  , id_name      = name
                                                  , id_arg_tys   = tys
+                                                 , id_sigs      = sigs
                                                  , id_meths     = defns }] }
   where
     split_app_tys acc (DAppT t1 t2) = split_app_tys (t2:acc) t1
@@ -170,13 +173,20 @@ partitionClassDec (DTySynInstD {}) =
 partitionClassDec _ =
   fail "Only method declarations can be promoted within a class."
 
-partitionInstanceDec :: Monad m => DDec -> m (Maybe (Name, ULetDecRHS))
+partitionInstanceDec :: Monad m => DDec
+                     -> m ( Maybe (Name, ULetDecRHS) -- right-hand sides of methods
+                          , Map Name DType           -- method type signatures
+                          )
 partitionInstanceDec (DLetDec (DValD (DVarPa name) exp)) =
-  return $ Just (name, UValue exp)
+  pure (Just (name, UValue exp), mempty)
 partitionInstanceDec (DLetDec (DFunD name clauses)) =
-  return $ Just (name, UFunction clauses)
-partitionInstanceDec (DLetDec (DPragmaD {})) = return Nothing
-partitionInstanceDec (DTySynInstD {}) = pure Nothing
+  pure (Just (name, UFunction clauses), mempty)
+partitionInstanceDec (DLetDec (DSigD name ty)) =
+  pure (Nothing, Map.singleton name ty)
+partitionInstanceDec (DLetDec (DPragmaD {})) =
+  pure (Nothing, mempty)
+partitionInstanceDec (DTySynInstD {}) =
+  pure (Nothing, mempty)
   -- There's no need to track associated type family instances, since
   -- we already record the type family itself separately.
 partitionInstanceDec _ =
@@ -214,6 +224,7 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
 
                     , id_name      = deriv_name
                     , id_arg_tys   = arg_tys ++ [ty]
+                    , id_sigs      = mempty
                     , id_meths     = [] }
 
        | Just DNewtypeStrategy <- mb_strat

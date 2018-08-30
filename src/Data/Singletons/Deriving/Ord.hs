@@ -37,6 +37,7 @@ mkOrdInstance mb_ctxt ty (DataDecl _ _ cons) = do
   return (InstDecl { id_cxt = constraints
                    , id_name = ordName
                    , id_arg_tys = [ty]
+                   , id_sigs  = mempty
                    , id_meths = [(compareName, UFunction clauses)] })
 
 mk_equal_clause :: Quasi q => DCon -> q DClause

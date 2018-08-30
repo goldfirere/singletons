@@ -231,8 +231,8 @@ promoteDecs raw_decls = do
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
   mapM_ promoteClassDec classes
-  let all_meth_sigs = foldMap (lde_types . cd_lde) classes
-  mapM_ (promoteInstanceDec all_meth_sigs) insts
+  let orig_meth_sigs = foldMap (lde_types . cd_lde) classes
+  mapM_ (promoteInstanceDec orig_meth_sigs) insts
   mapM_ promoteDerivedEqDec   derived_eq_decs
   promoteDataDecs datas
 
@@ -315,7 +315,7 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
     let defaults_list  = Map.toList defaults
         defaults_names = map fst defaults_list
     (default_decs, ann_rhss, prom_rhss)
-      <- mapAndUnzip3M (promoteMethod Nothing meth_sigs) defaults_list
+      <- mapAndUnzip3M (promoteMethod Map.empty Nothing meth_sigs) defaults_list
 
     let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl)
                                  $ Map.toList infix_decls
@@ -361,16 +361,17 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
 
 -- returns (unpromoted method name, ALetDecRHS) pairs
 promoteInstanceDec :: Map Name DType -> UInstDecl -> PrM AInstDecl
-promoteInstanceDec meth_sigs
+promoteInstanceDec orig_meth_sigs
                    decl@(InstDecl { id_name     = cls_name
                                   , id_arg_tys  = inst_tys
+                                  , id_sigs     = inst_sigs
                                   , id_meths    = meths }) = do
   cls_tvb_names <- lookup_cls_tvb_names
   inst_kis <- mapM promoteType inst_tys
   let kvs_to_bind = foldMap fvDType inst_kis
   forallBind kvs_to_bind $ do
     let subst = Map.fromList $ zip cls_tvb_names inst_kis
-    (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod (Just subst) meth_sigs) meths
+    (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod inst_sigs (Just subst) orig_meth_sigs) meths
     emitDecs [DInstanceD Nothing [] (foldType (DConT pClsName)
                                       inst_kis) meths']
     return (decl { id_meths = zip (map fst meths) ann_rhss })
@@ -429,28 +430,21 @@ dsReifyTypeNameInfo, which first calls lookupTypeName (to ensure we can find a N
 that's in the type namespace) and _then_ reifies it.
 -}
 
-promoteMethod :: Maybe (Map Name DKind)
+promoteMethod :: Map Name DType -- InstanceSigs for methods
+              -> Maybe (Map Name DKind)
                     -- ^ instantiations for class tyvars (Nothing for default decls)
                     --   See Note [Promoted class method kinds]
               -> Map Name DType     -- method types
               -> (Name, ULetDecRHS)
               -> PrM (DDec, ALetDecRHS, DType)
                  -- returns (type instance, ALetDecRHS, promoted RHS)
-promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
-  (arg_kis, res_ki) <- lookup_meth_ty
+promoteMethod inst_sigs_map m_subst orig_sigs_map (meth_name, meth_rhs) = do
+  (meth_arg_kis, meth_res_ki) <- lookup_meth_ty
   ((_, _, _, eqns), _defuns, ann_rhs)
-    <- promoteLetDecRHS (Just (arg_kis, res_ki)) sigs_map Map.empty
+    <- promoteLetDecRHS (Just (meth_arg_kis, meth_res_ki)) Map.empty Map.empty
                         noPrefix meth_name meth_rhs
-  meth_arg_tvs <- mapM (const $ qNewName "a") arg_kis
-  let -- If we're dealing with an associated type family instance, substitute
-      -- in the kind of the instance for better kind information in the RHS
-      -- helper function. If we're dealing with a default family implementation
-      -- (m_subst = Nothing), there's no need for a substitution.
-      -- See Note [Promoted class method kinds]
-      do_subst      = maybe id substKind m_subst
-      meth_arg_kis' = map do_subst arg_kis
-      meth_res_ki'  = do_subst res_ki
-      helperNameBase = case nameBase proName of
+  meth_arg_tvs <- mapM (const $ qNewName "a") meth_arg_kis
+  let helperNameBase = case nameBase proName of
                          first:_ | not (isHsLetter first) -> "TFHelper"
                          alpha                            -> alpha
 
@@ -468,14 +462,14 @@ promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
       -- strictly necessary, as kind inference can figure them out just as well.
       family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
-  let tvbs = zipWith DKindedTV meth_arg_tvs meth_arg_kis'
+  let tvbs = zipWith DKindedTV meth_arg_tvs meth_arg_kis
   emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
                                   helperName
                                   tvbs
-                                  (DKindSig meth_res_ki')
+                                  (DKindSig meth_res_ki)
                                   Nothing)
                                eqns]
-  emitDecsM (defunctionalize helperName Nothing tvbs (Just meth_res_ki'))
+  emitDecsM (defunctionalize helperName Nothing tvbs (Just meth_res_ki))
   return ( DTySynInstD
              proName
              (DTySynEqn family_args
@@ -486,17 +480,36 @@ promoteMethod m_subst sigs_map (meth_name, meth_rhs) = do
     proName = promoteValNameLhs meth_name
 
     lookup_meth_ty :: PrM ([DKind], DKind)
-    lookup_meth_ty = case Map.lookup meth_name sigs_map of
-      Nothing -> do
-        mb_info <- dsReifyTypeNameInfo proName
-                   -- See Note [Using dsReifyTypeNameInfo when promoting instances]
-        case mb_info of
-          Just (DTyConI (DOpenTypeFamilyD (DTypeFamilyHead _ tvbs mb_res_ki _)) _)
-            -> let arg_kis = map (default_to_star . extractTvbKind) tvbs
-                   res_ki  = default_to_star (resultSigToMaybeKind mb_res_ki)
-                in return (arg_kis, res_ki)
-          _ -> fail $ "Cannot find type annotation for " ++ show proName
-      Just ty -> promoteUnraveled ty
+    lookup_meth_ty =
+      case Map.lookup meth_name inst_sigs_map of
+        Just ty ->
+          -- We have an InstanceSig. These are easy: no substitution for clas
+          -- variables is required at all!
+          promoteUnraveled ty
+        Nothing -> do
+          -- We don't have an InstanceSig, so we must compute the kind to use
+          -- ourselves (possibly substituting for class variables below).
+          (arg_kis, res_ki) <-
+            case Map.lookup meth_name orig_sigs_map of
+              Nothing -> do
+                mb_info <- dsReifyTypeNameInfo proName
+                           -- See Note [Using dsReifyTypeNameInfo when promoting instances]
+                case mb_info of
+                  Just (DTyConI (DOpenTypeFamilyD (DTypeFamilyHead _ tvbs mb_res_ki _)) _)
+                    -> let arg_kis = map (default_to_star . extractTvbKind) tvbs
+                           res_ki  = default_to_star (resultSigToMaybeKind mb_res_ki)
+                        in return (arg_kis, res_ki)
+                  _ -> fail $ "Cannot find type annotation for " ++ show proName
+              Just ty -> promoteUnraveled ty
+          let -- If we're dealing with an associated type family instance, substitute
+              -- in the kind of the instance for better kind information in the RHS
+              -- helper function. If we're dealing with a default family implementation
+              -- (m_subst = Nothing), there's no need for a substitution.
+              -- See Note [Promoted class method kinds]
+              do_subst      = maybe id substKind m_subst
+              meth_arg_kis' = map do_subst arg_kis
+              meth_res_ki'  = do_subst res_ki
+          pure (meth_arg_kis', meth_res_ki')
 
     default_to_star Nothing  = DConT typeKindName
     default_to_star (Just k) = k

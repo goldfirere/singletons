@@ -1,0 +1,116 @@
+Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| class C1 (f :: k -> Type) where
+            method1 :: f a
+          class C2 a where
+            method2a, method2b :: forall b. b -> a
+          
+          instance C1 [] where
+            method1 :: [a]
+            method1 = []
+          instance C2 [a] where
+            method2a _ = []
+            method2b :: forall b. b -> [a]
+            method2b _ = [] |]
+  ======>
+    class C1 (f :: k -> Type) where
+      method1 :: f a
+    instance C1 [] where
+      method1 :: [a]
+      method1 = []
+    class C2 a where
+      method2a :: forall b. b -> a
+      method2b :: forall b. b -> a
+    instance C2 [a] where
+      method2b :: forall b. b -> [a]
+      method2a _ = []
+      method2b _ = []
+    type Method1Sym0 = Method1
+    class PC1 (f :: k -> Type) where
+      type Method1 :: f a
+    type Method2aSym1 (arg0123456789876543210 :: b0123456789876543210) =
+        Method2a arg0123456789876543210
+    instance SuppressUnusedWarnings Method2aSym0 where
+      suppressUnusedWarnings = snd (((,) Method2aSym0KindInference) ())
+    data Method2aSym0 :: forall a0123456789876543210
+                                b0123456789876543210.
+                         (~>) b0123456789876543210 a0123456789876543210
+      where
+        Method2aSym0KindInference :: forall arg0123456789876543210
+                                            arg. SameKind (Apply Method2aSym0 arg) (Method2aSym1 arg) =>
+                                     Method2aSym0 arg0123456789876543210
+    type instance Apply Method2aSym0 arg0123456789876543210 = Method2a arg0123456789876543210
+    type Method2bSym1 (arg0123456789876543210 :: b0123456789876543210) =
+        Method2b arg0123456789876543210
+    instance SuppressUnusedWarnings Method2bSym0 where
+      suppressUnusedWarnings = snd (((,) Method2bSym0KindInference) ())
+    data Method2bSym0 :: forall a0123456789876543210
+                                b0123456789876543210.
+                         (~>) b0123456789876543210 a0123456789876543210
+      where
+        Method2bSym0KindInference :: forall arg0123456789876543210
+                                            arg. SameKind (Apply Method2bSym0 arg) (Method2bSym1 arg) =>
+                                     Method2bSym0 arg0123456789876543210
+    type instance Apply Method2bSym0 arg0123456789876543210 = Method2b arg0123456789876543210
+    class PC2 (a :: Type) where
+      type Method2a (arg :: b) :: a
+      type Method2b (arg :: b) :: a
+    type family Method1_0123456789876543210 :: [a] where
+      Method1_0123456789876543210 = '[]
+    type Method1_0123456789876543210Sym0 = Method1_0123456789876543210
+    instance PC1 [] where
+      type Method1 = Method1_0123456789876543210Sym0
+    type family Method2a_0123456789876543210 (a :: b) :: [a] where
+      Method2a_0123456789876543210 _ = '[]
+    type Method2a_0123456789876543210Sym1 (a0123456789876543210 :: b0123456789876543210) =
+        Method2a_0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings Method2a_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) Method2a_0123456789876543210Sym0KindInference) ())
+    data Method2a_0123456789876543210Sym0 :: forall a0123456789876543210
+                                                    b0123456789876543210.
+                                             (~>) b0123456789876543210 [a0123456789876543210]
+      where
+        Method2a_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                arg. SameKind (Apply Method2a_0123456789876543210Sym0 arg) (Method2a_0123456789876543210Sym1 arg) =>
+                                                         Method2a_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Method2a_0123456789876543210Sym0 a0123456789876543210 = Method2a_0123456789876543210 a0123456789876543210
+    type family Method2b_0123456789876543210 (a :: b) :: [a] where
+      Method2b_0123456789876543210 _ = '[]
+    type Method2b_0123456789876543210Sym1 (a0123456789876543210 :: b0123456789876543210) =
+        Method2b_0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings Method2b_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) Method2b_0123456789876543210Sym0KindInference) ())
+    data Method2b_0123456789876543210Sym0 :: forall a0123456789876543210
+                                                    b0123456789876543210.
+                                             (~>) b0123456789876543210 [a0123456789876543210]
+      where
+        Method2b_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                arg. SameKind (Apply Method2b_0123456789876543210Sym0 arg) (Method2b_0123456789876543210Sym1 arg) =>
+                                                         Method2b_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Method2b_0123456789876543210Sym0 a0123456789876543210 = Method2b_0123456789876543210 a0123456789876543210
+    instance PC2 [a] where
+      type Method2a a = Apply Method2a_0123456789876543210Sym0 a
+      type Method2b a = Apply Method2b_0123456789876543210Sym0 a
+    class SC1 (f :: k -> Type) where
+      sMethod1 :: forall a. Sing (Method1Sym0 :: f a)
+    class SC2 a where
+      sMethod2a ::
+        forall b (t :: b). Sing t -> Sing (Apply Method2aSym0 t :: a)
+      sMethod2b ::
+        forall b (t :: b). Sing t -> Sing (Apply Method2bSym0 t :: a)
+    instance SC1 [] where
+      sMethod1 :: forall a. Sing (Method1Sym0 :: [a])
+      sMethod1 = Data.Singletons.Prelude.Instances.SNil
+    instance SC2 [a] where
+      sMethod2a ::
+        forall b (t :: b). Sing t -> Sing (Apply Method2aSym0 t :: [a])
+      sMethod2b ::
+        forall b (t :: b). Sing t -> Sing (Apply Method2bSym0 t :: [a])
+      sMethod2a _ = Data.Singletons.Prelude.Instances.SNil
+      sMethod2b _ = Data.Singletons.Prelude.Instances.SNil
+    instance SC2 a => SingI (Method2aSym0 :: (~>) b a) where
+      sing = (singFun1 @Method2aSym0) sMethod2a
+    instance SC2 a => SingI (Method2bSym0 :: (~>) b a) where
+      sing = (singFun1 @Method2bSym0) sMethod2b

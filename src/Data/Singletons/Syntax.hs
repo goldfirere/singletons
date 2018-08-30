@@ -73,6 +73,7 @@ data ClassDecl ann = ClassDecl { cd_cxt  :: DCxt
 data InstDecl  ann = InstDecl { id_cxt     :: DCxt
                               , id_name    :: Name
                               , id_arg_tys :: [DType]
+                              , id_sigs    :: Map Name DType
                               , id_meths   :: [(Name, LetDecRHS ann)] }
 
 type UClassDecl = ClassDecl Unannotated

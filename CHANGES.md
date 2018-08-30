@@ -111,6 +111,8 @@ Changelog for singletons project
 
 * Permit singling of expression and pattern signatures.
 
+* Permit promotion and singling of `InstanceSigs`.
+
 * `sError` and `sUndefined` now have `HasCallStack` constraints, like their
   counterparts `error` and `undefined`. The promoted and singled counterparts
   to `errorWithoutStackTrace` have also been added in case you do not want
