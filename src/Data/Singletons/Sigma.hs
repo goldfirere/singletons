@@ -61,17 +61,45 @@ projSigma1 (a :&: _) = fromSing a
 projSigma2 :: forall s t r. (forall (fst :: s). t @@ fst -> r) -> Sigma s t -> r
 projSigma2 f ((_ :: Sing (fst :: s)) :&: b) = f @fst b
 
--- | Witnessing an adjunction between 'Sigma' and 'ConstSym1'.
+-- | One half to witnessing an isomorphism. Convert a uncurried
+-- function on 'Sigma' to a curried one.
+-- 
+-- Alternative type
+-- 
+-- @
+-- -- (~@>) :: (k ~> Type) -> (k ~> Type) -> Type
+-- type f ~@> g = (forall xx. Sing (xx::k) -> f@@xx -> g@@xx)
+-- 
+-- 'currySigma' :: (Sigma k f -> b) -> (f ~@> 'ConstSym1' b)
+-- @
+--
+-- Such that the following holds:
+-- 
+-- @
+-- id1 :: ('Sigma' k f -> b) -> ('Sigma' k f -> b)
+-- id1 f = 'uncurrySigma' ('currySigma' f)
+--
+-- id2 :: forall f b. (f ~@> ConstSym1 b) -> (f ~@> ConstSym1 b)
+-- id2 f = 'currySigma' @_ @_ @f ('uncurrySigma' @_ @_ @f f)
+-- @
+-- 
 currySigma
   :: (Sigma k f -> b)
   -> (forall (a::k). Sing a -> f@@a -> b)
 currySigma f sing fa = f (sing :&: fa)
 
--- | Witnessing an adjunction between 'Sigma' and 'ConstSym1'.
+-- | Elimination of 'Sigma'. Second half of isomorphism.
+-- 
+-- Alternative type
+-- 
+-- @
+-- 'uncurrySigma' :: (f ~@> 'ConstSym1' b) -> ('Sigma' k f -> b)
+-- @
+-- 
 uncurrySigma
   :: (forall (a::k). Sing a -> f@@a -> b)
   -> (Sigma k f -> b)
-uncurrySigma f ((fst :: Sing fst) :&: f_fst) = f @fst fst f_st
+uncurrySigma elim ((fst :: Sing fst) :&: f_fst) = elim @fst fst f_fst
 
 -- | Map across a 'Sigma' value in a dependent fashion.
 mapSigma :: Sing (f :: a ~> b) -> (forall (x :: a). p @@ x -> q @@ (f @@ x))
