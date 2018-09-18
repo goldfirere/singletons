@@ -72,8 +72,8 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
                                   ChildSym0 a0123456789876543210
     type instance Apply ChildSym0 a0123456789876543210 = Child a0123456789876543210
     type family (+) (a :: Nat) (a :: Nat) :: Nat where
-      (+) Zero m = m
-      (+) (Succ n) m = Apply SuccSym0 (Apply (Apply (+@#@$) n) m)
+      (+)  'Zero m = m
+      (+) ( 'Succ n) m = Apply SuccSym0 (Apply (Apply (+@#@$) n) m)
     type family Child (a :: Foo) :: Foo where
       Child FLeaf = FLeafSym0
       Child ((:+:) a _) = a

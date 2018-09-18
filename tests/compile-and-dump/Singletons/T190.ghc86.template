@@ -34,8 +34,8 @@ Singletons/T190.hs:0:0:: Splicing declarations
     instance POrd T where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Case_0123456789876543210 n t where
-      Case_0123456789876543210 n True = TSym0
-      Case_0123456789876543210 n False = Apply ErrorSym0 "toEnum: bad argument"
+      Case_0123456789876543210 n  'True = TSym0
+      Case_0123456789876543210 n  'False = Apply ErrorSym0 "toEnum: bad argument"
     type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: T where
       ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0))
     type ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) =

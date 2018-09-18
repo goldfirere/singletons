@@ -359,8 +359,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     type family Let0123456789876543210Scrutinee_0123456789876543210 name name' u attrs where
       Let0123456789876543210Scrutinee_0123456789876543210 name name' u attrs = Apply (Apply (==@#@$) name) name'
     type family Case_0123456789876543210 name name' u attrs t where
-      Case_0123456789876543210 name name' u attrs True = u
-      Case_0123456789876543210 name name' u attrs False = Apply (Apply LookupSym0 name) (Apply SchSym0 attrs)
+      Case_0123456789876543210 name name' u attrs  'True = u
+      Case_0123456789876543210 name name' u attrs  'False = Apply (Apply LookupSym0 name) (Apply SchSym0 attrs)
     type LookupSym2 (a0123456789876543210 :: [AChar]) (a0123456789876543210 :: Schema) =
         Lookup a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (LookupSym1 a0123456789876543210) where

@@ -63,8 +63,8 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                                   RightSym0 t0123456789876543210
     type instance Apply RightSym0 t0123456789876543210 = Right t0123456789876543210
     type family Case_0123456789876543210 ns bs n b t where
-      Case_0123456789876543210 ns bs n b True = Apply SuccSym0 (Apply SuccSym0 n)
-      Case_0123456789876543210 ns bs n b False = n
+      Case_0123456789876543210 ns bs n b  'True = Apply SuccSym0 (Apply SuccSym0 n)
+      Case_0123456789876543210 ns bs n b  'False = n
     type family Lambda_0123456789876543210 ns bs t t where
       Lambda_0123456789876543210 ns bs n b = Case_0123456789876543210 ns bs n b b
     type Lambda_0123456789876543210Sym4 ns0123456789876543210 bs0123456789876543210 t0123456789876543210 t0123456789876543210 =
@@ -112,8 +112,8 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                                                        Lambda_0123456789876543210Sym0 ns0123456789876543210
     type instance Apply Lambda_0123456789876543210Sym0 ns0123456789876543210 = Lambda_0123456789876543210Sym1 ns0123456789876543210
     type family Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 t where
-      Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 True = Apply SuccSym0 (Apply SuccSym0 n)
-      Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 False = n
+      Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210  'True = Apply SuccSym0 (Apply SuccSym0 n)
+      Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210  'False = n
     type family Lambda_0123456789876543210 a_0123456789876543210 a_0123456789876543210 t t where
       Lambda_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n b = Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 b
     type Lambda_0123456789876543210Sym4 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 t0123456789876543210 t0123456789876543210 =
@@ -313,8 +313,8 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     type family Etad (a :: [Nat]) (a :: [Bool]) :: [Nat] where
       Etad a_0123456789876543210 a_0123456789876543210 = Apply (Apply (Apply ZipWithSym0 (Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210)) a_0123456789876543210) a_0123456789876543210
     type family LiftMaybe (a :: (~>) a b) (a :: Maybe a) :: Maybe b where
-      LiftMaybe f (Just x) = Apply JustSym0 (Apply f x)
-      LiftMaybe _ Nothing = NothingSym0
+      LiftMaybe f ( 'Just x) = Apply JustSym0 (Apply f x)
+      LiftMaybe _  'Nothing = NothingSym0
     type family Map (a :: (~>) a b) (a :: [a]) :: [b] where
       Map _ '[] = '[]
       Map f ( '(:) h t) = Apply (Apply (:@#@$) (Apply f h)) (Apply (Apply MapSym0 f) t)

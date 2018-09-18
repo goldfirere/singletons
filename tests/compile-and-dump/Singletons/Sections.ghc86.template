@@ -55,8 +55,8 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
     type Foo2Sym0 = Foo2
     type Foo3Sym0 = Foo3
     type family (+) (a :: Nat) (a :: Nat) :: Nat where
-      (+) Zero m = m
-      (+) (Succ n) m = Apply SuccSym0 (Apply (Apply (+@#@$) n) m)
+      (+)  'Zero m = m
+      (+) ( 'Succ n) m = Apply SuccSym0 (Apply (Apply (+@#@$) n) m)
     type family Foo1 :: [Nat] where
       Foo1 = Apply (Apply MapSym0 (Apply (+@#@$) (Apply SuccSym0 ZeroSym0))) (Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) '[]))
     type family Foo2 :: [Nat] where

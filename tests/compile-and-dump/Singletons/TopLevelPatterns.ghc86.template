@@ -121,9 +121,9 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 a_0123456789876543210 '(_,
                                                        y_0123456789876543210) = y_0123456789876543210
     type family Case_0123456789876543210 t where
-      Case_0123456789876543210 (Bar y_0123456789876543210 _) = y_0123456789876543210
+      Case_0123456789876543210 ( 'Bar y_0123456789876543210 _) = y_0123456789876543210
     type family Case_0123456789876543210 t where
-      Case_0123456789876543210 (Bar _ y_0123456789876543210) = y_0123456789876543210
+      Case_0123456789876543210 ( 'Bar _ y_0123456789876543210) = y_0123456789876543210
     type family Case_0123456789876543210 t where
       Case_0123456789876543210 '[y_0123456789876543210,
                                  _] = y_0123456789876543210
@@ -206,8 +206,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type family False_ where
       False_ = FalseSym0
     type family Not (a :: Bool) :: Bool where
-      Not True = FalseSym0
-      Not False = TrueSym0
+      Not  'True = FalseSym0
+      Not  'False = TrueSym0
     type family Id (a :: a) :: a where
       Id x = x
     type family F (a :: Bool) :: Bool where

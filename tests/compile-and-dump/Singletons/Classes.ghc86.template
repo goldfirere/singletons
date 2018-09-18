@@ -183,10 +183,10 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       type (<=>) (arg :: a) (arg :: a) :: Ordering
       type (<=>) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type family Mycompare_0123456789876543210 (a :: Nat) (a :: Nat) :: Ordering where
-      Mycompare_0123456789876543210 Zero Zero = EQSym0
-      Mycompare_0123456789876543210 Zero (Succ _) = LTSym0
-      Mycompare_0123456789876543210 (Succ _) Zero = GTSym0
-      Mycompare_0123456789876543210 (Succ n) (Succ m) = Apply (Apply MycompareSym0 m) n
+      Mycompare_0123456789876543210  'Zero  'Zero = EQSym0
+      Mycompare_0123456789876543210  'Zero ( 'Succ _) = LTSym0
+      Mycompare_0123456789876543210 ( 'Succ _)  'Zero = GTSym0
+      Mycompare_0123456789876543210 ( 'Succ n) ( 'Succ m) = Apply (Apply MycompareSym0 m) n
     type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
         Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
@@ -432,8 +432,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       compare F _ = LT
       compare _ _ = GT
     type family Mycompare_0123456789876543210 (a :: Foo2) (a :: Foo2) :: Ordering where
-      Mycompare_0123456789876543210 F F = EQSym0
-      Mycompare_0123456789876543210 F _ = LTSym0
+      Mycompare_0123456789876543210  'F  'F = EQSym0
+      Mycompare_0123456789876543210  'F _ = LTSym0
       Mycompare_0123456789876543210 _ _ = GTSym0
     type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: Foo2) (a0123456789876543210 :: Foo2) =
         Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -459,8 +459,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     instance PMyOrd Foo2 where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     type family Compare_0123456789876543210 (a :: Foo2) (a :: Foo2) :: Ordering where
-      Compare_0123456789876543210 F F = EQSym0
-      Compare_0123456789876543210 F _ = LTSym0
+      Compare_0123456789876543210  'F  'F = EQSym0
+      Compare_0123456789876543210  'F _ = LTSym0
       Compare_0123456789876543210 _ _ = GTSym0
     type Compare_0123456789876543210Sym2 (a0123456789876543210 :: Foo2) (a0123456789876543210 :: Foo2) =
         Compare_0123456789876543210 a0123456789876543210 a0123456789876543210

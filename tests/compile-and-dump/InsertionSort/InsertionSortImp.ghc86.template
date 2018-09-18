@@ -103,8 +103,8 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     type family Let0123456789876543210Scrutinee_0123456789876543210 n h t where
       Let0123456789876543210Scrutinee_0123456789876543210 n h t = Apply (Apply LeqSym0 n) h
     type family Case_0123456789876543210 n h t t where
-      Case_0123456789876543210 n h t True = Apply (Apply (:@#@$) n) (Apply (Apply (:@#@$) h) t)
-      Case_0123456789876543210 n h t False = Apply (Apply (:@#@$) h) (Apply (Apply InsertSym0 n) t)
+      Case_0123456789876543210 n h t  'True = Apply (Apply (:@#@$) n) (Apply (Apply (:@#@$) h) t)
+      Case_0123456789876543210 n h t  'False = Apply (Apply (:@#@$) h) (Apply (Apply InsertSym0 n) t)
     type LeqSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
         Leq a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (LeqSym1 a0123456789876543210) where
@@ -155,9 +155,9 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
                                           InsertionSortSym0 a0123456789876543210
     type instance Apply InsertionSortSym0 a0123456789876543210 = InsertionSort a0123456789876543210
     type family Leq (a :: Nat) (a :: Nat) :: Bool where
-      Leq Zero _ = TrueSym0
-      Leq (Succ _) Zero = FalseSym0
-      Leq (Succ a) (Succ b) = Apply (Apply LeqSym0 a) b
+      Leq  'Zero _ = TrueSym0
+      Leq ( 'Succ _)  'Zero = FalseSym0
+      Leq ( 'Succ a) ( 'Succ b) = Apply (Apply LeqSym0 a) b
     type family Insert (a :: Nat) (a :: [Nat]) :: [Nat] where
       Insert n '[] = Apply (Apply (:@#@$) n) '[]
       Insert n ( '(:) h t) = Case_0123456789876543210 n h t (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t)

@@ -191,11 +191,11 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       type MinBound = MinBound_0123456789876543210Sym0
       type MaxBound = MaxBound_0123456789876543210Sym0
     type family Case_0123456789876543210 n t where
-      Case_0123456789876543210 n True = S2Sym0
-      Case_0123456789876543210 n False = Apply ErrorSym0 "toEnum: bad argument"
+      Case_0123456789876543210 n  'True = S2Sym0
+      Case_0123456789876543210 n  'False = Apply ErrorSym0 "toEnum: bad argument"
     type family Case_0123456789876543210 n t where
-      Case_0123456789876543210 n True = S1Sym0
-      Case_0123456789876543210 n False = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 1))
+      Case_0123456789876543210 n  'True = S1Sym0
+      Case_0123456789876543210 n  'False = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 1))
     type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: S where
       ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))
     type ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) =

@@ -148,10 +148,10 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     type family Let0123456789876543210Scrutinee_0123456789876543210 d where
       Let0123456789876543210Scrutinee_0123456789876543210 d = Apply JustSym0 d
     type family Case_0123456789876543210 d t where
-      Case_0123456789876543210 d (Just y) = y
+      Case_0123456789876543210 d ( 'Just y) = y
     type family Case_0123456789876543210 d x t where
-      Case_0123456789876543210 d x (Just y) = y
-      Case_0123456789876543210 d x Nothing = d
+      Case_0123456789876543210 d x ( 'Just y) = y
+      Case_0123456789876543210 d x  'Nothing = d
     type Foo5Sym1 (a0123456789876543210 :: a0123456789876543210) =
         Foo5 a0123456789876543210
     instance SuppressUnusedWarnings Foo5Sym0 where

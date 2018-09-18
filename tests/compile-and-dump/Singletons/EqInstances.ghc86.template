@@ -8,8 +8,8 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
       (%==) ((:%+:) a a) ((:%+:) b b)
         = ((%&&) (((%==) a) b)) (((%==) a) b)
     type family Equals_0123456789876543210 (a :: Foo) (b :: Foo) :: Bool where
-      Equals_0123456789876543210 FLeaf FLeaf = TrueSym0
-      Equals_0123456789876543210 ((:+:) a a) ((:+:) b b) = (&&) ((==) a b) ((==) a b)
+      Equals_0123456789876543210  'FLeaf  'FLeaf = TrueSym0
+      Equals_0123456789876543210 ( '(:+:) a a) ( '(:+:) b b) = (&&) ((==) a b) ((==) a b)
       Equals_0123456789876543210 (_ :: Foo) (_ :: Foo) = FalseSym0
     instance PEq Foo where
       type (==) a b = Equals_0123456789876543210 a b

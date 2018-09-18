@@ -61,8 +61,8 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
                                                      Meth_0123456789876543210Sym0 a0123456789876543210
     type instance Apply Meth_0123456789876543210Sym0 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
     type family L2r_0123456789876543210 (a :: Bool) :: Nat where
-      L2r_0123456789876543210 False = FromInteger 0
-      L2r_0123456789876543210 True = FromInteger 1
+      L2r_0123456789876543210  'False = FromInteger 0
+      L2r_0123456789876543210  'True = FromInteger 1
     type L2r_0123456789876543210Sym1 (a0123456789876543210 :: Bool) =
         L2r_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings L2r_0123456789876543210Sym0 where

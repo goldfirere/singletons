@@ -1,5 +1,5 @@
 Promote/T361.hs:0:0:: Splicing declarations
-    genDefunSymbols [''Proxy] ======> type ProxySym0 = Proxy
+    genDefunSymbols [''Proxy] ======> type ProxySym0 =  'Proxy
 Promote/T361.hs:(0,0)-(0,0): Splicing declarations
     promote
       [d| f :: Proxy 1 -> Proxy 2
@@ -18,4 +18,4 @@ Promote/T361.hs:(0,0)-(0,0): Splicing declarations
                               FSym0 a0123456789876543210
     type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
     type family F (a :: Proxy 1) :: Proxy 2 where
-      F Proxy = ProxySym0
+      F  'Proxy = ProxySym0
