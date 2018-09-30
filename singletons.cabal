@@ -144,7 +144,7 @@ library
 test-suite singletons-test-suite
   type:               exitcode-stdio-1.0
   hs-source-dirs:     tests
-  ghc-options:        -Wall
+  ghc-options:        -Wall -threaded -with-rtsopts=-maxN16
   default-language:   Haskell2010
   main-is:            SingletonsTestSuite.hs
   other-modules:      ByHand
@@ -155,5 +155,5 @@ test-suite singletons-test-suite
                       filepath >= 1.3,
                       process >= 1.1,
                       singletons,
-                      tasty >= 0.6,
+                      tasty >= 1.2,
                       tasty-golden >= 2.2

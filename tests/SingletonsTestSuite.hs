@@ -2,16 +2,13 @@ module Main (
     main
  ) where
 
-import Test.Tasty               ( TestTree, defaultMain, testGroup          )
+import Test.Tasty               ( DependencyType(..), TestTree
+                                , after, defaultMain, testGroup )
 import SingletonsTestSuiteUtils ( compileAndDumpStdTest, compileAndDumpTest
-                                , testCompileAndDumpGroup, ghcOpts
-                             --   , cleanFiles
-                                )
+                                , testCompileAndDumpGroup, ghcOpts )
 
 main :: IO ()
-main = do
---  cleanFiles    We really need to parallelize the testsuite.
-  defaultMain tests
+main = defaultMain tests
 
 tests :: TestTree
 tests =
@@ -21,29 +18,44 @@ tests =
     , compileAndDumpStdTest "Empty"
     , compileAndDumpStdTest "Maybe"
     , compileAndDumpStdTest "BoxUnBox"
-    , compileAndDumpStdTest "Operators"
-    , compileAndDumpStdTest "HigherOrder"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "Operators"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "HigherOrder"
     , compileAndDumpStdTest "Contains"
-    , compileAndDumpStdTest "AsPattern"
-    , compileAndDumpStdTest "DataValues"
-    , compileAndDumpStdTest "EqInstances"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "AsPattern"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "DataValues"
+    , after AllSucceed "$3 == \"Empty\"" .
+      after AllSucceed "$3 == \"Operators\"" .
+      compileAndDumpStdTest "EqInstances"
     , compileAndDumpStdTest "CaseExpressions"
-    , compileAndDumpStdTest "Star"
-    , compileAndDumpStdTest "ReturnFunc"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "Star"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "ReturnFunc"
     , compileAndDumpStdTest "Lambdas"
-    , compileAndDumpStdTest "LambdasComprehensive"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "LambdasComprehensive"
     , compileAndDumpStdTest "Error"
     , compileAndDumpStdTest "TopLevelPatterns"
-    , compileAndDumpStdTest "LetStatements"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "LetStatements"
     , compileAndDumpStdTest "LambdaCase"
-    , compileAndDumpStdTest "Sections"
-    , compileAndDumpStdTest "PatternMatching"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "Sections"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "PatternMatching"
     , compileAndDumpStdTest "Records"
     , compileAndDumpStdTest "T29"
     , compileAndDumpStdTest "T33"
     , compileAndDumpStdTest "T54"
-    , compileAndDumpStdTest "Classes"
-    , compileAndDumpStdTest "Classes2"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "Classes"
+    , afterSingletonsNat .
+      after AllSucceed "$3 == \"Classes\"" .
+      compileAndDumpStdTest "Classes2"
     , compileAndDumpStdTest "FunDeps"
     , compileAndDumpStdTest "T78"
     , compileAndDumpStdTest "OrdDeriving"
@@ -107,7 +119,8 @@ tests =
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"
     , compileAndDumpStdTest "GenDefunSymbols"
-    , compileAndDumpStdTest "Newtypes"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "Newtypes"
     , compileAndDumpStdTest "Pragmas"
     , compileAndDumpStdTest "Prelude"
     , compileAndDumpStdTest "T180"
@@ -115,9 +128,13 @@ tests =
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts
-    , compileAndDumpTest "GradingClient/Main"     ghcOpts
+    , after AllSucceed "$3 == \"Database\"" $
+      compileAndDumpTest "GradingClient/Main"     ghcOpts
     ],
     testCompileAndDumpGroup "InsertionSort"
     [ compileAndDumpStdTest "InsertionSortImp"
     ]
   ]
+
+afterSingletonsNat :: TestTree -> TestTree
+afterSingletonsNat = after AllSucceed "$3 == \"Nat\""
