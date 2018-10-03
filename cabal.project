@@ -1,3 +1,7 @@
 packages: .
-          ./th-desugar
           ./util
+
+source-repository-package
+  type: git
+  location: https://github.com/goldfirere/th-desugar
+  tag: 200be2ec175b3f924d9170a55c675528eeedcd9e
