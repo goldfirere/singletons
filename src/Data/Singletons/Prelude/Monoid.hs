@@ -174,7 +174,6 @@ $(singletonsOnly [d|
   -- deriving newtype instance Monoid a => Monoid (Down a)
   instance Monoid a => Monoid (Down a) where
       mempty = Down mempty
-      Down a `mappend` Down b = Down (a `mappend` b)
 
   -- deriving newtype instance Applicative First
   instance Applicative First where
