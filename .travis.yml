@@ -80,6 +80,10 @@ install:
     fi
   - grep -Ev -- '^\s*--' ${HOME}/.cabal/config | grep -Ev '^\s*$'
   - "printf 'packages: \".\" \"./util\"\\n' > cabal.project"
+  - "echo 'source-repository-package' >> cabal.project"
+  - "echo '  type: git' >> cabal.project"
+  - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
+  - "echo '  tag: 0f0a45f7b1f290a6005e6d9d849247f8c3d35429' >> cabal.project"
   - touch cabal.project.local
   - "if ! $NOINSTALLEDCONSTRAINTS; then for pkg in $($HCPKG list --simple-output); do echo $pkg  | grep -vw -- singletons | grep -vw -- accept-all | sed 's/^/constraints: /' | sed 's/-[^-]*$/ installed/' >> cabal.project.local; done; fi"
   - cat cabal.project || true
@@ -99,12 +103,16 @@ install:
 # any command which exits with a non-zero exit code causes the build to fail.
 script:
   # test that source-distributions can be generated
-  - (cd "." && cabal sdist)
-  - (cd "./util" && cabal sdist)
-  - mv "."/dist/singletons-*.tar.gz "./util"/dist/accept-all-*.tar.gz ${DISTDIR}/
+  - (cd "." && cabal new-sdist)
+  - (cd "./util" && cabal new-sdist)
+  - mv dist-newstyle/sdist/*.tar.gz ${DISTDIR}/
   - cd ${DISTDIR} || false
   - find . -maxdepth 1 -name '*.tar.gz' -exec tar -xvf '{}' \;
   - "printf 'packages: singletons-*/*.cabal accept-all-*/*.cabal\\n' > cabal.project"
+  - "echo 'source-repository-package' >> cabal.project"
+  - "echo '  type: git' >> cabal.project"
+  - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
+  - "echo '  tag: 0f0a45f7b1f290a6005e6d9d849247f8c3d35429' >> cabal.project"
   - touch cabal.project.local
   - "if ! $NOINSTALLEDCONSTRAINTS; then for pkg in $($HCPKG list --simple-output); do echo $pkg  | grep -vw -- singletons | grep -vw -- accept-all | sed 's/^/constraints: /' | sed 's/-[^-]*$/ installed/' >> cabal.project.local; done; fi"
   - cat cabal.project || true
