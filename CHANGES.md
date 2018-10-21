@@ -1,6 +1,10 @@
 Changelog for singletons project
 ================================
 
+next
+----
+* Add an `IsString` instance for `SomeSing`.
+
 2.5
 ---
 * The `Data.Promotion.Prelude.*` namespace has been removed. Use the
