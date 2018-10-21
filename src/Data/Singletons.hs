@@ -86,12 +86,15 @@ module Data.Singletons (
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
+import Data.Singletons.Prelude.IsString
 import Data.Singletons.Prelude.Monoid
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Semigroup
 import Data.Singletons.Promote
 import Data.Singletons.ShowSing
+import Data.String
+import qualified Data.Text as T (pack)
 
 ----------------------------------------------------------------------
 ---- SomeSing instances ----------------------------------------------
@@ -138,6 +141,9 @@ instance SSemigroup k => Semigroup (SomeSing k) where
 
 instance SMonoid k => Monoid (SomeSing k) where
   mempty = SomeSing sMempty
+
+instance SIsString k => IsString (SomeSing k) where
+  fromString s = withSomeSing (T.pack s) (SomeSing . sFromString)
 
 ----------------------------------------------------------------------
 ---- Defunctionalization symbols -------------------------------------
