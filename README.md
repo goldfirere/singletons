@@ -34,7 +34,7 @@ functions, mirroring functions and datatypes found in Prelude, `Data.Bool`,
 paper for a more thorough introduction.
 
 [This blog series](https://blog.jle.im/entry/introduction-to-singletons-1.html),
-authored by Justin Le, offers an tutorial for this library that assumes no
+authored by Justin Le, offers a tutorial for this library that assumes no
 knowledge of dependent types.
 
 Compatibility
