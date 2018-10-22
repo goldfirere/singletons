@@ -208,7 +208,7 @@ functorLikeValidityChecks allowConstrainedLastTyVar (DataDecl n data_tvbs cons)
       = do ex_tvbs <- conExistentialTvbs (foldTypeTvbs (DConT n) data_tvbs) con
            let univ_tvb_names = map extractTvbName con_tvbs \\ map extractTvbName ex_tvbs
            if last_tv `elem` univ_tvb_names
-                && last_tv `Set.notMember` foldMap (fvDType . predToType) con_theta
+                && last_tv `Set.notMember` foldMap fvDPred con_theta
               then pure ()
               else fail $ badCon con_name existential
       | otherwise

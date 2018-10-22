@@ -41,7 +41,7 @@ singType bound_kvs prom ty = do
       tau   = ravel args' res'
       -- Make sure to subtract out the bound variables currently in scope, lest we
       -- accidentally shadow them in this type signature.
-      kv_names_to_bind = foldMap fvDType (prom_args ++ map predToType cxt' ++ [prom_res])
+      kv_names_to_bind = (foldMap fvDType prom_args <> foldMap fvDPred cxt' <> fvDType prom_res)
                              Set.\\ bound_kvs
       kvs_to_bind      = Set.toList kv_names_to_bind
   let ty' = DForallT (map DPlainTV kvs_to_bind ++ zipWith DKindedTV arg_names prom_args)

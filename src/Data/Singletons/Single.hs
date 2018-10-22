@@ -420,7 +420,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
         Just inst_sig -> do
           -- We have an InstanceSig, so just single that type. Take care to
           -- avoid binding the variables bound by the instance head as well.
-          let inst_bound = foldMap (fvDType . predToType) cxt <> foldMap fvDType inst_kis
+          let inst_bound = foldMap fvDPred cxt <> foldMap fvDType inst_kis
           (s_ty, tyvar_names, ctxt, res_ki) <- sing_meth_ty inst_bound inst_sig
           pure (s_ty, tyvar_names, ctxt, Just res_ki)
         Nothing -> case mb_s_info of
