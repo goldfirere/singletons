@@ -101,7 +101,6 @@ import Data.Kind
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Monoid hiding (All(..), Any(..), Endo(..), Product(..), Sum(..))
 import qualified Data.Monoid as Monoid (All(..), Any(..), Product(..), Sum(..))
-import Data.Singletons.Internal
 import Data.Singletons.Prelude.Base
   hiding (Foldr, FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3, sFoldr)
 import Data.Singletons.Prelude.Bool
@@ -130,20 +129,6 @@ import Data.Singletons.Prelude.Semigroup.Internal
 import Data.Singletons.Promote
 import Data.Singletons.Single
 import Data.Singletons.TypeLits.Internal
-
-newtype Endo a = Endo (a ~> a)
-data instance Sing :: forall a. Endo a -> Type where
-  SEndo :: Sing x -> Sing ('Endo x)
-data EndoSym0 :: forall a. (a ~> a) ~> Endo a
-type instance Apply EndoSym0 x = 'Endo x
-
-$(singletonsOnly [d|
-  instance Semigroup (Endo a) where
-          Endo x <> Endo y = Endo (x . y)
-
-  instance Monoid (Endo a) where
-          mempty = Endo id
-  |])
 
 newtype MaxInternal a = MaxInternal (Maybe a)
 data instance Sing :: forall a. MaxInternal a -> Type where

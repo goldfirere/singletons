@@ -35,7 +35,7 @@ module Data.Singletons.Prelude.Semigroup (
        SWrapMonoid, sUnwrapMonoid, SDual, sGetDual,
        SAll, sGetAll, SAny, sGetAny,
        SSum, sGetSum, SProduct, sGetProduct,
-       SOption, sGetOption, SArg),
+       SOption, sGetOption, SArg, SEndo),
   GetMin, GetMax, GetFirst, GetLast, GetDual,
   GetAll, GetAny, GetSum, GetProduct, GetOption,
 

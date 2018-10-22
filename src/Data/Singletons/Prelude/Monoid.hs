@@ -31,7 +31,7 @@ module Data.Singletons.Prelude.Monoid (
   PMonoid(..), SMonoid(..),
 
   Sing(SDual, sGetDual, SAll, sGetAll, SAny, sGetAny, SSum, sGetSum,
-       SProduct, sGetProduct, SFirst, sGetFirst, SLast, sGetLast),
+       SProduct, sGetProduct, SFirst, sGetFirst, SLast, sGetLast, SEndo),
   GetDual, GetAll, GetAny, GetSum, GetProduct, GetFirst, GetLast,
 
   SDual, SAll, SAny, SSum, SProduct, SFirst, SLast,
@@ -51,7 +51,7 @@ module Data.Singletons.Prelude.Monoid (
 
 import Data.Monoid (First(..), Last(..))
 import Data.Ord (Down(..))
-import Data.Semigroup hiding (First(..), Last(..))
+import Data.Semigroup hiding (First(..), Last(..), Endo(..))
 import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
@@ -210,4 +210,9 @@ $(singletonsOnly [d|
 
   instance Monoid (Last a) where
           mempty = Last Nothing
+
+  instance Monoid (Endo a) where
+          mempty = Endo id
   |])
+
+

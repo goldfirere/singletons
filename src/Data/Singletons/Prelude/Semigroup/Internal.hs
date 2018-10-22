@@ -35,6 +35,7 @@ module Data.Singletons.Prelude.Semigroup.Internal where
 
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Ord (Down(..))
+import Data.Kind
 import Data.Proxy
 import Data.Semigroup (Dual(..), All(..), Any(..), Sum(..), Product(..), Option(..))
 import Data.Singletons.Internal
@@ -278,3 +279,15 @@ sSum_ = SSum
 
 sProduct_ :: forall a (x :: a). Sing x -> Sing (Product_ x)
 sProduct_ = SProduct
+
+newtype Endo a = Endo (a ~> a)
+data instance Sing :: forall a. Endo a -> Type where
+  SEndo :: Sing x -> Sing ('Endo x)
+data EndoSym0 :: forall a. (a ~> a) ~> Endo a
+type instance Apply EndoSym0 x = 'Endo x
+
+
+$(singletonsOnly [d|
+  instance Semigroup (Endo a) where
+          Endo x <> Endo y = Endo (x . y)
+  |])
