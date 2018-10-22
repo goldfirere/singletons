@@ -83,7 +83,7 @@ install:
   - "echo 'source-repository-package' >> cabal.project"
   - "echo '  type: git' >> cabal.project"
   - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
-  - "echo '  tag: 200be2ec175b3f924d9170a55c675528eeedcd9e' >> cabal.project"
+  - "echo '  tag: 1d164b669079fe57181af95bbbe4749dbf08ab78' >> cabal.project"
   - touch cabal.project.local
   - "if ! $NOINSTALLEDCONSTRAINTS; then for pkg in $($HCPKG list --simple-output); do echo $pkg  | grep -vw -- singletons | grep -vw -- accept-all | sed 's/^/constraints: /' | sed 's/-[^-]*$/ installed/' >> cabal.project.local; done; fi"
   - cat cabal.project || true
@@ -112,7 +112,7 @@ script:
   - "echo 'source-repository-package' >> cabal.project"
   - "echo '  type: git' >> cabal.project"
   - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
-  - "echo '  tag: 200be2ec175b3f924d9170a55c675528eeedcd9e' >> cabal.project"
+  - "echo '  tag: 1d164b669079fe57181af95bbbe4749dbf08ab78' >> cabal.project"
   - touch cabal.project.local
   - "if ! $NOINSTALLEDCONSTRAINTS; then for pkg in $($HCPKG list --simple-output); do echo $pkg  | grep -vw -- singletons | grep -vw -- accept-all | sed 's/^/constraints: /' | sed 's/-[^-]*$/ installed/' >> cabal.project.local; done; fi"
   - cat cabal.project || true
