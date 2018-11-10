@@ -5,6 +5,14 @@ next
 ----
 * Add an `IsString` instance for `SomeSing`.
 
+2.5.1
+-----
+* `ShowSing` is now a type class (with a single instance) instead of a type
+  synonym. This was changed because defining `ShowSing` as a type synonym
+  prevents it from working well with recursive types.
+  For more information, see
+  [issue #371](https://github.com/goldfirere/singletons/issues/371).
+
 2.5
 ---
 * The `Data.Promotion.Prelude.*` namespace has been removed. Use the
