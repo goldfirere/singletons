@@ -1,10 +1,6 @@
 Changelog for singletons project
 ================================
 
-next
-----
-* Add an `IsString` instance for `SomeSing`.
-
 2.5.1
 -----
 * `ShowSing` is now a type class (with a single instance) instead of a type
@@ -12,6 +8,7 @@ next
   prevents it from working well with recursive types due to an unfortunate GHC
   bug. For more information, see
   [issue #371](https://github.com/goldfirere/singletons/issues/371).
+* Add an `IsString` instance for `SomeSing`.
 
 2.5
 ---
