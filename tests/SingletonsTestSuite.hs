@@ -102,6 +102,7 @@ tests =
     , compileAndDumpStdTest "FunctorLikeDeriving"
     , compileAndDumpStdTest "T353"
     , compileAndDumpStdTest "T358"
+    , compileAndDumpStdTest "T371"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

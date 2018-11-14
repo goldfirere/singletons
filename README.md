@@ -56,7 +56,6 @@ following:
 * `KindSignatures`
 * `NoStarIsType`
 * `PolyKinds`
-* `QuantifiedConstraints`
 * `RankNTypes`
 * `ScopedTypeVariables`
 * `StandaloneDeriving`
