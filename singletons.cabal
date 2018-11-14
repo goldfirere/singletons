@@ -1,5 +1,5 @@
 name:           singletons
-version:        2.5
+version:        2.5.1
                 -- Remember to bump version in the Makefile as well
 cabal-version:  >= 1.10
 synopsis:       A framework for generating singleton types
@@ -38,7 +38,7 @@ description:
 source-repository this
   type:     git
   location: https://github.com/goldfirere/singletons.git
-  tag:      v2.5
+  tag:      v2.5.1
 
 source-repository head
   type:     git

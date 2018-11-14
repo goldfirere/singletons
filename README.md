@@ -1,5 +1,5 @@
-singletons 2.5
-==============
+singletons 2.5.1
+================
 
 [![Hackage](https://img.shields.io/hackage/v/singletons.svg)](http://hackage.haskell.org/package/singletons)
 [![Build Status](https://travis-ci.org/goldfirere/singletons.svg?branch=master)](https://travis-ci.org/goldfirere/singletons)
