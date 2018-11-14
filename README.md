@@ -1,4 +1,4 @@
-singletons 2.5
+singletons 2.6
 ==============
 
 [![Hackage](https://img.shields.io/hackage/v/singletons.svg)](http://hackage.haskell.org/package/singletons)
