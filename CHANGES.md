@@ -1,6 +1,18 @@
 Changelog for singletons project
 ================================
 
+2.6
+---
+* Redefine `Σ` such that it is now a partial application of `Sigma`, like so:
+
+  ```haskell
+  type Σ = Sigma
+  ```
+
+  One benefit of this change is that one no longer needs defunctionalization
+  symbols in order to partially apply `Σ`. As a result, `ΣSym0`, `ΣSym1`,
+  and `ΣSym2` have been removed.
+
 2.5.1
 -----
 * `ShowSing` is now a type class (with a single instance) instead of a type

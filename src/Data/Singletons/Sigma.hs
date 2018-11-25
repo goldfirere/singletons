@@ -1,12 +1,11 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE ImpredicativeTypes #-} -- See Note [Impredicative Σ?]
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
-{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 
 -----------------------------------------------------------------------------
@@ -26,14 +25,10 @@ module Data.Singletons.Sigma
     ( Sigma(..), Σ
     , projSigma1, projSigma2
     , mapSigma, zipSigma
-
-      -- * Defunctionalization symbols
-    , ΣSym0, ΣSym1, ΣSym2
     ) where
 
 import Data.Kind (Type)
 import Data.Singletons.Internal
-import Data.Singletons.Promote
 
 -- | A dependent pair.
 data Sigma (s :: Type) :: (s ~> Type) -> Type where
@@ -41,7 +36,17 @@ data Sigma (s :: Type) :: (s ~> Type) -> Type where
 infixr 4 :&:
 
 -- | Unicode shorthand for 'Sigma'.
-type Σ (s :: Type) (t :: s ~> Type) = Sigma s t
+type Σ = Sigma
+
+{-
+Note [Impredicative Σ?]
+~~~~~~~~~~~~~~~~~~~~~~~
+The definition of Σ currently will not typecheck without the use of
+ImpredicativeTypes. There isn't a fundamental reason that this should be the
+case, and the only reason that GHC currently requires this is due to Trac
+#13408. If someone ever fixes that bug, we could remove the use of
+ImpredicativeTypes.
+-}
 
 -- | Project the first element out of a dependent pair.
 projSigma1 :: forall s t. SingKind s => Sigma s t -> Demote s
@@ -71,5 +76,3 @@ zipSigma :: Sing (f :: a ~> b ~> c)
          -> Sigma a p -> Sigma b q -> Sigma c r
 zipSigma f g ((a :: Sing (fstA :: a)) :&: p) ((b :: Sing (fstB :: b)) :&: q) =
   (f @@ a @@ b) :&: (g @fstA @fstB p q)
-
-$(genDefunSymbols [''Σ])
