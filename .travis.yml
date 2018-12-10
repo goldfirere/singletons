@@ -28,9 +28,9 @@ before_cache:
 
 matrix:
   include:
-    - compiler: "ghc-8.6.2"
+    - compiler: "ghc-8.6.3"
     # env: TEST=--disable-tests BENCH=--disable-benchmarks
-      addons: {apt: {packages: [ghc-ppa-tools,cabal-install-2.4,ghc-8.6.2], sources: [hvr-ghc]}}
+      addons: {apt: {packages: [ghc-ppa-tools,cabal-install-2.4,ghc-8.6.3], sources: [hvr-ghc]}}
     - compiler: "ghc-head"
       env: GHCHEAD=true
       addons: {apt: {packages: [ghc-ppa-tools,cabal-install-head,ghc-head], sources: [hvr-ghc]}}
@@ -84,7 +84,7 @@ install:
   - "echo '  type: git' >> cabal.project"
   - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
   - "echo '  tag: 567145eddeb5f6692a75e74d4a2dc575b1ad6f29' >> cabal.project"
-  - "printf 'write-ghc-environment-files: always' >> cabal.project"
+  - "printf 'write-ghc-environment-files: always\\n' >> cabal.project"
   - touch cabal.project.local
   - "if ! $NOINSTALLEDCONSTRAINTS; then for pkg in $($HCPKG list --simple-output); do echo $pkg  | grep -vw -- singletons | grep -vw -- accept-all | sed 's/^/constraints: /' | sed 's/-[^-]*$/ installed/' >> cabal.project.local; done; fi"
   - cat cabal.project || true
@@ -113,7 +113,7 @@ script:
   - "echo '  type: git' >> cabal.project"
   - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
   - "echo '  tag: 567145eddeb5f6692a75e74d4a2dc575b1ad6f29' >> cabal.project"
-  - "printf 'write-ghc-environment-files: always' >> cabal.project"
+  - "printf 'write-ghc-environment-files: always\\n' >> cabal.project"
   - touch cabal.project.local
   - "if ! $NOINSTALLEDCONSTRAINTS; then for pkg in $($HCPKG list --simple-output); do echo $pkg  | grep -vw -- singletons | grep -vw -- accept-all | sed 's/^/constraints: /' | sed 's/-[^-]*$/ installed/' >> cabal.project.local; done; fi"
   - cat cabal.project || true
