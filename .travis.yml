@@ -83,7 +83,7 @@ install:
   - "echo 'source-repository-package' >> cabal.project"
   - "echo '  type: git' >> cabal.project"
   - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
-  - "echo '  tag: 567145eddeb5f6692a75e74d4a2dc575b1ad6f29' >> cabal.project"
+  - "echo '  tag: 8495349a53f4bc3bde30378f2d85a07aae53bdbd' >> cabal.project"
   - "printf 'write-ghc-environment-files: always\\n' >> cabal.project"
   - touch cabal.project.local
   - "if ! $NOINSTALLEDCONSTRAINTS; then for pkg in $($HCPKG list --simple-output); do echo $pkg  | grep -vw -- singletons | grep -vw -- accept-all | sed 's/^/constraints: /' | sed 's/-[^-]*$/ installed/' >> cabal.project.local; done; fi"
@@ -112,7 +112,7 @@ script:
   - "echo 'source-repository-package' >> cabal.project"
   - "echo '  type: git' >> cabal.project"
   - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
-  - "echo '  tag: 567145eddeb5f6692a75e74d4a2dc575b1ad6f29' >> cabal.project"
+  - "echo '  tag: 8495349a53f4bc3bde30378f2d85a07aae53bdbd' >> cabal.project"
   - "printf 'write-ghc-environment-files: always\\n' >> cabal.project"
   - touch cabal.project.local
   - "if ! $NOINSTALLEDCONSTRAINTS; then for pkg in $($HCPKG list --simple-output); do echo $pkg  | grep -vw -- singletons | grep -vw -- accept-all | sed 's/^/constraints: /' | sed 's/-[^-]*$/ installed/' >> cabal.project.local; done; fi"
