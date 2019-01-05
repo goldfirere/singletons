@@ -24,7 +24,7 @@ import Data.Singletons.Syntax
 -- | Make a *non-singleton* Ord instance
 mkOrdInstance :: DsMonad q => DerivDesc q
 mkOrdInstance mb_ctxt ty (DataDecl _ _ cons) = do
-  constraints <- inferConstraintsDef mb_ctxt (DConPr ordName) ty cons
+  constraints <- inferConstraintsDef mb_ctxt (DConT ordName) ty cons
   compare_eq_clauses <- mapM mk_equal_clause cons
   let compare_noneq_clauses = map (uncurry mk_nonequal_clause)
                                   [ (con1, con2)
@@ -45,8 +45,8 @@ mk_equal_clause (DCon _tvbs _cxt name fields _rty) = do
   let tys = tysOfConFields fields
   a_names <- mapM (const $ newUniqueName "a") tys
   b_names <- mapM (const $ newUniqueName "b") tys
-  let pat1 = DConPa name (map DVarPa a_names)
-      pat2 = DConPa name (map DVarPa b_names)
+  let pat1 = DConP name (map DVarP a_names)
+      pat2 = DConP name (map DVarP b_names)
   return $ DClause [pat1, pat2] (DVarE foldlName `DAppE`
                                  DVarE thenCmpName `DAppE`
                                  DConE cmpEQName `DAppE`
@@ -63,9 +63,9 @@ mk_nonequal_clause (DCon _tvbs1 _cxt1 name1 fields1 _rty1, n1)
                           EQ -> DConE cmpEQName
                           GT -> DConE cmpGTName)
   where
-    pat1 = DConPa name1 (map (const DWildPa) (tysOfConFields fields1))
-    pat2 = DConPa name2 (map (const DWildPa) (tysOfConFields fields2))
+    pat1 = DConP name1 (map (const DWildP) (tysOfConFields fields1))
+    pat2 = DConP name2 (map (const DWildP) (tysOfConFields fields2))
 
 -- A variant of mk_equal_clause tailored to empty datatypes
 mk_empty_clause :: DClause
-mk_empty_clause = DClause [DWildPa, DWildPa] (DConE cmpEQName)
+mk_empty_clause = DClause [DWildP, DWildP] (DConE cmpEQName)

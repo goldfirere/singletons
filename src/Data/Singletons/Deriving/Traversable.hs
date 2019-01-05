@@ -51,17 +51,17 @@ mkTraversableInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
       mk_trav_clause :: DCon -> q DClause
       mk_trav_clause con = do
         parts <- foldDataConArgs ft_trav con
-        clause_for_con [DVarPa f] con =<< sequence parts
+        clause_for_con [DVarP f] con =<< sequence parts
 
       mk_trav :: q [DClause]
       mk_trav = case cons of
                   [] -> do v <- newUniqueName "v"
-                           pure [DClause [DWildPa, DVarPa v]
+                           pure [DClause [DWildP, DVarP v]
                                          (DVarE pureName `DAppE` DCaseE (DVarE v) [])]
                   _  -> traverse mk_trav_clause cons
 
   trav_clauses <- mk_trav
-  constraints <- inferConstraintsDef mb_ctxt (DConPr traversableName) ty cons
+  constraints <- inferConstraintsDef mb_ctxt (DConT traversableName) ty cons
   return $ InstDecl { id_cxt = constraints
                     , id_name = traversableName
                     , id_arg_tys = [ty]

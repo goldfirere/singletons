@@ -83,7 +83,7 @@ singDataD (DataDecl name tvbs ctors) = do
           let (cname, numArgs) = extractNameArgs c
           cname' <- mkConName cname
           varNames <- replicateM numArgs (qNewName "b")
-          return $ DClause [DConPa (singDataConName cname) (map DVarPa varNames)]
+          return $ DClause [DConP (singDataConName cname) (map DVarP varNames)]
                            (foldExp
                               (DConE cname')
                               (map (DAppE (DVarE fromSingName) . DVarE) varNames))
@@ -98,9 +98,9 @@ singDataD (DataDecl name tvbs ctors) = do
           let varPats        = zipWith mkToSingVarPat varNames promoted
               recursiveCalls = zipWith mkRecursiveCall varNames promoted
           return $
-            DClause [DConPa cname' varPats]
+            DClause [DConP cname' varPats]
                     (multiCase recursiveCalls
-                               (map (DConPa someSingDataName . listify . DVarPa)
+                               (map (DConP someSingDataName . listify . DVarP)
                                     svarNames)
                                (DAppE (DConE someSingDataName)
                                          (foldExp (DConE (singDataConName cname))
@@ -108,7 +108,7 @@ singDataD (DataDecl name tvbs ctors) = do
 
         mkToSingVarPat :: Name -> DKind -> DPat
         mkToSingVarPat varName ki =
-          DSigPa (DVarPa varName) (DAppT (DConT demoteName) ki)
+          DSigP (DVarP varName) (DAppT (DConT demoteName) ki)
 
         mkRecursiveCall :: Name -> DKind -> DExp
         mkRecursiveCall var_name ki =
@@ -118,13 +118,13 @@ singDataD (DataDecl name tvbs ctors) = do
         mkEmptyFromSingClause :: SgM DClause
         mkEmptyFromSingClause = do
           x <- qNewName "x"
-          pure $ DClause [DVarPa x]
+          pure $ DClause [DVarP x]
                $ DCaseE (DVarE x) []
 
         mkEmptyToSingClause :: SgM DClause
         mkEmptyToSingClause = do
           x <- qNewName "x"
-          pure $ DClause [DVarPa x]
+          pure $ DClause [DVarP x]
                $ DConE someSingDataName `DAppE` DCaseE (DVarE x) []
 
 -- refine a constructor.
@@ -153,10 +153,10 @@ singCtor (DCon _tvbs cxt name fields rty)
   -- SingI instance for data constructor
   emitDecs
     [DInstanceD Nothing
-                (map (DAppPr (DConPr singIName)) indices)
+                (map (DAppT (DConT singIName)) indices)
                 (DAppT (DConT singIName)
                        (foldType pCon kindedIndices))
-                [DLetDec $ DValD (DVarPa singMethName)
+                [DLetDec $ DValD (DVarP singMethName)
                        (foldExp sCon (map (const $ DVarE singMethName) types))]]
   -- SingI instances for defunctionalization symbols. Note that we don't
   -- support contexts in constructors at the moment, so it's fine for now to

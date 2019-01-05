@@ -253,15 +253,6 @@ ravel :: [DType] -> DType -> DType
 ravel []    res  = res
 ravel (h:t) res = DAppT (DAppT DArrowT h) (ravel t res)
 
--- | Convert a 'DPred' to a 'DType'.
-predToType :: DPred -> DType
-predToType (DForallPr tvbs cxt p) = DForallT tvbs cxt (predToType p)
-predToType (DAppPr p t)           = DAppT (predToType p) t
-predToType (DSigPr p k)           = DSigT (predToType p) k
-predToType (DVarPr n)             = DVarT n
-predToType (DConPr n)             = DConT n
-predToType DWildCardPr            = DWildCardT
-
 -- count the number of arguments in a type
 countArgs :: DType -> Int
 countArgs ty = length args
@@ -298,7 +289,7 @@ substType subst (DForallT tvbs cxt inner_ty)
   = DForallT tvbs' cxt' inner_ty'
   where
     (subst', tvbs') = mapAccumL subst_tvb subst tvbs
-    cxt'            = map (substPred subst') cxt
+    cxt'            = map (substType subst') cxt
     inner_ty'       = substType subst' inner_ty
 substType subst (DAppT ty1 ty2) = substType subst ty1 `DAppT` substType subst ty2
 substType subst (DSigT ty ki) = substType subst ty `DSigT` substType subst ki
@@ -310,22 +301,6 @@ substType _ ty@(DConT {}) = ty
 substType _ ty@(DArrowT)  = ty
 substType _ ty@(DLitT {}) = ty
 substType _ ty@DWildCardT = ty
-
-substPred :: Map Name DType -> DPred -> DPred
-substPred subst pred | Map.null subst = pred
-substPred subst (DForallPr tvbs cxt inner_pred)
-  = DForallPr tvbs' cxt' inner_pred'
-  where
-    (subst', tvbs') = mapAccumL subst_tvb subst tvbs
-    cxt'            = map (substPred subst') cxt
-    inner_pred'     = substPred subst' inner_pred
-substPred subst (DAppPr pred ty) =
-  DAppPr (substPred subst pred) (substType subst ty)
-substPred subst (DSigPr pred ki) =
-  DSigPr (substPred subst pred) (substKind subst ki)
-substPred _ pred@(DVarPr {}) = pred
-substPred _ pred@(DConPr {}) = pred
-substPred _ pred@DWildCardPr = pred
 
 subst_tvb :: Map Name DKind -> DTyVarBndr -> (Map Name DKind, DTyVarBndr)
 subst_tvb s tvb@(DPlainTV n) = (Map.delete n s, tvb)
@@ -342,14 +317,6 @@ foldType = foldl DAppT
 -- apply a type to a list of type variable binders
 foldTypeTvbs :: DType -> [DTyVarBndr] -> DType
 foldTypeTvbs ty = foldType ty . map tvbToType
-
--- apply a pred to a list of types
-foldPred :: DPred -> [DType] -> DPred
-foldPred = foldl DAppPr
-
--- apply a pred to a list of type variable binders
-foldPredTvbs :: DPred -> [DTyVarBndr] -> DPred
-foldPredTvbs pr = foldPred pr . map tvbToType
 
 -- | Decompose an applied type into its individual components. For example, this:
 --

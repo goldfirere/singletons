@@ -76,7 +76,7 @@ singletonStar names = do
   kinds <- mapM getKind names
   ctors <- zipWithM (mkCtor True) names kinds
   let repDecl = DDataD Data [] repName [] (Just (DConT typeKindName)) ctors
-                         [DDerivClause Nothing (map DConPr [''Eq, ''Ord, ''Read, ''Show])]
+                         [DDerivClause Nothing (map DConT [''Eq, ''Ord, ''Read, ''Show])]
   fakeCtors <- zipWithM (mkCtor False) names kinds
   let dataDecl = DataDecl repName [] fakeCtors
   -- Why do we need withLocalDeclarations here? It's because we end up
@@ -86,7 +86,7 @@ singletonStar names = do
   withLocalDeclarations (decToTH repDecl) $ do
     -- We opt to infer the constraints for the Eq instance here so that when it's
     -- promoted, Rep will be promoted to Type.
-    dataDeclEqCxt <- inferConstraints (DConPr ''Eq) (DConT repName) fakeCtors
+    dataDeclEqCxt <- inferConstraints (DConT ''Eq) (DConT repName) fakeCtors
     let dataDeclEqInst = DerivedDecl (Just dataDeclEqCxt) (DConT repName) dataDecl
     ordInst  <- mkOrdInstance Nothing (DConT repName) dataDecl
     showInst <- mkShowInstance Nothing (DConT repName) dataDecl

@@ -176,7 +176,7 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
             tyfun_param = mk_tvb tyfun_name m_tyfun
             arg_names   = map extractTvbName arg_params
             params      = arg_params ++ [tyfun_param]
-            con_eq_ct   = DConPr sameKindName `DAppPr` lhs `DAppPr` rhs
+            con_eq_ct   = DConT sameKindName `DAppT` lhs `DAppT` rhs
               where
                 lhs = foldType (DConT data_name) (map DVarT arg_names) `apply` (DVarT extra_name)
                 rhs = foldType (DConT next_name) (map DVarT (arg_names ++ [extra_name]))

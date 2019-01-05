@@ -128,7 +128,7 @@ inferConstraints pr inst_ty = fmap (nubBy geq) . concatMapM infer_ct
                       Just subst -> traverse (substTy subst) field_tys
       if is_functor_like
          then mk_functor_like_constraints field_tys' res_ty'
-         else pure $ map (pr `DAppPr`) field_tys'
+         else pure $ map (pr `DAppT`) field_tys'
 
     -- If we derive a Functor-like class, e.g.,
     --
@@ -146,11 +146,11 @@ inferConstraints pr inst_ty = fmap (nubBy geq) . concatMapM infer_ct
           (_, last_res_ty_arg) = snocView res_ty_args
           Just last_tv         = getDVarTName_maybe last_res_ty_arg
       deep_subtypes <- concatMapM (deepSubtypesContaining last_tv) fields
-      pure $ map (pr `DAppPr`) deep_subtypes
+      pure $ map (pr `DAppT`) deep_subtypes
 
     is_functor_like :: Bool
     is_functor_like
-      | DConT pr_class_name :| _ <- unfoldType (predToType pr)
+      | DConT pr_class_name :| _ <- unfoldType pr
       = isFunctorLikeClassName pr_class_name
       | otherwise
       = False

@@ -189,4 +189,4 @@ buildCases ctor_infos expq bodyq =
   where
     conToPat :: (Name, Int) -> DPat
     conToPat (name, num_fields) =
-      DConPa name (replicate num_fields DWildPa)
+      DConP name (replicate num_fields DWildP)

@@ -69,17 +69,17 @@ mkFoldableInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
       mk_foldMap_clause :: DCon -> q DClause
       mk_foldMap_clause con = do
         parts <- foldDataConArgs ft_foldMap con
-        clause_for_foldMap [DVarPa f] con =<< sequence parts
+        clause_for_foldMap [DVarP f] con =<< sequence parts
 
       mk_foldr_clause :: DCon -> q DClause
       mk_foldr_clause con = do
         parts <- foldDataConArgs ft_foldr con
-        clause_for_foldr [DVarPa f, DVarPa z] con =<< sequence parts
+        clause_for_foldr [DVarP f, DVarP z] con =<< sequence parts
 
       mk_foldMap :: q [DClause]
       mk_foldMap =
         case cons of
-          [] -> pure [DClause [DWildPa, DWildPa] (DVarE memptyName)]
+          [] -> pure [DClause [DWildP, DWildP] (DVarE memptyName)]
           _  -> traverse mk_foldMap_clause cons
 
       mk_foldr :: q [DClause]
@@ -91,7 +91,7 @@ mkFoldableInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
               : case cons of
                   [] -> []
                   _  -> [(foldrName, UFunction foldr_clauses)]
-  constraints <- inferConstraintsDef mb_ctxt (DConPr foldableName) ty cons
+  constraints <- inferConstraintsDef mb_ctxt (DConT foldableName) ty cons
   return $ InstDecl { id_cxt = constraints
                     , id_name = foldableName
                     , id_arg_tys = [ty]

@@ -61,28 +61,28 @@ mkFunctorInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
       mk_fmap_clause :: DCon -> q DClause
       mk_fmap_clause con = do
         parts <- foldDataConArgs ft_fmap con
-        clause_for_con [DVarPa f] con =<< sequence parts
+        clause_for_con [DVarP f] con =<< sequence parts
 
       mk_replace_clause :: DCon -> q DClause
       mk_replace_clause con = do
         parts <- foldDataConArgs ft_replace con
-        clause_for_con [DVarPa z] con =<< traverse (fmap replace) parts
+        clause_for_con [DVarP z] con =<< traverse (fmap replace) parts
 
       mk_fmap :: q [DClause]
       mk_fmap = case cons of
                   [] -> do v <- newUniqueName "v"
-                           pure [DClause [DWildPa, DVarPa v] (DCaseE (DVarE v) [])]
+                           pure [DClause [DWildP, DVarP v] (DCaseE (DVarE v) [])]
                   _  -> traverse mk_fmap_clause cons
 
       mk_replace :: q [DClause]
       mk_replace = case cons of
                      [] -> do v <- newUniqueName "v"
-                              pure [DClause [DWildPa, DVarPa v] (DCaseE (DVarE v) [])]
+                              pure [DClause [DWildP, DVarP v] (DCaseE (DVarE v) [])]
                      _  -> traverse mk_replace_clause cons
 
   fmap_clauses    <- mk_fmap
   replace_clauses <- mk_replace
-  constraints <- inferConstraintsDef mb_ctxt (DConPr functorName) ty cons
+  constraints <- inferConstraintsDef mb_ctxt (DConT functorName) ty cons
   return $ InstDecl { id_cxt = constraints
                     , id_name = functorName
                     , id_arg_tys = [ty]

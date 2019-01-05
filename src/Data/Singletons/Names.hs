@@ -285,7 +285,7 @@ singFamily :: DType
 singFamily = DConT singFamilyName
 
 singKindConstraint :: DKind -> DPred
-singKindConstraint = DAppPr (DConPr singKindClassName)
+singKindConstraint = DAppT (DConT singKindClassName)
 
 demote :: DType
 demote = DConT demoteName
@@ -302,9 +302,9 @@ mkListE =
 foldApply :: DType -> [DType] -> DType
 foldApply = foldl apply
 
--- make and equality predicate
+-- make an equality predicate
 mkEqPred :: DType -> DType -> DPred
-mkEqPred ty1 ty2 = foldPred (DConPr equalityName) [ty1, ty2]
+mkEqPred ty1 ty2 = foldType (DConT equalityName) [ty1, ty2]
 
 -- | If a 'String' begins with one or more underscores, return
 -- @'Just' (us, rest)@, where @us@ contain all of the underscores at the
@@ -315,16 +315,18 @@ splitUnderscores s = case span (== '_') s of
                        ([], _) -> Nothing
                        res     -> Just res
 
--- Walk a DPred, applying a function to all occurrences of constructor names.
-modifyConNameDPred :: (Name -> Name) -> DPred -> DPred
-modifyConNameDPred mod_con_name = go
+-- Walk a DType, applying a function to all occurrences of constructor names.
+modifyConNameDType :: (Name -> Name) -> DType -> DType
+modifyConNameDType mod_con_name = go
   where
-    go (DForallPr tvbs cxt p) = DForallPr tvbs (map go cxt) (go p)
-    go (DAppPr p t)           = DAppPr (go p) t
-    go (DSigPr p k)           = DSigPr (go p) k
-    go p@(DVarPr _)           = p
-    go (DConPr n)             = DConPr (mod_con_name n)
-    go p@DWildCardPr          = p
+    go (DForallT tvbs cxt p) = DForallT tvbs (map go cxt) (go p)
+    go (DAppT p t)           = DAppT (go p) t
+    go (DSigT p k)           = DSigT (go p) k
+    go p@(DVarT _)           = p
+    go (DConT n)             = DConT (mod_con_name n)
+    go p@DWildCardT          = p
+    go p@(DLitT {})          = p
+    go p@DArrowT             = p
 
 {-
 Note [Defunctionalization symbol suffixes]

@@ -41,8 +41,8 @@ singType bound_kvs prom ty = do
       tau   = ravel args' res'
       -- Make sure to subtract out the bound variables currently in scope, lest we
       -- accidentally shadow them in this type signature.
-      kv_names_to_bind = (foldMap fvDType prom_args <> foldMap fvDPred cxt' <> fvDType prom_res)
-                             Set.\\ bound_kvs
+      kv_names_to_bind = foldMap fvDType (prom_args ++ cxt' ++ [prom_res])
+                            Set.\\ bound_kvs
       kvs_to_bind      = Set.toList kv_names_to_bind
   let ty' = DForallT (map DPlainTV kvs_to_bind ++ zipWith DKindedTV arg_names prom_args)
                      cxt' tau
@@ -52,18 +52,22 @@ singPred :: DPred -> SgM DPred
 singPred = singPredRec []
 
 singPredRec :: [DType] -> DPred -> SgM DPred
-singPredRec _cxt (DForallPr {}) =
+singPredRec _cxt (DForallT {}) =
   fail "Singling of quantified constraints not yet supported"
-singPredRec ctx (DAppPr pr ty) = singPredRec (ty : ctx) pr
-singPredRec _ctx (DSigPr _pr _ki) =
+singPredRec ctx (DAppT pr ty) = singPredRec (ty : ctx) pr
+singPredRec _ctx (DSigT _pr _ki) =
   fail "Singling of constraints with explicit kinds not yet supported"
-singPredRec _ctx (DVarPr _n) =
+singPredRec _ctx (DVarT _n) =
   fail "Singling of contraint variables not yet supported"
-singPredRec ctx (DConPr n)
+singPredRec ctx (DConT n)
   | n == equalityName
   = fail "Singling of type equality constraints not yet supported"
   | otherwise = do
     kis <- mapM promoteType ctx
     let sName = singClassName n
-    return $ foldPred (DConPr sName) kis
-singPredRec _ctx DWildCardPr = return DWildCardPr  -- it just might work
+    return $ foldType (DConT sName) kis
+singPredRec _ctx DWildCardT = return DWildCardT  -- it just might work
+singPredRec _ctx DArrowT =
+  fail "(->) spotted at head of a constraint"
+singPredRec _ctx (DLitT {}) =
+  fail "Type-level literal spotted at head of a constraint"

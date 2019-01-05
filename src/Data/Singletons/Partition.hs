@@ -89,9 +89,9 @@ partitionDec (DDataD _nd _cxt name tvbs mk cons derivings) = do
       $ concatMap flatten_clause derivings
   return $ mconcat $ derived_dec : derived_decs
   where
-    flatten_clause :: DDerivClause -> [(Maybe DDerivStrategy, DType)]
+    flatten_clause :: DDerivClause -> [(Maybe DDerivStrategy, DPred)]
     flatten_clause (DDerivClause strat preds) =
-      map (\p -> (strat, predToType p)) preds
+      map (\p -> (strat, p)) preds
 
 partitionDec (DClassD cxt name tvbs fds decs) = do
   (lde, otfs) <- concatMapM partitionClassDec decs
@@ -155,7 +155,7 @@ partitionDec dec =
 partitionClassDec :: Monad m => DDec -> m (ULetDecEnv, [OpenTypeFamilyDecl])
 partitionClassDec (DLetDec (DSigD name ty)) =
   pure (typeBinding name ty, mempty)
-partitionClassDec (DLetDec (DValD (DVarPa name) exp)) =
+partitionClassDec (DLetDec (DValD (DVarP name) exp)) =
   pure (valueBinding name (UValue exp), mempty)
 partitionClassDec (DLetDec (DFunD name clauses)) =
   pure (valueBinding name (UFunction clauses), mempty)
@@ -177,7 +177,7 @@ partitionInstanceDec :: Monad m => DDec
                      -> m ( Maybe (Name, ULetDecRHS) -- right-hand sides of methods
                           , Map Name DType           -- method type signatures
                           )
-partitionInstanceDec (DLetDec (DValD (DVarPa name) exp)) =
+partitionInstanceDec (DLetDec (DValD (DVarP name) exp)) =
   pure (Just (name, UValue exp), mempty)
 partitionInstanceDec (DLetDec (DFunD name clauses)) =
   pure (Just (name, UFunction clauses), mempty)
@@ -196,7 +196,7 @@ partitionDeriving
   :: forall m. DsMonad m
   => Maybe DDerivStrategy
                 -- ^ The deriving strategy, if present.
-  -> DType      -- ^ The class being derived (e.g., 'Eq'), possibly applied to
+  -> DPred      -- ^ The class being derived (e.g., 'Eq'), possibly applied to
                 --   some number of arguments (e.g., @C Int Bool@).
   -> Maybe DCxt -- ^ @'Just' ctx@ if @ctx@ was provided via @StandaloneDeriving@.
                 --   'Nothing' if using a @deriving@ clause.

@@ -30,7 +30,7 @@ import GHC.Show (appPrec, appPrec1)
 mkShowInstance :: DsMonad q => DerivDesc q
 mkShowInstance mb_ctxt ty (DataDecl _ _ cons) = do
   clauses <- mk_showsPrec cons
-  constraints <- inferConstraintsDef mb_ctxt (DConPr showName) ty cons
+  constraints <- inferConstraintsDef mb_ctxt (DConT showName) ty cons
   return $ InstDecl { id_cxt = constraints
                     , id_name = showName
                     , id_arg_tys = [ty]
@@ -42,7 +42,7 @@ mk_showsPrec cons = do
     p <- newUniqueName "p" -- The precedence argument (not always used)
     if null cons
        then do v <- newUniqueName "v"
-               pure [DClause [DWildPa, DVarPa v] (DCaseE (DVarE v) [])]
+               pure [DClause [DWildP, DVarP v] (DCaseE (DVarE v) [])]
        else mapM (mk_showsPrec_clause p) cons
 
 mk_showsPrec_clause :: forall q. DsMonad q
@@ -54,7 +54,7 @@ mk_showsPrec_clause p (DCon _ _ con_name con_fields _) = go con_fields
 
     -- No fields: print just the constructor name, with no parentheses
     go (DNormalC _ []) = return $
-      DClause [DWildPa, DConPa con_name []] $
+      DClause [DWildP, DConP con_name []] $
         DVarE showStringName `DAppE` dStringE (parenInfixConName con_name "")
 
     -- Infix constructors have special Show treatment.
@@ -70,7 +70,7 @@ mk_showsPrec_clause p (DCon _ _ con_name con_fields _) = go con_fields
                           -- Make sure to handle infix data constructors
                           -- like (Int `Foo` Int)
                           else " `" ++ op_name ++ "` "
-      return $ DClause [DVarPa p, DConPa con_name [DVarPa argL, DVarPa argR]] $
+      return $ DClause [DVarP p, DConP con_name [DVarP argL, DVarP argR]] $
         (DVarE showParenName `DAppE` (DVarE gtName `DAppE` DVarE p
                                                    `DAppE` dIntegerE con_prec))
           `DAppE` (DVarE composeName
@@ -91,7 +91,7 @@ mk_showsPrec_clause p (DCon _ _ con_name con_fields _) = go con_fields
                          `DAppE` (DVarE showStringName
                                    `DAppE` dStringE (parenInfixConName con_name " "))
                          `DAppE` composed_args
-      return $ DClause [DVarPa p, DConPa con_name $ map DVarPa args] $
+      return $ DClause [DVarP p, DConP con_name $ map DVarP args] $
         DVarE showParenName
           `DAppE` (DVarE gtName `DAppE` DVarE p `DAppE` dIntegerE appPrec)
           `DAppE` named_args
@@ -121,7 +121,7 @@ mk_showsPrec_clause p (DCon _ _ con_name con_fields _) = go con_fields
                          `DAppE` (DVarE showStringName
                                    `DAppE` dStringE (parenInfixConName con_name " "))
                          `DAppE` composed_args
-      return $ DClause [DVarPa p, DConPa con_name $ map DVarPa args] $
+      return $ DClause [DVarP p, DConP con_name $ map DVarP args] $
         DVarE showParenName
           `DAppE` (DVarE gtName `DAppE` DVarE p `DAppE` dIntegerE appPrec)
           `DAppE` named_args
@@ -156,7 +156,7 @@ mkShowSingContext :: DCxt -> DCxt
 mkShowSingContext = map show_to_SingShow
   where
     show_to_SingShow :: DPred -> DPred
-    show_to_SingShow = modifyConNameDPred $ \n ->
+    show_to_SingShow = modifyConNameDType $ \n ->
                          if n == showName
                             then showSingName
                             else n

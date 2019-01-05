@@ -50,7 +50,7 @@ mkBoundedInstance mb_ctxt ty (DataDecl _ _ cons) = do
           in (minEqnRHS, maxEqnRHS)
 
       mk_rhs rhs = UFunction [DClause [] rhs]
-  constraints <- inferConstraintsDef mb_ctxt (DConPr boundedName) ty cons
+  constraints <- inferConstraintsDef mb_ctxt (DConT boundedName) ty cons
   return $ InstDecl { id_cxt = constraints
                     , id_name = boundedName
                     , id_arg_tys = [ty]

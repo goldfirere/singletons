@@ -208,7 +208,7 @@ functorLikeValidityChecks allowConstrainedLastTyVar (DataDecl n data_tvbs cons)
       = do ex_tvbs <- conExistentialTvbs (foldTypeTvbs (DConT n) data_tvbs) con
            let univ_tvb_names = map extractTvbName con_tvbs \\ map extractTvbName ex_tvbs
            if last_tv `elem` univ_tvb_names
-                && last_tv `Set.notMember` foldMap fvDPred con_theta
+                && last_tv `Set.notMember` foldMap fvDType con_theta
               then pure ()
               else fail $ badCon con_name existential
       | otherwise
@@ -297,7 +297,7 @@ mkSimpleConClause :: Quasi q
                   -> q DClause
 mkSimpleConClause fold extra_pats (DCon _ _ con_name _ _) insides = do
   vars_needed <- replicateM (length insides) $ newUniqueName "a"
-  let pat = DConPa con_name (map DVarPa vars_needed)
+  let pat = DConP con_name (map DVarP vars_needed)
       rhs = fold con_name (zipWith (\i v -> i `DAppE` DVarE v) insides vars_needed)
   pure $ DClause (extra_pats ++ [pat]) rhs
 

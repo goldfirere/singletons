@@ -98,7 +98,7 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
                  (map extractTvbName tvbs)
 
         singI_ctxt :: DCxt
-        singI_ctxt = map (DAppPr (DConPr singIName) . tvbToType) tvbs
+        singI_ctxt = map (DAppT (DConT singIName) . tvbToType) tvbs
 
         mk_inst_ty :: DType -> DType
         mk_inst_ty inst_head
@@ -133,7 +133,7 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
               = DInstanceD Nothing
                            (sty_ctxt ++ singI_ctxt)
                            (DConT singIName `DAppT` mk_inst_ty inst_head)
-                           [DLetDec $ DValD (DVarPa singMethName)
+                           [DLetDec $ DValD (DVarP singMethName)
                                     $ wrapSingFun sing_fun_num inst_head
                                     $ mk_sing_fun_expr sing_exp ]
 

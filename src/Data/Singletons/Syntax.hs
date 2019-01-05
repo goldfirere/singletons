@@ -106,15 +106,15 @@ data ADExp = ADVarE Name
                     ADExp DType
 
 -- A DPat with a pattern-signature node annotated with its type-level equivalent
-data ADPat = ADLitPa Lit
-           | ADVarPa Name
-           | ADConPa Name [ADPat]
-           | ADTildePa ADPat
-           | ADBangPa ADPat
-           | ADSigPa DType -- The promoted pattern. Will not contain any wildcards,
-                           -- as per Note [Singling pattern signatures]
-                     ADPat DType
-           | ADWildPa
+data ADPat = ADLitP Lit
+           | ADVarP Name
+           | ADConP Name [ADPat]
+           | ADTildeP ADPat
+           | ADBangP ADPat
+           | ADSigP DType -- The promoted pattern. Will not contain any wildcards,
+                          -- as per Note [Singling pattern signatures]
+                    ADPat DType
+           | ADWildP
 
 data ADMatch = ADMatch VarPromotions ADPat ADExp
 data ADClause = ADClause VarPromotions
@@ -182,7 +182,7 @@ buildLetDecEnv = go emptyLetDecEnv
     go acc [] = return acc
     go acc (DFunD name clauses : rest) =
       go (valueBinding name (UFunction clauses) <> acc) rest
-    go acc (DValD (DVarPa name) exp : rest) =
+    go acc (DValD (DVarP name) exp : rest) =
       go (valueBinding name (UValue exp) <> acc) rest
     go acc (dec@(DValD {}) : rest) = do
       flattened <- flattenDValD dec

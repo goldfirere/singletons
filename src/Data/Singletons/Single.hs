@@ -314,7 +314,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                             , lde_infix     = fixities
                                             , lde_proms     = promoted_defaults
                                             , lde_bound_kvs = meth_bound_kvs } }) =
-  bindContext [foldPredTvbs (DConPr cls_name) cls_tvbs] $ do
+  bindContext [foldTypeTvbs (DConT cls_name) cls_tvbs] $ do
     (sing_sigs, _, tyvar_names, cxts, res_kis, singIDefunss)
       <- unzip6 <$> zipWithM (singTySig no_meth_defns meth_sigs meth_bound_kvs)
                              meth_names (map promoteValRhs meth_names)
@@ -345,7 +345,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
 
     add_constraints meth_name sty (_, bound_kvs) res_ki = do  -- Maybe monad
       prom_dflt <- Map.lookup meth_name promoted_defaults
-      let default_pred = foldPred (DConPr equalityName)
+      let default_pred = foldType (DConT equalityName)
                                 -- NB: Need the res_ki here to prevent ambiguous
                                 -- kinds in result-inferred default methods.
                                 -- See #175
@@ -420,7 +420,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
         Just inst_sig -> do
           -- We have an InstanceSig, so just single that type. Take care to
           -- avoid binding the variables bound by the instance head as well.
-          let inst_bound = foldMap fvDPred cxt <> foldMap fvDType inst_kis
+          let inst_bound = foldMap fvDType (cxt ++ inst_kis)
           (s_ty, tyvar_names, ctxt, res_ki) <- sing_meth_ty inst_bound inst_sig
           pure (s_ty, tyvar_names, ctxt, Just res_ki)
         Nothing -> case mb_s_info of
@@ -435,7 +435,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
 
             pure ( substType subst s_ty
                  , map extractTvbName sing_tvbs
-                 , map (substPred subst) ctxt
+                 , map (substType subst) ctxt
                  , m_res_ki )
           _ -> do
             mb_info <- dsReify name
@@ -559,7 +559,7 @@ singLetDecRHS bound_names cxts res_kis name ld_rhs =
   bindContext (Map.findWithDefault [] name cxts) $
     case ld_rhs of
       AValue prom num_arrows exp ->
-        DValD (DVarPa (singValName name)) <$>
+        DValD (DVarP (singValName name)) <$>
         (wrapUnSingFun num_arrows prom <$> singExp exp (Map.lookup name res_kis))
       AFunction prom_fun num_arrows clauses ->
         let tyvar_names = case Map.lookup name bound_names of
@@ -603,21 +603,21 @@ singPat :: Map Name Name   -- from term-level names to type-level names
 singPat var_proms = go
   where
     go :: ADPat -> QWithAux SingDSigPaInfos SgM DPat
-    go (ADLitPa _lit) =
+    go (ADLitP _lit) =
       fail "Singling of literal patterns not yet supported"
-    go (ADVarPa name) = do
+    go (ADVarP name) = do
       tyname <- case Map.lookup name var_proms of
                   Nothing     ->
                     fail "Internal error: unknown variable when singling pattern"
                   Just tyname -> return tyname
-      pure $ DVarPa (singValName name) `DSigPa` (singFamily `DAppT` DVarT tyname)
-    go (ADConPa name pats) = DConPa (singDataConName name) <$> mapM go pats
-    go (ADTildePa pat) = do
+      pure $ DVarP (singValName name) `DSigP` (singFamily `DAppT` DVarT tyname)
+    go (ADConP name pats) = DConP (singDataConName name) <$> mapM go pats
+    go (ADTildeP pat) = do
       qReportWarning
         "Lazy pattern converted into regular pattern during singleton generation."
       go pat
-    go (ADBangPa pat) = DBangPa <$> go pat
-    go (ADSigPa prom_pat pat ty) = do
+    go (ADBangP pat) = DBangP <$> go pat
+    go (ADSigP prom_pat pat ty) = do
       pat' <- go pat
       -- Normally, calling dPatToDExp would be dangerous, since it fails if the
       -- supplied pattern contains any wildcard patterns. However, promotePat
@@ -627,7 +627,7 @@ singPat var_proms = go
       -- See Note [Singling pattern signatures].
       addElement (dPatToDExp pat', DSigT prom_pat ty)
       pure pat'
-    go ADWildPa = pure DWildPa
+    go ADWildP = pure DWildP
 
 -- | If given a non-empty list of 'SingDSigPaInfos', construct a case expression
 -- that brings singleton equality constraints into scope via pattern-matching.
@@ -638,7 +638,7 @@ mkSigPaCaseE exps_with_sigs exp
   | otherwise =
       let (exps, sigs) = unzip exps_with_sigs
           scrutinee = mkTupleDExp exps
-          pats = map (DSigPa DWildPa . DAppT (DConT singFamilyName)) sigs
+          pats = map (DSigP DWildP . DAppT (DConT singFamilyName)) sigs
       in DCaseE scrutinee [DMatch (mkTupleDPat pats) exp]
 
 -- Note [Annotate case return type]
@@ -765,7 +765,7 @@ singExp (ADLamE ty_names prom_lam names exp) _res_ki = do
   -- So: build a case
   let caseExp = DCaseE (mkTupleDExp (map DVarE sNames))
                        [DMatch (mkTupleDPat
-                                (map ((DWildPa `DSigPa`) .
+                                (map ((DWildP `DSigP`) .
                                       (singFamily `DAppT`) .
                                       DVarT) ty_names)) exp']
   return $ wrapSingFun (length names) prom_lam $ DLamE sNames caseExp
@@ -805,7 +805,7 @@ singDerivedEqDecs (DerivedDecl { ded_mb_cxt = mb_ctxt
 
 -- Walk a DPred, replacing all occurrences of SEq with SDecide.
 sEqToSDecide :: DPred -> DPred
-sEqToSDecide = modifyConNameDPred $ \n ->
+sEqToSDecide = modifyConNameDType $ \n ->
   -- Why don't we directly compare n to sEqClassName? Because n is almost certainly
   -- produced from a call to singClassName, which uses unqualified Names. Ugh.
   if nameBase n == nameBase sEqClassName
@@ -825,7 +825,7 @@ singDerivedShowDecs (DerivedDecl { ded_mb_cxt = mb_cxt
     -- Be careful: we want to generate an instance context that uses ShowSing,
     -- not SShow.
     show_cxt <- inferConstraintsDef (fmap mkShowSingContext mb_cxt)
-                                    (DConPr showSingName)
+                                    (DConT showSingName)
                                     ty cons
     let show_inst = DStandaloneDerivD Nothing show_cxt
                       (DConT showName `DAppT` (singFamily `DAppT` DSigT (DVarT z) ty))

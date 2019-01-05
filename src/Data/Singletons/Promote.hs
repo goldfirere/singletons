@@ -351,13 +351,15 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
     promote_superclass_pred :: DPred -> PrM DPred
     promote_superclass_pred = go
       where
-      go (DForallPr {}) = fail "Cannot promote quantified constraints"
-      go (DAppPr pr ty) = DAppPr <$> go pr <*> promoteType ty
-      go (DSigPr pr _k) = go pr    -- just ignore the kind; it can't matter
-      go (DVarPr name)  = fail $ "Cannot promote ConstraintKinds variables like "
-                              ++ show name
-      go (DConPr name)  = return $ DConPr (promoteClassName name)
-      go DWildCardPr    = return DWildCardPr
+      go (DForallT {}) = fail "Cannot promote quantified constraints"
+      go (DAppT pr ty) = DAppT <$> go pr <*> promoteType ty
+      go (DSigT pr _k) = go pr    -- just ignore the kind; it can't matter
+      go (DVarT name)  = fail $ "Cannot promote ConstraintKinds variables like "
+                             ++ show name
+      go (DConT name)  = return $ DConT (promoteClassName name)
+      go DWildCardT    = return DWildCardT
+      go (DLitT {})    = fail "Type-level literal spotted at head of a constraint"
+      go DArrowT       = fail "(->) spotted at head of a constraint"
 
 -- returns (unpromoted method name, ALetDecRHS) pairs
 promoteInstanceDec :: Map Name DType -> UInstDecl -> PrM AInstDecl
@@ -633,8 +635,8 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UValue exp) = do
                       num_arrows ann_exp )
     _ -> do
       names <- replicateM num_arrows (newUniqueName "a")
-      let pats    = map DVarPa names
-          newArgs = map DVarE  names
+      let pats    = map DVarP names
+          newArgs = map DVarE names
       promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name
                        (UFunction [DClause pats (foldExp exp newArgs)])
 
@@ -675,8 +677,8 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UFunction clauses) = d
     etaContractOrExpand ty_num_args clause_num_args (DClause pats exp)
       | n >= 0 = do -- Eta-expand
           names <- replicateM n (newUniqueName "a")
-          let newPats = map DVarPa names
-              newArgs = map DVarE  names
+          let newPats = map DVarP names
+              newArgs = map DVarE names
           return $ DClause (pats ++ newPats) (foldExp exp newArgs)
       | otherwise = do -- Eta-contract
           let (clausePats, lamPats) = splitAt ty_num_args pats
@@ -718,27 +720,27 @@ promoteMatch (DMatch pat exp) = do
 
 -- promotes a term pattern into a type pattern, accumulating bound variable names
 promotePat :: DPat -> QWithAux PromDPatInfos PrM (DType, ADPat)
-promotePat (DLitPa lit) = (, ADLitPa lit) <$> promoteLitPat lit
-promotePat (DVarPa name) = do
+promotePat (DLitP lit) = (, ADLitP lit) <$> promoteLitPat lit
+promotePat (DVarP name) = do
       -- term vars can be symbols... type vars can't!
   tyName <- mkTyName name
   tell $ PromDPatInfos [(name, tyName)] Set.empty
-  return (DVarT tyName, ADVarPa name)
-promotePat (DConPa name pats) = do
+  return (DVarT tyName, ADVarP name)
+promotePat (DConP name pats) = do
   (types, pats') <- mapAndUnzipM promotePat pats
   let name' = unboxed_tuple_to_tuple name
-  return (foldType (DConT name') types, ADConPa name pats')
+  return (foldType (DConT name') types, ADConP name pats')
   where
     unboxed_tuple_to_tuple n
       | Just deg <- unboxedTupleNameDegree_maybe n = tupleDataName deg
       | otherwise                                  = n
-promotePat (DTildePa pat) = do
+promotePat (DTildeP pat) = do
   qReportWarning "Lazy pattern converted into regular pattern in promotion"
-  second ADTildePa <$> promotePat pat
-promotePat (DBangPa pat) = do
+  second ADTildeP <$> promotePat pat
+promotePat (DBangP pat) = do
   qReportWarning "Strict pattern converted into regular pattern in promotion"
-  second ADBangPa <$> promotePat pat
-promotePat (DSigPa pat ty) = do
+  second ADBangP <$> promotePat pat
+promotePat (DSigP pat ty) = do
   -- We must maintain the invariant that any promoted pattern signature must
   -- not have any wildcards in the underlying pattern.
   -- See Note [Singling pattern signatures].
@@ -746,8 +748,8 @@ promotePat (DSigPa pat ty) = do
   (promoted, pat') <- promotePat wildless_pat
   ki <- promoteType ty
   tell $ PromDPatInfos [] (fvDType ki)
-  return (DSigT promoted ki, ADSigPa promoted pat' ki)
-promotePat DWildPa = return (DWildCardT, ADWildPa)
+  return (DSigT promoted ki, ADSigP promoted pat' ki)
+promotePat DWildP = return (DWildCardT, ADWildP)
 
 promoteExp :: DExp -> PrM (DType, ADExp)
 promoteExp (DVarE name) = fmap (, ADVarE name) $ lookupVarE name
