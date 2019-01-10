@@ -806,7 +806,7 @@ promoteExp (DLetE decs exp) = do
 promoteExp (DSigE exp ty) = do
   (exp', ann_exp) <- promoteExp exp
   ty' <- promoteType ty
-  return (DSigT exp' ty', ADSigE exp' ann_exp ty)
+  return (DSigT exp' ty', ADSigE exp' ann_exp ty')
 promoteExp e@(DStaticE _) = fail ("Static expressions cannot be promoted: " ++ show e)
 
 promoteLitExp :: Quasi q => Lit -> q DType

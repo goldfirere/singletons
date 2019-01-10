@@ -12,6 +12,8 @@ Changelog for singletons project
   One benefit of this change is that one no longer needs defunctionalization
   symbols in order to partially apply `Σ`. As a result, `ΣSym0`, `ΣSym1`,
   and `ΣSym2` have been removed.
+* Fix a bug where expressions with explicit signatures involving function types
+  would fail to single.
 
 2.5.1
 -----
