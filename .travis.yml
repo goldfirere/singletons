@@ -84,6 +84,9 @@ install:
   - "echo '  type: git' >> cabal.project"
   - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
   - "echo '  tag: 8495349a53f4bc3bde30378f2d85a07aae53bdbd' >> cabal.project"
+  - "echo 'package th-desugar' >> cabal.project"
+  - "echo '  tests:      False' >> cabal.project"
+  - "echo '  benchmarks: False' >> cabal.project"
   - "printf 'write-ghc-environment-files: always\\n' >> cabal.project"
   - touch cabal.project.local
   - "if ! $NOINSTALLEDCONSTRAINTS; then for pkg in $($HCPKG list --simple-output); do echo $pkg  | grep -vw -- singletons | grep -vw -- accept-all | sed 's/^/constraints: /' | sed 's/-[^-]*$/ installed/' >> cabal.project.local; done; fi"
@@ -113,6 +116,9 @@ script:
   - "echo '  type: git' >> cabal.project"
   - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
   - "echo '  tag: 8495349a53f4bc3bde30378f2d85a07aae53bdbd' >> cabal.project"
+  - "echo 'package th-desugar' >> cabal.project"
+  - "echo '  tests:      False' >> cabal.project"
+  - "echo '  benchmarks: False' >> cabal.project"
   - "printf 'write-ghc-environment-files: always\\n' >> cabal.project"
   - touch cabal.project.local
   - "if ! $NOINSTALLEDCONSTRAINTS; then for pkg in $($HCPKG list --simple-output); do echo $pkg  | grep -vw -- singletons | grep -vw -- accept-all | sed 's/^/constraints: /' | sed 's/-[^-]*$/ installed/' >> cabal.project.local; done; fi"
