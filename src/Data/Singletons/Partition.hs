@@ -34,11 +34,9 @@ import Data.Singletons.Util
 
 import Control.Monad
 import Data.Bifunctor (bimap)
-import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.Map as Map
 import Data.Map (Map)
 import Data.Maybe
-import Data.Semigroup (Semigroup(..))
 
 data PartitionedDecs =
   PDecs { pd_let_decs :: [DLetDec]
@@ -77,7 +75,7 @@ partitionDec (DDataD _nd _cxt name tvbs mk cons derivings) = do
   derived_decs
     <- mapM (\(strat, deriv_pred) ->
               let etad_tvbs
-                    | DConT pred_name :| _ <- unfoldType deriv_pred
+                    | (DConT pred_name, _) <- unfoldDType deriv_pred
                     , isFunctorLikeClassName pred_name
                       -- If deriving Functor, Foldable, or Traversable,
                       -- we need to use one less type variable than we normally do.
@@ -129,12 +127,13 @@ partitionDec (DTySynInstD {}) = pure mempty
   -- There's no need to track type family instances, since
   -- we already record the type family itself separately.
 partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
-  case unfoldType ty of
-    cls_pred_ty :| cls_tys
-      | not (null cls_tys) -- We can't handle zero-parameter type classes
-      , let cls_arg_tys  = init cls_tys
-            data_ty      = last cls_tys
-            data_ty_head = case unfoldType data_ty of ty_head :| _ -> ty_head
+  case unfoldDType ty of
+    (cls_pred_ty, cls_tys)
+      | let cls_normal_tys = filterDTANormals cls_tys
+      , not (null cls_normal_tys) -- We can't handle zero-parameter type classes
+      , let cls_arg_tys  = init cls_normal_tys
+            data_ty      = last cls_normal_tys
+            data_ty_head = case unfoldDType data_ty of (ty_head, _) -> ty_head
       , DConT data_tycon <- data_ty_head -- We can't handle deriving an instance for something
                                          -- other than a type constructor application
       -> do let cls_pred = foldType cls_pred_ty cls_arg_tys
@@ -204,8 +203,8 @@ partitionDeriving
   -> DataDecl   -- ^ The original data type information (e.g., its constructors).
   -> m PartitionedDecs
 partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
-  case unfoldType deriv_pred of
-    DConT deriv_name :| arg_tys
+  case unfoldDType deriv_pred of
+    (DConT deriv_name, arg_tys)
          -- Here, we are more conservative than GHC: DeriveAnyClass only kicks
          -- in if the user explicitly chooses to do so with the anyclass
          -- deriving strategy
@@ -223,7 +222,7 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
                       -- StandaloneDeriving, use that.)
 
                     , id_name      = deriv_name
-                    , id_arg_tys   = arg_tys ++ [ty]
+                    , id_arg_tys   = filterDTANormals arg_tys ++ [ty]
                     , id_sigs      = mempty
                     , id_meths     = [] }
 
@@ -237,7 +236,7 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
 
     -- Stock classes. These are derived only if `singletons` supports them
     -- (and, optionally, if an explicit stock deriving strategy is used)
-    DConT deriv_name :| [] -- For now, all stock derivable class supported in
+    (DConT deriv_name, []) -- For now, all stock derivable class supported in
                            -- singletons take just one argument (the data
                            -- type itself)
        | stock_or_default
@@ -258,6 +257,8 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
 
       mk_derived_inst    dec = mempty { pd_instance_decs   = [dec] }
       mk_derived_eq_inst dec = mempty { pd_derived_eq_decs = [dec] }
+
+      derived_decl :: DerivedDecl cls
       derived_decl = DerivedDecl { ded_mb_cxt = mb_ctxt
                                  , ded_type   = ty
                                  , ded_decl   = data_decl }

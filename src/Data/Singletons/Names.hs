@@ -320,8 +320,9 @@ modifyConNameDType :: (Name -> Name) -> DType -> DType
 modifyConNameDType mod_con_name = go
   where
     go (DForallT tvbs cxt p) = DForallT tvbs (map go cxt) (go p)
-    go (DAppT p t)           = DAppT (go p) t
-    go (DSigT p k)           = DSigT (go p) k
+    go (DAppT     p t)       = DAppT     (go p) t
+    go (DAppKindT p k)       = DAppKindT (go p) k
+    go (DSigT     p k)       = DSigT     (go p) k
     go p@(DVarT _)           = p
     go (DConT n)             = DConT (mod_con_name n)
     go p@DWildCardT          = p

@@ -131,21 +131,24 @@ singletonStar names = do
               noBang = Bang NoSourceUnpackedness NoSourceStrictness
 
         -- demote a kind back to a type, accumulating any unbound parameters
-        kindToType :: DsMonad q => [DType] -> DKind -> QWithAux [Name] q DType
+        kindToType :: DsMonad q => [DTypeArg] -> DKind -> QWithAux [Name] q DType
         kindToType _    (DForallT _ _ _) = fail "Explicit forall encountered in kind"
         kindToType args (DAppT f a) = do
           a' <- kindToType [] a
-          kindToType (a' : args) f
+          kindToType (DTANormal a' : args) f
+        kindToType args (DAppKindT f a) = do
+          a' <- kindToType [] a
+          kindToType (DTyArg a' : args) f
         kindToType args (DSigT t k) = do
           t' <- kindToType [] t
           k' <- kindToType [] k
-          return $ DSigT t' k' `foldType` args
+          return $ DSigT t' k' `applyDType` args
         kindToType args (DVarT n) = do
           addElement n
-          return $ DVarT n `foldType` args
-        kindToType args (DConT n)    = return $ DConT name    `foldType` args
+          return $ DVarT n `applyDType` args
+        kindToType args (DConT n)    = return $ DConT name `applyDType` args
           where name | isTypeKindName n = repName
                      | otherwise        = n
-        kindToType args DArrowT      = return $ DArrowT       `foldType` args
-        kindToType args k@(DLitT {}) = return $ k             `foldType` args
-        kindToType args DWildCardT   = return $ DWildCardT    `foldType` args
+        kindToType args DArrowT      = return $ DArrowT    `applyDType` args
+        kindToType args k@(DLitT {}) = return $ k          `applyDType` args
+        kindToType args DWildCardT   = return $ DWildCardT `applyDType` args

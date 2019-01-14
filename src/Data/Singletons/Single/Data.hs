@@ -51,8 +51,8 @@ singDataD (DataDecl name tvbs ctors) = do
         DInstanceD Nothing
                    (map (singKindConstraint . DVarT) tvbNames)
                    (DAppT (DConT singKindClassName) k)
-                   [ DTySynInstD demoteName $ DTySynEqn
-                      [k]
+                   [ DTySynInstD $ DTySynEqn Nothing
+                      (DConT demoteName `DAppT` k)
                       (foldType (DConT name)
                         (map (DAppT demote . DVarT) tvbNames))
                    , DLetDec $ DFunD fromSingName
@@ -67,7 +67,7 @@ singDataD (DataDecl name tvbs ctors) = do
                 []
                 (singFamily `DSigT` kindedSingTy)
 
-  return $ (DDataInstD Data [] singFamilyName [] (Just kindedSingTy) ctors' []) :
+  return $ (DDataInstD Data [] Nothing (DConT singFamilyName) (Just kindedSingTy) ctors' []) :
            kindedSynInst :
            singKindInst :
            ctorFixities

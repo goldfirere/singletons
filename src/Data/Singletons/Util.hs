@@ -292,6 +292,7 @@ substType subst (DForallT tvbs cxt inner_ty)
     cxt'            = map (substType subst') cxt
     inner_ty'       = substType subst' inner_ty
 substType subst (DAppT ty1 ty2) = substType subst ty1 `DAppT` substType subst ty2
+substType subst (DAppKindT ty ki) = substType subst ty `DAppKindT` substType subst ki
 substType subst (DSigT ty ki) = substType subst ty `DSigT` substType subst ki
 substType subst (DVarT n) =
   case Map.lookup n subst of
@@ -317,26 +318,6 @@ foldType = foldl DAppT
 -- apply a type to a list of type variable binders
 foldTypeTvbs :: DType -> [DTyVarBndr] -> DType
 foldTypeTvbs ty = foldType ty . map tvbToType
-
--- | Decompose an applied type into its individual components. For example, this:
---
--- @
--- Either Int Char
--- @
---
--- would be unfolded to this:
---
--- @
--- Either :| [Int, Char]
--- @
-unfoldType :: DType -> NonEmpty DType
-unfoldType = go []
-  where
-    go :: [DType] -> DType -> NonEmpty DType
-    go acc (DAppT t1 t2)    = go (t2:acc) t1
-    go acc (DSigT t _)      = go acc t
-    go acc (DForallT _ _ t) = go acc t
-    go acc t                = t :| acc
 
 -- Construct a data type's variable binders, possibly using fresh variables
 -- from the data type's kind signature.
