@@ -16,7 +16,6 @@ module Data.Singletons.Deriving.Util where
 
 import Control.Monad
 import Data.List
-import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.Set as Set
 import Data.Singletons.Names
 import Data.Singletons.Syntax
@@ -141,14 +140,20 @@ functorLikeTraverse var (FT { ft_triv = caseTrivial, ft_var = caseVar
                              inspect (DForallT _ _ t) = inspect t
                              inspect (DSigT t _)      = inspect t
                              inspect (DAppT t _)      = inspect t
+                             inspect (DAppKindT t _)  = inspect t
                              inspect (DVarT {})       = tyApp
                              inspect DArrowT          = tyApp
                              inspect (DLitT {})       = tyApp
                              inspect DWildCardT       = tyApp
 
-                         in case unfoldType f of
-                              f_head :| _ -> inspect f_head
+                         in case unfoldDType f of
+                              (f_head, _) -> inspect f_head
                     else trivial
+    go (DAppKindT t k) = do
+      (_, kc) <- go k
+      if kc
+         then pure (caseWrongArg, True)
+         else go t
     go (DSigT t k) = do
       (_, kc) <- go k
       if kc
@@ -202,8 +207,8 @@ functorLikeValidityChecks allowConstrainedLastTyVar (DataDecl n data_tvbs cons)
     check_universal con@(DCon con_tvbs con_theta con_name _ res_ty)
       | allowConstrainedLastTyVar
       = pure ()
-      | _ :| res_ty_args <- unfoldType res_ty
-      , (_, last_res_ty_arg) <- snocView res_ty_args
+      | (_, res_ty_args) <- unfoldDType res_ty
+      , (_, last_res_ty_arg) <- snocView $ filterDTANormals res_ty_args
       , Just last_tv <- getDVarTName_maybe last_res_ty_arg
       = do ex_tvbs <- conExistentialTvbs (foldTypeTvbs (DConT n) data_tvbs) con
            let univ_tvb_names = map extractTvbName con_tvbs \\ map extractTvbName ex_tvbs
@@ -253,8 +258,8 @@ foldDataConArgs ft (DCon _ _ _ fields res_ty) = do
   where
     foldArg :: DType -> q a
     foldArg
-      | _ :| res_ty_args <- unfoldType res_ty
-      , (_, last_res_ty_arg) <- snocView res_ty_args
+      | (_, res_ty_args) <- unfoldDType res_ty
+      , (_, last_res_ty_arg) <- snocView $ filterDTANormals res_ty_args
       , Just last_tv <- getDVarTName_maybe last_res_ty_arg
       = functorLikeTraverse last_tv ft
       | otherwise

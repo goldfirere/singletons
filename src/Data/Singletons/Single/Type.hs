@@ -51,10 +51,11 @@ singType bound_kvs prom ty = do
 singPred :: DPred -> SgM DPred
 singPred = singPredRec []
 
-singPredRec :: [DType] -> DPred -> SgM DPred
+singPredRec :: [DTypeArg] -> DPred -> SgM DPred
 singPredRec _cxt (DForallT {}) =
   fail "Singling of quantified constraints not yet supported"
-singPredRec ctx (DAppT pr ty) = singPredRec (ty : ctx) pr
+singPredRec ctx (DAppT pr ty) = singPredRec (DTANormal ty : ctx) pr
+singPredRec ctx (DAppKindT pr ki) = singPredRec (DTyArg ki : ctx) pr
 singPredRec _ctx (DSigT _pr _ki) =
   fail "Singling of constraints with explicit kinds not yet supported"
 singPredRec _ctx (DVarT _n) =
@@ -63,9 +64,9 @@ singPredRec ctx (DConT n)
   | n == equalityName
   = fail "Singling of type equality constraints not yet supported"
   | otherwise = do
-    kis <- mapM promoteType ctx
+    kis <- mapM promoteTypeArg ctx
     let sName = singClassName n
-    return $ foldType (DConT sName) kis
+    return $ applyDType (DConT sName) kis
 singPredRec _ctx DWildCardT = return DWildCardT  -- it just might work
 singPredRec _ctx DArrowT =
   fail "(->) spotted at head of a constraint"

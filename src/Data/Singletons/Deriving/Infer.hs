@@ -20,7 +20,6 @@ import Language.Haskell.TH.Syntax
 import Data.Singletons.Deriving.Util
 import Data.Singletons.Util
 import Data.List
-import Data.List.NonEmpty (NonEmpty(..))
 import Data.Generics.Twins
 
 -- @inferConstraints cls inst_ty cons@ infers the instance context for a
@@ -142,15 +141,15 @@ inferConstraints pr inst_ty = fmap (nubBy geq) . concatMapM infer_ct
       -- This function is partial. But that's OK, because
       -- functorLikeValidityChecks ensures that this is total by the time
       -- we invoke this.
-      let _ :| res_ty_args     = unfoldType res_ty
-          (_, last_res_ty_arg) = snocView res_ty_args
+      let (_, res_ty_args)     = unfoldDType res_ty
+          (_, last_res_ty_arg) = snocView $ filterDTANormals res_ty_args
           Just last_tv         = getDVarTName_maybe last_res_ty_arg
       deep_subtypes <- concatMapM (deepSubtypesContaining last_tv) fields
       pure $ map (pr `DAppT`) deep_subtypes
 
     is_functor_like :: Bool
     is_functor_like
-      | DConT pr_class_name :| _ <- unfoldType pr
+      | (DConT pr_class_name, _) <- unfoldDType pr
       = isFunctorLikeClassName pr_class_name
       | otherwise
       = False

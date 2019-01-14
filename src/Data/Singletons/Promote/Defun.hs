@@ -206,9 +206,11 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                                          Set.toList $ fvDType tyfun -- (2)(iii)(a)
                         in (arg_params, Just (DForallT tyfun_tvbs [] tyfun))
             app_data_ty = foldTypeTvbs (DConT data_name) m_args
-            app_eqn     = DTySynEqn [app_data_ty, DVarT tyfun_name]
+            app_eqn     = DTySynEqn Nothing
+                                    (DConT applyName `DAppT` app_data_ty
+                                                     `DAppT` DVarT tyfun_name)
                                     (mk_rhs (m_args ++ [DPlainTV tyfun_name]))
-            app_decl    = DTySynInstD applyName app_eqn
+            app_decl    = DTySynInstD app_eqn
             suppress    = DInstanceD Nothing []
                             (DConT suppressClassName `DAppT` app_data_ty)
                             [DLetDec $ DFunD suppressMethodName

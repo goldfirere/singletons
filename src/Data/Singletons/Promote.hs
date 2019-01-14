@@ -31,7 +31,6 @@ import Prelude hiding (exp)
 import Control.Applicative (Alternative(..))
 import Control.Arrow (second)
 import Control.Monad
-import Control.Monad.Trans.Class (MonadTrans(..))
 import Control.Monad.Trans.Maybe
 import Control.Monad.Writer
 import qualified Data.Map.Strict as Map
@@ -351,15 +350,16 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
     promote_superclass_pred :: DPred -> PrM DPred
     promote_superclass_pred = go
       where
-      go (DForallT {}) = fail "Cannot promote quantified constraints"
-      go (DAppT pr ty) = DAppT <$> go pr <*> promoteType ty
-      go (DSigT pr _k) = go pr    -- just ignore the kind; it can't matter
-      go (DVarT name)  = fail $ "Cannot promote ConstraintKinds variables like "
-                             ++ show name
-      go (DConT name)  = return $ DConT (promoteClassName name)
-      go DWildCardT    = return DWildCardT
-      go (DLitT {})    = fail "Type-level literal spotted at head of a constraint"
-      go DArrowT       = fail "(->) spotted at head of a constraint"
+      go (DForallT {})     = fail "Cannot promote quantified constraints"
+      go (DAppT pr ty)     = DAppT <$> go pr <*> promoteType ty
+      go (DAppKindT pr ki) = DAppKindT <$> go pr <*> pure ki -- Kind is already promoted
+      go (DSigT pr _k)     = go pr    -- just ignore the kind; it can't matter
+      go (DVarT name)      = fail $ "Cannot promote ConstraintKinds variables like "
+                                 ++ show name
+      go (DConT name)      = return $ DConT (promoteClassName name)
+      go DWildCardT        = return DWildCardT
+      go (DLitT {})        = fail "Type-level literal spotted at head of a constraint"
+      go DArrowT           = fail "(->) spotted at head of a constraint"
 
 -- returns (unpromoted method name, ALetDecRHS) pairs
 promoteInstanceDec :: Map Name DType -> UInstDecl -> PrM AInstDecl
@@ -473,8 +473,8 @@ promoteMethod inst_sigs_map m_subst orig_sigs_map (meth_name, meth_rhs) = do
                                eqns]
   emitDecsM (defunctionalize helperName Nothing tvbs (Just meth_res_ki))
   return ( DTySynInstD
-             proName
-             (DTySynEqn family_args
+             (DTySynEqn Nothing
+                        (foldType (DConT proName) family_args)
                         (foldApply (promoteValRhs helperName) (map DVarT meth_arg_tvs)))
          , ann_rhs
          , DConT (promoteTySym helperName 0) )
@@ -629,7 +629,7 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UValue exp) = do
           tvbs = map DPlainTV all_locals
       defuns <- defunctionalize proName m_fixity tvbs res_kind
       return ( ( proName, tvbs, res_kind
-               , [DTySynEqn (map DVarT all_locals) exp'] )
+               , [DTySynEqn Nothing (foldType (DConT proName) $ map DVarT all_locals) exp'] )
              , defuns
              , AValue (foldType (DConT proName) (map DVarT all_locals))
                       num_arrows ann_exp )
@@ -666,7 +666,7 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UFunction clauses) = d
   expClauses <- mapM (etaContractOrExpand ty_num_args numArgs) clauses
   let lde_kvs_to_bind = foldMap (foldMap fvDType) m_argKs <> foldMap fvDType m_resK
   (eqns, ann_clauses) <- forallBind lde_kvs_to_bind $
-                         mapAndUnzipM promoteClause expClauses
+                         mapAndUnzipM (promoteClause proName) expClauses
   prom_fun <- lookupVarE name
   return ( (proName, all_args, m_resK, eqns)
          , defun_decs
@@ -690,8 +690,8 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UFunction clauses) = d
     count_args (DClause pats _ : _) = return $ length pats
     count_args _ = fail $ "Impossible! A function without clauses."
 
-promoteClause :: DClause -> PrM (DTySynEqn, ADClause)
-promoteClause (DClause pats exp) = do
+promoteClause :: Name -> DClause -> PrM (DTySynEqn, ADClause)
+promoteClause proName (DClause pats exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
   ((types, pats'), prom_pat_infos) <- evalForPair $ mapAndUnzipM promotePat pats
@@ -701,11 +701,11 @@ promoteClause (DClause pats exp) = do
                    lambdaBind new_vars $
                    promoteExp exp
   all_locals <- allLocals   -- these are bound *outside* of this clause
-  return ( DTySynEqn (map DVarT all_locals ++ types) ty
+  return ( DTySynEqn Nothing (foldType (DConT proName) $ map DVarT all_locals ++ types) ty
          , ADClause new_vars pats' ann_exp )
 
-promoteMatch :: DMatch -> PrM (DTySynEqn, ADMatch)
-promoteMatch (DMatch pat exp) = do
+promoteMatch :: Name -> DMatch -> PrM (DTySynEqn, ADMatch)
+promoteMatch caseTFName (DMatch pat exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
   ((ty, pat'), prom_pat_infos) <- evalForPair $ promotePat pat
@@ -715,7 +715,9 @@ promoteMatch (DMatch pat exp) = do
                     lambdaBind new_vars $
                     promoteExp exp
   all_locals <- allLocals
-  return $ ( DTySynEqn (map DVarT all_locals ++ [ty]) rhs
+  return $ ( DTySynEqn Nothing
+                       (foldType (DConT caseTFName) $ map DVarT all_locals ++ [ty])
+                       rhs
            , ADMatch new_vars pat' ann_exp)
 
 -- promotes a term pattern into a type pattern, accumulating bound variable names
@@ -777,7 +779,9 @@ promoteExp (DLamE names exp) = do
                                  tvbs
                                  DNoSig
                                  Nothing)
-                               [DTySynEqn (map DVarT (all_locals ++ tyNames))
+                               [DTySynEqn Nothing
+                                          (foldType (DConT lambdaName) $
+                                           map DVarT (all_locals ++ tyNames))
                                           rhs]]
   emitDecsM $ defunctionalize lambdaName Nothing tvbs Nothing
   let promLambda = foldl apply (DConT (promoteTySym lambdaName 0))
@@ -788,7 +792,7 @@ promoteExp (DCaseE exp matches) = do
   all_locals <- allLocals
   let prom_case = foldType (DConT caseTFName) (map DVarT all_locals)
   (exp', ann_exp)     <- promoteExp exp
-  (eqns, ann_matches) <- mapAndUnzipM promoteMatch matches
+  (eqns, ann_matches) <- mapAndUnzipM (promoteMatch caseTFName) matches
   tyvarName  <- qNewName "t"
   let all_args = all_locals ++ [tyvarName]
       tvbs     = map DPlainTV all_args

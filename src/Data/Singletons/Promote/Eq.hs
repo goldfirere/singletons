@@ -22,9 +22,9 @@ mkEqTypeInstance kind cons = do
   helperName <- newUniqueName "Equals"
   aName <- qNewName "a"
   bName <- qNewName "b"
-  true_branches <- mapM mk_branch cons
-  let null_branch  = catch_all_case trueName
-      false_branch = catch_all_case falseName
+  true_branches <- mapM (mk_branch helperName) cons
+  let null_branch  = catch_all_case helperName trueName
+      false_branch = catch_all_case helperName falseName
       branches | null cons = [null_branch]
                | otherwise = true_branches ++ [false_branch]
       closedFam = DClosedTypeFamilyD (DTypeFamilyHead helperName
@@ -37,16 +37,17 @@ mkEqTypeInstance kind cons = do
                                                       (DKindSig boolKi)
                                                       Nothing)
                                      branches
-      eqInst = DTySynInstD tyEqName (DTySynEqn [DVarT aName, DVarT bName]
-                                             (foldType (DConT helperName)
-                                                       [DVarT aName, DVarT bName]))
+      eqInst = DTySynInstD $
+               DTySynEqn Nothing
+                         (DConT tyEqName `DAppT` DVarT aName `DAppT` DVarT bName)
+                         (foldType (DConT helperName) [DVarT aName, DVarT bName])
       inst = DInstanceD Nothing [] ((DConT $ promoteClassName eqName) `DAppT`
                                     kind) [eqInst]
 
   return [closedFam, inst]
 
-  where mk_branch :: Quasi q => DCon -> q DTySynEqn
-        mk_branch con = do
+  where mk_branch :: Quasi q => Name -> DCon -> q DTySynEqn
+        mk_branch helper_name con = do
           let (name, numArgs) = extractNameArgs con
           lnames <- replicateM numArgs (qNewName "a")
           rnames <- replicateM numArgs (qNewName "b")
@@ -56,11 +57,16 @@ mkEqTypeInstance kind cons = do
               rtype = foldType (DConT name) rvars
               results = zipWith (\l r -> foldType (DConT tyEqName) [l, r]) lvars rvars
               result = tyAll results
-          return $ DTySynEqn [ltype, rtype] result
+          return $ DTySynEqn Nothing
+                             (DConT helper_name `DAppT` ltype `DAppT` rtype)
+                             result
 
-        catch_all_case :: Name -> DTySynEqn
-        catch_all_case returned_val_name =
-          DTySynEqn [DSigT DWildCardT kind, DSigT DWildCardT kind]
+        catch_all_case :: Name -> Name -> DTySynEqn
+        catch_all_case helper_name returned_val_name =
+          DTySynEqn Nothing
+                    (DConT helper_name
+                       `DAppT` DSigT DWildCardT kind
+                       `DAppT` DSigT DWildCardT kind)
                     (promoteValRhs returned_val_name)
 
         tyAll :: [DType] -> DType -- "all" at the type level

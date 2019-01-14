@@ -6,11 +6,12 @@ rae@cs.brynmawr.edu
 This file implements promotion of types into kinds.
 -}
 
-module Data.Singletons.Promote.Type ( promoteType, promoteUnraveled ) where
+module Data.Singletons.Promote.Type
+  ( promoteType, promoteTypeArg, promoteUnraveled
+  ) where
 
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
-import Data.Singletons.Util
 import Language.Haskell.TH
 
 -- the only monadic thing we do here is fail. This allows the function
@@ -18,7 +19,7 @@ import Language.Haskell.TH
 promoteType :: Monad m => DType -> m DKind
 promoteType = go []
   where
-    go :: Monad m => [DKind] -> DType -> m DKind
+    go :: Monad m => [DTypeArg] -> DType -> m DKind
     -- We don't need to worry about constraints: they are used to express
     -- static guarantees at runtime. But, because we don't need to do
     -- anything special to keep static guarantees at compile time, we don't
@@ -28,32 +29,40 @@ promoteType = go []
       fail "Cannot promote types of rank above 1."
     go args     (DAppT t1 t2) = do
       k2 <- go [] t2
-      go (k2 : args) t1
+      go (DTANormal k2 : args) t1
        -- NB: This next case means that promoting something like
        --   (((->) a) :: Type -> Type) b
        -- will fail because the pattern below won't recognize the
        -- arrow to turn it into a TyFun. But I'm not terribly
        -- bothered by this, and it would be annoying to fix. Wait
        -- for someone to report.
+    go args     (DAppKindT ty ki) = do
+      ki' <- go [] ki
+      go (DTyArg ki' : args) ty
     go args     (DSigT ty ki) = do
       ty' <- go [] ty
       -- No need to promote 'ki' - it is already a kind.
-      return $ foldType (DSigT ty' ki) args
-    go args     (DVarT name) = return $ foldType (DVarT name) args
+      return $ applyDType (DSigT ty' ki) args
+    go args     (DVarT name) = return $ applyDType (DVarT name) args
     go []       (DConT name)
       | name == typeRepName               = return $ DConT typeKindName
       | nameBase name == nameBase repName = return $ DConT typeKindName
     go args     (DConT name)
       | Just n <- unboxedTupleNameDegree_maybe name
-      = return $ foldType (DConT (tupleTypeName n)) args
+      = return $ applyDType (DConT (tupleTypeName n)) args
       | otherwise
-      = return $ foldType (DConT name) args
-    go [k1, k2] DArrowT = return $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
+      = return $ applyDType (DConT name) args
+    go [DTANormal k1, DTANormal k2] DArrowT
+      = return $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
     go _        ty@DLitT{} = pure ty
 
     go args     hd = fail $ "Illegal Haskell construct encountered:\n" ++
                             "headed by: " ++ show hd ++ "\n" ++
                             "applied to: " ++ show args
+
+promoteTypeArg :: Monad m => DTypeArg -> m DTypeArg
+promoteTypeArg (DTANormal t) = DTANormal <$> promoteType t
+promoteTypeArg ta@(DTyArg _) = pure ta -- Kinds are already promoted
 
 promoteUnraveled :: Monad m => DType -> m ([DKind], DKind)
 promoteUnraveled ty = do
