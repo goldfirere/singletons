@@ -442,9 +442,6 @@ promoteMethod :: Map Name DType -- InstanceSigs for methods
                  -- returns (type instance, ALetDecRHS, promoted RHS)
 promoteMethod inst_sigs_map m_subst orig_sigs_map (meth_name, meth_rhs) = do
   (meth_arg_kis, meth_res_ki) <- lookup_meth_ty
-  ((_, _, _, eqns), _defuns, ann_rhs)
-    <- promoteLetDecRHS (Just (meth_arg_kis, meth_res_ki)) Map.empty Map.empty
-                        noPrefix meth_name meth_rhs
   meth_arg_tvs <- mapM (const $ qNewName "a") meth_arg_kis
   let helperNameBase = case nameBase proName of
                          first:_ | not (isHsLetter first) -> "TFHelper"
@@ -464,6 +461,9 @@ promoteMethod inst_sigs_map m_subst orig_sigs_map (meth_name, meth_rhs) = do
       -- strictly necessary, as kind inference can figure them out just as well.
       family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
+  ((_, _, _, eqns), _defuns, ann_rhs)
+    <- promoteLetDecRHS (Just (meth_arg_kis, meth_res_ki)) Map.empty Map.empty
+                        noPrefix helperName meth_rhs
   let tvbs = zipWith DKindedTV meth_arg_tvs meth_arg_kis
   emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
                                   helperName

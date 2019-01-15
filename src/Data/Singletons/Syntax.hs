@@ -19,7 +19,6 @@ import Language.Haskell.TH.Desugar
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
 import Data.Set ( Set )
-import Data.Semigroup (Semigroup(..))
 
 type VarPromotions = [(Name, Name)] -- from term-level name to type-level name
 

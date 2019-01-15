@@ -37,7 +37,6 @@ import Data.Singletons.Prelude.Instances
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Decide
-import Data.Type.Equality ((:~:)(..))
 import GHC.Exts (RuntimeRep, TYPE)
 import Type.Reflection
 import Type.Reflection.Unsafe

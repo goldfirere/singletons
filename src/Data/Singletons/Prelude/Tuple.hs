@@ -1,5 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, DataKinds, PolyKinds,
-             RankNTypes, TypeFamilies, GADTs, UndecidableInstances #-}
+             RankNTypes, TypeFamilies, GADTs, UndecidableInstances,
+             TypeApplications #-}
 
 -----------------------------------------------------------------------------
 -- |

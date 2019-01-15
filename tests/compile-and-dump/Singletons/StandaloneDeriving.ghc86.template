@@ -388,20 +388,22 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         -> Sing (Apply (FromEnumSym0 :: TyFun S GHC.Types.Nat
                                         -> GHC.Types.Type) t)
       sToEnum (sN :: Sing n)
-        = (case
-               (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
-                 (sFromInteger (sing :: Sing 0))
-           of
-             STrue -> SS1
-             SFalse
-               -> (case
-                       (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
-                         (sFromInteger (sing :: Sing 1))
-                   of
-                     STrue -> SS2
-                     SFalse -> sError (sing :: Sing "toEnum: bad argument")) ::
-                    Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 1)))) ::
-            Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0)))
+        = (id
+             @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0)))))
+            (case
+                 (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
+                   (sFromInteger (sing :: Sing 0))
+             of
+               STrue -> SS1
+               SFalse
+                 -> (id
+                       @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 1)))))
+                      (case
+                           (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
+                             (sFromInteger (sing :: Sing 1))
+                       of
+                         STrue -> SS2
+                         SFalse -> sError (sing :: Sing "toEnum: bad argument")))
       sFromEnum SS1 = sFromInteger (sing :: Sing 0)
       sFromEnum SS2 = sFromInteger (sing :: Sing 1)
     instance SEq a => SEq (T a ()) where

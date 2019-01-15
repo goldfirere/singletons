@@ -7,6 +7,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -53,7 +54,7 @@ import Data.Singletons.Util
 import qualified Data.Text as T
 import Data.Void (Void)
 
-import GHC.TypeLits (AppendSymbol, SomeSymbol(..), someSymbolVal, Symbol)
+import GHC.TypeLits (AppendSymbol, SomeSymbol(..), someSymbolVal)
 
 import Unsafe.Coerce
 
@@ -75,6 +76,7 @@ $(singletonsOnly [d|
         --
         sconcat :: NonEmpty a -> a
         sconcat (a :| as) = go a as where
+          go :: a -> [a] -> a
           go b (c:cs) = b <> go c cs
           go b []     = b
 

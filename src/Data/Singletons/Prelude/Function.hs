@@ -19,7 +19,7 @@
 
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies,
              TypeOperators, UndecidableInstances, GADTs,
-             DataKinds, PolyKinds #-}
+             DataKinds, PolyKinds, TypeApplications #-}
 
 module Data.Singletons.Prelude.Function (
     -- * "Prelude" re-exports

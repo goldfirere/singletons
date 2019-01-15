@@ -634,12 +634,14 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
           sScrutinee_0123456789876543210
             = (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sName))
                 sName'
-        in  (case sScrutinee_0123456789876543210 of
+        in
+          (GHC.Base.id
+             @(Sing (Case_0123456789876543210 name name' u attrs (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs) :: U)))
+            (case sScrutinee_0123456789876543210 of
                STrue -> sU
                SFalse
                  -> (applySing ((applySing ((singFun2 @LookupSym0) sLookup)) sName))
-                      ((applySing ((singFun1 @SchSym0) SSch)) sAttrs)) ::
-              Sing (Case_0123456789876543210 name name' u attrs (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs) :: U)
+                      ((applySing ((singFun1 @SchSym0) SSch)) sAttrs))
     sOccurs _ (SSch SNil) = SFalse
     sOccurs
       (sName :: Sing name)

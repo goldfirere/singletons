@@ -135,26 +135,29 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
       sPred (SCons STrue (sAs :: Sing as))
         = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SFalse)) sAs
       sToEnum (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
-        = (case sArg_0123456789876543210 of {
-             (sI :: Sing i)
-               -> (case
-                       (applySing ((applySing ((singFun2 @(<@#@$)) (%<))) sI))
-                         (sFromInteger (sing :: Sing 0))
-                   of
-                     STrue -> sError (sing :: Sing "negative toEnum")
-                     SFalse
-                       -> (case
-                               (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sI))
-                                 (sFromInteger (sing :: Sing 0))
-                           of
-                             STrue -> SNil
-                             SFalse
-                               -> (applySing ((singFun1 @SuccSym0) sSucc))
-                                    ((applySing ((singFun1 @ToEnumSym0) sToEnum))
-                                       ((applySing ((singFun1 @PredSym0) sPred)) sI))) ::
-                            Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (==@#@$) i) (FromInteger 0)))) ::
-                    Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (<@#@$) i) (FromInteger 0))) }) ::
-            Sing (Case_0123456789876543210 arg_0123456789876543210 arg_0123456789876543210)
+        = (id
+             @(Sing (Case_0123456789876543210 arg_0123456789876543210 arg_0123456789876543210)))
+            (case sArg_0123456789876543210 of {
+               (sI :: Sing i)
+                 -> (id
+                       @(Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (<@#@$) i) (FromInteger 0)))))
+                      (case
+                           (applySing ((applySing ((singFun2 @(<@#@$)) (%<))) sI))
+                             (sFromInteger (sing :: Sing 0))
+                       of
+                         STrue -> sError (sing :: Sing "negative toEnum")
+                         SFalse
+                           -> (id
+                                 @(Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (==@#@$) i) (FromInteger 0)))))
+                                (case
+                                     (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sI))
+                                       (sFromInteger (sing :: Sing 0))
+                                 of
+                                   STrue -> SNil
+                                   SFalse
+                                     -> (applySing ((singFun1 @SuccSym0) sSucc))
+                                          ((applySing ((singFun1 @ToEnumSym0) sToEnum))
+                                             ((applySing ((singFun1 @PredSym0) sPred)) sI)))) })
       sFromEnum SNil = sFromInteger (sing :: Sing 0)
       sFromEnum (SCons SFalse (sAs :: Sing as))
         = (applySing

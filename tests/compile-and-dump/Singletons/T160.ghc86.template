@@ -47,12 +47,14 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
           sScrutinee_0123456789876543210
             = (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sX))
                 (sFromInteger (sing :: Sing 0))
-        in  (case sScrutinee_0123456789876543210 of
+        in
+          (id
+             @(Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x) :: a)))
+            (case sScrutinee_0123456789876543210 of
                STrue -> sFromInteger (sing :: Sing 1)
                SFalse
                  -> (applySing ((applySing ((singFun2 @($@#@$)) (%$))) sTypeError))
-                      ((applySing ((singFun1 @ShowTypeSym0) SShowType)) sX)) ::
-              Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x) :: a)
+                      ((applySing ((singFun1 @ShowTypeSym0) SShowType)) sX))
     instance (SNum a, SEq a) => SingI (FooSym0 :: (~>) a a) where
       sing = (singFun1 @FooSym0) sFoo
 
@@ -65,13 +67,12 @@ Singletons/T160.hs:0:0: error:
           SFalse
             -> (applySing ((applySing ((singFun2 @($@#@$)) (%$))) sTypeError))
                  ((applySing ((singFun1 @ShowTypeSym0) SShowType)) sX)
-      In the expression:
-          (case sScrutinee_0123456789876543210 of
-             STrue -> sFromInteger (sing :: Sing 1)
-             SFalse
-               -> (applySing ((applySing ((singFun2 @($@#@$)) (%$))) sTypeError))
-                    ((applySing ((singFun1 @ShowTypeSym0) SShowType)) sX)) ::
-            Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x) :: a)
+      In the second argument of ‘id’, namely
+        ‘(case sScrutinee_0123456789876543210 of
+            STrue -> sFromInteger (sing :: Sing 1)
+            SFalse
+              -> (applySing ((applySing ((singFun2 @($@#@$)) (%$))) sTypeError))
+                   ((applySing ((singFun1 @ShowTypeSym0) SShowType)) sX))’
   |
 7 | $(singletons
   |   ^^^^^^^^^^...

@@ -210,9 +210,10 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
               (\ sX_0123456789876543210
                  -> case sX_0123456789876543210 of {
                       (_ :: Sing x_0123456789876543210)
-                        -> (case sX_0123456789876543210 of {
-                              STuple2 (sP :: Sing p) _ -> sP }) ::
-                             Sing (Case_0123456789876543210 a b x_0123456789876543210 x_0123456789876543210) })))
+                        -> (id
+                              @(Sing (Case_0123456789876543210 a b x_0123456789876543210 x_0123456789876543210)))
+                             (case sX_0123456789876543210 of {
+                                STuple2 (sP :: Sing p) _ -> sP }) })))
           ((applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sA)) sB)
     sFoo2 (sD :: Sing d) _
       = (applySing
@@ -220,10 +221,11 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
               (\ sX_0123456789876543210
                  -> case sX_0123456789876543210 of {
                       (_ :: Sing x_0123456789876543210)
-                        -> (case sX_0123456789876543210 of
-                              SJust (sY :: Sing y) -> sY
-                              SNothing -> sD) ::
-                             Sing (Case_0123456789876543210 d x_0123456789876543210 x_0123456789876543210) })))
+                        -> (id
+                              @(Sing (Case_0123456789876543210 d x_0123456789876543210 x_0123456789876543210)))
+                             (case sX_0123456789876543210 of
+                                SJust (sY :: Sing y) -> sY
+                                SNothing -> sD) })))
           ((applySing ((singFun1 @JustSym0) SJust)) sD)
     sFoo1 (sD :: Sing d) (sX :: Sing x)
       = (applySing
@@ -231,10 +233,11 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
               (\ sX_0123456789876543210
                  -> case sX_0123456789876543210 of {
                       (_ :: Sing x_0123456789876543210)
-                        -> (case sX_0123456789876543210 of
-                              SJust (sY :: Sing y) -> sY
-                              SNothing -> sD) ::
-                             Sing (Case_0123456789876543210 d x x_0123456789876543210 x_0123456789876543210) })))
+                        -> (id
+                              @(Sing (Case_0123456789876543210 d x x_0123456789876543210 x_0123456789876543210)))
+                             (case sX_0123456789876543210 of
+                                SJust (sY :: Sing y) -> sY
+                                SNothing -> sD) })))
           sX
     instance SingI (Foo3Sym0 :: (~>) a ((~>) b a)) where
       sing = (singFun2 @Foo3Sym0) sFoo3

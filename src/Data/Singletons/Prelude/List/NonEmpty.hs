@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeOperators,
              TypeFamilies, GADTs, UndecidableInstances, InstanceSigs,
-             DataKinds, PolyKinds #-}
+             DataKinds, PolyKinds, TypeApplications #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------

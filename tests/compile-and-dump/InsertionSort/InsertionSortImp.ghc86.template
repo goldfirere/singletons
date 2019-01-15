@@ -185,15 +185,16 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
             Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t)
           sScrutinee_0123456789876543210
             = (applySing ((applySing ((singFun2 @LeqSym0) sLeq)) sN)) sH
-        in  (case sScrutinee_0123456789876543210 of
+        in
+          (id
+             @(Sing (Case_0123456789876543210 n h t (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t) :: [Nat])))
+            (case sScrutinee_0123456789876543210 of
                STrue
                  -> (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) sN))
                       ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) sH)) sT)
                SFalse
                  -> (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) sH))
-                      ((applySing ((applySing ((singFun2 @InsertSym0) sInsert)) sN))
-                         sT)) ::
-              Sing (Case_0123456789876543210 n h t (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t) :: [Nat])
+                      ((applySing ((applySing ((singFun2 @InsertSym0) sInsert)) sN)) sT))
     sInsertionSort SNil = SNil
     sInsertionSort (SCons (sH :: Sing h) (sT :: Sing t))
       = (applySing ((applySing ((singFun2 @InsertSym0) sInsert)) sH))

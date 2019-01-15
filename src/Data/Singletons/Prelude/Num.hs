@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell, PolyKinds, DataKinds, TypeFamilies,
              TypeOperators, GADTs, ScopedTypeVariables, UndecidableInstances,
-             DefaultSignatures, FlexibleContexts, InstanceSigs, NoStarIsType
+             DefaultSignatures, FlexibleContexts, InstanceSigs, NoStarIsType,
+             TypeApplications
   #-}
 
 -----------------------------------------------------------------------------
@@ -41,7 +42,7 @@ import Data.Singletons.Prelude.Ord
 import Data.Singletons.TypeLits.Internal
 import Data.Singletons.Decide
 import qualified GHC.TypeNats as TN
-import GHC.TypeNats (Nat, SomeNat(..), someNatVal)
+import GHC.TypeNats (SomeNat(..), someNatVal)
 import Unsafe.Coerce
 
 $(singletonsOnly [d|

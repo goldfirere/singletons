@@ -650,6 +650,11 @@ mkSigPaCaseE exps_with_sigs exp
 -- becomes "untouchable" in the case matches. See the OutsideIn paper. But,
 -- during singletonization, we *know* the return type. So, just add a type
 -- annotation. See #54.
+--
+-- In particular, we add a type annotation in a somewhat unorthodox fashion.
+-- Instead of the usual `(x :: t)`, we use `id @t x`. See
+-- Note [The id hack; or, how singletons learned to stop worrying and avoid
+-- kind generalization] for an explanation of why we do this.
 
 -- Note [Why error is so special]
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -770,9 +775,12 @@ singExp (ADLamE ty_names prom_lam names exp) _res_ki = do
                                       DVarT) ty_names)) exp']
   return $ wrapSingFun (length names) prom_lam $ DLamE sNames caseExp
 singExp (ADCaseE exp matches ret_ty) res_ki =
-    -- See Note [Annotate case return type]
-  DSigE <$> (DCaseE <$> singExp exp Nothing <*> mapM (singMatch res_ki) matches)
-        <*> pure (singFamily `DAppT` (ret_ty `maybeSigT` res_ki))
+    -- See Note [Annotate case return type] and
+    --     Note [The id hack; or, how singletons learned to stop worrying and
+    --           avoid kind generalization]
+  DAppE (DAppTypeE (DVarE 'id)
+                   (singFamily `DAppT` (ret_ty `maybeSigT` res_ki)))
+    <$> (DCaseE <$> singExp exp Nothing <*> mapM (singMatch res_ki) matches)
 singExp (ADLetE env exp) res_ki = do
   -- We intentionally discard the SingI instances for exp's defunctionalization
   -- symbols, as we also do not generate the declarations for the
@@ -872,3 +880,85 @@ singLit lit =
 maybeSigT :: DType -> Maybe DKind -> DType
 maybeSigT ty Nothing   = ty
 maybeSigT ty (Just ki) = ty `DSigT` ki
+
+{-
+Note [The id hack; or, how singletons learned to stop worrying and avoid kind generalization]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+GHC 8.8 was a time of great change. In particular, 8.8 debuted a fix for
+Trac #15141 (decideKindGeneralisationPlan is too complicated). To fix this, a
+wily GHC developer—who shall remain unnamed, but whose username rhymes with
+schmoldfire—decided to make decideKindGeneralisationPlan less complicated by,
+well, removing the whole thing. One consequence of this is that local
+definitions are now kind-generalized (whereas they would not have been
+previously).
+
+While schmoldfire had the noblest of intentions when authoring his fix, he
+unintentionally made life much harder for singletons. Why? Consider the
+following program:
+
+  class Foo a where
+    bar :: a -> (a -> b) -> b
+    baz :: a
+
+  quux :: Foo a => a -> a
+  quux x = x `bar` \_ -> baz
+
+When singled, this program will turn into something like this:
+
+  type family Quux (x :: a) :: a where
+    Quux x = Bar x (LambdaSym1 x)
+
+  sQuux :: forall a (x :: a). SFoo a => Sing x -> Sing (Quux x :: a)
+  sQuux (sX :: Sing x)
+    = sBar sX
+        ((singFun1 @(LambdaSym1 x))
+           (\ sArg
+              -> case sArg of {
+                   (_ :: Sing arg)
+                     -> (case sArg of { _ -> sBaz }) ::
+                          Sing (Case x arg arg) }))
+
+  type family Case x arg t where
+    Case x arg _ = Baz
+  type family Lambda x t where
+    Lambda x arg = Case x arg arg
+  data LambdaSym1 x t
+  type instance Apply (LambdaSym1 x) t = Lambda x t
+
+The high-level bit is the explicit `Sing (Case x arg arg)` signature. Question:
+what is the kind of `Case x arg arg`? The answer depends on whether local
+definitions are kind-generalized or not!
+
+1. If local definitions are *not* kind-generalized (i.e., the status quo before
+   GHC 8.8), then `Case x arg arg :: a`.
+2. If local definitions *are* kind-generalized (i.e., the status quo in GHC 8.8
+   and later), then `Case x arg arg :: k` for some fresh kind variable `k`.
+
+Unfortunately, the kind of `Case x arg arg` *must* be `a` in order for `sQuux`
+to type-check. This means that the code above suddenly stopped working in GHC
+8.8. What's more, we can't just remove these explicit signatures, as there is
+code elsewhere in `singletons` that crucially relies on them to guide type
+inference along (e.g., `sShowParen` in `Data.Singletons.Prelude.Show`).
+
+Luckily, there is an ingenious hack that lets us the benefits of explicit
+signatures without the pain of kind generalization: our old friend, the `id`
+function. The plan is as follows: instead of generating this code:
+
+  (case sArg of ...) :: Sing (Case x arg arg)
+
+We instead generate this code:
+
+  id @(Sing (Case x arg arg)) (case sArg of ...)
+
+That's it! This works because visible type arguments in terms do not get kind-
+generalized, unlike top-level or local signatures. Now `Case x arg arg`'s kind
+is not generalized, and all is well. We dub this: the `id` hack.
+
+One might wonder: will we need the `id` hack around forever? Perhaps not. While
+GHC 8.8 removed the decideKindGeneralisationPlan function, there have been
+rumblings that a future version of GHC may bring it back (in a limited form).
+If this happens, it is possibly that GHC's attitude towards kind-generalizing
+local definitons may change *again*, which could conceivably render the `id`
+hack unnecessary. This is all speculation, of course, so all we can do now is
+wait and revisit this design at a later date.
+-}
