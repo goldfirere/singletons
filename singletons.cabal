@@ -139,12 +139,12 @@ library
                       Data.Singletons.TypeLits.Internal
                       Data.Singletons.Syntax
 
-  ghc-options:        -Wall -Wno-redundant-constraints
+  ghc-options:        -Wall -Wcompat -Wno-redundant-constraints
 
 test-suite singletons-test-suite
   type:               exitcode-stdio-1.0
   hs-source-dirs:     tests
-  ghc-options:        -Wall -threaded -with-rtsopts=-maxN16
+  ghc-options:        -Wall -Wcompat -threaded -with-rtsopts=-maxN16
   default-language:   Haskell2010
   main-is:            SingletonsTestSuite.hs
   other-modules:      ByHand
