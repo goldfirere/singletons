@@ -101,12 +101,12 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       type (==) a b = Equals_0123456789876543210 a b
     sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)])
     sEmpty = Data.Singletons.Prelude.Instances.SNil
-    data instance Sing :: Occ -> GHC.Types.Type
+    data SOcc :: Occ -> GHC.Types.Type
       where
-        SStr :: Sing Str
-        SOpt :: Sing Opt
-        SMany :: Sing Many
-    type SOcc = Sing :: Occ -> GHC.Types.Type
+        SStr :: SOcc Str
+        SOpt :: SOcc Opt
+        SMany :: SOcc Many
+    type instance Sing @Occ = SOcc
     instance SingKind Occ where
       type Demote Occ = Occ
       fromSing SStr = Str
@@ -201,7 +201,18 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       (%~) SMany SStr = Disproved (\ x -> case x of)
       (%~) SMany SOpt = Disproved (\ x -> case x of)
       (%~) SMany SMany = Proved Refl
-    deriving instance Show (Sing (z :: Occ))
+    instance Data.Type.Equality.TestEquality (SOcc :: Occ
+                                                      -> GHC.Types.Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance Data.Type.Coercion.TestCoercion (SOcc :: Occ
+                                                      -> GHC.Types.Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
+    instance Show (SOcc (z :: Occ)) where
+      showsPrec _ SStr = showString "SStr"
+      showsPrec _ SOpt = showString "SOpt"
+      showsPrec _ SMany = showString "SMany"
     instance SingI Str where
       sing = SStr
     instance SingI Opt where

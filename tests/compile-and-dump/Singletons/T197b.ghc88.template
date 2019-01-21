@@ -56,22 +56,22 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     infixr 9 `MkPairSym0`
     infixr 9 `SMkPair`
     infixr 9 `SPair`
-    data instance Sing :: (:*:) a b -> GHC.Types.Type
+    data (%:*:) :: (:*:) a b -> GHC.Types.Type
       where
         (:%*:) :: forall a b (n :: a) (n :: b).
-                  (Sing (n :: a)) -> (Sing (n :: b)) -> Sing ((:*:) n n)
-    type (%:*:) = Sing :: (:*:) a b -> GHC.Types.Type
+                  (Sing (n :: a)) -> (Sing (n :: b)) -> (%:*:) ((:*:) n n)
+    type instance Sing @((:*:) a b) = (%:*:)
     instance (SingKind a, SingKind b) => SingKind ((:*:) a b) where
       type Demote ((:*:) a b) = (:*:) (Demote a) (Demote b)
       fromSing ((:%*:) b b) = ((:*:) (fromSing b)) (fromSing b)
       toSing ((:*:) (b :: Demote a) (b :: Demote b))
         = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b) of {
             (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%*:) c) c) }
-    data instance Sing :: Pair a b -> GHC.Types.Type
+    data SPair :: Pair a b -> GHC.Types.Type
       where
         SMkPair :: forall a b (n :: a) (n :: b).
-                   (Sing (n :: a)) -> (Sing (n :: b)) -> Sing (MkPair n n)
-    type SPair = Sing :: Pair a b -> GHC.Types.Type
+                   (Sing (n :: a)) -> (Sing (n :: b)) -> SPair (MkPair n n)
+    type instance Sing @(Pair a b) = SPair
     instance (SingKind a, SingKind b) => SingKind (Pair a b) where
       type Demote (Pair a b) = Pair (Demote a) (Demote b)
       fromSing (SMkPair b b) = (MkPair (fromSing b)) (fromSing b)

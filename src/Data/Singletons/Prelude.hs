@@ -22,15 +22,11 @@ module Data.Singletons.Prelude (
   -- * Basic singleton definitions
   module Data.Singletons,
 
-  Sing(SFalse, STrue, SNil, SCons, SJust, SNothing, SLeft, SRight, SLT, SEQ, SGT,
-       STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7),
+  -- * Singleton types
 
-  -- * Singleton type synonyms
-
-  -- | These synonyms are all kind-restricted synonyms of 'Sing'.
-  -- For example 'SBool' requires an argument of kind 'Bool'.
-  SBool, SList, SMaybe, SEither, SOrdering,
-  STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
+  SBool(..), SList(..), SMaybe(..), SEither(..), SOrdering(..),
+  STuple0(..), STuple2(..), STuple3(..), STuple4(..),
+  STuple5(..), STuple6(..), STuple7(..),
 
   -- * Functions working with 'Bool'
   If, sIf, Not, sNot, type (&&), type (||), (%&&), (%||), Otherwise, sOtherwise,

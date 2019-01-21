@@ -42,14 +42,15 @@ module Data.Singletons.TH (
   -- ** Functions to generate 'Show' instances
   promoteShowInstances, promoteShowInstance,
   singShowInstances, singShowInstance,
+  showSingInstances, showSingInstance,
 
   -- ** Utility functions
   singITyConInstances, singITyConInstance,
   cases, sCases,
 
   -- * Basic singleton definitions
-  Sing(SFalse, STrue, STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
-       SLT, SEQ, SGT),
+  SBool(..), STuple0(..), STuple2(..), STuple3(..), STuple4(..),
+  STuple5(..), STuple6(..), STuple7(..), SOrdering(..),
   module Data.Singletons,
 
   -- * Auxiliary definitions

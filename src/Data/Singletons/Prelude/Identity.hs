@@ -26,8 +26,7 @@
 
 module Data.Singletons.Prelude.Identity (
   -- * The 'Identity' singleton
-  Sing(SIdentity, sRunIdentity),
-  SIdentity, RunIdentity,
+  Sing, SIdentity(..), RunIdentity,
 
   -- * Defunctionalization symbols
   IdentitySym0, IdentitySym1,

@@ -31,13 +31,15 @@ instance Eq Nat where
   Succ _ == Zero = False
   Succ x == Succ y = x == y
 
-data instance Sing :: Bool -> Type where
-  SFalse :: Sing 'False
-  STrue  :: Sing 'True
+data SBool :: Bool -> Type where
+  SFalse :: SBool 'False
+  STrue  :: SBool 'True
+type instance Sing = SBool
 
-data instance Sing :: Nat -> Type where
-  SZero :: Sing 'Zero
-  SSucc :: Sing n -> Sing ('Succ n)
+data SNat :: Nat -> Type where
+  SZero :: SNat 'Zero
+  SSucc :: SNat n -> SNat ('Succ n)
+type instance Sing = SNat
 
 type family Not (x :: Bool) :: Bool where
   Not 'True = 'False
@@ -112,10 +114,11 @@ instance POrd Nat where
   type Compare ('Succ x) 'Zero     = 'GT
   type Compare ('Succ x) ('Succ y) = Compare x y
 
-data instance Sing :: Ordering -> Type where
-  SLT :: Sing 'LT
-  SEQ :: Sing 'EQ
-  SGT :: Sing 'GT
+data SOrdering :: Ordering -> Type where
+  SLT :: SOrdering 'LT
+  SEQ :: SOrdering 'EQ
+  SGT :: SOrdering 'GT
+type instance Sing = SOrdering
 
 instance PEq Ordering where
   type 'LT == 'LT = 'True

@@ -30,17 +30,11 @@
 module Data.Singletons.Prelude.Semigroup (
   PSemigroup(..), SSemigroup(..),
 
-  Sing(SMin, sGetMin, SMax, sGetMax,
-       SFirst, sGetFirst, SLast, sGetLast,
-       SWrapMonoid, sUnwrapMonoid, SDual, sGetDual,
-       SAll, sGetAll, SAny, sGetAny,
-       SSum, sGetSum, SProduct, sGetProduct,
-       SOption, sGetOption, SArg),
-  GetMin, GetMax, GetFirst, GetLast, GetDual,
+  Sing, SMin(..), SMax(..), SFirst(..), SLast(..),
+  SWrappedMonoid(..), SDual(..), SAll(..), SAny(..),
+  SSum(..), SProduct(..), SOption(..), SArg(..),
+  GetMin, GetMax, GetFirst, GetLast, UnwrapMonoid, GetDual,
   GetAll, GetAny, GetSum, GetProduct, GetOption,
-
-  SMin, SMax, SFirst, SLast, SWrappedMonoid, SDual,
-  SAll, SAny, SSum, SProduct, SOption, SArg,
 
   option_, sOption_, Option_,
 
@@ -79,7 +73,7 @@ import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Maybe
 import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Prelude.Monoid hiding
-       (Sing(SFirst, SLast), SFirst, sGetFirst, SLast, sGetLast,
+       (SFirst(..), SLast(..),
         FirstSym0, FirstSym1, LastSym0, LastSym1,
         GetFirst,  GetFirstSym0, GetFirstSym1,
         GetLast,   GetLastSym0,  GetLastSym1)

@@ -64,11 +64,11 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (_ :: Maybe a) (_ :: Maybe a) = FalseSym0
     instance PEq (Maybe a) where
       type (==) a b = Equals_0123456789876543210 a b
-    data instance Sing :: Maybe a -> GHC.Types.Type
+    data SMaybe :: Maybe a -> GHC.Types.Type
       where
-        SNothing :: Sing Nothing
-        SJust :: forall a (n :: a). (Sing (n :: a)) -> Sing (Just n)
-    type SMaybe = Sing :: Maybe a -> GHC.Types.Type
+        SNothing :: SMaybe Nothing
+        SJust :: forall a (n :: a). (Sing (n :: a)) -> SMaybe (Just n)
+    type instance Sing @(Maybe a) = SMaybe
     instance SingKind a => SingKind (Maybe a) where
       type Demote (Maybe a) = Maybe (Demote a)
       fromSing SNothing = Nothing
@@ -128,8 +128,27 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-    deriving instance Data.Singletons.ShowSing.ShowSing a =>
-                      Show (Sing (z :: Maybe a))
+    instance SDecide a =>
+             Data.Type.Equality.TestEquality (SMaybe :: Maybe a
+                                                        -> GHC.Types.Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance SDecide a =>
+             Data.Type.Coercion.TestCoercion (SMaybe :: Maybe a
+                                                        -> GHC.Types.Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
+    instance Data.Singletons.ShowSing.ShowSing a =>
+             Show (SMaybe (z :: Maybe a)) where
+      showsPrec _ SNothing = showString "SNothing"
+      showsPrec
+        p_0123456789876543210
+        (SJust (arg_0123456789876543210 :: Sing argTy_0123456789876543210))
+        = (showParen (((>) p_0123456789876543210) 10))
+            (((.) (showString "SJust "))
+               ((showsPrec 11) arg_0123456789876543210)) ::
+            Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210 =>
+            ShowS
     instance SingI Nothing where
       sing = SNothing
     instance SingI n => SingI (Just (n :: a)) where

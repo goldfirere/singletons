@@ -2,8 +2,8 @@ Singletons/Empty.hs:(0,0)-(0,0): Splicing declarations
     singletons [d| data Empty |]
   ======>
     data Empty
-    data instance Sing :: Empty -> GHC.Types.Type
-    type SEmpty = Sing :: Empty -> GHC.Types.Type
+    data SEmpty :: Empty -> GHC.Types.Type
+    type instance Sing @Empty = SEmpty
     instance SingKind Empty where
       type Demote Empty = Empty
       fromSing x = case x of

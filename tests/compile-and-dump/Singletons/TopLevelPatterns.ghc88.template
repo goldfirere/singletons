@@ -28,22 +28,22 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 t0123456789876543210
     type instance Apply BarSym0 t0123456789876543210 = BarSym1 t0123456789876543210
-    data instance Sing :: Bool -> GHC.Types.Type
+    data SBool :: Bool -> GHC.Types.Type
       where
-        SFalse :: Sing False
-        STrue :: Sing True
-    type SBool = Sing :: Bool -> GHC.Types.Type
+        SFalse :: SBool False
+        STrue :: SBool True
+    type instance Sing @Bool = SBool
     instance SingKind Bool where
       type Demote Bool = Bool
       fromSing SFalse = False
       fromSing STrue = True
       toSing False = SomeSing SFalse
       toSing True = SomeSing STrue
-    data instance Sing :: Foo -> GHC.Types.Type
+    data SFoo :: Foo -> GHC.Types.Type
       where
         SBar :: forall (n :: Bool) (n :: Bool).
-                (Sing (n :: Bool)) -> (Sing (n :: Bool)) -> Sing (Bar n n)
-    type SFoo = Sing :: Foo -> GHC.Types.Type
+                (Sing (n :: Bool)) -> (Sing (n :: Bool)) -> SFoo (Bar n n)
+    type instance Sing @Foo = SFoo
     instance SingKind Foo where
       type Demote Foo = Foo
       fromSing (SBar b b) = (Bar (fromSing b)) (fromSing b)

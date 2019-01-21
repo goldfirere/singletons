@@ -117,8 +117,8 @@ Singletons/T190.hs:0:0:: Splicing declarations
       Equals_0123456789876543210 (_ :: T) (_ :: T) = FalseSym0
     instance PEq T where
       type (==) a b = Equals_0123456789876543210 a b
-    data instance Sing :: T -> GHC.Types.Type where ST :: Sing T
-    type ST = Sing :: T -> GHC.Types.Type
+    data ST :: T -> GHC.Types.Type where ST :: ST T
+    type instance Sing @T = ST
     instance SingKind T where
       type Demote T = T
       fromSing ST = T
@@ -184,6 +184,15 @@ Singletons/T190.hs:0:0:: Splicing declarations
       (%==) ST ST = STrue
     instance SDecide T where
       (%~) ST ST = Proved Refl
-    deriving instance Show (Sing (z :: T))
+    instance Data.Type.Equality.TestEquality (ST :: T
+                                                    -> GHC.Types.Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance Data.Type.Coercion.TestCoercion (ST :: T
+                                                    -> GHC.Types.Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
+    instance Show (ST (z :: T)) where
+      showsPrec _ ST = showString "ST"
     instance SingI T where
       sing = ST

@@ -28,7 +28,7 @@
 module Data.Singletons.TypeError (
   TypeError, sTypeError, typeError,
   ErrorMessage'(..), ErrorMessage, PErrorMessage,
-  Sing(SText, SShowType, (:%<>:), (:%$$:)), SErrorMessage,
+  Sing, SErrorMessage(..),
   ConvertPErrorMessage, showErrorMessage,
 
   -- * Defunctionalization symbols
@@ -75,18 +75,15 @@ type ErrorMessage  = ErrorMessage' Text.Text
 -- | A type-level `ErrorMessage'` which uses 'Symbol' as its text kind.
 type PErrorMessage = ErrorMessage' Symbol
 
-data instance Sing :: PErrorMessage -> Type where
-  -- It would be lovely to not have to write those (:: PErrorMessage) kind
-  -- ascriptions in the return types of each constructor.
-  -- See Trac #14111.
-  SText     :: Sing t             -> Sing ('Text t      :: PErrorMessage)
-  SShowType :: Sing ty            -> Sing ('ShowType ty :: PErrorMessage)
-  (:%<>:)   :: Sing e1 -> Sing e2 -> Sing (e1 ':<>: e2  :: PErrorMessage)
-  (:%$$:)   :: Sing e1 -> Sing e2 -> Sing (e1 ':$$: e2  :: PErrorMessage)
+data SErrorMessage :: PErrorMessage -> Type where
+  SText     :: Sing t             -> SErrorMessage ('Text t)
+  SShowType :: Sing ty            -> SErrorMessage ('ShowType ty)
+  (:%<>:)   :: Sing e1 -> Sing e2 -> SErrorMessage (e1 ':<>: e2)
+  (:%$$:)   :: Sing e1 -> Sing e2 -> SErrorMessage (e1 ':$$: e2)
 infixl 6 :%<>:
 infixl 5 :%$$:
 
-type SErrorMessage = (Sing :: PErrorMessage -> Type)
+type instance Sing = SErrorMessage
 
 instance SingKind PErrorMessage where
   type Demote PErrorMessage = ErrorMessage

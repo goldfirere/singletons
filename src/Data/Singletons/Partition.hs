@@ -261,9 +261,15 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
       mk_derived_eq_inst dec = mempty { pd_derived_eq_decs = [dec] }
 
       derived_decl :: DerivedDecl cls
-      derived_decl = DerivedDecl { ded_mb_cxt = mb_ctxt
-                                 , ded_type   = ty
-                                 , ded_decl   = data_decl }
+      derived_decl = DerivedDecl { ded_mb_cxt     = mb_ctxt
+                                 , ded_type       = ty
+                                 , ded_type_tycon = ty_tycon
+                                 , ded_decl       = data_decl }
+        where
+          ty_tycon :: Name
+          ty_tycon = case unfoldDType ty of
+                       (DConT tc, _) -> tc
+                       (t,        _) -> error $ "Not a data type: " ++ show t
       stock_or_default = isStockOrDefault mb_strat
 
       -- A mapping from all stock derivable classes (that singletons supports)
@@ -280,7 +286,7 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
         , ( eqName, return $ mk_derived_eq_inst derived_decl )
           -- See Note [DerivedDecl] in Data.Singletons.Syntax
         , ( showName, do -- These will become PShow/SShow instances...
-                         inst_for_promotion <- mk_instance mkShowInstance
+                         inst_for_promotion <- mk_instance $ mkShowInstance ForPromotion
                          -- ...and this will become a Show instance.
                          let inst_for_show = derived_decl
                          pure $ mempty { pd_instance_decs     = [inst_for_promotion]

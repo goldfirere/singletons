@@ -88,9 +88,10 @@ sIf SFalse _ c = c
 
 -- Nat
 
-data instance Sing :: Nat -> Type where
-  SZero :: Sing Zero
-  SSucc :: Sing n -> Sing (Succ n)
+data SNat :: Nat -> Type where
+  SZero :: SNat Zero
+  SSucc :: SNat n -> SNat (Succ n)
+type instance Sing = SNat
 
 data SuccSym0 :: Nat ~> Nat
 type instance Apply SuccSym0 x = Succ x
@@ -130,9 +131,10 @@ instance SingKind Nat where
 
 -- Bool
 
-data instance Sing :: Bool -> Type where
-  SFalse :: Sing False
-  STrue :: Sing True
+data SBool :: Bool -> Type where
+  SFalse :: SBool False
+  STrue :: SBool True
+type instance Sing = SBool
 
 (&&) :: Bool -> Bool -> Bool
 False && _ = False
@@ -161,9 +163,10 @@ instance SingKind Bool where
 
 -- Maybe
 
-data instance Sing :: Maybe k -> Type where
-  SNothing :: Sing Nothing
-  SJust :: forall k (a :: k). Sing a -> Sing (Just a)
+data SMaybe :: Maybe k -> Type where
+  SNothing :: SMaybe Nothing
+  SJust :: forall k (a :: k). Sing a -> SMaybe (Just a)
+type instance Sing = SMaybe
 
 type family EqualsMaybe (a :: Maybe k) (b :: Maybe k) where
   EqualsMaybe Nothing Nothing = True
@@ -202,9 +205,10 @@ instance SingKind k => SingKind (Maybe k) where
 
 -- List
 
-data instance Sing :: List k -> Type where
-  SNil :: Sing Nil
-  SCons :: forall k (h :: k) (t :: List k). Sing h -> Sing t -> Sing (Cons h t)
+data SList :: List k -> Type where
+  SNil :: SList Nil
+  SCons :: forall k (h :: k) (t :: List k). Sing h -> SList t -> SList (Cons h t)
+type instance Sing = SList
 
 type NilSym0 = Nil
 
@@ -256,9 +260,10 @@ instance SingKind k => SingKind (List k) where
 
 -- Either
 
-data instance Sing :: Either k1 k2 -> Type where
-  SLeft :: forall k1 (a :: k1). Sing a -> Sing (Left a)
-  SRight :: forall k2 (b :: k2). Sing b -> Sing (Right b)
+data SEither :: Either k1 k2 -> Type where
+  SLeft :: forall k1 (a :: k1). Sing a -> SEither (Left a)
+  SRight :: forall k2 (b :: k2). Sing b -> SEither (Right b)
+type instance Sing = SEither
 
 instance (SingI a) => SingI (Left (a :: k)) where
   sing = SLeft sing
@@ -292,8 +297,9 @@ instance (SDecide k1, SDecide k2) => SDecide (Either k1 k2) where
 data Composite :: Type -> Type -> Type where
   MkComp :: Either (Maybe a) b -> Composite a b
 
-data instance Sing :: Composite k1 k2 -> Type where
-  SMkComp :: forall k1 k2 (a :: Either (Maybe k1) k2). Sing a -> Sing (MkComp a)
+data SComposite :: Composite k1 k2 -> Type where
+  SMkComp :: forall k1 k2 (a :: Either (Maybe k1) k2). SEither a -> SComposite (MkComp a)
+type instance Sing = SComposite
 
 instance SingI a => SingI (MkComp (a :: Either (Maybe k1) k2)) where
   sing = SMkComp sing
@@ -314,7 +320,8 @@ instance (SDecide k1, SDecide k2) => SDecide (Composite k1 k2) where
 -- Empty
 
 data Empty
-data instance Sing :: Empty -> Type
+data SEmpty :: Empty -> Type
+type instance Sing = SEmpty
 instance SingKind Empty where
   type Demote Empty = Empty
   fromSing = \case
@@ -328,10 +335,11 @@ data Vec :: Type -> Nat -> Type where
 
 data Rep = Nat | Maybe Rep | Vec Rep Nat
 
-data instance Sing :: Type -> Type where
-  SNat :: Sing Nat
-  SMaybe :: Sing a -> Sing (Maybe a)
-  SVec :: Sing a -> Sing n -> Sing (Vec a n)
+data SRep :: Type -> Type where
+  SNat :: SRep Nat
+  SMaybe :: SRep a -> SRep (Maybe a)
+  SVec :: SRep a -> SNat n -> SRep (Vec a n)
+type instance Sing = SRep
 
 instance SingI Nat where
   sing = SNat
@@ -723,7 +731,7 @@ impNat _ sm = (sing :: Sing n) %+ sm
 callImpNat :: forall n m. Sing n -> Sing m -> Sing (n + m)
 callImpNat sn sm = withSingI sn (impNat (Proxy :: Proxy n) sm)
 
-instance Show (Sing (n :: Nat)) where
+instance Show (SNat n) where
   show SZero = "SZero"
   show (SSucc n) = "SSucc (" ++ (show n) ++ ")"
 
@@ -857,8 +865,9 @@ sFI = unSingFun2 (singFun2 @FI (\p ls ->
 
 ------------------------------------------------------------
 
-data G a where
+data G :: Type -> Type where
   MkG :: G Bool
 
-data instance Sing :: G a -> Type where
-  SMkG :: Sing MkG
+data SG :: forall a. G a -> Type where
+  SMkG :: SG MkG
+type instance Sing = SG

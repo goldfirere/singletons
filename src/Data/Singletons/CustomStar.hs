@@ -60,10 +60,11 @@ import Data.Singletons.Prelude.Bool
 -- and its singleton. However, because @Rep@ is promoted to @*@, the singleton
 -- is perhaps slightly unexpected:
 --
--- > data instance Sing (a :: *) where
+-- > data SRep (a :: *) where
 -- >   SNat :: Sing Nat
 -- >   SBool :: Sing Bool
 -- >   SMaybe :: Sing a -> Sing (Maybe a)
+-- > type instance Sing = SRep
 --
 -- The unexpected part is that @Nat@, @Bool@, and @Maybe@ above are the real @Nat@,
 -- @Bool@, and @Maybe@, not just promoted data constructors.
@@ -87,9 +88,9 @@ singletonStar names = do
     -- We opt to infer the constraints for the Eq instance here so that when it's
     -- promoted, Rep will be promoted to Type.
     dataDeclEqCxt <- inferConstraints (DConT ''Eq) (DConT repName) fakeCtors
-    let dataDeclEqInst = DerivedDecl (Just dataDeclEqCxt) (DConT repName) dataDecl
+    let dataDeclEqInst = DerivedDecl (Just dataDeclEqCxt) (DConT repName) repName dataDecl
     ordInst  <- mkOrdInstance Nothing (DConT repName) dataDecl
-    showInst <- mkShowInstance Nothing (DConT repName) dataDecl
+    showInst <- mkShowInstance ForPromotion Nothing (DConT repName) dataDecl
     (pInsts, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
                                             promoteDerivedEqDec dataDeclEqInst
                                             traverse (promoteInstanceDec mempty)

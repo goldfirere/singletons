@@ -37,4 +37,4 @@ g tr
   = NothingWordRep
 
 h :: forall (rep :: RuntimeRep) (a :: TYPE rep). Typeable a => Sing a
-h = STypeRep (typeRep @a)
+h = typeRep @a

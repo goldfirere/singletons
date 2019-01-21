@@ -311,22 +311,22 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @ConstSym0) sConst
     instance SingI d => SingI (ConstSym1 (d :: a) :: (~>) b a) where
       sing = (singFun1 @(ConstSym1 (d :: a))) (sConst (sing @d))
-    data instance Sing :: Foo -> GHC.Types.Type
+    data SFoo :: Foo -> GHC.Types.Type
       where
-        SA :: Sing A
-        SB :: Sing B
-    type SFoo = Sing :: Foo -> GHC.Types.Type
+        SA :: SFoo A
+        SB :: SFoo B
+    type instance Sing @Foo = SFoo
     instance SingKind Foo where
       type Demote Foo = Foo
       fromSing SA = A
       fromSing SB = B
       toSing A = SomeSing SA
       toSing B = SomeSing SB
-    data instance Sing :: Foo2 -> GHC.Types.Type
+    data SFoo2 :: Foo2 -> GHC.Types.Type
       where
-        SF :: Sing F
-        SG :: Sing G
-    type SFoo2 = Sing :: Foo2 -> GHC.Types.Type
+        SF :: SFoo2 F
+        SG :: SFoo2 G
+    type instance Sing @Foo2 = SFoo2
     instance SingKind Foo2 where
       type Demote Foo2 = Foo2
       fromSing SF = F
@@ -540,11 +540,11 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Mycompare_0123456789876543210Sym0 a0123456789876543210 = Mycompare_0123456789876543210Sym1 a0123456789876543210
     instance PMyOrd Nat' where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
-    data instance Sing :: Nat' -> GHC.Types.Type
+    data SNat' :: Nat' -> GHC.Types.Type
       where
-        SZero' :: Sing Zero'
-        SSucc' :: forall (n :: Nat'). (Sing (n :: Nat')) -> Sing (Succ' n)
-    type SNat' = Sing :: Nat' -> GHC.Types.Type
+        SZero' :: SNat' Zero'
+        SSucc' :: forall (n :: Nat'). (Sing (n :: Nat')) -> SNat' (Succ' n)
+    type instance Sing @Nat' = SNat'
     instance SingKind Nat' where
       type Demote Nat' = Nat'
       fromSing SZero' = Zero'

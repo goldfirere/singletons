@@ -159,11 +159,11 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (PlusSym1 (d :: Nat) :: (~>) Nat Nat) where
       sing = (singFun1 @(PlusSym1 (d :: Nat))) (sPlus (sing @d))
-    data instance Sing :: Nat -> GHC.Types.Type
+    data SNat :: Nat -> GHC.Types.Type
       where
-        SZero :: Sing Zero
-        SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> Sing (Succ n)
-    type SNat = Sing :: Nat -> GHC.Types.Type
+        SZero :: SNat Zero
+        SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> SNat (Succ n)
+    type instance Sing @Nat = SNat
     instance SingKind Nat where
       type Demote Nat = Nat
       fromSing SZero = Zero
@@ -254,8 +254,27 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-    deriving instance Data.Singletons.ShowSing.ShowSing Nat =>
-                      Show (Sing (z :: Nat))
+    instance SDecide Nat =>
+             Data.Type.Equality.TestEquality (SNat :: Nat
+                                                      -> GHC.Types.Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance SDecide Nat =>
+             Data.Type.Coercion.TestCoercion (SNat :: Nat
+                                                      -> GHC.Types.Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
+    instance Data.Singletons.ShowSing.ShowSing Nat =>
+             Show (SNat (z :: Nat)) where
+      showsPrec _ SZero = showString "SZero"
+      showsPrec
+        p_0123456789876543210
+        (SSucc (arg_0123456789876543210 :: Sing argTy_0123456789876543210))
+        = (showParen (((>) p_0123456789876543210) 10))
+            (((.) (showString "SSucc "))
+               ((showsPrec 11) arg_0123456789876543210)) ::
+            Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210 =>
+            ShowS
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where

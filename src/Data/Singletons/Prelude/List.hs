@@ -22,15 +22,7 @@
 
 module Data.Singletons.Prelude.List (
   -- * The singleton for lists
-  Sing(SNil, SCons),
-  -- | Though Haddock doesn't show it, the 'Sing' instance above declares
-  -- constructors
-  --
-  -- > SNil  :: Sing '[]
-  -- > SCons :: Sing (h :: k) -> Sing (t :: [k]) -> Sing (h ': t)
-
-  SList,
-  -- | 'SList' is a kind-restricted synonym for 'Sing': @type SList (a :: [k]) = Sing a@
+  Sing, SList(..),
 
   -- * Basic functions
   type (++), (%++), Head, sHead, Last, sLast, Tail, sTail, Init, sInit,
@@ -267,7 +259,7 @@ import Data.Singletons.Prelude.Base
        )
 import Data.Singletons.Prelude.Foldable
 import Data.Singletons.Prelude.Instances
-       (Sing(..), SList, NilSym0, type (:@#@$), type (:@#@$$), type (:@#@$$$))
+       (Sing, SList(..), NilSym0, type (:@#@$), type (:@#@$$), type (:@#@$$$))
 import Data.Singletons.Prelude.Traversable
 
 import Data.Singletons.Prelude.List.Internal

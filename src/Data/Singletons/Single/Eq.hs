@@ -37,6 +37,29 @@ mkEqualityInstance mb_ctxt k ctors sctors (mkMeth, mkEmpty, className, methName)
                      (DAppT (DConT className) k)
                      [DLetDec $ DFunD methName methClauses]
 
+data TestInstance = TestEquality
+                  | TestCoercion
+
+-- Make an instance of TestEquality or TestCoercion by leveraging SDecide.
+mkTestInstance :: DsMonad q => Maybe DCxt -> DKind
+               -> Name   -- ^ The name of the data type
+               -> [DCon] -- ^ The /original/ constructors (for inferring the instance context)
+               -> TestInstance -> q DDec
+mkTestInstance mb_ctxt k data_name ctors ti = do
+  constraints <- inferConstraintsDef mb_ctxt (DConT sDecideClassName) k ctors
+  pure $ DInstanceD Nothing Nothing
+                    constraints
+                    (DAppT (DConT tiClassName)
+                           (DConT (singTyConName data_name)
+                             `DSigT` (DArrowT `DAppT` k `DAppT` DConT typeKindName)))
+                    [DLetDec $ DFunD tiMethName
+                                     [DClause [] (DVarE tiDefaultName)]]
+  where
+    (tiClassName, tiMethName, tiDefaultName) =
+      case ti of
+        TestEquality -> (testEqualityClassName, testEqualityMethName, decideEqualityName)
+        TestCoercion -> (testCoercionClassName, testCoercionMethName, decideCoercionName)
+
 mkEqMethClause :: Quasi q => (DCon, DCon) -> q DClause
 mkEqMethClause (c1, c2)
   | lname == rname = do

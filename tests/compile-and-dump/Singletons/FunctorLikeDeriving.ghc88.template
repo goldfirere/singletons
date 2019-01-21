@@ -1240,7 +1240,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Traverse_0123456789876543210Sym0 a0123456789876543210 = Traverse_0123456789876543210Sym1 a0123456789876543210
     instance PTraversable Empty where
       type Traverse a a = Apply (Apply Traverse_0123456789876543210Sym0 a) a
-    data instance Sing :: T x a -> Type
+    data ST :: T x a -> Type
       where
         SMkT1 :: forall x
                         a
@@ -1251,10 +1251,10 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                  (Sing (n :: x))
                  -> (Sing (n :: a))
                     -> (Sing (n :: Maybe a))
-                       -> (Sing (n :: Maybe (Maybe a))) -> Sing (MkT1 n n n n)
+                       -> (Sing (n :: Maybe (Maybe a))) -> ST (MkT1 n n n n)
         SMkT2 :: forall x (n :: Maybe x).
-                 (Sing (n :: Maybe x)) -> Sing (MkT2 n)
-    type ST = Sing :: T x a -> Type
+                 (Sing (n :: Maybe x)) -> ST (MkT2 n)
+    type instance Sing @(T x a) = ST
     instance (SingKind x, SingKind a) => SingKind (T x a) where
       type Demote (T x a) = T (Demote x) (Demote a)
       fromSing (SMkT1 b b b b)
@@ -1275,8 +1275,8 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkT2 (b :: Demote (Maybe x)))
         = case toSing b :: SomeSing (Maybe x) of {
             SomeSing c -> SomeSing (SMkT2 c) }
-    data instance Sing :: Empty a -> Type
-    type SEmpty = Sing :: Empty a -> Type
+    data SEmpty :: Empty a -> Type
+    type instance Sing @(Empty a) = SEmpty
     instance SingKind a => SingKind (Empty a) where
       type Demote (Empty a) = Empty (Demote a)
       fromSing x = case x of

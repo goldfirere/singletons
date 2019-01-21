@@ -4,6 +4,50 @@ Changelog for singletons project
 2.6
 ---
 * Require GHC 8.8.
+* `Sing` has switched from a data family to a type family. This has a number of
+  consequences:
+  * Names like `SBool`, `SMaybe`, etc. are no longer type synonyms for
+    particular instantiations of `Sing` but are instead the names of the
+    singleton data types themselves. In other words, previous versions of
+    `singletons` would provide this:
+
+    ```haskell
+    data instance Sing :: Bool -> Type where
+      SFalse :: Sing False
+      STrue  :: Sing True
+    type SBool = (Sing :: Bool -> Type)
+    ```
+
+    Whereas with `Sing`-as-a-type-family, `singletons` now provides this:
+
+    ```haskell
+    data SBool :: Bool -> Type where
+      SFalse :: SBool False
+      STrue  :: SBool True
+    type instance Sing @Bool = SBool
+    ```
+  * The `Sing` instance for `TYPE rep` in `Data.Singletons.TypeRepTYPE` is now
+    directly defined as `type instance Sing @(TYPE rep) = TypeRep`, without the
+    use of an intermediate newtype as before.
+  * Due to limitations in the ways that quantified constraints and type
+    families can interact
+    (see [this GHC issue](https://gitlab.haskell.org/ghc/ghc/issues/14860)),
+    the internals of `ShowSing` has to be tweaked in order to continue to
+    work with `Sing`-as-a-type-family. One notable consequence of this is
+    that `Show` instances for singleton types can no longer be derived—they
+    must be written by hand in order to work around
+    [this GHC bug](https://gitlab.haskell.org/ghc/ghc/issues/16365).
+    This is unlikely to affect you unless you define 'Show' instances for
+    singleton types by hand. For more information, refer to the Haddocks for
+    `ShowSing'` in `Data.Singletons.ShowSing`.
+  * It is no longer possible to define a single `TestEquality` and
+    `TestCoercion` instance that covers all `Sing`s, as one cannot put type
+    families inside of instance heads. Instead, `singletons` now generates a
+    separate `TestEquality`/`TestCoercion` instance for every data type that
+    singletons a derived `Eq` instance. In addition, the
+    `Data.Singletons.Decide` module now provides top-level
+    `decideEquality`/`decideCoercion` functions which provide the behavior
+    of `testEquality`/`testCoercion`, but monomorphized to `Sing`.
 * GHC's behavior surrounding kind inference for local definitions has changed
   in 8.8, and certain code that `singletons` generates for local definitions
   may no longer typecheck as a result. While we have taken measures to mitigate

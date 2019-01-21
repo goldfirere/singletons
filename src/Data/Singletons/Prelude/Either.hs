@@ -24,16 +24,7 @@
 
 module Data.Singletons.Prelude.Either (
   -- * The 'Either' singleton
-  Sing(SLeft, SRight),
-  -- | Though Haddock doesn't show it, the 'Sing' instance above declares
-  -- constructors
-  --
-  -- > SLeft  :: Sing a -> Sing (Left a)
-  -- > SRight :: Sing b -> Sing (Right b)
-
-  SEither,
-  -- | 'SEither' is a kind-restricted synonym for 'Sing':
-  -- @type SEither (a :: Either x y) = Sing a@
+  Sing, SEither(..),
 
   -- * Singletons from @Data.Either@
   either_, Either_, sEither_,

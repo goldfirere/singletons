@@ -139,15 +139,15 @@ Singletons/Star.hs:0:0:: Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance PShow Type where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    data instance Sing :: Type -> Type
+    data SRep :: Type -> Type
       where
-        SNat :: Sing Nat
-        SInt :: Sing Int
-        SString :: Sing String
-        SMaybe :: forall (n :: Type). (Sing (n :: Type)) -> Sing (Maybe n)
+        SNat :: SRep Nat
+        SInt :: SRep Int
+        SString :: SRep String
+        SMaybe :: forall (n :: Type). (Sing (n :: Type)) -> SRep (Maybe n)
         SVec :: forall (n :: Type) (n :: Nat).
-                (Sing (n :: Type)) -> (Sing (n :: Nat)) -> Sing (Vec n n)
-    type SRep = Sing :: Type -> Type
+                (Sing (n :: Type)) -> (Sing (n :: Nat)) -> SRep (Vec n n)
+    type instance Sing @Type = SRep
     instance SingKind Type where
       type Demote Type = Rep
       fromSing SNat = Singletons.Star.Nat
@@ -229,6 +229,12 @@ Singletons/Star.hs:0:0:: Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             (,) _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance (SDecide Type, SDecide Nat) =>
+             Data.Type.Equality.TestEquality (SRep :: Type -> Type) where
+      Data.Type.Equality.testEquality = decideEquality
+    instance (SDecide Type, SDecide Nat) =>
+             Data.Type.Coercion.TestCoercion (SRep :: Type -> Type) where
+      Data.Type.Coercion.testCoercion = decideCoercion
     instance (SOrd Type, SOrd Nat) => SOrd Type where
       sCompare ::
         forall (t1 :: Type) (t2 :: Type).

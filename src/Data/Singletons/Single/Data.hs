@@ -30,7 +30,7 @@ singDataD :: DataDecl -> SgM [DDec]
 singDataD (DataDecl name tvbs ctors) = do
   let tvbNames = map extractTvbName tvbs
   k <- promoteType (foldType (DConT name) (map DVarT tvbNames))
-  ctors' <- mapM singCtor ctors
+  ctors' <- mapM (singCtor name) ctors
   ctorFixities <-
     -- try to reify the fixity declarations for the constructors and then
     -- singletonize them. In case the reification fails, we default to an
@@ -60,15 +60,16 @@ singDataD (DataDecl name tvbs ctors) = do
                    , DLetDec $ DFunD toSingName
                                (toSingClauses   `orIfEmpty` [emptyToSingClause]) ]
 
-  -- e.g. type SNat = (Sing :: Nat -> Type)
-  let kindedSingTy = DArrowT `DAppT` k `DAppT` DConT typeKindName
-      kindedSynInst =
-        DTySynD (singTyConName name)
-                []
-                (singFamily `DSigT` kindedSingTy)
+  let singDataName = singTyConName name
+      -- e.g. type instance Sing @Nat = SNat
+      singSynInst =
+        DTySynInstD $ DTySynEqn Nothing
+                                (DConT singFamilyName `DAppKindT` k)
+                                (DConT singDataName)
+      kindedSingTy = DArrowT `DAppT` k `DAppT` DConT typeKindName
 
-  return $ (DDataInstD Data [] Nothing (DConT singFamilyName) (Just kindedSingTy) ctors' []) :
-           kindedSynInst :
+  return $ (DDataD Data [] singDataName [] (Just kindedSingTy) ctors' []) :
+           singSynInst :
            singKindInst :
            ctorFixities
   where -- in the Rep case, the names of the constructors are in the wrong scope
@@ -128,11 +129,11 @@ singDataD (DataDecl name tvbs ctors) = do
                $ DConE someSingDataName `DAppE` DCaseE (DVarE x) []
 
 -- refine a constructor.
-singCtor :: DCon -> SgM DCon
+singCtor :: Name -> DCon -> SgM DCon
  -- polymorphic constructors are handled just
  -- like monomorphic ones -- the polymorphism in
  -- the kind is automatic
-singCtor (DCon _tvbs cxt name fields rty)
+singCtor dataName (DCon _tvbs cxt name fields rty)
   | not (null cxt)
   = fail "Singling of constrained constructors not yet supported"
   | otherwise
@@ -174,7 +175,7 @@ singCtor (DCon _tvbs cxt name fields rty)
                 []
                 sName
                 conFields
-                (DConT singFamilyName `DAppT` foldType pCon indices)
+                (DConT (singTyConName dataName) `DAppT` foldType pCon indices)
   where buildArgType :: OSet Name -> DType -> DType -> SgM DType
         buildArgType bound_kvs ty index = do
           (ty', _, _, _, _, _) <- singType bound_kvs index ty

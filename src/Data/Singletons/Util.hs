@@ -9,9 +9,8 @@ Users of the package should not need to consult this file.
 
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, RankNTypes,
              TemplateHaskell, GeneralizedNewtypeDeriving,
-             MultiParamTypeClasses, StandaloneDeriving,
-             UndecidableInstances, MagicHash, UnboxedTuples,
-             LambdaCase, NoMonomorphismRestriction #-}
+             MultiParamTypeClasses, UndecidableInstances, MagicHash,
+             UnboxedTuples, LambdaCase, NoMonomorphismRestriction #-}
 
 module Data.Singletons.Util where
 

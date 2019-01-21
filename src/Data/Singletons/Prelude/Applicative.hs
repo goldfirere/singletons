@@ -28,7 +28,7 @@
 module Data.Singletons.Prelude.Applicative (
   PApplicative(..), SApplicative(..),
   PAlternative(..), SAlternative(..),
-  Sing (SConst, sGetConst), SConst, Const, GetConst,
+  Sing, SConst(..), Const, GetConst,
   type (<$>), (%<$>), type (<$), (%<$), type (<**>), (%<**>),
   LiftA, sLiftA, LiftA3, sLiftA3, Optional, sOptional,
 
