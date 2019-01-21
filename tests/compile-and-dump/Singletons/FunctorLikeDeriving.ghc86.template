@@ -1575,11 +1575,13 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
            -> Sing (Apply (Apply ((<$@#@$) :: TyFun a ((~>) (Empty b) (Empty a))
                                               -> Type) t1) t2)
       sFmap _ (sV_0123456789876543210 :: Sing v_0123456789876543210)
-        = (case sV_0123456789876543210 of) ::
-            Sing (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210)
+        = (id
+             @(Sing (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210)))
+            (case sV_0123456789876543210 of)
       (%<$) _ (sV_0123456789876543210 :: Sing v_0123456789876543210)
-        = (case sV_0123456789876543210 of) ::
-            Sing (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210)
+        = (id
+             @(Sing (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210)))
+            (case sV_0123456789876543210 of)
     instance SFoldable Empty where
       sFoldMap ::
         forall (m :: Type) (a :: Type) (t1 :: (~>) a m) (t2 :: Empty a).
@@ -1603,8 +1605,9 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                   -> Type) t1) t2)
       sTraverse _ (sV_0123456789876543210 :: Sing v_0123456789876543210)
         = (applySing ((singFun1 @PureSym0) sPure))
-            ((case sV_0123456789876543210 of) ::
-               Sing (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210))
+            ((id
+                @(Sing (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210)))
+               (case sV_0123456789876543210 of))
     instance (SingI n, SingI n, SingI n, SingI n) =>
              SingI (MkT1 (n :: x) (n :: a) (n :: Maybe a) (n :: Maybe (Maybe a))) where
       sing = (((SMkT1 sing) sing) sing) sing

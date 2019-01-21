@@ -91,27 +91,30 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
         -> Sing (Apply (Data.Singletons.Prelude.Enum.FromEnumSym0 :: TyFun Foo GHC.Types.Nat
                                                                      -> GHC.Types.Type) t)
       sToEnum (sN :: Sing n)
-        = (case
-               (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
-                 (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))
-           of
-             STrue -> SBar
-             SFalse
-               -> (case
-                       (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
-                         (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 1))
-                   of
-                     STrue -> SBaz
-                     SFalse
-                       -> (case
-                               (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
-                                 (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 2))
-                           of
-                             STrue -> SBum
-                             SFalse -> sError (sing :: Sing "toEnum: bad argument")) ::
-                            Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 2)))) ::
-                    Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 1)))) ::
-            Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)))
+        = (id
+             @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)))))
+            (case
+                 (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
+                   (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))
+             of
+               STrue -> SBar
+               SFalse
+                 -> (id
+                       @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 1)))))
+                      (case
+                           (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
+                             (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 1))
+                       of
+                         STrue -> SBaz
+                         SFalse
+                           -> (id
+                                 @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 2)))))
+                                (case
+                                     (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
+                                       (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 2))
+                                 of
+                                   STrue -> SBum
+                                   SFalse -> sError (sing :: Sing "toEnum: bad argument"))))
       sFromEnum SBar
         = Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0)
       sFromEnum SBaz
@@ -179,20 +182,22 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
         -> Sing (Apply (Data.Singletons.Prelude.Enum.FromEnumSym0 :: TyFun Quux GHC.Types.Nat
                                                                      -> GHC.Types.Type) t)
       sToEnum (sN :: Sing n)
-        = (case
-               (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
-                 (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))
-           of
-             STrue -> SQ1
-             SFalse
-               -> (case
-                       (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
-                         (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 1))
-                   of
-                     STrue -> SQ2
-                     SFalse -> sError (sing :: Sing "toEnum: bad argument")) ::
-                    Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 1)))) ::
-            Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)))
+        = (id
+             @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)))))
+            (case
+                 (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
+                   (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))
+             of
+               STrue -> SQ1
+               SFalse
+                 -> (id
+                       @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 1)))))
+                      (case
+                           (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
+                             (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 1))
+                       of
+                         STrue -> SQ2
+                         SFalse -> sError (sing :: Sing "toEnum: bad argument")))
       sFromEnum SQ1
         = Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0)
       sFromEnum SQ2

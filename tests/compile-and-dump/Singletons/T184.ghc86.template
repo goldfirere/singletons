@@ -457,12 +457,13 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
              (\ sArg_0123456789876543210
                 -> case sArg_0123456789876543210 of {
                      (_ :: Sing arg_0123456789876543210)
-                       -> (case sArg_0123456789876543210 of {
-                             STuple2 (sX :: Sing x) (sY :: Sing y)
-                               -> (applySing ((singFun1 @ReturnSym0) sReturn))
-                                    ((applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX))
-                                       sY) }) ::
-                            Sing (Case_0123456789876543210 xs ys arg_0123456789876543210 arg_0123456789876543210) }))
+                       -> (id
+                             @(Sing (Case_0123456789876543210 xs ys arg_0123456789876543210 arg_0123456789876543210)))
+                            (case sArg_0123456789876543210 of {
+                               STuple2 (sX :: Sing x) (sY :: Sing y)
+                                 -> (applySing ((singFun1 @ReturnSym0) sReturn))
+                                      ((applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX))
+                                         sY) }) }))
     sBoogie (sMa :: Sing ma) (sMb :: Sing mb)
       = (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sMa))
           ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 ma) mb))

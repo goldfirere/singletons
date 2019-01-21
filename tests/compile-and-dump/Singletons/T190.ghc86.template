@@ -149,13 +149,14 @@ Singletons/T190.hs:0:0:: Splicing declarations
         -> Sing (Apply (Data.Singletons.Prelude.Enum.FromEnumSym0 :: TyFun T GHC.Types.Nat
                                                                      -> GHC.Types.Type) t)
       sToEnum (sN :: Sing n)
-        = (case
-               (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
-                 (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))
-           of
-             STrue -> ST
-             SFalse -> sError (sing :: Sing "toEnum: bad argument")) ::
-            Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)))
+        = (id
+             @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)))))
+            (case
+                 (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
+                   (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))
+             of
+               STrue -> ST
+               SFalse -> sError (sing :: Sing "toEnum: bad argument"))
       sFromEnum ST
         = Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0)
     instance SBounded T where

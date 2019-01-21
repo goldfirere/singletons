@@ -674,9 +674,10 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
               (\ sArg_0123456789876543210
                  -> case sArg_0123456789876543210 of {
                       (_ :: Sing arg_0123456789876543210)
-                        -> (case sArg_0123456789876543210 of {
-                              SFoo (sA :: Sing a) _ -> sA }) ::
-                             Sing (Case_0123456789876543210 x arg_0123456789876543210 arg_0123456789876543210) })))
+                        -> (id
+                              @(Sing (Case_0123456789876543210 x arg_0123456789876543210 arg_0123456789876543210)))
+                             (case sArg_0123456789876543210 of {
+                                SFoo (sA :: Sing a) _ -> sA }) })))
           sX
     sFoo7 (sX :: Sing x) (sY :: Sing y)
       = (applySing
@@ -684,9 +685,10 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
               (\ sArg_0123456789876543210
                  -> case sArg_0123456789876543210 of {
                       (_ :: Sing arg_0123456789876543210)
-                        -> (case sArg_0123456789876543210 of {
-                              STuple2 _ (sB :: Sing b) -> sB }) ::
-                             Sing (Case_0123456789876543210 x y arg_0123456789876543210 arg_0123456789876543210) })))
+                        -> (id
+                              @(Sing (Case_0123456789876543210 x y arg_0123456789876543210 arg_0123456789876543210)))
+                             (case sArg_0123456789876543210 of {
+                                STuple2 _ (sB :: Sing b) -> sB }) })))
           ((applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX)) sY)
     sFoo6 (sA :: Sing a) (sB :: Sing b)
       = (applySing
@@ -700,8 +702,10 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                                  (\ sArg_0123456789876543210
                                     -> case sArg_0123456789876543210 of {
                                          (_ :: Sing arg_0123456789876543210)
-                                           -> (case sArg_0123456789876543210 of { _ -> sX }) ::
-                                                Sing (Case_0123456789876543210 a b x arg_0123456789876543210 arg_0123456789876543210) }) })))
+                                           -> (id
+                                                 @(Sing (Case_0123456789876543210 a b x arg_0123456789876543210 arg_0123456789876543210)))
+                                                (case sArg_0123456789876543210 of {
+                                                   _ -> sX }) }) })))
               sA))
           sB
     sFoo5 (sX :: Sing x) (sY :: Sing y)
@@ -720,14 +724,15 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
                         of {
                           (,) (_ :: Sing arg_0123456789876543210)
                               (_ :: Sing arg_0123456789876543210)
-                            -> (case
-                                    (applySing
-                                       ((applySing ((singFun2 @Tuple2Sym0) STuple2))
-                                          sArg_0123456789876543210))
-                                      sArg_0123456789876543210
-                                of {
-                                  STuple2 _ _ -> sX }) ::
-                                 Sing (Case_0123456789876543210 x y z arg_0123456789876543210 arg_0123456789876543210 (Apply (Apply Tuple2Sym0 arg_0123456789876543210) arg_0123456789876543210)) })))
+                            -> (id
+                                  @(Sing (Case_0123456789876543210 x y z arg_0123456789876543210 arg_0123456789876543210 (Apply (Apply Tuple2Sym0 arg_0123456789876543210) arg_0123456789876543210))))
+                                 (case
+                                      (applySing
+                                         ((applySing ((singFun2 @Tuple2Sym0) STuple2))
+                                            sArg_0123456789876543210))
+                                        sArg_0123456789876543210
+                                  of {
+                                    STuple2 _ _ -> sX }) })))
               sY))
           sZ
     sFoo3 (sX :: Sing x)
@@ -741,8 +746,9 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
               (\ sArg_0123456789876543210
                  -> case sArg_0123456789876543210 of {
                       (_ :: Sing arg_0123456789876543210)
-                        -> (case sArg_0123456789876543210 of { _ -> sX }) ::
-                             Sing (Case_0123456789876543210 x y arg_0123456789876543210 arg_0123456789876543210) })))
+                        -> (id
+                              @(Sing (Case_0123456789876543210 x y arg_0123456789876543210 arg_0123456789876543210)))
+                             (case sArg_0123456789876543210 of { _ -> sX }) })))
           sY
     sFoo1
       (sX :: Sing x)
@@ -753,8 +759,9 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
               (\ sArg_0123456789876543210
                  -> case sArg_0123456789876543210 of {
                       (_ :: Sing arg_0123456789876543210)
-                        -> (case sArg_0123456789876543210 of { _ -> sX }) ::
-                             Sing (Case_0123456789876543210 x arg_0123456789876543210 a_0123456789876543210 arg_0123456789876543210) })))
+                        -> (id
+                              @(Sing (Case_0123456789876543210 x arg_0123456789876543210 a_0123456789876543210 arg_0123456789876543210)))
+                             (case sArg_0123456789876543210 of { _ -> sX }) })))
           sA_0123456789876543210
     sFoo0
       (sA_0123456789876543210 :: Sing a_0123456789876543210)

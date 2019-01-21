@@ -49,7 +49,6 @@ import Data.Singletons.Prelude.Bool
 import GHC.Stack (HasCallStack)
 import GHC.TypeLits as TL
 import qualified GHC.TypeNats as TN
-import Data.Proxy ( Proxy(..) )
 import Numeric.Natural (Natural)
 import Unsafe.Coerce
 

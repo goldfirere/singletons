@@ -1,6 +1,7 @@
 {-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies,
              TemplateHaskell, GADTs, UndecidableInstances, RankNTypes,
-             ScopedTypeVariables, FlexibleContexts, AllowAmbiguousTypes #-}
+             ScopedTypeVariables, FlexibleContexts, AllowAmbiguousTypes,
+             TypeApplications #-}
 {-# OPTIONS_GHC -O0 #-}
 
 -----------------------------------------------------------------------------
@@ -96,11 +97,6 @@ $(singletonsOnly [d|
       perms (t:ts) is = foldr interleave (perms ts (t:is)) (permutations is)
         where interleave    xs     r = let (_,zs) = interleave' id xs r in zs
 
-              -- This type signature isn't present in the reference
-              -- implementation of permutations in base. However, it is needed
-              -- here, since (at least in GHC 8.2.1) the singletonized version
-              -- will fail to typecheck without it. See #13549 for the full story.
-              interleave' :: ([a] -> b) -> [a] -> [b] -> ([a], [b])
               interleave' _ []     r = (ts, r)
               interleave' f (y:ys) r = let (us,zs) = interleave' (f . (y:)) ys r
                                        in  (y:us, f (t:y:us) : zs)

@@ -60,6 +60,7 @@ following:
 * `ScopedTypeVariables`
 * `StandaloneDeriving`
 * `TemplateHaskell`
+* `TypeApplications`
 * `TypeFamilies`
 * `TypeOperators`
 * `UndecidableInstances`

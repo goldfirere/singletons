@@ -137,8 +137,9 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
              (\ sArg_0123456789876543210
                 -> case sArg_0123456789876543210 of {
                      (_ :: Sing arg_0123456789876543210)
-                       -> (case sArg_0123456789876543210 of { _ -> sBaz1 }) ::
-                            Sing (Case_0123456789876543210 x arg_0123456789876543210 arg_0123456789876543210) }))
+                       -> (id
+                             @(Sing (Case_0123456789876543210 x arg_0123456789876543210 arg_0123456789876543210)))
+                            (case sArg_0123456789876543210 of { _ -> sBaz1 }) }))
     instance SFoo2 a => SingI (Quux2Sym0 :: (~>) a a) where
       sing = (singFun1 @Quux2Sym0) sQuux2
     instance SFoo1 a => SingI (Quux1Sym0 :: (~>) a a) where

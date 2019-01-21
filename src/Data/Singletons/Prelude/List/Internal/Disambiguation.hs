@@ -13,7 +13,8 @@
 ----------------------------------------------------------------------------
 
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies,
-             UndecidableInstances, GADTs, DataKinds, PolyKinds #-}
+             UndecidableInstances, GADTs, DataKinds, PolyKinds,
+             TypeApplications #-}
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
 
 module Data.Singletons.Prelude.List.Internal.Disambiguation where

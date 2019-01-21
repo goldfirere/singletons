@@ -3,6 +3,60 @@ Changelog for singletons project
 
 2.6
 ---
+* GHC's behavior surrounding kind inference for local definitions has changed
+  in 8.8, and certain code that `singletons` generates for local definitions
+  may no longer typecheck as a result. While we have taken measures to mitigate
+  the issue on `singletons`' end, there still exists code that must be patched
+  on the users' end in order to continue compiling. For instance, here is an
+  example of code that stopped compiling with the switch to GHC 8.8:
+
+  ```haskell
+  replicateM_ :: (Applicative m) => Nat -> m a -> m ()
+  replicateM_ cnt0 f =
+      loop cnt0
+    where
+      loop cnt
+          | cnt <= 0  = pure ()
+          | otherwise = f *> loop (cnt - 1)
+  ```
+
+  This produces errors to the effect of:
+
+  ```
+  • Could not deduce (SNum k1) arising from a use of ‘sFromInteger’
+    from the context: SApplicative m
+    ...
+
+  • Could not deduce (SOrd k1) arising from a use of ‘%<=’
+    from the context: SApplicative m
+    ...
+  ```
+
+  The issue is that GHC 8.8 now kind-generalizes `sLoop` (whereas it did not
+  previously), explaining why the error message mentions a mysterious kind
+  variable `k1` that only appeared after kind generalization. The solution is
+  to give `loop` an explicit type signature like so:
+
+  ```diff
+  -replicateM_       :: (Applicative m) => Nat -> m a -> m ()
+  +replicateM_       :: forall m a. (Applicative m) => Nat -> m a -> m ()
+   replicateM_ cnt0 f =
+       loop cnt0
+     where
+  +    loop :: Nat -> m ()
+       loop cnt
+           | cnt <= 0  = pure ()
+           | otherwise = f *> loop (cnt - 1)
+  ```
+
+  This general approach should be sufficient to fix any type inference
+  regressions that were introduced between GHC 8.6 and 8.8. If this isn't the
+  case, please file an issue.
+* Due to [GHC Trac #16133](https://ghc.haskell.org/trac/ghc/ticket/16133) being
+  fixed, `singletons`-generated code now requires explicitly enabling the
+  `TypeApplications` extension. (The generated code was always using
+  `TypeApplications` under the hood, but it's only now that GHC is detecting
+  it.)
 * Redefine `Σ` such that it is now a partial application of `Sigma`, like so:
 
   ```haskell

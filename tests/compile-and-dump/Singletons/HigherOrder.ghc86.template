@@ -369,12 +369,12 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                      (\ sN sB
                         -> case ((,) sN) sB of {
                              (,) (_ :: Sing n) (_ :: Sing b)
-                               -> (case sB of
-                                     STrue
-                                       -> (applySing ((singFun1 @SuccSym0) SSucc))
-                                            ((applySing ((singFun1 @SuccSym0) SSucc)) sN)
-                                     SFalse -> sN) ::
-                                    Sing (Case_0123456789876543210 ns bs n b b) }))))
+                               -> (id @(Sing (Case_0123456789876543210 ns bs n b b)))
+                                    (case sB of
+                                       STrue
+                                         -> (applySing ((singFun1 @SuccSym0) SSucc))
+                                              ((applySing ((singFun1 @SuccSym0) SSucc)) sN)
+                                       SFalse -> sN) }))))
               sNs))
           sBs
     sEtad
@@ -388,12 +388,13 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                      (\ sN sB
                         -> case ((,) sN) sB of {
                              (,) (_ :: Sing n) (_ :: Sing b)
-                               -> (case sB of
-                                     STrue
-                                       -> (applySing ((singFun1 @SuccSym0) SSucc))
-                                            ((applySing ((singFun1 @SuccSym0) SSucc)) sN)
-                                     SFalse -> sN) ::
-                                    Sing (Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 b) }))))
+                               -> (id
+                                     @(Sing (Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 b)))
+                                    (case sB of
+                                       STrue
+                                         -> (applySing ((singFun1 @SuccSym0) SSucc))
+                                              ((applySing ((singFun1 @SuccSym0) SSucc)) sN)
+                                       SFalse -> sN) }))))
               sA_0123456789876543210))
           sA_0123456789876543210
     sLiftMaybe (sF :: Sing f) (SJust (sX :: Sing x))
