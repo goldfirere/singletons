@@ -37,8 +37,8 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = TrueSym0
     instance PEq Empty where
       type (==) a b = Equals_0123456789876543210 a b
-    data instance Sing :: Empty -> GHC.Types.Type
-    type SEmpty = Sing :: Empty -> GHC.Types.Type
+    data SEmpty :: Empty -> GHC.Types.Type
+    type instance Sing @Empty = SEmpty
     instance SingKind Empty where
       type Demote Empty = Empty
       fromSing x = case x of
@@ -55,3 +55,11 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
       (%==) _ _ = STrue
     instance SDecide Empty where
       (%~) x _ = Proved (case x of)
+    instance Data.Type.Equality.TestEquality (SEmpty :: Empty
+                                                        -> GHC.Types.Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance Data.Type.Coercion.TestCoercion (SEmpty :: Empty
+                                                        -> GHC.Types.Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion

@@ -45,8 +45,61 @@ type SameKind (a :: k) (b :: k) = (() :: Constraint)
 ---- Sing & friends --------------------------------------------------
 ----------------------------------------------------------------------
 
--- | The singleton kind-indexed data family.
-data family Sing :: k -> Type
+-- | The singleton kind-indexed type family.
+type family Sing :: k -> Type
+
+{-
+Note [The kind of Sing]
+~~~~~~~~~~~~~~~~~~~~~~~
+It is important to define Sing like this:
+
+  type family Sing :: k -> Type
+
+There are other conceivable ways to define Sing, but they all suffer from
+various drawbacks:
+
+* type family Sing :: forall k. k -> Type
+
+  Surprisingly, this is /not/ equivalent to `type family Sing :: k -> Type`.
+  The difference lies in their arity, i.e., the number of arguments that must
+  be supplied in order to apply Sing. The former declaration has arity 0, while
+  the latter has arity 1 (this is more obvious if you write the declaration as
+  GHCi would display it with -fprint-explicit-kinds enabled:
+  `type family Sing @k :: k -> Type`).
+
+  The former declaration having arity 0 is actually what makes it useless. If
+  we were to adopt an arity-0 definition of `Sing`, then in order to write
+  `type instance Sing = SFoo`, GHC would require that `SFoo` must have the kind
+  `forall k. k -> Type`, and moreover, the kind /must/ be polymorphic in `k`.
+  This is undesirable, because in practice, every single `Sing` instance in the
+  wild must monomorphize `k` (e.g., `SBool` monomorphizes it to `Bool`), so an
+  arity-0 `Sing` simply won't work. In contrast, the current arity-1 definition
+  of `Sing` /does/ let you monomorphize `k` in type family instances.
+
+* type family Sing (a :: k) = (r :: Type) | r -> a
+
+  Again, this is not equivalent to `type family Sing :: k -> Type`. This
+  version of `Sing` has arity 2, since one must supply both `k` and `a` in
+  order to apply it. While an arity-2 `Sing` is not suffer from the same
+  polymorphism issues as the arity-0 `Sing` in the previous bullet point, it
+  does suffer from another issue in that it cannot be partially applied. This
+  is because its `a` argument /must/ be supplied, whereas with the arity-1
+  `Sing`, it is perfectly admissible to write `Sing` without an explicit `a`
+  argument. (Its invisible `k` argument is filled in automatically behind the
+  scenes.)
+
+* type family Sing = (r :: k -> Type) | r -> k
+
+  This is the same as `type family Sing :: k -> Type`, but with an injectivity
+  annotation. Technically, this definition isn't /wrong/, but the injectivity
+  annotation is actually unnecessary. Because the return kind of `Sing` is
+  declared to be `k -> Type`, the `Sing` type constructor is automatically
+  injective, so `Sing a1 ~ Sing a2` implies `a1 ~~ a2`.
+
+  Another way of phrasing this, using the terminology of Dependent Haskell, is
+  that the arrow in `Sing`'s return kind is /matchable/, which implies that
+  `Sing` is an injective type constructor as a consequence.
+-}
 
 -- | A 'SingI' constraint is essentially an implicitly-passed singleton.
 -- If you need to satisfy this constraint with an explicit singleton, please
@@ -265,8 +318,9 @@ type TyCon8 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9)
 ---- Defunctionalized Sing instance and utilities --------------------
 ----------------------------------------------------------------------
 
-newtype instance Sing (f :: k1 ~> k2) =
+newtype SLambda (f :: k1 ~> k2) =
   SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
+type instance Sing = SLambda
 
 -- | An infix synonym for `applySing`
 (@@) :: forall k1 k2 (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)

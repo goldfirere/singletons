@@ -52,11 +52,11 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (_ :: Nat) (_ :: Nat) = FalseSym0
     instance PEq Nat where
       type (==) a b = Equals_0123456789876543210 a b
-    data instance Sing :: Nat -> Type
+    data SNat :: Nat -> Type
       where
-        SZero :: Sing Zero
-        SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> Sing (Succ n)
-    type SNat = Sing :: Nat -> Type
+        SZero :: SNat Zero
+        SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> SNat (Succ n)
+    type instance Sing @Nat = SNat
     instance SingKind Nat where
       type Demote Nat = Nat
       fromSing SZero = Zero
@@ -110,6 +110,14 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance SDecide Nat =>
+             Data.Type.Equality.TestEquality (SNat :: Nat -> Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance SDecide Nat =>
+             Data.Type.Coercion.TestCoercion (SNat :: Nat -> Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where
@@ -707,14 +715,14 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (AppendSym1 (d :: Schema) :: (~>) Schema Schema) where
       sing = (singFun1 @(AppendSym1 (d :: Schema))) (sAppend (sing @d))
-    data instance Sing :: U -> Type
+    data SU :: U -> Type
       where
-        SBOOL :: Sing BOOL
-        SSTRING :: Sing STRING
-        SNAT :: Sing NAT
+        SBOOL :: SU BOOL
+        SSTRING :: SU STRING
+        SNAT :: SU NAT
         SVEC :: forall (n :: U) (n :: Nat).
-                (Sing (n :: U)) -> (Sing (n :: Nat)) -> Sing (VEC n n)
-    type SU = Sing :: U -> Type
+                (Sing (n :: U)) -> (Sing (n :: Nat)) -> SU (VEC n n)
+    type instance Sing @U = SU
     instance SingKind U where
       type Demote U = U
       fromSing SBOOL = BOOL
@@ -729,35 +737,35 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
               ((,) (toSing b :: SomeSing U)) (toSing b :: SomeSing Nat)
           of {
             (,) (SomeSing c) (SomeSing c) -> SomeSing ((SVEC c) c) }
-    data instance Sing :: AChar -> Type
+    data SAChar :: AChar -> Type
       where
-        SCA :: Sing CA
-        SCB :: Sing CB
-        SCC :: Sing CC
-        SCD :: Sing CD
-        SCE :: Sing CE
-        SCF :: Sing CF
-        SCG :: Sing CG
-        SCH :: Sing CH
-        SCI :: Sing CI
-        SCJ :: Sing CJ
-        SCK :: Sing CK
-        SCL :: Sing CL
-        SCM :: Sing CM
-        SCN :: Sing CN
-        SCO :: Sing CO
-        SCP :: Sing CP
-        SCQ :: Sing CQ
-        SCR :: Sing CR
-        SCS :: Sing CS
-        SCT :: Sing CT
-        SCU :: Sing CU
-        SCV :: Sing CV
-        SCW :: Sing CW
-        SCX :: Sing CX
-        SCY :: Sing CY
-        SCZ :: Sing CZ
-    type SAChar = Sing :: AChar -> Type
+        SCA :: SAChar CA
+        SCB :: SAChar CB
+        SCC :: SAChar CC
+        SCD :: SAChar CD
+        SCE :: SAChar CE
+        SCF :: SAChar CF
+        SCG :: SAChar CG
+        SCH :: SAChar CH
+        SCI :: SAChar CI
+        SCJ :: SAChar CJ
+        SCK :: SAChar CK
+        SCL :: SAChar CL
+        SCM :: SAChar CM
+        SCN :: SAChar CN
+        SCO :: SAChar CO
+        SCP :: SAChar CP
+        SCQ :: SAChar CQ
+        SCR :: SAChar CR
+        SCS :: SAChar CS
+        SCT :: SAChar CT
+        SCU :: SAChar CU
+        SCV :: SAChar CV
+        SCW :: SAChar CW
+        SCX :: SAChar CX
+        SCY :: SAChar CY
+        SCZ :: SAChar CZ
+    type instance Sing @AChar = SAChar
     instance SingKind AChar where
       type Demote AChar = AChar
       fromSing SCA = CA
@@ -812,11 +820,11 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       toSing CX = SomeSing SCX
       toSing CY = SomeSing SCY
       toSing CZ = SomeSing SCZ
-    data instance Sing :: Attribute -> Type
+    data SAttribute :: Attribute -> Type
       where
         SAttr :: forall (n :: [AChar]) (n :: U).
-                 (Sing (n :: [AChar])) -> (Sing (n :: U)) -> Sing (Attr n n)
-    type SAttribute = Sing :: Attribute -> Type
+                 (Sing (n :: [AChar])) -> (Sing (n :: U)) -> SAttribute (Attr n n)
+    type instance Sing @Attribute = SAttribute
     instance SingKind Attribute where
       type Demote Attribute = Attribute
       fromSing (SAttr b b) = (Attr (fromSing b)) (fromSing b)
@@ -825,11 +833,11 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
               ((,) (toSing b :: SomeSing [AChar])) (toSing b :: SomeSing U)
           of {
             (,) (SomeSing c) (SomeSing c) -> SomeSing ((SAttr c) c) }
-    data instance Sing :: Schema -> Type
+    data SSchema :: Schema -> Type
       where
         SSch :: forall (n :: [Attribute]).
-                (Sing (n :: [Attribute])) -> Sing (Sch n)
-    type SSchema = Sing :: Schema -> Type
+                (Sing (n :: [Attribute])) -> SSchema (Sch n)
+    type instance Sing @Schema = SSchema
     instance SingKind Schema where
       type Demote Schema = Schema
       fromSing (SSch b) = Sch (fromSing b)
@@ -1153,6 +1161,14 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             (,) _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance (SDecide U, SDecide Nat) =>
+             Data.Type.Equality.TestEquality (SU :: U -> Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance (SDecide U, SDecide Nat) =>
+             Data.Type.Coercion.TestCoercion (SU :: U -> Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
     instance SEq AChar where
       (%==) SCA SCA = STrue
       (%==) SCA SCB = SFalse
@@ -2507,10 +2523,59 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (%~) SCZ SCX = Disproved (\ x -> case x of)
       (%~) SCZ SCY = Disproved (\ x -> case x of)
       (%~) SCZ SCZ = Proved Refl
-    deriving instance (Data.Singletons.ShowSing.ShowSing U,
-                       Data.Singletons.ShowSing.ShowSing Nat) =>
-                      Show (Sing (z :: U))
-    deriving instance Show (Sing (z :: AChar))
+    instance Data.Type.Equality.TestEquality (SAChar :: AChar
+                                                        -> Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance Data.Type.Coercion.TestCoercion (SAChar :: AChar
+                                                        -> Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
+    instance (Data.Singletons.ShowSing.ShowSing U,
+              Data.Singletons.ShowSing.ShowSing Nat) =>
+             Show (SU (z :: U)) where
+      showsPrec _ SBOOL = showString "SBOOL"
+      showsPrec _ SSTRING = showString "SSTRING"
+      showsPrec _ SNAT = showString "SNAT"
+      showsPrec
+        p_0123456789876543210
+        (SVEC (arg_0123456789876543210 :: Sing argTy_0123456789876543210)
+              (arg_0123456789876543210 :: Sing argTy_0123456789876543210))
+        = (showParen (((>) p_0123456789876543210) 10))
+            (((.) (showString "SVEC "))
+               (((.) ((showsPrec 11) arg_0123456789876543210))
+                  (((.) GHC.Show.showSpace)
+                     ((showsPrec 11) arg_0123456789876543210)))) ::
+            (Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210,
+             Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210) =>
+            ShowS
+    instance Show (SAChar (z :: AChar)) where
+      showsPrec _ SCA = showString "SCA"
+      showsPrec _ SCB = showString "SCB"
+      showsPrec _ SCC = showString "SCC"
+      showsPrec _ SCD = showString "SCD"
+      showsPrec _ SCE = showString "SCE"
+      showsPrec _ SCF = showString "SCF"
+      showsPrec _ SCG = showString "SCG"
+      showsPrec _ SCH = showString "SCH"
+      showsPrec _ SCI = showString "SCI"
+      showsPrec _ SCJ = showString "SCJ"
+      showsPrec _ SCK = showString "SCK"
+      showsPrec _ SCL = showString "SCL"
+      showsPrec _ SCM = showString "SCM"
+      showsPrec _ SCN = showString "SCN"
+      showsPrec _ SCO = showString "SCO"
+      showsPrec _ SCP = showString "SCP"
+      showsPrec _ SCQ = showString "SCQ"
+      showsPrec _ SCR = showString "SCR"
+      showsPrec _ SCS = showString "SCS"
+      showsPrec _ SCT = showString "SCT"
+      showsPrec _ SCU = showString "SCU"
+      showsPrec _ SCV = showString "SCV"
+      showsPrec _ SCW = showString "SCW"
+      showsPrec _ SCX = showString "SCX"
+      showsPrec _ SCY = showString "SCY"
+      showsPrec _ SCZ = showString "SCZ"
     instance SingI BOOL where
       sing = SBOOL
     instance SingI STRING where

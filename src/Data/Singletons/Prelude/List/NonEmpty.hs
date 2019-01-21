@@ -25,17 +25,7 @@
 
 module Data.Singletons.Prelude.List.NonEmpty (
   -- * The 'NonEmpty' singleton
-
-  Sing((:%|)),
-
-  -- | Though Haddock doesn't show it, the 'Sing' instance above declares
-  -- constructor
-  --
-  -- > (:%|) :: Sing h -> Sing t -> Sing (h :| t)
-
-  SNonEmpty,
-  -- | 'SNonEmpty' is a kind-restricted synonym for 'Sing':
-  -- @type SNonEmpty (a :: NonEmpty) = Sing a@
+  Sing, SNonEmpty(..),
 
   -- * Non-empty stream transformations
   Map, sMap,

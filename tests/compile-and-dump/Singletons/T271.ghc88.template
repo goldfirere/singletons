@@ -99,22 +99,22 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (_ :: Identity a) (_ :: Identity a) = FalseSym0
     instance PEq (Identity a) where
       type (==) a b = Equals_0123456789876543210 a b
-    data instance Sing :: Constant a b -> Type
+    data SConstant :: Constant a b -> Type
       where
         SConstant :: forall a (n :: a).
-                     (Sing (n :: a)) -> Sing (Constant n)
-    type SConstant = Sing :: Constant a b -> Type
+                     (Sing (n :: a)) -> SConstant (Constant n)
+    type instance Sing @(Constant a b) = SConstant
     instance (SingKind a, SingKind b) => SingKind (Constant a b) where
       type Demote (Constant a b) = Constant (Demote a) (Demote b)
       fromSing (SConstant b) = Constant (fromSing b)
       toSing (Constant (b :: Demote a))
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SConstant c) }
-    data instance Sing :: Identity a -> Type
+    data SIdentity :: Identity a -> Type
       where
         SIdentity :: forall a (n :: a).
-                     (Sing (n :: a)) -> Sing (Identity n)
-    type SIdentity = Sing :: Identity a -> Type
+                     (Sing (n :: a)) -> SIdentity (Identity n)
+    type instance Sing @(Identity a) = SIdentity
     instance SingKind a => SingKind (Identity a) where
       type Demote (Identity a) = Identity (Demote a)
       fromSing (SIdentity b) = Identity (fromSing b)
@@ -177,6 +177,16 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance SDecide a =>
+             Data.Type.Equality.TestEquality (SConstant :: Constant a b
+                                                           -> Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance SDecide a =>
+             Data.Type.Coercion.TestCoercion (SConstant :: Constant a b
+                                                           -> Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
     instance SEq a => SEq (Identity a) where
       (%==) (SIdentity a) (SIdentity b) = ((%==) a) b
     instance SDecide a => SDecide (Identity a) where
@@ -185,6 +195,16 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance SDecide a =>
+             Data.Type.Equality.TestEquality (SIdentity :: Identity a
+                                                           -> Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance SDecide a =>
+             Data.Type.Coercion.TestCoercion (SIdentity :: Identity a
+                                                           -> Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
     instance SingI n => SingI (Constant (n :: a)) where
       sing = SConstant sing
     instance SingI (ConstantSym0 :: (~>) a (Constant (a :: Type) (b :: Type))) where

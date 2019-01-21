@@ -442,11 +442,11 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (_ :: Foo a b c d) (_ :: Foo a b c d) = FalseSym0
     instance PEq (Foo a b c d) where
       type (==) a b = Equals_0123456789876543210 a b
-    data instance Sing :: Nat -> GHC.Types.Type
+    data SNat :: Nat -> GHC.Types.Type
       where
-        SZero :: Sing Zero
-        SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> Sing (Succ n)
-    type SNat = Sing :: Nat -> GHC.Types.Type
+        SZero :: SNat Zero
+        SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> SNat (Succ n)
+    type instance Sing @Nat = SNat
     instance SingKind Nat where
       type Demote Nat = Nat
       fromSing SZero = Zero
@@ -455,33 +455,33 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ (b :: Demote Nat))
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
-    data instance Sing :: Foo a b c d -> GHC.Types.Type
+    data SFoo :: Foo a b c d -> GHC.Types.Type
       where
         SA :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
-                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (A n n n n)
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> SFoo (A n n n n)
         SB :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
-                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (B n n n n)
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> SFoo (B n n n n)
         SC :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
-                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (C n n n n)
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> SFoo (C n n n n)
         SD :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
-                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (D n n n n)
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> SFoo (D n n n n)
         SE :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
-                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (E n n n n)
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> SFoo (E n n n n)
         SF :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))
               -> (Sing (n :: b))
-                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> Sing (F n n n n)
-    type SFoo = Sing :: Foo a b c d -> GHC.Types.Type
+                 -> (Sing (n :: c)) -> (Sing (n :: d)) -> SFoo (F n n n n)
+    type instance Sing @(Foo a b c d) = SFoo
     instance (SingKind a, SingKind b, SingKind c, SingKind d) =>
              SingKind (Foo a b c d) where
       type Demote (Foo a b c d) = Foo (Demote a) (Demote b) (Demote c) (Demote d)
@@ -868,6 +868,16 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance SDecide Nat =>
+             Data.Type.Equality.TestEquality (SNat :: Nat
+                                                      -> GHC.Types.Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance SDecide Nat =>
+             Data.Type.Coercion.TestCoercion (SNat :: Nat
+                                                      -> GHC.Types.Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
     instance (SEq a, SEq b, SEq c, SEq d) => SEq (Foo a b c d) where
       (%==) (SA a a a a) (SA b b b b)
         = ((%&&) (((%==) a) b))
@@ -1033,6 +1043,16 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
             (,,,) _ _ _ (Disproved contra)
               -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+    instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
+             Data.Type.Equality.TestEquality (SFoo :: Foo a b c d
+                                                      -> GHC.Types.Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
+             Data.Type.Coercion.TestCoercion (SFoo :: Foo a b c d
+                                                      -> GHC.Types.Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where

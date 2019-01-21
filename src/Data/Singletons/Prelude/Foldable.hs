@@ -108,7 +108,8 @@ import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.Either
 import Data.Singletons.Prelude.Eq
-import Data.Singletons.Prelude.Instances (Sing(..), type (:@#@$))
+import Data.Singletons.Prelude.Instances
+  hiding (Foldl, FoldlSym0(..), FoldlSym1(..), FoldlSym2(..), FoldlSym3, sFoldl)
 import Data.Singletons.Prelude.List.Internal.Disambiguation
 import Data.Singletons.Prelude.Maybe
 import Data.Singletons.Prelude.Monad.Internal
@@ -133,8 +134,9 @@ import Data.Singletons.Single
 import Data.Singletons.TypeLits.Internal
 
 newtype Endo a = Endo (a ~> a)
-data instance Sing :: forall a. Endo a -> Type where
-  SEndo :: Sing x -> Sing ('Endo x)
+data SEndo :: forall a. Endo a -> Type where
+  SEndo :: Sing x -> SEndo ('Endo x)
+type instance Sing = SEndo
 data EndoSym0 :: forall a. (a ~> a) ~> Endo a
 type instance Apply EndoSym0 x = 'Endo x
 
@@ -147,13 +149,15 @@ $(singletonsOnly [d|
   |])
 
 newtype MaxInternal a = MaxInternal (Maybe a)
-data instance Sing :: forall a. MaxInternal a -> Type where
-  SMaxInternal :: Sing x -> Sing ('MaxInternal x)
+data SMaxInternal :: forall a. MaxInternal a -> Type where
+  SMaxInternal :: Sing x -> SMaxInternal ('MaxInternal x)
+type instance Sing = SMaxInternal
 $(genDefunSymbols [''MaxInternal])
 
 newtype MinInternal a = MinInternal (Maybe a)
-data instance Sing :: forall a. MinInternal a -> Type where
-  SMinInternal :: Sing x -> Sing ('MinInternal x)
+data SMinInternal :: forall a. MinInternal a -> Type where
+  SMinInternal :: Sing x -> SMinInternal ('MinInternal x)
+type instance Sing = SMinInternal
 $(genDefunSymbols [''MinInternal])
 
 $(singletonsOnly [d|

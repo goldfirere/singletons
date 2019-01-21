@@ -27,9 +27,7 @@ module Data.Singletons.Prelude.Ord (
   -- it returns its first argument.
   thenCmp, ThenCmp, sThenCmp,
 
-  Sing(SLT, SEQ, SGT, SDown),
-
-  SOrdering, SDown,
+  Sing, SOrdering(..), SDown(..),
 
   -- ** Defunctionalization symbols
   ThenCmpSym0, ThenCmpSym1, ThenCmpSym2,

@@ -46,9 +46,8 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
     sB SMkBar = STuple0
     instance SingI (BSym0 :: (~>) Bar ()) where
       sing = (singFun1 @BSym0) sB
-    data instance Sing :: Bar -> GHC.Types.Type
-      where SMkBar :: Sing MkBar
-    type SBar = Sing :: Bar -> GHC.Types.Type
+    data SBar :: Bar -> GHC.Types.Type where SMkBar :: SBar MkBar
+    type instance Sing @Bar = SBar
     instance SingKind Bar where
       type Demote Bar = Bar
       fromSing SMkBar = MkBar

@@ -26,8 +26,8 @@ module Data.Singletons.Prelude.Tuple (
   -- * Singleton definitions
   -- | See 'Data.Singletons.Prelude.Sing' for more info.
 
-  Sing(STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7),
-  STuple0, STuple2, STuple3, STuple4, STuple5, STuple6, STuple7,
+  Sing, STuple0(..), STuple2(..), STuple3(..),
+  STuple4(..), STuple5(..), STuple6(..), STuple7(..),
 
   -- * Singletons from @Data.Tuple@
   Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry, Swap, sSwap,

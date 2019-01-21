@@ -24,16 +24,7 @@
 
 module Data.Singletons.Prelude.Bool (
   -- * The 'Bool' singleton
-
-  Sing(SFalse, STrue),
-  -- | Though Haddock doesn't show it, the 'Sing' instance above declares
-  -- constructors
-  --
-  -- > SFalse :: Sing False
-  -- > STrue  :: Sing True
-
-  SBool,
-  -- | 'SBool' is a kind-restricted synonym for 'Sing': @type SBool (a :: Bool) = Sing a@
+  Sing, SBool(..),
 
   -- * Conditionals
   If, sIf,

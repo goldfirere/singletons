@@ -8,7 +8,7 @@ and contains various other AST definitions.
 -}
 
 {-# LANGUAGE DataKinds, TypeFamilies, PolyKinds, DeriveDataTypeable,
-             StandaloneDeriving, FlexibleInstances, ConstraintKinds #-}
+             FlexibleInstances, ConstraintKinds #-}
 
 module Data.Singletons.Syntax where
 
@@ -194,9 +194,10 @@ buildLetDecEnv = go emptyLetDecEnv
 
 -- See Note [DerivedDecl]
 data DerivedDecl (cls :: Type -> Constraint) = DerivedDecl
-  { ded_mb_cxt :: Maybe DCxt
-  , ded_type   :: DType
-  , ded_decl   :: DataDecl
+  { ded_mb_cxt     :: Maybe DCxt
+  , ded_type       :: DType
+  , ded_type_tycon :: Name
+  , ded_decl       :: DataDecl
   }
 
 type DerivedEqDecl   = DerivedDecl Eq
@@ -218,15 +219,16 @@ information to recreate the derived instance:
    a deriving clause (ded_mb_cxt)
 2. The datatype, applied to some number of type arguments, as in the
    instance declaration (ded_type)
-3. The datatype's original information, as provided through DataDecl (ded_decl)
+3. The datatype name (ded_type_tycon), cached for convenience
+4. The datatype's constructors (ded_cons)
 
 Why are these instances handled outside of partitionDecs?
 
 * Deriving Eq in singletons not only derives PEq/SEq instances, but it also
-  derives SDecide instances. This additional complication makes Eq difficult
-  to integrate with the other deriving machinery, so we handle it specially
-  in Data.Singletons.Promote and Data.Singletons.Single (depending on the task
-  at hand).
+  derives SDecide, TestEquality, and TestCoercion instances. This additional
+  complication makes Eq difficult to integrate with the other deriving
+  machinery, so we handle it specially in Data.Singletons.Promote and
+  Data.Singletons.Single (depending on the task at hand).
 * Deriving Show in singletons not only derives PShow/SShow instances, but it
   also derives Show instances for singletons types. To make this work,
   we let partitionDecs handle the PShow/SShow instances, but we also stick the

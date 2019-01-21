@@ -115,11 +115,11 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance PShow (Y a) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    data instance Sing :: X a -> Type
+    data SX :: X a -> Type
       where
-        SX1 :: Sing X1
-        SX2 :: forall a (n :: Y a). (Sing (n :: Y a)) -> Sing (X2 n)
-    type SX = Sing :: X a -> Type
+        SX1 :: SX X1
+        SX2 :: forall a (n :: Y a). (Sing (n :: Y a)) -> SX (X2 n)
+    type instance Sing @(X a) = SX
     instance SingKind a => SingKind (X a) where
       type Demote (X a) = X (Demote a)
       fromSing SX1 = X1
@@ -128,11 +128,11 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       toSing (X2 (b :: Demote (Y a)))
         = case toSing b :: SomeSing (Y a) of {
             SomeSing c -> SomeSing (SX2 c) }
-    data instance Sing :: Y a -> Type
+    data SY :: Y a -> Type
       where
-        SY1 :: Sing Y1
-        SY2 :: forall a (n :: X a). (Sing (n :: X a)) -> Sing (Y2 n)
-    type SY = Sing :: Y a -> Type
+        SY1 :: SY Y1
+        SY2 :: forall a (n :: X a). (Sing (n :: X a)) -> SY (Y2 n)
+    type instance Sing @(Y a) = SY
     instance SingKind a => SingKind (Y a) where
       type Demote (Y a) = Y (Demote a)
       fromSing SY1 = Y1
@@ -211,10 +211,28 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
                           (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 11))))
                       sArg_0123456789876543210))))
             sA_0123456789876543210
-    deriving instance Data.Singletons.ShowSing.ShowSing (Y a) =>
-                      Show (Sing (z :: X a))
-    deriving instance Data.Singletons.ShowSing.ShowSing (X a) =>
-                      Show (Sing (z :: Y a))
+    instance Data.Singletons.ShowSing.ShowSing (Y a) =>
+             Show (SX (z :: X a)) where
+      showsPrec _ SX1 = showString "SX1"
+      showsPrec
+        p_0123456789876543210
+        (SX2 (arg_0123456789876543210 :: Sing argTy_0123456789876543210))
+        = (showParen (((>) p_0123456789876543210) 10))
+            (((.) (showString "SX2 "))
+               ((showsPrec 11) arg_0123456789876543210)) ::
+            Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210 =>
+            ShowS
+    instance Data.Singletons.ShowSing.ShowSing (X a) =>
+             Show (SY (z :: Y a)) where
+      showsPrec _ SY1 = showString "SY1"
+      showsPrec
+        p_0123456789876543210
+        (SY2 (arg_0123456789876543210 :: Sing argTy_0123456789876543210))
+        = (showParen (((>) p_0123456789876543210) 10))
+            (((.) (showString "SY2 "))
+               ((showsPrec 11) arg_0123456789876543210)) ::
+            Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210 =>
+            ShowS
     instance SingI X1 where
       sing = SX1
     instance SingI n => SingI (X2 (n :: Y a)) where

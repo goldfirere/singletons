@@ -7,15 +7,15 @@ Singletons/T159.hs:0:0:: Splicing declarations
     type DSym0 = 'D
     type ESym0 = 'E
     type FSym0 = 'F
-    data instance Sing :: T0 -> GHC.Types.Type
+    data ST0 :: T0 -> GHC.Types.Type
       where
-        SA :: Sing 'A
-        SB :: Sing 'B
-        SC :: Sing 'C
-        SD :: Sing 'D
-        SE :: Sing 'E
-        SF :: Sing 'F
-    type ST0 = Sing :: T0 -> GHC.Types.Type
+        SA :: ST0 'A
+        SB :: ST0 'B
+        SC :: ST0 'C
+        SD :: ST0 'D
+        SE :: ST0 'E
+        SF :: ST0 'F
+    type instance Sing @T0 = ST0
     instance SingKind T0 where
       type Demote T0 = T0
       fromSing SA = A
@@ -85,14 +85,14 @@ Singletons/T159.hs:0:0:: Splicing declarations
                          (:&&@#@$) t0123456789876543210
     type instance Apply (:&&@#@$) t0123456789876543210 = (:&&@#@$$) t0123456789876543210
     infixr 5 :&&@#@$
-    data instance Sing :: T1 -> GHC.Types.Type
+    data ST1 :: T1 -> GHC.Types.Type
       where
-        SN1 :: Sing 'N1
+        SN1 :: ST1 'N1
         SC1 :: forall (n :: T0) (n :: T1).
-               (Sing (n :: T0)) -> (Sing (n :: T1)) -> Sing ('C1 n n)
+               (Sing (n :: T0)) -> (Sing (n :: T1)) -> ST1 ('C1 n n)
         (:%&&) :: forall (n :: T0) (n :: T1).
-                  (Sing (n :: T0)) -> (Sing (n :: T1)) -> Sing ('(:&&) n n)
-    type ST1 = Sing :: T1 -> GHC.Types.Type
+                  (Sing (n :: T0)) -> (Sing (n :: T1)) -> ST1 ('(:&&) n n)
+    type instance Sing @T1 = ST1
     instance SingKind T1 where
       type Demote T1 = T1
       fromSing SN1 = N1
@@ -183,14 +183,14 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
     infixr 5 :||@#@$
     infixr 5 :%||
     infixr 5 `SC2`
-    data instance Sing :: T2 -> GHC.Types.Type
+    data ST2 :: T2 -> GHC.Types.Type
       where
-        SN2 :: Sing N2
+        SN2 :: ST2 N2
         SC2 :: forall (n :: T0) (n :: T2).
-               (Sing (n :: T0)) -> (Sing (n :: T2)) -> Sing (C2 n n)
+               (Sing (n :: T0)) -> (Sing (n :: T2)) -> ST2 (C2 n n)
         (:%||) :: forall (n :: T0) (n :: T2).
-                  (Sing (n :: T0)) -> (Sing (n :: T2)) -> Sing ((:||) n n)
-    type ST2 = Sing :: T2 -> GHC.Types.Type
+                  (Sing (n :: T0)) -> (Sing (n :: T2)) -> ST2 ((:||) n n)
+    type instance Sing @T2 = ST2
     instance SingKind T2 where
       type Demote T2 = T2
       fromSing SN2 = N2

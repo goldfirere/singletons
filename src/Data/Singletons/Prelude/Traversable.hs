@@ -64,14 +64,16 @@ import Data.Singletons.Prelude.Monoid
 import Data.Singletons.Single
 
 newtype StateL s a = StateL (s ~> (s, a))
-data instance Sing :: forall s a. StateL s a -> Type where
-  SStateL :: Sing x -> Sing ('StateL x)
+data SStateL :: forall s a. StateL s a -> Type where
+  SStateL :: Sing x -> SStateL ('StateL x)
+type instance Sing = SStateL
 data StateLSym0 :: forall s a. (s ~> (s, a)) ~> StateL s a
 type instance Apply StateLSym0 x = 'StateL x
 
 newtype StateR s a = StateR (s ~> (s, a))
-data instance Sing :: forall s a. StateR s a -> Type where
-  SStateR :: Sing x -> Sing ('StateR x)
+data SStateR :: forall s a. StateR s a -> Type where
+  SStateR :: Sing x -> SStateR ('StateR x)
+type instance Sing = SStateR
 data StateRSym0 :: forall s a. (s ~> (s, a)) ~> StateR s a
 type instance Apply StateRSym0 x = 'StateR x
 

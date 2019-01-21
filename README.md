@@ -58,7 +58,6 @@ following:
 * `PolyKinds`
 * `RankNTypes`
 * `ScopedTypeVariables`
-* `StandaloneDeriving`
 * `TemplateHaskell`
 * `TypeApplications`
 * `TypeFamilies`
@@ -152,10 +151,10 @@ Please refer to the singletons paper for a more in-depth explanation of these
 definitions. Many of the definitions were developed in tandem with Iavor Diatchki.
 
 ```haskell
-data family Sing (a :: k)
+type family Sing :: k -> Type
 ```
 
-The data family of singleton types. A new instance of this data family is
+The type family of singleton types. A new instance of this type family is
 generated for every new singleton type.
 
 ```haskell
@@ -222,9 +221,10 @@ the advantage that your program can take action when two types do _not_ equal,
 while propositional equality has the advantage that GHC can use the equality
 of types during type inference.
 
-Instances of both `SEq` and `SDecide` are generated when `singletons` is called
-on a datatype that has `deriving Eq`. You can also generate these instances
-directly through functions exported from `Data.Singletons.TH`.
+Instances of `SEq`, `SDecide`, `TestEquality`, and `TestCoercion` are generated
+when `singletons` is called on a datatype that has `deriving Eq`. You can also
+generate these instances directly through functions exported from
+`Data.Singletons.TH`.
 
 
 `Show` classes
@@ -692,8 +692,8 @@ Support for `*`
 
 The built-in Haskell promotion mechanism does not yet have a full story around
 the kind `*` (the kind of types that have values). Ideally, promoting some form
-of `TypeRep` would yield `*`, but the implementation of TypeRep would have to be
-updated for this to really work out. In the meantime, users who wish to
+of `TypeRep` would yield `*`, but the implementation of `TypeRep` would have to
+be updated for this to really work out. In the meantime, users who wish to
 experiment with this feature have two options:
 
 1) The module `Data.Singletons.TypeRepTYPE` has all the definitions possible for
@@ -701,14 +701,12 @@ making `*` the promoted version of `TypeRep`, as `TypeRep` is currently implemen
 The singleton associated with `TypeRep` has one constructor:
 
     ```haskell
-    newtype instance Sing :: forall (rep :: RuntimeRep). TYPE rep -> Type where
-      STypeRep :: forall (rep :: RuntimeRep) (a :: TYPE rep). TypeRep a -> Sing a
+    type instance Sing @(TYPE rep) = TypeRep
     ```
 
-   (Recall that `type * = TYPE LiftedRep`.) Thus, a `TypeRep` is stored in the
-singleton constructor. However, any datatypes that store `TypeRep`s will not
-generally work as expected; the built-in promotion mechanism will not promote
-`TypeRep` to `*`.
+    (Recall that `type * = TYPE LiftedRep`.) Note that any datatypes that store
+`TypeRep`s will not generally work as expected; the built-in promotion
+mechanism will not promote `TypeRep` to `*`.
 
 2) The module `Data.Singletons.CustomStar` allows the programmer to define a subset
 of types with which to work. See the Haddock documentation for the function

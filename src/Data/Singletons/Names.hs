@@ -18,6 +18,8 @@ import Language.Haskell.TH.Desugar
 import GHC.TypeLits ( Nat, Symbol )
 import GHC.Exts ( Constraint )
 import GHC.Show ( showCommaSpace, showSpace )
+import Data.Type.Equality ( TestEquality(..) )
+import Data.Type.Coercion ( TestCoercion(..) )
 import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
 import Control.Applicative
@@ -34,6 +36,8 @@ boolName, andName, tyEqName, compareName, minBoundName,
   sIfName,
   someSingTypeName, someSingDataName,
   sListName, sDecideClassName, sDecideMethName,
+  testEqualityClassName, testEqualityMethName, decideEqualityName,
+  testCoercionClassName, testCoercionMethName, decideCoercionName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
   equalityName, applySingName, suppressClassName, suppressMethodName,
   thenCmpName,
@@ -41,8 +45,8 @@ boolName, andName, tyEqName, compareName, minBoundName,
   sNegateName, errorName, foldlName, cmpEQName, cmpLTName, cmpGTName,
   singletonsToEnumName, singletonsFromEnumName, enumName, singletonsEnumName,
   equalsName, constraintName,
-  showName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
-  showSpaceName, showStringName, showSingName,
+  showName, showSName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
+  showSpaceName, showStringName, showSingName, showSing'Name,
   composeName, gtName, tyFromStringName, sFromStringName,
   foldableName, foldMapName, memptyName, mappendName, foldrName,
   functorName, fmapName, replaceName,
@@ -88,6 +92,12 @@ someSingDataName = 'SomeSing
 sListName = mk_name_tc "Data.Singletons.Prelude.Instances" "SList"
 sDecideClassName = ''SDecide
 sDecideMethName = '(%~)
+testEqualityClassName = ''TestEquality
+testEqualityMethName = 'testEquality
+decideEqualityName = 'decideEquality
+testCoercionClassName = ''TestCoercion
+testCoercionMethName = 'testCoercion
+decideCoercionName = 'decideCoercion
 provedName = 'Proved
 disprovedName = 'Disproved
 reflName = 'Refl
@@ -113,12 +123,14 @@ singletonsEnumName = mk_name_tc "Data.Singletons.Prelude.Enum" "Enum"
 equalsName = '(==)
 constraintName = ''Constraint
 showName = ''Show
+showSName = ''ShowS
 showCharName = 'showChar
 showParenName = 'showParen
 showSpaceName = 'showSpace
 showsPrecName = 'showsPrec
 showStringName = 'showString
 showSingName = mk_name_tc "Data.Singletons.ShowSing" "ShowSing"
+showSing'Name = mk_name_tc "Data.Singletons.ShowSing" "ShowSing'"
 composeName = '(.)
 gtName = '(>)
 showCommaSpaceName = 'showCommaSpace

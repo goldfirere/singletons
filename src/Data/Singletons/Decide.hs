@@ -20,10 +20,10 @@ module Data.Singletons.Decide (
   SDecide(..),
 
   -- * Supporting definitions
-  (:~:)(..), Void, Refuted, Decision(..)
+  (:~:)(..), Void, Refuted, Decision(..),
+  decideEquality, decideCoercion
   ) where
 
-import Data.Kind (Type)
 import Data.Singletons.Internal
 import Data.Type.Coercion
 import Data.Type.Equality
@@ -51,14 +51,20 @@ class SDecide k where
   (%~) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Decision (a :~: b)
   infix 4 %~
 
-instance SDecide k => TestEquality (Sing :: k -> Type) where
-  testEquality a b =
-    case a %~ b of
-      Proved Refl -> Just Refl
-      Disproved _ -> Nothing
+-- | A suitable default implementation for 'testEquality' that leverages
+-- 'SDecide'.
+decideEquality :: forall k (a :: k) (b :: k). SDecide k
+               => Sing a -> Sing b -> Maybe (a :~: b)
+decideEquality a b =
+  case a %~ b of
+    Proved Refl -> Just Refl
+    Disproved _ -> Nothing
 
-instance SDecide k => TestCoercion (Sing :: k -> Type) where
-  testCoercion a b =
-    case a %~ b of
-      Proved Refl -> Just Coercion
-      Disproved _ -> Nothing
+-- | A suitable default implementation for 'testCoercion' that leverages
+-- 'SDecide'.
+decideCoercion :: forall k (a :: k) (b :: k). SDecide k
+               => Sing a -> Sing b -> Maybe (Coercion a b)
+decideCoercion a b =
+  case a %~ b of
+    Proved Refl -> Just Coercion
+    Disproved _ -> Nothing

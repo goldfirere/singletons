@@ -14,8 +14,12 @@ re-exported from various places.
              TypeApplications #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
-module Data.Singletons.Prelude.Instances where
+module Data.Singletons.Prelude.Instances (
+    module Data.Singletons.Prelude.Instances
+  , Sing
+  ) where
 
+import Data.Singletons.Internal
 import Data.Singletons.Single
 import Data.Singletons.Util
 

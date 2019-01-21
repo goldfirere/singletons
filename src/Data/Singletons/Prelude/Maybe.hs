@@ -25,16 +25,7 @@
 
 module Data.Singletons.Prelude.Maybe (
   -- The 'Maybe' singleton
-
-  Sing(SNothing, SJust),
-  -- | Though Haddock doesn't show it, the 'Sing' instance above declares
-  -- constructors
-  --
-  -- > SNothing :: Sing Nothing
-  -- > SJust    :: Sing a -> Sing (Just a)
-
-  SMaybe,
-  -- | 'SBool' is a kind-restricted synonym for 'Sing': @type SMaybe (a :: Maybe k) = Sing a@
+  Sing, SMaybe(..),
 
   -- * Singletons from @Data.Maybe@
   maybe_, Maybe_, sMaybe_,

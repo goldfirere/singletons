@@ -16,15 +16,14 @@
 {-# LANGUAGE PolyKinds, DataKinds, TypeFamilies, FlexibleInstances,
              UndecidableInstances, ScopedTypeVariables, RankNTypes,
              GADTs, FlexibleContexts, TypeOperators, ConstraintKinds,
-             TemplateHaskell, StandaloneDeriving,
-             TypeApplications #-}
+             TemplateHaskell, TypeApplications #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Singletons.TypeLits.Internal (
-  Sing(..),
+  Sing,
 
   Nat, Symbol,
-  SNat, SSymbol, withKnownNat, withKnownSymbol,
+  SNat(..), SSymbol(..), withKnownNat, withKnownSymbol,
   Error, sError,
   ErrorWithoutStackTrace, sErrorWithoutStackTrace,
   Undefined, sUndefined,
@@ -59,7 +58,8 @@ import Data.Text ( Text )
 ---- TypeLits singletons ---------------------------------------------
 ----------------------------------------------------------------------
 
-data instance Sing (n :: Nat) = KnownNat n => SNat
+data SNat (n :: Nat) = KnownNat n => SNat
+type instance Sing = SNat
 
 instance KnownNat n => SingI n where
   sing = SNat
@@ -70,7 +70,8 @@ instance SingKind Nat where
   toSing n = case TN.someNatVal n of
                SomeNat (_ :: Proxy n) -> SomeSing (SNat :: Sing n)
 
-data instance Sing (n :: Symbol) = KnownSymbol n => SSym
+data SSymbol (n :: Symbol) = KnownSymbol n => SSym
+type instance Sing = SSymbol
 
 instance KnownSymbol n => SingI n where
   sing = SSym
@@ -121,12 +122,6 @@ instance POrd Nat where
 
 instance POrd Symbol where
   type (a :: Symbol) `Compare` (b :: Symbol) = a `TL.CmpSymbol` b
-
--- | Kind-restricted synonym for 'Sing' for @Nat@s
-type SNat (x :: Nat) = Sing x
-
--- | Kind-restricted synonym for 'Sing' for @Symbol@s
-type SSymbol (x :: Symbol) = Sing x
 
 -- SOrd instances
 instance SOrd Nat where

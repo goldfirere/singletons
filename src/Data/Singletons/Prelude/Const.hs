@@ -26,8 +26,7 @@
 
 module Data.Singletons.Prelude.Const (
   -- * The 'Const' singleton
-  Sing(SConst, sGetConst),
-  SConst, GetConst,
+  Sing, SConst(..), GetConst,
 
   -- * Defunctionalization symbols
   ConstSym0, ConstSym1,
@@ -71,9 +70,9 @@ Assumes that `b` is of kind Type. Until we get a more reliable story for
 poly-kinded Sing instances (see #150), we simply write the Sing instance by
 hand.
 -}
-data instance Sing :: forall (k :: Type) (a :: Type) (b :: k). Const a b -> Type where
-  SConst :: { sGetConst :: Sing a } -> Sing ('Const a)
-type SConst = (Sing :: Const a b -> Type)
+data SConst :: forall (k :: Type) (a :: Type) (b :: k). Const a b -> Type where
+  SConst :: { sGetConst :: Sing a } -> SConst ('Const a)
+type instance Sing = SConst
 instance SingKind a => SingKind (Const a b) where
   type Demote (Const a b) = Const (Demote a) b
   fromSing (SConst sa) = Const (fromSing sa)

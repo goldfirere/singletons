@@ -1,11 +1,12 @@
-{-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE EmptyCase #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE QuantifiedConstraints #-}
 {-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
@@ -26,7 +27,10 @@
 
 module Data.Singletons.ShowSing (
   -- * The 'ShowSing' type
-  ShowSing
+  ShowSing,
+
+  -- * Internal utilities
+  ShowSing'
   ) where
 
 import Data.Singletons.Internal
@@ -48,35 +52,50 @@ import qualified GHC.TypeNats as TN
 -- an instance with the following shape:
 --
 -- @
--- deriving instance ??? => Show (Sing (x :: [k]))
+-- instance ??? => 'Show' ('SList' (z :: [k])) where
+--   showsPrec p 'SNil' = showString \"SNil\"
+--   showsPrec p ('SCons' sx sxs) =
+--     showParen (p > 10) $ showString \"SCons \" . showsPrec 11 sx
+--                        . showSpace . showsPrec 11 sxs
 -- @
 --
 -- To figure out what should go in place of @???@, observe that we require the
 -- type of each field to also be 'Show' instances. In other words, we need
--- something like @(Show (Sing (a :: k)))@. But this isn't quite right, as the
+-- something like @('Show' ('Sing' (a :: k)))@. But this isn't quite right, as the
 -- type variable @a@ doesn't appear in the instance head. In fact, this @a@
 -- type is really referring to an existentially quantified type variable in the
 -- 'SCons' constructor, so it doesn't make sense to try and use it like this.
 --
 -- Luckily, the @QuantifiedConstraints@ language extension provides a solution
 -- to this problem. This lets you write a context of the form
--- @(forall a. Show (Sing (a :: k)))@, which demands that there be an instance
--- for @Show (Sing (a :: k))@ that is parametric in the use of @a@. Thus, our
--- final instance looks like:
+-- @(forall a. 'Show' ('Sing' (a :: k)))@, which demands that there be an instance
+-- for @'Show' ('Sing' (a :: k))@ that is parametric in the use of @a@.
+-- This lets us write something closer to this:
 --
 -- @
--- deriving instance (forall a. Show (Sing (a :: k))) => Show (Sing (x :: [k]))
+-- instance (forall a. 'Show' ('Sing' (a :: k))) => 'SList' ('Sing' (z :: [k])) where ...
 -- @
 --
--- Because that quantified constraint is somewhat lengthy, we provide the
--- 'ShowSing' class synonym as a convenient shorthand. Thus, the above instance
--- is equivalent to:
+-- The 'ShowSing' class is a thin wrapper around
+-- @(forall a. 'Show' ('Sing' (a :: k)))@. With 'ShowSing', our final instance
+-- declaration becomes this:
 --
 -- @
--- deriving instance ShowSing k => Show (Sing (x :: [k]))
+-- instance 'ShowSing' k => 'Show' ('SList' (z :: [k])) where
+--   showsPrec p 'SNil' = showString \"SNil\"
+--   showsPrec p ('SCons' (sx :: 'Sing' x) (sxs :: 'Sing' xs)) =
+--     (showParen (p > 10) $ showString \"SCons \" . showsPrec 11 sx
+--                         . showSpace . showsPrec 11 sxs)
+--       :: (ShowSing' x, ShowSing' xs) => ShowS
 -- @
 --
--- When singling a derived 'Show' instance, @singletons@ will also derive
+-- (Note that the actual definition of 'ShowSing' is slightly more complicated
+-- than what this documentation might suggest. For the full story, as well as
+-- an explanation of why we need an explicit
+-- @(ShowSing' x, ShowSing' xs) => ShowS@ signature at the end,
+-- refer to the documentation for `ShowSing'`.)
+--
+-- When singling a derived 'Show' instance, @singletons@ will also generate
 -- a 'Show' instance for the corresponding singleton type using 'ShowSing'.
 -- In other words, if you give @singletons@ a derived 'Show' instance, then
 -- you'll receive the following in return:
@@ -86,21 +105,106 @@ import qualified GHC.TypeNats as TN
 -- * A 'Show' instance for the singleton type
 --
 -- What a bargain!
-class    (forall (z :: k). Show (Sing z)) => ShowSing k
-instance (forall (z :: k). Show (Sing z)) => ShowSing k
+
+-- One might wonder we we simply don't define ShowSing as
+-- @type ShowSing k = (forall (z :: k). ShowSing' z)@ instead of going the
+-- extra mile to define it as a class.
+-- See Note [Define ShowSing as a class, not a type synonym] for an explanation.
+class    (forall (z :: k). ShowSing' z) => ShowSing k
+instance (forall (z :: k). ShowSing' z) => ShowSing k
+
+-- | The workhorse that powers 'ShowSing'. The only reason that `ShowSing'`
+-- exists is to work around GHC's inability to put type families in the head
+-- of a quantified constraint (see
+-- <https://gitlab.haskell.org/ghc/ghc/issues/14860 this GHC issue> for more
+-- details on this point). In other words, GHC will not let you define
+-- 'ShowSing' like so:
+--
+-- @
+-- class (forall (z :: k). 'Show' ('Sing' z)) => 'ShowSing' k
+-- @
+--
+-- By replacing @'Show' ('Sing' z)@ with @ShowSing' z@, we are able to avoid
+-- this restriction for the most part. There is one major downside to using
+-- @ShowSing'@, however: deriving 'Show' instances for singleton types does
+-- not work out of the box. In other words, if you try to do this:
+--
+-- @
+-- deriving instance 'ShowSing' k => 'Show' ('SList' (z :: [k]))
+-- @
+--
+-- Then GHC will complain to the effect that it could not deduce a
+-- @'Show' ('Sing' x)@ constraint. This is due to
+-- <https://gitlab.haskell.org/ghc/ghc/issues/16365 another unfortunate GHC bug>
+-- that prevents GHC from realizing that @'ShowSing' k@ implies
+-- @'Show' ('Sing' (x :: k))@. The workaround is to force GHC to come to its
+-- senses by using an explicit type signature:
+--
+-- @
+-- instance 'ShowSing' k => 'Show' ('SList' (z :: [k])) where
+--   showsPrec p 'SNil' = showString \"SNil\"
+--   showsPrec p ('SCons' (sx :: 'Sing' x) (sxs :: 'Sing' xs)) =
+--     (showParen (p > 10) $ showString \"SCons \" . showsPrec 11 sx
+--                         . showSpace . showsPrec 11 sxs)
+--       :: (ShowSing' x, ShowSing' xs) => ShowS
+-- @
+--
+-- The use of @ShowSing' x@ in the signature is sufficient to make the
+-- constraint solver connect the dots between @'ShowSing' k@ and
+-- @'Show' ('Sing' (x :: k))@. (The @ShowSing' xs@ constraint is not strictly
+-- necessary, but it is shown here since that is in fact the code that
+-- @singletons@ will generate for this instance.)
+--
+-- Because @deriving 'Show'@ will not insert these explicit signatures for us,
+-- it is not possible to derive 'Show' instances for singleton types.
+-- Thankfully, @singletons@' Template Haskell machinery can do this manual
+-- gruntwork for us 99% of the time, but if you ever find yourself in a
+-- situation where you must define a 'Show' instance for a singleton type by
+-- hand, this is important to keep in mind.
+--
+-- Note that there is one potential future direction that might alleviate this
+-- pain. We could define `ShowSing'` like this instead:
+--
+-- @
+-- class (forall sing. sing ~ 'Sing' => 'Show' (sing z)) => ShowSing' z
+-- instance 'Show' ('Sing' z) => ShowSing' z
+-- @
+--
+-- For many examples, this lets you just derive 'Show' instances for singleton
+-- types like you would expect. Alas, this topples over on @Bar@ in the
+-- following example:
+--
+-- @
+-- newtype Foo a = MkFoo a
+-- data SFoo :: forall a. Foo a -> Type where
+--   SMkFoo :: Sing x -> SFoo (MkFoo x)
+-- type instance Sing = SFoo
+-- deriving instance ShowSing a => Show (SFoo (z :: Foo a))
+--
+-- newtype Bar a = MkBar (Foo a)
+-- data SBar :: forall a. Bar a -> Type where
+--   SMkBar :: Sing x -> SBar (MkBar x)
+-- type instance Sing = SBar
+-- deriving instance ShowSing (Foo a) => Show (SBar (z :: Bar a))
+-- @
+--
+-- This fails because
+-- of—you guessed it—<https://gitlab.haskell.org/ghc/ghc/issues/16502 another GHC bug>.
+-- Bummer. Unless that bug were to be fixed, the current definition of
+-- `ShowSing'` is the best that we can do.
+class    Show (Sing z) => ShowSing' z
+instance Show (Sing z) => ShowSing' z
 
 {-
 Note [Define ShowSing as a class, not a type synonym]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In an ideal world, we would simply define ShowSing as an ordinary type synonym,
-like this:
+In an ideal world, we would simply define ShowSing like this:
 
-  type ShowSing k = (forall (z :: k). Show (Sing z) :: Constraint)
+  type ShowSing k = (forall (z :: k). ShowSing' z) :: Constraint)
 
-In fact, I used to assume that we lived in an ideal world, so I defined
-ShowSing as a type synonym in version 2.5 of this library. However, I realized
-some time after 2.5's release that the world is far from ideal, unfortunately,
-and that this approach is unfeasible at the time being due to GHC Trac #15888.
+In fact, I used to define ShowSing in a manner similar to this in version 2.5
+of singletons. However, I realized some time after 2.5's release that the
+this encoding is unfeasible at the time being due to GHC Trac #15888.
 
 To be more precise, the exact issue involves an infelicity in the way
 QuantifiedConstraints interacts with recursive type class instances.
@@ -130,18 +234,18 @@ following error:
 To see why this happens, observe what goes on if we expand the occurrences of
 the ShowSing type synonym in the generated instances:
 
-  deriving instance (forall z. Show (Sing (z :: Y a))) => Show (Sing (z :: X a))
-  deriving instance (forall z. Show (Sing (z :: X a))) => Show (Sing (z :: Y a))
+  deriving instance (forall z. ShowSing' (z :: Y a)) => Show (Sing (z :: X a))
+  deriving instance (forall z. ShowSing' (z :: X a)) => Show (Sing (z :: Y a))
 
 Due to the way QuantifiedConstraints currently works (as surmised in Trac
-#15888), when GHC has a Wanted `Show (Sing X1 :: X Bool)` constraint, it
+#15888), when GHC has a Wanted `ShowSing' (X1 :: X Bool)` constraint, it
 chooses the appropriate instance and emits a Wanted
-`forall z. Show (Sing (z :: Y Bool))` constraint (from the instance context).
+`forall z. ShowSing' (z :: Y Bool)` constraint (from the instance context).
 GHC skolemizes the `z` to `z1` and tries to solve a Wanted
-`Show (Sing (z1 :: Y Bool))` constraint. GHC chooses the appropriate instance
-and emits a Wanted `forall z. Show (Sing (z :: X Bool))` constraint. GHC
+`ShowSing' (z1 :: Y Bool)` constraint. GHC chooses the appropriate instance
+and emits a Wanted `forall z. ShowSing' (z :: X Bool)` constraint. GHC
 skolemizes the `z` to `z2` and tries to solve a Wanted
-`Show (Sing (z2 :: X Bool))` constraint... we repeat the process and find
+`ShowSing' (z2 :: X Bool)` constraint... we repeat the process and find
 ourselves in an infinite loop that eventually overflows the reduction stack.
 Eep.
 
