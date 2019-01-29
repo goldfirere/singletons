@@ -26,9 +26,10 @@ import Control.Monad
 boolName, andName, tyEqName, compareName, minBoundName,
   maxBoundName, repName,
   nilName, consName, listName, tyFunArrowName,
-  applyName, natName, symbolName, typeRepName, stringName,
+  applyName, applyTyConName, applyTyConAux1Name,
+  natName, symbolName, typeRepName, stringName,
   eqName, ordName, boundedName, orderingName,
-  singFamilyName, singIName, singMethName, demoteName,
+  singFamilyName, singIName, singMethName, demoteName, withSingIName,
   singKindClassName, sEqClassName, sEqMethName, sconsName, snilName, strueName,
   sIfName,
   someSingTypeName, someSingDataName,
@@ -58,6 +59,8 @@ consName = '(:)
 listName = ''[]
 tyFunArrowName = ''(~>)
 applyName = ''Apply
+applyTyConName = ''ApplyTyCon
+applyTyConAux1Name = ''ApplyTyConAux1
 symbolName = ''Symbol
 natName = ''Nat
 typeRepName = ''TypeRep
@@ -72,6 +75,7 @@ singMethName = 'sing
 toSingName = 'toSing
 fromSingName = 'fromSing
 demoteName = ''Demote
+withSingIName = 'withSingI
 singKindClassName = ''SingKind
 sEqClassName = mk_name_tc "Data.Singletons.Prelude.Eq" "SEq"
 sEqMethName = mk_name_v "Data.Singletons.Prelude.Eq" "%=="

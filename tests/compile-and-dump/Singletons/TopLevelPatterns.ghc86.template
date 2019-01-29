@@ -61,14 +61,9 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       sing = (SBar sing) sing
     instance SingI (BarSym0 :: (~>) Bool ((~>) Bool Foo)) where
       sing = (singFun2 @BarSym0) SBar
-    instance SingI (TyCon2 Bar :: (~>) Bool ((~>) Bool Foo)) where
-      sing = (singFun2 @(TyCon2 Bar)) SBar
     instance SingI d =>
              SingI (BarSym1 (d :: Bool) :: (~>) Bool Foo) where
       sing = (singFun1 @(BarSym1 (d :: Bool))) (SBar (sing @d))
-    instance SingI d =>
-             SingI (TyCon1 (Bar (d :: Bool)) :: (~>) Bool Foo) where
-      sing = (singFun1 @(TyCon1 (Bar (d :: Bool)))) (SBar (sing @d))
 Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| otherwise :: Bool

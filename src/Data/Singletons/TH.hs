@@ -44,6 +44,7 @@ module Data.Singletons.TH (
   singShowInstances, singShowInstance,
 
   -- ** Utility functions
+  singITyConInstances, singITyConInstance,
   cases, sCases,
 
   -- * Basic singleton definitions

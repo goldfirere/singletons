@@ -201,11 +201,39 @@ data family TyCon :: (k1 -> k2) -> unmatchable_fun
 -- here because dealing with inequality like this is hard, and
 -- I (Richard) wasn't sure what concrete value the ticket would
 -- have, given that we don't know how to begin fixing it.
-type family ApplyTyCon (f :: k1 -> k2) (x :: k1) :: k3 where
-  ApplyTyCon (f :: k1 -> k2 -> k3) x = TyCon (f x)
-  ApplyTyCon f x                     = f x
+type family ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun) where
+  ApplyTyCon = (ApplyTyConAux2 :: (k1 -> k2 -> k3) -> (k1 ~> unmatchable_fun))
+  ApplyTyCon = (ApplyTyConAux1 :: (k1 -> k2)       -> (k1 ~> k2))
+-- Upon first glance, the definition of ApplyTyCon (as well as the
+-- corresponding Apply instance for TyCon) seems a little indirect. One might
+-- wonder why these aren't defined like so:
+--
+--   type family ApplyTyCon (f :: k1 -> k2) (x :: k1) :: k3 where
+--     ApplyTyCon (f :: k1 -> k2 -> k3) x = TyCon (f x)
+--     ApplyTyCon f x                     = f x
+--
+--   type instance Apply (TyCon f) x = ApplyTyCon f x
+--
+-- This also works, but it requires that ApplyTyCon always be applied to a
+-- minimum of two arguments. In particular, this rules out a trick that we use
+-- elsewhere in the library to write SingI instances for different TyCons,
+-- which relies on partial applications of ApplyTyCon:
+--
+--   instance forall k1 k2 (f :: k1 -> k2).
+--            ( forall a. SingI a => SingI (f a)
+--            , (ApplyTyCon :: (k1 -> k2) -> (k1 ~> k2)) ~ ApplyTyConAux1
+--            ) => SingI (TyCon1 f) where
+type instance Apply (TyCon f) x = ApplyTyCon f @@ x
 
-type instance Apply (TyCon f) x = ApplyTyCon f x
+-- | An \"internal\" defunctionalization symbol used primarily in the
+-- definition of 'ApplyTyCon', as well as the 'SingI' instances for 'TyCon1',
+-- 'TyCon2', etc.
+data ApplyTyConAux1 :: (k1 -> k2) -> (k1 ~> k2)
+-- | An \"internal\" defunctionalization symbol used primarily in the
+-- definition of 'ApplyTyCon'.
+data ApplyTyConAux2 :: (k1 -> k2) -> (k1 ~> unmatchable_fun)
+type instance Apply (ApplyTyConAux1 f) x = f x
+type instance Apply (ApplyTyConAux2 f) x = TyCon (f x)
 
 -- | Wrapper for converting the normal type-level arrow into a '~>'.
 -- For example, given:

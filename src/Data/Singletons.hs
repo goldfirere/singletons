@@ -1,12 +1,15 @@
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE ExplicitNamespaces #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE MagicHash #-}
 {-# LANGUAGE PatternSynonyms #-}
 {-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE QuantifiedConstraints #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -92,8 +95,22 @@ import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Semigroup
 import Data.Singletons.Promote
 import Data.Singletons.ShowSing
+import Data.Singletons.Single (singITyConInstances)
 import Data.String
 import qualified Data.Text as T (pack)
+
+----------------------------------------------------------------------
+---- SingI TyCon{N} instances ----------------------------------------
+----------------------------------------------------------------------
+
+{-
+Generates SingI instances for TyCon1 through TyCon8:
+
+  instance (forall a.    SingI a           => SingI (f a),   ...) => SingI (TyCon1 f)
+  instance (forall a b. (SingI a, SingI b) => SingI (f a b), ...) => SingI (TyCon2 f)
+  ...
+-}
+$(singITyConInstances [1..8])
 
 ----------------------------------------------------------------------
 ---- SomeSing instances ----------------------------------------------

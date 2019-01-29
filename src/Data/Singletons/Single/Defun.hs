@@ -45,15 +45,9 @@ import Language.Haskell.TH.Syntax
 -- Note that singDefuns takes Maybe DKinds for the promoted argument and result
 -- types, in case we have an entity whose type needs to be inferred.
 -- See Note [singDefuns and type inference].
---
--- Note that in the particular case of a data constructor, we actually generate
--- /two/ SingI instances partial application—one for the defunctionalization
--- symbol, and one for the data constructor placed inside TyCon{N}.
--- See Note [SingI instances for partially applied constructors].
 singDefuns :: Name      -- The Name of the thing to promote.
            -> NameSpace -- Whether the above Name is a value, data constructor,
                         -- or a type constructor.
-                        -- See Note [SingI instances for partially applied constructors]
            -> DCxt      -- The type's context.
            -> [Maybe DKind] -- The promoted argument types (if known).
            -> Maybe DKind   -- The promoted result type (if known).
@@ -119,28 +113,20 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
         mb_inst_kind = foldr buildTyFunArrow_maybe mb_ty_res mb_tyss
 
         new_insts :: [DDec]
-        new_insts
-          | DataName <- ns
-          = -- See Note [SingI instances for partially applied constructors]
-            let s_data_con = DConE $ singDataConName n in
-            [ mk_inst defun_inst_ty s_data_con
-            , mk_inst tycon_inst_ty s_data_con ]
-          | otherwise
-          = [mk_inst defun_inst_ty $ DVarE $ singValName n]
+        new_insts = [DInstanceD Nothing
+                                (sty_ctxt ++ singI_ctxt)
+                                (DConT singIName `DAppT` mk_inst_ty defun_inst_ty)
+                                [DLetDec $ DValD (DVarP singMethName)
+                                         $ wrapSingFun sing_fun_num defun_inst_ty
+                                         $ mk_sing_fun_expr sing_exp ]]
           where
-            mk_inst :: DType -> DExp -> DDec
-            mk_inst inst_head sing_exp
-              = DInstanceD Nothing
-                           (sty_ctxt ++ singI_ctxt)
-                           (DConT singIName `DAppT` mk_inst_ty inst_head)
-                           [DLetDec $ DValD (DVarP singMethName)
-                                    $ wrapSingFun sing_fun_num inst_head
-                                    $ mk_sing_fun_expr sing_exp ]
-
-            defun_inst_ty, tycon_inst_ty :: DType
+            defun_inst_ty :: DType
             defun_inst_ty = foldType (DConT (promoteTySym n sym_num)) tvb_tys
-            tycon_inst_ty = DConT (mkTyConName sing_fun_num) `DAppT`
-                            foldType (DConT n) tvb_tys
+
+            sing_exp :: DExp
+            sing_exp = case ns of
+                         DataName -> DConE $ singDataConName n
+                         _        -> DVarE $ singValName n
 
 {-
 Note [singDefuns and type inference]
@@ -176,38 +162,4 @@ This is true, but also not unprecedented, as the singled version of bar, sBar,
 will /also/ fail to typecheck due to a missing SEq constraint. Therefore, this
 design choice fits within the existing tradition of type inference in
 singletons.
-
-Note [SingI instances for partially applied constructors]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Unlike normal functions, where we generate one SingI instance for each of its
-partial applications (one per defunctionalization symbol), we generate *two*
-SingI instances for each partial application of a data constructor. That is,
-if we have:
-
-  data D a where
-    K :: a -> D a
-
-K has an partial application, so we will generate the following two SingI
-instances:
-
-  instance SingI KSym0          where sing = singFun1 SK
-  instance SingI (TyCon1 KSym0) where sing = singFun1 SK
-
-The first instance is exactly the same as what we'd generate for a normal,
-partially applied function's defun symbol. The second one, while functionally
-equivalent, is a bit dissatisfying: in general, adopting this approach means
-that we end up generating many instances of the form:
-
-  instance SingI (TyCon1 S1)
-  instance SingI (TyCon1 S2)
-  ...
-
-Ideally, we'd have a single instance SingI (TyCon1 s) to rule them all. But
-doing so would require writing something akin to:
-
-  instance (forall a. SingI a => SingI (f a)) => SingI (TyCon1 f) where
-    sing = SLambda $ \(x :: Sing a) -> withSingI x $ sing @_ @(f a)
-
-But this would require quantified constraints. Until GHC gains these, we
-compensate by generating out several SingI (TyCon1 s) instances.
 -}
