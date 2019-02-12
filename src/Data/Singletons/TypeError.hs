@@ -158,30 +158,18 @@ $(genDefunSymbols [''ErrorMessage', ''TypeError])
 
 instance SingI (TextSym0 :: Symbol ~> PErrorMessage) where
   sing = singFun1 SText
-instance SingI (TyCon1 'Text :: Symbol ~> PErrorMessage) where
-  sing = singFun1 SText
 
 instance SingI (ShowTypeSym0 :: t ~> PErrorMessage) where
-  sing = singFun1 SShowType
-instance SingI (TyCon1 'ShowType :: t ~> PErrorMessage) where
   sing = singFun1 SShowType
 
 instance SingI ((:<>:@#@$) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
   sing = singFun2 (:%<>:)
-instance SingI (TyCon2 '(:<>:) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
-  sing = singFun2 (:%<>:)
 instance SingI x => SingI ((:<>:@#@$$) x :: PErrorMessage ~> PErrorMessage) where
-  sing = singFun1 (sing @x :%<>:)
-instance SingI x => SingI (TyCon1 ('(:<>:) x) :: PErrorMessage ~> PErrorMessage) where
   sing = singFun1 (sing @x :%<>:)
 
 instance SingI ((:$$:@#@$) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
   sing = singFun2 (:%$$:)
-instance SingI (TyCon2 '(:$$:) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
-  sing = singFun2 (:%$$:)
 instance SingI x => SingI ((:$$:@#@$$) x :: PErrorMessage ~> PErrorMessage) where
-  sing = singFun1 (sing @x :%$$:)
-instance SingI x => SingI (TyCon1 ('(:$$:) x) :: PErrorMessage ~> PErrorMessage) where
   sing = singFun1 (sing @x :%$$:)
 
 instance SingI TypeErrorSym0 where

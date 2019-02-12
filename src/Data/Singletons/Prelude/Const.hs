@@ -1,5 +1,4 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE PolyKinds #-}
@@ -84,8 +83,6 @@ instance SingI a => SingI ('Const a) where
 
 $(genDefunSymbols [''Const])
 instance SingI ConstSym0 where
-  sing = singFun1 SConst
-instance SingI (TyCon1 'Const) where
   sing = singFun1 SConst
 
 $(singletons [d|

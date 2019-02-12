@@ -827,11 +827,6 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
       sing = (SFoo sing) sing
     instance SingI (FooSym0 :: (~>) a ((~>) b (Foo a b))) where
       sing = (singFun2 @FooSym0) SFoo
-    instance SingI (TyCon2 Foo :: (~>) a ((~>) b (Foo a b))) where
-      sing = (singFun2 @(TyCon2 Foo)) SFoo
     instance SingI d =>
              SingI (FooSym1 (d :: a) :: (~>) b (Foo a b)) where
       sing = (singFun1 @(FooSym1 (d :: a))) (SFoo (sing @d))
-    instance SingI d =>
-             SingI (TyCon1 (Foo (d :: a)) :: (~>) b (Foo a b)) where
-      sing = (singFun1 @(TyCon1 (Foo (d :: a)))) (SFoo (sing @d))

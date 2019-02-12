@@ -573,5 +573,3 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       sing = SSucc' sing
     instance SingI (Succ'Sym0 :: (~>) Nat' Nat') where
       sing = (singFun1 @Succ'Sym0) SSucc'
-    instance SingI (TyCon1 Succ' :: (~>) Nat' Nat') where
-      sing = (singFun1 @(TyCon1 Succ')) SSucc'

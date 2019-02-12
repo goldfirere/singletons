@@ -57,6 +57,18 @@ Changelog for singletons project
   `TypeApplications` extension. (The generated code was always using
   `TypeApplications` under the hood, but it's only now that GHC is detecting
   it.)
+* `Data.Singletons` now defines a family of `SingI` instances for `TyCon1`
+  through `TyCon8`:
+
+  ```haskell
+  instance (forall a.    SingI a           => SingI (f a),   ...) => SingI (TyCon1 f)
+  instance (forall a b. (SingI a, SingI b) => SingI (f a b), ...) => SingI (TyCon2 f)
+  ...
+  ```
+
+  As a result, `singletons` no longer generates instances for `SingI` instances
+  for applications of `TyCon{N}` to particular type constructors, as they have
+  been superseded by the instances above.
 * Redefine `Σ` such that it is now a partial application of `Sigma`, like so:
 
   ```haskell

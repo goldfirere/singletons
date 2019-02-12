@@ -1613,37 +1613,20 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       sing = (((SMkT1 sing) sing) sing) sing
     instance SingI (MkT1Sym0 :: (~>) x ((~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))))) where
       sing = (singFun4 @MkT1Sym0) SMkT1
-    instance SingI (TyCon4 MkT1 :: (~>) x ((~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))))) where
-      sing = (singFun4 @(TyCon4 MkT1)) SMkT1
     instance SingI d =>
              SingI (MkT1Sym1 (d :: x) :: (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))) where
       sing = (singFun3 @(MkT1Sym1 (d :: x))) (SMkT1 (sing @d))
-    instance SingI d =>
-             SingI (TyCon3 (MkT1 (d :: x)) :: (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))) where
-      sing = (singFun3 @(TyCon3 (MkT1 (d :: x)))) (SMkT1 (sing @d))
     instance (SingI d, SingI d) =>
              SingI (MkT1Sym2 (d :: x) (d :: a) :: (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))) where
       sing
         = (singFun2 @(MkT1Sym2 (d :: x) (d :: a)))
-            ((SMkT1 (sing @d)) (sing @d))
-    instance (SingI d, SingI d) =>
-             SingI (TyCon2 (MkT1 (d :: x) (d :: a)) :: (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))) where
-      sing
-        = (singFun2 @(TyCon2 (MkT1 (d :: x) (d :: a))))
             ((SMkT1 (sing @d)) (sing @d))
     instance (SingI d, SingI d, SingI d) =>
              SingI (MkT1Sym3 (d :: x) (d :: a) (d :: Maybe a) :: (~>) (Maybe (Maybe a)) (T x a)) where
       sing
         = (singFun1 @(MkT1Sym3 (d :: x) (d :: a) (d :: Maybe a)))
             (((SMkT1 (sing @d)) (sing @d)) (sing @d))
-    instance (SingI d, SingI d, SingI d) =>
-             SingI (TyCon1 (MkT1 (d :: x) (d :: a) (d :: Maybe a)) :: (~>) (Maybe (Maybe a)) (T x a)) where
-      sing
-        = (singFun1 @(TyCon1 (MkT1 (d :: x) (d :: a) (d :: Maybe a))))
-            (((SMkT1 (sing @d)) (sing @d)) (sing @d))
     instance SingI n => SingI (MkT2 (n :: Maybe x)) where
       sing = SMkT2 sing
     instance SingI (MkT2Sym0 :: (~>) (Maybe x) (T x a)) where
       sing = (singFun1 @MkT2Sym0) SMkT2
-    instance SingI (TyCon1 MkT2 :: (~>) (Maybe x) (T x a)) where
-      sing = (singFun1 @(TyCon1 MkT2)) SMkT2

@@ -210,6 +210,55 @@ showSingInstance name = do
 showSingInstances :: DsMonad q => [Name] -> q [Dec]
 showSingInstances = concatMapM showSingInstance
 
+-- | Create an instance for @'SingI' TyCon{N}@, where @N@ is the positive
+-- number provided as an argument.
+--
+-- Note that the generated code requires the use of the @QuantifiedConstraints@
+-- language extension.
+singITyConInstances :: DsMonad q => [Int] -> q [Dec]
+singITyConInstances = concatMapM singITyConInstance
+
+-- | Create an instance for @'SingI' TyCon{N}@, where @N@ is the positive
+-- number provided as an argument.
+--
+-- Note that the generated code requires the use of the @QuantifiedConstraints@
+-- language extension.
+singITyConInstance :: DsMonad q => Int -> q [Dec]
+singITyConInstance n
+  | n <= 0
+  = fail $ "Argument must be a positive number (given " ++ show n ++ ")"
+  | otherwise
+  = do as <- replicateM n (qNewName "a")
+       ks <- replicateM n (qNewName "k")
+       k_last <- qNewName "k_last"
+       f      <- qNewName "f"
+       x      <- qNewName "x"
+       let k_penult = last ks
+           k_fun = ravel (map DVarT ks) (DVarT k_last)
+           f_ty  = DVarT f
+           a_tys = map DVarT as
+           mk_fun arrow t1 t2 = arrow `DAppT` t1 `DAppT` t2
+           matchable_apply_fun   = mk_fun DArrowT                (DVarT k_penult) (DVarT k_last)
+           unmatchable_apply_fun = mk_fun (DConT tyFunArrowName) (DVarT k_penult) (DVarT k_last)
+           ctxt = [ DForallT (map DPlainTV as)
+                             (map (DAppT (DConT singIName)) a_tys)
+                             (DConT singIName `DAppT` foldType f_ty a_tys)
+                  , DConT equalityName
+                      `DAppT` (DConT applyTyConName `DSigT`
+                                mk_fun DArrowT matchable_apply_fun unmatchable_apply_fun)
+                      `DAppT` DConT applyTyConAux1Name
+                  ]
+       pure $ decToTH
+            $ DInstanceD
+                Nothing ctxt
+                (DConT singIName `DAppT` (DConT (mkTyConName n) `DAppT` (f_ty `DSigT` k_fun)))
+                [DLetDec $ DFunD singMethName
+                           [DClause [] $
+                            wrapSingFun 1 DWildCardT $
+                            DLamE [x] $
+                            DVarE withSingIName `DAppE` DVarE x
+                                                `DAppE` DVarE singMethName]]
+
 singInstance :: DsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 singInstance mk_inst inst_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name

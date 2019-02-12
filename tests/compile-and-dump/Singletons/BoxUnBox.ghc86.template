@@ -50,5 +50,3 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
       sing = SFBox sing
     instance SingI (FBoxSym0 :: (~>) a (Box a)) where
       sing = (singFun1 @FBoxSym0) SFBox
-    instance SingI (TyCon1 FBox :: (~>) a (Box a)) where
-      sing = (singFun1 @(TyCon1 FBox)) SFBox

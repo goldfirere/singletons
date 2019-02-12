@@ -116,8 +116,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sing = SSucc sing
     instance SingI (SuccSym0 :: (~>) Nat Nat) where
       sing = (singFun1 @SuccSym0) SSucc
-    instance SingI (TyCon1 Succ :: (~>) Nat Nat) where
-      sing = (singFun1 @(TyCon1 Succ)) SSucc
 GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| append :: Schema -> Schema -> Schema
@@ -2524,13 +2522,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sing = (SVEC sing) sing
     instance SingI (VECSym0 :: (~>) U ((~>) Nat U)) where
       sing = (singFun2 @VECSym0) SVEC
-    instance SingI (TyCon2 VEC :: (~>) U ((~>) Nat U)) where
-      sing = (singFun2 @(TyCon2 VEC)) SVEC
     instance SingI d => SingI (VECSym1 (d :: U) :: (~>) Nat U) where
       sing = (singFun1 @(VECSym1 (d :: U))) (SVEC (sing @d))
-    instance SingI d =>
-             SingI (TyCon1 (VEC (d :: U)) :: (~>) Nat U) where
-      sing = (singFun1 @(TyCon1 (VEC (d :: U)))) (SVEC (sing @d))
     instance SingI CA where
       sing = SCA
     instance SingI CB where
@@ -2588,20 +2581,13 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sing = (SAttr sing) sing
     instance SingI (AttrSym0 :: (~>) [AChar] ((~>) U Attribute)) where
       sing = (singFun2 @AttrSym0) SAttr
-    instance SingI (TyCon2 Attr :: (~>) [AChar] ((~>) U Attribute)) where
-      sing = (singFun2 @(TyCon2 Attr)) SAttr
     instance SingI d =>
              SingI (AttrSym1 (d :: [AChar]) :: (~>) U Attribute) where
       sing = (singFun1 @(AttrSym1 (d :: [AChar]))) (SAttr (sing @d))
-    instance SingI d =>
-             SingI (TyCon1 (Attr (d :: [AChar])) :: (~>) U Attribute) where
-      sing = (singFun1 @(TyCon1 (Attr (d :: [AChar])))) (SAttr (sing @d))
     instance SingI n => SingI (Sch (n :: [Attribute])) where
       sing = SSch sing
     instance SingI (SchSym0 :: (~>) [Attribute] Schema) where
       sing = (singFun1 @SchSym0) SSch
-    instance SingI (TyCon1 Sch :: (~>) [Attribute] Schema) where
-      sing = (singFun1 @(TyCon1 Sch)) SSch
 GradingClient/Database.hs:0:0:: Splicing declarations
     return [] ======>
 GradingClient/Database.hs:(0,0)-(0,0): Splicing expression

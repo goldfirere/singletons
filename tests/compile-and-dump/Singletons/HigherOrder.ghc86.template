@@ -471,11 +471,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       sing = SLeft sing
     instance SingI (LeftSym0 :: (~>) a (Either a b)) where
       sing = (singFun1 @LeftSym0) SLeft
-    instance SingI (TyCon1 Left :: (~>) a (Either a b)) where
-      sing = (singFun1 @(TyCon1 Left)) SLeft
     instance SingI n => SingI (Right (n :: b)) where
       sing = SRight sing
     instance SingI (RightSym0 :: (~>) b (Either a b)) where
       sing = (singFun1 @RightSym0) SRight
-    instance SingI (TyCon1 Right :: (~>) b (Either a b)) where
-      sing = (singFun1 @(TyCon1 Right)) SRight
