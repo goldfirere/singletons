@@ -40,7 +40,7 @@ knowledge of dependent types.
 Compatibility
 -------------
 
-The singletons library requires GHC 8.6.1 or greater. Any code that uses the
+The singletons library requires GHC 8.8.1 or greater. Any code that uses the
 singleton generation primitives needs to enable a long list of GHC
 extensions. This list includes, but is not necessarily limited to, the
 following:
@@ -535,27 +535,7 @@ treatment):
    All tuples (including the 0-tuple, unit) are treated similarly.
 
 
-6. original value: `(.)`
-
-   promoted type\*: `(:.)`
-
-   singleton value: `(%.)`
-
-   symbols: `(.@#@$)`, `(.@#@$$)`, `(.@#@$$$)`
-
-   The promoted type is special because GHC can't parse a type named `(.)`.
-
-7. original value: `(!)`
-
-   promoted type\*: `(:!)`
-
-   singleton value: `(%!)`
-
-   symbols: `(!@#@$)`, `(!@#@$$)`, `(!@#@$$$)`
-
-   The promoted type is special because GHC can't parse a type named `(!)`.
-
-8. original value: `___foo`
+6. original value: `___foo`
 
    promoted type\*: `US___foo` ("`US`" stands for "underscore")
 

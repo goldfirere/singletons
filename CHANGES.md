@@ -3,6 +3,7 @@ Changelog for singletons project
 
 2.6
 ---
+* Require GHC 8.8.
 * GHC's behavior surrounding kind inference for local definitions has changed
   in 8.8, and certain code that `singletons` generates for local definitions
   may no longer typecheck as a result. While we have taken measures to mitigate
@@ -69,6 +70,9 @@ Changelog for singletons project
   As a result, `singletons` no longer generates instances for `SingI` instances
   for applications of `TyCon{N}` to particular type constructors, as they have
   been superseded by the instances above.
+* Since GHC now has the ability to parse `.` and `!` as type operators, the
+  `(:.) and `(:!)` type families have been renamed to `(.)` and `(!)`,
+  respectively.
 * Redefine `Σ` such that it is now a partial application of `Sigma`, like so:
 
   ```haskell
