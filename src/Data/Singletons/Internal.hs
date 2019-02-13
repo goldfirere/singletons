@@ -202,8 +202,8 @@ data family TyCon :: (k1 -> k2) -> unmatchable_fun
 -- I (Richard) wasn't sure what concrete value the ticket would
 -- have, given that we don't know how to begin fixing it.
 type family ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun) where
-  ApplyTyCon = (ApplyTyConAux2 :: (k1 -> k2 -> k3) -> (k1 ~> unmatchable_fun))
-  ApplyTyCon = (ApplyTyConAux1 :: (k1 -> k2)       -> (k1 ~> k2))
+  ApplyTyCon @k1 @(k2 -> k3) @unmatchable_fun = ApplyTyConAux2
+  ApplyTyCon @k1 @k2         @k2              = ApplyTyConAux1
 -- Upon first glance, the definition of ApplyTyCon (as well as the
 -- corresponding Apply instance for TyCon) seems a little indirect. One might
 -- wonder why these aren't defined like so:

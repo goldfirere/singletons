@@ -3,6 +3,7 @@ Changelog for singletons project
 
 2.6
 ---
+* Require GHC 8.8.
 * GHC's behavior surrounding kind inference for local definitions has changed
   in 8.8, and certain code that `singletons` generates for local definitions
   may no longer typecheck as a result. While we have taken measures to mitigate
