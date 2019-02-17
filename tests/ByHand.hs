@@ -15,7 +15,7 @@ This file is a great way to understand the singleton encoding better.
              RankNTypes, TypeOperators, MultiParamTypeClasses,
              FunctionalDependencies, ScopedTypeVariables,
              LambdaCase, TemplateHaskell, EmptyCase,
-             AllowAmbiguousTypes, TypeApplications, EmptyCase
+             TypeApplications, EmptyCase
  #-}
 
 module ByHand where
