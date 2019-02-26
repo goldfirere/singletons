@@ -30,6 +30,8 @@ import Data.Singletons.Names
 import Language.Haskell.TH.Syntax hiding (showName)
 import Language.Haskell.TH.Ppr
 import Language.Haskell.TH.Desugar
+import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
+import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
 import Data.Singletons.Util
 
 import Control.Monad
@@ -174,14 +176,14 @@ partitionClassDec _ =
 
 partitionInstanceDec :: Monad m => DDec
                      -> m ( Maybe (Name, ULetDecRHS) -- right-hand sides of methods
-                          , Map Name DType           -- method type signatures
+                          , OMap Name DType          -- method type signatures
                           )
 partitionInstanceDec (DLetDec (DValD (DVarP name) exp)) =
   pure (Just (name, UValue exp), mempty)
 partitionInstanceDec (DLetDec (DFunD name clauses)) =
   pure (Just (name, UFunction clauses), mempty)
 partitionInstanceDec (DLetDec (DSigD name ty)) =
-  pure (Nothing, Map.singleton name ty)
+  pure (Nothing, OMap.singleton name ty)
 partitionInstanceDec (DLetDec (DPragmaD {})) =
   pure (Nothing, mempty)
 partitionInstanceDec (DTySynInstD {}) =

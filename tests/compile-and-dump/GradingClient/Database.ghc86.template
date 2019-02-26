@@ -397,25 +397,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                                           arg. SameKind (Apply OccursSym0 arg) (OccursSym1 arg) =>
                                    OccursSym0 a0123456789876543210
     type instance Apply OccursSym0 a0123456789876543210 = OccursSym1 a0123456789876543210
-    type AttrNotInSym2 (a0123456789876543210 :: Attribute) (a0123456789876543210 :: Schema) =
-        AttrNotIn a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (AttrNotInSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) AttrNotInSym1KindInference) ())
-    data AttrNotInSym1 (a0123456789876543210 :: Attribute) :: (~>) Schema Bool
-      where
-        AttrNotInSym1KindInference :: forall a0123456789876543210
-                                             a0123456789876543210
-                                             arg. SameKind (Apply (AttrNotInSym1 a0123456789876543210) arg) (AttrNotInSym2 a0123456789876543210 arg) =>
-                                      AttrNotInSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (AttrNotInSym1 a0123456789876543210) a0123456789876543210 = AttrNotIn a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings AttrNotInSym0 where
-      suppressUnusedWarnings = snd (((,) AttrNotInSym0KindInference) ())
-    data AttrNotInSym0 :: (~>) Attribute ((~>) Schema Bool)
-      where
-        AttrNotInSym0KindInference :: forall a0123456789876543210
-                                             arg. SameKind (Apply AttrNotInSym0 arg) (AttrNotInSym1 arg) =>
-                                      AttrNotInSym0 a0123456789876543210
-    type instance Apply AttrNotInSym0 a0123456789876543210 = AttrNotInSym1 a0123456789876543210
     type DisjointSym2 (a0123456789876543210 :: Schema) (a0123456789876543210 :: Schema) =
         Disjoint a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (DisjointSym1 a0123456789876543210) where
@@ -435,6 +416,25 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                                             arg. SameKind (Apply DisjointSym0 arg) (DisjointSym1 arg) =>
                                      DisjointSym0 a0123456789876543210
     type instance Apply DisjointSym0 a0123456789876543210 = DisjointSym1 a0123456789876543210
+    type AttrNotInSym2 (a0123456789876543210 :: Attribute) (a0123456789876543210 :: Schema) =
+        AttrNotIn a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (AttrNotInSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) AttrNotInSym1KindInference) ())
+    data AttrNotInSym1 (a0123456789876543210 :: Attribute) :: (~>) Schema Bool
+      where
+        AttrNotInSym1KindInference :: forall a0123456789876543210
+                                             a0123456789876543210
+                                             arg. SameKind (Apply (AttrNotInSym1 a0123456789876543210) arg) (AttrNotInSym2 a0123456789876543210 arg) =>
+                                      AttrNotInSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (AttrNotInSym1 a0123456789876543210) a0123456789876543210 = AttrNotIn a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings AttrNotInSym0 where
+      suppressUnusedWarnings = snd (((,) AttrNotInSym0KindInference) ())
+    data AttrNotInSym0 :: (~>) Attribute ((~>) Schema Bool)
+      where
+        AttrNotInSym0KindInference :: forall a0123456789876543210
+                                             arg. SameKind (Apply AttrNotInSym0 arg) (AttrNotInSym1 arg) =>
+                                      AttrNotInSym0 a0123456789876543210
+    type instance Apply AttrNotInSym0 a0123456789876543210 = AttrNotInSym1 a0123456789876543210
     type AppendSym2 (a0123456789876543210 :: Schema) (a0123456789876543210 :: Schema) =
         Append a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (AppendSym1 a0123456789876543210) where
@@ -460,12 +460,12 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     type family Occurs (a :: [AChar]) (a :: Schema) :: Bool where
       Occurs _ (Sch '[]) = FalseSym0
       Occurs name (Sch ( '(:) (Attr name' _) attrs)) = Apply (Apply (||@#@$) (Apply (Apply (==@#@$) name) name')) (Apply (Apply OccursSym0 name) (Apply SchSym0 attrs))
-    type family AttrNotIn (a :: Attribute) (a :: Schema) :: Bool where
-      AttrNotIn _ (Sch '[]) = TrueSym0
-      AttrNotIn (Attr name u) (Sch ( '(:) (Attr name' _) t)) = Apply (Apply (&&@#@$) (Apply (Apply (/=@#@$) name) name')) (Apply (Apply AttrNotInSym0 (Apply (Apply AttrSym0 name) u)) (Apply SchSym0 t))
     type family Disjoint (a :: Schema) (a :: Schema) :: Bool where
       Disjoint (Sch '[]) _ = TrueSym0
       Disjoint (Sch ( '(:) h t)) s = Apply (Apply (&&@#@$) (Apply (Apply AttrNotInSym0 h) s)) (Apply (Apply DisjointSym0 (Apply SchSym0 t)) s)
+    type family AttrNotIn (a :: Attribute) (a :: Schema) :: Bool where
+      AttrNotIn _ (Sch '[]) = TrueSym0
+      AttrNotIn (Attr name u) (Sch ( '(:) (Attr name' _) t)) = Apply (Apply (&&@#@$) (Apply (Apply (/=@#@$) name) name')) (Apply (Apply AttrNotInSym0 (Apply (Apply AttrSym0 name) u)) (Apply SchSym0 t))
     type family Append (a :: Schema) (a :: Schema) :: Schema where
       Append (Sch s1) (Sch s2) = Apply SchSym0 (Apply (Apply (++@#@$) s1) s2)
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: U) (a :: Symbol) :: Symbol where
@@ -612,12 +612,12 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     sOccurs ::
       forall (t :: [AChar]) (t :: Schema).
       Sing t -> Sing t -> Sing (Apply (Apply OccursSym0 t) t :: Bool)
-    sAttrNotIn ::
-      forall (t :: Attribute) (t :: Schema).
-      Sing t -> Sing t -> Sing (Apply (Apply AttrNotInSym0 t) t :: Bool)
     sDisjoint ::
       forall (t :: Schema) (t :: Schema).
       Sing t -> Sing t -> Sing (Apply (Apply DisjointSym0 t) t :: Bool)
+    sAttrNotIn ::
+      forall (t :: Attribute) (t :: Schema).
+      Sing t -> Sing t -> Sing (Apply (Apply AttrNotInSym0 t) t :: Bool)
     sAppend ::
       forall (t :: Schema) (t :: Schema).
       Sing t -> Sing t -> Sing (Apply (Apply AppendSym0 t) t :: Schema)
@@ -651,18 +651,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                  sName')))
           ((applySing ((applySing ((singFun2 @OccursSym0) sOccurs)) sName))
              ((applySing ((singFun1 @SchSym0) SSch)) sAttrs))
-    sAttrNotIn _ (SSch SNil) = STrue
-    sAttrNotIn
-      (SAttr (sName :: Sing name) (sU :: Sing u))
-      (SSch (SCons (SAttr (sName' :: Sing name') _) (sT :: Sing t)))
-      = (applySing
-           ((applySing ((singFun2 @(&&@#@$)) (%&&)))
-              ((applySing ((applySing ((singFun2 @(/=@#@$)) (%/=))) sName))
-                 sName')))
-          ((applySing
-              ((applySing ((singFun2 @AttrNotInSym0) sAttrNotIn))
-                 ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sName)) sU)))
-             ((applySing ((singFun1 @SchSym0) SSch)) sT))
     sDisjoint (SSch SNil) _ = STrue
     sDisjoint
       (SSch (SCons (sH :: Sing h) (sT :: Sing t)))
@@ -676,6 +664,18 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
               ((applySing ((singFun2 @DisjointSym0) sDisjoint))
                  ((applySing ((singFun1 @SchSym0) SSch)) sT)))
              sS)
+    sAttrNotIn _ (SSch SNil) = STrue
+    sAttrNotIn
+      (SAttr (sName :: Sing name) (sU :: Sing u))
+      (SSch (SCons (SAttr (sName' :: Sing name') _) (sT :: Sing t)))
+      = (applySing
+           ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+              ((applySing ((applySing ((singFun2 @(/=@#@$)) (%/=))) sName))
+                 sName')))
+          ((applySing
+              ((applySing ((singFun2 @AttrNotInSym0) sAttrNotIn))
+                 ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sName)) sU)))
+             ((applySing ((singFun1 @SchSym0) SSch)) sT))
     sAppend (SSch (sS1 :: Sing s1)) (SSch (sS2 :: Sing s2))
       = (applySing ((singFun1 @SchSym0) SSch))
           ((applySing ((applySing ((singFun2 @(++@#@$)) (%++))) sS1)) sS2)
@@ -689,6 +689,12 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (OccursSym1 (d :: [AChar]) :: (~>) Schema Bool) where
       sing = (singFun1 @(OccursSym1 (d :: [AChar]))) (sOccurs (sing @d))
+    instance SingI (DisjointSym0 :: (~>) Schema ((~>) Schema Bool)) where
+      sing = (singFun2 @DisjointSym0) sDisjoint
+    instance SingI d =>
+             SingI (DisjointSym1 (d :: Schema) :: (~>) Schema Bool) where
+      sing
+        = (singFun1 @(DisjointSym1 (d :: Schema))) (sDisjoint (sing @d))
     instance SingI (AttrNotInSym0 :: (~>) Attribute ((~>) Schema Bool)) where
       sing = (singFun2 @AttrNotInSym0) sAttrNotIn
     instance SingI d =>
@@ -696,12 +702,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sing
         = (singFun1 @(AttrNotInSym1 (d :: Attribute)))
             (sAttrNotIn (sing @d))
-    instance SingI (DisjointSym0 :: (~>) Schema ((~>) Schema Bool)) where
-      sing = (singFun2 @DisjointSym0) sDisjoint
-    instance SingI d =>
-             SingI (DisjointSym1 (d :: Schema) :: (~>) Schema Bool) where
-      sing
-        = (singFun1 @(DisjointSym1 (d :: Schema))) (sDisjoint (sing @d))
     instance SingI (AppendSym0 :: (~>) Schema ((~>) Schema Schema)) where
       sing = (singFun2 @AppendSym0) sAppend
     instance SingI d =>

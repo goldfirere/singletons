@@ -20,30 +20,30 @@ module Data.Singletons.Promote.Monad (
 
 import Control.Monad.Reader
 import Control.Monad.Writer
-import qualified Data.Map.Strict as Map
-import Data.Map.Strict ( Map )
-import qualified Data.Set as Set
-import Data.Set ( Set )
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
+import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
+import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
+import qualified Language.Haskell.TH.Desugar.OSet as OSet
+import Language.Haskell.TH.Desugar.OSet (OSet)
 import Data.Singletons.Names
 import Data.Singletons.Syntax
 import Control.Monad.Fail ( MonadFail )
 
-type LetExpansions = Map Name DType  -- from **term-level** name
+type LetExpansions = OMap Name DType  -- from **term-level** name
 
 -- environment during promotion
 data PrEnv =
-  PrEnv { pr_lambda_bound :: Map Name Name
+  PrEnv { pr_lambda_bound :: OMap Name Name
         , pr_let_bound    :: LetExpansions
-        , pr_forall_bound :: Set Name -- See Note [Explicitly quantifying kinds variables]
+        , pr_forall_bound :: OSet Name -- See Note [Explicitly quantifying kinds variables]
         , pr_local_decls  :: [Dec]
         }
 
 emptyPrEnv :: PrEnv
-emptyPrEnv = PrEnv { pr_lambda_bound = Map.empty
-                   , pr_let_bound    = Map.empty
-                   , pr_forall_bound = Set.empty
+emptyPrEnv = PrEnv { pr_lambda_bound = OMap.empty
+                   , pr_let_bound    = OMap.empty
+                   , pr_forall_bound = OSet.empty
                    , pr_local_decls  = [] }
 
 -- the promotion monad
@@ -58,12 +58,12 @@ instance DsMonad PrM where
 -- return *type-level* names
 allLocals :: MonadReader PrEnv m => m [Name]
 allLocals = do
-  lambdas <- asks (Map.toList . pr_lambda_bound)
+  lambdas <- asks (OMap.assocs . pr_lambda_bound)
   lets    <- asks pr_let_bound
     -- filter out shadowed variables!
   return [ typeName
          | (termName, typeName) <- lambdas
-         , case Map.lookup termName lets of
+         , case OMap.lookup termName lets of
              Just (DVarT typeName') | typeName' == typeName -> True
              _                                              -> False ]
 
@@ -81,33 +81,33 @@ lambdaBind :: VarPromotions -> PrM a -> PrM a
 lambdaBind binds = local add_binds
   where add_binds env@(PrEnv { pr_lambda_bound = lambdas
                              , pr_let_bound    = lets }) =
-          let new_lets = Map.fromList [ (tmN, DVarT tyN) | (tmN, tyN) <- binds ] in
-          env { pr_lambda_bound = Map.union (Map.fromList binds) lambdas
-              , pr_let_bound    = Map.union new_lets lets }
+          let new_lets = OMap.fromList [ (tmN, DVarT tyN) | (tmN, tyN) <- binds ] in
+          env { pr_lambda_bound = OMap.fromList binds OMap.|<> lambdas
+              , pr_let_bound    = new_lets            OMap.|<> lets }
 
 type LetBind = (Name, DType)
 letBind :: [LetBind] -> PrM a -> PrM a
 letBind binds = local add_binds
   where add_binds env@(PrEnv { pr_let_bound = lets }) =
-          env { pr_let_bound = Map.union (Map.fromList binds) lets }
+          env { pr_let_bound = OMap.fromList binds OMap.|<> lets }
 
 lookupVarE :: Name -> PrM DType
 lookupVarE n = do
   lets <- asks pr_let_bound
-  case Map.lookup n lets of
+  case OMap.lookup n lets of
     Just ty -> return ty
     Nothing -> return $ promoteValRhs n
 
 -- Add to the set of bound kind variables currently in scope.
 -- See Note [Explicitly binding kind variables]
-forallBind :: Set Name -> PrM a -> PrM a
+forallBind :: OSet Name -> PrM a -> PrM a
 forallBind kvs1 =
   local (\env@(PrEnv { pr_forall_bound = kvs2 }) ->
-    env { pr_forall_bound = kvs1 `Set.union` kvs2 })
+    env { pr_forall_bound = kvs1 OSet.|<> kvs2 })
 
 -- Look up the set of bound kind variables currently in scope.
 -- See Note [Explicitly binding kind variables]
-allBoundKindVars :: PrM (Set Name)
+allBoundKindVars :: PrM (OSet Name)
 allBoundKindVars = asks pr_forall_bound
 
 promoteM :: DsMonad q => [Dec] -> PrM a -> q (a, [DDec])

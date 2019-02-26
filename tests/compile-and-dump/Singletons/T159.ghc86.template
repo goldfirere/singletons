@@ -181,8 +181,8 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
                          (:||@#@$) t0123456789876543210
     type instance Apply (:||@#@$) t0123456789876543210 = (:||@#@$$) t0123456789876543210
     infixr 5 :||@#@$
-    infixr 5 `SC2`
     infixr 5 :%||
+    infixr 5 `SC2`
     data instance Sing :: T2 -> GHC.Types.Type
       where
         SN2 :: Sing N2

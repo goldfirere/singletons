@@ -3,17 +3,6 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       [d| data Record a = MkRecord {field1 :: a, field2 :: Bool} |]
   ======>
     data Record a = MkRecord {field1 :: a, field2 :: Bool}
-    type Field1Sym1 (a0123456789876543210 :: Record a0123456789876543210) =
-        Field1 a0123456789876543210
-    instance SuppressUnusedWarnings Field1Sym0 where
-      suppressUnusedWarnings = snd (((,) Field1Sym0KindInference) ())
-    data Field1Sym0 :: forall a0123456789876543210.
-                       (~>) (Record a0123456789876543210) a0123456789876543210
-      where
-        Field1Sym0KindInference :: forall a0123456789876543210
-                                          arg. SameKind (Apply Field1Sym0 arg) (Field1Sym1 arg) =>
-                                   Field1Sym0 a0123456789876543210
-    type instance Apply Field1Sym0 a0123456789876543210 = Field1 a0123456789876543210
     type Field2Sym1 (a0123456789876543210 :: Record a0123456789876543210) =
         Field2 a0123456789876543210
     instance SuppressUnusedWarnings Field2Sym0 where
@@ -25,10 +14,21 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
                                           arg. SameKind (Apply Field2Sym0 arg) (Field2Sym1 arg) =>
                                    Field2Sym0 a0123456789876543210
     type instance Apply Field2Sym0 a0123456789876543210 = Field2 a0123456789876543210
-    type family Field1 (a :: Record a) :: a where
-      Field1 (MkRecord field _) = field
+    type Field1Sym1 (a0123456789876543210 :: Record a0123456789876543210) =
+        Field1 a0123456789876543210
+    instance SuppressUnusedWarnings Field1Sym0 where
+      suppressUnusedWarnings = snd (((,) Field1Sym0KindInference) ())
+    data Field1Sym0 :: forall a0123456789876543210.
+                       (~>) (Record a0123456789876543210) a0123456789876543210
+      where
+        Field1Sym0KindInference :: forall a0123456789876543210
+                                          arg. SameKind (Apply Field1Sym0 arg) (Field1Sym1 arg) =>
+                                   Field1Sym0 a0123456789876543210
+    type instance Apply Field1Sym0 a0123456789876543210 = Field1 a0123456789876543210
     type family Field2 (a :: Record a) :: Bool where
       Field2 (MkRecord _ field) = field
+    type family Field1 (a :: Record a) :: a where
+      Field1 (MkRecord field _) = field
     type MkRecordSym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: Bool) =
         MkRecord t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (MkRecordSym1 t0123456789876543210) where

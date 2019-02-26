@@ -11,6 +11,7 @@ Singletonizes constructors.
 module Data.Singletons.Single.Data where
 
 import Language.Haskell.TH.Desugar
+import Language.Haskell.TH.Desugar.OSet (OSet)
 import Language.Haskell.TH.Syntax
 import Data.Singletons.Single.Defun
 import Data.Singletons.Single.Monad
@@ -21,8 +22,7 @@ import Data.Singletons.Util
 import Data.Singletons.Names
 import Data.Singletons.Syntax
 import Control.Monad
-import qualified Data.Set as Set
-import Data.Set (Set)
+import Data.Foldable
 
 -- We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
@@ -147,7 +147,7 @@ singCtor (DCon _tvbs cxt name fields rty)
   let bound_kvs = foldMap fvDType kinds
   args <- zipWithM (buildArgType bound_kvs) types indices
   rty' <- promoteType rty
-  let tvbs = map DPlainTV (Set.toList bound_kvs) ++ zipWith DKindedTV indexNames kinds
+  let tvbs = map DPlainTV (toList bound_kvs) ++ zipWith DKindedTV indexNames kinds
       kindedIndices = zipWith DSigT indices kinds
 
   -- SingI instance for data constructor
@@ -175,7 +175,7 @@ singCtor (DCon _tvbs cxt name fields rty)
                 sName
                 conFields
                 (DConT singFamilyName `DAppT` foldType pCon indices)
-  where buildArgType :: Set Name -> DType -> DType -> SgM DType
+  where buildArgType :: OSet Name -> DType -> DType -> SgM DType
         buildArgType bound_kvs ty index = do
           (ty', _, _, _, _, _) <- singType bound_kvs index ty
           return ty'

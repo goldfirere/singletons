@@ -114,6 +114,7 @@ tests =
     , compileAndDumpStdTest "FunctorLikeDeriving"
     , compileAndDumpStdTest "T353"
     , compileAndDumpStdTest "T358"
+    , compileAndDumpStdTest "T367"
     , compileAndDumpStdTest "T371"
     , compileAndDumpStdTest "T376"
     ],

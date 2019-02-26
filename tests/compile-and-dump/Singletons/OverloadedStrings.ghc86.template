@@ -9,6 +9,7 @@ Singletons/OverloadedStrings.hs:(0,0)-(0,0): Splicing declarations
     symId x = x
     foo :: Symbol
     foo = symId "foo"
+    type FooSym0 = Foo
     type SymIdSym1 (a0123456789876543210 :: Symbol) =
         SymId a0123456789876543210
     instance SuppressUnusedWarnings SymIdSym0 where
@@ -19,17 +20,16 @@ Singletons/OverloadedStrings.hs:(0,0)-(0,0): Splicing declarations
                                          arg. SameKind (Apply SymIdSym0 arg) (SymIdSym1 arg) =>
                                   SymIdSym0 a0123456789876543210
     type instance Apply SymIdSym0 a0123456789876543210 = SymId a0123456789876543210
-    type FooSym0 = Foo
-    type family SymId (a :: Symbol) :: Symbol where
-      SymId x = x
     type family Foo :: Symbol where
       Foo = Apply SymIdSym0 (Data.Singletons.Prelude.IsString.FromString "foo")
+    type family SymId (a :: Symbol) :: Symbol where
+      SymId x = x
+    sFoo :: Sing (FooSym0 :: Symbol)
     sSymId ::
       forall (t :: Symbol). Sing t -> Sing (Apply SymIdSym0 t :: Symbol)
-    sFoo :: Sing (FooSym0 :: Symbol)
-    sSymId (sX :: Sing x) = sX
     sFoo
       = (applySing ((singFun1 @SymIdSym0) sSymId))
           (Data.Singletons.Prelude.IsString.sFromString (sing :: Sing "foo"))
+    sSymId (sX :: Sing x) = sX
     instance SingI (SymIdSym0 :: (~>) Symbol Symbol) where
       sing = (singFun1 @SymIdSym0) sSymId

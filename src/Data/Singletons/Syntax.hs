@@ -16,9 +16,9 @@ import Prelude hiding ( exp )
 import Data.Kind (Constraint, Type)
 import Language.Haskell.TH.Syntax hiding (Type)
 import Language.Haskell.TH.Desugar
-import Data.Map.Strict ( Map )
-import qualified Data.Map.Strict as Map
-import Data.Set ( Set )
+import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
+import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
+import Language.Haskell.TH.Desugar.OSet (OSet)
 
 type VarPromotions = [(Name, Name)] -- from term-level name to type-level name
 
@@ -26,7 +26,7 @@ type VarPromotions = [(Name, Name)] -- from term-level name to type-level name
 data PromDPatInfos = PromDPatInfos
   { prom_dpat_vars    :: VarPromotions
       -- Maps term-level pattern variables to their promoted, type-level counterparts.
-  , prom_dpat_sig_kvs :: Set Name
+  , prom_dpat_sig_kvs :: OSet Name
       -- Kind variables bound by DSigPas.
       -- See Note [Explicitly binding kind variables] in Data.Singletons.Promote.Monad
   }
@@ -72,7 +72,7 @@ data ClassDecl ann = ClassDecl { cd_cxt  :: DCxt
 data InstDecl  ann = InstDecl { id_cxt     :: DCxt
                               , id_name    :: Name
                               , id_arg_tys :: [DType]
-                              , id_sigs    :: Map Name DType
+                              , id_sigs    :: OMap Name DType
                               , id_meths   :: [(Name, LetDecRHS ann)] }
 
 type UClassDecl = ClassDecl Unannotated
@@ -144,11 +144,11 @@ type ALetDecRHS = LetDecRHS Annotated
 type ULetDecRHS = LetDecRHS Unannotated
 
 data LetDecEnv ann = LetDecEnv
-                   { lde_defns :: Map Name (LetDecRHS ann)
-                   , lde_types :: Map Name DType   -- type signatures
-                   , lde_infix :: Map Name Fixity  -- infix declarations
-                   , lde_proms :: IfAnn ann (Map Name DType) () -- possibly, promotions
-                   , lde_bound_kvs :: IfAnn ann (Map Name (Set Name)) ()
+                   { lde_defns :: OMap Name (LetDecRHS ann)
+                   , lde_types :: OMap Name DType  -- type signatures
+                   , lde_infix :: OMap Name Fixity -- infix declarations
+                   , lde_proms :: IfAnn ann (OMap Name DType) () -- possibly, promotions
+                   , lde_bound_kvs :: IfAnn ann (OMap Name (OSet Name)) ()
                      -- The set of bound variables in scope.
                      -- See Note [Explicitly binding kind variables]
                      -- in Data.Singletons.Promote.Monad
@@ -161,16 +161,16 @@ instance Semigroup ULetDecEnv where
     LetDecEnv (defns1 <> defns2) (types1 <> types2) (infx1 <> infx2) () ()
 
 instance Monoid ULetDecEnv where
-  mempty = LetDecEnv Map.empty Map.empty Map.empty () ()
+  mempty = LetDecEnv OMap.empty OMap.empty OMap.empty () ()
 
 valueBinding :: Name -> ULetDecRHS -> ULetDecEnv
-valueBinding n v = emptyLetDecEnv { lde_defns = Map.singleton n v }
+valueBinding n v = emptyLetDecEnv { lde_defns = OMap.singleton n v }
 
 typeBinding :: Name -> DType -> ULetDecEnv
-typeBinding n t = emptyLetDecEnv { lde_types = Map.singleton n t }
+typeBinding n t = emptyLetDecEnv { lde_types = OMap.singleton n t }
 
 infixDecl :: Fixity -> Name -> ULetDecEnv
-infixDecl f n = emptyLetDecEnv { lde_infix = Map.singleton n f }
+infixDecl f n = emptyLetDecEnv { lde_infix = OMap.singleton n f }
 
 emptyLetDecEnv :: ULetDecEnv
 emptyLetDecEnv = mempty

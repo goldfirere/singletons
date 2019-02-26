@@ -17,7 +17,7 @@ Singletons/T163.hs:0:0:: Splicing declarations
         R t0123456789876543210
     instance SuppressUnusedWarnings RSym0 where
       suppressUnusedWarnings = snd (((,) RSym0KindInference) ())
-    data RSym0 :: forall a0123456789876543210 b0123456789876543210.
+    data RSym0 :: forall b0123456789876543210 a0123456789876543210.
                   (~>) b0123456789876543210 ((+) a0123456789876543210 b0123456789876543210)
       where
         RSym0KindInference :: forall t0123456789876543210
