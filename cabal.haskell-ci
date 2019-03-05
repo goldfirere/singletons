@@ -1,0 +1,9 @@
+ghc-head:               True
+no-tests-no-benchmarks: False
+unconstrained:          False
+
+raw-project
+  -- Work around https://github.com/haskell/cabal/issues/5586
+  package th-desugar
+    tests:      False
+    benchmarks: False
