@@ -54,8 +54,8 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
                                    MkPairSym0 t0123456789876543210
     type instance Apply MkPairSym0 t0123456789876543210 = MkPairSym1 t0123456789876543210
     infixr 9 `MkPairSym0`
-    infixr 9 `SPair`
     infixr 9 `SMkPair`
+    infixr 9 `SPair`
     data instance Sing :: (:*:) a b -> GHC.Types.Type
       where
         (:%*:) :: forall a b (n :: a) (n :: b).

@@ -24,16 +24,6 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     data Foo3
       = MkFoo3 {getFoo3a :: Bool, *** :: Bool}
       deriving Show
-    type GetFoo3aSym1 (a0123456789876543210 :: Foo3) =
-        GetFoo3a a0123456789876543210
-    instance SuppressUnusedWarnings GetFoo3aSym0 where
-      suppressUnusedWarnings = snd (((,) GetFoo3aSym0KindInference) ())
-    data GetFoo3aSym0 :: (~>) Foo3 Bool
-      where
-        GetFoo3aSym0KindInference :: forall a0123456789876543210
-                                            arg. SameKind (Apply GetFoo3aSym0 arg) (GetFoo3aSym1 arg) =>
-                                     GetFoo3aSym0 a0123456789876543210
-    type instance Apply GetFoo3aSym0 a0123456789876543210 = GetFoo3a a0123456789876543210
     type (***@#@$$) (a0123456789876543210 :: Foo3) =
         (***) a0123456789876543210
     instance SuppressUnusedWarnings (***@#@$) where
@@ -44,10 +34,20 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                 arg. SameKind (Apply (***@#@$) arg) ((***@#@$$) arg) =>
                          (***@#@$) a0123456789876543210
     type instance Apply (***@#@$) a0123456789876543210 = (***) a0123456789876543210
-    type family GetFoo3a (a :: Foo3) :: Bool where
-      GetFoo3a (MkFoo3 field _) = field
+    type GetFoo3aSym1 (a0123456789876543210 :: Foo3) =
+        GetFoo3a a0123456789876543210
+    instance SuppressUnusedWarnings GetFoo3aSym0 where
+      suppressUnusedWarnings = snd (((,) GetFoo3aSym0KindInference) ())
+    data GetFoo3aSym0 :: (~>) Foo3 Bool
+      where
+        GetFoo3aSym0KindInference :: forall a0123456789876543210
+                                            arg. SameKind (Apply GetFoo3aSym0 arg) (GetFoo3aSym1 arg) =>
+                                     GetFoo3aSym0 a0123456789876543210
+    type instance Apply GetFoo3aSym0 a0123456789876543210 = GetFoo3a a0123456789876543210
     type family (***) (a :: Foo3) :: Bool where
       (***) (MkFoo3 _ field) = field
+    type family GetFoo3a (a :: Foo3) :: Bool where
+      GetFoo3a (MkFoo3 field _) = field
     type MkFoo1Sym0 = MkFoo1
     type MkFoo2aSym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: a0123456789876543210) =
         MkFoo2a t0123456789876543210 t0123456789876543210
@@ -267,9 +267,9 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance PShow Foo3 where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    infixl 5 `SMkFoo2b`
-    infixl 5 :%*:
     infixl 5 :%&:
+    infixl 5 :%*:
+    infixl 5 `SMkFoo2b`
     data instance Sing :: Foo1 -> GHC.Types.Type
       where SMkFoo1 :: Sing MkFoo1
     type SFoo1 = (Sing :: Foo1 -> GHC.Types.Type)

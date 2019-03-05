@@ -22,10 +22,10 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       baz2 :: a
     quux2 :: Foo2 a => a -> a
     quux2 x = (x `bar2` baz2)
-    type family Case_0123456789876543210 x arg_0123456789876543210 t where
-      Case_0123456789876543210 x arg_0123456789876543210 _ = Baz1Sym0
+    type family Case_0123456789876543210 arg_0123456789876543210 x t where
+      Case_0123456789876543210 arg_0123456789876543210 x _ = Baz1Sym0
     type family Lambda_0123456789876543210 x t where
-      Lambda_0123456789876543210 x arg_0123456789876543210 = Case_0123456789876543210 x arg_0123456789876543210 arg_0123456789876543210
+      Lambda_0123456789876543210 x arg_0123456789876543210 = Case_0123456789876543210 arg_0123456789876543210 x arg_0123456789876543210
     type Lambda_0123456789876543210Sym2 x0123456789876543210 t0123456789876543210 =
         Lambda_0123456789876543210 x0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 x0123456789876543210) where
@@ -138,7 +138,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                 -> case sArg_0123456789876543210 of {
                      (_ :: Sing arg_0123456789876543210)
                        -> (id
-                             @(Sing (Case_0123456789876543210 x arg_0123456789876543210 arg_0123456789876543210)))
+                             @(Sing (Case_0123456789876543210 arg_0123456789876543210 x arg_0123456789876543210)))
                             (case sArg_0123456789876543210 of { _ -> sBaz1 }) }))
     instance SFoo2 a => SingI (Quux2Sym0 :: (~>) a a) where
       sing = (singFun1 @Quux2Sym0) sQuux2

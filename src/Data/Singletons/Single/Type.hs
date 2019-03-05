@@ -9,16 +9,17 @@ Singletonizes types.
 module Data.Singletons.Single.Type where
 
 import Language.Haskell.TH.Desugar
+import qualified Language.Haskell.TH.Desugar.OSet as OSet
+import Language.Haskell.TH.Desugar.OSet (OSet)
 import Language.Haskell.TH.Syntax
 import Data.Singletons.Names
 import Data.Singletons.Single.Monad
 import Data.Singletons.Promote.Type
 import Data.Singletons.Util
 import Control.Monad
-import qualified Data.Set as Set
-import Data.Set (Set)
+import Data.Foldable
 
-singType :: Set Name       -- the set of bound kind variables in this scope
+singType :: OSet Name      -- the set of bound kind variables in this scope
                            -- see Note [Explicitly binding kind variables]
                            -- in Data.Singletons.Promote.Monad
          -> DType          -- the promoted version of the thing classified by...
@@ -42,8 +43,8 @@ singType bound_kvs prom ty = do
       -- Make sure to subtract out the bound variables currently in scope, lest we
       -- accidentally shadow them in this type signature.
       kv_names_to_bind = foldMap fvDType (prom_args ++ cxt' ++ [prom_res])
-                            Set.\\ bound_kvs
-      kvs_to_bind      = Set.toList kv_names_to_bind
+                            OSet.\\ bound_kvs
+      kvs_to_bind      = toList kv_names_to_bind
   let ty' = DForallT (map DPlainTV kvs_to_bind ++ zipWith DKindedTV arg_names prom_args)
                      cxt' tau
   return (ty', num_args, arg_names, cxt, prom_args, prom_res)

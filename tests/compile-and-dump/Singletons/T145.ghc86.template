@@ -18,7 +18,7 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ColSym1 arg0123456789876543210) arg0123456789876543210 = Col arg0123456789876543210 arg0123456789876543210
     instance SuppressUnusedWarnings ColSym0 where
       suppressUnusedWarnings = snd (((,) ColSym0KindInference) ())
-    data ColSym0 :: forall a0123456789876543210 f0123456789876543210.
+    data ColSym0 :: forall f0123456789876543210 a0123456789876543210.
                     (~>) (f0123456789876543210 a0123456789876543210) ((~>) a0123456789876543210 Bool)
       where
         ColSym0KindInference :: forall arg0123456789876543210

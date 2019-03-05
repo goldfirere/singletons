@@ -32,8 +32,8 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
         Method2a arg0123456789876543210
     instance SuppressUnusedWarnings Method2aSym0 where
       suppressUnusedWarnings = snd (((,) Method2aSym0KindInference) ())
-    data Method2aSym0 :: forall a0123456789876543210
-                                b0123456789876543210.
+    data Method2aSym0 :: forall b0123456789876543210
+                                a0123456789876543210.
                          (~>) b0123456789876543210 a0123456789876543210
       where
         Method2aSym0KindInference :: forall arg0123456789876543210
@@ -44,8 +44,8 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
         Method2b arg0123456789876543210
     instance SuppressUnusedWarnings Method2bSym0 where
       suppressUnusedWarnings = snd (((,) Method2bSym0KindInference) ())
-    data Method2bSym0 :: forall a0123456789876543210
-                                b0123456789876543210.
+    data Method2bSym0 :: forall b0123456789876543210
+                                a0123456789876543210.
                          (~>) b0123456789876543210 a0123456789876543210
       where
         Method2bSym0KindInference :: forall arg0123456789876543210
@@ -67,8 +67,8 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Method2a_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Method2a_0123456789876543210Sym0KindInference) ())
-    data Method2a_0123456789876543210Sym0 :: forall a0123456789876543210
-                                                    b0123456789876543210.
+    data Method2a_0123456789876543210Sym0 :: forall b0123456789876543210
+                                                    a0123456789876543210.
                                              (~>) b0123456789876543210 [a0123456789876543210]
       where
         Method2a_0123456789876543210Sym0KindInference :: forall a0123456789876543210
@@ -82,8 +82,8 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Method2b_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Method2b_0123456789876543210Sym0KindInference) ())
-    data Method2b_0123456789876543210Sym0 :: forall a0123456789876543210
-                                                    b0123456789876543210.
+    data Method2b_0123456789876543210Sym0 :: forall b0123456789876543210
+                                                    a0123456789876543210.
                                              (~>) b0123456789876543210 [a0123456789876543210]
       where
         Method2b_0123456789876543210Sym0KindInference :: forall a0123456789876543210

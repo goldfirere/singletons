@@ -11,6 +11,7 @@ This file creates defunctionalization symbols for types during promotion.
 module Data.Singletons.Promote.Defun where
 
 import Language.Haskell.TH.Desugar
+import qualified Language.Haskell.TH.Desugar.OSet as OSet
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Type
 import Data.Singletons.Names
@@ -18,10 +19,10 @@ import Language.Haskell.TH.Syntax
 import Data.Singletons.Syntax
 import Data.Singletons.Util
 import Control.Monad
+import Data.Foldable
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map)
 import Data.Maybe
-import qualified Data.Set as Set
 
 defunInfo :: DInfo -> PrM [DDec]
 defunInfo (DTyConI dec _instances) = buildDefunSyms dec
@@ -193,17 +194,17 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                                     -- If we cannot infer the return type, don't bother
                                     -- trying to construct an explicit return kind.
                       Just tyfun ->
-                        let bound_tvs = Set.fromList (map extractTvbName arg_params) `Set.union`
+                        let bound_tvs = OSet.fromList (map extractTvbName arg_params) OSet.|<>
                                         foldMap (foldMap fvDType) (map extractTvbKind arg_params)
-                            not_bound tvb = not (extractTvbName tvb `Set.member` bound_tvs)
+                            not_bound tvb = not (extractTvbName tvb `OSet.member` bound_tvs)
                             tvb_to_type tvb_name = fromMaybe (DVarT tvb_name) $
                                                    Map.lookup tvb_name tvb_to_type_map
                             -- Implements part (2)(iii) from
                             -- Note [Defunctionalization and dependent quantification]
-                            tyfun_tvbs = filter not_bound $         -- (2)(iii)(d)
-                                         toposortTyVarsOf $         -- (2)(iii)(c)
-                                         map tvb_to_type $          -- (2)(iii)(b)
-                                         Set.toList $ fvDType tyfun -- (2)(iii)(a)
+                            tyfun_tvbs = filter not_bound $     -- (2)(iii)(d)
+                                         toposortTyVarsOf $     -- (2)(iii)(c)
+                                         map tvb_to_type $      -- (2)(iii)(b)
+                                         toList $ fvDType tyfun -- (2)(iii)(a)
                         in (arg_params, Just (DForallT tyfun_tvbs [] tyfun))
             app_data_ty = foldTypeTvbs (DConT data_name) m_args
             app_eqn     = DTySynEqn Nothing

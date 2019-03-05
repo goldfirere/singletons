@@ -74,8 +74,8 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Let0123456789876543210GSym1 x0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Let0123456789876543210GSym1KindInference) ())
-    data Let0123456789876543210GSym1 x0123456789876543210 :: forall b0123456789876543210
-                                                                    a.
+    data Let0123456789876543210GSym1 x0123456789876543210 :: forall a
+                                                                    b0123456789876543210.
                                                              (~>) a ((~>) b0123456789876543210 a)
       where
         Let0123456789876543210GSym1KindInference :: forall x0123456789876543210

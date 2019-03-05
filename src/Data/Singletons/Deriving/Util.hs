@@ -16,11 +16,11 @@ module Data.Singletons.Deriving.Util where
 
 import Control.Monad
 import Data.List
-import qualified Data.Set as Set
 import Data.Singletons.Names
 import Data.Singletons.Syntax
 import Data.Singletons.Util
 import Language.Haskell.TH.Desugar
+import qualified Language.Haskell.TH.Desugar.OSet as OSet
 import Language.Haskell.TH.Syntax
 
 -- A generic type signature for describing how to produce a derived instance.
@@ -213,7 +213,7 @@ functorLikeValidityChecks allowConstrainedLastTyVar (DataDecl n data_tvbs cons)
       = do ex_tvbs <- conExistentialTvbs (foldTypeTvbs (DConT n) data_tvbs) con
            let univ_tvb_names = map extractTvbName con_tvbs \\ map extractTvbName ex_tvbs
            if last_tv `elem` univ_tvb_names
-                && last_tv `Set.notMember` foldMap fvDType con_theta
+                && last_tv `OSet.notMember` foldMap fvDType con_theta
               then pure ()
               else fail $ badCon con_name existential
       | otherwise
@@ -248,7 +248,7 @@ deepSubtypesContaining tv
             , ft_forall  = \tvbs xs -> filter (\x -> all (not_in_ty x) tvbs) xs })
   where
     not_in_ty :: DType -> DTyVarBndr -> Bool
-    not_in_ty ty tvb = extractTvbName tvb `Set.notMember` fvDType ty
+    not_in_ty ty tvb = extractTvbName tvb `OSet.notMember` fvDType ty
 
 -- Fold over the arguments of a data constructor in a Functor-like way.
 foldDataConArgs :: forall q a. DsMonad q => FFoldType a -> DCon -> q [a]

@@ -34,11 +34,14 @@ import Data.Singletons.Single.Eq
 import Data.Singletons.Syntax
 import Data.Singletons.Partition
 import Language.Haskell.TH.Desugar
+import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
+import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
+import qualified Language.Haskell.TH.Desugar.OSet as OSet
+import Language.Haskell.TH.Desugar.OSet (OSet)
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Data.Maybe
 import qualified Data.Set as Set
-import Data.Set ( Set )
 import Control.Monad
 import Data.List
 import qualified GHC.LanguageExtensions.Type as LangExt
@@ -269,7 +272,7 @@ singInstance mk_inst inst_name name = do
   let data_decl = DataDecl name dtvbs dcons
   raw_inst <- mk_inst Nothing data_ty data_decl
   (a_inst, decs) <- promoteM [] $
-                    promoteInstanceDec Map.empty raw_inst
+                    promoteInstanceDec OMap.empty raw_inst
   decs' <- singDecsM [] $ (:[]) <$> singInstD a_inst
   return $ decsToTH (decs ++ decs')
 
@@ -346,7 +349,7 @@ buildDataLets (DataDecl _name _tvbs cons) =
 -- see comment at top of file
 buildMethLets :: UClassDecl -> [(Name, DExp)]
 buildMethLets (ClassDecl { cd_lde = LetDecEnv { lde_types = meth_sigs } }) =
-  map mk_bind (Map.toList meth_sigs)
+  map mk_bind (OMap.assocs meth_sigs)
   where
     mk_bind (meth_name, meth_ty) =
       ( meth_name
@@ -375,8 +378,8 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
     sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList tyvar_names)
                                                (Map.fromList cxts)
                                                res_ki_map))
-                       (Map.toList default_defns)
-    fixities' <- traverse (uncurry singInfixDecl) $ Map.toList fixities
+                       (OMap.assocs default_defns)
+    fixities' <- traverse (uncurry singInfixDecl) $ OMap.assocs fixities
     cls_cxt' <- mapM singPred cls_cxt
     return $ DClassD cls_cxt'
                      (singClassName cls_name)
@@ -386,14 +389,14 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
   where
     no_meth_defns = error "Internal error: can't find declared method type"
     always_sig    = error "Internal error: no signature for default method"
-    meth_names    = Map.keys meth_sigs
+    meth_names    = map fst $ OMap.assocs meth_sigs
 
     mk_default_sig meth_name (DSigD s_name sty) bound_kvs (Just res_ki) =
       DDefaultSigD s_name <$> add_constraints meth_name sty bound_kvs res_ki
     mk_default_sig _ _ _ _ = error "Internal error: a singled signature isn't a signature."
 
     add_constraints meth_name sty (_, bound_kvs) res_ki = do  -- Maybe monad
-      prom_dflt <- Map.lookup meth_name promoted_defaults
+      prom_dflt <- OMap.lookup meth_name promoted_defaults
       let default_pred = foldType (DConT equalityName)
                                 -- NB: Need the res_ki here to prevent ambiguous
                                 -- kinds in result-inferred default methods.
@@ -455,7 +458,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
               -- less confusing.
               vis_cls_tvbs = drop (length cls_tvbs - length inst_kis) cls_tvbs
 
-          sing_meth_ty :: Set Name -> DType
+          sing_meth_ty :: OSet Name -> DType
                        -> SgM (DType, [Name], DCxt, DKind)
           sing_meth_ty bound_kvs inner_ty = do
             -- Make sure to expand through type synonyms here! Not doing so
@@ -465,7 +468,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
               <- singType bound_kvs (promoteValRhs name) raw_ty
             pure (s_ty, tyvar_names, ctxt, res_ki)
 
-      (s_ty, tyvar_names, ctxt, m_res_ki) <- case Map.lookup name inst_sigs of
+      (s_ty, tyvar_names, ctxt, m_res_ki) <- case OMap.lookup name inst_sigs of
         Just inst_sig -> do
           -- We have an InstanceSig, so just single that type. Take care to
           -- avoid binding the variables bound by the instance head as well.
@@ -492,8 +495,8 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
               Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _) -> do
                 let subst = mk_subst cls_tvbs
                     cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
-                    cls_tvb_names = Set.fromList $ map extractTvbName cls_tvbs
-                    cls_bound     = cls_kvb_names `Set.union` cls_tvb_names
+                    cls_tvb_names = OSet.fromList $ map extractTvbName cls_tvbs
+                    cls_bound     = cls_kvb_names OSet.|<> cls_tvb_names
                 (s_ty, tyvar_names, ctxt, res_ki) <- sing_meth_ty cls_bound inner_ty
                 pure ( substType subst s_ty
                      , tyvar_names
@@ -522,23 +525,23 @@ singLetDecEnv (LetDecEnv { lde_defns     = defns
                          , lde_proms     = proms
                          , lde_bound_kvs = bound_kvs })
               thing_inside = do
-  let prom_list = Map.toList proms
+  let prom_list = OMap.assocs proms
   (typeSigs, letBinds, tyvarNames, cxts, res_kis, singIDefunss)
     <- unzip6 <$> mapM (uncurry (singTySig defns types bound_kvs)) prom_list
-  infix_decls' <- traverse (uncurry singInfixDecl) $ Map.toList infix_decls
+  infix_decls' <- traverse (uncurry singInfixDecl) $ OMap.assocs infix_decls
   let res_ki_map = Map.fromList [ (name, res_ki) | ((name, _), Just res_ki)
                                                      <- zip prom_list res_kis ]
   bindLets letBinds $ do
     let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList tyvarNames)
                                              (Map.fromList cxts)
                                              res_ki_map))
-                     (Map.toList defns)
+                     (OMap.assocs defns)
     thing <- thing_inside
     return (infix_decls' ++ typeSigs ++ let_decs, concat singIDefunss, thing)
 
-singTySig :: Map Name ALetDecRHS  -- definitions
-          -> Map Name DType       -- type signatures
-          -> Map Name (Set Name)  -- bound kind variables
+singTySig :: OMap Name ALetDecRHS  -- definitions
+          -> OMap Name DType       -- type signatures
+          -> OMap Name (OSet Name) -- bound kind variables
           -> Name -> DType   -- the type is the promoted type, not the type sig!
           -> SgM ( DLetDec               -- the new type signature
                  , (Name, DExp)          -- the let-bind entry
@@ -549,7 +552,7 @@ singTySig :: Map Name ALetDecRHS  -- definitions
                  )
 singTySig defns types bound_kvs name prom_ty =
   let sName = singValName name in
-  case Map.lookup name types of
+  case OMap.lookup name types of
     Nothing -> do
       num_args <- guess_num_args
       (sty, tyvar_names) <- mk_sing_ty num_args
@@ -577,14 +580,14 @@ singTySig defns types bound_kvs name prom_ty =
   where
     guess_num_args :: SgM Int
     guess_num_args =
-      case Map.lookup name defns of
+      case OMap.lookup name defns of
         Nothing -> fail "Internal error: promotion known for something not let-bound."
         Just (AValue _ n _) -> return n
         Just (AFunction _ n _) -> return n
 
-    lookup_bound_kvs :: SgM (Set Name)
+    lookup_bound_kvs :: SgM (OSet Name)
     lookup_bound_kvs =
-      case Map.lookup name bound_kvs of
+      case OMap.lookup name bound_kvs of
         Nothing -> fail $ "Internal error: " ++ nameBase name ++ " has no type variable "
                           ++ "bindings, despite having a type signature"
         Just kvs -> pure kvs
