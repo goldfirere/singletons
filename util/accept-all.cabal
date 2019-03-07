@@ -7,7 +7,7 @@ author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stola
 maintainer:     Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      stable
-tested-with:    GHC == 8.6.3
+tested-with:    GHC == 8.6.4
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple

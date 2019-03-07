@@ -4,7 +4,7 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.2
+# version: 0.2.1
 #
 language: c
 dist: xenial
@@ -30,8 +30,8 @@ before_cache:
 
 matrix:
   include:
-    - compiler: "ghc-8.6.3"
-      addons: {apt: {packages: [ghc-ppa-tools,cabal-install-2.4,ghc-8.6.3], sources: [hvr-ghc]}}
+    - compiler: "ghc-8.6.4"
+      addons: {apt: {packages: [ghc-ppa-tools,cabal-install-2.4,ghc-8.6.4], sources: [hvr-ghc]}}
     - compiler: "ghc-head"
       env: GHCHEAD=true
       addons: {apt: {packages: [ghc-ppa-tools,cabal-install-head,ghc-head], sources: [hvr-ghc]}}
@@ -86,10 +86,10 @@ install:
   - "echo '  type: git' >> cabal.project"
   - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
   - "echo '  tag: c67e84d2f6fdfd2aab1af3a86f646a7cc805d668' >> cabal.project"
-  - "printf 'write-ghc-environment-files: always\\n' >> cabal.project"
   - echo 'package th-desugar' >> cabal.project
   - "echo '  tests:      False' >> cabal.project"
   - "echo '  benchmarks: False' >> cabal.project"
+  - "printf 'write-ghc-environment-files: always\\n' >> cabal.project"
   - touch cabal.project.local
   - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | grep -vE -- '^(accept-all|singletons)$' | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
@@ -120,10 +120,10 @@ script:
   - "echo '  type: git' >> cabal.project"
   - "echo '  location: https://github.com/goldfirere/th-desugar' >> cabal.project"
   - "echo '  tag: c67e84d2f6fdfd2aab1af3a86f646a7cc805d668' >> cabal.project"
-  - "printf 'write-ghc-environment-files: always\\n' >> cabal.project"
   - echo 'package th-desugar' >> cabal.project
   - "echo '  tests:      False' >> cabal.project"
   - "echo '  benchmarks: False' >> cabal.project"
+  - "printf 'write-ghc-environment-files: always\\n' >> cabal.project"
   - touch cabal.project.local
   - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | grep -vE -- '^(accept-all|singletons)$' | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
