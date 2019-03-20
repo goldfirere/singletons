@@ -91,6 +91,7 @@ library
                       Data.Singletons.Prelude.List.NonEmpty
                       Data.Singletons.Prelude.Maybe
                       Data.Singletons.Prelude.Monad
+                      Data.Singletons.Prelude.Monad.Fail
                       Data.Singletons.Prelude.Monad.Zip
                       Data.Singletons.Prelude.Monoid
                       Data.Singletons.Prelude.Num

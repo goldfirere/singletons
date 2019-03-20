@@ -28,7 +28,7 @@ import qualified Language.Haskell.TH.Desugar.OSet as OSet
 import Language.Haskell.TH.Desugar.OSet (OSet)
 import Data.Singletons.Names
 import Data.Singletons.Syntax
-import Control.Monad.Fail ( MonadFail )
+import qualified Control.Monad.Fail as Fail
 
 type LetExpansions = OMap Name DType  -- from **term-level** name
 
@@ -50,7 +50,7 @@ emptyPrEnv = PrEnv { pr_lambda_bound = OMap.empty
 newtype PrM a = PrM (ReaderT PrEnv (WriterT [DDec] Q) a)
   deriving ( Functor, Applicative, Monad, Quasi
            , MonadReader PrEnv, MonadWriter [DDec]
-           , MonadFail, MonadIO )
+           , Fail.MonadFail, MonadIO )
 
 instance DsMonad PrM where
   localDeclarations = asks pr_local_decls

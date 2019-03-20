@@ -29,7 +29,7 @@ import Language.Haskell.TH.Desugar
 import Control.Monad.Reader
 import Control.Monad.Writer
 import Control.Applicative
-import Control.Monad.Fail
+import qualified Control.Monad.Fail as Fail
 
 -- environment during singling
 data SgEnv =
@@ -48,7 +48,7 @@ emptySgEnv = SgEnv { sg_let_binds   = Map.empty
 newtype SgM a = SgM (ReaderT SgEnv (WriterT [DDec] Q) a)
   deriving ( Functor, Applicative, Monad
            , MonadReader SgEnv, MonadWriter [DDec]
-           , MonadFail, MonadIO )
+           , Fail.MonadFail, MonadIO )
 
 liftSgM :: Q a -> SgM a
 liftSgM = SgM . lift . lift

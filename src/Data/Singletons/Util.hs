@@ -33,7 +33,7 @@ import Data.Traversable
 import Data.Generics
 import Data.Maybe
 import Data.Void
-import Control.Monad.Fail ( MonadFail )
+import qualified Control.Monad.Fail as Fail
 
 -- The list of types that singletons processes by default
 basicTypes :: [Name]
@@ -357,7 +357,7 @@ wrapDesugar f th = do
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
   deriving ( Functor, Applicative, Monad, MonadTrans
            , MonadWriter m, MonadReader r
-           , MonadFail, MonadIO )
+           , Fail.MonadFail, MonadIO )
 
 -- make a Quasi instance for easy lifting
 instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
