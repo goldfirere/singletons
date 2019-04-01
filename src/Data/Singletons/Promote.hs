@@ -35,6 +35,7 @@ import Prelude hiding (exp)
 import Control.Applicative (Alternative(..))
 import Control.Arrow (second)
 import Control.Monad
+import qualified Control.Monad.Fail as Fail
 import Control.Monad.Trans.Maybe
 import Control.Monad.Writer
 import qualified Data.Map.Strict as Map
@@ -829,12 +830,12 @@ promoteLitExp (StringL str) = do
 promoteLitExp lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
 
-promoteLitPat :: Monad m => Lit -> m DType
+promoteLitPat :: Fail.MonadFail m => Lit -> m DType
 promoteLitPat (IntegerL n)
   | n >= 0    = return $ (DLitT (NumTyLit n))
   | otherwise =
-    fail $ "Negative literal patterns are not allowed,\n" ++
-           "because literal patterns are promoted to natural numbers."
+    Fail.fail $ "Negative literal patterns are not allowed,\n" ++
+                "because literal patterns are promoted to natural numbers."
 promoteLitPat (StringL str) = return $ DLitT (StrTyLit str)
 promoteLitPat lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)

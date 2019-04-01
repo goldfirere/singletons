@@ -28,6 +28,7 @@
 module Data.Singletons.Prelude.Monad (
   PFunctor(Fmap), SFunctor(sFmap),
   PMonad(..), SMonad(..), PMonadPlus(..), SMonadPlus(..),
+  PMonadFail(Fail), SMonadFail(sFail),
 
   MapM, sMapM, MapM_, sMapM_, ForM, sForM,
   Sequence, sSequence, Sequence_, sSequence_,
@@ -99,6 +100,7 @@ import Data.Singletons.Prelude.Foldable
 import Data.Singletons.Prelude.Functor
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.List (UnzipSym0, sUnzip, ZipWithSym0, sZipWith)
+import Data.Singletons.Prelude.Monad.Fail
 import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Prelude.Monoid
 import Data.Singletons.Prelude.Num

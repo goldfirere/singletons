@@ -35,6 +35,7 @@ import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
 import Data.Singletons.Util
 
 import Control.Monad
+import qualified Control.Monad.Fail as Fail
 import Data.Bifunctor (bimap)
 import qualified Data.Map as Map
 import Data.Map (Map)
@@ -153,7 +154,7 @@ partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
 partitionDec dec =
   fail $ "Declaration cannot be promoted: " ++ pprint (decToTH dec)
 
-partitionClassDec :: Monad m => DDec -> m (ULetDecEnv, [OpenTypeFamilyDecl])
+partitionClassDec :: Fail.MonadFail m => DDec -> m (ULetDecEnv, [OpenTypeFamilyDecl])
 partitionClassDec (DLetDec (DSigD name ty)) =
   pure (typeBinding name ty, mempty)
 partitionClassDec (DLetDec (DValD (DVarP name) exp)) =
@@ -172,9 +173,9 @@ partitionClassDec (DTySynInstD {}) =
   -- we already record the type family itself separately.
   pure (mempty, mempty)
 partitionClassDec _ =
-  fail "Only method declarations can be promoted within a class."
+  Fail.fail "Only method declarations can be promoted within a class."
 
-partitionInstanceDec :: Monad m => DDec
+partitionInstanceDec :: Fail.MonadFail m => DDec
                      -> m ( Maybe (Name, ULetDecRHS) -- right-hand sides of methods
                           , OMap Name DType          -- method type signatures
                           )
@@ -191,7 +192,7 @@ partitionInstanceDec (DTySynInstD {}) =
   -- There's no need to track associated type family instances, since
   -- we already record the type family itself separately.
 partitionInstanceDec _ =
-  fail "Only method bodies can be promoted within an instance."
+  Fail.fail "Only method bodies can be promoted within an instance."
 
 partitionDeriving
   :: forall m. DsMonad m

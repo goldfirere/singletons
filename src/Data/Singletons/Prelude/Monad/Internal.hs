@@ -44,7 +44,6 @@ import Data.List.NonEmpty (NonEmpty(..))
 import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
-import Data.Singletons.TypeLits.Internal
 
 {-
 Note [How to get the right kinds when promoting Functor and friends]
@@ -276,17 +275,6 @@ $(singletonsOnly [d|
       return      :: a -> m a
       return      = pure
 
-      -- -| Fail with a message.  This operation is not part of the
-      -- mathematical definition of a monad, but is invoked on pattern-match
-      -- failure in a @do@ expression.
-      --
-      -- As part of the MonadFail proposal (MFP), this function is moved
-      -- to its own class 'MonadFail' (see "Control.Monad.Fail" for more
-      -- details). The definition here will be removed in a future
-      -- release.
-      fail        :: Symbol -> m a
-      fail s      = error s
-
   {- Note [Recursive bindings for Applicative/Monad]
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -490,8 +478,6 @@ $(singletonsOnly [d|
 
       (>>) = (*>)
 
-      fail _              = Nothing
-
   instance Monad NonEmpty where
     (a :| as) >>= f = b :| (bs ++ bs')
       where b :| bs = f a
@@ -500,7 +486,6 @@ $(singletonsOnly [d|
 
   instance Monad []  where
       xs >>= f = foldr ((++) . f) [] xs
-      fail _ = []
 
   instance Monad (Either e) where
       Left  l >>= _ = Left l

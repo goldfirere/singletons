@@ -65,12 +65,14 @@ module Data.Singletons.Prelude (
   PSemigroup(type (<>)), SSemigroup((%<>)),
   PMonoid(..), SMonoid(..),
 
-  -- * Singleton 'Functor', 'Applicative', and 'Monad'
+  -- * Singleton 'Functor', 'Applicative', 'Monad', and 'MonadFail'
   PFunctor(Fmap, type (<$)), SFunctor(sFmap, (%<$)), type (<$>), (%<$>),
   PApplicative(Pure, type (<*>), type (*>), type (<*)),
   SApplicative(sPure, (%<*>), (%*>), (%<*)),
-  PMonad(type (>>=), type (>>), Return, Fail),
-  SMonad((%>>=), (%>>), sReturn, sFail),
+  PMonad(type (>>=), type (>>), Return),
+  SMonad((%>>=), (%>>), sReturn),
+  PMonadFail(Fail), SMonadFail(sFail),
+
   MapM_, sMapM_,
   Sequence_, sSequence_,
   type (=<<), (%=<<),
