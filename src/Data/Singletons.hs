@@ -53,7 +53,6 @@ module Data.Singletons (
   withSing, singThat,
 
   -- ** Defunctionalization
-  TyFun, type (~>),
   TyCon1, TyCon2, TyCon3, TyCon4, TyCon5, TyCon6, TyCon7, TyCon8,
   TyCon, Apply, type (@@),
 

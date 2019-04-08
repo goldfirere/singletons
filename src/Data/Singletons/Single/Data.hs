@@ -13,7 +13,6 @@ module Data.Singletons.Single.Data where
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.OSet (OSet)
 import Language.Haskell.TH.Syntax
-import Data.Singletons.Single.Defun
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
 import Data.Singletons.Single.Fixity
@@ -132,7 +131,7 @@ singCtor :: DCon -> SgM DCon
  -- polymorphic constructors are handled just
  -- like monomorphic ones -- the polymorphism in
  -- the kind is automatic
-singCtor (DCon _tvbs cxt name fields rty)
+singCtor (DCon _tvbs cxt name fields _rty)
   | not (null cxt)
   = fail "Singling of constrained constructors not yet supported"
   | otherwise
@@ -146,7 +145,6 @@ singCtor (DCon _tvbs cxt name fields rty)
   kinds <- mapM promoteType types
   let bound_kvs = foldMap fvDType kinds
   args <- zipWithM (buildArgType bound_kvs) types indices
-  rty' <- promoteType rty
   let tvbs = map DPlainTV (toList bound_kvs) ++ zipWith DKindedTV indexNames kinds
       kindedIndices = zipWith DSigT indices kinds
 
@@ -158,10 +156,6 @@ singCtor (DCon _tvbs cxt name fields rty)
                        (foldType pCon kindedIndices))
                 [DLetDec $ DValD (DVarP singMethName)
                        (foldExp sCon (map (const $ DVarE singMethName) types))]]
-  -- SingI instances for defunctionalization symbols. Note that we don't
-  -- support contexts in constructors at the moment, so it's fine for now to
-  -- just assume that the context is always ().
-  emitDecs =<< singDefuns name DataName [] (map Just kinds) (Just rty')
 
   let noBang    = Bang NoSourceUnpackedness NoSourceStrictness
       conFields = case fields of

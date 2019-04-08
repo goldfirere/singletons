@@ -15,7 +15,6 @@ module Data.Singletons.Single.Defun (singDefuns) where
 
 import Data.List
 import Data.Singletons.Names
-import Data.Singletons.Promote.Defun
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
 import Data.Singletons.Util
@@ -127,6 +126,12 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
             sing_exp = case ns of
                          DataName -> DConE $ singDataConName n
                          _        -> DVarE $ singValName n
+
+buildTyFunArrow_maybe :: Maybe DKind -> Maybe DKind -> Maybe DKind
+buildTyFunArrow_maybe m_k1 m_k2 = do
+  k1 <- m_k1
+  k2 <- m_k2
+  pure $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
 
 {-
 Note [singDefuns and type inference]

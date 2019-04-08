@@ -47,21 +47,6 @@ type SingDSigPaInfos = [(DExp, DType)]
 -- The parts of data declarations that are relevant to singletons.
 data DataDecl = DataDecl Name [DTyVarBndr] [DCon]
 
--- The parts of type synonyms that are relevant to singletons.
-data TySynDecl = TySynDecl Name [DTyVarBndr]
-
--- The parts of open type families that are relevant to singletons.
-type OpenTypeFamilyDecl = TypeFamilyDecl 'Open
-
--- The parts of closed type families that are relevant to singletons.
-type ClosedTypeFamilyDecl = TypeFamilyDecl 'Closed
-
--- The parts of type families that are relevant to singletons.
-newtype TypeFamilyDecl (info :: FamilyInfo)
-  = TypeFamilyDecl { getTypeFamilyDecl :: DTypeFamilyHead }
--- Whether a type family is open or closed.
-data FamilyInfo = Open | Closed
-
 data ClassDecl ann = ClassDecl { cd_cxt  :: DCxt
                                , cd_name :: Name
                                , cd_tvbs :: [DTyVarBndr]

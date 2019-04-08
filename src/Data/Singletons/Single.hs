@@ -21,7 +21,6 @@ import Data.Singletons.Deriving.Show
 import Data.Singletons.Deriving.Util
 import Data.Singletons.Util
 import Data.Singletons.Promote
-import Data.Singletons.Promote.Defun
 import Data.Singletons.Promote.Monad ( promoteM )
 import Data.Singletons.Promote.Type
 import Data.Singletons.Names
@@ -217,7 +216,7 @@ showSingInstances = concatMapM showSingInstance
 -- number provided as an argument.
 --
 -- Note that the generated code requires the use of the @QuantifiedConstraints@
--- language extension.
+-- @UnsaturatedTypeFamilies@ language extensions.
 singITyConInstances :: DsMonad q => [Int] -> q [Dec]
 singITyConInstances = concatMapM singITyConInstance
 
@@ -225,7 +224,7 @@ singITyConInstances = concatMapM singITyConInstance
 -- number provided as an argument.
 --
 -- Note that the generated code requires the use of the @QuantifiedConstraints@
--- language extension.
+-- and @UnsaturatedTypeFamilies@ language extensions.
 singITyConInstance :: DsMonad q => Int -> q [Dec]
 singITyConInstance n
   | n <= 0
@@ -295,14 +294,10 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
         , pd_class_decs              = classes
         , pd_instance_decs           = insts
         , pd_data_decs               = datas
-        , pd_ty_syn_decs             = ty_syns
-        , pd_open_type_family_decs   = o_tyfams
-        , pd_closed_type_family_decs = c_tyfams
         , pd_derived_eq_decs         = derivedEqDecs
         , pd_derived_show_decs       = derivedShowDecs } <- partitionDecs decls
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
-    defunTypeDecls ty_syns c_tyfams o_tyfams
     promoteDataDecs datas
     (_, letDecEnv) <- promoteLetDecs noPrefix letDecls
     classes' <- mapM promoteClassDec classes

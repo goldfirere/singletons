@@ -21,7 +21,6 @@ import Language.Haskell.TH.Desugar.OSet (OSet)
 import Data.Singletons.Names
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Eq
-import Data.Singletons.Promote.Defun
 import Data.Singletons.Promote.Type
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
@@ -69,44 +68,6 @@ promoteOnly qdec = do
   ddecls <- dsDecs decls
   promDecls <- promoteM_ decls $ promoteDecs ddecls
   return $ decsToTH promDecls
-
--- | Generate defunctionalization symbols for existing type families.
---
--- 'genDefunSymbols' has reasonable support for type families that use
--- dependent quantification. For instance, this:
---
--- @
--- type family MyProxy k (a :: k) :: Type where
---   MyProxy k (a :: k) = Proxy a
---
--- $('genDefunSymbols' [''MyProxy])
--- @
---
--- Will generate the following defunctionalization symbols:
---
--- @
--- data MyProxySym0     :: Type  ~> k ~> Type
--- data MyProxySym1 (k  :: Type) :: k ~> Type
--- @
---
--- Note that @MyProxySym0@ is a bit more general than it ought to be, since
--- there is no dependency between the first kind (@Type@) and the second kind
--- (@k@). But this would require the ability to write something like:
---
--- @
--- data MyProxySym0 :: forall (k :: Type) ~> k ~> Type
--- @
---
--- Which currently isn't possible. So for the time being, the kind of
--- @MyProxySym0@ will be slightly more general, which means that under rare
--- circumstances, you may have to provide extra type signatures if you write
--- code which exploits the dependency in @MyProxy@'s kind.
-genDefunSymbols :: DsMonad q => [Name] -> q [Dec]
-genDefunSymbols names = do
-  checkForRep names
-  infos <- mapM (dsInfo <=< reifyWithLocals) names
-  decs <- promoteMDecs [] $ concatMapM defunInfo infos
-  return $ decsToTH decs
 
 -- | Produce instances for @(==)@ (type-level equality) from the given types
 promoteEqInstances :: DsMonad q => [Name] -> q [Dec]
@@ -223,12 +184,8 @@ promoteDecs raw_decls = do
         , pd_class_decs              = classes
         , pd_instance_decs           = insts
         , pd_data_decs               = datas
-        , pd_ty_syn_decs             = ty_syns
-        , pd_open_type_family_decs   = o_tyfams
-        , pd_closed_type_family_decs = c_tyfams
         , pd_derived_eq_decs         = derived_eq_decs } <- partitionDecs decls
 
-  defunTypeDecls ty_syns c_tyfams o_tyfams
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
   mapM_ promoteClassDec classes
@@ -240,8 +197,7 @@ promoteDecs raw_decls = do
 promoteDataDecs :: [DataDecl] -> PrM ()
 promoteDataDecs data_decs = do
   rec_selectors <- concatMapM extract_rec_selectors data_decs
-  _ <- promoteLetDecs noPrefix rec_selectors
-  mapM_ promoteDataDec data_decs
+  void $ promoteLetDecs noPrefix rec_selectors
   where
     extract_rec_selectors :: DataDecl -> PrM [DLetDec]
     extract_rec_selectors (DataDecl data_name tvbs cons) =
@@ -263,24 +219,6 @@ promoteLetDecs prefixes decls = do
   (decs, let_dec_env') <- letBind binds $ promoteLetDecEnv prefixes let_dec_env
   emitDecs decs
   return (binds, let_dec_env' { lde_proms = OMap.fromList binds })
-
--- Promotion of data types to kinds is automatic (see "Giving Haskell a
--- Promotion" paper for more details). Here we "plug into" the promotion
--- mechanism to add some extra stuff to the promotion:
---
---  * if data type derives Eq we generate a type family that implements the
---    equality test for the data type.
---
---  * for each data constructor with arity greater than 0 we generate type level
---    symbols for use with Apply type family. In this way promoted data
---    constructors and promoted functions can be used in a uniform way at the
---    type level in the same way they can be used uniformly at the type level.
---
---  * for each nullary data constructor we generate a type synonym
-promoteDataDec :: DataDecl -> PrM ()
-promoteDataDec (DataDecl _name _tvbs ctors) = do
-  ctorSyms <- buildDefunSymsDataD ctors
-  emitDecs ctorSyms
 
 -- Note [CUSKification]
 -- ~~~~~~~~~~~~~~~~~~~~
@@ -342,7 +280,6 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
       (argKs, resK) <- promoteUnraveled ty
       args <- mapM (const $ qNewName "arg") argKs
       let tvbs = zipWith DKindedTV args argKs
-      emitDecsM $ defunReifyFixity proName tvbs (Just resK)
 
       return $ DOpenTypeFamilyD (DTypeFamilyHead proName
                                                  tvbs
@@ -463,8 +400,8 @@ promoteMethod inst_sigs_map m_subst orig_sigs_map (meth_name, meth_rhs) = do
       -- strictly necessary, as kind inference can figure them out just as well.
       family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
-  ((_, _, _, eqns), _defuns, ann_rhs)
-    <- promoteLetDecRHS (Just (meth_arg_kis, meth_res_ki)) OMap.empty OMap.empty
+  ((_, _, _, eqns), ann_rhs)
+    <- promoteLetDecRHS (Just (meth_arg_kis, meth_res_ki)) OMap.empty
                         noPrefix helperName meth_rhs
   let tvbs = zipWith DKindedTV meth_arg_tvs meth_arg_kis
   emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
@@ -473,7 +410,6 @@ promoteMethod inst_sigs_map m_subst orig_sigs_map (meth_name, meth_rhs) = do
                                   (DKindSig meth_res_ki)
                                   Nothing)
                                eqns]
-  emitDecsM (defunctionalize helperName Nothing tvbs (Just meth_res_ki))
   return ( DTySynInstD
              (DTySynEqn Nothing
                         (foldType (DConT proName) family_args)
@@ -559,10 +495,9 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
 
     -- promote all the declarations, producing annotated declarations
   let (names, rhss) = unzip $ OMap.assocs value_env
-  (payloads, defun_decss, ann_rhss)
-    <- fmap unzip3 $ zipWithM (promoteLetDecRHS Nothing type_env fix_env prefixes) names rhss
+  (payloads, ann_rhss)
+    <- fmap unzip $ zipWithM (promoteLetDecRHS Nothing type_env prefixes) names rhss
 
-  emitDecs $ concat defun_decss
   bound_kvs <- allBoundKindVars
   let decs = map payload_to_dec payloads ++ infix_decls
 
@@ -601,18 +536,15 @@ promoteInfixDecl name fixity
 promoteLetDecRHS :: Maybe ([DKind], DKind)  -- the promoted type of the RHS (if known)
                                             -- needed to fix #136
                  -> OMap Name DType      -- local type env't
-                 -> OMap Name Fixity     -- local fixity env't
                  -> (String, String)     -- let-binding prefixes
                  -> Name                 -- name of the thing being promoted
                  -> ULetDecRHS           -- body of the thing
                  -> PrM ( (Name, [DTyVarBndr], Maybe DKind, [DTySynEqn]) -- "type family"
-                        , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
-promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UValue exp) = do
+promoteLetDecRHS m_rhs_ki type_env prefixes name (UValue exp) = do
   (res_kind, num_arrows)
     <- case m_rhs_ki of
-         Just (arg_kis, res_ki) -> return ( Just (ravelTyFun (arg_kis ++ [res_ki]))
-                                          , length arg_kis )
+         Just (arg_kis, res_ki) -> return (Just res_ki, length arg_kis)
          _ |  Just ty <- OMap.lookup name type_env
            -> do ki <- promoteType ty
                  return (Just ki, countArgs ty)
@@ -624,22 +556,19 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UValue exp) = do
       let lde_kvs_to_bind = foldMap fvDType res_kind
       (exp', ann_exp) <- forallBind lde_kvs_to_bind $ promoteExp exp
       let proName = promoteValNameLhsPrefix prefixes name
-          m_fixity = OMap.lookup name fix_env
           tvbs = map DPlainTV all_locals
-      defuns <- defunctionalize proName m_fixity tvbs res_kind
       return ( ( proName, tvbs, res_kind
                , [DTySynEqn Nothing (foldType (DConT proName) $ map DVarT all_locals) exp'] )
-             , defuns
              , AValue (foldType (DConT proName) (map DVarT all_locals))
                       num_arrows ann_exp )
     _ -> do
       names <- replicateM num_arrows (newUniqueName "a")
       let pats    = map DVarP names
           newArgs = map DVarE names
-      promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name
+      promoteLetDecRHS m_rhs_ki type_env prefixes name
                        (UFunction [DClause pats (foldExp exp newArgs)])
 
-promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UFunction clauses) = do
+promoteLetDecRHS m_rhs_ki type_env prefixes name (UFunction clauses) = do
   numArgs <- count_args clauses
   (m_argKs, m_resK, ty_num_args) <- case m_rhs_ki of
     Just (arg_kis, res_ki) -> return (map Just arg_kis, Just res_ki, length arg_kis)
@@ -655,20 +584,17 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UFunction clauses) = d
       |  otherwise
       -> return (replicate numArgs Nothing, Nothing, numArgs)
   let proName  = promoteValNameLhsPrefix prefixes name
-      m_fixity = OMap.lookup name fix_env
   all_locals <- allLocals
   let local_tvbs = map DPlainTV all_locals
   tyvarNames <- mapM (const $ qNewName "a") m_argKs
   let args     = zipWith inferMaybeKindTV tyvarNames m_argKs
       all_args = local_tvbs ++ args
-  defun_decs <- defunctionalize proName m_fixity all_args m_resK
   expClauses <- mapM (etaContractOrExpand ty_num_args numArgs) clauses
   let lde_kvs_to_bind = foldMap (foldMap fvDType) m_argKs <> foldMap fvDType m_resK
   (eqns, ann_clauses) <- forallBind lde_kvs_to_bind $
                          mapAndUnzipM (promoteClause proName) expClauses
   prom_fun <- lookupVarE name
   return ( (proName, all_args, m_resK, eqns)
-         , defun_decs
          , AFunction prom_fun ty_num_args ann_clauses )
 
   where
@@ -782,7 +708,6 @@ promoteExp (DLamE names exp) = do
                                           (foldType (DConT lambdaName) $
                                            map DVarT (all_locals ++ tyNames))
                                           rhs]]
-  emitDecsM $ defunctionalize lambdaName Nothing tvbs Nothing
   let promLambda = foldl apply (DConT (promoteTySym lambdaName 0))
                                (map DVarT all_locals)
   return (promLambda, ADLamE tyNames promLambda names ann_exp)

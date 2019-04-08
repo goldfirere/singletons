@@ -3,7 +3,7 @@
              TypeFamilies, TypeOperators, TypeFamilyDependencies,
              UndecidableInstances, ConstraintKinds,
              ScopedTypeVariables, TypeApplications, AllowAmbiguousTypes,
-             PatternSynonyms, ViewPatterns #-}
+             PatternSynonyms, ViewPatterns, UnsaturatedTypeFamilies #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -165,29 +165,21 @@ singInstance s = with_sing_i SingInstance
 ---- Defunctionalization ---------------------------------------------
 ----------------------------------------------------------------------
 
--- | Representation of the kind of a type-level function. The difference
--- between term-level arrows and this type-level arrow is that at the term
--- level applications can be unsaturated, whereas at the type level all
--- applications have to be fully saturated.
-data TyFun :: Type -> Type -> Type
+-- | TODO RGS: Docs
+type Apply (f :: k1 ~> k2) = f
 
--- | Something of kind `a ~> b` is a defunctionalized type function that is
--- not necessarily generative or injective.
-type a ~> b = TyFun a b -> Type
-infixr 0 ~>
-
--- | Type level function application
-type family Apply (f :: k1 ~> k2) (x :: k1) :: k2
-
--- | An infix synonym for `Apply`
-type a @@ b = Apply a b
+-- | TODO RGS: Docs
+type (@@) = Apply
 infixl 9 @@
+
+-- TODO RGS: Update the docs below
 
 -- | Workhorse for the 'TyCon1', etc., types. This can be used directly
 -- in place of any of the @TyConN@ types, but it will work only with
 -- /monomorphic/ types. When GHC#14645 is fixed, this should fully supersede
 -- the @TyConN@ types.
-data family TyCon :: (k1 -> k2) -> unmatchable_fun
+type family TyCon (f :: k1 -> k2) :: unmatchable_fun where
+  TyCon @k1 @k2 @(k1 ~> unmatchable_fun) f = ApplyTyCon f
 -- That unmatchable_fun should really be a function of k1 and k2,
 -- but GHC 8.4 doesn't support type family calls in the result kind
 -- of a data family. It should. See GHC#14645.
@@ -201,7 +193,7 @@ data family TyCon :: (k1 -> k2) -> unmatchable_fun
 -- here because dealing with inequality like this is hard, and
 -- I (Richard) wasn't sure what concrete value the ticket would
 -- have, given that we don't know how to begin fixing it.
-type family ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun) where
+type family ApplyTyCon :: (k1 -> k2) ~> (k1 ~> unmatchable_fun) where
   ApplyTyCon @k1 @(k2 -> k3) @unmatchable_fun = ApplyTyConAux2
   ApplyTyCon @k1 @k2         @k2              = ApplyTyConAux1
 -- Upon first glance, the definition of ApplyTyCon (as well as the
@@ -212,8 +204,6 @@ type family ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun) where
 --     ApplyTyCon (f :: k1 -> k2 -> k3) x = TyCon (f x)
 --     ApplyTyCon f x                     = f x
 --
---   type instance Apply (TyCon f) x = ApplyTyCon f x
---
 -- This also works, but it requires that ApplyTyCon always be applied to a
 -- minimum of two arguments. In particular, this rules out a trick that we use
 -- elsewhere in the library to write SingI instances for different TyCons,
@@ -221,19 +211,18 @@ type family ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun) where
 --
 --   instance forall k1 k2 (f :: k1 -> k2).
 --            ( forall a. SingI a => SingI (f a)
---            , (ApplyTyCon :: (k1 -> k2) -> (k1 ~> k2)) ~ ApplyTyConAux1
+--            , (ApplyTyCon :: (k1 -> k2) ~> (k1 ~> k2)) ~ ApplyTyConAux1
 --            ) => SingI (TyCon1 f) where
-type instance Apply (TyCon f) x = ApplyTyCon f @@ x
 
 -- | An \"internal\" defunctionalization symbol used primarily in the
 -- definition of 'ApplyTyCon', as well as the 'SingI' instances for 'TyCon1',
 -- 'TyCon2', etc.
-data ApplyTyConAux1 :: (k1 -> k2) -> (k1 ~> k2)
+type ApplyTyConAux1 (f :: k1 -> k2) (x :: k1) = f x :: k2
 -- | An \"internal\" defunctionalization symbol used primarily in the
 -- definition of 'ApplyTyCon'.
-data ApplyTyConAux2 :: (k1 -> k2) -> (k1 ~> unmatchable_fun)
-type instance Apply (ApplyTyConAux1 f) x = f x
-type instance Apply (ApplyTyConAux2 f) x = TyCon (f x)
+type family ApplyTyConAux2 (f :: k1 -> k2 -> k3) (x :: k1) :: unmatchable_fun where
+  ApplyTyConAux2 f x = TyCon (f x)
+-- type ApplyTyConAux2 (f :: k1 -> k2 -> k3) (x :: k1) = TyCon (f x) :: unmatchable_fun
 
 -- | Wrapper for converting the normal type-level arrow into a '~>'.
 -- For example, given:
@@ -246,34 +235,34 @@ type instance Apply (ApplyTyConAux2 f) x = TyCon (f x)
 -- We can write:
 --
 -- > Map (TyCon1 Succ) [Zero, Succ Zero]
-type TyCon1 = (TyCon :: (k1 -> k2) -> (k1 ~> k2))
+type TyCon1 = (TyCon :: (k1 -> k2) ~> (k1 ~> k2))
 
 -- | Similar to 'TyCon1', but for two-parameter type constructors.
-type TyCon2 = (TyCon :: (k1 -> k2 -> k3) -> (k1 ~> k2 ~> k3))
-type TyCon3 = (TyCon :: (k1 -> k2 -> k3 -> k4) -> (k1 ~> k2 ~> k3 ~> k4))
-type TyCon4 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5) -> (k1 ~> k2 ~> k3 ~> k4 ~> k5))
+type TyCon2 = (TyCon :: (k1 -> k2 -> k3) ~> (k1 ~> k2 ~> k3))
+type TyCon3 = (TyCon :: (k1 -> k2 -> k3 -> k4) ~> (k1 ~> k2 ~> k3 ~> k4))
+type TyCon4 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5) ~> (k1 ~> k2 ~> k3 ~> k4 ~> k5))
 type TyCon5 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6)
-                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6))
+                     ~> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6))
 type TyCon6 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7)
-                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7))
+                     ~> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7))
 type TyCon7 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8)
-                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8))
+                     ~> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8))
 type TyCon8 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9)
-                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8 ~> k9))
+                     ~> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8 ~> k9))
 
 ----------------------------------------------------------------------
 ---- Defunctionalized Sing instance and utilities --------------------
 ----------------------------------------------------------------------
 
 newtype instance Sing (f :: k1 ~> k2) =
-  SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
+  SLambda { applySing :: forall t. Sing t -> Sing (f t) }
 
 -- | An infix synonym for `applySing`
-(@@) :: forall k1 k2 (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)
+(@@) :: forall k1 k2 (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f t)
 (@@) = applySing
 
 -- | Note that this instance's 'toSing' implementation crucially relies on the fact
--- that the 'SingKind' instances for 'k1' and 'k2' both satisfy the 'SingKind' laws.
+-- that the 'SingKind' instances for @k1@ and @k2@ both satisfy the 'SingKind' laws.
 -- If they don't, 'toSing' might produce strange results!
 instance (SingKind k1, SingKind k2) => SingKind (k1 ~> k2) where
   type Demote (k1 ~> k2) = Demote k1 -> Demote k2
@@ -290,9 +279,9 @@ instance (SingKind k1, SingKind k2) => SingKind (k1 ~> k2) where
           -- Here's the tricky part. We need to demote the argument Sing, apply the
           -- term-level function f to it, and promote it back to a Sing. However,
           -- we don't have a way to convince the typechecker that for all argument
-          -- types t, f @@ t should be the same thing as res, which motivates the
+          -- types t, f t should be the same thing as res, which motivates the
           -- use of unsafeCoerce.
-          lam :: forall (t :: k1). Sing t -> Sing (f @@ t)
+          lam :: forall (t :: k1). Sing t -> Sing (f t)
           lam x = withSomeSing (f (fromSing x)) (\(r :: Sing res) -> unsafeCoerce r)
 
 type SingFunction1 f = forall t. Sing t -> Sing (f @@ t)

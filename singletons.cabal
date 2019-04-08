@@ -125,7 +125,6 @@ library
                       Data.Singletons.Promote.Monad
                       Data.Singletons.Promote.Eq
                       Data.Singletons.Promote.Type
-                      Data.Singletons.Promote.Defun
                       Data.Singletons.Util
                       Data.Singletons.Partition
                       Data.Singletons.Prelude.Instances
