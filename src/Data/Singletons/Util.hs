@@ -96,7 +96,7 @@ qNewUnique :: DsMonad q => q Int
 qNewUnique = do
   Name _ flav <- qNewName "x"
   case flav of
-    NameU n -> return n
+    NameU n -> return $ fromIntegral n
     _       -> error "Internal error: `qNewName` didn't return a NameU"
 
 checkForRep :: Quasi q => [Name] -> q ()
