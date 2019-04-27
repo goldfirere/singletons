@@ -165,13 +165,7 @@ promoteValNameLhs = promoteValNameLhsPrefix noPrefix
 
 -- like promoteValNameLhs, but adds a prefix to the promoted name
 promoteValNameLhsPrefix :: (String, String) -> Name -> Name
-promoteValNameLhsPrefix pres@(alpha, symb) n
-  | nameBase n == "."
-  = mkName $ symb ++ ":."
-  | nameBase n == "!"
-  = mkName $ symb ++ ":!"
-    -- See Note [Special cases for (.) and (!)]
-
+promoteValNameLhsPrefix pres@(alpha, _) n
     -- We can't promote promote idenitifers beginning with underscores to
     -- type names, so we work around the issue by prepending "US" at the
     -- front of the name (#229).
@@ -197,15 +191,6 @@ promoteValRhs name
 -- names.
 promoteTySym :: Name -> Int -> Name
 promoteTySym name sat
-    | nameBase name == ":."
-    = default_case (mkName ".")
-    | nameBase name == ":!"
-    = default_case (mkName "!")
-      -- Although (:.) and (:!) are special cases, we need not have a colon in
-      -- front of their defunctionalization symbols, since only the names
-      -- (.) and (!) are problematic for the parser.
-      -- See Note [Special cases for (.) and (!)]
-
       -- We can't promote promote idenitifers beginning with underscores to
       -- type names, so we work around the issue by prepending "US" at the
       -- front of the name (#229).
@@ -358,12 +343,4 @@ $@#@$
 $@#@$$
 
 And there is no conflict.
-
-Note [Special cases for (.) and (!)]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Almost every infix value name can be promoted trivially. For example, (+) works
-both at the value- and type-level. The two exceptions to this rule are (.) and (!),
-which we promote to the special type names (:.) and (:!), respectively.
-This is necessary since one cannot define or apply (.) or (!) at the type level --
-they simply won't parse. Bummer.
 -}

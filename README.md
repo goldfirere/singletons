@@ -535,27 +535,7 @@ treatment):
    All tuples (including the 0-tuple, unit) are treated similarly.
 
 
-6. original value: `(.)`
-
-   promoted type\*: `(:.)`
-
-   singleton value: `(%.)`
-
-   symbols: `(.@#@$)`, `(.@#@$$)`, `(.@#@$$$)`
-
-   The promoted type is special because GHC can't parse a type named `(.)`.
-
-7. original value: `(!)`
-
-   promoted type\*: `(:!)`
-
-   singleton value: `(%!)`
-
-   symbols: `(!@#@$)`, `(!@#@$$)`, `(!@#@$$$)`
-
-   The promoted type is special because GHC can't parse a type named `(!)`.
-
-8. original value: `___foo`
+6. original value: `___foo`
 
    promoted type\*: `US___foo` ("`US`" stands for "underscore")
 

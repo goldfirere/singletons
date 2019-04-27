@@ -24,7 +24,7 @@
 module Data.Singletons.Prelude.Base (
   -- * Basic functions
   Foldr, sFoldr, Map, sMap, type (++), (%++), Otherwise, sOtherwise,
-  Id, sId, Const, sConst, (:.), (%.), type ($), type ($!), (%$), (%$!),
+  Id, sId, Const, sConst, type (.), (%.), type ($), type ($!), (%$), (%$!),
   Until, sUntil, Flip, sFlip, AsTypeOf, sAsTypeOf,
   Seq, sSeq,
 
@@ -111,5 +111,6 @@ $(singletonsOnly [d|
 
 -- Workaround for #326
 infixr 5 ++
+infixr 9 .
 infixr 0 $
 infixr 0 $!

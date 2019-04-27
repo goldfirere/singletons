@@ -23,7 +23,7 @@
 
 module Data.Singletons.Prelude.Function (
     -- * "Prelude" re-exports
-    Id, sId, Const, sConst, (:.), (%.), Flip, sFlip, type ($), (%$)
+    Id, sId, Const, sConst, type (.), (%.), Flip, sFlip, type ($), (%$)
     -- * Other combinators
   , type (&), (%&), On, sOn
 

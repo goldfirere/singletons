@@ -588,11 +588,8 @@ promoteInfixDecl name fixity
    -- If a name and its promoted counterpart are the same (modulo module
    -- prefixes), then there's no need to promote a fixity declaration for
    -- that name, since the existing fixity declaration will cover both
-   -- the term- and type-level versions of that name,
-   --
-   -- Names that fall into this category include data constructor names
-   -- and infix names, with the exceptions of (.) and (!).
-   -- See Note [Special cases for (.) and (!)] in Data.Singletons.Names.
+   -- the term- and type-level versions of that name. Names that fall into this
+   -- category include data constructor names and infix names.
  = Nothing
  | otherwise
  = Just $ DLetDec $ DInfixD fixity promoted_name

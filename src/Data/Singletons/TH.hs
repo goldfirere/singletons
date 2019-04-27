@@ -67,7 +67,7 @@ module Data.Singletons.TH (
   PFunctor(..), SFunctor(..),
   PFoldable(..), SFoldable(..), PMonoid(..), SMonoid(..),
   PTraversable(..), STraversable(..), PApplicative(..), SApplicative(..),
-  (:.), (%.),
+  type (.), (%.),
   SomeSing(..),
 
   Error, sError, ErrorSym0, ErrorSym1,

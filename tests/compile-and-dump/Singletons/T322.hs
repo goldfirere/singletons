@@ -9,5 +9,5 @@ $(singletons [d|
   infixr 2 !
   |])
 
-f1 :: (False && True :! True) :~: True
+f1 :: (False && True ! True) :~: True
 f1 = Refl
