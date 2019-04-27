@@ -84,6 +84,8 @@ Changelog for singletons project
   are also re-exported from `Data.Singletons.Prelude`.
 * Fix a bug where expressions with explicit signatures involving function types
   would fail to single.
+* The infix names `(.)` and `(!)` are no longer mapped to `(:.)` and `(:!)`,
+  as GHC 8.8 learned to parse them at the type level.
 
 2.5.1
 -----

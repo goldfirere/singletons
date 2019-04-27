@@ -86,7 +86,7 @@ module Data.Singletons.Prelude (
   STraversable(sTraverse, sSequenceA, sMapM, sSequence),
 
   -- ** Miscellaneous functions
-  Id, sId, Const, sConst, (:.), (%.), type ($), (%$), type ($!), (%$!),
+  Id, sId, Const, sConst, type (.), (%.), type ($), (%$), type ($!), (%$!),
   Flip, sFlip, AsTypeOf, sAsTypeOf,
   Seq, sSeq,
 
