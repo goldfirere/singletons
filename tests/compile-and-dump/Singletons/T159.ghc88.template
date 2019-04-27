@@ -1,0 +1,225 @@
+Singletons/T159.hs:0:0:: Splicing declarations
+    genSingletons [''T0, ''T1]
+  ======>
+    type ASym0 = 'A
+    type BSym0 = 'B
+    type CSym0 = 'C
+    type DSym0 = 'D
+    type ESym0 = 'E
+    type FSym0 = 'F
+    data instance Sing :: T0 -> GHC.Types.Type
+      where
+        SA :: Sing 'A
+        SB :: Sing 'B
+        SC :: Sing 'C
+        SD :: Sing 'D
+        SE :: Sing 'E
+        SF :: Sing 'F
+    type ST0 = Sing :: T0 -> GHC.Types.Type
+    instance SingKind T0 where
+      type Demote T0 = T0
+      fromSing SA = A
+      fromSing SB = B
+      fromSing SC = C
+      fromSing SD = D
+      fromSing SE = E
+      fromSing SF = F
+      toSing A = SomeSing SA
+      toSing B = SomeSing SB
+      toSing C = SomeSing SC
+      toSing D = SomeSing SD
+      toSing E = SomeSing SE
+      toSing F = SomeSing SF
+    instance SingI 'A where
+      sing = SA
+    instance SingI 'B where
+      sing = SB
+    instance SingI 'C where
+      sing = SC
+    instance SingI 'D where
+      sing = SD
+    instance SingI 'E where
+      sing = SE
+    instance SingI 'F where
+      sing = SF
+    type N1Sym0 = 'N1
+    type C1Sym2 (t0123456789876543210 :: T0) (t0123456789876543210 :: T1) =
+        'C1 t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (C1Sym1 t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) C1Sym1KindInference) ())
+    data C1Sym1 (t0123456789876543210 :: T0) :: (~>) T1 T1
+      where
+        C1Sym1KindInference :: forall t0123456789876543210
+                                      t0123456789876543210
+                                      arg. SameKind (Apply (C1Sym1 t0123456789876543210) arg) (C1Sym2 t0123456789876543210 arg) =>
+                               C1Sym1 t0123456789876543210 t0123456789876543210
+    type instance Apply (C1Sym1 t0123456789876543210) t0123456789876543210 = 'C1 t0123456789876543210 t0123456789876543210
+    infixr 5 `C1Sym1`
+    instance SuppressUnusedWarnings C1Sym0 where
+      suppressUnusedWarnings = snd (((,) C1Sym0KindInference) ())
+    data C1Sym0 :: (~>) T0 ((~>) T1 T1)
+      where
+        C1Sym0KindInference :: forall t0123456789876543210
+                                      arg. SameKind (Apply C1Sym0 arg) (C1Sym1 arg) =>
+                               C1Sym0 t0123456789876543210
+    type instance Apply C1Sym0 t0123456789876543210 = C1Sym1 t0123456789876543210
+    infixr 5 `C1Sym0`
+    type (:&&@#@$$$) (t0123456789876543210 :: T0) (t0123456789876543210 :: T1) =
+        '(:&&) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings ((:&&@#@$$) t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (::&&@#@$$###)) ())
+    data (:&&@#@$$) (t0123456789876543210 :: T0) :: (~>) T1 T1
+      where
+        (::&&@#@$$###) :: forall t0123456789876543210
+                                 t0123456789876543210
+                                 arg. SameKind (Apply ((:&&@#@$$) t0123456789876543210) arg) ((:&&@#@$$$) t0123456789876543210 arg) =>
+                          (:&&@#@$$) t0123456789876543210 t0123456789876543210
+    type instance Apply ((:&&@#@$$) t0123456789876543210) t0123456789876543210 = '(:&&) t0123456789876543210 t0123456789876543210
+    infixr 5 :&&@#@$$
+    instance SuppressUnusedWarnings (:&&@#@$) where
+      suppressUnusedWarnings = snd (((,) (::&&@#@$###)) ())
+    data (:&&@#@$) :: (~>) T0 ((~>) T1 T1)
+      where
+        (::&&@#@$###) :: forall t0123456789876543210
+                                arg. SameKind (Apply (:&&@#@$) arg) ((:&&@#@$$) arg) =>
+                         (:&&@#@$) t0123456789876543210
+    type instance Apply (:&&@#@$) t0123456789876543210 = (:&&@#@$$) t0123456789876543210
+    infixr 5 :&&@#@$
+    data instance Sing :: T1 -> GHC.Types.Type
+      where
+        SN1 :: Sing 'N1
+        SC1 :: forall (n :: T0) (n :: T1).
+               (Sing (n :: T0)) -> (Sing (n :: T1)) -> Sing ('C1 n n)
+        (:%&&) :: forall (n :: T0) (n :: T1).
+                  (Sing (n :: T0)) -> (Sing (n :: T1)) -> Sing ('(:&&) n n)
+    type ST1 = Sing :: T1 -> GHC.Types.Type
+    instance SingKind T1 where
+      type Demote T1 = T1
+      fromSing SN1 = N1
+      fromSing (SC1 b b) = (C1 (fromSing b)) (fromSing b)
+      fromSing ((:%&&) b b) = ((:&&) (fromSing b)) (fromSing b)
+      toSing N1 = SomeSing SN1
+      toSing (C1 (b :: Demote T0) (b :: Demote T1))
+        = case
+              ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T1)
+          of {
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SC1 c) c) }
+      toSing ((:&&) (b :: Demote T0) (b :: Demote T1))
+        = case
+              ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T1)
+          of {
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%&&) c) c) }
+    infixr 5 `SC1`
+    infixr 5 :%&&
+    instance SingI 'N1 where
+      sing = SN1
+    instance (SingI n, SingI n) =>
+             SingI ('C1 (n :: T0) (n :: T1)) where
+      sing = (SC1 sing) sing
+    instance SingI (C1Sym0 :: (~>) T0 ((~>) T1 T1)) where
+      sing = (singFun2 @C1Sym0) SC1
+    instance SingI d => SingI (C1Sym1 (d :: T0) :: (~>) T1 T1) where
+      sing = (singFun1 @(C1Sym1 (d :: T0))) (SC1 (sing @d))
+    instance (SingI n, SingI n) =>
+             SingI ('(:&&) (n :: T0) (n :: T1)) where
+      sing = ((:%&&) sing) sing
+    instance SingI ((:&&@#@$) :: (~>) T0 ((~>) T1 T1)) where
+      sing = (singFun2 @(:&&@#@$)) (:%&&)
+    instance SingI d =>
+             SingI ((:&&@#@$$) (d :: T0) :: (~>) T1 T1) where
+      sing = (singFun1 @((:&&@#@$$) (d :: T0))) ((:%&&) (sing @d))
+Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| infixr 5 :||
+          infixr 5 `C2`
+          
+          data T2 = N2 | C2 T0 T2 | T0 :|| T2 |]
+  ======>
+    data T2 = N2 | C2 T0 T2 | T0 :|| T2
+    infixr 5 `C2`
+    infixr 5 :||
+    type N2Sym0 = N2
+    type C2Sym2 (t0123456789876543210 :: T0) (t0123456789876543210 :: T2) =
+        C2 t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (C2Sym1 t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) C2Sym1KindInference) ())
+    data C2Sym1 (t0123456789876543210 :: T0) :: (~>) T2 T2
+      where
+        C2Sym1KindInference :: forall t0123456789876543210
+                                      t0123456789876543210
+                                      arg. SameKind (Apply (C2Sym1 t0123456789876543210) arg) (C2Sym2 t0123456789876543210 arg) =>
+                               C2Sym1 t0123456789876543210 t0123456789876543210
+    type instance Apply (C2Sym1 t0123456789876543210) t0123456789876543210 = C2 t0123456789876543210 t0123456789876543210
+    infixr 5 `C2Sym1`
+    instance SuppressUnusedWarnings C2Sym0 where
+      suppressUnusedWarnings = snd (((,) C2Sym0KindInference) ())
+    data C2Sym0 :: (~>) T0 ((~>) T2 T2)
+      where
+        C2Sym0KindInference :: forall t0123456789876543210
+                                      arg. SameKind (Apply C2Sym0 arg) (C2Sym1 arg) =>
+                               C2Sym0 t0123456789876543210
+    type instance Apply C2Sym0 t0123456789876543210 = C2Sym1 t0123456789876543210
+    infixr 5 `C2Sym0`
+    type (:||@#@$$$) (t0123456789876543210 :: T0) (t0123456789876543210 :: T2) =
+        (:||) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings ((:||@#@$$) t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (::||@#@$$###)) ())
+    data (:||@#@$$) (t0123456789876543210 :: T0) :: (~>) T2 T2
+      where
+        (::||@#@$$###) :: forall t0123456789876543210
+                                 t0123456789876543210
+                                 arg. SameKind (Apply ((:||@#@$$) t0123456789876543210) arg) ((:||@#@$$$) t0123456789876543210 arg) =>
+                          (:||@#@$$) t0123456789876543210 t0123456789876543210
+    type instance Apply ((:||@#@$$) t0123456789876543210) t0123456789876543210 = (:||) t0123456789876543210 t0123456789876543210
+    infixr 5 :||@#@$$
+    instance SuppressUnusedWarnings (:||@#@$) where
+      suppressUnusedWarnings = snd (((,) (::||@#@$###)) ())
+    data (:||@#@$) :: (~>) T0 ((~>) T2 T2)
+      where
+        (::||@#@$###) :: forall t0123456789876543210
+                                arg. SameKind (Apply (:||@#@$) arg) ((:||@#@$$) arg) =>
+                         (:||@#@$) t0123456789876543210
+    type instance Apply (:||@#@$) t0123456789876543210 = (:||@#@$$) t0123456789876543210
+    infixr 5 :||@#@$
+    infixr 5 :%||
+    infixr 5 `SC2`
+    data instance Sing :: T2 -> GHC.Types.Type
+      where
+        SN2 :: Sing N2
+        SC2 :: forall (n :: T0) (n :: T2).
+               (Sing (n :: T0)) -> (Sing (n :: T2)) -> Sing (C2 n n)
+        (:%||) :: forall (n :: T0) (n :: T2).
+                  (Sing (n :: T0)) -> (Sing (n :: T2)) -> Sing ((:||) n n)
+    type ST2 = Sing :: T2 -> GHC.Types.Type
+    instance SingKind T2 where
+      type Demote T2 = T2
+      fromSing SN2 = N2
+      fromSing (SC2 b b) = (C2 (fromSing b)) (fromSing b)
+      fromSing ((:%||) b b) = ((:||) (fromSing b)) (fromSing b)
+      toSing N2 = SomeSing SN2
+      toSing (C2 (b :: Demote T0) (b :: Demote T2))
+        = case
+              ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T2)
+          of {
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SC2 c) c) }
+      toSing ((:||) (b :: Demote T0) (b :: Demote T2))
+        = case
+              ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T2)
+          of {
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%||) c) c) }
+    instance SingI N2 where
+      sing = SN2
+    instance (SingI n, SingI n) => SingI (C2 (n :: T0) (n :: T2)) where
+      sing = (SC2 sing) sing
+    instance SingI (C2Sym0 :: (~>) T0 ((~>) T2 T2)) where
+      sing = (singFun2 @C2Sym0) SC2
+    instance SingI d => SingI (C2Sym1 (d :: T0) :: (~>) T2 T2) where
+      sing = (singFun1 @(C2Sym1 (d :: T0))) (SC2 (sing @d))
+    instance (SingI n, SingI n) =>
+             SingI ((:||) (n :: T0) (n :: T2)) where
+      sing = ((:%||) sing) sing
+    instance SingI ((:||@#@$) :: (~>) T0 ((~>) T2 T2)) where
+      sing = (singFun2 @(:||@#@$)) (:%||)
+    instance SingI d =>
+             SingI ((:||@#@$$) (d :: T0) :: (~>) T2 T2) where
+      sing = (singFun1 @((:||@#@$$) (d :: T0))) ((:%||) (sing @d))

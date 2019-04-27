@@ -1,0 +1,12 @@
+diff --git a/.travis.yml b/.travis.yml
+index aec53b0..24091d5 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -34,7 +34,6 @@ matrix:
+       env: GHCHEAD=true
+   allow_failures:
+     - compiler: ghc-head
+-    - compiler: ghc-8.8.1
+ before_install:
+   - HC=$(echo "/opt/$CC/bin/ghc" | sed 's/-/\//')
+   - HCPKG="$HC-pkg"

@@ -1,0 +1,139 @@
+Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
+    singletonsOnly
+      [d| class Foo a where
+            foosPrec :: Nat -> a -> [Bool] -> [Bool]
+            foo :: a -> [Bool]
+            foo x s = foosPrec 0 x s |]
+  ======>
+    type FoosPrecSym3 (arg0123456789876543210 :: Nat) (arg0123456789876543210 :: a0123456789876543210) (arg0123456789876543210 :: [Bool]) =
+        FoosPrec arg0123456789876543210 arg0123456789876543210 arg0123456789876543210
+    instance SuppressUnusedWarnings (FoosPrecSym2 arg0123456789876543210 arg0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) FoosPrecSym2KindInference) ())
+    data FoosPrecSym2 (arg0123456789876543210 :: Nat) (arg0123456789876543210 :: a0123456789876543210) :: (~>) [Bool] [Bool]
+      where
+        FoosPrecSym2KindInference :: forall arg0123456789876543210
+                                            arg0123456789876543210
+                                            arg0123456789876543210
+                                            arg. SameKind (Apply (FoosPrecSym2 arg0123456789876543210 arg0123456789876543210) arg) (FoosPrecSym3 arg0123456789876543210 arg0123456789876543210 arg) =>
+                                     FoosPrecSym2 arg0123456789876543210 arg0123456789876543210 arg0123456789876543210
+    type instance Apply (FoosPrecSym2 arg0123456789876543210 arg0123456789876543210) arg0123456789876543210 = FoosPrec arg0123456789876543210 arg0123456789876543210 arg0123456789876543210
+    instance SuppressUnusedWarnings (FoosPrecSym1 arg0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) FoosPrecSym1KindInference) ())
+    data FoosPrecSym1 (arg0123456789876543210 :: Nat) :: forall a0123456789876543210.
+                                                         (~>) a0123456789876543210 ((~>) [Bool] [Bool])
+      where
+        FoosPrecSym1KindInference :: forall arg0123456789876543210
+                                            arg0123456789876543210
+                                            arg. SameKind (Apply (FoosPrecSym1 arg0123456789876543210) arg) (FoosPrecSym2 arg0123456789876543210 arg) =>
+                                     FoosPrecSym1 arg0123456789876543210 arg0123456789876543210
+    type instance Apply (FoosPrecSym1 arg0123456789876543210) arg0123456789876543210 = FoosPrecSym2 arg0123456789876543210 arg0123456789876543210
+    instance SuppressUnusedWarnings FoosPrecSym0 where
+      suppressUnusedWarnings = snd (((,) FoosPrecSym0KindInference) ())
+    data FoosPrecSym0 :: forall a0123456789876543210.
+                         (~>) Nat ((~>) a0123456789876543210 ((~>) [Bool] [Bool]))
+      where
+        FoosPrecSym0KindInference :: forall arg0123456789876543210
+                                            arg. SameKind (Apply FoosPrecSym0 arg) (FoosPrecSym1 arg) =>
+                                     FoosPrecSym0 arg0123456789876543210
+    type instance Apply FoosPrecSym0 arg0123456789876543210 = FoosPrecSym1 arg0123456789876543210
+    type FooSym1 (arg0123456789876543210 :: a0123456789876543210) =
+        Foo arg0123456789876543210
+    instance SuppressUnusedWarnings FooSym0 where
+      suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
+    data FooSym0 :: forall a0123456789876543210.
+                    (~>) a0123456789876543210 [Bool]
+      where
+        FooSym0KindInference :: forall arg0123456789876543210
+                                       arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
+                                FooSym0 arg0123456789876543210
+    type instance Apply FooSym0 arg0123456789876543210 = Foo arg0123456789876543210
+    type family Lambda_0123456789876543210 x t where
+      Lambda_0123456789876543210 x s = Apply (Apply (Apply FoosPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 0)) x) s
+    type Lambda_0123456789876543210Sym2 x0123456789876543210 t0123456789876543210 =
+        Lambda_0123456789876543210 x0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 x0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
+    data Lambda_0123456789876543210Sym1 x0123456789876543210 t0123456789876543210
+      where
+        Lambda_0123456789876543210Sym1KindInference :: forall x0123456789876543210
+                                                              t0123456789876543210
+                                                              arg. SameKind (Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) arg) (Lambda_0123456789876543210Sym2 x0123456789876543210 arg) =>
+                                                       Lambda_0123456789876543210Sym1 x0123456789876543210 t0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
+    data Lambda_0123456789876543210Sym0 x0123456789876543210
+      where
+        Lambda_0123456789876543210Sym0KindInference :: forall x0123456789876543210
+                                                              arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 x0123456789876543210
+    type instance Apply Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210Sym1 x0123456789876543210
+    type family Foo_0123456789876543210 (a :: a) :: [Bool] where
+      Foo_0123456789876543210 x = Apply Lambda_0123456789876543210Sym0 x
+    type Foo_0123456789876543210Sym1 (a0123456789876543210 :: a0123456789876543210) =
+        Foo_0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings Foo_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) Foo_0123456789876543210Sym0KindInference) ())
+    data Foo_0123456789876543210Sym0 :: forall a0123456789876543210.
+                                        (~>) a0123456789876543210 [Bool]
+      where
+        Foo_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                           arg. SameKind (Apply Foo_0123456789876543210Sym0 arg) (Foo_0123456789876543210Sym1 arg) =>
+                                                    Foo_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Foo_0123456789876543210Sym0 a0123456789876543210 = Foo_0123456789876543210 a0123456789876543210
+    class PFoo (a :: GHC.Types.Type) where
+      type FoosPrec (arg :: Nat) (arg :: a) (arg :: [Bool]) :: [Bool]
+      type Foo (arg :: a) :: [Bool]
+      type Foo a = Apply Foo_0123456789876543210Sym0 a
+    class SFoo a where
+      sFoosPrec ::
+        forall (t :: Nat) (t :: a) (t :: [Bool]).
+        Sing t
+        -> Sing t
+           -> Sing t
+              -> Sing (Apply (Apply (Apply FoosPrecSym0 t) t) t :: [Bool])
+      sFoo :: forall (t :: a). Sing t -> Sing (Apply FooSym0 t :: [Bool])
+      default sFoo ::
+                forall (t :: a).
+                ((Apply FooSym0 t :: [Bool])
+                 ~ Apply Foo_0123456789876543210Sym0 t) =>
+                Sing t -> Sing (Apply FooSym0 t :: [Bool])
+      sFoo (sX :: Sing x)
+        = (singFun1 @(Apply Lambda_0123456789876543210Sym0 x))
+            (\ sS
+               -> case sS of {
+                    (_ :: Sing s)
+                      -> (applySing
+                            ((applySing
+                                ((applySing ((singFun3 @FoosPrecSym0) sFoosPrec))
+                                   (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))))
+                               sX))
+                           sS })
+    instance SFoo a =>
+             SingI (FoosPrecSym0 :: (~>) Nat ((~>) a ((~>) [Bool] [Bool]))) where
+      sing = (singFun3 @FoosPrecSym0) sFoosPrec
+    instance (SFoo a, SingI d) =>
+             SingI (FoosPrecSym1 (d :: Nat) :: (~>) a ((~>) [Bool] [Bool])) where
+      sing = (singFun2 @(FoosPrecSym1 (d :: Nat))) (sFoosPrec (sing @d))
+    instance (SFoo a, SingI d, SingI d) =>
+             SingI (FoosPrecSym2 (d :: Nat) (d :: a) :: (~>) [Bool] [Bool]) where
+      sing
+        = (singFun1 @(FoosPrecSym2 (d :: Nat) (d :: a)))
+            ((sFoosPrec (sing @d)) (sing @d))
+    instance SFoo a => SingI (FooSym0 :: (~>) a [Bool]) where
+      sing = (singFun1 @FooSym0) sFoo
+
+Singletons/T166.hs:0:0: error:
+    • Expecting one more argument to ‘Apply Lambda_0123456789876543210Sym0 x’
+      Expected kind ‘[Bool]’,
+        but ‘Apply Lambda_0123456789876543210Sym0 x’ has kind ‘TyFun
+                                                                 [Bool] [Bool]
+                                                               -> Type’
+    • In the type ‘Apply Lambda_0123456789876543210Sym0 x’
+      In the type family declaration for ‘Foo_0123456789876543210’
+   |
+14 | $(singletonsOnly [d|
+   |   ^^^^^^^^^^^^^^^^^^...
