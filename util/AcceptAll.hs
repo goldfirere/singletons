@@ -16,10 +16,10 @@ main = sh $ do
   let pat = plus (notChar '.') <* (text ".actual")
   name_base <- select (match pat test_file')
 
-  template_exists <- testfile (fromText $ name_base <> ".ghc86.template")
+  template_exists <- testfile (fromText $ name_base <> ".ghc88.template")
   when (not template_exists) $ do
     liftIO $ Text.putStrLn ("No template for " <> name_base)
     empty  -- aborts
 
-  cp (fromText $ name_base <> ".actual") (fromText $ name_base <> ".ghc86.template")
+  cp (fromText $ name_base <> ".actual") (fromText $ name_base <> ".ghc88.template")
   liftIO $ Text.putStrLn ("Accepted " <> name_base)

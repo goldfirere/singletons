@@ -33,7 +33,7 @@ goldenPath :: FilePath
 goldenPath = rootDir </> "tests/compile-and-dump/"
 
 ghcVersion :: String
-ghcVersion = ".ghc86"
+ghcVersion = ".ghc88"
 
 -- GHC options used when running the tests
 ghcOpts :: [String]

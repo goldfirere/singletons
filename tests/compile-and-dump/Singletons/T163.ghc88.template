@@ -1,0 +1,47 @@
+Singletons/T163.hs:0:0:: Splicing declarations
+    singletons [d| data a + b = L a | R b |]
+  ======>
+    data (+) a b = L a | R b
+    type LSym1 (t0123456789876543210 :: a0123456789876543210) =
+        L t0123456789876543210
+    instance SuppressUnusedWarnings LSym0 where
+      suppressUnusedWarnings = snd (((,) LSym0KindInference) ())
+    data LSym0 :: forall a0123456789876543210 b0123456789876543210.
+                  (~>) a0123456789876543210 ((+) a0123456789876543210 b0123456789876543210)
+      where
+        LSym0KindInference :: forall t0123456789876543210
+                                     arg. SameKind (Apply LSym0 arg) (LSym1 arg) =>
+                              LSym0 t0123456789876543210
+    type instance Apply LSym0 t0123456789876543210 = L t0123456789876543210
+    type RSym1 (t0123456789876543210 :: b0123456789876543210) =
+        R t0123456789876543210
+    instance SuppressUnusedWarnings RSym0 where
+      suppressUnusedWarnings = snd (((,) RSym0KindInference) ())
+    data RSym0 :: forall b0123456789876543210 a0123456789876543210.
+                  (~>) b0123456789876543210 ((+) a0123456789876543210 b0123456789876543210)
+      where
+        RSym0KindInference :: forall t0123456789876543210
+                                     arg. SameKind (Apply RSym0 arg) (RSym1 arg) =>
+                              RSym0 t0123456789876543210
+    type instance Apply RSym0 t0123456789876543210 = R t0123456789876543210
+    data instance Sing :: (+) a b -> GHC.Types.Type
+      where
+        SL :: forall a (n :: a). (Sing (n :: a)) -> Sing (L n)
+        SR :: forall b (n :: b). (Sing (n :: b)) -> Sing (R n)
+    type (%+) = Sing :: (+) a b -> GHC.Types.Type
+    instance (SingKind a, SingKind b) => SingKind ((+) a b) where
+      type Demote ((+) a b) = (+) (Demote a) (Demote b)
+      fromSing (SL b) = L (fromSing b)
+      fromSing (SR b) = R (fromSing b)
+      toSing (L (b :: Demote a))
+        = case toSing b :: SomeSing a of { SomeSing c -> SomeSing (SL c) }
+      toSing (R (b :: Demote b))
+        = case toSing b :: SomeSing b of { SomeSing c -> SomeSing (SR c) }
+    instance SingI n => SingI (L (n :: a)) where
+      sing = SL sing
+    instance SingI (LSym0 :: (~>) a ((+) a b)) where
+      sing = (singFun1 @LSym0) SL
+    instance SingI n => SingI (R (n :: b)) where
+      sing = SR sing
+    instance SingI (RSym0 :: (~>) b ((+) a b)) where
+      sing = (singFun1 @RSym0) SR

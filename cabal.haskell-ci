@@ -7,3 +7,5 @@ raw-project
   package th-desugar
     tests:      False
     benchmarks: False
+
+travis-patches: travis.yml.patch
