@@ -13,21 +13,20 @@ module Data.Singletons.Promote.Type
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
 import Language.Haskell.TH
-import qualified Control.Monad.Fail as Fail
 
 -- the only monadic thing we do here is fail. This allows the function
 -- to be used from the Singletons module
-promoteType :: Fail.MonadFail m => DType -> m DKind
+promoteType :: MonadFail m => DType -> m DKind
 promoteType = go []
   where
-    go :: Fail.MonadFail m => [DTypeArg] -> DType -> m DKind
+    go :: MonadFail m => [DTypeArg] -> DType -> m DKind
     -- We don't need to worry about constraints: they are used to express
     -- static guarantees at runtime. But, because we don't need to do
     -- anything special to keep static guarantees at compile time, we don't
     -- need to promote them.
     go []       (DForallT _tvbs _cxt ty) = go [] ty
     go []       (DAppT (DAppT DArrowT (DForallT (_:_) _ _)) _) =
-      Fail.fail "Cannot promote types of rank above 1."
+      fail "Cannot promote types of rank above 1."
     go args     (DAppT t1 t2) = do
       k2 <- go [] t2
       go (DTANormal k2 : args) t1
@@ -57,15 +56,15 @@ promoteType = go []
       = return $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
     go _        ty@DLitT{} = pure ty
 
-    go args     hd = Fail.fail $ "Illegal Haskell construct encountered:\n" ++
-                                 "headed by: " ++ show hd ++ "\n" ++
-                                 "applied to: " ++ show args
+    go args     hd = fail $ "Illegal Haskell construct encountered:\n" ++
+                            "headed by: " ++ show hd ++ "\n" ++
+                            "applied to: " ++ show args
 
-promoteTypeArg :: Fail.MonadFail m => DTypeArg -> m DTypeArg
+promoteTypeArg :: MonadFail m => DTypeArg -> m DTypeArg
 promoteTypeArg (DTANormal t) = DTANormal <$> promoteType t
 promoteTypeArg ta@(DTyArg _) = pure ta -- Kinds are already promoted
 
-promoteUnraveled :: Fail.MonadFail m => DType -> m ([DKind], DKind)
+promoteUnraveled :: MonadFail m => DType -> m ([DKind], DKind)
 promoteUnraveled ty = do
   arg_kis <- mapM promoteType arg_tys
   res_ki  <- promoteType res_ty
