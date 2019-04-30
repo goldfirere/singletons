@@ -238,7 +238,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance PEq S where
       type (==) a b = Equals_0123456789876543210 a b
     infixl 6 :%*:
-    data ST :: T a b -> GHC.Types.Type
+    data ST :: forall a b. T a b -> GHC.Types.Type
       where
         (:%*:) :: forall a b (n :: a) (n :: b).
                   (Sing (n :: a)) -> (Sing (n :: b)) -> ST ((:*:) n n)

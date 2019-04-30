@@ -49,7 +49,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
                                             arg. SameKind (Apply MkRecordSym0 arg) (MkRecordSym1 arg) =>
                                      MkRecordSym0 t0123456789876543210
     type instance Apply MkRecordSym0 t0123456789876543210 = MkRecordSym1 t0123456789876543210
-    data SRecord :: Record a -> GHC.Types.Type
+    data SRecord :: forall a. Record a -> GHC.Types.Type
       where
         SMkRecord :: forall a (n :: a) (n :: Bool).
                      {sField1 :: (Sing (n :: a)), sField2 :: (Sing (n :: Bool))}

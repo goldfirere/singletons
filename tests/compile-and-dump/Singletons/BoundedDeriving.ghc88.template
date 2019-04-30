@@ -150,7 +150,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing C = SomeSing SC
       toSing D = SomeSing SD
       toSing E = SomeSing SE
-    data SFoo3 :: Foo3 a -> Type
+    data SFoo3 :: forall a. Foo3 a -> Type
       where SFoo3 :: forall a (n :: a). (Sing (n :: a)) -> SFoo3 (Foo3 n)
     type instance Sing @(Foo3 a) = SFoo3
     instance SingKind a => SingKind (Foo3 a) where
@@ -159,7 +159,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Foo3 (b :: Demote a))
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SFoo3 c) }
-    data SFoo4 :: Foo4 a b -> Type
+    data SFoo4 :: forall a b. Foo4 a b -> Type
       where
         SFoo41 :: SFoo4 Foo41
         SFoo42 :: SFoo4 Foo42

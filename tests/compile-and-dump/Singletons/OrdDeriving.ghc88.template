@@ -455,7 +455,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ (b :: Demote Nat))
         = case toSing b :: SomeSing Nat of {
             SomeSing c -> SomeSing (SSucc c) }
-    data SFoo :: Foo a b c d -> GHC.Types.Type
+    data SFoo :: forall a b c d. Foo a b c d -> GHC.Types.Type
       where
         SA :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing (n :: a))

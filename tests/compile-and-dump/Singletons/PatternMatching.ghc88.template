@@ -121,7 +121,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
            ((applySing ((singFun2 @PairSym0) SPair))
               ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
           ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SZero)) SNil)
-    data SPair :: Pair a b -> GHC.Types.Type
+    data SPair :: forall a b. Pair a b -> GHC.Types.Type
       where
         SPair :: forall a b (n :: a) (n :: b).
                  (Sing (n :: a)) -> (Sing (n :: b)) -> SPair (Pair n n)

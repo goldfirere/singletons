@@ -99,7 +99,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (_ :: Identity a) (_ :: Identity a) = FalseSym0
     instance PEq (Identity a) where
       type (==) a b = Equals_0123456789876543210 a b
-    data SConstant :: Constant a b -> Type
+    data SConstant :: forall a b. Constant a b -> Type
       where
         SConstant :: forall a (n :: a).
                      (Sing (n :: a)) -> SConstant (Constant n)
@@ -110,7 +110,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       toSing (Constant (b :: Demote a))
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SConstant c) }
-    data SIdentity :: Identity a -> Type
+    data SIdentity :: forall a. Identity a -> Type
       where
         SIdentity :: forall a (n :: a).
                      (Sing (n :: a)) -> SIdentity (Identity n)

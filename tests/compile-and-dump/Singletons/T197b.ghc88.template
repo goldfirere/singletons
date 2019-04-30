@@ -56,7 +56,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     infixr 9 `MkPairSym0`
     infixr 9 `SMkPair`
     infixr 9 `SPair`
-    data (%:*:) :: (:*:) a b -> GHC.Types.Type
+    data (%:*:) :: forall a b. (:*:) a b -> GHC.Types.Type
       where
         (:%*:) :: forall a b (n :: a) (n :: b).
                   (Sing (n :: a)) -> (Sing (n :: b)) -> (%:*:) ((:*:) n n)
@@ -67,7 +67,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:*:) (b :: Demote a) (b :: Demote b))
         = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b) of {
             (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%*:) c) c) }
-    data SPair :: Pair a b -> GHC.Types.Type
+    data SPair :: forall a b. Pair a b -> GHC.Types.Type
       where
         SMkPair :: forall a b (n :: a) (n :: b).
                    (Sing (n :: a)) -> (Sing (n :: b)) -> SPair (MkPair n n)
