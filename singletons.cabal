@@ -155,6 +155,8 @@ test-suite singletons-test-suite
   build-depends:      base >= 4.13 && < 4.14,
                       filepath >= 1.3,
                       process >= 1.1,
+                      turtle >= 1.5,
+                      text >= 1.2,
                       singletons,
                       tasty >= 1.2,
                       tasty-golden >= 2.2
