@@ -163,7 +163,7 @@ instance SingKind Bool where
 
 -- Maybe
 
-data SMaybe :: Maybe k -> Type where
+data SMaybe :: forall k. Maybe k -> Type where
   SNothing :: SMaybe Nothing
   SJust :: forall k (a :: k). Sing a -> SMaybe (Just a)
 type instance Sing = SMaybe
@@ -205,7 +205,7 @@ instance SingKind k => SingKind (Maybe k) where
 
 -- List
 
-data SList :: List k -> Type where
+data SList :: forall k. List k -> Type where
   SNil :: SList Nil
   SCons :: forall k (h :: k) (t :: List k). Sing h -> SList t -> SList (Cons h t)
 type instance Sing = SList
@@ -260,7 +260,7 @@ instance SingKind k => SingKind (List k) where
 
 -- Either
 
-data SEither :: Either k1 k2 -> Type where
+data SEither :: forall k1 k2. Either k1 k2 -> Type where
   SLeft :: forall k1 (a :: k1). Sing a -> SEither (Left a)
   SRight :: forall k2 (b :: k2). Sing b -> SEither (Right b)
 type instance Sing = SEither
@@ -297,7 +297,7 @@ instance (SDecide k1, SDecide k2) => SDecide (Either k1 k2) where
 data Composite :: Type -> Type -> Type where
   MkComp :: Either (Maybe a) b -> Composite a b
 
-data SComposite :: Composite k1 k2 -> Type where
+data SComposite :: forall k1 k2. Composite k1 k2 -> Type where
   SMkComp :: forall k1 k2 (a :: Either (Maybe k1) k2). SEither a -> SComposite (MkComp a)
 type instance Sing = SComposite
 

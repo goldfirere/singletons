@@ -40,7 +40,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
                                           arg. SameKind (Apply MkFoo3Sym0 arg) (MkFoo3Sym1 arg) =>
                                    MkFoo3Sym0 t0123456789876543210
     type instance Apply MkFoo3Sym0 t0123456789876543210 = MkFoo3 t0123456789876543210
-    data SFoo1 :: Foo1 a -> Type
+    data SFoo1 :: forall a. Foo1 a -> Type
       where
         SMkFoo1 :: forall a (n :: a). (Sing (n :: a)) -> SFoo1 (MkFoo1 n)
     type instance Sing @(Foo1 a) = SFoo1
@@ -50,7 +50,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkFoo1 (b :: Demote a))
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SMkFoo1 c) }
-    data SFoo2 :: Foo2 a -> Type
+    data SFoo2 :: forall a. Foo2 a -> Type
       where
         SMkFoo2 :: forall x (n :: x). (Sing (n :: x)) -> SFoo2 (MkFoo2 n)
     type instance Sing @(Foo2 a) = SFoo2
@@ -60,7 +60,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkFoo2 (b :: Demote x))
         = case toSing b :: SomeSing x of {
             SomeSing c -> SomeSing (SMkFoo2 c) }
-    data SFoo3 :: Foo3 a -> Type
+    data SFoo3 :: forall a. Foo3 a -> Type
       where
         SMkFoo3 :: forall x (n :: x). (Sing (n :: x)) -> SFoo3 (MkFoo3 n)
     type instance Sing @(Foo3 a) = SFoo3

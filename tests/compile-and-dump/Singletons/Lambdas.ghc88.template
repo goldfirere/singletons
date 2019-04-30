@@ -812,7 +812,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @Foo0Sym0) sFoo0
     instance SingI d => SingI (Foo0Sym1 (d :: a) :: (~>) b a) where
       sing = (singFun1 @(Foo0Sym1 (d :: a))) (sFoo0 (sing @d))
-    data SFoo :: Foo a b -> GHC.Types.Type
+    data SFoo :: forall a b. Foo a b -> GHC.Types.Type
       where
         SFoo :: forall a b (n :: a) (n :: b).
                 (Sing (n :: a)) -> (Sing (n :: b)) -> SFoo (Foo n n)

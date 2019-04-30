@@ -276,7 +276,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       type Demote Foo1 = Foo1
       fromSing SMkFoo1 = MkFoo1
       toSing MkFoo1 = SomeSing SMkFoo1
-    data SFoo2 :: Foo2 a -> GHC.Types.Type
+    data SFoo2 :: forall a. Foo2 a -> GHC.Types.Type
       where
         SMkFoo2a :: forall a (n :: a) (n :: a).
                     (Sing (n :: a)) -> (Sing (n :: a)) -> SFoo2 (MkFoo2a n n)

@@ -24,7 +24,7 @@ Singletons/T163.hs:0:0:: Splicing declarations
                                      arg. SameKind (Apply RSym0 arg) (RSym1 arg) =>
                               RSym0 t0123456789876543210
     type instance Apply RSym0 t0123456789876543210 = R t0123456789876543210
-    data (%+) :: (+) a b -> GHC.Types.Type
+    data (%+) :: forall a b. (+) a b -> GHC.Types.Type
       where
         SL :: forall a (n :: a). (Sing (n :: a)) -> (%+) (L n)
         SR :: forall b (n :: b). (Sing (n :: b)) -> (%+) (R n)

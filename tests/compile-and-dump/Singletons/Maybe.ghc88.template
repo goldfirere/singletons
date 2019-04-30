@@ -64,7 +64,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (_ :: Maybe a) (_ :: Maybe a) = FalseSym0
     instance PEq (Maybe a) where
       type (==) a b = Equals_0123456789876543210 a b
-    data SMaybe :: Maybe a -> GHC.Types.Type
+    data SMaybe :: forall a. Maybe a -> GHC.Types.Type
       where
         SNothing :: SMaybe Nothing
         SJust :: forall a (n :: a). (Sing (n :: a)) -> SMaybe (Just n)
