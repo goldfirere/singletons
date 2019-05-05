@@ -1,5 +1,6 @@
 {-# LANGUAGE RankNTypes, PolyKinds, DataKinds, TypeOperators,
-             TypeFamilies, FlexibleContexts, UndecidableInstances, GADTs #-}
+             TypeFamilies, FlexibleContexts, UndecidableInstances,
+             GADTs, TypeApplications #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------
@@ -60,6 +61,9 @@ decideEquality a b =
     Proved Refl -> Just Refl
     Disproved _ -> Nothing
 
+instance SDecide k => TestEquality (WrappedSing @k) where
+  testEquality (WrapSing s1) (WrapSing s2) = decideEquality s1 s2
+
 -- | A suitable default implementation for 'testCoercion' that leverages
 -- 'SDecide'.
 decideCoercion :: forall k (a :: k) (b :: k). SDecide k
@@ -68,3 +72,6 @@ decideCoercion a b =
   case a %~ b of
     Proved Refl -> Just Coercion
     Disproved _ -> Nothing
+
+instance SDecide k => TestCoercion (WrappedSing @k) where
+  testCoercion (WrapSing s1) (WrapSing s2) = decideCoercion s1 s2

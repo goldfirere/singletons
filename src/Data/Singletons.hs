@@ -53,6 +53,10 @@ module Data.Singletons (
   singByProxy#,
   withSing, singThat,
 
+  -- ** @WrappedSing@
+  WrappedSing(..), SWrappedSing(..), UnwrapSing,
+  -- $SingletonsOfSingletons
+
   -- ** Defunctionalization
   TyFun, type (~>),
   TyCon1, TyCon2, TyCon3, TyCon4, TyCon5, TyCon6, TyCon7, TyCon8,
@@ -177,7 +181,76 @@ instance SIsString k => IsString (SomeSing k) where
 ----------------------------------------------------------------------
 
 $(genDefunSymbols [''Demote, ''SameKind, ''KindOf, ''(~>), ''Apply, ''(@@)])
--- SingFunction1 et al. are not defunctionalizable at the moment due to Trac #9269
+-- WrapSing, UnwrapSing, and SingFunction1 et al. are not defunctionalizable
+-- at the moment due to Trac #9269
+
+{- $SingletonsOfSingletons
+
+Aside from being a data type to hang instances off of, 'WrappedSing' has
+another purpose as a general-purpose mechanism for allowing one to write
+code that uses singletons of other singletons. For instance, suppose you
+had the following data type:
+
+@
+data T :: Type -> Type where
+  MkT :: forall a (x :: a). 'Sing' x -> F a -> T a
+@
+
+A naïve attempt at defining a singleton for @T@ would look something like
+this:
+
+@
+data ST :: forall a. T a -> Type where
+  SMkT :: forall a (x :: a) (sx :: 'Sing' x) (f :: F a).
+          'Sing' sx -> 'Sing' f -> ST (MkT sx f)
+@
+
+But there is a problem here: what exactly /is/ @'Sing' sx@? If @x@ were 'True',
+for instance, then @sx@ would be 'STrue', but it's not clear what
+@'Sing' 'STrue'@ should be. One could define @SSBool@ to be the singleton of
+'SBool's, but in order to be thorough, one would have to generate a singleton
+for /every/ singleton type out there. Plus, it's not clear when to stop. Should
+we also generate @SSSBool@, @SSSSBool@, etc.?
+
+Instead, 'WrappedSing' and its singleton 'SWrappedSing' provide a way to talk
+about singletons of other arbitrary singletons without the need to generate a
+bazillion instances. For reference, here is the definition of 'SWrappedSing':
+
+@
+newtype 'SWrappedSing' :: forall k (a :: k). 'WrappedSing' a -> Type where
+  'SWrapSing' :: forall k (a :: k) (ws :: 'WrappedSing' a).
+                 { 'sUnwrapSing' :: 'Sing' a } -> 'SWrappedSing' ws
+type instance 'Sing' \@('WrappedSing' a) = 'SWrappedSing'
+@
+
+'SWrappedSing' is a bit of an unusual singleton in that its field is a
+singleton for @'Sing' \@k@, not @'WrappedSing' \@k@. But that's exactly the
+point—a singleton of a singleton contains as much type information as the
+underlying singleton itself, so we can get away with just @'Sing' \@k@.
+
+As an example of this in action, here is how you would define the singleton
+for the earlier @T@ type:
+
+@
+data ST :: forall a. T a -> Type where
+  SMkT :: forall a (x :: a) (sx :: 'Sing' x) (f :: F a).
+          'Sing' ('WrapSing' sx) -> 'Sing' f -> ST (MkT sx f)
+@
+
+With this technique, we won't need anything like @SSBool@ in order to
+instantiate @x@ with 'True'. Instead, the field of type
+@'Sing' ('WrapSing' sx)@ will simply be a newtype around 'SBool'. In general,
+you'll need /n/ layers of 'WrapSing' if you wish to single a singleton /n/
+times.
+
+Note that this is not the only possible way to define a singleton for @T@.
+An alternative approach that does not make use of singletons-of-singletons is
+discussed at some length
+<https://github.com/goldfirere/singletons/issues/366#issuecomment-489469086 here>.
+Due to the technical limitations of this approach, however, we do not use it
+in @singletons@ at the moment, instead favoring the
+slightly-clunkier-but-more-reliable 'WrappedSing' approach.
+-}
 
 {- $SLambdaPatternSynonyms
 

@@ -197,6 +197,39 @@ pattern FromSing sng <- ((\demotedVal -> withSomeSing demotedVal SomeSing) -> So
   where FromSing sng = fromSing sng
 
 ----------------------------------------------------------------------
+---- WrappedSing -----------------------------------------------------
+----------------------------------------------------------------------
+
+-- | A newtype around 'Sing'.
+--
+-- Since 'Sing' is a type family, it cannot be used directly in type class
+-- instances. As one example, one cannot write a catch-all
+-- @instance 'SDecide' k => 'TestEquality' ('Sing' k)@. On the other hand,
+-- 'WrappedSing' is a perfectly ordinary data type, which means that it is
+-- quite possible to define an
+-- @instance 'SDecide' k => 'TestEquality' ('WrappedSing' k)@.
+newtype WrappedSing :: forall k. k -> Type where
+  WrapSing :: forall k (a :: k). { unwrapSing :: Sing a } -> WrappedSing a
+
+-- | The singleton for 'WrappedSing's. Informally, this is the singleton type
+-- for other singletons.
+newtype SWrappedSing :: forall k (a :: k). WrappedSing a -> Type where
+  SWrapSing :: forall k (a :: k) (ws :: WrappedSing a).
+               { sUnwrapSing :: Sing a } -> SWrappedSing ws
+type instance Sing = SWrappedSing
+
+type family UnwrapSing (ws :: WrappedSing a) :: Sing a where
+  UnwrapSing ('WrapSing s) = s
+
+instance SingKind (WrappedSing a) where
+  type Demote (WrappedSing a) = WrappedSing a
+  fromSing (SWrapSing s) = WrapSing s
+  toSing (WrapSing s) = SomeSing $ SWrapSing s
+
+instance forall a (s :: Sing a). SingI a => SingI ('WrapSing s) where
+  sing = SWrapSing sing
+
+----------------------------------------------------------------------
 ---- SingInstance ----------------------------------------------------
 ----------------------------------------------------------------------
 
