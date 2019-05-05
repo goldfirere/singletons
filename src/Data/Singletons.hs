@@ -88,6 +88,7 @@ module Data.Singletons (
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
+import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.IsString
 import Data.Singletons.Prelude.Monoid
 import Data.Singletons.Prelude.Num
@@ -131,15 +132,21 @@ instance SBounded k => Bounded (SomeSing k) where
   minBound = SomeSing sMinBound
   maxBound = SomeSing sMaxBound
 
-instance (SEnum k, SingKind k) => Enum (SomeSing k) where
+instance SEnum k => Enum (SomeSing k) where
   succ (SomeSing a) = SomeSing (sSucc a)
   pred (SomeSing a) = SomeSing (sPred a)
   toEnum n = withSomeSing (fromIntegral n) (SomeSing . sToEnum)
   fromEnum (SomeSing a) = fromIntegral (fromSing (sFromEnum a))
   enumFromTo (SomeSing from) (SomeSing to) =
-    map toSing (fromSing (sEnumFromTo from to))
+    listFromSingShallow (sEnumFromTo from to)
   enumFromThenTo (SomeSing from) (SomeSing then_) (SomeSing to) =
-    map toSing (fromSing (sEnumFromThenTo from then_ to))
+    listFromSingShallow (sEnumFromThenTo from then_ to)
+
+-- Like the 'fromSing' implementation for lists, but bottoms out at
+-- 'SomeSing' instead of recursively invoking 'fromSing'.
+listFromSingShallow :: SList (x :: [a]) -> [SomeSing a]
+listFromSingShallow SNil         = []
+listFromSingShallow (SCons x xs) = SomeSing x : listFromSingShallow xs
 
 instance SNum k => Num (SomeSing k) where
   SomeSing a + SomeSing b = SomeSing (a %+ b)
