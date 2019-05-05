@@ -40,14 +40,21 @@ Changelog for singletons project
     This is unlikely to affect you unless you define 'Show' instances for
     singleton types by hand. For more information, refer to the Haddocks for
     `ShowSing'` in `Data.Singletons.ShowSing`.
-  * It is no longer possible to define a single `TestEquality` and
-    `TestCoercion` instance that covers all `Sing`s, as one cannot put type
-    families inside of instance heads. Instead, `singletons` now generates a
-    separate `TestEquality`/`TestCoercion` instance for every data type that
-    singletons a derived `Eq` instance. In addition, the
-    `Data.Singletons.Decide` module now provides top-level
-    `decideEquality`/`decideCoercion` functions which provide the behavior
-    of `testEquality`/`testCoercion`, but monomorphized to `Sing`.
+  * GHC does not permit type class instances to mention type families, which
+    means that it is no longer possible to define instances that mention the
+    `Sing` type constructor. For this reason, a `WrappedSing` data type (which
+    is a newtype around `Sing`) was introduced so that one can hang instances
+    off of it.
+
+    This had one noticeable effect in `singletons`
+    itself: there are no longer `TestEquality Sing` or `TestCoercion Sing`
+    instances. Instead, `singletons` now generates a separate
+    `TestEquality`/`TestCoercion` instance for every data type that singles a
+    derived `Eq` instance. In addition, the `Data.Singletons.Decide` module
+    now provides top-level `decideEquality`/`decideCoercion` functions which
+    provide the behavior of `testEquality`/`testCoercion`, but monomorphized
+    to `Sing`. Finally, `TestEquality`/`TestCoercion` instances are provided
+    for `WrappedSing`.
 * GHC's behavior surrounding kind inference for local definitions has changed
   in 8.8, and certain code that `singletons` generates for local definitions
   may no longer typecheck as a result. While we have taken measures to mitigate
