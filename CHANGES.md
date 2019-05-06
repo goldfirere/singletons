@@ -87,6 +87,9 @@ Changelog for singletons project
   would fail to single.
 * The infix names `(.)` and `(!)` are no longer mapped to `(:.)` and `(:!)`,
   as GHC 8.8 learned to parse them at the type level.
+* The `Enum` instance for `SomeSing` now uses more efficient implementations of
+  `enumFromTo` and `enumFromThenTo` that no longer require a `SingKind`
+  constraint.
 
 2.5.1
 -----
