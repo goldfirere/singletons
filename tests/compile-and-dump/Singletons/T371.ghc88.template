@@ -74,7 +74,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
                                                                  arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
-    instance PShow (X a) where
+    instance PShow (Y a) => PShow (X a) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Y a) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210 _ Y1 a_0123456789876543210 = Apply (Apply ShowStringSym0 "Y1") a_0123456789876543210
@@ -113,7 +113,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
                                                                  arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
-    instance PShow (Y a) where
+    instance PShow (X a) => PShow (Y a) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     data instance Sing :: X a -> Type
       where

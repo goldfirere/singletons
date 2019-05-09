@@ -229,7 +229,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                                  arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
-    instance PShow (Foo2 a) where
+    instance PShow a => PShow (Foo2 a) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Foo3) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 p_0123456789876543210 (MkFoo3 arg_0123456789876543210 arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "MkFoo3 ")) (Apply (Apply (.@#@$) (Apply ShowCharSym0 "{")) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "getFoo3a = ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 0)) arg_0123456789876543210)) (Apply (Apply (.@#@$) ShowCommaSpaceSym0) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "(***) = ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 0)) arg_0123456789876543210)) (Apply ShowCharSym0 "}"))))))))) a_0123456789876543210
@@ -265,7 +265,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                                  arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
-    instance PShow Foo3 where
+    instance PShow Bool => PShow Foo3 where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     infixl 5 :%&:
     infixl 5 :%*:

@@ -152,7 +152,7 @@ promoteEqInstance name = do
   let data_ty = foldTypeTvbs (DConT name) tvbs'
   cons' <- concatMapM (dsCon tvbs' data_ty) cons
   kind <- promoteType (foldTypeTvbs (DConT name) tvbs')
-  inst_decs <- mkEqTypeInstance kind cons'
+  inst_decs <- mkEqTypeInstance Nothing kind cons'
   return $ decsToTH inst_decs
 
 promoteInstance :: DsMonad q => DerivDesc q -> String -> Name -> q [Dec]
@@ -310,7 +310,7 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
     -- a workaround for GHC Trac #12928; see Note [CUSKification]
     tvbs = map cuskify tvbs'
   let pClsName = promoteClassName cls_name
-  pCxt <- mapM promote_superclass_pred cxt
+  pCxt <- mapM promotePred cxt
   forallBind cls_kvs_to_bind $ do
     sig_decs <- mapM (uncurry promote_sig) (OMap.assocs meth_sigs)
     let defaults_list  = OMap.assocs defaults
@@ -349,35 +349,23 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
                                                  (DKindSig resK)
                                                  Nothing)
 
-    promote_superclass_pred :: DPred -> PrM DPred
-    promote_superclass_pred = go
-      where
-      go (DForallT {})     = fail "Cannot promote quantified constraints"
-      go (DAppT pr ty)     = DAppT <$> go pr <*> promoteType ty
-      go (DAppKindT pr ki) = DAppKindT <$> go pr <*> pure ki -- Kind is already promoted
-      go (DSigT pr _k)     = go pr    -- just ignore the kind; it can't matter
-      go (DVarT name)      = fail $ "Cannot promote ConstraintKinds variables like "
-                                 ++ show name
-      go (DConT name)      = return $ DConT (promoteClassName name)
-      go DWildCardT        = return DWildCardT
-      go (DLitT {})        = fail "Type-level literal spotted at head of a constraint"
-      go DArrowT           = fail "(->) spotted at head of a constraint"
-
 -- returns (unpromoted method name, ALetDecRHS) pairs
 promoteInstanceDec :: OMap Name DType -> UInstDecl -> PrM AInstDecl
 promoteInstanceDec orig_meth_sigs
-                   decl@(InstDecl { id_name     = cls_name
+                   decl@(InstDecl { id_cxt      = cxt
+                                  , id_name     = cls_name
                                   , id_arg_tys  = inst_tys
                                   , id_sigs     = inst_sigs
                                   , id_meths    = meths }) = do
   cls_tvb_names <- lookup_cls_tvb_names
+  pcxt     <- mapM promotePred cxt
   inst_kis <- mapM promoteType inst_tys
-  let kvs_to_bind = foldMap fvDType inst_kis
+  let kvs_to_bind = foldMap fvDType (pcxt ++ inst_kis)
   forallBind kvs_to_bind $ do
     let subst = Map.fromList $ zip cls_tvb_names inst_kis
     (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod inst_sigs (Just subst) orig_meth_sigs) meths
-    emitDecs [DInstanceD Nothing [] (foldType (DConT pClsName)
-                                      inst_kis) meths']
+    emitDecs [DInstanceD Nothing pcxt (foldType (DConT pClsName)
+                                        inst_kis) meths']
     return (decl { id_meths = zip (map fst meths) ann_rhss })
   where
     pClsName = promoteClassName cls_name
@@ -838,8 +826,10 @@ promoteLitPat lit =
 
 -- See Note [DerivedDecl]
 promoteDerivedEqDec :: DerivedEqDecl -> PrM ()
-promoteDerivedEqDec (DerivedDecl { ded_type = ty
-                                 , ded_decl = DataDecl _ _ cons }) = do
+promoteDerivedEqDec (DerivedDecl { ded_mb_cxt = mb_cxt
+                                 , ded_type   = ty
+                                 , ded_decl   = DataDecl _ _ cons }) = do
+  mb_pcxt <- traverse (traverse promotePred) mb_cxt
   kind <- promoteType ty
-  inst_decs <- mkEqTypeInstance kind cons
+  inst_decs <- mkEqTypeInstance mb_pcxt kind cons
   emitDecs inst_decs

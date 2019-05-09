@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 {- Data/Singletons/Promote/Eq.hs
 
 (c) Richard Eisenberg 2014
@@ -11,18 +13,22 @@ module Data.Singletons.Promote.Eq where
 
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
+import Data.Singletons.Deriving.Infer
 import Data.Singletons.Names
 import Data.Singletons.Util
 import Control.Monad
 
 -- produce a closed type family helper and the instance
 -- for (==) over the given list of ctors
-mkEqTypeInstance :: Quasi q => DKind -> [DCon] -> q [DDec]
-mkEqTypeInstance kind cons = do
+mkEqTypeInstance :: forall q. DsMonad q
+                 => Maybe DCxt -> DKind -> [DCon] -> q [DDec]
+mkEqTypeInstance mb_ctxt kind cons = do
+  let peq_name = promoteClassName eqName
   helperName <- newUniqueName "Equals"
   aName <- qNewName "a"
   bName <- qNewName "b"
   true_branches <- mapM (mk_branch helperName) cons
+  constraints <- inferConstraintsDef mb_ctxt (DConT peq_name) kind cons
   let null_branch  = catch_all_case helperName trueName
       false_branch = catch_all_case helperName falseName
       branches | null cons = [null_branch]
@@ -41,12 +47,11 @@ mkEqTypeInstance kind cons = do
                DTySynEqn Nothing
                          (DConT tyEqName `DAppT` DVarT aName `DAppT` DVarT bName)
                          (foldType (DConT helperName) [DVarT aName, DVarT bName])
-      inst = DInstanceD Nothing [] ((DConT $ promoteClassName eqName) `DAppT`
-                                    kind) [eqInst]
+      inst = DInstanceD Nothing constraints (DConT peq_name `DAppT` kind) [eqInst]
 
   return [closedFam, inst]
 
-  where mk_branch :: Quasi q => Name -> DCon -> q DTySynEqn
+  where mk_branch :: Name -> DCon -> q DTySynEqn
         mk_branch helper_name con = do
           let (name, numArgs) = extractNameArgs con
           lnames <- replicateM numArgs (qNewName "a")

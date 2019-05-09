@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 {- Data/Singletons/Type.hs
 
 (c) Richard Eisenberg 2013
@@ -7,7 +9,7 @@ This file implements promotion of types into kinds.
 -}
 
 module Data.Singletons.Promote.Type
-  ( promoteType, promoteTypeArg, promoteUnraveled
+  ( promoteType, promotePred, promoteTypeArg, promoteUnraveled
   ) where
 
 import Language.Haskell.TH.Desugar
@@ -16,10 +18,10 @@ import Language.Haskell.TH
 
 -- the only monadic thing we do here is fail. This allows the function
 -- to be used from the Singletons module
-promoteType :: MonadFail m => DType -> m DKind
+promoteType :: forall m. MonadFail m => DType -> m DKind
 promoteType = go []
   where
-    go :: MonadFail m => [DTypeArg] -> DType -> m DKind
+    go :: [DTypeArg] -> DType -> m DKind
     -- We don't need to worry about constraints: they are used to express
     -- static guarantees at runtime. But, because we don't need to do
     -- anything special to keep static guarantees at compile time, we don't
@@ -59,6 +61,27 @@ promoteType = go []
     go args     hd = fail $ "Illegal Haskell construct encountered:\n" ++
                             "headed by: " ++ show hd ++ "\n" ++
                             "applied to: " ++ show args
+
+-- Make sure to keep this in sync with Data.Singletons.Single.Type.singPred
+promotePred :: forall m. MonadFail m => DPred -> m DPred
+promotePred = go []
+  where
+  go :: [DTypeArg] -> DPred -> m DPred
+  go _args (DForallT {})    = fail "Cannot promote quantified constraints"
+  go args (DAppT pr ty)     = go (DTANormal ty : args) pr
+  go args (DAppKindT pr ki) = go (DTyArg ki : args) pr
+  go args (DSigT pr _k)     = go args pr -- just ignore the kind; it can't matter
+  go _args (DVarT name)     = fail $ "Cannot promote ConstraintKinds variables like "
+                                  ++ show name
+  go args (DConT name)      | name == equalityName
+                            = fail "Cannot promote equality constraints"
+                            | otherwise
+                            = do args' <- traverse promoteTypeArg args
+                                 let pName = promoteClassName name
+                                 pure $ applyDType (DConT pName) args'
+  go _args DWildCardT       = pure DWildCardT
+  go _args (DLitT {})       = fail "Type-level literal spotted at head of a constraint"
+  go _args DArrowT          = fail "(->) spotted at head of a constraint"
 
 promoteTypeArg :: MonadFail m => DTypeArg -> m DTypeArg
 promoteTypeArg (DTANormal t) = DTANormal <$> promoteType t

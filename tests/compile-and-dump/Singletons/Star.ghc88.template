@@ -48,7 +48,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
       Equals_0123456789876543210 (Maybe a) (Maybe b) = (==) a b
       Equals_0123456789876543210 (Vec a a) (Vec b b) = (&&) ((==) a b) ((==) a b)
       Equals_0123456789876543210 (_ :: Type) (_ :: Type) = FalseSym0
-    instance PEq Type where
+    instance (PEq Type, PEq Nat) => PEq Type where
       type (==) a b = Equals_0123456789876543210 a b
     type family Compare_0123456789876543210 (a :: Type) (a :: Type) :: Ordering where
       Compare_0123456789876543210 Nat Nat = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
@@ -97,7 +97,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
                                                                arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
                                                         Compare_0123456789876543210Sym0 a0123456789876543210
     type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
-    instance POrd Type where
+    instance (POrd Type, POrd Nat) => POrd Type where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Type) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ Nat a_0123456789876543210 = Apply (Apply ShowStringSym0 "Nat") a_0123456789876543210
@@ -137,7 +137,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
                                                                  arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
-    instance PShow Type where
+    instance (PShow Type, PShow Nat) => PShow Type where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     data instance Sing :: Type -> Type
       where

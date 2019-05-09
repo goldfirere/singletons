@@ -87,7 +87,7 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
                                                                  arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
-    instance PShow (Pair a b) where
+    instance (PShow a, PShow b) => PShow (Pair a b) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     sAList :: Sing AListSym0
     sTuple :: Sing TupleSym0

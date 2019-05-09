@@ -61,7 +61,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                                                                arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
                                                         Compare_0123456789876543210Sym0 a0123456789876543210
     type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
-    instance POrd (Constant a b) where
+    instance POrd a => POrd (Constant a b) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Compare_0123456789876543210 (a :: Identity a) (a :: Identity a) :: Ordering where
       Compare_0123456789876543210 (Identity a_0123456789876543210) (Identity b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
@@ -87,17 +87,17 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                                                                arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
                                                         Compare_0123456789876543210Sym0 a0123456789876543210
     type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
-    instance POrd (Identity a) where
+    instance POrd a => POrd (Identity a) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Equals_0123456789876543210 (a :: Constant a b) (b :: Constant a b) :: Bool where
       Equals_0123456789876543210 (Constant a) (Constant b) = (==) a b
       Equals_0123456789876543210 (_ :: Constant a b) (_ :: Constant a b) = FalseSym0
-    instance PEq (Constant a b) where
+    instance PEq a => PEq (Constant a b) where
       type (==) a b = Equals_0123456789876543210 a b
     type family Equals_0123456789876543210 (a :: Identity a) (b :: Identity a) :: Bool where
       Equals_0123456789876543210 (Identity a) (Identity b) = (==) a b
       Equals_0123456789876543210 (_ :: Identity a) (_ :: Identity a) = FalseSym0
-    instance PEq (Identity a) where
+    instance PEq a => PEq (Identity a) where
       type (==) a b = Equals_0123456789876543210 a b
     data instance Sing :: Constant a b -> Type
       where

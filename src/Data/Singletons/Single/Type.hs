@@ -49,6 +49,7 @@ singType bound_kvs prom ty = do
                      cxt' tau
   return (ty', num_args, arg_names, cxt, prom_args, prom_res)
 
+-- Make sure to keep this in sync with Data.Singletons.Promote.Type.promotePred
 singPred :: DPred -> SgM DPred
 singPred = singPredRec []
 
@@ -57,8 +58,7 @@ singPredRec _cxt (DForallT {}) =
   fail "Singling of quantified constraints not yet supported"
 singPredRec ctx (DAppT pr ty) = singPredRec (DTANormal ty : ctx) pr
 singPredRec ctx (DAppKindT pr ki) = singPredRec (DTyArg ki : ctx) pr
-singPredRec _ctx (DSigT _pr _ki) =
-  fail "Singling of constraints with explicit kinds not yet supported"
+singPredRec ctx (DSigT pr _ki) = singPredRec ctx pr -- just ignore the kind; it can't matter
 singPredRec _ctx (DVarT _n) =
   fail "Singling of contraint variables not yet supported"
 singPredRec ctx (DConT n)

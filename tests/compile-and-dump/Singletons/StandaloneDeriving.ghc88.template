@@ -74,7 +74,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                                arg. SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
                                                         Compare_0123456789876543210Sym0 a0123456789876543210
     type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
-    instance POrd (T a ()) where
+    instance POrd a => POrd (T a ()) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: T a ()) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 p_0123456789876543210 ((:*:) argL_0123456789876543210 argR_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 6))) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argL_0123456789876543210)) (Apply (Apply (.@#@$) (Apply ShowStringSym0 " :*: ")) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argR_0123456789876543210)))) a_0123456789876543210
@@ -112,7 +112,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                                  arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
-    instance PShow (T a ()) where
+    instance PShow a => PShow (T a ()) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type family Compare_0123456789876543210 (a :: S) (a :: S) :: Ordering where
       Compare_0123456789876543210 S1 S1 = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
@@ -229,7 +229,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     type family Equals_0123456789876543210 (a :: T a ()) (b :: T a ()) :: Bool where
       Equals_0123456789876543210 ((:*:) a a) ((:*:) b b) = (&&) ((==) a b) ((==) a b)
       Equals_0123456789876543210 (_ :: T a ()) (_ :: T a ()) = FalseSym0
-    instance PEq (T a ()) where
+    instance PEq a => PEq (T a ()) where
       type (==) a b = Equals_0123456789876543210 a b
     type family Equals_0123456789876543210 (a :: S) (b :: S) :: Bool where
       Equals_0123456789876543210 S1 S1 = TrueSym0

@@ -53,7 +53,7 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
       M _ _ x = x
     class PC (a :: GHC.Types.Type) (b :: GHC.Types.Type)
     instance PC Bool Hm
-    instance PC a (Maybe a)
+    instance PC a a => PC a (Maybe a)
     sM ::
       forall a b (t :: a) (t :: b) (t :: Bool).
       Sing t

@@ -123,7 +123,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
                                                                 arg. SameKind (Apply FoosPrec_0123456789876543210Sym0 arg) (FoosPrec_0123456789876543210Sym1 arg) =>
                                                          FoosPrec_0123456789876543210Sym0 a0123456789876543210
     type instance Apply FoosPrec_0123456789876543210Sym0 a0123456789876543210 = FoosPrec_0123456789876543210Sym1 a0123456789876543210
-    instance PFoo [a] where
+    instance PFoo a => PFoo [a] where
       type FoosPrec a a a = Apply (Apply (Apply FoosPrec_0123456789876543210Sym0 a) a) a
     class SFoo a where
       sFoosPrec ::

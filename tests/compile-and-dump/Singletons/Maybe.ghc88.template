@@ -56,13 +56,13 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
                                                                  arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
-    instance PShow (Maybe a) where
+    instance PShow a => PShow (Maybe a) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type family Equals_0123456789876543210 (a :: Maybe a) (b :: Maybe a) :: Bool where
       Equals_0123456789876543210 Nothing Nothing = TrueSym0
       Equals_0123456789876543210 (Just a) (Just b) = (==) a b
       Equals_0123456789876543210 (_ :: Maybe a) (_ :: Maybe a) = FalseSym0
-    instance PEq (Maybe a) where
+    instance PEq a => PEq (Maybe a) where
       type (==) a b = Equals_0123456789876543210 a b
     data instance Sing :: Maybe a -> GHC.Types.Type
       where
