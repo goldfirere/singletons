@@ -2,6 +2,8 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications #-}
 module SingletonsTestSuiteUtils (
    compileAndDumpTest
  , compileAndDumpStdTest
@@ -12,7 +14,10 @@ module SingletonsTestSuiteUtils (
 
 import Build_singletons   ( ghcPath, ghcFlags, rootDir          )
 import Control.Exception  ( Exception, throw                    )
+import Data.Foldable      ( asum )
 import Data.List          ( intercalate                         )
+import Data.Text          ( Text                                )
+import Data.String        ( IsString(fromString)                )
 import System.Exit        ( ExitCode(..)                        )
 import System.FilePath    ( takeBaseName, pathSeparator         )
 import System.IO          ( IOMode(..), hGetContents, openFile  )
@@ -22,6 +27,7 @@ import System.Process     ( CreateProcess(..), StdStream(..)
                           , callCommand                         )
 import Test.Tasty         ( TestTree, testGroup                 )
 import Test.Tasty.Golden  ( goldenVsFileDiff                    )
+import qualified Turtle
 
 -- Some infractructure for handling external process errors
 newtype ProcessException = ProcessException String
@@ -71,8 +77,8 @@ ghcOpts = ghcFlags ++ [
   , "-XNoStarIsType"
   ]
 
--- Compile a test using specified GHC options. Save output to file, filter with
--- sed and compare it with golden file. This function also builds golden file
+-- Compile a test using specified GHC options. Save output to file, normalize
+-- and compare it with golden file. This function also builds golden file
 -- from a template file. Putting it here is a bit of a hack but it's easy and it
 -- works.
 --
@@ -100,7 +106,7 @@ compileAndDumpTest testName opts =
                                               , std_err = UseHandle hActualFile
                                               , cwd     = Just goldenPath }
       _ <- waitForProcess pid      -- see Note [Ignore exit code]
-      filterWithSed actualFilePath -- see Note [Normalization with sed]
+      normalizeOutput actualFilePath -- see Note [Output normalization]
       buildGoldenFile templateFilePath goldenFilePath
       return ()
 
@@ -137,10 +143,10 @@ testCompileAndDumpGroup testDir tests =
 --  -w - Ignore all white space.
 --  -B - Ignore changes whose lines are all blank.
 
--- Note [Normalization with sed]
+-- Note [Output normalization]
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --
--- Output file is normalized with sed. Line numbers generated in splices:
+-- Output file is normalized inplace. Line numbers generated in splices:
 --
 --   Foo:(40,3)-(42,4)
 --   Foo.hs:7:3:
@@ -155,29 +161,27 @@ testCompileAndDumpGroup testDir tests =
 -- This allows to insert comments into test file without the need to modify the
 -- golden file to adjust line numbers.
 --
--- Note that GNU sed (on Linux) and BSD sed (on MacOS) are slightly different.
--- We use conditional compilation to deal with this.
 
-filterWithSed :: FilePath -> IO ()
-filterWithSed file = runProcessWithOpts CreatePipe "sed"
-#ifdef darwin_HOST_OS
-  [ "-i", "''"
-#else
-  [ "-i"
-#endif
-  , "-e", "'s/([0-9]*,[0-9]*)-([0-9]*,[0-9]*)/(0,0)-(0,0)/g'"
-  , "-e", "'s/:[0-9][0-9]*:[0-9][0-9]*/:0:0/g'"
-  , "-e", "'s/:[0-9]*:[0-9]*-[0-9]*/:0:0:/g'"
-  , "-e", "'s/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/0123456789/g'"
-  , "-e", "'s/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/0123456789876543210/g'"
-  , "-e", "'s/[!#$%&*+./>]\\{10\\}/%%%%%%%%%%/g'"
-  , "-e", "'s/[!#$%&*+./>]\\{19\\}/%%%%%%%%%%%%%%%%%%%/g'"
-    -- Remove pretty-printed references to the singletons package
-    -- (e.g., turn `singletons-2.4.1:Sing` into `Sing`) to make the output
-    -- more stable.
-  , "-e", "'s/singletons-[0-9]\\+\\(\\.[0-9]\\+\\)*://g'"
-  , file
-  ]
+normalizeOutput :: FilePath -> IO ()
+normalizeOutput file = Turtle.inplace pat (fromString file)
+  where
+    pat :: Turtle.Pattern Text
+    pat = asum
+      [ "(0,0)-(0,0)" <$ numPair <* "-" <* numPair
+      , ":0:0:" <$ ":" <* d <* ":" <* d <* "-" <* d
+      , ":0:0" <$ ":" <* d <* ":" <* d
+      , fromString @Text . numPeriod <$> Turtle.lowerBounded 10 Turtle.digit
+      , fromString @Text . ('%' <$) <$> Turtle.lowerBounded 10 punctSym
+      -- Remove pretty-printed references to the singletons package
+      -- (e.g., turn `singletons-2.4.1:Sing` into `Sing`) to make the output
+      -- more stable.
+      , "" <$ "singletons-" <* verNum <* ":"
+      ]
+    verNum = d `Turtle.sepBy` Turtle.char '.'
+    numPair = () <$ "(" <* d <* "," <* d <* ")"
+    punctSym = Turtle.oneOf "!#$%&*+./>"
+    numPeriod = zipWith const (cycle "0123456789876543210")
+    d = Turtle.some Turtle.digit
 
 buildGoldenFile :: FilePath -> FilePath -> IO ()
 buildGoldenFile templateFilePath goldenFilePath = do
