@@ -55,7 +55,7 @@ import Data.Monoid
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Base hiding (Const, ConstSym0)
 import Data.Singletons.Prelude.Const
-import Data.Singletons.Prelude.Foldable (PFoldable, SFoldable)
+import Data.Singletons.Prelude.Foldable (SFoldable)
 import Data.Singletons.Prelude.Functor
 import Data.Singletons.Prelude.Identity
 import Data.Singletons.Prelude.Instances

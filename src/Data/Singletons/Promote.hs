@@ -298,8 +298,7 @@ promoteDataDec (DataDecl _name _tvbs ctors) = do
 
 promoteClassDec :: UClassDecl
                 -> PrM AClassDecl
-promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
-                                , cd_name = cls_name
+promoteClassDec decl@(ClassDecl { cd_name = cls_name
                                 , cd_tvbs = tvbs'
                                 , cd_fds  = fundeps
                                 , cd_lde  = lde@LetDecEnv
@@ -310,7 +309,6 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
     -- a workaround for GHC Trac #12928; see Note [CUSKification]
     tvbs = map cuskify tvbs'
   let pClsName = promoteClassName cls_name
-  pCxt <- mapM promote_superclass_pred cxt
   forallBind cls_kvs_to_bind $ do
     sig_decs <- mapM (uncurry promote_sig) (OMap.assocs meth_sigs)
     let defaults_list  = OMap.assocs defaults
@@ -322,7 +320,7 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
                                  $ OMap.assocs infix_decls
 
     -- no need to do anything to the fundeps. They work as is!
-    emitDecs [DClassD pCxt pClsName tvbs fundeps
+    emitDecs [DClassD [] pClsName tvbs fundeps
                       (sig_decs ++ default_decs ++ infix_decls')]
     let defaults_list'   = zip defaults_names ann_rhss
         proms            = zip defaults_names prom_rhss
@@ -348,20 +346,6 @@ promoteClassDec decl@(ClassDecl { cd_cxt  = cxt
                                                  tvbs
                                                  (DKindSig resK)
                                                  Nothing)
-
-    promote_superclass_pred :: DPred -> PrM DPred
-    promote_superclass_pred = go
-      where
-      go (DForallT {})     = fail "Cannot promote quantified constraints"
-      go (DAppT pr ty)     = DAppT <$> go pr <*> promoteType ty
-      go (DAppKindT pr ki) = DAppKindT <$> go pr <*> pure ki -- Kind is already promoted
-      go (DSigT pr _k)     = go pr    -- just ignore the kind; it can't matter
-      go (DVarT name)      = fail $ "Cannot promote ConstraintKinds variables like "
-                                 ++ show name
-      go (DConT name)      = return $ DConT (promoteClassName name)
-      go DWildCardT        = return DWildCardT
-      go (DLitT {})        = fail "Type-level literal spotted at head of a constraint"
-      go DArrowT           = fail "(->) spotted at head of a constraint"
 
 -- returns (unpromoted method name, ALetDecRHS) pairs
 promoteInstanceDec :: OMap Name DType -> UInstDecl -> PrM AInstDecl
