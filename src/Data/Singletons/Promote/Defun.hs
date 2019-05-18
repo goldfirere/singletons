@@ -174,9 +174,8 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                           -- Note [Defunctionalization and dependent quantification]
                           map (map_tvb_kind (substType tvb_to_type_map)) $
                           reverse m_args
-            tyfun_param = mk_tvb tyfun_name m_tyfun
             arg_names   = map extractTvbName arg_params
-            params      = arg_params ++ [tyfun_param]
+            params      = arg_params ++ [DPlainTV tyfun_name]
             con_eq_ct   = DConT sameKindName `DAppT` lhs `DAppT` rhs
               where
                 lhs = foldType (DConT data_name) (map DVarT arg_names) `apply` (DVarT extra_name)
@@ -237,10 +236,6 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
   other_decs <- go (num_args - 1) (reverse m_arg_tvbs) m_res_kind mk_rhs
   return $ sat_dec : other_decs
   where
-    mk_tvb :: Name -> Maybe DKind -> DTyVarBndr
-    mk_tvb tvb_name Nothing  = DPlainTV tvb_name
-    mk_tvb tvb_name (Just k) = DKindedTV tvb_name k
-
     eta_expand :: [DTyVarBndr] -> Maybe DKind -> PrM ([DTyVarBndr], Maybe DKind)
     eta_expand m_arg_tvbs Nothing = pure (m_arg_tvbs, Nothing)
     eta_expand m_arg_tvbs (Just res_kind) = do
