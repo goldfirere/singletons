@@ -231,7 +231,7 @@ type instance Apply (TyCon f) x = ApplyTyCon f @@ x
 data ApplyTyConAux1 :: (k1 -> k2) -> (k1 ~> k2)
 -- | An \"internal\" defunctionalization symbol used primarily in the
 -- definition of 'ApplyTyCon'.
-data ApplyTyConAux2 :: (k1 -> k2) -> (k1 ~> unmatchable_fun)
+data ApplyTyConAux2 :: (k1 -> k2 -> k3) -> (k1 ~> unmatchable_fun)
 type instance Apply (ApplyTyConAux1 f) x = f x
 type instance Apply (ApplyTyConAux2 f) x = TyCon (f x)
 
