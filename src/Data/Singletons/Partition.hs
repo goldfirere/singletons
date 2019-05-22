@@ -101,7 +101,7 @@ partitionDec (DClassD cxt name tvbs fds decs) = do
                                                , cd_fds       = fds
                                                , cd_lde       = lde }]
                   , pd_open_type_family_decs = otfs }
-partitionDec (DInstanceD _ cxt ty decs) = do
+partitionDec (DInstanceD _ _ cxt ty decs) = do
   (defns, sigs) <- liftM (bimap catMaybes mconcat) $
                    mapAndUnzipM partitionInstanceDec decs
   (name, tys) <- split_app_tys [] ty
@@ -128,7 +128,7 @@ partitionDec (DOpenTypeFamilyD tf_head) =
 partitionDec (DTySynInstD {}) = pure mempty
   -- There's no need to track type family instances, since
   -- we already record the type family itself separately.
-partitionDec (DStandaloneDerivD mb_strat ctxt ty) =
+partitionDec (DStandaloneDerivD mb_strat _ ctxt ty) =
   case unfoldDType ty of
     (cls_pred_ty, cls_tys)
       | let cls_normal_tys = filterDTANormals cls_tys

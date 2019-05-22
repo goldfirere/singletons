@@ -48,7 +48,7 @@ singDataD (DataDecl name tvbs ctors) = do
   toSingClauses       <- mapM mkToSingClause ctors
   emptyToSingClause   <- mkEmptyToSingClause
   let singKindInst =
-        DInstanceD Nothing
+        DInstanceD Nothing Nothing
                    (map (singKindConstraint . DVarT) tvbNames)
                    (DAppT (DConT singKindClassName) k)
                    [ DTySynInstD $ DTySynEqn Nothing
@@ -152,7 +152,7 @@ singCtor (DCon _tvbs cxt name fields rty)
 
   -- SingI instance for data constructor
   emitDecs
-    [DInstanceD Nothing
+    [DInstanceD Nothing Nothing
                 (map (DAppT (DConT singIName)) indices)
                 (DAppT (DConT singIName)
                        (foldType pCon kindedIndices))

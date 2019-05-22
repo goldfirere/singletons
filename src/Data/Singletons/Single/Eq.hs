@@ -32,7 +32,7 @@ mkEqualityInstance mb_ctxt k ctors sctors (mkMeth, mkEmpty, className, methName)
                  then (:[]) <$> mkEmpty
                  else mapM mkMeth sctorPairs
   constraints <- inferConstraintsDef mb_ctxt (DConT className) k ctors
-  return $ DInstanceD Nothing
+  return $ DInstanceD Nothing Nothing
                      constraints
                      (DAppT (DConT className) k)
                      [DLetDec $ DFunD methName methClauses]

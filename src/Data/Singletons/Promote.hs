@@ -360,8 +360,8 @@ promoteInstanceDec orig_meth_sigs
   forallBind kvs_to_bind $ do
     let subst = Map.fromList $ zip cls_tvb_names inst_kis
     (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod inst_sigs (Just subst) orig_meth_sigs) meths
-    emitDecs [DInstanceD Nothing [] (foldType (DConT pClsName)
-                                      inst_kis) meths']
+    emitDecs [DInstanceD Nothing Nothing [] (foldType (DConT pClsName)
+                                              inst_kis) meths']
     return (decl { id_meths = zip (map fst meths) ann_rhss })
   where
     pClsName = promoteClassName cls_name

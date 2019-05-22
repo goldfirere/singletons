@@ -253,7 +253,7 @@ singITyConInstance n
                   ]
        pure $ decToTH
             $ DInstanceD
-                Nothing ctxt
+                Nothing Nothing ctxt
                 (DConT singIName `DAppT` (DConT (mkTyConName n) `DAppT` (f_ty `DSigT` k_fun)))
                 [DLetDec $ DFunD singMethName
                            [DClause [] $
@@ -434,6 +434,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
     inst_kis <- mapM promoteType inst_tys
     meths <- concatMapM (uncurry sing_meth) ann_meths
     return (DInstanceD Nothing
+                       Nothing
                        cxt'
                        (foldl DAppT (DConT s_inst_name) inst_kis)
                        meths)
@@ -887,7 +888,7 @@ singDerivedShowDecs (DerivedDecl { ded_mb_cxt = mb_cxt
     show_cxt <- inferConstraintsDef (fmap mkShowSingContext mb_cxt)
                                     (DConT showSingName)
                                     ty cons
-    let show_inst = DStandaloneDerivD Nothing show_cxt
+    let show_inst = DStandaloneDerivD Nothing Nothing show_cxt
                       (DConT showName `DAppT` (singFamily `DAppT` DSigT (DVarT z) ty))
     pure [show_inst]
 

@@ -211,7 +211,7 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                                                      `DAppT` DVarT tyfun_name)
                                     (mk_rhs (m_args ++ [DPlainTV tyfun_name]))
             app_decl    = DTySynInstD app_eqn
-            suppress    = DInstanceD Nothing []
+            suppress    = DInstanceD Nothing Nothing []
                             (DConT suppressClassName `DAppT` app_data_ty)
                             [DLetDec $ DFunD suppressMethodName
                                              [DClause []

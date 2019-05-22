@@ -113,7 +113,7 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
         mb_inst_kind = foldr buildTyFunArrow_maybe mb_ty_res mb_tyss
 
         new_insts :: [DDec]
-        new_insts = [DInstanceD Nothing
+        new_insts = [DInstanceD Nothing Nothing
                                 (sty_ctxt ++ singI_ctxt)
                                 (DConT singIName `DAppT` mk_inst_ty defun_inst_ty)
                                 [DLetDec $ DValD (DVarP singMethName)
