@@ -47,7 +47,7 @@ generateBuildModule flags pkg lbi = do
                 | otherwise           = distPref
       -- Package DBs
       dbStack = withPackageDB lbi ++ [ SpecificPackageDB $ distPref' </> "package.conf.inplace" ]
-      dbFlags = "-hide-all-packages" : packageDbArgsDb dbStack
+      dbFlags = "-hide-all-packages" : "-package-env=-" : packageDbArgsDb dbStack
 
       ghc = case lookupProgram ghcProgram (withPrograms lbi) of
               Just fp -> locationPath $ programLocation fp
