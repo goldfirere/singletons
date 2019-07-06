@@ -497,7 +497,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
                 let subst = mk_subst cls_tvbs
                     cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
                     cls_tvb_names = OSet.fromList $ map extractTvbName cls_tvbs
-                    cls_bound     = cls_kvb_names OSet.|<> cls_tvb_names
+                    cls_bound     = cls_kvb_names `OSet.union` cls_tvb_names
                 (s_ty, tyvar_names, ctxt, res_ki) <- sing_meth_ty cls_bound inner_ty
                 pure ( substType subst s_ty
                      , tyvar_names

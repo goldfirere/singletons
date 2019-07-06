@@ -193,8 +193,9 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                                     -- If we cannot infer the return type, don't bother
                                     -- trying to construct an explicit return kind.
                       Just tyfun ->
-                        let bound_tvs = OSet.fromList (map extractTvbName arg_params) OSet.|<>
-                                        foldMap (foldMap fvDType) (map extractTvbKind arg_params)
+                        let bound_tvs = OSet.fromList (map extractTvbName arg_params)
+                                        `OSet.union` foldMap (foldMap fvDType)
+                                                             (map extractTvbKind arg_params)
                             not_bound tvb = not (extractTvbName tvb `OSet.member` bound_tvs)
                             tvb_to_type tvb_name = fromMaybe (DVarT tvb_name) $
                                                    Map.lookup tvb_name tvb_to_type_map

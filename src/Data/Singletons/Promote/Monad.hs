@@ -81,14 +81,14 @@ lambdaBind binds = local add_binds
   where add_binds env@(PrEnv { pr_lambda_bound = lambdas
                              , pr_let_bound    = lets }) =
           let new_lets = OMap.fromList [ (tmN, DVarT tyN) | (tmN, tyN) <- binds ] in
-          env { pr_lambda_bound = OMap.fromList binds OMap.|<> lambdas
-              , pr_let_bound    = new_lets            OMap.|<> lets }
+          env { pr_lambda_bound = OMap.fromList binds `OMap.union` lambdas
+              , pr_let_bound    = new_lets            `OMap.union` lets }
 
 type LetBind = (Name, DType)
 letBind :: [LetBind] -> PrM a -> PrM a
 letBind binds = local add_binds
   where add_binds env@(PrEnv { pr_let_bound = lets }) =
-          env { pr_let_bound = OMap.fromList binds OMap.|<> lets }
+          env { pr_let_bound = OMap.fromList binds `OMap.union` lets }
 
 lookupVarE :: Name -> PrM DType
 lookupVarE n = do
@@ -102,7 +102,7 @@ lookupVarE n = do
 forallBind :: OSet Name -> PrM a -> PrM a
 forallBind kvs1 =
   local (\env@(PrEnv { pr_forall_bound = kvs2 }) ->
-    env { pr_forall_bound = kvs1 OSet.|<> kvs2 })
+    env { pr_forall_bound = kvs1 `OSet.union` kvs2 })
 
 -- Look up the set of bound kind variables currently in scope.
 -- See Note [Explicitly binding kind variables]

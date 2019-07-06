@@ -332,7 +332,7 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
     cls_kvb_names, cls_tvb_names, cls_kvs_to_bind :: OSet Name
     cls_kvb_names   = foldMap (foldMap fvDType . extractTvbKind) tvbs'
     cls_tvb_names   = OSet.fromList $ map extractTvbName tvbs'
-    cls_kvs_to_bind = cls_kvb_names OSet.|<> cls_tvb_names
+    cls_kvs_to_bind = cls_kvb_names `OSet.union` cls_tvb_names
 
     promote_sig :: Name -> DType -> PrM DDec
     promote_sig name ty = do
