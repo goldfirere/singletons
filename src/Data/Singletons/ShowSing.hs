@@ -268,12 +268,17 @@ ultimately went with.
 -}
 
 ------------------------------------------------------------
--- WrappedSing instance
+-- (S)WrappedSing instances
 ------------------------------------------------------------
 
 instance ShowSing k => Show (WrappedSing (a :: k)) where
-  showsPrec p (WrapSing s) =
-    showParen (p > 10) $ showString "WrapSing " . showsPrec 11 s
+  showsPrec p (WrapSing s) = showParen (p >= 11) $
+    showString "WrapSing {unwrapSing = " . showsPrec 0 s . showChar '}'
+      :: ShowSing' a => ShowS
+
+instance ShowSing k => Show (SWrappedSing (ws :: WrappedSing (a :: k))) where
+  showsPrec p (SWrapSing s) = showParen (p >= 11) $
+    showString "SWrapSing {sUnwrapSing = " . showsPrec 0 s . showChar '}'
       :: ShowSing' a => ShowS
 
 ------------------------------------------------------------
