@@ -121,15 +121,31 @@ Changelog for singletons project
   As a result, `singletons` no longer generates instances for `SingI` instances
   for applications of `TyCon{N}` to particular type constructors, as they have
   been superseded by the instances above.
-* Redefine `Σ` such that it is now a partial application of `Sigma`, like so:
+* Changes to `Data.Singletons.Sigma`:
+  * `SSigma`, the singleton type for `Sigma`, is now defined.
+  * New functions `fstSigma`, `sndSigma`, `FstSigma`, `SndSigma`, `currySigma`,
+    and `uncurrySigma` have been added. A `Show` instance for `Sigma` has also
+    been added.
+  * `projSigma1` has been redefined to use continuation-passing style to more
+    closely resemble its cousin `projSigma2`. The new type signature of
+    `projSigma1` is:
 
-  ```haskell
-  type Σ = Sigma
-  ```
+    ```hs
+    projSigma1 :: (forall (fst :: s). Sing fst -> r) -> Sigma s t -> r
+    ```
 
-  One benefit of this change is that one no longer needs defunctionalization
-  symbols in order to partially apply `Σ`. As a result, `ΣSym0`, `ΣSym1`,
-  and `ΣSym2` have been removed.
+    The old type signature of `projSigma1` can be found in the `fstSigma`
+    function.
+  * `Σ` has been redefined such that it is now a partial application of
+    `Sigma`, like so:
+
+    ```haskell
+    type Σ = Sigma
+    ```
+
+    One benefit of this change is that one no longer needs defunctionalization
+    symbols in order to partially apply `Σ`. As a result, `ΣSym0`, `ΣSym1`,
+    and `ΣSym2` have been removed.
 * In line with corresponding changes in `base-4.13`, the `Fail`/`sFail` methods
   of `{P,S}Monad` have been removed in favor of new `{P,S}MonadFail` classes
   introduced in the `Data.Singletons.Prelude.Monad.Fail` module. These classes
