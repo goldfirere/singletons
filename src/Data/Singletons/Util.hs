@@ -10,7 +10,7 @@ Users of the package should not need to consult this file.
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, RankNTypes,
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses, UndecidableInstances, MagicHash,
-             UnboxedTuples, LambdaCase, NoMonomorphismRestriction #-}
+             LambdaCase, NoMonomorphismRestriction #-}
 
 module Data.Singletons.Util where
 
