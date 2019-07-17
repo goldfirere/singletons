@@ -241,5 +241,5 @@ mk_Show_arg_pat ForShowSing{} arg arg_ty =
 mk_Show_rhs_sig :: ShowMode -> [Name] -> DExp -> DExp
 mk_Show_rhs_sig ForPromotion  _            e = e
 mk_Show_rhs_sig ForShowSing{} arg_ty_names e =
-  e `DSigE` DForallT [] (map (DAppT (DConT showSing'Name) . DVarT) arg_ty_names)
-                        (DConT showSName)
+  e `DSigE` DConstrainedT (map (DAppT (DConT showSing'Name) . DVarT) arg_ty_names)
+                          (DConT showSName)

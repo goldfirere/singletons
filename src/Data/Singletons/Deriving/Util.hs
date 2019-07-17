@@ -137,14 +137,15 @@ functorLikeTraverse var (FT { ft_triv = caseTrivial, ft_var = caseVar
                                       -- error if we encounter one here.
                                   then pure (caseWrongArg, True)
                                   else tyApp
-                             inspect (DForallT _ _ t) = inspect t
-                             inspect (DSigT t _)      = inspect t
-                             inspect (DAppT t _)      = inspect t
-                             inspect (DAppKindT t _)  = inspect t
-                             inspect (DVarT {})       = tyApp
-                             inspect DArrowT          = tyApp
-                             inspect (DLitT {})       = tyApp
-                             inspect DWildCardT       = tyApp
+                             inspect (DForallT _ _ t)    = inspect t
+                             inspect (DConstrainedT _ t) = inspect t
+                             inspect (DSigT t _)         = inspect t
+                             inspect (DAppT t _)         = inspect t
+                             inspect (DAppKindT t _)     = inspect t
+                             inspect (DVarT {})          = tyApp
+                             inspect DArrowT             = tyApp
+                             inspect (DLitT {})          = tyApp
+                             inspect DWildCardT          = tyApp
 
                          in case unfoldDType f of
                               (f_head, _) -> inspect f_head
@@ -162,11 +163,12 @@ functorLikeTraverse var (FT { ft_triv = caseTrivial, ft_var = caseVar
     go (DVarT v)
       | v == var = pure (caseVar, True)
       | otherwise = trivial
-    go (DForallT tvbs _ t) = do
+    go (DForallT _ tvbs t) = do
       (tr, tc) <- go t
       if var `notElem` map extractTvbName tvbs && tc
          then pure (caseForAll tvbs tr, True)
          else trivial
+    go (DConstrainedT _ t) =  go t
     go (DConT {}) = trivial
     go DArrowT    = trivial
     go (DLitT {}) = trivial

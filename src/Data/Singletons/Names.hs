@@ -320,7 +320,9 @@ splitUnderscores s = case span (== '_') s of
 modifyConNameDType :: (Name -> Name) -> DType -> DType
 modifyConNameDType mod_con_name = go
   where
-    go (DForallT tvbs cxt p) = DForallT tvbs (map go cxt) (go p)
+    go :: DType -> DType
+    go (DForallT fvf tvbs p) = DForallT fvf tvbs (go p)
+    go (DConstrainedT cxt p) = DConstrainedT (map go cxt) (go p)
     go (DAppT     p t)       = DAppT     (go p) t
     go (DAppKindT p k)       = DAppKindT (go p) k
     go (DSigT     p k)       = DSigT     (go p) k

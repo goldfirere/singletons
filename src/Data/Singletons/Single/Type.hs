@@ -31,12 +31,13 @@ singType :: OSet Name      -- the set of bound kind variables in this scope
                 , [DKind]  -- the kinds of the argument types
                 , DKind )  -- the kind of the result type
 singType bound_kvs prom ty = do
-  let (_, cxt, args, res) = unravel ty
+  checkVanillaDType ty
+  let (_, cxt, args, res) = unravelVanillaDType ty
       num_args            = length args
-  cxt' <- mapM singPred cxt
+  cxt' <- mapM singPred_NC cxt
   arg_names <- replicateM num_args (qNewName "t")
-  prom_args <- mapM promoteType args
-  prom_res  <- promoteType res
+  prom_args <- mapM promoteType_NC args
+  prom_res  <- promoteType_NC res
   let args' = map (\n -> singFamily `DAppT` (DVarT n)) arg_names
       res'  = singFamily `DAppT` (foldl apply prom (map DVarT arg_names) `DSigT` prom_res)
       tau   = ravel args' res'
@@ -45,15 +46,30 @@ singType bound_kvs prom ty = do
       kv_names_to_bind = foldMap fvDType (prom_args ++ cxt' ++ [prom_res])
                             OSet.\\ bound_kvs
       kvs_to_bind      = toList kv_names_to_bind
-  let ty' = DForallT (map DPlainTV kvs_to_bind ++ zipWith DKindedTV arg_names prom_args)
-                     cxt' tau
+  let ty' = DForallT ForallInvis
+                     (map DPlainTV kvs_to_bind ++ zipWith DKindedTV arg_names prom_args) $
+            DConstrainedT cxt' tau
   return (ty', num_args, arg_names, cxt, prom_args, prom_res)
 
+-- Single a DPred, checking that it is a vanilla type in the process.
+-- See [Vanilla-type validity checking during promotion]
+-- in Data.Singletons.Promote.Type.
 singPred :: DPred -> SgM DPred
-singPred = singPredRec []
+singPred p = do
+  checkVanillaDType p
+  singPred_NC p
 
+-- Single a DPred. Does not check if the argument is a vanilla type.
+-- See [Vanilla-type validity checking during promotion]
+-- in Data.Singletons.Promote.Type.
+singPred_NC :: DPred -> SgM DPred
+singPred_NC = singPredRec []
+
+-- The workhorse for singPred_NC.
 singPredRec :: [DTypeArg] -> DPred -> SgM DPred
 singPredRec _cxt (DForallT {}) =
+  fail "Singling of quantified constraints not yet supported"
+singPredRec _cxt (DConstrainedT {}) =
   fail "Singling of quantified constraints not yet supported"
 singPredRec ctx (DAppT pr ty) = singPredRec (DTANormal ty : ctx) pr
 singPredRec ctx (DAppKindT pr ki) = singPredRec (DTyArg ki : ctx) pr
@@ -65,7 +81,7 @@ singPredRec ctx (DConT n)
   | n == equalityName
   = fail "Singling of type equality constraints not yet supported"
   | otherwise = do
-    kis <- mapM promoteTypeArg ctx
+    kis <- mapM promoteTypeArg_NC ctx
     let sName = singClassName n
     return $ applyDType (DConT sName) kis
 singPredRec _ctx DWildCardT = return DWildCardT  -- it just might work

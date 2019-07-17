@@ -10,11 +10,12 @@ Users of the package should not need to consult this file.
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, RankNTypes,
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses, UndecidableInstances, MagicHash,
-             LambdaCase, NoMonomorphismRestriction #-}
+             LambdaCase, NoMonomorphismRestriction, ScopedTypeVariables #-}
 
 module Data.Singletons.Util where
 
 import Prelude hiding ( exp, foldl, concat, mapM, any, pred )
+import Language.Haskell.TH ( pprint )
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Char
@@ -251,10 +252,130 @@ ravel :: [DType] -> DType -> DType
 ravel []    res  = res
 ravel (h:t) res = DAppT (DAppT DArrowT h) (ravel t res)
 
+-- Decompose a vanilla function type into its type variables, its context, its
+-- argument types, and its result type. (See
+-- Note [Vanilla-type validity checking during promotion] in
+-- Data.Singletons.Promote.Type for what "vanilla" means.)
+-- If a non-vanilla construct is encountered while decomposing the function
+-- type, an error is thrown.
+--
+-- This should be contrasted with the 'unravelDType' function from
+-- @th-desugar@, which supports the full gamut of function types. @singletons@
+-- only supports a subset of these types, which is why this function is used
+-- to decompose them instead.
+unravelVanillaDType :: DType -> ([DTyVarBndr], DCxt, [DType], DType)
+unravelVanillaDType ty =
+  let (args1, res)  = unravelDType ty
+      (args2, tvbs) = take_tvbs  args1
+      (args3, ctxt) = take_ctxt args2
+      anons         = take_anons args3
+  in (tvbs, ctxt, anons, res)
+  where
+    take_tvbs :: DFunArgs -> (DFunArgs, [DTyVarBndr])
+    take_tvbs (DFAForalls ForallInvis tvbs args) =
+      let (args', tvbs') = take_tvbs args
+      in (args', tvbs ++ tvbs')
+    take_tvbs (DFAForalls ForallVis _ _) = vdq_err
+    take_tvbs args = (args, [])
+
+    take_ctxt :: DFunArgs -> (DFunArgs, DCxt)
+    take_ctxt (DFACxt ctxt args) =
+      let (args', ctxt') = take_ctxt args
+      in (args', ctxt ++ ctxt')
+    take_ctxt (DFAForalls fvf _ _) =
+      case fvf of
+        ForallInvis -> nested_forall_err
+        ForallVis   -> vdq_err
+    take_ctxt args = (args, [])
+
+    take_anons :: DFunArgs -> [DType]
+    take_anons (DFAAnon anon args) = anon : take_anons args
+    take_anons (DFAForalls fvf _ _) =
+      case fvf of
+        ForallInvis -> nested_forall_err
+        ForallVis   -> vdq_err
+    take_anons (DFACxt _ _) = nested_ctxt_err
+    take_anons DFANil = []
+
+    vdq_err :: a
+    vdq_err =
+      error $ "Unexpected visible dependent quantification in type: " ++ show ty
+
+    nested_forall_err :: a
+    nested_forall_err =
+      error $ "Unexpected nested forall in type: " ++ show ty
+
+    nested_ctxt_err :: a
+    nested_ctxt_err =
+      error $ "Unexpected nested context in type: " ++ show ty
+
+-- Ensures that a 'DType' is a vanilla type. (See
+-- Note [Vanilla-type validity checking during promotion] in
+-- Data.Singletons.Promote.Type for what "vanilla" means.)
+--
+-- The only monadic thing that this function can do is 'fail', which it does
+-- if a non-vanilla construct is encountered.
+checkVanillaDType :: forall m. MonadFail m => DType -> m ()
+checkVanillaDType ty = go_ty True ty
+  where
+    go_ty :: Bool -- Are invisible arguments permitted?
+          -> DType -> m ()
+    go_ty invis_ok typ = do
+      let (args, _) = unravelDType typ
+      go_args invis_ok args
+
+    go_args :: Bool -> DFunArgs -> m ()
+    go_args = go_tvbs
+
+    go_tvbs :: Bool -> DFunArgs -> m ()
+    go_tvbs invis_ok (DFAForalls ForallInvis tvbs args) = do
+      unless invis_ok $ fail_forall "higher-rank"
+      traverse_ (traverse_ (go_ty False) . extractTvbKind) tvbs
+      go_tvbs invis_ok args
+    go_tvbs _ (DFAForalls ForallVis _ _) = fail_vdq
+    go_tvbs invis_ok args = go_ctxt invis_ok args
+
+    go_ctxt :: Bool -> DFunArgs -> m ()
+    go_ctxt invis_ok (DFACxt ctxt args) = do
+      unless invis_ok $ fail_ctxt "higher-rank"
+      traverse_ (go_ty False) ctxt
+      go_ctxt invis_ok args
+    go_ctxt _ (DFAForalls fvf _ _) =
+      case fvf of
+        ForallInvis -> fail_forall "nested"
+        ForallVis   -> fail_vdq
+    go_ctxt _ args = go_anons args
+
+    go_anons :: DFunArgs -> m ()
+    go_anons (DFAAnon anon args) = do
+      go_ty False anon
+      go_anons args
+    go_anons (DFAForalls fvf _ _) =
+      case fvf of
+        ForallInvis -> fail_forall "nested"
+        ForallVis   -> fail_vdq
+    go_anons (DFACxt _ _) = fail_ctxt "nested"
+    go_anons DFANil = pure ()
+
+    failWith :: String -> m ()
+    failWith thing = fail $ unlines
+      [ "`singletons` does not support " ++ thing
+      , "In the type: " ++ pprint (sweeten ty)
+      ]
+
+    fail_forall :: String -> m ()
+    fail_forall sort = failWith $ sort ++ " `forall`s"
+
+    fail_vdq :: m ()
+    fail_vdq = failWith "visible dependent quantification"
+
+    fail_ctxt :: String -> m ()
+    fail_ctxt sort = failWith $ sort ++ " contexts"
+
 -- count the number of arguments in a type
 countArgs :: DType -> Int
-countArgs ty = length args
-  where (_, _, args, _) = unravel ty
+countArgs ty = length $ filterDVisFunArgs args
+  where (args, _) = unravelDType ty
 
 -- changes all TyVars not to be NameU's. Workaround for GHC#11812
 noExactTyVars :: Data a => a -> a
@@ -283,12 +404,13 @@ substKind = substType
 -- substitution, use @substTy@ from "Language.Haskell.TH.Desugar.Subst".
 substType :: Map Name DType -> DType -> DType
 substType subst ty | Map.null subst = ty
-substType subst (DForallT tvbs cxt inner_ty)
-  = DForallT tvbs' cxt' inner_ty'
+substType subst (DForallT fvf tvbs inner_ty)
+  = DForallT fvf tvbs' inner_ty'
   where
     (subst', tvbs') = mapAccumL subst_tvb subst tvbs
-    cxt'            = map (substType subst') cxt
     inner_ty'       = substType subst' inner_ty
+substType subst (DConstrainedT cxt inner_ty) =
+  DConstrainedT (map (substType subst) cxt) (substType subst inner_ty)
 substType subst (DAppT ty1 ty2) = substType subst ty1 `DAppT` substType subst ty2
 substType subst (DAppKindT ty ki) = substType subst ty `DAppKindT` substType subst ki
 substType subst (DSigT ty ki) = substType subst ty `DSigT` substType subst ki
