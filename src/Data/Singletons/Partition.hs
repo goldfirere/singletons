@@ -116,9 +116,9 @@ partitionDec (DInstanceD _ _ cxt ty decs) = do
     split_app_tys acc (DSigT t _)   = split_app_tys acc t
     split_app_tys _ _ = fail $ "Illegal instance head: " ++ show ty
 partitionDec (DRoleAnnotD {}) = return mempty  -- ignore these
-partitionDec (DTySynD name tvbs _type) =
+partitionDec (DTySynD name tvbs rhs) =
   -- See Note [Partitioning, type synonyms, and type families]
-  pure $ mempty { pd_ty_syn_decs = [TySynDecl name tvbs] }
+  pure $ mempty { pd_ty_syn_decs = [TySynDecl name tvbs rhs] }
 partitionDec (DClosedTypeFamilyD tf_head _) =
   -- See Note [Partitioning, type synonyms, and type families]
   pure $ mempty { pd_closed_type_family_decs = [TypeFamilyDecl tf_head] }

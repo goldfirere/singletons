@@ -42,7 +42,7 @@ defunTypeDecls :: [TySynDecl]
                -> PrM ()
 defunTypeDecls ty_syns c_tyfams o_tyfams = do
   defun_ty_syns <-
-    concatMapM (\(TySynDecl name tvbs) -> buildDefunSymsTySynD name tvbs) ty_syns
+    concatMapM (\(TySynDecl name tvbs rhs) -> buildDefunSymsTySynD name tvbs rhs) ty_syns
   defun_c_tyfams <-
     concatMapM (buildDefunSymsClosedTypeFamilyD . getTypeFamilyDecl) c_tyfams
   defun_o_tyfams <-
@@ -56,8 +56,8 @@ buildDefunSyms (DClosedTypeFamilyD tf_head _) =
   buildDefunSymsClosedTypeFamilyD tf_head
 buildDefunSyms (DOpenTypeFamilyD tf_head) =
   buildDefunSymsOpenTypeFamilyD tf_head
-buildDefunSyms (DTySynD name tvbs _type) =
-  buildDefunSymsTySynD name tvbs
+buildDefunSyms (DTySynD name tvbs rhs) =
+  buildDefunSymsTySynD name tvbs rhs
 buildDefunSyms (DClassD _cxt name tvbs _fundeps _members) = do
   defunReifyFixity name tvbs (Just (DConT constraintName))
 buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
@@ -83,9 +83,18 @@ buildDefunSymsTypeFamilyHead default_tvb default_kind
       res_kind = default_kind (resultSigToMaybeKind result_sig)
   defunReifyFixity name arg_tvbs res_kind
 
-buildDefunSymsTySynD :: Name -> [DTyVarBndr] -> PrM [DDec]
-buildDefunSymsTySynD name tvbs =
-  defunReifyFixity name tvbs Nothing
+buildDefunSymsTySynD :: Name -> [DTyVarBndr] -> DType -> PrM [DDec]
+buildDefunSymsTySynD name tvbs rhs =
+  defunReifyFixity name tvbs mb_res_kind
+  where
+    -- In order to have a CUSK, a type synonym must annotate its right-hand
+    -- side with an explicit kind signature, so we can make use of this
+    -- property to determine the result kind when defunctionalizing the
+    -- type synonym.
+    mb_res_kind :: Maybe DKind
+    mb_res_kind = case rhs of
+                    DSigT _ k -> Just k
+                    _         -> Nothing
 
 buildDefunSymsDataD :: [DCon] -> PrM [DDec]
 buildDefunSymsDataD ctors =
