@@ -48,7 +48,7 @@ type SingDSigPaInfos = [(DExp, DType)]
 data DataDecl = DataDecl Name [DTyVarBndr] [DCon]
 
 -- The parts of type synonyms that are relevant to singletons.
-data TySynDecl = TySynDecl Name [DTyVarBndr]
+data TySynDecl = TySynDecl Name [DTyVarBndr] DType
 
 -- The parts of open type families that are relevant to singletons.
 type OpenTypeFamilyDecl = TypeFamilyDecl 'Open

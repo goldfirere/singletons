@@ -1,0 +1,15 @@
+Singletons/T402.hs:0:0:: Splicing declarations
+    singletons [d| type AnyOfKind (k :: Type) = Any :: k |]
+  ======>
+    type AnyOfKind (k :: Type) = Any :: k
+    type AnyOfKindSym1 (k0123456789876543210 :: Type) =
+        AnyOfKind k0123456789876543210
+    instance SuppressUnusedWarnings AnyOfKindSym0 where
+      suppressUnusedWarnings = snd (((,) AnyOfKindSym0KindInference) ())
+    data AnyOfKindSym0 :: forall (k0123456789876543210 :: Type).
+                          (~>) Type k0123456789876543210
+      where
+        AnyOfKindSym0KindInference :: forall k0123456789876543210
+                                             arg. SameKind (Apply AnyOfKindSym0 arg) (AnyOfKindSym1 arg) =>
+                                      AnyOfKindSym0 k0123456789876543210
+    type instance Apply AnyOfKindSym0 k0123456789876543210 = AnyOfKind k0123456789876543210
