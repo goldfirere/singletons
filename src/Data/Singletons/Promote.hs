@@ -447,17 +447,18 @@ promoteMethod inst_sigs_map m_subst orig_sigs_map (meth_name, meth_rhs) = do
       -- strictly necessary, as kind inference can figure them out just as well.
       family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
+  let proHelperName = promoteValNameLhs helperName
   ((_, _, _, eqns), _defuns, ann_rhs)
     <- promoteLetDecRHS (Just (meth_arg_kis, meth_res_ki)) OMap.empty OMap.empty
                         noPrefix helperName meth_rhs
   let tvbs = zipWith DKindedTV meth_arg_tvs meth_arg_kis
   emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
-                                  helperName
+                                  proHelperName
                                   tvbs
                                   (DKindSig meth_res_ki)
                                   Nothing)
                                eqns]
-  emitDecsM (defunctionalize helperName Nothing tvbs (Just meth_res_ki))
+  emitDecsM (defunctionalize proHelperName Nothing tvbs (Just meth_res_ki))
   return ( DTySynInstD
              (DTySynEqn Nothing
                         (foldType (DConT proName) family_args)
