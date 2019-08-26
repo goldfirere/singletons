@@ -1,9 +1,9 @@
 diff --git a/.travis.yml b/.travis.yml
-index aec53b0..24091d5 100644
+index 792b759..1e7fadf 100644
 --- a/.travis.yml
 +++ b/.travis.yml
 @@ -34,7 +34,6 @@ matrix:
-       env: GHCHEAD=true
+       env: HEADHACKAGE=true
    allow_failures:
      - compiler: ghc-head
 -    - compiler: ghc-8.8.1

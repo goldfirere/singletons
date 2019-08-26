@@ -20,7 +20,6 @@ import Language.Haskell.TH.Syntax
 import Data.Singletons.Deriving.Util
 import Data.Singletons.Util
 import Data.List
-import Data.Generics.Twins
 
 -- @inferConstraints cls inst_ty cons@ infers the instance context for a
 -- derived type class instance of @cls@ for @inst_ty@, using the constructors
@@ -62,7 +61,7 @@ import Data.Generics.Twins
 -- For more information on what this means, refer to the documentation for
 -- infer_ct below.
 inferConstraints :: forall q. DsMonad q => DPred -> DType -> [DCon] -> q DCxt
-inferConstraints pr inst_ty = fmap (nubBy geq) . concatMapM infer_ct
+inferConstraints pr inst_ty = fmap nub . concatMapM infer_ct
   where
     -- A thorny situation arises when attempting to infer an instance context
     -- for a GADT. Consider the following example:
