@@ -1,12 +1,12 @@
 diff --git a/.travis.yml b/.travis.yml
-index 792b759..1e7fadf 100644
+index f7433ed..dda1bd1 100644
 --- a/.travis.yml
 +++ b/.travis.yml
-@@ -34,7 +34,6 @@ matrix:
-       env: HEADHACKAGE=true
+@@ -32,7 +32,6 @@ matrix:
+       addons: {"apt":{"sources":["hvr-ghc"],"packages":["ghc-head","cabal-install-head"]}}
    allow_failures:
      - compiler: ghc-head
 -    - compiler: ghc-8.8.1
  before_install:
    - HC=$(echo "/opt/$CC/bin/ghc" | sed 's/-/\//')
-   - HCPKG="$HC-pkg"
+   - WITHCOMPILER="-w $HC"

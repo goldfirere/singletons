@@ -4,7 +4,7 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.3.20190730
+# version: 0.3.20190815
 #
 language: c
 dist: xenial
@@ -28,21 +28,20 @@ matrix:
   include:
     - compiler: ghc-8.8.1
       addons: {"apt":{"sources":["hvr-ghc"],"packages":["ghc-8.8.1","cabal-install-3.0"]}}
-      env: HEADHACKAGE=true
     - compiler: ghc-head
       addons: {"apt":{"sources":["hvr-ghc"],"packages":["ghc-head","cabal-install-head"]}}
-      env: HEADHACKAGE=true
   allow_failures:
     - compiler: ghc-head
 before_install:
   - HC=$(echo "/opt/$CC/bin/ghc" | sed 's/-/\//')
+  - WITHCOMPILER="-w $HC"
   - HCPKG="$HC-pkg"
   - unset CC
   - CABAL=/opt/ghc/bin/cabal
   - CABALHOME=$HOME/.cabal
   - export PATH="$CABALHOME/bin:$PATH"
   - TOP=$(pwd)
-  - HCNUMVER=$(( $(${HC} --numeric-version|sed -E 's/([0-9]+)\.([0-9]+)\.([0-9]+).*/\1 * 10000 + \2 * 100 + \3/') ))
+  - "HCNUMVER=$(${HC} --numeric-version|perl -ne '/^(\\d+)\\.(\\d+)\\.(\\d+)(\\.(\\d+))?$/; print(10000 * $1 + 100 * $2 + ($3 == 0 ? $5 != 1 : $3))')"
   - echo $HCNUMVER
   - CABAL="$CABAL -vnormal+nowrap+markoutput"
   - set -o pipefail
@@ -69,7 +68,8 @@ install:
   - echo "$(${HC} --version) [$(${HC} --print-project-git-commit-id 2> /dev/null || echo '?')]"
   - TEST=--enable-tests
   - BENCH=--enable-benchmarks
-  - HEADHACKAGE=${HEADHACKAGE-false}
+  - HEADHACKAGE=false
+  - HEADHACKAGE=true
   - rm -f $CABALHOME/config
   - |
     echo "verbose: normal +nowrap +markoutput"          >> $CABALHOME/config
@@ -105,13 +105,13 @@ install:
   - rm -rf cabal.project cabal.project.local cabal.project.freeze
   - touch cabal.project
   - |
-    echo 'packages: "."' >> cabal.project
-    echo 'packages: "./util"' >> cabal.project
+    echo "packages: ." >> cabal.project
+    echo "packages: ./util" >> cabal.project
   - |
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
     echo "  location: https://github.com/goldfirere/th-desugar" >> cabal.project
-    echo "  tag:      cabd9d24ab80401ae9f82fc7269c3e7d58e4702f" >> cabal.project
+    echo "  tag:      d8d00ea8dd19dac3628435cac7a31ab0f214db9b" >> cabal.project
     echo ""                                                     >> cabal.project
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project
@@ -121,10 +121,10 @@ install:
   - cat cabal.project.local || true
   - if [ -f "./configure.ac" ]; then (cd "." && autoreconf -i); fi
   - if [ -f "./util/configure.ac" ]; then (cd "./util" && autoreconf -i); fi
-  - ${CABAL} v2-freeze -w ${HC} ${TEST} ${BENCH} | color_cabal_output
+  - ${CABAL} v2-freeze $WITHCOMPILER ${TEST} ${BENCH} | color_cabal_output
   - "cat cabal.project.freeze | sed -E 's/^(constraints: *| *)//' | sed 's/any.//'"
   - rm  cabal.project.freeze
-  - ${CABAL} v2-build -w ${HC} ${TEST} ${BENCH} --dep -j2 all | color_cabal_output
+  - ${CABAL} v2-build $WITHCOMPILER ${TEST} ${BENCH} --dep -j2 all | color_cabal_output
 script:
   - DISTDIR=$(mktemp -d /tmp/dist-test.XXXX)
   # Packaging...
@@ -132,18 +132,21 @@ script:
   # Unpacking...
   - mv dist-newstyle/sdist/*.tar.gz ${DISTDIR}/
   - cd ${DISTDIR} || false
-  - find . -maxdepth 1 -name '*.tar.gz' -exec tar -xvf '{}' \;
+  - find . -maxdepth 1 -type f -name '*.tar.gz' -exec tar -xvf '{}' \;
+  - find . -maxdepth 1 -type f -name '*.tar.gz' -exec rm       '{}' \;
+  - PKGDIR_singletons="$(find . -maxdepth 1 -type d -regex '.*/singletons-[0-9.]*')"
+  - PKGDIR_accept_all="$(find . -maxdepth 1 -type d -regex '.*/accept-all-[0-9.]*')"
   # Generate cabal.project
   - rm -rf cabal.project cabal.project.local cabal.project.freeze
   - touch cabal.project
   - |
-    echo 'packages: "singletons-*/*.cabal"' >> cabal.project
-    echo 'packages: "accept-all-*/*.cabal"' >> cabal.project
+    echo "packages: ${PKGDIR_singletons}" >> cabal.project
+    echo "packages: ${PKGDIR_accept_all}" >> cabal.project
   - |
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
     echo "  location: https://github.com/goldfirere/th-desugar" >> cabal.project
-    echo "  tag:      cabd9d24ab80401ae9f82fc7269c3e7d58e4702f" >> cabal.project
+    echo "  tag:      d8d00ea8dd19dac3628435cac7a31ab0f214db9b" >> cabal.project
     echo ""                                                     >> cabal.project
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project
@@ -153,14 +156,14 @@ script:
   - cat cabal.project.local || true
   # Building with tests and benchmarks...
   # build & run tests, build benchmarks
-  - ${CABAL} v2-build -w ${HC} ${TEST} ${BENCH} all | color_cabal_output
+  - ${CABAL} v2-build $WITHCOMPILER ${TEST} ${BENCH} all | color_cabal_output
   # Testing...
-  - ${CABAL} v2-test -w ${HC} ${TEST} ${BENCH} all | color_cabal_output
+  - ${CABAL} v2-test $WITHCOMPILER ${TEST} ${BENCH} all | color_cabal_output
   # cabal check...
-  - (cd singletons-* && ${CABAL} -vnormal check)
-  - (cd accept-all-* && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_singletons} && ${CABAL} -vnormal check)
+  - (cd ${PKGDIR_accept_all} && ${CABAL} -vnormal check)
   # haddock...
-  - ${CABAL} v2-haddock -w ${HC} ${TEST} ${BENCH} all | color_cabal_output
+  - ${CABAL} v2-haddock $WITHCOMPILER ${TEST} ${BENCH} all | color_cabal_output
 
 # REGENDATA ["--output=.travis.yml","--config=cabal.haskell-ci","cabal.project"]
 # EOF
