@@ -10,7 +10,8 @@ Users of the package should not need to consult this file.
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, RankNTypes,
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses, UndecidableInstances, MagicHash,
-             LambdaCase, NoMonomorphismRestriction, ScopedTypeVariables #-}
+             LambdaCase, NoMonomorphismRestriction, ScopedTypeVariables,
+             FlexibleContexts #-}
 
 module Data.Singletons.Util where
 
@@ -20,8 +21,9 @@ import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Char
 import Control.Monad hiding ( mapM )
-import Control.Monad.Writer hiding ( mapM )
+import Control.Monad.Except hiding ( mapM )
 import Control.Monad.Reader hiding ( mapM )
+import Control.Monad.Writer hiding ( mapM )
 import qualified Data.Map as Map
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Map ( Map )
@@ -265,49 +267,9 @@ ravel (h:t) res = DAppT (DAppT DArrowT h) (ravel t res)
 -- to decompose them instead.
 unravelVanillaDType :: DType -> ([DTyVarBndr], DCxt, [DType], DType)
 unravelVanillaDType ty =
-  let (args1, res)  = unravelDType ty
-      (args2, tvbs) = take_tvbs  args1
-      (args3, ctxt) = take_ctxt args2
-      anons         = take_anons args3
-  in (tvbs, ctxt, anons, res)
-  where
-    take_tvbs :: DFunArgs -> (DFunArgs, [DTyVarBndr])
-    take_tvbs (DFAForalls ForallInvis tvbs args) =
-      let (args', tvbs') = take_tvbs args
-      in (args', tvbs ++ tvbs')
-    take_tvbs (DFAForalls ForallVis _ _) = vdq_err
-    take_tvbs args = (args, [])
-
-    take_ctxt :: DFunArgs -> (DFunArgs, DCxt)
-    take_ctxt (DFACxt ctxt args) =
-      let (args', ctxt') = take_ctxt args
-      in (args', ctxt ++ ctxt')
-    take_ctxt (DFAForalls fvf _ _) =
-      case fvf of
-        ForallInvis -> nested_forall_err
-        ForallVis   -> vdq_err
-    take_ctxt args = (args, [])
-
-    take_anons :: DFunArgs -> [DType]
-    take_anons (DFAAnon anon args) = anon : take_anons args
-    take_anons (DFAForalls fvf _ _) =
-      case fvf of
-        ForallInvis -> nested_forall_err
-        ForallVis   -> vdq_err
-    take_anons (DFACxt _ _) = nested_ctxt_err
-    take_anons DFANil = []
-
-    vdq_err :: a
-    vdq_err =
-      error $ "Unexpected visible dependent quantification in type: " ++ show ty
-
-    nested_forall_err :: a
-    nested_forall_err =
-      error $ "Unexpected nested forall in type: " ++ show ty
-
-    nested_ctxt_err :: a
-    nested_ctxt_err =
-      error $ "Unexpected nested context in type: " ++ show ty
+  case unravelVanillaDType_either ty of
+    Left err      -> error err
+    Right payload -> payload
 
 -- Ensures that a 'DType' is a vanilla type. (See
 -- Note [Vanilla-type validity checking during promotion] in
@@ -316,61 +278,90 @@ unravelVanillaDType ty =
 -- The only monadic thing that this function can do is 'fail', which it does
 -- if a non-vanilla construct is encountered.
 checkVanillaDType :: forall m. MonadFail m => DType -> m ()
-checkVanillaDType ty = go_ty True ty
+checkVanillaDType ty =
+  case unravelVanillaDType_either ty of
+    Left err -> fail err
+    Right _  -> pure ()
+
+-- The workhorse that powers unravelVanillaDType and checkVanillaDType.
+-- Returns @Right payload@ upon success, and @Left error_msg@ upon failure.
+unravelVanillaDType_either ::
+  DType -> Either String ([DTyVarBndr], DCxt, [DType], DType)
+unravelVanillaDType_either ty =
+  runIdentity $ flip runReaderT True $ runExceptT $ runUnravelM $ go_ty ty
   where
-    go_ty :: Bool -- Are invisible arguments permitted?
-          -> DType -> m ()
-    go_ty invis_ok typ = do
-      let (args, _) = unravelDType typ
-      go_args invis_ok args
+    go_ty :: DType -> UnravelM ([DTyVarBndr], DCxt, [DType], DType)
+    go_ty typ = do
+      let (args1, res) = unravelDType typ
+      (args2, tvbs) <- take_tvbs  args1
+      (args3, ctxt) <- take_ctxt  args2
+      anons         <- take_anons args3
+      pure (tvbs, ctxt, anons, res)
 
-    go_args :: Bool -> DFunArgs -> m ()
-    go_args = go_tvbs
+    -- Process a type in a higher-order position (e.g., the @forall a. a -> a@ in
+    -- @(forall a. a -> a) -> b -> b@). This is only done to check for the
+    -- presence of higher-rank foralls or constraints, which are not permitted
+    -- in vanilla types.
+    go_higher_order_ty :: DType -> UnravelM ()
+    go_higher_order_ty typ = () <$ local (const False) (go_ty typ)
 
-    go_tvbs :: Bool -> DFunArgs -> m ()
-    go_tvbs invis_ok (DFAForalls ForallInvis tvbs args) = do
-      unless invis_ok $ fail_forall "higher-rank"
-      traverse_ (traverse_ (go_ty False) . extractTvbKind) tvbs
-      go_tvbs invis_ok args
-    go_tvbs _ (DFAForalls ForallVis _ _) = fail_vdq
-    go_tvbs invis_ok args = go_ctxt invis_ok args
+    take_tvbs :: DFunArgs -> UnravelM (DFunArgs, [DTyVarBndr])
+    take_tvbs (DFAForalls ForallInvis tvbs args) = do
+      rank_1 <- ask
+      unless rank_1 $ fail_forall "higher-rank"
+      _ <- traverse_ (traverse_ go_higher_order_ty . extractTvbKind) tvbs
+      (args', tvbs') <- take_tvbs args
+      pure (args', tvbs ++ tvbs')
+    take_tvbs (DFAForalls ForallVis _ _) = fail_vdq
+    take_tvbs args = pure (args, [])
 
-    go_ctxt :: Bool -> DFunArgs -> m ()
-    go_ctxt invis_ok (DFACxt ctxt args) = do
-      unless invis_ok $ fail_ctxt "higher-rank"
-      traverse_ (go_ty False) ctxt
-      go_ctxt invis_ok args
-    go_ctxt _ (DFAForalls fvf _ _) =
+    take_ctxt :: DFunArgs -> UnravelM (DFunArgs, DCxt)
+    take_ctxt (DFACxt ctxt args) = do
+      rank_1 <- ask
+      unless rank_1 $ fail_ctxt "higher-rank"
+      traverse_ go_higher_order_ty ctxt
+      (args', ctxt') <- take_ctxt args
+      pure (args', ctxt ++ ctxt')
+    take_ctxt (DFAForalls fvf _ _) =
       case fvf of
         ForallInvis -> fail_forall "nested"
         ForallVis   -> fail_vdq
-    go_ctxt _ args = go_anons args
+    take_ctxt args = pure (args, [])
 
-    go_anons :: DFunArgs -> m ()
-    go_anons (DFAAnon anon args) = do
-      go_ty False anon
-      go_anons args
-    go_anons (DFAForalls fvf _ _) =
+    take_anons :: DFunArgs -> UnravelM [DType]
+    take_anons (DFAAnon anon args) = do
+      go_higher_order_ty anon
+      anons <- take_anons args
+      pure (anon:anons)
+    take_anons (DFAForalls fvf _ _) =
       case fvf of
         ForallInvis -> fail_forall "nested"
         ForallVis   -> fail_vdq
-    go_anons (DFACxt _ _) = fail_ctxt "nested"
-    go_anons DFANil = pure ()
+    take_anons (DFACxt _ _) = fail_ctxt "nested"
+    take_anons DFANil = pure []
 
-    failWith :: String -> m ()
-    failWith thing = fail $ unlines
+    failWith :: MonadError String m => String -> m a
+    failWith thing = throwError $ unlines
       [ "`singletons` does not support " ++ thing
       , "In the type: " ++ pprint (sweeten ty)
       ]
 
-    fail_forall :: String -> m ()
+    fail_forall :: MonadError String m => String -> m a
     fail_forall sort = failWith $ sort ++ " `forall`s"
 
-    fail_vdq :: m ()
+    fail_vdq :: MonadError String m => m a
     fail_vdq = failWith "visible dependent quantification"
 
-    fail_ctxt :: String -> m ()
+    fail_ctxt :: MonadError String m => String -> m a
     fail_ctxt sort = failWith $ sort ++ " contexts"
+
+-- The monad that powers the internals of unravelVanillaDType_either.
+--
+-- * ExceptT String: records the error message upon failure.
+--
+-- * Reader Bool: True if we are in a rank-1 position in a type, False otherwise
+newtype UnravelM a = UnravelM { runUnravelM :: ExceptT String (Reader Bool) a }
+  deriving (Functor, Applicative, Monad, MonadError String, MonadReader Bool)
 
 -- count the number of arguments in a type
 countArgs :: DType -> Int
