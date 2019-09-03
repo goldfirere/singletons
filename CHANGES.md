@@ -5,9 +5,9 @@ next
 ----
 * Require GHC 8.10.
 * `singletons` now does a more much thorough job of rejecting higher-rank types
-  during promotion or singling, as they cannot support them. (Previously,
-  `singletons` would sometimes accept them, often changing rank-2 types to
-  rank-1 types incorrectly in the process.)
+  during promotion or singling, as `singletons` cannot support them.
+  (Previously, `singletons` would sometimes accept them, often changing rank-2
+  types to rank-1 types incorrectly in the process.)
 
 2.6
 ---

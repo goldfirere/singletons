@@ -32,7 +32,9 @@ promoteType_NC :: MonadFail m => DType -> m DKind
 promoteType_NC = go []
   where
     go :: MonadFail m => [DTypeArg] -> DType -> m DKind
-    go []       (DForallT _fvf _tvbs ty) = go [] ty
+    go []       (DForallT fvf tvbs ty) = do
+      ty' <- go [] ty
+      pure $ DForallT fvf tvbs ty'
     -- We don't need to worry about constraints: they are used to express
     -- static guarantees at runtime. But, because we don't need to do
     -- anything special to keep static guarantees at compile time, we don't
