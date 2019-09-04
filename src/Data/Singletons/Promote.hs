@@ -447,18 +447,10 @@ promoteMethod inst_sigs_map m_subst orig_sigs_map (meth_name, meth_rhs) = do
       -- strictly necessary, as kind inference can figure them out just as well.
       family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
-  let proHelperName = promoteValNameLhs helperName
-  ((_, _, _, eqns), _defuns, ann_rhs)
+  (pro_dec, defun_decs, ann_rhs)
     <- promoteLetDecRHS (Just (meth_arg_kis, meth_res_ki)) OMap.empty OMap.empty
                         noPrefix helperName meth_rhs
-  let tvbs = zipWith DKindedTV meth_arg_tvs meth_arg_kis
-  emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
-                                  proHelperName
-                                  tvbs
-                                  (DKindSig meth_res_ki)
-                                  Nothing)
-                               eqns]
-  emitDecsM (defunctionalize proHelperName Nothing tvbs (Just meth_res_ki))
+  emitDecs (pro_dec:defun_decs)
   return ( DTySynInstD
              (DTySynEqn Nothing
                         (foldType (DConT proName) family_args)
@@ -544,12 +536,12 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
 
     -- promote all the declarations, producing annotated declarations
   let (names, rhss) = unzip $ OMap.assocs value_env
-  (payloads, defun_decss, ann_rhss)
+  (pro_decs, defun_decss, ann_rhss)
     <- fmap unzip3 $ zipWithM (promoteLetDecRHS Nothing type_env fix_env prefixes) names rhss
 
   emitDecs $ concat defun_decss
   bound_kvs <- allBoundKindVars
-  let decs = map payload_to_dec payloads ++ infix_decls
+  let decs = pro_decs ++ infix_decls
 
     -- build the ALetDecEnv
   let let_dec_env' = LetDecEnv { lde_defns     = OMap.fromList $ zip names ann_rhss
@@ -559,12 +551,6 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
                                , lde_bound_kvs = OMap.fromList $ map (, bound_kvs) names }
 
   return (decs, let_dec_env')
-  where
-    payload_to_dec (name, tvbs, m_ki, eqns) = DClosedTypeFamilyD
-                                                (DTypeFamilyHead name tvbs sig Nothing)
-                                                eqns
-      where
-        sig = maybe DNoSig DKindSig m_ki
 
 promoteInfixDecl :: Name -> Fixity -> Maybe DDec
 promoteInfixDecl name fixity
@@ -590,7 +576,7 @@ promoteLetDecRHS :: Maybe ([DKind], DKind)  -- the promoted type of the RHS (if 
                  -> (String, String)     -- let-binding prefixes
                  -> Name                 -- name of the thing being promoted
                  -> ULetDecRHS           -- body of the thing
-                 -> PrM ( (Name, [DTyVarBndr], Maybe DKind, [DTySynEqn]) -- "type family"
+                 -> PrM ( DDec          -- "type family"
                         , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
 promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UValue exp) = do
@@ -612,8 +598,9 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UValue exp) = do
           m_fixity = OMap.lookup name fix_env
           tvbs = map DPlainTV all_locals
       defuns <- defunctionalize proName m_fixity tvbs res_kind
-      return ( ( proName, tvbs, res_kind
-               , [DTySynEqn Nothing (foldType (DConT proName) $ map DVarT all_locals) exp'] )
+      return ( DClosedTypeFamilyD
+                 (DTypeFamilyHead proName tvbs (maybeKindToResultSig res_kind) Nothing)
+                 [DTySynEqn Nothing (foldType (DConT proName) $ map DVarT all_locals) exp']
              , defuns
              , AValue (foldType (DConT proName) (map DVarT all_locals))
                       num_arrows ann_exp )
@@ -652,7 +639,9 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UFunction clauses) = d
   (eqns, ann_clauses) <- forallBind lde_kvs_to_bind $
                          mapAndUnzipM (promoteClause proName) expClauses
   prom_fun <- lookupVarE name
-  return ( (proName, all_args, m_resK, eqns)
+  return ( DClosedTypeFamilyD
+             (DTypeFamilyHead proName all_args (maybeKindToResultSig m_resK) Nothing)
+             eqns
          , defun_decs
          , AFunction prom_fun ty_num_args ann_clauses )
 

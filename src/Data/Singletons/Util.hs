@@ -249,6 +249,9 @@ resultSigToMaybeKind (DKindSig k)                = Just k
 resultSigToMaybeKind (DTyVarSig (DPlainTV _))    = Nothing
 resultSigToMaybeKind (DTyVarSig (DKindedTV _ k)) = Just k
 
+maybeKindToResultSig :: Maybe DKind -> DFamilyResultSig
+maybeKindToResultSig = maybe DNoSig DKindSig
+
 -- Reconstruct arrow kind from the list of kinds
 ravel :: [DType] -> DType -> DType
 ravel []    res  = res
