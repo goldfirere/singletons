@@ -4,7 +4,7 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.3.20190815
+# version: 0.4
 #
 language: c
 dist: xenial
@@ -111,7 +111,7 @@ install:
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
     echo "  location: https://github.com/goldfirere/th-desugar" >> cabal.project
-    echo "  tag:      d8d00ea8dd19dac3628435cac7a31ab0f214db9b" >> cabal.project
+    echo "  tag:      3a1eadc51049bfae66fcb7873428fdb06f3040c3" >> cabal.project
     echo ""                                                     >> cabal.project
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project
@@ -146,7 +146,7 @@ script:
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
     echo "  location: https://github.com/goldfirere/th-desugar" >> cabal.project
-    echo "  tag:      d8d00ea8dd19dac3628435cac7a31ab0f214db9b" >> cabal.project
+    echo "  tag:      3a1eadc51049bfae66fcb7873428fdb06f3040c3" >> cabal.project
     echo ""                                                     >> cabal.project
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project

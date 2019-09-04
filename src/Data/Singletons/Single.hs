@@ -250,9 +250,9 @@ singITyConInstance n
            mk_fun arrow t1 t2 = arrow `DAppT` t1 `DAppT` t2
            matchable_apply_fun   = mk_fun DArrowT                (DVarT k_penult) (DVarT k_last)
            unmatchable_apply_fun = mk_fun (DConT tyFunArrowName) (DVarT k_penult) (DVarT k_last)
-           ctxt = [ DForallT (map DPlainTV as)
-                             (map (DAppT (DConT singIName)) a_tys)
-                             (DConT singIName `DAppT` foldType f_ty a_tys)
+           ctxt = [ DForallT ForallInvis (map DPlainTV as) $
+                    DConstrainedT (map (DAppT (DConT singIName)) a_tys)
+                                  (DConT singIName `DAppT` foldType f_ty a_tys)
                   , DConT equalityName
                       `DAppT` (DConT applyTyConName `DSigT`
                                 mk_fun DArrowT matchable_apply_fun unmatchable_apply_fun)
@@ -410,9 +410,10 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                 -- See #175
                                [ foldApply (promoteValRhs meth_name) tvs `DSigT` res_ki
                                , foldApply prom_dflt tvs ]
-      return $ DForallT tvbs (default_pred : cxt) (ravel args res)
+      return $ DForallT ForallInvis tvbs
+             $ DConstrainedT (default_pred : cxt) (ravel args res)
       where
-        (tvbs, cxt, args, res) = unravel sty
+        (tvbs, cxt, args, res) = unravelVanillaDType sty
         bound_kv_set = Set.fromList bound_kvs
         -- Filter out explicitly bound kind variables. Otherwise, if you had
         -- the following class (#312):
@@ -486,9 +487,9 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
         Nothing -> case mb_s_info of
           -- We don't have an InstanceSig, so we must compute the type to use
           -- in the singled instance ourselves through reification.
-          Just (DVarI _ (DForallT cls_tvbs _cls_pred s_ty) _) -> do
+          Just (DVarI _ (DForallT _ cls_tvbs (DConstrainedT _cls_pred s_ty)) _) -> do
             let subst = mk_subst cls_tvbs
-                (sing_tvbs, ctxt, _args, res_ty) = unravel s_ty
+                (sing_tvbs, ctxt, _args, res_ty) = unravelVanillaDType s_ty
                 m_res_ki = case res_ty of
                   _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substKind subst res_ki)
                   _                                         -> Nothing
@@ -500,7 +501,8 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
           _ -> do
             mb_info <- dsReify name
             case mb_info of
-              Just (DVarI _ (DForallT cls_tvbs _cls_pred inner_ty) _) -> do
+              Just (DVarI _ (DForallT _ cls_tvbs
+                                      (DConstrainedT _cls_pred inner_ty)) _) -> do
                 let subst = mk_subst cls_tvbs
                     cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
                     cls_tvb_names = OSet.fromList $ map extractTvbName cls_tvbs
@@ -604,7 +606,8 @@ singTySig defns types bound_kvs name prom_ty =
     mk_sing_ty :: Int -> SgM (DType, [Name])
     mk_sing_ty n = do
       arg_names <- replicateM n (qNewName "arg")
-      return ( DForallT (map DPlainTV arg_names) []
+      return ( DForallT ForallInvis
+                        (map DPlainTV arg_names)
                         (ravel (map (\nm -> singFamily `DAppT` DVarT nm) arg_names)
                                (singFamily `DAppT`
                                     (foldl apply prom_ty (map DVarT arg_names))))

@@ -214,7 +214,7 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                                          toposortTyVarsOf $     -- (2)(iii)(c)
                                          map tvb_to_type $      -- (2)(iii)(b)
                                          toList $ fvDType tyfun -- (2)(iii)(a)
-                        in (arg_params, Just (DForallT tyfun_tvbs [] tyfun))
+                        in (arg_params, Just (DForallT ForallInvis tyfun_tvbs tyfun))
             app_data_ty = foldTypeTvbs (DConT data_name) m_args
             app_eqn     = DTySynEqn Nothing
                                     (DConT applyName `DAppT` app_data_ty
@@ -249,10 +249,16 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
     eta_expand :: [DTyVarBndr] -> Maybe DKind -> PrM ([DTyVarBndr], Maybe DKind)
     eta_expand m_arg_tvbs Nothing = pure (m_arg_tvbs, Nothing)
     eta_expand m_arg_tvbs (Just res_kind) = do
-        let (_, _, argKs, resultK) = unravel res_kind
-        tvb_names <- replicateM (length argKs) $ qNewName "e"
-        let res_kind_arg_tvbs = zipWith DKindedTV tvb_names argKs
-        pure (m_arg_tvbs ++ res_kind_arg_tvbs, Just resultK)
+        let (arg_ks, result_k) = unravelDType res_kind
+            vis_arg_ks = filterDVisFunArgs arg_ks
+        extra_arg_tvbs <- traverse mk_extra_tvb vis_arg_ks
+        pure (m_arg_tvbs ++ extra_arg_tvbs, Just result_k)
+
+    mk_extra_tvb :: DVisFunArg -> PrM DTyVarBndr
+    mk_extra_tvb vfa =
+      case vfa of
+        DVisFADep tvb -> pure tvb
+        DVisFAAnon k  -> DKindedTV <$> qNewName "e" <*> pure k
 
     map_tvb_kind :: (DKind -> DKind) -> DTyVarBndr -> DTyVarBndr
     map_tvb_kind _ tvb@DPlainTV{}  = tvb

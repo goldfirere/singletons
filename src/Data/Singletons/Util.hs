@@ -10,17 +10,20 @@ Users of the package should not need to consult this file.
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, RankNTypes,
              TemplateHaskell, GeneralizedNewtypeDeriving,
              MultiParamTypeClasses, UndecidableInstances, MagicHash,
-             LambdaCase, NoMonomorphismRestriction #-}
+             LambdaCase, NoMonomorphismRestriction, ScopedTypeVariables,
+             FlexibleContexts #-}
 
 module Data.Singletons.Util where
 
 import Prelude hiding ( exp, foldl, concat, mapM, any, pred )
+import Language.Haskell.TH ( pprint )
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Char
 import Control.Monad hiding ( mapM )
-import Control.Monad.Writer hiding ( mapM )
+import Control.Monad.Except hiding ( mapM )
 import Control.Monad.Reader hiding ( mapM )
+import Control.Monad.Writer hiding ( mapM )
 import qualified Data.Map as Map
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Map ( Map )
@@ -251,10 +254,119 @@ ravel :: [DType] -> DType -> DType
 ravel []    res  = res
 ravel (h:t) res = DAppT (DAppT DArrowT h) (ravel t res)
 
+-- Decompose a vanilla function type into its type variables, its context, its
+-- argument types, and its result type. (See
+-- Note [Vanilla-type validity checking during promotion] in
+-- Data.Singletons.Promote.Type for what "vanilla" means.)
+-- If a non-vanilla construct is encountered while decomposing the function
+-- type, an error is thrown.
+--
+-- This should be contrasted with the 'unravelDType' function from
+-- @th-desugar@, which supports the full gamut of function types. @singletons@
+-- only supports a subset of these types, which is why this function is used
+-- to decompose them instead.
+unravelVanillaDType :: DType -> ([DTyVarBndr], DCxt, [DType], DType)
+unravelVanillaDType ty =
+  case unravelVanillaDType_either ty of
+    Left err      -> error err
+    Right payload -> payload
+
+-- Ensures that a 'DType' is a vanilla type. (See
+-- Note [Vanilla-type validity checking during promotion] in
+-- Data.Singletons.Promote.Type for what "vanilla" means.)
+--
+-- The only monadic thing that this function can do is 'fail', which it does
+-- if a non-vanilla construct is encountered.
+checkVanillaDType :: forall m. MonadFail m => DType -> m ()
+checkVanillaDType ty =
+  case unravelVanillaDType_either ty of
+    Left err -> fail err
+    Right _  -> pure ()
+
+-- The workhorse that powers unravelVanillaDType and checkVanillaDType.
+-- Returns @Right payload@ upon success, and @Left error_msg@ upon failure.
+unravelVanillaDType_either ::
+  DType -> Either String ([DTyVarBndr], DCxt, [DType], DType)
+unravelVanillaDType_either ty =
+  runIdentity $ flip runReaderT True $ runExceptT $ runUnravelM $ go_ty ty
+  where
+    go_ty :: DType -> UnravelM ([DTyVarBndr], DCxt, [DType], DType)
+    go_ty typ = do
+      let (args1, res) = unravelDType typ
+      (args2, tvbs) <- take_tvbs  args1
+      (args3, ctxt) <- take_ctxt  args2
+      anons         <- take_anons args3
+      pure (tvbs, ctxt, anons, res)
+
+    -- Process a type in a higher-order position (e.g., the @forall a. a -> a@ in
+    -- @(forall a. a -> a) -> b -> b@). This is only done to check for the
+    -- presence of higher-rank foralls or constraints, which are not permitted
+    -- in vanilla types.
+    go_higher_order_ty :: DType -> UnravelM ()
+    go_higher_order_ty typ = () <$ local (const False) (go_ty typ)
+
+    take_tvbs :: DFunArgs -> UnravelM (DFunArgs, [DTyVarBndr])
+    take_tvbs (DFAForalls ForallInvis tvbs args) = do
+      rank_1 <- ask
+      unless rank_1 $ fail_forall "higher-rank"
+      _ <- traverse_ (traverse_ go_higher_order_ty . extractTvbKind) tvbs
+      (args', tvbs') <- take_tvbs args
+      pure (args', tvbs ++ tvbs')
+    take_tvbs (DFAForalls ForallVis _ _) = fail_vdq
+    take_tvbs args = pure (args, [])
+
+    take_ctxt :: DFunArgs -> UnravelM (DFunArgs, DCxt)
+    take_ctxt (DFACxt ctxt args) = do
+      rank_1 <- ask
+      unless rank_1 $ fail_ctxt "higher-rank"
+      traverse_ go_higher_order_ty ctxt
+      (args', ctxt') <- take_ctxt args
+      pure (args', ctxt ++ ctxt')
+    take_ctxt (DFAForalls fvf _ _) =
+      case fvf of
+        ForallInvis -> fail_forall "nested"
+        ForallVis   -> fail_vdq
+    take_ctxt args = pure (args, [])
+
+    take_anons :: DFunArgs -> UnravelM [DType]
+    take_anons (DFAAnon anon args) = do
+      go_higher_order_ty anon
+      anons <- take_anons args
+      pure (anon:anons)
+    take_anons (DFAForalls fvf _ _) =
+      case fvf of
+        ForallInvis -> fail_forall "nested"
+        ForallVis   -> fail_vdq
+    take_anons (DFACxt _ _) = fail_ctxt "nested"
+    take_anons DFANil = pure []
+
+    failWith :: MonadError String m => String -> m a
+    failWith thing = throwError $ unlines
+      [ "`singletons` does not support " ++ thing
+      , "In the type: " ++ pprint (sweeten ty)
+      ]
+
+    fail_forall :: MonadError String m => String -> m a
+    fail_forall sort = failWith $ sort ++ " `forall`s"
+
+    fail_vdq :: MonadError String m => m a
+    fail_vdq = failWith "visible dependent quantification"
+
+    fail_ctxt :: MonadError String m => String -> m a
+    fail_ctxt sort = failWith $ sort ++ " contexts"
+
+-- The monad that powers the internals of unravelVanillaDType_either.
+--
+-- * ExceptT String: records the error message upon failure.
+--
+-- * Reader Bool: True if we are in a rank-1 position in a type, False otherwise
+newtype UnravelM a = UnravelM { runUnravelM :: ExceptT String (Reader Bool) a }
+  deriving (Functor, Applicative, Monad, MonadError String, MonadReader Bool)
+
 -- count the number of arguments in a type
 countArgs :: DType -> Int
-countArgs ty = length args
-  where (_, _, args, _) = unravel ty
+countArgs ty = length $ filterDVisFunArgs args
+  where (args, _) = unravelDType ty
 
 -- changes all TyVars not to be NameU's. Workaround for GHC#11812
 noExactTyVars :: Data a => a -> a
@@ -283,12 +395,13 @@ substKind = substType
 -- substitution, use @substTy@ from "Language.Haskell.TH.Desugar.Subst".
 substType :: Map Name DType -> DType -> DType
 substType subst ty | Map.null subst = ty
-substType subst (DForallT tvbs cxt inner_ty)
-  = DForallT tvbs' cxt' inner_ty'
+substType subst (DForallT fvf tvbs inner_ty)
+  = DForallT fvf tvbs' inner_ty'
   where
     (subst', tvbs') = mapAccumL subst_tvb subst tvbs
-    cxt'            = map (substType subst') cxt
     inner_ty'       = substType subst' inner_ty
+substType subst (DConstrainedT cxt inner_ty) =
+  DConstrainedT (map (substType subst) cxt) (substType subst inner_ty)
 substType subst (DAppT ty1 ty2) = substType subst ty1 `DAppT` substType subst ty2
 substType subst (DAppKindT ty ki) = substType subst ty `DAppKindT` substType subst ki
 substType subst (DSigT ty ki) = substType subst ty `DSigT` substType subst ki

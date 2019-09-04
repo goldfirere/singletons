@@ -133,7 +133,8 @@ singletonStar names = do
 
         -- demote a kind back to a type, accumulating any unbound parameters
         kindToType :: DsMonad q => [DTypeArg] -> DKind -> QWithAux [Name] q DType
-        kindToType _    (DForallT _ _ _) = fail "Explicit forall encountered in kind"
+        kindToType _    (DForallT _ _ _)    = fail "Explicit forall encountered in kind"
+        kindToType _    (DConstrainedT _ _) = fail "Explicit constraint encountered in kind"
         kindToType args (DAppT f a) = do
           a' <- kindToType [] a
           kindToType (DTANormal a' : args) f
