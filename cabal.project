@@ -4,4 +4,4 @@ packages: .
 source-repository-package
   type: git
   location: https://github.com/goldfirere/th-desugar
-  tag: 35cdb6c294651c5b55733cb3348f7722300c92a7
+  tag: 3a1eadc51049bfae66fcb7873428fdb06f3040c3
