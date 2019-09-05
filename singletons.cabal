@@ -153,6 +153,8 @@ test-suite singletons-test-suite
                       SingletonsTestSuiteUtils
 
   build-depends:      base >= 4.13 && < 4.14,
+                      bytestring >= 0.10.9,
+                      deepseq >= 1.4.4,
                       filepath >= 1.3,
                       process >= 1.1,
                       turtle >= 1.5,

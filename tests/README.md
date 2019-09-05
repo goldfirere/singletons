@@ -14,7 +14,7 @@ tests:
    run the tests with:
 
       ```bash
-      make tests
+      cabal v2-test
       ```
 
  * Compile-and-dump tests are stored in subdirectories of
@@ -54,11 +54,19 @@ tests:
    tasty's pattern feature. For example:
 
    ```bash
-   cabal test --test-options="--pattern=Testsuite/Singletons/*"
+   cabal v2-test --test-options="--pattern=Testsuite/Singletons/*"
    ```
 
    runs all tests in the Testsuite/Singletons branch of the test tree.
    SingletonsTestSuite module defines structure of the test tree.
+
+ * If you modify `singletons`, you may cause the actual output of some tests to
+   change. If these changes are what you intended, you can accept the new
+   output by running the following command:
+
+   ```bash
+   cabal v2-test --test-options="--accept"
+   ```
 
 ## Generating golden files from templates
 
