@@ -55,9 +55,9 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     data SNatFoo :: NatFoo -> GHC.Types.Type
       where
-        SZeroFoo :: SNatFoo ZeroFoo
+        SZeroFoo :: SNatFoo (ZeroFoo :: NatFoo)
         SSuccFoo :: forall (n :: NatFoo).
-                    (Sing (n :: NatFoo)) -> SNatFoo (SuccFoo n)
+                    (Sing n) -> SNatFoo (SuccFoo n :: NatFoo)
     type instance Sing @NatFoo = SNatFoo
     instance SingKind NatFoo where
       type Demote NatFoo = NatFoo

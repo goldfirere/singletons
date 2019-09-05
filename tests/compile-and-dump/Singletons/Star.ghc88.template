@@ -141,12 +141,12 @@ Singletons/Star.hs:0:0:: Splicing declarations
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     data SRep :: Type -> Type
       where
-        SNat :: SRep Nat
-        SInt :: SRep Int
-        SString :: SRep String
-        SMaybe :: forall (n :: Type). (Sing (n :: Type)) -> SRep (Maybe n)
+        SNat :: SRep (Nat :: Type)
+        SInt :: SRep (Int :: Type)
+        SString :: SRep (String :: Type)
+        SMaybe :: forall (n :: Type). (Sing n) -> SRep (Maybe n :: Type)
         SVec :: forall (n :: Type) (n :: Nat).
-                (Sing (n :: Type)) -> (Sing (n :: Nat)) -> SRep (Vec n n)
+                (Sing n) -> (Sing n) -> SRep (Vec n n :: Type)
     type instance Sing @Type = SRep
     instance SingKind Type where
       type Demote Type = Rep

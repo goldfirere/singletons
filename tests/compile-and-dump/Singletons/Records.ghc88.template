@@ -52,8 +52,8 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     data SRecord :: forall a. Record a -> GHC.Types.Type
       where
         SMkRecord :: forall a (n :: a) (n :: Bool).
-                     {sField1 :: (Sing (n :: a)), sField2 :: (Sing (n :: Bool))}
-                     -> SRecord (MkRecord n n)
+                     {sField1 :: (Sing n), sField2 :: (Sing n)}
+                     -> SRecord (MkRecord n n :: Record a)
     type instance Sing @(Record a) = SRecord
     instance SingKind a => SingKind (Record a) where
       type Demote (Record a) = Record (Demote a)

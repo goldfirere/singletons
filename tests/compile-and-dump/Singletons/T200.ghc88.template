@@ -135,13 +135,11 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     data SErrorMessage :: ErrorMessage -> GHC.Types.Type
       where
         (:%$$:) :: forall (n :: ErrorMessage) (n :: ErrorMessage).
-                   (Sing (n :: ErrorMessage))
-                   -> (Sing (n :: ErrorMessage)) -> SErrorMessage ((:$$:) n n)
+                   (Sing n) -> (Sing n) -> SErrorMessage ((:$$:) n n :: ErrorMessage)
         (:%<>:) :: forall (n :: ErrorMessage) (n :: ErrorMessage).
-                   (Sing (n :: ErrorMessage))
-                   -> (Sing (n :: ErrorMessage)) -> SErrorMessage ((:<>:) n n)
+                   (Sing n) -> (Sing n) -> SErrorMessage ((:<>:) n n :: ErrorMessage)
         SEM :: forall (n :: [Bool]).
-               (Sing (n :: [Bool])) -> SErrorMessage (EM n)
+               (Sing n) -> SErrorMessage (EM n :: ErrorMessage)
     type instance Sing @ErrorMessage = SErrorMessage
     instance SingKind ErrorMessage where
       type Demote ErrorMessage = ErrorMessage

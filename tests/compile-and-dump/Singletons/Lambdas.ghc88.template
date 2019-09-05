@@ -815,7 +815,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     data SFoo :: forall a b. Foo a b -> GHC.Types.Type
       where
         SFoo :: forall a b (n :: a) (n :: b).
-                (Sing (n :: a)) -> (Sing (n :: b)) -> SFoo (Foo n n)
+                (Sing n) -> (Sing n) -> SFoo (Foo n n :: Foo a b)
     type instance Sing @(Foo a b) = SFoo
     instance (SingKind a, SingKind b) => SingKind (Foo a b) where
       type Demote (Foo a b) = Foo (Demote a) (Demote b)

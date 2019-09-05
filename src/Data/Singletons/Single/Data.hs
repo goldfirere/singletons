@@ -11,7 +11,6 @@ Singletonizes constructors.
 module Data.Singletons.Single.Data where
 
 import Language.Haskell.TH.Desugar
-import Language.Haskell.TH.Desugar.OSet (OSet)
 import Language.Haskell.TH.Syntax
 import Data.Singletons.Single.Defun
 import Data.Singletons.Single.Monad
@@ -22,7 +21,6 @@ import Data.Singletons.Util
 import Data.Singletons.Names
 import Data.Singletons.Syntax
 import Control.Monad
-import Data.Foldable
 
 -- We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
@@ -129,12 +127,12 @@ singDataD (DataDecl name tvbs ctors) = do
           pure $ DClause [DVarP x]
                $ DConE someSingDataName `DAppE` DCaseE (DVarE x) []
 
--- refine a constructor.
+-- Single a constructor.
 singCtor :: Name -> DCon -> SgM DCon
  -- polymorphic constructors are handled just
  -- like monomorphic ones -- the polymorphism in
  -- the kind is automatic
-singCtor dataName (DCon _tvbs cxt name fields rty)
+singCtor dataName (DCon con_tvbs cxt name fields rty)
   | not (null cxt)
   = fail "Singling of constrained constructors not yet supported"
   | otherwise
@@ -144,13 +142,13 @@ singCtor dataName (DCon _tvbs cxt name fields rty)
       sCon = DConE sName
       pCon = DConT name
   indexNames <- mapM (const $ qNewName "n") types
-  let indices = map DVarT indexNames
   kinds <- mapM promoteType types
-  let bound_kvs = foldMap fvDType kinds
-  args <- zipWithM (buildArgType bound_kvs) types indices
   rty' <- promoteType rty
-  let tvbs = map DPlainTV (toList bound_kvs) ++ zipWith DKindedTV indexNames kinds
+  let indices = map DVarT indexNames
       kindedIndices = zipWith DSigT indices kinds
+      args = map (DAppT singFamily) indices
+      kvbs = singTypeKVBs con_tvbs kinds [] rty' mempty
+      all_tvbs = kvbs ++ zipWith DKindedTV indexNames kinds
 
   -- SingI instance for data constructor
   emitDecs
@@ -172,12 +170,9 @@ singCtor dataName (DCon _tvbs cxt name fields rty)
                       DRecC [ (singValName field_name, noBang, arg)
                             | (field_name, _, _) <- rec_fields
                             | arg <- args ]
-  return $ DCon tvbs
-                []
-                sName
-                conFields
-                (DConT (singTyConName dataName) `DAppT` foldType pCon indices)
-  where buildArgType :: OSet Name -> DType -> DType -> SgM DType
-        buildArgType bound_kvs ty index = do
-          (ty', _, _, _, _, _) <- singType bound_kvs index ty
-          return ty'
+  return $ DCon all_tvbs [] sName conFields
+                (DConT (singTyConName dataName) `DAppT`
+                  (foldType pCon indices `DSigT` rty'))
+                  -- Make sure to include an explicit `rty'` kind annotation.
+                  -- See Note [Preserve the order of type variables during singling],
+                  -- wrinkle 3, in D.S.Single.Type.

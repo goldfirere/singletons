@@ -56,9 +56,9 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
     data SFoo :: Foo -> GHC.Types.Type
       where
-        SBar :: SFoo Bar
-        SBaz :: SFoo Baz
-        SBum :: SFoo Bum
+        SBar :: SFoo (Bar :: Foo)
+        SBaz :: SFoo (Baz :: Foo)
+        SBum :: SFoo (Bum :: Foo)
     type instance Sing @Foo = SFoo
     instance SingKind Foo where
       type Demote Foo = Foo
@@ -70,8 +70,8 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing Bum = SomeSing SBum
     data SQuux :: Quux -> GHC.Types.Type
       where
-        SQ1 :: SQuux Q1
-        SQ2 :: SQuux Q2
+        SQ1 :: SQuux (Q1 :: Quux)
+        SQ2 :: SQuux (Q2 :: Quux)
     type instance Sing @Quux = SQuux
     instance SingKind Quux where
       type Demote Quux = Quux

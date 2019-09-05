@@ -117,7 +117,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       Equals_0123456789876543210 (_ :: T) (_ :: T) = FalseSym0
     instance PEq T where
       type (==) a b = Equals_0123456789876543210 a b
-    data ST :: T -> GHC.Types.Type where ST :: ST T
+    data ST :: T -> GHC.Types.Type where ST :: ST (T :: T)
     type instance Sing @T = ST
     instance SingKind T where
       type Demote T = T

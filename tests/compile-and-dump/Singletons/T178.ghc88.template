@@ -103,9 +103,9 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     sEmpty = Data.Singletons.Prelude.Instances.SNil
     data SOcc :: Occ -> GHC.Types.Type
       where
-        SStr :: SOcc Str
-        SOpt :: SOcc Opt
-        SMany :: SOcc Many
+        SStr :: SOcc (Str :: Occ)
+        SOpt :: SOcc (Opt :: Occ)
+        SMany :: SOcc (Many :: Occ)
     type instance Sing @Occ = SOcc
     instance SingKind Occ where
       type Demote Occ = Occ

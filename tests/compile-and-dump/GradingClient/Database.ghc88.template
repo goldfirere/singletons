@@ -54,8 +54,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       type (==) a b = Equals_0123456789876543210 a b
     data SNat :: Nat -> Type
       where
-        SZero :: SNat Zero
-        SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> SNat (Succ n)
+        SZero :: SNat (Zero :: Nat)
+        SSucc :: forall (n :: Nat). (Sing n) -> SNat (Succ n :: Nat)
     type instance Sing @Nat = SNat
     instance SingKind Nat where
       type Demote Nat = Nat
@@ -717,11 +717,11 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun1 @(AppendSym1 (d :: Schema))) (sAppend (sing @d))
     data SU :: U -> Type
       where
-        SBOOL :: SU BOOL
-        SSTRING :: SU STRING
-        SNAT :: SU NAT
+        SBOOL :: SU (BOOL :: U)
+        SSTRING :: SU (STRING :: U)
+        SNAT :: SU (NAT :: U)
         SVEC :: forall (n :: U) (n :: Nat).
-                (Sing (n :: U)) -> (Sing (n :: Nat)) -> SU (VEC n n)
+                (Sing n) -> (Sing n) -> SU (VEC n n :: U)
     type instance Sing @U = SU
     instance SingKind U where
       type Demote U = U
@@ -739,32 +739,32 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
             (,) (SomeSing c) (SomeSing c) -> SomeSing ((SVEC c) c) }
     data SAChar :: AChar -> Type
       where
-        SCA :: SAChar CA
-        SCB :: SAChar CB
-        SCC :: SAChar CC
-        SCD :: SAChar CD
-        SCE :: SAChar CE
-        SCF :: SAChar CF
-        SCG :: SAChar CG
-        SCH :: SAChar CH
-        SCI :: SAChar CI
-        SCJ :: SAChar CJ
-        SCK :: SAChar CK
-        SCL :: SAChar CL
-        SCM :: SAChar CM
-        SCN :: SAChar CN
-        SCO :: SAChar CO
-        SCP :: SAChar CP
-        SCQ :: SAChar CQ
-        SCR :: SAChar CR
-        SCS :: SAChar CS
-        SCT :: SAChar CT
-        SCU :: SAChar CU
-        SCV :: SAChar CV
-        SCW :: SAChar CW
-        SCX :: SAChar CX
-        SCY :: SAChar CY
-        SCZ :: SAChar CZ
+        SCA :: SAChar (CA :: AChar)
+        SCB :: SAChar (CB :: AChar)
+        SCC :: SAChar (CC :: AChar)
+        SCD :: SAChar (CD :: AChar)
+        SCE :: SAChar (CE :: AChar)
+        SCF :: SAChar (CF :: AChar)
+        SCG :: SAChar (CG :: AChar)
+        SCH :: SAChar (CH :: AChar)
+        SCI :: SAChar (CI :: AChar)
+        SCJ :: SAChar (CJ :: AChar)
+        SCK :: SAChar (CK :: AChar)
+        SCL :: SAChar (CL :: AChar)
+        SCM :: SAChar (CM :: AChar)
+        SCN :: SAChar (CN :: AChar)
+        SCO :: SAChar (CO :: AChar)
+        SCP :: SAChar (CP :: AChar)
+        SCQ :: SAChar (CQ :: AChar)
+        SCR :: SAChar (CR :: AChar)
+        SCS :: SAChar (CS :: AChar)
+        SCT :: SAChar (CT :: AChar)
+        SCU :: SAChar (CU :: AChar)
+        SCV :: SAChar (CV :: AChar)
+        SCW :: SAChar (CW :: AChar)
+        SCX :: SAChar (CX :: AChar)
+        SCY :: SAChar (CY :: AChar)
+        SCZ :: SAChar (CZ :: AChar)
     type instance Sing @AChar = SAChar
     instance SingKind AChar where
       type Demote AChar = AChar
@@ -823,7 +823,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     data SAttribute :: Attribute -> Type
       where
         SAttr :: forall (n :: [AChar]) (n :: U).
-                 (Sing (n :: [AChar])) -> (Sing (n :: U)) -> SAttribute (Attr n n)
+                 (Sing n) -> (Sing n) -> SAttribute (Attr n n :: Attribute)
     type instance Sing @Attribute = SAttribute
     instance SingKind Attribute where
       type Demote Attribute = Attribute
@@ -836,7 +836,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     data SSchema :: Schema -> Type
       where
         SSch :: forall (n :: [Attribute]).
-                (Sing (n :: [Attribute])) -> SSchema (Sch n)
+                (Sing n) -> SSchema (Sch n :: Schema)
     type instance Sing @Schema = SSchema
     instance SingKind Schema where
       type Demote Schema = Schema

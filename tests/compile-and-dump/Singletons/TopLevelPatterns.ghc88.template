@@ -30,8 +30,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply BarSym0 t0123456789876543210 = BarSym1 t0123456789876543210
     data SBool :: Bool -> GHC.Types.Type
       where
-        SFalse :: SBool False
-        STrue :: SBool True
+        SFalse :: SBool (False :: Bool)
+        STrue :: SBool (True :: Bool)
     type instance Sing @Bool = SBool
     instance SingKind Bool where
       type Demote Bool = Bool
@@ -42,7 +42,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     data SFoo :: Foo -> GHC.Types.Type
       where
         SBar :: forall (n :: Bool) (n :: Bool).
-                (Sing (n :: Bool)) -> (Sing (n :: Bool)) -> SFoo (Bar n n)
+                (Sing n) -> (Sing n) -> SFoo (Bar n n :: Foo)
     type instance Sing @Foo = SFoo
     instance SingKind Foo where
       type Demote Foo = Foo

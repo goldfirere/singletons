@@ -59,7 +59,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     data (%:*:) :: forall a b. (:*:) a b -> GHC.Types.Type
       where
         (:%*:) :: forall a b (n :: a) (n :: b).
-                  (Sing (n :: a)) -> (Sing (n :: b)) -> (%:*:) ((:*:) n n)
+                  (Sing n) -> (Sing n) -> (%:*:) ((:*:) n n :: (:*:) a b)
     type instance Sing @((:*:) a b) = (%:*:)
     instance (SingKind a, SingKind b) => SingKind ((:*:) a b) where
       type Demote ((:*:) a b) = (:*:) (Demote a) (Demote b)
@@ -70,7 +70,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     data SPair :: forall a b. Pair a b -> GHC.Types.Type
       where
         SMkPair :: forall a b (n :: a) (n :: b).
-                   (Sing (n :: a)) -> (Sing (n :: b)) -> SPair (MkPair n n)
+                   (Sing n) -> (Sing n) -> SPair (MkPair n n :: Pair a b)
     type instance Sing @(Pair a b) = SPair
     instance (SingKind a, SingKind b) => SingKind (Pair a b) where
       type Demote (Pair a b) = Pair (Demote a) (Demote b)

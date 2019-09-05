@@ -9,12 +9,12 @@ Singletons/T159.hs:0:0:: Splicing declarations
     type FSym0 = 'F
     data ST0 :: T0 -> GHC.Types.Type
       where
-        SA :: ST0 'A
-        SB :: ST0 'B
-        SC :: ST0 'C
-        SD :: ST0 'D
-        SE :: ST0 'E
-        SF :: ST0 'F
+        SA :: ST0 ('A :: T0)
+        SB :: ST0 ('B :: T0)
+        SC :: ST0 ('C :: T0)
+        SD :: ST0 ('D :: T0)
+        SE :: ST0 ('E :: T0)
+        SF :: ST0 ('F :: T0)
     type instance Sing @T0 = ST0
     instance SingKind T0 where
       type Demote T0 = T0
@@ -87,11 +87,11 @@ Singletons/T159.hs:0:0:: Splicing declarations
     infixr 5 :&&@#@$
     data ST1 :: T1 -> GHC.Types.Type
       where
-        SN1 :: ST1 'N1
+        SN1 :: ST1 ('N1 :: T1)
         SC1 :: forall (n :: T0) (n :: T1).
-               (Sing (n :: T0)) -> (Sing (n :: T1)) -> ST1 ('C1 n n)
+               (Sing n) -> (Sing n) -> ST1 ('C1 n n :: T1)
         (:%&&) :: forall (n :: T0) (n :: T1).
-                  (Sing (n :: T0)) -> (Sing (n :: T1)) -> ST1 ('(:&&) n n)
+                  (Sing n) -> (Sing n) -> ST1 ('(:&&) n n :: T1)
     type instance Sing @T1 = ST1
     instance SingKind T1 where
       type Demote T1 = T1
@@ -185,11 +185,11 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
     infixr 5 `SC2`
     data ST2 :: T2 -> GHC.Types.Type
       where
-        SN2 :: ST2 N2
+        SN2 :: ST2 (N2 :: T2)
         SC2 :: forall (n :: T0) (n :: T2).
-               (Sing (n :: T0)) -> (Sing (n :: T2)) -> ST2 (C2 n n)
+               (Sing n) -> (Sing n) -> ST2 (C2 n n :: T2)
         (:%||) :: forall (n :: T0) (n :: T2).
-                  (Sing (n :: T0)) -> (Sing (n :: T2)) -> ST2 ((:||) n n)
+                  (Sing n) -> (Sing n) -> ST2 ((:||) n n :: T2)
     type instance Sing @T2 = ST2
     instance SingKind T2 where
       type Demote T2 = T2

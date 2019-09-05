@@ -117,8 +117,9 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     data SX :: forall a. X a -> Type
       where
-        SX1 :: SX X1
-        SX2 :: forall a (n :: Y a). (Sing (n :: Y a)) -> SX (X2 n)
+        SX1 :: forall (a :: Type). SX (X1 :: X (a :: Type))
+        SX2 :: forall (a :: Type) (n :: Y a).
+               (Sing n) -> SX (X2 n :: X (a :: Type))
     type instance Sing @(X a) = SX
     instance SingKind a => SingKind (X a) where
       type Demote (X a) = X (Demote a)
@@ -130,8 +131,9 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SX2 c) }
     data SY :: forall a. Y a -> Type
       where
-        SY1 :: SY Y1
-        SY2 :: forall a (n :: X a). (Sing (n :: X a)) -> SY (Y2 n)
+        SY1 :: forall (a :: Type). SY (Y1 :: Y (a :: Type))
+        SY2 :: forall (a :: Type) (n :: X a).
+               (Sing n) -> SY (Y2 n :: Y (a :: Type))
     type instance Sing @(Y a) = SY
     instance SingKind a => SingKind (Y a) where
       type Demote (Y a) = Y (Demote a)

@@ -4,6 +4,10 @@ Changelog for singletons project
 next
 ----
 * Require GHC 8.10.
+* `singletons` now does a much better job of preserving the order of type
+  variables when singling the type signatures of top-level functions and data
+  constructors. See the `Support for TypeApplications` section of the `README`
+  for more details.
 * `singletons` now does a more much thorough job of rejecting higher-rank types
   during promotion or singling, as `singletons` cannot support them.
   (Previously, `singletons` would sometimes accept them, often changing rank-2
