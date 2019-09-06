@@ -712,6 +712,42 @@ mechanism will not promote `TypeRep` to `*`.
 of types with which to work. See the Haddock documentation for the function
 `singletonStar` for more info.
 
+Support for `TypeApplications`
+------------------------------
+
+`singletons` currently cannot handle promoting or singling code that uses
+`TypeApplications` syntax, so `singletons` will simply drop any visible type
+applications. For example, `id @Bool True` will be promoted to `Id True` and
+singled to `sId STrue`. See
+[#378](https://github.com/goldfirere/singletons/issues/378) for a discussion
+of how `singletons` may support `TypeApplications` in the future.
+
+On the other hand, `singletons` does make an effort to preserve the order of
+type variables when singling type signatures. For example, this type signature:
+
+```haskell
+const2 :: forall b a. a -> b -> a
+```
+
+Will single to the following:
+
+```haskell
+sConst2 :: forall b a (x :: a) (y :: a). Sing x -> Sing y -> Sing (Const x y)
+```
+
+Therefore, writing `const2 @T1 @T2` works just as well as writing
+`sConst2 @T1 @T2`, since the type signatures for `const2` and `sConst2` both
+begin with `forall b a.`, in that order. Again, it is worth emphasizing that
+the TH machinery does not support singling `const2 @T1 @T2` directly, but you
+can write the type applications by hand if you so choose.
+
+It is not yet guaranteed that promotion preserves the order of type variables.
+For instance, if one writes `const @T1 @T2`, then one would have to write
+`Const @T2 @T1` at the kind level (and similarly for `Const`'s
+defunctionalization symbols). See
+[#378](https://github.com/goldfirere/singletons/issues/378) for a discussion
+of how this may be fixed in the future.
+
 Known bugs
 ----------
 

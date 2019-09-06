@@ -101,8 +101,9 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       type (==) a b = Equals_0123456789876543210 a b
     data SConstant :: forall a b. Constant a b -> Type
       where
-        SConstant :: forall a (n :: a).
-                     (Sing (n :: a)) -> SConstant (Constant n)
+        SConstant :: forall (a :: Type) (b :: Type) (n :: a).
+                     (Sing n)
+                     -> SConstant (Constant n :: Constant (a :: Type) (b :: Type))
     type instance Sing @(Constant a b) = SConstant
     instance (SingKind a, SingKind b) => SingKind (Constant a b) where
       type Demote (Constant a b) = Constant (Demote a) (Demote b)
@@ -113,7 +114,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     data SIdentity :: forall a. Identity a -> Type
       where
         SIdentity :: forall a (n :: a).
-                     (Sing (n :: a)) -> SIdentity (Identity n)
+                     (Sing n) -> SIdentity (Identity n :: Identity a)
     type instance Sing @(Identity a) = SIdentity
     instance SingKind a => SingKind (Identity a) where
       type Demote (Identity a) = Identity (Demote a)

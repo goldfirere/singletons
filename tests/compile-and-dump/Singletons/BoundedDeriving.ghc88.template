@@ -124,7 +124,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance PBounded Pair where
       type MinBound = MinBound_0123456789876543210Sym0
       type MaxBound = MaxBound_0123456789876543210Sym0
-    data SFoo1 :: Foo1 -> Type where SFoo1 :: SFoo1 Foo1
+    data SFoo1 :: Foo1 -> Type where SFoo1 :: SFoo1 (Foo1 :: Foo1)
     type instance Sing @Foo1 = SFoo1
     instance SingKind Foo1 where
       type Demote Foo1 = Foo1
@@ -132,11 +132,11 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing Foo1 = SomeSing SFoo1
     data SFoo2 :: Foo2 -> Type
       where
-        SA :: SFoo2 A
-        SB :: SFoo2 B
-        SC :: SFoo2 C
-        SD :: SFoo2 D
-        SE :: SFoo2 E
+        SA :: SFoo2 (A :: Foo2)
+        SB :: SFoo2 (B :: Foo2)
+        SC :: SFoo2 (C :: Foo2)
+        SD :: SFoo2 (D :: Foo2)
+        SE :: SFoo2 (E :: Foo2)
     type instance Sing @Foo2 = SFoo2
     instance SingKind Foo2 where
       type Demote Foo2 = Foo2
@@ -151,7 +151,8 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing D = SomeSing SD
       toSing E = SomeSing SE
     data SFoo3 :: forall a. Foo3 a -> Type
-      where SFoo3 :: forall a (n :: a). (Sing (n :: a)) -> SFoo3 (Foo3 n)
+      where
+        SFoo3 :: forall a (n :: a). (Sing n) -> SFoo3 (Foo3 n :: Foo3 a)
     type instance Sing @(Foo3 a) = SFoo3
     instance SingKind a => SingKind (Foo3 a) where
       type Demote (Foo3 a) = Foo3 (Demote a)
@@ -161,8 +162,10 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SFoo3 c) }
     data SFoo4 :: forall a b. Foo4 a b -> Type
       where
-        SFoo41 :: SFoo4 Foo41
-        SFoo42 :: SFoo4 Foo42
+        SFoo41 :: forall (a :: Type) (b :: Type).
+                  SFoo4 (Foo41 :: Foo4 (a :: Type) (b :: Type))
+        SFoo42 :: forall (a :: Type) (b :: Type).
+                  SFoo4 (Foo42 :: Foo4 (a :: Type) (b :: Type))
     type instance Sing @(Foo4 a b) = SFoo4
     instance (SingKind a, SingKind b) => SingKind (Foo4 a b) where
       type Demote (Foo4 a b) = Foo4 (Demote a) (Demote b)
@@ -173,7 +176,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     data SPair :: Pair -> Type
       where
         SPair :: forall (n :: Bool) (n :: Bool).
-                 (Sing (n :: Bool)) -> (Sing (n :: Bool)) -> SPair (Pair n n)
+                 (Sing n) -> (Sing n) -> SPair (Pair n n :: Pair)
     type instance Sing @Pair = SPair
     instance SingKind Pair where
       type Demote Pair = Pair

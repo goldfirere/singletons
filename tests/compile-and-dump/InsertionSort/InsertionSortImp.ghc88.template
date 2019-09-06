@@ -15,8 +15,8 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply SuccSym0 t0123456789876543210 = Succ t0123456789876543210
     data SNat :: Nat -> Type
       where
-        SZero :: SNat Zero
-        SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> SNat (Succ n)
+        SZero :: SNat (Zero :: Nat)
+        SSucc :: forall (n :: Nat). (Sing n) -> SNat (Succ n :: Nat)
     type instance Sing @Nat = SNat
     instance SingKind Nat where
       type Demote Nat = Nat

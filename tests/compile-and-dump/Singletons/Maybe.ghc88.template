@@ -66,8 +66,8 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       type (==) a b = Equals_0123456789876543210 a b
     data SMaybe :: forall a. Maybe a -> GHC.Types.Type
       where
-        SNothing :: SMaybe Nothing
-        SJust :: forall a (n :: a). (Sing (n :: a)) -> SMaybe (Just n)
+        SNothing :: forall a. SMaybe (Nothing :: Maybe a)
+        SJust :: forall a (n :: a). (Sing n) -> SMaybe (Just n :: Maybe a)
     type instance Sing @(Maybe a) = SMaybe
     instance SingKind a => SingKind (Maybe a) where
       type Demote (Maybe a) = Maybe (Demote a)

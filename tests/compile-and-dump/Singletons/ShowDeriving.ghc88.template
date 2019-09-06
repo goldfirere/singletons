@@ -270,7 +270,8 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 :%&:
     infixl 5 :%*:
     infixl 5 `SMkFoo2b`
-    data SFoo1 :: Foo1 -> GHC.Types.Type where SMkFoo1 :: SFoo1 MkFoo1
+    data SFoo1 :: Foo1 -> GHC.Types.Type
+      where SMkFoo1 :: SFoo1 (MkFoo1 :: Foo1)
     type instance Sing @Foo1 = SFoo1
     instance SingKind Foo1 where
       type Demote Foo1 = Foo1
@@ -279,13 +280,13 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     data SFoo2 :: forall a. Foo2 a -> GHC.Types.Type
       where
         SMkFoo2a :: forall a (n :: a) (n :: a).
-                    (Sing (n :: a)) -> (Sing (n :: a)) -> SFoo2 (MkFoo2a n n)
+                    (Sing n) -> (Sing n) -> SFoo2 (MkFoo2a n n :: Foo2 a)
         SMkFoo2b :: forall a (n :: a) (n :: a).
-                    (Sing (n :: a)) -> (Sing (n :: a)) -> SFoo2 (MkFoo2b n n)
+                    (Sing n) -> (Sing n) -> SFoo2 (MkFoo2b n n :: Foo2 a)
         (:%*:) :: forall a (n :: a) (n :: a).
-                  (Sing (n :: a)) -> (Sing (n :: a)) -> SFoo2 ((:*:) n n)
+                  (Sing n) -> (Sing n) -> SFoo2 ((:*:) n n :: Foo2 a)
         (:%&:) :: forall a (n :: a) (n :: a).
-                  (Sing (n :: a)) -> (Sing (n :: a)) -> SFoo2 ((:&:) n n)
+                  (Sing n) -> (Sing n) -> SFoo2 ((:&:) n n :: Foo2 a)
     type instance Sing @(Foo2 a) = SFoo2
     instance SingKind a => SingKind (Foo2 a) where
       type Demote (Foo2 a) = Foo2 (Demote a)
@@ -308,8 +309,8 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     data SFoo3 :: Foo3 -> GHC.Types.Type
       where
         SMkFoo3 :: forall (n :: Bool) (n :: Bool).
-                   {sGetFoo3a :: (Sing (n :: Bool)), %*** :: (Sing (n :: Bool))}
-                   -> SFoo3 (MkFoo3 n n)
+                   {sGetFoo3a :: (Sing n), %*** :: (Sing n)}
+                   -> SFoo3 (MkFoo3 n n :: Foo3)
     type instance Sing @Foo3 = SFoo3
     instance SingKind Foo3 where
       type Demote Foo3 = Foo3

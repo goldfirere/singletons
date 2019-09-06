@@ -161,8 +161,8 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun1 @(PlusSym1 (d :: Nat))) (sPlus (sing @d))
     data SNat :: Nat -> GHC.Types.Type
       where
-        SZero :: SNat Zero
-        SSucc :: forall (n :: Nat). (Sing (n :: Nat)) -> SNat (Succ n)
+        SZero :: SNat (Zero :: Nat)
+        SSucc :: forall (n :: Nat). (Sing n) -> SNat (Succ n :: Nat)
     type instance Sing @Nat = SNat
     instance SingKind Nat where
       type Demote Nat = Nat

@@ -38,7 +38,8 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
     instance SingI (UnBoxSym0 :: (~>) (Box a) a) where
       sing = (singFun1 @UnBoxSym0) sUnBox
     data SBox :: forall a. Box a -> GHC.Types.Type
-      where SFBox :: forall a (n :: a). (Sing (n :: a)) -> SBox (FBox n)
+      where
+        SFBox :: forall a (n :: a). (Sing n) -> SBox (FBox n :: Box a)
     type instance Sing @(Box a) = SBox
     instance SingKind a => SingKind (Box a) where
       type Demote (Box a) = Box (Demote a)

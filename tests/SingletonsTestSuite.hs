@@ -117,6 +117,7 @@ tests =
     , compileAndDumpStdTest "T367"
     , compileAndDumpStdTest "T371"
     , compileAndDumpStdTest "T376"
+    , compileAndDumpStdTest "T378a"
     , compileAndDumpStdTest "T401"
     , compileAndDumpStdTest "T402"
     ],

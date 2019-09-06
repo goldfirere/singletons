@@ -124,7 +124,7 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
     data SPair :: forall a b. Pair a b -> GHC.Types.Type
       where
         SPair :: forall a b (n :: a) (n :: b).
-                 (Sing (n :: a)) -> (Sing (n :: b)) -> SPair (Pair n n)
+                 (Sing n) -> (Sing n) -> SPair (Pair n n :: Pair a b)
     type instance Sing @(Pair a b) = SPair
     instance (SingKind a, SingKind b) => SingKind (Pair a b) where
       type Demote (Pair a b) = Pair (Demote a) (Demote b)

@@ -49,7 +49,9 @@ Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
     instance SingI FSym0 where
       sing = (singFun1 @FSym0) sF
     data SMyProxy :: forall a. MyProxy a -> Type
-      where SMyProxy :: SMyProxy MyProxy
+      where
+        SMyProxy :: forall (a :: Type).
+                    SMyProxy (MyProxy :: MyProxy (a :: Type))
     type instance Sing @(MyProxy a) = SMyProxy
     instance SingKind a => SingKind (MyProxy a) where
       type Demote (MyProxy a) = MyProxy (Demote a)

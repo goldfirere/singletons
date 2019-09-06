@@ -35,7 +35,7 @@ type LetExpansions = OMap Name DType  -- from **term-level** name
 data PrEnv =
   PrEnv { pr_lambda_bound :: OMap Name Name
         , pr_let_bound    :: LetExpansions
-        , pr_forall_bound :: OSet Name -- See Note [Explicitly quantifying kinds variables]
+        , pr_forall_bound :: OSet Name -- See Note [Explicitly binding kind variables]
         , pr_local_decls  :: [Dec]
         }
 
@@ -129,17 +129,17 @@ promoteMDecs locals thing = do
 
 {-
 Note [Explicitly binding kind variables]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-We want to ensure that when we single type signatures for functions, we should
-explicitly quantify every kind variable bound by a forall. For example, if we
-were to single the identity function:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+We want to ensure that when we single type signatures for functions and data
+constructors, we should explicitly quantify every kind variable bound by a
+forall. For example, if we were to single the identity function:
 
   identity :: forall a. a -> a
   identity x = x
 
 We want the final result to be:
 
-  sIdentity :: forall a (x :: a). Sing x -> Sing (Identity x)
+  sIdentity :: forall a (x :: a). Sing x -> Sing (Identity x :: a)
   sIdentity sX = sX
 
 Accomplishing this takes a bit of care during promotion. When promoting a
@@ -160,7 +160,7 @@ consider this more complicated example:
 
 When singling, we would eventually end up in this spot:
 
-  sF :: forall a (x :: a). Sing a -> Sing (F a)
+  sF :: forall a (x :: a). Sing a -> Sing (F a :: a)
   sF = sG
     where
       sG :: _
@@ -168,10 +168,10 @@ When singling, we would eventually end up in this spot:
 
 We must make sure /not/ to fill in the following type for _:
 
-  sF :: forall a (x :: a). Sing a -> Sing (F a)
+  sF :: forall a (x :: a). Sing a -> Sing (F a :: a)
   sF = sG
     where
-      sG :: forall a (y :: a). Sing a -> Sing (G a)
+      sG :: forall a (y :: a). Sing a -> Sing (G a :: a)
       sG x = x
 
 This would be incorrect, as the `a` bound by sF /must/ be the same one used in
@@ -179,9 +179,9 @@ sG, as per the scoping of the original `f` function. Thus, we ensure that the
 bound variables from `f` are put into lde_bound_kvs when promoting `g` so
 that we subtract out `a` and are left with the correct result:
 
-  sF :: forall a (x :: a). Sing a -> Sing (F a)
+  sF :: forall a (x :: a). Sing a -> Sing (F a :: a)
   sF = sG
     where
-      sG :: forall (y :: a). Sing a -> Sing (G a)
+      sG :: forall (y :: a). Sing a -> Sing (G a :: a)
       sG x = x
 -}
