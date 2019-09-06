@@ -14,7 +14,7 @@ tests:
    run the tests with:
 
       ```bash
-      make tests
+      cabal test
       ```
 
  * Compile-and-dump tests are stored in subdirectories of
@@ -59,6 +59,14 @@ tests:
 
    runs all tests in the Testsuite/Singletons branch of the test tree.
    SingletonsTestSuite module defines structure of the test tree.
+
+ * If you modify `singletons`, you may cause the actual output of some tests to
+   change. If these changes are what you intended, you can accept the new
+   output by running the following command:
+
+   ```bash
+   cabal test --test-options="--accept"
+   ```
 
 ## Generating golden files from templates
 

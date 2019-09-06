@@ -13,7 +13,8 @@ module SingletonsTestSuiteUtils (
  ) where
 
 import Build_singletons   ( ghcPath, ghcFlags, rootDir          )
-import Control.Exception  ( Exception, throw                    )
+import Control.DeepSeq    ( NFData(..)                          )
+import Control.Exception  ( Exception, evaluate, throw          )
 import Data.Foldable      ( asum )
 import Data.List          ( intercalate                         )
 import Data.Text          ( Text                                )
@@ -26,7 +27,9 @@ import System.Process     ( CreateProcess(..), StdStream(..)
                           , createProcess, proc, waitForProcess
                           , callCommand                         )
 import Test.Tasty         ( TestTree, testGroup                 )
-import Test.Tasty.Golden  ( goldenVsFileDiff                    )
+import Test.Tasty.Golden.Advanced
+                          ( goldenTest                          )
+import qualified Data.ByteString as BS
 import qualified Turtle
 
 -- Some infractructure for handling external process errors
@@ -86,12 +89,12 @@ ghcOpts = ghcFlags ++ [
 -- with no ".hs".
 compileAndDumpTest :: FilePath -> [String] -> TestTree
 compileAndDumpTest testName opts =
-    goldenVsFileDiff
+    goldenTest
       (takeBaseName testName)
-      (\ref new -> ["diff", "-w", "-B", ref, new]) -- see Note [Diff options]
-      goldenFilePath
-      actualFilePath
+      (return ())
       compileWithGHC
+      cmp
+      acceptNewOutput
   where
     testPath         = testName ++ ".hs"
     templateFilePath = goldenPath ++ testName ++ ghcVersion ++ ".template"
@@ -109,6 +112,32 @@ compileAndDumpTest testName opts =
       normalizeOutput actualFilePath -- see Note [Output normalization]
       buildGoldenFile templateFilePath goldenFilePath
       return ()
+
+    -- See Note [Diff options]
+    cmd = ["diff", "-w", "-B", goldenFilePath, actualFilePath]
+
+    -- This is invoked when the test suite is run with the --accept flag.
+    -- In addition to updating the golden file, we should also update the
+    -- template file (which is what is actually checked into version control).
+    acceptNewOutput _ = do
+      actualContents <- BS.readFile actualFilePath
+      BS.writeFile goldenFilePath   actualContents
+      BS.writeFile templateFilePath actualContents
+
+    -- This is largely cargo-culted from the internals of
+    -- tasty-golden's goldenVsFileDiff.cmp function.
+    cmp _ _ | null cmd = error "compileAndDumpTest: empty command line"
+    cmp _ _ = do
+      (_, Just sout, _, pid)
+        <- createProcess (proc (head cmd) (tail cmd)) { std_out = CreatePipe }
+      -- strictly read the whole output, so that the process can terminate
+      out <- hGetContents sout
+      evaluate . rnf $ out
+
+      r <- waitForProcess pid
+      return $ case r of
+        ExitSuccess -> Nothing
+        _ -> Just out
 
 -- Compile-and-dump test using standard GHC options defined by the testsuite.
 -- It takes two parameters: name of a file containing a test (no ".hs"

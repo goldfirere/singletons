@@ -1,5 +1,4 @@
 packages: .
-          ./util
 
 source-repository-package
   type: git
