@@ -24,9 +24,15 @@ Changelog for singletons project
   Most TH functions are now polymorphic over `OptionsMonad` instead of
   `DsMonad`.
 * `singletons` now does a much better job of preserving the order of type
-  variables when singling the type signatures of top-level functions and data
-  constructors. See the `Support for TypeApplications` section of the `README`
-  for more details.
+  variables in type signatures during promotion and singling. See the
+  `Support for TypeApplications` section of the `README` for more details.
+
+  When generating type-level declarations in particular (e.g., promoted type
+  families or defunctionalization symbols), `singletons` will likely also
+  generate standalone kind signatures to preserve type variable order. As a
+  result, most `singletons` code that uses Template Haskell will require the
+  use of the `StandaloneKindSignatures` extension (and, by extension, the
+  `NoCUSKs` extension) to work.
 * `singletons` now does a more much thorough job of rejecting higher-rank types
   during promotion or singling, as `singletons` cannot support them.
   (Previously, `singletons` would sometimes accept them, often changing rank-2

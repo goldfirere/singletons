@@ -9,29 +9,31 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
     foo = undefined
     bar :: Bool -> Bool
     bar = error "urk"
-    instance SuppressUnusedWarnings BarSym0 where
-      suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
-    data BarSym0 :: (~>) Bool Bool
+    type BarSym0 :: (~>) Bool Bool
+    data BarSym0 a0123456789876543210
       where
-        BarSym0KindInference :: forall a0123456789876543210
-                                       arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
+        BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
     type instance Apply BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
+    instance SuppressUnusedWarnings BarSym0 where
+      suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
     type BarSym1 (a0123456789876543210 :: Bool) =
-        Bar a0123456789876543210
-    instance SuppressUnusedWarnings FooSym0 where
-      suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
-    data FooSym0 :: (~>) Bool Bool
+        Bar a0123456789876543210 :: Bool
+    type FooSym0 :: (~>) Bool Bool
+    data FooSym0 a0123456789876543210
       where
-        FooSym0KindInference :: forall a0123456789876543210
-                                       arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
+        FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
     type instance Apply FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
+    instance SuppressUnusedWarnings FooSym0 where
+      suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
     type FooSym1 (a0123456789876543210 :: Bool) =
-        Foo a0123456789876543210
-    type family Bar (a :: Bool) :: Bool where
+        Foo a0123456789876543210 :: Bool
+    type Bar :: Bool -> Bool
+    type family Bar a where
       Bar a_0123456789876543210 = Apply (Apply ErrorSym0 "urk") a_0123456789876543210
-    type family Foo (a :: Bool) :: Bool where
+    type Foo :: Bool -> Bool
+    type family Foo a where
       Foo a_0123456789876543210 = Apply UndefinedSym0 a_0123456789876543210
     sBar ::
       forall (t :: Bool). Sing t -> Sing (Apply BarSym0 t :: Bool)

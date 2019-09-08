@@ -262,7 +262,7 @@ singITyConInstance n
        f      <- qNewName "f"
        x      <- qNewName "x"
        let k_penult = last ks
-           k_fun = ravel (map DVarT ks) (DVarT k_last)
+           k_fun = ravelVanillaDType [] [] (map DVarT ks) (DVarT k_last)
            f_ty  = DVarT f
            a_tys = map DVarT as
            mk_fun arrow t1 t2 = arrow `DAppT` t1 `DAppT` t2
@@ -399,12 +399,15 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                             , lde_bound_kvs = meth_bound_kvs } }) =
   bindContext [foldTypeTvbs (DConT cls_name) cls_tvbs] $ do
     opts <- getOptions
+    mb_cls_sak <- dsReifyType cls_name
+    let sing_cls_name   = singledClassName opts cls_name
+        mb_sing_cls_sak = fmap (DKiSigD sing_cls_name) mb_cls_sak
     cls_infix_decls <- singReifiedInfixDecls $ cls_name:meth_names
     (sing_sigs, _, tyvar_names, cxts, res_kis, singIDefunss)
       <- unzip6 <$> zipWithM (singTySig no_meth_defns meth_sigs meth_bound_kvs)
                              meth_names
                              (map (DConT . defunctionalizedName0 opts) meth_names)
-    emitDecs $ cls_infix_decls ++ concat singIDefunss
+    emitDecs $ maybeToList mb_sing_cls_sak ++ cls_infix_decls ++ concat singIDefunss
     let default_sigs = catMaybes $
                        zipWith4 (mk_default_sig opts) meth_names sing_sigs
                                                       tyvar_names res_kis
@@ -417,7 +420,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
     fixities' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs fixities
     cls_cxt' <- mapM singPred cls_cxt
     return $ DClassD cls_cxt'
-                     (singledClassName opts cls_name)
+                     sing_cls_name
                      cls_tvbs
                      cls_fundeps   -- they are fine without modification
                      (map DLetDec (sing_sigs ++ sing_meths ++ fixities') ++ default_sigs)
@@ -458,8 +461,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                 -- See #175
                                [ foldApply prom_meth tvs `DSigT` res_ki
                                , foldApply prom_dflt tvs ]
-      return $ DForallT ForallInvis tvbs
-             $ DConstrainedT (default_pred : cxt) (ravel args res)
+      return $ ravelVanillaDType tvbs (default_pred : cxt) args res
       where
         bound_kv_set = Set.fromList bound_kvs
 
@@ -637,11 +639,12 @@ singTySig defns types bound_kvs name prom_ty = do
     mk_sing_ty :: Int -> SgM (DType, [Name])
     mk_sing_ty n = do
       arg_names <- replicateM n (qNewName "arg")
-      return ( DForallT ForallInvis
-                        (map DPlainTV arg_names)
-                        (ravel (map (\nm -> singFamily `DAppT` DVarT nm) arg_names)
-                               (singFamily `DAppT`
-                                    (foldl apply prom_ty (map DVarT arg_names))))
+      return ( ravelVanillaDType
+                 (map DPlainTV arg_names)
+                 []
+                 (map (\nm -> singFamily `DAppT` DVarT nm) arg_names)
+                 (singFamily `DAppT`
+                      (foldl apply prom_ty (map DVarT arg_names)))
              , arg_names )
 
 singLetDecRHS :: Map Name [Name]
@@ -992,10 +995,6 @@ singLit (StringL str) = do
          else sing_str_lit
 singLit lit =
   fail ("Only string and natural number literals can be singled: " ++ show lit)
-
-maybeSigT :: DType -> Maybe DKind -> DType
-maybeSigT ty Nothing   = ty
-maybeSigT ty (Just ki) = ty `DSigT` ki
 
 {-
 Note [The id hack; or, how singletons learned to stop worrying and avoid kind generalization]

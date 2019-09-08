@@ -30,6 +30,7 @@ singDataD (DataDecl name tvbs ctors) = do
   opts <- getOptions
   let tvbNames = map extractTvbName tvbs
   k <- promoteType (foldType (DConT name) (map DVarT tvbNames))
+  mb_data_sak <- dsReifyType name
   ctors' <- mapM (singCtor name) ctors
   ctorFixities <- singReifiedInfixDecls [ n | DCon _ _ n _ _ <- ctors ]
   -- instance for SingKind
@@ -56,10 +57,37 @@ singDataD (DataDecl name tvbs ctors) = do
         DTySynInstD $ DTySynEqn Nothing
                                 (DConT singFamilyName `DAppKindT` k)
                                 (DConT singDataName)
-      kindedSingTy = DForallT ForallInvis (map DPlainTV tvbNames) $
-                     DArrowT `DAppT` k `DAppT` DConT typeKindName
 
-  return $ (DDataD Data [] singDataName [] (Just kindedSingTy) ctors' []) :
+      mk_data_dec tvbs' mb_kind =
+        DDataD Data [] singDataName tvbs' mb_kind ctors' []
+
+  data_decs <-
+    case mb_data_sak of
+      -- No standalone kind signature. Try to figure out the order of kind
+      -- variables on a best-effort basis.
+      Nothing -> do
+        ki <- promoteType $ foldType (DConT name) (map dTyVarBndrToDType tvbs)
+        let sing_tvbs = toposortTyVarsOf [k]
+            kinded_sing_ty = DForallT ForallInvis sing_tvbs $
+                             DArrowT `DAppT` ki `DAppT` DConT typeKindName
+        pure [mk_data_dec [] (Just kinded_sing_ty)]
+
+      -- A standalone kind signature is provided, so use that to determine the
+      -- order of kind variables.
+      Just data_sak -> do
+        let (args, _)  = unravelDType data_sak
+            vis_args   = filterDVisFunArgs args
+            invis_tvbs = filterInvisTvbArgs args
+            vis_tvbs   = zipWith replaceTvbKind vis_args tvbs
+        ki <- promoteType $ foldType (DConT name) (map dTyVarBndrToDType vis_tvbs)
+        z  <- qNewName "z"
+        let sing_data_sak = DForallT ForallInvis (invis_tvbs ++ vis_tvbs) $
+                            DArrowT `DAppT` ki `DAppT` DConT typeKindName
+        pure [ DKiSigD singDataName sing_data_sak
+             , mk_data_dec [DPlainTV z] Nothing
+             ]
+
+  return $ data_decs ++
            singSynInst :
            [singKindInst | genSingKindInsts opts] ++
            ctorFixities
@@ -136,7 +164,7 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
       sName = singledDataConName opts name
       sCon = DConE sName
       pCon = DConT name
-  checkVanillaDType $ DForallT ForallInvis con_tvbs $ ravel types rty
+  checkVanillaDType $ ravelVanillaDType con_tvbs [] types rty
   indexNames <- mapM (const $ qNewName "n") types
   kinds <- mapM promoteType_NC types
   rty' <- promoteType_NC rty

@@ -14,7 +14,7 @@
 
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies,
              UndecidableInstances, GADTs, DataKinds, PolyKinds,
-             TypeApplications #-}
+             TypeApplications, StandaloneKindSignatures #-}
 
 module Data.Singletons.Prelude.List.Internal.Disambiguation where
 

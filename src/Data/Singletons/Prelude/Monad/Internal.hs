@@ -6,6 +6,7 @@
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
@@ -43,16 +44,6 @@ import Data.List.NonEmpty (NonEmpty(..))
 import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
-
-{-
-Note [How to get the right kinds when promoting Functor and friends]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-To avoid running afoul of a CUSK validity check (see Note [CUSKification]),
-classes with type parameters that lack explicit kind signatures will be
-defaulted to be of kind Type. This is not what you want for Functor, however,
-since its argument is of kind (Type -> Type), so we must explicitly use this
-kind when declaring the Functor class (and other classes in this module).
--}
 
 $(singletonsOnly [d|
   infixl 4  <$

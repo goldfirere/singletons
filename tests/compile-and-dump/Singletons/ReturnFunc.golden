@@ -13,62 +13,60 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     id x = x
     idFoo :: c -> a -> a
     idFoo _ = id
-    instance SuppressUnusedWarnings IdFooSym0 where
-      suppressUnusedWarnings = snd (((,) IdFooSym0KindInference) ())
-    data IdFooSym0 :: forall c0123456789876543210 a0123456789876543210.
-                      (~>) c0123456789876543210 ((~>) a0123456789876543210 a0123456789876543210)
+    type IdFooSym0 :: (~>) c ((~>) a a)
+    data IdFooSym0 a0123456789876543210
       where
-        IdFooSym0KindInference :: forall a0123456789876543210
-                                         arg. SameKind (Apply IdFooSym0 arg) (IdFooSym1 arg) =>
+        IdFooSym0KindInference :: SameKind (Apply IdFooSym0 arg) (IdFooSym1 arg) =>
                                   IdFooSym0 a0123456789876543210
     type instance Apply IdFooSym0 a0123456789876543210 = IdFooSym1 a0123456789876543210
-    instance SuppressUnusedWarnings (IdFooSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) IdFooSym1KindInference) ())
-    data IdFooSym1 (a0123456789876543210 :: c0123456789876543210) :: forall a0123456789876543210.
-                                                                     (~>) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings IdFooSym0 where
+      suppressUnusedWarnings = snd (((,) IdFooSym0KindInference) ())
+    type IdFooSym1 :: c -> (~>) a a
+    data IdFooSym1 a0123456789876543210 a0123456789876543210
       where
-        IdFooSym1KindInference :: forall a0123456789876543210
-                                         a0123456789876543210
-                                         arg. SameKind (Apply (IdFooSym1 a0123456789876543210) arg) (IdFooSym2 a0123456789876543210 arg) =>
+        IdFooSym1KindInference :: SameKind (Apply (IdFooSym1 a0123456789876543210) arg) (IdFooSym2 a0123456789876543210 arg) =>
                                   IdFooSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (IdFooSym1 a0123456789876543210) a0123456789876543210 = IdFooSym2 a0123456789876543210 a0123456789876543210
-    type IdFooSym2 (a0123456789876543210 :: c0123456789876543210) (a0123456789876543210 :: a0123456789876543210) =
-        IdFoo a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings IdSym0 where
-      suppressUnusedWarnings = snd (((,) IdSym0KindInference) ())
-    data IdSym0 :: forall a0123456789876543210.
-                   (~>) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (IdFooSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) IdFooSym1KindInference) ())
+    type IdFooSym2 (a0123456789876543210 :: c) (a0123456789876543210 :: a) =
+        IdFoo a0123456789876543210 a0123456789876543210 :: a
+    type IdSym0 :: (~>) a a
+    data IdSym0 a0123456789876543210
       where
-        IdSym0KindInference :: forall a0123456789876543210
-                                      arg. SameKind (Apply IdSym0 arg) (IdSym1 arg) =>
+        IdSym0KindInference :: SameKind (Apply IdSym0 arg) (IdSym1 arg) =>
                                IdSym0 a0123456789876543210
     type instance Apply IdSym0 a0123456789876543210 = IdSym1 a0123456789876543210
-    type IdSym1 (a0123456789876543210 :: a0123456789876543210) =
-        Id a0123456789876543210
-    instance SuppressUnusedWarnings ReturnFuncSym0 where
-      suppressUnusedWarnings = snd (((,) ReturnFuncSym0KindInference) ())
-    data ReturnFuncSym0 :: (~>) Nat ((~>) Nat Nat)
+    instance SuppressUnusedWarnings IdSym0 where
+      suppressUnusedWarnings = snd (((,) IdSym0KindInference) ())
+    type IdSym1 (a0123456789876543210 :: a) =
+        Id a0123456789876543210 :: a
+    type ReturnFuncSym0 :: (~>) Nat ((~>) Nat Nat)
+    data ReturnFuncSym0 a0123456789876543210
       where
-        ReturnFuncSym0KindInference :: forall a0123456789876543210
-                                              arg. SameKind (Apply ReturnFuncSym0 arg) (ReturnFuncSym1 arg) =>
+        ReturnFuncSym0KindInference :: SameKind (Apply ReturnFuncSym0 arg) (ReturnFuncSym1 arg) =>
                                        ReturnFuncSym0 a0123456789876543210
     type instance Apply ReturnFuncSym0 a0123456789876543210 = ReturnFuncSym1 a0123456789876543210
-    instance SuppressUnusedWarnings (ReturnFuncSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) ReturnFuncSym1KindInference) ())
-    data ReturnFuncSym1 (a0123456789876543210 :: Nat) :: (~>) Nat Nat
+    instance SuppressUnusedWarnings ReturnFuncSym0 where
+      suppressUnusedWarnings = snd (((,) ReturnFuncSym0KindInference) ())
+    type ReturnFuncSym1 :: Nat -> (~>) Nat Nat
+    data ReturnFuncSym1 a0123456789876543210 a0123456789876543210
       where
-        ReturnFuncSym1KindInference :: forall a0123456789876543210
-                                              a0123456789876543210
-                                              arg. SameKind (Apply (ReturnFuncSym1 a0123456789876543210) arg) (ReturnFuncSym2 a0123456789876543210 arg) =>
+        ReturnFuncSym1KindInference :: SameKind (Apply (ReturnFuncSym1 a0123456789876543210) arg) (ReturnFuncSym2 a0123456789876543210 arg) =>
                                        ReturnFuncSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (ReturnFuncSym1 a0123456789876543210) a0123456789876543210 = ReturnFuncSym2 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (ReturnFuncSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) ReturnFuncSym1KindInference) ())
     type ReturnFuncSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
-        ReturnFunc a0123456789876543210 a0123456789876543210
-    type family IdFoo (a :: c) (a :: a) :: a where
+        ReturnFunc a0123456789876543210 a0123456789876543210 :: Nat
+    type IdFoo :: c -> a -> a
+    type family IdFoo a a where
       IdFoo _ a_0123456789876543210 = Apply IdSym0 a_0123456789876543210
-    type family Id (a :: a) :: a where
+    type Id :: a -> a
+    type family Id a where
       Id x = x
-    type family ReturnFunc (a :: Nat) (a :: Nat) :: Nat where
+    type ReturnFunc :: Nat -> Nat -> Nat
+    type family ReturnFunc a a where
       ReturnFunc _ a_0123456789876543210 = Apply SuccSym0 a_0123456789876543210
     sIdFoo ::
       forall c a (t :: c) (t :: a).

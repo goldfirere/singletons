@@ -3,26 +3,26 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
       [d| ($>) :: Nat -> Nat -> Nat
           ($>) = (+) |]
   ======>
-    instance SuppressUnusedWarnings ($>@#@$) where
-      suppressUnusedWarnings = snd (((,) (:$>@#@$###)) ())
-    data ($>@#@$) :: (~>) Nat ((~>) Nat Nat)
+    type ($>@#@$) :: (~>) Nat ((~>) Nat Nat)
+    data ($>@#@$) a0123456789876543210
       where
-        (:$>@#@$###) :: forall a0123456789876543210
-                               arg. SameKind (Apply ($>@#@$) arg) (($>@#@$$) arg) =>
+        (:$>@#@$###) :: SameKind (Apply ($>@#@$) arg) (($>@#@$$) arg) =>
                         ($>@#@$) a0123456789876543210
     type instance Apply ($>@#@$) a0123456789876543210 = ($>@#@$$) a0123456789876543210
-    instance SuppressUnusedWarnings (($>@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (:$>@#@$$###)) ())
-    data ($>@#@$$) (a0123456789876543210 :: Nat) :: (~>) Nat Nat
+    instance SuppressUnusedWarnings ($>@#@$) where
+      suppressUnusedWarnings = snd (((,) (:$>@#@$###)) ())
+    type ($>@#@$$) :: Nat -> (~>) Nat Nat
+    data ($>@#@$$) a0123456789876543210 a0123456789876543210
       where
-        (:$>@#@$$###) :: forall a0123456789876543210
-                                a0123456789876543210
-                                arg. SameKind (Apply (($>@#@$$) a0123456789876543210) arg) (($>@#@$$$) a0123456789876543210 arg) =>
+        (:$>@#@$$###) :: SameKind (Apply (($>@#@$$) a0123456789876543210) arg) (($>@#@$$$) a0123456789876543210 arg) =>
                          ($>@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply (($>@#@$$) a0123456789876543210) a0123456789876543210 = ($>@#@$$$) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (($>@#@$$) a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (:$>@#@$$###)) ())
     type ($>@#@$$$) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
-        ($>) a0123456789876543210 a0123456789876543210
-    type family ($>) (a :: Nat) (a :: Nat) :: Nat where
+        ($>) a0123456789876543210 a0123456789876543210 :: Nat
+    type ($>) :: Nat -> Nat -> Nat
+    type family ($>) a a where
       ($>) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (+@#@$) a_0123456789876543210) a_0123456789876543210
     (%$>) ::
       forall (t :: Nat) (t :: Nat).

@@ -7,7 +7,8 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
       (%==) ((:%+:) _ _) SFLeaf = SFalse
       (%==) ((:%+:) a a) ((:%+:) b b)
         = ((%&&) (((%==) a) b)) (((%==) a) b)
-    type family Equals_0123456789876543210 (a :: Foo) (b :: Foo) :: Bool where
+    type Equals_0123456789876543210 :: Foo -> Foo -> Bool
+    type family Equals_0123456789876543210 a b where
       Equals_0123456789876543210 'FLeaf 'FLeaf = TrueSym0
       Equals_0123456789876543210 ('(:+:) a a) ('(:+:) b b) = (&&) ((==) a b) ((==) a b)
       Equals_0123456789876543210 (_ :: Foo) (_ :: Foo) = FalseSym0
@@ -15,7 +16,8 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
       type (==) a b = Equals_0123456789876543210 a b
     instance SEq Empty where
       (%==) _ _ = STrue
-    type family Equals_0123456789876543210 (a :: Empty) (b :: Empty) :: Bool where
+    type Equals_0123456789876543210 :: Empty -> Empty -> Bool
+    type family Equals_0123456789876543210 a b where
       Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = TrueSym0
     instance PEq Empty where
       type (==) a b = Equals_0123456789876543210 a b

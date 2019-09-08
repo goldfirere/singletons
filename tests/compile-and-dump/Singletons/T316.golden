@@ -3,38 +3,38 @@ Singletons/T316.hs:(0,0)-(0,0): Splicing declarations
       [d| replaceAllGTypes :: (a -> Type -> a) -> [Type] -> [a] -> [a]
           replaceAllGTypes f types as = zipWith f as types |]
   ======>
+    type ReplaceAllGTypesSym0 :: (~>) ((~>) a ((~>) Type a)) ((~>) [Type] ((~>) [a] [a]))
+    data ReplaceAllGTypesSym0 a0123456789876543210
+      where
+        ReplaceAllGTypesSym0KindInference :: SameKind (Apply ReplaceAllGTypesSym0 arg) (ReplaceAllGTypesSym1 arg) =>
+                                             ReplaceAllGTypesSym0 a0123456789876543210
+    type instance Apply ReplaceAllGTypesSym0 a0123456789876543210 = ReplaceAllGTypesSym1 a0123456789876543210
     instance SuppressUnusedWarnings ReplaceAllGTypesSym0 where
       suppressUnusedWarnings
         = snd (((,) ReplaceAllGTypesSym0KindInference) ())
-    data ReplaceAllGTypesSym0 :: forall a0123456789876543210.
-                                 (~>) ((~>) a0123456789876543210 ((~>) Type a0123456789876543210)) ((~>) [Type] ((~>) [a0123456789876543210] [a0123456789876543210]))
+    type ReplaceAllGTypesSym1 :: (~>) a ((~>) Type a)
+                                 -> (~>) [Type] ((~>) [a] [a])
+    data ReplaceAllGTypesSym1 a0123456789876543210 a0123456789876543210
       where
-        ReplaceAllGTypesSym0KindInference :: forall a0123456789876543210
-                                                    arg. SameKind (Apply ReplaceAllGTypesSym0 arg) (ReplaceAllGTypesSym1 arg) =>
-                                             ReplaceAllGTypesSym0 a0123456789876543210
-    type instance Apply ReplaceAllGTypesSym0 a0123456789876543210 = ReplaceAllGTypesSym1 a0123456789876543210
+        ReplaceAllGTypesSym1KindInference :: SameKind (Apply (ReplaceAllGTypesSym1 a0123456789876543210) arg) (ReplaceAllGTypesSym2 a0123456789876543210 arg) =>
+                                             ReplaceAllGTypesSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (ReplaceAllGTypesSym1 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ReplaceAllGTypesSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ReplaceAllGTypesSym1KindInference) ())
-    data ReplaceAllGTypesSym1 (a0123456789876543210 :: (~>) a0123456789876543210 ((~>) Type a0123456789876543210)) :: (~>) [Type] ((~>) [a0123456789876543210] [a0123456789876543210])
+    type ReplaceAllGTypesSym2 :: (~>) a ((~>) Type a)
+                                 -> [Type] -> (~>) [a] [a]
+    data ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
       where
-        ReplaceAllGTypesSym1KindInference :: forall a0123456789876543210
-                                                    a0123456789876543210
-                                                    arg. SameKind (Apply (ReplaceAllGTypesSym1 a0123456789876543210) arg) (ReplaceAllGTypesSym2 a0123456789876543210 arg) =>
-                                             ReplaceAllGTypesSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ReplaceAllGTypesSym1 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210
+        ReplaceAllGTypesSym2KindInference :: SameKind (Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) arg) (ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 arg) =>
+                                             ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ReplaceAllGTypesSym2KindInference) ())
-    data ReplaceAllGTypesSym2 (a0123456789876543210 :: (~>) a0123456789876543210 ((~>) Type a0123456789876543210)) (a0123456789876543210 :: [Type]) :: (~>) [a0123456789876543210] [a0123456789876543210]
-      where
-        ReplaceAllGTypesSym2KindInference :: forall a0123456789876543210
-                                                    a0123456789876543210
-                                                    a0123456789876543210
-                                                    arg. SameKind (Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) arg) (ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 arg) =>
-                                             ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type ReplaceAllGTypesSym3 (a0123456789876543210 :: (~>) a0123456789876543210 ((~>) Type a0123456789876543210)) (a0123456789876543210 :: [Type]) (a0123456789876543210 :: [a0123456789876543210]) =
-        ReplaceAllGTypes a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type family ReplaceAllGTypes (a :: (~>) a ((~>) Type a)) (a :: [Type]) (a :: [a]) :: [a] where
+    type ReplaceAllGTypesSym3 (a0123456789876543210 :: (~>) a ((~>) Type a)) (a0123456789876543210 :: [Type]) (a0123456789876543210 :: [a]) =
+        ReplaceAllGTypes a0123456789876543210 a0123456789876543210 a0123456789876543210 :: [a]
+    type ReplaceAllGTypes :: (~>) a ((~>) Type a)
+                             -> [Type] -> [a] -> [a]
+    type family ReplaceAllGTypes a a a where
       ReplaceAllGTypes f types as = Apply (Apply (Apply ZipWithSym0 f) as) types

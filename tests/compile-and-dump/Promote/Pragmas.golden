@@ -7,6 +7,7 @@ Promote/Pragmas.hs:(0,0)-(0,0): Splicing declarations
     {-# INLINE foo #-}
     foo :: Bool
     foo = True
-    type FooSym0 = Foo
-    type family Foo :: Bool where
+    type FooSym0 = Foo :: Bool
+    type Foo :: Bool
+    type family Foo where
       Foo = TrueSym0

@@ -80,14 +80,15 @@ promoteTypeArg_NC :: MonadFail m => DTypeArg -> m DTypeArg
 promoteTypeArg_NC (DTANormal t) = DTANormal <$> promoteType_NC t
 promoteTypeArg_NC ta@(DTyArg _) = pure ta -- Kinds are already promoted
 
--- | Promote a DType to the kind level, splitting it into its argument and
--- result types in the process.
-promoteUnraveled :: MonadFail m => DType -> m ([DKind], DKind)
+-- | Promote a DType to the kind level, splitting it into its type variable
+-- binders, argument types, and result type in the process.
+promoteUnraveled :: MonadFail m
+                 => DType -> m ([DTyVarBndr], [DKind], DKind)
 promoteUnraveled ty = do
-  (_, _, arg_tys, res_ty) <- unravelVanillaDType ty
+  (tvbs, _, arg_tys, res_ty) <- unravelVanillaDType ty
   arg_kis <- mapM promoteType_NC arg_tys
   res_ki  <- promoteType_NC res_ty
-  return (arg_kis, res_ki)
+  return (tvbs, arg_kis, res_ki)
 
 {-
 Note [Vanilla-type validity checking during promotion]

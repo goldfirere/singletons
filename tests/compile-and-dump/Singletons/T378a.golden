@@ -18,33 +18,30 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
         Proxy2 :: Proxy (a :: k)
         Proxy3 :: forall a. Proxy a
         Proxy4 :: forall k (a :: k). Proxy a
-    type Proxy1Sym0 = Proxy1
-    type Proxy2Sym0 = Proxy2
-    type Proxy3Sym0 = Proxy3
-    type Proxy4Sym0 = Proxy4
-    instance SuppressUnusedWarnings ConstBASym0 where
-      suppressUnusedWarnings = snd (((,) ConstBASym0KindInference) ())
-    data ConstBASym0 :: forall a0123456789876543210
-                               b0123456789876543210.
-                        (~>) a0123456789876543210 ((~>) b0123456789876543210 a0123456789876543210)
+    type Proxy1Sym0 = Proxy1 :: Proxy a
+    type Proxy2Sym0 = Proxy2 :: Proxy (a :: k)
+    type Proxy3Sym0 = Proxy3 :: Proxy a
+    type Proxy4Sym0 = Proxy4 :: Proxy a
+    type ConstBASym0 :: forall b a. (~>) a ((~>) b a)
+    data ConstBASym0 a0123456789876543210
       where
-        ConstBASym0KindInference :: forall a0123456789876543210
-                                           arg. SameKind (Apply ConstBASym0 arg) (ConstBASym1 arg) =>
+        ConstBASym0KindInference :: SameKind (Apply ConstBASym0 arg) (ConstBASym1 arg) =>
                                     ConstBASym0 a0123456789876543210
     type instance Apply ConstBASym0 a0123456789876543210 = ConstBASym1 a0123456789876543210
-    instance SuppressUnusedWarnings (ConstBASym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) ConstBASym1KindInference) ())
-    data ConstBASym1 (a0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
-                                                                       (~>) b0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings ConstBASym0 where
+      suppressUnusedWarnings = snd (((,) ConstBASym0KindInference) ())
+    type ConstBASym1 :: forall b a. a -> (~>) b a
+    data ConstBASym1 a0123456789876543210 a0123456789876543210
       where
-        ConstBASym1KindInference :: forall a0123456789876543210
-                                           a0123456789876543210
-                                           arg. SameKind (Apply (ConstBASym1 a0123456789876543210) arg) (ConstBASym2 a0123456789876543210 arg) =>
+        ConstBASym1KindInference :: SameKind (Apply (ConstBASym1 a0123456789876543210) arg) (ConstBASym2 a0123456789876543210 arg) =>
                                     ConstBASym1 a0123456789876543210 a0123456789876543210
     type instance Apply (ConstBASym1 a0123456789876543210) a0123456789876543210 = ConstBASym2 a0123456789876543210 a0123456789876543210
-    type ConstBASym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: b0123456789876543210) =
-        ConstBA a0123456789876543210 a0123456789876543210
-    type family ConstBA (a :: a) (a :: b) :: a where
+    instance SuppressUnusedWarnings (ConstBASym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) ConstBASym1KindInference) ())
+    type ConstBASym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) =
+        ConstBA a0123456789876543210 a0123456789876543210 :: a
+    type ConstBA :: forall b a. a -> b -> a
+    type family ConstBA a a where
       ConstBA x _ = x
     sConstBA ::
       forall b a (t :: a) (t :: b).
@@ -54,7 +51,7 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @ConstBASym0) sConstBA
     instance SingI d => SingI (ConstBASym1 (d :: a) :: (~>) b a) where
       sing = (singFun1 @(ConstBASym1 (d :: a))) (sConstBA (sing @d))
-    data SProxy :: forall a. Proxy a -> Type
+    data SProxy :: forall a. Proxy (a :: k) -> Type
       where
         SProxy1 :: forall a. SProxy (Proxy1 :: Proxy a)
         SProxy2 :: forall k (a :: k). SProxy (Proxy2 :: Proxy (a :: k))

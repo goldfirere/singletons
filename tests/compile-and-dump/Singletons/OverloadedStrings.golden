@@ -9,20 +9,22 @@ Singletons/OverloadedStrings.hs:(0,0)-(0,0): Splicing declarations
     symId x = x
     foo :: Symbol
     foo = symId "foo"
-    type FooSym0 = Foo
-    instance SuppressUnusedWarnings SymIdSym0 where
-      suppressUnusedWarnings = snd (((,) SymIdSym0KindInference) ())
-    data SymIdSym0 :: (~>) Symbol Symbol
+    type FooSym0 = Foo :: Symbol
+    type SymIdSym0 :: (~>) Symbol Symbol
+    data SymIdSym0 a0123456789876543210
       where
-        SymIdSym0KindInference :: forall a0123456789876543210
-                                         arg. SameKind (Apply SymIdSym0 arg) (SymIdSym1 arg) =>
+        SymIdSym0KindInference :: SameKind (Apply SymIdSym0 arg) (SymIdSym1 arg) =>
                                   SymIdSym0 a0123456789876543210
     type instance Apply SymIdSym0 a0123456789876543210 = SymIdSym1 a0123456789876543210
+    instance SuppressUnusedWarnings SymIdSym0 where
+      suppressUnusedWarnings = snd (((,) SymIdSym0KindInference) ())
     type SymIdSym1 (a0123456789876543210 :: Symbol) =
-        SymId a0123456789876543210
-    type family Foo :: Symbol where
+        SymId a0123456789876543210 :: Symbol
+    type Foo :: Symbol
+    type family Foo where
       Foo = Apply SymIdSym0 (Data.Singletons.Prelude.IsString.FromString "foo")
-    type family SymId (a :: Symbol) :: Symbol where
+    type SymId :: Symbol -> Symbol
+    type family SymId a where
       SymId x = x
     sFoo :: Sing (FooSym0 :: Symbol)
     sSymId ::

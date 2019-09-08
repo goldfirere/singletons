@@ -8,29 +8,29 @@ Singletons/T322.hs:(0,0)-(0,0): Splicing declarations
     (!) :: Bool -> Bool -> Bool
     (!) = (||)
     infixr 2 !
-    instance SuppressUnusedWarnings (!@#@$) where
-      suppressUnusedWarnings = snd (((,) (:!@#@$###)) ())
-    data (!@#@$) :: (~>) Bool ((~>) Bool Bool)
+    type (!@#@$) :: (~>) Bool ((~>) Bool Bool)
+    data (!@#@$) a0123456789876543210
       where
-        (:!@#@$###) :: forall a0123456789876543210
-                              arg. SameKind (Apply (!@#@$) arg) ((!@#@$$) arg) =>
+        (:!@#@$###) :: SameKind (Apply (!@#@$) arg) ((!@#@$$) arg) =>
                        (!@#@$) a0123456789876543210
     type instance Apply (!@#@$) a0123456789876543210 = (!@#@$$) a0123456789876543210
+    instance SuppressUnusedWarnings (!@#@$) where
+      suppressUnusedWarnings = snd (((,) (:!@#@$###)) ())
     infixr 2 !@#@$
-    instance SuppressUnusedWarnings ((!@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (:!@#@$$###)) ())
-    data (!@#@$$) (a0123456789876543210 :: Bool) :: (~>) Bool Bool
+    type (!@#@$$) :: Bool -> (~>) Bool Bool
+    data (!@#@$$) a0123456789876543210 a0123456789876543210
       where
-        (:!@#@$$###) :: forall a0123456789876543210
-                               a0123456789876543210
-                               arg. SameKind (Apply ((!@#@$$) a0123456789876543210) arg) ((!@#@$$$) a0123456789876543210 arg) =>
+        (:!@#@$$###) :: SameKind (Apply ((!@#@$$) a0123456789876543210) arg) ((!@#@$$$) a0123456789876543210 arg) =>
                         (!@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((!@#@$$) a0123456789876543210) a0123456789876543210 = (!@#@$$$) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings ((!@#@$$) a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (:!@#@$$###)) ())
     infixr 2 !@#@$$
     type (!@#@$$$) (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) =
-        (!) a0123456789876543210 a0123456789876543210
+        (!) a0123456789876543210 a0123456789876543210 :: Bool
     infixr 2 !@#@$$$
-    type family (!) (a :: Bool) (a :: Bool) :: Bool where
+    type (!) :: Bool -> Bool -> Bool
+    type family (!) a a where
       (!) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (||@#@$) a_0123456789876543210) a_0123456789876543210
     infixr 2 %!
     (%!) ::

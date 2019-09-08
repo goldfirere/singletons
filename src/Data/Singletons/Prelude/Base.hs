@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell, TypeOperators, DataKinds, PolyKinds,
              ScopedTypeVariables, TypeFamilies, GADTs,
-             UndecidableInstances, BangPatterns, TypeApplications #-}
+             UndecidableInstances, BangPatterns, TypeApplications,
+             StandaloneKindSignatures #-}
 
 -----------------------------------------------------------------------------
 -- |
