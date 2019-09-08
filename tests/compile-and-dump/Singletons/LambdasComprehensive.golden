@@ -14,22 +14,23 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
     bar = (map ((either_ pred) Succ)) [Left Zero, Right (Succ Zero)]
     type family Lambda_0123456789876543210 x where
       Lambda_0123456789876543210 x = Apply (Apply (Apply Either_Sym0 PredSym0) SuccSym0) x
+    data Lambda_0123456789876543210Sym0 x0123456789876543210
+      where
+        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 x0123456789876543210
+    type instance Apply Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210Sym1 x0123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
-    data Lambda_0123456789876543210Sym0 x0123456789876543210
-      where
-        Lambda_0123456789876543210Sym0KindInference :: forall x0123456789876543210
-                                                              arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
-                                                       Lambda_0123456789876543210Sym0 x0123456789876543210
-    type instance Apply Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210Sym1 x0123456789876543210
     type Lambda_0123456789876543210Sym1 x0123456789876543210 =
         Lambda_0123456789876543210 x0123456789876543210
-    type BarSym0 = Bar
-    type FooSym0 = Foo
-    type family Bar :: [Nat] where
+    type BarSym0 = Bar :: [Nat]
+    type FooSym0 = Foo :: [Nat]
+    type Bar :: [Nat]
+    type family Bar where
       Bar = Apply (Apply MapSym0 (Apply (Apply Either_Sym0 PredSym0) SuccSym0)) (Apply (Apply (:@#@$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))
-    type family Foo :: [Nat] where
+    type Foo :: [Nat]
+    type family Foo where
       Foo = Apply (Apply MapSym0 Lambda_0123456789876543210Sym0) (Apply (Apply (:@#@$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))
     sBar :: Sing (BarSym0 :: [Nat])
     sFoo :: Sing (FooSym0 :: [Nat])

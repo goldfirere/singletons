@@ -1,13 +1,14 @@
 Singletons/T159.hs:0:0:: Splicing declarations
     genSingletons [''T0, ''T1]
   ======>
-    type ASym0 = 'A
-    type BSym0 = 'B
-    type CSym0 = 'C
-    type DSym0 = 'D
-    type ESym0 = 'E
-    type FSym0 = 'F
-    data ST0 :: T0 -> GHC.Types.Type
+    type ASym0 = 'A :: T0
+    type BSym0 = 'B :: T0
+    type CSym0 = 'C :: T0
+    type DSym0 = 'D :: T0
+    type ESym0 = 'E :: T0
+    type FSym0 = 'F :: T0
+    type ST0 :: T0 -> GHC.Types.Type
+    data ST0 z
       where
         SA :: ST0 ('A :: T0)
         SB :: ST0 ('B :: T0)
@@ -42,52 +43,51 @@ Singletons/T159.hs:0:0:: Splicing declarations
       sing = SE
     instance SingI 'F where
       sing = SF
-    type N1Sym0 = 'N1
+    type N1Sym0 = 'N1 :: T1
+    type C1Sym0 :: (~>) T0 ((~>) T1 T1)
+    data C1Sym0 a0123456789876543210
+      where
+        C1Sym0KindInference :: SameKind (Apply C1Sym0 arg) (C1Sym1 arg) =>
+                               C1Sym0 a0123456789876543210
+    type instance Apply C1Sym0 a0123456789876543210 = C1Sym1 a0123456789876543210
     instance SuppressUnusedWarnings C1Sym0 where
       suppressUnusedWarnings = snd (((,) C1Sym0KindInference) ())
-    data C1Sym0 :: (~>) T0 ((~>) T1 T1)
-      where
-        C1Sym0KindInference :: forall t0123456789876543210
-                                      arg. SameKind (Apply C1Sym0 arg) (C1Sym1 arg) =>
-                               C1Sym0 t0123456789876543210
-    type instance Apply C1Sym0 t0123456789876543210 = C1Sym1 t0123456789876543210
     infixr 5 `C1Sym0`
-    instance SuppressUnusedWarnings (C1Sym1 t0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) C1Sym1KindInference) ())
-    data C1Sym1 (t0123456789876543210 :: T0) :: (~>) T1 T1
+    type C1Sym1 :: T0 -> (~>) T1 T1
+    data C1Sym1 a0123456789876543210 a0123456789876543210
       where
-        C1Sym1KindInference :: forall t0123456789876543210
-                                      t0123456789876543210
-                                      arg. SameKind (Apply (C1Sym1 t0123456789876543210) arg) (C1Sym2 t0123456789876543210 arg) =>
-                               C1Sym1 t0123456789876543210 t0123456789876543210
-    type instance Apply (C1Sym1 t0123456789876543210) t0123456789876543210 = C1Sym2 t0123456789876543210 t0123456789876543210
+        C1Sym1KindInference :: SameKind (Apply (C1Sym1 a0123456789876543210) arg) (C1Sym2 a0123456789876543210 arg) =>
+                               C1Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (C1Sym1 a0123456789876543210) a0123456789876543210 = C1Sym2 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (C1Sym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) C1Sym1KindInference) ())
     infixr 5 `C1Sym1`
-    type C1Sym2 (t0123456789876543210 :: T0) (t0123456789876543210 :: T1) =
-        'C1 t0123456789876543210 t0123456789876543210
+    type C1Sym2 (a0123456789876543210 :: T0) (a0123456789876543210 :: T1) =
+        'C1 a0123456789876543210 a0123456789876543210 :: T1
     infixr 5 `C1Sym2`
+    type (:&&@#@$) :: (~>) T0 ((~>) T1 T1)
+    data (:&&@#@$) a0123456789876543210
+      where
+        (::&&@#@$###) :: SameKind (Apply (:&&@#@$) arg) ((:&&@#@$$) arg) =>
+                         (:&&@#@$) a0123456789876543210
+    type instance Apply (:&&@#@$) a0123456789876543210 = (:&&@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:&&@#@$) where
       suppressUnusedWarnings = snd (((,) (::&&@#@$###)) ())
-    data (:&&@#@$) :: (~>) T0 ((~>) T1 T1)
-      where
-        (::&&@#@$###) :: forall t0123456789876543210
-                                arg. SameKind (Apply (:&&@#@$) arg) ((:&&@#@$$) arg) =>
-                         (:&&@#@$) t0123456789876543210
-    type instance Apply (:&&@#@$) t0123456789876543210 = (:&&@#@$$) t0123456789876543210
     infixr 5 :&&@#@$
-    instance SuppressUnusedWarnings ((:&&@#@$$) t0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (::&&@#@$$###)) ())
-    data (:&&@#@$$) (t0123456789876543210 :: T0) :: (~>) T1 T1
+    type (:&&@#@$$) :: T0 -> (~>) T1 T1
+    data (:&&@#@$$) a0123456789876543210 a0123456789876543210
       where
-        (::&&@#@$$###) :: forall t0123456789876543210
-                                 t0123456789876543210
-                                 arg. SameKind (Apply ((:&&@#@$$) t0123456789876543210) arg) ((:&&@#@$$$) t0123456789876543210 arg) =>
-                          (:&&@#@$$) t0123456789876543210 t0123456789876543210
-    type instance Apply ((:&&@#@$$) t0123456789876543210) t0123456789876543210 = (:&&@#@$$$) t0123456789876543210 t0123456789876543210
+        (::&&@#@$$###) :: SameKind (Apply ((:&&@#@$$) a0123456789876543210) arg) ((:&&@#@$$$) a0123456789876543210 arg) =>
+                          (:&&@#@$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((:&&@#@$$) a0123456789876543210) a0123456789876543210 = (:&&@#@$$$) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings ((:&&@#@$$) a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (::&&@#@$$###)) ())
     infixr 5 :&&@#@$$
-    type (:&&@#@$$$) (t0123456789876543210 :: T0) (t0123456789876543210 :: T1) =
-        '(:&&) t0123456789876543210 t0123456789876543210
+    type (:&&@#@$$$) (a0123456789876543210 :: T0) (a0123456789876543210 :: T1) =
+        '(:&&) a0123456789876543210 a0123456789876543210 :: T1
     infixr 5 :&&@#@$$$
-    data ST1 :: T1 -> GHC.Types.Type
+    type ST1 :: T1 -> GHC.Types.Type
+    data ST1 z
       where
         SN1 :: ST1 ('N1 :: T1)
         SC1 :: forall (n :: T0) (n :: T1).
@@ -140,50 +140,48 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
     data T2 = N2 | C2 T0 T2 | T0 :|| T2
     infixr 5 `C2`
     infixr 5 :||
-    type N2Sym0 = N2
+    type N2Sym0 = N2 :: T2
+    type C2Sym0 :: (~>) T0 ((~>) T2 T2)
+    data C2Sym0 a0123456789876543210
+      where
+        C2Sym0KindInference :: SameKind (Apply C2Sym0 arg) (C2Sym1 arg) =>
+                               C2Sym0 a0123456789876543210
+    type instance Apply C2Sym0 a0123456789876543210 = C2Sym1 a0123456789876543210
     instance SuppressUnusedWarnings C2Sym0 where
       suppressUnusedWarnings = snd (((,) C2Sym0KindInference) ())
-    data C2Sym0 :: (~>) T0 ((~>) T2 T2)
-      where
-        C2Sym0KindInference :: forall t0123456789876543210
-                                      arg. SameKind (Apply C2Sym0 arg) (C2Sym1 arg) =>
-                               C2Sym0 t0123456789876543210
-    type instance Apply C2Sym0 t0123456789876543210 = C2Sym1 t0123456789876543210
     infixr 5 `C2Sym0`
-    instance SuppressUnusedWarnings (C2Sym1 t0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) C2Sym1KindInference) ())
-    data C2Sym1 (t0123456789876543210 :: T0) :: (~>) T2 T2
+    type C2Sym1 :: T0 -> (~>) T2 T2
+    data C2Sym1 a0123456789876543210 a0123456789876543210
       where
-        C2Sym1KindInference :: forall t0123456789876543210
-                                      t0123456789876543210
-                                      arg. SameKind (Apply (C2Sym1 t0123456789876543210) arg) (C2Sym2 t0123456789876543210 arg) =>
-                               C2Sym1 t0123456789876543210 t0123456789876543210
-    type instance Apply (C2Sym1 t0123456789876543210) t0123456789876543210 = C2Sym2 t0123456789876543210 t0123456789876543210
+        C2Sym1KindInference :: SameKind (Apply (C2Sym1 a0123456789876543210) arg) (C2Sym2 a0123456789876543210 arg) =>
+                               C2Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (C2Sym1 a0123456789876543210) a0123456789876543210 = C2Sym2 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (C2Sym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) C2Sym1KindInference) ())
     infixr 5 `C2Sym1`
-    type C2Sym2 (t0123456789876543210 :: T0) (t0123456789876543210 :: T2) =
-        C2 t0123456789876543210 t0123456789876543210
+    type C2Sym2 (a0123456789876543210 :: T0) (a0123456789876543210 :: T2) =
+        C2 a0123456789876543210 a0123456789876543210 :: T2
     infixr 5 `C2Sym2`
+    type (:||@#@$) :: (~>) T0 ((~>) T2 T2)
+    data (:||@#@$) a0123456789876543210
+      where
+        (::||@#@$###) :: SameKind (Apply (:||@#@$) arg) ((:||@#@$$) arg) =>
+                         (:||@#@$) a0123456789876543210
+    type instance Apply (:||@#@$) a0123456789876543210 = (:||@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:||@#@$) where
       suppressUnusedWarnings = snd (((,) (::||@#@$###)) ())
-    data (:||@#@$) :: (~>) T0 ((~>) T2 T2)
-      where
-        (::||@#@$###) :: forall t0123456789876543210
-                                arg. SameKind (Apply (:||@#@$) arg) ((:||@#@$$) arg) =>
-                         (:||@#@$) t0123456789876543210
-    type instance Apply (:||@#@$) t0123456789876543210 = (:||@#@$$) t0123456789876543210
     infixr 5 :||@#@$
-    instance SuppressUnusedWarnings ((:||@#@$$) t0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (::||@#@$$###)) ())
-    data (:||@#@$$) (t0123456789876543210 :: T0) :: (~>) T2 T2
+    type (:||@#@$$) :: T0 -> (~>) T2 T2
+    data (:||@#@$$) a0123456789876543210 a0123456789876543210
       where
-        (::||@#@$$###) :: forall t0123456789876543210
-                                 t0123456789876543210
-                                 arg. SameKind (Apply ((:||@#@$$) t0123456789876543210) arg) ((:||@#@$$$) t0123456789876543210 arg) =>
-                          (:||@#@$$) t0123456789876543210 t0123456789876543210
-    type instance Apply ((:||@#@$$) t0123456789876543210) t0123456789876543210 = (:||@#@$$$) t0123456789876543210 t0123456789876543210
+        (::||@#@$$###) :: SameKind (Apply ((:||@#@$$) a0123456789876543210) arg) ((:||@#@$$$) a0123456789876543210 arg) =>
+                          (:||@#@$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((:||@#@$$) a0123456789876543210) a0123456789876543210 = (:||@#@$$$) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings ((:||@#@$$) a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (::||@#@$$###)) ())
     infixr 5 :||@#@$$
-    type (:||@#@$$$) (t0123456789876543210 :: T0) (t0123456789876543210 :: T2) =
-        (:||) t0123456789876543210 t0123456789876543210
+    type (:||@#@$$$) (a0123456789876543210 :: T0) (a0123456789876543210 :: T2) =
+        (:||) a0123456789876543210 a0123456789876543210 :: T2
     infixr 5 :||@#@$$$
     infixr 5 :%||
     infixr 5 `SC2`

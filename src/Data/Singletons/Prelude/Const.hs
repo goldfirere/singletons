@@ -85,7 +85,8 @@ instance SingI ConstSym0 where
   sing = singFun1 SConst
 
 $(singletons [d|
-  type family GetConst (x :: Const a b) :: a where
+  type GetConst :: Const a b -> a
+  type family GetConst x where
     GetConst ('Const x) = x
   |])
 

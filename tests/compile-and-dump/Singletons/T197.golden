@@ -8,29 +8,29 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 $$:
     ($$:) :: Bool -> Bool -> Bool
     ($$:) _ _ = False
-    instance SuppressUnusedWarnings ($$:@#@$) where
-      suppressUnusedWarnings = snd (((,) (:$$:@#@$###)) ())
-    data ($$:@#@$) :: (~>) Bool ((~>) Bool Bool)
+    type ($$:@#@$) :: (~>) Bool ((~>) Bool Bool)
+    data ($$:@#@$) a0123456789876543210
       where
-        (:$$:@#@$###) :: forall a0123456789876543210
-                                arg. SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
+        (:$$:@#@$###) :: SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
                          ($$:@#@$) a0123456789876543210
     type instance Apply ($$:@#@$) a0123456789876543210 = ($$:@#@$$) a0123456789876543210
+    instance SuppressUnusedWarnings ($$:@#@$) where
+      suppressUnusedWarnings = snd (((,) (:$$:@#@$###)) ())
     infixl 5 $$:@#@$
-    instance SuppressUnusedWarnings (($$:@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (:$$:@#@$$###)) ())
-    data ($$:@#@$$) (a0123456789876543210 :: Bool) :: (~>) Bool Bool
+    type ($$:@#@$$) :: Bool -> (~>) Bool Bool
+    data ($$:@#@$$) a0123456789876543210 a0123456789876543210
       where
-        (:$$:@#@$$###) :: forall a0123456789876543210
-                                 a0123456789876543210
-                                 arg. SameKind (Apply (($$:@#@$$) a0123456789876543210) arg) (($$:@#@$$$) a0123456789876543210 arg) =>
+        (:$$:@#@$$###) :: SameKind (Apply (($$:@#@$$) a0123456789876543210) arg) (($$:@#@$$$) a0123456789876543210 arg) =>
                           ($$:@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply (($$:@#@$$) a0123456789876543210) a0123456789876543210 = ($$:@#@$$$) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (($$:@#@$$) a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (:$$:@#@$$###)) ())
     infixl 5 $$:@#@$$
     type ($$:@#@$$$) (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) =
-        ($$:) a0123456789876543210 a0123456789876543210
+        ($$:) a0123456789876543210 a0123456789876543210 :: Bool
     infixl 5 $$:@#@$$$
-    type family ($$:) (a :: Bool) (a :: Bool) :: Bool where
+    type ($$:) :: Bool -> Bool -> Bool
+    type family ($$:) a a where
       ($$:) _ _ = FalseSym0
     infixl 5 %$$:
     (%$$:) ::

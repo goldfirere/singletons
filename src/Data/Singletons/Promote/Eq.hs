@@ -29,14 +29,12 @@ mkEqTypeInstance kind cons = do
       false_branch = catch_all_case opts helperName falseName
       branches | null cons = [null_branch]
                | otherwise = true_branches ++ [false_branch]
+      -- We opt to give an explicit kind signature for the helper type family.
+      -- See Note [Promoted class method kinds] in Data.Singletons.Promote.
+      sakDec    = DKiSigD helperName $ ravelVanillaDType [] [] [kind, kind] boolKi
       closedFam = DClosedTypeFamilyD (DTypeFamilyHead helperName
-                                                        -- We opt to give explicit kinds for the tyvars
-                                                        -- in the helper type family.
-                                                        -- See Note [Promoted class method kinds]
-                                                        -- in Data.Singletons.Promote.
-                                                      [ DKindedTV aName kind
-                                                      , DKindedTV bName kind ]
-                                                      (DKindSig boolKi)
+                                                      [DPlainTV aName, DPlainTV bName]
+                                                      DNoSig
                                                       Nothing)
                                      branches
       eqInst = DTySynInstD $
@@ -46,7 +44,7 @@ mkEqTypeInstance kind cons = do
       inst = DInstanceD Nothing Nothing [] ((DConT $ promotedClassName opts eqName) `DAppT`
                                             kind) [eqInst]
 
-  return [closedFam, inst]
+  return [sakDec, closedFam, inst]
 
   where mk_branch :: OptionsMonad q => Name -> DCon -> q DTySynEqn
         mk_branch helper_name con = do

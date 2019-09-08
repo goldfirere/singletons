@@ -4,16 +4,17 @@ Promote/Prelude.hs:(0,0)-(0,0): Splicing declarations
           odd 0 = False
           odd n = not . odd $ n - 1 |]
   ======>
-    instance SuppressUnusedWarnings OddSym0 where
-      suppressUnusedWarnings = snd (((,) OddSym0KindInference) ())
-    data OddSym0 :: (~>) Nat Bool
+    type OddSym0 :: (~>) Nat Bool
+    data OddSym0 a0123456789876543210
       where
-        OddSym0KindInference :: forall a0123456789876543210
-                                       arg. SameKind (Apply OddSym0 arg) (OddSym1 arg) =>
+        OddSym0KindInference :: SameKind (Apply OddSym0 arg) (OddSym1 arg) =>
                                 OddSym0 a0123456789876543210
     type instance Apply OddSym0 a0123456789876543210 = OddSym1 a0123456789876543210
+    instance SuppressUnusedWarnings OddSym0 where
+      suppressUnusedWarnings = snd (((,) OddSym0KindInference) ())
     type OddSym1 (a0123456789876543210 :: Nat) =
-        Odd a0123456789876543210
-    type family Odd (a :: Nat) :: Bool where
+        Odd a0123456789876543210 :: Bool
+    type Odd :: Nat -> Bool
+    type family Odd a where
       Odd 0 = FalseSym0
       Odd n = Apply (Apply ($@#@$) (Apply (Apply (.@#@$) NotSym0) OddSym0)) (Apply (Apply (-@#@$) n) (FromInteger 1))

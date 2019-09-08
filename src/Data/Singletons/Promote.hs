@@ -41,6 +41,7 @@ import Control.Monad.Trans.Maybe
 import Control.Monad.Writer
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
+import Data.Maybe
 import qualified GHC.LanguageExtensions.Type as LangExt
 
 {-
@@ -317,8 +318,7 @@ promoteDataDec (DataDecl _name _tvbs ctors) = do
   ctorSyms <- buildDefunSymsDataD ctors
   emitDecs ctorSyms
 
-promoteClassDec :: UClassDecl
-                -> PrM AClassDecl
+promoteClassDec :: UClassDecl -> PrM AClassDecl
 promoteClassDec decl@(ClassDecl { cd_name = cls_name
                                 , cd_tvbs = tvbs
                                 , cd_fds  = fundeps
@@ -334,6 +334,7 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
         meth_names     = map fst meth_sigs_list
         defaults_list  = OMap.assocs defaults
         defaults_names = map fst defaults_list
+    mb_cls_sak <- dsReifyType cls_name
     sig_decs <- mapM (uncurry promote_sig) meth_sigs_list
     (default_decs, ann_rhss, prom_rhss)
       <- mapAndUnzip3M (promoteMethod DefaultMethods meth_sigs) defaults_list
@@ -346,7 +347,8 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
     -- no need to do anything to the fundeps. They work as is!
     let pro_cls_dec = DClassD [] pClsName tvbs fundeps
                               (sig_decs ++ default_decs ++ infix_decls')
-    emitDecs $ pro_cls_dec:cls_infix_decls
+        mb_pro_cls_sak = fmap (DKiSigD pClsName) mb_cls_sak
+    emitDecs $ maybeToList mb_pro_cls_sak ++ pro_cls_dec:cls_infix_decls
     let defaults_list'   = zip defaults_names ann_rhss
         proms            = zip defaults_names prom_rhss
         cls_kvs_to_bind' = cls_kvs_to_bind <$ meth_sigs
@@ -363,16 +365,68 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
     promote_sig name ty = do
       opts <- getOptions
       let proName = promotedTopLevelValueName opts name
-      (argKs, resK) <- promoteUnraveled ty
+      -- When computing the kind to use for the defunctionalization symbols,
+      -- /don't/ use the type variable binders from the method's type...
+      (_, argKs, resK) <- promoteUnraveled ty
       args <- mapM (const $ qNewName "arg") argKs
       let proTvbs = zipWith DKindedTV args argKs
+      -- ...instead, compute the type variable binders in a left-to-right order,
+      -- since that is the same order that the promoted method's kind will use.
+      -- See Note [Promoted class methods and kind variable ordering]
+          meth_sak_tvbs = toposortTyVarsOf $ argKs ++ [resK]
+          meth_sak      = ravelVanillaDType meth_sak_tvbs [] argKs resK
       m_fixity <- reifyFixityWithLocals name
-      emitDecsM $ defunctionalize proName m_fixity proTvbs (Just resK)
+      emitDecsM $ defunctionalize proName m_fixity $ DefunSAK meth_sak
 
       return $ DOpenTypeFamilyD (DTypeFamilyHead proName
                                                  proTvbs
                                                  (DKindSig resK)
                                                  Nothing)
+
+{-
+Note [Promoted class methods and kind variable ordering]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In general, we make an effort to preserve the order of type variables when
+promoting type signatures, but there is an annoying corner case where this is
+difficult: class methods. When promoting class methods, the order of kind
+variables in their kinds will often "just work" by happy coincidence, but
+there are some situations where this does not happen. Consider the following
+class:
+
+  class C (b :: Type) where
+    m :: forall a. a -> b -> a
+
+The full type of `m` is `forall b. C b => forall a. a -> b -> a`, which binds
+`b` before `a`. This order is preserved when singling `m`, but *not* when
+promoting `m`. This is because the `C` class is promoted as follows:
+
+  class PC (b :: Type) where
+    type M (x :: a) (y :: b) :: a
+
+Due to the way GHC kind-checks associated type families, the kind of `M` is
+`forall a b. a -> b -> a`, which binds `b` *after* `a`. Moreover, the
+`StandaloneKindSignatures` extension does not provide a way to explicitly
+declare the full kind of an associated type family, so this limitation is
+not easy to work around.
+
+The defunctionalization symbols for `M` will also follow a similar
+order of type variables:
+
+  type MSym0 :: forall a b. a ~> b ~> a
+  type MSym1 :: forall a b. a -> b ~> a
+
+There is one potential hack we could use to rectify this:
+
+  type FlipConst x y = y
+  class PC (b :: Type) where
+    type M (x :: FlipConst '(b, a) a) (y :: b) :: a
+
+Using `FlipConst` would cause `b` to be mentioned before `a`, which would give
+`M` the kind `forall b a. FlipConst '(b, a) a -> b -> a`. While the order of
+type variables would be preserved, the downside is that the ugly `FlipConst`
+type synonym leaks into the kind. I'm not particularly fond of this, so I have
+decided not to use this hack unless someone specifically requests it.
+-}
 
 -- returns (unpromoted method name, ALetDecRHS) pairs
 promoteInstanceDec :: OMap Name DType
@@ -387,10 +441,11 @@ promoteInstanceDec orig_meth_sigs cls_tvbs_map
                                   , id_sigs     = inst_sigs
                                   , id_meths    = meths }) = do
   opts <- getOptions
-  cls_tvb_names <- lookup_cls_tvb_names
+  cls_tvbs <- lookup_cls_tvbs
   inst_kis <- mapM promoteType inst_tys
-  let pClsName    = promotedClassName opts cls_name
-      kvs_to_bind = foldMap fvDType inst_kis
+  let pClsName      = promotedClassName opts cls_name
+      cls_tvb_names = map extractTvbName cls_tvbs
+      kvs_to_bind   = foldMap fvDType inst_kis
   forallBind kvs_to_bind $ do
     let subst     = Map.fromList $ zip cls_tvb_names inst_kis
         meth_impl = InstanceMethods inst_sigs subst
@@ -400,37 +455,36 @@ promoteInstanceDec orig_meth_sigs cls_tvbs_map
                                               inst_kis) meths']
     return (decl { id_meths = zip (map fst meths) ann_rhss })
   where
-    lookup_cls_tvb_names :: PrM [Name]
-    lookup_cls_tvb_names =
+    lookup_cls_tvbs :: PrM [DTyVarBndr]
+    lookup_cls_tvbs =
       -- First, try consulting the map of class names to their type variables.
       -- It is important to do this first to ensure that we consider locally
       -- declared classes before imported ones. See #410 for what happens if
       -- you don't.
       case Map.lookup cls_name cls_tvbs_map of
-        Just tvb_names -> pure $ map extractTvbName tvb_names
-        Nothing -> reify_cls_tvb_names
+        Just tvbs -> pure tvbs
+        Nothing   -> reify_cls_tvbs
           -- If the class isn't present in this map, we try reifying the class
           -- as a last resort.
 
-    reify_cls_tvb_names :: PrM [Name]
-    reify_cls_tvb_names = do
+    reify_cls_tvbs :: PrM [DTyVarBndr]
+    reify_cls_tvbs = do
       opts <- getOptions
-      let pClsName     = promotedClassName opts cls_name
-          mk_tvb_names = extract_tvb_names (dsReifyTypeNameInfo pClsName)
-                     <|> extract_tvb_names (dsReifyTypeNameInfo cls_name)
+      let pClsName = promotedClassName opts cls_name
+          mk_tvbs  = extract_tvbs (dsReifyTypeNameInfo pClsName)
+                 <|> extract_tvbs (dsReifyTypeNameInfo cls_name)
                       -- See Note [Using dsReifyTypeNameInfo when promoting instances]
-      mb_tvb_names <- runMaybeT mk_tvb_names
-      case mb_tvb_names of
-        Just tvb_names -> pure tvb_names
+      mb_tvbs <- runMaybeT mk_tvbs
+      case mb_tvbs of
+        Just tvbs -> pure tvbs
         Nothing -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
 
-    extract_tvb_names :: PrM (Maybe DInfo) -> MaybeT PrM [Name]
-    extract_tvb_names reify_info = do
+    extract_tvbs :: PrM (Maybe DInfo) -> MaybeT PrM [DTyVarBndr]
+    extract_tvbs reify_info = do
       mb_info <- lift reify_info
       case mb_info of
-        Just (DTyConI (DClassD _ _ tvbs _ _) _)
-          -> pure $ map extractTvbName tvbs
-        _ -> empty
+        Just (DTyConI (DClassD _ _ tvbs _ _) _) -> pure tvbs
+        _                                       -> empty
 
 {-
 Note [Using dsReifyTypeNameInfo when promoting instances]
@@ -483,8 +537,8 @@ promoteMethod :: MethodSort
                  -- returns (type instance, ALetDecRHS, promoted RHS)
 promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
   opts <- getOptions
-  (meth_arg_kis, meth_res_ki) <- promote_meth_ty
-  meth_arg_tvs <- mapM (const $ qNewName "a") meth_arg_kis
+  (meth_tvbs, meth_arg_kis, meth_res_ki) <- promote_meth_ty
+  meth_arg_tvs <- replicateM (length meth_arg_kis) (qNewName "a")
   let proName = promotedTopLevelValueName opts meth_name
       helperNameBase = case nameBase proName of
                          first:_ | not (isHsLetter first) -> "TFHelper"
@@ -505,10 +559,11 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
       family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
   let helperDefunName = defunctionalizedName0 opts helperName
-  (pro_dec, defun_decs, ann_rhs)
-    <- promoteLetDecRHS (ClassMethodRHS meth_arg_kis meth_res_ki) OMap.empty OMap.empty
+  (pro_decs, defun_decs, ann_rhs)
+    <- promoteLetDecRHS (ClassMethodRHS meth_tvbs meth_arg_kis meth_res_ki)
+                        OMap.empty OMap.empty
                         Nothing helperName meth_rhs
-  emitDecs (pro_dec:defun_decs)
+  emitDecs (pro_decs ++ defun_decs)
   return ( DTySynInstD
              (DTySynEqn Nothing
                         (foldType (DConT proName) family_args)
@@ -522,7 +577,7 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
     -- the types in the instance head. (e.g., if you have `class C a` and
     -- `instance C T`, then the substitution [a |-> T] must be applied to the
     -- original method's type.)
-    promote_meth_ty :: PrM ([DKind], DKind)
+    promote_meth_ty :: PrM ([DTyVarBndr], [DKind], DKind)
     promote_meth_ty =
       case meth_sort of
         DefaultMethods ->
@@ -532,7 +587,7 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
           lookup_meth_ty
         InstanceMethods inst_sigs_map cls_subst ->
           case OMap.lookup meth_name inst_sigs_map of
-            Just ty ->
+            Just ty -> do
               -- We have an InstanceSig. These are easy: we can just use the
               -- instance signature's type directly, and no substitution for
               -- class variables is required.
@@ -540,20 +595,25 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
             Nothing -> do
               -- We don't have an InstanceSig, so we must compute the kind to use
               -- ourselves.
-              (arg_kis, res_ki) <- lookup_meth_ty
+              (_, arg_kis, res_ki) <- lookup_meth_ty
               -- Substitute for the class variables in the method's type.
               -- See Note [Promoted class method kinds]
               let arg_kis' = map (substKind cls_subst) arg_kis
                   res_ki'  = substKind cls_subst res_ki
-              pure (arg_kis', res_ki')
+                  -- Compute the type variable binders in a left-to-right
+                  -- order, since that is the same order that the promoted
+                  -- method's kind will use.
+                  -- See Note [Promoted class methods and kind variable ordering]
+                  tvbs'    = toposortTyVarsOf (arg_kis' ++ [res_ki'])
+              pure (tvbs', arg_kis', res_ki')
 
     -- Attempt to look up a class method's original type.
-    lookup_meth_ty :: PrM ([DKind], DKind)
+    lookup_meth_ty :: PrM ([DTyVarBndr], [DKind], DKind)
     lookup_meth_ty = do
       opts <- getOptions
       let proName = promotedTopLevelValueName opts meth_name
       case OMap.lookup meth_name orig_sigs_map of
-        Just ty ->
+        Just ty -> do
           -- The type of the method is in scope, so promote that.
           promoteUnraveled ty
         Nothing -> do
@@ -563,9 +623,14 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
                      -- See Note [Using dsReifyTypeNameInfo when promoting instances]
           case mb_info of
             Just (DTyConI (DOpenTypeFamilyD (DTypeFamilyHead _ tvbs mb_res_ki _)) _)
-              -> let arg_kis = map (defaultToTypeKind . extractTvbKind) tvbs
-                     res_ki  = defaultToTypeKind (resultSigToMaybeKind mb_res_ki)
-                  in pure (arg_kis, res_ki)
+              -> let arg_kis = map (defaultMaybeToTypeKind . extractTvbKind) tvbs
+                     res_ki  = defaultMaybeToTypeKind (resultSigToMaybeKind mb_res_ki)
+                     -- Compute the type variable binders in a left-to-right
+                     -- order, since that is the same order that the promoted
+                     -- method's kind will use.
+                     -- See Note [Promoted class methods and kind variable ordering]
+                     tvbs'   = toposortTyVarsOf (arg_kis ++ [res_ki])
+                  in pure (tvbs', arg_kis, res_ki)
             _ -> fail $ "Cannot find type annotation for " ++ show proName
 
 {-
@@ -583,14 +648,17 @@ Consider this example of a type class (and instance):
 The promoted version of these declarations would be:
 
   class PC a where
-    type M (x :: a) (y :: Bool) (z :: Bool)
-    type M x y z = MHelper1 x y z
+    type M (x :: a) (y :: Bool) :: Bool
+    type M x y = MHelper1 x y
 
   instance PC [a] where
-    type M x y z = MHelper2 x y z
+    type M x y = MHelper2 x y
 
-  type family MHelper1 (x :: a)   (y :: Bool) (z :: Bool) where ...
-  type family MHelper2 (x :: [a]) (y :: Bool) (z :: Bool) where ...
+  type MHelper1 :: a -> Bool -> Bool
+  type family MHelper1 x y where ...
+
+  type MHelper2 :: [a] -> Bool -> Bool
+  type family MHelper2 x y where ...
 
 Getting the kind signature for MHelper1 (the promoted default implementation of
 M) is quite simple, as it corresponds exactly to the kind of M. We might even
@@ -616,7 +684,7 @@ promoteLetDecEnv mb_let_uniq (LetDecEnv { lde_defns = value_env
 
   emitDecs $ concat defun_decss
   bound_kvs <- allBoundKindVars
-  let decs = pro_decs ++ infix_decls
+  let decs = concat pro_decs ++ infix_decls
 
     -- build the ALetDecEnv
   let let_dec_env' = LetDecEnv { lde_defns     = OMap.fromList $ zip names ann_rhss
@@ -691,8 +759,10 @@ data LetDecRHSSort
   = LetBindingRHS
     -- The right-hand side of a class method (either a default method or a
     -- method in an instance declaration).
-  | ClassMethodRHS [DKind] DKind -- The RHS's promoted argument and result types.
-                                 -- Needed to fix #136.
+  | ClassMethodRHS
+      [DTyVarBndr] [DKind] DKind
+      -- The RHS's promoted type variable binders, argument types, and
+      -- result type. Needed to fix #136.
   deriving Show
 
 -- This function is used both to promote class method defaults and normal
@@ -704,7 +774,8 @@ promoteLetDecRHS :: LetDecRHSSort
                  -> Maybe Uniq           -- let-binding unique (if locally bound)
                  -> Name                 -- name of the thing being promoted
                  -> ULetDecRHS           -- body of the thing
-                 -> PrM ( DDec          -- "type family"
+                 -> PrM ( [DDec]        -- promoted type family dec, plus the
+                                        -- SAK dec (if one exists)
                         , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
 promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
@@ -712,13 +783,12 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
   all_locals <- allLocals
   case let_dec_rhs of
     UValue exp -> do
-      (m_argKs, m_resK, ty_num_args) <- promote_let_dec_ty 0
+      (m_ldrki, ty_num_args) <- promote_let_dec_ty all_locals 0
       if ty_num_args == 0
       then
         let proName = promotedValueName opts name mb_let_uniq
             prom_fun_lhs = foldType (DConT proName) $ map DVarT all_locals in
-        promote_let_dec_rhs all_locals m_argKs m_resK 0
-                            (promoteExp exp)
+        promote_let_dec_rhs all_locals m_ldrki 0 (promoteExp exp)
                             (\exp' -> [DTySynEqn Nothing prom_fun_lhs exp'])
                             AValue
       else
@@ -730,15 +800,15 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
   where
     -- Promote the RHS of a UFunction (or a UValue with a function type).
     promote_function_rhs :: [Name]
-                         -> [DClause] -> PrM (DDec, [DDec], ALetDecRHS)
+                         -> [DClause] -> PrM ([DDec], [DDec], ALetDecRHS)
     promote_function_rhs all_locals clauses = do
       opts <- getOptions
       numArgs <- count_args clauses
       let proName = promotedValueName opts name mb_let_uniq
           prom_fun_lhs = foldType (DConT proName) $ map DVarT all_locals
-      (m_argKs, m_resK, ty_num_args) <- promote_let_dec_ty numArgs
+      (m_ldrki, ty_num_args) <- promote_let_dec_ty all_locals numArgs
       expClauses <- mapM (etaContractOrExpand ty_num_args numArgs) clauses
-      promote_let_dec_rhs all_locals m_argKs m_resK ty_num_args
+      promote_let_dec_rhs all_locals m_ldrki ty_num_args
                           (mapAndUnzipM (promoteClause prom_fun_lhs) expClauses)
                           id AFunction
 
@@ -750,53 +820,112 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
     -- * For UFunctions, `prom_a` is [DTySynEqn] and `a` is [DClause].
     promote_let_dec_rhs
       :: [Name]                            -- Local variables bound in this scope
-      -> [Maybe DKind]                     -- Promoted function argument types (if known)
-      -> Maybe DKind                       -- Promoted function result type (if known)
+      -> Maybe LetDecRHSKindInfo           -- Information about the promoted kind (if present)
       -> Int                               -- The number of promoted function arguments
       -> PrM (prom_a, a)                   -- Promote the RHS
       -> (prom_a -> [DTySynEqn])           -- Turn the promoted RHS into type family equations
       -> (DType -> Int -> a -> ALetDecRHS) -- Build an ALetDecRHS
-      -> PrM (DDec, [DDec], ALetDecRHS)
-    promote_let_dec_rhs all_locals m_argKs m_resK ty_num_args
+      -> PrM ([DDec], [DDec], ALetDecRHS)
+    promote_let_dec_rhs all_locals m_ldrki ty_num_args
                         promote_thing mk_prom_eqns mk_alet_dec_rhs = do
       opts <- getOptions
-      tyvarNames <- mapM (const $ qNewName "a") m_argKs
-      let proName         = promotedValueName opts name mb_let_uniq
-          local_tvbs      = map DPlainTV all_locals
-          m_fixity        = OMap.lookup name fix_env
-          args            = zipWith inferMaybeKindTV tyvarNames m_argKs
-          all_args        = local_tvbs ++ args
-          lde_kvs_to_bind = foldMap (foldMap fvDType) m_argKs <> foldMap fvDType m_resK
-      defun_decs <- defunctionalize proName m_fixity all_args m_resK
+      tyvarNames <- replicateM ty_num_args (qNewName "a")
+      let proName    = promotedValueName opts name mb_let_uniq
+          local_tvbs = map DPlainTV all_locals
+          m_fixity   = OMap.lookup name fix_env
+
+          mk_tf_head :: [DTyVarBndr] -> DFamilyResultSig -> DTypeFamilyHead
+          mk_tf_head tvbs res_sig = DTypeFamilyHead proName tvbs res_sig Nothing
+
+          (lde_kvs_to_bind, m_sak_dec, defun_ki, tf_head) =
+              -- There are three possible cases:
+            case m_ldrki of
+              -- 1. We have no kind information whatsoever.
+              Nothing ->
+                let all_args = local_tvbs ++ map DPlainTV tyvarNames in
+                ( OSet.empty
+                , Nothing
+                , DefunNoSAK all_args Nothing
+                , mk_tf_head all_args DNoSig
+                )
+              -- 2. We have some kind information in the form of a LetDecRHSKindInfo.
+              Just (LDRKI m_sak tvbs argKs resK) ->
+                let all_args         = local_tvbs ++ zipWith DKindedTV tyvarNames argKs
+                    lde_kvs_to_bind' = OSet.fromList (map extractTvbName tvbs) in
+                case m_sak of
+                  -- 2(a). We do not have a standalone kind signature.
+                  Nothing ->
+                    ( lde_kvs_to_bind'
+                    , Nothing
+                    , DefunNoSAK all_args (Just resK)
+                    , mk_tf_head all_args (DKindSig resK)
+                    )
+                  -- 2(b). We have a standalone kind signature.
+                  Just sak ->
+                    ( lde_kvs_to_bind'
+                    , Just $ DKiSigD proName sak
+                    , DefunSAK sak
+                      -- If the promoted type family has a standalone kind
+                      -- signature, then there is no need to annotate the arguments
+                      -- or result with explicit kinds. A standalone kind signature
+                      -- accomplishes the same thing, but better.
+                    , mk_tf_head (map dropTvbKind all_args) DNoSig
+                    )
+
+      defun_decs <- defunctionalize proName m_fixity defun_ki
       (prom_thing, thing) <- forallBind lde_kvs_to_bind promote_thing
       prom_fun_rhs <- lookupVarE name
-      return ( DClosedTypeFamilyD
-                 (DTypeFamilyHead proName all_args (maybeKindToResultSig m_resK) Nothing)
-                 (mk_prom_eqns prom_thing)
+      return ( catMaybes [ m_sak_dec
+                         , Just $ DClosedTypeFamilyD tf_head (mk_prom_eqns prom_thing)
+                         ]
              , defun_decs
              , mk_alet_dec_rhs prom_fun_rhs ty_num_args thing )
 
-    promote_let_dec_ty :: Int -- The number of arguments to default to if the
-                              -- type cannot be inferred. This is 0 for UValues
-                              -- and the number of arguments in a single clause
-                              -- for UFunctions.
-                       -> PrM ([Maybe DKind], Maybe DKind, Int)
-    promote_let_dec_ty default_num_args =
+    promote_let_dec_ty :: [Name] -- The local variables that the let-dec closes
+                                 -- over. If this is non-empty, we cannot
+                                 -- produce a standalone kind signature.
+                                 -- See Note [No SAKs for let-decs with local variables]
+                       -> Int    -- The number of arguments to default to if the
+                                 -- type cannot be inferred. This is 0 for UValues
+                                 -- and the number of arguments in a single clause
+                                 -- for UFunctions.
+                       -> PrM (Maybe LetDecRHSKindInfo, Int)
+                                 -- Returns two things in a pair:
+                                 --
+                                 -- 1. Information about the promoted kind,
+                                 --    if available.
+                                 --
+                                 -- 2. The number of arguments the let-dec has.
+                                 --    If no kind information is available from
+                                 --    which to infer this number, then this
+                                 --    will default to the earlier Int argument.
+    promote_let_dec_ty all_locals default_num_args =
       case rhs_sort of
-        ClassMethodRHS arg_kis res_ki
-          -> return (map Just arg_kis, Just res_ki, length arg_kis)
+        ClassMethodRHS tvbs arg_kis res_ki
+          -> -- For class method RHS helper functions, don't bother quantifying
+             -- any type variables in their SAKS. We could certainly try, but
+             -- given that these functions are only used internally, there's no
+             -- point in trying to get the order of type variables correct,
+             -- since we don't apply these functions with visible kind
+             -- applications.
+             let sak = ravelVanillaDType [] [] arg_kis res_ki in
+             return (Just (LDRKI (Just sak) tvbs arg_kis res_ki), length arg_kis)
         LetBindingRHS
           |  Just ty <- OMap.lookup name type_env
           -> do
-          -- promoteType turns arrows into TyFun. So, we unravel first to
-          -- avoid this behavior. Note the use of ravelTyFun in resultK
-          -- to make the return kind work out
-          (argKs, resultK) <- promoteUnraveled ty
+          -- promoteType turns rank-1 uses of (->) into (~>). So, we unravel
+          -- first to avoid this behavior, and then ravel back.
+          (tvbs, argKs, resultK) <- promoteUnraveled ty
+          let m_sak | null all_locals = Just $ ravelVanillaDType tvbs [] argKs resultK
+                      -- If this let-dec closes over local variables, then
+                      -- don't give it a SAK.
+                      -- See Note [No SAKs for let-decs with local variables]
+                    | otherwise       = Nothing
           -- invariant: count_args ty == length argKs
-          return (map Just argKs, Just resultK, length argKs)
+          return (Just (LDRKI m_sak tvbs argKs resultK), length argKs)
 
           |  otherwise
-          -> return (replicate default_num_args Nothing, Nothing, default_num_args)
+          -> return (Nothing, default_num_args)
 
     etaContractOrExpand :: Int -> Int -> DClause -> PrM DClause
     etaContractOrExpand ty_num_args clause_num_args (DClause pats exp)
@@ -815,6 +944,69 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
     count_args :: [DClause] -> PrM Int
     count_args (DClause pats _ : _) = return $ length pats
     count_args _ = fail $ "Impossible! A function without clauses."
+
+-- An auxiliary data type used in promoteLetDecRHS that describes information
+-- related to the promoted kind of a class method default or normal
+-- let binding.
+data LetDecRHSKindInfo =
+  LDRKI (Maybe DKind) -- The standalone kind signature, if applicable.
+                      -- This will be Nothing if the let-dec RHS has local
+                      -- variables that it closes over.
+                      -- See Note [No SAKs for let-decs with local variables]
+        [DTyVarBndr]  -- The type variable binders of the kind.
+        [DKind]       -- The argument kinds.
+        DKind         -- The result kind.
+
+{-
+Note [No SAKs for let-decs with local variables]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Consider promoting this:
+
+  f :: Bool
+  f = let x = True
+          g :: () -> Bool
+          g _ = x
+      in g ()
+
+Clearly, the promoted `F` type family will have the following SAK:
+
+  type F :: ()
+
+What about `G`? At a passing glance, it appears that you could get away with
+this:
+
+  type G :: Bool -> ()
+
+But this isn't quite right, since `g` closes over `x = True`. The body of `G`,
+therefore, has to lift `x` to be an explicit argument:
+
+  type family G x (u :: ()) :: Bool where
+    G x _ = x
+
+At present, we don't keep track of the types of local variables like `x`, which
+makes it difficult to create a SAK for things like `G`. Here are some possible
+ideas, each followed by explanations for why they are infeasible:
+
+* Use wildcards:
+
+    type G :: _ -> () -> Bool
+
+  Alas, GHC currently does not allow wildcards in SAKs. See GHC#17432.
+
+* Use visible dependent quantification to avoid having to say what the kind
+  of `x` is:
+
+    type G :: forall x -> () -> Bool
+
+  A clever trick to be sure, but it doesn't quite do what we want, since
+  GHC will generalize that kind to become `forall (x :: k) -> () -> Bool`,
+  which is more general than we want.
+
+In any case, it's probably not worth bothering with SAKs for local definitions
+like `g` in the first place, so we avoid generating SAKs for anything that
+closes over at least one local variable for now. If someone yells about this,
+we'll reconsider this design.
+-}
 
 promoteClause :: DType -- What to use as the LHS of the promoted type family
                        -- equation. This should consist of the promoted name of
@@ -915,7 +1107,7 @@ promoteExp (DLamE names exp) = do
                                           (foldType (DConT lambdaName) $
                                            map DVarT all_args)
                                           rhs]]
-  emitDecsM $ defunctionalize lambdaName Nothing tvbs Nothing
+  emitDecsM $ defunctionalize lambdaName Nothing $ DefunNoSAK tvbs Nothing
   let promLambda = foldl apply (DConT (defunctionalizedName opts lambdaName 0))
                                (map DVarT all_locals)
   return (promLambda, ADLamE tyNames promLambda names ann_exp)

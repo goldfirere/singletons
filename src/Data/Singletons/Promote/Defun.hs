@@ -11,7 +11,6 @@ This file creates defunctionalization symbols for types during promotion.
 module Data.Singletons.Promote.Defun where
 
 import Language.Haskell.TH.Desugar
-import qualified Language.Haskell.TH.Desugar.OSet as OSet
 import Data.Singletons.Promote.Monad
 import Data.Singletons.Promote.Type
 import Data.Singletons.Names
@@ -20,7 +19,6 @@ import Data.Singletons.Syntax
 import Data.Singletons.TH.Options
 import Data.Singletons.Util
 import Control.Monad
-import Data.Foldable
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map)
 import Data.Maybe
@@ -63,42 +61,30 @@ defunAssociatedTypeFamilies cls_tvbs atfs = do
   emitDecs defun_atfs
   where
     defun :: OpenTypeFamilyDecl -> PrM [DDec]
-    defun (TypeFamilyDecl tf_head)
-      | cls_has_cusk
-        -- If the parent class has a CUSK, so does its associated type
-        -- families. Default type variable kinds and the result kind to be Type
-        -- if they do not yet have an explicit kind.
-      = buildDefunSymsTypeFamilyHead (cuskify . ascribe_tf_tvb_kind)
-                                     (Just . defaultToTypeKind) tf_head
-      | otherwise
-        -- If the parent class lacks a CUSK, we cannot safely default kinds to
-        -- Type. Use whatever information from the parent class is available
-        -- and let kind inference do the rest.
-      = buildDefunSymsTypeFamilyHead ascribe_tf_tvb_kind id tf_head
-
-    -- A class has a CUSK when all of its type variable binders have explicit
-    -- kinds. In other words, `cls_tvb_kind_map` should have an entry for each
-    -- class-bound type variable.
-    cls_has_cusk :: Bool
-    cls_has_cusk = length cls_tvbs == Map.size cls_tvb_kind_map
+    defun (TypeFamilyDecl tf_head) =
+      buildDefunSymsTypeFamilyHead ascribe_tf_tvb_kind id tf_head
 
     -- Maps class-bound type variables to their kind annotations (if supplied).
     -- For example, `class C (a :: Bool) b (c :: Type)` will produce
     -- {a |-> Bool, c |-> Type}.
     cls_tvb_kind_map :: Map Name DKind
-    cls_tvb_kind_map = Map.fromList [ (extractTvbName cls_tvb, cls_tvb_kind)
-                                    | cls_tvb <- cls_tvbs
-                                    , Just cls_tvb_kind <- [extractTvbKind cls_tvb]
+    cls_tvb_kind_map = Map.fromList [ (extractTvbName tvb, tvb_kind)
+                                    | tvb <- cls_tvbs
+                                    , Just tvb_kind <- [extractTvbKind tvb]
                                     ]
 
+    -- If the parent class lacks a SAK, we cannot safely default kinds to
+    -- Type. All we can do is make use of whatever kind information that parent
+    -- class provides and let kind inference do the rest.
+    --
     -- We can sometimes learn more specific information about unannotated type
-    -- family binders from the paren class, as in the following example:
+    -- family binders from the parent class, as in the following example:
     --
     --   class C (a :: Bool) where
     --     type T a :: Type
     --
     -- Here, we know that `T :: Bool -> Type` because we can infer that the `a`
-    -- in `type T a` should be of kind `Bool` from the class header.
+    -- in `type T a` should be of kind `Bool` from the class SAK.
     ascribe_tf_tvb_kind :: DTyVarBndr -> DTyVarBndr
     ascribe_tf_tvb_kind tvb =
       case tvb of
@@ -106,30 +92,33 @@ defunAssociatedTypeFamilies cls_tvbs atfs = do
         DPlainTV n  -> maybe tvb (DKindedTV n) $ Map.lookup n cls_tvb_kind_map
 
 buildDefunSyms :: DDec -> PrM [DDec]
-buildDefunSyms (DDataD _new_or_data _cxt _tyName _tvbs _k ctors _derivings) =
-  buildDefunSymsDataD ctors
-buildDefunSyms (DClosedTypeFamilyD tf_head _) =
-  buildDefunSymsClosedTypeFamilyD tf_head
-buildDefunSyms (DOpenTypeFamilyD tf_head) =
-  buildDefunSymsOpenTypeFamilyD tf_head
-buildDefunSyms (DTySynD name tvbs rhs) =
-  buildDefunSymsTySynD name tvbs rhs
-buildDefunSyms (DClassD _cxt name tvbs _fundeps _members) = do
-  defunReifyFixity name tvbs (Just (DConT constraintName))
-buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
-                          "type families and data declarations"
+buildDefunSyms dec =
+  case dec of
+    DDataD _new_or_data _cxt _tyName _tvbs _k ctors _derivings ->
+      buildDefunSymsDataD ctors
+    DClosedTypeFamilyD tf_head _ ->
+      buildDefunSymsClosedTypeFamilyD tf_head
+    DOpenTypeFamilyD tf_head ->
+      buildDefunSymsOpenTypeFamilyD tf_head
+    DTySynD name tvbs rhs ->
+      buildDefunSymsTySynD name tvbs rhs
+    DClassD _cxt name tvbs _fundeps _members ->
+      defunReify name tvbs (Just (DConT constraintName))
+    _ -> fail $ "Defunctionalization symbols can only be built for " ++
+                "type families and data declarations"
 
--- If a closed type family lacks an explicit kind for any of its type variables
--- or its result kind, then it does not have a CUSK, so we must let kind
--- inference do the rest.
+-- Unlike open type families, closed type families that lack SAKS do not
+-- default anything to Type, instead relying on kind inference to figure out
+-- unspecified kinds.
 buildDefunSymsClosedTypeFamilyD :: DTypeFamilyHead -> PrM [DDec]
 buildDefunSymsClosedTypeFamilyD = buildDefunSymsTypeFamilyHead id id
 
--- Top-level open type families always have CUSKs, so it is safe to default
--- type variable kinds or the result kind to Type if they are not indicated
--- explicitly.
+-- If an open type family lacks a SAK and has type variable binders or a result
+-- without explicit kinds, then they default to Type (hence the uses of
+-- default{Tvb,Maybe}ToTypeKind).
 buildDefunSymsOpenTypeFamilyD :: DTypeFamilyHead -> PrM [DDec]
-buildDefunSymsOpenTypeFamilyD = buildDefunSymsTypeFamilyHead cuskify (Just . defaultToTypeKind)
+buildDefunSymsOpenTypeFamilyD =
+  buildDefunSymsTypeFamilyHead defaultTvbToTypeKind (Just . defaultMaybeToTypeKind)
 
 buildDefunSymsTypeFamilyHead
   :: (DTyVarBndr -> DTyVarBndr)   -- How to default each type variable binder
@@ -139,16 +128,13 @@ buildDefunSymsTypeFamilyHead default_tvb default_kind
     (DTypeFamilyHead name tvbs result_sig _) = do
   let arg_tvbs = map default_tvb tvbs
       res_kind = default_kind (resultSigToMaybeKind result_sig)
-  defunReifyFixity name arg_tvbs res_kind
+  defunReify name arg_tvbs res_kind
 
 buildDefunSymsTySynD :: Name -> [DTyVarBndr] -> DType -> PrM [DDec]
-buildDefunSymsTySynD name tvbs rhs =
-  defunReifyFixity name tvbs mb_res_kind
+buildDefunSymsTySynD name tvbs rhs = defunReify name tvbs mb_res_kind
   where
-    -- In order to have a CUSK, a type synonym must annotate its right-hand
-    -- side with an explicit kind signature, so we can make use of this
-    -- property to determine the result kind when defunctionalizing the
-    -- type synonym.
+    -- If a type synonym lacks a SAK, we can "infer" its result kind by
+    -- checking for an explicit kind annotation on the right-hand side.
     mb_res_kind :: Maybe DKind
     mb_res_kind = case rhs of
                     DSigT _ k -> Just k
@@ -159,179 +145,233 @@ buildDefunSymsDataD ctors =
   concatMapM promoteCtor ctors
   where
     promoteCtor :: DCon -> PrM [DDec]
-    promoteCtor ctor@(DCon _ _ _ _ res_ty) = do
-      let (name, arg_tys) = extractNameTypes ctor
-      tvb_names <- replicateM (length arg_tys) $ qNewName "t"
-      arg_kis <- mapM promoteType arg_tys
-      let arg_tvbs = zipWith DKindedTV tvb_names arg_kis
-      res_ki <- promoteType res_ty
-      defunReifyFixity name arg_tvbs (Just res_ki)
+    promoteCtor (DCon tvbs _ name fields res_ty) = do
+      let arg_tys = tysOfConFields fields
+      arg_kis <- traverse promoteType_NC arg_tys
+      res_ki  <- promoteType_NC res_ty
+      let con_ki = ravelVanillaDType tvbs [] arg_kis res_ki
+      m_fixity <- reifyFixityWithLocals name
+      defunctionalize name m_fixity $ DefunSAK con_ki
 
 -- Generate defunctionalization symbols for a name, using reifyFixityWithLocals
--- to determine what the fixity of each symbol should be.
--- See Note [Fixity declarations for defunctionalization symbols]
-defunReifyFixity :: Name -> [DTyVarBndr] -> Maybe DKind -> PrM [DDec]
-defunReifyFixity name tvbs m_res_kind = do
+-- to determine what the fixity of each symbol should be
+-- (see Note [Fixity declarations for defunctionalization symbols])
+-- and dsReifyType to determine whether defunctionalization should make use
+-- of SAKs or not (see Note [Defunctionalization game plan]).
+defunReify :: Name           -- Name of the declaration to be defunctionalized
+           -> [DTyVarBndr]   -- The declaration's type variable binders
+                             -- (only used if the declaration lacks a SAK)
+           -> Maybe DKind    -- The declaration's return kind, if it has one
+                             -- (only used if the declaration lacks a SAK)
+           -> PrM [DDec]
+defunReify name tvbs m_res_kind = do
   m_fixity <- reifyFixityWithLocals name
-  defunctionalize name m_fixity tvbs m_res_kind
+  m_sak    <- dsReifyType name
+  let defun = defunctionalize name m_fixity
+  case m_sak of
+    Just sak -> defun $ DefunSAK sak
+    Nothing  -> defun $ DefunNoSAK tvbs m_res_kind
 
--- Generate data declarations and apply instances
--- required for defunctionalization.
--- For a type family:
---
--- type family Foo (m :: Nat) (n :: Nat) (l :: Nat) :: Nat
---
--- we generate data declarations that allow us to talk about partial
--- application at the type level:
---
--- type FooSym3 a b c = Foo a b c
--- data FooSym2 a b f where
---   FooSym2KindInference :: SameKind (Apply (FooSym2 a b) arg) (FooSym3 a b arg)
---                        => FooSym2 a b f
--- type instance Apply (FooSym2 a b) c = FooSym3 a b c
--- data FooSym1 a f where
---   FooSym1KindInference :: SameKind (Apply (FooSym1 a) arg) (FooSym2 a arg)
---                        => FooSym1 a f
--- type instance Apply (FooSym1 a) b = FooSym2 a b
--- data FooSym0 f where
---  FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg)
---                       => FooSym0 f
--- type instance Apply FooSym0 a = FooSym1 a
---
--- What's up with all the "KindInference" stuff? In some scenarios, we don't
--- know the kinds that we should be using in these symbols. But, GHC can figure
--- it out using the types of the "KindInference" dummy data constructors. A
--- bit of a hack, but it works quite nicely. The only problem is that GHC will
--- warn about an unused data constructor. So, we use the data constructor in
--- an instance of a dummy class. (See Data.Singletons.SuppressUnusedWarnings
--- for the class, which should never be seen by anyone, ever.)
---
--- The defunctionalize function takes Maybe DKinds so that the caller can
--- indicate which kinds are known and which need to be inferred.
---
--- See also Note [Defunctionalization and dependent quantification]
+-- Generate symbol data types, Apply instances, and other declarations required
+-- for defunctionalization.
+-- See Note [Defunctionalization game plan] for an overview of the design
+-- considerations involved.
 defunctionalize :: Name
-                -> Maybe Fixity -- The name's fixity, if one was declared.
-                -> [DTyVarBndr] -> Maybe DKind -> PrM [DDec]
-defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
-  opts <- getOptions
-  (m_arg_tvbs, m_res_kind) <- eta_expand (noExactTyVars m_arg_tvbs')
-                                         (noExactTyVars m_res_kind')
-  extra_name <- qNewName "arg"
-
-  let -- Implements part (2)(i) from Note [Defunctionalization and dependent quantification]
-      tvb_to_type_map :: Map Name DType
-      tvb_to_type_map = Map.fromList $                   -- (2)(i)(c)
-                        map (\tvb -> (extractTvbName tvb, dTyVarBndrToDType tvb)) $
-                        toposortTyVarsOf $               -- (2)(i)(b)
-                        map dTyVarBndrToDType m_arg_tvbs
-                          ++ maybeToList m_res_kind      -- (2)(i)(a)
-
-      -- The inner loop. @go n arg_tvbs res_tvbs@ returns @(m_result, decls)@.
-      -- Using one particular example:
-      --
-      -- @
-      -- data ExampleSym2 (x :: a) (y :: b) :: c ~> d ~> Type where ...
-      -- type instance Apply (ExampleSym2 x y) z = ExampleSym3 x y z
-      -- ...
-      -- @
-      --
-      -- We have:
-      --
-      -- * @n@ is 2. This is incremented in each iteration of `go`.
-      --
-      -- * @arg_tvbs@ is [(x :: a), (y :: b)].
-      --
-      -- * @res_tvbs@ is [(z :: c), (w :: d)]. The kinds of these type variable
-      --   binders appear in the result kind.
-      --
-      -- * @m_result@ is `Just (c ~> d ~> Type)`. @m_result@ is returned so
-      --   that earlier defunctionalization symbols can build on the result
-      --   kinds of later symbols. For instance, ExampleSym1 would get the
-      --   result kind `b ~> c ~> d ~> Type` by prepending `b` to ExampleSym2's
-      --   result kind `c ~> d ~> Type`.
-      --
-      -- * @decls@ are all of the declarations corresponding to ExampleSym2
-      --   and later defunctionalization symbols. This is the main payload of
-      --   the function.
-      --
-      -- This function is quadratic because it appends a variable at the end of
-      -- the @arg_tvbs@ list at each iteration. In practice, this is unlikely
-      -- to be a performance bottleneck since the number of arguments rarely
-      -- gets to be that large.
-      go :: Int -> [DTyVarBndr] -> [DTyVarBndr]
-         -> (Maybe DKind, [DDec])
-      go _ _        []                 = (m_res_kind, [])
-      go n arg_tvbs (res_tvb:res_tvbs) =
-        let (m_result, decls) = go (n+1) (arg_tvbs ++ [res_tvb]) res_tvbs
-
-            tyfun_name  = extractTvbName res_tvb
-            data_name   = defunctionalizedName opts name n
-            next_name   = defunctionalizedName opts name (n+1)
-            con_name    = prefixName "" ":" $ suffixName "KindInference" "###" data_name
-            m_tyfun     = buildTyFunArrow_maybe (extractTvbKind res_tvb) m_result
-            arg_params  = -- Implements part (2)(ii) from
-                          -- Note [Defunctionalization and dependent quantification]
-                          map (map_tvb_kind (substType tvb_to_type_map)) arg_tvbs
-            arg_names   = map extractTvbName arg_params
-            params      = arg_params ++ [DPlainTV tyfun_name]
-            con_eq_ct   = DConT sameKindName `DAppT` lhs `DAppT` rhs
-              where
-                lhs = foldType (DConT data_name) (map DVarT arg_names) `apply` (DVarT extra_name)
-                rhs = foldType (DConT next_name) (map DVarT (arg_names ++ [extra_name]))
-            con_decl    = DCon (map dropTvbKind params ++ [DPlainTV extra_name])
-                               [con_eq_ct]
-                               con_name
-                               (DNormalC False [])
-                               (foldTypeTvbs (DConT data_name) params)
-            data_decl   = DDataD Data [] data_name args res_ki [con_decl] []
-              where
-                (args, res_ki)
-                  = case m_tyfun of
-                      Nothing    -> (params, Nothing)
-                                    -- If we cannot infer the return type, don't bother
-                                    -- trying to construct an explicit return kind.
-                      Just tyfun ->
-                        let bound_tvs = OSet.fromList (map extractTvbName arg_params)
-                                        `OSet.union` foldMap (foldMap fvDType)
-                                                             (map extractTvbKind arg_params)
-                            not_bound tvb = not (extractTvbName tvb `OSet.member` bound_tvs)
-                            tvb_to_type tvb_name = fromMaybe (DVarT tvb_name) $
-                                                   Map.lookup tvb_name tvb_to_type_map
-                            -- Implements part (2)(iii) from
-                            -- Note [Defunctionalization and dependent quantification]
-                            tyfun_tvbs = filter not_bound $     -- (2)(iii)(d)
-                                         toposortTyVarsOf $     -- (2)(iii)(c)
-                                         map tvb_to_type $      -- (2)(iii)(b)
-                                         toList $ fvDType tyfun -- (2)(iii)(a)
-                        in (arg_params, Just (DForallT ForallInvis tyfun_tvbs tyfun))
-            app_data_ty = foldTypeTvbs (DConT data_name) arg_tvbs
-            app_eqn     = DTySynEqn Nothing
-                                    (DConT applyName `DAppT` app_data_ty
-                                                     `DAppT` DVarT tyfun_name)
-                                    (foldTypeTvbs (DConT next_name)
-                                                  (arg_tvbs ++ [DPlainTV tyfun_name]))
-            app_decl    = DTySynInstD app_eqn
-            suppress    = DInstanceD Nothing Nothing []
-                            (DConT suppressClassName `DAppT` app_data_ty)
-                            [DLetDec $ DFunD suppressMethodName
-                                             [DClause []
-                                                      ((DVarE 'snd) `DAppE`
-                                                       mkTupleDExp [DConE con_name,
-                                                                    mkTupleDExp []])]]
-
-            -- See Note [Fixity declarations for defunctionalization symbols]
-            fixity_decl = maybeToList $ fmap (mk_fix_decl data_name) m_fixity
-        in (m_tyfun, suppress : data_decl : app_decl : fixity_decl ++ decls)
-
-  let num_args       = length m_arg_tvbs
-      sat_name       = defunctionalizedName opts name num_args
-      sat_dec        = DTySynD sat_name m_arg_tvbs $ foldTypeTvbs (DConT name) m_arg_tvbs
-      sat_fixity_dec = maybeToList $ fmap (mk_fix_decl sat_name) m_fixity
-
-      (_, other_decs) = go 0 [] m_arg_tvbs
-  return $ other_decs ++ sat_dec : sat_fixity_dec
+                -> Maybe Fixity
+                -> DefunKindInfo
+                -> PrM [DDec]
+defunctionalize name m_fixity defun_ki = do
+  case defun_ki of
+    DefunSAK sak ->
+      -- Even if a declaration has a SAK, its kind may not be vanilla.
+      case unravelVanillaDType_either sak of
+        -- If the kind isn't vanilla, use the fallback approach.
+        -- See Note [Defunctionalization game plan],
+        -- Wrinkle 2: Non-vanilla kinds.
+        Left _ -> defun_fallback [] (Just sak)
+        -- Otherwise, proceed with defun_vanilla_sak.
+        Right (sak_tvbs, _sak_cxt, sak_arg_kis, sak_res_ki)
+               -> defun_vanilla_sak sak_tvbs sak_arg_kis sak_res_ki
+    -- If a declaration lacks a SAK, it likely has a partial kind.
+    -- See Note [Defunctionalization game plan], Wrinkle 1: Partial kinds.
+    DefunNoSAK tvbs m_res -> defun_fallback tvbs m_res
   where
+    -- Generate defunctionalization symbols for things with vanilla SAKs.
+    -- The symbols themselves will also be given SAKs.
+    defun_vanilla_sak :: [DTyVarBndr] -> [DKind] -> DKind -> PrM [DDec]
+    defun_vanilla_sak sak_tvbs sak_arg_kis sak_res_ki = do
+      opts <- getOptions
+      extra_name <- qNewName "arg"
+      -- Use noExactName below to avoid #17537.
+      arg_names <- replicateM (length sak_arg_kis) (noExactName <$> qNewName "a")
+
+      let -- The inner loop. @go n arg_nks res_nks@ returns @(res_k, decls)@.
+          -- Using one particular example:
+          --
+          -- @
+          -- type ExampleSym2 :: a -> b -> c ~> d ~> Type
+          -- data ExampleSym2 x y where ...
+          -- type instance Apply (ExampleSym2 x y) z = ExampleSym3 x y z
+          -- ...
+          -- @
+          --
+          -- We have:
+          --
+          -- * @n@ is 2. This is incremented in each iteration of `go`.
+          --
+          -- * @arg_nks@ is [(x, a), (y, b)]. Each element in this list is a
+          -- (type variable name, type variable kind) pair. The kinds appear in
+          -- the SAK, separated by matchable arrows (->).
+          --
+          -- * @res_tvbs@ is [(z, c), (w, d)]. Each element in this list is a
+          -- (type variable name, type variable kind) pair. The kinds appear in
+          -- @res_k@, separated by unmatchable arrows (~>).
+          --
+          -- * @res_k@ is `c ~> d ~> Type`. @res_k@ is returned so that earlier
+          --   defunctionalization symbols can build on the result kinds of
+          --   later symbols. For instance, ExampleSym1 would get the result
+          --   kind `b ~> c ~> d ~> Type` by prepending `b` to ExampleSym2's
+          --   result kind `c ~> d ~> Type`.
+          --
+          -- * @decls@ are all of the declarations corresponding to ExampleSym2
+          --   and later defunctionalization symbols. This is the main payload of
+          --   the function.
+          --
+          -- This function is quadratic because it appends a variable at the end of
+          -- the @arg_nks@ list at each iteration. In practice, this is unlikely
+          -- to be a performance bottleneck since the number of arguments rarely
+          -- gets to be that large.
+          go :: Int -> [(Name, DKind)] -> [(Name, DKind)] -> (DKind, [DDec])
+          go n arg_nks res_nkss =
+            case res_nkss of
+              [] ->
+                let -- Somewhat surprisingly, we do *not* generate SAKs for
+                    -- fully saturated defunctionalization symbols.
+                    -- See Note [No SAKs for fully saturated defunctionalization symbols]
+                    sat_decs = mk_sat_decs opts n (map (uncurry DKindedTV) arg_nks)
+                                           (Just sak_res_ki)
+                in (sak_res_ki, sat_decs)
+              res_nk:res_nks ->
+                let (res_ki, decs)   = go (n+1) (arg_nks ++ [res_nk]) res_nks
+                    tyfun            = buildTyFunArrow (snd res_nk) res_ki
+                    defun_sak_dec    = DKiSigD (defunctionalizedName opts name n) $
+                                       ravelVanillaDType sak_tvbs [] (map snd arg_nks) tyfun
+                    defun_other_decs = mk_defun_decs opts n (map (DPlainTV . fst) arg_nks)
+                                                     (fst res_nk) extra_name Nothing
+                in (tyfun, defun_sak_dec:defun_other_decs ++ decs)
+
+      pure $ snd $ go 0 [] $ zip arg_names sak_arg_kis
+
+    -- If defun_sak can't be used to defunctionalize something, this fallback
+    -- approach is used. This is used when defunctionalizing something with a
+    -- partial kind
+    -- (see Note [Defunctionalization game plan], Wrinkle 1: Partial kinds)
+    -- or a non-vanilla kind
+    -- (see Note [Defunctionalization game plan], Wrinkle 2: Non-vanilla kinds).
+    defun_fallback :: [DTyVarBndr] -> Maybe DKind -> PrM [DDec]
+    defun_fallback tvbs' m_res' = do
+      opts <- getOptions
+      extra_name <- qNewName "arg"
+      -- Use noExactTyVars below to avoid #11812.
+      (tvbs, m_res) <- eta_expand (noExactTyVars tvbs') (noExactTyVars m_res')
+
+      let -- The inner loop. @go n arg_tvbs res_tvbs@ returns @(m_res_k, decls)@.
+          -- Using one particular example:
+          --
+          -- @
+          -- data ExampleSym2 (x :: a) y :: c ~> d ~> Type where ...
+          -- type instance Apply (ExampleSym2 x y) z = ExampleSym3 x y z
+          -- ...
+          -- @
+          --
+          -- This works very similarly to the `go` function in
+          -- `defun_vanilla_sak`. The main differences are:
+          --
+          -- * This function does not produce any SAKs for defunctionalization
+          --   symbols.
+          --
+          -- * Instead of [(Name, DKind)], this function uses [DTyVarBndr] as
+          --   the types of @arg_tvbs@ and @res_tvbs@. This is because the
+          --   kinds are not always known. By a similar token, this function
+          --   uses Maybe DKind, not DKind, as the type of @m_res_k@, since
+          --   the result kind is not always fully known.
+          go :: Int -> [DTyVarBndr] -> [DTyVarBndr] -> (Maybe DKind, [DDec])
+          go n arg_tvbs res_tvbss =
+            case res_tvbss of
+              [] ->
+                let sat_decs = mk_sat_decs opts n arg_tvbs m_res
+                in (m_res, sat_decs)
+              res_tvb:res_tvbs ->
+                let (m_res_ki, decs) = go (n+1) (arg_tvbs ++ [res_tvb]) res_tvbs
+                    m_tyfun          = buildTyFunArrow_maybe (extractTvbKind res_tvb)
+                                                             m_res_ki
+                    defun_decs'      = mk_defun_decs opts n arg_tvbs
+                                                     (extractTvbName res_tvb)
+                                                     extra_name m_tyfun
+                in (m_tyfun, defun_decs' ++ decs)
+
+      pure $ snd $ go 0 [] tvbs
+
+    mk_defun_decs :: Options
+                  -> Int
+                  -> [DTyVarBndr]
+                  -> Name
+                  -> Name
+                  -> Maybe DKind
+                  -> [DDec]
+    mk_defun_decs opts n arg_tvbs tyfun_name extra_name m_tyfun =
+      let data_name   = defunctionalizedName opts name n
+          next_name   = defunctionalizedName opts name (n+1)
+          con_name    = prefixName "" ":" $ suffixName "KindInference" "###" data_name
+          arg_names   = map extractTvbName arg_tvbs
+          params      = arg_tvbs ++ [DPlainTV tyfun_name]
+          con_eq_ct   = DConT sameKindName `DAppT` lhs `DAppT` rhs
+            where
+              lhs = foldType (DConT data_name) (map DVarT arg_names) `apply` (DVarT extra_name)
+              rhs = foldType (DConT next_name) (map DVarT (arg_names ++ [extra_name]))
+          con_decl    = DCon [] [con_eq_ct] con_name (DNormalC False [])
+                             (foldTypeTvbs (DConT data_name) params)
+          data_decl   = DDataD Data [] data_name args m_tyfun [con_decl] []
+            where
+              args | isJust m_tyfun = arg_tvbs
+                   | otherwise      = params
+          app_data_ty = foldTypeTvbs (DConT data_name) arg_tvbs
+          app_eqn     = DTySynEqn Nothing
+                                  (DConT applyName `DAppT` app_data_ty
+                                                   `DAppT` DVarT tyfun_name)
+                                  (foldTypeTvbs (DConT next_name)
+                                                (arg_tvbs ++ [DPlainTV tyfun_name]))
+          app_decl    = DTySynInstD app_eqn
+          suppress    = DInstanceD Nothing Nothing []
+                          (DConT suppressClassName `DAppT` app_data_ty)
+                          [DLetDec $ DFunD suppressMethodName
+                                           [DClause []
+                                                    ((DVarE 'snd) `DAppE`
+                                                     mkTupleDExp [DConE con_name,
+                                                                  mkTupleDExp []])]]
+
+          -- See Note [Fixity declarations for defunctionalization symbols]
+          fixity_decl = maybeToList $ fmap (mk_fix_decl data_name) m_fixity
+      in data_decl : app_decl : suppress : fixity_decl
+
+    -- Generate a "fully saturated" defunction symbol, along with a fixity
+    -- declaration (if needed).
+    mk_sat_decs :: Options -> Int -> [DTyVarBndr] -> Maybe DKind -> [DDec]
+    mk_sat_decs opts n sat_tvbs m_sat_res =
+      let sat_name = defunctionalizedName opts name n
+          sat_dec  = DTySynD sat_name sat_tvbs $
+                     foldTypeTvbs (DConT name) sat_tvbs `maybeSigT` m_sat_res
+          sat_fixity_dec = maybeToList $ fmap (mk_fix_decl sat_name) m_fixity
+      in sat_dec : sat_fixity_dec
+
+    -- Generate extra kind variable binders corresponding to the number of
+    -- arrows in the return kind (if provided). Examples:
+    --
+    -- >>> eta_expand [(x :: a), (y :: b)] (Just (c -> Type))
+    -- ([(x :: a), (y :: b), (e :: c)], Just Type)
+    --
+    -- >>> eta_expand [(x :: a), (y :: b)] Nothing
+    -- ([(x :: a), (y :: b)], Nothing)
     eta_expand :: [DTyVarBndr] -> Maybe DKind -> PrM ([DTyVarBndr], Maybe DKind)
     eta_expand m_arg_tvbs Nothing = pure (m_arg_tvbs, Nothing)
     eta_expand m_arg_tvbs (Just res_kind) = do
@@ -340,279 +380,501 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
         extra_arg_tvbs <- traverse mk_extra_tvb vis_arg_ks
         pure (m_arg_tvbs ++ extra_arg_tvbs, Just result_k)
 
+    -- Convert a DVisFunArg to a DTyVarBndr, generating a fresh type variable
+    -- name if the DVisFunArg is an anonymous argument.
     mk_extra_tvb :: DVisFunArg -> PrM DTyVarBndr
     mk_extra_tvb vfa =
       case vfa of
         DVisFADep tvb -> pure tvb
         DVisFAAnon k  -> DKindedTV <$> qNewName "e" <*> pure k
 
-    map_tvb_kind :: (DKind -> DKind) -> DTyVarBndr -> DTyVarBndr
-    map_tvb_kind _ tvb@DPlainTV{}  = tvb
-    map_tvb_kind f (DKindedTV n k) = DKindedTV n (f k)
-
     mk_fix_decl :: Name -> Fixity -> DDec
     mk_fix_decl n f = DLetDec $ DInfixD f n
 
-{-
-Note [Defunctionalization and dependent quantification]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The machinery in this module supports defunctionalizing types that use
-dependent quantification, such as in the following example:
-
-  type family Symmetry (a :: Proxy t) (y :: Proxy t)
-                       (e :: (a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k))) :: Type where
-    Symmetry a y _ = y :~: a
-
-Here is what is involved in making this happen:
-
-1. When defunctionalizing, we must not only know the argument kinds, but rather
-   the argument *kind variable binders*. This is essential since, for instance,
-   Symmetry dependently quantifies `a` and `y` and uses them in the kind of
-   `e`. If we did not track the original kind variable names, then instead of
-   generating this defunctionalization symbol for Symmetry:
-
-     data SymmetrySym2 (a :: Proxy t) (y :: Proxy t) :: (a :~: y) ~> Type
-
-   We would generate something more general, like this:
-
-     data SymmetrySym2 (abc1 :: Proxy t) (abc2 :: Proxy t) :: (a :~: y) ~> Type
-
-   Alas, there are times where will have no choice but to write a slightly
-   more general kind than we should. For instance, consider this:
-
-     data SymmetrySym0 :: Proxy t ~> Proxy t ~> (a :~: y) ~> Type
-
-   This defunctionalization symbol doesn't capture the dependent quantification
-   in the first and second argument kinds. But in order to do that properly,
-   you'd need the ability to write something like:
-
-     data SymmetrySym0 :: forall (a :: Proxy t) ~> forall (y :: Proxy t)
-                       ~> (a :~: y) ~> Type
-
-   It is my (RGS's) belief that it is not possible to achieve something like
-   this in today's GHC (see #304), so we'll just have to live with SymmetrySym0
-   being slightly more general than it ought to be. In practice, this is
-   unlikely to bite unless you're writing code that specifically exploits this
-   dependency in just the right way.
-
-2. I pulled a fast one earlier by writing:
-
-     data SymmetrySym0 :: Proxy t ~> Proxy t ~> (a :~: y) ~> Type
-
-   GHC will actually reject this, because it does not have a CUSK. There are
-   two glaring problems here:
-
-   (a) The kind of `t` is underdetermined.
-   (b) `a` and `y` should have kind `Proxy t`, but this is not currently the case.
-
-   Ultimately, the fix is to use explicit kind signatures. A naïve attempt
-   would be something like this:
-
-     data SymmetrySym0 :: Proxy (t :: (k :: Type)) ~> Proxy (t :: (k :: Type))
-                       ~> ((a :: Proxy (t :: (k :: Type))) :~: (y :: Proxy (t :: (k :: Type))))
-                       ~> Type
-
-   While that works, it adds a nontrivial amount of clutter. Plus, it requires
-   figuring out (in Template Haskell) which variables have underdetermined
-   kinds and substituting for them. Blegh. A much cleaner approach is:
-
-     data SymmetrySym0 :: forall (k :: Type) (t :: k) (a :: Proxy t) (y :: Proxy t).
-                          Proxy t ~> Proxy t ~> (a :~: y) ~> Type
-
-   This time, all we have to do is put an explicit `forall` in front, and we
-   achieve a CUSK without having to muck up the body of return kind. It also
-   has the benefit of looking much nicer in generated code.
-
-   Let's talk about how to achieve this feat, using SymmetrySym1 as the
-   guiding example:
-
-   (i) Before we begin defunctionalizing a type, we construct a mapping from
-       variable names to their corresponding types, complete with kinds.
-       For instance, in Symmetry, we would have the following map:
-
-         { k :-> DVarT k                                         -- k
-         , t :-> DSigT (DVarT t) (DVarT k)                       -- (t :: k)
-         , a :-> DSigT (DVarT a) (DConT ''Proxy `DAppT` DVarT t) -- (a :: Proxy t)
-         , y :-> DSigT (DVarT y) (DConT ''Proxy `DAppT` DVarT y) -- (y :: Proxy t)
-         , e :-> DSigT (DVarT e) (DConT ''(:~:)
-                                  `DAppT` DSigT (DVarT a) (DConT ''Proxy `DAppT` DSigT (DVarT t) (DVarT k))
-                                  `DAppT` DSigT (DVarT y) (DConT ''Proxy `DAppT` DSigT (DVarT t) (DVarT k)))
-                                                                 -- (e :: (a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
-         }
-
-       Why do this? Because when constructing the `forall` in the return kind
-       of a defunctionalization symbol, it's convenient to be able to know
-       the kinds of everything being bound at a glance. It's not always
-       possible to recover the kinds of every variable (for instance, if
-       we're just given `Proxy t ~> Proxy t ~> (a :~: y) ~> Type`), so having
-       this information is handy.
-
-       To construct this map, we:
-
-       (a) Grab the list of type variable binders (this is given as an input
-           to defunctionalize, as discussed in part (1)) and turn it into a list
-           of types. Also include the return kind (if there is one) in this
-           list, as it may also mention type variables with explicit kinds.
-       (b) Construct a flat list of all type variables mentioned in this list.
-           This may involve looking in the kinds of type variables binders.
-           (Note that this part is crucial—the the Singletons/PolyKinds test
-           will fail to compile without it!)
-       (c) Take the flat list and insert each variable into the map by
-           mapping its name to its type (as demonstrated above).
-
-       To continue the Symmetry example:
-
-       (a) We grab the list of type variable binders
-
-             [ (a :: Proxy t)
-             , (y :: Proxy t)
-             , (e :: (a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
-             ]
-
-           from the Symmetry declaration. Including the return kind (Type),
-           we get:
-
-             [ (a :: Proxy t)
-             , (y :: Proxy t)
-             , (e :: (a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
-             , Type
-             ]
-
-       (b) We flatten this into a list of well scoped type variables:
-
-             [ k
-             , (t :: k)
-             , (a :: Proxy t)
-             , (y :: Proxy t)
-             , (e :: (a :: Proxy (t :: k)) :~: (y :~: Proxy (t :: k)))
-             ]
-
-       (c) From this, we construct the map shown at the beginning of (i).
-
-   (ii) Using the map, we will annotate any kind variables in the LHS of the
-        declaration with their respective kinds. In this example, the LHS is:
-
-          data SymmetrySym1 (a :: Proxy t) :: ...
-
-        Since `t` maps to simply `(t :: k)` in the map, the LHS becomes:
-
-          data SymmetrySym1 (a :: Proxy (t :: k)) :: ...
-
-        Why do this? Because we need to make it apparent that `k` is bound on
-        the LHS. If we don't, we might end up trying to quantify `k` in the
-        return kind (see #353 for an example of what goes wrong if you try to
-        do this).
-
-        Having to explicitly annotate each occurrence of every kind variable on
-        the LHS like this is a bit tiresome, especially since we don't have to
-        do this in the return kind. If GHC had syntax for visible dependent
-        quantification, we could avoid this step entirely and simply write:
-
-          data SymmetrySym1 :: forall k (t :: k). forall (a :: Proxy t) -> ...
-
-        Until GHC gains this syntax, this is the best alternative.
-
-   (iii) When constructing each defunctionalization symbol, we will end up with
-         some remaining type variable binders and a return kind. For instance:
-
-           data SymmetrySym1 (a :: Proxy (t :: k))
-             :: forall ???. Proxy t
-                         ~> ((a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
-                         ~> Type
-
-         We must fill in the ??? part. Here is how we do so:
-
-         (a) Collect all of the type variables mentioned in the return kind.
-         (b) Look up each type variable's corresponding type in the map (from
-             part (i)) to learn as much kind information as possible.
-         (c) Perform a reverse topological sort on these types to put the
-             types (and kind) variables in proper dependency order.
-         (d) Filter out any variables that are already bound by the type
-             variable binders that precede the return kind.
-
-         After doing these steps, what remains goes in place of ???. Let's
-         explain this with the example above:
-
-           data SymmetrySym1 (a :: Proxy (t :: k))
-             :: forall ???. Proxy t
-                         ~> ((a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
-                         ~> Type
-
-         (a) [t, a, k, y]
-         (b) [(t :: k), (a :: Proxy t), k, (y :: Proxy t)]
-         (c) [k, (t :: k), (a :: Proxy t), (y :: Proxy t)]
-         (d) [(y :: Proxy t)] (`k`, `t` and `a` were already bound)
-
-         Therefore, we end up with:
-
-           data SymmetrySym1 (a :: Proxy (t :: k))
-             :: forall (y :: Proxy t).
-                            Proxy t
-                         ~> ((a :: Proxy (t :: k)) :~: (y :: Proxy (t :: k)))
-                         ~> Type
--}
-
--- This is a small function with large importance. When generating
--- defunctionalization data types, we often need to fill in the blank in the
--- sort of code exemplified below:
---
--- @
--- data FooSym2 a (b :: x) (c :: TyFun y z) where
---   FooSym2KindInference :: _
--- @
---
--- Where the kind of @a@ is not known. It's extremely tempting to just
--- copy-and-paste the type variable binders from the data type itself to the
--- constructor, like so:
---
--- @
--- data FooSym2 a (b :: x) (c :: TyFun y z) where
---   FooSym2KindInference :: forall a (b :: x) (c :: TyFun y z).
---                           SameKind (...) (...).
---                           FooSym2KindInference a b c
--- @
---
--- But this ends up being an untenable approach. Because @a@ lacks a kind
--- signature, @FooSym2@ does not have a complete, user-specified kind signature
--- (or CUSK), so GHC will fail to typecheck @FooSym2KindInference@.
---
--- Thankfully, there's a workaround—just don't give any of the constructor's
--- type variable binders any kinds:
---
--- @
--- data FooSym2 a (b :: x) (c :: TyFun y z) where
---   FooSym2KindInference :: forall a b c
---                           SameKind (...) (...).
---                           FooSym2KindInference a b c
--- @
---
--- GHC may be moody when it comes to CUSKs, but it's at least understanding
--- enough to typecheck this without issue. The 'dropTvbKind' function is
--- what removes the kinds used in the kind inference constructor.
-dropTvbKind :: DTyVarBndr -> DTyVarBndr
-dropTvbKind tvb@(DPlainTV {}) = tvb
-dropTvbKind (DKindedTV n _)   = DPlainTV n
+-- Indicates whether the type being defunctionalized has a standalone kind
+-- signature. If it does, DefunSAK contains the kind. If not, DefunNoSAK
+-- contains whatever information is known about its type variable binders
+-- and result kind.
+-- See Note [Defunctionalization game plan] for details on how this
+-- information is used.
+data DefunKindInfo
+  = DefunSAK DKind
+  | DefunNoSAK [DTyVarBndr] (Maybe DKind)
 
 -- Shorthand for building (k1 ~> k2)
 buildTyFunArrow :: DKind -> DKind -> DKind
 buildTyFunArrow k1 k2 = DConT tyFunArrowName `DAppT` k1 `DAppT` k2
 
 buildTyFunArrow_maybe :: Maybe DKind -> Maybe DKind -> Maybe DKind
-buildTyFunArrow_maybe m_k1 m_k2 = do
-  k1 <- m_k1
-  k2 <- m_k2
-  return $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
-
--- Build (~>) kind from the list of kinds
-ravelTyFun :: [DKind] -> DKind
-ravelTyFun []    = error "Internal error: TyFun raveling nil"
-ravelTyFun [k]   = k
-ravelTyFun kinds = go tailK (buildTyFunArrow k2 k1)
-    where (k1 : k2 : tailK) = reverse kinds
-          go []     acc = acc
-          go (k:ks) acc = go ks (buildTyFunArrow k acc)
+buildTyFunArrow_maybe m_k1 m_k2 = buildTyFunArrow <$> m_k1 <*> m_k2
 
 {-
+Note [Defunctionalization game plan]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Generating defunctionalization symbols involves a surprising amount of
+complexity. This Note gives a broad overview of what happens during
+defunctionalization and highlights various design considerations.
+As a working example, we will use the following type family:
+
+  type Foo :: forall c a b. a -> b -> c -> c
+  type family Foo x y z where ...
+
+We must generate a defunctionalization symbol for every number of arguments
+to which Foo can be partially applied. We do so by generating the following
+declarations:
+
+  type FooSym0 :: forall c a b. a ~> b ~> c ~> c
+  data FooSym0 f where
+   FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg)
+                        => FooSym0 f
+  type instance Apply FooSym0 x = FooSym1 x
+
+  type FooSym1 :: forall c a b. a -> b ~> c ~> c
+  data FooSym1 x f where
+    FooSym1KindInference :: SameKind (Apply (FooSym1 a) arg) (FooSym2 a arg)
+                         => FooSym1 a f
+  type instance Apply (FooSym1 x) y = FooSym2 x y
+
+  type FooSym2 :: forall c a b. a -> b -> c ~> c
+  data FooSym2 x y f where
+    FooSym2KindInference :: SameKind (Apply (FooSym2 x y) arg) (FooSym3 x y arg)
+                         => FooSym2 x y f
+  type instance Apply (FooSym2 x y) z = FooSym3 x y z
+
+  type FooSym3 (x :: a) (y :: b) (z :: c) = Foo x y z :: c
+
+Some things to note:
+
+* Each defunctionalization symbol has its own standalone kind signature. The
+  number after `Sym` in each symbol indicates the number of leading -> arrows
+  in its kind—that is, the number of arguments to which it can be applied
+  directly to without the use of the Apply type family.
+
+  See "Wrinkle 1: Partial kinds" below for what happens if the declaration
+  being defunctionalized does *not* have a standalone kind signature.
+
+* Each data declaration has a constructor with the suffix `-KindInference`
+  in its name. These are redundant in the particular case of Foo, where the
+  kind is already known. They play a more vital role when the kind of the
+  declaration being defunctionalized is only partially known.
+  See "Wrinkle 1: Partial kinds" below for more information.
+
+* FooSym3, the last defunctionalization symbol, is somewhat special in that
+  it is a type synonym, not a data type. These sorts of symbols are referred
+  to as "fully saturated" defunctionalization symbols. Furthermore, these
+  symbols are intentionally *not* given SAKs. See
+  Note [No SAKs for fully saturated defunctionalization symbols].
+
+* If Foo had a fixity declaration (e.g., infixl 4 `Foo`), then we would also
+  generate fixity declarations for each defunctionalization symbol (e.g.,
+  infixl 4 `FooSym0`).
+  See Note [Fixity declarations for defunctionalization symbols].
+
+* Foo has a vanilla kind signature. (See
+  Note [Vanilla-type validity checking during promotion] in D.S.Promote.Type
+  for what "vanilla" means in this context.) Having a vanilla type signature is
+  important, as it is a property that makes it much simpler to preserve the
+  order of type variables (`forall c a b.`) in each of the defunctionalization
+  symbols.
+
+  That being said, it is not strictly required that the kind be vanilla. There
+  is another approach that can be used to defunctionalize things with
+  non-vanilla types, at the possible expense of having different type variable
+  orders between different defunctionalization symbols.
+  See "Wrinkle 2: Non-vanilla kinds" below for more information.
+
+-----
+-- Wrinkle 1: Partial kinds
+-----
+
+The Foo example above has a standalone kind signature, but not everything has
+this much kind information. For example, consider this:
+
+  $(singletons [d|
+    type family Not x where
+      Not False = True
+      Not True  = False
+    |])
+
+The inferred kind for Not is `Bool -> Bool`, but since Not was declared in TH
+quotes, `singletons` has no knowledge of this. Instead, we must rely on kind
+inference to give Not's defunctionalization symbols the appropriate kinds.
+Here is a naïve first attempt:
+
+  data NotSym0 f
+  type instance Apply NotSym0 x = NotSym1 x
+
+  type NotSym1 x = Not x
+
+NotSym1 will have the inferred kind `Bool -> Bool`, but poor NotSym0 will have
+the inferred kind `forall k. k -> Type`, which is far more general than we
+would like. We can do slightly better by supplying additional kind information
+in a data constructor, like so:
+
+  type SameKind :: k -> k -> Constraint
+  class SameKind x y = ()
+
+  data NotSym0 f where
+    NotSym0KindInference :: SameKind (Apply NotSym0 arg) (NotSym1 arg)
+                         => NotSym0 f
+
+NotSym0KindInference is not intended to ever be seen by the user. Its only
+reason for existing is its existential
+`SameKind (Apply NotSym0 arg) (NotSym1 arg)` context, which allows GHC to
+figure out that NotSym0 has kind `Bool ~> Bool`. This is a bit of a hack, but
+it works quite nicely. The only problem is that GHC is likely to warn that
+NotSym0KindInference is unused, which is annoying. To work around this, we
+mention the data constructor in an instance of a dummy class:
+
+  instance SuppressUnusedWarnings NotSym0 where
+    suppressUnusedWarnings = snd (NotSym0KindInference, ())
+
+Similarly, this SuppressUnusedWarnings class is not intended to ever be seen
+by the user. As its name suggests, it only exists to help suppress "unused
+data constructor" warnings.
+
+Some declarations have a mixture of known kinds and unknown kinds, such as in
+this example:
+
+  $(singletons [d|
+    type family Bar x (y :: Nat) (z :: Nat) :: Nat where ...
+    |])
+
+We can use the known kinds to guide kind inference. In this particular example
+of Bar, here are the defunctionalization symbols that would be generated:
+
+  data BarSym0 f where ...
+  data BarSym1 x :: Nat ~> Nat ~> Nat where ...
+  data BarSym2 x (y :: Nat) :: Nat ~> Nat where ...
+  type BarSym3 x (y :: Nat) (z :: Nat) = Bar x y z :: Nat
+
+-----
+-- Wrinkle 2: Non-vanilla kinds
+-----
+
+There is only limited support for defunctionalizing declarations with
+non-vanilla kinds. One example of something with a non-vanilla kind is the
+following, which uses a nested forall:
+
+  $(singletons [d|
+    type Baz :: forall a. a -> forall b. b -> Type
+    data Baz x y
+    |])
+
+One might envision generating the following defunctionalization symbols for
+Baz:
+
+  type BazSym0 :: forall a. a ~> forall b. b ~> Type
+  data BazSym0 f where ...
+
+  type BarSym1 :: forall a. a -> forall b. b ~> Type
+  data BazSym1 x f where ...
+
+  type family BazSym2 (x :: a) (y :: b) = Baz x y :: Type
+
+Unfortunately, doing so would require impredicativity, since we would have:
+
+    forall a. a ~> forall b. b ~> Type
+  = forall a. (~>) a (forall b. b ~> Type)
+  = forall a. TyFun a (forall b. b ~> Type) -> Type
+
+Note that TyFun is an ordinary data type, so having its second argument be
+(forall b. b ~> Type) is truly impredicative. As a result, trying to preserve
+nested or higher-rank foralls is a non-starter.
+
+We need not reject Baz entirely, however. We can still generate perfectly
+usable defunctionalization symbols if we are willing to sacrifice the exact
+order of foralls. When we encounter a non-vanilla kind such as Baz's, we simply
+fall back to the algorithm used when we encounter a partial kind (as described
+in "Wrinkle 1: Partial kinds" above.) In other words, we generate the
+following symbols:
+
+  data BazSym0 :: a ~> b ~> Type where ...
+  data BazSym1 (x :: a) :: b ~> Type where ...
+  type BazSym2 (x :: a) (y :: b) = Baz x y :: Type
+
+The kinds of BazSym0 and BazSym1 both start with `forall a b.`,
+whereas the `b` is quantified later in Baz itself. For most use cases, however,
+this is not a huge concern.
+
+Another way kinds can be non-vanilla is if they contain visible dependent
+quantification, like so:
+
+  $(singletons [d|
+    type Quux :: forall (k :: Type) -> k -> Type
+    data Quux x y
+    |])
+
+What should the kind of QuuxSym0 be? Intuitively, it should be this:
+
+  type QuuxSym0 :: forall (k :: Type) ~> k ~> Type
+
+Alas, `forall (k :: Type) ~>` simply doesn't work. See #304. But there is an
+acceptable compromise we can make that can give us defunctionalization symbols
+for Quux. Once again, we fall back to the partial kind algorithm:
+
+  data QuuxSym0 :: Type ~> k ~> Type where ...
+  data QuuxSym1 (k :: Type) :: k ~> Type where ...
+  type QuuxSym2 (k :: Type) (x :: k) = Quux k x :: Type
+
+The catch is that the kind of QuuxSym0, `forall k. Type ~> k ~> Type`, is
+slightly more general than it ought to be. In practice, however, this is
+unlikely to be a problem as long as you apply QuuxSym0 to arguments of the
+right kinds.
+
+Note [No SAKs for fully saturated defunctionalization symbols]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+When generating defunctionalization symbols, most of the symbols are data
+types. The last one, however, is a type synonym. For example, this code:
+
+  $(singletons [d|
+    type Const :: a -> b -> a
+    type Const x y = x
+    |])
+
+Will generate the following symbols:
+
+  type ConstSym0 :: a ~> b ~> a
+  data ConstSym0 f where ...
+
+  type ConstSym1 :: a -> b ~> a
+  data ConstSym1 x f where ...
+
+  type ConstSym2 (x :: a) (y :: b) = Const x y :: a
+
+ConstSym2, the sole type synonym of the bunch, is what is referred to as a
+"fully saturated" defunctionaliztion symbol.
+
+At first glance, ConstSym2 may not seem terribly useful, since it is
+effectively a thin wrapper around the original Const type. Indeed, fully
+saturated symbols are never appear directly in user-written code. Instead,
+they are most valuable in TH-generated code, as singletons often generates code
+that directly applies a defunctionalization symbol to some number of arguments
+(see, for instance, D.S.Names.promoteTySym). In theory, such code could carve
+out a special case for fully saturated applications and apply the original
+type instead of a defunctionalization symbol, but determining when an
+application is fully saturated is often difficult in practice. As a result, it
+is more convenient to just generate code that always applies FuncSymN to N
+arguments, and to let fully saturated defunctionalization symbols handle the
+case where N equals the number of arguments needed to fully saturate Func.
+
+Another curious thing about fully saturated defunctionalization symbols do
+*not* get assigned SAKs, unlike their data type brethren. Why not just give
+ConstSym2 a SAK like this?
+
+  type ConstSym2 :: a -> b -> a
+  type ConstSym2 x y = Const x y
+
+This would in fact work for most use cases, but there are a handful of corner
+cases where this approach would break down. Here is one such corner case:
+
+  $(promote [d|
+    class Applicative f where
+      pure :: a -> f a
+      ...
+      (*>) :: f a -> f b -> f b
+    |])
+
+  ==>
+
+  class PApplicative f where
+    type Pure (x :: a) :: f a
+    type (*>) (x :: f a) (y :: f b) :: f b
+
+What would happen if we were to defunctionalize the promoted version of (*>)?
+We'd end up with the following defunctionalization symbols:
+
+  type (*>@#@$)   :: f a ~> f b ~> f b
+  data (*>@#@$) f where ...
+
+  type (*>@#@$$)  :: f a -> f b ~> f b
+  data (*>@#@$$) x f where ...
+
+  type (*>@#@$$$) :: f a -> f b -> f b
+  type (*>@#@$$$) x y = (*>) x y
+
+It turns out, however, that (*>@#@$$$) will not kind-check. Because (*>@#@$$$)
+has a standalone kind signature, it is kind-generalized *before* kind-checking
+the actual definition itself. Therefore, the full kind is:
+
+  type (*>@#@$$$) :: forall {k} (f :: k -> Type) (a :: k) (b :: k).
+                     f a -> f b -> f b
+  type (*>@#@$$$) x y = (*>) x y
+
+However, the kind of (*>) is
+`forall (f :: Type -> Type) (a :: Type) (b :: Type). f a -> f b -> f b`.
+This is not general enough for (*>@#@$$$), which expects kind-polymorphic `f`,
+`a`, and `b`, leading to a kind error. You might think that we could somehow
+infer this information, but note the quoted definition of Applicative (and
+PApplicative, as a consequence) omits the kinds of `f`, `a`, and `b` entirely.
+Unless we were to implement full-blown kind inference inside of Template
+Haskell (which is a tall order), the kind `f a -> f b -> f b` is about as good
+as we can get.
+
+Note that (*>@#@$) and (*>@#@$$) are implemented as GADTs, not type synonyms.
+This allows them to have kind-polymorphic `f`, `a`, and `b` in their kinds
+while equating `k` to be `Type` in their data constructors, which neatly avoids
+the issue that (*>@#@$$$) faces.
+
+-----
+
+In one last attempt to salvage the idea of giving SAKs to fully saturated
+defunctionalization symbols, I explored an idea where we would add
+"dummy constraints" to get the kinds exactly right. The idea was to first
+define a type synonym for dummy contexts:
+
+  type Dummy :: Constraint -> Constraint
+  type Dummy x = () ~ ()
+
+Dummy simply ignores its argument and returns `() ~ ()`. `() ~ ()` was chosen
+because it's one of the few Constraints that can currently be used at the kind
+level. Dummy could, in theory, be used like this:
+
+  type (*>@#@$)   :: Dummy (PApplicative f) => f a ~> f b ~> f b
+  type (*>@#@$$)  :: Dummy (PApplicative f) => f a -> f b ~> f b
+  type (*>@#@$$$) :: Dummy (PApplicative f) => f a -> f b -> f b
+
+The advantage to using `Dummy (PApplicative f)` is that it would constraint `f`
+to be of kind `Type -> Type`, which would get the kinds exactly the way we want
+them. Sounds great, right? Unfortunately, it doesn't work in practice. Consider
+this example:
+
+  $(promoteOnly [d|
+    class C a where
+      m1 :: a -> a
+      m1 = m2
+
+      m2 :: a -> a
+      m2 = m1
+    |])
+
+  ==>
+
+  class PC a where
+    type M1 (x :: a) :: a
+    type M1 x = Apply M2Sym1 x
+
+    type M2 (x :: a) :: a
+    type M2 x = Apply M1Sym1 x
+
+The generated code would fail to compile, instead throwing this error:
+
+  error:
+      • Class ‘PC’ cannot be used here
+          (it is defined and used in the same recursive group)
+      • In the first argument of ‘Dummy’, namely ‘(PC a)’
+        In a standalone kind signature for ‘M2Sym1’:
+          forall a. Dummy (PC a) => a -> a
+     |
+     | type M2Sym1 :: forall a. Dummy (PC a) => a -> a
+     |                                 ^^^^
+
+Ugh. I suspect this is a GHC bug (see
+https://gitlab.haskell.org/ghc/ghc/issues/15942#note_242075), but it's one
+that's unlikely to be fixed any time soon.
+
+A slight variations on idea is to use the original class instead of the
+promoted class in `Dummy` contexts, e.g.,
+
+  type M2Sym1 :: forall a. Dummy (C a) => a -> a
+
+This would avoid the recursive group issues, but it would introduce a new
+problem: the original class is not guaranteed to exist if
+`promoteOnly` or `singletonsOnly` are used to create the promoted class.
+(Indeed, this is precisely the case in the `PC` example.)
+
+-----
+
+As an alternative to type synonyms, we might consider using type families to
+define fully saturated defunctionalization symbols. For instance, we could try
+this:
+
+  type (*>@#@$$$) :: f a -> f b -> f b
+  type family (*>@#@$$$) x y where
+    (*>@#@$$$) x y = (*>) x y
+
+Like before, the full kind of (*>@#@$$$) is generalized to be
+`forall {k} (f :: k -> Type) (a :: k) (b :: k)`. The difference is that the
+type family equation *matches* on `k` such that the equation will only trigger
+if `k` is equal to `Type`. (This is similar to the trick that (*>@#@$) and
+(*>@#@$$) employ, as being GADTs allows them to constrain `k` to be `Type` in
+their data constructors.)
+
+Alas, the type family approach is strictly less powerful than the type synonym
+approach. Consider the following code:
+
+  $(singletons [d|
+    data Nat = Z | S Nat
+
+    natMinus :: Nat -> Nat -> Nat
+    natMinus Z     _     = Z
+    natMinus (S a) (S b) = natMinus a b
+    natMinus a     Z     = a
+    |])
+
+Among other things, this will generate the following declarations:
+
+  type ZSym0 :: Nat
+
+  type NatMinus :: Nat -> Nat -> Nat
+  type family NatMinus x y where
+    NatMinus Z     _     = ZSym0
+    NatMinus (S a) (S b) = NatMinus a b
+    NatMinus a     Z     = a
+
+  sNatMinus :: SNat x -> SNat y -> SNat (NatMinus x y)
+  sNatMinus SZ      _       = SZ
+  sNatMinus (SS sA) (SS sB) = sNatMinus sA sB
+  sNatMinus sA      SZ      = sA
+
+Shockingly, this will either succeed or fail to compile depending on whether
+ZSym0 is a type synonym or a type family. If ZSym0 is a type synonym, then
+the first and third equations of NatMinus will be compatible (since GHC will
+be able to infer that Z ~ ZSym0), which is what allows the third equation of
+sNatMinus to typecheck. If ZSym0 is a type family, however, then the third
+equation of NatMinus will be incompatible with the first, which will cause
+the third equation of sNatMinus to fail to typecheck:
+
+  error:
+      • Could not deduce: NatMinus x 'Z ~ x
+        from the context: y ~ 'Z
+          bound by a pattern with constructor: SZ :: SNat 'Z,
+                   in an equation for ‘sNatMinus’
+        ‘x’ is a rigid type variable bound by
+          the type signature for:
+            sNatMinus :: forall (x :: Nat) (y :: Nat).
+                         SNat x -> SNat y -> SNat (NatMinus x y)
+        Expected type: SNat (NatMinus x y)
+          Actual type: SNat x
+      • In the expression: sA
+        In an equation for ‘sNatMinus’: sNatMinus sA SZ = sA
+      • Relevant bindings include
+          sA :: SNat x
+          sNatMinus :: SNat x -> SNat y -> SNat (NatMinus x y)
+
+One could work around the issue by tweaking the third equation of natMinus
+slightly:
+
+  $(singletons [d|
+    ...
+
+    natMinus :: Nat -> Nat -> Nat
+    natMinus Z       _     = Z
+    natMinus (S a)   (S b) = natMinus a b
+    natMinus a@(S _) Z     = a
+    |])
+
+But I would generally prefer to avoid having the user add extraneous pattern
+matches when possible. Given the choice between expressiveness and SAKs, I give
+the edge to expressiveness.
+
+Bottom line: don't give fully saturated defunctionalization symbols SAKs. This
+is admittedly not ideal, but it's unlikely to be a sticking point in practice,
+given that these symbols are almost exclusively used in autogenerated code
+in the first place. If we want to support promoting code that uses visible
+type application (see #378), we will need to figure out how to resolve this
+issue.
+
 Note [Fixity declarations for defunctionalization symbols]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just like we promote fixity declarations, we should also generate fixity

@@ -101,7 +101,7 @@ install:
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
     echo "  location: https://github.com/goldfirere/th-desugar" >> cabal.project
-    echo "  tag:      4e8f7d46954e690530c17b2eac9d302170ff994f" >> cabal.project
+    echo "  tag:      a6c902914ff6fcca021619dbb4919327fb98c404" >> cabal.project
     echo ""                                                     >> cabal.project
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project
@@ -133,7 +133,7 @@ script:
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
     echo "  location: https://github.com/goldfirere/th-desugar" >> cabal.project
-    echo "  tag:      4e8f7d46954e690530c17b2eac9d302170ff994f" >> cabal.project
+    echo "  tag:      a6c902914ff6fcca021619dbb4919327fb98c404" >> cabal.project
     echo ""                                                     >> cabal.project
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project

@@ -55,12 +55,12 @@ data PartitionedDecs =
 
 instance Semigroup PartitionedDecs where
   PDecs a1 b1 c1 d1 e1 f1 g1 h1 i1 <> PDecs a2 b2 c2 d2 e2 f2 g2 h2 i2 =
-    PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2) (e1 <> e2) (f1 <> f2)
-          (g1 <> g2) (h1 <> h2) (i1 <> i2)
+    PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2) (e1 <> e2)
+          (f1 <> f2) (g1 <> g2) (h1 <> h2) (i1 <> i2)
 
 instance Monoid PartitionedDecs where
-  mempty = PDecs [] [] [] [] [] [] [] [] []
-  mappend = (<>)
+  mempty = PDecs mempty mempty mempty mempty mempty
+                 mempty mempty mempty mempty
 
 -- | Split up a @[DDec]@ into its pieces, extracting 'Ord' instances
 -- from deriving clauses
@@ -129,6 +129,9 @@ partitionDec (DOpenTypeFamilyD tf_head) =
 partitionDec (DTySynInstD {}) = pure mempty
   -- There's no need to track type family instances, since
   -- we already record the type family itself separately.
+partitionDec (DKiSigD {}) = pure mempty
+  -- There's no need to track standalone kind signatures, since we use
+  -- dsReifyType to look them up.
 partitionDec (DStandaloneDerivD mb_strat _ ctxt ty) =
   case unfoldDType ty of
     (cls_pred_ty, cls_tys)

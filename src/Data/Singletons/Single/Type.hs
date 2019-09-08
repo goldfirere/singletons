@@ -44,10 +44,9 @@ singType bound_kvs prom ty = do
                 -- Make sure to include an explicit `prom_res` kind annotation.
                 -- See Note [Preserve the order of type variables during singling],
                 -- wrinkle 3.
-      tau   = ravel args' res'
       kvbs     = singTypeKVBs orig_tvbs prom_args cxt' prom_res bound_kvs
       all_tvbs = kvbs ++ zipWith DKindedTV arg_names prom_args
-      ty' = DForallT ForallInvis all_tvbs $ DConstrainedT cxt' tau
+      ty'      = ravelVanillaDType all_tvbs cxt' args' res'
   return (ty', num_args, arg_names, cxt, prom_args, prom_res)
 
 -- Compute the kind variable binders to use in the singled version of a type

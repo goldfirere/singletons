@@ -18,11 +18,17 @@ $(singletons [d|
 ex1 :: [Bool]
 ex1 = [] @Bool
 
+type PEx1 :: [Bool]
+type PEx1 = '[] @Bool
+
 sEx1 :: SList ('[] @Bool)
 sEx1 = SNil @Bool
 
 ex2 :: Bool
 ex2 = constBA @Ordering @Bool True LT
+
+type PEx2 :: Bool
+type PEx2 = ConstBA @Ordering @Bool True LT
 
 sEx2 :: Sing (ConstBA True LT)
 sEx2 = sConstBA @Ordering @Bool STrue SLT
@@ -32,6 +38,18 @@ proxyEx1 = Proxy1 @True
 proxyEx2 = Proxy2 @Bool @True
 proxyEx3 = Proxy3 @True
 proxyEx4 = Proxy4 @Bool @True
+
+type ProxyEx1 :: Proxy True
+type ProxyEx1 = Proxy1 @True
+
+type ProxyEx2 :: Proxy True
+type ProxyEx2 = Proxy2 @Bool @True
+
+type ProxyEx3 :: Proxy True
+type ProxyEx3 = Proxy3 @True
+
+type ProxyEx4 :: Proxy True
+type ProxyEx4 = Proxy4 @Bool @True
 
 sProxyEx1 :: SProxy (Proxy1 @True)
 sProxyEx1 = SProxy1 @True

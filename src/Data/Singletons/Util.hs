@@ -117,11 +117,7 @@ tysOfConFields (DRecC vstys)   = map (\(_,_,ty) -> ty) vstys
 
 -- extract the name and number of arguments to a constructor
 extractNameArgs :: DCon -> (Name, Int)
-extractNameArgs = liftSnd length . extractNameTypes
-
--- extract the name and types of constructor arguments
-extractNameTypes :: DCon -> (Name, [DType])
-extractNameTypes (DCon _ _ n fields _) = (n, tysOfConFields fields)
+extractNameArgs (DCon _ _ n fields _) = (n, length (tysOfConFields fields))
 
 extractName :: DCon -> Name
 extractName (DCon _ _ n _ _) = n
@@ -239,9 +235,16 @@ extractTvbName (DKindedTV n _) = n
 tvbToType :: DTyVarBndr -> DType
 tvbToType = DVarT . extractTvbName
 
-defaultToTypeKind :: Maybe DKind -> DKind
-defaultToTypeKind (Just k) = k
-defaultToTypeKind Nothing  = DConT typeKindName
+-- If a type variable binder lacks an explicit kind, pick a default kind of
+-- Type. Otherwise, leave the binder alone.
+defaultTvbToTypeKind :: DTyVarBndr -> DTyVarBndr
+defaultTvbToTypeKind (DPlainTV tvname) = DKindedTV tvname $ DConT typeKindName
+defaultTvbToTypeKind tvb               = tvb
+
+-- If @Nothing@, return @Type@. If @Just k@, return @k@.
+defaultMaybeToTypeKind :: Maybe DKind -> DKind
+defaultMaybeToTypeKind (Just k) = k
+defaultMaybeToTypeKind Nothing  = DConT typeKindName
 
 inferMaybeKindTV :: Name -> Maybe DKind -> DTyVarBndr
 inferMaybeKindTV n Nothing =  DPlainTV n
@@ -256,10 +259,27 @@ resultSigToMaybeKind (DTyVarSig (DKindedTV _ k)) = Just k
 maybeKindToResultSig :: Maybe DKind -> DFamilyResultSig
 maybeKindToResultSig = maybe DNoSig DKindSig
 
--- Reconstruct arrow kind from the list of kinds
-ravel :: [DType] -> DType -> DType
-ravel []    res  = res
-ravel (h:t) res = DAppT (DAppT DArrowT h) (ravel t res)
+maybeSigT :: DType -> Maybe DKind -> DType
+maybeSigT ty Nothing   = ty
+maybeSigT ty (Just ki) = ty `DSigT` ki
+
+-- Reconstruct a vanilla function type from its individual type variable
+-- binders, constraints, argument types, and result type. (See
+-- Note [Vanilla-type validity checking during promotion] in
+-- Data.Singletons.Promote.Type for what "vanilla" means.)
+ravelVanillaDType :: [DTyVarBndr] -> DCxt -> [DType] -> DType -> DType
+ravelVanillaDType tvbs ctxt args res =
+  ifNonEmpty tvbs (DForallT ForallInvis) $
+  ifNonEmpty ctxt DConstrainedT $
+  go args
+  where
+    ifNonEmpty :: [a] -> ([a] -> b -> b) -> b -> b
+    ifNonEmpty [] _ z = z
+    ifNonEmpty l  f z = f l z
+
+    go :: [DType] -> DType
+    go []    = res
+    go (h:t) = DAppT (DAppT DArrowT h) (go t)
 
 -- Decompose a vanilla function type into its type variables, its context, its
 -- argument types, and its result type. (See
@@ -376,25 +396,42 @@ countArgs :: DType -> Int
 countArgs ty = length $ filterDVisFunArgs args
   where (args, _) = unravelDType ty
 
--- changes all TyVars not to be NameU's. Workaround for GHC#11812
+-- Collect the invisible type variable binders from a sequence of DFunArgs.
+filterInvisTvbArgs :: DFunArgs -> [DTyVarBndr]
+filterInvisTvbArgs DFANil           = []
+filterInvisTvbArgs (DFACxt  _ args) = filterInvisTvbArgs args
+filterInvisTvbArgs (DFAAnon _ args) = filterInvisTvbArgs args
+filterInvisTvbArgs (DFAForalls fvf tvbs' args) =
+  let res = filterInvisTvbArgs args in
+  case fvf of
+    ForallVis   -> res
+    ForallInvis -> tvbs' ++ res
+
+-- Infer the kind of a DTyVarBndr by using information from a DVisFunArg.
+replaceTvbKind :: DVisFunArg -> DTyVarBndr -> DTyVarBndr
+replaceTvbKind (DVisFADep tvb) _   = tvb
+replaceTvbKind (DVisFAAnon k)  tvb = DKindedTV (extractTvbName tvb) k
+
+-- changes all TyVars not to be NameU's. Workaround for GHC#11812/#17537
 noExactTyVars :: Data a => a -> a
 noExactTyVars = everywhere go
   where
     go :: Data a => a -> a
     go = mkT fix_tvb `extT` fix_ty `extT` fix_inj_ann
 
-    no_exact_name :: Name -> Name
-    no_exact_name (Name (OccName occ) (NameU unique)) = mkName (occ ++ show unique)
-    no_exact_name n                                   = n
+    fix_tvb (DPlainTV n)    = DPlainTV (noExactName n)
+    fix_tvb (DKindedTV n k) = DKindedTV (noExactName n) k
 
-    fix_tvb (DPlainTV n)    = DPlainTV (no_exact_name n)
-    fix_tvb (DKindedTV n k) = DKindedTV (no_exact_name n) k
-
-    fix_ty (DVarT n)           = DVarT (no_exact_name n)
+    fix_ty (DVarT n)           = DVarT (noExactName n)
     fix_ty ty                  = ty
 
     fix_inj_ann (InjectivityAnn lhs rhs)
-      = InjectivityAnn (no_exact_name lhs) (map no_exact_name rhs)
+      = InjectivityAnn (noExactName lhs) (map noExactName rhs)
+
+-- changes a Name not to be a NameU. Workaround for GHC#11812/#17537
+noExactName :: Name -> Name
+noExactName (Name (OccName occ) (NameU unique)) = mkName (occ ++ show unique)
+noExactName n                                   = n
 
 substKind :: Map Name DKind -> DKind -> DKind
 substKind = substType
@@ -426,9 +463,9 @@ subst_tvb :: Map Name DKind -> DTyVarBndr -> (Map Name DKind, DTyVarBndr)
 subst_tvb s tvb@(DPlainTV n) = (Map.delete n s, tvb)
 subst_tvb s (DKindedTV n k)  = (Map.delete n s, DKindedTV n (substKind s k))
 
-cuskify :: DTyVarBndr -> DTyVarBndr
-cuskify (DPlainTV tvname) = DKindedTV tvname $ DConT typeKindName
-cuskify tvb               = tvb
+dropTvbKind :: DTyVarBndr -> DTyVarBndr
+dropTvbKind tvb@(DPlainTV {}) = tvb
+dropTvbKind (DKindedTV n _)   = DPlainTV n
 
 -- apply a type to a list of types
 foldType :: DType -> [DType] -> DType

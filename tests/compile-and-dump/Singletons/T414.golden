@@ -1,53 +1,76 @@
 Singletons/T414.hs:(0,0)-(0,0): Splicing declarations
     singletons
-      [d| class C1 (a :: Bool) where
+      [d| type C3 :: Bool -> Constraint
+          
+          class C1 (a :: Bool) where
             type T1 a b
           class C2 a where
-            type T2 a b |]
+            type T2 a b
+          class C3 a where
+            type T3 a b |]
   ======>
     class C1 (a :: Bool) where
       type T1 a b
     class C2 a where
       type T2 a b
-    instance SuppressUnusedWarnings T1Sym0 where
-      suppressUnusedWarnings = snd (((,) T1Sym0KindInference) ())
-    data T1Sym0 :: (~>) Bool ((~>) GHC.Types.Type GHC.Types.Type)
+    type C3 :: Bool -> Constraint
+    class C3 a where
+      type T3 a b
+    data T1Sym0 a0123456789876543210
       where
-        T1Sym0KindInference :: forall a0123456789876543210
-                                      arg. SameKind (Apply T1Sym0 arg) (T1Sym1 arg) =>
+        T1Sym0KindInference :: SameKind (Apply T1Sym0 arg) (T1Sym1 arg) =>
                                T1Sym0 a0123456789876543210
     type instance Apply T1Sym0 a0123456789876543210 = T1Sym1 a0123456789876543210
-    instance SuppressUnusedWarnings (T1Sym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) T1Sym1KindInference) ())
-    data T1Sym1 (a0123456789876543210 :: Bool) :: (~>) GHC.Types.Type GHC.Types.Type
+    instance SuppressUnusedWarnings T1Sym0 where
+      suppressUnusedWarnings = snd (((,) T1Sym0KindInference) ())
+    data T1Sym1 (a0123456789876543210 :: Bool) b0123456789876543210
       where
-        T1Sym1KindInference :: forall a0123456789876543210
-                                      b0123456789876543210
-                                      arg. SameKind (Apply (T1Sym1 a0123456789876543210) arg) (T1Sym2 a0123456789876543210 arg) =>
+        T1Sym1KindInference :: SameKind (Apply (T1Sym1 a0123456789876543210) arg) (T1Sym2 a0123456789876543210 arg) =>
                                T1Sym1 a0123456789876543210 b0123456789876543210
     type instance Apply (T1Sym1 a0123456789876543210) b0123456789876543210 = T1Sym2 a0123456789876543210 b0123456789876543210
-    type T1Sym2 (a0123456789876543210 :: Bool) (b0123456789876543210 :: GHC.Types.Type) =
+    instance SuppressUnusedWarnings (T1Sym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) T1Sym1KindInference) ())
+    type T1Sym2 (a0123456789876543210 :: Bool) b0123456789876543210 =
         T1 a0123456789876543210 b0123456789876543210
     class PC1 (a :: Bool)
-    instance SuppressUnusedWarnings T2Sym0 where
-      suppressUnusedWarnings = snd (((,) T2Sym0KindInference) ())
     data T2Sym0 a0123456789876543210
       where
-        T2Sym0KindInference :: forall a0123456789876543210
-                                      arg. SameKind (Apply T2Sym0 arg) (T2Sym1 arg) =>
+        T2Sym0KindInference :: SameKind (Apply T2Sym0 arg) (T2Sym1 arg) =>
                                T2Sym0 a0123456789876543210
     type instance Apply T2Sym0 a0123456789876543210 = T2Sym1 a0123456789876543210
-    instance SuppressUnusedWarnings (T2Sym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) T2Sym1KindInference) ())
+    instance SuppressUnusedWarnings T2Sym0 where
+      suppressUnusedWarnings = snd (((,) T2Sym0KindInference) ())
     data T2Sym1 a0123456789876543210 b0123456789876543210
       where
-        T2Sym1KindInference :: forall a0123456789876543210
-                                      b0123456789876543210
-                                      arg. SameKind (Apply (T2Sym1 a0123456789876543210) arg) (T2Sym2 a0123456789876543210 arg) =>
+        T2Sym1KindInference :: SameKind (Apply (T2Sym1 a0123456789876543210) arg) (T2Sym2 a0123456789876543210 arg) =>
                                T2Sym1 a0123456789876543210 b0123456789876543210
     type instance Apply (T2Sym1 a0123456789876543210) b0123456789876543210 = T2Sym2 a0123456789876543210 b0123456789876543210
+    instance SuppressUnusedWarnings (T2Sym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) T2Sym1KindInference) ())
     type T2Sym2 a0123456789876543210 b0123456789876543210 =
         T2 a0123456789876543210 b0123456789876543210
     class PC2 a
+    type T3Sym0 :: (~>) Bool ((~>) Type Type)
+    data T3Sym0 a0123456789876543210
+      where
+        T3Sym0KindInference :: SameKind (Apply T3Sym0 arg) (T3Sym1 arg) =>
+                               T3Sym0 a0123456789876543210
+    type instance Apply T3Sym0 a0123456789876543210 = T3Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings T3Sym0 where
+      suppressUnusedWarnings = snd (((,) T3Sym0KindInference) ())
+    type T3Sym1 :: Bool -> (~>) Type Type
+    data T3Sym1 a0123456789876543210 a0123456789876543210
+      where
+        T3Sym1KindInference :: SameKind (Apply (T3Sym1 a0123456789876543210) arg) (T3Sym2 a0123456789876543210 arg) =>
+                               T3Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (T3Sym1 a0123456789876543210) a0123456789876543210 = T3Sym2 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (T3Sym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) T3Sym1KindInference) ())
+    type T3Sym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Type) =
+        T3 a0123456789876543210 a0123456789876543210 :: Type
+    type PC3 :: Bool -> Constraint
+    class PC3 a
     class SC1 (a :: Bool)
     class SC2 a
+    class SC3 a
+    type SC3 :: Bool -> Constraint

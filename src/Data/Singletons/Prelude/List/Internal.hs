@@ -1,7 +1,7 @@
 {-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies,
              TemplateHaskell, GADTs, UndecidableInstances, RankNTypes,
              ScopedTypeVariables, FlexibleContexts,
-             TypeApplications #-}
+             TypeApplications, StandaloneKindSignatures #-}
 {-# OPTIONS_GHC -O0 #-}
 
 -----------------------------------------------------------------------------

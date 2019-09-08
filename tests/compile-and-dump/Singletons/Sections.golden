@@ -21,46 +21,48 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
     foo3 = ((zipWith (+)) [Succ Zero, Succ Zero]) [Zero, Succ Zero]
     type family Lambda_0123456789876543210 lhs_0123456789876543210 where
       Lambda_0123456789876543210 lhs_0123456789876543210 = Apply (Apply (+@#@$) lhs_0123456789876543210) (Apply SuccSym0 ZeroSym0)
+    data Lambda_0123456789876543210Sym0 lhs_01234567898765432100123456789876543210
+      where
+        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 lhs_01234567898765432100123456789876543210
+    type instance Apply Lambda_0123456789876543210Sym0 lhs_01234567898765432100123456789876543210 = Lambda_0123456789876543210Sym1 lhs_01234567898765432100123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
-    data Lambda_0123456789876543210Sym0 lhs_01234567898765432100123456789876543210
-      where
-        Lambda_0123456789876543210Sym0KindInference :: forall lhs_01234567898765432100123456789876543210
-                                                              arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
-                                                       Lambda_0123456789876543210Sym0 lhs_01234567898765432100123456789876543210
-    type instance Apply Lambda_0123456789876543210Sym0 lhs_01234567898765432100123456789876543210 = Lambda_0123456789876543210Sym1 lhs_01234567898765432100123456789876543210
     type Lambda_0123456789876543210Sym1 lhs_01234567898765432100123456789876543210 =
         Lambda_0123456789876543210 lhs_01234567898765432100123456789876543210
-    type Foo3Sym0 = Foo3
-    type Foo2Sym0 = Foo2
-    type Foo1Sym0 = Foo1
-    instance SuppressUnusedWarnings (+@#@$) where
-      suppressUnusedWarnings = snd (((,) (:+@#@$###)) ())
-    data (+@#@$) :: (~>) Nat ((~>) Nat Nat)
+    type Foo3Sym0 = Foo3 :: [Nat]
+    type Foo2Sym0 = Foo2 :: [Nat]
+    type Foo1Sym0 = Foo1 :: [Nat]
+    type (+@#@$) :: (~>) Nat ((~>) Nat Nat)
+    data (+@#@$) a0123456789876543210
       where
-        (:+@#@$###) :: forall a0123456789876543210
-                              arg. SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
+        (:+@#@$###) :: SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
                        (+@#@$) a0123456789876543210
     type instance Apply (+@#@$) a0123456789876543210 = (+@#@$$) a0123456789876543210
-    instance SuppressUnusedWarnings ((+@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (:+@#@$$###)) ())
-    data (+@#@$$) (a0123456789876543210 :: Nat) :: (~>) Nat Nat
+    instance SuppressUnusedWarnings (+@#@$) where
+      suppressUnusedWarnings = snd (((,) (:+@#@$###)) ())
+    type (+@#@$$) :: Nat -> (~>) Nat Nat
+    data (+@#@$$) a0123456789876543210 a0123456789876543210
       where
-        (:+@#@$$###) :: forall a0123456789876543210
-                               a0123456789876543210
-                               arg. SameKind (Apply ((+@#@$$) a0123456789876543210) arg) ((+@#@$$$) a0123456789876543210 arg) =>
+        (:+@#@$$###) :: SameKind (Apply ((+@#@$$) a0123456789876543210) arg) ((+@#@$$$) a0123456789876543210 arg) =>
                         (+@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((+@#@$$) a0123456789876543210) a0123456789876543210 = (+@#@$$$) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings ((+@#@$$) a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (:+@#@$$###)) ())
     type (+@#@$$$) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
-        (+) a0123456789876543210 a0123456789876543210
-    type family Foo3 :: [Nat] where
+        (+) a0123456789876543210 a0123456789876543210 :: Nat
+    type Foo3 :: [Nat]
+    type family Foo3 where
       Foo3 = Apply (Apply (Apply ZipWithSym0 (+@#@$)) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) NilSym0))) (Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) NilSym0))
-    type family Foo2 :: [Nat] where
+    type Foo2 :: [Nat]
+    type family Foo2 where
       Foo2 = Apply (Apply MapSym0 Lambda_0123456789876543210Sym0) (Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) NilSym0))
-    type family Foo1 :: [Nat] where
+    type Foo1 :: [Nat]
+    type family Foo1 where
       Foo1 = Apply (Apply MapSym0 (Apply (+@#@$) (Apply SuccSym0 ZeroSym0))) (Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) NilSym0))
-    type family (+) (a :: Nat) (a :: Nat) :: Nat where
+    type (+) :: Nat -> Nat -> Nat
+    type family (+) a a where
       (+) 'Zero m = m
       (+) ('Succ n) m = Apply SuccSym0 (Apply (Apply (+@#@$) n) m)
     sFoo3 :: Sing (Foo3Sym0 :: [Nat])
