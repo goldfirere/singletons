@@ -164,7 +164,8 @@ promoteInstance mk_inst class_name name = do
   cons' <- concatMapM (dsCon tvbs' data_ty) cons
   let data_decl = DataDecl name tvbs' cons'
   raw_inst <- mk_inst Nothing data_ty data_decl
-  decs <- promoteM_ [] $ void $ promoteInstanceDec OMap.empty raw_inst
+  decs <- promoteM_ [] $ void $
+          promoteInstanceDec OMap.empty Map.empty raw_inst
   return $ decsToTH decs
 
 promoteInfo :: DInfo -> PrM ()
@@ -233,7 +234,8 @@ promoteDecs raw_decls = do
   _ <- promoteLetDecs noPrefix let_decs
   mapM_ promoteClassDec classes
   let orig_meth_sigs = foldMap (lde_types . cd_lde) classes
-  mapM_ (promoteInstanceDec orig_meth_sigs) insts
+      cls_tvbs_map   = Map.fromList $ map (\cd -> (cd_name cd, cd_tvbs cd)) classes
+  mapM_ (promoteInstanceDec orig_meth_sigs cls_tvbs_map) insts
   mapM_ promoteDerivedEqDec   derived_eq_decs
   promoteDataDecs datas
 
@@ -314,7 +316,7 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
     let defaults_list  = OMap.assocs defaults
         defaults_names = map fst defaults_list
     (default_decs, ann_rhss, prom_rhss)
-      <- mapAndUnzip3M (promoteMethod OMap.empty Nothing meth_sigs) defaults_list
+      <- mapAndUnzip3M (promoteMethod DefaultMethods meth_sigs) defaults_list
 
     let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl)
                                  $ OMap.assocs infix_decls
@@ -348,8 +350,13 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
                                                  Nothing)
 
 -- returns (unpromoted method name, ALetDecRHS) pairs
-promoteInstanceDec :: OMap Name DType -> UInstDecl -> PrM AInstDecl
-promoteInstanceDec orig_meth_sigs
+promoteInstanceDec :: OMap Name DType
+                      -- Class method type signatures
+                   -> Map Name [DTyVarBndr]
+                      -- Class header type variable (e.g., if `class C a b` is
+                      -- quoted, then this will have an entry for {C |-> [a, b]})
+                   -> UInstDecl -> PrM AInstDecl
+promoteInstanceDec orig_meth_sigs cls_tvbs_map
                    decl@(InstDecl { id_name     = cls_name
                                   , id_arg_tys  = inst_tys
                                   , id_sigs     = inst_sigs
@@ -358,8 +365,10 @@ promoteInstanceDec orig_meth_sigs
   inst_kis <- mapM promoteType inst_tys
   let kvs_to_bind = foldMap fvDType inst_kis
   forallBind kvs_to_bind $ do
-    let subst = Map.fromList $ zip cls_tvb_names inst_kis
-    (meths', ann_rhss, _) <- mapAndUnzip3M (promoteMethod inst_sigs (Just subst) orig_meth_sigs) meths
+    let subst     = Map.fromList $ zip cls_tvb_names inst_kis
+        meth_impl = InstanceMethods inst_sigs subst
+    (meths', ann_rhss, _)
+      <- mapAndUnzip3M (promoteMethod meth_impl orig_meth_sigs) meths
     emitDecs [DInstanceD Nothing Nothing [] (foldType (DConT pClsName)
                                               inst_kis) meths']
     return (decl { id_meths = zip (map fst meths) ann_rhss })
@@ -367,7 +376,19 @@ promoteInstanceDec orig_meth_sigs
     pClsName = promoteClassName cls_name
 
     lookup_cls_tvb_names :: PrM [Name]
-    lookup_cls_tvb_names = do
+    lookup_cls_tvb_names =
+      -- First, try consulting the map of class names to their type variables.
+      -- It is important to do this first to ensure that we consider locally
+      -- declared classes before imported ones. See #410 for what happens if
+      -- you don't.
+      case Map.lookup cls_name cls_tvbs_map of
+        Just tvb_names -> pure $ map extractTvbName tvb_names
+        Nothing -> reify_cls_tvb_names
+          -- If the class isn't present in this map, we try reifying the class
+          -- as a last resort.
+
+    reify_cls_tvb_names :: PrM [Name]
+    reify_cls_tvb_names = do
       let mk_tvb_names = extract_tvb_names (dsReifyTypeNameInfo pClsName)
                      <|> extract_tvb_names (dsReifyTypeNameInfo cls_name)
                       -- See Note [Using dsReifyTypeNameInfo when promoting instances]
@@ -418,16 +439,23 @@ dsReifyTypeNameInfo, which first calls lookupTypeName (to ensure we can find a N
 that's in the type namespace) and _then_ reifies it.
 -}
 
-promoteMethod :: OMap Name DType -- InstanceSigs for methods
-              -> Maybe (Map Name DKind)
-                    -- ^ instantiations for class tyvars (Nothing for default decls)
-                    --   See Note [Promoted class method kinds]
+-- Which sort of class methods are being promoted?
+data MethodSort
+    -- The method defaults in class declarations.
+  = DefaultMethods
+    -- The methods in instance declarations.
+  | InstanceMethods (OMap Name DType) -- ^ InstanceSigs
+                    (Map Name DKind)  -- ^ Instantiations for class tyvars
+                                      --   See Note [Promoted class method kinds]
+  deriving Show
+
+promoteMethod :: MethodSort
               -> OMap Name DType    -- method types
               -> (Name, ULetDecRHS)
               -> PrM (DDec, ALetDecRHS, DType)
                  -- returns (type instance, ALetDecRHS, promoted RHS)
-promoteMethod inst_sigs_map m_subst orig_sigs_map (meth_name, meth_rhs) = do
-  (meth_arg_kis, meth_res_ki) <- lookup_meth_ty
+promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
+  (meth_arg_kis, meth_res_ki) <- promote_meth_ty
   meth_arg_tvs <- mapM (const $ qNewName "a") meth_arg_kis
   let helperNameBase = case nameBase proName of
                          first:_ | not (isHsLetter first) -> "TFHelper"
@@ -448,7 +476,7 @@ promoteMethod inst_sigs_map m_subst orig_sigs_map (meth_name, meth_rhs) = do
       family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
   (pro_dec, defun_decs, ann_rhs)
-    <- promoteLetDecRHS (Just (meth_arg_kis, meth_res_ki)) OMap.empty OMap.empty
+    <- promoteLetDecRHS (ClassMethodRHS meth_arg_kis meth_res_ki) OMap.empty OMap.empty
                         noPrefix helperName meth_rhs
   emitDecs (pro_dec:defun_decs)
   return ( DTySynInstD
@@ -460,40 +488,55 @@ promoteMethod inst_sigs_map m_subst orig_sigs_map (meth_name, meth_rhs) = do
   where
     proName = promoteValNameLhs meth_name
 
+    -- Promote the type of a class method. For a default method, "the type" is
+    -- simply the type of the original method. For an instance method,
+    -- "the type" is like the type of the original method, but substituted for
+    -- the types in the instance head. (e.g., if you have `class C a` and
+    -- `instance C T`, then the substitution [a |-> T] must be applied to the
+    -- original method's type.)
+    promote_meth_ty :: PrM ([DKind], DKind)
+    promote_meth_ty =
+      case meth_sort of
+        DefaultMethods ->
+          -- No substitution for class variables is required for default
+          -- method type signatures, as they share type variables with the
+          -- class they inhabit.
+          lookup_meth_ty
+        InstanceMethods inst_sigs_map cls_subst ->
+          case OMap.lookup meth_name inst_sigs_map of
+            Just ty ->
+              -- We have an InstanceSig. These are easy: we can just use the
+              -- instance signature's type directly, and no substitution for
+              -- class variables is required.
+              promoteUnraveled ty
+            Nothing -> do
+              -- We don't have an InstanceSig, so we must compute the kind to use
+              -- ourselves.
+              (arg_kis, res_ki) <- lookup_meth_ty
+              -- Substitute for the class variables in the method's type.
+              -- See Note [Promoted class method kinds]
+              let arg_kis' = map (substKind cls_subst) arg_kis
+                  res_ki'  = substKind cls_subst res_ki
+              pure (arg_kis', res_ki')
+
+    -- Attempt to look up a class method's original type.
     lookup_meth_ty :: PrM ([DKind], DKind)
     lookup_meth_ty =
-      case OMap.lookup meth_name inst_sigs_map of
+      case OMap.lookup meth_name orig_sigs_map of
         Just ty ->
-          -- We have an InstanceSig. These are easy: no substitution for clas
-          -- variables is required at all!
+          -- The type of the method is in scope, so promote that.
           promoteUnraveled ty
         Nothing -> do
-          -- We don't have an InstanceSig, so we must compute the kind to use
-          -- ourselves (possibly substituting for class variables below).
-          (arg_kis, res_ki) <-
-            case OMap.lookup meth_name orig_sigs_map of
-              Nothing -> do
-                mb_info <- dsReifyTypeNameInfo proName
-                           -- See Note [Using dsReifyTypeNameInfo when promoting instances]
-                case mb_info of
-                  Just (DTyConI (DOpenTypeFamilyD (DTypeFamilyHead _ tvbs mb_res_ki _)) _)
-                    -> let arg_kis = map (default_to_star . extractTvbKind) tvbs
-                           res_ki  = default_to_star (resultSigToMaybeKind mb_res_ki)
-                        in return (arg_kis, res_ki)
-                  _ -> fail $ "Cannot find type annotation for " ++ show proName
-              Just ty -> promoteUnraveled ty
-          let -- If we're dealing with an associated type family instance, substitute
-              -- in the kind of the instance for better kind information in the RHS
-              -- helper function. If we're dealing with a default family implementation
-              -- (m_subst = Nothing), there's no need for a substitution.
-              -- See Note [Promoted class method kinds]
-              do_subst      = maybe id substKind m_subst
-              meth_arg_kis' = map do_subst arg_kis
-              meth_res_ki'  = do_subst res_ki
-          pure (meth_arg_kis', meth_res_ki')
-
-    default_to_star Nothing  = DConT typeKindName
-    default_to_star (Just k) = k
+          -- If the type of the method is not in scope, the only other option
+          -- is to try reifying the promoted method name.
+          mb_info <- dsReifyTypeNameInfo proName
+                     -- See Note [Using dsReifyTypeNameInfo when promoting instances]
+          case mb_info of
+            Just (DTyConI (DOpenTypeFamilyD (DTypeFamilyHead _ tvbs mb_res_ki _)) _)
+              -> let arg_kis = map (defaultToTypeKind . extractTvbKind) tvbs
+                     res_ki  = defaultToTypeKind (resultSigToMaybeKind mb_res_ki)
+                  in pure (arg_kis, res_ki)
+            _ -> fail $ "Cannot find type annotation for " ++ show proName
 
 {-
 Note [Promoted class method kinds]
@@ -537,7 +580,8 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
     -- promote all the declarations, producing annotated declarations
   let (names, rhss) = unzip $ OMap.assocs value_env
   (pro_decs, defun_decss, ann_rhss)
-    <- fmap unzip3 $ zipWithM (promoteLetDecRHS Nothing type_env fix_env prefixes) names rhss
+    <- fmap unzip3 $
+       zipWithM (promoteLetDecRHS LetBindingRHS type_env fix_env prefixes) names rhss
 
   emitDecs $ concat defun_decss
   bound_kvs <- allBoundKindVars
@@ -566,11 +610,20 @@ promoteInfixDecl name fixity
  where
   promoted_name = promoteValNameLhs name
 
+-- Which sort of let-bound declaration's right-hand side is being promoted?
+data LetDecRHSSort
+    -- An ordinary (i.e., non-class-related) let-bound declaration.
+  = LetBindingRHS
+    -- The right-hand side of a class method (either a default method or a
+    -- method in an instance declaration).
+  | ClassMethodRHS [DKind] DKind -- The RHS's promoted argument and result types.
+                                 -- Needed to fix #136.
+  deriving Show
+
 -- This function is used both to promote class method defaults and normal
 -- let bindings. Thus, it can't quite do all the work locally and returns
 -- an intermediate structure. Perhaps a better design is available.
-promoteLetDecRHS :: Maybe ([DKind], DKind)  -- the promoted type of the RHS (if known)
-                                            -- needed to fix #136
+promoteLetDecRHS :: LetDecRHSSort
                  -> OMap Name DType      -- local type env't
                  -> OMap Name Fixity     -- local fixity env't
                  -> (String, String)     -- let-binding prefixes
@@ -579,12 +632,14 @@ promoteLetDecRHS :: Maybe ([DKind], DKind)  -- the promoted type of the RHS (if 
                  -> PrM ( DDec          -- "type family"
                         , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
-promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UValue exp) = do
+promoteLetDecRHS rhs_sort type_env fix_env prefixes name (UValue exp) = do
   (res_kind, num_arrows)
-    <- case m_rhs_ki of
-         Just (arg_kis, res_ki) -> return ( Just (ravelTyFun (arg_kis ++ [res_ki]))
-                                          , length arg_kis )
-         _ |  Just ty <- OMap.lookup name type_env
+    <- case rhs_sort of
+         ClassMethodRHS arg_kis res_ki
+           -> return ( Just (ravelTyFun (arg_kis ++ [res_ki]))
+                     , length arg_kis )
+         LetBindingRHS
+           |  Just ty <- OMap.lookup name type_env
            -> do ki <- promoteType ty
                  return (Just ki, countArgs ty)
            |  otherwise
@@ -608,20 +663,22 @@ promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UValue exp) = do
       names <- replicateM num_arrows (newUniqueName "a")
       let pats    = map DVarP names
           newArgs = map DVarE names
-      promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name
+      promoteLetDecRHS rhs_sort type_env fix_env prefixes name
                        (UFunction [DClause pats (foldExp exp newArgs)])
 
-promoteLetDecRHS m_rhs_ki type_env fix_env prefixes name (UFunction clauses) = do
+promoteLetDecRHS rhs_sort type_env fix_env prefixes name (UFunction clauses) = do
   numArgs <- count_args clauses
-  (m_argKs, m_resK, ty_num_args) <- case m_rhs_ki of
-    Just (arg_kis, res_ki) -> return (map Just arg_kis, Just res_ki, length arg_kis)
-    _ |  Just ty <- OMap.lookup name type_env
+  (m_argKs, m_resK, ty_num_args) <- case rhs_sort of
+    ClassMethodRHS arg_kis res_ki
+      -> return (map Just arg_kis, Just res_ki, length arg_kis)
+    LetBindingRHS
+      |  Just ty <- OMap.lookup name type_env
       -> do
       -- promoteType turns arrows into TyFun. So, we unravel first to
       -- avoid this behavior. Note the use of ravelTyFun in resultK
       -- to make the return kind work out
       (argKs, resultK) <- promoteUnraveled ty
-      -- invariant: countArgs ty == length argKs
+      -- invariant: count_args ty == length argKs
       return (map Just argKs, Just resultK, length argKs)
 
       |  otherwise

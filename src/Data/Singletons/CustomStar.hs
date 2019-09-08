@@ -93,7 +93,7 @@ singletonStar names = do
     showInst <- mkShowInstance ForPromotion Nothing (DConT repName) dataDecl
     (pInsts, promDecls) <- promoteM [] $ do promoteDataDec dataDecl
                                             promoteDerivedEqDec dataDeclEqInst
-                                            traverse (promoteInstanceDec mempty)
+                                            traverse (promoteInstanceDec mempty mempty)
                                               [ordInst, showInst]
     singletonDecls <- singDecsM [] $ do decs1 <- singDataD dataDecl
                                         decs2 <- singDerivedEqDecs dataDeclEqInst

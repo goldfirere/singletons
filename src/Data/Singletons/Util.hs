@@ -239,6 +239,10 @@ extractTvbName (DKindedTV n _) = n
 tvbToType :: DTyVarBndr -> DType
 tvbToType = DVarT . extractTvbName
 
+defaultToTypeKind :: Maybe DKind -> DKind
+defaultToTypeKind (Just k) = k
+defaultToTypeKind Nothing  = DConT typeKindName
+
 inferMaybeKindTV :: Name -> Maybe DKind -> DTyVarBndr
 inferMaybeKindTV n Nothing =  DPlainTV n
 inferMaybeKindTV n (Just k) = DKindedTV n k

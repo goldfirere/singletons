@@ -67,11 +67,7 @@ buildDefunSymsClosedTypeFamilyD :: DTypeFamilyHead -> PrM [DDec]
 buildDefunSymsClosedTypeFamilyD = buildDefunSymsTypeFamilyHead id id
 
 buildDefunSymsOpenTypeFamilyD :: DTypeFamilyHead -> PrM [DDec]
-buildDefunSymsOpenTypeFamilyD = buildDefunSymsTypeFamilyHead cuskify default_to_star
-  where
-    default_to_star :: Maybe DKind -> Maybe DKind
-    default_to_star Nothing  = Just $ DConT typeKindName
-    default_to_star (Just k) = Just k
+buildDefunSymsOpenTypeFamilyD = buildDefunSymsTypeFamilyHead cuskify (Just . defaultToTypeKind)
 
 buildDefunSymsTypeFamilyHead
   :: (DTyVarBndr -> DTyVarBndr)

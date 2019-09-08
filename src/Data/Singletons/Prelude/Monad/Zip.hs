@@ -33,7 +33,6 @@ module Data.Singletons.Prelude.Monad.Zip (
   MunzipSym0, MunzipSym1,
   ) where
 
-import Control.Monad.Zip
 import Data.Functor.Identity
 import Data.Kind
 import Data.Monoid
