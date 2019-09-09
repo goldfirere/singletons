@@ -1,0 +1,208 @@
+Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| infixr 5 `D1`, `MkD1`
+          infixl 5 `T1a`, `T1b`
+          infix 5 `C1`
+          
+          class C1 a b
+          type T1a a b = Either a b
+          type family T1b a b where
+            T1b a b = Either a b
+          data D1 a b = MkD1 a b |]
+  ======>
+    infix 5 `C1`
+    class C1 a b
+    infixl 5 `T1a`
+    infixl 5 `T1b`
+    type T1a a b = Either a b
+    type family T1b a b where
+      T1b a b = Either a b
+    infixr 5 `D1`
+    infixr 5 `MkD1`
+    data D1 a b = MkD1 a b
+    type T1aSym2 a0123456789876543210 b0123456789876543210 =
+        T1a a0123456789876543210 b0123456789876543210
+    instance SuppressUnusedWarnings (T1aSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) T1aSym1KindInference) ())
+    data T1aSym1 a0123456789876543210 b0123456789876543210
+      where
+        T1aSym1KindInference :: forall a0123456789876543210
+                                       b0123456789876543210
+                                       arg. SameKind (Apply (T1aSym1 a0123456789876543210) arg) (T1aSym2 a0123456789876543210 arg) =>
+                                T1aSym1 a0123456789876543210 b0123456789876543210
+    type instance Apply (T1aSym1 a0123456789876543210) b0123456789876543210 = T1a a0123456789876543210 b0123456789876543210
+    infixl 5 `T1aSym1`
+    instance SuppressUnusedWarnings T1aSym0 where
+      suppressUnusedWarnings = snd (((,) T1aSym0KindInference) ())
+    data T1aSym0 a0123456789876543210
+      where
+        T1aSym0KindInference :: forall a0123456789876543210
+                                       arg. SameKind (Apply T1aSym0 arg) (T1aSym1 arg) =>
+                                T1aSym0 a0123456789876543210
+    type instance Apply T1aSym0 a0123456789876543210 = T1aSym1 a0123456789876543210
+    infixl 5 `T1aSym0`
+    type T1bSym2 a0123456789876543210 b0123456789876543210 =
+        T1b a0123456789876543210 b0123456789876543210
+    instance SuppressUnusedWarnings (T1bSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) T1bSym1KindInference) ())
+    data T1bSym1 a0123456789876543210 b0123456789876543210
+      where
+        T1bSym1KindInference :: forall a0123456789876543210
+                                       b0123456789876543210
+                                       arg. SameKind (Apply (T1bSym1 a0123456789876543210) arg) (T1bSym2 a0123456789876543210 arg) =>
+                                T1bSym1 a0123456789876543210 b0123456789876543210
+    type instance Apply (T1bSym1 a0123456789876543210) b0123456789876543210 = T1b a0123456789876543210 b0123456789876543210
+    infixl 5 `T1bSym1`
+    instance SuppressUnusedWarnings T1bSym0 where
+      suppressUnusedWarnings = snd (((,) T1bSym0KindInference) ())
+    data T1bSym0 a0123456789876543210
+      where
+        T1bSym0KindInference :: forall a0123456789876543210
+                                       arg. SameKind (Apply T1bSym0 arg) (T1bSym1 arg) =>
+                                T1bSym0 a0123456789876543210
+    type instance Apply T1bSym0 a0123456789876543210 = T1bSym1 a0123456789876543210
+    infixl 5 `T1bSym0`
+    type MkD1Sym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: b0123456789876543210) =
+        MkD1 t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (MkD1Sym1 t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) MkD1Sym1KindInference) ())
+    data MkD1Sym1 (t0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
+                                                                    (~>) b0123456789876543210 (D1 a0123456789876543210 b0123456789876543210)
+      where
+        MkD1Sym1KindInference :: forall t0123456789876543210
+                                        t0123456789876543210
+                                        arg. SameKind (Apply (MkD1Sym1 t0123456789876543210) arg) (MkD1Sym2 t0123456789876543210 arg) =>
+                                 MkD1Sym1 t0123456789876543210 t0123456789876543210
+    type instance Apply (MkD1Sym1 t0123456789876543210) t0123456789876543210 = MkD1 t0123456789876543210 t0123456789876543210
+    infixr 5 `MkD1Sym1`
+    instance SuppressUnusedWarnings MkD1Sym0 where
+      suppressUnusedWarnings = snd (((,) MkD1Sym0KindInference) ())
+    data MkD1Sym0 :: forall a0123456789876543210 b0123456789876543210.
+                     (~>) a0123456789876543210 ((~>) b0123456789876543210 (D1 a0123456789876543210 b0123456789876543210))
+      where
+        MkD1Sym0KindInference :: forall t0123456789876543210
+                                        arg. SameKind (Apply MkD1Sym0 arg) (MkD1Sym1 arg) =>
+                                 MkD1Sym0 t0123456789876543210
+    type instance Apply MkD1Sym0 t0123456789876543210 = MkD1Sym1 t0123456789876543210
+    infixr 5 `MkD1Sym0`
+    infix 5 `PC1`
+    class PC1 (a :: GHC.Types.Type) (b :: GHC.Types.Type)
+    infixr 5 `SMkD1`
+    infix 5 `SC1`
+    data SD1 :: forall a b. D1 a b -> GHC.Types.Type
+      where
+        SMkD1 :: forall a b (n :: a) (n :: b).
+                 (Sing n) -> (Sing n) -> SD1 (MkD1 n n :: D1 a b)
+    type instance Sing @(D1 a b) = SD1
+    instance (SingKind a, SingKind b) => SingKind (D1 a b) where
+      type Demote (D1 a b) = D1 (Demote a) (Demote b)
+      fromSing (SMkD1 b b) = (MkD1 (fromSing b)) (fromSing b)
+      toSing (MkD1 (b :: Demote a) (b :: Demote b))
+        = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b) of {
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SMkD1 c) c) }
+    class SC1 a b
+    instance (SingI n, SingI n) => SingI (MkD1 (n :: a) (n :: b)) where
+      sing = (SMkD1 sing) sing
+    instance SingI (MkD1Sym0 :: (~>) a ((~>) b (D1 a b))) where
+      sing = (singFun2 @MkD1Sym0) SMkD1
+    instance SingI d =>
+             SingI (MkD1Sym1 (d :: a) :: (~>) b (D1 a b)) where
+      sing = (singFun1 @(MkD1Sym1 (d :: a))) (SMkD1 (sing @d))
+Singletons/T412.hs:0:0:: Splicing declarations
+    genSingletons [''C2, ''T2a, ''T2b, ''D2]
+  ======>
+    class PC2 (a :: k) (b :: k)
+    infix 5 `PC2`
+    class SC2 (a :: k) (b :: k)
+    infix 5 `SC2`
+    type T2aSym2 (a0123456789876543210 :: GHC.Types.Type) (b0123456789876543210 :: GHC.Types.Type) =
+        T2a a0123456789876543210 b0123456789876543210
+    instance SuppressUnusedWarnings (T2aSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) T2aSym1KindInference) ())
+    data T2aSym1 (a0123456789876543210 :: GHC.Types.Type) b0123456789876543210
+      where
+        T2aSym1KindInference :: forall a0123456789876543210
+                                       b0123456789876543210
+                                       arg. SameKind (Apply (T2aSym1 a0123456789876543210) arg) (T2aSym2 a0123456789876543210 arg) =>
+                                T2aSym1 a0123456789876543210 b0123456789876543210
+    type instance Apply (T2aSym1 a0123456789876543210) b0123456789876543210 = T2a a0123456789876543210 b0123456789876543210
+    infixl 5 `T2aSym1`
+    instance SuppressUnusedWarnings T2aSym0 where
+      suppressUnusedWarnings = snd (((,) T2aSym0KindInference) ())
+    data T2aSym0 a0123456789876543210
+      where
+        T2aSym0KindInference :: forall a0123456789876543210
+                                       arg. SameKind (Apply T2aSym0 arg) (T2aSym1 arg) =>
+                                T2aSym0 a0123456789876543210
+    type instance Apply T2aSym0 a0123456789876543210 = T2aSym1 a0123456789876543210
+    infixl 5 `T2aSym0`
+    type T2bSym2 (a0123456789876543210 :: GHC.Types.Type) (b0123456789876543210 :: GHC.Types.Type) =
+        T2b a0123456789876543210 b0123456789876543210
+    instance SuppressUnusedWarnings (T2bSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) T2bSym1KindInference) ())
+    data T2bSym1 (a0123456789876543210 :: GHC.Types.Type) :: (~>) GHC.Types.Type GHC.Types.Type
+      where
+        T2bSym1KindInference :: forall a0123456789876543210
+                                       b0123456789876543210
+                                       arg. SameKind (Apply (T2bSym1 a0123456789876543210) arg) (T2bSym2 a0123456789876543210 arg) =>
+                                T2bSym1 a0123456789876543210 b0123456789876543210
+    type instance Apply (T2bSym1 a0123456789876543210) b0123456789876543210 = T2b a0123456789876543210 b0123456789876543210
+    infixl 5 `T2bSym1`
+    instance SuppressUnusedWarnings T2bSym0 where
+      suppressUnusedWarnings = snd (((,) T2bSym0KindInference) ())
+    data T2bSym0 :: (~>) GHC.Types.Type ((~>) GHC.Types.Type GHC.Types.Type)
+      where
+        T2bSym0KindInference :: forall a0123456789876543210
+                                       arg. SameKind (Apply T2bSym0 arg) (T2bSym1 arg) =>
+                                T2bSym0 a0123456789876543210
+    type instance Apply T2bSym0 a0123456789876543210 = T2bSym1 a0123456789876543210
+    infixl 5 `T2bSym0`
+    type MkD2Sym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: b0123456789876543210) =
+        'MkD2 t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (MkD2Sym1 t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) MkD2Sym1KindInference) ())
+    data MkD2Sym1 (t0123456789876543210 :: a0123456789876543210 :: GHC.Types.Type) :: forall (b0123456789876543210 :: GHC.Types.Type).
+                                                                                      (~>) b0123456789876543210 (D2 (a0123456789876543210 :: GHC.Types.Type) (b0123456789876543210 :: GHC.Types.Type))
+      where
+        MkD2Sym1KindInference :: forall t0123456789876543210
+                                        t0123456789876543210
+                                        arg. SameKind (Apply (MkD2Sym1 t0123456789876543210) arg) (MkD2Sym2 t0123456789876543210 arg) =>
+                                 MkD2Sym1 t0123456789876543210 t0123456789876543210
+    type instance Apply (MkD2Sym1 t0123456789876543210) t0123456789876543210 = 'MkD2 t0123456789876543210 t0123456789876543210
+    infixr 5 `MkD2Sym1`
+    instance SuppressUnusedWarnings MkD2Sym0 where
+      suppressUnusedWarnings = snd (((,) MkD2Sym0KindInference) ())
+    data MkD2Sym0 :: forall (a0123456789876543210 :: GHC.Types.Type)
+                            (b0123456789876543210 :: GHC.Types.Type).
+                     (~>) a0123456789876543210 ((~>) b0123456789876543210 (D2 (a0123456789876543210 :: GHC.Types.Type) (b0123456789876543210 :: GHC.Types.Type)))
+      where
+        MkD2Sym0KindInference :: forall t0123456789876543210
+                                        arg. SameKind (Apply MkD2Sym0 arg) (MkD2Sym1 arg) =>
+                                 MkD2Sym0 t0123456789876543210
+    type instance Apply MkD2Sym0 t0123456789876543210 = MkD2Sym1 t0123456789876543210
+    infixr 5 `MkD2Sym0`
+    data SD2 :: forall a b. D2 a b -> GHC.Types.Type
+      where
+        SMkD2 :: forall (a :: GHC.Types.Type)
+                        (b :: GHC.Types.Type)
+                        (n :: a)
+                        (n :: b).
+                 (Sing n)
+                 -> (Sing n)
+                    -> SD2 ('MkD2 n n :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type))
+    type instance Sing @(D2 a b) = SD2
+    instance (SingKind a, SingKind b) => SingKind (D2 a b) where
+      type Demote (D2 a b) = D2 (Demote a) (Demote b)
+      fromSing (SMkD2 b b) = (MkD2 (fromSing b)) (fromSing b)
+      toSing (MkD2 (b :: Demote a) (b :: Demote b))
+        = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b) of {
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SMkD2 c) c) }
+    infixr 5 `SMkD2`
+    instance (SingI n, SingI n) =>
+             SingI ('MkD2 (n :: a) (n :: b)) where
+      sing = (SMkD2 sing) sing
+    instance SingI (MkD2Sym0 :: (~>) a ((~>) b (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)))) where
+      sing = (singFun2 @MkD2Sym0) SMkD2
+    instance SingI d =>
+             SingI (MkD2Sym1 (d :: a) :: (~>) b (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type))) where
+      sing = (singFun1 @(MkD2Sym1 (d :: a))) (SMkD2 (sing @d))

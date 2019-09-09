@@ -12,6 +12,15 @@ next
   during promotion or singling, as `singletons` cannot support them.
   (Previously, `singletons` would sometimes accept them, often changing rank-2
   types to rank-1 types incorrectly in the process.)
+* Fix a slew of bugs related to fixity declarations:
+  * Fixity declarations for data types are no longer singled, as fixity
+    declarations do not serve any purpose for singled data type constructors,
+    which always have exactly one argument.
+  * `singletons` now promotes fixity declarations for class names.
+    `genPromotions`/`genSingletons` now also handle fixity declarations for
+    class names correctly.
+  * `singletons` will no longer erroneously try to single fixity declarations
+    for type synonym or type family names.
 
 2.6
 ---
