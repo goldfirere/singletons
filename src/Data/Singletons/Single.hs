@@ -375,10 +375,11 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                             , lde_proms     = promoted_defaults
                                             , lde_bound_kvs = meth_bound_kvs } }) =
   bindContext [foldTypeTvbs (DConT cls_name) cls_tvbs] $ do
+    cls_infix_decl <- singReifiedInfixDecls [cls_name]
     (sing_sigs, _, tyvar_names, cxts, res_kis, singIDefunss)
       <- unzip6 <$> zipWithM (singTySig no_meth_defns meth_sigs meth_bound_kvs)
                              meth_names (map promoteValRhs meth_names)
-    emitDecs $ concat singIDefunss
+    emitDecs $ cls_infix_decl ++ concat singIDefunss
     let default_sigs = catMaybes $
                        zipWith4 mk_default_sig meth_names sing_sigs tyvar_names res_kis
         res_ki_map   = Map.fromList (zip meth_names
@@ -387,7 +388,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                                (Map.fromList cxts)
                                                res_ki_map))
                        (OMap.assocs default_defns)
-    fixities' <- traverse (uncurry singInfixDecl) $ OMap.assocs fixities
+    fixities' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs fixities
     cls_cxt' <- mapM singPred cls_cxt
     return $ DClassD cls_cxt'
                      (singClassName cls_name)
@@ -539,7 +540,7 @@ singLetDecEnv (LetDecEnv { lde_defns     = defns
   let prom_list = OMap.assocs proms
   (typeSigs, letBinds, tyvarNames, cxts, res_kis, singIDefunss)
     <- unzip6 <$> mapM (uncurry (singTySig defns types bound_kvs)) prom_list
-  infix_decls' <- traverse (uncurry singInfixDecl) $ OMap.assocs infix_decls
+  infix_decls' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs infix_decls
   let res_ki_map = Map.fromList [ (name, res_ki) | ((name, _), Just res_ki)
                                                      <- zip prom_list res_kis ]
   bindLets letBinds $ do

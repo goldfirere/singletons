@@ -559,6 +559,16 @@ concatMapM fn list = do
   bss <- mapM fn list
   return $ fold bss
 
+-- like GHC's
+mapMaybeM :: Monad m => (a -> m (Maybe b)) -> [a] -> m [b]
+mapMaybeM _ [] = return []
+mapMaybeM f (x:xs) = do
+  y <- f x
+  ys <- mapMaybeM f xs
+  return $ case y of
+    Nothing -> ys
+    Just z  -> z : ys
+
 -- make a one-element list
 listify :: a -> [a]
 listify = (:[])

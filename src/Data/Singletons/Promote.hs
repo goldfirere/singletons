@@ -7,12 +7,13 @@ This file contains functions to promote term-level constructs to the
 type level. It is an internal module to the singletons package.
 -}
 
-{-# LANGUAGE TemplateHaskell, MultiWayIf, LambdaCase, TupleSections #-}
+{-# LANGUAGE TemplateHaskell, MultiWayIf, LambdaCase, TupleSections,
+             ScopedTypeVariables #-}
 
 module Data.Singletons.Promote where
 
 import Language.Haskell.TH hiding ( Q, cxt )
-import Language.Haskell.TH.Syntax ( Quasi(..) )
+import Language.Haskell.TH.Syntax ( NameSpace(..), Quasi(..) )
 import Language.Haskell.TH.Desugar
 import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
@@ -39,7 +40,6 @@ import Control.Monad.Trans.Maybe
 import Control.Monad.Writer
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
-import Data.Maybe
 import qualified GHC.LanguageExtensions.Type as LangExt
 
 -- | Generate promoted definitions from a type that is already defined.
@@ -318,12 +318,13 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
     (default_decs, ann_rhss, prom_rhss)
       <- mapAndUnzip3M (promoteMethod DefaultMethods meth_sigs) defaults_list
 
-    let infix_decls' = catMaybes $ map (uncurry promoteInfixDecl)
-                                 $ OMap.assocs infix_decls
+    infix_decls' <- mapMaybeM (uncurry promoteInfixDecl) $ OMap.assocs infix_decls
+    cls_infix_decl <- promoteReifiedInfixDecls [cls_name]
 
     -- no need to do anything to the fundeps. They work as is!
-    emitDecs [DClassD [] pClsName tvbs fundeps
-                      (sig_decs ++ default_decs ++ infix_decls')]
+    let pro_cls_dec = DClassD [] pClsName tvbs fundeps
+                              (sig_decs ++ default_decs ++ infix_decls')
+    emitDecs $ pro_cls_dec:cls_infix_decl
     let defaults_list'   = zip defaults_names ann_rhss
         proms            = zip defaults_names prom_rhss
         cls_kvs_to_bind' = cls_kvs_to_bind <$ meth_sigs
@@ -574,8 +575,7 @@ promoteLetDecEnv :: (String, String) -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
                                      , lde_types = type_env
                                      , lde_infix = fix_env }) = do
-  let infix_decls = catMaybes $ map (uncurry promoteInfixDecl)
-                              $ OMap.assocs fix_env
+  infix_decls <- mapMaybeM (uncurry promoteInfixDecl) $ OMap.assocs fix_env
 
     -- promote all the declarations, producing annotated declarations
   let (names, rhss) = unzip $ OMap.assocs value_env
@@ -596,19 +596,60 @@ promoteLetDecEnv prefixes (LetDecEnv { lde_defns = value_env
 
   return (decs, let_dec_env')
 
-promoteInfixDecl :: Name -> Fixity -> Maybe DDec
-promoteInfixDecl name fixity
- | nameBase name == nameBase promoted_name
-   -- If a name and its promoted counterpart are the same (modulo module
-   -- prefixes), then there's no need to promote a fixity declaration for
-   -- that name, since the existing fixity declaration will cover both
-   -- the term- and type-level versions of that name. Names that fall into this
-   -- category include data constructor names and infix names.
- = Nothing
- | otherwise
- = Just $ DLetDec $ DInfixD fixity promoted_name
- where
-  promoted_name = promoteValNameLhs name
+-- Promote a fixity declaration.
+promoteInfixDecl :: forall q. DsMonad q => Name -> Fixity -> q (Maybe DDec)
+promoteInfixDecl name fixity = do
+  mb_ns <- reifyNameSpace name
+  case mb_ns of
+    -- If we can't find the Name for some odd reason,
+    -- fall back to promote_infix_val
+    Nothing        -> promote_infix_val
+    Just VarName   -> promote_infix_val
+    Just DataName  -> never_mind
+    Just TcClsName -> do
+      mb_info <- dsReify name
+      case mb_info of
+        Just (DTyConI DClassD{} _)
+          -> finish $ promoteClassName name
+        _ -> never_mind
+  where
+    -- Produce the fixity declaration.
+    finish :: Name -> q (Maybe DDec)
+    finish = pure . Just . DLetDec . DInfixD fixity
+
+    -- Don't produce a fixity declaration at all. This happens when promoting a
+    -- fixity declaration for a name whose promoted counterpart is the same as
+    -- the original name.
+    -- See [singletons and fixity declarations] in D.S.Single.Fixity, wrinkle 1.
+    never_mind :: q (Maybe DDec)
+    never_mind = pure Nothing
+
+    -- Certain function names do not change when promoted (e.g., infix names),
+    -- so don't bother with them.
+    promote_infix_val :: q (Maybe DDec)
+    promote_infix_val
+      | nameBase name == nameBase promoted_name
+      = never_mind
+      | otherwise
+      = finish promoted_name
+
+    promoted_name :: Name
+    promoted_name = promoteValNameLhs name
+
+-- Try producing promoted fixity declarations for Names by reifying them
+-- /without/ consulting quoted declarations. If reification fails, recover and
+-- return the empty list.
+-- See [singletons and fixity declarations] in D.S.Single.Fixity, wrinkle 2.
+promoteReifiedInfixDecls :: forall q. DsMonad q => [Name] -> q [DDec]
+promoteReifiedInfixDecls = mapMaybeM tryPromoteFixityDeclaration
+  where
+    tryPromoteFixityDeclaration :: Name -> q (Maybe DDec)
+    tryPromoteFixityDeclaration name =
+      qRecover (return Nothing) $ do
+        mFixity <- qReifyFixity name
+        case mFixity of
+          Nothing     -> pure Nothing
+          Just fixity -> promoteInfixDecl name fixity
 
 -- Which sort of let-bound declaration's right-hand side is being promoted?
 data LetDecRHSSort
