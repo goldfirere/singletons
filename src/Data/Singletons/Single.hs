@@ -279,7 +279,7 @@ singInstance mk_inst inst_name name = do
   let data_decl = DataDecl name dtvbs dcons
   raw_inst <- mk_inst Nothing data_ty data_decl
   (a_inst, decs) <- promoteM [] $
-                    promoteInstanceDec OMap.empty raw_inst
+                    promoteInstanceDec OMap.empty Map.empty raw_inst
   decs' <- singDecsM [] $ (:[]) <$> singInstD a_inst
   return $ decsToTH (decs ++ decs')
 
@@ -313,8 +313,9 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
     promoteDataDecs datas
     (_, letDecEnv) <- promoteLetDecs noPrefix letDecls
     classes' <- mapM promoteClassDec classes
-    let meth_sigs = foldMap (lde_types . cd_lde) classes
-    insts' <- mapM (promoteInstanceDec meth_sigs) insts
+    let meth_sigs    = foldMap (lde_types . cd_lde) classes
+        cls_tvbs_map = Map.fromList $ map (\cd -> (cd_name cd, cd_tvbs cd)) classes
+    insts' <- mapM (promoteInstanceDec meth_sigs cls_tvbs_map) insts
     mapM_ promoteDerivedEqDec derivedEqDecs
     return (letDecEnv, classes', insts')
 
