@@ -2,16 +2,21 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| infixr 5 `D1`, `MkD1`
           infixl 5 `T1a`, `T1b`
+          infix 6 `m1`
           infix 5 `C1`
           
-          class C1 a b
+          class C1 a b where
+            infix 6 `m1`
+            m1 :: a -> b -> Bool
           type T1a a b = Either a b
           type family T1b a b where
             T1b a b = Either a b
           data D1 a b = MkD1 a b |]
   ======>
     infix 5 `C1`
-    class C1 a b
+    class C1 a b where
+      m1 :: a -> b -> Bool
+    infix 6 `m1`
     infixl 5 `T1a`
     infixl 5 `T1b`
     type T1a a b = Either a b
@@ -85,9 +90,35 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
                                  MkD1Sym0 t0123456789876543210
     type instance Apply MkD1Sym0 t0123456789876543210 = MkD1Sym1 t0123456789876543210
     infixr 5 `MkD1Sym0`
+    infix 6 `M1`
     infix 5 `PC1`
-    class PC1 (a :: GHC.Types.Type) (b :: GHC.Types.Type)
+    type M1Sym2 (arg0123456789876543210 :: a0123456789876543210) (arg0123456789876543210 :: b0123456789876543210) =
+        M1 arg0123456789876543210 arg0123456789876543210
+    instance SuppressUnusedWarnings (M1Sym1 arg0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) M1Sym1KindInference) ())
+    data M1Sym1 (arg0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
+                                                                    (~>) b0123456789876543210 Bool
+      where
+        M1Sym1KindInference :: forall arg0123456789876543210
+                                      arg0123456789876543210
+                                      arg. SameKind (Apply (M1Sym1 arg0123456789876543210) arg) (M1Sym2 arg0123456789876543210 arg) =>
+                               M1Sym1 arg0123456789876543210 arg0123456789876543210
+    type instance Apply (M1Sym1 arg0123456789876543210) arg0123456789876543210 = M1 arg0123456789876543210 arg0123456789876543210
+    infix 6 `M1Sym1`
+    instance SuppressUnusedWarnings M1Sym0 where
+      suppressUnusedWarnings = snd (((,) M1Sym0KindInference) ())
+    data M1Sym0 :: forall a0123456789876543210 b0123456789876543210.
+                   (~>) a0123456789876543210 ((~>) b0123456789876543210 Bool)
+      where
+        M1Sym0KindInference :: forall arg0123456789876543210
+                                      arg. SameKind (Apply M1Sym0 arg) (M1Sym1 arg) =>
+                               M1Sym0 arg0123456789876543210
+    type instance Apply M1Sym0 arg0123456789876543210 = M1Sym1 arg0123456789876543210
+    infix 6 `M1Sym0`
+    class PC1 (a :: GHC.Types.Type) (b :: GHC.Types.Type) where
+      type M1 (arg :: a) (arg :: b) :: Bool
     infixr 5 `SMkD1`
+    infix 6 `sM1`
     infix 5 `SC1`
     data SD1 :: forall a b. D1 a b -> GHC.Types.Type
       where
@@ -100,7 +131,10 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkD1 (b :: Demote a) (b :: Demote b))
         = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b) of {
             (,) (SomeSing c) (SomeSing c) -> SomeSing ((SMkD1 c) c) }
-    class SC1 a b
+    class SC1 a b where
+      sM1 ::
+        forall (t :: a) (t :: b).
+        Sing t -> Sing t -> Sing (Apply (Apply M1Sym0 t) t :: Bool)
     instance (SingI n, SingI n) => SingI (MkD1 (n :: a) (n :: b)) where
       sing = (SMkD1 sing) sing
     instance SingI (MkD1Sym0 :: (~>) a ((~>) b (D1 a b))) where
@@ -108,13 +142,52 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (MkD1Sym1 (d :: a) :: (~>) b (D1 a b)) where
       sing = (singFun1 @(MkD1Sym1 (d :: a))) (SMkD1 (sing @d))
+    instance SC1 a b => SingI (M1Sym0 :: (~>) a ((~>) b Bool)) where
+      sing = (singFun2 @M1Sym0) sM1
+    instance (SC1 a b, SingI d) =>
+             SingI (M1Sym1 (d :: a) :: (~>) b Bool) where
+      sing = (singFun1 @(M1Sym1 (d :: a))) (sM1 (sing @d))
 Singletons/T412.hs:0:0:: Splicing declarations
     genSingletons [''C2, ''T2a, ''T2b, ''D2]
   ======>
-    class PC2 (a :: k) (b :: k)
+    type M2Sym2 (arg0123456789876543210 :: a0123456789876543210) (arg0123456789876543210 :: b0123456789876543210) =
+        M2 arg0123456789876543210 arg0123456789876543210
+    instance SuppressUnusedWarnings (M2Sym1 arg0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) M2Sym1KindInference) ())
+    data M2Sym1 (arg0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
+                                                                    (~>) b0123456789876543210 Bool
+      where
+        M2Sym1KindInference :: forall arg0123456789876543210
+                                      arg0123456789876543210
+                                      arg. SameKind (Apply (M2Sym1 arg0123456789876543210) arg) (M2Sym2 arg0123456789876543210 arg) =>
+                               M2Sym1 arg0123456789876543210 arg0123456789876543210
+    type instance Apply (M2Sym1 arg0123456789876543210) arg0123456789876543210 = M2 arg0123456789876543210 arg0123456789876543210
+    infix 6 `M2Sym1`
+    instance SuppressUnusedWarnings M2Sym0 where
+      suppressUnusedWarnings = snd (((,) M2Sym0KindInference) ())
+    data M2Sym0 :: forall a0123456789876543210 b0123456789876543210.
+                   (~>) a0123456789876543210 ((~>) b0123456789876543210 Bool)
+      where
+        M2Sym0KindInference :: forall arg0123456789876543210
+                                      arg. SameKind (Apply M2Sym0 arg) (M2Sym1 arg) =>
+                               M2Sym0 arg0123456789876543210
+    type instance Apply M2Sym0 arg0123456789876543210 = M2Sym1 arg0123456789876543210
+    infix 6 `M2Sym0`
+    class PC2 (a :: GHC.Types.Type) (b :: GHC.Types.Type) where
+      type M2 (arg :: a) (arg :: b) :: Bool
     infix 5 `PC2`
-    class SC2 (a :: k) (b :: k)
+    infix 6 `M2`
+    class SC2 (a :: GHC.Types.Type) (b :: GHC.Types.Type) where
+      sM2 ::
+        forall (t :: a) (t :: b).
+        Sing t -> Sing t -> Sing (Apply (Apply M2Sym0 t) t :: Bool)
     infix 5 `SC2`
+    infix 6 `sM2`
+    instance SC2 a b => SingI (M2Sym0 :: (~>) a ((~>) b Bool)) where
+      sing = (singFun2 @M2Sym0) sM2
+    instance (SC2 a b, SingI d) =>
+             SingI (M2Sym1 (d :: a) :: (~>) b Bool) where
+      sing = (singFun1 @(M2Sym1 (d :: a))) (sM2 (sing @d))
     type T2aSym2 (a0123456789876543210 :: GHC.Types.Type) (b0123456789876543210 :: GHC.Types.Type) =
         T2a a0123456789876543210 b0123456789876543210
     instance SuppressUnusedWarnings (T2aSym1 a0123456789876543210) where

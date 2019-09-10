@@ -375,11 +375,11 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                             , lde_proms     = promoted_defaults
                                             , lde_bound_kvs = meth_bound_kvs } }) =
   bindContext [foldTypeTvbs (DConT cls_name) cls_tvbs] $ do
-    cls_infix_decl <- singReifiedInfixDecls [cls_name]
+    cls_infix_decls <- singReifiedInfixDecls $ cls_name:meth_names
     (sing_sigs, _, tyvar_names, cxts, res_kis, singIDefunss)
       <- unzip6 <$> zipWithM (singTySig no_meth_defns meth_sigs meth_bound_kvs)
                              meth_names (map promoteValRhs meth_names)
-    emitDecs $ cls_infix_decl ++ concat singIDefunss
+    emitDecs $ cls_infix_decls ++ concat singIDefunss
     let default_sigs = catMaybes $
                        zipWith4 mk_default_sig meth_names sing_sigs tyvar_names res_kis
         res_ki_map   = Map.fromList (zip meth_names

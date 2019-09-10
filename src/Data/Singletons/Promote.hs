@@ -312,19 +312,21 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
     tvbs = map cuskify tvbs'
   let pClsName = promoteClassName cls_name
   forallBind cls_kvs_to_bind $ do
-    sig_decs <- mapM (uncurry promote_sig) (OMap.assocs meth_sigs)
-    let defaults_list  = OMap.assocs defaults
+    let meth_sigs_list = OMap.assocs meth_sigs
+        meth_names     = map fst meth_sigs_list
+        defaults_list  = OMap.assocs defaults
         defaults_names = map fst defaults_list
+    sig_decs <- mapM (uncurry promote_sig) meth_sigs_list
     (default_decs, ann_rhss, prom_rhss)
       <- mapAndUnzip3M (promoteMethod DefaultMethods meth_sigs) defaults_list
 
     infix_decls' <- mapMaybeM (uncurry promoteInfixDecl) $ OMap.assocs infix_decls
-    cls_infix_decl <- promoteReifiedInfixDecls [cls_name]
+    cls_infix_decls <- promoteReifiedInfixDecls $ cls_name:meth_names
 
     -- no need to do anything to the fundeps. They work as is!
     let pro_cls_dec = DClassD [] pClsName tvbs fundeps
                               (sig_decs ++ default_decs ++ infix_decls')
-    emitDecs $ pro_cls_dec:cls_infix_decl
+    emitDecs $ pro_cls_dec:cls_infix_decls
     let defaults_list'   = zip defaults_names ann_rhss
         proms            = zip defaults_names prom_rhss
         cls_kvs_to_bind' = cls_kvs_to_bind <$ meth_sigs
@@ -343,7 +345,8 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
       (argKs, resK) <- promoteUnraveled ty
       args <- mapM (const $ qNewName "arg") argKs
       let tvbs = zipWith DKindedTV args argKs
-      emitDecsM $ defunReifyFixity proName tvbs (Just resK)
+      m_fixity <- reifyFixityWithLocals name
+      emitDecsM $ defunctionalize proName m_fixity tvbs (Just resK)
 
       return $ DOpenTypeFamilyD (DTypeFamilyHead proName
                                                  tvbs

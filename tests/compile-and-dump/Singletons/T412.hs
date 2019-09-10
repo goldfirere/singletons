@@ -4,7 +4,9 @@ import Data.Singletons.TH
 
 $(singletons [d|
   infix 5 `C1`
-  class C1 a b
+  class C1 a b where
+    infix 6 `m1`
+    m1 :: a -> b -> Bool
 
   infixl 5 `T1a`, `T1b`
   type T1a a b = Either a b
@@ -16,7 +18,9 @@ $(singletons [d|
   |])
 
 infix 5 `C2`
-class C2 a b
+class C2 a b where
+  infix 6 `m2`
+  m2 :: a -> b -> Bool
 
 infixl 5 `T2a`, `T2b`
 type T2a a b = Either a b

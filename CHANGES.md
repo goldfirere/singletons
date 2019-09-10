@@ -18,7 +18,7 @@ next
     which always have exactly one argument.
   * `singletons` now promotes fixity declarations for class names.
     `genPromotions`/`genSingletons` now also handle fixity declarations for
-    class names correctly.
+    classes and class methods correctly.
   * `singletons` will no longer erroneously try to single fixity declarations
     for type synonym or type family names.
 
