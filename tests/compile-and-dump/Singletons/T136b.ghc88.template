@@ -16,7 +16,7 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply MethSym0 arg) (MethSym1 arg) =>
                                  MethSym0 arg0123456789876543210
     type instance Apply MethSym0 arg0123456789876543210 = Meth arg0123456789876543210
-    class PC (a :: GHC.Types.Type) where
+    class PC a where
       type Meth (arg :: a) :: a
     class SC a where
       sMeth :: forall (t :: a). Sing t -> Sing (Apply MethSym0 t :: a)

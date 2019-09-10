@@ -44,7 +44,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply L2rSym0 arg) (L2rSym1 arg) =>
                                 L2rSym0 arg0123456789876543210
     type instance Apply L2rSym0 arg0123456789876543210 = L2r arg0123456789876543210
-    class PFD (a :: GHC.Types.Type) (b :: GHC.Types.Type) | a -> b where
+    class PFD a b | a -> b where
       type Meth (arg :: a) :: a
       type L2r (arg :: a) :: b
     type family Meth_0123456789876543210 (a :: Bool) :: Bool where

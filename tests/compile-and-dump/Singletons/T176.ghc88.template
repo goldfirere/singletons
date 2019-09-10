@@ -95,7 +95,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                                  Bar1Sym0 arg0123456789876543210
     type instance Apply Bar1Sym0 arg0123456789876543210 = Bar1Sym1 arg0123456789876543210
     type Baz1Sym0 = Baz1
-    class PFoo1 (a :: Type) where
+    class PFoo1 a where
       type Bar1 (arg :: a) (arg :: (~>) a b) :: b
       type Baz1 :: a
     type Bar2Sym2 (arg0123456789876543210 :: a0123456789876543210) (arg0123456789876543210 :: b0123456789876543210) =
@@ -120,7 +120,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                                  Bar2Sym0 arg0123456789876543210
     type instance Apply Bar2Sym0 arg0123456789876543210 = Bar2Sym1 arg0123456789876543210
     type Baz2Sym0 = Baz2
-    class PFoo2 (a :: Type) where
+    class PFoo2 a where
       type Bar2 (arg :: a) (arg :: b) :: b
       type Baz2 :: a
     sQuux2 ::

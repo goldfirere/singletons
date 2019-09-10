@@ -161,7 +161,7 @@ $(singletonsOnly [d|
   --    equivalent to traversal with a constant applicative functor
   --    ('foldMapDefault').
   --
-  class (Functor t, Foldable t) => Traversable (t :: Type -> Type) where
+  class (Functor t, Foldable t) => Traversable t where
       -- {-# MINIMAL traverse | sequenceA #-}
 
       -- -| Map each element of a structure to an action, evaluate these actions

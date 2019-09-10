@@ -62,7 +62,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
                          (<=>@#@$) arg0123456789876543210
     type instance Apply (<=>@#@$) arg0123456789876543210 = (<=>@#@$$) arg0123456789876543210
     infix 4 <=>@#@$
-    class PMyOrd (a :: GHC.Types.Type) where
+    class PMyOrd a where
       type (<=>) (arg :: a) (arg :: a) :: Ordering
     infix 4 %====
     infix 4 %<=>
