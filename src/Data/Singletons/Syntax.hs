@@ -62,12 +62,18 @@ newtype TypeFamilyDecl (info :: FamilyInfo)
 -- Whether a type family is open or closed.
 data FamilyInfo = Open | Closed
 
-data ClassDecl ann = ClassDecl { cd_cxt  :: DCxt
-                               , cd_name :: Name
-                               , cd_tvbs :: [DTyVarBndr]
-                               , cd_fds  :: [FunDep]
-                               , cd_lde  :: LetDecEnv ann
-                               }
+data ClassDecl ann
+  = ClassDecl { cd_cxt  :: DCxt
+              , cd_name :: Name
+              , cd_tvbs :: [DTyVarBndr]
+              , cd_fds  :: [FunDep]
+              , cd_lde  :: LetDecEnv ann
+              , cd_atfs :: [OpenTypeFamilyDecl]
+                  -- Associated type families. Only recorded for
+                  -- defunctionalization purposes.
+                  -- See Note [Partitioning, type synonyms, and type families]
+                  -- in D.S.Partition.
+              }
 
 data InstDecl  ann = InstDecl { id_cxt     :: DCxt
                               , id_name    :: Name

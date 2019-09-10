@@ -36,11 +36,14 @@ defunInfo (DTyVarI _name _ty) =
 defunInfo (DPatSynI {}) =
   fail "Building defunctionalization symbols of pattern synonyms not supported"
 
-defunTypeDecls :: [TySynDecl]
-               -> [ClosedTypeFamilyDecl]
-               -> [OpenTypeFamilyDecl]
-               -> PrM ()
-defunTypeDecls ty_syns c_tyfams o_tyfams = do
+-- Defunctionalize type families defined at the top level (i.e., not associated
+-- with a type class).
+defunTopLevelTypeDecls ::
+     [TySynDecl]
+  -> [ClosedTypeFamilyDecl]
+  -> [OpenTypeFamilyDecl]
+  -> PrM ()
+defunTopLevelTypeDecls ty_syns c_tyfams o_tyfams = do
   defun_ty_syns <-
     concatMapM (\(TySynDecl name tvbs rhs) -> buildDefunSymsTySynD name tvbs rhs) ty_syns
   defun_c_tyfams <-
@@ -48,6 +51,58 @@ defunTypeDecls ty_syns c_tyfams o_tyfams = do
   defun_o_tyfams <-
     concatMapM (buildDefunSymsOpenTypeFamilyD . getTypeFamilyDecl) o_tyfams
   emitDecs $ defun_ty_syns ++ defun_c_tyfams ++ defun_o_tyfams
+
+-- Defunctionalize all the type families associated with a type class.
+defunAssociatedTypeFamilies ::
+     [DTyVarBndr]         -- The type variables bound by the parent class
+  -> [OpenTypeFamilyDecl] -- The type families associated with the parent class
+  -> PrM ()
+defunAssociatedTypeFamilies cls_tvbs atfs = do
+  defun_atfs <- concatMapM defun atfs
+  emitDecs defun_atfs
+  where
+    defun :: OpenTypeFamilyDecl -> PrM [DDec]
+    defun (TypeFamilyDecl tf_head)
+      | cls_has_cusk
+        -- If the parent class has a CUSK, so does its associated type
+        -- families. Default type variable kinds and the result kind to be Type
+        -- if they do not yet have an explicit kind.
+      = buildDefunSymsTypeFamilyHead (cuskify . ascribe_tf_tvb_kind)
+                                     (Just . defaultToTypeKind) tf_head
+      | otherwise
+        -- If the parent class lacks a CUSK, we cannot safely default kinds to
+        -- Type. Use whatever information from the parent class is available
+        -- and let kind inference do the rest.
+      = buildDefunSymsTypeFamilyHead ascribe_tf_tvb_kind id tf_head
+
+    -- A class has a CUSK when all of its type variable binders have explicit
+    -- kinds. In other words, `cls_tvb_kind_map` should have an entry for each
+    -- class-bound type variable.
+    cls_has_cusk :: Bool
+    cls_has_cusk = length cls_tvbs == Map.size cls_tvb_kind_map
+
+    -- Maps class-bound type variables to their kind annotations (if supplied).
+    -- For example, `class C (a :: Bool) b (c :: Type)` will produce
+    -- {a |-> Bool, c |-> Type}.
+    cls_tvb_kind_map :: Map Name DKind
+    cls_tvb_kind_map = Map.fromList [ (extractTvbName cls_tvb, cls_tvb_kind)
+                                    | cls_tvb <- cls_tvbs
+                                    , Just cls_tvb_kind <- [extractTvbKind cls_tvb]
+                                    ]
+
+    -- We can sometimes learn more specific information about unannotated type
+    -- family binders from the paren class, as in the following example:
+    --
+    --   class C (a :: Bool) where
+    --     type T a :: Type
+    --
+    -- Here, we know that `T :: Bool -> Type` because we can infer that the `a`
+    -- in `type T a` should be of kind `Bool` from the class header.
+    ascribe_tf_tvb_kind :: DTyVarBndr -> DTyVarBndr
+    ascribe_tf_tvb_kind tvb =
+      case tvb of
+        DKindedTV{} -> tvb
+        DPlainTV n  -> maybe tvb (DKindedTV n) $ Map.lookup n cls_tvb_kind_map
 
 buildDefunSyms :: DDec -> PrM [DDec]
 buildDefunSyms (DDataD _new_or_data _cxt _tyName _tvbs _k ctors _derivings) =
@@ -63,15 +118,21 @@ buildDefunSyms (DClassD _cxt name tvbs _fundeps _members) = do
 buildDefunSyms _ = fail $ "Defunctionalization symbols can only be built for " ++
                           "type families and data declarations"
 
+-- If a closed type family lacks an explicit kind for any of its type variables
+-- or its result kind, then it does not have a CUSK, so we must let kind
+-- inference do the rest.
 buildDefunSymsClosedTypeFamilyD :: DTypeFamilyHead -> PrM [DDec]
 buildDefunSymsClosedTypeFamilyD = buildDefunSymsTypeFamilyHead id id
 
+-- Top-level open type families always have CUSKs, so it is safe to default
+-- type variable kinds or the result kind to Type if they are not indicated
+-- explicitly.
 buildDefunSymsOpenTypeFamilyD :: DTypeFamilyHead -> PrM [DDec]
 buildDefunSymsOpenTypeFamilyD = buildDefunSymsTypeFamilyHead cuskify (Just . defaultToTypeKind)
 
 buildDefunSymsTypeFamilyHead
-  :: (DTyVarBndr -> DTyVarBndr)
-  -> (Maybe DKind -> Maybe DKind)
+  :: (DTyVarBndr -> DTyVarBndr)   -- How to default each type variable binder
+  -> (Maybe DKind -> Maybe DKind) -- How to default the result kind
   -> DTypeFamilyHead -> PrM [DDec]
 buildDefunSymsTypeFamilyHead default_tvb default_kind
     (DTypeFamilyHead name tvbs result_sig _) = do
