@@ -13,7 +13,6 @@ tags
 
 # Other files
 *.actual
-*.golden
 Main
 
 # cabal sandboxes
