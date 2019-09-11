@@ -309,7 +309,7 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
         , pd_derived_show_decs       = derivedShowDecs } <- partitionDecs decls
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
-    defunTypeDecls ty_syns c_tyfams o_tyfams
+    defunTopLevelTypeDecls ty_syns c_tyfams o_tyfams
     promoteDataDecs datas
     (_, letDecEnv) <- promoteLetDecs noPrefix letDecls
     classes' <- mapM promoteClassDec classes

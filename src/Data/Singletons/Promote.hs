@@ -229,7 +229,7 @@ promoteDecs raw_decls = do
         , pd_closed_type_family_decs = c_tyfams
         , pd_derived_eq_decs         = derived_eq_decs } <- partitionDecs decls
 
-  defunTypeDecls ty_syns c_tyfams o_tyfams
+  defunTopLevelTypeDecls ty_syns c_tyfams o_tyfams
     -- promoteLetDecs returns LetBinds, which we don't need at top level
   _ <- promoteLetDecs noPrefix let_decs
   mapM_ promoteClassDec classes
@@ -289,6 +289,7 @@ promoteClassDec :: UClassDecl
 promoteClassDec decl@(ClassDecl { cd_name = cls_name
                                 , cd_tvbs = tvbs
                                 , cd_fds  = fundeps
+                                , cd_atfs = atfs
                                 , cd_lde  = lde@LetDecEnv
                                     { lde_defns = defaults
                                     , lde_types = meth_sigs
@@ -302,6 +303,7 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
     sig_decs <- mapM (uncurry promote_sig) meth_sigs_list
     (default_decs, ann_rhss, prom_rhss)
       <- mapAndUnzip3M (promoteMethod DefaultMethods meth_sigs) defaults_list
+    defunAssociatedTypeFamilies tvbs atfs
 
     infix_decls' <- mapMaybeM (uncurry promoteInfixDecl) $ OMap.assocs infix_decls
     cls_infix_decls <- promoteReifiedInfixDecls $ cls_name:meth_names

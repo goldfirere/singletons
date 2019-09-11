@@ -99,8 +99,8 @@ partitionDec (DClassD cxt name tvbs fds decs) = do
                                                , cd_name      = name
                                                , cd_tvbs      = tvbs
                                                , cd_fds       = fds
-                                               , cd_lde       = lde }]
-                  , pd_open_type_family_decs = otfs }
+                                               , cd_lde       = lde
+                                               , cd_atfs      = otfs}] }
 partitionDec (DInstanceD _ _ cxt ty decs) = do
   (defns, sigs) <- liftM (bimap catMaybes mconcat) $
                    mapAndUnzipM partitionInstanceDec decs
@@ -312,4 +312,9 @@ Also note that:
 1. Other uses of type synonyms in singled code will be expanded away.
 2. Other uses of type families in singled code are unlikely to work at present
    due to Trac #12564.
+3. We track open type families, closed type families, and associated type
+   families separately, as each form of type family has different kind
+   inference behavior. See defunTopLevelTypeDecls and
+   defunAssociatedTypeFamilies in D.S.Promote.Defun for how these differences
+   manifest.
 -}
