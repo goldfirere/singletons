@@ -27,7 +27,6 @@ module Data.Singletons.Prelude.Monad.Fail (
   FailSym0, FailSym1
   ) where
 
-import Data.Kind
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Single
@@ -53,7 +52,7 @@ $(singletonsOnly [d|
   -- @
   -- fail _ = mzero
   -- @
-  class Monad m => MonadFail (m :: Type -> Type) where
+  class Monad m => MonadFail m where
       fail :: String -> m a
 
   instance MonadFail Maybe where

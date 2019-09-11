@@ -32,7 +32,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
                                           arg. SameKind (Apply EqualsSym0 arg) (EqualsSym1 arg) =>
                                    EqualsSym0 arg0123456789876543210
     type instance Apply EqualsSym0 arg0123456789876543210 = EqualsSym1 arg0123456789876543210
-    class PEq (a :: GHC.Types.Type) where
+    class PEq a where
       type Equals (arg :: a) (arg :: a) :: Bool
     type family Equals_0123456789876543210 (a :: ()) (a :: ()) :: Bool where
       Equals_0123456789876543210 '() '() = TrueSym0

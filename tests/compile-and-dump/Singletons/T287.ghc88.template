@@ -30,7 +30,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
                                  arg. SameKind (Apply (<<>>@#@$) arg) ((<<>>@#@$$) arg) =>
                           (<<>>@#@$) arg0123456789876543210
     type instance Apply (<<>>@#@$) arg0123456789876543210 = (<<>>@#@$$) arg0123456789876543210
-    class PS (a :: GHC.Types.Type) where
+    class PS a where
       type (<<>>) (arg :: a) (arg :: a) :: a
     type family Lambda_0123456789876543210 f g t where
       Lambda_0123456789876543210 f g x = Apply (Apply (<<>>@#@$) (Apply f x)) (Apply g x)

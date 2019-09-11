@@ -162,7 +162,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
                                                            arg. SameKind (Apply Baz_0123456789876543210Sym0 arg) (Baz_0123456789876543210Sym1 arg) =>
                                                     Baz_0123456789876543210Sym0 a0123456789876543210
     type instance Apply Baz_0123456789876543210Sym0 a0123456789876543210 = Baz_0123456789876543210Sym1 a0123456789876543210
-    class PFoo (a :: GHC.Types.Type) where
+    class PFoo a where
       type Bar (arg :: a) (arg :: b) :: b
       type Baz (arg :: a) (arg :: b) :: b
       type Bar a a = Apply (Apply Bar_0123456789876543210Sym0 a) a

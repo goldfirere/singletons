@@ -178,7 +178,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                                 arg. SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
     type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
-    class PMyOrd (a :: GHC.Types.Type) where
+    class PMyOrd a where
       type Mycompare (arg :: a) (arg :: a) :: Ordering
       type (<=>) (arg :: a) (arg :: a) :: Ordering
       type (<=>) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a

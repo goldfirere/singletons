@@ -34,7 +34,6 @@ module Data.Singletons.Prelude.Monad.Zip (
   ) where
 
 import Data.Functor.Identity
-import Data.Kind
 import Data.Monoid
 import Data.Singletons.Prelude.Identity
 import Data.Singletons.Prelude.Instances
@@ -61,7 +60,7 @@ $(singletonsOnly [d|
   --   > ==>
   --   > munzip (mzip ma mb) = (ma, mb)
   --
-  class Monad m => MonadZip (m :: Type -> Type) where
+  class Monad m => MonadZip m where
       -- {-# MINIMAL mzip | mzipWith #-}
 
       mzip :: m a -> m b -> m (a,b)

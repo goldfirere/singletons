@@ -52,7 +52,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
                                             arg. SameKind (Apply Method2bSym0 arg) (Method2bSym1 arg) =>
                                      Method2bSym0 arg0123456789876543210
     type instance Apply Method2bSym0 arg0123456789876543210 = Method2b arg0123456789876543210
-    class PC2 (a :: Type) where
+    class PC2 a where
       type Method2a (arg :: b) :: a
       type Method2b (arg :: b) :: a
     type family Method1_0123456789876543210 :: [a] where

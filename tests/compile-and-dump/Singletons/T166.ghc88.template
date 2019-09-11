@@ -84,7 +84,7 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
                                                            arg. SameKind (Apply Foo_0123456789876543210Sym0 arg) (Foo_0123456789876543210Sym1 arg) =>
                                                     Foo_0123456789876543210Sym0 a0123456789876543210
     type instance Apply Foo_0123456789876543210Sym0 a0123456789876543210 = Foo_0123456789876543210 a0123456789876543210
-    class PFoo (a :: GHC.Types.Type) where
+    class PFoo a where
       type FoosPrec (arg :: Nat) (arg :: a) (arg :: [Bool]) :: [Bool]
       type Foo (arg :: a) :: [Bool]
       type Foo a = Apply Foo_0123456789876543210Sym0 a

@@ -284,32 +284,15 @@ promoteDataDec (DataDecl _name _tvbs ctors) = do
   ctorSyms <- buildDefunSymsDataD ctors
   emitDecs ctorSyms
 
--- Note [CUSKification]
--- ~~~~~~~~~~~~~~~~~~~~
--- GHC #12928 means that sometimes, this TH code will produce a declaration
--- that has a kind signature even when we want kind inference to work. There
--- seems to be no way to avoid this, so we embrace it:
---
---   * If a class type variable has no explicit kind, we make no effort to
---     guess it and default to *. This is OK because before GHC 8.0, we were
---     limited by KProxy anyway.
---
---   * If a class type variable has an explicit kind, it is preserved.
---
--- This way, we always get proper CUSKs where we need them.
-
 promoteClassDec :: UClassDecl
                 -> PrM AClassDecl
 promoteClassDec decl@(ClassDecl { cd_name = cls_name
-                                , cd_tvbs = tvbs'
+                                , cd_tvbs = tvbs
                                 , cd_fds  = fundeps
                                 , cd_lde  = lde@LetDecEnv
                                     { lde_defns = defaults
                                     , lde_types = meth_sigs
                                     , lde_infix = infix_decls } }) = do
-  let
-    -- a workaround for GHC Trac #12928; see Note [CUSKification]
-    tvbs = map cuskify tvbs'
   let pClsName = promoteClassName cls_name
   forallBind cls_kvs_to_bind $ do
     let meth_sigs_list = OMap.assocs meth_sigs
@@ -335,8 +318,8 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
                                 , lde_bound_kvs = cls_kvs_to_bind' } })
   where
     cls_kvb_names, cls_tvb_names, cls_kvs_to_bind :: OSet Name
-    cls_kvb_names   = foldMap (foldMap fvDType . extractTvbKind) tvbs'
-    cls_tvb_names   = OSet.fromList $ map extractTvbName tvbs'
+    cls_kvb_names   = foldMap (foldMap fvDType . extractTvbKind) tvbs
+    cls_tvb_names   = OSet.fromList $ map extractTvbName tvbs
     cls_kvs_to_bind = cls_kvb_names `OSet.union` cls_tvb_names
 
     promote_sig :: Name -> DType -> PrM DDec
@@ -344,12 +327,12 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
       let proName = promoteValNameLhs name
       (argKs, resK) <- promoteUnraveled ty
       args <- mapM (const $ qNewName "arg") argKs
-      let tvbs = zipWith DKindedTV args argKs
+      let proTvbs = zipWith DKindedTV args argKs
       m_fixity <- reifyFixityWithLocals name
-      emitDecsM $ defunctionalize proName m_fixity tvbs (Just resK)
+      emitDecsM $ defunctionalize proName m_fixity proTvbs (Just resK)
 
       return $ DOpenTypeFamilyD (DTypeFamilyHead proName
-                                                 tvbs
+                                                 proTvbs
                                                  (DKindSig resK)
                                                  Nothing)
 

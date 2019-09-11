@@ -39,7 +39,6 @@ module Data.Singletons.Prelude.Monad.Internal where
 
 import Control.Applicative
 import Control.Monad
-import Data.Kind
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Singletons.Prelude.Base
 import Data.Singletons.Prelude.Instances
@@ -68,7 +67,7 @@ $(singletonsOnly [d|
   satisfy these laws.
   -}
 
-  class  Functor (f :: Type -> Type)  where
+  class  Functor f  where
       fmap        :: (a -> b) -> f a -> f b
 
       -- -| Replace all locations in the input with the same value.
@@ -143,7 +142,7 @@ $(singletonsOnly [d|
   --
   -- (which implies that 'pure' and '<*>' satisfy the applicative functor laws).
 
-  class Functor f => Applicative (f :: Type -> Type) where
+  class Functor f => Applicative f where
       -- {-# MINIMAL pure, ((<*>) | liftA2) #-}
       -- -| Lift a value.
       pure :: a -> f a
@@ -260,7 +259,7 @@ $(singletonsOnly [d|
   The instances of 'Monad' for lists, 'Data.Maybe.Maybe' and 'System.IO.IO'
   defined in the "Prelude" satisfy these laws.
   -}
-  class Applicative m => Monad (m :: Type -> Type) where
+  class Applicative m => Monad m where
       -- -| Sequentially compose two actions, passing any value produced
       -- by the first as an argument to the second.
       (>>=)       :: forall a b. m a -> (a -> m b) -> m b
@@ -369,7 +368,7 @@ $(singletonsOnly [d|
   -- -* @'some' v = (:) '<$>' v '<*>' 'many' v@
   --
   -- -* @'many' v = 'some' v '<|>' 'pure' []@
-  class Applicative f => Alternative (f :: Type -> Type) where
+  class Applicative f => Alternative f where
       -- -| The identity of '<|>'
       empty :: f a
       -- -| An associative binary operation
@@ -403,7 +402,7 @@ $(singletonsOnly [d|
   -- The MonadPlus class definition
 
   -- -| Monads that also support choice and failure.
-  class (Alternative m, Monad m) => MonadPlus (m :: Type -> Type) where
+  class (Alternative m, Monad m) => MonadPlus m where
      -- -| The identity of 'mplus'.  It should also satisfy the equations
      --
      -- > mzero >>= f  =  mzero

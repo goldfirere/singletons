@@ -227,7 +227,7 @@ $(singletonsOnly [d|
   --
   -- > foldMap f . fmap g = foldMap (f . g)
 
-  class Foldable (t :: Type -> Type) where
+  class Foldable t where
       -- {-# MINIMAL foldMap | foldr #-}
 
       -- -| Combine the elements of a structure using a monoid.

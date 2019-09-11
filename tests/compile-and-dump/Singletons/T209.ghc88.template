@@ -51,7 +51,7 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply MSym0 a0123456789876543210 = MSym1 a0123456789876543210
     type family M (a :: a) (a :: b) (a :: Bool) :: Bool where
       M _ _ x = x
-    class PC (a :: GHC.Types.Type) (b :: GHC.Types.Type)
+    class PC a b
     instance PC Bool Hm
     instance PC a (Maybe a)
     sM ::
