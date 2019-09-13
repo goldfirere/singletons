@@ -29,7 +29,7 @@ description:
     presented in /Dependently Typed Programming with Singletons/, published
     at the Haskell Symposium, 2012.
     (<https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf>)
-
+    .
     Version 1.0 and onwards works a lot harder to promote functions. See the
     paper published at Haskell Symposium, 2014:
     <https://cs.brynmawr.edu/~rae/papers/2014/promotion/promotion.pdf>.
