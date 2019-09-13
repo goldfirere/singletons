@@ -60,7 +60,7 @@ module Data.Singletons (
   -- ** Defunctionalization
   TyFun, type (~>),
   TyCon1, TyCon2, TyCon3, TyCon4, TyCon5, TyCon6, TyCon7, TyCon8,
-  TyCon, Apply, type (@@),
+  TyCon, Apply, type (@@), ApplyTyCon, ApplyTyConAux1, ApplyTyConAux2,
 
   -- ** Defunctionalized singletons
   -- | When calling a higher-order singleton function, you need to use a
@@ -70,8 +70,13 @@ module Data.Singletons (
   unSingFun1, unSingFun2, unSingFun3, unSingFun4, unSingFun5,
   unSingFun6, unSingFun7, unSingFun8,
   -- $SLambdaPatternSynonyms
-  pattern SLambda2, pattern SLambda3, pattern SLambda4, pattern SLambda5,
-  pattern SLambda6, pattern SLambda7, pattern SLambda8,
+  pattern SLambda2, applySing2,
+  pattern SLambda3, applySing3,
+  pattern SLambda4, applySing4,
+  pattern SLambda5, applySing5,
+  pattern SLambda6, applySing6,
+  pattern SLambda7, applySing7,
+  pattern SLambda8, applySing8,
 
   -- | These type synonyms are exported only to improve error messages; users
   -- should not have to mention them.

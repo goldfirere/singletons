@@ -12,6 +12,9 @@ next
   during promotion or singling, as `singletons` cannot support them.
   (Previously, `singletons` would sometimes accept them, often changing rank-2
   types to rank-1 types incorrectly in the process.)
+* Export `ApplyTyConAux1`, `ApplyTyConAux2`, as well as the record pattern
+  synonyms selector `applySing2`, `applySing3`, etc. from `Data.Singletons`.
+  These were unintentionally left out in previous releases.
 * Fix a slew of bugs related to fixity declarations:
   * Fixity declarations for data types are no longer singled, as fixity
     declarations do not serve any purpose for singled data type constructors,
