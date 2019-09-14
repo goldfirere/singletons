@@ -71,6 +71,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply MkFoo2aSym0 t0123456789876543210 = MkFoo2aSym1 t0123456789876543210
     type MkFoo2bSym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: a0123456789876543210) =
         MkFoo2b t0123456789876543210 t0123456789876543210
+    infixl 5 `MkFoo2bSym2`
     instance SuppressUnusedWarnings (MkFoo2bSym1 t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MkFoo2bSym1KindInference) ())
     data MkFoo2bSym1 (t0123456789876543210 :: a0123456789876543210) :: (~>) a0123456789876543210 (Foo2 a0123456789876543210)
@@ -93,6 +94,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 `MkFoo2bSym0`
     type (:*:@#@$$$) (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: a0123456789876543210) =
         (:*:) t0123456789876543210 t0123456789876543210
+    infixl 5 :*:@#@$$$
     instance SuppressUnusedWarnings ((:*:@#@$$) t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::*:@#@$$###)) ())
     data (:*:@#@$$) (t0123456789876543210 :: a0123456789876543210) :: (~>) a0123456789876543210 (Foo2 a0123456789876543210)
@@ -115,6 +117,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 :*:@#@$
     type (:&:@#@$$$) (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: a0123456789876543210) =
         (:&:) t0123456789876543210 t0123456789876543210
+    infixl 5 :&:@#@$$$
     instance SuppressUnusedWarnings ((:&:@#@$$) t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::&:@#@$$###)) ())
     data (:&:@#@$$) (t0123456789876543210 :: a0123456789876543210) :: (~>) a0123456789876543210 (Foo2 a0123456789876543210)

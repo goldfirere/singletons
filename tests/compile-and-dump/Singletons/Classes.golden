@@ -134,6 +134,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply MycompareSym0 arg0123456789876543210 = MycompareSym1 arg0123456789876543210
     type (<=>@#@$$$) (arg0123456789876543210 :: a0123456789876543210) (arg0123456789876543210 :: a0123456789876543210) =
         (<=>) arg0123456789876543210 arg0123456789876543210
+    infix 4 <=>@#@$$$
     instance SuppressUnusedWarnings ((<=>@#@$$) arg0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:<=>@#@$$###)) ())
     data (<=>@#@$$) (arg0123456789876543210 :: a0123456789876543210) :: (~>) a0123456789876543210 Ordering

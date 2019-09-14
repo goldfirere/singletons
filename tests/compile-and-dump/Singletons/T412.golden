@@ -27,6 +27,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     data D1 a b = MkD1 a b
     type T1aSym2 a0123456789876543210 b0123456789876543210 =
         T1a a0123456789876543210 b0123456789876543210
+    infixl 5 `T1aSym2`
     instance SuppressUnusedWarnings (T1aSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) T1aSym1KindInference) ())
     data T1aSym1 a0123456789876543210 b0123456789876543210
@@ -48,6 +49,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 `T1aSym0`
     type T1bSym2 a0123456789876543210 b0123456789876543210 =
         T1b a0123456789876543210 b0123456789876543210
+    infixl 5 `T1bSym2`
     instance SuppressUnusedWarnings (T1bSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) T1bSym1KindInference) ())
     data T1bSym1 a0123456789876543210 b0123456789876543210
@@ -69,6 +71,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 `T1bSym0`
     type MkD1Sym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: b0123456789876543210) =
         MkD1 t0123456789876543210 t0123456789876543210
+    infixr 5 `MkD1Sym2`
     instance SuppressUnusedWarnings (MkD1Sym1 t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MkD1Sym1KindInference) ())
     data MkD1Sym1 (t0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
@@ -94,6 +97,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     infix 5 `PC1`
     type M1Sym2 (arg0123456789876543210 :: a0123456789876543210) (arg0123456789876543210 :: b0123456789876543210) =
         M1 arg0123456789876543210 arg0123456789876543210
+    infix 6 `M1Sym2`
     instance SuppressUnusedWarnings (M1Sym1 arg0123456789876543210) where
       suppressUnusedWarnings = snd (((,) M1Sym1KindInference) ())
     data M1Sym1 (arg0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
@@ -152,6 +156,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
   ======>
     type M2Sym2 (arg0123456789876543210 :: a0123456789876543210) (arg0123456789876543210 :: b0123456789876543210) =
         M2 arg0123456789876543210 arg0123456789876543210
+    infix 6 `M2Sym2`
     instance SuppressUnusedWarnings (M2Sym1 arg0123456789876543210) where
       suppressUnusedWarnings = snd (((,) M2Sym1KindInference) ())
     data M2Sym1 (arg0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
@@ -190,6 +195,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
       sing = (singFun1 @(M2Sym1 (d :: a))) (sM2 (sing @d))
     type T2aSym2 (a0123456789876543210 :: GHC.Types.Type) (b0123456789876543210 :: GHC.Types.Type) =
         T2a a0123456789876543210 b0123456789876543210
+    infixl 5 `T2aSym2`
     instance SuppressUnusedWarnings (T2aSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) T2aSym1KindInference) ())
     data T2aSym1 (a0123456789876543210 :: GHC.Types.Type) b0123456789876543210
@@ -211,6 +217,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     infixl 5 `T2aSym0`
     type T2bSym2 (a0123456789876543210 :: GHC.Types.Type) (b0123456789876543210 :: GHC.Types.Type) =
         T2b a0123456789876543210 b0123456789876543210
+    infixl 5 `T2bSym2`
     instance SuppressUnusedWarnings (T2bSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) T2bSym1KindInference) ())
     data T2bSym1 (a0123456789876543210 :: GHC.Types.Type) :: (~>) GHC.Types.Type GHC.Types.Type
@@ -232,6 +239,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     infixl 5 `T2bSym0`
     type MkD2Sym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: b0123456789876543210) =
         'MkD2 t0123456789876543210 t0123456789876543210
+    infixr 5 `MkD2Sym2`
     instance SuppressUnusedWarnings (MkD2Sym1 t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MkD2Sym1KindInference) ())
     data MkD2Sym1 (t0123456789876543210 :: a0123456789876543210 :: GHC.Types.Type) :: forall (b0123456789876543210 :: GHC.Types.Type).

@@ -287,21 +287,20 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                                                                     mkTupleDExp []])]]
 
             mk_rhs'     = foldTypeTvbs (DConT data_name)
-
             -- See Note [Fixity declarations for defunctionalization symbols]
-            mk_fix_decl f = DLetDec $ DInfixD f data_name
-            fixity_decl   = maybeToList $ fmap mk_fix_decl m_fixity
+            fixity_decl = maybeToList $ fmap (mk_fix_decl data_name) m_fixity
 
         decls <- go (n - 1) m_args m_tyfun mk_rhs'
         return $ suppress : data_decl : app_decl : fixity_decl ++ decls
 
-  let num_args = length m_arg_tvbs
-      sat_name = promoteTySym name num_args
-      mk_rhs   = foldTypeTvbs (DConT name)
-      sat_dec  = DTySynD sat_name m_arg_tvbs (mk_rhs m_arg_tvbs)
+  let num_args       = length m_arg_tvbs
+      sat_name       = promoteTySym name num_args
+      mk_rhs         = foldTypeTvbs (DConT name)
+      sat_dec        = DTySynD sat_name m_arg_tvbs (mk_rhs m_arg_tvbs)
+      sat_fixity_dec = maybeToList $ fmap (mk_fix_decl sat_name) m_fixity
 
   other_decs <- go (num_args - 1) (reverse m_arg_tvbs) m_res_kind mk_rhs
-  return $ sat_dec : other_decs
+  return $ sat_dec : sat_fixity_dec ++ other_decs
   where
     eta_expand :: [DTyVarBndr] -> Maybe DKind -> PrM ([DTyVarBndr], Maybe DKind)
     eta_expand m_arg_tvbs Nothing = pure (m_arg_tvbs, Nothing)
@@ -320,6 +319,9 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
     map_tvb_kind :: (DKind -> DKind) -> DTyVarBndr -> DTyVarBndr
     map_tvb_kind _ tvb@DPlainTV{}  = tvb
     map_tvb_kind f (DKindedTV n k) = DKindedTV n (f k)
+
+    mk_fix_decl :: Name -> Fixity -> DDec
+    mk_fix_decl n f = DLetDec $ DInfixD f n
 
 {-
 Note [Defunctionalization and dependent quantification]

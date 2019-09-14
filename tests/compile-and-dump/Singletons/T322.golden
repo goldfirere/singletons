@@ -10,6 +10,7 @@ Singletons/T322.hs:(0,0)-(0,0): Splicing declarations
     infixr 2 !
     type (!@#@$$$) (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) =
         (!) a0123456789876543210 a0123456789876543210
+    infixr 2 !@#@$$$
     instance SuppressUnusedWarnings ((!@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:!@#@$$###)) ())
     data (!@#@$$) (a0123456789876543210 :: Bool) :: (~>) Bool Bool

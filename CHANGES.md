@@ -24,6 +24,8 @@ next
     classes and class methods correctly.
   * `singletons` will no longer erroneously try to single fixity declarations
     for type synonym or type family names.
+  * A bug that caused fixity declarations for certain defunctionalization
+    symbols not to be generated has been fixed.
 
 2.6
 ---

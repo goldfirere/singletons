@@ -10,6 +10,7 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
     ($$:) _ _ = False
     type ($$:@#@$$$) (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) =
         ($$:) a0123456789876543210 a0123456789876543210
+    infixl 5 $$:@#@$$$
     instance SuppressUnusedWarnings (($$:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:$$:@#@$$###)) ())
     data ($$:@#@$$) (a0123456789876543210 :: Bool) :: (~>) Bool Bool

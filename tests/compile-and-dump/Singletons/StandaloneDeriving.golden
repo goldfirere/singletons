@@ -27,6 +27,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     deriving instance Enum S
     type (:*:@#@$$$) (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: b0123456789876543210) =
         (:*:) t0123456789876543210 t0123456789876543210
+    infixl 6 :*:@#@$$$
     instance SuppressUnusedWarnings ((:*:@#@$$) t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::*:@#@$$###)) ())
     data (:*:@#@$$) (t0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
