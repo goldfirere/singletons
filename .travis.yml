@@ -69,7 +69,7 @@ install:
   - TEST=--enable-tests
   - BENCH=--enable-benchmarks
   - HEADHACKAGE=false
-  - HEADHACKAGE=true
+  - if [ $HCNUMVER -gt 80801 ] ; then HEADHACKAGE=true ; fi
   - rm -f $CABALHOME/config
   - |
     echo "verbose: normal +nowrap +markoutput"          >> $CABALHOME/config
