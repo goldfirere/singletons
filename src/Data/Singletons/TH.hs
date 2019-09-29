@@ -1,4 +1,4 @@
-{-# LANGUAGE ExplicitNamespaces, CPP #-}
+{-# LANGUAGE ExplicitNamespaces #-}
 
 -----------------------------------------------------------------------------
 -- |

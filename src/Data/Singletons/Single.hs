@@ -6,7 +6,7 @@ rae@cs.brynmawr.edu
 This file contains functions to refine constructs to work with singleton
 types. It is an internal module to the singletons package.
 -}
-{-# LANGUAGE TemplateHaskell, TupleSections, ParallelListComp, CPP #-}
+{-# LANGUAGE TemplateHaskell, TupleSections, ParallelListComp #-}
 
 module Data.Singletons.Single where
 
