@@ -30,9 +30,10 @@ next
 2.6
 ---
 * Require GHC 8.8.
-* `Sing` has switched from a data family to a type family.  This [github issue comment](https://github.com/goldfirere/singletons/issues/318#issuecomment-467067257) provides a detailed explanation for the motivation behind this change. 
-This has a number of
-  consequences:
+* `Sing` has switched from a data family to a type family. This [Github issue comment](https://github.com/goldfirere/singletons/issues/318#issuecomment-467067257) provides a detailed explanation for the motivation behind this change. 
+
+
+This has a number of consequences:
   * Names like `SBool`, `SMaybe`, etc. are no longer type synonyms for
     particular instantiations of `Sing` but are instead the names of the
     singleton data types themselves. In other words, previous versions of
