@@ -15,12 +15,12 @@ This file is a great way to understand the singleton encoding better.
              RankNTypes, TypeOperators, MultiParamTypeClasses,
              FunctionalDependencies, ScopedTypeVariables,
              LambdaCase, TemplateHaskell, EmptyCase,
-             TypeApplications, EmptyCase
+             TypeApplications, EmptyCase, StandaloneKindSignatures
  #-}
 
 module ByHand where
 
-import Data.Kind (Type)
+import Data.Kind
 import Prelude hiding (Bool, False, True, Maybe, Just, Nothing, Either, Left, Right, map, zipWith,
                        (&&), (||), (+), (-))
 import Unsafe.Coerce
@@ -35,27 +35,32 @@ import Data.Singletons.Decide
 -- Original ADTs ------------------
 -----------------------------------
 
-data Nat :: Type where
+type Nat :: Type
+data Nat where
   Zero :: Nat
   Succ :: Nat -> Nat
   deriving Eq
 
-data Bool :: Type where
+type Bool :: Type
+data Bool where
   False :: Bool
   True :: Bool
 
-data Maybe :: Type -> Type where
+type Maybe :: Type -> Type
+data Maybe a where
   Nothing :: Maybe a
   Just :: a -> Maybe a
   deriving Eq
 
 -- Defined using names to avoid fighting with concrete syntax
-data List :: Type -> Type where
+type List :: Type -> Type
+data List a where
   Nil :: List a
   Cons :: a -> List a -> List a
   deriving Eq
 
-data Either :: Type -> Type -> Type where
+type Either :: Type -> Type -> Type
+data Either a b where
   Left :: a -> Either a b
   Right :: b -> Either a b
 
@@ -65,15 +70,18 @@ data Either :: Type -> Type -> Type where
 -----------------------------------
 
 -- Promoted equality type class
+type PEq :: Type -> Constraint
 class PEq k where
   type (==) (a :: k) (b :: k) :: Bool
   -- omitting definition of /=
 
 -- Singleton type equality type class
+type SEq :: Type -> Constraint
 class SEq k where
   (%==) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a == b)
   -- omitting definition of %/=
 
+type If :: Bool -> a -> a -> a
 type family If cond tru fls where
   If True  tru  fls = tru
   If False tru  fls = fls
@@ -88,15 +96,18 @@ sIf SFalse _ c = c
 
 -- Nat
 
-data SNat :: Nat -> Type where
+type SNat :: Nat -> Type
+data SNat n where
   SZero :: SNat Zero
   SSucc :: SNat n -> SNat (Succ n)
 type instance Sing = SNat
 
-data SuccSym0 :: Nat ~> Nat
+type SuccSym0 :: Nat ~> Nat
+data SuccSym0 tf
 type instance Apply SuccSym0 x = Succ x
 
-type family EqualsNat (a :: Nat) (b :: Nat) where
+type EqualsNat :: Nat -> Nat -> Bool
+type family EqualsNat a b where
   EqualsNat Zero Zero = True
   EqualsNat (Succ a) (Succ b) = a == b
   EqualsNat (n1 :: Nat) (n2 :: Nat) = False
@@ -131,7 +142,8 @@ instance SingKind Nat where
 
 -- Bool
 
-data SBool :: Bool -> Type where
+type SBool :: Bool -> Type
+data SBool b where
   SFalse :: SBool False
   STrue :: SBool True
 type instance Sing = SBool
@@ -140,7 +152,8 @@ type instance Sing = SBool
 False && _ = False
 True  && x = x
 
-type family (a :: Bool) && (b :: Bool) :: Bool where
+type (&&) :: Bool -> Bool -> Bool
+type family a && b where
   False && _ = False
   True  && x = x
 
@@ -163,12 +176,14 @@ instance SingKind Bool where
 
 -- Maybe
 
-data SMaybe :: forall k. Maybe k -> Type where
+type SMaybe :: Maybe k -> Type
+data SMaybe m where
   SNothing :: SMaybe Nothing
   SJust :: forall k (a :: k). Sing a -> SMaybe (Just a)
 type instance Sing = SMaybe
 
-type family EqualsMaybe (a :: Maybe k) (b :: Maybe k) where
+type EqualsMaybe :: Maybe k -> Maybe k -> Bool
+type family EqualsMaybe a b where
   EqualsMaybe Nothing Nothing = True
   EqualsMaybe (Just a) (Just a') = a == a'
   EqualsMaybe (x :: Maybe k) (y :: Maybe k) = False
@@ -205,22 +220,28 @@ instance SingKind k => SingKind (Maybe k) where
 
 -- List
 
-data SList :: forall k. List k -> Type where
+type SList :: List k -> Type
+data SList l where
   SNil :: SList Nil
   SCons :: forall k (h :: k) (t :: List k). Sing h -> SList t -> SList (Cons h t)
 type instance Sing = SList
 
+type NilSym0 :: List a
 type NilSym0 = Nil
 
-data ConsSym0 :: a ~> List a ~> List a
+type ConsSym0 :: a ~> List a ~> List a
+data ConsSym0 tf
 type instance Apply ConsSym0 a = ConsSym1 a
 
-data ConsSym1 :: a -> List a ~> List a
+type ConsSym1 :: a -> List a ~> List a
+data ConsSym1 a tf
 type instance Apply (ConsSym1 a) b = ConsSym2 a b
 
+type ConsSym2 :: a -> List a -> List a
 type ConsSym2 a b = Cons a b
 
-type family EqualsList (a :: List k) (b :: List k) where
+type EqualsList :: List k -> List k -> Bool
+type family EqualsList a b where
   EqualsList Nil Nil = True
   EqualsList (Cons a b) (Cons a' b') = (a == a') && (b == b')
   EqualsList (x :: List k) (y :: List k) = False
@@ -260,7 +281,8 @@ instance SingKind k => SingKind (List k) where
 
 -- Either
 
-data SEither :: forall k1 k2. Either k1 k2 -> Type where
+type SEither :: Either k1 k2 -> Type
+data SEither e where
   SLeft :: forall k1 (a :: k1). Sing a -> SEither (Left a)
   SRight :: forall k2 (b :: k2). Sing b -> SEither (Right b)
 type instance Sing = SEither
@@ -294,10 +316,12 @@ instance (SDecide k1, SDecide k2) => SDecide (Either k1 k2) where
 
 -- Composite
 
-data Composite :: Type -> Type -> Type where
+type Composite :: Type -> Type -> Type
+data Composite a b where
   MkComp :: Either (Maybe a) b -> Composite a b
 
-data SComposite :: forall k1 k2. Composite k1 k2 -> Type where
+type SComposite :: Composite k1 k2 -> Type
+data SComposite c where
   SMkComp :: forall k1 k2 (a :: Either (Maybe k1) k2). SEither a -> SComposite (MkComp a)
 type instance Sing = SComposite
 
@@ -319,8 +343,10 @@ instance (SDecide k1, SDecide k2) => SDecide (Composite k1 k2) where
 
 -- Empty
 
+type Empty :: Type
 data Empty
-data SEmpty :: Empty -> Type
+type SEmpty :: Empty -> Type
+data SEmpty e
 type instance Sing = SEmpty
 instance SingKind Empty where
   type Demote Empty = Empty
@@ -329,13 +355,16 @@ instance SingKind Empty where
 
 -- Type
 
-data Vec :: Type -> Nat -> Type where
+type Vec :: Type -> Nat -> Type
+data Vec a n where
   VNil :: Vec a Zero
   VCons :: a -> Vec a n -> Vec a (Succ n)
 
+type Rep :: Type
 data Rep = Nat | Maybe Rep | Vec Rep Nat
 
-data SRep :: Type -> Type where
+type SRep :: Type -> Type
+data SRep r where
   SNat :: SRep Nat
   SMaybe :: SRep a -> SRep (Maybe a)
   SVec :: SRep a -> SNat n -> SRep (Vec a n)
@@ -382,7 +411,8 @@ instance SDecide Type where
       (Disproved contra, _) -> Disproved (\Refl -> contra Refl)
       (_, Disproved contra) -> Disproved (\Refl -> contra Refl)
 
-type family EqualsType (a :: Type) (b :: Type) where
+type EqualsType :: Type -> Type -> Bool
+type family EqualsType a b where
   EqualsType a a = True
   EqualsType _ _ = False
 instance PEq Type where
@@ -402,12 +432,14 @@ isJust :: Maybe a -> Bool
 isJust Nothing = False
 isJust (Just _) = True
 
-type family IsJust (a :: Maybe k) :: Bool where
+type IsJust :: Maybe k -> Bool
+type family IsJust a where
     IsJust Nothing = False
     IsJust (Just a) = True
 
 -- defunctionalization symbols
-data IsJustSym0 :: Maybe a ~> Bool
+type IsJustSym0 :: Maybe a ~> Bool
+data IsJustSym0 tf
 type instance Apply IsJustSym0 a = IsJust a
 
 sIsJust :: Sing a -> Sing (IsJust a)
@@ -418,11 +450,13 @@ pred :: Nat -> Nat
 pred Zero = Zero
 pred (Succ n) = n
 
-type family Pred (a :: Nat) :: Nat where
+type Pred :: Nat -> Nat
+type family Pred a where
   Pred Zero = Zero
   Pred (Succ n) = n
 
-data PredSym0 :: Nat ~> Nat
+type PredSym0 :: Nat ~> Nat
+data PredSym0 tf
 type instance Apply PredSym0 a = Pred a
 
 sPred :: forall (t :: Nat). Sing t -> Sing (Pred t)
@@ -433,13 +467,16 @@ map :: (a -> b) -> List a -> List b
 map _ Nil = Nil
 map f (Cons h t) = Cons (f h) (map f t)
 
-type family Map (f :: k1 ~> k2) (l :: List k1) :: List k2 where
+type Map :: (k1 ~> k2) -> List k1 -> List k2
+type family Map f l where
     Map f Nil = Nil
     Map f (Cons h t) = Cons (Apply f h) (Map f t)
 
 -- defunctionalization symbols
-data MapSym1 :: (a ~> b) -> List a ~> List b
-data MapSym0 :: (a ~> b) ~> List a ~> List b
+type MapSym1 :: (a ~> b) -> List a ~> List b
+data MapSym1 f tf
+type MapSym0 :: (a ~> b) ~> List a ~> List b
+data MapSym0 tf
 type instance Apply (MapSym1 f) xs = Map f xs
 type instance Apply  MapSym0 f     = MapSym1 f
 
@@ -472,17 +509,19 @@ zipWith _ [] (_:_)      = []
 zipWith _ (_:_) []      = []
 zipWith _ []    []      = []
 
-type family ZipWith (k1 :: a ~> b ~> c)
-                    (k2 :: List a)
-                    (k3 :: List b) :: List c where
+type ZipWith :: (a ~> b ~> c) -> List a -> List b -> List c
+type family ZipWith k1 k2 k3 where
   ZipWith f (Cons x xs) (Cons y ys) = Cons (Apply (Apply f x) y) (ZipWith f xs ys)
   ZipWith f Nil (Cons z1 z2) = Nil
   ZipWith f (Cons z1 z2) Nil = Nil
   ZipWith f Nil          Nil = Nil
 
-data ZipWithSym2 :: (a ~> b ~> c) -> List a -> List b ~> List c
-data ZipWithSym1 :: (a ~> b ~> c) -> List a ~> List b ~> List c
-data ZipWithSym0 :: (a ~> b ~> c) ~> List a ~> List b ~> List c
+type ZipWithSym2 :: (a ~> b ~> c) -> List a -> List b ~> List c
+data ZipWithSym2 f xs tf
+type ZipWithSym1 :: (a ~> b ~> c) -> List a ~> List b ~> List c
+data ZipWithSym1 f tf
+type ZipWithSym0 :: (a ~> b ~> c) ~> List a ~> List b ~> List c
+data ZipWithSym0 tf
 type instance Apply (ZipWithSym2 f xs) ys = ZipWith f xs ys
 type instance Apply (ZipWithSym1 f)    xs = ZipWithSym2 f xs
 type instance Apply  ZipWithSym0 f        = ZipWithSym1 f
@@ -500,14 +539,18 @@ either :: (a -> c) -> (b -> c) -> Either a b -> c
 either l _ (Left x) = l x
 either _ r (Right x) = r x
 
-type family Either_ (l :: a ~> c) (r :: b ~> c) (e :: Either a b) :: c where
+type Either_ :: (a ~> c) -> (b ~> c) -> Either a b -> c
+type family Either_ l r e where
     Either_ l r (Left x) = Apply l x
     Either_ l r (Right x) = Apply r x
 
 -- defunctionalization symbols
-data Either_Sym2 :: (a ~> c) -> (b ~> c) -> Either a b ~> c
-data Either_Sym1 :: (a ~> c) -> (b ~> c) ~> Either a b ~> c
-data Either_Sym0 :: (a ~> c) ~> (b ~> c) ~> Either a b ~> c
+type Either_Sym2 :: (a ~> c) -> (b ~> c) -> Either a b ~> c
+data Either_Sym2 k1 k2 tf
+type Either_Sym1 :: (a ~> c) -> (b ~> c) ~> Either a b ~> c
+data Either_Sym1 f tf
+type Either_Sym0 :: (a ~> c) ~> (b ~> c) ~> Either a b ~> c
+data Either_Sym0 tf
 type instance Apply (Either_Sym2 k1 k2) k3 = Either_     k1 k2 k3
 type instance Apply (Either_Sym1 k1)    k2 = Either_Sym2 k1 k2
 type instance Apply  Either_Sym0        k1 = Either_Sym1 k1
@@ -549,7 +592,8 @@ eitherToNat :: Either Nat Nat -> Nat
 eitherToNat (Left  x) = x
 eitherToNat (Right x) = x
 
-type family EitherToNat (e :: Either Nat Nat) :: Nat where
+type EitherToNat :: Either Nat Nat -> Nat
+type family EitherToNat e where
     EitherToNat (Left x) = x
     EitherToNat (Right x) = x
 
@@ -561,12 +605,15 @@ liftMaybe :: (a -> b) -> Maybe a -> Maybe b
 liftMaybe _ Nothing = Nothing
 liftMaybe f (Just a) = Just (f a)
 
-type family LiftMaybe (f :: a ~> b) (x :: Maybe a) :: Maybe b where
+type LiftMaybe :: (a ~> b) -> Maybe a -> Maybe b
+type family LiftMaybe f x where
     LiftMaybe f Nothing = Nothing
     LiftMaybe f (Just a) = Just (Apply f a)
 
-data LiftMaybeSym1 :: (a ~> b) -> Maybe a ~> Maybe b
-data LiftMaybeSym0 :: (a ~> b) ~> Maybe a ~> Maybe b
+type LiftMaybeSym1 :: (a ~> b) -> Maybe a ~> Maybe b
+data LiftMaybeSym1 f tf
+type LiftMaybeSym0 :: (a ~> b) ~> Maybe a ~> Maybe b
+data LiftMaybeSym0 tf
 type instance Apply (LiftMaybeSym1 k1) k2 = LiftMaybe k1 k2
 type instance Apply  LiftMaybeSym0     k1 = LiftMaybeSym1 k1
 
@@ -580,13 +627,16 @@ sLiftMaybe f (SJust a) = SJust (f Proxy a)
 Zero + x = x
 (Succ x) + y = Succ (x + y)
 
-type family (+) (m :: Nat) (n :: Nat) :: Nat where
+type (+) :: Nat -> Nat -> Nat
+type family (+) m n where
   Zero + x = x
   (Succ x) + y = Succ (x + y)
 
 -- defunctionalization symbols
-data (+$$) :: Nat -> Nat ~> Nat
-data (+$)  :: Nat ~> Nat ~> Nat
+type (+$$) :: Nat -> Nat ~> Nat
+data (+$$) k1 tf
+type (+$)  :: Nat ~> Nat ~> Nat
+data (+$)  tf
 type instance Apply ((+$$) k1) k2 = (+) k1 k2
 type instance Apply  (+$)  k1     = (+$$) k1
 
@@ -599,13 +649,16 @@ Zero - _ = Zero
 (Succ x) - Zero = Succ x
 (Succ x) - (Succ y) = x - y
 
-type family (-) (m :: Nat) (n :: Nat) :: Nat where
+type (-) :: Nat -> Nat -> Nat
+type family (-) m n where
   Zero - x = Zero
   (Succ x) - Zero = Succ x
   (Succ x) - (Succ y) = x - y
 
-data (-$$) :: Nat -> Nat ~> Nat
-data (-$)  :: Nat ~> Nat ~> Nat
+type (-$$) :: Nat -> Nat ~> Nat
+data (-$$) k1 tf
+type (-$)  :: Nat ~> Nat ~> Nat
+data (-$)  tf
 type instance Apply ((-$$) k1) k2 = (-) k1 k2
 type instance Apply  (-$)  k1     = (-$$) k1
 
@@ -617,10 +670,12 @@ SZero %- _ = SZero
 isZero :: Nat -> Bool
 isZero n = if n == Zero then True else False
 
-type family IsZero (n :: Nat) :: Bool where
+type IsZero :: Nat -> Bool
+type family IsZero n where
   IsZero n = If (n == Zero) True False
 
-data IsZeroSym0 :: Nat ~> Bool
+type IsZeroSym0 :: Nat ~> Bool
+data IsZeroSym0 tf
 type instance Apply IsZeroSym0 a = IsZero a
 
 sIsZero :: Sing n -> Sing (IsZero n)
@@ -630,12 +685,15 @@ sIsZero n = sIf (n %== SZero) STrue SFalse
 False || x = x
 True || _ = True
 
-type family (a :: Bool) || (b :: Bool) :: Bool where
+type (||) :: Bool -> Bool -> Bool
+type family a || b where
   False || x = x
   True || x = True
 
-data (||$$) :: Bool -> Bool ~> Bool
-data (||$)  :: Bool ~> Bool ~> Bool
+type (||$$) :: Bool -> Bool ~> Bool
+data (||$$) a tf
+type (||$)  :: Bool ~> Bool ~> Bool
+data (||$)  tf
 type instance Apply ((||$$) a) b = (||) a b
 type instance Apply (||$) a = (||$$) a
 
@@ -649,12 +707,15 @@ contains _ Nil = False
 contains elt (Cons h t) = (elt == h) || contains elt t
 -}
 
-type family Contains (a :: k) (b :: List k) :: Bool where
+type Contains :: k -> List k -> Bool
+type family Contains a b where
   Contains elt Nil = False
   Contains elt (Cons h t) = (elt == h) || (Contains elt t)
 
-data ContainsSym1 :: a -> List a ~> Bool
-data ContainsSym0 :: a ~> List a ~> Bool
+type ContainsSym1 :: a -> List a ~> Bool
+data ContainsSym1 a tf
+type ContainsSym0 :: a ~> List a ~> Bool
+data ContainsSym0 tf
 type instance Apply (ContainsSym1 a) b = Contains a b
 type instance Apply  ContainsSym0 a    = ContainsSym1 a
 
@@ -686,7 +747,8 @@ cont = \elt list -> case list of
   Cons h t -> (elt == h) || cont elt t
 -}
 
-type family Cont :: a ~> List a ~> Bool where
+type Cont :: a ~> List a ~> Bool
+type family Cont where
   Cont = Lambda10Sym0
 
 data Lambda10Sym0 f where
@@ -754,7 +816,8 @@ findIndices' p ls =
   in
   loop Zero ls
 
-type family FindIndices (f :: a ~> Bool) (ls :: List a) :: List Nat where
+type FindIndices :: (a ~> Bool) -> List a -> List Nat
+type family FindIndices f ls where
   FindIndices p ls = (Let123LoopSym2 p ls) @@ Zero @@ ls
 
 type family Let123Loop p ls (arg1 :: Nat) (arg2 :: List a) :: List Nat where
@@ -865,9 +928,11 @@ sFI = unSingFun2 (singFun2 @FI (\p ls ->
 
 ------------------------------------------------------------
 
-data G :: Type -> Type where
+type G :: Type -> Type
+data G a where
   MkG :: G Bool
 
-data SG :: forall a. G a -> Type where
+type SG :: G a -> Type
+data SG g where
   SMkG :: SG MkG
 type instance Sing = SG

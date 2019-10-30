@@ -88,7 +88,8 @@ $(singletonsOnly [d|
   |])
 
 -- PNum instance
-type family SignumNat (a :: Nat) :: Nat where
+type SignumNat :: Nat -> Nat
+type family SignumNat a where
   SignumNat 0 = 0
   SignumNat x = 1
 

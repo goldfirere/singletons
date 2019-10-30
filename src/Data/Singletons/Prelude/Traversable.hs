@@ -64,18 +64,24 @@ import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Prelude.Monoid
 import Data.Singletons.Single
 
+type StateL :: Type -> Type -> Type
 newtype StateL s a = StateL (s ~> (s, a))
-data SStateL :: forall s a. StateL s a -> Type where
+type SStateL :: forall s a. StateL s a -> Type
+data SStateL state where
   SStateL :: Sing x -> SStateL ('StateL x)
 type instance Sing = SStateL
-data StateLSym0 :: forall s a. (s ~> (s, a)) ~> StateL s a
+type StateLSym0 :: forall s a. (s ~> (s, a)) ~> StateL s a
+data StateLSym0 z
 type instance Apply StateLSym0 x = 'StateL x
 
+type StateR :: Type -> Type -> Type
 newtype StateR s a = StateR (s ~> (s, a))
-data SStateR :: forall s a. StateR s a -> Type where
+type SStateR :: forall s a. StateR s a -> Type
+data SStateR state where
   SStateR :: Sing x -> SStateR ('StateR x)
 type instance Sing = SStateR
-data StateRSym0 :: forall s a. (s ~> (s, a)) ~> StateR s a
+type StateRSym0 :: forall s a. (s ~> (s, a)) ~> StateR s a
+data StateRSym0 z
 type instance Apply StateRSym0 x = 'StateR x
 
 $(singletonsOnly [d|

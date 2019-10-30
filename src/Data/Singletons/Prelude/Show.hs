@@ -52,6 +52,7 @@ module Data.Singletons.Prelude.Show (
   AppPrecSym0, AppPrec1Sym0
   ) where
 
+import           Data.Kind
 import           Data.List.NonEmpty (NonEmpty)
 import           Data.Ord (Down)
 import           Data.Proxy
@@ -77,10 +78,12 @@ import           Unsafe.Coerce (unsafeCoerce)
 -- | The @shows@ functions return a function that prepends the
 -- output 'Symbol' to an existing 'Symbol'.  This allows constant-time
 -- concatenation of results using function composition.
+type SymbolS :: Type
 type SymbolS = Symbol -> Symbol
 
 -- | GHC currently has no notion of type-level 'Char's, so we fake them with
 -- single-character 'Symbol's.
+type SChar :: Type
 type SChar = Symbol
 
 $(singletonsOnly [d|

@@ -1,7 +1,7 @@
 {-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies,
              RankNTypes, FlexibleContexts, TemplateHaskell,
              UndecidableInstances, GADTs, DefaultSignatures,
-             ScopedTypeVariables, TypeApplications #-}
+             ScopedTypeVariables, TypeApplications, StandaloneKindSignatures #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -26,6 +26,7 @@ module Data.Singletons.Prelude.Eq (
   DefaultEqSym0, DefaultEqSym1, DefaultEqSym2
   ) where
 
+import Data.Kind
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Single
@@ -39,6 +40,7 @@ import qualified Data.Type.Equality as DTE ()
 
 -- | The promoted analogue of 'Eq'. If you supply no definition for '(==)',
 -- then it defaults to a use of 'DefaultEq'.
+type PEq :: Type -> Constraint
 class PEq a where
   type (==) (x :: a) (y :: a) :: Bool
   type (/=) (x :: a) (y :: a) :: Bool
@@ -56,7 +58,8 @@ class PEq a where
 -- @a == a@ does not reduce to 'True' for every @a@, but @'DefaultEq' a a@
 -- /does/ reduce to 'True' for every @a@. The latter behavior is more desirable
 -- for @singletons@' purposes, so we use it instead of '(DTE.==)'.
-type family DefaultEq (a :: k) (b :: k) :: Bool where
+type DefaultEq :: k -> k -> Bool
+type family DefaultEq a b where
   DefaultEq a a = 'True
   DefaultEq a b = 'False
 
@@ -64,6 +67,7 @@ $(genDefunSymbols [''(==), ''(/=), ''DefaultEq])
 
 -- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
 -- that instances define a body for '(%==)'. You may also supply a body for '(%/=)'.
+type SEq :: Type -> Constraint
 class SEq k where
   -- | Boolean equality on singletons
   (%==) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a == b)

@@ -7,12 +7,15 @@
 -- from the user. Why would anyone ever want this? Because what is below
 -- is dirty, and no one wants to see it.
 
-{-# LANGUAGE AllowAmbiguousTypes, PolyKinds #-}
+{-# LANGUAGE AllowAmbiguousTypes, PolyKinds, StandaloneKindSignatures #-}
 
 module Data.Singletons.SuppressUnusedWarnings where
+
+import Data.Kind
 
 -- | This class (which users should never see) is to be instantiated in order
 -- to use an otherwise-unused data constructor, such as the "kind-inference"
 -- data constructor for defunctionalization symbols.
-class SuppressUnusedWarnings (t :: k) where
+type SuppressUnusedWarnings :: k -> Constraint
+class SuppressUnusedWarnings t where
   suppressUnusedWarnings :: ()

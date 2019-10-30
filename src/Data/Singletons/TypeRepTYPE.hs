@@ -1,6 +1,7 @@
 {-# LANGUAGE RankNTypes, TypeFamilies, FlexibleInstances,
              GADTs, UndecidableInstances, ScopedTypeVariables,
-             MagicHash, TypeOperators, PolyKinds, TypeApplications #-}
+             MagicHash, TypeOperators, PolyKinds, TypeApplications,
+             StandaloneKindSignatures #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------
@@ -57,7 +58,8 @@ type instance Sing @(TYPE rep) = TypeRep
 
 -- | A variant of 'SomeTypeRep' whose underlying 'TypeRep' is restricted to
 -- kind @'TYPE' rep@ (for some 'RuntimeRep' @rep@).
-data SomeTypeRepTYPE :: RuntimeRep -> Type where
+type SomeTypeRepTYPE :: RuntimeRep -> Type
+data SomeTypeRepTYPE r where
   SomeTypeRepTYPE :: forall (rep :: RuntimeRep) (a :: TYPE rep). !(TypeRep a) -> SomeTypeRepTYPE rep
 
 instance Eq (SomeTypeRepTYPE rep) where

@@ -4,6 +4,7 @@
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
@@ -54,10 +55,10 @@ import Data.Singletons.Single
 
 {-
 Const's argument `b` is poly-kinded, and as a result, we have a choice as to
-what Sing instance to give it. We could use either
+what singleton type to give it. We could use either
 
-1. data instance Sing :: forall (k :: Type) (a :: Type) (b :: k).    Const a b -> Type
-2. data instance Sing :: forall             (a :: Type) (b :: Type). Const a b -> Type
+1. type SConst :: forall {k :: Type} (a :: Type) (b :: k).    Const a b -> Type
+2. type SConst :: forall             (a :: Type) (b :: Type). Const a b -> Type
 
 Option (1) is the more permissive one, so we opt for that. However, singletons'
 TH machinery does not jive with this option, since the SingKind instance it
@@ -67,10 +68,11 @@ tries to generate:
     type Demote (Const a b) = Const (Demote a) (Demote b)
 
 Assumes that `b` is of kind Type. Until we get a more reliable story for
-poly-kinded Sing instances (see #150), we simply write the Sing instance by
+poly-kinded Sing instances (see #150), we simply write the singleton type by
 hand.
 -}
-data SConst :: forall (k :: Type) (a :: Type) (b :: k). Const a b -> Type where
+type SConst :: Const a b -> Type
+data SConst c where
   SConst :: { sGetConst :: Sing a } -> SConst ('Const a)
 type instance Sing = SConst
 instance SingKind a => SingKind (Const a b) where

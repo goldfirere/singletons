@@ -3,7 +3,7 @@
              TypeFamilies, TypeOperators, TypeFamilyDependencies,
              UndecidableInstances, ConstraintKinds,
              ScopedTypeVariables, TypeApplications, AllowAmbiguousTypes,
-             PatternSynonyms, ViewPatterns #-}
+             PatternSynonyms, ViewPatterns, StandaloneKindSignatures #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -33,25 +33,33 @@ import GHC.Exts ( Proxy#, Constraint )
 
 -- | Convenient synonym to refer to the kind of a type variable:
 -- @type KindOf (a :: k) = k@
+type KindOf :: k -> Type
 type KindOf (a :: k) = k
 
 -- | Force GHC to unify the kinds of @a@ and @b@. Note that @SameKind a b@ is
 -- different from @KindOf a ~ KindOf b@ in that the former makes the kinds
 -- unify immediately, whereas the latter is a proposition that GHC considers
 -- as possibly false.
-type SameKind (a :: k) (b :: k) = (() :: Constraint)
+type SameKind :: k -> k -> Constraint
+type SameKind a b = ()
 
 ----------------------------------------------------------------------
 ---- Sing & friends --------------------------------------------------
 ----------------------------------------------------------------------
 
 -- | The singleton kind-indexed type family.
-type family Sing :: k -> Type
+type Sing :: k -> Type
+type family Sing
 
 {-
 Note [The kind of Sing]
 ~~~~~~~~~~~~~~~~~~~~~~~
 It is important to define Sing like this:
+
+  type Sing :: k -> Type
+  type family Sing
+
+Or, equivalently,
 
   type family Sing :: k -> Type
 
@@ -138,6 +146,7 @@ pattern Sing <- (singInstance -> SingInstance)
 -- @
 -- (\\('FromSing' sing) -> 'FromSing' sing) ≡ 'id'
 -- @
+type SingKind :: Type -> Constraint
 class SingKind k where
   -- | Get a base type from the promoted kind. For example,
   -- @Demote Bool@ will be the type @Bool@. Rarely, the type and kind do not
@@ -160,6 +169,7 @@ class SingKind k where
 -- >           SomeSing sb -> {- fancy dependently-typed code with sb -}
 --
 -- An example like the one above may be easier to write using 'withSomeSing'.
+type SomeSing :: Type -> Type
 data SomeSing k where
   SomeSing :: Sing (a :: k) -> SomeSing k
 
@@ -208,17 +218,20 @@ pattern FromSing sng <- ((\demotedVal -> withSomeSing demotedVal SomeSing) -> So
 -- 'WrappedSing' is a perfectly ordinary data type, which means that it is
 -- quite possible to define an
 -- @instance 'SDecide' k => 'TestEquality' ('WrappedSing' k)@.
-newtype WrappedSing :: forall k. k -> Type where
+type WrappedSing :: k -> Type
+newtype WrappedSing a where
   WrapSing :: forall k (a :: k). { unwrapSing :: Sing a } -> WrappedSing a
 
 -- | The singleton for 'WrappedSing's. Informally, this is the singleton type
 -- for other singletons.
-newtype SWrappedSing :: forall k (a :: k). WrappedSing a -> Type where
+type SWrappedSing :: forall k (a :: k). WrappedSing a -> Type
+newtype SWrappedSing ws where
   SWrapSing :: forall k (a :: k) (ws :: WrappedSing a).
                { sUnwrapSing :: Sing a } -> SWrappedSing ws
 type instance Sing = SWrappedSing
 
-type family UnwrapSing (ws :: WrappedSing a) :: Sing a where
+type UnwrapSing :: WrappedSing a -> Sing a
+type family UnwrapSing ws where
   UnwrapSing ('WrapSing s) = s
 
 instance SingKind (WrappedSing a) where
@@ -234,10 +247,12 @@ instance forall a (s :: Sing a). SingI a => SingI ('WrapSing s) where
 ----------------------------------------------------------------------
 
 -- | A 'SingInstance' wraps up a 'SingI' instance for explicit handling.
-data SingInstance (a :: k) where
+type SingInstance :: k -> Type
+data SingInstance a where
   SingInstance :: SingI a => SingInstance a
 
 -- dirty implementation of explicit-to-implicit conversion
+type DI :: k -> Type
 newtype DI a = Don'tInstantiate (SingI a => SingInstance a)
 
 -- | Get an implicit singleton (a 'SingI' instance) from an explicit one.
@@ -255,17 +270,21 @@ singInstance s = with_sing_i SingInstance
 -- between term-level arrows and this type-level arrow is that at the term
 -- level applications can be unsaturated, whereas at the type level all
 -- applications have to be fully saturated.
-data TyFun :: Type -> Type -> Type
+type TyFun :: Type -> Type -> Type
+data TyFun a b
 
 -- | Something of kind `a ~> b` is a defunctionalized type function that is
 -- not necessarily generative or injective.
+type (~>) :: Type -> Type -> Type
 type a ~> b = TyFun a b -> Type
 infixr 0 ~>
 
 -- | Type level function application
-type family Apply (f :: k1 ~> k2) (x :: k1) :: k2
+type Apply :: (k1 ~> k2) -> k1 -> k2
+type family Apply f x
 
 -- | An infix synonym for `Apply`
+type (@@) :: (k1 ~> k2) -> k1 -> k2
 type a @@ b = Apply a b
 infixl 9 @@
 
@@ -273,7 +292,8 @@ infixl 9 @@
 -- in place of any of the @TyConN@ types, but it will work only with
 -- /monomorphic/ types. When GHC#14645 is fixed, this should fully supersede
 -- the @TyConN@ types.
-data family TyCon :: (k1 -> k2) -> unmatchable_fun
+type TyCon :: (k1 -> k2) -> unmatchable_fun
+data family TyCon
 -- That unmatchable_fun should really be a function of k1 and k2,
 -- but GHC 8.4 doesn't support type family calls in the result kind
 -- of a data family. It should. See GHC#14645.
@@ -287,7 +307,8 @@ data family TyCon :: (k1 -> k2) -> unmatchable_fun
 -- here because dealing with inequality like this is hard, and
 -- I (Richard) wasn't sure what concrete value the ticket would
 -- have, given that we don't know how to begin fixing it.
-type family ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun) where
+type ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun)
+type family ApplyTyCon where
   ApplyTyCon @k1 @(k2 -> k3) @unmatchable_fun = ApplyTyConAux2
   ApplyTyCon @k1 @k2         @k2              = ApplyTyConAux1
 -- Upon first glance, the definition of ApplyTyCon (as well as the
@@ -314,10 +335,12 @@ type instance Apply (TyCon f) x = ApplyTyCon f @@ x
 -- | An \"internal\" defunctionalization symbol used primarily in the
 -- definition of 'ApplyTyCon', as well as the 'SingI' instances for 'TyCon1',
 -- 'TyCon2', etc.
-data ApplyTyConAux1 :: (k1 -> k2) -> (k1 ~> k2)
+type ApplyTyConAux1 :: (k1 -> k2) -> (k1 ~> k2)
+data ApplyTyConAux1 f z
 -- | An \"internal\" defunctionalization symbol used primarily in the
 -- definition of 'ApplyTyCon'.
-data ApplyTyConAux2 :: (k1 -> k2 -> k3) -> (k1 ~> unmatchable_fun)
+type ApplyTyConAux2 :: (k1 -> k2 -> k3) -> (k1 ~> unmatchable_fun)
+data ApplyTyConAux2 f z
 type instance Apply (ApplyTyConAux1 f) x = f x
 type instance Apply (ApplyTyConAux2 f) x = TyCon (f x)
 
@@ -332,26 +355,41 @@ type instance Apply (ApplyTyConAux2 f) x = TyCon (f x)
 -- We can write:
 --
 -- > Map (TyCon1 Succ) [Zero, Succ Zero]
-type TyCon1 = (TyCon :: (k1 -> k2) -> (k1 ~> k2))
+type TyCon1 :: (k1 -> k2) -> (k1 ~> k2)
+type TyCon1 = TyCon
 
 -- | Similar to 'TyCon1', but for two-parameter type constructors.
-type TyCon2 = (TyCon :: (k1 -> k2 -> k3) -> (k1 ~> k2 ~> k3))
-type TyCon3 = (TyCon :: (k1 -> k2 -> k3 -> k4) -> (k1 ~> k2 ~> k3 ~> k4))
-type TyCon4 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5) -> (k1 ~> k2 ~> k3 ~> k4 ~> k5))
-type TyCon5 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6)
-                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6))
-type TyCon6 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7)
-                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7))
-type TyCon7 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8)
-                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8))
-type TyCon8 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9)
-                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8 ~> k9))
+type TyCon2 :: (k1 -> k2 -> k3) -> (k1 ~> k2 ~> k3)
+type TyCon2 = TyCon
+
+type TyCon3 :: (k1 -> k2 -> k3 -> k4) -> (k1 ~> k2 ~> k3 ~> k4)
+type TyCon3 = TyCon
+
+type TyCon4 :: (k1 -> k2 -> k3 -> k4 -> k5) -> (k1 ~> k2 ~> k3 ~> k4 ~> k5)
+type TyCon4 = TyCon
+
+type TyCon5 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6)
+            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6)
+type TyCon5 = TyCon
+
+type TyCon6 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7)
+            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7)
+type TyCon6 = TyCon
+
+type TyCon7 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8)
+            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8)
+type TyCon7 = TyCon
+
+type TyCon8 :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9)
+            -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8 ~> k9)
+type TyCon8 = TyCon
 
 ----------------------------------------------------------------------
 ---- Defunctionalized Sing instance and utilities --------------------
 ----------------------------------------------------------------------
 
-newtype SLambda (f :: k1 ~> k2) =
+type SLambda :: (k1 ~> k2) -> Type
+newtype SLambda f =
   SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
 type instance Sing = SLambda
 
@@ -382,6 +420,7 @@ instance (SingKind k1, SingKind k2) => SingKind (k1 ~> k2) where
           lam :: forall (t :: k1). Sing t -> Sing (f @@ t)
           lam x = withSomeSing (f (fromSing x)) (\(r :: Sing res) -> unsafeCoerce r)
 
+type SingFunction1 :: (a1 ~> b) -> Type
 type SingFunction1 f = forall t. Sing t -> Sing (f @@ t)
 
 -- | Use this function when passing a function on singletons as
@@ -396,30 +435,37 @@ type SingFunction1 f = forall t. Sing t -> Sing (f @@ t)
 singFun1 :: forall f. SingFunction1 f -> Sing f
 singFun1 f = SLambda f
 
+type SingFunction2 :: (a1 ~> a2 ~> b) -> Type
 type SingFunction2 f = forall t. Sing t -> SingFunction1 (f @@ t)
 singFun2 :: forall f. SingFunction2 f -> Sing f
 singFun2 f = SLambda (\x -> singFun1 (f x))
 
+type SingFunction3 :: (a1 ~> a2 ~> a3 ~> b) -> Type
 type SingFunction3 f = forall t. Sing t -> SingFunction2 (f @@ t)
 singFun3 :: forall f. SingFunction3 f -> Sing f
 singFun3 f = SLambda (\x -> singFun2 (f x))
 
+type SingFunction4 :: (a1 ~> a2 ~> a3 ~> a4 ~> b) -> Type
 type SingFunction4 f = forall t. Sing t -> SingFunction3 (f @@ t)
 singFun4 :: forall f. SingFunction4 f -> Sing f
 singFun4 f = SLambda (\x -> singFun3 (f x))
 
+type SingFunction5 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> b) -> Type
 type SingFunction5 f = forall t. Sing t -> SingFunction4 (f @@ t)
 singFun5 :: forall f. SingFunction5 f -> Sing f
 singFun5 f = SLambda (\x -> singFun4 (f x))
 
+type SingFunction6 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> b) -> Type
 type SingFunction6 f = forall t. Sing t -> SingFunction5 (f @@ t)
 singFun6 :: forall f. SingFunction6 f -> Sing f
 singFun6 f = SLambda (\x -> singFun5 (f x))
 
+type SingFunction7 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> b) -> Type
 type SingFunction7 f = forall t. Sing t -> SingFunction6 (f @@ t)
 singFun7 :: forall f. SingFunction7 f -> Sing f
 singFun7 f = SLambda (\x -> singFun6 (f x))
 
+type SingFunction8 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> a8 ~> b) -> Type
 type SingFunction8 f = forall t. Sing t -> SingFunction7 (f @@ t)
 singFun8 :: forall f. SingFunction8 f -> Sing f
 singFun8 f = SLambda (\x -> singFun7 (f x))
