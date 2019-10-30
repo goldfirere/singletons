@@ -153,14 +153,15 @@ Please refer to the singletons paper for a more in-depth explanation of these
 definitions. Many of the definitions were developed in tandem with Iavor Diatchki.
 
 ```haskell
-type family Sing :: k -> Type
+type Sing :: k -> Type
+type family Sing
 ```
 
 The type family of singleton types. A new instance of this type family is
 generated for every new singleton type.
 
 ```haskell
-class SingI (a :: k) where
+class SingI a where
   sing :: Sing a
 ```
 
@@ -168,6 +169,7 @@ A class used to pass singleton values implicitly. The `sing` method produces
 an explicit singleton value.
 
 ```haskell
+type SomeSing :: Type -> Type
 data SomeSing k where
   SomeSing :: Sing (a :: k) -> SomeSing k
 ```
@@ -178,6 +180,7 @@ can be used when you have a singleton, but you don't know at compile time what
 it will be. `SomeSing Thing` is isomorphic to `Thing`.
 
 ```haskell
+type SingKind :: Type -> Constraint
 class SingKind k where
   type Demote k :: *
   fromSing :: Sing (a :: k) -> Demote k
@@ -192,7 +195,8 @@ The `Demote` associated
 kind-indexed type family maps the kind `Nat` back to the type `Nat`.
 
 ```haskell
-data SingInstance (a :: k) where
+type SingInstance :: k -> Type
+data SingInstance a where
   SingInstance :: SingI a => SingInstance a
 singInstance :: Sing a -> SingInstance a
 ```
@@ -238,7 +242,8 @@ addition, there is a `ShowSing` constraint synonym provided in the
 `Data.Singletons.ShowSing` module:
 
 ```haskell
-type ShowSing k = (forall z. Show (Sing (z :: k))
+type ShowSing :: Type -> Constraint
+type ShowSing k = (forall z. Show (Sing (z :: k)) -- Approximately
 ```
 
 This facilitates the ability to write `Show` instances for `Sing` instances.
@@ -270,7 +275,8 @@ The `singletons` library provides two different ways to handle errors:
 * The `Error` type family, from `Data.Singletons.TypeLits`:
 
   ```haskell
-  type family Error (str :: a) :: k where {}
+  type Error :: a -> k
+  type family Error str where {}
   ```
 
   This is simply an empty, closed type family, which means that it will fail

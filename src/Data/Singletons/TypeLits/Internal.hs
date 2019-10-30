@@ -16,7 +16,7 @@
 {-# LANGUAGE PolyKinds, DataKinds, TypeFamilies, FlexibleInstances,
              UndecidableInstances, ScopedTypeVariables, RankNTypes,
              GADTs, FlexibleContexts, TypeOperators, ConstraintKinds,
-             TemplateHaskell, TypeApplications #-}
+             TemplateHaskell, TypeApplications, StandaloneKindSignatures #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Singletons.TypeLits.Internal (
@@ -39,6 +39,7 @@ module Data.Singletons.TypeLits.Internal (
   type (<=?@#@$),  type (<=?@#@$$),  type (<=?@#@$$$)
   ) where
 
+import Data.Kind
 import Data.Singletons.Promote
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Eq
@@ -58,7 +59,8 @@ import Data.Text ( Text )
 ---- TypeLits singletons ---------------------------------------------
 ----------------------------------------------------------------------
 
-data SNat (n :: Nat) = KnownNat n => SNat
+type SNat :: Nat -> Type
+data SNat n = KnownNat n => SNat
 type instance Sing = SNat
 
 instance KnownNat n => SingI n where
@@ -70,7 +72,8 @@ instance SingKind Nat where
   toSing n = case TN.someNatVal n of
                SomeNat (_ :: Proxy n) -> SomeSing (SNat :: Sing n)
 
-data SSymbol (n :: Symbol) = KnownSymbol n => SSym
+type SSymbol :: Symbol -> Type
+data SSymbol n = KnownSymbol n => SSym
 type instance Sing = SSymbol
 
 instance KnownSymbol n => SingI n where
@@ -150,7 +153,8 @@ withKnownSymbol SSym f = f
 
 -- | The promotion of 'error'. This version is more poly-kinded for
 -- easier use.
-type family Error (str :: k0) :: k where {}
+type Error :: k0 -> k
+type family Error str where {}
 $(genDefunSymbols [''Error])
 instance SingI (ErrorSym0 :: Symbol ~> a) where
   sing = singFun1 sError
@@ -161,7 +165,8 @@ sError sstr = error (T.unpack (fromSing sstr))
 
 -- | The promotion of 'errorWithoutStackTrace'. This version is more
 -- poly-kinded for easier use.
-type family ErrorWithoutStackTrace (str :: k0) :: k where {}
+type ErrorWithoutStackTrace :: k0 -> k
+type family ErrorWithoutStackTrace str where {}
 $(genDefunSymbols [''ErrorWithoutStackTrace])
 instance SingI (ErrorWithoutStackTraceSym0 :: Symbol ~> a) where
   sing = singFun1 sErrorWithoutStackTrace
@@ -171,7 +176,8 @@ sErrorWithoutStackTrace :: Sing (str :: Symbol) -> a
 sErrorWithoutStackTrace sstr = errorWithoutStackTrace (T.unpack (fromSing sstr))
 
 -- | The promotion of 'undefined'.
-type family Undefined :: k where {}
+type Undefined :: k
+type family Undefined where {}
 $(genDefunSymbols [''Undefined])
 
 -- | The singleton for 'undefined'.

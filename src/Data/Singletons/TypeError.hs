@@ -4,6 +4,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
@@ -54,6 +55,7 @@ import Text.PrettyPrint (Doc, text, (<>), ($$))
 -- text type is used in the 'Text' constructor. Instantiating it with
 -- 'Text.Text' gives you 'ErrorMessage', and instantiating it with 'Symbol'
 -- gives you 'PErrorMessage'.
+type ErrorMessage' :: Type -> Type
 data ErrorMessage' s
   = Text s
     -- ^ Show the text as is.
@@ -70,12 +72,15 @@ infixl 6 :<>:
 infixl 5 :$$:
 
 -- | A value-level `ErrorMessage'` which uses 'Text.Text' as its text type.
+type ErrorMessage :: Type
 type ErrorMessage  = ErrorMessage' Text.Text
 
 -- | A type-level `ErrorMessage'` which uses 'Symbol' as its text kind.
+type PErrorMessage :: Type
 type PErrorMessage = ErrorMessage' Symbol
 
-data SErrorMessage :: PErrorMessage -> Type where
+type SErrorMessage :: PErrorMessage -> Type
+data SErrorMessage em where
   SText     :: Sing t             -> SErrorMessage ('Text t)
   SShowType :: Sing ty            -> SErrorMessage ('ShowType ty)
   (:%<>:)   :: Sing e1 -> Sing e2 -> SErrorMessage (e1 ':<>: e2)
@@ -131,7 +136,8 @@ typeError :: HasCallStack => ErrorMessage -> a
 typeError = error . showErrorMessage
 
 -- | Convert a 'PErrorMessage' to a 'TL.ErrorMessage' from "GHC.TypeLits".
-type family ConvertPErrorMessage (a :: PErrorMessage) :: TL.ErrorMessage where
+type ConvertPErrorMessage :: PErrorMessage -> TL.ErrorMessage
+type family ConvertPErrorMessage a where
   ConvertPErrorMessage ('Text t)      = 'TL.Text t
   ConvertPErrorMessage ('ShowType ty) = 'TL.ShowType ty
   ConvertPErrorMessage (e1 ':<>: e2)  = ConvertPErrorMessage e1 'TL.:<>: ConvertPErrorMessage e2
@@ -139,7 +145,8 @@ type family ConvertPErrorMessage (a :: PErrorMessage) :: TL.ErrorMessage where
 
 -- | A drop-in replacement for 'TL.TypeError'. This also exists at the
 -- value-level as 'typeError'.
-type family TypeError (a :: PErrorMessage) :: b where
+type TypeError :: PErrorMessage -> a
+type family TypeError a where
   -- We cannot define this as a type synonym due to Trac #12048.
   TypeError a = TL.TypeError (ConvertPErrorMessage a)
 

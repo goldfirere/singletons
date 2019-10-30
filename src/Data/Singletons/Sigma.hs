@@ -3,12 +3,12 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs #-}
-{-# LANGUAGE ImpredicativeTypes #-} -- See Note [Impredicative Σ?]
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE QuantifiedConstraints #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
@@ -44,12 +44,13 @@ module Data.Singletons.Sigma
     , ShowApply', ShowSingApply'
     ) where
 
-import Data.Kind (Type)
+import Data.Kind
 import Data.Singletons.Internal
 import Data.Singletons.ShowSing
 
 -- | A dependent pair.
-data Sigma (s :: Type) :: (s ~> Type) -> Type where
+type Sigma :: forall s -> (s ~> Type) -> Type
+data Sigma s t where
   (:&:) :: forall s t fst. Sing (fst :: s) -> t @@ fst -> Sigma s t
 infixr 4 :&:
 instance (ShowSing s, ShowApply t) => Show (Sigma s t) where
@@ -58,20 +59,12 @@ instance (ShowSing s, ShowApply t) => Show (Sigma s t) where
       :: (ShowSing' fst, ShowApply' t fst) => ShowS
 
 -- | Unicode shorthand for 'Sigma'.
+type Σ :: forall s -> (s ~> Type) -> Type
 type Σ = Sigma
 
-{-
-Note [Impredicative Σ?]
-~~~~~~~~~~~~~~~~~~~~~~~
-The definition of Σ currently will not typecheck without the use of
-ImpredicativeTypes. There isn't a fundamental reason that this should be the
-case, and the only reason that GHC currently requires this is due to Trac
-#13408. If someone ever fixes that bug, we could remove the use of
-ImpredicativeTypes.
--}
-
 -- | The singleton type for 'Sigma'.
-data SSigma :: forall s (t :: s ~> Type). Sigma s t -> Type where
+type SSigma :: Sigma s t -> Type
+data SSigma sig where
   (:%&:) :: forall s t (fst :: s) (sfst :: Sing fst) (snd :: t @@ fst).
             Sing ('WrapSing sfst) -> Sing snd -> SSigma (sfst ':&: snd :: Sigma s t)
 infixr 4 :%&:
@@ -91,6 +84,7 @@ instance forall s t (fst :: s) (a :: Sing fst) (b :: t @@ fst).
   sing = sing :%&: sing
 
 -- | Unicode shorthand for 'SSigma'.
+type SΣ :: Sigma s t -> Type
 type SΣ = SSigma
 
 -- | Project the first element out of a dependent pair.
@@ -98,7 +92,8 @@ fstSigma :: forall s t. SingKind s => Sigma s t -> Demote s
 fstSigma (a :&: _) = fromSing a
 
 -- | Project the first element out of a dependent pair.
-type family FstSigma (sig :: Sigma s t) :: s where
+type FstSigma :: Sigma s t -> s
+type family FstSigma sig where
   FstSigma ((_ :: Sing fst) ':&: _) = fst
 
 -- | Project the second element out of a dependent pair.
@@ -108,7 +103,8 @@ sndSigma :: forall s t (sig :: Sigma s t).
 sndSigma (_ :%&: b) = fromSing b
 
 -- | Project the second element out of a dependent pair.
-type family SndSigma (sig :: Sigma s t) :: t @@ FstSigma sig where
+type SndSigma :: forall s t. forall (sig :: Sigma s t) -> t @@ FstSigma sig
+type family SndSigma sig where
   SndSigma (_ ':&: b) = b
 
 -- | Project the first element out of a dependent pair using
@@ -176,14 +172,18 @@ Haddocks for 'ShowSing' and `ShowSing'`—for an explanation for why these
 classes exist.
 -}
 
+type ShowApply :: (a ~> Type) -> Constraint
 class    (forall (x :: a). ShowApply' f x) => ShowApply (f :: a ~> Type)
 instance (forall (x :: a). ShowApply' f x) => ShowApply (f :: a ~> Type)
 
+type ShowApply' :: (a ~> Type) -> a -> Constraint
 class    Show (Apply f x) => ShowApply' (f :: a ~> Type) (x :: a)
 instance Show (Apply f x) => ShowApply' (f :: a ~> Type) (x :: a)
 
+type ShowSingApply :: (a ~> Type) -> Constraint
 class    (forall (x :: a) (z :: Apply f x). ShowSingApply' f x z) => ShowSingApply (f :: a ~> Type)
 instance (forall (x :: a) (z :: Apply f x). ShowSingApply' f x z) => ShowSingApply (f :: a ~> Type)
 
+type ShowSingApply' :: forall a. forall (f :: a ~> Type) (x :: a) -> Apply f x -> Constraint
 class    Show (Sing z) => ShowSingApply' (f :: a ~> Type) (x :: a) (z :: Apply f x)
 instance Show (Sing z) => ShowSingApply' (f :: a ~> Type) (x :: a) (z :: Apply f x)

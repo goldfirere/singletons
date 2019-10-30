@@ -1,22 +1,28 @@
 {-# LANGUAGE DataKinds, PolyKinds, TypeFamilies, GADTs, TypeOperators,
              DefaultSignatures, ScopedTypeVariables, InstanceSigs,
              MultiParamTypeClasses, FunctionalDependencies,
-             UndecidableInstances #-}
+             UndecidableInstances, StandaloneKindSignatures #-}
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
 module ByHand2 where
 
 import Prelude hiding ( Eq(..), Ord(..), Bool(..), Ordering(..), not )
-import Data.Kind (Type)
+import Data.Kind
 import Data.Singletons (Sing)
 
+type Nat :: Type
 data Nat = Zero | Succ Nat
+
+type Bool :: Type
 data Bool = False | True
+
+type Ordering :: Type
 data Ordering = LT | EQ | GT
 
 not :: Bool -> Bool
 not False = True
 not True  = False
 
+type Eq :: Type -> Constraint
 class Eq a where
   (==) :: a -> a -> Bool
   (/=) :: a -> a -> Bool
@@ -31,17 +37,20 @@ instance Eq Nat where
   Succ _ == Zero = False
   Succ x == Succ y = x == y
 
-data SBool :: Bool -> Type where
+type SBool :: Bool -> Type
+data SBool b where
   SFalse :: SBool 'False
   STrue  :: SBool 'True
 type instance Sing = SBool
 
-data SNat :: Nat -> Type where
+type SNat :: Nat -> Type
+data SNat n where
   SZero :: SNat 'Zero
   SSucc :: SNat n -> SNat ('Succ n)
 type instance Sing = SNat
 
-type family Not (x :: Bool) :: Bool where
+type Not :: Bool -> Bool
+type family Not x where
   Not 'True = 'False
   Not 'False = 'True
 
@@ -49,6 +58,7 @@ sNot :: Sing b -> Sing (Not b)
 sNot STrue = SFalse
 sNot SFalse = STrue
 
+type PEq :: Type -> Constraint
 class PEq a where
   type (==) (x :: a) (y :: a) :: Bool
   type (/=) (x :: a) (y :: a) :: Bool
@@ -62,6 +72,7 @@ instance PEq Nat where
   type 'Zero   == 'Succ x = 'False
   type 'Succ x == 'Succ y = x == y
 
+type SEq :: Type -> Constraint
 class SEq a where
   (%==) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x == y)
   (%/=) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x /= y)
@@ -90,12 +101,14 @@ instance Eq Ordering where
   GT == EQ = False
   GT == GT = True
 
+type Ord :: Type -> Constraint
 class Eq a => Ord a where
   compare :: a -> a -> Ordering
   (<) :: a -> a -> Bool
 
   x < y = compare x y == LT
 
+type POrd :: Type -> Constraint
 class PEq a => POrd a where
   type Compare (x :: a) (y :: a) :: Ordering
   type (<) (x :: a) (y :: a) :: Bool
@@ -114,7 +127,8 @@ instance POrd Nat where
   type Compare ('Succ x) 'Zero     = 'GT
   type Compare ('Succ x) ('Succ y) = Compare x y
 
-data SOrdering :: Ordering -> Type where
+type SOrdering :: Ordering -> Type
+data SOrdering o where
   SLT :: SOrdering 'LT
   SEQ :: SOrdering 'EQ
   SGT :: SOrdering 'GT
@@ -142,6 +156,7 @@ instance SEq Ordering where
   SGT %== SEQ = SFalse
   SGT %== SGT = STrue
 
+type SOrd :: Type -> Constraint
 class SEq a => SOrd a where
   sCompare :: Sing (x :: a) -> Sing (y :: a) -> Sing (Compare x y)
   (%<) :: Sing (x :: a) -> Sing (y :: a) -> Sing (x < y)
@@ -155,12 +170,15 @@ instance SOrd Nat where
   sCompare (SSucc _) SZero = SGT
   sCompare (SSucc x) (SSucc y) = sCompare x y
 
+type Pointed :: Type -> Constraint
 class Pointed a where
   point :: a
 
+type PPointed :: Type -> Constraint
 class PPointed a where
   type Point :: a
 
+type SPointed :: Type -> Constraint
 class SPointed a where
   sPoint :: Sing (Point :: a)
 
@@ -175,6 +193,7 @@ instance SPointed Nat where
 
 --------------------------------
 
+type FD :: Type -> Type -> Constraint
 class FD a b | a -> b where
   meth :: a -> a
   l2r  :: a -> b
@@ -187,6 +206,7 @@ instance FD Bool Nat where
 t1 = meth True
 t2 = l2r False
 
+type PFD :: Type -> Type -> Constraint
 class PFD a b | a -> b where
   type Meth (x :: a) :: a
   type L2r (x :: a) :: b
@@ -196,9 +216,13 @@ instance PFD Bool Nat where
   type L2r 'False = 'Zero
   type L2r 'True = 'Succ 'Zero
 
+type T1 :: Bool
 type T1 = Meth 'True
+
+type T2 :: Nat
 type T2 = L2r 'False
 
+type SFD :: Type -> Type -> Constraint
 class SFD a b | a -> b where
   sMeth :: forall (x :: a). Sing x -> Sing (Meth x :: a)
   sL2r :: forall (x :: a). Sing x -> Sing (L2r x :: b)
@@ -209,5 +233,5 @@ instance SFD Bool Nat where
   sL2r STrue = SSucc SZero
 
 sT1 = sMeth STrue
-sT2 :: Sing (T2 :: Nat)
+sT2 :: Sing T2
 sT2 = sL2r SFalse

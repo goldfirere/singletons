@@ -7,6 +7,7 @@
 {-# LANGUAGE QuantifiedConstraints #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
@@ -33,6 +34,7 @@ module Data.Singletons.ShowSing (
   ShowSing'
   ) where
 
+import Data.Kind
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Single
@@ -110,6 +112,7 @@ import qualified GHC.TypeNats as TN
 -- @type ShowSing k = (forall (z :: k). ShowSing' z)@ instead of going the
 -- extra mile to define it as a class.
 -- See Note [Define ShowSing as a class, not a type synonym] for an explanation.
+type ShowSing :: Type -> Constraint
 class    (forall (z :: k). ShowSing' z) => ShowSing k
 instance (forall (z :: k). ShowSing' z) => ShowSing k
 
@@ -192,6 +195,7 @@ instance (forall (z :: k). ShowSing' z) => ShowSing k
 -- of—you guessed it—<https://gitlab.haskell.org/ghc/ghc/issues/16502 another GHC bug>.
 -- Bummer. Unless that bug were to be fixed, the current definition of
 -- `ShowSing'` is the best that we can do.
+type ShowSing' :: k -> Constraint
 class    Show (Sing z) => ShowSing' z
 instance Show (Sing z) => ShowSing' z
 

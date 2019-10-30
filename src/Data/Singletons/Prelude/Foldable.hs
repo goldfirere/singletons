@@ -135,11 +135,14 @@ import Data.Singletons.Promote
 import Data.Singletons.Single
 import Data.Singletons.TypeLits.Internal
 
+type Endo :: Type -> Type
 newtype Endo a = Endo (a ~> a)
-data SEndo :: forall a. Endo a -> Type where
+type SEndo :: Endo a -> Type
+data SEndo e where
   SEndo :: Sing x -> SEndo ('Endo x)
 type instance Sing = SEndo
-data EndoSym0 :: forall a. (a ~> a) ~> Endo a
+type EndoSym0 :: (a ~> a) ~> Endo a
+data EndoSym0 tf
 type instance Apply EndoSym0 x = 'Endo x
 
 $(singletonsOnly [d|
@@ -150,14 +153,18 @@ $(singletonsOnly [d|
           mempty = Endo id
   |])
 
+type MaxInternal :: Type -> Type
 newtype MaxInternal a = MaxInternal (Maybe a)
-data SMaxInternal :: forall a. MaxInternal a -> Type where
+type SMaxInternal :: MaxInternal a -> Type
+data SMaxInternal mi where
   SMaxInternal :: Sing x -> SMaxInternal ('MaxInternal x)
 type instance Sing = SMaxInternal
 $(genDefunSymbols [''MaxInternal])
 
+type MinInternal :: Type -> Type
 newtype MinInternal a = MinInternal (Maybe a)
-data SMinInternal :: forall a. MinInternal a -> Type where
+type SMinInternal :: MinInternal a -> Type
+data SMinInternal mi where
   SMinInternal :: Sing x -> SMinInternal ('MinInternal x)
 type instance Sing = SMinInternal
 $(genDefunSymbols [''MinInternal])
