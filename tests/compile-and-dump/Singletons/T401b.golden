@@ -1,0 +1,13 @@
+
+Singletons/T401b.hs:0:0: error:
+    `singletons` does not support higher-rank `forall`s
+In the type: (forall a_0 . a_0) -> T_1
+
+  |
+5 | $(singletons [d|
+  |   ^^^^^^^^^^^^^^...
+
+Singletons/T401b.hs:0:0: error: Q monad failure
+  |
+5 | $(singletons [d|
+  |   ^^^^^^^^^^^^^^...

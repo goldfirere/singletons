@@ -131,9 +131,10 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
       sName = singDataConName name
       sCon = DConE sName
       pCon = DConT name
+  checkVanillaDType $ DForallT ForallInvis con_tvbs $ ravel types rty
   indexNames <- mapM (const $ qNewName "n") types
-  kinds <- mapM promoteType types
-  rty' <- promoteType rty
+  kinds <- mapM promoteType_NC types
+  rty' <- promoteType_NC rty
   let indices = map DVarT indexNames
       kindedIndices = zipWith DSigT indices kinds
       args = map (DAppT singFamily) indices
