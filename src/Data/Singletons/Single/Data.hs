@@ -20,12 +20,14 @@ import Data.Singletons.Promote.Type
 import Data.Singletons.Util
 import Data.Singletons.Names
 import Data.Singletons.Syntax
+import Data.Singletons.TH.Options
 import Control.Monad
 
 -- We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
 singDataD :: DataDecl -> SgM [DDec]
 singDataD (DataDecl name tvbs ctors) = do
+  opts <- getOptions
   let tvbNames = map extractTvbName tvbs
   k <- promoteType (foldType (DConT name) (map DVarT tvbNames))
   ctors' <- mapM (singCtor name) ctors
@@ -48,7 +50,7 @@ singDataD (DataDecl name tvbs ctors) = do
                    , DLetDec $ DFunD toSingName
                                (toSingClauses   `orIfEmpty` [emptyToSingClause]) ]
 
-  let singDataName = singTyConName name
+  let singDataName = singledDataTypeName opts name
       -- e.g. type instance Sing @Nat = SNat
       singSynInst =
         DTySynInstD $ DTySynEqn Nothing
@@ -59,7 +61,7 @@ singDataD (DataDecl name tvbs ctors) = do
 
   return $ (DDataD Data [] singDataName [] (Just kindedSingTy) ctors' []) :
            singSynInst :
-           singKindInst :
+           [singKindInst | genSingKindInsts opts] ++
            ctorFixities
   where -- in the Rep case, the names of the constructors are in the wrong scope
         -- (they're types, not datacons), so we have to reinterpret them.
@@ -70,16 +72,18 @@ singDataD (DataDecl name tvbs ctors) = do
 
         mkFromSingClause :: DCon -> SgM DClause
         mkFromSingClause c = do
+          opts <- getOptions
           let (cname, numArgs) = extractNameArgs c
           cname' <- mkConName cname
           varNames <- replicateM numArgs (qNewName "b")
-          return $ DClause [DConP (singDataConName cname) (map DVarP varNames)]
+          return $ DClause [DConP (singledDataConName opts cname) (map DVarP varNames)]
                            (foldExp
                               (DConE cname')
                               (map (DAppE (DVarE fromSingName) . DVarE) varNames))
 
         mkToSingClause :: DCon -> SgM DClause
         mkToSingClause (DCon _tvbs _cxt cname fields _rty) = do
+          opts <- getOptions
           let types = tysOfConFields fields
           varNames  <- mapM (const $ qNewName "b") types
           svarNames <- mapM (const $ qNewName "c") types
@@ -93,7 +97,7 @@ singDataD (DataDecl name tvbs ctors) = do
                                (map (DConP someSingDataName . listify . DVarP)
                                     svarNames)
                                (DAppE (DConE someSingDataName)
-                                         (foldExp (DConE (singDataConName cname))
+                                         (foldExp (DConE (singledDataConName opts cname))
                                                   (map DVarE svarNames))))
 
         mkToSingVarPat :: Name -> DKind -> DPat
@@ -127,8 +131,9 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
   = fail "Singling of constrained constructors not yet supported"
   | otherwise
   = do
+  opts <- getOptions
   let types = tysOfConFields fields
-      sName = singDataConName name
+      sName = singledDataConName opts name
       sCon = DConE sName
       pCon = DConT name
   checkVanillaDType $ DForallT ForallInvis con_tvbs $ ravel types rty
@@ -158,11 +163,11 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
       conFields = case fields of
                     DNormalC dInfix _ -> DNormalC dInfix $ map (noBang,) args
                     DRecC rec_fields ->
-                      DRecC [ (singValName field_name, noBang, arg)
+                      DRecC [ (singledValueName opts field_name, noBang, arg)
                             | (field_name, _, _) <- rec_fields
                             | arg <- args ]
   return $ DCon all_tvbs [] sName conFields
-                (DConT (singTyConName dataName) `DAppT`
+                (DConT (singledDataTypeName opts dataName) `DAppT`
                   (foldType pCon indices `DSigT` rty'))
                   -- Make sure to include an explicit `rty'` kind annotation.
                   -- See Note [Preserve the order of type variables during singling],

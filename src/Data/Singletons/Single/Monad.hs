@@ -21,7 +21,7 @@ import Prelude hiding ( exp )
 import Data.Map ( Map )
 import qualified Data.Map as Map
 import Data.Singletons.Promote.Monad ( emitDecs, emitDecsM )
-import Data.Singletons.Names
+import Data.Singletons.TH.Options
 import Data.Singletons.Util
 import Data.Singletons.Internal
 import Language.Haskell.TH.Syntax hiding ( lift )
@@ -32,13 +32,15 @@ import Control.Applicative
 
 -- environment during singling
 data SgEnv =
-  SgEnv { sg_let_binds   :: Map Name DExp   -- from the *original* name
+  SgEnv { sg_options     :: Options
+        , sg_let_binds   :: Map Name DExp   -- from the *original* name
         , sg_context     :: DCxt -- See Note [Tracking the current type signature context]
         , sg_local_decls :: [Dec]
         }
 
 emptySgEnv :: SgEnv
-emptySgEnv = SgEnv { sg_let_binds   = Map.empty
+emptySgEnv = SgEnv { sg_options     = defaultOptions
+                   , sg_let_binds   = Map.empty
                    , sg_context     = []
                    , sg_local_decls = []
                    }
@@ -91,6 +93,9 @@ instance Quasi SgM where
 instance DsMonad SgM where
   localDeclarations = asks sg_local_decls
 
+instance OptionsMonad SgM where
+  getOptions = asks sg_options
+
 bindLets :: [(Name, DExp)] -> SgM a -> SgM a
 bindLets lets1 =
   local (\env@(SgEnv { sg_let_binds = lets2 }) ->
@@ -109,13 +114,20 @@ askContext :: SgM DCxt
 askContext = asks sg_context
 
 lookupVarE :: Name -> SgM DExp
-lookupVarE = lookup_var_con singValName (DVarE . singValName)
+lookupVarE name = do
+  opts <- getOptions
+  lookup_var_con (singledValueName opts)
+                 (DVarE . singledValueName opts) name
 
 lookupConE :: Name -> SgM DExp
-lookupConE = lookup_var_con singDataConName (DConE . singDataConName)
+lookupConE name = do
+  opts <- getOptions
+  lookup_var_con (singledDataConName opts)
+                 (DConE . singledDataConName opts) name
 
 lookup_var_con :: (Name -> Name) -> (Name -> DExp) -> Name -> SgM DExp
 lookup_var_con mk_sing_name mk_exp name = do
+  opts <- getOptions
   letExpansions <- asks sg_let_binds
   sName <- mkDataName (nameBase (mk_sing_name name)) -- we want *term* names!
   case Map.lookup name letExpansions of
@@ -126,7 +138,8 @@ lookup_var_con mk_sing_name mk_exp name = do
       case m_dinfo of
         Just (DVarI _ ty _) ->
           let num_args = countArgs ty in
-          return $ wrapSingFun num_args (promoteValRhs name) (mk_exp name)
+          return $ wrapSingFun num_args (DConT $ defunctionalizedName0 opts name)
+                               (mk_exp name)
         _ -> return $ mk_exp name   -- lambda-bound
     Just exp -> return exp
 
@@ -160,14 +173,16 @@ wrapUnSingFun n ty =
   in
   (unwrap_fun `DAppTypeE` ty `DAppE`)
 
-singM :: DsMonad q => [Dec] -> SgM a -> q (a, [DDec])
+singM :: OptionsMonad q => [Dec] -> SgM a -> q (a, [DDec])
 singM locals (SgM rdr) = do
+  opts         <- getOptions
   other_locals <- localDeclarations
-  let wr = runReaderT rdr (emptySgEnv { sg_local_decls = other_locals ++ locals })
+  let wr = runReaderT rdr (emptySgEnv { sg_options     = opts
+                                      , sg_local_decls = other_locals ++ locals })
       q  = runWriterT wr
   runQ q
 
-singDecsM :: DsMonad q => [Dec] -> SgM [DDec] -> q [DDec]
+singDecsM :: OptionsMonad q => [Dec] -> SgM [DDec] -> q [DDec]
 singDecsM locals thing = do
   (decs1, decs2) <- singM locals thing
   return $ decs1 ++ decs2

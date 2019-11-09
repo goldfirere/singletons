@@ -129,9 +129,9 @@ import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Show
 import Data.Singletons.Prelude.Traversable
 import Data.Singletons.Decide
+import Data.Singletons.TH.Options
 import Data.Singletons.TypeLits
 import Data.Singletons.SuppressUnusedWarnings
-import Data.Singletons.Names
 import Language.Haskell.TH.Desugar
 
 import Language.Haskell.TH
@@ -163,17 +163,18 @@ cases tyName expq bodyq = do
 -- each constructor is treated the same. For 'sCases', unlike 'cases', the
 -- scrutinee is a singleton. But make sure to pass in the name of the /original/
 -- datatype, preferring @''Maybe@ over @''SMaybe@.
-sCases :: DsMonad q
+sCases :: OptionsMonad q
        => Name        -- ^ The head of the type the scrutinee's type is based on.
                       -- (Like @''Maybe@ or @''Bool@.)
        -> q Exp       -- ^ The scrutinee, in a Template Haskell quote
        -> q Exp       -- ^ The body, in a Template Haskell quote
        -> q Exp
 sCases tyName expq bodyq = do
+  opts  <- getOptions
   dinfo <- dsReify tyName
   case dinfo of
     Just (DTyConI (DDataD _ _ _ _ _ ctors _) _) ->
-      let ctor_stuff = map (first singDataConName . extractNameArgs) ctors in
+      let ctor_stuff = map (first (singledDataConName opts) . extractNameArgs) ctors in
       expToTH <$> buildCases ctor_stuff expq bodyq
     Just _ ->
       fail $ "Using <<cases>> with something other than a type constructor: "

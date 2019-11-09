@@ -73,6 +73,7 @@ library
                       Data.Singletons.CustomStar
                       Data.Singletons.TypeRepTYPE
                       Data.Singletons.TH
+                      Data.Singletons.TH.Options
                       Data.Singletons.Prelude
                       Data.Singletons.Prelude.Applicative
                       Data.Singletons.Prelude.Base

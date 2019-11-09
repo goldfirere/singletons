@@ -20,6 +20,7 @@ module Data.Singletons.Deriving.Show (
 import Language.Haskell.TH.Syntax hiding (showName)
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
+import Data.Singletons.TH.Options
 import Data.Singletons.Util
 import Data.Singletons.Syntax
 import Data.Singletons.Deriving.Infer
@@ -28,7 +29,7 @@ import Data.Maybe (fromMaybe)
 import GHC.Lexeme (startsConSym, startsVarSym)
 import GHC.Show (appPrec, appPrec1)
 
-mkShowInstance :: DsMonad q => ShowMode -> DerivDesc q
+mkShowInstance :: OptionsMonad q => ShowMode -> DerivDesc q
 mkShowInstance mode mb_ctxt ty (DataDecl _ _ cons) = do
   clauses <- mk_showsPrec mode cons
   constraints <- inferConstraintsDef (fmap (mkShowSingContext mode) mb_ctxt)
@@ -41,7 +42,7 @@ mkShowInstance mode mb_ctxt ty (DataDecl _ _ cons) = do
                     , id_sigs  = mempty
                     , id_meths = [ (showsPrecName, UFunction clauses) ] }
 
-mk_showsPrec :: DsMonad q => ShowMode -> [DCon] -> q [DClause]
+mk_showsPrec :: OptionsMonad q => ShowMode -> [DCon] -> q [DClause]
 mk_showsPrec mode cons = do
     p <- newUniqueName "p" -- The precedence argument (not always used)
     if null cons
@@ -49,119 +50,123 @@ mk_showsPrec mode cons = do
                pure [DClause [DWildP, DVarP v] (DCaseE (DVarE v) [])]
        else mapM (mk_showsPrec_clause mode p) cons
 
-mk_showsPrec_clause :: forall q. DsMonad q
+mk_showsPrec_clause :: forall q. OptionsMonad q
                     => ShowMode -> Name -> DCon
                     -> q DClause
 mk_showsPrec_clause mode p (DCon _ _ con_name con_fields _) = go con_fields
   where
-    con_name' :: Name
-    con_name' = case mode of
-                  ForPromotion  -> con_name
-                  ForShowSing{} -> singDataConName con_name
-
     go :: DConFields -> q DClause
+    go con_fields' = do
+      opts <- getOptions
 
-    -- No fields: print just the constructor name, with no parentheses
-    go (DNormalC _ []) = return $
-      DClause [DWildP, DConP con_name' []] $
-        DVarE showStringName `DAppE` dStringE (parenInfixConName con_name' "")
+      let con_name' :: Name
+          con_name' = case mode of
+                        ForPromotion  -> con_name
+                        ForShowSing{} -> singledDataConName opts con_name
 
-    -- Infix constructors have special Show treatment.
-    go (DNormalC True tys@[_, _])
-        -- Although the (:) constructor is infix, its singled counterpart SCons
-        -- is not, which matters if we're deriving a ShowSing instance.
-        -- Unless we remove this special case (see #234), we will simply
-        -- shunt it along as if we were dealing with a prefix constructor.
-      | ForShowSing{} <- mode
-      , con_name == consName
-      = go (DNormalC False tys)
+      case con_fields' of
 
-      | otherwise
-      = do argL   <- newUniqueName "argL"
-           argR   <- newUniqueName "argR"
-           argTyL <- newUniqueName "argTyL"
-           argTyR <- newUniqueName "argTyR"
-           fi <- fromMaybe defaultFixity <$> reifyFixityWithLocals con_name'
-           let con_prec = case fi of Fixity prec _ -> prec
-               op_name  = nameBase con_name'
-               infixOpE = DAppE (DVarE showStringName) . dStringE $
-                            if isInfixDataCon op_name
-                               then " "  ++ op_name ++ " "
-                               -- Make sure to handle infix data constructors
-                               -- like (Int `Foo` Int)
-                               else " `" ++ op_name ++ "` "
-           return $ DClause [ DVarP p
-                            , DConP con_name' $
-                              zipWith (mk_Show_arg_pat mode) [argL, argR] [argTyL, argTyR]
-                            ] $
-             mk_Show_rhs_sig mode [argTyL, argTyR] $
-             (DVarE showParenName `DAppE` (DVarE gtName `DAppE` DVarE p
-                                                        `DAppE` dIntegerE con_prec))
-               `DAppE` (DVarE composeName
-                          `DAppE` showsPrecE (con_prec + 1) argL
-                          `DAppE` (DVarE composeName
-                                     `DAppE` infixOpE
-                                     `DAppE` showsPrecE (con_prec + 1) argR))
+        -- No fields: print just the constructor name, with no parentheses
+        DNormalC _ [] -> return $
+          DClause [DWildP, DConP con_name' []] $
+            DVarE showStringName `DAppE` dStringE (parenInfixConName con_name' "")
 
-    go (DNormalC _ tys) = do
-      args   <- mapM (const $ newUniqueName "arg")   tys
-      argTys <- mapM (const $ newUniqueName "argTy") tys
-      let show_args     = map (showsPrecE appPrec1) args
-          composed_args = foldr1 (\v q -> DVarE composeName
-                                           `DAppE` v
-                                           `DAppE` (DVarE composeName
-                                                     `DAppE` DVarE showSpaceName
-                                                     `DAppE` q)) show_args
-          named_args = DVarE composeName
-                         `DAppE` (DVarE showStringName
-                                   `DAppE` dStringE (parenInfixConName con_name' " "))
-                         `DAppE` composed_args
-      return $ DClause [ DVarP p
-                       , DConP con_name' $
-                         zipWith (mk_Show_arg_pat mode) args argTys
-                       ] $
-        mk_Show_rhs_sig mode argTys $
-        DVarE showParenName
-          `DAppE` (DVarE gtName `DAppE` DVarE p `DAppE` dIntegerE appPrec)
-          `DAppE` named_args
+        -- Infix constructors have special Show treatment.
+        DNormalC True tys@[_, _]
+            -- Although the (:) constructor is infix, its singled counterpart SCons
+            -- is not, which matters if we're deriving a ShowSing instance.
+            -- Unless we remove this special case (see #234), we will simply
+            -- shunt it along as if we were dealing with a prefix constructor.
+          |  ForShowSing{} <- mode
+          ,  con_name == consName
+          -> go (DNormalC False tys)
 
-    -- We show a record constructor with no fields the same way we'd show a
-    -- normal constructor with no fields.
-    go (DRecC []) = go (DNormalC False [])
+          |  otherwise
+          -> do argL   <- newUniqueName "argL"
+                argR   <- newUniqueName "argR"
+                argTyL <- newUniqueName "argTyL"
+                argTyR <- newUniqueName "argTyR"
+                fi <- fromMaybe defaultFixity <$> reifyFixityWithLocals con_name'
+                let con_prec = case fi of Fixity prec _ -> prec
+                    op_name  = nameBase con_name'
+                    infixOpE = DAppE (DVarE showStringName) . dStringE $
+                                 if isInfixDataCon op_name
+                                    then " "  ++ op_name ++ " "
+                                    -- Make sure to handle infix data constructors
+                                    -- like (Int `Foo` Int)
+                                    else " `" ++ op_name ++ "` "
+                return $ DClause [ DVarP p
+                                 , DConP con_name' $
+                                   zipWith (mk_Show_arg_pat mode) [argL, argR] [argTyL, argTyR]
+                                 ] $
+                  mk_Show_rhs_sig mode [argTyL, argTyR] $
+                  (DVarE showParenName `DAppE` (DVarE gtName `DAppE` DVarE p
+                                                             `DAppE` dIntegerE con_prec))
+                    `DAppE` (DVarE composeName
+                               `DAppE` showsPrecE (con_prec + 1) argL
+                               `DAppE` (DVarE composeName
+                                          `DAppE` infixOpE
+                                          `DAppE` showsPrecE (con_prec + 1) argR))
 
-    go (DRecC tys) = do
-      args   <- mapM (const $ newUniqueName "arg")   tys
-      argTys <- mapM (const $ newUniqueName "argTy") tys
-      let show_args =
-            concatMap (\((arg_name, _, _), arg) ->
-                        let arg_name'    = case mode of
-                                             ForPromotion  -> arg_name
-                                             ForShowSing{} -> singValName arg_name
-                            arg_nameBase = nameBase arg_name'
-                            infix_rec    = showParen (isSym arg_nameBase)
-                                                     (showString arg_nameBase) ""
-                        in [ DVarE showStringName `DAppE` dStringE (infix_rec ++ " = ")
-                           , showsPrecE 0 arg
-                           , DVarE showCommaSpaceName
-                           ])
-                      (zip tys args)
-          brace_comma_args =   (DVarE showCharName `DAppE` dCharE mode '{')
-                             : take (length show_args - 1) show_args
-          composed_args = foldr (\x y -> DVarE composeName `DAppE` x `DAppE` y)
-                                (DVarE showCharName `DAppE` dCharE mode '}')
-                                brace_comma_args
-          named_args = DVarE composeName
-                         `DAppE` (DVarE showStringName
-                                   `DAppE` dStringE (parenInfixConName con_name' " "))
-                         `DAppE` composed_args
-      return $ DClause [ DVarP p
-                       , DConP con_name' $
-                         zipWith (mk_Show_arg_pat mode) args argTys
-                       ] $
-        mk_Show_rhs_sig mode argTys $
-        DVarE showParenName
-          `DAppE` (DVarE gtName `DAppE` DVarE p `DAppE` dIntegerE appPrec)
-          `DAppE` named_args
+        DNormalC _ tys -> do
+          args   <- mapM (const $ newUniqueName "arg")   tys
+          argTys <- mapM (const $ newUniqueName "argTy") tys
+          let show_args     = map (showsPrecE appPrec1) args
+              composed_args = foldr1 (\v q -> DVarE composeName
+                                               `DAppE` v
+                                               `DAppE` (DVarE composeName
+                                                         `DAppE` DVarE showSpaceName
+                                                         `DAppE` q)) show_args
+              named_args = DVarE composeName
+                             `DAppE` (DVarE showStringName
+                                       `DAppE` dStringE (parenInfixConName con_name' " "))
+                             `DAppE` composed_args
+          return $ DClause [ DVarP p
+                           , DConP con_name' $
+                             zipWith (mk_Show_arg_pat mode) args argTys
+                           ] $
+            mk_Show_rhs_sig mode argTys $
+            DVarE showParenName
+              `DAppE` (DVarE gtName `DAppE` DVarE p `DAppE` dIntegerE appPrec)
+              `DAppE` named_args
+
+        -- We show a record constructor with no fields the same way we'd show a
+        -- normal constructor with no fields.
+        DRecC [] -> go (DNormalC False [])
+
+        DRecC tys -> do
+          args   <- mapM (const $ newUniqueName "arg")   tys
+          argTys <- mapM (const $ newUniqueName "argTy") tys
+          let show_args =
+                concatMap (\((arg_name, _, _), arg) ->
+                            let arg_name'    = case mode of
+                                                 ForPromotion  -> arg_name
+                                                 ForShowSing{} -> singledValueName opts arg_name
+                                arg_nameBase = nameBase arg_name'
+                                infix_rec    = showParen (isSym arg_nameBase)
+                                                         (showString arg_nameBase) ""
+                            in [ DVarE showStringName `DAppE` dStringE (infix_rec ++ " = ")
+                               , showsPrecE 0 arg
+                               , DVarE showCommaSpaceName
+                               ])
+                          (zip tys args)
+              brace_comma_args =   (DVarE showCharName `DAppE` dCharE mode '{')
+                                 : take (length show_args - 1) show_args
+              composed_args = foldr (\x y -> DVarE composeName `DAppE` x `DAppE` y)
+                                    (DVarE showCharName `DAppE` dCharE mode '}')
+                                    brace_comma_args
+              named_args = DVarE composeName
+                             `DAppE` (DVarE showStringName
+                                       `DAppE` dStringE (parenInfixConName con_name' " "))
+                             `DAppE` composed_args
+          return $ DClause [ DVarP p
+                           , DConP con_name' $
+                             zipWith (mk_Show_arg_pat mode) args argTys
+                           ] $
+            mk_Show_rhs_sig mode argTys $
+            DVarE showParenName
+              `DAppE` (DVarE gtName `DAppE` DVarE p `DAppE` dIntegerE appPrec)
+              `DAppE` named_args
 
 -- | Parenthesize an infix constructor name if it is being applied as a prefix
 -- function (e.g., data Amp a = (:&) a a)
@@ -218,14 +223,15 @@ mk_Show_name :: ShowMode -> Name
 mk_Show_name ForPromotion  = showName
 mk_Show_name ForShowSing{} = showSingName
 
--- If we're creating a 'Show' instance for a singleon type, decorate the type
+-- If we're creating a 'Show' instance for a singleton type, decorate the type
 -- appropriately (e.g., turn @Maybe a@ into @SMaybe (z :: Maybe a)@).
 -- Otherwise, return the type (@Maybe a@) unchanged.
-mk_Show_inst_ty :: Quasi q => ShowMode -> DType -> q DType
+mk_Show_inst_ty :: OptionsMonad q => ShowMode -> DType -> q DType
 mk_Show_inst_ty ForPromotion           ty = pure ty
 mk_Show_inst_ty (ForShowSing ty_tycon) ty = do
+  opts <- getOptions
   z <- qNewName "z"
-  pure $ DConT (singTyConName ty_tycon) `DAppT` (DVarT z `DSigT` ty)
+  pure $ DConT (singledDataTypeName opts ty_tycon) `DAppT` (DVarT z `DSigT` ty)
 
 -- If we're creating a 'Show' instance for a singleton type, create a pattern
 -- of the form @(sx :: Sing x)@. Otherwise, simply return the pattern @sx@.

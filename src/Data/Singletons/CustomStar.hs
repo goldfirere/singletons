@@ -37,6 +37,7 @@ import Data.Singletons.Single
 import Data.Singletons.Syntax
 import Data.Singletons.Names
 import Data.Singletons.TH
+import Data.Singletons.TH.Options
 import Control.Monad
 import Data.Maybe
 import Language.Haskell.TH.Desugar
@@ -70,7 +71,7 @@ import Data.Singletons.Prelude.Bool
 -- @Bool@, and @Maybe@, not just promoted data constructors.
 --
 -- Please note that this function is /very/ experimental. Use at your own risk.
-singletonStar :: DsMonad q
+singletonStar :: OptionsMonad q
               => [Name]        -- ^ A list of Template Haskell @Name@s for types
               -> q [Dec]
 singletonStar names = do

@@ -14,6 +14,7 @@ import Language.Haskell.TH.Syntax
 import Data.Singletons.Names
 import Data.Singletons.Single.Monad
 import Data.Singletons.Promote.Type
+import Data.Singletons.TH.Options
 import Data.Singletons.Util
 import Control.Monad
 import Data.Foldable
@@ -106,8 +107,9 @@ singPredRec ctx (DConT n)
   | n == equalityName
   = fail "Singling of type equality constraints not yet supported"
   | otherwise = do
+    opts <- getOptions
     kis <- mapM promoteTypeArg_NC ctx
-    let sName = singClassName n
+    let sName = singledClassName opts n
     return $ applyDType (DConT sName) kis
 singPredRec _ctx DWildCardT = return DWildCardT  -- it just might work
 singPredRec _ctx DArrowT =

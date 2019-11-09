@@ -31,6 +31,7 @@ import Data.Singletons.Single.Defun
 import Data.Singletons.Single.Fixity
 import Data.Singletons.Single.Eq
 import Data.Singletons.Syntax
+import Data.Singletons.TH.Options
 import Data.Singletons.Partition
 import Language.Haskell.TH.Desugar
 import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
@@ -85,7 +86,7 @@ contract constructors. This is the point of buildDataLets.
 -- > $(genSingletons [''Bool, ''Maybe, ''Either, ''[]])
 --
 -- to generate singletons for Prelude types.
-genSingletons :: DsMonad q => [Name] -> q [Dec]
+genSingletons :: OptionsMonad q => [Name] -> q [Dec]
 genSingletons names = do
   checkForRep names
   ddecs <- concatMapM (singInfo <=< dsInfo <=< reifyWithLocals) names
@@ -95,7 +96,7 @@ genSingletons names = do
 -- the original declarations.
 -- See <https://github.com/goldfirere/singletons/blob/master/README.md> for
 -- further explanation.
-singletons :: DsMonad q => q [Dec] -> q [Dec]
+singletons :: OptionsMonad q => q [Dec] -> q [Dec]
 singletons qdecs = do
   decs <- qdecs
   ddecs <- withLocalDeclarations decs $ dsDecs decs
@@ -106,15 +107,15 @@ singletons qdecs = do
 -- the original declarations. Note that a singleton based on a datatype needs
 -- the original datatype, so this will fail if it sees any datatype declarations.
 -- Classes, instances, and functions are all fine.
-singletonsOnly :: DsMonad q => q [Dec] -> q [Dec]
+singletonsOnly :: OptionsMonad q => q [Dec] -> q [Dec]
 singletonsOnly = (>>= wrapDesugar singTopLevelDecs)
 
 -- | Create instances of 'SEq' and type-level @(==)@ for each type in the list
-singEqInstances :: DsMonad q => [Name] -> q [Dec]
+singEqInstances :: OptionsMonad q => [Name] -> q [Dec]
 singEqInstances = concatMapM singEqInstance
 
 -- | Create instance of 'SEq' and type-level @(==)@ for the given type
-singEqInstance :: DsMonad q => Name -> q [Dec]
+singEqInstance :: OptionsMonad q => Name -> q [Dec]
 singEqInstance name = do
   promotion <- promoteEqInstance name
   dec <- singEqualityInstance sEqClassDesc name
@@ -122,26 +123,26 @@ singEqInstance name = do
 
 -- | Create instances of 'SEq' (only -- no instance for @(==)@, which 'SEq' generally
 -- relies on) for each type in the list
-singEqInstancesOnly :: DsMonad q => [Name] -> q [Dec]
+singEqInstancesOnly :: OptionsMonad q => [Name] -> q [Dec]
 singEqInstancesOnly = concatMapM singEqInstanceOnly
 
 -- | Create instances of 'SEq' (only -- no instance for @(==)@, which 'SEq' generally
 -- relies on) for the given type
-singEqInstanceOnly :: DsMonad q => Name -> q [Dec]
+singEqInstanceOnly :: OptionsMonad q => Name -> q [Dec]
 singEqInstanceOnly name = singEqualityInstance sEqClassDesc name
 
 -- | Create instances of 'SDecide', 'TestEquality', and 'TestCoercion' for each
 -- type in the list.
-singDecideInstances :: DsMonad q => [Name] -> q [Dec]
+singDecideInstances :: OptionsMonad q => [Name] -> q [Dec]
 singDecideInstances = concatMapM singDecideInstance
 
 -- | Create instance of 'SDecide', 'TestEquality', and 'TestCoercion' for the
 -- given type.
-singDecideInstance :: DsMonad q => Name -> q [Dec]
+singDecideInstance :: OptionsMonad q => Name -> q [Dec]
 singDecideInstance name = singEqualityInstance sDecideClassDesc name
 
 -- generalized function for creating equality instances
-singEqualityInstance :: DsMonad q => EqualityClassDesc q -> Name -> q [Dec]
+singEqualityInstance :: OptionsMonad q => EqualityClassDesc q -> Name -> q [Dec]
 singEqualityInstance desc@(_, _, className, _) name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
                             show className ++ " for it.") name
@@ -160,45 +161,45 @@ singEqualityInstance desc@(_, _, className, _) name = do
   return $ decsToTH (eqInstance:testInstances)
 
 -- | Create instances of 'SOrd' for the given types
-singOrdInstances :: DsMonad q => [Name] -> q [Dec]
+singOrdInstances :: OptionsMonad q => [Name] -> q [Dec]
 singOrdInstances = concatMapM singOrdInstance
 
 -- | Create instance of 'SOrd' for the given type
-singOrdInstance :: DsMonad q => Name -> q [Dec]
+singOrdInstance :: OptionsMonad q => Name -> q [Dec]
 singOrdInstance = singInstance mkOrdInstance "Ord"
 
 -- | Create instances of 'SBounded' for the given types
-singBoundedInstances :: DsMonad q => [Name] -> q [Dec]
+singBoundedInstances :: OptionsMonad q => [Name] -> q [Dec]
 singBoundedInstances = concatMapM singBoundedInstance
 
 -- | Create instance of 'SBounded' for the given type
-singBoundedInstance :: DsMonad q => Name -> q [Dec]
+singBoundedInstance :: OptionsMonad q => Name -> q [Dec]
 singBoundedInstance = singInstance mkBoundedInstance "Bounded"
 
 -- | Create instances of 'SEnum' for the given types
-singEnumInstances :: DsMonad q => [Name] -> q [Dec]
+singEnumInstances :: OptionsMonad q => [Name] -> q [Dec]
 singEnumInstances = concatMapM singEnumInstance
 
 -- | Create instance of 'SEnum' for the given type
-singEnumInstance :: DsMonad q => Name -> q [Dec]
+singEnumInstance :: OptionsMonad q => Name -> q [Dec]
 singEnumInstance = singInstance mkEnumInstance "Enum"
 
 -- | Create instance of 'SShow' for the given type
 --
 -- (Not to be confused with 'showShowInstance'.)
-singShowInstance :: DsMonad q => Name -> q [Dec]
+singShowInstance :: OptionsMonad q => Name -> q [Dec]
 singShowInstance = singInstance (mkShowInstance ForPromotion) "Show"
 
 -- | Create instances of 'SShow' for the given types
 --
 -- (Not to be confused with 'showSingInstances'.)
-singShowInstances :: DsMonad q => [Name] -> q [Dec]
+singShowInstances :: OptionsMonad q => [Name] -> q [Dec]
 singShowInstances = concatMapM singShowInstance
 
 -- | Create instance of 'Show' for the given singleton type
 --
 -- (Not to be confused with 'singShowInstance'.)
-showSingInstance :: DsMonad q => Name -> q [Dec]
+showSingInstance :: OptionsMonad q => Name -> q [Dec]
 showSingInstance name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of Show for it.") name
   dtvbs <- mapM dsTvb tvbs
@@ -217,7 +218,7 @@ showSingInstance name = do
 -- | Create instances of 'Show' for the given singleton types
 --
 -- (Not to be confused with 'singShowInstances'.)
-showSingInstances :: DsMonad q => [Name] -> q [Dec]
+showSingInstances :: OptionsMonad q => [Name] -> q [Dec]
 showSingInstances = concatMapM showSingInstance
 
 -- | Create an instance for @'SingI' TyCon{N}@, where @N@ is the positive
@@ -269,7 +270,7 @@ singITyConInstance n
                             DVarE withSingIName `DAppE` DVarE x
                                                 `DAppE` DVarE singMethName]]
 
-singInstance :: DsMonad q => DerivDesc q -> String -> Name -> q [Dec]
+singInstance :: OptionsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 singInstance mk_inst inst_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
                             ++ " for it.") name
@@ -283,7 +284,7 @@ singInstance mk_inst inst_name name = do
   decs' <- singDecsM [] $ (:[]) <$> singInstD a_inst
   return $ decsToTH (decs ++ decs')
 
-singInfo :: DsMonad q => DInfo -> q [DDec]
+singInfo :: OptionsMonad q => DInfo -> q [DDec]
 singInfo (DTyConI dec _) =
   singTopLevelDecs [] [dec]
 singInfo (DPrimTyConI _name _numArgs _unlifted) =
@@ -295,7 +296,7 @@ singInfo (DTyVarI _name _ty) =
 singInfo (DPatSynI {}) =
   fail "Singling of pattern synonym info not supported"
 
-singTopLevelDecs :: DsMonad q => [Dec] -> [DDec] -> q [DDec]
+singTopLevelDecs :: OptionsMonad q => [Dec] -> [DDec] -> q [DDec]
 singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
   decls <- expand raw_decls     -- expand type synonyms
   PDecs { pd_let_decs                = letDecls
@@ -311,7 +312,7 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
     defunTopLevelTypeDecls ty_syns c_tyfams o_tyfams
     promoteDataDecs datas
-    (_, letDecEnv) <- promoteLetDecs noPrefix letDecls
+    (_, letDecEnv) <- promoteLetDecs Nothing letDecls
     classes' <- mapM promoteClassDec classes
     let meth_sigs    = foldMap (lde_types . cd_lde) classes
         cls_tvbs_map = Map.fromList $ map (\cd -> (cd_name cd, cd_tvbs cd)) classes
@@ -320,8 +321,9 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
     return (letDecEnv, classes', insts')
 
   singDecsM locals $ do
-    let letBinds = concatMap buildDataLets datas
-                ++ concatMap buildMethLets classes
+    dataLetBinds <- concatMapM buildDataLets datas
+    methLetBinds <- concatMapM buildMethLets classes
+    let letBinds = dataLetBinds ++ methLetBinds
     (newLetDecls, singIDefunDecls, newDecls)
                             <- bindLets letBinds $
                                singLetDecEnv letDecEnv $ do
@@ -337,32 +339,36 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
     return $ promDecls ++ (map DLetDec newLetDecls) ++ singIDefunDecls ++ newDecls
 
 -- see comment at top of file
-buildDataLets :: DataDecl -> [(Name, DExp)]
-buildDataLets (DataDecl _name _tvbs cons) =
-  concatMap con_num_args cons
+buildDataLets :: OptionsMonad q => DataDecl -> q [(Name, DExp)]
+buildDataLets (DataDecl _name _tvbs cons) = do
+  opts <- getOptions
+  pure $ concatMap (con_num_args opts) cons
   where
-    con_num_args :: DCon -> [(Name, DExp)]
-    con_num_args (DCon _tvbs _cxt name fields _rty) =
+    con_num_args :: Options -> DCon -> [(Name, DExp)]
+    con_num_args opts (DCon _tvbs _cxt name fields _rty) =
       (name, wrapSingFun (length (tysOfConFields fields))
-                         (promoteValRhs name) (DConE $ singDataConName name))
-      : rec_selectors fields
+                         (DConT $ defunctionalizedName0 opts name)
+                         (DConE $ singledDataConName opts name))
+      : rec_selectors opts fields
 
-    rec_selectors :: DConFields -> [(Name, DExp)]
-    rec_selectors (DNormalC {}) = []
-    rec_selectors (DRecC fields) =
+    rec_selectors :: Options -> DConFields -> [(Name, DExp)]
+    rec_selectors _    (DNormalC {}) = []
+    rec_selectors opts (DRecC fields) =
       let names = map fstOf3 fields in
-      [ (name, wrapSingFun 1 (promoteValRhs name) (DVarE $ singValName name))
+      [ (name, wrapSingFun 1 (DConT $ defunctionalizedName0 opts name)
+                             (DVarE $ singledValueName opts name))
       | name <- names ]
 
 -- see comment at top of file
-buildMethLets :: UClassDecl -> [(Name, DExp)]
-buildMethLets (ClassDecl { cd_lde = LetDecEnv { lde_types = meth_sigs } }) =
-  map mk_bind (OMap.assocs meth_sigs)
+buildMethLets :: OptionsMonad q => UClassDecl -> q [(Name, DExp)]
+buildMethLets (ClassDecl { cd_lde = LetDecEnv { lde_types = meth_sigs } }) = do
+  opts <- getOptions
+  pure $ map (mk_bind opts) (OMap.assocs meth_sigs)
   where
-    mk_bind (meth_name, meth_ty) =
+    mk_bind opts (meth_name, meth_ty) =
       ( meth_name
-      , wrapSingFun (countArgs meth_ty) (promoteValRhs meth_name)
-                                        (DVarE $ singValName meth_name) )
+      , wrapSingFun (countArgs meth_ty) (DConT $ defunctionalizedName0 opts meth_name)
+                                        (DVarE $ singledValueName opts meth_name) )
 
 singClassD :: AClassDecl -> SgM DDec
 singClassD (ClassDecl { cd_cxt  = cls_cxt
@@ -375,13 +381,16 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                             , lde_proms     = promoted_defaults
                                             , lde_bound_kvs = meth_bound_kvs } }) =
   bindContext [foldTypeTvbs (DConT cls_name) cls_tvbs] $ do
+    opts <- getOptions
     cls_infix_decls <- singReifiedInfixDecls $ cls_name:meth_names
     (sing_sigs, _, tyvar_names, cxts, res_kis, singIDefunss)
       <- unzip6 <$> zipWithM (singTySig no_meth_defns meth_sigs meth_bound_kvs)
-                             meth_names (map promoteValRhs meth_names)
+                             meth_names
+                             (map (DConT . defunctionalizedName0 opts) meth_names)
     emitDecs $ cls_infix_decls ++ concat singIDefunss
     let default_sigs = catMaybes $
-                       zipWith4 mk_default_sig meth_names sing_sigs tyvar_names res_kis
+                       zipWith4 (mk_default_sig opts) meth_names sing_sigs
+                                                      tyvar_names res_kis
         res_ki_map   = Map.fromList (zip meth_names
                                          (map (fromMaybe always_sig) res_kis))
     sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList tyvar_names)
@@ -391,7 +400,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
     fixities' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs fixities
     cls_cxt' <- mapM singPred cls_cxt
     return $ DClassD cls_cxt'
-                     (singClassName cls_name)
+                     (singledClassName opts cls_name)
                      cls_tvbs
                      cls_fundeps   -- they are fine without modification
                      (map DLetDec (sing_sigs ++ sing_meths ++ fixities') ++ default_sigs)
@@ -400,11 +409,11 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
     always_sig    = error "Internal error: no signature for default method"
     meth_names    = map fst $ OMap.assocs meth_sigs
 
-    mk_default_sig meth_name (DSigD s_name sty) bound_kvs (Just res_ki) =
-      DDefaultSigD s_name <$> add_constraints meth_name sty bound_kvs res_ki
-    mk_default_sig _ _ _ _ = error "Internal error: a singled signature isn't a signature."
+    mk_default_sig opts meth_name (DSigD s_name sty) bound_kvs (Just res_ki) =
+      DDefaultSigD s_name <$> add_constraints opts meth_name sty bound_kvs res_ki
+    mk_default_sig _ _ _ _ _ = error "Internal error: a singled signature isn't a signature."
 
-    add_constraints meth_name sty (_, bound_kvs) res_ki = do  -- Maybe monad
+    add_constraints opts meth_name sty (_, bound_kvs) res_ki = do  -- Maybe monad
       (tvbs, cxt, args, res) <- unravelVanillaDType sty
       prom_dflt <- OMap.lookup meth_name promoted_defaults
 
@@ -425,11 +434,12 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
       -- Which applies Bar/BarDefault to b, which shouldn't happen.
       let tvs = map tvbToType $
                 filter (\tvb -> extractTvbName tvb `Set.member` bound_kv_set) tvbs
+          prom_meth =  DConT $ defunctionalizedName0 opts meth_name
           default_pred = foldType (DConT equalityName)
                                 -- NB: Need the res_ki here to prevent ambiguous
                                 -- kinds in result-inferred default methods.
                                 -- See #175
-                               [ foldApply (promoteValRhs meth_name) tvs `DSigT` res_ki
+                               [ foldApply prom_meth tvs `DSigT` res_ki
                                , foldApply prom_dflt tvs ]
       return $ DForallT ForallInvis tvbs
              $ DConstrainedT (default_pred : cxt) (ravel args res)
@@ -439,6 +449,8 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
 singInstD :: AInstDecl -> SgM DDec
 singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
                     , id_sigs = inst_sigs, id_meths = ann_meths }) = do
+  opts <- getOptions
+  let s_inst_name = singledClassName opts inst_name
   bindContext cxt $ do
     cxt' <- mapM singPred cxt
     inst_kis <- mapM promoteType inst_tys
@@ -450,11 +462,10 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
                        meths)
 
   where
-    s_inst_name = singClassName inst_name
-
     sing_meth :: Name -> ALetDecRHS -> SgM [DDec]
     sing_meth name rhs = do
-      mb_s_info <- dsReify (singValName name)
+      opts <- getOptions
+      mb_s_info <- dsReify (singledValueName opts name)
       inst_kis <- mapM promoteType inst_tys
       let mk_subst cls_tvbs = Map.fromList $ zip (map extractTvbName vis_cls_tvbs) inst_kis
             where
@@ -476,7 +487,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
             -- resulted in #167.
             raw_ty <- expand inner_ty
             (s_ty, _num_args, tyvar_names, ctxt, _arg_kis, res_ki)
-              <- singType bound_kvs (promoteValRhs name) raw_ty
+              <- singType bound_kvs (DConT $ defunctionalizedName0 opts name) raw_ty
             pure (s_ty, tyvar_names, ctxt, res_ki)
 
       (s_ty, tyvar_names, ctxt, m_res_ki) <- case OMap.lookup name inst_sigs of
@@ -520,7 +531,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
       meth' <- singLetDecRHS (Map.singleton name tyvar_names)
                              (Map.singleton name ctxt)
                              kind_map name rhs
-      return $ map DLetDec [DSigD (singValName name) s_ty, meth']
+      return $ map DLetDec [DSigD (singledValueName opts name) s_ty, meth']
 
 singLetDecEnv :: ALetDecEnv
               -> SgM a
@@ -562,8 +573,9 @@ singTySig :: OMap Name ALetDecRHS  -- definitions
                  , Maybe DKind           -- the result kind in the tysig
                  , [DDec]                -- SingI instances for defun symbols
                  )
-singTySig defns types bound_kvs name prom_ty =
-  let sName = singValName name in
+singTySig defns types bound_kvs name prom_ty = do
+  opts <- getOptions
+  let sName = singledValueName opts name
   case OMap.lookup name types of
     Nothing -> do
       num_args <- guess_num_args
@@ -620,11 +632,12 @@ singLetDecRHS :: Map Name [Name]
                                   -- (might not be known)
               -> Map Name DKind   -- result kind (might not be known)
               -> Name -> ALetDecRHS -> SgM DLetDec
-singLetDecRHS bound_names cxts res_kis name ld_rhs =
+singLetDecRHS bound_names cxts res_kis name ld_rhs = do
+  opts <- getOptions
   bindContext (Map.findWithDefault [] name cxts) $
     case ld_rhs of
       AValue prom num_arrows exp ->
-        DValD (DVarP (singValName name)) <$>
+        DValD (DVarP (singledValueName opts name)) <$>
         (wrapUnSingFun num_arrows prom <$> singExp exp (Map.lookup name res_kis))
       AFunction prom_fun num_arrows clauses ->
         let tyvar_names = case Map.lookup name bound_names of
@@ -632,7 +645,7 @@ singLetDecRHS bound_names cxts res_kis name ld_rhs =
                             Just ns -> ns
             res_ki = Map.lookup name res_kis
         in
-        DFunD (singValName name) <$>
+        DFunD (singledValueName opts name) <$>
               mapM (singClause prom_fun num_arrows tyvar_names res_ki) clauses
 
 singClause :: DType   -- the promoted function
@@ -671,12 +684,16 @@ singPat var_proms = go
     go (ADLitP _lit) =
       fail "Singling of literal patterns not yet supported"
     go (ADVarP name) = do
+      opts <- getOptions
       tyname <- case Map.lookup name var_proms of
                   Nothing     ->
                     fail "Internal error: unknown variable when singling pattern"
                   Just tyname -> return tyname
-      pure $ DVarP (singValName name) `DSigP` (singFamily `DAppT` DVarT tyname)
-    go (ADConP name pats) = DConP (singDataConName name) <$> mapM go pats
+      pure $ DVarP (singledValueName opts name)
+               `DSigP` (singFamily `DAppT` DVarT tyname)
+    go (ADConP name pats) = do
+      opts <- getOptions
+      DConP (singledDataConName opts name) <$> mapM go pats
     go (ADTildeP pat) = do
       qReportWarning
         "Lazy pattern converted into regular pattern during singleton generation."
@@ -815,8 +832,9 @@ singExp :: ADExp -> Maybe DKind   -- the kind of the expression, if known
         -> SgM DExp
   -- See Note [Why error is so special]
 singExp (ADVarE err `ADAppE` arg) _res_ki
-  | err == errorName = DAppE (DVarE (singValName err)) <$>
-                       singExp arg (Just (DConT symbolName))
+  | err == errorName = do opts <- getOptions
+                          DAppE (DVarE (singledValueName opts err)) <$>
+                            singExp arg (Just (DConT symbolName))
 singExp (ADVarE name) _res_ki = lookupVarE name
 singExp (ADConE name) _res_ki = lookupConE name
 singExp (ADLitE lit)  _res_ki = singLit lit
@@ -829,7 +847,8 @@ singExp (ADAppE e1 e2) _res_ki = do
   then return $ e1' `DAppE` e2'
   else return $ (DVarE applySingName) `DAppE` e1' `DAppE` e2'
 singExp (ADLamE ty_names prom_lam names exp) _res_ki = do
-  let sNames = map singValName names
+  opts <- getOptions
+  let sNames = map (singledValueName opts) names
   exp' <- singExp exp Nothing
   -- we need to bind the type variables... but DLamE doesn't allow SigT patterns.
   -- So: build a case

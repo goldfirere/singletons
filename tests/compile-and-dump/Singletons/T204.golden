@@ -1,0 +1,94 @@
+Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
+    let
+      sing_data_con_name :: Name -> Name
+      sing_data_con_name n
+        = case nameBase n of
+            ':' : '%' : rest -> mkName $ ":^%" ++ rest
+            _ -> singledDataConName defaultOptions n
+    in
+      withOptions
+        defaultOptions {singledDataConName = sing_data_con_name}
+        $ singletons
+            $ lift
+                [d| data Ratio1 a = a :% a
+                    data Ratio2 a = a :%% a |]
+  ======>
+    data Ratio1 a = a :% a
+    data Ratio2 a = a :%% a
+    instance SuppressUnusedWarnings (:%@#@$) where
+      suppressUnusedWarnings = snd (((,) (::%@#@$###)) ())
+    data (:%@#@$) :: forall a0123456789876543210.
+                     (~>) a0123456789876543210 ((~>) a0123456789876543210 (Ratio1 a0123456789876543210))
+      where
+        (::%@#@$###) :: forall t0123456789876543210
+                               arg. SameKind (Apply (:%@#@$) arg) ((:%@#@$$) arg) =>
+                        (:%@#@$) t0123456789876543210
+    type instance Apply (:%@#@$) t0123456789876543210 = (:%@#@$$) t0123456789876543210
+    instance SuppressUnusedWarnings ((:%@#@$$) t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (::%@#@$$###)) ())
+    data (:%@#@$$) (t0123456789876543210 :: a0123456789876543210) :: (~>) a0123456789876543210 (Ratio1 a0123456789876543210)
+      where
+        (::%@#@$$###) :: forall t0123456789876543210
+                                t0123456789876543210
+                                arg. SameKind (Apply ((:%@#@$$) t0123456789876543210) arg) ((:%@#@$$$) t0123456789876543210 arg) =>
+                         (:%@#@$$) t0123456789876543210 t0123456789876543210
+    type instance Apply ((:%@#@$$) t0123456789876543210) t0123456789876543210 = (:%@#@$$$) t0123456789876543210 t0123456789876543210
+    type (:%@#@$$$) (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: a0123456789876543210) =
+        (:%) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (:%%@#@$) where
+      suppressUnusedWarnings = snd (((,) (::%%@#@$###)) ())
+    data (:%%@#@$) :: forall a0123456789876543210.
+                      (~>) a0123456789876543210 ((~>) a0123456789876543210 (Ratio2 a0123456789876543210))
+      where
+        (::%%@#@$###) :: forall t0123456789876543210
+                                arg. SameKind (Apply (:%%@#@$) arg) ((:%%@#@$$) arg) =>
+                         (:%%@#@$) t0123456789876543210
+    type instance Apply (:%%@#@$) t0123456789876543210 = (:%%@#@$$) t0123456789876543210
+    instance SuppressUnusedWarnings ((:%%@#@$$) t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (::%%@#@$$###)) ())
+    data (:%%@#@$$) (t0123456789876543210 :: a0123456789876543210) :: (~>) a0123456789876543210 (Ratio2 a0123456789876543210)
+      where
+        (::%%@#@$$###) :: forall t0123456789876543210
+                                 t0123456789876543210
+                                 arg. SameKind (Apply ((:%%@#@$$) t0123456789876543210) arg) ((:%%@#@$$$) t0123456789876543210 arg) =>
+                          (:%%@#@$$) t0123456789876543210 t0123456789876543210
+    type instance Apply ((:%%@#@$$) t0123456789876543210) t0123456789876543210 = (:%%@#@$$$) t0123456789876543210 t0123456789876543210
+    type (:%%@#@$$$) (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: a0123456789876543210) =
+        (:%%) t0123456789876543210 t0123456789876543210
+    data SRatio1 :: forall a. Ratio1 a -> GHC.Types.Type
+      where
+        (:^%) :: forall a (n :: a) (n :: a).
+                 (Sing n) -> (Sing n) -> SRatio1 ((:%) n n :: Ratio1 a)
+    type instance Sing @(Ratio1 a) = SRatio1
+    instance SingKind a => SingKind (Ratio1 a) where
+      type Demote (Ratio1 a) = Ratio1 (Demote a)
+      fromSing ((:^%) b b) = ((:%) (fromSing b)) (fromSing b)
+      toSing ((:%) (b :: Demote a) (b :: Demote a))
+        = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a) of {
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:^%) c) c) }
+    data SRatio2 :: forall a. Ratio2 a -> GHC.Types.Type
+      where
+        (:^%%) :: forall a (n :: a) (n :: a).
+                  (Sing n) -> (Sing n) -> SRatio2 ((:%%) n n :: Ratio2 a)
+    type instance Sing @(Ratio2 a) = SRatio2
+    instance SingKind a => SingKind (Ratio2 a) where
+      type Demote (Ratio2 a) = Ratio2 (Demote a)
+      fromSing ((:^%%) b b) = ((:%%) (fromSing b)) (fromSing b)
+      toSing ((:%%) (b :: Demote a) (b :: Demote a))
+        = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a) of {
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:^%%) c) c) }
+    instance (SingI n, SingI n) => SingI ((:%) (n :: a) (n :: a)) where
+      sing = ((:^%) sing) sing
+    instance SingI ((:%@#@$) :: (~>) a ((~>) a (Ratio1 a))) where
+      sing = (singFun2 @(:%@#@$)) (:^%)
+    instance SingI d =>
+             SingI ((:%@#@$$) (d :: a) :: (~>) a (Ratio1 a)) where
+      sing = (singFun1 @((:%@#@$$) (d :: a))) ((:^%) (sing @d))
+    instance (SingI n, SingI n) =>
+             SingI ((:%%) (n :: a) (n :: a)) where
+      sing = ((:^%%) sing) sing
+    instance SingI ((:%%@#@$) :: (~>) a ((~>) a (Ratio2 a))) where
+      sing = (singFun2 @(:%%@#@$)) (:^%%)
+    instance SingI d =>
+             SingI ((:%%@#@$$) (d :: a) :: (~>) a (Ratio2 a)) where
+      sing = (singFun1 @((:%%@#@$$) (d :: a))) ((:^%%) (sing @d))

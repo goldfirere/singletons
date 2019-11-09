@@ -4,6 +4,25 @@ Changelog for singletons project
 2.7
 ---
 * Require GHC 8.10.
+* The Template Haskell machinery now supports fine-grained configuration in
+  the way of an `Options` data type, which lives in the new
+  `Data.Singletons.TH.Options` module. Besides `Options`, this module also
+  contains:
+    * `Options`' record selectors. Currently, these include ways to toggle
+      generating `SingKind` instances and configure how `singletons` generates
+      the names of promoted or singled types. In the future, there may be
+      additional options.
+    * A `defaultOptions` value.
+    * An `mtl`-like `OptionsMonad` class for monads that support carrying
+      `Option`s. This includes `Q`, which uses `defaultOptions` if it is the
+      top of the monad transformer stack.
+    * An `OptionM` monad transformer that turns any `DsMonad` into an
+      `OptionsMonad`.
+    * A `withOptions` function which allows passing `Options` to TH functions
+      (e.g., `promote` or `singletons`). See the `README` for a full example
+      of how to use `withOptions`.
+  Most TH functions are now polymorphic over `OptionsMonad` instead of
+  `DsMonad`.
 * `singletons` now does a much better job of preserving the order of type
   variables when singling the type signatures of top-level functions and data
   constructors. See the `Support for TypeApplications` section of the `README`

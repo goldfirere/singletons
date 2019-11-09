@@ -11,6 +11,7 @@ module Data.Singletons.Single.Eq where
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Deriving.Infer
+import Data.Singletons.TH.Options
 import Data.Singletons.Util
 import Data.Singletons.Names
 import Control.Monad
@@ -18,7 +19,7 @@ import Control.Monad
 -- making the SEq instance and the SDecide instance are rather similar,
 -- so we generalize
 type EqualityClassDesc q = ((DCon, DCon) -> q DClause, q DClause, Name, Name)
-sEqClassDesc, sDecideClassDesc :: Quasi q => EqualityClassDesc q
+sEqClassDesc, sDecideClassDesc :: OptionsMonad q => EqualityClassDesc q
 sEqClassDesc = (mkEqMethClause, mkEmptyEqMethClause, sEqClassName, sEqMethName)
 sDecideClassDesc = (mkDecideMethClause, mkEmptyDecideMethClause, sDecideClassName, sDecideMethName)
 
@@ -41,16 +42,17 @@ data TestInstance = TestEquality
                   | TestCoercion
 
 -- Make an instance of TestEquality or TestCoercion by leveraging SDecide.
-mkTestInstance :: DsMonad q => Maybe DCxt -> DKind
+mkTestInstance :: OptionsMonad q => Maybe DCxt -> DKind
                -> Name   -- ^ The name of the data type
                -> [DCon] -- ^ The /original/ constructors (for inferring the instance context)
                -> TestInstance -> q DDec
 mkTestInstance mb_ctxt k data_name ctors ti = do
+  opts <- getOptions
   constraints <- inferConstraintsDef mb_ctxt (DConT sDecideClassName) k ctors
   pure $ DInstanceD Nothing Nothing
                     constraints
                     (DAppT (DConT tiClassName)
-                           (DConT (singTyConName data_name)
+                           (DConT (singledDataTypeName opts data_name)
                              `DSigT` (DArrowT `DAppT` k `DAppT` DConT typeKindName)))
                     [DLetDec $ DFunD tiMethName
                                      [DClause [] (DVarE tiDefaultName)]]
@@ -60,9 +62,10 @@ mkTestInstance mb_ctxt k data_name ctors ti = do
         TestEquality -> (testEqualityClassName, testEqualityMethName, decideEqualityName)
         TestCoercion -> (testCoercionClassName, testCoercionMethName, decideCoercionName)
 
-mkEqMethClause :: Quasi q => (DCon, DCon) -> q DClause
+mkEqMethClause :: OptionsMonad q => (DCon, DCon) -> q DClause
 mkEqMethClause (c1, c2)
   | lname == rname = do
+    opts <- getOptions
     lnames <- replicateM lNumArgs (qNewName "a")
     rnames <- replicateM lNumArgs (qNewName "b")
     let lpats = map DVarP lnames
@@ -71,17 +74,20 @@ mkEqMethClause (c1, c2)
         rvars = map DVarE rnames
     return $ DClause
       [DConP lname lpats, DConP rname rpats]
-      (allExp (zipWith (\l r -> foldExp (DVarE sEqMethName) [l, r])
-                        lvars rvars))
-  | otherwise =
+      (allExp opts (zipWith (\l r -> foldExp (DVarE sEqMethName) [l, r])
+                            lvars rvars))
+  | otherwise = do
+    opts <- getOptions
     return $ DClause
       [DConP lname (replicate lNumArgs DWildP),
        DConP rname (replicate rNumArgs DWildP)]
-      (DConE $ singDataConName falseName)
-  where allExp :: [DExp] -> DExp
-        allExp [] = DConE $ singDataConName trueName
-        allExp [one] = one
-        allExp (h:t) = DAppE (DAppE (DVarE $ singValName andName) h) (allExp t)
+      (DConE $ singledDataConName opts falseName)
+  where allExp :: Options -> [DExp] -> DExp
+        allExp opts = go
+          where
+            go [] = DConE $ singledDataConName opts trueName
+            go [one] = one
+            go (h:t) = DAppE (DAppE (DVarE $ singledValueName opts andName) h) (go t)
 
         (lname, lNumArgs) = extractNameArgs c1
         (rname, rNumArgs) = extractNameArgs c2
