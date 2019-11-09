@@ -1,8 +1,8 @@
 Changelog for singletons project
 ================================
 
-next
-----
+2.7
+---
 * Require GHC 8.10.
 * `singletons` now does a much better job of preserving the order of type
   variables when singling the type signatures of top-level functions and data
