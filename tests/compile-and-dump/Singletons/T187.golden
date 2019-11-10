@@ -21,7 +21,7 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
                                                                a0123456789876543210
                                                                arg. SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym0KindInference) ())

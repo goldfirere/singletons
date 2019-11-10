@@ -36,7 +36,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
                                        b0123456789876543210
                                        arg. SameKind (Apply (T1aSym1 a0123456789876543210) arg) (T1aSym2 a0123456789876543210 arg) =>
                                 T1aSym1 a0123456789876543210 b0123456789876543210
-    type instance Apply (T1aSym1 a0123456789876543210) b0123456789876543210 = T1a a0123456789876543210 b0123456789876543210
+    type instance Apply (T1aSym1 a0123456789876543210) b0123456789876543210 = T1aSym2 a0123456789876543210 b0123456789876543210
     infixl 5 `T1aSym1`
     instance SuppressUnusedWarnings T1aSym0 where
       suppressUnusedWarnings = snd (((,) T1aSym0KindInference) ())
@@ -58,7 +58,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
                                        b0123456789876543210
                                        arg. SameKind (Apply (T1bSym1 a0123456789876543210) arg) (T1bSym2 a0123456789876543210 arg) =>
                                 T1bSym1 a0123456789876543210 b0123456789876543210
-    type instance Apply (T1bSym1 a0123456789876543210) b0123456789876543210 = T1b a0123456789876543210 b0123456789876543210
+    type instance Apply (T1bSym1 a0123456789876543210) b0123456789876543210 = T1bSym2 a0123456789876543210 b0123456789876543210
     infixl 5 `T1bSym1`
     instance SuppressUnusedWarnings T1bSym0 where
       suppressUnusedWarnings = snd (((,) T1bSym0KindInference) ())
@@ -81,7 +81,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
                                         t0123456789876543210
                                         arg. SameKind (Apply (MkD1Sym1 t0123456789876543210) arg) (MkD1Sym2 t0123456789876543210 arg) =>
                                  MkD1Sym1 t0123456789876543210 t0123456789876543210
-    type instance Apply (MkD1Sym1 t0123456789876543210) t0123456789876543210 = MkD1 t0123456789876543210 t0123456789876543210
+    type instance Apply (MkD1Sym1 t0123456789876543210) t0123456789876543210 = MkD1Sym2 t0123456789876543210 t0123456789876543210
     infixr 5 `MkD1Sym1`
     instance SuppressUnusedWarnings MkD1Sym0 where
       suppressUnusedWarnings = snd (((,) MkD1Sym0KindInference) ())
@@ -107,7 +107,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
                                       arg0123456789876543210
                                       arg. SameKind (Apply (M1Sym1 arg0123456789876543210) arg) (M1Sym2 arg0123456789876543210 arg) =>
                                M1Sym1 arg0123456789876543210 arg0123456789876543210
-    type instance Apply (M1Sym1 arg0123456789876543210) arg0123456789876543210 = M1 arg0123456789876543210 arg0123456789876543210
+    type instance Apply (M1Sym1 arg0123456789876543210) arg0123456789876543210 = M1Sym2 arg0123456789876543210 arg0123456789876543210
     infix 6 `M1Sym1`
     instance SuppressUnusedWarnings M1Sym0 where
       suppressUnusedWarnings = snd (((,) M1Sym0KindInference) ())
@@ -166,7 +166,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
                                       arg0123456789876543210
                                       arg. SameKind (Apply (M2Sym1 arg0123456789876543210) arg) (M2Sym2 arg0123456789876543210 arg) =>
                                M2Sym1 arg0123456789876543210 arg0123456789876543210
-    type instance Apply (M2Sym1 arg0123456789876543210) arg0123456789876543210 = M2 arg0123456789876543210 arg0123456789876543210
+    type instance Apply (M2Sym1 arg0123456789876543210) arg0123456789876543210 = M2Sym2 arg0123456789876543210 arg0123456789876543210
     infix 6 `M2Sym1`
     instance SuppressUnusedWarnings M2Sym0 where
       suppressUnusedWarnings = snd (((,) M2Sym0KindInference) ())
@@ -204,7 +204,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
                                        b0123456789876543210
                                        arg. SameKind (Apply (T2aSym1 a0123456789876543210) arg) (T2aSym2 a0123456789876543210 arg) =>
                                 T2aSym1 a0123456789876543210 b0123456789876543210
-    type instance Apply (T2aSym1 a0123456789876543210) b0123456789876543210 = T2a a0123456789876543210 b0123456789876543210
+    type instance Apply (T2aSym1 a0123456789876543210) b0123456789876543210 = T2aSym2 a0123456789876543210 b0123456789876543210
     infixl 5 `T2aSym1`
     instance SuppressUnusedWarnings T2aSym0 where
       suppressUnusedWarnings = snd (((,) T2aSym0KindInference) ())
@@ -226,7 +226,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
                                        b0123456789876543210
                                        arg. SameKind (Apply (T2bSym1 a0123456789876543210) arg) (T2bSym2 a0123456789876543210 arg) =>
                                 T2bSym1 a0123456789876543210 b0123456789876543210
-    type instance Apply (T2bSym1 a0123456789876543210) b0123456789876543210 = T2b a0123456789876543210 b0123456789876543210
+    type instance Apply (T2bSym1 a0123456789876543210) b0123456789876543210 = T2bSym2 a0123456789876543210 b0123456789876543210
     infixl 5 `T2bSym1`
     instance SuppressUnusedWarnings T2bSym0 where
       suppressUnusedWarnings = snd (((,) T2bSym0KindInference) ())
@@ -249,7 +249,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
                                         t0123456789876543210
                                         arg. SameKind (Apply (MkD2Sym1 t0123456789876543210) arg) (MkD2Sym2 t0123456789876543210 arg) =>
                                  MkD2Sym1 t0123456789876543210 t0123456789876543210
-    type instance Apply (MkD2Sym1 t0123456789876543210) t0123456789876543210 = 'MkD2 t0123456789876543210 t0123456789876543210
+    type instance Apply (MkD2Sym1 t0123456789876543210) t0123456789876543210 = MkD2Sym2 t0123456789876543210 t0123456789876543210
     infixr 5 `MkD2Sym1`
     instance SuppressUnusedWarnings MkD2Sym0 where
       suppressUnusedWarnings = snd (((,) MkD2Sym0KindInference) ())

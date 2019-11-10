@@ -16,7 +16,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
         ZSym0KindInference :: forall a0123456789876543210
                                      arg. SameKind (Apply ZSym0 arg) (ZSym1 arg) =>
                               ZSym0 a0123456789876543210
-    type instance Apply ZSym0 a0123456789876543210 = Z a0123456789876543210
+    type instance Apply ZSym0 a0123456789876543210 = ZSym1 a0123456789876543210
     type family Z a where
       Z (X1 x) = x
       Z (X2 x) = x
@@ -28,7 +28,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
         YSym0KindInference :: forall a0123456789876543210
                                      arg. SameKind (Apply YSym0 arg) (YSym1 arg) =>
                               YSym0 a0123456789876543210
-    type instance Apply YSym0 a0123456789876543210 = Y a0123456789876543210
+    type instance Apply YSym0 a0123456789876543210 = YSym1 a0123456789876543210
     type family Y (a :: X) :: Symbol where
       Y (X1 field) = field
       Y (X2 field) = field
@@ -41,7 +41,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
         X1Sym0KindInference :: forall t0123456789876543210
                                       arg. SameKind (Apply X1Sym0 arg) (X1Sym1 arg) =>
                                X1Sym0 t0123456789876543210
-    type instance Apply X1Sym0 t0123456789876543210 = X1 t0123456789876543210
+    type instance Apply X1Sym0 t0123456789876543210 = X1Sym1 t0123456789876543210
     type X2Sym1 (t0123456789876543210 :: Symbol) =
         X2 t0123456789876543210
     instance SuppressUnusedWarnings X2Sym0 where
@@ -51,4 +51,4 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
         X2Sym0KindInference :: forall t0123456789876543210
                                       arg. SameKind (Apply X2Sym0 arg) (X2Sym1 arg) =>
                                X2Sym0 t0123456789876543210
-    type instance Apply X2Sym0 t0123456789876543210 = X2 t0123456789876543210
+    type instance Apply X2Sym0 t0123456789876543210 = X2Sym1 t0123456789876543210

@@ -19,7 +19,7 @@ Singletons/T414.hs:(0,0)-(0,0): Splicing declarations
                                       b0123456789876543210
                                       arg. SameKind (Apply (T1Sym1 a0123456789876543210) arg) (T1Sym2 a0123456789876543210 arg) =>
                                T1Sym1 a0123456789876543210 b0123456789876543210
-    type instance Apply (T1Sym1 a0123456789876543210) b0123456789876543210 = T1 a0123456789876543210 b0123456789876543210
+    type instance Apply (T1Sym1 a0123456789876543210) b0123456789876543210 = T1Sym2 a0123456789876543210 b0123456789876543210
     instance SuppressUnusedWarnings T1Sym0 where
       suppressUnusedWarnings = snd (((,) T1Sym0KindInference) ())
     data T1Sym0 :: (~>) Bool ((~>) GHC.Types.Type GHC.Types.Type)
@@ -39,7 +39,7 @@ Singletons/T414.hs:(0,0)-(0,0): Splicing declarations
                                       b0123456789876543210
                                       arg. SameKind (Apply (T2Sym1 a0123456789876543210) arg) (T2Sym2 a0123456789876543210 arg) =>
                                T2Sym1 a0123456789876543210 b0123456789876543210
-    type instance Apply (T2Sym1 a0123456789876543210) b0123456789876543210 = T2 a0123456789876543210 b0123456789876543210
+    type instance Apply (T2Sym1 a0123456789876543210) b0123456789876543210 = T2Sym2 a0123456789876543210 b0123456789876543210
     instance SuppressUnusedWarnings T2Sym0 where
       suppressUnusedWarnings = snd (((,) T2Sym0KindInference) ())
     data T2Sym0 a0123456789876543210

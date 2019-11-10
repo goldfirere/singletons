@@ -26,7 +26,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
         BanSym0KindInference :: forall a0123456789876543210
                                        arg. SameKind (Apply BanSym0 arg) (BanSym1 arg) =>
                                 BanSym0 a0123456789876543210
-    type instance Apply BanSym0 a0123456789876543210 = Ban a0123456789876543210
+    type instance Apply BanSym0 a0123456789876543210 = BanSym1 a0123456789876543210
     type BazSym1 (a0123456789876543210 :: Bool) =
         Baz a0123456789876543210
     instance SuppressUnusedWarnings BazSym0 where
@@ -36,7 +36,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
         BazSym0KindInference :: forall a0123456789876543210
                                        arg. SameKind (Apply BazSym0 arg) (BazSym1 arg) =>
                                 BazSym0 a0123456789876543210
-    type instance Apply BazSym0 a0123456789876543210 = Baz a0123456789876543210
+    type instance Apply BazSym0 a0123456789876543210 = BazSym1 a0123456789876543210
     type BarSym1 (a0123456789876543210 :: Bool) =
         Bar a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
@@ -46,7 +46,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
         BarSym0KindInference :: forall a0123456789876543210
                                        arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
-    type instance Apply BarSym0 a0123456789876543210 = Bar a0123456789876543210
+    type instance Apply BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
     type FooSym1 (a0123456789876543210 :: Bool) =
         Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
@@ -56,7 +56,7 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
         FooSym0KindInference :: forall a0123456789876543210
                                        arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
-    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
+    type instance Apply FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
     type family Ban (a :: Bool) :: Bool where
       Ban x = Apply (Apply ($!@#@$) (Apply (Apply (.@#@$) NotSym0) (Apply (Apply (.@#@$) NotSym0) NotSym0))) x
     type family Baz (a :: Bool) :: Bool where

@@ -18,7 +18,7 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
         Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference :: forall e0123456789876543210
                                                                                        arg. SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
                                                                                 Let0123456789876543210Scrutinee_0123456789876543210Sym0 e0123456789876543210
-    type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 e0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210 e0123456789876543210
+    type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 e0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210Sym1 e0123456789876543210
     type family Let0123456789876543210Scrutinee_0123456789876543210 e where
       Let0123456789876543210Scrutinee_0123456789876543210 e = Apply (Apply (:@#@$) NotSym0) '[]
     type family Case_0123456789876543210 e t where
@@ -31,7 +31,7 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
         GSym0KindInference :: forall a0123456789876543210
                                      arg. SameKind (Apply GSym0 arg) (GSym1 arg) =>
                               GSym0 a0123456789876543210
-    type instance Apply GSym0 a0123456789876543210 = G a0123456789876543210
+    type instance Apply GSym0 a0123456789876543210 = GSym1 a0123456789876543210
     type family G (a :: Bool) :: Bool where
       G e = Apply (Case_0123456789876543210 e (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e)) e
     sG :: forall (t :: Bool). Sing t -> Sing (Apply GSym0 t :: Bool)

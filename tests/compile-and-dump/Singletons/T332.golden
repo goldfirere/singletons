@@ -16,7 +16,7 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
         FSym0KindInference :: forall a0123456789876543210
                                      arg. SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
-    type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
+    type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
     type family F (a :: Foo) :: () where
       F MkFoo = Tuple0Sym0
     type MkFooSym0 = MkFoo
@@ -39,7 +39,7 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
         BSym0KindInference :: forall a0123456789876543210
                                      arg. SameKind (Apply BSym0 arg) (BSym1 arg) =>
                               BSym0 a0123456789876543210
-    type instance Apply BSym0 a0123456789876543210 = B a0123456789876543210
+    type instance Apply BSym0 a0123456789876543210 = BSym1 a0123456789876543210
     type family B (a :: Bar) :: () where
       B MkBar = Tuple0Sym0
     sB :: forall (t :: Bar). Sing t -> Sing (Apply BSym0 t :: ())

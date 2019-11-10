@@ -15,7 +15,7 @@ Singletons/T316.hs:(0,0)-(0,0): Splicing declarations
                                                     a0123456789876543210
                                                     arg. SameKind (Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) arg) (ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 arg) =>
                                              ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypes a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ReplaceAllGTypesSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ReplaceAllGTypesSym1KindInference) ())

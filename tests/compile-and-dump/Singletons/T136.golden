@@ -43,7 +43,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         Succ_0123456789876543210Sym0KindInference :: forall a0123456789876543210
                                                             arg. SameKind (Apply Succ_0123456789876543210Sym0 arg) (Succ_0123456789876543210Sym1 arg) =>
                                                      Succ_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Succ_0123456789876543210Sym0 a0123456789876543210 = Succ_0123456789876543210 a0123456789876543210
+    type instance Apply Succ_0123456789876543210Sym0 a0123456789876543210 = Succ_0123456789876543210Sym1 a0123456789876543210
     type family Pred_0123456789876543210 (a :: [Bool]) :: [Bool] where
       Pred_0123456789876543210 '[] = Apply ErrorSym0 "pred 0"
       Pred_0123456789876543210 ('(:) 'False as) = Apply (Apply (:@#@$) TrueSym0) (Apply PredSym0 as)
@@ -58,7 +58,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         Pred_0123456789876543210Sym0KindInference :: forall a0123456789876543210
                                                             arg. SameKind (Apply Pred_0123456789876543210Sym0 arg) (Pred_0123456789876543210Sym1 arg) =>
                                                      Pred_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Pred_0123456789876543210Sym0 a0123456789876543210 = Pred_0123456789876543210 a0123456789876543210
+    type instance Apply Pred_0123456789876543210Sym0 a0123456789876543210 = Pred_0123456789876543210Sym1 a0123456789876543210
     type family Case_0123456789876543210 i arg_0123456789876543210 t where
       Case_0123456789876543210 i arg_0123456789876543210 'True = '[]
       Case_0123456789876543210 i arg_0123456789876543210 'False = Apply SuccSym0 (Apply ToEnumSym0 (Apply PredSym0 i))
@@ -79,7 +79,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         ToEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
                                                               arg. SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
                                                        ToEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
+    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210Sym1 a0123456789876543210
     type family FromEnum_0123456789876543210 (a :: [Bool]) :: GHC.Types.Nat where
       FromEnum_0123456789876543210 '[] = FromInteger 0
       FromEnum_0123456789876543210 ('(:) 'False as) = Apply (Apply (*@#@$) (FromInteger 2)) (Apply FromEnumSym0 as)
@@ -94,7 +94,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         FromEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
                                                                 arg. SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
                                                          FromEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
+    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210Sym1 a0123456789876543210
     instance PEnum [Bool] where
       type Succ a = Apply Succ_0123456789876543210Sym0 a
       type Pred a = Apply Pred_0123456789876543210Sym0 a

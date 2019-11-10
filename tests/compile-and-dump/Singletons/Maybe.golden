@@ -18,7 +18,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
         JustSym0KindInference :: forall t0123456789876543210
                                         arg. SameKind (Apply JustSym0 arg) (JustSym1 arg) =>
                                  JustSym0 t0123456789876543210
-    type instance Apply JustSym0 t0123456789876543210 = Just t0123456789876543210
+    type instance Apply JustSym0 t0123456789876543210 = JustSym1 t0123456789876543210
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Maybe a) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210 _ Nothing a_0123456789876543210 = Apply (Apply ShowStringSym0 "Nothing") a_0123456789876543210
       ShowsPrec_0123456789876543210 p_0123456789876543210 (Just arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (Data.Singletons.Prelude.Num.FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Just ")) (Apply (Apply ShowsPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
@@ -34,7 +34,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
                                                                  a0123456789876543210
                                                                  arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())

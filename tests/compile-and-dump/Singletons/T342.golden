@@ -14,4 +14,4 @@ Singletons/T342.hs:(0,0)-(0,0): Splicing declarations
         MyIdSym0KindInference :: forall a0123456789876543210
                                         arg. SameKind (Apply MyIdSym0 arg) (MyIdSym1 arg) =>
                                  MyIdSym0 a0123456789876543210
-    type instance Apply MyIdSym0 a0123456789876543210 = MyId a0123456789876543210
+    type instance Apply MyIdSym0 a0123456789876543210 = MyIdSym1 a0123456789876543210

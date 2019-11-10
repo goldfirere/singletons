@@ -15,7 +15,7 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
                                      a0123456789876543210
                                      arg. SameKind (Apply (FSym1 a0123456789876543210) arg) (FSym2 a0123456789876543210 arg) =>
                               FSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (FSym1 a0123456789876543210) a0123456789876543210 = F a0123456789876543210 a0123456789876543210
+    type instance Apply (FSym1 a0123456789876543210) a0123456789876543210 = FSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
     data FSym0 :: (~>) ((~>) () ()) ((~>) () ())

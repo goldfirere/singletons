@@ -23,7 +23,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
         UnBarSym0KindInference :: forall a0123456789876543210
                                          arg. SameKind (Apply UnBarSym0 arg) (UnBarSym1 arg) =>
                                   UnBarSym0 a0123456789876543210
-    type instance Apply UnBarSym0 a0123456789876543210 = UnBar a0123456789876543210
+    type instance Apply UnBarSym0 a0123456789876543210 = UnBarSym1 a0123456789876543210
     type family UnBar (a :: Bar) :: Nat where
       UnBar (Bar field) = field
     type FooSym1 (t0123456789876543210 :: Nat) =
@@ -35,7 +35,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
         FooSym0KindInference :: forall t0123456789876543210
                                        arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 t0123456789876543210
-    type instance Apply FooSym0 t0123456789876543210 = Foo t0123456789876543210
+    type instance Apply FooSym0 t0123456789876543210 = FooSym1 t0123456789876543210
     type BarSym1 (t0123456789876543210 :: Nat) =
         Bar t0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
@@ -45,4 +45,4 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
         BarSym0KindInference :: forall t0123456789876543210
                                        arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 t0123456789876543210
-    type instance Apply BarSym0 t0123456789876543210 = Bar t0123456789876543210
+    type instance Apply BarSym0 t0123456789876543210 = BarSym1 t0123456789876543210

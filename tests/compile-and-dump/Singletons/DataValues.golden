@@ -27,7 +27,7 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
                                         t0123456789876543210
                                         arg. SameKind (Apply (PairSym1 t0123456789876543210) arg) (PairSym2 t0123456789876543210 arg) =>
                                  PairSym1 t0123456789876543210 t0123456789876543210
-    type instance Apply (PairSym1 t0123456789876543210) t0123456789876543210 = Pair t0123456789876543210 t0123456789876543210
+    type instance Apply (PairSym1 t0123456789876543210) t0123456789876543210 = PairSym2 t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings PairSym0 where
       suppressUnusedWarnings = snd (((,) PairSym0KindInference) ())
     data PairSym0 :: forall a0123456789876543210 b0123456789876543210.
@@ -63,7 +63,7 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
                                                                  a0123456789876543210
                                                                  arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())

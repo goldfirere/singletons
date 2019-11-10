@@ -35,7 +35,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
         ToEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
                                                               arg. SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
                                                        ToEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
+    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210Sym1 a0123456789876543210
     type family FromEnum_0123456789876543210 (a :: Foo) :: GHC.Types.Nat where
       FromEnum_0123456789876543210 Bar = Data.Singletons.Prelude.Num.FromInteger 0
       FromEnum_0123456789876543210 Baz = Data.Singletons.Prelude.Num.FromInteger 1
@@ -50,7 +50,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
         FromEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
                                                                 arg. SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
                                                          FromEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
+    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210Sym1 a0123456789876543210
     instance PEnum Foo where
       type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
       type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
@@ -152,7 +152,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
         ToEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
                                                               arg. SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
                                                        ToEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
+    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210Sym1 a0123456789876543210
     type family FromEnum_0123456789876543210 (a :: Quux) :: GHC.Types.Nat where
       FromEnum_0123456789876543210 'Q1 = Data.Singletons.Prelude.Num.FromInteger 0
       FromEnum_0123456789876543210 'Q2 = Data.Singletons.Prelude.Num.FromInteger 1
@@ -166,7 +166,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
         FromEnum_0123456789876543210Sym0KindInference :: forall a0123456789876543210
                                                                 arg. SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
                                                          FromEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
+    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210Sym1 a0123456789876543210
     instance PEnum Quux where
       type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
       type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a

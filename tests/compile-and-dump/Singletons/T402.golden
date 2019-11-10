@@ -12,4 +12,4 @@ Singletons/T402.hs:0:0:: Splicing declarations
         AnyOfKindSym0KindInference :: forall k0123456789876543210
                                              arg. SameKind (Apply AnyOfKindSym0 arg) (AnyOfKindSym1 arg) =>
                                       AnyOfKindSym0 k0123456789876543210
-    type instance Apply AnyOfKindSym0 k0123456789876543210 = AnyOfKind k0123456789876543210
+    type instance Apply AnyOfKindSym0 k0123456789876543210 = AnyOfKindSym1 k0123456789876543210

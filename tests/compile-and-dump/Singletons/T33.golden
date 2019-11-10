@@ -14,7 +14,7 @@ Singletons/T33.hs:(0,0)-(0,0): Splicing declarations
         FooSym0KindInference :: forall a0123456789876543210
                                        arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
-    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
+    type instance Apply FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
     type family Foo (a :: (Bool, Bool)) :: () where
       Foo '(_, _) = Tuple0Sym0
     sFoo ::

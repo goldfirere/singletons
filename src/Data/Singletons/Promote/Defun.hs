@@ -225,11 +225,9 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                           ++ maybeToList m_res_kind      -- (2)(i)(a)
 
       go :: Int -> [DTyVarBndr] -> Maybe DKind
-         -> ([DTyVarBndr] -> DType)  -- given the argument tyvar binders,
-                                     -- produce the RHS of the Apply instance
          -> PrM [DDec]
-      go _ [] _ _ = return []
-      go n (m_arg : m_args) m_result mk_rhs = do
+      go _ [] _ = return []
+      go n (m_arg : m_args) m_result = do
         extra_name <- qNewName "arg"
         let tyfun_name  = extractTvbName m_arg
             data_name   = promoteTySym name n
@@ -276,7 +274,8 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
             app_eqn     = DTySynEqn Nothing
                                     (DConT applyName `DAppT` app_data_ty
                                                      `DAppT` DVarT tyfun_name)
-                                    (mk_rhs (m_args ++ [DPlainTV tyfun_name]))
+                                    (foldTypeTvbs (DConT next_name)
+                                                  (m_args ++ [DPlainTV tyfun_name]))
             app_decl    = DTySynInstD app_eqn
             suppress    = DInstanceD Nothing Nothing []
                             (DConT suppressClassName `DAppT` app_data_ty)
@@ -286,20 +285,18 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                                                        mkTupleDExp [DConE con_name,
                                                                     mkTupleDExp []])]]
 
-            mk_rhs'     = foldTypeTvbs (DConT data_name)
             -- See Note [Fixity declarations for defunctionalization symbols]
             fixity_decl = maybeToList $ fmap (mk_fix_decl data_name) m_fixity
 
-        decls <- go (n - 1) m_args m_tyfun mk_rhs'
+        decls <- go (n - 1) m_args m_tyfun
         return $ suppress : data_decl : app_decl : fixity_decl ++ decls
 
   let num_args       = length m_arg_tvbs
       sat_name       = promoteTySym name num_args
-      mk_rhs         = foldTypeTvbs (DConT name)
-      sat_dec        = DTySynD sat_name m_arg_tvbs (mk_rhs m_arg_tvbs)
+      sat_dec        = DTySynD sat_name m_arg_tvbs $ foldTypeTvbs (DConT name) m_arg_tvbs
       sat_fixity_dec = maybeToList $ fmap (mk_fix_decl sat_name) m_fixity
 
-  other_decs <- go (num_args - 1) (reverse m_arg_tvbs) m_res_kind mk_rhs
+  other_decs <- go (num_args - 1) (reverse m_arg_tvbs) m_res_kind
   return $ sat_dec : sat_fixity_dec ++ other_decs
   where
     eta_expand :: [DTyVarBndr] -> Maybe DKind -> PrM ([DTyVarBndr], Maybe DKind)

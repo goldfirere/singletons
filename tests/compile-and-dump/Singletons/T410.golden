@@ -21,7 +21,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
                                           arg0123456789876543210
                                           arg. SameKind (Apply (EqualsSym1 arg0123456789876543210) arg) (EqualsSym2 arg0123456789876543210 arg) =>
                                    EqualsSym1 arg0123456789876543210 arg0123456789876543210
-    type instance Apply (EqualsSym1 arg0123456789876543210) arg0123456789876543210 = Equals arg0123456789876543210 arg0123456789876543210
+    type instance Apply (EqualsSym1 arg0123456789876543210) arg0123456789876543210 = EqualsSym2 arg0123456789876543210 arg0123456789876543210
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings EqualsSym0 where
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) EqualsSym0KindInference) ())
@@ -47,7 +47,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
                                                               a0123456789876543210
                                                               arg. SameKind (Apply (Equals_0123456789876543210Sym1 a0123456789876543210) arg) (Equals_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                        Equals_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Equals_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Equals_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (Equals_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Equals_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings Equals_0123456789876543210Sym0 where
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) Equals_0123456789876543210Sym0KindInference) ())

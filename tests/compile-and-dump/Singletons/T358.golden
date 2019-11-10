@@ -39,7 +39,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
         Method2aSym0KindInference :: forall arg0123456789876543210
                                             arg. SameKind (Apply Method2aSym0 arg) (Method2aSym1 arg) =>
                                      Method2aSym0 arg0123456789876543210
-    type instance Apply Method2aSym0 arg0123456789876543210 = Method2a arg0123456789876543210
+    type instance Apply Method2aSym0 arg0123456789876543210 = Method2aSym1 arg0123456789876543210
     type Method2bSym1 (arg0123456789876543210 :: b0123456789876543210) =
         Method2b arg0123456789876543210
     instance SuppressUnusedWarnings Method2bSym0 where
@@ -51,7 +51,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
         Method2bSym0KindInference :: forall arg0123456789876543210
                                             arg. SameKind (Apply Method2bSym0 arg) (Method2bSym1 arg) =>
                                      Method2bSym0 arg0123456789876543210
-    type instance Apply Method2bSym0 arg0123456789876543210 = Method2b arg0123456789876543210
+    type instance Apply Method2bSym0 arg0123456789876543210 = Method2bSym1 arg0123456789876543210
     class PC2 a where
       type Method2a (arg :: b) :: a
       type Method2b (arg :: b) :: a
@@ -74,7 +74,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
         Method2a_0123456789876543210Sym0KindInference :: forall a0123456789876543210
                                                                 arg. SameKind (Apply Method2a_0123456789876543210Sym0 arg) (Method2a_0123456789876543210Sym1 arg) =>
                                                          Method2a_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Method2a_0123456789876543210Sym0 a0123456789876543210 = Method2a_0123456789876543210 a0123456789876543210
+    type instance Apply Method2a_0123456789876543210Sym0 a0123456789876543210 = Method2a_0123456789876543210Sym1 a0123456789876543210
     type family Method2b_0123456789876543210 (a :: b) :: [a] where
       Method2b_0123456789876543210 _ = '[]
     type Method2b_0123456789876543210Sym1 (a0123456789876543210 :: b0123456789876543210) =
@@ -89,7 +89,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
         Method2b_0123456789876543210Sym0KindInference :: forall a0123456789876543210
                                                                 arg. SameKind (Apply Method2b_0123456789876543210Sym0 arg) (Method2b_0123456789876543210Sym1 arg) =>
                                                          Method2b_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Method2b_0123456789876543210Sym0 a0123456789876543210 = Method2b_0123456789876543210 a0123456789876543210
+    type instance Apply Method2b_0123456789876543210Sym0 a0123456789876543210 = Method2b_0123456789876543210Sym1 a0123456789876543210
     instance PC2 [a] where
       type Method2a a = Apply Method2a_0123456789876543210Sym0 a
       type Method2b a = Apply Method2b_0123456789876543210Sym0 a

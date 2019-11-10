@@ -18,7 +18,7 @@ Singletons/T353.hs:(0,0)-(0,0): Splicing declarations
                                             e0123456789876543210
                                             arg. SameKind (Apply (SymmetrySym2 a0123456789876543210 y0123456789876543210) arg) (SymmetrySym3 a0123456789876543210 y0123456789876543210 arg) =>
                                      SymmetrySym2 a0123456789876543210 y0123456789876543210 e0123456789876543210
-    type instance Apply (SymmetrySym2 y0123456789876543210 a0123456789876543210) e0123456789876543210 = Symmetry y0123456789876543210 a0123456789876543210 e0123456789876543210
+    type instance Apply (SymmetrySym2 y0123456789876543210 a0123456789876543210) e0123456789876543210 = SymmetrySym3 y0123456789876543210 a0123456789876543210 e0123456789876543210
     instance SuppressUnusedWarnings (SymmetrySym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) SymmetrySym1KindInference) ())
     data SymmetrySym1 (a0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210)) :: forall (y0123456789876543210 :: Proxy t0123456789876543210).
@@ -59,7 +59,7 @@ Singletons/T353.hs:0:0:: Splicing declarations
                                           t0123456789876543210
                                           arg. SameKind (Apply (MkProdSym1 t0123456789876543210) arg) (MkProdSym2 t0123456789876543210 arg) =>
                                    MkProdSym1 t0123456789876543210 t0123456789876543210
-    type instance Apply (MkProdSym1 t0123456789876543210) t0123456789876543210 = 'MkProd t0123456789876543210 t0123456789876543210
+    type instance Apply (MkProdSym1 t0123456789876543210) t0123456789876543210 = MkProdSym2 t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings MkProdSym0 where
       suppressUnusedWarnings = snd (((,) MkProdSym0KindInference) ())
     data MkProdSym0 :: forall k0123456789876543210
@@ -89,7 +89,7 @@ Singletons/T353.hs:0:0:: Splicing declarations
                                          t0123456789876543210
                                          arg. SameKind (Apply (MkFooSym1 t0123456789876543210) arg) (MkFooSym2 t0123456789876543210 arg) =>
                                   MkFooSym1 t0123456789876543210 t0123456789876543210
-    type instance Apply (MkFooSym1 t0123456789876543210) t0123456789876543210 = 'MkFoo t0123456789876543210 t0123456789876543210
+    type instance Apply (MkFooSym1 t0123456789876543210) t0123456789876543210 = MkFooSym2 t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings MkFooSym0 where
       suppressUnusedWarnings = snd (((,) MkFooSym0KindInference) ())
     data MkFooSym0 :: forall k0123456789876543210

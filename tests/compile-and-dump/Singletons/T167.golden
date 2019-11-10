@@ -19,7 +19,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
                                             arg0123456789876543210
                                             arg. SameKind (Apply (FoosPrecSym2 arg0123456789876543210 arg0123456789876543210) arg) (FoosPrecSym3 arg0123456789876543210 arg0123456789876543210 arg) =>
                                      FoosPrecSym2 arg0123456789876543210 arg0123456789876543210 arg0123456789876543210
-    type instance Apply (FoosPrecSym2 arg0123456789876543210 arg0123456789876543210) arg0123456789876543210 = FoosPrec arg0123456789876543210 arg0123456789876543210 arg0123456789876543210
+    type instance Apply (FoosPrecSym2 arg0123456789876543210 arg0123456789876543210) arg0123456789876543210 = FoosPrecSym3 arg0123456789876543210 arg0123456789876543210 arg0123456789876543210
     instance SuppressUnusedWarnings (FoosPrecSym1 arg0123456789876543210) where
       suppressUnusedWarnings = snd (((,) FoosPrecSym1KindInference) ())
     data FoosPrecSym1 (arg0123456789876543210 :: Nat) :: forall a0123456789876543210.
@@ -49,7 +49,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
                                            arg0123456789876543210
                                            arg. SameKind (Apply (FooListSym1 arg0123456789876543210) arg) (FooListSym2 arg0123456789876543210 arg) =>
                                     FooListSym1 arg0123456789876543210 arg0123456789876543210
-    type instance Apply (FooListSym1 arg0123456789876543210) arg0123456789876543210 = FooList arg0123456789876543210 arg0123456789876543210
+    type instance Apply (FooListSym1 arg0123456789876543210) arg0123456789876543210 = FooListSym2 arg0123456789876543210 arg0123456789876543210
     instance SuppressUnusedWarnings FooListSym0 where
       suppressUnusedWarnings = snd (((,) FooListSym0KindInference) ())
     data FooListSym0 :: forall a0123456789876543210.
@@ -72,7 +72,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
                                                                a0123456789876543210
                                                                arg. SameKind (Apply (FooList_0123456789876543210Sym1 a0123456789876543210) arg) (FooList_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         FooList_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (FooList_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = FooList_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (FooList_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = FooList_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings FooList_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) FooList_0123456789876543210Sym0KindInference) ())
@@ -101,7 +101,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
                                                                 a0123456789876543210
                                                                 arg. SameKind (Apply (FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (FoosPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                          FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = FoosPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = FoosPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FoosPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) FoosPrec_0123456789876543210Sym1KindInference) ())

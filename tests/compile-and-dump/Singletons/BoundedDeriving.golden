@@ -47,7 +47,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
         Foo3Sym0KindInference :: forall t0123456789876543210
                                         arg. SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
                                  Foo3Sym0 t0123456789876543210
-    type instance Apply Foo3Sym0 t0123456789876543210 = Foo3 t0123456789876543210
+    type instance Apply Foo3Sym0 t0123456789876543210 = Foo3Sym1 t0123456789876543210
     type Foo41Sym0 = Foo41
     type Foo42Sym0 = Foo42
     type PairSym2 (t0123456789876543210 :: Bool) (t0123456789876543210 :: Bool) =
@@ -60,7 +60,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
                                         t0123456789876543210
                                         arg. SameKind (Apply (PairSym1 t0123456789876543210) arg) (PairSym2 t0123456789876543210 arg) =>
                                  PairSym1 t0123456789876543210 t0123456789876543210
-    type instance Apply (PairSym1 t0123456789876543210) t0123456789876543210 = Pair t0123456789876543210 t0123456789876543210
+    type instance Apply (PairSym1 t0123456789876543210) t0123456789876543210 = PairSym2 t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings PairSym0 where
       suppressUnusedWarnings = snd (((,) PairSym0KindInference) ())
     data PairSym0 :: (~>) Bool ((~>) Bool Pair)

@@ -24,7 +24,7 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
         Lambda_0123456789876543210Sym0KindInference :: forall t0123456789876543210
                                                               arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
                                                        Lambda_0123456789876543210Sym0 t0123456789876543210
-    type instance Apply Lambda_0123456789876543210Sym0 t0123456789876543210 = Lambda_0123456789876543210 t0123456789876543210
+    type instance Apply Lambda_0123456789876543210Sym0 t0123456789876543210 = Lambda_0123456789876543210Sym1 t0123456789876543210
     type BarSym0 = Bar
     type FooSym0 = Foo
     type family Bar :: [Nat] where

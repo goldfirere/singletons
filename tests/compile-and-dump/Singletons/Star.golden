@@ -21,7 +21,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
         MaybeSym0KindInference :: forall t0123456789876543210
                                          arg. SameKind (Apply MaybeSym0 arg) (MaybeSym1 arg) =>
                                   MaybeSym0 t0123456789876543210
-    type instance Apply MaybeSym0 t0123456789876543210 = Maybe t0123456789876543210
+    type instance Apply MaybeSym0 t0123456789876543210 = MaybeSym1 t0123456789876543210
     type VecSym2 (t0123456789876543210 :: Type) (t0123456789876543210 :: Nat) =
         Vec t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (VecSym1 t0123456789876543210) where
@@ -32,7 +32,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
                                        t0123456789876543210
                                        arg. SameKind (Apply (VecSym1 t0123456789876543210) arg) (VecSym2 t0123456789876543210 arg) =>
                                 VecSym1 t0123456789876543210 t0123456789876543210
-    type instance Apply (VecSym1 t0123456789876543210) t0123456789876543210 = Vec t0123456789876543210 t0123456789876543210
+    type instance Apply (VecSym1 t0123456789876543210) t0123456789876543210 = VecSym2 t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings VecSym0 where
       suppressUnusedWarnings = snd (((,) VecSym0KindInference) ())
     data VecSym0 :: (~>) Type ((~>) Nat Type)
@@ -87,7 +87,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
                                                                a0123456789876543210
                                                                arg. SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym0KindInference) ())
@@ -117,7 +117,7 @@ Singletons/Star.hs:0:0:: Splicing declarations
                                                                  a0123456789876543210
                                                                  arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())

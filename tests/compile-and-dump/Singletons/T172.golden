@@ -13,7 +13,7 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
                                 a0123456789876543210
                                 arg. SameKind (Apply (($>@#@$$) a0123456789876543210) arg) (($>@#@$$$) a0123456789876543210 arg) =>
                          ($>@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply (($>@#@$$) a0123456789876543210) a0123456789876543210 = ($>) a0123456789876543210 a0123456789876543210
+    type instance Apply (($>@#@$$) a0123456789876543210) a0123456789876543210 = ($>@#@$$$) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ($>@#@$) where
       suppressUnusedWarnings = snd (((,) (:$>@#@$###)) ())
     data ($>@#@$) :: (~>) Nat ((~>) Nat Nat)

@@ -11,7 +11,7 @@ Singletons/T216.hs:0:0:: Splicing declarations
                                            a0123456789876543210
                                            arg. SameKind (Apply (MyProxySym1 k0123456789876543210) arg) (MyProxySym2 k0123456789876543210 arg) =>
                                     MyProxySym1 k0123456789876543210 a0123456789876543210
-    type instance Apply (MyProxySym1 k0123456789876543210) a0123456789876543210 = MyProxy k0123456789876543210 a0123456789876543210
+    type instance Apply (MyProxySym1 k0123456789876543210) a0123456789876543210 = MyProxySym2 k0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings MyProxySym0 where
       suppressUnusedWarnings = snd (((,) MyProxySym0KindInference) ())
     data MyProxySym0 :: forall (k0123456789876543210 :: Type).
@@ -32,7 +32,7 @@ Singletons/T216.hs:0:0:: Splicing declarations
                                             e0123456789876543210
                                             arg. SameKind (Apply (SymmetrySym2 a0123456789876543210 y0123456789876543210) arg) (SymmetrySym3 a0123456789876543210 y0123456789876543210 arg) =>
                                      SymmetrySym2 a0123456789876543210 y0123456789876543210 e0123456789876543210
-    type instance Apply (SymmetrySym2 y0123456789876543210 a0123456789876543210) e0123456789876543210 = Symmetry y0123456789876543210 a0123456789876543210 e0123456789876543210
+    type instance Apply (SymmetrySym2 y0123456789876543210 a0123456789876543210) e0123456789876543210 = SymmetrySym3 y0123456789876543210 a0123456789876543210 e0123456789876543210
     instance SuppressUnusedWarnings (SymmetrySym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) SymmetrySym1KindInference) ())
     data SymmetrySym1 (a0123456789876543210 :: t0123456789876543210) :: forall (y0123456789876543210 :: t0123456789876543210).

@@ -45,7 +45,7 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
                                                               t0123456789876543210
                                                               arg. SameKind (Apply (Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210) arg) (Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 arg) =>
                                                        Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210 t0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym2 b0123456789876543210 a0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210 b0123456789876543210 a0123456789876543210 t0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym2 b0123456789876543210 a0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210Sym3 b0123456789876543210 a0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
@@ -81,7 +81,7 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
                                                               t0123456789876543210
                                                               arg. SameKind (Apply (Lambda_0123456789876543210Sym1 d0123456789876543210) arg) (Lambda_0123456789876543210Sym2 d0123456789876543210 arg) =>
                                                        Lambda_0123456789876543210Sym1 d0123456789876543210 t0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym1 d0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210 d0123456789876543210 t0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym1 d0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210Sym2 d0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
@@ -108,7 +108,7 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
                                                               t0123456789876543210
                                                               arg. SameKind (Apply (Lambda_0123456789876543210Sym2 d0123456789876543210 x0123456789876543210) arg) (Lambda_0123456789876543210Sym3 d0123456789876543210 x0123456789876543210 arg) =>
                                                        Lambda_0123456789876543210Sym2 d0123456789876543210 x0123456789876543210 t0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym2 x0123456789876543210 d0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 d0123456789876543210 t0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym2 x0123456789876543210 d0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210Sym3 x0123456789876543210 d0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 d0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
@@ -139,7 +139,7 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
                                         a0123456789876543210
                                         arg. SameKind (Apply (Foo3Sym1 a0123456789876543210) arg) (Foo3Sym2 a0123456789876543210 arg) =>
                                  Foo3Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Foo3Sym1 a0123456789876543210) a0123456789876543210 = Foo3 a0123456789876543210 a0123456789876543210
+    type instance Apply (Foo3Sym1 a0123456789876543210) a0123456789876543210 = Foo3Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Foo3Sym0 where
       suppressUnusedWarnings = snd (((,) Foo3Sym0KindInference) ())
     data Foo3Sym0 :: forall a0123456789876543210 b0123456789876543210.
@@ -159,7 +159,7 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
                                         a0123456789876543210
                                         arg. SameKind (Apply (Foo2Sym1 a0123456789876543210) arg) (Foo2Sym2 a0123456789876543210 arg) =>
                                  Foo2Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Foo2Sym1 a0123456789876543210) a0123456789876543210 = Foo2 a0123456789876543210 a0123456789876543210
+    type instance Apply (Foo2Sym1 a0123456789876543210) a0123456789876543210 = Foo2Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Foo2Sym0 where
       suppressUnusedWarnings = snd (((,) Foo2Sym0KindInference) ())
     data Foo2Sym0 :: forall a0123456789876543210.
@@ -179,7 +179,7 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
                                         a0123456789876543210
                                         arg. SameKind (Apply (Foo1Sym1 a0123456789876543210) arg) (Foo1Sym2 a0123456789876543210 arg) =>
                                  Foo1Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Foo1Sym1 a0123456789876543210) a0123456789876543210 = Foo1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Foo1Sym1 a0123456789876543210) a0123456789876543210 = Foo1Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Foo1Sym0 where
       suppressUnusedWarnings = snd (((,) Foo1Sym0KindInference) ())
     data Foo1Sym0 :: forall a0123456789876543210.

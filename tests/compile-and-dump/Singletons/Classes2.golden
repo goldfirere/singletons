@@ -24,7 +24,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
         SuccFooSym0KindInference :: forall t0123456789876543210
                                            arg. SameKind (Apply SuccFooSym0 arg) (SuccFooSym1 arg) =>
                                     SuccFooSym0 t0123456789876543210
-    type instance Apply SuccFooSym0 t0123456789876543210 = SuccFoo t0123456789876543210
+    type instance Apply SuccFooSym0 t0123456789876543210 = SuccFooSym1 t0123456789876543210
     type family Mycompare_0123456789876543210 (a :: NatFoo) (a :: NatFoo) :: Ordering where
       Mycompare_0123456789876543210 ZeroFoo ZeroFoo = EQSym0
       Mycompare_0123456789876543210 ZeroFoo (SuccFoo _) = LTSym0
@@ -41,7 +41,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
                                                                  a0123456789876543210
                                                                  arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())

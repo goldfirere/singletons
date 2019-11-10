@@ -27,7 +27,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
                                   a0123456789876543210
                                   arg. SameKind (Apply ((====@#@$$) a0123456789876543210) arg) ((====@#@$$$) a0123456789876543210 arg) =>
                            (====@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((====@#@$$) a0123456789876543210) a0123456789876543210 = (====) a0123456789876543210 a0123456789876543210
+    type instance Apply ((====@#@$$) a0123456789876543210) a0123456789876543210 = (====@#@$$$) a0123456789876543210 a0123456789876543210
     infix 4 ====@#@$$
     instance SuppressUnusedWarnings (====@#@$) where
       suppressUnusedWarnings = snd (((,) (:====@#@$###)) ())
@@ -52,7 +52,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
                                  arg0123456789876543210
                                  arg. SameKind (Apply ((<=>@#@$$) arg0123456789876543210) arg) ((<=>@#@$$$) arg0123456789876543210 arg) =>
                           (<=>@#@$$) arg0123456789876543210 arg0123456789876543210
-    type instance Apply ((<=>@#@$$) arg0123456789876543210) arg0123456789876543210 = (<=>) arg0123456789876543210 arg0123456789876543210
+    type instance Apply ((<=>@#@$$) arg0123456789876543210) arg0123456789876543210 = (<=>@#@$$$) arg0123456789876543210 arg0123456789876543210
     infix 4 <=>@#@$$
     instance SuppressUnusedWarnings (<=>@#@$) where
       suppressUnusedWarnings = snd (((,) (:<=>@#@$###)) ())

@@ -75,7 +75,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                               a0123456789876543210
                                               arg. SameKind (Apply (FooCompareSym1 a0123456789876543210) arg) (FooCompareSym2 a0123456789876543210 arg) =>
                                        FooCompareSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (FooCompareSym1 a0123456789876543210) a0123456789876543210 = FooCompare a0123456789876543210 a0123456789876543210
+    type instance Apply (FooCompareSym1 a0123456789876543210) a0123456789876543210 = FooCompareSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings FooCompareSym0 where
       suppressUnusedWarnings = snd (((,) FooCompareSym0KindInference) ())
     data FooCompareSym0 :: (~>) Foo ((~>) Foo Ordering)
@@ -95,7 +95,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                          a0123456789876543210
                                          arg. SameKind (Apply (ConstSym1 a0123456789876543210) arg) (ConstSym2 a0123456789876543210 arg) =>
                                   ConstSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ConstSym1 a0123456789876543210) a0123456789876543210 = Const a0123456789876543210 a0123456789876543210
+    type instance Apply (ConstSym1 a0123456789876543210) a0123456789876543210 = ConstSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ConstSym0 where
       suppressUnusedWarnings = snd (((,) ConstSym0KindInference) ())
     data ConstSym0 :: forall a0123456789876543210 b0123456789876543210.
@@ -122,7 +122,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                              arg0123456789876543210
                                              arg. SameKind (Apply (MycompareSym1 arg0123456789876543210) arg) (MycompareSym2 arg0123456789876543210 arg) =>
                                       MycompareSym1 arg0123456789876543210 arg0123456789876543210
-    type instance Apply (MycompareSym1 arg0123456789876543210) arg0123456789876543210 = Mycompare arg0123456789876543210 arg0123456789876543210
+    type instance Apply (MycompareSym1 arg0123456789876543210) arg0123456789876543210 = MycompareSym2 arg0123456789876543210 arg0123456789876543210
     instance SuppressUnusedWarnings MycompareSym0 where
       suppressUnusedWarnings = snd (((,) MycompareSym0KindInference) ())
     data MycompareSym0 :: forall a0123456789876543210.
@@ -143,7 +143,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                  arg0123456789876543210
                                  arg. SameKind (Apply ((<=>@#@$$) arg0123456789876543210) arg) ((<=>@#@$$$) arg0123456789876543210 arg) =>
                           (<=>@#@$$) arg0123456789876543210 arg0123456789876543210
-    type instance Apply ((<=>@#@$$) arg0123456789876543210) arg0123456789876543210 = (<=>) arg0123456789876543210 arg0123456789876543210
+    type instance Apply ((<=>@#@$$) arg0123456789876543210) arg0123456789876543210 = (<=>@#@$$$) arg0123456789876543210 arg0123456789876543210
     infix 4 <=>@#@$$
     instance SuppressUnusedWarnings (<=>@#@$) where
       suppressUnusedWarnings = snd (((,) (:<=>@#@$###)) ())
@@ -168,7 +168,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                                 a0123456789876543210
                                                                 arg. SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
@@ -199,7 +199,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                                  a0123456789876543210
                                                                  arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())
@@ -224,7 +224,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                                  a0123456789876543210
                                                                  arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())
@@ -249,7 +249,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                                  a0123456789876543210
                                                                  arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())
@@ -277,7 +277,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                                 a0123456789876543210
                                                                 arg. SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
@@ -447,7 +447,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                                  a0123456789876543210
                                                                  arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())
@@ -474,7 +474,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                                a0123456789876543210
                                                                arg. SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym0KindInference) ())
@@ -512,7 +512,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         Succ'Sym0KindInference :: forall t0123456789876543210
                                          arg. SameKind (Apply Succ'Sym0 arg) (Succ'Sym1 arg) =>
                                   Succ'Sym0 t0123456789876543210
-    type instance Apply Succ'Sym0 t0123456789876543210 = Succ' t0123456789876543210
+    type instance Apply Succ'Sym0 t0123456789876543210 = Succ'Sym1 t0123456789876543210
     type family Mycompare_0123456789876543210 (a :: Nat') (a :: Nat') :: Ordering where
       Mycompare_0123456789876543210 Zero' Zero' = EQSym0
       Mycompare_0123456789876543210 Zero' (Succ' _) = LTSym0
@@ -529,7 +529,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                                                                  a0123456789876543210
                                                                  arg. SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())
