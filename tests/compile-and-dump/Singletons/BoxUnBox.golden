@@ -8,8 +8,6 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
     data Box a = FBox a
     unBox :: Box a -> a
     unBox (FBox a) = a
-    type FBoxSym1 (t0123456789876543210 :: a0123456789876543210) =
-        FBox t0123456789876543210
     instance SuppressUnusedWarnings FBoxSym0 where
       suppressUnusedWarnings = snd (((,) FBoxSym0KindInference) ())
     data FBoxSym0 :: forall a0123456789876543210.
@@ -19,8 +17,8 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply FBoxSym0 arg) (FBoxSym1 arg) =>
                                  FBoxSym0 t0123456789876543210
     type instance Apply FBoxSym0 t0123456789876543210 = FBoxSym1 t0123456789876543210
-    type UnBoxSym1 (a0123456789876543210 :: Box a0123456789876543210) =
-        UnBox a0123456789876543210
+    type FBoxSym1 (t0123456789876543210 :: a0123456789876543210) =
+        FBox t0123456789876543210
     instance SuppressUnusedWarnings UnBoxSym0 where
       suppressUnusedWarnings = snd (((,) UnBoxSym0KindInference) ())
     data UnBoxSym0 :: forall a0123456789876543210.
@@ -30,6 +28,8 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
                                          arg. SameKind (Apply UnBoxSym0 arg) (UnBoxSym1 arg) =>
                                   UnBoxSym0 a0123456789876543210
     type instance Apply UnBoxSym0 a0123456789876543210 = UnBoxSym1 a0123456789876543210
+    type UnBoxSym1 (a0123456789876543210 :: Box a0123456789876543210) =
+        UnBox a0123456789876543210
     type family UnBox (a :: Box a) :: a where
       UnBox (FBox a) = a
     sUnBox ::

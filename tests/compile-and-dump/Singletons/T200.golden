@@ -18,8 +18,14 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     ($$:) x y = (x :$$: y)
     (<>:) :: ErrorMessage -> ErrorMessage -> ErrorMessage
     (<>:) x y = (x :<>: y)
-    type (:$$:@#@$$$) (t0123456789876543210 :: ErrorMessage) (t0123456789876543210 :: ErrorMessage) =
-        (:$$:) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (:$$:@#@$) where
+      suppressUnusedWarnings = snd (((,) (::$$:@#@$###)) ())
+    data (:$$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
+      where
+        (::$$:@#@$###) :: forall t0123456789876543210
+                                 arg. SameKind (Apply (:$$:@#@$) arg) ((:$$:@#@$$) arg) =>
+                          (:$$:@#@$) t0123456789876543210
+    type instance Apply (:$$:@#@$) t0123456789876543210 = (:$$:@#@$$) t0123456789876543210
     instance SuppressUnusedWarnings ((:$$:@#@$$) t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::$$:@#@$$###)) ())
     data (:$$:@#@$$) (t0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
@@ -29,16 +35,16 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                                   arg. SameKind (Apply ((:$$:@#@$$) t0123456789876543210) arg) ((:$$:@#@$$$) t0123456789876543210 arg) =>
                            (:$$:@#@$$) t0123456789876543210 t0123456789876543210
     type instance Apply ((:$$:@#@$$) t0123456789876543210) t0123456789876543210 = (:$$:@#@$$$) t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (:$$:@#@$) where
-      suppressUnusedWarnings = snd (((,) (::$$:@#@$###)) ())
-    data (:$$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
+    type (:$$:@#@$$$) (t0123456789876543210 :: ErrorMessage) (t0123456789876543210 :: ErrorMessage) =
+        (:$$:) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (:<>:@#@$) where
+      suppressUnusedWarnings = snd (((,) (::<>:@#@$###)) ())
+    data (:<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
-        (::$$:@#@$###) :: forall t0123456789876543210
-                                 arg. SameKind (Apply (:$$:@#@$) arg) ((:$$:@#@$$) arg) =>
-                          (:$$:@#@$) t0123456789876543210
-    type instance Apply (:$$:@#@$) t0123456789876543210 = (:$$:@#@$$) t0123456789876543210
-    type (:<>:@#@$$$) (t0123456789876543210 :: ErrorMessage) (t0123456789876543210 :: ErrorMessage) =
-        (:<>:) t0123456789876543210 t0123456789876543210
+        (::<>:@#@$###) :: forall t0123456789876543210
+                                 arg. SameKind (Apply (:<>:@#@$) arg) ((:<>:@#@$$) arg) =>
+                          (:<>:@#@$) t0123456789876543210
+    type instance Apply (:<>:@#@$) t0123456789876543210 = (:<>:@#@$$) t0123456789876543210
     instance SuppressUnusedWarnings ((:<>:@#@$$) t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::<>:@#@$$###)) ())
     data (:<>:@#@$$) (t0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
@@ -48,16 +54,8 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                                   arg. SameKind (Apply ((:<>:@#@$$) t0123456789876543210) arg) ((:<>:@#@$$$) t0123456789876543210 arg) =>
                            (:<>:@#@$$) t0123456789876543210 t0123456789876543210
     type instance Apply ((:<>:@#@$$) t0123456789876543210) t0123456789876543210 = (:<>:@#@$$$) t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (:<>:@#@$) where
-      suppressUnusedWarnings = snd (((,) (::<>:@#@$###)) ())
-    data (:<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
-      where
-        (::<>:@#@$###) :: forall t0123456789876543210
-                                 arg. SameKind (Apply (:<>:@#@$) arg) ((:<>:@#@$$) arg) =>
-                          (:<>:@#@$) t0123456789876543210
-    type instance Apply (:<>:@#@$) t0123456789876543210 = (:<>:@#@$$) t0123456789876543210
-    type EMSym1 (t0123456789876543210 :: [Bool]) =
-        EM t0123456789876543210
+    type (:<>:@#@$$$) (t0123456789876543210 :: ErrorMessage) (t0123456789876543210 :: ErrorMessage) =
+        (:<>:) t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings EMSym0 where
       suppressUnusedWarnings = snd (((,) EMSym0KindInference) ())
     data EMSym0 :: (~>) [Bool] ErrorMessage
@@ -66,8 +64,16 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                                       arg. SameKind (Apply EMSym0 arg) (EMSym1 arg) =>
                                EMSym0 t0123456789876543210
     type instance Apply EMSym0 t0123456789876543210 = EMSym1 t0123456789876543210
-    type (<>:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) =
-        (<>:) a0123456789876543210 a0123456789876543210
+    type EMSym1 (t0123456789876543210 :: [Bool]) =
+        EM t0123456789876543210
+    instance SuppressUnusedWarnings (<>:@#@$) where
+      suppressUnusedWarnings = snd (((,) (:<>:@#@$###)) ())
+    data (<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
+      where
+        (:<>:@#@$###) :: forall a0123456789876543210
+                                arg. SameKind (Apply (<>:@#@$) arg) ((<>:@#@$$) arg) =>
+                         (<>:@#@$) a0123456789876543210
+    type instance Apply (<>:@#@$) a0123456789876543210 = (<>:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings ((<>:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:<>:@#@$$###)) ())
     data (<>:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
@@ -77,16 +83,16 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                                  arg. SameKind (Apply ((<>:@#@$$) a0123456789876543210) arg) ((<>:@#@$$$) a0123456789876543210 arg) =>
                           (<>:@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((<>:@#@$$) a0123456789876543210) a0123456789876543210 = (<>:@#@$$$) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (<>:@#@$) where
-      suppressUnusedWarnings = snd (((,) (:<>:@#@$###)) ())
-    data (<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
+    type (<>:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) =
+        (<>:) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings ($$:@#@$) where
+      suppressUnusedWarnings = snd (((,) (:$$:@#@$###)) ())
+    data ($$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
-        (:<>:@#@$###) :: forall a0123456789876543210
-                                arg. SameKind (Apply (<>:@#@$) arg) ((<>:@#@$$) arg) =>
-                         (<>:@#@$) a0123456789876543210
-    type instance Apply (<>:@#@$) a0123456789876543210 = (<>:@#@$$) a0123456789876543210
-    type ($$:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) =
-        ($$:) a0123456789876543210 a0123456789876543210
+        (:$$:@#@$###) :: forall a0123456789876543210
+                                arg. SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
+                         ($$:@#@$) a0123456789876543210
+    type instance Apply ($$:@#@$) a0123456789876543210 = ($$:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (($$:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:$$:@#@$$###)) ())
     data ($$:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
@@ -96,14 +102,8 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                                  arg. SameKind (Apply (($$:@#@$$) a0123456789876543210) arg) (($$:@#@$$$) a0123456789876543210 arg) =>
                           ($$:@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply (($$:@#@$$) a0123456789876543210) a0123456789876543210 = ($$:@#@$$$) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ($$:@#@$) where
-      suppressUnusedWarnings = snd (((,) (:$$:@#@$###)) ())
-    data ($$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
-      where
-        (:$$:@#@$###) :: forall a0123456789876543210
-                                arg. SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
-                         ($$:@#@$) a0123456789876543210
-    type instance Apply ($$:@#@$) a0123456789876543210 = ($$:@#@$$) a0123456789876543210
+    type ($$:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) =
+        ($$:) a0123456789876543210 a0123456789876543210
     type family (<>:) (a :: ErrorMessage) (a :: ErrorMessage) :: ErrorMessage where
       (<>:) x y = Apply (Apply (:<>:@#@$) x) y
     type family ($$:) (a :: ErrorMessage) (a :: ErrorMessage) :: ErrorMessage where

@@ -16,8 +16,15 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     complex = (Pair ((Pair (Just Zero)) Zero)) False
     tuple = (False, Just Zero, True)
     aList = [Zero, Succ Zero, Succ (Succ Zero)]
-    type PairSym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: b0123456789876543210) =
-        Pair t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings PairSym0 where
+      suppressUnusedWarnings = snd (((,) PairSym0KindInference) ())
+    data PairSym0 :: forall a0123456789876543210 b0123456789876543210.
+                     (~>) a0123456789876543210 ((~>) b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210))
+      where
+        PairSym0KindInference :: forall t0123456789876543210
+                                        arg. SameKind (Apply PairSym0 arg) (PairSym1 arg) =>
+                                 PairSym0 t0123456789876543210
+    type instance Apply PairSym0 t0123456789876543210 = PairSym1 t0123456789876543210
     instance SuppressUnusedWarnings (PairSym1 t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) PairSym1KindInference) ())
     data PairSym1 (t0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
@@ -28,15 +35,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply (PairSym1 t0123456789876543210) arg) (PairSym2 t0123456789876543210 arg) =>
                                  PairSym1 t0123456789876543210 t0123456789876543210
     type instance Apply (PairSym1 t0123456789876543210) t0123456789876543210 = PairSym2 t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings PairSym0 where
-      suppressUnusedWarnings = snd (((,) PairSym0KindInference) ())
-    data PairSym0 :: forall a0123456789876543210 b0123456789876543210.
-                     (~>) a0123456789876543210 ((~>) b0123456789876543210 (Pair a0123456789876543210 b0123456789876543210))
-      where
-        PairSym0KindInference :: forall t0123456789876543210
-                                        arg. SameKind (Apply PairSym0 arg) (PairSym1 arg) =>
-                                 PairSym0 t0123456789876543210
-    type instance Apply PairSym0 t0123456789876543210 = PairSym1 t0123456789876543210
+    type PairSym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: b0123456789876543210) =
+        Pair t0123456789876543210 t0123456789876543210
     type AListSym0 = AList
     type TupleSym0 = Tuple
     type ComplexSym0 = Complex
@@ -51,19 +51,17 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       Pr = Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:@#@$) ZeroSym0) '[])
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Pair a b) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 p_0123456789876543210 (Pair arg_0123456789876543210 arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Pair ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210)) (Apply (Apply (.@#@$) ShowSpaceSym0) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))))) a_0123456789876543210
-    type ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Pair a0123456789876543210 b0123456789876543210) (a0123456789876543210 :: Symbol) =
-        ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
+    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
-    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Pair a0123456789876543210 b0123456789876543210) :: (~>) Symbol Symbol
+        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
+    data ShowsPrec_0123456789876543210Sym0 :: forall a0123456789876543210
+                                                     b0123456789876543210.
+                                              (~>) GHC.Types.Nat ((~>) (Pair a0123456789876543210 b0123456789876543210) ((~>) Symbol Symbol))
       where
-        ShowsPrec_0123456789876543210Sym2KindInference :: forall a0123456789876543210
-                                                                 a0123456789876543210
-                                                                 a0123456789876543210
-                                                                 arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
-                                                          ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+        ShowsPrec_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                 arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
+                                                          ShowsPrec_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
@@ -76,17 +74,19 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                                                  arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
     type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
+    instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
-    data ShowsPrec_0123456789876543210Sym0 :: forall a0123456789876543210
-                                                     b0123456789876543210.
-                                              (~>) GHC.Types.Nat ((~>) (Pair a0123456789876543210 b0123456789876543210) ((~>) Symbol Symbol))
+        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
+    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Pair a0123456789876543210 b0123456789876543210) :: (~>) Symbol Symbol
       where
-        ShowsPrec_0123456789876543210Sym0KindInference :: forall a0123456789876543210
-                                                                 arg. SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
-                                                          ShowsPrec_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
+        ShowsPrec_0123456789876543210Sym2KindInference :: forall a0123456789876543210
+                                                                 a0123456789876543210
+                                                                 a0123456789876543210
+                                                                 arg. SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
+                                                          ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Pair a0123456789876543210 b0123456789876543210) (a0123456789876543210 :: Symbol) =
+        ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow (Pair a b) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     sAList :: Sing AListSym0
@@ -220,8 +220,15 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     silly x = case x of { _ -> () }
     type family Case_0123456789876543210 x t where
       Case_0123456789876543210 x _ = Tuple0Sym0
-    type Let0123456789876543210TSym2 x0123456789876543210 y0123456789876543210 =
-        Let0123456789876543210T x0123456789876543210 y0123456789876543210
+    instance SuppressUnusedWarnings Let0123456789876543210TSym0 where
+      suppressUnusedWarnings
+        = snd (((,) Let0123456789876543210TSym0KindInference) ())
+    data Let0123456789876543210TSym0 x0123456789876543210
+      where
+        Let0123456789876543210TSym0KindInference :: forall x0123456789876543210
+                                                           arg. SameKind (Apply Let0123456789876543210TSym0 arg) (Let0123456789876543210TSym1 arg) =>
+                                                    Let0123456789876543210TSym0 x0123456789876543210
+    type instance Apply Let0123456789876543210TSym0 x0123456789876543210 = Let0123456789876543210TSym1 x0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210TSym1 x0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Let0123456789876543210TSym1KindInference) ())
@@ -232,24 +239,57 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                                            arg. SameKind (Apply (Let0123456789876543210TSym1 x0123456789876543210) arg) (Let0123456789876543210TSym2 x0123456789876543210 arg) =>
                                                     Let0123456789876543210TSym1 x0123456789876543210 y0123456789876543210
     type instance Apply (Let0123456789876543210TSym1 x0123456789876543210) y0123456789876543210 = Let0123456789876543210TSym2 x0123456789876543210 y0123456789876543210
-    instance SuppressUnusedWarnings Let0123456789876543210TSym0 where
-      suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210TSym0KindInference) ())
-    data Let0123456789876543210TSym0 x0123456789876543210
-      where
-        Let0123456789876543210TSym0KindInference :: forall x0123456789876543210
-                                                           arg. SameKind (Apply Let0123456789876543210TSym0 arg) (Let0123456789876543210TSym1 arg) =>
-                                                    Let0123456789876543210TSym0 x0123456789876543210
-    type instance Apply Let0123456789876543210TSym0 x0123456789876543210 = Let0123456789876543210TSym1 x0123456789876543210
+    type Let0123456789876543210TSym2 x0123456789876543210 y0123456789876543210 =
+        Let0123456789876543210T x0123456789876543210 y0123456789876543210
     type family Let0123456789876543210T x y where
       Let0123456789876543210T x y = Apply (Apply Tuple2Sym0 x) y
     type family Case_0123456789876543210 arg_0123456789876543210 a b x y t where
       Case_0123456789876543210 arg_0123456789876543210 a b x y _ = a
     type family Lambda_0123456789876543210 a b x y t where
       Lambda_0123456789876543210 a b x y arg_0123456789876543210 = Case_0123456789876543210 arg_0123456789876543210 a b x y arg_0123456789876543210
-    type Lambda_0123456789876543210Sym5 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 t0123456789876543210 =
-        Lambda_0123456789876543210 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym4 y0123456789876543210 x0123456789876543210 b0123456789876543210 a0123456789876543210) where
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
+    data Lambda_0123456789876543210Sym0 a0123456789876543210
+      where
+        Lambda_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                              arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Lambda_0123456789876543210Sym0 a0123456789876543210 = Lambda_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
+    data Lambda_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210
+      where
+        Lambda_0123456789876543210Sym1KindInference :: forall a0123456789876543210
+                                                              b0123456789876543210
+                                                              arg. SameKind (Apply (Lambda_0123456789876543210Sym1 a0123456789876543210) arg) (Lambda_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                       Lambda_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym1 a0123456789876543210) b0123456789876543210 = Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210
+    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) Lambda_0123456789876543210Sym2KindInference) ())
+    data Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210 x0123456789876543210
+      where
+        Lambda_0123456789876543210Sym2KindInference :: forall a0123456789876543210
+                                                              b0123456789876543210
+                                                              x0123456789876543210
+                                                              arg. SameKind (Apply (Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210) arg) (Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 arg) =>
+                                                       Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210 x0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210) x0123456789876543210 = Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210
+    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) Lambda_0123456789876543210Sym3KindInference) ())
+    data Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210
+      where
+        Lambda_0123456789876543210Sym3KindInference :: forall a0123456789876543210
+                                                              b0123456789876543210
+                                                              x0123456789876543210
+                                                              y0123456789876543210
+                                                              arg. SameKind (Apply (Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210) arg) (Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 arg) =>
+                                                       Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210) y0123456789876543210 = Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210
+    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Lambda_0123456789876543210Sym4KindInference) ())
     data Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 t0123456789876543210
@@ -261,49 +301,9 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                                               t0123456789876543210
                                                               arg. SameKind (Apply (Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210) arg) (Lambda_0123456789876543210Sym5 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 arg) =>
                                                        Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 t0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym4 y0123456789876543210 x0123456789876543210 b0123456789876543210 a0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210Sym5 y0123456789876543210 x0123456789876543210 b0123456789876543210 a0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym3 x0123456789876543210 b0123456789876543210 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym3KindInference) ())
-    data Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210
-      where
-        Lambda_0123456789876543210Sym3KindInference :: forall a0123456789876543210
-                                                              b0123456789876543210
-                                                              x0123456789876543210
-                                                              y0123456789876543210
-                                                              arg. SameKind (Apply (Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210) arg) (Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 arg) =>
-                                                       Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym3 x0123456789876543210 b0123456789876543210 a0123456789876543210) y0123456789876543210 = Lambda_0123456789876543210Sym4 x0123456789876543210 b0123456789876543210 a0123456789876543210 y0123456789876543210
-    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym2 b0123456789876543210 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym2KindInference) ())
-    data Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210 x0123456789876543210
-      where
-        Lambda_0123456789876543210Sym2KindInference :: forall a0123456789876543210
-                                                              b0123456789876543210
-                                                              x0123456789876543210
-                                                              arg. SameKind (Apply (Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210) arg) (Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 arg) =>
-                                                       Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210 x0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym2 b0123456789876543210 a0123456789876543210) x0123456789876543210 = Lambda_0123456789876543210Sym3 b0123456789876543210 a0123456789876543210 x0123456789876543210
-    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
-    data Lambda_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210
-      where
-        Lambda_0123456789876543210Sym1KindInference :: forall a0123456789876543210
-                                                              b0123456789876543210
-                                                              arg. SameKind (Apply (Lambda_0123456789876543210Sym1 a0123456789876543210) arg) (Lambda_0123456789876543210Sym2 a0123456789876543210 arg) =>
-                                                       Lambda_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym1 a0123456789876543210) b0123456789876543210 = Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210
-    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
-    data Lambda_0123456789876543210Sym0 a0123456789876543210
-      where
-        Lambda_0123456789876543210Sym0KindInference :: forall a0123456789876543210
-                                                              arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
-                                                       Lambda_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Lambda_0123456789876543210Sym0 a0123456789876543210 = Lambda_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210Sym5 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 t0123456789876543210
+    type Lambda_0123456789876543210Sym5 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 t0123456789876543210 =
+        Lambda_0123456789876543210 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 t0123456789876543210
     type family Case_0123456789876543210 x y t where
       Case_0123456789876543210 x y '(a,
                                      b) = Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 a) b) x) y) b
@@ -311,19 +311,15 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 arg_0123456789876543210 x y _ = x
     type family Lambda_0123456789876543210 x y t where
       Lambda_0123456789876543210 x y arg_0123456789876543210 = Case_0123456789876543210 arg_0123456789876543210 x y arg_0123456789876543210
-    type Lambda_0123456789876543210Sym3 x0123456789876543210 y0123456789876543210 t0123456789876543210 =
-        Lambda_0123456789876543210 x0123456789876543210 y0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym2 y0123456789876543210 x0123456789876543210) where
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym2KindInference) ())
-    data Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210 t0123456789876543210
+        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
+    data Lambda_0123456789876543210Sym0 x0123456789876543210
       where
-        Lambda_0123456789876543210Sym2KindInference :: forall x0123456789876543210
-                                                              y0123456789876543210
-                                                              t0123456789876543210
-                                                              arg. SameKind (Apply (Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210) arg) (Lambda_0123456789876543210Sym3 x0123456789876543210 y0123456789876543210 arg) =>
-                                                       Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210 t0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym2 y0123456789876543210 x0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210Sym3 y0123456789876543210 x0123456789876543210 t0123456789876543210
+        Lambda_0123456789876543210Sym0KindInference :: forall x0123456789876543210
+                                                              arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 x0123456789876543210
+    type instance Apply Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210Sym1 x0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 x0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
@@ -334,15 +330,19 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                                               arg. SameKind (Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) arg) (Lambda_0123456789876543210Sym2 x0123456789876543210 arg) =>
                                                        Lambda_0123456789876543210Sym1 x0123456789876543210 y0123456789876543210
     type instance Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) y0123456789876543210 = Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210
-    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
-    data Lambda_0123456789876543210Sym0 x0123456789876543210
+        = snd (((,) Lambda_0123456789876543210Sym2KindInference) ())
+    data Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210 t0123456789876543210
       where
-        Lambda_0123456789876543210Sym0KindInference :: forall x0123456789876543210
-                                                              arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
-                                                       Lambda_0123456789876543210Sym0 x0123456789876543210
-    type instance Apply Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210Sym1 x0123456789876543210
+        Lambda_0123456789876543210Sym2KindInference :: forall x0123456789876543210
+                                                              y0123456789876543210
+                                                              t0123456789876543210
+                                                              arg. SameKind (Apply (Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210) arg) (Lambda_0123456789876543210Sym3 x0123456789876543210 y0123456789876543210 arg) =>
+                                                       Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210 t0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210Sym3 x0123456789876543210 y0123456789876543210 t0123456789876543210
+    type Lambda_0123456789876543210Sym3 x0123456789876543210 y0123456789876543210 t0123456789876543210 =
+        Lambda_0123456789876543210 x0123456789876543210 y0123456789876543210 t0123456789876543210
     type family Case_0123456789876543210 t where
       Case_0123456789876543210 '[_,
                                  _,
@@ -373,8 +373,6 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 ('Pair _ y_0123456789876543210) = y_0123456789876543210
     type family Case_0123456789876543210 t where
       Case_0123456789876543210 ('Pair y_0123456789876543210 _) = y_0123456789876543210
-    type SillySym1 (a0123456789876543210 :: a0123456789876543210) =
-        Silly a0123456789876543210
     instance SuppressUnusedWarnings SillySym0 where
       suppressUnusedWarnings = snd (((,) SillySym0KindInference) ())
     data SillySym0 :: forall a0123456789876543210.
@@ -384,9 +382,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                          arg. SameKind (Apply SillySym0 arg) (SillySym1 arg) =>
                                   SillySym0 a0123456789876543210
     type instance Apply SillySym0 a0123456789876543210 = SillySym1 a0123456789876543210
-    type Foo2Sym1 (a0123456789876543210 :: (a0123456789876543210,
-                                            b0123456789876543210)) =
-        Foo2 a0123456789876543210
+    type SillySym1 (a0123456789876543210 :: a0123456789876543210) =
+        Silly a0123456789876543210
     instance SuppressUnusedWarnings Foo2Sym0 where
       suppressUnusedWarnings = snd (((,) Foo2Sym0KindInference) ())
     data Foo2Sym0 :: forall a0123456789876543210 b0123456789876543210.
@@ -397,9 +394,9 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply Foo2Sym0 arg) (Foo2Sym1 arg) =>
                                  Foo2Sym0 a0123456789876543210
     type instance Apply Foo2Sym0 a0123456789876543210 = Foo2Sym1 a0123456789876543210
-    type Foo1Sym1 (a0123456789876543210 :: (a0123456789876543210,
+    type Foo2Sym1 (a0123456789876543210 :: (a0123456789876543210,
                                             b0123456789876543210)) =
-        Foo1 a0123456789876543210
+        Foo2 a0123456789876543210
     instance SuppressUnusedWarnings Foo1Sym0 where
       suppressUnusedWarnings = snd (((,) Foo1Sym0KindInference) ())
     data Foo1Sym0 :: forall a0123456789876543210 b0123456789876543210.
@@ -410,6 +407,9 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
                                  Foo1Sym0 a0123456789876543210
     type instance Apply Foo1Sym0 a0123456789876543210 = Foo1Sym1 a0123456789876543210
+    type Foo1Sym1 (a0123456789876543210 :: (a0123456789876543210,
+                                            b0123456789876543210)) =
+        Foo1 a0123456789876543210
     type BlimySym0 = Blimy
     type LszSym0 = Lsz
     type X_0123456789876543210Sym0 = X_0123456789876543210

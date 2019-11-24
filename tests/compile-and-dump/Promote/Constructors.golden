@@ -6,8 +6,14 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     data Foo = Foo | Foo :+ Foo
     data Bar = Bar Bar Bar Bar Bar Foo
     type FooSym0 = Foo
-    type (:+@#@$$$) (t0123456789876543210 :: Foo) (t0123456789876543210 :: Foo) =
-        (:+) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (:+@#@$) where
+      suppressUnusedWarnings = snd (((,) (::+@#@$###)) ())
+    data (:+@#@$) :: (~>) Foo ((~>) Foo Foo)
+      where
+        (::+@#@$###) :: forall t0123456789876543210
+                               arg. SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
+                        (:+@#@$) t0123456789876543210
+    type instance Apply (:+@#@$) t0123456789876543210 = (:+@#@$$) t0123456789876543210
     instance SuppressUnusedWarnings ((:+@#@$$) t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::+@#@$$###)) ())
     data (:+@#@$$) (t0123456789876543210 :: Foo) :: (~>) Foo Foo
@@ -17,16 +23,46 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
                                 arg. SameKind (Apply ((:+@#@$$) t0123456789876543210) arg) ((:+@#@$$$) t0123456789876543210 arg) =>
                          (:+@#@$$) t0123456789876543210 t0123456789876543210
     type instance Apply ((:+@#@$$) t0123456789876543210) t0123456789876543210 = (:+@#@$$$) t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (:+@#@$) where
-      suppressUnusedWarnings = snd (((,) (::+@#@$###)) ())
-    data (:+@#@$) :: (~>) Foo ((~>) Foo Foo)
+    type (:+@#@$$$) (t0123456789876543210 :: Foo) (t0123456789876543210 :: Foo) =
+        (:+) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings BarSym0 where
+      suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
+    data BarSym0 :: (~>) Bar ((~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar))))
       where
-        (::+@#@$###) :: forall t0123456789876543210
-                               arg. SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
-                        (:+@#@$) t0123456789876543210
-    type instance Apply (:+@#@$) t0123456789876543210 = (:+@#@$$) t0123456789876543210
-    type BarSym5 (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) (t0123456789876543210 :: Foo) =
-        Bar t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210
+        BarSym0KindInference :: forall t0123456789876543210
+                                       arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
+                                BarSym0 t0123456789876543210
+    type instance Apply BarSym0 t0123456789876543210 = BarSym1 t0123456789876543210
+    instance SuppressUnusedWarnings (BarSym1 t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) BarSym1KindInference) ())
+    data BarSym1 (t0123456789876543210 :: Bar) :: (~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar)))
+      where
+        BarSym1KindInference :: forall t0123456789876543210
+                                       t0123456789876543210
+                                       arg. SameKind (Apply (BarSym1 t0123456789876543210) arg) (BarSym2 t0123456789876543210 arg) =>
+                                BarSym1 t0123456789876543210 t0123456789876543210
+    type instance Apply (BarSym1 t0123456789876543210) t0123456789876543210 = BarSym2 t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (BarSym2 t0123456789876543210 t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) BarSym2KindInference) ())
+    data BarSym2 (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) :: (~>) Bar ((~>) Bar ((~>) Foo Bar))
+      where
+        BarSym2KindInference :: forall t0123456789876543210
+                                       t0123456789876543210
+                                       t0123456789876543210
+                                       arg. SameKind (Apply (BarSym2 t0123456789876543210 t0123456789876543210) arg) (BarSym3 t0123456789876543210 t0123456789876543210 arg) =>
+                                BarSym2 t0123456789876543210 t0123456789876543210 t0123456789876543210
+    type instance Apply (BarSym2 t0123456789876543210 t0123456789876543210) t0123456789876543210 = BarSym3 t0123456789876543210 t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (BarSym3 t0123456789876543210 t0123456789876543210 t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) BarSym3KindInference) ())
+    data BarSym3 (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) :: (~>) Bar ((~>) Foo Bar)
+      where
+        BarSym3KindInference :: forall t0123456789876543210
+                                       t0123456789876543210
+                                       t0123456789876543210
+                                       t0123456789876543210
+                                       arg. SameKind (Apply (BarSym3 t0123456789876543210 t0123456789876543210 t0123456789876543210) arg) (BarSym4 t0123456789876543210 t0123456789876543210 t0123456789876543210 arg) =>
+                                BarSym3 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210
+    type instance Apply (BarSym3 t0123456789876543210 t0123456789876543210 t0123456789876543210) t0123456789876543210 = BarSym4 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings (BarSym4 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) BarSym4KindInference) ())
     data BarSym4 (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) :: (~>) Foo Bar
@@ -39,41 +75,5 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply (BarSym4 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210) arg) (BarSym5 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210 arg) =>
                                 BarSym4 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210
     type instance Apply (BarSym4 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210) t0123456789876543210 = BarSym5 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (BarSym3 t0123456789876543210 t0123456789876543210 t0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) BarSym3KindInference) ())
-    data BarSym3 (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) :: (~>) Bar ((~>) Foo Bar)
-      where
-        BarSym3KindInference :: forall t0123456789876543210
-                                       t0123456789876543210
-                                       t0123456789876543210
-                                       t0123456789876543210
-                                       arg. SameKind (Apply (BarSym3 t0123456789876543210 t0123456789876543210 t0123456789876543210) arg) (BarSym4 t0123456789876543210 t0123456789876543210 t0123456789876543210 arg) =>
-                                BarSym3 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210
-    type instance Apply (BarSym3 t0123456789876543210 t0123456789876543210 t0123456789876543210) t0123456789876543210 = BarSym4 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (BarSym2 t0123456789876543210 t0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) BarSym2KindInference) ())
-    data BarSym2 (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) :: (~>) Bar ((~>) Bar ((~>) Foo Bar))
-      where
-        BarSym2KindInference :: forall t0123456789876543210
-                                       t0123456789876543210
-                                       t0123456789876543210
-                                       arg. SameKind (Apply (BarSym2 t0123456789876543210 t0123456789876543210) arg) (BarSym3 t0123456789876543210 t0123456789876543210 arg) =>
-                                BarSym2 t0123456789876543210 t0123456789876543210 t0123456789876543210
-    type instance Apply (BarSym2 t0123456789876543210 t0123456789876543210) t0123456789876543210 = BarSym3 t0123456789876543210 t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (BarSym1 t0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) BarSym1KindInference) ())
-    data BarSym1 (t0123456789876543210 :: Bar) :: (~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar)))
-      where
-        BarSym1KindInference :: forall t0123456789876543210
-                                       t0123456789876543210
-                                       arg. SameKind (Apply (BarSym1 t0123456789876543210) arg) (BarSym2 t0123456789876543210 arg) =>
-                                BarSym1 t0123456789876543210 t0123456789876543210
-    type instance Apply (BarSym1 t0123456789876543210) t0123456789876543210 = BarSym2 t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings BarSym0 where
-      suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
-    data BarSym0 :: (~>) Bar ((~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar))))
-      where
-        BarSym0KindInference :: forall t0123456789876543210
-                                       arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
-                                BarSym0 t0123456789876543210
-    type instance Apply BarSym0 t0123456789876543210 = BarSym1 t0123456789876543210
+    type BarSym5 (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) (t0123456789876543210 :: Bar) (t0123456789876543210 :: Foo) =
+        Bar t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210 t0123456789876543210

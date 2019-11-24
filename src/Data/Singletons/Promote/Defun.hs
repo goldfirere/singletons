@@ -215,6 +215,7 @@ defunctionalize :: Name
 defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
   (m_arg_tvbs, m_res_kind) <- eta_expand (noExactTyVars m_arg_tvbs')
                                          (noExactTyVars m_res_kind')
+  extra_name <- qNewName "arg"
 
   let -- Implements part (2)(i) from Note [Defunctionalization and dependent quantification]
       tvb_to_type_map :: Map Name DType
@@ -224,20 +225,52 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                         map dTyVarBndrToDType m_arg_tvbs
                           ++ maybeToList m_res_kind      -- (2)(i)(a)
 
-      go :: Int -> [DTyVarBndr] -> Maybe DKind
-         -> PrM [DDec]
-      go _ [] _ = return []
-      go n (m_arg : m_args) m_result = do
-        extra_name <- qNewName "arg"
-        let tyfun_name  = extractTvbName m_arg
+      -- The inner loop. @go n arg_tvbs res_tvbs@ returns @(m_result, decls)@.
+      -- Using one particular example:
+      --
+      -- @
+      -- data ExampleSym2 (x :: a) (y :: b) :: c ~> d ~> Type where ...
+      -- type instance Apply (ExampleSym2 x y) z = ExampleSym3 x y z
+      -- ...
+      -- @
+      --
+      -- We have:
+      --
+      -- * @n@ is 2. This is incremented in each iteration of `go`.
+      --
+      -- * @arg_tvbs@ is [(x :: a), (y :: b)].
+      --
+      -- * @res_tvbs@ is [(z :: c), (w :: d)]. The kinds of these type variable
+      --   binders appear in the result kind.
+      --
+      -- * @m_result@ is `Just (c ~> d ~> Type)`. @m_result@ is returned so
+      --   that earlier defunctionalization symbols can build on the result
+      --   kinds of later symbols. For instance, ExampleSym1 would get the
+      --   result kind `b ~> c ~> d ~> Type` by prepending `b` to ExampleSym2's
+      --   result kind `c ~> d ~> Type`.
+      --
+      -- * @decls@ are all of the declarations corresponding to ExampleSym2
+      --   and later defunctionalization symbols. This is the main payload of
+      --   the function.
+      --
+      -- This function is quadratic because it appends a variable at the end of
+      -- the @arg_tvbs@ list at each iteration. In practice, this is unlikely
+      -- to be a performance bottleneck since the number of arguments rarely
+      -- gets to be that large.
+      go :: Int -> [DTyVarBndr] -> [DTyVarBndr]
+         -> (Maybe DKind, [DDec])
+      go _ _        []                 = (m_res_kind, [])
+      go n arg_tvbs (res_tvb:res_tvbs) =
+        let (m_result, decls) = go (n+1) (arg_tvbs ++ [res_tvb]) res_tvbs
+
+            tyfun_name  = extractTvbName res_tvb
             data_name   = promoteTySym name n
             next_name   = promoteTySym name (n+1)
             con_name    = prefixName "" ":" $ suffixName "KindInference" "###" data_name
-            m_tyfun     = buildTyFunArrow_maybe (extractTvbKind m_arg) m_result
+            m_tyfun     = buildTyFunArrow_maybe (extractTvbKind res_tvb) m_result
             arg_params  = -- Implements part (2)(ii) from
                           -- Note [Defunctionalization and dependent quantification]
-                          map (map_tvb_kind (substType tvb_to_type_map)) $
-                          reverse m_args
+                          map (map_tvb_kind (substType tvb_to_type_map)) arg_tvbs
             arg_names   = map extractTvbName arg_params
             params      = arg_params ++ [DPlainTV tyfun_name]
             con_eq_ct   = DConT sameKindName `DAppT` lhs `DAppT` rhs
@@ -270,12 +303,12 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
                                          map tvb_to_type $      -- (2)(iii)(b)
                                          toList $ fvDType tyfun -- (2)(iii)(a)
                         in (arg_params, Just (DForallT ForallInvis tyfun_tvbs tyfun))
-            app_data_ty = foldTypeTvbs (DConT data_name) m_args
+            app_data_ty = foldTypeTvbs (DConT data_name) arg_tvbs
             app_eqn     = DTySynEqn Nothing
                                     (DConT applyName `DAppT` app_data_ty
                                                      `DAppT` DVarT tyfun_name)
                                     (foldTypeTvbs (DConT next_name)
-                                                  (m_args ++ [DPlainTV tyfun_name]))
+                                                  (arg_tvbs ++ [DPlainTV tyfun_name]))
             app_decl    = DTySynInstD app_eqn
             suppress    = DInstanceD Nothing Nothing []
                             (DConT suppressClassName `DAppT` app_data_ty)
@@ -287,17 +320,15 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
 
             -- See Note [Fixity declarations for defunctionalization symbols]
             fixity_decl = maybeToList $ fmap (mk_fix_decl data_name) m_fixity
-
-        decls <- go (n - 1) m_args m_tyfun
-        return $ suppress : data_decl : app_decl : fixity_decl ++ decls
+        in (m_tyfun, suppress : data_decl : app_decl : fixity_decl ++ decls)
 
   let num_args       = length m_arg_tvbs
       sat_name       = promoteTySym name num_args
       sat_dec        = DTySynD sat_name m_arg_tvbs $ foldTypeTvbs (DConT name) m_arg_tvbs
       sat_fixity_dec = maybeToList $ fmap (mk_fix_decl sat_name) m_fixity
 
-  other_decs <- go (num_args - 1) (reverse m_arg_tvbs) m_res_kind
-  return $ sat_dec : sat_fixity_dec ++ other_decs
+      (_, other_decs) = go 0 [] m_arg_tvbs
+  return $ other_decs ++ sat_dec : sat_fixity_dec
   where
     eta_expand :: [DTyVarBndr] -> Maybe DKind -> PrM ([DTyVarBndr], Maybe DKind)
     eta_expand m_arg_tvbs Nothing = pure (m_arg_tvbs, Nothing)

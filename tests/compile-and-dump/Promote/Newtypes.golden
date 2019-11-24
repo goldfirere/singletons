@@ -14,8 +14,6 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       Equals_0123456789876543210 (_ :: Foo) (_ :: Foo) = FalseSym0
     instance PEq Foo where
       type (==) a b = Equals_0123456789876543210 a b
-    type UnBarSym1 (a0123456789876543210 :: Bar) =
-        UnBar a0123456789876543210
     instance SuppressUnusedWarnings UnBarSym0 where
       suppressUnusedWarnings = snd (((,) UnBarSym0KindInference) ())
     data UnBarSym0 :: (~>) Bar Nat
@@ -24,10 +22,10 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
                                          arg. SameKind (Apply UnBarSym0 arg) (UnBarSym1 arg) =>
                                   UnBarSym0 a0123456789876543210
     type instance Apply UnBarSym0 a0123456789876543210 = UnBarSym1 a0123456789876543210
+    type UnBarSym1 (a0123456789876543210 :: Bar) =
+        UnBar a0123456789876543210
     type family UnBar (a :: Bar) :: Nat where
       UnBar (Bar field) = field
-    type FooSym1 (t0123456789876543210 :: Nat) =
-        Foo t0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
     data FooSym0 :: (~>) Nat Foo
@@ -36,8 +34,8 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 t0123456789876543210
     type instance Apply FooSym0 t0123456789876543210 = FooSym1 t0123456789876543210
-    type BarSym1 (t0123456789876543210 :: Nat) =
-        Bar t0123456789876543210
+    type FooSym1 (t0123456789876543210 :: Nat) =
+        Foo t0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
     data BarSym0 :: (~>) Nat Bar
@@ -46,3 +44,5 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 t0123456789876543210
     type instance Apply BarSym0 t0123456789876543210 = BarSym1 t0123456789876543210
+    type BarSym1 (t0123456789876543210 :: Nat) =
+        Bar t0123456789876543210

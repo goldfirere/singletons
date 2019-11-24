@@ -3,8 +3,6 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       [d| data Record a = MkRecord {field1 :: a, field2 :: Bool} |]
   ======>
     data Record a = MkRecord {field1 :: a, field2 :: Bool}
-    type Field2Sym1 (a0123456789876543210 :: Record a0123456789876543210) =
-        Field2 a0123456789876543210
     instance SuppressUnusedWarnings Field2Sym0 where
       suppressUnusedWarnings = snd (((,) Field2Sym0KindInference) ())
     data Field2Sym0 :: forall a0123456789876543210.
@@ -14,8 +12,8 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
                                           arg. SameKind (Apply Field2Sym0 arg) (Field2Sym1 arg) =>
                                    Field2Sym0 a0123456789876543210
     type instance Apply Field2Sym0 a0123456789876543210 = Field2Sym1 a0123456789876543210
-    type Field1Sym1 (a0123456789876543210 :: Record a0123456789876543210) =
-        Field1 a0123456789876543210
+    type Field2Sym1 (a0123456789876543210 :: Record a0123456789876543210) =
+        Field2 a0123456789876543210
     instance SuppressUnusedWarnings Field1Sym0 where
       suppressUnusedWarnings = snd (((,) Field1Sym0KindInference) ())
     data Field1Sym0 :: forall a0123456789876543210.
@@ -25,21 +23,12 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
                                           arg. SameKind (Apply Field1Sym0 arg) (Field1Sym1 arg) =>
                                    Field1Sym0 a0123456789876543210
     type instance Apply Field1Sym0 a0123456789876543210 = Field1Sym1 a0123456789876543210
+    type Field1Sym1 (a0123456789876543210 :: Record a0123456789876543210) =
+        Field1 a0123456789876543210
     type family Field2 (a :: Record a) :: Bool where
       Field2 (MkRecord _ field) = field
     type family Field1 (a :: Record a) :: a where
       Field1 (MkRecord field _) = field
-    type MkRecordSym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: Bool) =
-        MkRecord t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (MkRecordSym1 t0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) MkRecordSym1KindInference) ())
-    data MkRecordSym1 (t0123456789876543210 :: a0123456789876543210) :: (~>) Bool (Record a0123456789876543210)
-      where
-        MkRecordSym1KindInference :: forall t0123456789876543210
-                                            t0123456789876543210
-                                            arg. SameKind (Apply (MkRecordSym1 t0123456789876543210) arg) (MkRecordSym2 t0123456789876543210 arg) =>
-                                     MkRecordSym1 t0123456789876543210 t0123456789876543210
-    type instance Apply (MkRecordSym1 t0123456789876543210) t0123456789876543210 = MkRecordSym2 t0123456789876543210 t0123456789876543210
     instance SuppressUnusedWarnings MkRecordSym0 where
       suppressUnusedWarnings = snd (((,) MkRecordSym0KindInference) ())
     data MkRecordSym0 :: forall a0123456789876543210.
@@ -49,6 +38,17 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
                                             arg. SameKind (Apply MkRecordSym0 arg) (MkRecordSym1 arg) =>
                                      MkRecordSym0 t0123456789876543210
     type instance Apply MkRecordSym0 t0123456789876543210 = MkRecordSym1 t0123456789876543210
+    instance SuppressUnusedWarnings (MkRecordSym1 t0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) MkRecordSym1KindInference) ())
+    data MkRecordSym1 (t0123456789876543210 :: a0123456789876543210) :: (~>) Bool (Record a0123456789876543210)
+      where
+        MkRecordSym1KindInference :: forall t0123456789876543210
+                                            t0123456789876543210
+                                            arg. SameKind (Apply (MkRecordSym1 t0123456789876543210) arg) (MkRecordSym2 t0123456789876543210 arg) =>
+                                     MkRecordSym1 t0123456789876543210 t0123456789876543210
+    type instance Apply (MkRecordSym1 t0123456789876543210) t0123456789876543210 = MkRecordSym2 t0123456789876543210 t0123456789876543210
+    type MkRecordSym2 (t0123456789876543210 :: a0123456789876543210) (t0123456789876543210 :: Bool) =
+        MkRecord t0123456789876543210 t0123456789876543210
     data SRecord :: forall a. Record a -> GHC.Types.Type
       where
         SMkRecord :: forall a (n :: a) (n :: Bool).

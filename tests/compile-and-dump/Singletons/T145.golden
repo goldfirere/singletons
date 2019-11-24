@@ -5,17 +5,6 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
   ======>
     class Column (f :: Type -> Type) where
       col :: f a -> a -> Bool
-    type ColSym2 (arg0123456789876543210 :: f0123456789876543210 a0123456789876543210) (arg0123456789876543210 :: a0123456789876543210) =
-        Col arg0123456789876543210 arg0123456789876543210
-    instance SuppressUnusedWarnings (ColSym1 arg0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) ColSym1KindInference) ())
-    data ColSym1 (arg0123456789876543210 :: f0123456789876543210 a0123456789876543210) :: (~>) a0123456789876543210 Bool
-      where
-        ColSym1KindInference :: forall arg0123456789876543210
-                                       arg0123456789876543210
-                                       arg. SameKind (Apply (ColSym1 arg0123456789876543210) arg) (ColSym2 arg0123456789876543210 arg) =>
-                                ColSym1 arg0123456789876543210 arg0123456789876543210
-    type instance Apply (ColSym1 arg0123456789876543210) arg0123456789876543210 = ColSym2 arg0123456789876543210 arg0123456789876543210
     instance SuppressUnusedWarnings ColSym0 where
       suppressUnusedWarnings = snd (((,) ColSym0KindInference) ())
     data ColSym0 :: forall f0123456789876543210 a0123456789876543210.
@@ -25,6 +14,17 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply ColSym0 arg) (ColSym1 arg) =>
                                 ColSym0 arg0123456789876543210
     type instance Apply ColSym0 arg0123456789876543210 = ColSym1 arg0123456789876543210
+    instance SuppressUnusedWarnings (ColSym1 arg0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) ColSym1KindInference) ())
+    data ColSym1 (arg0123456789876543210 :: f0123456789876543210 a0123456789876543210) :: (~>) a0123456789876543210 Bool
+      where
+        ColSym1KindInference :: forall arg0123456789876543210
+                                       arg0123456789876543210
+                                       arg. SameKind (Apply (ColSym1 arg0123456789876543210) arg) (ColSym2 arg0123456789876543210 arg) =>
+                                ColSym1 arg0123456789876543210 arg0123456789876543210
+    type instance Apply (ColSym1 arg0123456789876543210) arg0123456789876543210 = ColSym2 arg0123456789876543210 arg0123456789876543210
+    type ColSym2 (arg0123456789876543210 :: f0123456789876543210 a0123456789876543210) (arg0123456789876543210 :: a0123456789876543210) =
+        Col arg0123456789876543210 arg0123456789876543210
     class PColumn (f :: Type -> Type) where
       type Col (arg :: f a) (arg :: a) :: Bool
     class SColumn (f :: Type -> Type) where

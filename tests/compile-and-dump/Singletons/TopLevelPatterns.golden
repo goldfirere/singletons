@@ -7,8 +7,15 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     data Foo = Bar Bool Bool
     type FalseSym0 = False
     type TrueSym0 = True
-    type BarSym2 (t0123456789876543210 :: Bool) (t0123456789876543210 :: Bool) =
-        Bar t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings BarSym0 where
+      suppressUnusedWarnings
+        = Data.Tuple.snd (((,) BarSym0KindInference) ())
+    data BarSym0 :: (~>) Bool ((~>) Bool Foo)
+      where
+        BarSym0KindInference :: forall t0123456789876543210
+                                       arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
+                                BarSym0 t0123456789876543210
+    type instance Apply BarSym0 t0123456789876543210 = BarSym1 t0123456789876543210
     instance SuppressUnusedWarnings (BarSym1 t0123456789876543210) where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) BarSym1KindInference) ())
@@ -19,15 +26,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply (BarSym1 t0123456789876543210) arg) (BarSym2 t0123456789876543210 arg) =>
                                 BarSym1 t0123456789876543210 t0123456789876543210
     type instance Apply (BarSym1 t0123456789876543210) t0123456789876543210 = BarSym2 t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings BarSym0 where
-      suppressUnusedWarnings
-        = Data.Tuple.snd (((,) BarSym0KindInference) ())
-    data BarSym0 :: (~>) Bool ((~>) Bool Foo)
-      where
-        BarSym0KindInference :: forall t0123456789876543210
-                                       arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
-                                BarSym0 t0123456789876543210
-    type instance Apply BarSym0 t0123456789876543210 = BarSym1 t0123456789876543210
+    type BarSym2 (t0123456789876543210 :: Bool) (t0123456789876543210 :: Bool) =
+        Bar t0123456789876543210 t0123456789876543210
     data SBool :: Bool -> GHC.Types.Type
       where
         SFalse :: SBool (False :: Bool)
@@ -131,7 +131,6 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type KSym0 = K
     type JSym0 = J
     type X_0123456789876543210Sym0 = X_0123456789876543210
-    type ISym1 (a0123456789876543210 :: Bool) = I a0123456789876543210
     instance SuppressUnusedWarnings ISym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) ISym0KindInference) ())
@@ -141,7 +140,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                                      arg. SameKind (Apply ISym0 arg) (ISym1 arg) =>
                               ISym0 a0123456789876543210
     type instance Apply ISym0 a0123456789876543210 = ISym1 a0123456789876543210
-    type HSym1 (a0123456789876543210 :: Bool) = H a0123456789876543210
+    type ISym1 (a0123456789876543210 :: Bool) = I a0123456789876543210
     instance SuppressUnusedWarnings HSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) HSym0KindInference) ())
@@ -151,8 +150,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                                      arg. SameKind (Apply HSym0 arg) (HSym1 arg) =>
                               HSym0 a0123456789876543210
     type instance Apply HSym0 a0123456789876543210 = HSym1 a0123456789876543210
+    type HSym1 (a0123456789876543210 :: Bool) = H a0123456789876543210
     type X_0123456789876543210Sym0 = X_0123456789876543210
-    type GSym1 (a0123456789876543210 :: Bool) = G a0123456789876543210
     instance SuppressUnusedWarnings GSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) GSym0KindInference) ())
@@ -162,7 +161,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                                      arg. SameKind (Apply GSym0 arg) (GSym1 arg) =>
                               GSym0 a0123456789876543210
     type instance Apply GSym0 a0123456789876543210 = GSym1 a0123456789876543210
-    type FSym1 (a0123456789876543210 :: Bool) = F a0123456789876543210
+    type GSym1 (a0123456789876543210 :: Bool) = G a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) FSym0KindInference) ())
@@ -172,10 +171,9 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                                      arg. SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
     type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
+    type FSym1 (a0123456789876543210 :: Bool) = F a0123456789876543210
     type X_0123456789876543210Sym0 = X_0123456789876543210
     type False_Sym0 = False_
-    type NotSym1 (a0123456789876543210 :: Bool) =
-        Not a0123456789876543210
     instance SuppressUnusedWarnings NotSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) NotSym0KindInference) ())
@@ -185,8 +183,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply NotSym0 arg) (NotSym1 arg) =>
                                 NotSym0 a0123456789876543210
     type instance Apply NotSym0 a0123456789876543210 = NotSym1 a0123456789876543210
-    type IdSym1 (a0123456789876543210 :: a0123456789876543210) =
-        Id a0123456789876543210
+    type NotSym1 (a0123456789876543210 :: Bool) =
+        Not a0123456789876543210
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) IdSym0KindInference) ())
@@ -197,6 +195,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                                       arg. SameKind (Apply IdSym0 arg) (IdSym1 arg) =>
                                IdSym0 a0123456789876543210
     type instance Apply IdSym0 a0123456789876543210 = IdSym1 a0123456789876543210
+    type IdSym1 (a0123456789876543210 :: a0123456789876543210) =
+        Id a0123456789876543210
     type OtherwiseSym0 = Otherwise
     type family M :: Bool where
       M = Case_0123456789876543210 X_0123456789876543210Sym0

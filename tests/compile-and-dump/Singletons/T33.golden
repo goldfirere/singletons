@@ -5,8 +5,6 @@ Singletons/T33.hs:(0,0)-(0,0): Splicing declarations
   ======>
     foo :: (Bool, Bool) -> ()
     foo ~(_, _) = ()
-    type FooSym1 (a0123456789876543210 :: (Bool, Bool)) =
-        Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
     data FooSym0 :: (~>) (Bool, Bool) ()
@@ -15,6 +13,8 @@ Singletons/T33.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
     type instance Apply FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
+    type FooSym1 (a0123456789876543210 :: (Bool, Bool)) =
+        Foo a0123456789876543210
     type family Foo (a :: (Bool, Bool)) :: () where
       Foo '(_, _) = Tuple0Sym0
     sFoo ::

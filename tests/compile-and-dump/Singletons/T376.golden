@@ -5,8 +5,14 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
   ======>
     f :: (() -> ()) -> () -> ()
     f g = g :: () -> ()
-    type FSym2 (a0123456789876543210 :: (~>) () ()) (a0123456789876543210 :: ()) =
-        F a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings FSym0 where
+      suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
+    data FSym0 :: (~>) ((~>) () ()) ((~>) () ())
+      where
+        FSym0KindInference :: forall a0123456789876543210
+                                     arg. SameKind (Apply FSym0 arg) (FSym1 arg) =>
+                              FSym0 a0123456789876543210
+    type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
     instance SuppressUnusedWarnings (FSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) FSym1KindInference) ())
     data FSym1 (a0123456789876543210 :: (~>) () ()) :: (~>) () ()
@@ -16,14 +22,8 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
                                      arg. SameKind (Apply (FSym1 a0123456789876543210) arg) (FSym2 a0123456789876543210 arg) =>
                               FSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (FSym1 a0123456789876543210) a0123456789876543210 = FSym2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings FSym0 where
-      suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
-    data FSym0 :: (~>) ((~>) () ()) ((~>) () ())
-      where
-        FSym0KindInference :: forall a0123456789876543210
-                                     arg. SameKind (Apply FSym0 arg) (FSym1 arg) =>
-                              FSym0 a0123456789876543210
-    type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
+    type FSym2 (a0123456789876543210 :: (~>) () ()) (a0123456789876543210 :: ()) =
+        F a0123456789876543210 a0123456789876543210
     type family F (a :: (~>) () ()) (a :: ()) :: () where
       F g a_0123456789876543210 = Apply (g :: (~>) () ()) a_0123456789876543210
     sF ::

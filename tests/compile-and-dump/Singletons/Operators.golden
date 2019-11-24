@@ -23,8 +23,14 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     (+) Zero m = m
     (+) (Succ n) m = Succ (n + m)
     type FLeafSym0 = FLeaf
-    type (:+:@#@$$$) (t0123456789876543210 :: Foo) (t0123456789876543210 :: Foo) =
-        (:+:) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (:+:@#@$) where
+      suppressUnusedWarnings = snd (((,) (::+:@#@$###)) ())
+    data (:+:@#@$) :: (~>) Foo ((~>) Foo Foo)
+      where
+        (::+:@#@$###) :: forall t0123456789876543210
+                                arg. SameKind (Apply (:+:@#@$) arg) ((:+:@#@$$) arg) =>
+                         (:+:@#@$) t0123456789876543210
+    type instance Apply (:+:@#@$) t0123456789876543210 = (:+:@#@$$) t0123456789876543210
     instance SuppressUnusedWarnings ((:+:@#@$$) t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::+:@#@$$###)) ())
     data (:+:@#@$$) (t0123456789876543210 :: Foo) :: (~>) Foo Foo
@@ -34,16 +40,16 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
                                  arg. SameKind (Apply ((:+:@#@$$) t0123456789876543210) arg) ((:+:@#@$$$) t0123456789876543210 arg) =>
                           (:+:@#@$$) t0123456789876543210 t0123456789876543210
     type instance Apply ((:+:@#@$$) t0123456789876543210) t0123456789876543210 = (:+:@#@$$$) t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (:+:@#@$) where
-      suppressUnusedWarnings = snd (((,) (::+:@#@$###)) ())
-    data (:+:@#@$) :: (~>) Foo ((~>) Foo Foo)
+    type (:+:@#@$$$) (t0123456789876543210 :: Foo) (t0123456789876543210 :: Foo) =
+        (:+:) t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings (+@#@$) where
+      suppressUnusedWarnings = snd (((,) (:+@#@$###)) ())
+    data (+@#@$) :: (~>) Nat ((~>) Nat Nat)
       where
-        (::+:@#@$###) :: forall t0123456789876543210
-                                arg. SameKind (Apply (:+:@#@$) arg) ((:+:@#@$$) arg) =>
-                         (:+:@#@$) t0123456789876543210
-    type instance Apply (:+:@#@$) t0123456789876543210 = (:+:@#@$$) t0123456789876543210
-    type (+@#@$$$) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
-        (+) a0123456789876543210 a0123456789876543210
+        (:+@#@$###) :: forall a0123456789876543210
+                              arg. SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
+                       (+@#@$) a0123456789876543210
+    type instance Apply (+@#@$) a0123456789876543210 = (+@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings ((+@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:+@#@$$###)) ())
     data (+@#@$$) (a0123456789876543210 :: Nat) :: (~>) Nat Nat
@@ -53,16 +59,8 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
                                arg. SameKind (Apply ((+@#@$$) a0123456789876543210) arg) ((+@#@$$$) a0123456789876543210 arg) =>
                         (+@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((+@#@$$) a0123456789876543210) a0123456789876543210 = (+@#@$$$) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (+@#@$) where
-      suppressUnusedWarnings = snd (((,) (:+@#@$###)) ())
-    data (+@#@$) :: (~>) Nat ((~>) Nat Nat)
-      where
-        (:+@#@$###) :: forall a0123456789876543210
-                              arg. SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
-                       (+@#@$) a0123456789876543210
-    type instance Apply (+@#@$) a0123456789876543210 = (+@#@$$) a0123456789876543210
-    type ChildSym1 (a0123456789876543210 :: Foo) =
-        Child a0123456789876543210
+    type (+@#@$$$) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
+        (+) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ChildSym0 where
       suppressUnusedWarnings = snd (((,) ChildSym0KindInference) ())
     data ChildSym0 :: (~>) Foo Foo
@@ -71,6 +69,8 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
                                          arg. SameKind (Apply ChildSym0 arg) (ChildSym1 arg) =>
                                   ChildSym0 a0123456789876543210
     type instance Apply ChildSym0 a0123456789876543210 = ChildSym1 a0123456789876543210
+    type ChildSym1 (a0123456789876543210 :: Foo) =
+        Child a0123456789876543210
     type family (+) (a :: Nat) (a :: Nat) :: Nat where
       (+) 'Zero m = m
       (+) ('Succ n) m = Apply SuccSym0 (Apply (Apply (+@#@$) n) m)

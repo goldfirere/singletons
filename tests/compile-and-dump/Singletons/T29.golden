@@ -17,8 +17,6 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
     baz x = (not $! x)
     ban :: Bool -> Bool
     ban x = ((not . (not . not)) $! x)
-    type BanSym1 (a0123456789876543210 :: Bool) =
-        Ban a0123456789876543210
     instance SuppressUnusedWarnings BanSym0 where
       suppressUnusedWarnings = snd (((,) BanSym0KindInference) ())
     data BanSym0 :: (~>) Bool Bool
@@ -27,8 +25,8 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply BanSym0 arg) (BanSym1 arg) =>
                                 BanSym0 a0123456789876543210
     type instance Apply BanSym0 a0123456789876543210 = BanSym1 a0123456789876543210
-    type BazSym1 (a0123456789876543210 :: Bool) =
-        Baz a0123456789876543210
+    type BanSym1 (a0123456789876543210 :: Bool) =
+        Ban a0123456789876543210
     instance SuppressUnusedWarnings BazSym0 where
       suppressUnusedWarnings = snd (((,) BazSym0KindInference) ())
     data BazSym0 :: (~>) Bool Bool
@@ -37,8 +35,8 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply BazSym0 arg) (BazSym1 arg) =>
                                 BazSym0 a0123456789876543210
     type instance Apply BazSym0 a0123456789876543210 = BazSym1 a0123456789876543210
-    type BarSym1 (a0123456789876543210 :: Bool) =
-        Bar a0123456789876543210
+    type BazSym1 (a0123456789876543210 :: Bool) =
+        Baz a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
     data BarSym0 :: (~>) Bool Bool
@@ -47,8 +45,8 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
     type instance Apply BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
-    type FooSym1 (a0123456789876543210 :: Bool) =
-        Foo a0123456789876543210
+    type BarSym1 (a0123456789876543210 :: Bool) =
+        Bar a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
     data FooSym0 :: (~>) Bool Bool
@@ -57,6 +55,8 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
     type instance Apply FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
+    type FooSym1 (a0123456789876543210 :: Bool) =
+        Foo a0123456789876543210
     type family Ban (a :: Bool) :: Bool where
       Ban x = Apply (Apply ($!@#@$) (Apply (Apply (.@#@$) NotSym0) (Apply (Apply (.@#@$) NotSym0) NotSym0))) x
     type family Baz (a :: Bool) :: Bool where

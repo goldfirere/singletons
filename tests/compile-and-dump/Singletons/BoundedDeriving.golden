@@ -37,8 +37,6 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type CSym0 = C
     type DSym0 = D
     type ESym0 = E
-    type Foo3Sym1 (t0123456789876543210 :: a0123456789876543210) =
-        Foo3 t0123456789876543210
     instance SuppressUnusedWarnings Foo3Sym0 where
       suppressUnusedWarnings = snd (((,) Foo3Sym0KindInference) ())
     data Foo3Sym0 :: forall a0123456789876543210.
@@ -48,10 +46,18 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
                                  Foo3Sym0 t0123456789876543210
     type instance Apply Foo3Sym0 t0123456789876543210 = Foo3Sym1 t0123456789876543210
+    type Foo3Sym1 (t0123456789876543210 :: a0123456789876543210) =
+        Foo3 t0123456789876543210
     type Foo41Sym0 = Foo41
     type Foo42Sym0 = Foo42
-    type PairSym2 (t0123456789876543210 :: Bool) (t0123456789876543210 :: Bool) =
-        Pair t0123456789876543210 t0123456789876543210
+    instance SuppressUnusedWarnings PairSym0 where
+      suppressUnusedWarnings = snd (((,) PairSym0KindInference) ())
+    data PairSym0 :: (~>) Bool ((~>) Bool Pair)
+      where
+        PairSym0KindInference :: forall t0123456789876543210
+                                        arg. SameKind (Apply PairSym0 arg) (PairSym1 arg) =>
+                                 PairSym0 t0123456789876543210
+    type instance Apply PairSym0 t0123456789876543210 = PairSym1 t0123456789876543210
     instance SuppressUnusedWarnings (PairSym1 t0123456789876543210) where
       suppressUnusedWarnings = snd (((,) PairSym1KindInference) ())
     data PairSym1 (t0123456789876543210 :: Bool) :: (~>) Bool Pair
@@ -61,14 +67,8 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply (PairSym1 t0123456789876543210) arg) (PairSym2 t0123456789876543210 arg) =>
                                  PairSym1 t0123456789876543210 t0123456789876543210
     type instance Apply (PairSym1 t0123456789876543210) t0123456789876543210 = PairSym2 t0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings PairSym0 where
-      suppressUnusedWarnings = snd (((,) PairSym0KindInference) ())
-    data PairSym0 :: (~>) Bool ((~>) Bool Pair)
-      where
-        PairSym0KindInference :: forall t0123456789876543210
-                                        arg. SameKind (Apply PairSym0 arg) (PairSym1 arg) =>
-                                 PairSym0 t0123456789876543210
-    type instance Apply PairSym0 t0123456789876543210 = PairSym1 t0123456789876543210
+    type PairSym2 (t0123456789876543210 :: Bool) (t0123456789876543210 :: Bool) =
+        Pair t0123456789876543210 t0123456789876543210
     type family MinBound_0123456789876543210 :: Foo1 where
       MinBound_0123456789876543210 = Foo1Sym0
     type MinBound_0123456789876543210Sym0 =

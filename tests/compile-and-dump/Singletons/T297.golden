@@ -25,7 +25,6 @@ Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
     type Let0123456789876543210XSym0 = Let0123456789876543210X
     type family Let0123456789876543210X where
       Let0123456789876543210X = Let0123456789876543210ZSym0
-    type FSym1 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
     data FSym0 a0123456789876543210
@@ -34,6 +33,7 @@ Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
                                      arg. SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
     type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
+    type FSym1 a0123456789876543210 = F a0123456789876543210
     type family F a where
       F MyProxy = Let0123456789876543210XSym0
     sF :: forall arg. Sing arg -> Sing (Apply FSym0 arg)

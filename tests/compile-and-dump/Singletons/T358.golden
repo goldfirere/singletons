@@ -28,8 +28,6 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
     type Method1Sym0 = Method1
     class PC1 (f :: k -> Type) where
       type Method1 :: f a
-    type Method2aSym1 (arg0123456789876543210 :: b0123456789876543210) =
-        Method2a arg0123456789876543210
     instance SuppressUnusedWarnings Method2aSym0 where
       suppressUnusedWarnings = snd (((,) Method2aSym0KindInference) ())
     data Method2aSym0 :: forall b0123456789876543210
@@ -40,8 +38,8 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
                                             arg. SameKind (Apply Method2aSym0 arg) (Method2aSym1 arg) =>
                                      Method2aSym0 arg0123456789876543210
     type instance Apply Method2aSym0 arg0123456789876543210 = Method2aSym1 arg0123456789876543210
-    type Method2bSym1 (arg0123456789876543210 :: b0123456789876543210) =
-        Method2b arg0123456789876543210
+    type Method2aSym1 (arg0123456789876543210 :: b0123456789876543210) =
+        Method2a arg0123456789876543210
     instance SuppressUnusedWarnings Method2bSym0 where
       suppressUnusedWarnings = snd (((,) Method2bSym0KindInference) ())
     data Method2bSym0 :: forall b0123456789876543210
@@ -52,6 +50,8 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
                                             arg. SameKind (Apply Method2bSym0 arg) (Method2bSym1 arg) =>
                                      Method2bSym0 arg0123456789876543210
     type instance Apply Method2bSym0 arg0123456789876543210 = Method2bSym1 arg0123456789876543210
+    type Method2bSym1 (arg0123456789876543210 :: b0123456789876543210) =
+        Method2b arg0123456789876543210
     class PC2 a where
       type Method2a (arg :: b) :: a
       type Method2b (arg :: b) :: a
@@ -62,8 +62,6 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
       type Method1 = Method1_0123456789876543210Sym0
     type family Method2a_0123456789876543210 (a :: b) :: [a] where
       Method2a_0123456789876543210 _ = '[]
-    type Method2a_0123456789876543210Sym1 (a0123456789876543210 :: b0123456789876543210) =
-        Method2a_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Method2a_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Method2a_0123456789876543210Sym0KindInference) ())
@@ -75,10 +73,10 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
                                                                 arg. SameKind (Apply Method2a_0123456789876543210Sym0 arg) (Method2a_0123456789876543210Sym1 arg) =>
                                                          Method2a_0123456789876543210Sym0 a0123456789876543210
     type instance Apply Method2a_0123456789876543210Sym0 a0123456789876543210 = Method2a_0123456789876543210Sym1 a0123456789876543210
+    type Method2a_0123456789876543210Sym1 (a0123456789876543210 :: b0123456789876543210) =
+        Method2a_0123456789876543210 a0123456789876543210
     type family Method2b_0123456789876543210 (a :: b) :: [a] where
       Method2b_0123456789876543210 _ = '[]
-    type Method2b_0123456789876543210Sym1 (a0123456789876543210 :: b0123456789876543210) =
-        Method2b_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Method2b_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Method2b_0123456789876543210Sym0KindInference) ())
@@ -90,6 +88,8 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
                                                                 arg. SameKind (Apply Method2b_0123456789876543210Sym0 arg) (Method2b_0123456789876543210Sym1 arg) =>
                                                          Method2b_0123456789876543210Sym0 a0123456789876543210
     type instance Apply Method2b_0123456789876543210Sym0 a0123456789876543210 = Method2b_0123456789876543210Sym1 a0123456789876543210
+    type Method2b_0123456789876543210Sym1 (a0123456789876543210 :: b0123456789876543210) =
+        Method2b_0123456789876543210 a0123456789876543210
     instance PC2 [a] where
       type Method2a a = Apply Method2a_0123456789876543210Sym0 a
       type Method2b a = Apply Method2b_0123456789876543210Sym0 a
