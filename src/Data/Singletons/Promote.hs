@@ -661,77 +661,94 @@ promoteLetDecRHS :: LetDecRHSSort
                  -> PrM ( DDec          -- "type family"
                         , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
-promoteLetDecRHS rhs_sort type_env fix_env prefixes name (UValue exp) = do
-  (res_kind, num_arrows)
-    <- case rhs_sort of
-         ClassMethodRHS arg_kis res_ki
-           -> return ( Just (ravelTyFun (arg_kis ++ [res_ki]))
-                     , length arg_kis )
-         LetBindingRHS
-           |  Just ty <- OMap.lookup name type_env
-           -> do ki <- promoteType ty
-                 return (Just ki, countArgs ty)
-           |  otherwise
-           -> return (Nothing, 0)
-  case num_arrows of
-    0 -> do
-      all_locals <- allLocals
-      let lde_kvs_to_bind = foldMap fvDType res_kind
-      (exp', ann_exp) <- forallBind lde_kvs_to_bind $ promoteExp exp
-      let proName = promoteValNameLhsPrefix prefixes name
-          m_fixity = OMap.lookup name fix_env
-          tvbs = map DPlainTV all_locals
-      defuns <- defunctionalize proName m_fixity tvbs res_kind
-      return ( DClosedTypeFamilyD
-                 (DTypeFamilyHead proName tvbs (maybeKindToResultSig res_kind) Nothing)
-                 [DTySynEqn Nothing (foldType (DConT proName) $ map DVarT all_locals) exp']
-             , defuns
-             , AValue (foldType (DConT proName) (map DVarT all_locals))
-                      num_arrows ann_exp )
-    _ -> do
-      names <- replicateM num_arrows (newUniqueName "a")
-      let pats    = map DVarP names
-          newArgs = map DVarE names
-      promoteLetDecRHS rhs_sort type_env fix_env prefixes name
-                       (UFunction [DClause pats (foldExp exp newArgs)])
-
-promoteLetDecRHS rhs_sort type_env fix_env prefixes name (UFunction clauses) = do
-  numArgs <- count_args clauses
-  (m_argKs, m_resK, ty_num_args) <- case rhs_sort of
-    ClassMethodRHS arg_kis res_ki
-      -> return (map Just arg_kis, Just res_ki, length arg_kis)
-    LetBindingRHS
-      |  Just ty <- OMap.lookup name type_env
-      -> do
-      -- promoteType turns arrows into TyFun. So, we unravel first to
-      -- avoid this behavior. Note the use of ravelTyFun in resultK
-      -- to make the return kind work out
-      (argKs, resultK) <- promoteUnraveled ty
-      -- invariant: count_args ty == length argKs
-      return (map Just argKs, Just resultK, length argKs)
-
-      |  otherwise
-      -> return (replicate numArgs Nothing, Nothing, numArgs)
-  let proName  = promoteValNameLhsPrefix prefixes name
-      m_fixity = OMap.lookup name fix_env
+promoteLetDecRHS rhs_sort type_env fix_env prefixes name let_dec_rhs = do
   all_locals <- allLocals
-  let local_tvbs = map DPlainTV all_locals
-  tyvarNames <- mapM (const $ qNewName "a") m_argKs
-  let args     = zipWith inferMaybeKindTV tyvarNames m_argKs
-      all_args = local_tvbs ++ args
-  defun_decs <- defunctionalize proName m_fixity all_args m_resK
-  expClauses <- mapM (etaContractOrExpand ty_num_args numArgs) clauses
-  let lde_kvs_to_bind = foldMap (foldMap fvDType) m_argKs <> foldMap fvDType m_resK
-  (eqns, ann_clauses) <- forallBind lde_kvs_to_bind $
-                         mapAndUnzipM (promoteClause proName) expClauses
-  prom_fun <- lookupVarE name
-  return ( DClosedTypeFamilyD
-             (DTypeFamilyHead proName all_args (maybeKindToResultSig m_resK) Nothing)
-             eqns
-         , defun_decs
-         , AFunction prom_fun ty_num_args ann_clauses )
-
+  case let_dec_rhs of
+    UValue exp -> do
+      (m_argKs, m_resK, ty_num_args) <- promote_let_dec_ty 0
+      if ty_num_args == 0
+      then
+        let prom_fun_lhs = foldType (DConT proName) $ map DVarT all_locals in
+        promote_let_dec_rhs all_locals m_argKs m_resK 0
+                            (promoteExp exp)
+                            (\exp' -> [DTySynEqn Nothing prom_fun_lhs exp'])
+                            AValue
+      else
+        -- If we have a UValue with a function type, process it as though it
+        -- were a UFunction. promote_function_rhs will take care of
+        -- eta-expanding arguments as necessary.
+        promote_function_rhs all_locals [DClause [] exp]
+    UFunction clauses -> promote_function_rhs all_locals clauses
   where
+    -- Promote the RHS of a UFunction (or a UValue with a function type).
+    promote_function_rhs :: [Name]
+                         -> [DClause] -> PrM (DDec, [DDec], ALetDecRHS)
+    promote_function_rhs all_locals clauses = do
+      numArgs <- count_args clauses
+      let prom_fun_lhs = foldType (DConT proName) $ map DVarT all_locals
+      (m_argKs, m_resK, ty_num_args) <- promote_let_dec_ty numArgs
+      expClauses <- mapM (etaContractOrExpand ty_num_args numArgs) clauses
+      promote_let_dec_rhs all_locals m_argKs m_resK ty_num_args
+                          (mapAndUnzipM (promoteClause prom_fun_lhs) expClauses)
+                          id AFunction
+
+    -- Promote a UValue or a UFunction.
+    -- Notes about type variables:
+    --
+    -- * For UValues, `prom_a` is DType and `a` is Exp.
+    --
+    -- * For UFunctions, `prom_a` is [DTySynEqn] and `a` is [DClause].
+    promote_let_dec_rhs
+      :: [Name]                            -- Local variables bound in this scope
+      -> [Maybe DKind]                     -- Promoted function argument types (if known)
+      -> Maybe DKind                       -- Promoted function result type (if known)
+      -> Int                               -- The number of promoted function arguments
+      -> PrM (prom_a, a)                   -- Promote the RHS
+      -> (prom_a -> [DTySynEqn])           -- Turn the promoted RHS into type family equations
+      -> (DType -> Int -> a -> ALetDecRHS) -- Build an ALetDecRHS
+      -> PrM (DDec, [DDec], ALetDecRHS)
+    promote_let_dec_rhs all_locals m_argKs m_resK ty_num_args
+                        promote_thing mk_prom_eqns mk_alet_dec_rhs = do
+      tyvarNames <- mapM (const $ qNewName "a") m_argKs
+      let local_tvbs      = map DPlainTV all_locals
+          m_fixity        = OMap.lookup name fix_env
+          args            = zipWith inferMaybeKindTV tyvarNames m_argKs
+          all_args        = local_tvbs ++ args
+          lde_kvs_to_bind = foldMap (foldMap fvDType) m_argKs <> foldMap fvDType m_resK
+      defun_decs <- defunctionalize proName m_fixity all_args m_resK
+      (prom_thing, thing) <- forallBind lde_kvs_to_bind promote_thing
+      prom_fun_rhs <- lookupVarE name
+      return ( DClosedTypeFamilyD
+                 (DTypeFamilyHead proName all_args (maybeKindToResultSig m_resK) Nothing)
+                 (mk_prom_eqns prom_thing)
+             , defun_decs
+             , mk_alet_dec_rhs prom_fun_rhs ty_num_args thing )
+
+    proName :: Name
+    proName = promoteValNameLhsPrefix prefixes name
+
+    promote_let_dec_ty :: Int -- The number of arguments to default to if the
+                              -- type cannot be inferred. This is 0 for UValues
+                              -- and the number of arguments in a single clause
+                              -- for UFunctions.
+                       -> PrM ([Maybe DKind], Maybe DKind, Int)
+    promote_let_dec_ty default_num_args =
+      case rhs_sort of
+        ClassMethodRHS arg_kis res_ki
+          -> return (map Just arg_kis, Just res_ki, length arg_kis)
+        LetBindingRHS
+          |  Just ty <- OMap.lookup name type_env
+          -> do
+          -- promoteType turns arrows into TyFun. So, we unravel first to
+          -- avoid this behavior. Note the use of ravelTyFun in resultK
+          -- to make the return kind work out
+          (argKs, resultK) <- promoteUnraveled ty
+          -- invariant: count_args ty == length argKs
+          return (map Just argKs, Just resultK, length argKs)
+
+          |  otherwise
+          -> return (replicate default_num_args Nothing, Nothing, default_num_args)
+
     etaContractOrExpand :: Int -> Int -> DClause -> PrM DClause
     etaContractOrExpand ty_num_args clause_num_args (DClause pats exp)
       | n >= 0 = do -- Eta-expand
@@ -746,11 +763,16 @@ promoteLetDecRHS rhs_sort type_env fix_env prefixes name (UFunction clauses) = d
       where
         n = ty_num_args - clause_num_args
 
+    count_args :: [DClause] -> PrM Int
     count_args (DClause pats _ : _) = return $ length pats
     count_args _ = fail $ "Impossible! A function without clauses."
 
-promoteClause :: Name -> DClause -> PrM (DTySynEqn, ADClause)
-promoteClause proName (DClause pats exp) = do
+promoteClause :: DType -- What to use as the LHS of the promoted type family
+                       -- equation. This should consist of the promoted name of
+                       -- the function to which the clause belongs, applied to
+                       -- any local arguments (e.g., `Go x y z`).
+              -> DClause -> PrM (DTySynEqn, ADClause)
+promoteClause pro_clause_fun (DClause pats exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
   ((types, pats'), prom_pat_infos) <- evalForPair $ mapAndUnzipM promotePat pats
@@ -759,12 +781,15 @@ promoteClause proName (DClause pats exp) = do
   (ty, ann_exp) <- forallBind sig_kvs $
                    lambdaBind new_vars $
                    promoteExp exp
-  all_locals <- allLocals   -- these are bound *outside* of this clause
-  return ( DTySynEqn Nothing (foldType (DConT proName) $ map DVarT all_locals ++ types) ty
+  return ( DTySynEqn Nothing (foldType pro_clause_fun types) ty
          , ADClause new_vars pats' ann_exp )
 
-promoteMatch :: Name -> DMatch -> PrM (DTySynEqn, ADMatch)
-promoteMatch caseTFName (DMatch pat exp) = do
+promoteMatch :: DType -- What to use as the LHS of the promoted type family
+                      -- equation. This should consist of the promoted name of
+                      -- the case expression to which the match belongs, applied
+                      -- to any local arguments (e.g., `Case x y z`).
+             -> DMatch -> PrM (DTySynEqn, ADMatch)
+promoteMatch pro_case_fun (DMatch pat exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
   ((ty, pat'), prom_pat_infos) <- evalForPair $ promotePat pat
@@ -773,10 +798,7 @@ promoteMatch caseTFName (DMatch pat exp) = do
   (rhs, ann_exp) <- forallBind sig_kvs $
                     lambdaBind new_vars $
                     promoteExp exp
-  all_locals <- allLocals
-  return $ ( DTySynEqn Nothing
-                       (foldType (DConT caseTFName) $ map DVarT all_locals ++ [ty])
-                       rhs
+  return $ ( DTySynEqn Nothing (pro_case_fun `DAppT` ty) rhs
            , ADMatch new_vars pat' ann_exp)
 
 -- promotes a term pattern into a type pattern, accumulating bound variable names
@@ -851,7 +873,7 @@ promoteExp (DCaseE exp matches) = do
   all_locals <- allLocals
   let prom_case = foldType (DConT caseTFName) (map DVarT all_locals)
   (exp', ann_exp)     <- promoteExp exp
-  (eqns, ann_matches) <- mapAndUnzipM (promoteMatch caseTFName) matches
+  (eqns, ann_matches) <- mapAndUnzipM (promoteMatch prom_case) matches
   tyvarName  <- qNewName "t"
   let all_args = all_locals ++ [tyvarName]
       tvbs     = map DPlainTV all_args
