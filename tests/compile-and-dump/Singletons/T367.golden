@@ -3,19 +3,6 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
       [d| const' :: a -> b -> a
           const' x _ = x |]
   ======>
-    type Const'Sym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: b0123456789876543210) =
-        Const' a0123456789876543210 a0123456789876543210
-    instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings (Const'Sym1 a0123456789876543210) where
-      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) Const'Sym1KindInference) ())
-    data Const'Sym1 (a0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
-                                                                      (~>) b0123456789876543210 a0123456789876543210
-      where
-        Const'Sym1KindInference :: forall a0123456789876543210
-                                          a0123456789876543210
-                                          arg. SameKind (Apply (Const'Sym1 a0123456789876543210) arg) (Const'Sym2 a0123456789876543210 arg) =>
-                                   Const'Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Const'Sym1 a0123456789876543210) a0123456789876543210 = Const'Sym2 a0123456789876543210 a0123456789876543210
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings Const'Sym0 where
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) Const'Sym0KindInference) ())
@@ -27,6 +14,19 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
                                           arg. SameKind (Apply Const'Sym0 arg) (Const'Sym1 arg) =>
                                    Const'Sym0 a0123456789876543210
     type instance Apply Const'Sym0 a0123456789876543210 = Const'Sym1 a0123456789876543210
+    instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings (Const'Sym1 a0123456789876543210) where
+      Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
+        = snd (((,) Const'Sym1KindInference) ())
+    data Const'Sym1 (a0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
+                                                                      (~>) b0123456789876543210 a0123456789876543210
+      where
+        Const'Sym1KindInference :: forall a0123456789876543210
+                                          a0123456789876543210
+                                          arg. SameKind (Apply (Const'Sym1 a0123456789876543210) arg) (Const'Sym2 a0123456789876543210 arg) =>
+                                   Const'Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Const'Sym1 a0123456789876543210) a0123456789876543210 = Const'Sym2 a0123456789876543210 a0123456789876543210
+    type Const'Sym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: b0123456789876543210) =
+        Const' a0123456789876543210 a0123456789876543210
     type family Const' (a :: a) (a :: b) :: a where
       Const' x _ = x
     sConst' ::

@@ -8,9 +8,15 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 $$:
     ($$:) :: Bool -> Bool -> Bool
     ($$:) _ _ = False
-    type ($$:@#@$$$) (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) =
-        ($$:) a0123456789876543210 a0123456789876543210
-    infixl 5 $$:@#@$$$
+    instance SuppressUnusedWarnings ($$:@#@$) where
+      suppressUnusedWarnings = snd (((,) (:$$:@#@$###)) ())
+    data ($$:@#@$) :: (~>) Bool ((~>) Bool Bool)
+      where
+        (:$$:@#@$###) :: forall a0123456789876543210
+                                arg. SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
+                         ($$:@#@$) a0123456789876543210
+    type instance Apply ($$:@#@$) a0123456789876543210 = ($$:@#@$$) a0123456789876543210
+    infixl 5 $$:@#@$
     instance SuppressUnusedWarnings (($$:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:$$:@#@$$###)) ())
     data ($$:@#@$$) (a0123456789876543210 :: Bool) :: (~>) Bool Bool
@@ -21,15 +27,9 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
                           ($$:@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply (($$:@#@$$) a0123456789876543210) a0123456789876543210 = ($$:@#@$$$) a0123456789876543210 a0123456789876543210
     infixl 5 $$:@#@$$
-    instance SuppressUnusedWarnings ($$:@#@$) where
-      suppressUnusedWarnings = snd (((,) (:$$:@#@$###)) ())
-    data ($$:@#@$) :: (~>) Bool ((~>) Bool Bool)
-      where
-        (:$$:@#@$###) :: forall a0123456789876543210
-                                arg. SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
-                         ($$:@#@$) a0123456789876543210
-    type instance Apply ($$:@#@$) a0123456789876543210 = ($$:@#@$$) a0123456789876543210
-    infixl 5 $$:@#@$
+    type ($$:@#@$$$) (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) =
+        ($$:) a0123456789876543210 a0123456789876543210
+    infixl 5 $$:@#@$$$
     type family ($$:) (a :: Bool) (a :: Bool) :: Bool where
       ($$:) _ _ = FalseSym0
     infixl 5 %$$:

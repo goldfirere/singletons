@@ -41,19 +41,15 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 arg_0123456789876543210 y x _ = x
     type family Lambda_0123456789876543210 y x t where
       Lambda_0123456789876543210 y x arg_0123456789876543210 = Case_0123456789876543210 arg_0123456789876543210 y x arg_0123456789876543210
-    type Lambda_0123456789876543210Sym3 y0123456789876543210 x0123456789876543210 t0123456789876543210 =
-        Lambda_0123456789876543210 y0123456789876543210 x0123456789876543210 t0123456789876543210
-    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210) where
+    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym2KindInference) ())
-    data Lambda_0123456789876543210Sym2 y0123456789876543210 x0123456789876543210 t0123456789876543210
+        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
+    data Lambda_0123456789876543210Sym0 y0123456789876543210
       where
-        Lambda_0123456789876543210Sym2KindInference :: forall y0123456789876543210
-                                                              x0123456789876543210
-                                                              t0123456789876543210
-                                                              arg. SameKind (Apply (Lambda_0123456789876543210Sym2 y0123456789876543210 x0123456789876543210) arg) (Lambda_0123456789876543210Sym3 y0123456789876543210 x0123456789876543210 arg) =>
-                                                       Lambda_0123456789876543210Sym2 y0123456789876543210 x0123456789876543210 t0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210Sym3 x0123456789876543210 y0123456789876543210 t0123456789876543210
+        Lambda_0123456789876543210Sym0KindInference :: forall y0123456789876543210
+                                                              arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
+                                                       Lambda_0123456789876543210Sym0 y0123456789876543210
+    type instance Apply Lambda_0123456789876543210Sym0 y0123456789876543210 = Lambda_0123456789876543210Sym1 y0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 y0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
@@ -64,19 +60,30 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
                                                               arg. SameKind (Apply (Lambda_0123456789876543210Sym1 y0123456789876543210) arg) (Lambda_0123456789876543210Sym2 y0123456789876543210 arg) =>
                                                        Lambda_0123456789876543210Sym1 y0123456789876543210 x0123456789876543210
     type instance Apply (Lambda_0123456789876543210Sym1 y0123456789876543210) x0123456789876543210 = Lambda_0123456789876543210Sym2 y0123456789876543210 x0123456789876543210
-    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym2 y0123456789876543210 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
-    data Lambda_0123456789876543210Sym0 y0123456789876543210
+        = snd (((,) Lambda_0123456789876543210Sym2KindInference) ())
+    data Lambda_0123456789876543210Sym2 y0123456789876543210 x0123456789876543210 t0123456789876543210
       where
-        Lambda_0123456789876543210Sym0KindInference :: forall y0123456789876543210
-                                                              arg. SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
-                                                       Lambda_0123456789876543210Sym0 y0123456789876543210
-    type instance Apply Lambda_0123456789876543210Sym0 y0123456789876543210 = Lambda_0123456789876543210Sym1 y0123456789876543210
+        Lambda_0123456789876543210Sym2KindInference :: forall y0123456789876543210
+                                                              x0123456789876543210
+                                                              t0123456789876543210
+                                                              arg. SameKind (Apply (Lambda_0123456789876543210Sym2 y0123456789876543210 x0123456789876543210) arg) (Lambda_0123456789876543210Sym3 y0123456789876543210 x0123456789876543210 arg) =>
+                                                       Lambda_0123456789876543210Sym2 y0123456789876543210 x0123456789876543210 t0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym2 y0123456789876543210 x0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210Sym3 y0123456789876543210 x0123456789876543210 t0123456789876543210
+    type Lambda_0123456789876543210Sym3 y0123456789876543210 x0123456789876543210 t0123456789876543210 =
+        Lambda_0123456789876543210 y0123456789876543210 x0123456789876543210 t0123456789876543210
     type family Case_0123456789876543210 x t where
       Case_0123456789876543210 x y = Apply (Apply (Apply Lambda_0123456789876543210Sym0 y) x) y
-    type Let0123456789876543210ZSym2 y0123456789876543210 x0123456789876543210 =
-        Let0123456789876543210Z y0123456789876543210 x0123456789876543210
+    instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
+      suppressUnusedWarnings
+        = snd (((,) Let0123456789876543210ZSym0KindInference) ())
+    data Let0123456789876543210ZSym0 y0123456789876543210
+      where
+        Let0123456789876543210ZSym0KindInference :: forall y0123456789876543210
+                                                           arg. SameKind (Apply Let0123456789876543210ZSym0 arg) (Let0123456789876543210ZSym1 arg) =>
+                                                    Let0123456789876543210ZSym0 y0123456789876543210
+    type instance Apply Let0123456789876543210ZSym0 y0123456789876543210 = Let0123456789876543210ZSym1 y0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210ZSym1 y0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Let0123456789876543210ZSym1KindInference) ())
@@ -87,21 +94,24 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
                                                            arg. SameKind (Apply (Let0123456789876543210ZSym1 y0123456789876543210) arg) (Let0123456789876543210ZSym2 y0123456789876543210 arg) =>
                                                     Let0123456789876543210ZSym1 y0123456789876543210 x0123456789876543210
     type instance Apply (Let0123456789876543210ZSym1 y0123456789876543210) x0123456789876543210 = Let0123456789876543210ZSym2 y0123456789876543210 x0123456789876543210
-    instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
-      suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210ZSym0KindInference) ())
-    data Let0123456789876543210ZSym0 y0123456789876543210
-      where
-        Let0123456789876543210ZSym0KindInference :: forall y0123456789876543210
-                                                           arg. SameKind (Apply Let0123456789876543210ZSym0 arg) (Let0123456789876543210ZSym1 arg) =>
-                                                    Let0123456789876543210ZSym0 y0123456789876543210
-    type instance Apply Let0123456789876543210ZSym0 y0123456789876543210 = Let0123456789876543210ZSym1 y0123456789876543210
+    type Let0123456789876543210ZSym2 y0123456789876543210 x0123456789876543210 =
+        Let0123456789876543210Z y0123456789876543210 x0123456789876543210
     type family Let0123456789876543210Z y x :: a where
       Let0123456789876543210Z y x = y
     type family Case_0123456789876543210 x t where
       Case_0123456789876543210 x y = Let0123456789876543210ZSym2 y x
-    type Let0123456789876543210Scrutinee_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210 =
-        Let0123456789876543210Scrutinee_0123456789876543210 a0123456789876543210 b0123456789876543210
+    instance SuppressUnusedWarnings Let0123456789876543210Scrutinee_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd
+            (((,)
+                Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
+               ())
+    data Let0123456789876543210Scrutinee_0123456789876543210Sym0 a0123456789876543210
+      where
+        Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference :: forall a0123456789876543210
+                                                                                       arg. SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
+                                                                                Let0123456789876543210Scrutinee_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 a0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210Scrutinee_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd
@@ -115,24 +125,12 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
                                                                                        arg. SameKind (Apply (Let0123456789876543210Scrutinee_0123456789876543210Sym1 a0123456789876543210) arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                                                 Let0123456789876543210Scrutinee_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210
     type instance Apply (Let0123456789876543210Scrutinee_0123456789876543210Sym1 a0123456789876543210) b0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210
-    instance SuppressUnusedWarnings Let0123456789876543210Scrutinee_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd
-            (((,)
-                Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
-               ())
-    data Let0123456789876543210Scrutinee_0123456789876543210Sym0 a0123456789876543210
-      where
-        Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference :: forall a0123456789876543210
-                                                                                       arg. SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
-                                                                                Let0123456789876543210Scrutinee_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 a0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210Sym1 a0123456789876543210
+    type Let0123456789876543210Scrutinee_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210 =
+        Let0123456789876543210Scrutinee_0123456789876543210 a0123456789876543210 b0123456789876543210
     type family Let0123456789876543210Scrutinee_0123456789876543210 a b where
       Let0123456789876543210Scrutinee_0123456789876543210 a b = Apply (Apply Tuple2Sym0 a) b
     type family Case_0123456789876543210 a b t where
       Case_0123456789876543210 a b '(p, _) = p
-    type Let0123456789876543210Scrutinee_0123456789876543210Sym1 d0123456789876543210 =
-        Let0123456789876543210Scrutinee_0123456789876543210 d0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210Scrutinee_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
@@ -145,6 +143,8 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
                                                                                        arg. SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
                                                                                 Let0123456789876543210Scrutinee_0123456789876543210Sym0 d0123456789876543210
     type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 d0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210Sym1 d0123456789876543210
+    type Let0123456789876543210Scrutinee_0123456789876543210Sym1 d0123456789876543210 =
+        Let0123456789876543210Scrutinee_0123456789876543210 d0123456789876543210
     type family Let0123456789876543210Scrutinee_0123456789876543210 d where
       Let0123456789876543210Scrutinee_0123456789876543210 d = Apply JustSym0 d
     type family Case_0123456789876543210 d t where
@@ -152,8 +152,6 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     type family Case_0123456789876543210 d x t where
       Case_0123456789876543210 d x ('Just y) = y
       Case_0123456789876543210 d x 'Nothing = d
-    type Foo5Sym1 (a0123456789876543210 :: a0123456789876543210) =
-        Foo5 a0123456789876543210
     instance SuppressUnusedWarnings Foo5Sym0 where
       suppressUnusedWarnings = snd (((,) Foo5Sym0KindInference) ())
     data Foo5Sym0 :: forall a0123456789876543210.
@@ -163,8 +161,8 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply Foo5Sym0 arg) (Foo5Sym1 arg) =>
                                  Foo5Sym0 a0123456789876543210
     type instance Apply Foo5Sym0 a0123456789876543210 = Foo5Sym1 a0123456789876543210
-    type Foo4Sym1 (a0123456789876543210 :: a0123456789876543210) =
-        Foo4 a0123456789876543210
+    type Foo5Sym1 (a0123456789876543210 :: a0123456789876543210) =
+        Foo5 a0123456789876543210
     instance SuppressUnusedWarnings Foo4Sym0 where
       suppressUnusedWarnings = snd (((,) Foo4Sym0KindInference) ())
     data Foo4Sym0 :: forall a0123456789876543210.
@@ -174,8 +172,17 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply Foo4Sym0 arg) (Foo4Sym1 arg) =>
                                  Foo4Sym0 a0123456789876543210
     type instance Apply Foo4Sym0 a0123456789876543210 = Foo4Sym1 a0123456789876543210
-    type Foo3Sym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: b0123456789876543210) =
-        Foo3 a0123456789876543210 a0123456789876543210
+    type Foo4Sym1 (a0123456789876543210 :: a0123456789876543210) =
+        Foo4 a0123456789876543210
+    instance SuppressUnusedWarnings Foo3Sym0 where
+      suppressUnusedWarnings = snd (((,) Foo3Sym0KindInference) ())
+    data Foo3Sym0 :: forall a0123456789876543210 b0123456789876543210.
+                     (~>) a0123456789876543210 ((~>) b0123456789876543210 a0123456789876543210)
+      where
+        Foo3Sym0KindInference :: forall a0123456789876543210
+                                        arg. SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
+                                 Foo3Sym0 a0123456789876543210
+    type instance Apply Foo3Sym0 a0123456789876543210 = Foo3Sym1 a0123456789876543210
     instance SuppressUnusedWarnings (Foo3Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) Foo3Sym1KindInference) ())
     data Foo3Sym1 (a0123456789876543210 :: a0123456789876543210) :: forall b0123456789876543210.
@@ -186,26 +193,8 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply (Foo3Sym1 a0123456789876543210) arg) (Foo3Sym2 a0123456789876543210 arg) =>
                                  Foo3Sym1 a0123456789876543210 a0123456789876543210
     type instance Apply (Foo3Sym1 a0123456789876543210) a0123456789876543210 = Foo3Sym2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings Foo3Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo3Sym0KindInference) ())
-    data Foo3Sym0 :: forall a0123456789876543210 b0123456789876543210.
-                     (~>) a0123456789876543210 ((~>) b0123456789876543210 a0123456789876543210)
-      where
-        Foo3Sym0KindInference :: forall a0123456789876543210
-                                        arg. SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
-                                 Foo3Sym0 a0123456789876543210
-    type instance Apply Foo3Sym0 a0123456789876543210 = Foo3Sym1 a0123456789876543210
-    type Foo2Sym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: Maybe a0123456789876543210) =
-        Foo2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Foo2Sym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) Foo2Sym1KindInference) ())
-    data Foo2Sym1 (a0123456789876543210 :: a0123456789876543210) :: (~>) (Maybe a0123456789876543210) a0123456789876543210
-      where
-        Foo2Sym1KindInference :: forall a0123456789876543210
-                                        a0123456789876543210
-                                        arg. SameKind (Apply (Foo2Sym1 a0123456789876543210) arg) (Foo2Sym2 a0123456789876543210 arg) =>
-                                 Foo2Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Foo2Sym1 a0123456789876543210) a0123456789876543210 = Foo2Sym2 a0123456789876543210 a0123456789876543210
+    type Foo3Sym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: b0123456789876543210) =
+        Foo3 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Foo2Sym0 where
       suppressUnusedWarnings = snd (((,) Foo2Sym0KindInference) ())
     data Foo2Sym0 :: forall a0123456789876543210.
@@ -215,17 +204,17 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply Foo2Sym0 arg) (Foo2Sym1 arg) =>
                                  Foo2Sym0 a0123456789876543210
     type instance Apply Foo2Sym0 a0123456789876543210 = Foo2Sym1 a0123456789876543210
-    type Foo1Sym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: Maybe a0123456789876543210) =
-        Foo1 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Foo1Sym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) Foo1Sym1KindInference) ())
-    data Foo1Sym1 (a0123456789876543210 :: a0123456789876543210) :: (~>) (Maybe a0123456789876543210) a0123456789876543210
+    instance SuppressUnusedWarnings (Foo2Sym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) Foo2Sym1KindInference) ())
+    data Foo2Sym1 (a0123456789876543210 :: a0123456789876543210) :: (~>) (Maybe a0123456789876543210) a0123456789876543210
       where
-        Foo1Sym1KindInference :: forall a0123456789876543210
+        Foo2Sym1KindInference :: forall a0123456789876543210
                                         a0123456789876543210
-                                        arg. SameKind (Apply (Foo1Sym1 a0123456789876543210) arg) (Foo1Sym2 a0123456789876543210 arg) =>
-                                 Foo1Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Foo1Sym1 a0123456789876543210) a0123456789876543210 = Foo1Sym2 a0123456789876543210 a0123456789876543210
+                                        arg. SameKind (Apply (Foo2Sym1 a0123456789876543210) arg) (Foo2Sym2 a0123456789876543210 arg) =>
+                                 Foo2Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Foo2Sym1 a0123456789876543210) a0123456789876543210 = Foo2Sym2 a0123456789876543210 a0123456789876543210
+    type Foo2Sym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: Maybe a0123456789876543210) =
+        Foo2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Foo1Sym0 where
       suppressUnusedWarnings = snd (((,) Foo1Sym0KindInference) ())
     data Foo1Sym0 :: forall a0123456789876543210.
@@ -235,6 +224,17 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
                                         arg. SameKind (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
                                  Foo1Sym0 a0123456789876543210
     type instance Apply Foo1Sym0 a0123456789876543210 = Foo1Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings (Foo1Sym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) Foo1Sym1KindInference) ())
+    data Foo1Sym1 (a0123456789876543210 :: a0123456789876543210) :: (~>) (Maybe a0123456789876543210) a0123456789876543210
+      where
+        Foo1Sym1KindInference :: forall a0123456789876543210
+                                        a0123456789876543210
+                                        arg. SameKind (Apply (Foo1Sym1 a0123456789876543210) arg) (Foo1Sym2 a0123456789876543210 arg) =>
+                                 Foo1Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (Foo1Sym1 a0123456789876543210) a0123456789876543210 = Foo1Sym2 a0123456789876543210 a0123456789876543210
+    type Foo1Sym2 (a0123456789876543210 :: a0123456789876543210) (a0123456789876543210 :: Maybe a0123456789876543210) =
+        Foo1 a0123456789876543210 a0123456789876543210
     type family Foo5 (a :: a) :: a where
       Foo5 x = Case_0123456789876543210 x x
     type family Foo4 (a :: a) :: a where

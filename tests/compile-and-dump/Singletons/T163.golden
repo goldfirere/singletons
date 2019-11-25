@@ -2,8 +2,6 @@ Singletons/T163.hs:0:0:: Splicing declarations
     singletons [d| data a + b = L a | R b |]
   ======>
     data (+) a b = L a | R b
-    type LSym1 (t0123456789876543210 :: a0123456789876543210) =
-        L t0123456789876543210
     instance SuppressUnusedWarnings LSym0 where
       suppressUnusedWarnings = snd (((,) LSym0KindInference) ())
     data LSym0 :: forall a0123456789876543210 b0123456789876543210.
@@ -13,8 +11,8 @@ Singletons/T163.hs:0:0:: Splicing declarations
                                      arg. SameKind (Apply LSym0 arg) (LSym1 arg) =>
                               LSym0 t0123456789876543210
     type instance Apply LSym0 t0123456789876543210 = LSym1 t0123456789876543210
-    type RSym1 (t0123456789876543210 :: b0123456789876543210) =
-        R t0123456789876543210
+    type LSym1 (t0123456789876543210 :: a0123456789876543210) =
+        L t0123456789876543210
     instance SuppressUnusedWarnings RSym0 where
       suppressUnusedWarnings = snd (((,) RSym0KindInference) ())
     data RSym0 :: forall b0123456789876543210 a0123456789876543210.
@@ -24,6 +22,8 @@ Singletons/T163.hs:0:0:: Splicing declarations
                                      arg. SameKind (Apply RSym0 arg) (RSym1 arg) =>
                               RSym0 t0123456789876543210
     type instance Apply RSym0 t0123456789876543210 = RSym1 t0123456789876543210
+    type RSym1 (t0123456789876543210 :: b0123456789876543210) =
+        R t0123456789876543210
     data (%+) :: forall a b. (+) a b -> GHC.Types.Type
       where
         SL :: forall a b (n :: a). (Sing n) -> (%+) (L n :: (+) a b)

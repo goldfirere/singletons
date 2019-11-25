@@ -9,8 +9,6 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
     foo = undefined
     bar :: Bool -> Bool
     bar = error "urk"
-    type BarSym1 (a0123456789876543210 :: Bool) =
-        Bar a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
     data BarSym0 :: (~>) Bool Bool
@@ -19,8 +17,8 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
     type instance Apply BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
-    type FooSym1 (a0123456789876543210 :: Bool) =
-        Foo a0123456789876543210
+    type BarSym1 (a0123456789876543210 :: Bool) =
+        Bar a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
     data FooSym0 :: (~>) Bool Bool
@@ -29,6 +27,8 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
     type instance Apply FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
+    type FooSym1 (a0123456789876543210 :: Bool) =
+        Foo a0123456789876543210
     type family Bar (a :: Bool) :: Bool where
       Bar a_0123456789876543210 = Apply (Apply ErrorSym0 "urk") a_0123456789876543210
     type family Foo (a :: Bool) :: Bool where

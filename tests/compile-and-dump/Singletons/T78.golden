@@ -9,8 +9,6 @@ Singletons/T78.hs:(0,0)-(0,0): Splicing declarations
     foo (Just False) = False
     foo (Just True) = True
     foo Nothing = False
-    type FooSym1 (a0123456789876543210 :: Maybe Bool) =
-        Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
     data FooSym0 :: (~>) (Maybe Bool) Bool
@@ -19,6 +17,8 @@ Singletons/T78.hs:(0,0)-(0,0): Splicing declarations
                                        arg. SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
     type instance Apply FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
+    type FooSym1 (a0123456789876543210 :: Maybe Bool) =
+        Foo a0123456789876543210
     type family Foo (a :: Maybe Bool) :: Bool where
       Foo ('Just 'False) = FalseSym0
       Foo ('Just 'True) = TrueSym0

@@ -5,8 +5,6 @@ Singletons/T229.hs:(0,0)-(0,0): Splicing declarations
   ======>
     ___foo :: Bool -> Bool
     ___foo _ = True
-    type US___fooSym1 (a0123456789876543210 :: Bool) =
-        US___foo a0123456789876543210
     instance SuppressUnusedWarnings US___fooSym0 where
       suppressUnusedWarnings = snd (((,) US___fooSym0KindInference) ())
     data US___fooSym0 :: (~>) Bool Bool
@@ -15,6 +13,8 @@ Singletons/T229.hs:(0,0)-(0,0): Splicing declarations
                                             arg. SameKind (Apply US___fooSym0 arg) (US___fooSym1 arg) =>
                                      US___fooSym0 a0123456789876543210
     type instance Apply US___fooSym0 a0123456789876543210 = US___fooSym1 a0123456789876543210
+    type US___fooSym1 (a0123456789876543210 :: Bool) =
+        US___foo a0123456789876543210
     type family US___foo (a :: Bool) :: Bool where
       US___foo _ = TrueSym0
     ___sfoo ::

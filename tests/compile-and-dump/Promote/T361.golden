@@ -7,8 +7,6 @@ Promote/T361.hs:(0,0)-(0,0): Splicing declarations
   ======>
     f :: Proxy 1 -> Proxy 2
     f Proxy = Proxy
-    type FSym1 (a0123456789876543210 :: Proxy 1) =
-        F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
     data FSym0 :: (~>) (Proxy 1) (Proxy 2)
@@ -17,5 +15,7 @@ Promote/T361.hs:(0,0)-(0,0): Splicing declarations
                                      arg. SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
     type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
+    type FSym1 (a0123456789876543210 :: Proxy 1) =
+        F a0123456789876543210
     type family F (a :: Proxy 1) :: Proxy 2 where
       F 'Proxy = ProxySym0

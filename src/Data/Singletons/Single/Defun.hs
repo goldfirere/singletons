@@ -13,6 +13,7 @@
 
 module Data.Singletons.Single.Defun (singDefuns) where
 
+import Control.Monad
 import Data.List
 import Data.Singletons.Names
 import Data.Singletons.Promote.Defun
@@ -57,31 +58,61 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
     [] -> pure [] -- If a function has no arguments, then it has no
                   -- defunctionalization symbols, so there's nothing to be done.
     _  -> do sty_ctxt <- mapM singPred ty_ctxt
-             go 0 sty_ctxt [] mb_ty_args
+             names    <- replicateM (length mb_ty_args) $ qNewName "d"
+             let tvbs       = zipWith inferMaybeKindTV names mb_ty_args
+                 (_, insts) = go 0 sty_ctxt [] tvbs
+             pure insts
   where
     num_ty_args :: Int
     num_ty_args = length mb_ty_args
 
-    -- Sadly, this algorithm is quadratic, because in each iteration of the loop
-    -- we must:
+    -- The inner loop. @go n ctxt arg_tvbs res_tvbs@ returns @(m_result, insts)@.
+    -- Using one particular example:
     --
-    -- * Construct an arrow type of the form (a ~> ... ~> z), using a suffix of
-    --   the promoted argument types.
-    -- * Append a new type variable to the end of an ordered list.
+    -- @
+    -- instance (SingI a, SingI b, SEq c, SEq d) =>
+    --   SingI (ExampleSym2 (x :: a) (y :: b) :: c ~> d ~> Type) where ...
+    -- @
     --
-    -- In practice, this is unlikely to be a bottleneck, as singletons does not
-    -- support functions with more than 7 or so arguments anyways.
-    go :: Int -> DCxt -> [DTyVarBndr] -> [Maybe DKind] -> SgM [DDec]
-    go sym_num sty_ctxt tvbs mb_tyss
-      | sym_num < num_ty_args
-      , mb_ty:mb_tys <- mb_tyss
-      = do new_tvb_name <- qNewName "d"
-           let new_tvb = inferMaybeKindTV new_tvb_name mb_ty
-           insts <- go (sym_num + 1) sty_ctxt (tvbs ++ [new_tvb]) mb_tys
-           pure $ new_insts ++ insts
-      | otherwise
-      = pure []
+    -- We have:
+    --
+    -- * @n@ is 2. This is incremented in each iteration of `go`.
+    --
+    -- * @ctxt@ is (SEq c, SEq d). The (SingI a, SingI b) part of the instance
+    --   context is added separately.
+    --
+    -- * @arg_tvbs@ is [(x :: a), (y :: b)].
+    --
+    -- * @res_tvbs@ is [(z :: c), (w :: d)]. The kinds of these type variable
+    --   binders appear in the result kind.
+    --
+    -- * @m_result@ is `Just (c ~> d ~> Type)`. @m_result@ is returned so
+    --   that earlier defunctionalization symbols can build on the result
+    --   kinds of later symbols. For instance, ExampleSym1 would get the
+    --   result kind `b ~> c ~> d ~> Type` by prepending `b` to ExampleSym2's
+    --   result kind `c ~> d ~> Type`.
+    --
+    -- * @insts@ are all of the instance declarations corresponding to
+    --   ExampleSym2 and later defunctionalization symbols. This is the main
+    --   payload of the function.
+    --
+    -- This function is quadratic because it appends a variable at the end of
+    -- the @arg_tvbs@ list at each iteration. In practice, this is unlikely
+    -- to be a performance bottleneck since the number of arguments rarely
+    -- gets to be that large.
+    go :: Int -> DCxt -> [DTyVarBndr] -> [DTyVarBndr]
+       -> (Maybe DKind, [DDec])
+    go _       _        _        []                 = (mb_ty_res, [])
+    go sym_num sty_ctxt arg_tvbs (res_tvb:res_tvbs) =
+      (mb_new_res, new_inst:insts)
       where
+        mb_res :: Maybe DKind
+        insts  :: [DDec]
+        (mb_res, insts) = go (sym_num + 1) sty_ctxt (arg_tvbs ++ [res_tvb]) res_tvbs
+
+        mb_new_res :: Maybe DKind
+        mb_new_res = mk_inst_kind res_tvb mb_res
+
         sing_fun_num :: Int
         sing_fun_num = num_ty_args - sym_num
 
@@ -89,19 +120,19 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
         mk_sing_fun_expr sing_expr =
           foldl' (\f tvb_n -> f `DAppE` (DVarE singMethName `DAppTypeE` DVarT tvb_n))
                  sing_expr
-                 (map extractTvbName tvbs)
+                 (map extractTvbName arg_tvbs)
 
         singI_ctxt :: DCxt
-        singI_ctxt = map (DAppT (DConT singIName) . tvbToType) tvbs
+        singI_ctxt = map (DAppT (DConT singIName) . tvbToType) arg_tvbs
 
         mk_inst_ty :: DType -> DType
         mk_inst_ty inst_head
-          = case mb_inst_kind of
+          = case mb_new_res of
               Just inst_kind -> inst_head `DSigT` inst_kind
               Nothing        -> inst_head
 
-        tvb_tys :: [DType]
-        tvb_tys = map dTyVarBndrToDType tvbs
+        arg_tvb_tys :: [DType]
+        arg_tvb_tys = map dTyVarBndrToDType arg_tvbs
 
         -- Construct the arrow kind used to annotate the defunctionalization
         -- symbol (e.g., the `a ~> a ~> Bool` in
@@ -109,19 +140,19 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
         -- If any of the argument kinds or result kind isn't known (i.e., is
         -- Nothing), then we opt not to construct this arrow kind altogether.
         -- See Note [singDefuns and type inference]
-        mb_inst_kind :: Maybe DType
-        mb_inst_kind = foldr buildTyFunArrow_maybe mb_ty_res mb_tyss
+        mk_inst_kind :: DTyVarBndr -> Maybe DKind -> Maybe DKind
+        mk_inst_kind tvb' = buildTyFunArrow_maybe (extractTvbKind tvb')
 
-        new_insts :: [DDec]
-        new_insts = [DInstanceD Nothing Nothing
-                                (sty_ctxt ++ singI_ctxt)
-                                (DConT singIName `DAppT` mk_inst_ty defun_inst_ty)
-                                [DLetDec $ DValD (DVarP singMethName)
-                                         $ wrapSingFun sing_fun_num defun_inst_ty
-                                         $ mk_sing_fun_expr sing_exp ]]
+        new_inst :: DDec
+        new_inst = DInstanceD Nothing Nothing
+                              (sty_ctxt ++ singI_ctxt)
+                              (DConT singIName `DAppT` mk_inst_ty defun_inst_ty)
+                              [DLetDec $ DValD (DVarP singMethName)
+                                       $ wrapSingFun sing_fun_num defun_inst_ty
+                                       $ mk_sing_fun_expr sing_exp ]
           where
             defun_inst_ty :: DType
-            defun_inst_ty = foldType (DConT (promoteTySym n sym_num)) tvb_tys
+            defun_inst_ty = foldType (DConT (promoteTySym n sym_num)) arg_tvb_tys
 
             sing_exp :: DExp
             sing_exp = case ns of
