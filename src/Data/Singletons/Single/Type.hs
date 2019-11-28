@@ -32,9 +32,8 @@ singType :: OSet Name      -- the set of bound kind variables in this scope
                 , [DKind]  -- the kinds of the argument types
                 , DKind )  -- the kind of the result type
 singType bound_kvs prom ty = do
-  checkVanillaDType ty
-  let (orig_tvbs, cxt, args, res) = unravelVanillaDType ty
-      num_args                    = length args
+  (orig_tvbs, cxt, args, res) <- unravelVanillaDType ty
+  let num_args = length args
   cxt' <- mapM singPred_NC cxt
   arg_names <- replicateM num_args (qNewName "t")
   prom_args <- mapM promoteType_NC args

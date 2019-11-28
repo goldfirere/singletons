@@ -266,17 +266,18 @@ ravel (h:t) res = DAppT (DAppT DArrowT h) (ravel t res)
 -- Note [Vanilla-type validity checking during promotion] in
 -- Data.Singletons.Promote.Type for what "vanilla" means.)
 -- If a non-vanilla construct is encountered while decomposing the function
--- type, an error is thrown.
+-- type, an error is thrown monadically.
 --
 -- This should be contrasted with the 'unravelDType' function from
 -- @th-desugar@, which supports the full gamut of function types. @singletons@
 -- only supports a subset of these types, which is why this function is used
 -- to decompose them instead.
-unravelVanillaDType :: DType -> ([DTyVarBndr], DCxt, [DType], DType)
+unravelVanillaDType :: forall m. MonadFail m
+                    => DType -> m ([DTyVarBndr], DCxt, [DType], DType)
 unravelVanillaDType ty =
   case unravelVanillaDType_either ty of
-    Left err      -> error err
-    Right payload -> payload
+    Left err      -> fail err
+    Right payload -> pure payload
 
 -- Ensures that a 'DType' is a vanilla type. (See
 -- Note [Vanilla-type validity checking during promotion] in

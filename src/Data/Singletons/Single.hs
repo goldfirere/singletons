@@ -405,8 +405,27 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
     mk_default_sig _ _ _ _ = error "Internal error: a singled signature isn't a signature."
 
     add_constraints meth_name sty (_, bound_kvs) res_ki = do  -- Maybe monad
+      (tvbs, cxt, args, res) <- unravelVanillaDType sty
       prom_dflt <- OMap.lookup meth_name promoted_defaults
-      let default_pred = foldType (DConT equalityName)
+
+      -- Filter out explicitly bound kind variables. Otherwise, if you had
+      -- the following class (#312):
+      --
+      --  class Foo a where
+      --    bar :: a -> b -> b
+      --    bar _ x = x
+      --
+      -- Then it would be singled to:
+      --
+      --  class SFoo a where
+      --    sBar :: forall b (x :: a) (y :: b). Sing x -> Sing y -> Sing (sBar x y)
+      --    default :: forall b (x :: a) (y :: b).
+      --               (Bar b x y) ~ (BarDefault b x y) => ...
+      --
+      -- Which applies Bar/BarDefault to b, which shouldn't happen.
+      let tvs = map tvbToType $
+                filter (\tvb -> extractTvbName tvb `Set.member` bound_kv_set) tvbs
+          default_pred = foldType (DConT equalityName)
                                 -- NB: Need the res_ki here to prevent ambiguous
                                 -- kinds in result-inferred default methods.
                                 -- See #175
@@ -415,26 +434,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
       return $ DForallT ForallInvis tvbs
              $ DConstrainedT (default_pred : cxt) (ravel args res)
       where
-        (tvbs, cxt, args, res) = unravelVanillaDType sty
         bound_kv_set = Set.fromList bound_kvs
-        -- Filter out explicitly bound kind variables. Otherwise, if you had
-        -- the following class (#312):
-        --
-        --  class Foo a where
-        --    bar :: a -> b -> b
-        --    bar _ x = x
-        --
-        -- Then it would be singled to:
-        --
-        --  class SFoo a where
-        --    sBar :: forall b (x :: a) (y :: b). Sing x -> Sing y -> Sing (sBar x y)
-        --    default :: forall b (x :: a) (y :: b).
-        --               (Bar b x y) ~ (BarDefault b x y) => ...
-        --
-        -- Which applies Bar/BarDefault to b, which shouldn't happen.
-        tvs = map tvbToType $
-              filter (\tvb -> extractTvbName tvb `Set.member` bound_kv_set) tvbs
-
 
 singInstD :: AInstDecl -> SgM DDec
 singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
@@ -490,8 +490,8 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
           -- We don't have an InstanceSig, so we must compute the type to use
           -- in the singled instance ourselves through reification.
           Just (DVarI _ (DForallT _ cls_tvbs (DConstrainedT _cls_pred s_ty)) _) -> do
+            (sing_tvbs, ctxt, _args, res_ty) <- unravelVanillaDType s_ty
             let subst = mk_subst cls_tvbs
-                (sing_tvbs, ctxt, _args, res_ty) = unravelVanillaDType s_ty
                 m_res_ki = case res_ty of
                   _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substKind subst res_ki)
                   _                                         -> Nothing

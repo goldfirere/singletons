@@ -84,12 +84,10 @@ promoteTypeArg_NC ta@(DTyArg _) = pure ta -- Kinds are already promoted
 -- result types in the process.
 promoteUnraveled :: MonadFail m => DType -> m ([DKind], DKind)
 promoteUnraveled ty = do
-  checkVanillaDType ty
+  (_, _, arg_tys, res_ty) <- unravelVanillaDType ty
   arg_kis <- mapM promoteType_NC arg_tys
   res_ki  <- promoteType_NC res_ty
   return (arg_kis, res_ki)
-  where
-    (_, _, arg_tys, res_ty) = unravelVanillaDType ty
 
 {-
 Note [Vanilla-type validity checking during promotion]
