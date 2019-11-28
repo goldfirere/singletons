@@ -8,7 +8,7 @@ This file defines the SgM monad and its operations, for use during singling.
 The SgM monad allows reading from a SgEnv environment and is wrapped around a Q.
 -}
 
-{-# LANGUAGE GeneralizedNewtypeDeriving, ParallelListComp, TemplateHaskell #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, ParallelListComp, TemplateHaskell, CPP #-}
 
 module Data.Singletons.Single.Monad (
   SgM, bindLets, bindContext, askContext, lookupVarE, lookupConE,
@@ -76,6 +76,9 @@ instance Quasi SgM where
   qAddForeignFilePath = liftSgM `comp2` qAddForeignFilePath
   qAddTempFile        = liftSgM `comp1` qAddTempFile
   qAddCorePlugin      = liftSgM `comp1` qAddCorePlugin
+#if MIN_VERSION_template_haskell(2,16,0)
+  qReifyType          = liftSgM `comp1` qReifyType
+#endif
 
   qRecover (SgM handler) (SgM body) = do
     env <- ask
