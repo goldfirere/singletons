@@ -19,7 +19,7 @@ import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
 import Data.Singletons.Deriving.Util
 import Data.Singletons.Util
-import Data.List
+import Data.List (nub)
 
 -- @inferConstraints cls inst_ty cons@ infers the instance context for a
 -- derived type class instance of @cls@ for @inst_ty@, using the constructors

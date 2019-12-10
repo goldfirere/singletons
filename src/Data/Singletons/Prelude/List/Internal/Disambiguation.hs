@@ -25,7 +25,8 @@ import Data.Singletons.Prelude.List.Internal
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Eq
-import Data.List
+import Data.List ( foldl', inits, insert, intersperse, isPrefixOf
+                 , nubBy, partition, sort, sortBy, tails, transpose )
 import GHC.TypeLits
 
 -- singletons doesn't support qualified names :(

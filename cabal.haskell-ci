@@ -7,3 +7,8 @@ raw-project
   package th-desugar
     tests:      False
     benchmarks: False
+
+-- Temporarily patch .travis.yml to require the GHC 8.10.1 build
+-- to succeed (as 8.10.1 is still pre-release, so haskell-ci allows
+-- it to fail by default)
+travis-patches: travis.yml.patch

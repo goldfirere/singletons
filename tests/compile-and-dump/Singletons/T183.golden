@@ -432,8 +432,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
             (((,,) (sX :: Sing x)) (SJust (sX :: Sing x)))
               (SJust (SJust (sX :: Sing x)))
         of {
-          (,,) (_ :: Sing (x :: a))
-               (_ :: Sing ('Just (x :: a) :: Maybe a))
+          (,,) (_ :: Sing (x :: a)) (_ :: Sing ('Just (x :: a) :: Maybe a))
                (_ :: Sing ('Just ('Just (x :: a) :: Maybe a) :: Maybe (Maybe a)))
             -> (applySing ((singFun1 @JustSym0) SJust))
                  ((applySing ((singFun1 @JustSym0) SJust)) (sX :: Sing (x :: a)) ::

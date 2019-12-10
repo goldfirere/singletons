@@ -40,7 +40,7 @@ knowledge of dependent types.
 Compatibility
 -------------
 
-The singletons library requires GHC 8.8.1 or greater. Any code that uses the
+The singletons library requires GHC 8.10.1 or greater. Any code that uses the
 singleton generation primitives needs to enable a long list of GHC
 extensions. This list includes, but is not necessarily limited to, the
 following:
