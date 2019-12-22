@@ -80,6 +80,7 @@ import Data.Singletons.Prelude.Monoid hiding
 import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Ord hiding
        (MinSym0, MinSym1, MaxSym0, MaxSym1)
+import Data.Singletons.Prelude.Ord.Disambiguation
 import Data.Singletons.Prelude.Semigroup.Internal
 import Data.Singletons.Prelude.Show
 import Data.Singletons.Prelude.Traversable

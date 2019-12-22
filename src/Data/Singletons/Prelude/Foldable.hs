@@ -129,6 +129,7 @@ import Data.Singletons.Prelude.Semigroup.Internal
          , LastSym0,        LastSym1,    SLast
          , ProductSym0(..), ProductSym1, SProduct
          , SumSym0(..),     SumSym1,     SSum )
+import Data.Singletons.Prelude.Semigroup.Internal.Disambiguation
 import Data.Singletons.Promote
 import Data.Singletons.Single
 import Data.Singletons.TypeLits.Internal
