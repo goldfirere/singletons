@@ -16,7 +16,8 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- TODO RGS
+-- Provides aliases for 'Min' and 'Max' that do not clash with the data
+-- types of the same names in Data.Singletons.Prelude.Semigroup.
 --
 ----------------------------------------------------------------------------
 

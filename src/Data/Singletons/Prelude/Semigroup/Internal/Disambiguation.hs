@@ -16,7 +16,9 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- TODO RGS
+-- Provides aliases for 'All', 'Any', 'Sum', and 'Product' that do not clash
+-- with the promoted functions of the same names in
+-- Data.Singletons.Prelude.Foldable.
 --
 ----------------------------------------------------------------------------
 
@@ -26,7 +28,11 @@ import Data.Semigroup
 import Data.Singletons.Prelude.Semigroup.Internal
 import Data.Singletons.Single
 
--- We need these in Data.Singletons.Prelude.Foldable.
+-- We need these in Data.Singletons.Prelude.Foldable, as we need to promote
+-- code that simultaneously uses the All/Any/Sum/Product constructors and the
+-- all/any/sum/product functions, which have clashing defunctionalization
+-- symbol names. Our workaround is to simply define synonyms for
+-- all/any/sum/product and use those instead.
 $(singletons [d|
   all_ :: Bool -> All
   all_ = All
