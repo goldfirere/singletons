@@ -56,12 +56,12 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
       type Method2a (arg :: b) :: a
       type Method2b (arg :: b) :: a
     type family Method1_0123456789876543210 :: [a] where
-      Method1_0123456789876543210 = '[]
+      Method1_0123456789876543210 = NilSym0
     type Method1_0123456789876543210Sym0 = Method1_0123456789876543210
     instance PC1 [] where
       type Method1 = Method1_0123456789876543210Sym0
     type family Method2a_0123456789876543210 (a :: b) :: [a] where
-      Method2a_0123456789876543210 _ = '[]
+      Method2a_0123456789876543210 _ = NilSym0
     instance SuppressUnusedWarnings Method2a_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Method2a_0123456789876543210Sym0KindInference) ())
@@ -76,7 +76,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
     type Method2a_0123456789876543210Sym1 (a0123456789876543210 :: b0123456789876543210) =
         Method2a_0123456789876543210 a0123456789876543210
     type family Method2b_0123456789876543210 (a :: b) :: [a] where
-      Method2b_0123456789876543210 _ = '[]
+      Method2b_0123456789876543210 _ = NilSym0
     instance SuppressUnusedWarnings Method2b_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Method2b_0123456789876543210Sym0KindInference) ())

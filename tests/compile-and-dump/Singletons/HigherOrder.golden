@@ -309,14 +309,14 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       Foo f g a = Apply (Apply f g) a
     type family ZipWith (a :: (~>) a ((~>) b c)) (a :: [a]) (a :: [b]) :: [c] where
       ZipWith f ('(:) x xs) ('(:) y ys) = Apply (Apply (:@#@$) (Apply (Apply f x) y)) (Apply (Apply (Apply ZipWithSym0 f) xs) ys)
-      ZipWith _ '[] '[] = '[]
-      ZipWith _ ('(:) _ _) '[] = '[]
-      ZipWith _ '[] ('(:) _ _) = '[]
+      ZipWith _ '[] '[] = NilSym0
+      ZipWith _ ('(:) _ _) '[] = NilSym0
+      ZipWith _ '[] ('(:) _ _) = NilSym0
     type family LiftMaybe (a :: (~>) a b) (a :: Maybe a) :: Maybe b where
       LiftMaybe f ('Just x) = Apply JustSym0 (Apply f x)
       LiftMaybe _ 'Nothing = NothingSym0
     type family Map (a :: (~>) a b) (a :: [a]) :: [b] where
-      Map _ '[] = '[]
+      Map _ '[] = NilSym0
       Map f ('(:) h t) = Apply (Apply (:@#@$) (Apply f h)) (Apply (Apply MapSym0 f) t)
     sEtad ::
       forall (t :: [Nat]) (t :: [Bool]).

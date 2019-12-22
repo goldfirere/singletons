@@ -19,8 +19,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     type SuccSym1 (t0123456789876543210 :: Nat) =
         Succ t0123456789876543210
     type family Compare_0123456789876543210 (a :: Nat) (a :: Nat) :: Ordering where
-      Compare_0123456789876543210 Zero Zero = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
-      Compare_0123456789876543210 (Succ a_0123456789876543210) (Succ b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
+      Compare_0123456789876543210 Zero Zero = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
+      Compare_0123456789876543210 (Succ a_0123456789876543210) (Succ b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0)
       Compare_0123456789876543210 Zero (Succ _) = LTSym0
       Compare_0123456789876543210 (Succ _) Zero = GTSym0
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where

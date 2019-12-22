@@ -153,10 +153,10 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     type LeqSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
         Leq a0123456789876543210 a0123456789876543210
     type family InsertionSort (a :: [Nat]) :: [Nat] where
-      InsertionSort '[] = '[]
+      InsertionSort '[] = NilSym0
       InsertionSort ('(:) h t) = Apply (Apply InsertSym0 h) (Apply InsertionSortSym0 t)
     type family Insert (a :: Nat) (a :: [Nat]) :: [Nat] where
-      Insert n '[] = Apply (Apply (:@#@$) n) '[]
+      Insert n '[] = Apply (Apply (:@#@$) n) NilSym0
       Insert n ('(:) h t) = Case_0123456789876543210 n h t (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t)
     type family Leq (a :: Nat) (a :: Nat) :: Bool where
       Leq 'Zero _ = TrueSym0

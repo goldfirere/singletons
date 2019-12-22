@@ -30,7 +30,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
       fromEnum (False : as) = (2 * fromEnum as)
       fromEnum (True : as) = (1 + (2 * fromEnum as))
     type family Succ_0123456789876543210 (a :: [Bool]) :: [Bool] where
-      Succ_0123456789876543210 '[] = Apply (Apply (:@#@$) TrueSym0) '[]
+      Succ_0123456789876543210 '[] = Apply (Apply (:@#@$) TrueSym0) NilSym0
       Succ_0123456789876543210 ('(:) 'False as) = Apply (Apply (:@#@$) TrueSym0) as
       Succ_0123456789876543210 ('(:) 'True as) = Apply (Apply (:@#@$) FalseSym0) (Apply SuccSym0 as)
     instance SuppressUnusedWarnings Succ_0123456789876543210Sym0 where
@@ -60,7 +60,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
     type Pred_0123456789876543210Sym1 (a0123456789876543210 :: [Bool]) =
         Pred_0123456789876543210 a0123456789876543210
     type family Case_0123456789876543210 i arg_0123456789876543210 t where
-      Case_0123456789876543210 i arg_0123456789876543210 'True = '[]
+      Case_0123456789876543210 i arg_0123456789876543210 'True = NilSym0
       Case_0123456789876543210 i arg_0123456789876543210 'False = Apply SuccSym0 (Apply ToEnumSym0 (Apply PredSym0 i))
     type family Case_0123456789876543210 i arg_0123456789876543210 t where
       Case_0123456789876543210 i arg_0123456789876543210 'True = Apply ErrorSym0 "negative toEnum"

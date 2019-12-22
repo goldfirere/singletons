@@ -190,12 +190,7 @@ promoteValNameLhsPrefix pres@(alpha, _) n
 -- used when a value name appears in an expression context
 -- works for both variables and datacons
 promoteValRhs :: Name -> DType
-promoteValRhs name
-  | name == nilName
-  = DConT nilName   -- workaround for #21
-
-  | otherwise
-  = DConT $ promoteTySym name 0
+promoteValRhs name = DConT $ promoteTySym name 0
 
 -- generates type-level symbol for a given name. Int parameter represents
 -- saturation: 0 - no parameters passed to the symbol, 1 - one parameter

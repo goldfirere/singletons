@@ -42,13 +42,13 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
     type ComplexSym0 = Complex
     type PrSym0 = Pr
     type family AList where
-      AList = Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) '[]))
+      AList = Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))
     type family Tuple where
       Tuple = Apply (Apply (Apply Tuple3Sym0 FalseSym0) (Apply JustSym0 ZeroSym0)) TrueSym0
     type family Complex where
       Complex = Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
     type family Pr where
-      Pr = Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:@#@$) ZeroSym0) '[])
+      Pr = Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:@#@$) ZeroSym0) NilSym0)
     type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Pair a b) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 p_0123456789876543210 (Pair arg_0123456789876543210 arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Pair ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210)) (Apply (Apply (.@#@$) ShowSpaceSym0) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))))) a_0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where

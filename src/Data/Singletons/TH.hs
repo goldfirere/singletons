@@ -105,7 +105,7 @@ module Data.Singletons.TH (
   type (<*>@#@$), type (<*>@#@$$), type (<*>@#@$$$),
   LiftA2Sym0, LiftA2Sym1, LiftA2Sym2, LiftA2Sym3,
   type (.@#@$), type (.@#@$$), type (.@#@$$$), type (.@#@$$$$),
-  (:@#@$), (:@#@$$), (:@#@$$$),
+  NilSym0, (:@#@$), (:@#@$$), (:@#@$$$),
 
   SuppressUnusedWarnings(..)
 

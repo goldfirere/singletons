@@ -20,11 +20,11 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type ManySym0 = Many
     type EmptySym0 = Empty
     type family Empty :: [(Symbol, Occ)] where
-      Empty = '[]
+      Empty = NilSym0
     type family Compare_0123456789876543210 (a :: Occ) (a :: Occ) :: Ordering where
-      Compare_0123456789876543210 Str Str = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
-      Compare_0123456789876543210 Opt Opt = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
-      Compare_0123456789876543210 Many Many = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
+      Compare_0123456789876543210 Str Str = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
+      Compare_0123456789876543210 Opt Opt = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
+      Compare_0123456789876543210 Many Many = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
       Compare_0123456789876543210 Str Opt = LTSym0
       Compare_0123456789876543210 Str Many = LTSym0
       Compare_0123456789876543210 Opt Str = GTSym0

@@ -65,7 +65,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         Baz t0123456789876543210 t0123456789876543210 t0123456789876543210
     type Let0123456789876543210PSym0 = Let0123456789876543210P
     type family Let0123456789876543210P where
-      Let0123456789876543210P = '[]
+      Let0123456789876543210P = NilSym0
     instance SuppressUnusedWarnings Let0123456789876543210PSym0 where
       suppressUnusedWarnings
         = snd (((,) Let0123456789876543210PSym0KindInference) ())
@@ -78,7 +78,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     type Let0123456789876543210PSym1 wild_01234567898765432100123456789876543210 =
         Let0123456789876543210P wild_01234567898765432100123456789876543210
     type family Let0123456789876543210P wild_0123456789876543210 where
-      Let0123456789876543210P wild_0123456789876543210 = Apply (Apply (:@#@$) wild_0123456789876543210) '[]
+      Let0123456789876543210P wild_0123456789876543210 = Apply (Apply (:@#@$) wild_0123456789876543210) NilSym0
     instance SuppressUnusedWarnings Let0123456789876543210PSym0 where
       suppressUnusedWarnings
         = snd (((,) Let0123456789876543210PSym0KindInference) ())

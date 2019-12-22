@@ -37,7 +37,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     type IdentitySym1 (t0123456789876543210 :: a0123456789876543210) =
         Identity t0123456789876543210
     type family Compare_0123456789876543210 (a :: Constant a b) (a :: Constant a b) :: Ordering where
-      Compare_0123456789876543210 (Constant a_0123456789876543210) (Constant b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
+      Compare_0123456789876543210 (Constant a_0123456789876543210) (Constant b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0)
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym0KindInference) ())
@@ -64,7 +64,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     instance POrd (Constant a b) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type family Compare_0123456789876543210 (a :: Identity a) (a :: Identity a) :: Ordering where
-      Compare_0123456789876543210 (Identity a_0123456789876543210) (Identity b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) '[])
+      Compare_0123456789876543210 (Identity a_0123456789876543210) (Identity b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0)
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym0KindInference) ())

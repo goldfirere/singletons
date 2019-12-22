@@ -20,7 +20,7 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
     type Let0123456789876543210Scrutinee_0123456789876543210Sym1 e0123456789876543210 =
         Let0123456789876543210Scrutinee_0123456789876543210 e0123456789876543210
     type family Let0123456789876543210Scrutinee_0123456789876543210 e where
-      Let0123456789876543210Scrutinee_0123456789876543210 e = Apply (Apply (:@#@$) NotSym0) '[]
+      Let0123456789876543210Scrutinee_0123456789876543210 e = Apply (Apply (:@#@$) NotSym0) NilSym0
     type family Case_0123456789876543210 e t where
       Case_0123456789876543210 e '[_] = NotSym0
     instance SuppressUnusedWarnings GSym0 where

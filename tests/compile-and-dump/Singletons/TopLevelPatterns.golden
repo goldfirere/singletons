@@ -203,7 +203,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type family L :: Bool where
       L = Case_0123456789876543210 X_0123456789876543210Sym0
     type family X_0123456789876543210 where
-      X_0123456789876543210 = Apply (Apply (:@#@$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:@#@$) (Apply IdSym0 FalseSym0)) '[])
+      X_0123456789876543210 = Apply (Apply (:@#@$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:@#@$) (Apply IdSym0 FalseSym0)) NilSym0)
     type family K :: Bool where
       K = Case_0123456789876543210 X_0123456789876543210Sym0
     type family J :: Bool where
@@ -221,7 +221,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type family F (a :: Bool) :: Bool where
       F a_0123456789876543210 = Apply (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0) a_0123456789876543210
     type family X_0123456789876543210 where
-      X_0123456789876543210 = Apply (Apply (:@#@$) NotSym0) (Apply (Apply (:@#@$) IdSym0) '[])
+      X_0123456789876543210 = Apply (Apply (:@#@$) NotSym0) (Apply (Apply (:@#@$) IdSym0) NilSym0)
     type family False_ where
       False_ = FalseSym0
     type family Not (a :: Bool) :: Bool where

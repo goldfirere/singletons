@@ -9,7 +9,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       deriving (Eq, Ord, Enum, Bounded, Show)
     type TSym0 = T
     type family Compare_0123456789876543210 (a :: T) (a :: T) :: Ordering where
-      Compare_0123456789876543210 T T = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) '[]
+      Compare_0123456789876543210 T T = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym0KindInference) ())
