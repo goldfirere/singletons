@@ -851,9 +851,8 @@ promoteExp (DLamE names exp) = do
   tyNames <- mapM mkTyName names
   let var_proms = zip names tyNames
   (rhs, ann_exp) <- lambdaBind var_proms $ promoteExp exp
-  tyFamLamTypes <- mapM (const $ qNewName "t") names
   all_locals <- allLocals
-  let all_args = all_locals ++ tyFamLamTypes
+  let all_args = all_locals ++ tyNames
       tvbs     = map DPlainTV all_args
   emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
                                  lambdaName
@@ -862,7 +861,7 @@ promoteExp (DLamE names exp) = do
                                  Nothing)
                                [DTySynEqn Nothing
                                           (foldType (DConT lambdaName) $
-                                           map DVarT (all_locals ++ tyNames))
+                                           map DVarT all_args)
                                           rhs]]
   emitDecsM $ defunctionalize lambdaName Nothing tvbs Nothing
   let promLambda = foldl apply (DConT (promoteTySym lambdaName 0))

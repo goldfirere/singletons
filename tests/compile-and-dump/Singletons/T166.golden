@@ -47,7 +47,7 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply FooSym0 arg0123456789876543210 = FooSym1 arg0123456789876543210
     type FooSym1 (arg0123456789876543210 :: a0123456789876543210) =
         Foo arg0123456789876543210
-    type family Lambda_0123456789876543210 x t where
+    type family Lambda_0123456789876543210 x s where
       Lambda_0123456789876543210 x s = Apply (Apply (Apply FoosPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 0)) x) s
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
@@ -61,15 +61,15 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 x0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
-    data Lambda_0123456789876543210Sym1 x0123456789876543210 t0123456789876543210
+    data Lambda_0123456789876543210Sym1 x0123456789876543210 s0123456789876543210
       where
         Lambda_0123456789876543210Sym1KindInference :: forall x0123456789876543210
-                                                              t0123456789876543210
+                                                              s0123456789876543210
                                                               arg. SameKind (Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) arg) (Lambda_0123456789876543210Sym2 x0123456789876543210 arg) =>
-                                                       Lambda_0123456789876543210Sym1 x0123456789876543210 t0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) t0123456789876543210 = Lambda_0123456789876543210Sym2 x0123456789876543210 t0123456789876543210
-    type Lambda_0123456789876543210Sym2 x0123456789876543210 t0123456789876543210 =
-        Lambda_0123456789876543210 x0123456789876543210 t0123456789876543210
+                                                       Lambda_0123456789876543210Sym1 x0123456789876543210 s0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) s0123456789876543210 = Lambda_0123456789876543210Sym2 x0123456789876543210 s0123456789876543210
+    type Lambda_0123456789876543210Sym2 x0123456789876543210 s0123456789876543210 =
+        Lambda_0123456789876543210 x0123456789876543210 s0123456789876543210
     type family Foo_0123456789876543210 (a :: a) :: [Bool] where
       Foo_0123456789876543210 x = Apply Lambda_0123456789876543210Sym0 x
     instance SuppressUnusedWarnings Foo_0123456789876543210Sym0 where
