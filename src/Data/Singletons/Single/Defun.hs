@@ -19,6 +19,7 @@ import Data.Singletons.Names
 import Data.Singletons.Promote.Defun
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
+import Data.Singletons.TH.Options
 import Data.Singletons.Util
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
@@ -57,10 +58,11 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
   case mb_ty_args of
     [] -> pure [] -- If a function has no arguments, then it has no
                   -- defunctionalization symbols, so there's nothing to be done.
-    _  -> do sty_ctxt <- mapM singPred ty_ctxt
+    _  -> do opts     <- getOptions
+             sty_ctxt <- mapM singPred ty_ctxt
              names    <- replicateM (length mb_ty_args) $ qNewName "d"
              let tvbs       = zipWith inferMaybeKindTV names mb_ty_args
-                 (_, insts) = go 0 sty_ctxt [] tvbs
+                 (_, insts) = go opts 0 sty_ctxt [] tvbs
              pure insts
   where
     num_ty_args :: Int
@@ -100,15 +102,15 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
     -- the @arg_tvbs@ list at each iteration. In practice, this is unlikely
     -- to be a performance bottleneck since the number of arguments rarely
     -- gets to be that large.
-    go :: Int -> DCxt -> [DTyVarBndr] -> [DTyVarBndr]
+    go :: Options -> Int -> DCxt -> [DTyVarBndr] -> [DTyVarBndr]
        -> (Maybe DKind, [DDec])
-    go _       _        _        []                 = (mb_ty_res, [])
-    go sym_num sty_ctxt arg_tvbs (res_tvb:res_tvbs) =
+    go _    _       _        _        []                 = (mb_ty_res, [])
+    go opts sym_num sty_ctxt arg_tvbs (res_tvb:res_tvbs) =
       (mb_new_res, new_inst:insts)
       where
         mb_res :: Maybe DKind
         insts  :: [DDec]
-        (mb_res, insts) = go (sym_num + 1) sty_ctxt (arg_tvbs ++ [res_tvb]) res_tvbs
+        (mb_res, insts) = go opts (sym_num + 1) sty_ctxt (arg_tvbs ++ [res_tvb]) res_tvbs
 
         mb_new_res :: Maybe DKind
         mb_new_res = mk_inst_kind res_tvb mb_res
@@ -152,12 +154,13 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
                                        $ mk_sing_fun_expr sing_exp ]
           where
             defun_inst_ty :: DType
-            defun_inst_ty = foldType (DConT (promoteTySym n sym_num)) arg_tvb_tys
+            defun_inst_ty = foldType (DConT (defunctionalizedName opts n sym_num))
+                                     arg_tvb_tys
 
             sing_exp :: DExp
             sing_exp = case ns of
-                         DataName -> DConE $ singDataConName n
-                         _        -> DVarE $ singValName n
+                         DataName -> DConE $ singledDataConName opts n
+                         _        -> DVarE $ singledValueName opts n
 
 {-
 Note [singDefuns and type inference]

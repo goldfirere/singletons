@@ -4,25 +4,26 @@ module Data.Singletons.Single.Fixity where
 import Prelude hiding ( exp )
 import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (NameSpace(..), Quasi(..))
+import Data.Singletons.TH.Options
 import Data.Singletons.Util
-import Data.Singletons.Names
 import Language.Haskell.TH.Desugar
 
 -- Single a fixity declaration.
-singInfixDecl :: forall q. DsMonad q => Name -> Fixity -> q (Maybe DLetDec)
+singInfixDecl :: forall q. OptionsMonad q => Name -> Fixity -> q (Maybe DLetDec)
 singInfixDecl name fixity = do
+  opts  <- getOptions
   mb_ns <- reifyNameSpace name
   case mb_ns of
     -- If we can't find the Name for some odd reason,
     -- fall back to singValName
-    Nothing        -> finish $ singValName name
-    Just VarName   -> finish $ singValName name
-    Just DataName  -> finish $ singDataConName name
+    Nothing        -> finish $ singledValueName   opts name
+    Just VarName   -> finish $ singledValueName   opts name
+    Just DataName  -> finish $ singledDataConName opts name
     Just TcClsName -> do
       mb_info <- dsReify name
       case mb_info of
         Just (DTyConI DClassD{} _)
-          -> finish $ singTyConName name
+          -> finish $ singledClassName opts name
         _ -> pure Nothing
           -- Don't produce anything for other type constructors (type synonyms,
           -- type families, data types, etc.).
@@ -35,7 +36,7 @@ singInfixDecl name fixity = do
 -- /without/ consulting quoted declarations. If reification fails, recover and
 -- return the empty list.
 -- See [singletons and fixity declarations], wrinkle 2.
-singReifiedInfixDecls :: forall q. DsMonad q => [Name] -> q [DDec]
+singReifiedInfixDecls :: forall q. OptionsMonad q => [Name] -> q [DDec]
 singReifiedInfixDecls = mapMaybeM trySingFixityDeclaration
   where
     trySingFixityDeclaration :: Name -> q (Maybe DDec)

@@ -27,6 +27,7 @@ import Data.Singletons.Deriving.Show
 import Data.Singletons.Deriving.Traversable
 import Data.Singletons.Deriving.Util
 import Data.Singletons.Names
+import Data.Singletons.TH.Options
 import Language.Haskell.TH.Syntax hiding (showName)
 import Language.Haskell.TH.Ppr
 import Language.Haskell.TH.Desugar
@@ -63,10 +64,10 @@ instance Monoid PartitionedDecs where
 
 -- | Split up a @[DDec]@ into its pieces, extracting 'Ord' instances
 -- from deriving clauses
-partitionDecs :: DsMonad m => [DDec] -> m PartitionedDecs
+partitionDecs :: OptionsMonad m => [DDec] -> m PartitionedDecs
 partitionDecs = concatMapM partitionDec
 
-partitionDec :: DsMonad m => DDec -> m PartitionedDecs
+partitionDec :: OptionsMonad m => DDec -> m PartitionedDecs
 partitionDec (DLetDec (DPragmaD {})) = return mempty
 partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
 
@@ -194,7 +195,7 @@ partitionInstanceDec _ =
   fail "Only method bodies can be promoted within an instance."
 
 partitionDeriving
-  :: forall m. DsMonad m
+  :: forall m. OptionsMonad m
   => Maybe DDerivStrategy
                 -- ^ The deriving strategy, if present.
   -> DPred      -- ^ The class being derived (e.g., 'Eq'), possibly applied to

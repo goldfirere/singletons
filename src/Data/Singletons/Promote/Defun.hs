@@ -17,6 +17,7 @@ import Data.Singletons.Promote.Type
 import Data.Singletons.Names
 import Language.Haskell.TH.Syntax
 import Data.Singletons.Syntax
+import Data.Singletons.TH.Options
 import Data.Singletons.Util
 import Control.Monad
 import Data.Foldable
@@ -213,6 +214,7 @@ defunctionalize :: Name
                 -> Maybe Fixity -- The name's fixity, if one was declared.
                 -> [DTyVarBndr] -> Maybe DKind -> PrM [DDec]
 defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
+  opts <- getOptions
   (m_arg_tvbs, m_res_kind) <- eta_expand (noExactTyVars m_arg_tvbs')
                                          (noExactTyVars m_res_kind')
   extra_name <- qNewName "arg"
@@ -264,8 +266,8 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
         let (m_result, decls) = go (n+1) (arg_tvbs ++ [res_tvb]) res_tvbs
 
             tyfun_name  = extractTvbName res_tvb
-            data_name   = promoteTySym name n
-            next_name   = promoteTySym name (n+1)
+            data_name   = defunctionalizedName opts name n
+            next_name   = defunctionalizedName opts name (n+1)
             con_name    = prefixName "" ":" $ suffixName "KindInference" "###" data_name
             m_tyfun     = buildTyFunArrow_maybe (extractTvbKind res_tvb) m_result
             arg_params  = -- Implements part (2)(ii) from
@@ -323,7 +325,7 @@ defunctionalize name m_fixity m_arg_tvbs' m_res_kind' = do
         in (m_tyfun, suppress : data_decl : app_decl : fixity_decl ++ decls)
 
   let num_args       = length m_arg_tvbs
-      sat_name       = promoteTySym name num_args
+      sat_name       = defunctionalizedName opts name num_args
       sat_dec        = DTySynD sat_name m_arg_tvbs $ foldTypeTvbs (DConT name) m_arg_tvbs
       sat_fixity_dec = maybeToList $ fmap (mk_fix_decl sat_name) m_fixity
 

@@ -170,63 +170,6 @@ mkTupleDataName :: Int -> Name
 mkTupleDataName n = mk_name_d "Data.Singletons.Prelude.Instances" $
                     "STuple" ++ (show n)
 
--- used when a value name appears in a pattern context
--- works only for proper variables (lower-case names)
-promoteValNameLhs :: Name -> Name
-promoteValNameLhs = promoteValNameLhsPrefix noPrefix
-
--- like promoteValNameLhs, but adds a prefix to the promoted name
-promoteValNameLhsPrefix :: (String, String) -> Name -> Name
-promoteValNameLhsPrefix pres@(alpha, _) n
-    -- We can't promote promote idenitifers beginning with underscores to
-    -- type names, so we work around the issue by prepending "US" at the
-    -- front of the name (#229).
-  | Just (us, rest) <- splitUnderscores (nameBase n)
-  = mkName $ alpha ++ "US" ++ us ++ rest
-
-  | otherwise
-  = mkName $ toUpcaseStr pres n
-
--- used when a value name appears in an expression context
--- works for both variables and datacons
-promoteValRhs :: Name -> DType
-promoteValRhs name = DConT $ promoteTySym name 0
-
--- generates type-level symbol for a given name. Int parameter represents
--- saturation: 0 - no parameters passed to the symbol, 1 - one parameter
--- passed to the symbol, and so on. Works on both promoted and unpromoted
--- names.
-promoteTySym :: Name -> Int -> Name
-promoteTySym name sat
-      -- We can't promote promote idenitifers beginning with underscores to
-      -- type names, so we work around the issue by prepending "US" at the
-      -- front of the name (#229).
-    | Just (us, rest) <- splitUnderscores (nameBase name)
-    = default_case (mkName $ "US" ++ us ++ rest)
-
-    | name == nilName
-    = mkName $ "NilSym" ++ (show sat)
-
-       -- treat unboxed tuples like tuples
-    | Just degree <- tupleNameDegree_maybe name `mplus`
-                     unboxedTupleNameDegree_maybe name
-    = mk_name_tc "Data.Singletons.Prelude.Instances" $
-                 "Tuple" ++ show degree ++ "Sym" ++ (show sat)
-
-    | otherwise
-    = default_case name
-  where
-    default_case :: Name -> Name
-    default_case name' =
-      let capped = toUpcaseStr noPrefix name' in
-      if isHsLetter (head capped)
-      then mkName (capped ++ "Sym" ++ (show sat))
-      else mkName (capped ++ "@#@" -- See Note [Defunctionalization symbol suffixes]
-                          ++ (replicate (sat + 1) '$'))
-
-promoteClassName :: Name -> Name
-promoteClassName = prefixName "P" "#"
-
 mkTyName :: Quasi q => Name -> q Name
 mkTyName tmName = do
   let nameStr  = nameBase tmName
@@ -236,46 +179,8 @@ mkTyName tmName = do
 mkTyConName :: Int -> Name
 mkTyConName i = mk_name_tc "Data.Singletons.Internal" $ "TyCon" ++ show i
 
-falseTySym :: DType
-falseTySym = promoteValRhs falseName
-
-trueTySym :: DType
-trueTySym = promoteValRhs trueName
-
 boolKi :: DKind
 boolKi = DConT boolName
-
-andTySym :: DType
-andTySym = promoteValRhs andName
-
--- Singletons
-
-singDataConName :: Name -> Name
-singDataConName nm
-  | nm == nilName                                  = snilName
-  | nm == consName                                 = sconsName
-  | Just degree <- tupleNameDegree_maybe nm        = mkTupleDataName degree
-  | Just degree <- unboxedTupleNameDegree_maybe nm = mkTupleDataName degree
-  | otherwise                                      = prefixConName "S" "%" nm
-
-singTyConName :: Name -> Name
-singTyConName name
-  | name == listName                                 = sListName
-  | Just degree <- tupleNameDegree_maybe name        = mkTupleTypeName degree
-  | Just degree <- unboxedTupleNameDegree_maybe name = mkTupleTypeName degree
-  | otherwise                                        = prefixName "S" "%" name
-
-singClassName :: Name -> Name
-singClassName = singTyConName
-
-singValName :: Name -> Name
-singValName n
-     -- Push the 's' past the underscores, as this lets us avoid some unused
-     -- variable warnings (#229).
-  | Just (us, rest) <- splitUnderscores (nameBase n)
-  = prefixName (us ++ "s") "%" $ mkName rest
-  | otherwise
-  = prefixName "s" "%" $ upcase n
 
 singFamily :: DType
 singFamily = DConT singFamilyName

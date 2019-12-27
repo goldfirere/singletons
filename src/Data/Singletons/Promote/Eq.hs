@@ -12,19 +12,21 @@ module Data.Singletons.Promote.Eq where
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
+import Data.Singletons.TH.Options
 import Data.Singletons.Util
 import Control.Monad
 
 -- produce a closed type family helper and the instance
 -- for (==) over the given list of ctors
-mkEqTypeInstance :: Quasi q => DKind -> [DCon] -> q [DDec]
+mkEqTypeInstance :: OptionsMonad q => DKind -> [DCon] -> q [DDec]
 mkEqTypeInstance kind cons = do
+  opts <- getOptions
   helperName <- newUniqueName "Equals"
   aName <- qNewName "a"
   bName <- qNewName "b"
   true_branches <- mapM (mk_branch helperName) cons
-  let null_branch  = catch_all_case helperName trueName
-      false_branch = catch_all_case helperName falseName
+  let null_branch  = catch_all_case opts helperName trueName
+      false_branch = catch_all_case opts helperName falseName
       branches | null cons = [null_branch]
                | otherwise = true_branches ++ [false_branch]
       closedFam = DClosedTypeFamilyD (DTypeFamilyHead helperName
@@ -41,13 +43,14 @@ mkEqTypeInstance kind cons = do
                DTySynEqn Nothing
                          (DConT tyEqName `DAppT` DVarT aName `DAppT` DVarT bName)
                          (foldType (DConT helperName) [DVarT aName, DVarT bName])
-      inst = DInstanceD Nothing Nothing [] ((DConT $ promoteClassName eqName) `DAppT`
+      inst = DInstanceD Nothing Nothing [] ((DConT $ promotedClassName opts eqName) `DAppT`
                                             kind) [eqInst]
 
   return [closedFam, inst]
 
-  where mk_branch :: Quasi q => Name -> DCon -> q DTySynEqn
+  where mk_branch :: OptionsMonad q => Name -> DCon -> q DTySynEqn
         mk_branch helper_name con = do
+          opts <- getOptions
           let (name, numArgs) = extractNameArgs con
           lnames <- replicateM numArgs (qNewName "a")
           rnames <- replicateM numArgs (qNewName "b")
@@ -56,21 +59,24 @@ mkEqTypeInstance kind cons = do
               ltype = foldType (DConT name) lvars
               rtype = foldType (DConT name) rvars
               results = zipWith (\l r -> foldType (DConT tyEqName) [l, r]) lvars rvars
-              result = tyAll results
+              result = tyAll opts results
           return $ DTySynEqn Nothing
                              (DConT helper_name `DAppT` ltype `DAppT` rtype)
                              result
 
-        catch_all_case :: Name -> Name -> DTySynEqn
-        catch_all_case helper_name returned_val_name =
+        catch_all_case :: Options -> Name -> Name -> DTySynEqn
+        catch_all_case opts helper_name returned_val_name =
           DTySynEqn Nothing
                     (DConT helper_name
                        `DAppT` DSigT DWildCardT kind
                        `DAppT` DSigT DWildCardT kind)
-                    (promoteValRhs returned_val_name)
+                    (DConT $ defunctionalizedName0 opts returned_val_name)
 
-        tyAll :: [DType] -> DType -- "all" at the type level
-        tyAll [] = (promoteValRhs trueName)
-        tyAll [one] = one
-        tyAll (h:t) = foldType (DConT $ promoteValNameLhs andName) [h, (tyAll t)]
+        tyAll :: Options -> [DType] -> DType -- "all" at the type level
+        tyAll opts = go
+          where
+            go []    = DConT $ defunctionalizedName0 opts trueName
+            go [one] = one
+            go (h:t) = foldType (DConT $ promotedTopLevelValueName opts andName)
+                                [h, (go t)]
            -- I could use the Apply nonsense here, but there's no reason to

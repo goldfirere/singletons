@@ -26,21 +26,23 @@ import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
 import qualified Language.Haskell.TH.Desugar.OSet as OSet
 import Language.Haskell.TH.Desugar.OSet (OSet)
-import Data.Singletons.Names
 import Data.Singletons.Syntax
+import Data.Singletons.TH.Options
 
 type LetExpansions = OMap Name DType  -- from **term-level** name
 
 -- environment during promotion
 data PrEnv =
-  PrEnv { pr_lambda_bound :: OMap Name Name
+  PrEnv { pr_options      :: Options
+        , pr_lambda_bound :: OMap Name Name
         , pr_let_bound    :: LetExpansions
         , pr_forall_bound :: OSet Name -- See Note [Explicitly binding kind variables]
         , pr_local_decls  :: [Dec]
         }
 
 emptyPrEnv :: PrEnv
-emptyPrEnv = PrEnv { pr_lambda_bound = OMap.empty
+emptyPrEnv = PrEnv { pr_options      = defaultOptions
+                   , pr_lambda_bound = OMap.empty
                    , pr_let_bound    = OMap.empty
                    , pr_forall_bound = OSet.empty
                    , pr_local_decls  = [] }
@@ -53,6 +55,9 @@ newtype PrM a = PrM (ReaderT PrEnv (WriterT [DDec] Q) a)
 
 instance DsMonad PrM where
   localDeclarations = asks pr_local_decls
+
+instance OptionsMonad PrM where
+  getOptions = asks pr_options
 
 -- return *type-level* names
 allLocals :: MonadReader PrEnv m => m [Name]
@@ -92,10 +97,11 @@ letBind binds = local add_binds
 
 lookupVarE :: Name -> PrM DType
 lookupVarE n = do
+  opts <- getOptions
   lets <- asks pr_let_bound
   case OMap.lookup n lets of
     Just ty -> return ty
-    Nothing -> return $ promoteValRhs n
+    Nothing -> return $ DConT $ defunctionalizedName0 opts n
 
 -- Add to the set of bound kind variables currently in scope.
 -- See Note [Explicitly binding kind variables]
@@ -109,20 +115,22 @@ forallBind kvs1 =
 allBoundKindVars :: PrM (OSet Name)
 allBoundKindVars = asks pr_forall_bound
 
-promoteM :: DsMonad q => [Dec] -> PrM a -> q (a, [DDec])
+promoteM :: OptionsMonad q => [Dec] -> PrM a -> q (a, [DDec])
 promoteM locals (PrM rdr) = do
+  opts         <- getOptions
   other_locals <- localDeclarations
-  let wr = runReaderT rdr (emptyPrEnv { pr_local_decls = other_locals ++ locals })
+  let wr = runReaderT rdr (emptyPrEnv { pr_options     = opts
+                                      , pr_local_decls = other_locals ++ locals })
       q  = runWriterT wr
   runQ q
 
-promoteM_ :: DsMonad q => [Dec] -> PrM () -> q [DDec]
+promoteM_ :: OptionsMonad q => [Dec] -> PrM () -> q [DDec]
 promoteM_ locals thing = do
   ((), decs) <- promoteM locals thing
   return decs
 
 -- promoteM specialized to [DDec]
-promoteMDecs :: DsMonad q => [Dec] -> PrM [DDec] -> q [DDec]
+promoteMDecs :: OptionsMonad q => [Dec] -> PrM [DDec] -> q [DDec]
 promoteMDecs locals thing = do
   (decs1, decs2) <- promoteM locals thing
   return $ decs1 ++ decs2

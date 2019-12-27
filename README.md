@@ -1,4 +1,4 @@
-singletons 2.6
+singletons 2.7
 ==============
 
 [![Hackage](https://img.shields.io/hackage/v/singletons.svg)](http://hackage.haskell.org/package/singletons)
@@ -545,6 +545,23 @@ treatment):
 
    All functions that begin with leading underscores are treated similarly.
 
+If desired, you can pick your own naming conventions by using the
+`Data.Singletons.TH.Options` module. Here is an example of how this module can
+be used to prefix a singled data constructor with `MyS` instead of `S`:
+
+```hs
+import Control.Monad.Trans.Class
+import Data.Singletons.TH
+import Data.Singletons.TH.Options
+import Language.Haskell.TH (Name, mkName, nameBase)
+
+$(let myPrefix :: Name -> Name
+      myPrefix name = mkName ("MyS" ++ nameBase name) in
+
+      withOptions defaultOptions{singledDataConName = myPrefix} $
+      singletons $ lift [d| data T = MkT |])
+```
+
 Supported Haskell constructs
 ----------------------------
 
@@ -780,3 +797,9 @@ Known bugs
     method :: [a]
     method = []
   ```
+* Singling GADTs is likely to fail due to the generated `SingKind` instances
+  not typechecking. (See
+  [#150](https://github.com/goldfirere/singletons/issues/150)).
+  However, one can often work around the issue by suppressing the generation
+  of `SingKind` instances by using custom `Options`. See the `T150` test case
+  for an example.

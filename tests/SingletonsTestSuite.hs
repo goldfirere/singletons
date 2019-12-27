@@ -75,6 +75,8 @@ tests =
     , compileAndDumpStdTest "T145"
     , compileAndDumpStdTest "PolyKinds"
     , compileAndDumpStdTest "PolyKindsApp"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "T150"
     , compileAndDumpStdTest "T160"
     , compileAndDumpStdTest "T163"
     , compileAndDumpStdTest "T166"
@@ -92,6 +94,7 @@ tests =
     , compileAndDumpStdTest "T197"
     , compileAndDumpStdTest "T197b"
     , compileAndDumpStdTest "T200"
+    , compileAndDumpStdTest "T204"
     , compileAndDumpStdTest "T206"
     , compileAndDumpStdTest "T209"
     , compileAndDumpStdTest "T216"
