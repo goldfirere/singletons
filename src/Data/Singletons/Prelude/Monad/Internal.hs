@@ -425,13 +425,6 @@ $(singletonsOnly [d|
      mplus = (<|>)
   |])
 
--- Workaround for #326
-infixl 4 <$
-infixl 4 <*>, <*, *>, <**>
-infixl 1 >>, >>=
-infixr 1 =<<
-infixl 3 <|>
-
 $(singletonsOnly [d|
   -------------------------------------------------------------------------------
   -- Instances

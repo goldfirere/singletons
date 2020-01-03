@@ -110,6 +110,7 @@ tests =
     , compileAndDumpStdTest "T313"
     , compileAndDumpStdTest "T316"
     , compileAndDumpStdTest "T322"
+    , compileAndDumpStdTest "T326"
     , compileAndDumpStdTest "NatSymbolReflexive"
     , compileAndDumpStdTest "T323"
     , compileAndDumpStdTest "T332"

@@ -292,7 +292,3 @@ $(singletonsOnly [d|
   instance Monad Down where
     Down a >>= k = k a
   |])
-
--- Workaround for #326
-infixr 1 <=<, >=>
-infixl 4 <$!>

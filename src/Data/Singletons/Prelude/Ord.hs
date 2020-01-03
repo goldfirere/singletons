@@ -88,12 +88,6 @@ $(singletonsOnly [d|
   comparing p x y = compare (p x) (p y)
   |])
 
--- Workaround for #326
-infix 4 <=
-infix 4 <
-infix 4 >
-infix 4 >=
-
 $(genSingletons [''Down])
 
 $(singletonsOnly [d|

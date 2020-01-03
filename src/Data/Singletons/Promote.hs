@@ -43,33 +43,64 @@ import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import qualified GHC.LanguageExtensions.Type as LangExt
 
+{-
+Note [Disable genQuotedDecs in genPromotions and genSingletons]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Somewhat curiously, the genPromotions and genSingletons functions set the
+genQuotedDecs option to False, despite neither function accepting quoted
+declarations as arguments in the first place. There is a good reason for doing
+this, however. Imagine this code:
+
+  class C a where
+    infixl 9 <%%>
+    (<%%>) :: a -> a -> a
+  $(genPromotions [''C])
+
+If genQuotedDecs is set to True, then the (<%%>) type family will not receive
+a fixity declaration (see
+Note [singletons and fixity declarations] in D.S.Single.Fixity, wrinkle 1 for
+more details on this point). Therefore, we set genQuotedDecs to False to avoid
+this problem.
+-}
+
 -- | Generate promoted definitions from a type that is already defined.
 -- This is generally only useful with classes.
 genPromotions :: OptionsMonad q => [Name] -> q [Dec]
 genPromotions names = do
-  checkForRep names
-  infos <- mapM reifyWithLocals names
-  dinfos <- mapM dsInfo infos
-  ddecs <- promoteM_ [] $ mapM_ promoteInfo dinfos
-  return $ decsToTH ddecs
+  opts <- getOptions
+  -- See Note [Disable genQuotedDecs in genPromotions and genSingletons]
+  withOptions opts{genQuotedDecs = False} $ do
+    checkForRep names
+    infos <- mapM reifyWithLocals names
+    dinfos <- mapM dsInfo infos
+    ddecs <- promoteM_ [] $ mapM_ promoteInfo dinfos
+    return $ decsToTH ddecs
 
 -- | Promote every declaration given to the type level, retaining the originals.
 promote :: OptionsMonad q => q [Dec] -> q [Dec]
-promote qdec = do
-  decls <- qdec
-  ddecls <- withLocalDeclarations decls $ dsDecs decls
-  promDecls <- promoteM_ decls $ promoteDecs ddecls
-  return $ decls ++ decsToTH promDecls
+promote qdecs = do
+  opts <- getOptions
+  withOptions opts{genQuotedDecs = True} $ promote' $ lift qdecs
 
 -- | Promote each declaration, discarding the originals. Note that a promoted
 -- datatype uses the same definition as an original datatype, so this will
 -- not work with datatypes. Classes, instances, and functions are all fine.
 promoteOnly :: OptionsMonad q => q [Dec] -> q [Dec]
-promoteOnly qdec = do
-  decls  <- qdec
-  ddecls <- dsDecs decls
-  promDecls <- promoteM_ decls $ promoteDecs ddecls
-  return $ decsToTH promDecls
+promoteOnly qdecs = do
+  opts <- getOptions
+  withOptions opts{genQuotedDecs = False} $ promote' $ lift qdecs
+
+-- The workhorse for 'promote' and 'promoteOnly'. The difference between the
+-- two functions is whether 'genQuotedDecs' is set to 'True' or 'False'.
+promote' :: OptionsMonad q => q [Dec] -> q [Dec]
+promote' qdecs = do
+  opts     <- getOptions
+  decs     <- qdecs
+  ddecs    <- withLocalDeclarations decs $ dsDecs decs
+  promDecs <- promoteM_ decs $ promoteDecs ddecs
+  let origDecs | genQuotedDecs opts = decs
+               | otherwise          = []
+  return $ origDecs ++ decsToTH promDecs
 
 -- | Generate defunctionalization symbols for existing type families.
 --
@@ -603,10 +634,9 @@ promoteInfixDecl mb_let_uniq name fixity = do
   opts  <- getOptions
   mb_ns <- reifyNameSpace name
   case mb_ns of
-    -- If we can't find the Name for some odd reason,
-    -- fall back to promote_infix_val
-    Nothing        -> promote_infix_val
-    Just VarName   -> promote_infix_val
+    -- If we can't find the Name for some odd reason, fall back to promote_val
+    Nothing        -> promote_val
+    Just VarName   -> promote_val
     Just DataName  -> never_mind
     Just TcClsName -> do
       mb_info <- dsReify name
@@ -622,18 +652,21 @@ promoteInfixDecl mb_let_uniq name fixity = do
     -- Don't produce a fixity declaration at all. This happens when promoting a
     -- fixity declaration for a name whose promoted counterpart is the same as
     -- the original name.
-    -- See [singletons and fixity declarations] in D.S.Single.Fixity, wrinkle 1.
+    -- See Note [singletons and fixity declarations] in D.S.Single.Fixity, wrinkle 1.
     never_mind :: q (Maybe DDec)
     never_mind = pure Nothing
 
-    -- Certain function names do not change when promoted (e.g., infix names),
-    -- so don't bother with them.
-    promote_infix_val :: q (Maybe DDec)
-    promote_infix_val = do
+    -- Certain value names do not change when promoted (e.g., infix names).
+    -- Therefore, don't bother promoting their fixity declarations if
+    -- 'genQuotedDecs' is set to 'True', since that will run the risk of
+    -- generating duplicate fixity declarations.
+    -- See Note [singletons and fixity declarations] in D.S.Single.Fixity, wrinkle 1.
+    promote_val :: q (Maybe DDec)
+    promote_val = do
       opts <- getOptions
       let promoted_name :: Name
           promoted_name = promotedValueName opts name mb_let_uniq
-      if nameBase name == nameBase promoted_name
+      if nameBase name == nameBase promoted_name && genQuotedDecs opts
          then never_mind
          else finish promoted_name
 

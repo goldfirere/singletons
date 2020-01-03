@@ -588,10 +588,6 @@ $(singletonsOnly [d|
 
   |])
 
--- Workaround for #326
-infix 5 \\      -- This comment is necessary so CPP doesn't treat the
-infixl 9 !!
-
 -- The following functions are supported for promotion only.
 $(promoteOnly [d|
 
