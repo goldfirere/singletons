@@ -8,10 +8,10 @@ Changelog for singletons project
   the way of an `Options` data type, which lives in the new
   `Data.Singletons.TH.Options` module. Besides `Options`, this module also
   contains:
-    * `Options`' record selectors. Currently, these include ways to toggle
-      generating `SingKind` instances and configure how `singletons` generates
-      the names of promoted or singled types. In the future, there may be
-      additional options.
+    * `Options`' record selectors. Currently, these include options to toggle
+      generating quoted declarations, toggle generating `SingKind` instances,
+      and configure how `singletons` generates the names of promoted or singled
+      types. In the future, there may be additional options.
     * A `defaultOptions` value.
     * An `mtl`-like `OptionsMonad` class for monads that support carrying
       `Option`s. This includes `Q`, which uses `defaultOptions` if it is the
@@ -45,6 +45,8 @@ Changelog for singletons project
     for type synonym or type family names.
   * A bug that caused fixity declarations for certain defunctionalization
     symbols not to be generated has been fixed.
+  * `promoteOnly` and `singletonsOnly` will now produce fixity declarations
+    for values with infix names.
 
 2.6
 ---

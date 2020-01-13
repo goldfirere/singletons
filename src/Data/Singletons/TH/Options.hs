@@ -20,6 +20,7 @@ module Data.Singletons.TH.Options
   ( -- * Options
     Options, defaultOptions
     -- ** Options record selectors
+  , genQuotedDecs
   , genSingKindInsts
   , promotedClassName
   , promotedValueName
@@ -56,7 +57,11 @@ import Language.Haskell.TH.Syntax hiding (Lift(..))
 -- | Options that control the finer details of how @singletons@' Template
 -- Haskell machinery works.
 data Options = Options
-  { genSingKindInsts        :: Bool
+  { genQuotedDecs        :: Bool
+    -- ^ If 'True', then quoted declarations will be generated alongside their
+    --   promoted and singled counterparts. If 'False', then quoted
+    --   declarations will be discarded.
+  , genSingKindInsts     :: Bool
     -- ^ If 'True', then 'SingKind' instances will be generated. If 'False',
     --   they will be omitted entirely. This can be useful in scenarios where
     --   TH-generated 'SingKind' instances do not typecheck (for instance,
@@ -98,6 +103,10 @@ data Options = Options
 
 -- | Sensible default 'Options'.
 --
+-- 'genQuotedDecs' defaults to 'True'.
+-- That is, quoted declarations are generated alongside their promoted and
+-- singled counterparts.
+--
 -- 'genSingKindInsts' defaults to 'True'.
 -- That is, 'SingKind' instances are generated.
 --
@@ -107,7 +116,8 @@ data Options = Options
 -- \"On names\" section of the @singletons@ @README@.
 defaultOptions :: Options
 defaultOptions = Options
-  { genSingKindInsts     = True
+  { genQuotedDecs        = True
+  , genSingKindInsts     = True
   , promotedClassName    = promoteClassName
   , promotedValueName    = promoteValNameLhs
   , singledDataTypeName  = singTyConName

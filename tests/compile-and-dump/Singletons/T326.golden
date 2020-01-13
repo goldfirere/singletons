@@ -1,0 +1,68 @@
+Singletons/T326.hs:0:0:: Splicing declarations
+    genPromotions [''C1]
+  ======>
+    instance SuppressUnusedWarnings (<%>@#@$) where
+      suppressUnusedWarnings = snd (((,) (:<%>@#@$###)) ())
+    data (<%>@#@$) :: forall a0123456789876543210.
+                      (~>) a0123456789876543210 ((~>) a0123456789876543210 a0123456789876543210)
+      where
+        (:<%>@#@$###) :: forall arg0123456789876543210
+                                arg. SameKind (Apply (<%>@#@$) arg) ((<%>@#@$$) arg) =>
+                         (<%>@#@$) arg0123456789876543210
+    type instance Apply (<%>@#@$) arg0123456789876543210 = (<%>@#@$$) arg0123456789876543210
+    infixl 9 <%>@#@$
+    instance SuppressUnusedWarnings ((<%>@#@$$) arg0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (:<%>@#@$$###)) ())
+    data (<%>@#@$$) (arg0123456789876543210 :: a0123456789876543210) :: (~>) a0123456789876543210 a0123456789876543210
+      where
+        (:<%>@#@$$###) :: forall arg0123456789876543210
+                                 arg0123456789876543210
+                                 arg. SameKind (Apply ((<%>@#@$$) arg0123456789876543210) arg) ((<%>@#@$$$) arg0123456789876543210 arg) =>
+                          (<%>@#@$$) arg0123456789876543210 arg0123456789876543210
+    type instance Apply ((<%>@#@$$) arg0123456789876543210) arg0123456789876543210 = (<%>@#@$$$) arg0123456789876543210 arg0123456789876543210
+    infixl 9 <%>@#@$$
+    type (<%>@#@$$$) (arg0123456789876543210 :: a0123456789876543210) (arg0123456789876543210 :: a0123456789876543210) =
+        (<%>) arg0123456789876543210 arg0123456789876543210
+    infixl 9 <%>@#@$$$
+    class PC1 (a :: GHC.Types.Type) where
+      type (<%>) (arg :: a) (arg :: a) :: a
+    infixl 9 <%>
+Singletons/T326.hs:0:0:: Splicing declarations
+    genSingletons [''C2]
+  ======>
+    instance SuppressUnusedWarnings (<%%>@#@$) where
+      suppressUnusedWarnings = snd (((,) (:<%%>@#@$###)) ())
+    data (<%%>@#@$) :: forall a0123456789876543210.
+                       (~>) a0123456789876543210 ((~>) a0123456789876543210 a0123456789876543210)
+      where
+        (:<%%>@#@$###) :: forall arg0123456789876543210
+                                 arg. SameKind (Apply (<%%>@#@$) arg) ((<%%>@#@$$) arg) =>
+                          (<%%>@#@$) arg0123456789876543210
+    type instance Apply (<%%>@#@$) arg0123456789876543210 = (<%%>@#@$$) arg0123456789876543210
+    infixl 9 <%%>@#@$
+    instance SuppressUnusedWarnings ((<%%>@#@$$) arg0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (:<%%>@#@$$###)) ())
+    data (<%%>@#@$$) (arg0123456789876543210 :: a0123456789876543210) :: (~>) a0123456789876543210 a0123456789876543210
+      where
+        (:<%%>@#@$$###) :: forall arg0123456789876543210
+                                  arg0123456789876543210
+                                  arg. SameKind (Apply ((<%%>@#@$$) arg0123456789876543210) arg) ((<%%>@#@$$$) arg0123456789876543210 arg) =>
+                           (<%%>@#@$$) arg0123456789876543210 arg0123456789876543210
+    type instance Apply ((<%%>@#@$$) arg0123456789876543210) arg0123456789876543210 = (<%%>@#@$$$) arg0123456789876543210 arg0123456789876543210
+    infixl 9 <%%>@#@$$
+    type (<%%>@#@$$$) (arg0123456789876543210 :: a0123456789876543210) (arg0123456789876543210 :: a0123456789876543210) =
+        (<%%>) arg0123456789876543210 arg0123456789876543210
+    infixl 9 <%%>@#@$$$
+    class PC2 (a :: GHC.Types.Type) where
+      type (<%%>) (arg :: a) (arg :: a) :: a
+    infixl 9 <%%>
+    class SC2 (a :: GHC.Types.Type) where
+      (%<%%>) ::
+        forall (t :: a) (t :: a).
+        Sing t -> Sing t -> Sing (Apply (Apply (<%%>@#@$) t) t :: a)
+    infixl 9 %<%%>
+    instance SC2 a => SingI ((<%%>@#@$) :: (~>) a ((~>) a a)) where
+      sing = (singFun2 @(<%%>@#@$)) (%<%%>)
+    instance (SC2 a, SingI d) =>
+             SingI ((<%%>@#@$$) (d :: a) :: (~>) a a) where
+      sing = (singFun1 @((<%%>@#@$$) (d :: a))) ((%<%%>) (sing @d))

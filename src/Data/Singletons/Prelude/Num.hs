@@ -73,6 +73,9 @@ $(singletonsOnly [d|
 
       negate x            = 0 - x
 
+  subtract :: Num a => a -> a -> a
+  subtract x y = y - x
+
   -- deriving newtype instance Num a => Num (Down a)
   instance Num a => Num (Down a) where
       Down a + Down b = Down (a + b)
@@ -83,11 +86,6 @@ $(singletonsOnly [d|
       signum (Down a) = Down (signum a)
       fromInteger n   = Down (fromInteger n)
   |])
-
--- Workaround for #326
-infixl 6 +
-infixl 6 -
-infixl 7 *
 
 -- PNum instance
 type family SignumNat (a :: Nat) :: Nat where
@@ -139,8 +137,3 @@ instance SNum Nat where
       Disproved _ -> unsafeCoerce (sing :: Sing 1)
 
   sFromInteger x = x
-
-$(singletonsOnly [d|
-  subtract :: Num a => a -> a -> a
-  subtract x y = y - x
-  |])

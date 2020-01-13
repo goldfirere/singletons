@@ -466,12 +466,6 @@ multiCase [] [] body = body
 multiCase scruts pats body =
   DCaseE (mkTupleDExp scruts) [DMatch (mkTupleDPat pats) body]
 
--- Make a desugar function into a TH function.
-wrapDesugar :: (Desugar th ds, DsMonad q) => (th -> ds -> q ds) -> th -> q th
-wrapDesugar f th = do
-  ds <- desugar th
-  fmap sweeten $ f th ds
-
 -- a monad transformer for writing a monoid alongside returning a Q
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
   deriving ( Functor, Applicative, Monad, MonadTrans

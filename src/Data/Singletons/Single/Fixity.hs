@@ -80,12 +80,47 @@ Rules are meant to be broken, and the general rule above is no exception. There
 are certain cases where singletons does *not* produce promoted or singled
 versions of fixity declarations:
 
-* During promotion, fixity declarations for data types, type synonyms,
-  type families, data constructors, and infix functions will not receive a
-  promoted counterpart. This is because the promoted versions of these names
-  are the same as the originals, so generating an extra fixity declaration for
-  them would run the risk of having duplicates, which GHC would reject with an
-  error. (See #326 for the drawback to this approach.)
+* During promotion, fixity declarations for the following sorts of names will
+  not receive promoted counterparts:
+
+  - Data types
+  - Type synonyms
+  - Type families
+  - Data constructors
+  - Infix values
+
+  We exclude the first four because the promoted versions of these names are
+  the same as the originals, so generating an extra fixity declaration for them
+  would run the risk of having duplicates, which GHC would reject with an error.
+
+  We exclude infix value because while their promoted versions are different,
+  they share the same name base. In concrete terms, this:
+
+    $(promote [d|
+      infixl 4 ###
+      (###) :: a -> a -> a
+      |])
+
+  Is promoted to the following:
+
+    type family (###) (x :: a) (y :: a) :: a where ...
+
+  So giving the type-level (###) a fixity declaration would clash with the
+  existing one for the value-level (###).
+
+  There *is* a scenario where we should generate a fixity declaration for the
+  type-level (###), however. Imagine the above example used the `promoteOnly`
+  function instead of `promote`. Then the type-level (###) would lack a fixity
+  declaration altogether because the original fixity declaration was discarded
+  by `promoteOnly`! The same problem would arise if one had to choose between
+  the `singletons` and `singletonsOnly` functions.
+
+  The difference between `promote` and `promoteOnly` (as well as `singletons`
+  and `singletonsOnly`) is whether the `genQuotedDecs` option is set to `True`
+  or `False`, respectively. Therefore, if `genQuotedDecs` is set to `False`
+  when promoting the fixity declaration for an infix value, we opt to generate
+  a fixity declaration (with the same name base) so that the type-level version
+  of that value gets one.
 
 * During singling, the following things will not have their fixity declarations
   singled:

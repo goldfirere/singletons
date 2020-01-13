@@ -200,8 +200,3 @@ $(singletonsOnly [d|
   deriving instance Functor ((,) a)
   deriving instance Functor Down
   |])
-
--- Workaround for #326
-infixl 4 <$>
-infixl 4 $>
-infixl 1 <&>

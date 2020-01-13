@@ -108,9 +108,3 @@ $(singletonsOnly [d|
   seq _ x = x
   infixr 0 `seq`
  |])
-
--- Workaround for #326
-infixr 5 ++
-infixr 9 .
-infixr 0 $
-infixr 0 $!

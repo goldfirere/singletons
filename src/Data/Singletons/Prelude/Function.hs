@@ -114,6 +114,3 @@ $(singletonsOnly [d|
   x & f = f x
   infixl 1 &
   |])
-
--- Workaround for #326
-infixl 1 &

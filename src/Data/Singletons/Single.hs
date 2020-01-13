@@ -43,6 +43,7 @@ import Data.Map.Strict ( Map )
 import Data.Maybe
 import qualified Data.Set as Set
 import Control.Monad
+import Control.Monad.Trans.Class
 import Data.List
 import qualified GHC.LanguageExtensions.Type as LangExt
 
@@ -88,9 +89,13 @@ contract constructors. This is the point of buildDataLets.
 -- to generate singletons for Prelude types.
 genSingletons :: OptionsMonad q => [Name] -> q [Dec]
 genSingletons names = do
-  checkForRep names
-  ddecs <- concatMapM (singInfo <=< dsInfo <=< reifyWithLocals) names
-  return $ decsToTH ddecs
+  opts <- getOptions
+  -- See Note [Disable genQuotedDecs in genPromotions and genSingletons]
+  -- in D.S.Promote
+  withOptions opts{genQuotedDecs = False} $ do
+    checkForRep names
+    ddecs <- concatMapM (singInfo <=< dsInfo <=< reifyWithLocals) names
+    return $ decsToTH ddecs
 
 -- | Make promoted and singleton versions of all declarations given, retaining
 -- the original declarations.
@@ -98,17 +103,29 @@ genSingletons names = do
 -- further explanation.
 singletons :: OptionsMonad q => q [Dec] -> q [Dec]
 singletons qdecs = do
-  decs <- qdecs
-  ddecs <- withLocalDeclarations decs $ dsDecs decs
-  singDecs <- singTopLevelDecs decs ddecs
-  return (decs ++ decsToTH singDecs)
+  opts <- getOptions
+  withOptions opts{genQuotedDecs = True} $ singletons' $ lift qdecs
 
 -- | Make promoted and singleton versions of all declarations given, discarding
 -- the original declarations. Note that a singleton based on a datatype needs
 -- the original datatype, so this will fail if it sees any datatype declarations.
 -- Classes, instances, and functions are all fine.
 singletonsOnly :: OptionsMonad q => q [Dec] -> q [Dec]
-singletonsOnly = (>>= wrapDesugar singTopLevelDecs)
+singletonsOnly qdecs = do
+  opts <- getOptions
+  withOptions opts{genQuotedDecs = False} $ singletons' $ lift qdecs
+
+-- The workhorse for 'singletons' and 'singletonsOnly'. The difference between
+-- the two functions is whether 'genQuotedDecs' is set to 'True' or 'False'.
+singletons' :: OptionsMonad q => q [Dec] -> q [Dec]
+singletons' qdecs = do
+  opts     <- getOptions
+  decs     <- qdecs
+  ddecs    <- withLocalDeclarations decs $ dsDecs decs
+  singDecs <- singTopLevelDecs decs ddecs
+  let origDecs | genQuotedDecs opts = decs
+               | otherwise          = []
+  return $ origDecs ++ decsToTH singDecs
 
 -- | Create instances of 'SEq' and type-level @(==)@ for each type in the list
 singEqInstances :: OptionsMonad q => [Name] -> q [Dec]
