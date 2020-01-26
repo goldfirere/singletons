@@ -15,7 +15,7 @@
 module Data.Singletons.Deriving.Util where
 
 import Control.Monad
-import Data.List
+import qualified Data.List as List
 import Data.Singletons.Names
 import Data.Singletons.Syntax
 import Data.Singletons.Util
@@ -213,7 +213,7 @@ functorLikeValidityChecks allowConstrainedLastTyVar (DataDecl n data_tvbs cons)
       , (_, last_res_ty_arg) <- snocView $ filterDTANormals res_ty_args
       , Just last_tv <- getDVarTName_maybe last_res_ty_arg
       = do ex_tvbs <- conExistentialTvbs (foldTypeTvbs (DConT n) data_tvbs) con
-           let univ_tvb_names = map extractTvbName con_tvbs \\ map extractTvbName ex_tvbs
+           let univ_tvb_names = map extractTvbName con_tvbs List.\\ map extractTvbName ex_tvbs
            if last_tv `elem` univ_tvb_names
                 && last_tv `OSet.notMember` foldMap fvDType con_theta
               then pure ()

@@ -1,0 +1,12 @@
+diff --git a/.travis.yml b/.travis.yml
+index 24ea25d..e6ecb3b 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -37,7 +37,6 @@ jobs:
+       os: linux
+   allow_failures:
+     - compiler: ghc-head
+-    - compiler: ghc-8.10.1
+ before_install:
+   - HC=$(echo "/opt/$CC/bin/ghc" | sed 's/-/\//')
+   - WITHCOMPILER="-w $HC"

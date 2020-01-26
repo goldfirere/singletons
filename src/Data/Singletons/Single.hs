@@ -44,7 +44,7 @@ import Data.Maybe
 import qualified Data.Set as Set
 import Control.Monad
 import Control.Monad.Trans.Class
-import Data.List
+import Data.List (unzip6, zipWith4)
 import qualified GHC.LanguageExtensions.Type as LangExt
 
 {-

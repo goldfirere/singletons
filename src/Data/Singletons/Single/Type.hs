@@ -19,7 +19,7 @@ import Data.Singletons.Util
 import Control.Monad
 import Data.Foldable
 import Data.Function
-import Data.List
+import Data.List (deleteFirstsBy)
 
 singType :: OSet Name      -- the set of bound kind variables in this scope
                            -- see Note [Explicitly binding kind variables]
