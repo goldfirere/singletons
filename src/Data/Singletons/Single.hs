@@ -328,8 +328,8 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
     defunTopLevelTypeDecls ty_syns c_tyfams o_tyfams
-    promoteDataDecs datas
-    (_, letDecEnv) <- promoteLetDecs Nothing letDecls
+    recSelLetDecls <- promoteDataDecs datas
+    (_, letDecEnv) <- promoteLetDecs Nothing $ recSelLetDecls ++ letDecls
     classes' <- mapM promoteClassDec classes
     let meth_sigs    = foldMap (lde_types . cd_lde) classes
         cls_tvbs_map = Map.fromList $ map (\cd -> (cd_name cd, cd_tvbs cd)) classes

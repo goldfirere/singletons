@@ -4,6 +4,40 @@ Changelog for singletons project
 2.7
 ---
 * Require GHC 8.10.
+* Record selectors are now singled as top-level functions. For instance,
+  `$(singletons [d| data T = MkT { unT :: Bool } |])` will now generate this:
+
+  ```hs
+  data ST :: T -> Type where
+    SMkT :: Sing b -> Sing (MkT b)
+
+  sUnT :: Sing (t :: T) -> Sing (UnT t :: Bool)
+  sUnT (SMkT sb) = sb
+
+  ...
+  ```
+
+  Instead of this:
+
+  ```hs
+  data ST :: T -> Type where
+    SMkT :: { sUnT :: Sing b } -> Sing (MkT b)
+  ```
+
+  Note that the new type of `sUnT` is more general than the previous type
+  (`Sing (MkT b) -> Sing b`).
+
+  There are two primary reasons for this change:
+
+  1. Singling record selectors as top-level functions is consistent with how
+     promoting records works (note that `MkT` is also a top-level function). As
+  2. Embedding record selectors directly into a singleton data constructor can
+     result in surprising behavior. This can range from simple code using a
+     record selector not typechecking to the inability to define multiple
+     constructors that share the same record name.
+
+  See [this GitHub issue](https://github.com/goldfirere/singletons/issues/364)
+  for an extended discussion on the motivation behind this change.
 * The Template Haskell machinery now supports fine-grained configuration in
   the way of an `Options` data type, which lives in the new
   `Data.Singletons.TH.Options` module. Besides `Options`, this module also
@@ -37,22 +71,24 @@ Changelog for singletons project
   during promotion or singling, as `singletons` cannot support them.
   (Previously, `singletons` would sometimes accept them, often changing rank-2
   types to rank-1 types incorrectly in the process.)
-* Export `ApplyTyConAux1`, `ApplyTyConAux2`, as well as the record pattern
-  synonyms selector `applySing2`, `applySing3`, etc. from `Data.Singletons`.
-  These were unintentionally left out in previous releases.
 * Add the `Data.Singletons.Prelude.Proxy` module.
 * Remove the promoted versions of `genericTake`, `genericDrop`,
   `genericSplitAt`, `genericIndex`, and `genericReplicate` from
   `Data.Singletons.Prelude.List`. These definitions were subtly wrong since
   (1) they claim to work over any `Integral` type `i`, but in practice would
   only work on `Nat`s, and (2) wouldn't even typecheck if they were singled.
+* Export `ApplyTyConAux1`, `ApplyTyConAux2`, as well as the record pattern
+  synonyms selector `applySing2`, `applySing3`, etc. from `Data.Singletons`.
+  These were unintentionally left out in previous releases.
+* Export promoted and singled versions of the `getDown` record selector in
+  `Data.Singletons.Prelude.Ord`.
 * Fix a slew of bugs related to fixity declarations:
   * Fixity declarations for data types are no longer singled, as fixity
     declarations do not serve any purpose for singled data type constructors,
     which always have exactly one argument.
   * `singletons` now promotes fixity declarations for class names.
     `genPromotions`/`genSingletons` now also handle fixity declarations for
-    classes and class methods correctly.
+    classes, class methods, data types, and record selectors correctly.
   * `singletons` will no longer erroneously try to single fixity declarations
     for type synonym or type family names.
   * A bug that caused fixity declarations for certain defunctionalization

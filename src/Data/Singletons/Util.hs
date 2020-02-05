@@ -115,12 +115,21 @@ tysOfConFields :: DConFields -> [DType]
 tysOfConFields (DNormalC _ stys) = map snd stys
 tysOfConFields (DRecC vstys)   = map (\(_,_,ty) -> ty) vstys
 
--- extract the name and number of arguments to a constructor
+recSelsOfConFields :: DConFields -> [Name]
+recSelsOfConFields DNormalC{}    = []
+recSelsOfConFields (DRecC vstys) = map (\(n,_,_) -> n) vstys
+
+-- Extract a data constructor's name and the number of arguments it accepts.
 extractNameArgs :: DCon -> (Name, Int)
 extractNameArgs (DCon _ _ n fields _) = (n, length (tysOfConFields fields))
 
+-- Extract a data constructor's name.
 extractName :: DCon -> Name
 extractName (DCon _ _ n _ _) = n
+
+-- Extract the names of a data constructor's record selectors.
+extractRecSelNames :: DCon -> [Name]
+extractRecSelNames (DCon _ _ _ fields _) = recSelsOfConFields fields
 
 -- | is a valid Haskell infix data constructor (i.e., does it begin with a colon?)
 isInfixDataCon :: String -> Bool

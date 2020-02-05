@@ -28,7 +28,7 @@ module Data.Singletons.Prelude.Ord (
   -- it returns its first argument.
   thenCmp, ThenCmp, sThenCmp,
 
-  Sing, SOrdering(..), SDown(..),
+  Sing, SOrdering(..), SDown(..), GetDown, sGetDown,
 
   -- ** Defunctionalization symbols
   ThenCmpSym0, ThenCmpSym1, ThenCmpSym2,
@@ -41,7 +41,8 @@ module Data.Singletons.Prelude.Ord (
   MaxSym0, MaxSym1, MaxSym2,
   MinSym0, MinSym1, MinSym2,
   ComparingSym0, ComparingSym1, ComparingSym2, ComparingSym3,
-  DownSym0, DownSym1
+  DownSym0, DownSym1,
+  GetDownSym0, GetDownSym1
   ) where
 
 import Data.Ord (Down(..))

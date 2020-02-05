@@ -86,6 +86,14 @@ data StateRSym0 z
 type instance Apply StateRSym0 x = 'StateR x
 
 $(singletonsOnly [d|
+  runStateL :: StateL s a -> (s -> (s, a))
+  runStateL (StateL x) = x
+
+  runStateR :: StateR s a -> (s -> (s, a))
+  runStateR (StateR x) = x
+  |])
+
+$(singletonsOnly [d|
   -- -| Functors representing data structures that can be traversed from
   -- left to right.
   --
@@ -266,16 +274,14 @@ $(singletonsOnly [d|
   -- a final value of this accumulator together with the new structure.
   mapAccumL :: forall t a b c. Traversable t
             => (a -> b -> (a, c)) -> a -> t b -> (a, t c)
-  mapAccumL f s t = case traverse (StateL . flip f) t of
-                      StateL g -> g s
+  mapAccumL f s t = runStateL (traverse (StateL . flip f) t) s
 
   -- -|The 'mapAccumR' function behaves like a combination of 'fmap'
   -- and 'foldr'; it applies a function to each element of a structure,
   -- passing an accumulating parameter from right to left, and returning
   -- a final value of this accumulator together with the new structure.
   mapAccumR :: Traversable t => (a -> b -> (a, c)) -> a -> t b -> (a, t c)
-  mapAccumR f s t = case traverse (StateR . flip f) t of
-                      StateR g -> g s
+  mapAccumR f s t = runStateR (traverse (StateR . flip f) t) s
 
   -- -| This function may be used as a value for `fmap` in a `Functor`
   --   instance, provided that 'traverse' is defined. (Using
