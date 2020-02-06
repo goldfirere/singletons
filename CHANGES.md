@@ -34,6 +34,11 @@ Changelog for singletons project
 * Export `ApplyTyConAux1`, `ApplyTyConAux2`, as well as the record pattern
   synonyms selector `applySing2`, `applySing3`, etc. from `Data.Singletons`.
   These were unintentionally left out in previous releases.
+* Remove the promoted versions of `genericTake`, `genericDrop`,
+  `genericSplitAt`, `genericIndex`, and `genericReplicate` from
+  `Data.Singletons.Prelude.List`. These definitions were subtly wrong since
+  (1) they claim to work over any `Integral` type `i`, but in practice would
+  only work on `Nat`s, and (2) wouldn't even typecheck if they were singled.
 * Fix a slew of bugs related to fixity declarations:
   * Fixity declarations for data types are no longer singled, as fixity
     declarations do not serve any purpose for singled data type constructors,

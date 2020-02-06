@@ -124,8 +124,6 @@ module Data.Singletons.Prelude.List (
   -- | The prefix \`@generic@\' indicates an overloaded function that
   -- is a generalized version of a "Prelude" function.
   GenericLength, sGenericLength,
-  GenericTake, GenericDrop,
-  GenericSplitAt, GenericIndex, GenericReplicate,
 
   -- * Defunctionalization symbols
   NilSym0,
@@ -245,12 +243,7 @@ module Data.Singletons.Prelude.List (
   MaximumBySym0, MaximumBySym1, MaximumBySym2,
   MinimumBySym0, MinimumBySym1, MinimumBySym2,
 
-  GenericLengthSym0, GenericLengthSym1,
-  GenericTakeSym0, GenericTakeSym1, GenericTakeSym2,
-  GenericDropSym0, GenericDropSym1, GenericDropSym2,
-  GenericSplitAtSym0, GenericSplitAtSym1, GenericSplitAtSym2,
-  GenericIndexSym0, GenericIndexSym1, GenericIndexSym2,
-  GenericReplicateSym0, GenericReplicateSym1, GenericReplicateSym2,
+  GenericLengthSym0, GenericLengthSym1
   ) where
 
 import Data.Singletons.Prelude.Base
