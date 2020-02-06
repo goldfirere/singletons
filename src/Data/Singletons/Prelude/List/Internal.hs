@@ -637,26 +637,4 @@ $(promoteOnly [d|
   zipWith7 z (a:as) (b:bs) (c:cs) (d:ds) (e:es) (f:fs) (g:gs)
                      =  z a b c d e f g : zipWith7 z as bs cs ds es fs gs
   zipWith7 _ _ _ _ _ _ _ _ = []
-
--- These functions use Integral or Num typeclass instead of Int.
---
---  genericLength, genericTake, genericDrop, genericSplitAt, genericIndex
---  genericReplicate
---
--- We provide aliases below to improve compatibility
-
-  genericTake :: (Integral i) => i -> [a] -> [a]
-  genericTake = take
-
-  genericDrop :: (Integral i) => i -> [a] -> [a]
-  genericDrop = drop
-
-  genericSplitAt :: (Integral i) => i -> [a] -> ([a], [a])
-  genericSplitAt = splitAt
-
-  genericIndex :: (Integral i) => [a] -> i -> a
-  genericIndex = (!!)
-
-  genericReplicate :: (Integral i) => i -> a -> [a]
-  genericReplicate = replicate
  |])
