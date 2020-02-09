@@ -32,30 +32,20 @@ import Control.Applicative
 
 -- environment during singling
 data SgEnv =
-  SgEnv { sg_options     :: Options
-        , sg_let_binds   :: Map Name DExp   -- from the *original* name
-        , sg_context     :: DCxt -- See Note [Tracking the current type signature context]
-        , sg_local_decls :: [Dec]
+  SgEnv { sg_let_binds :: Map Name DExp   -- from the *original* name
+        , sg_context   :: DCxt -- See Note [Tracking the current type signature context]
         }
 
 emptySgEnv :: SgEnv
-emptySgEnv = SgEnv { sg_options     = defaultOptions
-                   , sg_let_binds   = Map.empty
-                   , sg_context     = []
-                   , sg_local_decls = []
+emptySgEnv = SgEnv { sg_let_binds = Map.empty
+                   , sg_context   = []
                    }
 
 -- the singling monad
-newtype SgM a = SgM (ReaderT SgEnv (WriterT [DDec] Q) a)
+newtype SgM a = SgM (ReaderT SgEnv (WriterT [DDec] (OptionsM (DsM Q))) a)
   deriving ( Functor, Applicative, Monad
            , MonadReader SgEnv, MonadWriter [DDec]
-           , MonadFail, MonadIO, Quasi )
-
-instance DsMonad SgM where
-  localDeclarations = asks sg_local_decls
-
-instance OptionsMonad SgM where
-  getOptions = asks sg_options
+           , MonadFail, MonadIO, Quasi, DsMonad, OptionsMonad )
 
 bindLets :: [(Name, DExp)] -> SgM a -> SgM a
 bindLets lets1 =
@@ -136,11 +126,11 @@ wrapUnSingFun n ty =
 
 singM :: OptionsMonad q => [Dec] -> SgM a -> q (a, [DDec])
 singM locals (SgM rdr) = do
-  opts         <- getOptions
-  other_locals <- localDeclarations
-  let wr = runReaderT rdr (emptySgEnv { sg_options     = opts
-                                      , sg_local_decls = other_locals ++ locals })
-      q  = runWriterT wr
+  opts <- getOptions
+  let wr = runReaderT rdr emptySgEnv
+      o  = runWriterT wr
+      ds = withOptions opts o
+      q  = withLocalDeclarations locals ds
   runQ q
 
 singDecsM :: OptionsMonad q => [Dec] -> SgM [DDec] -> q [DDec]

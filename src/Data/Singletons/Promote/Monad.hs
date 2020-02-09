@@ -33,31 +33,21 @@ type LetExpansions = OMap Name DType  -- from **term-level** name
 
 -- environment during promotion
 data PrEnv =
-  PrEnv { pr_options      :: Options
-        , pr_lambda_bound :: OMap Name Name
+  PrEnv { pr_lambda_bound :: OMap Name Name
         , pr_let_bound    :: LetExpansions
         , pr_forall_bound :: OSet Name -- See Note [Explicitly binding kind variables]
-        , pr_local_decls  :: [Dec]
         }
 
 emptyPrEnv :: PrEnv
-emptyPrEnv = PrEnv { pr_options      = defaultOptions
-                   , pr_lambda_bound = OMap.empty
+emptyPrEnv = PrEnv { pr_lambda_bound = OMap.empty
                    , pr_let_bound    = OMap.empty
-                   , pr_forall_bound = OSet.empty
-                   , pr_local_decls  = [] }
+                   , pr_forall_bound = OSet.empty }
 
 -- the promotion monad
-newtype PrM a = PrM (ReaderT PrEnv (WriterT [DDec] Q) a)
+newtype PrM a = PrM (ReaderT PrEnv (WriterT [DDec] (OptionsM (DsM Q))) a)
   deriving ( Functor, Applicative, Monad, Quasi
            , MonadReader PrEnv, MonadWriter [DDec]
-           , MonadFail, MonadIO )
-
-instance DsMonad PrM where
-  localDeclarations = asks pr_local_decls
-
-instance OptionsMonad PrM where
-  getOptions = asks pr_options
+           , MonadFail, MonadIO, DsMonad, OptionsMonad )
 
 -- return *type-level* names
 allLocals :: MonadReader PrEnv m => m [Name]
@@ -117,11 +107,11 @@ allBoundKindVars = asks pr_forall_bound
 
 promoteM :: OptionsMonad q => [Dec] -> PrM a -> q (a, [DDec])
 promoteM locals (PrM rdr) = do
-  opts         <- getOptions
-  other_locals <- localDeclarations
-  let wr = runReaderT rdr (emptyPrEnv { pr_options     = opts
-                                      , pr_local_decls = other_locals ++ locals })
-      q  = runWriterT wr
+  opts <- getOptions
+  let wr = runReaderT rdr emptyPrEnv
+      o  = runWriterT wr
+      ds = withOptions opts o
+      q  = withLocalDeclarations locals ds
   runQ q
 
 promoteM_ :: OptionsMonad q => [Dec] -> PrM () -> q [DDec]
