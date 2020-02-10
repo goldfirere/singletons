@@ -62,6 +62,7 @@ import Data.Singletons.Prelude.Identity
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Prelude.Monoid
+import Data.Singletons.Prelude.Proxy
 import Data.Singletons.Single
 
 type StateL :: Type -> Type -> Type
@@ -204,7 +205,13 @@ $(singletonsOnly [d|
   deriving instance Traversable NonEmpty
   deriving instance Traversable (Either a)
   deriving instance Traversable ((,) a)
-  deriving instance Traversable (Const m)
+
+  instance Traversable Proxy where
+      traverse _ _ = pure Proxy
+      sequenceA _ = pure Proxy
+      mapM _ _ = pure Proxy
+      sequence _ = pure Proxy
+
   deriving instance Traversable Dual
   deriving instance Traversable Sum
   deriving instance Traversable Product

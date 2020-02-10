@@ -36,6 +36,7 @@ module Data.Singletons.Prelude.Monad.Zip (
 
 import Data.Functor.Identity
 import Data.Monoid
+import Data.Proxy
 import Data.Singletons.Prelude.Identity
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Prelude.List
@@ -43,6 +44,7 @@ import Data.Singletons.Prelude.List
        , sZip,    sZipWith,    sUnzip )
 import Data.Singletons.Prelude.Monad.Internal
 import Data.Singletons.Prelude.Monoid ()
+import Data.Singletons.Prelude.Proxy
 import Data.Singletons.Prelude.Tuple
 import Data.Singletons.Single
 
@@ -103,4 +105,7 @@ $(singletonsOnly [d|
 
   instance MonadZip Last where
       mzipWith = liftM2
+
+  instance MonadZip Proxy where
+      mzipWith _ _ _ = Proxy
   |])

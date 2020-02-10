@@ -95,6 +95,7 @@ library
                       Data.Singletons.Prelude.Monad.Zip
                       Data.Singletons.Prelude.Monoid
                       Data.Singletons.Prelude.Num
+                      Data.Singletons.Prelude.Proxy
                       Data.Singletons.Prelude.Semigroup
                       Data.Singletons.Prelude.Show
                       Data.Singletons.Prelude.Traversable
