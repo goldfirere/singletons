@@ -507,49 +507,7 @@ multiCase scruts pats body =
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }
   deriving ( Functor, Applicative, Monad, MonadTrans
            , MonadWriter m, MonadReader r
-           , MonadFail, MonadIO )
-
--- make a Quasi instance for easy lifting
-instance (Quasi q, Monoid m) => Quasi (QWithAux m q) where
-  qNewName          = lift `comp1` qNewName
-  qReport           = lift `comp2` qReport
-  qLookupName       = lift `comp2` qLookupName
-  qReify            = lift `comp1` qReify
-  qReifyInstances   = lift `comp2` qReifyInstances
-  qLocation         = lift qLocation
-  qRunIO            = lift `comp1` qRunIO
-  qAddDependentFile = lift `comp1` qAddDependentFile
-  qReifyRoles       = lift `comp1` qReifyRoles
-  qReifyAnnotations = lift `comp1` qReifyAnnotations
-  qReifyModule      = lift `comp1` qReifyModule
-  qAddTopDecls      = lift `comp1` qAddTopDecls
-  qAddModFinalizer  = lift `comp1` qAddModFinalizer
-  qGetQ             = lift qGetQ
-  qPutQ             = lift `comp1` qPutQ
-
-  qReifyFixity        = lift `comp1` qReifyFixity
-  qReifyConStrictness = lift `comp1` qReifyConStrictness
-  qIsExtEnabled       = lift `comp1` qIsExtEnabled
-  qExtsEnabled        = lift qExtsEnabled
-  qAddForeignFilePath = lift `comp2` qAddForeignFilePath
-  qAddTempFile        = lift `comp1` qAddTempFile
-  qAddCorePlugin      = lift `comp1` qAddCorePlugin
-  qReifyType          = lift `comp1` qReifyType
-
-  qRecover exp handler = do
-    (result, aux) <- lift $ qRecover (evalForPair exp) (evalForPair handler)
-    tell aux
-    return result
-
-instance (DsMonad q, Monoid m) => DsMonad (QWithAux m q) where
-  localDeclarations = lift localDeclarations
-
--- helper functions for composition
-comp1 :: (b -> c) -> (a -> b) -> a -> c
-comp1 = (.)
-
-comp2 :: (c -> d) -> (a -> b -> c) -> a -> b -> d
-comp2 f g a b = f (g a b)
+           , MonadFail, MonadIO, Quasi, DsMonad )
 
 -- run a computation with an auxiliary monoid, discarding the monoid result
 evalWithoutAux :: Quasi q => QWithAux m q a -> q a

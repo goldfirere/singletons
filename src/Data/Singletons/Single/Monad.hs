@@ -49,44 +49,7 @@ emptySgEnv = SgEnv { sg_options     = defaultOptions
 newtype SgM a = SgM (ReaderT SgEnv (WriterT [DDec] Q) a)
   deriving ( Functor, Applicative, Monad
            , MonadReader SgEnv, MonadWriter [DDec]
-           , MonadFail, MonadIO )
-
-liftSgM :: Q a -> SgM a
-liftSgM = SgM . lift . lift
-
-instance Quasi SgM where
-  qNewName          = liftSgM `comp1` qNewName
-  qReport           = liftSgM `comp2` qReport
-  qLookupName       = liftSgM `comp2` qLookupName
-  qReify            = liftSgM `comp1` qReify
-  qReifyInstances   = liftSgM `comp2` qReifyInstances
-  qLocation         = liftSgM qLocation
-  qRunIO            = liftSgM `comp1` qRunIO
-  qAddDependentFile = liftSgM `comp1` qAddDependentFile
-  qReifyRoles       = liftSgM `comp1` qReifyRoles
-  qReifyAnnotations = liftSgM `comp1` qReifyAnnotations
-  qReifyModule      = liftSgM `comp1` qReifyModule
-  qAddTopDecls      = liftSgM `comp1` qAddTopDecls
-  qAddModFinalizer  = liftSgM `comp1` qAddModFinalizer
-  qGetQ             = liftSgM qGetQ
-  qPutQ             = liftSgM `comp1` qPutQ
-
-  qReifyFixity        = liftSgM `comp1` qReifyFixity
-  qReifyConStrictness = liftSgM `comp1` qReifyConStrictness
-  qIsExtEnabled       = liftSgM `comp1` qIsExtEnabled
-  qExtsEnabled        = liftSgM qExtsEnabled
-  qAddForeignFilePath = liftSgM `comp2` qAddForeignFilePath
-  qAddTempFile        = liftSgM `comp1` qAddTempFile
-  qAddCorePlugin      = liftSgM `comp1` qAddCorePlugin
-  qReifyType          = liftSgM `comp1` qReifyType
-
-  qRecover (SgM handler) (SgM body) = do
-    env <- ask
-    (result, aux) <- liftSgM $
-                     qRecover (runWriterT $ runReaderT handler env)
-                              (runWriterT $ runReaderT body env)
-    tell aux
-    return result
+           , MonadFail, MonadIO, Quasi )
 
 instance DsMonad SgM where
   localDeclarations = asks sg_local_decls
