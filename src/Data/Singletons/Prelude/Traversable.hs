@@ -212,6 +212,7 @@ $(singletonsOnly [d|
       mapM _ _ = pure Proxy
       sequence _ = pure Proxy
 
+  deriving instance Traversable (Const m)
   deriving instance Traversable Dual
   deriving instance Traversable Sum
   deriving instance Traversable Product
