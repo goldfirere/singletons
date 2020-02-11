@@ -3357,51 +3357,10 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                                                         -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
-    instance (Data.Singletons.ShowSing.ShowSing U,
-              Data.Singletons.ShowSing.ShowSing Nat) =>
-             Show (SU (z :: U)) where
-      showsPrec _ SBOOL = showString "SBOOL"
-      showsPrec _ SSTRING = showString "SSTRING"
-      showsPrec _ SNAT = showString "SNAT"
-      showsPrec
-        p_0123456789876543210
-        (SVEC (arg_0123456789876543210 :: Sing argTy_0123456789876543210)
-              (arg_0123456789876543210 :: Sing argTy_0123456789876543210))
-        = (showParen (((>) p_0123456789876543210) 10))
-            (((.) (showString "SVEC "))
-               (((.) ((showsPrec 11) arg_0123456789876543210))
-                  (((.) GHC.Show.showSpace)
-                     ((showsPrec 11) arg_0123456789876543210)))) ::
-            (Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210,
-             Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210) =>
-            ShowS
-    instance Show (SAChar (z :: AChar)) where
-      showsPrec _ SCA = showString "SCA"
-      showsPrec _ SCB = showString "SCB"
-      showsPrec _ SCC = showString "SCC"
-      showsPrec _ SCD = showString "SCD"
-      showsPrec _ SCE = showString "SCE"
-      showsPrec _ SCF = showString "SCF"
-      showsPrec _ SCG = showString "SCG"
-      showsPrec _ SCH = showString "SCH"
-      showsPrec _ SCI = showString "SCI"
-      showsPrec _ SCJ = showString "SCJ"
-      showsPrec _ SCK = showString "SCK"
-      showsPrec _ SCL = showString "SCL"
-      showsPrec _ SCM = showString "SCM"
-      showsPrec _ SCN = showString "SCN"
-      showsPrec _ SCO = showString "SCO"
-      showsPrec _ SCP = showString "SCP"
-      showsPrec _ SCQ = showString "SCQ"
-      showsPrec _ SCR = showString "SCR"
-      showsPrec _ SCS = showString "SCS"
-      showsPrec _ SCT = showString "SCT"
-      showsPrec _ SCU = showString "SCU"
-      showsPrec _ SCV = showString "SCV"
-      showsPrec _ SCW = showString "SCW"
-      showsPrec _ SCX = showString "SCX"
-      showsPrec _ SCY = showString "SCY"
-      showsPrec _ SCZ = showString "SCZ"
+    deriving instance (Data.Singletons.ShowSing.ShowSing U,
+                       Data.Singletons.ShowSing.ShowSing Nat) =>
+                      Show (SU (z :: U))
+    deriving instance Show (SAChar (z :: AChar))
     instance SingI BOOL where
       sing = SBOOL
     instance SingI STRING where

@@ -74,7 +74,7 @@ boolName, andName, compareName, minBoundName,
   toEnumName, fromEnumName, enumName,
   equalsName, constraintName,
   showName, showSName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
-  showSpaceName, showStringName, showSingName, showSing'Name,
+  showSpaceName, showStringName, showSingName,
   composeName, gtName, fromStringName,
   foldableName, foldMapName, memptyName, mappendName, foldrName,
   functorName, fmapName, replaceName,
@@ -146,7 +146,6 @@ showSpaceName = 'showSpace
 showsPrecName = 'showsPrec
 showStringName = 'showString
 showSingName = ''ShowSing
-showSing'Name = ''ShowSing'
 composeName = '(.)
 gtName = '(>)
 showCommaSpaceName = 'showCommaSpace

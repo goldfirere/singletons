@@ -306,17 +306,8 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
                                                       -> GHC.Types.Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
-    instance Data.Singletons.ShowSing.ShowSing Nat =>
-             Show (SNat (z :: Nat)) where
-      showsPrec _ SZero = showString "SZero"
-      showsPrec
-        p_0123456789876543210
-        (SSucc (arg_0123456789876543210 :: Sing argTy_0123456789876543210))
-        = (showParen (((>) p_0123456789876543210) 10))
-            (((.) (showString "SSucc "))
-               ((showsPrec 11) arg_0123456789876543210)) ::
-            Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210 =>
-            ShowS
+    deriving instance Data.Singletons.ShowSing.ShowSing Nat =>
+                      Show (SNat (z :: Nat))
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where

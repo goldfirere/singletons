@@ -219,28 +219,10 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
                           (sFromInteger (sing :: Sing 11))))
                       sArg_0123456789876543210))))
             sA_0123456789876543210
-    instance Data.Singletons.ShowSing.ShowSing (Y a) =>
-             Show (SX (z :: X a)) where
-      showsPrec _ SX1 = showString "SX1"
-      showsPrec
-        p_0123456789876543210
-        (SX2 (arg_0123456789876543210 :: Sing argTy_0123456789876543210))
-        = (showParen (((>) p_0123456789876543210) 10))
-            (((.) (showString "SX2 "))
-               ((showsPrec 11) arg_0123456789876543210)) ::
-            Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210 =>
-            ShowS
-    instance Data.Singletons.ShowSing.ShowSing (X a) =>
-             Show (SY (z :: Y a)) where
-      showsPrec _ SY1 = showString "SY1"
-      showsPrec
-        p_0123456789876543210
-        (SY2 (arg_0123456789876543210 :: Sing argTy_0123456789876543210))
-        = (showParen (((>) p_0123456789876543210) 10))
-            (((.) (showString "SY2 "))
-               ((showsPrec 11) arg_0123456789876543210)) ::
-            Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210 =>
-            ShowS
+    deriving instance Data.Singletons.ShowSing.ShowSing (Y a) =>
+                      Show (SX (z :: X a))
+    deriving instance Data.Singletons.ShowSing.ShowSing (X a) =>
+                      Show (SY (z :: Y a))
     instance SingI X1 where
       sing = SX1
     instance SingI n => SingI (X2 (n :: Y a)) where

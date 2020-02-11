@@ -16,6 +16,7 @@ import Language.Haskell.TH.Syntax (NameSpace(..), Quasi(..))
 import Data.Singletons.TH.Deriving.Bounded
 import Data.Singletons.TH.Deriving.Enum
 import Data.Singletons.TH.Deriving.Eq
+import Data.Singletons.TH.Deriving.Infer
 import Data.Singletons.TH.Deriving.Ord
 import Data.Singletons.TH.Deriving.Show
 import Data.Singletons.TH.Deriving.Util
@@ -185,7 +186,7 @@ singEnumInstance = singInstance mkEnumInstance "Enum"
 --
 -- (Not to be confused with 'showShowInstance'.)
 singShowInstance :: OptionsMonad q => Name -> q [Dec]
-singShowInstance = singInstance (mkShowInstance ForPromotion) "Show"
+singShowInstance = singInstance mkShowInstance "Show"
 
 -- | Create instances of 'SShow' for the given types
 --
@@ -1009,31 +1010,22 @@ singDerivedShowDecs :: DerivedShowDecl -> SgM [DDec]
 singDerivedShowDecs (DerivedDecl { ded_mb_cxt     = mb_cxt
                                  , ded_type       = ty
                                  , ded_type_tycon = ty_tycon
-                                 , ded_decl       = data_decl }) = do
+                                 , ded_decl       = DataDecl _ _ cons }) = do
+    opts <- getOptions
+    z <- qNewName "z"
     -- Generate a Show instance for a singleton type, like this:
     --
-    --   instance (ShowSing a, ShowSing b) => Show (SEither (z :: Either a b)) where
-    --     showsPrec p (SLeft (sl :: Sing l)) =
-    --       showParen (p > 10) $ showString "SLeft " . showsPrec 11 sl
-    --         :: ShowSing' l => ShowS
-    --     showsPrec p (SRight (sr :: Sing r)) =
-    --       showParen (p > 10) $ showString "SRight " . showsPrec 11 sr
-    --         :: ShowSing' r => ShowS
+    --   deriving instance (ShowSing a, ShowSing b) => Sing (SEither (z :: Either a b))
     --
     -- Be careful: we want to generate an instance context that uses ShowSing,
     -- not SShow.
-    show_sing_inst <- mkShowInstance (ForShowSing ty_tycon) mb_cxt ty data_decl
-    pure [toInstanceD show_sing_inst]
-  where
-    toInstanceD :: UInstDecl -> DDec
-    toInstanceD (InstDecl { id_cxt = cxt, id_name = inst_name
-                          , id_arg_tys = inst_tys, id_meths = ann_meths }) =
-      DInstanceD Nothing Nothing cxt (foldType (DConT inst_name) inst_tys)
-                 (map (DLetDec . toFunD) ann_meths)
-
-    toFunD :: (Name, ULetDecRHS) -> DLetDec
-    toFunD (fun_name, UFunction clauses) = DFunD fun_name clauses
-    toFunD (val_name, UValue rhs)        = DValD (DVarP val_name) rhs
+    show_cxt <- inferConstraintsDef (fmap mkShowSingContext mb_cxt)
+                                    (DConT showSingName)
+                                    ty cons
+    let sty_tycon = singledDataTypeName opts ty_tycon
+        show_inst = DStandaloneDerivD Nothing Nothing show_cxt
+                      (DConT showName `DAppT` (DConT sty_tycon `DAppT` DSigT (DVarT z) ty))
+    pure [show_inst]
 
 isException :: DExp -> Bool
 isException (DVarE n)             = nameBase n == "sUndefined"

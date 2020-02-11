@@ -531,22 +531,9 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                     -> GHC.Types.Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
-    instance Data.Singletons.ShowSing.ShowSing a =>
-             Show (ST (z :: T a ())) where
-      showsPrec
-        p_0123456789876543210
-        ((:%*:) (argL_0123456789876543210 :: Sing argTyL_0123456789876543210)
-                (argR_0123456789876543210 :: Sing argTyR_0123456789876543210))
-        = (showParen (((>) p_0123456789876543210) 9))
-            (((.) ((showsPrec 10) argL_0123456789876543210))
-               (((.) (showString " :%*: "))
-                  ((showsPrec 10) argR_0123456789876543210))) ::
-            (Data.Singletons.ShowSing.ShowSing' argTyL_0123456789876543210,
-             Data.Singletons.ShowSing.ShowSing' argTyR_0123456789876543210) =>
-            ShowS
-    instance Show (SS (z :: S)) where
-      showsPrec _ SS1 = showString "SS1"
-      showsPrec _ SS2 = showString "SS2"
+    deriving instance Data.Singletons.ShowSing.ShowSing a =>
+                      Show (ST (z :: T a ()))
+    deriving instance Show (SS (z :: S))
     instance (SingI n, SingI n) =>
              SingI ((:*:) (n :: a) (n :: b)) where
       sing = ((:%*:) sing) sing

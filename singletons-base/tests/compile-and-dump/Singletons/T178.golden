@@ -256,10 +256,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
                                                       -> GHC.Types.Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
-    instance Show (SOcc (z :: Occ)) where
-      showsPrec _ SStr = showString "SStr"
-      showsPrec _ SOpt = showString "SOpt"
-      showsPrec _ SMany = showString "SMany"
+    deriving instance Show (SOcc (z :: Occ))
     instance SingI Str where
       sing = SStr
     instance SingI Opt where

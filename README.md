@@ -85,6 +85,7 @@ includes, but is not necessarily limited to, the following:
 * `PolyKinds`
 * `RankNTypes`
 * `ScopedTypeVariables`
+* `StandaloneDeriving`
 * `StandaloneKindSignatures`
 * `TemplateHaskell`
 * `TypeApplications`

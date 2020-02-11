@@ -295,7 +295,7 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
                          return $ mempty { pd_instance_decs   = [inst_for_promotion]
                                          , pd_derived_eq_decs = [inst_for_decide] } )
         , ( showName, do -- These will become PShow/SShow instances...
-                         inst_for_promotion <- mk_instance $ mkShowInstance ForPromotion
+                         inst_for_promotion <- mk_instance mkShowInstance
                          -- ...and this will become a Show instance.
                          let inst_for_show = derived_decl
                          pure $ mempty { pd_instance_decs     = [inst_for_promotion]

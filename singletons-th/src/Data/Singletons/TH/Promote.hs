@@ -156,7 +156,7 @@ promoteShowInstances = concatMapM promoteShowInstance
 
 -- | Produce an instance for 'PShow' from the given type
 promoteShowInstance :: OptionsMonad q => Name -> q [Dec]
-promoteShowInstance = promoteInstance (mkShowInstance ForPromotion) "Show"
+promoteShowInstance = promoteInstance mkShowInstance "Show"
 
 promoteInstance :: OptionsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 promoteInstance mk_inst class_name name = do
