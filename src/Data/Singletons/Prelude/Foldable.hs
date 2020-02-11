@@ -454,6 +454,36 @@ $(singletonsOnly [d|
 
       null             = isLeft
 
+  instance Foldable Proxy where
+      foldMap _ _ = mempty
+      fold _ = mempty
+      foldr _ z _ = z
+      foldl _ z _ = z
+      foldl1 _ _ = errorWithoutStackTrace "foldl1: Proxy"
+      foldr1 _ _ = errorWithoutStackTrace "foldr1: Proxy"
+
+      -- Why do we give length (and null) an instance signature here? If we
+      -- didn't, singletons would generate one for us when singling it:
+      --
+      --    instance SFoldable Proxy where
+      --      sLength :: forall a (x :: Proxy a). Sing x -> Sing (Length x)
+      --      sLength = ...
+      --
+      -- If you squint, you'll notice that that instance signature is actually
+      -- /too/ general. This is because GHC will infer that `a` should be
+      -- kind-polymorphic, but Length is only defined when `a` is of kind
+      -- `Type`! Ugh. To force GHC to come to its senses, we explicitly inform
+      -- it that `a :: Type` through our own instance signature.
+      length :: forall (a :: Type). Proxy a -> Nat
+      length _   = 0
+
+      null :: forall (a :: Type). Proxy a -> Bool
+      null _     = True
+
+      elem _ _   = False
+      sum _      = 0
+      product _  = 1
+
   instance Foldable Dual where
       foldMap f (Dual x)  = f x
 

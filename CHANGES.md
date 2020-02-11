@@ -40,6 +40,7 @@ Changelog for singletons project
 * Export `ApplyTyConAux1`, `ApplyTyConAux2`, as well as the record pattern
   synonyms selector `applySing2`, `applySing3`, etc. from `Data.Singletons`.
   These were unintentionally left out in previous releases.
+* Add the `Data.Singletons.Prelude.Proxy` module.
 * Remove the promoted versions of `genericTake`, `genericDrop`,
   `genericSplitAt`, `genericIndex`, and `genericReplicate` from
   `Data.Singletons.Prelude.List`. These definitions were subtly wrong since
