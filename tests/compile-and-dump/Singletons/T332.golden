@@ -8,6 +8,7 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
     data Foo = MkFoo
     f :: Foo -> ()
     f MkFoo {} = ()
+    type MkFooSym0 = MkFoo :: Foo
     type FSym0 :: (~>) Foo ()
     data FSym0 a0123456789876543210
       where
@@ -21,7 +22,6 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
     type F :: Foo -> ()
     type family F a where
       F MkFoo = Tuple0Sym0
-    type MkFooSym0 = MkFoo :: Foo
 Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| b :: Bar -> ()

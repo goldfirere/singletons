@@ -592,7 +592,6 @@ The following constructs are fully supported:
 * class constraints (though these sometimes fail with `let`, `lambda`, and `case`)
 * literals (for `Nat` and `Symbol`), including overloaded number literals
 * unboxed tuples (which are treated as normal tuples)
-* records
 * pattern guards
 * case
 * let
@@ -604,6 +603,7 @@ The following constructs are fully supported:
 * `InstanceSigs`
 * higher-kinded type variables (see below)
 * finite arithmetic sequences (see below)
+* records (with limitations -- see below)
 * functional dependencies (with limitations -- see below)
 * type families (with limitations -- see below)
 
@@ -622,6 +622,16 @@ methods from the `Enum` class under the hood). _Finite_ sequences (e.g.,
 [0..42]) are fully supported. However, _infinite_ sequences (e.g., [0..]),
 which desugar to calls to `enumFromTo` or `enumFromThenTo`, are not supported,
 as these would require using infinite lists at the type level.
+
+Record selectors are promoted to top-level functions, as there is no record
+syntax at the type level. Record selectors are also singled to top-level
+functions because embedding records directly into singleton data constructors
+can result in surprising behavior (see
+[this bug report](https://github.com/goldfirere/singletons/issues/364) for more
+details on this point). TH-generated code is not affected by this limitation
+since `singletons` desugars away most uses of record syntax. On the other hand,
+it is not possible to write out code like
+`SIdentity { sRunIdentity = SIdentity STrue }` by hand.
 
 The following constructs are supported for promotion but not singleton generation:
 
@@ -864,7 +874,6 @@ for the following constructs:
 Known bugs
 ----------
 
-* Record updates don't singletonize
 * Inference dependent on functional dependencies is unpredictably bad. The
   problem is that a use of an associated type family tied to a class with
   fundeps doesn't provoke the fundep to kick in. This is GHC's problem, in

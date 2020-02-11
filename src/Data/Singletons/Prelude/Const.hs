@@ -27,7 +27,7 @@
 
 module Data.Singletons.Prelude.Const (
   -- * The 'Const' singleton
-  Sing, SConst(..), GetConst,
+  Sing, SConst(..), GetConst, sGetConst,
 
   -- * Defunctionalization symbols
   ConstSym0, ConstSym1,
@@ -73,7 +73,7 @@ hand.
 -}
 type SConst :: Const a b -> Type
 data SConst c where
-  SConst :: { sGetConst :: Sing a } -> SConst ('Const a)
+  SConst :: Sing a -> SConst ('Const a)
 type instance Sing = SConst
 instance SingKind a => SingKind (Const a b) where
   type Demote (Const a b) = Const (Demote a) b
@@ -86,13 +86,10 @@ $(genDefunSymbols [''Const])
 instance SingI ConstSym0 where
   sing = singFun1 SConst
 
-$(singletons [d|
-  type GetConst :: Const a b -> a
-  type family GetConst x where
-    GetConst ('Const x) = x
-  |])
-
 $(singletonsOnly [d|
+  getConst :: Const a b -> a
+  getConst (Const x) = x
+
   deriving instance Bounded a => Bounded (Const a b)
   deriving instance Eq      a => Eq      (Const a b)
   deriving instance Ord     a => Ord     (Const a b)

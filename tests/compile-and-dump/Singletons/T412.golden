@@ -1,6 +1,6 @@
 Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     singletons
-      [d| infixr 5 `D1`, `MkD1`
+      [d| infixr 5 `D1`, `MkD1`, `d1A`, `d1B`
           infixl 5 `T1a`, `T1b`
           infix 6 `m1`
           infix 5 `C1`
@@ -11,7 +11,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
           type T1a a b = Either a b
           type family T1b a b where
             T1b a b = Either a b
-          data D1 a b = MkD1 a b |]
+          data D1 a b = MkD1 {d1A :: a, d1B :: b} |]
   ======>
     infix 5 `C1`
     class C1 a b where
@@ -24,7 +24,9 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       T1b a b = Either a b
     infixr 5 `D1`
     infixr 5 `MkD1`
-    data D1 a b = MkD1 a b
+    infixr 5 `d1A`
+    infixr 5 `d1B`
+    data D1 a b = MkD1 {d1A :: a, d1B :: b}
     data T1aSym0 a0123456789876543210
       where
         T1aSym0KindInference :: SameKind (Apply T1aSym0 arg) (T1aSym1 arg) =>
@@ -84,6 +86,38 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type MkD1Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) =
         MkD1 a0123456789876543210 a0123456789876543210 :: D1 a b
     infixr 5 `MkD1Sym2`
+    type D1BSym0 :: forall a b. (~>) (D1 a b) b
+    data D1BSym0 a0123456789876543210
+      where
+        D1BSym0KindInference :: SameKind (Apply D1BSym0 arg) (D1BSym1 arg) =>
+                                D1BSym0 a0123456789876543210
+    type instance Apply D1BSym0 a0123456789876543210 = D1BSym1 a0123456789876543210
+    instance SuppressUnusedWarnings D1BSym0 where
+      suppressUnusedWarnings = snd (((,) D1BSym0KindInference) ())
+    infixr 5 `D1BSym0`
+    type D1BSym1 (a0123456789876543210 :: D1 a b) =
+        D1B a0123456789876543210 :: b
+    infixr 5 `D1BSym1`
+    type D1ASym0 :: forall a b. (~>) (D1 a b) a
+    data D1ASym0 a0123456789876543210
+      where
+        D1ASym0KindInference :: SameKind (Apply D1ASym0 arg) (D1ASym1 arg) =>
+                                D1ASym0 a0123456789876543210
+    type instance Apply D1ASym0 a0123456789876543210 = D1ASym1 a0123456789876543210
+    instance SuppressUnusedWarnings D1ASym0 where
+      suppressUnusedWarnings = snd (((,) D1ASym0KindInference) ())
+    infixr 5 `D1ASym0`
+    type D1ASym1 (a0123456789876543210 :: D1 a b) =
+        D1A a0123456789876543210 :: a
+    infixr 5 `D1ASym1`
+    type D1B :: forall a b. D1 a b -> b
+    type family D1B a where
+      D1B (MkD1 _ field) = field
+    type D1A :: forall a b. D1 a b -> a
+    type family D1A a where
+      D1A (MkD1 field _) = field
+    infixr 5 `D1B`
+    infixr 5 `D1A`
     infix 6 `M1`
     infix 5 `PC1`
     type M1Sym0 :: forall a b. (~>) a ((~>) b Bool)
@@ -109,9 +143,21 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     infix 6 `M1Sym2`
     class PC1 a b where
       type M1 (arg :: a) (arg :: b) :: Bool
+    infixr 5 `sD1B`
+    infixr 5 `sD1A`
     infixr 5 `SMkD1`
     infix 6 `sM1`
     infix 5 `SC1`
+    sD1B ::
+      forall a b (t :: D1 a b). Sing t -> Sing (Apply D1BSym0 t :: b)
+    sD1A ::
+      forall a b (t :: D1 a b). Sing t -> Sing (Apply D1ASym0 t :: a)
+    sD1B (SMkD1 _ (sField :: Sing field)) = sField
+    sD1A (SMkD1 (sField :: Sing field) _) = sField
+    instance SingI (D1BSym0 :: (~>) (D1 a b) b) where
+      sing = (singFun1 @D1BSym0) sD1B
+    instance SingI (D1ASym0 :: (~>) (D1 a b) a) where
+      sing = (singFun1 @D1ASym0) sD1A
     data SD1 :: forall a b. D1 a b -> GHC.Types.Type
       where
         SMkD1 :: forall a b (n :: a) (n :: b).
@@ -249,6 +295,54 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type MkD2Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) =
         'MkD2 a0123456789876543210 a0123456789876543210 :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)
     infixr 5 `MkD2Sym2`
+    infixr 5 `D2A`
+    infixr 5 `D2B`
+    type D2BSym0 :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
+                    (~>) (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) b
+    data D2BSym0 a0123456789876543210
+      where
+        D2BSym0KindInference :: SameKind (Apply D2BSym0 arg) (D2BSym1 arg) =>
+                                D2BSym0 a0123456789876543210
+    type instance Apply D2BSym0 a0123456789876543210 = D2BSym1 a0123456789876543210
+    instance SuppressUnusedWarnings D2BSym0 where
+      suppressUnusedWarnings = snd (((,) D2BSym0KindInference) ())
+    type D2BSym1 (a0123456789876543210 :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) =
+        D2B a0123456789876543210 :: b
+    type D2ASym0 :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
+                    (~>) (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) a
+    data D2ASym0 a0123456789876543210
+      where
+        D2ASym0KindInference :: SameKind (Apply D2ASym0 arg) (D2ASym1 arg) =>
+                                D2ASym0 a0123456789876543210
+    type instance Apply D2ASym0 a0123456789876543210 = D2ASym1 a0123456789876543210
+    instance SuppressUnusedWarnings D2ASym0 where
+      suppressUnusedWarnings = snd (((,) D2ASym0KindInference) ())
+    type D2ASym1 (a0123456789876543210 :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) =
+        D2A a0123456789876543210 :: a
+    type D2B :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
+                D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type) -> b
+    type family D2B a where
+      D2B ('MkD2 _ field) = field
+    type D2A :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
+                D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type) -> a
+    type family D2A a where
+      D2A ('MkD2 field _) = field
+    sD2B ::
+      forall (a :: GHC.Types.Type)
+             (b :: GHC.Types.Type)
+             (t :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)).
+      Sing t -> Sing (Apply D2BSym0 t :: b)
+    sD2A ::
+      forall (a :: GHC.Types.Type)
+             (b :: GHC.Types.Type)
+             (t :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)).
+      Sing t -> Sing (Apply D2ASym0 t :: a)
+    sD2B (SMkD2 _ (sField :: Sing field)) = sField
+    sD2A (SMkD2 (sField :: Sing field) _) = sField
+    instance SingI (D2BSym0 :: (~>) (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) b) where
+      sing = (singFun1 @D2BSym0) sD2B
+    instance SingI (D2ASym0 :: (~>) (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) a) where
+      sing = (singFun1 @D2ASym0) sD2A
     type SD2 :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
                 D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type) -> GHC.Types.Type
     data SD2 z
@@ -268,6 +362,8 @@ Singletons/T412.hs:0:0:: Splicing declarations
         = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b) of {
             (,) (SomeSing c) (SomeSing c) -> SomeSing ((SMkD2 c) c) }
     infixr 5 `SMkD2`
+    infixr 5 `sD2A`
+    infixr 5 `sD2B`
     instance (SingI n, SingI n) =>
              SingI ('MkD2 (n :: a) (n :: b)) where
       sing = (SMkD2 sing) sing

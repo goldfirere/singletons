@@ -3,6 +3,24 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       [d| data Record a = MkRecord {field1 :: a, field2 :: Bool} |]
   ======>
     data Record a = MkRecord {field1 :: a, field2 :: Bool}
+    type MkRecordSym0 :: forall a. (~>) a ((~>) Bool (Record a))
+    data MkRecordSym0 a0123456789876543210
+      where
+        MkRecordSym0KindInference :: SameKind (Apply MkRecordSym0 arg) (MkRecordSym1 arg) =>
+                                     MkRecordSym0 a0123456789876543210
+    type instance Apply MkRecordSym0 a0123456789876543210 = MkRecordSym1 a0123456789876543210
+    instance SuppressUnusedWarnings MkRecordSym0 where
+      suppressUnusedWarnings = snd (((,) MkRecordSym0KindInference) ())
+    type MkRecordSym1 :: forall a. a -> (~>) Bool (Record a)
+    data MkRecordSym1 a0123456789876543210 a0123456789876543210
+      where
+        MkRecordSym1KindInference :: SameKind (Apply (MkRecordSym1 a0123456789876543210) arg) (MkRecordSym2 a0123456789876543210 arg) =>
+                                     MkRecordSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (MkRecordSym1 a0123456789876543210) a0123456789876543210 = MkRecordSym2 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (MkRecordSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) MkRecordSym1KindInference) ())
+    type MkRecordSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Bool) =
+        MkRecord a0123456789876543210 a0123456789876543210 :: Record a
     type Field2Sym0 :: forall a. (~>) (Record a) Bool
     data Field2Sym0 a0123456789876543210
       where
@@ -29,29 +47,21 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     type Field1 :: forall a. Record a -> a
     type family Field1 a where
       Field1 (MkRecord field _) = field
-    type MkRecordSym0 :: forall a. (~>) a ((~>) Bool (Record a))
-    data MkRecordSym0 a0123456789876543210
-      where
-        MkRecordSym0KindInference :: SameKind (Apply MkRecordSym0 arg) (MkRecordSym1 arg) =>
-                                     MkRecordSym0 a0123456789876543210
-    type instance Apply MkRecordSym0 a0123456789876543210 = MkRecordSym1 a0123456789876543210
-    instance SuppressUnusedWarnings MkRecordSym0 where
-      suppressUnusedWarnings = snd (((,) MkRecordSym0KindInference) ())
-    type MkRecordSym1 :: forall a. a -> (~>) Bool (Record a)
-    data MkRecordSym1 a0123456789876543210 a0123456789876543210
-      where
-        MkRecordSym1KindInference :: SameKind (Apply (MkRecordSym1 a0123456789876543210) arg) (MkRecordSym2 a0123456789876543210 arg) =>
-                                     MkRecordSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (MkRecordSym1 a0123456789876543210) a0123456789876543210 = MkRecordSym2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (MkRecordSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) MkRecordSym1KindInference) ())
-    type MkRecordSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Bool) =
-        MkRecord a0123456789876543210 a0123456789876543210 :: Record a
+    sField2 ::
+      forall a (t :: Record a).
+      Sing t -> Sing (Apply Field2Sym0 t :: Bool)
+    sField1 ::
+      forall a (t :: Record a). Sing t -> Sing (Apply Field1Sym0 t :: a)
+    sField2 (SMkRecord _ (sField :: Sing field)) = sField
+    sField1 (SMkRecord (sField :: Sing field) _) = sField
+    instance SingI (Field2Sym0 :: (~>) (Record a) Bool) where
+      sing = (singFun1 @Field2Sym0) sField2
+    instance SingI (Field1Sym0 :: (~>) (Record a) a) where
+      sing = (singFun1 @Field1Sym0) sField1
     data SRecord :: forall a. Record a -> GHC.Types.Type
       where
         SMkRecord :: forall a (n :: a) (n :: Bool).
-                     {sField1 :: (Sing n), sField2 :: (Sing n)}
-                     -> SRecord (MkRecord n n :: Record a)
+                     (Sing n) -> (Sing n) -> SRecord (MkRecord n n :: Record a)
     type instance Sing @(Record a) = SRecord
     instance SingKind a => SingKind (Record a) where
       type Demote (Record a) = Record (Demote a)

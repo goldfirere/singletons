@@ -102,7 +102,7 @@ import Control.Monad
 import Data.Kind
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Monoid hiding (All(..), Any(..), Endo(..), Product(..), Sum(..))
-import qualified Data.Monoid as Monoid (All(..), Any(..), Product(..), Sum(..))
+import qualified Data.Monoid as Monoid (Product(..), Sum(..))
 import Data.Singletons.Internal
 import Data.Singletons.Prelude.Base
   hiding (Foldr, FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3, sFoldr)
@@ -127,11 +127,11 @@ import Data.Singletons.Prelude.Semigroup.Internal
   hiding ( AllSym0(..),     AllSym1,     SAll
          , AnySym0(..),     AnySym1,     SAny
          , FirstSym0,       FirstSym1,   SFirst
+         , GetFirstSym0,    sGetFirst
          , LastSym0,        LastSym1,    SLast
          , ProductSym0(..), ProductSym1, SProduct
          , SumSym0(..),     SumSym1,     SSum )
 import Data.Singletons.Prelude.Semigroup.Internal.Disambiguation
-import Data.Singletons.Promote
 import Data.Singletons.Single
 import Data.Singletons.TypeLits.Internal
 
@@ -146,6 +146,9 @@ data EndoSym0 tf
 type instance Apply EndoSym0 x = 'Endo x
 
 $(singletonsOnly [d|
+  appEndo :: Endo a -> (a -> a)
+  appEndo (Endo x) = x
+
   instance Semigroup (Endo a) where
           Endo x <> Endo y = Endo (x . y)
 
@@ -153,21 +156,10 @@ $(singletonsOnly [d|
           mempty = Endo id
   |])
 
-type MaxInternal :: Type -> Type
-newtype MaxInternal a = MaxInternal (Maybe a)
-type SMaxInternal :: MaxInternal a -> Type
-data SMaxInternal mi where
-  SMaxInternal :: Sing x -> SMaxInternal ('MaxInternal x)
-type instance Sing = SMaxInternal
-$(genDefunSymbols [''MaxInternal])
-
-type MinInternal :: Type -> Type
-newtype MinInternal a = MinInternal (Maybe a)
-type SMinInternal :: MinInternal a -> Type
-data SMinInternal mi where
-  SMinInternal :: Sing x -> SMinInternal ('MinInternal x)
-type instance Sing = SMinInternal
-$(genDefunSymbols [''MinInternal])
+$(singletons [d|
+  newtype MaxInternal a = MaxInternal { getMaxInternal :: Maybe a }
+  newtype MinInternal a = MinInternal { getMinInternal :: Maybe a }
+  |])
 
 $(singletonsOnly [d|
   instance Ord a => Semigroup (MaxInternal a) where
@@ -266,8 +258,7 @@ $(singletonsOnly [d|
       -- @foldr f z = 'List.foldr' f z . 'toList'@
       --
       foldr :: (a -> b -> b) -> b -> t a -> b
-      foldr f z t = case foldMap (Endo . f) t of
-                      Endo g -> g z
+      foldr f z t = appEndo (foldMap (Endo . f) t) z
 
       -- -| Right-associative fold of a structure, but with strict application of
       -- the operator.
@@ -302,8 +293,7 @@ $(singletonsOnly [d|
       -- @foldl f z = 'List.foldl' f z . 'toList'@
       --
       foldl :: (b -> a -> b) -> b -> t a -> b
-      foldl f z t = case foldMap (Dual . Endo . flip f) t of
-                      Dual (Endo g) -> g z
+      foldl f z t = appEndo (getDual (foldMap (Dual . Endo . flip f) t)) z
       -- There's no point mucking around with coercions here,
       -- because flip forces us to build a new function anyway.
 
@@ -370,26 +360,28 @@ $(singletonsOnly [d|
 
       -- -| The largest element of a non-empty structure.
       maximum :: forall a . Ord a => t a -> a
-      maximum x =
-        case foldMap (MaxInternal . Just) x of
-          MaxInternal y -> fromMaybe (errorWithoutStackTrace "maximum: empty structure") y
+      maximum = fromMaybe (errorWithoutStackTrace "maximum: empty structure") .
+       getMaxInternal . foldMap (MaxInternal . mkJust)
+        where
+          mkJust :: a -> Maybe a
+          mkJust = Just
 
       -- -| The least element of a non-empty structure.
       minimum :: forall a . Ord a => t a -> a
-      minimum x =
-        case foldMap (MinInternal . Just) x of
-          MinInternal y -> fromMaybe (errorWithoutStackTrace "minimum: empty structure") y
+      minimum = fromMaybe (errorWithoutStackTrace "minimum: empty structure") .
+       getMinInternal . foldMap (MinInternal . mkJust)
+        where
+          mkJust :: a -> Maybe a
+          mkJust = Just
 
       -- -| The 'sum' function computes the sum of the numbers of a structure.
       sum :: Num a => t a -> a
-      sum x = case foldMap sum_ x of
-                Monoid.Sum y -> y
+      sum = getSum . foldMap sum_
 
       -- -| The 'product' function computes the product of the numbers of a
       -- structure.
       product :: Num a => t a -> a
-      product x = case foldMap product_ x of
-                    Monoid.Product y -> y
+      product = getProduct . foldMap product_
 
   -- instances for Prelude types
 
@@ -487,55 +479,55 @@ $(singletonsOnly [d|
   instance Foldable Dual where
       foldMap f (Dual x)  = f x
 
-      elem x (Dual y)     = x == y
+      elem                = (. getDual) . (==)
       foldl f z (Dual x)  = f z x
       foldl' f z (Dual x) = f z x
-      foldl1 _ (Dual x)   = x
+      foldl1 _            = getDual
       foldr f z (Dual x)  = f x z
       foldr'              = foldr
-      foldr1 _ (Dual x)   = x
+      foldr1 _            = getDual
       length _            = 1
-      maximum (Dual x)    = x
-      minimum (Dual x)    = x
+      maximum             = getDual
+      minimum             = getDual
       null _              = False
-      product (Dual x)    = x
-      sum (Dual x)        = x
+      product             = getDual
+      sum                 = getDual
       toList (Dual x)     = [x]
 
   instance Foldable Monoid.Sum where
       foldMap f (Monoid.Sum x)  = f x
 
-      elem x (Monoid.Sum y)     = x == y
+      elem                      = (. getSum) . (==)
       foldl f z (Monoid.Sum x)  = f z x
       foldl' f z (Monoid.Sum x) = f z x
-      foldl1 _ (Monoid.Sum x)   = x
+      foldl1 _                  = getSum
       foldr f z (Monoid.Sum x)  = f x z
       foldr'                    = foldr
-      foldr1 _ (Monoid.Sum x)   = x
+      foldr1 _                  = getSum
       length _                  = 1
-      maximum (Monoid.Sum x)    = x
-      minimum (Monoid.Sum x)    = x
+      maximum                   = getSum
+      minimum                   = getSum
       null _                    = False
-      product (Monoid.Sum x)    = x
-      sum (Monoid.Sum x)        = x
+      product                   = getSum
+      sum                       = getSum
       toList (Monoid.Sum x)     = [x]
 
   instance Foldable Monoid.Product where
       foldMap f (Monoid.Product x)  = f x
 
-      elem x (Monoid.Product y)     = x == y
+      elem                          = (. getProduct) . (==)
       foldl f z (Monoid.Product x)  = f z x
       foldl' f z (Monoid.Product x) = f z x
-      foldl1 _ (Monoid.Product x)   = x
+      foldl1 _                      = getProduct
       foldr f z (Monoid.Product x)  = f x z
-      foldr'              = foldr
-      foldr1 _ (Monoid.Product x)   = x
-      length _            = 1
-      maximum (Monoid.Product x)    = x
-      minimum (Monoid.Product x)    = x
-      null _              = False
-      product (Monoid.Product x)    = x
-      sum (Monoid.Product x)        = x
+      foldr'                        = foldr
+      foldr1 _                      = getProduct
+      length _                      = 1
+      maximum                       = getProduct
+      minimum                       = getProduct
+      null _                        = False
+      product                       = getProduct
+      sum                           = getProduct
       toList (Monoid.Product x)     = [x]
 
   -- -| Monadic fold over the elements of a structure,
@@ -626,25 +618,21 @@ $(singletonsOnly [d|
   -- result to be 'True', the container must be finite; 'False', however,
   -- results from a 'False' value finitely far from the left end.
   and :: Foldable t => t Bool -> Bool
-  and x = case foldMap all_ x of
-            Monoid.All y -> y
+  and = getAll . foldMap all_
 
   -- -| 'or' returns the disjunction of a container of Bools.  For the
   -- result to be 'False', the container must be finite; 'True', however,
   -- results from a 'True' value finitely far from the left end.
   or :: Foldable t => t Bool -> Bool
-  or x = case foldMap any_ x of
-           Monoid.Any y -> y
+  or = getAny . foldMap any_
 
   -- -| Determines whether any element of the structure satisfies the predicate.
   any :: Foldable t => (a -> Bool) -> t a -> Bool
-  any p x = case foldMap (any_ . p) x of
-              Monoid.Any y -> y
+  any p = getAny . foldMap (any_ . p)
 
   -- -| Determines whether all elements of the structure satisfy the predicate.
   all :: Foldable t => (a -> Bool) -> t a -> Bool
-  all p x = case foldMap (all_ . p) x of
-              Monoid.All y -> y
+  all p = getAll . foldMap (all_ . p)
 
   -- -| The largest element of a non-empty structure with respect to the
   -- given comparison function.
@@ -676,8 +664,7 @@ $(singletonsOnly [d|
   -- the leftmost element of the structure matching the predicate, or
   -- 'Nothing' if there is no such element.
   find :: Foldable t => (a -> Bool) -> t a -> Maybe a
-  find p y = case foldMap (\ x -> First (if p x then Just x else Nothing)) y of
-               First z -> z
+  find p = getFirst . foldMap (\ x -> First (if p x then Just x else Nothing))
   |])
 
 $(singletonsOnly [d|

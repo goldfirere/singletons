@@ -39,6 +39,7 @@ import Control.Arrow (second)
 import Control.Monad
 import Control.Monad.Trans.Maybe
 import Control.Monad.Writer
+import Data.List (nub)
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Data.Maybe
@@ -263,26 +264,14 @@ promoteDecs raw_decls = do
         , pd_derived_eq_decs         = derived_eq_decs } <- partitionDecs decls
 
   defunTopLevelTypeDecls ty_syns c_tyfams o_tyfams
+  rec_sel_let_decs <- promoteDataDecs datas
     -- promoteLetDecs returns LetBinds, which we don't need at top level
-  _ <- promoteLetDecs Nothing let_decs
+  _ <- promoteLetDecs Nothing $ rec_sel_let_decs ++ let_decs
   mapM_ promoteClassDec classes
   let orig_meth_sigs = foldMap (lde_types . cd_lde) classes
       cls_tvbs_map   = Map.fromList $ map (\cd -> (cd_name cd, cd_tvbs cd)) classes
   mapM_ (promoteInstanceDec orig_meth_sigs cls_tvbs_map) insts
   mapM_ promoteDerivedEqDec   derived_eq_decs
-  promoteDataDecs datas
-
-promoteDataDecs :: [DataDecl] -> PrM ()
-promoteDataDecs data_decs = do
-  rec_selectors <- concatMapM extract_rec_selectors data_decs
-  _ <- promoteLetDecs Nothing rec_selectors
-  mapM_ promoteDataDec data_decs
-  where
-    extract_rec_selectors :: DataDecl -> PrM [DLetDec]
-    extract_rec_selectors (DataDecl data_name tvbs cons) =
-      let arg_ty = foldTypeTvbs (DConT data_name) tvbs
-      in
-      getRecordSelectors arg_ty cons
 
 -- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
 promoteLetDecs :: Maybe Uniq -- let-binding unique (if locally bound)
@@ -300,23 +289,37 @@ promoteLetDecs mb_let_uniq decls = do
   emitDecs decs
   return (binds, let_dec_env' { lde_proms = OMap.fromList binds })
 
--- Promotion of data types to kinds is automatic (see "Giving Haskell a
--- Promotion" paper for more details). Here we "plug into" the promotion
--- mechanism to add some extra stuff to the promotion:
+promoteDataDecs :: [DataDecl] -> PrM [DLetDec]
+promoteDataDecs = concatMapM promoteDataDec
+
+-- "Promotes" a data type, much like D.S.Single.Data.singDataD singles a data
+-- type. Promoting a data type is much easier than singling it, however, since
+-- DataKinds automatically promotes data types and kinds and data constructors
+-- to types. That means that promoteDataDec only has to do three things:
 --
---  * if data type derives Eq we generate a type family that implements the
---    equality test for the data type.
+-- 1. Emit defunctionalization symbols for each data constructor,
 --
---  * for each data constructor with arity greater than 0 we generate type level
---    symbols for use with Apply type family. In this way promoted data
---    constructors and promoted functions can be used in a uniform way at the
---    type level in the same way they can be used uniformly at the type level.
+-- 2. Emit promoted fixity declarations for each data constructor and promoted
+--    record selector (assuming the originals have fixity declarations), and
 --
---  * for each nullary data constructor we generate a type synonym
-promoteDataDec :: DataDecl -> PrM ()
-promoteDataDec (DataDecl _name _tvbs ctors) = do
-  ctorSyms <- buildDefunSymsDataD ctors
-  emitDecs ctorSyms
+-- 3. Assemble a top-level function that mimics the behavior of its record
+--    selectors. Note that promoteDataDec does not actually promote this record
+--    selector function—it merely returns its DLetDecs. Later, the promoteDecs
+--    function takes these DLetDecs and promotes them (using promoteLetDecs).
+--    This greatly simplifies the plumbing, since this allows all DLetDecs to
+--    be promoted in a single location.
+--    See Note [singletons and record selectors] in D.S.Single.Data.
+promoteDataDec :: DataDecl -> PrM [DLetDec]
+promoteDataDec (DataDecl data_name tvbs ctors) = do
+  let arg_ty        = foldTypeTvbs (DConT data_name) tvbs
+      rec_sel_names = nub $ concatMap extractRecSelNames ctors
+                      -- Note the use of nub: the same record selector name can
+                      -- be used in multiple constructors!
+  rec_sel_let_decs <- getRecordSelectors arg_ty ctors
+  ctorSyms         <- buildDefunSymsDataD ctors
+  infix_decs       <- promoteReifiedInfixDecls rec_sel_names
+  emitDecs $ ctorSyms ++ infix_decs
+  pure rec_sel_let_decs
 
 promoteClassDec :: UClassDecl -> PrM AClassDecl
 promoteClassDec decl@(ClassDecl { cd_name = cls_name
