@@ -861,8 +861,8 @@ sFindIndices :: forall a (t1 :: a ~> Bool) (t2 :: (List a)).
              -> Sing t2
              -> Sing (FindIndicesSym0 @@ t1 @@ t2)
 sFindIndices sP sLs =
-  let sLoop :: forall (u1 :: Nat). Sing u1
-            -> forall (u2 :: List a). Sing u2
+  let sLoop :: forall (u1 :: Nat) (u2 :: List a).
+               Sing u1 -> Sing u2
             -> Sing ((Let123LoopSym2 t1 t2) @@ u1 @@ u2)
       sLoop _ SNil = SNil
       sLoop sN (sX `SCons` sXs) = case sP @@ sX of
