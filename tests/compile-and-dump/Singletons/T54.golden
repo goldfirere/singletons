@@ -40,7 +40,7 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
       = (applySing
            (let
               sScrutinee_0123456789876543210 ::
-                Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e)
+                Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e)
               sScrutinee_0123456789876543210
                 = (applySing
                      ((applySing ((singFun2 @(:@#@$)) SCons))

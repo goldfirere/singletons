@@ -263,7 +263,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     sFoo3 (sA :: Sing a) (sB :: Sing b)
       = let
           sScrutinee_0123456789876543210 ::
-            Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym2 a b)
+            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym2 a b)
           sScrutinee_0123456789876543210
             = (applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sA)) sB
         in
@@ -274,7 +274,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     sFoo2 (sD :: Sing d) _
       = let
           sScrutinee_0123456789876543210 ::
-            Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym1 d)
+            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym1 d)
           sScrutinee_0123456789876543210
             = (applySing ((singFun1 @JustSym0) SJust)) sD
         in

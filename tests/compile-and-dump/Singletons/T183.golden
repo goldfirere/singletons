@@ -21,6 +21,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
           foo7 (x :: a) (_ :: b) = (x :: a)
           foo8 :: forall a. Maybe a -> Maybe a
           foo8 x@(Just (_ :: a) :: Maybe a) = x
+          foo8 x@(Nothing :: Maybe a) = x
           foo9 :: a -> a
           foo9 (x :: a)
             = let
@@ -51,6 +52,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
     foo7 (x :: a) (_ :: b) = x :: a
     foo8 :: forall a. Maybe a -> Maybe a
     foo8 x@(Just (_ :: a) :: Maybe a) = x
+    foo8 x@(Nothing :: Maybe a) = x
     foo9 :: a -> a
     foo9 (x :: a)
       = let
@@ -97,6 +99,9 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
         Let0123456789876543210X wild_01234567898765432100123456789876543210
     type family Let0123456789876543210X wild_0123456789876543210 where
       Let0123456789876543210X wild_0123456789876543210 = Apply JustSym0 (wild_0123456789876543210 :: a) :: Maybe a
+    type Let0123456789876543210XSym0 = Let0123456789876543210X
+    type family Let0123456789876543210X where
+      Let0123456789876543210X = NothingSym0 :: Maybe a
     data Let0123456789876543210Scrutinee_0123456789876543210Sym0 x0123456789876543210
       where
         Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference :: SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
@@ -290,6 +295,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
     type Foo8 :: forall a. Maybe a -> Maybe a
     type family Foo8 a where
       Foo8 ('Just (wild_0123456789876543210 :: a) :: Maybe a) = Let0123456789876543210XSym1 wild_0123456789876543210
+      Foo8 ('Nothing :: Maybe a) = Let0123456789876543210XSym0
     type Foo7 :: a -> b -> a
     type family Foo7 a a where
       Foo7 (x :: a) (wild_0123456789876543210 :: b) = x :: a
@@ -369,12 +375,20 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
           (,) (_ :: Sing (wild_0123456789876543210 :: a))
               (_ :: Sing ('Just (wild_0123456789876543210 :: a) :: Maybe a))
             -> let
-                 sX :: Sing (Let0123456789876543210XSym1 wild_0123456789876543210)
+                 sX ::
+                   Sing @_ (Let0123456789876543210XSym1 wild_0123456789876543210)
                  sX
                    = (applySing ((singFun1 @JustSym0) SJust))
                        (sWild_0123456789876543210 ::
                           Sing (wild_0123456789876543210 :: a)) ::
                        Sing (Apply JustSym0 (wild_0123456789876543210 :: a) :: Maybe a)
+               in sX }
+    sFoo8 SNothing
+      = case SNothing of {
+          (_ :: Sing ('Nothing :: Maybe a))
+            -> let
+                 sX :: Sing @_ Let0123456789876543210XSym0
+                 sX = SNothing :: Sing (NothingSym0 :: Maybe a)
                in sX }
     sFoo7
       (sX :: Sing x)
@@ -391,7 +405,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
           (_ :: Sing ('Just x :: Maybe (Maybe a)))
             -> let
                  sScrutinee_0123456789876543210 ::
-                   Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
+                   Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
                  sScrutinee_0123456789876543210 = sX :: Sing (x :: Maybe a)
                in
                  (id
@@ -443,7 +457,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
     sG (sX :: Sing x)
       = let
           sScrutinee_0123456789876543210 ::
-            Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
+            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
           sScrutinee_0123456789876543210
             = (applySing ((singFun1 @JustSym0) SJust)) sX
         in

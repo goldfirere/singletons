@@ -83,10 +83,10 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
         ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 :: Symbol
     instance PShow (Pair a b) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    sAList :: Sing AListSym0
-    sTuple :: Sing TupleSym0
-    sComplex :: Sing ComplexSym0
-    sPr :: Sing PrSym0
+    sAList :: Sing @_ AListSym0
+    sTuple :: Sing @_ TupleSym0
+    sComplex :: Sing @_ ComplexSym0
+    sPr :: Sing @_ PrSym0
     sAList
       = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SZero))
           ((applySing
@@ -434,26 +434,26 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       forall a b (t :: (a, b)). Sing t -> Sing (Apply Foo2Sym0 t :: a)
     sFoo1 ::
       forall a b (t :: (a, b)). Sing t -> Sing (Apply Foo1Sym0 t :: a)
-    sBlimy :: Sing BlimySym0
+    sBlimy :: Sing @_ BlimySym0
     sLsz :: Sing (LszSym0 :: Nat)
-    sX_0123456789876543210 :: Sing X_0123456789876543210Sym0
-    sTt :: Sing TtSym0
-    sTjz :: Sing TjzSym0
-    sTf :: Sing TfSym0
-    sX_0123456789876543210 :: Sing X_0123456789876543210Sym0
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
+    sTt :: Sing @_ TtSym0
+    sTjz :: Sing @_ TjzSym0
+    sTf :: Sing @_ TfSym0
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
     sFls :: Sing (FlsSym0 :: Bool)
-    sZz :: Sing ZzSym0
-    sJz :: Sing JzSym0
-    sX_0123456789876543210 :: Sing X_0123456789876543210Sym0
-    sLz :: Sing LzSym0
-    sSz :: Sing SzSym0
-    sX_0123456789876543210 :: Sing X_0123456789876543210Sym0
+    sZz :: Sing @_ ZzSym0
+    sJz :: Sing @_ JzSym0
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
+    sLz :: Sing @_ LzSym0
+    sSz :: Sing @_ SzSym0
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
     sSilly (sX :: Sing x)
       = (id @(Sing (Case_0123456789876543210 x x :: ())))
           (case sX of { _ -> STuple0 })
     sFoo2 (STuple2 (sX :: Sing x) (sY :: Sing y))
       = let
-          sT :: Sing (Let0123456789876543210TSym2 x y)
+          sT :: Sing @_ (Let0123456789876543210TSym2 x y)
           sT
             = (applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX)) sY
         in

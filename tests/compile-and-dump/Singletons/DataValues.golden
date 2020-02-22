@@ -83,10 +83,10 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
         ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 :: Symbol
     instance PShow (Pair a b) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    sAList :: Sing AListSym0
-    sTuple :: Sing TupleSym0
-    sComplex :: Sing ComplexSym0
-    sPr :: Sing PrSym0
+    sAList :: Sing @_ AListSym0
+    sTuple :: Sing @_ TupleSym0
+    sComplex :: Sing @_ ComplexSym0
+    sPr :: Sing @_ PrSym0
     sAList
       = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SZero))
           ((applySing

@@ -629,7 +629,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                    (sAttrs :: Sing attrs)))
       = let
           sScrutinee_0123456789876543210 ::
-            Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs)
+            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs)
           sScrutinee_0123456789876543210
             = (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sName))
                 sName'
