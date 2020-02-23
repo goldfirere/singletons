@@ -113,7 +113,8 @@ data Options = Options
 -- The default behaviors for 'promotedClassName', 'promotedValueNamePrefix',
 -- 'singledDataTypeName', 'singledClassName', 'singledDataConName',
 -- 'singledValueName', and 'defunctionalizedName' are described in the
--- \"On names\" section of the @singletons@ @README@.
+-- \"On names\" section of the @singletons@
+-- @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
 defaultOptions :: Options
 defaultOptions = Options
   { genQuotedDecs        = True

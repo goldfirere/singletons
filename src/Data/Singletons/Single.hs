@@ -81,8 +81,8 @@ Note that to maintain the desired invariant, we must also be careful to eta-
 contract constructors. This is the point of buildDataLets.
 -}
 
--- | Generate singleton definitions from a type that is already defined.
--- For example, the singletons package itself uses
+-- | Generate singled definitions for each of the provided type-level
+-- declaration 'Name's. For example, the singletons package itself uses
 --
 -- > $(genSingletons [''Bool, ''Maybe, ''Either, ''[]])
 --
@@ -97,16 +97,16 @@ genSingletons names = do
     ddecs <- concatMapM (singInfo <=< dsInfo <=< reifyWithLocals) names
     return $ decsToTH ddecs
 
--- | Make promoted and singleton versions of all declarations given, retaining
--- the original declarations.
--- See <https://github.com/goldfirere/singletons/blob/master/README.md> for
--- further explanation.
+-- | Make promoted and singled versions of all declarations given, retaining
+-- the original declarations. See the
+-- @<https://github.com/goldfirere/singletons/blob/master/README.md README>@
+-- for further explanation.
 singletons :: OptionsMonad q => q [Dec] -> q [Dec]
 singletons qdecs = do
   opts <- getOptions
   withOptions opts{genQuotedDecs = True} $ singletons' $ lift qdecs
 
--- | Make promoted and singleton versions of all declarations given, discarding
+-- | Make promoted and singled versions of all declarations given, discarding
 -- the original declarations. Note that a singleton based on a datatype needs
 -- the original datatype, so this will fail if it sees any datatype declarations.
 -- Classes, instances, and functions are all fine.
