@@ -175,7 +175,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     sInsert (sN :: Sing n) (SCons (sH :: Sing h) (sT :: Sing t))
       = let
           sScrutinee_0123456789876543210 ::
-            Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t)
+            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t)
           sScrutinee_0123456789876543210
             = (applySing ((applySing ((singFun2 @LeqSym0) sLeq)) sN)) sH
         in

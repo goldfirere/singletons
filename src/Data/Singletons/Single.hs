@@ -639,13 +639,112 @@ singTySig defns types bound_kvs name prom_ty = do
     mk_sing_ty :: Int -> SgM (DType, [Name])
     mk_sing_ty n = do
       arg_names <- replicateM n (qNewName "arg")
+      -- If there are no arguments, use `Sing @_` instead of `Sing`.
+      -- See Note [Disable kind generalization for local functions if possible]
+      let sing_w_wildcard | n == 0    = singFamily `DAppKindT` DWildCardT
+                          | otherwise = singFamily
       return ( ravelVanillaDType
                  (map DPlainTV arg_names)
                  []
                  (map (\nm -> singFamily `DAppT` DVarT nm) arg_names)
-                 (singFamily `DAppT`
+                 (sing_w_wildcard `DAppT`
                       (foldl apply prom_ty (map DVarT arg_names)))
              , arg_names )
+
+{-
+Note [Disable kind generalization for local functions if possible]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Consider this example (from #296):
+
+  f :: forall a. MyProxy a -> MyProxy a
+  f MyProxy =
+    let x = let z :: MyProxy a
+                z = MyProxy in z
+    in x
+
+A naïve attempt at singling `f` is as follows:
+
+  type LetZ :: MyProxy a
+  type family LetZ where
+    LetZ = 'MyProxy
+
+  type family LetX where
+    LetX = LetZ
+
+  type F :: forall a. MyProxy a -> MyProxy a
+  type family F x where
+    F 'MyProxy = LetX
+
+  sF :: forall a (t :: MyProxy a). Sing t -> Sing (F t :: MyProxy a)
+  sF SMyProxy =
+    let sX :: Sing LetX
+        sX = let sZ :: Sing (LetZ :: MyProxy a)
+                 sZ = SMyProxy in sZ
+    in sX
+
+This will not typecheck, however. The is because the return kind of
+`LetX` (in `let sX :: Sing LetX`) will get generalized by virtue of `sX`
+having a type signature. It's as if one had written this:
+
+  sF :: forall a (t :: MyProxy a). Sing t -> Sing (F t :: MyProxy a)
+  sF SMyProxy =
+    let sX :: forall a1. Sing (LetX :: MyProxy a1)
+        sX = ...
+
+This is too general, since `sX` will only typecheck if the return kind of
+`LetX` is `MyProxy a`, not `MyProxy a1`. In order to avoid this problem,
+we need to avoid kind generalization when kind-checking the type of `sX`.
+To accomplish this, we borrow a trick from
+Note [The id hack; or, how singletons learned to stop worrying and avoid kind generalization]
+and use TypeApplications plus a wildcard type. That is, we generate this code
+for `sF`:
+
+  sF :: forall a (t :: MyProxy a). Sing t -> Sing (F t :: MyProxy a)
+  sF SMyProxy =
+    let sX :: Sing @_ LetX
+        sX = ...
+
+The presence of the wildcard type disables kind generalization, which allows
+GHC's kind inference to deduce that the return kind of `LetX` should be `a`.
+Now `sF` typechecks, and since we only use wildcards within visible kind
+applications, we don't even have to force users to enable
+PartialTypeSignatures. Hooray!
+
+Question: where should we put wildcard types when singling? One possible answer
+is: put a wildcard in any type signature that gets generated when singling a
+function that lacks a type signature. Unfortunately, this is a step too far.
+This will break singling the `foldr` function:
+
+    foldr                   :: (a -> b -> b) -> b -> [a] -> b
+    foldr k z = go
+              where
+                go []     = z
+                go (y:ys) = y `k` go ys
+
+If the type of `sGo` is given a wildcard, then it will fail to typecheck. This
+is because `sGo` is polymorphically recursive, so disabling kind generalization
+forces GHC to infer `sGo`'s type. Attempting to infer a polymorphically
+recursive type, unsurprisingly, leads to failure.
+
+To avoid this sort of situation, where adopt a simple metric: if a function
+lacks a type signature, only put @_ in its singled type signature if it has
+zero arguments. This allows `sX` to typecheck without breaking things like
+`sGo`. This metric is a bit conservative, however, since it means that this
+small tweak to `x` still would not typecheck:
+
+  f :: forall a. MyProxy a -> MyProxy a
+  f MyProxy =
+    let x () = let z :: MyProxy a
+                   z = MyProxy in z
+    in x ()
+
+We need not let perfect be the enemy of good, however. It is extremely
+common for local definitions to have zero arguments, so it makes good sense
+to optimize for that special case. In fact, this special treatment is the only
+reason that `foo8` from the `T183` test case singles successfully, since
+the as-patterns in `foo8` desugar to code very similar to the `f` example
+above.
+-}
 
 singLetDecRHS :: Map Name [Name]
               -> Map Name DCxt    -- the context of the type signature

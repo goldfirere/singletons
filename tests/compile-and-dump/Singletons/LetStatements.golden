@@ -775,10 +775,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       forall (t :: Nat). Sing t -> Sing (Apply Foo1Sym0 t :: Nat)
     sFoo14 (sX :: Sing x)
       = let
-          sZ :: Sing (Let0123456789876543210ZSym1 x)
-          sY :: Sing (Let0123456789876543210YSym1 x)
+          sZ :: Sing @_ (Let0123456789876543210ZSym1 x)
+          sY :: Sing @_ (Let0123456789876543210YSym1 x)
           sX_0123456789876543210 ::
-            Sing (Let0123456789876543210X_0123456789876543210Sym1 x)
+            Sing @_ (Let0123456789876543210X_0123456789876543210Sym1 x)
           sZ
             = (id
                  @(Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x))))
@@ -925,8 +925,8 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         in sY
     sFoo2
       = let
-          sZ :: Sing Let0123456789876543210ZSym0
-          sY :: Sing Let0123456789876543210YSym0
+          sZ :: Sing @_ Let0123456789876543210ZSym0
+          sY :: Sing @_ Let0123456789876543210YSym0
           sZ = (applySing ((singFun1 @SuccSym0) SSucc)) sY
           sY = (applySing ((singFun1 @SuccSym0) SSucc)) SZero
         in sZ

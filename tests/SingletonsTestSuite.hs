@@ -105,6 +105,7 @@ tests =
     , compileAndDumpStdTest "T271"
     , compileAndDumpStdTest "T287"
     , compileAndDumpStdTest "TypeRepTYPE"
+    , compileAndDumpStdTest "T296"
     , compileAndDumpStdTest "T297"
     , compileAndDumpStdTest "T312"
     , compileAndDumpStdTest "T313"

@@ -256,14 +256,15 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       Sing t -> Sing (Apply MaybePlusSym0 t :: Maybe Nat)
     sFoo SNil
       = let
-          sP :: Sing Let0123456789876543210PSym0
+          sP :: Sing @_ Let0123456789876543210PSym0
           sP = SNil
         in sP
     sFoo
       (SCons (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
              SNil)
       = let
-          sP :: Sing (Let0123456789876543210PSym1 wild_0123456789876543210)
+          sP ::
+            Sing @_ (Let0123456789876543210PSym1 wild_0123456789876543210)
           sP
             = (applySing
                  ((applySing ((singFun2 @(:@#@$)) SCons))
@@ -276,7 +277,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
                     (sWild_0123456789876543210 :: Sing wild_0123456789876543210)))
       = let
           sP ::
-            Sing (Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
+            Sing @_ (Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
           sP
             = (applySing
                  ((applySing ((singFun2 @(:@#@$)) SCons))
@@ -291,7 +292,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
                (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
       = let
           sP ::
-            Sing (Let0123456789876543210PSym2 wild_0123456789876543210 wild_0123456789876543210)
+            Sing @_ (Let0123456789876543210PSym2 wild_0123456789876543210 wild_0123456789876543210)
           sP
             = (applySing
                  ((applySing ((singFun2 @Tuple2Sym0) STuple2))
@@ -300,7 +301,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         in sP
     sBaz_ SNothing
       = let
-          sP :: Sing Let0123456789876543210PSym0
+          sP :: Sing @_ Let0123456789876543210PSym0
           sP = SNothing
         in sP
     sBaz_
@@ -309,7 +310,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
                    (sWild_0123456789876543210 :: Sing wild_0123456789876543210)))
       = let
           sP ::
-            Sing (Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
+            Sing @_ (Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
           sP
             = (applySing ((singFun1 @JustSym0) SJust))
                 ((applySing
@@ -321,7 +322,8 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     sBar
       (SJust (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
       = let
-          sX :: Sing (Let0123456789876543210XSym1 wild_0123456789876543210)
+          sX ::
+            Sing @_ (Let0123456789876543210XSym1 wild_0123456789876543210)
           sX
             = (applySing ((singFun1 @JustSym0) SJust))
                 sWild_0123456789876543210
@@ -335,7 +337,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
              sN)
     sMaybePlus SNothing
       = let
-          sP :: Sing Let0123456789876543210PSym0
+          sP :: Sing @_ Let0123456789876543210PSym0
           sP = SNothing
         in sP
     instance SingI (FooSym0 :: (~>) [Nat] [Nat]) where

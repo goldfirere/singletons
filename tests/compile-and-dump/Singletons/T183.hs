@@ -51,7 +51,7 @@ $(singletons [d|
 
   foo8 :: forall a. Maybe a -> Maybe a
   foo8 x@(Just (_ :: a) :: Maybe a) = x
-  -- foo8 x@(Nothing :: Maybe a)       = x -- #296
+  foo8 x@(Nothing :: Maybe a)       = x
 
   -----
   -- Type variable scoping (vis-à-vis #297)

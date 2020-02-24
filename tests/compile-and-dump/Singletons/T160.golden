@@ -42,7 +42,7 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
     sFoo (sX :: Sing x)
       = let
           sScrutinee_0123456789876543210 ::
-            Sing (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
+            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
           sScrutinee_0123456789876543210
             = (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sX))
                 (sFromInteger (sing :: Sing 0))
