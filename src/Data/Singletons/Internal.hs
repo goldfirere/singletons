@@ -436,37 +436,49 @@ singFun1 :: forall f. SingFunction1 f -> Sing f
 singFun1 f = SLambda f
 
 type SingFunction2 :: (a1 ~> a2 ~> b) -> Type
-type SingFunction2 f = forall t. Sing t -> SingFunction1 (f @@ t)
+type SingFunction2 f = forall t1 t2. Sing t1 -> Sing t2 -> Sing (f @@ t1 @@ t2)
 singFun2 :: forall f. SingFunction2 f -> Sing f
 singFun2 f = SLambda (\x -> singFun1 (f x))
 
 type SingFunction3 :: (a1 ~> a2 ~> a3 ~> b) -> Type
-type SingFunction3 f = forall t. Sing t -> SingFunction2 (f @@ t)
+type SingFunction3 f = forall t1 t2 t3.
+                       Sing t1 -> Sing t2 -> Sing t3
+                    -> Sing (f @@ t1 @@ t2 @@ t3)
 singFun3 :: forall f. SingFunction3 f -> Sing f
 singFun3 f = SLambda (\x -> singFun2 (f x))
 
 type SingFunction4 :: (a1 ~> a2 ~> a3 ~> a4 ~> b) -> Type
-type SingFunction4 f = forall t. Sing t -> SingFunction3 (f @@ t)
+type SingFunction4 f = forall t1 t2 t3 t4.
+                       Sing t1 -> Sing t2 -> Sing t3 -> Sing t4
+                    -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4)
 singFun4 :: forall f. SingFunction4 f -> Sing f
 singFun4 f = SLambda (\x -> singFun3 (f x))
 
 type SingFunction5 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> b) -> Type
-type SingFunction5 f = forall t. Sing t -> SingFunction4 (f @@ t)
+type SingFunction5 f = forall t1 t2 t3 t4 t5.
+                       Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5
+                    -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5)
 singFun5 :: forall f. SingFunction5 f -> Sing f
 singFun5 f = SLambda (\x -> singFun4 (f x))
 
 type SingFunction6 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> b) -> Type
-type SingFunction6 f = forall t. Sing t -> SingFunction5 (f @@ t)
+type SingFunction6 f = forall t1 t2 t3 t4 t5 t6.
+                       Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6
+                    -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5 @@ t6)
 singFun6 :: forall f. SingFunction6 f -> Sing f
 singFun6 f = SLambda (\x -> singFun5 (f x))
 
 type SingFunction7 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> b) -> Type
-type SingFunction7 f = forall t. Sing t -> SingFunction6 (f @@ t)
+type SingFunction7 f = forall t1 t2 t3 t4 t5 t6 t7.
+                       Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6 -> Sing t7
+                    -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5 @@ t6 @@ t7)
 singFun7 :: forall f. SingFunction7 f -> Sing f
 singFun7 f = SLambda (\x -> singFun6 (f x))
 
 type SingFunction8 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> a8 ~> b) -> Type
-type SingFunction8 f = forall t. Sing t -> SingFunction7 (f @@ t)
+type SingFunction8 f = forall t1 t2 t3 t4 t5 t6 t7 t8.
+                       Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6 -> Sing t7 -> Sing t8
+                    -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5 @@ t6 @@ t7 @@ t8)
 singFun8 :: forall f. SingFunction8 f -> Sing f
 singFun8 f = SLambda (\x -> singFun7 (f x))
 
