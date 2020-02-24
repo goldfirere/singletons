@@ -65,8 +65,8 @@ more details on this point). Therefore, we set genQuotedDecs to False to avoid
 this problem.
 -}
 
--- | Generate promoted definitions from a type that is already defined.
--- This is generally only useful with classes.
+-- | Generate promoted definitions for each of the provided type-level
+-- declaration 'Name's. This is generally only useful with classes.
 genPromotions :: OptionsMonad q => [Name] -> q [Dec]
 genPromotions names = do
   opts <- getOptions
@@ -79,6 +79,9 @@ genPromotions names = do
     return $ decsToTH ddecs
 
 -- | Promote every declaration given to the type level, retaining the originals.
+-- See the
+-- @<https://github.com/goldfirere/singletons/blob/master/README.md README>@
+-- for further explanation.
 promote :: OptionsMonad q => q [Dec] -> q [Dec]
 promote qdecs = do
   opts <- getOptions
@@ -104,37 +107,11 @@ promote' qdecs = do
                | otherwise          = []
   return $ origDecs ++ decsToTH promDecs
 
--- | Generate defunctionalization symbols for existing type families.
---
--- 'genDefunSymbols' has reasonable support for type families that use
--- dependent quantification. For instance, this:
---
--- @
--- type family MyProxy k (a :: k) :: Type where
---   MyProxy k (a :: k) = Proxy a
---
--- $('genDefunSymbols' [''MyProxy])
--- @
---
--- Will generate the following defunctionalization symbols:
---
--- @
--- data MyProxySym0     :: Type  ~> k ~> Type
--- data MyProxySym1 (k  :: Type) :: k ~> Type
--- @
---
--- Note that @MyProxySym0@ is a bit more general than it ought to be, since
--- there is no dependency between the first kind (@Type@) and the second kind
--- (@k@). But this would require the ability to write something like:
---
--- @
--- data MyProxySym0 :: forall (k :: Type) ~> k ~> Type
--- @
---
--- Which currently isn't possible. So for the time being, the kind of
--- @MyProxySym0@ will be slightly more general, which means that under rare
--- circumstances, you may have to provide extra type signatures if you write
--- code which exploits the dependency in @MyProxy@'s kind.
+-- | Generate defunctionalization symbols for each of the provided type-level
+-- declaration 'Name's. See the "Promotion and partial application" section of
+-- the @singletons@
+-- @<https://github.com/goldfirere/singletons/blob/master/README.md README>@
+-- for further explanation.
 genDefunSymbols :: OptionsMonad q => [Name] -> q [Dec]
 genDefunSymbols names = do
   checkForRep names

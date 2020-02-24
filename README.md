@@ -4,11 +4,12 @@ singletons 2.7
 [![Hackage](https://img.shields.io/hackage/v/singletons.svg)](http://hackage.haskell.org/package/singletons)
 [![Build Status](https://travis-ci.org/goldfirere/singletons.svg?branch=master)](https://travis-ci.org/goldfirere/singletons)
 
-This is the README file for the singletons library. This file contains all the
+This is the README file for the `singletons` library. This file contains all the
 documentation for the definitions and functions in the library.
 
-The singletons library was written by Richard Eisenberg, <rae@cs.brynmawr.edu>, and
-with significant contributions by Jan Stolarek, <jan.stolarek@p.lodz.pl>.  There
+The `singletons` library was written by Richard Eisenberg (<rae@cs.brynmawr.edu>) and
+with significant contributions by Jan Stolarek (<jan.stolarek@p.lodz.pl>) and
+Ryan Scott (<ryan.gl.scott@gmail.com>). There
 are two papers that describe the library. Original one, _Dependently typed
 programming with singletons_, is available
 [here](https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf) and will
@@ -18,18 +19,19 @@ paper, _Promoting Functions to Type Families in Haskell_, is available
 and will be referenced in this documentation as the
 "promotion paper".
 
-Ryan Scott, <ryan.gl.scott@gmail.com>, is an active maintainer.
+Ryan Scott (<ryan.gl.scott@gmail.com>) is the active maintainer.
 
-Purpose of the singletons library
----------------------------------
+Purpose of the `singletons` library
+-----------------------------------
 
 The library contains a definition of _singleton types_, which allow programmers
 to use dependently typed techniques to enforce rich constraints among the types
 in their programs. See the singletons paper for a more thorough introduction.
 
 The package also allows _promotion_ of term-level functions to type-level
-equivalents. Accordingly, it exports a Prelude of promoted and singletonized
-functions, mirroring functions and datatypes found in Prelude, `Data.Bool`,
+equivalents and _singling_ functions to dependently typed equivalents.
+Accordingly, it exports a Prelude of promoted and singled
+functions, mirroring functions and datatypes found in the `Prelude`, `Data.Bool`,
 `Data.Maybe`, `Data.Either`, `Data.Tuple` and `Data.List`. See the promotion
 paper for a more thorough introduction.
 
@@ -40,7 +42,7 @@ knowledge of dependent types.
 Compatibility
 -------------
 
-The singletons library requires GHC 8.10.1 or greater. Any code that uses the
+The `singletons` library requires GHC 8.10.1 or greater. Any code that uses the
 singleton generation primitives needs to enable a long list of GHC
 extensions. This list includes, but is not necessarily limited to, the
 following:
@@ -70,12 +72,15 @@ In particular, `NoStarIsType` is needed to use the `*` type family from the
 `PNum` class because with `StarIsType` enabled, GHC thinks `*` is a synonym
 for `Type`.
 
-You may also want
+You may also want to consider toggling various warning flags:
 
-* `-Wno-redundant-constraints`
-
-as the code that `singletons` generates uses redundant constraints, and there
-seems to be no way, without a large library redesign, to avoid this.
+* `-Wno-redundant-constraints`.
+  The code that `singletons` generates uses redundant constraints, and there
+  seems to be no way, without a large library redesign, to avoid this.
+* `-fenable-th-splice-warnings`.
+  By default, GHC does not run pattern-match coverage checker warnings on code
+  inside of Template Haskell quotes. This is an extremely common thing to do
+  in `singletons`, so you may consider opting in to these warnings.
 
 Modules for singleton types
 ---------------------------
@@ -88,52 +93,36 @@ own singletons.
 Haskell code to generate new singletons.
 
 `Data.Singletons.Prelude` re-exports `Data.Singletons` along with singleton
-definitions for various Prelude types. This module provides a singletonized
-equivalent of the real `Prelude`. Note that not all functions from original
-`Prelude` could be turned into singletons.
+definitions for various `Prelude` types. This module provides promoted and
+singled equivalents of functions from the real `Prelude`.
+Note that not all functions from original `Prelude` could be promoted or
+singled.
 
-`Data.Singletons.Prelude.*` modules provide singletonized equivalents of
-definitions found in the following `base` library modules: `Data.Bool`,
-`Data.Maybe`, `Data.Either`, `Data.List`, `Data.Tuple`, `Data.Void` and
-`GHC.Base`. We also provide singletonized `Eq`, `Ord`, `Show`, `Enum`, and
-`Bounded` typeclasses.
+`Data.Singletons.Prelude.*` modules provide promoted and singled equivalents of
+definitions found in several commonly used `base` library modules, including
+(but not limited to) `Data.Bool`, `Data.Maybe`, `Data.Either`, `Data.List`,
+`Data.Tuple`, `Data.Void` and `GHC.Base`. We also provide promoted and singled
+versions of common type classes, including (but not limited to) `Eq`, `Ord`,
+`Show`, `Enum`, and `Bounded`.
 
 `Data.Singletons.Decide` exports type classes for propositional equality.
 
 `Data.Singletons.TypeLits` exports definitions for working with `GHC.TypeLits`.
 
-Modules for function promotion
-------------------------------
-
-Modules in `Data.Promotion` namespace provide functionality required for
-function promotion. They mostly re-export a subset of definitions from
-respective `Data.Singletons` modules.
-
-`Data.Promotion.TH` exports all the definitions needed to use the Template
-Haskell code to generate promoted definitions.
-
-`Data.Promotion.Prelude` and `Data.Promotion.Prelude.*` modules re-export all
-promoted definitions from respective `Data.Singletons.Prelude`
-modules. `Data.Promotion.Prelude.List` adds a significant amount of functions
-that couldn't be singletonized but can be promoted. Some functions still don't
-promote - these are documented in the source code of the module. There is also
-`Data.Promotion.Prelude.Bounded` module that provides promoted `PBounded`
-typeclass.
-
 Functions to generate singletons
 --------------------------------
 
-The top-level functions used to generate singletons are documented in the
-`Data.Singletons.TH` module. The most common case is just calling `singletons`,
-which I'll describe here:
+The top-level functions used to generate promoted or singled definitions are
+documented in the `Data.Singletons.TH` module. The most common case is just
+calling `singletons`, which I'll describe here:
 
 ```haskell
 singletons :: Q [Dec] -> Q [Dec]
 ```
 
-Generates singletons from the definitions given. Because singleton generation
-requires promotion, this also promotes all of the definitions given to the
-type level.
+This function generates singletons from the definitions given. Because
+singleton generation requires promotion, this also promotes all of the
+definitions given to the type level.
 
 Usage example:
 
@@ -214,13 +203,13 @@ Equality classes
 There are two different notions of equality applicable to singletons: Boolean
 equality and propositional equality.
 
-* Boolean equality is implemented in the type family `(:==)` (which is actually
-a synonym for the type family `(==)` from `Data.Type.Equality`) and the class
-`SEq`. See the `Data.Singletons.Prelude.Eq` module for more information.
+* Boolean equality is implemented in the type family `(==)` (in the `PEq`
+  class) and the `(%==`) method (in the `SEq` class).
+  See the `Data.Singletons.Prelude.Eq` module for more information.
 
 * Propositional equality is implemented through the constraint `(~)`, the type
-`(:~:)`, and the class `SDecide`. See modules `Data.Type.Equality` and
-`Data.Singletons.Decide` for more information.
+  `(:~:)`, and the class `SDecide`. See modules `Data.Type.Equality` and
+  `Data.Singletons.Decide` for more information.
 
 Which one do you need? That depends on your application. Boolean equality has
 the advantage that your program can take action when two types do _not_ equal,
@@ -293,8 +282,8 @@ The `singletons` library provides two different ways to handle errors:
 Pre-defined singletons
 ----------------------
 
-The singletons library defines a number of singleton types and functions
-by default:
+The `singletons` library defines a number of singleton types and functions
+by default. These include (but are not limited to):
 
 * `Bool`
 * `Maybe`
@@ -312,10 +301,10 @@ Promoting functions
 -------------------
 
 Function promotion allows to generate type-level equivalents of term-level
-definitions. Almost all Haskell source constructs are supported -- see last
-section of this README for a full list.
+definitions. Almost all Haskell source constructs are supported -- see the
+"Supported Haskell constructs" section of this README for a full list.
 
-Promoted definitions are usually generated by calling `promote` function:
+Promoted definitions are usually generated by calling the `promote` function:
 
 ```haskell
 $(promote [d|
@@ -327,29 +316,177 @@ $(promote [d|
 ```
 
 Every promoted function and data constructor definition comes with a set of
-so-called "symbols". These are required to represent partial application at the
-type level. Each function gets N+1 symbols, where N is the arity. Symbols
-represent application of between 0 to N arguments. When calling any of the
-promoted definitions it is important refer to it using their symbol
-name. Moreover, there is new function application at the type level represented
-by `Apply` type family. Symbol representing arity X can have X arguments passed
-in using normal function application. All other parameters must be passed by
-calling `Apply`.
+so-called _defunctionalization symbols_. These are required to represent
+partial application at the type level. For more information, refer to the
+"Promotion and partial application" section below.
 
-Users also have access to `Data.Promotion.Prelude` and its submodules (`Base`,
-`Bool`, `Either`, `List`, `Maybe` and `Tuple`). These provide promoted versions
-of function found in GHC's base library.
+Users also have access to `Data.Singletons.Prelude` and its submodules (e.g.,
+`Base`, `Bool`, `Either`, `List`, `Maybe` and `Tuple`). These provide promoted
+versions of function found in GHC's `base` library.
 
 Note that GHC resolves variable names in Template Haskell quotes. You cannot
 then use an undefined identifier in a quote, making idioms like this not
 work:
+
 ```haskell
 type family Foo a where ...
 $(promote [d| ... foo x ... |])
 ```
+
 In this example, `foo` would be out of scope.
 
 Refer to the promotion paper for more details on function promotion.
+
+Promotion and partial application
+---------------------------------
+
+Promoting higher-order functions proves to be surprisingly tricky. Consider
+this example:
+
+```hs
+$(promote [d|
+  map :: (a -> b) -> [a] -> [b]
+  map _ []     = []
+  map f (x:xs) = f x : map f xs
+  |])
+```
+
+A naïve attempt to promote `map` would be:
+
+```hs
+type Map :: (a -> b) -> [a] -> [b]
+type family Map f xs where
+  Map _ '[]    = '[]
+  Map f (x:xs) = f x : Map f xs
+```
+
+While this compiles, it is much less useful than we would like. In particular,
+common idioms like `Map Id xs` will not typecheck, since GHC requires that all
+invocations of type families be fully saturated. That is, the use of `Id` in
+`Map Id xs` is rejected since it is not applied to one argument, which the
+number of arguments that `Id` was defined with. For more information on this
+point, refer to the promotion paper.
+
+Not having the ability to partially apply functions at the type level is rather
+painful, so we do the next best thing: we _defunctionalize_ all promoted
+functions so that we can emulate partial application. For example, if one were
+to promote the `id` function:
+
+```hs
+$(promote [d|
+  id :: a -> a
+  id x = x
+  |]
+```
+
+Then in addition to generating the promoted `Id` type family, two
+defunctionalization symbols will be generated:
+
+```hs
+type IdSym0 :: a ~> a
+type IdSym0 x = x
+
+type IdSym1 (x :: a) = Id a
+```
+
+In general, a function that accepts N arguments generates N+1 defunctionalization
+symbols when promoted.
+
+`IdSym1` is a _fully saturated_ defunctionalization symbol and is usually only
+needed when generating code through the Template Haskell machinery. `IdSym0`
+is more interesting: it has the kind `a ~> a`, which has a special arrow type
+`(~>)`. Defunctionalization symbols using the `(~>)` kind are type-level
+constants that can be "applied" using a special `Apply` type family:
+
+```hs
+type Apply :: (a ~> b) -> a -> b
+type family Apply f x
+```
+
+Every defunctionalization symbol comes with a corresponding `Apply` instance
+(except for fully saturated defunctionalization symbols). For instance, here
+is the `Apply` instance for `IdSym0`:
+
+```hs
+type instance Apply IdSym0 x = IdSym1 x
+```
+
+The `(~>)` kind is used when promoting higher-order functions so that partially
+applied arguments can be passed to them. For instance, here is our final attempt
+at promoting `map`:
+
+```hs
+type Map :: (a ~> b) -> [a] -> [b]
+type family Map f xs where
+  Map _ '[]    = '[]
+  Map f (x:xs) = Apply f x : Map f xs
+```
+
+Now `map id xs` can be promoted to `Map IdSym0 xs`, which typechecks without issue.
+
+## Defunctionalizing existing type families
+
+The most common way to defunctionalize functions is by promoting them with the
+Template Haskell machinery. One can also defunctionalize existing type families,
+however, by using `genDefunSymbols`. For example:
+
+```hs
+type MyTypeFamily :: Nat -> Bool
+type family MyTypeFamily n
+
+$(genDefunSymbols [''MyTypeFamily])
+```
+
+This can be especially useful if `MyTypeFamily` needs to be implemented by
+hand. Be aware of the following design limitations of `genDefunSymbols`:
+
+* `genDefunSymbols` only works for type-level declarations. Namely, it only
+  works when given the names of type classes, type families, type synonyms,
+  or data types. Attempting to pass the name of a term level function,
+  class method, data constructor, or record selector will throw an error.
+* Passing the name of a data type to `genDefunSymbols` will cause its
+  data constructors to be defunctionalized but _not_ its record selectors.
+* Passing the name of a type class to `genDefunSymbols` will cause the
+  class itself to be defunctionalized, but /not/ its associated type families
+  or methods.
+
+Note that the limitations above reflect the current design of
+`genDefunSymbols`. As a result, they are subject to change in the future.
+
+## Defunctionalization and visible dependent quantification
+
+Unlike most other parts of `singletons`, which disallow visible dependent
+quantification (VDQ), `genDefunSymbols` has limited support for VDQ.
+Consider this example:
+
+```hs
+type MyProxy :: forall (k :: Type) -> k -> Type
+type family MyProxy k (a :: k) :: Type where
+  MyProxy k (a :: k) = Proxy a
+
+$(genDefunSymbols [''MyProxy])
+```
+
+This will generate the following defunctionalization symbols:
+
+```hs
+type MyProxySym0 ::              Type  ~> k ~> Type
+type MyProxySym1 :: forall (k :: Type) -> k ~> Type
+type MyProxySym2 k (a :: k) = MyProxy k a
+```
+
+Note that `MyProxySym0` is a bit more general than it ought to be, since
+there is no dependency between the first kind (`Type`) and the second kind
+(`k`). But this would require the ability to write something like this:
+
+```hs
+type MyProxySym0 :: forall (k :: Type) ~> k ~> Type
+```
+
+This currently isn't possible. So for the time being, the kind of
+`MyProxySym0` will be slightly more general, which means that under rare
+circumstances, you may have to provide extra type signatures if you write
+code which exploits the dependency in `MyProxy`'s kind.
 
 Classes and instances
 ---------------------
@@ -371,8 +508,8 @@ This class gets promoted to a "kind class" thus:
 ```haskell
 class PEq a => POrd a where
   type Compare (x :: a) (y :: a) :: Ordering
-  type (:<)    (x :: a) (y :: a) :: Bool
-  type x :< y = ... -- promoting `case` is yucky.
+  type (<)     (x :: a) (y :: a) :: Bool
+  type x < y = ... -- promoting `case` is yucky.
 ```
 
 Note that default method definitions become default associated type family
@@ -383,15 +520,15 @@ We also get this singleton class:
 ```haskell
 class SEq a => SOrd a where
   sCompare :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Compare x y)
-  (%:<)    :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x :< y)
+  (%<)     :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (x < y)
 
-  default (%:<) :: forall (x :: a) (y :: a).
-                   ((x :< y) ~ {- RHS from (:<) above -})
-		=> Sing x -> Sing y -> Sing (x :< y)
-  x %:< y = ...  -- this is a bit yucky too
+  default (%<) :: forall (x :: a) (y :: a).
+                  ((x < y) ~ {- RHS from (<) above -})
+		=> Sing x -> Sing y -> Sing (x < y)
+  x %< y = ...  -- this is a bit yucky too
 ```
 
-Note that a singletonized class needs to use `default` signatures, because
+Note that a singled class needs to use `default` signatures, because
 type-checking the default body requires that the default associated type
 family instance was used in the promoted class. The extra equality constraint
 on the default signature asserts this fact to the type checker.
@@ -427,7 +564,7 @@ The defaults all just work.
 On names
 --------
 
-The singletons library has to produce new names for the new constructs it
+The `singletons` library has to produce new names for the new constructs it
 generates. Here are some examples showing how this is done:
 
 1. original datatype: `Nat`
@@ -573,6 +710,8 @@ $(let myPrefix :: Name -> Name
 Supported Haskell constructs
 ----------------------------
 
+## Full support
+
 The following constructs are fully supported:
 
 * variables
@@ -587,8 +726,6 @@ The following constructs are fully supported:
 * sections
 * undefined
 * error
-* deriving `Eq`, `Ord`, `Show`, `Bounded`, `Enum`, `Functor`, `Foldable`, and
-  `Traversable`, as well as the `stock` and `anyclass` deriving strategies
 * class constraints (though these sometimes fail with `let`, `lambda`, and `case`)
 * literals (for `Nat` and `Symbol`), including overloaded number literals
 * unboxed tuples (which are treated as normal tuples)
@@ -598,30 +735,52 @@ The following constructs are fully supported:
 * lambda expressions
 * `!` and `~` patterns (silently but successfully ignored during promotion)
 * class and instance declarations
-* scoped type variables
-* signatures (e.g., `(x :: Maybe a)`) in expressions and patterns
+* signatures (e.g., `(x :: Maybe a)`) in expressions
 * `InstanceSigs`
-* higher-kinded type variables (see below)
-* finite arithmetic sequences (see below)
-* records (with limitations -- see below)
-* functional dependencies (with limitations -- see below)
-* type families (with limitations -- see below)
+
+## Partial support
+
+The following constructs are partially supported:
+
+* `deriving`
+* finite arithmetic sequences
+* records
+* signatures (e.g., `(x :: Maybe a)`) in patterns
+* functional dependencies
+* type families
+
+See the following sections for more details.
+
+### `deriving`
 
 `singletons` is slightly more conservative with respect to `deriving` than GHC is.
-The stock classes listed above (`Eq`, `Ord`, `Show`, `Bounded`, `Enum`, `Functor`,
-`Foldable`, and `Traversable`) are the only ones that `singletons` will derive
-without an explicit deriving strategy. To do anything more exotic, one must
-explicitly indicate one's intentions by using the `DerivingStrategies` extension.
+The only classes that `singletons` can derive without an explicit deriving
+strategy are the following stock classes:
 
-`singletons` fully supports the `anyclass` strategy as well as the `stock` strategy
-(at least, for the classes listed above). `singletons` does not support the
-`newtype` strategy, as there is not an equivalent of `coerce` at the type level.
+* `Eq`
+* `Ord`
+* `Show`
+* `Bounded`
+* `Enum`
+* `Functor`
+* `Foldable`
+* `Traversable`
+
+To do anything more exotic, one must explicitly indicate one's intentions by
+using the `DerivingStrategies` extension. `singletons` fully supports the
+`anyclass` strategy as well as the `stock` strategy (at least, for the classes
+listed above). `singletons` does not support the `newtype` or `via` strategies,
+as there is no equivalent of `coerce` at the type level.
+
+### Finite arithmetic sequences
 
 `singletons` has partial support for arithmetic sequences (which desugar to
 methods from the `Enum` class under the hood). _Finite_ sequences (e.g.,
 [0..42]) are fully supported. However, _infinite_ sequences (e.g., [0..]),
 which desugar to calls to `enumFromTo` or `enumFromThenTo`, are not supported,
 as these would require using infinite lists at the type level.
+
+### Records
 
 Record selectors are promoted to top-level functions, as there is no record
 syntax at the type level. Record selectors are also singled to top-level
@@ -633,68 +792,204 @@ since `singletons` desugars away most uses of record syntax. On the other hand,
 it is not possible to write out code like
 `SIdentity { sRunIdentity = SIdentity STrue }` by hand.
 
+### Signatures in patterns
+
+`singletons` can promote basic pattern signatures, such as in the following
+examples:
+
+```hs
+f :: forall a. a -> a
+f (x :: a) = (x :: a)
+
+g :: forall a. a -> a
+g (x :: b) = (x :: b) -- b is the same as a
+```
+
+What does /not/ work are more advanced uses of pattern signatures that take
+advantage of the fact that type variables in pattern signatures can alias other
+types. Here are some examples of functions that one cannot promote:
+
+* ```hs
+  h :: a -> a -> a
+  h (x :: a) (_ :: b) = x
+  ```
+
+  This typechecks by virtue of the fact that `b` aliases `a`. However, the same
+  trick does not work when `h` is promoted to a type family, as a type family
+  would consider `a` and `b` to be distinct type variables.
+* ```hs
+  i :: Bool -> Bool
+  i (x :: a) = x
+  ```
+
+  This typechecks by virtue of the fact that `a` aliases `Bool`. Again, this
+  would not work at the type level, as a type family would consider `a` to be
+  a separate type from `Bool`.
+
+### Functional dependencies
+
+Inference dependent on functional dependencies is unpredictably bad. The
+problem is that a use of an associated type family tied to a class with
+fundeps doesn't provoke the fundep to kick in. This is GHC's problem, in
+the end.
+
+### Type families
+
+Promoting functions with types that contain type families is likely to fail due to
+[GHC#12564](https://gitlab.haskell.org/ghc/ghc/issues/12564).
+Note that promoting type family _declarations_ is fine
+(and often desired, since that produces defunctionalization symbols for them).
+
+## Support for promotion, but not singling
+
 The following constructs are supported for promotion but not singleton generation:
 
-* datatypes with constructors which have contexts. For example, the following
-  datatype does not singletonize:
-
-    ```haskell
-    data T a where
-      MkT :: Show a => a -> T a
-    ```
-
-  Constructors like these do not interact well with the current design of the
-  `SingKind` class. But see
-  [this bug report](https://github.com/goldfirere/singletons/issues/150), which
-  proposes a redesign for `SingKind` (in a future version of GHC with certain
-  bugfixes) which could permit constructors with equality constraints.
-
-* overlapping patterns. Note that overlapping patterns are
-  sometimes not obvious. For example, the `filter` function does not
-  singletonize due
-  to overlapping patterns:
-
-    ```haskell
-    filter :: (a -> Bool) -> [a] -> [a]
-    filter _pred []    = []
-    filter pred (x:xs)
-      | pred x         = x : filter pred xs
-      | otherwise      = filter pred xs
-    ```
-  Overlap is caused by `otherwise` catch-all guard, which is always true and thus
-overlaps with `pred x` guard.
-
-  Another non-obvious source of overlapping patterns comes from partial pattern
-  matches in `do`-notation. For example:
-
-    ```haskell
-    f :: [()]
-    f = do
-      Just () <- [Nothing]
-      return ()
-    ```
-
-  This has overlap because the partial pattern match desugars to the following:
-
-    ```haskell
-    f :: [()]
-    f = case [Nothing] of
-          Just () -> return ()
-          _ -> fail "Partial pattern match in do notation"
-    ```
-
-  Here, it is more evident that the catch-all pattern `_` overlaps with the
-  one above it.
-
-The following constructs are not supported:
-
-* datatypes that store arrows, `Nat`, or `Symbol`
-* literals (limited support)
-* rank-n types
+* data constructors with contexts
+* overlapping patterns
+* `GADTs`
+* instances of poly-kinded type classes
 
 See the following sections for more details.
 
-## Arrows, `Nat`, `Symbol`, and literals
+### Data constructors with contexts
+
+For example, the following datatype does not single:
+
+```haskell
+data T a where
+  MkT :: Show a => a -> T a
+```
+
+Constructors like these do not interact well with the current design of the
+`SingKind` class. But see
+[this bug report](https://github.com/goldfirere/singletons/issues/150), which
+proposes a redesign for `SingKind` (in a future version of GHC with certain
+bugfixes) which could permit constructors with equality constraints.
+
+### Overlapping patterns
+
+Note that overlapping patterns are sometimes not obvious. For example, the
+`filter` function does not single due to overlapping patterns:
+
+```haskell
+filter :: (a -> Bool) -> [a] -> [a]
+filter _pred []    = []
+filter pred (x:xs)
+  | pred x         = x : filter pred xs
+  | otherwise      = filter pred xs
+```
+
+Overlap is caused by `otherwise` catch-all guard, which is always true and thus
+overlaps with `pred x` guard.
+
+Another non-obvious source of overlapping patterns comes from partial pattern
+matches in `do`-notation. For example:
+
+```haskell
+f :: [()]
+f = do
+  Just () <- [Nothing]
+  return ()
+```
+
+This has overlap because the partial pattern match desugars to the following:
+
+```haskell
+f :: [()]
+f = case [Nothing] of
+      Just () -> return ()
+      _ -> fail "Partial pattern match in do notation"
+```
+
+Here, it is more evident that the catch-all pattern `_` overlaps with the
+one above it.
+
+### `GADTs`
+
+Singling GADTs is likely to fail due to the generated `SingKind` instances
+not typechecking. (See
+[#150](https://github.com/goldfirere/singletons/issues/150)).
+However, one can often work around the issue by suppressing the generation
+of `SingKind` instances by using custom `Options`. See the `T150` test case
+for an example.
+
+### Instances of poly-kinded type classes
+
+Singling instances of poly-kinded type classes is likely to fail due to
+[#358](https://github.com/goldfirere/singletons/issues/358).
+However, one can often work around the issue by using `InstanceSigs`. For
+instance, the following code will not single:
+
+```haskell
+class C (f :: k -> Type) where
+  method :: f a
+
+instance C [] where
+  method = []
+```
+
+Adding a type signature for `method` in the `C []` is sufficient
+to work around the issue, though:
+
+```haskell
+instance C [] where
+  method :: [a]
+  method = []
+```
+
+## Little to no support
+
+The following constructs are either unsupported or almost never work:
+
+* scoped type variables
+* datatypes that store arrows, `Nat`, or `Symbol`
+* rank-n types
+* promoting `TypeRep`s
+* `TypeApplications`
+
+See the following sections for more details.
+
+### Scoped type variables
+
+Promoting functions that rely on the behavior of `ScopedTypeVariables` is very
+tricky—see
+[this GitHub issue](https://github.com/goldfirere/singletons/issues/433) for an
+extended discussion on the topic. This is not to say that promoting functions
+that rely on `ScopedTypeVariables` is guaranteed to fail, but it is rather
+fragile. To demonstrate how fragile this is, note that the following function
+will promote successfully:
+
+```hs
+f :: forall a. a -> a
+f x = id x :: a
+```
+
+But this one will not:
+
+```hs
+g :: forall a. a -> a
+g x = id (x :: a)
+```
+
+There are usually workarounds one can use instead of `ScopedTypeVariables`:
+
+1. Use pattern signatures:
+
+   ```hs
+   g :: forall a. a -> a
+   g (x :: a) = id (x :: a)
+   ```
+2. Use local definitions:
+
+   ```hs
+   g :: forall a. a -> a
+   g x = id' a
+     where
+       id' :: a -> a
+       id' x = x
+   ```
+
+### Arrows, `Nat`, `Symbol`, and literals
 
 As described in the promotion paper, promotion of datatypes that store arrows is
 currently impossible. So if you have a declaration such as
@@ -707,32 +1002,31 @@ you will quickly run into errors.
 
 Literals are problematic because we rely on GHC's built-in support, which
 currently is limited. Functions that operate on strings will not work because
-type level strings are no longer considered lists of characters. Function
-working on integer literals can be promoted by rewriting them to use
-`Nat`. Since `Nat` does not exist at the term level it will only be possible to
+type level strings are no longer considered lists of characters. Functions
+working over integer literals can be promoted by rewriting them to use
+`Nat`. Since `Nat` does not exist at the term level, it will only be possible to
 use the promoted definition, but not the original, term-level one.
 
 This is the same line of reasoning that forbids the use of `Nat` or `Symbol`
 in datatype definitions. But, see [this bug
 report](https://github.com/goldfirere/singletons/issues/76) for a workaround.
 
-## Rank-n types
+### Rank-n types
 
 `singletons` does not support type signatures that have higher-rank types.
 More precisely, the only types that can be promoted or singled are
 _vanilla_ types,  where a vanilla function type is a type that:
 
-1. Only uses a @forall@ at the top level, if used at all. That is to say, it
-   does not contain any nested or higher-rank @forall@s.
+1. Only uses a `forall` at the top level, if used at all. That is to say, it
+   does not contain any nested or higher-rank `forall`s.
 
-2. Only uses a context (e.g., @c => ...@) at the top level, if used at all,
-   and only after the top-level @forall@ if one is present. That is to say,
+2. Only uses a context (e.g., `c => ...`) at the top level, if used at all,
+   and only after the top-level `forall` if one is present. That is to say,
    it does not contain any nested or higher-rank contexts.
 
 3. Contains no visible dependent quantification.
 
-Support for `*`
----------------
+### Promoting `TypeRep`s
 
 The built-in Haskell promotion mechanism does not yet have a full story around
 the kind `*` (the kind of types that have values). Ideally, promoting some form
@@ -756,8 +1050,7 @@ mechanism will not promote `TypeRep` to `*`.
 of types with which to work. See the Haddock documentation for the function
 `singletonStar` for more info.
 
-Support for `TypeApplications`
-------------------------------
+### `TypeApplications`
 
 `singletons` currently cannot handle promoting or singling code that uses
 `TypeApplications` syntax, so `singletons` will simply drop any visible type
@@ -870,41 +1163,3 @@ for the following constructs:
   type MSym0 :: forall a b. a ~> b ~> a
   type MSym1 :: forall a b. a -> b ~> a
   ```
-
-Known bugs
-----------
-
-* Inference dependent on functional dependencies is unpredictably bad. The
-  problem is that a use of an associated type family tied to a class with
-  fundeps doesn't provoke the fundep to kick in. This is GHC's problem, in
-  the end.
-* Singled code that contains uses type families is likely to fail due to GHC
-  Trac #12564. Note that singling type family declarations themselves is fine
-  (and often desired, since that produces defunctionalization symbols for them).
-* Singling instances of poly-kinded type classes is likely to fail due to
-  [#358](https://github.com/goldfirere/singletons/issues/358).
-  However, one can often work around the issue by using `InstanceSigs`. For
-  instance, the following code will not single:
-
-  ```haskell
-  class C (f :: k -> Type) where
-    method :: f a
-
-  instance C [] where
-    method = []
-  ```
-
-  Adding a type signature for `method` in the `C []` is sufficient
-  to work around the issue, though:
-
-  ```haskell
-  instance C [] where
-    method :: [a]
-    method = []
-  ```
-* Singling GADTs is likely to fail due to the generated `SingKind` instances
-  not typechecking. (See
-  [#150](https://github.com/goldfirere/singletons/issues/150)).
-  However, one can often work around the issue by suppressing the generation
-  of `SingKind` instances by using custom `Options`. See the `T150` test case
-  for an example.
