@@ -20,6 +20,7 @@ import Language.Haskell.TH.Syntax
 import Data.Singletons.Deriving.Util
 import Data.Singletons.Util
 import Data.List (nub)
+import Data.Maybe (fromJust)
 
 -- @inferConstraints cls inst_ty cons@ infers the instance context for a
 -- derived type class instance of @cls@ for @inst_ty@, using the constructors
@@ -142,7 +143,7 @@ inferConstraints pr inst_ty = fmap nub . concatMapM infer_ct
       -- we invoke this.
       let (_, res_ty_args)     = unfoldDType res_ty
           (_, last_res_ty_arg) = snocView $ filterDTANormals res_ty_args
-          Just last_tv         = getDVarTName_maybe last_res_ty_arg
+          last_tv              = fromJust $ getDVarTName_maybe last_res_ty_arg
       deep_subtypes <- concatMapM (deepSubtypesContaining last_tv) fields
       pure $ map (pr `DAppT`) deep_subtypes
 
