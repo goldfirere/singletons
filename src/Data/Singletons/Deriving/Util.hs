@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -----------------------------------------------------------------------------
@@ -121,35 +122,25 @@ functorLikeTraverse var (FT { ft_triv = caseTrivial, ft_var = caseVar
   where
     go :: DType
        -> q (a, Bool) -- (result of type a, does type contain var)
-    go (DAppT f x) = do
-      (_, fc) <- go f
-      if fc
-         then pure (caseWrongArg, True)
-         else do (xr, xc) <- go x
-                 if xc
-                    then let tyApp :: q (a, Bool)
-                             tyApp = pure (caseTyApp f xr, True)
-
-                             inspect :: DType -> q (a, Bool)
-                             inspect (DConT n) = do
-                               itf <- isTyFamilyName n
-                               if itf -- We can't decompose type families, so
-                                      -- error if we encounter one here.
-                                  then pure (caseWrongArg, True)
-                                  else tyApp
-                             inspect (DForallT _ _ t)    = inspect t
-                             inspect (DConstrainedT _ t) = inspect t
-                             inspect (DSigT t _)         = inspect t
-                             inspect (DAppT t _)         = inspect t
-                             inspect (DAppKindT t _)     = inspect t
-                             inspect (DVarT {})          = tyApp
-                             inspect DArrowT             = tyApp
-                             inspect (DLitT {})          = tyApp
-                             inspect DWildCardT          = tyApp
-
-                         in case unfoldDType f of
-                              (f_head, _) -> inspect f_head
-                    else trivial
+    go t@DAppT{} = do
+      let (f, args) = unfoldDType t
+          vis_args  = filterDTANormals args
+      (_,   fc)  <- go f
+      (xrs, xcs) <- mapAndUnzipM go vis_args
+      let wrongArg  :: q (a, Bool)
+          wrongArg = pure (caseWrongArg, True)
+      if |  not (or xcs)
+         -> trivial -- Variable does not occur
+         -- At this point we know that xrs, xcs is not empty,
+         -- and at least one xr is True
+         |  fc || or (init xcs)
+         -> wrongArg                    -- T (..var..)    ty
+         |  otherwise                   -- T (..no var..) ty
+         -> do itf <- isInTypeFamilyApp var f vis_args
+               if itf -- We can't decompose type families, so
+                      -- error if we encounter one here.
+                  then wrongArg
+                  else pure (caseTyApp (last vis_args) (last xrs), True)
     go (DAppKindT t k) = do
       (_, kc) <- go k
       if kc
@@ -177,14 +168,38 @@ functorLikeTraverse var (FT { ft_triv = caseTrivial, ft_var = caseVar
     trivial :: q (a, Bool)
     trivial = pure (caseTrivial, False)
 
-isTyFamilyName :: DsMonad q => Name -> q Bool
-isTyFamilyName n = do
-  info <- dsReify n
-  pure $ case info of
-           Just (DTyConI dec _)
-             | DOpenTypeFamilyD{}   <- dec -> True
-             | DClosedTypeFamilyD{} <- dec -> True
-           _ -> False
+-- | Detect if a Name occurs as an argument to some type family. This makes an
+-- effort to exclude /oversaturated/ arguments to type families. For instance,
+-- if one declared the following type family:
+--
+-- @
+-- type family F a :: Type -> Type
+-- @
+--
+-- Then in the type @F a b@, we would consider @a@ to be an argument to @F@,
+-- but not @b@.
+isInTypeFamilyApp :: forall q. DsMonad q => Name -> DType -> [DType] -> q Bool
+isInTypeFamilyApp name tyFun tyArgs =
+  case tyFun of
+    DConT tcName -> go tcName
+    _            -> pure False
+  where
+    go :: Name -> q Bool
+    go tcName = do
+      info <- dsReify tcName
+      case info of
+        Just (DTyConI dec _)
+          |  DOpenTypeFamilyD (DTypeFamilyHead _ bndrs _ _) <- dec
+          -> withinFirstArgs bndrs
+          |  DClosedTypeFamilyD (DTypeFamilyHead _ bndrs _ _) _ <- dec
+          -> withinFirstArgs bndrs
+        _ -> pure False
+
+    withinFirstArgs :: [a] -> q Bool
+    withinFirstArgs bndrs =
+      let firstArgs = take (length bndrs) tyArgs
+          argFVs    = foldMap fvDType firstArgs
+      in pure $ name `elem` argFVs
 
 -- A crude approximation of cond_functorOK from GHC. This checks that:
 --
