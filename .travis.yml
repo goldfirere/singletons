@@ -4,7 +4,7 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.9.20200125
+# version: 0.9.20200321
 #
 version: ~> 1.0
 language: c
@@ -101,7 +101,7 @@ install:
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
     echo "  location: https://github.com/goldfirere/th-desugar" >> cabal.project
-    echo "  tag:      a6c902914ff6fcca021619dbb4919327fb98c404" >> cabal.project
+    echo "  tag:      f075206882ce4e554c37537e624b4be7409d74a3" >> cabal.project
     echo ""                                                     >> cabal.project
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project
@@ -113,7 +113,7 @@ install:
   - ${CABAL} v2-freeze $WITHCOMPILER ${TEST} ${BENCH}
   - "cat cabal.project.freeze | sed -E 's/^(constraints: *| *)//' | sed 's/any.//'"
   - rm  cabal.project.freeze
-  - ${CABAL} v2-build $WITHCOMPILER ${TEST} ${BENCH} --dep -j2 all
+  - travis_wait 40 ${CABAL} v2-build $WITHCOMPILER ${TEST} ${BENCH} --dep -j2 all
 script:
   - DISTDIR=$(mktemp -d /tmp/dist-test.XXXX)
   # Packaging...
@@ -133,7 +133,7 @@ script:
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
     echo "  location: https://github.com/goldfirere/th-desugar" >> cabal.project
-    echo "  tag:      a6c902914ff6fcca021619dbb4919327fb98c404" >> cabal.project
+    echo "  tag:      f075206882ce4e554c37537e624b4be7409d74a3" >> cabal.project
     echo ""                                                     >> cabal.project
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project
@@ -151,5 +151,5 @@ script:
   # haddock...
   - ${CABAL} v2-haddock $WITHCOMPILER --with-haddock $HADDOCK ${TEST} ${BENCH} all
 
-# REGENDATA ("0.9.20200125",["--output=.travis.yml","--config=cabal.haskell-ci","cabal.project"])
+# REGENDATA ("0.9.20200321",["--output=.travis.yml","--config=cabal.haskell-ci","cabal.project"])
 # EOF
