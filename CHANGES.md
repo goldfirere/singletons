@@ -1,6 +1,10 @@
 Changelog for singletons project
 ================================
 
+next
+----
+* Support building with GHC 8.12.
+
 2.7
 ---
 * Require GHC 8.10.

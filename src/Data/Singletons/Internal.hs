@@ -395,7 +395,7 @@ type instance Sing = SLambda
 
 -- | An infix synonym for `applySing`
 (@@) :: forall k1 k2 (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)
-(@@) = applySing
+(@@) f = applySing f
 
 -- | Note that this instance's 'toSing' implementation crucially relies on the fact
 -- that the 'SingKind' instances for 'k1' and 'k2' both satisfy the 'SingKind' laws.
