@@ -288,6 +288,14 @@ type (@@) :: (k1 ~> k2) -> k1 -> k2
 type a @@ b = Apply a b
 infixl 9 @@
 
+-- | Refunctionalise a defunctionalised type function back to its type.
+type family Refun f where
+   Refun (a ~> b) = a -> b
+
+data Refun0 :: Type ~> Type
+type instance Apply Refun0 f = Refun1 f
+type Refun1 f = Refun f
+
 -- | Workhorse for the 'TyCon1', etc., types. This can be used directly
 -- in place of any of the @TyConN@ types, but it will work only with
 -- /monomorphic/ types. When GHC#14645 is fixed, this should fully supersede
