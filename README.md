@@ -384,9 +384,11 @@ defunctionalization symbols will be generated:
 
 ```hs
 type IdSym0 :: a ~> a
-type IdSym0 x = x
+data IdSym0 x
 
-type IdSym1 (x :: a) = Id a
+type IdSym1 :: a -> a
+type family IdSym1 x where
+  IdSym1 x = Id x
 ```
 
 In general, a function that accepts N arguments generates N+1 defunctionalization
@@ -408,7 +410,7 @@ Every defunctionalization symbol comes with a corresponding `Apply` instance
 is the `Apply` instance for `IdSym0`:
 
 ```hs
-type instance Apply IdSym0 x = IdSym1 x
+type instance Apply IdSym0 x = Id x
 ```
 
 The `(~>)` kind is used when promoting higher-order functions so that partially
@@ -472,7 +474,7 @@ This will generate the following defunctionalization symbols:
 ```hs
 type MyProxySym0 ::              Type  ~> k ~> Type
 type MyProxySym1 :: forall (k :: Type) -> k ~> Type
-type MyProxySym2 k (a :: k) = MyProxy k a
+type MyProxySym2 :: forall (k :: Type) -> k -> Type
 ```
 
 Note that `MyProxySym0` is a bit more general than it ought to be, since

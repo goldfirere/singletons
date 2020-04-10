@@ -2,6 +2,7 @@ module T378b where
 
 import Data.Kind
 import Data.Singletons.TH
+import Singletons.Nat
 
 $(singletons [d|
   type C :: forall b a. a -> b -> Constraint
@@ -13,16 +14,10 @@ $(singletons [d|
   f :: forall b a. a -> b -> ()
   f _ _ = ()
 
-  type Nat :: Type
-  data Nat = Z | S Nat
-
-  -- This will only typecheck if ZSym0 is a type synonym.
-  -- See Note [No SAKs for fully saturated defunctionalization symbols]
-  -- in D.S.Promote.Defun for more information.
   natMinus :: Nat -> Nat -> Nat
-  natMinus Z     _     = Z
-  natMinus (S a) (S b) = natMinus a b
-  natMinus a     Z     = a
+  natMinus Zero       _        = Zero
+  natMinus (Succ a)   (Succ b) = natMinus a b
+  natMinus a@(Succ _) Zero     = a
   |])
 
 -- Test some type variable orderings
@@ -40,3 +35,6 @@ type FEx0 = FSym0 @Ordering @Bool
 
 type FEx1 :: Bool -> Ordering ~> ()
 type FEx1 = FSym1 @Ordering @Bool
+
+type FEx2 :: ()
+type FEx2 = FSym2 @Ordering @Bool True EQ

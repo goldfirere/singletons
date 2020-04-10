@@ -18,14 +18,18 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
       where
         Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
                                                        Lambda_0123456789876543210Sym0 x0123456789876543210
-    type instance Apply Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210Sym1 x0123456789876543210
+    type instance Apply Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
-    type Lambda_0123456789876543210Sym1 x0123456789876543210 =
-        Lambda_0123456789876543210 x0123456789876543210
-    type BarSym0 = Bar :: [Nat]
-    type FooSym0 = Foo :: [Nat]
+    type family Lambda_0123456789876543210Sym1 x0123456789876543210 where
+      Lambda_0123456789876543210Sym1 x0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210
+    type BarSym0 :: [Nat]
+    type family BarSym0 where
+      BarSym0 = Bar
+    type FooSym0 :: [Nat]
+    type family FooSym0 where
+      FooSym0 = Foo
     type Bar :: [Nat]
     type family Bar where
       Bar = Apply (Apply MapSym0 (Apply (Apply Either_Sym0 PredSym0) SuccSym0)) (Apply (Apply (:@#@$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))

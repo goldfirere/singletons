@@ -13,21 +13,23 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
       where
         FBoxSym0KindInference :: SameKind (Apply FBoxSym0 arg) (FBoxSym1 arg) =>
                                  FBoxSym0 a0123456789876543210
-    type instance Apply FBoxSym0 a0123456789876543210 = FBoxSym1 a0123456789876543210
+    type instance Apply FBoxSym0 a0123456789876543210 = FBox a0123456789876543210
     instance SuppressUnusedWarnings FBoxSym0 where
       suppressUnusedWarnings = snd (((,) FBoxSym0KindInference) ())
-    type FBoxSym1 (a0123456789876543210 :: a) =
-        FBox a0123456789876543210 :: Box a
+    type FBoxSym1 :: forall a. a -> Box a
+    type family FBoxSym1 a0123456789876543210 where
+      FBoxSym1 a0123456789876543210 = FBox a0123456789876543210
     type UnBoxSym0 :: (~>) (Box a) a
     data UnBoxSym0 a0123456789876543210
       where
         UnBoxSym0KindInference :: SameKind (Apply UnBoxSym0 arg) (UnBoxSym1 arg) =>
                                   UnBoxSym0 a0123456789876543210
-    type instance Apply UnBoxSym0 a0123456789876543210 = UnBoxSym1 a0123456789876543210
+    type instance Apply UnBoxSym0 a0123456789876543210 = UnBox a0123456789876543210
     instance SuppressUnusedWarnings UnBoxSym0 where
       suppressUnusedWarnings = snd (((,) UnBoxSym0KindInference) ())
-    type UnBoxSym1 (a0123456789876543210 :: Box a) =
-        UnBox a0123456789876543210 :: a
+    type UnBoxSym1 :: Box a -> a
+    type family UnBoxSym1 a0123456789876543210 where
+      UnBoxSym1 a0123456789876543210 = UnBox a0123456789876543210
     type UnBox :: Box a -> a
     type family UnBox a where
       UnBox (FBox a) = a

@@ -14,31 +14,34 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
-    type instance Apply FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
+    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
-    type FooSym1 (a0123456789876543210 :: Nat) =
-        Foo a0123456789876543210 :: Foo
+    type FooSym1 :: Nat -> Foo
+    type family FooSym1 a0123456789876543210 where
+      FooSym1 a0123456789876543210 = Foo a0123456789876543210
     type BarSym0 :: (~>) Nat Bar
     data BarSym0 a0123456789876543210
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
-    type instance Apply BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
+    type instance Apply BarSym0 a0123456789876543210 = Bar a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
-    type BarSym1 (a0123456789876543210 :: Nat) =
-        Bar a0123456789876543210 :: Bar
+    type BarSym1 :: Nat -> Bar
+    type family BarSym1 a0123456789876543210 where
+      BarSym1 a0123456789876543210 = Bar a0123456789876543210
     type UnBarSym0 :: (~>) Bar Nat
     data UnBarSym0 a0123456789876543210
       where
         UnBarSym0KindInference :: SameKind (Apply UnBarSym0 arg) (UnBarSym1 arg) =>
                                   UnBarSym0 a0123456789876543210
-    type instance Apply UnBarSym0 a0123456789876543210 = UnBarSym1 a0123456789876543210
+    type instance Apply UnBarSym0 a0123456789876543210 = UnBar a0123456789876543210
     instance SuppressUnusedWarnings UnBarSym0 where
       suppressUnusedWarnings = snd (((,) UnBarSym0KindInference) ())
-    type UnBarSym1 (a0123456789876543210 :: Bar) =
-        UnBar a0123456789876543210 :: Nat
+    type UnBarSym1 :: Bar -> Nat
+    type family UnBarSym1 a0123456789876543210 where
+      UnBarSym1 a0123456789876543210 = UnBar a0123456789876543210
     type UnBar :: Bar -> Nat
     type family UnBar a where
       UnBar (Bar field) = field

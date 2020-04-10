@@ -227,7 +227,8 @@ data SList l where
 type instance Sing = SList
 
 type NilSym0 :: List a
-type NilSym0 = Nil
+type family NilSym0 where
+  NilSym0 = Nil
 
 type ConsSym0 :: a ~> List a ~> List a
 data ConsSym0 tf
@@ -235,10 +236,11 @@ type instance Apply ConsSym0 a = ConsSym1 a
 
 type ConsSym1 :: a -> List a ~> List a
 data ConsSym1 a tf
-type instance Apply (ConsSym1 a) b = ConsSym2 a b
+type instance Apply (ConsSym1 a) b = Cons a b
 
 type ConsSym2 :: a -> List a -> List a
-type ConsSym2 a b = Cons a b
+type family ConsSym2 a b where
+  ConsSym2 a b = Cons a b
 
 type EqualsList :: List k -> List k -> Bool
 type family EqualsList a b where
@@ -782,9 +784,10 @@ data (==$$) a f where
   (:###==$$) :: ((==$$) x @@ arg) ~ (==$$$) x arg
              => Proxy arg
              -> (==$$) x y
-type instance (==$$) a `Apply` b = (==$$$) a b
+type instance (==$$) a `Apply` b = (==) a b
 
-type (==$$$) a b = (==) a b
+type family (==$$$) a b where
+  (==$$$) a b = (==) a b
 
 
 impNat :: forall m n. SingI n => Proxy n -> Sing m -> Sing (n + m)
@@ -838,9 +841,10 @@ data Let123LoopSym3 a b c d where
   KindInferenceLet123LoopSym3 :: ((Let123LoopSym3 a b c @@ z) ~ Let123LoopSym4 a b c z)
                               => Proxy z
                               -> Let123LoopSym3 a b c d
-type instance Apply (Let123LoopSym3 a b c) d = Let123LoopSym4 a b c d
+type instance Apply (Let123LoopSym3 a b c) d = Let123Loop a b c d
 
-type Let123LoopSym4 a b c d = Let123Loop a b c d
+type family Let123LoopSym4 a b c d where
+  Let123LoopSym4 a b c d = Let123Loop a b c d
 
 data FindIndicesSym0 a where
   KindInferenceFindIndicesSym0 :: (FindIndicesSym0 @@ z) ~ FindIndicesSym1 z
@@ -852,9 +856,10 @@ data FindIndicesSym1 a b where
   KindInferenceFindIndicesSym1 :: (FindIndicesSym1 a @@ z) ~ FindIndicesSym2 a z
                                => Proxy z
                                -> FindIndicesSym1 a b
-type instance Apply (FindIndicesSym1 a) b = FindIndicesSym2 a b
+type instance Apply (FindIndicesSym1 a) b = FindIndices a b
 
-type FindIndicesSym2 a b = FindIndices a b
+type family FindIndicesSym2 a b where
+  FindIndicesSym2 a b = FindIndices a b
 
 sFindIndices :: forall a (t1 :: a ~> Bool) (t2 :: (List a)).
                 Sing t1
@@ -900,9 +905,10 @@ data Lambda22Sym1 a b where
   KindInferenceLambda22Sym1 :: (Lambda22Sym1 a @@ z) ~ Lambda22Sym2 a z
                             => Proxy z
                             -> Lambda22Sym1 a b
-type instance Apply (Lambda22Sym1 a) b = Lambda22Sym2 a b
+type instance Apply (Lambda22Sym1 a) b = Lambda22 a b
 
-type Lambda22Sym2 a b = Lambda22 a b
+type family Lambda22Sym2 a b where
+  Lambda22Sym2 a b = Lambda22 a b
 
 {-
 sFI :: forall a (t1 :: a ~> Bool) (t2 :: List a). Sing t1

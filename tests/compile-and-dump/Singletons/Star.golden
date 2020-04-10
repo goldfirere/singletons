@@ -9,19 +9,26 @@ Singletons/Star.hs:0:0:: Splicing declarations
         Singletons.Star.Maybe :: Rep -> Rep
         Singletons.Star.Vec :: Rep -> Nat -> Rep
       deriving (Eq, Ord, Read, Show)
-    type NatSym0 = Nat :: Type
-    type IntSym0 = Int :: Type
-    type StringSym0 = String :: Type
+    type NatSym0 :: Type
+    type family NatSym0 where
+      NatSym0 = Nat
+    type IntSym0 :: Type
+    type family IntSym0 where
+      IntSym0 = Int
+    type StringSym0 :: Type
+    type family StringSym0 where
+      StringSym0 = String
     type MaybeSym0 :: (~>) Type Type
     data MaybeSym0 a0123456789876543210
       where
         MaybeSym0KindInference :: SameKind (Apply MaybeSym0 arg) (MaybeSym1 arg) =>
                                   MaybeSym0 a0123456789876543210
-    type instance Apply MaybeSym0 a0123456789876543210 = MaybeSym1 a0123456789876543210
+    type instance Apply MaybeSym0 a0123456789876543210 = Maybe a0123456789876543210
     instance SuppressUnusedWarnings MaybeSym0 where
       suppressUnusedWarnings = snd (((,) MaybeSym0KindInference) ())
-    type MaybeSym1 (a0123456789876543210 :: Type) =
-        Maybe a0123456789876543210 :: Type
+    type MaybeSym1 :: Type -> Type
+    type family MaybeSym1 a0123456789876543210 where
+      MaybeSym1 a0123456789876543210 = Maybe a0123456789876543210
     type VecSym0 :: (~>) Type ((~>) Nat Type)
     data VecSym0 a0123456789876543210
       where
@@ -35,11 +42,12 @@ Singletons/Star.hs:0:0:: Splicing declarations
       where
         VecSym1KindInference :: SameKind (Apply (VecSym1 a0123456789876543210) arg) (VecSym2 a0123456789876543210 arg) =>
                                 VecSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (VecSym1 a0123456789876543210) a0123456789876543210 = VecSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (VecSym1 a0123456789876543210) a0123456789876543210 = Vec a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (VecSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) VecSym1KindInference) ())
-    type VecSym2 (a0123456789876543210 :: Type) (a0123456789876543210 :: Nat) =
-        Vec a0123456789876543210 a0123456789876543210 :: Type
+    type VecSym2 :: Type -> Nat -> Type
+    type family VecSym2 a0123456789876543210 a0123456789876543210 where
+      VecSym2 a0123456789876543210 a0123456789876543210 = Vec a0123456789876543210 a0123456789876543210
     type Equals_0123456789876543210 :: Type -> Type -> Bool
     type family Equals_0123456789876543210 a b where
       Equals_0123456789876543210 Nat Nat = TrueSym0
@@ -91,12 +99,13 @@ Singletons/Star.hs:0:0:: Splicing declarations
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym1KindInference) ())
-    type Compare_0123456789876543210Sym2 (a0123456789876543210 :: Type) (a0123456789876543210 :: Type) =
-        Compare_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Ordering
+    type Compare_0123456789876543210Sym2 :: Type -> Type -> Ordering
+    type family Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd Type where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type ShowsPrec_0123456789876543210 :: GHC.Types.Nat
@@ -132,12 +141,14 @@ Singletons/Star.hs:0:0:: Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
-    type ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Type) (a0123456789876543210 :: Symbol) =
-        ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 :: Symbol
+    type ShowsPrec_0123456789876543210Sym3 :: GHC.Types.Nat
+                                              -> Type -> Symbol -> Symbol
+    type family ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+      ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow Type where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     data SRep :: Type -> Type

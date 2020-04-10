@@ -70,20 +70,29 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
         HNil :: HList '[]
         HCons :: x -> (HList xs) -> HList ('(:) x xs)
     data Obj :: Type where Obj :: a -> Obj
-    type FZSym0 = FZ :: Fin ('Succ n)
+    type FZSym0 :: Fin ('Succ n)
+    type family FZSym0 where
+      FZSym0 = FZ
     type FSSym0 :: (~>) (Fin n) (Fin ('Succ n))
     data FSSym0 a0123456789876543210
       where
         FSSym0KindInference :: SameKind (Apply FSSym0 arg) (FSSym1 arg) =>
                                FSSym0 a0123456789876543210
-    type instance Apply FSSym0 a0123456789876543210 = FSSym1 a0123456789876543210
+    type instance Apply FSSym0 a0123456789876543210 = FS a0123456789876543210
     instance SuppressUnusedWarnings FSSym0 where
       suppressUnusedWarnings = snd (((,) FSSym0KindInference) ())
-    type FSSym1 (a0123456789876543210 :: Fin n) =
-        FS a0123456789876543210 :: Fin ('Succ n)
-    type MkFoo1Sym0 = MkFoo1 :: Foo Bool
-    type MkFoo2Sym0 = MkFoo2 :: Foo Ordering
-    type VNilSym0 = VNil :: Vec 'Zero a
+    type FSSym1 :: Fin n -> Fin ('Succ n)
+    type family FSSym1 a0123456789876543210 where
+      FSSym1 a0123456789876543210 = FS a0123456789876543210
+    type MkFoo1Sym0 :: Foo Bool
+    type family MkFoo1Sym0 where
+      MkFoo1Sym0 = MkFoo1
+    type MkFoo2Sym0 :: Foo Ordering
+    type family MkFoo2Sym0 where
+      MkFoo2Sym0 = MkFoo2
+    type VNilSym0 :: Vec 'Zero a
+    type family VNilSym0 where
+      VNilSym0 = VNil
     type VConsSym0 :: (~>) a ((~>) (Vec n a) (Vec ('Succ n) a))
     data VConsSym0 a0123456789876543210
       where
@@ -97,13 +106,18 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
       where
         VConsSym1KindInference :: SameKind (Apply (VConsSym1 a0123456789876543210) arg) (VConsSym2 a0123456789876543210 arg) =>
                                   VConsSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (VConsSym1 a0123456789876543210) a0123456789876543210 = VConsSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (VConsSym1 a0123456789876543210) a0123456789876543210 = VCons a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (VConsSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) VConsSym1KindInference) ())
-    type VConsSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Vec n a) =
-        VCons a0123456789876543210 a0123456789876543210 :: Vec ('Succ n) a
-    type ReflexiveSym0 = Reflexive :: Equal a a
-    type HNilSym0 = HNil :: HList '[]
+    type VConsSym2 :: a -> Vec n a -> Vec ('Succ n) a
+    type family VConsSym2 a0123456789876543210 a0123456789876543210 where
+      VConsSym2 a0123456789876543210 a0123456789876543210 = VCons a0123456789876543210 a0123456789876543210
+    type ReflexiveSym0 :: Equal a a
+    type family ReflexiveSym0 where
+      ReflexiveSym0 = Reflexive
+    type HNilSym0 :: HList '[]
+    type family HNilSym0 where
+      HNilSym0 = HNil
     type HConsSym0 :: (~>) x ((~>) (HList xs) (HList ('(:) x xs)))
     data HConsSym0 a0123456789876543210
       where
@@ -117,21 +131,23 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
       where
         HConsSym1KindInference :: SameKind (Apply (HConsSym1 a0123456789876543210) arg) (HConsSym2 a0123456789876543210 arg) =>
                                   HConsSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (HConsSym1 a0123456789876543210) a0123456789876543210 = HConsSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (HConsSym1 a0123456789876543210) a0123456789876543210 = HCons a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (HConsSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) HConsSym1KindInference) ())
-    type HConsSym2 (a0123456789876543210 :: x) (a0123456789876543210 :: HList xs) =
-        HCons a0123456789876543210 a0123456789876543210 :: HList ('(:) x xs)
+    type HConsSym2 :: x -> HList xs -> HList ('(:) x xs)
+    type family HConsSym2 a0123456789876543210 a0123456789876543210 where
+      HConsSym2 a0123456789876543210 a0123456789876543210 = HCons a0123456789876543210 a0123456789876543210
     type ObjSym0 :: (~>) a Obj
     data ObjSym0 a0123456789876543210
       where
         ObjSym0KindInference :: SameKind (Apply ObjSym0 arg) (ObjSym1 arg) =>
                                 ObjSym0 a0123456789876543210
-    type instance Apply ObjSym0 a0123456789876543210 = ObjSym1 a0123456789876543210
+    type instance Apply ObjSym0 a0123456789876543210 = Obj a0123456789876543210
     instance SuppressUnusedWarnings ObjSym0 where
       suppressUnusedWarnings = snd (((,) ObjSym0KindInference) ())
-    type ObjSym1 (a0123456789876543210 :: a) =
-        Obj a0123456789876543210 :: Obj
+    type ObjSym1 :: a -> Obj
+    type family ObjSym1 a0123456789876543210 where
+      ObjSym1 a0123456789876543210 = Obj a0123456789876543210
     type family Case_0123456789876543210 n t where
     type TransitivitySym0 :: (~>) (Equal a b) ((~>) (Equal b c) (Equal a c))
     data TransitivitySym0 a0123456789876543210
@@ -147,22 +163,24 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
       where
         TransitivitySym1KindInference :: SameKind (Apply (TransitivitySym1 a0123456789876543210) arg) (TransitivitySym2 a0123456789876543210 arg) =>
                                          TransitivitySym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TransitivitySym1 a0123456789876543210) a0123456789876543210 = TransitivitySym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (TransitivitySym1 a0123456789876543210) a0123456789876543210 = Transitivity a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TransitivitySym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) TransitivitySym1KindInference) ())
-    type TransitivitySym2 (a0123456789876543210 :: Equal a b) (a0123456789876543210 :: Equal b c) =
-        Transitivity a0123456789876543210 a0123456789876543210 :: Equal a c
+    type TransitivitySym2 :: Equal a b -> Equal b c -> Equal a c
+    type family TransitivitySym2 a0123456789876543210 a0123456789876543210 where
+      TransitivitySym2 a0123456789876543210 a0123456789876543210 = Transitivity a0123456789876543210 a0123456789876543210
     type SymmetrySym0 :: (~>) (Equal a b) (Equal b a)
     data SymmetrySym0 a0123456789876543210
       where
         SymmetrySym0KindInference :: SameKind (Apply SymmetrySym0 arg) (SymmetrySym1 arg) =>
                                      SymmetrySym0 a0123456789876543210
-    type instance Apply SymmetrySym0 a0123456789876543210 = SymmetrySym1 a0123456789876543210
+    type instance Apply SymmetrySym0 a0123456789876543210 = Symmetry a0123456789876543210
     instance SuppressUnusedWarnings SymmetrySym0 where
       suppressUnusedWarnings = snd (((,) SymmetrySym0KindInference) ())
-    type SymmetrySym1 (a0123456789876543210 :: Equal a b) =
-        Symmetry a0123456789876543210 :: Equal b a
+    type SymmetrySym1 :: Equal a b -> Equal b a
+    type family SymmetrySym1 a0123456789876543210 where
+      SymmetrySym1 a0123456789876543210 = Symmetry a0123456789876543210
     type MapVecSym0 :: (~>) ((~>) a b) ((~>) (Vec n a) (Vec n b))
     data MapVecSym0 a0123456789876543210
       where
@@ -176,11 +194,12 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
       where
         MapVecSym1KindInference :: SameKind (Apply (MapVecSym1 a0123456789876543210) arg) (MapVecSym2 a0123456789876543210 arg) =>
                                    MapVecSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (MapVecSym1 a0123456789876543210) a0123456789876543210 = MapVecSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (MapVecSym1 a0123456789876543210) a0123456789876543210 = MapVec a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MapVecSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MapVecSym1KindInference) ())
-    type MapVecSym2 (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: Vec n a) =
-        MapVec a0123456789876543210 a0123456789876543210 :: Vec n b
+    type MapVecSym2 :: (~>) a b -> Vec n a -> Vec n b
+    type family MapVecSym2 a0123456789876543210 a0123456789876543210 where
+      MapVecSym2 a0123456789876543210 a0123456789876543210 = MapVec a0123456789876543210 a0123456789876543210
     type (!@#@$) :: (~>) (Vec n a) ((~>) (Fin n) a)
     data (!@#@$) a0123456789876543210
       where
@@ -194,31 +213,34 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
       where
         (:!@#@$$###) :: SameKind (Apply ((!@#@$$) a0123456789876543210) arg) ((!@#@$$$) a0123456789876543210 arg) =>
                         (!@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((!@#@$$) a0123456789876543210) a0123456789876543210 = (!@#@$$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((!@#@$$) a0123456789876543210) a0123456789876543210 = (!) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((!@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:!@#@$$###)) ())
-    type (!@#@$$$) (a0123456789876543210 :: Vec n a) (a0123456789876543210 :: Fin n) =
-        (!) a0123456789876543210 a0123456789876543210 :: a
+    type (!@#@$$$) :: Vec n a -> Fin n -> a
+    type family (!@#@$$$) a0123456789876543210 a0123456789876543210 where
+      (!@#@$$$) a0123456789876543210 a0123456789876543210 = (!) a0123456789876543210 a0123456789876543210
     type TailVecSym0 :: (~>) (Vec ('Succ n) a) (Vec n a)
     data TailVecSym0 a0123456789876543210
       where
         TailVecSym0KindInference :: SameKind (Apply TailVecSym0 arg) (TailVecSym1 arg) =>
                                     TailVecSym0 a0123456789876543210
-    type instance Apply TailVecSym0 a0123456789876543210 = TailVecSym1 a0123456789876543210
+    type instance Apply TailVecSym0 a0123456789876543210 = TailVec a0123456789876543210
     instance SuppressUnusedWarnings TailVecSym0 where
       suppressUnusedWarnings = snd (((,) TailVecSym0KindInference) ())
-    type TailVecSym1 (a0123456789876543210 :: Vec ('Succ n) a) =
-        TailVec a0123456789876543210 :: Vec n a
+    type TailVecSym1 :: Vec ('Succ n) a -> Vec n a
+    type family TailVecSym1 a0123456789876543210 where
+      TailVecSym1 a0123456789876543210 = TailVec a0123456789876543210
     type HeadVecSym0 :: (~>) (Vec ('Succ n) a) a
     data HeadVecSym0 a0123456789876543210
       where
         HeadVecSym0KindInference :: SameKind (Apply HeadVecSym0 arg) (HeadVecSym1 arg) =>
                                     HeadVecSym0 a0123456789876543210
-    type instance Apply HeadVecSym0 a0123456789876543210 = HeadVecSym1 a0123456789876543210
+    type instance Apply HeadVecSym0 a0123456789876543210 = HeadVec a0123456789876543210
     instance SuppressUnusedWarnings HeadVecSym0 where
       suppressUnusedWarnings = snd (((,) HeadVecSym0KindInference) ())
-    type HeadVecSym1 (a0123456789876543210 :: Vec ('Succ n) a) =
-        HeadVec a0123456789876543210 :: a
+    type HeadVecSym1 :: Vec ('Succ n) a -> a
+    type family HeadVecSym1 a0123456789876543210 where
+      HeadVecSym1 a0123456789876543210 = HeadVec a0123456789876543210
     type Transitivity :: Equal a b -> Equal b c -> Equal a c
     type family Transitivity a a where
       Transitivity Reflexive Reflexive = ReflexiveSym0

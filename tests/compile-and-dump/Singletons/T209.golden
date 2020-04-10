@@ -17,7 +17,9 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
       = Hm
       deriving anyclass (C Bool)
     deriving anyclass instance C a a => C a (Maybe a)
-    type HmSym0 = Hm :: Hm
+    type HmSym0 :: Hm
+    type family HmSym0 where
+      HmSym0 = Hm
     type MSym0 :: (~>) a ((~>) b ((~>) Bool Bool))
     data MSym0 a0123456789876543210
       where
@@ -39,11 +41,12 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
       where
         MSym2KindInference :: SameKind (Apply (MSym2 a0123456789876543210 a0123456789876543210) arg) (MSym3 a0123456789876543210 a0123456789876543210 arg) =>
                               MSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (MSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = MSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (MSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = M a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MSym2KindInference) ())
-    type MSym3 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: Bool) =
-        M a0123456789876543210 a0123456789876543210 a0123456789876543210 :: Bool
+    type MSym3 :: a -> b -> Bool -> Bool
+    type family MSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+      MSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = M a0123456789876543210 a0123456789876543210 a0123456789876543210
     type M :: a -> b -> Bool -> Bool
     type family M a a a where
       M _ _ x = x

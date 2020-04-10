@@ -16,22 +16,27 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
       where
         LiftMaybeSym1KindInference :: Data.Singletons.Internal.SameKind (Apply (LiftMaybeSym1 a0123456789876543210) arg) (LiftMaybeSym2 a0123456789876543210 arg) =>
                                       LiftMaybeSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (LiftMaybeSym1 a0123456789876543210) a0123456789876543210 = LiftMaybeSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (LiftMaybeSym1 a0123456789876543210) a0123456789876543210 = LiftMaybe a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (LiftMaybeSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) LiftMaybeSym1KindInference) ())
-    type LiftMaybeSym2 (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: Maybe a) =
-        LiftMaybe a0123456789876543210 a0123456789876543210 :: Maybe b
-    type ZeroSym0 = 'Zero :: NatT
+    type LiftMaybeSym2 :: forall (a :: Type) (b :: Type).
+                          (~>) a b -> Maybe a -> Maybe b
+    type family LiftMaybeSym2 a0123456789876543210 a0123456789876543210 where
+      LiftMaybeSym2 a0123456789876543210 a0123456789876543210 = LiftMaybe a0123456789876543210 a0123456789876543210
+    type ZeroSym0 :: NatT
+    type family ZeroSym0 where
+      ZeroSym0 = 'Zero
     type SuccSym0 :: (~>) NatT NatT
     data SuccSym0 a0123456789876543210
       where
         SuccSym0KindInference :: Data.Singletons.Internal.SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
                                  SuccSym0 a0123456789876543210
-    type instance Apply SuccSym0 a0123456789876543210 = SuccSym1 a0123456789876543210
+    type instance Apply SuccSym0 a0123456789876543210 = 'Succ a0123456789876543210
     instance SuppressUnusedWarnings SuccSym0 where
       suppressUnusedWarnings = snd (((,) SuccSym0KindInference) ())
-    type SuccSym1 (a0123456789876543210 :: NatT) =
-        'Succ a0123456789876543210 :: NatT
+    type SuccSym1 :: NatT -> NatT
+    type family SuccSym1 a0123456789876543210 where
+      SuccSym1 a0123456789876543210 = 'Succ a0123456789876543210
     type (:+@#@$) :: (~>) Nat ((~>) Nat Nat)
     data (:+@#@$) a0123456789876543210
       where
@@ -45,8 +50,9 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
       where
         (::+@#@$$###) :: Data.Singletons.Internal.SameKind (Apply ((:+@#@$$) a0123456789876543210) arg) ((:+@#@$$$) a0123456789876543210 arg) =>
                          (:+@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:+@#@$$) a0123456789876543210) a0123456789876543210 = (:+@#@$$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((:+@#@$$) a0123456789876543210) a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:+@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::+@#@$$###)) ())
-    type (:+@#@$$$) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
-        (:+) a0123456789876543210 a0123456789876543210 :: Nat
+    type (:+@#@$$$) :: Nat -> Nat -> Nat
+    type family (:+@#@$$$) a0123456789876543210 a0123456789876543210 where
+      (:+@#@$$$) a0123456789876543210 a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210

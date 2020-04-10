@@ -12,11 +12,11 @@ Singletons/T216.hs:0:0:: Splicing declarations
       where
         MyProxySym1KindInference :: SameKind (Apply (MyProxySym1 k0123456789876543210) arg) (MyProxySym2 k0123456789876543210 arg) =>
                                     MyProxySym1 k0123456789876543210 e
-    type instance Apply (MyProxySym1 k0123456789876543210) e = MyProxySym2 k0123456789876543210 e
+    type instance Apply (MyProxySym1 k0123456789876543210) e = MyProxy k0123456789876543210 e
     instance SuppressUnusedWarnings (MyProxySym1 k0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MyProxySym1KindInference) ())
-    type MyProxySym2 (k0123456789876543210 :: Type) (e :: k0123456789876543210) =
-        MyProxy k0123456789876543210 e :: Type
+    type family MyProxySym2 (k0123456789876543210 :: Type) (e :: k0123456789876543210) :: Type where
+      MyProxySym2 k0123456789876543210 e = MyProxy k0123456789876543210 e
     data SymmetrySym0 :: (~>) t0123456789876543210 ((~>) t0123456789876543210 ((~>) ((:~:) a0123456789876543210 y0123456789876543210) Type))
       where
         SymmetrySym0KindInference :: SameKind (Apply SymmetrySym0 arg) (SymmetrySym1 arg) =>
@@ -35,8 +35,8 @@ Singletons/T216.hs:0:0:: Splicing declarations
       where
         SymmetrySym2KindInference :: SameKind (Apply (SymmetrySym2 a0123456789876543210 y0123456789876543210) arg) (SymmetrySym3 a0123456789876543210 y0123456789876543210 arg) =>
                                      SymmetrySym2 a0123456789876543210 y0123456789876543210 e
-    type instance Apply (SymmetrySym2 a0123456789876543210 y0123456789876543210) e = SymmetrySym3 a0123456789876543210 y0123456789876543210 e
+    type instance Apply (SymmetrySym2 a0123456789876543210 y0123456789876543210) e = Symmetry a0123456789876543210 y0123456789876543210 e
     instance SuppressUnusedWarnings (SymmetrySym2 a0123456789876543210 y0123456789876543210) where
       suppressUnusedWarnings = snd (((,) SymmetrySym2KindInference) ())
-    type SymmetrySym3 (a0123456789876543210 :: t0123456789876543210) (y0123456789876543210 :: t0123456789876543210) (e :: (:~:) a0123456789876543210 y0123456789876543210) =
-        Symmetry a0123456789876543210 y0123456789876543210 e :: Type
+    type family SymmetrySym3 (a0123456789876543210 :: t0123456789876543210) (y0123456789876543210 :: t0123456789876543210) (e :: (:~:) a0123456789876543210 y0123456789876543210) :: Type where
+      SymmetrySym3 a0123456789876543210 y0123456789876543210 e = Symmetry a0123456789876543210 y0123456789876543210 e

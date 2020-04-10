@@ -9,15 +9,15 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
       where
         Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference :: SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
                                                                                 Let0123456789876543210Scrutinee_0123456789876543210Sym0 x0123456789876543210
-    type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 x0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210Sym1 x0123456789876543210
+    type instance Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 x0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210 x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210Scrutinee_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
             (((,)
                 Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
                ())
-    type Let0123456789876543210Scrutinee_0123456789876543210Sym1 x0123456789876543210 =
-        Let0123456789876543210Scrutinee_0123456789876543210 x0123456789876543210
+    type family Let0123456789876543210Scrutinee_0123456789876543210Sym1 x0123456789876543210 where
+      Let0123456789876543210Scrutinee_0123456789876543210Sym1 x0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210 x0123456789876543210
     type family Let0123456789876543210Scrutinee_0123456789876543210 x where
       Let0123456789876543210Scrutinee_0123456789876543210 x = Apply (Apply (==@#@$) x) (FromInteger 0)
     type family Case_0123456789876543210 x t where
@@ -28,11 +28,12 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
-    type instance Apply FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
+    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
-    type FooSym1 (a0123456789876543210 :: a) =
-        Foo a0123456789876543210 :: a
+    type FooSym1 :: a -> a
+    type family FooSym1 a0123456789876543210 where
+      FooSym1 a0123456789876543210 = Foo a0123456789876543210
     type Foo :: a -> a
     type family Foo a where
       Foo x = Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)

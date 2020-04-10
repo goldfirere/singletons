@@ -24,7 +24,9 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     data Foo3
       = MkFoo3 {getFoo3a :: Bool, *** :: Bool}
       deriving Show
-    type MkFoo1Sym0 = MkFoo1 :: Foo1
+    type MkFoo1Sym0 :: Foo1
+    type family MkFoo1Sym0 where
+      MkFoo1Sym0 = MkFoo1
     type MkFoo2aSym0 :: forall a. (~>) a ((~>) a (Foo2 a))
     data MkFoo2aSym0 a0123456789876543210
       where
@@ -38,11 +40,12 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         MkFoo2aSym1KindInference :: SameKind (Apply (MkFoo2aSym1 a0123456789876543210) arg) (MkFoo2aSym2 a0123456789876543210 arg) =>
                                     MkFoo2aSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (MkFoo2aSym1 a0123456789876543210) a0123456789876543210 = MkFoo2aSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (MkFoo2aSym1 a0123456789876543210) a0123456789876543210 = MkFoo2a a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkFoo2aSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MkFoo2aSym1KindInference) ())
-    type MkFoo2aSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: a) =
-        MkFoo2a a0123456789876543210 a0123456789876543210 :: Foo2 a
+    type MkFoo2aSym2 :: forall a. a -> a -> Foo2 a
+    type family MkFoo2aSym2 a0123456789876543210 a0123456789876543210 where
+      MkFoo2aSym2 a0123456789876543210 a0123456789876543210 = MkFoo2a a0123456789876543210 a0123456789876543210
     type MkFoo2bSym0 :: forall a. (~>) a ((~>) a (Foo2 a))
     data MkFoo2bSym0 a0123456789876543210
       where
@@ -57,12 +60,13 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         MkFoo2bSym1KindInference :: SameKind (Apply (MkFoo2bSym1 a0123456789876543210) arg) (MkFoo2bSym2 a0123456789876543210 arg) =>
                                     MkFoo2bSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (MkFoo2bSym1 a0123456789876543210) a0123456789876543210 = MkFoo2bSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (MkFoo2bSym1 a0123456789876543210) a0123456789876543210 = MkFoo2b a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkFoo2bSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MkFoo2bSym1KindInference) ())
     infixl 5 `MkFoo2bSym1`
-    type MkFoo2bSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: a) =
-        MkFoo2b a0123456789876543210 a0123456789876543210 :: Foo2 a
+    type MkFoo2bSym2 :: forall a. a -> a -> Foo2 a
+    type family MkFoo2bSym2 a0123456789876543210 a0123456789876543210 where
+      MkFoo2bSym2 a0123456789876543210 a0123456789876543210 = MkFoo2b a0123456789876543210 a0123456789876543210
     infixl 5 `MkFoo2bSym2`
     type (:*:@#@$) :: forall a. (~>) a ((~>) a (Foo2 a))
     data (:*:@#@$) a0123456789876543210
@@ -78,12 +82,13 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         (::*:@#@$$###) :: SameKind (Apply ((:*:@#@$$) a0123456789876543210) arg) ((:*:@#@$$$) a0123456789876543210 arg) =>
                           (:*:@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:*:@#@$$) a0123456789876543210) a0123456789876543210 = (:*:@#@$$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((:*:@#@$$) a0123456789876543210) a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:*:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::*:@#@$$###)) ())
     infixl 5 :*:@#@$$
-    type (:*:@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) =
-        (:*:) a0123456789876543210 a0123456789876543210 :: Foo2 a
+    type (:*:@#@$$$) :: forall a. a -> a -> Foo2 a
+    type family (:*:@#@$$$) a0123456789876543210 a0123456789876543210 where
+      (:*:@#@$$$) a0123456789876543210 a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
     infixl 5 :*:@#@$$$
     type (:&:@#@$) :: forall a. (~>) a ((~>) a (Foo2 a))
     data (:&:@#@$) a0123456789876543210
@@ -99,12 +104,13 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         (::&:@#@$$###) :: SameKind (Apply ((:&:@#@$$) a0123456789876543210) arg) ((:&:@#@$$$) a0123456789876543210 arg) =>
                           (:&:@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:&:@#@$$) a0123456789876543210) a0123456789876543210 = (:&:@#@$$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((:&:@#@$$) a0123456789876543210) a0123456789876543210 = (:&:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:&:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::&:@#@$$###)) ())
     infixl 5 :&:@#@$$
-    type (:&:@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) =
-        (:&:) a0123456789876543210 a0123456789876543210 :: Foo2 a
+    type (:&:@#@$$$) :: forall a. a -> a -> Foo2 a
+    type family (:&:@#@$$$) a0123456789876543210 a0123456789876543210 where
+      (:&:@#@$$$) a0123456789876543210 a0123456789876543210 = (:&:) a0123456789876543210 a0123456789876543210
     infixl 5 :&:@#@$$$
     type MkFoo3Sym0 :: (~>) Bool ((~>) Bool Foo3)
     data MkFoo3Sym0 a0123456789876543210
@@ -119,31 +125,34 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         MkFoo3Sym1KindInference :: SameKind (Apply (MkFoo3Sym1 a0123456789876543210) arg) (MkFoo3Sym2 a0123456789876543210 arg) =>
                                    MkFoo3Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (MkFoo3Sym1 a0123456789876543210) a0123456789876543210 = MkFoo3Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (MkFoo3Sym1 a0123456789876543210) a0123456789876543210 = MkFoo3 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkFoo3Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MkFoo3Sym1KindInference) ())
-    type MkFoo3Sym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) =
-        MkFoo3 a0123456789876543210 a0123456789876543210 :: Foo3
+    type MkFoo3Sym2 :: Bool -> Bool -> Foo3
+    type family MkFoo3Sym2 a0123456789876543210 a0123456789876543210 where
+      MkFoo3Sym2 a0123456789876543210 a0123456789876543210 = MkFoo3 a0123456789876543210 a0123456789876543210
     type (***@#@$) :: (~>) Foo3 Bool
     data (***@#@$) a0123456789876543210
       where
         (:***@#@$###) :: SameKind (Apply (***@#@$) arg) ((***@#@$$) arg) =>
                          (***@#@$) a0123456789876543210
-    type instance Apply (***@#@$) a0123456789876543210 = (***@#@$$) a0123456789876543210
+    type instance Apply (***@#@$) a0123456789876543210 = (***) a0123456789876543210
     instance SuppressUnusedWarnings (***@#@$) where
       suppressUnusedWarnings = snd (((,) (:***@#@$###)) ())
-    type (***@#@$$) (a0123456789876543210 :: Foo3) =
-        (***) a0123456789876543210 :: Bool
+    type (***@#@$$) :: Foo3 -> Bool
+    type family (***@#@$$) a0123456789876543210 where
+      (***@#@$$) a0123456789876543210 = (***) a0123456789876543210
     type GetFoo3aSym0 :: (~>) Foo3 Bool
     data GetFoo3aSym0 a0123456789876543210
       where
         GetFoo3aSym0KindInference :: SameKind (Apply GetFoo3aSym0 arg) (GetFoo3aSym1 arg) =>
                                      GetFoo3aSym0 a0123456789876543210
-    type instance Apply GetFoo3aSym0 a0123456789876543210 = GetFoo3aSym1 a0123456789876543210
+    type instance Apply GetFoo3aSym0 a0123456789876543210 = GetFoo3a a0123456789876543210
     instance SuppressUnusedWarnings GetFoo3aSym0 where
       suppressUnusedWarnings = snd (((,) GetFoo3aSym0KindInference) ())
-    type GetFoo3aSym1 (a0123456789876543210 :: Foo3) =
-        GetFoo3a a0123456789876543210 :: Bool
+    type GetFoo3aSym1 :: Foo3 -> Bool
+    type family GetFoo3aSym1 a0123456789876543210 where
+      GetFoo3aSym1 a0123456789876543210 = GetFoo3a a0123456789876543210
     type (***) :: Foo3 -> Bool
     type family (***) a where
       (***) (MkFoo3 _ field) = field
@@ -179,12 +188,14 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
-    type ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Foo1) (a0123456789876543210 :: Symbol) =
-        ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 :: Symbol
+    type ShowsPrec_0123456789876543210Sym3 :: GHC.Types.Nat
+                                              -> Foo1 -> Symbol -> Symbol
+    type family ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+      ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow Foo1 where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type ShowsPrec_0123456789876543210 :: GHC.Types.Nat
@@ -219,12 +230,14 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
-    type ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Foo2 a) (a0123456789876543210 :: Symbol) =
-        ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 :: Symbol
+    type ShowsPrec_0123456789876543210Sym3 :: GHC.Types.Nat
+                                              -> Foo2 a -> Symbol -> Symbol
+    type family ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+      ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow (Foo2 a) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type ShowsPrec_0123456789876543210 :: GHC.Types.Nat
@@ -256,12 +269,14 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
-    type ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Foo3) (a0123456789876543210 :: Symbol) =
-        ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 :: Symbol
+    type ShowsPrec_0123456789876543210Sym3 :: GHC.Types.Nat
+                                              -> Foo3 -> Symbol -> Symbol
+    type family ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+      ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow Foo3 where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     infixl 5 :%&:

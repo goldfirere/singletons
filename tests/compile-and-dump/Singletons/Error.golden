@@ -12,11 +12,12 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
       where
         HeadSym0KindInference :: SameKind (Apply HeadSym0 arg) (HeadSym1 arg) =>
                                  HeadSym0 a0123456789876543210
-    type instance Apply HeadSym0 a0123456789876543210 = HeadSym1 a0123456789876543210
+    type instance Apply HeadSym0 a0123456789876543210 = Head a0123456789876543210
     instance SuppressUnusedWarnings HeadSym0 where
       suppressUnusedWarnings = snd (((,) HeadSym0KindInference) ())
-    type HeadSym1 (a0123456789876543210 :: [a]) =
-        Head a0123456789876543210 :: a
+    type HeadSym1 :: [a] -> a
+    type family HeadSym1 a0123456789876543210 where
+      HeadSym1 a0123456789876543210 = Head a0123456789876543210
     type Head :: [a] -> a
     type family Head a where
       Head ('(:) a _) = a

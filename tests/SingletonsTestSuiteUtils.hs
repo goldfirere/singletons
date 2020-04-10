@@ -70,6 +70,7 @@ ghcOpts = ghcFlags ++ [
   , "-XEmptyCase"
   , "-XNoStarIsType"
   , "-XStandaloneKindSignatures"
+  , "-XConstraintKinds"
   ]
 
 -- Compile a test using specified GHC options. Save output to file, normalize

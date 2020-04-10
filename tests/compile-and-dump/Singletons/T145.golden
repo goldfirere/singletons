@@ -18,11 +18,12 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
       where
         ColSym1KindInference :: SameKind (Apply (ColSym1 a0123456789876543210) arg) (ColSym2 a0123456789876543210 arg) =>
                                 ColSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ColSym1 a0123456789876543210) a0123456789876543210 = ColSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (ColSym1 a0123456789876543210) a0123456789876543210 = Col a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ColSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) ColSym1KindInference) ())
-    type ColSym2 (a0123456789876543210 :: f a) (a0123456789876543210 :: a) =
-        Col a0123456789876543210 a0123456789876543210 :: Bool
+    type ColSym2 :: forall f a. f a -> a -> Bool
+    type family ColSym2 a0123456789876543210 a0123456789876543210 where
+      ColSym2 a0123456789876543210 a0123456789876543210 = Col a0123456789876543210 a0123456789876543210
     class PColumn (f :: Type -> Type) where
       type Col (arg :: f a) (arg :: a) :: Bool
     class SColumn (f :: Type -> Type) where

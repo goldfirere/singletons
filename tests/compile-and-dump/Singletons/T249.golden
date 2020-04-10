@@ -12,31 +12,34 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
       where
         MkFoo1Sym0KindInference :: SameKind (Apply MkFoo1Sym0 arg) (MkFoo1Sym1 arg) =>
                                    MkFoo1Sym0 a0123456789876543210
-    type instance Apply MkFoo1Sym0 a0123456789876543210 = MkFoo1Sym1 a0123456789876543210
+    type instance Apply MkFoo1Sym0 a0123456789876543210 = MkFoo1 a0123456789876543210
     instance SuppressUnusedWarnings MkFoo1Sym0 where
       suppressUnusedWarnings = snd (((,) MkFoo1Sym0KindInference) ())
-    type MkFoo1Sym1 (a0123456789876543210 :: a) =
-        MkFoo1 a0123456789876543210 :: Foo1 a
+    type MkFoo1Sym1 :: forall a. a -> Foo1 a
+    type family MkFoo1Sym1 a0123456789876543210 where
+      MkFoo1Sym1 a0123456789876543210 = MkFoo1 a0123456789876543210
     type MkFoo2Sym0 :: (~>) x (Foo2 x)
     data MkFoo2Sym0 a0123456789876543210
       where
         MkFoo2Sym0KindInference :: SameKind (Apply MkFoo2Sym0 arg) (MkFoo2Sym1 arg) =>
                                    MkFoo2Sym0 a0123456789876543210
-    type instance Apply MkFoo2Sym0 a0123456789876543210 = MkFoo2Sym1 a0123456789876543210
+    type instance Apply MkFoo2Sym0 a0123456789876543210 = MkFoo2 a0123456789876543210
     instance SuppressUnusedWarnings MkFoo2Sym0 where
       suppressUnusedWarnings = snd (((,) MkFoo2Sym0KindInference) ())
-    type MkFoo2Sym1 (a0123456789876543210 :: x) =
-        MkFoo2 a0123456789876543210 :: Foo2 x
+    type MkFoo2Sym1 :: x -> Foo2 x
+    type family MkFoo2Sym1 a0123456789876543210 where
+      MkFoo2Sym1 a0123456789876543210 = MkFoo2 a0123456789876543210
     type MkFoo3Sym0 :: forall x. (~>) x (Foo3 x)
     data MkFoo3Sym0 a0123456789876543210
       where
         MkFoo3Sym0KindInference :: SameKind (Apply MkFoo3Sym0 arg) (MkFoo3Sym1 arg) =>
                                    MkFoo3Sym0 a0123456789876543210
-    type instance Apply MkFoo3Sym0 a0123456789876543210 = MkFoo3Sym1 a0123456789876543210
+    type instance Apply MkFoo3Sym0 a0123456789876543210 = MkFoo3 a0123456789876543210
     instance SuppressUnusedWarnings MkFoo3Sym0 where
       suppressUnusedWarnings = snd (((,) MkFoo3Sym0KindInference) ())
-    type MkFoo3Sym1 (a0123456789876543210 :: x) =
-        MkFoo3 a0123456789876543210 :: Foo3 x
+    type MkFoo3Sym1 :: forall x. x -> Foo3 x
+    type family MkFoo3Sym1 a0123456789876543210 where
+      MkFoo3Sym1 a0123456789876543210 = MkFoo3 a0123456789876543210
     data SFoo1 :: forall a. Foo1 a -> Type
       where
         SMkFoo1 :: forall a (n :: a).
