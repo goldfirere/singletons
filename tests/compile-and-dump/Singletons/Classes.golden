@@ -61,10 +61,18 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       (==) G G = True
       (==) F G = False
       (==) G F = False
-    type ASym0 = A :: Foo
-    type BSym0 = B :: Foo
-    type FSym0 = F :: Foo2
-    type GSym0 = G :: Foo2
+    type ASym0 :: Foo
+    type family ASym0 where
+      ASym0 = A
+    type BSym0 :: Foo
+    type family BSym0 where
+      BSym0 = B
+    type FSym0 :: Foo2
+    type family FSym0 where
+      FSym0 = F
+    type GSym0 :: Foo2
+    type family GSym0 where
+      GSym0 = G
     type FooCompareSym0 :: (~>) Foo ((~>) Foo Ordering)
     data FooCompareSym0 a0123456789876543210
       where
@@ -78,11 +86,12 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         FooCompareSym1KindInference :: SameKind (Apply (FooCompareSym1 a0123456789876543210) arg) (FooCompareSym2 a0123456789876543210 arg) =>
                                        FooCompareSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (FooCompareSym1 a0123456789876543210) a0123456789876543210 = FooCompareSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (FooCompareSym1 a0123456789876543210) a0123456789876543210 = FooCompare a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FooCompareSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) FooCompareSym1KindInference) ())
-    type FooCompareSym2 (a0123456789876543210 :: Foo) (a0123456789876543210 :: Foo) =
-        FooCompare a0123456789876543210 a0123456789876543210 :: Ordering
+    type FooCompareSym2 :: Foo -> Foo -> Ordering
+    type family FooCompareSym2 a0123456789876543210 a0123456789876543210 where
+      FooCompareSym2 a0123456789876543210 a0123456789876543210 = FooCompare a0123456789876543210 a0123456789876543210
     type ConstSym0 :: (~>) a ((~>) b a)
     data ConstSym0 a0123456789876543210
       where
@@ -96,11 +105,12 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         ConstSym1KindInference :: SameKind (Apply (ConstSym1 a0123456789876543210) arg) (ConstSym2 a0123456789876543210 arg) =>
                                   ConstSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ConstSym1 a0123456789876543210) a0123456789876543210 = ConstSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (ConstSym1 a0123456789876543210) a0123456789876543210 = Const a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ConstSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) ConstSym1KindInference) ())
-    type ConstSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) =
-        Const a0123456789876543210 a0123456789876543210 :: a
+    type ConstSym2 :: a -> b -> a
+    type family ConstSym2 a0123456789876543210 a0123456789876543210 where
+      ConstSym2 a0123456789876543210 a0123456789876543210 = Const a0123456789876543210 a0123456789876543210
     type FooCompare :: Foo -> Foo -> Ordering
     type family FooCompare a a where
       FooCompare A A = EQSym0
@@ -123,11 +133,12 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         MycompareSym1KindInference :: SameKind (Apply (MycompareSym1 a0123456789876543210) arg) (MycompareSym2 a0123456789876543210 arg) =>
                                       MycompareSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (MycompareSym1 a0123456789876543210) a0123456789876543210 = MycompareSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (MycompareSym1 a0123456789876543210) a0123456789876543210 = Mycompare a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MycompareSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MycompareSym1KindInference) ())
-    type MycompareSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: a) =
-        Mycompare a0123456789876543210 a0123456789876543210 :: Ordering
+    type MycompareSym2 :: forall a. a -> a -> Ordering
+    type family MycompareSym2 a0123456789876543210 a0123456789876543210 where
+      MycompareSym2 a0123456789876543210 a0123456789876543210 = Mycompare a0123456789876543210 a0123456789876543210
     type (<=>@#@$) :: forall a. (~>) a ((~>) a Ordering)
     data (<=>@#@$) a0123456789876543210
       where
@@ -142,12 +153,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         (:<=>@#@$$###) :: SameKind (Apply ((<=>@#@$$) a0123456789876543210) arg) ((<=>@#@$$$) a0123456789876543210 arg) =>
                           (<=>@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((<=>@#@$$) a0123456789876543210) a0123456789876543210 = (<=>@#@$$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((<=>@#@$$) a0123456789876543210) a0123456789876543210 = (<=>) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<=>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:<=>@#@$$###)) ())
     infix 4 <=>@#@$$
-    type (<=>@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) =
-        (<=>) a0123456789876543210 a0123456789876543210 :: Ordering
+    type (<=>@#@$$$) :: forall a. a -> a -> Ordering
+    type family (<=>@#@$$$) a0123456789876543210 a0123456789876543210 where
+      (<=>@#@$$$) a0123456789876543210 a0123456789876543210 = (<=>) a0123456789876543210 a0123456789876543210
     infix 4 <=>@#@$$$
     type TFHelper_0123456789876543210 :: a -> a -> Ordering
     type family TFHelper_0123456789876543210 a a where
@@ -166,12 +178,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
-    type TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: a) =
-        TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Ordering
+    type TFHelper_0123456789876543210Sym2 :: a -> a -> Ordering
+    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     class PMyOrd a where
       type Mycompare (arg :: a) (arg :: a) :: Ordering
       type (<=>) (arg :: a) (arg :: a) :: Ordering
@@ -196,12 +209,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         Mycompare_0123456789876543210Sym1KindInference :: SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Mycompare_0123456789876543210Sym1KindInference) ())
-    type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
-        Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Ordering
+    type Mycompare_0123456789876543210Sym2 :: Nat -> Nat -> Ordering
+    type family Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PMyOrd Nat where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     type Mycompare_0123456789876543210 :: () -> () -> Ordering
@@ -221,12 +235,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         Mycompare_0123456789876543210Sym1KindInference :: SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Mycompare_0123456789876543210Sym1KindInference) ())
-    type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: ()) (a0123456789876543210 :: ()) =
-        Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Ordering
+    type Mycompare_0123456789876543210Sym2 :: () -> () -> Ordering
+    type family Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PMyOrd () where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     type Mycompare_0123456789876543210 :: Foo -> Foo -> Ordering
@@ -246,12 +261,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         Mycompare_0123456789876543210Sym1KindInference :: SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Mycompare_0123456789876543210Sym1KindInference) ())
-    type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: Foo) (a0123456789876543210 :: Foo) =
-        Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Ordering
+    type Mycompare_0123456789876543210Sym2 :: Foo -> Foo -> Ordering
+    type family Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PMyOrd Foo where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     type TFHelper_0123456789876543210 :: Foo2 -> Foo2 -> Bool
@@ -274,12 +290,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
-    type TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: Foo2) (a0123456789876543210 :: Foo2) =
-        TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Bool
+    type TFHelper_0123456789876543210Sym2 :: Foo2 -> Foo2 -> Bool
+    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq Foo2 where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     infix 4 %<=>
@@ -445,12 +462,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         Mycompare_0123456789876543210Sym1KindInference :: SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Mycompare_0123456789876543210Sym1KindInference) ())
-    type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: Foo2) (a0123456789876543210 :: Foo2) =
-        Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Ordering
+    type Mycompare_0123456789876543210Sym2 :: Foo2 -> Foo2 -> Ordering
+    type family Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PMyOrd Foo2 where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: Foo2 -> Foo2 -> Ordering
@@ -472,12 +490,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym1KindInference) ())
-    type Compare_0123456789876543210Sym2 (a0123456789876543210 :: Foo2) (a0123456789876543210 :: Foo2) =
-        Compare_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Ordering
+    type Compare_0123456789876543210Sym2 :: Foo2 -> Foo2 -> Ordering
+    type family Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd Foo2 where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
 Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
@@ -496,17 +515,20 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       mycompare Zero' (Succ' _) = LT
       mycompare (Succ' _) Zero' = GT
       mycompare (Succ' n) (Succ' m) = (m `mycompare` n)
-    type Zero'Sym0 = Zero' :: Nat'
+    type Zero'Sym0 :: Nat'
+    type family Zero'Sym0 where
+      Zero'Sym0 = Zero'
     type Succ'Sym0 :: (~>) Nat' Nat'
     data Succ'Sym0 a0123456789876543210
       where
         Succ'Sym0KindInference :: SameKind (Apply Succ'Sym0 arg) (Succ'Sym1 arg) =>
                                   Succ'Sym0 a0123456789876543210
-    type instance Apply Succ'Sym0 a0123456789876543210 = Succ'Sym1 a0123456789876543210
+    type instance Apply Succ'Sym0 a0123456789876543210 = Succ' a0123456789876543210
     instance SuppressUnusedWarnings Succ'Sym0 where
       suppressUnusedWarnings = snd (((,) Succ'Sym0KindInference) ())
-    type Succ'Sym1 (a0123456789876543210 :: Nat') =
-        Succ' a0123456789876543210 :: Nat'
+    type Succ'Sym1 :: Nat' -> Nat'
+    type family Succ'Sym1 a0123456789876543210 where
+      Succ'Sym1 a0123456789876543210 = Succ' a0123456789876543210
     type Mycompare_0123456789876543210 :: Nat' -> Nat' -> Ordering
     type family Mycompare_0123456789876543210 a a where
       Mycompare_0123456789876543210 Zero' Zero' = EQSym0
@@ -528,12 +550,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       where
         Mycompare_0123456789876543210Sym1KindInference :: SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Mycompare_0123456789876543210Sym1KindInference) ())
-    type Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: Nat') (a0123456789876543210 :: Nat') =
-        Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Ordering
+    type Mycompare_0123456789876543210Sym2 :: Nat' -> Nat' -> Ordering
+    type family Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PMyOrd Nat' where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
     data SNat' :: Nat' -> GHC.Types.Type

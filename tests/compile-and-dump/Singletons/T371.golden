@@ -13,28 +13,34 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     data Y (a :: Type)
       = Y1 | Y2 (X a)
       deriving Show
-    type X1Sym0 = X1 :: X (a :: Type)
+    type X1Sym0 :: forall (a :: Type). X (a :: Type)
+    type family X1Sym0 where
+      X1Sym0 = X1
     type X2Sym0 :: forall (a :: Type). (~>) (Y a) (X (a :: Type))
     data X2Sym0 a0123456789876543210
       where
         X2Sym0KindInference :: SameKind (Apply X2Sym0 arg) (X2Sym1 arg) =>
                                X2Sym0 a0123456789876543210
-    type instance Apply X2Sym0 a0123456789876543210 = X2Sym1 a0123456789876543210
+    type instance Apply X2Sym0 a0123456789876543210 = X2 a0123456789876543210
     instance SuppressUnusedWarnings X2Sym0 where
       suppressUnusedWarnings = snd (((,) X2Sym0KindInference) ())
-    type X2Sym1 (a0123456789876543210 :: Y a) =
-        X2 a0123456789876543210 :: X (a :: Type)
-    type Y1Sym0 = Y1 :: Y (a :: Type)
+    type X2Sym1 :: forall (a :: Type). Y a -> X (a :: Type)
+    type family X2Sym1 a0123456789876543210 where
+      X2Sym1 a0123456789876543210 = X2 a0123456789876543210
+    type Y1Sym0 :: forall (a :: Type). Y (a :: Type)
+    type family Y1Sym0 where
+      Y1Sym0 = Y1
     type Y2Sym0 :: forall (a :: Type). (~>) (X a) (Y (a :: Type))
     data Y2Sym0 a0123456789876543210
       where
         Y2Sym0KindInference :: SameKind (Apply Y2Sym0 arg) (Y2Sym1 arg) =>
                                Y2Sym0 a0123456789876543210
-    type instance Apply Y2Sym0 a0123456789876543210 = Y2Sym1 a0123456789876543210
+    type instance Apply Y2Sym0 a0123456789876543210 = Y2 a0123456789876543210
     instance SuppressUnusedWarnings Y2Sym0 where
       suppressUnusedWarnings = snd (((,) Y2Sym0KindInference) ())
-    type Y2Sym1 (a0123456789876543210 :: X a) =
-        Y2 a0123456789876543210 :: Y (a :: Type)
+    type Y2Sym1 :: forall (a :: Type). X a -> Y (a :: Type)
+    type family Y2Sym1 a0123456789876543210 where
+      Y2Sym1 a0123456789876543210 = Y2 a0123456789876543210
     type ShowsPrec_0123456789876543210 :: GHC.Types.Nat
                                           -> X a -> GHC.Types.Symbol -> GHC.Types.Symbol
     type family ShowsPrec_0123456789876543210 a a a where
@@ -65,12 +71,14 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
-    type ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: X a) (a0123456789876543210 :: GHC.Types.Symbol) =
-        ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 :: GHC.Types.Symbol
+    type ShowsPrec_0123456789876543210Sym3 :: GHC.Types.Nat
+                                              -> X a -> GHC.Types.Symbol -> GHC.Types.Symbol
+    type family ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+      ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow (X a) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     type ShowsPrec_0123456789876543210 :: GHC.Types.Nat
@@ -103,12 +111,14 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
-    type ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Y a) (a0123456789876543210 :: GHC.Types.Symbol) =
-        ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 :: GHC.Types.Symbol
+    type ShowsPrec_0123456789876543210Sym3 :: GHC.Types.Nat
+                                              -> Y a -> GHC.Types.Symbol -> GHC.Types.Symbol
+    type family ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+      ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow (Y a) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     data SX :: forall a. X (a :: Type) -> Type

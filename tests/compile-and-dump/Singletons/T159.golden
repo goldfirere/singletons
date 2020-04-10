@@ -1,12 +1,24 @@
 Singletons/T159.hs:0:0:: Splicing declarations
     genSingletons [''T0, ''T1]
   ======>
-    type ASym0 = 'A :: T0
-    type BSym0 = 'B :: T0
-    type CSym0 = 'C :: T0
-    type DSym0 = 'D :: T0
-    type ESym0 = 'E :: T0
-    type FSym0 = 'F :: T0
+    type ASym0 :: T0
+    type family ASym0 where
+      ASym0 = 'A
+    type BSym0 :: T0
+    type family BSym0 where
+      BSym0 = 'B
+    type CSym0 :: T0
+    type family CSym0 where
+      CSym0 = 'C
+    type DSym0 :: T0
+    type family DSym0 where
+      DSym0 = 'D
+    type ESym0 :: T0
+    type family ESym0 where
+      ESym0 = 'E
+    type FSym0 :: T0
+    type family FSym0 where
+      FSym0 = 'F
     type ST0 :: T0 -> GHC.Types.Type
     data ST0 z
       where
@@ -43,7 +55,9 @@ Singletons/T159.hs:0:0:: Splicing declarations
       sing = SE
     instance SingI 'F where
       sing = SF
-    type N1Sym0 = 'N1 :: T1
+    type N1Sym0 :: T1
+    type family N1Sym0 where
+      N1Sym0 = 'N1
     type C1Sym0 :: (~>) T0 ((~>) T1 T1)
     data C1Sym0 a0123456789876543210
       where
@@ -58,12 +72,13 @@ Singletons/T159.hs:0:0:: Splicing declarations
       where
         C1Sym1KindInference :: SameKind (Apply (C1Sym1 a0123456789876543210) arg) (C1Sym2 a0123456789876543210 arg) =>
                                C1Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (C1Sym1 a0123456789876543210) a0123456789876543210 = C1Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (C1Sym1 a0123456789876543210) a0123456789876543210 = 'C1 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (C1Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) C1Sym1KindInference) ())
     infixr 5 `C1Sym1`
-    type C1Sym2 (a0123456789876543210 :: T0) (a0123456789876543210 :: T1) =
-        'C1 a0123456789876543210 a0123456789876543210 :: T1
+    type C1Sym2 :: T0 -> T1 -> T1
+    type family C1Sym2 a0123456789876543210 a0123456789876543210 where
+      C1Sym2 a0123456789876543210 a0123456789876543210 = 'C1 a0123456789876543210 a0123456789876543210
     infixr 5 `C1Sym2`
     type (:&&@#@$) :: (~>) T0 ((~>) T1 T1)
     data (:&&@#@$) a0123456789876543210
@@ -79,12 +94,13 @@ Singletons/T159.hs:0:0:: Splicing declarations
       where
         (::&&@#@$$###) :: SameKind (Apply ((:&&@#@$$) a0123456789876543210) arg) ((:&&@#@$$$) a0123456789876543210 arg) =>
                           (:&&@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:&&@#@$$) a0123456789876543210) a0123456789876543210 = (:&&@#@$$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((:&&@#@$$) a0123456789876543210) a0123456789876543210 = '(:&&) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:&&@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::&&@#@$$###)) ())
     infixr 5 :&&@#@$$
-    type (:&&@#@$$$) (a0123456789876543210 :: T0) (a0123456789876543210 :: T1) =
-        '(:&&) a0123456789876543210 a0123456789876543210 :: T1
+    type (:&&@#@$$$) :: T0 -> T1 -> T1
+    type family (:&&@#@$$$) a0123456789876543210 a0123456789876543210 where
+      (:&&@#@$$$) a0123456789876543210 a0123456789876543210 = '(:&&) a0123456789876543210 a0123456789876543210
     infixr 5 :&&@#@$$$
     type ST1 :: T1 -> GHC.Types.Type
     data ST1 z
@@ -140,7 +156,9 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
     data T2 = N2 | C2 T0 T2 | T0 :|| T2
     infixr 5 `C2`
     infixr 5 :||
-    type N2Sym0 = N2 :: T2
+    type N2Sym0 :: T2
+    type family N2Sym0 where
+      N2Sym0 = N2
     type C2Sym0 :: (~>) T0 ((~>) T2 T2)
     data C2Sym0 a0123456789876543210
       where
@@ -155,12 +173,13 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       where
         C2Sym1KindInference :: SameKind (Apply (C2Sym1 a0123456789876543210) arg) (C2Sym2 a0123456789876543210 arg) =>
                                C2Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (C2Sym1 a0123456789876543210) a0123456789876543210 = C2Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (C2Sym1 a0123456789876543210) a0123456789876543210 = C2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (C2Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) C2Sym1KindInference) ())
     infixr 5 `C2Sym1`
-    type C2Sym2 (a0123456789876543210 :: T0) (a0123456789876543210 :: T2) =
-        C2 a0123456789876543210 a0123456789876543210 :: T2
+    type C2Sym2 :: T0 -> T2 -> T2
+    type family C2Sym2 a0123456789876543210 a0123456789876543210 where
+      C2Sym2 a0123456789876543210 a0123456789876543210 = C2 a0123456789876543210 a0123456789876543210
     infixr 5 `C2Sym2`
     type (:||@#@$) :: (~>) T0 ((~>) T2 T2)
     data (:||@#@$) a0123456789876543210
@@ -176,12 +195,13 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       where
         (::||@#@$$###) :: SameKind (Apply ((:||@#@$$) a0123456789876543210) arg) ((:||@#@$$$) a0123456789876543210 arg) =>
                           (:||@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:||@#@$$) a0123456789876543210) a0123456789876543210 = (:||@#@$$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((:||@#@$$) a0123456789876543210) a0123456789876543210 = (:||) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:||@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::||@#@$$###)) ())
     infixr 5 :||@#@$$
-    type (:||@#@$$$) (a0123456789876543210 :: T0) (a0123456789876543210 :: T2) =
-        (:||) a0123456789876543210 a0123456789876543210 :: T2
+    type (:||@#@$$$) :: T0 -> T2 -> T2
+    type family (:||@#@$$$) a0123456789876543210 a0123456789876543210 where
+      (:||@#@$$$) a0123456789876543210 a0123456789876543210 = (:||) a0123456789876543210 a0123456789876543210
     infixr 5 :||@#@$$$
     infixr 5 :%||
     infixr 5 `SC2`

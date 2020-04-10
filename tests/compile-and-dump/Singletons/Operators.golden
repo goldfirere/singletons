@@ -22,7 +22,9 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     (+) :: Nat -> Nat -> Nat
     (+) Zero m = m
     (+) (Succ n) m = Succ (n + m)
-    type FLeafSym0 = FLeaf :: Foo
+    type FLeafSym0 :: Foo
+    type family FLeafSym0 where
+      FLeafSym0 = FLeaf
     type (:+:@#@$) :: (~>) Foo ((~>) Foo Foo)
     data (:+:@#@$) a0123456789876543210
       where
@@ -36,11 +38,12 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       where
         (::+:@#@$$###) :: SameKind (Apply ((:+:@#@$$) a0123456789876543210) arg) ((:+:@#@$$$) a0123456789876543210 arg) =>
                           (:+:@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:+:@#@$$) a0123456789876543210) a0123456789876543210 = (:+:@#@$$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((:+:@#@$$) a0123456789876543210) a0123456789876543210 = (:+:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:+:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::+:@#@$$###)) ())
-    type (:+:@#@$$$) (a0123456789876543210 :: Foo) (a0123456789876543210 :: Foo) =
-        (:+:) a0123456789876543210 a0123456789876543210 :: Foo
+    type (:+:@#@$$$) :: Foo -> Foo -> Foo
+    type family (:+:@#@$$$) a0123456789876543210 a0123456789876543210 where
+      (:+:@#@$$$) a0123456789876543210 a0123456789876543210 = (:+:) a0123456789876543210 a0123456789876543210
     type (+@#@$) :: (~>) Nat ((~>) Nat Nat)
     data (+@#@$) a0123456789876543210
       where
@@ -54,21 +57,23 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       where
         (:+@#@$$###) :: SameKind (Apply ((+@#@$$) a0123456789876543210) arg) ((+@#@$$$) a0123456789876543210 arg) =>
                         (+@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((+@#@$$) a0123456789876543210) a0123456789876543210 = (+@#@$$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((+@#@$$) a0123456789876543210) a0123456789876543210 = (+) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((+@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:+@#@$$###)) ())
-    type (+@#@$$$) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) =
-        (+) a0123456789876543210 a0123456789876543210 :: Nat
+    type (+@#@$$$) :: Nat -> Nat -> Nat
+    type family (+@#@$$$) a0123456789876543210 a0123456789876543210 where
+      (+@#@$$$) a0123456789876543210 a0123456789876543210 = (+) a0123456789876543210 a0123456789876543210
     type ChildSym0 :: (~>) Foo Foo
     data ChildSym0 a0123456789876543210
       where
         ChildSym0KindInference :: SameKind (Apply ChildSym0 arg) (ChildSym1 arg) =>
                                   ChildSym0 a0123456789876543210
-    type instance Apply ChildSym0 a0123456789876543210 = ChildSym1 a0123456789876543210
+    type instance Apply ChildSym0 a0123456789876543210 = Child a0123456789876543210
     instance SuppressUnusedWarnings ChildSym0 where
       suppressUnusedWarnings = snd (((,) ChildSym0KindInference) ())
-    type ChildSym1 (a0123456789876543210 :: Foo) =
-        Child a0123456789876543210 :: Foo
+    type ChildSym1 :: Foo -> Foo
+    type family ChildSym1 a0123456789876543210 where
+      ChildSym1 a0123456789876543210 = Child a0123456789876543210
     type (+) :: Nat -> Nat -> Nat
     type family (+) a a where
       (+) 'Zero m = m

@@ -17,12 +17,13 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
       where
         Const'Sym1KindInference :: SameKind (Apply (Const'Sym1 a0123456789876543210) arg) (Const'Sym2 a0123456789876543210 arg) =>
                                    Const'Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Const'Sym1 a0123456789876543210) a0123456789876543210 = Const'Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (Const'Sym1 a0123456789876543210) a0123456789876543210 = Const' a0123456789876543210 a0123456789876543210
     instance Data.Singletons.SuppressUnusedWarnings.SuppressUnusedWarnings (Const'Sym1 a0123456789876543210) where
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) Const'Sym1KindInference) ())
-    type Const'Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) =
-        Const' a0123456789876543210 a0123456789876543210 :: a
+    type Const'Sym2 :: a -> b -> a
+    type family Const'Sym2 a0123456789876543210 a0123456789876543210 where
+      Const'Sym2 a0123456789876543210 a0123456789876543210 = Const' a0123456789876543210 a0123456789876543210
     type Const' :: a -> b -> a
     type family Const' a a where
       Const' x _ = x

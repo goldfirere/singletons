@@ -202,8 +202,9 @@ defunctionalize name m_fixity defun_ki = do
     defun_vanilla_sak sak_tvbs sak_arg_kis sak_res_ki = do
       opts <- getOptions
       extra_name <- qNewName "arg"
+      let sak_arg_n = length sak_arg_kis
       -- Use noExactName below to avoid #17537.
-      arg_names <- replicateM (length sak_arg_kis) (noExactName <$> qNewName "a")
+      arg_names <- replicateM sak_arg_n (noExactName <$> qNewName "a")
 
       let -- The inner loop. @go n arg_nks res_nks@ returns @(res_k, decls)@.
           -- Using one particular example:
@@ -243,21 +244,25 @@ defunctionalize name m_fixity defun_ki = do
           -- gets to be that large.
           go :: Int -> [(Name, DKind)] -> [(Name, DKind)] -> (DKind, [DDec])
           go n arg_nks res_nkss =
+            let arg_tvbs :: [DTyVarBndr]
+                arg_tvbs = map (DPlainTV . fst) arg_nks
+
+                mk_sak_dec :: DKind -> DDec
+                mk_sak_dec res_ki =
+                  DKiSigD (defunctionalizedName opts name n) $
+                  ravelVanillaDType sak_tvbs [] (map snd arg_nks) res_ki in
             case res_nkss of
               [] ->
-                let -- Somewhat surprisingly, we do *not* generate SAKs for
-                    -- fully saturated defunctionalization symbols.
-                    -- See Note [No SAKs for fully saturated defunctionalization symbols]
-                    sat_decs = mk_sat_decs opts n (map (uncurry DKindedTV) arg_nks)
-                                           (Just sak_res_ki)
-                in (sak_res_ki, sat_decs)
+                let sat_sak_dec = mk_sak_dec sak_res_ki
+                    sat_decs    = mk_sat_decs opts n arg_tvbs Nothing
+                in (sak_res_ki, sat_sak_dec:sat_decs)
               res_nk:res_nks ->
                 let (res_ki, decs)   = go (n+1) (arg_nks ++ [res_nk]) res_nks
                     tyfun            = buildTyFunArrow (snd res_nk) res_ki
-                    defun_sak_dec    = DKiSigD (defunctionalizedName opts name n) $
-                                       ravelVanillaDType sak_tvbs [] (map snd arg_nks) tyfun
-                    defun_other_decs = mk_defun_decs opts n (map (DPlainTV . fst) arg_nks)
-                                                     (fst res_nk) extra_name Nothing
+                    defun_sak_dec    = mk_sak_dec tyfun
+                    defun_other_decs = mk_defun_decs opts n sak_arg_n
+                                                     arg_tvbs (fst res_nk)
+                                                     extra_name Nothing
                 in (tyfun, defun_sak_dec:defun_other_decs ++ decs)
 
       pure $ snd $ go 0 [] $ zip arg_names sak_arg_kis
@@ -275,7 +280,9 @@ defunctionalize name m_fixity defun_ki = do
       -- Use noExactTyVars below to avoid #11812.
       (tvbs, m_res) <- eta_expand (noExactTyVars tvbs') (noExactTyVars m_res')
 
-      let -- The inner loop. @go n arg_tvbs res_tvbs@ returns @(m_res_k, decls)@.
+      let tvbs_n = length tvbs
+
+          -- The inner loop. @go n arg_tvbs res_tvbs@ returns @(m_res_k, decls)@.
           -- Using one particular example:
           --
           -- @
@@ -305,7 +312,7 @@ defunctionalize name m_fixity defun_ki = do
                 let (m_res_ki, decs) = go (n+1) (arg_tvbs ++ [res_tvb]) res_tvbs
                     m_tyfun          = buildTyFunArrow_maybe (extractTvbKind res_tvb)
                                                              m_res_ki
-                    defun_decs'      = mk_defun_decs opts n arg_tvbs
+                    defun_decs'      = mk_defun_decs opts n tvbs_n arg_tvbs
                                                      (extractTvbName res_tvb)
                                                      extra_name m_tyfun
                 in (m_tyfun, defun_decs' ++ decs)
@@ -314,12 +321,13 @@ defunctionalize name m_fixity defun_ki = do
 
     mk_defun_decs :: Options
                   -> Int
+                  -> Int
                   -> [DTyVarBndr]
                   -> Name
                   -> Name
                   -> Maybe DKind
                   -> [DDec]
-    mk_defun_decs opts n arg_tvbs tyfun_name extra_name m_tyfun =
+    mk_defun_decs opts n fully_sat_n arg_tvbs tyfun_name extra_name m_tyfun =
       let data_name   = defunctionalizedName opts name n
           next_name   = defunctionalizedName opts name (n+1)
           con_name    = prefixName "" ":" $ suffixName "KindInference" "###" data_name
@@ -339,8 +347,14 @@ defunctionalize name m_fixity defun_ki = do
           app_eqn     = DTySynEqn Nothing
                                   (DConT applyName `DAppT` app_data_ty
                                                    `DAppT` DVarT tyfun_name)
-                                  (foldTypeTvbs (DConT next_name)
+                                  (foldTypeTvbs (DConT app_eqn_rhs_name)
                                                 (arg_tvbs ++ [DPlainTV tyfun_name]))
+          -- If the next defunctionalization symbol is fully saturated, then
+          -- use the original declaration name instead.
+          -- See Note [Fully saturated defunctionalization symbols]
+          -- (Wrinkle: avoiding reduction stack overflows).
+          app_eqn_rhs_name | n+1 == fully_sat_n = name
+                           | otherwise          = next_name
           app_decl    = DTySynInstD app_eqn
           suppress    = DInstanceD Nothing Nothing []
                           (DConT suppressClassName `DAppT` app_data_ty)
@@ -356,11 +370,16 @@ defunctionalize name m_fixity defun_ki = do
 
     -- Generate a "fully saturated" defunction symbol, along with a fixity
     -- declaration (if needed).
+    -- See Note [Fully saturated defunctionalization symbols].
     mk_sat_decs :: Options -> Int -> [DTyVarBndr] -> Maybe DKind -> [DDec]
     mk_sat_decs opts n sat_tvbs m_sat_res =
       let sat_name = defunctionalizedName opts name n
-          sat_dec  = DTySynD sat_name sat_tvbs $
-                     foldTypeTvbs (DConT name) sat_tvbs `maybeSigT` m_sat_res
+          sat_dec  = DClosedTypeFamilyD
+                       (DTypeFamilyHead sat_name sat_tvbs
+                                        (maybeKindToResultSig m_sat_res) Nothing)
+                       [DTySynEqn Nothing
+                                  (foldTypeTvbs (DConT sat_name) sat_tvbs)
+                                  (foldTypeTvbs (DConT name)     sat_tvbs)]
           sat_fixity_dec = maybeToList $ fmap (mk_fix_decl sat_name) m_fixity
       in sat_dec : sat_fixity_dec
 
@@ -439,9 +458,11 @@ declarations:
   data FooSym2 x y f where
     FooSym2KindInference :: SameKind (Apply (FooSym2 x y) arg) (FooSym3 x y arg)
                          => FooSym2 x y f
-  type instance Apply (FooSym2 x y) z = FooSym3 x y z
+  type instance Apply (FooSym2 x y) z = Foo x y z
 
-  type FooSym3 (x :: a) (y :: b) (z :: c) = Foo x y z :: c
+  type FooSym3 :: forall c a b. a -> b -> c -> c
+  type family FooSym3 x y z where
+    FooSym3 x y z = Foo x y z
 
 Some things to note:
 
@@ -460,10 +481,9 @@ Some things to note:
   See "Wrinkle 1: Partial kinds" below for more information.
 
 * FooSym3, the last defunctionalization symbol, is somewhat special in that
-  it is a type synonym, not a data type. These sorts of symbols are referred
-  to as "fully saturated" defunctionalization symbols. Furthermore, these
-  symbols are intentionally *not* given SAKs. See
-  Note [No SAKs for fully saturated defunctionalization symbols].
+  it is a type family, not a data type. These sorts of symbols are referred
+  to as "fully saturated" defunctionalization symbols.
+  See Note [Fully saturated defunctionalization symbols].
 
 * If Foo had a fixity declaration (e.g., infixl 4 `Foo`), then we would also
   generate fixity declarations for each defunctionalization symbol (e.g.,
@@ -502,9 +522,10 @@ inference to give Not's defunctionalization symbols the appropriate kinds.
 Here is a naïve first attempt:
 
   data NotSym0 f
-  type instance Apply NotSym0 x = NotSym1 x
+  type instance Apply NotSym0 x = Not x
 
-  type NotSym1 x = Not x
+  type family NotSym1 x where
+    NotSym1 x = Not x
 
 NotSym1 will have the inferred kind `Bool -> Bool`, but poor NotSym0 will have
 the inferred kind `forall k. k -> Type`, which is far more general than we
@@ -546,7 +567,7 @@ of Bar, here are the defunctionalization symbols that would be generated:
   data BarSym0 f where ...
   data BarSym1 x :: Nat ~> Nat ~> Nat where ...
   data BarSym2 x (y :: Nat) :: Nat ~> Nat where ...
-  type BarSym3 x (y :: Nat) (z :: Nat) = Bar x y z :: Nat
+  type family BarSym3 x (y :: Nat) (z :: Nat) :: Nat where ...
 
 -----
 -- Wrinkle 2: Non-vanilla kinds
@@ -567,10 +588,12 @@ Baz:
   type BazSym0 :: forall a. a ~> forall b. b ~> Type
   data BazSym0 f where ...
 
-  type BarSym1 :: forall a. a -> forall b. b ~> Type
+  type BazSym1 :: forall a. a -> forall b. b ~> Type
   data BazSym1 x f where ...
 
-  type family BazSym2 (x :: a) (y :: b) = Baz x y :: Type
+  type BazSym2 :: forall a. a -> forall b. b -> Type
+  type family BazSym2 x y where
+    BazSym2 x y = Baz x y
 
 Unfortunately, doing so would require impredicativity, since we would have:
 
@@ -591,7 +614,7 @@ following symbols:
 
   data BazSym0 :: a ~> b ~> Type where ...
   data BazSym1 (x :: a) :: b ~> Type where ...
-  type BazSym2 (x :: a) (y :: b) = Baz x y :: Type
+  type family BazSym2 (x :: a) (y :: b) :: Type where ...
 
 The kinds of BazSym0 and BazSym1 both start with `forall a b.`,
 whereas the `b` is quantified later in Baz itself. For most use cases, however,
@@ -615,17 +638,17 @@ for Quux. Once again, we fall back to the partial kind algorithm:
 
   data QuuxSym0 :: Type ~> k ~> Type where ...
   data QuuxSym1 (k :: Type) :: k ~> Type where ...
-  type QuuxSym2 (k :: Type) (x :: k) = Quux k x :: Type
+  type family QuuxSym2 (k :: Type) (x :: k) :: Type where ...
 
 The catch is that the kind of QuuxSym0, `forall k. Type ~> k ~> Type`, is
 slightly more general than it ought to be. In practice, however, this is
 unlikely to be a problem as long as you apply QuuxSym0 to arguments of the
 right kinds.
 
-Note [No SAKs for fully saturated defunctionalization symbols]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Note [Fully saturated defunctionalization symbols]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 When generating defunctionalization symbols, most of the symbols are data
-types. The last one, however, is a type synonym. For example, this code:
+types. The last one, however, is a type family. For example, this code:
 
   $(singletons [d|
     type Const :: a -> b -> a
@@ -640,14 +663,16 @@ Will generate the following symbols:
   type ConstSym1 :: a -> b ~> a
   data ConstSym1 x f where ...
 
-  type ConstSym2 (x :: a) (y :: b) = Const x y :: a
+  type ConstSym2 :: a -> b -> a
+  type family ConstSym2 x y where
+    ConstSym2 x y = Const x y
 
-ConstSym2, the sole type synonym of the bunch, is what is referred to as a
+ConstSym2, the sole type family of the bunch, is what is referred to as a
 "fully saturated" defunctionaliztion symbol.
 
 At first glance, ConstSym2 may not seem terribly useful, since it is
 effectively a thin wrapper around the original Const type. Indeed, fully
-saturated symbols are never appear directly in user-written code. Instead,
+saturated symbols almost never appear directly in user-written code. Instead,
 they are most valuable in TH-generated code, as singletons often generates code
 that directly applies a defunctionalization symbol to some number of arguments
 (see, for instance, D.S.Names.promoteTySym). In theory, such code could carve
@@ -658,222 +683,113 @@ is more convenient to just generate code that always applies FuncSymN to N
 arguments, and to let fully saturated defunctionalization symbols handle the
 case where N equals the number of arguments needed to fully saturate Func.
 
-Another curious thing about fully saturated defunctionalization symbols do
-*not* get assigned SAKs, unlike their data type brethren. Why not just give
-ConstSym2 a SAK like this?
+One might wonder if, instead of using a closed type family with a single
+equation, we could use a type synonym to define ConstSym2:
 
   type ConstSym2 :: a -> b -> a
   type ConstSym2 x y = Const x y
 
-This would in fact work for most use cases, but there are a handful of corner
-cases where this approach would break down. Here is one such corner case:
+This approach has various downsides which make it impractical:
 
-  $(promote [d|
-    class Applicative f where
-      pure :: a -> f a
-      ...
-      (*>) :: f a -> f b -> f b
-    |])
+* Type synonyms are often not expanded in the output of GHCi's :kind! command.
+  As issue #445 chronicles, this can significantly impact the readability of
+  even simple :kind! queries. It can be the difference between this:
 
-  ==>
+    λ> :kind! Map IdSym0 '[1,2,3]
+    Map IdSym0 '[1,2,3] :: [Nat]
+    = 1 :@#@$$$ '[2, 3]
 
-  class PApplicative f where
-    type Pure (x :: a) :: f a
-    type (*>) (x :: f a) (y :: f b) :: f b
+  And this:
 
-What would happen if we were to defunctionalize the promoted version of (*>)?
-We'd end up with the following defunctionalization symbols:
+    λ> :kind! Map IdSym0 '[1,2,3]
+    Map IdSym0 '[1,2,3] :: [Nat]
+    = '[1, 2, 3]
 
-  type (*>@#@$)   :: f a ~> f b ~> f b
-  data (*>@#@$) f where ...
+  Making fully saturated defunctionalization symbols like (:@#@$$$) type
+  families makes this issue moot, since :kind! always expands type families.
+* There are a handful of corner cases where using type synonyms can actually
+  make fully saturated defunctionalization symbols fail to typecheck.
+  Here is one such corner case:
 
-  type (*>@#@$$)  :: f a -> f b ~> f b
-  data (*>@#@$$) x f where ...
+    $(promote [d|
+      class Applicative f where
+        pure :: a -> f a
+        ...
+        (*>) :: f a -> f b -> f b
+      |])
 
-  type (*>@#@$$$) :: f a -> f b -> f b
-  type (*>@#@$$$) x y = (*>) x y
+    ==>
 
-It turns out, however, that (*>@#@$$$) will not kind-check. Because (*>@#@$$$)
-has a standalone kind signature, it is kind-generalized *before* kind-checking
-the actual definition itself. Therefore, the full kind is:
+    class PApplicative f where
+      type Pure (x :: a) :: f a
+      type (*>) (x :: f a) (y :: f b) :: f b
 
-  type (*>@#@$$$) :: forall {k} (f :: k -> Type) (a :: k) (b :: k).
-                     f a -> f b -> f b
-  type (*>@#@$$$) x y = (*>) x y
+  What would happen if we were to defunctionalize the promoted version of (*>)?
+  We'd end up with the following defunctionalization symbols:
 
-However, the kind of (*>) is
-`forall (f :: Type -> Type) (a :: Type) (b :: Type). f a -> f b -> f b`.
-This is not general enough for (*>@#@$$$), which expects kind-polymorphic `f`,
-`a`, and `b`, leading to a kind error. You might think that we could somehow
-infer this information, but note the quoted definition of Applicative (and
-PApplicative, as a consequence) omits the kinds of `f`, `a`, and `b` entirely.
-Unless we were to implement full-blown kind inference inside of Template
-Haskell (which is a tall order), the kind `f a -> f b -> f b` is about as good
-as we can get.
+    type (*>@#@$)   :: f a ~> f b ~> f b
+    data (*>@#@$) f where ...
 
-Note that (*>@#@$) and (*>@#@$$) are implemented as GADTs, not type synonyms.
-This allows them to have kind-polymorphic `f`, `a`, and `b` in their kinds
-while equating `k` to be `Type` in their data constructors, which neatly avoids
-the issue that (*>@#@$$$) faces.
+    type (*>@#@$$)  :: f a -> f b ~> f b
+    data (*>@#@$$) x f where ...
 
------
+    type (*>@#@$$$) :: f a -> f b -> f b
+    type (*>@#@$$$) x y = (*>) x y
 
-In one last attempt to salvage the idea of giving SAKs to fully saturated
-defunctionalization symbols, I explored an idea where we would add
-"dummy constraints" to get the kinds exactly right. The idea was to first
-define a type synonym for dummy contexts:
+  It turns out, however, that (*>@#@$$$) will not kind-check. Because (*>@#@$$$)
+  has a standalone kind signature, it is kind-generalized *before* kind-checking
+  the actual definition itself. Therefore, the full kind is:
 
-  type Dummy :: Constraint -> Constraint
-  type Dummy x = () ~ ()
+    type (*>@#@$$$) :: forall {k} (f :: k -> Type) (a :: k) (b :: k).
+                       f a -> f b -> f b
+    type (*>@#@$$$) x y = (*>) x y
 
-Dummy simply ignores its argument and returns `() ~ ()`. `() ~ ()` was chosen
-because it's one of the few Constraints that can currently be used at the kind
-level. Dummy could, in theory, be used like this:
+  However, the kind of (*>) is
+  `forall (f :: Type -> Type) (a :: Type) (b :: Type). f a -> f b -> f b`.
+  This is not general enough for (*>@#@$$$), which expects kind-polymorphic `f`,
+  `a`, and `b`, leading to a kind error. You might think that we could somehow
+  infer this information, but note the quoted definition of Applicative (and
+  PApplicative, as a consequence) omits the kinds of `f`, `a`, and `b` entirely.
+  Unless we were to implement full-blown kind inference inside of Template
+  Haskell (which is a tall order), the kind `f a -> f b -> f b` is about as good
+  as we can get.
 
-  type (*>@#@$)   :: Dummy (PApplicative f) => f a ~> f b ~> f b
-  type (*>@#@$$)  :: Dummy (PApplicative f) => f a -> f b ~> f b
-  type (*>@#@$$$) :: Dummy (PApplicative f) => f a -> f b -> f b
-
-The advantage to using `Dummy (PApplicative f)` is that it would constraint `f`
-to be of kind `Type -> Type`, which would get the kinds exactly the way we want
-them. Sounds great, right? Unfortunately, it doesn't work in practice. Consider
-this example:
-
-  $(promoteOnly [d|
-    class C a where
-      m1 :: a -> a
-      m1 = m2
-
-      m2 :: a -> a
-      m2 = m1
-    |])
-
-  ==>
-
-  class PC a where
-    type M1 (x :: a) :: a
-    type M1 x = Apply M2Sym1 x
-
-    type M2 (x :: a) :: a
-    type M2 x = Apply M1Sym1 x
-
-The generated code would fail to compile, instead throwing this error:
-
-  error:
-      • Class ‘PC’ cannot be used here
-          (it is defined and used in the same recursive group)
-      • In the first argument of ‘Dummy’, namely ‘(PC a)’
-        In a standalone kind signature for ‘M2Sym1’:
-          forall a. Dummy (PC a) => a -> a
-     |
-     | type M2Sym1 :: forall a. Dummy (PC a) => a -> a
-     |                                 ^^^^
-
-Ugh. I suspect this is a GHC bug (see
-https://gitlab.haskell.org/ghc/ghc/issues/15942#note_242075), but it's one
-that's unlikely to be fixed any time soon.
-
-A slight variations on idea is to use the original class instead of the
-promoted class in `Dummy` contexts, e.g.,
-
-  type M2Sym1 :: forall a. Dummy (C a) => a -> a
-
-This would avoid the recursive group issues, but it would introduce a new
-problem: the original class is not guaranteed to exist if
-`promoteOnly` or `singletonsOnly` are used to create the promoted class.
-(Indeed, this is precisely the case in the `PC` example.)
+  Making (*>@#@$$$) a type family rather than a type synonym avoids this issue
+  since type family equations are allowed to match on kind arguments. In this
+  example, (*>@#@$$$) would have kind-polymorphic `f`, `a`, and `b` in its kind
+  signature, but its equation would implicitly equate `k` with `Type`. Note
+  that (*>@#@$) and (*>@#@$$), which are GADTs, also use a similar trick by
+  equating `k` with `Type` in their GADT constructors.
 
 -----
+-- Wrinkle: avoiding reduction stack overflows
+-----
 
-As an alternative to type synonyms, we might consider using type families to
-define fully saturated defunctionalization symbols. For instance, we could try
-this:
+A naïve attempt at declaring all fully saturated defunctionalization symbols
+as type families can make certain programs overflow the reduction stack, such
+as the T445 test case. This is because when evaluating
+`FSym0 `Apply` x_1 `Apply` ... `Apply` x_N`, (where F is a promoted function
+that requires N arguments), we will eventually bottom out by evaluating
+`FSymN x_1 ... x_N`, where FSymN is a fully saturated defunctionalization
+symbol. Since FSymN is a type family, this is yet another type family
+reduction that contributes to the overall reduction limit. This might not
+seem like a lot, but it can add up if F is invoked several times in a single
+type-level computation!
 
-  type (*>@#@$$$) :: f a -> f b -> f b
-  type family (*>@#@$$$) x y where
-    (*>@#@$$$) x y = (*>) x y
+Fortunately, we can bypass evaluating FSymN entirely by just making a slight
+tweak to the TH machinery. Instead of generating this Apply instance:
 
-Like before, the full kind of (*>@#@$$$) is generalized to be
-`forall {k} (f :: k -> Type) (a :: k) (b :: k)`. The difference is that the
-type family equation *matches* on `k` such that the equation will only trigger
-if `k` is equal to `Type`. (This is similar to the trick that (*>@#@$) and
-(*>@#@$$) employ, as being GADTs allows them to constrain `k` to be `Type` in
-their data constructors.)
+  type instance Apply (FSym{N-1} x_1 ... x_{N-1}) x_N =
+    FSymN x_1 ... x_{N-1} x_N
 
-Alas, the type family approach is strictly less powerful than the type synonym
-approach. Consider the following code:
+Generate this instance, which jumps straight to F:
 
-  $(singletons [d|
-    data Nat = Z | S Nat
+  type instance Apply (FSym{N-1} x_1 ... x_{N-1}) x_N =
+    F x_1 ... x_{N-1} x_N
 
-    natMinus :: Nat -> Nat -> Nat
-    natMinus Z     _     = Z
-    natMinus (S a) (S b) = natMinus a b
-    natMinus a     Z     = a
-    |])
-
-Among other things, this will generate the following declarations:
-
-  type ZSym0 :: Nat
-
-  type NatMinus :: Nat -> Nat -> Nat
-  type family NatMinus x y where
-    NatMinus Z     _     = ZSym0
-    NatMinus (S a) (S b) = NatMinus a b
-    NatMinus a     Z     = a
-
-  sNatMinus :: SNat x -> SNat y -> SNat (NatMinus x y)
-  sNatMinus SZ      _       = SZ
-  sNatMinus (SS sA) (SS sB) = sNatMinus sA sB
-  sNatMinus sA      SZ      = sA
-
-Shockingly, this will either succeed or fail to compile depending on whether
-ZSym0 is a type synonym or a type family. If ZSym0 is a type synonym, then
-the first and third equations of NatMinus will be compatible (since GHC will
-be able to infer that Z ~ ZSym0), which is what allows the third equation of
-sNatMinus to typecheck. If ZSym0 is a type family, however, then the third
-equation of NatMinus will be incompatible with the first, which will cause
-the third equation of sNatMinus to fail to typecheck:
-
-  error:
-      • Could not deduce: NatMinus x 'Z ~ x
-        from the context: y ~ 'Z
-          bound by a pattern with constructor: SZ :: SNat 'Z,
-                   in an equation for ‘sNatMinus’
-        ‘x’ is a rigid type variable bound by
-          the type signature for:
-            sNatMinus :: forall (x :: Nat) (y :: Nat).
-                         SNat x -> SNat y -> SNat (NatMinus x y)
-        Expected type: SNat (NatMinus x y)
-          Actual type: SNat x
-      • In the expression: sA
-        In an equation for ‘sNatMinus’: sNatMinus sA SZ = sA
-      • Relevant bindings include
-          sA :: SNat x
-          sNatMinus :: SNat x -> SNat y -> SNat (NatMinus x y)
-
-One could work around the issue by tweaking the third equation of natMinus
-slightly:
-
-  $(singletons [d|
-    ...
-
-    natMinus :: Nat -> Nat -> Nat
-    natMinus Z       _     = Z
-    natMinus (S a)   (S b) = natMinus a b
-    natMinus a@(S _) Z     = a
-    |])
-
-But I would generally prefer to avoid having the user add extraneous pattern
-matches when possible. Given the choice between expressiveness and SAKs, I give
-the edge to expressiveness.
-
-Bottom line: don't give fully saturated defunctionalization symbols SAKs. This
-is admittedly not ideal, but it's unlikely to be a sticking point in practice,
-given that these symbols are almost exclusively used in autogenerated code
-in the first place. If we want to support promoting code that uses visible
-type application (see #378), we will need to figure out how to resolve this
-issue.
+Now evaluating `FSym0 `Apply` x_1 `Apply` ... `Apply` x_N` will require one
+less type family reduction. In practice, this is usually enough to keep the
+reduction limit at bay in most situations.
 
 Note [Fixity declarations for defunctionalization symbols]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

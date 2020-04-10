@@ -1,0 +1,125 @@
+Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| f :: forall b a. a -> b -> ()
+          f _ _ = ()
+          natMinus :: Nat -> Nat -> Nat
+          natMinus Zero _ = Zero
+          natMinus (Succ a) (Succ b) = natMinus a b
+          natMinus a@(Succ _) Zero = a
+          
+          type C :: forall b a. a -> b -> Constraint
+          type D :: forall b a. a -> b -> Type
+          
+          class C x y
+          data D x y |]
+  ======>
+    type C :: forall b a. a -> b -> Constraint
+    class C x y
+    type D :: forall b a. a -> b -> Type
+    data D x y
+    f :: forall b a. a -> b -> ()
+    f _ _ = ()
+    natMinus :: Nat -> Nat -> Nat
+    natMinus Zero _ = Zero
+    natMinus (Succ a) (Succ b) = (natMinus a) b
+    natMinus a@(Succ _) Zero = a
+    data Let0123456789876543210ASym0 wild_01234567898765432100123456789876543210
+      where
+        Let0123456789876543210ASym0KindInference :: SameKind (Apply Let0123456789876543210ASym0 arg) (Let0123456789876543210ASym1 arg) =>
+                                                    Let0123456789876543210ASym0 wild_01234567898765432100123456789876543210
+    type instance Apply Let0123456789876543210ASym0 wild_01234567898765432100123456789876543210 = Let0123456789876543210A wild_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings Let0123456789876543210ASym0 where
+      suppressUnusedWarnings
+        = snd (((,) Let0123456789876543210ASym0KindInference) ())
+    type family Let0123456789876543210ASym1 wild_01234567898765432100123456789876543210 where
+      Let0123456789876543210ASym1 wild_01234567898765432100123456789876543210 = Let0123456789876543210A wild_01234567898765432100123456789876543210
+    type family Let0123456789876543210A wild_0123456789876543210 where
+      Let0123456789876543210A wild_0123456789876543210 = Apply SuccSym0 wild_0123456789876543210
+    type NatMinusSym0 :: (~>) Nat ((~>) Nat Nat)
+    data NatMinusSym0 a0123456789876543210
+      where
+        NatMinusSym0KindInference :: SameKind (Apply NatMinusSym0 arg) (NatMinusSym1 arg) =>
+                                     NatMinusSym0 a0123456789876543210
+    type instance Apply NatMinusSym0 a0123456789876543210 = NatMinusSym1 a0123456789876543210
+    instance SuppressUnusedWarnings NatMinusSym0 where
+      suppressUnusedWarnings = snd (((,) NatMinusSym0KindInference) ())
+    type NatMinusSym1 :: Nat -> (~>) Nat Nat
+    data NatMinusSym1 a0123456789876543210 a0123456789876543210
+      where
+        NatMinusSym1KindInference :: SameKind (Apply (NatMinusSym1 a0123456789876543210) arg) (NatMinusSym2 a0123456789876543210 arg) =>
+                                     NatMinusSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (NatMinusSym1 a0123456789876543210) a0123456789876543210 = NatMinus a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (NatMinusSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) NatMinusSym1KindInference) ())
+    type NatMinusSym2 :: Nat -> Nat -> Nat
+    type family NatMinusSym2 a0123456789876543210 a0123456789876543210 where
+      NatMinusSym2 a0123456789876543210 a0123456789876543210 = NatMinus a0123456789876543210 a0123456789876543210
+    type FSym0 :: forall b a. (~>) a ((~>) b ())
+    data FSym0 a0123456789876543210
+      where
+        FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
+                              FSym0 a0123456789876543210
+    type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
+    instance SuppressUnusedWarnings FSym0 where
+      suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
+    type FSym1 :: forall b a. a -> (~>) b ()
+    data FSym1 a0123456789876543210 a0123456789876543210
+      where
+        FSym1KindInference :: SameKind (Apply (FSym1 a0123456789876543210) arg) (FSym2 a0123456789876543210 arg) =>
+                              FSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (FSym1 a0123456789876543210) a0123456789876543210 = F a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (FSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) FSym1KindInference) ())
+    type FSym2 :: forall b a. a -> b -> ()
+    type family FSym2 a0123456789876543210 a0123456789876543210 where
+      FSym2 a0123456789876543210 a0123456789876543210 = F a0123456789876543210 a0123456789876543210
+    type NatMinus :: Nat -> Nat -> Nat
+    type family NatMinus a a where
+      NatMinus 'Zero _ = ZeroSym0
+      NatMinus ('Succ a) ('Succ b) = Apply (Apply NatMinusSym0 a) b
+      NatMinus ('Succ wild_0123456789876543210) 'Zero = Let0123456789876543210ASym1 wild_0123456789876543210
+    type F :: forall b a. a -> b -> ()
+    type family F a a where
+      F _ _ = Tuple0Sym0
+    type PC :: forall b a. a -> b -> Constraint
+    class PC x y
+    sNatMinus ::
+      forall (t :: Nat) (t :: Nat).
+      Sing t -> Sing t -> Sing (Apply (Apply NatMinusSym0 t) t :: Nat)
+    sF ::
+      forall b a (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply FSym0 t) t :: ())
+    sNatMinus SZero _ = SZero
+    sNatMinus (SSucc (sA :: Sing a)) (SSucc (sB :: Sing b))
+      = (applySing ((applySing ((singFun2 @NatMinusSym0) sNatMinus)) sA))
+          sB
+    sNatMinus
+      (SSucc (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
+      SZero
+      = let
+          sA ::
+            Sing @_ (Let0123456789876543210ASym1 wild_0123456789876543210)
+          sA
+            = (applySing ((singFun1 @SuccSym0) SSucc))
+                sWild_0123456789876543210
+        in sA
+    sF _ _ = STuple0
+    instance SingI (NatMinusSym0 :: (~>) Nat ((~>) Nat Nat)) where
+      sing = (singFun2 @NatMinusSym0) sNatMinus
+    instance SingI d =>
+             SingI (NatMinusSym1 (d :: Nat) :: (~>) Nat Nat) where
+      sing = (singFun1 @(NatMinusSym1 (d :: Nat))) (sNatMinus (sing @d))
+    instance SingI (FSym0 :: (~>) a ((~>) b ())) where
+      sing = (singFun2 @FSym0) sF
+    instance SingI d => SingI (FSym1 (d :: a) :: (~>) b ()) where
+      sing = (singFun1 @(FSym1 (d :: a))) (sF (sing @d))
+    type SD :: forall b a (x :: a) (y :: b).
+               D (x :: a) (y :: b) -> Type
+    data SD z
+    type instance Sing @(D x y) = SD
+    instance (SingKind x, SingKind y) => SingKind (D x y) where
+      type Demote (D x y) = D (Demote x) (Demote y)
+      fromSing x = case x of
+      toSing x = SomeSing (case x of)
+    class SC x y
+    type SC :: forall b a. a -> b -> Constraint

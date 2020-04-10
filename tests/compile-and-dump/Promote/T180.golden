@@ -13,39 +13,43 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
       where
         X1Sym0KindInference :: SameKind (Apply X1Sym0 arg) (X1Sym1 arg) =>
                                X1Sym0 a0123456789876543210
-    type instance Apply X1Sym0 a0123456789876543210 = X1Sym1 a0123456789876543210
+    type instance Apply X1Sym0 a0123456789876543210 = X1 a0123456789876543210
     instance SuppressUnusedWarnings X1Sym0 where
       suppressUnusedWarnings = snd (((,) X1Sym0KindInference) ())
-    type X1Sym1 (a0123456789876543210 :: Symbol) =
-        X1 a0123456789876543210 :: X
+    type X1Sym1 :: Symbol -> X
+    type family X1Sym1 a0123456789876543210 where
+      X1Sym1 a0123456789876543210 = X1 a0123456789876543210
     type X2Sym0 :: (~>) Symbol X
     data X2Sym0 a0123456789876543210
       where
         X2Sym0KindInference :: SameKind (Apply X2Sym0 arg) (X2Sym1 arg) =>
                                X2Sym0 a0123456789876543210
-    type instance Apply X2Sym0 a0123456789876543210 = X2Sym1 a0123456789876543210
+    type instance Apply X2Sym0 a0123456789876543210 = X2 a0123456789876543210
     instance SuppressUnusedWarnings X2Sym0 where
       suppressUnusedWarnings = snd (((,) X2Sym0KindInference) ())
-    type X2Sym1 (a0123456789876543210 :: Symbol) =
-        X2 a0123456789876543210 :: X
+    type X2Sym1 :: Symbol -> X
+    type family X2Sym1 a0123456789876543210 where
+      X2Sym1 a0123456789876543210 = X2 a0123456789876543210
     data ZSym0 a0123456789876543210
       where
         ZSym0KindInference :: SameKind (Apply ZSym0 arg) (ZSym1 arg) =>
                               ZSym0 a0123456789876543210
-    type instance Apply ZSym0 a0123456789876543210 = ZSym1 a0123456789876543210
+    type instance Apply ZSym0 a0123456789876543210 = Z a0123456789876543210
     instance SuppressUnusedWarnings ZSym0 where
       suppressUnusedWarnings = snd (((,) ZSym0KindInference) ())
-    type ZSym1 a0123456789876543210 = Z a0123456789876543210
+    type family ZSym1 a0123456789876543210 where
+      ZSym1 a0123456789876543210 = Z a0123456789876543210
     type YSym0 :: (~>) X Symbol
     data YSym0 a0123456789876543210
       where
         YSym0KindInference :: SameKind (Apply YSym0 arg) (YSym1 arg) =>
                               YSym0 a0123456789876543210
-    type instance Apply YSym0 a0123456789876543210 = YSym1 a0123456789876543210
+    type instance Apply YSym0 a0123456789876543210 = Y a0123456789876543210
     instance SuppressUnusedWarnings YSym0 where
       suppressUnusedWarnings = snd (((,) YSym0KindInference) ())
-    type YSym1 (a0123456789876543210 :: X) =
-        Y a0123456789876543210 :: Symbol
+    type YSym1 :: X -> Symbol
+    type family YSym1 a0123456789876543210 where
+      YSym1 a0123456789876543210 = Y a0123456789876543210
     type family Z a where
       Z (X1 x) = x
       Z (X2 x) = x

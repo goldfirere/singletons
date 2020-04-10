@@ -19,21 +19,24 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       where
         ConstantSym0KindInference :: SameKind (Apply ConstantSym0 arg) (ConstantSym1 arg) =>
                                      ConstantSym0 a0123456789876543210
-    type instance Apply ConstantSym0 a0123456789876543210 = ConstantSym1 a0123456789876543210
+    type instance Apply ConstantSym0 a0123456789876543210 = Constant a0123456789876543210
     instance SuppressUnusedWarnings ConstantSym0 where
       suppressUnusedWarnings = snd (((,) ConstantSym0KindInference) ())
-    type ConstantSym1 (a0123456789876543210 :: a) =
-        Constant a0123456789876543210 :: Constant (a :: Type) (b :: Type)
+    type ConstantSym1 :: forall (a :: Type) (b :: Type).
+                         a -> Constant (a :: Type) (b :: Type)
+    type family ConstantSym1 a0123456789876543210 where
+      ConstantSym1 a0123456789876543210 = Constant a0123456789876543210
     type IdentitySym0 :: (~>) a (Identity a)
     data IdentitySym0 a0123456789876543210
       where
         IdentitySym0KindInference :: SameKind (Apply IdentitySym0 arg) (IdentitySym1 arg) =>
                                      IdentitySym0 a0123456789876543210
-    type instance Apply IdentitySym0 a0123456789876543210 = IdentitySym1 a0123456789876543210
+    type instance Apply IdentitySym0 a0123456789876543210 = Identity a0123456789876543210
     instance SuppressUnusedWarnings IdentitySym0 where
       suppressUnusedWarnings = snd (((,) IdentitySym0KindInference) ())
-    type IdentitySym1 (a0123456789876543210 :: a) =
-        Identity a0123456789876543210 :: Identity a
+    type IdentitySym1 :: a -> Identity a
+    type family IdentitySym1 a0123456789876543210 where
+      IdentitySym1 a0123456789876543210 = Identity a0123456789876543210
     type Compare_0123456789876543210 :: Constant a b
                                         -> Constant a b -> Ordering
     type family Compare_0123456789876543210 a a where
@@ -53,12 +56,14 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym1KindInference) ())
-    type Compare_0123456789876543210Sym2 (a0123456789876543210 :: Constant a b) (a0123456789876543210 :: Constant a b) =
-        Compare_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Ordering
+    type Compare_0123456789876543210Sym2 :: Constant a b
+                                            -> Constant a b -> Ordering
+    type family Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd (Constant a b) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: Identity a
@@ -80,12 +85,14 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym1KindInference) ())
-    type Compare_0123456789876543210Sym2 (a0123456789876543210 :: Identity a) (a0123456789876543210 :: Identity a) =
-        Compare_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Ordering
+    type Compare_0123456789876543210Sym2 :: Identity a
+                                            -> Identity a -> Ordering
+    type family Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd (Identity a) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type Equals_0123456789876543210 :: Constant a b

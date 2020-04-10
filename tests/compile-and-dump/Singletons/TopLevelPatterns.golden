@@ -5,8 +5,12 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
   ======>
     data Bool = False | True
     data Foo = Bar Bool Bool
-    type FalseSym0 = False :: Bool
-    type TrueSym0 = True :: Bool
+    type FalseSym0 :: Bool
+    type family FalseSym0 where
+      FalseSym0 = False
+    type TrueSym0 :: Bool
+    type family TrueSym0 where
+      TrueSym0 = True
     type BarSym0 :: (~>) Bool ((~>) Bool Foo)
     data BarSym0 a0123456789876543210
       where
@@ -21,12 +25,13 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       where
         BarSym1KindInference :: SameKind (Apply (BarSym1 a0123456789876543210) arg) (BarSym2 a0123456789876543210 arg) =>
                                 BarSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (BarSym1 a0123456789876543210) a0123456789876543210 = BarSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply (BarSym1 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BarSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) BarSym1KindInference) ())
-    type BarSym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) =
-        Bar a0123456789876543210 a0123456789876543210 :: Foo
+    type BarSym2 :: Bool -> Bool -> Foo
+    type family BarSym2 a0123456789876543210 a0123456789876543210 where
+      BarSym2 a0123456789876543210 a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
     data SBool :: Bool -> GHC.Types.Type
       where
         SFalse :: SBool (False :: Bool)
@@ -124,82 +129,103 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type family Case_0123456789876543210 a_0123456789876543210 t where
       Case_0123456789876543210 a_0123456789876543210 '[y_0123456789876543210,
                                                        _] = y_0123456789876543210
-    type MSym0 = M :: Bool
-    type LSym0 = L :: Bool
-    type X_0123456789876543210Sym0 = X_0123456789876543210
-    type KSym0 = K :: Bool
-    type JSym0 = J :: Bool
-    type X_0123456789876543210Sym0 = X_0123456789876543210
+    type MSym0 :: Bool
+    type family MSym0 where
+      MSym0 = M
+    type LSym0 :: Bool
+    type family LSym0 where
+      LSym0 = L
+    type family X_0123456789876543210Sym0 where
+      X_0123456789876543210Sym0 = X_0123456789876543210
+    type KSym0 :: Bool
+    type family KSym0 where
+      KSym0 = K
+    type JSym0 :: Bool
+    type family JSym0 where
+      JSym0 = J
+    type family X_0123456789876543210Sym0 where
+      X_0123456789876543210Sym0 = X_0123456789876543210
     type ISym0 :: (~>) Bool Bool
     data ISym0 a0123456789876543210
       where
         ISym0KindInference :: SameKind (Apply ISym0 arg) (ISym1 arg) =>
                               ISym0 a0123456789876543210
-    type instance Apply ISym0 a0123456789876543210 = ISym1 a0123456789876543210
+    type instance Apply ISym0 a0123456789876543210 = I a0123456789876543210
     instance SuppressUnusedWarnings ISym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) ISym0KindInference) ())
-    type ISym1 (a0123456789876543210 :: Bool) =
-        I a0123456789876543210 :: Bool
+    type ISym1 :: Bool -> Bool
+    type family ISym1 a0123456789876543210 where
+      ISym1 a0123456789876543210 = I a0123456789876543210
     type HSym0 :: (~>) Bool Bool
     data HSym0 a0123456789876543210
       where
         HSym0KindInference :: SameKind (Apply HSym0 arg) (HSym1 arg) =>
                               HSym0 a0123456789876543210
-    type instance Apply HSym0 a0123456789876543210 = HSym1 a0123456789876543210
+    type instance Apply HSym0 a0123456789876543210 = H a0123456789876543210
     instance SuppressUnusedWarnings HSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) HSym0KindInference) ())
-    type HSym1 (a0123456789876543210 :: Bool) =
-        H a0123456789876543210 :: Bool
-    type X_0123456789876543210Sym0 = X_0123456789876543210
+    type HSym1 :: Bool -> Bool
+    type family HSym1 a0123456789876543210 where
+      HSym1 a0123456789876543210 = H a0123456789876543210
+    type family X_0123456789876543210Sym0 where
+      X_0123456789876543210Sym0 = X_0123456789876543210
     type GSym0 :: (~>) Bool Bool
     data GSym0 a0123456789876543210
       where
         GSym0KindInference :: SameKind (Apply GSym0 arg) (GSym1 arg) =>
                               GSym0 a0123456789876543210
-    type instance Apply GSym0 a0123456789876543210 = GSym1 a0123456789876543210
+    type instance Apply GSym0 a0123456789876543210 = G a0123456789876543210
     instance SuppressUnusedWarnings GSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) GSym0KindInference) ())
-    type GSym1 (a0123456789876543210 :: Bool) =
-        G a0123456789876543210 :: Bool
+    type GSym1 :: Bool -> Bool
+    type family GSym1 a0123456789876543210 where
+      GSym1 a0123456789876543210 = G a0123456789876543210
     type FSym0 :: (~>) Bool Bool
     data FSym0 a0123456789876543210
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
-    type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
+    type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) FSym0KindInference) ())
-    type FSym1 (a0123456789876543210 :: Bool) =
-        F a0123456789876543210 :: Bool
-    type X_0123456789876543210Sym0 = X_0123456789876543210
-    type False_Sym0 = False_
+    type FSym1 :: Bool -> Bool
+    type family FSym1 a0123456789876543210 where
+      FSym1 a0123456789876543210 = F a0123456789876543210
+    type family X_0123456789876543210Sym0 where
+      X_0123456789876543210Sym0 = X_0123456789876543210
+    type family False_Sym0 where
+      False_Sym0 = False_
     type NotSym0 :: (~>) Bool Bool
     data NotSym0 a0123456789876543210
       where
         NotSym0KindInference :: SameKind (Apply NotSym0 arg) (NotSym1 arg) =>
                                 NotSym0 a0123456789876543210
-    type instance Apply NotSym0 a0123456789876543210 = NotSym1 a0123456789876543210
+    type instance Apply NotSym0 a0123456789876543210 = Not a0123456789876543210
     instance SuppressUnusedWarnings NotSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) NotSym0KindInference) ())
-    type NotSym1 (a0123456789876543210 :: Bool) =
-        Not a0123456789876543210 :: Bool
+    type NotSym1 :: Bool -> Bool
+    type family NotSym1 a0123456789876543210 where
+      NotSym1 a0123456789876543210 = Not a0123456789876543210
     type IdSym0 :: (~>) a a
     data IdSym0 a0123456789876543210
       where
         IdSym0KindInference :: SameKind (Apply IdSym0 arg) (IdSym1 arg) =>
                                IdSym0 a0123456789876543210
-    type instance Apply IdSym0 a0123456789876543210 = IdSym1 a0123456789876543210
+    type instance Apply IdSym0 a0123456789876543210 = Id a0123456789876543210
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) IdSym0KindInference) ())
-    type IdSym1 (a0123456789876543210 :: a) =
-        Id a0123456789876543210 :: a
-    type OtherwiseSym0 = Otherwise :: Bool
+    type IdSym1 :: a -> a
+    type family IdSym1 a0123456789876543210 where
+      IdSym1 a0123456789876543210 = Id a0123456789876543210
+    type OtherwiseSym0 :: Bool
+    type family OtherwiseSym0 where
+      OtherwiseSym0 = Otherwise
     type M :: Bool
     type family M where
       M = Case_0123456789876543210 X_0123456789876543210Sym0

@@ -19,7 +19,8 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       l2r False = 0
       l2r True = 1
     t1 = meth True
-    type T1Sym0 = T1
+    type family T1Sym0 where
+      T1Sym0 = T1
     type family T1 where
       T1 = Apply MethSym0 TrueSym0
     type MethSym0 :: forall a. (~>) a a
@@ -27,21 +28,23 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       where
         MethSym0KindInference :: SameKind (Apply MethSym0 arg) (MethSym1 arg) =>
                                  MethSym0 a0123456789876543210
-    type instance Apply MethSym0 a0123456789876543210 = MethSym1 a0123456789876543210
+    type instance Apply MethSym0 a0123456789876543210 = Meth a0123456789876543210
     instance SuppressUnusedWarnings MethSym0 where
       suppressUnusedWarnings = snd (((,) MethSym0KindInference) ())
-    type MethSym1 (a0123456789876543210 :: a) =
-        Meth a0123456789876543210 :: a
+    type MethSym1 :: forall a. a -> a
+    type family MethSym1 a0123456789876543210 where
+      MethSym1 a0123456789876543210 = Meth a0123456789876543210
     type L2rSym0 :: forall a b. (~>) a b
     data L2rSym0 a0123456789876543210
       where
         L2rSym0KindInference :: SameKind (Apply L2rSym0 arg) (L2rSym1 arg) =>
                                 L2rSym0 a0123456789876543210
-    type instance Apply L2rSym0 a0123456789876543210 = L2rSym1 a0123456789876543210
+    type instance Apply L2rSym0 a0123456789876543210 = L2r a0123456789876543210
     instance SuppressUnusedWarnings L2rSym0 where
       suppressUnusedWarnings = snd (((,) L2rSym0KindInference) ())
-    type L2rSym1 (a0123456789876543210 :: a) =
-        L2r a0123456789876543210 :: b
+    type L2rSym1 :: forall a b. a -> b
+    type family L2rSym1 a0123456789876543210 where
+      L2rSym1 a0123456789876543210 = L2r a0123456789876543210
     class PFD a b | a -> b where
       type Meth (arg :: a) :: a
       type L2r (arg :: a) :: b
@@ -53,12 +56,13 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       where
         Meth_0123456789876543210Sym0KindInference :: SameKind (Apply Meth_0123456789876543210Sym0 arg) (Meth_0123456789876543210Sym1 arg) =>
                                                      Meth_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Meth_0123456789876543210Sym0 a0123456789876543210 = Meth_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply Meth_0123456789876543210Sym0 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Meth_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) Meth_0123456789876543210Sym0KindInference) ())
-    type Meth_0123456789876543210Sym1 (a0123456789876543210 :: Bool) =
-        Meth_0123456789876543210 a0123456789876543210 :: Bool
+    type Meth_0123456789876543210Sym1 :: Bool -> Bool
+    type family Meth_0123456789876543210Sym1 a0123456789876543210 where
+      Meth_0123456789876543210Sym1 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
     type L2r_0123456789876543210 :: Bool -> Nat
     type family L2r_0123456789876543210 a where
       L2r_0123456789876543210 'False = FromInteger 0
@@ -68,12 +72,13 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       where
         L2r_0123456789876543210Sym0KindInference :: SameKind (Apply L2r_0123456789876543210Sym0 arg) (L2r_0123456789876543210Sym1 arg) =>
                                                     L2r_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply L2r_0123456789876543210Sym0 a0123456789876543210 = L2r_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply L2r_0123456789876543210Sym0 a0123456789876543210 = L2r_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings L2r_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) L2r_0123456789876543210Sym0KindInference) ())
-    type L2r_0123456789876543210Sym1 (a0123456789876543210 :: Bool) =
-        L2r_0123456789876543210 a0123456789876543210 :: Nat
+    type L2r_0123456789876543210Sym1 :: Bool -> Nat
+    type family L2r_0123456789876543210Sym1 a0123456789876543210 where
+      L2r_0123456789876543210Sym1 a0123456789876543210 = L2r_0123456789876543210 a0123456789876543210
     instance PFD Bool Nat where
       type Meth a = Apply Meth_0123456789876543210Sym0 a
       type L2r a = Apply L2r_0123456789876543210Sym0 a

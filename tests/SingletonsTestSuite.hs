@@ -123,12 +123,16 @@ tests =
     , compileAndDumpStdTest "T371"
     , compileAndDumpStdTest "T376"
     , compileAndDumpStdTest "T378a"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "T378b"
     , compileAndDumpStdTest "T401"
     , compileAndDumpStdTest "T401b"
     , compileAndDumpStdTest "T402"
     , compileAndDumpStdTest "T410"
     , compileAndDumpStdTest "T412"
     , compileAndDumpStdTest "T414"
+    , afterSingletonsNat .
+      compileAndDumpStdTest "T445"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"
