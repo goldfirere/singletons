@@ -1,8 +1,8 @@
 Changelog for singletons project
 ================================
 
-next
-----
+2.8 [????.??.??]
+----------------
 * Support building with GHC 8.12.
 
 2.7
