@@ -273,8 +273,26 @@ singInstance s = with_sing_i SingInstance
 type TyFun :: Type -> Type -> Type
 data TyFun a b
 
--- | Something of kind `a ~> b` is a defunctionalized type function that is
--- not necessarily generative or injective.
+-- | Something of kind @a '~>' b@ is a defunctionalized type function that is
+-- not necessarily generative or injective. Defunctionalized type functions
+-- (also called \"defunctionalization symbols\") can be partially applied, even
+-- if the original type function cannot be. For more information on how this
+-- works, see the "Promotion and partial application" section of the
+-- @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
+--
+-- Normal type-level arrows @(->)@ can be converted into defunctionalization
+-- arrows @('~>')@ by the use of the 'TyCon' family of types. (Refer to the
+-- Haddocks for 'TyCon1' to see an example of this in practice.) For this
+-- reason, we do not make an effort to define defunctionalization symbols for
+-- most type constructors of kind @a -> b@, as they can be used in
+-- defunctionalized settings by simply applying @TyCon{N}@ with an appropriate
+-- @N@.
+--
+-- This includes the @(->)@ type constructor itself, which is of kind
+-- @'Type' -> 'Type' -> 'Type'@. One can turn it into something of kind
+-- @'Type' '~>' 'Type' '~>' 'Type'@ by writing @'TyCon2' (->)@, or something of
+-- kind @'Type' -> 'Type' '~>' 'Type'@ by writing @'TyCon1' ((->) t)@
+-- (where @t :: 'Type'@).
 type (~>) :: Type -> Type -> Type
 type a ~> b = TyFun a b -> Type
 infixr 0 ~>
