@@ -91,7 +91,7 @@ instance SDecide Nat where
     | Just r <- TN.sameNat (Proxy :: Proxy n) (Proxy :: Proxy m)
     = Proved r
     | otherwise
-    = Disproved (\_ -> error errStr)
+    = Disproved (\Refl -> error errStr)
     where errStr = "Broken Nat singletons"
 
 instance SDecide Symbol where
@@ -99,7 +99,7 @@ instance SDecide Symbol where
     | Just r <- sameSymbol (Proxy :: Proxy n) (Proxy :: Proxy m)
     = Proved r
     | otherwise
-    = Disproved (\_ -> error errStr)
+    = Disproved (\Refl -> error errStr)
     where errStr = "Broken Symbol singletons"
 
 -- PEq instances
