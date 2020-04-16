@@ -217,36 +217,6 @@ $(singletonsOnly [d|
       go c = case f c of
         (d, me) -> d : maybe_ [] go me
 
-  {-
-  -- | @since 4.9.0.0
-  instance Functor NonEmpty where
-    fmap f ~(a :| as) = f a :| fmap f as
-    b <$ ~(_ :| as)   = b   :| (b <$ as)
-
-  -- | @since 4.9.0.0
-  instance Applicative NonEmpty where
-    pure a = a :| []
-    (<*>) = ap
-
-  -- | @since 4.9.0.0
-  instance Monad NonEmpty where
-    ~(a :| as) >>= f = b :| (bs ++ bs')
-      where b :| bs = f a
-            bs' = as >>= toList . f
-
-  -- | @since 4.9.0.0
-  instance Traversable NonEmpty where
-    traverse f ~(a :| as) = (:|) <$> f a <*> traverse f as
-
-  -- | @since 4.9.0.0
-  instance Foldable NonEmpty where
-    foldr f z ~(a :| as) = f a (foldr f z as)
-    foldl f z ~(a :| as) = foldl f (f z a) as
-    foldl1 f ~(a :| as) = foldl f a as
-    foldMap f ~(a :| as) = f a `mappend` foldMap f as
-    fold ~(m :| ms) = m `mappend` fold ms
-  -}
-
   -- -| Extract the first element of the stream.
   head :: NonEmpty a -> a
   head (a :| _) = a
