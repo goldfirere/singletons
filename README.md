@@ -1009,9 +1009,69 @@ working over integer literals can be promoted by rewriting them to use
 `Nat`. Since `Nat` does not exist at the term level, it will only be possible to
 use the promoted definition, but not the original, term-level one.
 
-This is the same line of reasoning that forbids the use of `Nat` or `Symbol`
-in datatype definitions. But, see [this bug
-report](https://github.com/goldfirere/singletons/issues/76) for a workaround.
+For now, one way to work around this issue is to define data types that are
+parameterized over the choice of arrow (or literal) type. The example below
+demonstrates this workaround in the context of `Nat`s:
+
+```hs
+import Data.Kind
+import Data.Singletons
+import Data.Singletons.TypeLits
+import Numeric.Natural
+
+-- Base type
+newtype Age' n = MkAge n
+-- Term-level
+type Age = Age' Natural
+-- Type-level
+type PAge = Age' Nat
+
+type SAge :: PAge -> Type
+data SAge age where
+  SMkAge :: Sing n -> SAge (MkAge n)
+type instance Sing = SAge
+
+instance SingKind PAge where
+  type Demote PAge = Age
+  fromSing (SMkAge sn) = MkAge (fromSing sn)
+  toSing (MkAge n) = withSomeSing n (SomeSing . SMkAge)
+```
+
+Note how the base type `Age'` is parameterized over which natural number type
+to use. `Age` (intended to be used at the term level) uses
+`Numeric.Natural.Natural`, whereas `PAge` (intended to be used at the type
+level) uses `GHC.TypeNats.Nat`.
+
+It should be emphasized that attempting to use `singletons` Template Haskell
+machinery to promote code that uses the type `Age` is unlikely to work, since
+`singletons` does not know about the relationship between `Age` and `PAge`.
+As a result, you will likely have to write such code by hand. (See also
+[this bug report](https://github.com/goldfirere/singletons/issues/450), which
+proposes a way to generate some `Age`-related code automatically.)
+
+A similar workaround exists for `Symbol`:
+
+```hs
+import Data.Text
+
+-- Base type
+newtype Message' s = MkMessage s
+-- Term-level
+type Message = Message' Text
+-- Type-level
+type PMessage = Message' Symbol
+```
+
+The workaround for arrow types is somewhat trickier since they have arguments:
+
+```hs
+-- Base type
+newtype Function' p a b = MkFunction (p @@ a @@ b)
+-- Term-level (i.e., MkFunction (a -> b))
+type Function = Function' (TyCon2 (->))
+-- Type-level (i.e., MkFunction (a ~> b))
+type PFunction = Function' (~>@#@$)
+```
 
 ### Rank-n types
 
