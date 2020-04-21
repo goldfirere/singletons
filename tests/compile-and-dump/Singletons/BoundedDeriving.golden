@@ -198,7 +198,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Foo3 (b :: Demote a))
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SFoo3 c) }
-    data SFoo4 :: forall a b. Foo4 (a :: Type) (b :: Type) -> Type
+    data SFoo4 :: forall (a :: Type) (b :: Type). Foo4 a b -> Type
       where
         SFoo41 :: forall (a :: Type) (b :: Type).
                   SFoo4 (Foo41 :: Foo4 (a :: Type) (b :: Type))

@@ -1,0 +1,20 @@
+Singletons/T453.hs:(0,0)-(0,0): Splicing declarations
+    withOptions defaultOptions {genSingKindInsts = False}
+      $ singletons
+          $ lift
+              [d| type T1 :: forall k. k -> Type
+                  type T2 :: k -> Type
+                  
+                  data T1 a
+                  data T2 a |]
+  ======>
+    type T1 :: forall k. k -> Type
+    data T1 a
+    type T2 :: k -> Type
+    data T2 a
+    type ST1 :: forall k (a :: k). T1 a -> Type
+    data ST1 z
+    type instance Sing @(T1 a) = ST1
+    type ST2 :: forall k (a :: k). T2 a -> Type
+    data ST2 z
+    type instance Sing @(T2 a) = ST2

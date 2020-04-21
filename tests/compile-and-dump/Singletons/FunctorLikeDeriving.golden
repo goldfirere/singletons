@@ -977,7 +977,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkT2 (b :: Demote (Maybe x)))
         = case toSing b :: SomeSing (Maybe x) of {
             SomeSing c -> SomeSing (SMkT2 c) }
-    data SEmpty :: forall a. Empty (a :: Type) -> Type
+    data SEmpty :: forall (a :: Type). Empty a -> Type
     type instance Sing @(Empty a) = SEmpty
     instance SingKind a => SingKind (Empty a) where
       type Demote (Empty a) = Empty (Demote a)

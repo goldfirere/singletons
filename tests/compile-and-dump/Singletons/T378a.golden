@@ -60,7 +60,7 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @ConstBASym0) sConstBA
     instance SingI d => SingI (ConstBASym1 (d :: a) :: (~>) b a) where
       sing = (singFun1 @(ConstBASym1 (d :: a))) (sConstBA (sing @d))
-    data SProxy :: forall a. Proxy (a :: k) -> Type
+    data SProxy :: forall k (a :: k). Proxy a -> Type
       where
         SProxy1 :: forall a. SProxy (Proxy1 :: Proxy a)
         SProxy2 :: forall k (a :: k). SProxy (Proxy2 :: Proxy (a :: k))

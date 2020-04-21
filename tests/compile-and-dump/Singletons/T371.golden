@@ -121,7 +121,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow (Y a) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    data SX :: forall a. X (a :: Type) -> Type
+    data SX :: forall (a :: Type). X a -> Type
       where
         SX1 :: forall (a :: Type). SX (X1 :: X (a :: Type))
         SX2 :: forall (a :: Type) (n :: Y a).
@@ -135,7 +135,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       toSing (X2 (b :: Demote (Y a)))
         = case toSing b :: SomeSing (Y a) of {
             SomeSing c -> SomeSing (SX2 c) }
-    data SY :: forall a. Y (a :: Type) -> Type
+    data SY :: forall (a :: Type). Y a -> Type
       where
         SY1 :: forall (a :: Type). SY (Y1 :: Y (a :: Type))
         SY2 :: forall (a :: Type) (n :: X a).

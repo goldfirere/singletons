@@ -113,8 +113,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @FSym0) sF
     instance SingI d => SingI (FSym1 (d :: a) :: (~>) b ()) where
       sing = (singFun1 @(FSym1 (d :: a))) (sF (sing @d))
-    type SD :: forall b a (x :: a) (y :: b).
-               D (x :: a) (y :: b) -> Type
+    type SD :: forall b a (x :: a) (y :: b). D x y -> Type
     data SD z
     type instance Sing @(D x y) = SD
     instance (SingKind x, SingKind y) => SingKind (D x y) where

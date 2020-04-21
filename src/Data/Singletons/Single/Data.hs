@@ -67,11 +67,10 @@ singDataD (DataDecl name tvbs ctors) = do
     case mb_data_sak of
       -- No standalone kind signature. Try to figure out the order of kind
       -- variables on a best-effort basis.
-      Nothing -> do
-        ki <- promoteType $ foldType (DConT name) (map dTyVarBndrToDType tvbs)
-        let sing_tvbs = toposortTyVarsOf [k]
+      Nothing ->
+        let sing_tvbs = toposortTyVarsOf $ map dTyVarBndrToDType tvbs
             kinded_sing_ty = DForallT ForallInvis sing_tvbs $
-                             DArrowT `DAppT` ki `DAppT` DConT typeKindName
+                             DArrowT `DAppT` k `DAppT` DConT typeKindName in
         pure [mk_data_dec [] (Just kinded_sing_ty)]
 
       -- A standalone kind signature is provided, so use that to determine the
@@ -79,12 +78,18 @@ singDataD (DataDecl name tvbs ctors) = do
       Just data_sak -> do
         let (args, _)  = unravelDType data_sak
             vis_args   = filterDVisFunArgs args
-            invis_tvbs = filterInvisTvbArgs args
             vis_tvbs   = zipWith replaceTvbKind vis_args tvbs
-        ki <- promoteType $ foldType (DConT name) (map dTyVarBndrToDType vis_tvbs)
+            invis_args = filterInvisTvbArgs args
+            -- If the standalone kind signature did not explicitly quantify its
+            -- kind variables, do so ourselves. This is very similar to what
+            -- D.S.Single.Type.singTypeKVBs does.
+            invis_tvbs | null invis_args
+                       = toposortTyVarsOf [data_sak]
+                       | otherwise
+                       = invis_args
         z  <- qNewName "z"
         let sing_data_sak = DForallT ForallInvis (invis_tvbs ++ vis_tvbs) $
-                            DArrowT `DAppT` ki `DAppT` DConT typeKindName
+                            DArrowT `DAppT` k `DAppT` DConT typeKindName
         pure [ DKiSigD singDataName sing_data_sak
              , mk_data_dec [DPlainTV z] Nothing
              ]
