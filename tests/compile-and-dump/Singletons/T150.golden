@@ -318,27 +318,27 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun1 @TailVecSym0) sTailVec
     instance SingI (HeadVecSym0 :: (~>) (Vec ('Succ n) a) a) where
       sing = (singFun1 @HeadVecSym0) sHeadVec
-    data SFin :: forall a. Fin (a :: Nat) -> Type
+    data SFin :: forall (a :: Nat). Fin a -> Type
       where
         SFZ :: forall n. SFin (FZ :: Fin ('Succ n))
         SFS :: forall n (n :: Fin n).
                (Sing n) -> SFin (FS n :: Fin ('Succ n))
     type instance Sing @(Fin a) = SFin
-    data SFoo :: forall a. Foo (a :: Type) -> Type
+    data SFoo :: forall (a :: Type). Foo a -> Type
       where
         SMkFoo1 :: SFoo (MkFoo1 :: Foo Bool)
         SMkFoo2 :: SFoo (MkFoo2 :: Foo Ordering)
     type instance Sing @(Foo a) = SFoo
-    data SVec :: forall a a. Vec (a :: Nat) (a :: Type) -> Type
+    data SVec :: forall (a :: Nat) (a :: Type). Vec a a -> Type
       where
         SVNil :: forall a. SVec (VNil :: Vec 'Zero a)
         SVCons :: forall a n (n :: a) (n :: Vec n a).
                   (Sing n) -> (Sing n) -> SVec (VCons n n :: Vec ('Succ n) a)
     type instance Sing @(Vec a a) = SVec
-    data SEqual :: forall a a. Equal (a :: Type) (a :: Type) -> Type
+    data SEqual :: forall (a :: Type) (a :: Type). Equal a a -> Type
       where SReflexive :: forall a. SEqual (Reflexive :: Equal a a)
     type instance Sing @(Equal a a) = SEqual
-    data SHList :: forall a. HList (a :: [Type]) -> Type
+    data SHList :: forall (a :: [Type]). HList a -> Type
       where
         SHNil :: SHList (HNil :: HList '[])
         SHCons :: forall x xs (n :: x) (n :: HList xs).

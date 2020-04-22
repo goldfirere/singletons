@@ -358,7 +358,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     instance SingI (D2ASym0 :: (~>) (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) a) where
       sing = (singFun1 @D2ASym0) sD2A
     type SD2 :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
-                D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type) -> GHC.Types.Type
+                D2 a b -> GHC.Types.Type
     data SD2 z
       where
         SMkD2 :: forall (a :: GHC.Types.Type)

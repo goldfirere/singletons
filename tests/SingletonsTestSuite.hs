@@ -133,6 +133,7 @@ tests =
     , compileAndDumpStdTest "T414"
     , afterSingletonsNat .
       compileAndDumpStdTest "T445"
+    , compileAndDumpStdTest "T453"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

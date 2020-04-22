@@ -61,7 +61,7 @@ Singletons/T296.hs:(0,0)-(0,0): Splicing declarations
         in sX
     instance SingI (FSym0 :: (~>) (MyProxy a) (MyProxy a)) where
       sing = (singFun1 @FSym0) sF
-    data SMyProxy :: forall a. MyProxy (a :: Type) -> Type
+    data SMyProxy :: forall (a :: Type). MyProxy a -> Type
       where
         SMyProxy :: forall (a :: Type).
                     SMyProxy (MyProxy :: MyProxy (a :: Type))
