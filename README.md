@@ -794,6 +794,26 @@ since `singletons` desugars away most uses of record syntax. On the other hand,
 it is not possible to write out code like
 `SIdentity { sRunIdentity = SIdentity STrue }` by hand.
 
+Another caveat is that GHC allows defining so-called "naughty" record selectors
+that mention existential type variables that do not appear in the constructor's
+return type. Naughty record selectors can be used in pattern matching, but they
+cannot be used as top-level functions. Here is one example of a naughty
+record selector:
+
+```hs
+data Some :: (Type -> Type) -> Type where
+  MkSome :: { getSome :: f a } -> Some f
+```
+
+Because `singletons` promotes all records to top-level functions, however,
+attempting to promote `getSome` will result in an invalid definition. (It
+may typecheck, but it will not behave like you would expect.) Theoretically,
+`singletons` could refrain from promoting naughty record selectors, but this
+would require detecting which type variables in a data constructor are
+existentially quantified. This is very challenging in general, so we stick to
+the dumb-but-predictable approach of always promoting record selectors,
+regardless of whether they are naughty or not.
+
 ### Signatures in patterns
 
 `singletons` can promote basic pattern signatures, such as in the following

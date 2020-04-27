@@ -287,12 +287,11 @@ promoteDataDecs = concatMapM promoteDataDec
 --    be promoted in a single location.
 --    See Note [singletons and record selectors] in D.S.Single.Data.
 promoteDataDec :: DataDecl -> PrM [DLetDec]
-promoteDataDec (DataDecl data_name tvbs ctors) = do
-  let arg_ty        = foldTypeTvbs (DConT data_name) tvbs
-      rec_sel_names = nub $ concatMap extractRecSelNames ctors
+promoteDataDec (DataDecl _ _ ctors) = do
+  let rec_sel_names = nub $ concatMap extractRecSelNames ctors
                       -- Note the use of nub: the same record selector name can
                       -- be used in multiple constructors!
-  rec_sel_let_decs <- getRecordSelectors arg_ty ctors
+  rec_sel_let_decs <- getRecordSelectors ctors
   ctorSyms         <- buildDefunSymsDataD ctors
   infix_decs       <- promoteReifiedInfixDecls rec_sel_names
   emitDecs $ ctorSyms ++ infix_decs

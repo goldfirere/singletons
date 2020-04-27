@@ -16,7 +16,6 @@
 module Data.Singletons.Deriving.Util where
 
 import Control.Monad
-import qualified Data.List as List
 import Data.Singletons.Names
 import Data.Singletons.Syntax
 import Data.Singletons.Util
@@ -31,56 +30,6 @@ type DerivDesc q
   -> DType       -- The data type argument to the class.
   -> DataDecl    -- The original data type information.
   -> q UInstDecl -- The derived instance.
-
--- | Is this data type a non-vanilla data type? Here, \"non-vanilla\" refers to
--- any data type that cannot be expressed using Haskell98 syntax. For instance,
--- this GADT:
---
--- @
--- data Foo :: Type -> Type where
---   MkFoo :: forall a. a -> Foo a
--- @
---
--- Is equivalent to this Haskell98 data type:
---
--- @
--- data Foo a = MkFoo a
--- @
---
--- However, the following GADT is non-vanilla:
---
--- @
--- data Bar :: Type -> Type where
---   MkBar :: Int -> Bar Int
--- @
---
--- Since there is no equivalent Haskell98 data type. The closest you could get
--- is this:
---
--- @
--- data Bar a = (a ~ Int) => MkBar Int
--- @
---
--- Which requires language extensions to write.
---
--- A data type is a non-vanilla if one of the following conditions are met:
---
--- 1. A constructor has any existentially quantified type variables.
---
--- 2. A constructor has a context.
---
--- We care about this because some derivable stock classes, such as 'Enum',
--- forbid derived instances for non-vanilla data types.
-isNonVanillaDataType :: forall q. DsMonad q => DType -> [DCon] -> q Bool
-isNonVanillaDataType data_ty = anyM $ \con@(DCon _ ctxt _ _ _) -> do
-    ex_tvbs <- conExistentialTvbs data_ty con
-    return $ not $ null ex_tvbs && null ctxt
-  where
-    anyM :: (a -> q Bool) -> [a] -> q Bool
-    anyM _ [] = return False
-    anyM p (x:xs) = do
-      b <- p x
-      if b then return True else anyM p xs
 
 -----
 -- Utilities for deriving Functor-like classes.
@@ -204,8 +153,24 @@ isInTypeFamilyApp name tyFun tyArgs =
 -- A crude approximation of cond_functorOK from GHC. This checks that:
 --
 -- (1) There's at least one type variable in the data type.
--- (2) It doesn't use the last type variable in the wrong place, e.g. data T a = MkT (X a a)
--- (3) It doesn't constrain the last type variable, e.g., data T a = Eq a => MkT a
+-- (2) It doesn't constrain the last type variable, e.g., data T a = Eq a => MkT a
+-- (3) It doesn't use the last type variable in the wrong place, e.g. data T a = MkT (X a a)
+--
+-- This skips some things that cond_functorOK checks for but are tricky to
+-- implement in Template Haskell, such as if the last type variable in the
+-- constructor's return type is universally quantified. For example,
+-- functorLikeValidityChecks would accept the following example that
+-- cond_functorOK would reject:
+--
+-- @
+-- data T a b where
+--   MkT :: z -> T z z -- Last type variable is existential
+-- deriving instance Functor (T a)
+-- @
+--
+-- This isn't the end of the world, as it just means that the user will have to
+-- deal with a more complex error message when the generate code fails to
+-- typecheck.
 functorLikeValidityChecks :: forall q. DsMonad q => Bool -> DataDecl -> q ()
 functorLikeValidityChecks allowConstrainedLastTyVar (DataDecl n data_tvbs cons)
   | null data_tvbs -- (1)
@@ -221,16 +186,13 @@ functorLikeValidityChecks allowConstrainedLastTyVar (DataDecl n data_tvbs cons)
 
     -- (2)
     check_universal :: DCon -> q ()
-    check_universal con@(DCon con_tvbs con_theta con_name _ res_ty)
+    check_universal (DCon _ con_theta con_name _ res_ty)
       | allowConstrainedLastTyVar
       = pure ()
       | (_, res_ty_args) <- unfoldDType res_ty
       , (_, last_res_ty_arg) <- snocView $ filterDTANormals res_ty_args
       , Just last_tv <- getDVarTName_maybe last_res_ty_arg
-      = do ex_tvbs <- conExistentialTvbs (foldTypeTvbs (DConT n) data_tvbs) con
-           let univ_tvb_names = map extractTvbName con_tvbs List.\\ map extractTvbName ex_tvbs
-           if last_tv `elem` univ_tvb_names
-                && last_tv `OSet.notMember` foldMap fvDType con_theta
+      = do if last_tv `OSet.notMember` foldMap fvDType con_theta
               then pure ()
               else fail $ badCon con_name existential
       | otherwise

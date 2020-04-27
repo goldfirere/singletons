@@ -25,13 +25,21 @@ import Data.Maybe
 
 -- monadic for failure only
 mkEnumInstance :: DsMonad q => DerivDesc q
-mkEnumInstance mb_ctxt ty (DataDecl data_name tvbs cons) = do
-  let data_ty = foldTypeTvbs (DConT data_name) tvbs
-  non_vanilla <- isNonVanillaDataType data_ty cons
+mkEnumInstance mb_ctxt ty (DataDecl _ _ cons) = do
+  -- GHC only allows deriving Enum instances for enumeration types (i.e., those
+  -- data types whose constructors all lack fields). We perform the same
+  -- validity check here.
+  --
+  -- GHC actually goes further than we do. GHC will give a specific error
+  -- message if you attempt to derive an instance for a "non-vanilla" data
+  -- type—that is, a data type that uses features not expressible with
+  -- Haskell98 syntax, such as existential quantification. Checking whether
+  -- a type variable is existentially quantified is difficult in Template
+  -- Haskell, so we omit this check.
   when (null cons ||
-        any (\(DCon _ _ _ f _) ->
-              non_vanilla || not (null $ tysOfConFields f)) cons) $
+        any (\(DCon _ _ _ f _) -> not (null $ tysOfConFields f)) cons) $
     fail ("Can't derive Enum instance for " ++ pprint (typeToTH ty) ++ ".")
+
   n <- qNewName "n"
   let to_enum = UFunction [DClause [DVarP n] (to_enum_rhs cons [0..])]
       to_enum_rhs [] _ = DVarE errorName `DAppE` DLitE (StringL "toEnum: bad argument")
