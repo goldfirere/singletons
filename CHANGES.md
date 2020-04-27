@@ -46,6 +46,28 @@ Changelog for singletons project
       natMinus a@(S _) Z     = a
       |])
     ```
+* The specification for how `singletons` deals with record selectors has been
+  simplified. Previously, `singletons` would try to avoid promoting so-called
+  "naughty" selectors (those whose types mention existential type variables
+  that do not appear in the constructor's return type) to top-level functions.
+  Determing if a selector is naughty is quite challenging in practice, as
+  determining if a type variable is existential or not in the context of
+  Template Haskell is difficult in the general case. As a result, `singletons`
+  now adopts the dumb-but-predictable approach of always promoting record
+  selectors to top-level functions, naughty or not.
+
+  This means that attempting to promote code with a naughty record selector,
+  like in the example below, will no longer work:
+
+  ```hs
+  $(promote [d|
+    data Some :: (Type -> Type) -> Type where
+      MkSome :: { getSome :: f a } -> Some f
+      -- getSome is naughty due to mentioning the type variable `a`
+    |])
+  ```
+
+  Please open an issue if you find this restriction burdensome in practice.
 
 2.7
 ---

@@ -1,0 +1,118 @@
+Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
+    withOptions defaultOptions {genSingKindInsts = False}
+      $ singletons
+          $ lift
+              [d| data Nat = Z | S Nat
+                  data Vec :: Nat -> Type -> Type
+                    where
+                      VNil :: Vec Z a
+                      (:>) :: {head :: a, tail :: Vec n a} -> Vec (S n) a |]
+  ======>
+    data Nat = Z | S Nat
+    data Vec :: Nat -> Type -> Type
+      where
+        VNil :: Vec 'Z a
+        (:>) :: {head :: a, tail :: (Vec n a)} -> Vec ('S n) a
+    type ZSym0 :: Nat
+    type family ZSym0 where
+      ZSym0 = Z
+    type SSym0 :: (~>) Nat Nat
+    data SSym0 a0123456789876543210
+      where
+        SSym0KindInference :: SameKind (Apply SSym0 arg) (SSym1 arg) =>
+                              SSym0 a0123456789876543210
+    type instance Apply SSym0 a0123456789876543210 = S a0123456789876543210
+    instance SuppressUnusedWarnings SSym0 where
+      suppressUnusedWarnings = snd (((,) SSym0KindInference) ())
+    type SSym1 :: Nat -> Nat
+    type family SSym1 a0123456789876543210 where
+      SSym1 a0123456789876543210 = S a0123456789876543210
+    type VNilSym0 :: Vec Z a
+    type family VNilSym0 where
+      VNilSym0 = VNil
+    type (:>@#@$) :: (~>) a ((~>) (Vec n a) (Vec (S n) a))
+    data (:>@#@$) a0123456789876543210
+      where
+        (::>@#@$###) :: SameKind (Apply (:>@#@$) arg) ((:>@#@$$) arg) =>
+                        (:>@#@$) a0123456789876543210
+    type instance Apply (:>@#@$) a0123456789876543210 = (:>@#@$$) a0123456789876543210
+    instance SuppressUnusedWarnings (:>@#@$) where
+      suppressUnusedWarnings = snd (((,) (::>@#@$###)) ())
+    type (:>@#@$$) :: a -> (~>) (Vec n a) (Vec (S n) a)
+    data (:>@#@$$) a0123456789876543210 a0123456789876543210
+      where
+        (::>@#@$$###) :: SameKind (Apply ((:>@#@$$) a0123456789876543210) arg) ((:>@#@$$$) a0123456789876543210 arg) =>
+                         (:>@#@$$) a0123456789876543210 a0123456789876543210
+    type instance Apply ((:>@#@$$) a0123456789876543210) a0123456789876543210 = (:>) a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings ((:>@#@$$) a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) (::>@#@$$###)) ())
+    type (:>@#@$$$) :: a -> Vec n a -> Vec (S n) a
+    type family (:>@#@$$$) a0123456789876543210 a0123456789876543210 where
+      (:>@#@$$$) a0123456789876543210 a0123456789876543210 = (:>) a0123456789876543210 a0123456789876543210
+    type TailSym0 :: (~>) (Vec (S n) a) (Vec n a)
+    data TailSym0 a0123456789876543210
+      where
+        TailSym0KindInference :: SameKind (Apply TailSym0 arg) (TailSym1 arg) =>
+                                 TailSym0 a0123456789876543210
+    type instance Apply TailSym0 a0123456789876543210 = Tail a0123456789876543210
+    instance SuppressUnusedWarnings TailSym0 where
+      suppressUnusedWarnings = snd (((,) TailSym0KindInference) ())
+    type TailSym1 :: Vec (S n) a -> Vec n a
+    type family TailSym1 a0123456789876543210 where
+      TailSym1 a0123456789876543210 = Tail a0123456789876543210
+    type HeadSym0 :: (~>) (Vec (S n) a) a
+    data HeadSym0 a0123456789876543210
+      where
+        HeadSym0KindInference :: SameKind (Apply HeadSym0 arg) (HeadSym1 arg) =>
+                                 HeadSym0 a0123456789876543210
+    type instance Apply HeadSym0 a0123456789876543210 = Head a0123456789876543210
+    instance SuppressUnusedWarnings HeadSym0 where
+      suppressUnusedWarnings = snd (((,) HeadSym0KindInference) ())
+    type HeadSym1 :: Vec (S n) a -> a
+    type family HeadSym1 a0123456789876543210 where
+      HeadSym1 a0123456789876543210 = Head a0123456789876543210
+    type Tail :: Vec (S n) a -> Vec n a
+    type family Tail a where
+      Tail ((:>) _ field) = field
+    type Head :: Vec (S n) a -> a
+    type family Head a where
+      Head ((:>) field _) = field
+    sTail ::
+      forall n a (t :: Vec (S n) a).
+      Sing t -> Sing (Apply TailSym0 t :: Vec n a)
+    sHead ::
+      forall n a (t :: Vec (S n) a).
+      Sing t -> Sing (Apply HeadSym0 t :: a)
+    sTail ((:%>) _ (sField :: Sing field)) = sField
+    sHead ((:%>) (sField :: Sing field) _) = sField
+    instance SingI (TailSym0 :: (~>) (Vec (S n) a) (Vec n a)) where
+      sing = (singFun1 @TailSym0) sTail
+    instance SingI (HeadSym0 :: (~>) (Vec (S n) a) a) where
+      sing = (singFun1 @HeadSym0) sHead
+    data SNat :: Nat -> Type
+      where
+        SZ :: SNat (Z :: Nat)
+        SS :: forall (n :: Nat). (Sing n) -> SNat (S n :: Nat)
+    type instance Sing @Nat = SNat
+    data SVec :: forall (a :: Nat) (a :: Type). Vec a a -> Type
+      where
+        SVNil :: forall a. SVec (VNil :: Vec Z a)
+        (:%>) :: forall a n (n :: a) (n :: Vec n a).
+                 (Sing n) -> (Sing n) -> SVec ((:>) n n :: Vec (S n) a)
+    type instance Sing @(Vec a a) = SVec
+    instance SingI Z where
+      sing = SZ
+    instance SingI n => SingI (S (n :: Nat)) where
+      sing = SS sing
+    instance SingI (SSym0 :: (~>) Nat Nat) where
+      sing = (singFun1 @SSym0) SS
+    instance SingI VNil where
+      sing = SVNil
+    instance (SingI n, SingI n) =>
+             SingI ((:>) (n :: a) (n :: Vec n a)) where
+      sing = ((:%>) sing) sing
+    instance SingI ((:>@#@$) :: (~>) a ((~>) (Vec n a) (Vec (S n) a))) where
+      sing = (singFun2 @(:>@#@$)) (:%>)
+    instance SingI d =>
+             SingI ((:>@#@$$) (d :: a) :: (~>) (Vec n a) (Vec (S n) a)) where
+      sing = (singFun1 @((:>@#@$$) (d :: a))) ((:%>) (sing @d))
