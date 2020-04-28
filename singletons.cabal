@@ -111,6 +111,7 @@ library
   other-modules:      Data.Singletons.Deriving.Infer
                       Data.Singletons.Deriving.Bounded
                       Data.Singletons.Deriving.Enum
+                      Data.Singletons.Deriving.Eq
                       Data.Singletons.Deriving.Foldable
                       Data.Singletons.Deriving.Functor
                       Data.Singletons.Deriving.Ord
@@ -126,7 +127,6 @@ library
                       Data.Singletons.Prelude.Semigroup.Internal.Disambiguation
                       Data.Singletons.Promote
                       Data.Singletons.Promote.Monad
-                      Data.Singletons.Promote.Eq
                       Data.Singletons.Promote.Type
                       Data.Singletons.Promote.Defun
                       Data.Singletons.Util
@@ -135,8 +135,8 @@ library
                       Data.Singletons.Names
                       Data.Singletons.Single.Monad
                       Data.Singletons.Single.Type
-                      Data.Singletons.Single.Eq
                       Data.Singletons.Single.Data
+                      Data.Singletons.Single.Decide
                       Data.Singletons.Single.Defun
                       Data.Singletons.Single.Fixity
                       Data.Singletons.Single

@@ -1,12 +1,13 @@
-{- Data/Singletons/Single/Eq.hs
+{- Data/Singletons/Single/Decide.hs
 
 (c) Richard Eisenberg 2014
 rae@cs.brynmawr.edu
 
-Defines functions to generate SEq and SDecide instances.
+Defines functions to generate SDecide instances, as well as TestEquality and
+TestCoercion instances that leverage SDecide.
 -}
 
-module Data.Singletons.Single.Eq where
+module Data.Singletons.Single.Decide where
 
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
@@ -16,27 +17,21 @@ import Data.Singletons.Util
 import Data.Singletons.Names
 import Control.Monad
 
--- making the SEq instance and the SDecide instance are rather similar,
--- so we generalize
-type EqualityClassDesc q = ((DCon, DCon) -> q DClause, q DClause, Name, Name)
-sEqClassDesc, sDecideClassDesc :: OptionsMonad q => EqualityClassDesc q
-sEqClassDesc = (mkEqMethClause, mkEmptyEqMethClause, sEqClassName, sEqMethName)
-sDecideClassDesc = (mkDecideMethClause, mkEmptyDecideMethClause, sDecideClassName, sDecideMethName)
-
-mkEqualityInstance :: DsMonad q => Maybe DCxt -> DKind
-                   -> [DCon] -- ^ The /original/ constructors (for inferring the instance context)
-                   -> [DCon] -- ^ The /singletons/ constructors
-                   -> EqualityClassDesc q -> q DDec
-mkEqualityInstance mb_ctxt k ctors sctors (mkMeth, mkEmpty, className, methName) = do
+-- Make an instance of SDecide.
+mkDecideInstance :: DsMonad q => Maybe DCxt -> DKind
+                 -> [DCon] -- ^ The /original/ constructors (for inferring the instance context)
+                 -> [DCon] -- ^ The /singletons/ constructors
+                 -> q DDec
+mkDecideInstance mb_ctxt k ctors sctors = do
   let sctorPairs = [ (sc1, sc2) | sc1 <- sctors, sc2 <- sctors ]
   methClauses <- if null sctors
-                 then (:[]) <$> mkEmpty
-                 else mapM mkMeth sctorPairs
-  constraints <- inferConstraintsDef mb_ctxt (DConT className) k ctors
+                 then (:[]) <$> mkEmptyDecideMethClause
+                 else mapM mkDecideMethClause sctorPairs
+  constraints <- inferConstraintsDef mb_ctxt (DConT sDecideClassName) k ctors
   return $ DInstanceD Nothing Nothing
                      constraints
-                     (DAppT (DConT className) k)
-                     [DLetDec $ DFunD methName methClauses]
+                     (DAppT (DConT sDecideClassName) k)
+                     [DLetDec $ DFunD sDecideMethName methClauses]
 
 data TestInstance = TestEquality
                   | TestCoercion
@@ -61,41 +56,6 @@ mkTestInstance mb_ctxt k data_name ctors ti = do
       case ti of
         TestEquality -> (testEqualityClassName, testEqualityMethName, decideEqualityName)
         TestCoercion -> (testCoercionClassName, testCoercionMethName, decideCoercionName)
-
-mkEqMethClause :: OptionsMonad q => (DCon, DCon) -> q DClause
-mkEqMethClause (c1, c2)
-  | lname == rname = do
-    opts <- getOptions
-    lnames <- replicateM lNumArgs (qNewName "a")
-    rnames <- replicateM lNumArgs (qNewName "b")
-    let lpats = map DVarP lnames
-        rpats = map DVarP rnames
-        lvars = map DVarE lnames
-        rvars = map DVarE rnames
-    return $ DClause
-      [DConP lname lpats, DConP rname rpats]
-      (allExp opts (zipWith (\l r -> foldExp (DVarE sEqMethName) [l, r])
-                            lvars rvars))
-  | otherwise = do
-    opts <- getOptions
-    return $ DClause
-      [DConP lname (replicate lNumArgs DWildP),
-       DConP rname (replicate rNumArgs DWildP)]
-      (DConE $ singledDataConName opts falseName)
-  where allExp :: Options -> [DExp] -> DExp
-        allExp opts = go
-          where
-            go [] = DConE $ singledDataConName opts trueName
-            go [one] = one
-            go (h:t) = DAppE (DAppE (DVarE $ singledValueName opts andName) h) (go t)
-
-        (lname, lNumArgs) = extractNameArgs c1
-        (rname, rNumArgs) = extractNameArgs c2
-
-mkEmptyEqMethClause :: Applicative q => q DClause
-mkEmptyEqMethClause =
-  pure $ DClause [DWildP, DWildP]
-       $ DConE strueName
 
 mkDecideMethClause :: Quasi q => (DCon, DCon) -> q DClause
 mkDecideMethClause (c1, c2)

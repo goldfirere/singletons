@@ -103,8 +103,10 @@ instance SDecide Symbol where
     where errStr = "Broken Symbol singletons"
 
 -- PEq instances
-instance PEq Nat
-instance PEq Symbol
+instance PEq Nat where
+  type x == y = DefaultEq x y
+instance PEq Symbol where
+  type x == y = DefaultEq x y
 
 -- need SEq instances for TypeLits kinds
 instance SEq Nat where

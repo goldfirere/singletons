@@ -10,6 +10,32 @@ Singletons/T190.hs:0:0:: Splicing declarations
     type TSym0 :: T
     type family TSym0 where
       TSym0 = T
+    type TFHelper_0123456789876543210 :: T -> T -> Bool
+    type family TFHelper_0123456789876543210 a a where
+      TFHelper_0123456789876543210 T T = TrueSym0
+    type TFHelper_0123456789876543210Sym0 :: (~>) T ((~>) T Bool)
+    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+    type TFHelper_0123456789876543210Sym1 :: T -> (~>) T Bool
+    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+    type TFHelper_0123456789876543210Sym2 :: T -> T -> Bool
+    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance PEq T where
+      type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: T -> T -> Ordering
     type family Compare_0123456789876543210 a a where
       Compare_0123456789876543210 T T = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
@@ -126,18 +152,20 @@ Singletons/T190.hs:0:0:: Splicing declarations
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow T where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    type Equals_0123456789876543210 :: T -> T -> Bool
-    type family Equals_0123456789876543210 a b where
-      Equals_0123456789876543210 T T = TrueSym0
-      Equals_0123456789876543210 (_ :: T) (_ :: T) = FalseSym0
-    instance PEq T where
-      type (==) a b = Equals_0123456789876543210 a b
     data ST :: T -> GHC.Types.Type where ST :: ST (T :: T)
     type instance Sing @T = ST
     instance SingKind T where
       type Demote T = T
       fromSing ST = T
       toSing T = SomeSing ST
+    instance SEq T where
+      (%==) ::
+        forall (t1 :: T) (t2 :: T).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply ((==@#@$) :: TyFun T ((~>) T Bool)
+                                              -> GHC.Types.Type) t1) t2)
+      (%==) ST ST = STrue
     instance SOrd T where
       sCompare ::
         forall (t1 :: T) (t2 :: T).
@@ -195,8 +223,6 @@ Singletons/T190.hs:0:0:: Splicing declarations
              ((applySing ((singFun2 @ShowStringSym0) sShowString))
                 (sing :: Sing "T")))
             sA_0123456789876543210
-    instance SEq T where
-      (%==) ST ST = STrue
     instance SDecide T where
       (%~) ST ST = Proved Refl
     instance Data.Type.Equality.TestEquality (ST :: T

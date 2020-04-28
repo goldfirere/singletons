@@ -398,7 +398,11 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
             sA_0123456789876543210
     instance SEq Foo2 where
       (%==) ::
-        forall (a :: Foo2) (b :: Foo2). Sing a -> Sing b -> Sing ((==) a b)
+        forall (t1 :: Foo2) (t2 :: Foo2).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply ((==@#@$) :: TyFun Foo2 ((~>) Foo2 Bool)
+                                              -> GHC.Types.Type) t1) t2)
       (%==) SF SF = STrue
       (%==) SG SG = STrue
       (%==) SF SG = SFalse

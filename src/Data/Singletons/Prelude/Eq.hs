@@ -1,7 +1,8 @@
 {-# LANGUAGE TypeOperators, DataKinds, PolyKinds, TypeFamilies,
              RankNTypes, FlexibleContexts, TemplateHaskell,
              UndecidableInstances, GADTs, DefaultSignatures,
-             ScopedTypeVariables, TypeApplications, StandaloneKindSignatures #-}
+             ScopedTypeVariables, TypeApplications, StandaloneKindSignatures,
+             InstanceSigs #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -12,7 +13,9 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Defines the SEq singleton version of the Eq type class.
+-- Defines the promoted version of 'Eq', 'PEq', and the singleton version,
+-- 'SEq'. Also defines the 'DefaultEq' type family, which is useful for
+-- implementing boolean equality for non-inductively defined data types.
 --
 -----------------------------------------------------------------------------
 
@@ -26,35 +29,87 @@ module Data.Singletons.Prelude.Eq (
   DefaultEqSym0, DefaultEqSym1, DefaultEqSym2
   ) where
 
-import Data.Kind
-import Data.Singletons.Internal
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Single
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Util
 import Data.Singletons.Promote
+-- The imports below are only needed for Haddock purposes.
+import qualified Data.Kind as Kind ()
 import qualified Data.Type.Equality as DTE ()
+import qualified GHC.TypeLits as Lit ()
 
--- NB: These must be defined by hand because of the custom handling of the
--- default for (==) to use DefaultEq
+$(singletonsOnly [d|
+  infix 4 ==, /=
 
--- | The promoted analogue of 'Eq'. If you supply no definition for '(==)',
--- then it defaults to a use of 'DefaultEq'.
-type PEq :: Type -> Constraint
-class PEq a where
-  type (==) (x :: a) (y :: a) :: Bool
-  type (/=) (x :: a) (y :: a) :: Bool
+  -- -| The 'Eq' class defines equality ('==') and inequality ('/=').
+  -- All the basic datatypes exported by the "Prelude" are instances of 'Eq',
+  -- and 'Eq' may be derived for any datatype whose constituents are also
+  -- instances of 'Eq'.
+  --
+  -- The Haskell Report defines no laws for 'Eq'. However, '==' is customarily
+  -- expected to implement an equivalence relationship where two values comparing
+  -- equal are indistinguishable by "public" functions, with a "public" function
+  -- being one not allowing to see implementation details. For example, for a
+  -- type representing non-normalised natural numbers modulo 100, a "public"
+  -- function doesn't make the difference between 1 and 201. It is expected to
+  -- have the following properties:
+  --
+  -- [__Reflexivity__]: @x == x@ = 'True'
+  -- [__Symmetry__]: @x == y@ = @y == x@
+  -- [__Transitivity__]: if @x == y && y == z@ = 'True', then @x == z@ = 'True'
+  -- [__Substitutivity__]: if @x == y@ = 'True' and @f@ is a "public" function
+  -- whose return type is an instance of 'Eq', then @f x == f y@ = 'True'
+  -- [__Negation__]: @x /= y@ = @not (x == y)@
+  --
+  -- Minimal complete definition: either '==' or '/='.
+  --
+  class  Eq a  where
+      (==), (/=)           :: a -> a -> Bool
 
-  type (x :: a) == (y :: a) = x `DefaultEq` y
-  type (x :: a) /= (y :: a) = Not (x == y)
+      {-# INLINE (/=) #-}
+      {-# INLINE (==) #-}
+      x /= y               = not (x == y)
+      x == y               = not (x /= y)
+      -- {-# MINIMAL (==) | (/=) #-}
+  |])
 
-  infix 4 ==
-  infix 4 /=
-
--- | A sensible way to compute Boolean equality for types of any kind. Note
--- that this definition is slightly different from the '(DTE.==)' type family
--- from "Data.Type.Equality" in @base@, as '(DTE.==)' attempts to distinguish
--- applications of type constructors from other types. As a result,
+-- | One way to compute Boolean equality for types of any kind. This will
+-- return 'True' if the two arguments are known to be the same type and 'False'
+-- if they are known to be apart. Examples:
+--
+-- @
+-- >>> 'DefaultEq' 'Nothing' 'Nothing'
+-- 'True'
+-- >>> 'DefaultEq' 'Nothing' ('Just' a)
+-- 'False'
+-- >>> 'DefaultEq' a a
+-- 'True'
+-- @
+--
+-- 'DefaultEq' is most suited for data types that are not inductively defined.
+-- Three concrete examples of this are 'Lit.Nat', 'Lit.Symbol', and
+-- 'Kind.Type'. One cannot implement boolean equality for these types by
+-- pattern matching alone, so 'DefaultEq' is a good fit instead.
+--
+-- The downside to 'DefaultEq' is that it can fail to reduce if it is unable
+-- to determine if two types are equal or apart. Here is one such example:
+--
+-- @
+-- 'DefaultEq' ('Just' a) ('Just' b)
+-- @
+--
+-- What should this reduce to? It depends on what @a@ and @b@ are. 'DefaultEq'
+-- has no way of knowing what these two types are, and as a result, this type
+-- will be stuck. This is a pitfall that you can run into if you use
+-- 'DefaultEq' to implement boolean equality for an inductive data type like
+-- 'Maybe'. For this reason, it is usually recommended to implement boolean
+-- equality for inductive data types using pattern matching and recursion, not
+-- 'DefaultEq'.
+--
+-- Note that this definition is slightly different from the '(DTE.==)' type
+-- family from "Data.Type.Equality" in @base@, as '(DTE.==)' attempts to
+-- distinguish applications of type constructors from other types. As a result,
 -- @a == a@ does not reduce to 'True' for every @a@, but @'DefaultEq' a a@
 -- /does/ reduce to 'True' for every @a@. The latter behavior is more desirable
 -- for @singletons@' purposes, so we use it instead of '(DTE.==)'.
@@ -62,33 +117,6 @@ type DefaultEq :: k -> k -> Bool
 type family DefaultEq a b where
   DefaultEq a a = 'True
   DefaultEq a b = 'False
-
-$(genDefunSymbols [''(==), ''(/=), ''DefaultEq])
-
--- | The singleton analogue of 'Eq'. Unlike the definition for 'Eq', it is required
--- that instances define a body for '(%==)'. You may also supply a body for '(%/=)'.
-type SEq :: Type -> Constraint
-class SEq k where
-  -- | Boolean equality on singletons
-  (%==) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a == b)
-  infix 4 %==
-
-  -- | Boolean disequality on singletons
-  (%/=) :: forall (a :: k) (b :: k). Sing a -> Sing b -> Sing (a /= b)
-  default (%/=) :: forall (a :: k) (b :: k).
-                   ((a /= b) ~ Not (a == b))
-                => Sing a -> Sing b -> Sing (a /= b)
-  a %/= b = sNot (a %== b)
-  infix 4 %/=
+$(genDefunSymbols [''DefaultEq])
 
 $(singEqInstances basicTypes)
-
-instance SEq a => SingI ((==@#@$) :: a ~> a ~> Bool) where
-  sing = singFun2 (%==)
-instance (SEq a, SingI x) => SingI ((==@#@$$) x :: a ~> Bool) where
-  sing = singFun1 (sing @x %==)
-
-instance SEq a => SingI ((/=@#@$) :: a ~> a ~> Bool) where
-  sing = singFun2 (%/=)
-instance (SEq a, SingI x) => SingI ((/=@#@$$) x :: a ~> Bool) where
-  sing = singFun1 (sing @x %/=)

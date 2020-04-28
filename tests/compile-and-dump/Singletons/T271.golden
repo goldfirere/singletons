@@ -37,6 +37,35 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     type IdentitySym1 :: a -> Identity a
     type family IdentitySym1 a0123456789876543210 where
       IdentitySym1 a0123456789876543210 = Identity a0123456789876543210
+    type TFHelper_0123456789876543210 :: Constant a b
+                                         -> Constant a b -> Bool
+    type family TFHelper_0123456789876543210 a a where
+      TFHelper_0123456789876543210 (Constant a_0123456789876543210) (Constant b_0123456789876543210) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
+    type TFHelper_0123456789876543210Sym0 :: (~>) (Constant a b) ((~>) (Constant a b) Bool)
+    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+    type TFHelper_0123456789876543210Sym1 :: Constant a b
+                                             -> (~>) (Constant a b) Bool
+    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+    type TFHelper_0123456789876543210Sym2 :: Constant a b
+                                             -> Constant a b -> Bool
+    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance PEq (Constant a b) where
+      type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: Constant a b
                                         -> Constant a b -> Ordering
     type family Compare_0123456789876543210 a a where
@@ -66,6 +95,35 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd (Constant a b) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
+    type TFHelper_0123456789876543210 :: Identity a
+                                         -> Identity a -> Bool
+    type family TFHelper_0123456789876543210 a a where
+      TFHelper_0123456789876543210 (Identity a_0123456789876543210) (Identity b_0123456789876543210) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
+    type TFHelper_0123456789876543210Sym0 :: (~>) (Identity a) ((~>) (Identity a) Bool)
+    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+    type TFHelper_0123456789876543210Sym1 :: Identity a
+                                             -> (~>) (Identity a) Bool
+    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+    type TFHelper_0123456789876543210Sym2 :: Identity a
+                                             -> Identity a -> Bool
+    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance PEq (Identity a) where
+      type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: Identity a
                                         -> Identity a -> Ordering
     type family Compare_0123456789876543210 a a where
@@ -95,19 +153,6 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd (Identity a) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
-    type Equals_0123456789876543210 :: Constant a b
-                                       -> Constant a b -> Bool
-    type family Equals_0123456789876543210 a b where
-      Equals_0123456789876543210 (Constant a) (Constant b) = (==) a b
-      Equals_0123456789876543210 (_ :: Constant a b) (_ :: Constant a b) = FalseSym0
-    instance PEq (Constant a b) where
-      type (==) a b = Equals_0123456789876543210 a b
-    type Equals_0123456789876543210 :: Identity a -> Identity a -> Bool
-    type family Equals_0123456789876543210 a b where
-      Equals_0123456789876543210 (Identity a) (Identity b) = (==) a b
-      Equals_0123456789876543210 (_ :: Identity a) (_ :: Identity a) = FalseSym0
-    instance PEq (Identity a) where
-      type (==) a b = Equals_0123456789876543210 a b
     data SConstant :: forall (a :: Type) (b :: Type).
                       Constant a b -> Type
       where
@@ -132,6 +177,19 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       toSing (Identity (b :: Demote a))
         = case toSing b :: SomeSing a of {
             SomeSing c -> SomeSing (SIdentity c) }
+    instance SEq a => SEq (Constant a b) where
+      (%==) ::
+        forall (t1 :: Constant a b) (t2 :: Constant a b).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply ((==@#@$) :: TyFun (Constant a b) ((~>) (Constant a b) Bool)
+                                              -> Type) t1) t2)
+      (%==)
+        (SConstant (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SConstant (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+            sB_0123456789876543210
     instance SOrd a => SOrd (Constant a b) where
       sCompare ::
         forall (t1 :: Constant a b) (t2 :: Constant a b).
@@ -156,6 +214,19 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                Data.Singletons.Prelude.Instances.SNil)
+    instance SEq a => SEq (Identity a) where
+      (%==) ::
+        forall (t1 :: Identity a) (t2 :: Identity a).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply ((==@#@$) :: TyFun (Identity a) ((~>) (Identity a) Bool)
+                                              -> Type) t1) t2)
+      (%==)
+        (SIdentity (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SIdentity (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+            sB_0123456789876543210
     instance SOrd a => SOrd (Identity a) where
       sCompare ::
         forall (t1 :: Identity a) (t2 :: Identity a).
@@ -180,8 +251,6 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
                Data.Singletons.Prelude.Instances.SNil)
-    instance SEq a => SEq (Constant a b) where
-      (%==) (SConstant a) (SConstant b) = ((%==) a) b
     instance SDecide a => SDecide (Constant a b) where
       (%~) (SConstant a) (SConstant b)
         = case ((%~) a) b of
@@ -198,8 +267,6 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                                                            -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
-    instance SEq a => SEq (Identity a) where
-      (%==) (SIdentity a) (SIdentity b) = ((%==) a) b
     instance SDecide a => SDecide (Identity a) where
       (%~) (SIdentity a) (SIdentity b)
         = case ((%~) a) b of

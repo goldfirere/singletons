@@ -21,9 +21,9 @@ import qualified Language.Haskell.TH.Desugar.OSet as OSet
 import Language.Haskell.TH.Desugar.OSet (OSet)
 import Data.Singletons.Names
 import Data.Singletons.Promote.Monad
-import Data.Singletons.Promote.Eq
 import Data.Singletons.Promote.Defun
 import Data.Singletons.Promote.Type
+import Data.Singletons.Deriving.Eq
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Deriving.Enum
@@ -119,9 +119,13 @@ genDefunSymbols names = do
   decs <- promoteMDecs [] $ concatMapM defunInfo infos
   return $ decsToTH decs
 
--- | Produce instances for @(==)@ (type-level equality) from the given types
+-- | Produce instances for @PEq@ from the given types
 promoteEqInstances :: OptionsMonad q => [Name] -> q [Dec]
 promoteEqInstances = concatMapM promoteEqInstance
+
+-- | Produce an instance for @PEq@ from the given type
+promoteEqInstance :: OptionsMonad q => Name -> q [Dec]
+promoteEqInstance = promoteInstance mkEqInstance "Eq"
 
 -- | Produce instances for 'POrd' from the given types
 promoteOrdInstances :: OptionsMonad q => [Name] -> q [Dec]
@@ -154,17 +158,6 @@ promoteShowInstances = concatMapM promoteShowInstance
 -- | Produce an instance for 'PShow' from the given type
 promoteShowInstance :: OptionsMonad q => Name -> q [Dec]
 promoteShowInstance = promoteInstance (mkShowInstance ForPromotion) "Show"
-
--- | Produce an instance for @(==)@ (type-level equality) from the given type
-promoteEqInstance :: OptionsMonad q => Name -> q [Dec]
-promoteEqInstance name = do
-  (tvbs, cons) <- getDataD "I cannot make an instance of (==) for it." name
-  tvbs' <- mapM dsTvb tvbs
-  let data_ty = foldTypeTvbs (DConT name) tvbs'
-  cons' <- concatMapM (dsCon tvbs' data_ty) cons
-  kind <- promoteType (foldTypeTvbs (DConT name) tvbs')
-  inst_decs <- mkEqTypeInstance kind cons'
-  return $ decsToTH inst_decs
 
 promoteInstance :: OptionsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 promoteInstance mk_inst class_name name = do
@@ -237,8 +230,7 @@ promoteDecs raw_decls = do
         , pd_data_decs               = datas
         , pd_ty_syn_decs             = ty_syns
         , pd_open_type_family_decs   = o_tyfams
-        , pd_closed_type_family_decs = c_tyfams
-        , pd_derived_eq_decs         = derived_eq_decs } <- partitionDecs decls
+        , pd_closed_type_family_decs = c_tyfams } <- partitionDecs decls
 
   defunTopLevelTypeDecls ty_syns c_tyfams o_tyfams
   rec_sel_let_decs <- promoteDataDecs datas
@@ -248,7 +240,6 @@ promoteDecs raw_decls = do
   let orig_meth_sigs = foldMap (lde_types . cd_lde) classes
       cls_tvbs_map   = Map.fromList $ map (\cd -> (cd_name cd, cd_tvbs cd)) classes
   mapM_ (promoteInstanceDec orig_meth_sigs cls_tvbs_map) insts
-  mapM_ promoteDerivedEqDec   derived_eq_decs
 
 -- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
 promoteLetDecs :: Maybe Uniq -- let-binding unique (if locally bound)
@@ -1138,11 +1129,3 @@ promoteLitPat (IntegerL n)
 promoteLitPat (StringL str) = return $ DLitT (StrTyLit str)
 promoteLitPat lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)
-
--- See Note [DerivedDecl]
-promoteDerivedEqDec :: DerivedEqDecl -> PrM ()
-promoteDerivedEqDec (DerivedDecl { ded_type = ty
-                                 , ded_decl = DataDecl _ _ cons }) = do
-  kind <- promoteType ty
-  inst_decs <- mkEqTypeInstance kind cons
-  emitDecs inst_decs

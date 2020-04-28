@@ -68,6 +68,17 @@ Changelog for singletons project
   ```
 
   Please open an issue if you find this restriction burdensome in practice.
+* The `PEq` class no longer uses `DefaultEq` as its default implementation for
+  `(==)`. `DefaultEq`, despite its name, is actually not a suitable
+  implementation for `(==)` for a good majority of singleton types
+  (see the discussion in
+  [this GitHub issue](https://github.com/goldfirere/singletons/issues/457)
+  for more information). `(==)`'s default is now defined in terms of `(/=)`,
+  just like its term-level counterpart in the `Eq` class.
+* The `singEqInstanceOnly` and `singEqInstancesOnly` functions, which generate
+  `SEq` (but not `PEq`) instances, have been removed. There is not much point
+  in keeping these functions around now that `PEq` now longer has a special
+  default implementation. Use `singEqInstance{s}` instead.
 
 2.7
 ---
