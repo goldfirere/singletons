@@ -1,23 +1,89 @@
 Singletons/EqInstances.hs:0:0:: Splicing declarations
     singEqInstances [''Foo, ''Empty]
   ======>
+    type TFHelper_0123456789876543210 :: Foo -> Foo -> Bool
+    type family TFHelper_0123456789876543210 a a where
+      TFHelper_0123456789876543210 'FLeaf 'FLeaf = TrueSym0
+      TFHelper_0123456789876543210 'FLeaf ('(:+:) _ _) = FalseSym0
+      TFHelper_0123456789876543210 ('(:+:) _ _) 'FLeaf = FalseSym0
+      TFHelper_0123456789876543210 ('(:+:) a_0123456789876543210 a_0123456789876543210) ('(:+:) b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)
+    type TFHelper_0123456789876543210Sym0 :: (~>) Foo ((~>) Foo Bool)
+    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+    type TFHelper_0123456789876543210Sym1 :: Foo -> (~>) Foo Bool
+    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+    type TFHelper_0123456789876543210Sym2 :: Foo -> Foo -> Bool
+    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance PEq Foo where
+      type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     instance SEq Foo => SEq Foo where
+      (%==) ::
+        forall (t1 :: Foo) (t2 :: Foo).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply ((==@#@$) :: TyFun Foo ((~>) Foo Bool)
+                                              -> GHC.Types.Type) t1) t2)
       (%==) SFLeaf SFLeaf = STrue
       (%==) SFLeaf ((:%+:) _ _) = SFalse
       (%==) ((:%+:) _ _) SFLeaf = SFalse
-      (%==) ((:%+:) a a) ((:%+:) b b)
-        = ((%&&) (((%==) a) b)) (((%==) a) b)
-    type Equals_0123456789876543210 :: Foo -> Foo -> Bool
-    type family Equals_0123456789876543210 a b where
-      Equals_0123456789876543210 'FLeaf 'FLeaf = TrueSym0
-      Equals_0123456789876543210 ('(:+:) a a) ('(:+:) b b) = (&&) ((==) a b) ((==) a b)
-      Equals_0123456789876543210 (_ :: Foo) (_ :: Foo) = FalseSym0
-    instance PEq Foo where
-      type (==) a b = Equals_0123456789876543210 a b
-    instance SEq Empty where
-      (%==) _ _ = STrue
-    type Equals_0123456789876543210 :: Empty -> Empty -> Bool
-    type family Equals_0123456789876543210 a b where
-      Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = TrueSym0
+      (%==)
+        ((:%+:) (sA_0123456789876543210 :: Sing a_0123456789876543210)
+                (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        ((:%+:) (sB_0123456789876543210 :: Sing b_0123456789876543210)
+                (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                ((applySing
+                    ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                   sB_0123456789876543210)))
+            ((applySing
+                ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+               sB_0123456789876543210)
+    type TFHelper_0123456789876543210 :: Empty -> Empty -> Bool
+    type family TFHelper_0123456789876543210 a a where
+      TFHelper_0123456789876543210 _ _ = TrueSym0
+    type TFHelper_0123456789876543210Sym0 :: (~>) Empty ((~>) Empty Bool)
+    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+    type TFHelper_0123456789876543210Sym1 :: Empty -> (~>) Empty Bool
+    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+    type TFHelper_0123456789876543210Sym2 :: Empty -> Empty -> Bool
+    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq Empty where
-      type (==) a b = Equals_0123456789876543210 a b
+      type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
+    instance SEq Empty where
+      (%==) ::
+        forall (t1 :: Empty) (t2 :: Empty).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply ((==@#@$) :: TyFun Empty ((~>) Empty Bool)
+                                              -> GHC.Types.Type) t1) t2)
+      (%==) _ _ = STrue

@@ -82,7 +82,8 @@ instance SingKind (TYPE rep) where
   fromSing = SomeTypeRepTYPE
   toSing (SomeTypeRepTYPE tr) = SomeSing tr
 
-instance PEq (TYPE rep)
+instance PEq (TYPE rep) where
+  type x == y = DefaultEq x y
 instance SEq (TYPE rep) where
   tra %== trb =
     case eqTypeRep tra trb of

@@ -213,13 +213,9 @@ type DerivedShowDecl = DerivedDecl Show
 ~~~~~~~~~~~~~~~~~~~~~
 Most derived instances are wholly handled in
 Data.Singletons.Partition.partitionDecs. There are two notable exceptions to
-this rule, however:
-
-* Eq instances (which are handled entirely outside of partitionDecs)
-* Show instances (which are partially handled outside of partitionDecs)
-
-For these instances, we use a DerivedDecl data type to encode just enough
-information to recreate the derived instance:
+this rule, however, that are partially handled outside of partitionDecs:
+Eq and Show instances. For these instances, we use a DerivedDecl data type to
+encode just enough information to recreate the derived instance:
 
 1. Just the instance context, if it's standalone-derived, or Nothing if it's in
    a deriving clause (ded_mb_cxt)
@@ -231,14 +227,13 @@ information to recreate the derived instance:
 Why are these instances handled outside of partitionDecs?
 
 * Deriving Eq in singletons not only derives PEq/SEq instances, but it also
-  derives SDecide, TestEquality, and TestCoercion instances. This additional
-  complication makes Eq difficult to integrate with the other deriving
-  machinery, so we handle it specially in Data.Singletons.Promote and
+  derives SDecide, TestEquality, and TestCoercion instances.
   Data.Singletons.Single (depending on the task at hand).
 * Deriving Show in singletons not only derives PShow/SShow instances, but it
-  also derives Show instances for singletons types. To make this work,
-  we let partitionDecs handle the PShow/SShow instances, but we also stick the
-  relevant info into a DerivedDecl value for later use in
-  Data.Singletons.Single, where we additionally generate Show
-  instances.
+  also derives Show instances for singletons types.
+
+To make this work, we let partitionDecs handle the P{Eq,Show} and S{Eq,Show}
+instances, but we also stick the relevant info into a DerivedDecl value for
+later use in Data.Singletons.Single, where we additionally generate
+SDecide, TestEquality, TestCoercion and Show instances for singleton types.
 -}

@@ -13,6 +13,7 @@ module Data.Singletons.Single where
 import Prelude hiding ( exp )
 import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (NameSpace(..), Quasi(..))
+import Data.Singletons.Deriving.Eq
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Deriving.Enum
@@ -27,9 +28,9 @@ import Data.Singletons.Names
 import Data.Singletons.Single.Monad
 import Data.Singletons.Single.Type
 import Data.Singletons.Single.Data
+import Data.Singletons.Single.Decide
 import Data.Singletons.Single.Defun
 import Data.Singletons.Single.Fixity
-import Data.Singletons.Single.Eq
 import Data.Singletons.Syntax
 import Data.Singletons.TH.Options
 import Data.Singletons.Partition
@@ -127,55 +128,34 @@ singletons' qdecs = do
                | otherwise          = []
   return $ origDecs ++ decsToTH singDecs
 
--- | Create instances of 'SEq' and type-level @(==)@ for each type in the list
+-- | Create instances of 'SEq' for the given types
 singEqInstances :: OptionsMonad q => [Name] -> q [Dec]
 singEqInstances = concatMapM singEqInstance
 
--- | Create instance of 'SEq' and type-level @(==)@ for the given type
+-- | Create instance of 'SEq' for the given type
 singEqInstance :: OptionsMonad q => Name -> q [Dec]
-singEqInstance name = do
-  promotion <- promoteEqInstance name
-  dec <- singEqualityInstance sEqClassDesc name
-  return $ dec ++ promotion
-
--- | Create instances of 'SEq' (only -- no instance for @(==)@, which 'SEq' generally
--- relies on) for each type in the list
-singEqInstancesOnly :: OptionsMonad q => [Name] -> q [Dec]
-singEqInstancesOnly = concatMapM singEqInstanceOnly
-
--- | Create instances of 'SEq' (only -- no instance for @(==)@, which 'SEq' generally
--- relies on) for the given type
-singEqInstanceOnly :: OptionsMonad q => Name -> q [Dec]
-singEqInstanceOnly name = singEqualityInstance sEqClassDesc name
+singEqInstance = singInstance mkEqInstance "Eq"
 
 -- | Create instances of 'SDecide', 'TestEquality', and 'TestCoercion' for each
 -- type in the list.
 singDecideInstances :: OptionsMonad q => [Name] -> q [Dec]
 singDecideInstances = concatMapM singDecideInstance
 
--- | Create instance of 'SDecide', 'TestEquality', and 'TestCoercion' for the
+-- | Create instances of 'SDecide', 'TestEquality', and 'TestCoercion' for the
 -- given type.
 singDecideInstance :: OptionsMonad q => Name -> q [Dec]
-singDecideInstance name = singEqualityInstance sDecideClassDesc name
-
--- generalized function for creating equality instances
-singEqualityInstance :: OptionsMonad q => EqualityClassDesc q -> Name -> q [Dec]
-singEqualityInstance desc@(_, _, className, _) name = do
-  (tvbs, cons) <- getDataD ("I cannot make an instance of " ++
-                            show className ++ " for it.") name
+singDecideInstance name = do
+  (tvbs, cons) <- getDataD ("I cannot make an instance of SDecide for it.") name
   dtvbs <- mapM dsTvb tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
   let tyvars = map (DVarT . extractTvbName) dtvbs
       kind = foldType (DConT name) tyvars
   (scons, _) <- singM [] $ mapM (singCtor name) dcons
-  eqInstance <- mkEqualityInstance Nothing kind dcons scons desc
-  testInstances <-
-    if className == sDecideClassName
-       then traverse (mkTestInstance Nothing kind name dcons)
-                     [TestEquality, TestCoercion]
-       else pure []
-  return $ decsToTH (eqInstance:testInstances)
+  sDecideInstance <- mkDecideInstance Nothing kind dcons scons
+  testInstances <- traverse (mkTestInstance Nothing kind name dcons)
+                            [TestEquality, TestCoercion]
+  return $ decsToTH (sDecideInstance:testInstances)
 
 -- | Create instances of 'SOrd' for the given types
 singOrdInstances :: OptionsMonad q => [Name] -> q [Dec]
@@ -334,7 +314,6 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
     let meth_sigs    = foldMap (lde_types . cd_lde) classes
         cls_tvbs_map = Map.fromList $ map (\cd -> (cd_name cd, cd_tvbs cd)) classes
     insts' <- mapM (promoteInstanceDec meth_sigs cls_tvbs_map) insts
-    mapM_ promoteDerivedEqDec derivedEqDecs
     return (letDecEnv, classes', insts')
 
   singDecsM locals $ do
@@ -1003,7 +982,6 @@ singDerivedEqDecs (DerivedDecl { ded_mb_cxt     = mb_ctxt
   (scons, _) <- singM [] $ mapM (singCtor ty_tycon) cons
   mb_sctxt <- mapM (mapM singPred) mb_ctxt
   kind <- promoteType ty
-  sEqInst <- mkEqualityInstance mb_sctxt kind cons scons sEqClassDesc
   -- Beware! The user might have specified an instance context like this:
   --
   --   deriving instance Eq a => Eq (T a Int)
@@ -1012,10 +990,10 @@ singDerivedEqDecs (DerivedDecl { ded_mb_cxt     = mb_ctxt
   -- this for the SDecide instance! The simplest solution is to simply replace
   -- all occurrences of SEq with SDecide in the context.
   let mb_sctxtDecide = fmap (map sEqToSDecide) mb_sctxt
-  sDecideInst <- mkEqualityInstance mb_sctxtDecide kind cons scons sDecideClassDesc
+  sDecideInst <- mkDecideInstance mb_sctxtDecide kind cons scons
   testInsts <- traverse (mkTestInstance mb_sctxtDecide kind ty_tycon cons)
                         [TestEquality, TestCoercion]
-  return (sEqInst:sDecideInst:testInsts)
+  return (sDecideInst:testInsts)
 
 -- Walk a DPred, replacing all occurrences of SEq with SDecide.
 sEqToSDecide :: DPred -> DPred

@@ -265,6 +265,35 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type FSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
     type family FSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
       FSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = F a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type TFHelper_0123456789876543210 :: Nat -> Nat -> Bool
+    type family TFHelper_0123456789876543210 a a where
+      TFHelper_0123456789876543210 Zero Zero = TrueSym0
+      TFHelper_0123456789876543210 Zero (Succ _) = FalseSym0
+      TFHelper_0123456789876543210 (Succ _) Zero = FalseSym0
+      TFHelper_0123456789876543210 (Succ a_0123456789876543210) (Succ b_0123456789876543210) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
+    type TFHelper_0123456789876543210Sym0 :: (~>) Nat ((~>) Nat Bool)
+    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+    type TFHelper_0123456789876543210Sym1 :: Nat -> (~>) Nat Bool
+    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+    type TFHelper_0123456789876543210Sym2 :: Nat -> Nat -> Bool
+    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance PEq Nat where
+      type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: Nat -> Nat -> Ordering
     type family Compare_0123456789876543210 a a where
       Compare_0123456789876543210 Zero Zero = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
@@ -294,6 +323,70 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd Nat where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
+    type TFHelper_0123456789876543210 :: Foo a b c d
+                                         -> Foo a b c d -> Bool
+    type family TFHelper_0123456789876543210 a a where
+      TFHelper_0123456789876543210 (A a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (A b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+      TFHelper_0123456789876543210 (A _ _ _ _) (B _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (A _ _ _ _) (C _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (A _ _ _ _) (D _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (A _ _ _ _) (E _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (A _ _ _ _) (F _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (B _ _ _ _) (A _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (B a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (B b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+      TFHelper_0123456789876543210 (B _ _ _ _) (C _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (B _ _ _ _) (D _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (B _ _ _ _) (E _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (B _ _ _ _) (F _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (C _ _ _ _) (A _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (C _ _ _ _) (B _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (C a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (C b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+      TFHelper_0123456789876543210 (C _ _ _ _) (D _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (C _ _ _ _) (E _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (C _ _ _ _) (F _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (D _ _ _ _) (A _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (D _ _ _ _) (B _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (D _ _ _ _) (C _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (D a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (D b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+      TFHelper_0123456789876543210 (D _ _ _ _) (E _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (D _ _ _ _) (F _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (E _ _ _ _) (A _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (E _ _ _ _) (B _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (E _ _ _ _) (C _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (E _ _ _ _) (D _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (E a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (E b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+      TFHelper_0123456789876543210 (E _ _ _ _) (F _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (F _ _ _ _) (A _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (F _ _ _ _) (B _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (F _ _ _ _) (C _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (F _ _ _ _) (D _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (F _ _ _ _) (E _ _ _ _) = FalseSym0
+      TFHelper_0123456789876543210 (F a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (F b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+    type TFHelper_0123456789876543210Sym0 :: (~>) (Foo a b c d) ((~>) (Foo a b c d) Bool)
+    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+    type TFHelper_0123456789876543210Sym1 :: Foo a b c d
+                                             -> (~>) (Foo a b c d) Bool
+    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+    type TFHelper_0123456789876543210Sym2 :: Foo a b c d
+                                             -> Foo a b c d -> Bool
+    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance PEq (Foo a b c d) where
+      type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: Foo a b c d
                                         -> Foo a b c d -> Ordering
     type family Compare_0123456789876543210 a a where
@@ -358,25 +451,6 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd (Foo a b c d) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
-    type Equals_0123456789876543210 :: Nat -> Nat -> Bool
-    type family Equals_0123456789876543210 a b where
-      Equals_0123456789876543210 Zero Zero = TrueSym0
-      Equals_0123456789876543210 (Succ a) (Succ b) = (==) a b
-      Equals_0123456789876543210 (_ :: Nat) (_ :: Nat) = FalseSym0
-    instance PEq Nat where
-      type (==) a b = Equals_0123456789876543210 a b
-    type Equals_0123456789876543210 :: Foo a b c d
-                                       -> Foo a b c d -> Bool
-    type family Equals_0123456789876543210 a b where
-      Equals_0123456789876543210 (A a a a a) (A b b b b) = (&&) ((==) a b) ((&&) ((==) a b) ((&&) ((==) a b) ((==) a b)))
-      Equals_0123456789876543210 (B a a a a) (B b b b b) = (&&) ((==) a b) ((&&) ((==) a b) ((&&) ((==) a b) ((==) a b)))
-      Equals_0123456789876543210 (C a a a a) (C b b b b) = (&&) ((==) a b) ((&&) ((==) a b) ((&&) ((==) a b) ((==) a b)))
-      Equals_0123456789876543210 (D a a a a) (D b b b b) = (&&) ((==) a b) ((&&) ((==) a b) ((&&) ((==) a b) ((==) a b)))
-      Equals_0123456789876543210 (E a a a a) (E b b b b) = (&&) ((==) a b) ((&&) ((==) a b) ((&&) ((==) a b) ((==) a b)))
-      Equals_0123456789876543210 (F a a a a) (F b b b b) = (&&) ((==) a b) ((&&) ((==) a b) ((&&) ((==) a b) ((==) a b)))
-      Equals_0123456789876543210 (_ :: Foo a b c d) (_ :: Foo a b c d) = FalseSym0
-    instance PEq (Foo a b c d) where
-      type (==) a b = Equals_0123456789876543210 a b
     data SNat :: Nat -> GHC.Types.Type
       where
         SZero :: SNat (Zero :: Nat)
@@ -486,6 +560,22 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
           of {
             (,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing ((((SF c) c) c) c) }
+    instance SEq Nat => SEq Nat where
+      (%==) ::
+        forall (t1 :: Nat) (t2 :: Nat).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply ((==@#@$) :: TyFun Nat ((~>) Nat Bool)
+                                              -> GHC.Types.Type) t1) t2)
+      (%==) SZero SZero = STrue
+      (%==) SZero (SSucc _) = SFalse
+      (%==) (SSucc _) SZero = SFalse
+      (%==)
+        (SSucc (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SSucc (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+            sB_0123456789876543210
     instance SOrd Nat => SOrd Nat where
       sCompare ::
         forall (t1 :: Nat) (t2 :: Nat).
@@ -517,6 +607,205 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                SNil)
       sCompare SZero (SSucc _) = SLT
       sCompare (SSucc _) SZero = SGT
+    instance (SEq a, SEq b, SEq c, SEq d) => SEq (Foo a b c d) where
+      (%==) ::
+        forall (t1 :: Foo a b c d) (t2 :: Foo a b c d).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply ((==@#@$) :: TyFun (Foo a b c d) ((~>) (Foo a b c d) Bool)
+                                              -> GHC.Types.Type) t1) t2)
+      (%==)
+        (SA (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SA (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                ((applySing
+                    ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                   sB_0123456789876543210)))
+            ((applySing
+                ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                   ((applySing
+                       ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                      ((applySing
+                          ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                     sB_0123456789876543210)))
+      (%==) (SA _ _ _ _) (SB _ _ _ _) = SFalse
+      (%==) (SA _ _ _ _) (SC _ _ _ _) = SFalse
+      (%==) (SA _ _ _ _) (SD _ _ _ _) = SFalse
+      (%==) (SA _ _ _ _) (SE _ _ _ _) = SFalse
+      (%==) (SA _ _ _ _) (SF _ _ _ _) = SFalse
+      (%==) (SB _ _ _ _) (SA _ _ _ _) = SFalse
+      (%==)
+        (SB (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SB (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                ((applySing
+                    ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                   sB_0123456789876543210)))
+            ((applySing
+                ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                   ((applySing
+                       ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                      ((applySing
+                          ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                     sB_0123456789876543210)))
+      (%==) (SB _ _ _ _) (SC _ _ _ _) = SFalse
+      (%==) (SB _ _ _ _) (SD _ _ _ _) = SFalse
+      (%==) (SB _ _ _ _) (SE _ _ _ _) = SFalse
+      (%==) (SB _ _ _ _) (SF _ _ _ _) = SFalse
+      (%==) (SC _ _ _ _) (SA _ _ _ _) = SFalse
+      (%==) (SC _ _ _ _) (SB _ _ _ _) = SFalse
+      (%==)
+        (SC (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SC (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                ((applySing
+                    ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                   sB_0123456789876543210)))
+            ((applySing
+                ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                   ((applySing
+                       ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                      ((applySing
+                          ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                     sB_0123456789876543210)))
+      (%==) (SC _ _ _ _) (SD _ _ _ _) = SFalse
+      (%==) (SC _ _ _ _) (SE _ _ _ _) = SFalse
+      (%==) (SC _ _ _ _) (SF _ _ _ _) = SFalse
+      (%==) (SD _ _ _ _) (SA _ _ _ _) = SFalse
+      (%==) (SD _ _ _ _) (SB _ _ _ _) = SFalse
+      (%==) (SD _ _ _ _) (SC _ _ _ _) = SFalse
+      (%==)
+        (SD (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SD (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                ((applySing
+                    ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                   sB_0123456789876543210)))
+            ((applySing
+                ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                   ((applySing
+                       ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                      ((applySing
+                          ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                     sB_0123456789876543210)))
+      (%==) (SD _ _ _ _) (SE _ _ _ _) = SFalse
+      (%==) (SD _ _ _ _) (SF _ _ _ _) = SFalse
+      (%==) (SE _ _ _ _) (SA _ _ _ _) = SFalse
+      (%==) (SE _ _ _ _) (SB _ _ _ _) = SFalse
+      (%==) (SE _ _ _ _) (SC _ _ _ _) = SFalse
+      (%==) (SE _ _ _ _) (SD _ _ _ _) = SFalse
+      (%==)
+        (SE (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SE (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                ((applySing
+                    ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                   sB_0123456789876543210)))
+            ((applySing
+                ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                   ((applySing
+                       ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                      ((applySing
+                          ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                     sB_0123456789876543210)))
+      (%==) (SE _ _ _ _) (SF _ _ _ _) = SFalse
+      (%==) (SF _ _ _ _) (SA _ _ _ _) = SFalse
+      (%==) (SF _ _ _ _) (SB _ _ _ _) = SFalse
+      (%==) (SF _ _ _ _) (SC _ _ _ _) = SFalse
+      (%==) (SF _ _ _ _) (SD _ _ _ _) = SFalse
+      (%==) (SF _ _ _ _) (SE _ _ _ _) = SFalse
+      (%==)
+        (SF (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (SF (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210)
+            (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        = (applySing
+             ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                ((applySing
+                    ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                   sB_0123456789876543210)))
+            ((applySing
+                ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                   ((applySing
+                       ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                      sB_0123456789876543210)))
+               ((applySing
+                   ((applySing ((singFun2 @(&&@#@$)) (%&&)))
+                      ((applySing
+                          ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                         sB_0123456789876543210)))
+                  ((applySing
+                      ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+                     sB_0123456789876543210)))
     instance (SOrd a, SOrd b, SOrd c, SOrd d) =>
              SOrd (Foo a b c d) where
       sCompare ::
@@ -789,11 +1078,6 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       sCompare (SF _ _ _ _) (SC _ _ _ _) = SGT
       sCompare (SF _ _ _ _) (SD _ _ _ _) = SGT
       sCompare (SF _ _ _ _) (SE _ _ _ _) = SGT
-    instance SEq Nat => SEq Nat where
-      (%==) SZero SZero = STrue
-      (%==) SZero (SSucc _) = SFalse
-      (%==) (SSucc _) SZero = SFalse
-      (%==) (SSucc a) (SSucc b) = ((%==) a) b
     instance SDecide Nat => SDecide Nat where
       (%~) SZero SZero = Proved Refl
       (%~) SZero (SSucc _) = Disproved (\ x -> case x of)
@@ -813,55 +1097,6 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                       -> GHC.Types.Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
-    instance (SEq a, SEq b, SEq c, SEq d) => SEq (Foo a b c d) where
-      (%==) (SA a a a a) (SA b b b b)
-        = ((%&&) (((%==) a) b))
-            (((%&&) (((%==) a) b)) (((%&&) (((%==) a) b)) (((%==) a) b)))
-      (%==) (SA _ _ _ _) (SB _ _ _ _) = SFalse
-      (%==) (SA _ _ _ _) (SC _ _ _ _) = SFalse
-      (%==) (SA _ _ _ _) (SD _ _ _ _) = SFalse
-      (%==) (SA _ _ _ _) (SE _ _ _ _) = SFalse
-      (%==) (SA _ _ _ _) (SF _ _ _ _) = SFalse
-      (%==) (SB _ _ _ _) (SA _ _ _ _) = SFalse
-      (%==) (SB a a a a) (SB b b b b)
-        = ((%&&) (((%==) a) b))
-            (((%&&) (((%==) a) b)) (((%&&) (((%==) a) b)) (((%==) a) b)))
-      (%==) (SB _ _ _ _) (SC _ _ _ _) = SFalse
-      (%==) (SB _ _ _ _) (SD _ _ _ _) = SFalse
-      (%==) (SB _ _ _ _) (SE _ _ _ _) = SFalse
-      (%==) (SB _ _ _ _) (SF _ _ _ _) = SFalse
-      (%==) (SC _ _ _ _) (SA _ _ _ _) = SFalse
-      (%==) (SC _ _ _ _) (SB _ _ _ _) = SFalse
-      (%==) (SC a a a a) (SC b b b b)
-        = ((%&&) (((%==) a) b))
-            (((%&&) (((%==) a) b)) (((%&&) (((%==) a) b)) (((%==) a) b)))
-      (%==) (SC _ _ _ _) (SD _ _ _ _) = SFalse
-      (%==) (SC _ _ _ _) (SE _ _ _ _) = SFalse
-      (%==) (SC _ _ _ _) (SF _ _ _ _) = SFalse
-      (%==) (SD _ _ _ _) (SA _ _ _ _) = SFalse
-      (%==) (SD _ _ _ _) (SB _ _ _ _) = SFalse
-      (%==) (SD _ _ _ _) (SC _ _ _ _) = SFalse
-      (%==) (SD a a a a) (SD b b b b)
-        = ((%&&) (((%==) a) b))
-            (((%&&) (((%==) a) b)) (((%&&) (((%==) a) b)) (((%==) a) b)))
-      (%==) (SD _ _ _ _) (SE _ _ _ _) = SFalse
-      (%==) (SD _ _ _ _) (SF _ _ _ _) = SFalse
-      (%==) (SE _ _ _ _) (SA _ _ _ _) = SFalse
-      (%==) (SE _ _ _ _) (SB _ _ _ _) = SFalse
-      (%==) (SE _ _ _ _) (SC _ _ _ _) = SFalse
-      (%==) (SE _ _ _ _) (SD _ _ _ _) = SFalse
-      (%==) (SE a a a a) (SE b b b b)
-        = ((%&&) (((%==) a) b))
-            (((%&&) (((%==) a) b)) (((%&&) (((%==) a) b)) (((%==) a) b)))
-      (%==) (SE _ _ _ _) (SF _ _ _ _) = SFalse
-      (%==) (SF _ _ _ _) (SA _ _ _ _) = SFalse
-      (%==) (SF _ _ _ _) (SB _ _ _ _) = SFalse
-      (%==) (SF _ _ _ _) (SC _ _ _ _) = SFalse
-      (%==) (SF _ _ _ _) (SD _ _ _ _) = SFalse
-      (%==) (SF _ _ _ _) (SE _ _ _ _) = SFalse
-      (%==) (SF a a a a) (SF b b b b)
-        = ((%&&) (((%==) a) b))
-            (((%&&) (((%==) a) b)) (((%&&) (((%==) a) b)) (((%==) a) b)))
     instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
              SDecide (Foo a b c d) where
       (%~) (SA a a a a) (SA b b b b)

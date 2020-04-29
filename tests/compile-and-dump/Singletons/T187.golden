@@ -8,6 +8,32 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     data Empty
     deriving instance Eq Empty
     deriving instance Ord Empty
+    type TFHelper_0123456789876543210 :: Empty -> Empty -> Bool
+    type family TFHelper_0123456789876543210 a a where
+      TFHelper_0123456789876543210 _ _ = TrueSym0
+    type TFHelper_0123456789876543210Sym0 :: (~>) Empty ((~>) Empty Bool)
+    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
+                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+    type TFHelper_0123456789876543210Sym1 :: Empty -> (~>) Empty Bool
+    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+      where
+        TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+    type TFHelper_0123456789876543210Sym2 :: Empty -> Empty -> Bool
+    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance PEq Empty where
+      type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: Empty -> Empty -> Ordering
     type family Compare_0123456789876543210 a a where
       Compare_0123456789876543210 _ _ = EQSym0
@@ -35,17 +61,20 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd Empty where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
-    type Equals_0123456789876543210 :: Empty -> Empty -> Bool
-    type family Equals_0123456789876543210 a b where
-      Equals_0123456789876543210 (_ :: Empty) (_ :: Empty) = TrueSym0
-    instance PEq Empty where
-      type (==) a b = Equals_0123456789876543210 a b
     data SEmpty :: Empty -> GHC.Types.Type
     type instance Sing @Empty = SEmpty
     instance SingKind Empty where
       type Demote Empty = Empty
       fromSing x = case x of
       toSing x = SomeSing (case x of)
+    instance SEq Empty where
+      (%==) ::
+        forall (t1 :: Empty) (t2 :: Empty).
+        Sing t1
+        -> Sing t2
+           -> Sing (Apply (Apply ((==@#@$) :: TyFun Empty ((~>) Empty Bool)
+                                              -> GHC.Types.Type) t1) t2)
+      (%==) _ _ = STrue
     instance SOrd Empty where
       sCompare ::
         forall (t1 :: Empty) (t2 :: Empty).
@@ -54,8 +83,6 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
            -> Sing (Apply (Apply (CompareSym0 :: TyFun Empty ((~>) Empty Ordering)
                                                  -> GHC.Types.Type) t1) t2)
       sCompare _ _ = SEQ
-    instance SEq Empty where
-      (%==) _ _ = STrue
     instance SDecide Empty where
       (%~) x _ = Proved (case x of)
     instance Data.Type.Equality.TestEquality (SEmpty :: Empty

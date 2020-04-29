@@ -21,6 +21,7 @@ import Data.Singletons.Syntax
 import Data.Singletons.Deriving.Ord
 import Data.Singletons.Deriving.Bounded
 import Data.Singletons.Deriving.Enum
+import Data.Singletons.Deriving.Eq
 import Data.Singletons.Deriving.Foldable
 import Data.Singletons.Deriving.Functor
 import Data.Singletons.Deriving.Show
@@ -262,7 +263,6 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
       mk_instance maker = maker mb_ctxt ty data_decl
 
       mk_derived_inst    dec = mempty { pd_instance_decs   = [dec] }
-      mk_derived_eq_inst dec = mempty { pd_derived_eq_decs = [dec] }
 
       derived_decl :: DerivedDecl cls
       derived_decl = DerivedDecl { ded_mb_cxt     = mb_ctxt
@@ -286,9 +286,14 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
         , ( functorName,     mk_derived_inst <$> mk_instance mkFunctorInstance )
         , ( foldableName,    mk_derived_inst <$> mk_instance mkFoldableInstance )
         , ( traversableName, mk_derived_inst <$> mk_instance mkTraversableInstance )
+
           -- See Note [DerivedDecl] in Data.Singletons.Syntax
-        , ( eqName, return $ mk_derived_eq_inst derived_decl )
-          -- See Note [DerivedDecl] in Data.Singletons.Syntax
+        , ( eqName,   do -- These will become PEq/SEq instances...
+                         inst_for_promotion <- mk_instance mkEqInstance
+                         -- ...and these will become SDecide/TestEquality/TestCoercion instances.
+                         let inst_for_decide = derived_decl
+                         return $ mempty { pd_instance_decs   = [inst_for_promotion]
+                                         , pd_derived_eq_decs = [inst_for_decide] } )
         , ( showName, do -- These will become PShow/SShow instances...
                          inst_for_promotion <- mk_instance $ mkShowInstance ForPromotion
                          -- ...and this will become a Show instance.

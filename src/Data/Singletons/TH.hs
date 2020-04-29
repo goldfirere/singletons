@@ -24,7 +24,6 @@ module Data.Singletons.TH (
   -- ** Functions to generate equality instances
   promoteEqInstances, promoteEqInstance,
   singEqInstances, singEqInstance,
-  singEqInstancesOnly, singEqInstanceOnly,
   singDecideInstances, singDecideInstance,
 
   -- ** Functions to generate 'Ord' instances
