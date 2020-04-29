@@ -67,7 +67,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       Case_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
     type ToEnum_0123456789876543210 :: GHC.Types.Nat -> T
     type family ToEnum_0123456789876543210 a where
-      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0))
+      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))
     type ToEnum_0123456789876543210Sym0 :: (~>) GHC.Types.Nat T
     data ToEnum_0123456789876543210Sym0 a0123456789876543210
       where
@@ -82,7 +82,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       ToEnum_0123456789876543210Sym1 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     type FromEnum_0123456789876543210 :: T -> GHC.Types.Nat
     type family FromEnum_0123456789876543210 a where
-      FromEnum_0123456789876543210 T = Data.Singletons.Prelude.Num.FromInteger 0
+      FromEnum_0123456789876543210 T = FromInteger 0
     type FromEnum_0123456789876543210Sym0 :: (~>) T GHC.Types.Nat
     data FromEnum_0123456789876543210Sym0 a0123456789876543210
       where
@@ -179,7 +179,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
-            Data.Singletons.Prelude.Instances.SNil
+            SNil
     instance SEnum T where
       sToEnum ::
         forall (t :: GHC.Types.Nat).
@@ -193,15 +193,14 @@ Singletons/T190.hs:0:0:: Splicing declarations
                                                                      -> GHC.Types.Type) t)
       sToEnum (sN :: Sing n)
         = (id
-             @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (Data.Singletons.Prelude.Num.FromInteger 0)))))
+             @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0)))))
             (case
                  (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
-                   (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))
+                   (sFromInteger (sing :: Sing 0))
              of
                STrue -> ST
                SFalse -> sError (sing :: Sing "toEnum: bad argument"))
-      sFromEnum ST
-        = Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0)
+      sFromEnum ST = sFromInteger (sing :: Sing 0)
     instance SBounded T where
       sMinBound :: Sing (MinBoundSym0 :: T)
       sMaxBound :: Sing (MaxBoundSym0 :: T)

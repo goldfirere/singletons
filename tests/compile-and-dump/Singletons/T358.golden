@@ -105,14 +105,14 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
         forall b (t :: b). Sing t -> Sing (Apply Method2bSym0 t :: a)
     instance SC1 [] where
       sMethod1 :: forall a. Sing (Method1Sym0 :: [a])
-      sMethod1 = Data.Singletons.Prelude.Instances.SNil
+      sMethod1 = SNil
     instance SC2 [a] where
       sMethod2a ::
         forall b (t :: b). Sing t -> Sing (Apply Method2aSym0 t :: [a])
       sMethod2b ::
         forall b (t :: b). Sing t -> Sing (Apply Method2bSym0 t :: [a])
-      sMethod2a _ = Data.Singletons.Prelude.Instances.SNil
-      sMethod2b _ = Data.Singletons.Prelude.Instances.SNil
+      sMethod2a _ = SNil
+      sMethod2b _ = SNil
     instance SC2 a => SingI (Method2aSym0 :: (~>) b a) where
       sing = (singFun1 @Method2aSym0) sMethod2a
     instance SC2 a => SingI (Method2bSym0 :: (~>) b a) where

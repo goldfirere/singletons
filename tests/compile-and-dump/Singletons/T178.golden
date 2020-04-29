@@ -141,7 +141,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     instance PShow Occ where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)])
-    sEmpty = Data.Singletons.Prelude.Instances.SNil
+    sEmpty = SNil
     data SOcc :: Occ -> GHC.Types.Type
       where
         SStr :: SOcc (Str :: Occ)
@@ -185,21 +185,21 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
-            Data.Singletons.Prelude.Instances.SNil
+            SNil
       sCompare SOpt SOpt
         = (applySing
              ((applySing
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
-            Data.Singletons.Prelude.Instances.SNil
+            SNil
       sCompare SMany SMany
         = (applySing
              ((applySing
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
-            Data.Singletons.Prelude.Instances.SNil
+            SNil
       sCompare SStr SOpt = SLT
       sCompare SStr SMany = SLT
       sCompare SOpt SStr = SGT

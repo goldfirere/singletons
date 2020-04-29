@@ -18,6 +18,7 @@ import Language.Haskell.TH.Desugar
 import GHC.TypeLits ( Nat, Symbol )
 import GHC.Exts ( Constraint )
 import GHC.Show ( showCommaSpace, showSpace )
+import Data.String (fromString)
 import Data.Type.Equality ( TestEquality(..) )
 import Data.Type.Coercion ( TestCoercion(..) )
 import Data.Typeable ( TypeRep )
@@ -25,29 +26,57 @@ import Data.Singletons.Util
 import Control.Applicative
 import Control.Monad
 
-boolName, andName, tyEqName, compareName, minBoundName,
+{-
+Note [Wired-in Names]
+~~~~~~~~~~~~~~~~~~~~~
+The list of Names below contains everything that the Template Haskell machinery
+needs to have special knowledge of. These names can be broadly categorized into
+two groups:
+
+1. Names of basic singleton definitions (Sing, SingKind, etc.). These are
+   spliced directly into TH-generated code.
+2. Names of definitions from the Prelude. These are not spliced into
+   TH-generated code, but are instead used as the namesakes for promoted and
+   singled definitions. For example, the TH machinery must be aware of the Name
+   `fromInteger` so that it can promote and single the expression `42` to
+   `FromInteger 42` and `sFromInteger (sing @42)`, respectively.
+
+Note that we deliberately do not wire in promoted or singled Names, such as
+FromInteger or sFromInteger, for two reasons:
+
+a. We want all promoted and singled names to go through the naming options in
+   D.S.TH.Options. Splicing the name FromInteger directly into TH-generated
+   code, for instance, would prevent users from overriding the default options
+   in order to promote `fromInteger` to something else (e.g.,
+   MyCustomFromInteger).
+b. Wired in names live in particular modules, so if we were to wire in the name
+   FromInteger, it would come from D.S.Prelude.Num. This would effectively
+   prevent anyone from defining their own version of FromInteger and
+   piggybacking on top of the TH machinery to generate it, however. As a
+   result, we generate the name FromInteger completely unqualified so that
+   it picks up whichever version of FromInteger is in scope.
+-}
+
+boolName, andName, compareName, minBoundName,
   maxBoundName, repName,
   nilName, consName, listName, tyFunArrowName,
   applyName, applyTyConName, applyTyConAux1Name,
   natName, symbolName, typeRepName, stringName,
   eqName, ordName, boundedName, orderingName,
   singFamilyName, singIName, singMethName, demoteName, withSingIName,
-  singKindClassName, sEqClassName, sEqMethName, sconsName, snilName, strueName,
-  sIfName,
-  someSingTypeName, someSingDataName,
-  sListName, sDecideClassName, sDecideMethName,
+  singKindClassName, someSingTypeName, someSingDataName,
+  sDecideClassName, sDecideMethName,
   testEqualityClassName, testEqualityMethName, decideEqualityName,
   testCoercionClassName, testCoercionMethName, decideCoercionName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
   equalityName, applySingName, suppressClassName, suppressMethodName,
-  thenCmpName,
-  sameKindName, tyFromIntegerName, tyNegateName, sFromIntegerName,
-  sNegateName, errorName, foldlName, cmpEQName, cmpLTName, cmpGTName,
-  singletonsToEnumName, singletonsFromEnumName, enumName, singletonsEnumName,
+  thenCmpName, sameKindName, fromIntegerName, negateName,
+  errorName, foldlName, cmpEQName, cmpLTName, cmpGTName,
+  toEnumName, fromEnumName, enumName,
   equalsName, constraintName,
   showName, showSName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
   showSpaceName, showStringName, showSingName, showSing'Name,
-  composeName, gtName, tyFromStringName, sFromStringName,
+  composeName, gtName, fromStringName,
   foldableName, foldMapName, memptyName, mappendName, foldrName,
   functorName, fmapName, replaceName,
   traversableName, traverseName, pureName, apName, liftA2Name :: Name
@@ -56,7 +85,6 @@ andName = '(&&)
 compareName = 'compare
 minBoundName = 'minBound
 maxBoundName = 'maxBound
-tyEqName = mk_name_tc "Data.Singletons.Prelude.Eq" "=="
 repName = mkName "Rep"   -- this is actually defined in client code!
 nilName = '[]
 consName = '(:)
@@ -81,15 +109,8 @@ fromSingName = 'fromSing
 demoteName = ''Demote
 withSingIName = 'withSingI
 singKindClassName = ''SingKind
-sEqClassName = mk_name_tc "Data.Singletons.Prelude.Eq" "SEq"
-sEqMethName = mk_name_v "Data.Singletons.Prelude.Eq" "%=="
-sIfName = mk_name_v "Data.Singletons.Prelude.Bool" "sIf"
-sconsName = mk_name_d "Data.Singletons.Prelude.Instances" "SCons"
-snilName = mk_name_d "Data.Singletons.Prelude.Instances" "SNil"
-strueName = mk_name_d "Data.Singletons.Prelude.Instances" "STrue"
 someSingTypeName = ''SomeSing
 someSingDataName = 'SomeSing
-sListName = mk_name_tc "Data.Singletons.Prelude.Instances" "SList"
 sDecideClassName = ''SDecide
 sDecideMethName = '(%~)
 testEqualityClassName = ''TestEquality
@@ -105,21 +126,18 @@ equalityName = ''(~)
 applySingName = 'applySing
 suppressClassName = ''SuppressUnusedWarnings
 suppressMethodName = 'suppressUnusedWarnings
-thenCmpName = mk_name_v "Data.Singletons.Prelude.Ord" "thenCmp"
+thenCmpName = 'thenCmp
 sameKindName = ''SameKind
-tyFromIntegerName = mk_name_tc "Data.Singletons.Prelude.Num" "FromInteger"
-tyNegateName = mk_name_tc "Data.Singletons.Prelude.Num" "Negate"
-sFromIntegerName = mk_name_v "Data.Singletons.Prelude.Num" "sFromInteger"
-sNegateName = mk_name_v "Data.Singletons.Prelude.Num" "sNegate"
+fromIntegerName = 'fromInteger
+negateName = 'negate
 errorName = 'error
 foldlName = 'foldl
 cmpEQName = 'EQ
 cmpLTName = 'LT
 cmpGTName = 'GT
-singletonsToEnumName = mk_name_v "Data.Singletons.Prelude.Enum" "toEnum"
-singletonsFromEnumName = mk_name_v "Data.Singletons.Prelude.Enum" "fromEnum"
+toEnumName = 'toEnum
+fromEnumName = 'fromEnum
 enumName = ''Enum
-singletonsEnumName = mk_name_tc "Data.Singletons.Prelude.Enum" "Enum"
 equalsName = '(==)
 constraintName = ''Constraint
 showName = ''Show
@@ -134,8 +152,7 @@ showSing'Name = mk_name_tc "Data.Singletons.ShowSing" "ShowSing'"
 composeName = '(.)
 gtName = '(>)
 showCommaSpaceName = 'showCommaSpace
-tyFromStringName = mk_name_tc "Data.Singletons.Prelude.IsString" "FromString"
-sFromStringName = mk_name_v "Data.Singletons.Prelude.IsString" "sFromString"
+fromStringName = 'fromString
 foldableName = ''Foldable
 foldMapName = 'foldMap
 memptyName = 'mempty
@@ -155,20 +172,6 @@ singPkg = $( (LitE . StringL . loc_package) `liftM` location )
 
 mk_name_tc :: String -> String -> Name
 mk_name_tc = mkNameG_tc singPkg
-
-mk_name_d :: String -> String -> Name
-mk_name_d = mkNameG_d singPkg
-
-mk_name_v :: String -> String -> Name
-mk_name_v = mkNameG_v singPkg
-
-mkTupleTypeName :: Int -> Name
-mkTupleTypeName n = mk_name_tc "Data.Singletons.Prelude.Instances" $
-                    "STuple" ++ (show n)
-
-mkTupleDataName :: Int -> Name
-mkTupleDataName n = mk_name_d "Data.Singletons.Prelude.Instances" $
-                    "STuple" ++ (show n)
 
 mkTyName :: Quasi q => Name -> q Name
 mkTyName tmName = do

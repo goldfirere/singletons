@@ -45,11 +45,7 @@ import Control.Monad.RWS (RWST)
 import Control.Monad.State (StateT)
 import Control.Monad.Trans.Class (MonadTrans(..))
 import Control.Monad.Writer (WriterT)
-import Data.Singletons.Names ( consName, listName, nilName
-                             , mk_name_tc, mkTupleDataName, mkTupleTypeName
-                             , sconsName, sListName, snilName
-                             , splitUnderscores
-                             )
+import Data.Singletons.Names (consName, listName, nilName, splitUnderscores)
 import Data.Singletons.Util
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax hiding (Lift(..))
@@ -223,8 +219,7 @@ promoteTySym name sat
        -- treat unboxed tuples like tuples
     | Just degree <- tupleNameDegree_maybe name <|>
                      unboxedTupleNameDegree_maybe name
-    = mk_name_tc "Data.Singletons.Prelude.Instances" $
-                 "Tuple" ++ show degree ++ "Sym" ++ (show sat)
+    = mkName $ "Tuple" ++ show degree ++ "Sym" ++ show sat
 
     | otherwise
     = default_case name
@@ -244,18 +239,21 @@ promoteClassName = prefixName "P" "#"
 
 singDataConName :: Name -> Name
 singDataConName nm
-  | nm == nilName                                  = snilName
-  | nm == consName                                 = sconsName
-  | Just degree <- tupleNameDegree_maybe nm        = mkTupleDataName degree
-  | Just degree <- unboxedTupleNameDegree_maybe nm = mkTupleDataName degree
+  | nm == nilName                                  = mkName "SNil"
+  | nm == consName                                 = mkName "SCons"
+  | Just degree <- tupleNameDegree_maybe nm        = mkTupleName degree
+  | Just degree <- unboxedTupleNameDegree_maybe nm = mkTupleName degree
   | otherwise                                      = prefixConName "S" "%" nm
 
 singTyConName :: Name -> Name
 singTyConName name
-  | name == listName                                 = sListName
-  | Just degree <- tupleNameDegree_maybe name        = mkTupleTypeName degree
-  | Just degree <- unboxedTupleNameDegree_maybe name = mkTupleTypeName degree
+  | name == listName                                 = mkName "SList"
+  | Just degree <- tupleNameDegree_maybe name        = mkTupleName degree
+  | Just degree <- unboxedTupleNameDegree_maybe name = mkTupleName degree
   | otherwise                                        = prefixName "S" "%" name
+
+mkTupleName :: Int -> Name
+mkTupleName n = mkName $ "STuple" ++ show n
 
 singClassName :: Name -> Name
 singClassName = singTyConName

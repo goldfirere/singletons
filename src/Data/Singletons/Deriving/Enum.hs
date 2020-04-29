@@ -53,11 +53,8 @@ mkEnumInstance mb_ctxt ty (DataDecl _ _ cons) = do
                                                         (DLitE (IntegerL i)))
                                      [0..] cons)
   return (InstDecl { id_cxt     = fromMaybe [] mb_ctxt
-                   , id_name    = singletonsEnumName
-                      -- need to use singletons's Enum class to get the types
-                      -- to use Nat instead of Int
-
+                   , id_name    = enumName
                    , id_arg_tys = [ty]
                    , id_sigs    = mempty
-                   , id_meths   = [ (singletonsToEnumName, to_enum)
-                                  , (singletonsFromEnumName, from_enum) ] })
+                   , id_meths   = [ (toEnumName, to_enum)
+                                  , (fromEnumName, from_enum) ] })

@@ -25,7 +25,7 @@ Singletons/OverloadedStrings.hs:(0,0)-(0,0): Splicing declarations
       SymIdSym1 a0123456789876543210 = SymId a0123456789876543210
     type Foo :: Symbol
     type family Foo where
-      Foo = Apply SymIdSym0 (Data.Singletons.Prelude.IsString.FromString "foo")
+      Foo = Apply SymIdSym0 (FromString "foo")
     type SymId :: Symbol -> Symbol
     type family SymId a where
       SymId x = x
@@ -34,7 +34,7 @@ Singletons/OverloadedStrings.hs:(0,0)-(0,0): Splicing declarations
       forall (t :: Symbol). Sing t -> Sing (Apply SymIdSym0 t :: Symbol)
     sFoo
       = (applySing ((singFun1 @SymIdSym0) sSymId))
-          (Data.Singletons.Prelude.IsString.sFromString (sing :: Sing "foo"))
+          (sFromString (sing :: Sing "foo"))
     sSymId (sX :: Sing x) = sX
     instance SingI (SymIdSym0 :: (~>) Symbol Symbol) where
       sing = (singFun1 @SymIdSym0) sSymId
