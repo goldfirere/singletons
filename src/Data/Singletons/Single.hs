@@ -989,20 +989,20 @@ singDerivedEqDecs (DerivedDecl { ded_mb_cxt     = mb_ctxt
   -- When we single the context, it will become (SEq a). But we do *not* want
   -- this for the SDecide instance! The simplest solution is to simply replace
   -- all occurrences of SEq with SDecide in the context.
-  let mb_sctxtDecide = fmap (map sEqToSDecide) mb_sctxt
+  mb_sctxtDecide <- traverse (traverse sEqToSDecide) mb_sctxt
   sDecideInst <- mkDecideInstance mb_sctxtDecide kind cons scons
   testInsts <- traverse (mkTestInstance mb_sctxtDecide kind ty_tycon cons)
                         [TestEquality, TestCoercion]
   return (sDecideInst:testInsts)
 
 -- Walk a DPred, replacing all occurrences of SEq with SDecide.
-sEqToSDecide :: DPred -> DPred
-sEqToSDecide = modifyConNameDType $ \n ->
-  -- Why don't we directly compare n to sEqClassName? Because n is almost certainly
-  -- produced from a call to singClassName, which uses unqualified Names. Ugh.
-  if nameBase n == nameBase sEqClassName
-     then sDecideClassName
-     else n
+sEqToSDecide :: OptionsMonad q => DPred -> q DPred
+sEqToSDecide p = do
+  opts <- getOptions
+  pure $ modifyConNameDType (\n ->
+         if n == singledClassName opts eqName
+            then sDecideClassName
+            else n) p
 
 -- See Note [DerivedDecl] in Data.Singletons.Syntax
 singDerivedShowDecs :: DerivedShowDecl -> SgM [DDec]
@@ -1056,19 +1056,22 @@ singMatch res_ki (ADMatch var_proms pat exp) = do
   return $ DMatch sPat $ mkSigPaCaseE sigPaExpsSigs sExp
 
 singLit :: Lit -> SgM DExp
-singLit (IntegerL n)
-  | n >= 0    = return $
-                DVarE sFromIntegerName `DAppE`
-                (DVarE singMethName `DSigE`
-                 (singFamily `DAppT` DLitT (NumTyLit n)))
-  | otherwise = do sLit <- singLit (IntegerL (-n))
-                   return $ DVarE sNegateName `DAppE` sLit
+singLit (IntegerL n) = do
+  opts <- getOptions
+  if n >= 0
+     then return $
+          DVarE (singledValueName opts fromIntegerName) `DAppE`
+          (DVarE singMethName `DSigE`
+           (singFamily `DAppT` DLitT (NumTyLit n)))
+     else do sLit <- singLit (IntegerL (-n))
+             return $ DVarE (singledValueName opts negateName) `DAppE` sLit
 singLit (StringL str) = do
+  opts <- getOptions
   let sing_str_lit = DVarE singMethName `DSigE`
                      (singFamily `DAppT` DLitT (StrTyLit str))
   os_enabled <- qIsExtEnabled LangExt.OverloadedStrings
   pure $ if os_enabled
-         then DVarE sFromStringName `DAppE` sing_str_lit
+         then DVarE (singledValueName opts fromStringName) `DAppE` sing_str_lit
          else sing_str_lit
 singLit lit =
   fail ("Only string and natural number literals can be singled: " ++ show lit)

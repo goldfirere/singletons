@@ -50,6 +50,7 @@ import Data.Singletons.Single
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Instances
 import Data.Singletons.Util
+import Language.Haskell.TH.Syntax (thenCmp)
 
 $(singletonsOnly [d|
   class  (Eq a) => Ord a  where
@@ -88,6 +89,11 @@ $(singletonsOnly [d|
   -- >   ... sortBy (comparing fst) ...
   comparing :: (Ord a) => (b -> a) -> b -> b -> Ordering
   comparing p x y = compare (p x) (p y)
+
+  thenCmp :: Ordering -> Ordering -> Ordering
+  thenCmp EQ x = x
+  thenCmp LT _ = LT
+  thenCmp GT _ = GT
   |])
 
 $(genSingletons [''Down])
@@ -97,13 +103,6 @@ $(singletonsOnly [d|
 
   instance Ord a => Ord (Down a) where
       compare (Down x) (Down y) = y `compare` x
-  |])
-
-$(singletons [d|
-  thenCmp :: Ordering -> Ordering -> Ordering
-  thenCmp EQ x = x
-  thenCmp LT _ = LT
-  thenCmp GT _ = GT
   |])
 
 $(singOrdInstances basicTypes)

@@ -48,7 +48,7 @@ module Data.Singletons.TH (
   cases, sCases,
 
   -- * Basic singleton definitions
-  SBool(..), STuple0(..), STuple2(..), STuple3(..), STuple4(..),
+  SList(..), SBool(..), STuple0(..), STuple2(..), STuple3(..), STuple4(..),
   STuple5(..), STuple6(..), STuple7(..), SOrdering(..),
   module Data.Singletons,
 
@@ -61,9 +61,10 @@ module Data.Singletons.TH (
   SDecide(..), (:~:)(..), Void, Refuted, Decision(..),
   PBounded(..), SBounded(..),
   PEnum(FromEnum, ToEnum), SEnum(sFromEnum, sToEnum),
-  PShow(..), SShow(..),
+  PShow(..), SShow(..), PIsString(..), SIsString(..),
   ShowString, sShowString, ShowParen, sShowParen, ShowSpace, sShowSpace,
   ShowChar, sShowChar, ShowCommaSpace, sShowCommaSpace,
+  FromInteger, sFromInteger, Negate, sNegate,
   PFunctor(..), SFunctor(..),
   PFoldable(..), SFoldable(..), PMonoid(..), SMonoid(..),
   PTraversable(..), STraversable(..), PApplicative(..), SApplicative(..),
@@ -93,6 +94,9 @@ module Data.Singletons.TH (
   ShowSpaceSym0, ShowSpaceSym1,
   ShowCharSym0, ShowCharSym1, ShowCharSym2,
   ShowCommaSpaceSym0, ShowCommaSpaceSym1,
+  FromIntegerSym0, FromIntegerSym1,
+  NegateSym0, NegateSym1,
+  FromStringSym0, FromStringSym1,
   FmapSym0, FmapSym1, FmapSym2,
   type (<$@#@$),  type (<$@#@$$),  type (<$@#@$$$),
   FoldMapSym0, FoldMapSym1, FoldMapSym2,
@@ -123,7 +127,9 @@ import Data.Singletons.Prelude.Enum
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Foldable
 import Data.Singletons.Prelude.Functor hiding (Void)
+import Data.Singletons.Prelude.IsString
 import Data.Singletons.Prelude.Monoid
+import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Show
 import Data.Singletons.Prelude.Traversable

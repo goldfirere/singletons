@@ -1106,16 +1106,21 @@ promoteExp (DSigE exp ty) = do
   return (DSigT exp' ty', ADSigE exp' ann_exp ty')
 promoteExp e@(DStaticE _) = fail ("Static expressions cannot be promoted: " ++ show e)
 
-promoteLitExp :: Quasi q => Lit -> q DType
-promoteLitExp (IntegerL n)
-  | n >= 0    = return $ (DConT tyFromIntegerName `DAppT` DLitT (NumTyLit n))
-  | otherwise = return $ (DConT tyNegateName `DAppT`
-                          (DConT tyFromIntegerName `DAppT` DLitT (NumTyLit (-n))))
+promoteLitExp :: OptionsMonad q => Lit -> q DType
+promoteLitExp (IntegerL n) = do
+  opts <- getOptions
+  let tyFromIntegerName = promotedValueName opts fromIntegerName Nothing
+      tyNegateName      = promotedValueName opts negateName      Nothing
+  if n >= 0
+     then return $ (DConT tyFromIntegerName `DAppT` DLitT (NumTyLit n))
+     else return $ (DConT tyNegateName `DAppT`
+                    (DConT tyFromIntegerName `DAppT` DLitT (NumTyLit (-n))))
 promoteLitExp (StringL str) = do
+  opts <- getOptions
   let prom_str_lit = DLitT (StrTyLit str)
   os_enabled <- qIsExtEnabled LangExt.OverloadedStrings
   pure $ if os_enabled
-         then DConT tyFromStringName `DAppT` prom_str_lit
+         then DConT (promotedValueName opts fromStringName Nothing) `DAppT` prom_str_lit
          else prom_str_lit
 promoteLitExp lit =
   fail ("Only string and natural number literals can be promoted: " ++ show lit)

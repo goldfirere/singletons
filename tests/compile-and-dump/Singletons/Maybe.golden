@@ -55,7 +55,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
                                           -> Maybe a -> GHC.Types.Symbol -> GHC.Types.Symbol
     type family ShowsPrec_0123456789876543210 a a a where
       ShowsPrec_0123456789876543210 _ Nothing a_0123456789876543210 = Apply (Apply ShowStringSym0 "Nothing") a_0123456789876543210
-      ShowsPrec_0123456789876543210 p_0123456789876543210 (Just arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (Data.Singletons.Prelude.Num.FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Just ")) (Apply (Apply ShowsPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
+      ShowsPrec_0123456789876543210 p_0123456789876543210 (Just arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Just ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Types.Nat ((~>) (Maybe a) ((~>) GHC.Types.Symbol GHC.Types.Symbol))
     data ShowsPrec_0123456789876543210Sym0 a0123456789876543210
       where
@@ -147,14 +147,14 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
                  ((applySing ((singFun3 @ShowParenSym0) sShowParen))
                     ((applySing
                         ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
-                       (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 10)))))
+                       (sFromInteger (sing :: Sing 10)))))
                 ((applySing
                     ((applySing ((singFun3 @(.@#@$)) (%.)))
                        ((applySing ((singFun2 @ShowStringSym0) sShowString))
                           (sing :: Sing "Just "))))
                    ((applySing
                        ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                          (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 11))))
+                          (sFromInteger (sing :: Sing 11))))
                       sArg_0123456789876543210))))
             sA_0123456789876543210
     instance SDecide a => SDecide (Maybe a) where

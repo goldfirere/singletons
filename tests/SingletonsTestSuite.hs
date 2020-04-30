@@ -135,6 +135,7 @@ tests =
     , afterSingletonsNat .
       compileAndDumpStdTest "T445"
     , compileAndDumpStdTest "T453"
+    , compileAndDumpStdTest "NegativeLiterals"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

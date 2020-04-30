@@ -45,7 +45,7 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
     type family FooSym1 a0123456789876543210 where
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
     type family Lambda_0123456789876543210 x s where
-      Lambda_0123456789876543210 x s = Apply (Apply (Apply FoosPrecSym0 (Data.Singletons.Prelude.Num.FromInteger 0)) x) s
+      Lambda_0123456789876543210 x s = Apply (Apply (Apply FoosPrecSym0 (FromInteger 0)) x) s
     data Lambda_0123456789876543210Sym0 x0123456789876543210
       where
         Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
@@ -104,7 +104,7 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
                       -> (applySing
                             ((applySing
                                 ((applySing ((singFun3 @FoosPrecSym0) sFoosPrec))
-                                   (Data.Singletons.Prelude.Num.sFromInteger (sing :: Sing 0))))
+                                   (sFromInteger (sing :: Sing 0))))
                                sX))
                            sS })
     instance SFoo a =>

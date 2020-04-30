@@ -60,6 +60,7 @@ import           Data.Singletons.Internal
 import           Data.Singletons.Prelude.Base
 import           Data.Singletons.Prelude.Instances
 import           Data.Singletons.Prelude.List.Internal
+import           Data.Singletons.Prelude.Num
 import           Data.Singletons.Prelude.Ord
 import           Data.Singletons.Prelude.Semigroup.Internal
 import           Data.Singletons.Promote

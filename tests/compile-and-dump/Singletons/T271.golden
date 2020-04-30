@@ -206,14 +206,12 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing
-                    ((singFun2 @(:@#@$))
-                       Data.Singletons.Prelude.Instances.SCons))
+                ((applySing ((singFun2 @(:@#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
-               Data.Singletons.Prelude.Instances.SNil)
+               SNil)
     instance SEq a => SEq (Identity a) where
       (%==) ::
         forall (t1 :: Identity a) (t2 :: Identity a).
@@ -243,14 +241,12 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                     ((singFun2 @ThenCmpSym0) sThenCmp)))
                 SEQ))
             ((applySing
-                ((applySing
-                    ((singFun2 @(:@#@$))
-                       Data.Singletons.Prelude.Instances.SCons))
+                ((applySing ((singFun2 @(:@#@$)) SCons))
                    ((applySing
                        ((applySing ((singFun2 @CompareSym0) sCompare))
                           sA_0123456789876543210))
                       sB_0123456789876543210)))
-               Data.Singletons.Prelude.Instances.SNil)
+               SNil)
     instance SDecide a => SDecide (Constant a b) where
       (%~) (SConstant a) (SConstant b)
         = case ((%~) a) b of
