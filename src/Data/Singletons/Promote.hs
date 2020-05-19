@@ -1021,13 +1021,10 @@ promotePat (DVarP name) = do
   tell $ PromDPatInfos [(name, tyName)] OSet.empty
   return (DVarT tyName, ADVarP name)
 promotePat (DConP name pats) = do
+  opts <- getOptions
   (types, pats') <- mapAndUnzipM promotePat pats
-  let name' = unboxed_tuple_to_tuple name
+  let name' = promotedDataTypeOrConName opts name
   return (foldType (DConT name') types, ADConP name pats')
-  where
-    unboxed_tuple_to_tuple n
-      | Just deg <- unboxedTupleNameDegree_maybe n = tupleDataName deg
-      | otherwise                                  = n
 promotePat (DTildeP pat) = do
   qReportWarning "Lazy pattern converted into regular pattern in promotion"
   second ADTildeP <$> promotePat pat

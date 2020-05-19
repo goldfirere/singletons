@@ -134,6 +134,7 @@ tests =
     , compileAndDumpStdTest "T443"
     , afterSingletonsNat .
       compileAndDumpStdTest "T445"
+    , compileAndDumpStdTest "T450"
     , compileAndDumpStdTest "T453"
     , compileAndDumpStdTest "NegativeLiterals"
     ],

@@ -170,7 +170,7 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
   let types = tysOfConFields fields
       sName = singledDataConName opts name
       sCon = DConE sName
-      pCon = DConT name
+      pCon = DConT $ promotedDataTypeOrConName opts name
   checkVanillaDType $ ravelVanillaDType con_tvbs [] types rty
   indexNames <- mapM (const $ qNewName "n") types
   kinds <- mapM promoteType_NC types

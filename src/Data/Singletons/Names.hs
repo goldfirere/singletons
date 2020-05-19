@@ -21,7 +21,6 @@ import GHC.Show ( showCommaSpace, showSpace )
 import Data.String (fromString)
 import Data.Type.Equality ( TestEquality(..) )
 import Data.Type.Coercion ( TestCoercion(..) )
-import Data.Typeable ( TypeRep )
 import Data.Singletons.Util
 import Control.Applicative
 import Control.Monad
@@ -61,7 +60,7 @@ boolName, andName, compareName, minBoundName,
   maxBoundName, repName,
   nilName, consName, listName, tyFunArrowName,
   applyName, applyTyConName, applyTyConAux1Name,
-  natName, symbolName, typeRepName, stringName,
+  natName, symbolName, stringName,
   eqName, ordName, boundedName, orderingName,
   singFamilyName, singIName, singMethName, demoteName, withSingIName,
   singKindClassName, someSingTypeName, someSingDataName,
@@ -95,7 +94,6 @@ applyTyConName = ''ApplyTyCon
 applyTyConAux1Name = ''ApplyTyConAux1
 symbolName = ''Symbol
 natName = ''Nat
-typeRepName = ''TypeRep
 stringName = ''String
 eqName = ''Eq
 ordName = ''Ord
