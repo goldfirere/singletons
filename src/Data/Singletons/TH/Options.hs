@@ -22,6 +22,7 @@ module Data.Singletons.TH.Options
     -- ** Options record selectors
   , genQuotedDecs
   , genSingKindInsts
+  , promotedDataTypeOrConName
   , promotedClassName
   , promotedValueName
   , singledDataTypeName
@@ -45,7 +46,7 @@ import Control.Monad.RWS (RWST)
 import Control.Monad.State (StateT)
 import Control.Monad.Trans.Class (MonadTrans(..))
 import Control.Monad.Writer (WriterT)
-import Data.Singletons.Names (consName, listName, nilName, splitUnderscores)
+import Data.Singletons.Names
 import Data.Singletons.Util
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax hiding (Lift(..))
@@ -53,19 +54,39 @@ import Language.Haskell.TH.Syntax hiding (Lift(..))
 -- | Options that control the finer details of how @singletons@' Template
 -- Haskell machinery works.
 data Options = Options
-  { genQuotedDecs        :: Bool
+  { genQuotedDecs :: Bool
     -- ^ If 'True', then quoted declarations will be generated alongside their
     --   promoted and singled counterparts. If 'False', then quoted
     --   declarations will be discarded.
-  , genSingKindInsts     :: Bool
+  , genSingKindInsts :: Bool
     -- ^ If 'True', then 'SingKind' instances will be generated. If 'False',
     --   they will be omitted entirely. This can be useful in scenarios where
     --   TH-generated 'SingKind' instances do not typecheck (for instance,
     --   when generating singletons for GADTs).
-  , promotedClassName    :: Name -> Name
+  , promotedDataTypeOrConName :: Name -> Name
+    -- ^ Given the name of the original data type or data constructor, produces
+    --   the name of the promoted equivalent. Unlike the singling-related
+    --   options, in which there are separate 'singledDataTypeName' and
+    --   'singledDataConName' functions, we combine the handling of promoted
+    --   data types and data constructors into a single option. This is because
+    --   the names of promoted data types and data constructors can be
+    --   difficult to distinguish in certain contexts without expensive
+    --   compile-time checks.
+    --
+    --   Because of the @DataKinds@ extension, most data type and data
+    --   constructor names can be used in promoted contexts without any
+    --   changes. As a result, this option will act like the identity function
+    --   99% of the time. There are some situations where it can be useful to
+    --   override this option, however, as it can be used to promote primitive
+    --   data types that do not have proper type-level equivalents, such as
+    --   'Natural' and 'Text'. See the
+    --   \"Arrows, 'Nat', 'Symbol', and literals\" section of the @singletons@
+    --   @<https://github.com/goldfirere/singletons/blob/master/README.md README>@
+    --   for more details.
+  , promotedClassName :: Name -> Name
     -- ^ Given the name of the original, unrefined class, produces the name of
     --   the promoted equivalent of the class.
-  , promotedValueName    :: Name -> Maybe Uniq -> Name
+  , promotedValueName :: Name -> Maybe Uniq -> Name
     -- ^ Given the name of the original, unrefined value, produces the name of
     --   the promoted equivalent of the value. This is used for both top-level
     --   and @let@-bound names, and the difference is encoded in the
@@ -74,16 +95,16 @@ data Options = Options
     --   @Just uniq@, where @uniq@ is a globally unique number that can be used
     --   to distinguish the name from other local definitions of the same name
     --   (e.g., if two functions both use @let x = ... in x@).
-  , singledDataTypeName  :: Name -> Name
+  , singledDataTypeName :: Name -> Name
     -- ^ Given the name of the original, unrefined data type, produces the name
     --   of the corresponding singleton type.
-  , singledClassName     :: Name -> Name
+  , singledClassName :: Name -> Name
     -- ^ Given the name of the original, unrefined class, produces the name of
     --   the singled equivalent of the class.
-  , singledDataConName   :: Name -> Name
+  , singledDataConName :: Name -> Name
     -- ^ Given the name of the original, unrefined data constructor, produces
     --   the name of the corresponding singleton data constructor.
-  , singledValueName     :: Name -> Name
+  , singledValueName :: Name -> Name
     -- ^ Given the name of the original, unrefined value, produces the name of
     --   the singled equivalent of the value.
   , defunctionalizedName :: Name -> Int -> Name
@@ -113,15 +134,16 @@ data Options = Options
 -- @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
 defaultOptions :: Options
 defaultOptions = Options
-  { genQuotedDecs        = True
-  , genSingKindInsts     = True
-  , promotedClassName    = promoteClassName
-  , promotedValueName    = promoteValNameLhs
-  , singledDataTypeName  = singTyConName
-  , singledClassName     = singClassName
-  , singledDataConName   = singDataConName
-  , singledValueName     = singValName
-  , defunctionalizedName = promoteTySym
+  { genQuotedDecs             = True
+  , genSingKindInsts          = True
+  , promotedDataTypeOrConName = promoteDataTypeOrConName
+  , promotedClassName         = promoteClassName
+  , promotedValueName         = promoteValNameLhs
+  , singledDataTypeName       = singTyConName
+  , singledClassName          = singClassName
+  , singledDataConName        = singDataConName
+  , singledValueName          = singValName
+  , defunctionalizedName      = promoteTySym
   }
 
 -- | Given the name of the original, unrefined, top-level value, produces the
@@ -216,7 +238,8 @@ promoteTySym name sat
     | name == nilName
     = mkName $ "NilSym" ++ (show sat)
 
-       -- treat unboxed tuples like tuples
+       -- Treat unboxed tuples like tuples.
+       -- See Note [Promoting and singling unboxed tuples].
     | Just degree <- tupleNameDegree_maybe name <|>
                      unboxedTupleNameDegree_maybe name
     = mkName $ "Tuple" ++ show degree ++ "Sym" ++ show sat
@@ -235,6 +258,19 @@ promoteTySym name sat
 promoteClassName :: Name -> Name
 promoteClassName = prefixName "P" "#"
 
+promoteDataTypeOrConName :: Name -> Name
+promoteDataTypeOrConName nm
+  | nameBase nm == nameBase repName = typeKindName
+    -- See Note [Promoting and singling unboxed tuples]
+  | Just degree <- unboxedTupleNameDegree_maybe nm
+  = if isDataName nm then tupleDataName degree else tupleTypeName degree
+  | otherwise = nm
+  where
+    -- Is this name a data constructor name? A 'False' answer means "unsure".
+    isDataName :: Name -> Bool
+    isDataName (Name _ (NameG DataName _ _)) = True
+    isDataName _                             = False
+
 -- Singletons
 
 singDataConName :: Name -> Name
@@ -242,6 +278,7 @@ singDataConName nm
   | nm == nilName                                  = mkName "SNil"
   | nm == consName                                 = mkName "SCons"
   | Just degree <- tupleNameDegree_maybe nm        = mkTupleName degree
+    -- See Note [Promoting and singling unboxed tuples]
   | Just degree <- unboxedTupleNameDegree_maybe nm = mkTupleName degree
   | otherwise                                      = prefixConName "S" "%" nm
 
@@ -249,6 +286,7 @@ singTyConName :: Name -> Name
 singTyConName name
   | name == listName                                 = mkName "SList"
   | Just degree <- tupleNameDegree_maybe name        = mkTupleName degree
+    -- See Note [Promoting and singling unboxed tuples]
   | Just degree <- unboxedTupleNameDegree_maybe name = mkTupleName degree
   | otherwise                                        = prefixName "S" "%" name
 
@@ -266,3 +304,40 @@ singValName n
   = prefixName (us ++ "s") "%" $ mkName rest
   | otherwise
   = prefixName "s" "%" $ upcase n
+
+{-
+Note [Promoting and singling unboxed tuples]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unfortunately, today's GHC is not quite up to the task of promoting types
+involving unboxed tuples. Consider this example:
+
+  swapperino :: (# a, b #) -> (# b, a #)
+
+What would this look like when promoted? Presumably, it would have a kind
+signature like this:
+
+  type Swapperino :: (# a, b #) -> (# b, a #)
+
+Surprisingly, this won't kindcheck:
+
+  error:
+      • Expecting a lifted type, but ‘(# a, b #)’ is unlifted
+      • In a standalone kind signature for ‘Swapperino’:
+          (# a, b #) -> (# b, a #)
+
+Even though (->) is levity polymorphic, this levity polymorphism only kicks in
+for types, not kinds. In other words, the (->) in the kind of Swapperino is
+completely levity monomorphic and only accepts Type-kinded arguments. This
+oddity is tracked upstream as GHC#14180. Until that is fixed, there is no hope
+of using promoted unboxed tuples freely in kinds.
+
+However, we don't have to give up quite yet. As a crude-but-effective
+workaround, we can simply promote value-level unboxed tuples to type-level boxed
+tuples. In other words, we would promote swapperino to this:
+
+  type Swapperino :: (a, b) -> (b, a)
+
+This trick is enough to make many (but not all) uses of unboxed tuples
+Just Work™ when promoted. We use a similar trick when singling unboxed tuples
+as well.
+-}

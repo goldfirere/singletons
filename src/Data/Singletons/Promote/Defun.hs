@@ -146,12 +146,14 @@ buildDefunSymsDataD ctors =
   where
     promoteCtor :: DCon -> PrM [DDec]
     promoteCtor (DCon tvbs _ name fields res_ty) = do
-      let arg_tys = tysOfConFields fields
+      opts <- getOptions
+      let name'   = promotedDataTypeOrConName opts name
+          arg_tys = tysOfConFields fields
       arg_kis <- traverse promoteType_NC arg_tys
       res_ki  <- promoteType_NC res_ty
       let con_ki = ravelVanillaDType tvbs [] arg_kis res_ki
-      m_fixity <- reifyFixityWithLocals name
-      defunctionalize name m_fixity $ DefunSAK con_ki
+      m_fixity <- reifyFixityWithLocals name'
+      defunctionalize name' m_fixity $ DefunSAK con_ki
 
 -- Generate defunctionalization symbols for a name, using reifyFixityWithLocals
 -- to determine what the fixity of each symbol should be

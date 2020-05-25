@@ -1,0 +1,279 @@
+Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
+    do let customPromote :: [(Name, Name)] -> Name -> Name
+           customPromote customs n = fromMaybe n $ lookup n customs
+           customOptions :: [(Name, Name)] -> Options
+           customOptions customs
+             = defaultOptions
+                 {promotedDataTypeOrConName = \ n
+                                                -> promotedDataTypeOrConName
+                                                     defaultOptions (customPromote customs n),
+                  defunctionalizedName = \ n sat
+                                           -> defunctionalizedName
+                                                defaultOptions (customPromote customs n) sat}
+       ageDecs <- withOptions
+                    (customOptions
+                       [(''Age, ''PAge), ('MkAge, 'PMkAge), (''Natural, ''Nat)])
+                    $ do ageDecs1 <- genSingletons [''Age]
+                         ageDecs2 <- singletons
+                                       $ lift
+                                           [d| addAge :: Age -> Age -> Age
+                                               addAge (MkAge (x :: Natural)) (MkAge (y :: Natural))
+                                                 = MkAge (x + y :: Natural) |]
+                         pure $ ageDecs1 ++ ageDecs2
+       messageDecs <- withOptions
+                        (customOptions
+                           [(''Message, ''PMessage), ('MkMessage, 'PMkMessage),
+                            (''Text, ''Symbol)])
+                        $ do messageDecs1 <- genSingletons [''Message]
+                             messageDecs2 <- singletons
+                                               $ lift
+                                                   [d| appendMessage ::
+                                                         Message -> Message -> Message
+                                                       appendMessage
+                                                         (MkMessage (x :: Text))
+                                                         (MkMessage (y :: Text))
+                                                         = MkMessage (x <> y :: Text) |]
+                             pure $ messageDecs1 ++ messageDecs2
+       functionDecs <- withOptions
+                         (customOptions
+                            [(''Function, ''PFunction), ('MkFunction, 'PMkFunction)])
+                         $ do functionDecs1 <- genSingletons [''Function]
+                              functionDecs2 <- singletons
+                                                 $ lift
+                                                     [d| composeFunction ::
+                                                           Function b c
+                                                           -> Function a b -> Function a c
+                                                         composeFunction
+                                                           (MkFunction (f :: b -> c))
+                                                           (MkFunction (g :: a -> b))
+                                                           = MkFunction (f . g :: a -> c) |]
+                              pure $ functionDecs1 ++ functionDecs2
+       pure $ ageDecs ++ messageDecs ++ functionDecs
+  ======>
+    type PMkAgeSym0 :: (~>) Nat PAge
+    data PMkAgeSym0 a0123456789876543210
+      where
+        PMkAgeSym0KindInference :: SameKind (Apply PMkAgeSym0 arg) (PMkAgeSym1 arg) =>
+                                   PMkAgeSym0 a0123456789876543210
+    type instance Apply PMkAgeSym0 a0123456789876543210 = 'PMkAge a0123456789876543210
+    instance SuppressUnusedWarnings PMkAgeSym0 where
+      suppressUnusedWarnings = snd (((,) PMkAgeSym0KindInference) ())
+    type PMkAgeSym1 :: Nat -> PAge
+    type family PMkAgeSym1 a0123456789876543210 where
+      PMkAgeSym1 a0123456789876543210 = 'PMkAge a0123456789876543210
+    type SAge :: PAge -> GHC.Types.Type
+    data SAge z
+      where
+        SMkAge :: forall (n :: Nat). (Sing n) -> SAge ('PMkAge n :: PAge)
+    type instance Sing @PAge = SAge
+    instance SingKind PAge where
+      type Demote PAge = Age
+      fromSing (SMkAge b) = MkAge (fromSing b)
+      toSing (MkAge (b :: Demote Nat))
+        = case toSing b :: SomeSing Nat of {
+            SomeSing c -> SomeSing (SMkAge c) }
+    instance SingI n => SingI ('PMkAge (n :: Nat)) where
+      sing = SMkAge sing
+    instance SingI (PMkAgeSym0 :: (~>) Nat PAge) where
+      sing = (singFun1 @PMkAgeSym0) SMkAge
+    addAge :: Age -> Age -> Age
+    addAge (MkAge (x :: Natural)) (MkAge (y :: Natural))
+      = MkAge ((x + y) :: Natural)
+    type AddAgeSym0 :: (~>) PAge ((~>) PAge PAge)
+    data AddAgeSym0 a0123456789876543210
+      where
+        AddAgeSym0KindInference :: SameKind (Apply AddAgeSym0 arg) (AddAgeSym1 arg) =>
+                                   AddAgeSym0 a0123456789876543210
+    type instance Apply AddAgeSym0 a0123456789876543210 = AddAgeSym1 a0123456789876543210
+    instance SuppressUnusedWarnings AddAgeSym0 where
+      suppressUnusedWarnings = snd (((,) AddAgeSym0KindInference) ())
+    type AddAgeSym1 :: PAge -> (~>) PAge PAge
+    data AddAgeSym1 a0123456789876543210 a0123456789876543210
+      where
+        AddAgeSym1KindInference :: SameKind (Apply (AddAgeSym1 a0123456789876543210) arg) (AddAgeSym2 a0123456789876543210 arg) =>
+                                   AddAgeSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (AddAgeSym1 a0123456789876543210) a0123456789876543210 = AddAge a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (AddAgeSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd (((,) AddAgeSym1KindInference) ())
+    type AddAgeSym2 :: PAge -> PAge -> PAge
+    type family AddAgeSym2 a0123456789876543210 a0123456789876543210 where
+      AddAgeSym2 a0123456789876543210 a0123456789876543210 = AddAge a0123456789876543210 a0123456789876543210
+    type AddAge :: PAge -> PAge -> PAge
+    type family AddAge a a where
+      AddAge ('PMkAge (x :: Nat)) ('PMkAge (y :: Nat)) = Apply PMkAgeSym0 (Apply (Apply (+@#@$) x) y :: Nat)
+    sAddAge ::
+      forall (t :: PAge) (t :: PAge).
+      Sing t -> Sing t -> Sing (Apply (Apply AddAgeSym0 t) t :: PAge)
+    sAddAge (SMkAge (sX :: Sing x)) (SMkAge (sY :: Sing y))
+      = case ((,) (sX :: Sing x)) (sY :: Sing y) of {
+          (,) (_ :: Sing (x :: Nat)) (_ :: Sing (y :: Nat))
+            -> (applySing ((singFun1 @PMkAgeSym0) SMkAge))
+                 ((applySing ((applySing ((singFun2 @(+@#@$)) (%+))) sX)) sY ::
+                    Sing (Apply (Apply (+@#@$) x) y :: Nat)) }
+    instance SingI (AddAgeSym0 :: (~>) PAge ((~>) PAge PAge)) where
+      sing = (singFun2 @AddAgeSym0) sAddAge
+    instance SingI d =>
+             SingI (AddAgeSym1 (d :: PAge) :: (~>) PAge PAge) where
+      sing = (singFun1 @(AddAgeSym1 (d :: PAge))) (sAddAge (sing @d))
+    type PMkMessageSym0 :: (~>) Symbol PMessage
+    data PMkMessageSym0 a0123456789876543210
+      where
+        PMkMessageSym0KindInference :: SameKind (Apply PMkMessageSym0 arg) (PMkMessageSym1 arg) =>
+                                       PMkMessageSym0 a0123456789876543210
+    type instance Apply PMkMessageSym0 a0123456789876543210 = 'PMkMessage a0123456789876543210
+    instance SuppressUnusedWarnings PMkMessageSym0 where
+      suppressUnusedWarnings = snd (((,) PMkMessageSym0KindInference) ())
+    type PMkMessageSym1 :: Symbol -> PMessage
+    type family PMkMessageSym1 a0123456789876543210 where
+      PMkMessageSym1 a0123456789876543210 = 'PMkMessage a0123456789876543210
+    type SMessage :: PMessage -> GHC.Types.Type
+    data SMessage z
+      where
+        SMkMessage :: forall (n :: Symbol).
+                      (Sing n) -> SMessage ('PMkMessage n :: PMessage)
+    type instance Sing @PMessage = SMessage
+    instance SingKind PMessage where
+      type Demote PMessage = Message
+      fromSing (SMkMessage b) = MkMessage (fromSing b)
+      toSing (MkMessage (b :: Demote Symbol))
+        = case toSing b :: SomeSing Symbol of {
+            SomeSing c -> SomeSing (SMkMessage c) }
+    instance SingI n => SingI ('PMkMessage (n :: Symbol)) where
+      sing = SMkMessage sing
+    instance SingI (PMkMessageSym0 :: (~>) Symbol PMessage) where
+      sing = (singFun1 @PMkMessageSym0) SMkMessage
+    appendMessage :: Message -> Message -> Message
+    appendMessage (MkMessage (x :: Text)) (MkMessage (y :: Text))
+      = MkMessage ((x <> y) :: Text)
+    type AppendMessageSym0 :: (~>) PMessage ((~>) PMessage PMessage)
+    data AppendMessageSym0 a0123456789876543210
+      where
+        AppendMessageSym0KindInference :: SameKind (Apply AppendMessageSym0 arg) (AppendMessageSym1 arg) =>
+                                          AppendMessageSym0 a0123456789876543210
+    type instance Apply AppendMessageSym0 a0123456789876543210 = AppendMessageSym1 a0123456789876543210
+    instance SuppressUnusedWarnings AppendMessageSym0 where
+      suppressUnusedWarnings
+        = snd (((,) AppendMessageSym0KindInference) ())
+    type AppendMessageSym1 :: PMessage -> (~>) PMessage PMessage
+    data AppendMessageSym1 a0123456789876543210 a0123456789876543210
+      where
+        AppendMessageSym1KindInference :: SameKind (Apply (AppendMessageSym1 a0123456789876543210) arg) (AppendMessageSym2 a0123456789876543210 arg) =>
+                                          AppendMessageSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (AppendMessageSym1 a0123456789876543210) a0123456789876543210 = AppendMessage a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (AppendMessageSym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) AppendMessageSym1KindInference) ())
+    type AppendMessageSym2 :: PMessage -> PMessage -> PMessage
+    type family AppendMessageSym2 a0123456789876543210 a0123456789876543210 where
+      AppendMessageSym2 a0123456789876543210 a0123456789876543210 = AppendMessage a0123456789876543210 a0123456789876543210
+    type AppendMessage :: PMessage -> PMessage -> PMessage
+    type family AppendMessage a a where
+      AppendMessage ('PMkMessage (x :: Symbol)) ('PMkMessage (y :: Symbol)) = Apply PMkMessageSym0 (Apply (Apply (<>@#@$) x) y :: Symbol)
+    sAppendMessage ::
+      forall (t :: PMessage) (t :: PMessage).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply AppendMessageSym0 t) t :: PMessage)
+    sAppendMessage
+      (SMkMessage (sX :: Sing x))
+      (SMkMessage (sY :: Sing y))
+      = case ((,) (sX :: Sing x)) (sY :: Sing y) of {
+          (,) (_ :: Sing (x :: Symbol)) (_ :: Sing (y :: Symbol))
+            -> (applySing ((singFun1 @PMkMessageSym0) SMkMessage))
+                 ((applySing ((applySing ((singFun2 @(<>@#@$)) (%<>))) sX)) sY ::
+                    Sing (Apply (Apply (<>@#@$) x) y :: Symbol)) }
+    instance SingI (AppendMessageSym0 :: (~>) PMessage ((~>) PMessage PMessage)) where
+      sing = (singFun2 @AppendMessageSym0) sAppendMessage
+    instance SingI d =>
+             SingI (AppendMessageSym1 (d :: PMessage) :: (~>) PMessage PMessage) where
+      sing
+        = (singFun1 @(AppendMessageSym1 (d :: PMessage)))
+            (sAppendMessage (sing @d))
+    type PMkFunctionSym0 :: forall (a :: GHC.Types.Type)
+                                   (b :: GHC.Types.Type).
+                            (~>) ((~>) a b) (PFunction (a :: GHC.Types.Type) (b :: GHC.Types.Type))
+    data PMkFunctionSym0 a0123456789876543210
+      where
+        PMkFunctionSym0KindInference :: SameKind (Apply PMkFunctionSym0 arg) (PMkFunctionSym1 arg) =>
+                                        PMkFunctionSym0 a0123456789876543210
+    type instance Apply PMkFunctionSym0 a0123456789876543210 = 'PMkFunction a0123456789876543210
+    instance SuppressUnusedWarnings PMkFunctionSym0 where
+      suppressUnusedWarnings
+        = snd (((,) PMkFunctionSym0KindInference) ())
+    type PMkFunctionSym1 :: forall (a :: GHC.Types.Type)
+                                   (b :: GHC.Types.Type).
+                            (~>) a b -> PFunction (a :: GHC.Types.Type) (b :: GHC.Types.Type)
+    type family PMkFunctionSym1 a0123456789876543210 where
+      PMkFunctionSym1 a0123456789876543210 = 'PMkFunction a0123456789876543210
+    type SFunction :: forall (a :: GHC.Types.Type)
+                             (b :: GHC.Types.Type).
+                      PFunction a b -> GHC.Types.Type
+    data SFunction z
+      where
+        SMkFunction :: forall (a :: GHC.Types.Type)
+                              (b :: GHC.Types.Type)
+                              (n :: (~>) a b).
+                       (Sing n)
+                       -> SFunction ('PMkFunction n :: PFunction (a :: GHC.Types.Type) (b :: GHC.Types.Type))
+    type instance Sing @(PFunction a b) = SFunction
+    instance (SingKind a, SingKind b) => SingKind (PFunction a b) where
+      type Demote (PFunction a b) = Function (Demote a) (Demote b)
+      fromSing (SMkFunction b) = MkFunction (fromSing b)
+      toSing (MkFunction (b :: Demote ((~>) a b)))
+        = case toSing b :: SomeSing ((~>) a b) of {
+            SomeSing c -> SomeSing (SMkFunction c) }
+    instance SingI n => SingI ('PMkFunction (n :: (~>) a b)) where
+      sing = SMkFunction sing
+    instance SingI (PMkFunctionSym0 :: (~>) ((~>) a b) (PFunction (a :: GHC.Types.Type) (b :: GHC.Types.Type))) where
+      sing = (singFun1 @PMkFunctionSym0) SMkFunction
+    composeFunction :: Function b c -> Function a b -> Function a c
+    composeFunction
+      (MkFunction (f :: b -> c))
+      (MkFunction (g :: a -> b))
+      = MkFunction ((f . g) :: a -> c)
+    type ComposeFunctionSym0 :: (~>) (PFunction b c) ((~>) (PFunction a b) (PFunction a c))
+    data ComposeFunctionSym0 a0123456789876543210
+      where
+        ComposeFunctionSym0KindInference :: SameKind (Apply ComposeFunctionSym0 arg) (ComposeFunctionSym1 arg) =>
+                                            ComposeFunctionSym0 a0123456789876543210
+    type instance Apply ComposeFunctionSym0 a0123456789876543210 = ComposeFunctionSym1 a0123456789876543210
+    instance SuppressUnusedWarnings ComposeFunctionSym0 where
+      suppressUnusedWarnings
+        = snd (((,) ComposeFunctionSym0KindInference) ())
+    type ComposeFunctionSym1 :: PFunction b c
+                                -> (~>) (PFunction a b) (PFunction a c)
+    data ComposeFunctionSym1 a0123456789876543210 a0123456789876543210
+      where
+        ComposeFunctionSym1KindInference :: SameKind (Apply (ComposeFunctionSym1 a0123456789876543210) arg) (ComposeFunctionSym2 a0123456789876543210 arg) =>
+                                            ComposeFunctionSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (ComposeFunctionSym1 a0123456789876543210) a0123456789876543210 = ComposeFunction a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (ComposeFunctionSym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd (((,) ComposeFunctionSym1KindInference) ())
+    type ComposeFunctionSym2 :: PFunction b c
+                                -> PFunction a b -> PFunction a c
+    type family ComposeFunctionSym2 a0123456789876543210 a0123456789876543210 where
+      ComposeFunctionSym2 a0123456789876543210 a0123456789876543210 = ComposeFunction a0123456789876543210 a0123456789876543210
+    type ComposeFunction :: PFunction b c
+                            -> PFunction a b -> PFunction a c
+    type family ComposeFunction a a where
+      ComposeFunction ('PMkFunction (f :: (~>) b c)) ('PMkFunction (g :: (~>) a b)) = Apply PMkFunctionSym0 (Apply (Apply (.@#@$) f) g :: (~>) a c)
+    sComposeFunction ::
+      forall b c a (t :: PFunction b c) (t :: PFunction a b).
+      Sing t
+      -> Sing t
+         -> Sing (Apply (Apply ComposeFunctionSym0 t) t :: PFunction a c)
+    sComposeFunction
+      (SMkFunction (sF :: Sing f))
+      (SMkFunction (sG :: Sing g))
+      = case ((,) (sF :: Sing f)) (sG :: Sing g) of {
+          (,) (_ :: Sing (f :: (~>) b c)) (_ :: Sing (g :: (~>) a b))
+            -> (applySing ((singFun1 @PMkFunctionSym0) SMkFunction))
+                 ((applySing ((applySing ((singFun3 @(.@#@$)) (%.))) sF)) sG ::
+                    Sing (Apply (Apply (.@#@$) f) g :: (~>) a c)) }
+    instance SingI (ComposeFunctionSym0 :: (~>) (PFunction b c) ((~>) (PFunction a b) (PFunction a c))) where
+      sing = (singFun2 @ComposeFunctionSym0) sComposeFunction
+    instance SingI d =>
+             SingI (ComposeFunctionSym1 (d :: PFunction b c) :: (~>) (PFunction a b) (PFunction a c)) where
+      sing
+        = (singFun1 @(ComposeFunctionSym1 (d :: PFunction b c)))
+            (sComposeFunction (sing @d))

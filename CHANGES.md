@@ -79,6 +79,14 @@ Changelog for singletons project
   `SEq` (but not `PEq`) instances, have been removed. There is not much point
   in keeping these functions around now that `PEq` now longer has a special
   default implementation. Use `singEqInstance{s}` instead.
+* The Template Haskell machinery will no longer promote `TypeRep` to `Type`,
+  as this special case never worked properly in the first place.
+* Introduce a new `promotedDataTypeOrConName` option to
+  `Data.Singletons.TH.Options`. Overriding this option can be useful in
+  situations where one wishes to promote types such as `Nat`, `Symbol`, or
+  data types built on top of them. See the
+  "Arrows, `Nat`, `Symbol`, and literals" section of the `README` for more
+  information.
 
 2.7
 ---

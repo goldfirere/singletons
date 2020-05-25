@@ -13,14 +13,11 @@ module Data.Singletons.Promote.Type
 
 import Language.Haskell.TH.Desugar
 import Data.Singletons.Names
+import Data.Singletons.TH.Options
 import Data.Singletons.Util
-import Language.Haskell.TH
 
 -- Promote a DType to the kind level.
---
--- NB: the only monadic thing we do here is fail. This allows the function
--- to be used from the Singletons module.
-promoteType :: MonadFail m => DType -> m DKind
+promoteType :: OptionsMonad m => DType -> m DKind
 promoteType ty = do
   checkVanillaDType ty
   promoteType_NC ty
@@ -28,10 +25,10 @@ promoteType ty = do
 -- Promote a DType to the kind level. This is suffixed with "_NC" because
 -- we do not invoke checkVanillaDType here.
 -- See [Vanilla-type validity checking during promotion].
-promoteType_NC :: MonadFail m => DType -> m DKind
+promoteType_NC :: OptionsMonad m => DType -> m DKind
 promoteType_NC = go []
   where
-    go :: MonadFail m => [DTypeArg] -> DType -> m DKind
+    go :: OptionsMonad m => [DTypeArg] -> DType -> m DKind
     go []       (DForallT fvf tvbs ty) = do
       ty' <- go [] ty
       pure $ DForallT fvf tvbs ty'
@@ -57,14 +54,9 @@ promoteType_NC = go []
       -- No need to promote 'ki' - it is already a kind.
       return $ applyDType (DSigT ty' ki) args
     go args     (DVarT name) = return $ applyDType (DVarT name) args
-    go []       (DConT name)
-      | name == typeRepName               = return $ DConT typeKindName
-      | nameBase name == nameBase repName = return $ DConT typeKindName
-    go args     (DConT name)
-      | Just n <- unboxedTupleNameDegree_maybe name
-      = return $ applyDType (DConT (tupleTypeName n)) args
-      | otherwise
-      = return $ applyDType (DConT name) args
+    go args     (DConT name) = do
+      opts <- getOptions
+      return $ applyDType (DConT (promotedDataTypeOrConName opts name)) args
     go [DTANormal k1, DTANormal k2] DArrowT
       = return $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
     go _        ty@DLitT{} = pure ty
@@ -76,13 +68,13 @@ promoteType_NC = go []
 -- | Promote a DTypeArg to the kind level. This is suffixed with "_NC" because
 -- we do not invoke checkVanillaDType here.
 -- See [Vanilla-type validity checking during promotion].
-promoteTypeArg_NC :: MonadFail m => DTypeArg -> m DTypeArg
+promoteTypeArg_NC :: OptionsMonad m => DTypeArg -> m DTypeArg
 promoteTypeArg_NC (DTANormal t) = DTANormal <$> promoteType_NC t
 promoteTypeArg_NC ta@(DTyArg _) = pure ta -- Kinds are already promoted
 
 -- | Promote a DType to the kind level, splitting it into its type variable
 -- binders, argument types, and result type in the process.
-promoteUnraveled :: MonadFail m
+promoteUnraveled :: OptionsMonad m
                  => DType -> m ([DTyVarBndr], [DKind], DKind)
 promoteUnraveled ty = do
   (tvbs, _, arg_tys, res_ty) <- unravelVanillaDType ty
