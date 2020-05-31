@@ -8,7 +8,7 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.10
+# version: 0.10.1
 #
 version: ~> 1.0
 language: c
@@ -33,13 +33,40 @@ before_cache:
   - rm -rfv $CABALHOME/packages/head.hackage
 jobs:
   include:
+    - compiler: ghcjs-8.4
+      addons: {"apt":{"sources":[{"sourceline":"deb http://ppa.launchpad.net/hvr/ghc/ubuntu xenial main","key_url":"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x063dab2bdc0b3f9fcebc378bff3aeacef6f88286"},{"sourceline":"deb http://ppa.launchpad.net/hvr/ghcjs/ubuntu xenial main"},{"sourceline":"deb https://deb.nodesource.com/node_10.x xenial main","key_url":"https://deb.nodesource.com/gpgkey/nodesource.gpg.key"}],"packages":["ghcjs-8.4","cabal-install-3.0","ghc-8.4.4","nodejs"]}}
+      os: linux
     - compiler: ghc-8.10.1
       addons: {"apt":{"sources":[{"sourceline":"deb http://ppa.launchpad.net/hvr/ghc/ubuntu xenial main","key_url":"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x063dab2bdc0b3f9fcebc378bff3aeacef6f88286"}],"packages":["ghc-8.10.1","cabal-install-3.2"]}}
       os: linux
+    - compiler: ghc-8.8.3
+      addons: {"apt":{"sources":[{"sourceline":"deb http://ppa.launchpad.net/hvr/ghc/ubuntu xenial main","key_url":"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x063dab2bdc0b3f9fcebc378bff3aeacef6f88286"}],"packages":["ghc-8.8.3","cabal-install-3.2"]}}
+      os: linux
+    - compiler: ghc-8.6.5
+      addons: {"apt":{"sources":[{"sourceline":"deb http://ppa.launchpad.net/hvr/ghc/ubuntu xenial main","key_url":"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x063dab2bdc0b3f9fcebc378bff3aeacef6f88286"}],"packages":["ghc-8.6.5","cabal-install-3.2"]}}
+      os: linux
+    - compiler: ghc-8.4.4
+      addons: {"apt":{"sources":[{"sourceline":"deb http://ppa.launchpad.net/hvr/ghc/ubuntu xenial main","key_url":"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x063dab2bdc0b3f9fcebc378bff3aeacef6f88286"}],"packages":["ghc-8.4.4","cabal-install-3.2"]}}
+      os: linux
+    - compiler: ghc-8.2.2
+      addons: {"apt":{"sources":[{"sourceline":"deb http://ppa.launchpad.net/hvr/ghc/ubuntu xenial main","key_url":"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x063dab2bdc0b3f9fcebc378bff3aeacef6f88286"}],"packages":["ghc-8.2.2","cabal-install-3.2"]}}
+      os: linux
+    - compiler: ghc-8.0.2
+      addons: {"apt":{"sources":[{"sourceline":"deb http://ppa.launchpad.net/hvr/ghc/ubuntu xenial main","key_url":"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x063dab2bdc0b3f9fcebc378bff3aeacef6f88286"}],"packages":["ghc-8.0.2","cabal-install-3.2"]}}
+      os: linux
 before_install:
+  - |
+    if echo $CC | grep -q ghcjs; then
+        GHCJS=true;
+    else
+        GHCJS=false;
+    fi
   - HC=$(echo "/opt/$CC/bin/ghc" | sed 's/-/\//')
   - WITHCOMPILER="-w $HC"
+  - if $GHCJS ; then HC=${HC}js ; fi
+  - if $GHCJS ; then WITHCOMPILER="--ghcjs ${WITHCOMPILER}js" ; fi
   - HADDOCK=$(echo "/opt/$CC/bin/haddock" | sed 's/-/\//')
+  - if $GHCJS ; then PATH="/opt/ghc/8.4.4/bin:$PATH" ; fi
   - HCPKG="$HC-pkg"
   - unset CC
   - CABAL=/opt/ghc/bin/cabal
@@ -73,6 +100,8 @@ before_install:
 install:
   - ${CABAL} --version
   - echo "$(${HC} --version) [$(${HC} --print-project-git-commit-id 2> /dev/null || echo '?')]"
+  - node --version
+  - echo $GHCJS
   - |
     echo "program-default-options"                >> $CABALHOME/config
     echo "  ghc-options: $GHCJOBS +RTS -M6G -RTS" >> $CABALHOME/config
@@ -83,9 +112,15 @@ install:
   - rm -rf cabal.project cabal.project.local cabal.project.freeze
   - touch cabal.project
   - |
-    echo "packages: ." >> cabal.project
-  - echo 'package singletons' >> cabal.project
-  - "echo '  ghc-options: -Werror=missing-methods' >> cabal.project"
+    echo "packages: ./singletons" >> cabal.project
+    if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo "packages: ./singletons-th" >> cabal.project ; fi
+    if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo "packages: ./singletons-base" >> cabal.project ; fi
+  - if $GHCJS || ! $GHCJS && [ $HCNUMVER -ge 80200 ] ; then echo 'package singletons' >> cabal.project ; fi
+  - "if $GHCJS || ! $GHCJS && [ $HCNUMVER -ge 80200 ] ; then echo '  ghc-options: -Werror=missing-methods' >> cabal.project ; fi"
+  - if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo 'package singletons-th' >> cabal.project ; fi
+  - "if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo '  ghc-options: -Werror=missing-methods' >> cabal.project ; fi"
+  - if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo 'package singletons-base' >> cabal.project ; fi
+  - "if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo '  ghc-options: -Werror=missing-methods' >> cabal.project ; fi"
   - |
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
@@ -95,10 +130,12 @@ install:
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project
     echo "  benchmarks: False"                                  >> cabal.project
-  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(singletons)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
+  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(singletons|singletons-base|singletons-th)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
-  - if [ -f "./configure.ac" ]; then (cd "." && autoreconf -i); fi
+  - if [ -f "./singletons/configure.ac" ]; then (cd "./singletons" && autoreconf -i); fi
+  - if [ -f "./singletons-th/configure.ac" ]; then (cd "./singletons-th" && autoreconf -i); fi
+  - if [ -f "./singletons-base/configure.ac" ]; then (cd "./singletons-base" && autoreconf -i); fi
   - ${CABAL} v2-freeze $WITHCOMPILER ${TEST} ${BENCH}
   - "cat cabal.project.freeze | sed -E 's/^(constraints: *| *)//' | sed 's/any.//'"
   - rm  cabal.project.freeze
@@ -113,13 +150,21 @@ script:
   - find . -maxdepth 1 -type f -name '*.tar.gz' -exec tar -xvf '{}' \;
   - find . -maxdepth 1 -type f -name '*.tar.gz' -exec rm       '{}' \;
   - PKGDIR_singletons="$(find . -maxdepth 1 -type d -regex '.*/singletons-[0-9.]*')"
+  - PKGDIR_singletons_th="$(find . -maxdepth 1 -type d -regex '.*/singletons-th-[0-9.]*')"
+  - PKGDIR_singletons_base="$(find . -maxdepth 1 -type d -regex '.*/singletons-base-[0-9.]*')"
   # Generate cabal.project
   - rm -rf cabal.project cabal.project.local cabal.project.freeze
   - touch cabal.project
   - |
     echo "packages: ${PKGDIR_singletons}" >> cabal.project
-  - echo 'package singletons' >> cabal.project
-  - "echo '  ghc-options: -Werror=missing-methods' >> cabal.project"
+    if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo "packages: ${PKGDIR_singletons_th}" >> cabal.project ; fi
+    if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo "packages: ${PKGDIR_singletons_base}" >> cabal.project ; fi
+  - if $GHCJS || ! $GHCJS && [ $HCNUMVER -ge 80200 ] ; then echo 'package singletons' >> cabal.project ; fi
+  - "if $GHCJS || ! $GHCJS && [ $HCNUMVER -ge 80200 ] ; then echo '  ghc-options: -Werror=missing-methods' >> cabal.project ; fi"
+  - if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo 'package singletons-th' >> cabal.project ; fi
+  - "if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo '  ghc-options: -Werror=missing-methods' >> cabal.project ; fi"
+  - if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo 'package singletons-base' >> cabal.project ; fi
+  - "if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then echo '  ghc-options: -Werror=missing-methods' >> cabal.project ; fi"
   - |
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
@@ -129,18 +174,20 @@ script:
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project
     echo "  benchmarks: False"                                  >> cabal.project
-  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(singletons)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
+  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(singletons|singletons-base|singletons-th)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
   # Building with tests and benchmarks...
   # build & run tests, build benchmarks
   - ${CABAL} v2-build $WITHCOMPILER ${TEST} ${BENCH} all
   # Testing...
-  - ${CABAL} v2-test $WITHCOMPILER ${TEST} ${BENCH} all
+  - if ! $GHCJS ; then ${CABAL} v2-test $WITHCOMPILER ${TEST} ${BENCH} all ; fi
   # cabal check...
   - (cd ${PKGDIR_singletons} && ${CABAL} -vnormal check)
+  - if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then (cd ${PKGDIR_singletons_th} && ${CABAL} -vnormal check) ; fi
+  - if ! $GHCJS && [ $HCNUMVER -ge 81000 ] ; then (cd ${PKGDIR_singletons_base} && ${CABAL} -vnormal check) ; fi
   # haddock...
-  - ${CABAL} v2-haddock $WITHCOMPILER --with-haddock $HADDOCK ${TEST} ${BENCH} all
+  - if ! $GHCJS ; then ${CABAL} v2-haddock $WITHCOMPILER --with-haddock $HADDOCK ${TEST} ${BENCH} all ; fi
 
-# REGENDATA ("0.10",["--output=.travis.yml","--config=cabal.haskell-ci","cabal.project"])
+# REGENDATA ("0.10.1",["--output=.travis.yml","--config=cabal.haskell-ci","cabal.project"])
 # EOF

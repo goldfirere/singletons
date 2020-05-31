@@ -1,0 +1,103 @@
+name:           singletons-th
+version:        3.0
+cabal-version:  >= 1.24
+synopsis:       A framework for generating singleton types
+homepage:       http://www.github.com/goldfirere/singletons
+category:       Dependent Types
+author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
+maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
+bug-reports:    https://github.com/goldfirere/singletons/issues
+stability:      experimental
+tested-with:    GHC == 8.10.1
+extra-source-files: README.md, CHANGES.md
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+description:
+    @singletons-th@ defines Template Haskell functionality that allows
+    /promotion/ of term-level functions to type-level equivalents and
+    /singling/ functions to dependently typed equivalents. This library was
+    originally presented in /Dependently Typed Programming with Singletons/,
+    published at the Haskell Symposium, 2012.
+    (<https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf>)
+    See also the paper published at Haskell Symposium, 2014, which describes
+    how promotion works in greater detail:
+    <https://cs.brynmawr.edu/~rae/papers/2014/promotion/promotion.pdf>.
+    .
+    @singletons-th@ generates code that relies on bleeding-edge GHC language
+    extensions. As such, @singletons-th@ only supports the latest major version
+    of GHC (currently GHC 8.10). For more information,
+    consult the @singletons@
+    @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
+    .
+    You may also be interested in the following related libraries:
+    .
+    * The @singletons@ library is a small, foundational library that defines
+      basic singleton-related types and definitions.
+    .
+    * The @singletons-base@ library uses @singletons-th@ to define promoted and
+      singled functions from the @base@ library, including the "Prelude".
+
+source-repository this
+  type:     git
+  location: https://github.com/goldfirere/singletons.git
+  subdir:   singletons-th
+  tag:      v3.0
+
+source-repository head
+  type:     git
+  location: https://github.com/goldfirere/singletons.git
+  subdir:   singletons-th
+  branch:   master
+
+library
+  hs-source-dirs:     src
+  build-depends:      base             >= 4.14 && < 4.15,
+                      containers       >= 0.5,
+                      mtl              >= 2.2.1,
+                      ghc-boot-th,
+                      singletons       == 3.0.*,
+                      syb              >= 0.4,
+                      template-haskell >= 2.16 && < 2.17,
+                      th-desugar       >= 1.12 && < 1.13,
+                      transformers     >= 0.5.2
+  default-language:   Haskell2010
+  other-extensions:   TemplateHaskellQuotes
+  exposed-modules:    Data.Singletons.CustomStar
+                      Data.Singletons.SuppressUnusedWarnings
+                      Data.Singletons.TH
+                      Data.Singletons.TH.Options
+
+  -- singletons re-exports
+  reexported-modules: Data.Singletons
+                    , Data.Singletons.Decide
+                    , Data.Singletons.ShowSing
+                    , Data.Singletons.Sigma
+
+  other-modules:      Data.Singletons.Deriving.Bounded
+                      Data.Singletons.Deriving.Enum
+                      Data.Singletons.Deriving.Eq
+                      Data.Singletons.Deriving.Foldable
+                      Data.Singletons.Deriving.Functor
+                      Data.Singletons.Deriving.Infer
+                      Data.Singletons.Deriving.Ord
+                      Data.Singletons.Deriving.Show
+                      Data.Singletons.Deriving.Traversable
+                      Data.Singletons.Deriving.Util
+                      Data.Singletons.Names
+                      Data.Singletons.Partition
+                      Data.Singletons.Promote
+                      Data.Singletons.Promote.Defun
+                      Data.Singletons.Promote.Monad
+                      Data.Singletons.Promote.Type
+                      Data.Singletons.Single
+                      Data.Singletons.Single.Data
+                      Data.Singletons.Single.Decide
+                      Data.Singletons.Single.Defun
+                      Data.Singletons.Single.Fixity
+                      Data.Singletons.Single.Monad
+                      Data.Singletons.Single.Type
+                      Data.Singletons.Syntax
+                      Data.Singletons.Util
+
+  ghc-options:        -Wall -Wcompat
