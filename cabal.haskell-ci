@@ -1,5 +1,6 @@
 no-tests-no-benchmarks: False
 unconstrained:          False
+jobs-selection:         any
 
 raw-project
   -- Work around https://github.com/haskell/cabal/issues/5586

@@ -1,16 +1,16 @@
-singletons 2.8
-==============
+singletons
+==========
 
-[![Hackage](https://img.shields.io/hackage/v/singletons.svg)](http://hackage.haskell.org/package/singletons)
 [![Build Status](https://travis-ci.org/goldfirere/singletons.svg?branch=master)](https://travis-ci.org/goldfirere/singletons)
 
-This is the README file for the `singletons` library. This file contains all the
-documentation for the definitions and functions in the library.
+This is the README file for the `singletons`, `singletons-th`, and
+`singletons-base` libraries. This file contains documentation for the
+definitions and functions in these libraries.
 
-The `singletons` library was written by Richard Eisenberg (<rae@cs.brynmawr.edu>) and
+The `singletons` libraries were written by Richard Eisenberg (<rae@cs.brynmawr.edu>) and
 with significant contributions by Jan Stolarek (<jan.stolarek@p.lodz.pl>) and
 Ryan Scott (<ryan.gl.scott@gmail.com>). There
-are two papers that describe the library. Original one, _Dependently typed
+are two papers that describe the libraries. Original one, _Dependently typed
 programming with singletons_, is available
 [here](https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf) and will
 be referenced in this documentation as the "singletons paper". A follow-up
@@ -21,31 +21,55 @@ and will be referenced in this documentation as the
 
 Ryan Scott (<ryan.gl.scott@gmail.com>) is the active maintainer.
 
-Purpose of the `singletons` library
------------------------------------
+Purpose of the libraries
+------------------------
 
-The library contains a definition of _singleton types_, which allow programmers
+Broadly speaking, the `singletons` libraries define an ecosystem of
+_singleton types_, which allow programmers
 to use dependently typed techniques to enforce rich constraints among the types
-in their programs. See the singletons paper for a more thorough introduction.
+in their programs. To that end, the three libraries serve the following roles:
 
-The package also allows _promotion_ of term-level functions to type-level
-equivalents and _singling_ functions to dependently typed equivalents.
-Accordingly, it exports a Prelude of promoted and singled
-functions, mirroring functions and datatypes found in the `Prelude`, `Data.Bool`,
-`Data.Maybe`, `Data.Either`, `Data.Tuple` and `Data.List`. See the promotion
-paper for a more thorough introduction.
+* The `singletons` library is a small, foundational library that defines basic
+  singleton-related types and definitions.
+* The `singletons-th` library defines Template Haskell functionality that
+  allows _promotion_ of term-level functions to type-level equivalents and
+  _singling_ functions to dependently typed equivalents.
+* The `singletons-base` library uses `singletons-th` to define promoted and
+  singled functions from the `base` library, including the `Prelude`.
 
-[This blog series](https://blog.jle.im/entry/introduction-to-singletons-1.html),
-authored by Justin Le, offers a tutorial for this library that assumes no
-knowledge of dependent types.
+Besides the functionality of the libraries themselves, `singletons` differs
+from `singletons-th` and `singletons-base` by aiming to be compatible with a
+wider range of GHC versions. See the "Compatibility" section for further
+details.
+
+Some other introductions to the ideas in these libraries include:
+
+* The singletons paper and promotion papers.
+* [This blog series](https://blog.jle.im/entry/introduction-to-singletons-1.html),
+  authored by Justin Le, which offers a tutorial for these libraries that
+  assumes no knowledge of dependent types.
 
 Compatibility
 -------------
 
-The `singletons` library requires GHC 8.10.1 or greater. Any code that uses the
-singleton generation primitives needs to enable a long list of GHC
-extensions. This list includes, but is not necessarily limited to, the
-following:
+`singletons`, `singletons-th`, and `singletons-base` have different support
+windows for requirements on the compiler version needed to build each library:
+
+* `singletons` is a minimal library, and as such, it has a relatively
+   wide support window. `singletons` must be built with one of the following
+   compilers:
+
+   * GHC 8.0 or greater
+   * GHCJS
+* `singletons-th` and `singletons-base` require use of many bleeding-edge
+  GHC language extensions, even more so than `singletons` itself. As such, it
+  is difficult to maintain support for multiple GHC versions in any given
+  release of either library, so they only support the latest major GHC version
+  (currently GHC 8.10).
+
+Any code that uses the singleton-generation functionality from `singletons-th`
+or `singletons-base` needs to enable a long list of GHC extensions. This list
+includes, but is not necessarily limited to, the following:
 
 * `DataKinds`
 * `DefaultSignatures`
@@ -80,41 +104,48 @@ You may also want to consider toggling various warning flags:
 * `-fenable-th-splice-warnings`.
   By default, GHC does not run pattern-match coverage checker warnings on code
   inside of Template Haskell quotes. This is an extremely common thing to do
-  in `singletons`, so you may consider opting in to these warnings.
+  in `singletons-th`, so you may consider opting in to these warnings.
 
 Modules for singleton types
 ---------------------------
 
-`Data.Singletons` exports all the basic singletons definitions. Import this
-module if you are not using Template Haskell and wish only to define your
-own singletons.
+`Data.Singletons` (from `singletons`) exports all the basic singletons
+definitions. Import this module if you are not using Template Haskell and wish
+only to define your own singletons.
 
-`Data.Singletons.TH` exports all the definitions needed to use the Template
-Haskell code to generate new singletons.
+`Data.Singletons.Decide` (from `singletons`) exports type classes for propositional
+equality. See the "Equality classes" section for more information.
 
-`Data.Singletons.Prelude` re-exports `Data.Singletons` along with singleton
-definitions for various `Prelude` types. This module provides promoted and
-singled equivalents of functions from the real `Prelude`.
+`Data.Singletons.TH` (from `singletons-th`) exports all the definitions needed
+to use the Template Haskell code to generate new singletons.
+`Data.Singletons.Prelude.TH` (from `singletons-bsae`) re-exports
+`Data.Singletons.TH` plus any promoted or singled definitions that are likely
+to appear in TH-generated code. For instance, singling a
+`deriving Eq` clause will make use of `SEq`, the singled `Eq` class, so
+`Data.Singletons.TH` re-exports `SEq`.
+
+`Data.Singletons.Prelude` (from `singletons-base` re-exports `Data.Singletons`
+along with singleton definitions for various `Prelude` types. This module
+provides promoted and singled equivalents of functions from the real `Prelude`.
 Note that not all functions from original `Prelude` could be promoted or
 singled.
 
-`Data.Singletons.Prelude.*` modules provide promoted and singled equivalents of
-definitions found in several commonly used `base` library modules, including
-(but not limited to) `Data.Bool`, `Data.Maybe`, `Data.Either`, `Data.List`,
-`Data.Tuple`, `Data.Void` and `GHC.Base`. We also provide promoted and singled
-versions of common type classes, including (but not limited to) `Eq`, `Ord`,
-`Show`, `Enum`, and `Bounded`.
+`Data.Singletons.Prelude.*` modules (from `singletons-base`) provide promoted
+and singled equivalents of definitions found in several commonly used `base`
+library modules, including (but not limited to) `Data.Bool`, `Data.Maybe`,
+`Data.Either`, `Data.List`, `Data.Tuple`, `Data.Void` and `GHC.Base`. We also
+provide promoted and singled versions of common type classes, including (but
+not limited to) `Eq`, `Ord`, `Show`, `Enum`, and `Bounded`.
 
-`Data.Singletons.Decide` exports type classes for propositional equality.
-
-`Data.Singletons.TypeLits` exports definitions for working with `GHC.TypeLits`.
+`Data.Singletons.TypeLits` (from `singletons-base`) exports definitions for
+working with `GHC.TypeLits`.
 
 Functions to generate singletons
 --------------------------------
 
 The top-level functions used to generate promoted or singled definitions are
-documented in the `Data.Singletons.TH` module. The most common case is just
-calling `singletons`, which I'll describe here:
+documented in the `Data.Singletons.TH` module in `singletons-th`. The most
+common case is just calling the `singletons` function, which I'll describe here:
 
 ```haskell
 singletons :: Q [Dec] -> Q [Dec]
@@ -138,8 +169,10 @@ $(singletons [d|
 Definitions used to support singletons
 --------------------------------------
 
-Please refer to the singletons paper for a more in-depth explanation of these
-definitions. Many of the definitions were developed in tandem with Iavor Diatchki.
+This section contains a brief overview of some of the most important types
+from `Data.Singletons` (from `singletons`). Please refer to the singletons
+paper for a more in-depth explanation of these definitions. Many of the
+definitions were developed in tandem with Iavor Diatchki.
 
 ```haskell
 type Sing :: k -> Type
@@ -205,11 +238,12 @@ equality and propositional equality.
 
 * Boolean equality is implemented in the type family `(==)` (in the `PEq`
   class) and the `(%==`) method (in the `SEq` class).
-  See the `Data.Singletons.Prelude.Eq` module for more information.
+  See the `Data.Singletons.Prelude.Eq` module from `singletons-base` for more
+  information.
 
 * Propositional equality is implemented through the constraint `(~)`, the type
   `(:~:)`, and the class `SDecide`. See modules `Data.Type.Equality` and
-  `Data.Singletons.Decide` for more information.
+  `Data.Singletons.Decide` from `singletons` for more information.
 
 Which one do you need? That depends on your application. Boolean equality has
 the advantage that your program can take action when two types do _not_ equal,
@@ -219,16 +253,17 @@ of types during type inference.
 Instances of `SEq`, `SDecide`, `TestEquality`, and `TestCoercion` are generated
 when `singletons` is called on a datatype that has `deriving Eq`. You can also
 generate these instances directly through functions exported from
-`Data.Singletons.TH`.
+`Data.Singletons.TH` (from `singletons-th`) and
+`Data.Singletons.Prelude.TH` (from `singletons-base`).
 
 
 `Show` classes
 --------------
 
 Promoted and singled versions of the `Show` class (`PShow` and `SShow`,
-respectively) are provided in the `Data.Singletons.Prelude.Show` module. In
-addition, there is a `ShowSing` constraint synonym provided in the
-`Data.Singletons.ShowSing` module:
+respectively) are provided in the `Data.Singletons.Prelude.Show` module from
+`singletons-base`. In addition, there is a `ShowSing` constraint synonym
+provided in the `Data.Singletons.ShowSing` module from `singletons`:
 
 ```haskell
 type ShowSing :: Type -> Constraint
@@ -247,7 +282,8 @@ _singleton_ constructor `SFalse`, so calling `show SFalse` yields `"SFalse"`.
 Instance of `PShow`, `SShow`, and `Show` (for the singleton type) are generated
 when `singletons` is called on a datatype that has `deriving Show`. You can also
 generate these instances directly through functions exported from
-`Data.Singletons.TH`.
+`Data.Singletons.TH` (from `singletons-th`) and
+`Data.Singletons.Prelude.TH` (from `singletons-base`).
 
 A promoted and singled `Show` instance is provided for `Symbol`, but it is only
 a crude approximation of the value-level `Show` instance for `String`. On the
@@ -259,7 +295,7 @@ type-level `Show` instance for `Symbol`s does not do any character escaping.
 Errors
 ------
 
-The `singletons` library provides two different ways to handle errors:
+The `singletons-base` library provides two different ways to handle errors:
 
 * The `Error` type family, from `Data.Singletons.TypeLits`:
 
@@ -282,7 +318,7 @@ The `singletons` library provides two different ways to handle errors:
 Pre-defined singletons
 ----------------------
 
-The `singletons` library defines a number of singleton types and functions
+The `singletons-base` library defines a number of singleton types and functions
 by default. These include (but are not limited to):
 
 * `Bool`
@@ -302,7 +338,8 @@ Promoting functions
 
 Function promotion allows to generate type-level equivalents of term-level
 definitions. Almost all Haskell source constructs are supported -- see the
-"Supported Haskell constructs" section of this README for a full list.
+"Haskell constructs supported by `singletons-th`" section of this README for a
+full list.
 
 Promoted definitions are usually generated by calling the `promote` function:
 
@@ -321,8 +358,8 @@ partial application at the type level. For more information, refer to the
 "Promotion and partial application" section below.
 
 Users also have access to `Data.Singletons.Prelude` and its submodules (e.g.,
-`Base`, `Bool`, `Either`, `List`, `Maybe` and `Tuple`). These provide promoted
-versions of function found in GHC's `base` library.
+`Base`, `Bool`, `Either`, `List`, `Maybe` and `Tuple`) in `singletons-base`.
+These provide promoted versions of function found in GHC's `base` library.
 
 Note that GHC resolves variable names in Template Haskell quotes. You cannot
 then use an undefined identifier in a quote, making idioms like this not
@@ -457,7 +494,7 @@ Note that the limitations above reflect the current design of
 
 ## Defunctionalization and visible dependent quantification
 
-Unlike most other parts of `singletons`, which disallow visible dependent
+Unlike most other parts of `singletons-th`, which disallow visible dependent
 quantification (VDQ), `genDefunSymbols` has limited support for VDQ.
 Consider this example:
 
@@ -566,7 +603,7 @@ The defaults all just work.
 On names
 --------
 
-The `singletons` library has to produce new names for the new constructs it
+The `singletons-th` library has to produce new names for the new constructs it
 generates. Here are some examples showing how this is done:
 
 1. original datatype: `Nat`
@@ -701,8 +738,9 @@ treatment):
    `Data.Singletons.CustomStar` work.
 
 If desired, you can pick your own naming conventions by using the
-`Data.Singletons.TH.Options` module. Here is an example of how this module can
-be used to prefix a singled data constructor with `MyS` instead of `S`:
+`Data.Singletons.TH.Options` module in `singletons-th`. Here is an example of
+how this module can be used to prefix a singled data constructor with `MyS`
+instead of `S`:
 
 ```hs
 import Control.Monad.Trans.Class
@@ -717,8 +755,8 @@ $(let myPrefix :: Name -> Name
       singletons $ lift [d| data T = MkT |])
 ```
 
-Supported Haskell constructs
-----------------------------
+Haskell constructs supported by `singletons-th`
+-----------------------------------------------
 
 ## Full support
 
@@ -763,9 +801,9 @@ See the following sections for more details.
 
 ### `deriving`
 
-`singletons` is slightly more conservative with respect to `deriving` than GHC is.
-The only classes that `singletons` can derive without an explicit deriving
-strategy are the following stock classes:
+`singletons-th` is slightly more conservative with respect to `deriving` than
+GHC is. The only classes that `singletons-th` can derive without an explicit
+deriving strategy are the following stock classes:
 
 * `Eq`
 * `Ord`
@@ -777,14 +815,14 @@ strategy are the following stock classes:
 * `Traversable`
 
 To do anything more exotic, one must explicitly indicate one's intentions by
-using the `DerivingStrategies` extension. `singletons` fully supports the
+using the `DerivingStrategies` extension. `singletons-th` fully supports the
 `anyclass` strategy as well as the `stock` strategy (at least, for the classes
-listed above). `singletons` does not support the `newtype` or `via` strategies,
+listed above). `singletons-th` does not support the `newtype` or `via` strategies,
 as there is no equivalent of `coerce` at the type level.
 
 ### Finite arithmetic sequences
 
-`singletons` has partial support for arithmetic sequences (which desugar to
+`singletons-th` has partial support for arithmetic sequences (which desugar to
 methods from the `Enum` class under the hood). _Finite_ sequences (e.g.,
 [0..42]) are fully supported. However, _infinite_ sequences (e.g., [0..]),
 which desugar to calls to `enumFromTo` or `enumFromThenTo`, are not supported,
@@ -798,8 +836,8 @@ functions because embedding records directly into singleton data constructors
 can result in surprising behavior (see
 [this bug report](https://github.com/goldfirere/singletons/issues/364) for more
 details on this point). TH-generated code is not affected by this limitation
-since `singletons` desugars away most uses of record syntax. On the other hand,
-it is not possible to write out code like
+since `singletons-th` desugars away most uses of record syntax. On the other
+hand, it is not possible to write out code like
 `SIdentity { sRunIdentity = SIdentity STrue }` by hand.
 
 Another caveat is that GHC allows defining so-called "naughty" record selectors
@@ -813,10 +851,10 @@ data Some :: (Type -> Type) -> Type where
   MkSome :: { getSome :: f a } -> Some f
 ```
 
-Because `singletons` promotes all records to top-level functions, however,
+Because `singletons-th` promotes all records to top-level functions, however,
 attempting to promote `getSome` will result in an invalid definition. (It
 may typecheck, but it will not behave like you would expect.) Theoretically,
-`singletons` could refrain from promoting naughty record selectors, but this
+`singletons-th` could refrain from promoting naughty record selectors, but this
 would require detecting which type variables in a data constructor are
 existentially quantified. This is very challenging in general, so we stick to
 the dumb-but-predictable approach of always promoting record selectors,
@@ -824,7 +862,7 @@ regardless of whether they are naughty or not.
 
 ### Signatures in patterns
 
-`singletons` can promote basic pattern signatures, such as in the following
+`singletons-th` can promote basic pattern signatures, such as in the following
 examples:
 
 ```hs
@@ -1133,7 +1171,7 @@ Besides `Natural`/`Nat`, other common use cases for this technique are:
 
 ### Rank-n types
 
-`singletons` does not support type signatures that have higher-rank types.
+`singletons-th` does not support type signatures that have higher-rank types.
 More precisely, the only types that can be promoted or singled are
 _vanilla_ types,  where a vanilla function type is a type that:
 
@@ -1154,7 +1192,7 @@ of `TypeRep` would yield `*`, but the implementation of `TypeRep` would have to
 be updated for this to really work out. In the meantime, users who wish to
 experiment with this feature have two options:
 
-1) The module `Data.Singletons.TypeRepTYPE` has all the definitions possible for
+1) The module `Data.Singletons.TypeRepTYPE` (from `singletons-base`) has all the definitions possible for
 making `*` the promoted version of `TypeRep`, as `TypeRep` is currently implemented.
 The singleton associated with `TypeRep` has one constructor:
 
@@ -1166,20 +1204,20 @@ The singleton associated with `TypeRep` has one constructor:
 `TypeRep`s will not generally work as expected; the built-in promotion
 mechanism will not promote `TypeRep` to `*`.
 
-2) The module `Data.Singletons.CustomStar` allows the programmer to define a subset
+2) The module `Data.Singletons.CustomStar` (from `singletons-th`) allows the programmer to define a subset
 of types with which to work. See the Haddock documentation for the function
 `singletonStar` for more info.
 
 ### `TypeApplications`
 
-`singletons` currently cannot handle promoting or singling code that uses
-`TypeApplications` syntax, so `singletons` will simply drop any visible type
-applications. For example, `id @Bool True` will be promoted to `Id True` and
-singled to `sId STrue`. See
+`singletons-th` currently cannot handle promoting or singling code that uses
+`TypeApplications` syntax, so the Template Haskell machinery will simply drop
+any visible type applications. For example, `id @Bool True` will be promoted to
+`Id True` and singled to `sId STrue`. See
 [#378](https://github.com/goldfirere/singletons/issues/378) for a discussion
-of how `singletons` may support `TypeApplications` in the future.
+of how `singletons-th` may support `TypeApplications` in the future.
 
-On the other hand, `singletons` does make an effort to preserve the order of
+On the other hand, `singletons-th` does make an effort to preserve the order of
 type variables when promoting and singling certain constructors. These include:
 
 * Kind signatures of promoted top-level functions
@@ -1214,7 +1252,7 @@ emphasizing that the TH machinery does not support promoting or singling
 `const2 @T1 @T2` directly, but you can write the type applications by hand if
 you so choose.
 
-`singletons` also has limited support for preserving the order of type variables
+`singletons-th` also has limited support for preserving the order of type variables
 for the following constructs:
 
 * Kind signatures of defunctionalization symbols.
@@ -1226,7 +1264,7 @@ for the following constructs:
      a vanilla type. (See the "Rank-n types" section above for what "vanilla"
      means.)
 
-  If either of these conditions do not hold, `singletons` will fall back to
+  If either of these conditions do not hold, `singletons-th` will fall back to
   a slightly different approach to generating defunctionalization symbols that
   does *not* guarantee the order of type variables. As an example, consider the
   following example:
@@ -1237,7 +1275,7 @@ for the following constructs:
   ```
 
   The kind of `T` is `forall a. a -> forall b. b -> Type`, which is not
-  vanilla. Currently, `singletons` will generate the following
+  vanilla. Currently, `singletons-th` will generate the following
   defunctionalization symbols for `T`:
 
   ```haskell
@@ -1247,7 +1285,7 @@ for the following constructs:
 
   In both symbols, the kind starts with `forall a b.` rather than quantifying
   the `b` after the visible argument of kind `a`. These symbols can still be
-  useful even with this flaw, so `singletons` permits generating them
+  useful even with this flaw, so `singletons-th` permits generating them
   regardless. Be aware of this drawback if you try doing something similar
   yourself!
 

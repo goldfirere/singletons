@@ -1,0 +1,76 @@
+name:           singletons
+version:        3.0
+cabal-version:  >= 1.24
+synopsis:       Basic singleton types and definitions
+homepage:       http://www.github.com/goldfirere/singletons
+category:       Dependent Types
+author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stolarek@p.lodz.pl>
+maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
+bug-reports:    https://github.com/goldfirere/singletons/issues
+stability:      experimental
+tested-with:    GHC == 8.0.2
+              , GHC == 8.2.2
+              , GHC == 8.4.4
+              , GHC == 8.6.5
+              , GHC == 8.8.3
+              , GHC == 8.10.1
+              , GHCJS==8.4
+extra-source-files: README.md, CHANGES.md
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+description:
+    @singletons@ contains the basic types and definitions needed to support
+    dependently typed programming techniques in Haskell. This library was
+    originally presented in /Dependently Typed Programming with Singletons/,
+    published at the Haskell Symposium, 2012.
+    (<https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf>)
+    .
+    @singletons@ is intended to be a small, foundational library on which other
+    projects can build. As such, @singletons@ has a minimal dependency
+    footprint and supports GHCs dating back to GHC 8.0. For more information,
+    consult the @singletons@
+    @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
+    .
+    You may also be interested in the following related libraries:
+    .
+    * The @singletons-th@ library defines Template Haskell functionality that
+      allows /promotion/ of term-level functions to type-level equivalents and
+      /singling/ functions to dependently typed equivalents.
+    .
+    * The @singletons-base@ library uses @singletons-th@ to define promoted and
+      singled functions from the @base@ library, including the "Prelude".
+
+source-repository this
+  type:     git
+  location: https://github.com/goldfirere/singletons.git
+  subdir:   singletons
+  tag:      v3.0
+
+source-repository head
+  type:     git
+  location: https://github.com/goldfirere/singletons.git
+  subdir:   singletons
+  branch:   master
+
+library
+  hs-source-dirs:     src
+  build-depends:      base >= 4.9 && < 4.15
+  default-language:   Haskell2010
+  exposed-modules:    Data.Singletons
+                      Data.Singletons.Decide
+                      Data.Singletons.ShowSing
+                      Data.Singletons.Sigma
+  ghc-options:        -Wall
+
+test-suite singletons-test-suite
+  type:               exitcode-stdio-1.0
+  hs-source-dirs:     tests
+  ghc-options:        -Wall -threaded
+  default-language:   Haskell2010
+  main-is:            SingletonsTestSuite.hs
+  other-modules:      ByHand
+                      ByHand2
+
+  build-depends:      base >= 4.9 && < 4.15,
+                      singletons
