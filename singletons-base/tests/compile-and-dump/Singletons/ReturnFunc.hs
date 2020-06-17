@@ -1,7 +1,6 @@
 module Singletons.ReturnFunc where
 
 import Data.Singletons
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Singletons.Nat
 

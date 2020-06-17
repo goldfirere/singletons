@@ -1,4 +1,4 @@
-{- Data/Singletons/Promote.hs
+{- Data/Singletons/TH/Promote.hs
 
 (c) Richard Eisenberg 2013
 rae@cs.brynmawr.edu
@@ -9,7 +9,7 @@ type level. It is an internal module to the singletons-th package.
 
 {-# LANGUAGE MultiWayIf, LambdaCase, TupleSections, ScopedTypeVariables #-}
 
-module Data.Singletons.Promote where
+module Data.Singletons.TH.Promote where
 
 import Language.Haskell.TH hiding ( Q, cxt )
 import Language.Haskell.TH.Syntax ( NameSpace(..), Quasi(..), Uniq )
@@ -18,20 +18,20 @@ import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
 import qualified Language.Haskell.TH.Desugar.OSet as OSet
 import Language.Haskell.TH.Desugar.OSet (OSet)
-import Data.Singletons.Names
-import Data.Singletons.Promote.Monad
-import Data.Singletons.Promote.Defun
-import Data.Singletons.Promote.Type
-import Data.Singletons.Deriving.Eq
-import Data.Singletons.Deriving.Ord
-import Data.Singletons.Deriving.Bounded
-import Data.Singletons.Deriving.Enum
-import Data.Singletons.Deriving.Show
-import Data.Singletons.Deriving.Util
-import Data.Singletons.Partition
+import Data.Singletons.TH.Deriving.Bounded
+import Data.Singletons.TH.Deriving.Enum
+import Data.Singletons.TH.Deriving.Eq
+import Data.Singletons.TH.Deriving.Ord
+import Data.Singletons.TH.Deriving.Show
+import Data.Singletons.TH.Deriving.Util
+import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
-import Data.Singletons.Util
-import Data.Singletons.Syntax
+import Data.Singletons.TH.Partition
+import Data.Singletons.TH.Promote.Defun
+import Data.Singletons.TH.Promote.Monad
+import Data.Singletons.TH.Promote.Type
+import Data.Singletons.TH.Syntax
+import Data.Singletons.TH.Util
 import Prelude hiding (exp)
 import Control.Applicative (Alternative(..))
 import Control.Arrow (second)
@@ -59,7 +59,7 @@ this, however. Imagine this code:
 
 If genQuotedDecs is set to True, then the (<%%>) type family will not receive
 a fixity declaration (see
-Note [singletons-th and fixity declarations] in D.S.Single.Fixity, wrinkle 1 for
+Note [singletons-th and fixity declarations] in D.S.TH.Single.Fixity, wrinkle 1 for
 more details on this point). Therefore, we set genQuotedDecs to False to avoid
 this problem.
 -}
@@ -259,7 +259,7 @@ promoteLetDecs mb_let_uniq decls = do
 promoteDataDecs :: [DataDecl] -> PrM [DLetDec]
 promoteDataDecs = concatMapM promoteDataDec
 
--- "Promotes" a data type, much like D.S.Single.Data.singDataD singles a data
+-- "Promotes" a data type, much like D.S.TH.Single.Data.singDataD singles a data
 -- type. Promoting a data type is much easier than singling it, however, since
 -- DataKinds automatically promotes data types and kinds and data constructors
 -- to types. That means that promoteDataDec only has to do three things:
@@ -275,7 +275,7 @@ promoteDataDecs = concatMapM promoteDataDec
 --    function takes these DLetDecs and promotes them (using promoteLetDecs).
 --    This greatly simplifies the plumbing, since this allows all DLetDecs to
 --    be promoted in a single location.
---    See Note [singletons-th and record selectors] in D.S.Single.Data.
+--    See Note [singletons-th and record selectors] in D.S.TH.Single.Data.
 promoteDataDec :: DataDecl -> PrM [DLetDec]
 promoteDataDec (DataDecl _ _ ctors) = do
   let rec_sel_names = nub $ concatMap extractRecSelNames ctors
@@ -689,7 +689,7 @@ promoteInfixDecl mb_let_uniq name fixity = do
     -- Don't produce a fixity declaration at all. This happens when promoting a
     -- fixity declaration for a name whose promoted counterpart is the same as
     -- the original name.
-    -- See Note [singletons-th and fixity declarations] in D.S.Single.Fixity, wrinkle 1.
+    -- See Note [singletons-th and fixity declarations] in D.S.TH.Single.Fixity, wrinkle 1.
     never_mind :: q (Maybe DDec)
     never_mind = pure Nothing
 
@@ -697,7 +697,7 @@ promoteInfixDecl mb_let_uniq name fixity = do
     -- Therefore, don't bother promoting their fixity declarations if
     -- 'genQuotedDecs' is set to 'True', since that will run the risk of
     -- generating duplicate fixity declarations.
-    -- See Note [singletons-th and fixity declarations] in D.S.Single.Fixity, wrinkle 1.
+    -- See Note [singletons-th and fixity declarations] in D.S.TH.Single.Fixity, wrinkle 1.
     promote_val :: q (Maybe DDec)
     promote_val = do
       opts <- getOptions
@@ -710,7 +710,7 @@ promoteInfixDecl mb_let_uniq name fixity = do
 -- Try producing promoted fixity declarations for Names by reifying them
 -- /without/ consulting quoted declarations. If reification fails, recover and
 -- return the empty list.
--- See [singletons-th and fixity declarations] in D.S.Single.Fixity, wrinkle 2.
+-- See [singletons-th and fixity declarations] in D.S.TH.Single.Fixity, wrinkle 2.
 promoteReifiedInfixDecls :: forall q. OptionsMonad q => [Name] -> q [DDec]
 promoteReifiedInfixDecls = mapMaybeM tryPromoteFixityDeclaration
   where

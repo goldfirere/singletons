@@ -36,7 +36,6 @@ module InsertionSort.InsertionSortImp where
 
 import Data.Kind (Type)
 import Data.Singletons.Prelude
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 
 data Dict c where

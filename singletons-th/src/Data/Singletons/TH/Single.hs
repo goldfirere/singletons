@@ -1,4 +1,4 @@
-{- Data/Singletons/Single.hs
+{- Data/Singletons/TH/Single.hs
 
 (c) Richard Eisenberg 2013
 rae@cs.brynmawr.edu
@@ -8,32 +8,32 @@ types. It is an internal module to the singletons-th package.
 -}
 {-# LANGUAGE TemplateHaskellQuotes, TupleSections, ParallelListComp #-}
 
-module Data.Singletons.Single where
+module Data.Singletons.TH.Single where
 
 import Prelude hiding ( exp )
 import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (NameSpace(..), Quasi(..))
-import Data.Singletons.Deriving.Eq
-import Data.Singletons.Deriving.Ord
-import Data.Singletons.Deriving.Bounded
-import Data.Singletons.Deriving.Enum
-import Data.Singletons.Deriving.Show
-import Data.Singletons.Deriving.Util
-import Data.Singletons.Util
-import Data.Singletons.Promote
-import Data.Singletons.Promote.Defun
-import Data.Singletons.Promote.Monad ( promoteM )
-import Data.Singletons.Promote.Type
-import Data.Singletons.Names
-import Data.Singletons.Single.Monad
-import Data.Singletons.Single.Type
-import Data.Singletons.Single.Data
-import Data.Singletons.Single.Decide
-import Data.Singletons.Single.Defun
-import Data.Singletons.Single.Fixity
-import Data.Singletons.Syntax
+import Data.Singletons.TH.Deriving.Bounded
+import Data.Singletons.TH.Deriving.Enum
+import Data.Singletons.TH.Deriving.Eq
+import Data.Singletons.TH.Deriving.Ord
+import Data.Singletons.TH.Deriving.Show
+import Data.Singletons.TH.Deriving.Util
+import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
-import Data.Singletons.Partition
+import Data.Singletons.TH.Partition
+import Data.Singletons.TH.Promote
+import Data.Singletons.TH.Promote.Defun
+import Data.Singletons.TH.Promote.Monad ( promoteM )
+import Data.Singletons.TH.Promote.Type
+import Data.Singletons.TH.Single.Data
+import Data.Singletons.TH.Single.Decide
+import Data.Singletons.TH.Single.Defun
+import Data.Singletons.TH.Single.Fixity
+import Data.Singletons.TH.Single.Monad
+import Data.Singletons.TH.Single.Type
+import Data.Singletons.TH.Syntax
+import Data.Singletons.TH.Util
 import Language.Haskell.TH.Desugar
 import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
@@ -92,7 +92,7 @@ genSingletons :: OptionsMonad q => [Name] -> q [Dec]
 genSingletons names = do
   opts <- getOptions
   -- See Note [Disable genQuotedDecs in genPromotions and genSingletons]
-  -- in D.S.Promote
+  -- in D.S.TH.Promote
   withOptions opts{genQuotedDecs = False} $ do
     checkForRep names
     ddecs <- concatMapM (singInfo <=< dsInfo <=< reifyWithLocals) names
@@ -538,7 +538,7 @@ singLetDecEnv :: ALetDecEnv
                  --
                  -- 1. The singled let-decs
                  -- 2. SingI instances for any defunctionalization symbols
-                 --    (see Data.Singletons.Single.Defun)
+                 --    (see Data.Singletons.TH.Single.Defun)
                  -- 3. The result of running the `SgM a` action
 singLetDecEnv (LetDecEnv { lde_defns     = defns
                          , lde_types     = types
@@ -973,7 +973,7 @@ singExp (ADSigE prom_exp exp ty) _ = do
   exp' <- singExp exp (Just ty)
   pure $ DSigE exp' $ DConT singFamilyName `DAppT` DSigT prom_exp ty
 
--- See Note [DerivedDecl] in Data.Singletons.Syntax
+-- See Note [DerivedDecl] in Data.Singletons.TH.Syntax
 singDerivedEqDecs :: DerivedEqDecl -> SgM [DDec]
 singDerivedEqDecs (DerivedDecl { ded_mb_cxt     = mb_ctxt
                                , ded_type       = ty
@@ -1004,7 +1004,7 @@ sEqToSDecide p = do
             then sDecideClassName
             else n) p
 
--- See Note [DerivedDecl] in Data.Singletons.Syntax
+-- See Note [DerivedDecl] in Data.Singletons.TH.Syntax
 singDerivedShowDecs :: DerivedShowDecl -> SgM [DDec]
 singDerivedShowDecs (DerivedDecl { ded_mb_cxt     = mb_cxt
                                  , ded_type       = ty

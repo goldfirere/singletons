@@ -3,7 +3,7 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Deriving.Util
+-- Module      :  Data.Singletons.TH.Deriving.Util
 -- Copyright   :  (C) 2018 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -13,12 +13,12 @@
 -- Utilities used by the `deriving` machinery in singletons-th.
 --
 ----------------------------------------------------------------------------
-module Data.Singletons.Deriving.Util where
+module Data.Singletons.TH.Deriving.Util where
 
 import Control.Monad
-import Data.Singletons.Names
-import Data.Singletons.Syntax
-import Data.Singletons.Util
+import Data.Singletons.TH.Names
+import Data.Singletons.TH.Syntax
+import Data.Singletons.TH.Util
 import Language.Haskell.TH.Desugar
 import qualified Language.Haskell.TH.Desugar.OSet as OSet
 import Language.Haskell.TH.Syntax

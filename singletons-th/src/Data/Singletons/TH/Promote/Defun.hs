@@ -1,4 +1,4 @@
-{- Data/Singletons/Promote/Defun.hs
+{- Data/Singletons/TH/Promote/Defun.hs
 
 (c) Richard Eisenberg, Jan Stolarek 2014
 rae@cs.brynmawr.edu
@@ -8,16 +8,16 @@ This file creates defunctionalization symbols for types during promotion.
 
 {-# LANGUAGE TemplateHaskellQuotes #-}
 
-module Data.Singletons.Promote.Defun where
+module Data.Singletons.TH.Promote.Defun where
 
 import Language.Haskell.TH.Desugar
-import Data.Singletons.Promote.Monad
-import Data.Singletons.Promote.Type
-import Data.Singletons.Names
 import Language.Haskell.TH.Syntax
-import Data.Singletons.Syntax
+import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
-import Data.Singletons.Util
+import Data.Singletons.TH.Promote.Monad
+import Data.Singletons.TH.Promote.Type
+import Data.Singletons.TH.Syntax
+import Data.Singletons.TH.Util
 import Control.Monad
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map)
@@ -244,7 +244,7 @@ defunctionalize name m_fixity defun_ki = do
           -- argument kinds and result kind, which are already stated in the
           -- standalone kind signature. This is a deliberate choice.
           -- See Note [Keep redundant kind information for Haddocks]
-          -- in D.S.Promote.
+          -- in D.S.TH.Promote.
           --
           -- This function is quadratic because it appends a variable at the end of
           -- the @arg_nks@ list at each iteration. In practice, this is unlikely
@@ -499,7 +499,7 @@ Some things to note:
   See Note [Fixity declarations for defunctionalization symbols].
 
 * Foo has a vanilla kind signature. (See
-  Note [Vanilla-type validity checking during promotion] in D.S.Promote.Type
+  Note [Vanilla-type validity checking during promotion] in D.S.TH.Promote.Type
   for what "vanilla" means in this context.) Having a vanilla type signature is
   important, as it is a property that makes it much simpler to preserve the
   order of type variables (`forall c a b.`) in each of the defunctionalization
@@ -683,7 +683,7 @@ effectively a thin wrapper around the original Const type. Indeed, fully
 saturated symbols almost never appear directly in user-written code. Instead,
 they are most valuable in TH-generated code, as singletons-th often generates code
 that directly applies a defunctionalization symbol to some number of arguments
-(see, for instance, D.S.Names.promoteTySym). In theory, such code could carve
+(see, for instance, D.S.TH.Names.promoteTySym). In theory, such code could carve
 out a special case for fully saturated applications and apply the original
 type instead of a defunctionalization symbol, but determining when an
 application is fully saturated is often difficult in practice. As a result, it

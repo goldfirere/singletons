@@ -1,4 +1,4 @@
-{- Data/Singletons/Type.hs
+{- Data/Singletons/TH/Promote/Type.hs
 
 (c) Richard Eisenberg 2013
 rae@cs.brynmawr.edu
@@ -6,15 +6,15 @@ rae@cs.brynmawr.edu
 This file implements promotion of types into kinds.
 -}
 
-module Data.Singletons.Promote.Type
+module Data.Singletons.TH.Promote.Type
   ( promoteType, promoteType_NC
   , promoteTypeArg_NC, promoteUnraveled
   ) where
 
 import Language.Haskell.TH.Desugar
-import Data.Singletons.Names
+import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
-import Data.Singletons.Util
+import Data.Singletons.TH.Util
 
 -- Promote a DType to the kind level.
 promoteType :: OptionsMonad m => DType -> m DKind

@@ -5,7 +5,6 @@ module Singletons.LetStatements where
 
 import Data.Singletons
 import Data.Singletons.Prelude
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Singletons.Nat
 

@@ -735,7 +735,7 @@ treatment):
 
 7. Any data type constructor `Rep` (regardless of where or how `Rep` is
    defined) is promoted to `Type`. This is needed to make
-   `Data.Singletons.CustomStar` work.
+   `Data.Singletons.TH.CustomStar` work.
 
 If desired, you can pick your own naming conventions by using the
 `Data.Singletons.TH.Options` module in `singletons-th`. Here is an example of
@@ -1204,7 +1204,7 @@ The singleton associated with `TypeRep` has one constructor:
 `TypeRep`s will not generally work as expected; the built-in promotion
 mechanism will not promote `TypeRep` to `*`.
 
-2) The module `Data.Singletons.CustomStar` (from `singletons-th`) allows the programmer to define a subset
+2) The module `Data.Singletons.TH.CustomStar` (from `singletons-th`) allows the programmer to define a subset
 of types with which to work. See the Haddock documentation for the function
 `singletonStar` for more info.
 

@@ -21,12 +21,13 @@ Changelog for singletons-base project
   specific to those libraries. For more information on this split, see the
   [relevant GitHub discussion](https://github.com/goldfirere/singletons/issues/420).
 * Require building with GHC 8.12.
-* Due to the `singletons` package split, the `Data.Singletons.CustomStar` and
-  `Data.Singletons.TH` modules in `singletons-th` no longer re-export any
-  definitions from `Data.Singletons.Prelude.*`. The `singletons-base` library
-  now provides versions of these modules—`Data.Singletons.Prelude.CustomStar`
-  and `Data.Singletons.Prelude.TH`, respectively—that do re-export
-  definitions from `Data.Singletons.Prelude.*`.
+* Due to the `singletons` package split, the modules `Data.Singletons.TH` and
+  `Data.Singletons.TH.CustomStar` (formerly known as
+  `Data.Singletons.CustomStar`) no longer re-export any definitions from
+  `Data.Singletons.Prelude.*`. The `singletons-base` library now provides
+  versions of these modules—`Data.Singletons.Prelude.CustomStar` and
+  `Data.Singletons.Prelude.TH`, respectively—that do re-export definitions
+  from `Data.Singletons.Prelude.*`.
 * Due to the `singletons` package split, the `Eq`, `Ord`, etc. instances for
   `SomeSing` are no longer provided in the `Data.Singletons` module in the
   `singletons` library. Instead, they are now provided in a new

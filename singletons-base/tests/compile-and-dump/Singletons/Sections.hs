@@ -2,7 +2,6 @@ module Singletons.Sections where
 
 import Data.Singletons
 import Data.Singletons.Prelude.List
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Singletons.Nat
 

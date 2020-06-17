@@ -3,7 +3,6 @@ module Singletons.Operators where
 import Data.Singletons
 import Data.Singletons.TH
 import Singletons.Nat
-import Data.Singletons.SuppressUnusedWarnings
 
 $(singletons [d|
   data Foo where

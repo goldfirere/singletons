@@ -2,7 +2,7 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Deriving.Foldable
+-- Module      :  Data.Singletons.TH.Deriving.Foldable
 -- Copyright   :  (C) 2018 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -13,12 +13,12 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Singletons.Deriving.Foldable where
+module Data.Singletons.TH.Deriving.Foldable where
 
-import Data.Singletons.Deriving.Infer
-import Data.Singletons.Deriving.Util
-import Data.Singletons.Names
-import Data.Singletons.Syntax
+import Data.Singletons.TH.Deriving.Infer
+import Data.Singletons.TH.Deriving.Util
+import Data.Singletons.TH.Names
+import Data.Singletons.TH.Syntax
 import Language.Haskell.TH.Desugar
 
 mkFoldableInstance :: forall q. DsMonad q => DerivDesc q

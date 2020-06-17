@@ -1,4 +1,4 @@
-{- Data/Singletons/Single/Type.hs
+{- Data/Singletons/TH/Single/Type.hs
 
 (c) Richard Eisenberg 2013
 rae@cs.brynmawr.edu
@@ -6,16 +6,16 @@ rae@cs.brynmawr.edu
 Singletonizes types.
 -}
 
-module Data.Singletons.Single.Type where
+module Data.Singletons.TH.Single.Type where
 
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Desugar.OSet (OSet)
 import Language.Haskell.TH.Syntax
-import Data.Singletons.Names
-import Data.Singletons.Single.Monad
-import Data.Singletons.Promote.Type
+import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
-import Data.Singletons.Util
+import Data.Singletons.TH.Promote.Type
+import Data.Singletons.TH.Single.Monad
+import Data.Singletons.TH.Util
 import Control.Monad
 import Data.Foldable
 import Data.Function
@@ -23,7 +23,7 @@ import Data.List (deleteFirstsBy)
 
 singType :: OSet Name      -- the set of bound kind variables in this scope
                            -- see Note [Explicitly binding kind variables]
-                           -- in Data.Singletons.Promote.Monad
+                           -- in Data.Singletons.TH.Promote.Monad
          -> DType          -- the promoted version of the thing classified by...
          -> DType          -- ... this type
          -> SgM ( DType    -- the singletonized type
@@ -50,7 +50,7 @@ singType bound_kvs prom ty = do
   return (ty', num_args, arg_names, cxt, prom_args, prom_res)
 
 -- Compute the kind variable binders to use in the singled version of a type
--- signature. This has two main call sites: singType and D.S.Single.Data.singCtor.
+-- signature. This has two main call sites: singType and D.S.TH.Single.Data.singCtor.
 --
 -- This implements the advice documented in
 -- Note [Preserve the order of type variables during singling], wrinkle 1.
@@ -71,14 +71,14 @@ singTypeKVBs orig_tvbs prom_args sing_ctxt prom_res bound_tvbs
       (map DPlainTV $ toList bound_tvbs)
       -- Make sure to subtract out the bound variables currently in scope,
       -- lest we accidentally shadow them in this type signature.
-      -- See Note [Explicitly binding kind variables] in D.S.Promote.Monad.
+      -- See Note [Explicitly binding kind variables] in D.S.TH.Promote.Monad.
   | otherwise
   -- There is an explicit `forall`, so this case is easy.
   = orig_tvbs
 
 -- Single a DPred, checking that it is a vanilla type in the process.
 -- See [Vanilla-type validity checking during promotion]
--- in Data.Singletons.Promote.Type.
+-- in Data.Singletons.TH.Promote.Type.
 singPred :: DPred -> SgM DPred
 singPred p = do
   checkVanillaDType p
@@ -86,7 +86,7 @@ singPred p = do
 
 -- Single a DPred. Does not check if the argument is a vanilla type.
 -- See [Vanilla-type validity checking during promotion]
--- in Data.Singletons.Promote.Type.
+-- in Data.Singletons.TH.Promote.Type.
 singPred_NC :: DPred -> SgM DPred
 singPred_NC = singPredRec []
 
@@ -170,7 +170,7 @@ scope here, resulting in an error!
 
 (Why do we generate the code `id @(Case v v :: b)` in the first place? See
 Note [The id hack; or, how singletons-th learned to stop worrying and avoid kind generalization]
-in D.S.Single.)
+in D.S.TH.Single.)
 
 The simplest approach is to just always generate singled type signatures with
 explicit `forall`s. In the event that the original type signature lacks an

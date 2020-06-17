@@ -1,4 +1,4 @@
--- Data/Singletons/SuppressUnusedWarnings.hs
+-- Data/Singletons/TH/SuppressUnusedWarnings.hs
 --
 -- (c) Richard Eisenberg 2014
 -- rae@cs.brynmawr.edu
@@ -9,7 +9,7 @@
 
 {-# LANGUAGE AllowAmbiguousTypes, PolyKinds, StandaloneKindSignatures #-}
 
-module Data.Singletons.SuppressUnusedWarnings where
+module Data.Singletons.TH.SuppressUnusedWarnings where
 
 import Data.Kind
 

@@ -1,4 +1,4 @@
-{- Data/Singletons/Single/Decide.hs
+{- Data/Singletons/TH/Single/Decide.hs
 
 (c) Richard Eisenberg 2014
 rae@cs.brynmawr.edu
@@ -7,14 +7,14 @@ Defines functions to generate SDecide instances, as well as TestEquality and
 TestCoercion instances that leverage SDecide.
 -}
 
-module Data.Singletons.Single.Decide where
+module Data.Singletons.TH.Single.Decide where
 
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
-import Data.Singletons.Deriving.Infer
+import Data.Singletons.TH.Deriving.Infer
+import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
-import Data.Singletons.Util
-import Data.Singletons.Names
+import Data.Singletons.TH.Util
 import Control.Monad
 
 -- Make an instance of SDecide.

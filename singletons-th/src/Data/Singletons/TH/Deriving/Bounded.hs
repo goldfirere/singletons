@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Deriving.Bounded
+-- Module      :  Data.Singletons.TH.Deriving.Bounded
 -- Copyright   :  (C) 2015 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -11,15 +11,15 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Singletons.Deriving.Bounded where
+module Data.Singletons.TH.Deriving.Bounded where
 
 import Language.Haskell.TH.Ppr
 import Language.Haskell.TH.Desugar
-import Data.Singletons.Names
-import Data.Singletons.Util
-import Data.Singletons.Syntax
-import Data.Singletons.Deriving.Infer
-import Data.Singletons.Deriving.Util
+import Data.Singletons.TH.Deriving.Infer
+import Data.Singletons.TH.Deriving.Util
+import Data.Singletons.TH.Names
+import Data.Singletons.TH.Syntax
+import Data.Singletons.TH.Util
 import Control.Monad
 
 -- monadic only for failure and parallelism with other functions

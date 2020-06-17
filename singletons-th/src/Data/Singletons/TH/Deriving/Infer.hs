@@ -2,7 +2,7 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Deriving.Infer
+-- Module      :  Data.Singletons.TH.Deriving.Infer
 -- Copyright   :  (C) 2015 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -13,12 +13,12 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Singletons.Deriving.Infer ( inferConstraints, inferConstraintsDef ) where
+module Data.Singletons.TH.Deriving.Infer ( inferConstraints, inferConstraintsDef ) where
 
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
-import Data.Singletons.Deriving.Util
-import Data.Singletons.Util
+import Data.Singletons.TH.Deriving.Util
+import Data.Singletons.TH.Util
 import Data.List (nub)
 import Data.Maybe (fromJust)
 

@@ -12,7 +12,7 @@
 -- Haskell types themselves. This is still very experimental, so expect unusual
 -- results!
 --
--- See also "Data.Singletons.CustomStar" from @singletons-th@, a
+-- See also "Data.Singletons.TH.CustomStar" from @singletons-th@, a
 -- more minimal version of this module that does not re-export anything from
 -- @Data.Singletons.Prelude@.
 --
@@ -26,7 +26,7 @@ module Data.Singletons.Prelude.CustomStar (
   module Data.Singletons.Prelude.TH
   ) where
 
-import Data.Singletons.CustomStar
 import Data.Singletons.Prelude.Eq
 import Data.Singletons.Prelude.Bool
 import Data.Singletons.Prelude.TH
+import Data.Singletons.TH.CustomStar

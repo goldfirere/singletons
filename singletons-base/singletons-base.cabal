@@ -116,18 +116,6 @@ library
                       Data.Singletons.TypeLits
                       Data.Singletons.TypeRepTYPE
 
-  -- singletons re-exports
-  reexported-modules: Data.Singletons
-                    , Data.Singletons.Decide
-                    , Data.Singletons.ShowSing
-                    , Data.Singletons.Sigma
-
-  -- singletons-th re-exports
-  reexported-modules: Data.Singletons.CustomStar
-                    , Data.Singletons.SuppressUnusedWarnings
-                    , Data.Singletons.TH
-                    , Data.Singletons.TH.Options
-
   other-modules:      Data.Singletons.Prelude.Instances
                       Data.Singletons.Prelude.List.Internal
                       Data.Singletons.Prelude.List.Internal.Disambiguation
@@ -137,6 +125,18 @@ library
                       Data.Singletons.Prelude.Semigroup.Internal.Disambiguation
                       Data.Singletons.Prelude.Util
                       Data.Singletons.TypeLits.Internal
+
+  -- singletons re-exports
+  reexported-modules: Data.Singletons
+                    , Data.Singletons.Decide
+                    , Data.Singletons.ShowSing
+                    , Data.Singletons.Sigma
+
+  -- singletons-th re-exports
+  reexported-modules: Data.Singletons.TH
+                    , Data.Singletons.TH.CustomStar
+                    , Data.Singletons.TH.Options
+                    , Data.Singletons.TH.SuppressUnusedWarnings
 
   ghc-options:        -Wall -Wcompat -Wno-redundant-constraints
 
