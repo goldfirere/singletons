@@ -1,4 +1,4 @@
-{- Data/Singletons/Util.hs
+{- Data/Singletons/TH/Util.hs
 
 (c) Richard Eisenberg 2013
 rae@cs.brynmawr.edu
@@ -13,7 +13,7 @@ Users of the package should not need to consult this file.
              NoMonomorphismRestriction, ScopedTypeVariables,
              FlexibleContexts #-}
 
-module Data.Singletons.Util where
+module Data.Singletons.TH.Util where
 
 import Prelude hiding ( exp, foldl, concat, mapM, any, pred )
 import Language.Haskell.TH ( pprint )
@@ -223,7 +223,7 @@ maybeSigT ty (Just ki) = ty `DSigT` ki
 -- Reconstruct a vanilla function type from its individual type variable
 -- binders, constraints, argument types, and result type. (See
 -- Note [Vanilla-type validity checking during promotion] in
--- Data.Singletons.Promote.Type for what "vanilla" means.)
+-- Data.Singletons.TH.Promote.Type for what "vanilla" means.)
 ravelVanillaDType :: [DTyVarBndr] -> DCxt -> [DType] -> DType -> DType
 ravelVanillaDType tvbs ctxt args res =
   ifNonEmpty tvbs (DForallT ForallInvis) $
@@ -241,7 +241,7 @@ ravelVanillaDType tvbs ctxt args res =
 -- Decompose a vanilla function type into its type variables, its context, its
 -- argument types, and its result type. (See
 -- Note [Vanilla-type validity checking during promotion] in
--- Data.Singletons.Promote.Type for what "vanilla" means.)
+-- Data.Singletons.TH.Promote.Type for what "vanilla" means.)
 -- If a non-vanilla construct is encountered while decomposing the function
 -- type, an error is thrown monadically.
 --
@@ -258,7 +258,7 @@ unravelVanillaDType ty =
 
 -- Ensures that a 'DType' is a vanilla type. (See
 -- Note [Vanilla-type validity checking during promotion] in
--- Data.Singletons.Promote.Type for what "vanilla" means.)
+-- Data.Singletons.TH.Promote.Type for what "vanilla" means.)
 --
 -- The only monadic thing that this function can do is 'fail', which it does
 -- if a non-vanilla construct is encountered.
@@ -491,7 +491,7 @@ addElement elt = tell [elt]
 -- type namespace, then call 'dsReify'.
 
 -- See also Note [Using dsReifyTypeNameInfo when promoting instances]
--- in Data.Singletons.Promote.
+-- in Data.Singletons.TH.Promote.
 dsReifyTypeNameInfo :: DsMonad q => Name -> q (Maybe DInfo)
 dsReifyTypeNameInfo ty_name = do
   mb_name <- lookupTypeNameWithLocals (nameBase ty_name)

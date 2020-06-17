@@ -59,11 +59,11 @@ module Data.Singletons.TH (
 import Control.Arrow ( first )
 import Data.Singletons
 import Data.Singletons.Decide
-import Data.Singletons.Promote
-import Data.Singletons.Single
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH.Options
-import Data.Singletons.Util
+import Data.Singletons.TH.Promote
+import Data.Singletons.TH.Single
+import Data.Singletons.TH.SuppressUnusedWarnings
+import Data.Singletons.TH.Util
 import Language.Haskell.TH
 import Language.Haskell.TH.Desugar
 

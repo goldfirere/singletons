@@ -1,4 +1,4 @@
-{- Data/Singletons/Promote/Monad.hs
+{- Data/Singletons/TH/Promote/Monad.hs
 
 (c) Richard Eisenberg 2014
 rae@cs.brynmawr.edu
@@ -12,7 +12,7 @@ of DDec, and is wrapped around a Q.
 {-# LANGUAGE GeneralizedNewtypeDeriving, FlexibleContexts,
              TypeFamilies, KindSignatures #-}
 
-module Data.Singletons.Promote.Monad (
+module Data.Singletons.TH.Promote.Monad (
   PrM, promoteM, promoteM_, promoteMDecs, VarPromotions,
   allLocals, emitDecs, emitDecsM,
   lambdaBind, LetBind, letBind, lookupVarE, forallBind, allBoundKindVars
@@ -26,8 +26,8 @@ import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
 import qualified Language.Haskell.TH.Desugar.OSet as OSet
 import Language.Haskell.TH.Desugar.OSet (OSet)
-import Data.Singletons.Syntax
 import Data.Singletons.TH.Options
+import Data.Singletons.TH.Syntax
 
 type LetExpansions = OMap Name DType  -- from **term-level** name
 

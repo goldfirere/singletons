@@ -2,7 +2,7 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.CustomStar
+-- Module      :  Data.Singletons.TH.CustomStar
 -- Copyright   :  (C) 2013 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -20,27 +20,27 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Singletons.CustomStar (
+module Data.Singletons.TH.CustomStar (
   singletonStar,
 
   module Data.Singletons.TH
   ) where
 
 import Language.Haskell.TH
-import Data.Singletons.Util
-import Data.Singletons.Deriving.Eq
-import Data.Singletons.Deriving.Infer
-import Data.Singletons.Deriving.Ord
-import Data.Singletons.Deriving.Show
-import Data.Singletons.Promote
-import Data.Singletons.Promote.Monad
-import Data.Singletons.Single.Monad
-import Data.Singletons.Single.Data
-import Data.Singletons.Single
-import Data.Singletons.Syntax
-import Data.Singletons.Names
 import Data.Singletons.TH
+import Data.Singletons.TH.Deriving.Eq
+import Data.Singletons.TH.Deriving.Infer
+import Data.Singletons.TH.Deriving.Ord
+import Data.Singletons.TH.Deriving.Show
+import Data.Singletons.TH.Promote
+import Data.Singletons.TH.Promote.Monad
+import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
+import Data.Singletons.TH.Single
+import Data.Singletons.TH.Single.Data
+import Data.Singletons.TH.Single.Monad
+import Data.Singletons.TH.Syntax
+import Data.Singletons.TH.Util
 import Control.Monad
 import Data.Maybe
 import Language.Haskell.TH.Desugar

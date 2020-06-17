@@ -1,7 +1,6 @@
 module Promote.GenDefunSymbols where
 
 import Data.Singletons (Apply, type (~>))
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH (genDefunSymbols)
 import GHC.TypeLits hiding (type (*))
 import Data.Kind (Type)

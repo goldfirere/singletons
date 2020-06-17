@@ -2,7 +2,6 @@ module Singletons.Contains where
 
 import Data.Singletons.TH
 import Data.Singletons.Prelude
-import Data.Singletons.SuppressUnusedWarnings
 
 -- polymorphic function with context
 

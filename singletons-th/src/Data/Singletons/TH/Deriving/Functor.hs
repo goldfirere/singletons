@@ -2,7 +2,7 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Deriving.Functor
+-- Module      :  Data.Singletons.TH.Deriving.Functor
 -- Copyright   :  (C) 2018 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -13,13 +13,13 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Singletons.Deriving.Functor where
+module Data.Singletons.TH.Deriving.Functor where
 
-import Data.Singletons.Deriving.Infer
-import Data.Singletons.Deriving.Util
-import Data.Singletons.Names
-import Data.Singletons.Syntax
-import Data.Singletons.Util
+import Data.Singletons.TH.Deriving.Infer
+import Data.Singletons.TH.Deriving.Util
+import Data.Singletons.TH.Names
+import Data.Singletons.TH.Syntax
+import Data.Singletons.TH.Util
 import Language.Haskell.TH.Desugar
 
 mkFunctorInstance :: forall q. DsMonad q => DerivDesc q

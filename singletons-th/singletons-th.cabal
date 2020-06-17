@@ -63,41 +63,41 @@ library
                       transformers     >= 0.5.2
   default-language:   Haskell2010
   other-extensions:   TemplateHaskellQuotes
-  exposed-modules:    Data.Singletons.CustomStar
-                      Data.Singletons.SuppressUnusedWarnings
-                      Data.Singletons.TH
+  exposed-modules:    Data.Singletons.TH
+                      Data.Singletons.TH.CustomStar
                       Data.Singletons.TH.Options
+                      Data.Singletons.TH.SuppressUnusedWarnings
+
+  other-modules:      Data.Singletons.TH.Deriving.Bounded
+                      Data.Singletons.TH.Deriving.Enum
+                      Data.Singletons.TH.Deriving.Eq
+                      Data.Singletons.TH.Deriving.Foldable
+                      Data.Singletons.TH.Deriving.Functor
+                      Data.Singletons.TH.Deriving.Infer
+                      Data.Singletons.TH.Deriving.Ord
+                      Data.Singletons.TH.Deriving.Show
+                      Data.Singletons.TH.Deriving.Traversable
+                      Data.Singletons.TH.Deriving.Util
+                      Data.Singletons.TH.Names
+                      Data.Singletons.TH.Partition
+                      Data.Singletons.TH.Promote
+                      Data.Singletons.TH.Promote.Defun
+                      Data.Singletons.TH.Promote.Monad
+                      Data.Singletons.TH.Promote.Type
+                      Data.Singletons.TH.Single
+                      Data.Singletons.TH.Single.Data
+                      Data.Singletons.TH.Single.Decide
+                      Data.Singletons.TH.Single.Defun
+                      Data.Singletons.TH.Single.Fixity
+                      Data.Singletons.TH.Single.Monad
+                      Data.Singletons.TH.Single.Type
+                      Data.Singletons.TH.Syntax
+                      Data.Singletons.TH.Util
 
   -- singletons re-exports
   reexported-modules: Data.Singletons
                     , Data.Singletons.Decide
                     , Data.Singletons.ShowSing
                     , Data.Singletons.Sigma
-
-  other-modules:      Data.Singletons.Deriving.Bounded
-                      Data.Singletons.Deriving.Enum
-                      Data.Singletons.Deriving.Eq
-                      Data.Singletons.Deriving.Foldable
-                      Data.Singletons.Deriving.Functor
-                      Data.Singletons.Deriving.Infer
-                      Data.Singletons.Deriving.Ord
-                      Data.Singletons.Deriving.Show
-                      Data.Singletons.Deriving.Traversable
-                      Data.Singletons.Deriving.Util
-                      Data.Singletons.Names
-                      Data.Singletons.Partition
-                      Data.Singletons.Promote
-                      Data.Singletons.Promote.Defun
-                      Data.Singletons.Promote.Monad
-                      Data.Singletons.Promote.Type
-                      Data.Singletons.Single
-                      Data.Singletons.Single.Data
-                      Data.Singletons.Single.Decide
-                      Data.Singletons.Single.Defun
-                      Data.Singletons.Single.Fixity
-                      Data.Singletons.Single.Monad
-                      Data.Singletons.Single.Type
-                      Data.Singletons.Syntax
-                      Data.Singletons.Util
 
   ghc-options:        -Wall -Wcompat

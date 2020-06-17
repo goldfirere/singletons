@@ -1,4 +1,4 @@
-{- Data/Singletons/Names.hs
+{- Data/Singletons/TH/Names.hs
 
 (c) Richard Eisenberg 2014
 rae@cs.brynmawr.edu
@@ -8,12 +8,13 @@ Defining names and manipulations on names for use in promotion and singling.
 
 {-# LANGUAGE TemplateHaskellQuotes #-}
 
-module Data.Singletons.Names where
+module Data.Singletons.TH.Names where
 
 import Data.Singletons
 import Data.Singletons.Decide
 import Data.Singletons.ShowSing
-import Data.Singletons.SuppressUnusedWarnings
+import Data.Singletons.TH.SuppressUnusedWarnings
+import Data.Singletons.TH.Util
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
 import GHC.TypeLits ( Nat, Symbol )
@@ -22,7 +23,6 @@ import GHC.Show ( showCommaSpace, showSpace )
 import Data.String (fromString)
 import Data.Type.Equality ( TestEquality(..) )
 import Data.Type.Coercion ( TestCoercion(..) )
-import Data.Singletons.Util
 import Control.Applicative
 
 {-

@@ -135,6 +135,5 @@ import Data.Singletons.Prelude.Num
 import Data.Singletons.Prelude.Ord
 import Data.Singletons.Prelude.Show
 import Data.Singletons.Prelude.Traversable
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Data.Singletons.TypeLits

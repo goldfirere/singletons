@@ -1,7 +1,6 @@
 module Singletons.LambdaCase where
 
 import Data.Singletons.Prelude
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 
 $(singletons [d|

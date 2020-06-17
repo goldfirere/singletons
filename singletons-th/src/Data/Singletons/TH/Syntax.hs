@@ -1,4 +1,4 @@
-{- Data/Singletons/Syntax.hs
+{- Data/Singletons/TH/Syntax.hs
 
 (c) Richard Eisenberg 2014
 rae@cs.brynmawr.edu
@@ -10,7 +10,7 @@ and contains various other AST definitions.
 {-# LANGUAGE DataKinds, TypeFamilies, PolyKinds, DeriveDataTypeable,
              FlexibleInstances, ConstraintKinds #-}
 
-module Data.Singletons.Syntax where
+module Data.Singletons.TH.Syntax where
 
 import Prelude hiding ( exp )
 import Data.Kind (Constraint, Type)
@@ -28,7 +28,8 @@ data PromDPatInfos = PromDPatInfos
       -- Maps term-level pattern variables to their promoted, type-level counterparts.
   , prom_dpat_sig_kvs :: OSet Name
       -- Kind variables bound by DSigPas.
-      -- See Note [Explicitly binding kind variables] in Data.Singletons.Promote.Monad
+      -- See Note [Explicitly binding kind variables] in
+      -- Data.Singletons.TH.Promote.Monad.
   }
 
 instance Semigroup PromDPatInfos where
@@ -72,7 +73,7 @@ data ClassDecl ann
                   -- Associated type families. Only recorded for
                   -- defunctionalization purposes.
                   -- See Note [Partitioning, type synonyms, and type families]
-                  -- in D.S.Partition.
+                  -- in D.S.TH.Partition.
               }
 
 data InstDecl  ann = InstDecl { id_cxt     :: DCxt
@@ -157,7 +158,7 @@ data LetDecEnv ann = LetDecEnv
                    , lde_bound_kvs :: IfAnn ann (OMap Name (OSet Name)) ()
                      -- The set of bound variables in scope.
                      -- See Note [Explicitly binding kind variables]
-                     -- in Data.Singletons.Promote.Monad
+                     -- in Data.Singletons.TH.Promote.Monad.
                    }
 type ALetDecEnv = LetDecEnv Annotated
 type ULetDecEnv = LetDecEnv Unannotated
@@ -212,7 +213,7 @@ type DerivedShowDecl = DerivedDecl Show
 {- Note [DerivedDecl]
 ~~~~~~~~~~~~~~~~~~~~~
 Most derived instances are wholly handled in
-Data.Singletons.Partition.partitionDecs. There are two notable exceptions to
+Data.Singletons.TH.Partition.partitionDecs. There are two notable exceptions to
 this rule, however, that are partially handled outside of partitionDecs:
 Eq and Show instances. For these instances, we use a DerivedDecl data type to
 encode just enough information to recreate the derived instance:
@@ -228,12 +229,12 @@ Why are these instances handled outside of partitionDecs?
 
 * Deriving Eq in singletons-th not only derives PEq/SEq instances, but it also
   derives SDecide, TestEquality, and TestCoercion instances.
-  Data.Singletons.Single (depending on the task at hand).
+  Data.Singletons.TH.Single (depending on the task at hand).
 * Deriving Show in singletons-th not only derives PShow/SShow instances, but it
   also derives Show instances for singletons-th types.
 
 To make this work, we let partitionDecs handle the P{Eq,Show} and S{Eq,Show}
 instances, but we also stick the relevant info into a DerivedDecl value for
-later use in Data.Singletons.Single, where we additionally generate
+later use in Data.Singletons.TH.Single, where we additionally generate
 SDecide, TestEquality, TestCoercion and Show instances for singleton types.
 -}

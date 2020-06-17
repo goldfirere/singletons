@@ -1,11 +1,11 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-module Data.Singletons.Single.Fixity where
+module Data.Singletons.TH.Single.Fixity where
 
 import Prelude hiding ( exp )
 import Language.Haskell.TH hiding ( cxt )
 import Language.Haskell.TH.Syntax (NameSpace(..), Quasi(..))
 import Data.Singletons.TH.Options
-import Data.Singletons.Util
+import Data.Singletons.TH.Util
 import Language.Haskell.TH.Desugar
 
 -- Single a fixity declaration.
@@ -66,7 +66,7 @@ singletons-th will produce promoted and singled versions of them:
 
 singletons-th will also produce fixity declarations for its defunctionalization
 symbols (see Note [Fixity declarations for defunctionalization symbols] in
-D.S.Promote.Defun):
+D.S.TH.Promote.Defun):
 
   infixl 5 `FooSym0`
   infixl 5 `FooSym1`
@@ -152,7 +152,7 @@ lde_infix field of LetDecEnv. Therefore, it suffices to call
 promoteInfixDecl/singleInfixDecl when processing LetDecEnvs.
 
 In the case of (2), there is no LetDecEnv to use, so we must instead reify
-the fixity declarations and promote/single those. See D.S.Single.Data.singDataD
+the fixity declarations and promote/single those. See D.S.TH.Single.Data.singDataD
 (which singles data constructors) for a place that does this—we will use
 singDataD as a running example for the rest of this section.
 

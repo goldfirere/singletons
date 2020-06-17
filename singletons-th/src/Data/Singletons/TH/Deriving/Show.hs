@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Deriving.Show
+-- Module      :  Data.Singletons.TH.Deriving.Show
 -- Copyright   :  (C) 2017 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -11,7 +11,7 @@
 --
 ----------------------------------------------------------------------------
 {-# LANGUAGE ScopedTypeVariables #-}
-module Data.Singletons.Deriving.Show (
+module Data.Singletons.TH.Deriving.Show (
     mkShowInstance
   , ShowMode(..)
   , mkShowSingContext
@@ -19,12 +19,12 @@ module Data.Singletons.Deriving.Show (
 
 import Language.Haskell.TH.Syntax hiding (showName)
 import Language.Haskell.TH.Desugar
-import Data.Singletons.Names
+import Data.Singletons.TH.Deriving.Infer
+import Data.Singletons.TH.Deriving.Util
+import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
-import Data.Singletons.Util
-import Data.Singletons.Syntax
-import Data.Singletons.Deriving.Infer
-import Data.Singletons.Deriving.Util
+import Data.Singletons.TH.Syntax
+import Data.Singletons.TH.Util
 import Data.Maybe (fromMaybe)
 import GHC.Lexeme (startsConSym, startsVarSym)
 import GHC.Show (appPrec, appPrec1)

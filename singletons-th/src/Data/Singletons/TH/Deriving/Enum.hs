@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Deriving.Enum
+-- Module      :  Data.Singletons.TH.Deriving.Enum
 -- Copyright   :  (C) 2015 Richard Eisenberg
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -11,15 +11,15 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Singletons.Deriving.Enum ( mkEnumInstance ) where
+module Data.Singletons.TH.Deriving.Enum ( mkEnumInstance ) where
 
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Ppr
 import Language.Haskell.TH.Desugar
-import Data.Singletons.Deriving.Util
-import Data.Singletons.Syntax
-import Data.Singletons.Util
-import Data.Singletons.Names
+import Data.Singletons.TH.Deriving.Util
+import Data.Singletons.TH.Names
+import Data.Singletons.TH.Syntax
+import Data.Singletons.TH.Util
 import Control.Monad
 import Data.Maybe
 

@@ -1,4 +1,4 @@
-{- Data/Singletons/Single/Data.hs
+{- Data/Singletons/TH/Single/Data.hs
 
 (c) Richard Eisenberg 2013
 rae@cs.brynmawr.edu
@@ -8,19 +8,19 @@ Singletonizes constructors.
 
 {-# LANGUAGE ParallelListComp, TupleSections, LambdaCase #-}
 
-module Data.Singletons.Single.Data where
+module Data.Singletons.TH.Single.Data where
 
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
-import Data.Singletons.Single.Defun
-import Data.Singletons.Single.Monad
-import Data.Singletons.Single.Type
-import Data.Singletons.Single.Fixity
-import Data.Singletons.Promote.Type
-import Data.Singletons.Util
-import Data.Singletons.Names
-import Data.Singletons.Syntax
+import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
+import Data.Singletons.TH.Promote.Type
+import Data.Singletons.TH.Single.Defun
+import Data.Singletons.TH.Single.Fixity
+import Data.Singletons.TH.Single.Monad
+import Data.Singletons.TH.Single.Type
+import Data.Singletons.TH.Syntax
+import Data.Singletons.TH.Util
 import Control.Monad
 
 -- We wish to consider the promotion of "Rep" to be *
@@ -64,7 +64,7 @@ singDataD (DataDecl name tvbs ctors) = do
       -- singleton data type declaration, even if it has a standalone kind
       -- signature that would make this explicit result kind redudant.
       -- See Note [Keep redundant kind information for Haddocks]
-      -- in D.S.Promote.
+      -- in D.S.TH.Promote.
       mk_data_dec kind =
         DDataD Data [] singDataName [] (Just kind) ctors' []
 
@@ -86,7 +86,7 @@ singDataD (DataDecl name tvbs ctors) = do
               invis_args = filterInvisTvbArgs args
               -- If the standalone kind signature did not explicitly quantify its
               -- kind variables, do so ourselves. This is very similar to what
-              -- D.S.Single.Type.singTypeKVBs does.
+              -- D.S.TH.Single.Type.singTypeKVBs does.
               invis_tvbs | null invis_args
                          = toposortTyVarsOf [data_sak]
                          | otherwise
@@ -209,7 +209,7 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
                   (foldType pCon indices `DSigT` rty'))
                   -- Make sure to include an explicit `rty'` kind annotation.
                   -- See Note [Preserve the order of type variables during singling],
-                  -- wrinkle 3, in D.S.Single.Type.
+                  -- wrinkle 3, in D.S.TH.Single.Type.
 
 {-
 Note [singletons-th and record selectors]
@@ -322,8 +322,8 @@ When singling Unit, we do not give SMkUnit a record selector:
     SMkUnit :: Sing u -> SUnit (MkUnit u)
 
 Instead, we generate a top-level function that behaves equivalently to runUnit.
-This function then gets promoted and singled (in D.S.Promote.promoteDecs and
-D.S.Single.singTopLevelDecs):
+This function then gets promoted and singled (in D.S.TH.Promote.promoteDecs and
+D.S.TH.Single.singTopLevelDecs):
 
   type family RunUnit (x :: Unit) :: () where
     RunUnit (MkUnit x) = x

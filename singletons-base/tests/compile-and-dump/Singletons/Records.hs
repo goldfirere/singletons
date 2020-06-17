@@ -1,6 +1,5 @@
 module Singletons.Records where
 
-import Data.Singletons.SuppressUnusedWarnings
 import Data.Singletons.TH
 import Data.Singletons.Prelude
 

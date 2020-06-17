@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Single.Defun
+-- Module      :  Data.Singletons.TH.Single.Defun
 -- Copyright   :  (C) 2018 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -11,16 +11,16 @@
 --
 -----------------------------------------------------------------------------
 
-module Data.Singletons.Single.Defun (singDefuns) where
+module Data.Singletons.TH.Single.Defun (singDefuns) where
 
 import Control.Monad
 import Data.Foldable
-import Data.Singletons.Names
-import Data.Singletons.Promote.Defun
-import Data.Singletons.Single.Monad
-import Data.Singletons.Single.Type
+import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
-import Data.Singletons.Util
+import Data.Singletons.TH.Promote.Defun
+import Data.Singletons.TH.Single.Monad
+import Data.Singletons.TH.Single.Type
+import Data.Singletons.TH.Util
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
 

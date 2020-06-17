@@ -45,8 +45,8 @@ import Control.Monad.RWS (RWST)
 import Control.Monad.State (StateT)
 import Control.Monad.Trans.Class (MonadTrans(..))
 import Control.Monad.Writer (WriterT)
-import Data.Singletons.Names
-import Data.Singletons.Util
+import Data.Singletons.TH.Names
+import Data.Singletons.TH.Util
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax hiding (Lift(..))
 

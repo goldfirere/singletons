@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Singletons.Deriving.Eq
+-- Module      :  Data.Singletons.TH.Deriving.Eq
 -- Copyright   :  (C) 2020 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -10,14 +10,14 @@
 -- Implements deriving of Eq instances
 --
 ----------------------------------------------------------------------------
-module Data.Singletons.Deriving.Eq (mkEqInstance) where
+module Data.Singletons.TH.Deriving.Eq (mkEqInstance) where
 
 import Control.Monad
-import Data.Singletons.Deriving.Infer
-import Data.Singletons.Deriving.Util
-import Data.Singletons.Names
-import Data.Singletons.Syntax
-import Data.Singletons.Util
+import Data.Singletons.TH.Deriving.Infer
+import Data.Singletons.TH.Deriving.Util
+import Data.Singletons.TH.Names
+import Data.Singletons.TH.Syntax
+import Data.Singletons.TH.Util
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
 
