@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wall #-}
 module Singletons.Undef where
 
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 
 $(singletons [d|
   foo :: Bool -> Bool

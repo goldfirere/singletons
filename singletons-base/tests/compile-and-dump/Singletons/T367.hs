@@ -1,7 +1,7 @@
 module T367 where
 
-import Data.Singletons.Prelude
 import Data.Singletons.TH (singletonsOnly)
+import Prelude.Singletons
 
 $(singletonsOnly [d|
   const' :: a -> b -> a

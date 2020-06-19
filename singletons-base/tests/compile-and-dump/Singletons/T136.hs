@@ -7,10 +7,9 @@
 
 module Binary where
 
+import Data.Singletons.Base.Enum
 import Data.Singletons.TH
-import Data.Singletons.Prelude
-import Data.Singletons.Prelude.Enum
-import Data.Singletons.Prelude.Num
+import Prelude.Singletons
 
 type Bit = Bool
 type BiNat = [Bit]

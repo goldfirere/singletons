@@ -3,7 +3,7 @@
 
 module Singletons.TopLevelPatterns where
 
-import Data.Singletons.Prelude.TH hiding (SBool(..), TrueSym0, FalseSym0)
+import Data.Singletons.Base.TH hiding (SBool(..), TrueSym0, FalseSym0)
 
 $(singletons [d|
   data Bool = False | True

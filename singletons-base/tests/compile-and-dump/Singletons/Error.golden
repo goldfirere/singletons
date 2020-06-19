@@ -2,11 +2,11 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| head :: [a] -> a
           head (a : _) = a
-          head [] = error "Data.Singletons.List.head: empty list" |]
+          head [] = error "head: empty list" |]
   ======>
     head :: [a] -> a
     head (a : _) = a
-    head [] = error "Data.Singletons.List.head: empty list"
+    head [] = error "head: empty list"
     type HeadSym0 :: (~>) [a] a
     data HeadSym0 :: (~>) [a] a
       where
@@ -21,11 +21,10 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     type Head :: [a] -> a
     type family Head (a :: [a]) :: a where
       Head ('(:) a _) = a
-      Head '[] = Apply ErrorSym0 "Data.Singletons.List.head: empty list"
+      Head '[] = Apply ErrorSym0 "head: empty list"
     sHead ::
       forall a (t :: [a]). Sing t -> Sing (Apply HeadSym0 t :: a)
     sHead (SCons (sA :: Sing a) _) = sA
-    sHead SNil
-      = sError (sing :: Sing "Data.Singletons.List.head: empty list")
+    sHead SNil = sError (sing :: Sing "head: empty list")
     instance SingI (HeadSym0 :: (~>) [a] a) where
       sing = (singFun1 @HeadSym0) sHead

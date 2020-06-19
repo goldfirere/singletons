@@ -1,7 +1,7 @@
 module T136b where
 
+import Data.Bool.Singletons
 import Data.Singletons.TH
-import Data.Singletons.Prelude.Bool
 
 $(singletons [d|
   class C a where

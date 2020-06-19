@@ -1,7 +1,7 @@
 module Singletons.Records where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude
+import Prelude.Singletons
 
 $(singletons [d|
   data Record a = MkRecord { field1 :: a

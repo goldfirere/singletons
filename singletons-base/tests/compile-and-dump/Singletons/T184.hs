@@ -2,10 +2,10 @@
 module T184 where
 
 import Control.Monad
-import Data.Singletons.Prelude
-import Data.Singletons.Prelude.Monad
-import Data.Singletons.Prelude.Monad.Zip
+import Control.Monad.Singletons
+import Control.Monad.Zip.Singletons
 import Data.Singletons.TH
+import Prelude.Singletons
 
 $(singletons [d|
   boogie :: Maybe a -> Maybe Bool -> Maybe a

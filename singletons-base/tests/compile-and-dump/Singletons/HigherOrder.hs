@@ -1,10 +1,10 @@
 module Singletons.HigherOrder where
 
-import Data.Singletons.Prelude.List hiding (
+import Data.List.Singletons hiding (
          sMap, Map, MapSym0, MapSym1, MapSym2,
          ZipWith, sZipWith, ZipWithSym0, ZipWithSym1, ZipWithSym2, ZipWithSym3 )
-import Data.Singletons.Prelude.Maybe
-import Data.Singletons.Prelude.TH
+import Data.Maybe.Singletons
+import Data.Singletons.Base.TH
 import Prelude hiding (Either(..))
 import Singletons.Nat
 

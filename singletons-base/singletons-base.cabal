@@ -81,50 +81,52 @@ library
                       th-desugar       >= 1.12 && < 1.13
   default-language:   Haskell2010
   other-extensions:   TemplateHaskell
-  exposed-modules:    Data.Singletons.Prelude
-                      Data.Singletons.Prelude.Applicative
-                      Data.Singletons.Prelude.Base
-                      Data.Singletons.Prelude.Bool
-                      Data.Singletons.Prelude.Const
-                      Data.Singletons.Prelude.CustomStar
-                      Data.Singletons.Prelude.Either
-                      Data.Singletons.Prelude.Enum
-                      Data.Singletons.Prelude.Eq
-                      Data.Singletons.Prelude.Foldable
-                      Data.Singletons.Prelude.Function
-                      Data.Singletons.Prelude.Functor
-                      Data.Singletons.Prelude.Identity
-                      Data.Singletons.Prelude.IsString
-                      Data.Singletons.Prelude.Ord
-                      Data.Singletons.Prelude.List
-                      Data.Singletons.Prelude.List.NonEmpty
-                      Data.Singletons.Prelude.Maybe
-                      Data.Singletons.Prelude.Monad
-                      Data.Singletons.Prelude.Monad.Fail
-                      Data.Singletons.Prelude.Monad.Zip
-                      Data.Singletons.Prelude.Monoid
-                      Data.Singletons.Prelude.Num
-                      Data.Singletons.Prelude.Proxy
-                      Data.Singletons.Prelude.Semigroup
-                      Data.Singletons.Prelude.Show
-                      Data.Singletons.Prelude.SomeSing
-                      Data.Singletons.Prelude.TH
-                      Data.Singletons.Prelude.Traversable
-                      Data.Singletons.Prelude.Tuple
-                      Data.Singletons.Prelude.Void
-                      Data.Singletons.TypeError
-                      Data.Singletons.TypeLits
-                      Data.Singletons.TypeRepTYPE
+  exposed-modules:    Data.Singletons.Base.CustomStar
+                      Data.Singletons.Base.Enum
+                      Data.Singletons.Base.TH
+                      Data.Singletons.Base.SomeSing
+                      Data.Singletons.Base.TypeError
+                      Data.Singletons.Base.TypeRepTYPE
 
-  other-modules:      Data.Singletons.Prelude.Instances
-                      Data.Singletons.Prelude.List.Internal
-                      Data.Singletons.Prelude.List.Internal.Disambiguation
-                      Data.Singletons.Prelude.Monad.Internal
-                      Data.Singletons.Prelude.Ord.Disambiguation
-                      Data.Singletons.Prelude.Semigroup.Internal
-                      Data.Singletons.Prelude.Semigroup.Internal.Disambiguation
-                      Data.Singletons.Prelude.Util
-                      Data.Singletons.TypeLits.Internal
+                      Control.Applicative.Singletons
+                      Control.Monad.Singletons
+                      Control.Monad.Fail.Singletons
+                      Control.Monad.Zip.Singletons
+                      Data.Bool.Singletons
+                      Data.Either.Singletons
+                      Data.Eq.Singletons
+                      Data.Foldable.Singletons
+                      Data.Function.Singletons
+                      Data.Functor.Const.Singletons
+                      Data.Functor.Identity.Singletons
+                      Data.Functor.Singletons
+                      Data.List.Singletons
+                      Data.List.NonEmpty.Singletons
+                      Data.Maybe.Singletons
+                      Data.Monoid.Singletons
+                      Data.Ord.Singletons
+                      Data.Proxy.Singletons
+                      Data.Semigroup.Singletons
+                      Data.String.Singletons
+                      Data.Traversable.Singletons
+                      Data.Tuple.Singletons
+                      Data.Void.Singletons
+                      GHC.TypeLits.Singletons
+                      Prelude.Singletons
+                      Text.Show.Singletons
+
+  other-modules:      Data.Singletons.Base.Instances
+                      Data.Singletons.Base.Util
+
+                      Control.Monad.Singletons.Internal
+                      Data.List.Singletons.Internal
+                      Data.List.Singletons.Internal.Disambiguation
+                      Data.Ord.Singletons.Disambiguation
+                      Data.Semigroup.Singletons.Internal
+                      Data.Semigroup.Singletons.Internal.Disambiguation
+                      GHC.Base.Singletons
+                      GHC.Num.Singletons
+                      GHC.TypeLits.Singletons.Internal
 
   -- singletons re-exports
   reexported-modules: Data.Singletons

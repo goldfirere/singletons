@@ -1,5 +1,5 @@
 module T206 where
 
-import Data.Singletons.Prelude
+import Prelude.Singletons
 
 x = SCons @Bool @True @'[False]

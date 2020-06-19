@@ -22,14 +22,14 @@ presented in /Dependently typed programming with singletons/
 
 module GradingClient.Database where
 
-import Prelude hiding ( tail, id )
-import Data.Singletons.Prelude hiding ( Lookup, sLookup )
-import Data.Singletons.Prelude.Show
-import Data.Singletons.Prelude.TH
 import Control.Monad
 import Control.Monad.Except  ( throwError )
-import Data.List hiding ( tail )
 import Data.Kind (Type)
+import Data.List hiding ( tail )
+import Data.Singletons.Base.TH
+import Prelude hiding ( tail, id )
+import Prelude.Singletons hiding ( Lookup, sLookup )
+import Text.Show.Singletons
 
 $(singletons [d|
   -- Basic Nat type

@@ -10,8 +10,8 @@
 
 module T175 where
 
-import Data.Singletons.Prelude
 import Data.Singletons.TH
+import Prelude.Singletons
 
 $(singletons [d|
   class Foo a where

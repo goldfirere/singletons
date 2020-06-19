@@ -13,9 +13,8 @@ Changelog for singletons-th project
     promoting and singling term-level definitions, but but nothing else. This
     library continues to require the latest stable release of GHC.
   * The `singletons-base` library defines promoted and singled versions of
-    definitions from the `base` library, which includes everything under
-    `Data.Singletons.Prelude.*`. This library continues to require the latest
-    stable release of GHC.
+    definitions from the `base` library, including the `Prelude`. This library
+    continues to require the latest stable release of GHC.
 
   Consult the changelogs for `singletons` and `singletons-base` for changes
   specific to those libraries. For more information on this split, see the
@@ -25,13 +24,14 @@ Changelog for singletons-th project
   have been renamed to `Data.Singletons.TH.CustomStar` and
   `Data.Singletons.SuppressUnusedWarnings`, respectively, to give every module
   in `singletons-th` a consistent module prefix.
-* Due to the `singletons` package split, the modules `Data.Singletons.TH` and
-  `Data.Singletons.TH.CustomStar` (formerly known as
-  `Data.Singletons.CustomStar`) no longer re-export any definitions from
-  `Data.Singletons.Prelude.*`. The `singletons-base` library now provides
-  versions of these modules—`Data.Singletons.Prelude.CustomStar` and
-  `Data.Singletons.Prelude.TH`, respectively—that do re-export definitions
-  from `Data.Singletons.Prelude.*`.
+* Due to the `singletons` package split, the `singletons-th` modules
+  `Data.Singletons.TH` and `Data.Singletons.TH.CustomStar` (formerly known as
+  `Data.Singletons.CustomStar`) no longer re-export any definitions from the
+  `singletons-base` module `Prelude.Singletons` (formerly known as
+  `Data.Singletons.Prelude`). The `singletons-base` library now provides
+  versions of these modules—`Data.Singletons.Base.CustomStar` and
+  `Data.Singletons.Base.TH`, respectively—that do re-export definitions
+  from `Prelude.Singletons`.
 * "Fully saturated" defunctionalization symbols (e.g., `IdSym1`) are now
   defined as type families instead of type synonyms. This has two notable
   benefits:

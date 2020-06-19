@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module OverloadedStrings where
 
-import Data.Singletons.Prelude.TH
-import Data.Singletons.TypeLits
+import Data.Singletons.Base.TH
+import GHC.TypeLits.Singletons
 
 $(singletons
   [d| symId :: Symbol -> Symbol

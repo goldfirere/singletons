@@ -1,6 +1,6 @@
 module T332 where
 
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 
 $(promote [d|
   data Foo = MkFoo

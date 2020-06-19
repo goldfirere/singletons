@@ -97,13 +97,13 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       sToEnum ::
         forall (t :: GHC.Types.Nat).
         Sing t
-        -> Sing (Apply (Data.Singletons.Prelude.Enum.ToEnumSym0 :: TyFun GHC.Types.Nat Foo
-                                                                   -> GHC.Types.Type) t)
+        -> Sing (Apply (Data.Singletons.Base.Enum.ToEnumSym0 :: TyFun GHC.Types.Nat Foo
+                                                                -> GHC.Types.Type) t)
       sFromEnum ::
         forall (t :: Foo).
         Sing t
-        -> Sing (Apply (Data.Singletons.Prelude.Enum.FromEnumSym0 :: TyFun Foo GHC.Types.Nat
-                                                                     -> GHC.Types.Type) t)
+        -> Sing (Apply (Data.Singletons.Base.Enum.FromEnumSym0 :: TyFun Foo GHC.Types.Nat
+                                                                  -> GHC.Types.Type) t)
       sToEnum (sN :: Sing n)
         = (id
              @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0)))))
@@ -189,13 +189,13 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       sToEnum ::
         forall (t :: GHC.Types.Nat).
         Sing t
-        -> Sing (Apply (Data.Singletons.Prelude.Enum.ToEnumSym0 :: TyFun GHC.Types.Nat Quux
-                                                                   -> GHC.Types.Type) t)
+        -> Sing (Apply (Data.Singletons.Base.Enum.ToEnumSym0 :: TyFun GHC.Types.Nat Quux
+                                                                -> GHC.Types.Type) t)
       sFromEnum ::
         forall (t :: Quux).
         Sing t
-        -> Sing (Apply (Data.Singletons.Prelude.Enum.FromEnumSym0 :: TyFun Quux GHC.Types.Nat
-                                                                     -> GHC.Types.Type) t)
+        -> Sing (Apply (Data.Singletons.Base.Enum.FromEnumSym0 :: TyFun Quux GHC.Types.Nat
+                                                                  -> GHC.Types.Type) t)
       sToEnum (sN :: Sing n)
         = (id
              @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0)))))

@@ -1,7 +1,7 @@
 module T378b where
 
 import Data.Kind
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 import Singletons.Nat
 
 $(singletons [d|

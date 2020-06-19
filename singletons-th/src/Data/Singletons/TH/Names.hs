@@ -49,7 +49,7 @@ a. We want all promoted and singled names to go through the naming options in
    in order to promote `fromInteger` to something else (e.g.,
    MyCustomFromInteger).
 b. Wired in names live in particular modules, so if we were to wire in the name
-   FromInteger, it would come from D.S.Prelude.Num. This would effectively
+   FromInteger, it would come from GHC.Num.Singletons. This would effectively
    prevent anyone from defining their own version of FromInteger and
    piggybacking on top of the TH machinery to generate it, however. As a
    result, we generate the name FromInteger completely unqualified so that

@@ -1,7 +1,7 @@
 module Singletons.Sections where
 
+import Data.List.Singletons
 import Data.Singletons
-import Data.Singletons.Prelude.List
 import Data.Singletons.TH
 import Singletons.Nat
 

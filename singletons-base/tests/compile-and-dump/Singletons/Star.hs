@@ -1,8 +1,8 @@
 module Singletons.Star where
 
 import Data.Singletons.Decide
-import Data.Singletons.Prelude
-import Data.Singletons.Prelude.CustomStar
+import Data.Singletons.Base.CustomStar
+import Prelude.Singletons
 import Singletons.Nat
 import Data.Kind (Type)
 

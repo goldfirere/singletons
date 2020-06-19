@@ -1,7 +1,7 @@
 module T271 where
 
 import Data.Kind (Type)
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 
 $(singletons
     [d| newtype Constant (a :: Type) (b :: Type) =

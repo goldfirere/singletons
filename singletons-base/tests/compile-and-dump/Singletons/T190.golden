@@ -184,13 +184,13 @@ Singletons/T190.hs:0:0:: Splicing declarations
       sToEnum ::
         forall (t :: GHC.Types.Nat).
         Sing t
-        -> Sing (Apply (Data.Singletons.Prelude.Enum.ToEnumSym0 :: TyFun GHC.Types.Nat T
-                                                                   -> GHC.Types.Type) t)
+        -> Sing (Apply (Data.Singletons.Base.Enum.ToEnumSym0 :: TyFun GHC.Types.Nat T
+                                                                -> GHC.Types.Type) t)
       sFromEnum ::
         forall (t :: T).
         Sing t
-        -> Sing (Apply (Data.Singletons.Prelude.Enum.FromEnumSym0 :: TyFun T GHC.Types.Nat
-                                                                     -> GHC.Types.Type) t)
+        -> Sing (Apply (Data.Singletons.Base.Enum.FromEnumSym0 :: TyFun T GHC.Types.Nat
+                                                                  -> GHC.Types.Type) t)
       sToEnum (sN :: Sing n)
         = (id
              @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0)))))

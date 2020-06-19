@@ -1,7 +1,7 @@
 module Singletons.T78 where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude
+import Prelude.Singletons
 
 type MaybeBool = Maybe Bool
 

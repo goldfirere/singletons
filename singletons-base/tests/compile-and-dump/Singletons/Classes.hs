@@ -1,8 +1,8 @@
 module Singletons.Classes where
 
-import Data.Singletons.Prelude.Eq
-import Data.Singletons.Prelude.Ord
-import Data.Singletons.Prelude.TH
+import Data.Eq.Singletons
+import Data.Ord.Singletons
+import Data.Singletons.Base.TH
 import Language.Haskell.TH.Desugar
 import Prelude hiding (const)
 import Singletons.Nat

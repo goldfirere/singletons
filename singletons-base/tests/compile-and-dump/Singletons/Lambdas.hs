@@ -5,7 +5,7 @@
 module Singletons.Lambdas where
 
 import Data.Proxy
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 
 $(singletons [d|
   -- nothing in scope

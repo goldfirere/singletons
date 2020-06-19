@@ -1,9 +1,9 @@
 module Promote.Prelude where
 
+import Data.List.Singletons
 import Data.Singletons.TH
-import Data.Singletons.Prelude
-import Data.Singletons.Prelude.List
 import GHC.TypeLits
+import Prelude.Singletons
 
 lengthTest1a :: Proxy (Length '[True, True, True, True])
 lengthTest1a = Proxy

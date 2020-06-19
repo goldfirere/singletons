@@ -1,7 +1,7 @@
 module Singletons.Classes2 where
 
-import Data.Singletons.Prelude.Ord (EQSym0, LTSym0, GTSym0, Sing(..))
-import Data.Singletons.Prelude.TH
+import Data.Ord.Singletons (EQSym0, LTSym0, GTSym0, Sing(..))
+import Data.Singletons.Base.TH
 import Language.Haskell.TH.Desugar
 import Prelude hiding (const)
 import Singletons.Classes

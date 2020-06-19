@@ -1,8 +1,8 @@
 module T445 where
 
-import Data.Singletons.Prelude
 import Data.Singletons.TH
 import qualified GHC.TypeLits as Lit
+import Prelude.Singletons
 import Singletons.Nat
 
 type Lit :: Lit.Nat -> Nat

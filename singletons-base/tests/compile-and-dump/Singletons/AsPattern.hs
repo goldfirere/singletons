@@ -1,8 +1,8 @@
 module Singletons.AsPattern where
 
-import Data.Singletons.Prelude.List
-import Data.Singletons.Prelude.Maybe
-import Data.Singletons.Prelude.TH
+import Data.List.Singletons
+import Data.Maybe.Singletons
+import Data.Singletons.Base.TH
 import Singletons.Nat
 
 $(singletons [d|

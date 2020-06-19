@@ -13,9 +13,8 @@ Changelog for singletons project
     promoting and singling term-level definitions, but but nothing else. This
     library continues to require the latest stable release of GHC.
   * The `singletons-base` library defines promoted and singled versions of
-    definitions from the `base` library, which includes everything under
-    `Data.Singletons.Prelude.*`. This library continues to require the latest
-    stable release of GHC.
+    definitions from the `base` library, including the `Prelude`. This library
+    continues to require the latest stable release of GHC.
 
   Consult the changelogs for `singletons-th` and `singletons-base` for changes
   specific to those libraries. For more information on this split, see the

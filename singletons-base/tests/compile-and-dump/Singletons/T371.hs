@@ -1,7 +1,7 @@
 module T371 where
 
 import Data.Kind
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 
 $(singletons [d|
   data X (a :: Type) = X1 | X2 (Y a) deriving Show

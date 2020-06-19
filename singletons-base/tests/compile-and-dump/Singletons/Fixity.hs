@@ -2,8 +2,8 @@ module Singletons.Fixity where
 
 import Data.Singletons
 import Data.Singletons.TH
-import Data.Singletons.Prelude
 import Language.Haskell.TH.Desugar
+import Prelude.Singletons
 
 $(singletons [d|
   class MyOrd a where

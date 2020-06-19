@@ -118,26 +118,26 @@ equality. See the "Equality classes" section for more information.
 
 `Data.Singletons.TH` (from `singletons-th`) exports all the definitions needed
 to use the Template Haskell code to generate new singletons.
-`Data.Singletons.Prelude.TH` (from `singletons-bsae`) re-exports
+`Data.Singletons.Base.TH` (from `singletons-base`) re-exports
 `Data.Singletons.TH` plus any promoted or singled definitions that are likely
 to appear in TH-generated code. For instance, singling a
 `deriving Eq` clause will make use of `SEq`, the singled `Eq` class, so
 `Data.Singletons.TH` re-exports `SEq`.
 
-`Data.Singletons.Prelude` (from `singletons-base` re-exports `Data.Singletons`
+`Prelude.Singletons` (from `singletons-base`) re-exports `Data.Singletons`
 along with singleton definitions for various `Prelude` types. This module
 provides promoted and singled equivalents of functions from the real `Prelude`.
 Note that not all functions from original `Prelude` could be promoted or
 singled.
 
-`Data.Singletons.Prelude.*` modules (from `singletons-base`) provide promoted
-and singled equivalents of definitions found in several commonly used `base`
-library modules, including (but not limited to) `Data.Bool`, `Data.Maybe`,
-`Data.Either`, `Data.List`, `Data.Tuple`, `Data.Void` and `GHC.Base`. We also
-provide promoted and singled versions of common type classes, including (but
-not limited to) `Eq`, `Ord`, `Show`, `Enum`, and `Bounded`.
+The `singletons-base` library provides promoted and singled equivalents of
+definitions found in several commonly used `base` library modules, including
+(but not limited to) `Data.Bool`, `Data.Maybe`, `Data.Either`, `Data.List`,
+`Data.Tuple`, and `Data.Void`. We also provide promoted and singled versions of
+common type classes, including (but not limited to) `Eq`, `Ord`, `Show`,
+`Enum`, and `Bounded`.
 
-`Data.Singletons.TypeLits` (from `singletons-base`) exports definitions for
+`GHC.TypeLits.Singletons` (from `singletons-base`) exports definitions for
 working with `GHC.TypeLits`.
 
 Functions to generate singletons
@@ -238,7 +238,7 @@ equality and propositional equality.
 
 * Boolean equality is implemented in the type family `(==)` (in the `PEq`
   class) and the `(%==`) method (in the `SEq` class).
-  See the `Data.Singletons.Prelude.Eq` module from `singletons-base` for more
+  See the `Data.Eq.Singletons` module from `singletons-base` for more
   information.
 
 * Propositional equality is implemented through the constraint `(~)`, the type
@@ -254,14 +254,14 @@ Instances of `SEq`, `SDecide`, `TestEquality`, and `TestCoercion` are generated
 when `singletons` is called on a datatype that has `deriving Eq`. You can also
 generate these instances directly through functions exported from
 `Data.Singletons.TH` (from `singletons-th`) and
-`Data.Singletons.Prelude.TH` (from `singletons-base`).
+`Data.Singletons.Base.TH` (from `singletons-base`).
 
 
 `Show` classes
 --------------
 
 Promoted and singled versions of the `Show` class (`PShow` and `SShow`,
-respectively) are provided in the `Data.Singletons.Prelude.Show` module from
+respectively) are provided in the `Text.Show.Singletons` module from
 `singletons-base`. In addition, there is a `ShowSing` constraint synonym
 provided in the `Data.Singletons.ShowSing` module from `singletons`:
 
@@ -283,7 +283,7 @@ Instance of `PShow`, `SShow`, and `Show` (for the singleton type) are generated
 when `singletons` is called on a datatype that has `deriving Show`. You can also
 generate these instances directly through functions exported from
 `Data.Singletons.TH` (from `singletons-th`) and
-`Data.Singletons.Prelude.TH` (from `singletons-base`).
+`Data.Singletons.Base.TH` (from `singletons-base`).
 
 A promoted and singled `Show` instance is provided for `Symbol`, but it is only
 a crude approximation of the value-level `Show` instance for `String`. On the
@@ -297,7 +297,7 @@ Errors
 
 The `singletons-base` library provides two different ways to handle errors:
 
-* The `Error` type family, from `Data.Singletons.TypeLits`:
+* The `Error` type family, from `GHC.TypeLits.Singletons`:
 
   ```haskell
   type Error :: a -> k
@@ -308,7 +308,7 @@ The `singletons-base` library provides two different ways to handle errors:
   to reduce regardless of its input. The typical use case is giving it a
   `Symbol` as an argument, so that something akin to
   `Error "This is an error message"` appears in error messages.
-* The `TypeError` type family, from `Data.Singletons.TypeError`. This is a
+* The `TypeError` type family, from `Data.Singletons.Base.TypeError`. This is a
   drop-in replacement for `TypeError` from `GHC.TypeLits` which can be used
   at both the type level and the value level (via the `typeError` function).
 
@@ -329,7 +329,7 @@ by default. These include (but are not limited to):
 * tuples up to length 7
 * lists
 
-These are all available through `Data.Singletons.Prelude`. Functions that
+These are all available through `Prelude.Singletons`. Functions that
 operate on these singletons are available from modules such as `Data.Singletons.Bool`
 and `Data.Singletons.Maybe`.
 
@@ -357,8 +357,9 @@ so-called _defunctionalization symbols_. These are required to represent
 partial application at the type level. For more information, refer to the
 "Promotion and partial application" section below.
 
-Users also have access to `Data.Singletons.Prelude` and its submodules (e.g.,
-`Base`, `Bool`, `Either`, `List`, `Maybe` and `Tuple`) in `singletons-base`.
+Users also have access to `Prelude.Singletons` and related modules (e.g.,
+`Data.Bool.Singletons`, `Data.Either.Singletons`, `Data.List.Singletons`,
+`Data.Maybe.Singletons`, `Data.Tuple.Singletons`, etc.) in `singletons-base`.
 These provide promoted versions of function found in GHC's `base` library.
 
 Note that GHC resolves variable names in Template Haskell quotes. You cannot
@@ -1087,7 +1088,7 @@ import Control.Monad.Trans.Class
 import Data.Kind
 import Data.Singletons.TH
 import Data.Singletons.TH.Options
-import Data.Singletons.TypeLits
+import GHC.TypeLits.Singletons
 import Numeric.Natural
 import Language.Haskell.TH (Name)
 
@@ -1192,7 +1193,7 @@ of `TypeRep` would yield `*`, but the implementation of `TypeRep` would have to
 be updated for this to really work out. In the meantime, users who wish to
 experiment with this feature have two options:
 
-1) The module `Data.Singletons.TypeRepTYPE` (from `singletons-base`) has all the definitions possible for
+1) The module `Data.Singletons.Base.TypeRepTYPE` (from `singletons-base`) has all the definitions possible for
 making `*` the promoted version of `TypeRep`, as `TypeRep` is currently implemented.
 The singleton associated with `TypeRep` has one constructor:
 

@@ -2,8 +2,8 @@
 
 module Singletons.CaseExpressions where
 
-import Data.Singletons.Prelude.Maybe
-import Data.Singletons.Prelude.TH
+import Data.Maybe.Singletons
+import Data.Singletons.Base.TH
 
 $(singletons [d|
   foo1 :: a -> Maybe a -> a

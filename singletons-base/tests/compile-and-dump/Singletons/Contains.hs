@@ -1,7 +1,7 @@
 module Singletons.Contains where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude
+import Prelude.Singletons
 
 -- polymorphic function with context
 
