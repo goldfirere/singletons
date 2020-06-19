@@ -1,7 +1,7 @@
 module T322 where
 
-import Data.Singletons.Prelude
 import Data.Singletons.TH
+import Prelude.Singletons
 
 $(singletons [d|
   (!) :: Bool -> Bool -> Bool

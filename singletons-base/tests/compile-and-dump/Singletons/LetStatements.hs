@@ -4,8 +4,8 @@
 module Singletons.LetStatements where
 
 import Data.Singletons
-import Data.Singletons.Prelude
 import Data.Singletons.TH
+import Prelude.Singletons
 import Singletons.Nat
 
 $(singletons [d|

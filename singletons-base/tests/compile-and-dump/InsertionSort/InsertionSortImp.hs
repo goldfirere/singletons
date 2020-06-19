@@ -35,8 +35,8 @@ unambiguous.
 module InsertionSort.InsertionSortImp where
 
 import Data.Kind (Type)
-import Data.Singletons.Prelude
 import Data.Singletons.TH
+import Prelude.Singletons
 
 data Dict c where
   Dict :: c => Dict c

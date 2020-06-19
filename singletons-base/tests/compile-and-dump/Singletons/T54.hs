@@ -3,7 +3,7 @@
 module Singletons.T54 where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude
+import Prelude.Singletons
 
 $(singletons [d|
   g :: Bool -> Bool

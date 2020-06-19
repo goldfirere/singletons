@@ -4,7 +4,7 @@
 module Singletons.T153 where
 
 import Data.Singletons
-import Data.Singletons.Prelude
+import Prelude.Singletons
 
 foo :: Int
 foo = withSomeSing @(Maybe Bool) (Just True) $ \case

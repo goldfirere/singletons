@@ -10,7 +10,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 module Singletons.T167 where
 
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 import GHC.TypeLits
 
 type DiffList = [Bool] -> [Bool]

@@ -1,7 +1,7 @@
 module Singletons.T33 where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude
+import Prelude.Singletons
 
 $(singletons [d|
   foo :: (Bool, Bool) -> ()

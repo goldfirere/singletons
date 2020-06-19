@@ -9,8 +9,8 @@
 module T176 where
 
 import Data.Kind (Type)
-import Data.Singletons.Prelude
 import Data.Singletons.TH
+import Prelude.Singletons
 
 $(singletons [d|
   class Foo1 a where

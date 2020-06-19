@@ -1,8 +1,8 @@
 module T160 where
 
-import Data.Singletons.Prelude
+import Data.Singletons.Base.TypeError
 import Data.Singletons.TH
-import Data.Singletons.TypeError
+import Prelude.Singletons
 
 $(singletons
   [d| foo :: (Num a, Eq a) => a -> a

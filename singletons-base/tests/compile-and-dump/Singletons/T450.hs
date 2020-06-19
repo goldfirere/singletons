@@ -2,11 +2,11 @@ module T450 where
 
 import Control.Monad.Trans.Class
 import Data.Maybe
-import Data.Singletons.Prelude
 import Data.Singletons.TH
 import Data.Singletons.TH.Options
 import Data.Text (Text)
 import Language.Haskell.TH (Name)
+import Prelude.Singletons
 import GHC.TypeNats (Nat)
 import Numeric.Natural (Natural)
 

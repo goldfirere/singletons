@@ -4,7 +4,7 @@
 module FunctorLikeDeriving where
 
 import Data.Kind
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 
 $(singletons [d|
   data T x a

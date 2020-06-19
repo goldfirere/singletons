@@ -1,10 +1,9 @@
 module Singletons.LambdasComprehensive where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude
-import Singletons.Nat
-
 import Prelude hiding (pred)
+import Prelude.Singletons
+import Singletons.Nat
 
 $(singletons [d|
  foo :: [Nat]

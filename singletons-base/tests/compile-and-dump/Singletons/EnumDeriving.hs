@@ -1,6 +1,6 @@
 module Singletons.EnumDeriving where
 
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 
 $(singletons [d|
   data Foo = Bar | Baz | Bum

@@ -1,0 +1,276 @@
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Prelude.Singletons
+-- Copyright   :  (C) 2013 Richard Eisenberg
+-- License     :  BSD-style (see LICENSE)
+-- Maintainer  :  Ryan Scott
+-- Stability   :  experimental
+-- Portability :  non-portable
+--
+-- Mimics the Haskell Prelude, but with singleton types. Includes the basic
+-- singleton definitions. Note: This is currently very incomplete!
+--
+-- Because many of these definitions are produced by Template Haskell, it is
+-- not possible to create proper Haddock documentation. Also, please excuse
+-- the apparent repeated variable names. This is due to an interaction between
+-- Template Haskell and Haddock.
+--
+----------------------------------------------------------------------------
+
+{-# LANGUAGE ExplicitNamespaces #-}
+module Prelude.Singletons (
+  -- * Basic singleton definitions
+  module Data.Singletons,
+
+  -- * Singleton types
+
+  SBool(..), SList(..), SMaybe(..), SEither(..), SOrdering(..),
+  STuple0(..), STuple2(..), STuple3(..), STuple4(..),
+  STuple5(..), STuple6(..), STuple7(..),
+
+  -- * Functions working with 'Bool'
+  If, sIf, Not, sNot, type (&&), type (||), (%&&), (%||), Otherwise, sOtherwise,
+
+  -- * Error reporting
+  Error, sError,
+  ErrorWithoutStackTrace, sErrorWithoutStackTrace,
+  Undefined, sUndefined,
+
+  -- * Singleton equality
+  module Data.Eq.Singletons,
+
+  -- * Singleton comparisons
+  POrd(..), SOrd(..),
+
+  -- * Singleton Enum and Bounded
+  -- | As a matter of convenience, the @singletons-base@ Prelude does /not/ export
+  -- promoted/singletonized @succ@ and @pred@, due to likely conflicts with
+  -- unary numbers. Please import "Data.Singletons.Base.Enum" directly if
+  -- you want these.
+  module Data.Singletons.Base.Enum,
+
+  -- * Singletons numbers
+  module GHC.Num.Singletons,
+  type (^), (%^),
+
+  -- * Singleton 'Show'
+  PShow(..), SShow(..), ShowS, SChar,
+  Shows, sShows, ShowChar, sShowChar, ShowString, sShowString, ShowParen, sShowParen,
+
+  -- * Singleton 'Semigroup' and 'Monoid'
+  PSemigroup(type (<>)), SSemigroup((%<>)),
+  PMonoid(..), SMonoid(..),
+
+  -- * Singleton 'Functor', 'Applicative', 'Monad', and 'MonadFail'
+  PFunctor(Fmap, type (<$)), SFunctor(sFmap, (%<$)), type (<$>), (%<$>),
+  PApplicative(Pure, type (<*>), type (*>), type (<*)),
+  SApplicative(sPure, (%<*>), (%*>), (%<*)),
+  PMonad(type (>>=), type (>>), Return),
+  SMonad((%>>=), (%>>), sReturn),
+  PMonadFail(Fail), SMonadFail(sFail),
+
+  MapM_, sMapM_,
+  Sequence_, sSequence_,
+  type (=<<), (%=<<),
+
+  -- * Singleton 'Foldable' and 'Traversable'
+  PFoldable(Elem, FoldMap, Foldr, Foldl, Foldr1, Foldl1,
+            Maximum, Minimum, Product, Sum),
+  SFoldable(sElem, sFoldMap, sFoldr, sFoldl, sFoldr1, sFoldl1,
+            sMaximum, sMinimum, sProduct, sSum),
+  PTraversable(Traverse, SequenceA, MapM, Sequence),
+  STraversable(sTraverse, sSequenceA, sMapM, sSequence),
+
+  -- ** Miscellaneous functions
+  Id, sId, Const, sConst, type (.), (%.), type ($), (%$), type ($!), (%$!),
+  Flip, sFlip, AsTypeOf, sAsTypeOf,
+  Seq, sSeq,
+
+  -- * List operations
+  Map, sMap, type (++), (%++), Filter, sFilter,
+  Head, sHead, Last, sLast, Tail, sTail,
+  Init, sInit, Null, sNull, Reverse, sReverse,
+  -- *** Special folds
+  And, sAnd, Or, sOr, Any, sAny, All, sAll,
+  Concat, sConcat, ConcatMap, sConcatMap,
+  -- *** Scans
+  Scanl, sScanl, Scanl1, sScanl1, Scanr, sScanr, Scanr1, sScanr1,
+  -- *** Infinite lists
+  Replicate, sReplicate,
+  -- ** Sublists
+  Take, sTake, Drop, sDrop, SplitAt, sSplitAt, TakeWhile, sTakeWhile,
+  Span, sSpan, Break, sBreak,
+  -- ** Searching lists
+  NotElem, sNotElem, Lookup, sLookup,
+  -- ** Zipping and unzipping lists
+  Zip, sZip, Zip3, sZip3, ZipWith, sZipWith, ZipWith3, sZipWith3,
+  Unzip, sUnzip, Unzip3, sUnzip3,
+  -- ** Functions on 'Symbol's
+  Unlines, sUnlines, Unwords, sUnwords,
+
+  -- * Other datatypes
+  Maybe_, sMaybe_,
+  Either_, sEither_,
+  Fst, sFst, Snd, sSnd, Curry, sCurry, Uncurry, sUncurry,
+  Symbol,
+
+  -- * Other functions
+  either_, -- reimplementation of either to be used with singletons-base library
+  maybe_,
+  bool_,
+  show_,
+
+  -- * Defunctionalization symbols
+  FalseSym0, TrueSym0,
+  NotSym0, NotSym1,
+  type (&&@#@$), type (&&@#@$$), type (&&@#@$$$),
+  type (||@#@$), type (||@#@$$), type (||@#@$$$),
+  OtherwiseSym0,
+
+  NothingSym0, JustSym0, JustSym1,
+  Maybe_Sym0, Maybe_Sym1, Maybe_Sym2, Maybe_Sym3,
+
+  LeftSym0, LeftSym1, RightSym0, RightSym1,
+  Either_Sym0, Either_Sym1, Either_Sym2, Either_Sym3,
+
+  Tuple0Sym0,
+  Tuple2Sym0, Tuple2Sym1, Tuple2Sym2,
+  Tuple3Sym0, Tuple3Sym1, Tuple3Sym2, Tuple3Sym3,
+  Tuple4Sym0, Tuple4Sym1, Tuple4Sym2, Tuple4Sym3, Tuple4Sym4,
+  Tuple5Sym0, Tuple5Sym1, Tuple5Sym2, Tuple5Sym3, Tuple5Sym4, Tuple5Sym5,
+  Tuple6Sym0, Tuple6Sym1, Tuple6Sym2, Tuple6Sym3, Tuple6Sym4, Tuple6Sym5, Tuple6Sym6,
+  Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6, Tuple7Sym7,
+  FstSym0, FstSym1, SndSym0, SndSym1,
+  CurrySym0, CurrySym1, CurrySym2, CurrySym3,
+  UncurrySym0, UncurrySym1, UncurrySym2,
+
+  ErrorSym0, ErrorSym1,
+  ErrorWithoutStackTraceSym0, ErrorWithoutStackTraceSym1,
+  UndefinedSym0,
+
+  LTSym0, EQSym0, GTSym0,
+  CompareSym0, CompareSym1, CompareSym2,
+  type (<@#@$),  type (<@#@$$),  type (<@#@$$$),
+  type (<=@#@$), type (<=@#@$$), type (<=@#@$$$),
+  type (>@#@$),  type (>@#@$$),  type (>@#@$$$),
+  type (>=@#@$), type (>=@#@$$), type (>=@#@$$$),
+  MaxSym0, MaxSym1, MaxSym2,
+  MinSym0, MinSym1, MinSym2,
+
+  type (^@#@$), type (^@#@$$), type (^@#@$$$),
+
+  ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
+  Show_Sym0, Show_Sym1,
+  ShowListSym0, ShowListSym1, ShowListSym2,
+  ShowsSym0, ShowsSym1, ShowsSym2,
+  ShowCharSym0, ShowCharSym1, ShowCharSym2,
+  ShowStringSym0, ShowStringSym1, ShowStringSym2,
+  ShowParenSym0, ShowParenSym1, ShowParenSym2,
+
+  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
+  MemptySym0,
+  MappendSym0, MappendSym1, MappendSym2,
+  MconcatSym0, MconcatSym1,
+
+  FmapSym0, FmapSym1, FmapSym2,
+  type (<$@#@$),  type (<$@#@$$),  type (<$@#@$$$),
+  type (<$>@#@$), type (<$>@#@$$), type (<$>@#@$$$),
+  PureSym0, PureSym1,
+  type (<*>@#@$), type (<*>@#@$$), type (<*>@#@$$$),
+  type (*>@#@$),  type (*>@#@$$),  type (*>@#@$$$),
+  type (<*@#@$),  type (<*@#@$$),  type (<*@#@$$$),
+  type (>>=@#@$), type (>>=@#@$$), type (>>=@#@$$$),
+  type (>>@#@$),  type (>>@#@$$),  type (>>@#@$$$),
+  ReturnSym0, ReturnSym1, FailSym0, FailSym1,
+  MapM_Sym0, MapM_Sym1, MapM_Sym2,
+  Sequence_Sym0, Sequence_Sym1,
+  type (=<<@#@$), type (=<<@#@$$), type (=<<@#@$$$),
+
+  ElemSym0, ElemSym1, ElemSym2,
+  FoldMapSym0, FoldMapSym1, FoldMapSym2,
+  FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
+  FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,
+  Foldr1Sym0, Foldr1Sym1, Foldr1Sym2,
+  Foldl1Sym0, Foldl1Sym1, Foldl1Sym2,
+  MaximumSym0, MaximumSym1,
+  MinimumSym0, MinimumSym1,
+  SumSym0, SumSym1,
+  ProductSym0, ProductSym1,
+
+  TraverseSym0, TraverseSym1, TraverseSym2,
+  SequenceASym0, SequenceASym1,
+  MapMSym0, MapMSym1, MapMSym2,
+  SequenceSym0, SequenceSym1,
+
+  IdSym0, IdSym1, ConstSym0, ConstSym1, ConstSym2,
+  type (.@#@$),  type (.@#@$$),  type (.@#@$$$),
+  type ($@#@$),  type ($@#@$$),  type ($@#@$$$),
+  type ($!@#@$), type ($!@#@$$), type ($!@#@$$$),
+  FlipSym0, FlipSym1, FlipSym2,
+  AsTypeOfSym0, AsTypeOfSym1, AsTypeOfSym2, SeqSym0, SeqSym1, SeqSym2,
+
+  (:@#@$), (:@#@$$), (:@#@$$$), NilSym0,
+  MapSym0, MapSym1, MapSym2, ReverseSym0, ReverseSym1,
+  type (++@#@$$), type (++@#@$), FilterSym0, FilterSym1, FilterSym2,
+  HeadSym0, HeadSym1, LastSym0, LastSym1,
+  TailSym0, TailSym1, InitSym0, InitSym1, NullSym0, NullSym1,
+
+  ConcatSym0, ConcatSym1,
+  ConcatMapSym0, ConcatMapSym1, ConcatMapSym2,
+  AndSym0, AndSym1, OrSym0, OrSym1,
+  AnySym0, AnySym1, AnySym2,
+  AllSym0, AllSym1, AllSym2,
+
+  ScanlSym0, ScanlSym1, ScanlSym2, ScanlSym3,
+  Scanl1Sym0, Scanl1Sym1, Scanl1Sym2,
+  ScanrSym0, ScanrSym1, ScanrSym2, ScanrSym3,
+  Scanr1Sym0, Scanr1Sym1, Scanr1Sym2,
+
+  ReplicateSym0, ReplicateSym1, ReplicateSym2,
+
+  TakeSym0, TakeSym1, TakeSym2,
+  DropSym0, DropSym1, DropSym2,
+  SplitAtSym0, SplitAtSym1, SplitAtSym2,
+  TakeWhileSym0, TakeWhileSym1, TakeWhileSym2,
+  DropWhileSym0, DropWhileSym1, DropWhileSym2,
+  DropWhileEndSym0, DropWhileEndSym1, DropWhileEndSym2,
+  SpanSym0, SpanSym1, SpanSym2,
+  BreakSym0, BreakSym1, BreakSym2,
+
+  NotElemSym0, NotElemSym1, NotElemSym2,
+
+  ZipSym0, ZipSym1, ZipSym2,
+  Zip3Sym0, Zip3Sym1, Zip3Sym2, Zip3Sym3,
+  ZipWithSym0, ZipWithSym1, ZipWithSym2, ZipWithSym3,
+  ZipWith3Sym0, ZipWith3Sym1, ZipWith3Sym2, ZipWith3Sym3,
+  UnzipSym0, UnzipSym1,
+
+  UnlinesSym0, UnlinesSym1, UnwordsSym0, UnwordsSym1
+  ) where
+
+import Control.Applicative.Singletons
+  hiding (Const, ConstSym0, ConstSym1)
+import Control.Monad.Singletons
+import Data.Bool.Singletons
+import Data.Either.Singletons
+import Data.Eq.Singletons
+import Data.Foldable.Singletons
+import Data.List.Singletons
+import Data.Maybe.Singletons
+import Data.Monoid.Singletons
+       ( PMonoid(..), SMonoid(..), MemptySym0, MappendSym0
+       , MappendSym1, MappendSym2, MconcatSym0, MconcatSym1 )
+import Data.Ord.Singletons
+import Data.Semigroup.Singletons
+       ( PSemigroup(..), SSemigroup(..)
+       , type (<>@#@$), type (<>@#@$$), type (<>@#@$$$) )
+import Data.Singletons
+import Data.Singletons.Base.Enum
+  hiding (Succ, Pred, SuccSym0, SuccSym1, PredSym0, PredSym1, sSucc, sPred)
+import Data.Traversable.Singletons
+import Data.Tuple.Singletons
+import GHC.Base.Singletons
+  hiding (Foldr, FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3, sFoldr)
+import GHC.Num.Singletons
+import GHC.TypeLits.Singletons
+import Text.Show.Singletons

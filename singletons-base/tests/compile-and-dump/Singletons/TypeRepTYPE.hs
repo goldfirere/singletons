@@ -2,10 +2,10 @@
 module TypeRepTYPE where
 
 import Data.Kind (Type)
+import Data.Singletons.Base.TypeRepTYPE
 import Data.Singletons.Decide
-import Data.Singletons.Prelude
-import Data.Singletons.TypeRepTYPE
 import GHC.Exts (Char#, RuntimeRep(..), TYPE, Word#)
+import Prelude.Singletons
 import Type.Reflection (Typeable, typeRep)
 
 eqTYPETest1 :: (Type == Type) :~: 'True

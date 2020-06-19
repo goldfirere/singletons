@@ -1,9 +1,9 @@
 module Singletons.DataValues where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude
-import Data.Singletons.Prelude.Show
+import Prelude.Singletons
 import Singletons.Nat
+import Text.Show.Singletons
 
 $(singletons [d|
   data Pair a b = Pair a b deriving Show

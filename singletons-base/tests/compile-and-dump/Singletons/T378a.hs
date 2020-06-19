@@ -1,8 +1,8 @@
 module T378a where
 
 import Data.Kind
-import Data.Singletons.Prelude hiding (Proxy(..))
 import Data.Singletons.TH hiding (Proxy(..))
+import Prelude.Singletons hiding (Proxy(..))
 
 $(singletons [d|
   constBA :: forall b a. a -> b -> a

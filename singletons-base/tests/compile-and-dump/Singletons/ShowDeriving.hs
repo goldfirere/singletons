@@ -1,9 +1,9 @@
 module Singletons.ShowDeriving where
 
 import Data.Type.Equality
-import Data.Singletons.Prelude
-import Data.Singletons.Prelude.Show
 import Data.Singletons.TH
+import Prelude.Singletons
+import Text.Show.Singletons
 
 $(singletons [d|
     data Foo1 = MkFoo1 deriving Show

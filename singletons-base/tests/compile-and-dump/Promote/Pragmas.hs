@@ -1,7 +1,7 @@
 module Promote.Pragmas where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude
+import Prelude.Singletons
 
 $(promote [d|
   {-# INLINE foo #-}

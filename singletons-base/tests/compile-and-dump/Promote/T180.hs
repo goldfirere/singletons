@@ -1,7 +1,7 @@
 module T180 where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude
+import Prelude.Singletons
 
 promote [d|
   data X = X1 {y :: Symbol} | X2 {y :: Symbol}

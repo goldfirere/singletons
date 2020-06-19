@@ -11,7 +11,7 @@
 -- via Template Haskell. Note that this module does not define any singled
 -- definitions on its own. For a version of this module that comes pre-equipped
 -- with several singled definitions based on the "Prelude", see
--- @Data.Singletons.Prelude.TH@ from the @singletons-base@ library.
+-- @Data.Singletons.Base.TH@ from the @singletons-base@ library.
 --
 ----------------------------------------------------------------------------
 

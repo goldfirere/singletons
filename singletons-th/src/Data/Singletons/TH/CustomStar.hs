@@ -14,9 +14,9 @@
 -- Haskell types themselves. This is still very experimental, so expect unusual
 -- results!
 --
--- See also @Data.Singletons.Prelude.CustomStar@ from @singletons-base@, a
+-- See also @Data.Singletons.Base.CustomStar@ from @singletons-base@, a
 -- variant of this module that also re-exports related definitions from
--- @Data.Singletons.Prelude@.
+-- @Prelude.Singletons@.
 --
 ----------------------------------------------------------------------------
 

@@ -1,7 +1,7 @@
 module T178 where
 
 import GHC.TypeLits
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 
 $(singletons [d|
 

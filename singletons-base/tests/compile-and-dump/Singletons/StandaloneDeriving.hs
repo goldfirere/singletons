@@ -1,8 +1,8 @@
 module Singletons.StandaloneDeriving where
 
-import Data.Singletons.Prelude
-import Data.Singletons.Prelude.Show
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
+import Prelude.Singletons
+import Text.Show.Singletons
 
 $(singletons [d|
 

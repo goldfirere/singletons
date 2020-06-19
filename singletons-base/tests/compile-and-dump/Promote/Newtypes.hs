@@ -1,6 +1,6 @@
 module Promote.Newtypes where
 
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 import Singletons.Nat
 
 $(promote [d|

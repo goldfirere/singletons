@@ -1133,7 +1133,7 @@ Unfortunately, the kind of `Case x arg arg` *must* be `a` in order for `sQuux`
 to type-check. This means that the code above suddenly stopped working in GHC
 8.8. What's more, we can't just remove these explicit signatures, as there is
 code elsewhere in `singletons-th` that crucially relies on them to guide type
-inference along (e.g., `sShowParen` in `Data.Singletons.Prelude.Show`).
+inference along (e.g., `sShowParen` in `Text.Show.Singletons`).
 
 Luckily, there is an ingenious hack that lets us the benefits of explicit
 signatures without the pain of kind generalization: our old friend, the `id`

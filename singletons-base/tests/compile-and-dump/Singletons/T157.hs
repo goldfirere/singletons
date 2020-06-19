@@ -1,6 +1,6 @@
 module T157 where
 
-import Data.Singletons.Prelude
+import Prelude.Singletons
 
 foo :: SList '["a", "b", "c"]
 foo = sing `SCons` sing `SCons` sing

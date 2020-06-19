@@ -37,7 +37,7 @@
 -- Portability :  non-portable
 --
 -- This module exports the basic definitions to use singletons. See also
--- @Data.Singletons.Prelude@ from the @singletons-base@
+-- @Prelude.Singletons@ from the @singletons-base@
 -- library, which re-exports this module alongside many singled definitions
 -- based on the "Prelude".
 --
@@ -1056,7 +1056,7 @@ binary function on singletons @sTake :: 'SingFunction2' TakeSym0@ into a
 defunctionalized singleton @'Sing' (TakeSym :: Nat '~>' [a] '~>' [a])@:
 
 @
->>> import Data.Singletons.Prelude.List
+>>> import Data.List.Singletons
 >>> :set -XTypeApplications
 >>>
 >>> :t 'SLambda2'

@@ -1,6 +1,6 @@
 module Singletons.OrdDeriving where
 
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 
 $(singletons [d|
   data Nat = Zero | Succ Nat

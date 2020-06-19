@@ -8,7 +8,7 @@
 {-# LANGUAGE TypeFamilies #-}
 module SingletonsBug where
 
-import Data.Singletons.Prelude.TH
+import Data.Singletons.Base.TH
 import GHC.TypeLits
 
 $(singletonsOnly [d|

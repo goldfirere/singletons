@@ -3,8 +3,8 @@
 module Singletons.FunDeps where
 
 import Data.Singletons.TH
-import Data.Singletons.Prelude
-import Data.Singletons.TypeLits
+import GHC.TypeLits.Singletons
+import Prelude.Singletons
 
 $( singletons [d|
   class FD a b | a -> b where
