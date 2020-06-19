@@ -6,7 +6,7 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
     f :: (() -> ()) -> () -> ()
     f g = g :: () -> ()
     type FSym0 :: (~>) ((~>) () ()) ((~>) () ())
-    data FSym0 a0123456789876543210
+    data FSym0 :: (~>) ((~>) () ()) ((~>) () ())
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
@@ -14,7 +14,7 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
     type FSym1 :: (~>) () () -> (~>) () ()
-    data FSym1 a0123456789876543210 a0123456789876543210
+    data FSym1 (a0123456789876543210 :: (~>) () ()) :: (~>) () ()
       where
         FSym1KindInference :: SameKind (Apply (FSym1 a0123456789876543210) arg) (FSym2 a0123456789876543210 arg) =>
                               FSym1 a0123456789876543210 a0123456789876543210
@@ -22,10 +22,10 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (FSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) FSym1KindInference) ())
     type FSym2 :: (~>) () () -> () -> ()
-    type family FSym2 a0123456789876543210 a0123456789876543210 where
+    type family FSym2 (a0123456789876543210 :: (~>) () ()) (a0123456789876543210 :: ()) :: () where
       FSym2 a0123456789876543210 a0123456789876543210 = F a0123456789876543210 a0123456789876543210
     type F :: (~>) () () -> () -> ()
-    type family F a a where
+    type family F (a :: (~>) () ()) (a :: ()) :: () where
       F g a_0123456789876543210 = Apply (g :: (~>) () ()) a_0123456789876543210
     sF ::
       forall (t :: (~>) () ()) (t :: ()).

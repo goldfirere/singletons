@@ -11,7 +11,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
     instance Eq () where
       equals () () = True
     type EqualsSym0 :: forall a. (~>) a ((~>) a Bool)
-    data EqualsSym0 a0123456789876543210
+    data EqualsSym0 :: (~>) a ((~>) a Bool)
       where
         EqualsSym0KindInference :: SameKind (Apply EqualsSym0 arg) (EqualsSym1 arg) =>
                                    EqualsSym0 a0123456789876543210
@@ -20,7 +20,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) EqualsSym0KindInference) ())
     type EqualsSym1 :: forall a. a -> (~>) a Bool
-    data EqualsSym1 a0123456789876543210 a0123456789876543210
+    data EqualsSym1 (a0123456789876543210 :: a) :: (~>) a Bool
       where
         EqualsSym1KindInference :: SameKind (Apply (EqualsSym1 a0123456789876543210) arg) (EqualsSym2 a0123456789876543210 arg) =>
                                    EqualsSym1 a0123456789876543210 a0123456789876543210
@@ -29,15 +29,15 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) EqualsSym1KindInference) ())
     type EqualsSym2 :: forall a. a -> a -> Bool
-    type family EqualsSym2 a0123456789876543210 a0123456789876543210 where
+    type family EqualsSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Bool where
       EqualsSym2 a0123456789876543210 a0123456789876543210 = Equals a0123456789876543210 a0123456789876543210
     class PEq a where
       type Equals (arg :: a) (arg :: a) :: Bool
     type Equals_0123456789876543210 :: () -> () -> Bool
-    type family Equals_0123456789876543210 a a where
+    type family Equals_0123456789876543210 (a :: ()) (a :: ()) :: Bool where
       Equals_0123456789876543210 '() '() = TrueSym0
     type Equals_0123456789876543210Sym0 :: (~>) () ((~>) () Bool)
-    data Equals_0123456789876543210Sym0 a0123456789876543210
+    data Equals_0123456789876543210Sym0 :: (~>) () ((~>) () Bool)
       where
         Equals_0123456789876543210Sym0KindInference :: SameKind (Apply Equals_0123456789876543210Sym0 arg) (Equals_0123456789876543210Sym1 arg) =>
                                                        Equals_0123456789876543210Sym0 a0123456789876543210
@@ -46,7 +46,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) Equals_0123456789876543210Sym0KindInference) ())
     type Equals_0123456789876543210Sym1 :: () -> (~>) () Bool
-    data Equals_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data Equals_0123456789876543210Sym1 (a0123456789876543210 :: ()) :: (~>) () Bool
       where
         Equals_0123456789876543210Sym1KindInference :: SameKind (Apply (Equals_0123456789876543210Sym1 a0123456789876543210) arg) (Equals_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                        Equals_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -55,7 +55,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) Equals_0123456789876543210Sym1KindInference) ())
     type Equals_0123456789876543210Sym2 :: () -> () -> Bool
-    type family Equals_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family Equals_0123456789876543210Sym2 (a0123456789876543210 :: ()) (a0123456789876543210 :: ()) :: Bool where
       Equals_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Equals_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq () where
       type Equals a a = Apply (Apply Equals_0123456789876543210Sym0 a) a

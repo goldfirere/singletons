@@ -561,7 +561,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type family Let0123456789876543210Y x :: Nat where
       Let0123456789876543210Y x = Apply SuccSym0 ZeroSym0
     type Foo14Sym0 :: (~>) Nat (Nat, Nat)
-    data Foo14Sym0 a0123456789876543210
+    data Foo14Sym0 :: (~>) Nat (Nat, Nat)
       where
         Foo14Sym0KindInference :: SameKind (Apply Foo14Sym0 arg) (Foo14Sym1 arg) =>
                                   Foo14Sym0 a0123456789876543210
@@ -569,10 +569,11 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo14Sym0 where
       suppressUnusedWarnings = snd (((,) Foo14Sym0KindInference) ())
     type Foo14Sym1 :: Nat -> (Nat, Nat)
-    type family Foo14Sym1 a0123456789876543210 where
+    type family Foo14Sym1 (a0123456789876543210 :: Nat) :: (Nat,
+                                                            Nat) where
       Foo14Sym1 a0123456789876543210 = Foo14 a0123456789876543210
     type Foo13_Sym0 :: (~>) a a
-    data Foo13_Sym0 a0123456789876543210
+    data Foo13_Sym0 :: (~>) a a
       where
         Foo13_Sym0KindInference :: SameKind (Apply Foo13_Sym0 arg) (Foo13_Sym1 arg) =>
                                    Foo13_Sym0 a0123456789876543210
@@ -580,10 +581,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo13_Sym0 where
       suppressUnusedWarnings = snd (((,) Foo13_Sym0KindInference) ())
     type Foo13_Sym1 :: a -> a
-    type family Foo13_Sym1 a0123456789876543210 where
+    type family Foo13_Sym1 (a0123456789876543210 :: a) :: a where
       Foo13_Sym1 a0123456789876543210 = Foo13_ a0123456789876543210
     type Foo13Sym0 :: forall a. (~>) a a
-    data Foo13Sym0 a0123456789876543210
+    data Foo13Sym0 :: (~>) a a
       where
         Foo13Sym0KindInference :: SameKind (Apply Foo13Sym0 arg) (Foo13Sym1 arg) =>
                                   Foo13Sym0 a0123456789876543210
@@ -591,10 +592,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo13Sym0 where
       suppressUnusedWarnings = snd (((,) Foo13Sym0KindInference) ())
     type Foo13Sym1 :: forall a. a -> a
-    type family Foo13Sym1 a0123456789876543210 where
+    type family Foo13Sym1 (a0123456789876543210 :: a) :: a where
       Foo13Sym1 a0123456789876543210 = Foo13 a0123456789876543210
     type Foo12Sym0 :: (~>) Nat Nat
-    data Foo12Sym0 a0123456789876543210
+    data Foo12Sym0 :: (~>) Nat Nat
       where
         Foo12Sym0KindInference :: SameKind (Apply Foo12Sym0 arg) (Foo12Sym1 arg) =>
                                   Foo12Sym0 a0123456789876543210
@@ -602,10 +603,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo12Sym0 where
       suppressUnusedWarnings = snd (((,) Foo12Sym0KindInference) ())
     type Foo12Sym1 :: Nat -> Nat
-    type family Foo12Sym1 a0123456789876543210 where
+    type family Foo12Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo12Sym1 a0123456789876543210 = Foo12 a0123456789876543210
     type Foo11Sym0 :: (~>) Nat Nat
-    data Foo11Sym0 a0123456789876543210
+    data Foo11Sym0 :: (~>) Nat Nat
       where
         Foo11Sym0KindInference :: SameKind (Apply Foo11Sym0 arg) (Foo11Sym1 arg) =>
                                   Foo11Sym0 a0123456789876543210
@@ -613,10 +614,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo11Sym0 where
       suppressUnusedWarnings = snd (((,) Foo11Sym0KindInference) ())
     type Foo11Sym1 :: Nat -> Nat
-    type family Foo11Sym1 a0123456789876543210 where
+    type family Foo11Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo11Sym1 a0123456789876543210 = Foo11 a0123456789876543210
     type Foo10Sym0 :: (~>) Nat Nat
-    data Foo10Sym0 a0123456789876543210
+    data Foo10Sym0 :: (~>) Nat Nat
       where
         Foo10Sym0KindInference :: SameKind (Apply Foo10Sym0 arg) (Foo10Sym1 arg) =>
                                   Foo10Sym0 a0123456789876543210
@@ -624,10 +625,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo10Sym0 where
       suppressUnusedWarnings = snd (((,) Foo10Sym0KindInference) ())
     type Foo10Sym1 :: Nat -> Nat
-    type family Foo10Sym1 a0123456789876543210 where
+    type family Foo10Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo10Sym1 a0123456789876543210 = Foo10 a0123456789876543210
     type Foo9Sym0 :: (~>) Nat Nat
-    data Foo9Sym0 a0123456789876543210
+    data Foo9Sym0 :: (~>) Nat Nat
       where
         Foo9Sym0KindInference :: SameKind (Apply Foo9Sym0 arg) (Foo9Sym1 arg) =>
                                  Foo9Sym0 a0123456789876543210
@@ -635,10 +636,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo9Sym0 where
       suppressUnusedWarnings = snd (((,) Foo9Sym0KindInference) ())
     type Foo9Sym1 :: Nat -> Nat
-    type family Foo9Sym1 a0123456789876543210 where
+    type family Foo9Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo9Sym1 a0123456789876543210 = Foo9 a0123456789876543210
     type Foo8Sym0 :: (~>) Nat Nat
-    data Foo8Sym0 a0123456789876543210
+    data Foo8Sym0 :: (~>) Nat Nat
       where
         Foo8Sym0KindInference :: SameKind (Apply Foo8Sym0 arg) (Foo8Sym1 arg) =>
                                  Foo8Sym0 a0123456789876543210
@@ -646,10 +647,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo8Sym0 where
       suppressUnusedWarnings = snd (((,) Foo8Sym0KindInference) ())
     type Foo8Sym1 :: Nat -> Nat
-    type family Foo8Sym1 a0123456789876543210 where
+    type family Foo8Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo8Sym1 a0123456789876543210 = Foo8 a0123456789876543210
     type Foo7Sym0 :: (~>) Nat Nat
-    data Foo7Sym0 a0123456789876543210
+    data Foo7Sym0 :: (~>) Nat Nat
       where
         Foo7Sym0KindInference :: SameKind (Apply Foo7Sym0 arg) (Foo7Sym1 arg) =>
                                  Foo7Sym0 a0123456789876543210
@@ -657,10 +658,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo7Sym0 where
       suppressUnusedWarnings = snd (((,) Foo7Sym0KindInference) ())
     type Foo7Sym1 :: Nat -> Nat
-    type family Foo7Sym1 a0123456789876543210 where
+    type family Foo7Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo7Sym1 a0123456789876543210 = Foo7 a0123456789876543210
     type Foo6Sym0 :: (~>) Nat Nat
-    data Foo6Sym0 a0123456789876543210
+    data Foo6Sym0 :: (~>) Nat Nat
       where
         Foo6Sym0KindInference :: SameKind (Apply Foo6Sym0 arg) (Foo6Sym1 arg) =>
                                  Foo6Sym0 a0123456789876543210
@@ -668,10 +669,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo6Sym0 where
       suppressUnusedWarnings = snd (((,) Foo6Sym0KindInference) ())
     type Foo6Sym1 :: Nat -> Nat
-    type family Foo6Sym1 a0123456789876543210 where
+    type family Foo6Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo6Sym1 a0123456789876543210 = Foo6 a0123456789876543210
     type Foo5Sym0 :: (~>) Nat Nat
-    data Foo5Sym0 a0123456789876543210
+    data Foo5Sym0 :: (~>) Nat Nat
       where
         Foo5Sym0KindInference :: SameKind (Apply Foo5Sym0 arg) (Foo5Sym1 arg) =>
                                  Foo5Sym0 a0123456789876543210
@@ -679,10 +680,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo5Sym0 where
       suppressUnusedWarnings = snd (((,) Foo5Sym0KindInference) ())
     type Foo5Sym1 :: Nat -> Nat
-    type family Foo5Sym1 a0123456789876543210 where
+    type family Foo5Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo5Sym1 a0123456789876543210 = Foo5 a0123456789876543210
     type Foo4Sym0 :: (~>) Nat Nat
-    data Foo4Sym0 a0123456789876543210
+    data Foo4Sym0 :: (~>) Nat Nat
       where
         Foo4Sym0KindInference :: SameKind (Apply Foo4Sym0 arg) (Foo4Sym1 arg) =>
                                  Foo4Sym0 a0123456789876543210
@@ -690,10 +691,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo4Sym0 where
       suppressUnusedWarnings = snd (((,) Foo4Sym0KindInference) ())
     type Foo4Sym1 :: Nat -> Nat
-    type family Foo4Sym1 a0123456789876543210 where
+    type family Foo4Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo4Sym1 a0123456789876543210 = Foo4 a0123456789876543210
     type Foo3Sym0 :: (~>) Nat Nat
-    data Foo3Sym0 a0123456789876543210
+    data Foo3Sym0 :: (~>) Nat Nat
       where
         Foo3Sym0KindInference :: SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
                                  Foo3Sym0 a0123456789876543210
@@ -701,13 +702,13 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo3Sym0 where
       suppressUnusedWarnings = snd (((,) Foo3Sym0KindInference) ())
     type Foo3Sym1 :: Nat -> Nat
-    type family Foo3Sym1 a0123456789876543210 where
+    type family Foo3Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo3Sym1 a0123456789876543210 = Foo3 a0123456789876543210
     type Foo2Sym0 :: Nat
-    type family Foo2Sym0 where
+    type family Foo2Sym0 :: Nat where
       Foo2Sym0 = Foo2
     type Foo1Sym0 :: (~>) Nat Nat
-    data Foo1Sym0 a0123456789876543210
+    data Foo1Sym0 :: (~>) Nat Nat
       where
         Foo1Sym0KindInference :: SameKind (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
                                  Foo1Sym0 a0123456789876543210
@@ -715,52 +716,52 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo1Sym0 where
       suppressUnusedWarnings = snd (((,) Foo1Sym0KindInference) ())
     type Foo1Sym1 :: Nat -> Nat
-    type family Foo1Sym1 a0123456789876543210 where
+    type family Foo1Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo1Sym1 a0123456789876543210 = Foo1 a0123456789876543210
     type Foo14 :: Nat -> (Nat, Nat)
-    type family Foo14 a where
+    type family Foo14 (a :: Nat) :: (Nat, Nat) where
       Foo14 x = Apply (Apply Tuple2Sym0 (Let0123456789876543210ZSym1 x)) (Let0123456789876543210YSym1 x)
     type Foo13_ :: a -> a
-    type family Foo13_ a where
+    type family Foo13_ (a :: a) :: a where
       Foo13_ y = y
     type Foo13 :: forall a. a -> a
-    type family Foo13 a where
+    type family Foo13 (a :: a) :: a where
       Foo13 x = Apply Foo13_Sym0 (Let0123456789876543210BarSym1 x)
     type Foo12 :: Nat -> Nat
-    type family Foo12 a where
+    type family Foo12 (a :: Nat) :: Nat where
       Foo12 x = Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) x) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))
     type Foo11 :: Nat -> Nat
-    type family Foo11 a where
+    type family Foo11 (a :: Nat) :: Nat where
       Foo11 x = Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) (Apply SuccSym0 ZeroSym0)) (Let0123456789876543210ZSym1 x)
     type Foo10 :: Nat -> Nat
-    type family Foo10 a where
+    type family Foo10 (a :: Nat) :: Nat where
       Foo10 x = Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) (Apply SuccSym0 ZeroSym0)) x
     type Foo9 :: Nat -> Nat
-    type family Foo9 a where
+    type family Foo9 (a :: Nat) :: Nat where
       Foo9 x = Apply (Let0123456789876543210ZSym1 x) x
     type Foo8 :: Nat -> Nat
-    type family Foo8 a where
+    type family Foo8 (a :: Nat) :: Nat where
       Foo8 x = Let0123456789876543210ZSym1 x
     type Foo7 :: Nat -> Nat
-    type family Foo7 a where
+    type family Foo7 (a :: Nat) :: Nat where
       Foo7 x = Let0123456789876543210XSym1 x
     type Foo6 :: Nat -> Nat
-    type family Foo6 a where
+    type family Foo6 (a :: Nat) :: Nat where
       Foo6 x = Let0123456789876543210ZSym1 x
     type Foo5 :: Nat -> Nat
-    type family Foo5 a where
+    type family Foo5 (a :: Nat) :: Nat where
       Foo5 x = Apply (Let0123456789876543210FSym1 x) x
     type Foo4 :: Nat -> Nat
-    type family Foo4 a where
+    type family Foo4 (a :: Nat) :: Nat where
       Foo4 x = Apply (Let0123456789876543210FSym1 x) x
     type Foo3 :: Nat -> Nat
-    type family Foo3 a where
+    type family Foo3 (a :: Nat) :: Nat where
       Foo3 x = Let0123456789876543210YSym1 x
     type Foo2 :: Nat
-    type family Foo2 where
+    type family Foo2 :: Nat where
       Foo2 = Let0123456789876543210ZSym0
     type Foo1 :: Nat -> Nat
-    type family Foo1 a where
+    type family Foo1 (a :: Nat) :: Nat where
       Foo1 x = Let0123456789876543210YSym1 x
     sFoo14 ::
       forall (t :: Nat). Sing t -> Sing (Apply Foo14Sym0 t :: (Nat, Nat))

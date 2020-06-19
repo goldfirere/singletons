@@ -6,7 +6,7 @@ Singletons/PolyKinds.hs:(0,0)-(0,0): Splicing declarations
     class Cls (a :: k) where
       fff :: Proxy (a :: k) -> ()
     type FffSym0 :: forall k (a :: k). (~>) (Proxy (a :: k)) ()
-    data FffSym0 a0123456789876543210
+    data FffSym0 :: (~>) (Proxy (a :: k)) ()
       where
         FffSym0KindInference :: SameKind (Apply FffSym0 arg) (FffSym1 arg) =>
                                 FffSym0 a0123456789876543210
@@ -14,7 +14,7 @@ Singletons/PolyKinds.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FffSym0 where
       suppressUnusedWarnings = snd (((,) FffSym0KindInference) ())
     type FffSym1 :: forall k (a :: k). Proxy (a :: k) -> ()
-    type family FffSym1 a0123456789876543210 where
+    type family FffSym1 (a0123456789876543210 :: Proxy (a :: k)) :: () where
       FffSym1 a0123456789876543210 = Fff a0123456789876543210
     class PCls (a :: k) where
       type Fff (arg :: Proxy (a :: k)) :: ()

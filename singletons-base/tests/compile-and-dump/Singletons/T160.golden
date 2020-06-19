@@ -24,7 +24,7 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 x 'True = FromInteger 1
       Case_0123456789876543210 x 'False = Apply (Apply ($@#@$) TypeErrorSym0) (Apply ShowTypeSym0 x)
     type FooSym0 :: (~>) a a
-    data FooSym0 a0123456789876543210
+    data FooSym0 :: (~>) a a
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
@@ -32,10 +32,10 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
     type FooSym1 :: a -> a
-    type family FooSym1 a0123456789876543210 where
+    type family FooSym1 (a0123456789876543210 :: a) :: a where
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
     type Foo :: a -> a
-    type family Foo a where
+    type family Foo (a :: a) :: a where
       Foo x = Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
     sFoo ::
       forall a (t :: a).

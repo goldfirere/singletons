@@ -2,7 +2,7 @@ Promote/T361.hs:0:0:: Splicing declarations
     genDefunSymbols [''Proxy]
   ======>
     type ProxySym0 :: forall k (t :: k). Proxy (t :: k)
-    type family ProxySym0 where
+    type family ProxySym0 :: Proxy (t :: k) where
       ProxySym0 = 'Proxy
 Promote/T361.hs:(0,0)-(0,0): Splicing declarations
     promote
@@ -12,7 +12,7 @@ Promote/T361.hs:(0,0)-(0,0): Splicing declarations
     f :: Proxy 1 -> Proxy 2
     f Proxy = Proxy
     type FSym0 :: (~>) (Proxy 1) (Proxy 2)
-    data FSym0 a0123456789876543210
+    data FSym0 :: (~>) (Proxy 1) (Proxy 2)
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
@@ -20,8 +20,8 @@ Promote/T361.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
     type FSym1 :: Proxy 1 -> Proxy 2
-    type family FSym1 a0123456789876543210 where
+    type family FSym1 (a0123456789876543210 :: Proxy 1) :: Proxy 2 where
       FSym1 a0123456789876543210 = F a0123456789876543210
     type F :: Proxy 1 -> Proxy 2
-    type family F a where
+    type family F (a :: Proxy 1) :: Proxy 2 where
       F 'Proxy = ProxySym0

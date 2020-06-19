@@ -213,7 +213,7 @@ defunctionalize name m_fixity defun_ki = do
           --
           -- @
           -- type ExampleSym2 :: a -> b -> c ~> d ~> Type
-          -- data ExampleSym2 x y where ...
+          -- data ExampleSym2 (x :: a) (y :: b) :: c ~> d ~> Type where ...
           -- type instance Apply (ExampleSym2 x y) z = ExampleSym3 x y z
           -- ...
           -- @
@@ -240,6 +240,12 @@ defunctionalize name m_fixity defun_ki = do
           --   and later defunctionalization symbols. This is the main payload of
           --   the function.
           --
+          -- Note that the body of ExampleSym2 redundantly includes the
+          -- argument kinds and result kind, which are already stated in the
+          -- standalone kind signature. This is a deliberate choice.
+          -- See Note [Keep redundant kind information for Haddocks]
+          -- in D.S.Promote.
+          --
           -- This function is quadratic because it appends a variable at the end of
           -- the @arg_nks@ list at each iteration. In practice, this is unlikely
           -- to be a performance bottleneck since the number of arguments rarely
@@ -247,7 +253,7 @@ defunctionalize name m_fixity defun_ki = do
           go :: Int -> [(Name, DKind)] -> [(Name, DKind)] -> (DKind, [DDec])
           go n arg_nks res_nkss =
             let arg_tvbs :: [DTyVarBndr]
-                arg_tvbs = map (DPlainTV . fst) arg_nks
+                arg_tvbs = map (uncurry DKindedTV) arg_nks
 
                 mk_sak_dec :: DKind -> DDec
                 mk_sak_dec res_ki =
@@ -256,7 +262,7 @@ defunctionalize name m_fixity defun_ki = do
             case res_nkss of
               [] ->
                 let sat_sak_dec = mk_sak_dec sak_res_ki
-                    sat_decs    = mk_sat_decs opts n arg_tvbs Nothing
+                    sat_decs    = mk_sat_decs opts n arg_tvbs (Just sak_res_ki)
                 in (sak_res_ki, sat_sak_dec:sat_decs)
               res_nk:res_nks ->
                 let (res_ki, decs)   = go (n+1) (arg_nks ++ [res_nk]) res_nks
@@ -264,7 +270,7 @@ defunctionalize name m_fixity defun_ki = do
                     defun_sak_dec    = mk_sak_dec tyfun
                     defun_other_decs = mk_defun_decs opts n sak_arg_n
                                                      arg_tvbs (fst res_nk)
-                                                     extra_name Nothing
+                                                     extra_name (Just tyfun)
                 in (tyfun, defun_sak_dec:defun_other_decs ++ decs)
 
       pure $ snd $ go 0 [] $ zip arg_names sak_arg_kis

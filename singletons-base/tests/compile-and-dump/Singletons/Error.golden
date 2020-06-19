@@ -8,7 +8,7 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     head (a : _) = a
     head [] = error "Data.Singletons.List.head: empty list"
     type HeadSym0 :: (~>) [a] a
-    data HeadSym0 a0123456789876543210
+    data HeadSym0 :: (~>) [a] a
       where
         HeadSym0KindInference :: SameKind (Apply HeadSym0 arg) (HeadSym1 arg) =>
                                  HeadSym0 a0123456789876543210
@@ -16,10 +16,10 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings HeadSym0 where
       suppressUnusedWarnings = snd (((,) HeadSym0KindInference) ())
     type HeadSym1 :: [a] -> a
-    type family HeadSym1 a0123456789876543210 where
+    type family HeadSym1 (a0123456789876543210 :: [a]) :: a where
       HeadSym1 a0123456789876543210 = Head a0123456789876543210
     type Head :: [a] -> a
-    type family Head a where
+    type family Head (a :: [a]) :: a where
       Head ('(:) a _) = a
       Head '[] = Apply ErrorSym0 "Data.Singletons.List.head: empty list"
     sHead ::

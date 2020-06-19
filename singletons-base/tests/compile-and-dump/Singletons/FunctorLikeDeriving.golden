@@ -11,7 +11,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     data Empty (a :: Type) deriving (Functor, Foldable, Traversable)
     type MkT1Sym0 :: forall x a.
                      (~>) x ((~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))))
-    data MkT1Sym0 a0123456789876543210
+    data MkT1Sym0 :: (~>) x ((~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))))
       where
         MkT1Sym0KindInference :: SameKind (Apply MkT1Sym0 arg) (MkT1Sym1 arg) =>
                                  MkT1Sym0 a0123456789876543210
@@ -20,7 +20,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) MkT1Sym0KindInference) ())
     type MkT1Sym1 :: forall x a.
                      x -> (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))
-    data MkT1Sym1 a0123456789876543210 a0123456789876543210
+    data MkT1Sym1 (a0123456789876543210 :: x) :: (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))
       where
         MkT1Sym1KindInference :: SameKind (Apply (MkT1Sym1 a0123456789876543210) arg) (MkT1Sym2 a0123456789876543210 arg) =>
                                  MkT1Sym1 a0123456789876543210 a0123456789876543210
@@ -29,7 +29,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) MkT1Sym1KindInference) ())
     type MkT1Sym2 :: forall x a.
                      x -> a -> (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))
-    data MkT1Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data MkT1Sym2 (a0123456789876543210 :: x) (a0123456789876543210 :: a) :: (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))
       where
         MkT1Sym2KindInference :: SameKind (Apply (MkT1Sym2 a0123456789876543210 a0123456789876543210) arg) (MkT1Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                  MkT1Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -38,7 +38,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) MkT1Sym2KindInference) ())
     type MkT1Sym3 :: forall x a.
                      x -> a -> Maybe a -> (~>) (Maybe (Maybe a)) (T x a)
-    data MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data MkT1Sym3 (a0123456789876543210 :: x) (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) :: (~>) (Maybe (Maybe a)) (T x a)
       where
         MkT1Sym3KindInference :: SameKind (Apply (MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (MkT1Sym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
                                  MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -47,10 +47,10 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) MkT1Sym3KindInference) ())
     type MkT1Sym4 :: forall x a.
                      x -> a -> Maybe a -> Maybe (Maybe a) -> T x a
-    type family MkT1Sym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family MkT1Sym4 (a0123456789876543210 :: x) (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) (a0123456789876543210 :: Maybe (Maybe a)) :: T x a where
       MkT1Sym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = MkT1 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     type MkT2Sym0 :: forall x a. (~>) (Maybe x) (T x a)
-    data MkT2Sym0 a0123456789876543210
+    data MkT2Sym0 :: (~>) (Maybe x) (T x a)
       where
         MkT2Sym0KindInference :: SameKind (Apply MkT2Sym0 arg) (MkT2Sym1 arg) =>
                                  MkT2Sym0 a0123456789876543210
@@ -58,7 +58,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MkT2Sym0 where
       suppressUnusedWarnings = snd (((,) MkT2Sym0KindInference) ())
     type MkT2Sym1 :: forall x a. Maybe x -> T x a
-    type family MkT2Sym1 a0123456789876543210 where
+    type family MkT2Sym1 (a0123456789876543210 :: Maybe x) :: T x a where
       MkT2Sym1 a0123456789876543210 = MkT2 a0123456789876543210
     type family Lambda_0123456789876543210 _f_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n_0123456789876543210 where
       Lambda_0123456789876543210 _f_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n_0123456789876543210 = n_0123456789876543210
@@ -141,11 +141,11 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     type family Lambda_0123456789876543210Sym3 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 n_01234567898765432100123456789876543210 where
       Lambda_0123456789876543210Sym3 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 n_01234567898765432100123456789876543210 = Lambda_0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 n_01234567898765432100123456789876543210
     type Fmap_0123456789876543210 :: (~>) a b -> T x a -> T x b
-    type family Fmap_0123456789876543210 a a where
+    type family Fmap_0123456789876543210 (a :: (~>) a b) (a :: T x a) :: T x b where
       Fmap_0123456789876543210 _f_0123456789876543210 (MkT1 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) = Apply (Apply (Apply (Apply MkT1Sym0 (Apply (Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210)) (Apply _f_0123456789876543210 a_0123456789876543210)) (Apply (Apply FmapSym0 _f_0123456789876543210) a_0123456789876543210)) (Apply (Apply FmapSym0 (Apply FmapSym0 _f_0123456789876543210)) a_0123456789876543210)
       Fmap_0123456789876543210 _f_0123456789876543210 (MkT2 a_0123456789876543210) = Apply MkT2Sym0 (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) a_0123456789876543210) a_0123456789876543210)
     type Fmap_0123456789876543210Sym0 :: (~>) ((~>) a b) ((~>) (T x a) (T x b))
-    data Fmap_0123456789876543210Sym0 a0123456789876543210
+    data Fmap_0123456789876543210Sym0 :: (~>) ((~>) a b) ((~>) (T x a) (T x b))
       where
         Fmap_0123456789876543210Sym0KindInference :: SameKind (Apply Fmap_0123456789876543210Sym0 arg) (Fmap_0123456789876543210Sym1 arg) =>
                                                      Fmap_0123456789876543210Sym0 a0123456789876543210
@@ -155,7 +155,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) Fmap_0123456789876543210Sym0KindInference) ())
     type Fmap_0123456789876543210Sym1 :: (~>) a b
                                          -> (~>) (T x a) (T x b)
-    data Fmap_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data Fmap_0123456789876543210Sym1 (a0123456789876543210 :: (~>) a b) :: (~>) (T x a) (T x b)
       where
         Fmap_0123456789876543210Sym1KindInference :: SameKind (Apply (Fmap_0123456789876543210Sym1 a0123456789876543210) arg) (Fmap_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                      Fmap_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -164,7 +164,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) Fmap_0123456789876543210Sym1KindInference) ())
     type Fmap_0123456789876543210Sym2 :: (~>) a b -> T x a -> T x b
-    type family Fmap_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family Fmap_0123456789876543210Sym2 (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: T x a) :: T x b where
       Fmap_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Fmap_0123456789876543210 a0123456789876543210 a0123456789876543210
     type family Lambda_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n_0123456789876543210 where
       Lambda_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n_0123456789876543210 = n_0123456789876543210
@@ -299,11 +299,11 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     type family Lambda_0123456789876543210Sym3 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 n_01234567898765432100123456789876543210 where
       Lambda_0123456789876543210Sym3 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 n_01234567898765432100123456789876543210 = Lambda_0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 n_01234567898765432100123456789876543210
     type TFHelper_0123456789876543210 :: a -> T x b -> T x a
-    type family TFHelper_0123456789876543210 a a where
+    type family TFHelper_0123456789876543210 (a :: a) (a :: T x b) :: T x a where
       TFHelper_0123456789876543210 _z_0123456789876543210 (MkT1 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) = Apply (Apply (Apply (Apply MkT1Sym0 (Apply (Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210)) (Apply (Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210)) (Apply (Apply (<$@#@$) _z_0123456789876543210) a_0123456789876543210)) (Apply (Apply FmapSym0 (Apply (<$@#@$) _z_0123456789876543210)) a_0123456789876543210)
       TFHelper_0123456789876543210 _z_0123456789876543210 (MkT2 a_0123456789876543210) = Apply MkT2Sym0 (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210)
     type TFHelper_0123456789876543210Sym0 :: (~>) a ((~>) (T x b) (T x a))
-    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+    data TFHelper_0123456789876543210Sym0 :: (~>) a ((~>) (T x b) (T x a))
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
@@ -312,7 +312,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
     type TFHelper_0123456789876543210Sym1 :: a -> (~>) (T x b) (T x a)
-    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: a) :: (~>) (T x b) (T x a)
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -321,7 +321,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
     type TFHelper_0123456789876543210Sym2 :: a -> T x b -> T x a
-    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: T x b) :: T x a where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PFunctor (T x) where
       type Fmap a a = Apply (Apply Fmap_0123456789876543210Sym0 a) a
@@ -407,11 +407,11 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     type family Lambda_0123456789876543210Sym3 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 n_01234567898765432100123456789876543210 where
       Lambda_0123456789876543210Sym3 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 n_01234567898765432100123456789876543210 = Lambda_0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 n_01234567898765432100123456789876543210
     type FoldMap_0123456789876543210 :: (~>) a m -> T x a -> m
-    type family FoldMap_0123456789876543210 a a where
+    type family FoldMap_0123456789876543210 (a :: (~>) a m) (a :: T x a) :: m where
       FoldMap_0123456789876543210 _f_0123456789876543210 (MkT1 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) = Apply (Apply MappendSym0 (Apply (Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210)) (Apply (Apply MappendSym0 (Apply _f_0123456789876543210 a_0123456789876543210)) (Apply (Apply MappendSym0 (Apply (Apply FoldMapSym0 _f_0123456789876543210) a_0123456789876543210)) (Apply (Apply FoldMapSym0 (Apply FoldMapSym0 _f_0123456789876543210)) a_0123456789876543210)))
       FoldMap_0123456789876543210 _f_0123456789876543210 (MkT2 a_0123456789876543210) = Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) a_0123456789876543210) a_0123456789876543210
     type FoldMap_0123456789876543210Sym0 :: (~>) ((~>) a m) ((~>) (T x a) m)
-    data FoldMap_0123456789876543210Sym0 a0123456789876543210
+    data FoldMap_0123456789876543210Sym0 :: (~>) ((~>) a m) ((~>) (T x a) m)
       where
         FoldMap_0123456789876543210Sym0KindInference :: SameKind (Apply FoldMap_0123456789876543210Sym0 arg) (FoldMap_0123456789876543210Sym1 arg) =>
                                                         FoldMap_0123456789876543210Sym0 a0123456789876543210
@@ -420,7 +420,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) FoldMap_0123456789876543210Sym0KindInference) ())
     type FoldMap_0123456789876543210Sym1 :: (~>) a m -> (~>) (T x a) m
-    data FoldMap_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data FoldMap_0123456789876543210Sym1 (a0123456789876543210 :: (~>) a m) :: (~>) (T x a) m
       where
         FoldMap_0123456789876543210Sym1KindInference :: SameKind (Apply (FoldMap_0123456789876543210Sym1 a0123456789876543210) arg) (FoldMap_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         FoldMap_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -429,7 +429,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) FoldMap_0123456789876543210Sym1KindInference) ())
     type FoldMap_0123456789876543210Sym2 :: (~>) a m -> T x a -> m
-    type family FoldMap_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family FoldMap_0123456789876543210Sym2 (a0123456789876543210 :: (~>) a m) (a0123456789876543210 :: T x a) :: m where
       FoldMap_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = FoldMap_0123456789876543210 a0123456789876543210 a0123456789876543210
     type family Lambda_0123456789876543210 _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n1_0123456789876543210 n2_0123456789876543210 where
       Lambda_0123456789876543210 _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n1_0123456789876543210 n2_0123456789876543210 = n2_0123456789876543210
@@ -765,11 +765,11 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       Lambda_0123456789876543210Sym5 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 = Lambda_0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210
     type Foldr_0123456789876543210 :: (~>) a ((~>) b b)
                                       -> b -> T x a -> b
-    type family Foldr_0123456789876543210 a a a where
+    type family Foldr_0123456789876543210 (a :: (~>) a ((~>) b b)) (a :: b) (a :: T x a) :: b where
       Foldr_0123456789876543210 _f_0123456789876543210 _z_0123456789876543210 (MkT1 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) = Apply (Apply (Apply (Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) (Apply (Apply _f_0123456789876543210 a_0123456789876543210) (Apply (Apply (Apply (Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) (Apply (Apply (Apply (Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) _z_0123456789876543210)))
       Foldr_0123456789876543210 _f_0123456789876543210 _z_0123456789876543210 (MkT2 a_0123456789876543210) = Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210) _z_0123456789876543210
     type Foldr_0123456789876543210Sym0 :: (~>) ((~>) a ((~>) b b)) ((~>) b ((~>) (T x a) b))
-    data Foldr_0123456789876543210Sym0 a0123456789876543210
+    data Foldr_0123456789876543210Sym0 :: (~>) ((~>) a ((~>) b b)) ((~>) b ((~>) (T x a) b))
       where
         Foldr_0123456789876543210Sym0KindInference :: SameKind (Apply Foldr_0123456789876543210Sym0 arg) (Foldr_0123456789876543210Sym1 arg) =>
                                                       Foldr_0123456789876543210Sym0 a0123456789876543210
@@ -779,7 +779,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) Foldr_0123456789876543210Sym0KindInference) ())
     type Foldr_0123456789876543210Sym1 :: (~>) a ((~>) b b)
                                           -> (~>) b ((~>) (T x a) b)
-    data Foldr_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data Foldr_0123456789876543210Sym1 (a0123456789876543210 :: (~>) a ((~>) b b)) :: (~>) b ((~>) (T x a) b)
       where
         Foldr_0123456789876543210Sym1KindInference :: SameKind (Apply (Foldr_0123456789876543210Sym1 a0123456789876543210) arg) (Foldr_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                       Foldr_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -789,7 +789,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) Foldr_0123456789876543210Sym1KindInference) ())
     type Foldr_0123456789876543210Sym2 :: (~>) a ((~>) b b)
                                           -> b -> (~>) (T x a) b
-    data Foldr_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data Foldr_0123456789876543210Sym2 (a0123456789876543210 :: (~>) a ((~>) b b)) (a0123456789876543210 :: b) :: (~>) (T x a) b
       where
         Foldr_0123456789876543210Sym2KindInference :: SameKind (Apply (Foldr_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (Foldr_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                       Foldr_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -799,18 +799,18 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) Foldr_0123456789876543210Sym2KindInference) ())
     type Foldr_0123456789876543210Sym3 :: (~>) a ((~>) b b)
                                           -> b -> T x a -> b
-    type family Foldr_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family Foldr_0123456789876543210Sym3 (a0123456789876543210 :: (~>) a ((~>) b b)) (a0123456789876543210 :: b) (a0123456789876543210 :: T x a) :: b where
       Foldr_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = Foldr_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PFoldable (T x) where
       type FoldMap a a = Apply (Apply FoldMap_0123456789876543210Sym0 a) a
       type Foldr a a a = Apply (Apply (Apply Foldr_0123456789876543210Sym0 a) a) a
     type Traverse_0123456789876543210 :: (~>) a (f b)
                                          -> T x a -> f (T x b)
-    type family Traverse_0123456789876543210 a a where
+    type family Traverse_0123456789876543210 (a :: (~>) a (f b)) (a :: T x a) :: f (T x b) where
       Traverse_0123456789876543210 _f_0123456789876543210 (MkT1 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) = Apply (Apply (<*>@#@$) (Apply (Apply (<*>@#@$) (Apply (Apply (Apply LiftA2Sym0 MkT1Sym0) (Apply PureSym0 a_0123456789876543210)) (Apply _f_0123456789876543210 a_0123456789876543210))) (Apply (Apply TraverseSym0 _f_0123456789876543210) a_0123456789876543210))) (Apply (Apply TraverseSym0 (Apply TraverseSym0 _f_0123456789876543210)) a_0123456789876543210)
       Traverse_0123456789876543210 _f_0123456789876543210 (MkT2 a_0123456789876543210) = Apply (Apply FmapSym0 MkT2Sym0) (Apply PureSym0 a_0123456789876543210)
     type Traverse_0123456789876543210Sym0 :: (~>) ((~>) a (f b)) ((~>) (T x a) (f (T x b)))
-    data Traverse_0123456789876543210Sym0 a0123456789876543210
+    data Traverse_0123456789876543210Sym0 :: (~>) ((~>) a (f b)) ((~>) (T x a) (f (T x b)))
       where
         Traverse_0123456789876543210Sym0KindInference :: SameKind (Apply Traverse_0123456789876543210Sym0 arg) (Traverse_0123456789876543210Sym1 arg) =>
                                                          Traverse_0123456789876543210Sym0 a0123456789876543210
@@ -820,7 +820,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) Traverse_0123456789876543210Sym0KindInference) ())
     type Traverse_0123456789876543210Sym1 :: (~>) a (f b)
                                              -> (~>) (T x a) (f (T x b))
-    data Traverse_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data Traverse_0123456789876543210Sym1 (a0123456789876543210 :: (~>) a (f b)) :: (~>) (T x a) (f (T x b))
       where
         Traverse_0123456789876543210Sym1KindInference :: SameKind (Apply (Traverse_0123456789876543210Sym1 a0123456789876543210) arg) (Traverse_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          Traverse_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -830,16 +830,16 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) Traverse_0123456789876543210Sym1KindInference) ())
     type Traverse_0123456789876543210Sym2 :: (~>) a (f b)
                                              -> T x a -> f (T x b)
-    type family Traverse_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family Traverse_0123456789876543210Sym2 (a0123456789876543210 :: (~>) a (f b)) (a0123456789876543210 :: T x a) :: f (T x b) where
       Traverse_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Traverse_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PTraversable (T x) where
       type Traverse a a = Apply (Apply Traverse_0123456789876543210Sym0 a) a
     type family Case_0123456789876543210 v_0123456789876543210 t where
     type Fmap_0123456789876543210 :: (~>) a b -> Empty a -> Empty b
-    type family Fmap_0123456789876543210 a a where
+    type family Fmap_0123456789876543210 (a :: (~>) a b) (a :: Empty a) :: Empty b where
       Fmap_0123456789876543210 _ v_0123456789876543210 = Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210
     type Fmap_0123456789876543210Sym0 :: (~>) ((~>) a b) ((~>) (Empty a) (Empty b))
-    data Fmap_0123456789876543210Sym0 a0123456789876543210
+    data Fmap_0123456789876543210Sym0 :: (~>) ((~>) a b) ((~>) (Empty a) (Empty b))
       where
         Fmap_0123456789876543210Sym0KindInference :: SameKind (Apply Fmap_0123456789876543210Sym0 arg) (Fmap_0123456789876543210Sym1 arg) =>
                                                      Fmap_0123456789876543210Sym0 a0123456789876543210
@@ -849,7 +849,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) Fmap_0123456789876543210Sym0KindInference) ())
     type Fmap_0123456789876543210Sym1 :: (~>) a b
                                          -> (~>) (Empty a) (Empty b)
-    data Fmap_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data Fmap_0123456789876543210Sym1 (a0123456789876543210 :: (~>) a b) :: (~>) (Empty a) (Empty b)
       where
         Fmap_0123456789876543210Sym1KindInference :: SameKind (Apply (Fmap_0123456789876543210Sym1 a0123456789876543210) arg) (Fmap_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                      Fmap_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -858,14 +858,14 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) Fmap_0123456789876543210Sym1KindInference) ())
     type Fmap_0123456789876543210Sym2 :: (~>) a b -> Empty a -> Empty b
-    type family Fmap_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family Fmap_0123456789876543210Sym2 (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: Empty a) :: Empty b where
       Fmap_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Fmap_0123456789876543210 a0123456789876543210 a0123456789876543210
     type family Case_0123456789876543210 v_0123456789876543210 t where
     type TFHelper_0123456789876543210 :: a -> Empty b -> Empty a
-    type family TFHelper_0123456789876543210 a a where
+    type family TFHelper_0123456789876543210 (a :: a) (a :: Empty b) :: Empty a where
       TFHelper_0123456789876543210 _ v_0123456789876543210 = Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210
     type TFHelper_0123456789876543210Sym0 :: (~>) a ((~>) (Empty b) (Empty a))
-    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+    data TFHelper_0123456789876543210Sym0 :: (~>) a ((~>) (Empty b) (Empty a))
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
@@ -875,7 +875,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
     type TFHelper_0123456789876543210Sym1 :: a
                                              -> (~>) (Empty b) (Empty a)
-    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: a) :: (~>) (Empty b) (Empty a)
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -884,16 +884,16 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
     type TFHelper_0123456789876543210Sym2 :: a -> Empty b -> Empty a
-    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Empty b) :: Empty a where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PFunctor Empty where
       type Fmap a a = Apply (Apply Fmap_0123456789876543210Sym0 a) a
       type (<$) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type FoldMap_0123456789876543210 :: (~>) a m -> Empty a -> m
-    type family FoldMap_0123456789876543210 a a where
+    type family FoldMap_0123456789876543210 (a :: (~>) a m) (a :: Empty a) :: m where
       FoldMap_0123456789876543210 _ _ = MemptySym0
     type FoldMap_0123456789876543210Sym0 :: (~>) ((~>) a m) ((~>) (Empty a) m)
-    data FoldMap_0123456789876543210Sym0 a0123456789876543210
+    data FoldMap_0123456789876543210Sym0 :: (~>) ((~>) a m) ((~>) (Empty a) m)
       where
         FoldMap_0123456789876543210Sym0KindInference :: SameKind (Apply FoldMap_0123456789876543210Sym0 arg) (FoldMap_0123456789876543210Sym1 arg) =>
                                                         FoldMap_0123456789876543210Sym0 a0123456789876543210
@@ -903,7 +903,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) FoldMap_0123456789876543210Sym0KindInference) ())
     type FoldMap_0123456789876543210Sym1 :: (~>) a m
                                             -> (~>) (Empty a) m
-    data FoldMap_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data FoldMap_0123456789876543210Sym1 (a0123456789876543210 :: (~>) a m) :: (~>) (Empty a) m
       where
         FoldMap_0123456789876543210Sym1KindInference :: SameKind (Apply (FoldMap_0123456789876543210Sym1 a0123456789876543210) arg) (FoldMap_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         FoldMap_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -912,17 +912,17 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) FoldMap_0123456789876543210Sym1KindInference) ())
     type FoldMap_0123456789876543210Sym2 :: (~>) a m -> Empty a -> m
-    type family FoldMap_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family FoldMap_0123456789876543210Sym2 (a0123456789876543210 :: (~>) a m) (a0123456789876543210 :: Empty a) :: m where
       FoldMap_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = FoldMap_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PFoldable Empty where
       type FoldMap a a = Apply (Apply FoldMap_0123456789876543210Sym0 a) a
     type family Case_0123456789876543210 v_0123456789876543210 t where
     type Traverse_0123456789876543210 :: (~>) a (f b)
                                          -> Empty a -> f (Empty b)
-    type family Traverse_0123456789876543210 a a where
+    type family Traverse_0123456789876543210 (a :: (~>) a (f b)) (a :: Empty a) :: f (Empty b) where
       Traverse_0123456789876543210 _ v_0123456789876543210 = Apply PureSym0 (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210)
     type Traverse_0123456789876543210Sym0 :: (~>) ((~>) a (f b)) ((~>) (Empty a) (f (Empty b)))
-    data Traverse_0123456789876543210Sym0 a0123456789876543210
+    data Traverse_0123456789876543210Sym0 :: (~>) ((~>) a (f b)) ((~>) (Empty a) (f (Empty b)))
       where
         Traverse_0123456789876543210Sym0KindInference :: SameKind (Apply Traverse_0123456789876543210Sym0 arg) (Traverse_0123456789876543210Sym1 arg) =>
                                                          Traverse_0123456789876543210Sym0 a0123456789876543210
@@ -932,7 +932,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) Traverse_0123456789876543210Sym0KindInference) ())
     type Traverse_0123456789876543210Sym1 :: (~>) a (f b)
                                              -> (~>) (Empty a) (f (Empty b))
-    data Traverse_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data Traverse_0123456789876543210Sym1 (a0123456789876543210 :: (~>) a (f b)) :: (~>) (Empty a) (f (Empty b))
       where
         Traverse_0123456789876543210Sym1KindInference :: SameKind (Apply (Traverse_0123456789876543210Sym1 a0123456789876543210) arg) (Traverse_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          Traverse_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -942,7 +942,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) Traverse_0123456789876543210Sym1KindInference) ())
     type Traverse_0123456789876543210Sym2 :: (~>) a (f b)
                                              -> Empty a -> f (Empty b)
-    type family Traverse_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family Traverse_0123456789876543210Sym2 (a0123456789876543210 :: (~>) a (f b)) (a0123456789876543210 :: Empty a) :: f (Empty b) where
       Traverse_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Traverse_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PTraversable Empty where
       type Traverse a a = Apply (Apply Traverse_0123456789876543210Sym0 a) a

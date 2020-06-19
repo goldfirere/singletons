@@ -10,19 +10,19 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       deriving Enum
     data Quux = Q1 | Q2
     type BarSym0 :: Foo
-    type family BarSym0 where
+    type family BarSym0 :: Foo where
       BarSym0 = Bar
     type BazSym0 :: Foo
-    type family BazSym0 where
+    type family BazSym0 :: Foo where
       BazSym0 = Baz
     type BumSym0 :: Foo
-    type family BumSym0 where
+    type family BumSym0 :: Foo where
       BumSym0 = Bum
     type Q1Sym0 :: Quux
-    type family Q1Sym0 where
+    type family Q1Sym0 :: Quux where
       Q1Sym0 = Q1
     type Q2Sym0 :: Quux
-    type family Q2Sym0 where
+    type family Q2Sym0 :: Quux where
       Q2Sym0 = Q2
     type family Case_0123456789876543210 n t where
       Case_0123456789876543210 n 'True = BumSym0
@@ -34,10 +34,10 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 n 'True = BarSym0
       Case_0123456789876543210 n 'False = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 1))
     type ToEnum_0123456789876543210 :: GHC.Types.Nat -> Foo
-    type family ToEnum_0123456789876543210 a where
+    type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: Foo where
       ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))
     type ToEnum_0123456789876543210Sym0 :: (~>) GHC.Types.Nat Foo
-    data ToEnum_0123456789876543210Sym0 a0123456789876543210
+    data ToEnum_0123456789876543210Sym0 :: (~>) GHC.Types.Nat Foo
       where
         ToEnum_0123456789876543210Sym0KindInference :: SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
                                                        ToEnum_0123456789876543210Sym0 a0123456789876543210
@@ -46,15 +46,15 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) ToEnum_0123456789876543210Sym0KindInference) ())
     type ToEnum_0123456789876543210Sym1 :: GHC.Types.Nat -> Foo
-    type family ToEnum_0123456789876543210Sym1 a0123456789876543210 where
+    type family ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) :: Foo where
       ToEnum_0123456789876543210Sym1 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     type FromEnum_0123456789876543210 :: Foo -> GHC.Types.Nat
-    type family FromEnum_0123456789876543210 a where
+    type family FromEnum_0123456789876543210 (a :: Foo) :: GHC.Types.Nat where
       FromEnum_0123456789876543210 Bar = FromInteger 0
       FromEnum_0123456789876543210 Baz = FromInteger 1
       FromEnum_0123456789876543210 Bum = FromInteger 2
     type FromEnum_0123456789876543210Sym0 :: (~>) Foo GHC.Types.Nat
-    data FromEnum_0123456789876543210Sym0 a0123456789876543210
+    data FromEnum_0123456789876543210Sym0 :: (~>) Foo GHC.Types.Nat
       where
         FromEnum_0123456789876543210Sym0KindInference :: SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
                                                          FromEnum_0123456789876543210Sym0 a0123456789876543210
@@ -63,7 +63,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) FromEnum_0123456789876543210Sym0KindInference) ())
     type FromEnum_0123456789876543210Sym1 :: Foo -> GHC.Types.Nat
-    type family FromEnum_0123456789876543210Sym1 a0123456789876543210 where
+    type family FromEnum_0123456789876543210Sym1 (a0123456789876543210 :: Foo) :: GHC.Types.Nat where
       FromEnum_0123456789876543210Sym1 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance PEnum Foo where
       type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
@@ -152,10 +152,10 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       Case_0123456789876543210 n 'True = Q1Sym0
       Case_0123456789876543210 n 'False = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 1))
     type ToEnum_0123456789876543210 :: GHC.Types.Nat -> Quux
-    type family ToEnum_0123456789876543210 a where
+    type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: Quux where
       ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))
     type ToEnum_0123456789876543210Sym0 :: (~>) GHC.Types.Nat Quux
-    data ToEnum_0123456789876543210Sym0 a0123456789876543210
+    data ToEnum_0123456789876543210Sym0 :: (~>) GHC.Types.Nat Quux
       where
         ToEnum_0123456789876543210Sym0KindInference :: SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
                                                        ToEnum_0123456789876543210Sym0 a0123456789876543210
@@ -164,14 +164,14 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       suppressUnusedWarnings
         = snd (((,) ToEnum_0123456789876543210Sym0KindInference) ())
     type ToEnum_0123456789876543210Sym1 :: GHC.Types.Nat -> Quux
-    type family ToEnum_0123456789876543210Sym1 a0123456789876543210 where
+    type family ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) :: Quux where
       ToEnum_0123456789876543210Sym1 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     type FromEnum_0123456789876543210 :: Quux -> GHC.Types.Nat
-    type family FromEnum_0123456789876543210 a where
+    type family FromEnum_0123456789876543210 (a :: Quux) :: GHC.Types.Nat where
       FromEnum_0123456789876543210 'Q1 = FromInteger 0
       FromEnum_0123456789876543210 'Q2 = FromInteger 1
     type FromEnum_0123456789876543210Sym0 :: (~>) Quux GHC.Types.Nat
-    data FromEnum_0123456789876543210Sym0 a0123456789876543210
+    data FromEnum_0123456789876543210Sym0 :: (~>) Quux GHC.Types.Nat
       where
         FromEnum_0123456789876543210Sym0KindInference :: SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
                                                          FromEnum_0123456789876543210Sym0 a0123456789876543210
@@ -180,7 +180,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       suppressUnusedWarnings
         = snd (((,) FromEnum_0123456789876543210Sym0KindInference) ())
     type FromEnum_0123456789876543210Sym1 :: Quux -> GHC.Types.Nat
-    type family FromEnum_0123456789876543210Sym1 a0123456789876543210 where
+    type family FromEnum_0123456789876543210Sym1 (a0123456789876543210 :: Quux) :: GHC.Types.Nat where
       FromEnum_0123456789876543210Sym1 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance PEnum Quux where
       type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a

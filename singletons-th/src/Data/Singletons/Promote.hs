@@ -834,11 +834,11 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                     ( lde_kvs_to_bind'
                     , Just $ DKiSigD proName sak
                     , DefunSAK sak
-                      -- If the promoted type family has a standalone kind
-                      -- signature, then there is no need to annotate the arguments
-                      -- or result with explicit kinds. A standalone kind signature
-                      -- accomplishes the same thing, but better.
-                    , mk_tf_head (map dropTvbKind all_args) DNoSig
+                      -- We opt to annotate the argument and result kinds in
+                      -- the body of the type family declaration even if it is
+                      -- given a standalone kind signature.
+                      -- See Note [Keep redundant kind information for Haddocks].
+                    , mk_tf_head all_args (DKindSig resK)
                     )
 
       defun_decs <- defunctionalize proName m_fixity defun_ki
@@ -975,6 +975,34 @@ In any case, it's probably not worth bothering with SAKs for local definitions
 like `g` in the first place, so we avoid generating SAKs for anything that
 closes over at least one local variable for now. If someone yells about this,
 we'll reconsider this design.
+
+Note [Keep redundant kind information for Haddocks]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`singletons-th` generates explicit argument kinds and result kinds for
+type-level declarations whenever possible, even if those kinds are technically
+redundant. For example, `singletons-th` would promote this:
+
+  id' :: a -> a
+
+To this:
+
+  type Id' :: a -> a
+  type family Id' (x :: a) :: a where ...
+
+Strictly speaking, the argument and result kind of Id' are unnecessary, since
+the same information is already present in the standalone kind signature.
+However, due to a Haddock limitation
+(https://github.com/haskell/haddock/issues/1178), Haddock will not render
+standalone kind signatures at all, so if the argument and result kind of Id'
+were omitted in the body, Haddock would render it like so:
+
+  type family Id' x where ...
+
+This is unfortunate for Haddock viewers, as this does not convey any kind
+information whatsoever. Until the aformentioned Haddock issue is resolved, we
+work around this limitation by generating the redundant argument and kind
+information anyway. Thankfully, this is simple to accomplish, as we already
+compute this information to begin with.
 -}
 
 promoteClause :: DType -- What to use as the LHS of the promoted type family

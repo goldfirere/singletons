@@ -4,7 +4,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
   ======>
     data Record a = MkRecord {field1 :: a, field2 :: Bool}
     type MkRecordSym0 :: forall a. (~>) a ((~>) Bool (Record a))
-    data MkRecordSym0 a0123456789876543210
+    data MkRecordSym0 :: (~>) a ((~>) Bool (Record a))
       where
         MkRecordSym0KindInference :: SameKind (Apply MkRecordSym0 arg) (MkRecordSym1 arg) =>
                                      MkRecordSym0 a0123456789876543210
@@ -12,7 +12,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MkRecordSym0 where
       suppressUnusedWarnings = snd (((,) MkRecordSym0KindInference) ())
     type MkRecordSym1 :: forall a. a -> (~>) Bool (Record a)
-    data MkRecordSym1 a0123456789876543210 a0123456789876543210
+    data MkRecordSym1 (a0123456789876543210 :: a) :: (~>) Bool (Record a)
       where
         MkRecordSym1KindInference :: SameKind (Apply (MkRecordSym1 a0123456789876543210) arg) (MkRecordSym2 a0123456789876543210 arg) =>
                                      MkRecordSym1 a0123456789876543210 a0123456789876543210
@@ -20,10 +20,10 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (MkRecordSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MkRecordSym1KindInference) ())
     type MkRecordSym2 :: forall a. a -> Bool -> Record a
-    type family MkRecordSym2 a0123456789876543210 a0123456789876543210 where
+    type family MkRecordSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Bool) :: Record a where
       MkRecordSym2 a0123456789876543210 a0123456789876543210 = MkRecord a0123456789876543210 a0123456789876543210
     type Field2Sym0 :: forall a. (~>) (Record a) Bool
-    data Field2Sym0 a0123456789876543210
+    data Field2Sym0 :: (~>) (Record a) Bool
       where
         Field2Sym0KindInference :: SameKind (Apply Field2Sym0 arg) (Field2Sym1 arg) =>
                                    Field2Sym0 a0123456789876543210
@@ -31,10 +31,10 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Field2Sym0 where
       suppressUnusedWarnings = snd (((,) Field2Sym0KindInference) ())
     type Field2Sym1 :: forall a. Record a -> Bool
-    type family Field2Sym1 a0123456789876543210 where
+    type family Field2Sym1 (a0123456789876543210 :: Record a) :: Bool where
       Field2Sym1 a0123456789876543210 = Field2 a0123456789876543210
     type Field1Sym0 :: forall a. (~>) (Record a) a
-    data Field1Sym0 a0123456789876543210
+    data Field1Sym0 :: (~>) (Record a) a
       where
         Field1Sym0KindInference :: SameKind (Apply Field1Sym0 arg) (Field1Sym1 arg) =>
                                    Field1Sym0 a0123456789876543210
@@ -42,13 +42,13 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Field1Sym0 where
       suppressUnusedWarnings = snd (((,) Field1Sym0KindInference) ())
     type Field1Sym1 :: forall a. Record a -> a
-    type family Field1Sym1 a0123456789876543210 where
+    type family Field1Sym1 (a0123456789876543210 :: Record a) :: a where
       Field1Sym1 a0123456789876543210 = Field1 a0123456789876543210
     type Field2 :: forall a. Record a -> Bool
-    type family Field2 a where
+    type family Field2 (a :: Record a) :: Bool where
       Field2 (MkRecord _ field) = field
     type Field1 :: forall a. Record a -> a
-    type family Field1 a where
+    type family Field1 (a :: Record a) :: a where
       Field1 (MkRecord field _) = field
     sField2 ::
       forall a (t :: Record a).

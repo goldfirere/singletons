@@ -8,7 +8,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
     contains _ [] = False
     contains elt (h : t) = ((elt == h) || (contains elt) t)
     type ContainsSym0 :: (~>) a ((~>) [a] Bool)
-    data ContainsSym0 a0123456789876543210
+    data ContainsSym0 :: (~>) a ((~>) [a] Bool)
       where
         ContainsSym0KindInference :: SameKind (Apply ContainsSym0 arg) (ContainsSym1 arg) =>
                                      ContainsSym0 a0123456789876543210
@@ -16,7 +16,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ContainsSym0 where
       suppressUnusedWarnings = snd (((,) ContainsSym0KindInference) ())
     type ContainsSym1 :: a -> (~>) [a] Bool
-    data ContainsSym1 a0123456789876543210 a0123456789876543210
+    data ContainsSym1 (a0123456789876543210 :: a) :: (~>) [a] Bool
       where
         ContainsSym1KindInference :: SameKind (Apply (ContainsSym1 a0123456789876543210) arg) (ContainsSym2 a0123456789876543210 arg) =>
                                      ContainsSym1 a0123456789876543210 a0123456789876543210
@@ -24,10 +24,10 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (ContainsSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) ContainsSym1KindInference) ())
     type ContainsSym2 :: a -> [a] -> Bool
-    type family ContainsSym2 a0123456789876543210 a0123456789876543210 where
+    type family ContainsSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: [a]) :: Bool where
       ContainsSym2 a0123456789876543210 a0123456789876543210 = Contains a0123456789876543210 a0123456789876543210
     type Contains :: a -> [a] -> Bool
-    type family Contains a a where
+    type family Contains (a :: a) (a :: [a]) :: Bool where
       Contains _ '[] = FalseSym0
       Contains elt ('(:) h t) = Apply (Apply (||@#@$) (Apply (Apply (==@#@$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
     sContains ::

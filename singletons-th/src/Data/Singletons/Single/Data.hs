@@ -60,39 +60,42 @@ singDataD (DataDecl name tvbs ctors) = do
                                 (DConT singFamilyName `DAppKindT` k)
                                 (DConT singDataName)
 
-      mk_data_dec tvbs' mb_kind =
-        DDataD Data [] singDataName tvbs' mb_kind ctors' []
+      -- Note that we always include an explicit result kind in the body of the
+      -- singleton data type declaration, even if it has a standalone kind
+      -- signature that would make this explicit result kind redudant.
+      -- See Note [Keep redundant kind information for Haddocks]
+      -- in D.S.Promote.
+      mk_data_dec kind =
+        DDataD Data [] singDataName [] (Just kind) ctors' []
 
-  data_decs <-
-    case mb_data_sak of
-      -- No standalone kind signature. Try to figure out the order of kind
-      -- variables on a best-effort basis.
-      Nothing ->
-        let sing_tvbs = toposortTyVarsOf $ map dTyVarBndrToDType tvbs
-            kinded_sing_ty = DForallT ForallInvis sing_tvbs $
-                             DArrowT `DAppT` k `DAppT` DConT typeKindName in
-        pure [mk_data_dec [] (Just kinded_sing_ty)]
+      data_decs = case mb_data_sak of
+        -- No standalone kind signature. Try to figure out the order of kind
+        -- variables on a best-effort basis.
+        Nothing ->
+          let sing_tvbs = toposortTyVarsOf $ map dTyVarBndrToDType tvbs
+              kinded_sing_ty = DForallT ForallInvis sing_tvbs $
+                               DArrowT `DAppT` k `DAppT` DConT typeKindName in
+          [mk_data_dec kinded_sing_ty]
 
-      -- A standalone kind signature is provided, so use that to determine the
-      -- order of kind variables.
-      Just data_sak -> do
-        let (args, _)  = unravelDType data_sak
-            vis_args   = filterDVisFunArgs args
-            vis_tvbs   = zipWith replaceTvbKind vis_args tvbs
-            invis_args = filterInvisTvbArgs args
-            -- If the standalone kind signature did not explicitly quantify its
-            -- kind variables, do so ourselves. This is very similar to what
-            -- D.S.Single.Type.singTypeKVBs does.
-            invis_tvbs | null invis_args
-                       = toposortTyVarsOf [data_sak]
-                       | otherwise
-                       = invis_args
-        z  <- qNewName "z"
-        let sing_data_sak = DForallT ForallInvis (invis_tvbs ++ vis_tvbs) $
-                            DArrowT `DAppT` k `DAppT` DConT typeKindName
-        pure [ DKiSigD singDataName sing_data_sak
-             , mk_data_dec [DPlainTV z] Nothing
-             ]
+        -- A standalone kind signature is provided, so use that to determine the
+        -- order of kind variables.
+        Just data_sak ->
+          let (args, _)  = unravelDType data_sak
+              vis_args   = filterDVisFunArgs args
+              vis_tvbs   = zipWith replaceTvbKind vis_args tvbs
+              invis_args = filterInvisTvbArgs args
+              -- If the standalone kind signature did not explicitly quantify its
+              -- kind variables, do so ourselves. This is very similar to what
+              -- D.S.Single.Type.singTypeKVBs does.
+              invis_tvbs | null invis_args
+                         = toposortTyVarsOf [data_sak]
+                         | otherwise
+                         = invis_args
+              sing_data_sak = DForallT ForallInvis (invis_tvbs ++ vis_tvbs) $
+                              DArrowT `DAppT` k `DAppT` DConT typeKindName in
+          [ DKiSigD singDataName sing_data_sak
+          , mk_data_dec sing_data_sak
+          ]
 
   return $ data_decs ++
            singSynInst :

@@ -8,7 +8,7 @@ Singletons/T124.hs:(0,0)-(0,0): Splicing declarations
     foo True = ()
     foo False = ()
     type FooSym0 :: (~>) Bool ()
-    data FooSym0 a0123456789876543210
+    data FooSym0 :: (~>) Bool ()
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
@@ -16,10 +16,10 @@ Singletons/T124.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
     type FooSym1 :: Bool -> ()
-    type family FooSym1 a0123456789876543210 where
+    type family FooSym1 (a0123456789876543210 :: Bool) :: () where
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
     type Foo :: Bool -> ()
-    type family Foo a where
+    type family Foo (a :: Bool) :: () where
       Foo 'True = Tuple0Sym0
       Foo 'False = Tuple0Sym0
     sFoo :: forall (t :: Bool). Sing t -> Sing (Apply FooSym0 t :: ())

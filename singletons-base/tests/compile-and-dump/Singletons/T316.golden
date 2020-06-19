@@ -4,7 +4,7 @@ Singletons/T316.hs:(0,0)-(0,0): Splicing declarations
           replaceAllGTypes f types as = zipWith f as types |]
   ======>
     type ReplaceAllGTypesSym0 :: (~>) ((~>) a ((~>) Type a)) ((~>) [Type] ((~>) [a] [a]))
-    data ReplaceAllGTypesSym0 a0123456789876543210
+    data ReplaceAllGTypesSym0 :: (~>) ((~>) a ((~>) Type a)) ((~>) [Type] ((~>) [a] [a]))
       where
         ReplaceAllGTypesSym0KindInference :: SameKind (Apply ReplaceAllGTypesSym0 arg) (ReplaceAllGTypesSym1 arg) =>
                                              ReplaceAllGTypesSym0 a0123456789876543210
@@ -14,7 +14,7 @@ Singletons/T316.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ReplaceAllGTypesSym0KindInference) ())
     type ReplaceAllGTypesSym1 :: (~>) a ((~>) Type a)
                                  -> (~>) [Type] ((~>) [a] [a])
-    data ReplaceAllGTypesSym1 a0123456789876543210 a0123456789876543210
+    data ReplaceAllGTypesSym1 (a0123456789876543210 :: (~>) a ((~>) Type a)) :: (~>) [Type] ((~>) [a] [a])
       where
         ReplaceAllGTypesSym1KindInference :: SameKind (Apply (ReplaceAllGTypesSym1 a0123456789876543210) arg) (ReplaceAllGTypesSym2 a0123456789876543210 arg) =>
                                              ReplaceAllGTypesSym1 a0123456789876543210 a0123456789876543210
@@ -24,7 +24,7 @@ Singletons/T316.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ReplaceAllGTypesSym1KindInference) ())
     type ReplaceAllGTypesSym2 :: (~>) a ((~>) Type a)
                                  -> [Type] -> (~>) [a] [a]
-    data ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data ReplaceAllGTypesSym2 (a0123456789876543210 :: (~>) a ((~>) Type a)) (a0123456789876543210 :: [Type]) :: (~>) [a] [a]
       where
         ReplaceAllGTypesSym2KindInference :: SameKind (Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) arg) (ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 arg) =>
                                              ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -34,9 +34,9 @@ Singletons/T316.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ReplaceAllGTypesSym2KindInference) ())
     type ReplaceAllGTypesSym3 :: (~>) a ((~>) Type a)
                                  -> [Type] -> [a] -> [a]
-    type family ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family ReplaceAllGTypesSym3 (a0123456789876543210 :: (~>) a ((~>) Type a)) (a0123456789876543210 :: [Type]) (a0123456789876543210 :: [a]) :: [a] where
       ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ReplaceAllGTypes a0123456789876543210 a0123456789876543210 a0123456789876543210
     type ReplaceAllGTypes :: (~>) a ((~>) Type a)
                              -> [Type] -> [a] -> [a]
-    type family ReplaceAllGTypes a a a where
+    type family ReplaceAllGTypes (a :: (~>) a ((~>) Type a)) (a :: [Type]) (a :: [a]) :: [a] where
       ReplaceAllGTypes f types as = Apply (Apply (Apply ZipWithSym0 f) as) types

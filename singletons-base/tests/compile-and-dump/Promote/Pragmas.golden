@@ -8,8 +8,8 @@ Promote/Pragmas.hs:(0,0)-(0,0): Splicing declarations
     foo :: Bool
     foo = True
     type FooSym0 :: Bool
-    type family FooSym0 where
+    type family FooSym0 :: Bool where
       FooSym0 = Foo
     type Foo :: Bool
-    type family Foo where
+    type family Foo :: Bool where
       Foo = TrueSym0

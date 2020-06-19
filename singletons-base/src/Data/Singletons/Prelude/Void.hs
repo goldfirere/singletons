@@ -29,13 +29,8 @@
 ----------------------------------------------------------------------------
 module Data.Singletons.Prelude.Void (
   -- * The 'Void' singleton
-  Sing,
-  -- | Just as 'Void' has no constructors, the 'Sing' instance above also has
-  -- no constructors.
-
-  SVoid,
-  -- | 'SVoid' is a kind-restricted synonym for 'Sing':
-  -- @type SVoid (a :: Void) = Sing a@
+  Sing, SVoid,
+  -- | Just as 'Void' has no constructors, 'SVoid' also has no constructors.
 
   -- * Singletons from @Data.Void@
   Absurd, sAbsurd,

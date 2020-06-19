@@ -17,22 +17,22 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type family USym0 where
       USym0 = U
     type StrSym0 :: Occ
-    type family StrSym0 where
+    type family StrSym0 :: Occ where
       StrSym0 = Str
     type OptSym0 :: Occ
-    type family OptSym0 where
+    type family OptSym0 :: Occ where
       OptSym0 = Opt
     type ManySym0 :: Occ
-    type family ManySym0 where
+    type family ManySym0 :: Occ where
       ManySym0 = Many
     type EmptySym0 :: [(Symbol, Occ)]
-    type family EmptySym0 where
+    type family EmptySym0 :: [(Symbol, Occ)] where
       EmptySym0 = Empty
     type Empty :: [(Symbol, Occ)]
-    type family Empty where
+    type family Empty :: [(Symbol, Occ)] where
       Empty = NilSym0
     type TFHelper_0123456789876543210 :: Occ -> Occ -> Bool
-    type family TFHelper_0123456789876543210 a a where
+    type family TFHelper_0123456789876543210 (a :: Occ) (a :: Occ) :: Bool where
       TFHelper_0123456789876543210 Str Str = TrueSym0
       TFHelper_0123456789876543210 Str Opt = FalseSym0
       TFHelper_0123456789876543210 Str Many = FalseSym0
@@ -43,7 +43,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       TFHelper_0123456789876543210 Many Opt = FalseSym0
       TFHelper_0123456789876543210 Many Many = TrueSym0
     type TFHelper_0123456789876543210Sym0 :: (~>) Occ ((~>) Occ Bool)
-    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+    data TFHelper_0123456789876543210Sym0 :: (~>) Occ ((~>) Occ Bool)
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
@@ -52,7 +52,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
     type TFHelper_0123456789876543210Sym1 :: Occ -> (~>) Occ Bool
-    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: Occ) :: (~>) Occ Bool
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -61,12 +61,12 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
     type TFHelper_0123456789876543210Sym2 :: Occ -> Occ -> Bool
-    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: Occ) (a0123456789876543210 :: Occ) :: Bool where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq Occ where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: Occ -> Occ -> Ordering
-    type family Compare_0123456789876543210 a a where
+    type family Compare_0123456789876543210 (a :: Occ) (a :: Occ) :: Ordering where
       Compare_0123456789876543210 Str Str = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
       Compare_0123456789876543210 Opt Opt = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
       Compare_0123456789876543210 Many Many = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
@@ -77,7 +77,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210 Many Str = GTSym0
       Compare_0123456789876543210 Many Opt = GTSym0
     type Compare_0123456789876543210Sym0 :: (~>) Occ ((~>) Occ Ordering)
-    data Compare_0123456789876543210Sym0 a0123456789876543210
+    data Compare_0123456789876543210Sym0 :: (~>) Occ ((~>) Occ Ordering)
       where
         Compare_0123456789876543210Sym0KindInference :: SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
                                                         Compare_0123456789876543210Sym0 a0123456789876543210
@@ -86,7 +86,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym0KindInference) ())
     type Compare_0123456789876543210Sym1 :: Occ -> (~>) Occ Ordering
-    data Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data Compare_0123456789876543210Sym1 (a0123456789876543210 :: Occ) :: (~>) Occ Ordering
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -95,18 +95,18 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym1KindInference) ())
     type Compare_0123456789876543210Sym2 :: Occ -> Occ -> Ordering
-    type family Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family Compare_0123456789876543210Sym2 (a0123456789876543210 :: Occ) (a0123456789876543210 :: Occ) :: Ordering where
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd Occ where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type ShowsPrec_0123456789876543210 :: Nat
                                           -> Occ -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210 a a a where
+    type family ShowsPrec_0123456789876543210 (a :: Nat) (a :: Occ) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ Str a_0123456789876543210 = Apply (Apply ShowStringSym0 "Str") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ Opt a_0123456789876543210 = Apply (Apply ShowStringSym0 "Opt") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ Many a_0123456789876543210 = Apply (Apply ShowStringSym0 "Many") a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym0 :: (~>) Nat ((~>) Occ ((~>) Symbol Symbol))
-    data ShowsPrec_0123456789876543210Sym0 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym0 :: (~>) Nat ((~>) Occ ((~>) Symbol Symbol))
       where
         ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
@@ -116,7 +116,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
     type ShowsPrec_0123456789876543210Sym1 :: Nat
                                               -> (~>) Occ ((~>) Symbol Symbol)
-    data ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: Nat) :: (~>) Occ ((~>) Symbol Symbol)
       where
         ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -126,7 +126,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
     type ShowsPrec_0123456789876543210Sym2 :: Nat
                                               -> Occ -> (~>) Symbol Symbol
-    data ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Occ) :: (~>) Symbol Symbol
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -136,7 +136,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
     type ShowsPrec_0123456789876543210Sym3 :: Nat
                                               -> Occ -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Occ) (a0123456789876543210 :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow Occ where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a

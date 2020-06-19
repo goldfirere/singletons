@@ -13,8 +13,8 @@ Singletons/T453.hs:(0,0)-(0,0): Splicing declarations
     type T2 :: k -> Type
     data T2 a
     type ST1 :: forall k (a :: k). T1 a -> Type
-    data ST1 z
+    data ST1 :: forall k (a :: k). T1 a -> Type
     type instance Sing @(T1 a) = ST1
     type ST2 :: forall k (a :: k). T2 a -> Type
-    data ST2 z
+    data ST2 :: forall k (a :: k). T2 a -> Type
     type instance Sing @(T2 a) = ST2

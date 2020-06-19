@@ -10,7 +10,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
   ======>
     type FoosPrecSym0 :: forall a.
                          (~>) Nat ((~>) a ((~>) [Bool] [Bool]))
-    data FoosPrecSym0 a0123456789876543210
+    data FoosPrecSym0 :: (~>) Nat ((~>) a ((~>) [Bool] [Bool]))
       where
         FoosPrecSym0KindInference :: SameKind (Apply FoosPrecSym0 arg) (FoosPrecSym1 arg) =>
                                      FoosPrecSym0 a0123456789876543210
@@ -18,7 +18,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FoosPrecSym0 where
       suppressUnusedWarnings = snd (((,) FoosPrecSym0KindInference) ())
     type FoosPrecSym1 :: forall a. Nat -> (~>) a ((~>) [Bool] [Bool])
-    data FoosPrecSym1 a0123456789876543210 a0123456789876543210
+    data FoosPrecSym1 (a0123456789876543210 :: Nat) :: (~>) a ((~>) [Bool] [Bool])
       where
         FoosPrecSym1KindInference :: SameKind (Apply (FoosPrecSym1 a0123456789876543210) arg) (FoosPrecSym2 a0123456789876543210 arg) =>
                                      FoosPrecSym1 a0123456789876543210 a0123456789876543210
@@ -26,7 +26,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (FoosPrecSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) FoosPrecSym1KindInference) ())
     type FoosPrecSym2 :: forall a. Nat -> a -> (~>) [Bool] [Bool]
-    data FoosPrecSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data FoosPrecSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: a) :: (~>) [Bool] [Bool]
       where
         FoosPrecSym2KindInference :: SameKind (Apply (FoosPrecSym2 a0123456789876543210 a0123456789876543210) arg) (FoosPrecSym3 a0123456789876543210 a0123456789876543210 arg) =>
                                      FoosPrecSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -34,10 +34,10 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (FoosPrecSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) FoosPrecSym2KindInference) ())
     type FoosPrecSym3 :: forall a. Nat -> a -> [Bool] -> [Bool]
-    type family FoosPrecSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family FoosPrecSym3 (a0123456789876543210 :: Nat) (a0123456789876543210 :: a) (a0123456789876543210 :: [Bool]) :: [Bool] where
       FoosPrecSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = FoosPrec a0123456789876543210 a0123456789876543210 a0123456789876543210
     type FooListSym0 :: forall a. (~>) a ((~>) [Bool] [Bool])
-    data FooListSym0 a0123456789876543210
+    data FooListSym0 :: (~>) a ((~>) [Bool] [Bool])
       where
         FooListSym0KindInference :: SameKind (Apply FooListSym0 arg) (FooListSym1 arg) =>
                                     FooListSym0 a0123456789876543210
@@ -45,7 +45,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FooListSym0 where
       suppressUnusedWarnings = snd (((,) FooListSym0KindInference) ())
     type FooListSym1 :: forall a. a -> (~>) [Bool] [Bool]
-    data FooListSym1 a0123456789876543210 a0123456789876543210
+    data FooListSym1 (a0123456789876543210 :: a) :: (~>) [Bool] [Bool]
       where
         FooListSym1KindInference :: SameKind (Apply (FooListSym1 a0123456789876543210) arg) (FooListSym2 a0123456789876543210 arg) =>
                                     FooListSym1 a0123456789876543210 a0123456789876543210
@@ -53,13 +53,13 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (FooListSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) FooListSym1KindInference) ())
     type FooListSym2 :: forall a. a -> [Bool] -> [Bool]
-    type family FooListSym2 a0123456789876543210 a0123456789876543210 where
+    type family FooListSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: [Bool]) :: [Bool] where
       FooListSym2 a0123456789876543210 a0123456789876543210 = FooList a0123456789876543210 a0123456789876543210
     type FooList_0123456789876543210 :: a -> [Bool] -> [Bool]
-    type family FooList_0123456789876543210 a a where
+    type family FooList_0123456789876543210 (a :: a) (a :: [Bool]) :: [Bool] where
       FooList_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply UndefinedSym0 a_0123456789876543210) a_0123456789876543210
     type FooList_0123456789876543210Sym0 :: (~>) a ((~>) [Bool] [Bool])
-    data FooList_0123456789876543210Sym0 a0123456789876543210
+    data FooList_0123456789876543210Sym0 :: (~>) a ((~>) [Bool] [Bool])
       where
         FooList_0123456789876543210Sym0KindInference :: SameKind (Apply FooList_0123456789876543210Sym0 arg) (FooList_0123456789876543210Sym1 arg) =>
                                                         FooList_0123456789876543210Sym0 a0123456789876543210
@@ -68,7 +68,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) FooList_0123456789876543210Sym0KindInference) ())
     type FooList_0123456789876543210Sym1 :: a -> (~>) [Bool] [Bool]
-    data FooList_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data FooList_0123456789876543210Sym1 (a0123456789876543210 :: a) :: (~>) [Bool] [Bool]
       where
         FooList_0123456789876543210Sym1KindInference :: SameKind (Apply (FooList_0123456789876543210Sym1 a0123456789876543210) arg) (FooList_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         FooList_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -77,17 +77,17 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) FooList_0123456789876543210Sym1KindInference) ())
     type FooList_0123456789876543210Sym2 :: a -> [Bool] -> [Bool]
-    type family FooList_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family FooList_0123456789876543210Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: [Bool]) :: [Bool] where
       FooList_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = FooList_0123456789876543210 a0123456789876543210 a0123456789876543210
     class PFoo a where
       type FoosPrec (arg :: Nat) (arg :: a) (arg :: [Bool]) :: [Bool]
       type FooList (arg :: a) (arg :: [Bool]) :: [Bool]
       type FooList a a = Apply (Apply FooList_0123456789876543210Sym0 a) a
     type FoosPrec_0123456789876543210 :: Nat -> [a] -> [Bool] -> [Bool]
-    type family FoosPrec_0123456789876543210 a a a where
+    type family FoosPrec_0123456789876543210 (a :: Nat) (a :: [a]) (a :: [Bool]) :: [Bool] where
       FoosPrec_0123456789876543210 _ a_0123456789876543210 a_0123456789876543210 = Apply (Apply FooListSym0 a_0123456789876543210) a_0123456789876543210
     type FoosPrec_0123456789876543210Sym0 :: (~>) Nat ((~>) [a] ((~>) [Bool] [Bool]))
-    data FoosPrec_0123456789876543210Sym0 a0123456789876543210
+    data FoosPrec_0123456789876543210Sym0 :: (~>) Nat ((~>) [a] ((~>) [Bool] [Bool]))
       where
         FoosPrec_0123456789876543210Sym0KindInference :: SameKind (Apply FoosPrec_0123456789876543210Sym0 arg) (FoosPrec_0123456789876543210Sym1 arg) =>
                                                          FoosPrec_0123456789876543210Sym0 a0123456789876543210
@@ -97,7 +97,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) FoosPrec_0123456789876543210Sym0KindInference) ())
     type FoosPrec_0123456789876543210Sym1 :: Nat
                                              -> (~>) [a] ((~>) [Bool] [Bool])
-    data FoosPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data FoosPrec_0123456789876543210Sym1 (a0123456789876543210 :: Nat) :: (~>) [a] ((~>) [Bool] [Bool])
       where
         FoosPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (FoosPrec_0123456789876543210Sym1 a0123456789876543210) arg) (FoosPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          FoosPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -107,7 +107,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) FoosPrec_0123456789876543210Sym1KindInference) ())
     type FoosPrec_0123456789876543210Sym2 :: Nat
                                              -> [a] -> (~>) [Bool] [Bool]
-    data FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data FoosPrec_0123456789876543210Sym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: [a]) :: (~>) [Bool] [Bool]
       where
         FoosPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (FoosPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                          FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -117,7 +117,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) FoosPrec_0123456789876543210Sym2KindInference) ())
     type FoosPrec_0123456789876543210Sym3 :: Nat
                                              -> [a] -> [Bool] -> [Bool]
-    type family FoosPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family FoosPrec_0123456789876543210Sym3 (a0123456789876543210 :: Nat) (a0123456789876543210 :: [a]) (a0123456789876543210 :: [Bool]) :: [Bool] where
       FoosPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = FoosPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PFoo [a] where
       type FoosPrec a a a = Apply (Apply (Apply FoosPrec_0123456789876543210Sym0 a) a) a
