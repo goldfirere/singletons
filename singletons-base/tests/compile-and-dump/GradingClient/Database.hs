@@ -28,7 +28,7 @@ import Data.Kind (Type)
 import Data.List hiding ( tail )
 import Data.Singletons.Base.TH
 import Prelude hiding ( tail, id )
-import Prelude.Singletons hiding ( Lookup, sLookup )
+import Prelude.Singletons hiding ( Lookup, sLookup, LookupSym0, LookupSym1, LookupSym2 )
 import Text.Show.Singletons
 
 $(singletons [d|
