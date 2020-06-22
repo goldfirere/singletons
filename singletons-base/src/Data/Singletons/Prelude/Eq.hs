@@ -113,7 +113,7 @@ $(singletonsOnly [d|
 -- /does/ reduce to 'True' for every @a@. The latter behavior is more desirable
 -- for @singletons@' purposes, so we use it instead of '(DTE.==)'.
 type DefaultEq :: k -> k -> Bool
-type family DefaultEq a b where
+type family DefaultEq (a :: k) (b :: k) :: Bool where
   DefaultEq a a = 'True
   DefaultEq a b = 'False
 $(genDefunSymbols [''DefaultEq])

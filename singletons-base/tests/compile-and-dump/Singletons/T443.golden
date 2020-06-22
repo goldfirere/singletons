@@ -14,10 +14,10 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
         VNil :: Vec 'Z a
         (:>) :: {head :: a, tail :: (Vec n a)} -> Vec ('S n) a
     type ZSym0 :: Nat
-    type family ZSym0 where
+    type family ZSym0 :: Nat where
       ZSym0 = Z
     type SSym0 :: (~>) Nat Nat
-    data SSym0 a0123456789876543210
+    data SSym0 :: (~>) Nat Nat
       where
         SSym0KindInference :: SameKind (Apply SSym0 arg) (SSym1 arg) =>
                               SSym0 a0123456789876543210
@@ -25,13 +25,13 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings SSym0 where
       suppressUnusedWarnings = snd (((,) SSym0KindInference) ())
     type SSym1 :: Nat -> Nat
-    type family SSym1 a0123456789876543210 where
+    type family SSym1 (a0123456789876543210 :: Nat) :: Nat where
       SSym1 a0123456789876543210 = S a0123456789876543210
     type VNilSym0 :: Vec Z a
-    type family VNilSym0 where
+    type family VNilSym0 :: Vec Z a where
       VNilSym0 = VNil
     type (:>@#@$) :: (~>) a ((~>) (Vec n a) (Vec (S n) a))
-    data (:>@#@$) a0123456789876543210
+    data (:>@#@$) :: (~>) a ((~>) (Vec n a) (Vec (S n) a))
       where
         (::>@#@$###) :: SameKind (Apply (:>@#@$) arg) ((:>@#@$$) arg) =>
                         (:>@#@$) a0123456789876543210
@@ -39,7 +39,7 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (:>@#@$) where
       suppressUnusedWarnings = snd (((,) (::>@#@$###)) ())
     type (:>@#@$$) :: a -> (~>) (Vec n a) (Vec (S n) a)
-    data (:>@#@$$) a0123456789876543210 a0123456789876543210
+    data (:>@#@$$) (a0123456789876543210 :: a) :: (~>) (Vec n a) (Vec (S n) a)
       where
         (::>@#@$$###) :: SameKind (Apply ((:>@#@$$) a0123456789876543210) arg) ((:>@#@$$$) a0123456789876543210 arg) =>
                          (:>@#@$$) a0123456789876543210 a0123456789876543210
@@ -47,10 +47,10 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ((:>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::>@#@$$###)) ())
     type (:>@#@$$$) :: a -> Vec n a -> Vec (S n) a
-    type family (:>@#@$$$) a0123456789876543210 a0123456789876543210 where
+    type family (:>@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: Vec n a) :: Vec (S n) a where
       (:>@#@$$$) a0123456789876543210 a0123456789876543210 = (:>) a0123456789876543210 a0123456789876543210
     type TailSym0 :: (~>) (Vec (S n) a) (Vec n a)
-    data TailSym0 a0123456789876543210
+    data TailSym0 :: (~>) (Vec (S n) a) (Vec n a)
       where
         TailSym0KindInference :: SameKind (Apply TailSym0 arg) (TailSym1 arg) =>
                                  TailSym0 a0123456789876543210
@@ -58,10 +58,10 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings TailSym0 where
       suppressUnusedWarnings = snd (((,) TailSym0KindInference) ())
     type TailSym1 :: Vec (S n) a -> Vec n a
-    type family TailSym1 a0123456789876543210 where
+    type family TailSym1 (a0123456789876543210 :: Vec (S n) a) :: Vec n a where
       TailSym1 a0123456789876543210 = Tail a0123456789876543210
     type HeadSym0 :: (~>) (Vec (S n) a) a
-    data HeadSym0 a0123456789876543210
+    data HeadSym0 :: (~>) (Vec (S n) a) a
       where
         HeadSym0KindInference :: SameKind (Apply HeadSym0 arg) (HeadSym1 arg) =>
                                  HeadSym0 a0123456789876543210
@@ -69,13 +69,13 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings HeadSym0 where
       suppressUnusedWarnings = snd (((,) HeadSym0KindInference) ())
     type HeadSym1 :: Vec (S n) a -> a
-    type family HeadSym1 a0123456789876543210 where
+    type family HeadSym1 (a0123456789876543210 :: Vec (S n) a) :: a where
       HeadSym1 a0123456789876543210 = Head a0123456789876543210
     type Tail :: Vec (S n) a -> Vec n a
-    type family Tail a where
+    type family Tail (a :: Vec (S n) a) :: Vec n a where
       Tail ((:>) _ field) = field
     type Head :: Vec (S n) a -> a
-    type family Head a where
+    type family Head (a :: Vec (S n) a) :: a where
       Head ((:>) field _) = field
     sTail ::
       forall n a (t :: Vec (S n) a).

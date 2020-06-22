@@ -80,7 +80,7 @@ type PErrorMessage :: Type
 type PErrorMessage = ErrorMessage' Symbol
 
 type SErrorMessage :: PErrorMessage -> Type
-data SErrorMessage em where
+data SErrorMessage :: PErrorMessage -> Type where
   SText     :: Sing t             -> SErrorMessage ('Text t)
   SShowType :: Sing ty            -> SErrorMessage ('ShowType ty)
   (:%<>:)   :: Sing e1 -> Sing e2 -> SErrorMessage (e1 ':<>: e2)
@@ -137,7 +137,7 @@ typeError = error . showErrorMessage
 
 -- | Convert a 'PErrorMessage' to a 'TL.ErrorMessage' from "GHC.TypeLits".
 type ConvertPErrorMessage :: PErrorMessage -> TL.ErrorMessage
-type family ConvertPErrorMessage a where
+type family ConvertPErrorMessage (a :: PErrorMessage) :: TL.ErrorMessage where
   ConvertPErrorMessage ('Text t)      = 'TL.Text t
   ConvertPErrorMessage ('ShowType ty) = 'TL.ShowType ty
   ConvertPErrorMessage (e1 ':<>: e2)  = ConvertPErrorMessage e1 'TL.:<>: ConvertPErrorMessage e2
@@ -146,9 +146,9 @@ type family ConvertPErrorMessage a where
 -- | A drop-in replacement for 'TL.TypeError'. This also exists at the
 -- value-level as 'typeError'.
 type TypeError :: PErrorMessage -> a
-type family TypeError a where
+type family TypeError (x :: PErrorMessage) :: a where
   -- We cannot define this as a type synonym due to Trac #12048.
-  TypeError a = TL.TypeError (ConvertPErrorMessage a)
+  TypeError x = TL.TypeError (ConvertPErrorMessage x)
 
 -- | The singleton for 'typeError'.
 --

@@ -51,7 +51,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
        pure $ ageDecs ++ messageDecs ++ functionDecs
   ======>
     type PMkAgeSym0 :: (~>) Nat PAge
-    data PMkAgeSym0 a0123456789876543210
+    data PMkAgeSym0 :: (~>) Nat PAge
       where
         PMkAgeSym0KindInference :: SameKind (Apply PMkAgeSym0 arg) (PMkAgeSym1 arg) =>
                                    PMkAgeSym0 a0123456789876543210
@@ -59,10 +59,10 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings PMkAgeSym0 where
       suppressUnusedWarnings = snd (((,) PMkAgeSym0KindInference) ())
     type PMkAgeSym1 :: Nat -> PAge
-    type family PMkAgeSym1 a0123456789876543210 where
+    type family PMkAgeSym1 (a0123456789876543210 :: Nat) :: PAge where
       PMkAgeSym1 a0123456789876543210 = 'PMkAge a0123456789876543210
     type SAge :: PAge -> GHC.Types.Type
-    data SAge z
+    data SAge :: PAge -> GHC.Types.Type
       where
         SMkAge :: forall (n :: Nat). (Sing n) -> SAge ('PMkAge n :: PAge)
     type instance Sing @PAge = SAge
@@ -80,7 +80,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     addAge (MkAge (x :: Natural)) (MkAge (y :: Natural))
       = MkAge ((x + y) :: Natural)
     type AddAgeSym0 :: (~>) PAge ((~>) PAge PAge)
-    data AddAgeSym0 a0123456789876543210
+    data AddAgeSym0 :: (~>) PAge ((~>) PAge PAge)
       where
         AddAgeSym0KindInference :: SameKind (Apply AddAgeSym0 arg) (AddAgeSym1 arg) =>
                                    AddAgeSym0 a0123456789876543210
@@ -88,7 +88,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings AddAgeSym0 where
       suppressUnusedWarnings = snd (((,) AddAgeSym0KindInference) ())
     type AddAgeSym1 :: PAge -> (~>) PAge PAge
-    data AddAgeSym1 a0123456789876543210 a0123456789876543210
+    data AddAgeSym1 (a0123456789876543210 :: PAge) :: (~>) PAge PAge
       where
         AddAgeSym1KindInference :: SameKind (Apply (AddAgeSym1 a0123456789876543210) arg) (AddAgeSym2 a0123456789876543210 arg) =>
                                    AddAgeSym1 a0123456789876543210 a0123456789876543210
@@ -96,10 +96,10 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (AddAgeSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) AddAgeSym1KindInference) ())
     type AddAgeSym2 :: PAge -> PAge -> PAge
-    type family AddAgeSym2 a0123456789876543210 a0123456789876543210 where
+    type family AddAgeSym2 (a0123456789876543210 :: PAge) (a0123456789876543210 :: PAge) :: PAge where
       AddAgeSym2 a0123456789876543210 a0123456789876543210 = AddAge a0123456789876543210 a0123456789876543210
     type AddAge :: PAge -> PAge -> PAge
-    type family AddAge a a where
+    type family AddAge (a :: PAge) (a :: PAge) :: PAge where
       AddAge ('PMkAge (x :: Nat)) ('PMkAge (y :: Nat)) = Apply PMkAgeSym0 (Apply (Apply (+@#@$) x) y :: Nat)
     sAddAge ::
       forall (t :: PAge) (t :: PAge).
@@ -116,7 +116,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
              SingI (AddAgeSym1 (d :: PAge) :: (~>) PAge PAge) where
       sing = (singFun1 @(AddAgeSym1 (d :: PAge))) (sAddAge (sing @d))
     type PMkMessageSym0 :: (~>) Symbol PMessage
-    data PMkMessageSym0 a0123456789876543210
+    data PMkMessageSym0 :: (~>) Symbol PMessage
       where
         PMkMessageSym0KindInference :: SameKind (Apply PMkMessageSym0 arg) (PMkMessageSym1 arg) =>
                                        PMkMessageSym0 a0123456789876543210
@@ -124,10 +124,10 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings PMkMessageSym0 where
       suppressUnusedWarnings = snd (((,) PMkMessageSym0KindInference) ())
     type PMkMessageSym1 :: Symbol -> PMessage
-    type family PMkMessageSym1 a0123456789876543210 where
+    type family PMkMessageSym1 (a0123456789876543210 :: Symbol) :: PMessage where
       PMkMessageSym1 a0123456789876543210 = 'PMkMessage a0123456789876543210
     type SMessage :: PMessage -> GHC.Types.Type
-    data SMessage z
+    data SMessage :: PMessage -> GHC.Types.Type
       where
         SMkMessage :: forall (n :: Symbol).
                       (Sing n) -> SMessage ('PMkMessage n :: PMessage)
@@ -146,7 +146,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     appendMessage (MkMessage (x :: Text)) (MkMessage (y :: Text))
       = MkMessage ((x <> y) :: Text)
     type AppendMessageSym0 :: (~>) PMessage ((~>) PMessage PMessage)
-    data AppendMessageSym0 a0123456789876543210
+    data AppendMessageSym0 :: (~>) PMessage ((~>) PMessage PMessage)
       where
         AppendMessageSym0KindInference :: SameKind (Apply AppendMessageSym0 arg) (AppendMessageSym1 arg) =>
                                           AppendMessageSym0 a0123456789876543210
@@ -155,7 +155,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) AppendMessageSym0KindInference) ())
     type AppendMessageSym1 :: PMessage -> (~>) PMessage PMessage
-    data AppendMessageSym1 a0123456789876543210 a0123456789876543210
+    data AppendMessageSym1 (a0123456789876543210 :: PMessage) :: (~>) PMessage PMessage
       where
         AppendMessageSym1KindInference :: SameKind (Apply (AppendMessageSym1 a0123456789876543210) arg) (AppendMessageSym2 a0123456789876543210 arg) =>
                                           AppendMessageSym1 a0123456789876543210 a0123456789876543210
@@ -164,10 +164,10 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) AppendMessageSym1KindInference) ())
     type AppendMessageSym2 :: PMessage -> PMessage -> PMessage
-    type family AppendMessageSym2 a0123456789876543210 a0123456789876543210 where
+    type family AppendMessageSym2 (a0123456789876543210 :: PMessage) (a0123456789876543210 :: PMessage) :: PMessage where
       AppendMessageSym2 a0123456789876543210 a0123456789876543210 = AppendMessage a0123456789876543210 a0123456789876543210
     type AppendMessage :: PMessage -> PMessage -> PMessage
-    type family AppendMessage a a where
+    type family AppendMessage (a :: PMessage) (a :: PMessage) :: PMessage where
       AppendMessage ('PMkMessage (x :: Symbol)) ('PMkMessage (y :: Symbol)) = Apply PMkMessageSym0 (Apply (Apply (<>@#@$) x) y :: Symbol)
     sAppendMessage ::
       forall (t :: PMessage) (t :: PMessage).
@@ -191,7 +191,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     type PMkFunctionSym0 :: forall (a :: GHC.Types.Type)
                                    (b :: GHC.Types.Type).
                             (~>) ((~>) a b) (PFunction (a :: GHC.Types.Type) (b :: GHC.Types.Type))
-    data PMkFunctionSym0 a0123456789876543210
+    data PMkFunctionSym0 :: (~>) ((~>) a b) (PFunction (a :: GHC.Types.Type) (b :: GHC.Types.Type))
       where
         PMkFunctionSym0KindInference :: SameKind (Apply PMkFunctionSym0 arg) (PMkFunctionSym1 arg) =>
                                         PMkFunctionSym0 a0123456789876543210
@@ -202,12 +202,14 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     type PMkFunctionSym1 :: forall (a :: GHC.Types.Type)
                                    (b :: GHC.Types.Type).
                             (~>) a b -> PFunction (a :: GHC.Types.Type) (b :: GHC.Types.Type)
-    type family PMkFunctionSym1 a0123456789876543210 where
+    type family PMkFunctionSym1 (a0123456789876543210 :: (~>) a b) :: PFunction (a :: GHC.Types.Type) (b :: GHC.Types.Type) where
       PMkFunctionSym1 a0123456789876543210 = 'PMkFunction a0123456789876543210
     type SFunction :: forall (a :: GHC.Types.Type)
                              (b :: GHC.Types.Type).
                       PFunction a b -> GHC.Types.Type
-    data SFunction z
+    data SFunction :: forall (a :: GHC.Types.Type)
+                             (b :: GHC.Types.Type).
+                      PFunction a b -> GHC.Types.Type
       where
         SMkFunction :: forall (a :: GHC.Types.Type)
                               (b :: GHC.Types.Type)
@@ -231,7 +233,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       (MkFunction (g :: a -> b))
       = MkFunction ((f . g) :: a -> c)
     type ComposeFunctionSym0 :: (~>) (PFunction b c) ((~>) (PFunction a b) (PFunction a c))
-    data ComposeFunctionSym0 a0123456789876543210
+    data ComposeFunctionSym0 :: (~>) (PFunction b c) ((~>) (PFunction a b) (PFunction a c))
       where
         ComposeFunctionSym0KindInference :: SameKind (Apply ComposeFunctionSym0 arg) (ComposeFunctionSym1 arg) =>
                                             ComposeFunctionSym0 a0123456789876543210
@@ -241,7 +243,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ComposeFunctionSym0KindInference) ())
     type ComposeFunctionSym1 :: PFunction b c
                                 -> (~>) (PFunction a b) (PFunction a c)
-    data ComposeFunctionSym1 a0123456789876543210 a0123456789876543210
+    data ComposeFunctionSym1 (a0123456789876543210 :: PFunction b c) :: (~>) (PFunction a b) (PFunction a c)
       where
         ComposeFunctionSym1KindInference :: SameKind (Apply (ComposeFunctionSym1 a0123456789876543210) arg) (ComposeFunctionSym2 a0123456789876543210 arg) =>
                                             ComposeFunctionSym1 a0123456789876543210 a0123456789876543210
@@ -251,11 +253,11 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ComposeFunctionSym1KindInference) ())
     type ComposeFunctionSym2 :: PFunction b c
                                 -> PFunction a b -> PFunction a c
-    type family ComposeFunctionSym2 a0123456789876543210 a0123456789876543210 where
+    type family ComposeFunctionSym2 (a0123456789876543210 :: PFunction b c) (a0123456789876543210 :: PFunction a b) :: PFunction a c where
       ComposeFunctionSym2 a0123456789876543210 a0123456789876543210 = ComposeFunction a0123456789876543210 a0123456789876543210
     type ComposeFunction :: PFunction b c
                             -> PFunction a b -> PFunction a c
-    type family ComposeFunction a a where
+    type family ComposeFunction (a :: PFunction b c) (a :: PFunction a b) :: PFunction a c where
       ComposeFunction ('PMkFunction (f :: (~>) b c)) ('PMkFunction (g :: (~>) a b)) = Apply PMkFunctionSym0 (Apply (Apply (.@#@$) f) g :: (~>) a c)
     sComposeFunction ::
       forall b c a (t :: PFunction b c) (t :: PFunction a b).

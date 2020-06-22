@@ -10,7 +10,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       deriving Eq
     newtype Bar = Bar {unBar :: Nat}
     type FooSym0 :: (~>) Nat Foo
-    data FooSym0 a0123456789876543210
+    data FooSym0 :: (~>) Nat Foo
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
@@ -18,10 +18,10 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
     type FooSym1 :: Nat -> Foo
-    type family FooSym1 a0123456789876543210 where
+    type family FooSym1 (a0123456789876543210 :: Nat) :: Foo where
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
     type BarSym0 :: (~>) Nat Bar
-    data BarSym0 a0123456789876543210
+    data BarSym0 :: (~>) Nat Bar
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
@@ -29,10 +29,10 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
     type BarSym1 :: Nat -> Bar
-    type family BarSym1 a0123456789876543210 where
+    type family BarSym1 (a0123456789876543210 :: Nat) :: Bar where
       BarSym1 a0123456789876543210 = Bar a0123456789876543210
     type UnBarSym0 :: (~>) Bar Nat
-    data UnBarSym0 a0123456789876543210
+    data UnBarSym0 :: (~>) Bar Nat
       where
         UnBarSym0KindInference :: SameKind (Apply UnBarSym0 arg) (UnBarSym1 arg) =>
                                   UnBarSym0 a0123456789876543210
@@ -40,16 +40,16 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings UnBarSym0 where
       suppressUnusedWarnings = snd (((,) UnBarSym0KindInference) ())
     type UnBarSym1 :: Bar -> Nat
-    type family UnBarSym1 a0123456789876543210 where
+    type family UnBarSym1 (a0123456789876543210 :: Bar) :: Nat where
       UnBarSym1 a0123456789876543210 = UnBar a0123456789876543210
     type UnBar :: Bar -> Nat
-    type family UnBar a where
+    type family UnBar (a :: Bar) :: Nat where
       UnBar (Bar field) = field
     type TFHelper_0123456789876543210 :: Foo -> Foo -> Bool
-    type family TFHelper_0123456789876543210 a a where
+    type family TFHelper_0123456789876543210 (a :: Foo) (a :: Foo) :: Bool where
       TFHelper_0123456789876543210 (Foo a_0123456789876543210) (Foo b_0123456789876543210) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
     type TFHelper_0123456789876543210Sym0 :: (~>) Foo ((~>) Foo Bool)
-    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+    data TFHelper_0123456789876543210Sym0 :: (~>) Foo ((~>) Foo Bool)
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
@@ -58,7 +58,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
     type TFHelper_0123456789876543210Sym1 :: Foo -> (~>) Foo Bool
-    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: Foo) :: (~>) Foo Bool
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -67,7 +67,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
     type TFHelper_0123456789876543210Sym2 :: Foo -> Foo -> Bool
-    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: Foo) (a0123456789876543210 :: Foo) :: Bool where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq Foo where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a

@@ -8,10 +8,10 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       = Nothing | Just a
       deriving (Eq, Show)
     type NothingSym0 :: forall a. Maybe a
-    type family NothingSym0 where
+    type family NothingSym0 :: Maybe a where
       NothingSym0 = Nothing
     type JustSym0 :: forall a. (~>) a (Maybe a)
-    data JustSym0 a0123456789876543210
+    data JustSym0 :: (~>) a (Maybe a)
       where
         JustSym0KindInference :: SameKind (Apply JustSym0 arg) (JustSym1 arg) =>
                                  JustSym0 a0123456789876543210
@@ -19,16 +19,16 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings JustSym0 where
       suppressUnusedWarnings = snd (((,) JustSym0KindInference) ())
     type JustSym1 :: forall a. a -> Maybe a
-    type family JustSym1 a0123456789876543210 where
+    type family JustSym1 (a0123456789876543210 :: a) :: Maybe a where
       JustSym1 a0123456789876543210 = Just a0123456789876543210
     type TFHelper_0123456789876543210 :: Maybe a -> Maybe a -> Bool
-    type family TFHelper_0123456789876543210 a a where
+    type family TFHelper_0123456789876543210 (a :: Maybe a) (a :: Maybe a) :: Bool where
       TFHelper_0123456789876543210 Nothing Nothing = TrueSym0
       TFHelper_0123456789876543210 Nothing (Just _) = FalseSym0
       TFHelper_0123456789876543210 (Just _) Nothing = FalseSym0
       TFHelper_0123456789876543210 (Just a_0123456789876543210) (Just b_0123456789876543210) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
     type TFHelper_0123456789876543210Sym0 :: (~>) (Maybe a) ((~>) (Maybe a) Bool)
-    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+    data TFHelper_0123456789876543210Sym0 :: (~>) (Maybe a) ((~>) (Maybe a) Bool)
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
@@ -38,7 +38,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
     type TFHelper_0123456789876543210Sym1 :: Maybe a
                                              -> (~>) (Maybe a) Bool
-    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: Maybe a) :: (~>) (Maybe a) Bool
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -47,17 +47,17 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
     type TFHelper_0123456789876543210Sym2 :: Maybe a -> Maybe a -> Bool
-    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: Maybe a) (a0123456789876543210 :: Maybe a) :: Bool where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq (Maybe a) where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type ShowsPrec_0123456789876543210 :: GHC.Types.Nat
                                           -> Maybe a -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210 a a a where
+    type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Maybe a) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210 _ Nothing a_0123456789876543210 = Apply (Apply ShowStringSym0 "Nothing") a_0123456789876543210
       ShowsPrec_0123456789876543210 p_0123456789876543210 (Just arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Just ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Types.Nat ((~>) (Maybe a) ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-    data ShowsPrec_0123456789876543210Sym0 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Types.Nat ((~>) (Maybe a) ((~>) GHC.Types.Symbol GHC.Types.Symbol))
       where
         ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
@@ -67,7 +67,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Types.Nat
                                               -> (~>) (Maybe a) ((~>) GHC.Types.Symbol GHC.Types.Symbol)
-    data ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) :: (~>) (Maybe a) ((~>) GHC.Types.Symbol GHC.Types.Symbol)
       where
         ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -77,7 +77,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Types.Nat
                                               -> Maybe a -> (~>) GHC.Types.Symbol GHC.Types.Symbol
-    data ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Maybe a) :: (~>) GHC.Types.Symbol GHC.Types.Symbol
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -87,7 +87,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Types.Nat
                                               -> Maybe a -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Maybe a) (a0123456789876543210 :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow (Maybe a) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a

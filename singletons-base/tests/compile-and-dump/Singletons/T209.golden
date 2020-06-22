@@ -18,10 +18,10 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
       deriving anyclass (C Bool)
     deriving anyclass instance C a a => C a (Maybe a)
     type HmSym0 :: Hm
-    type family HmSym0 where
+    type family HmSym0 :: Hm where
       HmSym0 = Hm
     type MSym0 :: (~>) a ((~>) b ((~>) Bool Bool))
-    data MSym0 a0123456789876543210
+    data MSym0 :: (~>) a ((~>) b ((~>) Bool Bool))
       where
         MSym0KindInference :: SameKind (Apply MSym0 arg) (MSym1 arg) =>
                               MSym0 a0123456789876543210
@@ -29,7 +29,7 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MSym0 where
       suppressUnusedWarnings = snd (((,) MSym0KindInference) ())
     type MSym1 :: a -> (~>) b ((~>) Bool Bool)
-    data MSym1 a0123456789876543210 a0123456789876543210
+    data MSym1 (a0123456789876543210 :: a) :: (~>) b ((~>) Bool Bool)
       where
         MSym1KindInference :: SameKind (Apply (MSym1 a0123456789876543210) arg) (MSym2 a0123456789876543210 arg) =>
                               MSym1 a0123456789876543210 a0123456789876543210
@@ -37,7 +37,7 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (MSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MSym1KindInference) ())
     type MSym2 :: a -> b -> (~>) Bool Bool
-    data MSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data MSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (~>) Bool Bool
       where
         MSym2KindInference :: SameKind (Apply (MSym2 a0123456789876543210 a0123456789876543210) arg) (MSym3 a0123456789876543210 a0123456789876543210 arg) =>
                               MSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -45,10 +45,10 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (MSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MSym2KindInference) ())
     type MSym3 :: a -> b -> Bool -> Bool
-    type family MSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family MSym3 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: Bool) :: Bool where
       MSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = M a0123456789876543210 a0123456789876543210 a0123456789876543210
     type M :: a -> b -> Bool -> Bool
-    type family M a a a where
+    type family M (a :: a) (a :: b) (a :: Bool) :: Bool where
       M _ _ x = x
     class PC a b
     instance PC Bool Hm

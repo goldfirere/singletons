@@ -35,7 +35,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     foo p@[_] = p
     foo p@(_ : (_ : _)) = p
     type BazSym0 :: (~>) Nat ((~>) Nat ((~>) Nat Baz))
-    data BazSym0 a0123456789876543210
+    data BazSym0 :: (~>) Nat ((~>) Nat ((~>) Nat Baz))
       where
         BazSym0KindInference :: SameKind (Apply BazSym0 arg) (BazSym1 arg) =>
                                 BazSym0 a0123456789876543210
@@ -43,7 +43,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings BazSym0 where
       suppressUnusedWarnings = snd (((,) BazSym0KindInference) ())
     type BazSym1 :: Nat -> (~>) Nat ((~>) Nat Baz)
-    data BazSym1 a0123456789876543210 a0123456789876543210
+    data BazSym1 (a0123456789876543210 :: Nat) :: (~>) Nat ((~>) Nat Baz)
       where
         BazSym1KindInference :: SameKind (Apply (BazSym1 a0123456789876543210) arg) (BazSym2 a0123456789876543210 arg) =>
                                 BazSym1 a0123456789876543210 a0123456789876543210
@@ -51,7 +51,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (BazSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) BazSym1KindInference) ())
     type BazSym2 :: Nat -> Nat -> (~>) Nat Baz
-    data BazSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data BazSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: (~>) Nat Baz
       where
         BazSym2KindInference :: SameKind (Apply (BazSym2 a0123456789876543210 a0123456789876543210) arg) (BazSym3 a0123456789876543210 a0123456789876543210 arg) =>
                                 BazSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -59,7 +59,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (BazSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) BazSym2KindInference) ())
     type BazSym3 :: Nat -> Nat -> Nat -> Baz
-    type family BazSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family BazSym3 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Baz where
       BazSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = Baz a0123456789876543210 a0123456789876543210 a0123456789876543210
     type family Let0123456789876543210PSym0 where
       Let0123456789876543210PSym0 = Let0123456789876543210P
@@ -174,7 +174,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     type family Let0123456789876543210P where
       Let0123456789876543210P = NothingSym0
     type FooSym0 :: (~>) [Nat] [Nat]
-    data FooSym0 a0123456789876543210
+    data FooSym0 :: (~>) [Nat] [Nat]
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
@@ -182,10 +182,10 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
     type FooSym1 :: [Nat] -> [Nat]
-    type family FooSym1 a0123456789876543210 where
+    type family FooSym1 (a0123456789876543210 :: [Nat]) :: [Nat] where
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
     type TupSym0 :: (~>) (Nat, Nat) (Nat, Nat)
-    data TupSym0 a0123456789876543210
+    data TupSym0 :: (~>) (Nat, Nat) (Nat, Nat)
       where
         TupSym0KindInference :: SameKind (Apply TupSym0 arg) (TupSym1 arg) =>
                                 TupSym0 a0123456789876543210
@@ -193,10 +193,11 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings TupSym0 where
       suppressUnusedWarnings = snd (((,) TupSym0KindInference) ())
     type TupSym1 :: (Nat, Nat) -> (Nat, Nat)
-    type family TupSym1 a0123456789876543210 where
+    type family TupSym1 (a0123456789876543210 :: (Nat, Nat)) :: (Nat,
+                                                                 Nat) where
       TupSym1 a0123456789876543210 = Tup a0123456789876543210
     type Baz_Sym0 :: (~>) (Maybe Baz) (Maybe Baz)
-    data Baz_Sym0 a0123456789876543210
+    data Baz_Sym0 :: (~>) (Maybe Baz) (Maybe Baz)
       where
         Baz_Sym0KindInference :: SameKind (Apply Baz_Sym0 arg) (Baz_Sym1 arg) =>
                                  Baz_Sym0 a0123456789876543210
@@ -204,10 +205,10 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Baz_Sym0 where
       suppressUnusedWarnings = snd (((,) Baz_Sym0KindInference) ())
     type Baz_Sym1 :: Maybe Baz -> Maybe Baz
-    type family Baz_Sym1 a0123456789876543210 where
+    type family Baz_Sym1 (a0123456789876543210 :: Maybe Baz) :: Maybe Baz where
       Baz_Sym1 a0123456789876543210 = Baz_ a0123456789876543210
     type BarSym0 :: (~>) (Maybe Nat) (Maybe Nat)
-    data BarSym0 a0123456789876543210
+    data BarSym0 :: (~>) (Maybe Nat) (Maybe Nat)
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
@@ -215,10 +216,10 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
     type BarSym1 :: Maybe Nat -> Maybe Nat
-    type family BarSym1 a0123456789876543210 where
+    type family BarSym1 (a0123456789876543210 :: Maybe Nat) :: Maybe Nat where
       BarSym1 a0123456789876543210 = Bar a0123456789876543210
     type MaybePlusSym0 :: (~>) (Maybe Nat) (Maybe Nat)
-    data MaybePlusSym0 a0123456789876543210
+    data MaybePlusSym0 :: (~>) (Maybe Nat) (Maybe Nat)
       where
         MaybePlusSym0KindInference :: SameKind (Apply MaybePlusSym0 arg) (MaybePlusSym1 arg) =>
                                       MaybePlusSym0 a0123456789876543210
@@ -226,27 +227,27 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MaybePlusSym0 where
       suppressUnusedWarnings = snd (((,) MaybePlusSym0KindInference) ())
     type MaybePlusSym1 :: Maybe Nat -> Maybe Nat
-    type family MaybePlusSym1 a0123456789876543210 where
+    type family MaybePlusSym1 (a0123456789876543210 :: Maybe Nat) :: Maybe Nat where
       MaybePlusSym1 a0123456789876543210 = MaybePlus a0123456789876543210
     type Foo :: [Nat] -> [Nat]
-    type family Foo a where
+    type family Foo (a :: [Nat]) :: [Nat] where
       Foo '[] = Let0123456789876543210PSym0
       Foo '[wild_0123456789876543210] = Let0123456789876543210PSym1 wild_0123456789876543210
       Foo ('(:) wild_0123456789876543210 ('(:) wild_0123456789876543210 wild_0123456789876543210)) = Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210
     type Tup :: (Nat, Nat) -> (Nat, Nat)
-    type family Tup a where
+    type family Tup (a :: (Nat, Nat)) :: (Nat, Nat) where
       Tup '(wild_0123456789876543210,
             wild_0123456789876543210) = Let0123456789876543210PSym2 wild_0123456789876543210 wild_0123456789876543210
     type Baz_ :: Maybe Baz -> Maybe Baz
-    type family Baz_ a where
+    type family Baz_ (a :: Maybe Baz) :: Maybe Baz where
       Baz_ 'Nothing = Let0123456789876543210PSym0
       Baz_ ('Just (Baz wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)) = Let0123456789876543210PSym3 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210
     type Bar :: Maybe Nat -> Maybe Nat
-    type family Bar a where
+    type family Bar (a :: Maybe Nat) :: Maybe Nat where
       Bar ('Just wild_0123456789876543210) = Let0123456789876543210XSym1 wild_0123456789876543210
       Bar 'Nothing = NothingSym0
     type MaybePlus :: Maybe Nat -> Maybe Nat
-    type family MaybePlus a where
+    type family MaybePlus (a :: Maybe Nat) :: Maybe Nat where
       MaybePlus ('Just n) = Apply JustSym0 (Apply (Apply PlusSym0 (Apply SuccSym0 ZeroSym0)) n)
       MaybePlus 'Nothing = Let0123456789876543210PSym0
     sFoo ::

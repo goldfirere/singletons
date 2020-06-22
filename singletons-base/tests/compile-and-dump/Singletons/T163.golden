@@ -3,7 +3,7 @@ Singletons/T163.hs:0:0:: Splicing declarations
   ======>
     data (+) a b = L a | R b
     type LSym0 :: forall a b. (~>) a ((+) a b)
-    data LSym0 a0123456789876543210
+    data LSym0 :: (~>) a ((+) a b)
       where
         LSym0KindInference :: SameKind (Apply LSym0 arg) (LSym1 arg) =>
                               LSym0 a0123456789876543210
@@ -11,10 +11,10 @@ Singletons/T163.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings LSym0 where
       suppressUnusedWarnings = snd (((,) LSym0KindInference) ())
     type LSym1 :: forall a b. a -> (+) a b
-    type family LSym1 a0123456789876543210 where
+    type family LSym1 (a0123456789876543210 :: a) :: (+) a b where
       LSym1 a0123456789876543210 = L a0123456789876543210
     type RSym0 :: forall a b. (~>) b ((+) a b)
-    data RSym0 a0123456789876543210
+    data RSym0 :: (~>) b ((+) a b)
       where
         RSym0KindInference :: SameKind (Apply RSym0 arg) (RSym1 arg) =>
                               RSym0 a0123456789876543210
@@ -22,7 +22,7 @@ Singletons/T163.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings RSym0 where
       suppressUnusedWarnings = snd (((,) RSym0KindInference) ())
     type RSym1 :: forall a b. b -> (+) a b
-    type family RSym1 a0123456789876543210 where
+    type family RSym1 (a0123456789876543210 :: b) :: (+) a b where
       RSym1 a0123456789876543210 = R a0123456789876543210
     data (%+) :: forall a b. (+) a b -> GHC.Types.Type
       where

@@ -9,7 +9,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
     z (X1 x) = x
     z (X2 x) = x
     type X1Sym0 :: (~>) Symbol X
-    data X1Sym0 a0123456789876543210
+    data X1Sym0 :: (~>) Symbol X
       where
         X1Sym0KindInference :: SameKind (Apply X1Sym0 arg) (X1Sym1 arg) =>
                                X1Sym0 a0123456789876543210
@@ -17,10 +17,10 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings X1Sym0 where
       suppressUnusedWarnings = snd (((,) X1Sym0KindInference) ())
     type X1Sym1 :: Symbol -> X
-    type family X1Sym1 a0123456789876543210 where
+    type family X1Sym1 (a0123456789876543210 :: Symbol) :: X where
       X1Sym1 a0123456789876543210 = X1 a0123456789876543210
     type X2Sym0 :: (~>) Symbol X
-    data X2Sym0 a0123456789876543210
+    data X2Sym0 :: (~>) Symbol X
       where
         X2Sym0KindInference :: SameKind (Apply X2Sym0 arg) (X2Sym1 arg) =>
                                X2Sym0 a0123456789876543210
@@ -28,7 +28,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings X2Sym0 where
       suppressUnusedWarnings = snd (((,) X2Sym0KindInference) ())
     type X2Sym1 :: Symbol -> X
-    type family X2Sym1 a0123456789876543210 where
+    type family X2Sym1 (a0123456789876543210 :: Symbol) :: X where
       X2Sym1 a0123456789876543210 = X2 a0123456789876543210
     data ZSym0 a0123456789876543210
       where
@@ -40,7 +40,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
     type family ZSym1 a0123456789876543210 where
       ZSym1 a0123456789876543210 = Z a0123456789876543210
     type YSym0 :: (~>) X Symbol
-    data YSym0 a0123456789876543210
+    data YSym0 :: (~>) X Symbol
       where
         YSym0KindInference :: SameKind (Apply YSym0 arg) (YSym1 arg) =>
                               YSym0 a0123456789876543210
@@ -48,12 +48,12 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings YSym0 where
       suppressUnusedWarnings = snd (((,) YSym0KindInference) ())
     type YSym1 :: X -> Symbol
-    type family YSym1 a0123456789876543210 where
+    type family YSym1 (a0123456789876543210 :: X) :: Symbol where
       YSym1 a0123456789876543210 = Y a0123456789876543210
     type family Z a where
       Z (X1 x) = x
       Z (X2 x) = x
     type Y :: X -> Symbol
-    type family Y a where
+    type family Y (a :: X) :: Symbol where
       Y (X1 field) = field
       Y (X2 field) = field

@@ -6,13 +6,13 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     data Bool = False | True
     data Foo = Bar Bool Bool
     type FalseSym0 :: Bool
-    type family FalseSym0 where
+    type family FalseSym0 :: Bool where
       FalseSym0 = False
     type TrueSym0 :: Bool
-    type family TrueSym0 where
+    type family TrueSym0 :: Bool where
       TrueSym0 = True
     type BarSym0 :: (~>) Bool ((~>) Bool Foo)
-    data BarSym0 a0123456789876543210
+    data BarSym0 :: (~>) Bool ((~>) Bool Foo)
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
@@ -21,7 +21,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) BarSym0KindInference) ())
     type BarSym1 :: Bool -> (~>) Bool Foo
-    data BarSym1 a0123456789876543210 a0123456789876543210
+    data BarSym1 (a0123456789876543210 :: Bool) :: (~>) Bool Foo
       where
         BarSym1KindInference :: SameKind (Apply (BarSym1 a0123456789876543210) arg) (BarSym2 a0123456789876543210 arg) =>
                                 BarSym1 a0123456789876543210 a0123456789876543210
@@ -30,7 +30,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) BarSym1KindInference) ())
     type BarSym2 :: Bool -> Bool -> Foo
-    type family BarSym2 a0123456789876543210 a0123456789876543210 where
+    type family BarSym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) :: Foo where
       BarSym2 a0123456789876543210 a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
     data SBool :: Bool -> GHC.Types.Type
       where
@@ -130,23 +130,23 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       Case_0123456789876543210 a_0123456789876543210 '[y_0123456789876543210,
                                                        _] = y_0123456789876543210
     type MSym0 :: Bool
-    type family MSym0 where
+    type family MSym0 :: Bool where
       MSym0 = M
     type LSym0 :: Bool
-    type family LSym0 where
+    type family LSym0 :: Bool where
       LSym0 = L
     type family X_0123456789876543210Sym0 where
       X_0123456789876543210Sym0 = X_0123456789876543210
     type KSym0 :: Bool
-    type family KSym0 where
+    type family KSym0 :: Bool where
       KSym0 = K
     type JSym0 :: Bool
-    type family JSym0 where
+    type family JSym0 :: Bool where
       JSym0 = J
     type family X_0123456789876543210Sym0 where
       X_0123456789876543210Sym0 = X_0123456789876543210
     type ISym0 :: (~>) Bool Bool
-    data ISym0 a0123456789876543210
+    data ISym0 :: (~>) Bool Bool
       where
         ISym0KindInference :: SameKind (Apply ISym0 arg) (ISym1 arg) =>
                               ISym0 a0123456789876543210
@@ -155,10 +155,10 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) ISym0KindInference) ())
     type ISym1 :: Bool -> Bool
-    type family ISym1 a0123456789876543210 where
+    type family ISym1 (a0123456789876543210 :: Bool) :: Bool where
       ISym1 a0123456789876543210 = I a0123456789876543210
     type HSym0 :: (~>) Bool Bool
-    data HSym0 a0123456789876543210
+    data HSym0 :: (~>) Bool Bool
       where
         HSym0KindInference :: SameKind (Apply HSym0 arg) (HSym1 arg) =>
                               HSym0 a0123456789876543210
@@ -167,12 +167,12 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) HSym0KindInference) ())
     type HSym1 :: Bool -> Bool
-    type family HSym1 a0123456789876543210 where
+    type family HSym1 (a0123456789876543210 :: Bool) :: Bool where
       HSym1 a0123456789876543210 = H a0123456789876543210
     type family X_0123456789876543210Sym0 where
       X_0123456789876543210Sym0 = X_0123456789876543210
     type GSym0 :: (~>) Bool Bool
-    data GSym0 a0123456789876543210
+    data GSym0 :: (~>) Bool Bool
       where
         GSym0KindInference :: SameKind (Apply GSym0 arg) (GSym1 arg) =>
                               GSym0 a0123456789876543210
@@ -181,10 +181,10 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) GSym0KindInference) ())
     type GSym1 :: Bool -> Bool
-    type family GSym1 a0123456789876543210 where
+    type family GSym1 (a0123456789876543210 :: Bool) :: Bool where
       GSym1 a0123456789876543210 = G a0123456789876543210
     type FSym0 :: (~>) Bool Bool
-    data FSym0 a0123456789876543210
+    data FSym0 :: (~>) Bool Bool
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
@@ -193,14 +193,14 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) FSym0KindInference) ())
     type FSym1 :: Bool -> Bool
-    type family FSym1 a0123456789876543210 where
+    type family FSym1 (a0123456789876543210 :: Bool) :: Bool where
       FSym1 a0123456789876543210 = F a0123456789876543210
     type family X_0123456789876543210Sym0 where
       X_0123456789876543210Sym0 = X_0123456789876543210
     type family False_Sym0 where
       False_Sym0 = False_
     type NotSym0 :: (~>) Bool Bool
-    data NotSym0 a0123456789876543210
+    data NotSym0 :: (~>) Bool Bool
       where
         NotSym0KindInference :: SameKind (Apply NotSym0 arg) (NotSym1 arg) =>
                                 NotSym0 a0123456789876543210
@@ -209,10 +209,10 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) NotSym0KindInference) ())
     type NotSym1 :: Bool -> Bool
-    type family NotSym1 a0123456789876543210 where
+    type family NotSym1 (a0123456789876543210 :: Bool) :: Bool where
       NotSym1 a0123456789876543210 = Not a0123456789876543210
     type IdSym0 :: (~>) a a
-    data IdSym0 a0123456789876543210
+    data IdSym0 :: (~>) a a
       where
         IdSym0KindInference :: SameKind (Apply IdSym0 arg) (IdSym1 arg) =>
                                IdSym0 a0123456789876543210
@@ -221,54 +221,54 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = Data.Tuple.snd (((,) IdSym0KindInference) ())
     type IdSym1 :: a -> a
-    type family IdSym1 a0123456789876543210 where
+    type family IdSym1 (a0123456789876543210 :: a) :: a where
       IdSym1 a0123456789876543210 = Id a0123456789876543210
     type OtherwiseSym0 :: Bool
-    type family OtherwiseSym0 where
+    type family OtherwiseSym0 :: Bool where
       OtherwiseSym0 = Otherwise
     type M :: Bool
-    type family M where
+    type family M :: Bool where
       M = Case_0123456789876543210 X_0123456789876543210Sym0
     type L :: Bool
-    type family L where
+    type family L :: Bool where
       L = Case_0123456789876543210 X_0123456789876543210Sym0
     type family X_0123456789876543210 where
       X_0123456789876543210 = Apply (Apply (:@#@$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:@#@$) (Apply IdSym0 FalseSym0)) NilSym0)
     type K :: Bool
-    type family K where
+    type family K :: Bool where
       K = Case_0123456789876543210 X_0123456789876543210Sym0
     type J :: Bool
-    type family J where
+    type family J :: Bool where
       J = Case_0123456789876543210 X_0123456789876543210Sym0
     type family X_0123456789876543210 where
       X_0123456789876543210 = Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0)
     type I :: Bool -> Bool
-    type family I a where
+    type family I (a :: Bool) :: Bool where
       I a_0123456789876543210 = Apply (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0) a_0123456789876543210
     type H :: Bool -> Bool
-    type family H a where
+    type family H (a :: Bool) :: Bool where
       H a_0123456789876543210 = Apply (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0) a_0123456789876543210
     type family X_0123456789876543210 where
       X_0123456789876543210 = Apply (Apply Tuple2Sym0 FSym0) GSym0
     type G :: Bool -> Bool
-    type family G a where
+    type family G (a :: Bool) :: Bool where
       G a_0123456789876543210 = Apply (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0) a_0123456789876543210
     type F :: Bool -> Bool
-    type family F a where
+    type family F (a :: Bool) :: Bool where
       F a_0123456789876543210 = Apply (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0) a_0123456789876543210
     type family X_0123456789876543210 where
       X_0123456789876543210 = Apply (Apply (:@#@$) NotSym0) (Apply (Apply (:@#@$) IdSym0) NilSym0)
     type family False_ where
       False_ = FalseSym0
     type Not :: Bool -> Bool
-    type family Not a where
+    type family Not (a :: Bool) :: Bool where
       Not 'True = FalseSym0
       Not 'False = TrueSym0
     type Id :: a -> a
-    type family Id a where
+    type family Id (a :: a) :: a where
       Id x = x
     type Otherwise :: Bool
-    type family Otherwise where
+    type family Otherwise :: Bool where
       Otherwise = TrueSym0
     sM :: Sing (MSym0 :: Bool)
     sL :: Sing (LSym0 :: Bool)

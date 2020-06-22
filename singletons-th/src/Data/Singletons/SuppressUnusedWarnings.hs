@@ -17,5 +17,5 @@ import Data.Kind
 -- to use an otherwise-unused data constructor, such as the "kind-inference"
 -- data constructor for defunctionalization symbols.
 type SuppressUnusedWarnings :: k -> Constraint
-class SuppressUnusedWarnings t where
+class SuppressUnusedWarnings (t :: k) where
   suppressUnusedWarnings :: ()

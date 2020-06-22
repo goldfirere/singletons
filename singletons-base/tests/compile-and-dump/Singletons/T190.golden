@@ -8,13 +8,13 @@ Singletons/T190.hs:0:0:: Splicing declarations
       = T
       deriving (Eq, Ord, Enum, Bounded, Show)
     type TSym0 :: T
-    type family TSym0 where
+    type family TSym0 :: T where
       TSym0 = T
     type TFHelper_0123456789876543210 :: T -> T -> Bool
-    type family TFHelper_0123456789876543210 a a where
+    type family TFHelper_0123456789876543210 (a :: T) (a :: T) :: Bool where
       TFHelper_0123456789876543210 T T = TrueSym0
     type TFHelper_0123456789876543210Sym0 :: (~>) T ((~>) T Bool)
-    data TFHelper_0123456789876543210Sym0 a0123456789876543210
+    data TFHelper_0123456789876543210Sym0 :: (~>) T ((~>) T Bool)
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
@@ -23,7 +23,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
     type TFHelper_0123456789876543210Sym1 :: T -> (~>) T Bool
-    data TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: T) :: (~>) T Bool
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -32,15 +32,15 @@ Singletons/T190.hs:0:0:: Splicing declarations
       suppressUnusedWarnings
         = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
     type TFHelper_0123456789876543210Sym2 :: T -> T -> Bool
-    type family TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: T) (a0123456789876543210 :: T) :: Bool where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq T where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: T -> T -> Ordering
-    type family Compare_0123456789876543210 a a where
+    type family Compare_0123456789876543210 (a :: T) (a :: T) :: Ordering where
       Compare_0123456789876543210 T T = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
     type Compare_0123456789876543210Sym0 :: (~>) T ((~>) T Ordering)
-    data Compare_0123456789876543210Sym0 a0123456789876543210
+    data Compare_0123456789876543210Sym0 :: (~>) T ((~>) T Ordering)
       where
         Compare_0123456789876543210Sym0KindInference :: SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
                                                         Compare_0123456789876543210Sym0 a0123456789876543210
@@ -49,7 +49,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym0KindInference) ())
     type Compare_0123456789876543210Sym1 :: T -> (~>) T Ordering
-    data Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data Compare_0123456789876543210Sym1 (a0123456789876543210 :: T) :: (~>) T Ordering
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -58,7 +58,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       suppressUnusedWarnings
         = snd (((,) Compare_0123456789876543210Sym1KindInference) ())
     type Compare_0123456789876543210Sym2 :: T -> T -> Ordering
-    type family Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 where
+    type family Compare_0123456789876543210Sym2 (a0123456789876543210 :: T) (a0123456789876543210 :: T) :: Ordering where
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd T where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
@@ -66,10 +66,10 @@ Singletons/T190.hs:0:0:: Splicing declarations
       Case_0123456789876543210 n 'True = TSym0
       Case_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
     type ToEnum_0123456789876543210 :: GHC.Types.Nat -> T
-    type family ToEnum_0123456789876543210 a where
+    type family ToEnum_0123456789876543210 (a :: GHC.Types.Nat) :: T where
       ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))
     type ToEnum_0123456789876543210Sym0 :: (~>) GHC.Types.Nat T
-    data ToEnum_0123456789876543210Sym0 a0123456789876543210
+    data ToEnum_0123456789876543210Sym0 :: (~>) GHC.Types.Nat T
       where
         ToEnum_0123456789876543210Sym0KindInference :: SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
                                                        ToEnum_0123456789876543210Sym0 a0123456789876543210
@@ -78,13 +78,13 @@ Singletons/T190.hs:0:0:: Splicing declarations
       suppressUnusedWarnings
         = snd (((,) ToEnum_0123456789876543210Sym0KindInference) ())
     type ToEnum_0123456789876543210Sym1 :: GHC.Types.Nat -> T
-    type family ToEnum_0123456789876543210Sym1 a0123456789876543210 where
+    type family ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) :: T where
       ToEnum_0123456789876543210Sym1 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     type FromEnum_0123456789876543210 :: T -> GHC.Types.Nat
-    type family FromEnum_0123456789876543210 a where
+    type family FromEnum_0123456789876543210 (a :: T) :: GHC.Types.Nat where
       FromEnum_0123456789876543210 T = FromInteger 0
     type FromEnum_0123456789876543210Sym0 :: (~>) T GHC.Types.Nat
-    data FromEnum_0123456789876543210Sym0 a0123456789876543210
+    data FromEnum_0123456789876543210Sym0 :: (~>) T GHC.Types.Nat
       where
         FromEnum_0123456789876543210Sym0KindInference :: SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
                                                          FromEnum_0123456789876543210Sym0 a0123456789876543210
@@ -93,32 +93,32 @@ Singletons/T190.hs:0:0:: Splicing declarations
       suppressUnusedWarnings
         = snd (((,) FromEnum_0123456789876543210Sym0KindInference) ())
     type FromEnum_0123456789876543210Sym1 :: T -> GHC.Types.Nat
-    type family FromEnum_0123456789876543210Sym1 a0123456789876543210 where
+    type family FromEnum_0123456789876543210Sym1 (a0123456789876543210 :: T) :: GHC.Types.Nat where
       FromEnum_0123456789876543210Sym1 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance PEnum T where
       type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
       type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
     type MinBound_0123456789876543210 :: T
-    type family MinBound_0123456789876543210 where
+    type family MinBound_0123456789876543210 :: T where
       MinBound_0123456789876543210 = TSym0
     type MinBound_0123456789876543210Sym0 :: T
-    type family MinBound_0123456789876543210Sym0 where
+    type family MinBound_0123456789876543210Sym0 :: T where
       MinBound_0123456789876543210Sym0 = MinBound_0123456789876543210
     type MaxBound_0123456789876543210 :: T
-    type family MaxBound_0123456789876543210 where
+    type family MaxBound_0123456789876543210 :: T where
       MaxBound_0123456789876543210 = TSym0
     type MaxBound_0123456789876543210Sym0 :: T
-    type family MaxBound_0123456789876543210Sym0 where
+    type family MaxBound_0123456789876543210Sym0 :: T where
       MaxBound_0123456789876543210Sym0 = MaxBound_0123456789876543210
     instance PBounded T where
       type MinBound = MinBound_0123456789876543210Sym0
       type MaxBound = MaxBound_0123456789876543210Sym0
     type ShowsPrec_0123456789876543210 :: GHC.Types.Nat
                                           -> T -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210 a a a where
+    type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: T) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210 _ T a_0123456789876543210 = Apply (Apply ShowStringSym0 "T") a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Types.Nat ((~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-    data ShowsPrec_0123456789876543210Sym0 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Types.Nat ((~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol))
       where
         ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
@@ -128,7 +128,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Types.Nat
                                               -> (~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol)
-    data ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) :: (~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol)
       where
         ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -138,7 +138,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Types.Nat
                                               -> T -> (~>) GHC.Types.Symbol GHC.Types.Symbol
-    data ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: T) :: (~>) GHC.Types.Symbol GHC.Types.Symbol
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -148,7 +148,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Types.Nat
                                               -> T -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: T) (a0123456789876543210 :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow T where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a

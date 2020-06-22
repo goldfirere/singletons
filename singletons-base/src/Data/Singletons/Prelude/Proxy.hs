@@ -63,7 +63,7 @@ code in D.S.Prelude.Const. (See the comments above SConst in that module
 for more details on this choice.)
 -}
 type SProxy :: Proxy t -> Type
-data SProxy proxy where
+data SProxy :: Proxy t -> Type where
   SProxy :: forall t. SProxy ('Proxy @t)
 type instance Sing = SProxy
 instance SingKind (Proxy t) where

@@ -59,7 +59,7 @@ type instance Sing @(TYPE rep) = TypeRep
 -- | A variant of 'SomeTypeRep' whose underlying 'TypeRep' is restricted to
 -- kind @'TYPE' rep@ (for some 'RuntimeRep' @rep@).
 type SomeTypeRepTYPE :: RuntimeRep -> Type
-data SomeTypeRepTYPE r where
+data SomeTypeRepTYPE :: RuntimeRep -> Type where
   SomeTypeRepTYPE :: forall (rep :: RuntimeRep) (a :: TYPE rep). !(TypeRep a) -> SomeTypeRepTYPE rep
 
 instance Eq (SomeTypeRepTYPE rep) where

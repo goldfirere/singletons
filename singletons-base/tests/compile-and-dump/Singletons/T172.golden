@@ -4,7 +4,7 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
           ($>) = (+) |]
   ======>
     type ($>@#@$) :: (~>) Nat ((~>) Nat Nat)
-    data ($>@#@$) a0123456789876543210
+    data ($>@#@$) :: (~>) Nat ((~>) Nat Nat)
       where
         (:$>@#@$###) :: SameKind (Apply ($>@#@$) arg) (($>@#@$$) arg) =>
                         ($>@#@$) a0123456789876543210
@@ -12,7 +12,7 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ($>@#@$) where
       suppressUnusedWarnings = snd (((,) (:$>@#@$###)) ())
     type ($>@#@$$) :: Nat -> (~>) Nat Nat
-    data ($>@#@$$) a0123456789876543210 a0123456789876543210
+    data ($>@#@$$) (a0123456789876543210 :: Nat) :: (~>) Nat Nat
       where
         (:$>@#@$$###) :: SameKind (Apply (($>@#@$$) a0123456789876543210) arg) (($>@#@$$$) a0123456789876543210 arg) =>
                          ($>@#@$$) a0123456789876543210 a0123456789876543210
@@ -20,10 +20,10 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (($>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:$>@#@$$###)) ())
     type ($>@#@$$$) :: Nat -> Nat -> Nat
-    type family ($>@#@$$$) a0123456789876543210 a0123456789876543210 where
+    type family ($>@#@$$$) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       ($>@#@$$$) a0123456789876543210 a0123456789876543210 = ($>) a0123456789876543210 a0123456789876543210
     type ($>) :: Nat -> Nat -> Nat
-    type family ($>) a a where
+    type family ($>) (a :: Nat) (a :: Nat) :: Nat where
       ($>) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (+@#@$) a_0123456789876543210) a_0123456789876543210
     (%$>) ::
       forall (t :: Nat) (t :: Nat).

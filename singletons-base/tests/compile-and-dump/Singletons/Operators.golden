@@ -23,10 +23,10 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     (+) Zero m = m
     (+) (Succ n) m = Succ (n + m)
     type FLeafSym0 :: Foo
-    type family FLeafSym0 where
+    type family FLeafSym0 :: Foo where
       FLeafSym0 = FLeaf
     type (:+:@#@$) :: (~>) Foo ((~>) Foo Foo)
-    data (:+:@#@$) a0123456789876543210
+    data (:+:@#@$) :: (~>) Foo ((~>) Foo Foo)
       where
         (::+:@#@$###) :: SameKind (Apply (:+:@#@$) arg) ((:+:@#@$$) arg) =>
                          (:+:@#@$) a0123456789876543210
@@ -34,7 +34,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (:+:@#@$) where
       suppressUnusedWarnings = snd (((,) (::+:@#@$###)) ())
     type (:+:@#@$$) :: Foo -> (~>) Foo Foo
-    data (:+:@#@$$) a0123456789876543210 a0123456789876543210
+    data (:+:@#@$$) (a0123456789876543210 :: Foo) :: (~>) Foo Foo
       where
         (::+:@#@$$###) :: SameKind (Apply ((:+:@#@$$) a0123456789876543210) arg) ((:+:@#@$$$) a0123456789876543210 arg) =>
                           (:+:@#@$$) a0123456789876543210 a0123456789876543210
@@ -42,10 +42,10 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ((:+:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::+:@#@$$###)) ())
     type (:+:@#@$$$) :: Foo -> Foo -> Foo
-    type family (:+:@#@$$$) a0123456789876543210 a0123456789876543210 where
+    type family (:+:@#@$$$) (a0123456789876543210 :: Foo) (a0123456789876543210 :: Foo) :: Foo where
       (:+:@#@$$$) a0123456789876543210 a0123456789876543210 = (:+:) a0123456789876543210 a0123456789876543210
     type (+@#@$) :: (~>) Nat ((~>) Nat Nat)
-    data (+@#@$) a0123456789876543210
+    data (+@#@$) :: (~>) Nat ((~>) Nat Nat)
       where
         (:+@#@$###) :: SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
                        (+@#@$) a0123456789876543210
@@ -53,7 +53,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (+@#@$) where
       suppressUnusedWarnings = snd (((,) (:+@#@$###)) ())
     type (+@#@$$) :: Nat -> (~>) Nat Nat
-    data (+@#@$$) a0123456789876543210 a0123456789876543210
+    data (+@#@$$) (a0123456789876543210 :: Nat) :: (~>) Nat Nat
       where
         (:+@#@$$###) :: SameKind (Apply ((+@#@$$) a0123456789876543210) arg) ((+@#@$$$) a0123456789876543210 arg) =>
                         (+@#@$$) a0123456789876543210 a0123456789876543210
@@ -61,10 +61,10 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ((+@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:+@#@$$###)) ())
     type (+@#@$$$) :: Nat -> Nat -> Nat
-    type family (+@#@$$$) a0123456789876543210 a0123456789876543210 where
+    type family (+@#@$$$) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       (+@#@$$$) a0123456789876543210 a0123456789876543210 = (+) a0123456789876543210 a0123456789876543210
     type ChildSym0 :: (~>) Foo Foo
-    data ChildSym0 a0123456789876543210
+    data ChildSym0 :: (~>) Foo Foo
       where
         ChildSym0KindInference :: SameKind (Apply ChildSym0 arg) (ChildSym1 arg) =>
                                   ChildSym0 a0123456789876543210
@@ -72,14 +72,14 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ChildSym0 where
       suppressUnusedWarnings = snd (((,) ChildSym0KindInference) ())
     type ChildSym1 :: Foo -> Foo
-    type family ChildSym1 a0123456789876543210 where
+    type family ChildSym1 (a0123456789876543210 :: Foo) :: Foo where
       ChildSym1 a0123456789876543210 = Child a0123456789876543210
     type (+) :: Nat -> Nat -> Nat
-    type family (+) a a where
+    type family (+) (a :: Nat) (a :: Nat) :: Nat where
       (+) 'Zero m = m
       (+) ('Succ n) m = Apply SuccSym0 (Apply (Apply (+@#@$) n) m)
     type Child :: Foo -> Foo
-    type family Child a where
+    type family Child (a :: Foo) :: Foo where
       Child FLeaf = FLeafSym0
       Child ((:+:) a _) = a
     (%+) ::

@@ -71,7 +71,7 @@ poly-kinded Sing instances (see #150), we simply write the singleton type by
 hand.
 -}
 type SConst :: Const a b -> Type
-data SConst c where
+data SConst :: Const a b -> Type where
   SConst :: Sing a -> SConst ('Const a)
 type instance Sing = SConst
 instance SingKind a => SingKind (Const a b) where

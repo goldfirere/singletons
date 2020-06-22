@@ -6,10 +6,10 @@ Singletons/NegativeLiterals.hs:(0,0)-(0,0): Splicing declarations
     f :: Nat
     f = (-1)
     type FSym0 :: Nat
-    type family FSym0 where
+    type family FSym0 :: Nat where
       FSym0 = F
     type F :: Nat
-    type family F where
+    type family F :: Nat where
       F = Negate (FromInteger 1)
     sF :: Sing (FSym0 :: Nat)
     sF = sNegate (sFromInteger (sing :: Sing 1))

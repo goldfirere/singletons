@@ -4,7 +4,7 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
           const' x _ = x |]
   ======>
     type Const'Sym0 :: (~>) a ((~>) b a)
-    data Const'Sym0 a0123456789876543210
+    data Const'Sym0 :: (~>) a ((~>) b a)
       where
         Const'Sym0KindInference :: SameKind (Apply Const'Sym0 arg) (Const'Sym1 arg) =>
                                    Const'Sym0 a0123456789876543210
@@ -13,7 +13,7 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) Const'Sym0KindInference) ())
     type Const'Sym1 :: a -> (~>) b a
-    data Const'Sym1 a0123456789876543210 a0123456789876543210
+    data Const'Sym1 (a0123456789876543210 :: a) :: (~>) b a
       where
         Const'Sym1KindInference :: SameKind (Apply (Const'Sym1 a0123456789876543210) arg) (Const'Sym2 a0123456789876543210 arg) =>
                                    Const'Sym1 a0123456789876543210 a0123456789876543210
@@ -22,10 +22,10 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
       Data.Singletons.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) Const'Sym1KindInference) ())
     type Const'Sym2 :: a -> b -> a
-    type family Const'Sym2 a0123456789876543210 a0123456789876543210 where
+    type family Const'Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
       Const'Sym2 a0123456789876543210 a0123456789876543210 = Const' a0123456789876543210 a0123456789876543210
     type Const' :: a -> b -> a
-    type family Const' a a where
+    type family Const' (a :: a) (a :: b) :: a where
       Const' x _ = x
     sConst' ::
       forall a b (t :: a) (t :: b).

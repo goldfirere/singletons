@@ -9,10 +9,10 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type family Case_0123456789876543210 v_0123456789876543210 a_0123456789876543210 t where
     type ShowsPrec_0123456789876543210 :: GHC.Types.Nat
                                           -> Foo -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210 a a a where
+    type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Foo) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210 _ v_0123456789876543210 a_0123456789876543210 = Apply (Case_0123456789876543210 v_0123456789876543210 a_0123456789876543210 v_0123456789876543210) a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Types.Nat ((~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-    data ShowsPrec_0123456789876543210Sym0 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Types.Nat ((~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol))
       where
         ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
@@ -22,7 +22,7 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Types.Nat
                                               -> (~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol)
-    data ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) :: (~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol)
       where
         ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -32,7 +32,7 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Types.Nat
                                               -> Foo -> (~>) GHC.Types.Symbol GHC.Types.Symbol
-    data ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Foo) :: (~>) GHC.Types.Symbol GHC.Types.Symbol
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -42,7 +42,7 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Types.Nat
                                               -> Foo -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Foo) (a0123456789876543210 :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow Foo where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a

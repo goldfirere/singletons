@@ -17,7 +17,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     (====) a _ = a
     infix 4 ====
     type (====@#@$) :: (~>) a ((~>) a a)
-    data (====@#@$) a0123456789876543210
+    data (====@#@$) :: (~>) a ((~>) a a)
       where
         (:====@#@$###) :: SameKind (Apply (====@#@$) arg) ((====@#@$$) arg) =>
                           (====@#@$) a0123456789876543210
@@ -26,7 +26,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) (:====@#@$###)) ())
     infix 4 ====@#@$
     type (====@#@$$) :: a -> (~>) a a
-    data (====@#@$$) a0123456789876543210 a0123456789876543210
+    data (====@#@$$) (a0123456789876543210 :: a) :: (~>) a a
       where
         (:====@#@$$###) :: SameKind (Apply ((====@#@$$) a0123456789876543210) arg) ((====@#@$$$) a0123456789876543210 arg) =>
                            (====@#@$$) a0123456789876543210 a0123456789876543210
@@ -35,14 +35,14 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) (:====@#@$$###)) ())
     infix 4 ====@#@$$
     type (====@#@$$$) :: a -> a -> a
-    type family (====@#@$$$) a0123456789876543210 a0123456789876543210 where
+    type family (====@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       (====@#@$$$) a0123456789876543210 a0123456789876543210 = (====) a0123456789876543210 a0123456789876543210
     infix 4 ====@#@$$$
     type (====) :: a -> a -> a
-    type family (====) a a where
+    type family (====) (a :: a) (a :: a) :: a where
       (====) a _ = a
     type (<=>@#@$) :: forall a. (~>) a ((~>) a Ordering)
-    data (<=>@#@$) a0123456789876543210
+    data (<=>@#@$) :: (~>) a ((~>) a Ordering)
       where
         (:<=>@#@$###) :: SameKind (Apply (<=>@#@$) arg) ((<=>@#@$$) arg) =>
                          (<=>@#@$) a0123456789876543210
@@ -51,7 +51,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) (:<=>@#@$###)) ())
     infix 4 <=>@#@$
     type (<=>@#@$$) :: forall a. a -> (~>) a Ordering
-    data (<=>@#@$$) a0123456789876543210 a0123456789876543210
+    data (<=>@#@$$) (a0123456789876543210 :: a) :: (~>) a Ordering
       where
         (:<=>@#@$$###) :: SameKind (Apply ((<=>@#@$$) a0123456789876543210) arg) ((<=>@#@$$$) a0123456789876543210 arg) =>
                           (<=>@#@$$) a0123456789876543210 a0123456789876543210
@@ -60,7 +60,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) (:<=>@#@$$###)) ())
     infix 4 <=>@#@$$
     type (<=>@#@$$$) :: forall a. a -> a -> Ordering
-    type family (<=>@#@$$$) a0123456789876543210 a0123456789876543210 where
+    type family (<=>@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ordering where
       (<=>@#@$$$) a0123456789876543210 a0123456789876543210 = (<=>) a0123456789876543210 a0123456789876543210
     infix 4 <=>@#@$$$
     class PMyOrd a where

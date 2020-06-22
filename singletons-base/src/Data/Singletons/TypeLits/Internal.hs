@@ -61,7 +61,7 @@ import Data.Text ( Text )
 ----------------------------------------------------------------------
 
 type SNat :: Nat -> Type
-data SNat n = KnownNat n => SNat
+data SNat (n :: Nat) = KnownNat n => SNat
 type instance Sing = SNat
 
 instance KnownNat n => SingI n where
@@ -74,7 +74,7 @@ instance SingKind Nat where
                SomeNat (_ :: Proxy n) -> SomeSing (SNat :: Sing n)
 
 type SSymbol :: Symbol -> Type
-data SSymbol n = KnownSymbol n => SSym
+data SSymbol (n :: Symbol) = KnownSymbol n => SSym
 type instance Sing = SSymbol
 
 instance KnownSymbol n => SingI n where
@@ -179,7 +179,7 @@ withKnownSymbol SSym f = f
 -- | The promotion of 'error'. This version is more poly-kinded for
 -- easier use.
 type Error :: k0 -> k
-type family Error str where {}
+type family Error (str :: k0) :: k where {}
 $(genDefunSymbols [''Error])
 instance SingI (ErrorSym0 :: Symbol ~> a) where
   sing = singFun1 sError
@@ -191,7 +191,7 @@ sError sstr = error (T.unpack (fromSing sstr))
 -- | The promotion of 'errorWithoutStackTrace'. This version is more
 -- poly-kinded for easier use.
 type ErrorWithoutStackTrace :: k0 -> k
-type family ErrorWithoutStackTrace str where {}
+type family ErrorWithoutStackTrace (str :: k0) :: k where {}
 $(genDefunSymbols [''ErrorWithoutStackTrace])
 instance SingI (ErrorWithoutStackTraceSym0 :: Symbol ~> a) where
   sing = singFun1 sErrorWithoutStackTrace
@@ -202,7 +202,7 @@ sErrorWithoutStackTrace sstr = errorWithoutStackTrace (T.unpack (fromSing sstr))
 
 -- | The promotion of 'undefined'.
 type Undefined :: k
-type family Undefined where {}
+type family Undefined :: k where {}
 $(genDefunSymbols [''Undefined])
 
 -- | The singleton for 'undefined'.

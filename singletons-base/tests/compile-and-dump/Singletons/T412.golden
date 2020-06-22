@@ -66,7 +66,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       T1bSym2 a0123456789876543210 b0123456789876543210 = T1b a0123456789876543210 b0123456789876543210
     infixl 5 `T1bSym2`
     type MkD1Sym0 :: forall a b. (~>) a ((~>) b (D1 a b))
-    data MkD1Sym0 a0123456789876543210
+    data MkD1Sym0 :: (~>) a ((~>) b (D1 a b))
       where
         MkD1Sym0KindInference :: SameKind (Apply MkD1Sym0 arg) (MkD1Sym1 arg) =>
                                  MkD1Sym0 a0123456789876543210
@@ -75,7 +75,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) MkD1Sym0KindInference) ())
     infixr 5 `MkD1Sym0`
     type MkD1Sym1 :: forall a b. a -> (~>) b (D1 a b)
-    data MkD1Sym1 a0123456789876543210 a0123456789876543210
+    data MkD1Sym1 (a0123456789876543210 :: a) :: (~>) b (D1 a b)
       where
         MkD1Sym1KindInference :: SameKind (Apply (MkD1Sym1 a0123456789876543210) arg) (MkD1Sym2 a0123456789876543210 arg) =>
                                  MkD1Sym1 a0123456789876543210 a0123456789876543210
@@ -84,11 +84,11 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) MkD1Sym1KindInference) ())
     infixr 5 `MkD1Sym1`
     type MkD1Sym2 :: forall a b. a -> b -> D1 a b
-    type family MkD1Sym2 a0123456789876543210 a0123456789876543210 where
+    type family MkD1Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: D1 a b where
       MkD1Sym2 a0123456789876543210 a0123456789876543210 = MkD1 a0123456789876543210 a0123456789876543210
     infixr 5 `MkD1Sym2`
     type D1BSym0 :: forall a b. (~>) (D1 a b) b
-    data D1BSym0 a0123456789876543210
+    data D1BSym0 :: (~>) (D1 a b) b
       where
         D1BSym0KindInference :: SameKind (Apply D1BSym0 arg) (D1BSym1 arg) =>
                                 D1BSym0 a0123456789876543210
@@ -97,11 +97,11 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) D1BSym0KindInference) ())
     infixr 5 `D1BSym0`
     type D1BSym1 :: forall a b. D1 a b -> b
-    type family D1BSym1 a0123456789876543210 where
+    type family D1BSym1 (a0123456789876543210 :: D1 a b) :: b where
       D1BSym1 a0123456789876543210 = D1B a0123456789876543210
     infixr 5 `D1BSym1`
     type D1ASym0 :: forall a b. (~>) (D1 a b) a
-    data D1ASym0 a0123456789876543210
+    data D1ASym0 :: (~>) (D1 a b) a
       where
         D1ASym0KindInference :: SameKind (Apply D1ASym0 arg) (D1ASym1 arg) =>
                                 D1ASym0 a0123456789876543210
@@ -110,21 +110,21 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) D1ASym0KindInference) ())
     infixr 5 `D1ASym0`
     type D1ASym1 :: forall a b. D1 a b -> a
-    type family D1ASym1 a0123456789876543210 where
+    type family D1ASym1 (a0123456789876543210 :: D1 a b) :: a where
       D1ASym1 a0123456789876543210 = D1A a0123456789876543210
     infixr 5 `D1ASym1`
     type D1B :: forall a b. D1 a b -> b
-    type family D1B a where
+    type family D1B (a :: D1 a b) :: b where
       D1B (MkD1 _ field) = field
     type D1A :: forall a b. D1 a b -> a
-    type family D1A a where
+    type family D1A (a :: D1 a b) :: a where
       D1A (MkD1 field _) = field
     infixr 5 `D1B`
     infixr 5 `D1A`
     infix 6 `M1`
     infix 5 `PC1`
     type M1Sym0 :: forall a b. (~>) a ((~>) b Bool)
-    data M1Sym0 a0123456789876543210
+    data M1Sym0 :: (~>) a ((~>) b Bool)
       where
         M1Sym0KindInference :: SameKind (Apply M1Sym0 arg) (M1Sym1 arg) =>
                                M1Sym0 a0123456789876543210
@@ -133,7 +133,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) M1Sym0KindInference) ())
     infix 6 `M1Sym0`
     type M1Sym1 :: forall a b. a -> (~>) b Bool
-    data M1Sym1 a0123456789876543210 a0123456789876543210
+    data M1Sym1 (a0123456789876543210 :: a) :: (~>) b Bool
       where
         M1Sym1KindInference :: SameKind (Apply (M1Sym1 a0123456789876543210) arg) (M1Sym2 a0123456789876543210 arg) =>
                                M1Sym1 a0123456789876543210 a0123456789876543210
@@ -142,7 +142,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) M1Sym1KindInference) ())
     infix 6 `M1Sym1`
     type M1Sym2 :: forall a b. a -> b -> Bool
-    type family M1Sym2 a0123456789876543210 a0123456789876543210 where
+    type family M1Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Bool where
       M1Sym2 a0123456789876543210 a0123456789876543210 = M1 a0123456789876543210 a0123456789876543210
     infix 6 `M1Sym2`
     class PC1 a b where
@@ -193,7 +193,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     genSingletons [''C2, ''T2a, ''T2b, ''D2]
   ======>
     type M2Sym0 :: forall a b. (~>) a ((~>) b Bool)
-    data M2Sym0 a0123456789876543210
+    data M2Sym0 :: (~>) a ((~>) b Bool)
       where
         M2Sym0KindInference :: SameKind (Apply M2Sym0 arg) (M2Sym1 arg) =>
                                M2Sym0 a0123456789876543210
@@ -202,7 +202,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
       suppressUnusedWarnings = snd (((,) M2Sym0KindInference) ())
     infix 6 `M2Sym0`
     type M2Sym1 :: forall a b. a -> (~>) b Bool
-    data M2Sym1 a0123456789876543210 a0123456789876543210
+    data M2Sym1 (a0123456789876543210 :: a) :: (~>) b Bool
       where
         M2Sym1KindInference :: SameKind (Apply (M2Sym1 a0123456789876543210) arg) (M2Sym2 a0123456789876543210 arg) =>
                                M2Sym1 a0123456789876543210 a0123456789876543210
@@ -211,7 +211,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
       suppressUnusedWarnings = snd (((,) M2Sym1KindInference) ())
     infix 6 `M2Sym1`
     type M2Sym2 :: forall a b. a -> b -> Bool
-    type family M2Sym2 a0123456789876543210 a0123456789876543210 where
+    type family M2Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Bool where
       M2Sym2 a0123456789876543210 a0123456789876543210 = M2 a0123456789876543210 a0123456789876543210
     infix 6 `M2Sym2`
     type PC2 :: GHC.Types.Type -> GHC.Types.Type -> Constraint
@@ -232,7 +232,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
              SingI (M2Sym1 (d :: a) :: (~>) b Bool) where
       sing = (singFun1 @(M2Sym1 (d :: a))) (sM2 (sing @d))
     type T2aSym0 :: (~>) GHC.Types.Type ((~>) GHC.Types.Type GHC.Types.Type)
-    data T2aSym0 a0123456789876543210
+    data T2aSym0 :: (~>) GHC.Types.Type ((~>) GHC.Types.Type GHC.Types.Type)
       where
         T2aSym0KindInference :: SameKind (Apply T2aSym0 arg) (T2aSym1 arg) =>
                                 T2aSym0 a0123456789876543210
@@ -242,7 +242,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     infixl 5 `T2aSym0`
     type T2aSym1 :: GHC.Types.Type
                     -> (~>) GHC.Types.Type GHC.Types.Type
-    data T2aSym1 a0123456789876543210 a0123456789876543210
+    data T2aSym1 (a0123456789876543210 :: GHC.Types.Type) :: (~>) GHC.Types.Type GHC.Types.Type
       where
         T2aSym1KindInference :: SameKind (Apply (T2aSym1 a0123456789876543210) arg) (T2aSym2 a0123456789876543210 arg) =>
                                 T2aSym1 a0123456789876543210 a0123456789876543210
@@ -251,11 +251,11 @@ Singletons/T412.hs:0:0:: Splicing declarations
       suppressUnusedWarnings = snd (((,) T2aSym1KindInference) ())
     infixl 5 `T2aSym1`
     type T2aSym2 :: GHC.Types.Type -> GHC.Types.Type -> GHC.Types.Type
-    type family T2aSym2 a0123456789876543210 a0123456789876543210 where
+    type family T2aSym2 (a0123456789876543210 :: GHC.Types.Type) (a0123456789876543210 :: GHC.Types.Type) :: GHC.Types.Type where
       T2aSym2 a0123456789876543210 a0123456789876543210 = T2a a0123456789876543210 a0123456789876543210
     infixl 5 `T2aSym2`
     type T2bSym0 :: (~>) GHC.Types.Type ((~>) GHC.Types.Type GHC.Types.Type)
-    data T2bSym0 a0123456789876543210
+    data T2bSym0 :: (~>) GHC.Types.Type ((~>) GHC.Types.Type GHC.Types.Type)
       where
         T2bSym0KindInference :: SameKind (Apply T2bSym0 arg) (T2bSym1 arg) =>
                                 T2bSym0 a0123456789876543210
@@ -265,7 +265,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     infixl 5 `T2bSym0`
     type T2bSym1 :: GHC.Types.Type
                     -> (~>) GHC.Types.Type GHC.Types.Type
-    data T2bSym1 a0123456789876543210 a0123456789876543210
+    data T2bSym1 (a0123456789876543210 :: GHC.Types.Type) :: (~>) GHC.Types.Type GHC.Types.Type
       where
         T2bSym1KindInference :: SameKind (Apply (T2bSym1 a0123456789876543210) arg) (T2bSym2 a0123456789876543210 arg) =>
                                 T2bSym1 a0123456789876543210 a0123456789876543210
@@ -274,13 +274,13 @@ Singletons/T412.hs:0:0:: Splicing declarations
       suppressUnusedWarnings = snd (((,) T2bSym1KindInference) ())
     infixl 5 `T2bSym1`
     type T2bSym2 :: GHC.Types.Type -> GHC.Types.Type -> GHC.Types.Type
-    type family T2bSym2 a0123456789876543210 a0123456789876543210 where
+    type family T2bSym2 (a0123456789876543210 :: GHC.Types.Type) (a0123456789876543210 :: GHC.Types.Type) :: GHC.Types.Type where
       T2bSym2 a0123456789876543210 a0123456789876543210 = T2b a0123456789876543210 a0123456789876543210
     infixl 5 `T2bSym2`
     type MkD2Sym0 :: forall (a :: GHC.Types.Type)
                             (b :: GHC.Types.Type).
                      (~>) a ((~>) b (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)))
-    data MkD2Sym0 a0123456789876543210
+    data MkD2Sym0 :: (~>) a ((~>) b (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)))
       where
         MkD2Sym0KindInference :: SameKind (Apply MkD2Sym0 arg) (MkD2Sym1 arg) =>
                                  MkD2Sym0 a0123456789876543210
@@ -291,7 +291,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type MkD2Sym1 :: forall (a :: GHC.Types.Type)
                             (b :: GHC.Types.Type).
                      a -> (~>) b (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type))
-    data MkD2Sym1 a0123456789876543210 a0123456789876543210
+    data MkD2Sym1 (a0123456789876543210 :: a) :: (~>) b (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type))
       where
         MkD2Sym1KindInference :: SameKind (Apply (MkD2Sym1 a0123456789876543210) arg) (MkD2Sym2 a0123456789876543210 arg) =>
                                  MkD2Sym1 a0123456789876543210 a0123456789876543210
@@ -302,14 +302,14 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type MkD2Sym2 :: forall (a :: GHC.Types.Type)
                             (b :: GHC.Types.Type).
                      a -> b -> D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)
-    type family MkD2Sym2 a0123456789876543210 a0123456789876543210 where
+    type family MkD2Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type) where
       MkD2Sym2 a0123456789876543210 a0123456789876543210 = 'MkD2 a0123456789876543210 a0123456789876543210
     infixr 5 `MkD2Sym2`
     infixr 5 `D2A`
     infixr 5 `D2B`
     type D2BSym0 :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
                     (~>) (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) b
-    data D2BSym0 a0123456789876543210
+    data D2BSym0 :: (~>) (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) b
       where
         D2BSym0KindInference :: SameKind (Apply D2BSym0 arg) (D2BSym1 arg) =>
                                 D2BSym0 a0123456789876543210
@@ -318,11 +318,11 @@ Singletons/T412.hs:0:0:: Splicing declarations
       suppressUnusedWarnings = snd (((,) D2BSym0KindInference) ())
     type D2BSym1 :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
                     D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type) -> b
-    type family D2BSym1 a0123456789876543210 where
+    type family D2BSym1 (a0123456789876543210 :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) :: b where
       D2BSym1 a0123456789876543210 = D2B a0123456789876543210
     type D2ASym0 :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
                     (~>) (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) a
-    data D2ASym0 a0123456789876543210
+    data D2ASym0 :: (~>) (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) a
       where
         D2ASym0KindInference :: SameKind (Apply D2ASym0 arg) (D2ASym1 arg) =>
                                 D2ASym0 a0123456789876543210
@@ -331,15 +331,15 @@ Singletons/T412.hs:0:0:: Splicing declarations
       suppressUnusedWarnings = snd (((,) D2ASym0KindInference) ())
     type D2ASym1 :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
                     D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type) -> a
-    type family D2ASym1 a0123456789876543210 where
+    type family D2ASym1 (a0123456789876543210 :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) :: a where
       D2ASym1 a0123456789876543210 = D2A a0123456789876543210
     type D2B :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
                 D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type) -> b
-    type family D2B a where
+    type family D2B (a :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) :: b where
       D2B ('MkD2 _ field) = field
     type D2A :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
                 D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type) -> a
-    type family D2A a where
+    type family D2A (a :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)) :: a where
       D2A ('MkD2 field _) = field
     sD2B ::
       forall (a :: GHC.Types.Type)
@@ -359,7 +359,8 @@ Singletons/T412.hs:0:0:: Splicing declarations
       sing = (singFun1 @D2ASym0) sD2A
     type SD2 :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
                 D2 a b -> GHC.Types.Type
-    data SD2 z
+    data SD2 :: forall (a :: GHC.Types.Type) (b :: GHC.Types.Type).
+                D2 a b -> GHC.Types.Type
       where
         SMkD2 :: forall (a :: GHC.Types.Type)
                         (b :: GHC.Types.Type)

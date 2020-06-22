@@ -36,7 +36,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     type family Let0123456789876543210A wild_0123456789876543210 where
       Let0123456789876543210A wild_0123456789876543210 = Apply SuccSym0 wild_0123456789876543210
     type NatMinusSym0 :: (~>) Nat ((~>) Nat Nat)
-    data NatMinusSym0 a0123456789876543210
+    data NatMinusSym0 :: (~>) Nat ((~>) Nat Nat)
       where
         NatMinusSym0KindInference :: SameKind (Apply NatMinusSym0 arg) (NatMinusSym1 arg) =>
                                      NatMinusSym0 a0123456789876543210
@@ -44,7 +44,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings NatMinusSym0 where
       suppressUnusedWarnings = snd (((,) NatMinusSym0KindInference) ())
     type NatMinusSym1 :: Nat -> (~>) Nat Nat
-    data NatMinusSym1 a0123456789876543210 a0123456789876543210
+    data NatMinusSym1 (a0123456789876543210 :: Nat) :: (~>) Nat Nat
       where
         NatMinusSym1KindInference :: SameKind (Apply (NatMinusSym1 a0123456789876543210) arg) (NatMinusSym2 a0123456789876543210 arg) =>
                                      NatMinusSym1 a0123456789876543210 a0123456789876543210
@@ -52,10 +52,10 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (NatMinusSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) NatMinusSym1KindInference) ())
     type NatMinusSym2 :: Nat -> Nat -> Nat
-    type family NatMinusSym2 a0123456789876543210 a0123456789876543210 where
+    type family NatMinusSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       NatMinusSym2 a0123456789876543210 a0123456789876543210 = NatMinus a0123456789876543210 a0123456789876543210
     type FSym0 :: forall b a. (~>) a ((~>) b ())
-    data FSym0 a0123456789876543210
+    data FSym0 :: (~>) a ((~>) b ())
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
@@ -63,7 +63,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
     type FSym1 :: forall b a. a -> (~>) b ()
-    data FSym1 a0123456789876543210 a0123456789876543210
+    data FSym1 (a0123456789876543210 :: a) :: (~>) b ()
       where
         FSym1KindInference :: SameKind (Apply (FSym1 a0123456789876543210) arg) (FSym2 a0123456789876543210 arg) =>
                               FSym1 a0123456789876543210 a0123456789876543210
@@ -71,15 +71,15 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (FSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) FSym1KindInference) ())
     type FSym2 :: forall b a. a -> b -> ()
-    type family FSym2 a0123456789876543210 a0123456789876543210 where
+    type family FSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: () where
       FSym2 a0123456789876543210 a0123456789876543210 = F a0123456789876543210 a0123456789876543210
     type NatMinus :: Nat -> Nat -> Nat
-    type family NatMinus a a where
+    type family NatMinus (a :: Nat) (a :: Nat) :: Nat where
       NatMinus 'Zero _ = ZeroSym0
       NatMinus ('Succ a) ('Succ b) = Apply (Apply NatMinusSym0 a) b
       NatMinus ('Succ wild_0123456789876543210) 'Zero = Let0123456789876543210ASym1 wild_0123456789876543210
     type F :: forall b a. a -> b -> ()
-    type family F a a where
+    type family F (a :: a) (a :: b) :: () where
       F _ _ = Tuple0Sym0
     type PC :: forall b a. a -> b -> Constraint
     class PC x y
@@ -114,7 +114,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d => SingI (FSym1 (d :: a) :: (~>) b ()) where
       sing = (singFun1 @(FSym1 (d :: a))) (sF (sing @d))
     type SD :: forall b a (x :: a) (y :: b). D x y -> Type
-    data SD z
+    data SD :: forall b a (x :: a) (y :: b). D x y -> Type
     type instance Sing @(D x y) = SD
     instance (SingKind x, SingKind y) => SingKind (D x y) where
       type Demote (D x y) = D (Demote x) (Demote y)

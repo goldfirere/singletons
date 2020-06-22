@@ -6,10 +6,10 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     data Foo = Foo | Foo :+ Foo
     data Bar = Bar Bar Bar Bar Bar Foo
     type FooSym0 :: Foo
-    type family FooSym0 where
+    type family FooSym0 :: Foo where
       FooSym0 = Foo
     type (:+@#@$) :: (~>) Foo ((~>) Foo Foo)
-    data (:+@#@$) a0123456789876543210
+    data (:+@#@$) :: (~>) Foo ((~>) Foo Foo)
       where
         (::+@#@$###) :: SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
                         (:+@#@$) a0123456789876543210
@@ -17,7 +17,7 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (:+@#@$) where
       suppressUnusedWarnings = snd (((,) (::+@#@$###)) ())
     type (:+@#@$$) :: Foo -> (~>) Foo Foo
-    data (:+@#@$$) a0123456789876543210 a0123456789876543210
+    data (:+@#@$$) (a0123456789876543210 :: Foo) :: (~>) Foo Foo
       where
         (::+@#@$$###) :: SameKind (Apply ((:+@#@$$) a0123456789876543210) arg) ((:+@#@$$$) a0123456789876543210 arg) =>
                          (:+@#@$$) a0123456789876543210 a0123456789876543210
@@ -25,10 +25,10 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ((:+@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::+@#@$$###)) ())
     type (:+@#@$$$) :: Foo -> Foo -> Foo
-    type family (:+@#@$$$) a0123456789876543210 a0123456789876543210 where
+    type family (:+@#@$$$) (a0123456789876543210 :: Foo) (a0123456789876543210 :: Foo) :: Foo where
       (:+@#@$$$) a0123456789876543210 a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210
     type BarSym0 :: (~>) Bar ((~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar))))
-    data BarSym0 a0123456789876543210
+    data BarSym0 :: (~>) Bar ((~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar))))
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
@@ -37,7 +37,7 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
     type BarSym1 :: Bar
                     -> (~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar)))
-    data BarSym1 a0123456789876543210 a0123456789876543210
+    data BarSym1 (a0123456789876543210 :: Bar) :: (~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar)))
       where
         BarSym1KindInference :: SameKind (Apply (BarSym1 a0123456789876543210) arg) (BarSym2 a0123456789876543210 arg) =>
                                 BarSym1 a0123456789876543210 a0123456789876543210
@@ -45,7 +45,7 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (BarSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) BarSym1KindInference) ())
     type BarSym2 :: Bar -> Bar -> (~>) Bar ((~>) Bar ((~>) Foo Bar))
-    data BarSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data BarSym2 (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) :: (~>) Bar ((~>) Bar ((~>) Foo Bar))
       where
         BarSym2KindInference :: SameKind (Apply (BarSym2 a0123456789876543210 a0123456789876543210) arg) (BarSym3 a0123456789876543210 a0123456789876543210 arg) =>
                                 BarSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -53,7 +53,7 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (BarSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) BarSym2KindInference) ())
     type BarSym3 :: Bar -> Bar -> Bar -> (~>) Bar ((~>) Foo Bar)
-    data BarSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data BarSym3 (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) :: (~>) Bar ((~>) Foo Bar)
       where
         BarSym3KindInference :: SameKind (Apply (BarSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (BarSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
                                 BarSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -61,7 +61,7 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (BarSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) BarSym3KindInference) ())
     type BarSym4 :: Bar -> Bar -> Bar -> Bar -> (~>) Foo Bar
-    data BarSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    data BarSym4 (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) :: (~>) Foo Bar
       where
         BarSym4KindInference :: SameKind (Apply (BarSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (BarSym5 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
                                 BarSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -69,5 +69,5 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (BarSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) BarSym4KindInference) ())
     type BarSym5 :: Bar -> Bar -> Bar -> Bar -> Foo -> Bar
-    type family BarSym5 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 where
+    type family BarSym5 (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Foo) :: Bar where
       BarSym5 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210

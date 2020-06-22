@@ -16,7 +16,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
     data Ratio1 a = a :% a
     data Ratio2 a = a :%% a
     type (:%@#@$) :: forall a. (~>) a ((~>) a (Ratio1 a))
-    data (:%@#@$) a0123456789876543210
+    data (:%@#@$) :: (~>) a ((~>) a (Ratio1 a))
       where
         (::%@#@$###) :: SameKind (Apply (:%@#@$) arg) ((:%@#@$$) arg) =>
                         (:%@#@$) a0123456789876543210
@@ -24,7 +24,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (:%@#@$) where
       suppressUnusedWarnings = snd (((,) (::%@#@$###)) ())
     type (:%@#@$$) :: forall a. a -> (~>) a (Ratio1 a)
-    data (:%@#@$$) a0123456789876543210 a0123456789876543210
+    data (:%@#@$$) (a0123456789876543210 :: a) :: (~>) a (Ratio1 a)
       where
         (::%@#@$$###) :: SameKind (Apply ((:%@#@$$) a0123456789876543210) arg) ((:%@#@$$$) a0123456789876543210 arg) =>
                          (:%@#@$$) a0123456789876543210 a0123456789876543210
@@ -32,10 +32,10 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ((:%@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::%@#@$$###)) ())
     type (:%@#@$$$) :: forall a. a -> a -> Ratio1 a
-    type family (:%@#@$$$) a0123456789876543210 a0123456789876543210 where
+    type family (:%@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ratio1 a where
       (:%@#@$$$) a0123456789876543210 a0123456789876543210 = (:%) a0123456789876543210 a0123456789876543210
     type (:%%@#@$) :: forall a. (~>) a ((~>) a (Ratio2 a))
-    data (:%%@#@$) a0123456789876543210
+    data (:%%@#@$) :: (~>) a ((~>) a (Ratio2 a))
       where
         (::%%@#@$###) :: SameKind (Apply (:%%@#@$) arg) ((:%%@#@$$) arg) =>
                          (:%%@#@$) a0123456789876543210
@@ -43,7 +43,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (:%%@#@$) where
       suppressUnusedWarnings = snd (((,) (::%%@#@$###)) ())
     type (:%%@#@$$) :: forall a. a -> (~>) a (Ratio2 a)
-    data (:%%@#@$$) a0123456789876543210 a0123456789876543210
+    data (:%%@#@$$) (a0123456789876543210 :: a) :: (~>) a (Ratio2 a)
       where
         (::%%@#@$$###) :: SameKind (Apply ((:%%@#@$$) a0123456789876543210) arg) ((:%%@#@$$$) a0123456789876543210 arg) =>
                           (:%%@#@$$) a0123456789876543210 a0123456789876543210
@@ -51,7 +51,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ((:%%@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (::%%@#@$$###)) ())
     type (:%%@#@$$$) :: forall a. a -> a -> Ratio2 a
-    type family (:%%@#@$$$) a0123456789876543210 a0123456789876543210 where
+    type family (:%%@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ratio2 a where
       (:%%@#@$$$) a0123456789876543210 a0123456789876543210 = (:%%) a0123456789876543210 a0123456789876543210
     data SRatio1 :: forall a. Ratio1 a -> GHC.Types.Type
       where

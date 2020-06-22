@@ -9,7 +9,7 @@ Singletons/T322.hs:(0,0)-(0,0): Splicing declarations
     (!) = (||)
     infixr 2 !
     type (!@#@$) :: (~>) Bool ((~>) Bool Bool)
-    data (!@#@$) a0123456789876543210
+    data (!@#@$) :: (~>) Bool ((~>) Bool Bool)
       where
         (:!@#@$###) :: SameKind (Apply (!@#@$) arg) ((!@#@$$) arg) =>
                        (!@#@$) a0123456789876543210
@@ -18,7 +18,7 @@ Singletons/T322.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) (:!@#@$###)) ())
     infixr 2 !@#@$
     type (!@#@$$) :: Bool -> (~>) Bool Bool
-    data (!@#@$$) a0123456789876543210 a0123456789876543210
+    data (!@#@$$) (a0123456789876543210 :: Bool) :: (~>) Bool Bool
       where
         (:!@#@$$###) :: SameKind (Apply ((!@#@$$) a0123456789876543210) arg) ((!@#@$$$) a0123456789876543210 arg) =>
                         (!@#@$$) a0123456789876543210 a0123456789876543210
@@ -27,11 +27,11 @@ Singletons/T322.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd (((,) (:!@#@$$###)) ())
     infixr 2 !@#@$$
     type (!@#@$$$) :: Bool -> Bool -> Bool
-    type family (!@#@$$$) a0123456789876543210 a0123456789876543210 where
+    type family (!@#@$$$) (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) :: Bool where
       (!@#@$$$) a0123456789876543210 a0123456789876543210 = (!) a0123456789876543210 a0123456789876543210
     infixr 2 !@#@$$$
     type (!) :: Bool -> Bool -> Bool
-    type family (!) a a where
+    type family (!) (a :: Bool) (a :: Bool) :: Bool where
       (!) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (||@#@$) a_0123456789876543210) a_0123456789876543210
     infixr 2 %!
     (%!) ::
