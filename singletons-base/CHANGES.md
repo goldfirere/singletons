@@ -64,6 +64,33 @@ Changelog for singletons-base project
   and `Pred`). This is done in an effort to make importing `Prelude.Singletons`
   less likely to induce name clashes with code that works over unary natural
   numbers, which often use the names "`Succ`" and "`Pred`".
+* An effort has been made to make the API of `Prelude.Singletons` more closely
+  mirror that of the `Prelude` in `base`. As a result, `Prelude.Singletons` now
+  exports some different functions than it used to. In particular, it now
+  exports the following:
+
+  * `Until`/`sUntil`/`UntilSym{N}`
+  * `type (++@#@$$$)`
+  * `type (.@#@$$$$)`
+  * `FlipSym3`
+  * `type (!!)`/`(%!!)`/`type (!!@#@{$})`
+  * `Length`/`sLength`/`LengthSym{N}`
+  * `DropWhile`/`sDropWhile`
+  * `LookupSym{N}`
+  * `Unzip3Sym{N}`
+
+  `Prelude.Singletons` also used to export some things that were _not_ exported
+  by the `Prelude`. Accordingly, these exports have been removed from
+  `Prelude.Singletons`. They are:
+
+  * `(^)`/`(%^)`/`type (^@#@{$})`. Although the `Prelude` does define a
+    function named `(^)`, it is more general than the one defined in
+    `singletons-base`, which only works on `Nat`s. Import
+    `GHC.TypeLits.Singletons` if you wish to use the `Nat`-specific versions.
+  * `DefaultEq`, which has no counterpart in the `Prelude`.
+    Import `Data.Eq.Singletons` if you wish to use this.
+  * `bool_`, which has no counterpart in the `Prelude`.
+    Import `Data.Bool.Singletons` if you wish to use this.
 * Two previously public-facing modules—`Data.Singletons.Prelude.Base` and
   `Data.Singletons.Prelude.Num`—have been turned into internal modules. The
   contents of these modules are re-exported from `Prelude.Singletons`, so that
