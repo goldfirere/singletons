@@ -1006,6 +1006,21 @@ instance C [] where
   method = []
 ```
 
+## Support for singling, but not promotion
+
+The following constructs are supported for singleton generation but not promotion:
+
+* bang patterns
+
+See the following sections for more details.
+
+### Bang patterns
+
+Bang patterns (e.g., `f !x = (x, x)`) cannot be translated to a type-level
+setting as type families lack an equivalent of bang patterns. As a result,
+`singletons-th` will ignore any bang patterns and will simply promote the
+underyling pattern instead.
+
 ## Little to no support
 
 The following constructs are either unsupported or almost never work:
@@ -1015,6 +1030,8 @@ The following constructs are either unsupported or almost never work:
 * rank-n types
 * promoting `TypeRep`s
 * `TypeApplications`
+* Irrefutable patterns
+* `{-# UNPACK #-}` pragmas
 
 See the following sections for more details.
 
@@ -1322,3 +1339,25 @@ for the following constructs:
   type MSym0 :: forall a b. a ~> b ~> a
   type MSym1 :: forall a b. a -> b ~> a
   ```
+
+### Irrefutable patterns
+
+`singletons-th` will ignore irrefutable patterns (e.g., `f ~(x, y) = (y, x)`)
+and will simply promote or single the underlying patterns instead.
+`singletons-th` cannot promote irrefutable patterns for the same reason it
+cannot promote bang patterns: there is no equivalent syntax for type families.
+Moreover, `singletons-th` cannot single irrefutable patterns since singled data
+constructors are implemented as GADTs, as irrefutably matching on a GADT
+constructor will not bring the underlying type information into scope. Since
+essentially all singled code relies on using GADT type information in this way,
+it cannot reasonably be combined with irrefutable patterns, which prevent this
+key feature of GADT pattern matching.
+
+### `{-# UNPACK #-}` pragmas
+
+`singletons-th` will ignore `{-# UNPACK #-}` pragmas on the fields of a data
+constructor (e.g., `data T = MkT {-# UNPACK #-} !()`). This is because
+singled data types represent their argument types using existential type
+variables, and any data constructor that explicitly uses existential
+quantification cannot be unpacked. See
+[GHC#10016](https://gitlab.haskell.org/ghc/ghc/-/issues/10016).

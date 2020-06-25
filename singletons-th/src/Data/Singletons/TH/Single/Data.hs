@@ -196,11 +196,13 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
   -- just assume that the context is always ().
   emitDecs =<< singDefuns name DataName [] (map Just kinds) (Just rty')
 
-  let noBang    = Bang NoSourceUnpackedness NoSourceStrictness
-      args      = map ((noBang,) . DAppT singFamily) indices
-      conFields = case fields of
-                    DNormalC dInfix _ -> DNormalC dInfix args
-                    DRecC _           -> DNormalC False  args
+  conFields <- case fields of
+    DNormalC dInfix bts -> DNormalC dInfix <$>
+                           zipWithM (\(b, _) index -> mk_bang_type b index)
+                                    bts indices
+    DRecC vbts          -> DNormalC False <$>
+                           zipWithM (\(_, b, _) index -> mk_bang_type b index)
+                                    vbts indices
                       -- Don't bother looking at record selectors, as they are
                       -- handled separately in singTopLevelDecs.
                       -- See Note [singletons-th and record selectors]
@@ -210,6 +212,24 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
                   -- Make sure to include an explicit `rty'` kind annotation.
                   -- See Note [Preserve the order of type variables during singling],
                   -- wrinkle 3, in D.S.TH.Single.Type.
+  where
+    mk_source_unpackedness :: SourceUnpackedness -> SgM SourceUnpackedness
+    mk_source_unpackedness su = case su of
+      NoSourceUnpackedness -> pure su
+      SourceNoUnpack       -> pure su
+      SourceUnpack         -> do
+        -- {-# UNPACK #-} is essentially useless in a singletons setting, since
+        -- all singled data types are GADTs. See GHC#10016.
+        qReportWarning "{-# UNPACK #-} pragmas are ignored by `singletons-th`."
+        pure NoSourceUnpackedness
+
+    mk_bang :: Bang -> SgM Bang
+    mk_bang (Bang su ss) = do su' <- mk_source_unpackedness su
+                              pure $ Bang su' ss
+
+    mk_bang_type :: Bang -> DType -> SgM DBangType
+    mk_bang_type b index = do b' <- mk_bang b
+                              pure (b', DAppT singFamily index)
 
 {-
 Note [singletons-th and record selectors]
