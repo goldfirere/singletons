@@ -102,6 +102,8 @@ Changelog for singletons-th project
   default implementation. Use `singEqInstance{s}` instead.
 * The Template Haskell machinery will no longer promote `TypeRep` to `Type`,
   as this special case never worked properly in the first place.
+* The Template Haskell machinery will now preserve strict fields in data types
+  when generating their singled counterparts.
 * Introduce a new `promotedDataTypeOrConName` option to
   `Data.Singletons.TH.Options`. Overriding this option can be useful in
   situations where one wishes to promote types such as `Nat`, `Symbol`, or

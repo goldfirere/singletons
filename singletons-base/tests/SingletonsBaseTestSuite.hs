@@ -137,6 +137,7 @@ tests =
     , compileAndDumpStdTest "T450"
     , compileAndDumpStdTest "T453"
     , compileAndDumpStdTest "NegativeLiterals"
+    , compileAndDumpStdTest "T470"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

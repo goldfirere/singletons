@@ -1,0 +1,92 @@
+Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| type T :: Type -> Type
+          
+          data T a
+            where
+              MkT1 :: a -> T a
+              MkT2 :: !Void -> T a
+          data S = MkS {-# UNPACK #-} !Bool |]
+  ======>
+    type T :: Type -> Type
+    data T a
+      where
+        MkT1 :: a -> T a
+        MkT2 :: !Void -> T a
+    data S = MkS {-# UNPACK #-} !Bool
+    type MkT1Sym0 :: (~>) a (T a)
+    data MkT1Sym0 :: (~>) a (T a)
+      where
+        MkT1Sym0KindInference :: SameKind (Apply MkT1Sym0 arg) (MkT1Sym1 arg) =>
+                                 MkT1Sym0 a0123456789876543210
+    type instance Apply MkT1Sym0 a0123456789876543210 = MkT1 a0123456789876543210
+    instance SuppressUnusedWarnings MkT1Sym0 where
+      suppressUnusedWarnings = snd (((,) MkT1Sym0KindInference) ())
+    type MkT1Sym1 :: a -> T a
+    type family MkT1Sym1 (a0123456789876543210 :: a) :: T a where
+      MkT1Sym1 a0123456789876543210 = MkT1 a0123456789876543210
+    type MkT2Sym0 :: (~>) Void (T a)
+    data MkT2Sym0 :: (~>) Void (T a)
+      where
+        MkT2Sym0KindInference :: SameKind (Apply MkT2Sym0 arg) (MkT2Sym1 arg) =>
+                                 MkT2Sym0 a0123456789876543210
+    type instance Apply MkT2Sym0 a0123456789876543210 = MkT2 a0123456789876543210
+    instance SuppressUnusedWarnings MkT2Sym0 where
+      suppressUnusedWarnings = snd (((,) MkT2Sym0KindInference) ())
+    type MkT2Sym1 :: Void -> T a
+    type family MkT2Sym1 (a0123456789876543210 :: Void) :: T a where
+      MkT2Sym1 a0123456789876543210 = MkT2 a0123456789876543210
+    type MkSSym0 :: (~>) Bool S
+    data MkSSym0 :: (~>) Bool S
+      where
+        MkSSym0KindInference :: SameKind (Apply MkSSym0 arg) (MkSSym1 arg) =>
+                                MkSSym0 a0123456789876543210
+    type instance Apply MkSSym0 a0123456789876543210 = MkS a0123456789876543210
+    instance SuppressUnusedWarnings MkSSym0 where
+      suppressUnusedWarnings = snd (((,) MkSSym0KindInference) ())
+    type MkSSym1 :: Bool -> S
+    type family MkSSym1 (a0123456789876543210 :: Bool) :: S where
+      MkSSym1 a0123456789876543210 = MkS a0123456789876543210
+    type ST :: forall (a :: Type). T a -> Type
+    data ST :: forall (a :: Type). T a -> Type
+      where
+        SMkT1 :: forall a (n :: a). (Sing n) -> ST (MkT1 n :: T a)
+        SMkT2 :: forall a (n :: Void). !(Sing n) -> ST (MkT2 n :: T a)
+    type instance Sing @(T a) = ST
+    instance SingKind a => SingKind (T a) where
+      type Demote (T a) = T (Demote a)
+      fromSing (SMkT1 b) = MkT1 (fromSing b)
+      fromSing (SMkT2 b) = MkT2 (fromSing b)
+      toSing (MkT1 (b :: Demote a))
+        = case toSing b :: SomeSing a of {
+            SomeSing c -> SomeSing (SMkT1 c) }
+      toSing (MkT2 (b :: Demote Void))
+        = case toSing b :: SomeSing Void of {
+            SomeSing c -> SomeSing (SMkT2 c) }
+    data SS :: S -> Type
+      where SMkS :: forall (n :: Bool). !(Sing n) -> SS (MkS n :: S)
+    type instance Sing @S = SS
+    instance SingKind S where
+      type Demote S = S
+      fromSing (SMkS b) = MkS (fromSing b)
+      toSing (MkS (b :: Demote Bool))
+        = case toSing b :: SomeSing Bool of {
+            SomeSing c -> SomeSing (SMkS c) }
+    instance SingI n => SingI (MkT1 (n :: a)) where
+      sing = SMkT1 sing
+    instance SingI (MkT1Sym0 :: (~>) a (T a)) where
+      sing = (singFun1 @MkT1Sym0) SMkT1
+    instance SingI n => SingI (MkT2 (n :: Void)) where
+      sing = SMkT2 sing
+    instance SingI (MkT2Sym0 :: (~>) Void (T a)) where
+      sing = (singFun1 @MkT2Sym0) SMkT2
+    instance SingI n => SingI (MkS (n :: Bool)) where
+      sing = SMkS sing
+    instance SingI (MkSSym0 :: (~>) Bool S) where
+      sing = (singFun1 @MkSSym0) SMkS
+
+Singletons/T470.hs:0:0: warning:
+    {-# UNPACK #-} pragmas are ignored by `singletons-th`.
+  |
+6 | $(singletons [d|
+  |   ^^^^^^^^^^^^^^...
