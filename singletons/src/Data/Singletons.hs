@@ -27,6 +27,10 @@
 {-# LANGUAGE StandaloneKindSignatures #-}
 #endif
 
+#if __GLASGOW_HASKELL__ >= 811
+{-# LANGUAGE UnsaturatedTypeFamilies #-}
+#endif
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Singletons
@@ -69,7 +73,7 @@ module Data.Singletons (
   WrappedSing(..), SWrappedSing(..), UnwrapSing,
   -- $SingletonsOfSingletons
 
-  -- ** Defunctionalization
+  -- ** Higher-order type-level functions
   TyFun, type (~>),
   TyCon1, TyCon2, TyCon3, TyCon4, TyCon5, TyCon6, TyCon7, TyCon8,
   Apply, type (@@),
@@ -77,7 +81,7 @@ module Data.Singletons (
   TyCon, ApplyTyCon, ApplyTyConAux1, ApplyTyConAux2,
 #endif
 
-  -- ** Defunctionalized singletons
+  -- ** Higher-order singletons
   -- | When calling a higher-order singleton function, you need to use a
   -- @singFun...@ function to wrap it. See 'singFun1'.
   singFun1, singFun2, singFun3, singFun4, singFun5, singFun6, singFun7,
@@ -110,9 +114,9 @@ module Data.Singletons (
   type (@@@#@$), type (@@@#@$$), type (@@@#@$$$)
   ) where
 
-import Data.Kind (Constraint, Type)
+import Data.Kind
 import Data.Proxy (Proxy(..))
-import GHC.Exts (Proxy#)
+import GHC.Exts
 import Unsafe.Coerce (unsafeCoerce)
 
 -- | Convenient synonym to refer to the kind of a type variable:
@@ -371,7 +375,7 @@ singInstance s = with_sing_i SingInstance
     with_sing_i si = unsafeCoerce (Don'tInstantiate si) s
 
 ----------------------------------------------------------------------
----- Defunctionalization ---------------------------------------------
+---- Higher-order type-level functions -------------------------------
 ----------------------------------------------------------------------
 
 -- | Representation of the kind of a type-level function. The difference
@@ -406,7 +410,11 @@ data TyFun :: Type -> Type -> Type
 #if __GLASGOW_HASKELL__ >= 810
 type (~>) :: Type -> Type -> Type
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type a ~> b = a -> @U b
+#else
 type a ~> b = TyFun a b -> Type
+#endif
 infixr 0 ~>
 
 -- | Type level function application
@@ -414,6 +422,9 @@ infixr 0 ~>
 type Apply :: (k1 ~> k2) -> k1 -> k2
 #endif
 type family Apply (f :: k1 ~> k2) (x :: k1) :: k2
+#if __GLASGOW_HASKELL__ >= 811
+  where Apply f x = f x
+#endif
 
 -- | An infix synonym for `Apply`
 #if __GLASGOW_HASKELL__ >= 810
@@ -433,7 +444,13 @@ infixl 9 @@
 #if __GLASGOW_HASKELL__ >= 810
 type TyCon :: (k1 -> k2) -> unmatchable_fun
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type family TyCon (f :: k1 -> k2) :: unmatchable_fun where
+  TyCon @k1 @k2 @(k1 -> @U unmatchable_fun) f = ApplyTyCon f
+#else
 data family TyCon :: (k1 -> k2) -> unmatchable_fun
+type instance Apply (TyCon f) x = ApplyTyCon f @@ x
+#endif
 -- That unmatchable_fun should really be a function of k1 and k2,
 -- but GHC 8.4 doesn't support type family calls in the result kind
 -- of a data family. It should. See GHC#14645.
@@ -482,7 +499,6 @@ type family ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun) where
 --            ( forall a. SingI a => SingI (f a)
 --            , (ApplyTyCon :: (k1 -> k2) -> (k1 ~> k2)) ~ ApplyTyConAux1
 --            ) => SingI (TyCon1 f) where
-type instance Apply (TyCon f) x = ApplyTyCon f @@ x
 
 -- | An \"internal\" defunctionalization symbol used primarily in the
 -- definition of 'ApplyTyCon', as well as the 'SingI' instances for 'TyCon1',
@@ -492,7 +508,13 @@ type instance Apply (TyCon f) x = ApplyTyCon f @@ x
 #if __GLASGOW_HASKELL__ >= 810
 type ApplyTyConAux1 :: (k1 -> k2) -> (k1 ~> k2)
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type family ApplyTyConAux1 (f :: k1 -> k2) (x :: k1) :: k2 where
+  ApplyTyConAux1 f x = f x
+#else
 data ApplyTyConAux1 :: (k1 -> k2) -> (k1 ~> k2)
+type instance Apply (ApplyTyConAux1 f) x = f x
+#endif
 
 -- | An \"internal\" defunctionalization symbol used primarily in the
 -- definition of 'ApplyTyCon'.
@@ -501,10 +523,13 @@ data ApplyTyConAux1 :: (k1 -> k2) -> (k1 ~> k2)
 #if __GLASGOW_HASKELL__ >= 810
 type ApplyTyConAux2 :: (k1 -> k2 -> k3) -> (k1 ~> unmatchable_fun)
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type family ApplyTyConAux2 (f :: k1 -> k2 -> k3) (x :: k1) :: unmatchable_fun where
+  ApplyTyConAux2 f x = TyCon (f x)
+#else
 data ApplyTyConAux2 :: (k1 -> k2 -> k3) -> (k1 ~> unmatchable_fun)
-
-type instance Apply (ApplyTyConAux1 f) x = f x
 type instance Apply (ApplyTyConAux2 f) x = TyCon (f x)
+#endif
 
 #if __GLASGOW_HASKELL__ >= 810
 type TyCon1          :: (k1 -> k2) -> (k1 ~> k2)
@@ -584,7 +609,7 @@ type instance Apply (TyCon8 f) x = TyCon7 (f x)
 #endif
 
 ----------------------------------------------------------------------
----- Defunctionalized Sing instance and utilities --------------------
+---- Higher-order Sing instance and utilities ------------------------
 ----------------------------------------------------------------------
 
 #if __GLASGOW_HASKELL__ >= 810
@@ -821,7 +846,7 @@ demote = fromSing (sing @a)
 ---- SingI TyCon{N} instances ----------------------------------------
 ----------------------------------------------------------------------
 
-#if __GLASGOW_HASKELL__ >= 806
+#if __GLASGOW_HASKELL__ >= 806 && __GLASGOW_HASKELL__ < 811
 instance forall k1 kr (f :: k1 -> kr).
          ( forall a. SingI a => SingI (f a)
          ,   (ApplyTyCon :: (k1 -> kr) -> (k1 ~> kr))
@@ -897,10 +922,15 @@ type DemoteSym0 :: Type ~> Type
 type DemoteSym1 :: Type -> Type
 #endif
 
+#if __GLASGOW_HASKELL__ >= 811
+type DemoteSym0 = Demote :: Type ~> Type
+#else
 data DemoteSym0 :: Type ~> Type
-type DemoteSym1 x = Demote x
 
 type instance Apply DemoteSym0 x = Demote x
+#endif
+
+type DemoteSym1 x = Demote x
 
 -----
 
@@ -910,12 +940,18 @@ type SameKindSym1 :: forall k. k -> k ~> Constraint
 type SameKindSym2 :: forall k. k -> k -> Constraint
 #endif
 
+#if __GLASGOW_HASKELL__ >= 811
+type SameKindSym0 = SameKind :: k ~> k ~> Constraint
+type SameKindSym1 = SameKind :: k -> k ~> Constraint
+#else
 data SameKindSym0 :: forall k. k ~> k ~> Constraint
 data SameKindSym1 :: forall k. k -> k ~> Constraint
-type SameKindSym2 (x :: k) (y :: k) = SameKind x y
 
 type instance Apply SameKindSym0 x = SameKindSym1 x
 type instance Apply (SameKindSym1 x) y = SameKind x y
+#endif
+
+type SameKindSym2 (x :: k) (y :: k) = SameKind x y
 
 -----
 
@@ -924,10 +960,15 @@ type KindOfSym0 :: forall k. k ~> Type
 type KindOfSym1 :: forall k. k -> Type
 #endif
 
+#if __GLASGOW_HASKELL__ >= 811
+type KindOfSym0 = KindOf :: k ~> Type
+#else
 data KindOfSym0 :: forall k. k ~> Type
-type KindOfSym1 (x :: k) = KindOf x
 
 type instance Apply KindOfSym0 x = KindOf x
+#endif
+
+type KindOfSym1 (x :: k) = KindOf x
 
 -----
 
@@ -939,12 +980,18 @@ type (~>@#@$$) :: Type -> Type ~> Type
 type (~>@#@$$$) :: Type -> Type -> Type
 #endif
 
+#if __GLASGOW_HASKELL__ >= 811
+type (~>@#@$)  = (~>) :: Type ~> Type ~> Type
+type (~>@#@$$) = (~>) :: Type -> Type ~> Type
+#else
 data (~>@#@$)  :: Type ~> Type ~> Type
 data (~>@#@$$) :: Type -> Type ~> Type
-type x ~>@#@$$$ y = x ~> y
 
 type instance Apply (~>@#@$) x = (~>@#@$$) x
 type instance Apply ((~>@#@$$) x) y = x ~> y
+#endif
+
+type x ~>@#@$$$ y = x ~> y
 
 -----
 
@@ -954,12 +1001,18 @@ type ApplySym1 :: forall a b. (a ~> b) -> a ~> b
 type ApplySym2 :: forall a b. (a ~> b) -> a -> b
 #endif
 
+#if __GLASGOW_HASKELL__ >= 811
+type ApplySym0 = Apply :: (a ~> b) ~> a ~> b
+type ApplySym1 = Apply :: (a ~> b) -> a ~> b
+#else
 data ApplySym0 :: forall a b. (a ~> b) ~> a ~> b
 data ApplySym1 :: forall a b. (a ~> b) -> a ~> b
-type ApplySym2 (f :: a ~> b) (x :: a) = Apply f x
 
 type instance Apply ApplySym0 f = ApplySym1 f
 type instance Apply (ApplySym1 f) x = Apply f x
+#endif
+
+type ApplySym2 (f :: a ~> b) (x :: a) = Apply f x
 
 -----
 
@@ -971,12 +1024,18 @@ type (@@@#@$$) :: forall a b. (a ~> b) -> a ~> b
 type (@@@#@$$$) :: forall a b. (a ~> b) -> a -> b
 #endif
 
+#if __GLASGOW_HASKELL__ >= 811
+type (@@@#@$)  = (@@) :: (a ~> b) ~> a ~> b
+type (@@@#@$$) = (@@) :: (a ~> b) -> a ~> b
+#else
 data (@@@#@$)  :: forall a b. (a ~> b) ~> a ~> b
 data (@@@#@$$) :: forall a b. (a ~> b) -> a ~> b
-type (f :: a ~> b) @@@#@$$$ (x :: a) = f @@ x
 
 type instance Apply (@@@#@$) f = (@@@#@$$) f
 type instance Apply ((@@@#@$$) f) x = f @@ x
+#endif
+
+type (f :: a ~> b) @@@#@$$$ (x :: a) = f @@ x
 
 {- $SingletonsOfSingletons
 

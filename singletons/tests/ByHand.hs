@@ -24,6 +24,10 @@ This file is a great way to understand the singleton encoding better.
 #if __GLASGOW_HASKELL__ >= 810
 {-# LANGUAGE StandaloneKindSignatures #-}
 #endif
+
+#if __GLASGOW_HASKELL__ >= 811
+{-# LANGUAGE UnsaturatedTypeFamilies #-}
+#endif
 module ByHand where
 
 import Data.Kind
@@ -103,8 +107,12 @@ type instance Sing = SNat
 #if __GLASGOW_HASKELL__ >= 810
 type SuccSym0 :: Nat ~> Nat
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type SuccSym0 (x :: Nat) = Succ x :: Nat
+#else
 data SuccSym0 :: Nat ~> Nat
 type instance Apply SuccSym0 x = Succ x
+#endif
 
 #if __GLASGOW_HASKELL__ >= 810
 type EqualsNat :: Nat -> Nat -> Bool
@@ -251,12 +259,19 @@ type ConsSym0 :: forall a. a ~> List a ~> List a
 type ConsSym1 :: forall a. a -> List a ~> List a
 type ConsSym2 :: forall a. a -> List a -> List a
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type ConsSym0 (x :: a) (y :: List a) = Cons x y :: List a
+type ConsSym1 (x :: a) (y :: List a) = Cons x y :: List a
+#else
 data ConsSym0 :: forall a. a ~> List a ~> List a
 data ConsSym1 :: forall a. a -> List a ~> List a
+
+type instance Apply ConsSym0 x = ConsSym1 x
+type instance Apply (ConsSym1 x) y = Cons x y
+#endif
+
 type family ConsSym2 (x :: a) (y :: List a) :: List a where
   ConsSym2 x y = Cons x y
-type instance Apply ConsSym0 a = ConsSym1 a
-type instance Apply (ConsSym1 a) b = Cons a b
 
 #if __GLASGOW_HASKELL__ >= 810
 type EqualsList :: List k -> List k -> Bool
@@ -483,8 +498,12 @@ type family IsJust (a :: Maybe k) :: Bool where
 #if __GLASGOW_HASKELL__ >= 810
 type IsJustSym0 :: forall a. Maybe a ~> Bool
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type IsJustSym0 (x :: Maybe a) = IsJust x :: Bool
+#else
 data IsJustSym0 :: forall a. Maybe a ~> Bool
-type instance Apply IsJustSym0 a = IsJust a
+type instance Apply IsJustSym0 x = IsJust x
+#endif
 
 sIsJust :: Sing a -> Sing (IsJust a)
 sIsJust SNothing = SFalse
@@ -504,8 +523,12 @@ type family Pred (a :: Nat) :: Nat where
 #if __GLASGOW_HASKELL__ >= 810
 type PredSym0 :: Nat ~> Nat
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type PredSym0 = Pred :: Nat ~> Nat
+#else
 data PredSym0 :: Nat ~> Nat
 type instance Apply PredSym0 a = Pred a
+#endif
 
 sPred :: forall (t :: Nat). Sing t -> Sing (Pred t)
 sPred SZero = SZero
@@ -527,10 +550,15 @@ type family Map (f :: k1 ~> k2) (l :: List k1) :: List k2 where
 type MapSym0 :: forall a b. (a ~> b) ~> List a ~> List b
 type MapSym1 :: forall a b. (a ~> b) -> List a ~> List b
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type MapSym0 = Map :: (a ~> b) ~> List a ~> List b
+type MapSym1 = Map :: (a ~> b) -> List a ~> List b
+#else
 data MapSym0 :: forall a b. (a ~> b) ~> List a ~> List b
 data MapSym1 :: forall a b. (a ~> b) -> List a ~> List b
 type instance Apply  MapSym0 f     = MapSym1 f
 type instance Apply (MapSym1 f) xs = Map f xs
+#endif
 
 sMap :: forall k1 k2 (a :: List k1) (f :: k1 ~> k2).
        (forall b. Proxy f -> Sing b -> Sing (Apply f b)) -> Sing a -> Sing (Map f a)
@@ -575,12 +603,18 @@ type ZipWithSym0 :: forall a b c. (a ~> b ~> c) ~> List a ~> List b ~> List c
 type ZipWithSym1 :: forall a b c. (a ~> b ~> c) -> List a ~> List b ~> List c
 type ZipWithSym2 :: forall a b c. (a ~> b ~> c) -> List a -> List b ~> List c
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type ZipWithSym0 = ZipWith :: (a ~> b ~> c) ~> List a ~> List b ~> List c
+type ZipWithSym1 = ZipWith :: (a ~> b ~> c) -> List a ~> List b ~> List c
+type ZipWithSym2 = ZipWith :: (a ~> b ~> c) -> List a -> List b ~> List c
+#else
 data ZipWithSym0 :: forall a b c. (a ~> b ~> c) ~> List a ~> List b ~> List c
 data ZipWithSym1 :: forall a b c. (a ~> b ~> c) -> List a ~> List b ~> List c
 data ZipWithSym2 :: forall a b c. (a ~> b ~> c) -> List a -> List b ~> List c
 type instance Apply  ZipWithSym0 f        = ZipWithSym1 f
 type instance Apply (ZipWithSym1 f)    xs = ZipWithSym2 f xs
 type instance Apply (ZipWithSym2 f xs) ys = ZipWith f xs ys
+#endif
 
 
 sZipWith :: forall a b c (k1 :: a ~> b ~> c) (k2 :: List a) (k3 :: List b).
@@ -608,12 +642,18 @@ type Either_Sym0 :: forall a c b. (a ~> c) ~> (b ~> c) ~> Either a b ~> c
 type Either_Sym1 :: forall a c b. (a ~> c) -> (b ~> c) ~> Either a b ~> c
 type Either_Sym2 :: forall a c b. (a ~> c) -> (b ~> c) -> Either a b ~> c
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type Either_Sym0 = Either_ :: (a ~> c) ~> (b ~> c) ~> Either a b ~> c
+type Either_Sym1 = Either_ :: (a ~> c) -> (b ~> c) ~> Either a b ~> c
+type Either_Sym2 = Either_ :: (a ~> c) -> (b ~> c) -> Either a b ~> c
+#else
 data Either_Sym0 :: forall a c b. (a ~> c) ~> (b ~> c) ~> Either a b ~> c
 data Either_Sym1 :: forall a c b. (a ~> c) -> (b ~> c) ~> Either a b ~> c
 data Either_Sym2 :: forall a c b. (a ~> c) -> (b ~> c) -> Either a b ~> c
 type instance Apply  Either_Sym0        k1 = Either_Sym1 k1
 type instance Apply (Either_Sym1 k1)    k2 = Either_Sym2 k1 k2
 type instance Apply (Either_Sym2 k1 k2) k3 = Either_     k1 k2 k3
+#endif
 
 sEither :: forall a b c
                   (l :: a ~> c)
@@ -678,10 +718,15 @@ type family LiftMaybe (f :: a ~> b) (x :: Maybe a) :: Maybe b where
 type LiftMaybeSym0 :: forall a b. (a ~> b) ~> Maybe a ~> Maybe b
 type LiftMaybeSym1 :: forall a b. (a ~> b) -> Maybe a ~> Maybe b
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type LiftMaybeSym0 = LiftMaybe :: (a ~> b) ~> Maybe a ~> Maybe b
+type LiftMaybeSym1 = LiftMaybe :: (a ~> b) -> Maybe a ~> Maybe b
+#else
 data LiftMaybeSym0 :: forall a b. (a ~> b) ~> Maybe a ~> Maybe b
 data LiftMaybeSym1 :: forall a b. (a ~> b) -> Maybe a ~> Maybe b
 type instance Apply  LiftMaybeSym0     k1 = LiftMaybeSym1 k1
 type instance Apply (LiftMaybeSym1 k1) k2 = LiftMaybe k1 k2
+#endif
 
 sLiftMaybe :: forall a b (f :: a ~> b) (x :: Maybe a).
                 (forall (y :: a). Proxy f -> Sing y -> Sing (Apply f y)) ->
@@ -705,10 +750,15 @@ type family (+) (m :: Nat) (n :: Nat) :: Nat where
 type (+@#@$)  :: Nat ~> Nat ~> Nat
 type (+@#@$$) :: Nat -> Nat ~> Nat
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type (+@#@$)  = (+) :: Nat ~> Nat ~> Nat
+type (+@#@$$) = (+) :: Nat -> Nat ~> Nat
+#else
 data (+@#@$)  :: Nat ~> Nat ~> Nat
 data (+@#@$$) :: Nat -> Nat ~> Nat
 type instance Apply  (+@#@$)  k1     = (+@#@$$) k1
 type instance Apply ((+@#@$$) k1) k2 = (+) k1 k2
+#endif
 
 (%+) :: Sing m -> Sing n -> Sing (m + n)
 SZero %+ x = x
@@ -731,10 +781,15 @@ type family (-) (m :: Nat) (n :: Nat) :: Nat where
 type (-@#@$)  :: Nat ~> Nat ~> Nat
 type (-@#@$$) :: Nat -> Nat ~> Nat
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type (-@#@$)  = (-) :: Nat ~> Nat ~> Nat
+type (-@#@$$) = (-) :: Nat -> Nat ~> Nat
+#else
 data (-@#@$)  :: Nat ~> Nat ~> Nat
 data (-@#@$$) :: Nat -> Nat ~> Nat
 type instance Apply  (-@#@$)  k1     = (-@#@$$) k1
 type instance Apply ((-@#@$$) k1) k2 = (-) k1 k2
+#endif
 
 (%-) :: Sing m -> Sing n -> Sing (m - n)
 SZero %- _ = SZero
@@ -753,8 +808,12 @@ type family IsZero (n :: Nat) :: Bool where
 #if __GLASGOW_HASKELL__ >= 810
 type IsZeroSym0 :: Nat ~> Bool
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type IsZeroSym0 = IsZero :: Nat ~> Bool
+#else
 data IsZeroSym0 :: Nat ~> Bool
 type instance Apply IsZeroSym0 a = IsZero a
+#endif
 
 sIsZero :: Sing n -> Sing (IsZero n)
 sIsZero n = sIf (n %== SZero) STrue SFalse
@@ -776,10 +835,15 @@ type family (a :: Bool) || (b :: Bool) :: Bool where
 type (||@#@$)  :: Bool ~> Bool ~> Bool
 type (||@#@$$) :: Bool -> Bool ~> Bool
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type (||@#@$)  = (||) :: Bool ~> Bool ~> Bool
+type (||@#@$$) = (||) :: Bool -> Bool ~> Bool
+#else
 data (||@#@$)  :: Bool ~> Bool ~> Bool
 data (||@#@$$) :: Bool -> Bool ~> Bool
 type instance Apply (||@#@$) a = (||@#@$$) a
 type instance Apply ((||@#@$$) a) b = (||) a b
+#endif
 
 (%||) :: Sing a -> Sing b -> Sing (a || b)
 SFalse %|| x = x
@@ -800,10 +864,15 @@ type family Contains (a :: k) (b :: List k) :: Bool where
 type ContainsSym0 :: forall a. a ~> List a ~> Bool
 type ContainsSym1 :: forall a. a -> List a ~> Bool
 #endif
+#if __GLASGOW_HASKELL__ >= 811
+type ContainsSym0 = Contains :: a ~> List a ~> Bool
+type ContainsSym1 = Contains :: a -> List a ~> Bool
+#else
 data ContainsSym0 :: forall a. a ~> List a ~> Bool
 data ContainsSym1 :: forall a. a -> List a ~> Bool
 type instance Apply  ContainsSym0 a    = ContainsSym1 a
 type instance Apply (ContainsSym1 a) b = Contains a b
+#endif
 
 {-
 sContains :: forall k. SEq k =>
@@ -837,6 +906,10 @@ type Cont :: a ~> List a ~> Bool
 type family Cont :: a ~> List a ~> Bool where
   Cont = Lambda10Sym0
 
+#if __GLASGOW_HASKELL__ >= 811
+type Lambda10Sym0 = Lambda10
+type Lambda10Sym1 = Lambda10
+#else
 data Lambda10Sym0 f where
   KindInferenceLambda10Sym0 :: (Lambda10Sym0 @@ arg) ~ Lambda10Sym1 arg
                             => Proxy arg
@@ -850,6 +923,7 @@ data Lambda10Sym1 a f where
 type instance (Lambda10Sym1 a) `Apply` b = Lambda10Sym2 a b
 
 type Lambda10Sym2 a b = Lambda10 a b
+#endif
 
 type family Lambda10 a b where
   Lambda10 elt list = Case10 elt list list
@@ -858,6 +932,10 @@ type family Case10 a b scrut where
   Case10 elt list Nil = False
   Case10 elt list (Cons h t) = (||@#@$) @@ ((==@#@$) @@ elt @@ h) @@ (Cont @@ elt @@ t)
 
+#if __GLASGOW_HASKELL__ >= 811
+type (==@#@$)  = (==)
+type (==@#@$$) = (==)
+#else
 data (==@#@$) f where
   (:###==@#@$) :: ((==@#@$) @@ arg) ~ (==@#@$$) arg
                => Proxy arg
@@ -869,6 +947,7 @@ data (==@#@$$) a f where
                 => Proxy arg
                 -> (==@#@$$) x y
 type instance (==@#@$$) a `Apply` b = (==) a b
+#endif
 
 type family (==@#@$$$) a b where
   (==@#@$$$) a b = (==) a b
@@ -905,6 +984,10 @@ type family Case123 p ls n x xs scrut where
   Case123 p ls n x xs True = n `Cons` ((Let123LoopSym2 p ls) @@ (Succ n) @@ xs)
   Case123 p ls n x xs False = (Let123LoopSym2 p ls) @@ (Succ n) @@ xs
 
+#if __GLASGOW_HASKELL__ >= 811
+type Let123LoopSym2 = Let123Loop
+type Let123LoopSym3 = Let123Loop
+#else
 data Let123LoopSym2 a b c where
   Let123LoopSym2KindInfernece :: ((Let123LoopSym2 a b @@ z) ~ Let123LoopSym3 a b z)
                               => Proxy z
@@ -916,10 +999,15 @@ data Let123LoopSym3 a b c d where
                               => Proxy z
                               -> Let123LoopSym3 a b c d
 type instance Apply (Let123LoopSym3 a b c) d = Let123Loop a b c d
+#endif
 
 type family Let123LoopSym4 a b c d where
   Let123LoopSym4 a b c d = Let123Loop a b c d
 
+#if __GLASGOW_HASKELL__ >= 811
+type FindIndicesSym0 = FindIndices
+type FindIndicesSym1 = FindIndices
+#else
 data FindIndicesSym0 a where
   KindInferenceFindIndicesSym0 :: (FindIndicesSym0 @@ z) ~ FindIndicesSym1 z
                                => Proxy z
@@ -931,6 +1019,7 @@ data FindIndicesSym1 a b where
                                => Proxy z
                                -> FindIndicesSym1 a b
 type instance Apply (FindIndicesSym1 a) b = FindIndices a b
+#endif
 
 type family FindIndicesSym2 a b where
   FindIndicesSym2 a b = FindIndices a b
@@ -969,6 +1058,10 @@ type FISym0 = FI
 type family Lambda22 p ls where
   Lambda22 p ls = (Let123LoopSym2 p ls) @@ Zero @@ ls
 
+#if __GLASGOW_HASKELL__ >= 811
+type Lambda22Sym0 = Lambda22
+type Lambda22Sym1 = Lambda22
+#else
 data Lambda22Sym0 a where
   KindInferenceLambda22Sym0 :: (Lambda22Sym0 @@ z) ~ Lambda22Sym1 z
                             => Proxy z
@@ -980,6 +1073,7 @@ data Lambda22Sym1 a b where
                             => Proxy z
                             -> Lambda22Sym1 a b
 type instance Apply (Lambda22Sym1 a) b = Lambda22 a b
+#endif
 
 type family Lambda22Sym2 a b where
   Lambda22Sym2 a b = Lambda22 a b

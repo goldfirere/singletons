@@ -1,15 +1,11 @@
+with-compiler: /home/rgscott/Software/ghc-kcsongor/inplace/bin/ghc-stage2
+allow-newer: base
 packages: ./singletons
-          ./singletons-th
-          ./singletons-base
-
-source-repository-package
-  type: git
-  location: https://github.com/goldfirere/th-desugar
-  tag: 79d856015b6125b397809ed0df52a1f6a952bce9
+          -- ./singletons-th
+          -- ./singletons-base
 
 -- TODO RGS: This should only be temporary
-allow-newer: th-abstraction
-source-repository-package
-  type: git
-  location: https://github.com/glguy/th-abstraction
-  tag: 82ffd01498c5b43478d2607911ed308686ace218
+-- source-repository-package
+--   type: git
+--   location: https://github.com/goldfirere/th-desugar
+--   tag: 5eef50aad9a7db9ad284a427b791891398304fa8
