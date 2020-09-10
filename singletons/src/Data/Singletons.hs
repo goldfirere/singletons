@@ -612,15 +612,26 @@ type instance Apply (TyCon8 f) x = TyCon7 (f x)
 ---- Higher-order Sing instance and utilities ------------------------
 ----------------------------------------------------------------------
 
+#if __GLASGOW_HASKELL__ >= 811
+type SLambda :: forall {m} k1 k2. (k1 -> @m k2) -> Type
+newtype SLambda (f :: k1 -> @m k2) =
+  SLambda { applySing :: forall t. Sing t -> Sing (f t) }
+type instance Sing = SLambda
+#else
 #if __GLASGOW_HASKELL__ >= 810
 type SLambda :: (k1 ~> k2) -> Type
 #endif
 newtype SLambda (f :: k1 ~> k2) =
   SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
 type instance Sing = SLambda
+#endif
 
 -- | An infix synonym for `applySing`
+#if __GLASGOW_HASKELL__ >= 811
+(@@) :: forall {m} k1 k2 (f :: k1 -> @m k2) (t :: k1). Sing f -> Sing t -> Sing (f t)
+#else
 (@@) :: forall k1 k2 (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)
+#endif
 (@@) f = applySing f
 
 -- | Note that this instance's 'toSing' implementation crucially relies on the fact
@@ -646,19 +657,113 @@ instance (SingKind k1, SingKind k2) => SingKind (k1 ~> k2) where
           lam :: forall (t :: k1). Sing t -> Sing (f @@ t)
           lam x = withSomeSing (f (fromSing x)) (\(r :: Sing res) -> unsafeCoerce r)
 
+#if __GLASGOW_HASKELL__ >= 811
+type SingFunction1 :: forall {m1} a1 b. (a1 -> @m1 b) -> Type
+type SingFunction1 (f :: a1 -> b) =
+  forall t. Sing t -> Sing (f t)
+
+type SingFunction2 :: forall {m1} {m2} a1 a2 b. (a1 -> @m1 a2 -> @m2 b) -> Type
+type SingFunction2 (f :: a1 -> a2 -> b) =
+  forall t1 t2. Sing t1 -> Sing t2 -> Sing (f t1 t2)
+
+type SingFunction3 :: forall {m1} {m2} {m3} a1 a2 a3 b. (a1 -> @m1 a2 -> @m2 a3 -> @m3 b) -> Type
+type SingFunction3 (f :: a1 -> a2 -> a3 -> b) =
+     forall t1 t2 t3.
+     Sing t1 -> Sing t2 -> Sing t3
+  -> Sing (f t1 t2 t3)
+
+type SingFunction4 :: forall {m1} {m2} {m3} {m4} a1 a2 a3 a4 b. (a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 b) -> Type
+type SingFunction4 (f :: a1 -> a2 -> a3 -> a4 -> b) =
+     forall t1 t2 t3 t4.
+     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4
+  -> Sing (f t1 t2 t3 t4)
+
+type SingFunction5 :: forall {m1} {m2} {m3} {m4} {m5} a1 a2 a3 a4 a5 b. (a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 b) -> Type
+type SingFunction5 (f :: a1 -> a2 -> a3 -> a4 -> a5 -> b) =
+     forall t1 t2 t3 t4 t5.
+     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5
+  -> Sing (f t1 t2 t3 t4 t5)
+
+type SingFunction6 :: forall {m1} {m2} {m3} {m4} {m5} {m6} a1 a2 a3 a4 a5 a6 b. (a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 b) -> Type
+type SingFunction6 (f :: a1 -> a2 -> a3 -> a4 -> a5 -> a6 -> b) =
+     forall t1 t2 t3 t4 t5 t6.
+     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6
+  -> Sing (f t1 t2 t3 t4 t5 t6)
+
+type SingFunction7 :: forall {m1} {m2} {m3} {m4} {m5} {m6} {m7} a1 a2 a3 a4 a5 a6 a7 b. (a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 a7 -> @m7 b) -> Type
+type SingFunction7 (f :: a1 -> a2 -> a3 -> a4 -> a5 -> a6 -> a7 -> b) =
+     forall t1 t2 t3 t4 t5 t6 t7.
+     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6 -> Sing t7
+  -> Sing (f t1 t2 t3 t4 t5 t6 t7)
+
+type SingFunction8 :: forall {m1} {m2} {m3} {m4} {m5} {m6} {m7} {m8} a1 a2 a3 a4 a5 a6 a7 a8 b. (a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 a7 -> @m7 a8 -> @m8 b) -> Type
+type SingFunction8 (f :: a1 -> a2 -> a3 -> a4 -> a5 -> a6 -> a7 -> a8 -> b) =
+     forall t1 t2 t3 t4 t5 t6 t7 t8.
+     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6 -> Sing t7 -> Sing t8
+  -> Sing (f t1 t2 t3 t4 t5 t6 t7 t8)
+#else
 #if __GLASGOW_HASKELL__ >= 810
 type SingFunction1 :: (a1 ~> b) -> Type
-type SingFunction2 :: (a1 ~> a2 ~> b) -> Type
-type SingFunction3 :: (a1 ~> a2 ~> a3 ~> b) -> Type
-type SingFunction4 :: (a1 ~> a2 ~> a3 ~> a4 ~> b) -> Type
-type SingFunction5 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> b) -> Type
-type SingFunction6 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> b) -> Type
-type SingFunction7 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> b) -> Type
-type SingFunction8 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> a8 ~> b) -> Type
 #endif
-
 type SingFunction1 (f :: a1 ~> b) =
   forall t. Sing t -> Sing (f @@ t)
+
+#if __GLASGOW_HASKELL__ >= 810
+type SingFunction2 :: (a1 ~> a2 ~> b) -> Type
+#endif
+type SingFunction2 (f :: a1 ~> a2 ~> b) =
+  forall t1 t2. Sing t1 -> Sing t2 -> Sing (f @@ t1 @@ t2)
+
+#if __GLASGOW_HASKELL__ >= 810
+type SingFunction3 :: (a1 ~> a2 ~> a3 ~> b) -> Type
+#endif
+type SingFunction3 (f :: a1 ~> a2 ~> a3 ~> b) =
+     forall t1 t2 t3.
+     Sing t1 -> Sing t2 -> Sing t3
+  -> Sing (f @@ t1 @@ t2 @@ t3)
+
+#if __GLASGOW_HASKELL__ >= 810
+type SingFunction4 :: (a1 ~> a2 ~> a3 ~> a4 ~> b) -> Type
+#endif
+type SingFunction4 (f :: a1 ~> a2 ~> a3 ~> a4 ~> b) =
+     forall t1 t2 t3 t4.
+     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4
+  -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4)
+
+#if __GLASGOW_HASKELL__ >= 810
+type SingFunction5 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> b) -> Type
+#endif
+type SingFunction5 (f :: a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> b) =
+     forall t1 t2 t3 t4 t5.
+     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5
+  -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5)
+
+#if __GLASGOW_HASKELL__ >= 810
+type SingFunction6 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> b) -> Type
+#endif
+type SingFunction6 (f :: a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> b) =
+     forall t1 t2 t3 t4 t5 t6.
+     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6
+  -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5 @@ t6)
+
+#if __GLASGOW_HASKELL__ >= 810
+type SingFunction7 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> b) -> Type
+#endif
+type SingFunction7 (f :: a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> b) =
+     forall t1 t2 t3 t4 t5 t6 t7.
+     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6 -> Sing t7
+  -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5 @@ t6 @@ t7)
+
+#if __GLASGOW_HASKELL__ >= 810
+type SingFunction8 :: (a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> a8 ~> b) -> Type
+#endif
+type SingFunction8 (f :: a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> a8 ~> b) =
+     forall t1 t2 t3 t4 t5 t6 t7 t8.
+     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6 -> Sing t7 -> Sing t8
+  -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5 @@ t6 @@ t7 @@ t8)
+#endif
+
+-----
 
 -- | Use this function when passing a function on singletons as
 -- a higher-order function. You will need visible type application
@@ -669,81 +774,237 @@ type SingFunction1 (f :: a1 ~> b) =
 --
 -- There are a family of @singFun...@ functions, keyed by the number
 -- of parameters of the function.
-singFun1 :: forall f. SingFunction1 f -> Sing f
+singFun1 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {a1} {b} (f :: a1 -> @m1 b).
+#else
+  forall f.
+#endif
+  SingFunction1 f -> Sing f
 singFun1 f = SLambda f
-
-type SingFunction2 (f :: a1 ~> a2 ~> b) =
-  forall t1 t2. Sing t1 -> Sing t2 -> Sing (f @@ t1 @@ t2)
-singFun2 :: forall f. SingFunction2 f -> Sing f
-singFun2 f = SLambda (\x -> singFun1 (f x))
-
-type SingFunction3 (f :: a1 ~> a2 ~> a3 ~> b) =
-     forall t1 t2 t3.
-     Sing t1 -> Sing t2 -> Sing t3
-  -> Sing (f @@ t1 @@ t2 @@ t3)
-singFun3 :: forall f. SingFunction3 f -> Sing f
-singFun3 f = SLambda (\x -> singFun2 (f x))
-
-type SingFunction4 (f :: a1 ~> a2 ~> a3 ~> a4 ~> b) =
-     forall t1 t2 t3 t4.
-     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4
-  -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4)
-singFun4 :: forall f. SingFunction4 f -> Sing f
-singFun4 f = SLambda (\x -> singFun3 (f x))
-
-type SingFunction5 (f :: a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> b) =
-     forall t1 t2 t3 t4 t5.
-     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5
-  -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5)
-singFun5 :: forall f. SingFunction5 f -> Sing f
-singFun5 f = SLambda (\x -> singFun4 (f x))
-
-type SingFunction6 (f :: a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> b) =
-     forall t1 t2 t3 t4 t5 t6.
-     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6
-  -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5 @@ t6)
-singFun6 :: forall f. SingFunction6 f -> Sing f
-singFun6 f = SLambda (\x -> singFun5 (f x))
-
-type SingFunction7 (f :: a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> b) =
-     forall t1 t2 t3 t4 t5 t6 t7.
-     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6 -> Sing t7
-  -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5 @@ t6 @@ t7)
-singFun7 :: forall f. SingFunction7 f -> Sing f
-singFun7 f = SLambda (\x -> singFun6 (f x))
-
-type SingFunction8 (f :: a1 ~> a2 ~> a3 ~> a4 ~> a5 ~> a6 ~> a7 ~> a8 ~> b) =
-     forall t1 t2 t3 t4 t5 t6 t7 t8.
-     Sing t1 -> Sing t2 -> Sing t3 -> Sing t4 -> Sing t5 -> Sing t6 -> Sing t7 -> Sing t8
-  -> Sing (f @@ t1 @@ t2 @@ t3 @@ t4 @@ t5 @@ t6 @@ t7 @@ t8)
-singFun8 :: forall f. SingFunction8 f -> Sing f
-singFun8 f = SLambda (\x -> singFun7 (f x))
 
 -- | This is the inverse of 'singFun1', and likewise for the other
 -- @unSingFun...@ functions.
-unSingFun1 :: forall f. Sing f -> SingFunction1 f
+unSingFun1 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {a1} {b} (f :: a1 -> @m1 b).
+#else
+  forall f.
+#endif
+  Sing f -> SingFunction1 f
 unSingFun1 sf = applySing sf
 
-unSingFun2 :: forall f. Sing f -> SingFunction2 f
+-----
+
+singFun2 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {a1} {a2} {b} (f :: a1 -> @m1 a2 -> @m2 b).
+#else
+  forall f.
+#endif
+  SingFunction2 f -> Sing f
+singFun2 f = SLambda (\x -> singFun1 (f x))
+
+unSingFun2 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {a1} {a2} {b} (f :: a1 -> @m1 a2 -> @m2 b).
+#else
+  forall f.
+#endif
+  Sing f -> SingFunction2 f
 unSingFun2 sf x = unSingFun1 (sf @@ x)
 
-unSingFun3 :: forall f. Sing f -> SingFunction3 f
+pattern SLambda2 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {a1} {a2} {b} (f :: a1 -> @m1 a2 -> @m2 b).
+#else
+  forall f.
+#endif
+  SingFunction2 f -> Sing f
+pattern SLambda2 {applySing2} <- (unSingFun2 -> applySing2)
+  where SLambda2 lam2         = singFun2 lam2
+
+-----
+
+singFun3 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {a1} {a2} {a3} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 b).
+#else
+  forall f.
+#endif
+  SingFunction3 f -> Sing f
+singFun3 f = SLambda (\x -> singFun2 (f x))
+
+unSingFun3 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {a1} {a2} {a3} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 b).
+#else
+  forall f.
+#endif
+  Sing f -> SingFunction3 f
 unSingFun3 sf x = unSingFun2 (sf @@ x)
 
-unSingFun4 :: forall f. Sing f -> SingFunction4 f
+pattern SLambda3 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {a1} {a2} {a3} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 b).
+#else
+  forall f.
+#endif
+  SingFunction3 f -> Sing f
+pattern SLambda3 {applySing3} <- (unSingFun3 -> applySing3)
+  where SLambda3 lam3         = singFun3 lam3
+
+-----
+
+singFun4 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {a1} {a2} {a3} {a4} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 b).
+#else
+  forall f.
+#endif
+  SingFunction4 f -> Sing f
+singFun4 f = SLambda (\x -> singFun3 (f x))
+
+unSingFun4 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {a1} {a2} {a3} {a4} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 b).
+#else
+  forall f.
+#endif
+  Sing f -> SingFunction4 f
 unSingFun4 sf x = unSingFun3 (sf @@ x)
 
-unSingFun5 :: forall f. Sing f -> SingFunction5 f
+pattern SLambda4 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {a1} {a2} {a3} {a4} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 b).
+#else
+  forall f.
+#endif
+  SingFunction4 f -> Sing f
+pattern SLambda4 {applySing4} <- (unSingFun4 -> applySing4)
+  where SLambda4 lam4         = singFun4 lam4
+
+-----
+
+singFun5 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {a1} {a2} {a3} {a4} {a5} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 b).
+#else
+  forall f.
+#endif
+  SingFunction5 f -> Sing f
+singFun5 f = SLambda (\x -> singFun4 (f x))
+
+unSingFun5 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {a1} {a2} {a3} {a4} {a5} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 b).
+#else
+  forall f.
+#endif
+  Sing f -> SingFunction5 f
 unSingFun5 sf x = unSingFun4 (sf @@ x)
 
-unSingFun6 :: forall f. Sing f -> SingFunction6 f
+pattern SLambda5 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {a1} {a2} {a3} {a4} {a5} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 b).
+#else
+  forall f.
+#endif
+  SingFunction5 f -> Sing f
+pattern SLambda5 {applySing5} <- (unSingFun5 -> applySing5)
+  where SLambda5 lam5         = singFun5 lam5
+
+-----
+
+singFun6 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {m6} {a1} {a2} {a3} {a4} {a5} {a6} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 b).
+#else
+  forall f.
+#endif
+  SingFunction6 f -> Sing f
+singFun6 f = SLambda (\x -> singFun5 (f x))
+
+unSingFun6 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {m6} {a1} {a2} {a3} {a4} {a5} {a6} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 b).
+#else
+  forall f.
+#endif
+  Sing f -> SingFunction6 f
 unSingFun6 sf x = unSingFun5 (sf @@ x)
 
-unSingFun7 :: forall f. Sing f -> SingFunction7 f
+pattern SLambda6 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {m6} {a1} {a2} {a3} {a4} {a5} {a6} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 b).
+#else
+  forall f.
+#endif
+  SingFunction6 f -> Sing f
+pattern SLambda6 {applySing6} <- (unSingFun6 -> applySing6)
+  where SLambda6 lam6         = singFun6 lam6
+
+-----
+
+singFun7 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {m6} {m7} {a1} {a2} {a3} {a4} {a5} {a6} {a7} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 a7 -> @m7 b).
+#else
+  forall f.
+#endif
+  SingFunction7 f -> Sing f
+singFun7 f = SLambda (\x -> singFun6 (f x))
+
+unSingFun7 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {m6} {m7} {a1} {a2} {a3} {a4} {a5} {a6} {a7} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 a7 -> @m7 b).
+#else
+  forall f.
+#endif
+  Sing f -> SingFunction7 f
 unSingFun7 sf x = unSingFun6 (sf @@ x)
 
-unSingFun8 :: forall f. Sing f -> SingFunction8 f
+pattern SLambda7 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {m6} {m7} {a1} {a2} {a3} {a4} {a5} {a6} {a7} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 a7 -> @m7 b).
+#else
+  forall f.
+#endif
+  SingFunction7 f -> Sing f
+pattern SLambda7 {applySing7} <- (unSingFun7 -> applySing7)
+  where SLambda7 lam7         = singFun7 lam7
+
+-----
+
+singFun8 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {m6} {m7} {m8} {a1} {a2} {a3} {a4} {a5} {a6} {a7} {a8} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 a7 -> @m7 a8 -> @m8 b).
+#else
+  forall f.
+#endif
+  SingFunction8 f -> Sing f
+singFun8 f = SLambda (\x -> singFun7 (f x))
+
+unSingFun8 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {m6} {m7} {m8} {a1} {a2} {a3} {a4} {a5} {a6} {a7} {a8} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 a7 -> @m7 a8 -> @m8 b).
+#else
+  forall f.
+#endif
+  Sing f -> SingFunction8 f
 unSingFun8 sf x = unSingFun7 (sf @@ x)
+
+pattern SLambda8 ::
+#if __GLASGOW_HASKELL__ >= 811
+  forall {m1} {m2} {m3} {m4} {m5} {m6} {m7} {m8} {a1} {a2} {a3} {a4} {a5} {a6} {a7} {a8} {b} (f :: a1 -> @m1 a2 -> @m2 a3 -> @m3 a4 -> @m4 a5 -> @m5 a6 -> @m6 a7 -> @m7 a8 -> @m8 b).
+#else
+  forall f.
+#endif
+  SingFunction8 f -> Sing f
+pattern SLambda8 {applySing8} <- (unSingFun8 -> applySing8)
+  where SLambda8 lam8         = singFun8 lam8
+
+-----
 
 #if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE SLambda2 #-}
@@ -754,34 +1015,6 @@ unSingFun8 sf x = unSingFun7 (sf @@ x)
 {-# COMPLETE SLambda7 #-}
 {-# COMPLETE SLambda8 #-}
 #endif
-
-pattern SLambda2 :: forall f. SingFunction2 f -> Sing f
-pattern SLambda2 {applySing2} <- (unSingFun2 -> applySing2)
-  where SLambda2 lam2         = singFun2 lam2
-
-pattern SLambda3 :: forall f. SingFunction3 f -> Sing f
-pattern SLambda3 {applySing3} <- (unSingFun3 -> applySing3)
-  where SLambda3 lam3         = singFun3 lam3
-
-pattern SLambda4 :: forall f. SingFunction4 f -> Sing f
-pattern SLambda4 {applySing4} <- (unSingFun4 -> applySing4)
-  where SLambda4 lam4         = singFun4 lam4
-
-pattern SLambda5 :: forall f. SingFunction5 f -> Sing f
-pattern SLambda5 {applySing5} <- (unSingFun5 -> applySing5)
-  where SLambda5 lam5         = singFun5 lam5
-
-pattern SLambda6 :: forall f. SingFunction6 f -> Sing f
-pattern SLambda6 {applySing6} <- (unSingFun6 -> applySing6)
-  where SLambda6 lam6         = singFun6 lam6
-
-pattern SLambda7 :: forall f. SingFunction7 f -> Sing f
-pattern SLambda7 {applySing7} <- (unSingFun7 -> applySing7)
-  where SLambda7 lam7         = singFun7 lam7
-
-pattern SLambda8 :: forall f. SingFunction8 f -> Sing f
-pattern SLambda8 {applySing8} <- (unSingFun8 -> applySing8)
-  where SLambda8 lam8         = singFun8 lam8
 
 ----------------------------------------------------------------------
 ---- Convenience -----------------------------------------------------
