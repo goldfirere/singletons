@@ -8,7 +8,7 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.10.1
+# version: 0.10.3
 #
 version: ~> 1.0
 language: c
@@ -125,7 +125,7 @@ install:
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
     echo "  location: https://github.com/goldfirere/th-desugar" >> cabal.project
-    echo "  tag:      5eef50aad9a7db9ad284a427b791891398304fa8" >> cabal.project
+    echo "  tag:      ca761285741c16c704a4044f551faf4292432d6a" >> cabal.project
     echo ""                                                     >> cabal.project
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project
@@ -169,7 +169,7 @@ script:
     echo "source-repository-package"                            >> cabal.project
     echo "  type:     git"                                      >> cabal.project
     echo "  location: https://github.com/goldfirere/th-desugar" >> cabal.project
-    echo "  tag:      5eef50aad9a7db9ad284a427b791891398304fa8" >> cabal.project
+    echo "  tag:      ca761285741c16c704a4044f551faf4292432d6a" >> cabal.project
     echo ""                                                     >> cabal.project
     echo "package th-desugar"                                   >> cabal.project
     echo "  tests:      False"                                  >> cabal.project
@@ -189,5 +189,5 @@ script:
   # haddock...
   - if ! $GHCJS ; then ${CABAL} v2-haddock $WITHCOMPILER --with-haddock $HADDOCK ${TEST} ${BENCH} all ; fi
 
-# REGENDATA ("0.10.1",["--output=.travis.yml","--config=cabal.haskell-ci","cabal.project"])
+# REGENDATA ("0.10.3",["--output=.travis.yml","--config=cabal.haskell-ci","cabal.project"])
 # EOF

@@ -146,7 +146,7 @@ singDecideInstances = concatMapM singDecideInstance
 singDecideInstance :: OptionsMonad q => Name -> q [Dec]
 singDecideInstance name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of SDecide for it.") name
-  dtvbs <- mapM dsTvb tvbs
+  dtvbs <- mapM dsTvbUnit tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
   let tyvars = map (DVarT . extractTvbName) dtvbs
@@ -199,7 +199,7 @@ singShowInstances = concatMapM singShowInstance
 showSingInstance :: OptionsMonad q => Name -> q [Dec]
 showSingInstance name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of Show for it.") name
-  dtvbs <- mapM dsTvb tvbs
+  dtvbs <- mapM dsTvbUnit tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
   let tyvars    = map (DVarT . extractTvbName) dtvbs
@@ -224,14 +224,14 @@ showSingInstances = concatMapM showSingInstance
 -- Note that the generated code requires the use of the @QuantifiedConstraints@
 -- language extension.
 singITyConInstances :: DsMonad q => [Int] -> q [Dec]
-singITyConInstances = concatMapM singITyConInstance
+singITyConInstances = mapM singITyConInstance
 
 -- | Create an instance for @'SingI' TyCon{N}@, where @N@ is the positive
 -- number provided as an argument.
 --
 -- Note that the generated code requires the use of the @QuantifiedConstraints@
 -- language extension.
-singITyConInstance :: DsMonad q => Int -> q [Dec]
+singITyConInstance :: DsMonad q => Int -> q Dec
 singITyConInstance n
   | n <= 0
   = fail $ "Argument must be a positive number (given " ++ show n ++ ")"
@@ -248,7 +248,7 @@ singITyConInstance n
            mk_fun arrow t1 t2 = arrow `DAppT` t1 `DAppT` t2
            matchable_apply_fun   = mk_fun DArrowT                (DVarT k_penult) (DVarT k_last)
            unmatchable_apply_fun = mk_fun (DConT tyFunArrowName) (DVarT k_penult) (DVarT k_last)
-           ctxt = [ DForallT ForallInvis (map DPlainTV as) $
+           ctxt = [ DForallT (DForallInvis (map (`DPlainTV` SpecifiedSpec) as)) $
                     DConstrainedT (map (DAppT (DConT singIName)) a_tys)
                                   (DConT singIName `DAppT` foldType f_ty a_tys)
                   , DConT equalityName
@@ -271,7 +271,7 @@ singInstance :: OptionsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 singInstance mk_inst inst_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
                             ++ " for it.") name
-  dtvbs <- mapM dsTvb tvbs
+  dtvbs <- mapM dsTvbUnit tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
   let data_decl = DataDecl name dtvbs dcons
@@ -498,7 +498,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
         Nothing -> case mb_s_info of
           -- We don't have an InstanceSig, so we must compute the type to use
           -- in the singled instance ourselves through reification.
-          Just (DVarI _ (DForallT _ cls_tvbs (DConstrainedT _cls_pred s_ty)) _) -> do
+          Just (DVarI _ (DForallT (DForallInvis cls_tvbs) (DConstrainedT _cls_pred s_ty)) _) -> do
             (sing_tvbs, ctxt, _args, res_ty) <- unravelVanillaDType s_ty
             let subst = mk_subst cls_tvbs
                 m_res_ki = case res_ty of
@@ -512,7 +512,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
           _ -> do
             mb_info <- dsReify name
             case mb_info of
-              Just (DVarI _ (DForallT _ cls_tvbs
+              Just (DVarI _ (DForallT (DForallInvis cls_tvbs)
                                       (DConstrainedT _cls_pred inner_ty)) _) -> do
                 let subst = mk_subst cls_tvbs
                     cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
@@ -623,7 +623,7 @@ singTySig defns types bound_kvs name prom_ty = do
       let sing_w_wildcard | n == 0    = singFamily `DAppKindT` DWildCardT
                           | otherwise = singFamily
       return ( ravelVanillaDType
-                 (map DPlainTV arg_names)
+                 (map (`DPlainTV` SpecifiedSpec) arg_names)
                  []
                  (map (\nm -> singFamily `DAppT` DVarT nm) arg_names)
                  (sing_w_wildcard `DAppT`

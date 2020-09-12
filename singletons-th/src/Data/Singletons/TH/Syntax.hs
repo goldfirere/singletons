@@ -46,10 +46,10 @@ instance Monoid PromDPatInfos where
 type SingDSigPaInfos = [(DExp, DType)]
 
 -- The parts of data declarations that are relevant to singletons-th.
-data DataDecl = DataDecl Name [DTyVarBndr] [DCon]
+data DataDecl = DataDecl Name [DTyVarBndrUnit] [DCon]
 
 -- The parts of type synonyms that are relevant to singletons-th.
-data TySynDecl = TySynDecl Name [DTyVarBndr] DType
+data TySynDecl = TySynDecl Name [DTyVarBndrUnit] DType
 
 -- The parts of open type families that are relevant to singletons-th.
 type OpenTypeFamilyDecl = TypeFamilyDecl 'Open
@@ -66,7 +66,7 @@ data FamilyInfo = Open | Closed
 data ClassDecl ann
   = ClassDecl { cd_cxt  :: DCxt
               , cd_name :: Name
-              , cd_tvbs :: [DTyVarBndr]
+              , cd_tvbs :: [DTyVarBndrUnit]
               , cd_fds  :: [FunDep]
               , cd_lde  :: LetDecEnv ann
               , cd_atfs :: [OpenTypeFamilyDecl]

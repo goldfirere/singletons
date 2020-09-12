@@ -162,7 +162,7 @@ promoteInstance :: OptionsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 promoteInstance mk_inst class_name name = do
   (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
                             ++ " for it.") name
-  tvbs' <- mapM dsTvb tvbs
+  tvbs' <- mapM dsTvbUnit tvbs
   let data_ty   = foldTypeTvbs (DConT name) tvbs'
   cons' <- concatMapM (dsCon tvbs' data_ty) cons
   let data_decl = DataDecl name tvbs' cons'
@@ -338,11 +338,12 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
       -- /don't/ use the type variable binders from the method's type...
       (_, argKs, resK) <- promoteUnraveled ty
       args <- mapM (const $ qNewName "arg") argKs
-      let proTvbs = zipWith DKindedTV args argKs
+      let proTvbs = zipWith (`DKindedTV` ()) args argKs
       -- ...instead, compute the type variable binders in a left-to-right order,
       -- since that is the same order that the promoted method's kind will use.
       -- See Note [Promoted class methods and kind variable ordering]
-          meth_sak_tvbs = toposortTyVarsOf $ argKs ++ [resK]
+          meth_sak_tvbs = changeDTVFlags SpecifiedSpec $
+                          toposortTyVarsOf $ argKs ++ [resK]
           meth_sak      = ravelVanillaDType meth_sak_tvbs [] argKs resK
       m_fixity <- reifyFixityWithLocals name
       emitDecsM $ defunctionalize proName m_fixity $ DefunSAK meth_sak
@@ -400,7 +401,7 @@ decided not to use this hack unless someone specifically requests it.
 -- returns (unpromoted method name, ALetDecRHS) pairs
 promoteInstanceDec :: OMap Name DType
                       -- Class method type signatures
-                   -> Map Name [DTyVarBndr]
+                   -> Map Name [DTyVarBndrUnit]
                       -- Class header type variable (e.g., if `class C a b` is
                       -- quoted, then this will have an entry for {C |-> [a, b]})
                    -> UInstDecl -> PrM AInstDecl
@@ -424,7 +425,7 @@ promoteInstanceDec orig_meth_sigs cls_tvbs_map
                                               inst_kis) meths']
     return (decl { id_meths = zip (map fst meths) ann_rhss })
   where
-    lookup_cls_tvbs :: PrM [DTyVarBndr]
+    lookup_cls_tvbs :: PrM [DTyVarBndrUnit]
     lookup_cls_tvbs =
       -- First, try consulting the map of class names to their type variables.
       -- It is important to do this first to ensure that we consider locally
@@ -436,7 +437,7 @@ promoteInstanceDec orig_meth_sigs cls_tvbs_map
           -- If the class isn't present in this map, we try reifying the class
           -- as a last resort.
 
-    reify_cls_tvbs :: PrM [DTyVarBndr]
+    reify_cls_tvbs :: PrM [DTyVarBndrUnit]
     reify_cls_tvbs = do
       opts <- getOptions
       let pClsName = promotedClassName opts cls_name
@@ -448,7 +449,7 @@ promoteInstanceDec orig_meth_sigs cls_tvbs_map
         Just tvbs -> pure tvbs
         Nothing -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
 
-    extract_tvbs :: PrM (Maybe DInfo) -> MaybeT PrM [DTyVarBndr]
+    extract_tvbs :: PrM (Maybe DInfo) -> MaybeT PrM [DTyVarBndrUnit]
     extract_tvbs reify_info = do
       mb_info <- lift reify_info
       case mb_info of
@@ -546,7 +547,7 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
     -- the types in the instance head. (e.g., if you have `class C a` and
     -- `instance C T`, then the substitution [a |-> T] must be applied to the
     -- original method's type.)
-    promote_meth_ty :: PrM ([DTyVarBndr], [DKind], DKind)
+    promote_meth_ty :: PrM ([DTyVarBndrSpec], [DKind], DKind)
     promote_meth_ty =
       case meth_sort of
         DefaultMethods ->
@@ -573,11 +574,12 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
                   -- order, since that is the same order that the promoted
                   -- method's kind will use.
                   -- See Note [Promoted class methods and kind variable ordering]
-                  tvbs'    = toposortTyVarsOf (arg_kis' ++ [res_ki'])
+                  tvbs'    = changeDTVFlags SpecifiedSpec $
+                             toposortTyVarsOf (arg_kis' ++ [res_ki'])
               pure (tvbs', arg_kis', res_ki')
 
     -- Attempt to look up a class method's original type.
-    lookup_meth_ty :: PrM ([DTyVarBndr], [DKind], DKind)
+    lookup_meth_ty :: PrM ([DTyVarBndrSpec], [DKind], DKind)
     lookup_meth_ty = do
       opts <- getOptions
       let proName = promotedTopLevelValueName opts meth_name
@@ -598,7 +600,8 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
                      -- order, since that is the same order that the promoted
                      -- method's kind will use.
                      -- See Note [Promoted class methods and kind variable ordering]
-                     tvbs'   = toposortTyVarsOf (arg_kis ++ [res_ki])
+                     tvbs'   = changeDTVFlags SpecifiedSpec $
+                               toposortTyVarsOf (arg_kis ++ [res_ki])
                   in pure (tvbs', arg_kis, res_ki)
             _ -> fail $ "Cannot find type annotation for " ++ show proName
 
@@ -729,7 +732,7 @@ data LetDecRHSSort
     -- The right-hand side of a class method (either a default method or a
     -- method in an instance declaration).
   | ClassMethodRHS
-      [DTyVarBndr] [DKind] DKind
+      [DTyVarBndrSpec] [DKind] DKind
       -- The RHS's promoted type variable binders, argument types, and
       -- result type. Needed to fix #136.
   deriving Show
@@ -800,10 +803,10 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
       opts <- getOptions
       tyvarNames <- replicateM ty_num_args (qNewName "a")
       let proName    = promotedValueName opts name mb_let_uniq
-          local_tvbs = map DPlainTV all_locals
+          local_tvbs = map (`DPlainTV` ()) all_locals
           m_fixity   = OMap.lookup name fix_env
 
-          mk_tf_head :: [DTyVarBndr] -> DFamilyResultSig -> DTypeFamilyHead
+          mk_tf_head :: [DTyVarBndrUnit] -> DFamilyResultSig -> DTypeFamilyHead
           mk_tf_head tvbs res_sig = DTypeFamilyHead proName tvbs res_sig Nothing
 
           (lde_kvs_to_bind, m_sak_dec, defun_ki, tf_head) =
@@ -811,7 +814,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
             case m_ldrki of
               -- 1. We have no kind information whatsoever.
               Nothing ->
-                let all_args = local_tvbs ++ map DPlainTV tyvarNames in
+                let all_args = local_tvbs ++ map (`DPlainTV` ()) tyvarNames in
                 ( OSet.empty
                 , Nothing
                 , DefunNoSAK all_args Nothing
@@ -819,7 +822,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                 )
               -- 2. We have some kind information in the form of a LetDecRHSKindInfo.
               Just (LDRKI m_sak tvbs argKs resK) ->
-                let all_args         = local_tvbs ++ zipWith DKindedTV tyvarNames argKs
+                let all_args         = local_tvbs ++ zipWith (`DKindedTV` ()) tyvarNames argKs
                     lde_kvs_to_bind' = OSet.fromList (map extractTvbName tvbs) in
                 case m_sak of
                   -- 2(a). We do not have a standalone kind signature.
@@ -918,13 +921,13 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
 -- related to the promoted kind of a class method default or normal
 -- let binding.
 data LetDecRHSKindInfo =
-  LDRKI (Maybe DKind) -- The standalone kind signature, if applicable.
-                      -- This will be Nothing if the let-dec RHS has local
-                      -- variables that it closes over.
-                      -- See Note [No SAKs for let-decs with local variables]
-        [DTyVarBndr]  -- The type variable binders of the kind.
-        [DKind]       -- The argument kinds.
-        DKind         -- The result kind.
+  LDRKI (Maybe DKind)    -- The standalone kind signature, if applicable.
+                         -- This will be Nothing if the let-dec RHS has local
+                         -- variables that it closes over.
+                         -- See Note [No SAKs for let-decs with local variables]
+        [DTyVarBndrSpec] -- The type variable binders of the kind.
+        [DKind]          -- The argument kinds.
+        DKind            -- The result kind.
 
 {-
 Note [No SAKs for let-decs with local variables]
@@ -1091,7 +1094,7 @@ promoteExp (DLamE names exp) = do
   (rhs, ann_exp) <- lambdaBind var_proms $ promoteExp exp
   all_locals <- allLocals
   let all_args = all_locals ++ tyNames
-      tvbs     = map DPlainTV all_args
+      tvbs     = map (`DPlainTV` ()) all_args
   emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
                                  lambdaName
                                  tvbs
@@ -1113,7 +1116,7 @@ promoteExp (DCaseE exp matches) = do
   (eqns, ann_matches) <- mapAndUnzipM (promoteMatch prom_case) matches
   tyvarName  <- qNewName "t"
   let all_args = all_locals ++ [tyvarName]
-      tvbs     = map DPlainTV all_args
+      tvbs     = map (`DPlainTV` ()) all_args
   emitDecs [DClosedTypeFamilyD (DTypeFamilyHead caseTFName tvbs DNoSig Nothing) eqns]
     -- See Note [Annotate case return type] in Single
   let applied_case = prom_case `DAppT` exp'

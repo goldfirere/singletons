@@ -102,7 +102,7 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
     -- the @arg_tvbs@ list at each iteration. In practice, this is unlikely
     -- to be a performance bottleneck since the number of arguments rarely
     -- gets to be that large.
-    go :: Options -> Int -> DCxt -> [DTyVarBndr] -> [DTyVarBndr]
+    go :: Options -> Int -> DCxt -> [DTyVarBndrUnit] -> [DTyVarBndrUnit]
        -> (Maybe DKind, [DDec])
     go _    _       _        _        []                 = (mb_ty_res, [])
     go opts sym_num sty_ctxt arg_tvbs (res_tvb:res_tvbs) =
@@ -142,7 +142,7 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
         -- If any of the argument kinds or result kind isn't known (i.e., is
         -- Nothing), then we opt not to construct this arrow kind altogether.
         -- See Note [singDefuns and type inference]
-        mk_inst_kind :: DTyVarBndr -> Maybe DKind -> Maybe DKind
+        mk_inst_kind :: DTyVarBndrUnit -> Maybe DKind -> Maybe DKind
         mk_inst_kind tvb' = buildTyFunArrow_maybe (extractTvbKind tvb')
 
         new_inst :: DDec

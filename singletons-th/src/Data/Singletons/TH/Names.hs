@@ -216,7 +216,7 @@ modifyConNameDType :: (Name -> Name) -> DType -> DType
 modifyConNameDType mod_con_name = go
   where
     go :: DType -> DType
-    go (DForallT fvf tvbs p) = DForallT fvf tvbs (go p)
+    go (DForallT tele p)     = DForallT tele (go p)
     go (DConstrainedT cxt p) = DConstrainedT (map go cxt) (go p)
     go (DAppT     p t)       = DAppT     (go p) t
     go (DAppKindT p k)       = DAppKindT (go p) k
