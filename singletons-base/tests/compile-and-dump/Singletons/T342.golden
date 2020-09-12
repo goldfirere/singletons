@@ -1,9 +1,10 @@
 Singletons/T342.hs:(0,0)-(0,0): Splicing declarations
     do synName <- newName "MyId"
        a <- newName "a"
-       let syn = TySynD synName [PlainTV a] (VarT a)
-       defuns <- withLocalDeclarations [syn] $ genDefunSymbols [synName]
-       pure $ syn : defuns
+       let dsyn = DTySynD synName [DPlainTV a ()] (DVarT a)
+           syns = sweeten [dsyn]
+       defuns <- withLocalDeclarations syns $ genDefunSymbols [synName]
+       pure $ syns ++ defuns
   ======>
     type MyId a = a
     data MyIdSym0 a0123456789876543210

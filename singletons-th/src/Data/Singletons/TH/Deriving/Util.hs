@@ -45,7 +45,7 @@ data FFoldType a      -- Describes how to fold over a DType in a functor like wa
           -- ^ Type app, variable only in last argument
         , ft_bad_app :: a
           -- ^ Type app, variable other than in last argument
-        , ft_forall  :: [DTyVarBndr] -> a -> a
+        , ft_forall  :: [DTyVarBndrSpec] -> a -> a
           -- ^ Forall type
         }
 
@@ -103,11 +103,14 @@ functorLikeTraverse var (FT { ft_triv = caseTrivial, ft_var = caseVar
     go (DVarT v)
       | v == var = pure (caseVar, True)
       | otherwise = trivial
-    go (DForallT _ tvbs t) = do
-      (tr, tc) <- go t
-      if var `notElem` map extractTvbName tvbs && tc
-         then pure (caseForAll tvbs tr, True)
-         else trivial
+    go (DForallT tele t) = case tele of
+      DForallVis{} ->
+        fail "Unexpected visible forall in the type of a data constructor"
+      DForallInvis tvbs -> do
+        (tr, tc) <- go t
+        if var `notElem` map extractTvbName tvbs && tc
+           then pure (caseForAll tvbs tr, True)
+           else trivial
     go (DConstrainedT _ t) =  go t
     go (DConT {}) = trivial
     go DArrowT    = trivial
@@ -226,7 +229,7 @@ deepSubtypesContaining tv
             , ft_bad_app = error "in other argument in deepSubtypesContaining"
             , ft_forall  = \tvbs xs -> filter (\x -> all (not_in_ty x) tvbs) xs })
   where
-    not_in_ty :: DType -> DTyVarBndr -> Bool
+    not_in_ty :: DType -> DTyVarBndrSpec -> Bool
     not_in_ty ty tvb = extractTvbName tvb `OSet.notMember` fvDType ty
 
 -- Fold over the arguments of a data constructor in a Functor-like way.

@@ -6,7 +6,8 @@ import Language.Haskell.TH.Desugar
 
 $(do synName <- newName "MyId"
      a       <- newName "a"
-     let syn = TySynD synName [PlainTV a] (VarT a)
-     defuns <- withLocalDeclarations [syn] $
+     let dsyn = DTySynD synName [DPlainTV a ()] (DVarT a)
+         syns = sweeten [dsyn]
+     defuns <- withLocalDeclarations syns $
                genDefunSymbols [synName]
-     pure $ syn:defuns)
+     pure $ syns ++ defuns)

@@ -127,7 +127,7 @@ singletonStar names = do
         mkCtor real name args = do
           (types, vars) <- evalForPair $ mapM (kindToType []) args
           dataName <- if real then mkDataName (nameBase name) else return name
-          return $ DCon (map DPlainTV vars) [] dataName
+          return $ DCon (map (`DPlainTV` SpecifiedSpec) vars) [] dataName
                         (DNormalC False (map (\ty -> (noBang, ty)) types))
                         (DConT repName)
             where
@@ -135,7 +135,7 @@ singletonStar names = do
 
         -- demote a kind back to a type, accumulating any unbound parameters
         kindToType :: DsMonad q => [DTypeArg] -> DKind -> QWithAux [Name] q DType
-        kindToType _    (DForallT _ _ _)    = fail "Explicit forall encountered in kind"
+        kindToType _    (DForallT _ _)      = fail "Explicit forall encountered in kind"
         kindToType _    (DConstrainedT _ _) = fail "Explicit constraint encountered in kind"
         kindToType args (DAppT f a) = do
           a' <- kindToType [] a

@@ -53,7 +53,7 @@ defunTopLevelTypeDecls ty_syns c_tyfams o_tyfams = do
 
 -- Defunctionalize all the type families associated with a type class.
 defunAssociatedTypeFamilies ::
-     [DTyVarBndr]         -- The type variables bound by the parent class
+     [DTyVarBndrUnit]     -- The type variables bound by the parent class
   -> [OpenTypeFamilyDecl] -- The type families associated with the parent class
   -> PrM ()
 defunAssociatedTypeFamilies cls_tvbs atfs = do
@@ -85,11 +85,11 @@ defunAssociatedTypeFamilies cls_tvbs atfs = do
     --
     -- Here, we know that `T :: Bool -> Type` because we can infer that the `a`
     -- in `type T a` should be of kind `Bool` from the class SAK.
-    ascribe_tf_tvb_kind :: DTyVarBndr -> DTyVarBndr
+    ascribe_tf_tvb_kind :: DTyVarBndrUnit -> DTyVarBndrUnit
     ascribe_tf_tvb_kind tvb =
       case tvb of
-        DKindedTV{} -> tvb
-        DPlainTV n  -> maybe tvb (DKindedTV n) $ Map.lookup n cls_tvb_kind_map
+        DKindedTV{}  -> tvb
+        DPlainTV n _ -> maybe tvb (DKindedTV n ()) $ Map.lookup n cls_tvb_kind_map
 
 buildDefunSyms :: DDec -> PrM [DDec]
 buildDefunSyms dec =
@@ -121,8 +121,8 @@ buildDefunSymsOpenTypeFamilyD =
   buildDefunSymsTypeFamilyHead defaultTvbToTypeKind (Just . defaultMaybeToTypeKind)
 
 buildDefunSymsTypeFamilyHead
-  :: (DTyVarBndr -> DTyVarBndr)   -- How to default each type variable binder
-  -> (Maybe DKind -> Maybe DKind) -- How to default the result kind
+  :: (DTyVarBndrUnit -> DTyVarBndrUnit) -- How to default each type variable binder
+  -> (Maybe DKind -> Maybe DKind)       -- How to default the result kind
   -> DTypeFamilyHead -> PrM [DDec]
 buildDefunSymsTypeFamilyHead default_tvb default_kind
     (DTypeFamilyHead name tvbs result_sig _) = do
@@ -130,7 +130,7 @@ buildDefunSymsTypeFamilyHead default_tvb default_kind
       res_kind = default_kind (resultSigToMaybeKind result_sig)
   defunReify name arg_tvbs res_kind
 
-buildDefunSymsTySynD :: Name -> [DTyVarBndr] -> DType -> PrM [DDec]
+buildDefunSymsTySynD :: Name -> [DTyVarBndrUnit] -> DType -> PrM [DDec]
 buildDefunSymsTySynD name tvbs rhs = defunReify name tvbs mb_res_kind
   where
     -- If a type synonym lacks a SAK, we can "infer" its result kind by
@@ -160,11 +160,11 @@ buildDefunSymsDataD ctors =
 -- (see Note [Fixity declarations for defunctionalization symbols])
 -- and dsReifyType to determine whether defunctionalization should make use
 -- of SAKs or not (see Note [Defunctionalization game plan]).
-defunReify :: Name           -- Name of the declaration to be defunctionalized
-           -> [DTyVarBndr]   -- The declaration's type variable binders
-                             -- (only used if the declaration lacks a SAK)
-           -> Maybe DKind    -- The declaration's return kind, if it has one
-                             -- (only used if the declaration lacks a SAK)
+defunReify :: Name             -- Name of the declaration to be defunctionalized
+           -> [DTyVarBndrUnit] -- The declaration's type variable binders
+                               -- (only used if the declaration lacks a SAK)
+           -> Maybe DKind      -- The declaration's return kind, if it has one
+                               -- (only used if the declaration lacks a SAK)
            -> PrM [DDec]
 defunReify name tvbs m_res_kind = do
   m_fixity <- reifyFixityWithLocals name
@@ -200,7 +200,7 @@ defunctionalize name m_fixity defun_ki = do
   where
     -- Generate defunctionalization symbols for things with vanilla SAKs.
     -- The symbols themselves will also be given SAKs.
-    defun_vanilla_sak :: [DTyVarBndr] -> [DKind] -> DKind -> PrM [DDec]
+    defun_vanilla_sak :: [DTyVarBndrSpec] -> [DKind] -> DKind -> PrM [DDec]
     defun_vanilla_sak sak_tvbs sak_arg_kis sak_res_ki = do
       opts <- getOptions
       extra_name <- qNewName "arg"
@@ -252,8 +252,8 @@ defunctionalize name m_fixity defun_ki = do
           -- gets to be that large.
           go :: Int -> [(Name, DKind)] -> [(Name, DKind)] -> (DKind, [DDec])
           go n arg_nks res_nkss =
-            let arg_tvbs :: [DTyVarBndr]
-                arg_tvbs = map (uncurry DKindedTV) arg_nks
+            let arg_tvbs :: [DTyVarBndrUnit]
+                arg_tvbs = map (\(na, ki) -> DKindedTV na () ki) arg_nks
 
                 mk_sak_dec :: DKind -> DDec
                 mk_sak_dec res_ki =
@@ -281,7 +281,7 @@ defunctionalize name m_fixity defun_ki = do
     -- (see Note [Defunctionalization game plan], Wrinkle 1: Partial kinds)
     -- or a non-vanilla kind
     -- (see Note [Defunctionalization game plan], Wrinkle 2: Non-vanilla kinds).
-    defun_fallback :: [DTyVarBndr] -> Maybe DKind -> PrM [DDec]
+    defun_fallback :: [DTyVarBndrUnit] -> Maybe DKind -> PrM [DDec]
     defun_fallback tvbs' m_res' = do
       opts <- getOptions
       extra_name <- qNewName "arg"
@@ -310,7 +310,7 @@ defunctionalize name m_fixity defun_ki = do
           --   kinds are not always known. By a similar token, this function
           --   uses Maybe DKind, not DKind, as the type of @m_res_k@, since
           --   the result kind is not always fully known.
-          go :: Int -> [DTyVarBndr] -> [DTyVarBndr] -> (Maybe DKind, [DDec])
+          go :: Int -> [DTyVarBndrUnit] -> [DTyVarBndrUnit] -> (Maybe DKind, [DDec])
           go n arg_tvbs res_tvbss =
             case res_tvbss of
               [] ->
@@ -330,7 +330,7 @@ defunctionalize name m_fixity defun_ki = do
     mk_defun_decs :: Options
                   -> Int
                   -> Int
-                  -> [DTyVarBndr]
+                  -> [DTyVarBndrUnit]
                   -> Name
                   -> Name
                   -> Maybe DKind
@@ -340,7 +340,7 @@ defunctionalize name m_fixity defun_ki = do
           next_name   = defunctionalizedName opts name (n+1)
           con_name    = prefixName "" ":" $ suffixName "KindInference" "###" data_name
           arg_names   = map extractTvbName arg_tvbs
-          params      = arg_tvbs ++ [DPlainTV tyfun_name]
+          params      = arg_tvbs ++ [DPlainTV tyfun_name ()]
           con_eq_ct   = DConT sameKindName `DAppT` lhs `DAppT` rhs
             where
               lhs = foldType (DConT data_name) (map DVarT arg_names) `apply` (DVarT extra_name)
@@ -356,7 +356,7 @@ defunctionalize name m_fixity defun_ki = do
                                   (DConT applyName `DAppT` app_data_ty
                                                    `DAppT` DVarT tyfun_name)
                                   (foldTypeTvbs (DConT app_eqn_rhs_name)
-                                                (arg_tvbs ++ [DPlainTV tyfun_name]))
+                                                (arg_tvbs ++ [DPlainTV tyfun_name ()]))
           -- If the next defunctionalization symbol is fully saturated, then
           -- use the original declaration name instead.
           -- See Note [Fully saturated defunctionalization symbols]
@@ -379,7 +379,7 @@ defunctionalize name m_fixity defun_ki = do
     -- Generate a "fully saturated" defunction symbol, along with a fixity
     -- declaration (if needed).
     -- See Note [Fully saturated defunctionalization symbols].
-    mk_sat_decs :: Options -> Int -> [DTyVarBndr] -> Maybe DKind -> [DDec]
+    mk_sat_decs :: Options -> Int -> [DTyVarBndrUnit] -> Maybe DKind -> [DDec]
     mk_sat_decs opts n sat_tvbs m_sat_res =
       let sat_name = defunctionalizedName opts name n
           sat_dec  = DClosedTypeFamilyD
@@ -399,7 +399,7 @@ defunctionalize name m_fixity defun_ki = do
     --
     -- >>> eta_expand [(x :: a), (y :: b)] Nothing
     -- ([(x :: a), (y :: b)], Nothing)
-    eta_expand :: [DTyVarBndr] -> Maybe DKind -> PrM ([DTyVarBndr], Maybe DKind)
+    eta_expand :: [DTyVarBndrUnit] -> Maybe DKind -> PrM ([DTyVarBndrUnit], Maybe DKind)
     eta_expand m_arg_tvbs Nothing = pure (m_arg_tvbs, Nothing)
     eta_expand m_arg_tvbs (Just res_kind) = do
         let (arg_ks, result_k) = unravelDType res_kind
@@ -409,11 +409,11 @@ defunctionalize name m_fixity defun_ki = do
 
     -- Convert a DVisFunArg to a DTyVarBndr, generating a fresh type variable
     -- name if the DVisFunArg is an anonymous argument.
-    mk_extra_tvb :: DVisFunArg -> PrM DTyVarBndr
+    mk_extra_tvb :: DVisFunArg -> PrM DTyVarBndrUnit
     mk_extra_tvb vfa =
       case vfa of
         DVisFADep tvb -> pure tvb
-        DVisFAAnon k  -> DKindedTV <$> qNewName "e" <*> pure k
+        DVisFAAnon k  -> (\n -> DKindedTV n () k) <$> qNewName "e"
 
     mk_fix_decl :: Name -> Fixity -> DDec
     mk_fix_decl n f = DLetDec $ DInfixD f n
@@ -426,7 +426,7 @@ defunctionalize name m_fixity defun_ki = do
 -- information is used.
 data DefunKindInfo
   = DefunSAK DKind
-  | DefunNoSAK [DTyVarBndr] (Maybe DKind)
+  | DefunNoSAK [DTyVarBndrUnit] (Maybe DKind)
 
 -- Shorthand for building (k1 ~> k2)
 buildTyFunArrow :: DKind -> DKind -> DKind
