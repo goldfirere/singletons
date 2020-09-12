@@ -443,12 +443,6 @@ buildDataDTvbs tvbs mk = do
 foldExp :: DExp -> [DExp] -> DExp
 foldExp = foldl DAppE
 
--- is a function type?
-isFunTy :: DType -> Bool
-isFunTy (DAppT (DAppT DArrowT _) _) = True
-isFunTy (DForallT _ _ _)            = True
-isFunTy _                           = False
-
 -- choose the first non-empty list
 orIfEmpty :: [a] -> [a] -> [a]
 orIfEmpty [] x = x
