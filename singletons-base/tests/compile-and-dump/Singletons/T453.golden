@@ -1,12 +1,11 @@
 Singletons/T453.hs:(0,0)-(0,0): Splicing declarations
     withOptions defaultOptions {genSingKindInsts = False}
       $ singletons
-          $ lift
-              [d| type T1 :: forall k. k -> Type
-                  type T2 :: k -> Type
-                  
-                  data T1 a
-                  data T2 a |]
+          [d| type T1 :: forall k. k -> Type
+              type T2 :: k -> Type
+              
+              data T1 a
+              data T2 a |]
   ======>
     type T1 :: forall k. k -> Type
     data T1 a

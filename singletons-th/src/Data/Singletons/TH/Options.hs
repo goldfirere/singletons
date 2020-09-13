@@ -48,6 +48,7 @@ import Control.Monad.Writer (WriterT)
 import Data.Singletons.TH.Names
 import Data.Singletons.TH.Util
 import Language.Haskell.TH.Desugar
+import Language.Haskell.TH.Instances () -- To obtain a Quote instance for ReaderT
 import Language.Haskell.TH.Syntax hiding (Lift(..))
 
 -- | Options that control the finer details of how @singletons-th@'s Template
@@ -191,7 +192,7 @@ instance (OptionsMonad m, Monoid w) => OptionsMonad (RWST r w s m) where
 -- 'withOptions'.
 newtype OptionsM m a = OptionsM (ReaderT Options m a)
   deriving ( Functor, Applicative, Monad, MonadTrans
-           , Quasi, MonadFail, MonadIO, DsMonad )
+           , Quote, Quasi, MonadFail, MonadIO, DsMonad )
 
 -- | Turn any 'DsMonad' into an 'OptionsMonad'.
 instance DsMonad m => OptionsMonad (OptionsM m) where

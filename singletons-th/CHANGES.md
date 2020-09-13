@@ -110,3 +110,21 @@ Changelog for singletons-th project
   data types built on top of them. See the
   "Arrows, `Nat`, `Symbol`, and literals" section of the `README` for more
   information.
+* Define a `Quote` instance for `OptionsM`. A notable benefit of this instance
+  is that it avoids the need to explicitly `lift` TH quotes into `OptionsM`.
+  Before, you would have to do this:
+
+  ```hs
+  import Control.Monad.Trans.Class (lift)
+
+  withOptions defaultOptions
+    $ singletons
+    $ lift [d| data T = MkT |]
+  ```
+
+  But now, it suffices to simply do this:
+
+  ```hs
+  withOptions defaultOptions
+    $ singletons [d| data T = MkT |]
+  ```

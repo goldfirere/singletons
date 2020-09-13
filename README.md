@@ -744,7 +744,6 @@ how this module can be used to prefix a singled data constructor with `MyS`
 instead of `S`:
 
 ```hs
-import Control.Monad.Trans.Class
 import Data.Singletons.TH
 import Data.Singletons.TH.Options
 import Language.Haskell.TH (Name, mkName, nameBase)
@@ -753,7 +752,7 @@ $(let myPrefix :: Name -> Name
       myPrefix name = mkName ("MyS" ++ nameBase name) in
 
       withOptions defaultOptions{singledDataConName = myPrefix} $
-      singletons $ lift [d| data T = MkT |])
+      singletons [d| data T = MkT |])
 ```
 
 Haskell constructs supported by `singletons-th`
@@ -1101,7 +1100,6 @@ The example below demonstrates this workaround in the context of a data type
 that has a `Nat` field:
 
 ```hs
-import Control.Monad.Trans.Class
 import Data.Kind
 import Data.Singletons.TH
 import Data.Singletons.TH.Options
@@ -1128,7 +1126,7 @@ $(let customPromote :: Name -> Name
                             , defunctionalizedName      = customDefun
                             } $ do
     decs1 <- genSingletons [''Age]
-    decs2 <- singletons $ lift [d|
+    decs2 <- singletons [d|
                fortyTwo :: Age
                fortyTwo = MkAge 42
                |]

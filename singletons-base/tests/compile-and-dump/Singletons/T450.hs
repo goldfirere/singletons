@@ -1,6 +1,5 @@
 module T450 where
 
-import Control.Monad.Trans.Class
 import Data.Maybe
 import Data.Singletons.TH
 import Data.Singletons.TH.Options
@@ -38,7 +37,7 @@ $(do let customPromote :: [(Name, Name)] -> Name -> Name
                                   , (''Natural, ''Nat)
                                   ]) $ do
          ageDecs1 <- genSingletons [''Age]
-         ageDecs2 <- singletons $ lift [d|
+         ageDecs2 <- singletons [d|
            addAge :: Age -> Age -> Age
            addAge (MkAge (x :: Natural)) (MkAge (y :: Natural)) =
              MkAge (x + y :: Natural)
@@ -51,7 +50,7 @@ $(do let customPromote :: [(Name, Name)] -> Name -> Name
                                   , (''Text, ''Symbol)
                                   ]) $ do
          messageDecs1 <- genSingletons [''Message]
-         messageDecs2 <- singletons $ lift [d|
+         messageDecs2 <- singletons [d|
            appendMessage :: Message -> Message -> Message
            appendMessage (MkMessage (x :: Text)) (MkMessage (y :: Text)) =
              MkMessage (x <> y :: Text)
@@ -63,7 +62,7 @@ $(do let customPromote :: [(Name, Name)] -> Name -> Name
                                   , ('MkFunction, 'PMkFunction)
                                   ]) $ do
          functionDecs1 <- genSingletons [''Function]
-         functionDecs2 <- singletons $ lift [d|
+         functionDecs2 <- singletons [d|
            composeFunction :: Function b c -> Function a b -> Function a c
            composeFunction (MkFunction (f :: b -> c)) (MkFunction (g :: a -> b)) =
              MkFunction (f . g :: a -> c)
