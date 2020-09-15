@@ -27,3 +27,6 @@ cabal.project.local~
 
 # stack
 .stack-work/
+
+# TODO RGS: Temporary
+vendored/

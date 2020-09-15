@@ -1,0 +1,61 @@
+diff --git a/Language/Haskell/TH/Desugar/Core.hs b/Language/Haskell/TH/Desugar/Core.hs
+index 51416de..1fe24a2 100644
+--- a/Language/Haskell/TH/Desugar/Core.hs
++++ b/Language/Haskell/TH/Desugar/Core.hs
+@@ -1202,7 +1202,7 @@ dsType (ImplicitParamT n t) = do
+   return $ DConT ''IP `DAppT` DLitT (StrTyLit n) `DAppT` t'
+ #endif
+ #if __GLASGOW_HASKELL__ >= 809
+-dsType (ForallVisT tvbs ty) =
++dsType (ForallVisT _ tvbs ty) =
+   DForallT <$> (DForallVis <$> mapM dsTvbUnit tvbs) <*> dsType ty
+ #endif
+ 
+diff --git a/Language/Haskell/TH/Desugar/Reify.hs b/Language/Haskell/TH/Desugar/Reify.hs
+index 54fd408..5f493de 100644
+--- a/Language/Haskell/TH/Desugar/Reify.hs
++++ b/Language/Haskell/TH/Desugar/Reify.hs
+@@ -1061,7 +1061,7 @@ build_kind arg_kinds res_kind =
+ 
+     forall_vis :: TyVarBndrUnit -> Maybe Kind -> Maybe Kind
+ #if __GLASGOW_HASKELL__ >= 809
+-    forall_vis tvb m_ki = fmap (ForallVisT [tvb]) m_ki
++    forall_vis tvb m_ki = fmap (ForallVisT Nothing [tvb]) m_ki
+       -- One downside of this approach is that we generate kinds like this:
+       --
+       --   forall a -> forall b -> forall c -> (a, b, c)
+diff --git a/Language/Haskell/TH/Desugar/Sweeten.hs b/Language/Haskell/TH/Desugar/Sweeten.hs
+index 9d922e5..25924d9 100644
+--- a/Language/Haskell/TH/Desugar/Sweeten.hs
++++ b/Language/Haskell/TH/Desugar/Sweeten.hs
+@@ -425,7 +425,7 @@ typeToTH (DForallT tele ty) =
+     DForallInvis  tvbs -> ForallT (map tvbToTH tvbs) [] ty'
+     DForallVis   _tvbs ->
+ #if __GLASGOW_HASKELL__ >= 809
+-      ForallVisT (map tvbToTH _tvbs) ty'
++      ForallVisT Nothing (map tvbToTH _tvbs) ty'
+ #else
+       error "Visible dependent quantification supported only in GHC 8.10+"
+ #endif
+diff --git a/Language/Haskell/TH/Desugar/Util.hs b/Language/Haskell/TH/Desugar/Util.hs
+index 6ad206c..770c45e 100644
+--- a/Language/Haskell/TH/Desugar/Util.hs
++++ b/Language/Haskell/TH/Desugar/Util.hs
+@@ -268,7 +268,7 @@ ravelType (FAForalls (ForallInvis tvbs) (FACxt p args)) res =
+ ravelType (FAForalls (ForallInvis  tvbs)  args)  res = ForallT tvbs [] (ravelType args res)
+ ravelType (FAForalls (ForallVis   _tvbs) _args) _res =
+ #if __GLASGOW_HASKELL__ >= 809
+-      ForallVisT _tvbs (ravelType _args _res)
++      ForallVisT Nothing _tvbs (ravelType _args _res)
+ #else
+       error "Visible dependent quantification supported only on GHC 8.10+"
+ #endif
+@@ -285,7 +285,7 @@ unravelType (AppT (AppT ArrowT t1) t2) =
+   let (args, res) = unravelType t2 in
+   (FAAnon t1 args, res)
+ #if __GLASGOW_HASKELL__ >= 809
+-unravelType (ForallVisT tvbs ty) =
++unravelType (ForallVisT _ tvbs ty) =
+   let (args, res) = unravelType ty in
+   (FAForalls (ForallVis tvbs) args, res)
+ #endif

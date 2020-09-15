@@ -1,0 +1,101 @@
+diff --git a/Language/Haskell/TH/ExpandSyns.hs b/Language/Haskell/TH/ExpandSyns.hs
+index c443722..59596df 100644
+--- a/Language/Haskell/TH/ExpandSyns.hs
++++ b/Language/Haskell/TH/ExpandSyns.hs
+@@ -30,17 +30,28 @@ packagename = "th-expand-syns"
+ 
+ 
+ -- Compatibility layer for TH >=2.4 vs. 2.3
+-tyVarBndrGetName :: TyVarBndr -> Name
++tyVarBndrGetName :: TyVarBndr_ spec -> Name
+ #if !MIN_VERSION_template_haskell(2,10,0)
+ mapPred :: (Type -> Type) -> Pred -> Pred
+ #endif
+ bindPred :: (Type -> Q Type) -> Pred -> Q Pred
+-tyVarBndrSetName :: Name -> TyVarBndr -> TyVarBndr
++tyVarBndrSetName :: Name -> TyVarBndr_ spec -> TyVarBndr_ spec
+ 
+ #if MIN_VERSION_template_haskell(2,4,0)
++# if MIN_VERSION_template_haskell(2,17,0)
++tyVarBndrGetName (PlainTV n _) = n
++tyVarBndrGetName (KindedTV n _ _) = n
++
++tyVarBndrSetName n (PlainTV _ spec) = PlainTV n spec
++tyVarBndrSetName n (KindedTV _ spec k) = KindedTV n spec k
++# else
+ tyVarBndrGetName (PlainTV n) = n
+ tyVarBndrGetName (KindedTV n _) = n
+ 
++tyVarBndrSetName n (PlainTV _) = PlainTV n
++tyVarBndrSetName n (KindedTV _ k) = KindedTV n k
++# endif
++
+ #if MIN_VERSION_template_haskell(2,10,0)
+ bindPred = id
+ #else
+@@ -50,9 +61,6 @@ mapPred f (EqualP t1 t2) = EqualP (f t1) (f t2)
+ bindPred f (ClassP n ts) = ClassP n <$> mapM f ts
+ bindPred f (EqualP t1 t2) = EqualP <$> f t1 <*> f t2
+ #endif
+-
+-tyVarBndrSetName n (PlainTV _) = PlainTV n
+-tyVarBndrSetName n (KindedTV _ k) = KindedTV n k
+ #else
+ 
+ type TyVarBndr = Name
+@@ -383,9 +391,10 @@ expandSynsWith settings = expandSyns'
+ #endif
+ 
+ #if MIN_VERSION_template_haskell(2,16,0)
+-      go [] (ForallVisT ns t) = do
++      go [] (ForallVisT m ns t) = do
++        m' <- traverse expandSyns' m
+         t' <- expandSyns' t
+-        return ([], ForallVisT ns t')
++        return ([], ForallVisT m' ns t')
+ 
+       go acc x@ForallVisT{} = forallAppError acc x
+ #endif
+@@ -457,9 +466,9 @@ instance SubstTypeVariable Type where
+ #endif
+ 
+ #if MIN_VERSION_template_haskell(2,16,0)
+-      go (ForallVisT vars body) =
++      go (ForallVisT m vars body) =
+           commonForallCase vt vars $ \vts' vars' ->
+-          ForallVisT vars' (doSubsts vts' body)
++          ForallVisT (fmap (doSubsts vts') m) vars' (doSubsts vts' body)
+ #endif
+ 
+ -- testCapture :: Type
+@@ -542,7 +551,7 @@ instance SubstTypeVariable Con where
+ 
+ 
+ class HasForallConstruct a where
+-    mkForall :: [TyVarBndr] -> Cxt -> a -> a
++    mkForall :: [TyVarBndrSpec] -> Cxt -> a -> a
+ 
+ instance HasForallConstruct Type where
+     mkForall = ForallT
+@@ -555,8 +564,8 @@ instance HasForallConstruct Con where
+ -- Apply a substitution to something underneath a @forall@. The continuation
+ -- argument provides new substitutions and fresh type variable binders to avoid
+ -- the outer substitution from capturing the thing underneath the @forall@.
+-commonForallCase :: (Name, Type) -> [TyVarBndr]
+-                 -> ([(Name, Type)] -> [TyVarBndr] -> a)
++commonForallCase :: (Name, Type) -> [TyVarBndr_ spec]
++                 -> ([(Name, Type)] -> [TyVarBndr_ spec] -> a)
+                  -> a
+ commonForallCase vt@(v,t) bndrs k
+             -- If a variable with the same name as the one to be replaced is bound by the forall,
+@@ -584,3 +593,10 @@ substInType = subst
+ -- | Capture-free substitution
+ substInCon :: (Name,Type) -> Con -> Con
+ substInCon = subst
++
++#if MIN_VERSION_template_haskell(2,17,0)
++type TyVarBndr_ spec = TyVarBndr spec
++#else
++type TyVarBndr_ spec = TyVarBndr
++type TyVarBndrSpec   = TyVarBndr
++#endif

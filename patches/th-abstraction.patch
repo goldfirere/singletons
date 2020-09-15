@@ -1,0 +1,63 @@
+diff --git a/src/Language/Haskell/TH/Datatype.hs b/src/Language/Haskell/TH/Datatype.hs
+index 4082823..71d1f69 100644
+--- a/src/Language/Haskell/TH/Datatype.hs
++++ b/src/Language/Haskell/TH/Datatype.hs
+@@ -1288,8 +1288,9 @@ resolveTypeSynonyms t =
+          ImplicitParamT n <$> resolveTypeSynonyms t
+ #endif
+ #if MIN_VERSION_template_haskell(2,16,0)
+-       ForallVisT tvbs body ->
+-         ForallVisT `fmap` mapM resolve_tvb_syns tvbs
++       ForallVisT m tvbs body ->
++         ForallVisT `fmap` mapM resolveTypeSynonyms m
++                      `ap` mapM resolve_tvb_syns tvbs
+                       `ap` resolveTypeSynonyms body
+ #endif
+        _ -> notTypeSynCase f
+@@ -1475,8 +1476,9 @@ resolveInfixT (ImplicitParamT n t)
+                                 = implicitParamT n $ resolveInfixT t
+ # endif
+ # if MIN_VERSION_template_haskell(2,16,0)
+-resolveInfixT (ForallVisT vs t) = ForallVisT <$> traverse (traverseTVKind resolveInfixT) vs
+-                                             <*> resolveInfixT t
++resolveInfixT (ForallVisT m vs t) = ForallVisT <$> traverse resolveInfixT m
++                                               <*> traverse (traverseTVKind resolveInfixT) vs
++                                               <*> resolveInfixT t
+ # endif
+ resolveInfixT t                 = return t
+ 
+@@ -1644,8 +1646,8 @@ freeVariablesWellScoped tys =
+           go_ty (ImplicitParamT _ t) = go_ty t
+ #endif
+ #if MIN_VERSION_template_haskell(2,16,0)
+-          go_ty (ForallVisT tvbs t) =
+-            foldr (\tvb -> Map.delete (tvName tvb)) (go_ty t) tvbs
++          go_ty (ForallVisT m tvbs t) =
++            foldr (\tvb -> Map.delete (tvName tvb)) (foldMap go_ty m `mappend` go_ty t) tvbs
+ #endif
+           go_ty _ = mempty
+ 
+@@ -1791,9 +1793,10 @@ instance TypeSubstitution Type where
+                          = ImplicitParamT n (go t)
+ #endif
+ #if MIN_VERSION_template_haskell(2,16,0)
+-      go (ForallVisT tvs t) =
++      go (ForallVisT m tvs t) =
+         subst_tvbs tvs $ \subst' ->
+-        ForallVisT (map (mapTVKind (applySubstitution subst')) tvs)
++        ForallVisT (fmap (applySubstitution subst') m)
++                   (map (mapTVKind (applySubstitution subst')) tvs)
+                    (applySubstitution subst' t)
+ #endif
+       go t               = t
+@@ -1819,8 +1822,8 @@ instance TypeSubstitution Type where
+                     -> freeVariables t
+ #endif
+ #if MIN_VERSION_template_haskell(2,16,0)
+-      ForallVisT tvs t'
+-                    -> fvs_under_forall tvs (freeVariables t')
++      ForallVisT m tvs t'
++                    -> fvs_under_forall tvs (foldMap freeVariables m `union` freeVariables t')
+ #endif
+       _             -> []
+     where
