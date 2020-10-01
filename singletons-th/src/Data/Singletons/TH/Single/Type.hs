@@ -45,7 +45,7 @@ singType bound_kvs prom ty = do
                 -- See Note [Preserve the order of type variables during singling],
                 -- wrinkle 3.
       kvbs     = singTypeKVBs orig_tvbs prom_args cxt' prom_res bound_kvs
-      all_tvbs = kvbs ++ zipWith DKindedTV arg_names prom_args
+      all_tvbs = kvbs ++ zipWith (`DKindedTV` SpecifiedSpec) arg_names prom_args
       ty'      = ravelVanillaDType all_tvbs cxt' args' res'
   return (ty', num_args, arg_names, cxt, prom_args, prom_res)
 
@@ -55,20 +55,21 @@ singType bound_kvs prom ty = do
 -- This implements the advice documented in
 -- Note [Preserve the order of type variables during singling], wrinkle 1.
 singTypeKVBs ::
-     [DTyVarBndr] -- ^ The bound type variables from the original type signature.
-  -> [DType]      -- ^ The argument types of the signature (promoted).
-  -> DCxt         -- ^ The context of the signature (singled).
-  -> DType        -- ^ The result type of the signature (promoted).
-  -> OSet Name    -- ^ The type variables previously bound in the current scope.
-  -> [DTyVarBndr] -- ^ The kind variables for the singled type signature.
+     [DTyVarBndrSpec] -- ^ The bound type variables from the original type signature.
+  -> [DType]          -- ^ The argument types of the signature (promoted).
+  -> DCxt             -- ^ The context of the signature (singled).
+  -> DType            -- ^ The result type of the signature (promoted).
+  -> OSet Name        -- ^ The type variables previously bound in the current scope.
+  -> [DTyVarBndrSpec] -- ^ The kind variables for the singled type signature.
 singTypeKVBs orig_tvbs prom_args sing_ctxt prom_res bound_tvbs
   | null orig_tvbs
   -- There are no explicitly `forall`ed type variable binders, so we must
   -- infer them ourselves.
-  = deleteFirstsBy
+  = changeDTVFlags SpecifiedSpec $
+    deleteFirstsBy
       ((==) `on` extractTvbName)
       (toposortTyVarsOf $ prom_args ++ sing_ctxt ++ [prom_res])
-      (map DPlainTV $ toList bound_tvbs)
+      (map (`DPlainTV` ()) $ toList bound_tvbs)
       -- Make sure to subtract out the bound variables currently in scope,
       -- lest we accidentally shadow them in this type signature.
       -- See Note [Explicitly binding kind variables] in D.S.TH.Promote.Monad.

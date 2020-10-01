@@ -72,8 +72,9 @@ singDataD (DataDecl name tvbs ctors) = do
         -- No standalone kind signature. Try to figure out the order of kind
         -- variables on a best-effort basis.
         Nothing ->
-          let sing_tvbs = toposortTyVarsOf $ map dTyVarBndrToDType tvbs
-              kinded_sing_ty = DForallT ForallInvis sing_tvbs $
+          let sing_tvbs = changeDTVFlags SpecifiedSpec $
+                          toposortTyVarsOf $ map dTyVarBndrToDType tvbs
+              kinded_sing_ty = DForallT (DForallInvis sing_tvbs) $
                                DArrowT `DAppT` k `DAppT` DConT typeKindName in
           [mk_data_dec kinded_sing_ty]
 
@@ -82,16 +83,18 @@ singDataD (DataDecl name tvbs ctors) = do
         Just data_sak ->
           let (args, _)  = unravelDType data_sak
               vis_args   = filterDVisFunArgs args
-              vis_tvbs   = zipWith replaceTvbKind vis_args tvbs
+              vis_tvbs   = changeDTVFlags SpecifiedSpec $
+                           zipWith replaceTvbKind vis_args tvbs
               invis_args = filterInvisTvbArgs args
               -- If the standalone kind signature did not explicitly quantify its
               -- kind variables, do so ourselves. This is very similar to what
               -- D.S.TH.Single.Type.singTypeKVBs does.
               invis_tvbs | null invis_args
-                         = toposortTyVarsOf [data_sak]
+                         = changeDTVFlags SpecifiedSpec $
+                           toposortTyVarsOf [data_sak]
                          | otherwise
                          = invis_args
-              sing_data_sak = DForallT ForallInvis (invis_tvbs ++ vis_tvbs) $
+              sing_data_sak = DForallT (DForallInvis (invis_tvbs ++ vis_tvbs)) $
                               DArrowT `DAppT` k `DAppT` DConT typeKindName in
           [ DKiSigD singDataName sing_data_sak
           , mk_data_dec sing_data_sak
@@ -181,7 +184,7 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
   let indices = map DVarT indexNames
       kindedIndices = zipWith DSigT indices kinds
       kvbs = singTypeKVBs con_tvbs kinds [] rty' mempty
-      all_tvbs = kvbs ++ zipWith DKindedTV indexNames kinds
+      all_tvbs = kvbs ++ zipWith (`DKindedTV` SpecifiedSpec) indexNames kinds
 
   -- SingI instance for data constructor
   emitDecs

@@ -29,9 +29,9 @@ promoteType_NC :: OptionsMonad m => DType -> m DKind
 promoteType_NC = go []
   where
     go :: OptionsMonad m => [DTypeArg] -> DType -> m DKind
-    go []       (DForallT fvf tvbs ty) = do
+    go []       (DForallT tele ty) = do
       ty' <- go [] ty
-      pure $ DForallT fvf tvbs ty'
+      pure $ DForallT tele ty'
     -- We don't need to worry about constraints: they are used to express
     -- static guarantees at runtime. But, because we don't need to do
     -- anything special to keep static guarantees at compile time, we don't
@@ -75,7 +75,7 @@ promoteTypeArg_NC ta@(DTyArg _) = pure ta -- Kinds are already promoted
 -- | Promote a DType to the kind level, splitting it into its type variable
 -- binders, argument types, and result type in the process.
 promoteUnraveled :: OptionsMonad m
-                 => DType -> m ([DTyVarBndr], [DKind], DKind)
+                 => DType -> m ([DTyVarBndrSpec], [DKind], DKind)
 promoteUnraveled ty = do
   (tvbs, _, arg_tys, res_ty) <- unravelVanillaDType ty
   arg_kis <- mapM promoteType_NC arg_tys

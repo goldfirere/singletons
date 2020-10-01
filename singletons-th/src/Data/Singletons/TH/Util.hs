@@ -11,7 +11,7 @@ Users of the package should not need to consult this file.
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              UndecidableInstances, MagicHash, LambdaCase,
              NoMonomorphismRestriction, ScopedTypeVariables,
-             FlexibleContexts #-}
+             FlexibleContexts, TypeApplications #-}
 
 module Data.Singletons.TH.Util where
 
@@ -26,6 +26,7 @@ import Control.Monad.Reader hiding ( mapM )
 import Control.Monad.Writer hiding ( mapM )
 import qualified Data.Map as Map
 import Data.Map ( Map )
+import Data.Bifunctor (second)
 import Data.Foldable
 import Data.Functor.Identity
 import Data.Traversable
@@ -180,38 +181,38 @@ uniquePrefixes alpha symb n = (alpha ++ n_str, symb ++ convert n_str)
       in d' : convert ds
 
 -- extract the kind from a TyVarBndr
-extractTvbKind :: DTyVarBndr -> Maybe DKind
-extractTvbKind (DPlainTV _) = Nothing
-extractTvbKind (DKindedTV _ k) = Just k
+extractTvbKind :: DTyVarBndr flag -> Maybe DKind
+extractTvbKind (DPlainTV _ _)    = Nothing
+extractTvbKind (DKindedTV _ _ k) = Just k
 
 -- extract the name from a TyVarBndr.
-extractTvbName :: DTyVarBndr -> Name
-extractTvbName (DPlainTV n) = n
-extractTvbName (DKindedTV n _) = n
+extractTvbName :: DTyVarBndr flag -> Name
+extractTvbName (DPlainTV n _)    = n
+extractTvbName (DKindedTV n _ _) = n
 
-tvbToType :: DTyVarBndr -> DType
+tvbToType :: DTyVarBndr flag -> DType
 tvbToType = DVarT . extractTvbName
 
 -- If a type variable binder lacks an explicit kind, pick a default kind of
 -- Type. Otherwise, leave the binder alone.
-defaultTvbToTypeKind :: DTyVarBndr -> DTyVarBndr
-defaultTvbToTypeKind (DPlainTV tvname) = DKindedTV tvname $ DConT typeKindName
-defaultTvbToTypeKind tvb               = tvb
+defaultTvbToTypeKind :: DTyVarBndr flag -> DTyVarBndr flag
+defaultTvbToTypeKind (DPlainTV tvname f) = DKindedTV tvname f $ DConT typeKindName
+defaultTvbToTypeKind tvb                 = tvb
 
 -- If @Nothing@, return @Type@. If @Just k@, return @k@.
 defaultMaybeToTypeKind :: Maybe DKind -> DKind
 defaultMaybeToTypeKind (Just k) = k
 defaultMaybeToTypeKind Nothing  = DConT typeKindName
 
-inferMaybeKindTV :: Name -> Maybe DKind -> DTyVarBndr
-inferMaybeKindTV n Nothing =  DPlainTV n
-inferMaybeKindTV n (Just k) = DKindedTV n k
+inferMaybeKindTV :: Name -> Maybe DKind -> DTyVarBndrUnit
+inferMaybeKindTV n Nothing  = DPlainTV n ()
+inferMaybeKindTV n (Just k) = DKindedTV n () k
 
 resultSigToMaybeKind :: DFamilyResultSig -> Maybe DKind
-resultSigToMaybeKind DNoSig                      = Nothing
-resultSigToMaybeKind (DKindSig k)                = Just k
-resultSigToMaybeKind (DTyVarSig (DPlainTV _))    = Nothing
-resultSigToMaybeKind (DTyVarSig (DKindedTV _ k)) = Just k
+resultSigToMaybeKind DNoSig                        = Nothing
+resultSigToMaybeKind (DKindSig k)                  = Just k
+resultSigToMaybeKind (DTyVarSig DPlainTV{})        = Nothing
+resultSigToMaybeKind (DTyVarSig (DKindedTV _ _ k)) = Just k
 
 maybeKindToResultSig :: Maybe DKind -> DFamilyResultSig
 maybeKindToResultSig = maybe DNoSig DKindSig
@@ -224,9 +225,9 @@ maybeSigT ty (Just ki) = ty `DSigT` ki
 -- binders, constraints, argument types, and result type. (See
 -- Note [Vanilla-type validity checking during promotion] in
 -- Data.Singletons.TH.Promote.Type for what "vanilla" means.)
-ravelVanillaDType :: [DTyVarBndr] -> DCxt -> [DType] -> DType -> DType
+ravelVanillaDType :: [DTyVarBndrSpec] -> DCxt -> [DType] -> DType -> DType
 ravelVanillaDType tvbs ctxt args res =
-  ifNonEmpty tvbs (DForallT ForallInvis) $
+  ifNonEmpty tvbs (DForallT . DForallInvis) $
   ifNonEmpty ctxt DConstrainedT $
   go args
   where
@@ -250,7 +251,7 @@ ravelVanillaDType tvbs ctxt args res =
 -- only supports a subset of these types, which is why this function is used
 -- to decompose them instead.
 unravelVanillaDType :: forall m. MonadFail m
-                    => DType -> m ([DTyVarBndr], DCxt, [DType], DType)
+                    => DType -> m ([DTyVarBndrSpec], DCxt, [DType], DType)
 unravelVanillaDType ty =
   case unravelVanillaDType_either ty of
     Left err      -> fail err
@@ -271,11 +272,11 @@ checkVanillaDType ty =
 -- The workhorse that powers unravelVanillaDType and checkVanillaDType.
 -- Returns @Right payload@ upon success, and @Left error_msg@ upon failure.
 unravelVanillaDType_either ::
-  DType -> Either String ([DTyVarBndr], DCxt, [DType], DType)
+  DType -> Either String ([DTyVarBndrSpec], DCxt, [DType], DType)
 unravelVanillaDType_either ty =
   runIdentity $ flip runReaderT True $ runExceptT $ runUnravelM $ go_ty ty
   where
-    go_ty :: DType -> UnravelM ([DTyVarBndr], DCxt, [DType], DType)
+    go_ty :: DType -> UnravelM ([DTyVarBndrSpec], DCxt, [DType], DType)
     go_ty typ = do
       let (args1, res) = unravelDType typ
       (args2, tvbs) <- take_tvbs  args1
@@ -290,14 +291,14 @@ unravelVanillaDType_either ty =
     go_higher_order_ty :: DType -> UnravelM ()
     go_higher_order_ty typ = () <$ local (const False) (go_ty typ)
 
-    take_tvbs :: DFunArgs -> UnravelM (DFunArgs, [DTyVarBndr])
-    take_tvbs (DFAForalls ForallInvis tvbs args) = do
+    take_tvbs :: DFunArgs -> UnravelM (DFunArgs, [DTyVarBndrSpec])
+    take_tvbs (DFAForalls (DForallInvis tvbs) args) = do
       rank_1 <- ask
       unless rank_1 $ fail_forall "higher-rank"
       _ <- traverse_ (traverse_ go_higher_order_ty . extractTvbKind) tvbs
       (args', tvbs') <- take_tvbs args
       pure (args', tvbs ++ tvbs')
-    take_tvbs (DFAForalls ForallVis _ _) = fail_vdq
+    take_tvbs (DFAForalls DForallVis{} _) = fail_vdq
     take_tvbs args = pure (args, [])
 
     take_ctxt :: DFunArgs -> UnravelM (DFunArgs, DCxt)
@@ -307,10 +308,10 @@ unravelVanillaDType_either ty =
       traverse_ go_higher_order_ty ctxt
       (args', ctxt') <- take_ctxt args
       pure (args', ctxt ++ ctxt')
-    take_ctxt (DFAForalls fvf _ _) =
-      case fvf of
-        ForallInvis -> fail_forall "nested"
-        ForallVis   -> fail_vdq
+    take_ctxt (DFAForalls tele _) =
+      case tele of
+        DForallInvis{} -> fail_forall "nested"
+        DForallVis{}   -> fail_vdq
     take_ctxt args = pure (args, [])
 
     take_anons :: DFunArgs -> UnravelM [DType]
@@ -318,10 +319,10 @@ unravelVanillaDType_either ty =
       go_higher_order_ty anon
       anons <- take_anons args
       pure (anon:anons)
-    take_anons (DFAForalls fvf _ _) =
-      case fvf of
-        ForallInvis -> fail_forall "nested"
-        ForallVis   -> fail_vdq
+    take_anons (DFAForalls tele _) =
+      case tele of
+        DForallInvis{} -> fail_forall "nested"
+        DForallVis{}   -> fail_vdq
     take_anons (DFACxt _ _) = fail_ctxt "nested"
     take_anons DFANil = pure []
 
@@ -354,30 +355,34 @@ countArgs ty = length $ filterDVisFunArgs args
   where (args, _) = unravelDType ty
 
 -- Collect the invisible type variable binders from a sequence of DFunArgs.
-filterInvisTvbArgs :: DFunArgs -> [DTyVarBndr]
+filterInvisTvbArgs :: DFunArgs -> [DTyVarBndrSpec]
 filterInvisTvbArgs DFANil           = []
 filterInvisTvbArgs (DFACxt  _ args) = filterInvisTvbArgs args
 filterInvisTvbArgs (DFAAnon _ args) = filterInvisTvbArgs args
-filterInvisTvbArgs (DFAForalls fvf tvbs' args) =
+filterInvisTvbArgs (DFAForalls tele args) =
   let res = filterInvisTvbArgs args in
-  case fvf of
-    ForallVis   -> res
-    ForallInvis -> tvbs' ++ res
+  case tele of
+    DForallVis   _     -> res
+    DForallInvis tvbs' -> tvbs' ++ res
 
 -- Infer the kind of a DTyVarBndr by using information from a DVisFunArg.
-replaceTvbKind :: DVisFunArg -> DTyVarBndr -> DTyVarBndr
+replaceTvbKind :: DVisFunArg -> DTyVarBndrUnit -> DTyVarBndrUnit
 replaceTvbKind (DVisFADep tvb) _   = tvb
-replaceTvbKind (DVisFAAnon k)  tvb = DKindedTV (extractTvbName tvb) k
+replaceTvbKind (DVisFAAnon k)  tvb = DKindedTV (extractTvbName tvb) () k
 
 -- changes all TyVars not to be NameU's. Workaround for GHC#11812/#17537
 noExactTyVars :: Data a => a -> a
 noExactTyVars = everywhere go
   where
     go :: Data a => a -> a
-    go = mkT fix_tvb `extT` fix_ty `extT` fix_inj_ann
+    go = mkT (fix_tvb @Specificity)
+      `extT` fix_tvb @()
+      `extT` fix_ty
+      `extT` fix_inj_ann
 
-    fix_tvb (DPlainTV n)    = DPlainTV (noExactName n)
-    fix_tvb (DKindedTV n k) = DKindedTV (noExactName n) k
+    fix_tvb :: Typeable flag => DTyVarBndr flag -> DTyVarBndr flag
+    fix_tvb (DPlainTV n f)    = DPlainTV (noExactName n) f
+    fix_tvb (DKindedTV n f k) = DKindedTV (noExactName n) f k
 
     fix_ty (DVarT n)           = DVarT (noExactName n)
     fix_ty ty                  = ty
@@ -397,10 +402,10 @@ substKind = substType
 -- substitution, use @substTy@ from "Language.Haskell.TH.Desugar.Subst".
 substType :: Map Name DType -> DType -> DType
 substType subst ty | Map.null subst = ty
-substType subst (DForallT fvf tvbs inner_ty)
-  = DForallT fvf tvbs' inner_ty'
+substType subst (DForallT tele inner_ty)
+  = DForallT tele' inner_ty'
   where
-    (subst', tvbs') = mapAccumL subst_tvb subst tvbs
+    (subst', tele') = subst_tele subst tele
     inner_ty'       = substType subst' inner_ty
 substType subst (DConstrainedT cxt inner_ty) =
   DConstrainedT (map (substType subst) cxt) (substType subst inner_ty)
@@ -416,25 +421,32 @@ substType _ ty@(DArrowT)  = ty
 substType _ ty@(DLitT {}) = ty
 substType _ ty@DWildCardT = ty
 
-subst_tvb :: Map Name DKind -> DTyVarBndr -> (Map Name DKind, DTyVarBndr)
-subst_tvb s tvb@(DPlainTV n) = (Map.delete n s, tvb)
-subst_tvb s (DKindedTV n k)  = (Map.delete n s, DKindedTV n (substKind s k))
+subst_tele :: Map Name DKind -> DForallTelescope -> (Map Name DKind, DForallTelescope)
+subst_tele s (DForallInvis tvbs) = second DForallInvis $ subst_tvbs s tvbs
+subst_tele s (DForallVis   tvbs) = second DForallVis   $ subst_tvbs s tvbs
 
-dropTvbKind :: DTyVarBndr -> DTyVarBndr
+subst_tvbs :: Map Name DKind -> [DTyVarBndr flag] -> (Map Name DKind, [DTyVarBndr flag])
+subst_tvbs = mapAccumL subst_tvb
+
+subst_tvb :: Map Name DKind -> DTyVarBndr flag -> (Map Name DKind, DTyVarBndr flag)
+subst_tvb s tvb@(DPlainTV n _) = (Map.delete n s, tvb)
+subst_tvb s (DKindedTV n f k)  = (Map.delete n s, DKindedTV n f (substKind s k))
+
+dropTvbKind :: DTyVarBndr flag -> DTyVarBndr flag
 dropTvbKind tvb@(DPlainTV {}) = tvb
-dropTvbKind (DKindedTV n _)   = DPlainTV n
+dropTvbKind (DKindedTV n f _) = DPlainTV n f
 
 -- apply a type to a list of types
 foldType :: DType -> [DType] -> DType
 foldType = foldl DAppT
 
 -- apply a type to a list of type variable binders
-foldTypeTvbs :: DType -> [DTyVarBndr] -> DType
+foldTypeTvbs :: DType -> [DTyVarBndr flag] -> DType
 foldTypeTvbs ty = foldType ty . map tvbToType
 
 -- Construct a data type's variable binders, possibly using fresh variables
 -- from the data type's kind signature.
-buildDataDTvbs :: DsMonad q => [DTyVarBndr] -> Maybe DKind -> q [DTyVarBndr]
+buildDataDTvbs :: DsMonad q => [DTyVarBndrUnit] -> Maybe DKind -> q [DTyVarBndrUnit]
 buildDataDTvbs tvbs mk = do
   extra_tvbs <- mkExtraDKindBinders $ fromMaybe (DConT typeKindName) mk
   pure $ tvbs ++ extra_tvbs
