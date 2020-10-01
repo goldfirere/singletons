@@ -202,6 +202,9 @@ various drawbacks:
 -- | A 'SingI' constraint is essentially an implicitly-passed singleton.
 -- If you need to satisfy this constraint with an explicit singleton, please
 -- see 'withSingI' or the 'Sing' pattern synonym.
+#if __GLASGOW_HASKELL__ >= 900
+type SingI :: forall {k}. k -> Constraint
+#endif
 class SingI a where
   -- | Produce the singleton explicitly. You will likely need the @ScopedTypeVariables@
   -- extension to use this method the way you want.
@@ -814,7 +817,12 @@ singByProxy# _ = sing
 --
 -- >>> demote @(Nothing :: Maybe Ordering)
 -- Nothing
-demote :: forall a. (SingKind (KindOf a), SingI a) => Demote (KindOf a)
+demote ::
+#if __GLASGOW_HASKELL__ >= 900
+  forall {k} (a :: k). (SingKind k, SingI a) => Demote k
+#else
+  forall a. (SingKind (KindOf a), SingI a) => Demote (KindOf a)
+#endif
 demote = fromSing (sing @a)
 
 ----------------------------------------------------------------------
