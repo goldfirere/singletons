@@ -107,3 +107,7 @@ Changelog for singletons-base project
   [this GitHub issue](https://github.com/goldfirere/singletons/issues/457)
   for more information). `(==)`'s default is now defined in terms of `(/=)`,
   just like its term-level counterpart in the `Eq` class.
+* Since `base-4.15.0.0` now deprecates `Data.Singletons.Option` (in
+  anticipation of its removal in a future version of `base`), this library no
+  longer offers a singleton type for `Option`. Accordingly, the `option_`
+  function has also been removed.
