@@ -469,27 +469,39 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         SA :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing n)
               -> (Sing n)
-                 -> (Sing n) -> (Sing n) -> SFoo (A n n n n :: Foo a b c d)
+              -> (Sing n)
+              -> (Sing n)
+              -> SFoo (A n n n n :: Foo a b c d)
         SB :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing n)
               -> (Sing n)
-                 -> (Sing n) -> (Sing n) -> SFoo (B n n n n :: Foo a b c d)
+              -> (Sing n)
+              -> (Sing n)
+              -> SFoo (B n n n n :: Foo a b c d)
         SC :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing n)
               -> (Sing n)
-                 -> (Sing n) -> (Sing n) -> SFoo (C n n n n :: Foo a b c d)
+              -> (Sing n)
+              -> (Sing n)
+              -> SFoo (C n n n n :: Foo a b c d)
         SD :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing n)
               -> (Sing n)
-                 -> (Sing n) -> (Sing n) -> SFoo (D n n n n :: Foo a b c d)
+              -> (Sing n)
+              -> (Sing n)
+              -> SFoo (D n n n n :: Foo a b c d)
         SE :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing n)
               -> (Sing n)
-                 -> (Sing n) -> (Sing n) -> SFoo (E n n n n :: Foo a b c d)
+              -> (Sing n)
+              -> (Sing n)
+              -> SFoo (E n n n n :: Foo a b c d)
         SF :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
               (Sing n)
               -> (Sing n)
-                 -> (Sing n) -> (Sing n) -> SFoo (F n n n n :: Foo a b c d)
+              -> (Sing n)
+              -> (Sing n)
+              -> SFoo (F n n n n :: Foo a b c d)
     type instance Sing @(Foo a b c d) = SFoo
     instance (SingKind a, SingKind b, SingKind c, SingKind d) =>
              SingKind (Foo a b c d) where

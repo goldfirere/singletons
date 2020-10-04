@@ -19,7 +19,7 @@ Changelog for singletons-base project
   Consult the changelogs for `singletons` and `singletons-th` for changes
   specific to those libraries. For more information on this split, see the
   [relevant GitHub discussion](https://github.com/goldfirere/singletons/issues/420).
-* Require building with GHC 8.12.
+* Require building with GHC 9.0.
 * The modules in `singletons-base` have been renamed to better reflect the
   modules from `base` from which they take inspiration. In particular, the
   following module renamings have been applied:

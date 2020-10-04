@@ -955,7 +955,10 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                         (n :: Maybe a)
                         (n :: Maybe (Maybe a)).
                  (Sing n)
-                 -> (Sing n) -> (Sing n) -> (Sing n) -> ST (MkT1 n n n n :: T x a)
+                 -> (Sing n)
+                 -> (Sing n)
+                 -> (Sing n)
+                 -> ST (MkT1 n n n n :: T x a)
         SMkT2 :: forall x a (n :: Maybe x).
                  (Sing n) -> ST (MkT2 n :: T x a)
     type instance Sing @(T x a) = ST
