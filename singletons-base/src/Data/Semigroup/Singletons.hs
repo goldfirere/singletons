@@ -33,13 +33,11 @@ module Data.Semigroup.Singletons (
 
   Sing, SMin(..), SMax(..), SFirst(..), SLast(..),
   SWrappedMonoid(..), SDual(..), SAll(..), SAny(..),
-  SSum(..), SProduct(..), SOption(..), SArg(..),
+  SSum(..), SProduct(..), SArg(..),
   GetMin, GetMax, GetFirst, GetLast, UnwrapMonoid, GetDual,
-  GetAll, GetAny, GetSum, GetProduct, GetOption,
+  GetAll, GetAny, GetSum, GetProduct,
   sGetMin, sGetMax, sGetFirst, sGetLast, sUnwrapMonoid, sGetDual,
-  sGetAll, sGetAny, sGetSum, sGetProduct, sGetOption,
-
-  option_, sOption_, Option_,
+  sGetAll, sGetAny, sGetSum, sGetProduct,
 
   -- ** Defunctionalization symbols
   type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
@@ -54,12 +52,10 @@ module Data.Semigroup.Singletons (
   AnySym0, AnySym1, GetAnySym0, GetAnySym1,
   SumSym0, SumSym1, GetSumSym0, GetSumSym1,
   ProductSym0, ProductSym1, GetProductSym0, GetProductSym1,
-  OptionSym0, OptionSym1, GetOptionSym0, GetOptionSym1,
   ArgSym0, ArgSym1, ArgSym2
   ) where
 
 import Control.Applicative
-import Control.Monad
 import Control.Monad.Singletons.Internal
 import Data.Eq.Singletons
 import Data.Foldable.Singletons hiding
@@ -67,7 +63,6 @@ import Data.Foldable.Singletons hiding
        , Any,     AnySym0,     AnySym1
        , Product, ProductSym0, ProductSym1
        , Sum,     SumSym0,     SumSym1 )
-import Data.Functor.Singletons
 import Data.Monoid.Singletons hiding
        (SFirst(..), SLast(..),
         FirstSym0, FirstSym1, LastSym0, LastSym1,
@@ -76,9 +71,8 @@ import Data.Monoid.Singletons hiding
 import Data.Ord.Singletons hiding
        (MinSym0, MinSym1, MaxSym0, MaxSym1)
 import Data.Ord.Singletons.Disambiguation
-import Data.Maybe.Singletons
 import qualified Data.Semigroup as Semi (Min(..), Max(..))
-import Data.Semigroup (First(..), Last(..), WrappedMonoid(..), Option(..), Arg(..))
+import Data.Semigroup (First(..), Last(..), WrappedMonoid(..), Arg(..))
 import Data.Semigroup.Singletons.Internal
 import Data.Singletons.Base.Enum
 import Data.Singletons.Base.Instances
@@ -91,8 +85,8 @@ import GHC.Num.Singletons
 import Text.Show.Singletons
 
 $(genSingletons [''Arg])
-$(showSingInstances $ ''Option : semigroupBasicTypes)
-$(singShowInstances $ ''Option : semigroupBasicTypes)
+$(showSingInstances semigroupBasicTypes)
+$(singShowInstances semigroupBasicTypes)
 
 $(singletonsOnly [d|
   instance Applicative Semi.Min where
@@ -259,48 +253,4 @@ $(singletonsOnly [d|
     enumFromTo (WrapMonoid a) (WrapMonoid b) = WrapMonoid `map` enumFromTo a b
     enumFromThenTo (WrapMonoid a) (WrapMonoid b) (WrapMonoid c) =
         WrapMonoid `map` enumFromThenTo a b c
-
-  instance Alternative Option where
-    empty = Option Nothing
-    Option Nothing    <|> b = b
-    a@(Option Just{}) <|> _ = a
-
-  instance Applicative Option where
-    pure a = Option (Just a)
-    Option a <*> Option b = Option (a <*> b)
-    liftA2 f (Option x) (Option y) = Option (liftA2 f x y)
-
-    Option Nothing  *>  _ = Option Nothing
-    Option Just{}   *>  b = b
-
-  deriving instance Functor Option
-
-  instance Monad Option where
-    Option (Just a) >>= k = k a
-    Option Nothing  >>= _ = Option Nothing
-    (>>) = (*>)
-
-  instance MonadPlus Option
-
-  -- deriving newtype instance Semigroup a => Semigroup (Option a)
-  instance Semigroup a => Semigroup (Option a) where
-    Option a <> Option b = Option (a <> b)
-
-  instance Semigroup a => Monoid (Option a) where
-    mempty = Option Nothing
-
-  instance Foldable Option where
-    foldMap f (Option (Just m)) = f m
-    foldMap _ (Option Nothing)  = mempty
-
-  instance Traversable Option where
-    traverse f (Option (Just a)) = Option . Just <$> f a
-    traverse _ (Option Nothing)  = pure (Option Nothing)
-  |])
-
-$(singletons [d|
-  -- Renamed to avoid name clash
-  -- -| Fold an 'Option' case-wise, just like 'maybe'.
-  option_ :: b -> (a -> b) -> Option a -> b
-  option_ n j (Option m) = maybe_ n j m
   |])

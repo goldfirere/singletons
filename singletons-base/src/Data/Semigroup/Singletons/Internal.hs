@@ -42,7 +42,7 @@ import Data.List.NonEmpty (NonEmpty(..))
 import Data.Ord (Down(..))
 import Data.Ord.Singletons hiding (MinSym0, MinSym1, MaxSym0, MaxSym1)
 import Data.Proxy
-import Data.Semigroup (Dual(..), All(..), Any(..), Sum(..), Product(..), Option(..))
+import Data.Semigroup (Dual(..), All(..), Any(..), Sum(..), Product(..))
 import Data.Singletons
 import Data.Singletons.Base.Enum
 import Data.Singletons.Base.Instances
@@ -145,11 +145,11 @@ $(singletonsOnly [d|
     Down a <> Down b = Down (a <> b)
   |])
 
-$(genSingletons       $ ''Option : semigroupBasicTypes)
-$(singBoundedInstances             semigroupBasicTypes)
-$(singEqInstances     $ ''Option : semigroupBasicTypes)
-$(singDecideInstances $ ''Option : semigroupBasicTypes)
-$(singOrdInstances    $ ''Option : semigroupBasicTypes)
+$(genSingletons        semigroupBasicTypes)
+$(singBoundedInstances semigroupBasicTypes)
+$(singEqInstances      semigroupBasicTypes)
+$(singDecideInstances  semigroupBasicTypes)
+$(singOrdInstances     semigroupBasicTypes)
 
 $(singletonsOnly [d|
   instance Applicative Dual where
