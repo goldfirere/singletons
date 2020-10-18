@@ -68,7 +68,10 @@ tries to generate:
 
 Assumes that `b` is of kind Type. Until we get a more reliable story for
 poly-kinded Sing instances (see #150), we simply write the singleton type by
-hand.
+hand. Note that we cannot use genSingletons to generate this code because we
+would end up with the wrong specificity for the kind of `a` when singling the
+Const constructor. See Note [Preserve the order of type variables during
+singling] in D.S.TH.Single.Type, wrinkle 2.
 -}
 type SConst :: Const a b -> Type
 data SConst :: Const a b -> Type where
