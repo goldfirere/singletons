@@ -1,7 +1,7 @@
 singletons
 ==========
 
-[![Build Status](https://travis-ci.org/goldfirere/singletons.svg?branch=master)](https://travis-ci.org/goldfirere/singletons)
+[![Build Status](https://github.com/goldfirere/singletons/workflows/Haskell-CI/badge.svg)](https://github.com/goldfirere/singletons/actions?query=workflow%3AHaskell-CI)
 
 This is the README file for the `singletons`, `singletons-th`, and
 `singletons-base` libraries. This file contains documentation for the
