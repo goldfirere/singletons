@@ -1153,7 +1153,7 @@ One might wonder: will we need the `id` hack around forever? Perhaps not. While
 GHC 8.8 removed the decideKindGeneralisationPlan function, there have been
 rumblings that a future version of GHC may bring it back (in a limited form).
 If this happens, it is possibly that GHC's attitude towards kind-generalizing
-local definitons may change *again*, which could conceivably render the `id`
+local definitions may change *again*, which could conceivably render the `id`
 hack unnecessary. This is all speculation, of course, so all we can do now is
 wait and revisit this design at a later date.
 -}

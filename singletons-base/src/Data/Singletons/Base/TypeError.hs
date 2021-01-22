@@ -23,7 +23,7 @@
 -- that can be used at the value level as well. Since this is a drop-in
 -- replacement, it is not recommended to import all of "GHC.TypeLits"
 -- and "Data.Singletons.Base.TypeError" at the same time, as many of the
--- definitons in the latter deliberately clash with the former.
+-- definitions in the latter deliberately clash with the former.
 --
 ----------------------------------------------------------------------------
 module Data.Singletons.Base.TypeError (
