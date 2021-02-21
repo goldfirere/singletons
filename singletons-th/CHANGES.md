@@ -19,7 +19,7 @@ Changelog for singletons-th project
   Consult the changelogs for `singletons` and `singletons-base` for changes
   specific to those libraries. For more information on this split, see the
   [relevant GitHub discussion](https://github.com/goldfirere/singletons/issues/420).
-* Require building with GHC 8.12.
+* Require building with GHC 9.0.
 * `Data.Singletons.CustomStar` and `Data.Singletons.SuppressUnusedWarnings`
   have been renamed to `Data.Singletons.TH.CustomStar` and
   `Data.Singletons.SuppressUnusedWarnings`, respectively, to give every module

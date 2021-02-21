@@ -1,6 +1,6 @@
 name:           singletons-base
 version:        3.0
-cabal-version:  >= 1.24
+cabal-version:  1.24
 synopsis:       A promoted and singled version of the base library
 homepage:       http://www.github.com/goldfirere/singletons
 category:       Dependent Types
@@ -8,7 +8,7 @@ author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stola
 maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC == 8.10.1
+tested-with:    GHC == 9.0.1
 extra-source-files: README.md, CHANGES.md, tests/README.md,
                     tests/compile-and-dump/GradingClient/*.hs,
                     tests/compile-and-dump/InsertionSort/*.hs,
@@ -38,7 +38,7 @@ description:
     .
     @singletons-base@ uses code that relies on bleeding-edge GHC language
     extensions. As such, @singletons-base@ only supports the latest major version
-    of GHC (currently GHC 8.10). For more information,
+    of GHC (currently GHC 9.0). For more information,
     consult the @singletons@
     @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
     .
@@ -65,18 +65,18 @@ source-repository head
 
 custom-setup
   setup-depends:
-    base      >= 4.14 && < 4.15,
-    Cabal     >= 3.0 && < 3.3,
+    base      >= 4.15 && < 4.16,
+    Cabal     >= 3.0 && < 3.5,
     directory >= 1,
     filepath  >= 1.3
 
 library
   hs-source-dirs:     src
-  build-depends:      base             >= 4.14 && < 4.15,
+  build-depends:      base             >= 4.15 && < 4.16,
                       pretty,
                       singletons       == 3.0.*,
                       singletons-th    == 3.0.*,
-                      template-haskell >= 2.16 && < 2.17,
+                      template-haskell >= 2.17 && < 2.18,
                       text >= 1.2,
                       th-desugar       >= 1.12 && < 1.13
   default-language:   Haskell2010
@@ -150,7 +150,7 @@ test-suite singletons-base-test-suite
   main-is:            SingletonsBaseTestSuite.hs
   other-modules:      SingletonsBaseTestSuiteUtils
 
-  build-depends:      base >= 4.14 && < 4.15,
+  build-depends:      base >= 4.15 && < 4.16,
                       bytestring >= 0.10.9,
                       deepseq >= 1.4.4,
                       filepath >= 1.3,

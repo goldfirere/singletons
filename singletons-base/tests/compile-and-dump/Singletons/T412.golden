@@ -2,7 +2,6 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| infixr 5 `D1`, `MkD1`, `d1A`, `d1B`
           infixl 5 `T1a`, `T1b`
-          infix 6 `m1`
           infix 5 `C1`
           
           class C1 a b where
@@ -15,8 +14,8 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
   ======>
     infix 5 `C1`
     class C1 a b where
+      infix 6 `m1`
       m1 :: a -> b -> Bool
-    infix 6 `m1`
     infixl 5 `T1a`
     infixl 5 `T1b`
     type T1a a b = Either a b
@@ -121,7 +120,6 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       D1A (MkD1 field _) = field
     infixr 5 `D1B`
     infixr 5 `D1A`
-    infix 6 `M1`
     infix 5 `PC1`
     type M1Sym0 :: forall a b. (~>) a ((~>) b Bool)
     data M1Sym0 :: (~>) a ((~>) b Bool)
@@ -147,10 +145,10 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     infix 6 `M1Sym2`
     class PC1 a b where
       type M1 (arg :: a) (arg :: b) :: Bool
+      infix 6 `M1`
     infixr 5 `sD1B`
     infixr 5 `sD1A`
     infixr 5 `SMkD1`
-    infix 6 `sM1`
     infix 5 `SC1`
     sD1B ::
       forall a b (t :: D1 a b). Sing t -> Sing (Apply D1BSym0 t :: b)
@@ -177,6 +175,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       sM1 ::
         forall (t :: a) (t :: b).
         Sing t -> Sing t -> Sing (Apply (Apply M1Sym0 t) t :: Bool)
+      infix 6 `sM1`
     instance (SingI n, SingI n) => SingI (MkD1 (n :: a) (n :: b)) where
       sing = (SMkD1 sing) sing
     instance SingI (MkD1Sym0 :: (~>) a ((~>) b (D1 a b))) where
@@ -368,7 +367,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
                         (n :: b).
                  (Sing n)
                  -> (Sing n)
-                    -> SD2 ('MkD2 n n :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type))
+                 -> SD2 ('MkD2 n n :: D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type))
     type instance Sing @(D2 a b) = SD2
     instance (SingKind a, SingKind b) => SingKind (D2 a b) where
       type Demote (D2 a b) = D2 (Demote a) (Demote b)

@@ -1,6 +1,6 @@
 name:           singletons-th
 version:        3.0
-cabal-version:  >= 1.24
+cabal-version:  1.24
 synopsis:       A framework for generating singleton types
 homepage:       http://www.github.com/goldfirere/singletons
 category:       Dependent Types
@@ -8,7 +8,7 @@ author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stola
 maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC == 8.10.1
+tested-with:    GHC == 9.0.1
 extra-source-files: README.md, CHANGES.md
 license:        BSD3
 license-file:   LICENSE
@@ -26,7 +26,7 @@ description:
     .
     @singletons-th@ generates code that relies on bleeding-edge GHC language
     extensions. As such, @singletons-th@ only supports the latest major version
-    of GHC (currently GHC 8.10). For more information,
+    of GHC (currently GHC 9.0). For more information,
     consult the @singletons@
     @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
     .
@@ -52,13 +52,13 @@ source-repository head
 
 library
   hs-source-dirs:     src
-  build-depends:      base             >= 4.14 && < 4.15,
+  build-depends:      base             >= 4.15 && < 4.16,
                       containers       >= 0.5,
                       mtl              >= 2.2.1,
                       ghc-boot-th,
                       singletons       == 3.0.*,
                       syb              >= 0.4,
-                      template-haskell >= 2.16 && < 2.17,
+                      template-haskell >= 2.17 && < 2.18,
                       th-desugar       >= 1.12 && < 1.13,
                       transformers     >= 0.5.2
   default-language:   Haskell2010

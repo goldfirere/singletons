@@ -65,7 +65,7 @@ windows for requirements on the compiler version needed to build each library:
   GHC language extensions, even more so than `singletons` itself. As such, it
   is difficult to maintain support for multiple GHC versions in any given
   release of either library, so they only support the latest major GHC version
-  (currently GHC 8.10).
+  (currently GHC 9.0).
 
 Any code that uses the singleton-generation functionality from `singletons-th`
 or `singletons-base` needs to enable a long list of GHC extensions. This list
