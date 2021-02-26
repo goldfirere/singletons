@@ -179,7 +179,7 @@ $(singletonsOnly [d|
   fmap f (x :| xs) = f x :| listmap f xs
 
   -- -| Number of elements in 'NonEmpty' list.
-  length :: NonEmpty a -> Nat
+  length :: NonEmpty a -> Natural
   length (_ :| xs) = 1 + listlength xs
 
   -- -| Compute n-ary logic exclusive OR operation on 'NonEmpty' list.
@@ -352,12 +352,12 @@ $(singletonsOnly [d|
   -}
 
   -- -| @'take' n xs@ returns the first @n@ elements of @xs@.
-  take :: Nat -> NonEmpty a -> [a]
+  take :: Natural -> NonEmpty a -> [a]
   take n = listtake n . toList
 
   -- -| @'drop' n xs@ drops the first @n@ elements off the front of
   -- the sequence @xs@.
-  drop :: Nat -> NonEmpty a -> [a]
+  drop :: Natural -> NonEmpty a -> [a]
   drop n = listdrop n . toList
 
   -- -| @'splitAt' n xs@ returns a pair consisting of the prefix of @xs@
@@ -365,7 +365,7 @@ $(singletonsOnly [d|
   --
   -- > 'splitAt' n xs == ('take' n xs, 'drop' n xs)
   -- > xs == ys ++ zs where (ys, zs) = 'splitAt' n xs
-  splitAt :: Nat -> NonEmpty a -> ([a],[a])
+  splitAt :: Natural -> NonEmpty a -> ([a],[a])
   splitAt n = listsplitAt n . toList
 
   -- -| @'takeWhile' p xs@ returns the longest prefix of the stream
@@ -461,7 +461,7 @@ $(singletonsOnly [d|
   -- @n@. Note that the head of the stream has index 0.
   --
   -- /Beware/: a negative or out-of-bounds index will cause an error.
-  (!!) :: NonEmpty a -> Nat -> a
+  (!!) :: NonEmpty a -> Natural -> a
   (!!) (x :| xs) n
     | n == 0 = x
     | n > 0  = xs `listindex` (n - 1)

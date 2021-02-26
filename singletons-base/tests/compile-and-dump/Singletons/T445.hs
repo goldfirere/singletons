@@ -2,10 +2,11 @@ module T445 where
 
 import Data.Singletons.TH
 import qualified GHC.TypeLits as Lit
+import Numeric.Natural (Natural)
 import Prelude.Singletons
 import Singletons.Nat
 
-type Lit :: Lit.Nat -> Nat
+type Lit :: Natural -> Nat
 type family Lit n where
   Lit 0 = Zero
   Lit n = Succ (Lit (n Lit.- 1))

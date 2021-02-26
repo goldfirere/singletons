@@ -790,7 +790,8 @@ The following constructs are fully supported:
 * undefined
 * error
 * class constraints (though these sometimes fail with `let`, `lambda`, and `case`)
-* literals (for `Nat` and `Symbol`), including overloaded number literals
+* literals (for `Natural` and `Symbol`), including overloaded number literals
+* datatypes that store `Natural`
 * unboxed tuples (which are treated as normal tuples)
 * pattern guards
 * case
@@ -1040,7 +1041,7 @@ underyling pattern instead.
 The following constructs are either unsupported or almost never work:
 
 * scoped type variables
-* datatypes that store arrows, `Nat`, or `Symbol`
+* datatypes that store arrows or `Symbol`
 * rank-n types
 * promoting `TypeRep`s
 * `TypeApplications`
@@ -1089,7 +1090,7 @@ There are usually workarounds one can use instead of `ScopedTypeVariables`:
        id' x = x
    ```
 
-### Arrows, `Nat`, `Symbol`, and literals
+### Arrows, `Symbol`, and literals
 
 As described in the promotion paper, automatic promotion of datatypes that
 store arrows is currently impossible. So if you have a declaration such as
@@ -1105,34 +1106,34 @@ you will quickly run into errors.
 Literals are problematic because we rely on GHC's built-in support, which
 currently is limited. Functions that operate on strings will not work because
 type level strings are no longer considered lists of characters. Functions
-working over integer literals can be promoted by rewriting them to use
-`Nat`. Since `Nat` does not exist at the term level, it will only be possible to
-use the promoted definition, but not the original, term-level one.
+working over strings can be promoted by rewriting them to use `Symbol`. Since
+`Symbol` does not exist at the term level, it will only be possible to use the
+promoted definition, but not the original, term-level one.
 
 For now, one way to work around this issue is to define two variants of a data
 type: one for use at the value level, and one for use at the type level.
 The example below demonstrates this workaround in the context of a data type
-that has a `Nat` field:
+that has a `Symbol` field:
 
 ```hs
 import Data.Kind
 import Data.Singletons.TH
 import Data.Singletons.TH.Options
+import Data.Text (Text)
 import GHC.TypeLits.Singletons
-import Numeric.Natural
 import Language.Haskell.TH (Name)
 
 -- Term-level
-newtype Age = MkAge Natural
+newtype Message = MkMessage Text
 -- Type-level
-newtype PAge = PMkAge Nat
+newtype PMessage = PMkMessage Symbol
 
 $(let customPromote :: Name -> Name
       customPromote n
-        | n == ''Age     = ''PAge
-        | n == 'MkAge    = 'PMkAge
-        | n == ''Natural = ''Nat
-        | otherwise      = promotedDataTypeOrConName defaultOptions n
+        | n == ''Message  = ''PMessage
+        | n == 'MkMessage = 'PMkMessage
+        | n == ''Text     = ''Symbol
+        | otherwise       = promotedDataTypeOrConName defaultOptions n
 
       customDefun :: Name -> Int -> Name
       customDefun n sat = defunctionalizedName defaultOptions (customPromote n) sat in
@@ -1140,65 +1141,55 @@ $(let customPromote :: Name -> Name
   withOptions defaultOptions{ promotedDataTypeOrConName = customPromote
                             , defunctionalizedName      = customDefun
                             } $ do
-    decs1 <- genSingletons [''Age]
+    decs1 <- genSingletons [''Message]
     decs2 <- singletons [d|
-               fortyTwo :: Age
-               fortyTwo = MkAge 42
+               hello :: Message
+               hello = MkMessage "hello"
                |]
     return $ decs1 ++ decs2)
 ```
 
 Here is breakdown of what each part of this code is doing:
 
-* `Age` defines a data type with a field of type `Natural` (from
-  `Numeric.Natural`). `PAge` is what we wish to be the promoted counterpart to
-  `Age`. The "`P`" in `PAge` stands for "promoted", but this is naming
+* `Message` defines a data type with a field of type `Text` (from
+  `Data.Text`). `PMessage` is what we wish to be the promoted counterpart to
+  `Message`. The "`P`" in `PMessage` stands for "promoted", but this is naming
   convention is not strictly enforced; you may name your types however you
   choose.
 
-  `PAge` is identical to `Age` module names and the use of `Nat` instead
-  of `Natural`. The choice of `Nat` is intentional, since the
-  `Demote Nat = Natural`.
+  `PMessage` is identical to `Message` modulo names and the use of `Symbol`
+  instead of `Text`. The choice of `Symbol` is intentional, since
+  `Demote Symbol = Text`.
 * `customPromote` defines a mapping from Template Haskell `Name`s to their
   promoted `Name` equivalents. We define special cases for the three special
-  types in our program: `Age` (which will promote `PAge`), `MkAge` (which will
-  promote to `PMkAge`), and `Natural` (which will promote to `Age`). All other
-  names will go through the default `promotedDataTypeOrConName` hook
-  (from `Data.Singletons.TH.Options`).
+  types in our program: `Message` (which will promote to `PMessage`),
+  `MkMessage` (which will promote to `PMkMessage`), and `Text` (which will
+  promote to `Symbol`). All other names will go through the default
+  `promotedDataTypeOrConName` hook (from `Data.Singletons.TH.Options`).
 * `customDefun` is like `customPromote`, but it handles defunctionalization
   symbols in particular (see the "Promotion and partial application" section).
-  This is needed to ensure that partial applications of `MkAge` are promoted
-  to `PMkAgeSym0` rather than `MkAgeSym0`.
+  This is needed to ensure that partial applications of `MkMessage` are promoted
+  to `PMkMessageSym0` rather than `MkMessageSym0`.
 * We use `customPromote` and `customDefun` to override the `defaultOptions`
   for the Template Haskell machinery. This will ensure that everything in the
-  last argument to `withOptions` will recognize the names `Age`, `MkAge`, and
-  `Natural`, promoting them according to our custom rules.
-* `genSingletons [''Age]` generates a `Sing` instance for `PAge`,
-  defunctionalization symbols for `PMkAge`, etc. These are needed for the next
-  part of the code.
-* Finally, the `fortyTwo` function is promoted and singled using the Template
-  Haskell machinery. Note that the literal `42` works as both a `Natural` _and_
-  a `Nat`, as the former has a `Num` instance and the latter has a
-  `PNum`/`SNum` instance.
+  last argument to `withOptions` will recognize the names `Message`,
+  `MkMessage`, and `Symbol`, promoting them according to our custom rules.
+* `genSingletons [''Message]` generates a `Sing` instance for `PMessage`,
+  defunctionalization symbols for `PMkMessage`, etc. These are needed for the
+  next part of the code.
+* Finally, the `hello` function is promoted and singled using the Template
+  Haskell machinery. Note that the literal `"hello"` works as both `Text` _and_
+  a `Symbol`.
 
-Besides `Natural`/`Nat`, other common use cases for this technique are:
+Besides `Text`/`Symbol`, another common use case for this technique is
+higher-order functions, e.g.,
 
-* `Text`/`Symbol`, e.g.,
-
-  ```hs
-  -- Term-level
-  newtype Message = MkMessage Text
-  -- Type-level
-  newtype PMessage = PMkMessage Symbol
-  ```
-* Higher-order functions, e.g.,
-
-  ```hs
-  -- Term-level
-  newtype Function a b = MkFunction (a -> b)
-  -- Type-level
-  newtype PFunction a b = PMkFunction (a ~> b)
-  ```
+```hs
+-- Term-level
+newtype Function a b = MkFunction (a -> b)
+-- Type-level
+newtype PFunction a b = PMkFunction (a ~> b)
+```
 
 ### Rank-n types
 

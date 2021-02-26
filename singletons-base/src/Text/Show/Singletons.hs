@@ -85,7 +85,7 @@ type SChar = Symbol
 
 $(singletonsOnly [d|
   class Show a where
-    showsPrec :: Nat -> a -> SymbolS
+    showsPrec :: Natural -> a -> SymbolS
     show_     :: a -> Symbol
     showList  :: [a] -> SymbolS
 
@@ -161,7 +161,7 @@ $(singletonsOnly [d|
   |])
 
 $(promoteOnly [d|
-  showsNat :: Nat -> SymbolS
+  showsNat :: Natural -> SymbolS
   showsNat 0 = showChar "0"
   showsNat 1 = showChar "1"
   showsNat 2 = showChar "2"
@@ -175,10 +175,10 @@ $(promoteOnly [d|
   showsNat n = showsNat (n `div` 10) . showsNat (n `mod` 10)
   |])
 
-instance PShow Nat where
+instance PShow Natural where
   type ShowsPrec _ n x = ShowsNat n x
 
-instance SShow Nat where
+instance SShow Natural where
   sShowsPrec _ sn sx =
     let n = fromSing sn
         x = fromSing sx
