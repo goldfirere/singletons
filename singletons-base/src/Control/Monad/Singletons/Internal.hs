@@ -448,7 +448,7 @@ $(singletonsOnly [d|
       pure x = [x]
       (<*>)  = ap
       liftA2 = liftM2
-      (*>)   = (>>)
+      m *> k = m >>= \_ -> k
 
   instance Applicative (Either e) where
       pure          = Right
