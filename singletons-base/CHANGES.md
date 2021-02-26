@@ -4,6 +4,10 @@ Changelog for the `singletons-base` project
 next [????.??.??]
 -----------------
 * Require building with GHC 9.2.
+* In GHC 9.2, `Nat` is now a synonym for `Natural`. As a result, the bogus
+  `Num`, `Eq`, `Ord`, `Enum`, and `Show` instances for `Nat` in
+  `GHC.TypeLits.Singletons` have been removed, as they have replaced by the
+  corresponding instances for `Natural`.
 * Add `Data.Functor.{Compose,Product,Sum}.Singletons`.
 * The types of various entities in `Data.Functor.Const.Singletons` and
   `Data.Proxy.Singletons` have been tweaked slightly such that their

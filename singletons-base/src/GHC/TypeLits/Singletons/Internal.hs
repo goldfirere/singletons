@@ -7,7 +7,7 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Defines and exports singletons useful for the 'Nat' and 'Symbol' kinds.
+-- Defines and exports singletons useful for the 'Natural' and 'Symbol' kinds.
 -- This exports the internal, unsafe constructors. Use import
 -- "GHC.TypeLits.Singletons" for a safe interface.
 --
@@ -22,7 +22,7 @@
 module GHC.TypeLits.Singletons.Internal (
   Sing,
 
-  Nat, Symbol,
+  Natural, Symbol,
   SNat(..), SSymbol(..), withKnownNat, withKnownSymbol,
   Error, sError,
   ErrorWithoutStackTrace, sErrorWithoutStackTrace,
@@ -50,7 +50,6 @@ import GHC.Show (appPrec, appPrec1)
 import GHC.Stack (HasCallStack)
 import GHC.TypeLits as TL
 import qualified GHC.TypeNats as TN
-import Numeric.Natural (Natural)
 import Unsafe.Coerce
 
 import qualified Data.Text as T
@@ -60,15 +59,15 @@ import Data.Text ( Text )
 ---- TypeLits singletons ---------------------------------------------
 ----------------------------------------------------------------------
 
-type SNat :: Nat -> Type
-data SNat (n :: Nat) = KnownNat n => SNat
+type SNat :: Natural -> Type
+data SNat (n :: Natural) = KnownNat n => SNat
 type instance Sing = SNat
 
 instance KnownNat n => SingI n where
   sing = SNat
 
-instance SingKind Nat where
-  type Demote Nat = Natural
+instance SingKind Natural where
+  type Demote Natural = Natural
   fromSing (SNat :: Sing n) = TN.natVal (Proxy :: Proxy n)
   toSing n = case TN.someNatVal n of
                SomeNat (_ :: Proxy n) -> SomeSing (SNat :: Sing n)
@@ -87,13 +86,13 @@ instance SingKind Symbol where
                SomeSymbol (_ :: Proxy n) -> SomeSing (SSym :: Sing n)
 
 -- SDecide instances:
-instance SDecide Nat where
+instance SDecide Natural where
   (SNat :: Sing n) %~ (SNat :: Sing m)
     | Just r <- TN.sameNat (Proxy :: Proxy n) (Proxy :: Proxy m)
     = Proved r
     | otherwise
     = Disproved (\Refl -> error errStr)
-    where errStr = "Broken Nat singletons"
+    where errStr = "Broken Natural singletons"
 
 instance SDecide Symbol where
   (SSym :: Sing n) %~ (SSym :: Sing m)
@@ -104,13 +103,13 @@ instance SDecide Symbol where
     where errStr = "Broken Symbol singletons"
 
 -- PEq instances
-instance PEq Nat where
+instance PEq Natural where
   type x == y = DefaultEq x y
 instance PEq Symbol where
   type x == y = DefaultEq x y
 
 -- need SEq instances for TypeLits kinds
-instance SEq Nat where
+instance SEq Natural where
   (SNat :: Sing n) %== (SNat :: Sing m)
     = case sameNat (Proxy :: Proxy n) (Proxy :: Proxy m) of
         Just Refl -> STrue
@@ -123,14 +122,14 @@ instance SEq Symbol where
         Nothing   -> unsafeCoerce SFalse
 
 -- POrd instances
-instance POrd Nat where
-  type (a :: Nat) `Compare` (b :: Nat) = a `TN.CmpNat` b
+instance POrd Natural where
+  type (a :: Natural) `Compare` (b :: Natural) = a `TN.CmpNat` b
 
 instance POrd Symbol where
   type (a :: Symbol) `Compare` (b :: Symbol) = a `TL.CmpSymbol` b
 
 -- SOrd instances
-instance SOrd Nat where
+instance SOrd Natural where
   a `sCompare` b = case fromSing a `compare` fromSing b of
                      LT -> unsafeCoerce SLT
                      EQ -> unsafeCoerce SEQ
@@ -145,7 +144,7 @@ instance SOrd Symbol where
 -- Show instances
 
 -- These are a bit special because the singleton constructor does not uniquely
--- determine the type being used in the constructor's return type (e.g., all Nats
+-- determine the type being used in the constructor's return type (e.g., all Naturals
 -- have the same singleton constructor, SNat). To compensate for this, we display
 -- the type being used using visible type application. (Thanks to @cumber on #179
 -- for suggesting this implementation.)
@@ -209,7 +208,7 @@ $(genDefunSymbols [''Undefined])
 sUndefined :: HasCallStack => a
 sUndefined = undefined
 
--- | The singleton analogue of '(TN.^)' for 'Nat's.
+-- | The singleton analogue of '(TN.^)' for 'Natural's.
 (%^) :: Sing a -> Sing b -> Sing (a ^ b)
 sa %^ sb =
   let a = fromSing sa
@@ -231,9 +230,9 @@ instance SingI1 (^@#@$$) where
 
 -- | The singleton analogue of 'TN.<=?'
 --
--- Note that, because of historical reasons in GHC's 'TN.Nat' API, 'TN.<=?'
+-- Note that, because of historical reasons in GHC's 'Natural' API, 'TN.<=?'
 -- is incompatible (unification-wise) with 'O.<=' and the 'PEq', 'SEq',
--- 'POrd', and 'SOrd' instances for 'Nat'.  @(a '<=?' b) ~ 'True@ does not
+-- 'POrd', and 'SOrd' instances for 'Natural'.  @(a '<=?' b) ~ 'True@ does not
 -- imply anything about @a 'O.<=' b@ or any other 'PEq' / 'POrd'
 -- relationships.
 --
@@ -245,7 +244,7 @@ instance SingI1 (^@#@$$) where
 -- This is provided here for the sake of completeness and for compatibility
 -- with libraries with APIs built around '<=?'.  New code should use
 -- 'CmpNat', exposed through this library through the 'POrd' and 'SOrd'
--- instances for 'Nat'.
+-- instances for 'Natural'.
 (%<=?) :: Sing a -> Sing b -> Sing (a <=? b)
 sa %<=? sb = unsafeCoerce (sa %<= sb)
 infix 4 %<=?

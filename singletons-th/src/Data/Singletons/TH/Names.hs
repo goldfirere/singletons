@@ -17,7 +17,7 @@ import Data.Singletons.TH.SuppressUnusedWarnings
 import Data.Singletons.TH.Util
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Desugar
-import GHC.TypeLits ( Nat, Symbol )
+import GHC.TypeLits ( Symbol )
 import GHC.Exts ( Constraint )
 import GHC.Show ( showCommaSpace, showSpace )
 import Data.String (fromString)
@@ -60,7 +60,7 @@ boolName, andName, compareName, minBoundName,
   maxBoundName, repName,
   nilName, consName, listName, tyFunArrowName,
   applyName, applyTyConName, applyTyConAux1Name,
-  natName, symbolName, stringName,
+  symbolName, stringName,
   eqName, ordName, boundedName, orderingName,
   singFamilyName, singIName, singI1Name, singI2Name,
   singMethName, liftSingName, liftSing2Name, demoteName, withSingIName,
@@ -94,7 +94,6 @@ applyName = ''Apply
 applyTyConName = ''ApplyTyCon
 applyTyConAux1Name = ''ApplyTyConAux1
 symbolName = ''Symbol
-natName = ''Nat
 stringName = ''String
 eqName = ''Eq
 ordName = ''Ord

@@ -6,11 +6,6 @@ import Data.Singletons.TH.Options
 import Data.Text (Text)
 import Language.Haskell.TH (Name)
 import Prelude.Singletons
-import GHC.TypeNats (Nat)
-import Numeric.Natural (Natural)
-
-newtype  Age =  MkAge Natural
-newtype PAge = PMkAge Nat
 
 newtype  Message =  MkMessage Text
 newtype PMessage = PMkMessage Symbol
@@ -30,19 +25,6 @@ $(do let customPromote :: [(Name, Name)] -> Name -> Name
                              defunctionalizedName defaultOptions
                                (customPromote customs n) sat
                          }
-
-     ageDecs <-
-       withOptions (customOptions [ (''Age, ''PAge)
-                                  , ('MkAge, 'PMkAge)
-                                  , (''Natural, ''Nat)
-                                  ]) $ do
-         ageDecs1 <- genSingletons [''Age]
-         ageDecs2 <- singletons [d|
-           addAge :: Age -> Age -> Age
-           addAge (MkAge (x :: Natural)) (MkAge (y :: Natural)) =
-             MkAge (x + y :: Natural)
-           |]
-         pure $ ageDecs1 ++ ageDecs2
 
      messageDecs <-
        withOptions (customOptions [ (''Message, ''PMessage)
@@ -68,4 +50,4 @@ $(do let customPromote :: [(Name, Name)] -> Name -> Name
              MkFunction (f . g :: a -> c)
            |]
          pure $ functionDecs1 ++ functionDecs2
-     pure $ ageDecs ++ messageDecs ++ functionDecs)
+     pure $ messageDecs ++ functionDecs)
