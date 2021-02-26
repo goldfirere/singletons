@@ -62,10 +62,10 @@ $(singletonsOnly [d|
       succ                :: a -> a
       -- | the predecessor of a value.  For numeric types, 'pred' subtracts 1.
       pred                :: a -> a
-      -- | Convert from a 'Nat'.
-      toEnum              :: Nat -> a
-      -- | Convert to a 'Nat'.
-      fromEnum            :: a -> Nat
+      -- | Convert from a 'Natural'.
+      toEnum              :: Natural -> a
+      -- | Convert to a 'Natural'.
+      fromEnum            :: a -> Natural
 
       -- The following use infinite lists, and are not promotable:
       -- -- | Used in Haskell's translation of @[n..]@.
@@ -85,22 +85,22 @@ $(singletonsOnly [d|
       enumFromTo x y         = map toEnum [fromEnum x .. fromEnum y]
       enumFromThenTo x1 x2 y = map toEnum [fromEnum x1, fromEnum x2 .. fromEnum y]
 
-  -- Nat instance for Enum
-  eftNat :: Nat -> Nat -> [Nat]
+  -- Natural instance for Enum
+  eftNat :: Natural -> Natural -> [Natural]
   -- [x1..x2]
   eftNat x0 y | (x0 > y)  = []
               | otherwise = go x0
                  where
                    go x = x : if (x == y) then [] else go (x + 1)
 
-  efdtNat :: Nat -> Nat -> Nat -> [Nat]
+  efdtNat :: Natural -> Natural -> Natural -> [Natural]
   -- [x1,x2..y]
   efdtNat x1 x2 y
    | x2 >= x1  = efdtNatUp x1 x2 y
    | otherwise = efdtNatDn x1 x2 y
 
   -- Requires x2 >= x1
-  efdtNatUp :: Nat -> Nat -> Nat -> [Nat]
+  efdtNatUp :: Natural -> Natural -> Natural -> [Natural]
   efdtNatUp x1 x2 y    -- Be careful about overflow!
    | y < x2    = if y < x1 then [] else [x1]
    | otherwise = -- Common case: x1 <= x2 <= y
@@ -115,7 +115,7 @@ $(singletonsOnly [d|
                  in x1 : go_up x2
 
   -- Requires x2 <= x1
-  efdtNatDn :: Nat -> Nat -> Nat -> [Nat]
+  efdtNatDn :: Natural -> Natural -> Natural -> [Natural]
   efdtNatDn x1 x2 y    -- Be careful about underflow!
    | y > x2    = if y > x1 then [] else [x1]
    | otherwise = -- Common case: x1 >= x2 >= y
@@ -129,7 +129,7 @@ $(singletonsOnly [d|
                              | otherwise = x : go_dn (x + delta)
      in x1 : go_dn x2
 
-  instance  Enum Nat  where
+  instance  Enum Natural  where
       succ x = x + 1
       pred x = x - 1
 

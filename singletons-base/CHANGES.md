@@ -1,6 +1,11 @@
 Changelog for singletons-base project
 =====================================
 
+next [????.??.??]
+-----------------
+* Require building with GHC 9.2.
+* TODO RGS: `Natural` changes
+
 3.0 [????.??.??]
 ----------------
 * The `singletons` library has been split into three libraries:

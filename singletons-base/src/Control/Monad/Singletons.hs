@@ -212,21 +212,21 @@ $(singletonsOnly [d|
 
   -- -| @'replicateM' n act@ performs the action @n@ times,
   -- gathering the results.
-  replicateM        :: forall m a. (Applicative m) => Nat -> m a -> m [a]
+  replicateM        :: forall m a. (Applicative m) => Natural -> m a -> m [a]
   replicateM cnt0 f =
       loop cnt0
     where
-      loop :: Nat -> m [a]
+      loop :: Natural -> m [a]
       loop cnt
           | cnt <= 0  = pure []
           | otherwise = liftA2 (:) f (loop (cnt - 1))
 
   -- -| Like 'replicateM', but discards the result.
-  replicateM_       :: forall m a. (Applicative m) => Nat -> m a -> m ()
+  replicateM_       :: forall m a. (Applicative m) => Natural -> m a -> m ()
   replicateM_ cnt0 f =
       loop cnt0
     where
-      loop :: Nat -> m ()
+      loop :: Natural -> m ()
       loop cnt
           | cnt <= 0  = pure ()
           | otherwise = f *> loop (cnt - 1)

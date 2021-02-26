@@ -13,6 +13,6 @@ import GHC.TypeLits.Singletons
 import Prelude.Singletons
 
 $(singletonsOnly [d|
-  ($>) :: Nat -> Nat -> Nat
+  ($>) :: Natural -> Natural -> Natural
   ($>) = (+)
   |])

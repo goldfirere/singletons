@@ -11,7 +11,7 @@ $( singletons [d|
     meth :: a -> a
     l2r  :: a -> b
 
-  instance FD Bool Nat where
+  instance FD Bool Natural where
     meth = not
     l2r False = 0
     l2r True  = 1

@@ -361,23 +361,23 @@ $(singletonsOnly [d|
 
 -- These three rely on findIndices, which does not promote.
 -- Since we have our own implementation of findIndices these are perfectly valid
-  elemIndex       :: Eq a => a -> [a] -> Maybe Nat
+  elemIndex       :: Eq a => a -> [a] -> Maybe Natural
   elemIndex x     = findIndex (x==)
 
-  elemIndices     :: Eq a => a -> [a] -> [Nat]
+  elemIndices     :: Eq a => a -> [a] -> [Natural]
   elemIndices x   = findIndices (x==)
 
-  findIndex       :: (a -> Bool) -> [a] -> Maybe Nat
+  findIndex       :: (a -> Bool) -> [a] -> Maybe Natural
   findIndex p     = listToMaybe . findIndices p
 
 -- Uses infinite lists and and Ints
 --  findIndices      :: (a -> Bool) -> [a] -> [Int]
 --  findIndices p xs = [ i | (x,i) <- zip xs [0..], p x]
 
-  findIndices      :: (a -> Bool) -> [a] -> [Nat]
+  findIndices      :: (a -> Bool) -> [a] -> [Natural]
   findIndices p xs = map snd (filter (\(x,_) -> p x)
                                      (zip xs (buildList 0 xs)))
-    where buildList :: Nat -> [b] -> [Nat]
+    where buildList :: Natural -> [b] -> [Natural]
           buildList _ []     = []
           buildList a (_:rest) = a : buildList (a+1) rest
 
@@ -426,15 +426,15 @@ $(singletonsOnly [d|
 --  splitAt                :: Int -> [a] -> ([a],[a])
 --  splitAt n xs           =  (take n xs, drop n xs)
 
-  take                   :: Nat -> [a] -> [a]
+  take                   :: Natural -> [a] -> [a]
   take _ []              =  []
   take n (x:xs)          = if n == 0 then [] else x : take (n-1) xs
 
-  drop                   :: Nat -> [a] -> [a]
+  drop                   :: Natural -> [a] -> [a]
   drop _ []              = []
   drop n (x:xs)          = if n == 0 then x:xs else drop (n-1) xs
 
-  splitAt                :: Nat -> [a] -> ([a],[a])
+  splitAt                :: Natural -> [a] -> ([a],[a])
   splitAt n xs           =  (take n xs, drop n xs)
 
   group                   :: Eq a => [a] -> [[a]]
@@ -511,7 +511,7 @@ $(singletonsOnly [d|
 --  incLen :: a -> (Int# -> Int) -> Int# -> Int
 --  incLen _ g x = g (x +# 1#)
 
-  length :: [a] -> Nat
+  length :: [a] -> Natural
   length []     = 0
   length (_:xs) = 1 + length xs
 
@@ -530,7 +530,7 @@ $(singletonsOnly [d|
 --  cycle []                = error "Data.Singletons.List.cycle: empty list"
 --  cycle xs                = xs' where xs' = xs ++ xs'
 
-  replicate               :: Nat -> a -> [a]
+  replicate               :: Natural -> a -> [a]
   replicate n x           = if n == 0 then [] else x : replicate (n-1) x
 
 -- Uses partial pattern-matching in a list comprehension
@@ -553,7 +553,7 @@ $(singletonsOnly [d|
 --  (x:_)  !! 0         =  x
 --  (_:xs) !! n         =  xs !! (n-1)
 
-  (!!)                    :: [a] -> Nat -> a
+  (!!)                    :: [a] -> Natural -> a
   []     !! _         =  error "Data.Singletons.List.!!: index too large"
   (x:xs) !! n         =  if n == 0 then x else xs !! (n-1)
   infixl 9 !!

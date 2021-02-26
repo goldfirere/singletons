@@ -2,9 +2,9 @@
 module Singletons.NegativeLiterals where
 
 import Data.Singletons.Base.TH
-import GHC.TypeNats (Nat)
+import Numeric.Natural (Natural)
 
 $(singletons [d|
-  f :: Nat
+  f :: Natural
   f = -1
   |])

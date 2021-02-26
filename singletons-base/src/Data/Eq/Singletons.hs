@@ -87,7 +87,7 @@ $(singletonsOnly [d|
 -- @
 --
 -- 'DefaultEq' is most suited for data types that are not inductively defined.
--- Three concrete examples of this are 'Lit.Nat', 'Lit.Symbol', and
+-- Three concrete examples of this are 'Natural', 'Lit.Symbol', and
 -- 'Kind.Type'. One cannot implement boolean equality for these types by
 -- pattern matching alone, so 'DefaultEq' is a good fit instead.
 --

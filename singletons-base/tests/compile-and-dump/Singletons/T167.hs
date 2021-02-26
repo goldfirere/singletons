@@ -17,7 +17,7 @@ type DiffList = [Bool] -> [Bool]
 
 $(singletonsOnly [d|
   class Foo a where
-    foosPrec :: Nat -> a -> DiffList
+    foosPrec :: Natural -> a -> DiffList
     fooList  :: a -> DiffList
     fooList = undefined
 

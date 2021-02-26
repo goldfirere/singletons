@@ -351,7 +351,7 @@ $(singletonsOnly [d|
       -- -| Returns the size/length of a finite structure as an 'Int'.  The
       -- default implementation is optimized for structures that are similar to
       -- cons-lists, because there is no general way to do better.
-      length :: t a -> Nat
+      length :: t a -> Natural
       length = foldl' (\c _ -> c+1) 0
 
       -- -| Does the element occur in the structure?
@@ -466,7 +466,7 @@ $(singletonsOnly [d|
       -- kind-polymorphic, but Length is only defined when `a` is of kind
       -- `Type`! Ugh. To force GHC to come to its senses, we explicitly inform
       -- it that `a :: Type` through our own instance signature.
-      length :: forall (a :: Type). Proxy a -> Nat
+      length :: forall (a :: Type). Proxy a -> Natural
       length _   = 0
 
       null :: forall (a :: Type). Proxy a -> Bool

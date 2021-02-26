@@ -102,7 +102,7 @@ replicateTest2b :: Proxy '[]
 replicateTest2b = Proxy
 
 $(promoteOnly [d|
-  odd :: Nat -> Bool
+  odd :: Natural -> Bool
   odd 0 = False
   odd n = not . odd $ n - 1
  |])

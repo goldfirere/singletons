@@ -17,7 +17,7 @@
 -- "GHC.Num".
 --
 -- Be warned that some of the associated type families in the 'PNum' class
--- (@(+)@, @(-)@, and @(*)@) clash with their counterparts for 'Nat' in the
+-- (@(+)@, @(-)@, and @(*)@) clash with their counterparts for 'Natural' in the
 -- "GHC.TypeLits" module.
 ----------------------------------------------------------------------------
 
@@ -66,8 +66,8 @@ $(singletonsOnly [d|
       -- For real numbers, the 'signum' is either @-1@ (negative), @0@ (zero)
       -- or @1@ (positive).
       signum              :: a -> a
-      -- Conversion from a 'Nat'.
-      fromInteger         :: Nat -> a
+      -- Conversion from a 'Natural'.
+      fromInteger         :: Natural -> a
 
       x - y               = x + negate y
 
@@ -88,22 +88,22 @@ $(singletonsOnly [d|
   |])
 
 -- PNum instance
-type SignumNat :: Nat -> Nat
+type SignumNat :: Natural -> Natural
 type family SignumNat a where
   SignumNat 0 = 0
   SignumNat x = 1
 
-instance PNum Nat where
+instance PNum Natural where
   type a + b = a TN.+ b
   type a - b = a TN.- b
   type a * b = a TN.* b
-  type Negate (a :: Nat) = Error "Cannot negate a natural number"
-  type Abs (a :: Nat) = a
+  type Negate (a :: Natural) = Error "Cannot negate a natural number"
+  type Abs (a :: Natural) = a
   type Signum a = SignumNat a
   type FromInteger a = a
 
 -- SNum instance
-instance SNum Nat where
+instance SNum Natural where
   sa %+ sb =
     let a = fromSing sa
         b = fromSing sb

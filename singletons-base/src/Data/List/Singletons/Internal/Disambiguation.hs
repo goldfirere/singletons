@@ -138,32 +138,32 @@ $(singletons [d|
   |])
 
 $(singletonsOnly [d|
-  listtake :: Nat -> [a] -> [a]
+  listtake :: Natural -> [a] -> [a]
   listtake = take
 
-  listdrop :: Nat -> [a] -> [a]
+  listdrop :: Natural -> [a] -> [a]
   listdrop = drop
 
-  listsplitAt :: Nat -> [a] -> ([a], [a])
+  listsplitAt :: Natural -> [a] -> ([a], [a])
   listsplitAt = splitAt
 
-  listindex :: [a] -> Nat -> a
+  listindex :: [a] -> Natural -> a
   listindex = (!!)
 
   listlength :: [a] -> Nat
   listlength = length
   |])
 
-listtake :: Nat -> [a] -> [a]
+listtake :: Natural -> [a] -> [a]
 listtake = undefined
 
-listdrop :: Nat -> [a] -> [a]
+listdrop :: Natural -> [a] -> [a]
 listdrop = undefined
 
-listsplitAt :: Nat -> [a] -> ([a], [a])
+listsplitAt :: Natural -> [a] -> ([a], [a])
 listsplitAt = undefined
 
-listindex :: [a] -> Nat -> a
+listindex :: [a] -> Natural -> a
 listindex = undefined
 
 listlength :: [a] -> Nat

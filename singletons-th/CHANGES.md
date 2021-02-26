@@ -1,6 +1,10 @@
 Changelog for singletons-th project
 ===================================
 
+next [????.??.??]
+-----------------
+* Require building with GHC 9.2.
+
 3.0 [????.??.??]
 ----------------
 * The `singletons` library has been split into three libraries:
