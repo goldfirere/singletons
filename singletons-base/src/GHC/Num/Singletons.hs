@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-} -- TODO RGS: Remove me
 {-# LANGUAGE TemplateHaskell, PolyKinds, DataKinds, TypeFamilies,
              TypeOperators, GADTs, ScopedTypeVariables, UndecidableInstances,
              DefaultSignatures, FlexibleContexts, InstanceSigs, NoStarIsType,
