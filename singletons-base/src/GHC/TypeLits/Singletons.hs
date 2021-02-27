@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-} -- TODO RGS: Remove me
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables, ConstraintKinds,
              GADTs, TypeApplications, TypeFamilies, UndecidableInstances,
              DataKinds, PolyKinds, StandaloneKindSignatures #-}
@@ -60,6 +61,7 @@ import GHC.TypeNats (Div, Mod, SomeNat(..))
 import Numeric.Natural (Natural)
 import Unsafe.Coerce
 
+#if !(MIN_VERSION_base(4,16,0))
 -- | This bogus 'Num' instance is helpful for people who want to define
 -- functions over Nats that will only be used at the type level or
 -- as singletons. A correct SNum instance for Nat singletons exists.
@@ -86,6 +88,7 @@ instance Enum Nat where
 
 instance Show Nat where
   showsPrec      = no_term_level_nats
+#endif
 
 -- | This bogus instance is helpful for people who want to define
 -- functions over Symbols that will only be used at the type level or
@@ -108,8 +111,10 @@ instance Monoid Symbol where
 instance Show Symbol where
   showsPrec = no_term_level_syms
 
+#if !(MIN_VERSION_base(4,16,0))
 no_term_level_nats :: a
 no_term_level_nats = error "The kind `Nat` may not be used at the term level."
+#endif
 
 no_term_level_syms :: a
 no_term_level_syms = error "The kind `Symbol` may not be used at the term level."

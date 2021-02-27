@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-} -- TODO RGS: Remove me
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE EmptyCase #-}
