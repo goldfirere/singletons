@@ -22,12 +22,13 @@
 module GHC.TypeLits.Singletons.Internal (
   Sing,
 
-  Nat, Symbol,
-  SNat(..), SSymbol(..), withKnownNat, withKnownSymbol,
+  Nat, Symbol, Char,
+  SNat(..), SSymbol(..), SChar(..),
+  withKnownNat, withKnownSymbol, withKnownChar,
   Error, sError,
   ErrorWithoutStackTrace, sErrorWithoutStackTrace,
   Undefined, sUndefined,
-  KnownNat, TN.natVal, KnownSymbol, symbolVal,
+  KnownNat, TN.natVal, KnownSymbol, symbolVal, KnownChar, charVal,
   type (^), (%^),
   type (<=?), (%<=?),
 
@@ -86,6 +87,19 @@ instance SingKind Symbol where
   toSing s = case someSymbolVal (T.unpack s) of
                SomeSymbol (_ :: Proxy n) -> SomeSing (SSym :: Sing n)
 
+type SChar :: Char -> Type
+data SChar (c :: Char) = KnownChar c => SChar
+type instance Sing = SChar
+
+instance KnownChar c => SingI c where
+  sing = SChar
+
+instance SingKind Char where
+  type Demote Char = Char
+  fromSing (SChar :: Sing c) = charVal (Proxy :: Proxy c)
+  toSing sc = case someCharVal sc of
+                SomeChar (_ :: Proxy c) -> SomeSing (SChar :: Sing c)
+
 -- SDecide instances:
 instance SDecide Nat where
   (SNat :: Sing n) %~ (SNat :: Sing m)
@@ -103,10 +117,20 @@ instance SDecide Symbol where
     = Disproved (\Refl -> error errStr)
     where errStr = "Broken Symbol singletons"
 
+instance SDecide Char where
+  (SChar :: Sing n) %~ (SChar :: Sing m)
+    | Just r <- sameChar (Proxy :: Proxy n) (Proxy :: Proxy m)
+    = Proved r
+    | otherwise
+    = Disproved (\Refl -> error errStr)
+    where errStr = "Broken Char singletons"
+
 -- PEq instances
 instance PEq Nat where
   type x == y = DefaultEq x y
 instance PEq Symbol where
+  type x == y = DefaultEq x y
+instance PEq Char where
   type x == y = DefaultEq x y
 
 -- need SEq instances for TypeLits kinds
@@ -122,12 +146,21 @@ instance SEq Symbol where
         Just Refl -> STrue
         Nothing   -> unsafeCoerce SFalse
 
+instance SEq Char where
+  (SChar :: Sing n) %== (SChar :: Sing m)
+    = case sameChar (Proxy :: Proxy n) (Proxy :: Proxy m) of
+        Just Refl -> STrue
+        Nothing   -> unsafeCoerce SFalse
+
 -- POrd instances
 instance POrd Nat where
   type (a :: Nat) `Compare` (b :: Nat) = a `TN.CmpNat` b
 
 instance POrd Symbol where
   type (a :: Symbol) `Compare` (b :: Symbol) = a `TL.CmpSymbol` b
+
+instance POrd Char where
+  type (a :: Char) `Compare` (b :: Char) = a `TL.CmpChar` b
 
 -- SOrd instances
 instance SOrd Nat where
@@ -137,6 +170,12 @@ instance SOrd Nat where
                      GT -> unsafeCoerce SGT
 
 instance SOrd Symbol where
+  a `sCompare` b = case fromSing a `compare` fromSing b of
+                     LT -> unsafeCoerce SLT
+                     EQ -> unsafeCoerce SEQ
+                     GT -> unsafeCoerce SGT
+
+instance SOrd Char where
   a `sCompare` b = case fromSing a `compare` fromSing b of
                      LT -> unsafeCoerce SLT
                      EQ -> unsafeCoerce SEQ
@@ -164,6 +203,13 @@ instance Show (SSymbol s) where
         . showsPrec appPrec1 (symbolVal s)
       )
 
+instance Show (SChar c) where
+  showsPrec p s@SChar
+    = showParen (p > appPrec)
+      ( showString "SChar @"
+        . showsPrec appPrec1 (charVal s)
+      )
+
 -- Convenience functions
 
 -- | Given a singleton for @Nat@, call something requiring a
@@ -175,6 +221,11 @@ withKnownNat SNat f = f
 -- a @KnownSymbol@ instance.
 withKnownSymbol :: Sing n -> (KnownSymbol n => r) -> r
 withKnownSymbol SSym f = f
+
+-- | Given a singleton for @Char@, call something requiring
+-- a @KnownChar@ instance.
+withKnownChar :: Sing n -> (KnownChar n => r) -> r
+withKnownChar SChar f = f
 
 -- | The promotion of 'error'. This version is more poly-kinded for
 -- easier use.

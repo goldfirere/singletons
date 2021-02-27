@@ -4,6 +4,7 @@ Changelog for the `singletons-base` project
 next [????.??.??]
 -----------------
 * Require building with GHC 9.2.
+* TODO RGS: Type-level `Char` changes
 
 3.0 [2021.03.12]
 ----------------
