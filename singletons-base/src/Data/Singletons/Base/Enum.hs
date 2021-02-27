@@ -52,6 +52,10 @@ import GHC.TypeLits.Singletons
 $(singletonsOnly [d|
   class Bounded a where
     minBound, maxBound :: a
+
+  instance  Bounded Char  where
+      minBound =  '\0'
+      maxBound =  '\x10FFFF'
   |])
 
 $(singBoundedInstances boundedBasicTypes)
@@ -138,6 +142,10 @@ $(singletonsOnly [d|
 
       enumFromTo = eftNat
       enumFromThenTo = efdtNat
+
+  instance  Enum Char  where
+      toEnum   = natToChar
+      fromEnum = charToNat
   |])
 
 $(singEnumInstances enumBasicTypes)

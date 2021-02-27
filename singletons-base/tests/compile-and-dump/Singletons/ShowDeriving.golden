@@ -243,7 +243,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type ShowsPrec_0123456789876543210 :: GHC.Num.Natural.Natural
                                           -> Foo3 -> Symbol -> Symbol
     type family ShowsPrec_0123456789876543210 (a :: GHC.Num.Natural.Natural) (a :: Foo3) (a :: Symbol) :: Symbol where
-      ShowsPrec_0123456789876543210 p_0123456789876543210 (MkFoo3 arg_0123456789876543210 arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "MkFoo3 ")) (Apply (Apply (.@#@$) (Apply ShowCharSym0 "{")) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "getFoo3a = ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 0)) arg_0123456789876543210)) (Apply (Apply (.@#@$) ShowCommaSpaceSym0) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "(***) = ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 0)) arg_0123456789876543210)) (Apply ShowCharSym0 "}"))))))))) a_0123456789876543210
+      ShowsPrec_0123456789876543210 p_0123456789876543210 (MkFoo3 arg_0123456789876543210 arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "MkFoo3 ")) (Apply (Apply (.@#@$) (Apply ShowCharSym0 '{')) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "getFoo3a = ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 0)) arg_0123456789876543210)) (Apply (Apply (.@#@$) ShowCommaSpaceSym0) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "(***) = ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 0)) arg_0123456789876543210)) (Apply ShowCharSym0 '}'))))))))) a_0123456789876543210
     type ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural ((~>) Foo3 ((~>) Symbol Symbol))
     data ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural ((~>) Foo3 ((~>) Symbol Symbol))
       where
@@ -504,7 +504,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                    ((applySing
                        ((applySing ((singFun3 @(.@#@$)) (%.)))
                           ((applySing ((singFun2 @ShowCharSym0) sShowChar))
-                             (sing :: Sing "{"))))
+                             (sing :: Sing '{'))))
                       ((applySing
                           ((applySing ((singFun3 @(.@#@$)) (%.)))
                              ((applySing ((singFun2 @ShowStringSym0) sShowString))
@@ -529,7 +529,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                 (sFromInteger (sing :: Sing 0))))
                                             sArg_0123456789876543210)))
                                      ((applySing ((singFun2 @ShowCharSym0) sShowChar))
-                                        (sing :: Sing "}")))))))))))
+                                        (sing :: Sing '}')))))))))))
             sA_0123456789876543210
     deriving instance Show (SFoo1 (z :: Foo1))
     deriving instance Data.Singletons.ShowSing.ShowSing a =>
