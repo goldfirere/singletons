@@ -4,6 +4,21 @@ Changelog for the `singletons-base` project
 next [????.??.??]
 -----------------
 * Require building with GHC 9.2.
+* `singletons-base` now supports type-level `Char`s, a feature added in
+  GHC 9.2. In particular:
+
+  * Promoting and singling character literal expressions (e.g., `f = 'a'`) is
+    now supported. Promoting (but not singling) character patterns
+    (e.g., `g 'a' = ()`) is also supported.
+  * `GHC.TypeLits.Singletons` now offers singled versions of the `ConsSymbol`,
+    `UnconsSymbol`, `CharToNat`, and `NatToChar` type families that were
+    introduced to `GHC.TypeLits` in GHC 9.2.
+  * `Text.Show.Singletons` now makes use of type-level `Char`s, a feature added
+    in GHC 9.2. As a result, there is no longer any need for the `SChar` type
+    synonym, so it has been removed.
+  * The `PShow` and `SShow` instances for `Symbol` now display escape characters
+    properly rather than returning the input `Symbol` unchanged.
+
 * In GHC 9.2, `Nat` is now a synonym for `Natural`. As a result, the bogus
   `Num`, `Eq`, `Ord`, `Enum`, and `Show` instances for `Nat` in
   `GHC.TypeLits.Singletons` have been removed, as they have replaced by the

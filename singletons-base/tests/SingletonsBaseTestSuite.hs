@@ -138,6 +138,7 @@ tests =
     , compileAndDumpStdTest "T453"
     , compileAndDumpStdTest "NegativeLiterals"
     , compileAndDumpStdTest "T470"
+    , compileAndDumpStdTest "T487"
     , compileAndDumpStdTest "T492"
     , compileAndDumpStdTest "Natural"
     ],

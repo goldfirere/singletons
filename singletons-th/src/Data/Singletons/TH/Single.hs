@@ -1065,8 +1065,10 @@ singLit (StringL str) = do
   pure $ if os_enabled
          then DVarE (singledValueName opts fromStringName) `DAppE` sing_str_lit
          else sing_str_lit
+singLit (CharL c) =
+  return $ DVarE singMethName `DSigE` (singFamily `DAppT` DLitT (CharTyLit c))
 singLit lit =
-  fail ("Only string and natural number literals can be singled: " ++ show lit)
+  fail ("Only string, natural number, and character literals can be singled: " ++ show lit)
 
 {-
 Note [The id hack; or, how singletons-th learned to stop worrying and avoid kind generalization]

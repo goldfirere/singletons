@@ -28,7 +28,7 @@
 -----------------------------------------------------------------------------
 
 module Text.Show.Singletons (
-  PShow(..), SShow(..), SymbolS, SChar, show_,
+  PShow(..), SShow(..), SymbolS, show_,
   Shows, sShows,
   ShowListWith, sShowListWith,
   ShowChar, sShowChar,
@@ -53,6 +53,8 @@ module Text.Show.Singletons (
   AppPrecSym0, AppPrec1Sym0
   ) where
 
+import           Data.Bool.Singletons
+import           Data.Eq.Singletons
 import           Data.Kind
 import           Data.List.NonEmpty (NonEmpty)
 import           Data.List.Singletons.Internal
@@ -78,11 +80,6 @@ import           Unsafe.Coerce (unsafeCoerce)
 type SymbolS :: Type
 type SymbolS = Symbol -> Symbol
 
--- | GHC currently has no notion of type-level 'Char's, so we fake them with
--- single-character 'Symbol's.
-type SChar :: Type
-type SChar = Symbol
-
 $(singletonsOnly [d|
   class Show a where
     showsPrec :: Natural -> a -> SymbolS
@@ -103,14 +100,14 @@ $(singletonsOnly [d|
       showl []     = "]" <> s
       showl (y:ys) = "," <> showx y (showl ys)
 
-  showChar :: SChar -> SymbolS
-  showChar = (<>)
+  showChar :: Char -> SymbolS
+  showChar = consSymbol
 
   showString :: Symbol -> SymbolS
   showString = (<>)
 
   showParen :: Bool -> SymbolS -> SymbolS
-  showParen b p = if b then showChar "(" . p . showChar ")" else p
+  showParen b p = if b then showChar '(' . p . showChar ')' else p
 
   showSpace :: SymbolS
   showSpace = \xs -> " " <> xs
@@ -125,17 +122,10 @@ $(singletonsOnly [d|
   instance Show a => Show [a] where
     showsPrec _ = showList
 
-  -- -| This is not an ideal Show instance for Symbol, since the Show instance
-  -- for String escapes special characters. Unfortunately, GHC lacks the ability
-  -- to case on individual characters in a Symbol (at least, not without GHC
-  -- plugins), so this is the best we can do for the time being.
-  instance Show Symbol where
-    showsPrec _ = showString
-
   show_tuple :: [SymbolS] -> SymbolS
-  show_tuple ss = showChar "("
-                . foldr1 (\s r -> s . showChar "," . r) ss
-                . showChar ")"
+  show_tuple ss = showChar '('
+                . foldr1 (\s r -> s . showChar ',' . r) ss
+                . showChar ')'
 
   instance (Show a, Show b) => Show (a,b)  where
     showsPrec _ (a,b) s = show_tuple [shows a, shows b] s
@@ -162,16 +152,16 @@ $(singletonsOnly [d|
 
 $(promoteOnly [d|
   showsNat :: Natural -> SymbolS
-  showsNat 0 = showChar "0"
-  showsNat 1 = showChar "1"
-  showsNat 2 = showChar "2"
-  showsNat 3 = showChar "3"
-  showsNat 4 = showChar "4"
-  showsNat 5 = showChar "5"
-  showsNat 6 = showChar "6"
-  showsNat 7 = showChar "7"
-  showsNat 8 = showChar "8"
-  showsNat 9 = showChar "9"
+  showsNat 0 = showChar '0'
+  showsNat 1 = showChar '1'
+  showsNat 2 = showChar '2'
+  showsNat 3 = showChar '3'
+  showsNat 4 = showChar '4'
+  showsNat 5 = showChar '5'
+  showsNat 6 = showChar '6'
+  showsNat 7 = showChar '7'
+  showsNat 8 = showChar '8'
+  showsNat 9 = showChar '9'
   showsNat n = showsNat (n `div` 10) . showsNat (n `mod` 10)
   |])
 
@@ -183,6 +173,116 @@ instance SShow Natural where
     let n = fromSing sn
         x = fromSing sx
         ex = someSymbolVal (P.show n ++ T.unpack x)
+    in
+    case ex of
+      SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
+
+$(promoteOnly [d|
+  showsCharPrec :: Natural -> Char -> SymbolS
+  showsCharPrec _ '\'' = showString "'\\''"
+  showsCharPrec _ c    = showChar '\'' . showLitChar c . showChar '\''
+
+  showCharList :: [Char] -> SymbolS
+  showCharList cs = showChar '"' . showLitString cs . showChar '"'
+
+  -- -| Like 'showCharList', but for 'Symbol's.
+  showSymbol :: Symbol -> SymbolS
+  showSymbol sym = showChar '"' . showLitSymbol sym . showChar '"'
+
+  -- -| Convert a character to a string using only printable characters,
+  -- using Haskell source-language escape conventions.  For example:
+  --
+  -- > showLitChar '\n' s  =  "\\n" ++ s
+  --
+  showLitChar                :: Char -> SymbolS
+  showLitChar c s | c > '\DEL' =  showChar '\\' (protectEsc isDec (shows (charToNat c)) s)
+  showLitChar '\DEL'         s =  showString "\\DEL" s
+  showLitChar '\\'           s =  showString "\\\\" s
+  showLitChar c s | c >= ' '   =  showChar c s
+  showLitChar '\a'           s =  showString "\\a" s
+  showLitChar '\b'           s =  showString "\\b" s
+  showLitChar '\f'           s =  showString "\\f" s
+  showLitChar '\n'           s =  showString "\\n" s
+  showLitChar '\r'           s =  showString "\\r" s
+  showLitChar '\t'           s =  showString "\\t" s
+  showLitChar '\v'           s =  showString "\\v" s
+  showLitChar '\SO'          s =  protectEsc (== 'H') (showString "\\SO") s
+  showLitChar c              s =  showString ('\\' `consSymbol` (asciiTab!!charToNat c)) s
+          -- I've done manual eta-expansion here, because otherwise it's
+          -- impossible to stop (asciiTab!!charToNat) getting floated out as an MFE
+
+  showLitString :: String -> SymbolS
+  -- -| Same as 'showLitChar', but for strings
+  -- It converts the string to a string using Haskell escape conventions
+  -- for non-printable characters. Does not add double-quotes around the
+  -- whole thing; the caller should do that.
+  -- The main difference from showLitChar (apart from the fact that the
+  -- argument is a string not a list) is that we must escape double-quotes
+  showLitString []         s = s
+  showLitString ('"' : cs) s = showString "\\\"" (showLitString cs s)
+  showLitString (c   : cs) s = showLitChar c (showLitString cs s)
+     -- Making 's' an explicit parameter makes it clear to GHC that
+     -- showLitString has arity 2, which avoids it allocating an extra lambda
+     -- The sticking point is the recursive call to (showLitString cs), which
+     -- it can't figure out would be ok with arity 2.
+
+  -- -| Like 'showLitString', but for 'Symbol's.
+  showLitSymbol :: Symbol -> SymbolS
+  showLitSymbol sym s = case unconsSymbol sym of
+    Nothing        -> s
+    Just ('"', cs) -> showString "\\\"" (showLitSymbol cs s)
+    Just (c,   cs) -> showLitChar c (showLitSymbol cs s)
+
+  isDec :: Char -> Bool
+  isDec c = c >= '0' && c <= '9'
+
+  protectEsc :: (Char -> Bool) -> SymbolS -> SymbolS
+  protectEsc p f             = f . cont
+                               -- where cont s@(c:_) | p c = "\\&" ++ s
+                               --       cont s             = s
+                               where cont s = case unconsSymbol s of
+                                       Just (c, _) | p c -> "\\&" <> s
+                                       Nothing           -> s
+
+  asciiTab :: [Symbol]
+  asciiTab = -- Using an array drags in the array module.  listArray ('\NUL', ' ')
+             ["NUL", "SOH", "STX", "ETX", "EOT", "ENQ", "ACK", "BEL",
+              "BS",  "HT",  "LF",  "VT",  "FF",  "CR",  "SO",  "SI",
+              "DLE", "DC1", "DC2", "DC3", "DC4", "NAK", "SYN", "ETB",
+              "CAN", "EM",  "SUB", "ESC", "FS",  "GS",  "RS",  "US",
+              "SP"]
+  |])
+
+instance PShow Char where
+  type ShowsPrec p c x = ShowsCharPrec p c x
+  type ShowList cs x = ShowCharList cs x
+
+instance SShow Char where
+  sShowsPrec sp sc sx =
+    let p  = fromSing sp
+        c  = fromSing sc
+        x  = fromSing sx
+        ex = someSymbolVal (P.showsPrec (fromIntegral p) c (T.unpack x))
+    in
+    case ex of
+      SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
+
+  sShowList scs sx =
+    let cs = fromSing scs
+        x  = fromSing sx
+        ex = someSymbolVal (P.showList cs (T.unpack x))
+    in
+    case ex of
+      SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
+
+instance PShow Symbol where
+  type ShowsPrec _ s x = ShowSymbol s x
+
+instance SShow Symbol where
+  sShowsPrec _ ss sx =
+    let s  = fromSing ss
+        x  = fromSing sx
+        ex = someSymbolVal (P.show s ++ T.unpack x)
     in
     case ex of
       SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)

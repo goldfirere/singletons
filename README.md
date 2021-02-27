@@ -305,13 +305,6 @@ generate these instances directly through functions exported from
 `Data.Singletons.TH` (from `singletons-th`) and
 `Data.Singletons.Base.TH` (from `singletons-base`).
 
-A promoted and singled `Show` instance is provided for `Symbol`, but it is only
-a crude approximation of the value-level `Show` instance for `String`. On the
-value level, showing `String`s escapes special characters (such as double
-quotes), but implementing this requires pattern-matching on character literals,
-something which is currently impossible at the type level. As a consequence, the
-type-level `Show` instance for `Symbol`s does not do any character escaping.
-
 Errors
 ------
 
@@ -795,7 +788,8 @@ The following constructs are fully supported:
 * undefined
 * error
 * class constraints (though these sometimes fail with `let`, `lambda`, and `case`)
-* literals (for `Natural` and `Symbol`), including overloaded number literals
+* literal expressions (for `Natural`, `Symbol`, and `Char`), including
+  overloaded number literals
 * datatypes that store `Natural`
 * unboxed tuples (which are treated as normal tuples)
 * pattern guards
@@ -1083,7 +1077,7 @@ instance C [] where
 
 ### Literal patterns
 
-Patterns which match on numeric or string literals cannot be
+Patterns which match on numeric, string, or character literals cannot be
 singled. Using this code as an example:
 
 ```hs

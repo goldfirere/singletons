@@ -140,8 +140,7 @@ showsPrecE :: Int -> Name -> DExp
 showsPrecE prec n = DVarE showsPrecName `DAppE` dIntegerE prec `DAppE` DVarE n
 
 dCharE :: Char -> DExp
-dCharE c = DLitE $ StringL [c] -- There aren't type-level characters yet,
-                               -- so fake it with a string
+dCharE = DLitE . CharL
 
 dStringE :: String -> DExp
 dStringE = DLitE . StringL

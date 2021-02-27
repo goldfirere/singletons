@@ -11,20 +11,23 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Defines and exports singletons useful for the Natural and Symbol kinds.
+-- Defines and exports singletons useful for the Natural, Symbol, and Char
+-- kinds.
 --
 ----------------------------------------------------------------------------
 
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 module GHC.TypeLits.Singletons (
-  Natural, Symbol,
-  Sing, SNat(..), SSymbol(..), withKnownNat, withKnownSymbol,
+  Natural, Symbol, Char,
+  Sing, SNat(..), SSymbol(..), SChar(..),
+  withKnownNat, withKnownSymbol, withKnownChar,
   Error, sError,
   ErrorWithoutStackTrace, sErrorWithoutStackTrace,
   Undefined, sUndefined,
   KnownNat, natVal,
   KnownSymbol, symbolVal,
+  KnownChar, charVal,
 
   type (^), (%^),
   type (<=?), (%<=?),
@@ -33,12 +36,18 @@ module GHC.TypeLits.Singletons (
   Div, sDiv, Mod, sMod, DivMod, sDivMod,
   Quot, sQuot, Rem, sRem, QuotRem, sQuotRem,
 
+  consSymbol, ConsSymbol, sConsSymbol,
+  unconsSymbol, UnconsSymbol, sUnconsSymbol,
+  charToNat, CharToNat, sCharToNat,
+  natToChar, NatToChar, sNatToChar,
+
   -- * Defunctionalization symbols
   ErrorSym0, ErrorSym1,
   ErrorWithoutStackTraceSym0, ErrorWithoutStackTraceSym1,
   UndefinedSym0,
   KnownNatSym0, KnownNatSym1,
   KnownSymbolSym0, KnownSymbolSym1,
+  KnownCharSym0, KnownCharSym1,
   type (^@#@$), type (^@#@$$), type (^@#@$$$),
   type (<=?@#@$), type (<=?@#@$$), type (<=?@#@$$$),
   Log2Sym0, Log2Sym1,
@@ -47,13 +56,22 @@ module GHC.TypeLits.Singletons (
   DivModSym0, DivModSym1, DivModSym2,
   QuotSym0, QuotSym1, QuotSym2,
   RemSym0, RemSym1, RemSym2,
-  QuotRemSym0, QuotRemSym1, QuotRemSym2
+  QuotRemSym0, QuotRemSym1, QuotRemSym2,
+  ConsSymbolSym0, ConsSymbolSym1, ConsSymbolSym2,
+  UnconsSymbolSym0, UnconsSymbolSym1,
+  CharToNatSym0, CharToNatSym1,
+  NatToCharSym0, NatToCharSym1
   ) where
 
+import Data.Char (chr, ord)
+import qualified Data.List as L (uncons)
 import Data.Singletons
 import Data.Singletons.TH
 import Data.String (IsString(..))
+import qualified Data.Text as T
 import Data.Tuple.Singletons
+import GHC.TypeLits ( CharToNat, ConsSymbol, NatToChar, SomeChar(..)
+                    , SomeSymbol(..), UnconsSymbol, someCharVal, someSymbolVal )
 import GHC.TypeLits.Singletons.Internal
 import qualified GHC.TypeNats as TN
 import GHC.TypeNats (Div, Mod, SomeNat(..))
@@ -84,7 +102,7 @@ no_term_level_syms :: a
 no_term_level_syms = error "The kind `Symbol` may not be used at the term level."
 
 -- These are often useful in TypeLits-heavy code
-$(genDefunSymbols [''KnownNat, ''KnownSymbol])
+$(genDefunSymbols [''KnownNat, ''KnownSymbol, ''KnownChar])
 
 ------------------------------------------------------------
 -- Log2, Div, Mod, DivMod, and friends
@@ -192,3 +210,60 @@ infixl 7 `sQuot`
 sRem :: Sing x -> Sing y -> Sing (Rem x y)
 sRem = sMod
 infixl 7 `sRem`
+
+consSymbol :: Char -> String -> String
+consSymbol = (:)
+
+sConsSymbol :: Sing x -> Sing y -> Sing (ConsSymbol x y)
+sConsSymbol sx sy =
+    let x   = fromSing sx
+        y   = T.unpack (fromSing sy)
+        res = someSymbolVal (consSymbol x y)
+    in case res of
+         SomeSymbol (_ :: Proxy res) -> unsafeCoerce (SSym :: Sing res)
+$(genDefunSymbols [''ConsSymbol])
+instance SingI ConsSymbolSym0 where
+  sing = singFun2 sConsSymbol
+instance SingI x => SingI (ConsSymbolSym1 x) where
+  sing = singFun1 $ sConsSymbol $ sing @x
+instance SingI1 ConsSymbolSym1 where
+  liftSing s = singFun1 $ sConsSymbol s
+
+unconsSymbol :: String -> Maybe (Char, String)
+unconsSymbol = L.uncons
+
+sUnconsSymbol :: Sing x -> Sing (UnconsSymbol x)
+sUnconsSymbol sx =
+    let x   = T.unpack (fromSing sx)
+        res = toSing (unconsSymbol x)
+    in case res of
+         SomeSing s -> unsafeCoerce s
+$(genDefunSymbols [''UnconsSymbol])
+instance SingI UnconsSymbolSym0 where
+  sing = singFun1 sUnconsSymbol
+
+charToNat :: Char -> Natural
+charToNat = fromIntegral . ord
+
+sCharToNat :: Sing x -> Sing (CharToNat x)
+sCharToNat sx =
+    let x   = fromSing sx
+        res = TN.someNatVal (charToNat x)
+    in case res of
+         SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
+$(genDefunSymbols [''CharToNat])
+instance SingI CharToNatSym0 where
+  sing = singFun1 sCharToNat
+
+natToChar :: Natural -> Char
+natToChar = chr . fromIntegral
+
+sNatToChar :: Sing x -> Sing (NatToChar x)
+sNatToChar sx =
+    let x   = fromSing sx
+        res = someCharVal (natToChar x)
+    in case res of
+         SomeChar (_ :: Proxy res) -> unsafeCoerce (SChar :: Sing res)
+$(genDefunSymbols [''NatToChar])
+instance SingI NatToCharSym0 where
+  sing = singFun1 sNatToChar

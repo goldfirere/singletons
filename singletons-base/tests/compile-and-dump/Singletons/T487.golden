@@ -1,0 +1,73 @@
+Singletons/T487.hs:(0,0)-(0,0): Splicing declarations
+    singletonsOnly
+      [d| exprEx :: Char
+          exprEx = 'a'
+          consEx :: Char -> Symbol
+          consEx x = consSymbol x "bc"
+          unconsEx :: Maybe (Char, Symbol)
+          unconsEx = unconsSymbol "abc"
+          natToCharEx :: Char
+          natToCharEx = natToChar 97
+          charToNatEx :: Natural
+          charToNatEx = charToNat 'a' |]
+  ======>
+    type CharToNatExSym0 :: Natural
+    type family CharToNatExSym0 :: Natural where
+      CharToNatExSym0 = CharToNatEx
+    type NatToCharExSym0 :: Char
+    type family NatToCharExSym0 :: Char where
+      NatToCharExSym0 = NatToCharEx
+    type UnconsExSym0 :: Maybe (Char, Symbol)
+    type family UnconsExSym0 :: Maybe (Char, Symbol) where
+      UnconsExSym0 = UnconsEx
+    type ConsExSym0 :: (~>) Char Symbol
+    data ConsExSym0 :: (~>) Char Symbol
+      where
+        ConsExSym0KindInference :: SameKind (Apply ConsExSym0 arg) (ConsExSym1 arg) =>
+                                   ConsExSym0 a0123456789876543210
+    type instance Apply ConsExSym0 a0123456789876543210 = ConsEx a0123456789876543210
+    instance SuppressUnusedWarnings ConsExSym0 where
+      suppressUnusedWarnings = snd (((,) ConsExSym0KindInference) ())
+    type ConsExSym1 :: Char -> Symbol
+    type family ConsExSym1 (a0123456789876543210 :: Char) :: Symbol where
+      ConsExSym1 a0123456789876543210 = ConsEx a0123456789876543210
+    type ExprExSym0 :: Char
+    type family ExprExSym0 :: Char where
+      ExprExSym0 = ExprEx
+    type CharToNatEx :: Natural
+    type family CharToNatEx :: Natural where
+      CharToNatEx = Apply CharToNatSym0 'a'
+    type NatToCharEx :: Char
+    type family NatToCharEx :: Char where
+      NatToCharEx = Apply NatToCharSym0 (FromInteger 97)
+    type UnconsEx :: Maybe (Char, Symbol)
+    type family UnconsEx :: Maybe (Char, Symbol) where
+      UnconsEx = Apply UnconsSymbolSym0 "abc"
+    type ConsEx :: Char -> Symbol
+    type family ConsEx (a :: Char) :: Symbol where
+      ConsEx x = Apply (Apply ConsSymbolSym0 x) "bc"
+    type ExprEx :: Char
+    type family ExprEx :: Char where
+      ExprEx = 'a'
+    sCharToNatEx :: Sing (CharToNatExSym0 :: Natural)
+    sNatToCharEx :: Sing (NatToCharExSym0 :: Char)
+    sUnconsEx :: Sing (UnconsExSym0 :: Maybe (Char, Symbol))
+    sConsEx ::
+      forall (t :: Char). Sing t -> Sing (Apply ConsExSym0 t :: Symbol)
+    sExprEx :: Sing (ExprExSym0 :: Char)
+    sCharToNatEx
+      = (applySing ((singFun1 @CharToNatSym0) sCharToNat))
+          (sing :: Sing 'a')
+    sNatToCharEx
+      = (applySing ((singFun1 @NatToCharSym0) sNatToChar))
+          (sFromInteger (sing :: Sing 97))
+    sUnconsEx
+      = (applySing ((singFun1 @UnconsSymbolSym0) sUnconsSymbol))
+          (sing :: Sing "abc")
+    sConsEx (sX :: Sing x)
+      = (applySing
+           ((applySing ((singFun2 @ConsSymbolSym0) sConsSymbol)) sX))
+          (sing :: Sing "bc")
+    sExprEx = sing :: Sing 'a'
+    instance SingI (ConsExSym0 :: (~>) Char Symbol) where
+      sing = (singFun1 @ConsExSym0) sConsEx
