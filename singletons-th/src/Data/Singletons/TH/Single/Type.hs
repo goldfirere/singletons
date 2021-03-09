@@ -187,38 +187,46 @@ There is another issue with type signatures that lack explicit `forall`s, one
 which the current design of Template Haskell does not make simple to fix.
 If we single code that is wrapped in TH quotes, such as in the following example:
 
+  {-# LANGUAGE PolyKinds, ... #-}
   $(singletons [d|
-    data Proxy (a :: k) where
-      MkProxy :: Proxy a
+    data Proxy a = MkProxy
     |])
 
 Then our job is made much easier when singling MkProxy, since we know that the
 only type variable that must be quantified is `a`, as that is the only one
-specified in the type signature.
+specified by the user. This results in the following type signature for
+MkProxy:
+
+  MkProxy :: forall a. Proxy a
 
 However, this is not the only possible way to single MkProxy. One can
 alternatively use $(genSingletons [''Proxy]), which uses TH reification to
 infer the type of MkProxy. There is perilous, however, because this is how
-TH reifies MkProxy:
+TH reifies Proxy:
 
-  ForallC [KindedTV k StarT,KindedTV a (VarT k)] []
-          (GadtC [MkProxy] [] (AppT (ConT Proxy) (VarT a)))
+  DataD
+    [] ''Proxy [KindedTV a () (VarT k)] Nothing
+    [NormalC 'MkProxy []]
+    []
 
-In terms of actual Haskell code, that's:
+We must then construct a type signature for MkProxy using nothing but the type
+variables from the data type header. But notice that `KindedTV a () (VarT k)`
+gives no indication of whether `k` is specified or inferred! As a result, we
+conservatively assume that `k` is specified, resulting the following type
+signature for MkProxy:
 
   MkProxy :: forall k (a :: k). Proxy a
 
-This is subtly different than before, as `k` is now specified. Contrast this
-with `MkProxy :: Proxy a`, where `k` is invisible. In other words, if you
-single MkProxy using genSingletons, then `Proxy @True` will typecheck but
-`SMkProxy @True` will /not/ typecheck—you'd have to use `SMkProxy @_ @True`
-instead. Urk!
+Contrast this with `MkProxy :: Proxy a`, where `k` is inferred. In other words,
+if you single MkProxy using genSingletons, then `Proxy @True` will typecheck
+but `SMkProxy @True` will /not/ typecheck—you'd have to use
+`SMkProxy @_ @True` instead. Urk!
 
-At present, Template Haskell does not have a way to distinguish specified from
-inferred type variables—see GHC #17159—and it is unclear how one could work
-around this issue withouf first fixing #17159 upstream. Thankfully, it is
-only likely to bite in situations where the original type signature uses
-inferred variables, so the damage is somewhat minimal.
+At present, Template Haskell does not have a way to distinguish among the
+specificities bound by a data type header. Without this knowledge, it is
+unclear how one could work around this issue. Thankfully, this issue is
+only likely to surface in very limited circumstances, so the damage is somewhat
+minimal.
 
 -----
 -- Wrinkle 3: Where to put explicit kind annotations
@@ -274,8 +282,8 @@ instead:
 This does work for many cases, but there are also some corner cases where this
 approach fails. Recall the `MkProxy` example from Wrinkle 2 above:
 
-  data Proxy (a :: k) where
-    MkProxy :: Proxy a
+  {-# LANGUAGE PolyKinds, ... #-}
+  data Proxy a = MkProxy
   $(genSingletons [''Proxy])
 
 Due to the design of Template Haskell (discussed in Wrinkle 2), `MkProxy` will
@@ -289,8 +297,11 @@ This will not kind-check because MkProxy only accepts /one/ visible kind argumen
 whereas this supplies it with two. To avoid this issue, we instead use the type
 `forall k (a :: k). SProxy (MkProxy :: Proxy a)`. Granted, this type is /still/
 technically wrong due to the fact that it explicitly quantifies `k`, but at the
-very least it typechecks. If GHC #17159 were fixed, we could revisit this
-design choice.
+very least it typechecks. If Template Haskell gained the ability to distinguish
+among the specificities of type variables bound by a data type header
+(perhaps by way of a language feature akin to
+https://github.com/ghc-proposals/ghc-proposals/pull/326), then we could revisit
+this design choice.
 
 Finally, note that we need only write `Sing x_1 -> ... -> Sing x_p`, and not
 `Sing (x_1 :: PT_1) -> ... Sing (x_p :: PT_p)`. This is simply because we
