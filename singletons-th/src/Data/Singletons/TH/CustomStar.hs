@@ -93,7 +93,7 @@ singletonStar names = do
     let dataDeclEqInst = DerivedDecl (Just dataDeclEqCxt) (DConT repName) repName dataDecl
     eqInst   <- mkEqInstance Nothing (DConT repName) dataDecl
     ordInst  <- mkOrdInstance Nothing (DConT repName) dataDecl
-    showInst <- mkShowInstance ForPromotion Nothing (DConT repName) dataDecl
+    showInst <- mkShowInstance Nothing (DConT repName) dataDecl
     (pInsts, promDecls) <- promoteM [] $ do _ <- promoteDataDec dataDecl
                                             traverse (promoteInstanceDec mempty mempty)
                                               [eqInst, ordInst, showInst]

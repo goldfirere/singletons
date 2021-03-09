@@ -176,17 +176,8 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
                                                         -> GHC.Types.Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
-    instance Data.Singletons.ShowSing.ShowSing a =>
-             Show (SMaybe (z :: Maybe a)) where
-      showsPrec _ SNothing = showString "SNothing"
-      showsPrec
-        p_0123456789876543210
-        (SJust (arg_0123456789876543210 :: Sing argTy_0123456789876543210))
-        = (showParen (((>) p_0123456789876543210) 10))
-            (((.) (showString "SJust "))
-               ((showsPrec 11) arg_0123456789876543210)) ::
-            Data.Singletons.ShowSing.ShowSing' argTy_0123456789876543210 =>
-            ShowS
+    deriving instance Data.Singletons.ShowSing.ShowSing a =>
+                      Show (SMaybe (z :: Maybe a))
     instance SingI Nothing where
       sing = SNothing
     instance SingI n => SingI (Just (n :: a)) where

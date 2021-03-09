@@ -19,6 +19,17 @@ Changelog for singletons project
   Consult the changelogs for `singletons-th` and `singletons-base` for changes
   specific to those libraries. For more information on this split, see the
   [relevant GitHub discussion](https://github.com/goldfirere/singletons/issues/420).
+* The internals of `ShowSing` have been tweaked to make it possible to derive
+  `Show` instances for singleton types, e.g.,
+
+  ```hs
+  deriving instance ShowSing a => Show (SList (z :: [a]))
+  ```
+
+  For the most part, this is a backwards-compatible change, although there
+  exists at least one corner case where the new internals of `ShowSing` require
+  extra work to play nicely with GHC's constraint solver. For more details,
+  refer to the Haddocks for `ShowSing'` in `Data.Singletons.ShowSing`.
 
 2.7
 ---

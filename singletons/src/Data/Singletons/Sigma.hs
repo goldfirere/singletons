@@ -194,7 +194,7 @@ uncurrySigma f (x :%&: y) = f x y
 instance (ShowSing s, ShowApply t) => Show (Sigma s t) where
   showsPrec p ((a :: Sing (fst :: s)) :&: b) = showParen (p >= 5) $
     showsPrec 5 a . showString " :&: " . showsPrec 5 b
-      :: (ShowSing' fst, ShowApply' t fst) => ShowS
+      :: ShowApply' t fst => ShowS
 
 instance forall s (t :: s ~> Type) (sig :: Sigma s t).
          (ShowSing s, ShowSingApply t)
@@ -202,7 +202,7 @@ instance forall s (t :: s ~> Type) (sig :: Sigma s t).
   showsPrec p ((sa :: Sing ('WrapSing (sfst :: Sing fst))) :%&: (sb :: Sing snd)) =
     showParen (p >= 5) $
       showsPrec 5 sa . showString " :&: " . showsPrec 5 sb
-        :: (ShowSing' fst, ShowSingApply' t fst snd) => ShowS
+        :: ShowSingApply' t fst snd => ShowS
 
 ------------------------------------------------------------
 -- Internal utilities

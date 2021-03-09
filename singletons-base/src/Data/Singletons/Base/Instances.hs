@@ -11,7 +11,7 @@ re-exported from various places.
 {-# LANGUAGE DataKinds, PolyKinds, RankNTypes, GADTs, TypeFamilies, EmptyCase,
              FlexibleContexts, TemplateHaskell, ScopedTypeVariables,
              UndecidableInstances, TypeOperators, FlexibleInstances,
-             TypeApplications, StandaloneKindSignatures #-}
+             TypeApplications, StandaloneKindSignatures, StandaloneDeriving #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Singletons.Base.Instances (

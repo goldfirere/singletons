@@ -8,6 +8,8 @@
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE QuantifiedConstraints #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
@@ -45,6 +47,7 @@ module Data.Singletons.ShowSing (
 #if __GLASGOW_HASKELL__ >= 806
 import Data.Kind
 import Data.Singletons
+import Text.Show
 
 -- | In addition to the promoted and singled versions of the 'Show' class that
 -- @singletons-base@ provides, it is also useful to be able to directly define
@@ -86,18 +89,17 @@ import Data.Singletons
 -- declaration becomes this:
 --
 -- @
--- instance 'ShowSing' k => 'Show' ('SList' (z :: [k])) where
---   showsPrec p 'SNil' = showString \"SNil\"
---   showsPrec p ('SCons' (sx :: 'Sing' x) (sxs :: 'Sing' xs)) =
---     (showParen (p > 10) $ showString \"SCons \" . showsPrec 11 sx
---                         . showSpace . showsPrec 11 sxs)
---       :: (ShowSing' x, ShowSing' xs) => ShowS
+-- instance 'ShowSing' k => 'Show' ('SList' (z :: [k])) where ...
+-- @
+--
+-- In fact, this instance can be derived:
+--
+-- @
+-- deriving instance 'ShowSing' k => 'Show' ('SList' (z :: [k]))
 -- @
 --
 -- (Note that the actual definition of 'ShowSing' is slightly more complicated
--- than what this documentation might suggest. For the full story, as well as
--- an explanation of why we need an explicit
--- @(ShowSing' x, ShowSing' xs) => ShowS@ signature at the end,
+-- than what this documentation might suggest. For the full story,
 -- refer to the documentation for `ShowSing'`.)
 --
 -- When singling a derived 'Show' instance, @singletons-th@ will also generate
@@ -133,77 +135,94 @@ instance (forall (z :: k). ShowSing' z) => ShowSing (k :: Type)
 -- @
 --
 -- By replacing @'Show' ('Sing' z)@ with @ShowSing' z@, we are able to avoid
--- this restriction for the most part. There is one major downside to using
--- @ShowSing'@, however: deriving 'Show' instances for singleton types does
--- not work out of the box. In other words, if you try to do this:
+-- this restriction for the most part.
+--
+-- The superclass of `ShowSing'` is a bit peculiar:
 --
 -- @
--- deriving instance 'ShowSing' k => 'Show' ('SList' (z :: [k]))
+-- class (forall (sing :: k -> Type). sing ~ 'Sing' => 'Show' (sing z)) => `ShowSing'` (z :: k)
 -- @
 --
--- Then GHC will complain to the effect that it could not deduce a
--- @'Show' ('Sing' x)@ constraint. This is due to
--- <https://gitlab.haskell.org/ghc/ghc/issues/16365 another unfortunate GHC bug>
--- that prevents GHC from realizing that @'ShowSing' k@ implies
--- @'Show' ('Sing' (x :: k))@. The workaround is to force GHC to come to its
--- senses by using an explicit type signature:
+-- One might wonder why this superclass is used instead of this seemingly more
+-- direct equivalent:
 --
 -- @
--- instance 'ShowSing' k => 'Show' ('SList' (z :: [k])) where
---   showsPrec p 'SNil' = showString \"SNil\"
---   showsPrec p ('SCons' (sx :: 'Sing' x) (sxs :: 'Sing' xs)) =
---     (showParen (p > 10) $ showString \"SCons \" . showsPrec 11 sx
---                         . showSpace . showsPrec 11 sxs)
---       :: (ShowSing' x, ShowSing' xs) => ShowS
+-- class 'Show' ('Sing' z) => `ShowSing'` (z :: k)
 -- @
 --
--- The use of @ShowSing' x@ in the signature is sufficient to make the
--- constraint solver connect the dots between @'ShowSing' k@ and
--- @'Show' ('Sing' (x :: k))@. (The @ShowSing' xs@ constraint is not strictly
--- necessary, but it is shown here since that is in fact the code that
--- @singletons-th@ will generate for this instance.)
+-- Actually, these aren't equivalent! The latter's superclass mentions a type
+-- family in its head, and this gives GHC's constraint solver trouble when
+-- trying to match this superclass against other constraints. (See the
+-- discussion beginning at
+-- https://gitlab.haskell.org/ghc/ghc/-/issues/16365#note_189057 for more on
+-- this point). The former's superclass, on the other hand, does /not/ mention
+-- a type family in its head, which allows it to match other constraints more
+-- easily. It may sound like a small difference, but it's the only reason that
+-- 'ShowSing' is able to work at all without a significant amount of additional
+-- workarounds.
 --
--- Because @deriving 'Show'@ will not insert these explicit signatures for us,
--- it is not possible to derive 'Show' instances for singleton types.
--- Thankfully, @singletons-th@' Template Haskell machinery can do this manual
--- gruntwork for us 99% of the time, but if you ever find yourself in a
--- situation where you must define a 'Show' instance for a singleton type by
--- hand, this is important to keep in mind.
---
--- Note that there is one potential future direction that might alleviate this
--- pain. We could define `ShowSing'` like this instead:
---
--- @
--- class (forall sing. sing ~ 'Sing' => 'Show' (sing z)) => ShowSing' z
--- instance 'Show' ('Sing' z) => ShowSing' z
--- @
---
--- For many examples, this lets you just derive 'Show' instances for singleton
--- types like you would expect. Alas, this topples over on @Bar@ in the
--- following example:
+-- The quantified superclass has one major downside. Although the head of the
+-- quantified superclass is more eager to match, which is usually a good thing,
+-- it can bite under certain circumstances. Because @'Show' (sing z)@ will
+-- match a 'Show' instance for /any/ types @sing :: k -> Type@ and @z :: k@,
+-- (where @k@ is a kind variable), it is possible for GHC's constraint solver
+-- to get into a situation where multiple instances match @'Show' (sing z)@,
+-- and GHC will get confused as a result. Consider this example:
 --
 -- @
--- newtype Foo a = MkFoo a
--- data SFoo :: forall a. Foo a -> Type where
---   SMkFoo :: Sing x -> SFoo (MkFoo x)
--- type instance Sing = SFoo
--- deriving instance ShowSing a => Show (SFoo (z :: Foo a))
+-- -- As in "Data.Singletons"
+-- newtype 'WrappedSing' :: forall k. k -> Type where
+--   'WrapSing' :: forall k (a :: k). { 'unwrapSing' :: 'Sing' a } -> 'WrappedSing' a
 --
--- newtype Bar a = MkBar (Foo a)
--- data SBar :: forall a. Bar a -> Type where
---   SMkBar :: Sing x -> SBar (MkBar x)
--- type instance Sing = SBar
--- deriving instance ShowSing (Foo a) => Show (SBar (z :: Bar a))
+-- instance 'ShowSing' k => 'Show' ('WrappedSing' (a :: k)) where
+--   'showsPrec' _ s = 'showString' "WrapSing {unwrapSing = " . showsPrec 0 s . showChar '}'
 -- @
 --
--- This fails because
--- of—you guessed it—<https://gitlab.haskell.org/ghc/ghc/issues/16502 another GHC bug>.
--- Bummer. Unless that bug were to be fixed, the current definition of
--- `ShowSing'` is the best that we can do.
+-- When typechecking the 'Show' instance for 'WrappedSing', GHC must fill in a
+-- default definition @'show' = defaultShow@, where
+-- @defaultShow :: 'Show' ('WrappedSing' a) => 'WrappedSing' a -> 'String'@.
+-- GHC's constraint solver has two possible ways to satisfy the
+-- @'Show' ('WrappedSing' a)@ constraint for @defaultShow@:
+--
+-- 1. The top-level instance declaration for @'Show' ('WrappedSing' (a :: k))@
+--    itself, and
+--
+-- 2. @'Show' (sing (z :: k))@ from the head of the quantified constraint arising
+--    from @'ShowSing' k@.
+--
+-- In practice, GHC will choose (2), as local quantified constraints shadow
+-- global constraints. This confuses GHC greatly, causing it to error out with
+-- an error akin to @Couldn't match type Sing with WrappedSing@. See
+-- https://gitlab.haskell.org/ghc/ghc/-/issues/17934 for a full diagnosis of
+-- the issue.
+--
+-- The bad news is that because of GHC#17934, we have to manually define 'show'
+-- (and 'showList') in the 'Show' instance for 'WrappedSing' in order to avoid
+-- confusing GHC's constraint solver. In other words, @deriving 'Show'@ is a
+-- no-go for 'WrappedSing'. The good news is that situations like 'WrappedSing'
+-- are quite rare in the world of @singletons@—most of the time, 'Show'
+-- instances for singleton types do /not/ have the shape
+-- @'Show' (sing (z :: k))@, where @k@ is a polymorphic kind variable. Rather,
+-- most such instances instantiate @k@ to a specific kind (e.g., @Bool@, or
+-- @[a]@), which means that they will not overlap the head of the quantified
+-- superclass in `ShowSing'` as observed above.
+--
+-- Note that we define the single instance for `ShowSing'` without the use of a
+-- quantified constraint in the instance context:
+--
+-- @
+-- instance 'Show' ('Sing' z) => `ShowSing'` (z :: k)
+-- @
+--
+-- We /could/ define this instance with a quantified constraint in the instance
+-- context, and it would be equally as expressive. But it doesn't provide any
+-- additional functionality that the non-quantified version gives, so we opt
+-- for the non-quantified version, which is easier to read.
 #if __GLASGOW_HASKELL__ >= 810
 type ShowSing' :: k -> Constraint
 #endif
-class    Show (Sing z) => ShowSing' (z :: k)
+class    (forall (sing :: k -> Type). sing ~ Sing => Show (sing z))
+                       => ShowSing' (z :: k)
 instance Show (Sing z) => ShowSing' (z :: k)
 
 {-
@@ -282,13 +301,18 @@ ultimately went with.
 -- (S)WrappedSing instances
 ------------------------------------------------------------
 
+-- Note that we cannot derive this Show instance due to
+-- https://gitlab.haskell.org/ghc/ghc/-/issues/17934. The Haddocks for
+-- ShowSing' contain a lengthier explanation of how GHC#17934 relates to
+-- ShowSing.
 instance ShowSing k => Show (WrappedSing (a :: k)) where
-  showsPrec p (WrapSing s) = showParen (p >= 11) $
-    showString "WrapSing {unwrapSing = " . showsPrec 0 s . showChar '}'
-      :: ShowSing' a => ShowS
+  showsPrec = showsWrappedSingPrec
+  show x = showsWrappedSingPrec 0 x ""
+  showList = showListWith (showsWrappedSingPrec 0)
 
-instance ShowSing k => Show (SWrappedSing (ws :: WrappedSing (a :: k))) where
-  showsPrec p (SWrapSing s) = showParen (p >= 11) $
-    showString "SWrapSing {sUnwrapSing = " . showsPrec 0 s . showChar '}'
-      :: ShowSing' a => ShowS
+showsWrappedSingPrec :: ShowSing k => Int -> WrappedSing (a :: k) -> ShowS
+showsWrappedSingPrec p (WrapSing s) = showParen (p >= 11) $
+  showString "WrapSing {unwrapSing = " . showsPrec 0 s . showChar '}'
+
+deriving instance ShowSing k => Show (SWrappedSing (ws :: WrappedSing (a :: k)))
 #endif
