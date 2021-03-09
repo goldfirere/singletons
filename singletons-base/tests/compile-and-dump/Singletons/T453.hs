@@ -6,7 +6,7 @@ import Data.Singletons.TH
 import Data.Singletons.TH.Options
 
 $(withOptions defaultOptions{genSingKindInsts = False} $
-  singletons $ lift [d|
+  singletons [d|
     type T1 :: forall k. k -> Type
     data T1 a
 
