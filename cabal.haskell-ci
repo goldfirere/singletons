@@ -1,5 +1,3 @@
 no-tests-no-benchmarks: False
 unconstrained:          False
 jobs-selection:         any
-head-hackage:           ==9.0.*
-github-patches:         github.yml.patch
