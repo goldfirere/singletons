@@ -1,7 +1,7 @@
-Changelog for singletons project
-================================
+Changelog for the `singletons` project
+======================================
 
-3.0 [????.??.??]
+3.0 [2021.03.12]
 ----------------
 * The `singletons` library has been split into three libraries:
 
