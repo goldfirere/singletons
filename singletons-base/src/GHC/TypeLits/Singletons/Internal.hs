@@ -244,13 +244,14 @@ instance SingI x => SingI ((^@#@$$) x) where
 -- with libraries with APIs built around '<=?'.  New code should use
 -- 'CmpNat', exposed through this library through the 'POrd' and 'SOrd'
 -- instances for 'Nat'.
-(%<=?) :: Sing a -> Sing b -> Sing (a <=? b)
+(%<=?) :: forall (a :: Nat) (b :: Nat). Sing a -> Sing b -> Sing (a <=? b)
+-- TODO RGS: Consider exposing a more general type for this function
 sa %<=? sb = unsafeCoerce (sa %<= sb)
 infix 4 %<=?
 
 -- Defunctionalization symbols for (<=?)
 $(genDefunSymbols [''(<=?)])
-instance SingI (<=?@#@$) where
+instance SingI ((<=?@#@$) :: Nat ~> Nat ~> Bool) where
   sing = singFun2 (%<=?)
-instance SingI x => SingI ((<=?@#@$$) x) where
+instance forall (x :: Nat). SingI x => SingI ((<=?@#@$$) x) where
   sing = singFun1 (sing @x %<=?)
