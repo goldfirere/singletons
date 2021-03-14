@@ -8,9 +8,9 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.11.20210311
+# version: 0.12
 #
-# REGENDATA ("0.11.20210311",["github","cabal.project"])
+# REGENDATA ("0.12",["github","cabal.project"])
 #
 name: Haskell-CI
 on:
@@ -173,7 +173,7 @@ jobs:
           source-repository-package
             type:     git
             location: https://github.com/goldfirere/th-desugar
-            tag:      ca761285741c16c704a4044f551faf4292432d6a
+            tag:      ddc82d94e755acdeeb3299fa4eb858e2d658d8b7
           EOF
           $HCPKG list --simple-output --names-only | perl -ne 'for (split /\s+/) { print "constraints: $_ installed\n" unless /^(singletons|singletons-base|singletons-th)$/; }' >> cabal.project.local
           cat cabal.project
