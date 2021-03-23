@@ -44,13 +44,13 @@ mkEqClause (c1, c2)
           lvars = map DVarE lnames
           rvars = map DVarE rnames
       pure $ DClause
-        [DConP lname lpats, DConP rname rpats]
+        [DConP lname [] lpats, DConP rname [] rpats]
         (andExp (zipWith (\l r -> foldExp (DVarE equalsName) [l, r])
                          lvars rvars))
   | otherwise =
       pure $ DClause
-        [DConP lname (replicate lNumArgs DWildP),
-         DConP rname (replicate rNumArgs DWildP)]
+        [DConP lname [] (replicate lNumArgs DWildP),
+         DConP rname [] (replicate rNumArgs DWildP)]
         (DConE falseName)
   where
     andExp :: [DExp] -> DExp

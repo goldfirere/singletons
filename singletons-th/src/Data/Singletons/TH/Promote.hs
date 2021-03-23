@@ -1050,7 +1050,9 @@ promotePat (DVarP name) = do
   tyName <- mkTyName name
   tell $ PromDPatInfos [(name, tyName)] OSet.empty
   return (DVarT tyName, ADVarP name)
-promotePat (DConP name pats) = do
+promotePat (DConP name tys pats) = do
+  unless (null tys) $
+    qReportWarning "Visible type applications in patterns are ignored by `singletons-th`."
   opts <- getOptions
   (types, pats') <- mapAndUnzipM promotePat pats
   let name' = promotedDataTypeOrConName opts name

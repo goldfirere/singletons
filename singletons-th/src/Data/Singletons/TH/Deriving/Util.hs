@@ -284,7 +284,7 @@ mkSimpleConClause :: Quasi q
                   -> q DClause
 mkSimpleConClause fold extra_pats (DCon _ _ con_name _ _) insides = do
   vars_needed <- replicateM (length insides) $ newUniqueName "a"
-  let pat = DConP con_name (map DVarP vars_needed)
+  let pat = DConP con_name [] (map DVarP vars_needed)
       rhs = fold con_name (zipWith (\i v -> i `DAppE` DVarE v) insides vars_needed)
   pure $ DClause (extra_pats ++ [pat]) rhs
 

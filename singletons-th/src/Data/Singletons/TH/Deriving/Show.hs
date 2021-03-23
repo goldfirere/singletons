@@ -57,7 +57,7 @@ mk_showsPrec_clause p (DCon _ _ con_name con_fields _) = go con_fields
 
         -- No fields: print just the constructor name, with no parentheses
         DNormalC _ [] -> return $
-          DClause [DWildP, DConP con_name []] $
+          DClause [DWildP, DConP con_name [] []] $
             DVarE showStringName `DAppE` dStringE (parenInfixConName con_name "")
 
         -- Infix constructors have special Show treatment.
@@ -73,7 +73,7 @@ mk_showsPrec_clause p (DCon _ _ con_name con_fields _) = go con_fields
                               -- Make sure to handle infix data constructors
                               -- like (Int `Foo` Int)
                               else " `" ++ op_name ++ "` "
-          return $ DClause [DVarP p, DConP con_name [DVarP argL, DVarP argR]] $
+          return $ DClause [DVarP p, DConP con_name [] [DVarP argL, DVarP argR]] $
             (DVarE showParenName `DAppE` (DVarE gtName `DAppE` DVarE p
                                                        `DAppE` dIntegerE con_prec))
               `DAppE` (DVarE composeName
@@ -94,7 +94,7 @@ mk_showsPrec_clause p (DCon _ _ con_name con_fields _) = go con_fields
                              `DAppE` (DVarE showStringName
                                        `DAppE` dStringE (parenInfixConName con_name " "))
                              `DAppE` composed_args
-          return $ DClause [DVarP p, DConP con_name $ map DVarP args] $
+          return $ DClause [DVarP p, DConP con_name [] $ map DVarP args] $
             DVarE showParenName
               `DAppE` (DVarE gtName `DAppE` DVarE p `DAppE` dIntegerE appPrec)
               `DAppE` named_args
@@ -124,7 +124,7 @@ mk_showsPrec_clause p (DCon _ _ con_name con_fields _) = go con_fields
                              `DAppE` (DVarE showStringName
                                        `DAppE` dStringE (parenInfixConName con_name " "))
                              `DAppE` composed_args
-          return $ DClause [DVarP p, DConP con_name $ map DVarP args] $
+          return $ DClause [DVarP p, DConP con_name [] $ map DVarP args] $
             DVarE showParenName
               `DAppE` (DVarE gtName `DAppE` DVarE p `DAppE` dIntegerE appPrec)
               `DAppE` named_args

@@ -792,7 +792,7 @@ singPat var_proms = go
                `DSigP` (singFamily `DAppT` DVarT tyname)
     go (ADConP name pats) = do
       opts <- getOptions
-      DConP (singledDataConName opts name) <$> mapM go pats
+      DConP (singledDataConName opts name) [] <$> mapM go pats
     go (ADTildeP pat) = do
       qReportWarning
         "Lazy pattern converted into regular pattern during singleton generation."
