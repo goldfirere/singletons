@@ -1,6 +1,26 @@
 Changelog for the `singletons-base` project
 ===========================================
 
+next [????.??.??]
+-----------------
+* The types of various entities in `Data.Functor.Const.Singletons` and
+  `Data.Proxy.Singletons` have been tweaked slightly such that their
+  specificities match their term-level counterparts:
+
+  ```diff
+  -SConst :: forall {k} {a} {b :: k} (x :: a). Sing x -> Sing ('Const @a @b x)
+  +SConst :: forall {k}  a  (b :: k) (x :: a). Sing x -> Sing ('Const @a @b x)
+
+  -type ConstSym0 :: forall  k  a (b :: k). a ~> Const a b
+  +type ConstSym0 :: forall {k} a (b :: k). a ~> Const a b
+
+  -type ConstSym1 :: forall  k a  (b :: k). a -> Const a b
+  +type ConstSym1 :: forall {k} a (b :: k). a -> Const a b
+
+  -type ProxySym0 :: forall  k  (t :: k). Proxy t
+  +type ProxySym0 :: forall {k} (t :: k). Proxy t
+  ```
+
 3.0 [2021.03.12]
 ----------------
 * The `singletons` library has been split into three libraries:

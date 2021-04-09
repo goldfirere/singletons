@@ -57,8 +57,9 @@ import GHC.TypeLits.Singletons.Internal
 import Text.Show.Singletons
 
 {-
-In order to keep the type argument to Proxy poly-kinded, we define the
-singleton version of Proxy by hand. This is very much in the spirit of the
+In order to keep the type argument to Proxy poly-kinded and with an inferred
+specificity, we define the singleton version of Proxy, as well as its
+defunctionalization symbols, by hand. This is very much in the spirit of the
 code in Data.Functor.Const.Singletons. (See the comments above SConst in that
 module for more details on this choice.)
 -}
@@ -73,7 +74,9 @@ instance SingKind (Proxy t) where
 instance SingI 'Proxy where
   sing = SProxy
 
-$(genDefunSymbols [''Proxy])
+type ProxySym0 :: Proxy t
+type family ProxySym0 where
+  ProxySym0 = 'Proxy
 
 instance SDecide (Proxy t) where
   SProxy %~ SProxy = Proved Refl

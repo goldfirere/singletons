@@ -68,14 +68,19 @@ tries to generate:
 
 Assumes that `b` is of kind Type. Until we get a more reliable story for
 poly-kinded Sing instances (see #150), we simply write the singleton type by
-hand. Note that we cannot use genSingletons to generate this code because we
+hand.
+
+Note that we cannot use genSingletons to generate this code because we
 would end up with the wrong specificity for the kind of `a` when singling the
 Const constructor. See Note [Preserve the order of type variables during
-singling] in D.S.TH.Single.Type, wrinkle 2.
+singling] in D.S.TH.Single.Type, wrinkle 2. Similarly, we must define the
+defunctionalization symbols for the Const data constructor by hand to get the
+specificities right.
 -}
 type SConst :: Const a b -> Type
 data SConst :: Const a b -> Type where
-  SConst :: Sing a -> SConst ('Const a)
+  SConst :: forall {k} a (b :: k) (x :: a).
+            Sing x -> SConst ('Const @a @b x)
 type instance Sing = SConst
 instance SingKind a => SingKind (Const a b) where
   type Demote (Const a b) = Const (Demote a) b
@@ -84,9 +89,15 @@ instance SingKind a => SingKind (Const a b) where
 instance SingI a => SingI ('Const a) where
   sing = SConst sing
 
-$(genDefunSymbols [''Const])
+type ConstSym0 :: a ~> Const a b
+data ConstSym0 z
+type instance Apply ConstSym0 x = 'Const x
 instance SingI ConstSym0 where
   sing = singFun1 SConst
+
+type ConstSym1 :: a -> Const a b
+type family ConstSym1 x where
+  ConstSym1 x = 'Const x
 
 $(singletonsOnly [d|
   getConst :: Const a b -> a
