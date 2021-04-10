@@ -97,9 +97,12 @@ library
                       Data.Eq.Singletons
                       Data.Foldable.Singletons
                       Data.Function.Singletons
+                      Data.Functor.Compose.Singletons
                       Data.Functor.Const.Singletons
                       Data.Functor.Identity.Singletons
+                      Data.Functor.Product.Singletons
                       Data.Functor.Singletons
+                      Data.Functor.Sum.Singletons
                       Data.List.Singletons
                       Data.List.NonEmpty.Singletons
                       Data.Maybe.Singletons
