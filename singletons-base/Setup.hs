@@ -3,7 +3,7 @@ module Main (main) where
 
 import Control.Monad
 
-import Data.List
+import qualified Data.List as List
 import Data.String
 
 import Distribution.PackageDescription
@@ -128,8 +128,8 @@ amendGPD gpd = gpd
         --
         -- Note: we `nub`, because it's unclear if that's ok to have duplicate
         -- modules in the lists.
-        om' = nub $ mn : om
-        am' = nub $ mn : am
+        om' = List.nub $ mn : om
+        am' = List.nub $ mn : am
 
         mn = fromString buildSingletonsBaseModule
 
