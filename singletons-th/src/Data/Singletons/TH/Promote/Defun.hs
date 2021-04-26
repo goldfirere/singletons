@@ -205,7 +205,7 @@ defunctionalize name m_fixity defun_ki = do
       opts <- getOptions
       extra_name <- qNewName "arg"
       let sak_arg_n = length sak_arg_kis
-      -- Use noExactName below to avoid #17537.
+      -- Use noExactName below to avoid GHC#17537.
       arg_names <- replicateM sak_arg_n (noExactName <$> qNewName "a")
 
       let -- The inner loop. @go n arg_nks res_nks@ returns @(res_k, decls)@.
@@ -285,7 +285,7 @@ defunctionalize name m_fixity defun_ki = do
     defun_fallback tvbs' m_res' = do
       opts <- getOptions
       extra_name <- qNewName "arg"
-      -- Use noExactTyVars below to avoid #11812.
+      -- Use noExactTyVars below to avoid GHC#11812.
       (tvbs, m_res) <- eta_expand (noExactTyVars tvbs') (noExactTyVars m_res')
 
       let tvbs_n = length tvbs
@@ -413,7 +413,9 @@ defunctionalize name m_fixity defun_ki = do
     mk_extra_tvb vfa =
       case vfa of
         DVisFADep tvb -> pure tvb
-        DVisFAAnon k  -> (\n -> DKindedTV n () k) <$> qNewName "e"
+        DVisFAAnon k  -> (\n -> DKindedTV n () k) <$>
+                           -- Use noExactName below to avoid GHC#19743.
+                           (noExactName <$> qNewName "e")
 
     mk_fix_decl :: Name -> Fixity -> DDec
     mk_fix_decl n f = DLetDec $ DInfixD f n

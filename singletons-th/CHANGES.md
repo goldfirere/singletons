@@ -1,6 +1,11 @@
 Changelog for the `singletons-th` project
 =========================================
 
+next [????.??.??]
+-----------------
+* Make `genDefunSymbols` and related functions less likely to trigger
+  [GHC#19743](https://gitlab.haskell.org/ghc/ghc/-/issues/19743).
+
 3.0 [2021.03.12]
 ----------------
 * The `singletons` library has been split into three libraries:

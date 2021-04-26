@@ -370,7 +370,7 @@ replaceTvbKind :: DVisFunArg -> DTyVarBndrUnit -> DTyVarBndrUnit
 replaceTvbKind (DVisFADep tvb) _   = tvb
 replaceTvbKind (DVisFAAnon k)  tvb = DKindedTV (extractTvbName tvb) () k
 
--- changes all TyVars not to be NameU's. Workaround for GHC#11812/#17537
+-- changes all TyVars not to be NameU's. Workaround for GHC#11812/#17537/#19743
 noExactTyVars :: Data a => a -> a
 noExactTyVars = everywhere go
   where
@@ -390,7 +390,7 @@ noExactTyVars = everywhere go
     fix_inj_ann (InjectivityAnn lhs rhs)
       = InjectivityAnn (noExactName lhs) (map noExactName rhs)
 
--- changes a Name not to be a NameU. Workaround for GHC#11812/#17537
+-- changes a Name not to be a NameU. Workaround for GHC#11812/#17537/#19743
 noExactName :: Name -> Name
 noExactName (Name (OccName occ) (NameU unique)) = mkName (occ ++ show unique)
 noExactName n                                   = n
