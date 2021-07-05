@@ -107,15 +107,27 @@ instance SingKind PErrorMessage where
 
 instance SingI t => SingI ('Text t :: PErrorMessage) where
   sing = SText sing
+instance SingI1 ('Text :: Symbol -> PErrorMessage) where
+  liftSing = SText
 
 instance SingI ty => SingI ('ShowType ty :: PErrorMessage) where
   sing = SShowType sing
+instance SingI1 ('ShowType :: t -> PErrorMessage) where
+  liftSing = SShowType
 
 instance (SingI e1, SingI e2) => SingI (e1 ':<>: e2 :: PErrorMessage) where
   sing = sing :%<>: sing
+instance SingI e1 => SingI1 ('(:<>:) e1 :: PErrorMessage -> PErrorMessage) where
+  liftSing s = sing :%<>: s
+instance SingI2 ('(:<>:) :: PErrorMessage -> PErrorMessage -> PErrorMessage) where
+  liftSing2 s1 s2 = s1 :%<>: s2
 
 instance (SingI e1, SingI e2) => SingI (e1 ':$$: e2 :: PErrorMessage) where
   sing = sing :%$$: sing
+instance SingI e1 => SingI1 ('(:$$:) e1 :: PErrorMessage -> PErrorMessage) where
+  liftSing s = sing :%$$: s
+instance SingI2 ('(:$$:) :: PErrorMessage -> PErrorMessage -> PErrorMessage) where
+  liftSing2 s1 s2 = s1 :%$$: s2
 
 -- | Convert an 'ErrorMessage' into a human-readable 'String'.
 showErrorMessage :: ErrorMessage -> String
@@ -169,11 +181,15 @@ instance SingI ((:<>:@#@$) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) w
   sing = singFun2 (:%<>:)
 instance SingI x => SingI ((:<>:@#@$$) x :: PErrorMessage ~> PErrorMessage) where
   sing = singFun1 (sing @x :%<>:)
+instance SingI1 ((:<>:@#@$$) :: PErrorMessage -> PErrorMessage ~> PErrorMessage) where
+  liftSing s = singFun1 (s :%<>:)
 
 instance SingI ((:$$:@#@$) :: PErrorMessage ~> PErrorMessage ~> PErrorMessage) where
   sing = singFun2 (:%$$:)
 instance SingI x => SingI ((:$$:@#@$$) x :: PErrorMessage ~> PErrorMessage) where
   sing = singFun1 (sing @x :%$$:)
+instance SingI1 ((:$$:@#@$$) :: PErrorMessage -> PErrorMessage ~> PErrorMessage) where
+  liftSing s = singFun1 (s :%$$:)
 
 instance SingI TypeErrorSym0 where
   sing = singFun1 sTypeError

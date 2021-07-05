@@ -175,11 +175,18 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                       Show (SPair (z :: Pair a b))
     instance (SingI n, SingI n) => SingI (Pair (n :: a) (n :: b)) where
       sing = (SPair sing) sing
+    instance SingI n => SingI1 (Pair (n :: a)) where
+      liftSing = SPair sing
+    instance SingI2 Pair where
+      liftSing2 = SPair
     instance SingI (PairSym0 :: (~>) a ((~>) b (Pair a b))) where
       sing = (singFun2 @PairSym0) SPair
     instance SingI d =>
              SingI (PairSym1 (d :: a) :: (~>) b (Pair a b)) where
       sing = (singFun1 @(PairSym1 (d :: a))) (SPair (sing @d))
+    instance SingI1 (PairSym1 :: a -> (~>) b (Pair a b)) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(PairSym1 (d :: a))) (SPair s)
 Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| Pair sz lz = pr

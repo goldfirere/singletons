@@ -98,6 +98,9 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI ((+@#@$$) (d :: Nat) :: (~>) Nat Nat) where
       sing = (singFun1 @((+@#@$$) (d :: Nat))) ((%+) (sing @d))
+    instance SingI1 ((+@#@$$) :: Nat -> (~>) Nat Nat) where
+      liftSing (s :: Sing (d :: Nat))
+        = (singFun1 @((+@#@$$) (d :: Nat))) ((%+) s)
     instance SingI (ChildSym0 :: (~>) Foo Foo) where
       sing = (singFun1 @ChildSym0) sChild
     data SFoo :: Foo -> GHC.Types.Type
@@ -121,8 +124,15 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI ((:+:) (n :: Foo) (n :: Foo)) where
       sing = ((:%+:) sing) sing
+    instance SingI n => SingI1 ((:+:) (n :: Foo)) where
+      liftSing = (:%+:) sing
+    instance SingI2 (:+:) where
+      liftSing2 = (:%+:)
     instance SingI ((:+:@#@$) :: (~>) Foo ((~>) Foo Foo)) where
       sing = (singFun2 @(:+:@#@$)) (:%+:)
     instance SingI d =>
              SingI ((:+:@#@$$) (d :: Foo) :: (~>) Foo Foo) where
       sing = (singFun1 @((:+:@#@$$) (d :: Foo))) ((:%+:) (sing @d))
+    instance SingI1 ((:+:@#@$$) :: Foo -> (~>) Foo Foo) where
+      liftSing (s :: Sing (d :: Foo))
+        = (singFun1 @((:+:@#@$$) (d :: Foo))) ((:%+:) s)

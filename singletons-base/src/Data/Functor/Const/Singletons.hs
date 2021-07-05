@@ -88,6 +88,8 @@ instance SingKind a => SingKind (Const a b) where
   toSing (Const a) = withSomeSing a $ SomeSing . SConst
 instance SingI a => SingI ('Const a) where
   sing = SConst sing
+instance SingI1 'Const where
+  liftSing = SConst
 
 type ConstSym0 :: a ~> Const a b
 data ConstSym0 z

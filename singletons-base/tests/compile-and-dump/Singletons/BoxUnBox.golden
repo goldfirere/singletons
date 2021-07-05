@@ -50,5 +50,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SFBox c) }
     instance SingI n => SingI (FBox (n :: a)) where
       sing = SFBox sing
+    instance SingI1 FBox where
+      liftSing = SFBox
     instance SingI (FBoxSym0 :: (~>) a (Box a)) where
       sing = (singFun1 @FBoxSym0) SFBox

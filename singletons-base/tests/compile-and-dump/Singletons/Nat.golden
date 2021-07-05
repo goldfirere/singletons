@@ -192,6 +192,9 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (PlusSym1 (d :: Nat) :: (~>) Nat Nat) where
       sing = (singFun1 @(PlusSym1 (d :: Nat))) (sPlus (sing @d))
+    instance SingI1 (PlusSym1 :: Nat -> (~>) Nat Nat) where
+      liftSing (s :: Sing (d :: Nat))
+        = (singFun1 @(PlusSym1 (d :: Nat))) (sPlus s)
     data SNat :: Nat -> GHC.Types.Type
       where
         SZero :: SNat (Zero :: Nat)
@@ -312,5 +315,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where
       sing = SSucc sing
+    instance SingI1 Succ where
+      liftSing = SSucc
     instance SingI (SuccSym0 :: (~>) Nat Nat) where
       sing = (singFun1 @SuccSym0) SSucc

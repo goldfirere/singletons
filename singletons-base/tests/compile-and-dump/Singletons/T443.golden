@@ -103,6 +103,8 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
       sing = SZ
     instance SingI n => SingI (S (n :: Nat)) where
       sing = SS sing
+    instance SingI1 S where
+      liftSing = SS
     instance SingI (SSym0 :: (~>) Nat Nat) where
       sing = (singFun1 @SSym0) SS
     instance SingI VNil where
@@ -110,8 +112,16 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI ((:>) (n :: a) (n :: Vec n a)) where
       sing = ((:%>) sing) sing
+    instance SingI n => SingI1 ((:>) (n :: a)) where
+      liftSing = (:%>) sing
+    instance SingI2 (:>) where
+      liftSing2 = (:%>)
     instance SingI ((:>@#@$) :: (~>) a ((~>) (Vec n a) (Vec (S n) a))) where
       sing = (singFun2 @(:>@#@$)) (:%>)
     instance SingI d =>
              SingI ((:>@#@$$) (d :: a) :: (~>) (Vec n a) (Vec (S n) a)) where
       sing = (singFun1 @((:>@#@$$) (d :: a))) ((:%>) (sing @d))
+    instance SingI1 ((:>@#@$$) :: a
+                                  -> (~>) (Vec n a) (Vec (S n) a)) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @((:>@#@$$) (d :: a))) ((:%>) s)

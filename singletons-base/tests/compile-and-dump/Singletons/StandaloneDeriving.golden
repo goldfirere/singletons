@@ -537,11 +537,18 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI ((:*:) (n :: a) (n :: b)) where
       sing = ((:%*:) sing) sing
+    instance SingI n => SingI1 ((:*:) (n :: a)) where
+      liftSing = (:%*:) sing
+    instance SingI2 (:*:) where
+      liftSing2 = (:%*:)
     instance SingI ((:*:@#@$) :: (~>) a ((~>) b (T a b))) where
       sing = (singFun2 @(:*:@#@$)) (:%*:)
     instance SingI d =>
              SingI ((:*:@#@$$) (d :: a) :: (~>) b (T a b)) where
       sing = (singFun1 @((:*:@#@$$) (d :: a))) ((:%*:) (sing @d))
+    instance SingI1 ((:*:@#@$$) :: a -> (~>) b (T a b)) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @((:*:@#@$$) (d :: a))) ((:%*:) s)
     instance SingI S1 where
       sing = SS1
     instance SingI S2 where

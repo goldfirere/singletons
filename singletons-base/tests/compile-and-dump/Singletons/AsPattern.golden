@@ -379,13 +379,28 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n, SingI n) =>
              SingI (Baz (n :: Nat) (n :: Nat) (n :: Nat)) where
       sing = ((SBaz sing) sing) sing
+    instance (SingI n, SingI n) =>
+             SingI1 (Baz (n :: Nat) (n :: Nat)) where
+      liftSing = (SBaz sing) sing
+    instance SingI n => SingI2 (Baz (n :: Nat)) where
+      liftSing2 = SBaz sing
     instance SingI (BazSym0 :: (~>) Nat ((~>) Nat ((~>) Nat Baz))) where
       sing = (singFun3 @BazSym0) SBaz
     instance SingI d =>
              SingI (BazSym1 (d :: Nat) :: (~>) Nat ((~>) Nat Baz)) where
       sing = (singFun2 @(BazSym1 (d :: Nat))) (SBaz (sing @d))
+    instance SingI1 (BazSym1 :: Nat -> (~>) Nat ((~>) Nat Baz)) where
+      liftSing (s :: Sing (d :: Nat))
+        = (singFun2 @(BazSym1 (d :: Nat))) (SBaz s)
     instance (SingI d, SingI d) =>
              SingI (BazSym2 (d :: Nat) (d :: Nat) :: (~>) Nat Baz) where
       sing
         = (singFun1 @(BazSym2 (d :: Nat) (d :: Nat)))
             ((SBaz (sing @d)) (sing @d))
+    instance SingI d =>
+             SingI1 (BazSym2 (d :: Nat) :: Nat -> (~>) Nat Baz) where
+      liftSing (s :: Sing (d :: Nat))
+        = (singFun1 @(BazSym2 (d :: Nat) (d :: Nat))) ((SBaz (sing @d)) s)
+    instance SingI2 (BazSym2 :: Nat -> Nat -> (~>) Nat Baz) where
+      liftSing2 (s :: Sing (d :: Nat)) (s :: Sing (d :: Nat))
+        = (singFun1 @(BazSym2 (d :: Nat) (d :: Nat))) ((SBaz s) s)

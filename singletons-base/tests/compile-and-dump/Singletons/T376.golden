@@ -39,3 +39,6 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (FSym1 (d :: (~>) () ()) :: (~>) () ()) where
       sing = (singFun1 @(FSym1 (d :: (~>) () ()))) (sF (sing @d))
+    instance SingI1 (FSym1 :: (~>) () () -> (~>) () ()) where
+      liftSing (s :: Sing (d :: (~>) () ()))
+        = (singFun1 @(FSym1 (d :: (~>) () ()))) (sF s)

@@ -25,7 +25,7 @@ import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
 
 -- Given the Name of something, take the defunctionalization symbols for its
--- promoted counterpart and create SingI instances for them. As a concrete
+-- promoted counterpart and create SingI{,1,2} instances for them. As a concrete
 -- example, if you have:
 --
 --   foo :: Eq a => a -> a -> Bool
@@ -36,13 +36,21 @@ import Language.Haskell.TH.Syntax
 --   FooSym0 :: a ~> a ~> Bool
 --   FooSym1 :: a -> a ~> Bool
 --
--- We can declare SingI instances for these two symbols like so:
+-- We can declare SingI and SingI1 instances for these two symbols like so:
 --
 --   instance SEq a => SingI (FooSym0 :: a ~> a ~> Bool) where
 --     sing = singFun2 sFoo
 --
 --   instance (SEq a, SingI x) => SingI (FooSym1 x :: a ~> Bool) where
 --     sing = singFun1 (sFoo (sing @_ @x))
+--
+--   instance SEq a => SingI1 (FooSym1 :: a -> a ~> Bool) where
+--     liftSing s = singFun1 (sFoo s)
+--
+-- Only FooSym1 will have a SingI1 instance, as unlike FooSym0, it is able to
+-- be partially applied (using normal function application) to a single
+-- argument. Neither FooSym0 nor FooSym1 can be partially applied to two
+-- arguments, so neither will receive a SingI2 instance.
 --
 -- Note that singDefuns takes Maybe DKinds for the promoted argument and result
 -- types, in case we have an entity whose type needs to be inferred.
@@ -61,8 +69,8 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
     _  -> do opts     <- getOptions
              sty_ctxt <- mapM singPred ty_ctxt
              names    <- replicateM (length mb_ty_args) $ qNewName "d"
-             let tvbs       = zipWith inferMaybeKindTV names mb_ty_args
-                 (_, insts) = go opts 0 sty_ctxt [] tvbs
+             let tvbs = zipWith inferMaybeKindTV names mb_ty_args
+             (_, insts) <- go opts 0 sty_ctxt [] tvbs
              pure insts
   where
     num_ty_args :: Int
@@ -103,64 +111,95 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
     -- to be a performance bottleneck since the number of arguments rarely
     -- gets to be that large.
     go :: Options -> Int -> DCxt -> [DTyVarBndrUnit] -> [DTyVarBndrUnit]
-       -> (Maybe DKind, [DDec])
-    go _    _       _        _        []                 = (mb_ty_res, [])
-    go opts sym_num sty_ctxt arg_tvbs (res_tvb:res_tvbs) =
-      (mb_new_res, new_inst:insts)
+       -> SgM (Maybe DKind, [DDec])
+    go _    _       _        _        []                 = pure (mb_ty_res, [])
+    go opts sym_num sty_ctxt arg_tvbs (res_tvb:res_tvbs) = do
+      (mb_res, insts) <- go opts (sym_num + 1) sty_ctxt (arg_tvbs ++ [res_tvb]) res_tvbs
+      new_insts <- mapMaybeM (mb_new_inst mb_res) [0, 1, 2]
+      pure (mk_inst_kind [] res_tvb mb_res, new_insts ++ insts)
       where
-        mb_res :: Maybe DKind
-        insts  :: [DDec]
-        (mb_res, insts) = go opts (sym_num + 1) sty_ctxt (arg_tvbs ++ [res_tvb]) res_tvbs
-
-        mb_new_res :: Maybe DKind
-        mb_new_res = mk_inst_kind res_tvb mb_res
-
         sing_fun_num :: Int
         sing_fun_num = num_ty_args - sym_num
 
-        mk_sing_fun_expr :: DExp -> DExp
-        mk_sing_fun_expr sing_expr =
-          foldl' (\f tvb_n -> f `DAppE` (DVarE singMethName `DAppTypeE` DVarT tvb_n))
-                 sing_expr
-                 (map extractTvbName arg_tvbs)
-
-        singI_ctxt :: DCxt
-        singI_ctxt = map (DAppT (DConT singIName) . tvbToType) arg_tvbs
-
-        mk_inst_ty :: DType -> DType
-        mk_inst_ty inst_head
-          = case mb_new_res of
-              Just inst_kind -> inst_head `DSigT` inst_kind
-              Nothing        -> inst_head
-
-        arg_tvb_tys :: [DType]
-        arg_tvb_tys = map dTyVarBndrToDType arg_tvbs
-
         -- Construct the arrow kind used to annotate the defunctionalization
-        -- symbol (e.g., the `a ~> a ~> Bool` in
-        -- `SingI (FooSym0 :: a ~> a ~> Bool)`).
+        -- symbol. For example, this constructs the `a -> b -> c ~> Bool` in
+        -- `SingI1 (FooSym1 :: a -> b -> c ~> Bool)`, where:
+        --
+        -- * The first argument to `mk_inst_kind` gives the kinds [a, b], which
+        --   are used with normal function arrows.
+        -- * The second argumen to `mk_inst_kind` gives the kind `c`, which is
+        --   used with a defunctionalized function arrow.
+        --
         -- If any of the argument kinds or result kind isn't known (i.e., is
         -- Nothing), then we opt not to construct this arrow kind altogether.
         -- See Note [singDefuns and type inference]
-        mk_inst_kind :: DTyVarBndrUnit -> Maybe DKind -> Maybe DKind
-        mk_inst_kind tvb' = buildTyFunArrow_maybe (extractTvbKind tvb')
+        mk_inst_kind :: [DTyVarBndrUnit] -> DTyVarBndrUnit -> Maybe DKind -> Maybe DKind
+        mk_inst_kind funTvbs defunTvb mbKind =
+          foldr buildFunArrow_maybe
+                (buildTyFunArrow_maybe (extractTvbKind defunTvb) mbKind)
+                (map extractTvbKind funTvbs)
 
-        new_inst :: DDec
-        new_inst = DInstanceD Nothing Nothing
-                              (sty_ctxt ++ singI_ctxt)
-                              (DConT singIName `DAppT` mk_inst_ty defun_inst_ty)
-                              [DLetDec $ DValD (DVarP singMethName)
-                                       $ wrapSingFun sing_fun_num defun_inst_ty
-                                       $ mk_sing_fun_expr sing_exp ]
+        -- @mb_new_inst mb_res k@ returns 'Just' an instance of @SingI<k>@ if
+        -- @k@ is less than or equal to the number of arguments to which the
+        -- defunctionalization symbol can be partially applied using normal
+        -- function application. Otherwise, it returns 'Nothing'.
+        mb_new_inst :: Maybe DKind -> Int -> SgM (Maybe DDec)
+        mb_new_inst mb_res k
+          | k <= sym_num
+          = do vs <- replicateM k $ qNewName "s"
+               let sing_vs = zipWith (\v arg_tvb ->
+                                       DSigP (DVarP v)
+                                             (singFamily `DAppT` dTyVarBndrToDType arg_tvb))
+                                     vs last_arg_tvbs
+               pure $ Just $
+                 DInstanceD Nothing Nothing
+                   (sty_ctxt ++ singI_ctxt)
+                   (DConT (mkSingIName k) `DAppT` mk_inst_ty (mk_defun_inst_ty init_arg_tvbs))
+                   [ DLetDec $ DFunD (mkSingMethName k)
+                      [ DClause sing_vs
+                         $ wrapSingFun sing_fun_num (mk_defun_inst_ty arg_tvbs)
+                         $ mk_sing_fun_expr sing_exp vs
+                      ]
+                   ]
+          | otherwise
+          = pure Nothing
           where
-            defun_inst_ty :: DType
-            defun_inst_ty = foldType (DConT (defunctionalizedName opts n sym_num))
-                                     arg_tvb_tys
+            init_arg_tvbs, last_arg_tvbs :: [DTyVarBndrUnit]
+            (init_arg_tvbs, last_arg_tvbs) = splitAt (sym_num - k) arg_tvbs
+
+            mk_defun_inst_ty :: [DTyVarBndrUnit] -> DType
+            mk_defun_inst_ty tvbs =
+              foldType (DConT (defunctionalizedName opts n sym_num))
+                       (map dTyVarBndrToDType tvbs)
 
             sing_exp :: DExp
             sing_exp = case ns of
                          DataName -> DConE $ singledDataConName opts n
                          _        -> DVarE $ singledValueName opts n
+
+            mk_sing_fun_expr :: DExp -> [Name] -> DExp
+            mk_sing_fun_expr sing_expr vs =
+              foldl' DAppE sing_expr
+                     (map (\arg_tvb -> DVarE singMethName `DAppTypeE`
+                                       DVarT (extractTvbName arg_tvb))
+                          init_arg_tvbs ++
+                      map DVarE vs)
+
+            singI_ctxt :: DCxt
+            singI_ctxt = map (DAppT (DConT singIName) . tvbToType) init_arg_tvbs
+
+            mk_inst_ty :: DType -> DType
+            mk_inst_ty inst_head
+              = case mk_inst_kind last_arg_tvbs res_tvb mb_res of
+                  Just inst_kind -> inst_head `DSigT` inst_kind
+                  Nothing        -> inst_head
+
+-- Shorthand for building (k1 -> k2)
+buildFunArrow :: DKind -> DKind -> DKind
+buildFunArrow k1 k2 = DArrowT `DAppT` k1 `DAppT` k2
+
+buildFunArrow_maybe :: Maybe DKind -> Maybe DKind -> Maybe DKind
+buildFunArrow_maybe m_k1 m_k2 = buildFunArrow <$> m_k1 <*> m_k2
 
 {-
 Note [singDefuns and type inference]

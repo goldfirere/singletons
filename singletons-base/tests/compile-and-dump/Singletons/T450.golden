@@ -69,6 +69,8 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SMkAge c) }
     instance SingI n => SingI ('PMkAge (n :: Nat)) where
       sing = SMkAge sing
+    instance SingI1 'PMkAge where
+      liftSing = SMkAge
     instance SingI (PMkAgeSym0 :: (~>) Nat PAge) where
       sing = (singFun1 @PMkAgeSym0) SMkAge
     addAge :: Age -> Age -> Age
@@ -110,6 +112,9 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (AddAgeSym1 (d :: PAge) :: (~>) PAge PAge) where
       sing = (singFun1 @(AddAgeSym1 (d :: PAge))) (sAddAge (sing @d))
+    instance SingI1 (AddAgeSym1 :: PAge -> (~>) PAge PAge) where
+      liftSing (s :: Sing (d :: PAge))
+        = (singFun1 @(AddAgeSym1 (d :: PAge))) (sAddAge s)
     type PMkMessageSym0 :: (~>) Symbol PMessage
     data PMkMessageSym0 :: (~>) Symbol PMessage
       where
@@ -135,6 +140,8 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SMkMessage c) }
     instance SingI n => SingI ('PMkMessage (n :: Symbol)) where
       sing = SMkMessage sing
+    instance SingI1 'PMkMessage where
+      liftSing = SMkMessage
     instance SingI (PMkMessageSym0 :: (~>) Symbol PMessage) where
       sing = (singFun1 @PMkMessageSym0) SMkMessage
     appendMessage :: Message -> Message -> Message
@@ -183,6 +190,11 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       sing
         = (singFun1 @(AppendMessageSym1 (d :: PMessage)))
             (sAppendMessage (sing @d))
+    instance SingI1 (AppendMessageSym1 :: PMessage
+                                          -> (~>) PMessage PMessage) where
+      liftSing (s :: Sing (d :: PMessage))
+        = (singFun1 @(AppendMessageSym1 (d :: PMessage)))
+            (sAppendMessage s)
     type PMkFunctionSym0 :: forall (a :: GHC.Types.Type)
                                    (b :: GHC.Types.Type).
                             (~>) ((~>) a b) (PFunction (a :: GHC.Types.Type) (b :: GHC.Types.Type))
@@ -220,6 +232,8 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
             SomeSing c -> SomeSing (SMkFunction c) }
     instance SingI n => SingI ('PMkFunction (n :: (~>) a b)) where
       sing = SMkFunction sing
+    instance SingI1 'PMkFunction where
+      liftSing = SMkFunction
     instance SingI (PMkFunctionSym0 :: (~>) ((~>) a b) (PFunction (a :: GHC.Types.Type) (b :: GHC.Types.Type))) where
       sing = (singFun1 @PMkFunctionSym0) SMkFunction
     composeFunction :: Function b c -> Function a b -> Function a c
@@ -274,3 +288,8 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       sing
         = (singFun1 @(ComposeFunctionSym1 (d :: PFunction b c)))
             (sComposeFunction (sing @d))
+    instance SingI1 (ComposeFunctionSym1 :: PFunction b c
+                                            -> (~>) (PFunction a b) (PFunction a c)) where
+      liftSing (s :: Sing (d :: PFunction b c))
+        = (singFun1 @(ComposeFunctionSym1 (d :: PFunction b c)))
+            (sComposeFunction s)

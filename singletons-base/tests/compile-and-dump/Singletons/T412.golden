@@ -178,16 +178,26 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       infix 6 `sM1`
     instance (SingI n, SingI n) => SingI (MkD1 (n :: a) (n :: b)) where
       sing = (SMkD1 sing) sing
+    instance SingI n => SingI1 (MkD1 (n :: a)) where
+      liftSing = SMkD1 sing
+    instance SingI2 MkD1 where
+      liftSing2 = SMkD1
     instance SingI (MkD1Sym0 :: (~>) a ((~>) b (D1 a b))) where
       sing = (singFun2 @MkD1Sym0) SMkD1
     instance SingI d =>
              SingI (MkD1Sym1 (d :: a) :: (~>) b (D1 a b)) where
       sing = (singFun1 @(MkD1Sym1 (d :: a))) (SMkD1 (sing @d))
+    instance SingI1 (MkD1Sym1 :: a -> (~>) b (D1 a b)) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(MkD1Sym1 (d :: a))) (SMkD1 s)
     instance SC1 a b => SingI (M1Sym0 :: (~>) a ((~>) b Bool)) where
       sing = (singFun2 @M1Sym0) sM1
     instance (SC1 a b, SingI d) =>
              SingI (M1Sym1 (d :: a) :: (~>) b Bool) where
       sing = (singFun1 @(M1Sym1 (d :: a))) (sM1 (sing @d))
+    instance SC1 a b => SingI1 (M1Sym1 :: a -> (~>) b Bool) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(M1Sym1 (d :: a))) (sM1 s)
 Singletons/T412.hs:0:0:: Splicing declarations
     genSingletons [''C2, ''T2a, ''T2b, ''D2]
   ======>
@@ -230,6 +240,9 @@ Singletons/T412.hs:0:0:: Splicing declarations
     instance (SC2 a b, SingI d) =>
              SingI (M2Sym1 (d :: a) :: (~>) b Bool) where
       sing = (singFun1 @(M2Sym1 (d :: a))) (sM2 (sing @d))
+    instance SC2 a b => SingI1 (M2Sym1 :: a -> (~>) b Bool) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(M2Sym1 (d :: a))) (sM2 s)
     type T2aSym0 :: (~>) GHC.Types.Type ((~>) GHC.Types.Type GHC.Types.Type)
     data T2aSym0 :: (~>) GHC.Types.Type ((~>) GHC.Types.Type GHC.Types.Type)
       where
@@ -381,8 +394,16 @@ Singletons/T412.hs:0:0:: Splicing declarations
     instance (SingI n, SingI n) =>
              SingI ('MkD2 (n :: a) (n :: b)) where
       sing = (SMkD2 sing) sing
+    instance SingI n => SingI1 ('MkD2 (n :: a)) where
+      liftSing = SMkD2 sing
+    instance SingI2 'MkD2 where
+      liftSing2 = SMkD2
     instance SingI (MkD2Sym0 :: (~>) a ((~>) b (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type)))) where
       sing = (singFun2 @MkD2Sym0) SMkD2
     instance SingI d =>
              SingI (MkD2Sym1 (d :: a) :: (~>) b (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type))) where
       sing = (singFun1 @(MkD2Sym1 (d :: a))) (SMkD2 (sing @d))
+    instance SingI1 (MkD2Sym1 :: a
+                                 -> (~>) b (D2 (a :: GHC.Types.Type) (b :: GHC.Types.Type))) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(MkD2Sym1 (d :: a))) (SMkD2 s)

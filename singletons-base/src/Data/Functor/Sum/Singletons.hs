@@ -57,12 +57,18 @@ data SSum :: Sum f g a -> Type where
 type instance Sing = SSum
 instance SingI x => SingI ('InL x) where
   sing = SInL sing
+instance SingI1 'InL where
+  liftSing = SInL
 instance SingI y => SingI ('InR y) where
   sing = SInR sing
+instance SingI1 'InR where
+  liftSing = SInR
 
 type InLSym0 :: forall f g a. f a ~> Sum f g a
 data InLSym0 z
 type instance Apply InLSym0 x = 'InL x
+instance SingI InLSym0 where
+  sing = singFun1 SInL
 
 type InLSym1 :: forall f g a. f a -> Sum f g a
 type family InLSym1 x where
@@ -71,6 +77,8 @@ type family InLSym1 x where
 type InRSym0 :: forall f g a. g a ~> Sum f g a
 data InRSym0 z
 type instance Apply InRSym0 y = 'InR y
+instance SingI InRSym0 where
+  sing = singFun1 SInR
 
 type InRSym1 :: forall f g a. g a -> Sum f g a
 type family InRSym1 x where

@@ -267,6 +267,8 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       sing = SE
     instance SingI n => SingI (Foo3 (n :: a)) where
       sing = SFoo3 sing
+    instance SingI1 Foo3 where
+      liftSing = SFoo3
     instance SingI (Foo3Sym0 :: (~>) a (Foo3 a)) where
       sing = (singFun1 @Foo3Sym0) SFoo3
     instance SingI Foo41 where
@@ -276,8 +278,15 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI (Pair (n :: Bool) (n :: Bool)) where
       sing = (SPair sing) sing
+    instance SingI n => SingI1 (Pair (n :: Bool)) where
+      liftSing = SPair sing
+    instance SingI2 Pair where
+      liftSing2 = SPair
     instance SingI (PairSym0 :: (~>) Bool ((~>) Bool Pair)) where
       sing = (singFun2 @PairSym0) SPair
     instance SingI d =>
              SingI (PairSym1 (d :: Bool) :: (~>) Bool Pair) where
       sing = (singFun1 @(PairSym1 (d :: Bool))) (SPair (sing @d))
+    instance SingI1 (PairSym1 :: Bool -> (~>) Bool Pair) where
+      liftSing (s :: Sing (d :: Bool))
+        = (singFun1 @(PairSym1 (d :: Bool))) (SPair s)

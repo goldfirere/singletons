@@ -227,11 +227,15 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       sing = SX1
     instance SingI n => SingI (X2 (n :: Y a)) where
       sing = SX2 sing
+    instance SingI1 X2 where
+      liftSing = SX2
     instance SingI (X2Sym0 :: (~>) (Y a) (X (a :: Type))) where
       sing = (singFun1 @X2Sym0) SX2
     instance SingI Y1 where
       sing = SY1
     instance SingI n => SingI (Y2 (n :: X a)) where
       sing = SY2 sing
+    instance SingI1 Y2 where
+      liftSing = SY2
     instance SingI (Y2Sym0 :: (~>) (X a) (Y (a :: Type))) where
       sing = (singFun1 @Y2Sym0) SY2

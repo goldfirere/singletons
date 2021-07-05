@@ -12,6 +12,7 @@ module Data.Singletons.TH.Single.Data where
 
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
+import Data.Maybe
 import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
 import Data.Singletons.TH.Promote.Type
@@ -174,6 +175,7 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
   = do
   opts <- getOptions
   let types = tysOfConFields fields
+      numTypes = length types
       sName = singledDataConName opts name
       sCon = DConE sName
       pCon = DConT $ promotedDataTypeOrConName opts name
@@ -186,14 +188,24 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
       kvbs = singTypeKVBs con_tvbs kinds [] rty' mempty
       all_tvbs = kvbs ++ zipWith (`DKindedTV` SpecifiedSpec) indexNames kinds
 
+  -- @mb_SingI_dec k@ returns 'Just' an instance of @SingI<k>@ if @k@ is
+  -- less than or equal to the number of fields in the data constructor.
+  -- Otherwise, it returns 'Nothing'.
+  let mb_SingI_dec :: Int -> Maybe DDec
+      mb_SingI_dec k
+        | k <= numTypes
+        = let take_until_k = take (numTypes - k) in
+          Just $ DInstanceD Nothing Nothing
+                   (map (DAppT (DConT singIName)) (take_until_k indices))
+                   (DAppT (DConT (mkSingIName k))
+                          (foldType pCon (take_until_k kindedIndices)))
+                   [DLetDec $ DValD (DVarP (mkSingMethName k))
+                          (foldExp sCon (replicate (numTypes - k) (DVarE singMethName)))]
+        | otherwise
+        = Nothing
+
   -- SingI instance for data constructor
-  emitDecs
-    [DInstanceD Nothing Nothing
-                (map (DAppT (DConT singIName)) indices)
-                (DAppT (DConT singIName)
-                       (foldType pCon kindedIndices))
-                [DLetDec $ DValD (DVarP singMethName)
-                       (foldExp sCon (map (const $ DVarE singMethName) types))]]
+  emitDecs $ mapMaybe mb_SingI_dec [0, 1, 2]
   -- SingI instances for defunctionalization symbols. Note that we don't
   -- support contexts in constructors at the moment, so it's fine for now to
   -- just assume that the context is always ().

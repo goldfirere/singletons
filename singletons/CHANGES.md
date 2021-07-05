@@ -1,6 +1,17 @@
 Changelog for the `singletons` project
 ======================================
 
+3.0.1 [????.??.??]
+------------------
+* Add `SingI1` and `SingI2`, higher-order versions of `SingI`, to
+  `Data.Singletons`, along with various derived functions:
+
+  * `sing{1,2}`
+  * `singByProxy{1,2}` and `singByProxy{1,2}#`
+  * `usingSing{1,2}`
+  * `withSing{1,2}`
+  * `singThat{1,2}`
+
 3.0 [2021.03.12]
 ----------------
 * The `singletons` library has been split into three libraries:

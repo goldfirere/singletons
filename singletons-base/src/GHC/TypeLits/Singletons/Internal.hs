@@ -226,6 +226,8 @@ instance SingI (^@#@$) where
   sing = singFun2 (%^)
 instance SingI x => SingI ((^@#@$$) x) where
   sing = singFun1 (sing @x %^)
+instance SingI1 (^@#@$$) where
+  liftSing s = singFun1 (s %^)
 
 -- | The singleton analogue of 'TN.<=?'
 --
@@ -254,3 +256,5 @@ instance SingI (<=?@#@$) where
   sing = singFun2 (%<=?)
 instance SingI x => SingI ((<=?@#@$$) x) where
   sing = singFun1 (sing @x %<=?)
+instance SingI1 (<=?@#@$$) where
+  liftSing s = singFun1 (s %<=?)

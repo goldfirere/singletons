@@ -696,38 +696,66 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @Foo7Sym0) sFoo7
     instance SingI d => SingI (Foo7Sym1 (d :: a) :: (~>) b b) where
       sing = (singFun1 @(Foo7Sym1 (d :: a))) (sFoo7 (sing @d))
+    instance SingI1 (Foo7Sym1 :: a -> (~>) b b) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Foo7Sym1 (d :: a))) (sFoo7 s)
     instance SingI (Foo6Sym0 :: (~>) a ((~>) b a)) where
       sing = (singFun2 @Foo6Sym0) sFoo6
     instance SingI d => SingI (Foo6Sym1 (d :: a) :: (~>) b a) where
       sing = (singFun1 @(Foo6Sym1 (d :: a))) (sFoo6 (sing @d))
+    instance SingI1 (Foo6Sym1 :: a -> (~>) b a) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Foo6Sym1 (d :: a))) (sFoo6 s)
     instance SingI (Foo5Sym0 :: (~>) a ((~>) b b)) where
       sing = (singFun2 @Foo5Sym0) sFoo5
     instance SingI d => SingI (Foo5Sym1 (d :: a) :: (~>) b b) where
       sing = (singFun1 @(Foo5Sym1 (d :: a))) (sFoo5 (sing @d))
+    instance SingI1 (Foo5Sym1 :: a -> (~>) b b) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Foo5Sym1 (d :: a))) (sFoo5 s)
     instance SingI (Foo4Sym0 :: (~>) a ((~>) b ((~>) c a))) where
       sing = (singFun3 @Foo4Sym0) sFoo4
     instance SingI d =>
              SingI (Foo4Sym1 (d :: a) :: (~>) b ((~>) c a)) where
       sing = (singFun2 @(Foo4Sym1 (d :: a))) (sFoo4 (sing @d))
+    instance SingI1 (Foo4Sym1 :: a -> (~>) b ((~>) c a)) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun2 @(Foo4Sym1 (d :: a))) (sFoo4 s)
     instance (SingI d, SingI d) =>
              SingI (Foo4Sym2 (d :: a) (d :: b) :: (~>) c a) where
       sing
         = (singFun1 @(Foo4Sym2 (d :: a) (d :: b)))
             ((sFoo4 (sing @d)) (sing @d))
+    instance SingI d =>
+             SingI1 (Foo4Sym2 (d :: a) :: b -> (~>) c a) where
+      liftSing (s :: Sing (d :: b))
+        = (singFun1 @(Foo4Sym2 (d :: a) (d :: b))) ((sFoo4 (sing @d)) s)
+    instance SingI2 (Foo4Sym2 :: a -> b -> (~>) c a) where
+      liftSing2 (s :: Sing (d :: a)) (s :: Sing (d :: b))
+        = (singFun1 @(Foo4Sym2 (d :: a) (d :: b))) ((sFoo4 s) s)
     instance SingI (Foo3Sym0 :: (~>) a a) where
       sing = (singFun1 @Foo3Sym0) sFoo3
     instance SingI (Foo2Sym0 :: (~>) a ((~>) b a)) where
       sing = (singFun2 @Foo2Sym0) sFoo2
     instance SingI d => SingI (Foo2Sym1 (d :: a) :: (~>) b a) where
       sing = (singFun1 @(Foo2Sym1 (d :: a))) (sFoo2 (sing @d))
+    instance SingI1 (Foo2Sym1 :: a -> (~>) b a) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Foo2Sym1 (d :: a))) (sFoo2 s)
     instance SingI (Foo1Sym0 :: (~>) a ((~>) b a)) where
       sing = (singFun2 @Foo1Sym0) sFoo1
     instance SingI d => SingI (Foo1Sym1 (d :: a) :: (~>) b a) where
       sing = (singFun1 @(Foo1Sym1 (d :: a))) (sFoo1 (sing @d))
+    instance SingI1 (Foo1Sym1 :: a -> (~>) b a) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Foo1Sym1 (d :: a))) (sFoo1 s)
     instance SingI (Foo0Sym0 :: (~>) a ((~>) b a)) where
       sing = (singFun2 @Foo0Sym0) sFoo0
     instance SingI d => SingI (Foo0Sym1 (d :: a) :: (~>) b a) where
       sing = (singFun1 @(Foo0Sym1 (d :: a))) (sFoo0 (sing @d))
+    instance SingI1 (Foo0Sym1 :: a -> (~>) b a) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Foo0Sym1 (d :: a))) (sFoo0 s)
     data SFoo :: forall a b. Foo a b -> GHC.Types.Type
       where
         SFoo :: forall a b (n :: a) (n :: b).
@@ -741,8 +769,15 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
             (,) (SomeSing c) (SomeSing c) -> SomeSing ((SFoo c) c) }
     instance (SingI n, SingI n) => SingI (Foo (n :: a) (n :: b)) where
       sing = (SFoo sing) sing
+    instance SingI n => SingI1 (Foo (n :: a)) where
+      liftSing = SFoo sing
+    instance SingI2 Foo where
+      liftSing2 = SFoo
     instance SingI (FooSym0 :: (~>) a ((~>) b (Foo a b))) where
       sing = (singFun2 @FooSym0) SFoo
     instance SingI d =>
              SingI (FooSym1 (d :: a) :: (~>) b (Foo a b)) where
       sing = (singFun1 @(FooSym1 (d :: a))) (SFoo (sing @d))
+    instance SingI1 (FooSym1 :: a -> (~>) b (Foo a b)) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(FooSym1 (d :: a))) (SFoo s)

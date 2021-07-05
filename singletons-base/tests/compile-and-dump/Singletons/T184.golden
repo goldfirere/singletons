@@ -433,13 +433,23 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (CartProdSym1 (d :: [a]) :: (~>) [b] [(a, b)]) where
       sing = (singFun1 @(CartProdSym1 (d :: [a]))) (sCartProd (sing @d))
+    instance SingI1 (CartProdSym1 :: [a] -> (~>) [b] [(a, b)]) where
+      liftSing (s :: Sing (d :: [a]))
+        = (singFun1 @(CartProdSym1 (d :: [a]))) (sCartProd s)
     instance SingI (Zip'Sym0 :: (~>) [a] ((~>) [b] [(a, b)])) where
       sing = (singFun2 @Zip'Sym0) sZip'
     instance SingI d =>
              SingI (Zip'Sym1 (d :: [a]) :: (~>) [b] [(a, b)]) where
       sing = (singFun1 @(Zip'Sym1 (d :: [a]))) (sZip' (sing @d))
+    instance SingI1 (Zip'Sym1 :: [a] -> (~>) [b] [(a, b)]) where
+      liftSing (s :: Sing (d :: [a]))
+        = (singFun1 @(Zip'Sym1 (d :: [a]))) (sZip' s)
     instance SingI (BoogieSym0 :: (~>) (Maybe a) ((~>) (Maybe Bool) (Maybe a))) where
       sing = (singFun2 @BoogieSym0) sBoogie
     instance SingI d =>
              SingI (BoogieSym1 (d :: Maybe a) :: (~>) (Maybe Bool) (Maybe a)) where
       sing = (singFun1 @(BoogieSym1 (d :: Maybe a))) (sBoogie (sing @d))
+    instance SingI1 (BoogieSym1 :: Maybe a
+                                   -> (~>) (Maybe Bool) (Maybe a)) where
+      liftSing (s :: Sing (d :: Maybe a))
+        = (singFun1 @(BoogieSym1 (d :: Maybe a))) (sBoogie s)

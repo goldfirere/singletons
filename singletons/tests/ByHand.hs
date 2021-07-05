@@ -135,6 +135,8 @@ instance SingI Zero where
   sing = SZero
 instance SingI n => SingI (Succ n) where
   sing = SSucc sing
+instance SingI1 Succ where
+  liftSing = SSucc
 instance SingKind Nat where
   type Demote Nat = Nat
   fromSing SZero = Zero
@@ -221,6 +223,8 @@ instance SingI (Nothing :: Maybe k) where
   sing = SNothing
 instance SingI a => SingI (Just (a :: k)) where
   sing = SJust sing
+instance SingI1 Just where
+  liftSing = SJust
 instance SingKind k => SingKind (Maybe k) where
   type Demote (Maybe k) = Maybe (Demote k)
   fromSing SNothing = Nothing
@@ -289,6 +293,10 @@ instance SingI Nil where
 instance (SingI h, SingI t) =>
            SingI (Cons (h :: k) (t :: List k)) where
   sing = SCons sing sing
+instance SingI h => SingI1 (Cons (h :: k)) where
+  liftSing = SCons sing
+instance SingI2 Cons where
+  liftSing2 = SCons
 instance SingKind k => SingKind (List k) where
   type Demote (List k) = List (Demote k)
   fromSing SNil = Nil
@@ -311,8 +319,12 @@ type instance Sing = SEither
 
 instance (SingI a) => SingI (Left (a :: k)) where
   sing = SLeft sing
+instance SingI1 Left where
+  liftSing = SLeft
 instance (SingI b) => SingI (Right (b :: k)) where
   sing = SRight sing
+instance SingI1 Right where
+  liftSing = SRight
 instance (SingKind k1, SingKind k2) => SingKind (Either k1 k2) where
   type Demote (Either k1 k2) = Either (Demote k1) (Demote k2)
   fromSing (SLeft x) = Left (fromSing x)
@@ -353,6 +365,8 @@ type instance Sing = SComposite
 
 instance SingI a => SingI (MkComp (a :: Either (Maybe k1) k2)) where
   sing = SMkComp sing
+instance SingI1 MkComp where
+  liftSing = SMkComp
 instance (SingKind k1, SingKind k2) => SingKind (Composite k1 k2) where
   type Demote (Composite k1 k2) =
     Composite (Demote k1) (Demote k2)
@@ -412,8 +426,14 @@ instance SingI Nat where
   sing = SNat
 instance SingI a => SingI (Maybe a) where
   sing = SMaybe sing
+instance SingI1 Maybe where
+  liftSing = SMaybe
 instance (SingI a, SingI n) => SingI (Vec a n) where
   sing = SVec sing sing
+instance SingI a => SingI1 (Vec a) where
+  liftSing = SVec sing
+instance SingI2 Vec where
+  liftSing2 = SVec
 
 instance SingKind Type where
   type Demote Type = Rep

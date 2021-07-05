@@ -36,3 +36,6 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
     instance (SColumn f, SingI d) =>
              SingI (ColSym1 (d :: f a) :: (~>) a Bool) where
       sing = (singFun1 @(ColSym1 (d :: f a))) (sCol (sing @d))
+    instance SColumn f => SingI1 (ColSym1 :: f a -> (~>) a Bool) where
+      liftSing (s :: Sing (d :: f a))
+        = (singFun1 @(ColSym1 (d :: f a))) (sCol s)
