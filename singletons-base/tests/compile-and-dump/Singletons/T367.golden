@@ -35,3 +35,6 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @Const'Sym0) sConst'
     instance SingI d => SingI (Const'Sym1 (d :: a) :: (~>) b a) where
       sing = (singFun1 @(Const'Sym1 (d :: a))) (sConst' (sing @d))
+    instance SingI1 (Const'Sym1 :: a -> (~>) b a) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Const'Sym1 (d :: a))) (sConst' s)

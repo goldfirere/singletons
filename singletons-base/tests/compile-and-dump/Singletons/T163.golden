@@ -39,9 +39,13 @@ Singletons/T163.hs:0:0:: Splicing declarations
         = case toSing b :: SomeSing b of { SomeSing c -> SomeSing (SR c) }
     instance SingI n => SingI (L (n :: a)) where
       sing = SL sing
+    instance SingI1 L where
+      liftSing = SL
     instance SingI (LSym0 :: (~>) a ((+) a b)) where
       sing = (singFun1 @LSym0) SL
     instance SingI n => SingI (R (n :: b)) where
       sing = SR sing
+    instance SingI1 R where
+      liftSing = SR
     instance SingI (RSym0 :: (~>) b ((+) a b)) where
       sing = (singFun1 @RSym0) SR

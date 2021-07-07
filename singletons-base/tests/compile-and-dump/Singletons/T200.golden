@@ -129,12 +129,20 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
              SingI ((<>:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
       sing
         = (singFun1 @((<>:@#@$$) (d :: ErrorMessage))) ((%<>:) (sing @d))
+    instance SingI1 ((<>:@#@$$) :: ErrorMessage
+                                   -> (~>) ErrorMessage ErrorMessage) where
+      liftSing (s :: Sing (d :: ErrorMessage))
+        = (singFun1 @((<>:@#@$$) (d :: ErrorMessage))) ((%<>:) s)
     instance SingI (($$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
       sing = (singFun2 @($$:@#@$)) (%$$:)
     instance SingI d =>
              SingI (($$:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
       sing
         = (singFun1 @(($$:@#@$$) (d :: ErrorMessage))) ((%$$:) (sing @d))
+    instance SingI1 (($$:@#@$$) :: ErrorMessage
+                                   -> (~>) ErrorMessage ErrorMessage) where
+      liftSing (s :: Sing (d :: ErrorMessage))
+        = (singFun1 @(($$:@#@$$) (d :: ErrorMessage))) ((%$$:) s)
     data SErrorMessage :: ErrorMessage -> GHC.Types.Type
       where
         (:%$$:) :: forall (n :: ErrorMessage) (n :: ErrorMessage).
@@ -169,22 +177,40 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI ((:$$:) (n :: ErrorMessage) (n :: ErrorMessage)) where
       sing = ((:%$$:) sing) sing
+    instance SingI n => SingI1 ((:$$:) (n :: ErrorMessage)) where
+      liftSing = (:%$$:) sing
+    instance SingI2 (:$$:) where
+      liftSing2 = (:%$$:)
     instance SingI ((:$$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
       sing = (singFun2 @(:$$:@#@$)) (:%$$:)
     instance SingI d =>
              SingI ((:$$:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
       sing
         = (singFun1 @((:$$:@#@$$) (d :: ErrorMessage))) ((:%$$:) (sing @d))
+    instance SingI1 ((:$$:@#@$$) :: ErrorMessage
+                                    -> (~>) ErrorMessage ErrorMessage) where
+      liftSing (s :: Sing (d :: ErrorMessage))
+        = (singFun1 @((:$$:@#@$$) (d :: ErrorMessage))) ((:%$$:) s)
     instance (SingI n, SingI n) =>
              SingI ((:<>:) (n :: ErrorMessage) (n :: ErrorMessage)) where
       sing = ((:%<>:) sing) sing
+    instance SingI n => SingI1 ((:<>:) (n :: ErrorMessage)) where
+      liftSing = (:%<>:) sing
+    instance SingI2 (:<>:) where
+      liftSing2 = (:%<>:)
     instance SingI ((:<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
       sing = (singFun2 @(:<>:@#@$)) (:%<>:)
     instance SingI d =>
              SingI ((:<>:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
       sing
         = (singFun1 @((:<>:@#@$$) (d :: ErrorMessage))) ((:%<>:) (sing @d))
+    instance SingI1 ((:<>:@#@$$) :: ErrorMessage
+                                    -> (~>) ErrorMessage ErrorMessage) where
+      liftSing (s :: Sing (d :: ErrorMessage))
+        = (singFun1 @((:<>:@#@$$) (d :: ErrorMessage))) ((:%<>:) s)
     instance SingI n => SingI (EM (n :: [Bool])) where
       sing = SEM sing
+    instance SingI1 EM where
+      liftSing = SEM
     instance SingI (EMSym0 :: (~>) [Bool] ErrorMessage) where
       sing = (singFun1 @EMSym0) SEM

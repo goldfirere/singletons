@@ -53,17 +53,23 @@ module Data.Singletons (
 
   Sing, SLambda(..), (@@),
 
-  SingI(..), SingKind(..),
+  SingI(..),
+  SingI1(..), sing1,
+  SingI2(..), sing2,
+  SingKind(..),
 
   -- * Working with singletons
   KindOf, SameKind,
   SingInstance(..), SomeSing(..),
   singInstance, pattern Sing, withSingI,
   withSomeSing, pattern FromSing,
-  singByProxy, demote,
+  usingSingI1, usingSingI2,
+  singByProxy, singByProxy1, singByProxy2,
+  demote, demote1, demote2,
 
-  singByProxy#,
-  withSing, singThat,
+  singByProxy#, singByProxy1#, singByProxy2#,
+  withSing, withSing1, withSing2,
+  singThat, singThat1, singThat2,
 
   -- ** @WrappedSing@
   WrappedSing(..), SWrappedSing(..), UnwrapSing,
@@ -209,6 +215,46 @@ class SingI a where
   -- | Produce the singleton explicitly. You will likely need the @ScopedTypeVariables@
   -- extension to use this method the way you want.
   sing :: Sing a
+
+-- | A version of the 'SingI' class lifted to unary type constructors.
+#if __GLASGOW_HASKELL__ >= 900
+type SingI1 :: forall {k1} {k2}. (k1 -> k2) -> Constraint
+#endif
+class
+#if __GLASGOW_HASKELL__ >= 806
+  (forall x. SingI x => SingI (f x)) =>
+#endif
+    SingI1 f where
+  -- | Lift an explicit singleton through a unary type constructor.
+  -- You will likely need the @ScopedTypeVariables@ extension to use this
+  -- method the way you want.
+  liftSing :: Sing x -> Sing (f x)
+
+-- | Produce a singleton explicitly using implicit 'SingI1' and 'SingI'
+-- constraints. You will likely need the @ScopedTypeVariables@ extension to use
+-- this method the way you want.
+sing1 :: (SingI1 f, SingI x) => Sing (f x)
+sing1 = liftSing sing
+
+-- | A version of the 'SingI' class lifted to binary type constructors.
+#if __GLASGOW_HASKELL__ >= 900
+type SingI2 :: forall {k1} {k2} {k3}. (k1 -> k2 -> k3) -> Constraint
+#endif
+class
+#if __GLASGOW_HASKELL__ >= 806
+  (forall x y. (SingI x, SingI y) => SingI (f x y)) =>
+#endif
+    SingI2 f where
+  -- | Lift explicit singletons through a binary type constructor.
+  -- You will likely need the @ScopedTypeVariables@ extension to use this
+  -- method the way you want.
+  liftSing2 :: Sing x -> Sing y -> Sing (f x y)
+
+-- | Produce a singleton explicitly using implicit 'SingI2' and 'SingI'
+-- constraints. You will likely need the @ScopedTypeVariables@ extension to use
+-- this method the way you want.
+sing2 :: (SingI2 f, SingI x, SingI y) => Sing (f x y)
+sing2 = liftSing2 sing sing
 
 -- | An explicitly bidirectional pattern synonym for implicit singletons.
 --
@@ -783,12 +829,42 @@ withSomeSing x f =
   case toSing x of
     SomeSing x' -> f x'
 
+-- | Convert a group of 'SingI1' and 'SingI' constraints (representing a
+-- function to apply and its argument, respectively) into a single 'SingI'
+-- constraint representing the application. You will likely need the
+-- @ScopedTypeVariables@ extension to use this method the way you want.
+usingSingI1 :: forall f x r. (SingI1 f, SingI x) => (SingI (f x) => r) -> r
+usingSingI1 k = withSingI (sing1 @f @x) k
+
+-- | Convert a group of 'SingI2' and 'SingI' constraints (representing a
+-- function to apply and its arguments, respectively) into a single 'SingI'
+-- constraint representing the application. You will likely need the
+-- @ScopedTypeVariables@ extension to use this method the way you want.
+usingSingI2 :: forall f x y r. (SingI2 f, SingI x, SingI y) => (SingI (f x y) => r) -> r
+usingSingI2 k = withSingI (sing2 @f @x @y) k
+
 -- | A convenience function useful when we need to name a singleton value
 -- multiple times. Without this function, each use of 'sing' could potentially
 -- refer to a different singleton, and one has to use type signatures (often
 -- with @ScopedTypeVariables@) to ensure that they are the same.
 withSing :: SingI a => (Sing a -> b) -> b
 withSing f = f sing
+
+-- | A convenience function useful when we need to name a singleton value for a
+-- unary type constructor multiple times. Without this function, each use of
+-- 'sing1' could potentially refer to a different singleton, and one has to use
+-- type signatures (often with @ScopedTypeVariables@) to ensure that they are
+-- the same.
+withSing1 :: (SingI1 f, SingI x) => (Sing (f x) -> b) -> b
+withSing1 f = f sing1
+
+-- | A convenience function useful when we need to name a singleton value for a
+-- binary type constructor multiple times. Without this function, each use of
+-- 'sing1' could potentially refer to a different singleton, and one has to use
+-- type signatures (often with @ScopedTypeVariables@) to ensure that they are
+-- the same.
+withSing2 :: (SingI2 f, SingI x, SingI y) => (Sing (f x y) -> b) -> b
+withSing2 f = f sing2
 
 -- | A convenience function that names a singleton satisfying a certain
 -- property.  If the singleton does not satisfy the property, then the function
@@ -798,13 +874,51 @@ singThat :: forall k (a :: k). (SingKind k, SingI a)
          => (Demote k -> Bool) -> Maybe (Sing a)
 singThat p = withSing $ \x -> if p (fromSing x) then Just x else Nothing
 
+-- | A convenience function that names a singleton for a unary type constructor
+-- satisfying a certain property.  If the singleton does not satisfy the
+-- property, then the function returns 'Nothing'. The property is expressed in
+-- terms of the underlying representation of the singleton.
+singThat1 :: forall k1 k2 (f :: k1 -> k2) (x :: k1).
+             (SingKind k2, SingI1 f, SingI x)
+          => (Demote k2 -> Bool) -> Maybe (Sing (f x))
+singThat1 p = withSing1 $ \x -> if p (fromSing x) then Just x else Nothing
+
+-- | A convenience function that names a singleton for a binary type constructor
+-- satisfying a certain property.  If the singleton does not satisfy the
+-- property, then the function returns 'Nothing'. The property is expressed in
+-- terms of the underlying representation of the singleton.
+singThat2 :: forall k1 k2 k3 (f :: k1 -> k2 -> k3) (x :: k1) (y :: k2).
+             (SingKind k3, SingI2 f, SingI x, SingI y)
+          => (Demote k3 -> Bool) -> Maybe (Sing (f x y))
+singThat2 p = withSing2 $ \x -> if p (fromSing x) then Just x else Nothing
+
 -- | Allows creation of a singleton when a proxy is at hand.
 singByProxy :: SingI a => proxy a -> Sing a
 singByProxy _ = sing
 
+-- | Allows creation of a singleton for a unary type constructor when a proxy
+-- is at hand.
+singByProxy1 :: (SingI1 f, SingI x) => proxy (f x) -> Sing (f x)
+singByProxy1 _ = sing1
+
+-- | Allows creation of a singleton for a binary type constructor when a proxy
+-- is at hand.
+singByProxy2 :: (SingI2 f, SingI x, SingI y) => proxy (f x y) -> Sing (f x y)
+singByProxy2 _ = sing2
+
 -- | Allows creation of a singleton when a @proxy#@ is at hand.
 singByProxy# :: SingI a => Proxy# a -> Sing a
 singByProxy# _ = sing
+
+-- | Allows creation of a singleton for a unary type constructor when a
+-- @proxy#@ is at hand.
+singByProxy1# :: (SingI1 f, SingI x) => Proxy# (f x) -> Sing (f x)
+singByProxy1# _ = sing1
+
+-- | Allows creation of a singleton for a binary type constructor when a
+-- @proxy#@ is at hand.
+singByProxy2# :: (SingI2 f, SingI x, SingI y) => Proxy# (f x y) -> Sing (f x y)
+singByProxy2# _ = sing2
 
 -- | A convenience function that takes a type as input and demotes it to its
 -- value-level counterpart as output. This uses 'SingKind' and 'SingI' behind
@@ -817,6 +931,12 @@ singByProxy# _ = sing
 --
 -- >>> demote @(Nothing :: Maybe Ordering)
 -- Nothing
+--
+-- >>> demote @(Just EQ)
+-- Just EQ
+--
+-- >>> demote @'(True,EQ)
+-- (True,EQ)
 demote ::
 #if __GLASGOW_HASKELL__ >= 900
   forall {k} (a :: k). (SingKind k, SingI a) => Demote k
@@ -824,6 +944,51 @@ demote ::
   forall a. (SingKind (KindOf a), SingI a) => Demote (KindOf a)
 #endif
 demote = fromSing (sing @a)
+
+-- | A convenience function that takes a unary type constructor and its
+-- argument as input, applies them, and demotes the result to its
+-- value-level counterpart as output. This uses 'SingKind', 'SingI1', and
+-- 'SingI' behind the scenes, so @'demote1' = 'fromSing' 'sing1'@.
+--
+-- This function is intended to be used with @TypeApplications@. For example:
+--
+-- >>> demote1 @Just @EQ
+-- Just EQ
+--
+-- >>> demote1 @('(,) True) @EQ
+-- (True,EQ)
+demote1 ::
+#if __GLASGOW_HASKELL__ >= 900
+  forall {k1} {k2} (f :: k1 -> k2) (x :: k1).
+  (SingKind k2, SingI1 f, SingI x) =>
+  Demote k2
+#else
+  forall f x.
+  (SingKind (KindOf (f x)), SingI1 f, SingI x) =>
+  Demote (KindOf (f x))
+#endif
+demote1 = fromSing (sing1 @f @x)
+
+-- | A convenience function that takes a binary type constructor and its
+-- arguments as input, applies them, and demotes the result to its
+-- value-level counterpart as output. This uses 'SingKind', 'SingI2', and
+-- 'SingI' behind the scenes, so @'demote2' = 'fromSing' 'sing2'@.
+--
+-- This function is intended to be used with @TypeApplications@. For example:
+--
+-- >>> demote2 @'(,) @True @EQ
+-- (True,EQ)
+demote2 ::
+#if __GLASGOW_HASKELL__ >= 900
+  forall {k1} {k2} {k3} (f :: k1 -> k2 -> k3) (x :: k1) (y :: k2).
+  (SingKind k3, SingI2 f, SingI x, SingI y) =>
+  Demote k3
+#else
+  forall f x y.
+  (SingKind (KindOf (f x y)), SingI2 f, SingI x, SingI y) =>
+  Demote (KindOf (f x y))
+#endif
+demote2 = fromSing (sing2 @f @x @y)
 
 ----------------------------------------------------------------------
 ---- SingI TyCon{N} instances ----------------------------------------

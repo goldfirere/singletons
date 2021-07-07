@@ -109,3 +109,6 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
     instance (SS a, SingI d) =>
              SingI ((<<>>@#@$$) (d :: a) :: (~>) a a) where
       sing = (singFun1 @((<<>>@#@$$) (d :: a))) ((%<<>>) (sing @d))
+    instance SS a => SingI1 ((<<>>@#@$$) :: a -> (~>) a a) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @((<<>>@#@$$) (d :: a))) ((%<<>>) s)

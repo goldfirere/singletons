@@ -62,7 +62,8 @@ boolName, andName, compareName, minBoundName,
   applyName, applyTyConName, applyTyConAux1Name,
   natName, symbolName, stringName,
   eqName, ordName, boundedName, orderingName,
-  singFamilyName, singIName, singMethName, demoteName, withSingIName,
+  singFamilyName, singIName, singI1Name, singI2Name,
+  singMethName, liftSingName, liftSing2Name, demoteName, withSingIName,
   singKindClassName, someSingTypeName, someSingDataName,
   sDecideClassName, sDecideMethName,
   testEqualityClassName, testEqualityMethName, decideEqualityName,
@@ -101,7 +102,11 @@ boundedName = ''Bounded
 orderingName = ''Ordering
 singFamilyName = ''Sing
 singIName = ''SingI
+singI1Name = ''SingI1
+singI2Name = ''SingI2
 singMethName = 'sing
+liftSingName = 'liftSing
+liftSing2Name = 'liftSing2
 toSingName = 'toSing
 fromSingName = 'fromSing
 demoteName = ''Demote
@@ -172,6 +177,18 @@ mkTyName tmName = do
 
 mkTyConName :: Int -> Name
 mkTyConName i = mkName $ "TyCon" ++ show i
+
+mkSingIName :: Int -> Name
+mkSingIName 0 = singIName
+mkSingIName 1 = singI1Name
+mkSingIName 2 = singI2Name
+mkSingIName n = error $ "SingI" ++ show n ++ " does not exist"
+
+mkSingMethName :: Int -> Name
+mkSingMethName 0 = singMethName
+mkSingMethName 1 = liftSingName
+mkSingMethName 2 = liftSing2Name
+mkSingMethName n = error $ "SingI" ++ show n ++ " does not exist"
 
 boolKi :: DKind
 boolKi = DConT boolName

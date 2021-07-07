@@ -104,3 +104,9 @@ instance SingI c => SingI (IfSym1 c) where
   sing = singFun2 $ sIf (sing @c)
 instance (SingI c, SingI t) => SingI (IfSym2 c t) where
   sing = singFun1 $ sIf (sing @c) (sing @t)
+instance SingI1 IfSym1 where
+  liftSing s = singFun2 $ sIf s
+instance SingI c => SingI1 (IfSym2 c) where
+  liftSing s = singFun1 $ sIf (sing @c) s
+instance SingI2 IfSym2 where
+  liftSing2 s1 s2 = singFun1 $ sIf s1 s2

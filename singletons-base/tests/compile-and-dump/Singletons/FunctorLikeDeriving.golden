@@ -1316,22 +1316,55 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n, SingI n, SingI n) =>
              SingI (MkT1 (n :: x) (n :: a) (n :: Maybe a) (n :: Maybe (Maybe a))) where
       sing = (((SMkT1 sing) sing) sing) sing
+    instance (SingI n, SingI n, SingI n) =>
+             SingI1 (MkT1 (n :: x) (n :: a) (n :: Maybe a)) where
+      liftSing = ((SMkT1 sing) sing) sing
+    instance (SingI n, SingI n) =>
+             SingI2 (MkT1 (n :: x) (n :: a)) where
+      liftSing2 = (SMkT1 sing) sing
     instance SingI (MkT1Sym0 :: (~>) x ((~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))))) where
       sing = (singFun4 @MkT1Sym0) SMkT1
     instance SingI d =>
              SingI (MkT1Sym1 (d :: x) :: (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))) where
       sing = (singFun3 @(MkT1Sym1 (d :: x))) (SMkT1 (sing @d))
+    instance SingI1 (MkT1Sym1 :: x
+                                 -> (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))) where
+      liftSing (s :: Sing (d :: x))
+        = (singFun3 @(MkT1Sym1 (d :: x))) (SMkT1 s)
     instance (SingI d, SingI d) =>
              SingI (MkT1Sym2 (d :: x) (d :: a) :: (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))) where
       sing
         = (singFun2 @(MkT1Sym2 (d :: x) (d :: a)))
             ((SMkT1 (sing @d)) (sing @d))
+    instance SingI d =>
+             SingI1 (MkT1Sym2 (d :: x) :: a
+                                          -> (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun2 @(MkT1Sym2 (d :: x) (d :: a))) ((SMkT1 (sing @d)) s)
+    instance SingI2 (MkT1Sym2 :: x
+                                 -> a -> (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))) where
+      liftSing2 (s :: Sing (d :: x)) (s :: Sing (d :: a))
+        = (singFun2 @(MkT1Sym2 (d :: x) (d :: a))) ((SMkT1 s) s)
     instance (SingI d, SingI d, SingI d) =>
              SingI (MkT1Sym3 (d :: x) (d :: a) (d :: Maybe a) :: (~>) (Maybe (Maybe a)) (T x a)) where
       sing
         = (singFun1 @(MkT1Sym3 (d :: x) (d :: a) (d :: Maybe a)))
             (((SMkT1 (sing @d)) (sing @d)) (sing @d))
+    instance (SingI d, SingI d) =>
+             SingI1 (MkT1Sym3 (d :: x) (d :: a) :: Maybe a
+                                                   -> (~>) (Maybe (Maybe a)) (T x a)) where
+      liftSing (s :: Sing (d :: Maybe a))
+        = (singFun1 @(MkT1Sym3 (d :: x) (d :: a) (d :: Maybe a)))
+            (((SMkT1 (sing @d)) (sing @d)) s)
+    instance SingI d =>
+             SingI2 (MkT1Sym3 (d :: x) :: a
+                                          -> Maybe a -> (~>) (Maybe (Maybe a)) (T x a)) where
+      liftSing2 (s :: Sing (d :: a)) (s :: Sing (d :: Maybe a))
+        = (singFun1 @(MkT1Sym3 (d :: x) (d :: a) (d :: Maybe a)))
+            (((SMkT1 (sing @d)) s) s)
     instance SingI n => SingI (MkT2 (n :: Maybe x)) where
       sing = SMkT2 sing
+    instance SingI1 MkT2 where
+      liftSing = SMkT2
     instance SingI (MkT2Sym0 :: (~>) (Maybe x) (T x a)) where
       sing = (singFun1 @MkT2Sym0) SMkT2

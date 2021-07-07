@@ -184,6 +184,7 @@ The type family of singleton types. A new instance of this type family is
 generated for every new singleton type.
 
 ```haskell
+type SingI :: forall {k}. k -> Constraint
 class SingI a where
   sing :: Sing a
 ```
@@ -229,6 +230,19 @@ one (a dictionary for `SingI`). The `SingInstance` type simply wraps a `SingI`
 dictionary, and the `singInstance` function produces this dictionary from an
 explicit singleton. The `singInstance` function runs in constant time, using
 a little magic.
+
+In addition to `SingI`, there are also higher-order versions named `SingI1`
+and `SingI2`:
+
+```haskell
+type SingI1 :: forall {k1 k2}. (k1 -> k2) -> Constraint
+class (forall x. SingI x => SingI (f x)) => SingI1 f where
+  liftSing :: Sing x -> Sing (f x)
+
+type SingI2 :: forall {k1 k2 k3}. (k1 -> k2 -> k3) -> Constraint
+class (forall x y. (SingI x, SingI y) => SingI (f x y)) => SingI2 f where
+  liftSing2 :: Sing x -> Sing y -> Sing (f x y)
+```
 
 
 Equality classes

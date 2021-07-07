@@ -21,6 +21,7 @@ next [????.??.??]
   -type ProxySym0 :: forall  k  (t :: k). Proxy t
   +type ProxySym0 :: forall {k} (t :: k). Proxy t
   ```
+* Define instances of `SingI1` and `SingI2` when possible.
 
 3.0 [2021.03.12]
 ----------------

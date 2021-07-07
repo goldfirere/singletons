@@ -56,7 +56,7 @@ library
                       containers       >= 0.5,
                       mtl              >= 2.2.1,
                       ghc-boot-th,
-                      singletons       == 3.0.*,
+                      singletons       >= 3.0.1,
                       syb              >= 0.4,
                       template-haskell >= 2.17 && < 2.18,
                       th-desugar       >= 1.13 && < 1.14,

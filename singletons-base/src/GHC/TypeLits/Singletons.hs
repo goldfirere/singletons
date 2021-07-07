@@ -167,6 +167,8 @@ instance SingI DivSym0 where
   sing = singFun2 sDiv
 instance SingI x => SingI (DivSym1 x) where
   sing = singFun1 $ sDiv (sing @x)
+instance SingI1 DivSym1 where
+  liftSing s = singFun1 $ sDiv s
 
 sMod :: Sing x -> Sing y -> Sing (Mod x y)
 sMod sx sy =
@@ -181,6 +183,8 @@ instance SingI ModSym0 where
   sing = singFun2 sMod
 instance SingI x => SingI (ModSym1 x) where
   sing = singFun1 $ sMod $ sing @x
+instance SingI1 ModSym1 where
+  liftSing s = singFun1 $ sMod s
 
 $(promoteOnly [d|
   divMod :: Nat -> Nat -> (Nat, Nat)

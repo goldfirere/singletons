@@ -61,14 +61,24 @@ data SProduct :: Product f g a -> Type where
 type instance Sing = SProduct
 instance (SingI x, SingI y) => SingI ('Pair x y) where
   sing = SPair sing sing
+instance SingI x => SingI1 ('Pair x) where
+  liftSing = SPair sing
+instance SingI2 'Pair where
+  liftSing2 = SPair
 
 type PairSym0 :: forall f g a. f a ~> g a ~> Product f g a
 data PairSym0 z
 type instance Apply PairSym0 x = PairSym1 x
+instance SingI PairSym0 where
+  sing = singFun2 SPair
 
 type PairSym1 :: forall f g a. f a -> g a ~> Product f g a
 data PairSym1 fa z
 type instance Apply (PairSym1 x) y = 'Pair x y
+instance SingI x => SingI (PairSym1 x) where
+  sing = singFun1 $ SPair (sing @x)
+instance SingI1 PairSym1 where
+  liftSing s = singFun1 $ SPair s
 
 type PairSym2 :: forall f g a. f a -> g a -> Product f g a
 type family PairSym2 x y where

@@ -315,10 +315,16 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
              SingI (FooCompareSym1 (d :: Foo) :: (~>) Foo Ordering) where
       sing
         = (singFun1 @(FooCompareSym1 (d :: Foo))) (sFooCompare (sing @d))
+    instance SingI1 (FooCompareSym1 :: Foo -> (~>) Foo Ordering) where
+      liftSing (s :: Sing (d :: Foo))
+        = (singFun1 @(FooCompareSym1 (d :: Foo))) (sFooCompare s)
     instance SingI (ConstSym0 :: (~>) a ((~>) b a)) where
       sing = (singFun2 @ConstSym0) sConst
     instance SingI d => SingI (ConstSym1 (d :: a) :: (~>) b a) where
       sing = (singFun1 @(ConstSym1 (d :: a))) (sConst (sing @d))
+    instance SingI1 (ConstSym1 :: a -> (~>) b a) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(ConstSym1 (d :: a))) (sConst s)
     data SFoo :: Foo -> GHC.Types.Type
       where
         SA :: SFoo (A :: Foo)
@@ -420,11 +426,19 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
              SingI (MycompareSym1 (d :: a) :: (~>) a Ordering) where
       sing = (singFun1 @(MycompareSym1 (d :: a))) (sMycompare (sing @d))
     instance SMyOrd a =>
+             SingI1 (MycompareSym1 :: a -> (~>) a Ordering) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(MycompareSym1 (d :: a))) (sMycompare s)
+    instance SMyOrd a =>
              SingI ((<=>@#@$) :: (~>) a ((~>) a Ordering)) where
       sing = (singFun2 @(<=>@#@$)) (%<=>)
     instance (SMyOrd a, SingI d) =>
              SingI ((<=>@#@$$) (d :: a) :: (~>) a Ordering) where
       sing = (singFun1 @((<=>@#@$$) (d :: a))) ((%<=>) (sing @d))
+    instance SMyOrd a =>
+             SingI1 ((<=>@#@$$) :: a -> (~>) a Ordering) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @((<=>@#@$$) (d :: a))) ((%<=>) s)
 Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     promote
       [d| instance Ord Foo2 where
@@ -592,5 +606,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       sing = SZero'
     instance SingI n => SingI (Succ' (n :: Nat')) where
       sing = SSucc' sing
+    instance SingI1 Succ' where
+      liftSing = SSucc'
     instance SingI (Succ'Sym0 :: (~>) Nat' Nat') where
       sing = (singFun1 @Succ'Sym0) SSucc'

@@ -300,13 +300,22 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun2 @Foo3Sym0) sFoo3
     instance SingI d => SingI (Foo3Sym1 (d :: a) :: (~>) b a) where
       sing = (singFun1 @(Foo3Sym1 (d :: a))) (sFoo3 (sing @d))
+    instance SingI1 (Foo3Sym1 :: a -> (~>) b a) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Foo3Sym1 (d :: a))) (sFoo3 s)
     instance SingI (Foo2Sym0 :: (~>) a ((~>) (Maybe a) a)) where
       sing = (singFun2 @Foo2Sym0) sFoo2
     instance SingI d =>
              SingI (Foo2Sym1 (d :: a) :: (~>) (Maybe a) a) where
       sing = (singFun1 @(Foo2Sym1 (d :: a))) (sFoo2 (sing @d))
+    instance SingI1 (Foo2Sym1 :: a -> (~>) (Maybe a) a) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Foo2Sym1 (d :: a))) (sFoo2 s)
     instance SingI (Foo1Sym0 :: (~>) a ((~>) (Maybe a) a)) where
       sing = (singFun2 @Foo1Sym0) sFoo1
     instance SingI d =>
              SingI (Foo1Sym1 (d :: a) :: (~>) (Maybe a) a) where
       sing = (singFun1 @(Foo1Sym1 (d :: a))) (sFoo1 (sing @d))
+    instance SingI1 (Foo1Sym1 :: a -> (~>) (Maybe a) a) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Foo1Sym1 (d :: a))) (sFoo1 s)

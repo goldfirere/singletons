@@ -74,7 +74,7 @@ library
   hs-source-dirs:     src
   build-depends:      base             >= 4.15 && < 4.16,
                       pretty,
-                      singletons       == 3.0.*,
+                      singletons       == 3.0.1,
                       singletons-th    == 3.0.*,
                       template-haskell >= 2.17 && < 2.18,
                       text >= 1.2,

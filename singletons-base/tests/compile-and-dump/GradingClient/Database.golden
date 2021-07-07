@@ -160,6 +160,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where
       sing = SSucc sing
+    instance SingI1 Succ where
+      liftSing = SSucc
     instance SingI (SuccSym0 :: (~>) Nat Nat) where
       sing = (singFun1 @SuccSym0) SSucc
 GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
@@ -1494,17 +1496,26 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (LookupSym1 (d :: [AChar]) :: (~>) Schema U) where
       sing = (singFun1 @(LookupSym1 (d :: [AChar]))) (sLookup (sing @d))
+    instance SingI1 (LookupSym1 :: [AChar] -> (~>) Schema U) where
+      liftSing (s :: Sing (d :: [AChar]))
+        = (singFun1 @(LookupSym1 (d :: [AChar]))) (sLookup s)
     instance SingI (OccursSym0 :: (~>) [AChar] ((~>) Schema Bool)) where
       sing = (singFun2 @OccursSym0) sOccurs
     instance SingI d =>
              SingI (OccursSym1 (d :: [AChar]) :: (~>) Schema Bool) where
       sing = (singFun1 @(OccursSym1 (d :: [AChar]))) (sOccurs (sing @d))
+    instance SingI1 (OccursSym1 :: [AChar] -> (~>) Schema Bool) where
+      liftSing (s :: Sing (d :: [AChar]))
+        = (singFun1 @(OccursSym1 (d :: [AChar]))) (sOccurs s)
     instance SingI (DisjointSym0 :: (~>) Schema ((~>) Schema Bool)) where
       sing = (singFun2 @DisjointSym0) sDisjoint
     instance SingI d =>
              SingI (DisjointSym1 (d :: Schema) :: (~>) Schema Bool) where
       sing
         = (singFun1 @(DisjointSym1 (d :: Schema))) (sDisjoint (sing @d))
+    instance SingI1 (DisjointSym1 :: Schema -> (~>) Schema Bool) where
+      liftSing (s :: Sing (d :: Schema))
+        = (singFun1 @(DisjointSym1 (d :: Schema))) (sDisjoint s)
     instance SingI (AttrNotInSym0 :: (~>) Attribute ((~>) Schema Bool)) where
       sing = (singFun2 @AttrNotInSym0) sAttrNotIn
     instance SingI d =>
@@ -1512,11 +1523,18 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       sing
         = (singFun1 @(AttrNotInSym1 (d :: Attribute)))
             (sAttrNotIn (sing @d))
+    instance SingI1 (AttrNotInSym1 :: Attribute
+                                      -> (~>) Schema Bool) where
+      liftSing (s :: Sing (d :: Attribute))
+        = (singFun1 @(AttrNotInSym1 (d :: Attribute))) (sAttrNotIn s)
     instance SingI (AppendSym0 :: (~>) Schema ((~>) Schema Schema)) where
       sing = (singFun2 @AppendSym0) sAppend
     instance SingI d =>
              SingI (AppendSym1 (d :: Schema) :: (~>) Schema Schema) where
       sing = (singFun1 @(AppendSym1 (d :: Schema))) (sAppend (sing @d))
+    instance SingI1 (AppendSym1 :: Schema -> (~>) Schema Schema) where
+      liftSing (s :: Sing (d :: Schema))
+        = (singFun1 @(AppendSym1 (d :: Schema))) (sAppend s)
     data SU :: U -> Type
       where
         SBOOL :: SU (BOOL :: U)
@@ -3370,10 +3388,17 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI (VEC (n :: U) (n :: Nat)) where
       sing = (SVEC sing) sing
+    instance SingI n => SingI1 (VEC (n :: U)) where
+      liftSing = SVEC sing
+    instance SingI2 VEC where
+      liftSing2 = SVEC
     instance SingI (VECSym0 :: (~>) U ((~>) Nat U)) where
       sing = (singFun2 @VECSym0) SVEC
     instance SingI d => SingI (VECSym1 (d :: U) :: (~>) Nat U) where
       sing = (singFun1 @(VECSym1 (d :: U))) (SVEC (sing @d))
+    instance SingI1 (VECSym1 :: U -> (~>) Nat U) where
+      liftSing (s :: Sing (d :: U))
+        = (singFun1 @(VECSym1 (d :: U))) (SVEC s)
     instance SingI CA where
       sing = SCA
     instance SingI CB where
@@ -3429,13 +3454,22 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI (Attr (n :: [AChar]) (n :: U)) where
       sing = (SAttr sing) sing
+    instance SingI n => SingI1 (Attr (n :: [AChar])) where
+      liftSing = SAttr sing
+    instance SingI2 Attr where
+      liftSing2 = SAttr
     instance SingI (AttrSym0 :: (~>) [AChar] ((~>) U Attribute)) where
       sing = (singFun2 @AttrSym0) SAttr
     instance SingI d =>
              SingI (AttrSym1 (d :: [AChar]) :: (~>) U Attribute) where
       sing = (singFun1 @(AttrSym1 (d :: [AChar]))) (SAttr (sing @d))
+    instance SingI1 (AttrSym1 :: [AChar] -> (~>) U Attribute) where
+      liftSing (s :: Sing (d :: [AChar]))
+        = (singFun1 @(AttrSym1 (d :: [AChar]))) (SAttr s)
     instance SingI n => SingI (Sch (n :: [Attribute])) where
       sing = SSch sing
+    instance SingI1 Sch where
+      liftSing = SSch
     instance SingI (SchSym0 :: (~>) [Attribute] Schema) where
       sing = (singFun1 @SchSym0) SSch
 GradingClient/Database.hs:0:0:: Splicing declarations

@@ -3,6 +3,8 @@ Changelog for the `singletons-th` project
 
 next [????.??.??]
 -----------------
+* Make the Template Haskell machinery generate `SingI1` and `SingI2` instances
+  when possible.
 * Make `genDefunSymbols` and related functions less likely to trigger
   [GHC#19743](https://gitlab.haskell.org/ghc/ghc/-/issues/19743).
 

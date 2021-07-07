@@ -159,8 +159,15 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
     instance (SFoo1 a, SingI d) =>
              SingI (Bar1Sym1 (d :: a) :: (~>) ((~>) a b) b) where
       sing = (singFun1 @(Bar1Sym1 (d :: a))) (sBar1 (sing @d))
+    instance SFoo1 a =>
+             SingI1 (Bar1Sym1 :: a -> (~>) ((~>) a b) b) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Bar1Sym1 (d :: a))) (sBar1 s)
     instance SFoo2 a => SingI (Bar2Sym0 :: (~>) a ((~>) b b)) where
       sing = (singFun2 @Bar2Sym0) sBar2
     instance (SFoo2 a, SingI d) =>
              SingI (Bar2Sym1 (d :: a) :: (~>) b b) where
       sing = (singFun1 @(Bar2Sym1 (d :: a))) (sBar2 (sing @d))
+    instance SFoo2 a => SingI1 (Bar2Sym1 :: a -> (~>) b b) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(Bar2Sym1 (d :: a))) (sBar2 s)

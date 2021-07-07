@@ -58,11 +58,15 @@ data SCompose :: Compose f g a -> Type where
 type instance Sing = SCompose
 instance SingI x => SingI ('Compose x) where
   sing = SCompose sing
+instance SingI1 'Compose where
+  liftSing = SCompose
 
 infixr 9 `ComposeSym0`
 type ComposeSym0 :: f (g a) ~> Compose f g a
 data ComposeSym0 z
 type instance Apply ComposeSym0 x = 'Compose x
+instance SingI ComposeSym0 where
+  sing = singFun1 SCompose
 
 infixr 9 `ComposeSym1`
 type ComposeSym1 :: f (g a) -> Compose f g a

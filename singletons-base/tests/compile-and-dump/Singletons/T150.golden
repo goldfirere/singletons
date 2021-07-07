@@ -302,6 +302,10 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
       sing
         = (singFun1 @(TransitivitySym1 (d :: Equal a b)))
             (sTransitivity (sing @d))
+    instance SingI1 (TransitivitySym1 :: Equal a b
+                                         -> (~>) (Equal b c) (Equal a c)) where
+      liftSing (s :: Sing (d :: Equal a b))
+        = (singFun1 @(TransitivitySym1 (d :: Equal a b))) (sTransitivity s)
     instance SingI (SymmetrySym0 :: (~>) (Equal a b) (Equal b a)) where
       sing = (singFun1 @SymmetrySym0) sSymmetry
     instance SingI (MapVecSym0 :: (~>) ((~>) a b) ((~>) (Vec n a) (Vec n b))) where
@@ -309,11 +313,18 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (MapVecSym1 (d :: (~>) a b) :: (~>) (Vec n a) (Vec n b)) where
       sing = (singFun1 @(MapVecSym1 (d :: (~>) a b))) (sMapVec (sing @d))
+    instance SingI1 (MapVecSym1 :: (~>) a b
+                                   -> (~>) (Vec n a) (Vec n b)) where
+      liftSing (s :: Sing (d :: (~>) a b))
+        = (singFun1 @(MapVecSym1 (d :: (~>) a b))) (sMapVec s)
     instance SingI ((!@#@$) :: (~>) (Vec n a) ((~>) (Fin n) a)) where
       sing = (singFun2 @(!@#@$)) (%!)
     instance SingI d =>
              SingI ((!@#@$$) (d :: Vec n a) :: (~>) (Fin n) a) where
       sing = (singFun1 @((!@#@$$) (d :: Vec n a))) ((%!) (sing @d))
+    instance SingI1 ((!@#@$$) :: Vec n a -> (~>) (Fin n) a) where
+      liftSing (s :: Sing (d :: Vec n a))
+        = (singFun1 @((!@#@$$) (d :: Vec n a))) ((%!) s)
     instance SingI (TailVecSym0 :: (~>) (Vec ('Succ n) a) (Vec n a)) where
       sing = (singFun1 @TailVecSym0) sTailVec
     instance SingI (HeadVecSym0 :: (~>) (Vec ('Succ n) a) a) where
@@ -351,6 +362,8 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
       sing = SFZ
     instance SingI n => SingI (FS (n :: Fin n)) where
       sing = SFS sing
+    instance SingI1 FS where
+      liftSing = SFS
     instance SingI (FSSym0 :: (~>) (Fin n) (Fin ('Succ n))) where
       sing = (singFun1 @FSSym0) SFS
     instance SingI MkFoo1 where
@@ -362,11 +375,19 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI (VCons (n :: a) (n :: Vec n a)) where
       sing = (SVCons sing) sing
+    instance SingI n => SingI1 (VCons (n :: a)) where
+      liftSing = SVCons sing
+    instance SingI2 VCons where
+      liftSing2 = SVCons
     instance SingI (VConsSym0 :: (~>) a ((~>) (Vec n a) (Vec ('Succ n) a))) where
       sing = (singFun2 @VConsSym0) SVCons
     instance SingI d =>
              SingI (VConsSym1 (d :: a) :: (~>) (Vec n a) (Vec ('Succ n) a)) where
       sing = (singFun1 @(VConsSym1 (d :: a))) (SVCons (sing @d))
+    instance SingI1 (VConsSym1 :: a
+                                  -> (~>) (Vec n a) (Vec ('Succ n) a)) where
+      liftSing (s :: Sing (d :: a))
+        = (singFun1 @(VConsSym1 (d :: a))) (SVCons s)
     instance SingI Reflexive where
       sing = SReflexive
     instance SingI HNil where
@@ -374,12 +395,22 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     instance (SingI n, SingI n) =>
              SingI (HCons (n :: x) (n :: HList xs)) where
       sing = (SHCons sing) sing
+    instance SingI n => SingI1 (HCons (n :: x)) where
+      liftSing = SHCons sing
+    instance SingI2 HCons where
+      liftSing2 = SHCons
     instance SingI (HConsSym0 :: (~>) x ((~>) (HList xs) (HList ('(:) x xs)))) where
       sing = (singFun2 @HConsSym0) SHCons
     instance SingI d =>
              SingI (HConsSym1 (d :: x) :: (~>) (HList xs) (HList ('(:) x xs))) where
       sing = (singFun1 @(HConsSym1 (d :: x))) (SHCons (sing @d))
+    instance SingI1 (HConsSym1 :: x
+                                  -> (~>) (HList xs) (HList ('(:) x xs))) where
+      liftSing (s :: Sing (d :: x))
+        = (singFun1 @(HConsSym1 (d :: x))) (SHCons s)
     instance SingI n => SingI (Obj (n :: a)) where
       sing = SObj sing
+    instance SingI1 Obj where
+      liftSing = SObj
     instance SingI (ObjSym0 :: (~>) a Obj) where
       sing = (singFun1 @ObjSym0) SObj

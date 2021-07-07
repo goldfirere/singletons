@@ -39,3 +39,6 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
     instance SingI d =>
              SingI (($>@#@$$) (d :: Nat) :: (~>) Nat Nat) where
       sing = (singFun1 @(($>@#@$$) (d :: Nat))) ((%$>) (sing @d))
+    instance SingI1 (($>@#@$$) :: Nat -> (~>) Nat Nat) where
+      liftSing (s :: Sing (d :: Nat))
+        = (singFun1 @(($>@#@$$) (d :: Nat))) ((%$>) s)

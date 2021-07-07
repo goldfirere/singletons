@@ -1239,107 +1239,265 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where
       sing = SSucc sing
+    instance SingI1 Succ where
+      liftSing = SSucc
     instance SingI (SuccSym0 :: (~>) Nat Nat) where
       sing = (singFun1 @SuccSym0) SSucc
     instance (SingI n, SingI n, SingI n, SingI n) =>
              SingI (A (n :: a) (n :: b) (n :: c) (n :: d)) where
       sing = (((SA sing) sing) sing) sing
+    instance (SingI n, SingI n, SingI n) =>
+             SingI1 (A (n :: a) (n :: b) (n :: c)) where
+      liftSing = ((SA sing) sing) sing
+    instance (SingI n, SingI n) => SingI2 (A (n :: a) (n :: b)) where
+      liftSing2 = (SA sing) sing
     instance SingI (ASym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))) where
       sing = (singFun4 @ASym0) SA
     instance SingI d =>
              SingI (ASym1 (d :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
       sing = (singFun3 @(ASym1 (d :: a))) (SA (sing @d))
+    instance SingI1 (ASym1 :: a
+                              -> (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
+      liftSing (s :: Sing (d :: a)) = (singFun3 @(ASym1 (d :: a))) (SA s)
     instance (SingI d, SingI d) =>
              SingI (ASym2 (d :: a) (d :: b) :: (~>) c ((~>) d (Foo a b c d))) where
       sing
         = (singFun2 @(ASym2 (d :: a) (d :: b))) ((SA (sing @d)) (sing @d))
+    instance SingI d =>
+             SingI1 (ASym2 (d :: a) :: b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing (s :: Sing (d :: b))
+        = (singFun2 @(ASym2 (d :: a) (d :: b))) ((SA (sing @d)) s)
+    instance SingI2 (ASym2 :: a
+                              -> b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing2 (s :: Sing (d :: a)) (s :: Sing (d :: b))
+        = (singFun2 @(ASym2 (d :: a) (d :: b))) ((SA s) s)
     instance (SingI d, SingI d, SingI d) =>
              SingI (ASym3 (d :: a) (d :: b) (d :: c) :: (~>) d (Foo a b c d)) where
       sing
         = (singFun1 @(ASym3 (d :: a) (d :: b) (d :: c)))
             (((SA (sing @d)) (sing @d)) (sing @d))
+    instance (SingI d, SingI d) =>
+             SingI1 (ASym3 (d :: a) (d :: b) :: c -> (~>) d (Foo a b c d)) where
+      liftSing (s :: Sing (d :: c))
+        = (singFun1 @(ASym3 (d :: a) (d :: b) (d :: c)))
+            (((SA (sing @d)) (sing @d)) s)
+    instance SingI d =>
+             SingI2 (ASym3 (d :: a) :: b -> c -> (~>) d (Foo a b c d)) where
+      liftSing2 (s :: Sing (d :: b)) (s :: Sing (d :: c))
+        = (singFun1 @(ASym3 (d :: a) (d :: b) (d :: c)))
+            (((SA (sing @d)) s) s)
     instance (SingI n, SingI n, SingI n, SingI n) =>
              SingI (B (n :: a) (n :: b) (n :: c) (n :: d)) where
       sing = (((SB sing) sing) sing) sing
+    instance (SingI n, SingI n, SingI n) =>
+             SingI1 (B (n :: a) (n :: b) (n :: c)) where
+      liftSing = ((SB sing) sing) sing
+    instance (SingI n, SingI n) => SingI2 (B (n :: a) (n :: b)) where
+      liftSing2 = (SB sing) sing
     instance SingI (BSym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))) where
       sing = (singFun4 @BSym0) SB
     instance SingI d =>
              SingI (BSym1 (d :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
       sing = (singFun3 @(BSym1 (d :: a))) (SB (sing @d))
+    instance SingI1 (BSym1 :: a
+                              -> (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
+      liftSing (s :: Sing (d :: a)) = (singFun3 @(BSym1 (d :: a))) (SB s)
     instance (SingI d, SingI d) =>
              SingI (BSym2 (d :: a) (d :: b) :: (~>) c ((~>) d (Foo a b c d))) where
       sing
         = (singFun2 @(BSym2 (d :: a) (d :: b))) ((SB (sing @d)) (sing @d))
+    instance SingI d =>
+             SingI1 (BSym2 (d :: a) :: b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing (s :: Sing (d :: b))
+        = (singFun2 @(BSym2 (d :: a) (d :: b))) ((SB (sing @d)) s)
+    instance SingI2 (BSym2 :: a
+                              -> b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing2 (s :: Sing (d :: a)) (s :: Sing (d :: b))
+        = (singFun2 @(BSym2 (d :: a) (d :: b))) ((SB s) s)
     instance (SingI d, SingI d, SingI d) =>
              SingI (BSym3 (d :: a) (d :: b) (d :: c) :: (~>) d (Foo a b c d)) where
       sing
         = (singFun1 @(BSym3 (d :: a) (d :: b) (d :: c)))
             (((SB (sing @d)) (sing @d)) (sing @d))
+    instance (SingI d, SingI d) =>
+             SingI1 (BSym3 (d :: a) (d :: b) :: c -> (~>) d (Foo a b c d)) where
+      liftSing (s :: Sing (d :: c))
+        = (singFun1 @(BSym3 (d :: a) (d :: b) (d :: c)))
+            (((SB (sing @d)) (sing @d)) s)
+    instance SingI d =>
+             SingI2 (BSym3 (d :: a) :: b -> c -> (~>) d (Foo a b c d)) where
+      liftSing2 (s :: Sing (d :: b)) (s :: Sing (d :: c))
+        = (singFun1 @(BSym3 (d :: a) (d :: b) (d :: c)))
+            (((SB (sing @d)) s) s)
     instance (SingI n, SingI n, SingI n, SingI n) =>
              SingI (C (n :: a) (n :: b) (n :: c) (n :: d)) where
       sing = (((SC sing) sing) sing) sing
+    instance (SingI n, SingI n, SingI n) =>
+             SingI1 (C (n :: a) (n :: b) (n :: c)) where
+      liftSing = ((SC sing) sing) sing
+    instance (SingI n, SingI n) => SingI2 (C (n :: a) (n :: b)) where
+      liftSing2 = (SC sing) sing
     instance SingI (CSym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))) where
       sing = (singFun4 @CSym0) SC
     instance SingI d =>
              SingI (CSym1 (d :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
       sing = (singFun3 @(CSym1 (d :: a))) (SC (sing @d))
+    instance SingI1 (CSym1 :: a
+                              -> (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
+      liftSing (s :: Sing (d :: a)) = (singFun3 @(CSym1 (d :: a))) (SC s)
     instance (SingI d, SingI d) =>
              SingI (CSym2 (d :: a) (d :: b) :: (~>) c ((~>) d (Foo a b c d))) where
       sing
         = (singFun2 @(CSym2 (d :: a) (d :: b))) ((SC (sing @d)) (sing @d))
+    instance SingI d =>
+             SingI1 (CSym2 (d :: a) :: b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing (s :: Sing (d :: b))
+        = (singFun2 @(CSym2 (d :: a) (d :: b))) ((SC (sing @d)) s)
+    instance SingI2 (CSym2 :: a
+                              -> b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing2 (s :: Sing (d :: a)) (s :: Sing (d :: b))
+        = (singFun2 @(CSym2 (d :: a) (d :: b))) ((SC s) s)
     instance (SingI d, SingI d, SingI d) =>
              SingI (CSym3 (d :: a) (d :: b) (d :: c) :: (~>) d (Foo a b c d)) where
       sing
         = (singFun1 @(CSym3 (d :: a) (d :: b) (d :: c)))
             (((SC (sing @d)) (sing @d)) (sing @d))
+    instance (SingI d, SingI d) =>
+             SingI1 (CSym3 (d :: a) (d :: b) :: c -> (~>) d (Foo a b c d)) where
+      liftSing (s :: Sing (d :: c))
+        = (singFun1 @(CSym3 (d :: a) (d :: b) (d :: c)))
+            (((SC (sing @d)) (sing @d)) s)
+    instance SingI d =>
+             SingI2 (CSym3 (d :: a) :: b -> c -> (~>) d (Foo a b c d)) where
+      liftSing2 (s :: Sing (d :: b)) (s :: Sing (d :: c))
+        = (singFun1 @(CSym3 (d :: a) (d :: b) (d :: c)))
+            (((SC (sing @d)) s) s)
     instance (SingI n, SingI n, SingI n, SingI n) =>
              SingI (D (n :: a) (n :: b) (n :: c) (n :: d)) where
       sing = (((SD sing) sing) sing) sing
+    instance (SingI n, SingI n, SingI n) =>
+             SingI1 (D (n :: a) (n :: b) (n :: c)) where
+      liftSing = ((SD sing) sing) sing
+    instance (SingI n, SingI n) => SingI2 (D (n :: a) (n :: b)) where
+      liftSing2 = (SD sing) sing
     instance SingI (DSym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))) where
       sing = (singFun4 @DSym0) SD
     instance SingI d =>
              SingI (DSym1 (d :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
       sing = (singFun3 @(DSym1 (d :: a))) (SD (sing @d))
+    instance SingI1 (DSym1 :: a
+                              -> (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
+      liftSing (s :: Sing (d :: a)) = (singFun3 @(DSym1 (d :: a))) (SD s)
     instance (SingI d, SingI d) =>
              SingI (DSym2 (d :: a) (d :: b) :: (~>) c ((~>) d (Foo a b c d))) where
       sing
         = (singFun2 @(DSym2 (d :: a) (d :: b))) ((SD (sing @d)) (sing @d))
+    instance SingI d =>
+             SingI1 (DSym2 (d :: a) :: b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing (s :: Sing (d :: b))
+        = (singFun2 @(DSym2 (d :: a) (d :: b))) ((SD (sing @d)) s)
+    instance SingI2 (DSym2 :: a
+                              -> b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing2 (s :: Sing (d :: a)) (s :: Sing (d :: b))
+        = (singFun2 @(DSym2 (d :: a) (d :: b))) ((SD s) s)
     instance (SingI d, SingI d, SingI d) =>
              SingI (DSym3 (d :: a) (d :: b) (d :: c) :: (~>) d (Foo a b c d)) where
       sing
         = (singFun1 @(DSym3 (d :: a) (d :: b) (d :: c)))
             (((SD (sing @d)) (sing @d)) (sing @d))
+    instance (SingI d, SingI d) =>
+             SingI1 (DSym3 (d :: a) (d :: b) :: c -> (~>) d (Foo a b c d)) where
+      liftSing (s :: Sing (d :: c))
+        = (singFun1 @(DSym3 (d :: a) (d :: b) (d :: c)))
+            (((SD (sing @d)) (sing @d)) s)
+    instance SingI d =>
+             SingI2 (DSym3 (d :: a) :: b -> c -> (~>) d (Foo a b c d)) where
+      liftSing2 (s :: Sing (d :: b)) (s :: Sing (d :: c))
+        = (singFun1 @(DSym3 (d :: a) (d :: b) (d :: c)))
+            (((SD (sing @d)) s) s)
     instance (SingI n, SingI n, SingI n, SingI n) =>
              SingI (E (n :: a) (n :: b) (n :: c) (n :: d)) where
       sing = (((SE sing) sing) sing) sing
+    instance (SingI n, SingI n, SingI n) =>
+             SingI1 (E (n :: a) (n :: b) (n :: c)) where
+      liftSing = ((SE sing) sing) sing
+    instance (SingI n, SingI n) => SingI2 (E (n :: a) (n :: b)) where
+      liftSing2 = (SE sing) sing
     instance SingI (ESym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))) where
       sing = (singFun4 @ESym0) SE
     instance SingI d =>
              SingI (ESym1 (d :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
       sing = (singFun3 @(ESym1 (d :: a))) (SE (sing @d))
+    instance SingI1 (ESym1 :: a
+                              -> (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
+      liftSing (s :: Sing (d :: a)) = (singFun3 @(ESym1 (d :: a))) (SE s)
     instance (SingI d, SingI d) =>
              SingI (ESym2 (d :: a) (d :: b) :: (~>) c ((~>) d (Foo a b c d))) where
       sing
         = (singFun2 @(ESym2 (d :: a) (d :: b))) ((SE (sing @d)) (sing @d))
+    instance SingI d =>
+             SingI1 (ESym2 (d :: a) :: b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing (s :: Sing (d :: b))
+        = (singFun2 @(ESym2 (d :: a) (d :: b))) ((SE (sing @d)) s)
+    instance SingI2 (ESym2 :: a
+                              -> b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing2 (s :: Sing (d :: a)) (s :: Sing (d :: b))
+        = (singFun2 @(ESym2 (d :: a) (d :: b))) ((SE s) s)
     instance (SingI d, SingI d, SingI d) =>
              SingI (ESym3 (d :: a) (d :: b) (d :: c) :: (~>) d (Foo a b c d)) where
       sing
         = (singFun1 @(ESym3 (d :: a) (d :: b) (d :: c)))
             (((SE (sing @d)) (sing @d)) (sing @d))
+    instance (SingI d, SingI d) =>
+             SingI1 (ESym3 (d :: a) (d :: b) :: c -> (~>) d (Foo a b c d)) where
+      liftSing (s :: Sing (d :: c))
+        = (singFun1 @(ESym3 (d :: a) (d :: b) (d :: c)))
+            (((SE (sing @d)) (sing @d)) s)
+    instance SingI d =>
+             SingI2 (ESym3 (d :: a) :: b -> c -> (~>) d (Foo a b c d)) where
+      liftSing2 (s :: Sing (d :: b)) (s :: Sing (d :: c))
+        = (singFun1 @(ESym3 (d :: a) (d :: b) (d :: c)))
+            (((SE (sing @d)) s) s)
     instance (SingI n, SingI n, SingI n, SingI n) =>
              SingI (F (n :: a) (n :: b) (n :: c) (n :: d)) where
       sing = (((SF sing) sing) sing) sing
+    instance (SingI n, SingI n, SingI n) =>
+             SingI1 (F (n :: a) (n :: b) (n :: c)) where
+      liftSing = ((SF sing) sing) sing
+    instance (SingI n, SingI n) => SingI2 (F (n :: a) (n :: b)) where
+      liftSing2 = (SF sing) sing
     instance SingI (FSym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))) where
       sing = (singFun4 @FSym0) SF
     instance SingI d =>
              SingI (FSym1 (d :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
       sing = (singFun3 @(FSym1 (d :: a))) (SF (sing @d))
+    instance SingI1 (FSym1 :: a
+                              -> (~>) b ((~>) c ((~>) d (Foo a b c d)))) where
+      liftSing (s :: Sing (d :: a)) = (singFun3 @(FSym1 (d :: a))) (SF s)
     instance (SingI d, SingI d) =>
              SingI (FSym2 (d :: a) (d :: b) :: (~>) c ((~>) d (Foo a b c d))) where
       sing
         = (singFun2 @(FSym2 (d :: a) (d :: b))) ((SF (sing @d)) (sing @d))
+    instance SingI d =>
+             SingI1 (FSym2 (d :: a) :: b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing (s :: Sing (d :: b))
+        = (singFun2 @(FSym2 (d :: a) (d :: b))) ((SF (sing @d)) s)
+    instance SingI2 (FSym2 :: a
+                              -> b -> (~>) c ((~>) d (Foo a b c d))) where
+      liftSing2 (s :: Sing (d :: a)) (s :: Sing (d :: b))
+        = (singFun2 @(FSym2 (d :: a) (d :: b))) ((SF s) s)
     instance (SingI d, SingI d, SingI d) =>
              SingI (FSym3 (d :: a) (d :: b) (d :: c) :: (~>) d (Foo a b c d)) where
       sing
         = (singFun1 @(FSym3 (d :: a) (d :: b) (d :: c)))
             (((SF (sing @d)) (sing @d)) (sing @d))
+    instance (SingI d, SingI d) =>
+             SingI1 (FSym3 (d :: a) (d :: b) :: c -> (~>) d (Foo a b c d)) where
+      liftSing (s :: Sing (d :: c))
+        = (singFun1 @(FSym3 (d :: a) (d :: b) (d :: c)))
+            (((SF (sing @d)) (sing @d)) s)
+    instance SingI d =>
+             SingI2 (FSym3 (d :: a) :: b -> c -> (~>) d (Foo a b c d)) where
+      liftSing2 (s :: Sing (d :: b)) (s :: Sing (d :: c))
+        = (singFun1 @(FSym3 (d :: a) (d :: b) (d :: c)))
+            (((SF (sing @d)) s) s)

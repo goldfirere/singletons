@@ -281,9 +281,13 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
         = Data.Singletons.Decide.decideCoercion
     instance SingI n => SingI (Constant (n :: a)) where
       sing = SConstant sing
+    instance SingI1 Constant where
+      liftSing = SConstant
     instance SingI (ConstantSym0 :: (~>) a (Constant (a :: Type) (b :: Type))) where
       sing = (singFun1 @ConstantSym0) SConstant
     instance SingI n => SingI (Identity (n :: a)) where
       sing = SIdentity sing
+    instance SingI1 Identity where
+      liftSing = SIdentity
     instance SingI (IdentitySym0 :: (~>) a (Identity a)) where
       sing = (singFun1 @IdentitySym0) SIdentity
