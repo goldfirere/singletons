@@ -245,15 +245,15 @@ instance SingI1 (^@#@$$) where
 -- with libraries with APIs built around '<=?'.  New code should use
 -- 'CmpNat', exposed through this library through the 'POrd' and 'SOrd'
 -- instances for 'Natural'.
-(%<=?) :: Sing a -> Sing b -> Sing (a <=? b)
+(%<=?) :: forall (a :: Natural) (b :: Natural). Sing a -> Sing b -> Sing (a <=? b)
 sa %<=? sb = unsafeCoerce (sa %<= sb)
 infix 4 %<=?
 
 -- Defunctionalization symbols for (<=?)
 $(genDefunSymbols [''(<=?)])
-instance SingI (<=?@#@$) where
+instance SingI ((<=?@#@$) @Natural) where
   sing = singFun2 (%<=?)
-instance SingI x => SingI ((<=?@#@$$) x) where
+instance SingI x => SingI ((<=?@#@$$) @Natural x) where
   sing = singFun1 (sing @x %<=?)
-instance SingI1 (<=?@#@$$) where
+instance SingI1 ((<=?@#@$$) @Natural) where
   liftSing s = singFun1 (s %<=?)
