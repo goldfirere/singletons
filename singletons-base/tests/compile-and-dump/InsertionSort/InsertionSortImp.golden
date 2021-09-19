@@ -27,8 +27,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
       toSing (Succ (b :: Demote Nat))
-        = case toSing b :: SomeSing Nat of {
-            SomeSing c -> SomeSing (SSucc c) }
+        = case toSing b :: SomeSing Nat of SomeSing c -> SomeSing (SSucc c)
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where
@@ -166,14 +165,14 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       Leq ('Succ _) 'Zero = FalseSym0
       Leq ('Succ a) ('Succ b) = Apply (Apply LeqSym0 a) b
     sInsertionSort ::
-      forall (t :: [Nat]).
-      Sing t -> Sing (Apply InsertionSortSym0 t :: [Nat])
+      forall (t :: [Nat]). Sing t
+                           -> Sing (Apply InsertionSortSym0 t :: [Nat])
     sInsert ::
-      forall (t :: Nat) (t :: [Nat]).
-      Sing t -> Sing t -> Sing (Apply (Apply InsertSym0 t) t :: [Nat])
+      forall (t :: Nat) (t :: [Nat]). Sing t
+                                      -> Sing t -> Sing (Apply (Apply InsertSym0 t) t :: [Nat])
     sLeq ::
-      forall (t :: Nat) (t :: Nat).
-      Sing t -> Sing t -> Sing (Apply (Apply LeqSym0 t) t :: Bool)
+      forall (t :: Nat) (t :: Nat). Sing t
+                                    -> Sing t -> Sing (Apply (Apply LeqSym0 t) t :: Bool)
     sInsertionSort SNil = SNil
     sInsertionSort (SCons (sH :: Sing h) (sT :: Sing t))
       = (applySing ((applySing ((singFun2 @InsertSym0) sInsert)) sH))

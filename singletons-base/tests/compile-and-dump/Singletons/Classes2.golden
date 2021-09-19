@@ -71,15 +71,14 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SSuccFoo b) = SuccFoo (fromSing b)
       toSing ZeroFoo = SomeSing SZeroFoo
       toSing (SuccFoo (b :: Demote NatFoo))
-        = case toSing b :: SomeSing NatFoo of {
-            SomeSing c -> SomeSing (SSuccFoo c) }
+        = case toSing b :: SomeSing NatFoo of
+            SomeSing c -> SomeSing (SSuccFoo c)
     instance SMyOrd NatFoo where
       sMycompare ::
-        forall (t1 :: NatFoo) (t2 :: NatFoo).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (MycompareSym0 :: TyFun NatFoo ((~>) NatFoo Ordering)
-                                                   -> GHC.Types.Type) t1) t2)
+        forall (t1 :: NatFoo) (t2 :: NatFoo). Sing t1
+                                              -> Sing t2
+                                                 -> Sing (Apply (Apply (MycompareSym0 :: TyFun NatFoo ((~>) NatFoo Ordering)
+                                                                                         -> GHC.Types.Type) t1) t2)
       sMycompare SZeroFoo SZeroFoo = SEQ
       sMycompare SZeroFoo (SSuccFoo _) = SLT
       sMycompare (SSuccFoo _) SZeroFoo = SGT

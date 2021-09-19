@@ -1,10 +1,10 @@
 Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| g :: Bool -> Bool
-          g e = (case [not] of { [_] -> not }) e |]
+          g e = (case [not] of [_] -> not) e |]
   ======>
     g :: Bool -> Bool
-    g e = (case [not] of { [_] -> not }) e
+    g e = (case [not] of [_] -> not) e
     data Let0123456789876543210Scrutinee_0123456789876543210Sym0 e0123456789876543210
       where
         Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference :: SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
@@ -50,8 +50,8 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
             in
               (id
                  @(Sing (Case_0123456789876543210 e (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e))))
-                (case sScrutinee_0123456789876543210 of {
-                   SCons _ SNil -> (singFun1 @NotSym0) sNot })))
+                (case sScrutinee_0123456789876543210 of
+                   SCons _ SNil -> (singFun1 @NotSym0) sNot)))
           sE
     instance SingI (GSym0 :: (~>) Bool Bool) where
       sing = (singFun1 @GSym0) sG

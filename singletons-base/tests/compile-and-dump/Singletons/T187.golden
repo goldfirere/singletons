@@ -65,26 +65,24 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @Empty = SEmpty
     instance SingKind Empty where
       type Demote Empty = Empty
-      fromSing x = case x of
-      toSing x = SomeSing (case x of)
+      fromSing x = case x of {}
+      toSing x = SomeSing (case x of {})
     instance SEq Empty where
       (%==) ::
-        forall (t1 :: Empty) (t2 :: Empty).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply ((==@#@$) :: TyFun Empty ((~>) Empty Bool)
-                                              -> GHC.Types.Type) t1) t2)
+        forall (t1 :: Empty) (t2 :: Empty). Sing t1
+                                            -> Sing t2
+                                               -> Sing (Apply (Apply ((==@#@$) :: TyFun Empty ((~>) Empty Bool)
+                                                                                  -> GHC.Types.Type) t1) t2)
       (%==) _ _ = STrue
     instance SOrd Empty where
       sCompare ::
-        forall (t1 :: Empty) (t2 :: Empty).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun Empty ((~>) Empty Ordering)
-                                                 -> GHC.Types.Type) t1) t2)
+        forall (t1 :: Empty) (t2 :: Empty). Sing t1
+                                            -> Sing t2
+                                               -> Sing (Apply (Apply (CompareSym0 :: TyFun Empty ((~>) Empty Ordering)
+                                                                                     -> GHC.Types.Type) t1) t2)
       sCompare _ _ = SEQ
     instance SDecide Empty where
-      (%~) x _ = Proved (case x of)
+      (%~) x _ = Proved (case x of {})
     instance Data.Type.Equality.TestEquality (SEmpty :: Empty
                                                         -> GHC.Types.Type) where
       Data.Type.Equality.testEquality

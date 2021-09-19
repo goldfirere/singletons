@@ -47,16 +47,19 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
       forall (t :: Age) (t :: Age). Sing t
                                     -> Sing t -> Sing (Apply (Apply AddAgeSym0 t) t :: Age)
     sAddAge (SMkAge (sX :: Sing x)) (SMkAge (sY :: Sing y))
-      = case ((,) (sX :: Sing x)) (sY :: Sing y) of {
+      = case ((,) (sX :: Sing x)) (sY :: Sing y) of
           (,) (_ :: Sing (x :: Natural)) (_ :: Sing (y :: Natural))
             -> (applySing ((singFun1 @MkAgeSym0) SMkAge))
                  ((applySing ((applySing ((singFun2 @(+@#@$)) (%+))) sX)) sY ::
-                    Sing (Apply (Apply (+@#@$) x) y :: Natural)) }
+                    Sing (Apply (Apply (+@#@$) x) y :: Natural))
     instance SingI (AddAgeSym0 :: (~>) Age ((~>) Age Age)) where
       sing = (singFun2 @AddAgeSym0) sAddAge
     instance SingI d =>
              SingI (AddAgeSym1 (d :: Age) :: (~>) Age Age) where
       sing = (singFun1 @(AddAgeSym1 (d :: Age))) (sAddAge (sing @d))
+    instance SingI1 (AddAgeSym1 :: Age -> (~>) Age Age) where
+      liftSing (s :: Sing (d :: Age))
+        = (singFun1 @(AddAgeSym1 (d :: Age))) (sAddAge s)
     data SAge :: Age -> GHC.Types.Type
       where
         SMkAge :: forall (n :: Natural). (Sing n) -> SAge (MkAge n :: Age)
@@ -65,9 +68,11 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
       type Demote Age = Age
       fromSing (SMkAge b) = MkAge (fromSing b)
       toSing (MkAge (b :: Demote Natural))
-        = case toSing b :: SomeSing Natural of {
-            SomeSing c -> SomeSing (SMkAge c) }
+        = case toSing b :: SomeSing Natural of
+            SomeSing c -> SomeSing (SMkAge c)
     instance SingI n => SingI (MkAge (n :: Natural)) where
       sing = SMkAge sing
+    instance SingI1 MkAge where
+      liftSing = SMkAge
     instance SingI (MkAgeSym0 :: (~>) Natural Age) where
       sing = (singFun1 @MkAgeSym0) SMkAge

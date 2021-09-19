@@ -95,8 +95,8 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
     type family Baz1Sym0 :: a where
       Baz1Sym0 = Baz1
     class PFoo1 a where
-      type Bar1 (arg :: a) (arg :: (~>) a b) :: b
-      type Baz1 :: a
+      type family Bar1 (arg :: a) (arg :: (~>) a b) :: b
+      type family Baz1 :: a
     type Bar2Sym0 :: forall a b. (~>) a ((~>) b b)
     data Bar2Sym0 :: (~>) a ((~>) b b)
       where
@@ -120,38 +120,38 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
     type family Baz2Sym0 :: a where
       Baz2Sym0 = Baz2
     class PFoo2 a where
-      type Bar2 (arg :: a) (arg :: b) :: b
-      type Baz2 :: a
+      type family Bar2 (arg :: a) (arg :: b) :: b
+      type family Baz2 :: a
     sQuux2 ::
-      forall a (t :: a).
-      SFoo2 a => Sing t -> Sing (Apply Quux2Sym0 t :: a)
+      forall a (t :: a). SFoo2 a =>
+                         Sing t -> Sing (Apply Quux2Sym0 t :: a)
     sQuux1 ::
-      forall a (t :: a).
-      SFoo1 a => Sing t -> Sing (Apply Quux1Sym0 t :: a)
+      forall a (t :: a). SFoo1 a =>
+                         Sing t -> Sing (Apply Quux1Sym0 t :: a)
     sQuux2 (sX :: Sing x)
       = (applySing ((applySing ((singFun2 @Bar2Sym0) sBar2)) sX)) sBaz2
     sQuux1 (sX :: Sing x)
       = (applySing ((applySing ((singFun2 @Bar1Sym0) sBar1)) sX))
           ((singFun1 @(Apply Lambda_0123456789876543210Sym0 x))
              (\ sArg_0123456789876543210
-                -> case sArg_0123456789876543210 of {
+                -> case sArg_0123456789876543210 of
                      (_ :: Sing arg_0123456789876543210)
                        -> (id
                              @(Sing (Case_0123456789876543210 arg_0123456789876543210 x arg_0123456789876543210)))
-                            (case sArg_0123456789876543210 of { _ -> sBaz1 }) }))
+                            (case sArg_0123456789876543210 of _ -> sBaz1)))
     instance SFoo2 a => SingI (Quux2Sym0 :: (~>) a a) where
       sing = (singFun1 @Quux2Sym0) sQuux2
     instance SFoo1 a => SingI (Quux1Sym0 :: (~>) a a) where
       sing = (singFun1 @Quux1Sym0) sQuux1
     class SFoo1 a where
       sBar1 ::
-        forall b (t :: a) (t :: (~>) a b).
-        Sing t -> Sing t -> Sing (Apply (Apply Bar1Sym0 t) t :: b)
+        forall b (t :: a) (t :: (~>) a b). Sing t
+                                           -> Sing t -> Sing (Apply (Apply Bar1Sym0 t) t :: b)
       sBaz1 :: Sing (Baz1Sym0 :: a)
     class SFoo2 a where
       sBar2 ::
-        forall b (t :: a) (t :: b).
-        Sing t -> Sing t -> Sing (Apply (Apply Bar2Sym0 t) t :: b)
+        forall b (t :: a) (t :: b). Sing t
+                                    -> Sing t -> Sing (Apply (Apply Bar2Sym0 t) t :: b)
       sBaz2 :: Sing (Baz2Sym0 :: a)
     instance SFoo1 a =>
              SingI (Bar1Sym0 :: (~>) a ((~>) ((~>) a b) b)) where

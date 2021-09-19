@@ -76,8 +76,8 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
     sFoo2 :: Sing (Foo2Sym0 :: [Nat])
     sFoo1 :: Sing (Foo1Sym0 :: [Nat])
     (%+) ::
-      forall (t :: Nat) (t :: Nat).
-      Sing t -> Sing t -> Sing (Apply (Apply (+@#@$) t) t :: Nat)
+      forall (t :: Nat) (t :: Nat). Sing t
+                                    -> Sing t -> Sing (Apply (Apply (+@#@$) t) t :: Nat)
     sFoo3
       = (applySing
            ((applySing
@@ -100,11 +100,11 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
            ((applySing ((singFun2 @MapSym0) sMap))
               ((singFun1 @Lambda_0123456789876543210Sym0)
                  (\ sLhs_0123456789876543210
-                    -> case sLhs_0123456789876543210 of {
+                    -> case sLhs_0123456789876543210 of
                          (_ :: Sing lhs_0123456789876543210)
                            -> (applySing
                                  ((applySing ((singFun2 @(+@#@$)) (%+))) sLhs_0123456789876543210))
-                                ((applySing ((singFun1 @SuccSym0) SSucc)) SZero) }))))
+                                ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))))
           ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SZero))
              ((applySing
                  ((applySing ((singFun2 @(:@#@$)) SCons))

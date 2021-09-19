@@ -142,27 +142,27 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
     type family Baz_0123456789876543210Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
       Baz_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Baz_0123456789876543210 a0123456789876543210 a0123456789876543210
     class PFoo a where
-      type Bar (arg :: a) (arg :: b) :: b
-      type Baz (arg :: a) (arg :: b) :: b
+      type family Bar (arg :: a) (arg :: b) :: b
+      type family Baz (arg :: a) (arg :: b) :: b
       type Bar a a = Apply (Apply Bar_0123456789876543210Sym0 a) a
       type Baz a a = Apply (Apply Baz_0123456789876543210Sym0 a) a
     class SFoo a where
       sBar ::
-        forall b (t :: a) (t :: b).
-        Sing t -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b)
+        forall b (t :: a) (t :: b). Sing t
+                                    -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b)
       sBaz ::
-        forall b (t :: a) (t :: b).
-        Sing t -> Sing t -> Sing (Apply (Apply BazSym0 t) t :: b)
+        forall b (t :: a) (t :: b). Sing t
+                                    -> Sing t -> Sing (Apply (Apply BazSym0 t) t :: b)
       default sBar ::
-                forall b (t :: a) (t :: b).
-                ((Apply (Apply BarSym0 t) t :: b)
-                 ~ Apply (Apply Bar_0123456789876543210Sym0 t) t) =>
-                Sing t -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b)
+                forall b (t :: a) (t :: b). ((Apply (Apply BarSym0 t) t :: b)
+                                             ~ Apply (Apply Bar_0123456789876543210Sym0 t) t) =>
+                                            Sing t
+                                            -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b)
       default sBaz ::
-                forall b (t :: a) (t :: b).
-                ((Apply (Apply BazSym0 t) t :: b)
-                 ~ Apply (Apply Baz_0123456789876543210Sym0 t) t) =>
-                Sing t -> Sing t -> Sing (Apply (Apply BazSym0 t) t :: b)
+                forall b (t :: a) (t :: b). ((Apply (Apply BazSym0 t) t :: b)
+                                             ~ Apply (Apply Baz_0123456789876543210Sym0 t) t) =>
+                                            Sing t
+                                            -> Sing t -> Sing (Apply (Apply BazSym0 t) t :: b)
       sBar _ (sX :: Sing x) = sX
       sBaz
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -171,10 +171,9 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
              ((applySing
                  (let
                     sH ::
-                      forall c (t :: c) (t :: b).
-                      Sing t
-                      -> Sing t
-                         -> Sing (Apply (Apply (Let0123456789876543210HSym2 a_0123456789876543210 a_0123456789876543210) t) t :: b)
+                      forall c (t :: c) (t :: b). Sing t
+                                                  -> Sing t
+                                                     -> Sing (Apply (Apply (Let0123456789876543210HSym2 a_0123456789876543210 a_0123456789876543210) t) t :: b)
                     sH _ (sX :: Sing x) = sX
                   in
                     (singFun2

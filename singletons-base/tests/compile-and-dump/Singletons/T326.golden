@@ -25,7 +25,7 @@ Singletons/T326.hs:0:0:: Splicing declarations
     infixl 9 <%>@#@$$$
     type PC1 :: GHC.Types.Type -> Constraint
     class PC1 (a :: GHC.Types.Type) where
-      type (<%>) (arg :: a) (arg :: a) :: a
+      type family (<%>) (arg :: a) (arg :: a) :: a
     infixl 9 <%>
 Singletons/T326.hs:0:0:: Splicing declarations
     genSingletons [''C2]
@@ -54,12 +54,12 @@ Singletons/T326.hs:0:0:: Splicing declarations
     infixl 9 <%%>@#@$$$
     type PC2 :: GHC.Types.Type -> Constraint
     class PC2 (a :: GHC.Types.Type) where
-      type (<%%>) (arg :: a) (arg :: a) :: a
+      type family (<%%>) (arg :: a) (arg :: a) :: a
     infixl 9 <%%>
     class SC2 (a :: GHC.Types.Type) where
       (%<%%>) ::
-        forall (t :: a) (t :: a).
-        Sing t -> Sing t -> Sing (Apply (Apply (<%%>@#@$) t) t :: a)
+        forall (t :: a) (t :: a). Sing t
+                                  -> Sing t -> Sing (Apply (Apply (<%%>@#@$) t) t :: a)
     type SC2 :: GHC.Types.Type -> Constraint
     infixl 9 %<%%>
     instance SC2 a => SingI ((<%%>@#@$) :: (~>) a ((~>) a a)) where

@@ -18,7 +18,7 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
     type family PFoo3 a where
       PFoo3 a = Maybe a
     class PC (a :: Type) where
-      type PFoo4 a
+      type family PFoo4 a
       type PFoo4 a = Maybe a
     instance PC a where
       type PFoo4 a = Maybe a
@@ -80,7 +80,7 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
     type family SFoo3 a where
       SFoo3 a = Maybe a
     class SC (a :: Type) where
-      type SFoo4 a
+      type family SFoo4 a
       type SFoo4 a = Maybe a
     instance SC a where
       type SFoo4 a = Maybe a

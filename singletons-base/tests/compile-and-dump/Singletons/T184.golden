@@ -346,41 +346,42 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
     sTrues ::
       forall (t :: [Bool]). Sing t -> Sing (Apply TruesSym0 t :: [Bool])
     sCartProd ::
-      forall a b (t :: [a]) (t :: [b]).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply CartProdSym0 t) t :: [(a, b)])
+      forall a b (t :: [a]) (t :: [b]). Sing t
+                                        -> Sing t
+                                           -> Sing (Apply (Apply CartProdSym0 t) t :: [(a, b)])
     sZip' ::
-      forall a b (t :: [a]) (t :: [b]).
-      Sing t -> Sing t -> Sing (Apply (Apply Zip'Sym0 t) t :: [(a, b)])
+      forall a b (t :: [a]) (t :: [b]). Sing t
+                                        -> Sing t -> Sing (Apply (Apply Zip'Sym0 t) t :: [(a, b)])
     sBoogie ::
-      forall a (t :: Maybe a) (t :: Maybe Bool).
-      Sing t -> Sing t -> Sing (Apply (Apply BoogieSym0 t) t :: Maybe a)
+      forall a (t :: Maybe a) (t :: Maybe Bool). Sing t
+                                                 -> Sing t
+                                                    -> Sing (Apply (Apply BoogieSym0 t) t :: Maybe a)
     sTrues (sXs :: Sing xs)
       = (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sXs))
           ((singFun1 @(Apply Lambda_0123456789876543210Sym0 xs))
              (\ sX
-                -> case sX of {
+                -> case sX of
                      (_ :: Sing x)
                        -> (applySing
                              ((applySing ((singFun2 @(>>@#@$)) (%>>)))
                                 ((applySing ((singFun1 @GuardSym0) sGuard)) sX)))
-                            ((applySing ((singFun1 @ReturnSym0) sReturn)) sX) }))
+                            ((applySing ((singFun1 @ReturnSym0) sReturn)) sX)))
     sCartProd (sXs :: Sing xs) (sYs :: Sing ys)
       = (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sXs))
           ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 xs) ys))
              (\ sX
-                -> case sX of {
+                -> case sX of
                      (_ :: Sing x)
                        -> (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sYs))
                             ((singFun1
                                 @(Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) xs) ys))
                                (\ sY
-                                  -> case sY of {
+                                  -> case sY of
                                        (_ :: Sing y)
                                          -> (applySing ((singFun1 @ReturnSym0) sReturn))
                                               ((applySing
                                                   ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX))
-                                                 sY) })) }))
+                                                 sY)))))
     sZip' (sXs :: Sing xs) (sYs :: Sing ys)
       = (applySing
            ((applySing ((singFun2 @(>>=@#@$)) (%>>=)))
@@ -389,43 +390,42 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
                      ((applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sXs))
                         ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 xs) ys))
                            (\ sX
-                              -> case sX of {
+                              -> case sX of
                                    (_ :: Sing x)
-                                     -> (applySing ((singFun1 @ReturnSym0) sReturn)) sX })))))
+                                     -> (applySing ((singFun1 @ReturnSym0) sReturn)) sX)))))
                  ((applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sYs))
                     ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 xs) ys))
                        (\ sY
-                          -> case sY of {
+                          -> case sY of
                                (_ :: Sing y)
-                                 -> (applySing ((singFun1 @ReturnSym0) sReturn)) sY }))))))
+                                 -> (applySing ((singFun1 @ReturnSym0) sReturn)) sY))))))
           ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 xs) ys))
              (\ sArg_0123456789876543210
-                -> case sArg_0123456789876543210 of {
+                -> case sArg_0123456789876543210 of
                      (_ :: Sing arg_0123456789876543210)
                        -> (id
                              @(Sing (Case_0123456789876543210 arg_0123456789876543210 xs ys arg_0123456789876543210)))
-                            (case sArg_0123456789876543210 of {
+                            (case sArg_0123456789876543210 of
                                STuple2 (sX :: Sing x) (sY :: Sing y)
                                  -> (applySing ((singFun1 @ReturnSym0) sReturn))
                                       ((applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX))
-                                         sY) }) }))
+                                         sY))))
     sBoogie (sMa :: Sing ma) (sMb :: Sing mb)
       = (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sMa))
           ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 ma) mb))
              (\ sA
-                -> case sA of {
+                -> case sA of
                      (_ :: Sing a)
                        -> (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sMb))
                             ((singFun1
                                 @(Apply (Apply (Apply Lambda_0123456789876543210Sym0 a) ma) mb))
                                (\ sB
-                                  -> case sB of {
+                                  -> case sB of
                                        (_ :: Sing b)
                                          -> (applySing
                                                ((applySing ((singFun2 @(>>@#@$)) (%>>)))
                                                   ((applySing ((singFun1 @GuardSym0) sGuard)) sB)))
-                                              ((applySing ((singFun1 @ReturnSym0) sReturn))
-                                                 sA) })) }))
+                                              ((applySing ((singFun1 @ReturnSym0) sReturn)) sA)))))
     instance SingI (TruesSym0 :: (~>) [Bool] [Bool]) where
       sing = (singFun1 @TruesSym0) sTrues
     instance SingI (CartProdSym0 :: (~>) [a] ((~>) [b] [(a, b)])) where

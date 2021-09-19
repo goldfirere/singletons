@@ -295,32 +295,31 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       Map _ '[] = NilSym0
       Map f ('(:) h t) = Apply (Apply (:@#@$) (Apply f h)) (Apply (Apply MapSym0 f) t)
     sEtad ::
-      forall (t :: [Nat]) (t :: [Bool]).
-      Sing t -> Sing t -> Sing (Apply (Apply EtadSym0 t) t :: [Nat])
+      forall (t :: [Nat]) (t :: [Bool]). Sing t
+                                         -> Sing t -> Sing (Apply (Apply EtadSym0 t) t :: [Nat])
     sSplunge ::
-      forall (t :: [Nat]) (t :: [Bool]).
-      Sing t -> Sing t -> Sing (Apply (Apply SplungeSym0 t) t :: [Nat])
+      forall (t :: [Nat]) (t :: [Bool]). Sing t
+                                         -> Sing t -> Sing (Apply (Apply SplungeSym0 t) t :: [Nat])
     sFoo ::
       forall a
              b
              (t :: (~>) ((~>) a b) ((~>) a b))
              (t :: (~>) a b)
-             (t :: a).
-      Sing t
-      -> Sing t
-         -> Sing t -> Sing (Apply (Apply (Apply FooSym0 t) t) t :: b)
+             (t :: a). Sing t
+                       -> Sing t
+                          -> Sing t -> Sing (Apply (Apply (Apply FooSym0 t) t) t :: b)
     sZipWith ::
-      forall a b c (t :: (~>) a ((~>) b c)) (t :: [a]) (t :: [b]).
-      Sing t
-      -> Sing t
-         -> Sing t -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
+      forall a b c (t :: (~>) a ((~>) b c)) (t :: [a]) (t :: [b]). Sing t
+                                                                   -> Sing t
+                                                                      -> Sing t
+                                                                         -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
     sLiftMaybe ::
-      forall a b (t :: (~>) a b) (t :: Maybe a).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
+      forall a b (t :: (~>) a b) (t :: Maybe a). Sing t
+                                                 -> Sing t
+                                                    -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
     sMap ::
-      forall a b (t :: (~>) a b) (t :: [a]).
-      Sing t -> Sing t -> Sing (Apply (Apply MapSym0 t) t :: [b])
+      forall a b (t :: (~>) a b) (t :: [a]). Sing t
+                                             -> Sing t -> Sing (Apply (Apply MapSym0 t) t :: [b])
     sEtad
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -330,7 +329,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                   ((singFun2
                       @(Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210))
                      (\ sN sB
-                        -> case ((,) sN) sB of {
+                        -> case ((,) sN) sB of
                              (,) (_ :: Sing n) (_ :: Sing b)
                                -> (id
                                      @(Sing (Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 b)))
@@ -338,7 +337,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                                        STrue
                                          -> (applySing ((singFun1 @SuccSym0) SSucc))
                                               ((applySing ((singFun1 @SuccSym0) SSucc)) sN)
-                                       SFalse -> sN) }))))
+                                       SFalse -> sN)))))
               sA_0123456789876543210))
           sA_0123456789876543210
     sSplunge (sNs :: Sing ns) (sBs :: Sing bs)
@@ -347,14 +346,14 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
                ((applySing ((singFun3 @ZipWithSym0) sZipWith))
                   ((singFun2 @(Apply (Apply Lambda_0123456789876543210Sym0 ns) bs))
                      (\ sN sB
-                        -> case ((,) sN) sB of {
+                        -> case ((,) sN) sB of
                              (,) (_ :: Sing n) (_ :: Sing b)
                                -> (id @(Sing (Case_0123456789876543210 n b ns bs b)))
                                     (case sB of
                                        STrue
                                          -> (applySing ((singFun1 @SuccSym0) SSucc))
                                               ((applySing ((singFun1 @SuccSym0) SSucc)) sN)
-                                       SFalse -> sN) }))))
+                                       SFalse -> sN)))))
               sNs))
           sBs
     sFoo (sF :: Sing f) (sG :: Sing g) (sA :: Sing a)
@@ -489,11 +488,9 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SLeft b) = Left (fromSing b)
       fromSing (SRight b) = Right (fromSing b)
       toSing (Left (b :: Demote a))
-        = case toSing b :: SomeSing a of {
-            SomeSing c -> SomeSing (SLeft c) }
+        = case toSing b :: SomeSing a of SomeSing c -> SomeSing (SLeft c)
       toSing (Right (b :: Demote b))
-        = case toSing b :: SomeSing b of {
-            SomeSing c -> SomeSing (SRight c) }
+        = case toSing b :: SomeSing b of SomeSing c -> SomeSing (SRight c)
     instance SingI n => SingI (Left (n :: a)) where
       sing = SLeft sing
     instance SingI1 Left where

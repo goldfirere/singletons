@@ -58,14 +58,14 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
            ((applySing ((singFun2 @MapSym0) sMap))
               ((singFun1 @Lambda_0123456789876543210Sym0)
                  (\ sX
-                    -> case sX of {
+                    -> case sX of
                          (_ :: Sing x)
                            -> (applySing
                                  ((applySing
                                      ((applySing ((singFun3 @Either_Sym0) sEither_))
                                         ((singFun1 @PredSym0) sPred)))
                                     ((singFun1 @SuccSym0) SSucc)))
-                                sX }))))
+                                sX))))
           ((applySing
               ((applySing ((singFun2 @(:@#@$)) SCons))
                  ((applySing ((singFun1 @LeftSym0) SLeft)) SZero)))

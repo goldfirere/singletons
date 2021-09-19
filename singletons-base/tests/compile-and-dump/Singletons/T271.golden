@@ -13,8 +13,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     data Identity :: Type -> Type
       where Identity :: a -> Identity a
       deriving (Eq, Ord)
-    type ConstantSym0 :: forall (a :: Type) (b :: Type).
-                         (~>) a (Constant (a :: Type) (b :: Type))
+    type ConstantSym0 :: forall (a :: Type)
+                                (b :: Type). (~>) a (Constant (a :: Type) (b :: Type))
     data ConstantSym0 :: (~>) a (Constant (a :: Type) (b :: Type))
       where
         ConstantSym0KindInference :: SameKind (Apply ConstantSym0 arg) (ConstantSym1 arg) =>
@@ -22,8 +22,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ConstantSym0 a0123456789876543210 = Constant a0123456789876543210
     instance SuppressUnusedWarnings ConstantSym0 where
       suppressUnusedWarnings = snd (((,) ConstantSym0KindInference) ())
-    type ConstantSym1 :: forall (a :: Type) (b :: Type).
-                         a -> Constant (a :: Type) (b :: Type)
+    type ConstantSym1 :: forall (a :: Type) (b :: Type). a
+                                                         -> Constant (a :: Type) (b :: Type)
     type family ConstantSym1 (a0123456789876543210 :: a) :: Constant (a :: Type) (b :: Type) where
       ConstantSym1 a0123456789876543210 = Constant a0123456789876543210
     type IdentitySym0 :: (~>) a (Identity a)
@@ -164,8 +164,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Constant a b) = Constant (Demote a) (Demote b)
       fromSing (SConstant b) = Constant (fromSing b)
       toSing (Constant (b :: Demote a))
-        = case toSing b :: SomeSing a of {
-            SomeSing c -> SomeSing (SConstant c) }
+        = case toSing b :: SomeSing a of
+            SomeSing c -> SomeSing (SConstant c)
     data SIdentity :: forall (a :: Type). Identity a -> Type
       where
         SIdentity :: forall a (n :: a).
@@ -175,15 +175,14 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Identity a) = Identity (Demote a)
       fromSing (SIdentity b) = Identity (fromSing b)
       toSing (Identity (b :: Demote a))
-        = case toSing b :: SomeSing a of {
-            SomeSing c -> SomeSing (SIdentity c) }
+        = case toSing b :: SomeSing a of
+            SomeSing c -> SomeSing (SIdentity c)
     instance SEq a => SEq (Constant a b) where
       (%==) ::
-        forall (t1 :: Constant a b) (t2 :: Constant a b).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply ((==@#@$) :: TyFun (Constant a b) ((~>) (Constant a b) Bool)
-                                              -> Type) t1) t2)
+        forall (t1 :: Constant a b) (t2 :: Constant a b). Sing t1
+                                                          -> Sing t2
+                                                             -> Sing (Apply (Apply ((==@#@$) :: TyFun (Constant a b) ((~>) (Constant a b) Bool)
+                                                                                                -> Type) t1) t2)
       (%==)
         (SConstant (sA_0123456789876543210 :: Sing a_0123456789876543210))
         (SConstant (sB_0123456789876543210 :: Sing b_0123456789876543210))
@@ -192,11 +191,10 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
             sB_0123456789876543210
     instance SOrd a => SOrd (Constant a b) where
       sCompare ::
-        forall (t1 :: Constant a b) (t2 :: Constant a b).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Constant a b) ((~>) (Constant a b) Ordering)
-                                                 -> Type) t1) t2)
+        forall (t1 :: Constant a b) (t2 :: Constant a b). Sing t1
+                                                          -> Sing t2
+                                                             -> Sing (Apply (Apply (CompareSym0 :: TyFun (Constant a b) ((~>) (Constant a b) Ordering)
+                                                                                                   -> Type) t1) t2)
       sCompare
         (SConstant (sA_0123456789876543210 :: Sing a_0123456789876543210))
         (SConstant (sB_0123456789876543210 :: Sing b_0123456789876543210))
@@ -214,11 +212,10 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                SNil)
     instance SEq a => SEq (Identity a) where
       (%==) ::
-        forall (t1 :: Identity a) (t2 :: Identity a).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply ((==@#@$) :: TyFun (Identity a) ((~>) (Identity a) Bool)
-                                              -> Type) t1) t2)
+        forall (t1 :: Identity a) (t2 :: Identity a). Sing t1
+                                                      -> Sing t2
+                                                         -> Sing (Apply (Apply ((==@#@$) :: TyFun (Identity a) ((~>) (Identity a) Bool)
+                                                                                            -> Type) t1) t2)
       (%==)
         (SIdentity (sA_0123456789876543210 :: Sing a_0123456789876543210))
         (SIdentity (sB_0123456789876543210 :: Sing b_0123456789876543210))
@@ -227,11 +224,10 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
             sB_0123456789876543210
     instance SOrd a => SOrd (Identity a) where
       sCompare ::
-        forall (t1 :: Identity a) (t2 :: Identity a).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Identity a) ((~>) (Identity a) Ordering)
-                                                 -> Type) t1) t2)
+        forall (t1 :: Identity a) (t2 :: Identity a). Sing t1
+                                                      -> Sing t2
+                                                         -> Sing (Apply (Apply (CompareSym0 :: TyFun (Identity a) ((~>) (Identity a) Ordering)
+                                                                                               -> Type) t1) t2)
       sCompare
         (SIdentity (sA_0123456789876543210 :: Sing a_0123456789876543210))
         (SIdentity (sB_0123456789876543210 :: Sing b_0123456789876543210))
@@ -252,7 +248,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
         = case ((%~) a) b of
             Proved Refl -> Proved Refl
             Disproved contra
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
     instance SDecide a =>
              Data.Type.Equality.TestEquality (SConstant :: Constant a b
                                                            -> Type) where
@@ -268,7 +264,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
         = case ((%~) a) b of
             Proved Refl -> Proved Refl
             Disproved contra
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
     instance SDecide a =>
              Data.Type.Equality.TestEquality (SIdentity :: Identity a
                                                            -> Type) where

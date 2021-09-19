@@ -112,13 +112,13 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     type family ($$:) (a :: ErrorMessage) (a :: ErrorMessage) :: ErrorMessage where
       ($$:) x y = Apply (Apply (:$$:@#@$) x) y
     (%<>:) ::
-      forall (t :: ErrorMessage) (t :: ErrorMessage).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply (<>:@#@$) t) t :: ErrorMessage)
+      forall (t :: ErrorMessage) (t :: ErrorMessage). Sing t
+                                                      -> Sing t
+                                                         -> Sing (Apply (Apply (<>:@#@$) t) t :: ErrorMessage)
     (%$$:) ::
-      forall (t :: ErrorMessage) (t :: ErrorMessage).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply ($$:@#@$) t) t :: ErrorMessage)
+      forall (t :: ErrorMessage) (t :: ErrorMessage). Sing t
+                                                      -> Sing t
+                                                         -> Sing (Apply (Apply ($$:@#@$) t) t :: ErrorMessage)
     (%<>:) (sX :: Sing x) (sY :: Sing y)
       = (applySing ((applySing ((singFun2 @(:<>:@#@$)) (:%<>:))) sX)) sY
     (%$$:) (sX :: Sing x) (sY :: Sing y)
@@ -162,18 +162,18 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
         = case
               ((,) (toSing b :: SomeSing ErrorMessage))
                 (toSing b :: SomeSing ErrorMessage)
-          of {
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%$$:) c) c) }
+          of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%$$:) c) c)
       toSing
         ((:<>:) (b :: Demote ErrorMessage) (b :: Demote ErrorMessage))
         = case
               ((,) (toSing b :: SomeSing ErrorMessage))
                 (toSing b :: SomeSing ErrorMessage)
-          of {
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%<>:) c) c) }
+          of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%<>:) c) c)
       toSing (EM (b :: Demote [Bool]))
-        = case toSing b :: SomeSing [Bool] of {
-            SomeSing c -> SomeSing (SEM c) }
+        = case toSing b :: SomeSing [Bool] of
+            SomeSing c -> SomeSing (SEM c)
     instance (SingI n, SingI n) =>
              SingI ((:$$:) (n :: ErrorMessage) (n :: ErrorMessage)) where
       sing = ((:%$$:) sing) sing
