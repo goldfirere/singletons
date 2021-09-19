@@ -3,6 +3,7 @@ Changelog for the `singletons-base` project
 
 next [????.??.??]
 -----------------
+* Require building with GHC 9.2.
 * Add `Data.Functor.{Compose,Product,Sum}.Singletons`.
 * The types of various entities in `Data.Functor.Const.Singletons` and
   `Data.Proxy.Singletons` have been tweaked slightly such that their

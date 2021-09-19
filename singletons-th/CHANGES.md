@@ -3,6 +3,7 @@ Changelog for the `singletons-th` project
 
 next [????.??.??]
 -----------------
+* Require building with GHC 9.2.
 * Make the Template Haskell machinery generate `SingI1` and `SingI2` instances
   when possible.
 * Make `genDefunSymbols` and related functions less likely to trigger
