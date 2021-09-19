@@ -2,7 +2,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
     promote
       [d| newtype Foo
             = Foo Nat
-            deriving Eq
+            deriving (Eq)
           newtype Bar = Bar {unBar :: Nat} |]
   ======>
     newtype Foo

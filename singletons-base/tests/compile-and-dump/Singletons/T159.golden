@@ -118,15 +118,11 @@ Singletons/T159.hs:0:0:: Splicing declarations
       fromSing ((:%&&) b b) = ((:&&) (fromSing b)) (fromSing b)
       toSing N1 = SomeSing SN1
       toSing (C1 (b :: Demote T0) (b :: Demote T1))
-        = case
-              ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T1)
-          of {
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SC1 c) c) }
+        = case ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T1) of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SC1 c) c)
       toSing ((:&&) (b :: Demote T0) (b :: Demote T1))
-        = case
-              ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T1)
-          of {
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%&&) c) c) }
+        = case ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T1) of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%&&) c) c)
     infixr 5 `SC1`
     infixr 5 :%&&
     instance SingI 'N1 where
@@ -234,15 +230,11 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       fromSing ((:%||) b b) = ((:||) (fromSing b)) (fromSing b)
       toSing N2 = SomeSing SN2
       toSing (C2 (b :: Demote T0) (b :: Demote T2))
-        = case
-              ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T2)
-          of {
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SC2 c) c) }
+        = case ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T2) of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SC2 c) c)
       toSing ((:||) (b :: Demote T0) (b :: Demote T2))
-        = case
-              ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T2)
-          of {
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%||) c) c) }
+        = case ((,) (toSing b :: SomeSing T0)) (toSing b :: SomeSing T2) of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%||) c) c)
     instance SingI N2 where
       sing = SN2
     instance (SingI n, SingI n) => SingI (C2 (n :: T0) (n :: T2)) where

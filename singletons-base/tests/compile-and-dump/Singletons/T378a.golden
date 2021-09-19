@@ -53,8 +53,8 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
     type family ConstBA (a :: a) (a :: b) :: a where
       ConstBA x _ = x
     sConstBA ::
-      forall b a (t :: a) (t :: b).
-      Sing t -> Sing t -> Sing (Apply (Apply ConstBASym0 t) t :: a)
+      forall b a (t :: a) (t :: b). Sing t
+                                    -> Sing t -> Sing (Apply (Apply ConstBASym0 t) t :: a)
     sConstBA (sX :: Sing x) _ = sX
     instance SingI (ConstBASym0 :: (~>) a ((~>) b a)) where
       sing = (singFun2 @ConstBASym0) sConstBA

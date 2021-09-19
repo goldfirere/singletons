@@ -38,8 +38,8 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
     type family Foo (a :: a) :: a where
       Foo x = Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
     sFoo ::
-      forall a (t :: a).
-      (SNum a, SEq a) => Sing t -> Sing (Apply FooSym0 t :: a)
+      forall a (t :: a). (SNum a, SEq a) =>
+                         Sing t -> Sing (Apply FooSym0 t :: a)
     sFoo (sX :: Sing x)
       = let
           sScrutinee_0123456789876543210 ::

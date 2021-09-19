@@ -31,9 +31,9 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
       Contains _ '[] = FalseSym0
       Contains elt ('(:) h t) = Apply (Apply (||@#@$) (Apply (Apply (==@#@$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
     sContains ::
-      forall a (t :: a) (t :: [a]).
-      SEq a =>
-      Sing t -> Sing t -> Sing (Apply (Apply ContainsSym0 t) t :: Bool)
+      forall a (t :: a) (t :: [a]). SEq a =>
+                                    Sing t
+                                    -> Sing t -> Sing (Apply (Apply ContainsSym0 t) t :: Bool)
     sContains _ SNil = SFalse
     sContains (sElt :: Sing elt) (SCons (sH :: Sing h) (sT :: Sing t))
       = (applySing

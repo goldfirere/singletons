@@ -5,12 +5,12 @@ Singletons/PolyKindsApp.hs:(0,0)-(0,0): Splicing declarations
   ======>
     class Cls (a :: k -> Type) where
       fff :: (a :: k -> Type) (b :: k)
-    type FffSym0 :: forall k (a :: k -> Type) (b :: k).
-                    (a :: k -> Type) (b :: k)
+    type FffSym0 :: forall k (a :: k -> Type) (b :: k). (a :: k
+                                                              -> Type) (b :: k)
     type family FffSym0 :: (a :: k -> Type) (b :: k) where
       FffSym0 = Fff
     class PCls (a :: k -> Type) where
-      type Fff :: (a :: k -> Type) (b :: k)
+      type family Fff :: (a :: k -> Type) (b :: k)
     class SCls (a :: k -> Type) where
       sFff ::
         forall (b :: k). Sing (FffSym0 :: (a :: k -> Type) (b :: k))

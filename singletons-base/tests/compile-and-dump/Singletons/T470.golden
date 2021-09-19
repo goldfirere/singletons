@@ -58,11 +58,10 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SMkT1 b) = MkT1 (fromSing b)
       fromSing (SMkT2 b) = MkT2 (fromSing b)
       toSing (MkT1 (b :: Demote a))
-        = case toSing b :: SomeSing a of {
-            SomeSing c -> SomeSing (SMkT1 c) }
+        = case toSing b :: SomeSing a of SomeSing c -> SomeSing (SMkT1 c)
       toSing (MkT2 (b :: Demote Void))
-        = case toSing b :: SomeSing Void of {
-            SomeSing c -> SomeSing (SMkT2 c) }
+        = case toSing b :: SomeSing Void of
+            SomeSing c -> SomeSing (SMkT2 c)
     data SS :: S -> Type
       where SMkS :: forall (n :: Bool). !(Sing n) -> SS (MkS n :: S)
     type instance Sing @S = SS
@@ -70,8 +69,7 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
       type Demote S = S
       fromSing (SMkS b) = MkS (fromSing b)
       toSing (MkS (b :: Demote Bool))
-        = case toSing b :: SomeSing Bool of {
-            SomeSing c -> SomeSing (SMkS c) }
+        = case toSing b :: SomeSing Bool of SomeSing c -> SomeSing (SMkS c)
     instance SingI n => SingI (MkT1 (n :: a)) where
       sing = SMkT1 sing
     instance SingI1 MkT1 where

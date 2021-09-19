@@ -7,12 +7,12 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     data Foo
     deriving instance Show Foo
     type family Case_0123456789876543210 v_0123456789876543210 a_0123456789876543210 t where
-    type ShowsPrec_0123456789876543210 :: GHC.Types.Nat
+    type ShowsPrec_0123456789876543210 :: GHC.Num.Natural.Natural
                                           -> Foo -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210 (a :: GHC.Types.Nat) (a :: Foo) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
+    type family ShowsPrec_0123456789876543210 (a :: GHC.Num.Natural.Natural) (a :: Foo) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210 _ v_0123456789876543210 a_0123456789876543210 = Apply (Case_0123456789876543210 v_0123456789876543210 a_0123456789876543210 v_0123456789876543210) a_0123456789876543210
-    type ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Types.Nat ((~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-    data ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Types.Nat ((~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol))
+    type ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural ((~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol))
+    data ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural ((~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol))
       where
         ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
@@ -20,9 +20,9 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
-    type ShowsPrec_0123456789876543210Sym1 :: GHC.Types.Nat
+    type ShowsPrec_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
                                               -> (~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol)
-    data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Types.Nat) :: (~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol)
+    data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: (~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol)
       where
         ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -30,9 +30,9 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
-    type ShowsPrec_0123456789876543210Sym2 :: GHC.Types.Nat
+    type ShowsPrec_0123456789876543210Sym2 :: GHC.Num.Natural.Natural
                                               -> Foo -> (~>) GHC.Types.Symbol GHC.Types.Symbol
-    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Foo) :: (~>) GHC.Types.Symbol GHC.Types.Symbol
+    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Foo) :: (~>) GHC.Types.Symbol GHC.Types.Symbol
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -40,9 +40,9 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
-    type ShowsPrec_0123456789876543210Sym3 :: GHC.Types.Nat
+    type ShowsPrec_0123456789876543210Sym3 :: GHC.Num.Natural.Natural
                                               -> Foo -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Types.Nat) (a0123456789876543210 :: Foo) (a0123456789876543210 :: GHC.Types.Symbol) :: GHC.Types.Symbol where
+    type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Foo) (a0123456789876543210 :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow Foo where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
@@ -50,16 +50,17 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @Foo = SFoo
     instance SingKind Foo where
       type Demote Foo = Foo
-      fromSing x = case x of
-      toSing x = SomeSing (case x of)
+      fromSing x = case x of {}
+      toSing x = SomeSing (case x of {})
     instance SShow Foo where
       sShowsPrec ::
-        forall (t1 :: GHC.Types.Nat) (t2 :: Foo) (t3 :: GHC.Types.Symbol).
-        Sing t1
-        -> Sing t2
-           -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Types.Nat ((~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-                                                             -> GHC.Types.Type) t1) t2) t3)
+        forall (t1 :: GHC.Num.Natural.Natural)
+               (t2 :: Foo)
+               (t3 :: GHC.Types.Symbol). Sing t1
+                                         -> Sing t2
+                                            -> Sing t3
+                                               -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol))
+                                                                                              -> GHC.Types.Type) t1) t2) t3)
       sShowsPrec
         _
         (sV_0123456789876543210 :: Sing v_0123456789876543210)
@@ -67,6 +68,6 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         = (applySing
              ((id
                  @(Sing (Case_0123456789876543210 v_0123456789876543210 a_0123456789876543210 v_0123456789876543210)))
-                (case sV_0123456789876543210 of)))
+                (case sV_0123456789876543210 of {})))
             sA_0123456789876543210
     deriving instance Show (SFoo (z :: Foo))

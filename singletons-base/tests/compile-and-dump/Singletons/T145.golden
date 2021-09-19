@@ -25,11 +25,11 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
     type family ColSym2 (a0123456789876543210 :: f a) (a0123456789876543210 :: a) :: Bool where
       ColSym2 a0123456789876543210 a0123456789876543210 = Col a0123456789876543210 a0123456789876543210
     class PColumn (f :: Type -> Type) where
-      type Col (arg :: f a) (arg :: a) :: Bool
+      type family Col (arg :: f a) (arg :: a) :: Bool
     class SColumn (f :: Type -> Type) where
       sCol ::
-        forall a (t :: f a) (t :: a).
-        Sing t -> Sing t -> Sing (Apply (Apply ColSym0 t) t :: Bool)
+        forall a (t :: f a) (t :: a). Sing t
+                                      -> Sing t -> Sing (Apply (Apply ColSym0 t) t :: Bool)
     instance SColumn f =>
              SingI (ColSym0 :: (~>) (f a) ((~>) a Bool)) where
       sing = (singFun2 @ColSym0) sCol

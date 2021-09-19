@@ -81,6 +81,7 @@ includes, but is not necessarily limited to, the following:
 * `InstanceSigs`
 * `KindSignatures`
 * `NoCUSKs`
+* `NoNamedWildCards`
 * `NoStarIsType`
 * `PolyKinds`
 * `RankNTypes`
@@ -93,9 +94,13 @@ includes, but is not necessarily limited to, the following:
 * `TypeOperators`
 * `UndecidableInstances`
 
-In particular, `NoStarIsType` is needed to use the `*` type family from the
-`PNum` class because with `StarIsType` enabled, GHC thinks `*` is a synonym
-for `Type`.
+Some notes on the use of `No*` extensions:
+
+* `NoNamedWildCards` is needed since `singletons-th` will single code like
+  `f _x = ...` to `sF (_sx :: Sing _x) = ...`, which crucially relies on the
+  `_x` in `Sing _x` being treated as a type variable, not a wildcard.
+* `NoStarIsType` is needed to use the `*` type family from the `PNum` class
+  because with `StarIsType` enabled, GHC thinks `*` is a synonym for `Type`.
 
 You may also want to consider toggling various warning flags:
 

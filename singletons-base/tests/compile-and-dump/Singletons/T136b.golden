@@ -17,7 +17,7 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
     type family MethSym1 (a0123456789876543210 :: a) :: a where
       MethSym1 a0123456789876543210 = Meth a0123456789876543210
     class PC a where
-      type Meth (arg :: a) :: a
+      type family Meth (arg :: a) :: a
     class SC a where
       sMeth :: forall (t :: a). Sing t -> Sing (Apply MethSym0 t :: a)
     instance SC a => SingI (MethSym0 :: (~>) a a) where
@@ -48,8 +48,7 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
       type Meth a = Apply Meth_0123456789876543210Sym0 a
     instance SC Bool where
       sMeth ::
-        forall (t :: Bool).
-        Sing t
-        -> Sing (Apply (MethSym0 :: TyFun Bool Bool -> GHC.Types.Type) t)
+        forall (t :: Bool). Sing t
+                            -> Sing (Apply (MethSym0 :: TyFun Bool Bool -> GHC.Types.Type) t)
       sMeth (sA_0123456789876543210 :: Sing a_0123456789876543210)
         = (applySing ((singFun1 @NotSym0) sNot)) sA_0123456789876543210

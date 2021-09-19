@@ -30,7 +30,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
     type family (<<>>@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       (<<>>@#@$$$) a0123456789876543210 a0123456789876543210 = (<<>>) a0123456789876543210 a0123456789876543210
     class PS a where
-      type (<<>>) (arg :: a) (arg :: a) :: a
+      type family (<<>>) (arg :: a) (arg :: a) :: a
     type family Lambda_0123456789876543210 f g x where
       Lambda_0123456789876543210 f g x = Apply (Apply (<<>>@#@$) (Apply f x)) (Apply g x)
     data Lambda_0123456789876543210Sym0 f0123456789876543210
@@ -90,20 +90,21 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
       type (<<>>) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     class SS a where
       (%<<>>) ::
-        forall (t :: a) (t :: a).
-        Sing t -> Sing t -> Sing (Apply (Apply (<<>>@#@$) t) t :: a)
+        forall (t :: a) (t :: a). Sing t
+                                  -> Sing t -> Sing (Apply (Apply (<<>>@#@$) t) t :: a)
     instance SS b => SS ((~>) a b) where
       (%<<>>) ::
-        forall (t :: (~>) a b) (t :: (~>) a b).
-        Sing t -> Sing t -> Sing (Apply (Apply (<<>>@#@$) t) t :: (~>) a b)
+        forall (t :: (~>) a b) (t :: (~>) a b). Sing t
+                                                -> Sing t
+                                                   -> Sing (Apply (Apply (<<>>@#@$) t) t :: (~>) a b)
       (%<<>>) (sF :: Sing f) (sG :: Sing g)
         = (singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 f) g))
             (\ sX
-               -> case sX of {
+               -> case sX of
                     (_ :: Sing x)
                       -> (applySing
                             ((applySing ((singFun2 @(<<>>@#@$)) (%<<>>))) ((applySing sF) sX)))
-                           ((applySing sG) sX) })
+                           ((applySing sG) sX))
     instance SS a => SingI ((<<>>@#@$) :: (~>) a ((~>) a a)) where
       sing = (singFun2 @(<<>>@#@$)) (%<<>>)
     instance (SS a, SingI d) =>

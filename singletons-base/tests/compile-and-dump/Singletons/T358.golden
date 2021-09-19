@@ -29,7 +29,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
     type family Method1Sym0 :: f a where
       Method1Sym0 = Method1
     class PC1 (f :: k -> Type) where
-      type Method1 :: f a
+      type family Method1 :: f a
     type Method2aSym0 :: forall b a. (~>) b a
     data Method2aSym0 :: (~>) b a
       where
@@ -53,8 +53,8 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
     type family Method2bSym1 (a0123456789876543210 :: b) :: a where
       Method2bSym1 a0123456789876543210 = Method2b a0123456789876543210
     class PC2 a where
-      type Method2a (arg :: b) :: a
-      type Method2b (arg :: b) :: a
+      type family Method2a (arg :: b) :: a
+      type family Method2b (arg :: b) :: a
     type Method1_0123456789876543210 :: [a]
     type family Method1_0123456789876543210 :: [a] where
       Method1_0123456789876543210 = NilSym0

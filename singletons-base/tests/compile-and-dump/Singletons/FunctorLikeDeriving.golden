@@ -9,8 +9,8 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       = MkT1 x a (Maybe a) (Maybe (Maybe a)) | MkT2 (Maybe x)
       deriving (Functor, Foldable, Traversable)
     data Empty (a :: Type) deriving (Functor, Foldable, Traversable)
-    type MkT1Sym0 :: forall x a.
-                     (~>) x ((~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))))
+    type MkT1Sym0 :: forall x
+                            a. (~>) x ((~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))))
     data MkT1Sym0 :: (~>) x ((~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))))
       where
         MkT1Sym0KindInference :: SameKind (Apply MkT1Sym0 arg) (MkT1Sym1 arg) =>
@@ -18,8 +18,8 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply MkT1Sym0 a0123456789876543210 = MkT1Sym1 a0123456789876543210
     instance SuppressUnusedWarnings MkT1Sym0 where
       suppressUnusedWarnings = snd (((,) MkT1Sym0KindInference) ())
-    type MkT1Sym1 :: forall x a.
-                     x -> (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))
+    type MkT1Sym1 :: forall x a. x
+                                 -> (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))
     data MkT1Sym1 (a0123456789876543210 :: x) :: (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))
       where
         MkT1Sym1KindInference :: SameKind (Apply (MkT1Sym1 a0123456789876543210) arg) (MkT1Sym2 a0123456789876543210 arg) =>
@@ -27,8 +27,8 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (MkT1Sym1 a0123456789876543210) a0123456789876543210 = MkT1Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkT1Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MkT1Sym1KindInference) ())
-    type MkT1Sym2 :: forall x a.
-                     x -> a -> (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))
+    type MkT1Sym2 :: forall x a. x
+                                 -> a -> (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))
     data MkT1Sym2 (a0123456789876543210 :: x) (a0123456789876543210 :: a) :: (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))
       where
         MkT1Sym2KindInference :: SameKind (Apply (MkT1Sym2 a0123456789876543210 a0123456789876543210) arg) (MkT1Sym3 a0123456789876543210 a0123456789876543210 arg) =>
@@ -36,8 +36,8 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (MkT1Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkT1Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MkT1Sym2KindInference) ())
-    type MkT1Sym3 :: forall x a.
-                     x -> a -> Maybe a -> (~>) (Maybe (Maybe a)) (T x a)
+    type MkT1Sym3 :: forall x a. x
+                                 -> a -> Maybe a -> (~>) (Maybe (Maybe a)) (T x a)
     data MkT1Sym3 (a0123456789876543210 :: x) (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) :: (~>) (Maybe (Maybe a)) (T x a)
       where
         MkT1Sym3KindInference :: SameKind (Apply (MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (MkT1Sym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
@@ -45,8 +45,8 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = MkT1 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) MkT1Sym3KindInference) ())
-    type MkT1Sym4 :: forall x a.
-                     x -> a -> Maybe a -> Maybe (Maybe a) -> T x a
+    type MkT1Sym4 :: forall x a. x
+                                 -> a -> Maybe a -> Maybe (Maybe a) -> T x a
     type family MkT1Sym4 (a0123456789876543210 :: x) (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) (a0123456789876543210 :: Maybe (Maybe a)) :: T x a where
       MkT1Sym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = MkT1 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     type MkT2Sym0 :: forall x a. (~>) (Maybe x) (T x a)
@@ -974,31 +974,32 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
               ((((,,,) (toSing b :: SomeSing x)) (toSing b :: SomeSing a))
                  (toSing b :: SomeSing (Maybe a)))
                 (toSing b :: SomeSing (Maybe (Maybe a)))
-          of {
+          of
             (,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
-              -> SomeSing ((((SMkT1 c) c) c) c) }
+              -> SomeSing ((((SMkT1 c) c) c) c)
       toSing (MkT2 (b :: Demote (Maybe x)))
-        = case toSing b :: SomeSing (Maybe x) of {
-            SomeSing c -> SomeSing (SMkT2 c) }
+        = case toSing b :: SomeSing (Maybe x) of
+            SomeSing c -> SomeSing (SMkT2 c)
     data SEmpty :: forall (a :: Type). Empty a -> Type
     type instance Sing @(Empty a) = SEmpty
     instance SingKind a => SingKind (Empty a) where
       type Demote (Empty a) = Empty (Demote a)
-      fromSing x = case x of
-      toSing x = SomeSing (case x of)
+      fromSing x = case x of {}
+      toSing x = SomeSing (case x of {})
     instance SFunctor (T x) where
       sFmap ::
-        forall (a :: Type) (b :: Type) (t1 :: (~>) a b) (t2 :: T x a).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (FmapSym0 :: TyFun ((~>) a b) ((~>) (T x a) (T x b))
-                                              -> Type) t1) t2)
+        forall (a :: Type)
+               (b :: Type)
+               (t1 :: (~>) a b)
+               (t2 :: T x a). Sing t1
+                              -> Sing t2
+                                 -> Sing (Apply (Apply (FmapSym0 :: TyFun ((~>) a b) ((~>) (T x a) (T x b))
+                                                                    -> Type) t1) t2)
       (%<$) ::
-        forall (a :: Type) (b :: Type) (t1 :: a) (t2 :: T x b).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply ((<$@#@$) :: TyFun a ((~>) (T x b) (T x a))
-                                              -> Type) t1) t2)
+        forall (a :: Type) (b :: Type) (t1 :: a) (t2 :: T x b). Sing t1
+                                                                -> Sing t2
+                                                                   -> Sing (Apply (Apply ((<$@#@$) :: TyFun a ((~>) (T x b) (T x a))
+                                                                                                      -> Type) t1) t2)
       sFmap
         (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
         (SMkT1 (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -1013,9 +1014,9 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                             ((singFun1
                                 @(Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210))
                                (\ sN_0123456789876543210
-                                  -> case sN_0123456789876543210 of {
+                                  -> case sN_0123456789876543210 of
                                        (_ :: Sing n_0123456789876543210)
-                                         -> sN_0123456789876543210 })))
+                                         -> sN_0123456789876543210)))
                            sA_0123456789876543210)))
                     ((applySing _sf_0123456789876543210) sA_0123456789876543210)))
                 ((applySing
@@ -1034,8 +1035,8 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                 ((singFun1
                     @(Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) a_0123456789876543210))
                    (\ sN_0123456789876543210
-                      -> case sN_0123456789876543210 of {
-                           (_ :: Sing n_0123456789876543210) -> sN_0123456789876543210 })))
+                      -> case sN_0123456789876543210 of
+                           (_ :: Sing n_0123456789876543210) -> sN_0123456789876543210)))
                sA_0123456789876543210)
       (%<$)
         (_sz_0123456789876543210 :: Sing _z_0123456789876543210)
@@ -1051,16 +1052,16 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                             ((singFun1
                                 @(Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210))
                                (\ sN_0123456789876543210
-                                  -> case sN_0123456789876543210 of {
+                                  -> case sN_0123456789876543210 of
                                        (_ :: Sing n_0123456789876543210)
-                                         -> sN_0123456789876543210 })))
+                                         -> sN_0123456789876543210)))
                            sA_0123456789876543210)))
                     ((applySing
                         ((singFun1
                             @(Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210))
                            (\ sN_0123456789876543210
-                              -> case sN_0123456789876543210 of {
-                                   (_ :: Sing n_0123456789876543210) -> _sz_0123456789876543210 })))
+                              -> case sN_0123456789876543210 of
+                                   (_ :: Sing n_0123456789876543210) -> _sz_0123456789876543210)))
                        sA_0123456789876543210)))
                 ((applySing
                     ((applySing ((singFun2 @(<$@#@$)) (%<$))) _sz_0123456789876543210))
@@ -1078,28 +1079,29 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                 ((singFun1
                     @(Apply (Apply Lambda_0123456789876543210Sym0 _z_0123456789876543210) a_0123456789876543210))
                    (\ sN_0123456789876543210
-                      -> case sN_0123456789876543210 of {
-                           (_ :: Sing n_0123456789876543210) -> sN_0123456789876543210 })))
+                      -> case sN_0123456789876543210 of
+                           (_ :: Sing n_0123456789876543210) -> sN_0123456789876543210)))
                sA_0123456789876543210)
     instance SFoldable (T x) where
       sFoldMap ::
-        forall (a :: Type) (m :: Type) (t1 :: (~>) a m) (t2 :: T x a).
-        SMonoid m =>
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (FoldMapSym0 :: TyFun ((~>) a m) ((~>) (T x a) m)
-                                                 -> Type) t1) t2)
+        forall (a :: Type)
+               (m :: Type)
+               (t1 :: (~>) a m)
+               (t2 :: T x a). SMonoid m =>
+                              Sing t1
+                              -> Sing t2
+                                 -> Sing (Apply (Apply (FoldMapSym0 :: TyFun ((~>) a m) ((~>) (T x a) m)
+                                                                       -> Type) t1) t2)
       sFoldr ::
         forall (a :: Type)
                (b :: Type)
                (t1 :: (~>) a ((~>) b b))
                (t2 :: b)
-               (t3 :: T x a).
-        Sing t1
-        -> Sing t2
-           -> Sing t3
-              -> Sing (Apply (Apply (Apply (FoldrSym0 :: TyFun ((~>) a ((~>) b b)) ((~>) b ((~>) (T x a) b))
-                                                         -> Type) t1) t2) t3)
+               (t3 :: T x a). Sing t1
+                              -> Sing t2
+                                 -> Sing t3
+                                    -> Sing (Apply (Apply (Apply (FoldrSym0 :: TyFun ((~>) a ((~>) b b)) ((~>) b ((~>) (T x a) b))
+                                                                               -> Type) t1) t2) t3)
       sFoldMap
         (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
         (SMkT1 (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -1112,8 +1114,8 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                     ((singFun1
                         @(Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210))
                        (\ sN_0123456789876543210
-                          -> case sN_0123456789876543210 of {
-                               (_ :: Sing n_0123456789876543210) -> sMempty })))
+                          -> case sN_0123456789876543210 of
+                               (_ :: Sing n_0123456789876543210) -> sMempty)))
                    sA_0123456789876543210)))
             ((applySing
                 ((applySing ((singFun2 @MappendSym0) sMappend))
@@ -1136,8 +1138,8 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
              ((singFun1
                  @(Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) a_0123456789876543210))
                 (\ sN_0123456789876543210
-                   -> case sN_0123456789876543210 of {
-                        (_ :: Sing n_0123456789876543210) -> sMempty })))
+                   -> case sN_0123456789876543210 of
+                        (_ :: Sing n_0123456789876543210) -> sMempty)))
             sA_0123456789876543210
       sFoldr
         (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
@@ -1151,10 +1153,10 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                  ((singFun2
                      @(Apply (Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210))
                     (\ sN1_0123456789876543210 sN2_0123456789876543210
-                       -> case ((,) sN1_0123456789876543210) sN2_0123456789876543210 of {
+                       -> case ((,) sN1_0123456789876543210) sN2_0123456789876543210 of
                             (,) (_ :: Sing n1_0123456789876543210)
                                 (_ :: Sing n2_0123456789876543210)
-                              -> sN2_0123456789876543210 })))
+                              -> sN2_0123456789876543210)))
                 sA_0123456789876543210))
             ((applySing
                 ((applySing _sf_0123456789876543210) sA_0123456789876543210))
@@ -1163,7 +1165,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                        ((singFun2
                            @(Apply (Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210))
                           (\ sN1_0123456789876543210 sN2_0123456789876543210
-                             -> case ((,) sN1_0123456789876543210) sN2_0123456789876543210 of {
+                             -> case ((,) sN1_0123456789876543210) sN2_0123456789876543210 of
                                   (,) (_ :: Sing n1_0123456789876543210)
                                       (_ :: Sing n2_0123456789876543210)
                                     -> (applySing
@@ -1171,14 +1173,14 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                                               ((applySing ((singFun3 @FoldrSym0) sFoldr))
                                                  _sf_0123456789876543210))
                                              sN2_0123456789876543210))
-                                         sN1_0123456789876543210 })))
+                                         sN1_0123456789876543210)))
                       sA_0123456789876543210))
                   ((applySing
                       ((applySing
                           ((singFun2
                               @(Apply (Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) _z_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210))
                              (\ sN1_0123456789876543210 sN2_0123456789876543210
-                                -> case ((,) sN1_0123456789876543210) sN2_0123456789876543210 of {
+                                -> case ((,) sN1_0123456789876543210) sN2_0123456789876543210 of
                                      (,) (_ :: Sing n1_0123456789876543210)
                                          (_ :: Sing n2_0123456789876543210)
                                        -> (applySing
@@ -1191,7 +1193,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                           -> case
                                                                  ((,) sN1_0123456789876543210)
                                                                    sN2_0123456789876543210
-                                                             of {
+                                                             of
                                                                (,) (_ :: Sing n1_0123456789876543210)
                                                                    (_ :: Sing n2_0123456789876543210)
                                                                  -> (applySing
@@ -1202,9 +1204,9 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                                                                                   sFoldr))
                                                                               _sf_0123456789876543210))
                                                                           sN2_0123456789876543210))
-                                                                      sN1_0123456789876543210 }))))
+                                                                      sN1_0123456789876543210))))
                                                 sN2_0123456789876543210))
-                                            sN1_0123456789876543210 })))
+                                            sN1_0123456789876543210)))
                          sA_0123456789876543210))
                      _sz_0123456789876543210)))
       sFoldr
@@ -1216,10 +1218,10 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                  ((singFun2
                      @(Apply (Apply (Apply Lambda_0123456789876543210Sym0 _f_0123456789876543210) _z_0123456789876543210) a_0123456789876543210))
                     (\ sN1_0123456789876543210 sN2_0123456789876543210
-                       -> case ((,) sN1_0123456789876543210) sN2_0123456789876543210 of {
+                       -> case ((,) sN1_0123456789876543210) sN2_0123456789876543210 of
                             (,) (_ :: Sing n1_0123456789876543210)
                                 (_ :: Sing n2_0123456789876543210)
-                              -> sN2_0123456789876543210 })))
+                              -> sN2_0123456789876543210)))
                 sA_0123456789876543210))
             _sz_0123456789876543210
     instance STraversable (T x) where
@@ -1228,12 +1230,11 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                (f :: Type -> Type)
                (b :: Type)
                (t1 :: (~>) a (f b))
-               (t2 :: T x a).
-        SApplicative f =>
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (TraverseSym0 :: TyFun ((~>) a (f b)) ((~>) (T x a) (f (T x b)))
-                                                  -> Type) t1) t2)
+               (t2 :: T x a). SApplicative f =>
+                              Sing t1
+                              -> Sing t2
+                                 -> Sing (Apply (Apply (TraverseSym0 :: TyFun ((~>) a (f b)) ((~>) (T x a) (f (T x b)))
+                                                                        -> Type) t1) t2)
       sTraverse
         (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
         (SMkT1 (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -1268,33 +1269,36 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
             ((applySing ((singFun1 @PureSym0) sPure)) sA_0123456789876543210)
     instance SFunctor Empty where
       sFmap ::
-        forall (a :: Type) (b :: Type) (t1 :: (~>) a b) (t2 :: Empty a).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (FmapSym0 :: TyFun ((~>) a b) ((~>) (Empty a) (Empty b))
-                                              -> Type) t1) t2)
+        forall (a :: Type)
+               (b :: Type)
+               (t1 :: (~>) a b)
+               (t2 :: Empty a). Sing t1
+                                -> Sing t2
+                                   -> Sing (Apply (Apply (FmapSym0 :: TyFun ((~>) a b) ((~>) (Empty a) (Empty b))
+                                                                      -> Type) t1) t2)
       (%<$) ::
-        forall (a :: Type) (b :: Type) (t1 :: a) (t2 :: Empty b).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply ((<$@#@$) :: TyFun a ((~>) (Empty b) (Empty a))
-                                              -> Type) t1) t2)
+        forall (a :: Type) (b :: Type) (t1 :: a) (t2 :: Empty b). Sing t1
+                                                                  -> Sing t2
+                                                                     -> Sing (Apply (Apply ((<$@#@$) :: TyFun a ((~>) (Empty b) (Empty a))
+                                                                                                        -> Type) t1) t2)
       sFmap _ (sV_0123456789876543210 :: Sing v_0123456789876543210)
         = (id
              @(Sing (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210)))
-            (case sV_0123456789876543210 of)
+            (case sV_0123456789876543210 of {})
       (%<$) _ (sV_0123456789876543210 :: Sing v_0123456789876543210)
         = (id
              @(Sing (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210)))
-            (case sV_0123456789876543210 of)
+            (case sV_0123456789876543210 of {})
     instance SFoldable Empty where
       sFoldMap ::
-        forall (a :: Type) (m :: Type) (t1 :: (~>) a m) (t2 :: Empty a).
-        SMonoid m =>
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (FoldMapSym0 :: TyFun ((~>) a m) ((~>) (Empty a) m)
-                                                 -> Type) t1) t2)
+        forall (a :: Type)
+               (m :: Type)
+               (t1 :: (~>) a m)
+               (t2 :: Empty a). SMonoid m =>
+                                Sing t1
+                                -> Sing t2
+                                   -> Sing (Apply (Apply (FoldMapSym0 :: TyFun ((~>) a m) ((~>) (Empty a) m)
+                                                                         -> Type) t1) t2)
       sFoldMap _ _ = sMempty
     instance STraversable Empty where
       sTraverse ::
@@ -1302,17 +1306,16 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                (f :: Type -> Type)
                (b :: Type)
                (t1 :: (~>) a (f b))
-               (t2 :: Empty a).
-        SApplicative f =>
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (TraverseSym0 :: TyFun ((~>) a (f b)) ((~>) (Empty a) (f (Empty b)))
-                                                  -> Type) t1) t2)
+               (t2 :: Empty a). SApplicative f =>
+                                Sing t1
+                                -> Sing t2
+                                   -> Sing (Apply (Apply (TraverseSym0 :: TyFun ((~>) a (f b)) ((~>) (Empty a) (f (Empty b)))
+                                                                          -> Type) t1) t2)
       sTraverse _ (sV_0123456789876543210 :: Sing v_0123456789876543210)
         = (applySing ((singFun1 @PureSym0) sPure))
             ((id
                 @(Sing (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210)))
-               (case sV_0123456789876543210 of))
+               (case sV_0123456789876543210 of {}))
     instance (SingI n, SingI n, SingI n, SingI n) =>
              SingI (MkT1 (n :: x) (n :: a) (n :: Maybe a) (n :: Maybe (Maybe a))) where
       sing = (((SMkT1 sing) sing) sing) sing

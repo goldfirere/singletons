@@ -253,17 +253,17 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     sFoo ::
       forall (t :: [Nat]). Sing t -> Sing (Apply FooSym0 t :: [Nat])
     sTup ::
-      forall (t :: (Nat, Nat)).
-      Sing t -> Sing (Apply TupSym0 t :: (Nat, Nat))
+      forall (t :: (Nat, Nat)). Sing t
+                                -> Sing (Apply TupSym0 t :: (Nat, Nat))
     sBaz_ ::
-      forall (t :: Maybe Baz).
-      Sing t -> Sing (Apply Baz_Sym0 t :: Maybe Baz)
+      forall (t :: Maybe Baz). Sing t
+                               -> Sing (Apply Baz_Sym0 t :: Maybe Baz)
     sBar ::
-      forall (t :: Maybe Nat).
-      Sing t -> Sing (Apply BarSym0 t :: Maybe Nat)
+      forall (t :: Maybe Nat). Sing t
+                               -> Sing (Apply BarSym0 t :: Maybe Nat)
     sMaybePlus ::
-      forall (t :: Maybe Nat).
-      Sing t -> Sing (Apply MaybePlusSym0 t :: Maybe Nat)
+      forall (t :: Maybe Nat). Sing t
+                               -> Sing (Apply MaybePlusSym0 t :: Maybe Nat)
     sFoo SNil
       = let
           sP :: Sing @_ Let0123456789876543210PSym0
@@ -373,9 +373,9 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         = case
               (((,,) (toSing b :: SomeSing Nat)) (toSing b :: SomeSing Nat))
                 (toSing b :: SomeSing Nat)
-          of {
+          of
             (,,) (SomeSing c) (SomeSing c) (SomeSing c)
-              -> SomeSing (((SBaz c) c) c) }
+              -> SomeSing (((SBaz c) c) c)
     instance (SingI n, SingI n, SingI n) =>
              SingI (Baz (n :: Nat) (n :: Nat) (n :: Nat)) where
       sing = ((SBaz sing) sing) sing

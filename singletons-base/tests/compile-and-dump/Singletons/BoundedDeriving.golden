@@ -2,13 +2,13 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| data Foo1
             = Foo1
-            deriving Bounded
+            deriving (Bounded)
           data Foo2
             = A | B | C | D | E
-            deriving Bounded
+            deriving (Bounded)
           data Foo3 a
             = Foo3 a
-            deriving Bounded
+            deriving (Bounded)
           data Foo4 (a :: Type) (b :: Type)
             = Foo41 | Foo42
             deriving Bounded
@@ -60,12 +60,12 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type Foo3Sym1 :: forall a. a -> Foo3 a
     type family Foo3Sym1 (a0123456789876543210 :: a) :: Foo3 a where
       Foo3Sym1 a0123456789876543210 = Foo3 a0123456789876543210
-    type Foo41Sym0 :: forall (a :: Type) (b :: Type).
-                      Foo4 (a :: Type) (b :: Type)
+    type Foo41Sym0 :: forall (a :: Type)
+                             (b :: Type). Foo4 (a :: Type) (b :: Type)
     type family Foo41Sym0 :: Foo4 (a :: Type) (b :: Type) where
       Foo41Sym0 = Foo41
-    type Foo42Sym0 :: forall (a :: Type) (b :: Type).
-                      Foo4 (a :: Type) (b :: Type)
+    type Foo42Sym0 :: forall (a :: Type)
+                             (b :: Type). Foo4 (a :: Type) (b :: Type)
     type family Foo42Sym0 :: Foo4 (a :: Type) (b :: Type) where
       Foo42Sym0 = Foo42
     type PairSym0 :: (~>) Bool ((~>) Bool Pair)
@@ -196,8 +196,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Foo3 a) = Foo3 (Demote a)
       fromSing (SFoo3 b) = Foo3 (fromSing b)
       toSing (Foo3 (b :: Demote a))
-        = case toSing b :: SomeSing a of {
-            SomeSing c -> SomeSing (SFoo3 c) }
+        = case toSing b :: SomeSing a of SomeSing c -> SomeSing (SFoo3 c)
     data SFoo4 :: forall (a :: Type) (b :: Type). Foo4 a b -> Type
       where
         SFoo41 :: forall (a :: Type) (b :: Type).
@@ -222,8 +221,8 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Pair (b :: Demote Bool) (b :: Demote Bool))
         = case
               ((,) (toSing b :: SomeSing Bool)) (toSing b :: SomeSing Bool)
-          of {
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SPair c) c) }
+          of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SPair c) c)
     instance SBounded Foo1 where
       sMinBound :: Sing (MinBoundSym0 :: Foo1)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo1)

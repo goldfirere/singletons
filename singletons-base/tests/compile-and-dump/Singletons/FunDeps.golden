@@ -6,7 +6,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
             meth :: a -> a
             l2r :: a -> b
           
-          instance FD Bool Nat where
+          instance FD Bool Natural where
             meth = not
             l2r False = 0
             l2r True = 1 |]
@@ -14,7 +14,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     class FD a b | a -> b where
       meth :: a -> a
       l2r :: a -> b
-    instance FD Bool Nat where
+    instance FD Bool Natural where
       meth = not
       l2r False = 0
       l2r True = 1
@@ -46,8 +46,8 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     type family L2rSym1 (a0123456789876543210 :: a) :: b where
       L2rSym1 a0123456789876543210 = L2r a0123456789876543210
     class PFD a b | a -> b where
-      type Meth (arg :: a) :: a
-      type L2r (arg :: a) :: b
+      type family Meth (arg :: a) :: a
+      type family L2r (arg :: a) :: b
     type Meth_0123456789876543210 :: Bool -> Bool
     type family Meth_0123456789876543210 (a :: Bool) :: Bool where
       Meth_0123456789876543210 a_0123456789876543210 = Apply NotSym0 a_0123456789876543210
@@ -63,12 +63,12 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     type Meth_0123456789876543210Sym1 :: Bool -> Bool
     type family Meth_0123456789876543210Sym1 (a0123456789876543210 :: Bool) :: Bool where
       Meth_0123456789876543210Sym1 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
-    type L2r_0123456789876543210 :: Bool -> Nat
-    type family L2r_0123456789876543210 (a :: Bool) :: Nat where
+    type L2r_0123456789876543210 :: Bool -> Natural
+    type family L2r_0123456789876543210 (a :: Bool) :: Natural where
       L2r_0123456789876543210 'False = FromInteger 0
       L2r_0123456789876543210 'True = FromInteger 1
-    type L2r_0123456789876543210Sym0 :: (~>) Bool Nat
-    data L2r_0123456789876543210Sym0 :: (~>) Bool Nat
+    type L2r_0123456789876543210Sym0 :: (~>) Bool Natural
+    data L2r_0123456789876543210Sym0 :: (~>) Bool Natural
       where
         L2r_0123456789876543210Sym0KindInference :: SameKind (Apply L2r_0123456789876543210Sym0 arg) (L2r_0123456789876543210Sym1 arg) =>
                                                     L2r_0123456789876543210Sym0 a0123456789876543210
@@ -76,10 +76,10 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings L2r_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) L2r_0123456789876543210Sym0KindInference) ())
-    type L2r_0123456789876543210Sym1 :: Bool -> Nat
-    type family L2r_0123456789876543210Sym1 (a0123456789876543210 :: Bool) :: Nat where
+    type L2r_0123456789876543210Sym1 :: Bool -> Natural
+    type family L2r_0123456789876543210Sym1 (a0123456789876543210 :: Bool) :: Natural where
       L2r_0123456789876543210Sym1 a0123456789876543210 = L2r_0123456789876543210 a0123456789876543210
-    instance PFD Bool Nat where
+    instance PFD Bool Natural where
       type Meth a = Apply Meth_0123456789876543210Sym0 a
       type L2r a = Apply L2r_0123456789876543210Sym0 a
     sT1 :: Sing @_ T1Sym0
@@ -87,10 +87,11 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     class SFD a b | a -> b where
       sMeth :: forall (t :: a). Sing t -> Sing (Apply MethSym0 t :: a)
       sL2r :: forall (t :: a). Sing t -> Sing (Apply L2rSym0 t :: b)
-    instance SFD Bool Nat where
+    instance SFD Bool Natural where
       sMeth ::
         forall (t :: Bool). Sing t -> Sing (Apply MethSym0 t :: Bool)
-      sL2r :: forall (t :: Bool). Sing t -> Sing (Apply L2rSym0 t :: Nat)
+      sL2r ::
+        forall (t :: Bool). Sing t -> Sing (Apply L2rSym0 t :: Natural)
       sMeth (sA_0123456789876543210 :: Sing a_0123456789876543210)
         = (applySing ((singFun1 @NotSym0) sNot)) sA_0123456789876543210
       sL2r SFalse = sFromInteger (sing :: Sing 0)

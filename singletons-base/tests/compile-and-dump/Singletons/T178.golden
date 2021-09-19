@@ -99,14 +99,14 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd Occ where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
-    type ShowsPrec_0123456789876543210 :: Nat
+    type ShowsPrec_0123456789876543210 :: Natural
                                           -> Occ -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210 (a :: Nat) (a :: Occ) (a :: Symbol) :: Symbol where
+    type family ShowsPrec_0123456789876543210 (a :: Natural) (a :: Occ) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ Str a_0123456789876543210 = Apply (Apply ShowStringSym0 "Str") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ Opt a_0123456789876543210 = Apply (Apply ShowStringSym0 "Opt") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ Many a_0123456789876543210 = Apply (Apply ShowStringSym0 "Many") a_0123456789876543210
-    type ShowsPrec_0123456789876543210Sym0 :: (~>) Nat ((~>) Occ ((~>) Symbol Symbol))
-    data ShowsPrec_0123456789876543210Sym0 :: (~>) Nat ((~>) Occ ((~>) Symbol Symbol))
+    type ShowsPrec_0123456789876543210Sym0 :: (~>) Natural ((~>) Occ ((~>) Symbol Symbol))
+    data ShowsPrec_0123456789876543210Sym0 :: (~>) Natural ((~>) Occ ((~>) Symbol Symbol))
       where
         ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
@@ -114,9 +114,9 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
-    type ShowsPrec_0123456789876543210Sym1 :: Nat
+    type ShowsPrec_0123456789876543210Sym1 :: Natural
                                               -> (~>) Occ ((~>) Symbol Symbol)
-    data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: Nat) :: (~>) Occ ((~>) Symbol Symbol)
+    data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: Natural) :: (~>) Occ ((~>) Symbol Symbol)
       where
         ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
@@ -124,9 +124,9 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
-    type ShowsPrec_0123456789876543210Sym2 :: Nat
+    type ShowsPrec_0123456789876543210Sym2 :: Natural
                                               -> Occ -> (~>) Symbol Symbol
-    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Occ) :: (~>) Symbol Symbol
+    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: Natural) (a0123456789876543210 :: Occ) :: (~>) Symbol Symbol
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -134,9 +134,9 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
-    type ShowsPrec_0123456789876543210Sym3 :: Nat
+    type ShowsPrec_0123456789876543210Sym3 :: Natural
                                               -> Occ -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Occ) (a0123456789876543210 :: Symbol) :: Symbol where
+    type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: Natural) (a0123456789876543210 :: Occ) (a0123456789876543210 :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow Occ where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
@@ -158,11 +158,10 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       toSing Many = SomeSing SMany
     instance SEq Occ where
       (%==) ::
-        forall (t1 :: Occ) (t2 :: Occ).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply ((==@#@$) :: TyFun Occ ((~>) Occ Bool)
-                                              -> GHC.Types.Type) t1) t2)
+        forall (t1 :: Occ) (t2 :: Occ). Sing t1
+                                        -> Sing t2
+                                           -> Sing (Apply (Apply ((==@#@$) :: TyFun Occ ((~>) Occ Bool)
+                                                                              -> GHC.Types.Type) t1) t2)
       (%==) SStr SStr = STrue
       (%==) SStr SOpt = SFalse
       (%==) SStr SMany = SFalse
@@ -174,11 +173,10 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       (%==) SMany SMany = STrue
     instance SOrd Occ where
       sCompare ::
-        forall (t1 :: Occ) (t2 :: Occ).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun Occ ((~>) Occ Ordering)
-                                                 -> GHC.Types.Type) t1) t2)
+        forall (t1 :: Occ) (t2 :: Occ). Sing t1
+                                        -> Sing t2
+                                           -> Sing (Apply (Apply (CompareSym0 :: TyFun Occ ((~>) Occ Ordering)
+                                                                                 -> GHC.Types.Type) t1) t2)
       sCompare SStr SStr
         = (applySing
              ((applySing
@@ -208,12 +206,11 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       sCompare SMany SOpt = SGT
     instance SShow Occ where
       sShowsPrec ::
-        forall (t1 :: Nat) (t2 :: Occ) (t3 :: Symbol).
-        Sing t1
-        -> Sing t2
-           -> Sing t3
-              -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun Nat ((~>) Occ ((~>) Symbol Symbol))
-                                                             -> GHC.Types.Type) t1) t2) t3)
+        forall (t1 :: Natural) (t2 :: Occ) (t3 :: Symbol). Sing t1
+                                                           -> Sing t2
+                                                              -> Sing t3
+                                                                 -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun Natural ((~>) Occ ((~>) Symbol Symbol))
+                                                                                                                -> GHC.Types.Type) t1) t2) t3)
       sShowsPrec
         _
         SStr
@@ -240,13 +237,13 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
             sA_0123456789876543210
     instance SDecide Occ where
       (%~) SStr SStr = Proved Refl
-      (%~) SStr SOpt = Disproved (\ x -> case x of)
-      (%~) SStr SMany = Disproved (\ x -> case x of)
-      (%~) SOpt SStr = Disproved (\ x -> case x of)
+      (%~) SStr SOpt = Disproved (\ x -> case x of {})
+      (%~) SStr SMany = Disproved (\ x -> case x of {})
+      (%~) SOpt SStr = Disproved (\ x -> case x of {})
       (%~) SOpt SOpt = Proved Refl
-      (%~) SOpt SMany = Disproved (\ x -> case x of)
-      (%~) SMany SStr = Disproved (\ x -> case x of)
-      (%~) SMany SOpt = Disproved (\ x -> case x of)
+      (%~) SOpt SMany = Disproved (\ x -> case x of {})
+      (%~) SMany SStr = Disproved (\ x -> case x of {})
+      (%~) SMany SOpt = Disproved (\ x -> case x of {})
       (%~) SMany SMany = Proved Refl
     instance Data.Type.Equality.TestEquality (SOcc :: Occ
                                                       -> GHC.Types.Type) where

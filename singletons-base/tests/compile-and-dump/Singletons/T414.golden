@@ -10,12 +10,12 @@ Singletons/T414.hs:(0,0)-(0,0): Splicing declarations
             type T3 a b |]
   ======>
     class C1 (a :: Bool) where
-      type T1 a b
+      type family T1 a b
     class C2 a where
-      type T2 a b
+      type family T2 a b
     type C3 :: Bool -> Constraint
     class C3 a where
-      type T3 a b
+      type family T3 a b
     data T1Sym0 a0123456789876543210
       where
         T1Sym0KindInference :: SameKind (Apply T1Sym0 arg) (T1Sym1 arg) =>

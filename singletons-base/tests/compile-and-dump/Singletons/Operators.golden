@@ -83,8 +83,8 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       Child FLeaf = FLeafSym0
       Child ((:+:) a _) = a
     (%+) ::
-      forall (t :: Nat) (t :: Nat).
-      Sing t -> Sing t -> Sing (Apply (Apply (+@#@$) t) t :: Nat)
+      forall (t :: Nat) (t :: Nat). Sing t
+                                    -> Sing t -> Sing (Apply (Apply (+@#@$) t) t :: Nat)
     sChild ::
       forall (t :: Foo). Sing t -> Sing (Apply ChildSym0 t :: Foo)
     (%+) SZero (sM :: Sing m) = sM
@@ -117,8 +117,8 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:+:) (b :: Demote Foo) (b :: Demote Foo))
         = case
               ((,) (toSing b :: SomeSing Foo)) (toSing b :: SomeSing Foo)
-          of {
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%+:) c) c) }
+          of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%+:) c) c)
     instance SingI FLeaf where
       sing = SFLeaf
     instance (SingI n, SingI n) =>

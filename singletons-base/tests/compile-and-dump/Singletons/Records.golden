@@ -51,8 +51,8 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     type family Field1 (a :: Record a) :: a where
       Field1 (MkRecord field _) = field
     sField2 ::
-      forall a (t :: Record a).
-      Sing t -> Sing (Apply Field2Sym0 t :: Bool)
+      forall a (t :: Record a). Sing t
+                                -> Sing (Apply Field2Sym0 t :: Bool)
     sField1 ::
       forall a (t :: Record a). Sing t -> Sing (Apply Field1Sym0 t :: a)
     sField2 (SMkRecord _ (sField :: Sing field)) = sField
@@ -72,8 +72,8 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkRecord (b :: Demote a) (b :: Demote Bool))
         = case
               ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing Bool)
-          of {
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SMkRecord c) c) }
+          of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SMkRecord c) c)
     instance (SingI n, SingI n) =>
              SingI (MkRecord (n :: a) (n :: Bool)) where
       sing = (SMkRecord sing) sing

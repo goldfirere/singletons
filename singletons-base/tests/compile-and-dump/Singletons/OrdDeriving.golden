@@ -37,8 +37,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type SuccSym1 :: Nat -> Nat
     type family SuccSym1 (a0123456789876543210 :: Nat) :: Nat where
       SuccSym1 a0123456789876543210 = Succ a0123456789876543210
-    type ASym0 :: forall a b c d.
-                  (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
+    type ASym0 :: forall a
+                         b
+                         c
+                         d. (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
     data ASym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
       where
         ASym0KindInference :: SameKind (Apply ASym0 arg) (ASym1 arg) =>
@@ -46,8 +48,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ASym0 a0123456789876543210 = ASym1 a0123456789876543210
     instance SuppressUnusedWarnings ASym0 where
       suppressUnusedWarnings = snd (((,) ASym0KindInference) ())
-    type ASym1 :: forall a b c d.
-                  a -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
+    type ASym1 :: forall a b c d. a
+                                  -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
     data ASym1 (a0123456789876543210 :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))
       where
         ASym1KindInference :: SameKind (Apply (ASym1 a0123456789876543210) arg) (ASym2 a0123456789876543210 arg) =>
@@ -55,8 +57,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ASym1 a0123456789876543210) a0123456789876543210 = ASym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ASym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) ASym1KindInference) ())
-    type ASym2 :: forall a b c d.
-                  a -> b -> (~>) c ((~>) d (Foo a b c d))
+    type ASym2 :: forall a b c d. a
+                                  -> b -> (~>) c ((~>) d (Foo a b c d))
     data ASym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (~>) c ((~>) d (Foo a b c d))
       where
         ASym2KindInference :: SameKind (Apply (ASym2 a0123456789876543210 a0123456789876543210) arg) (ASym3 a0123456789876543210 a0123456789876543210 arg) =>
@@ -75,8 +77,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type ASym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
     type family ASym4 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
       ASym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = A a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type BSym0 :: forall a b c d.
-                  (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
+    type BSym0 :: forall a
+                         b
+                         c
+                         d. (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
     data BSym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
       where
         BSym0KindInference :: SameKind (Apply BSym0 arg) (BSym1 arg) =>
@@ -84,8 +88,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply BSym0 a0123456789876543210 = BSym1 a0123456789876543210
     instance SuppressUnusedWarnings BSym0 where
       suppressUnusedWarnings = snd (((,) BSym0KindInference) ())
-    type BSym1 :: forall a b c d.
-                  a -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
+    type BSym1 :: forall a b c d. a
+                                  -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
     data BSym1 (a0123456789876543210 :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))
       where
         BSym1KindInference :: SameKind (Apply (BSym1 a0123456789876543210) arg) (BSym2 a0123456789876543210 arg) =>
@@ -93,8 +97,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (BSym1 a0123456789876543210) a0123456789876543210 = BSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) BSym1KindInference) ())
-    type BSym2 :: forall a b c d.
-                  a -> b -> (~>) c ((~>) d (Foo a b c d))
+    type BSym2 :: forall a b c d. a
+                                  -> b -> (~>) c ((~>) d (Foo a b c d))
     data BSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (~>) c ((~>) d (Foo a b c d))
       where
         BSym2KindInference :: SameKind (Apply (BSym2 a0123456789876543210 a0123456789876543210) arg) (BSym3 a0123456789876543210 a0123456789876543210 arg) =>
@@ -113,8 +117,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type BSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
     type family BSym4 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
       BSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = B a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type CSym0 :: forall a b c d.
-                  (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
+    type CSym0 :: forall a
+                         b
+                         c
+                         d. (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
     data CSym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
       where
         CSym0KindInference :: SameKind (Apply CSym0 arg) (CSym1 arg) =>
@@ -122,8 +128,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply CSym0 a0123456789876543210 = CSym1 a0123456789876543210
     instance SuppressUnusedWarnings CSym0 where
       suppressUnusedWarnings = snd (((,) CSym0KindInference) ())
-    type CSym1 :: forall a b c d.
-                  a -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
+    type CSym1 :: forall a b c d. a
+                                  -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
     data CSym1 (a0123456789876543210 :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))
       where
         CSym1KindInference :: SameKind (Apply (CSym1 a0123456789876543210) arg) (CSym2 a0123456789876543210 arg) =>
@@ -131,8 +137,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (CSym1 a0123456789876543210) a0123456789876543210 = CSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (CSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) CSym1KindInference) ())
-    type CSym2 :: forall a b c d.
-                  a -> b -> (~>) c ((~>) d (Foo a b c d))
+    type CSym2 :: forall a b c d. a
+                                  -> b -> (~>) c ((~>) d (Foo a b c d))
     data CSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (~>) c ((~>) d (Foo a b c d))
       where
         CSym2KindInference :: SameKind (Apply (CSym2 a0123456789876543210 a0123456789876543210) arg) (CSym3 a0123456789876543210 a0123456789876543210 arg) =>
@@ -151,8 +157,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type CSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
     type family CSym4 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
       CSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = C a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type DSym0 :: forall a b c d.
-                  (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
+    type DSym0 :: forall a
+                         b
+                         c
+                         d. (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
     data DSym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
       where
         DSym0KindInference :: SameKind (Apply DSym0 arg) (DSym1 arg) =>
@@ -160,8 +168,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply DSym0 a0123456789876543210 = DSym1 a0123456789876543210
     instance SuppressUnusedWarnings DSym0 where
       suppressUnusedWarnings = snd (((,) DSym0KindInference) ())
-    type DSym1 :: forall a b c d.
-                  a -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
+    type DSym1 :: forall a b c d. a
+                                  -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
     data DSym1 (a0123456789876543210 :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))
       where
         DSym1KindInference :: SameKind (Apply (DSym1 a0123456789876543210) arg) (DSym2 a0123456789876543210 arg) =>
@@ -169,8 +177,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (DSym1 a0123456789876543210) a0123456789876543210 = DSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (DSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) DSym1KindInference) ())
-    type DSym2 :: forall a b c d.
-                  a -> b -> (~>) c ((~>) d (Foo a b c d))
+    type DSym2 :: forall a b c d. a
+                                  -> b -> (~>) c ((~>) d (Foo a b c d))
     data DSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (~>) c ((~>) d (Foo a b c d))
       where
         DSym2KindInference :: SameKind (Apply (DSym2 a0123456789876543210 a0123456789876543210) arg) (DSym3 a0123456789876543210 a0123456789876543210 arg) =>
@@ -189,8 +197,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type DSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
     type family DSym4 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
       DSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = D a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type ESym0 :: forall a b c d.
-                  (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
+    type ESym0 :: forall a
+                         b
+                         c
+                         d. (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
     data ESym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
       where
         ESym0KindInference :: SameKind (Apply ESym0 arg) (ESym1 arg) =>
@@ -198,8 +208,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ESym0 a0123456789876543210 = ESym1 a0123456789876543210
     instance SuppressUnusedWarnings ESym0 where
       suppressUnusedWarnings = snd (((,) ESym0KindInference) ())
-    type ESym1 :: forall a b c d.
-                  a -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
+    type ESym1 :: forall a b c d. a
+                                  -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
     data ESym1 (a0123456789876543210 :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))
       where
         ESym1KindInference :: SameKind (Apply (ESym1 a0123456789876543210) arg) (ESym2 a0123456789876543210 arg) =>
@@ -207,8 +217,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ESym1 a0123456789876543210) a0123456789876543210 = ESym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ESym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) ESym1KindInference) ())
-    type ESym2 :: forall a b c d.
-                  a -> b -> (~>) c ((~>) d (Foo a b c d))
+    type ESym2 :: forall a b c d. a
+                                  -> b -> (~>) c ((~>) d (Foo a b c d))
     data ESym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (~>) c ((~>) d (Foo a b c d))
       where
         ESym2KindInference :: SameKind (Apply (ESym2 a0123456789876543210 a0123456789876543210) arg) (ESym3 a0123456789876543210 a0123456789876543210 arg) =>
@@ -227,8 +237,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type ESym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
     type family ESym4 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
       ESym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = E a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type FSym0 :: forall a b c d.
-                  (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
+    type FSym0 :: forall a
+                         b
+                         c
+                         d. (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
     data FSym0 :: (~>) a ((~>) b ((~>) c ((~>) d (Foo a b c d))))
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
@@ -236,8 +248,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
-    type FSym1 :: forall a b c d.
-                  a -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
+    type FSym1 :: forall a b c d. a
+                                  -> (~>) b ((~>) c ((~>) d (Foo a b c d)))
     data FSym1 (a0123456789876543210 :: a) :: (~>) b ((~>) c ((~>) d (Foo a b c d)))
       where
         FSym1KindInference :: SameKind (Apply (FSym1 a0123456789876543210) arg) (FSym2 a0123456789876543210 arg) =>
@@ -245,8 +257,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (FSym1 a0123456789876543210) a0123456789876543210 = FSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) FSym1KindInference) ())
-    type FSym2 :: forall a b c d.
-                  a -> b -> (~>) c ((~>) d (Foo a b c d))
+    type FSym2 :: forall a b c d. a
+                                  -> b -> (~>) c ((~>) d (Foo a b c d))
     data FSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (~>) c ((~>) d (Foo a b c d))
       where
         FSym2KindInference :: SameKind (Apply (FSym2 a0123456789876543210 a0123456789876543210) arg) (FSym3 a0123456789876543210 a0123456789876543210 arg) =>
@@ -462,8 +474,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
       toSing (Succ (b :: Demote Nat))
-        = case toSing b :: SomeSing Nat of {
-            SomeSing c -> SomeSing (SSucc c) }
+        = case toSing b :: SomeSing Nat of SomeSing c -> SomeSing (SSucc c)
     data SFoo :: forall a b c d. Foo a b c d -> GHC.Types.Type
       where
         SA :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
@@ -524,61 +535,60 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               ((((,,,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b))
                  (toSing b :: SomeSing c))
                 (toSing b :: SomeSing d)
-          of {
+          of
             (,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
-              -> SomeSing ((((SA c) c) c) c) }
+              -> SomeSing ((((SA c) c) c) c)
       toSing
         (B (b :: Demote a) (b :: Demote b) (b :: Demote c) (b :: Demote d))
         = case
               ((((,,,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b))
                  (toSing b :: SomeSing c))
                 (toSing b :: SomeSing d)
-          of {
+          of
             (,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
-              -> SomeSing ((((SB c) c) c) c) }
+              -> SomeSing ((((SB c) c) c) c)
       toSing
         (C (b :: Demote a) (b :: Demote b) (b :: Demote c) (b :: Demote d))
         = case
               ((((,,,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b))
                  (toSing b :: SomeSing c))
                 (toSing b :: SomeSing d)
-          of {
+          of
             (,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
-              -> SomeSing ((((SC c) c) c) c) }
+              -> SomeSing ((((SC c) c) c) c)
       toSing
         (D (b :: Demote a) (b :: Demote b) (b :: Demote c) (b :: Demote d))
         = case
               ((((,,,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b))
                  (toSing b :: SomeSing c))
                 (toSing b :: SomeSing d)
-          of {
+          of
             (,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
-              -> SomeSing ((((SD c) c) c) c) }
+              -> SomeSing ((((SD c) c) c) c)
       toSing
         (E (b :: Demote a) (b :: Demote b) (b :: Demote c) (b :: Demote d))
         = case
               ((((,,,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b))
                  (toSing b :: SomeSing c))
                 (toSing b :: SomeSing d)
-          of {
+          of
             (,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
-              -> SomeSing ((((SE c) c) c) c) }
+              -> SomeSing ((((SE c) c) c) c)
       toSing
         (F (b :: Demote a) (b :: Demote b) (b :: Demote c) (b :: Demote d))
         = case
               ((((,,,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b))
                  (toSing b :: SomeSing c))
                 (toSing b :: SomeSing d)
-          of {
+          of
             (,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
-              -> SomeSing ((((SF c) c) c) c) }
+              -> SomeSing ((((SF c) c) c) c)
     instance SEq Nat => SEq Nat where
       (%==) ::
-        forall (t1 :: Nat) (t2 :: Nat).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply ((==@#@$) :: TyFun Nat ((~>) Nat Bool)
-                                              -> GHC.Types.Type) t1) t2)
+        forall (t1 :: Nat) (t2 :: Nat). Sing t1
+                                        -> Sing t2
+                                           -> Sing (Apply (Apply ((==@#@$) :: TyFun Nat ((~>) Nat Bool)
+                                                                              -> GHC.Types.Type) t1) t2)
       (%==) SZero SZero = STrue
       (%==) SZero (SSucc _) = SFalse
       (%==) (SSucc _) SZero = SFalse
@@ -590,11 +600,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             sB_0123456789876543210
     instance SOrd Nat => SOrd Nat where
       sCompare ::
-        forall (t1 :: Nat) (t2 :: Nat).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat ((~>) Nat Ordering)
-                                                 -> GHC.Types.Type) t1) t2)
+        forall (t1 :: Nat) (t2 :: Nat). Sing t1
+                                        -> Sing t2
+                                           -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat ((~>) Nat Ordering)
+                                                                                 -> GHC.Types.Type) t1) t2)
       sCompare SZero SZero
         = (applySing
              ((applySing
@@ -621,11 +630,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       sCompare (SSucc _) SZero = SGT
     instance (SEq a, SEq b, SEq c, SEq d) => SEq (Foo a b c d) where
       (%==) ::
-        forall (t1 :: Foo a b c d) (t2 :: Foo a b c d).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply ((==@#@$) :: TyFun (Foo a b c d) ((~>) (Foo a b c d) Bool)
-                                              -> GHC.Types.Type) t1) t2)
+        forall (t1 :: Foo a b c d) (t2 :: Foo a b c d). Sing t1
+                                                        -> Sing t2
+                                                           -> Sing (Apply (Apply ((==@#@$) :: TyFun (Foo a b c d) ((~>) (Foo a b c d) Bool)
+                                                                                              -> GHC.Types.Type) t1) t2)
       (%==)
         (SA (sA_0123456789876543210 :: Sing a_0123456789876543210)
             (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -821,11 +829,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance (SOrd a, SOrd b, SOrd c, SOrd d) =>
              SOrd (Foo a b c d) where
       sCompare ::
-        forall (t1 :: Foo a b c d) (t2 :: Foo a b c d).
-        Sing t1
-        -> Sing t2
-           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Foo a b c d) ((~>) (Foo a b c d) Ordering)
-                                                 -> GHC.Types.Type) t1) t2)
+        forall (t1 :: Foo a b c d) (t2 :: Foo a b c d). Sing t1
+                                                        -> Sing t2
+                                                           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Foo a b c d) ((~>) (Foo a b c d) Ordering)
+                                                                                                 -> GHC.Types.Type) t1) t2)
       sCompare
         (SA (sA_0123456789876543210 :: Sing a_0123456789876543210)
             (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -1092,13 +1099,13 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       sCompare (SF _ _ _ _) (SE _ _ _ _) = SGT
     instance SDecide Nat => SDecide Nat where
       (%~) SZero SZero = Proved Refl
-      (%~) SZero (SSucc _) = Disproved (\ x -> case x of)
-      (%~) (SSucc _) SZero = Disproved (\ x -> case x of)
+      (%~) SZero (SSucc _) = Disproved (\ x -> case x of {})
+      (%~) (SSucc _) SZero = Disproved (\ x -> case x of {})
       (%~) (SSucc a) (SSucc b)
         = case ((%~) a) b of
             Proved Refl -> Proved Refl
             Disproved contra
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
     instance SDecide Nat =>
              Data.Type.Equality.TestEquality (SNat :: Nat
                                                       -> GHC.Types.Type) where
@@ -1118,19 +1125,19 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (,,,) (Proved Refl) (Proved Refl) (Proved Refl) (Proved Refl)
               -> Proved Refl
             (,,,) (Disproved contra) _ _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ (Disproved contra) _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ (Disproved contra) _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ _ (Disproved contra)
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-      (%~) (SA _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SA _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SA _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SA _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SA _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SB _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of)
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+      (%~) (SA _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SA _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SA _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SA _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SA _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SB _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of {})
       (%~) (SB a a a a) (SB b b b b)
         = case
               ((((,,,) (((%~) a) b)) (((%~) a) b)) (((%~) a) b)) (((%~) a) b)
@@ -1138,19 +1145,19 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (,,,) (Proved Refl) (Proved Refl) (Proved Refl) (Proved Refl)
               -> Proved Refl
             (,,,) (Disproved contra) _ _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ (Disproved contra) _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ (Disproved contra) _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ _ (Disproved contra)
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-      (%~) (SB _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SB _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SB _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SB _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SC _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SC _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of)
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+      (%~) (SB _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SB _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SB _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SB _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SC _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SC _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of {})
       (%~) (SC a a a a) (SC b b b b)
         = case
               ((((,,,) (((%~) a) b)) (((%~) a) b)) (((%~) a) b)) (((%~) a) b)
@@ -1158,19 +1165,19 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (,,,) (Proved Refl) (Proved Refl) (Proved Refl) (Proved Refl)
               -> Proved Refl
             (,,,) (Disproved contra) _ _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ (Disproved contra) _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ (Disproved contra) _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ _ (Disproved contra)
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-      (%~) (SC _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SC _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SC _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SD _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SD _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SD _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of)
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+      (%~) (SC _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SC _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SC _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SD _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SD _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SD _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of {})
       (%~) (SD a a a a) (SD b b b b)
         = case
               ((((,,,) (((%~) a) b)) (((%~) a) b)) (((%~) a) b)) (((%~) a) b)
@@ -1178,19 +1185,19 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (,,,) (Proved Refl) (Proved Refl) (Proved Refl) (Proved Refl)
               -> Proved Refl
             (,,,) (Disproved contra) _ _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ (Disproved contra) _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ (Disproved contra) _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ _ (Disproved contra)
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-      (%~) (SD _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SD _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SE _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SE _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SE _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SE _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of)
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+      (%~) (SD _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SD _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SE _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SE _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SE _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SE _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of {})
       (%~) (SE a a a a) (SE b b b b)
         = case
               ((((,,,) (((%~) a) b)) (((%~) a) b)) (((%~) a) b)) (((%~) a) b)
@@ -1198,19 +1205,19 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (,,,) (Proved Refl) (Proved Refl) (Proved Refl) (Proved Refl)
               -> Proved Refl
             (,,,) (Disproved contra) _ _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ (Disproved contra) _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ (Disproved contra) _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ _ (Disproved contra)
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
-      (%~) (SE _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SF _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SF _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SF _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SF _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of)
-      (%~) (SF _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of)
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+      (%~) (SE _ _ _ _) (SF _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SF _ _ _ _) (SA _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SF _ _ _ _) (SB _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SF _ _ _ _) (SC _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SF _ _ _ _) (SD _ _ _ _) = Disproved (\ x -> case x of {})
+      (%~) (SF _ _ _ _) (SE _ _ _ _) = Disproved (\ x -> case x of {})
       (%~) (SF a a a a) (SF b b b b)
         = case
               ((((,,,) (((%~) a) b)) (((%~) a) b)) (((%~) a) b)) (((%~) a) b)
@@ -1218,13 +1225,13 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (,,,) (Proved Refl) (Proved Refl) (Proved Refl) (Proved Refl)
               -> Proved Refl
             (,,,) (Disproved contra) _ _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ (Disproved contra) _ _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ (Disproved contra) _
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ _ (Disproved contra)
-              -> Disproved (\ refl -> case refl of { Refl -> contra Refl })
+              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
     instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
              Data.Type.Equality.TestEquality (SFoo :: Foo a b c d
                                                       -> GHC.Types.Type) where

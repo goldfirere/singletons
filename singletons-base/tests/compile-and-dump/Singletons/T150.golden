@@ -9,7 +9,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                   (!) :: Vec n a -> Fin n -> a
                   VCons x _ ! FZ = x
                   VCons _ xs ! FS n = xs ! n
-                  VNil ! n = case n of
+                  VNil ! n = case n of {}
                   mapVec :: (a -> b) -> Vec n a -> Vec n b
                   mapVec _ VNil = VNil
                   mapVec f (VCons x xs) = VCons (f x) (mapVec f xs)
@@ -56,7 +56,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     (!) :: Vec n a -> Fin n -> a
     (!) (VCons x _) FZ = x
     (!) (VCons _ xs) (FS n) = (xs ! n)
-    (!) VNil n = case n of
+    (!) VNil n = case n of {}
     mapVec :: (a -> b) -> Vec n a -> Vec n b
     mapVec _ VNil = VNil
     mapVec f (VCons x xs) = (VCons (f x)) ((mapVec f) xs)
@@ -263,24 +263,25 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     type family HeadVec (a :: Vec ('Succ n) a) :: a where
       HeadVec (VCons x _) = x
     sTransitivity ::
-      forall a b c (t :: Equal a b) (t :: Equal b c).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply TransitivitySym0 t) t :: Equal a c)
+      forall a b c (t :: Equal a b) (t :: Equal b c). Sing t
+                                                      -> Sing t
+                                                         -> Sing (Apply (Apply TransitivitySym0 t) t :: Equal a c)
     sSymmetry ::
-      forall a b (t :: Equal a b).
-      Sing t -> Sing (Apply SymmetrySym0 t :: Equal b a)
+      forall a b (t :: Equal a b). Sing t
+                                   -> Sing (Apply SymmetrySym0 t :: Equal b a)
     sMapVec ::
-      forall a b n (t :: (~>) a b) (t :: Vec n a).
-      Sing t -> Sing t -> Sing (Apply (Apply MapVecSym0 t) t :: Vec n b)
+      forall a b n (t :: (~>) a b) (t :: Vec n a). Sing t
+                                                   -> Sing t
+                                                      -> Sing (Apply (Apply MapVecSym0 t) t :: Vec n b)
     (%!) ::
-      forall n a (t :: Vec n a) (t :: Fin n).
-      Sing t -> Sing t -> Sing (Apply (Apply (!@#@$) t) t :: a)
+      forall n a (t :: Vec n a) (t :: Fin n). Sing t
+                                              -> Sing t -> Sing (Apply (Apply (!@#@$) t) t :: a)
     sTailVec ::
-      forall n a (t :: Vec ('Succ n) a).
-      Sing t -> Sing (Apply TailVecSym0 t :: Vec n a)
+      forall n a (t :: Vec ('Succ n) a). Sing t
+                                         -> Sing (Apply TailVecSym0 t :: Vec n a)
     sHeadVec ::
-      forall n a (t :: Vec ('Succ n) a).
-      Sing t -> Sing (Apply HeadVecSym0 t :: a)
+      forall n a (t :: Vec ('Succ n) a). Sing t
+                                         -> Sing (Apply HeadVecSym0 t :: a)
     sTransitivity SReflexive SReflexive = SReflexive
     sSymmetry SReflexive = SReflexive
     sMapVec _ SVNil = SVNil
@@ -292,7 +293,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     (%!) (SVCons _ (sXs :: Sing xs)) (SFS (sN :: Sing n))
       = (applySing ((applySing ((singFun2 @(!@#@$)) (%!))) sXs)) sN
     (%!) SVNil (sN :: Sing n)
-      = (id @(Sing (Case_0123456789876543210 n n :: a))) (case sN of)
+      = (id @(Sing (Case_0123456789876543210 n n :: a))) (case sN of {})
     sTailVec (SVCons _ (sXs :: Sing xs)) = sXs
     sHeadVec (SVCons (sX :: Sing x) _) = sX
     instance SingI (TransitivitySym0 :: (~>) (Equal a b) ((~>) (Equal b c) (Equal a c))) where

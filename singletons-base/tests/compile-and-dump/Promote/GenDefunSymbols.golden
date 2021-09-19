@@ -1,8 +1,8 @@
 Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     genDefunSymbols [''LiftMaybe, ''NatT, ''(:+)]
   ======>
-    type LiftMaybeSym0 :: forall (a :: Type) (b :: Type).
-                          (~>) ((~>) a b) ((~>) (Maybe a) (Maybe b))
+    type LiftMaybeSym0 :: forall (a :: Type)
+                                 (b :: Type). (~>) ((~>) a b) ((~>) (Maybe a) (Maybe b))
     data LiftMaybeSym0 :: (~>) ((~>) a b) ((~>) (Maybe a) (Maybe b))
       where
         LiftMaybeSym0KindInference :: Data.Singletons.SameKind (Apply LiftMaybeSym0 arg) (LiftMaybeSym1 arg) =>
@@ -11,8 +11,8 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings LiftMaybeSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) LiftMaybeSym0KindInference) ())
-    type LiftMaybeSym1 :: forall (a :: Type) (b :: Type).
-                          (~>) a b -> (~>) (Maybe a) (Maybe b)
+    type LiftMaybeSym1 :: forall (a :: Type) (b :: Type). (~>) a b
+                                                          -> (~>) (Maybe a) (Maybe b)
     data LiftMaybeSym1 (a0123456789876543210 :: (~>) a b) :: (~>) (Maybe a) (Maybe b)
       where
         LiftMaybeSym1KindInference :: Data.Singletons.SameKind (Apply (LiftMaybeSym1 a0123456789876543210) arg) (LiftMaybeSym2 a0123456789876543210 arg) =>
@@ -21,8 +21,8 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (LiftMaybeSym1 a0123456789876543210) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) LiftMaybeSym1KindInference) ())
-    type LiftMaybeSym2 :: forall (a :: Type) (b :: Type).
-                          (~>) a b -> Maybe a -> Maybe b
+    type LiftMaybeSym2 :: forall (a :: Type) (b :: Type). (~>) a b
+                                                          -> Maybe a -> Maybe b
     type family LiftMaybeSym2 (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: Maybe a) :: Maybe b where
       LiftMaybeSym2 a0123456789876543210 a0123456789876543210 = LiftMaybe a0123456789876543210 a0123456789876543210
     type ZeroSym0 :: NatT
@@ -40,8 +40,8 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     type SuccSym1 :: NatT -> NatT
     type family SuccSym1 (a0123456789876543210 :: NatT) :: NatT where
       SuccSym1 a0123456789876543210 = 'Succ a0123456789876543210
-    type (:+@#@$) :: (~>) Nat ((~>) Nat Nat)
-    data (:+@#@$) :: (~>) Nat ((~>) Nat Nat)
+    type (:+@#@$) :: (~>) Natural ((~>) Natural Natural)
+    data (:+@#@$) :: (~>) Natural ((~>) Natural Natural)
       where
         (::+@#@$###) :: Data.Singletons.SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
                         (:+@#@$) a0123456789876543210
@@ -49,8 +49,8 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (:+@#@$) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) (::+@#@$###)) ())
-    type (:+@#@$$) :: Nat -> (~>) Nat Nat
-    data (:+@#@$$) (a0123456789876543210 :: Nat) :: (~>) Nat Nat
+    type (:+@#@$$) :: Natural -> (~>) Natural Natural
+    data (:+@#@$$) (a0123456789876543210 :: Natural) :: (~>) Natural Natural
       where
         (::+@#@$$###) :: Data.Singletons.SameKind (Apply ((:+@#@$$) a0123456789876543210) arg) ((:+@#@$$$) a0123456789876543210 arg) =>
                          (:+@#@$$) a0123456789876543210 a0123456789876543210
@@ -58,6 +58,6 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings ((:+@#@$$) a0123456789876543210) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd (((,) (::+@#@$$###)) ())
-    type (:+@#@$$$) :: Nat -> Nat -> Nat
-    type family (:+@#@$$$) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
+    type (:+@#@$$$) :: Natural -> Natural -> Natural
+    type family (:+@#@$$$) (a0123456789876543210 :: Natural) (a0123456789876543210 :: Natural) :: Natural where
       (:+@#@$$$) a0123456789876543210 a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210

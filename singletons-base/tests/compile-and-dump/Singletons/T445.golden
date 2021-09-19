@@ -1,16 +1,16 @@
 Singletons/T445.hs:0:0:: Splicing declarations
     genDefunSymbols [''Lit]
   ======>
-    type LitSym0 :: (~>) Lit.Nat Nat
-    data LitSym0 :: (~>) Lit.Nat Nat
+    type LitSym0 :: (~>) Natural Nat
+    data LitSym0 :: (~>) Natural Nat
       where
         LitSym0KindInference :: SameKind (Apply LitSym0 arg) (LitSym1 arg) =>
                                 LitSym0 a0123456789876543210
     type instance Apply LitSym0 a0123456789876543210 = Lit a0123456789876543210
     instance SuppressUnusedWarnings LitSym0 where
       suppressUnusedWarnings = snd (((,) LitSym0KindInference) ())
-    type LitSym1 :: Lit.Nat -> Nat
-    type family LitSym1 (a0123456789876543210 :: Lit.Nat) :: Nat where
+    type LitSym1 :: Natural -> Nat
+    type family LitSym1 (a0123456789876543210 :: Natural) :: Nat where
       LitSym1 a0123456789876543210 = Lit a0123456789876543210
 Singletons/T445.hs:(0,0)-(0,0): Splicing declarations
     promoteOnly

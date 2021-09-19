@@ -84,11 +84,11 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     type PC :: forall b a. a -> b -> Constraint
     class PC x y
     sNatMinus ::
-      forall (t :: Nat) (t :: Nat).
-      Sing t -> Sing t -> Sing (Apply (Apply NatMinusSym0 t) t :: Nat)
+      forall (t :: Nat) (t :: Nat). Sing t
+                                    -> Sing t -> Sing (Apply (Apply NatMinusSym0 t) t :: Nat)
     sF ::
-      forall b a (t :: a) (t :: b).
-      Sing t -> Sing t -> Sing (Apply (Apply FSym0 t) t :: ())
+      forall b a (t :: a) (t :: b). Sing t
+                                    -> Sing t -> Sing (Apply (Apply FSym0 t) t :: ())
     sNatMinus SZero _ = SZero
     sNatMinus (SSucc (sA :: Sing a)) (SSucc (sB :: Sing b))
       = (applySing ((applySing ((singFun2 @NatMinusSym0) sNatMinus)) sA))
@@ -123,7 +123,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(D x y) = SD
     instance (SingKind x, SingKind y) => SingKind (D x y) where
       type Demote (D x y) = D (Demote x) (Demote y)
-      fromSing x = case x of
-      toSing x = SomeSing (case x of)
+      fromSing x = case x of {}
+      toSing x = SomeSing (case x of {})
     class SC x y
     type SC :: forall b a. a -> b -> Constraint
