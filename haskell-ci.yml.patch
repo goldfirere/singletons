@@ -1,0 +1,13 @@
+diff --git a/.github/workflows/haskell-ci.yml b/.github/workflows/haskell-ci.yml
+index f211013..f7461e8 100644
+--- a/.github/workflows/haskell-ci.yml
++++ b/.github/workflows/haskell-ci.yml
+@@ -35,7 +35,7 @@ jobs:
+             compilerKind: ghc
+             compilerVersion: 9.2.0.20210821
+             setup-method: ghcup
+-            allow-failure: true
++            allow-failure: false
+           - compiler: ghc-9.0.1
+             compilerKind: ghc
+             compilerVersion: 9.0.1
