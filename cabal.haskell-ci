@@ -3,3 +3,4 @@ no-tests-no-benchmarks: False
 unconstrained:          False
 jobs-selection:         any
 ghcup-jobs:             >=8.10
+github-patches:         haskell-ci.yml.patch
