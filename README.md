@@ -937,6 +937,7 @@ The following constructs are supported for promotion but not singleton generatio
 * overlapping patterns
 * `GADTs`
 * instances of poly-kinded type classes
+* literal patterns
 
 See the following sections for more details.
 
@@ -957,6 +958,56 @@ bugfixes) which could permit constructors with equality constraints.
 
 ### Overlapping patterns
 
+Overlapping patterns pose a challenge for singling. Consider this
+implementation of `isNothing`:
+
+```hs
+isNothing :: Maybe a -> Bool
+isNothing Nothing = True
+isNothing _       = False
+```
+
+If we single this in a naïve way, we would end up with something like this:
+
+```hs
+sIsNothing :: forall a (m :: Maybe a). Sing m -> Sing (IsNothing m)
+sIsNothing SNothing = STrue
+sIsNothing _        = SFalse
+```
+
+This won't typecheck, however. The issue is that due to the way GADT pattern
+matches are typechecked in GHC, the second equation of `sIsNothing` has no way
+of knowing that `m` should be equal to `Just`, even though the first equation
+already matched `m` against `Nothing`. As a result, `IsNothing m` will not
+reduce in the second equation, which means that the `SFalse`, the right-hand
+side, will not typecheck.
+
+Often times, one can work around the issue by "match flattening" the
+definition. Match flattening works by removing problematic wildcard patterns in
+favor of enumerating all possible constructors of the data type being matched
+against. Here are the match-flattened versions of `isNothing` and `sIsNothing`,
+for example:
+
+```hs
+isNothing :: Maybe a -> Bool
+isNothing Nothing  = True
+isNothing (Just _) = False
+
+sIsNothing :: forall a (m :: Maybe a). Sing m -> Sing (IsNothing m)
+sIsNothing SNothing  = STrue
+sIsNothing (SJust _) = SFalse
+```
+
+Now each equation matches on a data constructor of `Maybe`, so all is well.
+Note that the wildcard pattern inside of `Just _` is fine. The only time a
+wildcard pattern is problematic is when it prevents a type family in the type
+signature from reducing (e.g., `IsNothing`).
+
+Be warned that match flattening is not a perfect workaround. If you have a
+function with n arguments that need to be flattened, then the flattened
+version will have approximately n² equations. Nevertheless, it is the only
+workaround available at the moment.
+
 Note that overlapping patterns are sometimes not obvious. For example, the
 `filter` function does not single due to overlapping patterns:
 
@@ -969,7 +1020,9 @@ filter pred (x:xs)
 ```
 
 Overlap is caused by `otherwise` catch-all guard, which is always true and thus
-overlaps with `pred x` guard.
+overlaps with `pred x` guard. This can be workaround by either replacing the
+guards with an `if pred x then ... else ...` expression or a
+`case pred x of { True -> ...; False -> ...}` expression.
 
 Another non-obvious source of overlapping patterns comes from partial pattern
 matches in `do`-notation. For example:
@@ -991,7 +1044,9 @@ f = case [Nothing] of
 ```
 
 Here, it is more evident that the catch-all pattern `_` overlaps with the
-one above it.
+one above it. Again, this can be worked around by rewriting the partial pattern
+match to an explicit `case` expression that matches on both `Just` and
+`Nothing`.
 
 ### `GADTs`
 
@@ -1025,6 +1080,39 @@ instance C [] where
   method :: [a]
   method = []
 ```
+
+### Literal patterns
+
+Patterns which match on numeric or string literals cannot be
+singled. Using this code as an example:
+
+```hs
+isZero :: Natural -> Bool
+isZero 0 = True
+isZero _ = False
+```
+
+Due to the way that the singled version of `Natural` works, this code would
+need to be singled into something like this:
+
+```hs
+sIsZero :: forall (n :: Natural). Sing n -> Sing (IsZero n)
+sIsZero sn =
+  case sameNat sn (SNat @0) of
+    Just Refl -> STrue
+    Nothing   -> SFalse
+```
+
+This runs into the same issues with overlapping patterns discussed earlier.
+Unfortunately, there is not a good workaround this time. It is impossible to
+match-flatten `isZero` since there are infinitely many `Natural` patterns.
+
+If you _really_ want to make something like this work, one can write
+`unsafeCoerce SFalse` to force it to typecheck. The `singletons-base` library
+itself uses this trick in certain places when it has no other alternatives. See
+the source code for the `SEq Natural` instance for inspiration. `singletons-th`
+will not generate such code for you, however, so if you want to reach for
+`unsafeCoerce`, you are on your own.
 
 ## Support for singling, but not promotion
 
