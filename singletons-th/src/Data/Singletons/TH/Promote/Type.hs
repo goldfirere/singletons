@@ -15,6 +15,7 @@ module Data.Singletons.TH.Promote.Type
   ) where
 
 import Control.Monad (when)
+import Language.Haskell.TH (pprint)
 import Language.Haskell.TH.Desugar
 import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
@@ -91,7 +92,10 @@ promoteType_options pto typ = do
     go args     ty@DArrowT = illegal args ty
     go []       ty@DLitT{} = pure ty
     go args     ty@DLitT{} = illegal args ty
-    go args     ty@DWildCardT{} = illegal args ty
+    go _args    DWildCardT{} = fail $ unlines
+      [ "`singletons-th` does not support wildcard types"
+      , "\tIn the type: " ++ pprint (sweeten typ)
+      ]
 
     illegal :: [DTypeArg] -> DType -> m a
     illegal args hd = fail $ unlines
