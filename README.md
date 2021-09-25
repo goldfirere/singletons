@@ -811,6 +811,8 @@ The following constructs are partially supported:
 * signatures (e.g., `(x :: Maybe a)`) in patterns
 * functional dependencies
 * type families
+* `TypeApplications`
+* wildcard types
 
 See the following sections for more details.
 
@@ -922,6 +924,147 @@ Promoting functions with types that contain type families is likely to fail due 
 [GHC#12564](https://gitlab.haskell.org/ghc/ghc/issues/12564).
 Note that promoting type family _declarations_ is fine
 (and often desired, since that produces defunctionalization symbols for them).
+
+### `TypeApplications`
+
+Currently, `singletons-th` will only promote or single code that uses
+`TypeApplications` syntax in one specific situation: when type applications
+are used in data constructor patterns, such as in the following example:
+
+```haskell
+foo :: Maybe a -> [a]
+foo (Just @a x)  = [x :: a]
+foo (Nothing @a) = [] :: [a]
+```
+
+For all other forms of `TypeApplications`, `singletons-th` will simply drop any
+visible type applications. For example, `id @Bool True` will be promoted to
+`Id True` and singled to `sId STrue`. See
+[#378](https://github.com/goldfirere/singletons/issues/378) for a discussion
+of how `singletons-th` may support `TypeApplications` in more places in the
+future.
+
+On the other hand, `singletons-th` does make an effort to preserve the order of
+type variables when promoting and singling certain constructors. These include:
+
+* Kind signatures of promoted top-level functions
+* Type signatures of singled top-level functions
+* Kind signatures of singled data type declarations
+* Type signatures of singled data constructors
+* Kind signatures of singled class declarations
+* Type signatures of singled class methods
+
+For example, consider this type signature:
+
+```haskell
+const2 :: forall b a. a -> b -> a
+```
+
+The promoted version of `const` will have the following kind signature:
+
+```haskell
+type Const2 :: forall b a. a -> b -> a
+```
+
+The singled version of `const2` will have the following type signature:
+
+```haskell
+sConst2 :: forall b a (x :: a) (y :: a). Sing x -> Sing y -> Sing (Const x y)
+```
+
+Therefore, writing `const2 @T1 @T2` works just as well as writing
+`Const2 @T1 @T2` or `sConst2 @T1 @T2`, since the signatures for `const2`, `Const2`,
+and `sConst2` all begin with `forall b a.`, in that order. Again, it is worth
+emphasizing that the TH machinery does not support promoting or singling
+`const2 @T1 @T2` directly, but you can write the type applications by hand if
+you so choose.
+
+`singletons-th` also has limited support for preserving the order of type variables
+for the following constructs:
+
+* Kind signatures of defunctionalization symbols.
+  The order of type variables is only guaranteed to be preserved if:
+
+  1. The thing being defunctionalized has a standalone type (or kind)
+     signature.
+  2. The type (or kind) signature of the thing being defunctionalized is
+     a vanilla type. (See the "Rank-n types" section above for what "vanilla"
+     means.)
+
+  If either of these conditions do not hold, `singletons-th` will fall back to
+  a slightly different approach to generating defunctionalization symbols that
+  does *not* guarantee the order of type variables. As an example, consider the
+  following example:
+
+  ```haskell
+  data T (x :: a) :: forall b. b -> Type
+  $(genDefunSymbols [''T])
+  ```
+
+  The kind of `T` is `forall a. a -> forall b. b -> Type`, which is not
+  vanilla. Currently, `singletons-th` will generate the following
+  defunctionalization symbols for `T`:
+
+  ```haskell
+  data TSym0 :: a ~> b ~> Type
+  data TSym1 (x :: a) :: b ~> Type
+  ```
+
+  In both symbols, the kind starts with `forall a b.` rather than quantifying
+  the `b` after the visible argument of kind `a`. These symbols can still be
+  useful even with this flaw, so `singletons-th` permits generating them
+  regardless. Be aware of this drawback if you try doing something similar
+  yourself!
+
+* Kind signatures of promoted class methods.
+  The order of type variables will often "just work" by happy coincidence, but
+  there are some situations where this does not happen. Consider the following
+  class:
+
+  ```haskell
+  class C (b :: Type) where
+    m :: forall a. a -> b -> a
+  ```
+
+  The full type of `m` is `forall b. C b => forall a. a -> b -> a`, which binds
+  `b` before `a`. This order is preserved when singling `m`, but *not* when
+  promoting `m`. This is because the `C` class is promoted as follows:
+
+  ```haskell
+  class PC (b :: Type) where
+    type M (x :: a) (y :: b) :: a
+  ```
+
+  Due to the way GHC kind-checks associated type families, the kind of `M` is
+  `forall a b. a -> b -> a`, which binds `b` *after* `a`. Moreover, the
+  `StandaloneKindSignatures` extension does not provide a way to explicitly
+  declare the full kind of an associated type family, so this limitation is
+  not easy to work around.
+
+  The defunctionalization symbols for `M` will also follow a similar
+  order of type variables:
+
+  ```haskell
+  type MSym0 :: forall a b. a ~> b ~> a
+  type MSym1 :: forall a b. a -> b ~> a
+  ```
+
+### Wildcard types
+
+Currently, `singletons-th` can only handle promoting or singling wildcard types
+if they appear within type applications in data constructor patterns, such as
+in the following example:
+
+```hs
+bar :: Maybe () -> Bool
+bar (Nothing @_) = False
+bar (Just ())    = True
+```
+
+`singletons-th` will error if trying to promote or single a wildcard type in
+any other context. Ultimately, this is due to a GHC restriction, as GHC itself
+will forbid using wildcards in most kind-level contexts. For example, GHC will
+permit `f :: _` but reject `type F :: _`.
 
 ## Support for promotion, but not singling
 
@@ -1316,120 +1459,6 @@ mechanism will not promote `TypeRep` to `*`.
 2) The module `Data.Singletons.TH.CustomStar` (from `singletons-th`) allows the programmer to define a subset
 of types with which to work. See the Haddock documentation for the function
 `singletonStar` for more info.
-
-### `TypeApplications`
-
-`singletons-th` currently cannot handle promoting or singling code that uses
-`TypeApplications` syntax, so the Template Haskell machinery will simply drop
-any visible type applications. For example, `id @Bool True` will be promoted to
-`Id True` and singled to `sId STrue`. See
-[#378](https://github.com/goldfirere/singletons/issues/378) for a discussion
-of how `singletons-th` may support `TypeApplications` in the future.
-
-On the other hand, `singletons-th` does make an effort to preserve the order of
-type variables when promoting and singling certain constructors. These include:
-
-* Kind signatures of promoted top-level functions
-* Type signatures of singled top-level functions
-* Kind signatures of singled data type declarations
-* Type signatures of singled data constructors
-* Kind signatures of singled class declarations
-* Type signatures of singled class methods
-
-For example, consider this type signature:
-
-```haskell
-const2 :: forall b a. a -> b -> a
-```
-
-The promoted version of `const` will have the following kind signature:
-
-```haskell
-type Const2 :: forall b a. a -> b -> a
-```
-
-The singled version of `const2` will have the following type signature:
-
-```haskell
-sConst2 :: forall b a (x :: a) (y :: a). Sing x -> Sing y -> Sing (Const x y)
-```
-
-Therefore, writing `const2 @T1 @T2` works just as well as writing
-`Const2 @T1 @T2` or `sConst2 @T1 @T2`, since the signatures for `const2`, `Const2`,
-and `sConst2` all begin with `forall b a.`, in that order. Again, it is worth
-emphasizing that the TH machinery does not support promoting or singling
-`const2 @T1 @T2` directly, but you can write the type applications by hand if
-you so choose.
-
-`singletons-th` also has limited support for preserving the order of type variables
-for the following constructs:
-
-* Kind signatures of defunctionalization symbols.
-  The order of type variables is only guaranteed to be preserved if:
-
-  1. The thing being defunctionalized has a standalone type (or kind)
-     signature.
-  2. The type (or kind) signature of the thing being defunctionalized is
-     a vanilla type. (See the "Rank-n types" section above for what "vanilla"
-     means.)
-
-  If either of these conditions do not hold, `singletons-th` will fall back to
-  a slightly different approach to generating defunctionalization symbols that
-  does *not* guarantee the order of type variables. As an example, consider the
-  following example:
-
-  ```haskell
-  data T (x :: a) :: forall b. b -> Type
-  $(genDefunSymbols [''T])
-  ```
-
-  The kind of `T` is `forall a. a -> forall b. b -> Type`, which is not
-  vanilla. Currently, `singletons-th` will generate the following
-  defunctionalization symbols for `T`:
-
-  ```haskell
-  data TSym0 :: a ~> b ~> Type
-  data TSym1 (x :: a) :: b ~> Type
-  ```
-
-  In both symbols, the kind starts with `forall a b.` rather than quantifying
-  the `b` after the visible argument of kind `a`. These symbols can still be
-  useful even with this flaw, so `singletons-th` permits generating them
-  regardless. Be aware of this drawback if you try doing something similar
-  yourself!
-
-* Kind signatures of promoted class methods.
-  The order of type variables will often "just work" by happy coincidence, but
-  there are some situations where this does not happen. Consider the following
-  class:
-
-  ```haskell
-  class C (b :: Type) where
-    m :: forall a. a -> b -> a
-  ```
-
-  The full type of `m` is `forall b. C b => forall a. a -> b -> a`, which binds
-  `b` before `a`. This order is preserved when singling `m`, but *not* when
-  promoting `m`. This is because the `C` class is promoted as follows:
-
-  ```haskell
-  class PC (b :: Type) where
-    type M (x :: a) (y :: b) :: a
-  ```
-
-  Due to the way GHC kind-checks associated type families, the kind of `M` is
-  `forall a b. a -> b -> a`, which binds `b` *after* `a`. Moreover, the
-  `StandaloneKindSignatures` extension does not provide a way to explicitly
-  declare the full kind of an associated type family, so this limitation is
-  not easy to work around.
-
-  The defunctionalization symbols for `M` will also follow a similar
-  order of type variables:
-
-  ```haskell
-  type MSym0 :: forall a b. a ~> b ~> a
-  type MSym1 :: forall a b. a -> b ~> a
-  ```
 
 ### Irrefutable patterns
 

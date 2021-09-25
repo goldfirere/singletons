@@ -114,7 +114,7 @@ data ADExp = ADVarE Name
 -- A DPat with a pattern-signature node annotated with its type-level equivalent
 data ADPat = ADLitP Lit
            | ADVarP Name
-           | ADConP Name [ADPat]
+           | ADConP Name [DType] [ADPat]
            | ADTildeP ADPat
            | ADBangP ADPat
            | ADSigP DType -- The promoted pattern. Will not contain any wildcards,

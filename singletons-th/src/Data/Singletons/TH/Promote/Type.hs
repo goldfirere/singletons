@@ -33,18 +33,27 @@ promoteType_NC :: forall m. OptionsMonad m => DType -> m DKind
 promoteType_NC = promoteType_options defaultPromoteTypeOptions
 
 -- | Options for controlling how types are promoted at a fine granularity.
-newtype PromoteTypeOptions = PromoteTypeOptions
+data PromoteTypeOptions = PromoteTypeOptions
   { ptoCheckVanilla :: Bool
     -- ^ If 'True', invoke 'checkVanillaDType' on the argument type being
     --   promoted. See @Note [Vanilla-type validity checking during promotion]@.
+  , ptoAllowWildcards :: Bool
+    -- ^ If 'True', allow promoting wildcard types. Otherwise, throw an error.
+    --   In most places, GHC disallows kind-level wildcard types, so rather
+    --   than promoting such wildcards and getting an error message from GHC
+    --   /post facto/, we can catch such wildcards early and give a more
+    --   descriptive error message instead.
   } deriving Show
 
 -- | The default 'PromoteTypeOptions':
 --
 -- * 'checkVanillaDType' is not invoked.
+--
+-- * Throw an error when attempting to promote a wildcard type.
 defaultPromoteTypeOptions :: PromoteTypeOptions
 defaultPromoteTypeOptions = PromoteTypeOptions
   { ptoCheckVanilla = False
+  , ptoAllowWildcards = False
   }
 
 -- | Promote a 'DType' to the kind level. This is the workhorse for
@@ -92,10 +101,15 @@ promoteType_options pto typ = do
     go args     ty@DArrowT = illegal args ty
     go []       ty@DLitT{} = pure ty
     go args     ty@DLitT{} = illegal args ty
-    go _args    DWildCardT{} = fail $ unlines
-      [ "`singletons-th` does not support wildcard types"
-      , "\tIn the type: " ++ pprint (sweeten typ)
-      ]
+    go args     ty@DWildCardT{}
+      | ptoAllowWildcards pto
+      = pure $ applyDType ty args
+      | otherwise
+      = fail $ unlines
+          [ "`singletons-th` does not support wildcard types"
+          , "\tunless they appear in visible type patterns of data constructors"
+          , "\tIn the type: " ++ pprint (sweeten typ)
+          ]
 
     illegal :: [DTypeArg] -> DType -> m a
     illegal args hd = fail $ unlines

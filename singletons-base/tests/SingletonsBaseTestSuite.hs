@@ -140,6 +140,7 @@ tests =
     , compileAndDumpStdTest "T470"
     , compileAndDumpStdTest "T480"
     , compileAndDumpStdTest "T487"
+    , compileAndDumpStdTest "T489"
     , compileAndDumpStdTest "T492"
     , compileAndDumpStdTest "Natural"
     ],

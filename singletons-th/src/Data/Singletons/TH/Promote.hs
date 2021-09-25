@@ -1051,12 +1051,17 @@ promotePat (DVarP name) = do
   tell $ PromDPatInfos [(name, tyName)] OSet.empty
   return (DVarT tyName, ADVarP name)
 promotePat (DConP name tys pats) = do
-  unless (null tys) $
-    qReportWarning "Visible type applications in patterns are ignored by `singletons-th`."
   opts <- getOptions
+  kis <- traverse (promoteType_options conOptions) tys
   (types, pats') <- mapAndUnzipM promotePat pats
   let name' = promotedDataTypeOrConName opts name
-  return (foldType (DConT name') types, ADConP name pats')
+  return (foldType (foldl DAppKindT (DConT name') kis) types, ADConP name kis pats')
+  where
+    -- Currently, visible type patterns of data constructors are the one place
+    -- in `singletons-th` where it makes sense to promote wildcard types, as it
+    -- will produce code that GHC will accept.
+    conOptions :: PromoteTypeOptions
+    conOptions = defaultPromoteTypeOptions{ptoAllowWildcards = True}
 promotePat (DTildeP pat) = do
   qReportWarning "Lazy pattern converted into regular pattern in promotion"
   second ADTildeP <$> promotePat pat
