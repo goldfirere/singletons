@@ -9,26 +9,51 @@ This file implements promotion of types into kinds.
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Data.Singletons.TH.Promote.Type
-  ( promoteType, promoteType_NC
+  ( promoteType, promoteType_NC, promoteType_options
+  , PromoteTypeOptions(..), defaultPromoteTypeOptions
   , promoteTypeArg_NC, promoteUnraveled
   ) where
 
+import Control.Monad (when)
 import Language.Haskell.TH.Desugar
 import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
 import Data.Singletons.TH.Util
 
--- Promote a DType to the kind level.
+-- | Promote a 'DType' to the kind level and invoke 'checkVanillaDType'.
+-- See @Note [Vanilla-type validity checking during promotion]@.
 promoteType :: OptionsMonad m => DType -> m DKind
-promoteType ty = do
-  checkVanillaDType ty
-  promoteType_NC ty
+promoteType = promoteType_options defaultPromoteTypeOptions{ptoCheckVanilla = True}
 
--- Promote a DType to the kind level. This is suffixed with "_NC" because
--- we do not invoke checkVanillaDType here.
--- See [Vanilla-type validity checking during promotion].
+-- | Promote a 'DType' to the kind level. This is suffixed with \"_NC\" because
+-- we do not invoke 'checkVanillaDType' here.
+-- See @Note [Vanilla-type validity checking during promotion]@.
 promoteType_NC :: forall m. OptionsMonad m => DType -> m DKind
-promoteType_NC = go []
+promoteType_NC = promoteType_options defaultPromoteTypeOptions
+
+-- | Options for controlling how types are promoted at a fine granularity.
+newtype PromoteTypeOptions = PromoteTypeOptions
+  { ptoCheckVanilla :: Bool
+    -- ^ If 'True', invoke 'checkVanillaDType' on the argument type being
+    --   promoted. See @Note [Vanilla-type validity checking during promotion]@.
+  } deriving Show
+
+-- | The default 'PromoteTypeOptions':
+--
+-- * 'checkVanillaDType' is not invoked.
+defaultPromoteTypeOptions :: PromoteTypeOptions
+defaultPromoteTypeOptions = PromoteTypeOptions
+  { ptoCheckVanilla = False
+  }
+
+-- | Promote a 'DType' to the kind level. This is the workhorse for
+-- 'promoteType' and 'promoteType_NC'.
+promoteType_options :: forall m. OptionsMonad m => PromoteTypeOptions -> DType -> m DKind
+promoteType_options pto typ = do
+  -- See Note [Vanilla-type validity checking during promotion]
+  when (ptoCheckVanilla pto) $
+    checkVanillaDType typ
+  go [] typ
   where
     go :: [DTypeArg] -> DType -> m DKind
     go []       (DForallT tele ty) = do
@@ -77,7 +102,7 @@ promoteType_NC = go []
 
 -- | Promote a DTypeArg to the kind level. This is suffixed with "_NC" because
 -- we do not invoke checkVanillaDType here.
--- See [Vanilla-type validity checking during promotion].
+-- See @Note [Vanilla-type validity checking during promotion]@.
 promoteTypeArg_NC :: OptionsMonad m => DTypeArg -> m DTypeArg
 promoteTypeArg_NC (DTANormal t) = DTANormal <$> promoteType_NC t
 promoteTypeArg_NC ta@(DTyArg _) = pure ta -- Kinds are already promoted
