@@ -6,6 +6,8 @@ rae@cs.brynmawr.edu
 This file implements promotion of types into kinds.
 -}
 
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Data.Singletons.TH.Promote.Type
   ( promoteType, promoteType_NC
   , promoteTypeArg_NC, promoteUnraveled
@@ -25,18 +27,20 @@ promoteType ty = do
 -- Promote a DType to the kind level. This is suffixed with "_NC" because
 -- we do not invoke checkVanillaDType here.
 -- See [Vanilla-type validity checking during promotion].
-promoteType_NC :: OptionsMonad m => DType -> m DKind
+promoteType_NC :: forall m. OptionsMonad m => DType -> m DKind
 promoteType_NC = go []
   where
-    go :: OptionsMonad m => [DTypeArg] -> DType -> m DKind
+    go :: [DTypeArg] -> DType -> m DKind
     go []       (DForallT tele ty) = do
       ty' <- go [] ty
       pure $ DForallT tele ty'
+    go args     ty@DForallT{} = illegal args ty
     -- We don't need to worry about constraints: they are used to express
     -- static guarantees at runtime. But, because we don't need to do
     -- anything special to keep static guarantees at compile time, we don't
     -- need to promote them.
     go []       (DConstrainedT _cxt ty) = go [] ty
+    go args     ty@DConstrainedT{} = illegal args ty
     go args     (DAppT t1 t2) = do
       k2 <- go [] t2
       go (DTANormal k2 : args) t1
@@ -59,11 +63,17 @@ promoteType_NC = go []
       return $ applyDType (DConT (promotedDataTypeOrConName opts name)) args
     go [DTANormal k1, DTANormal k2] DArrowT
       = return $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
-    go _        ty@DLitT{} = pure ty
+    go args     ty@DArrowT = illegal args ty
+    go []       ty@DLitT{} = pure ty
+    go args     ty@DLitT{} = illegal args ty
+    go args     ty@DWildCardT{} = illegal args ty
 
-    go args     hd = fail $ "Illegal Haskell construct encountered:\n" ++
-                            "headed by: " ++ show hd ++ "\n" ++
-                            "applied to: " ++ show args
+    illegal :: [DTypeArg] -> DType -> m a
+    illegal args hd = fail $ unlines
+      [ "Illegal Haskell construct encountered:"
+      , "\theaded by: " ++ show hd
+      , "\tapplied to: " ++ show args
+      ]
 
 -- | Promote a DTypeArg to the kind level. This is suffixed with "_NC" because
 -- we do not invoke checkVanillaDType here.
