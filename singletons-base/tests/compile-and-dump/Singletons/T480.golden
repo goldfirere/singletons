@@ -1,0 +1,13 @@
+
+Singletons/T480.hs:0:0: error: Q monad failure
+  |
+5 | $(singletons
+  |  ^^^^^^^^^^^...
+
+Singletons/T480.hs:0:0: error:
+    `singletons-th` does not support wildcard types
+	In the type: _
+
+  |
+5 | $(singletons
+  |  ^^^^^^^^^^^...
