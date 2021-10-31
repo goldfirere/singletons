@@ -8,7 +8,7 @@ author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stola
 maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC == 9.2.*
+tested-with:    GHC == 9.2.1
 extra-source-files: README.md, CHANGES.md
 license:        BSD3
 license-file:   LICENSE
