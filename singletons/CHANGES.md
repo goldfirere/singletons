@@ -1,7 +1,7 @@
 Changelog for the `singletons` project
 ======================================
 
-3.0.1 [????.??.??]
+3.0.1 [2021.10.30]
 ------------------
 * Add `SingI1` and `SingI2`, higher-order versions of `SingI`, to
   `Data.Singletons`, along with various derived functions:
