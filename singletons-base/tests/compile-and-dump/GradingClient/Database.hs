@@ -25,7 +25,7 @@ module GradingClient.Database where
 import Control.Monad
 import Control.Monad.Except  ( throwError )
 import Data.Kind (Type)
-import Data.List hiding ( tail )
+import qualified Data.List as List
 import Data.Singletons.Base.TH
 import Prelude hiding ( tail, id )
 import Prelude.Singletons hiding ( Lookup, sLookup, LookupSym0, LookupSym1, LookupSym2 )
@@ -434,11 +434,11 @@ query (Read (Handle rows)) = return rows
 query (Union ra rb) = do
   rowsa <- query ra
   rowsb <- query rb
-  return $ unionBy eqRow rowsa rowsb
+  return $ List.unionBy eqRow rowsa rowsb
 query (Diff ra rb) = do
   rowsa <- query ra
   rowsb <- query rb
-  return $ deleteFirstsBy eqRow rowsa rowsb
+  return $ List.deleteFirstsBy eqRow rowsa rowsb
 query (Product ra rb) = do
   rowsa <- query ra
   rowsb <- query rb
