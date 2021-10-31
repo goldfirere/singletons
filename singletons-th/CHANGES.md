@@ -1,8 +1,8 @@
 Changelog for the `singletons-th` project
 =========================================
 
-next [????.??.??]
------------------
+3.1 [2021.10.30]
+----------------
 * Require building with GHC 9.2.
 * Allow promoting and singling type applications in data constructor patterns.
 * Make the Template Haskell machinery generate `SingI1` and `SingI2` instances
