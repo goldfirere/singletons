@@ -7,8 +7,6 @@ This file contains functions to promote term-level constructs to the
 type level. It is an internal module to the singletons-th package.
 -}
 
-{-# LANGUAGE MultiWayIf, LambdaCase, TupleSections, ScopedTypeVariables #-}
-
 module Data.Singletons.TH.Promote where
 
 import Language.Haskell.TH hiding ( Q, cxt )

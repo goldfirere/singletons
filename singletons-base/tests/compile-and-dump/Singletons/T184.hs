@@ -1,4 +1,5 @@
 {-# LANGUAGE ParallelListComp #-}
+
 module T184 where
 
 import Control.Monad

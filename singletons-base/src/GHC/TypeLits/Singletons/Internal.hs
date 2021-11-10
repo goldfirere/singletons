@@ -1,3 +1,9 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  GHC.TypeLits.Singletons.Internal
@@ -12,12 +18,6 @@
 -- "GHC.TypeLits.Singletons" for a safe interface.
 --
 ----------------------------------------------------------------------------
-
-{-# LANGUAGE PolyKinds, DataKinds, TypeFamilies, FlexibleInstances,
-             UndecidableInstances, ScopedTypeVariables, RankNTypes,
-             GADTs, FlexibleContexts, TypeOperators, ConstraintKinds,
-             TemplateHaskell, TypeApplications, StandaloneKindSignatures #-}
-{-# OPTIONS_GHC -Wno-orphans #-}
 
 module GHC.TypeLits.Singletons.Internal (
   Sing,

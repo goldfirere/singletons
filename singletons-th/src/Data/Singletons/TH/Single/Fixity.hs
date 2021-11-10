@@ -1,4 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables #-}
 module Data.Singletons.TH.Single.Fixity where
 
 import Prelude hiding ( exp )

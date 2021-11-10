@@ -1,3 +1,8 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE UndecidableInstances #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.List.Singletons.Internal.Disambiguation
@@ -11,10 +16,6 @@
 -- names. :(
 --
 ----------------------------------------------------------------------------
-
-{-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies,
-             UndecidableInstances, GADTs, DataKinds, PolyKinds,
-             TypeApplications, StandaloneKindSignatures #-}
 
 module Data.List.Singletons.Internal.Disambiguation where
 

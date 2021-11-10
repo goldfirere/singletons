@@ -8,12 +8,6 @@ presented in /Dependently typed programming with singletons/
 
 -}
 
-{-# LANGUAGE PolyKinds, DataKinds, TemplateHaskell, TypeFamilies,
-    GADTs, TypeOperators, RankNTypes, FlexibleContexts, UndecidableInstances,
-    FlexibleInstances, ScopedTypeVariables, MultiParamTypeClasses,
-    ConstraintKinds, InstanceSigs #-}
-{-# OPTIONS_GHC -Wno-warnings-deprecations #-}
-
 -- The OverlappingInstances is needed only to allow the InC and SubsetC classes.
 -- This is simply a convenience so that GHC can infer the necessary proofs of
 -- schema inclusion. The library could easily be designed without this flag,

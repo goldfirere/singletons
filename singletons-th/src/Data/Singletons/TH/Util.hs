@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+
 {- Data/Singletons/TH/Util.hs
 
 (c) Richard Eisenberg 2013
@@ -6,12 +8,6 @@ rae@cs.brynmawr.edu
 This file contains helper functions internal to the singletons-th package.
 Users of the package should not need to consult this file.
 -}
-
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, RankNTypes,
-             GeneralizedNewtypeDeriving, MultiParamTypeClasses,
-             UndecidableInstances, MagicHash, LambdaCase,
-             NoMonomorphismRestriction, ScopedTypeVariables,
-             FlexibleContexts, TypeApplications #-}
 
 module Data.Singletons.TH.Util where
 

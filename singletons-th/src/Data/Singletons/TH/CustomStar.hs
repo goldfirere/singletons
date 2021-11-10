@@ -1,4 +1,4 @@
-{-# LANGUAGE DataKinds, TypeFamilies, KindSignatures, TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskellQuotes #-}
 
 -----------------------------------------------------------------------------
 -- |

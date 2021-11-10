@@ -8,8 +8,6 @@ some basic queries on it.
 
 -}
 
-{-# LANGUAGE TemplateHaskell, DataKinds #-}
-
 module Main where
 
 import Data.List.Singletons

@@ -1,4 +1,5 @@
 {-# LANGUAGE NegativeLiterals #-}
+
 module Singletons.NegativeLiterals where
 
 import Data.Singletons.Base.TH

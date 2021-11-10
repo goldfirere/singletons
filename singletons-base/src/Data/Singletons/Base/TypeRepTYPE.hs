@@ -1,7 +1,5 @@
-{-# LANGUAGE RankNTypes, TypeFamilies, FlexibleInstances,
-             GADTs, UndecidableInstances, ScopedTypeVariables,
-             MagicHash, TypeOperators, PolyKinds, TypeApplications,
-             StandaloneKindSignatures #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE UndecidableInstances #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------

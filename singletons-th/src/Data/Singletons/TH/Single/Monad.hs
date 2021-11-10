@@ -1,3 +1,5 @@
+{-# LANGUAGE TemplateHaskellQuotes #-}
+
 {- Data/Singletons/TH/Single/Monad.hs
 
 (c) Richard Eisenberg 2014
@@ -7,8 +9,6 @@ This file defines the SgM monad and its operations, for use during singling.
 
 The SgM monad allows reading from a SgEnv environment and is wrapped around a Q.
 -}
-
-{-# LANGUAGE GeneralizedNewtypeDeriving, ParallelListComp, TemplateHaskellQuotes #-}
 
 module Data.Singletons.TH.Single.Monad (
   SgM, bindLets, bindContext, askContext, lookupVarE, lookupConE,

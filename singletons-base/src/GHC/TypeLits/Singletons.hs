@@ -1,6 +1,8 @@
-{-# LANGUAGE TemplateHaskell, ScopedTypeVariables, ConstraintKinds,
-             GADTs, TypeApplications, TypeFamilies, UndecidableInstances,
-             DataKinds, PolyKinds, StandaloneKindSignatures #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -15,8 +17,6 @@
 -- kinds.
 --
 ----------------------------------------------------------------------------
-
-{-# OPTIONS_GHC -Wno-orphans #-}
 
 module GHC.TypeLits.Singletons (
   Natural, Symbol, Char,

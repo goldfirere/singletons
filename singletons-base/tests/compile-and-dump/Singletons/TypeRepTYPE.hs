@@ -1,4 +1,5 @@
 {-# LANGUAGE MagicHash #-}
+
 module TypeRepTYPE where
 
 import Data.Kind (Type)

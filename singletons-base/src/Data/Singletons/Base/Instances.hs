@@ -1,3 +1,9 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
+
 {- Data/Singletons/Base/Instances.hs
 
 (c) Richard Eisenberg 2013
@@ -7,12 +13,6 @@ This (internal) module contains the main class definitions for singletons-base,
 re-exported from various places.
 
 -}
-
-{-# LANGUAGE DataKinds, PolyKinds, RankNTypes, GADTs, TypeFamilies, EmptyCase,
-             FlexibleContexts, TemplateHaskell, ScopedTypeVariables,
-             UndecidableInstances, TypeOperators, FlexibleInstances,
-             TypeApplications, StandaloneKindSignatures, StandaloneDeriving #-}
-{-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Singletons.Base.Instances (
     module Data.Singletons.Base.Instances

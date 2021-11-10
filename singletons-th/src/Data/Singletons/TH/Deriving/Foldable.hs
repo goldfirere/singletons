@@ -1,5 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Singletons.TH.Deriving.Foldable

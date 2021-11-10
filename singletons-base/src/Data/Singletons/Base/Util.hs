@@ -1,3 +1,5 @@
+{-# LANGUAGE TemplateHaskellQuotes #-}
+
 {- Data/Singletons/Prelude/Util.hs
 
 (c) Richard Eisenberg 2013
@@ -7,7 +9,6 @@ This file contains helper functions internal to the singletons-base package.
 Users of the package should not need to consult this file.
 -}
 
-{-# LANGUAGE TemplateHaskellQuotes #-}
 module Data.Singletons.Base.Util where
 
 import Data.Functor.Identity

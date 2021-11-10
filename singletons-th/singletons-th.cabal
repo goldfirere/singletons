@@ -62,7 +62,7 @@ library
                       th-desugar       >= 1.13 && < 1.14,
                       th-orphans       >= 0.13.11 && < 0.14,
                       transformers     >= 0.5.2
-  default-language:   Haskell2010
+  default-language:   GHC2021
   other-extensions:   TemplateHaskellQuotes
   exposed-modules:    Data.Singletons.TH
                       Data.Singletons.TH.CustomStar

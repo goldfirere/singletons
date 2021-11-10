@@ -1,3 +1,5 @@
+{-# LANGUAGE TemplateHaskellQuotes #-}
+
 {- Data/Singletons/TH/Names.hs
 
 (c) Richard Eisenberg 2014
@@ -5,8 +7,6 @@ rae@cs.brynmawr.edu
 
 Defining names and manipulations on names for use in promotion and singling.
 -}
-
-{-# LANGUAGE TemplateHaskellQuotes #-}
 
 module Data.Singletons.TH.Names where
 

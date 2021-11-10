@@ -17,5 +17,5 @@ Singletons/NegativeLiterals.hs:(0,0)-(0,0): Splicing declarations
 Singletons/NegativeLiterals.hs:0:0: warning: [-Woverflowed-literals]
     Literal -1 is negative but Natural only supports positive numbers
   |
-7 | $(singletons [d|
+8 | $(singletons [d|
   |  ^^^^^^^^^^^^^^^...

@@ -9,9 +9,6 @@ The PrM monad allows reading from a PrEnv environment and writing to a list
 of DDec, and is wrapped around a Q.
 -}
 
-{-# LANGUAGE GeneralizedNewtypeDeriving, FlexibleContexts,
-             TypeFamilies, KindSignatures #-}
-
 module Data.Singletons.TH.Promote.Monad (
   PrM, promoteM, promoteM_, promoteMDecs, VarPromotions,
   allLocals, emitDecs, emitDecsM,

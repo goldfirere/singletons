@@ -1,3 +1,5 @@
+{-# LANGUAGE TemplateHaskellQuotes #-}
+
 {- Data/Singletons/TH/Single.hs
 
 (c) Richard Eisenberg 2013
@@ -6,7 +8,6 @@ rae@cs.brynmawr.edu
 This file contains functions to refine constructs to work with singleton
 types. It is an internal module to the singletons-th package.
 -}
-{-# LANGUAGE TemplateHaskellQuotes, TupleSections, ParallelListComp #-}
 
 module Data.Singletons.TH.Single where
 

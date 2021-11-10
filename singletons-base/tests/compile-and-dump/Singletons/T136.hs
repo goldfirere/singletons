@@ -1,10 +1,3 @@
-{-# LANGUAGE GADTs, DataKinds, PolyKinds, TypeFamilies, KindSignatures #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
-{-# LANGUAGE InstanceSigs, DefaultSignatures #-}
-
 module Binary where
 
 import Data.Singletons.Base.Enum

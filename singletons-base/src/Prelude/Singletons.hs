@@ -1,3 +1,6 @@
+{-# LANGUAGE ExplicitNamespaces #-}
+{-# LANGUAGE NoStarIsType #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Prelude.Singletons
@@ -17,8 +20,6 @@
 --
 ----------------------------------------------------------------------------
 
-{-# LANGUAGE ExplicitNamespaces #-}
-{-# LANGUAGE NoStarIsType #-}
 module Prelude.Singletons (
   -- * Basic singleton definitions
   module Data.Singletons,

@@ -1,3 +1,8 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE UndecidableInstances #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Function.Singletons
@@ -16,11 +21,6 @@
 -- between Template Haskell and Haddock.
 --
 ----------------------------------------------------------------------------
-
-{-# LANGUAGE TemplateHaskell, ScopedTypeVariables, TypeFamilies,
-             TypeOperators, UndecidableInstances, GADTs,
-             DataKinds, PolyKinds, TypeApplications,
-             StandaloneKindSignatures #-}
 
 module Data.Function.Singletons (
     -- * "Prelude" re-exports
