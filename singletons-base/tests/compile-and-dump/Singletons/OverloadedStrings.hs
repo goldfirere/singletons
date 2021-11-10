@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module OverloadedStrings where
 
 import Data.Singletons.Base.TH

@@ -1,5 +1,3 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Singletons.TH.Options

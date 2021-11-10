@@ -1,8 +1,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DerivingStrategies #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications #-}
+
 module SingletonsBaseTestSuiteUtils (
    compileAndDumpTest
  , compileAndDumpStdTest
@@ -46,31 +45,18 @@ ghcOpts = ghcFlags ++ [
   , "-fprint-explicit-kinds"
   , "-O0"
   , "-i" ++ goldenPath
+  , "-XGHC2021"
   , "-XTemplateHaskell"
   , "-XDataKinds"
-  , "-XKindSignatures"
   , "-XTypeFamilies"
-  , "-XTypeOperators"
-  , "-XMultiParamTypeClasses"
   , "-XGADTs"
-  , "-XFlexibleInstances"
   , "-XUndecidableInstances"
-  , "-XRankNTypes"
-  , "-XScopedTypeVariables"
-  , "-XPolyKinds"
-  , "-XFlexibleContexts"
   , "-XIncoherentInstances"
   , "-XLambdaCase"
   , "-XUnboxedTuples"
-  , "-XInstanceSigs"
   , "-XDefaultSignatures"
   , "-XCPP"
-  , "-XStandaloneDeriving"
-  , "-XTypeApplications"
-  , "-XEmptyCase"
   , "-XNoStarIsType"
-  , "-XStandaloneKindSignatures"
-  , "-XConstraintKinds"
   , "-XNoNamedWildCards"
   ]
 

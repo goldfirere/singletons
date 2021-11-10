@@ -1,3 +1,5 @@
+{-# LANGUAGE TemplateHaskellQuotes #-}
+
 {- Data/Singletons/TH/Promote/Defun.hs
 
 (c) Richard Eisenberg, Jan Stolarek 2014
@@ -5,8 +7,6 @@ rae@cs.brynmawr.edu
 
 This file creates defunctionalization symbols for types during promotion.
 -}
-
-{-# LANGUAGE TemplateHaskellQuotes #-}
 
 module Data.Singletons.TH.Promote.Defun where
 

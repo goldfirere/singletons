@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveTraversable #-}
 -- Ensure that we can derive Functor, Foldable, and Traversable using only
 -- an import of Data.Singletons.TH
 module FunctorLikeDeriving where

@@ -6,8 +6,6 @@ rae@cs.brynmawr.edu
 Singletonizes constructors.
 -}
 
-{-# LANGUAGE ParallelListComp, TupleSections, LambdaCase #-}
-
 module Data.Singletons.TH.Single.Data where
 
 import Language.Haskell.TH.Desugar

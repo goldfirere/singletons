@@ -27,11 +27,6 @@ unambiguous.
 
 -}
 
-{-# LANGUAGE IncoherentInstances, ConstraintKinds, TypeFamilies,
-             TemplateHaskell, RankNTypes, ScopedTypeVariables, GADTs,
-             TypeOperators, DataKinds, PolyKinds, MultiParamTypeClasses,
-             FlexibleContexts, FlexibleInstances, UndecidableInstances #-}
-
 module InsertionSort.InsertionSortImp where
 
 import Data.Kind (Type)

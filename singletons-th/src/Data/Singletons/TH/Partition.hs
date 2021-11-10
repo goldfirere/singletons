@@ -11,9 +11,6 @@
 --
 ----------------------------------------------------------------------------
 
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TupleSections #-}
-
 module Data.Singletons.TH.Partition where
 
 import Prelude hiding ( exp )

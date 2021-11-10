@@ -6,8 +6,6 @@ rae@cs.brynmawr.edu
 This file implements promotion of types into kinds.
 -}
 
-{-# LANGUAGE ScopedTypeVariables #-}
-
 module Data.Singletons.TH.Promote.Type
   ( promoteType, promoteType_NC, promoteType_options
   , PromoteTypeOptions(..), defaultPromoteTypeOptions

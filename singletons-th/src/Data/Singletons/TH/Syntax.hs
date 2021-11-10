@@ -1,3 +1,6 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TypeFamilies #-}
+
 {- Data/Singletons/TH/Syntax.hs
 
 (c) Richard Eisenberg 2014
@@ -6,9 +9,6 @@ rae@cs.brynmawr.edu
 Converts a list of DLetDecs into a LetDecEnv for easier processing,
 and contains various other AST definitions.
 -}
-
-{-# LANGUAGE DataKinds, TypeFamilies, PolyKinds, DeriveDataTypeable,
-             FlexibleInstances, ConstraintKinds #-}
 
 module Data.Singletons.TH.Syntax where
 

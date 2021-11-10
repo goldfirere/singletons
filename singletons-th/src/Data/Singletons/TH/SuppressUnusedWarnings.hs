@@ -1,3 +1,5 @@
+{-# LANGUAGE AllowAmbiguousTypes #-}
+
 -- Data/Singletons/TH/SuppressUnusedWarnings.hs
 --
 -- (c) Richard Eisenberg 2014
@@ -6,8 +8,6 @@
 -- This declares user-oriented exports that are actually meant to be hidden
 -- from the user. Why would anyone ever want this? Because what is below
 -- is dirty, and no one wants to see it.
-
-{-# LANGUAGE AllowAmbiguousTypes, PolyKinds, StandaloneKindSignatures #-}
 
 module Data.Singletons.TH.SuppressUnusedWarnings where
 

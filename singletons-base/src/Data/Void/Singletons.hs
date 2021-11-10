@@ -1,13 +1,8 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE EmptyCase #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Void.Singletons

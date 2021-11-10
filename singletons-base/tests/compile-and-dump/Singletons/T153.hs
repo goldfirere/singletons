@@ -1,6 +1,3 @@
-{-# LANGUAGE LambdaCase, GADTs, ScopedTypeVariables,
-             TypeApplications, RankNTypes #-}
-
 module Singletons.T153 where
 
 import Data.Singletons

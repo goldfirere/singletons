@@ -10,7 +10,7 @@
 -- Implements deriving of Show instances
 --
 ----------------------------------------------------------------------------
-{-# LANGUAGE ScopedTypeVariables #-}
+
 module Data.Singletons.TH.Deriving.Show (
     mkShowInstance
   , mkShowSingContext
