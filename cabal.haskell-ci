@@ -2,5 +2,3 @@ distribution:           bionic
 no-tests-no-benchmarks: False
 unconstrained:          False
 jobs-selection:         any
-github-patches:         haskell-ci.yml.patch
-head-hackage:           >=9.2
