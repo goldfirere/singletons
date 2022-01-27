@@ -94,9 +94,12 @@ promoteType_options pto typ = do
     go args     (DConT name) = do
       opts <- getOptions
       return $ applyDType (DConT (promotedDataTypeOrConName opts name)) args
-    go [DTANormal k1, DTANormal k2] DArrowT
-      = return $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
-    go args     ty@DArrowT = illegal args ty
+    go args     ty@DArrowT =
+      case filterDTANormals args of
+        []        -> noPartialArrows
+        [_]       -> noPartialArrows
+        [k1, k2]  -> return $ DConT tyFunArrowName `DAppT` k1 `DAppT` k2
+        (_:_:_:_) -> illegal args ty
     go []       ty@DLitT{} = pure ty
     go args     ty@DLitT{} = illegal args ty
     go args     ty@DWildCardT{}
@@ -106,8 +109,17 @@ promoteType_options pto typ = do
       = fail $ unlines
           [ "`singletons-th` does not support wildcard types"
           , "\tunless they appear in visible type patterns of data constructors"
-          , "\tIn the type: " ++ pprint (sweeten typ)
+          , "\t" ++ herald
           ]
+
+    noPartialArrows :: m a
+    noPartialArrows = fail $ unlines
+      [ "`singletons-th` does not support partial applications of (->)"
+      , "\t" ++ herald
+      ]
+
+    herald :: String
+    herald = "In the type: " ++ pprint (sweeten typ)
 
     illegal :: [DTypeArg] -> DType -> m a
     illegal args hd = fail $ unlines

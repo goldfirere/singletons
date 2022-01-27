@@ -1277,6 +1277,7 @@ The following constructs are either unsupported or almost never work:
 * `TypeApplications`
 * Irrefutable patterns
 * `{-# UNPACK #-}` pragmas
+* partial application of the `(->)` type
 
 See the following sections for more details.
 
@@ -1481,3 +1482,10 @@ singled data types represent their argument types using existential type
 variables, and any data constructor that explicitly uses existential
 quantification cannot be unpacked. See
 [GHC#10016](https://gitlab.haskell.org/ghc/ghc/-/issues/10016).
+
+### Partial application of the `(->)` type
+
+`singletons-th` can only promote `(->)` when it is applied to exactly two
+arguments. Attempting to promote `(->)` to zero or one argument will result in
+an error. As a consequence, it is impossible to promote instances like the
+`Functor ((->) r)` instance, so `singletons-base` does not provide them.
