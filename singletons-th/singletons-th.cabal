@@ -19,10 +19,10 @@ description:
     /singling/ functions to dependently typed equivalents. This library was
     originally presented in /Dependently Typed Programming with Singletons/,
     published at the Haskell Symposium, 2012.
-    (<https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf>)
+    (<https://richarde.dev/papers/2012/singletons/paper.pdf>)
     See also the paper published at Haskell Symposium, 2014, which describes
     how promotion works in greater detail:
-    <https://cs.brynmawr.edu/~rae/papers/2014/promotion/promotion.pdf>.
+    <https://richarde.dev/papers/2014/promotion/promotion.pdf>.
     .
     @singletons-th@ generates code that relies on bleeding-edge GHC language
     extensions. As such, @singletons-th@ only supports the latest major version

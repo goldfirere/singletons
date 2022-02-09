@@ -26,10 +26,10 @@ description:
     functions from the @base@ library, including the "Prelude". This library was
     originally presented in /Dependently Typed Programming with Singletons/,
     published at the Haskell Symposium, 2012.
-    (<https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf>)
+    (<https://richarde.dev/papers/2012/singletons/paper.pdf>)
     See also the paper published at Haskell Symposium, 2014, which describes
     how promotion works in greater detail:
-    <https://cs.brynmawr.edu/~rae/papers/2014/promotion/promotion.pdf>.
+    <https://richarde.dev/papers/2014/promotion/promotion.pdf>.
     .
     WARNING: @singletons-base@ defines orphan instances for @Sing@, @SingKind@,
     etc. for common types such as @Bool@, @[]@, @Maybe@, etc. If you define
