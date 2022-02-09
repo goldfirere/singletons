@@ -43,8 +43,8 @@
 --
 -- You may also want to read
 -- the original papers presenting this library, available at
--- <http://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf>
--- and <http://cs.brynmawr.edu/~rae/papers/2014/promotion/promotion.pdf>.
+-- <https://richarde.dev/papers/2012/singletons/paper.pdf>
+-- and <https://richarde.dev/papers/2014/promotion/promotion.pdf>.
 --
 ----------------------------------------------------------------------------
 

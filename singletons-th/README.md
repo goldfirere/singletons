@@ -7,9 +7,9 @@
 _promotion_ of term-level functions to type-level equivalents and
 _singling_ functions to dependently typed equivalents. This library was
 originally presented in
-[_Dependently Typed Programming with Singletons_](https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf),
+[_Dependently Typed Programming with Singletons_](https://richarde.dev/papers/2012/singletons/paper.pdf),
 published at the Haskell Symposium, 2012. See also
-[the paper published at Haskell Symposium, 2014](https://cs.brynmawr.edu/~rae/papers/2014/promotion/promotion.pdf),
+[the paper published at Haskell Symposium, 2014](https://richarde.dev/papers/2014/promotion/promotion.pdf),
 which describes how promotion works in greater detail.
 
 `singletons-th` generates code that relies on bleeding-edge GHC language

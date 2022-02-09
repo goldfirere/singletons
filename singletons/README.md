@@ -6,7 +6,7 @@
 `singletons` contains the basic types and definitions needed to support
 dependently typed programming techniques in Haskell. This library was
 originally presented in
-[_Dependently Typed Programming with Singletons_](https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf),
+[_Dependently Typed Programming with Singletons_](https://richarde.dev/papers/2012/singletons/paper.pdf),
 published at the Haskell Symposium, 2012.
 
 `singletons` is intended to be a small, foundational library on which other
