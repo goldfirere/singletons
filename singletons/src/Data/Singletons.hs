@@ -121,6 +121,10 @@ import Data.Proxy (Proxy(..))
 import GHC.Exts (Proxy#)
 import Unsafe.Coerce (unsafeCoerce)
 
+#if MIN_VERSION_base(4,17,0)
+import GHC.Exts (withDict)
+#endif
+
 -- | Convenient synonym to refer to the kind of a type variable:
 -- @type KindOf (a :: k) = k@
 #if __GLASGOW_HASKELL__ >= 810
@@ -406,18 +410,22 @@ type SingInstance :: k -> Type
 data SingInstance (a :: k) where
   SingInstance :: SingI a => SingInstance a
 
--- dirty implementation of explicit-to-implicit conversion
-#if __GLASGOW_HASKELL__ >= 810
-type DI :: k -> Type
-#endif
-newtype DI a = Don'tInstantiate (SingI a => SingInstance a)
-
 -- | Get an implicit singleton (a 'SingI' instance) from an explicit one.
 singInstance :: forall k (a :: k). Sing a -> SingInstance a
 singInstance s = with_sing_i SingInstance
   where
     with_sing_i :: (SingI a => SingInstance a) -> SingInstance a
+#if MIN_VERSION_base(4,17,0)
+    with_sing_i = withDict @(SingI a) @(Sing a) s
+#else
     with_sing_i si = unsafeCoerce (Don'tInstantiate si) s
+
+-- dirty implementation of explicit-to-implicit conversion
+#if __GLASGOW_HASKELL__ >= 810
+type DI :: k -> Type
+#endif
+newtype DI a = Don'tInstantiate (SingI a => SingInstance a)
+#endif
 
 ----------------------------------------------------------------------
 ---- Defunctionalization ---------------------------------------------
