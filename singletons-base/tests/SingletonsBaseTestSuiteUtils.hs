@@ -23,6 +23,7 @@ import System.Process        ( CreateProcess(..), StdStream(..)
                              , callCommand                         )
 import Test.Tasty            ( TestTree, testGroup                 )
 import Test.Tasty.Golden     ( goldenVsFileDiff                    )
+import qualified Data.Text as Text
 import qualified Turtle
 
 -- Some infractructure for handling external process errors
@@ -140,6 +141,38 @@ are turned into:
 
 This allows inserting comments into test files without the need to modify the
 golden file to adjust line numbers.
+
+Note [Normalizing Windows path separators]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+File paths are printed differently by GHC depending on which operating system
+one uses:
+
+* On Unix-like operating systems: Foo/Bar.hs
+* On Windows:                     Foo\Bar.hs
+
+This is annoying for golden testing, since it means that checking in output
+that prints file paths will only work on some operating systems and not others.
+To circumvent this problem, we normalize Windows-style path separators to
+Unix-like ones.
+
+One way to do this is to replace all occurrences of the '\' character with '/'.
+This is a step too far, however, since this will normalize things like
+(\x -> x) to (/x -> x). A reasonable middle ground is to require that the
+characters before and after the '\' character are alphanumeric before
+normalizing it. This just so happens to be the case for every path that is
+checked into the singletons-base test suite. This approach isn't perfect, since
+one could check in a golden file that prints a path with a non-alphanumeric
+character. This seems very unlikely to happen, however, so we will only worry
+about that issue should it ever arise in practice.
+
+Moreover, this approach would normalize expressions like (id\x -> x)
+to (id/x -> x), which could hypothetically happen with BlockArguments. However,
+the vast majority of the expressions that we check into golden files arise from
+-ddump-splices output, which puts surrounding whitespace after the backslashes
+in lambda expressions. As a result, the expression above would be
+pretty-printed as (id \ x -> x), which avoids the issue entirely. Again, we
+will choose not to worry about this corner case unless it becomes an issue in
+practice.
 -}
 
 normalizeOutput :: FilePath -> IO ()
@@ -156,6 +189,10 @@ normalizeOutput file = Turtle.inplace pat (fromString file)
       -- (e.g., turn `singletons-2.4.1:Sing` into `Sing`) to make the output
       -- more stable.
       , "" <$ "singletons-" <* verNum <* ":"
+      , do x <- Turtle.alphaNum
+           _ <- Turtle.char '\\'
+           y <- Turtle.alphaNum
+           pure $ Text.pack [x, '/', y]
       ]
     verNum = d `Turtle.sepBy` Turtle.char '.'
     numPair = () <$ "(" <* d <* "," <* d <* ")"
