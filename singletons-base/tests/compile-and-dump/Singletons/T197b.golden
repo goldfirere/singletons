@@ -51,7 +51,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
       MkPairSym2 a0123456789876543210 a0123456789876543210 = MkPair a0123456789876543210 a0123456789876543210
     infixr 9 `MkPairSym2`
     infixr 9 `SMkPair`
-    data (%:*:) :: forall a b. (:*:) a b -> GHC.Types.Type
+    data (%:*:) :: forall a b. (:*:) a b -> Type
       where
         (:%*:) :: forall a b (n :: a) (n :: b).
                   (Sing n) -> (Sing n) -> (%:*:) ((:*:) n n :: (:*:) a b)
@@ -62,7 +62,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:*:) (b :: Demote a) (b :: Demote b))
         = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b) of
             (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%*:) c) c)
-    data SPair :: forall a b. Pair a b -> GHC.Types.Type
+    data SPair :: forall a b. Pair a b -> Type
       where
         SMkPair :: forall a b (n :: a) (n :: b).
                    (Sing n) -> (Sing n) -> SPair (MkPair n n :: Pair a b)

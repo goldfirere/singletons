@@ -1,6 +1,14 @@
 Changelog for the `singletons` project
 ======================================
 
+3.0.2 [????.??.??]
+------------------
+* Allow building with GHC 9.4.
+* When building with GHC 9.4 or later, use the new
+  [`withDict`](https://hackage.haskell.org/package/ghc-prim-0.9.0/docs/GHC-Magic-Dict.html#v:withDict)
+  primitive to implement `withSingI` instead of `unsafeCoerce`. This change
+  should not have any consequences for user-facing code.
+
 3.0.1 [2021.10.30]
 ------------------
 * Add `SingI1` and `SingI2`, higher-order versions of `SingI`, to

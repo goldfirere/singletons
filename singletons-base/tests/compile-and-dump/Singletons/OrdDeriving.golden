@@ -463,7 +463,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd (Foo a b c d) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
-    data SNat :: Nat -> GHC.Types.Type
+    data SNat :: Nat -> Type
       where
         SZero :: SNat (Zero :: Nat)
         SSucc :: forall (n :: Nat). (Sing n) -> SNat (Succ n :: Nat)
@@ -475,44 +475,44 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing Zero = SomeSing SZero
       toSing (Succ (b :: Demote Nat))
         = case toSing b :: SomeSing Nat of SomeSing c -> SomeSing (SSucc c)
-    data SFoo :: forall a b c d. Foo a b c d -> GHC.Types.Type
+    data SFoo :: forall a b c d. Foo a b c d -> Type
       where
         SA :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
-              (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> SFoo (A n n n n :: Foo a b c d)
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              SFoo (A n n n n :: Foo a b c d)
         SB :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
-              (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> SFoo (B n n n n :: Foo a b c d)
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              SFoo (B n n n n :: Foo a b c d)
         SC :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
-              (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> SFoo (C n n n n :: Foo a b c d)
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              SFoo (C n n n n :: Foo a b c d)
         SD :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
-              (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> SFoo (D n n n n :: Foo a b c d)
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              SFoo (D n n n n :: Foo a b c d)
         SE :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
-              (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> SFoo (E n n n n :: Foo a b c d)
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              SFoo (E n n n n :: Foo a b c d)
         SF :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
-              (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> (Sing n)
-              -> SFoo (F n n n n :: Foo a b c d)
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              (Sing n) ->
+              SFoo (F n n n n :: Foo a b c d)
     type instance Sing @(Foo a b c d) = SFoo
     instance (SingKind a, SingKind b, SingKind c, SingKind d) =>
              SingKind (Foo a b c d) where
@@ -588,7 +588,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Nat) (t2 :: Nat). Sing t1
                                         -> Sing t2
                                            -> Sing (Apply (Apply ((==@#@$) :: TyFun Nat ((~>) Nat Bool)
-                                                                              -> GHC.Types.Type) t1) t2)
+                                                                              -> Type) t1) t2)
       (%==) SZero SZero = STrue
       (%==) SZero (SSucc _) = SFalse
       (%==) (SSucc _) SZero = SFalse
@@ -603,7 +603,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Nat) (t2 :: Nat). Sing t1
                                         -> Sing t2
                                            -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat ((~>) Nat Ordering)
-                                                                                 -> GHC.Types.Type) t1) t2)
+                                                                                 -> Type) t1) t2)
       sCompare SZero SZero
         = (applySing
              ((applySing
@@ -633,7 +633,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Foo a b c d) (t2 :: Foo a b c d). Sing t1
                                                         -> Sing t2
                                                            -> Sing (Apply (Apply ((==@#@$) :: TyFun (Foo a b c d) ((~>) (Foo a b c d) Bool)
-                                                                                              -> GHC.Types.Type) t1) t2)
+                                                                                              -> Type) t1) t2)
       (%==)
         (SA (sA_0123456789876543210 :: Sing a_0123456789876543210)
             (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -832,7 +832,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Foo a b c d) (t2 :: Foo a b c d). Sing t1
                                                         -> Sing t2
                                                            -> Sing (Apply (Apply (CompareSym0 :: TyFun (Foo a b c d) ((~>) (Foo a b c d) Ordering)
-                                                                                                 -> GHC.Types.Type) t1) t2)
+                                                                                                 -> Type) t1) t2)
       sCompare
         (SA (sA_0123456789876543210 :: Sing a_0123456789876543210)
             (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -1107,13 +1107,11 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             Disproved contra
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
     instance SDecide Nat =>
-             Data.Type.Equality.TestEquality (SNat :: Nat
-                                                      -> GHC.Types.Type) where
+             Data.Type.Equality.TestEquality (SNat :: Nat -> Type) where
       Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance SDecide Nat =>
-             Data.Type.Coercion.TestCoercion (SNat :: Nat
-                                                      -> GHC.Types.Type) where
+             Data.Type.Coercion.TestCoercion (SNat :: Nat -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
@@ -1233,13 +1231,11 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (,,,) _ _ _ (Disproved contra)
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
     instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
-             Data.Type.Equality.TestEquality (SFoo :: Foo a b c d
-                                                      -> GHC.Types.Type) where
+             Data.Type.Equality.TestEquality (SFoo :: Foo a b c d -> Type) where
       Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
-             Data.Type.Coercion.TestCoercion (SFoo :: Foo a b c d
-                                                      -> GHC.Types.Type) where
+             Data.Type.Coercion.TestCoercion (SFoo :: Foo a b c d -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance SingI Zero where

@@ -1,5 +1,5 @@
 name:           singletons-base
-version:        3.1
+version:        3.1.1
 cabal-version:  1.24
 synopsis:       A promoted and singled version of the base library
 homepage:       http://www.github.com/goldfirere/singletons
@@ -8,7 +8,7 @@ author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stola
 maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC == 9.2.1
+tested-with:    GHC == 9.4.1
 extra-source-files: README.md, CHANGES.md, tests/README.md,
                     tests/compile-and-dump/GradingClient/*.hs,
                     tests/compile-and-dump/InsertionSort/*.hs,
@@ -38,7 +38,7 @@ description:
     .
     @singletons-base@ uses code that relies on bleeding-edge GHC language
     extensions. As such, @singletons-base@ only supports the latest major version
-    of GHC (currently GHC 9.2). For more information,
+    of GHC (currently GHC 9.4). For more information,
     consult the @singletons@
     @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
     .
@@ -65,20 +65,20 @@ source-repository head
 
 custom-setup
   setup-depends:
-    base      >= 4.16 && < 4.17,
-    Cabal     >= 3.0 && < 3.7,
+    base      >= 4.17 && < 4.18,
+    Cabal     >= 3.0 && < 3.9,
     directory >= 1,
     filepath  >= 1.3
 
 library
   hs-source-dirs:     src
-  build-depends:      base             >= 4.16 && < 4.17,
+  build-depends:      base             >= 4.17 && < 4.18,
                       pretty,
-                      singletons       == 3.0.1,
+                      singletons       == 3.0.*,
                       singletons-th    == 3.1.*,
-                      template-haskell >= 2.18 && < 2.19,
+                      template-haskell >= 2.19 && < 2.20,
                       text >= 1.2,
-                      th-desugar       >= 1.13 && < 1.14
+                      th-desugar       >= 1.14 && < 1.15
   default-language:   GHC2021
   other-extensions:   TemplateHaskell
   exposed-modules:    Data.Singletons.Base.CustomStar
@@ -153,7 +153,7 @@ test-suite singletons-base-test-suite
   main-is:            SingletonsBaseTestSuite.hs
   other-modules:      SingletonsBaseTestSuiteUtils
 
-  build-depends:      base >= 4.16 && < 4.17,
+  build-depends:      base >= 4.17 && < 4.18,
                       bytestring >= 0.10.9,
                       deepseq >= 1.4.4,
                       filepath >= 1.3,

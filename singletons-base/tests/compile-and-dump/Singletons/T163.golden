@@ -24,7 +24,7 @@ Singletons/T163.hs:0:0:: Splicing declarations
     type RSym1 :: forall a b. b -> (+) a b
     type family RSym1 (a0123456789876543210 :: b) :: (+) a b where
       RSym1 a0123456789876543210 = R a0123456789876543210
-    data (%+) :: forall a b. (+) a b -> GHC.Types.Type
+    data (%+) :: forall a b. (+) a b -> Type
       where
         SL :: forall a b (n :: a). (Sing n) -> (%+) (L n :: (+) a b)
         SR :: forall a b (n :: b). (Sing n) -> (%+) (R n :: (+) a b)

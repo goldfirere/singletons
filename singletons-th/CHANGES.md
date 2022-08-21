@@ -1,6 +1,12 @@
 Changelog for the `singletons-th` project
 =========================================
 
+3.1.1 [????.??.??]
+------------------
+* Require building with GHC 9.4.
+* Improve error messages when attempting to promote a partial application of
+  a function arrow `(->)`, which is not currently supported.
+
 3.1 [2021.10.30]
 ----------------
 * Require building with GHC 9.2.

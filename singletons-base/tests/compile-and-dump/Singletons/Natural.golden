@@ -60,7 +60,7 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 (AddAgeSym1 :: Age -> (~>) Age Age) where
       liftSing (s :: Sing (d :: Age))
         = (singFun1 @(AddAgeSym1 (d :: Age))) (sAddAge s)
-    data SAge :: Age -> GHC.Types.Type
+    data SAge :: Age -> Type
       where
         SMkAge :: forall (n :: Natural). (Sing n) -> SAge (MkAge n :: Age)
     type instance Sing @Age = SAge

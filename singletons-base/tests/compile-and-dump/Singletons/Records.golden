@@ -61,7 +61,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun1 @Field2Sym0) sField2
     instance SingI (Field1Sym0 :: (~>) (Record a) a) where
       sing = (singFun1 @Field1Sym0) sField1
-    data SRecord :: forall a. Record a -> GHC.Types.Type
+    data SRecord :: forall a. Record a -> Type
       where
         SMkRecord :: forall a (n :: a) (n :: Bool).
                      (Sing n) -> (Sing n) -> SRecord (MkRecord n n :: Record a)

@@ -49,6 +49,6 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
     instance SC Bool where
       sMeth ::
         forall (t :: Bool). Sing t
-                            -> Sing (Apply (MethSym0 :: TyFun Bool Bool -> GHC.Types.Type) t)
+                            -> Sing (Apply (MethSym0 :: TyFun Bool Bool -> Type) t)
       sMeth (sA_0123456789876543210 :: Sing a_0123456789876543210)
         = (applySing ((singFun1 @NotSym0) sNot)) sA_0123456789876543210

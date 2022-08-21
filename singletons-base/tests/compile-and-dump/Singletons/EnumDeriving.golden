@@ -70,7 +70,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance PEnum Foo where
       type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
       type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
-    data SFoo :: Foo -> GHC.Types.Type
+    data SFoo :: Foo -> Type
       where
         SBar :: SFoo (Bar :: Foo)
         SBaz :: SFoo (Baz :: Foo)
@@ -84,7 +84,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing Bar = SomeSing SBar
       toSing Baz = SomeSing SBaz
       toSing Bum = SomeSing SBum
-    data SQuux :: Quux -> GHC.Types.Type
+    data SQuux :: Quux -> Type
       where
         SQ1 :: SQuux (Q1 :: Quux)
         SQ2 :: SQuux (Q2 :: Quux)
@@ -99,11 +99,11 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       sToEnum ::
         forall (t :: GHC.Num.Natural.Natural). Sing t
                                                -> Sing (Apply (Data.Singletons.Base.Enum.ToEnumSym0 :: TyFun GHC.Num.Natural.Natural Foo
-                                                                                                       -> GHC.Types.Type) t)
+                                                                                                       -> Type) t)
       sFromEnum ::
         forall (t :: Foo). Sing t
                            -> Sing (Apply (Data.Singletons.Base.Enum.FromEnumSym0 :: TyFun Foo GHC.Num.Natural.Natural
-                                                                                     -> GHC.Types.Type) t)
+                                                                                     -> Type) t)
       sToEnum (sN :: Sing n)
         = (id
              @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0)))))
@@ -192,11 +192,11 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       sToEnum ::
         forall (t :: GHC.Num.Natural.Natural). Sing t
                                                -> Sing (Apply (Data.Singletons.Base.Enum.ToEnumSym0 :: TyFun GHC.Num.Natural.Natural Quux
-                                                                                                       -> GHC.Types.Type) t)
+                                                                                                       -> Type) t)
       sFromEnum ::
         forall (t :: Quux). Sing t
                             -> Sing (Apply (Data.Singletons.Base.Enum.FromEnumSym0 :: TyFun Quux GHC.Num.Natural.Natural
-                                                                                      -> GHC.Types.Type) t)
+                                                                                      -> Type) t)
       sToEnum (sN :: Sing n)
         = (id
              @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0)))))
