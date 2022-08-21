@@ -157,8 +157,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                       Constant a b -> Type
       where
         SConstant :: forall (a :: Type) (b :: Type) (n :: a).
-                     (Sing n)
-                     -> SConstant (Constant n :: Constant (a :: Type) (b :: Type))
+                     (Sing n) ->
+                     SConstant (Constant n :: Constant (a :: Type) (b :: Type))
     type instance Sing @(Constant a b) = SConstant
     instance (SingKind a, SingKind b) => SingKind (Constant a b) where
       type Demote (Constant a b) = Constant (Demote a) (Demote b)

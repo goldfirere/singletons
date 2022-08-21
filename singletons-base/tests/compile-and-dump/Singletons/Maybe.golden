@@ -91,7 +91,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow (Maybe a) where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    data SMaybe :: forall a. Maybe a -> GHC.Types.Type
+    data SMaybe :: forall a. Maybe a -> Type
       where
         SNothing :: forall a. SMaybe (Nothing :: Maybe a)
         SJust :: forall a (n :: a). (Sing n) -> SMaybe (Just n :: Maybe a)
@@ -108,7 +108,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Maybe a) (t2 :: Maybe a). Sing t1
                                                 -> Sing t2
                                                    -> Sing (Apply (Apply ((==@#@$) :: TyFun (Maybe a) ((~>) (Maybe a) Bool)
-                                                                                      -> GHC.Types.Type) t1) t2)
+                                                                                      -> Type) t1) t2)
       (%==) SNothing SNothing = STrue
       (%==) SNothing (SJust _) = SFalse
       (%==) (SJust _) SNothing = SFalse
@@ -126,7 +126,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
                                          -> Sing t2
                                             -> Sing t3
                                                -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) (Maybe a) ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-                                                                                              -> GHC.Types.Type) t1) t2) t3)
+                                                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _
         SNothing
@@ -164,13 +164,11 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
             Disproved contra
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
     instance SDecide a =>
-             Data.Type.Equality.TestEquality (SMaybe :: Maybe a
-                                                        -> GHC.Types.Type) where
+             Data.Type.Equality.TestEquality (SMaybe :: Maybe a -> Type) where
       Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance SDecide a =>
-             Data.Type.Coercion.TestCoercion (SMaybe :: Maybe a
-                                                        -> GHC.Types.Type) where
+             Data.Type.Coercion.TestCoercion (SMaybe :: Maybe a -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     deriving instance Data.Singletons.ShowSing.ShowSing a =>

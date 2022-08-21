@@ -32,7 +32,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type BarSym2 :: Bool -> Bool -> Foo
     type family BarSym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) :: Foo where
       BarSym2 a0123456789876543210 a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
-    data SBool :: Bool -> GHC.Types.Type
+    data SBool :: Bool -> Type
       where
         SFalse :: SBool (False :: Bool)
         STrue :: SBool (True :: Bool)
@@ -43,7 +43,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       fromSing STrue = True
       toSing False = SomeSing SFalse
       toSing True = SomeSing STrue
-    data SFoo :: Foo -> GHC.Types.Type
+    data SFoo :: Foo -> Type
       where
         SBar :: forall (n :: Bool) (n :: Bool).
                 (Sing n) -> (Sing n) -> SFoo (Bar n n :: Foo)

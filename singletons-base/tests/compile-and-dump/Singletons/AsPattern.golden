@@ -360,7 +360,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun1 @BarSym0) sBar
     instance SingI (MaybePlusSym0 :: (~>) (Maybe Nat) (Maybe Nat)) where
       sing = (singFun1 @MaybePlusSym0) sMaybePlus
-    data SBaz :: Baz -> GHC.Types.Type
+    data SBaz :: Baz -> Type
       where
         SBaz :: forall (n :: Nat) (n :: Nat) (n :: Nat).
                 (Sing n) -> (Sing n) -> (Sing n) -> SBaz (Baz n n n :: Baz)

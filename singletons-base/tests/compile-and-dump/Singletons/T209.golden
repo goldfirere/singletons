@@ -77,7 +77,7 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
     instance SingI2 (MSym2 :: a -> b -> (~>) Bool Bool) where
       liftSing2 (s :: Sing (d :: a)) (s :: Sing (d :: b))
         = (singFun1 @(MSym2 (d :: a) (d :: b))) ((sM s) s)
-    data SHm :: Hm -> GHC.Types.Type where SHm :: SHm (Hm :: Hm)
+    data SHm :: Hm -> Type where SHm :: SHm (Hm :: Hm)
     type instance Sing @Hm = SHm
     instance SingKind Hm where
       type Demote Hm = Hm
