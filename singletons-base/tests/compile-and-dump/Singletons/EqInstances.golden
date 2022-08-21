@@ -35,7 +35,7 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
         forall (t1 :: Foo) (t2 :: Foo). Sing t1
                                         -> Sing t2
                                            -> Sing (Apply (Apply ((==@#@$) :: TyFun Foo ((~>) Foo Bool)
-                                                                              -> GHC.Types.Type) t1) t2)
+                                                                              -> Type) t1) t2)
       (%==) SFLeaf SFLeaf = STrue
       (%==) SFLeaf ((:%+:) _ _) = SFalse
       (%==) ((:%+:) _ _) SFLeaf = SFalse
@@ -83,5 +83,5 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
         forall (t1 :: Empty) (t2 :: Empty). Sing t1
                                             -> Sing t2
                                                -> Sing (Apply (Apply ((==@#@$) :: TyFun Empty ((~>) Empty Bool)
-                                                                                  -> GHC.Types.Type) t1) t2)
+                                                                                  -> Type) t1) t2)
       (%==) _ _ = STrue

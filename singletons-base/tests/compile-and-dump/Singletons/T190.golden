@@ -153,7 +153,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow T where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    data ST :: T -> GHC.Types.Type where ST :: ST (T :: T)
+    data ST :: T -> Type where ST :: ST (T :: T)
     type instance Sing @T = ST
     instance SingKind T where
       type Demote T = T
@@ -164,14 +164,14 @@ Singletons/T190.hs:0:0:: Splicing declarations
         forall (t1 :: T) (t2 :: T). Sing t1
                                     -> Sing t2
                                        -> Sing (Apply (Apply ((==@#@$) :: TyFun T ((~>) T Bool)
-                                                                          -> GHC.Types.Type) t1) t2)
+                                                                          -> Type) t1) t2)
       (%==) ST ST = STrue
     instance SOrd T where
       sCompare ::
         forall (t1 :: T) (t2 :: T). Sing t1
                                     -> Sing t2
                                        -> Sing (Apply (Apply (CompareSym0 :: TyFun T ((~>) T Ordering)
-                                                                             -> GHC.Types.Type) t1) t2)
+                                                                             -> Type) t1) t2)
       sCompare ST ST
         = (applySing
              ((applySing
@@ -183,11 +183,11 @@ Singletons/T190.hs:0:0:: Splicing declarations
       sToEnum ::
         forall (t :: GHC.Num.Natural.Natural). Sing t
                                                -> Sing (Apply (Data.Singletons.Base.Enum.ToEnumSym0 :: TyFun GHC.Num.Natural.Natural T
-                                                                                                       -> GHC.Types.Type) t)
+                                                                                                       -> Type) t)
       sFromEnum ::
         forall (t :: T). Sing t
                          -> Sing (Apply (Data.Singletons.Base.Enum.FromEnumSym0 :: TyFun T GHC.Num.Natural.Natural
-                                                                                   -> GHC.Types.Type) t)
+                                                                                   -> Type) t)
       sToEnum (sN :: Sing n)
         = (id
              @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0)))))
@@ -211,7 +211,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
                                          -> Sing t2
                                             -> Sing t3
                                                -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-                                                                                              -> GHC.Types.Type) t1) t2) t3)
+                                                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _
         ST
@@ -222,12 +222,10 @@ Singletons/T190.hs:0:0:: Splicing declarations
             sA_0123456789876543210
     instance SDecide T where
       (%~) ST ST = Proved Refl
-    instance Data.Type.Equality.TestEquality (ST :: T
-                                                    -> GHC.Types.Type) where
+    instance Data.Type.Equality.TestEquality (ST :: T -> Type) where
       Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
-    instance Data.Type.Coercion.TestCoercion (ST :: T
-                                                    -> GHC.Types.Type) where
+    instance Data.Type.Coercion.TestCoercion (ST :: T -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     deriving instance Show (ST (z :: T))

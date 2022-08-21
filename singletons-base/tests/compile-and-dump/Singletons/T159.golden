@@ -19,8 +19,8 @@ Singletons/T159.hs:0:0:: Splicing declarations
     type FSym0 :: T0
     type family FSym0 :: T0 where
       FSym0 = 'F
-    type ST0 :: T0 -> GHC.Types.Type
-    data ST0 :: T0 -> GHC.Types.Type
+    type ST0 :: T0 -> Type
+    data ST0 :: T0 -> Type
       where
         SA :: ST0 ('A :: T0)
         SB :: ST0 ('B :: T0)
@@ -102,8 +102,8 @@ Singletons/T159.hs:0:0:: Splicing declarations
     type family (:&&@#@$$$) (a0123456789876543210 :: T0) (a0123456789876543210 :: T1) :: T1 where
       (:&&@#@$$$) a0123456789876543210 a0123456789876543210 = '(:&&) a0123456789876543210 a0123456789876543210
     infixr 5 :&&@#@$$$
-    type ST1 :: T1 -> GHC.Types.Type
-    data ST1 :: T1 -> GHC.Types.Type
+    type ST1 :: T1 -> Type
+    data ST1 :: T1 -> Type
       where
         SN1 :: ST1 ('N1 :: T1)
         SC1 :: forall (n :: T0) (n :: T1).
@@ -215,7 +215,7 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
     infixr 5 :||@#@$$$
     infixr 5 :%||
     infixr 5 `SC2`
-    data ST2 :: T2 -> GHC.Types.Type
+    data ST2 :: T2 -> Type
       where
         SN2 :: ST2 (N2 :: T2)
         SC2 :: forall (n :: T0) (n :: T2).

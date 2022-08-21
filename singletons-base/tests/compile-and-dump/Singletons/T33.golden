@@ -27,13 +27,13 @@ Singletons/T33.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun1 @FooSym0) sFoo
 
 Singletons/T33.hs:0:0: warning:
-    Lazy pattern converted into regular pattern in promotion
+    Lazy pattern converted into regular pattern during singleton generation.
   |
 6 | $(singletons [d|
   |  ^^^^^^^^^^^^^^^...
 
 Singletons/T33.hs:0:0: warning:
-    Lazy pattern converted into regular pattern during singleton generation.
+    Lazy pattern converted into regular pattern in promotion
   |
 6 | $(singletons [d|
   |  ^^^^^^^^^^^^^^^...

@@ -302,7 +302,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
       type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
     infixl 6 :%*:
-    data ST :: forall a b. T a b -> GHC.Types.Type
+    data ST :: forall a b. T a b -> Type
       where
         (:%*:) :: forall a b (n :: a) (n :: b).
                   (Sing n) -> (Sing n) -> ST ((:*:) n n :: T a b)
@@ -313,7 +313,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:*:) (b :: Demote a) (b :: Demote b))
         = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b) of
             (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%*:) c) c)
-    data SS :: S -> GHC.Types.Type
+    data SS :: S -> Type
       where
         SS1 :: SS (S1 :: S)
         SS2 :: SS (S2 :: S)
@@ -329,7 +329,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: T a ()) (t2 :: T a ()). Sing t1
                                               -> Sing t2
                                                  -> Sing (Apply (Apply ((==@#@$) :: TyFun (T a ()) ((~>) (T a ()) Bool)
-                                                                                    -> GHC.Types.Type) t1) t2)
+                                                                                    -> Type) t1) t2)
       (%==)
         ((:%*:) (sA_0123456789876543210 :: Sing a_0123456789876543210)
                 (sA_0123456789876543210 :: Sing a_0123456789876543210))
@@ -348,7 +348,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: T a ()) (t2 :: T a ()). Sing t1
                                               -> Sing t2
                                                  -> Sing (Apply (Apply (CompareSym0 :: TyFun (T a ()) ((~>) (T a ()) Ordering)
-                                                                                       -> GHC.Types.Type) t1) t2)
+                                                                                       -> Type) t1) t2)
       sCompare
         ((:%*:) (sA_0123456789876543210 :: Sing a_0123456789876543210)
                 (sA_0123456789876543210 :: Sing a_0123456789876543210))
@@ -380,7 +380,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                                -> Sing t2
                                   -> Sing t3
                                      -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) (T a ()) ((~>) Symbol Symbol))
-                                                                                    -> GHC.Types.Type) t1) t2) t3)
+                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         ((:%*:) (sArgL_0123456789876543210 :: Sing argL_0123456789876543210)
@@ -412,7 +412,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: S) (t2 :: S). Sing t1
                                     -> Sing t2
                                        -> Sing (Apply (Apply ((==@#@$) :: TyFun S ((~>) S Bool)
-                                                                          -> GHC.Types.Type) t1) t2)
+                                                                          -> Type) t1) t2)
       (%==) SS1 SS1 = STrue
       (%==) SS1 SS2 = SFalse
       (%==) SS2 SS1 = SFalse
@@ -422,7 +422,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: S) (t2 :: S). Sing t1
                                     -> Sing t2
                                        -> Sing (Apply (Apply (CompareSym0 :: TyFun S ((~>) S Ordering)
-                                                                             -> GHC.Types.Type) t1) t2)
+                                                                             -> Type) t1) t2)
       sCompare SS1 SS1
         = (applySing
              ((applySing
@@ -447,7 +447,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                                -> Sing t2
                                   -> Sing t3
                                      -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) S ((~>) Symbol Symbol))
-                                                                                    -> GHC.Types.Type) t1) t2) t3)
+                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         _
         SS1
@@ -473,11 +473,11 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       sToEnum ::
         forall (t :: GHC.Num.Natural.Natural). Sing t
                                                -> Sing (Apply (ToEnumSym0 :: TyFun GHC.Num.Natural.Natural S
-                                                                             -> GHC.Types.Type) t)
+                                                                             -> Type) t)
       sFromEnum ::
         forall (t :: S). Sing t
                          -> Sing (Apply (FromEnumSym0 :: TyFun S GHC.Num.Natural.Natural
-                                                         -> GHC.Types.Type) t)
+                                                         -> Type) t)
       sToEnum (sN :: Sing n)
         = (id
              @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0)))))
@@ -506,13 +506,11 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
             (,) _ (Disproved contra)
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
     instance SDecide a =>
-             Data.Type.Equality.TestEquality (ST :: T a ()
-                                                    -> GHC.Types.Type) where
+             Data.Type.Equality.TestEquality (ST :: T a () -> Type) where
       Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance SDecide a =>
-             Data.Type.Coercion.TestCoercion (ST :: T a ()
-                                                    -> GHC.Types.Type) where
+             Data.Type.Coercion.TestCoercion (ST :: T a () -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance SDecide S where
@@ -520,12 +518,10 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       (%~) SS1 SS2 = Disproved (\ x -> case x of {})
       (%~) SS2 SS1 = Disproved (\ x -> case x of {})
       (%~) SS2 SS2 = Proved Refl
-    instance Data.Type.Equality.TestEquality (SS :: S
-                                                    -> GHC.Types.Type) where
+    instance Data.Type.Equality.TestEquality (SS :: S -> Type) where
       Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
-    instance Data.Type.Coercion.TestCoercion (SS :: S
-                                                    -> GHC.Types.Type) where
+    instance Data.Type.Coercion.TestCoercion (SS :: S -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     deriving instance Data.Singletons.ShowSing.ShowSing a =>

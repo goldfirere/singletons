@@ -476,7 +476,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 (MapSym1 :: (~>) a b -> (~>) [a] [b]) where
       liftSing (s :: Sing (d :: (~>) a b))
         = (singFun1 @(MapSym1 (d :: (~>) a b))) (sMap s)
-    data SEither :: forall a b. Either a b -> GHC.Types.Type
+    data SEither :: forall a b. Either a b -> Type
       where
         SLeft :: forall a b (n :: a).
                  (Sing n) -> SEither (Left n :: Either a b)

@@ -292,14 +292,13 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun1 @(***@#@$)) (%***)
     instance SingI (GetFoo3aSym0 :: (~>) Foo3 Bool) where
       sing = (singFun1 @GetFoo3aSym0) sGetFoo3a
-    data SFoo1 :: Foo1 -> GHC.Types.Type
-      where SMkFoo1 :: SFoo1 (MkFoo1 :: Foo1)
+    data SFoo1 :: Foo1 -> Type where SMkFoo1 :: SFoo1 (MkFoo1 :: Foo1)
     type instance Sing @Foo1 = SFoo1
     instance SingKind Foo1 where
       type Demote Foo1 = Foo1
       fromSing SMkFoo1 = MkFoo1
       toSing MkFoo1 = SomeSing SMkFoo1
-    data SFoo2 :: forall a. Foo2 a -> GHC.Types.Type
+    data SFoo2 :: forall a. Foo2 a -> Type
       where
         SMkFoo2a :: forall a (n :: a) (n :: a).
                     (Sing n) -> (Sing n) -> SFoo2 (MkFoo2a n n :: Foo2 a)
@@ -328,7 +327,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:&:) (b :: Demote a) (b :: Demote a))
         = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a) of
             (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%&:) c) c)
-    data SFoo3 :: Foo3 -> GHC.Types.Type
+    data SFoo3 :: Foo3 -> Type
       where
         SMkFoo3 :: forall (n :: Bool) (n :: Bool).
                    (Sing n) -> (Sing n) -> SFoo3 (MkFoo3 n n :: Foo3)
@@ -349,7 +348,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                -> Sing t2
                                   -> Sing t3
                                      -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) Foo1 ((~>) Symbol Symbol))
-                                                                                    -> GHC.Types.Type) t1) t2) t3)
+                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         _
         SMkFoo1
@@ -366,7 +365,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                -> Sing t2
                                   -> Sing t3
                                      -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) (Foo2 a) ((~>) Symbol Symbol))
-                                                                                    -> GHC.Types.Type) t1) t2) t3)
+                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         (SMkFoo2a (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
@@ -485,7 +484,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                -> Sing t2
                                   -> Sing t3
                                      -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) Foo3 ((~>) Symbol Symbol))
-                                                                                    -> GHC.Types.Type) t1) t2) t3)
+                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         (SMkFoo3 (sArg_0123456789876543210 :: Sing arg_0123456789876543210)

@@ -46,7 +46,7 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow Foo where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    data SFoo :: Foo -> GHC.Types.Type
+    data SFoo :: Foo -> Type
     type instance Sing @Foo = SFoo
     instance SingKind Foo where
       type Demote Foo = Foo
@@ -60,7 +60,7 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                          -> Sing t2
                                             -> Sing t3
                                                -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-                                                                                              -> GHC.Types.Type) t1) t2) t3)
+                                                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _
         (sV_0123456789876543210 :: Sing v_0123456789876543210)

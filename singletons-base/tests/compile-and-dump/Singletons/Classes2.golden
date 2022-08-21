@@ -59,7 +59,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PMyOrd NatFoo where
       type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
-    data SNatFoo :: NatFoo -> GHC.Types.Type
+    data SNatFoo :: NatFoo -> Type
       where
         SZeroFoo :: SNatFoo (ZeroFoo :: NatFoo)
         SSuccFoo :: forall (n :: NatFoo).
@@ -78,7 +78,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: NatFoo) (t2 :: NatFoo). Sing t1
                                               -> Sing t2
                                                  -> Sing (Apply (Apply (MycompareSym0 :: TyFun NatFoo ((~>) NatFoo Ordering)
-                                                                                         -> GHC.Types.Type) t1) t2)
+                                                                                         -> Type) t1) t2)
       sMycompare SZeroFoo SZeroFoo = SEQ
       sMycompare SZeroFoo (SSuccFoo _) = SLT
       sMycompare (SSuccFoo _) SZeroFoo = SGT

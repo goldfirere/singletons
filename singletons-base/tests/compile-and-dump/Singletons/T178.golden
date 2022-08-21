@@ -142,7 +142,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)])
     sEmpty = SNil
-    data SOcc :: Occ -> GHC.Types.Type
+    data SOcc :: Occ -> Type
       where
         SStr :: SOcc (Str :: Occ)
         SOpt :: SOcc (Opt :: Occ)
@@ -161,7 +161,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Occ) (t2 :: Occ). Sing t1
                                         -> Sing t2
                                            -> Sing (Apply (Apply ((==@#@$) :: TyFun Occ ((~>) Occ Bool)
-                                                                              -> GHC.Types.Type) t1) t2)
+                                                                              -> Type) t1) t2)
       (%==) SStr SStr = STrue
       (%==) SStr SOpt = SFalse
       (%==) SStr SMany = SFalse
@@ -176,7 +176,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Occ) (t2 :: Occ). Sing t1
                                         -> Sing t2
                                            -> Sing (Apply (Apply (CompareSym0 :: TyFun Occ ((~>) Occ Ordering)
-                                                                                 -> GHC.Types.Type) t1) t2)
+                                                                                 -> Type) t1) t2)
       sCompare SStr SStr
         = (applySing
              ((applySing
@@ -210,7 +210,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
                                                            -> Sing t2
                                                               -> Sing t3
                                                                  -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun Natural ((~>) Occ ((~>) Symbol Symbol))
-                                                                                                                -> GHC.Types.Type) t1) t2) t3)
+                                                                                                                -> Type) t1) t2) t3)
       sShowsPrec
         _
         SStr
@@ -246,11 +246,11 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       (%~) SMany SOpt = Disproved (\ x -> case x of {})
       (%~) SMany SMany = Proved Refl
     instance Data.Type.Equality.TestEquality (SOcc :: Occ
-                                                      -> GHC.Types.Type) where
+                                                      -> Type) where
       Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance Data.Type.Coercion.TestCoercion (SOcc :: Occ
-                                                      -> GHC.Types.Type) where
+                                                      -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     deriving instance Show (SOcc (z :: Occ))

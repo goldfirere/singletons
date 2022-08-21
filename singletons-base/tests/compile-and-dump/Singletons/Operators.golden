@@ -103,7 +103,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
         = (singFun1 @((+@#@$$) (d :: Nat))) ((%+) s)
     instance SingI (ChildSym0 :: (~>) Foo Foo) where
       sing = (singFun1 @ChildSym0) sChild
-    data SFoo :: Foo -> GHC.Types.Type
+    data SFoo :: Foo -> Type
       where
         SFLeaf :: SFoo (FLeaf :: Foo)
         (:%+:) :: forall (n :: Foo) (n :: Foo).

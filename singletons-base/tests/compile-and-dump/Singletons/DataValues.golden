@@ -122,7 +122,7 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
            ((applySing ((singFun2 @PairSym0) SPair))
               ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
           ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SZero)) SNil)
-    data SPair :: forall a b. Pair a b -> GHC.Types.Type
+    data SPair :: forall a b. Pair a b -> Type
       where
         SPair :: forall a b (n :: a) (n :: b).
                  (Sing n) -> (Sing n) -> SPair (Pair n n :: Pair a b)
@@ -141,7 +141,7 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
                                -> Sing t2
                                   -> Sing t3
                                      -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) (Pair a b) ((~>) Symbol Symbol))
-                                                                                    -> GHC.Types.Type) t1) t2) t3)
+                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         (SPair (sArg_0123456789876543210 :: Sing arg_0123456789876543210)

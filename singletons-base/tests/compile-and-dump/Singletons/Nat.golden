@@ -195,7 +195,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 (PlusSym1 :: Nat -> (~>) Nat Nat) where
       liftSing (s :: Sing (d :: Nat))
         = (singFun1 @(PlusSym1 (d :: Nat))) (sPlus s)
-    data SNat :: Nat -> GHC.Types.Type
+    data SNat :: Nat -> Type
       where
         SZero :: SNat (Zero :: Nat)
         SSucc :: forall (n :: Nat). (Sing n) -> SNat (Succ n :: Nat)
@@ -212,7 +212,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Nat) (t2 :: Nat). Sing t1
                                         -> Sing t2
                                            -> Sing (Apply (Apply ((==@#@$) :: TyFun Nat ((~>) Nat Bool)
-                                                                              -> GHC.Types.Type) t1) t2)
+                                                                              -> Type) t1) t2)
       (%==) SZero SZero = STrue
       (%==) SZero (SSucc _) = SFalse
       (%==) (SSucc _) SZero = SFalse
@@ -230,7 +230,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
                                          -> Sing t2
                                             -> Sing t3
                                                -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) Nat ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-                                                                                              -> GHC.Types.Type) t1) t2) t3)
+                                                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _
         SZero
@@ -263,7 +263,7 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
         forall (t1 :: Nat) (t2 :: Nat). Sing t1
                                         -> Sing t2
                                            -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat ((~>) Nat Ordering)
-                                                                                 -> GHC.Types.Type) t1) t2)
+                                                                                 -> Type) t1) t2)
       sCompare SZero SZero
         = (applySing
              ((applySing
@@ -298,13 +298,11 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
             Disproved contra
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
     instance SDecide Nat =>
-             Data.Type.Equality.TestEquality (SNat :: Nat
-                                                      -> GHC.Types.Type) where
+             Data.Type.Equality.TestEquality (SNat :: Nat -> Type) where
       Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance SDecide Nat =>
-             Data.Type.Coercion.TestCoercion (SNat :: Nat
-                                                      -> GHC.Types.Type) where
+             Data.Type.Coercion.TestCoercion (SNat :: Nat -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     deriving instance Data.Singletons.ShowSing.ShowSing Nat =>
