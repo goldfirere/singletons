@@ -1,6 +1,6 @@
+cabal-version:  3.8
 name:           singletons-base
 version:        3.4
-cabal-version:  1.24
 synopsis:       A promoted and singled version of the base library
 homepage:       http://www.github.com/goldfirere/singletons
 category:       Dependent Types
@@ -9,18 +9,20 @@ maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
 tested-with:    GHC == 9.10.1
-extra-source-files: README.md, CHANGES.md, tests/README.md,
-                    tests/compile-and-dump/GradingClient/*.hs,
-                    tests/compile-and-dump/InsertionSort/*.hs,
-                    tests/compile-and-dump/Promote/*.hs,
+extra-doc-files:    CHANGES.md
+extra-source-files: README.md
+                    tests/README.md
+                    tests/compile-and-dump/GradingClient/*.hs
+                    tests/compile-and-dump/InsertionSort/*.hs
+                    tests/compile-and-dump/Promote/*.hs
                     tests/compile-and-dump/Singletons/*.hs
-                    tests/compile-and-dump/GradingClient/*.golden,
-                    tests/compile-and-dump/InsertionSort/*.golden,
-                    tests/compile-and-dump/Promote/*.golden,
+                    tests/compile-and-dump/GradingClient/*.golden
+                    tests/compile-and-dump/InsertionSort/*.golden
+                    tests/compile-and-dump/Promote/*.golden
                     tests/compile-and-dump/Singletons/*.golden
-license:        BSD3
+license:        BSD-3-Clause
 license-file:   LICENSE
-build-type:     Custom
+build-type:     Simple
 description:
     @singletons-base@ uses @singletons-th@ to define promoted and singled
     functions from the @base@ library, including the "Prelude". This library was
@@ -62,13 +64,6 @@ source-repository head
   location: https://github.com/goldfirere/singletons.git
   subdir:   singletons-base
   branch:   master
-
-custom-setup
-  setup-depends:
-    base      >= 4.19 && < 4.21,
-    Cabal     >= 3.0 && < 3.13,
-    directory >= 1,
-    filepath  >= 1.3
 
 library
   hs-source-dirs:     src
@@ -159,9 +154,21 @@ test-suite singletons-base-test-suite
                       bytestring >= 0.10.9,
                       deepseq >= 1.4.4,
                       filepath >= 1.3,
+                      ghc-paths >= 0.1,
                       process >= 1.1,
                       turtle >= 1.5,
                       text >= 1.2,
                       singletons-base,
                       tasty >= 1.2,
-                      tasty-golden >= 2.2
+                      tasty-golden >= 2.2,
+
+                      -- Dependencies only used when invoking GHC in the test
+                      -- suite
+                      ghc-prim,
+                      ghc-internal,
+                      mtl,
+                      template-haskell,
+                      th-desugar,
+                      transformers
+  build-tool-depends: singletons-base-code-generator:singletons-base-code-generator
+  code-generators:    singletons-base-code-generator
