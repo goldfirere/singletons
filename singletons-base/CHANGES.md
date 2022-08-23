@@ -3,6 +3,11 @@ Changelog for the `singletons-base` project
 
 next [????.??.??]
 -----------------
+* Remove the use of a custom `Setup.hs` script. This script has now been
+  replaced with a [`cabal` code
+  generator](https://cabal.readthedocs.io/en/stable/cabal-package-description-file.html#pkg-field-test-suite-code-generators)
+  As such, `singletons-base` now requires the use of `Cabal-3.8` or later in
+  order to build.
 * The types of `sError`, `sErrorWithoutStackTrace`, and `sUndefined` are now
   less polymorphic than they were before:
 

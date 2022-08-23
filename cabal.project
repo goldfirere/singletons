@@ -1,6 +1,7 @@
 packages: ./singletons
           ./singletons-th
           ./singletons-base
+          ./singletons-base-code-generator
 
 source-repository-package
   type: git
