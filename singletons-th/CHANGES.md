@@ -1,7 +1,7 @@
 Changelog for the `singletons-th` project
 =========================================
 
-3.1.1 [????.??.??]
+3.1.1 [2022.08.23]
 ------------------
 * Require building with GHC 9.4.
 * Improve error messages when attempting to promote a partial application of

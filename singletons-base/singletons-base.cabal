@@ -55,7 +55,7 @@ source-repository this
   type:     git
   location: https://github.com/goldfirere/singletons.git
   subdir:   singletons-base
-  tag:      v3.1
+  tag:      v3.1.1
 
 source-repository head
   type:     git
