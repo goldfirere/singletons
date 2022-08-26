@@ -1,6 +1,12 @@
 Changelog for the `singletons-th` project
 =========================================
 
+3.1.2 [????.??.??]
+------------------
+* Fix a bug in which the `singDecideInstances` and `showSingInstances`, as well
+  as `deriving Show` declarations, would not respect custom
+  `promotedDataTypeOrConName` options.
+
 3.1.1 [2022.08.23]
 ------------------
 * Require building with GHC 9.4.

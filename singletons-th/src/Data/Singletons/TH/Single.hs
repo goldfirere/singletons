@@ -151,11 +151,9 @@ singDecideInstance name = do
   dtvbs <- mapM dsTvbUnit tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
-  let tyvars = map (DVarT . extractTvbName) dtvbs
-      kind = foldType (DConT name) tyvars
   (scons, _) <- singM [] $ mapM (singCtor name) dcons
-  sDecideInstance <- mkDecideInstance Nothing kind dcons scons
-  testInstances <- traverse (mkTestInstance Nothing kind name dcons)
+  sDecideInstance <- mkDecideInstance Nothing data_ty dcons scons
+  testInstances <- traverse (mkTestInstance Nothing data_ty name dcons)
                             [TestEquality, TestCoercion]
   return $ decsToTH (sDecideInstance:testInstances)
 
@@ -1023,9 +1021,10 @@ singDerivedShowDecs (DerivedDecl { ded_mb_cxt     = mb_cxt
     show_cxt <- inferConstraintsDef (fmap mkShowSingContext mb_cxt)
                                     (DConT showSingName)
                                     ty cons
+    ki <- promoteType ty
     let sty_tycon = singledDataTypeName opts ty_tycon
         show_inst = DStandaloneDerivD Nothing Nothing show_cxt
-                      (DConT showName `DAppT` (DConT sty_tycon `DAppT` DSigT (DVarT z) ty))
+                      (DConT showName `DAppT` (DConT sty_tycon `DAppT` DSigT (DVarT z) ki))
     pure [show_inst]
 
 isException :: DExp -> Bool
