@@ -47,6 +47,8 @@ import Data.Ord.Singletons as O
 import Data.Singletons
 import Data.Singletons.Decide
 import Data.Singletons.TH
+import Data.Type.Coercion (TestCoercion(..))
+import Data.Type.Equality (TestEquality(..))
 import GHC.Show (appPrec, appPrec1)
 import GHC.Stack (HasCallStack)
 import GHC.TypeLits as TL
@@ -123,6 +125,22 @@ instance SDecide Char where
     | otherwise
     = Disproved (\Refl -> error errStr)
     where errStr = "Broken Char singletons"
+
+-- TestEquality instances
+instance TestEquality SNat where
+  testEquality = decideEquality
+instance TestEquality SSymbol where
+  testEquality = decideEquality
+instance TestEquality SChar where
+  testEquality = decideEquality
+
+-- TestCoercion instances
+instance TestCoercion SNat where
+  testCoercion = decideCoercion
+instance TestCoercion SSymbol where
+  testCoercion = decideCoercion
+instance TestCoercion SChar where
+  testCoercion = decideCoercion
 
 -- PEq instances
 instance PEq Natural where
