@@ -1,0 +1,97 @@
+Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
+    let
+      customPromote :: Name -> Name
+      customPromote n
+        | n == ''Message = ''PMessage
+        | n == 'MkMessage = 'PMkMessage
+        | n == ''Text = ''Symbol
+        | otherwise = promotedDataTypeOrConName defaultOptions n
+      customDefun :: Name -> Int -> Name
+      customDefun n sat
+        = defunctionalizedName defaultOptions (customPromote n) sat
+    in
+      withOptions
+        defaultOptions
+          {promotedDataTypeOrConName = customPromote,
+           defunctionalizedName = customDefun}
+        $ do decs1 <- genSingletons [''Message]
+             decs2 <- singletons
+                        [d| hello :: Message
+                            hello = MkMessage "hello" |]
+             decs3 <- singDecideInstances [''Message]
+             decs4 <- showSingInstances [''Message]
+             return $ decs1 ++ decs2 ++ decs3 ++ decs4
+  ======>
+    type PMkMessageSym0 :: (Data.Singletons.~>) Symbol PMessage
+    data PMkMessageSym0 :: (Data.Singletons.~>) Symbol PMessage
+      where
+        PMkMessageSym0KindInference :: Data.Singletons.SameKind (Data.Singletons.Apply PMkMessageSym0 arg) (PMkMessageSym1 arg) =>
+                                       PMkMessageSym0 a0123456789876543210
+    type instance Data.Singletons.Apply PMkMessageSym0 a0123456789876543210 = 'PMkMessage a0123456789876543210
+    instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings PMkMessageSym0 where
+      Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
+        = snd (((,) PMkMessageSym0KindInference) ())
+    type PMkMessageSym1 :: Symbol -> PMessage
+    type family PMkMessageSym1 (a0123456789876543210 :: Symbol) :: PMessage where
+      PMkMessageSym1 a0123456789876543210 = 'PMkMessage a0123456789876543210
+    type SMessage :: PMessage -> Type
+    data SMessage :: PMessage -> Type
+      where
+        SMkMessage :: forall (n :: Symbol).
+                      (Data.Singletons.Sing n) -> SMessage ('PMkMessage n :: PMessage)
+    type instance Data.Singletons.Sing @PMessage = SMessage
+    instance Data.Singletons.SingKind PMessage where
+      type Data.Singletons.Demote PMessage = Message
+      Data.Singletons.fromSing (SMkMessage b)
+        = MkMessage (Data.Singletons.fromSing b)
+      Data.Singletons.toSing
+        (MkMessage (b :: Data.Singletons.Demote Symbol))
+        = case  Data.Singletons.toSing b :: Data.Singletons.SomeSing Symbol
+          of
+            Data.Singletons.SomeSing c
+              -> Data.Singletons.SomeSing (SMkMessage c)
+    instance Data.Singletons.SingI n =>
+             Data.Singletons.SingI ('PMkMessage (n :: Symbol)) where
+      Data.Singletons.sing = SMkMessage Data.Singletons.sing
+    instance Data.Singletons.SingI1 'PMkMessage where
+      Data.Singletons.liftSing = SMkMessage
+    instance Data.Singletons.SingI (PMkMessageSym0 :: (Data.Singletons.~>) Symbol PMessage) where
+      Data.Singletons.sing
+        = (Data.Singletons.singFun1 @PMkMessageSym0) SMkMessage
+    hello :: Message
+    hello = MkMessage "hello"
+    type HelloSym0 :: PMessage
+    type family HelloSym0 :: PMessage where
+      HelloSym0 = Hello
+    type Hello :: PMessage
+    type family Hello :: PMessage where
+      Hello = Data.Singletons.Apply PMkMessageSym0 (FromString "hello")
+    sHello :: Data.Singletons.Sing (HelloSym0 :: PMessage)
+    sHello
+      = (Data.Singletons.applySing
+           ((Data.Singletons.singFun1 @PMkMessageSym0) SMkMessage))
+          (sFromString
+             (Data.Singletons.sing :: Data.Singletons.Sing "hello"))
+    instance Data.Singletons.Decide.SDecide Text =>
+             Data.Singletons.Decide.SDecide PMessage where
+      (Data.Singletons.Decide.%~) (SMkMessage a) (SMkMessage b)
+        = case ((Data.Singletons.Decide.%~) a) b of
+            Data.Singletons.Decide.Proved Data.Type.Equality.Refl
+              -> Data.Singletons.Decide.Proved Data.Type.Equality.Refl
+            Data.Singletons.Decide.Disproved contra
+              -> Data.Singletons.Decide.Disproved
+                   (\ refl
+                      -> case refl of
+                           Data.Type.Equality.Refl -> contra Data.Type.Equality.Refl)
+    instance Data.Singletons.Decide.SDecide Text =>
+             Data.Type.Equality.TestEquality (SMessage :: PMessage
+                                                          -> Type) where
+      Data.Type.Equality.testEquality
+        = Data.Singletons.Decide.decideEquality
+    instance Data.Singletons.Decide.SDecide Text =>
+             Data.Type.Coercion.TestCoercion (SMessage :: PMessage
+                                                          -> Type) where
+      Data.Type.Coercion.testCoercion
+        = Data.Singletons.Decide.decideCoercion
+    deriving instance Data.Singletons.ShowSing.ShowSing Text =>
+                      Show (SMessage (z :: PMessage))

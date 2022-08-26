@@ -1,5 +1,5 @@
 name:           singletons-th
-version:        3.1.1
+version:        3.1.2
 cabal-version:  1.24
 synopsis:       A framework for generating singleton types
 homepage:       http://www.github.com/goldfirere/singletons
@@ -42,7 +42,7 @@ source-repository this
   type:     git
   location: https://github.com/goldfirere/singletons.git
   subdir:   singletons-th
-  tag:      v3.1.1
+  tag:      v3.1.2
 
 source-repository head
   type:     git

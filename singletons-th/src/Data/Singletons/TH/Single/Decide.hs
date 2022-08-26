@@ -14,41 +14,44 @@ import Language.Haskell.TH.Desugar
 import Data.Singletons.TH.Deriving.Infer
 import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
+import Data.Singletons.TH.Promote.Type
 import Data.Singletons.TH.Util
 import Control.Monad
 
 -- Make an instance of SDecide.
-mkDecideInstance :: DsMonad q => Maybe DCxt -> DKind
+mkDecideInstance :: OptionsMonad q => Maybe DCxt -> DType
                  -> [DCon] -- ^ The /original/ constructors (for inferring the instance context)
                  -> [DCon] -- ^ The /singletons/ constructors
                  -> q DDec
-mkDecideInstance mb_ctxt k ctors sctors = do
+mkDecideInstance mb_ctxt data_ty ctors sctors = do
   let sctorPairs = [ (sc1, sc2) | sc1 <- sctors, sc2 <- sctors ]
   methClauses <- if null sctors
                  then (:[]) <$> mkEmptyDecideMethClause
                  else mapM mkDecideMethClause sctorPairs
-  constraints <- inferConstraintsDef mb_ctxt (DConT sDecideClassName) k ctors
+  constraints <- inferConstraintsDef mb_ctxt (DConT sDecideClassName) data_ty ctors
+  data_ki <- promoteType data_ty
   return $ DInstanceD Nothing Nothing
                      constraints
-                     (DAppT (DConT sDecideClassName) k)
+                     (DAppT (DConT sDecideClassName) data_ki)
                      [DLetDec $ DFunD sDecideMethName methClauses]
 
 data TestInstance = TestEquality
                   | TestCoercion
 
 -- Make an instance of TestEquality or TestCoercion by leveraging SDecide.
-mkTestInstance :: OptionsMonad q => Maybe DCxt -> DKind
+mkTestInstance :: OptionsMonad q => Maybe DCxt -> DType
                -> Name   -- ^ The name of the data type
                -> [DCon] -- ^ The /original/ constructors (for inferring the instance context)
                -> TestInstance -> q DDec
-mkTestInstance mb_ctxt k data_name ctors ti = do
+mkTestInstance mb_ctxt data_ty data_name ctors ti = do
   opts <- getOptions
-  constraints <- inferConstraintsDef mb_ctxt (DConT sDecideClassName) k ctors
+  constraints <- inferConstraintsDef mb_ctxt (DConT sDecideClassName) data_ty ctors
+  data_ki <- promoteType data_ty
   pure $ DInstanceD Nothing Nothing
                     constraints
                     (DAppT (DConT tiClassName)
                            (DConT (singledDataTypeName opts data_name)
-                             `DSigT` (DArrowT `DAppT` k `DAppT` DConT typeKindName)))
+                             `DSigT` (DArrowT `DAppT` data_ki `DAppT` DConT typeKindName)))
                     [DLetDec $ DFunD tiMethName
                                      [DClause [] (DVarE tiDefaultName)]]
   where

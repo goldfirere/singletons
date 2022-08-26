@@ -1,8 +1,8 @@
 Changelog for the `singletons-base` project
 ===========================================
 
-next [????.??.??]
------------------
+3.1.2 [????.??.??]
+------------------
 * Provide `TestEquality` and `TestCoercion` instances for `SNat, `SSymbol`, and
   `SChar`.
 
