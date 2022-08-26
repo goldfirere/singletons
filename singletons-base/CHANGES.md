@@ -1,6 +1,11 @@
 Changelog for the `singletons-base` project
 ===========================================
 
+next [????.??.??]
+-----------------
+* Provide `TestEquality` and `TestCoercion` instances for `SNat, `SSymbol`, and
+  `SChar`.
+
 3.1.1 [2022.08.23]
 ------------------
 * Require building with GHC 9.4.
