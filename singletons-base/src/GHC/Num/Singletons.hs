@@ -43,7 +43,6 @@ import Data.Singletons.Decide
 import Data.Singletons.TH
 import GHC.TypeLits.Singletons.Internal
 import qualified GHC.TypeNats as TN
-import GHC.TypeNats (SomeNat(..), someNatVal)
 import Unsafe.Coerce
 
 $(singletonsOnly [d|
@@ -108,26 +107,17 @@ instance SNum Natural where
   sa %+ sb =
     let a = fromSing sa
         b = fromSing sb
-        ex = someNatVal (a + b)
-    in
-    case ex of
-      SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
+    in TN.withSomeSNat (a + b) unsafeCoerce
 
   sa %- sb =
     let a = fromSing sa
         b = fromSing sb
-        ex = someNatVal (a - b)
-    in
-    case ex of
-      SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
+    in TN.withSomeSNat (a - b) unsafeCoerce
 
   sa %* sb =
     let a = fromSing sa
         b = fromSing sb
-        ex = someNatVal (a * b)
-    in
-    case ex of
-      SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
+    in TN.withSomeSNat (a * b) unsafeCoerce
 
   sNegate _ = error "Cannot call sNegate on a natural number singleton."
 

@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE PatternSynonyms #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -13,7 +14,7 @@
 -- Stability   :  experimental
 -- Portability :  non-portable
 --
--- Defines and exports singletons useful for the 'Natural', 'Symbol', and
+-- Defines and exports singletons useful for the 'Natural', 'TL.Symbol', and
 -- 'Char' kinds. This exports the internal, unsafe constructors. Use import
 -- "GHC.TypeLits.Singletons" for a safe interface.
 --
@@ -22,15 +23,17 @@
 module GHC.TypeLits.Singletons.Internal (
   Sing,
 
-  Natural, Symbol, Char,
-  SNat(..), SSymbol(..), SChar(..),
-  withKnownNat, withKnownSymbol, withKnownChar,
+  Natural, TL.Symbol, Char,
+  TN.SNat, pattern TN.SNat,
+  TL.SSymbol, pattern TL.SSymbol, pattern SSym,
+  TL.SChar, pattern TL.SChar,
+  TN.withKnownNat, TL.withKnownSymbol, TL.withKnownChar,
   Error, sError,
   ErrorWithoutStackTrace, sErrorWithoutStackTrace,
   Undefined, sUndefined,
-  KnownNat, TN.natVal, KnownSymbol, symbolVal, KnownChar, charVal,
-  type (^), (%^),
-  type (<=?), (%<=?),
+  TL.KnownNat, TN.natVal, TL.KnownSymbol, TL.symbolVal, TL.KnownChar, TL.charVal,
+  type (TN.^), (%^),
+  type (TN.<=?), (%<=?),
 
   -- * Defunctionalization symbols
   ErrorSym0, ErrorSym1,
@@ -42,18 +45,16 @@ module GHC.TypeLits.Singletons.Internal (
 
 import Data.Bool.Singletons
 import Data.Eq.Singletons
-import Data.Kind
 import Data.Ord.Singletons as O
 import Data.Semigroup.Singletons.Internal.Classes
 import Data.Singletons
 import Data.Singletons.Decide
 import Data.Singletons.TH
-import Data.Type.Coercion (TestCoercion(..))
 import Data.Type.Equality (TestEquality(..))
-import GHC.Show (appPrec, appPrec1)
 import GHC.Stack (HasCallStack)
-import GHC.TypeLits as TL
+import qualified GHC.TypeLits as TL
 import qualified GHC.TypeNats as TN
+import Numeric.Natural (Natural)
 import Unsafe.Coerce
 
 import qualified Data.Text as T
@@ -63,110 +64,93 @@ import Data.Text ( Text )
 ---- TypeLits singletons ---------------------------------------------
 ----------------------------------------------------------------------
 
-type SNat :: Natural -> Type
-data SNat (n :: Natural) = KnownNat n => SNat
-type instance Sing = SNat
+-- SNat
+type instance Sing = TN.SNat
 
-instance KnownNat n => SingI n where
-  sing = SNat
+instance TN.KnownNat n => SingI n where
+  sing = TN.natSing
 
 instance SingKind Natural where
   type Demote Natural = Natural
-  fromSing (SNat :: Sing n) = TN.natVal (Proxy :: Proxy n)
-  toSing n = case TN.someNatVal n of
-               SomeNat (_ :: Proxy n) -> SomeSing (SNat :: Sing n)
+  fromSing = TN.fromSNat
+  toSing n = TN.withSomeSNat n SomeSing
 
-type SSymbol :: Symbol -> Type
-data SSymbol (n :: Symbol) = KnownSymbol n => SSym
-type instance Sing = SSymbol
+-- STL.Symbol
+type instance Sing = TL.SSymbol
 
-instance KnownSymbol n => SingI n where
-  sing = SSym
+-- | An alias for the 'TL.SSymbol' pattern synonym.
+pattern SSym :: forall s. () => TL.KnownSymbol s => TL.SSymbol s
+pattern SSym = TL.SSymbol
+{-# COMPLETE SSym #-}
 
-instance SingKind Symbol where
-  type Demote Symbol = Text
-  fromSing (SSym :: Sing n) = T.pack (symbolVal (Proxy :: Proxy n))
-  toSing s = case someSymbolVal (T.unpack s) of
-               SomeSymbol (_ :: Proxy n) -> SomeSing (SSym :: Sing n)
+instance TL.KnownSymbol n => SingI n where
+  sing = TL.symbolSing
 
-type SChar :: Char -> Type
-data SChar (c :: Char) = KnownChar c => SChar
-type instance Sing = SChar
+instance SingKind TL.Symbol where
+  type Demote TL.Symbol = Text
+  fromSing = T.pack . TL.fromSSymbol
+  toSing s = TL.withSomeSSymbol (T.unpack s) SomeSing
 
-instance KnownChar c => SingI c where
-  sing = SChar
+-- SChar
+type instance Sing = TL.SChar
+
+instance TL.KnownChar c => SingI c where
+  sing = TL.charSing
 
 instance SingKind Char where
   type Demote Char = Char
-  fromSing (SChar :: Sing c) = charVal (Proxy :: Proxy c)
-  toSing sc = case someCharVal sc of
-                SomeChar (_ :: Proxy c) -> SomeSing (SChar :: Sing c)
+  fromSing = TL.fromSChar
+  toSing c = TL.withSomeSChar c SomeSing
 
 -- SDecide instances:
 instance SDecide Natural where
-  (SNat :: Sing n) %~ (SNat :: Sing m)
-    | Just r <- TN.sameNat (Proxy :: Proxy n) (Proxy :: Proxy m)
+  sn %~ sm
+    | Just r <- testEquality sn sm
     = Proved r
     | otherwise
     = Disproved (\Refl -> error errStr)
     where errStr = "Broken Natural singletons"
 
-instance SDecide Symbol where
-  (SSym :: Sing n) %~ (SSym :: Sing m)
-    | Just r <- sameSymbol (Proxy :: Proxy n) (Proxy :: Proxy m)
+instance SDecide TL.Symbol where
+  sn %~ sm
+    | Just r <- testEquality sn sm
     = Proved r
     | otherwise
     = Disproved (\Refl -> error errStr)
-    where errStr = "Broken Symbol singletons"
+    where errStr = "Broken TL.Symbol singletons"
 
 instance SDecide Char where
-  (SChar :: Sing n) %~ (SChar :: Sing m)
-    | Just r <- sameChar (Proxy :: Proxy n) (Proxy :: Proxy m)
+  sn %~ sm
+    | Just r <- testEquality sn sm
     = Proved r
     | otherwise
     = Disproved (\Refl -> error errStr)
     where errStr = "Broken Char singletons"
 
--- TestEquality instances
-instance TestEquality SNat where
-  testEquality = decideEquality
-instance TestEquality SSymbol where
-  testEquality = decideEquality
-instance TestEquality SChar where
-  testEquality = decideEquality
-
--- TestCoercion instances
-instance TestCoercion SNat where
-  testCoercion = decideCoercion
-instance TestCoercion SSymbol where
-  testCoercion = decideCoercion
-instance TestCoercion SChar where
-  testCoercion = decideCoercion
-
 -- PEq instances
 instance PEq Natural where
   type x == y = DefaultEq x y
-instance PEq Symbol where
+instance PEq TL.Symbol where
   type x == y = DefaultEq x y
 instance PEq Char where
   type x == y = DefaultEq x y
 
 -- need SEq instances for TypeLits kinds
 instance SEq Natural where
-  (SNat :: Sing n) %== (SNat :: Sing m)
-    = case sameNat (Proxy :: Proxy n) (Proxy :: Proxy m) of
+  sn %== sm
+    = case testEquality sn sm of
         Just Refl -> STrue
         Nothing   -> unsafeCoerce SFalse
 
-instance SEq Symbol where
-  (SSym :: Sing n) %== (SSym :: Sing m)
-    = case sameSymbol (Proxy :: Proxy n) (Proxy :: Proxy m) of
+instance SEq TL.Symbol where
+  sn %== sm
+    = case testEquality sn sm of
         Just Refl -> STrue
         Nothing   -> unsafeCoerce SFalse
 
 instance SEq Char where
-  (SChar :: Sing n) %== (SChar :: Sing m)
-    = case sameChar (Proxy :: Proxy n) (Proxy :: Proxy m) of
+  sn %== sm
+    = case testEquality sn sm of
         Just Refl -> STrue
         Nothing   -> unsafeCoerce SFalse
 
@@ -174,8 +158,8 @@ instance SEq Char where
 instance POrd Natural where
   type (a :: Natural) `Compare` (b :: Natural) = a `TN.CmpNat` b
 
-instance POrd Symbol where
-  type (a :: Symbol) `Compare` (b :: Symbol) = a `TL.CmpSymbol` b
+instance POrd TL.Symbol where
+  type (a :: TL.Symbol) `Compare` (b :: TL.Symbol) = a `TL.CmpSymbol` b
 
 instance POrd Char where
   type (a :: Char) `Compare` (b :: Char) = a `TL.CmpChar` b
@@ -187,7 +171,7 @@ instance SOrd Natural where
                      EQ -> unsafeCoerce SEQ
                      GT -> unsafeCoerce SGT
 
-instance SOrd Symbol where
+instance SOrd TL.Symbol where
   a `sCompare` b = case fromSing a `compare` fromSing b of
                      LT -> unsafeCoerce SLT
                      EQ -> unsafeCoerce SEQ
@@ -201,64 +185,18 @@ instance SOrd Char where
 
 -- PSemigroup instance
 
-instance PSemigroup Symbol where
-  type a <> b = AppendSymbol a b
+instance PSemigroup TL.Symbol where
+  type a <> b = TL.AppendSymbol a b
 
 -- SSemigroup instance
 
-instance SSemigroup Symbol where
+instance SSemigroup TL.Symbol where
   sa %<> sb =
     let a  = fromSing sa
         b  = fromSing sb
-        ex = someSymbolVal $ T.unpack $ a <> b
-    in case ex of
-         SomeSymbol (_ :: Proxy ab) -> unsafeCoerce (SSym :: Sing ab)
-
--- Show instances
-
--- These are a bit special because the singleton constructor does not uniquely
--- determine the type being used in the constructor's return type (e.g., all Naturals
--- have the same singleton constructor, SNat). To compensate for this, we display
--- the type being used using visible type application. (Thanks to @cumber on #179
--- for suggesting this implementation.)
-
-instance Show (SNat n) where
-  showsPrec p n@SNat
-    = showParen (p > appPrec)
-      ( showString "SNat @"
-        . showsPrec appPrec1 (TN.natVal n)
-      )
-
-instance Show (SSymbol s) where
-  showsPrec p s@SSym
-    = showParen (p > appPrec)
-      ( showString "SSym @"
-        . showsPrec appPrec1 (symbolVal s)
-      )
-
-instance Show (SChar c) where
-  showsPrec p s@SChar
-    = showParen (p > appPrec)
-      ( showString "SChar @"
-        . showsPrec appPrec1 (charVal s)
-      )
+    in TL.withSomeSSymbol (T.unpack (a <> b)) unsafeCoerce
 
 -- Convenience functions
-
--- | Given a singleton for @Nat@, call something requiring a
--- @KnownNat@ instance.
-withKnownNat :: Sing n -> (KnownNat n => r) -> r
-withKnownNat SNat f = f
-
--- | Given a singleton for @Symbol@, call something requiring
--- a @KnownSymbol@ instance.
-withKnownSymbol :: Sing n -> (KnownSymbol n => r) -> r
-withKnownSymbol SSym f = f
-
--- | Given a singleton for @Char@, call something requiring
--- a @KnownChar@ instance.
-withKnownChar :: Sing n -> (KnownChar n => r) -> r
-withKnownChar SChar f = f
 
 -- | A promoted version of 'error'. This implements 'Error' as a stuck type
 -- family with a 'Symbol' argument. Depending on your needs, you might also
@@ -272,25 +210,25 @@ withKnownChar SChar f = f
 --   version of the custom type error machinery found in "GHC.TypeLits". This
 --   allows emitting error messages as compiler errors rather than as stuck type
 --   families.
-type Error :: Symbol -> a
-type family Error (str :: Symbol) :: a where {}
+type Error :: TL.Symbol -> a
+type family Error (str :: TL.Symbol) :: a where {}
 $(genDefunSymbols [''Error])
-instance SingI (ErrorSym0 :: Symbol ~> a) where
+instance SingI (ErrorSym0 :: TL.Symbol ~> a) where
   sing = singFun1 sError
 
 -- | The singleton for 'error'.
-sError :: HasCallStack => Sing (str :: Symbol) -> a
+sError :: HasCallStack => Sing (str :: TL.Symbol) -> a
 sError sstr = error (T.unpack (fromSing sstr))
 
 -- | The promotion of 'errorWithoutStackTrace'.
-type ErrorWithoutStackTrace :: Symbol -> a
-type family ErrorWithoutStackTrace (str :: Symbol) :: a where {}
+type ErrorWithoutStackTrace :: TL.Symbol -> a
+type family ErrorWithoutStackTrace (str :: TL.Symbol) :: a where {}
 $(genDefunSymbols [''ErrorWithoutStackTrace])
-instance SingI (ErrorWithoutStackTraceSym0 :: Symbol ~> a) where
+instance SingI (ErrorWithoutStackTraceSym0 :: TL.Symbol ~> a) where
   sing = singFun1 sErrorWithoutStackTrace
 
 -- | The singleton for 'errorWithoutStackTrace'.
-sErrorWithoutStackTrace :: Sing (str :: Symbol) -> a
+sErrorWithoutStackTrace :: Sing (str :: TL.Symbol) -> a
 sErrorWithoutStackTrace sstr = errorWithoutStackTrace (T.unpack (fromSing sstr))
 
 -- | The promotion of 'undefined'.
@@ -303,18 +241,15 @@ sUndefined :: HasCallStack => a
 sUndefined = undefined
 
 -- | The singleton analogue of '(TN.^)' for 'Natural's.
-(%^) :: Sing a -> Sing b -> Sing (a ^ b)
+(%^) :: Sing a -> Sing b -> Sing (a TN.^ b)
 sa %^ sb =
   let a = fromSing sa
       b = fromSing sb
-      ex = TN.someNatVal (a ^ b)
-  in
-  case ex of
-    SomeNat (_ :: Proxy ab) -> unsafeCoerce (SNat :: Sing ab)
+  in TN.withSomeSNat (a ^ b) unsafeCoerce
 infixr 8 %^
 
 -- Defunctionalization symbols for type-level (^)
-$(genDefunSymbols [''(^)])
+$(genDefunSymbols [''(TN.^)])
 instance SingI (^@#@$) where
   sing = singFun2 (%^)
 instance SingI x => SingI ((^@#@$$) x) where
@@ -339,12 +274,12 @@ instance SingI1 (^@#@$$) where
 -- with libraries with APIs built around '<=?'.  New code should use
 -- 'CmpNat', exposed through this library through the 'POrd' and 'SOrd'
 -- instances for 'Natural'.
-(%<=?) :: forall (a :: Natural) (b :: Natural). Sing a -> Sing b -> Sing (a <=? b)
+(%<=?) :: forall (a :: Natural) (b :: Natural). Sing a -> Sing b -> Sing (a TN.<=? b)
 sa %<=? sb = unsafeCoerce (sa %<= sb)
 infix 4 %<=?
 
 -- Defunctionalization symbols for (<=?)
-$(genDefunSymbols [''(<=?)])
+$(genDefunSymbols [''(TN.<=?)])
 instance SingI ((<=?@#@$) @Natural) where
   sing = singFun2 (%<=?)
 instance SingI x => SingI ((<=?@#@$$) @Natural x) where

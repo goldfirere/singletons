@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE PatternSynonyms #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -20,7 +21,10 @@
 
 module GHC.TypeLits.Singletons (
   Natural, Symbol, Char,
-  Sing, SNat(..), SSymbol(..), SChar(..),
+  Sing,
+  SNat, pattern SNat,
+  SSymbol, pattern SSymbol, pattern SSym,
+  SChar, pattern SChar,
   withKnownNat, withKnownSymbol, withKnownChar,
   Error, sError,
   ErrorWithoutStackTrace, sErrorWithoutStackTrace,
@@ -70,11 +74,11 @@ import Data.Singletons.TH
 import Data.String (IsString(..))
 import qualified Data.Text as T
 import Data.Tuple.Singletons
-import GHC.TypeLits ( CharToNat, ConsSymbol, NatToChar, SomeChar(..)
-                    , SomeSymbol(..), UnconsSymbol, someCharVal, someSymbolVal )
+import GHC.TypeLits ( CharToNat, ConsSymbol, NatToChar, UnconsSymbol
+                    , withSomeSChar, withSomeSSymbol )
 import GHC.TypeLits.Singletons.Internal
 import qualified GHC.TypeNats as TN
-import GHC.TypeNats (Div, Mod, SomeNat(..))
+import GHC.TypeNats (Div, Mod)
 import Unsafe.Coerce
 
 -- | This bogus instance is helpful for people who want to define
@@ -132,22 +136,19 @@ genLog2 x = exactLoop 0 x
 
 sLog2 :: Sing x -> Sing (TN.Log2 x)
 sLog2 sx =
-    let x   = fromSing sx
+    let x = fromSing sx
     in case x of
          0 -> error "log2 of 0"
-         _ -> case TN.someNatVal (genLog2 x) of
-                SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
+         _ -> TN.withSomeSNat (genLog2 x) unsafeCoerce
 $(genDefunSymbols [''TN.Log2])
 instance SingI Log2Sym0 where
   sing = singFun1 sLog2
 
 sDiv :: Sing x -> Sing y -> Sing (Div x y)
 sDiv sx sy =
-    let x   = fromSing sx
-        y   = fromSing sy
-        res = TN.someNatVal (x `div` y)
-    in case res of
-         SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
+    let x = fromSing sx
+        y = fromSing sy
+    in TN.withSomeSNat (x `div` y) unsafeCoerce
 infixl 7 `sDiv`
 $(genDefunSymbols [''Div])
 instance SingI DivSym0 where
@@ -159,11 +160,9 @@ instance SingI1 DivSym1 where
 
 sMod :: Sing x -> Sing y -> Sing (Mod x y)
 sMod sx sy =
-    let x   = fromSing sx
-        y   = fromSing sy
-        res = TN.someNatVal (x `mod` y)
-    in case res of
-         SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
+    let x = fromSing sx
+        y = fromSing sy
+    in TN.withSomeSNat (x `mod` y) unsafeCoerce
 infixl 7 `sMod`
 $(genDefunSymbols [''Mod])
 instance SingI ModSym0 where
@@ -194,11 +193,9 @@ sDivMod sx sy =
     let x     = fromSing sx
         y     = fromSing sy
         (q,r) = x `divMod` y
-        qRes  = TN.someNatVal q
-        rRes  = TN.someNatVal r
-    in case (qRes, rRes) of
-         (SomeNat (_ :: Proxy q), SomeNat (_ :: Proxy r))
-           -> unsafeCoerce (STuple2 (SNat :: Sing q) (SNat :: Sing r))
+    in TN.withSomeSNat q $ \sq ->
+       TN.withSomeSNat r $ \sr ->
+       unsafeCoerce (STuple2 sq sr)
 
 sQuotRem :: Sing x -> Sing y -> Sing (QuotRem x y)
 sQuotRem = sDivMod
@@ -216,11 +213,9 @@ consSymbol = (:)
 
 sConsSymbol :: Sing x -> Sing y -> Sing (ConsSymbol x y)
 sConsSymbol sx sy =
-    let x   = fromSing sx
-        y   = T.unpack (fromSing sy)
-        res = someSymbolVal (consSymbol x y)
-    in case res of
-         SomeSymbol (_ :: Proxy res) -> unsafeCoerce (SSym :: Sing res)
+    let x = fromSing sx
+        y = T.unpack (fromSing sy)
+    in withSomeSSymbol (consSymbol x y) unsafeCoerce
 $(genDefunSymbols [''ConsSymbol])
 instance SingI ConsSymbolSym0 where
   sing = singFun2 sConsSymbol
@@ -247,10 +242,8 @@ charToNat = fromIntegral . ord
 
 sCharToNat :: Sing x -> Sing (CharToNat x)
 sCharToNat sx =
-    let x   = fromSing sx
-        res = TN.someNatVal (charToNat x)
-    in case res of
-         SomeNat (_ :: Proxy res) -> unsafeCoerce (SNat :: Sing res)
+    let x = fromSing sx
+    in TN.withSomeSNat (charToNat x) unsafeCoerce
 $(genDefunSymbols [''CharToNat])
 instance SingI CharToNatSym0 where
   sing = singFun1 sCharToNat
@@ -260,10 +253,8 @@ natToChar = chr . fromIntegral
 
 sNatToChar :: Sing x -> Sing (NatToChar x)
 sNatToChar sx =
-    let x   = fromSing sx
-        res = someCharVal (natToChar x)
-    in case res of
-         SomeChar (_ :: Proxy res) -> unsafeCoerce (SChar :: Sing res)
+    let x = fromSing sx
+    in withSomeSChar (natToChar x) unsafeCoerce
 $(genDefunSymbols [''NatToChar])
 instance SingI NatToCharSym0 where
   sing = singFun1 sNatToChar
