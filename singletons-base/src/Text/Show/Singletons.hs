@@ -50,7 +50,6 @@ import           Data.List.NonEmpty (NonEmpty)
 import           Data.List.Singletons.Internal
 import           Data.Ord (Down)
 import           Data.Ord.Singletons
-import           Data.Proxy
 import           Data.Semigroup.Singletons.Internal.Classes
 import           Data.Singletons
 import           Data.Singletons.Base.Instances
@@ -162,10 +161,7 @@ instance SShow Natural where
   sShowsPrec _ sn sx =
     let n = fromSing sn
         x = fromSing sx
-        ex = someSymbolVal (P.show n ++ T.unpack x)
-    in
-    case ex of
-      SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
+    in withSomeSSymbol (P.show n ++ T.unpack x) unsafeCoerce
 
 $(promoteOnly [d|
   showsCharPrec :: Natural -> Char -> SymbolS
@@ -252,18 +248,12 @@ instance SShow Char where
     let p  = fromSing sp
         c  = fromSing sc
         x  = fromSing sx
-        ex = someSymbolVal (P.showsPrec (fromIntegral p) c (T.unpack x))
-    in
-    case ex of
-      SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
+    in withSomeSSymbol (P.showsPrec (fromIntegral p) c (T.unpack x)) unsafeCoerce
 
   sShowList scs sx =
     let cs = fromSing scs
         x  = fromSing sx
-        ex = someSymbolVal (P.showList cs (T.unpack x))
-    in
-    case ex of
-      SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
+    in withSomeSSymbol (P.showList cs (T.unpack x)) unsafeCoerce
 
 instance PShow Symbol where
   type ShowsPrec _ s x = ShowSymbol s x
@@ -272,10 +262,7 @@ instance SShow Symbol where
   sShowsPrec _ ss sx =
     let s  = fromSing ss
         x  = fromSing sx
-        ex = someSymbolVal (P.show s ++ T.unpack x)
-    in
-    case ex of
-      SomeSymbol (_ :: Proxy s) -> unsafeCoerce (SSym :: Sing s)
+    in withSomeSSymbol (P.show s ++ T.unpack x) unsafeCoerce
 
 -- | 'P.show', but with an extra underscore so that its promoted counterpart
 -- ('Show_') will not clash with the 'Show' class.
