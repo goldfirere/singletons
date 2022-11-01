@@ -54,7 +54,7 @@ library
   hs-source-dirs:     src
   build-depends:      base             >= 4.17 && < 4.18,
                       containers       >= 0.5,
-                      mtl              >= 2.2.1,
+                      mtl              >= 2.2.1 && < 2.4,
                       ghc-boot-th,
                       singletons       == 3.0.*,
                       syb              >= 0.4,

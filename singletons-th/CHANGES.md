@@ -6,6 +6,7 @@ Changelog for the `singletons-th` project
 * Fix a bug in which the `singDecideInstances` and `showSingInstances`, as well
   as `deriving Show` declarations, would not respect custom
   `promotedDataTypeOrConName` options.
+* Allow building with `mtl-2.3.*`.
 
 3.1.1 [2022.08.23]
 ------------------

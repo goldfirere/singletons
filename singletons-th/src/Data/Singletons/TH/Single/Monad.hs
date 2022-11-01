@@ -26,8 +26,10 @@ import Data.Singletons.TH.Promote.Monad ( emitDecs, emitDecsM )
 import Data.Singletons.TH.Util
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
-import Control.Monad.Reader
-import Control.Monad.Writer
+import Control.Monad ( liftM2 )
+import Control.Monad.IO.Class ( MonadIO )
+import Control.Monad.Reader ( MonadReader(..), ReaderT(..), asks )
+import Control.Monad.Writer ( MonadWriter, WriterT(..) )
 import Control.Applicative
 
 -- environment during singling

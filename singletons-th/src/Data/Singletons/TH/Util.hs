@@ -16,10 +16,12 @@ import Language.Haskell.TH ( pprint )
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import Data.Char
-import Control.Monad hiding ( mapM )
-import Control.Monad.Except hiding ( mapM )
-import Control.Monad.Reader hiding ( mapM )
-import Control.Monad.Writer hiding ( mapM )
+import Control.Monad ( liftM, unless, when )
+import Control.Monad.Except ( ExceptT, runExceptT, MonadError(..) )
+import Control.Monad.IO.Class ( MonadIO )
+import Control.Monad.Reader ( MonadReader(..), Reader, ReaderT(..) )
+import Control.Monad.Trans ( MonadTrans )
+import Control.Monad.Writer ( MonadWriter(..), WriterT(..), execWriterT )
 import qualified Data.Map as Map
 import Data.Map ( Map )
 import Data.Bifunctor (second)
