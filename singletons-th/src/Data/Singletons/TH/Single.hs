@@ -627,7 +627,7 @@ singTySig defns types bound_kvs name prom_ty = do
                  []
                  (map (\nm -> singFamily `DAppT` DVarT nm) arg_names)
                  (sing_w_wildcard `DAppT`
-                      (foldl apply prom_ty (map DVarT arg_names)))
+                      (foldApply prom_ty (map DVarT arg_names)))
              , arg_names )
 
 {-
@@ -770,7 +770,7 @@ singClause prom_fun num_arrows bound_names res_ki
   let pattern_bound_names = zipWith const bound_names pats
        -- this does eta-expansion. See comment at top of file.
       sBody' = wrapUnSingFun (num_arrows - length pats)
-                 (foldl apply prom_fun (map DVarT pattern_bound_names)) sBody
+                 (foldApply prom_fun (map DVarT pattern_bound_names)) sBody
   return $ DClause sPats $ mkSigPaCaseE sigPaExpsSigs sBody'
 
 singPat :: Map Name Name   -- from term-level names to type-level names

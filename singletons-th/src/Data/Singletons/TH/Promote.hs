@@ -1110,8 +1110,8 @@ promoteExp (DLamE names exp) = do
                                            map DVarT all_args)
                                           rhs]]
   emitDecsM $ defunctionalize lambdaName Nothing $ DefunNoSAK tvbs Nothing
-  let promLambda = foldl apply (DConT (defunctionalizedName opts lambdaName 0))
-                               (map DVarT all_locals)
+  let promLambda = foldApply (DConT (defunctionalizedName opts lambdaName 0))
+                             (map DVarT all_locals)
   return (promLambda, ADLamE tyNames promLambda names ann_exp)
 promoteExp (DCaseE exp matches) = do
   caseTFName <- newUniqueName "Case"

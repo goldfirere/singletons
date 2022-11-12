@@ -40,7 +40,7 @@ singType bound_kvs prom ty = do
   prom_args <- mapM promoteType_NC args
   prom_res  <- promoteType_NC res
   let args' = map (\n -> singFamily `DAppT` (DVarT n)) arg_names
-      res'  = singFamily `DAppT` (foldl apply prom (map DVarT arg_names) `DSigT` prom_res)
+      res'  = singFamily `DAppT` (foldApply prom (map DVarT arg_names) `DSigT` prom_res)
                 -- Make sure to include an explicit `prom_res` kind annotation.
                 -- See Note [Preserve the order of type variables during singling],
                 -- wrinkle 3.
