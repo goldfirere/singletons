@@ -210,6 +210,20 @@ various drawbacks:
 -}
 
 -- | A 'SingI' constraint is essentially an implicitly-passed singleton.
+--
+-- In contrast to the 'SingKind' class, which is parameterized over data types
+-- promoted to the kind level, the 'SingI' class is parameterized over values
+-- promoted to the type level. To explain this distinction another way, consider
+-- this code:
+--
+-- @
+-- f = fromSing (sing @(T :: K))
+-- @
+--
+-- Here, @f@ uses methods from both 'SingI' and 'SingKind'. However, the shape
+-- of each constraint is rather different: using 'sing' requires a 'SingI T'
+-- constraint, whereas using 'fromSing' requires a 'SingKind K' constraint.
+--
 -- If you need to satisfy this constraint with an explicit singleton, please
 -- see 'withSingI' or the 'Sing' pattern synonym.
 #if __GLASGOW_HASKELL__ >= 900
