@@ -461,6 +461,32 @@ data TyFun :: Type -> Type -> Type
 -- works, see the "Promotion and partial application" section of the
 -- @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
 --
+-- The singleton for things of kind @a '~>' b@ is 'SLambda'. 'SLambda' values
+-- can be constructed in one of two ways:
+--
+-- 1. With the @singFun*@ family of combinators (e.g., 'singFun1'). For
+--    example, if you have:
+--
+--    @
+--    type Id :: a -> a
+--    sId :: Sing a -> Sing (Id a)
+--    @
+--
+--    Then you can construct a value of type @'Sing' \@(a '~>' a)@ (that is,
+--    @'SLambda' \@a \@a@ like so:
+--
+--    @
+--    sIdFun :: 'Sing' \@(a '~>' a) IdSym0
+--    sIdFun = singFun1 @IdSym0 sId
+--    @
+--
+--    Where @IdSym0 :: a '~>' a@ is the defunctionlized version of @Id@.
+--
+-- 2. Using the 'SingI' class. For example, @'sing' \@IdSym0@ is another way of
+--    defining @sIdFun@ above. The @singletons-th@ library automatically
+--    generates 'SingI' instances for defunctionalization symbols such as
+--    @IdSym0@.
+--
 -- Normal type-level arrows @(->)@ can be converted into defunctionalization
 -- arrows @('~>')@ by the use of the 'TyCon' family of types. (Refer to the
 -- Haddocks for 'TyCon1' to see an example of this in practice.) For this
@@ -658,6 +684,11 @@ type instance Apply (TyCon8 f) x = TyCon7 (f x)
 ---- Defunctionalized Sing instance and utilities --------------------
 ----------------------------------------------------------------------
 
+-- | The singleton type for functions. Functions have somewhat special
+-- treatment in @singletons@ (see the Haddocks for @('~>')@ for more information
+-- about this), and as a result, the 'Sing' instance for 'SLambda' is one of the
+-- only such instances defined in the @singletons@ library rather than, say,
+-- @singletons-base@.
 #if __GLASGOW_HASKELL__ >= 810
 type SLambda :: (k1 ~> k2) -> Type
 #endif
