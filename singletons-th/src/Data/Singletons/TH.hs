@@ -71,8 +71,54 @@ import Language.Haskell.TH.Desugar
 -- is identical. This may be useful if the type-checker requires knowledge of which
 -- constructor is used to satisfy equality or type-class constraints, but where
 -- each constructor is treated the same.
+--
+-- Here is a simple example to illustrate where 'cases' can be useful. Suppose
+-- you use @singletons-th@ to single this code:
+--
+-- @
+-- $('singletons' [d|
+--   foo :: Bool -> ()
+--   foo True = ()
+--   foo False = ()
+--   |])
+-- @
+--
+-- And that you want to write a function of this type:
+--
+-- @
+-- bar :: SBool b -> STuple0 (Foo b)
+-- @
+--
+-- How would you do this? You might be tempted to write the following:
+--
+-- @
+-- bar _ = STuple0
+-- @
+--
+-- However, this won't typecheck, as Foo b won't reduce to @'()@ unless GHC
+-- knows @b@ is either 'True' or 'False'. In order to convince GHC of this, you
+-- must explicitly match on each of the data constructors of @SBool@:
+--
+-- @
+-- bar :: SBool b -> STuple0 (Foo b)
+-- bar b = case b of
+--   STrue  -> STuple0
+--   SFalse -> STuple0
+-- @
+--
+-- This is doable, but it is somewhat tedious. After all, the right-hand side
+-- of each case alternative is exactly the same! This only becomes more tedious
+-- when you deal with data types with lots of lots of data constructors. For
+-- this reason, @singletons-th@ offers the 'cases' function to generate this
+-- boilerplate code for you. The following is equivalent to the implementation
+-- of @bar@ above:
+--
+-- @
+-- bar :: SBool b -> STuple0 (Foo b)
+-- bar b = $(cases ''SBool [| b |] [| STuple0 |])
+-- @
 cases :: DsMonad q
-      => Name        -- ^ The head of the type of the scrutinee. (Like @''Maybe@ or @''Bool@.)
+      => Name        -- ^ The head of the type of the scrutinee. (e.g., @''SBool@)
       -> q Exp       -- ^ The scrutinee, in a Template Haskell quote
       -> q Exp       -- ^ The body, in a Template Haskell quote
       -> q Exp
@@ -89,9 +135,12 @@ cases tyName expq bodyq = do
 -- | The function 'sCases' generates a case expression where each right-hand side
 -- is identical. This may be useful if the type-checker requires knowledge of which
 -- constructor is used to satisfy equality or type-class constraints, but where
--- each constructor is treated the same. For 'sCases', unlike 'cases', the
--- scrutinee is a singleton. But make sure to pass in the name of the /original/
--- datatype, preferring @''Maybe@ over @''SMaybe@.
+-- each constructor is treated the same.
+--
+-- For 'sCases', unlike 'cases', the scrutinee is a singleton. But make sure to
+-- pass in the name of the /original/ datatype, preferring @''Maybe@ over
+-- @''SMaybe@. In other words, @sCases ''Maybe@ is equivalent to
+-- @'cases' ''SMaybe@.
 sCases :: OptionsMonad q
        => Name        -- ^ The head of the type the scrutinee's type is based on.
                       -- (Like @''Maybe@ or @''Bool@.)
