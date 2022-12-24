@@ -392,8 +392,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                                       tyvar_names res_kis
         res_ki_map   = Map.fromList (zip meth_names
                                          (map (fromMaybe always_sig) res_kis))
-    sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList tyvar_names)
-                                               (Map.fromList cxts)
+    sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList cxts)
                                                res_ki_map))
                        (OMap.assocs default_defns)
     fixities' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs fixities
@@ -479,34 +478,33 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
               vis_cls_tvbs = drop (length cls_tvbs - length inst_kis) cls_tvbs
 
           sing_meth_ty :: OSet Name -> DType
-                       -> SgM (DType, [Name], DCxt, DKind)
+                       -> SgM (DType, DCxt, DKind)
           sing_meth_ty bound_kvs inner_ty = do
             -- Make sure to expand through type synonyms here! Not doing so
             -- resulted in #167.
             raw_ty <- expand inner_ty
-            (s_ty, _num_args, tyvar_names, ctxt, _arg_kis, res_ki)
+            (s_ty, _num_args, _tyvar_names, ctxt, _arg_kis, res_ki)
               <- singType bound_kvs (DConT $ defunctionalizedName0 opts name) raw_ty
-            pure (s_ty, tyvar_names, ctxt, res_ki)
+            pure (s_ty, ctxt, res_ki)
 
-      (s_ty, tyvar_names, ctxt, m_res_ki) <- case OMap.lookup name inst_sigs of
+      (s_ty, ctxt, m_res_ki) <- case OMap.lookup name inst_sigs of
         Just inst_sig -> do
           -- We have an InstanceSig, so just single that type. Take care to
           -- avoid binding the variables bound by the instance head as well.
           let inst_bound = foldMap fvDType (cxt ++ inst_kis)
-          (s_ty, tyvar_names, ctxt, res_ki) <- sing_meth_ty inst_bound inst_sig
-          pure (s_ty, tyvar_names, ctxt, Just res_ki)
+          (s_ty, ctxt, res_ki) <- sing_meth_ty inst_bound inst_sig
+          pure (s_ty, ctxt, Just res_ki)
         Nothing -> case mb_s_info of
           -- We don't have an InstanceSig, so we must compute the type to use
           -- in the singled instance ourselves through reification.
           Just (DVarI _ (DForallT (DForallInvis cls_tvbs) (DConstrainedT _cls_pred s_ty)) _) -> do
-            (sing_tvbs, ctxt, _args, res_ty) <- unravelVanillaDType s_ty
+            (_sing_tvbs, ctxt, _args, res_ty) <- unravelVanillaDType s_ty
             let subst = mk_subst cls_tvbs
                 m_res_ki = case res_ty of
                   _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substKind subst res_ki)
                   _                                         -> Nothing
 
             pure ( substType subst s_ty
-                 , map extractTvbName sing_tvbs
                  , map (substType subst) ctxt
                  , m_res_ki )
           _ -> do
@@ -518,16 +516,14 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
                     cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
                     cls_tvb_names = OSet.fromList $ map extractTvbName cls_tvbs
                     cls_bound     = cls_kvb_names `OSet.union` cls_tvb_names
-                (s_ty, tyvar_names, ctxt, res_ki) <- sing_meth_ty cls_bound inner_ty
+                (s_ty, ctxt, res_ki) <- sing_meth_ty cls_bound inner_ty
                 pure ( substType subst s_ty
-                     , tyvar_names
                      , ctxt
                      , Just (substKind subst res_ki) )
               _ -> fail $ "Cannot find type of method " ++ show name
 
       let kind_map = maybe Map.empty (Map.singleton name) m_res_ki
-      meth' <- singLetDecRHS (Map.singleton name tyvar_names)
-                             (Map.singleton name ctxt)
+      meth' <- singLetDecRHS (Map.singleton name ctxt)
                              kind_map name rhs
       return $ map DLetDec [DSigD (singledValueName opts name) s_ty, meth']
 
@@ -547,14 +543,13 @@ singLetDecEnv (LetDecEnv { lde_defns     = defns
                          , lde_bound_kvs = bound_kvs })
               thing_inside = do
   let prom_list = OMap.assocs proms
-  (typeSigs, letBinds, tyvarNames, cxts, res_kis, singIDefunss)
+  (typeSigs, letBinds, _tyvarNames, cxts, res_kis, singIDefunss)
     <- unzip6 <$> mapM (uncurry (singTySig defns types bound_kvs)) prom_list
   infix_decls' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs infix_decls
   let res_ki_map = Map.fromList [ (name, res_ki) | ((name, _), Just res_ki)
                                                      <- zip prom_list res_kis ]
   bindLets letBinds $ do
-    let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList tyvarNames)
-                                             (Map.fromList cxts)
+    let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList cxts)
                                              res_ki_map))
                      (OMap.assocs defns)
     thing <- thing_inside
@@ -604,8 +599,8 @@ singTySig defns types bound_kvs name prom_ty = do
     guess_num_args =
       case OMap.lookup name defns of
         Nothing -> fail "Internal error: promotion known for something not let-bound."
-        Just (AValue _ n _) -> return n
-        Just (AFunction _ n _) -> return n
+        Just (AValue _) -> return 0
+        Just (AFunction n _) -> return n
 
     lookup_bound_kvs :: SgM (OSet Name)
     lookup_bound_kvs =
@@ -725,53 +720,29 @@ the as-patterns in `foo8` desugar to code very similar to the `f` example
 above.
 -}
 
-singLetDecRHS :: Map Name [Name]
-              -> Map Name DCxt    -- the context of the type signature
+singLetDecRHS :: Map Name DCxt    -- the context of the type signature
                                   -- (might not be known)
               -> Map Name DKind   -- result kind (might not be known)
               -> Name -> ALetDecRHS -> SgM DLetDec
-singLetDecRHS bound_names cxts res_kis name ld_rhs = do
+singLetDecRHS cxts res_kis name ld_rhs = do
   opts <- getOptions
   bindContext (Map.findWithDefault [] name cxts) $
     case ld_rhs of
-      AValue prom num_arrows exp ->
+      AValue exp ->
         DValD (DVarP (singledValueName opts name)) <$>
-        (wrapUnSingFun num_arrows prom <$> singExp exp (Map.lookup name res_kis))
-      AFunction prom_fun num_arrows clauses ->
-        let tyvar_names = case Map.lookup name bound_names of
-                            Nothing -> []
-                            Just ns -> ns
-            res_ki = Map.lookup name res_kis
+        singExp exp (Map.lookup name res_kis)
+      AFunction _num_arrows clauses ->
+        let res_ki = Map.lookup name res_kis
         in
         DFunD (singledValueName opts name) <$>
-              mapM (singClause prom_fun num_arrows tyvar_names res_ki) clauses
+              mapM (singClause res_ki) clauses
 
-singClause :: DType   -- the promoted function
-           -> Int     -- the number of arrows in the type. If this is more
-                      -- than the number of patterns, we need to eta-expand
-                      -- with unSingFun.
-           -> [Name]  -- the names of the forall'd vars in the type sig of this
-                      -- function. This list should have at least the length as the
-                      -- number of patterns in the clause
-           -> Maybe DKind   -- result kind, if known
+singClause :: Maybe DKind   -- result kind, if known
            -> ADClause -> SgM DClause
-singClause prom_fun num_arrows bound_names res_ki
-           (ADClause var_proms pats exp) = do
-
-  -- Fix #166:
-  when (num_arrows - length pats < 0) $
-    fail $ "Function being promoted to " ++ (pprint (typeToTH prom_fun)) ++
-           " has too many arguments."
-
+singClause res_ki (ADClause var_proms pats exp) = do
   (sPats, sigPaExpsSigs) <- evalForPair $ mapM (singPat (Map.fromList var_proms)) pats
   sBody <- singExp exp res_ki
-    -- when calling unSingFun, the promoted pats aren't in scope, so we use the
-    -- bound_names instead
-  let pattern_bound_names = zipWith const bound_names pats
-       -- this does eta-expansion. See comment at top of file.
-      sBody' = wrapUnSingFun (num_arrows - length pats)
-                 (foldApply prom_fun (map DVarT pattern_bound_names)) sBody
-  return $ DClause sPats $ mkSigPaCaseE sigPaExpsSigs sBody'
+  return $ DClause sPats $ mkSigPaCaseE sigPaExpsSigs sBody
 
 singPat :: Map Name Name   -- from term-level names to type-level names
         -> ADPat
