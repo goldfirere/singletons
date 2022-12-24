@@ -780,7 +780,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
       expClauses <- mapM (etaContractOrExpand ty_num_args numArgs) clauses
       promote_let_dec_rhs all_locals m_ldrki ty_num_args
                           (mapAndUnzipM (promoteClause prom_fun_lhs) expClauses)
-                          id AFunction
+                          id (AFunction ty_num_args)
 
     -- Promote a UValue or a UFunction.
     -- Notes about type variables:
@@ -789,12 +789,12 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
     --
     -- * For UFunctions, `prom_a` is [DTySynEqn] and `a` is [DClause].
     promote_let_dec_rhs
-      :: [Name]                            -- Local variables bound in this scope
-      -> Maybe LetDecRHSKindInfo           -- Information about the promoted kind (if present)
-      -> Int                               -- The number of promoted function arguments
-      -> PrM (prom_a, a)                   -- Promote the RHS
-      -> (prom_a -> [DTySynEqn])           -- Turn the promoted RHS into type family equations
-      -> (DType -> Int -> a -> ALetDecRHS) -- Build an ALetDecRHS
+      :: [Name]                   -- Local variables bound in this scope
+      -> Maybe LetDecRHSKindInfo  -- Information about the promoted kind (if present)
+      -> Int                      -- The number of promoted function arguments
+      -> PrM (prom_a, a)          -- Promote the RHS
+      -> (prom_a -> [DTySynEqn])  -- Turn the promoted RHS into type family equations
+      -> (a -> ALetDecRHS)        -- Build an ALetDecRHS
       -> PrM ([DDec], [DDec], ALetDecRHS)
     promote_let_dec_rhs all_locals m_ldrki ty_num_args
                         promote_thing mk_prom_eqns mk_alet_dec_rhs = do
@@ -844,12 +844,11 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
 
       defun_decs <- defunctionalize proName m_fixity defun_ki
       (prom_thing, thing) <- forallBind lde_kvs_to_bind promote_thing
-      prom_fun_rhs <- lookupVarE name
       return ( catMaybes [ m_sak_dec
                          , Just $ DClosedTypeFamilyD tf_head (mk_prom_eqns prom_thing)
                          ]
              , defun_decs
-             , mk_alet_dec_rhs prom_fun_rhs ty_num_args thing )
+             , mk_alet_dec_rhs thing )
 
     promote_let_dec_ty :: [Name] -- The local variables that the let-dec closes
                                  -- over. If this is non-empty, we cannot

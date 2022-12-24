@@ -12,7 +12,7 @@ The SgM monad allows reading from a SgEnv environment and is wrapped around a Q.
 
 module Data.Singletons.TH.Single.Monad (
   SgM, bindLets, bindContext, askContext, lookupVarE, lookupConE,
-  wrapSingFun, wrapUnSingFun,
+  wrapSingFun,
   singM, singDecsM,
   emitDecs, emitDecsM
   ) where
@@ -120,21 +120,6 @@ wrapSingFun n ty =
                            _ -> error "No support for functions of arity > 7."
   in
   (wrap_fun `DAppTypeE` ty `DAppE`)
-
-wrapUnSingFun :: Int -> DType -> DExp -> DExp
-wrapUnSingFun 0 _  = id
-wrapUnSingFun n ty =
-  let unwrap_fun = DVarE $ case n of
-                             1 -> 'unSingFun1
-                             2 -> 'unSingFun2
-                             3 -> 'unSingFun3
-                             4 -> 'unSingFun4
-                             5 -> 'unSingFun5
-                             6 -> 'unSingFun6
-                             7 -> 'unSingFun7
-                             _ -> error "No support for functions of arity > 7."
-  in
-  (unwrap_fun `DAppTypeE` ty `DAppE`)
 
 singM :: OptionsMonad q => [Dec] -> SgM a -> q (a, [DDec])
 singM locals (SgM rdr) = do

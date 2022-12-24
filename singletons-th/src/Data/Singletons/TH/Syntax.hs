@@ -138,12 +138,18 @@ type family IfAnn (ann :: AnnotationFlag) (yes :: k) (no :: k) :: k where
 
 data family LetDecRHS :: AnnotationFlag -> Type
 data instance LetDecRHS Annotated
-  = AFunction DType  -- promote function (unapplied)
-    Int    -- number of arrows in type
-    [ADClause]
-  | AValue DType -- promoted exp
-    Int   -- number of arrows in type
-    ADExp
+  = -- A function definition. Invariant: each ADClause contains at least one
+    -- pattern.
+    AFunction
+      Int -- The number of arrows in the type. As a consequence of the invariant
+          -- above, this is always a positive number.
+      [ADClause]
+
+  | -- A value whose definition is given by the DExp. Invariant: the value is
+    -- not a function (i.e., there are no occurrences of (->) in the value's
+    -- type).
+    AValue
+      ADExp
 data instance LetDecRHS Unannotated = UFunction [DClause]
                                     | UValue DExp
 
