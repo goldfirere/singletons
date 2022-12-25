@@ -390,10 +390,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
     let default_sigs = catMaybes $
                        zipWith4 (mk_default_sig opts) meth_names sing_sigs
                                                       tyvar_names res_kis
-        res_ki_map   = Map.fromList (zip meth_names
-                                         (map (fromMaybe always_sig) res_kis))
-    sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList cxts)
-                                               res_ki_map))
+    sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList cxts)))
                        (OMap.assocs default_defns)
     fixities' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs fixities
     cls_cxt' <- mapM singPred cls_cxt
@@ -404,7 +401,6 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                      (map DLetDec (sing_sigs ++ sing_meths ++ fixities') ++ default_sigs)
   where
     no_meth_defns = error "Internal error: can't find declared method type"
-    always_sig    = error "Internal error: no signature for default method"
     meth_names    = map fst $ OMap.assocs meth_sigs
 
     mk_default_sig opts meth_name (DSigD s_name sty) bound_kvs (Just res_ki) =
@@ -478,35 +474,30 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
               vis_cls_tvbs = drop (length cls_tvbs - length inst_kis) cls_tvbs
 
           sing_meth_ty :: OSet Name -> DType
-                       -> SgM (DType, DCxt, DKind)
+                       -> SgM (DType, DCxt)
           sing_meth_ty bound_kvs inner_ty = do
             -- Make sure to expand through type synonyms here! Not doing so
             -- resulted in #167.
             raw_ty <- expand inner_ty
-            (s_ty, _num_args, _tyvar_names, ctxt, _arg_kis, res_ki)
+            (s_ty, _num_args, _tyvar_names, ctxt, _arg_kis, _res_ki)
               <- singType bound_kvs (DConT $ defunctionalizedName0 opts name) raw_ty
-            pure (s_ty, ctxt, res_ki)
+            pure (s_ty, ctxt)
 
-      (s_ty, ctxt, m_res_ki) <- case OMap.lookup name inst_sigs of
+      (s_ty, ctxt) <- case OMap.lookup name inst_sigs of
         Just inst_sig -> do
           -- We have an InstanceSig, so just single that type. Take care to
           -- avoid binding the variables bound by the instance head as well.
           let inst_bound = foldMap fvDType (cxt ++ inst_kis)
-          (s_ty, ctxt, res_ki) <- sing_meth_ty inst_bound inst_sig
-          pure (s_ty, ctxt, Just res_ki)
+          (s_ty, ctxt) <- sing_meth_ty inst_bound inst_sig
+          pure (s_ty, ctxt)
         Nothing -> case mb_s_info of
           -- We don't have an InstanceSig, so we must compute the type to use
           -- in the singled instance ourselves through reification.
           Just (DVarI _ (DForallT (DForallInvis cls_tvbs) (DConstrainedT _cls_pred s_ty)) _) -> do
-            (_sing_tvbs, ctxt, _args, res_ty) <- unravelVanillaDType s_ty
+            (_sing_tvbs, ctxt, _args, _res_ty) <- unravelVanillaDType s_ty
             let subst = mk_subst cls_tvbs
-                m_res_ki = case res_ty of
-                  _sing `DAppT` (_prom_func `DSigT` res_ki) -> Just (substKind subst res_ki)
-                  _                                         -> Nothing
-
             pure ( substType subst s_ty
-                 , map (substType subst) ctxt
-                 , m_res_ki )
+                 , map (substType subst) ctxt )
           _ -> do
             mb_info <- dsReify name
             case mb_info of
@@ -516,15 +507,13 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
                     cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
                     cls_tvb_names = OSet.fromList $ map extractTvbName cls_tvbs
                     cls_bound     = cls_kvb_names `OSet.union` cls_tvb_names
-                (s_ty, ctxt, res_ki) <- sing_meth_ty cls_bound inner_ty
+                (s_ty, ctxt) <- sing_meth_ty cls_bound inner_ty
                 pure ( substType subst s_ty
-                     , ctxt
-                     , Just (substKind subst res_ki) )
+                     , ctxt )
               _ -> fail $ "Cannot find type of method " ++ show name
 
-      let kind_map = maybe Map.empty (Map.singleton name) m_res_ki
       meth' <- singLetDecRHS (Map.singleton name ctxt)
-                             kind_map name rhs
+                             name rhs
       return $ map DLetDec [DSigD (singledValueName opts name) s_ty, meth']
 
 singLetDecEnv :: ALetDecEnv
@@ -543,14 +532,11 @@ singLetDecEnv (LetDecEnv { lde_defns     = defns
                          , lde_bound_kvs = bound_kvs })
               thing_inside = do
   let prom_list = OMap.assocs proms
-  (typeSigs, letBinds, _tyvarNames, cxts, res_kis, singIDefunss)
+  (typeSigs, letBinds, _tyvarNames, cxts, _res_kis, singIDefunss)
     <- unzip6 <$> mapM (uncurry (singTySig defns types bound_kvs)) prom_list
   infix_decls' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs infix_decls
-  let res_ki_map = Map.fromList [ (name, res_ki) | ((name, _), Just res_ki)
-                                                     <- zip prom_list res_kis ]
   bindLets letBinds $ do
-    let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList cxts)
-                                             res_ki_map))
+    let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList cxts)))
                      (OMap.assocs defns)
     thing <- thing_inside
     return (infix_decls' ++ typeSigs ++ let_decs, concat singIDefunss, thing)
@@ -722,26 +708,22 @@ above.
 
 singLetDecRHS :: Map Name DCxt    -- the context of the type signature
                                   -- (might not be known)
-              -> Map Name DKind   -- result kind (might not be known)
               -> Name -> ALetDecRHS -> SgM DLetDec
-singLetDecRHS cxts res_kis name ld_rhs = do
+singLetDecRHS cxts name ld_rhs = do
   opts <- getOptions
   bindContext (Map.findWithDefault [] name cxts) $
     case ld_rhs of
       AValue exp ->
         DValD (DVarP (singledValueName opts name)) <$>
-        singExp exp (Map.lookup name res_kis)
+        singExp exp
       AFunction _num_arrows clauses ->
-        let res_ki = Map.lookup name res_kis
-        in
         DFunD (singledValueName opts name) <$>
-              mapM (singClause res_ki) clauses
+              mapM singClause clauses
 
-singClause :: Maybe DKind   -- result kind, if known
-           -> ADClause -> SgM DClause
-singClause res_ki (ADClause var_proms pats exp) = do
+singClause :: ADClause -> SgM DClause
+singClause (ADClause var_proms pats exp) = do
   (sPats, sigPaExpsSigs) <- evalForPair $ mapM (singPat (Map.fromList var_proms)) pats
-  sBody <- singExp exp res_ki
+  sBody <- singExp exp
   return $ DClause sPats $ mkSigPaCaseE sigPaExpsSigs sBody
 
 singPat :: Map Name Name   -- from term-level names to type-level names
@@ -897,28 +879,27 @@ mkSigPaCaseE exps_with_sigs exp
 --
 --    And now everything is hunky-dory.
 
-singExp :: ADExp -> Maybe DKind   -- the kind of the expression, if known
-        -> SgM DExp
+singExp :: ADExp -> SgM DExp
   -- See Note [Why error is so special]
-singExp (ADVarE err `ADAppE` arg) _res_ki
+singExp (ADVarE err `ADAppE` arg)
   | err == errorName = do opts <- getOptions
                           DAppE (DVarE (singledValueName opts err)) <$>
-                            singExp arg (Just (DConT symbolName))
-singExp (ADVarE name) _res_ki = lookupVarE name
-singExp (ADConE name) _res_ki = lookupConE name
-singExp (ADLitE lit)  _res_ki = singLit lit
-singExp (ADAppE e1 e2) _res_ki = do
-  e1' <- singExp e1 Nothing
-  e2' <- singExp e2 Nothing
+                            singExp arg
+singExp (ADVarE name) = lookupVarE name
+singExp (ADConE name) = lookupConE name
+singExp (ADLitE lit)  = singLit lit
+singExp (ADAppE e1 e2) = do
+  e1' <- singExp e1
+  e2' <- singExp e2
   -- `applySing undefined x` kills type inference, because GHC can't figure
   -- out the type of `undefined`. So we don't emit `applySing` there.
   if isException e1'
   then return $ e1' `DAppE` e2'
   else return $ (DVarE applySingName) `DAppE` e1' `DAppE` e2'
-singExp (ADLamE ty_names prom_lam names exp) _res_ki = do
+singExp (ADLamE ty_names prom_lam names exp) = do
   opts <- getOptions
   let sNames = map (singledValueName opts) names
-  exp' <- singExp exp Nothing
+  exp' <- singExp exp
   -- we need to bind the type variables... but DLamE doesn't allow SigT patterns.
   -- So: build a case
   let caseExp = DCaseE (mkTupleDExp (map DVarE sNames))
@@ -927,21 +908,21 @@ singExp (ADLamE ty_names prom_lam names exp) _res_ki = do
                                       (singFamily `DAppT`) .
                                       DVarT) ty_names)) exp']
   return $ wrapSingFun (length names) prom_lam $ DLamE sNames caseExp
-singExp (ADCaseE exp matches ret_ty) res_ki =
+singExp (ADCaseE exp matches ret_ty) =
     -- See Note [Annotate case return type] and
     --     Note [The id hack; or, how singletons-th learned to stop worrying and
     --           avoid kind generalization]
   DAppE (DAppTypeE (DVarE 'id)
-                   (singFamily `DAppT` (ret_ty `maybeSigT` res_ki)))
-    <$> (DCaseE <$> singExp exp Nothing <*> mapM (singMatch res_ki) matches)
-singExp (ADLetE env exp) res_ki = do
+                   (singFamily `DAppT` ret_ty))
+    <$> (DCaseE <$> singExp exp <*> mapM singMatch matches)
+singExp (ADLetE env exp) = do
   -- We intentionally discard the SingI instances for exp's defunctionalization
   -- symbols, as we also do not generate the declarations for the
   -- defunctionalization symbols in the first place during promotion.
-  (let_decs, _, exp') <- singLetDecEnv env $ singExp exp res_ki
+  (let_decs, _, exp') <- singLetDecEnv env $ singExp exp
   pure $ DLetE let_decs exp'
-singExp (ADSigE prom_exp exp ty) _ = do
-  exp' <- singExp exp (Just ty)
+singExp (ADSigE prom_exp exp ty) = do
+  exp' <- singExp exp
   pure $ DSigE exp' $ DConT singFamilyName `DAppT` DSigT prom_exp ty
 
 -- See Note [DerivedDecl] in Data.Singletons.TH.Syntax
@@ -1011,11 +992,10 @@ isException (DLetE _ e)           = isException e
 isException (DSigE e _)           = isException e
 isException (DStaticE e)          = isException e
 
-singMatch :: Maybe DKind  -- ^ the result kind, if known
-          -> ADMatch -> SgM DMatch
-singMatch res_ki (ADMatch var_proms pat exp) = do
+singMatch :: ADMatch -> SgM DMatch
+singMatch (ADMatch var_proms pat exp) = do
   (sPat, sigPaExpsSigs) <- evalForPair $ singPat (Map.fromList var_proms) pat
-  sExp <- singExp exp res_ki
+  sExp <- singExp exp
   return $ DMatch sPat $ mkSigPaCaseE sigPaExpsSigs sExp
 
 singLit :: Lit -> SgM DExp

@@ -296,14 +296,14 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     sOtherwise :: Sing (OtherwiseSym0 :: Bool)
     sM
       = (GHC.Base.id
-           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0 :: Bool)))
+           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
           (case sX_0123456789876543210 of
              SCons _
                    (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210) SNil)
                -> sY_0123456789876543210)
     sL
       = (GHC.Base.id
-           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0 :: Bool)))
+           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
           (case sX_0123456789876543210 of
              SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
                    (SCons _ SNil)
@@ -318,13 +318,13 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
              SNil)
     sK
       = (GHC.Base.id
-           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0 :: Bool)))
+           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
           (case sX_0123456789876543210 of
              SBar _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
                -> sY_0123456789876543210)
     sJ
       = (GHC.Base.id
-           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0 :: Bool)))
+           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
           (case sX_0123456789876543210 of
              SBar (sY_0123456789876543210 :: Sing y_0123456789876543210) _
                -> sY_0123456789876543210)

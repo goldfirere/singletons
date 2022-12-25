@@ -423,7 +423,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
                  sScrutinee_0123456789876543210 = sX :: Sing (x :: Maybe a)
                in
                  (id
-                    @(Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x) :: Maybe (Maybe a))))
+                    @(Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x))))
                    (case sScrutinee_0123456789876543210 of
                       SJust (sY :: Sing y)
                         -> case ((,) (sY :: Sing y)) (SJust (sY :: Sing y)) of
