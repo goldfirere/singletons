@@ -293,7 +293,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     (%!) (SVCons _ (sXs :: Sing xs)) (SFS (sN :: Sing n))
       = (applySing ((applySing ((singFun2 @(!@#@$)) (%!))) sXs)) sN
     (%!) SVNil (sN :: Sing n)
-      = (id @(Sing (Case_0123456789876543210 n n :: a))) (case sN of {})
+      = (id @(Sing (Case_0123456789876543210 n n))) (case sN of {})
     sTailVec (SVCons _ (sXs :: Sing xs)) = sXs
     sHeadVec (SVCons (sX :: Sing x) _) = sX
     instance SingI (TransitivitySym0 :: (~>) (Equal a b) ((~>) (Equal b c) (Equal a c))) where

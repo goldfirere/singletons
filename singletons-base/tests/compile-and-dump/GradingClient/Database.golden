@@ -1444,7 +1444,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                 sName'
         in
           (GHC.Base.id
-             @(Sing (Case_0123456789876543210 name name' u attrs (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs) :: U)))
+             @(Sing (Case_0123456789876543210 name name' u attrs (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs))))
             (case sScrutinee_0123456789876543210 of
                STrue -> sU
                SFalse

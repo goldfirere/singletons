@@ -187,7 +187,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
             = (applySing ((applySing ((singFun2 @LeqSym0) sLeq)) sN)) sH
         in
           (id
-             @(Sing (Case_0123456789876543210 n h t (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t) :: [Nat])))
+             @(Sing (Case_0123456789876543210 n h t (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t))))
             (case sScrutinee_0123456789876543210 of
                STrue
                  -> (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) sN))

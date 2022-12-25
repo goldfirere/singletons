@@ -49,7 +49,7 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
                 (sFromInteger (sing :: Sing 0))
         in
           (id
-             @(Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x) :: a)))
+             @(Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x))))
             (case sScrutinee_0123456789876543210 of
                STrue -> sFromInteger (sing :: Sing 1)
                SFalse

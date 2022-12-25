@@ -151,33 +151,15 @@ What happens if there is no explicit `forall`, as in this example?
   absurd v = case v of {}
 
 This time, the order of type variables vis-à-vis TypeApplications is determined
-by their left-to-right order of appearance in the type signature. It's tempting
-to think that since there is no explicit `forall` in the original type
-signature, we could get away without an explicit `forall` in the singled type
-signature. That is, one could write:
+by their left-to-right order of appearance in the type signature. This order
+dictates that `a` is quantified before `b`, so we mirror this order in the
+singled type signature:
 
-  sAbsurd :: Sing (v :: V a) -> Sing (Absurd :: b)
+  sAbsurd :: forall a b (v :: V a). Sing v -> Sing (Absurd v :: b)
 
-This would have the right type variable order, but unfortunately, this approach
-does not play well with singletons-th's style of code generation. Consider the code
-that would be generated for the body of sAbsurd:
-
-  sAbsurd :: Sing (v :: V a) -> Sing (Absurd :: b)
-  sAbsurd (sV :: Sing v) = id @(Case v v :: b) (case sV of {})
-
-Note the use of the type `Case v v :: b` in the right-hand side of sAbsurd.
-However, because `b` was not bound by a top-level `forall`, it won't be in
-scope here, resulting in an error!
-
-(Why do we generate the code `id @(Case v v :: b)` in the first place? See
-Note [The id hack; or, how singletons-th learned to stop worrying and avoid kind generalization]
-in D.S.TH.Single.)
-
-The simplest approach is to just always generate singled type signatures with
-explicit `forall`s. In the event that the original type signature lacks an
-explicit `forall`, we infer the correct type variable ordering ourselves and
-synthesize a `forall` with that order. The `singTypeKVBs` function implements
-this logic.
+The `singTypeKVBs` function is responsible for detecting the presence or
+absence of an explicit `forall`, and in the event that an explicit `forall` is
+omitted, it infers the correct order of type variables.
 
 -----
 -- Wrinkle 2: The TH reification swamp

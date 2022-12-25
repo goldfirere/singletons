@@ -245,7 +245,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
       forall a (t :: a) (t :: Maybe a). Sing t
                                         -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a)
     sFoo5 (sX :: Sing x)
-      = (id @(Sing (Case_0123456789876543210 x x :: a)))
+      = (id @(Sing (Case_0123456789876543210 x x)))
           (case sX of
              (sY :: Sing y)
                -> (applySing
@@ -258,7 +258,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
                                        (case sArg_0123456789876543210 of _ -> sX))))
                     sY)
     sFoo4 (sX :: Sing x)
-      = (id @(Sing (Case_0123456789876543210 x x :: a)))
+      = (id @(Sing (Case_0123456789876543210 x x)))
           (case sX of
              (sY :: Sing y)
                -> let
@@ -273,7 +273,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
             = (applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sA)) sB
         in
           (id
-             @(Sing (Case_0123456789876543210 a b (Let0123456789876543210Scrutinee_0123456789876543210Sym2 a b) :: a)))
+             @(Sing (Case_0123456789876543210 a b (Let0123456789876543210Scrutinee_0123456789876543210Sym2 a b))))
             (case sScrutinee_0123456789876543210 of
                STuple2 (sP :: Sing p) _ -> sP)
     sFoo2 (sD :: Sing d) _
@@ -284,10 +284,10 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
             = (applySing ((singFun1 @JustSym0) SJust)) sD
         in
           (id
-             @(Sing (Case_0123456789876543210 d (Let0123456789876543210Scrutinee_0123456789876543210Sym1 d) :: a)))
+             @(Sing (Case_0123456789876543210 d (Let0123456789876543210Scrutinee_0123456789876543210Sym1 d))))
             (case sScrutinee_0123456789876543210 of SJust (sY :: Sing y) -> sY)
     sFoo1 (sD :: Sing d) (sX :: Sing x)
-      = (id @(Sing (Case_0123456789876543210 d x x :: a)))
+      = (id @(Sing (Case_0123456789876543210 d x x)))
           (case sX of
              SJust (sY :: Sing y) -> sY
              SNothing -> sD)

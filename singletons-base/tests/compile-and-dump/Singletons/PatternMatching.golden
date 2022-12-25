@@ -471,7 +471,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     sSz :: Sing @_ SzSym0
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
     sSilly (sX :: Sing x)
-      = (id @(Sing (Case_0123456789876543210 x x :: ())))
+      = (id @(Sing (Case_0123456789876543210 x x)))
           (case sX of _ -> STuple0)
     sFoo2 (STuple2 (sX :: Sing x) (sY :: Sing y))
       = let
@@ -480,7 +480,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
             = (applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX)) sY
         in
           (id
-             @(Sing (Case_0123456789876543210 x y (Let0123456789876543210TSym2 x y) :: a)))
+             @(Sing (Case_0123456789876543210 x y (Let0123456789876543210TSym2 x y))))
             (case sT of
                STuple2 (sA :: Sing a) (sB :: Sing b)
                  -> (applySing
@@ -512,8 +512,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                  SNil))
                -> sY_0123456789876543210)
     sLsz
-      = (id
-           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0 :: Nat)))
+      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
           (case sX_0123456789876543210 of
              SCons _
                    (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
@@ -537,8 +536,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                -> sY_0123456789876543210)
     sX_0123456789876543210 = sTuple
     sFls
-      = (id
-           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0 :: Bool)))
+      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
           (case sX_0123456789876543210 of
              SPair (SPair _ _)
                    (sY_0123456789876543210 :: Sing y_0123456789876543210)
