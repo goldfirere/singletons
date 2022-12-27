@@ -180,42 +180,6 @@ promoteInfo (DTyVarI _name _ty) =
 promoteInfo (DPatSynI {}) =
   fail "Promotion of pattern synonyms not supported"
 
--- Note [Promoting declarations in two stages]
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
--- It is necessary to know the types of things when promoting. So,
--- we promote in two stages: first, we build a LetDecEnv, which allows
--- for easy lookup. Then, we go through the actual elements of the LetDecEnv,
--- performing the promotion.
---
--- Why do we need the types? For kind annotations on the type family. We also
--- need to have both the types and the actual function definition at the same
--- time, because the function definition tells us how many patterns are
--- matched. Note that an eta-contracted function needs to return a TyFun,
--- not a proper type-level function.
---
--- Consider this example:
---
---   foo :: Nat -> Bool -> Bool
---   foo Zero = id
---   foo _    = not
---
--- Here the first parameter to foo is non-uniform, because it is
--- inspected in a pattern and can be different in each defining
--- equation of foo. The second parameter to foo, specified in the type
--- signature as Bool, is a uniform parameter - it is not inspected and
--- each defining equation of foo uses it the same way. The foo
--- function will be promoted to a type familty Foo like this:
---
---   type family Foo (n :: Nat) :: Bool ~> Bool where
---      Foo Zero = Id
---      Foo a    = Not
---
--- To generate type signature for Foo type family we must first learn
--- what is the actual number of patterns used in defining cequations
--- of foo. In this case there is only one so we declare Foo to take
--- one argument and have return type of Bool -> Bool.
-
 -- Promote a list of top-level declarations.
 promoteDecs :: [DDec] -> PrM ()
 promoteDecs raw_decls = do
@@ -241,7 +205,6 @@ promoteDecs raw_decls = do
 -- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
 promoteLetDecs :: Maybe Uniq -- let-binding unique (if locally bound)
                -> [DLetDec] -> PrM ([LetBind], ALetDecEnv)
-  -- See Note [Promoting declarations in two stages]
 promoteLetDecs mb_let_uniq decls = do
   opts <- getOptions
   let_dec_env <- buildLetDecEnv decls
