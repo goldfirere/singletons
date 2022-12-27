@@ -254,16 +254,15 @@ singITyConInstance n
                                 mk_fun DArrowT matchable_apply_fun unmatchable_apply_fun)
                       `DAppT` DConT applyTyConAux1Name
                   ]
+       wrapped <- wrapSingFun 1 DWildCardT $
+                  DLamE [x] $
+                  DVarE withSingIName `DAppE` DVarE x
+                                      `DAppE` DVarE singMethName
        pure $ decToTH
             $ DInstanceD
                 Nothing Nothing ctxt
                 (DConT singIName `DAppT` (DConT (mkTyConName n) `DAppT` (f_ty `DSigT` k_fun)))
-                [DLetDec $ DFunD singMethName
-                           [DClause [] $
-                            wrapSingFun 1 DWildCardT $
-                            DLamE [x] $
-                            DVarE withSingIName `DAppE` DVarE x
-                                                `DAppE` DVarE singMethName]]
+                [DLetDec $ DFunD singMethName [DClause [] wrapped]]
 
 singInstance :: OptionsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 singInstance mk_inst inst_name name = do
@@ -333,36 +332,40 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
     return $ promDecls ++ (map DLetDec newLetDecls) ++ singIDefunDecls ++ newDecls
 
 -- see comment at top of file
-buildDataLets :: OptionsMonad q => DataDecl -> q [(Name, DExp)]
+buildDataLets :: forall q. OptionsMonad q => DataDecl -> q [(Name, DExp)]
 buildDataLets (DataDecl _name _tvbs cons) = do
   opts <- getOptions
-  pure $ concatMap (con_num_args opts) cons
+  concatMapM (con_num_args opts) cons
   where
-    con_num_args :: Options -> DCon -> [(Name, DExp)]
-    con_num_args opts (DCon _tvbs _cxt name fields _rty) =
-      (name, wrapSingFun (length (tysOfConFields fields))
-                         (DConT $ defunctionalizedName0 opts name)
-                         (DConE $ singledDataConName opts name))
-      : rec_selectors opts fields
+    con_num_args :: Options -> DCon -> q [(Name, DExp)]
+    con_num_args opts (DCon _tvbs _cxt name fields _rty) = do
+      wrapped <- wrapSingFun (length (tysOfConFields fields))
+                             (DConT $ defunctionalizedName0 opts name)
+                             (DConE $ singledDataConName opts name)
+      rec_sels <- rec_selectors opts fields
+      pure $ (name, wrapped) : rec_sels
 
-    rec_selectors :: Options -> DConFields -> [(Name, DExp)]
-    rec_selectors _    (DNormalC {}) = []
-    rec_selectors opts (DRecC fields) =
-      let names = map fstOf3 fields in
-      [ (name, wrapSingFun 1 (DConT $ defunctionalizedName0 opts name)
-                             (DVarE $ singledValueName opts name))
-      | name <- names ]
+    rec_selectors :: Options -> DConFields -> q [(Name, DExp)]
+    rec_selectors _    (DNormalC {}) = pure []
+    rec_selectors opts (DRecC fields) = do
+      let names = map fstOf3 fields
+      traverse (\name -> do
+                 wrapped <- wrapSingFun 1 (DConT $ defunctionalizedName0 opts name)
+                                          (DVarE $ singledValueName opts name)
+                 pure (name, wrapped))
+               names
 
 -- see comment at top of file
 buildMethLets :: OptionsMonad q => UClassDecl -> q [(Name, DExp)]
 buildMethLets (ClassDecl { cd_lde = LetDecEnv { lde_types = meth_sigs } }) = do
   opts <- getOptions
-  pure $ map (mk_bind opts) (OMap.assocs meth_sigs)
+  traverse (mk_bind opts) (OMap.assocs meth_sigs)
   where
-    mk_bind opts (meth_name, meth_ty) =
-      ( meth_name
-      , wrapSingFun (countArgs meth_ty) (DConT $ defunctionalizedName0 opts meth_name)
-                                        (DVarE $ singledValueName opts meth_name) )
+    mk_bind opts (meth_name, meth_ty) = do
+      wrapped <- wrapSingFun (countArgs meth_ty)
+                             (DConT $ defunctionalizedName0 opts meth_name)
+                             (DVarE $ singledValueName opts meth_name)
+      pure (meth_name, wrapped)
 
 singClassD :: AClassDecl -> SgM DDec
 singClassD (ClassDecl { cd_cxt  = cls_cxt
@@ -414,6 +417,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
       sty' <- add_constraints opts meth_name sty bound_kvs res_ki
       pure $ DSigT sty' ski
     add_constraints opts meth_name sty bound_kvs res_ki = do
+      -- TODO RGS: Ugh. Figure out what to do here.
       (tvbs, cxt, args, res) <- unravelVanillaDType sty
       prom_dflt <- OMap.lookup meth_name promoted_defaults
 
@@ -558,8 +562,9 @@ singTySig defns types name prom_ty = do
       (sty, tyvar_names) <- mk_sing_ty num_args
       singIDefuns <- singDefuns name VarName []
                                 (map (const Nothing) tyvar_names) Nothing
+      wrapped <- wrapSingFun num_args prom_ty (DVarE sName)
       return ( DSigD sName sty
-             , (name, wrapSingFun num_args prom_ty (DVarE sName))
+             , (name, wrapped)
              , tyvar_names
              , (name, [])
              , Nothing
@@ -570,8 +575,9 @@ singTySig defns types name prom_ty = do
       bound_cxt <- askContext
       singIDefuns <- singDefuns name VarName (bound_cxt ++ ctxt)
                                 (map Just arg_kis) (Just res_ki)
+      wrapped <- wrapSingFun num_args prom_ty (DVarE sName)
       return ( DSigD sName sty
-             , (name, wrapSingFun num_args prom_ty (DVarE sName))
+             , (name, wrapped)
              , tyvar_names
              , (name, ctxt)
              , Just res_ki
@@ -896,7 +902,7 @@ singExp (ADLamE ty_names prom_lam names exp) = do
                                 (map ((DWildP `DSigP`) .
                                       (singFamily `DAppT`) .
                                       DVarT) ty_names)) exp']
-  return $ wrapSingFun (length names) prom_lam $ DLamE sNames caseExp
+  wrapSingFun (length names) prom_lam $ DLamE sNames caseExp
 singExp (ADCaseE exp matches ret_ty) =
     -- See Note [Annotate case return type] and
     --     Note [The id hack; or, how singletons-th learned to stop worrying and

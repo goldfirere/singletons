@@ -219,6 +219,8 @@ maybeSigT :: DType -> Maybe DKind -> DType
 maybeSigT ty Nothing   = ty
 maybeSigT ty (Just ki) = ty `DSigT` ki
 
+-- TODO RGS: Delete all of the *Vanilla functions
+
 -- Reconstruct a vanilla function type from its individual type variable
 -- binders, constraints, argument types, and result type. (See
 -- Note [Vanilla-type validity checking during promotion] in
@@ -236,6 +238,13 @@ ravelVanillaDType tvbs ctxt args res =
     go :: [DType] -> DType
     go []    = res
     go (h:t) = DAppT (DAppT DArrowT h) (go t)
+
+-- TODO RGS: Docs
+dropForalls :: DFunArgs -> DFunArgs
+dropForalls args@DFANil = args
+dropForalls (DFAForalls _tele args) = dropForalls args
+dropForalls (DFACxt ctxt args) = DFACxt ctxt $ dropForalls args
+dropForalls (DFAAnon anon args) = DFAAnon anon $ dropForalls args
 
 -- Decompose a vanilla function type into its type variables, its context, its
 -- argument types, and its result type. (See
@@ -255,6 +264,13 @@ unravelVanillaDType ty =
     Left err      -> fail err
     Right payload -> pure payload
 
+-- TODO RGS: Docs
+unravelRank1DType :: forall m. MonadFail m => DType -> m (DFunArgs, DType)
+unravelRank1DType ty =
+  case unravelRank1DType_either ty of
+    Left err      -> fail err
+    Right payload -> pure payload
+
 -- Ensures that a 'DType' is a vanilla type. (See
 -- Note [Vanilla-type validity checking during promotion] in
 -- Data.Singletons.TH.Promote.Type for what "vanilla" means.)
@@ -264,6 +280,13 @@ unravelVanillaDType ty =
 checkVanillaDType :: forall m. MonadFail m => DType -> m ()
 checkVanillaDType ty =
   case unravelVanillaDType_either ty of
+    Left err -> fail err
+    Right _  -> pure ()
+
+-- TODO RGS: Docs
+checkRank1DType :: forall m. MonadFail m => DType -> m ()
+checkRank1DType ty =
+  case unravelRank1DType_either ty of
     Left err -> fail err
     Right _  -> pure ()
 
@@ -339,17 +362,68 @@ unravelVanillaDType_either ty =
     fail_ctxt :: MonadError String m => String -> m a
     fail_ctxt sort = failWith $ sort ++ " contexts"
 
+-- The workhorse that powers unravelRank1DType and checkRank1DType.
+-- Returns @Right payload@ upon success, and @Left error_msg@ upon failure.
+unravelRank1DType_either :: DType -> Either String (DFunArgs, DType)
+unravelRank1DType_either ty = do
+  let argsAndRes@(args, _res) = unravelDType ty
+  runIdentity $ flip runReaderT True $ runExceptT $ runUnravelM $ go_args args
+  pure argsAndRes
+  where
+    go_args :: DFunArgs -> UnravelM ()
+    go_args DFANil = pure ()
+    go_args (DFAForalls tele args) =
+      case tele of
+        DForallVis{} -> failWith "visible dependent quantification"
+        DForallInvis tvbs -> do
+          rank_1 <- ask
+          unless rank_1 $ failWith "higher-rank `forall`s"
+          traverse_ (traverse_ go_higher_order_ty . extractTvbKind) tvbs
+          go_args args
+    go_args (DFACxt ctxt args) = do
+      rank_1 <- ask
+      unless rank_1 $ failWith "higher-rank contexts"
+      traverse_ go_higher_order_ty ctxt
+      go_args args
+    go_args (DFAAnon anon args) = do
+      go_higher_order_ty anon
+      go_args args
+
+    go_ty :: DType -> UnravelM ()
+    go_ty typ =
+      let (args, _res) = unravelDType typ in
+      go_args args
+
+    -- Process a type in a higher-order position (e.g., the @forall a. a -> a@ in
+    -- @(forall a. a -> a) -> b -> b@). This is only done to check for the
+    -- presence of higher-rank foralls or constraints, which are not permitted
+    -- in rank-1 types.
+    go_higher_order_ty :: DType -> UnravelM ()
+    go_higher_order_ty typ = local (const False) (go_ty typ)
+
+    failWith :: MonadError String m => String -> m a
+    failWith thing = throwError $ unlines
+      [ "`singletons-th` does not support " ++ thing
+      , "In the type: " ++ pprint (sweeten ty)
+      ]
+
 -- The monad that powers the internals of unravelVanillaDType_either.
 --
 -- * ExceptT String: records the error message upon failure.
 --
 -- * Reader Bool: True if we are in a rank-1 position in a type, False otherwise
+--
+-- TODO RGS: Update the docs. (Also search other docs for mentions of "Vanilla".)
 newtype UnravelM a = UnravelM { runUnravelM :: ExceptT String (Reader Bool) a }
   deriving (Functor, Applicative, Monad, MonadError String, MonadReader Bool)
 
--- count the number of arguments in a type
+-- count the number of visible arguments
+countDVisFunArgs :: DFunArgs -> Int
+countDVisFunArgs = length . filterDVisFunArgs
+
+-- count the number of visible arguments in a type
 countArgs :: DType -> Int
-countArgs ty = length $ filterDVisFunArgs args
+countArgs ty = countDVisFunArgs args
   where (args, _) = unravelDType ty
 
 -- Collect the invisible type variable binders from a sequence of DFunArgs.
@@ -363,10 +437,29 @@ filterInvisTvbArgs (DFAForalls tele args) =
     DForallVis   _     -> res
     DForallInvis tvbs' -> tvbs' ++ res
 
+-- TODO RGS: Docs
+filterContextArgs :: DFunArgs -> DCxt
+filterContextArgs DFANil              = []
+filterContextArgs (DFAForalls _ args) = filterContextArgs args
+filterContextArgs (DFACxt ctxt args)  = ctxt ++ filterContextArgs args
+filterContextArgs (DFAAnon _ args)    = filterContextArgs args
+
+-- TODO RGS: Docs
+visFunArgToTyVarBndr :: DVisFunArg -> Name -> DTyVarBndrUnit
+visFunArgToTyVarBndr (DVisFADep tvb) _ = tvb
+visFunArgToTyVarBndr (DVisFAAnon k)  n = DKindedTV n () k
+
 -- Infer the kind of a DTyVarBndr by using information from a DVisFunArg.
 replaceTvbKind :: DVisFunArg -> DTyVarBndrUnit -> DTyVarBndrUnit
-replaceTvbKind (DVisFADep tvb) _   = tvb
-replaceTvbKind (DVisFAAnon k)  tvb = DKindedTV (extractTvbName tvb) () k
+replaceTvbKind vfa tvb = visFunArgToTyVarBndr vfa (extractTvbName tvb)
+
+-- TODO RGS: Docs
+outerForallArgs :: DFunArgs -> [DTyVarBndrSpec]
+outerForallArgs (DFAForalls (DForallInvis tvbs) _) = tvbs
+outerForallArgs (DFAForalls (DForallVis _) _) = []
+outerForallArgs (DFACxt _ _) = []
+outerForallArgs (DFAAnon _ _) = []
+outerForallArgs DFANil = []
 
 -- changes all TyVars not to be NameU's. Workaround for GHC#11812/#17537/#19743
 noExactTyVars :: Data a => a -> a
@@ -418,6 +511,18 @@ substType _ ty@(DConT {}) = ty
 substType _ ty@(DArrowT)  = ty
 substType _ ty@(DLitT {}) = ty
 substType _ ty@DWildCardT = ty
+
+-- | TODO RGS: Docs
+substFunArgs :: Map Name DType -> DFunArgs -> DFunArgs
+substFunArgs _ args@DFANil = args
+substFunArgs subst (DFAForalls tele args) = DFAForalls tele' args'
+  where
+    (subst', tele') = subst_tele subst tele
+    args'           = substFunArgs subst' args
+substFunArgs subst (DFACxt ctxt args) =
+  DFACxt (map (substType subst) ctxt) (substFunArgs subst args)
+substFunArgs subst (DFAAnon anon args) =
+  DFAAnon (substType subst anon) (substFunArgs subst args)
 
 subst_tele :: Map Name DKind -> DForallTelescope -> (Map Name DKind, DForallTelescope)
 subst_tele s (DForallInvis tvbs) = second DForallInvis $ subst_tvbs s tvbs

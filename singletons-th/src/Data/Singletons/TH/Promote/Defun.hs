@@ -411,11 +411,9 @@ defunctionalize name m_fixity defun_ki = do
     -- name if the DVisFunArg is an anonymous argument.
     mk_extra_tvb :: DVisFunArg -> PrM DTyVarBndrUnit
     mk_extra_tvb vfa =
-      case vfa of
-        DVisFADep tvb -> pure tvb
-        DVisFAAnon k  -> (\n -> DKindedTV n () k) <$>
-                           -- Use noExactName below to avoid GHC#19743.
-                           (noExactName <$> qNewName "e")
+      visFunArgToTyVarBndr vfa <$>
+        -- Use noExactName below to avoid GHC#19743.
+        (noExactName <$> qNewName "e")
 
     mk_fix_decl :: Name -> Fixity -> DDec
     mk_fix_decl n f = DLetDec $ DInfixD f n

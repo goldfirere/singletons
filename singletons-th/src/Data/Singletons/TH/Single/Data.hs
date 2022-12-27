@@ -176,6 +176,7 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
       sName = singledDataConName opts name
       sCon = DConE sName
       pCon = DConT $ promotedDataTypeOrConName opts name
+  -- TODO RGS: This check feels silly
   checkVanillaDType $ ravelVanillaDType con_tvbs [] types rty
   indexNames <- mapM (const $ qNewName "n") types
   kinds <- mapM promoteType_NC types

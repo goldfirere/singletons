@@ -22,18 +22,18 @@ import Data.Singletons.TH.Util
 -- | Promote a 'DType' to the kind level and invoke 'checkVanillaDType'.
 -- See @Note [Vanilla-type validity checking during promotion]@.
 promoteType :: OptionsMonad m => DType -> m DKind
-promoteType = promoteType_options defaultPromoteTypeOptions{ptoCheckVanilla = True}
+promoteType = promoteType_options defaultPromoteTypeOptions{ptoCheckRank1 = True}
 
 -- | Promote a 'DType' to the kind level. This is suffixed with \"_NC\" because
--- we do not invoke 'checkVanillaDType' here.
+-- we do not invoke 'checkRank1DType' here.
 -- See @Note [Vanilla-type validity checking during promotion]@.
 promoteType_NC :: forall m. OptionsMonad m => DType -> m DKind
 promoteType_NC = promoteType_options defaultPromoteTypeOptions
 
 -- | Options for controlling how types are promoted at a fine granularity.
 data PromoteTypeOptions = PromoteTypeOptions
-  { ptoCheckVanilla :: Bool
-    -- ^ If 'True', invoke 'checkVanillaDType' on the argument type being
+  { ptoCheckRank1 :: Bool
+    -- ^ If 'True', invoke 'checkRank1DType' on the argument type being
     --   promoted. See @Note [Vanilla-type validity checking during promotion]@.
   , ptoAllowWildcards :: Bool
     -- ^ If 'True', allow promoting wildcard types. Otherwise, throw an error.
@@ -45,12 +45,12 @@ data PromoteTypeOptions = PromoteTypeOptions
 
 -- | The default 'PromoteTypeOptions':
 --
--- * 'checkVanillaDType' is not invoked.
+-- * 'checkRank1DType' is not invoked.
 --
 -- * Throw an error when attempting to promote a wildcard type.
 defaultPromoteTypeOptions :: PromoteTypeOptions
 defaultPromoteTypeOptions = PromoteTypeOptions
-  { ptoCheckVanilla = False
+  { ptoCheckRank1 = False
   , ptoAllowWildcards = False
   }
 
@@ -59,13 +59,15 @@ defaultPromoteTypeOptions = PromoteTypeOptions
 promoteType_options :: forall m. OptionsMonad m => PromoteTypeOptions -> DType -> m DKind
 promoteType_options pto typ = do
   -- See Note [Vanilla-type validity checking during promotion]
-  when (ptoCheckVanilla pto) $
-    checkVanillaDType typ
+  when (ptoCheckRank1 pto) $
+    checkRank1DType typ
   go [] typ
   where
     go :: [DTypeArg] -> DType -> m DKind
     go []       (DForallT tele ty) = do
       ty' <- go [] ty
+      -- No need to promote the telescope, as it only contains variable binders
+      -- and kinds, neither of which need to be promoted.
       pure $ DForallT tele ty'
     go args     ty@DForallT{} = illegal args ty
     -- We don't need to worry about constraints: they are used to express
@@ -129,25 +131,41 @@ promoteType_options pto typ = do
       ]
 
 -- | Promote a DTypeArg to the kind level. This is suffixed with "_NC" because
--- we do not invoke checkVanillaDType here.
+-- we do not invoke checkRank1DType here.
 -- See @Note [Vanilla-type validity checking during promotion]@.
+--
+-- TODO RGS: Do we still need this?
 promoteTypeArg_NC :: OptionsMonad m => DTypeArg -> m DTypeArg
 promoteTypeArg_NC (DTANormal t) = DTANormal <$> promoteType_NC t
 promoteTypeArg_NC ta@(DTyArg _) = pure ta -- Kinds are already promoted
 
--- | Promote a DType to the kind level, splitting it into its type variable
--- binders, argument types, and result type in the process.
-promoteUnraveled :: OptionsMonad m
-                 => DType -> m ([DTyVarBndrSpec], [DKind], DKind)
+-- | TODO RGS: Docs
+promoteDFunArgs_NC :: OptionsMonad m => DFunArgs -> m DFunArgs
+promoteDFunArgs_NC DFANil = pure DFANil
+-- No need to promote the telescope, as it only contains variable binders
+-- and kinds, neither of which need to be promoted.
+promoteDFunArgs_NC (DFAForalls tele args) =
+  DFAForalls tele <$> promoteDFunArgs_NC args
+-- Note [Discard constraints during promotion]
+promoteDFunArgs_NC (DFACxt _ctxt args) =
+  promoteDFunArgs_NC args
+promoteDFunArgs_NC (DFAAnon anon args) =
+  DFAAnon <$> promoteType_NC anon <*> promoteDFunArgs_NC args
+
+-- | Promote a DType to the kind level, splitting it into its argument and
+-- result types in the process.
+promoteUnraveled :: OptionsMonad m => DType -> m (DFunArgs, DKind)
 promoteUnraveled ty = do
-  (tvbs, _, arg_tys, res_ty) <- unravelVanillaDType ty
-  arg_kis <- mapM promoteType_NC arg_tys
+  (arg_tys, res_ty) <- unravelRank1DType ty
+  arg_kis <- promoteDFunArgs_NC arg_tys
   res_ki  <- promoteType_NC res_ty
-  return (tvbs, arg_kis, res_ki)
+  return (arg_kis, res_ki)
 
 {-
 Note [Vanilla-type validity checking during promotion]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TODO RGS: Change this, rename Note
+
 We only support promoting (and singling) vanilla types, where a vanilla
 function type is a type that:
 
@@ -172,4 +190,12 @@ incorrect to do so, just wasteful.) For this certain, certain functions are
 suffixed with "_NC" (short for "no checking") to indicate that they do not
 invoke checkVanillaDType. These functions are used on types that have already
 been validity-checked.
+
+Note [Discard constraints during promotion]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+When promoting a type containing a context (e.g., Show a => ...), we discard
+the context entirely. This is because we don't need to worry about constraints
+during promotion: they are used to express static guarantees at runtime. But,
+because we don't need to do anything special to keep static guarantees at
+compile time, we don't need to promote them.
 -}

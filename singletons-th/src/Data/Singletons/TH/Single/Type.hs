@@ -15,29 +15,27 @@ import Data.Singletons.TH.Options
 import Data.Singletons.TH.Promote.Type
 import Data.Singletons.TH.Single.Monad
 import Data.Singletons.TH.Util
-import Control.Monad
 
 singType :: DType          -- the promoted version of the thing classified by...
          -> DType          -- ... this type
          -> SgM ( DType    -- the singletonized type
-                , Int      -- the number of arguments
-                , [Name]   -- the names of the tyvars used in the sing'd type
+                , Int      -- the number of visible arguments
+                , [Name]   -- the names of the fresh tyvars used in the sing'd type
                 , DCxt     -- the context of the singletonized type
                 , [DKind]  -- the kinds of the argument types
                 , DKind )  -- the kind of the result type
 singType prom ty = do
-  (orig_tvbs, cxt, args, res) <- unravelVanillaDType ty
-  let num_args = length args
-  cxt' <- mapM singPred_NC cxt
-  arg_names <- replicateM num_args (qNewName "t")
-  prom_args <- mapM promoteType_NC args
+  (args, res) <- unravelRank1DType ty
+  let orig_tvbs = outerForallArgs args
+  (sing_args, cxt, sing_vis_arg_names, prom_vis_args) <- singDFunArgs_NC args
+  let num_vis_args = length prom_vis_args
   prom_res  <- promoteType_NC res
-  let args' = map (\n -> singFamily `DAppT` (DVarT n)) arg_names
-      res'  = singFamily `DAppT` (foldApply prom (map DVarT arg_names) `DSigT` prom_res)
+  let sing_res =
+        singFamily `DAppT`
+          (foldApply prom (map DVarT sing_vis_arg_names) `DSigT` prom_res)
                 -- Make sure to include an explicit `prom_res` kind annotation.
                 -- See Note [Preserve the order of type variables during singling],
                 -- wrinkle 3.
-      arg_tvbs = zipWith (`DKindedTV` SpecifiedSpec) arg_names prom_args
       -- If the original type signature lacks an explicit `forall`, then do not
       -- give the singled type signature an outermost `forall`. Instead, give it
       -- a `<singled-ty> :: Type` kind annotation and let GHC implicitly
@@ -45,20 +43,45 @@ singType prom ty = do
       -- See Note [Preserve the order of type variables during singling],
       -- wrinkle 1.
       ty' | null orig_tvbs
-          = ravelVanillaDType arg_tvbs cxt' args' res' `DSigT` DConT typeKindName
+          = ravelDType sing_args sing_res `DSigT` DConT typeKindName
           | otherwise
-          = ravelVanillaDType (orig_tvbs ++ arg_tvbs) cxt' args' res'
-  return (ty', num_args, arg_names, cxt, prom_args, prom_res)
+          = ravelDType sing_args sing_res
+  return (ty', num_vis_args, sing_vis_arg_names, cxt, prom_vis_args, prom_res)
 
--- Single a DPred, checking that it is a vanilla type in the process.
+-- TODO RGS: Docs
+singDFunArgs_NC :: DFunArgs
+                -> SgM (DFunArgs, DCxt, [Name], [DKind])
+singDFunArgs_NC DFANil = pure (DFANil, [], [], [])
+singDFunArgs_NC (DFAForalls tele args) = do
+  -- TODO RGS: This assumes that the `forall`s are invisible.
+  -- Should we check this?
+  (args', ctxt, sing_vis_arg_names, prom_vis_args) <- singDFunArgs_NC args
+  pure (DFAForalls tele args', ctxt, sing_vis_arg_names, prom_vis_args)
+singDFunArgs_NC (DFACxt ctxt args) = do
+  sing_ctxt <- traverse singPred_NC ctxt
+  (args', ctxt', sing_vis_arg_names, prom_vis_args) <- singDFunArgs_NC args
+  pure (DFACxt sing_ctxt args', ctxt ++ ctxt', sing_vis_arg_names, prom_vis_args)
+singDFunArgs_NC (DFAAnon vis_arg args) = do
+  prom_vis_arg <- promoteType_NC vis_arg
+  sing_vis_arg_name <- qNewName "t"
+  let sing_tvb  = DKindedTV sing_vis_arg_name SpecifiedSpec prom_vis_arg
+      sing_anon = singFamily `DAppT` DVarT sing_vis_arg_name
+  (args', ctxt, sing_vis_arg_names, prom_vis_args) <- singDFunArgs_NC args
+  pure ( DFAForalls (DForallInvis [sing_tvb]) (DFAAnon sing_anon args')
+       , ctxt
+       , sing_vis_arg_name : sing_vis_arg_names
+       , prom_vis_arg : prom_vis_args
+       )
+
+-- Single a DPred, checking that it is a rank-1 type in the process.
 -- See [Vanilla-type validity checking during promotion]
 -- in Data.Singletons.TH.Promote.Type.
 singPred :: DPred -> SgM DPred
 singPred p = do
-  checkVanillaDType p
+  checkRank1DType p
   singPred_NC p
 
--- Single a DPred. Does not check if the argument is a vanilla type.
+-- Single a DPred. Does not check if the argument is a rank-1 type.
 -- See [Vanilla-type validity checking during promotion]
 -- in Data.Singletons.TH.Promote.Type.
 singPred_NC :: DPred -> SgM DPred
@@ -93,6 +116,8 @@ singPredRec _ctx (DLitT {}) =
 {-
 Note [Preserve the order of type variables during singling]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TODO RGS: Update this
+
 singletons-th does its best to preseve the order in which users write type
 variables in type signatures for functions and data constructors. They are
 "preserved" in the sense that if one writes `foo @T1 @T2`, one should be

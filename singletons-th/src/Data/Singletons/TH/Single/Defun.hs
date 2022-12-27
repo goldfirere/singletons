@@ -151,16 +151,13 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
                                        DSigP (DVarP v)
                                              (singFamily `DAppT` dTyVarBndrToDType arg_tvb))
                                      vs last_arg_tvbs
+               wrapped <- wrapSingFun sing_fun_num (mk_defun_inst_ty arg_tvbs) $
+                          mk_sing_fun_expr sing_exp vs
                pure $ Just $
                  DInstanceD Nothing Nothing
                    (sty_ctxt ++ singI_ctxt)
                    (DConT (mkSingIName k) `DAppT` mk_inst_ty (mk_defun_inst_ty init_arg_tvbs))
-                   [ DLetDec $ DFunD (mkSingMethName k)
-                      [ DClause sing_vs
-                         $ wrapSingFun sing_fun_num (mk_defun_inst_ty arg_tvbs)
-                         $ mk_sing_fun_expr sing_exp vs
-                      ]
-                   ]
+                   [DLetDec $ DFunD (mkSingMethName k) [DClause sing_vs wrapped]]
           | otherwise
           = pure Nothing
           where

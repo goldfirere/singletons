@@ -26,7 +26,7 @@ import Data.Singletons.TH.Promote.Monad ( emitDecs, emitDecsM )
 import Data.Singletons.TH.Util
 import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
-import Control.Monad ( liftM2 )
+import Control.Monad ( liftM2, replicateM )
 import Control.Monad.IO.Class ( MonadIO )
 import Control.Monad.Reader ( MonadReader(..), ReaderT(..), asks )
 import Control.Monad.Writer ( MonadWriter, WriterT(..) )
@@ -101,14 +101,14 @@ lookup_var_con mk_sing_name mk_exp name = do
       case m_dinfo of
         Just (DVarI _ ty _) ->
           let num_args = countArgs ty in
-          return $ wrapSingFun num_args (DConT $ defunctionalizedName0 opts name)
-                               (mk_exp name)
+          wrapSingFun num_args (DConT $ defunctionalizedName0 opts name)
+                      (mk_exp name)
         _ -> return $ mk_exp name   -- lambda-bound
     Just exp -> return exp
 
-wrapSingFun :: Int -> DType -> DExp -> DExp
-wrapSingFun 0 _  = id
-wrapSingFun n ty =
+wrapSingFun :: Quasi q => Int -> DType -> DExp -> q DExp
+wrapSingFun 0 _  exp = pure exp
+wrapSingFun n ty exp =
   let wrap_fun = DVarE $ case n of
                            1 -> 'singFun1
                            2 -> 'singFun2
@@ -118,8 +118,10 @@ wrapSingFun n ty =
                            6 -> 'singFun6
                            7 -> 'singFun7
                            _ -> error "No support for functions of arity > 7."
-  in
-  (wrap_fun `DAppTypeE` ty `DAppE`)
+  in do eta_vars <- replicateM n $ qNewName "eta"
+        pure $ wrap_fun `DAppTypeE` ty
+                        `DAppE` DLamE eta_vars
+                                      (foldExp exp (map DVarE eta_vars))
 
 singM :: OptionsMonad q => [Dec] -> SgM a -> q (a, [DDec])
 singM locals (SgM rdr) = do

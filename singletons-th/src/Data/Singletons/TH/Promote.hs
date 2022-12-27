@@ -287,15 +287,22 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
       let proName = promotedTopLevelValueName opts name
       -- When computing the kind to use for the defunctionalization symbols,
       -- /don't/ use the type variable binders from the method's type...
-      (_, argKs, resK) <- promoteUnraveled ty
-      args <- mapM (const $ qNewName "arg") argKs
-      let proTvbs = zipWith (`DKindedTV` ()) args argKs
+      (argKs, resK) <- promoteUnraveled ty
+      proTvbs <-
+        traverse
+          (\visArgK -> visFunArgToTyVarBndr visArgK <$> qNewName "arg")
+          (filterDVisFunArgs argKs)
       -- ...instead, compute the type variable binders in a left-to-right order,
       -- since that is the same order that the promoted method's kind will use.
       -- See Note [Promoted class methods and kind variable ordering]
+      let argKs_no_foralls = dropForalls argKs
           meth_sak_tvbs = changeDTVFlags SpecifiedSpec $
-                          toposortTyVarsOf $ argKs ++ [resK]
-          meth_sak      = ravelVanillaDType meth_sak_tvbs [] argKs resK
+                          toposortTyVarsOf [ravelDType argKs_no_foralls resK]
+          meth_sak      = ravelDType
+                            (DFAForalls
+                              (DForallInvis meth_sak_tvbs)
+                              argKs_no_foralls)
+                            resK
       m_fixity <- reifyFixityWithLocals name
       emitDecsM $ defunctionalize proName m_fixity $ DefunSAK meth_sak
 
@@ -457,7 +464,7 @@ promoteMethod :: MethodSort
 promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
   opts <- getOptions
   (meth_arg_kis, meth_res_ki) <- promote_meth_ty
-  meth_arg_tvs <- replicateM (length meth_arg_kis) (qNewName "a")
+  meth_arg_tvs <- replicateM (countDVisFunArgs meth_arg_kis) (qNewName "a")
   let proName = promotedTopLevelValueName opts meth_name
       helperNameBase = case nameBase proName of
                          first:_ | not (isHsLetter first) -> "TFHelper"
@@ -496,7 +503,7 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
     -- the types in the instance head. (e.g., if you have `class C a` and
     -- `instance C T`, then the substitution [a |-> T] must be applied to the
     -- original method's type.)
-    promote_meth_ty :: PrM ([DKind], DKind)
+    promote_meth_ty :: PrM (DFunArgs, DKind)
     promote_meth_ty =
       case meth_sort of
         DefaultMethods ->
@@ -506,32 +513,39 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
           lookup_meth_ty
         InstanceMethods inst_sigs_map cls_subst ->
           case OMap.lookup meth_name inst_sigs_map of
-            Just ty -> do
+            Just ty ->
               -- We have an InstanceSig. These are easy: we can just use the
               -- instance signature's type directly, and no substitution for
               -- class variables is required.
-              (_tvbs, arg_kis, res_ki) <- promoteUnraveled ty
-              pure (arg_kis, res_ki)
+              promoteUnraveled ty
             Nothing -> do
               -- We don't have an InstanceSig, so we must compute the kind to use
               -- ourselves.
               (arg_kis, res_ki) <- lookup_meth_ty
               -- Substitute for the class variables in the method's type.
               -- See Note [Promoted class method kinds]
-              let arg_kis' = map (substKind cls_subst) arg_kis
+              let arg_kis' = substFunArgs cls_subst arg_kis
                   res_ki'  = substKind cls_subst res_ki
-              pure (arg_kis', res_ki')
+                  -- Compute the type variable binders in a left-to-right
+                  -- order, since that is the same order that the promoted
+                  -- method's kind will use.
+                  -- See Note [Promoted class methods and kind variable ordering]
+                  arg_kis_no_foralls' = dropForalls arg_kis'
+                  tvbs' = changeDTVFlags SpecifiedSpec $
+                          toposortTyVarsOf [ravelDType arg_kis_no_foralls' res_ki']
+                  requantified_arg_kis' =
+                    DFAForalls (DForallInvis tvbs') arg_kis_no_foralls'
+              pure (requantified_arg_kis', res_ki')
 
     -- Attempt to look up a class method's original type.
-    lookup_meth_ty :: PrM ([DKind], DKind)
+    lookup_meth_ty :: PrM (DFunArgs, DKind)
     lookup_meth_ty = do
       opts <- getOptions
       let proName = promotedTopLevelValueName opts meth_name
       case OMap.lookup meth_name orig_sigs_map of
-        Just ty -> do
+        Just ty ->
           -- The type of the method is in scope, so promote that.
-          (_tvbs, arg_kis, res_ki) <- promoteUnraveled ty
-          pure (arg_kis, res_ki)
+          promoteUnraveled ty
         Nothing -> do
           -- If the type of the method is not in scope, the only other option
           -- is to try reifying the promoted method name.
@@ -539,8 +553,16 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
                      -- See Note [Using dsReifyTypeNameInfo when promoting instances]
           case mb_info of
             Just (DTyConI (DOpenTypeFamilyD (DTypeFamilyHead _ tvbs mb_res_ki _)) _)
-              -> let arg_kis = map (defaultMaybeToTypeKind . extractTvbKind) tvbs
-                     res_ki  = defaultMaybeToTypeKind (resultSigToMaybeKind mb_res_ki)
+              -> let anon_arg_kis = map (defaultMaybeToTypeKind . extractTvbKind) tvbs
+                     res_ki = defaultMaybeToTypeKind (resultSigToMaybeKind mb_res_ki)
+                     -- Compute the type variable binders in a left-to-right
+                     -- order, since that is the same order that the promoted
+                     -- method's kind will use.
+                     -- See Note [Promoted class methods and kind variable ordering]
+                     tvbs'   = changeDTVFlags SpecifiedSpec $
+                               toposortTyVarsOf (anon_arg_kis ++ [res_ki])
+                     arg_kis = DFAForalls (DForallInvis tvbs') $
+                               foldr DFAAnon DFANil anon_arg_kis
                   in pure (arg_kis, res_ki)
             _ -> fail $ "Cannot find type annotation for " ++ show proName
 
@@ -670,7 +692,7 @@ data LetDecRHSSort
     -- The right-hand side of a class method (either a default method or a
     -- method in an instance declaration).
   | ClassMethodRHS
-      [DKind] DKind
+      DFunArgs DKind
       -- The RHS's promoted argument and result types. Needed to fix #136.
   deriving Show
 
@@ -758,7 +780,8 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                 )
               -- 2. We have some kind information in the form of a LetDecRHSKindInfo.
               Just (LDRKI m_sak argKs resK) ->
-                let all_args = local_tvbs ++ zipWith (`DKindedTV` ()) tyvarNames argKs in
+                let vis_args = zipWith visFunArgToTyVarBndr (filterDVisFunArgs argKs) tyvarNames
+                    all_args = local_tvbs ++ vis_args in
                 case m_sak of
                   -- 2(a). We do not have a standalone kind signature.
                   Nothing ->
@@ -799,10 +822,11 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                                  -- 1. Information about the promoted kind,
                                  --    if available.
                                  --
-                                 -- 2. The number of arguments the let-dec has.
-                                 --    If no kind information is available from
-                                 --    which to infer this number, then this
-                                 --    will default to the earlier Int argument.
+                                 -- 2. The number of visible arguments the
+                                 --    let-dec has. If no kind information is
+                                 --    available from which to infer this
+                                 --    number, then this will default to the
+                                 --    earlier Int argument.
     promote_let_dec_ty all_locals default_num_args =
       case rhs_sort of
         ClassMethodRHS arg_kis res_ki
@@ -812,21 +836,22 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
              -- point in trying to get the order of type variables correct,
              -- since we don't apply these functions with visible kind
              -- applications.
-             let sak = ravelVanillaDType [] [] arg_kis res_ki in
-             return (Just (LDRKI (Just sak) arg_kis res_ki), length arg_kis)
+             let sak = ravelDType (dropForalls arg_kis) res_ki in
+             return (Just (LDRKI (Just sak) arg_kis res_ki), countDVisFunArgs arg_kis)
         LetBindingRHS
           |  Just ty <- OMap.lookup name type_env
           -> do
           -- promoteType turns rank-1 uses of (->) into (~>). So, we unravel
           -- first to avoid this behavior, and then ravel back.
-          (tvbs, argKs, resultK) <- promoteUnraveled ty
-          let m_sak | null all_locals = Just $ ravelVanillaDType tvbs [] argKs resultK
+          (argKs, resultK) <- promoteUnraveled ty
+          let m_sak | null all_locals = Just $ ravelDType argKs resultK
                       -- If this let-dec closes over local variables, then
                       -- don't give it a SAK.
                       -- See Note [No SAKs for let-decs with local variables]
                     | otherwise       = Nothing
-          -- invariant: count_args ty == length argKs
-          return (Just (LDRKI m_sak argKs resultK), length argKs)
+          -- invariant: count_args ty == countDVisFunArgs argKs
+          -- TODO RGS: Update me
+          return (Just (LDRKI m_sak argKs resultK), countDVisFunArgs argKs)
 
           |  otherwise
           -> return (Nothing, default_num_args)
@@ -853,12 +878,12 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
 -- related to the promoted kind of a class method default or normal
 -- let binding.
 data LetDecRHSKindInfo =
-  LDRKI (Maybe DKind)    -- The standalone kind signature, if applicable.
-                         -- This will be Nothing if the let-dec RHS has local
-                         -- variables that it closes over.
-                         -- See Note [No SAKs for let-decs with local variables]
-        [DKind]          -- The argument kinds.
-        DKind            -- The result kind.
+  LDRKI (Maybe DKind) -- The standalone kind signature, if applicable.
+                      -- This will be Nothing if the let-dec RHS has local
+                      -- variables that it closes over.
+                      -- See Note [No SAKs for let-decs with local variables]
+        DFunArgs      -- The argument kinds.
+        DKind         -- The result kind.
 
 {-
 Note [No SAKs for let-decs with local variables]
