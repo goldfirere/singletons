@@ -233,17 +233,18 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     type Foo1 :: a -> Maybe a -> a
     type family Foo1 (a :: a) (a :: Maybe a) :: a where
       Foo1 d x = Case_0123456789876543210 d x x
-    sFoo5 :: forall a (t :: a). Sing t -> Sing (Apply Foo5Sym0 t :: a)
+    sFoo5 ::
+      forall (t :: a). Sing t -> Sing (Apply Foo5Sym0 t :: a) :: Type
     sFoo4 :: forall a (t :: a). Sing t -> Sing (Apply Foo4Sym0 t :: a)
     sFoo3 ::
-      forall a b (t :: a) (t :: b). Sing t
-                                    -> Sing t -> Sing (Apply (Apply Foo3Sym0 t) t :: a)
+      forall (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply Foo3Sym0 t) t :: a) :: Type
     sFoo2 ::
-      forall a (t :: a) (t :: Maybe a). Sing t
-                                        -> Sing t -> Sing (Apply (Apply Foo2Sym0 t) t :: a)
+      forall (t :: a) (t :: Maybe a).
+      Sing t -> Sing t -> Sing (Apply (Apply Foo2Sym0 t) t :: a) :: Type
     sFoo1 ::
-      forall a (t :: a) (t :: Maybe a). Sing t
-                                        -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a)
+      forall (t :: a) (t :: Maybe a).
+      Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a) :: Type
     sFoo5 (sX :: Sing x)
       = (id @(Sing (Case_0123456789876543210 x x)))
           (case sX of
@@ -262,7 +263,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
           (case sX of
              (sY :: Sing y)
                -> let
-                    sZ :: Sing (Let0123456789876543210ZSym2 y x :: a)
+                    sZ :: Sing (Let0123456789876543210ZSym2 y x :: a) :: Type
                     sZ = sY
                   in sZ)
     sFoo3 (sA :: Sing a) (sB :: Sing b)

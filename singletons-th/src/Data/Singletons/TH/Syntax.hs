@@ -18,26 +18,8 @@ import Language.Haskell.TH.Syntax hiding (Type)
 import Language.Haskell.TH.Desugar
 import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
-import Language.Haskell.TH.Desugar.OSet (OSet)
 
 type VarPromotions = [(Name, Name)] -- from term-level name to type-level name
-
--- Information that is accumulated when promoting patterns.
-data PromDPatInfos = PromDPatInfos
-  { prom_dpat_vars    :: VarPromotions
-      -- Maps term-level pattern variables to their promoted, type-level counterparts.
-  , prom_dpat_sig_kvs :: OSet Name
-      -- Kind variables bound by DSigPas.
-      -- See Note [Explicitly binding kind variables] in
-      -- Data.Singletons.TH.Promote.Monad.
-  }
-
-instance Semigroup PromDPatInfos where
-  PromDPatInfos vars1 sig_kvs1 <> PromDPatInfos vars2 sig_kvs2
-    = PromDPatInfos (vars1 <> vars2) (sig_kvs1 <> sig_kvs2)
-
-instance Monoid PromDPatInfos where
-  mempty = PromDPatInfos mempty mempty
 
 -- A list of 'SingDSigPaInfos' is produced when singling pattern signatures, as we
 -- must case on the 'DExp's and match on them using the supplied 'DType's to
@@ -161,20 +143,16 @@ data LetDecEnv ann = LetDecEnv
                    , lde_types :: OMap Name DType  -- type signatures
                    , lde_infix :: OMap Name Fixity -- infix declarations
                    , lde_proms :: IfAnn ann (OMap Name DType) () -- possibly, promotions
-                   , lde_bound_kvs :: IfAnn ann (OMap Name (OSet Name)) ()
-                     -- The set of bound variables in scope.
-                     -- See Note [Explicitly binding kind variables]
-                     -- in Data.Singletons.TH.Promote.Monad.
                    }
 type ALetDecEnv = LetDecEnv Annotated
 type ULetDecEnv = LetDecEnv Unannotated
 
 instance Semigroup ULetDecEnv where
-  LetDecEnv defns1 types1 infx1 _ _ <> LetDecEnv defns2 types2 infx2 _ _ =
-    LetDecEnv (defns1 <> defns2) (types1 <> types2) (infx1 <> infx2) () ()
+  LetDecEnv defns1 types1 infx1 _ <> LetDecEnv defns2 types2 infx2 _ =
+    LetDecEnv (defns1 <> defns2) (types1 <> types2) (infx1 <> infx2) ()
 
 instance Monoid ULetDecEnv where
-  mempty = LetDecEnv OMap.empty OMap.empty OMap.empty () ()
+  mempty = LetDecEnv OMap.empty OMap.empty OMap.empty ()
 
 valueBinding :: Name -> ULetDecRHS -> ULetDecEnv
 valueBinding n v = emptyLetDecEnv { lde_defns = OMap.singleton n v }

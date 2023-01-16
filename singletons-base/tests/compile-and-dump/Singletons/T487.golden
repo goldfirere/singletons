@@ -49,12 +49,13 @@ Singletons/T487.hs:(0,0)-(0,0): Splicing declarations
     type ExprEx :: Char
     type family ExprEx :: Char where
       ExprEx = 'a'
-    sCharToNatEx :: Sing (CharToNatExSym0 :: Natural)
-    sNatToCharEx :: Sing (NatToCharExSym0 :: Char)
-    sUnconsEx :: Sing (UnconsExSym0 :: Maybe (Char, Symbol))
+    sCharToNatEx :: Sing (CharToNatExSym0 :: Natural) :: Type
+    sNatToCharEx :: Sing (NatToCharExSym0 :: Char) :: Type
+    sUnconsEx :: Sing (UnconsExSym0 :: Maybe (Char, Symbol)) :: Type
     sConsEx ::
-      forall (t :: Char). Sing t -> Sing (Apply ConsExSym0 t :: Symbol)
-    sExprEx :: Sing (ExprExSym0 :: Char)
+      forall (t :: Char).
+      Sing t -> Sing (Apply ConsExSym0 t :: Symbol) :: Type
+    sExprEx :: Sing (ExprExSym0 :: Char) :: Type
     sCharToNatEx
       = (applySing ((singFun1 @CharToNatSym0) sCharToNat))
           (sing :: Sing 'a')

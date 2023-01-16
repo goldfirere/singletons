@@ -9,7 +9,6 @@ Singletonizes types.
 module Data.Singletons.TH.Single.Type where
 
 import Language.Haskell.TH.Desugar
-import Language.Haskell.TH.Desugar.OSet (OSet)
 import Language.Haskell.TH.Syntax
 import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
@@ -17,14 +16,8 @@ import Data.Singletons.TH.Promote.Type
 import Data.Singletons.TH.Single.Monad
 import Data.Singletons.TH.Util
 import Control.Monad
-import Data.Foldable
-import Data.Function
-import Data.List (deleteFirstsBy)
 
-singType :: OSet Name      -- the set of bound kind variables in this scope
-                           -- see Note [Explicitly binding kind variables]
-                           -- in Data.Singletons.TH.Promote.Monad
-         -> DType          -- the promoted version of the thing classified by...
+singType :: DType          -- the promoted version of the thing classified by...
          -> DType          -- ... this type
          -> SgM ( DType    -- the singletonized type
                 , Int      -- the number of arguments
@@ -32,7 +25,7 @@ singType :: OSet Name      -- the set of bound kind variables in this scope
                 , DCxt     -- the context of the singletonized type
                 , [DKind]  -- the kinds of the argument types
                 , DKind )  -- the kind of the result type
-singType bound_kvs prom ty = do
+singType prom ty = do
   (orig_tvbs, cxt, args, res) <- unravelVanillaDType ty
   let num_args = length args
   cxt' <- mapM singPred_NC cxt
@@ -44,38 +37,18 @@ singType bound_kvs prom ty = do
                 -- Make sure to include an explicit `prom_res` kind annotation.
                 -- See Note [Preserve the order of type variables during singling],
                 -- wrinkle 3.
-      kvbs     = singTypeKVBs orig_tvbs prom_args cxt' prom_res bound_kvs
-      all_tvbs = kvbs ++ zipWith (`DKindedTV` SpecifiedSpec) arg_names prom_args
-      ty'      = ravelVanillaDType all_tvbs cxt' args' res'
+      arg_tvbs = zipWith (`DKindedTV` SpecifiedSpec) arg_names prom_args
+      -- If the original type signature lacks an explicit `forall`, then do not
+      -- give the singled type signature an outermost `forall`. Instead, give it
+      -- a `<singled-ty> :: Type` kind annotation and let GHC implicitly
+      -- quantify any type variables that are free in `<singled-ty>`.
+      -- See Note [Preserve the order of type variables during singling],
+      -- wrinkle 1.
+      ty' | null orig_tvbs
+          = ravelVanillaDType arg_tvbs cxt' args' res' `DSigT` DConT typeKindName
+          | otherwise
+          = ravelVanillaDType (orig_tvbs ++ arg_tvbs) cxt' args' res'
   return (ty', num_args, arg_names, cxt, prom_args, prom_res)
-
--- Compute the kind variable binders to use in the singled version of a type
--- signature. This has two main call sites: singType and D.S.TH.Single.Data.singCtor.
---
--- This implements the advice documented in
--- Note [Preserve the order of type variables during singling], wrinkle 1.
-singTypeKVBs ::
-     [DTyVarBndrSpec] -- ^ The bound type variables from the original type signature.
-  -> [DType]          -- ^ The argument types of the signature (promoted).
-  -> DCxt             -- ^ The context of the signature (singled).
-  -> DType            -- ^ The result type of the signature (promoted).
-  -> OSet Name        -- ^ The type variables previously bound in the current scope.
-  -> [DTyVarBndrSpec] -- ^ The kind variables for the singled type signature.
-singTypeKVBs orig_tvbs prom_args sing_ctxt prom_res bound_tvbs
-  | null orig_tvbs
-  -- There are no explicitly `forall`ed type variable binders, so we must
-  -- infer them ourselves.
-  = changeDTVFlags SpecifiedSpec $
-    deleteFirstsBy
-      ((==) `on` extractTvbName)
-      (toposortTyVarsOf $ prom_args ++ sing_ctxt ++ [prom_res])
-      (map (`DPlainTV` ()) $ toList bound_tvbs)
-      -- Make sure to subtract out the bound variables currently in scope,
-      -- lest we accidentally shadow them in this type signature.
-      -- See Note [Explicitly binding kind variables] in D.S.TH.Promote.Monad.
-  | otherwise
-  -- There is an explicit `forall`, so this case is easy.
-  = orig_tvbs
 
 -- Single a DPred, checking that it is a vanilla type in the process.
 -- See [Vanilla-type validity checking during promotion]
@@ -152,14 +125,83 @@ What happens if there is no explicit `forall`, as in this example?
 
 This time, the order of type variables vis-à-vis TypeApplications is determined
 by their left-to-right order of appearance in the type signature. This order
-dictates that `a` is quantified before `b`, so we mirror this order in the
-singled type signature:
+dictates that `a` is quantified before `b`, so we must mirror this order in the
+singled type signature.
+
+One way to accomplish this would be to compute the order in which the type
+variables appear and then explicitly quantify them. In the `absurd` example
+above, this would be tantamount to writing:
 
   sAbsurd :: forall a b (v :: V a). Sing v -> Sing (Absurd v :: b)
+                    ^^^
+                    |||
+         Explicitly quantified by singletons-th,
+         not in the original type signature
 
-The `singTypeKVBs` function is responsible for detecting the presence or
-absence of an explicit `forall`, and in the event that an explicit `forall` is
-omitted, it infers the correct order of type variables.
+This is possible to do, and indeed, singletons-th used to do this. However, it
+is a bit tiresome to implement. In order to know which type variables to
+quantify, you must keep track of which type variables have been brought into
+scope at all times. For the historical details on how this worked, see this
+now-removed Note describing the old implementation:
+https://github.com/goldfirere/singletons/blob/10ef27880d7ecc16241824c504ca83e2bb6ca787/singletons-th/src/Data/Singletons/TH/Promote/Monad.hs#L135-L192
+
+A much more straightforward approach, which singletons-th currently uses, is to
+let GHC do the hard work of implicitly quantifying the type variables. That is,
+we will single `absurd` to something like this:
+
+  sAbsurd :: () => forall (v :: V a). Sing v -> Sing (Absurd v :: b)
+
+This works because just like in the original type signature, `a` and `b` are
+implicitly quantified, and more importantly, they are quantified in exactly the
+same order as in the original type signature.
+
+Why do we need the `() => ...` part? If we had instead written the type
+signature like this:
+
+  sAbsurd :: forall (v :: V a). Sing v -> Sing (Absurd v :: b)
+
+Then GHC would reject `a` and `b` for being out of scope. This is because of
+GHC's "forall-or-nothing" rule: if a type signature has an outermost forall,
+then all type variable occurrences in the type signature must have explicit
+binding sites. Using `() => forall (v :: V a). ...` prevents the `forall` from
+being an outermost `forall`, which bypasses the forall-or-nothing rule.
+
+Some further complications:
+
+* Template Haskell doesn't actually allow you to splice in types of the form
+  `() => ...` in practice.
+  See https://gitlab.haskell.org/ghc/ghc/-/issues/16396. Luckily, this isn't a
+  deal-breaker, as we can also avoid the forall-or-nothing rule by annotating
+  the type signature with an explicit `... :: Type` annotation:
+
+    sAbsurd :: ((forall (v :: V a). Sing v -> Sing (Absurd v :: b)) :: Type)
+
+  This is the approach that singletons-th actually uses. Note that there is one
+  spot in the code (in D.S.TH.Single.singInstD) that must be taught to look
+  through these `... :: Type` annotations, but this approach is otherwise fairly
+  non-invasive.
+
+* We cannot use this trick when singling the types of data constructors. That
+  is, we cannot single this:
+
+    data T a where
+      MkT :: a -> T a
+
+  To this:
+
+    data ST z where
+      SMkT :: ((forall (x :: a). Sing x -> ST (MkT x)) :: Type)
+
+  This is because GADT syntax does not currently permit nested `forall`s of this
+  sort. (It might permit them in the future if
+  https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0402-gadt-syntax.rst
+  is implemented, but not currently.) As a result, we /always/ explicitly
+  quantify all type variables in a data constructor's type, regardless of
+  whether the original type implicitly quantified them or not. In the example
+  above, that means that the singled version would be:
+
+    data ST z where
+      SMkT :: forall a (x :: a). Sing x -> ST (MkT x)
 
 -----
 -- Wrinkle 2: The TH reification swamp

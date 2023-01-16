@@ -26,9 +26,9 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
     type family ($>) (a :: Natural) (a :: Natural) :: Natural where
       ($>) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (+@#@$) a_0123456789876543210) a_0123456789876543210
     (%$>) ::
-      forall (t :: Natural) (t :: Natural). Sing t
-                                            -> Sing t
-                                               -> Sing (Apply (Apply ($>@#@$) t) t :: Natural)
+      forall (t :: Natural) (t :: Natural).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply ($>@#@$) t) t :: Natural) :: Type
     (%$>)
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
       (sA_0123456789876543210 :: Sing a_0123456789876543210)

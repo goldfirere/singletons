@@ -44,9 +44,11 @@ Singletons/T489.hs:(0,0)-(0,0): Splicing declarations
       Blah ('Just @a x) = Apply (Apply (:@#@$) (x :: a)) NilSym0
       Blah ('Nothing @a) = NilSym0 :: [a]
     sFlurmp ::
-      forall (t :: Maybe ()). Sing t -> Sing (Apply FlurmpSym0 t :: ())
+      forall (t :: Maybe ()).
+      Sing t -> Sing (Apply FlurmpSym0 t :: ()) :: Type
     sBlah ::
-      forall a (t :: Maybe a). Sing t -> Sing (Apply BlahSym0 t :: [a])
+      forall (t :: Maybe a).
+      Sing t -> Sing (Apply BlahSym0 t :: [a]) :: Type
     sFlurmp (SNothing @_) = STuple0
     sFlurmp (SJust STuple0) = STuple0
     sBlah (SJust @a (sX :: Sing x))

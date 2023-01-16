@@ -35,8 +35,9 @@ Singletons/T322.hs:(0,0)-(0,0): Splicing declarations
       (!) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (||@#@$) a_0123456789876543210) a_0123456789876543210
     infixr 2 %!
     (%!) ::
-      forall (t :: Bool) (t :: Bool). Sing t
-                                      -> Sing t -> Sing (Apply (Apply (!@#@$) t) t :: Bool)
+      forall (t :: Bool) (t :: Bool).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply (!@#@$) t) t :: Bool) :: Type
     (%!)
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
       (sA_0123456789876543210 :: Sing a_0123456789876543210)

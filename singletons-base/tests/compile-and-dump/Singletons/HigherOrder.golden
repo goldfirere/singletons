@@ -295,31 +295,33 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       Map _ '[] = NilSym0
       Map f ('(:) h t) = Apply (Apply (:@#@$) (Apply f h)) (Apply (Apply MapSym0 f) t)
     sEtad ::
-      forall (t :: [Nat]) (t :: [Bool]). Sing t
-                                         -> Sing t -> Sing (Apply (Apply EtadSym0 t) t :: [Nat])
+      forall (t :: [Nat]) (t :: [Bool]).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply EtadSym0 t) t :: [Nat]) :: Type
     sSplunge ::
-      forall (t :: [Nat]) (t :: [Bool]). Sing t
-                                         -> Sing t -> Sing (Apply (Apply SplungeSym0 t) t :: [Nat])
+      forall (t :: [Nat]) (t :: [Bool]).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply SplungeSym0 t) t :: [Nat]) :: Type
     sFoo ::
-      forall a
-             b
-             (t :: (~>) ((~>) a b) ((~>) a b))
-             (t :: (~>) a b)
-             (t :: a). Sing t
-                       -> Sing t
-                          -> Sing t -> Sing (Apply (Apply (Apply FooSym0 t) t) t :: b)
+      forall (t :: (~>) ((~>) a b) ((~>) a b)) (t :: (~>) a b) (t :: a).
+      Sing t
+      -> Sing t
+         -> Sing t
+            -> Sing (Apply (Apply (Apply FooSym0 t) t) t :: b) :: Type
     sZipWith ::
-      forall a b c (t :: (~>) a ((~>) b c)) (t :: [a]) (t :: [b]). Sing t
-                                                                   -> Sing t
-                                                                      -> Sing t
-                                                                         -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c])
+      forall (t :: (~>) a ((~>) b c)) (t :: [a]) (t :: [b]).
+      Sing t
+      -> Sing t
+         -> Sing t
+            -> Sing (Apply (Apply (Apply ZipWithSym0 t) t) t :: [c]) :: Type
     sLiftMaybe ::
-      forall a b (t :: (~>) a b) (t :: Maybe a). Sing t
-                                                 -> Sing t
-                                                    -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b)
+      forall (t :: (~>) a b) (t :: Maybe a).
+      Sing t
+      -> Sing t
+         -> Sing (Apply (Apply LiftMaybeSym0 t) t :: Maybe b) :: Type
     sMap ::
-      forall a b (t :: (~>) a b) (t :: [a]). Sing t
-                                             -> Sing t -> Sing (Apply (Apply MapSym0 t) t :: [b])
+      forall (t :: (~>) a b) (t :: [a]).
+      Sing t -> Sing t -> Sing (Apply (Apply MapSym0 t) t :: [b]) :: Type
     sEtad
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
       (sA_0123456789876543210 :: Sing a_0123456789876543210)

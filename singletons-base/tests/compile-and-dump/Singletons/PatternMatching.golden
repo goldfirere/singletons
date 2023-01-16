@@ -451,19 +451,21 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type family X_0123456789876543210 where
       X_0123456789876543210 = PrSym0
     sSilly ::
-      forall a (t :: a). Sing t -> Sing (Apply SillySym0 t :: ())
+      forall (t :: a). Sing t -> Sing (Apply SillySym0 t :: ()) :: Type
     sFoo2 ::
-      forall a b (t :: (a, b)). Sing t -> Sing (Apply Foo2Sym0 t :: a)
+      forall (t :: (a, b)).
+      Sing t -> Sing (Apply Foo2Sym0 t :: a) :: Type
     sFoo1 ::
-      forall a b (t :: (a, b)). Sing t -> Sing (Apply Foo1Sym0 t :: a)
+      forall (t :: (a, b)).
+      Sing t -> Sing (Apply Foo1Sym0 t :: a) :: Type
     sBlimy :: Sing @_ BlimySym0
-    sLsz :: Sing (LszSym0 :: Nat)
+    sLsz :: Sing (LszSym0 :: Nat) :: Type
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
     sTt :: Sing @_ TtSym0
     sTjz :: Sing @_ TjzSym0
     sTf :: Sing @_ TfSym0
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
-    sFls :: Sing (FlsSym0 :: Bool)
+    sFls :: Sing (FlsSym0 :: Bool) :: Type
     sZz :: Sing @_ ZzSym0
     sJz :: Sing @_ JzSym0
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0

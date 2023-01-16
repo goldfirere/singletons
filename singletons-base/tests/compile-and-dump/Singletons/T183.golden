@@ -340,28 +340,30 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
       F2 (x :: Maybe a) = x :: Maybe a
     type family F1 a where
       F1 (x :: Maybe Bool) = x :: Maybe Bool
-    sFoo9 :: forall a (t :: a). Sing t -> Sing (Apply Foo9Sym0 t :: a)
+    sFoo9 ::
+      forall (t :: a). Sing t -> Sing (Apply Foo9Sym0 t :: a) :: Type
     sFoo8 ::
       forall a (t :: Maybe a). Sing t
                                -> Sing (Apply Foo8Sym0 t :: Maybe a)
     sFoo7 ::
-      forall a b (t :: a) (t :: b). Sing t
-                                    -> Sing t -> Sing (Apply (Apply Foo7Sym0 t) t :: a)
+      forall (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply Foo7Sym0 t) t :: a) :: Type
     sFoo6 ::
-      forall a (t :: Maybe (Maybe a)). Sing t
-                                       -> Sing (Apply Foo6Sym0 t :: Maybe (Maybe a))
+      forall (t :: Maybe (Maybe a)).
+      Sing t -> Sing (Apply Foo6Sym0 t :: Maybe (Maybe a)) :: Type
     sFoo5 ::
-      forall a (t :: Maybe (Maybe a)). Sing t
-                                       -> Sing (Apply Foo5Sym0 t :: Maybe (Maybe a))
+      forall (t :: Maybe (Maybe a)).
+      Sing t -> Sing (Apply Foo5Sym0 t :: Maybe (Maybe a)) :: Type
     sFoo4 ::
-      forall a b (t :: (a, b)). Sing t
-                                -> Sing (Apply Foo4Sym0 t :: (b, a))
+      forall (t :: (a, b)).
+      Sing t -> Sing (Apply Foo4Sym0 t :: (b, a)) :: Type
     sFoo3 ::
       forall a (t :: Maybe a). Sing t -> Sing (Apply Foo3Sym0 t :: a)
     sFoo2 ::
       forall a (t :: Maybe a). Sing t -> Sing (Apply Foo2Sym0 t :: a)
     sFoo1 ::
-      forall a (t :: Maybe a). Sing t -> Sing (Apply Foo1Sym0 t :: a)
+      forall (t :: Maybe a).
+      Sing t -> Sing (Apply Foo1Sym0 t :: a) :: Type
     sG :: forall arg. Sing arg -> Sing (Apply GSym0 arg)
     sF3 :: forall arg. Sing arg -> Sing (Apply F3Sym0 arg)
     sF2 :: forall arg. Sing arg -> Sing (Apply F2Sym0 arg)
@@ -371,9 +373,10 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
           (_ :: Sing (x :: a))
             -> let
                  sG ::
-                   forall b (t :: a) (t :: b). Sing t
-                                               -> Sing t
-                                                  -> Sing (Apply (Apply (Let0123456789876543210GSym1 x) t) t :: a)
+                   forall (t :: a) (t :: b).
+                   Sing t
+                   -> Sing t
+                      -> Sing (Apply (Apply (Let0123456789876543210GSym1 x) t) t :: a) :: Type
                  sG (sY :: Sing y) _ = sY
                in
                  (applySing

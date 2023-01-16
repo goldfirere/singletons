@@ -35,8 +35,9 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
       ($$:) _ _ = FalseSym0
     infixl 5 %$$:
     (%$$:) ::
-      forall (t :: Bool) (t :: Bool). Sing t
-                                      -> Sing t -> Sing (Apply (Apply ($$:@#@$) t) t :: Bool)
+      forall (t :: Bool) (t :: Bool).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply ($$:@#@$) t) t :: Bool) :: Type
     (%$$:) _ _ = SFalse
     instance SingI (($$:@#@$) :: (~>) Bool ((~>) Bool Bool)) where
       sing = (singFun2 @($$:@#@$)) (%$$:)

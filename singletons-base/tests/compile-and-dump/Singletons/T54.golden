@@ -36,7 +36,8 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
     type G :: Bool -> Bool
     type family G (a :: Bool) :: Bool where
       G e = Apply (Case_0123456789876543210 e (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e)) e
-    sG :: forall (t :: Bool). Sing t -> Sing (Apply GSym0 t :: Bool)
+    sG ::
+      forall (t :: Bool). Sing t -> Sing (Apply GSym0 t :: Bool) :: Type
     sG (sE :: Sing e)
       = (applySing
            (let

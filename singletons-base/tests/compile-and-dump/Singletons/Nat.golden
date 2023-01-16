@@ -175,10 +175,11 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     instance POrd Nat where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     sPred ::
-      forall (t :: Nat). Sing t -> Sing (Apply PredSym0 t :: Nat)
+      forall (t :: Nat). Sing t -> Sing (Apply PredSym0 t :: Nat) :: Type
     sPlus ::
-      forall (t :: Nat) (t :: Nat). Sing t
-                                    -> Sing t -> Sing (Apply (Apply PlusSym0 t) t :: Nat)
+      forall (t :: Nat) (t :: Nat).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply PlusSym0 t) t :: Nat) :: Type
     sPred SZero = SZero
     sPred (SSucc (sN :: Sing n)) = sN
     sPlus SZero (sM :: Sing m) = sM

@@ -58,8 +58,9 @@ Singletons/T326.hs:0:0:: Splicing declarations
     infixl 9 <%%>
     class SC2 (a :: Type) where
       (%<%%>) ::
-        forall (t :: a) (t :: a). Sing t
-                                  -> Sing t -> Sing (Apply (Apply (<%%>@#@$) t) t :: a)
+        forall (t :: a) (t :: a).
+        Sing t
+        -> Sing t -> Sing (Apply (Apply (<%%>@#@$) t) t :: a) :: Type
     type SC2 :: Type -> Constraint
     infixl 9 %<%%>
     instance SC2 a => SingI ((<%%>@#@$) :: (~>) a ((~>) a a)) where

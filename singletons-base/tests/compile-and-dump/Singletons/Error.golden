@@ -23,7 +23,7 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
       Head ('(:) a _) = a
       Head '[] = Apply ErrorSym0 "head: empty list"
     sHead ::
-      forall a (t :: [a]). Sing t -> Sing (Apply HeadSym0 t :: a)
+      forall (t :: [a]). Sing t -> Sing (Apply HeadSym0 t :: a) :: Type
     sHead (SCons (sA :: Sing a) _) = sA
     sHead SNil = sError (sing :: Sing "head: empty list")
     instance SingI (HeadSym0 :: (~>) [a] a) where

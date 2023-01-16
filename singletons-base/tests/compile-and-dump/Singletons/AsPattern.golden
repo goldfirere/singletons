@@ -251,19 +251,20 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       MaybePlus ('Just n) = Apply JustSym0 (Apply (Apply PlusSym0 (Apply SuccSym0 ZeroSym0)) n)
       MaybePlus 'Nothing = Let0123456789876543210PSym0
     sFoo ::
-      forall (t :: [Nat]). Sing t -> Sing (Apply FooSym0 t :: [Nat])
+      forall (t :: [Nat]).
+      Sing t -> Sing (Apply FooSym0 t :: [Nat]) :: Type
     sTup ::
-      forall (t :: (Nat, Nat)). Sing t
-                                -> Sing (Apply TupSym0 t :: (Nat, Nat))
+      forall (t :: (Nat, Nat)).
+      Sing t -> Sing (Apply TupSym0 t :: (Nat, Nat)) :: Type
     sBaz_ ::
-      forall (t :: Maybe Baz). Sing t
-                               -> Sing (Apply Baz_Sym0 t :: Maybe Baz)
+      forall (t :: Maybe Baz).
+      Sing t -> Sing (Apply Baz_Sym0 t :: Maybe Baz) :: Type
     sBar ::
-      forall (t :: Maybe Nat). Sing t
-                               -> Sing (Apply BarSym0 t :: Maybe Nat)
+      forall (t :: Maybe Nat).
+      Sing t -> Sing (Apply BarSym0 t :: Maybe Nat) :: Type
     sMaybePlus ::
-      forall (t :: Maybe Nat). Sing t
-                               -> Sing (Apply MaybePlusSym0 t :: Maybe Nat)
+      forall (t :: Maybe Nat).
+      Sing t -> Sing (Apply MaybePlusSym0 t :: Maybe Nat) :: Type
     sFoo SNil
       = let
           sP :: Sing @_ Let0123456789876543210PSym0

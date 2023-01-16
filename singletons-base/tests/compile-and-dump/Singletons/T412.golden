@@ -173,8 +173,8 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
             (,) (SomeSing c) (SomeSing c) -> SomeSing ((SMkD1 c) c)
     class SC1 a b where
       sM1 ::
-        forall (t :: a) (t :: b). Sing t
-                                  -> Sing t -> Sing (Apply (Apply M1Sym0 t) t :: Bool)
+        forall (t :: a) (t :: b).
+        Sing t -> Sing t -> Sing (Apply (Apply M1Sym0 t) t :: Bool) :: Type
       infix 6 `sM1`
     instance (SingI n, SingI n) => SingI (MkD1 (n :: a) (n :: b)) where
       sing = (SMkD1 sing) sing
@@ -230,8 +230,8 @@ Singletons/T412.hs:0:0:: Splicing declarations
     infix 6 `M2`
     class SC2 (a :: Type) (b :: Type) where
       sM2 ::
-        forall (t :: a) (t :: b). Sing t
-                                  -> Sing t -> Sing (Apply (Apply M2Sym0 t) t :: Bool)
+        forall (t :: a) (t :: b).
+        Sing t -> Sing t -> Sing (Apply (Apply M2Sym0 t) t :: Bool) :: Type
     type SC2 :: Type -> Type -> Constraint
     infix 5 `SC2`
     infix 6 `sM2`

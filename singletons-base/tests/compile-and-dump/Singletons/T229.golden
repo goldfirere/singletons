@@ -20,7 +20,8 @@ Singletons/T229.hs:(0,0)-(0,0): Splicing declarations
     type family US___foo (a :: Bool) :: Bool where
       US___foo _ = TrueSym0
     ___sfoo ::
-      forall (t :: Bool). Sing t -> Sing (Apply US___fooSym0 t :: Bool)
+      forall (t :: Bool).
+      Sing t -> Sing (Apply US___fooSym0 t :: Bool) :: Type
     ___sfoo _ = STrue
     instance SingI (US___fooSym0 :: (~>) Bool Bool) where
       sing = (singFun1 @US___fooSym0) ___sfoo

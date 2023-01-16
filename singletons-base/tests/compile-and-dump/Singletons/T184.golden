@@ -344,18 +344,21 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
     type family Boogie (a :: Maybe a) (a :: Maybe Bool) :: Maybe a where
       Boogie ma mb = Apply (Apply (>>=@#@$) ma) (Apply (Apply Lambda_0123456789876543210Sym0 ma) mb)
     sTrues ::
-      forall (t :: [Bool]). Sing t -> Sing (Apply TruesSym0 t :: [Bool])
+      forall (t :: [Bool]).
+      Sing t -> Sing (Apply TruesSym0 t :: [Bool]) :: Type
     sCartProd ::
-      forall a b (t :: [a]) (t :: [b]). Sing t
-                                        -> Sing t
-                                           -> Sing (Apply (Apply CartProdSym0 t) t :: [(a, b)])
+      forall (t :: [a]) (t :: [b]).
+      Sing t
+      -> Sing t
+         -> Sing (Apply (Apply CartProdSym0 t) t :: [(a, b)]) :: Type
     sZip' ::
-      forall a b (t :: [a]) (t :: [b]). Sing t
-                                        -> Sing t -> Sing (Apply (Apply Zip'Sym0 t) t :: [(a, b)])
+      forall (t :: [a]) (t :: [b]).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply Zip'Sym0 t) t :: [(a, b)]) :: Type
     sBoogie ::
-      forall a (t :: Maybe a) (t :: Maybe Bool). Sing t
-                                                 -> Sing t
-                                                    -> Sing (Apply (Apply BoogieSym0 t) t :: Maybe a)
+      forall (t :: Maybe a) (t :: Maybe Bool).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply BoogieSym0 t) t :: Maybe a) :: Type
     sTrues (sXs :: Sing xs)
       = (applySing ((applySing ((singFun2 @(>>=@#@$)) (%>>=))) sXs))
           ((singFun1 @(Apply Lambda_0123456789876543210Sym0 xs))

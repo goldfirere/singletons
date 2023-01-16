@@ -298,11 +298,13 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     instance PEq Foo2 where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     sFooCompare ::
-      forall (t :: Foo) (t :: Foo). Sing t
-                                    -> Sing t -> Sing (Apply (Apply FooCompareSym0 t) t :: Ordering)
+      forall (t :: Foo) (t :: Foo).
+      Sing t
+      -> Sing t
+         -> Sing (Apply (Apply FooCompareSym0 t) t :: Ordering) :: Type
     sConst ::
-      forall a b (t :: a) (t :: b). Sing t
-                                    -> Sing t -> Sing (Apply (Apply ConstSym0 t) t :: a)
+      forall (t :: a) (t :: b).
+      Sing t -> Sing t -> Sing (Apply (Apply ConstSym0 t) t :: a) :: Type
     sFooCompare SA SA = SEQ
     sFooCompare SA SB = SLT
     sFooCompare SB SB = SGT
@@ -348,17 +350,21 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       toSing G = SomeSing SG
     class SMyOrd a where
       sMycompare ::
-        forall (t :: a) (t :: a). Sing t
-                                  -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
+        forall (t :: a) (t :: a).
+        Sing t
+        -> Sing t
+           -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering) :: Type
       (%<=>) ::
-        forall (t :: a) (t :: a). Sing t
-                                  -> Sing t -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering)
+        forall (t :: a) (t :: a).
+        Sing t
+        -> Sing t -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering) :: Type
       infix 4 %<=>
       default (%<=>) ::
-                forall (t :: a)
-                       (t :: a). ((Apply (Apply (<=>@#@$) t) t :: Ordering)
-                                  ~ Apply (Apply TFHelper_0123456789876543210Sym0 t) t) =>
-                                 Sing t -> Sing t -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering)
+                forall (t :: a) (t :: a).
+                ((Apply (Apply (<=>@#@$) t) t :: Ordering)
+                 ~ Apply (Apply TFHelper_0123456789876543210Sym0 t) t) =>
+                Sing t
+                -> Sing t -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering) :: Type
       (%<=>)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -368,9 +374,10 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
             sA_0123456789876543210
     instance SMyOrd Nat where
       sMycompare ::
-        forall (t :: Nat) (t :: Nat). Sing t
-                                      -> Sing t
-                                         -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
+        forall (t :: Nat) (t :: Nat).
+        Sing t
+        -> Sing t
+           -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering) :: Type
       sMycompare SZero SZero = SEQ
       sMycompare SZero (SSucc _) = SLT
       sMycompare (SSucc _) SZero = SGT
@@ -380,16 +387,19 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
             sN
     instance SMyOrd () where
       sMycompare ::
-        forall (t :: ()) (t :: ()). Sing t
-                                    -> Sing t -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
+        forall (t :: ()) (t :: ()).
+        Sing t
+        -> Sing t
+           -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering) :: Type
       sMycompare _ (sA_0123456789876543210 :: Sing a_0123456789876543210)
         = (applySing ((applySing ((singFun2 @ConstSym0) sConst)) SEQ))
             sA_0123456789876543210
     instance SMyOrd Foo where
       sMycompare ::
-        forall (t :: Foo) (t :: Foo). Sing t
-                                      -> Sing t
-                                         -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering)
+        forall (t :: Foo) (t :: Foo).
+        Sing t
+        -> Sing t
+           -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering) :: Type
       sMycompare
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
