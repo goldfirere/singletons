@@ -44,8 +44,9 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
     type family AddAge (a :: Age) (a :: Age) :: Age where
       AddAge (MkAge (x :: Natural)) (MkAge (y :: Natural)) = Apply MkAgeSym0 (Apply (Apply (+@#@$) x) y :: Natural)
     sAddAge ::
-      forall (t :: Age) (t :: Age). Sing t
-                                    -> Sing t -> Sing (Apply (Apply AddAgeSym0 t) t :: Age)
+      forall (t :: Age) (t :: Age).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply AddAgeSym0 t) t :: Age) :: Type
     sAddAge (SMkAge (sX :: Sing x)) (SMkAge (sY :: Sing y))
       = case ((,) (sX :: Sing x)) (sY :: Sing y) of
           (,) (_ :: Sing (x :: Natural)) (_ :: Sing (y :: Natural))

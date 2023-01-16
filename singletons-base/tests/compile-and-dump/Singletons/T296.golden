@@ -55,7 +55,7 @@ Singletons/T296.hs:(0,0)-(0,0): Splicing declarations
           sX :: Sing @_ Let0123456789876543210XSym0
           sX
             = let
-                sZ :: Sing (Let0123456789876543210ZSym0 :: MyProxy a)
+                sZ :: Sing (Let0123456789876543210ZSym0 :: MyProxy a) :: Type
                 sZ = SMyProxy
               in sZ
         in sX

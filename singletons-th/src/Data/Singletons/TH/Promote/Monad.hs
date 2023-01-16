@@ -12,7 +12,7 @@ of DDec, and is wrapped around a Q.
 module Data.Singletons.TH.Promote.Monad (
   PrM, promoteM, promoteM_, promoteMDecs, VarPromotions,
   allLocals, emitDecs, emitDecsM,
-  lambdaBind, LetBind, letBind, lookupVarE, forallBind, allBoundKindVars
+  lambdaBind, LetBind, letBind, lookupVarE
   ) where
 
 import Control.Monad.Reader
@@ -21,8 +21,6 @@ import Language.Haskell.TH.Syntax hiding ( lift )
 import Language.Haskell.TH.Desugar
 import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
-import qualified Language.Haskell.TH.Desugar.OSet as OSet
-import Language.Haskell.TH.Desugar.OSet (OSet)
 import Data.Singletons.TH.Options
 import Data.Singletons.TH.Syntax
 
@@ -33,7 +31,6 @@ data PrEnv =
   PrEnv { pr_options      :: Options
         , pr_lambda_bound :: OMap Name Name
         , pr_let_bound    :: LetExpansions
-        , pr_forall_bound :: OSet Name -- See Note [Explicitly binding kind variables]
         , pr_local_decls  :: [Dec]
         }
 
@@ -41,7 +38,6 @@ emptyPrEnv :: PrEnv
 emptyPrEnv = PrEnv { pr_options      = defaultOptions
                    , pr_lambda_bound = OMap.empty
                    , pr_let_bound    = OMap.empty
-                   , pr_forall_bound = OSet.empty
                    , pr_local_decls  = [] }
 
 -- the promotion monad
@@ -100,18 +96,6 @@ lookupVarE n = do
     Just ty -> return ty
     Nothing -> return $ DConT $ defunctionalizedName0 opts n
 
--- Add to the set of bound kind variables currently in scope.
--- See Note [Explicitly binding kind variables]
-forallBind :: OSet Name -> PrM a -> PrM a
-forallBind kvs1 =
-  local (\env@(PrEnv { pr_forall_bound = kvs2 }) ->
-    env { pr_forall_bound = kvs1 `OSet.union` kvs2 })
-
--- Look up the set of bound kind variables currently in scope.
--- See Note [Explicitly binding kind variables]
-allBoundKindVars :: PrM (OSet Name)
-allBoundKindVars = asks pr_forall_bound
-
 promoteM :: OptionsMonad q => [Dec] -> PrM a -> q (a, [DDec])
 promoteM locals (PrM rdr) = do
   opts         <- getOptions
@@ -131,62 +115,3 @@ promoteMDecs :: OptionsMonad q => [Dec] -> PrM [DDec] -> q [DDec]
 promoteMDecs locals thing = do
   (decs1, decs2) <- promoteM locals thing
   return $ decs1 ++ decs2
-
-{-
-Note [Explicitly binding kind variables]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-We want to ensure that when we single type signatures for functions and data
-constructors, we should explicitly quantify every kind variable bound by a
-forall. For example, if we were to single the identity function:
-
-  identity :: forall a. a -> a
-  identity x = x
-
-We want the final result to be:
-
-  sIdentity :: forall a (x :: a). Sing x -> Sing (Identity x :: a)
-  sIdentity sX = sX
-
-Accomplishing this takes a bit of care during promotion. When promoting a
-function, we determine what set of kind variables are currently bound at that
-point and store them in an ALetDecEnv (as lde_bound_kvs), which in turn is
-singled. Then, during singling, we extract every kind variable in a singled
-type signature, subtract the lde_bound_kvs, and explicitly bind the variables
-that remain.
-
-For a top-level function like identity, lde_bound_kvs is the empty set. But
-consider this more complicated example:
-
-  f :: forall a. a -> a
-  f = g
-    where
-      g :: a -> a
-      g x = x
-
-When singling, we would eventually end up in this spot:
-
-  sF :: forall a (x :: a). Sing a -> Sing (F a :: a)
-  sF = sG
-    where
-      sG :: _
-      sG x = x
-
-We must make sure /not/ to fill in the following type for _:
-
-  sF :: forall a (x :: a). Sing a -> Sing (F a :: a)
-  sF = sG
-    where
-      sG :: forall a (y :: a). Sing a -> Sing (G a :: a)
-      sG x = x
-
-This would be incorrect, as the `a` bound by sF /must/ be the same one used in
-sG, as per the scoping of the original `f` function. Thus, we ensure that the
-bound variables from `f` are put into lde_bound_kvs when promoting `g` so
-that we subtract out `a` and are left with the correct result:
-
-  sF :: forall a (x :: a). Sing a -> Sing (F a :: a)
-  sF = sG
-    where
-      sG :: forall (y :: a). Sing a -> Sing (G a :: a)
-      sG x = x
--}

@@ -77,11 +77,11 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
     type family Head (a :: Vec (S n) a) :: a where
       Head ((:>) field _) = field
     sTail ::
-      forall n a (t :: Vec (S n) a). Sing t
-                                     -> Sing (Apply TailSym0 t :: Vec n a)
+      forall (t :: Vec (S n) a).
+      Sing t -> Sing (Apply TailSym0 t :: Vec n a) :: Type
     sHead ::
-      forall n a (t :: Vec (S n) a). Sing t
-                                     -> Sing (Apply HeadSym0 t :: a)
+      forall (t :: Vec (S n) a).
+      Sing t -> Sing (Apply HeadSym0 t :: a) :: Type
     sTail ((:%>) _ (sField :: Sing field)) = sField
     sHead ((:%>) (sField :: Sing field) _) = sField
     instance SingI (TailSym0 :: (~>) (Vec (S n) a) (Vec n a)) where

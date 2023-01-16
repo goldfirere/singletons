@@ -17,7 +17,6 @@ import Data.Singletons.TH.Promote.Type
 import Data.Singletons.TH.Single.Defun
 import Data.Singletons.TH.Single.Fixity
 import Data.Singletons.TH.Single.Monad
-import Data.Singletons.TH.Single.Type
 import Data.Singletons.TH.Syntax
 import Data.Singletons.TH.Util
 import Control.Monad
@@ -183,7 +182,19 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
   rty' <- promoteType_NC rty
   let indices = map DVarT indexNames
       kindedIndices = zipWith DSigT indices kinds
-      kvbs = singTypeKVBs con_tvbs kinds [] rty' mempty
+      -- The approach we use for singling data constructor types differs
+      -- slightly from the approach taken in D.S.TH.Single.Type.singType in that
+      -- we always explicitly quantify all type variables in a singled data
+      -- constructor, regardless of whether the original data constructor
+      -- explicitly quantified them or not. This explains the use of
+      -- toposortTyVarsOf below.
+      -- See Note [Preserve the order of type variables during singling]
+      -- (wrinkle 1) in D.S.TH.Single.Type.
+      kvbs | null con_tvbs
+           = changeDTVFlags SpecifiedSpec (toposortTyVarsOf (kinds ++ [rty'])) ++
+             con_tvbs
+           | otherwise
+           = con_tvbs
       all_tvbs = kvbs ++ zipWith (`DKindedTV` SpecifiedSpec) indexNames kinds
 
   -- @mb_SingI_dec k@ returns 'Just' an instance of @SingI<k>@ if @k@ is

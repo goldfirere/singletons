@@ -90,13 +90,15 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
       type (<<>>) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     class SS a where
       (%<<>>) ::
-        forall (t :: a) (t :: a). Sing t
-                                  -> Sing t -> Sing (Apply (Apply (<<>>@#@$) t) t :: a)
+        forall (t :: a) (t :: a).
+        Sing t
+        -> Sing t -> Sing (Apply (Apply (<<>>@#@$) t) t :: a) :: Type
     instance SS b => SS ((~>) a b) where
       (%<<>>) ::
-        forall (t :: (~>) a b) (t :: (~>) a b). Sing t
-                                                -> Sing t
-                                                   -> Sing (Apply (Apply (<<>>@#@$) t) t :: (~>) a b)
+        forall (t :: (~>) a b) (t :: (~>) a b).
+        Sing t
+        -> Sing t
+           -> Sing (Apply (Apply (<<>>@#@$) t) t :: (~>) a b) :: Type
       (%<<>>) (sF :: Sing f) (sG :: Sing g)
         = (singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 f) g))
             (\ sX

@@ -148,16 +148,16 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
       type Baz a a = Apply (Apply Baz_0123456789876543210Sym0 a) a
     class SFoo a where
       sBar ::
-        forall b (t :: a) (t :: b). Sing t
-                                    -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b)
+        forall (t :: a) (t :: b).
+        Sing t -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b) :: Type
       sBaz ::
         forall b (t :: a) (t :: b). Sing t
                                     -> Sing t -> Sing (Apply (Apply BazSym0 t) t :: b)
       default sBar ::
-                forall b (t :: a) (t :: b). ((Apply (Apply BarSym0 t) t :: b)
-                                             ~ Apply (Apply Bar_0123456789876543210Sym0 t) t) =>
-                                            Sing t
-                                            -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b)
+                forall (t :: a) (t :: b).
+                ((Apply (Apply BarSym0 t) t :: b)
+                 ~ Apply (Apply Bar_0123456789876543210Sym0 t) t) =>
+                Sing t -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b) :: Type
       default sBaz ::
                 forall b (t :: a) (t :: b). ((Apply (Apply BazSym0 t) t :: b)
                                              ~ Apply (Apply Baz_0123456789876543210Sym0 t) t) =>

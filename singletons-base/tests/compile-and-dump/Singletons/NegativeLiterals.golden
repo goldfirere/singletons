@@ -11,7 +11,7 @@ Singletons/NegativeLiterals.hs:(0,0)-(0,0): Splicing declarations
     type F :: Natural
     type family F :: Natural where
       F = Negate (FromInteger 1)
-    sF :: Sing (FSym0 :: Natural)
+    sF :: Sing (FSym0 :: Natural) :: Type
     sF = sNegate (sFromInteger (sing :: Sing 1))
 
 Singletons/NegativeLiterals.hs:0:0: warning: [-Woverflowed-literals]

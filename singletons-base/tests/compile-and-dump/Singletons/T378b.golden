@@ -84,8 +84,9 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     type PC :: forall b a. a -> b -> Constraint
     class PC x y
     sNatMinus ::
-      forall (t :: Nat) (t :: Nat). Sing t
-                                    -> Sing t -> Sing (Apply (Apply NatMinusSym0 t) t :: Nat)
+      forall (t :: Nat) (t :: Nat).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply NatMinusSym0 t) t :: Nat) :: Type
     sF ::
       forall b a (t :: a) (t :: b). Sing t
                                     -> Sing t -> Sing (Apply (Apply FSym0 t) t :: ())

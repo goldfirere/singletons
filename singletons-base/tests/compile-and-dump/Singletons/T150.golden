@@ -263,25 +263,26 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     type family HeadVec (a :: Vec ('Succ n) a) :: a where
       HeadVec (VCons x _) = x
     sTransitivity ::
-      forall a b c (t :: Equal a b) (t :: Equal b c). Sing t
-                                                      -> Sing t
-                                                         -> Sing (Apply (Apply TransitivitySym0 t) t :: Equal a c)
+      forall (t :: Equal a b) (t :: Equal b c).
+      Sing t
+      -> Sing t
+         -> Sing (Apply (Apply TransitivitySym0 t) t :: Equal a c) :: Type
     sSymmetry ::
-      forall a b (t :: Equal a b). Sing t
-                                   -> Sing (Apply SymmetrySym0 t :: Equal b a)
+      forall (t :: Equal a b).
+      Sing t -> Sing (Apply SymmetrySym0 t :: Equal b a) :: Type
     sMapVec ::
-      forall a b n (t :: (~>) a b) (t :: Vec n a). Sing t
-                                                   -> Sing t
-                                                      -> Sing (Apply (Apply MapVecSym0 t) t :: Vec n b)
+      forall (t :: (~>) a b) (t :: Vec n a).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply MapVecSym0 t) t :: Vec n b) :: Type
     (%!) ::
-      forall n a (t :: Vec n a) (t :: Fin n). Sing t
-                                              -> Sing t -> Sing (Apply (Apply (!@#@$) t) t :: a)
+      forall (t :: Vec n a) (t :: Fin n).
+      Sing t -> Sing t -> Sing (Apply (Apply (!@#@$) t) t :: a) :: Type
     sTailVec ::
-      forall n a (t :: Vec ('Succ n) a). Sing t
-                                         -> Sing (Apply TailVecSym0 t :: Vec n a)
+      forall (t :: Vec ('Succ n) a).
+      Sing t -> Sing (Apply TailVecSym0 t :: Vec n a) :: Type
     sHeadVec ::
-      forall n a (t :: Vec ('Succ n) a). Sing t
-                                         -> Sing (Apply HeadVecSym0 t :: a)
+      forall (t :: Vec ('Succ n) a).
+      Sing t -> Sing (Apply HeadVecSym0 t :: a) :: Type
     sTransitivity SReflexive SReflexive = SReflexive
     sSymmetry SReflexive = SReflexive
     sMapVec _ SVNil = SVNil

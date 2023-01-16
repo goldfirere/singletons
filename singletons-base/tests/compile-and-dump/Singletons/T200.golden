@@ -112,13 +112,15 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     type family ($$:) (a :: ErrorMessage) (a :: ErrorMessage) :: ErrorMessage where
       ($$:) x y = Apply (Apply (:$$:@#@$) x) y
     (%<>:) ::
-      forall (t :: ErrorMessage) (t :: ErrorMessage). Sing t
-                                                      -> Sing t
-                                                         -> Sing (Apply (Apply (<>:@#@$) t) t :: ErrorMessage)
+      forall (t :: ErrorMessage) (t :: ErrorMessage).
+      Sing t
+      -> Sing t
+         -> Sing (Apply (Apply (<>:@#@$) t) t :: ErrorMessage) :: Type
     (%$$:) ::
-      forall (t :: ErrorMessage) (t :: ErrorMessage). Sing t
-                                                      -> Sing t
-                                                         -> Sing (Apply (Apply ($$:@#@$) t) t :: ErrorMessage)
+      forall (t :: ErrorMessage) (t :: ErrorMessage).
+      Sing t
+      -> Sing t
+         -> Sing (Apply (Apply ($$:@#@$) t) t :: ErrorMessage) :: Type
     (%<>:) (sX :: Sing x) (sY :: Sing y)
       = (applySing ((applySing ((singFun2 @(:<>:@#@$)) (:%<>:))) sX)) sY
     (%$$:) (sX :: Sing x) (sY :: Sing y)

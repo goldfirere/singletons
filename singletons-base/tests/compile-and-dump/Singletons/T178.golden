@@ -140,7 +140,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow Occ where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)])
+    sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)]) :: Type
     sEmpty = SNil
     data SOcc :: Occ -> Type
       where

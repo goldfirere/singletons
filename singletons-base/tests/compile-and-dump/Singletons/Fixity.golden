@@ -66,8 +66,9 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
       type family (<=>) (arg :: a) (arg :: a) :: Ordering
     infix 4 %====
     (%====) ::
-      forall a (t :: a) (t :: a). Sing t
-                                  -> Sing t -> Sing (Apply (Apply (====@#@$) t) t :: a)
+      forall (t :: a) (t :: a).
+      Sing t
+      -> Sing t -> Sing (Apply (Apply (====@#@$) t) t :: a) :: Type
     (%====) (sA :: Sing a) _ = sA
     instance SingI ((====@#@$) :: (~>) a ((~>) a a)) where
       sing = (singFun2 @(====@#@$)) (%====)
@@ -78,8 +79,9 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
         = (singFun1 @((====@#@$$) (d :: a))) ((%====) s)
     class SMyOrd a where
       (%<=>) ::
-        forall (t :: a) (t :: a). Sing t
-                                  -> Sing t -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering)
+        forall (t :: a) (t :: a).
+        Sing t
+        -> Sing t -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering) :: Type
       infix 4 %<=>
     instance SMyOrd a =>
              SingI ((<=>@#@$) :: (~>) a ((~>) a Ordering)) where

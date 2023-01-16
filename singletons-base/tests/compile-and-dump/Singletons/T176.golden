@@ -123,11 +123,11 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       type family Bar2 (arg :: a) (arg :: b) :: b
       type family Baz2 :: a
     sQuux2 ::
-      forall a (t :: a). SFoo2 a =>
-                         Sing t -> Sing (Apply Quux2Sym0 t :: a)
+      forall (t :: a).
+      SFoo2 a => Sing t -> Sing (Apply Quux2Sym0 t :: a) :: Type
     sQuux1 ::
-      forall a (t :: a). SFoo1 a =>
-                         Sing t -> Sing (Apply Quux1Sym0 t :: a)
+      forall (t :: a).
+      SFoo1 a => Sing t -> Sing (Apply Quux1Sym0 t :: a) :: Type
     sQuux2 (sX :: Sing x)
       = (applySing ((applySing ((singFun2 @Bar2Sym0) sBar2)) sX)) sBaz2
     sQuux1 (sX :: Sing x)
@@ -145,14 +145,14 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       sing = (singFun1 @Quux1Sym0) sQuux1
     class SFoo1 a where
       sBar1 ::
-        forall b (t :: a) (t :: (~>) a b). Sing t
-                                           -> Sing t -> Sing (Apply (Apply Bar1Sym0 t) t :: b)
-      sBaz1 :: Sing (Baz1Sym0 :: a)
+        forall (t :: a) (t :: (~>) a b).
+        Sing t -> Sing t -> Sing (Apply (Apply Bar1Sym0 t) t :: b) :: Type
+      sBaz1 :: Sing (Baz1Sym0 :: a) :: Type
     class SFoo2 a where
       sBar2 ::
-        forall b (t :: a) (t :: b). Sing t
-                                    -> Sing t -> Sing (Apply (Apply Bar2Sym0 t) t :: b)
-      sBaz2 :: Sing (Baz2Sym0 :: a)
+        forall (t :: a) (t :: b).
+        Sing t -> Sing t -> Sing (Apply (Apply Bar2Sym0 t) t :: b) :: Type
+      sBaz2 :: Sing (Baz2Sym0 :: a) :: Type
     instance SFoo1 a =>
              SingI (Bar1Sym0 :: (~>) a ((~>) ((~>) a b) b)) where
       sing = (singFun2 @Bar1Sym0) sBar1

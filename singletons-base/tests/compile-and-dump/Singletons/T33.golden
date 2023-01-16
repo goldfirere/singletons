@@ -21,7 +21,8 @@ Singletons/T33.hs:(0,0)-(0,0): Splicing declarations
     type family Foo (a :: (Bool, Bool)) :: () where
       Foo '(_, _) = Tuple0Sym0
     sFoo ::
-      forall (t :: (Bool, Bool)). Sing t -> Sing (Apply FooSym0 t :: ())
+      forall (t :: (Bool, Bool)).
+      Sing t -> Sing (Apply FooSym0 t :: ()) :: Type
     sFoo (STuple2 _ _) = STuple0
     instance SingI (FooSym0 :: (~>) (Bool, Bool) ()) where
       sing = (singFun1 @FooSym0) sFoo
