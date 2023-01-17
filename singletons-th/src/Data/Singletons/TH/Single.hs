@@ -473,47 +473,45 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
               -- less confusing.
               vis_cls_tvbs = drop (length cls_tvbs - length inst_kis) cls_tvbs
 
-          sing_meth_ty :: OSet Name -> DType
-                       -> SgM (DType, DCxt)
+          sing_meth_ty :: OSet Name -> DType -> SgM DType
           sing_meth_ty bound_kvs inner_ty = do
             -- Make sure to expand through type synonyms here! Not doing so
             -- resulted in #167.
             raw_ty <- expand inner_ty
-            (s_ty, _num_args, _tyvar_names, ctxt, _arg_kis, _res_ki)
+            (s_ty, _num_args, _tyvar_names, _ctxt, _arg_kis, _res_ki)
               <- singType bound_kvs (DConT $ defunctionalizedName0 opts name) raw_ty
-            pure (s_ty, ctxt)
+            pure s_ty
 
-      (s_ty, ctxt) <- case OMap.lookup name inst_sigs of
+      s_ty <- case OMap.lookup name inst_sigs of
         Just inst_sig -> do
           -- We have an InstanceSig, so just single that type. Take care to
           -- avoid binding the variables bound by the instance head as well.
           let inst_bound = foldMap fvDType (cxt ++ inst_kis)
-          (s_ty, ctxt) <- sing_meth_ty inst_bound inst_sig
-          pure (s_ty, ctxt)
+          sing_meth_ty inst_bound inst_sig
         Nothing -> case mb_s_info of
           -- We don't have an InstanceSig, so we must compute the type to use
           -- in the singled instance ourselves through reification.
-          Just (DVarI _ (DForallT (DForallInvis cls_tvbs) (DConstrainedT _cls_pred s_ty)) _) -> do
-            (_sing_tvbs, ctxt, _args, _res_ty) <- unravelVanillaDType s_ty
-            let subst = mk_subst cls_tvbs
-            pure ( substType subst s_ty
-                 , map (substType subst) ctxt )
+          Just (DVarI _ (DForallT (DForallInvis cls_tvbs) (DConstrainedT _cls_pred s_ty)) _) ->
+            pure $ substType (mk_subst cls_tvbs) s_ty
           _ -> do
             mb_info <- dsReify name
             case mb_info of
               Just (DVarI _ (DForallT (DForallInvis cls_tvbs)
                                       (DConstrainedT _cls_pred inner_ty)) _) -> do
-                let subst = mk_subst cls_tvbs
-                    cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
+                let cls_kvb_names = foldMap (foldMap fvDType . extractTvbKind) cls_tvbs
                     cls_tvb_names = OSet.fromList $ map extractTvbName cls_tvbs
                     cls_bound     = cls_kvb_names `OSet.union` cls_tvb_names
-                (s_ty, ctxt) <- sing_meth_ty cls_bound inner_ty
-                pure ( substType subst s_ty
-                     , ctxt )
+                s_ty <- sing_meth_ty cls_bound inner_ty
+                pure $ substType (mk_subst cls_tvbs) s_ty
               _ -> fail $ "Cannot find type of method " ++ show name
 
-      meth' <- singLetDecRHS (Map.singleton name ctxt)
-                             name rhs
+      meth' <- singLetDecRHS
+                 Map.empty -- Because we are singling an instance declaration,
+                           -- we aren't generating defunctionalization symbols
+                           -- for the class methods, and hence we aren't
+                           -- generating any SingI instances. Therefore, we
+                           -- don't need to include anything in this Map.
+                 name rhs
       return $ map DLetDec [DSigD (singledValueName opts name) s_ty, meth']
 
 singLetDecEnv :: ALetDecEnv
