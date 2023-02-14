@@ -244,22 +244,31 @@ withKnownSymbol SSym f = f
 withKnownChar :: Sing n -> (KnownChar n => r) -> r
 withKnownChar SChar f = f
 
--- | The promotion of 'error'. This version is more poly-kinded for
--- easier use.
-type Error :: k0 -> a
-type family Error (str :: k0) :: a where {}
+-- | A promoted version of 'error'. This implements 'Error' as a stuck type
+-- family with a 'Symbol' argument. Depending on your needs, you might also
+-- consider the following alternatives:
+--
+-- * "Data.Singletons.Base.PolyError" provides @PolyError@, which generalizes
+--   the argument to be kind-polymorphic. This allows passing additional
+--   information to the error besides raw 'Symbol's.
+--
+-- * "Data.Singletons.Base.TypeError" provides @TypeError@, a slightly modified
+--   version of the custom type error machinery found in "GHC.TypeLits". This
+--   allows emitting error messages as compiler errors rather than as stuck type
+--   families.
+type Error :: Symbol -> a
+type family Error (str :: Symbol) :: a where {}
 $(genDefunSymbols [''Error])
 instance SingI (ErrorSym0 :: Symbol ~> a) where
   sing = singFun1 sError
 
--- | The singleton for 'error'
+-- | The singleton for 'error'.
 sError :: HasCallStack => Sing (str :: Symbol) -> a
 sError sstr = error (T.unpack (fromSing sstr))
 
--- | The promotion of 'errorWithoutStackTrace'. This version is more
--- poly-kinded for easier use.
-type ErrorWithoutStackTrace :: k0 -> a
-type family ErrorWithoutStackTrace (str :: k0) :: a where {}
+-- | The promotion of 'errorWithoutStackTrace'.
+type ErrorWithoutStackTrace :: Symbol -> a
+type family ErrorWithoutStackTrace (str :: Symbol) :: a where {}
 $(genDefunSymbols [''ErrorWithoutStackTrace])
 instance SingI (ErrorWithoutStackTraceSym0 :: Symbol ~> a) where
   sing = singFun1 sErrorWithoutStackTrace

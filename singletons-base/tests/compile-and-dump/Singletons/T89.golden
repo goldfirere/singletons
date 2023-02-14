@@ -1,0 +1,78 @@
+Singletons/T89.hs:0:0:: Splicing declarations
+    singletons
+      [d| data Foo
+            = Foo
+            deriving (Enum) |]
+  ======>
+    data Foo
+      = Foo
+      deriving Enum
+    type FooSym0 :: Foo
+    type family FooSym0 :: Foo where
+      FooSym0 = Foo
+    type family Case_0123456789876543210 n t where
+      Case_0123456789876543210 n 'True = FooSym0
+      Case_0123456789876543210 n 'False = Apply ErrorSym0 (FromString "toEnum: bad argument")
+    type ToEnum_0123456789876543210 :: GHC.Num.Natural.Natural -> Foo
+    type family ToEnum_0123456789876543210 (a :: GHC.Num.Natural.Natural) :: Foo where
+      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))
+    type ToEnum_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural Foo
+    data ToEnum_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural Foo
+      where
+        ToEnum_0123456789876543210Sym0KindInference :: SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
+                                                       ToEnum_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) ToEnum_0123456789876543210Sym0KindInference) ())
+    type ToEnum_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
+                                           -> Foo
+    type family ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: Foo where
+      ToEnum_0123456789876543210Sym1 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
+    type FromEnum_0123456789876543210 :: Foo -> GHC.Num.Natural.Natural
+    type family FromEnum_0123456789876543210 (a :: Foo) :: GHC.Num.Natural.Natural where
+      FromEnum_0123456789876543210 Foo = FromInteger 0
+    type FromEnum_0123456789876543210Sym0 :: (~>) Foo GHC.Num.Natural.Natural
+    data FromEnum_0123456789876543210Sym0 :: (~>) Foo GHC.Num.Natural.Natural
+      where
+        FromEnum_0123456789876543210Sym0KindInference :: SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
+                                                         FromEnum_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd (((,) FromEnum_0123456789876543210Sym0KindInference) ())
+    type FromEnum_0123456789876543210Sym1 :: Foo
+                                             -> GHC.Num.Natural.Natural
+    type family FromEnum_0123456789876543210Sym1 (a0123456789876543210 :: Foo) :: GHC.Num.Natural.Natural where
+      FromEnum_0123456789876543210Sym1 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
+    instance PEnum Foo where
+      type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
+      type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
+    data SFoo :: Foo -> Type where SFoo :: SFoo (Foo :: Foo)
+    type instance Sing @Foo = SFoo
+    instance SingKind Foo where
+      type Demote Foo = Foo
+      fromSing SFoo = Foo
+      toSing Foo = SomeSing SFoo
+    instance SEnum Foo where
+      sToEnum ::
+        forall (t :: GHC.Num.Natural.Natural). Sing t
+                                               -> Sing (Apply (Data.Singletons.Base.Enum.ToEnumSym0 :: TyFun GHC.Num.Natural.Natural Foo
+                                                                                                       -> Type) t)
+      sFromEnum ::
+        forall (t :: Foo). Sing t
+                           -> Sing (Apply (Data.Singletons.Base.Enum.FromEnumSym0 :: TyFun Foo GHC.Num.Natural.Natural
+                                                                                     -> Type) t)
+      sToEnum (sN :: Sing n)
+        = (id
+             @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0)))))
+            (case
+                 (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sN))
+                   (sFromInteger (sing :: Sing 0))
+             of
+               STrue -> SFoo
+               SFalse
+                 -> sError (sFromString (sing :: Sing "toEnum: bad argument")))
+      sFromEnum SFoo = sFromInteger (sing :: Sing 0)
+    instance SingI Foo where
+      sing = SFoo

@@ -58,6 +58,7 @@ tests =
       compileAndDumpStdTest "Classes2"
     , compileAndDumpStdTest "FunDeps"
     , compileAndDumpStdTest "T78"
+    , compileAndDumpStdTest "T89"
     , compileAndDumpStdTest "OrdDeriving"
     , compileAndDumpStdTest "BoundedDeriving"
     , compileAndDumpStdTest "BadBoundedDeriving"

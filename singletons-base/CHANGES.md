@@ -1,8 +1,18 @@
 Changelog for the `singletons-base` project
 ===========================================
 
-3.1.2 [????.??.??]
-------------------
+3.2 [????.??.??]
+----------------
+* The kinds of the promoted `Error` and `ErrorWithoutStackTrace` functions have
+  been monomorphized to `Symbol`. A previous release generalized the kinds of
+  these arguments to allow passing arguments besides `Symbol`s, but this change
+  introduces ambiguity in derived code when `OverloadedString`s is enabled.
+  See [#89](https://github.com/goldfirere/singletons/issues/89) for the full
+  story.
+
+  If you were relying on the previous, kind-polymorphic behavior of `Error`, you
+  can instead use the new `Data.Singletons.Base.PolyError` module that provides
+  `PolyError`, a version of `Error` with a kind-polymorphic argument.
 * Provide `TestEquality` and `TestCoercion` instances for `SNat, `SSymbol`, and
   `SChar`.
 
