@@ -1,5 +1,5 @@
 name:           singletons-base
-version:        3.1.2
+version:        3.2
 cabal-version:  1.24
 synopsis:       A promoted and singled version of the base library
 homepage:       http://www.github.com/goldfirere/singletons
@@ -84,6 +84,7 @@ library
   exposed-modules:    Data.Singletons.Base.CustomStar
                       Data.Singletons.Base.Enum
                       Data.Singletons.Base.TH
+                      Data.Singletons.Base.PolyError
                       Data.Singletons.Base.SomeSing
                       Data.Singletons.Base.TypeError
                       Data.Singletons.Base.TypeRepTYPE
