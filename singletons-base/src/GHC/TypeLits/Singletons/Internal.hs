@@ -246,8 +246,8 @@ withKnownChar SChar f = f
 
 -- | The promotion of 'error'. This version is more poly-kinded for
 -- easier use.
-type Error :: k0 -> k
-type family Error (str :: k0) :: k where {}
+type Error :: k0 -> a
+type family Error (str :: k0) :: a where {}
 $(genDefunSymbols [''Error])
 instance SingI (ErrorSym0 :: Symbol ~> a) where
   sing = singFun1 sError
@@ -258,8 +258,8 @@ sError sstr = error (T.unpack (fromSing sstr))
 
 -- | The promotion of 'errorWithoutStackTrace'. This version is more
 -- poly-kinded for easier use.
-type ErrorWithoutStackTrace :: k0 -> k
-type family ErrorWithoutStackTrace (str :: k0) :: k where {}
+type ErrorWithoutStackTrace :: k0 -> a
+type family ErrorWithoutStackTrace (str :: k0) :: a where {}
 $(genDefunSymbols [''ErrorWithoutStackTrace])
 instance SingI (ErrorWithoutStackTraceSym0 :: Symbol ~> a) where
   sing = singFun1 sErrorWithoutStackTrace
@@ -269,8 +269,8 @@ sErrorWithoutStackTrace :: Sing (str :: Symbol) -> a
 sErrorWithoutStackTrace sstr = errorWithoutStackTrace (T.unpack (fromSing sstr))
 
 -- | The promotion of 'undefined'.
-type Undefined :: k
-type family Undefined :: k where {}
+type Undefined :: a
+type family Undefined :: a where {}
 $(genDefunSymbols [''Undefined])
 
 -- | The singleton for 'undefined'.
