@@ -51,7 +51,7 @@ import           Data.List.Singletons.Internal
 import           Data.Ord (Down)
 import           Data.Ord.Singletons
 import           Data.Proxy
-import           Data.Semigroup.Singletons.Internal.Wrappers
+import           Data.Semigroup.Singletons.Internal.Classes
 import           Data.Singletons
 import           Data.Singletons.Base.Instances
 import           Data.Singletons.TH
