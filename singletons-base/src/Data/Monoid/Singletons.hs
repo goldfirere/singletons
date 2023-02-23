@@ -47,6 +47,7 @@ import Data.Monoid (First(..), Last(..))
 import Data.Ord (Down(..))
 import Data.Ord.Singletons
 import Data.Semigroup hiding (First(..), Last(..))
+import Data.Semigroup.Singletons.Internal.Classes
 import Data.Semigroup.Singletons.Internal.Wrappers hiding
        (SFirst, SLast,
         FirstSym0, FirstSym1, FirstSym0KindInference,

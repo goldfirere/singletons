@@ -126,6 +126,7 @@ library
                       Data.List.Singletons.Internal
                       Data.List.Singletons.Internal.Disambiguation
                       Data.Ord.Singletons.Disambiguation
+                      Data.Semigroup.Singletons.Internal.Classes
                       Data.Semigroup.Singletons.Internal.Disambiguation
                       Data.Semigroup.Singletons.Internal.Wrappers
                       GHC.Base.Singletons

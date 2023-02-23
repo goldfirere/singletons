@@ -36,7 +36,7 @@ import Data.Monoid.Singletons
 import Data.Ord.Singletons
 import Data.Proxy
 import Data.Semigroup (Semigroup(..))
-import Data.Semigroup.Singletons.Internal.Wrappers
+import Data.Semigroup.Singletons.Internal.Classes
 import Data.Singletons.Decide
 import Data.Singletons
 import Data.Singletons.Base.Enum
