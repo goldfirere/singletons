@@ -34,7 +34,7 @@ import Data.Foldable.Singletons
 import Data.Kind (Type)
 import Data.Monoid.Singletons
 import Data.Ord.Singletons
-import Data.Semigroup.Singletons.Internal
+import Data.Semigroup.Singletons.Internal.Wrappers
 import Data.Singletons
 import Data.Singletons.Base.Instances hiding (FoldlSym0, sFoldl)
 import Data.Singletons.Base.Enum

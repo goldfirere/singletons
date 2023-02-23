@@ -64,7 +64,7 @@ import Data.Ord.Singletons hiding
 import Data.Ord.Singletons.Disambiguation
 import qualified Data.Semigroup as Semi (Min(..), Max(..))
 import Data.Semigroup (First(..), Last(..), WrappedMonoid(..), Arg(..))
-import Data.Semigroup.Singletons.Internal
+import Data.Semigroup.Singletons.Internal.Wrappers
 import Data.Singletons.Base.Enum
 import Data.Singletons.Base.Instances
 import Data.Singletons.Base.Util
