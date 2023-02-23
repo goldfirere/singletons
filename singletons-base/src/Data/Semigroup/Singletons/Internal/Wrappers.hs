@@ -8,7 +8,7 @@
 
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Semigroup.Singletons.Internal
+-- Module      :  Data.Semigroup.Singletons.Internal.Wrappers
 -- Copyright   :  (C) 2018 Ryan Scott
 -- License     :  BSD-style (see LICENSE)
 -- Maintainer  :  Ryan Scott
@@ -25,7 +25,7 @@
 --
 ----------------------------------------------------------------------------
 
-module Data.Semigroup.Singletons.Internal where
+module Data.Semigroup.Singletons.Internal.Wrappers where
 
 import Control.Monad.Singletons.Internal
 import Data.Bool.Singletons

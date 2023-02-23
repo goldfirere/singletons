@@ -21,7 +21,7 @@
 module Data.Semigroup.Singletons.Internal.Disambiguation where
 
 import Data.Semigroup
-import Data.Semigroup.Singletons.Internal
+import Data.Semigroup.Singletons.Internal.Wrappers
 import Data.Singletons.TH
 
 -- We need these in Data.Foldable.Singletons, as we need to promote

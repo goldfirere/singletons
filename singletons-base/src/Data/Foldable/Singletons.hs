@@ -110,7 +110,8 @@ import qualified Data.Monoid as Monoid (Product(..), Sum(..))
 import Data.Ord.Singletons
   hiding ( Max, MaxSym0, MaxSym1, MaxSym2, sMax
          , Min, MinSym0, MinSym1, MinSym2, sMin )
-import Data.Semigroup.Singletons.Internal
+import Data.Semigroup.Singletons.Internal.Disambiguation
+import Data.Semigroup.Singletons.Internal.Wrappers
   hiding ( AllSym0(..),     AllSym1,     SAll
          , AnySym0(..),     AnySym1,     SAny
          , FirstSym0,       FirstSym1,   SFirst
@@ -118,7 +119,6 @@ import Data.Semigroup.Singletons.Internal
          , LastSym0,        LastSym1,    SLast
          , ProductSym0(..), ProductSym1, SProduct
          , SumSym0(..),     SumSym1,     SSum )
-import Data.Semigroup.Singletons.Internal.Disambiguation
 import Data.Singletons
 import Data.Singletons.Base.Instances
   hiding (Foldl, FoldlSym0(..), FoldlSym1(..), FoldlSym2(..), FoldlSym3, sFoldl)

@@ -31,7 +31,7 @@ import Data.Eq.Singletons
 import Data.Maybe
 import Data.Maybe.Singletons
 import Data.Ord.Singletons
-import Data.Semigroup.Singletons.Internal (SSemigroup(..), type (<>@#@$))
+import Data.Semigroup.Singletons.Internal.Wrappers (SSemigroup(..), type (<>@#@$))
 import Data.Singletons.Base.Instances
 import Data.Singletons.TH
 import Data.Tuple.Singletons
