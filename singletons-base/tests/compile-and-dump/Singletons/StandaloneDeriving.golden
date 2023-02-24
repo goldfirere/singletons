@@ -82,7 +82,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: T a () -> T a () -> Ordering
     type family Compare_0123456789876543210 (a :: T a ()) (a :: T a ()) :: Ordering where
-      Compare_0123456789876543210 ((:*:) a_0123456789876543210 a_0123456789876543210) ((:*:) b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))
+      Compare_0123456789876543210 ((:*:) a_0123456789876543210 a_0123456789876543210) ((:*:) b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))
     type Compare_0123456789876543210Sym0 :: (~>) (T a ()) ((~>) (T a ()) Ordering)
     data Compare_0123456789876543210Sym0 :: (~>) (T a ()) ((~>) (T a ()) Ordering)
       where
@@ -178,8 +178,8 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: S -> S -> Ordering
     type family Compare_0123456789876543210 (a :: S) (a :: S) :: Ordering where
-      Compare_0123456789876543210 S1 S1 = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
-      Compare_0123456789876543210 S2 S2 = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
+      Compare_0123456789876543210 S1 S1 = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
+      Compare_0123456789876543210 S2 S2 = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
       Compare_0123456789876543210 S1 S2 = LTSym0
       Compare_0123456789876543210 S2 S1 = GTSym0
     type Compare_0123456789876543210Sym0 :: (~>) S ((~>) S Ordering)
@@ -357,7 +357,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         = (applySing
              ((applySing
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                    ((singFun2 @(<>@#@$)) (%<>))))
                 SEQ))
             ((applySing
                 ((applySing ((singFun2 @(:@#@$)) SCons))
@@ -427,14 +427,14 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         = (applySing
              ((applySing
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                    ((singFun2 @(<>@#@$)) (%<>))))
                 SEQ))
             SNil
       sCompare SS2 SS2
         = (applySing
              ((applySing
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                    ((singFun2 @(<>@#@$)) (%<>))))
                 SEQ))
             SNil
       sCompare SS1 SS2 = SLT

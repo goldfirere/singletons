@@ -70,14 +70,14 @@ boolName, andName, compareName, minBoundName,
   testCoercionClassName, testCoercionMethName, decideCoercionName,
   provedName, disprovedName, reflName, toSingName, fromSingName,
   equalityName, applySingName, suppressClassName, suppressMethodName,
-  thenCmpName, sameKindName, fromIntegerName, negateName,
+  sameKindName, fromIntegerName, negateName,
   errorName, foldlName, cmpEQName, cmpLTName, cmpGTName,
   toEnumName, fromEnumName, enumName,
   equalsName, constraintName,
   showName, showSName, showCharName, showCommaSpaceName, showParenName, showsPrecName,
   showSpaceName, showStringName, showSingName,
   composeName, gtName, fromStringName,
-  foldableName, foldMapName, memptyName, mappendName, foldrName,
+  foldableName, foldMapName, memptyName, mappendName, sappendName, foldrName,
   functorName, fmapName, replaceName,
   traversableName, traverseName, pureName, apName, liftA2Name :: Name
 boolName = ''Bool
@@ -128,7 +128,6 @@ equalityName = ''(~)
 applySingName = 'applySing
 suppressClassName = ''SuppressUnusedWarnings
 suppressMethodName = 'suppressUnusedWarnings
-thenCmpName = 'thenCmp
 sameKindName = ''SameKind
 fromIntegerName = 'fromInteger
 negateName = 'negate
@@ -158,6 +157,7 @@ foldableName = ''Foldable
 foldMapName = 'foldMap
 memptyName = 'mempty
 mappendName = 'mappend
+sappendName = '(<>)
 foldrName = 'foldr
 functorName = ''Functor
 fmapName = 'fmap

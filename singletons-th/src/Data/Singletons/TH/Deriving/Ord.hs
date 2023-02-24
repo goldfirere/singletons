@@ -48,7 +48,7 @@ mk_equal_clause (DCon _tvbs _cxt name fields _rty) = do
   let pat1 = DConP name [] (map DVarP a_names)
       pat2 = DConP name [] (map DVarP b_names)
   return $ DClause [pat1, pat2] (DVarE foldlName `DAppE`
-                                 DVarE thenCmpName `DAppE`
+                                 DVarE sappendName `DAppE`
                                  DConE cmpEQName `DAppE`
                                  mkListE (zipWith
                                           (\a b -> DVarE compareName `DAppE` DVarE a

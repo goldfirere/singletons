@@ -1,6 +1,15 @@
 Changelog for the `singletons-th` project
 =========================================
 
+3.2 [????.??.??]
+----------------
+* Derived `POrd` and `SOrd` instances (arising from a use of `deriving Ord`)
+  now use `(<>) @Ordering` in their implementations instead of the custom
+  `thenCmp :: Ordering -> Ordering -> Ordering` function. While most code will
+  likely continue to work after this change, this may break code that attempts
+  to prove properties about the implementation of a derived `POrd`/`SOrd`
+  instance.
+
 3.1.2 [????.??.??]
 ------------------
 * Fix a bug in which the `singDecideInstances` and `showSingInstances`, as well
