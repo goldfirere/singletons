@@ -44,6 +44,7 @@ import Data.Bool.Singletons
 import Data.Eq.Singletons
 import Data.Kind
 import Data.Ord.Singletons as O
+import Data.Semigroup.Singletons.Internal.Classes
 import Data.Singletons
 import Data.Singletons.Decide
 import Data.Singletons.TH
@@ -197,6 +198,21 @@ instance SOrd Char where
                      LT -> unsafeCoerce SLT
                      EQ -> unsafeCoerce SEQ
                      GT -> unsafeCoerce SGT
+
+-- PSemigroup instance
+
+instance PSemigroup Symbol where
+  type a <> b = AppendSymbol a b
+
+-- SSemigroup instance
+
+instance SSemigroup Symbol where
+  sa %<> sb =
+    let a  = fromSing sa
+        b  = fromSing sb
+        ex = someSymbolVal $ T.unpack $ a <> b
+    in case ex of
+         SomeSymbol (_ :: Proxy ab) -> unsafeCoerce (SSym :: Sing ab)
 
 -- Show instances
 

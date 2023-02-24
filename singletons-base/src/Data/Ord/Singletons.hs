@@ -47,6 +47,7 @@ module Data.Ord.Singletons (
 
 import Data.Eq.Singletons
 import Data.Ord (Down(..))
+import Data.Semigroup.Singletons.Internal.Classes
 import Data.Singletons.Base.Instances
 import Data.Singletons.Base.Util
 import Data.Singletons.TH
@@ -103,6 +104,10 @@ $(singletonsOnly [d|
 
   instance Ord a => Ord (Down a) where
       compare (Down x) (Down y) = y `compare` x
+
+  -- deriving newtype instance Semigroup a => Semigroup (Down a)
+  instance Semigroup a => Semigroup (Down a) where
+    Down a <> Down b = Down (a <> b)
   |])
 
 $(singOrdInstances basicTypes)

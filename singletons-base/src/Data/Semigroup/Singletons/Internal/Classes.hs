@@ -26,8 +26,6 @@
 module Data.Semigroup.Singletons.Internal.Classes where
 
 import Data.List.NonEmpty (NonEmpty(..))
-import Data.Ord (Down(..))
-import Data.Ord.Singletons hiding (MinSym0, MinSym1, MaxSym0, MaxSym1)
 import Data.Singletons.Base.Instances
 import Data.Singletons.TH
 import GHC.Base.Singletons
@@ -116,8 +114,4 @@ $(singletonsOnly [d|
 
   instance Semigroup Void where
     a <> _ = a
-
-  -- deriving newtype instance Semigroup a => Semigroup (Down a)
-  instance Semigroup a => Semigroup (Down a) where
-    Down a <> Down b = Down (a <> b)
   |])
