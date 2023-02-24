@@ -29,19 +29,13 @@ import Control.Monad.Singletons.Internal
 import Data.Bool.Singletons
 import Data.Eq.Singletons
 import Data.Ord.Singletons hiding (MinSym0, MinSym1, MaxSym0, MaxSym1)
-import Data.Proxy
 import Data.Semigroup (Dual(..), All(..), Any(..), Sum(..), Product(..))
 import Data.Semigroup.Singletons.Internal.Classes
-import Data.Singletons
 import Data.Singletons.Base.Enum
 import Data.Singletons.Base.Instances
 import Data.Singletons.Base.Util
 import Data.Singletons.TH
-import qualified Data.Text as T
 import GHC.Num.Singletons
-import GHC.TypeLits (AppendSymbol, SomeSymbol(..), someSymbolVal)
-import GHC.TypeLits.Singletons.Internal
-import Unsafe.Coerce
 
 $(genSingletons        semigroupBasicTypes)
 $(singBoundedInstances semigroupBasicTypes)
@@ -112,14 +106,3 @@ $(singletonsOnly [d|
       signum (Product a) = Product (signum a)
       fromInteger n      = Product (fromInteger n)
   |])
-
-instance PSemigroup Symbol where
-  type a <> b = AppendSymbol a b
-
-instance SSemigroup Symbol where
-  sa %<> sb =
-    let a  = fromSing sa
-        b  = fromSing sb
-        ex = someSymbolVal $ T.unpack $ a <> b
-    in case ex of
-         SomeSymbol (_ :: Proxy ab) -> unsafeCoerce (SSym :: Sing ab)
