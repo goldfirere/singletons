@@ -52,8 +52,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: Nat -> Nat -> Ordering
     type family Compare_0123456789876543210 (a :: Nat) (a :: Nat) :: Ordering where
-      Compare_0123456789876543210 Zero Zero = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
-      Compare_0123456789876543210 (Succ a_0123456789876543210) (Succ b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0)
+      Compare_0123456789876543210 Zero Zero = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
+      Compare_0123456789876543210 (Succ a_0123456789876543210) (Succ b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0)
       Compare_0123456789876543210 Zero (Succ _) = LTSym0
       Compare_0123456789876543210 (Succ _) Zero = GTSym0
     type Compare_0123456789876543210Sym0 :: (~>) Nat ((~>) Nat Ordering)
@@ -116,7 +116,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         = (applySing
              ((applySing
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                    ((singFun2 @(<>@#@$)) (%<>))))
                 SEQ))
             SNil
       sCompare
@@ -125,7 +125,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         = (applySing
              ((applySing
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                    ((singFun2 @(<>@#@$)) (%<>))))
                 SEQ))
             ((applySing
                 ((applySing ((singFun2 @(:@#@$)) SCons))

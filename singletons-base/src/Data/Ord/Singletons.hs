@@ -24,14 +24,9 @@ module Data.Ord.Singletons (
 
   Comparing, sComparing,
 
-  -- | 'thenCmp' returns its second argument if its first is 'EQ'; otherwise,
-  -- it returns its first argument.
-  thenCmp, ThenCmp, sThenCmp,
-
   Sing, SOrdering(..), SDown(..), GetDown, sGetDown,
 
   -- ** Defunctionalization symbols
-  ThenCmpSym0, ThenCmpSym1, ThenCmpSym2,
   LTSym0, EQSym0, GTSym0,
   CompareSym0, CompareSym1, CompareSym2,
   type (<@#@$),  type (<@#@$$),  type (<@#@$$$),
@@ -51,7 +46,6 @@ import Data.Semigroup.Singletons.Internal.Classes
 import Data.Singletons.Base.Instances
 import Data.Singletons.Base.Util
 import Data.Singletons.TH
-import Language.Haskell.TH.Syntax (thenCmp)
 
 $(singletonsOnly [d|
   class  (Eq a) => Ord a  where
@@ -90,11 +84,6 @@ $(singletonsOnly [d|
   -- >   ... sortBy (comparing fst) ...
   comparing :: (Ord a) => (b -> a) -> b -> b -> Ordering
   comparing p x y = compare (p x) (p y)
-
-  thenCmp :: Ordering -> Ordering -> Ordering
-  thenCmp EQ x = x
-  thenCmp LT _ = LT
-  thenCmp GT _ = GT
   |])
 
 $(genSingletons [''Down])

@@ -59,7 +59,7 @@ module Data.Singletons.Base.TH (
   -- so they must be in scope.
 
   PEq(..), If, sIf, type (&&), (%&&), SEq(..),
-  POrd(..), SOrd(..), ThenCmp, sThenCmp,
+  POrd(..), SOrd(..),
   SDecide(..), (:~:)(..), Void, Refuted, Decision(..),
   PBounded(..), SBounded(..),
   PEnum(FromEnum, ToEnum), SEnum(sFromEnum, sToEnum),
@@ -68,7 +68,9 @@ module Data.Singletons.Base.TH (
   ShowChar, sShowChar, ShowCommaSpace, sShowCommaSpace,
   FromInteger, sFromInteger, Negate, sNegate,
   PFunctor(..), SFunctor(..),
-  PFoldable(..), SFoldable(..), PMonoid(..), SMonoid(..),
+  PFoldable(..), SFoldable(..),
+  PSemigroup(..), SSemigroup(..),
+  PMonoid(..), SMonoid(..),
   PTraversable(..), STraversable(..), PApplicative(..), SApplicative(..),
   type (.), (%.),
 
@@ -88,7 +90,6 @@ module Data.Singletons.Base.TH (
   Tuple6Sym0, Tuple6Sym1, Tuple6Sym2, Tuple6Sym3, Tuple6Sym4, Tuple6Sym5, Tuple6Sym6,
   Tuple7Sym0, Tuple7Sym1, Tuple7Sym2, Tuple7Sym3, Tuple7Sym4, Tuple7Sym5, Tuple7Sym6, Tuple7Sym7,
   CompareSym0, CompareSym1, CompareSym2,
-  ThenCmpSym0, ThenCmpSym1, ThenCmpSym2,
   FoldlSym0, FoldlSym1, FoldlSym2, FoldlSym3,
   MinBoundSym0, MaxBoundSym0,
   ShowsPrecSym0, ShowsPrecSym1, ShowsPrecSym2, ShowsPrecSym3,
@@ -103,6 +104,7 @@ module Data.Singletons.Base.TH (
   FmapSym0, FmapSym1, FmapSym2,
   type (<$@#@$),  type (<$@#@$$),  type (<$@#@$$$),
   FoldMapSym0, FoldMapSym1, FoldMapSym2,
+  type (<>@#@$), type (<>@#@$$), type (<>@#@$$$),
   MemptySym0,
   MappendSym0, MappendSym1, MappendSym2,
   FoldrSym0, FoldrSym1, FoldrSym2, FoldrSym3,
@@ -124,6 +126,9 @@ import Data.Foldable.Singletons
 import Data.Functor.Singletons hiding (Void)
 import Data.Monoid.Singletons
 import Data.Ord.Singletons
+import Data.Semigroup.Singletons
+       ( PSemigroup(..), SSemigroup(..)
+       , type (<>@#@$), type (<>@#@$$), type (<>@#@$$$) )
 import Data.Singletons
 import Data.Singletons.Base.Enum
 import Data.Singletons.Base.Instances

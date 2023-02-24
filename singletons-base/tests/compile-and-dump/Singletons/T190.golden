@@ -38,7 +38,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: T -> T -> Ordering
     type family Compare_0123456789876543210 (a :: T) (a :: T) :: Ordering where
-      Compare_0123456789876543210 T T = Apply (Apply (Apply FoldlSym0 ThenCmpSym0) EQSym0) NilSym0
+      Compare_0123456789876543210 T T = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
     type Compare_0123456789876543210Sym0 :: (~>) T ((~>) T Ordering)
     data Compare_0123456789876543210Sym0 :: (~>) T ((~>) T Ordering)
       where
@@ -176,7 +176,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
         = (applySing
              ((applySing
                  ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @ThenCmpSym0) sThenCmp)))
+                    ((singFun2 @(<>@#@$)) (%<>))))
                 SEQ))
             SNil
     instance SEnum T where
