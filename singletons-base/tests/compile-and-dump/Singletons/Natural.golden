@@ -17,7 +17,7 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
                                   MkAgeSym0 a0123456789876543210
     type instance Apply MkAgeSym0 a0123456789876543210 = MkAge a0123456789876543210
     instance SuppressUnusedWarnings MkAgeSym0 where
-      suppressUnusedWarnings = snd (((,) MkAgeSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) MkAgeSym0KindInference ())
     type MkAgeSym1 :: Natural -> Age
     type family MkAgeSym1 (a0123456789876543210 :: Natural) :: Age where
       MkAgeSym1 a0123456789876543210 = MkAge a0123456789876543210
@@ -28,7 +28,7 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
                                    AddAgeSym0 a0123456789876543210
     type instance Apply AddAgeSym0 a0123456789876543210 = AddAgeSym1 a0123456789876543210
     instance SuppressUnusedWarnings AddAgeSym0 where
-      suppressUnusedWarnings = snd (((,) AddAgeSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) AddAgeSym0KindInference ())
     type AddAgeSym1 :: Age -> (~>) Age Age
     data AddAgeSym1 (a0123456789876543210 :: Age) :: (~>) Age Age
       where
@@ -36,7 +36,7 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
                                    AddAgeSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (AddAgeSym1 a0123456789876543210) a0123456789876543210 = AddAge a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (AddAgeSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) AddAgeSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) AddAgeSym1KindInference ())
     type AddAgeSym2 :: Age -> Age -> Age
     type family AddAgeSym2 (a0123456789876543210 :: Age) (a0123456789876543210 :: Age) :: Age where
       AddAgeSym2 a0123456789876543210 a0123456789876543210 = AddAge a0123456789876543210 a0123456789876543210
@@ -44,23 +44,24 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
     type family AddAge (a :: Age) (a :: Age) :: Age where
       AddAge (MkAge (x :: Natural)) (MkAge (y :: Natural)) = Apply MkAgeSym0 (Apply (Apply (+@#@$) x) y :: Natural)
     sAddAge ::
-      forall (t :: Age) (t :: Age).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply AddAgeSym0 t) t :: Age) :: Type
+      (forall (t :: Age) (t :: Age).
+       Sing t
+       -> Sing t -> Sing (Apply (Apply AddAgeSym0 t) t :: Age) :: Type)
     sAddAge (SMkAge (sX :: Sing x)) (SMkAge (sY :: Sing y))
-      = case ((,) (sX :: Sing x)) (sY :: Sing y) of
+      = case (,) (sX :: Sing x) (sY :: Sing y) of
           (,) (_ :: Sing (x :: Natural)) (_ :: Sing (y :: Natural))
-            -> (applySing ((singFun1 @MkAgeSym0) SMkAge))
-                 ((applySing ((applySing ((singFun2 @(+@#@$)) (%+))) sX)) sY ::
+            -> applySing
+                 (singFun1 @MkAgeSym0 SMkAge)
+                 (applySing (applySing (singFun2 @(+@#@$) (%+)) sX) sY ::
                     Sing (Apply (Apply (+@#@$) x) y :: Natural))
     instance SingI (AddAgeSym0 :: (~>) Age ((~>) Age Age)) where
-      sing = (singFun2 @AddAgeSym0) sAddAge
+      sing = singFun2 @AddAgeSym0 sAddAge
     instance SingI d =>
              SingI (AddAgeSym1 (d :: Age) :: (~>) Age Age) where
-      sing = (singFun1 @(AddAgeSym1 (d :: Age))) (sAddAge (sing @d))
+      sing = singFun1 @(AddAgeSym1 (d :: Age)) (sAddAge (sing @d))
     instance SingI1 (AddAgeSym1 :: Age -> (~>) Age Age) where
       liftSing (s :: Sing (d :: Age))
-        = (singFun1 @(AddAgeSym1 (d :: Age))) (sAddAge s)
+        = singFun1 @(AddAgeSym1 (d :: Age)) (sAddAge s)
     data SAge :: Age -> Type
       where
         SMkAge :: forall (n :: Natural). (Sing n) -> SAge (MkAge n :: Age)
@@ -76,4 +77,4 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 MkAge where
       liftSing = SMkAge
     instance SingI (MkAgeSym0 :: (~>) Natural Age) where
-      sing = (singFun1 @MkAgeSym0) SMkAge
+      sing = singFun1 @MkAgeSym0 SMkAge

@@ -17,7 +17,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
                                  JustSym0 a0123456789876543210
     type instance Apply JustSym0 a0123456789876543210 = Just a0123456789876543210
     instance SuppressUnusedWarnings JustSym0 where
-      suppressUnusedWarnings = snd (((,) JustSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) JustSym0KindInference ())
     type JustSym1 :: forall a. a -> Maybe a
     type family JustSym1 (a0123456789876543210 :: a) :: Maybe a where
       JustSym1 a0123456789876543210 = Just a0123456789876543210
@@ -35,7 +35,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+        = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
     type TFHelper_0123456789876543210Sym1 :: Maybe a
                                              -> (~>) (Maybe a) Bool
     data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: Maybe a) :: (~>) (Maybe a) Bool
@@ -45,7 +45,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+        = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
     type TFHelper_0123456789876543210Sym2 :: Maybe a -> Maybe a -> Bool
     type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: Maybe a) (a0123456789876543210 :: Maybe a) :: Bool where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -64,7 +64,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
                                               -> (~>) (Maybe a) ((~>) GHC.Types.Symbol GHC.Types.Symbol)
     data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: (~>) (Maybe a) ((~>) GHC.Types.Symbol GHC.Types.Symbol)
@@ -74,7 +74,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Num.Natural.Natural
                                               -> Maybe a -> (~>) GHC.Types.Symbol GHC.Types.Symbol
     data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Maybe a) :: (~>) GHC.Types.Symbol GHC.Types.Symbol
@@ -84,7 +84,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Num.Natural.Natural
                                               -> Maybe a -> GHC.Types.Symbol -> GHC.Types.Symbol
     type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Maybe a) (a0123456789876543210 :: GHC.Types.Symbol) :: GHC.Types.Symbol where
@@ -115,8 +115,8 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       (%==)
         (SJust (sA_0123456789876543210 :: Sing a_0123456789876543210))
         (SJust (sB_0123456789876543210 :: Sing b_0123456789876543210))
-        = (applySing
-             ((applySing ((singFun2 @(==@#@$)) (%==))) sA_0123456789876543210))
+        = applySing
+            (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
             sB_0123456789876543210
     instance SShow a => SShow (Maybe a) where
       sShowsPrec ::
@@ -131,35 +131,38 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
         _
         SNothing
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "Nothing")))
+        = applySing
+            (applySing
+               (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Nothing"))
             sA_0123456789876543210
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         (SJust (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
-                       (sFromInteger (sing :: Sing 10)))))
-                ((applySing
-                    ((applySing ((singFun3 @(.@#@$)) (%.)))
-                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                          (sing :: Sing "Just "))))
-                   ((applySing
-                       ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                          (sFromInteger (sing :: Sing 11))))
-                      sArg_0123456789876543210))))
+        = applySing
+            (applySing
+               (applySing
+                  (singFun3 @ShowParenSym0 sShowParen)
+                  (applySing
+                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (sFromInteger (sing :: Sing 10))))
+               (applySing
+                  (applySing
+                     (singFun3 @(.@#@$) (%.))
+                     (applySing
+                        (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Just ")))
+                  (applySing
+                     (applySing
+                        (singFun3 @ShowsPrecSym0 sShowsPrec)
+                        (sFromInteger (sing :: Sing 11)))
+                     sArg_0123456789876543210)))
             sA_0123456789876543210
     instance SDecide a => SDecide (Maybe a) where
       (%~) SNothing SNothing = Proved Refl
       (%~) SNothing (SJust _) = Disproved (\ x -> case x of {})
       (%~) (SJust _) SNothing = Disproved (\ x -> case x of {})
       (%~) (SJust a) (SJust b)
-        = case ((%~) a) b of
+        = case (%~) a b of
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
@@ -180,4 +183,4 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 Just where
       liftSing = SJust
     instance SingI (JustSym0 :: (~>) a (Maybe a)) where
-      sing = (singFun1 @JustSym0) SJust
+      sing = singFun1 @JustSym0 SJust

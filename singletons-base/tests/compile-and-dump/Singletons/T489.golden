@@ -20,7 +20,7 @@ Singletons/T489.hs:(0,0)-(0,0): Splicing declarations
                                    FlurmpSym0 a0123456789876543210
     type instance Apply FlurmpSym0 a0123456789876543210 = Flurmp a0123456789876543210
     instance SuppressUnusedWarnings FlurmpSym0 where
-      suppressUnusedWarnings = snd (((,) FlurmpSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) FlurmpSym0KindInference ())
     type FlurmpSym1 :: Maybe () -> ()
     type family FlurmpSym1 (a0123456789876543210 :: Maybe ()) :: () where
       FlurmpSym1 a0123456789876543210 = Flurmp a0123456789876543210
@@ -31,7 +31,7 @@ Singletons/T489.hs:(0,0)-(0,0): Splicing declarations
                                  BlahSym0 a0123456789876543210
     type instance Apply BlahSym0 a0123456789876543210 = Blah a0123456789876543210
     instance SuppressUnusedWarnings BlahSym0 where
-      suppressUnusedWarnings = snd (((,) BlahSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) BlahSym0KindInference ())
     type BlahSym1 :: Maybe a -> [a]
     type family BlahSym1 (a0123456789876543210 :: Maybe a) :: [a] where
       BlahSym1 a0123456789876543210 = Blah a0123456789876543210
@@ -44,19 +44,18 @@ Singletons/T489.hs:(0,0)-(0,0): Splicing declarations
       Blah ('Just @a x) = Apply (Apply (:@#@$) (x :: a)) NilSym0
       Blah ('Nothing @a) = NilSym0 :: [a]
     sFlurmp ::
-      forall (t :: Maybe ()).
-      Sing t -> Sing (Apply FlurmpSym0 t :: ()) :: Type
+      (forall (t :: Maybe ()).
+       Sing t -> Sing (Apply FlurmpSym0 t :: ()) :: Type)
     sBlah ::
-      forall (t :: Maybe a).
-      Sing t -> Sing (Apply BlahSym0 t :: [a]) :: Type
+      (forall (t :: Maybe a).
+       Sing t -> Sing (Apply BlahSym0 t :: [a]) :: Type)
     sFlurmp (SNothing @_) = STuple0
     sFlurmp (SJust STuple0) = STuple0
     sBlah (SJust @a (sX :: Sing x))
-      = (applySing
-           ((applySing ((singFun2 @(:@#@$)) SCons)) (sX :: Sing (x :: a))))
-          SNil
+      = applySing
+          (applySing (singFun2 @(:@#@$) SCons) (sX :: Sing (x :: a))) SNil
     sBlah (SNothing @a) = SNil :: Sing (NilSym0 :: [a])
     instance SingI (FlurmpSym0 :: (~>) (Maybe ()) ()) where
-      sing = (singFun1 @FlurmpSym0) sFlurmp
+      sing = singFun1 @FlurmpSym0 sFlurmp
     instance SingI (BlahSym0 :: (~>) (Maybe a) [a]) where
-      sing = (singFun1 @BlahSym0) sBlah
+      sing = singFun1 @BlahSym0 sBlah

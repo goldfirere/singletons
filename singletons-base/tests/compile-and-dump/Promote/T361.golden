@@ -18,7 +18,7 @@ Promote/T361.hs:(0,0)-(0,0): Splicing declarations
                               FSym0 a0123456789876543210
     type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
-      suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: Proxy 1 -> Proxy 2
     type family FSym1 (a0123456789876543210 :: Proxy 1) :: Proxy 2 where
       FSym1 a0123456789876543210 = F a0123456789876543210

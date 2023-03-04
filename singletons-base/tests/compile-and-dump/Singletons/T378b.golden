@@ -21,7 +21,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     f _ _ = ()
     natMinus :: Nat -> Nat -> Nat
     natMinus Zero _ = Zero
-    natMinus (Succ a) (Succ b) = (natMinus a) b
+    natMinus (Succ a) (Succ b) = natMinus a b
     natMinus a@(Succ _) Zero = a
     data Let0123456789876543210ASym0 wild_01234567898765432100123456789876543210
       where
@@ -30,7 +30,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210ASym0 wild_01234567898765432100123456789876543210 = Let0123456789876543210A wild_01234567898765432100123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210ASym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210ASym0KindInference) ())
+        = snd ((,) Let0123456789876543210ASym0KindInference ())
     type family Let0123456789876543210ASym1 wild_01234567898765432100123456789876543210 where
       Let0123456789876543210ASym1 wild_01234567898765432100123456789876543210 = Let0123456789876543210A wild_01234567898765432100123456789876543210
     type family Let0123456789876543210A wild_0123456789876543210 where
@@ -42,7 +42,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
                                      NatMinusSym0 a0123456789876543210
     type instance Apply NatMinusSym0 a0123456789876543210 = NatMinusSym1 a0123456789876543210
     instance SuppressUnusedWarnings NatMinusSym0 where
-      suppressUnusedWarnings = snd (((,) NatMinusSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) NatMinusSym0KindInference ())
     type NatMinusSym1 :: Nat -> (~>) Nat Nat
     data NatMinusSym1 (a0123456789876543210 :: Nat) :: (~>) Nat Nat
       where
@@ -50,7 +50,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
                                      NatMinusSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (NatMinusSym1 a0123456789876543210) a0123456789876543210 = NatMinus a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (NatMinusSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) NatMinusSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) NatMinusSym1KindInference ())
     type NatMinusSym2 :: Nat -> Nat -> Nat
     type family NatMinusSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       NatMinusSym2 a0123456789876543210 a0123456789876543210 = NatMinus a0123456789876543210 a0123456789876543210
@@ -61,7 +61,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
                               FSym0 a0123456789876543210
     type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
-      suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: forall b a. a -> (~>) b ()
     data FSym1 (a0123456789876543210 :: a) :: (~>) b ()
       where
@@ -69,7 +69,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
                               FSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (FSym1 a0123456789876543210) a0123456789876543210 = F a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) FSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) FSym1KindInference ())
     type FSym2 :: forall b a. a -> b -> ()
     type family FSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: () where
       FSym2 a0123456789876543210 a0123456789876543210 = F a0123456789876543210 a0123456789876543210
@@ -84,41 +84,38 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     type PC :: forall b a. a -> b -> Constraint
     class PC x y
     sNatMinus ::
-      forall (t :: Nat) (t :: Nat).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply NatMinusSym0 t) t :: Nat) :: Type
+      (forall (t :: Nat) (t :: Nat).
+       Sing t
+       -> Sing t -> Sing (Apply (Apply NatMinusSym0 t) t :: Nat) :: Type)
     sF ::
       forall b a (t :: a) (t :: b). Sing t
                                     -> Sing t -> Sing (Apply (Apply FSym0 t) t :: ())
     sNatMinus SZero _ = SZero
     sNatMinus (SSucc (sA :: Sing a)) (SSucc (sB :: Sing b))
-      = (applySing ((applySing ((singFun2 @NatMinusSym0) sNatMinus)) sA))
-          sB
+      = applySing (applySing (singFun2 @NatMinusSym0 sNatMinus) sA) sB
     sNatMinus
       (SSucc (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
       SZero
       = let
           sA ::
             Sing @_ (Let0123456789876543210ASym1 wild_0123456789876543210)
-          sA
-            = (applySing ((singFun1 @SuccSym0) SSucc))
-                sWild_0123456789876543210
+          sA = applySing (singFun1 @SuccSym0 SSucc) sWild_0123456789876543210
         in sA
     sF _ _ = STuple0
     instance SingI (NatMinusSym0 :: (~>) Nat ((~>) Nat Nat)) where
-      sing = (singFun2 @NatMinusSym0) sNatMinus
+      sing = singFun2 @NatMinusSym0 sNatMinus
     instance SingI d =>
              SingI (NatMinusSym1 (d :: Nat) :: (~>) Nat Nat) where
-      sing = (singFun1 @(NatMinusSym1 (d :: Nat))) (sNatMinus (sing @d))
+      sing = singFun1 @(NatMinusSym1 (d :: Nat)) (sNatMinus (sing @d))
     instance SingI1 (NatMinusSym1 :: Nat -> (~>) Nat Nat) where
       liftSing (s :: Sing (d :: Nat))
-        = (singFun1 @(NatMinusSym1 (d :: Nat))) (sNatMinus s)
+        = singFun1 @(NatMinusSym1 (d :: Nat)) (sNatMinus s)
     instance SingI (FSym0 :: (~>) a ((~>) b ())) where
-      sing = (singFun2 @FSym0) sF
+      sing = singFun2 @FSym0 sF
     instance SingI d => SingI (FSym1 (d :: a) :: (~>) b ()) where
-      sing = (singFun1 @(FSym1 (d :: a))) (sF (sing @d))
+      sing = singFun1 @(FSym1 (d :: a)) (sF (sing @d))
     instance SingI1 (FSym1 :: a -> (~>) b ()) where
-      liftSing (s :: Sing (d :: a)) = (singFun1 @(FSym1 (d :: a))) (sF s)
+      liftSing (s :: Sing (d :: a)) = singFun1 @(FSym1 (d :: a)) (sF s)
     type SD :: forall b a (x :: a) (y :: b). D x y -> Type
     data SD :: forall b a (x :: a) (y :: b). D x y -> Type
     type instance Sing @(D x y) = SD

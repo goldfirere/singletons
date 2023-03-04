@@ -28,7 +28,7 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+        = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
     type TFHelper_0123456789876543210Sym1 :: MyPropKind
                                              -> (~>) MyPropKind Bool
     data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: MyPropKind) :: (~>) MyPropKind Bool
@@ -38,7 +38,7 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+        = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
     type TFHelper_0123456789876543210Sym2 :: MyPropKind
                                              -> MyPropKind -> Bool
     type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: MyPropKind) (a0123456789876543210 :: MyPropKind) :: Bool where
@@ -60,7 +60,7 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Compare_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Compare_0123456789876543210Sym0KindInference ())
     type Compare_0123456789876543210Sym1 :: MyPropKind
                                             -> (~>) MyPropKind Ordering
     data Compare_0123456789876543210Sym1 (a0123456789876543210 :: MyPropKind) :: (~>) MyPropKind Ordering
@@ -70,7 +70,7 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Compare_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Compare_0123456789876543210Sym1KindInference ())
     type Compare_0123456789876543210Sym2 :: MyPropKind
                                             -> MyPropKind -> Ordering
     type family Compare_0123456789876543210Sym2 (a0123456789876543210 :: MyPropKind) (a0123456789876543210 :: MyPropKind) :: Ordering where
@@ -90,7 +90,7 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
                                               -> (~>) MyPropKind ((~>) Symbol Symbol)
     data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: (~>) MyPropKind ((~>) Symbol Symbol)
@@ -100,7 +100,7 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Num.Natural.Natural
                                               -> MyPropKind -> (~>) Symbol Symbol
     data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: MyPropKind) :: (~>) Symbol Symbol
@@ -110,7 +110,7 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Num.Natural.Natural
                                               -> MyPropKind -> Symbol -> Symbol
     type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: MyPropKind) (a0123456789876543210 :: Symbol) :: Symbol where
@@ -145,18 +145,16 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
                                                          -> Sing (Apply (Apply (CompareSym0 :: TyFun MyPropKind ((~>) MyPropKind Ordering)
                                                                                                -> Type) t1) t2)
       sCompare SLocation SLocation
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @(<>@#@$)) (%<>))))
-                SEQ))
+        = applySing
+            (applySing
+               (applySing (singFun3 @FoldlSym0 sFoldl) (singFun2 @(<>@#@$) (%<>)))
+               SEQ)
             SNil
       sCompare SQuaternion SQuaternion
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @(<>@#@$)) (%<>))))
-                SEQ))
+        = applySing
+            (applySing
+               (applySing (singFun3 @FoldlSym0 sFoldl) (singFun2 @(<>@#@$) (%<>)))
+               SEQ)
             SNil
       sCompare SLocation SQuaternion = SLT
       sCompare SQuaternion SLocation = SGT
@@ -173,17 +171,17 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
         _
         SLocation
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "Location")))
+        = applySing
+            (applySing
+               (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Location"))
             sA_0123456789876543210
       sShowsPrec
         _
         SQuaternion
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "Quaternion")))
+        = applySing
+            (applySing
+               (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Quaternion"))
             sA_0123456789876543210
     instance SDecide MyPropKind where
       (%~) SLocation SLocation = Proved Refl

@@ -15,7 +15,7 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
                          ($$:@#@$) a0123456789876543210
     type instance Apply ($$:@#@$) a0123456789876543210 = ($$:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings ($$:@#@$) where
-      suppressUnusedWarnings = snd (((,) (:$$:@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (:$$:@#@$###) ())
     infixl 5 $$:@#@$
     type ($$:@#@$$) :: Bool -> (~>) Bool Bool
     data ($$:@#@$$) (a0123456789876543210 :: Bool) :: (~>) Bool Bool
@@ -24,7 +24,7 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
                           ($$:@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply (($$:@#@$$) a0123456789876543210) a0123456789876543210 = ($$:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (($$:@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (:$$:@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (:$$:@#@$$###) ())
     infixl 5 $$:@#@$$
     type ($$:@#@$$$) :: Bool -> Bool -> Bool
     type family ($$:@#@$$$) (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) :: Bool where
@@ -35,15 +35,15 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
       ($$:) _ _ = FalseSym0
     infixl 5 %$$:
     (%$$:) ::
-      forall (t :: Bool) (t :: Bool).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply ($$:@#@$) t) t :: Bool) :: Type
+      (forall (t :: Bool) (t :: Bool).
+       Sing t
+       -> Sing t -> Sing (Apply (Apply ($$:@#@$) t) t :: Bool) :: Type)
     (%$$:) _ _ = SFalse
     instance SingI (($$:@#@$) :: (~>) Bool ((~>) Bool Bool)) where
-      sing = (singFun2 @($$:@#@$)) (%$$:)
+      sing = singFun2 @($$:@#@$) (%$$:)
     instance SingI d =>
              SingI (($$:@#@$$) (d :: Bool) :: (~>) Bool Bool) where
-      sing = (singFun1 @(($$:@#@$$) (d :: Bool))) ((%$$:) (sing @d))
+      sing = singFun1 @(($$:@#@$$) (d :: Bool)) ((%$$:) (sing @d))
     instance SingI1 (($$:@#@$$) :: Bool -> (~>) Bool Bool) where
       liftSing (s :: Sing (d :: Bool))
-        = (singFun1 @(($$:@#@$$) (d :: Bool))) ((%$$:) s)
+        = singFun1 @(($$:@#@$$) (d :: Bool)) ((%$$:) s)

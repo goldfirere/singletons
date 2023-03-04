@@ -10,7 +10,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     type instance Apply LiftMaybeSym0 a0123456789876543210 = LiftMaybeSym1 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings LiftMaybeSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) LiftMaybeSym0KindInference) ())
+        = snd ((,) LiftMaybeSym0KindInference ())
     type LiftMaybeSym1 :: forall (a :: Type) (b :: Type). (~>) a b
                                                           -> (~>) (Maybe a) (Maybe b)
     data LiftMaybeSym1 (a0123456789876543210 :: (~>) a b) :: (~>) (Maybe a) (Maybe b)
@@ -20,7 +20,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     type instance Apply (LiftMaybeSym1 a0123456789876543210) a0123456789876543210 = LiftMaybe a0123456789876543210 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (LiftMaybeSym1 a0123456789876543210) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) LiftMaybeSym1KindInference) ())
+        = snd ((,) LiftMaybeSym1KindInference ())
     type LiftMaybeSym2 :: forall (a :: Type) (b :: Type). (~>) a b
                                                           -> Maybe a -> Maybe b
     type family LiftMaybeSym2 (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: Maybe a) :: Maybe b where
@@ -36,7 +36,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     type instance Apply SuccSym0 a0123456789876543210 = 'Succ a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings SuccSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) SuccSym0KindInference) ())
+        = snd ((,) SuccSym0KindInference ())
     type SuccSym1 :: NatT -> NatT
     type family SuccSym1 (a0123456789876543210 :: NatT) :: NatT where
       SuccSym1 a0123456789876543210 = 'Succ a0123456789876543210
@@ -48,7 +48,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     type instance Apply (:+@#@$) a0123456789876543210 = (:+@#@$$) a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (:+@#@$) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) (::+@#@$###)) ())
+        = snd ((,) (::+@#@$###) ())
     type (:+@#@$$) :: Natural -> (~>) Natural Natural
     data (:+@#@$$) (a0123456789876543210 :: Natural) :: (~>) Natural Natural
       where
@@ -57,7 +57,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     type instance Apply ((:+@#@$$) a0123456789876543210) a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings ((:+@#@$$) a0123456789876543210) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) (::+@#@$$###)) ())
+        = snd ((,) (::+@#@$$###) ())
     type (:+@#@$$$) :: Natural -> Natural -> Natural
     type family (:+@#@$$$) (a0123456789876543210 :: Natural) (a0123456789876543210 :: Natural) :: Natural where
       (:+@#@$$$) a0123456789876543210 a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210

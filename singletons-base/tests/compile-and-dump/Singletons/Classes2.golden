@@ -24,7 +24,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
                                     SuccFooSym0 a0123456789876543210
     type instance Apply SuccFooSym0 a0123456789876543210 = SuccFoo a0123456789876543210
     instance SuppressUnusedWarnings SuccFooSym0 where
-      suppressUnusedWarnings = snd (((,) SuccFooSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) SuccFooSym0KindInference ())
     type SuccFooSym1 :: NatFoo -> NatFoo
     type family SuccFooSym1 (a0123456789876543210 :: NatFoo) :: NatFoo where
       SuccFooSym1 a0123456789876543210 = SuccFoo a0123456789876543210
@@ -42,7 +42,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Mycompare_0123456789876543210Sym0 a0123456789876543210 = Mycompare_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Mycompare_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Mycompare_0123456789876543210Sym0KindInference ())
     type Mycompare_0123456789876543210Sym1 :: NatFoo
                                               -> (~>) NatFoo Ordering
     data Mycompare_0123456789876543210Sym1 (a0123456789876543210 :: NatFoo) :: (~>) NatFoo Ordering
@@ -52,7 +52,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Mycompare_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Mycompare_0123456789876543210Sym1KindInference ())
     type Mycompare_0123456789876543210Sym2 :: NatFoo
                                               -> NatFoo -> Ordering
     type family Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: NatFoo) (a0123456789876543210 :: NatFoo) :: Ordering where
@@ -83,9 +83,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       sMycompare SZeroFoo (SSuccFoo _) = SLT
       sMycompare (SSuccFoo _) SZeroFoo = SGT
       sMycompare (SSuccFoo (sN :: Sing n)) (SSuccFoo (sM :: Sing m))
-        = (applySing
-             ((applySing ((singFun2 @MycompareSym0) sMycompare)) sM))
-            sN
+        = applySing (applySing (singFun2 @MycompareSym0 sMycompare) sM) sN
     instance SingI ZeroFoo where
       sing = SZeroFoo
     instance SingI n => SingI (SuccFoo (n :: NatFoo)) where
@@ -93,4 +91,4 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 SuccFoo where
       liftSing = SSuccFoo
     instance SingI (SuccFooSym0 :: (~>) NatFoo NatFoo) where
-      sing = (singFun1 @SuccFooSym0) SSuccFoo
+      sing = singFun1 @SuccFooSym0 SSuccFoo

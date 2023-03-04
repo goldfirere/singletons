@@ -59,7 +59,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     (!) VNil n = case n of {}
     mapVec :: (a -> b) -> Vec n a -> Vec n b
     mapVec _ VNil = VNil
-    mapVec f (VCons x xs) = (VCons (f x)) ((mapVec f) xs)
+    mapVec f (VCons x xs) = VCons (f x) (mapVec f xs)
     data Equal :: Type -> Type -> Type where Reflexive :: Equal a a
     symmetry :: Equal a b -> Equal b a
     symmetry Reflexive = Reflexive
@@ -80,7 +80,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                FSSym0 a0123456789876543210
     type instance Apply FSSym0 a0123456789876543210 = FS a0123456789876543210
     instance SuppressUnusedWarnings FSSym0 where
-      suppressUnusedWarnings = snd (((,) FSSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) FSSym0KindInference ())
     type FSSym1 :: Fin n -> Fin ('Succ n)
     type family FSSym1 (a0123456789876543210 :: Fin n) :: Fin ('Succ n) where
       FSSym1 a0123456789876543210 = FS a0123456789876543210
@@ -100,7 +100,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                   VConsSym0 a0123456789876543210
     type instance Apply VConsSym0 a0123456789876543210 = VConsSym1 a0123456789876543210
     instance SuppressUnusedWarnings VConsSym0 where
-      suppressUnusedWarnings = snd (((,) VConsSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) VConsSym0KindInference ())
     type VConsSym1 :: a -> (~>) (Vec n a) (Vec ('Succ n) a)
     data VConsSym1 (a0123456789876543210 :: a) :: (~>) (Vec n a) (Vec ('Succ n) a)
       where
@@ -108,7 +108,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                   VConsSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (VConsSym1 a0123456789876543210) a0123456789876543210 = VCons a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (VConsSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) VConsSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) VConsSym1KindInference ())
     type VConsSym2 :: a -> Vec n a -> Vec ('Succ n) a
     type family VConsSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Vec n a) :: Vec ('Succ n) a where
       VConsSym2 a0123456789876543210 a0123456789876543210 = VCons a0123456789876543210 a0123456789876543210
@@ -125,7 +125,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                   HConsSym0 a0123456789876543210
     type instance Apply HConsSym0 a0123456789876543210 = HConsSym1 a0123456789876543210
     instance SuppressUnusedWarnings HConsSym0 where
-      suppressUnusedWarnings = snd (((,) HConsSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) HConsSym0KindInference ())
     type HConsSym1 :: x -> (~>) (HList xs) (HList ('(:) x xs))
     data HConsSym1 (a0123456789876543210 :: x) :: (~>) (HList xs) (HList ('(:) x xs))
       where
@@ -133,7 +133,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                   HConsSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (HConsSym1 a0123456789876543210) a0123456789876543210 = HCons a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (HConsSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) HConsSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) HConsSym1KindInference ())
     type HConsSym2 :: x -> HList xs -> HList ('(:) x xs)
     type family HConsSym2 (a0123456789876543210 :: x) (a0123456789876543210 :: HList xs) :: HList ('(:) x xs) where
       HConsSym2 a0123456789876543210 a0123456789876543210 = HCons a0123456789876543210 a0123456789876543210
@@ -144,7 +144,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                 ObjSym0 a0123456789876543210
     type instance Apply ObjSym0 a0123456789876543210 = Obj a0123456789876543210
     instance SuppressUnusedWarnings ObjSym0 where
-      suppressUnusedWarnings = snd (((,) ObjSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) ObjSym0KindInference ())
     type ObjSym1 :: a -> Obj
     type family ObjSym1 (a0123456789876543210 :: a) :: Obj where
       ObjSym1 a0123456789876543210 = Obj a0123456789876543210
@@ -156,8 +156,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                          TransitivitySym0 a0123456789876543210
     type instance Apply TransitivitySym0 a0123456789876543210 = TransitivitySym1 a0123456789876543210
     instance SuppressUnusedWarnings TransitivitySym0 where
-      suppressUnusedWarnings
-        = snd (((,) TransitivitySym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) TransitivitySym0KindInference ())
     type TransitivitySym1 :: Equal a b -> (~>) (Equal b c) (Equal a c)
     data TransitivitySym1 (a0123456789876543210 :: Equal a b) :: (~>) (Equal b c) (Equal a c)
       where
@@ -165,8 +164,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                          TransitivitySym1 a0123456789876543210 a0123456789876543210
     type instance Apply (TransitivitySym1 a0123456789876543210) a0123456789876543210 = Transitivity a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TransitivitySym1 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd (((,) TransitivitySym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) TransitivitySym1KindInference ())
     type TransitivitySym2 :: Equal a b -> Equal b c -> Equal a c
     type family TransitivitySym2 (a0123456789876543210 :: Equal a b) (a0123456789876543210 :: Equal b c) :: Equal a c where
       TransitivitySym2 a0123456789876543210 a0123456789876543210 = Transitivity a0123456789876543210 a0123456789876543210
@@ -177,7 +175,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                      SymmetrySym0 a0123456789876543210
     type instance Apply SymmetrySym0 a0123456789876543210 = Symmetry a0123456789876543210
     instance SuppressUnusedWarnings SymmetrySym0 where
-      suppressUnusedWarnings = snd (((,) SymmetrySym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) SymmetrySym0KindInference ())
     type SymmetrySym1 :: Equal a b -> Equal b a
     type family SymmetrySym1 (a0123456789876543210 :: Equal a b) :: Equal b a where
       SymmetrySym1 a0123456789876543210 = Symmetry a0123456789876543210
@@ -188,7 +186,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                    MapVecSym0 a0123456789876543210
     type instance Apply MapVecSym0 a0123456789876543210 = MapVecSym1 a0123456789876543210
     instance SuppressUnusedWarnings MapVecSym0 where
-      suppressUnusedWarnings = snd (((,) MapVecSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) MapVecSym0KindInference ())
     type MapVecSym1 :: (~>) a b -> (~>) (Vec n a) (Vec n b)
     data MapVecSym1 (a0123456789876543210 :: (~>) a b) :: (~>) (Vec n a) (Vec n b)
       where
@@ -196,7 +194,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                    MapVecSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (MapVecSym1 a0123456789876543210) a0123456789876543210 = MapVec a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MapVecSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) MapVecSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) MapVecSym1KindInference ())
     type MapVecSym2 :: (~>) a b -> Vec n a -> Vec n b
     type family MapVecSym2 (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: Vec n a) :: Vec n b where
       MapVecSym2 a0123456789876543210 a0123456789876543210 = MapVec a0123456789876543210 a0123456789876543210
@@ -207,7 +205,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                        (!@#@$) a0123456789876543210
     type instance Apply (!@#@$) a0123456789876543210 = (!@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (!@#@$) where
-      suppressUnusedWarnings = snd (((,) (:!@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (:!@#@$###) ())
     type (!@#@$$) :: Vec n a -> (~>) (Fin n) a
     data (!@#@$$) (a0123456789876543210 :: Vec n a) :: (~>) (Fin n) a
       where
@@ -215,7 +213,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                         (!@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((!@#@$$) a0123456789876543210) a0123456789876543210 = (!) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((!@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (:!@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (:!@#@$$###) ())
     type (!@#@$$$) :: Vec n a -> Fin n -> a
     type family (!@#@$$$) (a0123456789876543210 :: Vec n a) (a0123456789876543210 :: Fin n) :: a where
       (!@#@$$$) a0123456789876543210 a0123456789876543210 = (!) a0123456789876543210 a0123456789876543210
@@ -226,7 +224,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                     TailVecSym0 a0123456789876543210
     type instance Apply TailVecSym0 a0123456789876543210 = TailVec a0123456789876543210
     instance SuppressUnusedWarnings TailVecSym0 where
-      suppressUnusedWarnings = snd (((,) TailVecSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) TailVecSym0KindInference ())
     type TailVecSym1 :: Vec ('Succ n) a -> Vec n a
     type family TailVecSym1 (a0123456789876543210 :: Vec ('Succ n) a) :: Vec n a where
       TailVecSym1 a0123456789876543210 = TailVec a0123456789876543210
@@ -237,7 +235,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
                                     HeadVecSym0 a0123456789876543210
     type instance Apply HeadVecSym0 a0123456789876543210 = HeadVec a0123456789876543210
     instance SuppressUnusedWarnings HeadVecSym0 where
-      suppressUnusedWarnings = snd (((,) HeadVecSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) HeadVecSym0KindInference ())
     type HeadVecSym1 :: Vec ('Succ n) a -> a
     type family HeadVecSym1 (a0123456789876543210 :: Vec ('Succ n) a) :: a where
       HeadVecSym1 a0123456789876543210 = HeadVec a0123456789876543210
@@ -263,74 +261,75 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     type family HeadVec (a :: Vec ('Succ n) a) :: a where
       HeadVec (VCons x _) = x
     sTransitivity ::
-      forall (t :: Equal a b) (t :: Equal b c).
-      Sing t
-      -> Sing t
-         -> Sing (Apply (Apply TransitivitySym0 t) t :: Equal a c) :: Type
+      (forall (t :: Equal a b) (t :: Equal b c).
+       Sing t
+       -> Sing t
+          -> Sing (Apply (Apply TransitivitySym0 t) t :: Equal a c) :: Type)
     sSymmetry ::
-      forall (t :: Equal a b).
-      Sing t -> Sing (Apply SymmetrySym0 t :: Equal b a) :: Type
+      (forall (t :: Equal a b).
+       Sing t -> Sing (Apply SymmetrySym0 t :: Equal b a) :: Type)
     sMapVec ::
-      forall (t :: (~>) a b) (t :: Vec n a).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply MapVecSym0 t) t :: Vec n b) :: Type
+      (forall (t :: (~>) a b) (t :: Vec n a).
+       Sing t
+       -> Sing t
+          -> Sing (Apply (Apply MapVecSym0 t) t :: Vec n b) :: Type)
     (%!) ::
-      forall (t :: Vec n a) (t :: Fin n).
-      Sing t -> Sing t -> Sing (Apply (Apply (!@#@$) t) t :: a) :: Type
+      (forall (t :: Vec n a) (t :: Fin n).
+       Sing t -> Sing t -> Sing (Apply (Apply (!@#@$) t) t :: a) :: Type)
     sTailVec ::
-      forall (t :: Vec ('Succ n) a).
-      Sing t -> Sing (Apply TailVecSym0 t :: Vec n a) :: Type
+      (forall (t :: Vec ('Succ n) a).
+       Sing t -> Sing (Apply TailVecSym0 t :: Vec n a) :: Type)
     sHeadVec ::
-      forall (t :: Vec ('Succ n) a).
-      Sing t -> Sing (Apply HeadVecSym0 t :: a) :: Type
+      (forall (t :: Vec ('Succ n) a).
+       Sing t -> Sing (Apply HeadVecSym0 t :: a) :: Type)
     sTransitivity SReflexive SReflexive = SReflexive
     sSymmetry SReflexive = SReflexive
     sMapVec _ SVNil = SVNil
     sMapVec (sF :: Sing f) (SVCons (sX :: Sing x) (sXs :: Sing xs))
-      = (applySing
-           ((applySing ((singFun2 @VConsSym0) SVCons)) ((applySing sF) sX)))
-          ((applySing ((applySing ((singFun2 @MapVecSym0) sMapVec)) sF)) sXs)
+      = applySing
+          (applySing (singFun2 @VConsSym0 SVCons) (applySing sF sX))
+          (applySing (applySing (singFun2 @MapVecSym0 sMapVec) sF) sXs)
     (%!) (SVCons (sX :: Sing x) _) SFZ = sX
     (%!) (SVCons _ (sXs :: Sing xs)) (SFS (sN :: Sing n))
-      = (applySing ((applySing ((singFun2 @(!@#@$)) (%!))) sXs)) sN
+      = applySing (applySing (singFun2 @(!@#@$) (%!)) sXs) sN
     (%!) SVNil (sN :: Sing n)
-      = (id @(Sing (Case_0123456789876543210 n n))) (case sN of {})
+      = id @(Sing (Case_0123456789876543210 n n)) (case sN of {})
     sTailVec (SVCons _ (sXs :: Sing xs)) = sXs
     sHeadVec (SVCons (sX :: Sing x) _) = sX
     instance SingI (TransitivitySym0 :: (~>) (Equal a b) ((~>) (Equal b c) (Equal a c))) where
-      sing = (singFun2 @TransitivitySym0) sTransitivity
+      sing = singFun2 @TransitivitySym0 sTransitivity
     instance SingI d =>
              SingI (TransitivitySym1 (d :: Equal a b) :: (~>) (Equal b c) (Equal a c)) where
       sing
-        = (singFun1 @(TransitivitySym1 (d :: Equal a b)))
-            (sTransitivity (sing @d))
+        = singFun1
+            @(TransitivitySym1 (d :: Equal a b)) (sTransitivity (sing @d))
     instance SingI1 (TransitivitySym1 :: Equal a b
                                          -> (~>) (Equal b c) (Equal a c)) where
       liftSing (s :: Sing (d :: Equal a b))
-        = (singFun1 @(TransitivitySym1 (d :: Equal a b))) (sTransitivity s)
+        = singFun1 @(TransitivitySym1 (d :: Equal a b)) (sTransitivity s)
     instance SingI (SymmetrySym0 :: (~>) (Equal a b) (Equal b a)) where
-      sing = (singFun1 @SymmetrySym0) sSymmetry
+      sing = singFun1 @SymmetrySym0 sSymmetry
     instance SingI (MapVecSym0 :: (~>) ((~>) a b) ((~>) (Vec n a) (Vec n b))) where
-      sing = (singFun2 @MapVecSym0) sMapVec
+      sing = singFun2 @MapVecSym0 sMapVec
     instance SingI d =>
              SingI (MapVecSym1 (d :: (~>) a b) :: (~>) (Vec n a) (Vec n b)) where
-      sing = (singFun1 @(MapVecSym1 (d :: (~>) a b))) (sMapVec (sing @d))
+      sing = singFun1 @(MapVecSym1 (d :: (~>) a b)) (sMapVec (sing @d))
     instance SingI1 (MapVecSym1 :: (~>) a b
                                    -> (~>) (Vec n a) (Vec n b)) where
       liftSing (s :: Sing (d :: (~>) a b))
-        = (singFun1 @(MapVecSym1 (d :: (~>) a b))) (sMapVec s)
+        = singFun1 @(MapVecSym1 (d :: (~>) a b)) (sMapVec s)
     instance SingI ((!@#@$) :: (~>) (Vec n a) ((~>) (Fin n) a)) where
-      sing = (singFun2 @(!@#@$)) (%!)
+      sing = singFun2 @(!@#@$) (%!)
     instance SingI d =>
              SingI ((!@#@$$) (d :: Vec n a) :: (~>) (Fin n) a) where
-      sing = (singFun1 @((!@#@$$) (d :: Vec n a))) ((%!) (sing @d))
+      sing = singFun1 @((!@#@$$) (d :: Vec n a)) ((%!) (sing @d))
     instance SingI1 ((!@#@$$) :: Vec n a -> (~>) (Fin n) a) where
       liftSing (s :: Sing (d :: Vec n a))
-        = (singFun1 @((!@#@$$) (d :: Vec n a))) ((%!) s)
+        = singFun1 @((!@#@$$) (d :: Vec n a)) ((%!) s)
     instance SingI (TailVecSym0 :: (~>) (Vec ('Succ n) a) (Vec n a)) where
-      sing = (singFun1 @TailVecSym0) sTailVec
+      sing = singFun1 @TailVecSym0 sTailVec
     instance SingI (HeadVecSym0 :: (~>) (Vec ('Succ n) a) a) where
-      sing = (singFun1 @HeadVecSym0) sHeadVec
+      sing = singFun1 @HeadVecSym0 sHeadVec
     data SFin :: forall (a :: Nat). Fin a -> Type
       where
         SFZ :: forall n. SFin (FZ :: Fin ('Succ n))
@@ -367,7 +366,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 FS where
       liftSing = SFS
     instance SingI (FSSym0 :: (~>) (Fin n) (Fin ('Succ n))) where
-      sing = (singFun1 @FSSym0) SFS
+      sing = singFun1 @FSSym0 SFS
     instance SingI MkFoo1 where
       sing = SMkFoo1
     instance SingI MkFoo2 where
@@ -376,43 +375,43 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
       sing = SVNil
     instance (SingI n, SingI n) =>
              SingI (VCons (n :: a) (n :: Vec n a)) where
-      sing = (SVCons sing) sing
+      sing = SVCons sing sing
     instance SingI n => SingI1 (VCons (n :: a)) where
       liftSing = SVCons sing
     instance SingI2 VCons where
       liftSing2 = SVCons
     instance SingI (VConsSym0 :: (~>) a ((~>) (Vec n a) (Vec ('Succ n) a))) where
-      sing = (singFun2 @VConsSym0) SVCons
+      sing = singFun2 @VConsSym0 SVCons
     instance SingI d =>
              SingI (VConsSym1 (d :: a) :: (~>) (Vec n a) (Vec ('Succ n) a)) where
-      sing = (singFun1 @(VConsSym1 (d :: a))) (SVCons (sing @d))
+      sing = singFun1 @(VConsSym1 (d :: a)) (SVCons (sing @d))
     instance SingI1 (VConsSym1 :: a
                                   -> (~>) (Vec n a) (Vec ('Succ n) a)) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @(VConsSym1 (d :: a))) (SVCons s)
+        = singFun1 @(VConsSym1 (d :: a)) (SVCons s)
     instance SingI Reflexive where
       sing = SReflexive
     instance SingI HNil where
       sing = SHNil
     instance (SingI n, SingI n) =>
              SingI (HCons (n :: x) (n :: HList xs)) where
-      sing = (SHCons sing) sing
+      sing = SHCons sing sing
     instance SingI n => SingI1 (HCons (n :: x)) where
       liftSing = SHCons sing
     instance SingI2 HCons where
       liftSing2 = SHCons
     instance SingI (HConsSym0 :: (~>) x ((~>) (HList xs) (HList ('(:) x xs)))) where
-      sing = (singFun2 @HConsSym0) SHCons
+      sing = singFun2 @HConsSym0 SHCons
     instance SingI d =>
              SingI (HConsSym1 (d :: x) :: (~>) (HList xs) (HList ('(:) x xs))) where
-      sing = (singFun1 @(HConsSym1 (d :: x))) (SHCons (sing @d))
+      sing = singFun1 @(HConsSym1 (d :: x)) (SHCons (sing @d))
     instance SingI1 (HConsSym1 :: x
                                   -> (~>) (HList xs) (HList ('(:) x xs))) where
       liftSing (s :: Sing (d :: x))
-        = (singFun1 @(HConsSym1 (d :: x))) (SHCons s)
+        = singFun1 @(HConsSym1 (d :: x)) (SHCons s)
     instance SingI n => SingI (Obj (n :: a)) where
       sing = SObj sing
     instance SingI1 Obj where
       liftSing = SObj
     instance SingI (ObjSym0 :: (~>) a Obj) where
-      sing = (singFun1 @ObjSym0) SObj
+      sing = singFun1 @ObjSym0 SObj

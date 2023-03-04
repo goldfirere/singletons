@@ -202,7 +202,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210ZSym0 x0123456789876543210 = Let0123456789876543210Z x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210ZSym0KindInference) ())
+        = snd ((,) Let0123456789876543210ZSym0KindInference ())
     type family Let0123456789876543210ZSym1 x0123456789876543210 where
       Let0123456789876543210ZSym1 x0123456789876543210 = Let0123456789876543210Z x0123456789876543210
     data Let0123456789876543210YSym0 x0123456789876543210
@@ -212,7 +212,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210YSym0 x0123456789876543210 = Let0123456789876543210Y x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210YSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210YSym0KindInference) ())
+        = snd ((,) Let0123456789876543210YSym0KindInference ())
     type family Let0123456789876543210YSym1 x0123456789876543210 where
       Let0123456789876543210YSym1 x0123456789876543210 = Let0123456789876543210Y x0123456789876543210
     data Let0123456789876543210X_0123456789876543210Sym0 x0123456789876543210
@@ -223,8 +223,8 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Let0123456789876543210X_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
-            (((,) Let0123456789876543210X_0123456789876543210Sym0KindInference)
-               ())
+            ((,)
+               Let0123456789876543210X_0123456789876543210Sym0KindInference ())
     type family Let0123456789876543210X_0123456789876543210Sym1 x0123456789876543210 where
       Let0123456789876543210X_0123456789876543210Sym1 x0123456789876543210 = Let0123456789876543210X_0123456789876543210 x0123456789876543210
     type family Let0123456789876543210Z x where
@@ -240,7 +240,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210BarSym0 x0123456789876543210 = Let0123456789876543210Bar x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210BarSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210BarSym0KindInference) ())
+        = snd ((,) Let0123456789876543210BarSym0KindInference ())
     type family Let0123456789876543210BarSym1 x0123456789876543210 :: a0123456789876543210 where
       Let0123456789876543210BarSym1 x0123456789876543210 = Let0123456789876543210Bar x0123456789876543210
     type family Let0123456789876543210Bar x :: a where
@@ -252,7 +252,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (<<<%%%%%%%%%%%%%%%%%%%%@#@$) x0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210
     instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$) where
       suppressUnusedWarnings
-        = snd (((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###)) ())
+        = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###) ())
     data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210 :: (~>) Nat ((~>) Nat Nat)
       where
         (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###) :: SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 arg) =>
@@ -260,7 +260,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210) a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)) ())
+        = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###) ())
     data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 (a0123456789876543210 :: Nat) :: (~>) Nat Nat
       where
         (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###) :: SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 a0123456789876543210 arg) =>
@@ -268,7 +268,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210) a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###)) ())
+        = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###) ())
     type family (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 a0123456789876543210 a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 a0123456789876543210 a0123456789876543210
     type family (<<<%%%%%%%%%%%%%%%%%%%%) x (a :: Nat) (a :: Nat) :: Nat where
@@ -281,7 +281,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210ZSym0 x0123456789876543210 = Let0123456789876543210Z x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210ZSym0KindInference) ())
+        = snd ((,) Let0123456789876543210ZSym0KindInference ())
     type family Let0123456789876543210ZSym1 x0123456789876543210 :: Nat where
       Let0123456789876543210ZSym1 x0123456789876543210 = Let0123456789876543210Z x0123456789876543210
     data (<<<%%%%%%%%%%%%%%%%%%%%@#@$) x0123456789876543210
@@ -291,7 +291,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (<<<%%%%%%%%%%%%%%%%%%%%@#@$) x0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210
     instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$) where
       suppressUnusedWarnings
-        = snd (((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###)) ())
+        = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###) ())
     data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210 :: (~>) Nat ((~>) Nat Nat)
       where
         (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###) :: SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 arg) =>
@@ -299,7 +299,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210) a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)) ())
+        = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###) ())
     data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 (a0123456789876543210 :: Nat) :: (~>) Nat Nat
       where
         (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###) :: SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 a0123456789876543210 arg) =>
@@ -307,7 +307,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210) a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###)) ())
+        = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###) ())
     type family (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 a0123456789876543210 a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 a0123456789876543210 a0123456789876543210
     type family Let0123456789876543210Z x :: Nat where
@@ -322,7 +322,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (<<<%%%%%%%%%%%%%%%%%%%%@#@$) x0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210
     instance SuppressUnusedWarnings (<<<%%%%%%%%%%%%%%%%%%%%@#@$) where
       suppressUnusedWarnings
-        = snd (((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###)) ())
+        = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###) ())
     data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210 :: (~>) Nat ((~>) Nat Nat)
       where
         (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###) :: SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 arg) =>
@@ -330,7 +330,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210) a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###)) ())
+        = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$###) ())
     data (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 (a0123456789876543210 :: Nat) :: (~>) Nat Nat
       where
         (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###) :: SameKind (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 a0123456789876543210 arg) =>
@@ -338,7 +338,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210) a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$$) x0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###)) ())
+        = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###) ())
     type family (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 a0123456789876543210 a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 a0123456789876543210 a0123456789876543210
     type family (<<<%%%%%%%%%%%%%%%%%%%%) x (a :: Nat) (a :: Nat) :: Nat where
@@ -353,7 +353,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = Lambda_0123456789876543210Sym1 a_01234567898765432100123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
     data Lambda_0123456789876543210Sym1 a_01234567898765432100123456789876543210 x0123456789876543210
       where
         Lambda_0123456789876543210Sym1KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym1 a_01234567898765432100123456789876543210) arg) (Lambda_0123456789876543210Sym2 a_01234567898765432100123456789876543210 arg) =>
@@ -361,7 +361,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Lambda_0123456789876543210Sym1 a_01234567898765432100123456789876543210) x0123456789876543210 = Lambda_0123456789876543210Sym2 a_01234567898765432100123456789876543210 x0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 a_01234567898765432100123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym1KindInference ())
     data Lambda_0123456789876543210Sym2 a_01234567898765432100123456789876543210 x0123456789876543210 x0123456789876543210
       where
         Lambda_0123456789876543210Sym2KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym2 a_01234567898765432100123456789876543210 x0123456789876543210) arg) (Lambda_0123456789876543210Sym3 a_01234567898765432100123456789876543210 x0123456789876543210 arg) =>
@@ -369,7 +369,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Lambda_0123456789876543210Sym2 a_01234567898765432100123456789876543210 x0123456789876543210) x0123456789876543210 = Lambda_0123456789876543210 a_01234567898765432100123456789876543210 x0123456789876543210 x0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym2 a_01234567898765432100123456789876543210 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym2KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym2KindInference ())
     type family Lambda_0123456789876543210Sym3 a_01234567898765432100123456789876543210 x0123456789876543210 x0123456789876543210 where
       Lambda_0123456789876543210Sym3 a_01234567898765432100123456789876543210 x0123456789876543210 x0123456789876543210 = Lambda_0123456789876543210 a_01234567898765432100123456789876543210 x0123456789876543210 x0123456789876543210
     data Let0123456789876543210ZSym0 x0123456789876543210
@@ -379,7 +379,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210ZSym0 x0123456789876543210 = Let0123456789876543210ZSym1 x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210ZSym0KindInference) ())
+        = snd ((,) Let0123456789876543210ZSym0KindInference ())
     data Let0123456789876543210ZSym1 x0123456789876543210 :: (~>) Nat Nat
       where
         Let0123456789876543210ZSym1KindInference :: SameKind (Apply (Let0123456789876543210ZSym1 x0123456789876543210) arg) (Let0123456789876543210ZSym2 x0123456789876543210 arg) =>
@@ -387,7 +387,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Let0123456789876543210ZSym1 x0123456789876543210) a0123456789876543210 = Let0123456789876543210Z x0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210ZSym1 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210ZSym1KindInference) ())
+        = snd ((,) Let0123456789876543210ZSym1KindInference ())
     type family Let0123456789876543210ZSym2 x0123456789876543210 (a0123456789876543210 :: Nat) :: Nat where
       Let0123456789876543210ZSym2 x0123456789876543210 a0123456789876543210 = Let0123456789876543210Z x0123456789876543210 a0123456789876543210
     type family Let0123456789876543210Z x (a :: Nat) :: Nat where
@@ -401,7 +401,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210Sym1 x0123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
     data Lambda_0123456789876543210Sym1 x0123456789876543210 x0123456789876543210
       where
         Lambda_0123456789876543210Sym1KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) arg) (Lambda_0123456789876543210Sym2 x0123456789876543210 arg) =>
@@ -409,7 +409,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) x0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 x0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym1KindInference ())
     type family Lambda_0123456789876543210Sym2 x0123456789876543210 x0123456789876543210 where
       Lambda_0123456789876543210Sym2 x0123456789876543210 x0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 x0123456789876543210
     data Let0123456789876543210ZSym0 x0123456789876543210
@@ -419,7 +419,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210ZSym0 x0123456789876543210 = Let0123456789876543210Z x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210ZSym0KindInference) ())
+        = snd ((,) Let0123456789876543210ZSym0KindInference ())
     type family Let0123456789876543210ZSym1 x0123456789876543210 :: Nat where
       Let0123456789876543210ZSym1 x0123456789876543210 = Let0123456789876543210Z x0123456789876543210
     type family Let0123456789876543210Z x :: Nat where
@@ -431,7 +431,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210XSym0 x0123456789876543210 = Let0123456789876543210X x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210XSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210XSym0KindInference) ())
+        = snd ((,) Let0123456789876543210XSym0KindInference ())
     type family Let0123456789876543210XSym1 x0123456789876543210 :: Nat where
       Let0123456789876543210XSym1 x0123456789876543210 = Let0123456789876543210X x0123456789876543210
     type family Let0123456789876543210X x :: Nat where
@@ -443,7 +443,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210FSym0 x0123456789876543210 = Let0123456789876543210FSym1 x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210FSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210FSym0KindInference) ())
+        = snd ((,) Let0123456789876543210FSym0KindInference ())
     data Let0123456789876543210FSym1 x0123456789876543210 :: (~>) Nat Nat
       where
         Let0123456789876543210FSym1KindInference :: SameKind (Apply (Let0123456789876543210FSym1 x0123456789876543210) arg) (Let0123456789876543210FSym2 x0123456789876543210 arg) =>
@@ -451,7 +451,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Let0123456789876543210FSym1 x0123456789876543210) a0123456789876543210 = Let0123456789876543210F x0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210FSym1 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210FSym1KindInference) ())
+        = snd ((,) Let0123456789876543210FSym1KindInference ())
     type family Let0123456789876543210FSym2 x0123456789876543210 (a0123456789876543210 :: Nat) :: Nat where
       Let0123456789876543210FSym2 x0123456789876543210 a0123456789876543210 = Let0123456789876543210F x0123456789876543210 a0123456789876543210
     type family Let0123456789876543210F x (a :: Nat) :: Nat where
@@ -463,7 +463,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210ZSym0 x0123456789876543210 = Let0123456789876543210Z x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210ZSym0KindInference) ())
+        = snd ((,) Let0123456789876543210ZSym0KindInference ())
     type family Let0123456789876543210ZSym1 x0123456789876543210 :: Nat where
       Let0123456789876543210ZSym1 x0123456789876543210 = Let0123456789876543210Z x0123456789876543210
     type family Let0123456789876543210Z x :: Nat where
@@ -475,7 +475,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210ZSym0 y0123456789876543210 = Let0123456789876543210ZSym1 y0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210ZSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210ZSym0KindInference) ())
+        = snd ((,) Let0123456789876543210ZSym0KindInference ())
     data Let0123456789876543210ZSym1 y0123456789876543210 x0123456789876543210
       where
         Let0123456789876543210ZSym1KindInference :: SameKind (Apply (Let0123456789876543210ZSym1 y0123456789876543210) arg) (Let0123456789876543210ZSym2 y0123456789876543210 arg) =>
@@ -483,7 +483,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Let0123456789876543210ZSym1 y0123456789876543210) x0123456789876543210 = Let0123456789876543210Z y0123456789876543210 x0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210ZSym1 y0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210ZSym1KindInference) ())
+        = snd ((,) Let0123456789876543210ZSym1KindInference ())
     type family Let0123456789876543210ZSym2 y0123456789876543210 x0123456789876543210 :: Nat where
       Let0123456789876543210ZSym2 y0123456789876543210 x0123456789876543210 = Let0123456789876543210Z y0123456789876543210 x0123456789876543210
     type family Let0123456789876543210Z y x :: Nat where
@@ -495,7 +495,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210FSym0 x0123456789876543210 = Let0123456789876543210FSym1 x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210FSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210FSym0KindInference) ())
+        = snd ((,) Let0123456789876543210FSym0KindInference ())
     data Let0123456789876543210FSym1 x0123456789876543210 :: (~>) Nat Nat
       where
         Let0123456789876543210FSym1KindInference :: SameKind (Apply (Let0123456789876543210FSym1 x0123456789876543210) arg) (Let0123456789876543210FSym2 x0123456789876543210 arg) =>
@@ -503,7 +503,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Let0123456789876543210FSym1 x0123456789876543210) a0123456789876543210 = Let0123456789876543210F x0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210FSym1 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210FSym1KindInference) ())
+        = snd ((,) Let0123456789876543210FSym1KindInference ())
     type family Let0123456789876543210FSym2 x0123456789876543210 (a0123456789876543210 :: Nat) :: Nat where
       Let0123456789876543210FSym2 x0123456789876543210 a0123456789876543210 = Let0123456789876543210F x0123456789876543210 a0123456789876543210
     type family Let0123456789876543210F x (a :: Nat) :: Nat where
@@ -515,7 +515,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210FSym0 x0123456789876543210 = Let0123456789876543210FSym1 x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210FSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210FSym0KindInference) ())
+        = snd ((,) Let0123456789876543210FSym0KindInference ())
     data Let0123456789876543210FSym1 x0123456789876543210 :: (~>) Nat Nat
       where
         Let0123456789876543210FSym1KindInference :: SameKind (Apply (Let0123456789876543210FSym1 x0123456789876543210) arg) (Let0123456789876543210FSym2 x0123456789876543210 arg) =>
@@ -523,7 +523,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Let0123456789876543210FSym1 x0123456789876543210) a0123456789876543210 = Let0123456789876543210F x0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210FSym1 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210FSym1KindInference) ())
+        = snd ((,) Let0123456789876543210FSym1KindInference ())
     type family Let0123456789876543210FSym2 x0123456789876543210 (a0123456789876543210 :: Nat) :: Nat where
       Let0123456789876543210FSym2 x0123456789876543210 a0123456789876543210 = Let0123456789876543210F x0123456789876543210 a0123456789876543210
     type family Let0123456789876543210F x (a :: Nat) :: Nat where
@@ -535,7 +535,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210YSym0 x0123456789876543210 = Let0123456789876543210Y x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210YSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210YSym0KindInference) ())
+        = snd ((,) Let0123456789876543210YSym0KindInference ())
     type family Let0123456789876543210YSym1 x0123456789876543210 :: Nat where
       Let0123456789876543210YSym1 x0123456789876543210 = Let0123456789876543210Y x0123456789876543210
     type family Let0123456789876543210Y x :: Nat where
@@ -555,7 +555,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210YSym0 x0123456789876543210 = Let0123456789876543210Y x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210YSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210YSym0KindInference) ())
+        = snd ((,) Let0123456789876543210YSym0KindInference ())
     type family Let0123456789876543210YSym1 x0123456789876543210 :: Nat where
       Let0123456789876543210YSym1 x0123456789876543210 = Let0123456789876543210Y x0123456789876543210
     type family Let0123456789876543210Y x :: Nat where
@@ -567,7 +567,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                   Foo14Sym0 a0123456789876543210
     type instance Apply Foo14Sym0 a0123456789876543210 = Foo14 a0123456789876543210
     instance SuppressUnusedWarnings Foo14Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo14Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo14Sym0KindInference ())
     type Foo14Sym1 :: Nat -> (Nat, Nat)
     type family Foo14Sym1 (a0123456789876543210 :: Nat) :: (Nat,
                                                             Nat) where
@@ -579,7 +579,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                    Foo13_Sym0 a0123456789876543210
     type instance Apply Foo13_Sym0 a0123456789876543210 = Foo13_ a0123456789876543210
     instance SuppressUnusedWarnings Foo13_Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo13_Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo13_Sym0KindInference ())
     type Foo13_Sym1 :: a -> a
     type family Foo13_Sym1 (a0123456789876543210 :: a) :: a where
       Foo13_Sym1 a0123456789876543210 = Foo13_ a0123456789876543210
@@ -590,7 +590,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                   Foo13Sym0 a0123456789876543210
     type instance Apply Foo13Sym0 a0123456789876543210 = Foo13 a0123456789876543210
     instance SuppressUnusedWarnings Foo13Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo13Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo13Sym0KindInference ())
     type Foo13Sym1 :: forall a. a -> a
     type family Foo13Sym1 (a0123456789876543210 :: a) :: a where
       Foo13Sym1 a0123456789876543210 = Foo13 a0123456789876543210
@@ -601,7 +601,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                   Foo12Sym0 a0123456789876543210
     type instance Apply Foo12Sym0 a0123456789876543210 = Foo12 a0123456789876543210
     instance SuppressUnusedWarnings Foo12Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo12Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo12Sym0KindInference ())
     type Foo12Sym1 :: Nat -> Nat
     type family Foo12Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo12Sym1 a0123456789876543210 = Foo12 a0123456789876543210
@@ -612,7 +612,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                   Foo11Sym0 a0123456789876543210
     type instance Apply Foo11Sym0 a0123456789876543210 = Foo11 a0123456789876543210
     instance SuppressUnusedWarnings Foo11Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo11Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo11Sym0KindInference ())
     type Foo11Sym1 :: Nat -> Nat
     type family Foo11Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo11Sym1 a0123456789876543210 = Foo11 a0123456789876543210
@@ -623,7 +623,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                   Foo10Sym0 a0123456789876543210
     type instance Apply Foo10Sym0 a0123456789876543210 = Foo10 a0123456789876543210
     instance SuppressUnusedWarnings Foo10Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo10Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo10Sym0KindInference ())
     type Foo10Sym1 :: Nat -> Nat
     type family Foo10Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo10Sym1 a0123456789876543210 = Foo10 a0123456789876543210
@@ -634,7 +634,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                  Foo9Sym0 a0123456789876543210
     type instance Apply Foo9Sym0 a0123456789876543210 = Foo9 a0123456789876543210
     instance SuppressUnusedWarnings Foo9Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo9Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo9Sym0KindInference ())
     type Foo9Sym1 :: Nat -> Nat
     type family Foo9Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo9Sym1 a0123456789876543210 = Foo9 a0123456789876543210
@@ -645,7 +645,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                  Foo8Sym0 a0123456789876543210
     type instance Apply Foo8Sym0 a0123456789876543210 = Foo8 a0123456789876543210
     instance SuppressUnusedWarnings Foo8Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo8Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo8Sym0KindInference ())
     type Foo8Sym1 :: Nat -> Nat
     type family Foo8Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo8Sym1 a0123456789876543210 = Foo8 a0123456789876543210
@@ -656,7 +656,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                  Foo7Sym0 a0123456789876543210
     type instance Apply Foo7Sym0 a0123456789876543210 = Foo7 a0123456789876543210
     instance SuppressUnusedWarnings Foo7Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo7Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo7Sym0KindInference ())
     type Foo7Sym1 :: Nat -> Nat
     type family Foo7Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo7Sym1 a0123456789876543210 = Foo7 a0123456789876543210
@@ -667,7 +667,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                  Foo6Sym0 a0123456789876543210
     type instance Apply Foo6Sym0 a0123456789876543210 = Foo6 a0123456789876543210
     instance SuppressUnusedWarnings Foo6Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo6Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo6Sym0KindInference ())
     type Foo6Sym1 :: Nat -> Nat
     type family Foo6Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo6Sym1 a0123456789876543210 = Foo6 a0123456789876543210
@@ -678,7 +678,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                  Foo5Sym0 a0123456789876543210
     type instance Apply Foo5Sym0 a0123456789876543210 = Foo5 a0123456789876543210
     instance SuppressUnusedWarnings Foo5Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo5Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo5Sym0KindInference ())
     type Foo5Sym1 :: Nat -> Nat
     type family Foo5Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo5Sym1 a0123456789876543210 = Foo5 a0123456789876543210
@@ -689,7 +689,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                  Foo4Sym0 a0123456789876543210
     type instance Apply Foo4Sym0 a0123456789876543210 = Foo4 a0123456789876543210
     instance SuppressUnusedWarnings Foo4Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo4Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo4Sym0KindInference ())
     type Foo4Sym1 :: Nat -> Nat
     type family Foo4Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo4Sym1 a0123456789876543210 = Foo4 a0123456789876543210
@@ -700,7 +700,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                  Foo3Sym0 a0123456789876543210
     type instance Apply Foo3Sym0 a0123456789876543210 = Foo3 a0123456789876543210
     instance SuppressUnusedWarnings Foo3Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo3Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo3Sym0KindInference ())
     type Foo3Sym1 :: Nat -> Nat
     type family Foo3Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo3Sym1 a0123456789876543210 = Foo3 a0123456789876543210
@@ -714,7 +714,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                                  Foo1Sym0 a0123456789876543210
     type instance Apply Foo1Sym0 a0123456789876543210 = Foo1 a0123456789876543210
     instance SuppressUnusedWarnings Foo1Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo1Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo1Sym0KindInference ())
     type Foo1Sym1 :: Nat -> Nat
     type family Foo1Sym1 (a0123456789876543210 :: Nat) :: Nat where
       Foo1Sym1 a0123456789876543210 = Foo1 a0123456789876543210
@@ -764,38 +764,46 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type family Foo1 (a :: Nat) :: Nat where
       Foo1 x = Let0123456789876543210YSym1 x
     sFoo14 ::
-      forall (t :: Nat).
-      Sing t -> Sing (Apply Foo14Sym0 t :: (Nat, Nat)) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo14Sym0 t :: (Nat, Nat)) :: Type)
     sFoo13_ ::
-      forall (t :: a). Sing t -> Sing (Apply Foo13_Sym0 t :: a) :: Type
+      (forall (t :: a). Sing t -> Sing (Apply Foo13_Sym0 t :: a) :: Type)
     sFoo13 ::
       forall a (t :: a). Sing t -> Sing (Apply Foo13Sym0 t :: a)
     sFoo12 ::
-      forall (t :: Nat).
-      Sing t -> Sing (Apply Foo12Sym0 t :: Nat) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo12Sym0 t :: Nat) :: Type)
     sFoo11 ::
-      forall (t :: Nat).
-      Sing t -> Sing (Apply Foo11Sym0 t :: Nat) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo11Sym0 t :: Nat) :: Type)
     sFoo10 ::
-      forall (t :: Nat).
-      Sing t -> Sing (Apply Foo10Sym0 t :: Nat) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo10Sym0 t :: Nat) :: Type)
     sFoo9 ::
-      forall (t :: Nat). Sing t -> Sing (Apply Foo9Sym0 t :: Nat) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo9Sym0 t :: Nat) :: Type)
     sFoo8 ::
-      forall (t :: Nat). Sing t -> Sing (Apply Foo8Sym0 t :: Nat) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo8Sym0 t :: Nat) :: Type)
     sFoo7 ::
-      forall (t :: Nat). Sing t -> Sing (Apply Foo7Sym0 t :: Nat) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo7Sym0 t :: Nat) :: Type)
     sFoo6 ::
-      forall (t :: Nat). Sing t -> Sing (Apply Foo6Sym0 t :: Nat) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo6Sym0 t :: Nat) :: Type)
     sFoo5 ::
-      forall (t :: Nat). Sing t -> Sing (Apply Foo5Sym0 t :: Nat) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo5Sym0 t :: Nat) :: Type)
     sFoo4 ::
-      forall (t :: Nat). Sing t -> Sing (Apply Foo4Sym0 t :: Nat) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo4Sym0 t :: Nat) :: Type)
     sFoo3 ::
-      forall (t :: Nat). Sing t -> Sing (Apply Foo3Sym0 t :: Nat) :: Type
-    sFoo2 :: Sing (Foo2Sym0 :: Nat) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo3Sym0 t :: Nat) :: Type)
+    sFoo2 :: (Sing (Foo2Sym0 :: Nat) :: Type)
     sFoo1 ::
-      forall (t :: Nat). Sing t -> Sing (Apply Foo1Sym0 t :: Nat) :: Type
+      (forall (t :: Nat).
+       Sing t -> Sing (Apply Foo1Sym0 t :: Nat) :: Type)
     sFoo14 (sX :: Sing x)
       = let
           sZ :: Sing @_ (Let0123456789876543210ZSym1 x)
@@ -803,190 +811,193 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
           sX_0123456789876543210 ::
             Sing @_ (Let0123456789876543210X_0123456789876543210Sym1 x)
           sZ
-            = (id
-                 @(Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x))))
+            = id
+                @(Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x)))
                 (case sX_0123456789876543210 of
                    STuple2 _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
                      -> sY_0123456789876543210)
           sY
-            = (id
-                 @(Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x))))
+            = id
+                @(Sing (Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x)))
                 (case sX_0123456789876543210 of
                    STuple2 (sY_0123456789876543210 :: Sing y_0123456789876543210) _
                      -> sY_0123456789876543210)
           sX_0123456789876543210
-            = (applySing
-                 ((applySing ((singFun2 @Tuple2Sym0) STuple2))
-                    ((applySing ((singFun1 @SuccSym0) SSucc)) sX)))
+            = applySing
+                (applySing
+                   (singFun2 @Tuple2Sym0 STuple2)
+                   (applySing (singFun1 @SuccSym0 SSucc) sX))
                 sX
-        in (applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sZ)) sY
+        in applySing (applySing (singFun2 @Tuple2Sym0 STuple2) sZ) sY
     sFoo13_ (sY :: Sing y) = sY
     sFoo13 (sX :: Sing x)
       = let
-          sBar :: Sing (Let0123456789876543210BarSym1 x :: a) :: Type
+          sBar :: (Sing (Let0123456789876543210BarSym1 x :: a) :: Type)
           sBar = sX
-        in (applySing ((singFun1 @Foo13_Sym0) sFoo13_)) sBar
+        in applySing (singFun1 @Foo13_Sym0 sFoo13_) sBar
     sFoo12 (sX :: Sing x)
       = let
           (%+) ::
-            forall (t :: Nat) (t :: Nat).
-            Sing t
-            -> Sing t
-               -> Sing (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) t) t :: Nat) :: Type
+            (forall (t :: Nat) (t :: Nat).
+             Sing t
+             -> Sing t
+                -> Sing (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) t) t :: Nat) :: Type)
           (%+) SZero (sM :: Sing m) = sM
           (%+) (SSucc (sN :: Sing n)) (sM :: Sing m)
-            = (applySing ((singFun1 @SuccSym0) SSucc))
-                ((applySing
-                    ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
-                       sN))
+            = applySing
+                (singFun1 @SuccSym0 SSucc)
+                (applySing
+                   (applySing (singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) (%+)) sN)
                    sX)
         in
-          (applySing
-             ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
-                sX))
-            ((applySing ((singFun1 @SuccSym0) SSucc))
-               ((applySing ((singFun1 @SuccSym0) SSucc)) SZero))
+          applySing
+            (applySing (singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) (%+)) sX)
+            (applySing
+               (singFun1 @SuccSym0 SSucc)
+               (applySing (singFun1 @SuccSym0 SSucc) SZero))
     sFoo11 (sX :: Sing x)
       = let
-          sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat) :: Type
+          sZ :: (Sing (Let0123456789876543210ZSym1 x :: Nat) :: Type)
           (%+) ::
-            forall (t :: Nat) (t :: Nat).
-            Sing t
-            -> Sing t
-               -> Sing (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) t) t :: Nat) :: Type
+            (forall (t :: Nat) (t :: Nat).
+             Sing t
+             -> Sing t
+                -> Sing (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) t) t :: Nat) :: Type)
           sZ = sX
           (%+) SZero (sM :: Sing m) = sM
           (%+) (SSucc (sN :: Sing n)) (sM :: Sing m)
-            = (applySing ((singFun1 @SuccSym0) SSucc))
-                ((applySing
-                    ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
-                       sN))
+            = applySing
+                (singFun1 @SuccSym0 SSucc)
+                (applySing
+                   (applySing (singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) (%+)) sN)
                    sM)
         in
-          (applySing
-             ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
-                ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
+          applySing
+            (applySing
+               (singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) (%+))
+               (applySing (singFun1 @SuccSym0 SSucc) SZero))
             sZ
     sFoo10 (sX :: Sing x)
       = let
           (%+) ::
-            forall (t :: Nat) (t :: Nat).
-            Sing t
-            -> Sing t
-               -> Sing (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) t) t :: Nat) :: Type
+            (forall (t :: Nat) (t :: Nat).
+             Sing t
+             -> Sing t
+                -> Sing (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) t) t :: Nat) :: Type)
           (%+) SZero (sM :: Sing m) = sM
           (%+) (SSucc (sN :: Sing n)) (sM :: Sing m)
-            = (applySing ((singFun1 @SuccSym0) SSucc))
-                ((applySing
-                    ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
-                       sN))
+            = applySing
+                (singFun1 @SuccSym0 SSucc)
+                (applySing
+                   (applySing (singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) (%+)) sN)
                    sM)
         in
-          (applySing
-             ((applySing ((singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x)) (%+)))
-                ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
+          applySing
+            (applySing
+               (singFun2 @((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) (%+))
+               (applySing (singFun1 @SuccSym0 SSucc) SZero))
             sX
     sFoo9 (sX :: Sing x)
       = let
           sZ ::
-            forall (t :: Nat).
-            Sing t
-            -> Sing (Apply (Let0123456789876543210ZSym1 x) t :: Nat) :: Type
+            (forall (t :: Nat).
+             Sing t
+             -> Sing (Apply (Let0123456789876543210ZSym1 x) t :: Nat) :: Type)
           sZ (sA_0123456789876543210 :: Sing a_0123456789876543210)
-            = (applySing
-                 ((singFun1
-                     @(Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) x))
-                    (\ sX -> case sX of (_ :: Sing x) -> sX)))
+            = applySing
+                (singFun1
+                   @(Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) x)
+                   (\ sX -> case sX of (_ :: Sing x) -> sX))
                 sA_0123456789876543210
-        in (applySing ((singFun1 @(Let0123456789876543210ZSym1 x)) sZ)) sX
+        in applySing (singFun1 @(Let0123456789876543210ZSym1 x) sZ) sX
     sFoo8 (sX :: Sing x)
       = let
-          sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat) :: Type
+          sZ :: (Sing (Let0123456789876543210ZSym1 x :: Nat) :: Type)
           sZ
-            = (applySing
-                 ((singFun1 @(Apply Lambda_0123456789876543210Sym0 x))
-                    (\ sX -> case sX of (_ :: Sing x) -> sX)))
+            = applySing
+                (singFun1
+                   @(Apply Lambda_0123456789876543210Sym0 x)
+                   (\ sX -> case sX of (_ :: Sing x) -> sX))
                 SZero
         in sZ
     sFoo7 (sX :: Sing x)
       = let
-          sX :: Sing (Let0123456789876543210XSym1 x :: Nat) :: Type
+          sX :: (Sing (Let0123456789876543210XSym1 x :: Nat) :: Type)
           sX = SZero
         in sX
     sFoo6 (sX :: Sing x)
       = let
           sF ::
-            forall (t :: Nat).
-            Sing t
-            -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat) :: Type
-          sF (sY :: Sing y) = (applySing ((singFun1 @SuccSym0) SSucc)) sY in
+            (forall (t :: Nat).
+             Sing t
+             -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat) :: Type)
+          sF (sY :: Sing y) = applySing (singFun1 @SuccSym0 SSucc) sY in
         let
-          sZ :: Sing (Let0123456789876543210ZSym1 x :: Nat) :: Type
-          sZ
-            = (applySing ((singFun1 @(Let0123456789876543210FSym1 x)) sF)) sX
+          sZ :: (Sing (Let0123456789876543210ZSym1 x :: Nat) :: Type)
+          sZ = applySing (singFun1 @(Let0123456789876543210FSym1 x) sF) sX
         in sZ
     sFoo5 (sX :: Sing x)
       = let
           sF ::
-            forall (t :: Nat).
-            Sing t
-            -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat) :: Type
+            (forall (t :: Nat).
+             Sing t
+             -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat) :: Type)
           sF (sY :: Sing y)
             = let
-                sZ :: Sing (Let0123456789876543210ZSym2 y x :: Nat) :: Type
-                sZ = (applySing ((singFun1 @SuccSym0) SSucc)) sY
-              in (applySing ((singFun1 @SuccSym0) SSucc)) sZ
-        in (applySing ((singFun1 @(Let0123456789876543210FSym1 x)) sF)) sX
+                sZ :: (Sing (Let0123456789876543210ZSym2 y x :: Nat) :: Type)
+                sZ = applySing (singFun1 @SuccSym0 SSucc) sY
+              in applySing (singFun1 @SuccSym0 SSucc) sZ
+        in applySing (singFun1 @(Let0123456789876543210FSym1 x) sF) sX
     sFoo4 (sX :: Sing x)
       = let
           sF ::
-            forall (t :: Nat).
-            Sing t
-            -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat) :: Type
-          sF (sY :: Sing y) = (applySing ((singFun1 @SuccSym0) SSucc)) sY
-        in (applySing ((singFun1 @(Let0123456789876543210FSym1 x)) sF)) sX
+            (forall (t :: Nat).
+             Sing t
+             -> Sing (Apply (Let0123456789876543210FSym1 x) t :: Nat) :: Type)
+          sF (sY :: Sing y) = applySing (singFun1 @SuccSym0 SSucc) sY
+        in applySing (singFun1 @(Let0123456789876543210FSym1 x) sF) sX
     sFoo3 (sX :: Sing x)
       = let
-          sY :: Sing (Let0123456789876543210YSym1 x :: Nat) :: Type
-          sY = (applySing ((singFun1 @SuccSym0) SSucc)) sX
+          sY :: (Sing (Let0123456789876543210YSym1 x :: Nat) :: Type)
+          sY = applySing (singFun1 @SuccSym0 SSucc) sX
         in sY
     sFoo2
       = let
           sZ :: Sing @_ Let0123456789876543210ZSym0
           sY :: Sing @_ Let0123456789876543210YSym0
-          sZ = (applySing ((singFun1 @SuccSym0) SSucc)) sY
-          sY = (applySing ((singFun1 @SuccSym0) SSucc)) SZero
+          sZ = applySing (singFun1 @SuccSym0 SSucc) sY
+          sY = applySing (singFun1 @SuccSym0 SSucc) SZero
         in sZ
     sFoo1 (sX :: Sing x)
       = let
-          sY :: Sing (Let0123456789876543210YSym1 x :: Nat) :: Type
-          sY = (applySing ((singFun1 @SuccSym0) SSucc)) SZero
+          sY :: (Sing (Let0123456789876543210YSym1 x :: Nat) :: Type)
+          sY = applySing (singFun1 @SuccSym0 SSucc) SZero
         in sY
     instance SingI (Foo14Sym0 :: (~>) Nat (Nat, Nat)) where
-      sing = (singFun1 @Foo14Sym0) sFoo14
+      sing = singFun1 @Foo14Sym0 sFoo14
     instance SingI (Foo13_Sym0 :: (~>) a a) where
-      sing = (singFun1 @Foo13_Sym0) sFoo13_
+      sing = singFun1 @Foo13_Sym0 sFoo13_
     instance SingI (Foo13Sym0 :: (~>) a a) where
-      sing = (singFun1 @Foo13Sym0) sFoo13
+      sing = singFun1 @Foo13Sym0 sFoo13
     instance SingI (Foo12Sym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @Foo12Sym0) sFoo12
+      sing = singFun1 @Foo12Sym0 sFoo12
     instance SingI (Foo11Sym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @Foo11Sym0) sFoo11
+      sing = singFun1 @Foo11Sym0 sFoo11
     instance SingI (Foo10Sym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @Foo10Sym0) sFoo10
+      sing = singFun1 @Foo10Sym0 sFoo10
     instance SingI (Foo9Sym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @Foo9Sym0) sFoo9
+      sing = singFun1 @Foo9Sym0 sFoo9
     instance SingI (Foo8Sym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @Foo8Sym0) sFoo8
+      sing = singFun1 @Foo8Sym0 sFoo8
     instance SingI (Foo7Sym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @Foo7Sym0) sFoo7
+      sing = singFun1 @Foo7Sym0 sFoo7
     instance SingI (Foo6Sym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @Foo6Sym0) sFoo6
+      sing = singFun1 @Foo6Sym0 sFoo6
     instance SingI (Foo5Sym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @Foo5Sym0) sFoo5
+      sing = singFun1 @Foo5Sym0 sFoo5
     instance SingI (Foo4Sym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @Foo4Sym0) sFoo4
+      sing = singFun1 @Foo4Sym0 sFoo4
     instance SingI (Foo3Sym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @Foo3Sym0) sFoo3
+      sing = singFun1 @Foo3Sym0 sFoo3
     instance SingI (Foo1Sym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @Foo1Sym0) sFoo1
+      sing = singFun1 @Foo1Sym0 sFoo1

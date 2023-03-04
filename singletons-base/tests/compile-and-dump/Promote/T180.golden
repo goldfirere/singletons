@@ -15,7 +15,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
                                X1Sym0 a0123456789876543210
     type instance Apply X1Sym0 a0123456789876543210 = X1 a0123456789876543210
     instance SuppressUnusedWarnings X1Sym0 where
-      suppressUnusedWarnings = snd (((,) X1Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) X1Sym0KindInference ())
     type X1Sym1 :: Symbol -> X
     type family X1Sym1 (a0123456789876543210 :: Symbol) :: X where
       X1Sym1 a0123456789876543210 = X1 a0123456789876543210
@@ -26,7 +26,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
                                X2Sym0 a0123456789876543210
     type instance Apply X2Sym0 a0123456789876543210 = X2 a0123456789876543210
     instance SuppressUnusedWarnings X2Sym0 where
-      suppressUnusedWarnings = snd (((,) X2Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) X2Sym0KindInference ())
     type X2Sym1 :: Symbol -> X
     type family X2Sym1 (a0123456789876543210 :: Symbol) :: X where
       X2Sym1 a0123456789876543210 = X2 a0123456789876543210
@@ -36,7 +36,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
                               ZSym0 a0123456789876543210
     type instance Apply ZSym0 a0123456789876543210 = Z a0123456789876543210
     instance SuppressUnusedWarnings ZSym0 where
-      suppressUnusedWarnings = snd (((,) ZSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) ZSym0KindInference ())
     type family ZSym1 a0123456789876543210 where
       ZSym1 a0123456789876543210 = Z a0123456789876543210
     type YSym0 :: (~>) X Symbol
@@ -46,7 +46,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
                               YSym0 a0123456789876543210
     type instance Apply YSym0 a0123456789876543210 = Y a0123456789876543210
     instance SuppressUnusedWarnings YSym0 where
-      suppressUnusedWarnings = snd (((,) YSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) YSym0KindInference ())
     type YSym1 :: X -> Symbol
     type family YSym1 (a0123456789876543210 :: X) :: Symbol where
       YSym1 a0123456789876543210 = Y a0123456789876543210

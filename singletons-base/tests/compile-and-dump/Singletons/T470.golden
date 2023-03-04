@@ -21,7 +21,7 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
                                  MkT1Sym0 a0123456789876543210
     type instance Apply MkT1Sym0 a0123456789876543210 = MkT1 a0123456789876543210
     instance SuppressUnusedWarnings MkT1Sym0 where
-      suppressUnusedWarnings = snd (((,) MkT1Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) MkT1Sym0KindInference ())
     type MkT1Sym1 :: a -> T a
     type family MkT1Sym1 (a0123456789876543210 :: a) :: T a where
       MkT1Sym1 a0123456789876543210 = MkT1 a0123456789876543210
@@ -32,7 +32,7 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
                                  MkT2Sym0 a0123456789876543210
     type instance Apply MkT2Sym0 a0123456789876543210 = MkT2 a0123456789876543210
     instance SuppressUnusedWarnings MkT2Sym0 where
-      suppressUnusedWarnings = snd (((,) MkT2Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) MkT2Sym0KindInference ())
     type MkT2Sym1 :: Void -> T a
     type family MkT2Sym1 (a0123456789876543210 :: Void) :: T a where
       MkT2Sym1 a0123456789876543210 = MkT2 a0123456789876543210
@@ -43,7 +43,7 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
                                 MkSSym0 a0123456789876543210
     type instance Apply MkSSym0 a0123456789876543210 = MkS a0123456789876543210
     instance SuppressUnusedWarnings MkSSym0 where
-      suppressUnusedWarnings = snd (((,) MkSSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) MkSSym0KindInference ())
     type MkSSym1 :: Bool -> S
     type family MkSSym1 (a0123456789876543210 :: Bool) :: S where
       MkSSym1 a0123456789876543210 = MkS a0123456789876543210
@@ -75,21 +75,21 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 MkT1 where
       liftSing = SMkT1
     instance SingI (MkT1Sym0 :: (~>) a (T a)) where
-      sing = (singFun1 @MkT1Sym0) SMkT1
+      sing = singFun1 @MkT1Sym0 SMkT1
     instance SingI n => SingI (MkT2 (n :: Void)) where
       sing = SMkT2 sing
     instance SingI1 MkT2 where
       liftSing = SMkT2
     instance SingI (MkT2Sym0 :: (~>) Void (T a)) where
-      sing = (singFun1 @MkT2Sym0) SMkT2
+      sing = singFun1 @MkT2Sym0 SMkT2
     instance SingI n => SingI (MkS (n :: Bool)) where
       sing = SMkS sing
     instance SingI1 MkS where
       liftSing = SMkS
     instance SingI (MkSSym0 :: (~>) Bool S) where
-      sing = (singFun1 @MkSSym0) SMkS
+      sing = singFun1 @MkSSym0 SMkS
 
-Singletons/T470.hs:0:0: warning:
+Singletons/T470.hs:0:0: warning: [GHC-39584]
     {-# UNPACK #-} pragmas are ignored by `singletons-th`.
   |
 6 | $(singletons [d|

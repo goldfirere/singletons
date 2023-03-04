@@ -33,7 +33,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210Sym1 x0123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
     data Lambda_0123456789876543210Sym1 x0123456789876543210 arg_01234567898765432100123456789876543210
       where
         Lambda_0123456789876543210Sym1KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) arg) (Lambda_0123456789876543210Sym2 x0123456789876543210 arg) =>
@@ -41,7 +41,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) arg_01234567898765432100123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 arg_01234567898765432100123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym1KindInference ())
     type family Lambda_0123456789876543210Sym2 x0123456789876543210 arg_01234567898765432100123456789876543210 where
       Lambda_0123456789876543210Sym2 x0123456789876543210 arg_01234567898765432100123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 arg_01234567898765432100123456789876543210
     type Quux2Sym0 :: (~>) a a
@@ -51,7 +51,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                                   Quux2Sym0 a0123456789876543210
     type instance Apply Quux2Sym0 a0123456789876543210 = Quux2 a0123456789876543210
     instance SuppressUnusedWarnings Quux2Sym0 where
-      suppressUnusedWarnings = snd (((,) Quux2Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Quux2Sym0KindInference ())
     type Quux2Sym1 :: a -> a
     type family Quux2Sym1 (a0123456789876543210 :: a) :: a where
       Quux2Sym1 a0123456789876543210 = Quux2 a0123456789876543210
@@ -62,7 +62,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                                   Quux1Sym0 a0123456789876543210
     type instance Apply Quux1Sym0 a0123456789876543210 = Quux1 a0123456789876543210
     instance SuppressUnusedWarnings Quux1Sym0 where
-      suppressUnusedWarnings = snd (((,) Quux1Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Quux1Sym0KindInference ())
     type Quux1Sym1 :: a -> a
     type family Quux1Sym1 (a0123456789876543210 :: a) :: a where
       Quux1Sym1 a0123456789876543210 = Quux1 a0123456789876543210
@@ -79,7 +79,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                                  Bar1Sym0 a0123456789876543210
     type instance Apply Bar1Sym0 a0123456789876543210 = Bar1Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Bar1Sym0 where
-      suppressUnusedWarnings = snd (((,) Bar1Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Bar1Sym0KindInference ())
     type Bar1Sym1 :: forall a b. a -> (~>) ((~>) a b) b
     data Bar1Sym1 (a0123456789876543210 :: a) :: (~>) ((~>) a b) b
       where
@@ -87,7 +87,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                                  Bar1Sym1 a0123456789876543210 a0123456789876543210
     type instance Apply (Bar1Sym1 a0123456789876543210) a0123456789876543210 = Bar1 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Bar1Sym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) Bar1Sym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) Bar1Sym1KindInference ())
     type Bar1Sym2 :: forall a b. a -> (~>) a b -> b
     type family Bar1Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: (~>) a b) :: b where
       Bar1Sym2 a0123456789876543210 a0123456789876543210 = Bar1 a0123456789876543210 a0123456789876543210
@@ -104,7 +104,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                                  Bar2Sym0 a0123456789876543210
     type instance Apply Bar2Sym0 a0123456789876543210 = Bar2Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Bar2Sym0 where
-      suppressUnusedWarnings = snd (((,) Bar2Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Bar2Sym0KindInference ())
     type Bar2Sym1 :: forall a b. a -> (~>) b b
     data Bar2Sym1 (a0123456789876543210 :: a) :: (~>) b b
       where
@@ -112,7 +112,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
                                  Bar2Sym1 a0123456789876543210 a0123456789876543210
     type instance Apply (Bar2Sym1 a0123456789876543210) a0123456789876543210 = Bar2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Bar2Sym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) Bar2Sym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) Bar2Sym1KindInference ())
     type Bar2Sym2 :: forall a b. a -> b -> b
     type family Bar2Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
       Bar2Sym2 a0123456789876543210 a0123456789876543210 = Bar2 a0123456789876543210 a0123456789876543210
@@ -123,51 +123,53 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       type family Bar2 (arg :: a) (arg :: b) :: b
       type family Baz2 :: a
     sQuux2 ::
-      forall (t :: a).
-      SFoo2 a => Sing t -> Sing (Apply Quux2Sym0 t :: a) :: Type
+      (forall (t :: a).
+       SFoo2 a => Sing t -> Sing (Apply Quux2Sym0 t :: a) :: Type)
     sQuux1 ::
-      forall (t :: a).
-      SFoo1 a => Sing t -> Sing (Apply Quux1Sym0 t :: a) :: Type
+      (forall (t :: a).
+       SFoo1 a => Sing t -> Sing (Apply Quux1Sym0 t :: a) :: Type)
     sQuux2 (sX :: Sing x)
-      = (applySing ((applySing ((singFun2 @Bar2Sym0) sBar2)) sX)) sBaz2
+      = applySing (applySing (singFun2 @Bar2Sym0 sBar2) sX) sBaz2
     sQuux1 (sX :: Sing x)
-      = (applySing ((applySing ((singFun2 @Bar1Sym0) sBar1)) sX))
-          ((singFun1 @(Apply Lambda_0123456789876543210Sym0 x))
+      = applySing
+          (applySing (singFun2 @Bar1Sym0 sBar1) sX)
+          (singFun1
+             @(Apply Lambda_0123456789876543210Sym0 x)
              (\ sArg_0123456789876543210
                 -> case sArg_0123456789876543210 of
                      (_ :: Sing arg_0123456789876543210)
-                       -> (id
-                             @(Sing (Case_0123456789876543210 arg_0123456789876543210 x arg_0123456789876543210)))
+                       -> id
+                            @(Sing (Case_0123456789876543210 arg_0123456789876543210 x arg_0123456789876543210))
                             (case sArg_0123456789876543210 of _ -> sBaz1)))
     instance SFoo2 a => SingI (Quux2Sym0 :: (~>) a a) where
-      sing = (singFun1 @Quux2Sym0) sQuux2
+      sing = singFun1 @Quux2Sym0 sQuux2
     instance SFoo1 a => SingI (Quux1Sym0 :: (~>) a a) where
-      sing = (singFun1 @Quux1Sym0) sQuux1
+      sing = singFun1 @Quux1Sym0 sQuux1
     class SFoo1 a where
       sBar1 ::
-        forall (t :: a) (t :: (~>) a b).
-        Sing t -> Sing t -> Sing (Apply (Apply Bar1Sym0 t) t :: b) :: Type
-      sBaz1 :: Sing (Baz1Sym0 :: a) :: Type
+        (forall (t :: a) (t :: (~>) a b).
+         Sing t -> Sing t -> Sing (Apply (Apply Bar1Sym0 t) t :: b) :: Type)
+      sBaz1 :: (Sing (Baz1Sym0 :: a) :: Type)
     class SFoo2 a where
       sBar2 ::
-        forall (t :: a) (t :: b).
-        Sing t -> Sing t -> Sing (Apply (Apply Bar2Sym0 t) t :: b) :: Type
-      sBaz2 :: Sing (Baz2Sym0 :: a) :: Type
+        (forall (t :: a) (t :: b).
+         Sing t -> Sing t -> Sing (Apply (Apply Bar2Sym0 t) t :: b) :: Type)
+      sBaz2 :: (Sing (Baz2Sym0 :: a) :: Type)
     instance SFoo1 a =>
              SingI (Bar1Sym0 :: (~>) a ((~>) ((~>) a b) b)) where
-      sing = (singFun2 @Bar1Sym0) sBar1
+      sing = singFun2 @Bar1Sym0 sBar1
     instance (SFoo1 a, SingI d) =>
              SingI (Bar1Sym1 (d :: a) :: (~>) ((~>) a b) b) where
-      sing = (singFun1 @(Bar1Sym1 (d :: a))) (sBar1 (sing @d))
+      sing = singFun1 @(Bar1Sym1 (d :: a)) (sBar1 (sing @d))
     instance SFoo1 a =>
              SingI1 (Bar1Sym1 :: a -> (~>) ((~>) a b) b) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @(Bar1Sym1 (d :: a))) (sBar1 s)
+        = singFun1 @(Bar1Sym1 (d :: a)) (sBar1 s)
     instance SFoo2 a => SingI (Bar2Sym0 :: (~>) a ((~>) b b)) where
-      sing = (singFun2 @Bar2Sym0) sBar2
+      sing = singFun2 @Bar2Sym0 sBar2
     instance (SFoo2 a, SingI d) =>
              SingI (Bar2Sym1 (d :: a) :: (~>) b b) where
-      sing = (singFun1 @(Bar2Sym1 (d :: a))) (sBar2 (sing @d))
+      sing = singFun1 @(Bar2Sym1 (d :: a)) (sBar2 (sing @d))
     instance SFoo2 a => SingI1 (Bar2Sym1 :: a -> (~>) b b) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @(Bar2Sym1 (d :: a))) (sBar2 s)
+        = singFun1 @(Bar2Sym1 (d :: a)) (sBar2 s)

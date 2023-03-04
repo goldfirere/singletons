@@ -25,7 +25,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                           (:$$:@#@$) a0123456789876543210
     type instance Apply (:$$:@#@$) a0123456789876543210 = (:$$:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:$$:@#@$) where
-      suppressUnusedWarnings = snd (((,) (::$$:@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (::$$:@#@$###) ())
     type (:$$:@#@$$) :: ErrorMessage -> (~>) ErrorMessage ErrorMessage
     data (:$$:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
@@ -33,7 +33,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                            (:$$:@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((:$$:@#@$$) a0123456789876543210) a0123456789876543210 = (:$$:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:$$:@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (::$$:@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (::$$:@#@$$###) ())
     type (:$$:@#@$$$) :: ErrorMessage -> ErrorMessage -> ErrorMessage
     type family (:$$:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) :: ErrorMessage where
       (:$$:@#@$$$) a0123456789876543210 a0123456789876543210 = (:$$:) a0123456789876543210 a0123456789876543210
@@ -44,7 +44,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                           (:<>:@#@$) a0123456789876543210
     type instance Apply (:<>:@#@$) a0123456789876543210 = (:<>:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:<>:@#@$) where
-      suppressUnusedWarnings = snd (((,) (::<>:@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (::<>:@#@$###) ())
     type (:<>:@#@$$) :: ErrorMessage -> (~>) ErrorMessage ErrorMessage
     data (:<>:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
@@ -52,7 +52,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                            (:<>:@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((:<>:@#@$$) a0123456789876543210) a0123456789876543210 = (:<>:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:<>:@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (::<>:@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (::<>:@#@$$###) ())
     type (:<>:@#@$$$) :: ErrorMessage -> ErrorMessage -> ErrorMessage
     type family (:<>:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) :: ErrorMessage where
       (:<>:@#@$$$) a0123456789876543210 a0123456789876543210 = (:<>:) a0123456789876543210 a0123456789876543210
@@ -63,7 +63,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                                EMSym0 a0123456789876543210
     type instance Apply EMSym0 a0123456789876543210 = EM a0123456789876543210
     instance SuppressUnusedWarnings EMSym0 where
-      suppressUnusedWarnings = snd (((,) EMSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) EMSym0KindInference ())
     type EMSym1 :: [Bool] -> ErrorMessage
     type family EMSym1 (a0123456789876543210 :: [Bool]) :: ErrorMessage where
       EMSym1 a0123456789876543210 = EM a0123456789876543210
@@ -74,7 +74,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                          (<>:@#@$) a0123456789876543210
     type instance Apply (<>:@#@$) a0123456789876543210 = (<>:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (<>:@#@$) where
-      suppressUnusedWarnings = snd (((,) (:<>:@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (:<>:@#@$###) ())
     type (<>:@#@$$) :: ErrorMessage -> (~>) ErrorMessage ErrorMessage
     data (<>:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
@@ -82,7 +82,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                           (<>:@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((<>:@#@$$) a0123456789876543210) a0123456789876543210 = (<>:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<>:@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (:<>:@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (:<>:@#@$$###) ())
     type (<>:@#@$$$) :: ErrorMessage -> ErrorMessage -> ErrorMessage
     type family (<>:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) :: ErrorMessage where
       (<>:@#@$$$) a0123456789876543210 a0123456789876543210 = (<>:) a0123456789876543210 a0123456789876543210
@@ -93,7 +93,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                          ($$:@#@$) a0123456789876543210
     type instance Apply ($$:@#@$) a0123456789876543210 = ($$:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings ($$:@#@$) where
-      suppressUnusedWarnings = snd (((,) (:$$:@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (:$$:@#@$###) ())
     type ($$:@#@$$) :: ErrorMessage -> (~>) ErrorMessage ErrorMessage
     data ($$:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
@@ -101,7 +101,7 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
                           ($$:@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply (($$:@#@$$) a0123456789876543210) a0123456789876543210 = ($$:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (($$:@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (:$$:@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (:$$:@#@$$###) ())
     type ($$:@#@$$$) :: ErrorMessage -> ErrorMessage -> ErrorMessage
     type family ($$:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) :: ErrorMessage where
       ($$:@#@$$$) a0123456789876543210 a0123456789876543210 = ($$:) a0123456789876543210 a0123456789876543210
@@ -112,39 +112,39 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     type family ($$:) (a :: ErrorMessage) (a :: ErrorMessage) :: ErrorMessage where
       ($$:) x y = Apply (Apply (:$$:@#@$) x) y
     (%<>:) ::
-      forall (t :: ErrorMessage) (t :: ErrorMessage).
-      Sing t
-      -> Sing t
-         -> Sing (Apply (Apply (<>:@#@$) t) t :: ErrorMessage) :: Type
+      (forall (t :: ErrorMessage) (t :: ErrorMessage).
+       Sing t
+       -> Sing t
+          -> Sing (Apply (Apply (<>:@#@$) t) t :: ErrorMessage) :: Type)
     (%$$:) ::
-      forall (t :: ErrorMessage) (t :: ErrorMessage).
-      Sing t
-      -> Sing t
-         -> Sing (Apply (Apply ($$:@#@$) t) t :: ErrorMessage) :: Type
+      (forall (t :: ErrorMessage) (t :: ErrorMessage).
+       Sing t
+       -> Sing t
+          -> Sing (Apply (Apply ($$:@#@$) t) t :: ErrorMessage) :: Type)
     (%<>:) (sX :: Sing x) (sY :: Sing y)
-      = (applySing ((applySing ((singFun2 @(:<>:@#@$)) (:%<>:))) sX)) sY
+      = applySing (applySing (singFun2 @(:<>:@#@$) (:%<>:)) sX) sY
     (%$$:) (sX :: Sing x) (sY :: Sing y)
-      = (applySing ((applySing ((singFun2 @(:$$:@#@$)) (:%$$:))) sX)) sY
+      = applySing (applySing (singFun2 @(:$$:@#@$) (:%$$:)) sX) sY
     instance SingI ((<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
-      sing = (singFun2 @(<>:@#@$)) (%<>:)
+      sing = singFun2 @(<>:@#@$) (%<>:)
     instance SingI d =>
              SingI ((<>:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
       sing
-        = (singFun1 @((<>:@#@$$) (d :: ErrorMessage))) ((%<>:) (sing @d))
+        = singFun1 @((<>:@#@$$) (d :: ErrorMessage)) ((%<>:) (sing @d))
     instance SingI1 ((<>:@#@$$) :: ErrorMessage
                                    -> (~>) ErrorMessage ErrorMessage) where
       liftSing (s :: Sing (d :: ErrorMessage))
-        = (singFun1 @((<>:@#@$$) (d :: ErrorMessage))) ((%<>:) s)
+        = singFun1 @((<>:@#@$$) (d :: ErrorMessage)) ((%<>:) s)
     instance SingI (($$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
-      sing = (singFun2 @($$:@#@$)) (%$$:)
+      sing = singFun2 @($$:@#@$) (%$$:)
     instance SingI d =>
              SingI (($$:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
       sing
-        = (singFun1 @(($$:@#@$$) (d :: ErrorMessage))) ((%$$:) (sing @d))
+        = singFun1 @(($$:@#@$$) (d :: ErrorMessage)) ((%$$:) (sing @d))
     instance SingI1 (($$:@#@$$) :: ErrorMessage
                                    -> (~>) ErrorMessage ErrorMessage) where
       liftSing (s :: Sing (d :: ErrorMessage))
-        = (singFun1 @(($$:@#@$$) (d :: ErrorMessage))) ((%$$:) s)
+        = singFun1 @(($$:@#@$$) (d :: ErrorMessage)) ((%$$:) s)
     data SErrorMessage :: ErrorMessage -> Type
       where
         (:%$$:) :: forall (n :: ErrorMessage) (n :: ErrorMessage).
@@ -156,63 +156,65 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @ErrorMessage = SErrorMessage
     instance SingKind ErrorMessage where
       type Demote ErrorMessage = ErrorMessage
-      fromSing ((:%$$:) b b) = ((:$$:) (fromSing b)) (fromSing b)
-      fromSing ((:%<>:) b b) = ((:<>:) (fromSing b)) (fromSing b)
+      fromSing ((:%$$:) b b) = (:$$:) (fromSing b) (fromSing b)
+      fromSing ((:%<>:) b b) = (:<>:) (fromSing b) (fromSing b)
       fromSing (SEM b) = EM (fromSing b)
       toSing
         ((:$$:) (b :: Demote ErrorMessage) (b :: Demote ErrorMessage))
         = case
-              ((,) (toSing b :: SomeSing ErrorMessage))
+              (,)
+                (toSing b :: SomeSing ErrorMessage)
                 (toSing b :: SomeSing ErrorMessage)
           of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%$$:) c) c)
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:%$$:) c c)
       toSing
         ((:<>:) (b :: Demote ErrorMessage) (b :: Demote ErrorMessage))
         = case
-              ((,) (toSing b :: SomeSing ErrorMessage))
+              (,)
+                (toSing b :: SomeSing ErrorMessage)
                 (toSing b :: SomeSing ErrorMessage)
           of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%<>:) c) c)
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:%<>:) c c)
       toSing (EM (b :: Demote [Bool]))
         = case toSing b :: SomeSing [Bool] of
             SomeSing c -> SomeSing (SEM c)
     instance (SingI n, SingI n) =>
              SingI ((:$$:) (n :: ErrorMessage) (n :: ErrorMessage)) where
-      sing = ((:%$$:) sing) sing
+      sing = (:%$$:) sing sing
     instance SingI n => SingI1 ((:$$:) (n :: ErrorMessage)) where
       liftSing = (:%$$:) sing
     instance SingI2 (:$$:) where
       liftSing2 = (:%$$:)
     instance SingI ((:$$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
-      sing = (singFun2 @(:$$:@#@$)) (:%$$:)
+      sing = singFun2 @(:$$:@#@$) (:%$$:)
     instance SingI d =>
              SingI ((:$$:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
       sing
-        = (singFun1 @((:$$:@#@$$) (d :: ErrorMessage))) ((:%$$:) (sing @d))
+        = singFun1 @((:$$:@#@$$) (d :: ErrorMessage)) ((:%$$:) (sing @d))
     instance SingI1 ((:$$:@#@$$) :: ErrorMessage
                                     -> (~>) ErrorMessage ErrorMessage) where
       liftSing (s :: Sing (d :: ErrorMessage))
-        = (singFun1 @((:$$:@#@$$) (d :: ErrorMessage))) ((:%$$:) s)
+        = singFun1 @((:$$:@#@$$) (d :: ErrorMessage)) ((:%$$:) s)
     instance (SingI n, SingI n) =>
              SingI ((:<>:) (n :: ErrorMessage) (n :: ErrorMessage)) where
-      sing = ((:%<>:) sing) sing
+      sing = (:%<>:) sing sing
     instance SingI n => SingI1 ((:<>:) (n :: ErrorMessage)) where
       liftSing = (:%<>:) sing
     instance SingI2 (:<>:) where
       liftSing2 = (:%<>:)
     instance SingI ((:<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)) where
-      sing = (singFun2 @(:<>:@#@$)) (:%<>:)
+      sing = singFun2 @(:<>:@#@$) (:%<>:)
     instance SingI d =>
              SingI ((:<>:@#@$$) (d :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage) where
       sing
-        = (singFun1 @((:<>:@#@$$) (d :: ErrorMessage))) ((:%<>:) (sing @d))
+        = singFun1 @((:<>:@#@$$) (d :: ErrorMessage)) ((:%<>:) (sing @d))
     instance SingI1 ((:<>:@#@$$) :: ErrorMessage
                                     -> (~>) ErrorMessage ErrorMessage) where
       liftSing (s :: Sing (d :: ErrorMessage))
-        = (singFun1 @((:<>:@#@$$) (d :: ErrorMessage))) ((:%<>:) s)
+        = singFun1 @((:<>:@#@$$) (d :: ErrorMessage)) ((:%<>:) s)
     instance SingI n => SingI (EM (n :: [Bool])) where
       sing = SEM sing
     instance SingI1 EM where
       liftSing = SEM
     instance SingI (EMSym0 :: (~>) [Bool] ErrorMessage) where
-      sing = (singFun1 @EMSym0) SEM
+      sing = singFun1 @EMSym0 SEM

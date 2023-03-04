@@ -20,7 +20,7 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
                                   IdFooSym0 a0123456789876543210
     type instance Apply IdFooSym0 a0123456789876543210 = IdFooSym1 a0123456789876543210
     instance SuppressUnusedWarnings IdFooSym0 where
-      suppressUnusedWarnings = snd (((,) IdFooSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) IdFooSym0KindInference ())
     type IdFooSym1 :: c -> (~>) a a
     data IdFooSym1 (a0123456789876543210 :: c) :: (~>) a a
       where
@@ -28,7 +28,7 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
                                   IdFooSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (IdFooSym1 a0123456789876543210) a0123456789876543210 = IdFoo a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (IdFooSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) IdFooSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) IdFooSym1KindInference ())
     type IdFooSym2 :: c -> a -> a
     type family IdFooSym2 (a0123456789876543210 :: c) (a0123456789876543210 :: a) :: a where
       IdFooSym2 a0123456789876543210 a0123456789876543210 = IdFoo a0123456789876543210 a0123456789876543210
@@ -39,7 +39,7 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
                                IdSym0 a0123456789876543210
     type instance Apply IdSym0 a0123456789876543210 = Id a0123456789876543210
     instance SuppressUnusedWarnings IdSym0 where
-      suppressUnusedWarnings = snd (((,) IdSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) IdSym0KindInference ())
     type IdSym1 :: a -> a
     type family IdSym1 (a0123456789876543210 :: a) :: a where
       IdSym1 a0123456789876543210 = Id a0123456789876543210
@@ -50,7 +50,7 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
                                        ReturnFuncSym0 a0123456789876543210
     type instance Apply ReturnFuncSym0 a0123456789876543210 = ReturnFuncSym1 a0123456789876543210
     instance SuppressUnusedWarnings ReturnFuncSym0 where
-      suppressUnusedWarnings = snd (((,) ReturnFuncSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) ReturnFuncSym0KindInference ())
     type ReturnFuncSym1 :: Nat -> (~>) Nat Nat
     data ReturnFuncSym1 (a0123456789876543210 :: Nat) :: (~>) Nat Nat
       where
@@ -58,7 +58,7 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
                                        ReturnFuncSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (ReturnFuncSym1 a0123456789876543210) a0123456789876543210 = ReturnFunc a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ReturnFuncSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) ReturnFuncSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) ReturnFuncSym1KindInference ())
     type ReturnFuncSym2 :: Nat -> Nat -> Nat
     type family ReturnFuncSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       ReturnFuncSym2 a0123456789876543210 a0123456789876543210 = ReturnFunc a0123456789876543210 a0123456789876543210
@@ -72,36 +72,38 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     type family ReturnFunc (a :: Nat) (a :: Nat) :: Nat where
       ReturnFunc _ a_0123456789876543210 = Apply SuccSym0 a_0123456789876543210
     sIdFoo ::
-      forall (t :: c) (t :: a).
-      Sing t -> Sing t -> Sing (Apply (Apply IdFooSym0 t) t :: a) :: Type
+      (forall (t :: c) (t :: a).
+       Sing t
+       -> Sing t -> Sing (Apply (Apply IdFooSym0 t) t :: a) :: Type)
     sId ::
-      forall (t :: a). Sing t -> Sing (Apply IdSym0 t :: a) :: Type
+      (forall (t :: a). Sing t -> Sing (Apply IdSym0 t :: a) :: Type)
     sReturnFunc ::
-      forall (t :: Nat) (t :: Nat).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply ReturnFuncSym0 t) t :: Nat) :: Type
+      (forall (t :: Nat) (t :: Nat).
+       Sing t
+       -> Sing t
+          -> Sing (Apply (Apply ReturnFuncSym0 t) t :: Nat) :: Type)
     sIdFoo _ (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = (applySing ((singFun1 @IdSym0) sId)) sA_0123456789876543210
+      = applySing (singFun1 @IdSym0 sId) sA_0123456789876543210
     sId (sX :: Sing x) = sX
     sReturnFunc
       _
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = (applySing ((singFun1 @SuccSym0) SSucc)) sA_0123456789876543210
+      = applySing (singFun1 @SuccSym0 SSucc) sA_0123456789876543210
     instance SingI (IdFooSym0 :: (~>) c ((~>) a a)) where
-      sing = (singFun2 @IdFooSym0) sIdFoo
+      sing = singFun2 @IdFooSym0 sIdFoo
     instance SingI d => SingI (IdFooSym1 (d :: c) :: (~>) a a) where
-      sing = (singFun1 @(IdFooSym1 (d :: c))) (sIdFoo (sing @d))
+      sing = singFun1 @(IdFooSym1 (d :: c)) (sIdFoo (sing @d))
     instance SingI1 (IdFooSym1 :: c -> (~>) a a) where
       liftSing (s :: Sing (d :: c))
-        = (singFun1 @(IdFooSym1 (d :: c))) (sIdFoo s)
+        = singFun1 @(IdFooSym1 (d :: c)) (sIdFoo s)
     instance SingI (IdSym0 :: (~>) a a) where
-      sing = (singFun1 @IdSym0) sId
+      sing = singFun1 @IdSym0 sId
     instance SingI (ReturnFuncSym0 :: (~>) Nat ((~>) Nat Nat)) where
-      sing = (singFun2 @ReturnFuncSym0) sReturnFunc
+      sing = singFun2 @ReturnFuncSym0 sReturnFunc
     instance SingI d =>
              SingI (ReturnFuncSym1 (d :: Nat) :: (~>) Nat Nat) where
       sing
-        = (singFun1 @(ReturnFuncSym1 (d :: Nat))) (sReturnFunc (sing @d))
+        = singFun1 @(ReturnFuncSym1 (d :: Nat)) (sReturnFunc (sing @d))
     instance SingI1 (ReturnFuncSym1 :: Nat -> (~>) Nat Nat) where
       liftSing (s :: Sing (d :: Nat))
-        = (singFun1 @(ReturnFuncSym1 (d :: Nat))) (sReturnFunc s)
+        = singFun1 @(ReturnFuncSym1 (d :: Nat)) (sReturnFunc s)

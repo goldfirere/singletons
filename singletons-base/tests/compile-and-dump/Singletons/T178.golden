@@ -50,7 +50,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+        = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
     type TFHelper_0123456789876543210Sym1 :: Occ -> (~>) Occ Bool
     data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: Occ) :: (~>) Occ Bool
       where
@@ -59,7 +59,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+        = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
     type TFHelper_0123456789876543210Sym2 :: Occ -> Occ -> Bool
     type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: Occ) (a0123456789876543210 :: Occ) :: Bool where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -84,7 +84,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Compare_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Compare_0123456789876543210Sym0KindInference ())
     type Compare_0123456789876543210Sym1 :: Occ -> (~>) Occ Ordering
     data Compare_0123456789876543210Sym1 (a0123456789876543210 :: Occ) :: (~>) Occ Ordering
       where
@@ -93,7 +93,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Compare_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Compare_0123456789876543210Sym1KindInference ())
     type Compare_0123456789876543210Sym2 :: Occ -> Occ -> Ordering
     type family Compare_0123456789876543210Sym2 (a0123456789876543210 :: Occ) (a0123456789876543210 :: Occ) :: Ordering where
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -113,7 +113,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
     type ShowsPrec_0123456789876543210Sym1 :: Natural
                                               -> (~>) Occ ((~>) Symbol Symbol)
     data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: Natural) :: (~>) Occ ((~>) Symbol Symbol)
@@ -123,7 +123,7 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
     type ShowsPrec_0123456789876543210Sym2 :: Natural
                                               -> Occ -> (~>) Symbol Symbol
     data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: Natural) (a0123456789876543210 :: Occ) :: (~>) Symbol Symbol
@@ -133,14 +133,14 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
     type ShowsPrec_0123456789876543210Sym3 :: Natural
                                               -> Occ -> Symbol -> Symbol
     type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: Natural) (a0123456789876543210 :: Occ) (a0123456789876543210 :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow Occ where
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
-    sEmpty :: Sing (EmptySym0 :: [(Symbol, Occ)]) :: Type
+    sEmpty :: (Sing (EmptySym0 :: [(Symbol, Occ)]) :: Type)
     sEmpty = SNil
     data SOcc :: Occ -> Type
       where
@@ -178,25 +178,22 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
                                            -> Sing (Apply (Apply (CompareSym0 :: TyFun Occ ((~>) Occ Ordering)
                                                                                  -> Type) t1) t2)
       sCompare SStr SStr
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @(<>@#@$)) (%<>))))
-                SEQ))
+        = applySing
+            (applySing
+               (applySing (singFun3 @FoldlSym0 sFoldl) (singFun2 @(<>@#@$) (%<>)))
+               SEQ)
             SNil
       sCompare SOpt SOpt
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @(<>@#@$)) (%<>))))
-                SEQ))
+        = applySing
+            (applySing
+               (applySing (singFun3 @FoldlSym0 sFoldl) (singFun2 @(<>@#@$) (%<>)))
+               SEQ)
             SNil
       sCompare SMany SMany
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @FoldlSym0) sFoldl))
-                    ((singFun2 @(<>@#@$)) (%<>))))
-                SEQ))
+        = applySing
+            (applySing
+               (applySing (singFun3 @FoldlSym0 sFoldl) (singFun2 @(<>@#@$) (%<>)))
+               SEQ)
             SNil
       sCompare SStr SOpt = SLT
       sCompare SStr SMany = SLT
@@ -215,25 +212,25 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
         _
         SStr
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "Str")))
+        = applySing
+            (applySing
+               (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Str"))
             sA_0123456789876543210
       sShowsPrec
         _
         SOpt
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "Opt")))
+        = applySing
+            (applySing
+               (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Opt"))
             sA_0123456789876543210
       sShowsPrec
         _
         SMany
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "Many")))
+        = applySing
+            (applySing
+               (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Many"))
             sA_0123456789876543210
     instance SDecide Occ where
       (%~) SStr SStr = Proved Refl

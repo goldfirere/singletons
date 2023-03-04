@@ -13,8 +13,8 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Let0123456789876543210Scrutinee_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
-            (((,)
-                Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
+            ((,)
+               Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference
                ())
     type family Let0123456789876543210Scrutinee_0123456789876543210Sym1 x0123456789876543210 where
       Let0123456789876543210Scrutinee_0123456789876543210Sym1 x0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210 x0123456789876543210
@@ -30,7 +30,7 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
                                 FooSym0 a0123456789876543210
     type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
-      suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: a -> a
     type family FooSym1 (a0123456789876543210 :: a) :: a where
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
@@ -38,29 +38,30 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
     type family Foo (a :: a) :: a where
       Foo x = Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
     sFoo ::
-      forall (t :: a).
-      (SNum a, SEq a) => Sing t -> Sing (Apply FooSym0 t :: a) :: Type
+      (forall (t :: a).
+       (SNum a, SEq a) => Sing t -> Sing (Apply FooSym0 t :: a) :: Type)
     sFoo (sX :: Sing x)
       = let
           sScrutinee_0123456789876543210 ::
             Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)
           sScrutinee_0123456789876543210
-            = (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sX))
+            = applySing
+                (applySing (singFun2 @(==@#@$) (%==)) sX)
                 (sFromInteger (sing :: Sing 0))
         in
-          (id
-             @(Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x))))
+          id
+            @(Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym1 x)))
             (case sScrutinee_0123456789876543210 of
                STrue -> sFromInteger (sing :: Sing 1)
                SFalse
-                 -> (applySing
-                       ((applySing ((singFun2 @($@#@$)) (%$)))
-                          ((singFun1 @TypeErrorSym0) sTypeError)))
-                      ((applySing ((singFun1 @ShowTypeSym0) SShowType)) sX))
+                 -> applySing
+                      (applySing
+                         (singFun2 @($@#@$) (%$)) (singFun1 @TypeErrorSym0 sTypeError))
+                      (applySing (singFun1 @ShowTypeSym0 SShowType) sX))
     instance (SNum a, SEq a) => SingI (FooSym0 :: (~>) a a) where
-      sing = (singFun1 @FooSym0) sFoo
+      sing = singFun1 @FooSym0 sFoo
 
-Singletons/T160.hs:0:0: error:
+Singletons/T160.hs:0:0: error: [GHC-64725]
     • 1
     • In the expression: Refl
       In an equation for ‘f’: f = Refl

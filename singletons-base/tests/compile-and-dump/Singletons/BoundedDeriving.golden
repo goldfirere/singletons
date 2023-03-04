@@ -56,7 +56,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
                                  Foo3Sym0 a0123456789876543210
     type instance Apply Foo3Sym0 a0123456789876543210 = Foo3 a0123456789876543210
     instance SuppressUnusedWarnings Foo3Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo3Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo3Sym0KindInference ())
     type Foo3Sym1 :: forall a. a -> Foo3 a
     type family Foo3Sym1 (a0123456789876543210 :: a) :: Foo3 a where
       Foo3Sym1 a0123456789876543210 = Foo3 a0123456789876543210
@@ -75,7 +75,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
                                  PairSym0 a0123456789876543210
     type instance Apply PairSym0 a0123456789876543210 = PairSym1 a0123456789876543210
     instance SuppressUnusedWarnings PairSym0 where
-      suppressUnusedWarnings = snd (((,) PairSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) PairSym0KindInference ())
     type PairSym1 :: Bool -> (~>) Bool Pair
     data PairSym1 (a0123456789876543210 :: Bool) :: (~>) Bool Pair
       where
@@ -83,7 +83,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
                                  PairSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (PairSym1 a0123456789876543210) a0123456789876543210 = Pair a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (PairSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) PairSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) PairSym1KindInference ())
     type PairSym2 :: Bool -> Bool -> Pair
     type family PairSym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) :: Pair where
       PairSym2 a0123456789876543210 a0123456789876543210 = Pair a0123456789876543210 a0123456789876543210
@@ -217,12 +217,12 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @Pair = SPair
     instance SingKind Pair where
       type Demote Pair = Pair
-      fromSing (SPair b b) = (Pair (fromSing b)) (fromSing b)
+      fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
       toSing (Pair (b :: Demote Bool) (b :: Demote Bool))
         = case
-              ((,) (toSing b :: SomeSing Bool)) (toSing b :: SomeSing Bool)
+              (,) (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
           of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SPair c) c)
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (SPair c c)
     instance SBounded Foo1 where
       sMinBound :: Sing (MinBoundSym0 :: Foo1)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo1)
@@ -236,8 +236,8 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SBounded a => SBounded (Foo3 a) where
       sMinBound :: Sing (MinBoundSym0 :: Foo3 a)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo3 a)
-      sMinBound = (applySing ((singFun1 @Foo3Sym0) SFoo3)) sMinBound
-      sMaxBound = (applySing ((singFun1 @Foo3Sym0) SFoo3)) sMaxBound
+      sMinBound = applySing (singFun1 @Foo3Sym0 SFoo3) sMinBound
+      sMaxBound = applySing (singFun1 @Foo3Sym0 SFoo3) sMaxBound
     instance SBounded (Foo4 a b) where
       sMinBound :: Sing (MinBoundSym0 :: Foo4 a b)
       sMaxBound :: Sing (MaxBoundSym0 :: Foo4 a b)
@@ -247,11 +247,11 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       sMinBound :: Sing (MinBoundSym0 :: Pair)
       sMaxBound :: Sing (MaxBoundSym0 :: Pair)
       sMinBound
-        = (applySing ((applySing ((singFun2 @PairSym0) SPair)) sMinBound))
-            sMinBound
+        = applySing
+            (applySing (singFun2 @PairSym0 SPair) sMinBound) sMinBound
       sMaxBound
-        = (applySing ((applySing ((singFun2 @PairSym0) SPair)) sMaxBound))
-            sMaxBound
+        = applySing
+            (applySing (singFun2 @PairSym0 SPair) sMaxBound) sMaxBound
     instance SingI Foo1 where
       sing = SFoo1
     instance SingI A where
@@ -269,23 +269,23 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 Foo3 where
       liftSing = SFoo3
     instance SingI (Foo3Sym0 :: (~>) a (Foo3 a)) where
-      sing = (singFun1 @Foo3Sym0) SFoo3
+      sing = singFun1 @Foo3Sym0 SFoo3
     instance SingI Foo41 where
       sing = SFoo41
     instance SingI Foo42 where
       sing = SFoo42
     instance (SingI n, SingI n) =>
              SingI (Pair (n :: Bool) (n :: Bool)) where
-      sing = (SPair sing) sing
+      sing = SPair sing sing
     instance SingI n => SingI1 (Pair (n :: Bool)) where
       liftSing = SPair sing
     instance SingI2 Pair where
       liftSing2 = SPair
     instance SingI (PairSym0 :: (~>) Bool ((~>) Bool Pair)) where
-      sing = (singFun2 @PairSym0) SPair
+      sing = singFun2 @PairSym0 SPair
     instance SingI d =>
              SingI (PairSym1 (d :: Bool) :: (~>) Bool Pair) where
-      sing = (singFun1 @(PairSym1 (d :: Bool))) (SPair (sing @d))
+      sing = singFun1 @(PairSym1 (d :: Bool)) (SPair (sing @d))
     instance SingI1 (PairSym1 :: Bool -> (~>) Bool Pair) where
       liftSing (s :: Sing (d :: Bool))
-        = (singFun1 @(PairSym1 (d :: Bool))) (SPair s)
+        = singFun1 @(PairSym1 (d :: Bool)) (SPair s)

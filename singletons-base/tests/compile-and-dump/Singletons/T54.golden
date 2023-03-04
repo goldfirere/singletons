@@ -13,8 +13,8 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Let0123456789876543210Scrutinee_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
-            (((,)
-                Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
+            ((,)
+               Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference
                ())
     type family Let0123456789876543210Scrutinee_0123456789876543210Sym1 e0123456789876543210 where
       Let0123456789876543210Scrutinee_0123456789876543210Sym1 e0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210 e0123456789876543210
@@ -29,7 +29,7 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
                               GSym0 a0123456789876543210
     type instance Apply GSym0 a0123456789876543210 = G a0123456789876543210
     instance SuppressUnusedWarnings GSym0 where
-      suppressUnusedWarnings = snd (((,) GSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) GSym0KindInference ())
     type GSym1 :: Bool -> Bool
     type family GSym1 (a0123456789876543210 :: Bool) :: Bool where
       GSym1 a0123456789876543210 = G a0123456789876543210
@@ -37,22 +37,21 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
     type family G (a :: Bool) :: Bool where
       G e = Apply (Case_0123456789876543210 e (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e)) e
     sG ::
-      forall (t :: Bool). Sing t -> Sing (Apply GSym0 t :: Bool) :: Type
+      (forall (t :: Bool).
+       Sing t -> Sing (Apply GSym0 t :: Bool) :: Type)
     sG (sE :: Sing e)
-      = (applySing
-           (let
-              sScrutinee_0123456789876543210 ::
-                Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e)
-              sScrutinee_0123456789876543210
-                = (applySing
-                     ((applySing ((singFun2 @(:@#@$)) SCons))
-                        ((singFun1 @NotSym0) sNot)))
-                    SNil
-            in
-              (id
-                 @(Sing (Case_0123456789876543210 e (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e))))
-                (case sScrutinee_0123456789876543210 of
-                   SCons _ SNil -> (singFun1 @NotSym0) sNot)))
+      = applySing
+          (let
+             sScrutinee_0123456789876543210 ::
+               Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e)
+             sScrutinee_0123456789876543210
+               = applySing
+                   (applySing (singFun2 @(:@#@$) SCons) (singFun1 @NotSym0 sNot)) SNil
+           in
+             id
+               @(Sing (Case_0123456789876543210 e (Let0123456789876543210Scrutinee_0123456789876543210Sym1 e)))
+               (case sScrutinee_0123456789876543210 of
+                  SCons _ SNil -> singFun1 @NotSym0 sNot))
           sE
     instance SingI (GSym0 :: (~>) Bool Bool) where
-      sing = (singFun1 @GSym0) sG
+      sing = singFun1 @GSym0 sG

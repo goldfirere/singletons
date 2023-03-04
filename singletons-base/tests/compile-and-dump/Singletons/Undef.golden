@@ -16,7 +16,7 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
                                 BarSym0 a0123456789876543210
     type instance Apply BarSym0 a0123456789876543210 = Bar a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
-      suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
     type BarSym1 :: Bool -> Bool
     type family BarSym1 (a0123456789876543210 :: Bool) :: Bool where
       BarSym1 a0123456789876543210 = Bar a0123456789876543210
@@ -27,7 +27,7 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
                                 FooSym0 a0123456789876543210
     type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
-      suppressUnusedWarnings = snd (((,) FooSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: Bool -> Bool
     type family FooSym1 (a0123456789876543210 :: Bool) :: Bool where
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
@@ -38,16 +38,16 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
     type family Foo (a :: Bool) :: Bool where
       Foo a_0123456789876543210 = Apply UndefinedSym0 a_0123456789876543210
     sBar ::
-      forall (t :: Bool).
-      Sing t -> Sing (Apply BarSym0 t :: Bool) :: Type
+      (forall (t :: Bool).
+       Sing t -> Sing (Apply BarSym0 t :: Bool) :: Type)
     sFoo ::
-      forall (t :: Bool).
-      Sing t -> Sing (Apply FooSym0 t :: Bool) :: Type
+      (forall (t :: Bool).
+       Sing t -> Sing (Apply FooSym0 t :: Bool) :: Type)
     sBar (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = (sError (sing :: Sing "urk")) sA_0123456789876543210
+      = sError (sing :: Sing "urk") sA_0123456789876543210
     sFoo (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = sUndefined sA_0123456789876543210
     instance SingI (BarSym0 :: (~>) Bool Bool) where
-      sing = (singFun1 @BarSym0) sBar
+      sing = singFun1 @BarSym0 sBar
     instance SingI (FooSym0 :: (~>) Bool Bool) where
-      sing = (singFun1 @FooSym0) sFoo
+      sing = singFun1 @FooSym0 sFoo

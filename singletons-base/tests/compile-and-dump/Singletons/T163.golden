@@ -9,7 +9,7 @@ Singletons/T163.hs:0:0:: Splicing declarations
                               LSym0 a0123456789876543210
     type instance Apply LSym0 a0123456789876543210 = L a0123456789876543210
     instance SuppressUnusedWarnings LSym0 where
-      suppressUnusedWarnings = snd (((,) LSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) LSym0KindInference ())
     type LSym1 :: forall a b. a -> (+) a b
     type family LSym1 (a0123456789876543210 :: a) :: (+) a b where
       LSym1 a0123456789876543210 = L a0123456789876543210
@@ -20,7 +20,7 @@ Singletons/T163.hs:0:0:: Splicing declarations
                               RSym0 a0123456789876543210
     type instance Apply RSym0 a0123456789876543210 = R a0123456789876543210
     instance SuppressUnusedWarnings RSym0 where
-      suppressUnusedWarnings = snd (((,) RSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) RSym0KindInference ())
     type RSym1 :: forall a b. b -> (+) a b
     type family RSym1 (a0123456789876543210 :: b) :: (+) a b where
       RSym1 a0123456789876543210 = R a0123456789876543210
@@ -42,10 +42,10 @@ Singletons/T163.hs:0:0:: Splicing declarations
     instance SingI1 L where
       liftSing = SL
     instance SingI (LSym0 :: (~>) a ((+) a b)) where
-      sing = (singFun1 @LSym0) SL
+      sing = singFun1 @LSym0 SL
     instance SingI n => SingI (R (n :: b)) where
       sing = SR sing
     instance SingI1 R where
       liftSing = SR
     instance SingI (RSym0 :: (~>) b ((+) a b)) where
-      sing = (singFun1 @RSym0) SR
+      sing = singFun1 @RSym0 SR

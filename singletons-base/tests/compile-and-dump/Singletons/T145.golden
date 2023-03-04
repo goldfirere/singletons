@@ -12,7 +12,7 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
                                 ColSym0 a0123456789876543210
     type instance Apply ColSym0 a0123456789876543210 = ColSym1 a0123456789876543210
     instance SuppressUnusedWarnings ColSym0 where
-      suppressUnusedWarnings = snd (((,) ColSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) ColSym0KindInference ())
     type ColSym1 :: forall f a. f a -> (~>) a Bool
     data ColSym1 (a0123456789876543210 :: f a) :: (~>) a Bool
       where
@@ -20,7 +20,7 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
                                 ColSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (ColSym1 a0123456789876543210) a0123456789876543210 = Col a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ColSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) ColSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) ColSym1KindInference ())
     type ColSym2 :: forall f a. f a -> a -> Bool
     type family ColSym2 (a0123456789876543210 :: f a) (a0123456789876543210 :: a) :: Bool where
       ColSym2 a0123456789876543210 a0123456789876543210 = Col a0123456789876543210 a0123456789876543210
@@ -28,15 +28,15 @@ Singletons/T145.hs:(0,0)-(0,0): Splicing declarations
       type family Col (arg :: f a) (arg :: a) :: Bool
     class SColumn (f :: Type -> Type) where
       sCol ::
-        forall (t :: f a) (t :: a).
-        Sing t
-        -> Sing t -> Sing (Apply (Apply ColSym0 t) t :: Bool) :: Type
+        (forall (t :: f a) (t :: a).
+         Sing t
+         -> Sing t -> Sing (Apply (Apply ColSym0 t) t :: Bool) :: Type)
     instance SColumn f =>
              SingI (ColSym0 :: (~>) (f a) ((~>) a Bool)) where
-      sing = (singFun2 @ColSym0) sCol
+      sing = singFun2 @ColSym0 sCol
     instance (SColumn f, SingI d) =>
              SingI (ColSym1 (d :: f a) :: (~>) a Bool) where
-      sing = (singFun1 @(ColSym1 (d :: f a))) (sCol (sing @d))
+      sing = singFun1 @(ColSym1 (d :: f a)) (sCol (sing @d))
     instance SColumn f => SingI1 (ColSym1 :: f a -> (~>) a Bool) where
       liftSing (s :: Sing (d :: f a))
-        = (singFun1 @(ColSym1 (d :: f a))) (sCol s)
+        = singFun1 @(ColSym1 (d :: f a)) (sCol s)

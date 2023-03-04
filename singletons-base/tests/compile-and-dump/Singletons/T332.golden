@@ -18,7 +18,7 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
                               FSym0 a0123456789876543210
     type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
-      suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: Foo -> ()
     type family FSym1 (a0123456789876543210 :: Foo) :: () where
       FSym1 a0123456789876543210 = F a0123456789876543210
@@ -45,7 +45,7 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
                               BSym0 a0123456789876543210
     type instance Apply BSym0 a0123456789876543210 = B a0123456789876543210
     instance SuppressUnusedWarnings BSym0 where
-      suppressUnusedWarnings = snd (((,) BSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) BSym0KindInference ())
     type BSym1 :: Bar -> ()
     type family BSym1 (a0123456789876543210 :: Bar) :: () where
       BSym1 a0123456789876543210 = B a0123456789876543210
@@ -53,10 +53,10 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
     type family B (a :: Bar) :: () where
       B MkBar = Tuple0Sym0
     sB ::
-      forall (t :: Bar). Sing t -> Sing (Apply BSym0 t :: ()) :: Type
+      (forall (t :: Bar). Sing t -> Sing (Apply BSym0 t :: ()) :: Type)
     sB SMkBar = STuple0
     instance SingI (BSym0 :: (~>) Bar ()) where
-      sing = (singFun1 @BSym0) sB
+      sing = singFun1 @BSym0 sB
     data SBar :: Bar -> Type where SMkBar :: SBar (MkBar :: Bar)
     type instance Sing @Bar = SBar
     instance SingKind Bar where

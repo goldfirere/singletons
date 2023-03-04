@@ -43,7 +43,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
                                        PMkMessageSym0 a0123456789876543210
     type instance Apply PMkMessageSym0 a0123456789876543210 = 'PMkMessage a0123456789876543210
     instance SuppressUnusedWarnings PMkMessageSym0 where
-      suppressUnusedWarnings = snd (((,) PMkMessageSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) PMkMessageSym0KindInference ())
     type PMkMessageSym1 :: Symbol -> PMessage
     type family PMkMessageSym1 (a0123456789876543210 :: Symbol) :: PMessage where
       PMkMessageSym1 a0123456789876543210 = 'PMkMessage a0123456789876543210
@@ -64,7 +64,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 'PMkMessage where
       liftSing = SMkMessage
     instance SingI (PMkMessageSym0 :: (~>) Symbol PMessage) where
-      sing = (singFun1 @PMkMessageSym0) SMkMessage
+      sing = singFun1 @PMkMessageSym0 SMkMessage
     appendMessage :: Message -> Message -> Message
     appendMessage (MkMessage (x :: Text)) (MkMessage (y :: Text))
       = MkMessage ((x <> y) :: Text)
@@ -76,7 +76,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply AppendMessageSym0 a0123456789876543210 = AppendMessageSym1 a0123456789876543210
     instance SuppressUnusedWarnings AppendMessageSym0 where
       suppressUnusedWarnings
-        = snd (((,) AppendMessageSym0KindInference) ())
+        = snd ((,) AppendMessageSym0KindInference ())
     type AppendMessageSym1 :: PMessage -> (~>) PMessage PMessage
     data AppendMessageSym1 (a0123456789876543210 :: PMessage) :: (~>) PMessage PMessage
       where
@@ -85,7 +85,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (AppendMessageSym1 a0123456789876543210) a0123456789876543210 = AppendMessage a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (AppendMessageSym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) AppendMessageSym1KindInference) ())
+        = snd ((,) AppendMessageSym1KindInference ())
     type AppendMessageSym2 :: PMessage -> PMessage -> PMessage
     type family AppendMessageSym2 (a0123456789876543210 :: PMessage) (a0123456789876543210 :: PMessage) :: PMessage where
       AppendMessageSym2 a0123456789876543210 a0123456789876543210 = AppendMessage a0123456789876543210 a0123456789876543210
@@ -93,30 +93,30 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     type family AppendMessage (a :: PMessage) (a :: PMessage) :: PMessage where
       AppendMessage ('PMkMessage (x :: Symbol)) ('PMkMessage (y :: Symbol)) = Apply PMkMessageSym0 (Apply (Apply (<>@#@$) x) y :: Symbol)
     sAppendMessage ::
-      forall (t :: PMessage) (t :: PMessage).
-      Sing t
-      -> Sing t
-         -> Sing (Apply (Apply AppendMessageSym0 t) t :: PMessage) :: Type
+      (forall (t :: PMessage) (t :: PMessage).
+       Sing t
+       -> Sing t
+          -> Sing (Apply (Apply AppendMessageSym0 t) t :: PMessage) :: Type)
     sAppendMessage
       (SMkMessage (sX :: Sing x))
       (SMkMessage (sY :: Sing y))
-      = case ((,) (sX :: Sing x)) (sY :: Sing y) of
+      = case (,) (sX :: Sing x) (sY :: Sing y) of
           (,) (_ :: Sing (x :: Symbol)) (_ :: Sing (y :: Symbol))
-            -> (applySing ((singFun1 @PMkMessageSym0) SMkMessage))
-                 ((applySing ((applySing ((singFun2 @(<>@#@$)) (%<>))) sX)) sY ::
+            -> applySing
+                 (singFun1 @PMkMessageSym0 SMkMessage)
+                 (applySing (applySing (singFun2 @(<>@#@$) (%<>)) sX) sY ::
                     Sing (Apply (Apply (<>@#@$) x) y :: Symbol))
     instance SingI (AppendMessageSym0 :: (~>) PMessage ((~>) PMessage PMessage)) where
-      sing = (singFun2 @AppendMessageSym0) sAppendMessage
+      sing = singFun2 @AppendMessageSym0 sAppendMessage
     instance SingI d =>
              SingI (AppendMessageSym1 (d :: PMessage) :: (~>) PMessage PMessage) where
       sing
-        = (singFun1 @(AppendMessageSym1 (d :: PMessage)))
-            (sAppendMessage (sing @d))
+        = singFun1
+            @(AppendMessageSym1 (d :: PMessage)) (sAppendMessage (sing @d))
     instance SingI1 (AppendMessageSym1 :: PMessage
                                           -> (~>) PMessage PMessage) where
       liftSing (s :: Sing (d :: PMessage))
-        = (singFun1 @(AppendMessageSym1 (d :: PMessage)))
-            (sAppendMessage s)
+        = singFun1 @(AppendMessageSym1 (d :: PMessage)) (sAppendMessage s)
     type PMkFunctionSym0 :: forall (a :: Type)
                                    (b :: Type). (~>) ((~>) a b) (PFunction (a :: Type) (b :: Type))
     data PMkFunctionSym0 :: (~>) ((~>) a b) (PFunction (a :: Type) (b :: Type))
@@ -125,8 +125,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
                                         PMkFunctionSym0 a0123456789876543210
     type instance Apply PMkFunctionSym0 a0123456789876543210 = 'PMkFunction a0123456789876543210
     instance SuppressUnusedWarnings PMkFunctionSym0 where
-      suppressUnusedWarnings
-        = snd (((,) PMkFunctionSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) PMkFunctionSym0KindInference ())
     type PMkFunctionSym1 :: forall (a :: Type) (b :: Type). (~>) a b
                                                             -> PFunction (a :: Type) (b :: Type)
     type family PMkFunctionSym1 (a0123456789876543210 :: (~>) a b) :: PFunction (a :: Type) (b :: Type) where
@@ -151,7 +150,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 'PMkFunction where
       liftSing = SMkFunction
     instance SingI (PMkFunctionSym0 :: (~>) ((~>) a b) (PFunction (a :: Type) (b :: Type))) where
-      sing = (singFun1 @PMkFunctionSym0) SMkFunction
+      sing = singFun1 @PMkFunctionSym0 SMkFunction
     composeFunction :: Function b c -> Function a b -> Function a c
     composeFunction
       (MkFunction (f :: b -> c))
@@ -165,7 +164,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ComposeFunctionSym0 a0123456789876543210 = ComposeFunctionSym1 a0123456789876543210
     instance SuppressUnusedWarnings ComposeFunctionSym0 where
       suppressUnusedWarnings
-        = snd (((,) ComposeFunctionSym0KindInference) ())
+        = snd ((,) ComposeFunctionSym0KindInference ())
     type ComposeFunctionSym1 :: PFunction b c
                                 -> (~>) (PFunction a b) (PFunction a c)
     data ComposeFunctionSym1 (a0123456789876543210 :: PFunction b c) :: (~>) (PFunction a b) (PFunction a c)
@@ -175,7 +174,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ComposeFunctionSym1 a0123456789876543210) a0123456789876543210 = ComposeFunction a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ComposeFunctionSym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ComposeFunctionSym1KindInference) ())
+        = snd ((,) ComposeFunctionSym1KindInference ())
     type ComposeFunctionSym2 :: PFunction b c
                                 -> PFunction a b -> PFunction a c
     type family ComposeFunctionSym2 (a0123456789876543210 :: PFunction b c) (a0123456789876543210 :: PFunction a b) :: PFunction a c where
@@ -185,27 +184,29 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     type family ComposeFunction (a :: PFunction b c) (a :: PFunction a b) :: PFunction a c where
       ComposeFunction ('PMkFunction (f :: (~>) b c)) ('PMkFunction (g :: (~>) a b)) = Apply PMkFunctionSym0 (Apply (Apply (.@#@$) f) g :: (~>) a c)
     sComposeFunction ::
-      forall (t :: PFunction b c) (t :: PFunction a b).
-      Sing t
-      -> Sing t
-         -> Sing (Apply (Apply ComposeFunctionSym0 t) t :: PFunction a c) :: Type
+      (forall (t :: PFunction b c) (t :: PFunction a b).
+       Sing t
+       -> Sing t
+          -> Sing (Apply (Apply ComposeFunctionSym0 t) t :: PFunction a c) :: Type)
     sComposeFunction
       (SMkFunction (sF :: Sing f))
       (SMkFunction (sG :: Sing g))
-      = case ((,) (sF :: Sing f)) (sG :: Sing g) of
+      = case (,) (sF :: Sing f) (sG :: Sing g) of
           (,) (_ :: Sing (f :: (~>) b c)) (_ :: Sing (g :: (~>) a b))
-            -> (applySing ((singFun1 @PMkFunctionSym0) SMkFunction))
-                 ((applySing ((applySing ((singFun3 @(.@#@$)) (%.))) sF)) sG ::
+            -> applySing
+                 (singFun1 @PMkFunctionSym0 SMkFunction)
+                 (applySing (applySing (singFun3 @(.@#@$) (%.)) sF) sG ::
                     Sing (Apply (Apply (.@#@$) f) g :: (~>) a c))
     instance SingI (ComposeFunctionSym0 :: (~>) (PFunction b c) ((~>) (PFunction a b) (PFunction a c))) where
-      sing = (singFun2 @ComposeFunctionSym0) sComposeFunction
+      sing = singFun2 @ComposeFunctionSym0 sComposeFunction
     instance SingI d =>
              SingI (ComposeFunctionSym1 (d :: PFunction b c) :: (~>) (PFunction a b) (PFunction a c)) where
       sing
-        = (singFun1 @(ComposeFunctionSym1 (d :: PFunction b c)))
+        = singFun1
+            @(ComposeFunctionSym1 (d :: PFunction b c))
             (sComposeFunction (sing @d))
     instance SingI1 (ComposeFunctionSym1 :: PFunction b c
                                             -> (~>) (PFunction a b) (PFunction a c)) where
       liftSing (s :: Sing (d :: PFunction b c))
-        = (singFun1 @(ComposeFunctionSym1 (d :: PFunction b c)))
-            (sComposeFunction s)
+        = singFun1
+            @(ComposeFunctionSym1 (d :: PFunction b c)) (sComposeFunction s)

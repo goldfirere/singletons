@@ -42,7 +42,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Succ_0123456789876543210Sym0 a0123456789876543210 = Succ_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Succ_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Succ_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Succ_0123456789876543210Sym0KindInference ())
     type Succ_0123456789876543210Sym1 :: [Bool] -> [Bool]
     type family Succ_0123456789876543210Sym1 (a0123456789876543210 :: [Bool]) :: [Bool] where
       Succ_0123456789876543210Sym1 a0123456789876543210 = Succ_0123456789876543210 a0123456789876543210
@@ -59,7 +59,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Pred_0123456789876543210Sym0 a0123456789876543210 = Pred_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Pred_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Pred_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Pred_0123456789876543210Sym0KindInference ())
     type Pred_0123456789876543210Sym1 :: [Bool] -> [Bool]
     type family Pred_0123456789876543210Sym1 (a0123456789876543210 :: [Bool]) :: [Bool] where
       Pred_0123456789876543210Sym1 a0123456789876543210 = Pred_0123456789876543210 a0123456789876543210
@@ -83,7 +83,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ToEnum_0123456789876543210Sym0KindInference) ())
+        = snd ((,) ToEnum_0123456789876543210Sym0KindInference ())
     type ToEnum_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
                                            -> [Bool]
     type family ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: [Bool] where
@@ -102,7 +102,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) FromEnum_0123456789876543210Sym0KindInference) ())
+        = snd ((,) FromEnum_0123456789876543210Sym0KindInference ())
     type FromEnum_0123456789876543210Sym1 :: [Bool]
                                              -> GHC.Num.Natural.Natural
     type family FromEnum_0123456789876543210Sym1 (a0123456789876543210 :: [Bool]) :: GHC.Num.Natural.Natural where
@@ -128,53 +128,59 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
                               -> Sing (Apply (FromEnumSym0 :: TyFun [Bool] GHC.Num.Natural.Natural
                                                               -> Type) t)
       sSucc SNil
-        = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) STrue)) SNil
+        = applySing (applySing (singFun2 @(:@#@$) SCons) STrue) SNil
       sSucc (SCons SFalse (sAs :: Sing as))
-        = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) STrue)) sAs
+        = applySing (applySing (singFun2 @(:@#@$) SCons) STrue) sAs
       sSucc (SCons STrue (sAs :: Sing as))
-        = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SFalse))
-            ((applySing ((singFun1 @SuccSym0) sSucc)) sAs)
+        = applySing
+            (applySing (singFun2 @(:@#@$) SCons) SFalse)
+            (applySing (singFun1 @SuccSym0 sSucc) sAs)
       sPred SNil = sError (sing :: Sing "pred 0")
       sPred (SCons SFalse (sAs :: Sing as))
-        = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) STrue))
-            ((applySing ((singFun1 @PredSym0) sPred)) sAs)
+        = applySing
+            (applySing (singFun2 @(:@#@$) SCons) STrue)
+            (applySing (singFun1 @PredSym0 sPred) sAs)
       sPred (SCons STrue (sAs :: Sing as))
-        = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SFalse)) sAs
+        = applySing (applySing (singFun2 @(:@#@$) SCons) SFalse) sAs
       sToEnum (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
-        = (id
-             @(Sing (Case_0123456789876543210 arg_0123456789876543210 arg_0123456789876543210)))
+        = id
+            @(Sing (Case_0123456789876543210 arg_0123456789876543210 arg_0123456789876543210))
             (case sArg_0123456789876543210 of
                (sI :: Sing i)
-                 -> (id
-                       @(Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (<@#@$) i) (FromInteger 0)))))
+                 -> id
+                      @(Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (<@#@$) i) (FromInteger 0))))
                       (case
-                           (applySing ((applySing ((singFun2 @(<@#@$)) (%<))) sI))
+                           applySing
+                             (applySing (singFun2 @(<@#@$) (%<)) sI)
                              (sFromInteger (sing :: Sing 0))
                        of
                          STrue -> sError (sing :: Sing "negative toEnum")
                          SFalse
-                           -> (id
-                                 @(Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (==@#@$) i) (FromInteger 0)))))
+                           -> id
+                                @(Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (==@#@$) i) (FromInteger 0))))
                                 (case
-                                     (applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sI))
+                                     applySing
+                                       (applySing (singFun2 @(==@#@$) (%==)) sI)
                                        (sFromInteger (sing :: Sing 0))
                                  of
                                    STrue -> SNil
                                    SFalse
-                                     -> (applySing ((singFun1 @SuccSym0) sSucc))
-                                          ((applySing ((singFun1 @ToEnumSym0) sToEnum))
-                                             ((applySing ((singFun1 @PredSym0) sPred)) sI)))))
+                                     -> applySing
+                                          (singFun1 @SuccSym0 sSucc)
+                                          (applySing
+                                             (singFun1 @ToEnumSym0 sToEnum)
+                                             (applySing (singFun1 @PredSym0 sPred) sI)))))
       sFromEnum SNil = sFromInteger (sing :: Sing 0)
       sFromEnum (SCons SFalse (sAs :: Sing as))
-        = (applySing
-             ((applySing ((singFun2 @(*@#@$)) (%*)))
-                (sFromInteger (sing :: Sing 2))))
-            ((applySing ((singFun1 @FromEnumSym0) sFromEnum)) sAs)
+        = applySing
+            (applySing
+               (singFun2 @(*@#@$) (%*)) (sFromInteger (sing :: Sing 2)))
+            (applySing (singFun1 @FromEnumSym0 sFromEnum) sAs)
       sFromEnum (SCons STrue (sAs :: Sing as))
-        = (applySing
-             ((applySing ((singFun2 @(+@#@$)) (%+)))
-                (sFromInteger (sing :: Sing 1))))
-            ((applySing
-                ((applySing ((singFun2 @(*@#@$)) (%*)))
-                   (sFromInteger (sing :: Sing 2))))
-               ((applySing ((singFun1 @FromEnumSym0) sFromEnum)) sAs))
+        = applySing
+            (applySing
+               (singFun2 @(+@#@$) (%+)) (sFromInteger (sing :: Sing 1)))
+            (applySing
+               (applySing
+                  (singFun2 @(*@#@$) (%*)) (sFromInteger (sing :: Sing 2)))
+               (applySing (singFun1 @FromEnumSym0 sFromEnum) sAs))

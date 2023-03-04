@@ -42,14 +42,14 @@ Singletons/T175.hs:(0,0)-(0,0): Splicing declarations
       type family Quux1 :: a
       type Quux1 = Quux1_0123456789876543210Sym0
     class PBar2 a
-    sQuux2 :: SBar2 a => Sing (Quux2Sym0 :: a) :: Type
+    sQuux2 :: (SBar2 a => Sing (Quux2Sym0 :: a) :: Type)
     sQuux2 = sBaz
     class SFoo a where
-      sBaz :: Sing (BazSym0 :: a) :: Type
+      sBaz :: (Sing (BazSym0 :: a) :: Type)
     class SFoo a => SBar1 a where
-      sQuux1 :: Sing (Quux1Sym0 :: a) :: Type
+      sQuux1 :: (Sing (Quux1Sym0 :: a) :: Type)
       default sQuux1 ::
-                ((Quux1Sym0 :: a) ~ Quux1_0123456789876543210Sym0) =>
-                Sing (Quux1Sym0 :: a) :: Type
+                (((Quux1Sym0 :: a) ~ Quux1_0123456789876543210Sym0) =>
+                 Sing (Quux1Sym0 :: a) :: Type)
       sQuux1 = sBaz
     class SFoo a => SBar2 a

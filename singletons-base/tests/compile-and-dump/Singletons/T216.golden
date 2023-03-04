@@ -7,14 +7,14 @@ Singletons/T216.hs:0:0:: Splicing declarations
                                     MyProxySym0 k0123456789876543210
     type instance Apply MyProxySym0 k0123456789876543210 = MyProxySym1 k0123456789876543210
     instance SuppressUnusedWarnings MyProxySym0 where
-      suppressUnusedWarnings = snd (((,) MyProxySym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) MyProxySym0KindInference ())
     data MyProxySym1 (k0123456789876543210 :: Type) :: (~>) k0123456789876543210 Type
       where
         MyProxySym1KindInference :: SameKind (Apply (MyProxySym1 k0123456789876543210) arg) (MyProxySym2 k0123456789876543210 arg) =>
                                     MyProxySym1 k0123456789876543210 e0123456789876543210
     type instance Apply (MyProxySym1 k0123456789876543210) e0123456789876543210 = MyProxy k0123456789876543210 e0123456789876543210
     instance SuppressUnusedWarnings (MyProxySym1 k0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) MyProxySym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) MyProxySym1KindInference ())
     type family MyProxySym2 (k0123456789876543210 :: Type) (e0123456789876543210 :: k0123456789876543210) :: Type where
       MyProxySym2 k0123456789876543210 e0123456789876543210 = MyProxy k0123456789876543210 e0123456789876543210
     data SymmetrySym0 :: (~>) t0123456789876543210 ((~>) t0123456789876543210 ((~>) ((:~:) a0123456789876543210 y0123456789876543210) Type))
@@ -23,20 +23,20 @@ Singletons/T216.hs:0:0:: Splicing declarations
                                      SymmetrySym0 a0123456789876543210
     type instance Apply SymmetrySym0 a0123456789876543210 = SymmetrySym1 a0123456789876543210
     instance SuppressUnusedWarnings SymmetrySym0 where
-      suppressUnusedWarnings = snd (((,) SymmetrySym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) SymmetrySym0KindInference ())
     data SymmetrySym1 (a0123456789876543210 :: t0123456789876543210) :: (~>) t0123456789876543210 ((~>) ((:~:) a0123456789876543210 y0123456789876543210) Type)
       where
         SymmetrySym1KindInference :: SameKind (Apply (SymmetrySym1 a0123456789876543210) arg) (SymmetrySym2 a0123456789876543210 arg) =>
                                      SymmetrySym1 a0123456789876543210 y0123456789876543210
     type instance Apply (SymmetrySym1 a0123456789876543210) y0123456789876543210 = SymmetrySym2 a0123456789876543210 y0123456789876543210
     instance SuppressUnusedWarnings (SymmetrySym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) SymmetrySym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) SymmetrySym1KindInference ())
     data SymmetrySym2 (a0123456789876543210 :: t0123456789876543210) (y0123456789876543210 :: t0123456789876543210) :: (~>) ((:~:) a0123456789876543210 y0123456789876543210) Type
       where
         SymmetrySym2KindInference :: SameKind (Apply (SymmetrySym2 a0123456789876543210 y0123456789876543210) arg) (SymmetrySym3 a0123456789876543210 y0123456789876543210 arg) =>
                                      SymmetrySym2 a0123456789876543210 y0123456789876543210 e0123456789876543210
     type instance Apply (SymmetrySym2 a0123456789876543210 y0123456789876543210) e0123456789876543210 = Symmetry a0123456789876543210 y0123456789876543210 e0123456789876543210
     instance SuppressUnusedWarnings (SymmetrySym2 a0123456789876543210 y0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) SymmetrySym2KindInference) ())
+      suppressUnusedWarnings = snd ((,) SymmetrySym2KindInference ())
     type family SymmetrySym3 (a0123456789876543210 :: t0123456789876543210) (y0123456789876543210 :: t0123456789876543210) (e0123456789876543210 :: (:~:) a0123456789876543210 y0123456789876543210) :: Type where
       SymmetrySym3 a0123456789876543210 y0123456789876543210 e0123456789876543210 = Symmetry a0123456789876543210 y0123456789876543210 e0123456789876543210

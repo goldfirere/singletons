@@ -26,7 +26,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
                                 BarSym0 a0123456789876543210
     type instance Apply BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
-      suppressUnusedWarnings = snd (((,) BarSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
     type BarSym1 :: forall a b. a -> (~>) b b
     data BarSym1 (a0123456789876543210 :: a) :: (~>) b b
       where
@@ -34,7 +34,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
                                 BarSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (BarSym1 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BarSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) BarSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) BarSym1KindInference ())
     type BarSym2 :: forall a b. a -> b -> b
     type family BarSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
       BarSym2 a0123456789876543210 a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
@@ -45,7 +45,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
                                 BazSym0 a0123456789876543210
     type instance Apply BazSym0 a0123456789876543210 = BazSym1 a0123456789876543210
     instance SuppressUnusedWarnings BazSym0 where
-      suppressUnusedWarnings = snd (((,) BazSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) BazSym0KindInference ())
     type BazSym1 :: forall a b. a -> (~>) b b
     data BazSym1 (a0123456789876543210 :: a) :: (~>) b b
       where
@@ -53,7 +53,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
                                 BazSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (BazSym1 a0123456789876543210) a0123456789876543210 = Baz a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BazSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) BazSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) BazSym1KindInference ())
     type BazSym2 :: forall a b. a -> b -> b
     type family BazSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
       BazSym2 a0123456789876543210 a0123456789876543210 = Baz a0123456789876543210 a0123456789876543210
@@ -68,7 +68,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Bar_0123456789876543210Sym0 a0123456789876543210 = Bar_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Bar_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Bar_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Bar_0123456789876543210Sym0KindInference ())
     type Bar_0123456789876543210Sym1 :: a -> (~>) b b
     data Bar_0123456789876543210Sym1 (a0123456789876543210 :: a) :: (~>) b b
       where
@@ -77,7 +77,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Bar_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Bar_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Bar_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Bar_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Bar_0123456789876543210Sym1KindInference ())
     type Bar_0123456789876543210Sym2 :: a -> b -> b
     type family Bar_0123456789876543210Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
       Bar_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Bar_0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -88,7 +88,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210HSym0 a_01234567898765432100123456789876543210 = Let0123456789876543210HSym1 a_01234567898765432100123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210HSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210HSym0KindInference) ())
+        = snd ((,) Let0123456789876543210HSym0KindInference ())
     data Let0123456789876543210HSym1 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
       where
         Let0123456789876543210HSym1KindInference :: SameKind (Apply (Let0123456789876543210HSym1 a_01234567898765432100123456789876543210) arg) (Let0123456789876543210HSym2 a_01234567898765432100123456789876543210 arg) =>
@@ -96,7 +96,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Let0123456789876543210HSym1 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = Let0123456789876543210HSym2 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210HSym1 a_01234567898765432100123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210HSym1KindInference) ())
+        = snd ((,) Let0123456789876543210HSym1KindInference ())
     data Let0123456789876543210HSym2 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 :: (~>) c0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)
       where
         Let0123456789876543210HSym2KindInference :: SameKind (Apply (Let0123456789876543210HSym2 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (Let0123456789876543210HSym3 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
@@ -104,7 +104,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Let0123456789876543210HSym2 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a0123456789876543210 = Let0123456789876543210HSym3 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210HSym2 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210HSym2KindInference) ())
+        = snd ((,) Let0123456789876543210HSym2KindInference ())
     data Let0123456789876543210HSym3 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 (a0123456789876543210 :: c0123456789876543210) :: (~>) b0123456789876543210 b0123456789876543210
       where
         Let0123456789876543210HSym3KindInference :: SameKind (Apply (Let0123456789876543210HSym3 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210) arg) (Let0123456789876543210HSym4 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210 arg) =>
@@ -112,7 +112,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Let0123456789876543210HSym3 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210) a0123456789876543210 = Let0123456789876543210H a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210HSym3 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210HSym3KindInference) ())
+        = snd ((,) Let0123456789876543210HSym3KindInference ())
     type family Let0123456789876543210HSym4 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 (a0123456789876543210 :: c0123456789876543210) (a0123456789876543210 :: b0123456789876543210) :: b0123456789876543210 where
       Let0123456789876543210HSym4 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210 a0123456789876543210 = Let0123456789876543210H a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210 a0123456789876543210
     type family Let0123456789876543210H a_0123456789876543210 a_0123456789876543210 (a :: c) (a :: b) :: b where
@@ -128,7 +128,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Baz_0123456789876543210Sym0 a0123456789876543210 = Baz_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Baz_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Baz_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Baz_0123456789876543210Sym0KindInference ())
     type Baz_0123456789876543210Sym1 :: a -> (~>) b b
     data Baz_0123456789876543210Sym1 (a0123456789876543210 :: a) :: (~>) b b
       where
@@ -137,7 +137,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Baz_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Baz_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Baz_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Baz_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Baz_0123456789876543210Sym1KindInference ())
     type Baz_0123456789876543210Sym2 :: a -> b -> b
     type family Baz_0123456789876543210Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
       Baz_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Baz_0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -148,16 +148,16 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
       type Baz a a = Apply (Apply Baz_0123456789876543210Sym0 a) a
     class SFoo a where
       sBar ::
-        forall (t :: a) (t :: b).
-        Sing t -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b) :: Type
+        (forall (t :: a) (t :: b).
+         Sing t -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b) :: Type)
       sBaz ::
         forall b (t :: a) (t :: b). Sing t
                                     -> Sing t -> Sing (Apply (Apply BazSym0 t) t :: b)
       default sBar ::
-                forall (t :: a) (t :: b).
-                ((Apply (Apply BarSym0 t) t :: b)
-                 ~ Apply (Apply Bar_0123456789876543210Sym0 t) t) =>
-                Sing t -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b) :: Type
+                (forall (t :: a) (t :: b).
+                 ((Apply (Apply BarSym0 t) t :: b)
+                  ~ Apply (Apply Bar_0123456789876543210Sym0 t) t) =>
+                 Sing t -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b) :: Type)
       default sBaz ::
                 forall b (t :: a) (t :: b). ((Apply (Apply BazSym0 t) t :: b)
                                              ~ Apply (Apply Baz_0123456789876543210Sym0 t) t) =>
@@ -167,33 +167,33 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
       sBaz
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 (let
-                    sH ::
-                      forall c (t :: c) (t :: b). Sing t
-                                                  -> Sing t
-                                                     -> Sing (Apply (Apply (Let0123456789876543210HSym2 a_0123456789876543210 a_0123456789876543210) t) t :: b)
-                    sH _ (sX :: Sing x) = sX
-                  in
-                    (singFun2
-                       @(Let0123456789876543210HSym2 a_0123456789876543210 a_0123456789876543210))
-                      sH))
-                sA_0123456789876543210))
+        = applySing
+            (applySing
+               (let
+                  sH ::
+                    forall c (t :: c) (t :: b). Sing t
+                                                -> Sing t
+                                                   -> Sing (Apply (Apply (Let0123456789876543210HSym2 a_0123456789876543210 a_0123456789876543210) t) t :: b)
+                  sH _ (sX :: Sing x) = sX
+                in
+                  singFun2
+                    @(Let0123456789876543210HSym2 a_0123456789876543210 a_0123456789876543210)
+                    sH)
+               sA_0123456789876543210)
             sA_0123456789876543210
     instance SFoo a => SingI (BarSym0 :: (~>) a ((~>) b b)) where
-      sing = (singFun2 @BarSym0) sBar
+      sing = singFun2 @BarSym0 sBar
     instance (SFoo a, SingI d) =>
              SingI (BarSym1 (d :: a) :: (~>) b b) where
-      sing = (singFun1 @(BarSym1 (d :: a))) (sBar (sing @d))
+      sing = singFun1 @(BarSym1 (d :: a)) (sBar (sing @d))
     instance SFoo a => SingI1 (BarSym1 :: a -> (~>) b b) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @(BarSym1 (d :: a))) (sBar s)
+        = singFun1 @(BarSym1 (d :: a)) (sBar s)
     instance SFoo a => SingI (BazSym0 :: (~>) a ((~>) b b)) where
-      sing = (singFun2 @BazSym0) sBaz
+      sing = singFun2 @BazSym0 sBaz
     instance (SFoo a, SingI d) =>
              SingI (BazSym1 (d :: a) :: (~>) b b) where
-      sing = (singFun1 @(BazSym1 (d :: a))) (sBaz (sing @d))
+      sing = singFun1 @(BazSym1 (d :: a)) (sBaz (sing @d))
     instance SFoo a => SingI1 (BazSym1 :: a -> (~>) b b) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @(BazSym1 (d :: a))) (sBaz s)
+        = singFun1 @(BazSym1 (d :: a)) (sBaz s)

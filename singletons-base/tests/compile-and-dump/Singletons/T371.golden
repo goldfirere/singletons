@@ -23,7 +23,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
                                X2Sym0 a0123456789876543210
     type instance Apply X2Sym0 a0123456789876543210 = X2 a0123456789876543210
     instance SuppressUnusedWarnings X2Sym0 where
-      suppressUnusedWarnings = snd (((,) X2Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) X2Sym0KindInference ())
     type X2Sym1 :: forall (a :: Type). Y a -> X (a :: Type)
     type family X2Sym1 (a0123456789876543210 :: Y a) :: X (a :: Type) where
       X2Sym1 a0123456789876543210 = X2 a0123456789876543210
@@ -37,7 +37,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
                                Y2Sym0 a0123456789876543210
     type instance Apply Y2Sym0 a0123456789876543210 = Y2 a0123456789876543210
     instance SuppressUnusedWarnings Y2Sym0 where
-      suppressUnusedWarnings = snd (((,) Y2Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Y2Sym0KindInference ())
     type Y2Sym1 :: forall (a :: Type). X a -> Y (a :: Type)
     type family Y2Sym1 (a0123456789876543210 :: X a) :: Y (a :: Type) where
       Y2Sym1 a0123456789876543210 = Y2 a0123456789876543210
@@ -54,7 +54,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
                                               -> (~>) (X a) ((~>) GHC.Types.Symbol GHC.Types.Symbol)
     data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: (~>) (X a) ((~>) GHC.Types.Symbol GHC.Types.Symbol)
@@ -64,7 +64,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Num.Natural.Natural
                                               -> X a -> (~>) GHC.Types.Symbol GHC.Types.Symbol
     data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: X a) :: (~>) GHC.Types.Symbol GHC.Types.Symbol
@@ -74,7 +74,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Num.Natural.Natural
                                               -> X a -> GHC.Types.Symbol -> GHC.Types.Symbol
     type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: X a) (a0123456789876543210 :: GHC.Types.Symbol) :: GHC.Types.Symbol where
@@ -94,7 +94,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
                                               -> (~>) (Y a) ((~>) GHC.Types.Symbol GHC.Types.Symbol)
     data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: (~>) (Y a) ((~>) GHC.Types.Symbol GHC.Types.Symbol)
@@ -104,7 +104,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Num.Natural.Natural
                                               -> Y a -> (~>) GHC.Types.Symbol GHC.Types.Symbol
     data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Y a) :: (~>) GHC.Types.Symbol GHC.Types.Symbol
@@ -114,7 +114,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Num.Natural.Natural
                                               -> Y a -> GHC.Types.Symbol -> GHC.Types.Symbol
     type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Y a) (a0123456789876543210 :: GHC.Types.Symbol) :: GHC.Types.Symbol where
@@ -160,28 +160,31 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
         _
         SX1
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "X1")))
+        = applySing
+            (applySing
+               (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "X1"))
             sA_0123456789876543210
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         (SX2 (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
-                       (sFromInteger (sing :: Sing 10)))))
-                ((applySing
-                    ((applySing ((singFun3 @(.@#@$)) (%.)))
-                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                          (sing :: Sing "X2 "))))
-                   ((applySing
-                       ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                          (sFromInteger (sing :: Sing 11))))
-                      sArg_0123456789876543210))))
+        = applySing
+            (applySing
+               (applySing
+                  (singFun3 @ShowParenSym0 sShowParen)
+                  (applySing
+                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (sFromInteger (sing :: Sing 10))))
+               (applySing
+                  (applySing
+                     (singFun3 @(.@#@$) (%.))
+                     (applySing
+                        (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "X2 ")))
+                  (applySing
+                     (applySing
+                        (singFun3 @ShowsPrecSym0 sShowsPrec)
+                        (sFromInteger (sing :: Sing 11)))
+                     sArg_0123456789876543210)))
             sA_0123456789876543210
     instance SShow (X a) => SShow (Y a) where
       sShowsPrec ::
@@ -196,28 +199,31 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
         _
         SY1
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "Y1")))
+        = applySing
+            (applySing
+               (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Y1"))
             sA_0123456789876543210
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         (SY2 (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
-                       (sFromInteger (sing :: Sing 10)))))
-                ((applySing
-                    ((applySing ((singFun3 @(.@#@$)) (%.)))
-                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                          (sing :: Sing "Y2 "))))
-                   ((applySing
-                       ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                          (sFromInteger (sing :: Sing 11))))
-                      sArg_0123456789876543210))))
+        = applySing
+            (applySing
+               (applySing
+                  (singFun3 @ShowParenSym0 sShowParen)
+                  (applySing
+                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (sFromInteger (sing :: Sing 10))))
+               (applySing
+                  (applySing
+                     (singFun3 @(.@#@$) (%.))
+                     (applySing
+                        (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Y2 ")))
+                  (applySing
+                     (applySing
+                        (singFun3 @ShowsPrecSym0 sShowsPrec)
+                        (sFromInteger (sing :: Sing 11)))
+                     sArg_0123456789876543210)))
             sA_0123456789876543210
     deriving instance Data.Singletons.ShowSing.ShowSing (Y a) =>
                       Show (SX (z :: X a))
@@ -230,7 +236,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 X2 where
       liftSing = SX2
     instance SingI (X2Sym0 :: (~>) (Y a) (X (a :: Type))) where
-      sing = (singFun1 @X2Sym0) SX2
+      sing = singFun1 @X2Sym0 SX2
     instance SingI Y1 where
       sing = SY1
     instance SingI n => SingI (Y2 (n :: X a)) where
@@ -238,4 +244,4 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 Y2 where
       liftSing = SY2
     instance SingI (Y2Sym0 :: (~>) (X a) (Y (a :: Type))) where
-      sing = (singFun1 @Y2Sym0) SY2
+      sing = singFun1 @Y2Sym0 SY2

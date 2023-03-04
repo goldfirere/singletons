@@ -11,7 +11,7 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Const'Sym0 a0123456789876543210 = Const'Sym1 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings Const'Sym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) Const'Sym0KindInference) ())
+        = snd ((,) Const'Sym0KindInference ())
     type Const'Sym1 :: a -> (~>) b a
     data Const'Sym1 (a0123456789876543210 :: a) :: (~>) b a
       where
@@ -20,7 +20,7 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Const'Sym1 a0123456789876543210) a0123456789876543210 = Const' a0123456789876543210 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (Const'Sym1 a0123456789876543210) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) Const'Sym1KindInference) ())
+        = snd ((,) Const'Sym1KindInference ())
     type Const'Sym2 :: a -> b -> a
     type family Const'Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
       Const'Sym2 a0123456789876543210 a0123456789876543210 = Const' a0123456789876543210 a0123456789876543210
@@ -28,14 +28,14 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
     type family Const' (a :: a) (a :: b) :: a where
       Const' x _ = x
     sConst' ::
-      forall (t :: a) (t :: b).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply Const'Sym0 t) t :: a) :: Type
+      (forall (t :: a) (t :: b).
+       Sing t
+       -> Sing t -> Sing (Apply (Apply Const'Sym0 t) t :: a) :: Type)
     sConst' (sX :: Sing x) _ = sX
     instance SingI (Const'Sym0 :: (~>) a ((~>) b a)) where
-      sing = (singFun2 @Const'Sym0) sConst'
+      sing = singFun2 @Const'Sym0 sConst'
     instance SingI d => SingI (Const'Sym1 (d :: a) :: (~>) b a) where
-      sing = (singFun1 @(Const'Sym1 (d :: a))) (sConst' (sing @d))
+      sing = singFun1 @(Const'Sym1 (d :: a)) (sConst' (sing @d))
     instance SingI1 (Const'Sym1 :: a -> (~>) b a) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @(Const'Sym1 (d :: a))) (sConst' s)
+        = singFun1 @(Const'Sym1 (d :: a)) (sConst' s)
