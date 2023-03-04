@@ -83,7 +83,6 @@ module Control.Monad.Singletons (
   type (<$!>@#@$), type (<$!>@#@$$), type (<$!>@#@$$$),
   ) where
 
-import Control.Applicative
 import Control.Applicative.Singletons ()
 import Control.Monad
 import Control.Monad.Fail.Singletons

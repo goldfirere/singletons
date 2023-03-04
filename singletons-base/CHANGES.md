@@ -28,6 +28,8 @@ Changelog for the `singletons-base` project
 * `GHC.TypeLits.Singletons` now re-exports the `SSymbol` pattern synonym
   from `GHC.TypeLits`. `GHC.TypeLits.Singletons` also continues to export `SSym`
   for backwards compatibility.
+* `Prelude.Singletons` now re-exports `LiftA2` and `sLiftA2`, mirroring the
+  fact that `Prelude` now re-exports `liftA2` in `base-4.18.0.0`.
 * Provide `TestEquality` and `TestCoercion` instances for `SNat, `SSymbol`, and
   `SChar`.
 

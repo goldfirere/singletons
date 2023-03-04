@@ -23,7 +23,6 @@ import GHC.Show ( showCommaSpace, showSpace )
 import Data.String (fromString)
 import Data.Type.Equality ( TestEquality(..) )
 import Data.Type.Coercion ( TestCoercion(..) )
-import Control.Applicative
 
 {-
 Note [Wired-in Names]
