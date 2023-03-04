@@ -3,6 +3,7 @@ Changelog for the `singletons-base` project
 
 3.2 [????.??.??]
 ----------------
+* Require building with GHC 9.6.
 * The kinds of the promoted `Error` and `ErrorWithoutStackTrace` functions have
   been monomorphized to `Symbol`. A previous release generalized the kinds of
   these arguments to allow passing arguments besides `Symbol`s, but this change
