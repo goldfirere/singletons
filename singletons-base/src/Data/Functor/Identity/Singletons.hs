@@ -27,7 +27,6 @@ module Data.Functor.Identity.Singletons (
   RunIdentitySym0, RunIdentitySym1
   ) where
 
-import Control.Applicative
 import Control.Monad.Singletons.Internal
 import Data.Eq.Singletons
 import Data.Foldable (Foldable(..))

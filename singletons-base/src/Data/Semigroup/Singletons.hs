@@ -46,7 +46,6 @@ module Data.Semigroup.Singletons (
   ArgSym0, ArgSym1, ArgSym2
   ) where
 
-import Control.Applicative
 import Control.Monad.Singletons.Internal
 import Data.Eq.Singletons
 import Data.Foldable.Singletons hiding

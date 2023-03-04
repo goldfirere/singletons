@@ -120,8 +120,8 @@ module Prelude.Singletons (
 
   -- ** Monads and functors
   PFunctor(Fmap, type (<$)), SFunctor(sFmap, (%<$)), type (<$>), (%<$>),
-  PApplicative(Pure, type (<*>), type (*>), type (<*)),
-  SApplicative(sPure, (%<*>), (%*>), (%<*)),
+  PApplicative(Pure, type (<*>), type (*>), type (<*), LiftA2),
+  SApplicative(sPure, (%<*>), (%*>), (%<*), sLiftA2),
   PMonad(type (>>=), type (>>), Return),
   SMonad((%>>=), (%>>), sReturn),
   PMonadFail(Fail), SMonadFail(sFail),
@@ -299,6 +299,7 @@ module Prelude.Singletons (
   type (<*>@#@$), type (<*>@#@$$), type (<*>@#@$$$),
   type (*>@#@$),  type (*>@#@$$),  type (*>@#@$$$),
   type (<*@#@$),  type (<*@#@$$),  type (<*@#@$$$),
+  LiftA2Sym0, LiftA2Sym1, LiftA2Sym2, LiftA2Sym3,
   type (>>=@#@$), type (>>=@#@$$), type (>>=@#@$$$),
   type (>>@#@$),  type (>>@#@$$),  type (>>@#@$$$),
   ReturnSym0, ReturnSym1, FailSym0, FailSym1,
