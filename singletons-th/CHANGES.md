@@ -3,6 +3,7 @@ Changelog for the `singletons-th` project
 
 3.2 [????.??.??]
 ----------------
+* Require building with GHC 9.6.
 * Derived `POrd` and `SOrd` instances (arising from a use of `deriving Ord`)
   now use `(<>) @Ordering` in their implementations instead of the custom
   `thenCmp :: Ordering -> Ordering -> Ordering` function. While most code will
