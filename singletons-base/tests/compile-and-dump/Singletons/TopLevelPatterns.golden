@@ -19,7 +19,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings
-        = Data.Tuple.snd (((,) BarSym0KindInference) ())
+        = Data.Tuple.snd ((,) BarSym0KindInference ())
     type BarSym1 :: Bool -> (~>) Bool Foo
     data BarSym1 (a0123456789876543210 :: Bool) :: (~>) Bool Foo
       where
@@ -28,7 +28,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (BarSym1 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BarSym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = Data.Tuple.snd (((,) BarSym1KindInference) ())
+        = Data.Tuple.snd ((,) BarSym1KindInference ())
     type BarSym2 :: Bool -> Bool -> Foo
     type family BarSym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) :: Foo where
       BarSym2 a0123456789876543210 a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
@@ -50,31 +50,31 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @Foo = SFoo
     instance SingKind Foo where
       type Demote Foo = Foo
-      fromSing (SBar b b) = (Bar (fromSing b)) (fromSing b)
+      fromSing (SBar b b) = Bar (fromSing b) (fromSing b)
       toSing (Bar (b :: Demote Bool) (b :: Demote Bool))
         = case
-              ((,) (toSing b :: SomeSing Bool)) (toSing b :: SomeSing Bool)
+              (,) (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
           of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SBar c) c)
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (SBar c c)
     instance SingI False where
       sing = SFalse
     instance SingI True where
       sing = STrue
     instance (SingI n, SingI n) =>
              SingI (Bar (n :: Bool) (n :: Bool)) where
-      sing = (SBar sing) sing
+      sing = SBar sing sing
     instance SingI n => SingI1 (Bar (n :: Bool)) where
       liftSing = SBar sing
     instance SingI2 Bar where
       liftSing2 = SBar
     instance SingI (BarSym0 :: (~>) Bool ((~>) Bool Foo)) where
-      sing = (singFun2 @BarSym0) SBar
+      sing = singFun2 @BarSym0 SBar
     instance SingI d =>
              SingI (BarSym1 (d :: Bool) :: (~>) Bool Foo) where
-      sing = (singFun1 @(BarSym1 (d :: Bool))) (SBar (sing @d))
+      sing = singFun1 @(BarSym1 (d :: Bool)) (SBar (sing @d))
     instance SingI1 (BarSym1 :: Bool -> (~>) Bool Foo) where
       liftSing (s :: Sing (d :: Bool))
-        = (singFun1 @(BarSym1 (d :: Bool))) (SBar s)
+        = singFun1 @(BarSym1 (d :: Bool)) (SBar s)
 Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| otherwise :: Bool
@@ -110,7 +110,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     (h, i) = (f, g)
     j :: Bool
     k :: Bool
-    Bar j k = (Bar True) (h False)
+    Bar j k = Bar True (h False)
     l :: Bool
     m :: Bool
     [l, m] = [not True, id False]
@@ -159,8 +159,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                               ISym0 a0123456789876543210
     type instance Apply ISym0 a0123456789876543210 = I a0123456789876543210
     instance SuppressUnusedWarnings ISym0 where
-      suppressUnusedWarnings
-        = Data.Tuple.snd (((,) ISym0KindInference) ())
+      suppressUnusedWarnings = Data.Tuple.snd ((,) ISym0KindInference ())
     type ISym1 :: Bool -> Bool
     type family ISym1 (a0123456789876543210 :: Bool) :: Bool where
       ISym1 a0123456789876543210 = I a0123456789876543210
@@ -171,8 +170,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                               HSym0 a0123456789876543210
     type instance Apply HSym0 a0123456789876543210 = H a0123456789876543210
     instance SuppressUnusedWarnings HSym0 where
-      suppressUnusedWarnings
-        = Data.Tuple.snd (((,) HSym0KindInference) ())
+      suppressUnusedWarnings = Data.Tuple.snd ((,) HSym0KindInference ())
     type HSym1 :: Bool -> Bool
     type family HSym1 (a0123456789876543210 :: Bool) :: Bool where
       HSym1 a0123456789876543210 = H a0123456789876543210
@@ -185,8 +183,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                               GSym0 a0123456789876543210
     type instance Apply GSym0 a0123456789876543210 = G a0123456789876543210
     instance SuppressUnusedWarnings GSym0 where
-      suppressUnusedWarnings
-        = Data.Tuple.snd (((,) GSym0KindInference) ())
+      suppressUnusedWarnings = Data.Tuple.snd ((,) GSym0KindInference ())
     type GSym1 :: Bool -> Bool
     type family GSym1 (a0123456789876543210 :: Bool) :: Bool where
       GSym1 a0123456789876543210 = G a0123456789876543210
@@ -197,8 +194,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                               FSym0 a0123456789876543210
     type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
-      suppressUnusedWarnings
-        = Data.Tuple.snd (((,) FSym0KindInference) ())
+      suppressUnusedWarnings = Data.Tuple.snd ((,) FSym0KindInference ())
     type FSym1 :: Bool -> Bool
     type family FSym1 (a0123456789876543210 :: Bool) :: Bool where
       FSym1 a0123456789876543210 = F a0123456789876543210
@@ -214,7 +210,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply NotSym0 a0123456789876543210 = Not a0123456789876543210
     instance SuppressUnusedWarnings NotSym0 where
       suppressUnusedWarnings
-        = Data.Tuple.snd (((,) NotSym0KindInference) ())
+        = Data.Tuple.snd ((,) NotSym0KindInference ())
     type NotSym1 :: Bool -> Bool
     type family NotSym1 (a0123456789876543210 :: Bool) :: Bool where
       NotSym1 a0123456789876543210 = Not a0123456789876543210
@@ -226,7 +222,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply IdSym0 a0123456789876543210 = Id a0123456789876543210
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings
-        = Data.Tuple.snd (((,) IdSym0KindInference) ())
+        = Data.Tuple.snd ((,) IdSym0KindInference ())
     type IdSym1 :: a -> a
     type family IdSym1 (a0123456789876543210 :: a) :: a where
       IdSym1 a0123456789876543210 = Id a0123456789876543210
@@ -277,126 +273,130 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type Otherwise :: Bool
     type family Otherwise :: Bool where
       Otherwise = TrueSym0
-    sM :: Sing (MSym0 :: Bool) :: Type
-    sL :: Sing (LSym0 :: Bool) :: Type
+    sM :: (Sing (MSym0 :: Bool) :: Type)
+    sL :: (Sing (LSym0 :: Bool) :: Type)
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
-    sK :: Sing (KSym0 :: Bool) :: Type
-    sJ :: Sing (JSym0 :: Bool) :: Type
+    sK :: (Sing (KSym0 :: Bool) :: Type)
+    sJ :: (Sing (JSym0 :: Bool) :: Type)
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
     sI ::
-      forall (t :: Bool). Sing t -> Sing (Apply ISym0 t :: Bool) :: Type
+      (forall (t :: Bool).
+       Sing t -> Sing (Apply ISym0 t :: Bool) :: Type)
     sH ::
-      forall (t :: Bool). Sing t -> Sing (Apply HSym0 t :: Bool) :: Type
+      (forall (t :: Bool).
+       Sing t -> Sing (Apply HSym0 t :: Bool) :: Type)
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
     sG ::
-      forall (t :: Bool). Sing t -> Sing (Apply GSym0 t :: Bool) :: Type
+      (forall (t :: Bool).
+       Sing t -> Sing (Apply GSym0 t :: Bool) :: Type)
     sF ::
-      forall (t :: Bool). Sing t -> Sing (Apply FSym0 t :: Bool) :: Type
+      (forall (t :: Bool).
+       Sing t -> Sing (Apply FSym0 t :: Bool) :: Type)
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
     sFalse_ :: Sing @_ False_Sym0
     sNot ::
-      forall (t :: Bool).
-      Sing t -> Sing (Apply NotSym0 t :: Bool) :: Type
+      (forall (t :: Bool).
+       Sing t -> Sing (Apply NotSym0 t :: Bool) :: Type)
     sId ::
-      forall (t :: a). Sing t -> Sing (Apply IdSym0 t :: a) :: Type
-    sOtherwise :: Sing (OtherwiseSym0 :: Bool) :: Type
+      (forall (t :: a). Sing t -> Sing (Apply IdSym0 t :: a) :: Type)
+    sOtherwise :: (Sing (OtherwiseSym0 :: Bool) :: Type)
     sM
-      = (GHC.Base.id
-           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = GHC.Base.id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SCons _
                    (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210) SNil)
                -> sY_0123456789876543210)
     sL
-      = (GHC.Base.id
-           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = GHC.Base.id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
                    (SCons _ SNil)
                -> sY_0123456789876543210)
     sX_0123456789876543210
-      = (applySing
-           ((applySing ((singFun2 @(:@#@$)) SCons))
-              ((applySing ((singFun1 @NotSym0) sNot)) STrue)))
-          ((applySing
-              ((applySing ((singFun2 @(:@#@$)) SCons))
-                 ((applySing ((singFun1 @IdSym0) sId)) SFalse)))
+      = applySing
+          (applySing
+             (singFun2 @(:@#@$) SCons)
+             (applySing (singFun1 @NotSym0 sNot) STrue))
+          (applySing
+             (applySing
+                (singFun2 @(:@#@$) SCons)
+                (applySing (singFun1 @IdSym0 sId) SFalse))
              SNil)
     sK
-      = (GHC.Base.id
-           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = GHC.Base.id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SBar _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
                -> sY_0123456789876543210)
     sJ
-      = (GHC.Base.id
-           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = GHC.Base.id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SBar (sY_0123456789876543210 :: Sing y_0123456789876543210) _
                -> sY_0123456789876543210)
     sX_0123456789876543210
-      = (applySing ((applySing ((singFun2 @BarSym0) SBar)) STrue))
-          ((applySing ((singFun1 @HSym0) sH)) SFalse)
+      = applySing
+          (applySing (singFun2 @BarSym0 SBar) STrue)
+          (applySing (singFun1 @HSym0 sH) SFalse)
     sI (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = (applySing
-           ((GHC.Base.id
-               @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0)))
-              (case sX_0123456789876543210 of
-                 STuple2 _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
-                   -> sY_0123456789876543210)))
+      = applySing
+          (GHC.Base.id
+             @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0))
+             (case sX_0123456789876543210 of
+                STuple2 _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
+                  -> sY_0123456789876543210))
           sA_0123456789876543210
     sH (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = (applySing
-           ((GHC.Base.id
-               @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0)))
-              (case sX_0123456789876543210 of
-                 STuple2 (sY_0123456789876543210 :: Sing y_0123456789876543210) _
-                   -> sY_0123456789876543210)))
+      = applySing
+          (GHC.Base.id
+             @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0))
+             (case sX_0123456789876543210 of
+                STuple2 (sY_0123456789876543210 :: Sing y_0123456789876543210) _
+                  -> sY_0123456789876543210))
           sA_0123456789876543210
     sX_0123456789876543210
-      = (applySing
-           ((applySing ((singFun2 @Tuple2Sym0) STuple2))
-              ((singFun1 @FSym0) sF)))
-          ((singFun1 @GSym0) sG)
+      = applySing
+          (applySing (singFun2 @Tuple2Sym0 STuple2) (singFun1 @FSym0 sF))
+          (singFun1 @GSym0 sG)
     sG (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = (applySing
-           ((GHC.Base.id
-               @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0)))
-              (case sX_0123456789876543210 of
-                 SCons _
-                       (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210) SNil)
-                   -> sY_0123456789876543210)))
+      = applySing
+          (GHC.Base.id
+             @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0))
+             (case sX_0123456789876543210 of
+                SCons _
+                      (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210) SNil)
+                  -> sY_0123456789876543210))
           sA_0123456789876543210
     sF (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = (applySing
-           ((GHC.Base.id
-               @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0)))
-              (case sX_0123456789876543210 of
-                 SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
-                       (SCons _ SNil)
-                   -> sY_0123456789876543210)))
+      = applySing
+          (GHC.Base.id
+             @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0))
+             (case sX_0123456789876543210 of
+                SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
+                      (SCons _ SNil)
+                  -> sY_0123456789876543210))
           sA_0123456789876543210
     sX_0123456789876543210
-      = (applySing
-           ((applySing ((singFun2 @(:@#@$)) SCons))
-              ((singFun1 @NotSym0) sNot)))
-          ((applySing
-              ((applySing ((singFun2 @(:@#@$)) SCons)) ((singFun1 @IdSym0) sId)))
-             SNil)
+      = applySing
+          (applySing (singFun2 @(:@#@$) SCons) (singFun1 @NotSym0 sNot))
+          (applySing
+             (applySing (singFun2 @(:@#@$) SCons) (singFun1 @IdSym0 sId)) SNil)
     sFalse_ = SFalse
     sNot STrue = SFalse
     sNot SFalse = STrue
     sId (sX :: Sing x) = sX
     sOtherwise = STrue
     instance SingI (ISym0 :: (~>) Bool Bool) where
-      sing = (singFun1 @ISym0) sI
+      sing = singFun1 @ISym0 sI
     instance SingI (HSym0 :: (~>) Bool Bool) where
-      sing = (singFun1 @HSym0) sH
+      sing = singFun1 @HSym0 sH
     instance SingI (GSym0 :: (~>) Bool Bool) where
-      sing = (singFun1 @GSym0) sG
+      sing = singFun1 @GSym0 sG
     instance SingI (FSym0 :: (~>) Bool Bool) where
-      sing = (singFun1 @FSym0) sF
+      sing = singFun1 @FSym0 sF
     instance SingI (NotSym0 :: (~>) Bool Bool) where
-      sing = (singFun1 @NotSym0) sNot
+      sing = singFun1 @NotSym0 sNot
     instance SingI (IdSym0 :: (~>) a a) where
-      sing = (singFun1 @IdSym0) sId
+      sing = singFun1 @IdSym0 sId

@@ -27,10 +27,10 @@ GradingClient/Main.hs:(0,0)-(0,0): Splicing declarations
     gradingSchema :: Schema
     gradingSchema
       = Sch
-          [(Attr lastName) STRING, (Attr firstName) STRING,
-           (Attr yearName) NAT, (Attr gradeName) NAT, (Attr majorName) BOOL]
+          [Attr lastName STRING, Attr firstName STRING, Attr yearName NAT,
+           Attr gradeName NAT, Attr majorName BOOL]
     names :: Schema
-    names = Sch [(Attr firstName) STRING, (Attr lastName) STRING]
+    names = Sch [Attr firstName STRING, Attr lastName STRING]
     type NamesSym0 :: Schema
     type family NamesSym0 :: Schema where
       NamesSym0 = Names
@@ -73,72 +73,97 @@ GradingClient/Main.hs:(0,0)-(0,0): Splicing declarations
     type LastName :: [AChar]
     type family LastName :: [AChar] where
       LastName = Apply (Apply (:@#@$) CLSym0) (Apply (Apply (:@#@$) CASym0) (Apply (Apply (:@#@$) CSSym0) (Apply (Apply (:@#@$) CTSym0) NilSym0)))
-    sNames :: Sing (NamesSym0 :: Schema) :: Type
-    sGradingSchema :: Sing (GradingSchemaSym0 :: Schema) :: Type
-    sMajorName :: Sing (MajorNameSym0 :: [AChar]) :: Type
-    sGradeName :: Sing (GradeNameSym0 :: [AChar]) :: Type
-    sYearName :: Sing (YearNameSym0 :: [AChar]) :: Type
-    sFirstName :: Sing (FirstNameSym0 :: [AChar]) :: Type
-    sLastName :: Sing (LastNameSym0 :: [AChar]) :: Type
+    sNames :: (Sing (NamesSym0 :: Schema) :: Type)
+    sGradingSchema :: (Sing (GradingSchemaSym0 :: Schema) :: Type)
+    sMajorName :: (Sing (MajorNameSym0 :: [AChar]) :: Type)
+    sGradeName :: (Sing (GradeNameSym0 :: [AChar]) :: Type)
+    sYearName :: (Sing (YearNameSym0 :: [AChar]) :: Type)
+    sFirstName :: (Sing (FirstNameSym0 :: [AChar]) :: Type)
+    sLastName :: (Sing (LastNameSym0 :: [AChar]) :: Type)
     sNames
-      = (applySing ((singFun1 @SchSym0) SSch))
-          ((applySing
-              ((applySing ((singFun2 @(:@#@$)) SCons))
-                 ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sFirstName))
-                    SSTRING)))
-             ((applySing
-                 ((applySing ((singFun2 @(:@#@$)) SCons))
-                    ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sLastName))
-                       SSTRING)))
+      = applySing
+          (singFun1 @SchSym0 SSch)
+          (applySing
+             (applySing
+                (singFun2 @(:@#@$) SCons)
+                (applySing
+                   (applySing (singFun2 @AttrSym0 SAttr) sFirstName) SSTRING))
+             (applySing
+                (applySing
+                   (singFun2 @(:@#@$) SCons)
+                   (applySing
+                      (applySing (singFun2 @AttrSym0 SAttr) sLastName) SSTRING))
                 SNil))
     sGradingSchema
-      = (applySing ((singFun1 @SchSym0) SSch))
-          ((applySing
-              ((applySing ((singFun2 @(:@#@$)) SCons))
-                 ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sLastName))
-                    SSTRING)))
-             ((applySing
-                 ((applySing ((singFun2 @(:@#@$)) SCons))
-                    ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sFirstName))
-                       SSTRING)))
-                ((applySing
-                    ((applySing ((singFun2 @(:@#@$)) SCons))
-                       ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sYearName))
-                          SNAT)))
-                   ((applySing
-                       ((applySing ((singFun2 @(:@#@$)) SCons))
-                          ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sGradeName))
-                             SNAT)))
-                      ((applySing
-                          ((applySing ((singFun2 @(:@#@$)) SCons))
-                             ((applySing ((applySing ((singFun2 @AttrSym0) SAttr)) sMajorName))
-                                SBOOL)))
+      = applySing
+          (singFun1 @SchSym0 SSch)
+          (applySing
+             (applySing
+                (singFun2 @(:@#@$) SCons)
+                (applySing
+                   (applySing (singFun2 @AttrSym0 SAttr) sLastName) SSTRING))
+             (applySing
+                (applySing
+                   (singFun2 @(:@#@$) SCons)
+                   (applySing
+                      (applySing (singFun2 @AttrSym0 SAttr) sFirstName) SSTRING))
+                (applySing
+                   (applySing
+                      (singFun2 @(:@#@$) SCons)
+                      (applySing (applySing (singFun2 @AttrSym0 SAttr) sYearName) SNAT))
+                   (applySing
+                      (applySing
+                         (singFun2 @(:@#@$) SCons)
+                         (applySing (applySing (singFun2 @AttrSym0 SAttr) sGradeName) SNAT))
+                      (applySing
+                         (applySing
+                            (singFun2 @(:@#@$) SCons)
+                            (applySing
+                               (applySing (singFun2 @AttrSym0 SAttr) sMajorName) SBOOL))
                          SNil)))))
     sMajorName
-      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCM))
-          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCA))
-             ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCJ))
-                ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCO))
-                   ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCR)) SNil))))
+      = applySing
+          (applySing (singFun2 @(:@#@$) SCons) SCM)
+          (applySing
+             (applySing (singFun2 @(:@#@$) SCons) SCA)
+             (applySing
+                (applySing (singFun2 @(:@#@$) SCons) SCJ)
+                (applySing
+                   (applySing (singFun2 @(:@#@$) SCons) SCO)
+                   (applySing (applySing (singFun2 @(:@#@$) SCons) SCR) SNil))))
     sGradeName
-      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCG))
-          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCR))
-             ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCA))
-                ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCD))
-                   ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCE)) SNil))))
+      = applySing
+          (applySing (singFun2 @(:@#@$) SCons) SCG)
+          (applySing
+             (applySing (singFun2 @(:@#@$) SCons) SCR)
+             (applySing
+                (applySing (singFun2 @(:@#@$) SCons) SCA)
+                (applySing
+                   (applySing (singFun2 @(:@#@$) SCons) SCD)
+                   (applySing (applySing (singFun2 @(:@#@$) SCons) SCE) SNil))))
     sYearName
-      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCY))
-          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCE))
-             ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCA))
-                ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCR)) SNil)))
+      = applySing
+          (applySing (singFun2 @(:@#@$) SCons) SCY)
+          (applySing
+             (applySing (singFun2 @(:@#@$) SCons) SCE)
+             (applySing
+                (applySing (singFun2 @(:@#@$) SCons) SCA)
+                (applySing (applySing (singFun2 @(:@#@$) SCons) SCR) SNil)))
     sFirstName
-      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCF))
-          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCI))
-             ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCR))
-                ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCS))
-                   ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCT)) SNil))))
+      = applySing
+          (applySing (singFun2 @(:@#@$) SCons) SCF)
+          (applySing
+             (applySing (singFun2 @(:@#@$) SCons) SCI)
+             (applySing
+                (applySing (singFun2 @(:@#@$) SCons) SCR)
+                (applySing
+                   (applySing (singFun2 @(:@#@$) SCons) SCS)
+                   (applySing (applySing (singFun2 @(:@#@$) SCons) SCT) SNil))))
     sLastName
-      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCL))
-          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCA))
-             ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCS))
-                ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SCT)) SNil)))
+      = applySing
+          (applySing (singFun2 @(:@#@$) SCons) SCL)
+          (applySing
+             (applySing (singFun2 @(:@#@$) SCons) SCA)
+             (applySing
+                (applySing (singFun2 @(:@#@$) SCons) SCS)
+                (applySing (applySing (singFun2 @(:@#@$) SCons) SCT) SNil)))

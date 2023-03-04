@@ -12,7 +12,7 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
                               FSym0 a0123456789876543210
     type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
-      suppressUnusedWarnings = snd (((,) FSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: (~>) () () -> (~>) () ()
     data FSym1 (a0123456789876543210 :: (~>) () ()) :: (~>) () ()
       where
@@ -20,7 +20,7 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
                               FSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (FSym1 a0123456789876543210) a0123456789876543210 = F a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) FSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) FSym1KindInference ())
     type FSym2 :: (~>) () () -> () -> ()
     type family FSym2 (a0123456789876543210 :: (~>) () ()) (a0123456789876543210 :: ()) :: () where
       FSym2 a0123456789876543210 a0123456789876543210 = F a0123456789876543210 a0123456789876543210
@@ -28,17 +28,17 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
     type family F (a :: (~>) () ()) (a :: ()) :: () where
       F g a_0123456789876543210 = Apply (g :: (~>) () ()) a_0123456789876543210
     sF ::
-      forall (t :: (~>) () ()) (t :: ()).
-      Sing t -> Sing t -> Sing (Apply (Apply FSym0 t) t :: ()) :: Type
+      (forall (t :: (~>) () ()) (t :: ()).
+       Sing t -> Sing t -> Sing (Apply (Apply FSym0 t) t :: ()) :: Type)
     sF
       (sG :: Sing g)
       (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = (applySing (sG :: Sing (g :: (~>) () ()))) sA_0123456789876543210
+      = applySing (sG :: Sing (g :: (~>) () ())) sA_0123456789876543210
     instance SingI (FSym0 :: (~>) ((~>) () ()) ((~>) () ())) where
-      sing = (singFun2 @FSym0) sF
+      sing = singFun2 @FSym0 sF
     instance SingI d =>
              SingI (FSym1 (d :: (~>) () ()) :: (~>) () ()) where
-      sing = (singFun1 @(FSym1 (d :: (~>) () ()))) (sF (sing @d))
+      sing = singFun1 @(FSym1 (d :: (~>) () ())) (sF (sing @d))
     instance SingI1 (FSym1 :: (~>) () () -> (~>) () ()) where
       liftSing (s :: Sing (d :: (~>) () ()))
-        = (singFun1 @(FSym1 (d :: (~>) () ()))) (sF s)
+        = singFun1 @(FSym1 (d :: (~>) () ())) (sF s)

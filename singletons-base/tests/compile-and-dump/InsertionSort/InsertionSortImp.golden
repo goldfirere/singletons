@@ -12,7 +12,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
                                  SuccSym0 a0123456789876543210
     type instance Apply SuccSym0 a0123456789876543210 = Succ a0123456789876543210
     instance SuppressUnusedWarnings SuccSym0 where
-      suppressUnusedWarnings = snd (((,) SuccSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) SuccSym0KindInference ())
     type SuccSym1 :: Nat -> Nat
     type family SuccSym1 (a0123456789876543210 :: Nat) :: Nat where
       SuccSym1 a0123456789876543210 = Succ a0123456789876543210
@@ -35,7 +35,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     instance SingI1 Succ where
       liftSing = SSucc
     instance SingI (SuccSym0 :: (~>) Nat Nat) where
-      sing = (singFun1 @SuccSym0) SSucc
+      sing = singFun1 @SuccSym0 SSucc
 InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| leq :: Nat -> Nat -> Bool
@@ -53,14 +53,14 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     leq :: Nat -> Nat -> Bool
     leq Zero _ = True
     leq (Succ _) Zero = False
-    leq (Succ a) (Succ b) = (leq a) b
+    leq (Succ a) (Succ b) = leq a b
     insert :: Nat -> [Nat] -> [Nat]
     insert n [] = [n]
     insert n (h : t)
-      = if (leq n) h then (n : (h : t)) else (h : (insert n) t)
+      = if leq n h then (n : (h : t)) else (h : insert n t)
     insertionSort :: [Nat] -> [Nat]
     insertionSort [] = []
-    insertionSort (h : t) = (insert h) (insertionSort t)
+    insertionSort (h : t) = insert h (insertionSort t)
     data Let0123456789876543210Scrutinee_0123456789876543210Sym0 n0123456789876543210
       where
         Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference :: SameKind (Apply Let0123456789876543210Scrutinee_0123456789876543210Sym0 arg) (Let0123456789876543210Scrutinee_0123456789876543210Sym1 arg) =>
@@ -69,8 +69,8 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Let0123456789876543210Scrutinee_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd
-            (((,)
-                Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference)
+            ((,)
+               Let0123456789876543210Scrutinee_0123456789876543210Sym0KindInference
                ())
     data Let0123456789876543210Scrutinee_0123456789876543210Sym1 n0123456789876543210 h0123456789876543210
       where
@@ -80,8 +80,8 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Let0123456789876543210Scrutinee_0123456789876543210Sym1 n0123456789876543210) where
       suppressUnusedWarnings
         = snd
-            (((,)
-                Let0123456789876543210Scrutinee_0123456789876543210Sym1KindInference)
+            ((,)
+               Let0123456789876543210Scrutinee_0123456789876543210Sym1KindInference
                ())
     data Let0123456789876543210Scrutinee_0123456789876543210Sym2 n0123456789876543210 h0123456789876543210 t0123456789876543210
       where
@@ -91,8 +91,8 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Let0123456789876543210Scrutinee_0123456789876543210Sym2 n0123456789876543210 h0123456789876543210) where
       suppressUnusedWarnings
         = snd
-            (((,)
-                Let0123456789876543210Scrutinee_0123456789876543210Sym2KindInference)
+            ((,)
+               Let0123456789876543210Scrutinee_0123456789876543210Sym2KindInference
                ())
     type family Let0123456789876543210Scrutinee_0123456789876543210Sym3 n0123456789876543210 h0123456789876543210 t0123456789876543210 where
       Let0123456789876543210Scrutinee_0123456789876543210Sym3 n0123456789876543210 h0123456789876543210 t0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210 n0123456789876543210 h0123456789876543210 t0123456789876543210
@@ -109,7 +109,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply InsertionSortSym0 a0123456789876543210 = InsertionSort a0123456789876543210
     instance SuppressUnusedWarnings InsertionSortSym0 where
       suppressUnusedWarnings
-        = snd (((,) InsertionSortSym0KindInference) ())
+        = snd ((,) InsertionSortSym0KindInference ())
     type InsertionSortSym1 :: [Nat] -> [Nat]
     type family InsertionSortSym1 (a0123456789876543210 :: [Nat]) :: [Nat] where
       InsertionSortSym1 a0123456789876543210 = InsertionSort a0123456789876543210
@@ -120,7 +120,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
                                    InsertSym0 a0123456789876543210
     type instance Apply InsertSym0 a0123456789876543210 = InsertSym1 a0123456789876543210
     instance SuppressUnusedWarnings InsertSym0 where
-      suppressUnusedWarnings = snd (((,) InsertSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) InsertSym0KindInference ())
     type InsertSym1 :: Nat -> (~>) [Nat] [Nat]
     data InsertSym1 (a0123456789876543210 :: Nat) :: (~>) [Nat] [Nat]
       where
@@ -128,7 +128,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
                                    InsertSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (InsertSym1 a0123456789876543210) a0123456789876543210 = Insert a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (InsertSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) InsertSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) InsertSym1KindInference ())
     type InsertSym2 :: Nat -> [Nat] -> [Nat]
     type family InsertSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: [Nat]) :: [Nat] where
       InsertSym2 a0123456789876543210 a0123456789876543210 = Insert a0123456789876543210 a0123456789876543210
@@ -139,7 +139,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
                                 LeqSym0 a0123456789876543210
     type instance Apply LeqSym0 a0123456789876543210 = LeqSym1 a0123456789876543210
     instance SuppressUnusedWarnings LeqSym0 where
-      suppressUnusedWarnings = snd (((,) LeqSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) LeqSym0KindInference ())
     type LeqSym1 :: Nat -> (~>) Nat Bool
     data LeqSym1 (a0123456789876543210 :: Nat) :: (~>) Nat Bool
       where
@@ -147,7 +147,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
                                 LeqSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (LeqSym1 a0123456789876543210) a0123456789876543210 = Leq a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (LeqSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) LeqSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) LeqSym1KindInference ())
     type LeqSym2 :: Nat -> Nat -> Bool
     type family LeqSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Bool where
       LeqSym2 a0123456789876543210 a0123456789876543210 = Leq a0123456789876543210 a0123456789876543210
@@ -165,57 +165,60 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       Leq ('Succ _) 'Zero = FalseSym0
       Leq ('Succ a) ('Succ b) = Apply (Apply LeqSym0 a) b
     sInsertionSort ::
-      forall (t :: [Nat]).
-      Sing t -> Sing (Apply InsertionSortSym0 t :: [Nat]) :: Type
+      (forall (t :: [Nat]).
+       Sing t -> Sing (Apply InsertionSortSym0 t :: [Nat]) :: Type)
     sInsert ::
-      forall (t :: Nat) (t :: [Nat]).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply InsertSym0 t) t :: [Nat]) :: Type
+      (forall (t :: Nat) (t :: [Nat]).
+       Sing t
+       -> Sing t -> Sing (Apply (Apply InsertSym0 t) t :: [Nat]) :: Type)
     sLeq ::
-      forall (t :: Nat) (t :: Nat).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply LeqSym0 t) t :: Bool) :: Type
+      (forall (t :: Nat) (t :: Nat).
+       Sing t
+       -> Sing t -> Sing (Apply (Apply LeqSym0 t) t :: Bool) :: Type)
     sInsertionSort SNil = SNil
     sInsertionSort (SCons (sH :: Sing h) (sT :: Sing t))
-      = (applySing ((applySing ((singFun2 @InsertSym0) sInsert)) sH))
-          ((applySing ((singFun1 @InsertionSortSym0) sInsertionSort)) sT)
+      = applySing
+          (applySing (singFun2 @InsertSym0 sInsert) sH)
+          (applySing (singFun1 @InsertionSortSym0 sInsertionSort) sT)
     sInsert (sN :: Sing n) SNil
-      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) sN)) SNil
+      = applySing (applySing (singFun2 @(:@#@$) SCons) sN) SNil
     sInsert (sN :: Sing n) (SCons (sH :: Sing h) (sT :: Sing t))
       = let
           sScrutinee_0123456789876543210 ::
             Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t)
           sScrutinee_0123456789876543210
-            = (applySing ((applySing ((singFun2 @LeqSym0) sLeq)) sN)) sH
+            = applySing (applySing (singFun2 @LeqSym0 sLeq) sN) sH
         in
-          (id
-             @(Sing (Case_0123456789876543210 n h t (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t))))
+          id
+            @(Sing (Case_0123456789876543210 n h t (Let0123456789876543210Scrutinee_0123456789876543210Sym3 n h t)))
             (case sScrutinee_0123456789876543210 of
                STrue
-                 -> (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) sN))
-                      ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) sH)) sT)
+                 -> applySing
+                      (applySing (singFun2 @(:@#@$) SCons) sN)
+                      (applySing (applySing (singFun2 @(:@#@$) SCons) sH) sT)
                SFalse
-                 -> (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) sH))
-                      ((applySing ((applySing ((singFun2 @InsertSym0) sInsert)) sN)) sT))
+                 -> applySing
+                      (applySing (singFun2 @(:@#@$) SCons) sH)
+                      (applySing (applySing (singFun2 @InsertSym0 sInsert) sN) sT))
     sLeq SZero _ = STrue
     sLeq (SSucc _) SZero = SFalse
     sLeq (SSucc (sA :: Sing a)) (SSucc (sB :: Sing b))
-      = (applySing ((applySing ((singFun2 @LeqSym0) sLeq)) sA)) sB
+      = applySing (applySing (singFun2 @LeqSym0 sLeq) sA) sB
     instance SingI (InsertionSortSym0 :: (~>) [Nat] [Nat]) where
-      sing = (singFun1 @InsertionSortSym0) sInsertionSort
+      sing = singFun1 @InsertionSortSym0 sInsertionSort
     instance SingI (InsertSym0 :: (~>) Nat ((~>) [Nat] [Nat])) where
-      sing = (singFun2 @InsertSym0) sInsert
+      sing = singFun2 @InsertSym0 sInsert
     instance SingI d =>
              SingI (InsertSym1 (d :: Nat) :: (~>) [Nat] [Nat]) where
-      sing = (singFun1 @(InsertSym1 (d :: Nat))) (sInsert (sing @d))
+      sing = singFun1 @(InsertSym1 (d :: Nat)) (sInsert (sing @d))
     instance SingI1 (InsertSym1 :: Nat -> (~>) [Nat] [Nat]) where
       liftSing (s :: Sing (d :: Nat))
-        = (singFun1 @(InsertSym1 (d :: Nat))) (sInsert s)
+        = singFun1 @(InsertSym1 (d :: Nat)) (sInsert s)
     instance SingI (LeqSym0 :: (~>) Nat ((~>) Nat Bool)) where
-      sing = (singFun2 @LeqSym0) sLeq
+      sing = singFun2 @LeqSym0 sLeq
     instance SingI d =>
              SingI (LeqSym1 (d :: Nat) :: (~>) Nat Bool) where
-      sing = (singFun1 @(LeqSym1 (d :: Nat))) (sLeq (sing @d))
+      sing = singFun1 @(LeqSym1 (d :: Nat)) (sLeq (sing @d))
     instance SingI1 (LeqSym1 :: Nat -> (~>) Nat Bool) where
       liftSing (s :: Sing (d :: Nat))
-        = (singFun1 @(LeqSym1 (d :: Nat))) (sLeq s)
+        = singFun1 @(LeqSym1 (d :: Nat)) (sLeq s)

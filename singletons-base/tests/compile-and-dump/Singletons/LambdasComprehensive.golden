@@ -8,10 +8,9 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
   ======>
     foo :: [Nat]
     foo
-      = (map (\ x -> ((either_ pred) Succ) x))
-          [Left Zero, Right (Succ Zero)]
+      = map (\ x -> either_ pred Succ x) [Left Zero, Right (Succ Zero)]
     bar :: [Nat]
-    bar = (map ((either_ pred) Succ)) [Left Zero, Right (Succ Zero)]
+    bar = map (either_ pred Succ) [Left Zero, Right (Succ Zero)]
     type family Lambda_0123456789876543210 x where
       Lambda_0123456789876543210 x = Apply (Apply (Apply Either_Sym0 PredSym0) SuccSym0) x
     data Lambda_0123456789876543210Sym0 x0123456789876543210
@@ -21,7 +20,7 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
     type family Lambda_0123456789876543210Sym1 x0123456789876543210 where
       Lambda_0123456789876543210Sym1 x0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210
     type BarSym0 :: [Nat]
@@ -36,41 +35,50 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
     type Foo :: [Nat]
     type family Foo :: [Nat] where
       Foo = Apply (Apply MapSym0 Lambda_0123456789876543210Sym0) (Apply (Apply (:@#@$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))
-    sBar :: Sing (BarSym0 :: [Nat]) :: Type
-    sFoo :: Sing (FooSym0 :: [Nat]) :: Type
+    sBar :: (Sing (BarSym0 :: [Nat]) :: Type)
+    sFoo :: (Sing (FooSym0 :: [Nat]) :: Type)
     sBar
-      = (applySing
-           ((applySing ((singFun2 @MapSym0) sMap))
-              ((applySing
-                  ((applySing ((singFun3 @Either_Sym0) sEither_))
-                     ((singFun1 @PredSym0) sPred)))
-                 ((singFun1 @SuccSym0) SSucc))))
-          ((applySing
-              ((applySing ((singFun2 @(:@#@$)) SCons))
-                 ((applySing ((singFun1 @LeftSym0) SLeft)) SZero)))
-             ((applySing
-                 ((applySing ((singFun2 @(:@#@$)) SCons))
-                    ((applySing ((singFun1 @RightSym0) SRight))
-                       ((applySing ((singFun1 @SuccSym0) SSucc)) SZero))))
+      = applySing
+          (applySing
+             (singFun2 @MapSym0 sMap)
+             (applySing
+                (applySing
+                   (singFun3 @Either_Sym0 sEither_) (singFun1 @PredSym0 sPred))
+                (singFun1 @SuccSym0 SSucc)))
+          (applySing
+             (applySing
+                (singFun2 @(:@#@$) SCons)
+                (applySing (singFun1 @LeftSym0 SLeft) SZero))
+             (applySing
+                (applySing
+                   (singFun2 @(:@#@$) SCons)
+                   (applySing
+                      (singFun1 @RightSym0 SRight)
+                      (applySing (singFun1 @SuccSym0 SSucc) SZero)))
                 SNil))
     sFoo
-      = (applySing
-           ((applySing ((singFun2 @MapSym0) sMap))
-              ((singFun1 @Lambda_0123456789876543210Sym0)
-                 (\ sX
-                    -> case sX of
-                         (_ :: Sing x)
-                           -> (applySing
-                                 ((applySing
-                                     ((applySing ((singFun3 @Either_Sym0) sEither_))
-                                        ((singFun1 @PredSym0) sPred)))
-                                    ((singFun1 @SuccSym0) SSucc)))
-                                sX))))
-          ((applySing
-              ((applySing ((singFun2 @(:@#@$)) SCons))
-                 ((applySing ((singFun1 @LeftSym0) SLeft)) SZero)))
-             ((applySing
-                 ((applySing ((singFun2 @(:@#@$)) SCons))
-                    ((applySing ((singFun1 @RightSym0) SRight))
-                       ((applySing ((singFun1 @SuccSym0) SSucc)) SZero))))
+      = applySing
+          (applySing
+             (singFun2 @MapSym0 sMap)
+             (singFun1
+                @Lambda_0123456789876543210Sym0
+                (\ sX
+                   -> case sX of
+                        (_ :: Sing x)
+                          -> applySing
+                               (applySing
+                                  (applySing
+                                     (singFun3 @Either_Sym0 sEither_) (singFun1 @PredSym0 sPred))
+                                  (singFun1 @SuccSym0 SSucc))
+                               sX)))
+          (applySing
+             (applySing
+                (singFun2 @(:@#@$) SCons)
+                (applySing (singFun1 @LeftSym0 SLeft) SZero))
+             (applySing
+                (applySing
+                   (singFun2 @(:@#@$) SCons)
+                   (applySing
+                      (singFun1 @RightSym0 SRight)
+                      (applySing (singFun1 @SuccSym0 SSucc) SZero)))
                 SNil))

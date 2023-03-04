@@ -12,7 +12,7 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
                                  MethSym0 a0123456789876543210
     type instance Apply MethSym0 a0123456789876543210 = Meth a0123456789876543210
     instance SuppressUnusedWarnings MethSym0 where
-      suppressUnusedWarnings = snd (((,) MethSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) MethSym0KindInference ())
     type MethSym1 :: forall a. a -> a
     type family MethSym1 (a0123456789876543210 :: a) :: a where
       MethSym1 a0123456789876543210 = Meth a0123456789876543210
@@ -20,9 +20,9 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
       type family Meth (arg :: a) :: a
     class SC a where
       sMeth ::
-        forall (t :: a). Sing t -> Sing (Apply MethSym0 t :: a) :: Type
+        (forall (t :: a). Sing t -> Sing (Apply MethSym0 t :: a) :: Type)
     instance SC a => SingI (MethSym0 :: (~>) a a) where
-      sing = (singFun1 @MethSym0) sMeth
+      sing = singFun1 @MethSym0 sMeth
 Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| instance C Bool where
@@ -41,7 +41,7 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Meth_0123456789876543210Sym0 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Meth_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Meth_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Meth_0123456789876543210Sym0KindInference ())
     type Meth_0123456789876543210Sym1 :: Bool -> Bool
     type family Meth_0123456789876543210Sym1 (a0123456789876543210 :: Bool) :: Bool where
       Meth_0123456789876543210Sym1 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
@@ -52,4 +52,4 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
         forall (t :: Bool). Sing t
                             -> Sing (Apply (MethSym0 :: TyFun Bool Bool -> Type) t)
       sMeth (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing ((singFun1 @NotSym0) sNot)) sA_0123456789876543210
+        = applySing (singFun1 @NotSym0 sNot) sA_0123456789876543210

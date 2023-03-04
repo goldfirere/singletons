@@ -11,7 +11,7 @@ Promote/Prelude.hs:(0,0)-(0,0): Splicing declarations
                                 OddSym0 a0123456789876543210
     type instance Apply OddSym0 a0123456789876543210 = Odd a0123456789876543210
     instance SuppressUnusedWarnings OddSym0 where
-      suppressUnusedWarnings = snd (((,) OddSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) OddSym0KindInference ())
     type OddSym1 :: Natural -> Bool
     type family OddSym1 (a0123456789876543210 :: Natural) :: Bool where
       OddSym1 a0123456789876543210 = Odd a0123456789876543210

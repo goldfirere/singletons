@@ -19,7 +19,7 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) TFHelper_0123456789876543210Sym0KindInference) ())
+        = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
     type TFHelper_0123456789876543210Sym1 :: Empty -> (~>) Empty Bool
     data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: Empty) :: (~>) Empty Bool
       where
@@ -28,7 +28,7 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) TFHelper_0123456789876543210Sym1KindInference) ())
+        = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
     type TFHelper_0123456789876543210Sym2 :: Empty -> Empty -> Bool
     type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: Empty) (a0123456789876543210 :: Empty) :: Bool where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
@@ -45,7 +45,7 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Compare_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Compare_0123456789876543210Sym0KindInference ())
     type Compare_0123456789876543210Sym1 :: Empty
                                             -> (~>) Empty Ordering
     data Compare_0123456789876543210Sym1 (a0123456789876543210 :: Empty) :: (~>) Empty Ordering
@@ -55,7 +55,7 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Compare_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Compare_0123456789876543210Sym1KindInference ())
     type Compare_0123456789876543210Sym2 :: Empty -> Empty -> Ordering
     type family Compare_0123456789876543210Sym2 (a0123456789876543210 :: Empty) (a0123456789876543210 :: Empty) :: Ordering where
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210

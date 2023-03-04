@@ -1,10 +1,10 @@
 
-Singletons/T511.hs:0:0: error: Q monad failure
+Singletons/T511.hs:0:0: error: [GHC-39584] Q monad failure
   |
 7 | $(singletons [d|
   |  ^^^^^^^^^^^^^^^...
 
-Singletons/T511.hs:0:0: error:
+Singletons/T511.hs:0:0: error: [GHC-39584]
     `singletons-th` does not support partial applications of (->)
 	In the type: Data.Proxy.Proxy (->)
 

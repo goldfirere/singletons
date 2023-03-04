@@ -22,14 +22,14 @@ Singletons/T414.hs:(0,0)-(0,0): Splicing declarations
                                T1Sym0 a0123456789876543210
     type instance Apply T1Sym0 a0123456789876543210 = T1Sym1 a0123456789876543210
     instance SuppressUnusedWarnings T1Sym0 where
-      suppressUnusedWarnings = snd (((,) T1Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) T1Sym0KindInference ())
     data T1Sym1 (a0123456789876543210 :: Bool) b0123456789876543210
       where
         T1Sym1KindInference :: SameKind (Apply (T1Sym1 a0123456789876543210) arg) (T1Sym2 a0123456789876543210 arg) =>
                                T1Sym1 a0123456789876543210 b0123456789876543210
     type instance Apply (T1Sym1 a0123456789876543210) b0123456789876543210 = T1 a0123456789876543210 b0123456789876543210
     instance SuppressUnusedWarnings (T1Sym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) T1Sym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) T1Sym1KindInference ())
     type family T1Sym2 (a0123456789876543210 :: Bool) b0123456789876543210 where
       T1Sym2 a0123456789876543210 b0123456789876543210 = T1 a0123456789876543210 b0123456789876543210
     class PC1 (a :: Bool)
@@ -39,14 +39,14 @@ Singletons/T414.hs:(0,0)-(0,0): Splicing declarations
                                T2Sym0 a0123456789876543210
     type instance Apply T2Sym0 a0123456789876543210 = T2Sym1 a0123456789876543210
     instance SuppressUnusedWarnings T2Sym0 where
-      suppressUnusedWarnings = snd (((,) T2Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) T2Sym0KindInference ())
     data T2Sym1 a0123456789876543210 b0123456789876543210
       where
         T2Sym1KindInference :: SameKind (Apply (T2Sym1 a0123456789876543210) arg) (T2Sym2 a0123456789876543210 arg) =>
                                T2Sym1 a0123456789876543210 b0123456789876543210
     type instance Apply (T2Sym1 a0123456789876543210) b0123456789876543210 = T2 a0123456789876543210 b0123456789876543210
     instance SuppressUnusedWarnings (T2Sym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) T2Sym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) T2Sym1KindInference ())
     type family T2Sym2 a0123456789876543210 b0123456789876543210 where
       T2Sym2 a0123456789876543210 b0123456789876543210 = T2 a0123456789876543210 b0123456789876543210
     class PC2 a
@@ -57,7 +57,7 @@ Singletons/T414.hs:(0,0)-(0,0): Splicing declarations
                                T3Sym0 a0123456789876543210
     type instance Apply T3Sym0 a0123456789876543210 = T3Sym1 a0123456789876543210
     instance SuppressUnusedWarnings T3Sym0 where
-      suppressUnusedWarnings = snd (((,) T3Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) T3Sym0KindInference ())
     type T3Sym1 :: Bool -> (~>) Type Type
     data T3Sym1 (a0123456789876543210 :: Bool) :: (~>) Type Type
       where
@@ -65,7 +65,7 @@ Singletons/T414.hs:(0,0)-(0,0): Splicing declarations
                                T3Sym1 a0123456789876543210 a0123456789876543210
     type instance Apply (T3Sym1 a0123456789876543210) a0123456789876543210 = T3 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (T3Sym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) T3Sym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) T3Sym1KindInference ())
     type T3Sym2 :: Bool -> Type -> Type
     type family T3Sym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Type) :: Type where
       T3Sym2 a0123456789876543210 a0123456789876543210 = T3 a0123456789876543210 a0123456789876543210

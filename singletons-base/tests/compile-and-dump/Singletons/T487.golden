@@ -27,7 +27,7 @@ Singletons/T487.hs:(0,0)-(0,0): Splicing declarations
                                    ConsExSym0 a0123456789876543210
     type instance Apply ConsExSym0 a0123456789876543210 = ConsEx a0123456789876543210
     instance SuppressUnusedWarnings ConsExSym0 where
-      suppressUnusedWarnings = snd (((,) ConsExSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) ConsExSym0KindInference ())
     type ConsExSym1 :: Char -> Symbol
     type family ConsExSym1 (a0123456789876543210 :: Char) :: Symbol where
       ConsExSym1 a0123456789876543210 = ConsEx a0123456789876543210
@@ -49,26 +49,26 @@ Singletons/T487.hs:(0,0)-(0,0): Splicing declarations
     type ExprEx :: Char
     type family ExprEx :: Char where
       ExprEx = 'a'
-    sCharToNatEx :: Sing (CharToNatExSym0 :: Natural) :: Type
-    sNatToCharEx :: Sing (NatToCharExSym0 :: Char) :: Type
-    sUnconsEx :: Sing (UnconsExSym0 :: Maybe (Char, Symbol)) :: Type
+    sCharToNatEx :: (Sing (CharToNatExSym0 :: Natural) :: Type)
+    sNatToCharEx :: (Sing (NatToCharExSym0 :: Char) :: Type)
+    sUnconsEx :: (Sing (UnconsExSym0 :: Maybe (Char, Symbol)) :: Type)
     sConsEx ::
-      forall (t :: Char).
-      Sing t -> Sing (Apply ConsExSym0 t :: Symbol) :: Type
-    sExprEx :: Sing (ExprExSym0 :: Char) :: Type
+      (forall (t :: Char).
+       Sing t -> Sing (Apply ConsExSym0 t :: Symbol) :: Type)
+    sExprEx :: (Sing (ExprExSym0 :: Char) :: Type)
     sCharToNatEx
-      = (applySing ((singFun1 @CharToNatSym0) sCharToNat))
-          (sing :: Sing 'a')
+      = applySing (singFun1 @CharToNatSym0 sCharToNat) (sing :: Sing 'a')
     sNatToCharEx
-      = (applySing ((singFun1 @NatToCharSym0) sNatToChar))
+      = applySing
+          (singFun1 @NatToCharSym0 sNatToChar)
           (sFromInteger (sing :: Sing 97))
     sUnconsEx
-      = (applySing ((singFun1 @UnconsSymbolSym0) sUnconsSymbol))
-          (sing :: Sing "abc")
+      = applySing
+          (singFun1 @UnconsSymbolSym0 sUnconsSymbol) (sing :: Sing "abc")
     sConsEx (sX :: Sing x)
-      = (applySing
-           ((applySing ((singFun2 @ConsSymbolSym0) sConsSymbol)) sX))
+      = applySing
+          (applySing (singFun2 @ConsSymbolSym0 sConsSymbol) sX)
           (sing :: Sing "bc")
     sExprEx = sing :: Sing 'a'
     instance SingI (ConsExSym0 :: (~>) Char Symbol) where
-      sing = (singFun1 @ConsExSym0) sConsEx
+      sing = singFun1 @ConsExSym0 sConsEx

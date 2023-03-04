@@ -6,7 +6,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
   ======>
     contains :: Eq a => a -> [a] -> Bool
     contains _ [] = False
-    contains elt (h : t) = ((elt == h) || (contains elt) t)
+    contains elt (h : t) = ((elt == h) || contains elt t)
     type ContainsSym0 :: (~>) a ((~>) [a] Bool)
     data ContainsSym0 :: (~>) a ((~>) [a] Bool)
       where
@@ -14,7 +14,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
                                      ContainsSym0 a0123456789876543210
     type instance Apply ContainsSym0 a0123456789876543210 = ContainsSym1 a0123456789876543210
     instance SuppressUnusedWarnings ContainsSym0 where
-      suppressUnusedWarnings = snd (((,) ContainsSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) ContainsSym0KindInference ())
     type ContainsSym1 :: a -> (~>) [a] Bool
     data ContainsSym1 (a0123456789876543210 :: a) :: (~>) [a] Bool
       where
@@ -22,7 +22,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
                                      ContainsSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (ContainsSym1 a0123456789876543210) a0123456789876543210 = Contains a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ContainsSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) ContainsSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) ContainsSym1KindInference ())
     type ContainsSym2 :: a -> [a] -> Bool
     type family ContainsSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: [a]) :: Bool where
       ContainsSym2 a0123456789876543210 a0123456789876543210 = Contains a0123456789876543210 a0123456789876543210
@@ -31,24 +31,23 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
       Contains _ '[] = FalseSym0
       Contains elt ('(:) h t) = Apply (Apply (||@#@$) (Apply (Apply (==@#@$) elt) h)) (Apply (Apply ContainsSym0 elt) t)
     sContains ::
-      forall (t :: a) (t :: [a]).
-      SEq a =>
-      Sing t
-      -> Sing t -> Sing (Apply (Apply ContainsSym0 t) t :: Bool) :: Type
+      (forall (t :: a) (t :: [a]).
+       SEq a =>
+       Sing t
+       -> Sing t -> Sing (Apply (Apply ContainsSym0 t) t :: Bool) :: Type)
     sContains _ SNil = SFalse
     sContains (sElt :: Sing elt) (SCons (sH :: Sing h) (sT :: Sing t))
-      = (applySing
-           ((applySing ((singFun2 @(||@#@$)) (%||)))
-              ((applySing ((applySing ((singFun2 @(==@#@$)) (%==))) sElt)) sH)))
-          ((applySing
-              ((applySing ((singFun2 @ContainsSym0) sContains)) sElt))
-             sT)
+      = applySing
+          (applySing
+             (singFun2 @(||@#@$) (%||))
+             (applySing (applySing (singFun2 @(==@#@$) (%==)) sElt) sH))
+          (applySing (applySing (singFun2 @ContainsSym0 sContains) sElt) sT)
     instance SEq a =>
              SingI (ContainsSym0 :: (~>) a ((~>) [a] Bool)) where
-      sing = (singFun2 @ContainsSym0) sContains
+      sing = singFun2 @ContainsSym0 sContains
     instance (SEq a, SingI d) =>
              SingI (ContainsSym1 (d :: a) :: (~>) [a] Bool) where
-      sing = (singFun1 @(ContainsSym1 (d :: a))) (sContains (sing @d))
+      sing = singFun1 @(ContainsSym1 (d :: a)) (sContains (sing @d))
     instance SEq a => SingI1 (ContainsSym1 :: a -> (~>) [a] Bool) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @(ContainsSym1 (d :: a))) (sContains s)
+        = singFun1 @(ContainsSym1 (d :: a)) (sContains s)

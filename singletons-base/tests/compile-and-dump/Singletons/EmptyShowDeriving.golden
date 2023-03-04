@@ -19,7 +19,7 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
                                               -> (~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol)
     data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: (~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol)
@@ -29,7 +29,7 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Num.Natural.Natural
                                               -> Foo -> (~>) GHC.Types.Symbol GHC.Types.Symbol
     data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Foo) :: (~>) GHC.Types.Symbol GHC.Types.Symbol
@@ -39,7 +39,7 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Num.Natural.Natural
                                               -> Foo -> GHC.Types.Symbol -> GHC.Types.Symbol
     type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Foo) (a0123456789876543210 :: GHC.Types.Symbol) :: GHC.Types.Symbol where
@@ -65,9 +65,9 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         _
         (sV_0123456789876543210 :: Sing v_0123456789876543210)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((id
-                 @(Sing (Case_0123456789876543210 v_0123456789876543210 a_0123456789876543210 v_0123456789876543210)))
-                (case sV_0123456789876543210 of {})))
+        = applySing
+            (id
+               @(Sing (Case_0123456789876543210 v_0123456789876543210 a_0123456789876543210 v_0123456789876543210))
+               (case sV_0123456789876543210 of {}))
             sA_0123456789876543210
     deriving instance Show (SFoo (z :: Foo))

@@ -30,7 +30,7 @@ Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
     type instance Data.Singletons.Apply PMkMessageSym0 a0123456789876543210 = 'PMkMessage a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings PMkMessageSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) PMkMessageSym0KindInference) ())
+        = snd ((,) PMkMessageSym0KindInference ())
     type PMkMessageSym1 :: Symbol -> PMessage
     type family PMkMessageSym1 (a0123456789876543210 :: Symbol) :: PMessage where
       PMkMessageSym1 a0123456789876543210 = 'PMkMessage a0123456789876543210
@@ -57,7 +57,7 @@ Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
       Data.Singletons.liftSing = SMkMessage
     instance Data.Singletons.SingI (PMkMessageSym0 :: (Data.Singletons.~>) Symbol PMessage) where
       Data.Singletons.sing
-        = (Data.Singletons.singFun1 @PMkMessageSym0) SMkMessage
+        = Data.Singletons.singFun1 @PMkMessageSym0 SMkMessage
     hello :: Message
     hello = MkMessage "hello"
     type HelloSym0 :: PMessage
@@ -66,16 +66,16 @@ Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
     type Hello :: PMessage
     type family Hello :: PMessage where
       Hello = Data.Singletons.Apply PMkMessageSym0 (FromString "hello")
-    sHello :: Data.Singletons.Sing (HelloSym0 :: PMessage) :: Type
+    sHello :: (Data.Singletons.Sing (HelloSym0 :: PMessage) :: Type)
     sHello
-      = (Data.Singletons.applySing
-           ((Data.Singletons.singFun1 @PMkMessageSym0) SMkMessage))
+      = Data.Singletons.applySing
+          (Data.Singletons.singFun1 @PMkMessageSym0 SMkMessage)
           (sFromString
              (Data.Singletons.sing :: Data.Singletons.Sing "hello"))
     instance Data.Singletons.Decide.SDecide Text =>
              Data.Singletons.Decide.SDecide PMessage where
       (Data.Singletons.Decide.%~) (SMkMessage a) (SMkMessage b)
-        = case ((Data.Singletons.Decide.%~) a) b of
+        = case (Data.Singletons.Decide.%~) a b of
             Data.Singletons.Decide.Proved Data.Type.Equality.Refl
               -> Data.Singletons.Decide.Proved Data.Type.Equality.Refl
             Data.Singletons.Decide.Disproved contra

@@ -8,6 +8,6 @@ Singletons/T402.hs:0:0:: Splicing declarations
                                       AnyOfKindSym0 k0123456789876543210
     type instance Apply AnyOfKindSym0 k0123456789876543210 = AnyOfKind k0123456789876543210
     instance SuppressUnusedWarnings AnyOfKindSym0 where
-      suppressUnusedWarnings = snd (((,) AnyOfKindSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) AnyOfKindSym0KindInference ())
     type family AnyOfKindSym1 (k0123456789876543210 :: Type) :: k0123456789876543210 where
       AnyOfKindSym1 k0123456789876543210 = AnyOfKind k0123456789876543210

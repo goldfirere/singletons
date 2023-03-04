@@ -14,7 +14,7 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
                                  HeadSym0 a0123456789876543210
     type instance Apply HeadSym0 a0123456789876543210 = Head a0123456789876543210
     instance SuppressUnusedWarnings HeadSym0 where
-      suppressUnusedWarnings = snd (((,) HeadSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) HeadSym0KindInference ())
     type HeadSym1 :: [a] -> a
     type family HeadSym1 (a0123456789876543210 :: [a]) :: a where
       HeadSym1 a0123456789876543210 = Head a0123456789876543210
@@ -23,8 +23,8 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
       Head ('(:) a _) = a
       Head '[] = Apply ErrorSym0 "head: empty list"
     sHead ::
-      forall (t :: [a]). Sing t -> Sing (Apply HeadSym0 t :: a) :: Type
+      (forall (t :: [a]). Sing t -> Sing (Apply HeadSym0 t :: a) :: Type)
     sHead (SCons (sA :: Sing a) _) = sA
     sHead SNil = sError (sing :: Sing "head: empty list")
     instance SingI (HeadSym0 :: (~>) [a] a) where
-      sing = (singFun1 @HeadSym0) sHead
+      sing = singFun1 @HeadSym0 sHead

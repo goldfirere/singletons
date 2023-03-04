@@ -37,7 +37,7 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
                                     ConstBASym0 a0123456789876543210
     type instance Apply ConstBASym0 a0123456789876543210 = ConstBASym1 a0123456789876543210
     instance SuppressUnusedWarnings ConstBASym0 where
-      suppressUnusedWarnings = snd (((,) ConstBASym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) ConstBASym0KindInference ())
     type ConstBASym1 :: forall b a. a -> (~>) b a
     data ConstBASym1 (a0123456789876543210 :: a) :: (~>) b a
       where
@@ -45,7 +45,7 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
                                     ConstBASym1 a0123456789876543210 a0123456789876543210
     type instance Apply (ConstBASym1 a0123456789876543210) a0123456789876543210 = ConstBA a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ConstBASym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) ConstBASym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) ConstBASym1KindInference ())
     type ConstBASym2 :: forall b a. a -> b -> a
     type family ConstBASym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
       ConstBASym2 a0123456789876543210 a0123456789876543210 = ConstBA a0123456789876543210 a0123456789876543210
@@ -57,12 +57,12 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
                                     -> Sing t -> Sing (Apply (Apply ConstBASym0 t) t :: a)
     sConstBA (sX :: Sing x) _ = sX
     instance SingI (ConstBASym0 :: (~>) a ((~>) b a)) where
-      sing = (singFun2 @ConstBASym0) sConstBA
+      sing = singFun2 @ConstBASym0 sConstBA
     instance SingI d => SingI (ConstBASym1 (d :: a) :: (~>) b a) where
-      sing = (singFun1 @(ConstBASym1 (d :: a))) (sConstBA (sing @d))
+      sing = singFun1 @(ConstBASym1 (d :: a)) (sConstBA (sing @d))
     instance SingI1 (ConstBASym1 :: a -> (~>) b a) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @(ConstBASym1 (d :: a))) (sConstBA s)
+        = singFun1 @(ConstBASym1 (d :: a)) (sConstBA s)
     data SProxy :: forall k (a :: k). Proxy a -> Type
       where
         SProxy1 :: forall a. SProxy (Proxy1 :: Proxy a)

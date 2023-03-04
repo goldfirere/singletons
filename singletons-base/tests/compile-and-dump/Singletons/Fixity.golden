@@ -22,7 +22,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
                           (====@#@$) a0123456789876543210
     type instance Apply (====@#@$) a0123456789876543210 = (====@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (====@#@$) where
-      suppressUnusedWarnings = snd (((,) (:====@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (:====@#@$###) ())
     infix 4 ====@#@$
     type (====@#@$$) :: a -> (~>) a a
     data (====@#@$$) (a0123456789876543210 :: a) :: (~>) a a
@@ -31,7 +31,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
                            (====@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((====@#@$$) a0123456789876543210) a0123456789876543210 = (====) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((====@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (:====@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (:====@#@$$###) ())
     infix 4 ====@#@$$
     type (====@#@$$$) :: a -> a -> a
     type family (====@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
@@ -47,7 +47,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
                          (<=>@#@$) a0123456789876543210
     type instance Apply (<=>@#@$) a0123456789876543210 = (<=>@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (<=>@#@$) where
-      suppressUnusedWarnings = snd (((,) (:<=>@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (:<=>@#@$###) ())
     infix 4 <=>@#@$
     type (<=>@#@$$) :: forall a. a -> (~>) a Ordering
     data (<=>@#@$$) (a0123456789876543210 :: a) :: (~>) a Ordering
@@ -56,7 +56,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
                           (<=>@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((<=>@#@$$) a0123456789876543210) a0123456789876543210 = (<=>) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<=>@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (:<=>@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (:<=>@#@$$###) ())
     infix 4 <=>@#@$$
     type (<=>@#@$$$) :: forall a. a -> a -> Ordering
     type family (<=>@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ordering where
@@ -66,30 +66,31 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
       type family (<=>) (arg :: a) (arg :: a) :: Ordering
     infix 4 %====
     (%====) ::
-      forall (t :: a) (t :: a).
-      Sing t
-      -> Sing t -> Sing (Apply (Apply (====@#@$) t) t :: a) :: Type
+      (forall (t :: a) (t :: a).
+       Sing t
+       -> Sing t -> Sing (Apply (Apply (====@#@$) t) t :: a) :: Type)
     (%====) (sA :: Sing a) _ = sA
     instance SingI ((====@#@$) :: (~>) a ((~>) a a)) where
-      sing = (singFun2 @(====@#@$)) (%====)
+      sing = singFun2 @(====@#@$) (%====)
     instance SingI d => SingI ((====@#@$$) (d :: a) :: (~>) a a) where
-      sing = (singFun1 @((====@#@$$) (d :: a))) ((%====) (sing @d))
+      sing = singFun1 @((====@#@$$) (d :: a)) ((%====) (sing @d))
     instance SingI1 ((====@#@$$) :: a -> (~>) a a) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @((====@#@$$) (d :: a))) ((%====) s)
+        = singFun1 @((====@#@$$) (d :: a)) ((%====) s)
     class SMyOrd a where
       (%<=>) ::
-        forall (t :: a) (t :: a).
-        Sing t
-        -> Sing t -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering) :: Type
+        (forall (t :: a) (t :: a).
+         Sing t
+         -> Sing t
+            -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering) :: Type)
       infix 4 %<=>
     instance SMyOrd a =>
              SingI ((<=>@#@$) :: (~>) a ((~>) a Ordering)) where
-      sing = (singFun2 @(<=>@#@$)) (%<=>)
+      sing = singFun2 @(<=>@#@$) (%<=>)
     instance (SMyOrd a, SingI d) =>
              SingI ((<=>@#@$$) (d :: a) :: (~>) a Ordering) where
-      sing = (singFun1 @((<=>@#@$$) (d :: a))) ((%<=>) (sing @d))
+      sing = singFun1 @((<=>@#@$$) (d :: a)) ((%<=>) (sing @d))
     instance SMyOrd a =>
              SingI1 ((<=>@#@$$) :: a -> (~>) a Ordering) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @((<=>@#@$$) (d :: a))) ((%<=>) s)
+        = singFun1 @((<=>@#@$$) (d :: a)) ((%<=>) s)

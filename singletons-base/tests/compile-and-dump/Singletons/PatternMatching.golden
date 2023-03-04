@@ -12,8 +12,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     data Pair a b
       = Pair a b
       deriving Show
-    pr = (Pair (Succ Zero)) [Zero]
-    complex = (Pair ((Pair (Just Zero)) Zero)) False
+    pr = Pair (Succ Zero) [Zero]
+    complex = Pair (Pair (Just Zero) Zero) False
     tuple = (False, Just Zero, True)
     aList = [Zero, Succ Zero, Succ (Succ Zero)]
     type PairSym0 :: forall a b. (~>) a ((~>) b (Pair a b))
@@ -23,7 +23,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                  PairSym0 a0123456789876543210
     type instance Apply PairSym0 a0123456789876543210 = PairSym1 a0123456789876543210
     instance SuppressUnusedWarnings PairSym0 where
-      suppressUnusedWarnings = snd (((,) PairSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) PairSym0KindInference ())
     type PairSym1 :: forall a b. a -> (~>) b (Pair a b)
     data PairSym1 (a0123456789876543210 :: a) :: (~>) b (Pair a b)
       where
@@ -31,7 +31,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                  PairSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (PairSym1 a0123456789876543210) a0123456789876543210 = Pair a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (PairSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) PairSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) PairSym1KindInference ())
     type PairSym2 :: forall a b. a -> b -> Pair a b
     type family PairSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Pair a b where
       PairSym2 a0123456789876543210 a0123456789876543210 = Pair a0123456789876543210 a0123456789876543210
@@ -63,7 +63,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
                                               -> (~>) (Pair a b) ((~>) Symbol Symbol)
     data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: (~>) (Pair a b) ((~>) Symbol Symbol)
@@ -73,7 +73,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Num.Natural.Natural
                                               -> Pair a b -> (~>) Symbol Symbol
     data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Pair a b) :: (~>) Symbol Symbol
@@ -83,7 +83,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Num.Natural.Natural
                                               -> Pair a b -> Symbol -> Symbol
     type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Pair a b) (a0123456789876543210 :: Symbol) :: Symbol where
@@ -95,33 +95,41 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     sComplex :: Sing @_ ComplexSym0
     sPr :: Sing @_ PrSym0
     sAList
-      = (applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SZero))
-          ((applySing
-              ((applySing ((singFun2 @(:@#@$)) SCons))
-                 ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
-             ((applySing
-                 ((applySing ((singFun2 @(:@#@$)) SCons))
-                    ((applySing ((singFun1 @SuccSym0) SSucc))
-                       ((applySing ((singFun1 @SuccSym0) SSucc)) SZero))))
+      = applySing
+          (applySing (singFun2 @(:@#@$) SCons) SZero)
+          (applySing
+             (applySing
+                (singFun2 @(:@#@$) SCons)
+                (applySing (singFun1 @SuccSym0 SSucc) SZero))
+             (applySing
+                (applySing
+                   (singFun2 @(:@#@$) SCons)
+                   (applySing
+                      (singFun1 @SuccSym0 SSucc)
+                      (applySing (singFun1 @SuccSym0 SSucc) SZero)))
                 SNil))
     sTuple
-      = (applySing
-           ((applySing ((applySing ((singFun3 @Tuple3Sym0) STuple3)) SFalse))
-              ((applySing ((singFun1 @JustSym0) SJust)) SZero)))
+      = applySing
+          (applySing
+             (applySing (singFun3 @Tuple3Sym0 STuple3) SFalse)
+             (applySing (singFun1 @JustSym0 SJust) SZero))
           STrue
     sComplex
-      = (applySing
-           ((applySing ((singFun2 @PairSym0) SPair))
-              ((applySing
-                  ((applySing ((singFun2 @PairSym0) SPair))
-                     ((applySing ((singFun1 @JustSym0) SJust)) SZero)))
-                 SZero)))
+      = applySing
+          (applySing
+             (singFun2 @PairSym0 SPair)
+             (applySing
+                (applySing
+                   (singFun2 @PairSym0 SPair)
+                   (applySing (singFun1 @JustSym0 SJust) SZero))
+                SZero))
           SFalse
     sPr
-      = (applySing
-           ((applySing ((singFun2 @PairSym0) SPair))
-              ((applySing ((singFun1 @SuccSym0) SSucc)) SZero)))
-          ((applySing ((applySing ((singFun2 @(:@#@$)) SCons)) SZero)) SNil)
+      = applySing
+          (applySing
+             (singFun2 @PairSym0 SPair)
+             (applySing (singFun1 @SuccSym0 SSucc) SZero))
+          (applySing (applySing (singFun2 @(:@#@$) SCons) SZero) SNil)
     data SPair :: forall a b. Pair a b -> Type
       where
         SPair :: forall a b (n :: a) (n :: b).
@@ -129,10 +137,10 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Pair a b) = SPair
     instance (SingKind a, SingKind b) => SingKind (Pair a b) where
       type Demote (Pair a b) = Pair (Demote a) (Demote b)
-      fromSing (SPair b b) = (Pair (fromSing b)) (fromSing b)
+      fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
       toSing (Pair (b :: Demote a) (b :: Demote b))
-        = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing b) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SPair c) c)
+        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing b) of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (SPair c c)
     instance (SShow a, SShow b) => SShow (Pair a b) where
       sShowsPrec ::
         forall (t1 :: GHC.Num.Natural.Natural)
@@ -147,47 +155,52 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
         (SPair (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
                (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
-                       (sFromInteger (sing :: Sing 10)))))
-                ((applySing
-                    ((applySing ((singFun3 @(.@#@$)) (%.)))
-                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                          (sing :: Sing "Pair "))))
-                   ((applySing
-                       ((applySing ((singFun3 @(.@#@$)) (%.)))
-                          ((applySing
-                              ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                 (sFromInteger (sing :: Sing 11))))
-                             sArg_0123456789876543210)))
-                      ((applySing
-                          ((applySing ((singFun3 @(.@#@$)) (%.)))
-                             ((singFun1 @ShowSpaceSym0) sShowSpace)))
-                         ((applySing
-                             ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                (sFromInteger (sing :: Sing 11))))
-                            sArg_0123456789876543210))))))
+        = applySing
+            (applySing
+               (applySing
+                  (singFun3 @ShowParenSym0 sShowParen)
+                  (applySing
+                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (sFromInteger (sing :: Sing 10))))
+               (applySing
+                  (applySing
+                     (singFun3 @(.@#@$) (%.))
+                     (applySing
+                        (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Pair ")))
+                  (applySing
+                     (applySing
+                        (singFun3 @(.@#@$) (%.))
+                        (applySing
+                           (applySing
+                              (singFun3 @ShowsPrecSym0 sShowsPrec)
+                              (sFromInteger (sing :: Sing 11)))
+                           sArg_0123456789876543210))
+                     (applySing
+                        (applySing
+                           (singFun3 @(.@#@$) (%.)) (singFun1 @ShowSpaceSym0 sShowSpace))
+                        (applySing
+                           (applySing
+                              (singFun3 @ShowsPrecSym0 sShowsPrec)
+                              (sFromInteger (sing :: Sing 11)))
+                           sArg_0123456789876543210)))))
             sA_0123456789876543210
     deriving instance (Data.Singletons.ShowSing.ShowSing a,
                        Data.Singletons.ShowSing.ShowSing b) =>
                       Show (SPair (z :: Pair a b))
     instance (SingI n, SingI n) => SingI (Pair (n :: a) (n :: b)) where
-      sing = (SPair sing) sing
+      sing = SPair sing sing
     instance SingI n => SingI1 (Pair (n :: a)) where
       liftSing = SPair sing
     instance SingI2 Pair where
       liftSing2 = SPair
     instance SingI (PairSym0 :: (~>) a ((~>) b (Pair a b))) where
-      sing = (singFun2 @PairSym0) SPair
+      sing = singFun2 @PairSym0 SPair
     instance SingI d =>
              SingI (PairSym1 (d :: a) :: (~>) b (Pair a b)) where
-      sing = (singFun1 @(PairSym1 (d :: a))) (SPair (sing @d))
+      sing = singFun1 @(PairSym1 (d :: a)) (SPair (sing @d))
     instance SingI1 (PairSym1 :: a -> (~>) b (Pair a b)) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @(PairSym1 (d :: a))) (SPair s)
+        = singFun1 @(PairSym1 (d :: a)) (SPair s)
 Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     singletons
       [d| Pair sz lz = pr
@@ -224,7 +237,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Let0123456789876543210TSym0 x0123456789876543210 = Let0123456789876543210TSym1 x0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210TSym0 where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210TSym0KindInference) ())
+        = snd ((,) Let0123456789876543210TSym0KindInference ())
     data Let0123456789876543210TSym1 x0123456789876543210 y0123456789876543210
       where
         Let0123456789876543210TSym1KindInference :: SameKind (Apply (Let0123456789876543210TSym1 x0123456789876543210) arg) (Let0123456789876543210TSym2 x0123456789876543210 arg) =>
@@ -232,7 +245,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Let0123456789876543210TSym1 x0123456789876543210) y0123456789876543210 = Let0123456789876543210T x0123456789876543210 y0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210TSym1 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Let0123456789876543210TSym1KindInference) ())
+        = snd ((,) Let0123456789876543210TSym1KindInference ())
     type family Let0123456789876543210TSym2 x0123456789876543210 y0123456789876543210 where
       Let0123456789876543210TSym2 x0123456789876543210 y0123456789876543210 = Let0123456789876543210T x0123456789876543210 y0123456789876543210
     type family Let0123456789876543210T x y where
@@ -248,7 +261,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Lambda_0123456789876543210Sym0 a0123456789876543210 = Lambda_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
     data Lambda_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210
       where
         Lambda_0123456789876543210Sym1KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym1 a0123456789876543210) arg) (Lambda_0123456789876543210Sym2 a0123456789876543210 arg) =>
@@ -256,7 +269,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Lambda_0123456789876543210Sym1 a0123456789876543210) b0123456789876543210 = Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym1KindInference ())
     data Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210 x0123456789876543210
       where
         Lambda_0123456789876543210Sym2KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210) arg) (Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 arg) =>
@@ -264,7 +277,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210) x0123456789876543210 = Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym2 a0123456789876543210 b0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym2KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym2KindInference ())
     data Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210
       where
         Lambda_0123456789876543210Sym3KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210) arg) (Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 arg) =>
@@ -272,7 +285,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210) y0123456789876543210 = Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym3 a0123456789876543210 b0123456789876543210 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym3KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym3KindInference ())
     data Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 arg_01234567898765432100123456789876543210
       where
         Lambda_0123456789876543210Sym4KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210) arg) (Lambda_0123456789876543210Sym5 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 arg) =>
@@ -280,7 +293,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210) arg_01234567898765432100123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 arg_01234567898765432100123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym4 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym4KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym4KindInference ())
     type family Lambda_0123456789876543210Sym5 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 arg_01234567898765432100123456789876543210 where
       Lambda_0123456789876543210Sym5 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 arg_01234567898765432100123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 arg_01234567898765432100123456789876543210
     type family Case_0123456789876543210 x y t where
@@ -297,7 +310,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210Sym1 x0123456789876543210
     instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
     data Lambda_0123456789876543210Sym1 x0123456789876543210 y0123456789876543210
       where
         Lambda_0123456789876543210Sym1KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) arg) (Lambda_0123456789876543210Sym2 x0123456789876543210 arg) =>
@@ -305,7 +318,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Lambda_0123456789876543210Sym1 x0123456789876543210) y0123456789876543210 = Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym1 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym1KindInference ())
     data Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210 arg_01234567898765432100123456789876543210
       where
         Lambda_0123456789876543210Sym2KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210) arg) (Lambda_0123456789876543210Sym3 x0123456789876543210 y0123456789876543210 arg) =>
@@ -313,7 +326,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210) arg_01234567898765432100123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 y0123456789876543210 arg_01234567898765432100123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym2 x0123456789876543210 y0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) Lambda_0123456789876543210Sym2KindInference) ())
+        = snd ((,) Lambda_0123456789876543210Sym2KindInference ())
     type family Lambda_0123456789876543210Sym3 x0123456789876543210 y0123456789876543210 arg_01234567898765432100123456789876543210 where
       Lambda_0123456789876543210Sym3 x0123456789876543210 y0123456789876543210 arg_01234567898765432100123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 y0123456789876543210 arg_01234567898765432100123456789876543210
     type family Case_0123456789876543210 t where
@@ -353,7 +366,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                   SillySym0 a0123456789876543210
     type instance Apply SillySym0 a0123456789876543210 = Silly a0123456789876543210
     instance SuppressUnusedWarnings SillySym0 where
-      suppressUnusedWarnings = snd (((,) SillySym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) SillySym0KindInference ())
     type SillySym1 :: a -> ()
     type family SillySym1 (a0123456789876543210 :: a) :: () where
       SillySym1 a0123456789876543210 = Silly a0123456789876543210
@@ -364,7 +377,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                  Foo2Sym0 a0123456789876543210
     type instance Apply Foo2Sym0 a0123456789876543210 = Foo2 a0123456789876543210
     instance SuppressUnusedWarnings Foo2Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo2Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo2Sym0KindInference ())
     type Foo2Sym1 :: (a, b) -> a
     type family Foo2Sym1 (a0123456789876543210 :: (a, b)) :: a where
       Foo2Sym1 a0123456789876543210 = Foo2 a0123456789876543210
@@ -375,7 +388,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                  Foo1Sym0 a0123456789876543210
     type instance Apply Foo1Sym0 a0123456789876543210 = Foo1 a0123456789876543210
     instance SuppressUnusedWarnings Foo1Sym0 where
-      suppressUnusedWarnings = snd (((,) Foo1Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) Foo1Sym0KindInference ())
     type Foo1Sym1 :: (a, b) -> a
     type family Foo1Sym1 (a0123456789876543210 :: (a, b)) :: a where
       Foo1Sym1 a0123456789876543210 = Foo1 a0123456789876543210
@@ -451,21 +464,21 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     type family X_0123456789876543210 where
       X_0123456789876543210 = PrSym0
     sSilly ::
-      forall (t :: a). Sing t -> Sing (Apply SillySym0 t :: ()) :: Type
+      (forall (t :: a). Sing t -> Sing (Apply SillySym0 t :: ()) :: Type)
     sFoo2 ::
-      forall (t :: (a, b)).
-      Sing t -> Sing (Apply Foo2Sym0 t :: a) :: Type
+      (forall (t :: (a, b)).
+       Sing t -> Sing (Apply Foo2Sym0 t :: a) :: Type)
     sFoo1 ::
-      forall (t :: (a, b)).
-      Sing t -> Sing (Apply Foo1Sym0 t :: a) :: Type
+      (forall (t :: (a, b)).
+       Sing t -> Sing (Apply Foo1Sym0 t :: a) :: Type)
     sBlimy :: Sing @_ BlimySym0
-    sLsz :: Sing (LszSym0 :: Nat) :: Type
+    sLsz :: (Sing (LszSym0 :: Nat) :: Type)
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
     sTt :: Sing @_ TtSym0
     sTjz :: Sing @_ TjzSym0
     sTf :: Sing @_ TfSym0
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
-    sFls :: Sing (FlsSym0 :: Bool) :: Type
+    sFls :: (Sing (FlsSym0 :: Bool) :: Type)
     sZz :: Sing @_ ZzSym0
     sJz :: Sing @_ JzSym0
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
@@ -473,40 +486,41 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     sSz :: Sing @_ SzSym0
     sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
     sSilly (sX :: Sing x)
-      = (id @(Sing (Case_0123456789876543210 x x)))
-          (case sX of _ -> STuple0)
+      = id
+          @(Sing (Case_0123456789876543210 x x)) (case sX of _ -> STuple0)
     sFoo2 (STuple2 (sX :: Sing x) (sY :: Sing y))
       = let
           sT :: Sing @_ (Let0123456789876543210TSym2 x y)
-          sT
-            = (applySing ((applySing ((singFun2 @Tuple2Sym0) STuple2)) sX)) sY
+          sT = applySing (applySing (singFun2 @Tuple2Sym0 STuple2) sX) sY
         in
-          (id
-             @(Sing (Case_0123456789876543210 x y (Let0123456789876543210TSym2 x y))))
+          id
+            @(Sing (Case_0123456789876543210 x y (Let0123456789876543210TSym2 x y)))
             (case sT of
                STuple2 (sA :: Sing a) (sB :: Sing b)
-                 -> (applySing
-                       ((singFun1
-                           @(Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 a) b) x) y))
-                          (\ sArg_0123456789876543210
-                             -> case sArg_0123456789876543210 of
-                                  (_ :: Sing arg_0123456789876543210)
-                                    -> (id
-                                          @(Sing (Case_0123456789876543210 arg_0123456789876543210 a b x y arg_0123456789876543210)))
-                                         (case sArg_0123456789876543210 of _ -> sA))))
+                 -> applySing
+                      (singFun1
+                         @(Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 a) b) x) y)
+                         (\ sArg_0123456789876543210
+                            -> case sArg_0123456789876543210 of
+                                 (_ :: Sing arg_0123456789876543210)
+                                   -> id
+                                        @(Sing (Case_0123456789876543210 arg_0123456789876543210 a b x y arg_0123456789876543210))
+                                        (case sArg_0123456789876543210 of _ -> sA)))
                       sB)
     sFoo1 (STuple2 (sX :: Sing x) (sY :: Sing y))
-      = (applySing
-           ((singFun1 @(Apply (Apply Lambda_0123456789876543210Sym0 x) y))
-              (\ sArg_0123456789876543210
-                 -> case sArg_0123456789876543210 of
-                      (_ :: Sing arg_0123456789876543210)
-                        -> (id
-                              @(Sing (Case_0123456789876543210 arg_0123456789876543210 x y arg_0123456789876543210)))
-                             (case sArg_0123456789876543210 of _ -> sX))))
+      = applySing
+          (singFun1
+             @(Apply (Apply Lambda_0123456789876543210Sym0 x) y)
+             (\ sArg_0123456789876543210
+                -> case sArg_0123456789876543210 of
+                     (_ :: Sing arg_0123456789876543210)
+                       -> id
+                            @(Sing (Case_0123456789876543210 arg_0123456789876543210 x y arg_0123456789876543210))
+                            (case sArg_0123456789876543210 of _ -> sX)))
           sY
     sBlimy
-      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SCons _
                    (SCons _
@@ -514,7 +528,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                                  SNil))
                -> sY_0123456789876543210)
     sLsz
-      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SCons _
                    (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
@@ -522,36 +537,42 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                -> sY_0123456789876543210)
     sX_0123456789876543210 = sAList
     sTt
-      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              STuple3 _ _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
                -> sY_0123456789876543210)
     sTjz
-      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              STuple3 _ (sY_0123456789876543210 :: Sing y_0123456789876543210) _
                -> sY_0123456789876543210)
     sTf
-      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              STuple3 (sY_0123456789876543210 :: Sing y_0123456789876543210) _ _
                -> sY_0123456789876543210)
     sX_0123456789876543210 = sTuple
     sFls
-      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SPair (SPair _ _)
                    (sY_0123456789876543210 :: Sing y_0123456789876543210)
                -> sY_0123456789876543210)
     sZz
-      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SPair (SPair _
                           (sY_0123456789876543210 :: Sing y_0123456789876543210))
                    _
                -> sY_0123456789876543210)
     sJz
-      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SPair (SPair (sY_0123456789876543210 :: Sing y_0123456789876543210)
                           _)
@@ -559,19 +580,21 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                -> sY_0123456789876543210)
     sX_0123456789876543210 = sComplex
     sLz
-      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SPair _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
                -> sY_0123456789876543210)
     sSz
-      = (id @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0)))
+      = id
+          @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SPair (sY_0123456789876543210 :: Sing y_0123456789876543210) _
                -> sY_0123456789876543210)
     sX_0123456789876543210 = sPr
     instance SingI (SillySym0 :: (~>) a ()) where
-      sing = (singFun1 @SillySym0) sSilly
+      sing = singFun1 @SillySym0 sSilly
     instance SingI (Foo2Sym0 :: (~>) (a, b) a) where
-      sing = (singFun1 @Foo2Sym0) sFoo2
+      sing = singFun1 @Foo2Sym0 sFoo2
     instance SingI (Foo1Sym0 :: (~>) (a, b) a) where
-      sing = (singFun1 @Foo1Sym0) sFoo1
+      sing = singFun1 @Foo1Sym0 sFoo1

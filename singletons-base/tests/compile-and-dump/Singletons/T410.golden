@@ -18,7 +18,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply EqualsSym0 a0123456789876543210 = EqualsSym1 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings EqualsSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) EqualsSym0KindInference) ())
+        = snd ((,) EqualsSym0KindInference ())
     type EqualsSym1 :: forall a. a -> (~>) a Bool
     data EqualsSym1 (a0123456789876543210 :: a) :: (~>) a Bool
       where
@@ -27,7 +27,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (EqualsSym1 a0123456789876543210) a0123456789876543210 = Equals a0123456789876543210 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (EqualsSym1 a0123456789876543210) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) EqualsSym1KindInference) ())
+        = snd ((,) EqualsSym1KindInference ())
     type EqualsSym2 :: forall a. a -> a -> Bool
     type family EqualsSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Bool where
       EqualsSym2 a0123456789876543210 a0123456789876543210 = Equals a0123456789876543210 a0123456789876543210
@@ -44,7 +44,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Equals_0123456789876543210Sym0 a0123456789876543210 = Equals_0123456789876543210Sym1 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings Equals_0123456789876543210Sym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) Equals_0123456789876543210Sym0KindInference) ())
+        = snd ((,) Equals_0123456789876543210Sym0KindInference ())
     type Equals_0123456789876543210Sym1 :: () -> (~>) () Bool
     data Equals_0123456789876543210Sym1 (a0123456789876543210 :: ()) :: (~>) () Bool
       where
@@ -53,7 +53,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (Equals_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Equals_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (Equals_0123456789876543210Sym1 a0123456789876543210) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
-        = snd (((,) Equals_0123456789876543210Sym1KindInference) ())
+        = snd ((,) Equals_0123456789876543210Sym1KindInference ())
     type Equals_0123456789876543210Sym2 :: () -> () -> Bool
     type family Equals_0123456789876543210Sym2 (a0123456789876543210 :: ()) (a0123456789876543210 :: ()) :: Bool where
       Equals_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Equals_0123456789876543210 a0123456789876543210 a0123456789876543210

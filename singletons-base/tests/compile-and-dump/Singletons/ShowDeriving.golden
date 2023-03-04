@@ -34,7 +34,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                     MkFoo2aSym0 a0123456789876543210
     type instance Apply MkFoo2aSym0 a0123456789876543210 = MkFoo2aSym1 a0123456789876543210
     instance SuppressUnusedWarnings MkFoo2aSym0 where
-      suppressUnusedWarnings = snd (((,) MkFoo2aSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) MkFoo2aSym0KindInference ())
     type MkFoo2aSym1 :: forall a. a -> (~>) a (Foo2 a)
     data MkFoo2aSym1 (a0123456789876543210 :: a) :: (~>) a (Foo2 a)
       where
@@ -42,7 +42,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                     MkFoo2aSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (MkFoo2aSym1 a0123456789876543210) a0123456789876543210 = MkFoo2a a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkFoo2aSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) MkFoo2aSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) MkFoo2aSym1KindInference ())
     type MkFoo2aSym2 :: forall a. a -> a -> Foo2 a
     type family MkFoo2aSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Foo2 a where
       MkFoo2aSym2 a0123456789876543210 a0123456789876543210 = MkFoo2a a0123456789876543210 a0123456789876543210
@@ -53,7 +53,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                     MkFoo2bSym0 a0123456789876543210
     type instance Apply MkFoo2bSym0 a0123456789876543210 = MkFoo2bSym1 a0123456789876543210
     instance SuppressUnusedWarnings MkFoo2bSym0 where
-      suppressUnusedWarnings = snd (((,) MkFoo2bSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) MkFoo2bSym0KindInference ())
     infixl 5 `MkFoo2bSym0`
     type MkFoo2bSym1 :: forall a. a -> (~>) a (Foo2 a)
     data MkFoo2bSym1 (a0123456789876543210 :: a) :: (~>) a (Foo2 a)
@@ -62,7 +62,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                     MkFoo2bSym1 a0123456789876543210 a0123456789876543210
     type instance Apply (MkFoo2bSym1 a0123456789876543210) a0123456789876543210 = MkFoo2b a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkFoo2bSym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) MkFoo2bSym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) MkFoo2bSym1KindInference ())
     infixl 5 `MkFoo2bSym1`
     type MkFoo2bSym2 :: forall a. a -> a -> Foo2 a
     type family MkFoo2bSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Foo2 a where
@@ -75,7 +75,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                          (:*:@#@$) a0123456789876543210
     type instance Apply (:*:@#@$) a0123456789876543210 = (:*:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:*:@#@$) where
-      suppressUnusedWarnings = snd (((,) (::*:@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (::*:@#@$###) ())
     infixl 5 :*:@#@$
     type (:*:@#@$$) :: forall a. a -> (~>) a (Foo2 a)
     data (:*:@#@$$) (a0123456789876543210 :: a) :: (~>) a (Foo2 a)
@@ -84,7 +84,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                           (:*:@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((:*:@#@$$) a0123456789876543210) a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:*:@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (::*:@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (::*:@#@$$###) ())
     infixl 5 :*:@#@$$
     type (:*:@#@$$$) :: forall a. a -> a -> Foo2 a
     type family (:*:@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Foo2 a where
@@ -97,7 +97,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                          (:&:@#@$) a0123456789876543210
     type instance Apply (:&:@#@$) a0123456789876543210 = (:&:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:&:@#@$) where
-      suppressUnusedWarnings = snd (((,) (::&:@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (::&:@#@$###) ())
     infixl 5 :&:@#@$
     type (:&:@#@$$) :: forall a. a -> (~>) a (Foo2 a)
     data (:&:@#@$$) (a0123456789876543210 :: a) :: (~>) a (Foo2 a)
@@ -106,7 +106,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                           (:&:@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((:&:@#@$$) a0123456789876543210) a0123456789876543210 = (:&:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:&:@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (::&:@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (::&:@#@$$###) ())
     infixl 5 :&:@#@$$
     type (:&:@#@$$$) :: forall a. a -> a -> Foo2 a
     type family (:&:@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Foo2 a where
@@ -119,7 +119,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                    MkFoo3Sym0 a0123456789876543210
     type instance Apply MkFoo3Sym0 a0123456789876543210 = MkFoo3Sym1 a0123456789876543210
     instance SuppressUnusedWarnings MkFoo3Sym0 where
-      suppressUnusedWarnings = snd (((,) MkFoo3Sym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) MkFoo3Sym0KindInference ())
     type MkFoo3Sym1 :: Bool -> (~>) Bool Foo3
     data MkFoo3Sym1 (a0123456789876543210 :: Bool) :: (~>) Bool Foo3
       where
@@ -127,7 +127,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                    MkFoo3Sym1 a0123456789876543210 a0123456789876543210
     type instance Apply (MkFoo3Sym1 a0123456789876543210) a0123456789876543210 = MkFoo3 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkFoo3Sym1 a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) MkFoo3Sym1KindInference) ())
+      suppressUnusedWarnings = snd ((,) MkFoo3Sym1KindInference ())
     type MkFoo3Sym2 :: Bool -> Bool -> Foo3
     type family MkFoo3Sym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) :: Foo3 where
       MkFoo3Sym2 a0123456789876543210 a0123456789876543210 = MkFoo3 a0123456789876543210 a0123456789876543210
@@ -138,7 +138,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                          (***@#@$) a0123456789876543210
     type instance Apply (***@#@$) a0123456789876543210 = (***) a0123456789876543210
     instance SuppressUnusedWarnings (***@#@$) where
-      suppressUnusedWarnings = snd (((,) (:***@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (:***@#@$###) ())
     type (***@#@$$) :: Foo3 -> Bool
     type family (***@#@$$) (a0123456789876543210 :: Foo3) :: Bool where
       (***@#@$$) a0123456789876543210 = (***) a0123456789876543210
@@ -149,7 +149,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                                      GetFoo3aSym0 a0123456789876543210
     type instance Apply GetFoo3aSym0 a0123456789876543210 = GetFoo3a a0123456789876543210
     instance SuppressUnusedWarnings GetFoo3aSym0 where
-      suppressUnusedWarnings = snd (((,) GetFoo3aSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) GetFoo3aSym0KindInference ())
     type GetFoo3aSym1 :: Foo3 -> Bool
     type family GetFoo3aSym1 (a0123456789876543210 :: Foo3) :: Bool where
       GetFoo3aSym1 a0123456789876543210 = GetFoo3a a0123456789876543210
@@ -171,7 +171,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
                                               -> (~>) Foo1 ((~>) Symbol Symbol)
     data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: (~>) Foo1 ((~>) Symbol Symbol)
@@ -181,7 +181,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Num.Natural.Natural
                                               -> Foo1 -> (~>) Symbol Symbol
     data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Foo1) :: (~>) Symbol Symbol
@@ -191,7 +191,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Num.Natural.Natural
                                               -> Foo1 -> Symbol -> Symbol
     type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Foo1) (a0123456789876543210 :: Symbol) :: Symbol where
@@ -213,7 +213,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
                                               -> (~>) (Foo2 a) ((~>) Symbol Symbol)
     data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: (~>) (Foo2 a) ((~>) Symbol Symbol)
@@ -223,7 +223,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Num.Natural.Natural
                                               -> Foo2 a -> (~>) Symbol Symbol
     data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Foo2 a) :: (~>) Symbol Symbol
@@ -233,7 +233,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Num.Natural.Natural
                                               -> Foo2 a -> Symbol -> Symbol
     type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Foo2 a) (a0123456789876543210 :: Symbol) :: Symbol where
@@ -252,7 +252,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym0KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
     type ShowsPrec_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
                                               -> (~>) Foo3 ((~>) Symbol Symbol)
     data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: (~>) Foo3 ((~>) Symbol Symbol)
@@ -262,7 +262,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym1KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
     type ShowsPrec_0123456789876543210Sym2 :: GHC.Num.Natural.Natural
                                               -> Foo3 -> (~>) Symbol Symbol
     data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Foo3) :: (~>) Symbol Symbol
@@ -272,7 +272,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
-        = snd (((,) ShowsPrec_0123456789876543210Sym2KindInference) ())
+        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
     type ShowsPrec_0123456789876543210Sym3 :: GHC.Num.Natural.Natural
                                               -> Foo3 -> Symbol -> Symbol
     type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: Foo3) (a0123456789876543210 :: Symbol) :: Symbol where
@@ -283,17 +283,17 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 :%*:
     infixl 5 `SMkFoo2b`
     (%***) ::
-      forall (t :: Foo3).
-      Sing t -> Sing (Apply (***@#@$) t :: Bool) :: Type
+      (forall (t :: Foo3).
+       Sing t -> Sing (Apply (***@#@$) t :: Bool) :: Type)
     sGetFoo3a ::
-      forall (t :: Foo3).
-      Sing t -> Sing (Apply GetFoo3aSym0 t :: Bool) :: Type
+      (forall (t :: Foo3).
+       Sing t -> Sing (Apply GetFoo3aSym0 t :: Bool) :: Type)
     (%***) (SMkFoo3 _ (sField :: Sing field)) = sField
     sGetFoo3a (SMkFoo3 (sField :: Sing field) _) = sField
     instance SingI ((***@#@$) :: (~>) Foo3 Bool) where
-      sing = (singFun1 @(***@#@$)) (%***)
+      sing = singFun1 @(***@#@$) (%***)
     instance SingI (GetFoo3aSym0 :: (~>) Foo3 Bool) where
-      sing = (singFun1 @GetFoo3aSym0) sGetFoo3a
+      sing = singFun1 @GetFoo3aSym0 sGetFoo3a
     data SFoo1 :: Foo1 -> Type where SMkFoo1 :: SFoo1 (MkFoo1 :: Foo1)
     type instance Sing @Foo1 = SFoo1
     instance SingKind Foo1 where
@@ -313,22 +313,22 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Foo2 a) = SFoo2
     instance SingKind a => SingKind (Foo2 a) where
       type Demote (Foo2 a) = Foo2 (Demote a)
-      fromSing (SMkFoo2a b b) = (MkFoo2a (fromSing b)) (fromSing b)
-      fromSing (SMkFoo2b b b) = (MkFoo2b (fromSing b)) (fromSing b)
-      fromSing ((:%*:) b b) = ((:*:) (fromSing b)) (fromSing b)
-      fromSing ((:%&:) b b) = ((:&:) (fromSing b)) (fromSing b)
+      fromSing (SMkFoo2a b b) = MkFoo2a (fromSing b) (fromSing b)
+      fromSing (SMkFoo2b b b) = MkFoo2b (fromSing b) (fromSing b)
+      fromSing ((:%*:) b b) = (:*:) (fromSing b) (fromSing b)
+      fromSing ((:%&:) b b) = (:&:) (fromSing b) (fromSing b)
       toSing (MkFoo2a (b :: Demote a) (b :: Demote a))
-        = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SMkFoo2a c) c)
+        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing a) of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (SMkFoo2a c c)
       toSing (MkFoo2b (b :: Demote a) (b :: Demote a))
-        = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SMkFoo2b c) c)
+        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing a) of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (SMkFoo2b c c)
       toSing ((:*:) (b :: Demote a) (b :: Demote a))
-        = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%*:) c) c)
+        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing a) of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:%*:) c c)
       toSing ((:&:) (b :: Demote a) (b :: Demote a))
-        = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:%&:) c) c)
+        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing a) of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:%&:) c c)
     data SFoo3 :: Foo3 -> Type
       where
         SMkFoo3 :: forall (n :: Bool) (n :: Bool).
@@ -336,12 +336,12 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @Foo3 = SFoo3
     instance SingKind Foo3 where
       type Demote Foo3 = Foo3
-      fromSing (SMkFoo3 b b) = (MkFoo3 (fromSing b)) (fromSing b)
+      fromSing (SMkFoo3 b b) = MkFoo3 (fromSing b) (fromSing b)
       toSing (MkFoo3 (b :: Demote Bool) (b :: Demote Bool))
         = case
-              ((,) (toSing b :: SomeSing Bool)) (toSing b :: SomeSing Bool)
+              (,) (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
           of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((SMkFoo3 c) c)
+            (,) (SomeSing c) (SomeSing c) -> SomeSing (SMkFoo3 c c)
     instance SShow Foo1 where
       sShowsPrec ::
         forall (t1 :: GHC.Num.Natural.Natural)
@@ -355,9 +355,9 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         _
         SMkFoo1
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                (sing :: Sing "MkFoo1")))
+        = applySing
+            (applySing
+               (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "MkFoo1"))
             sA_0123456789876543210
     instance SShow a => SShow (Foo2 a) where
       sShowsPrec ::
@@ -373,110 +373,131 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         (SMkFoo2a (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
                   (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
-                       (sFromInteger (sing :: Sing 10)))))
-                ((applySing
-                    ((applySing ((singFun3 @(.@#@$)) (%.)))
-                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                          (sing :: Sing "MkFoo2a "))))
-                   ((applySing
-                       ((applySing ((singFun3 @(.@#@$)) (%.)))
-                          ((applySing
-                              ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                 (sFromInteger (sing :: Sing 11))))
-                             sArg_0123456789876543210)))
-                      ((applySing
-                          ((applySing ((singFun3 @(.@#@$)) (%.)))
-                             ((singFun1 @ShowSpaceSym0) sShowSpace)))
-                         ((applySing
-                             ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                (sFromInteger (sing :: Sing 11))))
-                            sArg_0123456789876543210))))))
+        = applySing
+            (applySing
+               (applySing
+                  (singFun3 @ShowParenSym0 sShowParen)
+                  (applySing
+                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (sFromInteger (sing :: Sing 10))))
+               (applySing
+                  (applySing
+                     (singFun3 @(.@#@$) (%.))
+                     (applySing
+                        (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "MkFoo2a ")))
+                  (applySing
+                     (applySing
+                        (singFun3 @(.@#@$) (%.))
+                        (applySing
+                           (applySing
+                              (singFun3 @ShowsPrecSym0 sShowsPrec)
+                              (sFromInteger (sing :: Sing 11)))
+                           sArg_0123456789876543210))
+                     (applySing
+                        (applySing
+                           (singFun3 @(.@#@$) (%.)) (singFun1 @ShowSpaceSym0 sShowSpace))
+                        (applySing
+                           (applySing
+                              (singFun3 @ShowsPrecSym0 sShowsPrec)
+                              (sFromInteger (sing :: Sing 11)))
+                           sArg_0123456789876543210)))))
             sA_0123456789876543210
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         (SMkFoo2b (sArgL_0123456789876543210 :: Sing argL_0123456789876543210)
                   (sArgR_0123456789876543210 :: Sing argR_0123456789876543210))
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
-                       (sFromInteger (sing :: Sing 5)))))
-                ((applySing
-                    ((applySing ((singFun3 @(.@#@$)) (%.)))
-                       ((applySing
-                           ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                              (sFromInteger (sing :: Sing 6))))
-                          sArgL_0123456789876543210)))
-                   ((applySing
-                       ((applySing ((singFun3 @(.@#@$)) (%.)))
-                          ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                             (sing :: Sing " `MkFoo2b` "))))
-                      ((applySing
-                          ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                             (sFromInteger (sing :: Sing 6))))
-                         sArgR_0123456789876543210)))))
+        = applySing
+            (applySing
+               (applySing
+                  (singFun3 @ShowParenSym0 sShowParen)
+                  (applySing
+                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (sFromInteger (sing :: Sing 5))))
+               (applySing
+                  (applySing
+                     (singFun3 @(.@#@$) (%.))
+                     (applySing
+                        (applySing
+                           (singFun3 @ShowsPrecSym0 sShowsPrec)
+                           (sFromInteger (sing :: Sing 6)))
+                        sArgL_0123456789876543210))
+                  (applySing
+                     (applySing
+                        (singFun3 @(.@#@$) (%.))
+                        (applySing
+                           (singFun2 @ShowStringSym0 sShowString)
+                           (sing :: Sing " `MkFoo2b` ")))
+                     (applySing
+                        (applySing
+                           (singFun3 @ShowsPrecSym0 sShowsPrec)
+                           (sFromInteger (sing :: Sing 6)))
+                        sArgR_0123456789876543210))))
             sA_0123456789876543210
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         ((:%*:) (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
                 (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
-                       (sFromInteger (sing :: Sing 10)))))
-                ((applySing
-                    ((applySing ((singFun3 @(.@#@$)) (%.)))
-                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                          (sing :: Sing "(:*:) "))))
-                   ((applySing
-                       ((applySing ((singFun3 @(.@#@$)) (%.)))
-                          ((applySing
-                              ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                 (sFromInteger (sing :: Sing 11))))
-                             sArg_0123456789876543210)))
-                      ((applySing
-                          ((applySing ((singFun3 @(.@#@$)) (%.)))
-                             ((singFun1 @ShowSpaceSym0) sShowSpace)))
-                         ((applySing
-                             ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                (sFromInteger (sing :: Sing 11))))
-                            sArg_0123456789876543210))))))
+        = applySing
+            (applySing
+               (applySing
+                  (singFun3 @ShowParenSym0 sShowParen)
+                  (applySing
+                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (sFromInteger (sing :: Sing 10))))
+               (applySing
+                  (applySing
+                     (singFun3 @(.@#@$) (%.))
+                     (applySing
+                        (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "(:*:) ")))
+                  (applySing
+                     (applySing
+                        (singFun3 @(.@#@$) (%.))
+                        (applySing
+                           (applySing
+                              (singFun3 @ShowsPrecSym0 sShowsPrec)
+                              (sFromInteger (sing :: Sing 11)))
+                           sArg_0123456789876543210))
+                     (applySing
+                        (applySing
+                           (singFun3 @(.@#@$) (%.)) (singFun1 @ShowSpaceSym0 sShowSpace))
+                        (applySing
+                           (applySing
+                              (singFun3 @ShowsPrecSym0 sShowsPrec)
+                              (sFromInteger (sing :: Sing 11)))
+                           sArg_0123456789876543210)))))
             sA_0123456789876543210
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         ((:%&:) (sArgL_0123456789876543210 :: Sing argL_0123456789876543210)
                 (sArgR_0123456789876543210 :: Sing argR_0123456789876543210))
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
-                       (sFromInteger (sing :: Sing 5)))))
-                ((applySing
-                    ((applySing ((singFun3 @(.@#@$)) (%.)))
-                       ((applySing
-                           ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                              (sFromInteger (sing :: Sing 6))))
-                          sArgL_0123456789876543210)))
-                   ((applySing
-                       ((applySing ((singFun3 @(.@#@$)) (%.)))
-                          ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                             (sing :: Sing " :&: "))))
-                      ((applySing
-                          ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                             (sFromInteger (sing :: Sing 6))))
-                         sArgR_0123456789876543210)))))
+        = applySing
+            (applySing
+               (applySing
+                  (singFun3 @ShowParenSym0 sShowParen)
+                  (applySing
+                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (sFromInteger (sing :: Sing 5))))
+               (applySing
+                  (applySing
+                     (singFun3 @(.@#@$) (%.))
+                     (applySing
+                        (applySing
+                           (singFun3 @ShowsPrecSym0 sShowsPrec)
+                           (sFromInteger (sing :: Sing 6)))
+                        sArgL_0123456789876543210))
+                  (applySing
+                     (applySing
+                        (singFun3 @(.@#@$) (%.))
+                        (applySing
+                           (singFun2 @ShowStringSym0 sShowString) (sing :: Sing " :&: ")))
+                     (applySing
+                        (applySing
+                           (singFun3 @ShowsPrecSym0 sShowsPrec)
+                           (sFromInteger (sing :: Sing 6)))
+                        sArgR_0123456789876543210))))
             sA_0123456789876543210
     instance SShow Bool => SShow Foo3 where
       sShowsPrec ::
@@ -492,45 +513,57 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         (SMkFoo3 (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
                  (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = (applySing
-             ((applySing
-                 ((applySing ((singFun3 @ShowParenSym0) sShowParen))
-                    ((applySing
-                        ((applySing ((singFun2 @(>@#@$)) (%>))) sP_0123456789876543210))
-                       (sFromInteger (sing :: Sing 10)))))
-                ((applySing
-                    ((applySing ((singFun3 @(.@#@$)) (%.)))
-                       ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                          (sing :: Sing "MkFoo3 "))))
-                   ((applySing
-                       ((applySing ((singFun3 @(.@#@$)) (%.)))
-                          ((applySing ((singFun2 @ShowCharSym0) sShowChar))
-                             (sing :: Sing '{'))))
-                      ((applySing
-                          ((applySing ((singFun3 @(.@#@$)) (%.)))
-                             ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                                (sing :: Sing "getFoo3a = "))))
-                         ((applySing
-                             ((applySing ((singFun3 @(.@#@$)) (%.)))
-                                ((applySing
-                                    ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                       (sFromInteger (sing :: Sing 0))))
-                                   sArg_0123456789876543210)))
-                            ((applySing
-                                ((applySing ((singFun3 @(.@#@$)) (%.)))
-                                   ((singFun1 @ShowCommaSpaceSym0) sShowCommaSpace)))
-                               ((applySing
-                                   ((applySing ((singFun3 @(.@#@$)) (%.)))
-                                      ((applySing ((singFun2 @ShowStringSym0) sShowString))
-                                         (sing :: Sing "(***) = "))))
-                                  ((applySing
-                                      ((applySing ((singFun3 @(.@#@$)) (%.)))
-                                         ((applySing
-                                             ((applySing ((singFun3 @ShowsPrecSym0) sShowsPrec))
-                                                (sFromInteger (sing :: Sing 0))))
-                                            sArg_0123456789876543210)))
-                                     ((applySing ((singFun2 @ShowCharSym0) sShowChar))
-                                        (sing :: Sing '}')))))))))))
+        = applySing
+            (applySing
+               (applySing
+                  (singFun3 @ShowParenSym0 sShowParen)
+                  (applySing
+                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (sFromInteger (sing :: Sing 10))))
+               (applySing
+                  (applySing
+                     (singFun3 @(.@#@$) (%.))
+                     (applySing
+                        (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "MkFoo3 ")))
+                  (applySing
+                     (applySing
+                        (singFun3 @(.@#@$) (%.))
+                        (applySing (singFun2 @ShowCharSym0 sShowChar) (sing :: Sing '{')))
+                     (applySing
+                        (applySing
+                           (singFun3 @(.@#@$) (%.))
+                           (applySing
+                              (singFun2 @ShowStringSym0 sShowString)
+                              (sing :: Sing "getFoo3a = ")))
+                        (applySing
+                           (applySing
+                              (singFun3 @(.@#@$) (%.))
+                              (applySing
+                                 (applySing
+                                    (singFun3 @ShowsPrecSym0 sShowsPrec)
+                                    (sFromInteger (sing :: Sing 0)))
+                                 sArg_0123456789876543210))
+                           (applySing
+                              (applySing
+                                 (singFun3 @(.@#@$) (%.))
+                                 (singFun1 @ShowCommaSpaceSym0 sShowCommaSpace))
+                              (applySing
+                                 (applySing
+                                    (singFun3 @(.@#@$) (%.))
+                                    (applySing
+                                       (singFun2 @ShowStringSym0 sShowString)
+                                       (sing :: Sing "(***) = ")))
+                                 (applySing
+                                    (applySing
+                                       (singFun3 @(.@#@$) (%.))
+                                       (applySing
+                                          (applySing
+                                             (singFun3 @ShowsPrecSym0 sShowsPrec)
+                                             (sFromInteger (sing :: Sing 0)))
+                                          sArg_0123456789876543210))
+                                    (applySing
+                                       (singFun2 @ShowCharSym0 sShowChar)
+                                       (sing :: Sing '}'))))))))))
             sA_0123456789876543210
     deriving instance Show (SFoo1 (z :: Foo1))
     deriving instance Data.Singletons.ShowSing.ShowSing a =>
@@ -541,76 +574,76 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       sing = SMkFoo1
     instance (SingI n, SingI n) =>
              SingI (MkFoo2a (n :: a) (n :: a)) where
-      sing = (SMkFoo2a sing) sing
+      sing = SMkFoo2a sing sing
     instance SingI n => SingI1 (MkFoo2a (n :: a)) where
       liftSing = SMkFoo2a sing
     instance SingI2 MkFoo2a where
       liftSing2 = SMkFoo2a
     instance SingI (MkFoo2aSym0 :: (~>) a ((~>) a (Foo2 a))) where
-      sing = (singFun2 @MkFoo2aSym0) SMkFoo2a
+      sing = singFun2 @MkFoo2aSym0 SMkFoo2a
     instance SingI d =>
              SingI (MkFoo2aSym1 (d :: a) :: (~>) a (Foo2 a)) where
-      sing = (singFun1 @(MkFoo2aSym1 (d :: a))) (SMkFoo2a (sing @d))
+      sing = singFun1 @(MkFoo2aSym1 (d :: a)) (SMkFoo2a (sing @d))
     instance SingI1 (MkFoo2aSym1 :: a -> (~>) a (Foo2 a)) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @(MkFoo2aSym1 (d :: a))) (SMkFoo2a s)
+        = singFun1 @(MkFoo2aSym1 (d :: a)) (SMkFoo2a s)
     instance (SingI n, SingI n) =>
              SingI (MkFoo2b (n :: a) (n :: a)) where
-      sing = (SMkFoo2b sing) sing
+      sing = SMkFoo2b sing sing
     instance SingI n => SingI1 (MkFoo2b (n :: a)) where
       liftSing = SMkFoo2b sing
     instance SingI2 MkFoo2b where
       liftSing2 = SMkFoo2b
     instance SingI (MkFoo2bSym0 :: (~>) a ((~>) a (Foo2 a))) where
-      sing = (singFun2 @MkFoo2bSym0) SMkFoo2b
+      sing = singFun2 @MkFoo2bSym0 SMkFoo2b
     instance SingI d =>
              SingI (MkFoo2bSym1 (d :: a) :: (~>) a (Foo2 a)) where
-      sing = (singFun1 @(MkFoo2bSym1 (d :: a))) (SMkFoo2b (sing @d))
+      sing = singFun1 @(MkFoo2bSym1 (d :: a)) (SMkFoo2b (sing @d))
     instance SingI1 (MkFoo2bSym1 :: a -> (~>) a (Foo2 a)) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @(MkFoo2bSym1 (d :: a))) (SMkFoo2b s)
+        = singFun1 @(MkFoo2bSym1 (d :: a)) (SMkFoo2b s)
     instance (SingI n, SingI n) =>
              SingI ((:*:) (n :: a) (n :: a)) where
-      sing = ((:%*:) sing) sing
+      sing = (:%*:) sing sing
     instance SingI n => SingI1 ((:*:) (n :: a)) where
       liftSing = (:%*:) sing
     instance SingI2 (:*:) where
       liftSing2 = (:%*:)
     instance SingI ((:*:@#@$) :: (~>) a ((~>) a (Foo2 a))) where
-      sing = (singFun2 @(:*:@#@$)) (:%*:)
+      sing = singFun2 @(:*:@#@$) (:%*:)
     instance SingI d =>
              SingI ((:*:@#@$$) (d :: a) :: (~>) a (Foo2 a)) where
-      sing = (singFun1 @((:*:@#@$$) (d :: a))) ((:%*:) (sing @d))
+      sing = singFun1 @((:*:@#@$$) (d :: a)) ((:%*:) (sing @d))
     instance SingI1 ((:*:@#@$$) :: a -> (~>) a (Foo2 a)) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @((:*:@#@$$) (d :: a))) ((:%*:) s)
+        = singFun1 @((:*:@#@$$) (d :: a)) ((:%*:) s)
     instance (SingI n, SingI n) =>
              SingI ((:&:) (n :: a) (n :: a)) where
-      sing = ((:%&:) sing) sing
+      sing = (:%&:) sing sing
     instance SingI n => SingI1 ((:&:) (n :: a)) where
       liftSing = (:%&:) sing
     instance SingI2 (:&:) where
       liftSing2 = (:%&:)
     instance SingI ((:&:@#@$) :: (~>) a ((~>) a (Foo2 a))) where
-      sing = (singFun2 @(:&:@#@$)) (:%&:)
+      sing = singFun2 @(:&:@#@$) (:%&:)
     instance SingI d =>
              SingI ((:&:@#@$$) (d :: a) :: (~>) a (Foo2 a)) where
-      sing = (singFun1 @((:&:@#@$$) (d :: a))) ((:%&:) (sing @d))
+      sing = singFun1 @((:&:@#@$$) (d :: a)) ((:%&:) (sing @d))
     instance SingI1 ((:&:@#@$$) :: a -> (~>) a (Foo2 a)) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @((:&:@#@$$) (d :: a))) ((:%&:) s)
+        = singFun1 @((:&:@#@$$) (d :: a)) ((:%&:) s)
     instance (SingI n, SingI n) =>
              SingI (MkFoo3 (n :: Bool) (n :: Bool)) where
-      sing = (SMkFoo3 sing) sing
+      sing = SMkFoo3 sing sing
     instance SingI n => SingI1 (MkFoo3 (n :: Bool)) where
       liftSing = SMkFoo3 sing
     instance SingI2 MkFoo3 where
       liftSing2 = SMkFoo3
     instance SingI (MkFoo3Sym0 :: (~>) Bool ((~>) Bool Foo3)) where
-      sing = (singFun2 @MkFoo3Sym0) SMkFoo3
+      sing = singFun2 @MkFoo3Sym0 SMkFoo3
     instance SingI d =>
              SingI (MkFoo3Sym1 (d :: Bool) :: (~>) Bool Foo3) where
-      sing = (singFun1 @(MkFoo3Sym1 (d :: Bool))) (SMkFoo3 (sing @d))
+      sing = singFun1 @(MkFoo3Sym1 (d :: Bool)) (SMkFoo3 (sing @d))
     instance SingI1 (MkFoo3Sym1 :: Bool -> (~>) Bool Foo3) where
       liftSing (s :: Sing (d :: Bool))
-        = (singFun1 @(MkFoo3Sym1 (d :: Bool))) (SMkFoo3 s)
+        = singFun1 @(MkFoo3Sym1 (d :: Bool)) (SMkFoo3 s)

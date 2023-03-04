@@ -12,7 +12,7 @@ Singletons/T229.hs:(0,0)-(0,0): Splicing declarations
                                      US___fooSym0 a0123456789876543210
     type instance Apply US___fooSym0 a0123456789876543210 = US___foo a0123456789876543210
     instance SuppressUnusedWarnings US___fooSym0 where
-      suppressUnusedWarnings = snd (((,) US___fooSym0KindInference) ())
+      suppressUnusedWarnings = snd ((,) US___fooSym0KindInference ())
     type US___fooSym1 :: Bool -> Bool
     type family US___fooSym1 (a0123456789876543210 :: Bool) :: Bool where
       US___fooSym1 a0123456789876543210 = US___foo a0123456789876543210
@@ -20,8 +20,8 @@ Singletons/T229.hs:(0,0)-(0,0): Splicing declarations
     type family US___foo (a :: Bool) :: Bool where
       US___foo _ = TrueSym0
     ___sfoo ::
-      forall (t :: Bool).
-      Sing t -> Sing (Apply US___fooSym0 t :: Bool) :: Type
+      (forall (t :: Bool).
+       Sing t -> Sing (Apply US___fooSym0 t :: Bool) :: Type)
     ___sfoo _ = STrue
     instance SingI (US___fooSym0 :: (~>) Bool Bool) where
-      sing = (singFun1 @US___fooSym0) ___sfoo
+      sing = singFun1 @US___fooSym0 ___sfoo

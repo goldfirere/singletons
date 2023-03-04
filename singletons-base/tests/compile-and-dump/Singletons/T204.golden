@@ -22,7 +22,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
                         (:%@#@$) a0123456789876543210
     type instance Apply (:%@#@$) a0123456789876543210 = (:%@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:%@#@$) where
-      suppressUnusedWarnings = snd (((,) (::%@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (::%@#@$###) ())
     type (:%@#@$$) :: forall a. a -> (~>) a (Ratio1 a)
     data (:%@#@$$) (a0123456789876543210 :: a) :: (~>) a (Ratio1 a)
       where
@@ -30,7 +30,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
                          (:%@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((:%@#@$$) a0123456789876543210) a0123456789876543210 = (:%) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:%@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (::%@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (::%@#@$$###) ())
     type (:%@#@$$$) :: forall a. a -> a -> Ratio1 a
     type family (:%@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ratio1 a where
       (:%@#@$$$) a0123456789876543210 a0123456789876543210 = (:%) a0123456789876543210 a0123456789876543210
@@ -41,7 +41,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
                          (:%%@#@$) a0123456789876543210
     type instance Apply (:%%@#@$) a0123456789876543210 = (:%%@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:%%@#@$) where
-      suppressUnusedWarnings = snd (((,) (::%%@#@$###)) ())
+      suppressUnusedWarnings = snd ((,) (::%%@#@$###) ())
     type (:%%@#@$$) :: forall a. a -> (~>) a (Ratio2 a)
     data (:%%@#@$$) (a0123456789876543210 :: a) :: (~>) a (Ratio2 a)
       where
@@ -49,7 +49,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
                           (:%%@#@$$) a0123456789876543210 a0123456789876543210
     type instance Apply ((:%%@#@$$) a0123456789876543210) a0123456789876543210 = (:%%) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:%%@#@$$) a0123456789876543210) where
-      suppressUnusedWarnings = snd (((,) (::%%@#@$$###)) ())
+      suppressUnusedWarnings = snd ((,) (::%%@#@$$###) ())
     type (:%%@#@$$$) :: forall a. a -> a -> Ratio2 a
     type family (:%%@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ratio2 a where
       (:%%@#@$$$) a0123456789876543210 a0123456789876543210 = (:%%) a0123456789876543210 a0123456789876543210
@@ -60,10 +60,10 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Ratio1 a) = SRatio1
     instance SingKind a => SingKind (Ratio1 a) where
       type Demote (Ratio1 a) = Ratio1 (Demote a)
-      fromSing ((:^%) b b) = ((:%) (fromSing b)) (fromSing b)
+      fromSing ((:^%) b b) = (:%) (fromSing b) (fromSing b)
       toSing ((:%) (b :: Demote a) (b :: Demote a))
-        = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:^%) c) c)
+        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing a) of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:^%) c c)
     data SRatio2 :: forall a. Ratio2 a -> GHC.Types.Type
       where
         (:^%%) :: forall a (n :: a) (n :: a).
@@ -71,36 +71,36 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Ratio2 a) = SRatio2
     instance SingKind a => SingKind (Ratio2 a) where
       type Demote (Ratio2 a) = Ratio2 (Demote a)
-      fromSing ((:^%%) b b) = ((:%%) (fromSing b)) (fromSing b)
+      fromSing ((:^%%) b b) = (:%%) (fromSing b) (fromSing b)
       toSing ((:%%) (b :: Demote a) (b :: Demote a))
-        = case ((,) (toSing b :: SomeSing a)) (toSing b :: SomeSing a) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (((:^%%) c) c)
+        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing a) of
+            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:^%%) c c)
     instance (SingI n, SingI n) => SingI ((:%) (n :: a) (n :: a)) where
-      sing = ((:^%) sing) sing
+      sing = (:^%) sing sing
     instance SingI n => SingI1 ((:%) (n :: a)) where
       liftSing = (:^%) sing
     instance SingI2 (:%) where
       liftSing2 = (:^%)
     instance SingI ((:%@#@$) :: (~>) a ((~>) a (Ratio1 a))) where
-      sing = (singFun2 @(:%@#@$)) (:^%)
+      sing = singFun2 @(:%@#@$) (:^%)
     instance SingI d =>
              SingI ((:%@#@$$) (d :: a) :: (~>) a (Ratio1 a)) where
-      sing = (singFun1 @((:%@#@$$) (d :: a))) ((:^%) (sing @d))
+      sing = singFun1 @((:%@#@$$) (d :: a)) ((:^%) (sing @d))
     instance SingI1 ((:%@#@$$) :: a -> (~>) a (Ratio1 a)) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @((:%@#@$$) (d :: a))) ((:^%) s)
+        = singFun1 @((:%@#@$$) (d :: a)) ((:^%) s)
     instance (SingI n, SingI n) =>
              SingI ((:%%) (n :: a) (n :: a)) where
-      sing = ((:^%%) sing) sing
+      sing = (:^%%) sing sing
     instance SingI n => SingI1 ((:%%) (n :: a)) where
       liftSing = (:^%%) sing
     instance SingI2 (:%%) where
       liftSing2 = (:^%%)
     instance SingI ((:%%@#@$) :: (~>) a ((~>) a (Ratio2 a))) where
-      sing = (singFun2 @(:%%@#@$)) (:^%%)
+      sing = singFun2 @(:%%@#@$) (:^%%)
     instance SingI d =>
              SingI ((:%%@#@$$) (d :: a) :: (~>) a (Ratio2 a)) where
-      sing = (singFun1 @((:%%@#@$$) (d :: a))) ((:^%%) (sing @d))
+      sing = singFun1 @((:%%@#@$$) (d :: a)) ((:^%%) (sing @d))
     instance SingI1 ((:%%@#@$$) :: a -> (~>) a (Ratio2 a)) where
       liftSing (s :: Sing (d :: a))
-        = (singFun1 @((:%%@#@$$) (d :: a))) ((:^%%) s)
+        = singFun1 @((:%%@#@$$) (d :: a)) ((:^%%) s)
