@@ -69,9 +69,9 @@ partitionDec :: OptionsMonad m => DDec -> m PartitionedDecs
 partitionDec (DLetDec (DPragmaD {})) = return mempty
 partitionDec (DLetDec letdec) = return $ mempty { pd_let_decs = [letdec] }
 
-partitionDec (DDataD _nd _cxt name tvbs mk cons derivings) = do
+partitionDec (DDataD df _cxt name tvbs mk cons derivings) = do
   all_tvbs <- buildDataDTvbs tvbs mk
-  let data_decl   = DataDecl name all_tvbs cons
+  let data_decl   = DataDecl df name all_tvbs cons
       derived_dec = mempty { pd_data_decs = [data_decl] }
   derived_decs
     <- mapM (\(strat, deriv_pred) ->
@@ -143,9 +143,9 @@ partitionDec (DStandaloneDerivD mb_strat _ ctxt ty) =
       -> do let cls_pred = foldType cls_pred_ty cls_arg_tys
             dinfo <- dsReify data_tycon
             case dinfo of
-              Just (DTyConI (DDataD _ _ dn dtvbs dk dcons _) _) -> do
+              Just (DTyConI (DDataD df _ dn dtvbs dk dcons _) _) -> do
                 all_tvbs <- buildDataDTvbs dtvbs dk
-                let data_decl = DataDecl dn all_tvbs dcons
+                let data_decl = DataDecl df dn all_tvbs dcons
                 partitionDeriving mb_strat cls_pred (Just ctxt) data_ty data_decl
               Just _ ->
                 fail $ "Standalone derived instance for something other than a datatype: "

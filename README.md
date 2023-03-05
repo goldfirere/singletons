@@ -800,6 +800,7 @@ The following constructs are fully supported:
 * class and instance declarations
 * signatures (e.g., `(x :: Maybe a)`) in expressions
 * `InstanceSigs`
+* `TypeData`
 
 ## Partial support
 

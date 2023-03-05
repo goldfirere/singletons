@@ -174,7 +174,7 @@ isInTypeFamilyApp name tyFun tyArgs =
 -- deal with a more complex error message when the generate code fails to
 -- typecheck.
 functorLikeValidityChecks :: forall q. DsMonad q => Bool -> DataDecl -> q ()
-functorLikeValidityChecks allowConstrainedLastTyVar (DataDecl n data_tvbs cons)
+functorLikeValidityChecks allowConstrainedLastTyVar (DataDecl _df n data_tvbs cons)
   | null data_tvbs -- (1)
   = fail $ "Data type " ++ nameBase n ++ " must have some type parameters"
   | otherwise

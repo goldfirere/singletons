@@ -23,7 +23,7 @@ import Data.Singletons.TH.Util
 
 -- | Make a *non-singleton* Ord instance
 mkOrdInstance :: DsMonad q => DerivDesc q
-mkOrdInstance mb_ctxt ty (DataDecl _ _ cons) = do
+mkOrdInstance mb_ctxt ty (DataDecl _ _ _ cons) = do
   constraints <- inferConstraintsDef mb_ctxt (DConT ordName) ty cons
   compare_eq_clauses <- mapM mk_equal_clause cons
   let compare_noneq_clauses = map (uncurry mk_nonequal_clause)

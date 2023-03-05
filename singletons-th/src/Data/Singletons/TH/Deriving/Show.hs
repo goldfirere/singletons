@@ -29,7 +29,7 @@ import GHC.Lexeme (startsConSym, startsVarSym)
 import GHC.Show (appPrec, appPrec1)
 
 mkShowInstance :: OptionsMonad q => DerivDesc q
-mkShowInstance mb_ctxt ty (DataDecl _ _ cons) = do
+mkShowInstance mb_ctxt ty (DataDecl _ _ _ cons) = do
   clauses <- mk_showsPrec cons
   constraints <- inferConstraintsDef mb_ctxt (DConT showName) ty cons
   return $ InstDecl { id_cxt = constraints

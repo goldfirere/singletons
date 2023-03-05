@@ -1,0 +1,11 @@
+Singletons/T559.hs:0:0:: Splicing declarations
+    singletons [d| type data T = MkT |]
+  ======>
+    type data T = MkT
+    type MkTSym0 :: T
+    type family MkTSym0 :: T where
+      MkTSym0 = MkT
+    data ST :: T -> Type where SMkT :: ST (MkT :: T)
+    type instance Sing @T = ST
+    instance SingI MkT where
+      sing = SMkT

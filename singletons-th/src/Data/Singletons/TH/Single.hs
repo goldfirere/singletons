@@ -145,7 +145,7 @@ singDecideInstances = concatMapM singDecideInstance
 -- given type.
 singDecideInstance :: OptionsMonad q => Name -> q [Dec]
 singDecideInstance name = do
-  (tvbs, cons) <- getDataD ("I cannot make an instance of SDecide for it.") name
+  (_df, tvbs, cons) <- getDataD ("I cannot make an instance of SDecide for it.") name
   dtvbs <- mapM dsTvbUnit tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
@@ -196,13 +196,13 @@ singShowInstances = concatMapM singShowInstance
 -- (Not to be confused with 'singShowInstance'.)
 showSingInstance :: OptionsMonad q => Name -> q [Dec]
 showSingInstance name = do
-  (tvbs, cons) <- getDataD ("I cannot make an instance of Show for it.") name
+  (df, tvbs, cons) <- getDataD ("I cannot make an instance of Show for it.") name
   dtvbs <- mapM dsTvbUnit tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
   let tyvars    = map (DVarT . extractTvbName) dtvbs
       kind      = foldType (DConT name) tyvars
-      data_decl = DataDecl name dtvbs dcons
+      data_decl = DataDecl df name dtvbs dcons
       deriv_show_decl = DerivedDecl { ded_mb_cxt     = Nothing
                                     , ded_type       = kind
                                     , ded_type_tycon = name
@@ -267,12 +267,12 @@ singITyConInstance n
 
 singInstance :: OptionsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 singInstance mk_inst inst_name name = do
-  (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
-                            ++ " for it.") name
+  (df, tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
+                                ++ " for it.") name
   dtvbs <- mapM dsTvbUnit tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
-  let data_decl = DataDecl name dtvbs dcons
+  let data_decl = DataDecl df name dtvbs dcons
   raw_inst <- mk_inst Nothing data_ty data_decl
   (a_inst, decs) <- promoteM [] $
                     promoteInstanceDec OMap.empty Map.empty raw_inst
@@ -334,7 +334,7 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
 
 -- see comment at top of file
 buildDataLets :: OptionsMonad q => DataDecl -> q [(Name, DExp)]
-buildDataLets (DataDecl _name _tvbs cons) = do
+buildDataLets (DataDecl _df _name _tvbs cons) = do
   opts <- getOptions
   pure $ concatMap (con_num_args opts) cons
   where
@@ -919,7 +919,7 @@ singDerivedEqDecs :: DerivedEqDecl -> SgM [DDec]
 singDerivedEqDecs (DerivedDecl { ded_mb_cxt     = mb_ctxt
                                , ded_type       = ty
                                , ded_type_tycon = ty_tycon
-                               , ded_decl       = DataDecl _ _ cons }) = do
+                               , ded_decl       = DataDecl _ _ _ cons }) = do
   (scons, _) <- singM [] $ mapM (singCtor ty_tycon) cons
   mb_sctxt <- mapM (mapM singPred) mb_ctxt
   kind <- promoteType ty
@@ -950,7 +950,7 @@ singDerivedShowDecs :: DerivedShowDecl -> SgM [DDec]
 singDerivedShowDecs (DerivedDecl { ded_mb_cxt     = mb_cxt
                                  , ded_type       = ty
                                  , ded_type_tycon = ty_tycon
-                                 , ded_decl       = DataDecl _ _ cons }) = do
+                                 , ded_decl       = DataDecl _ _ _ cons }) = do
     opts <- getOptions
     z <- qNewName "z"
     -- Generate a Show instance for a singleton type, like this:

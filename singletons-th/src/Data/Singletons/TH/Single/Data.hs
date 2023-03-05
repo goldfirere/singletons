@@ -8,7 +8,7 @@ Singletonizes constructors.
 
 module Data.Singletons.TH.Single.Data where
 
-import Language.Haskell.TH.Desugar
+import Language.Haskell.TH.Desugar as Desugar
 import Language.Haskell.TH.Syntax
 import Data.Maybe
 import Data.Singletons.TH.Names
@@ -24,7 +24,7 @@ import Control.Monad
 -- We wish to consider the promotion of "Rep" to be *
 -- not a promoted data constructor.
 singDataD :: DataDecl -> SgM [DDec]
-singDataD (DataDecl name tvbs ctors) = do
+singDataD (DataDecl df name tvbs ctors) = do
   opts <- getOptions
   let tvbNames      = map extractTvbName tvbs
       ctor_names    = map extractName ctors
@@ -100,7 +100,13 @@ singDataD (DataDecl name tvbs ctors) = do
 
   return $ data_decs ++
            singSynInst :
-           [singKindInst | genSingKindInsts opts] ++
+           [ singKindInst | genSingKindInsts opts
+                          , -- `type data` data constructors only exist at the
+                            -- type level. As such, we cannot define SingKind
+                            -- instances for them, as they require term-level
+                            -- data constructors to implement.
+                            df /= Desugar.TypeData
+                          ] ++
            fixityDecs
   where -- in the Rep case, the names of the constructors are in the wrong scope
         -- (they're types, not datacons), so we have to reinterpret them.

@@ -22,7 +22,7 @@ import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
 
 mkEqInstance :: DsMonad q => DerivDesc q
-mkEqInstance mb_ctxt ty (DataDecl _ _ cons) = do
+mkEqInstance mb_ctxt ty (DataDecl _ _ _ cons) = do
   let con_pairs = [ (c1, c2) | c1 <- cons, c2 <- cons ]
   constraints <- inferConstraintsDef mb_ctxt (DConT eqName) ty cons
   clauses <- if null cons
