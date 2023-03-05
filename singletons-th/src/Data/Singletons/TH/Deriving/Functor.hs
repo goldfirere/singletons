@@ -21,7 +21,7 @@ import Data.Singletons.TH.Util
 import Language.Haskell.TH.Desugar
 
 mkFunctorInstance :: forall q. DsMonad q => DerivDesc q
-mkFunctorInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
+mkFunctorInstance mb_ctxt ty dd@(DataDecl _ _ _ cons) = do
   functorLikeValidityChecks False dd
   f <- newUniqueName "_f"
   z <- newUniqueName "_z"

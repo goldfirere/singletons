@@ -147,6 +147,7 @@ tests =
     , compileAndDumpStdTest "T511"
     , compileAndDumpStdTest "T536"
     , compileAndDumpStdTest "T555"
+    , compileAndDumpStdTest "T559"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"

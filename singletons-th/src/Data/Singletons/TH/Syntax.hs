@@ -28,7 +28,7 @@ type VarPromotions = [(Name, Name)] -- from term-level name to type-level name
 type SingDSigPaInfos = [(DExp, DType)]
 
 -- The parts of data declarations that are relevant to singletons-th.
-data DataDecl = DataDecl Name [DTyVarBndrUnit] [DCon]
+data DataDecl = DataDecl DataFlavor Name [DTyVarBndrUnit] [DCon]
 
 -- The parts of type synonyms that are relevant to singletons-th.
 data TySynDecl = TySynDecl Name [DTyVarBndrUnit] DType

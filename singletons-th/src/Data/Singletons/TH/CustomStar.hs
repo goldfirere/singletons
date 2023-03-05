@@ -81,7 +81,7 @@ singletonStar names = do
   let repDecl = DDataD Data [] repName [] (Just (DConT typeKindName)) ctors
                          [DDerivClause Nothing (map DConT [''Eq, ''Ord, ''Read, ''Show])]
   fakeCtors <- zipWithM (mkCtor False) names kinds
-  let dataDecl = DataDecl repName [] fakeCtors
+  let dataDecl = DataDecl Data repName [] fakeCtors
   -- Why do we need withLocalDeclarations here? It's because we end up
   -- expanding type synonyms when deriving instances for Rep, which requires
   -- reifying Rep itself. Since Rep hasn't been spliced in yet, we must put it

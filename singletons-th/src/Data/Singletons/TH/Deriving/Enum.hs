@@ -25,7 +25,7 @@ import Data.Maybe
 
 -- monadic for failure only
 mkEnumInstance :: DsMonad q => DerivDesc q
-mkEnumInstance mb_ctxt ty (DataDecl _ _ cons) = do
+mkEnumInstance mb_ctxt ty (DataDecl _ _ _ cons) = do
   -- GHC only allows deriving Enum instances for enumeration types (i.e., those
   -- data types whose constructors all lack fields). We perform the same
   -- validity check here.

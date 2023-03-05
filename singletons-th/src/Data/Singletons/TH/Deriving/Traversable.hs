@@ -20,7 +20,7 @@ import Data.Singletons.TH.Syntax
 import Language.Haskell.TH.Desugar
 
 mkTraversableInstance :: forall q. DsMonad q => DerivDesc q
-mkTraversableInstance mb_ctxt ty dd@(DataDecl _ _ cons) = do
+mkTraversableInstance mb_ctxt ty dd@(DataDecl _ _ _ cons) = do
   functorLikeValidityChecks False dd
   f <- newUniqueName "_f"
   let ft_trav :: FFoldType (q DExp)

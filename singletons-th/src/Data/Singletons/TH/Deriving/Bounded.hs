@@ -25,7 +25,7 @@ import Control.Monad
 -- monadic only for failure and parallelism with other functions
 -- that make instances
 mkBoundedInstance :: DsMonad q => DerivDesc q
-mkBoundedInstance mb_ctxt ty (DataDecl _ _ cons) = do
+mkBoundedInstance mb_ctxt ty (DataDecl _ _ _ cons) = do
   -- We can derive instance of Bounded if datatype is an enumeration (all
   -- constructors must be nullary) or has only one constructor. See Section 11
   -- of Haskell 2010 Language Report.

@@ -156,12 +156,12 @@ promoteShowInstance = promoteInstance mkShowInstance "Show"
 
 promoteInstance :: OptionsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 promoteInstance mk_inst class_name name = do
-  (tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
-                            ++ " for it.") name
+  (df, tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
+                                ++ " for it.") name
   tvbs' <- mapM dsTvbUnit tvbs
   let data_ty   = foldTypeTvbs (DConT name) tvbs'
   cons' <- concatMapM (dsCon tvbs' data_ty) cons
-  let data_decl = DataDecl name tvbs' cons'
+  let data_decl = DataDecl df name tvbs' cons'
   raw_inst <- mk_inst Nothing data_ty data_decl
   decs <- promoteM_ [] $ void $
           promoteInstanceDec OMap.empty Map.empty raw_inst
@@ -236,7 +236,7 @@ promoteDataDecs = concatMapM promoteDataDec
 --    be promoted in a single location.
 --    See Note [singletons-th and record selectors] in D.S.TH.Single.Data.
 promoteDataDec :: DataDecl -> PrM [DLetDec]
-promoteDataDec (DataDecl _ _ ctors) = do
+promoteDataDec (DataDecl _ _ _ ctors) = do
   let rec_sel_names = nub $ concatMap extractRecSelNames ctors
                       -- Note the use of nub: the same record selector name can
                       -- be used in multiple constructors!
