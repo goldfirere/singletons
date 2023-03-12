@@ -1,7 +1,7 @@
 Changelog for the `singletons-th` project
 =========================================
 
-3.2 [????.??.??]
+3.2 [2023.03.12]
 ----------------
 * Require building with GHC 9.6.
 * Derived `POrd` and `SOrd` instances (arising from a use of `deriving Ord`)

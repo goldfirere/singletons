@@ -1,7 +1,7 @@
 Changelog for the `singletons-base` project
 ===========================================
 
-3.2 [????.??.??]
+3.2 [2023.03.12]
 ----------------
 * Require building with GHC 9.6.
 * The kinds of the promoted `Error` and `ErrorWithoutStackTrace` functions have
