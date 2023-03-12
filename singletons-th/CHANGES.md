@@ -10,9 +10,6 @@ Changelog for the `singletons-th` project
   likely continue to work after this change, this may break code that attempts
   to prove properties about the implementation of a derived `POrd`/`SOrd`
   instance.
-
-3.1.2 [????.??.??]
-------------------
 * Fix a bug in which the `singDecideInstances` and `showSingInstances`, as well
   as `deriving Show` declarations, would not respect custom
   `promotedDataTypeOrConName` options.
