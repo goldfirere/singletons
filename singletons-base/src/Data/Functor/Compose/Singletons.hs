@@ -28,11 +28,15 @@ module Data.Functor.Compose.Singletons (
 
 import Control.Applicative
 import Control.Applicative.Singletons
+import Data.Eq.Singletons
 import Data.Foldable.Singletons
 import Data.Functor.Compose
 import Data.Functor.Singletons
+import Data.Ord.Singletons
 import Data.Kind
+import Data.Semigroup.Singletons
 import Data.Singletons
+import Data.Singletons.Base.Instances (SList(..), (:@#@$), NilSym0)
 import Data.Singletons.TH
 import Data.Traversable.Singletons
 
@@ -69,6 +73,9 @@ type family ComposeSym1 x where
 $(singletonsOnly [d|
   getCompose :: Compose f g a -> f (g a)
   getCompose (Compose x) = x
+
+  deriving instance Eq (f (g a)) => Eq (Compose f g a)
+  deriving instance Ord (f (g a)) => Ord (Compose f g a)
 
   instance (Functor f, Functor g) => Functor (Compose f g) where
       fmap f (Compose x) = Compose (fmap (fmap f) x)

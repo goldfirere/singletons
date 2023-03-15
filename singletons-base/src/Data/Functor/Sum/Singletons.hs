@@ -26,11 +26,16 @@ module Data.Functor.Sum.Singletons (
   InRSym0, InRSym1,
   ) where
 
+import Data.Bool.Singletons
+import Data.Eq.Singletons
 import Data.Foldable.Singletons hiding (Sum)
 import Data.Functor.Singletons
 import Data.Functor.Sum
 import Data.Kind
+import Data.Ord.Singletons
+import Data.Semigroup.Singletons hiding (SSum(..))
 import Data.Singletons
+import Data.Singletons.Base.Instances (SList(..), (:@#@$), NilSym0)
 import Data.Singletons.TH
 import Data.Traversable.Singletons
 
@@ -78,6 +83,9 @@ type family InRSym1 x where
   InRSym1 y = 'InR y
 
 $(singletonsOnly [d|
+  deriving instance (Eq (f a), Eq (g a)) => Eq (Sum f g a)
+  deriving instance (Ord (f a), Ord (g a)) => Ord (Sum f g a)
+
   instance (Functor f, Functor g) => Functor (Sum f g) where
       fmap f (InL x) = InL (fmap f x)
       fmap f (InR y) = InR (fmap f y)

@@ -83,6 +83,8 @@ Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
                    (\ refl
                       -> case refl of
                            Data.Type.Equality.Refl -> contra Data.Type.Equality.Refl)
+    instance Eq (SMessage (z :: PMessage)) where
+      (==) _ _ = True
     instance Data.Singletons.Decide.SDecide Text =>
              Data.Type.Equality.TestEquality (SMessage :: PMessage
                                                           -> Type) where

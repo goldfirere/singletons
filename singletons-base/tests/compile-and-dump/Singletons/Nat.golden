@@ -301,6 +301,8 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+    instance Eq (SNat (z :: Nat)) where
+      (==) _ _ = True
     instance SDecide Nat =>
              Data.Type.Equality.TestEquality (SNat :: Nat -> Type) where
       Data.Type.Equality.testEquality
@@ -309,6 +311,8 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
              Data.Type.Coercion.TestCoercion (SNat :: Nat -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
+    instance Ord (SNat (z :: Nat)) where
+      compare _ _ = EQ
     deriving instance Data.Singletons.ShowSing.ShowSing Nat =>
                       Show (SNat (z :: Nat))
     instance SingI Zero where

@@ -83,6 +83,8 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
       sCompare _ _ = SEQ
     instance SDecide Empty where
       (%~) x _ = Proved (case x of {})
+    instance Eq (SEmpty (z :: Empty)) where
+      (==) _ _ = True
     instance Data.Type.Equality.TestEquality (SEmpty :: Empty
                                                         -> Type) where
       Data.Type.Equality.testEquality
@@ -91,3 +93,5 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
                                                         -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
+    instance Ord (SEmpty (z :: Empty)) where
+      compare _ _ = EQ

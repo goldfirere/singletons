@@ -1,6 +1,22 @@
 Changelog for the `singletons-base` project
 ===========================================
 
+next [????.??.??]
+-----------------
+* All singleton types with `SEq` or `SOrd` instances now have `Eq` or `Ord`
+  instances of the form:
+
+  ```hs
+  instance Eq (SExample a) where
+    _ == _ = True
+
+  instance Ord (SExample a) where
+    compare _ _ = EQ
+  ```
+* Define `{P,S}Eq` and `{P,S}Ord` instances for `Sum`, `Product`, and `Compose`.
+* Define `TestEquality` and `TestOrdering` instances for `SSum`, `SProduct`, and
+  `SCompose`.
+
 3.2 [2023.03.12]
 ----------------
 * Require building with GHC 9.6.

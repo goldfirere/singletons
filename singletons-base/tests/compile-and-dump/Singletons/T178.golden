@@ -242,6 +242,8 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       (%~) SMany SStr = Disproved (\ x -> case x of {})
       (%~) SMany SOpt = Disproved (\ x -> case x of {})
       (%~) SMany SMany = Proved Refl
+    instance Eq (SOcc (z :: Occ)) where
+      (==) _ _ = True
     instance Data.Type.Equality.TestEquality (SOcc :: Occ
                                                       -> Type) where
       Data.Type.Equality.testEquality
@@ -250,6 +252,8 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
                                                       -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
+    instance Ord (SOcc (z :: Occ)) where
+      compare _ _ = EQ
     deriving instance Show (SOcc (z :: Occ))
     instance SingI Str where
       sing = SStr

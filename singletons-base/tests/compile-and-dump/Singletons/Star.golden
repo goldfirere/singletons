@@ -254,6 +254,8 @@ Singletons/Star.hs:0:0:: Splicing declarations
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,) _ (Disproved contra)
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+    instance Eq (SRep (z :: Type)) where
+      (==) _ _ = True
     instance (SDecide Type, SDecide Nat) =>
              Data.Type.Equality.TestEquality (SRep :: Type -> Type) where
       Data.Type.Equality.testEquality = decideEquality

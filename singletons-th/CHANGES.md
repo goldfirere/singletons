@@ -1,6 +1,19 @@
 Changelog for the `singletons-th` project
 =========================================
 
+next [????.??.??]
+-----------------
+* Singled data types with derived `Eq` or `Ord` instances now generate `Eq` or
+  `Ord` instances for the singleton type itself, e.g.,
+
+  ```hs
+  instance Eq (SExample a) where
+    _ == _ = True
+
+  instance Ord (SExample a) where
+    compare _ _ = EQ
+  ```
+
 3.2 [2023.03.12]
 ----------------
 * Require building with GHC 9.6.

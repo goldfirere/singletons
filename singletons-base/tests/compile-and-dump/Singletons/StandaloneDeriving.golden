@@ -510,6 +510,8 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,) _ (Disproved contra)
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+    instance Eq (ST (z :: T a ())) where
+      (==) _ _ = True
     instance SDecide a =>
              Data.Type.Equality.TestEquality (ST :: T a () -> Type) where
       Data.Type.Equality.testEquality
@@ -523,12 +525,18 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       (%~) SS1 SS2 = Disproved (\ x -> case x of {})
       (%~) SS2 SS1 = Disproved (\ x -> case x of {})
       (%~) SS2 SS2 = Proved Refl
+    instance Eq (SS (z :: S)) where
+      (==) _ _ = True
     instance Data.Type.Equality.TestEquality (SS :: S -> Type) where
       Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance Data.Type.Coercion.TestCoercion (SS :: S -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
+    instance Ord (ST (z :: T a ())) where
+      compare _ _ = EQ
+    instance Ord (SS (z :: S)) where
+      compare _ _ = EQ
     deriving instance Data.Singletons.ShowSing.ShowSing a =>
                       Show (ST (z :: T a ()))
     deriving instance Show (SS (z :: S))

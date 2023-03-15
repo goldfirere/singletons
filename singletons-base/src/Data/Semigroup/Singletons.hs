@@ -79,6 +79,12 @@ $(genSingletons [''Arg])
 $(showSingInstances semigroupBasicTypes)
 $(singShowInstances semigroupBasicTypes)
 
+instance Eq (SArg z) where
+  _ == _ = True
+
+instance Ord (SArg z) where
+  compare _ _ = EQ
+
 $(singletonsOnly [d|
   instance Applicative Semi.Min where
     pure = Semi.Min

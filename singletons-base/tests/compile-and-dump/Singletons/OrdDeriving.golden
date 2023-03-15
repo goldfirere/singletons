@@ -1116,6 +1116,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+    instance Eq (SNat (z :: Nat)) where
+      (==) _ _ = True
     instance SDecide Nat =>
              Data.Type.Equality.TestEquality (SNat :: Nat -> Type) where
       Data.Type.Equality.testEquality
@@ -1228,6 +1230,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,,,) _ _ _ (Disproved contra)
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+    instance Eq (SFoo (z :: Foo a b c d)) where
+      (==) _ _ = True
     instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
              Data.Type.Equality.TestEquality (SFoo :: Foo a b c d -> Type) where
       Data.Type.Equality.testEquality
@@ -1236,6 +1240,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
              Data.Type.Coercion.TestCoercion (SFoo :: Foo a b c d -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
+    instance Ord (SNat (z :: Nat)) where
+      compare _ _ = EQ
+    instance Ord (SFoo (z :: Foo a b c d)) where
+      compare _ _ = EQ
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where

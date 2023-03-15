@@ -35,6 +35,28 @@ mkDecideInstance mb_ctxt data_ty ctors sctors = do
                      (DAppT (DConT sDecideClassName) data_ki)
                      [DLetDec $ DFunD sDecideMethName methClauses]
 
+-- Make a boilerplate Eq instance for a singleton type, e.g.,
+--
+-- @
+-- instance Eq (SExample (z :: Example a)) where
+--   _ == _ = True
+-- @
+mkEqInstanceForSingleton :: OptionsMonad q
+                         => DType
+                         -> Name
+                         -- ^ The name of the data type
+                         -> q DDec
+mkEqInstanceForSingleton data_ty data_name = do
+  opts <- getOptions
+  z <- qNewName "z"
+  data_ki <- promoteType data_ty
+  let sdata_name = singledDataTypeName opts data_name
+  pure $ DInstanceD Nothing Nothing []
+           (DAppT (DConT eqName) (DConT sdata_name `DAppT` DSigT (DVarT z) data_ki))
+           [DLetDec $
+            DFunD equalsName
+                  [DClause [DWildP, DWildP] (DConE trueName)]]
+
 data TestInstance = TestEquality
                   | TestCoercion
 
