@@ -143,6 +143,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+    instance Eq (SNat (z :: Nat)) where
+      (==) _ _ = True
     instance SDecide Nat =>
              Data.Type.Equality.TestEquality (SNat :: Nat -> Type) where
       Data.Type.Equality.testEquality
@@ -151,6 +153,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
              Data.Type.Coercion.TestCoercion (SNat :: Nat -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
+    instance Ord (SNat (z :: Nat)) where
+      compare _ _ = EQ
     instance SingI Zero where
       sing = SZero
     instance SingI n => SingI (Succ (n :: Nat)) where
@@ -2687,6 +2691,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
             (,) _ (Disproved contra)
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+    instance Eq (SU (z :: U)) where
+      (==) _ _ = True
     instance (SDecide U, SDecide Nat) =>
              Data.Type.Equality.TestEquality (SU :: U -> Type) where
       Data.Type.Equality.testEquality
@@ -3372,6 +3378,8 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (%~) SCZ SCX = Disproved (\ x -> case x of {})
       (%~) SCZ SCY = Disproved (\ x -> case x of {})
       (%~) SCZ SCZ = Proved Refl
+    instance Eq (SAChar (z :: AChar)) where
+      (==) _ _ = True
     instance Data.Type.Equality.TestEquality (SAChar :: AChar
                                                         -> Type) where
       Data.Type.Equality.testEquality

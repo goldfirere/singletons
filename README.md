@@ -270,12 +270,45 @@ the advantage that your program can take action when two types do _not_ equal,
 while propositional equality has the advantage that GHC can use the equality
 of types during type inference.
 
-Instances of `SEq`, `SDecide`, `TestEquality`, and `TestCoercion` are generated
-when `singletons` is called on a datatype that has `deriving Eq`. You can also
-generate these instances directly through functions exported from
-`Data.Singletons.TH` (from `singletons-th`) and
-`Data.Singletons.Base.TH` (from `singletons-base`).
+Instances of `SEq`, `SDecide`, `Eq`, `TestEquality`, and `TestCoercion` are
+generated when `singletons-th` is used to single a data type that has a
+`deriving Eq` clause.  The structure of the `SEq` and `SDecide` instances will
+match that of the derived `Eq` instance, while the other instances will be
+boilerplate code:
 
+```hs
+instance Eq (SExample a) where
+  _ == _ = True
+
+-- See Data.Singletons.Decide for how decideEquality and decideCoercion are
+-- implemented
+
+instance TestEquality (SExample a) where
+  testEquality = decideEquality
+
+instance TestCoercion (SExample a) where
+  testEquality = decideCoercion
+```
+
+You can also generate these instances directly through functions exported from
+`Data.Singletons.TH` (from `singletons-th`) and `Data.Singletons.Base.TH` (from
+`singletons-base`).
+
+`Ord` classes
+-------------
+
+Promoted and singled versions of the `Ord` class (`POrd` and `SOrd`,
+respectively) are provided in the `Data.Ord.Singletons` module from
+`singletons-base`.
+
+Just like how singling a data type with a `deriving Eq` clause will generate a
+boilerplate `Eq` instance, singling a data type with a `deriving Ord` clause
+will generate a boilerplate `Ord` instance:
+
+```hs
+instance Ord (SExample a) where
+  compare _ _ = EQ
+```
 
 `Show` classes
 --------------

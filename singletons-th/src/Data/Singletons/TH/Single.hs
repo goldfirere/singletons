@@ -33,6 +33,7 @@ import Data.Singletons.TH.Single.Decide
 import Data.Singletons.TH.Single.Defun
 import Data.Singletons.TH.Single.Fixity
 import Data.Singletons.TH.Single.Monad
+import Data.Singletons.TH.Single.Ord
 import Data.Singletons.TH.Single.Type
 import Data.Singletons.TH.Syntax
 import Data.Singletons.TH.Util
@@ -136,13 +137,13 @@ singEqInstances = concatMapM singEqInstance
 singEqInstance :: OptionsMonad q => Name -> q [Dec]
 singEqInstance = singInstance mkEqInstance "Eq"
 
--- | Create instances of 'SDecide', 'TestEquality', and 'TestCoercion' for each
--- type in the list.
+-- | Create instances of 'SDecide', 'Eq', 'TestEquality', and 'TestCoercion' for
+-- each type in the list.
 singDecideInstances :: OptionsMonad q => [Name] -> q [Dec]
 singDecideInstances = concatMapM singDecideInstance
 
--- | Create instances of 'SDecide', 'TestEquality', and 'TestCoercion' for the
--- given type.
+-- | Create instances of 'SDecide', 'Eq', 'TestEquality', and 'TestCoercion' for
+-- the given type.
 singDecideInstance :: OptionsMonad q => Name -> q [Dec]
 singDecideInstance name = do
   (_df, tvbs, cons) <- getDataD ("I cannot make an instance of SDecide for it.") name
@@ -151,9 +152,10 @@ singDecideInstance name = do
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
   (scons, _) <- singM [] $ mapM (singCtor name) dcons
   sDecideInstance <- mkDecideInstance Nothing data_ty dcons scons
+  eqInstance <- mkEqInstanceForSingleton data_ty name
   testInstances <- traverse (mkTestInstance Nothing data_ty name dcons)
                             [TestEquality, TestCoercion]
-  return $ decsToTH (sDecideInstance:testInstances)
+  return $ decsToTH (sDecideInstance:eqInstance:testInstances)
 
 -- | Create instances of 'SOrd' for the given types
 singOrdInstances :: OptionsMonad q => [Name] -> q [Dec]
@@ -302,6 +304,7 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
         , pd_open_type_family_decs   = o_tyfams
         , pd_closed_type_family_decs = c_tyfams
         , pd_derived_eq_decs         = derivedEqDecs
+        , pd_derived_ord_decs        = derivedOrdDecs
         , pd_derived_show_decs       = derivedShowDecs } <- partitionDecs decls
 
   ((letDecEnv, classes', insts'), promDecls) <- promoteM locals $ do
@@ -325,10 +328,12 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
                                  newClassDecls <- mapM singClassD classes'
                                  newInstDecls <- mapM singInstD insts'
                                  newDerivedEqDecs <- concatMapM singDerivedEqDecs derivedEqDecs
+                                 newDerivedOrdDecs <- concatMapM singDerivedOrdDecs derivedOrdDecs
                                  newDerivedShowDecs <- concatMapM singDerivedShowDecs derivedShowDecs
                                  return $ newDataDecls ++ newClassDecls
                                                        ++ newInstDecls
                                                        ++ newDerivedEqDecs
+                                                       ++ newDerivedOrdDecs
                                                        ++ newDerivedShowDecs
     return $ promDecls ++ (map DLetDec newLetDecls) ++ singIDefunDecls ++ newDecls
 
@@ -922,7 +927,6 @@ singDerivedEqDecs (DerivedDecl { ded_mb_cxt     = mb_ctxt
                                , ded_decl       = DataDecl _ _ _ cons }) = do
   (scons, _) <- singM [] $ mapM (singCtor ty_tycon) cons
   mb_sctxt <- mapM (mapM singPred) mb_ctxt
-  kind <- promoteType ty
   -- Beware! The user might have specified an instance context like this:
   --
   --   deriving instance Eq a => Eq (T a Int)
@@ -931,10 +935,11 @@ singDerivedEqDecs (DerivedDecl { ded_mb_cxt     = mb_ctxt
   -- this for the SDecide instance! The simplest solution is to simply replace
   -- all occurrences of SEq with SDecide in the context.
   mb_sctxtDecide <- traverse (traverse sEqToSDecide) mb_sctxt
-  sDecideInst <- mkDecideInstance mb_sctxtDecide kind cons scons
-  testInsts <- traverse (mkTestInstance mb_sctxtDecide kind ty_tycon cons)
+  sDecideInst <- mkDecideInstance mb_sctxtDecide ty cons scons
+  eqInst <- mkEqInstanceForSingleton ty ty_tycon
+  testInsts <- traverse (mkTestInstance mb_sctxtDecide ty ty_tycon cons)
                         [TestEquality, TestCoercion]
-  return (sDecideInst:testInsts)
+  return (sDecideInst:eqInst:testInsts)
 
 -- Walk a DPred, replacing all occurrences of SEq with SDecide.
 sEqToSDecide :: OptionsMonad q => DPred -> q DPred
@@ -944,6 +949,13 @@ sEqToSDecide p = do
          if n == singledClassName opts eqName
             then sDecideClassName
             else n) p
+
+-- See Note [DerivedDecl] in Data.Singletons.TH.Syntax
+singDerivedOrdDecs :: DerivedOrdDecl -> SgM [DDec]
+singDerivedOrdDecs (DerivedDecl { ded_type       = ty
+                                , ded_type_tycon = ty_tycon }) = do
+    ord_inst <- mkOrdInstanceForSingleton ty ty_tycon
+    pure [ord_inst]
 
 -- See Note [DerivedDecl] in Data.Singletons.TH.Syntax
 singDerivedShowDecs :: DerivedShowDecl -> SgM [DDec]

@@ -91,6 +91,7 @@ library
                       Data.Singletons.TH.Single.Defun
                       Data.Singletons.TH.Single.Fixity
                       Data.Singletons.TH.Single.Monad
+                      Data.Singletons.TH.Single.Ord
                       Data.Singletons.TH.Single.Type
                       Data.Singletons.TH.Syntax
                       Data.Singletons.TH.Util

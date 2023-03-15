@@ -31,11 +31,16 @@ import Control.Monad
 import Control.Monad.Singletons
 import Control.Monad.Zip
 import Control.Monad.Zip.Singletons
+import Data.Bool.Singletons
+import Data.Eq.Singletons
 import Data.Foldable.Singletons hiding (Product)
 import Data.Function.Singletons
 import Data.Functor.Product
 import Data.Kind
 import Data.Monoid.Singletons hiding (SProduct(..))
+import Data.Semigroup.Singletons hiding (SProduct(..))
+import Data.Singletons.Base.Instances (SList(..), (:@#@$), NilSym0)
+import Data.Ord.Singletons
 import Data.Singletons
 import Data.Singletons.TH
 import Data.Traversable.Singletons
@@ -78,6 +83,9 @@ type family PairSym2 x y where
   PairSym2 x y = 'Pair x y
 
 $(singletonsOnly [d|
+  deriving instance (Eq (f a), Eq (g a)) => Eq (Product f g a)
+  deriving instance (Ord (f a), Ord (g a)) => Ord (Product f g a)
+
   instance (Functor f, Functor g) => Functor (Product f g) where
       fmap f (Pair x y) = Pair (fmap f x) (fmap f y)
       a <$ (Pair x y) = Pair (a <$ x) (a <$ y)

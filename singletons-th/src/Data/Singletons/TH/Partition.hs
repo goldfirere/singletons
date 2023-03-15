@@ -48,17 +48,18 @@ data PartitionedDecs =
         , pd_open_type_family_decs :: [OpenTypeFamilyDecl]
         , pd_closed_type_family_decs :: [ClosedTypeFamilyDecl]
         , pd_derived_eq_decs :: [DerivedEqDecl]
+        , pd_derived_ord_decs :: [DerivedOrdDecl]
         , pd_derived_show_decs :: [DerivedShowDecl]
         }
 
 instance Semigroup PartitionedDecs where
-  PDecs a1 b1 c1 d1 e1 f1 g1 h1 i1 <> PDecs a2 b2 c2 d2 e2 f2 g2 h2 i2 =
+  PDecs a1 b1 c1 d1 e1 f1 g1 h1 i1 j1 <> PDecs a2 b2 c2 d2 e2 f2 g2 h2 i2 j2 =
     PDecs (a1 <> a2) (b1 <> b2) (c1 <> c2) (d1 <> d2) (e1 <> e2)
-          (f1 <> f2) (g1 <> g2) (h1 <> h2) (i1 <> i2)
+          (f1 <> f2) (g1 <> g2) (h1 <> h2) (i1 <> i2) (j1 <> j2)
 
 instance Monoid PartitionedDecs where
   mempty = PDecs mempty mempty mempty mempty mempty
-                 mempty mempty mempty mempty
+                 mempty mempty mempty mempty mempty
 
 -- | Split up a @[DDec]@ into its pieces, extracting 'Ord' instances
 -- from deriving clauses
@@ -287,10 +288,16 @@ partitionDeriving mb_strat deriv_pred mb_ctxt ty data_decl =
           -- See Note [DerivedDecl] in Data.Singletons.TH.Syntax
         , ( eqName,   do -- These will become PEq/SEq instances...
                          inst_for_promotion <- mk_instance mkEqInstance
-                         -- ...and these will become SDecide/TestEquality/TestCoercion instances.
+                         -- ...and these will become SDecide/Eq/TestEquality/TestCoercion instances.
                          let inst_for_decide = derived_decl
                          return $ mempty { pd_instance_decs   = [inst_for_promotion]
                                          , pd_derived_eq_decs = [inst_for_decide] } )
+        , ( ordName,  do -- These will become POrd/SOrd instances...
+                         inst_for_promotion <- mk_instance mkOrdInstance
+                         -- ...and this will become an Ord instance.
+                         let inst_for_ord = derived_decl
+                         pure $ mempty { pd_instance_decs    = [inst_for_promotion]
+                                       , pd_derived_ord_decs = [inst_for_ord] } )
         , ( showName, do -- These will become PShow/SShow instances...
                          inst_for_promotion <- mk_instance mkShowInstance
                          -- ...and this will become a Show instance.

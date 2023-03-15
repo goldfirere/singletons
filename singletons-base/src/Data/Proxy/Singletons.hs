@@ -71,6 +71,9 @@ type ProxySym0 :: Proxy t
 type family ProxySym0 where
   ProxySym0 = 'Proxy
 
+instance Eq (SProxy z) where
+  _ == _ = True
+
 instance SDecide (Proxy t) where
   SProxy %~ SProxy = Proved Refl
 
@@ -79,6 +82,9 @@ instance TestEquality SProxy where
 
 instance TestCoercion SProxy where
   testCoercion = decideCoercion
+
+instance Ord (SProxy z) where
+  compare _ _ = EQ
 
 instance Show (SProxy z) where
   showsPrec _ _ = showString "SProxy"

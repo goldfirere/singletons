@@ -247,6 +247,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+    instance Eq (SConstant (z :: Constant a b)) where
+      (==) _ _ = True
     instance SDecide a =>
              Data.Type.Equality.TestEquality (SConstant :: Constant a b
                                                            -> Type) where
@@ -263,6 +265,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+    instance Eq (SIdentity (z :: Identity a)) where
+      (==) _ _ = True
     instance SDecide a =>
              Data.Type.Equality.TestEquality (SIdentity :: Identity a
                                                            -> Type) where
@@ -273,6 +277,10 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                                                            -> Type) where
       Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
+    instance Ord (SConstant (z :: Constant a b)) where
+      compare _ _ = EQ
+    instance Ord (SIdentity (z :: Identity a)) where
+      compare _ _ = EQ
     instance SingI n => SingI (Constant (n :: a)) where
       sing = SConstant sing
     instance SingI1 Constant where

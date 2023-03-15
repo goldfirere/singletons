@@ -192,6 +192,7 @@ data DerivedDecl (cls :: Type -> Constraint) = DerivedDecl
   }
 
 type DerivedEqDecl   = DerivedDecl Eq
+type DerivedOrdDecl  = DerivedDecl Ord
 type DerivedShowDecl = DerivedDecl Show
 
 {- Note [DerivedDecl]
@@ -212,13 +213,14 @@ encode just enough information to recreate the derived instance:
 Why are these instances handled outside of partitionDecs?
 
 * Deriving Eq in singletons-th not only derives PEq/SEq instances, but it also
-  derives SDecide, TestEquality, and TestCoercion instances.
-  Data.Singletons.TH.Single (depending on the task at hand).
+  derives SDecide, Eq, TestEquality, and TestCoercion instances.
+* Deriving Ord in singletons-th not only derives POrd/SOrd instances, but it also
+  derives Ord instances for the singleton types themselves.
 * Deriving Show in singletons-th not only derives PShow/SShow instances, but it
-  also derives Show instances for singletons-th types.
+  also derives Show instances for the singleton types themselves.
 
 To make this work, we let partitionDecs handle the P{Eq,Show} and S{Eq,Show}
 instances, but we also stick the relevant info into a DerivedDecl value for
 later use in Data.Singletons.TH.Single, where we additionally generate
-SDecide, TestEquality, TestCoercion and Show instances for singleton types.
+SDecide, Eq, TestEquality, TestCoercion and Show instances for singleton types.
 -}

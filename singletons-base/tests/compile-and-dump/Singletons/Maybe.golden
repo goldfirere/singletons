@@ -166,6 +166,8 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
             Proved Refl -> Proved Refl
             Disproved contra
               -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+    instance Eq (SMaybe (z :: Maybe a)) where
+      (==) _ _ = True
     instance SDecide a =>
              Data.Type.Equality.TestEquality (SMaybe :: Maybe a -> Type) where
       Data.Type.Equality.testEquality
