@@ -292,7 +292,7 @@ singDataSAK ::
      MonadFail q
   => DKind
      -- ^ The standalone kind signature for the original data type
-  -> [DTyVarBndrUnit]
+  -> [DTyVarBndrVis]
      -- ^ The user-written binders for the original data type
   -> DKind
      -- ^ The original data type, promoted to a kind
@@ -346,7 +346,7 @@ matchUpSigWithDecl ::
      MonadFail q
   => DFunArgs
      -- ^ The quantifiers in the data type's standalone kind signature
-  -> [DTyVarBndrUnit]
+  -> [DTyVarBndrVis]
      -- ^ The user-written binders in the data type declaration
   -> q [DTyVarBndrSpec]
 matchUpSigWithDecl = go_fun_args Map.empty
@@ -366,7 +366,7 @@ matchUpSigWithDecl = go_fun_args Map.empty
          -- After matching up the @a@ in @forall a ->@ with @x@, this
          -- substitution will be extended with @[a :-> x]@. This ensures that
          -- we will produce @Maybe x@ instead of @Maybe a@ in the kind for @y@.
-      -> DFunArgs -> [DTyVarBndrUnit] -> q [DTyVarBndrSpec]
+      -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
     go_fun_args _ DFANil [] =
       pure []
     -- This should not happen, per the function's precondition
@@ -397,7 +397,7 @@ matchUpSigWithDecl = go_fun_args Map.empty
     go_fun_args _ _ [] =
       fail "matchUpSigWithDecl.go_fun_args: Too few binders"
 
-    go_invis_tvbs :: DSubst -> [DTyVarBndrSpec] -> DFunArgs -> [DTyVarBndrUnit] -> q [DTyVarBndrSpec]
+    go_invis_tvbs :: DSubst -> [DTyVarBndrSpec] -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
     go_invis_tvbs subst [] sig_args data_bndrs =
       go_fun_args subst sig_args data_bndrs
     go_invis_tvbs subst (invis_tvb:invis_tvbs) sig_args data_bndrs = do
@@ -405,7 +405,7 @@ matchUpSigWithDecl = go_fun_args Map.empty
       sig_args' <- go_invis_tvbs subst' invis_tvbs sig_args data_bndrs
       pure $ invis_tvb' : sig_args'
 
-    go_vis_tvbs :: DSubst -> [DTyVarBndrUnit] -> DFunArgs -> [DTyVarBndrUnit] -> q [DTyVarBndrSpec]
+    go_vis_tvbs :: DSubst -> [DTyVarBndrUnit] -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
     go_vis_tvbs subst [] sig_args data_bndrs =
       go_fun_args subst sig_args data_bndrs
     -- This should not happen, per the function's precondition

@@ -159,7 +159,7 @@ promoteInstance :: OptionsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 promoteInstance mk_inst class_name name = do
   (df, tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
                                 ++ " for it.") name
-  tvbs' <- mapM dsTvbUnit tvbs
+  tvbs' <- mapM dsTvbVis tvbs
   let data_ty   = foldTypeTvbs (DConT name) tvbs'
   cons' <- concatMapM (dsCon tvbs' data_ty) cons
   let data_decl = DataDecl df name tvbs' cons'
@@ -290,7 +290,7 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
       -- /don't/ use the type variable binders from the method's type...
       (_, argKs, resK) <- promoteUnraveled ty
       args <- mapM (const $ qNewName "arg") argKs
-      let proTvbs = zipWith (`DKindedTV` ()) args argKs
+      let proTvbs = zipWith (`DKindedTV` BndrReq) args argKs
       -- ...instead, compute the type variable binders in a left-to-right order,
       -- since that is the same order that the promoted method's kind will use.
       -- See Note [Promoted class methods and kind variable ordering]
@@ -353,7 +353,7 @@ decided not to use this hack unless someone specifically requests it.
 -- returns (unpromoted method name, ALetDecRHS) pairs
 promoteInstanceDec :: OMap Name DType
                       -- Class method type signatures
-                   -> Map Name [DTyVarBndrUnit]
+                   -> Map Name [DTyVarBndrVis]
                       -- Class header type variable (e.g., if `class C a b` is
                       -- quoted, then this will have an entry for {C |-> [a, b]})
                    -> UInstDecl -> PrM AInstDecl
@@ -375,7 +375,7 @@ promoteInstanceDec orig_meth_sigs cls_tvbs_map
                                             inst_kis) meths']
   return (decl { id_meths = zip (map fst meths) ann_rhss })
   where
-    lookup_cls_tvbs :: PrM [DTyVarBndrUnit]
+    lookup_cls_tvbs :: PrM [DTyVarBndrVis]
     lookup_cls_tvbs =
       -- First, try consulting the map of class names to their type variables.
       -- It is important to do this first to ensure that we consider locally
@@ -387,7 +387,7 @@ promoteInstanceDec orig_meth_sigs cls_tvbs_map
           -- If the class isn't present in this map, we try reifying the class
           -- as a last resort.
 
-    reify_cls_tvbs :: PrM [DTyVarBndrUnit]
+    reify_cls_tvbs :: PrM [DTyVarBndrVis]
     reify_cls_tvbs = do
       opts <- getOptions
       let pClsName = promotedClassName opts cls_name
@@ -399,7 +399,7 @@ promoteInstanceDec orig_meth_sigs cls_tvbs_map
         Just tvbs -> pure tvbs
         Nothing -> fail $ "Cannot find class declaration annotation for " ++ show cls_name
 
-    extract_tvbs :: PrM (Maybe DInfo) -> MaybeT PrM [DTyVarBndrUnit]
+    extract_tvbs :: PrM (Maybe DInfo) -> MaybeT PrM [DTyVarBndrVis]
     extract_tvbs reify_info = do
       mb_info <- lift reify_info
       case mb_info of
@@ -737,10 +737,10 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
       opts <- getOptions
       tyvarNames <- replicateM ty_num_args (qNewName "a")
       let proName    = promotedValueName opts name mb_let_uniq
-          local_tvbs = map (`DPlainTV` ()) all_locals
+          local_tvbs = map (`DPlainTV` BndrReq) all_locals
           m_fixity   = OMap.lookup name fix_env
 
-          mk_tf_head :: [DTyVarBndrUnit] -> DFamilyResultSig -> DTypeFamilyHead
+          mk_tf_head :: [DTyVarBndrVis] -> DFamilyResultSig -> DTypeFamilyHead
           mk_tf_head arg_tvbs res_sig =
             dTypeFamilyHead_with_locals proName all_locals arg_tvbs res_sig
 
@@ -749,7 +749,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
             case m_ldrki of
               -- 1. We have no kind information whatsoever.
               Nothing ->
-                let arg_tvbs = map (`DPlainTV` ()) tyvarNames in
+                let arg_tvbs = map (`DPlainTV` BndrReq) tyvarNames in
                 ( OSet.empty
                 , Nothing
                 , DefunNoSAK (local_tvbs ++ arg_tvbs) Nothing
@@ -757,7 +757,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                 )
               -- 2. We have some kind information in the form of a LetDecRHSKindInfo.
               Just (LDRKI m_sak tvbs argKs resK) ->
-                let arg_tvbs = zipWith (`DKindedTV` ()) tyvarNames argKs
+                let arg_tvbs = zipWith (`DKindedTV` BndrReq) tyvarNames argKs
                     lde_kvs_to_bind' = OSet.fromList (map extractTvbName tvbs) in
                 case m_sak of
                   -- 2(a). We do not have a standalone kind signature.
@@ -1050,9 +1050,9 @@ promoteExp (DLamE names exp) = do
   let var_proms = zip names tyNames
   (rhs, ann_exp) <- lambdaBind var_proms $ promoteExp exp
   all_locals <- allLocals
-  let tvbs     = map (`DPlainTV` ()) tyNames
+  let tvbs     = map (`DPlainTV` BndrReq) tyNames
       all_args = all_locals ++ tyNames
-      all_tvbs = map (`DPlainTV` ()) all_args
+      all_tvbs = map (`DPlainTV` BndrReq) all_args
       tfh      = dTypeFamilyHead_with_locals lambdaName all_locals tvbs DNoSig
   emitDecs [DClosedTypeFamilyD
               tfh
@@ -1070,7 +1070,7 @@ promoteExp (DCaseE exp matches) = do
   (exp', ann_exp)     <- promoteExp exp
   (eqns, ann_matches) <- mapAndUnzipM (promoteMatch prom_case) matches
   tyvarName  <- qNewName "t"
-  let tvbs = [DPlainTV tyvarName ()]
+  let tvbs = [DPlainTV tyvarName BndrReq]
       tfh  = dTypeFamilyHead_with_locals caseTFName all_locals tvbs DNoSig
   emitDecs [DClosedTypeFamilyD tfh eqns]
     -- See Note [Annotate case return type] in Single
@@ -1159,7 +1159,7 @@ dTypeFamilyHead_with_locals ::
   -- ^ Name of type family
   -> [Name]
   -- ^ Local variables
-  -> [DTyVarBndrUnit]
+  -> [DTyVarBndrVis]
   -- ^ Variables for type family arguments
   -> DFamilyResultSig
   -- ^ Type family result
@@ -1167,7 +1167,7 @@ dTypeFamilyHead_with_locals ::
 dTypeFamilyHead_with_locals tf_nm local_nms arg_tvbs res_sig =
   DTypeFamilyHead
     tf_nm
-    (map (`DPlainTV` ()) local_nms' ++ arg_tvbs')
+    (map (`DPlainTV` BndrReq) local_nms' ++ arg_tvbs')
     res_sig'
     Nothing
   where

@@ -381,6 +381,7 @@ noExactTyVars = everywhere go
   where
     go :: Data a => a -> a
     go = mkT (fix_tvb @Specificity)
+      `extT` fix_tvb @BndrVis
       `extT` fix_tvb @()
       `extT` fix_ty
       `extT` fix_inj_ann
@@ -541,7 +542,8 @@ foldTypeTvbs ty = foldType ty . map tvbToType
 -- from the data type's kind signature. This function is used when constructing
 -- a @DataDecl@ to ensure that it has a number of binders equal in length to the
 -- number of visible quantifiers in the data type's kind.
-buildDataDTvbs :: DsMonad q => [DTyVarBndrUnit] -> Maybe DKind -> q [DTyVarBndrUnit]
+-- from the data type's kind signature.
+buildDataDTvbs :: DsMonad q => [DTyVarBndrVis] -> Maybe DKind -> q [DTyVarBndrVis]
 buildDataDTvbs tvbs mk = do
   extra_tvbs <- mkExtraDKindBinders $ fromMaybe (DConT typeKindName) mk
   pure $ tvbs ++ extra_tvbs
