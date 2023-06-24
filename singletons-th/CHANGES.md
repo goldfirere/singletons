@@ -13,6 +13,8 @@ next [????.??.??]
   instance Ord (SExample a) where
     compare _ _ = EQ
   ```
+* Fix a bug in which data types using visible dependent quantification would
+  generate ill-scoped code when singled.
 
 3.2 [2023.03.12]
 ----------------
