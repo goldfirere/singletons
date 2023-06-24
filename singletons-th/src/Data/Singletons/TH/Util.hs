@@ -188,6 +188,16 @@ extractTvbName :: DTyVarBndr flag -> Name
 extractTvbName (DPlainTV n _)    = n
 extractTvbName (DKindedTV n _ _) = n
 
+-- Map over the 'Name' of a 'DTyVarBndr'.
+mapDTVName :: (Name -> Name) -> DTyVarBndr flag -> DTyVarBndr flag
+mapDTVName f (DPlainTV name flag) = DPlainTV (f name) flag
+mapDTVName f (DKindedTV name flag kind) = DKindedTV (f name) flag kind
+
+-- Map over the 'DKind' of a 'DTyVarBndr'.
+mapDTVKind :: (DKind -> DKind) -> DTyVarBndr flag -> DTyVarBndr flag
+mapDTVKind _ tvb@(DPlainTV{}) = tvb
+mapDTVKind f (DKindedTV name flag kind) = DKindedTV name flag (f kind)
+
 tvbToType :: DTyVarBndr flag -> DType
 tvbToType = DVarT . extractTvbName
 
@@ -363,11 +373,6 @@ filterInvisTvbArgs (DFAForalls tele args) =
     DForallVis   _     -> res
     DForallInvis tvbs' -> tvbs' ++ res
 
--- Infer the kind of a DTyVarBndr by using information from a DVisFunArg.
-replaceTvbKind :: DVisFunArg -> DTyVarBndrUnit -> DTyVarBndrUnit
-replaceTvbKind (DVisFADep tvb) _   = tvb
-replaceTvbKind (DVisFAAnon k)  tvb = DKindedTV (extractTvbName tvb) () k
-
 -- changes all TyVars not to be NameU's. Workaround for GHC#11812/#17537/#19743
 noExactTyVars :: Data a => a -> a
 noExactTyVars = everywhere go
@@ -424,11 +429,11 @@ subst_tele s (DForallInvis tvbs) = second DForallInvis $ subst_tvbs s tvbs
 subst_tele s (DForallVis   tvbs) = second DForallVis   $ subst_tvbs s tvbs
 
 subst_tvbs :: Map Name DKind -> [DTyVarBndr flag] -> (Map Name DKind, [DTyVarBndr flag])
-subst_tvbs = mapAccumL subst_tvb
+subst_tvbs = mapAccumL substTvb
 
-subst_tvb :: Map Name DKind -> DTyVarBndr flag -> (Map Name DKind, DTyVarBndr flag)
-subst_tvb s tvb@(DPlainTV n _) = (Map.delete n s, tvb)
-subst_tvb s (DKindedTV n f k)  = (Map.delete n s, DKindedTV n f (substKind s k))
+substTvb :: Map Name DKind -> DTyVarBndr flag -> (Map Name DKind, DTyVarBndr flag)
+substTvb s tvb@(DPlainTV n _) = (Map.delete n s, tvb)
+substTvb s (DKindedTV n f k)  = (Map.delete n s, DKindedTV n f (substKind s k))
 
 dropTvbKind :: DTyVarBndr flag -> DTyVarBndr flag
 dropTvbKind tvb@(DPlainTV {}) = tvb
@@ -443,7 +448,9 @@ foldTypeTvbs :: DType -> [DTyVarBndr flag] -> DType
 foldTypeTvbs ty = foldType ty . map tvbToType
 
 -- Construct a data type's variable binders, possibly using fresh variables
--- from the data type's kind signature.
+-- from the data type's kind signature. This function is used when constructing
+-- a @DataDecl@ to ensure that it has a number of binders equal in length to the
+-- number of visible quantifiers in the data type's kind.
 buildDataDTvbs :: DsMonad q => [DTyVarBndrUnit] -> Maybe DKind -> q [DTyVarBndrUnit]
 buildDataDTvbs tvbs mk = do
   extra_tvbs <- mkExtraDKindBinders $ fromMaybe (DConT typeKindName) mk

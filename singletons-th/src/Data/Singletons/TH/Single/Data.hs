@@ -6,11 +6,17 @@ rae@cs.brynmawr.edu
 Singletonizes constructors.
 -}
 
-module Data.Singletons.TH.Single.Data where
+module Data.Singletons.TH.Single.Data
+  ( singDataD
+  , singCtor
+  ) where
 
 import Language.Haskell.TH.Desugar as Desugar
 import Language.Haskell.TH.Syntax
+import qualified Data.Map.Strict as Map
+import Data.Map.Strict (Map)
 import Data.Maybe
+import Data.Traversable (mapAccumL)
 import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
 import Data.Singletons.TH.Promote.Type
@@ -66,37 +72,23 @@ singDataD (DataDecl df name tvbs ctors) = do
       mk_data_dec kind =
         DDataD Data [] singDataName [] (Just kind) ctors' []
 
-      data_decs = case mb_data_sak of
-        -- No standalone kind signature. Try to figure out the order of kind
-        -- variables on a best-effort basis.
-        Nothing ->
-          let sing_tvbs = changeDTVFlags SpecifiedSpec $
-                          toposortTyVarsOf $ map dTyVarBndrToDType tvbs
-              kinded_sing_ty = DForallT (DForallInvis sing_tvbs) $
-                               DArrowT `DAppT` k `DAppT` DConT typeKindName in
-          [mk_data_dec kinded_sing_ty]
+  data_decs <- case mb_data_sak of
+    -- No standalone kind signature. Try to figure out the order of kind
+    -- variables on a best-effort basis.
+    Nothing -> do
+      let sing_tvbs = changeDTVFlags SpecifiedSpec $
+                      toposortTyVarsOf $ map dTyVarBndrToDType tvbs
+          kinded_sing_ty = DForallT (DForallInvis sing_tvbs) $
+                           DArrowT `DAppT` k `DAppT` DConT typeKindName
+      pure [mk_data_dec kinded_sing_ty]
 
-        -- A standalone kind signature is provided, so use that to determine the
-        -- order of kind variables.
-        Just data_sak ->
-          let (args, _)  = unravelDType data_sak
-              vis_args   = filterDVisFunArgs args
-              vis_tvbs   = changeDTVFlags SpecifiedSpec $
-                           zipWith replaceTvbKind vis_args tvbs
-              invis_args = filterInvisTvbArgs args
-              -- If the standalone kind signature did not explicitly quantify its
-              -- kind variables, do so ourselves. This is very similar to what
-              -- D.S.TH.Single.Type.singTypeKVBs does.
-              invis_tvbs | null invis_args
-                         = changeDTVFlags SpecifiedSpec $
-                           toposortTyVarsOf [data_sak]
-                         | otherwise
-                         = invis_args
-              sing_data_sak = DForallT (DForallInvis (invis_tvbs ++ vis_tvbs)) $
-                              DArrowT `DAppT` k `DAppT` DConT typeKindName in
-          [ DKiSigD singDataName sing_data_sak
-          , mk_data_dec sing_data_sak
-          ]
+    -- A standalone kind signature is provided, so use that to determine the
+    -- order of kind variables.
+    Just data_sak -> do
+      sing_data_sak <- singDataSAK data_sak tvbs k
+      pure [ DKiSigD singDataName sing_data_sak
+           , mk_data_dec sing_data_sak
+           ]
 
   return $ data_decs ++
            singSynInst :
@@ -260,6 +252,201 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
     mk_bang_type :: Bang -> DType -> SgM DBangType
     mk_bang_type b index = do b' <- mk_bang b
                               pure (b', DAppT singFamily index)
+
+-- @'singDataSAK' sak data_bndrs@ produces a standalone kind signature for a
+-- singled data declaration, using the original data type's standalone kind
+-- signature (@sak@) and its user-written binders (@data_bndrs@) as a template.
+-- For this example:
+--
+-- @
+-- type D :: forall j k. k -> j -> Type
+-- data D (a :: l) b = ...
+-- @
+--
+-- We would produce the following standalone kind signature:
+--
+-- @
+-- type SD :: forall j l (a :: l) (b :: j). D a b -> Type
+-- @
+--
+-- Note that:
+--
+-- * This function has a precondition that the length of @data_bndrs@ must
+--   always be equal to the number of visible quantifiers in @sak@.
+--   @singletons-th@ maintains this invariant when constructing a 'DataDecl'
+--   (see the 'buildDataDTvbs' function).
+--
+-- * The order of the invisible quantifiers is preserved, so both
+--   @D \@Bool \@Ordering@ and @SD \@Bool \@Ordering@ will work the way you would
+--   expect it to.
+--
+-- * Whenever possible, this function reuses type variable names from the data
+--   type's user-written binders. This is why the standalone kind signature uses
+--   @forall j l@ instead of @forall j k@, since the @(a :: l)@ binder uses @l@
+--   instead of @k@. We could have just as well chose the other way around, but
+--   we chose to pick variable names from the data type binders since they scope
+--   over other parts of the data type declaration (e.g., in @deriving@
+--   clauses), so keeping these names avoids having to perform some
+--   alpha-renaming.
+singDataSAK ::
+     MonadFail q
+  => DKind
+     -- ^ The standalone kind signature for the original data type
+  -> [DTyVarBndrUnit]
+     -- ^ The user-written binders for the original data type
+  -> DKind
+     -- ^ The original data type, promoted to a kind
+  -> q DKind
+     -- ^ The standalone kind signature for the singled data type
+singDataSAK data_sak data_bndrs data_k = do
+  -- (1) First, explicitly quantify any free kind variables in `data_sak`. This
+  -- is done to ensure that `matchUpSigWithDecl`'s precondition is upheld (see
+  -- the Haddocks for that function).
+  let data_sak_free_tvbs =
+        changeDTVFlags SpecifiedSpec $ toposortTyVarsOf [data_sak]
+      data_sak' = DForallT (DForallInvis data_sak_free_tvbs) data_sak
+
+  -- (2) Next, compute type variable binders for the singled data type's
+  -- standalone kind signature using `matchUpSigWithDecl`. Note that these can
+  -- be biased towards type variable names mention in `data_sak` over names
+  -- mentioned in `data_bndrs`, but we will fix that up in the next step.
+  let (data_sak_args, _) = unravelDType data_sak'
+  sing_sak_tvbs <- matchUpSigWithDecl data_sak_args data_bndrs
+
+  -- (3) Swizzle the type variable names so that names in `data_bndrs` are
+  -- preferred over names in `data_sak`.
+  --
+  -- This is heavily inspired by similar code in GHC:
+  -- https://gitlab.haskell.org/ghc/ghc/-/blob/cec903899234bf9e25ea404477ba846ac1e963bb/compiler/GHC/Tc/Gen/HsType.hs#L2607-2616
+  let invis_data_sak_args = filterInvisTvbArgs data_sak_args
+      invis_data_sak_arg_nms = map extractTvbName invis_data_sak_args
+
+      invis_data_bndrs = toposortKindVarsOfTvbs data_bndrs
+      invis_data_bndr_nms = map extractTvbName invis_data_bndrs
+
+      swizzle_env =
+        Map.fromList $ zip invis_data_sak_arg_nms invis_data_bndr_nms
+      (_, swizzled_sing_sak_tvbs) =
+        mapAccumL (swizzleTvb swizzle_env) Map.empty sing_sak_tvbs
+
+  -- (4) Finally, construct the kind of the singled data type.
+  pure $ DForallT (DForallInvis swizzled_sing_sak_tvbs)
+       $ DArrowT `DAppT` data_k `DAppT` DConT typeKindName
+
+-- Match the quantifiers in a data type's standalone kind signature with the
+-- binders in the data type declaration. This function assumes the precondition
+-- that the number of binders in the data type declaration is equal to the
+-- number of visible quantifiers in the standalone kind signature.
+--
+-- The implementation of this function is heavily based on a GHC function of
+-- the same name:
+-- https://gitlab.haskell.org/ghc/ghc/-/blob/1464a2a8de082f66ae250d63ab9d94dbe2ef8620/compiler/GHC/Tc/Gen/HsType.hs#L2645-2715
+matchUpSigWithDecl ::
+     forall q.
+     MonadFail q
+  => DFunArgs
+     -- ^ The quantifiers in the data type's standalone kind signature
+  -> [DTyVarBndrUnit]
+     -- ^ The user-written binders in the data type declaration
+  -> q [DTyVarBndrSpec]
+matchUpSigWithDecl = go_fun_args Map.empty
+  where
+    go_fun_args ::
+         DSubst
+         -- ^ A substitution from visible, dependent binders in the standalone
+         -- kind signature to corresponding binders in the user-written binders.
+         -- (See the Haddocks for `singDataSAK` for an explanation of why we
+         -- perform this substitution.) For example:
+         --
+         -- @
+         -- type T :: forall a -> Maybe a -> Type
+         -- data T x y
+         -- @
+         --
+         -- After matching up the @a@ in @forall a ->@ with @x@, this
+         -- substitution will be extended with @[a :-> x]@. This ensures that
+         -- we will produce @Maybe x@ instead of @Maybe a@ in the kind for @y@.
+      -> DFunArgs -> [DTyVarBndrUnit] -> q [DTyVarBndrSpec]
+    go_fun_args _ DFANil [] =
+      pure []
+    -- This should not happen, per the function's precondition
+    go_fun_args _ DFANil data_bndrs =
+      fail $ "matchUpSigWithDecl.go_fun_args: Too many binders: " ++ show data_bndrs
+    -- GHC now disallows kind-level constraints, per this GHC proposal:
+    -- https://github.com/ghc-proposals/ghc-proposals/blob/b0687d96ce8007294173b7f628042ac4260cc738/proposals/0547-no-kind-equalities.rst
+    go_fun_args _ (DFACxt{}) _ =
+      fail "matchUpSigWithDecl.go_fun_args: Unexpected kind-level constraint"
+    go_fun_args subst (DFAForalls (DForallInvis tvbs) sig_args) data_bndrs =
+      go_invis_tvbs subst tvbs sig_args data_bndrs
+    go_fun_args subst (DFAForalls (DForallVis tvbs) sig_args) data_bndrs =
+      go_vis_tvbs subst tvbs sig_args data_bndrs
+    go_fun_args subst (DFAAnon anon sig_args) (data_bndr:data_bndrs) = do
+      let data_bndr_name = extractTvbName data_bndr
+          mb_data_bndr_kind = extractTvbKind data_bndr
+          anon' = substType subst anon
+
+          anon'' =
+            case mb_data_bndr_kind of
+              Nothing -> anon'
+              Just data_bndr_kind ->
+                let mb_match_subst = matchTy NoIgnore data_bndr_kind anon' in
+                maybe data_bndr_kind (`substType` data_bndr_kind) mb_match_subst
+      sig_args' <- go_fun_args subst sig_args data_bndrs
+      pure $ DKindedTV data_bndr_name SpecifiedSpec anon'' : sig_args'
+    -- This should not happen, per the function's precondition
+    go_fun_args _ _ [] =
+      fail "matchUpSigWithDecl.go_fun_args: Too few binders"
+
+    go_invis_tvbs :: DSubst -> [DTyVarBndrSpec] -> DFunArgs -> [DTyVarBndrUnit] -> q [DTyVarBndrSpec]
+    go_invis_tvbs subst [] sig_args data_bndrs =
+      go_fun_args subst sig_args data_bndrs
+    go_invis_tvbs subst (invis_tvb:invis_tvbs) sig_args data_bndrs = do
+      let (subst', invis_tvb') = substTvb subst invis_tvb
+      sig_args' <- go_invis_tvbs subst' invis_tvbs sig_args data_bndrs
+      pure $ invis_tvb' : sig_args'
+
+    go_vis_tvbs :: DSubst -> [DTyVarBndrUnit] -> DFunArgs -> [DTyVarBndrUnit] -> q [DTyVarBndrSpec]
+    go_vis_tvbs subst [] sig_args data_bndrs =
+      go_fun_args subst sig_args data_bndrs
+    -- This should not happen, per the function's precondition
+    go_vis_tvbs _ (_:_) _ [] =
+      fail $ "matchUpSigWithDecl.go_vis_tvbs: Too few binders"
+    go_vis_tvbs subst (vis_tvb:vis_tvbs) sig_args (data_bndr:data_bndrs) = do
+      let data_bndr_name = extractTvbName data_bndr
+          mb_data_bndr_kind = extractTvbKind data_bndr
+
+          vis_tvb_name = extractTvbName vis_tvb
+          mb_vis_tvb_kind = substType subst <$> extractTvbKind vis_tvb
+
+          mb_kind :: Maybe DKind
+          mb_kind =
+            case (mb_data_bndr_kind, mb_vis_tvb_kind) of
+              (Nothing,             Nothing)           -> Nothing
+              (Just data_bndr_kind, Nothing)           -> Just data_bndr_kind
+              (Nothing,             Just vis_tvb_kind) -> Just vis_tvb_kind
+              (Just data_bndr_kind, Just vis_tvb_kind) -> do
+                match_subst <- matchTy NoIgnore data_bndr_kind vis_tvb_kind
+                Just $ substType match_subst data_bndr_kind
+
+          subst' = Map.insert vis_tvb_name (DVarT data_bndr_name) subst
+      sig_args' <- go_vis_tvbs subst' vis_tvbs sig_args data_bndrs
+      pure $ case mb_kind of
+        Nothing   -> DPlainTV  data_bndr_name SpecifiedSpec      : sig_args'
+        Just kind -> DKindedTV data_bndr_name SpecifiedSpec kind : sig_args'
+
+-- This is heavily inspired by the `swizzleTcb` function in GHC:
+-- https://gitlab.haskell.org/ghc/ghc/-/blob/cec903899234bf9e25ea404477ba846ac1e963bb/compiler/GHC/Tc/Gen/HsType.hs#L2741-2755
+swizzleTvb :: Map Name Name -> DSubst -> DTyVarBndrSpec -> (DSubst, DTyVarBndrSpec)
+swizzleTvb swizzle_env subst tvb =
+  (subst', tvb2)
+  where
+    subst' = Map.insert tvb_name (DVarT (extractTvbName tvb2)) subst
+    tvb_name = extractTvbName tvb
+    tvb1 = mapDTVKind (substType subst) tvb
+    tvb2 =
+      case Map.lookup tvb_name swizzle_env of
+        Just user_name -> mapDTVName (const user_name) tvb1
+        Nothing        -> tvb1
 
 {-
 Note [singletons-th and record selectors]
