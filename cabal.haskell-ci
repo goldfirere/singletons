@@ -2,6 +2,5 @@ distribution:           bionic
 no-tests-no-benchmarks: False
 unconstrained:          False
 jobs-selection:         any
-github-patches:         haskell-ci.yml.patch
 -- Needed to avoid https://github.com/haskell/cabal/issues/5423
 haddock-components:     libs
