@@ -2,7 +2,21 @@ packages: ./singletons
           ./singletons-th
           ./singletons-base
 
+-- TODO RGS: Remove this when
+-- https://github.com/glguy/th-abstraction/pull/104 has landed
+source-repository-package
+  type: git
+  location: https://github.com/glguy/th-abstraction
+  tag: a3314597fe39f78db6c62127d3c0aa0e5f60bccd
+
+-- TODO RGS: Remove this
+source-repository-package
+  type: git
+  location: https://github.com/RyanGlScott/th-lift
+  tag: 8f0a43f64df8dcff2e7aa0f3c2861013cdf7175c
+
+-- TODO RGS: Make sure this th-desugar commit has landed before merging
 source-repository-package
   type: git
   location: https://github.com/goldfirere/th-desugar
-  tag: f7db712e95a125e710cefc7cd819c6480f7e52e3
+  tag: e42d8c78ebe2d5531ba3c3c6379a7a7372c0250c
