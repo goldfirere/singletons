@@ -86,7 +86,7 @@ isInfixDataCon _       = False
 -- | Is an identifier a legal data constructor name in Haskell? That is, is its
 -- first character an uppercase letter (prefix) or a colon (infix)?
 isDataConName :: Name -> Bool
-isDataConName n = let first = head (nameBase n) in isUpper first || first == ':'
+isDataConName n = let first = headNameStr (nameBase n) in isUpper first || first == ':'
 
 -- | Is an identifier uppercase?
 --
@@ -95,7 +95,7 @@ isDataConName n = let first = head (nameBase n) in isUpper first || first == ':'
 -- If you want to check if a name is legal as a data constructor, use the
 -- 'isDataConName' function.
 isUpcase :: Name -> Bool
-isUpcase n = let first = head (nameBase n) in isUpper first
+isUpcase n = let first = headNameStr (nameBase n) in isUpper first
 
 -- Make an identifier uppercase. If the identifier is infix, this acts as the
 -- identity function.
@@ -114,9 +114,9 @@ toUpcaseStr (alpha, symb) n
 
   where
     str   = nameBase n
-    first = head str
+    first = headNameStr str
 
-    upcase_alpha = alpha ++ (toUpper first) : tail str
+    upcase_alpha = alpha ++ (toUpper first) : tailNameStr str
     upcase_symb = symb ++ str
 
 noPrefix :: (String, String)
@@ -138,7 +138,7 @@ prefixConName pre tyPre n = case (nameBase n) of
 prefixName :: String -> String -> Name -> Name
 prefixName pre tyPre n =
   let str = nameBase n
-      first = head str in
+      first = headNameStr str in
     if isHsLetter first
      then mkName (pre ++ str)
      else mkName (tyPre ++ str)
@@ -148,10 +148,26 @@ prefixName pre tyPre n =
 suffixName :: String -> String -> Name -> Name
 suffixName ident symb n =
   let str = nameBase n
-      first = head str in
+      first = headNameStr str in
   if isHsLetter first
   then mkName (str ++ ident)
   else mkName (str ++ symb)
+
+-- Return the first character in a Name's string (i.e., nameBase).
+-- Precondition: the string is non-empty.
+headNameStr :: String -> Char
+headNameStr str =
+  case str of
+    (c:_) -> c
+    [] -> error "headNameStr: Expected non-empty string"
+
+-- Drop the first character in a Name's string (i.e., nameBase).
+-- Precondition: the string is non-empty.
+tailNameStr :: String -> String
+tailNameStr str =
+  case str of
+    (_:cs) -> cs
+    [] -> error "tailNameStr: Expected non-empty string"
 
 -- convert a number into both alphanumeric and symoblic forms
 uniquePrefixes :: String   -- alphanumeric prefix
