@@ -1,0 +1,70 @@
+Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
+    promote
+      [d| konst :: a -> Bool -> a
+          konst x _ = x
+          f local
+            = g
+            where
+                g :: forall a. a -> a
+                g x = konst (x :: a) local |]
+  ======>
+    konst :: a -> Bool -> a
+    konst x _ = x
+    f local
+      = g
+      where
+          g :: forall a. a -> a
+          g x = konst (x :: a) local
+    data Let0123456789876543210GSym0 local0123456789876543210
+      where
+        Let0123456789876543210GSym0KindInference :: SameKind (Apply Let0123456789876543210GSym0 arg) (Let0123456789876543210GSym1 arg) =>
+                                                    Let0123456789876543210GSym0 local0123456789876543210
+    type instance Apply Let0123456789876543210GSym0 local0123456789876543210 = Let0123456789876543210GSym1 local0123456789876543210
+    instance SuppressUnusedWarnings Let0123456789876543210GSym0 where
+      suppressUnusedWarnings
+        = snd ((,) Let0123456789876543210GSym0KindInference ())
+    data Let0123456789876543210GSym1 local0123456789876543210 :: (~>) a0123456789876543210 a0123456789876543210
+      where
+        Let0123456789876543210GSym1KindInference :: SameKind (Apply (Let0123456789876543210GSym1 local0123456789876543210) arg) (Let0123456789876543210GSym2 local0123456789876543210 arg) =>
+                                                    Let0123456789876543210GSym1 local0123456789876543210 a0123456789876543210
+    type instance Apply (Let0123456789876543210GSym1 local0123456789876543210) a0123456789876543210 = Let0123456789876543210G local0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (Let0123456789876543210GSym1 local0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) Let0123456789876543210GSym1KindInference ())
+    type family Let0123456789876543210GSym2 local0123456789876543210 (a0123456789876543210 :: a0123456789876543210) :: a0123456789876543210 where
+      Let0123456789876543210GSym2 local0123456789876543210 a0123456789876543210 = Let0123456789876543210G local0123456789876543210 a0123456789876543210
+    type family Let0123456789876543210G local (a :: a) :: a where
+      Let0123456789876543210G local (x :: a) = Apply (Apply KonstSym0 (x :: a)) local
+    data FSym0 a0123456789876543210
+      where
+        FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
+                              FSym0 a0123456789876543210
+    type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
+    instance SuppressUnusedWarnings FSym0 where
+      suppressUnusedWarnings = snd ((,) FSym0KindInference ())
+    type family FSym1 a0123456789876543210 where
+      FSym1 a0123456789876543210 = F a0123456789876543210
+    type KonstSym0 :: (~>) a ((~>) Bool a)
+    data KonstSym0 :: (~>) a ((~>) Bool a)
+      where
+        KonstSym0KindInference :: SameKind (Apply KonstSym0 arg) (KonstSym1 arg) =>
+                                  KonstSym0 a0123456789876543210
+    type instance Apply KonstSym0 a0123456789876543210 = KonstSym1 a0123456789876543210
+    instance SuppressUnusedWarnings KonstSym0 where
+      suppressUnusedWarnings = snd ((,) KonstSym0KindInference ())
+    type KonstSym1 :: a -> (~>) Bool a
+    data KonstSym1 (a0123456789876543210 :: a) :: (~>) Bool a
+      where
+        KonstSym1KindInference :: SameKind (Apply (KonstSym1 a0123456789876543210) arg) (KonstSym2 a0123456789876543210 arg) =>
+                                  KonstSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (KonstSym1 a0123456789876543210) a0123456789876543210 = Konst a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (KonstSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd ((,) KonstSym1KindInference ())
+    type KonstSym2 :: a -> Bool -> a
+    type family KonstSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Bool) :: a where
+      KonstSym2 a0123456789876543210 a0123456789876543210 = Konst a0123456789876543210 a0123456789876543210
+    type family F a where
+      F local = Let0123456789876543210GSym1 local
+    type Konst :: a -> Bool -> a
+    type family Konst (a :: a) (a :: Bool) :: a where
+      Konst x _ = x

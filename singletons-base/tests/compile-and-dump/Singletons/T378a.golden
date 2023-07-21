@@ -51,7 +51,7 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
       ConstBASym2 a0123456789876543210 a0123456789876543210 = ConstBA a0123456789876543210 a0123456789876543210
     type ConstBA :: forall b a. a -> b -> a
     type family ConstBA (a :: a) (a :: b) :: a where
-      ConstBA x _ = x
+      ConstBA (x :: a) (_ :: b) = x
     sConstBA ::
       forall b a (t :: a) (t :: b). Sing t
                                     -> Sing t -> Sing (Apply (Apply ConstBASym0 t) t :: a)

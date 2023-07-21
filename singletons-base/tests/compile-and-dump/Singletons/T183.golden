@@ -309,8 +309,8 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
       Foo9 (x :: a) = Apply (Apply (Let0123456789876543210GSym1 x) x) Tuple0Sym0
     type Foo8 :: forall a. Maybe a -> Maybe a
     type family Foo8 (a :: Maybe a) :: Maybe a where
-      Foo8 ('Just (wild_0123456789876543210 :: a) :: Maybe a) = Let0123456789876543210XSym1 wild_0123456789876543210
-      Foo8 ('Nothing :: Maybe a) = Let0123456789876543210XSym0
+      Foo8 ('Just (wild_0123456789876543210 :: a) :: Maybe a :: Maybe a) = Let0123456789876543210XSym1 wild_0123456789876543210
+      Foo8 ('Nothing :: Maybe a :: Maybe a) = Let0123456789876543210XSym0
     type Foo7 :: a -> b -> a
     type family Foo7 (a :: a) (a :: b) :: a where
       Foo7 (x :: a) (wild_0123456789876543210 :: b) = x :: a
@@ -325,10 +325,10 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
       Foo4 a_0123456789876543210 = Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210
     type Foo3 :: forall a. Maybe a -> a
     type family Foo3 (a :: Maybe a) :: a where
-      Foo3 ('Just x) = x :: a
+      Foo3 ('Just x :: Maybe a) = x :: a
     type Foo2 :: forall a. Maybe a -> a
     type family Foo2 (a :: Maybe a) :: a where
-      Foo2 ('Just x :: Maybe a) = x :: a
+      Foo2 ('Just x :: Maybe a :: Maybe a) = x :: a
     type Foo1 :: Maybe a -> a
     type family Foo1 (a :: Maybe a) :: a where
       Foo1 ('Just x :: Maybe a) = x :: a

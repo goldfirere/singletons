@@ -132,6 +132,7 @@ tests =
     , compileAndDumpStdTest "T410"
     , compileAndDumpStdTest "T412"
     , compileAndDumpStdTest "T414"
+    , compileAndDumpStdTest "T433"
     , compileAndDumpStdTest "T443"
     , afterSingletonsNat .
       compileAndDumpStdTest "T445"

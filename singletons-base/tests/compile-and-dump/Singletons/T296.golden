@@ -46,7 +46,7 @@ Singletons/T296.hs:(0,0)-(0,0): Splicing declarations
       FSym1 a0123456789876543210 = F a0123456789876543210
     type F :: forall a. MyProxy a -> MyProxy a
     type family F (a :: MyProxy a) :: MyProxy a where
-      F MyProxy = Let0123456789876543210XSym0
+      F (MyProxy :: MyProxy a) = Let0123456789876543210XSym0
     sF ::
       forall a (t :: MyProxy a). Sing t
                                  -> Sing (Apply FSym0 t :: MyProxy a)

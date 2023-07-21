@@ -223,7 +223,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
       Foo5 x = Case_0123456789876543210 x x
     type Foo4 :: forall a. a -> a
     type family Foo4 (a :: a) :: a where
-      Foo4 x = Case_0123456789876543210 x x
+      Foo4 (x :: a) = Case_0123456789876543210 x x
     type Foo3 :: a -> b -> a
     type family Foo3 (a :: a) (a :: b) :: a where
       Foo3 a b = Case_0123456789876543210 a b (Let0123456789876543210Scrutinee_0123456789876543210Sym2 a b)

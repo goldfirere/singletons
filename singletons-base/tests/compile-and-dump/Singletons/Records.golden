@@ -46,10 +46,10 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       Field1Sym1 a0123456789876543210 = Field1 a0123456789876543210
     type Field2 :: forall a. Record a -> Bool
     type family Field2 (a :: Record a) :: Bool where
-      Field2 (MkRecord _ field) = field
+      Field2 (MkRecord _ field :: Record a) = field
     type Field1 :: forall a. Record a -> a
     type family Field1 (a :: Record a) :: a where
-      Field1 (MkRecord field _) = field
+      Field1 (MkRecord field _ :: Record a) = field
     sField2 ::
       forall a (t :: Record a). Sing t
                                 -> Sing (Apply Field2Sym0 t :: Bool)

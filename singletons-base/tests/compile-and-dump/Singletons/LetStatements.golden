@@ -726,7 +726,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       Foo13_ y = y
     type Foo13 :: forall a. a -> a
     type family Foo13 (a :: a) :: a where
-      Foo13 x = Apply Foo13_Sym0 (Let0123456789876543210BarSym1 x)
+      Foo13 (x :: a) = Apply Foo13_Sym0 (Let0123456789876543210BarSym1 x)
     type Foo12 :: Nat -> Nat
     type family Foo12 (a :: Nat) :: Nat where
       Foo12 x = Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) x) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))

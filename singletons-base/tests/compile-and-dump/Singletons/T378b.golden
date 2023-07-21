@@ -80,7 +80,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
       NatMinus ('Succ wild_0123456789876543210) 'Zero = Let0123456789876543210ASym1 wild_0123456789876543210
     type F :: forall b a. a -> b -> ()
     type family F (a :: a) (a :: b) :: () where
-      F _ _ = Tuple0Sym0
+      F (_ :: a) (_ :: b) = Tuple0Sym0
     type PC :: forall b a. a -> b -> Constraint
     class PC x y
     sNatMinus ::
