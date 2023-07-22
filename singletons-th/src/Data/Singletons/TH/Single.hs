@@ -716,8 +716,10 @@ singLetDecRHS cxts name ld_rhs = do
 
 singClause :: ADClause -> SgM DClause
 singClause (ADClause var_proms pats exp) = do
+  opts <- getOptions
   (sPats, sigPaExpsSigs) <- evalForPair $ mapM (singPat (Map.fromList var_proms)) pats
-  sBody <- singExp exp
+  let lambda_binds = map (\(n,_) -> (n, singledValueName opts n)) var_proms
+  sBody <- bindLambdas lambda_binds $ singExp exp
   return $ DClause sPats $ mkSigPaCaseE sigPaExpsSigs sBody
 
 singPat :: Map Name Name   -- from term-level names to type-level names
@@ -893,7 +895,7 @@ singExp (ADAppE e1 e2) = do
 singExp (ADLamE ty_names prom_lam names exp) = do
   opts <- getOptions
   let sNames = map (singledValueName opts) names
-  exp' <- singExp exp
+  exp' <- bindLambdas (zip names sNames) $ singExp exp
   -- we need to bind the type variables... but DLamE doesn't allow SigT patterns.
   -- So: build a case
   let caseExp = DCaseE (mkTupleDExp (map DVarE sNames))
@@ -995,8 +997,10 @@ isException (DStaticE e)          = isException e
 
 singMatch :: ADMatch -> SgM DMatch
 singMatch (ADMatch var_proms pat exp) = do
+  opts <- getOptions
   (sPat, sigPaExpsSigs) <- evalForPair $ singPat (Map.fromList var_proms) pat
-  sExp <- singExp exp
+  let lambda_binds = map (\(n,_) -> (n, singledValueName opts n)) var_proms
+  sExp <- bindLambdas lambda_binds $ singExp exp
   return $ DMatch sPat $ mkSigPaCaseE sigPaExpsSigs sExp
 
 singLit :: Lit -> SgM DExp
