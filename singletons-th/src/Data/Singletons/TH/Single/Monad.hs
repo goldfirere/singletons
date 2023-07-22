@@ -11,7 +11,8 @@ The SgM monad allows reading from a SgEnv environment and is wrapped around a Q.
 -}
 
 module Data.Singletons.TH.Single.Monad (
-  SgM, bindLets, bindContext, askContext, lookupVarE, lookupConE,
+  SgM, bindLambdas, bindLets, bindContext,
+  askContext, lookupVarE, lookupConE,
   wrapSingFun,
   singM, singDecsM,
   emitDecs, emitDecsM
@@ -35,14 +36,17 @@ import Control.Applicative
 -- environment during singling
 data SgEnv =
   SgEnv { sg_options     :: Options
-        , sg_let_binds   :: Map Name DExp   -- from the *original* name
+        , sg_local_vars  :: Map Name DExp
+          -- ^ Map from term-level 'Name's of local variables to their
+          -- singled counterparts. See @Note [Tracking local variables]@ in
+          -- "Data.Singletons.TH.Promote.Monad".
         , sg_context     :: DCxt -- See Note [Tracking the current type signature context]
         , sg_local_decls :: [Dec]
         }
 
 emptySgEnv :: SgEnv
 emptySgEnv = SgEnv { sg_options     = defaultOptions
-                   , sg_let_binds   = Map.empty
+                   , sg_local_vars  = Map.empty
                    , sg_context     = []
                    , sg_local_decls = []
                    }
@@ -59,10 +63,24 @@ instance DsMonad SgM where
 instance OptionsMonad SgM where
   getOptions = asks sg_options
 
+-- ^ Bring a list of lambda-bound names into scope for the duration the supplied
+-- computation, where the first element of each pair is the original, term-level
+-- name, and the second element of each pair is the singled counterpart.
+-- See @Note [Tracking local variables]@ in "Data.Singletons.TH.Promote.Monad".
+bindLambdas :: [(Name, Name)] -> SgM a -> SgM a
+bindLambdas lambdas = local add_binds
+  where add_binds env@(SgEnv { sg_local_vars = locals }) =
+          let new_locals = Map.fromList [ (tmN, DVarE tyN) | (tmN, tyN) <- lambdas ] in
+          env { sg_local_vars = new_locals `Map.union` locals }
+
+-- ^ Bring a list of let-bound names into scope for the duration the supplied
+-- computation, where the first element of each pair is the original, term-level
+-- name, and the second element of each pair is the singled counterpart.
+-- See @Note [Tracking local variables]@ in "Data.Singletons.TH.Promote.Monad".
 bindLets :: [(Name, DExp)] -> SgM a -> SgM a
-bindLets lets1 =
-  local (\env@(SgEnv { sg_let_binds = lets2 }) ->
-               env { sg_let_binds = (Map.fromList lets1) `Map.union` lets2 })
+bindLets lets =
+  local (\env@(SgEnv { sg_local_vars = locals }) ->
+               env { sg_local_vars = Map.fromList lets `Map.union` locals })
 
 -- Add some constraints to the current type signature context.
 -- See Note [Tracking the current type signature context]
@@ -76,12 +94,16 @@ bindContext ctxt1
 askContext :: SgM DCxt
 askContext = asks sg_context
 
+-- | Map a term-level 'Name' to its singled counterpart. This function is aware
+-- of any local variables that are currently in scope.
+-- See @Note [Tracking local variables]@ in "Data.Singletons.TH.Promote.Monad".
 lookupVarE :: Name -> SgM DExp
 lookupVarE name = do
   opts <- getOptions
   lookup_var_con (singledValueName opts)
                  (DVarE . singledValueName opts) name
 
+-- | Map a data constructor name to its singled counterpart.
 lookupConE :: Name -> SgM DExp
 lookupConE name = do
   opts <- getOptions
@@ -91,9 +113,9 @@ lookupConE name = do
 lookup_var_con :: (Name -> Name) -> (Name -> DExp) -> Name -> SgM DExp
 lookup_var_con mk_sing_name mk_exp name = do
   opts <- getOptions
-  letExpansions <- asks sg_let_binds
+  localExpansions <- asks sg_local_vars
   sName <- mkDataName (nameBase (mk_sing_name name)) -- we want *term* names!
-  case Map.lookup name letExpansions of
+  case Map.lookup name localExpansions of
     Nothing -> do
       -- try to get it from the global context
       m_dinfo <- liftM2 (<|>) (dsReify sName) (dsReify name)
@@ -138,7 +160,8 @@ singDecsM locals thing = do
 {-
 Note [Tracking the current type signature context]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Much like we track the let-bound names in scope, we also track the current
+Much like we track the locally-bound names in scope (see Note [Tracking local
+variables] in Data.Singletons.TH.Promote.Monad), we also track the current
 context. For instance, in the following program:
 
   -- (1)

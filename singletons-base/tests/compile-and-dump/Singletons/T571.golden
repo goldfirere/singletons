@@ -1,0 +1,66 @@
+Singletons/T571.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| f :: a -> a
+          f x = x |]
+  ======>
+    f :: a -> a
+    f x = x
+    type FSym0 :: (~>) a a
+    data FSym0 :: (~>) a a
+      where
+        FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
+                              FSym0 a0123456789876543210
+    type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
+    instance SuppressUnusedWarnings FSym0 where
+      suppressUnusedWarnings = snd ((,) FSym0KindInference ())
+    type FSym1 :: a -> a
+    type family FSym1 (a0123456789876543210 :: a) :: a where
+      FSym1 a0123456789876543210 = F a0123456789876543210
+    type F :: a -> a
+    type family F (a :: a) :: a where
+      F x = x
+    sF ::
+      (forall (t :: a). Sing t -> Sing (Apply FSym0 t :: a) :: Type)
+    sF (sX :: Sing x) = sX
+    instance SingI (FSym0 :: (~>) a a) where
+      sing = singFun1 @FSym0 sF
+Singletons/T571.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| g :: (a -> a) -> a -> a
+          g f x = f x |]
+  ======>
+    g :: (a -> a) -> a -> a
+    g f x = f x
+    type GSym0 :: (~>) ((~>) a a) ((~>) a a)
+    data GSym0 :: (~>) ((~>) a a) ((~>) a a)
+      where
+        GSym0KindInference :: SameKind (Apply GSym0 arg) (GSym1 arg) =>
+                              GSym0 a0123456789876543210
+    type instance Apply GSym0 a0123456789876543210 = GSym1 a0123456789876543210
+    instance SuppressUnusedWarnings GSym0 where
+      suppressUnusedWarnings = snd ((,) GSym0KindInference ())
+    type GSym1 :: (~>) a a -> (~>) a a
+    data GSym1 (a0123456789876543210 :: (~>) a a) :: (~>) a a
+      where
+        GSym1KindInference :: SameKind (Apply (GSym1 a0123456789876543210) arg) (GSym2 a0123456789876543210 arg) =>
+                              GSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (GSym1 a0123456789876543210) a0123456789876543210 = G a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (GSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd ((,) GSym1KindInference ())
+    type GSym2 :: (~>) a a -> a -> a
+    type family GSym2 (a0123456789876543210 :: (~>) a a) (a0123456789876543210 :: a) :: a where
+      GSym2 a0123456789876543210 a0123456789876543210 = G a0123456789876543210 a0123456789876543210
+    type G :: (~>) a a -> a -> a
+    type family G (a :: (~>) a a) (a :: a) :: a where
+      G f x = Apply f x
+    sG ::
+      (forall (t :: (~>) a a) (t :: a).
+       Sing t -> Sing t -> Sing (Apply (Apply GSym0 t) t :: a) :: Type)
+    sG (sF :: Sing f) (sX :: Sing x) = applySing sF sX
+    instance SingI (GSym0 :: (~>) ((~>) a a) ((~>) a a)) where
+      sing = singFun2 @GSym0 sG
+    instance SingI d => SingI (GSym1 (d :: (~>) a a) :: (~>) a a) where
+      sing = singFun1 @(GSym1 (d :: (~>) a a)) (sG (sing @d))
+    instance SingI1 (GSym1 :: (~>) a a -> (~>) a a) where
+      liftSing (s :: Sing (d :: (~>) a a))
+        = singFun1 @(GSym1 (d :: (~>) a a)) (sG s)

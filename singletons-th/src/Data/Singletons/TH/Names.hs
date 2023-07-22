@@ -167,6 +167,11 @@ pureName = 'pure
 apName = '(<*>)
 liftA2Name = 'liftA2
 
+-- | Return a fresh alphanumeric 'Name'. In particular, if the supplied 'Name'
+-- is symbolic (e.g., (%%)), then return a fresh 'Name' with the 'OccName' @ty@.
+-- Otherwise, return a fresh 'Name' with the same 'OccName' as the supplied
+-- 'Name'. See @Note [Tracking local variables]@ in
+-- "Data.Singletons.TH.Promote.Monad" for why we do this.
 mkTyName :: Quasi q => Name -> q Name
 mkTyName tmName = do
   let nameStr  = nameBase tmName
