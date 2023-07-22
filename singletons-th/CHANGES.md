@@ -15,6 +15,8 @@ next [????.??.??]
   ```
 * Fix a bug in which data types using visible dependent quantification would
   generate ill-scoped code when singled.
+* Fix a bug in which singling a local variable that shadows a top-level
+  definition would fail to typecheck in some circumstances.
 
 3.2 [2023.03.12]
 ----------------
