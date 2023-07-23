@@ -24,13 +24,13 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
     type Q2Sym0 :: Quux
     type family Q2Sym0 :: Quux where
       Q2Sym0 = Q2
-    type family Case_0123456789876543210 n t where
+    type family Case_0123456789876543210 n0123456789876543210 t where
       Case_0123456789876543210 n 'True = BumSym0
       Case_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
-    type family Case_0123456789876543210 n t where
+    type family Case_0123456789876543210 n0123456789876543210 t where
       Case_0123456789876543210 n 'True = BazSym0
       Case_0123456789876543210 n 'False = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 2))
-    type family Case_0123456789876543210 n t where
+    type family Case_0123456789876543210 n0123456789876543210 t where
       Case_0123456789876543210 n 'True = BarSym0
       Case_0123456789876543210 n 'False = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 1))
     type ToEnum_0123456789876543210 :: GHC.Num.Natural.Natural -> Foo
@@ -148,10 +148,10 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
 Singletons/EnumDeriving.hs:0:0:: Splicing declarations
     singEnumInstance ''Quux
   ======>
-    type family Case_0123456789876543210 n t where
+    type family Case_0123456789876543210 n0123456789876543210 t where
       Case_0123456789876543210 n 'True = Q2Sym0
       Case_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
-    type family Case_0123456789876543210 n t where
+    type family Case_0123456789876543210 n0123456789876543210 t where
       Case_0123456789876543210 n 'True = Q1Sym0
       Case_0123456789876543210 n 'False = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 1))
     type ToEnum_0123456789876543210 :: GHC.Num.Natural.Natural -> Quux

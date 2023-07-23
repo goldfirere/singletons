@@ -260,10 +260,10 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance PBounded S where
       type MinBound = MinBound_0123456789876543210Sym0
       type MaxBound = MaxBound_0123456789876543210Sym0
-    type family Case_0123456789876543210 n t where
+    type family Case_0123456789876543210 n0123456789876543210 t where
       Case_0123456789876543210 n 'True = S2Sym0
       Case_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
-    type family Case_0123456789876543210 n t where
+    type family Case_0123456789876543210 n0123456789876543210 t where
       Case_0123456789876543210 n 'True = S1Sym0
       Case_0123456789876543210 n 'False = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 1))
     type ToEnum_0123456789876543210 :: GHC.Num.Natural.Natural -> S

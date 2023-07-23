@@ -44,7 +44,7 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
     type FooSym1 :: forall a. a -> [Bool]
     type family FooSym1 (a0123456789876543210 :: a) :: [Bool] where
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
-    type family Lambda_0123456789876543210 x s where
+    type family Lambda_0123456789876543210 x0123456789876543210 s where
       Lambda_0123456789876543210 x s = Apply (Apply (Apply FoosPrecSym0 (FromInteger 0)) x) s
     data Lambda_0123456789876543210Sym0 x0123456789876543210
       where

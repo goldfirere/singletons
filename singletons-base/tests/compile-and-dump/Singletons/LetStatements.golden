@@ -189,10 +189,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     foo13_ y = y
     foo14 :: Nat -> (Nat, Nat)
     foo14 x = let (y, z) = (Succ x, x) in (z, y)
-    type family Case_0123456789876543210 x t where
+    type family Case_0123456789876543210 x0123456789876543210 t where
       Case_0123456789876543210 x '(_,
                                    y_0123456789876543210) = y_0123456789876543210
-    type family Case_0123456789876543210 x t where
+    type family Case_0123456789876543210 x0123456789876543210 t where
       Case_0123456789876543210 x '(y_0123456789876543210,
                                    _) = y_0123456789876543210
     data Let0123456789876543210ZSym0 x0123456789876543210
@@ -227,11 +227,11 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
                Let0123456789876543210X_0123456789876543210Sym0KindInference ())
     type family Let0123456789876543210X_0123456789876543210Sym1 x0123456789876543210 where
       Let0123456789876543210X_0123456789876543210Sym1 x0123456789876543210 = Let0123456789876543210X_0123456789876543210 x0123456789876543210
-    type family Let0123456789876543210Z x where
+    type family Let0123456789876543210Z x0123456789876543210 where
       Let0123456789876543210Z x = Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x)
-    type family Let0123456789876543210Y x where
+    type family Let0123456789876543210Y x0123456789876543210 where
       Let0123456789876543210Y x = Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x)
-    type family Let0123456789876543210X_0123456789876543210 x where
+    type family Let0123456789876543210X_0123456789876543210 x0123456789876543210 where
       Let0123456789876543210X_0123456789876543210 x = Apply (Apply Tuple2Sym0 (Apply SuccSym0 x)) x
     data Let0123456789876543210BarSym0 x0123456789876543210
       where
@@ -243,7 +243,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Let0123456789876543210BarSym0KindInference ())
     type family Let0123456789876543210BarSym1 x0123456789876543210 :: a0123456789876543210 where
       Let0123456789876543210BarSym1 x0123456789876543210 = Let0123456789876543210Bar x0123456789876543210
-    type family Let0123456789876543210Bar x :: a where
+    type family Let0123456789876543210Bar x0123456789876543210 :: a where
       Let0123456789876543210Bar x = x
     data (<<<%%%%%%%%%%%%%%%%%%%%@#@$) x0123456789876543210
       where
@@ -271,7 +271,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###) ())
     type family (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 a0123456789876543210 a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 a0123456789876543210 a0123456789876543210
-    type family (<<<%%%%%%%%%%%%%%%%%%%%) x (a :: Nat) (a :: Nat) :: Nat where
+    type family (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 (a :: Nat) (a :: Nat) :: Nat where
       (<<<%%%%%%%%%%%%%%%%%%%%) x 'Zero m = m
       (<<<%%%%%%%%%%%%%%%%%%%%) x ('Succ n) m = Apply SuccSym0 (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) n) x)
     data Let0123456789876543210ZSym0 x0123456789876543210
@@ -310,9 +310,9 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###) ())
     type family (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 a0123456789876543210 a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 a0123456789876543210 a0123456789876543210
-    type family Let0123456789876543210Z x :: Nat where
+    type family Let0123456789876543210Z x0123456789876543210 :: Nat where
       Let0123456789876543210Z x = x
-    type family (<<<%%%%%%%%%%%%%%%%%%%%) x (a :: Nat) (a :: Nat) :: Nat where
+    type family (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 (a :: Nat) (a :: Nat) :: Nat where
       (<<<%%%%%%%%%%%%%%%%%%%%) x 'Zero m = m
       (<<<%%%%%%%%%%%%%%%%%%%%) x ('Succ n) m = Apply SuccSym0 (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) n) m)
     data (<<<%%%%%%%%%%%%%%%%%%%%@#@$) x0123456789876543210
@@ -341,10 +341,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) (:<<<%%%%%%%%%%%%%%%%%%%%@#@$$$###) ())
     type family (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       (<<<%%%%%%%%%%%%%%%%%%%%@#@$$$$) x0123456789876543210 a0123456789876543210 a0123456789876543210 = (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 a0123456789876543210 a0123456789876543210
-    type family (<<<%%%%%%%%%%%%%%%%%%%%) x (a :: Nat) (a :: Nat) :: Nat where
+    type family (<<<%%%%%%%%%%%%%%%%%%%%) x0123456789876543210 (a :: Nat) (a :: Nat) :: Nat where
       (<<<%%%%%%%%%%%%%%%%%%%%) x 'Zero m = m
       (<<<%%%%%%%%%%%%%%%%%%%%) x ('Succ n) m = Apply SuccSym0 (Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) n) m)
-    type family Lambda_0123456789876543210 a_0123456789876543210 x x where
+    type family Lambda_0123456789876543210 a_01234567898765432100123456789876543210 x0123456789876543210 x where
       Lambda_0123456789876543210 a_0123456789876543210 x x = x
     data Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210
       where
@@ -390,9 +390,9 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Let0123456789876543210ZSym1KindInference ())
     type family Let0123456789876543210ZSym2 x0123456789876543210 (a0123456789876543210 :: Nat) :: Nat where
       Let0123456789876543210ZSym2 x0123456789876543210 a0123456789876543210 = Let0123456789876543210Z x0123456789876543210 a0123456789876543210
-    type family Let0123456789876543210Z x (a :: Nat) :: Nat where
+    type family Let0123456789876543210Z x0123456789876543210 (a :: Nat) :: Nat where
       Let0123456789876543210Z x a_0123456789876543210 = Apply (Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) x) a_0123456789876543210
-    type family Lambda_0123456789876543210 x x where
+    type family Lambda_0123456789876543210 x0123456789876543210 x where
       Lambda_0123456789876543210 x x = x
     data Lambda_0123456789876543210Sym0 x0123456789876543210
       where
@@ -422,7 +422,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Let0123456789876543210ZSym0KindInference ())
     type family Let0123456789876543210ZSym1 x0123456789876543210 :: Nat where
       Let0123456789876543210ZSym1 x0123456789876543210 = Let0123456789876543210Z x0123456789876543210
-    type family Let0123456789876543210Z x :: Nat where
+    type family Let0123456789876543210Z x0123456789876543210 :: Nat where
       Let0123456789876543210Z x = Apply (Apply Lambda_0123456789876543210Sym0 x) ZeroSym0
     data Let0123456789876543210XSym0 x0123456789876543210
       where
@@ -434,7 +434,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Let0123456789876543210XSym0KindInference ())
     type family Let0123456789876543210XSym1 x0123456789876543210 :: Nat where
       Let0123456789876543210XSym1 x0123456789876543210 = Let0123456789876543210X x0123456789876543210
-    type family Let0123456789876543210X x :: Nat where
+    type family Let0123456789876543210X x0123456789876543210 :: Nat where
       Let0123456789876543210X x = ZeroSym0
     data Let0123456789876543210FSym0 x0123456789876543210
       where
@@ -454,7 +454,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Let0123456789876543210FSym1KindInference ())
     type family Let0123456789876543210FSym2 x0123456789876543210 (a0123456789876543210 :: Nat) :: Nat where
       Let0123456789876543210FSym2 x0123456789876543210 a0123456789876543210 = Let0123456789876543210F x0123456789876543210 a0123456789876543210
-    type family Let0123456789876543210F x (a :: Nat) :: Nat where
+    type family Let0123456789876543210F x0123456789876543210 (a :: Nat) :: Nat where
       Let0123456789876543210F x y = Apply SuccSym0 y
     data Let0123456789876543210ZSym0 x0123456789876543210
       where
@@ -466,7 +466,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Let0123456789876543210ZSym0KindInference ())
     type family Let0123456789876543210ZSym1 x0123456789876543210 :: Nat where
       Let0123456789876543210ZSym1 x0123456789876543210 = Let0123456789876543210Z x0123456789876543210
-    type family Let0123456789876543210Z x :: Nat where
+    type family Let0123456789876543210Z x0123456789876543210 :: Nat where
       Let0123456789876543210Z x = Apply (Let0123456789876543210FSym1 x) x
     data Let0123456789876543210ZSym0 y0123456789876543210
       where
@@ -486,7 +486,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Let0123456789876543210ZSym1KindInference ())
     type family Let0123456789876543210ZSym2 y0123456789876543210 x0123456789876543210 :: Nat where
       Let0123456789876543210ZSym2 y0123456789876543210 x0123456789876543210 = Let0123456789876543210Z y0123456789876543210 x0123456789876543210
-    type family Let0123456789876543210Z y x :: Nat where
+    type family Let0123456789876543210Z y0123456789876543210 x0123456789876543210 :: Nat where
       Let0123456789876543210Z y x = Apply SuccSym0 y
     data Let0123456789876543210FSym0 x0123456789876543210
       where
@@ -506,7 +506,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Let0123456789876543210FSym1KindInference ())
     type family Let0123456789876543210FSym2 x0123456789876543210 (a0123456789876543210 :: Nat) :: Nat where
       Let0123456789876543210FSym2 x0123456789876543210 a0123456789876543210 = Let0123456789876543210F x0123456789876543210 a0123456789876543210
-    type family Let0123456789876543210F x (a :: Nat) :: Nat where
+    type family Let0123456789876543210F x0123456789876543210 (a :: Nat) :: Nat where
       Let0123456789876543210F x y = Apply SuccSym0 (Let0123456789876543210ZSym2 y x)
     data Let0123456789876543210FSym0 x0123456789876543210
       where
@@ -526,7 +526,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Let0123456789876543210FSym1KindInference ())
     type family Let0123456789876543210FSym2 x0123456789876543210 (a0123456789876543210 :: Nat) :: Nat where
       Let0123456789876543210FSym2 x0123456789876543210 a0123456789876543210 = Let0123456789876543210F x0123456789876543210 a0123456789876543210
-    type family Let0123456789876543210F x (a :: Nat) :: Nat where
+    type family Let0123456789876543210F x0123456789876543210 (a :: Nat) :: Nat where
       Let0123456789876543210F x y = Apply SuccSym0 y
     data Let0123456789876543210YSym0 x0123456789876543210
       where
@@ -538,7 +538,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Let0123456789876543210YSym0KindInference ())
     type family Let0123456789876543210YSym1 x0123456789876543210 :: Nat where
       Let0123456789876543210YSym1 x0123456789876543210 = Let0123456789876543210Y x0123456789876543210
-    type family Let0123456789876543210Y x :: Nat where
+    type family Let0123456789876543210Y x0123456789876543210 :: Nat where
       Let0123456789876543210Y x = Apply SuccSym0 x
     type family Let0123456789876543210ZSym0 where
       Let0123456789876543210ZSym0 = Let0123456789876543210Z
@@ -558,7 +558,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Let0123456789876543210YSym0KindInference ())
     type family Let0123456789876543210YSym1 x0123456789876543210 :: Nat where
       Let0123456789876543210YSym1 x0123456789876543210 = Let0123456789876543210Y x0123456789876543210
-    type family Let0123456789876543210Y x :: Nat where
+    type family Let0123456789876543210Y x0123456789876543210 :: Nat where
       Let0123456789876543210Y x = Apply SuccSym0 ZeroSym0
     type Foo14Sym0 :: (~>) Nat (Nat, Nat)
     data Foo14Sym0 :: (~>) Nat (Nat, Nat)

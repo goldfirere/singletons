@@ -62,7 +62,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd T where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
-    type family Case_0123456789876543210 n t where
+    type family Case_0123456789876543210 n0123456789876543210 t where
       Case_0123456789876543210 n 'True = TSym0
       Case_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
     type ToEnum_0123456789876543210 :: GHC.Num.Natural.Natural -> T
