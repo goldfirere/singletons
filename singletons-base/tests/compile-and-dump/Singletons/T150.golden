@@ -148,7 +148,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     type ObjSym1 :: a -> Obj
     type family ObjSym1 (a0123456789876543210 :: a) :: Obj where
       ObjSym1 a0123456789876543210 = Obj a0123456789876543210
-    type family Case_0123456789876543210 n t where
+    type family Case_0123456789876543210 n0123456789876543210 t where
     type TransitivitySym0 :: (~>) (Equal a b) ((~>) (Equal b c) (Equal a c))
     data TransitivitySym0 :: (~>) (Equal a b) ((~>) (Equal b c) (Equal a c))
       where

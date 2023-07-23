@@ -21,7 +21,7 @@ Singletons/T445.hs:(0,0)-(0,0): Splicing declarations
           filterEvenGt7 :: [Nat] -> [Nat]
           filterEvenGt7 = filter (\ x -> evenb x && x > lit 7) |]
   ======>
-    type family Lambda_0123456789876543210 a_0123456789876543210 x where
+    type family Lambda_0123456789876543210 a_01234567898765432100123456789876543210 x where
       Lambda_0123456789876543210 a_0123456789876543210 x = Apply (Apply (&&@#@$) (Apply EvenbSym0 x)) (Apply (Apply (>@#@$) x) (Apply LitSym0 (FromInteger 7)))
     data Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210
       where

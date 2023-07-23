@@ -31,7 +31,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
       (<<>>@#@$$$) a0123456789876543210 a0123456789876543210 = (<<>>) a0123456789876543210 a0123456789876543210
     class PS a where
       type family (<<>>) (arg :: a) (arg :: a) :: a
-    type family Lambda_0123456789876543210 f g x where
+    type family Lambda_0123456789876543210 f0123456789876543210 g0123456789876543210 x where
       Lambda_0123456789876543210 f g x = Apply (Apply (<<>>@#@$) (Apply f x)) (Apply g x)
     data Lambda_0123456789876543210Sym0 f0123456789876543210
       where

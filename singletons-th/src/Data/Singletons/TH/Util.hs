@@ -373,7 +373,9 @@ filterInvisTvbArgs (DFAForalls tele args) =
     DForallVis   _     -> res
     DForallInvis tvbs' -> tvbs' ++ res
 
--- changes all TyVars not to be NameU's. Workaround for GHC#11812/#17537/#19743
+-- Change all unique Names with a NameU or NameL namespace to non-unique Names
+-- by performing a syb-based traversal. See Note [Pitfalls of NameU/NameL] for
+-- why this is useful.
 noExactTyVars :: Data a => a -> a
 noExactTyVars = everywhere go
   where
@@ -393,10 +395,92 @@ noExactTyVars = everywhere go
     fix_inj_ann (InjectivityAnn lhs rhs)
       = InjectivityAnn (noExactName lhs) (map noExactName rhs)
 
--- changes a Name not to be a NameU. Workaround for GHC#11812/#17537/#19743
+-- Changes a unique Name with a NameU or NameL namespace to a non-unique Name.
+-- See Note [Pitfalls of NameU/NameL] for why this is useful.
 noExactName :: Name -> Name
-noExactName (Name (OccName occ) (NameU unique)) = mkName (occ ++ show unique)
-noExactName n                                   = n
+noExactName n@(Name (OccName occ) ns) =
+  case ns of
+    NameU unique -> mk_name unique
+    NameL unique -> mk_name unique
+    _            -> n
+  where
+    mk_name unique = mkName (occ ++ show unique)
+
+{-
+Note [Pitfalls of NameU/NameL]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Most of the Names used in singletons-th come from reified or quoted Template
+Haskell definitions. Because these definitions have passed through GHC's
+renamer, they have unique Names with unique a NameU/NameL namespace. For the
+sake of convenience, we often reuse these Names in the definitions that we
+generate. For example, if singletons-th is given a declaration
+`f :: forall a_123. a_123 -> a_123`, it will produce a standalone kind signature
+`type F :: forall a_123. a_123 -> a_123`, reusing the unique Name `a_123`.
+
+While reusing unique Names is convenient, it does have a downside. In
+particular, GHC can sometimes get confused when the same unique Name is reused
+in distinct type variable scopes. In the best case, this can lead to confusing
+type errors, but in the worst case, it can cause GHC to panic, as seen in the
+following issues (all of which were first observed in singletons-th):
+
+* https://gitlab.haskell.org/ghc/ghc/-/issues/11812
+* https://gitlab.haskell.org/ghc/ghc/-/issues/17537
+* https://gitlab.haskell.org/ghc/ghc/-/issues/19743
+
+This is pretty terrible. Arguably, we are abusing Template Haskell here, since
+GHC likely assumes the invariant that each unique Name only has a single
+binding site. On the other hand, rearchitecting singletons-th to uphold this
+invariant would require a substantial amount of work.
+
+A far easier solution is to identify any problematic areas where unique Names
+are reused and work around the issue by changing unique Names to non-unique
+Names. The issues above all have a common theme: they arise when unique Names
+are reused in the type variable binders of a data type or type family
+declaration. For instance, when promoting a function like this:
+
+  f :: forall a_123. a_123 -> a_123
+  f x_456 = g
+    where
+      g = x_456
+
+We must promote `f` and `g` to something like this:
+
+    type F :: forall a_123. a_123 -> a_123
+    type family F (arg :: a_123) :: a_123 where
+      F x_456 = G x_456
+
+    type family LetG x_456 where
+      LetG x_456 = x_456
+
+This looks sensible enough. But note that we are reusing the same unique Name
+`x_456` in three different scopes: once in the equation for `F`, once in the
+the equation for `G`, and once more in the type variable binder in
+`type family LetG x_456`. The last of these scopes in particular is enough to
+confuse GHC in some situations and trigger GHC#11812.
+
+Our workaround is to apply the `noExactName` function to such names, which
+converts any Names with NameU/NameL namespaces into non-unique Names with
+longer OccNames. For instance, `noExactName x_456` will return a non-unique
+Name with the OccName `x456`. We use `noExactName` when generating `LetG` so
+that it will instead be:
+
+    type family LetG x456 where
+      LetG x_456 = x_456
+
+Here, `x456` is a non-unique Name, and `x_456` is a Unique name. Thankfully,
+this is sufficient to work around GHC#11812. There is still some amount of
+risk, since we are reusing `x_456` in two different type family equations (one
+for `LetG` and one for `F`), but GHC accepts this for now. We prefer to use the
+`noExactName` in as few places as possible, as using longer OccNames makes the
+Haddocks harder to read, so we will continue to reuse unique Names unless GHC
+forces us to behave differently.
+
+In addition to the type family example above, we also make use of `noExactName`
+(as well as its cousin, `noExactTyVars`) when generating defunctionalization
+symbols, as these also require reusing Unique names in several type family and
+data type declarations. See references to this Note in the code for particular
+locations where we must apply this workaround.
+-}
 
 substKind :: Map Name DKind -> DKind -> DKind
 substKind = substType
@@ -425,15 +509,21 @@ substType _ ty@(DLitT {}) = ty
 substType _ ty@DWildCardT = ty
 
 subst_tele :: Map Name DKind -> DForallTelescope -> (Map Name DKind, DForallTelescope)
-subst_tele s (DForallInvis tvbs) = second DForallInvis $ subst_tvbs s tvbs
-subst_tele s (DForallVis   tvbs) = second DForallVis   $ subst_tvbs s tvbs
+subst_tele s (DForallInvis tvbs) = second DForallInvis $ substTvbs s tvbs
+subst_tele s (DForallVis   tvbs) = second DForallVis   $ substTvbs s tvbs
 
-subst_tvbs :: Map Name DKind -> [DTyVarBndr flag] -> (Map Name DKind, [DTyVarBndr flag])
-subst_tvbs = mapAccumL substTvb
+substTvbs :: Map Name DKind -> [DTyVarBndr flag] -> (Map Name DKind, [DTyVarBndr flag])
+substTvbs = mapAccumL substTvb
 
 substTvb :: Map Name DKind -> DTyVarBndr flag -> (Map Name DKind, DTyVarBndr flag)
 substTvb s tvb@(DPlainTV n _) = (Map.delete n s, tvb)
 substTvb s (DKindedTV n f k)  = (Map.delete n s, DKindedTV n f (substKind s k))
+
+substFamilyResultSig :: Map Name DKind -> DFamilyResultSig -> (Map Name DKind, DFamilyResultSig)
+substFamilyResultSig s frs@DNoSig      = (s, frs)
+substFamilyResultSig s (DKindSig k)    = (s, DKindSig (substKind s k))
+substFamilyResultSig s (DTyVarSig tvb) = let (s', tvb') = substTvb s tvb in
+                                         (s', DTyVarSig tvb')
 
 dropTvbKind :: DTyVarBndr flag -> DTyVarBndr flag
 dropTvbKind tvb@(DPlainTV {}) = tvb

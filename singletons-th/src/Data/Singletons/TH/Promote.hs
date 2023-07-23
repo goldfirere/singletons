@@ -744,27 +744,28 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
           m_fixity   = OMap.lookup name fix_env
 
           mk_tf_head :: [DTyVarBndrUnit] -> DFamilyResultSig -> DTypeFamilyHead
-          mk_tf_head tvbs res_sig = DTypeFamilyHead proName tvbs res_sig Nothing
+          mk_tf_head arg_tvbs res_sig =
+            dTypeFamilyHead_with_locals proName all_locals arg_tvbs res_sig
 
           (m_sak_dec, defun_ki, tf_head) =
               -- There are three possible cases:
             case m_ldrki of
               -- 1. We have no kind information whatsoever.
               Nothing ->
-                let all_args = local_tvbs ++ map (`DPlainTV` ()) tyvarNames in
+                let arg_tvbs = map (`DPlainTV` ()) tyvarNames in
                 ( Nothing
-                , DefunNoSAK all_args Nothing
-                , mk_tf_head all_args DNoSig
+                , DefunNoSAK (local_tvbs ++ arg_tvbs) Nothing
+                , mk_tf_head arg_tvbs DNoSig
                 )
               -- 2. We have some kind information in the form of a LetDecRHSKindInfo.
               Just (LDRKI m_sak argKs resK) ->
-                let all_args = local_tvbs ++ zipWith (`DKindedTV` ()) tyvarNames argKs in
+                let arg_tvbs = zipWith (`DKindedTV` ()) tyvarNames argKs in
                 case m_sak of
                   -- 2(a). We do not have a standalone kind signature.
                   Nothing ->
                     ( Nothing
-                    , DefunNoSAK all_args (Just resK)
-                    , mk_tf_head all_args (DKindSig resK)
+                    , DefunNoSAK (local_tvbs ++ arg_tvbs) (Just resK)
+                    , mk_tf_head arg_tvbs (DKindSig resK)
                     )
                   -- 2(b). We have a standalone kind signature.
                   Just sak ->
@@ -774,7 +775,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                       -- the body of the type family declaration even if it is
                       -- given a standalone kind signature.
                       -- See Note [Keep redundant kind information for Haddocks].
-                    , mk_tf_head all_args (DKindSig resK)
+                    , mk_tf_head arg_tvbs (DKindSig resK)
                     )
 
       defun_decs <- defunctionalize proName m_fixity defun_ki
@@ -1022,18 +1023,16 @@ promoteExp (DLamE names exp) = do
   let var_proms = zip names tyNames
   (rhs, ann_exp) <- lambdaBind var_proms $ promoteExp exp
   all_locals <- allLocals
-  let all_args = all_locals ++ tyNames
-      tvbs     = map (`DPlainTV` ()) all_args
-  emitDecs [DClosedTypeFamilyD (DTypeFamilyHead
-                                 lambdaName
-                                 tvbs
-                                 DNoSig
-                                 Nothing)
-                               [DTySynEqn Nothing
-                                          (foldType (DConT lambdaName) $
-                                           map DVarT all_args)
-                                          rhs]]
-  emitDecsM $ defunctionalize lambdaName Nothing $ DefunNoSAK tvbs Nothing
+  let tvbs     = map (`DPlainTV` ()) tyNames
+      all_args = all_locals ++ tyNames
+      all_tvbs = map (`DPlainTV` ()) all_args
+      tfh      = dTypeFamilyHead_with_locals lambdaName all_locals tvbs DNoSig
+  emitDecs [DClosedTypeFamilyD
+              tfh
+              [DTySynEqn Nothing
+                         (foldType (DConT lambdaName) (map DVarT all_args))
+                         rhs]]
+  emitDecsM $ defunctionalize lambdaName Nothing $ DefunNoSAK all_tvbs Nothing
   let promLambda = foldApply (DConT (defunctionalizedName opts lambdaName 0))
                              (map DVarT all_locals)
   return (promLambda, ADLamE tyNames promLambda names ann_exp)
@@ -1044,9 +1043,9 @@ promoteExp (DCaseE exp matches) = do
   (exp', ann_exp)     <- promoteExp exp
   (eqns, ann_matches) <- mapAndUnzipM (promoteMatch prom_case) matches
   tyvarName  <- qNewName "t"
-  let all_args = all_locals ++ [tyvarName]
-      tvbs     = map (`DPlainTV` ()) all_args
-  emitDecs [DClosedTypeFamilyD (DTypeFamilyHead caseTFName tvbs DNoSig Nothing) eqns]
+  let tvbs = [DPlainTV tyvarName ()]
+      tfh  = dTypeFamilyHead_with_locals caseTFName all_locals tvbs DNoSig
+  emitDecs [DClosedTypeFamilyD tfh eqns]
     -- See Note [Annotate case return type] in Single
   let applied_case = prom_case `DAppT` exp'
   return ( applied_case
@@ -1092,3 +1091,37 @@ promoteLitPat (StringL str) = return $ DLitT (StrTyLit str)
 promoteLitPat (CharL c) = return $ DLitT (CharTyLit c)
 promoteLitPat lit =
   fail ("Only string, natural number, and character literals can be promoted: " ++ show lit)
+
+-- Construct a 'DTypeFamilyHead' that closes over some local variables. We
+-- apply `noExactName` to each local variable to avoid GHC#11812.
+-- See also Note [Pitfalls of NameU/NameL] in Data.Singletons.TH.Util.
+dTypeFamilyHead_with_locals ::
+     Name
+  -- ^ Name of type family
+  -> [Name]
+  -- ^ Local variables
+  -> [DTyVarBndrUnit]
+  -- ^ Variables for type family arguments
+  -> DFamilyResultSig
+  -- ^ Type family result
+  -> DTypeFamilyHead
+dTypeFamilyHead_with_locals tf_nm local_nms arg_tvbs res_sig =
+  DTypeFamilyHead
+    tf_nm
+    (map (`DPlainTV` ()) local_nms' ++ arg_tvbs')
+    res_sig'
+    Nothing
+  where
+    -- We take care to only apply `noExactName` to the local variables and not
+    -- to any of the argument/result types. The latter are much more likely to
+    -- show up in the Haddocks, and `noExactName` produces incredibly long Names
+    -- that are much harder to read in the rendered Haddocks.
+    local_nms' = map noExactName local_nms
+
+    -- Ensure that all references to local_nms are substituted away.
+    subst1 = Map.fromList $
+             zipWith (\local_nm local_nm' -> (local_nm, DVarT local_nm'))
+                     local_nms
+                     local_nms'
+    (subst2, arg_tvbs') = substTvbs subst1 arg_tvbs
+    (_subst3, res_sig') = substFamilyResultSig subst2 res_sig
