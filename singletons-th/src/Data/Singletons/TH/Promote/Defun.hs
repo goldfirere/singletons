@@ -206,6 +206,7 @@ defunctionalize name m_fixity defun_ki = do
       extra_name <- qNewName "arg"
       let sak_arg_n = length sak_arg_kis
       -- Use noExactName below to avoid GHC#17537.
+      -- See also Note [Pitfalls of NameU/NameL] in Data.Singletons.TH.Util.
       arg_names <- replicateM sak_arg_n (noExactName <$> qNewName "a")
 
       let -- The inner loop. @go n arg_nks res_nks@ returns @(res_k, decls)@.
@@ -286,6 +287,7 @@ defunctionalize name m_fixity defun_ki = do
       opts <- getOptions
       extra_name <- qNewName "arg"
       -- Use noExactTyVars below to avoid GHC#11812.
+      -- See also Note [Pitfalls of NameU/NameL] in Data.Singletons.TH.Util.
       (tvbs, m_res) <- eta_expand (noExactTyVars tvbs') (noExactTyVars m_res')
 
       let tvbs_n = length tvbs
@@ -415,6 +417,8 @@ defunctionalize name m_fixity defun_ki = do
         DVisFADep tvb -> pure tvb
         DVisFAAnon k  -> (\n -> DKindedTV n () k) <$>
                            -- Use noExactName below to avoid GHC#19743.
+                           -- See also Note [Pitfalls of NameU/NameL]
+                           -- in Data.Singletons.TH.Util.
                            (noExactName <$> qNewName "e")
 
     mk_fix_decl :: Name -> Fixity -> DDec

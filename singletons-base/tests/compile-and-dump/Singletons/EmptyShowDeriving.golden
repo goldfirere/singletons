@@ -6,7 +6,7 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
   ======>
     data Foo
     deriving instance Show Foo
-    type family Case_0123456789876543210 v_0123456789876543210 a_0123456789876543210 t where
+    type family Case_0123456789876543210 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 t where
     type ShowsPrec_0123456789876543210 :: GHC.Num.Natural.Natural
                                           -> Foo -> GHC.Types.Symbol -> GHC.Types.Symbol
     type family ShowsPrec_0123456789876543210 (a :: GHC.Num.Natural.Natural) (a :: Foo) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
