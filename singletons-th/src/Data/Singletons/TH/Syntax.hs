@@ -18,8 +18,25 @@ import Language.Haskell.TH.Syntax hiding (Type)
 import Language.Haskell.TH.Desugar
 import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
+import Language.Haskell.TH.Desugar.OSet (OSet)
 
 type VarPromotions = [(Name, Name)] -- from term-level name to type-level name
+
+-- Information that is accumulated when promoting patterns.
+data PromDPatInfos = PromDPatInfos
+  { prom_dpat_vars    :: VarPromotions
+      -- Maps term-level pattern variables to their promoted, type-level counterparts.
+  , prom_dpat_sig_kvs :: OSet Name
+      -- Kind variables bound by DSigPas.
+      -- See Note [Scoped type variables] in Data.Singletons.TH.Promote.Monad.
+  }
+
+instance Semigroup PromDPatInfos where
+  PromDPatInfos vars1 sig_kvs1 <> PromDPatInfos vars2 sig_kvs2
+    = PromDPatInfos (vars1 <> vars2) (sig_kvs1 <> sig_kvs2)
+
+instance Monoid PromDPatInfos where
+  mempty = PromDPatInfos mempty mempty
 
 -- A list of 'SingDSigPaInfos' is produced when singling pattern signatures, as we
 -- must case on the 'DExp's and match on them using the supplied 'DType's to

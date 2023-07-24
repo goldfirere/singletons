@@ -839,6 +839,7 @@ The following constructs are fully supported:
 
 The following constructs are partially supported:
 
+* scoped type variables
 * `deriving`
 * finite arithmetic sequences
 * records
@@ -849,6 +850,132 @@ The following constructs are partially supported:
 * wildcard types
 
 See the following sections for more details.
+
+### Scoped type variables
+
+`singletons-th` makes an effort to track scoped type variables during promotion
+so that they "just work". For instance, this function:
+
+```hs
+f :: forall a. a -> a
+f x = (x :: a)
+```
+
+Will be promoted to the following type family:
+
+```hs
+type F :: forall a. a -> a
+type family F x where
+  F @a x = (x :: a)
+```
+
+Note the use of `@a` on the left-hand side of the type family equation, which
+ensures that `a` is in scope on the right-hand side. This also works for local
+definitions, so this:
+
+```hs
+f :: forall a. a -> a
+f x = g
+  where
+    g = (x :: a)
+```
+
+Will promote to the following type families:
+
+```hs
+type F :: forall a. a -> a
+type family F x where
+  F @a x = LetG a x
+
+type family LetG a x where
+  LetG a x = (x :: a)
+```
+
+Note that `LetG` includes both `a` and `x` as arguments to ensure that they are
+in scope on the right-hand side.
+
+Besides `forall`s in type signatures, scoped type variables can also come
+from pattern signatures. For example, this will also work:
+
+```hs
+f (x :: a) = g
+  where
+    g = (x :: a)
+```
+
+Not all forms of scoped type variables are currently supported:
+
+* If a type signature brings a type variable into scope over the body of a
+  function with a `forall`, then any pattern signatures must consistently use
+  the same type variable in argument types that mention it. For example, while
+  this will work:
+
+  ```hs
+  f :: forall a. a -> a
+  f (x :: a) = a -- (x :: a) mentions the same type variable `a` from the type signature
+  ```
+
+  The following will _not_ work:
+
+  ```hs
+  f' :: forall a. a -> a
+  f' (x :: b) = b -- BAD: (x :: b) mentions `b` instead of `a`
+  ```
+
+  This is because `singletons-th` would attempt to promote `f'` to the
+  following:
+
+  ```hs
+  type F' :: forall a. a -> a
+  type family F' x where
+    F' @a (x :: b) = b
+  ```
+
+  And GHC will not infer that `b` should stand for `a`.
+
+* There is limited support for local variables that themselves bring type
+  variables into scope with `forall`s in their type signatures. For example,
+  this example works:
+
+  ```hs
+  f local = g
+    where
+      g :: forall a. a -> a
+      g x = const (x :: a) local
+  ```
+
+  This is because `f` and `g` will be promoted like so:
+
+  ```hs
+  type family F local where
+    F local = G local
+
+  type family G local x where
+    G local (x :: a) = Const (x :: a) local
+  ```
+
+  It is not straightforward to give `G` a standalone kind signature, and
+  without a standalone kind signature, GHC will not allow writing `@a` on the
+  left-hand side of `G`'s type family equation. On the other hand, we can still
+  ensure that `a` is brought into scope by writing `(x :: a)` instead of `x` on
+  the left-hand side.  While the `:: a` signature was not present in the
+  original definition, we include it anyway during promotion to ensure that
+  definitions like `G` kind-check.
+
+  This trick only works if the scoped type variable is mentioned in one of the
+  local definition's arguments, however. If the scoped type variable is only
+  mentioned in the return type, then the promoted definition will not
+  kind-check. This means that examples like this one will not work:
+
+  ```hs
+  konst :: a -> Maybe Bool -> a
+  konst x _ = x
+
+  f x = konst x y
+    where
+      y :: forall b. Maybe b
+      y = Nothing :: Maybe b
+  ```
 
 ### `deriving`
 
@@ -1304,7 +1431,6 @@ underyling pattern instead.
 
 The following constructs are either unsupported or almost never work:
 
-* scoped type variables
 * datatypes that store arrows or `Symbol`
 * rank-n types
 * promoting `TypeRep`s
@@ -1314,46 +1440,6 @@ The following constructs are either unsupported or almost never work:
 * partial application of the `(->)` type
 
 See the following sections for more details.
-
-### Scoped type variables
-
-Promoting functions that rely on the behavior of `ScopedTypeVariables` is very
-tricky—see
-[this GitHub issue](https://github.com/goldfirere/singletons/issues/433) for an
-extended discussion on the topic. This is not to say that promoting functions
-that rely on `ScopedTypeVariables` is guaranteed to fail, but it is rather
-fragile. To demonstrate how fragile this is, note that the following function
-will promote successfully:
-
-```hs
-f :: forall a. a -> a
-f x = id x :: a
-```
-
-But this one will not:
-
-```hs
-g :: forall a. a -> a
-g x = id (x :: a)
-```
-
-There are usually workarounds one can use instead of `ScopedTypeVariables`:
-
-1. Use pattern signatures:
-
-   ```hs
-   g :: forall a. a -> a
-   g (x :: a) = id (x :: a)
-   ```
-2. Use local definitions:
-
-   ```hs
-   g :: forall a. a -> a
-   g x = id' a
-     where
-       id' :: a -> a
-       id' x = x
-   ```
 
 ### Arrows, `Symbol`, and literals
 
