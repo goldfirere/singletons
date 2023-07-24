@@ -114,10 +114,10 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     infixr 5 `D1ASym1`
     type D1B :: forall a b. D1 a b -> b
     type family D1B (a :: D1 a b) :: b where
-      D1B (MkD1 _ field) = field
+      D1B @a @b (MkD1 _ field :: D1 a b) = field
     type D1A :: forall a b. D1 a b -> a
     type family D1A (a :: D1 a b) :: a where
-      D1A (MkD1 field _) = field
+      D1A @a @b (MkD1 field _ :: D1 a b) = field
     infixr 5 `D1B`
     infixr 5 `D1A`
     infix 5 `PC1`
@@ -343,11 +343,11 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type D2B :: forall (a :: Type)
                        (b :: Type). D2 (a :: Type) (b :: Type) -> b
     type family D2B (a :: D2 (a :: Type) (b :: Type)) :: b where
-      D2B ('MkD2 _ field) = field
+      D2B @a @b ('MkD2 _ field :: D2 (a :: Type) (b :: Type)) = field
     type D2A :: forall (a :: Type)
                        (b :: Type). D2 (a :: Type) (b :: Type) -> a
     type family D2A (a :: D2 (a :: Type) (b :: Type)) :: a where
-      D2A ('MkD2 field _) = field
+      D2A @a @b ('MkD2 field _ :: D2 (a :: Type) (b :: Type)) = field
     sD2B ::
       forall (a :: Type)
              (b :: Type)

@@ -233,18 +233,26 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       Let0123456789876543210Y x = Case_0123456789876543210 x (Let0123456789876543210X_0123456789876543210Sym1 x)
     type family Let0123456789876543210X_0123456789876543210 x0123456789876543210 where
       Let0123456789876543210X_0123456789876543210 x = Apply (Apply Tuple2Sym0 (Apply SuccSym0 x)) x
-    data Let0123456789876543210BarSym0 x0123456789876543210
+    data Let0123456789876543210BarSym0 a0123456789876543210
       where
         Let0123456789876543210BarSym0KindInference :: SameKind (Apply Let0123456789876543210BarSym0 arg) (Let0123456789876543210BarSym1 arg) =>
-                                                      Let0123456789876543210BarSym0 x0123456789876543210
-    type instance Apply Let0123456789876543210BarSym0 x0123456789876543210 = Let0123456789876543210Bar x0123456789876543210
+                                                      Let0123456789876543210BarSym0 a0123456789876543210
+    type instance Apply Let0123456789876543210BarSym0 a0123456789876543210 = Let0123456789876543210BarSym1 a0123456789876543210
     instance SuppressUnusedWarnings Let0123456789876543210BarSym0 where
       suppressUnusedWarnings
         = snd ((,) Let0123456789876543210BarSym0KindInference ())
-    type family Let0123456789876543210BarSym1 x0123456789876543210 :: a0123456789876543210 where
-      Let0123456789876543210BarSym1 x0123456789876543210 = Let0123456789876543210Bar x0123456789876543210
-    type family Let0123456789876543210Bar x0123456789876543210 :: a where
-      Let0123456789876543210Bar x = x
+    data Let0123456789876543210BarSym1 a0123456789876543210 x0123456789876543210
+      where
+        Let0123456789876543210BarSym1KindInference :: SameKind (Apply (Let0123456789876543210BarSym1 a0123456789876543210) arg) (Let0123456789876543210BarSym2 a0123456789876543210 arg) =>
+                                                      Let0123456789876543210BarSym1 a0123456789876543210 x0123456789876543210
+    type instance Apply (Let0123456789876543210BarSym1 a0123456789876543210) x0123456789876543210 = Let0123456789876543210Bar a0123456789876543210 x0123456789876543210
+    instance SuppressUnusedWarnings (Let0123456789876543210BarSym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) Let0123456789876543210BarSym1KindInference ())
+    type family Let0123456789876543210BarSym2 a0123456789876543210 x0123456789876543210 :: a0123456789876543210 where
+      Let0123456789876543210BarSym2 a0123456789876543210 x0123456789876543210 = Let0123456789876543210Bar a0123456789876543210 x0123456789876543210
+    type family Let0123456789876543210Bar a0123456789876543210 x0123456789876543210 :: a0123456789876543210 where
+      Let0123456789876543210Bar a x = x
     data (<<<%%%%%%%%%%%%%%%%%%%%@#@$) x0123456789876543210
       where
         (:<<<%%%%%%%%%%%%%%%%%%%%@#@$###) :: SameKind (Apply (<<<%%%%%%%%%%%%%%%%%%%%@#@$) arg) ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) arg) =>
@@ -726,7 +734,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
       Foo13_ y = y
     type Foo13 :: forall a. a -> a
     type family Foo13 (a :: a) :: a where
-      Foo13 x = Apply Foo13_Sym0 (Let0123456789876543210BarSym1 x)
+      Foo13 @a (x :: a) = Apply Foo13_Sym0 (Let0123456789876543210BarSym2 a x)
     type Foo12 :: Nat -> Nat
     type family Foo12 (a :: Nat) :: Nat where
       Foo12 x = Apply (Apply ((<<<%%%%%%%%%%%%%%%%%%%%@#@$$) x) x) (Apply SuccSym0 (Apply SuccSym0 ZeroSym0))
@@ -832,7 +840,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     sFoo13_ (sY :: Sing y) = sY
     sFoo13 (sX :: Sing x)
       = let
-          sBar :: (Sing (Let0123456789876543210BarSym1 x :: a) :: Type)
+          sBar :: (Sing (Let0123456789876543210BarSym2 a x :: a) :: Type)
           sBar = sX
         in applySing (singFun1 @Foo13_Sym0 sFoo13_) sBar
     sFoo12 (sX :: Sing x)

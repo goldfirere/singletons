@@ -13,6 +13,9 @@ next [????.??.??]
   instance Ord (SExample a) where
     compare _ _ = EQ
   ```
+* `singletons-th` now makes an effort to promote definitions that use scoped
+  type variables. See the "Scoped type variables" section of the `README` for
+  more information about what `singletons-th` can (and can't) do.
 * Fix a bug in which data types using visible dependent quantification would
   generate ill-scoped code when singled.
 * Fix a bug in which singling a local variable that shadows a top-level
