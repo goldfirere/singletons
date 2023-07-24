@@ -14,6 +14,7 @@ import Language.Haskell.TH.Syntax ( NameSpace(..), Quasi(..), Uniq )
 import Language.Haskell.TH.Desugar
 import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
+import qualified Language.Haskell.TH.Desugar.OSet as OSet
 import Data.Singletons.TH.Deriving.Bounded
 import Data.Singletons.TH.Deriving.Enum
 import Data.Singletons.TH.Deriving.Eq
@@ -688,15 +689,13 @@ promoteLetDecRHS :: LetDecRHSSort
                         , [DDec]        -- defunctionalization
                         , ALetDecRHS )  -- annotated RHS
 promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
-  opts <- getOptions
   all_locals <- allLocals
   case let_dec_rhs of
     UValue exp -> do
       (m_ldrki, ty_num_args) <- promote_let_dec_ty all_locals 0
       if ty_num_args == 0
-      then
-        let proName = promotedValueName opts name mb_let_uniq
-            prom_fun_lhs = foldType (DConT proName) $ map DVarT all_locals in
+      then do
+        prom_fun_lhs <- promoteLetDecName mb_let_uniq name m_ldrki all_locals
         promote_let_dec_rhs all_locals m_ldrki 0 (promoteExp exp)
                             (\exp' -> [DTySynEqn Nothing prom_fun_lhs exp'])
                             AValue
@@ -711,14 +710,12 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
     promote_function_rhs :: [Name]
                          -> [DClause] -> PrM ([DDec], [DDec], ALetDecRHS)
     promote_function_rhs all_locals clauses = do
-      opts <- getOptions
       numArgs <- count_args clauses
-      let proName = promotedValueName opts name mb_let_uniq
-          prom_fun_lhs = foldType (DConT proName) $ map DVarT all_locals
       (m_ldrki, ty_num_args) <- promote_let_dec_ty all_locals numArgs
       expClauses <- mapM (etaContractOrExpand ty_num_args numArgs) clauses
+      let promote_clause = promoteClause mb_let_uniq name m_ldrki all_locals
       promote_let_dec_rhs all_locals m_ldrki ty_num_args
-                          (mapAndUnzipM (promoteClause prom_fun_lhs) expClauses)
+                          (mapAndUnzipM promote_clause expClauses)
                           id (AFunction ty_num_args)
 
     -- Promote a UValue or a UFunction.
@@ -747,29 +744,33 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
           mk_tf_head arg_tvbs res_sig =
             dTypeFamilyHead_with_locals proName all_locals arg_tvbs res_sig
 
-          (m_sak_dec, defun_ki, tf_head) =
+          (lde_kvs_to_bind, m_sak_dec, defun_ki, tf_head) =
               -- There are three possible cases:
             case m_ldrki of
               -- 1. We have no kind information whatsoever.
               Nothing ->
                 let arg_tvbs = map (`DPlainTV` ()) tyvarNames in
-                ( Nothing
+                ( OSet.empty
+                , Nothing
                 , DefunNoSAK (local_tvbs ++ arg_tvbs) Nothing
                 , mk_tf_head arg_tvbs DNoSig
                 )
               -- 2. We have some kind information in the form of a LetDecRHSKindInfo.
-              Just (LDRKI m_sak argKs resK) ->
-                let arg_tvbs = zipWith (`DKindedTV` ()) tyvarNames argKs in
+              Just (LDRKI m_sak tvbs argKs resK) ->
+                let arg_tvbs = zipWith (`DKindedTV` ()) tyvarNames argKs
+                    lde_kvs_to_bind' = OSet.fromList (map extractTvbName tvbs) in
                 case m_sak of
                   -- 2(a). We do not have a standalone kind signature.
                   Nothing ->
-                    ( Nothing
+                    ( lde_kvs_to_bind'
+                    , Nothing
                     , DefunNoSAK (local_tvbs ++ arg_tvbs) (Just resK)
                     , mk_tf_head arg_tvbs (DKindSig resK)
                     )
                   -- 2(b). We have a standalone kind signature.
                   Just sak ->
-                    ( Just $ DKiSigD proName sak
+                    ( lde_kvs_to_bind'
+                    , Just $ DKiSigD proName sak
                     , DefunSAK sak
                       -- We opt to annotate the argument and result kinds in
                       -- the body of the type family declaration even if it is
@@ -779,7 +780,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                     )
 
       defun_decs <- defunctionalize proName m_fixity defun_ki
-      (prom_thing, thing) <- promote_thing
+      (prom_thing, thing) <- scopedBind lde_kvs_to_bind promote_thing
       return ( catMaybes [ m_sak_dec
                          , Just $ DClosedTypeFamilyD tf_head (mk_prom_eqns prom_thing)
                          ]
@@ -814,7 +815,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
              -- since we don't apply these functions with visible kind
              -- applications.
              let sak = ravelVanillaDType [] [] arg_kis res_ki in
-             return (Just (LDRKI (Just sak) arg_kis res_ki), length arg_kis)
+             return (Just (LDRKI (Just sak) [] arg_kis res_ki), length arg_kis)
         LetBindingRHS
           |  Just ty <- OMap.lookup name type_env
           -> do
@@ -827,7 +828,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                       -- See Note [No SAKs for let-decs with local variables]
                     | otherwise       = Nothing
           -- invariant: count_args ty == length argKs
-          return (Just (LDRKI m_sak argKs resultK), length argKs)
+          return (Just (LDRKI m_sak tvbs argKs resultK), length argKs)
 
           |  otherwise
           -> return (Nothing, default_num_args)
@@ -858,6 +859,7 @@ data LetDecRHSKindInfo =
                          -- This will be Nothing if the let-dec RHS has local
                          -- variables that it closes over.
                          -- See Note [No SAKs for let-decs with local variables]
+        [DTyVarBndrSpec] -- The type variable binders of the kind.
         [DKind]          -- The argument kinds.
         DKind            -- The result kind.
 
@@ -940,17 +942,37 @@ information anyway. Thankfully, this is simple to accomplish, as we already
 compute this information to begin with.
 -}
 
-promoteClause :: DType -- What to use as the LHS of the promoted type family
-                       -- equation. This should consist of the promoted name of
-                       -- the function to which the clause belongs, applied to
-                       -- any local arguments (e.g., `Go x y z`).
+promoteClause :: Maybe Uniq
+                 -- ^ Let-binding unique (if locally bound)
+              -> Name
+                 -- ^ Name of the function being promoted
+              -> Maybe LetDecRHSKindInfo
+                 -- ^ Information about the promoted kind (if present)
+              -> [Name]
+                 -- ^ The local variables currently in scope
               -> DClause -> PrM (DTySynEqn, ADClause)
-promoteClause pro_clause_fun (DClause pats exp) = do
+promoteClause mb_let_uniq name m_ldrki all_locals (DClause pats exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  ((types, pats'), new_vars) <- evalForPair $ mapAndUnzipM promotePat pats
-  (ty, ann_exp) <- lambdaBind new_vars $ promoteExp exp
-  return ( DTySynEqn Nothing (foldType pro_clause_fun types) ty
+  ((types, pats'), prom_pat_infos) <- evalForPair $ mapAndUnzipM promotePat pats
+  -- If the function has scoped type variables, then we annotate each argument
+  -- in the promoted type family equation with its kind.
+  -- See Note [Scoped type variables] in Data.Singletons.TH.Promote.Monad for an
+  -- explanation of why we do this.
+  scoped_tvs <- qIsExtEnabled LangExt.ScopedTypeVariables
+  let types_w_kinds =
+        case m_ldrki of
+          Just (LDRKI _ tvbs kinds _)
+            |  not (null tvbs) && scoped_tvs
+            -> zipWith DSigT types kinds
+          _ -> types
+  let PromDPatInfos { prom_dpat_vars    = new_vars
+                    , prom_dpat_sig_kvs = sig_kvs } = prom_pat_infos
+  (ty, ann_exp) <- scopedBind sig_kvs $
+                   lambdaBind new_vars $
+                   promoteExp exp
+  pro_clause_fun <- promoteLetDecName mb_let_uniq name m_ldrki all_locals
+  return ( DTySynEqn Nothing (foldType pro_clause_fun types_w_kinds) ty
          , ADClause new_vars pats' ann_exp )
 
 promoteMatch :: DType -- What to use as the LHS of the promoted type family
@@ -961,18 +983,22 @@ promoteMatch :: DType -- What to use as the LHS of the promoted type family
 promoteMatch pro_case_fun (DMatch pat exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  ((ty, pat'), new_vars) <- evalForPair $ promotePat pat
-  (rhs, ann_exp) <- lambdaBind new_vars $ promoteExp exp
+  ((ty, pat'), prom_pat_infos) <- evalForPair $ promotePat pat
+  let PromDPatInfos { prom_dpat_vars    = new_vars
+                    , prom_dpat_sig_kvs = sig_kvs } = prom_pat_infos
+  (rhs, ann_exp) <- scopedBind sig_kvs $
+                    lambdaBind new_vars $
+                    promoteExp exp
   return $ ( DTySynEqn Nothing (pro_case_fun `DAppT` ty) rhs
            , ADMatch new_vars pat' ann_exp)
 
 -- promotes a term pattern into a type pattern, accumulating bound variable names
-promotePat :: DPat -> QWithAux VarPromotions PrM (DType, ADPat)
+promotePat :: DPat -> QWithAux PromDPatInfos PrM (DType, ADPat)
 promotePat (DLitP lit) = (, ADLitP lit) <$> promoteLitPat lit
 promotePat (DVarP name) = do
       -- term vars can be symbols... type vars can't!
   tyName <- mkTyName name
-  tell $ [(name, tyName)]
+  tell $ PromDPatInfos [(name, tyName)] OSet.empty
   return (DVarT tyName, ADVarP name)
 promotePat (DConP name tys pats) = do
   opts <- getOptions
@@ -999,6 +1025,7 @@ promotePat (DSigP pat ty) = do
   wildless_pat <- removeWilds pat
   (promoted, pat') <- promotePat wildless_pat
   ki <- promoteType ty
+  tell $ PromDPatInfos [] (fvDType ki)
   return (DSigT promoted ki, ADSigP promoted pat' ki)
 promotePat DWildP = return (DWildCardT, ADWildP)
 
@@ -1091,6 +1118,38 @@ promoteLitPat (StringL str) = return $ DLitT (StrTyLit str)
 promoteLitPat (CharL c) = return $ DLitT (CharTyLit c)
 promoteLitPat lit =
   fail ("Only string, natural number, and character literals can be promoted: " ++ show lit)
+
+-- Promote the name of a 'ULetDecRHS' to the type level. If the promoted
+-- 'ULetDecRHS' has a standalone type signature and does not close over any
+-- local variables, then this will include the scoped type variables from the
+-- type signature as invisible arguments. (See Note [Scoped type variables] in
+-- Data.Singletons.TH.Promote.Monad.) Otherwise, it will include any local
+-- variables that it closes over as explicit arguments.
+promoteLetDecName ::
+     Maybe Uniq
+     -- ^ Let-binding unique (if locally bound)
+  -> Name
+     -- ^ Name of the function being promoted
+  -> Maybe LetDecRHSKindInfo
+     -- ^ Information about the promoted kind (if present)
+  -> [Name]
+     -- ^ The local variables currently in scope
+  -> PrM DType
+promoteLetDecName mb_let_uniq name m_ldrki all_locals = do
+  opts <- getOptions
+  let proName = promotedValueName opts name mb_let_uniq
+      type_args =
+        case m_ldrki of
+          Just (LDRKI m_sak tvbs _ _)
+            |  isJust m_sak
+               -- Per the comments on LetDecRHSKindInfo, `isJust m_sak` is only True
+               -- if there are no local variables. Return the scoped type variables
+               -- `tvbs` as invisible arguments using `DTyArg`...
+            -> map (DTyArg . DVarT . extractTvbName) tvbs
+          _ -> -- ...otherwise, return the local variables as explicit arguments
+               -- using DTANormal.
+               map (DTANormal . DVarT) all_locals
+  pure $ applyDType (DConT proName) type_args
 
 -- Construct a 'DTypeFamilyHead' that closes over some local variables. We
 -- apply `noExactName` to each local variable to avoid GHC#11812.
