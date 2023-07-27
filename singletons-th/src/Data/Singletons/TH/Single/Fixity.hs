@@ -15,10 +15,11 @@ singInfixDecl name fixity = do
   case mb_ns of
     -- If we can't find the Name for some odd reason,
     -- fall back to singValName
-    Nothing        -> finish $ singledValueName   opts name
-    Just VarName   -> finish $ singledValueName   opts name
-    Just DataName  -> finish $ singledDataConName opts name
-    Just TcClsName -> do
+    Nothing          -> finish $ singledValueName   opts name
+    Just VarName     -> finish $ singledValueName   opts name
+    Just (FldName _) -> finish $ singledValueName   opts name
+    Just DataName    -> finish $ singledDataConName opts name
+    Just TcClsName   -> do
       mb_info <- dsReify name
       case mb_info of
         Just (DTyConI DClassD{} _)
