@@ -994,6 +994,8 @@ isException (DCaseE e _)          = isException e
 isException (DLetE _ e)           = isException e
 isException (DSigE e _)           = isException e
 isException (DStaticE e)          = isException e
+isException (DTypedBracketE e)    = isException e
+isException (DTypedSpliceE e)     = isException e
 
 singMatch :: ADMatch -> SgM DMatch
 singMatch (ADMatch var_proms pat exp) = do
