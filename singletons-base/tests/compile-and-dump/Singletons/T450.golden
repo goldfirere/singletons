@@ -118,8 +118,8 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       liftSing (s :: Sing (d :: PMessage))
         = singFun1 @(AppendMessageSym1 (d :: PMessage)) (sAppendMessage s)
     type PMkFunctionSym0 :: forall (a :: Type)
-                                   (b :: Type). (~>) ((~>) a b) (PFunction (a :: Type) (b :: Type))
-    data PMkFunctionSym0 :: (~>) ((~>) a b) (PFunction (a :: Type) (b :: Type))
+                                   (b :: Type). (~>) ((~>) a b) (PFunction a b)
+    data PMkFunctionSym0 :: (~>) ((~>) a b) (PFunction a b)
       where
         PMkFunctionSym0KindInference :: SameKind (Apply PMkFunctionSym0 arg) (PMkFunctionSym1 arg) =>
                                         PMkFunctionSym0 a0123456789876543210
@@ -127,8 +127,8 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings PMkFunctionSym0 where
       suppressUnusedWarnings = snd ((,) PMkFunctionSym0KindInference ())
     type PMkFunctionSym1 :: forall (a :: Type) (b :: Type). (~>) a b
-                                                            -> PFunction (a :: Type) (b :: Type)
-    type family PMkFunctionSym1 (a0123456789876543210 :: (~>) a b) :: PFunction (a :: Type) (b :: Type) where
+                                                            -> PFunction a b
+    type family PMkFunctionSym1 (a0123456789876543210 :: (~>) a b) :: PFunction a b where
       PMkFunctionSym1 a0123456789876543210 = 'PMkFunction a0123456789876543210
     type SFunction :: forall (a :: Type) (b :: Type). PFunction a b
                                                       -> Type
@@ -136,8 +136,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
                       PFunction a b -> Type
       where
         SMkFunction :: forall (a :: Type) (b :: Type) (n :: (~>) a b).
-                       (Sing n) ->
-                       SFunction ('PMkFunction n :: PFunction (a :: Type) (b :: Type))
+                       (Sing n) -> SFunction ('PMkFunction n :: PFunction a b)
     type instance Sing @(PFunction a b) = SFunction
     instance (SingKind a, SingKind b) => SingKind (PFunction a b) where
       type Demote (PFunction a b) = Function (Demote a) (Demote b)
@@ -149,7 +148,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       sing = SMkFunction sing
     instance SingI1 'PMkFunction where
       liftSing = SMkFunction
-    instance SingI (PMkFunctionSym0 :: (~>) ((~>) a b) (PFunction (a :: Type) (b :: Type))) where
+    instance SingI (PMkFunctionSym0 :: (~>) ((~>) a b) (PFunction a b)) where
       sing = singFun1 @PMkFunctionSym0 SMkFunction
     composeFunction :: Function b c -> Function a b -> Function a c
     composeFunction

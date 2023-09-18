@@ -60,13 +60,11 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type Foo3Sym1 :: forall a. a -> Foo3 a
     type family Foo3Sym1 (a0123456789876543210 :: a) :: Foo3 a where
       Foo3Sym1 a0123456789876543210 = Foo3 a0123456789876543210
-    type Foo41Sym0 :: forall (a :: Type)
-                             (b :: Type). Foo4 (a :: Type) (b :: Type)
-    type family Foo41Sym0 :: Foo4 (a :: Type) (b :: Type) where
+    type Foo41Sym0 :: forall (a :: Type) (b :: Type). Foo4 a b
+    type family Foo41Sym0 :: Foo4 a b where
       Foo41Sym0 = Foo41
-    type Foo42Sym0 :: forall (a :: Type)
-                             (b :: Type). Foo4 (a :: Type) (b :: Type)
-    type family Foo42Sym0 :: Foo4 (a :: Type) (b :: Type) where
+    type Foo42Sym0 :: forall (a :: Type) (b :: Type). Foo4 a b
+    type family Foo42Sym0 :: Foo4 a b where
       Foo42Sym0 = Foo42
     type PairSym0 :: (~>) Bool ((~>) Bool Pair)
     data PairSym0 :: (~>) Bool ((~>) Bool Pair)
@@ -199,10 +197,8 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
         = case toSing b :: SomeSing a of SomeSing c -> SomeSing (SFoo3 c)
     data SFoo4 :: forall (a :: Type) (b :: Type). Foo4 a b -> Type
       where
-        SFoo41 :: forall (a :: Type) (b :: Type).
-                  SFoo4 (Foo41 :: Foo4 (a :: Type) (b :: Type))
-        SFoo42 :: forall (a :: Type) (b :: Type).
-                  SFoo4 (Foo42 :: Foo4 (a :: Type) (b :: Type))
+        SFoo41 :: forall (a :: Type) (b :: Type). SFoo4 (Foo41 :: Foo4 a b)
+        SFoo42 :: forall (a :: Type) (b :: Type). SFoo4 (Foo42 :: Foo4 a b)
     type instance Sing @(Foo4 a b) = SFoo4
     instance (SingKind a, SingKind b) => SingKind (Foo4 a b) where
       type Demote (Foo4 a b) = Foo4 (Demote a) (Demote b)
