@@ -22,16 +22,14 @@ Singletons/T567.hs:(0,0)-(0,0): Splicing declarations
     type MkD1Sym0 :: forall x p. D1 x p
     type family MkD1Sym0 :: D1 x p where
       MkD1Sym0 = MkD1
-    type MkD2Sym0 :: forall j (x :: j) p. D2 (x :: j) p
-    type family MkD2Sym0 :: D2 (x :: j) p where
+    type MkD2Sym0 :: forall j (x :: j) p. D2 x p
+    type family MkD2Sym0 :: D2 x p where
       MkD2Sym0 = MkD2
-    type MkD3Sym0 :: forall x (p :: Proxy x). D3 x (p :: Proxy x)
-    type family MkD3Sym0 :: D3 x (p :: Proxy x) where
+    type MkD3Sym0 :: forall x (p :: Proxy x). D3 x p
+    type family MkD3Sym0 :: D3 x p where
       MkD3Sym0 = MkD3
-    type MkD4Sym0 :: forall j
-                            (x :: j)
-                            (p :: Proxy x). D4 (x :: j) (p :: Proxy x)
-    type family MkD4Sym0 :: D4 (x :: j) (p :: Proxy x) where
+    type MkD4Sym0 :: forall j (x :: j) (p :: Proxy x). D4 x p
+    type family MkD4Sym0 :: D4 x p where
       MkD4Sym0 = MkD4
     type SD1 :: forall k (x :: k) (p :: Proxy x). D1 x p -> Type
     data SD1 :: forall k (x :: k) (p :: Proxy x). D1 x p -> Type
@@ -39,18 +37,16 @@ Singletons/T567.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(D1 x p) = SD1
     type SD2 :: forall j (x :: j) (p :: Proxy x). D2 x p -> Type
     data SD2 :: forall j (x :: j) (p :: Proxy x). D2 x p -> Type
-      where SMkD2 :: forall j (x :: j) p. SD2 (MkD2 :: D2 (x :: j) p)
+      where SMkD2 :: forall j (x :: j) p. SD2 (MkD2 :: D2 x p)
     type instance Sing @(D2 x p) = SD2
     type SD3 :: forall k (x :: k) (p :: Proxy x). D3 x p -> Type
     data SD3 :: forall k (x :: k) (p :: Proxy x). D3 x p -> Type
-      where
-        SMkD3 :: forall x (p :: Proxy x). SD3 (MkD3 :: D3 x (p :: Proxy x))
+      where SMkD3 :: forall x (p :: Proxy x). SD3 (MkD3 :: D3 x p)
     type instance Sing @(D3 x p) = SD3
     type SD4 :: forall j (x :: j) (p :: Proxy x). D4 x p -> Type
     data SD4 :: forall j (x :: j) (p :: Proxy x). D4 x p -> Type
       where
-        SMkD4 :: forall j (x :: j) (p :: Proxy x).
-                 SD4 (MkD4 :: D4 (x :: j) (p :: Proxy x))
+        SMkD4 :: forall j (x :: j) (p :: Proxy x). SD4 (MkD4 :: D4 x p)
     type instance Sing @(D4 x p) = SD4
     instance SingI MkD1 where
       sing = SMkD1

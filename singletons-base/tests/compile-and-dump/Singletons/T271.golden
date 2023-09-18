@@ -14,8 +14,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       where Identity :: a -> Identity a
       deriving (Eq, Ord)
     type ConstantSym0 :: forall (a :: Type)
-                                (b :: Type). (~>) a (Constant (a :: Type) (b :: Type))
-    data ConstantSym0 :: (~>) a (Constant (a :: Type) (b :: Type))
+                                (b :: Type). (~>) a (Constant a b)
+    data ConstantSym0 :: (~>) a (Constant a b)
       where
         ConstantSym0KindInference :: SameKind (Apply ConstantSym0 arg) (ConstantSym1 arg) =>
                                      ConstantSym0 a0123456789876543210
@@ -23,8 +23,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ConstantSym0 where
       suppressUnusedWarnings = snd ((,) ConstantSym0KindInference ())
     type ConstantSym1 :: forall (a :: Type) (b :: Type). a
-                                                         -> Constant (a :: Type) (b :: Type)
-    type family ConstantSym1 (a0123456789876543210 :: a) :: Constant (a :: Type) (b :: Type) where
+                                                         -> Constant a b
+    type family ConstantSym1 (a0123456789876543210 :: a) :: Constant a b where
       ConstantSym1 a0123456789876543210 = Constant a0123456789876543210
     type IdentitySym0 :: (~>) a (Identity a)
     data IdentitySym0 :: (~>) a (Identity a)
@@ -157,8 +157,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                       Constant a b -> Type
       where
         SConstant :: forall (a :: Type) (b :: Type) (n :: a).
-                     (Sing n) ->
-                     SConstant (Constant n :: Constant (a :: Type) (b :: Type))
+                     (Sing n) -> SConstant (Constant n :: Constant a b)
     type instance Sing @(Constant a b) = SConstant
     instance (SingKind a, SingKind b) => SingKind (Constant a b) where
       type Demote (Constant a b) = Constant (Demote a) (Demote b)
@@ -285,7 +284,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       sing = SConstant sing
     instance SingI1 Constant where
       liftSing = SConstant
-    instance SingI (ConstantSym0 :: (~>) a (Constant (a :: Type) (b :: Type))) where
+    instance SingI (ConstantSym0 :: (~>) a (Constant a b)) where
       sing = singFun1 @ConstantSym0 SConstant
     instance SingI n => SingI (Identity (n :: a)) where
       sing = SIdentity sing

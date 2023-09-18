@@ -18,8 +18,8 @@ Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
                 z = MyProxy
               in z
         in x
-    type MyProxySym0 :: forall (a :: Type). MyProxy (a :: Type)
-    type family MyProxySym0 :: MyProxy (a :: Type) where
+    type MyProxySym0 :: forall (a :: Type). MyProxy a
+    type family MyProxySym0 :: MyProxy a where
       MyProxySym0 = MyProxy
     type Let0123456789876543210ZSym0 :: MyProxy a
     type family Let0123456789876543210ZSym0 :: MyProxy a where
@@ -56,8 +56,7 @@ Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
       sing = singFun1 @FSym0 sF
     data SMyProxy :: forall (a :: Type). MyProxy a -> Type
       where
-        SMyProxy :: forall (a :: Type).
-                    SMyProxy (MyProxy :: MyProxy (a :: Type))
+        SMyProxy :: forall (a :: Type). SMyProxy (MyProxy :: MyProxy a)
     type instance Sing @(MyProxy a) = SMyProxy
     instance SingKind a => SingKind (MyProxy a) where
       type Demote (MyProxy a) = MyProxy (Demote a)

@@ -59,7 +59,7 @@ library
                       singletons       == 3.0.*,
                       syb              >= 0.4,
                       template-haskell >= 2.20 && < 2.21,
-                      th-desugar       >= 1.15 && < 1.16,
+                      th-desugar       >= 1.16 && < 1.17,
                       th-orphans       >= 0.13.11 && < 0.14,
                       transformers     >= 0.5.2
   default-language:   GHC2021

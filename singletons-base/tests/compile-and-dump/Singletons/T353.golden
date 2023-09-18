@@ -36,10 +36,8 @@ Singletons/T353.hs:0:0:: Splicing declarations
     type MkProdSym0 :: forall k
                               (f :: k -> Type)
                               (g :: k -> Type)
-                              (p :: k). (~>) (f p) ((~>) (g p) (Prod (f :: k -> Type) (g :: k
-                                                                                            -> Type) (p :: k)))
-    data MkProdSym0 :: (~>) (f p) ((~>) (g p) (Prod (f :: k
-                                                          -> Type) (g :: k -> Type) (p :: k)))
+                              (p :: k). (~>) (f p) ((~>) (g p) (Prod f g p))
+    data MkProdSym0 :: (~>) (f p) ((~>) (g p) (Prod f g p))
       where
         MkProdSym0KindInference :: SameKind (Apply MkProdSym0 arg) (MkProdSym1 arg) =>
                                    MkProdSym0 a0123456789876543210
@@ -49,12 +47,8 @@ Singletons/T353.hs:0:0:: Splicing declarations
     type MkProdSym1 :: forall k
                               (f :: k -> Type)
                               (g :: k -> Type)
-                              (p :: k). f p
-                                        -> (~>) (g p) (Prod (f :: k -> Type) (g :: k
-                                                                                   -> Type) (p :: k))
-    data MkProdSym1 (a0123456789876543210 :: f p) :: (~>) (g p) (Prod (f :: k
-                                                                            -> Type) (g :: k
-                                                                                           -> Type) (p :: k))
+                              (p :: k). f p -> (~>) (g p) (Prod f g p)
+    data MkProdSym1 (a0123456789876543210 :: f p) :: (~>) (g p) (Prod f g p)
       where
         MkProdSym1KindInference :: SameKind (Apply (MkProdSym1 a0123456789876543210) arg) (MkProdSym2 a0123456789876543210 arg) =>
                                    MkProdSym1 a0123456789876543210 a0123456789876543210
@@ -64,11 +58,8 @@ Singletons/T353.hs:0:0:: Splicing declarations
     type MkProdSym2 :: forall k
                               (f :: k -> Type)
                               (g :: k -> Type)
-                              (p :: k). f p
-                                        -> g p -> Prod (f :: k -> Type) (g :: k -> Type) (p :: k)
-    type family MkProdSym2 (a0123456789876543210 :: f p) (a0123456789876543210 :: g p) :: Prod (f :: k
-                                                                                                     -> Type) (g :: k
-                                                                                                                    -> Type) (p :: k) where
+                              (p :: k). f p -> g p -> Prod f g p
+    type family MkProdSym2 (a0123456789876543210 :: f p) (a0123456789876543210 :: g p) :: Prod f g p where
       MkProdSym2 a0123456789876543210 a0123456789876543210 = 'MkProd a0123456789876543210 a0123456789876543210
 Singletons/T353.hs:0:0:: Splicing declarations
     genDefunSymbols [''Foo]
@@ -76,8 +67,8 @@ Singletons/T353.hs:0:0:: Splicing declarations
     type MkFooSym0 :: forall k
                              k
                              (a :: k)
-                             (b :: k). (~>) (Proxy a) ((~>) (Proxy b) (Foo (a :: k) (b :: k)))
-    data MkFooSym0 :: (~>) (Proxy a) ((~>) (Proxy b) (Foo (a :: k) (b :: k)))
+                             (b :: k). (~>) (Proxy a) ((~>) (Proxy b) (Foo a b))
+    data MkFooSym0 :: (~>) (Proxy a) ((~>) (Proxy b) (Foo a b))
       where
         MkFooSym0KindInference :: SameKind (Apply MkFooSym0 arg) (MkFooSym1 arg) =>
                                   MkFooSym0 a0123456789876543210
@@ -85,8 +76,8 @@ Singletons/T353.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings MkFooSym0 where
       suppressUnusedWarnings = snd ((,) MkFooSym0KindInference ())
     type MkFooSym1 :: forall k k (a :: k) (b :: k). Proxy a
-                                                    -> (~>) (Proxy b) (Foo (a :: k) (b :: k))
-    data MkFooSym1 (a0123456789876543210 :: Proxy a) :: (~>) (Proxy b) (Foo (a :: k) (b :: k))
+                                                    -> (~>) (Proxy b) (Foo a b)
+    data MkFooSym1 (a0123456789876543210 :: Proxy a) :: (~>) (Proxy b) (Foo a b)
       where
         MkFooSym1KindInference :: SameKind (Apply (MkFooSym1 a0123456789876543210) arg) (MkFooSym2 a0123456789876543210 arg) =>
                                   MkFooSym1 a0123456789876543210 a0123456789876543210
@@ -94,6 +85,6 @@ Singletons/T353.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings (MkFooSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) MkFooSym1KindInference ())
     type MkFooSym2 :: forall k k (a :: k) (b :: k). Proxy a
-                                                    -> Proxy b -> Foo (a :: k) (b :: k)
-    type family MkFooSym2 (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: Foo (a :: k) (b :: k) where
+                                                    -> Proxy b -> Foo a b
+    type family MkFooSym2 (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: Foo a b where
       MkFooSym2 a0123456789876543210 a0123456789876543210 = 'MkFoo a0123456789876543210 a0123456789876543210

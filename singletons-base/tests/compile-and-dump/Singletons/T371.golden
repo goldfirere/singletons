@@ -13,33 +13,33 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     data Y (a :: Type)
       = Y1 | Y2 (X a)
       deriving Show
-    type X1Sym0 :: forall (a :: Type). X (a :: Type)
-    type family X1Sym0 :: X (a :: Type) where
+    type X1Sym0 :: forall (a :: Type). X a
+    type family X1Sym0 :: X a where
       X1Sym0 = X1
-    type X2Sym0 :: forall (a :: Type). (~>) (Y a) (X (a :: Type))
-    data X2Sym0 :: (~>) (Y a) (X (a :: Type))
+    type X2Sym0 :: forall (a :: Type). (~>) (Y a) (X a)
+    data X2Sym0 :: (~>) (Y a) (X a)
       where
         X2Sym0KindInference :: SameKind (Apply X2Sym0 arg) (X2Sym1 arg) =>
                                X2Sym0 a0123456789876543210
     type instance Apply X2Sym0 a0123456789876543210 = X2 a0123456789876543210
     instance SuppressUnusedWarnings X2Sym0 where
       suppressUnusedWarnings = snd ((,) X2Sym0KindInference ())
-    type X2Sym1 :: forall (a :: Type). Y a -> X (a :: Type)
-    type family X2Sym1 (a0123456789876543210 :: Y a) :: X (a :: Type) where
+    type X2Sym1 :: forall (a :: Type). Y a -> X a
+    type family X2Sym1 (a0123456789876543210 :: Y a) :: X a where
       X2Sym1 a0123456789876543210 = X2 a0123456789876543210
-    type Y1Sym0 :: forall (a :: Type). Y (a :: Type)
-    type family Y1Sym0 :: Y (a :: Type) where
+    type Y1Sym0 :: forall (a :: Type). Y a
+    type family Y1Sym0 :: Y a where
       Y1Sym0 = Y1
-    type Y2Sym0 :: forall (a :: Type). (~>) (X a) (Y (a :: Type))
-    data Y2Sym0 :: (~>) (X a) (Y (a :: Type))
+    type Y2Sym0 :: forall (a :: Type). (~>) (X a) (Y a)
+    data Y2Sym0 :: (~>) (X a) (Y a)
       where
         Y2Sym0KindInference :: SameKind (Apply Y2Sym0 arg) (Y2Sym1 arg) =>
                                Y2Sym0 a0123456789876543210
     type instance Apply Y2Sym0 a0123456789876543210 = Y2 a0123456789876543210
     instance SuppressUnusedWarnings Y2Sym0 where
       suppressUnusedWarnings = snd ((,) Y2Sym0KindInference ())
-    type Y2Sym1 :: forall (a :: Type). X a -> Y (a :: Type)
-    type family Y2Sym1 (a0123456789876543210 :: X a) :: Y (a :: Type) where
+    type Y2Sym1 :: forall (a :: Type). X a -> Y a
+    type family Y2Sym1 (a0123456789876543210 :: X a) :: Y a where
       Y2Sym1 a0123456789876543210 = Y2 a0123456789876543210
     type ShowsPrec_0123456789876543210 :: GHC.Num.Natural.Natural
                                           -> X a -> GHC.Types.Symbol -> GHC.Types.Symbol
@@ -123,9 +123,8 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
     data SX :: forall (a :: Type). X a -> Type
       where
-        SX1 :: forall (a :: Type). SX (X1 :: X (a :: Type))
-        SX2 :: forall (a :: Type) (n :: Y a).
-               (Sing n) -> SX (X2 n :: X (a :: Type))
+        SX1 :: forall (a :: Type). SX (X1 :: X a)
+        SX2 :: forall (a :: Type) (n :: Y a). (Sing n) -> SX (X2 n :: X a)
     type instance Sing @(X a) = SX
     instance SingKind a => SingKind (X a) where
       type Demote (X a) = X (Demote a)
@@ -136,9 +135,8 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
         = case toSing b :: SomeSing (Y a) of SomeSing c -> SomeSing (SX2 c)
     data SY :: forall (a :: Type). Y a -> Type
       where
-        SY1 :: forall (a :: Type). SY (Y1 :: Y (a :: Type))
-        SY2 :: forall (a :: Type) (n :: X a).
-               (Sing n) -> SY (Y2 n :: Y (a :: Type))
+        SY1 :: forall (a :: Type). SY (Y1 :: Y a)
+        SY2 :: forall (a :: Type) (n :: X a). (Sing n) -> SY (Y2 n :: Y a)
     type instance Sing @(Y a) = SY
     instance SingKind a => SingKind (Y a) where
       type Demote (Y a) = Y (Demote a)
@@ -235,7 +233,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       sing = SX2 sing
     instance SingI1 X2 where
       liftSing = SX2
-    instance SingI (X2Sym0 :: (~>) (Y a) (X (a :: Type))) where
+    instance SingI (X2Sym0 :: (~>) (Y a) (X a)) where
       sing = singFun1 @X2Sym0 SX2
     instance SingI Y1 where
       sing = SY1
@@ -243,5 +241,5 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       sing = SY2 sing
     instance SingI1 Y2 where
       liftSing = SY2
-    instance SingI (Y2Sym0 :: (~>) (X a) (Y (a :: Type))) where
+    instance SingI (Y2Sym0 :: (~>) (X a) (Y a)) where
       sing = singFun1 @Y2Sym0 SY2
