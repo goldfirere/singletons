@@ -65,18 +65,18 @@ source-repository head
 
 custom-setup
   setup-depends:
-    base      >= 4.18 && < 4.19,
-    Cabal     >= 3.0 && < 3.11,
+    base      >= 4.19 && < 4.20,
+    Cabal     >= 3.0 && < 3.13,
     directory >= 1,
     filepath  >= 1.3
 
 library
   hs-source-dirs:     src
-  build-depends:      base             >= 4.18 && < 4.19,
+  build-depends:      base             >= 4.19 && < 4.20,
                       pretty,
                       singletons       == 3.0.*,
                       singletons-th    >= 3.2  && < 3.3,
-                      template-haskell >= 2.20 && < 2.21,
+                      template-haskell >= 2.21 && < 2.22,
                       text >= 1.2,
                       th-desugar       >= 1.16 && < 1.17
   default-language:   GHC2021
@@ -155,7 +155,7 @@ test-suite singletons-base-test-suite
   main-is:            SingletonsBaseTestSuite.hs
   other-modules:      SingletonsBaseTestSuiteUtils
 
-  build-depends:      base >= 4.18 && < 4.19,
+  build-depends:      base >= 4.19 && < 4.20,
                       bytestring >= 0.10.9,
                       deepseq >= 1.4.4,
                       filepath >= 1.3,
