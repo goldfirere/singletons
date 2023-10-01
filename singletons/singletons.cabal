@@ -18,6 +18,7 @@ tested-with:    GHC == 8.0.2
               , GHC == 9.2.7
               , GHC == 9.4.5
               , GHC == 9.6.2
+              , GHC == 9.8.1
               , GHCJS==8.4
 extra-source-files: README.md, CHANGES.md
 license:        BSD3
