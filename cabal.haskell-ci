@@ -4,3 +4,5 @@ unconstrained:          False
 jobs-selection:         any
 -- Needed to avoid https://github.com/haskell/cabal/issues/5423
 haddock-components:     libs
+-- Temporarily use head.hackage for GHC 9.8 until the ecosystem catches up
+head-hackage:           >= 9.8

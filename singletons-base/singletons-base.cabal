@@ -8,7 +8,7 @@ author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stola
 maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC == 9.6.2
+tested-with:    GHC == 9.8.1
 extra-source-files: README.md, CHANGES.md, tests/README.md,
                     tests/compile-and-dump/GradingClient/*.hs,
                     tests/compile-and-dump/InsertionSort/*.hs,
@@ -38,7 +38,7 @@ description:
     .
     @singletons-base@ uses code that relies on bleeding-edge GHC language
     extensions. As such, @singletons-base@ only supports the latest major version
-    of GHC (currently GHC 9.6). For more information,
+    of GHC (currently GHC 9.8). For more information,
     consult the @singletons@
     @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
     .
