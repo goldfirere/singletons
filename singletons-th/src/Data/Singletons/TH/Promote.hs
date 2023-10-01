@@ -614,10 +614,11 @@ promoteInfixDecl mb_let_uniq name fixity = do
   mb_ns <- reifyNameSpace name
   case mb_ns of
     -- If we can't find the Name for some odd reason, fall back to promote_val
-    Nothing        -> promote_val
-    Just VarName   -> promote_val
-    Just DataName  -> never_mind
-    Just TcClsName -> do
+    Nothing          -> promote_val
+    Just VarName     -> promote_val
+    Just (FldName _) -> promote_val
+    Just DataName    -> never_mind
+    Just TcClsName   -> do
       mb_info <- dsReify name
       case mb_info of
         Just (DTyConI DClassD{} _)
