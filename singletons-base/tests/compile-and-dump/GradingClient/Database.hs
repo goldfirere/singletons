@@ -215,12 +215,12 @@ readRow id (SSch (SCons (SAttr _ u) at)) (sh:st) = do
   (rowTail, strTail) <- readRow id (SSch at) st
   case elUReadInstance u of
     ElUReadInstance ->
-      let results = readsPrec 0 sh in
-      if null results
-        then throwError $ "No parse of " ++ sh ++ " as a " ++
-                          (show (fromSing u))
-        else
-          let item = fst $ head results in
+      case readsPrec 0 sh of
+        [] ->
+          throwError $ "No parse of " ++ sh ++ " as a " ++
+                       (show (fromSing u))
+        result:_ ->
+          let item = fst result in
           case elUShowInstance u of
             ElUShowInstance -> return (ConsRow item rowTail, strTail)
 

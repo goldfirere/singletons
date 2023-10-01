@@ -30,15 +30,23 @@ mkBoundedInstance mb_ctxt ty (DataDecl _ _ _ cons) = do
   -- constructors must be nullary) or has only one constructor. See Section 11
   -- of Haskell 2010 Language Report.
   -- Note that order of conditions below is important.
-  when (null cons
-       || (any (\(DCon _ _ _ f _) -> not . null . tysOfConFields $ f) cons
-            && (not . null . tail $ cons))) $
+  let illegal_bounded_inst =
+        case cons of
+          [] -> True
+          _:cons' ->
+            any (\(DCon _ _ _ f _) -> not . null . tysOfConFields $ f) cons
+             && not (null cons')
+  when illegal_bounded_inst $
        fail ("Can't derive Bounded instance for "
              ++ pprint (typeToTH ty) ++ ".")
   -- at this point we know that either we have a datatype that has only one
   -- constructor or a datatype where each constructor is nullary
-  let (DCon _ _ minName fields _) = head cons
-      (DCon _ _ maxName _ _)      = last cons
+  let internal_err = fail "Internal error (mkBoundedInstance): non-empty list of constructors"
+  DCon _ _ minName fields _ <-
+    case cons of
+      (c:_) -> pure c
+      [] -> internal_err
+  let (_, DCon _ _ maxName _ _) = snocView cons
       fieldsCount   = length $ tysOfConFields fields
       (minRHS, maxRHS) = case fieldsCount of
         0 -> (DConE minName, DConE maxName)
