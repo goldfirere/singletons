@@ -1,0 +1,336 @@
+Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
+    withOptions defaultOptions {genSingKindInsts = False}
+      $ singletons
+          [d| type D1 :: forall j k. j -> k -> Type
+              type D2 :: forall j k. j -> k -> Type
+              type D3 :: forall j. j -> forall k. k -> Type
+              type D4 :: forall (a :: Type). Type
+              type C1 :: forall j k. j -> k -> Constraint
+              type C2 :: forall j k. j -> k -> Constraint
+              type C3 :: forall j. j -> forall k. k -> Constraint
+              type C4 :: forall (a :: Type). Constraint
+              type TF :: forall j. j -> forall k. k -> Type
+              type TS :: forall j. j -> forall k. k -> Type
+              
+              data D1 @j @k (a :: j) (b :: k) = MkD1 (Proxy a) (Proxy b)
+              data D2 @x @y (a :: x) (b :: y) = MkD2 (Proxy a) (Proxy b)
+              data D3 @j (a :: j) @k (b :: k) = MkD3 (Proxy a) (Proxy b)
+              data D4 @a = MkD4 a
+              class C1 @j @k (a :: j) (b :: k) where
+                meth1 :: Proxy a -> Proxy b
+              class C2 @x @y (a :: x) (b :: y) where
+                meth2 :: Proxy a -> Proxy b
+              class C3 @j (a :: j) @k (b :: k) where
+                meth3 :: Proxy a -> Proxy b
+              class C4 @a where
+                meth4 :: a
+              type family TF @j (a :: j) @k (b :: k) where
+                TF @j _ @k _ = (j, k)
+              type TS @j (a :: j) @k (b :: k) = (j, k) |]
+  ======>
+    type D1 :: forall j k. j -> k -> Type
+    data D1 @j @k (a :: j) (b :: k) = MkD1 (Proxy a) (Proxy b)
+    type D2 :: forall j k. j -> k -> Type
+    data D2 @x @y (a :: x) (b :: y) = MkD2 (Proxy a) (Proxy b)
+    type D3 :: forall j. j -> forall k. k -> Type
+    data D3 @j (a :: j) @k (b :: k) = MkD3 (Proxy a) (Proxy b)
+    type D4 :: forall (a :: Type). Type
+    data D4 @a = MkD4 a
+    type C1 :: forall j k. j -> k -> Constraint
+    class C1 @j @k (a :: j) (b :: k) where
+      meth1 :: Proxy a -> Proxy b
+    type C2 :: forall j k. j -> k -> Constraint
+    class C2 @x @y (a :: x) (b :: y) where
+      meth2 :: Proxy a -> Proxy b
+    type C3 :: forall j. j -> forall k. k -> Constraint
+    class C3 @j (a :: j) @k (b :: k) where
+      meth3 :: Proxy a -> Proxy b
+    type C4 :: forall (a :: Type). Constraint
+    class C4 @a where
+      meth4 :: a
+    type TF :: forall j. j -> forall k. k -> Type
+    type family TF @j (a :: j) @k (b :: k) where
+      TF @j _ @k _ = (j, k)
+    type TS :: forall j. j -> forall k. k -> Type
+    type TS @j (a :: j) @k (b :: k) = (j, k)
+    data TSSym0 :: (~>) j0123456789876543210 ((~>) k0123456789876543210 Type)
+      where
+        TSSym0KindInference :: SameKind (Apply TSSym0 arg) (TSSym1 arg) =>
+                               TSSym0 e0123456789876543210
+    type instance Apply TSSym0 e0123456789876543210 = TSSym1 e0123456789876543210
+    instance SuppressUnusedWarnings TSSym0 where
+      suppressUnusedWarnings = snd ((,) TSSym0KindInference ())
+    data TSSym1 (e0123456789876543210 :: j0123456789876543210) :: (~>) k0123456789876543210 Type
+      where
+        TSSym1KindInference :: SameKind (Apply (TSSym1 e0123456789876543210) arg) (TSSym2 e0123456789876543210 arg) =>
+                               TSSym1 e0123456789876543210 e0123456789876543210
+    type instance Apply (TSSym1 e0123456789876543210) e0123456789876543210 = TS e0123456789876543210 e0123456789876543210
+    instance SuppressUnusedWarnings (TSSym1 e0123456789876543210) where
+      suppressUnusedWarnings = snd ((,) TSSym1KindInference ())
+    type family TSSym2 (e0123456789876543210 :: j0123456789876543210) (e0123456789876543210 :: k0123456789876543210) :: Type where
+      TSSym2 e0123456789876543210 e0123456789876543210 = TS e0123456789876543210 e0123456789876543210
+    data TFSym0 :: (~>) j0123456789876543210 ((~>) k0123456789876543210 Type)
+      where
+        TFSym0KindInference :: SameKind (Apply TFSym0 arg) (TFSym1 arg) =>
+                               TFSym0 e0123456789876543210
+    type instance Apply TFSym0 e0123456789876543210 = TFSym1 e0123456789876543210
+    instance SuppressUnusedWarnings TFSym0 where
+      suppressUnusedWarnings = snd ((,) TFSym0KindInference ())
+    data TFSym1 (e0123456789876543210 :: j0123456789876543210) :: (~>) k0123456789876543210 Type
+      where
+        TFSym1KindInference :: SameKind (Apply (TFSym1 e0123456789876543210) arg) (TFSym2 e0123456789876543210 arg) =>
+                               TFSym1 e0123456789876543210 e0123456789876543210
+    type instance Apply (TFSym1 e0123456789876543210) e0123456789876543210 = TF e0123456789876543210 e0123456789876543210
+    instance SuppressUnusedWarnings (TFSym1 e0123456789876543210) where
+      suppressUnusedWarnings = snd ((,) TFSym1KindInference ())
+    type family TFSym2 (e0123456789876543210 :: j0123456789876543210) (e0123456789876543210 :: k0123456789876543210) :: Type where
+      TFSym2 e0123456789876543210 e0123456789876543210 = TF e0123456789876543210 e0123456789876543210
+    type MkD1Sym0 :: forall j
+                            k
+                            (a :: j)
+                            (b :: k). (~>) (Proxy a) ((~>) (Proxy b) (D1 @j @k a b))
+    data MkD1Sym0 :: (~>) (Proxy a) ((~>) (Proxy b) (D1 @j @k a b))
+      where
+        MkD1Sym0KindInference :: SameKind (Apply MkD1Sym0 arg) (MkD1Sym1 arg) =>
+                                 MkD1Sym0 a0123456789876543210
+    type instance Apply MkD1Sym0 a0123456789876543210 = MkD1Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings MkD1Sym0 where
+      suppressUnusedWarnings = snd ((,) MkD1Sym0KindInference ())
+    type MkD1Sym1 :: forall j k (a :: j) (b :: k). Proxy a
+                                                   -> (~>) (Proxy b) (D1 @j @k a b)
+    data MkD1Sym1 (a0123456789876543210 :: Proxy a) :: (~>) (Proxy b) (D1 @j @k a b)
+      where
+        MkD1Sym1KindInference :: SameKind (Apply (MkD1Sym1 a0123456789876543210) arg) (MkD1Sym2 a0123456789876543210 arg) =>
+                                 MkD1Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (MkD1Sym1 a0123456789876543210) a0123456789876543210 = MkD1 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (MkD1Sym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd ((,) MkD1Sym1KindInference ())
+    type MkD1Sym2 :: forall j k (a :: j) (b :: k). Proxy a
+                                                   -> Proxy b -> D1 @j @k a b
+    type family MkD1Sym2 (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: D1 @j @k a b where
+      MkD1Sym2 a0123456789876543210 a0123456789876543210 = MkD1 a0123456789876543210 a0123456789876543210
+    type MkD2Sym0 :: forall x
+                            y
+                            (a :: x)
+                            (b :: y). (~>) (Proxy a) ((~>) (Proxy b) (D2 @x @y a b))
+    data MkD2Sym0 :: (~>) (Proxy a) ((~>) (Proxy b) (D2 @x @y a b))
+      where
+        MkD2Sym0KindInference :: SameKind (Apply MkD2Sym0 arg) (MkD2Sym1 arg) =>
+                                 MkD2Sym0 a0123456789876543210
+    type instance Apply MkD2Sym0 a0123456789876543210 = MkD2Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings MkD2Sym0 where
+      suppressUnusedWarnings = snd ((,) MkD2Sym0KindInference ())
+    type MkD2Sym1 :: forall x y (a :: x) (b :: y). Proxy a
+                                                   -> (~>) (Proxy b) (D2 @x @y a b)
+    data MkD2Sym1 (a0123456789876543210 :: Proxy a) :: (~>) (Proxy b) (D2 @x @y a b)
+      where
+        MkD2Sym1KindInference :: SameKind (Apply (MkD2Sym1 a0123456789876543210) arg) (MkD2Sym2 a0123456789876543210 arg) =>
+                                 MkD2Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (MkD2Sym1 a0123456789876543210) a0123456789876543210 = MkD2 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (MkD2Sym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd ((,) MkD2Sym1KindInference ())
+    type MkD2Sym2 :: forall x y (a :: x) (b :: y). Proxy a
+                                                   -> Proxy b -> D2 @x @y a b
+    type family MkD2Sym2 (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: D2 @x @y a b where
+      MkD2Sym2 a0123456789876543210 a0123456789876543210 = MkD2 a0123456789876543210 a0123456789876543210
+    type MkD3Sym0 :: forall j
+                            (a :: j)
+                            k
+                            (b :: k). (~>) (Proxy a) ((~>) (Proxy b) (D3 @j a @k b))
+    data MkD3Sym0 :: (~>) (Proxy a) ((~>) (Proxy b) (D3 @j a @k b))
+      where
+        MkD3Sym0KindInference :: SameKind (Apply MkD3Sym0 arg) (MkD3Sym1 arg) =>
+                                 MkD3Sym0 a0123456789876543210
+    type instance Apply MkD3Sym0 a0123456789876543210 = MkD3Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings MkD3Sym0 where
+      suppressUnusedWarnings = snd ((,) MkD3Sym0KindInference ())
+    type MkD3Sym1 :: forall j (a :: j) k (b :: k). Proxy a
+                                                   -> (~>) (Proxy b) (D3 @j a @k b)
+    data MkD3Sym1 (a0123456789876543210 :: Proxy a) :: (~>) (Proxy b) (D3 @j a @k b)
+      where
+        MkD3Sym1KindInference :: SameKind (Apply (MkD3Sym1 a0123456789876543210) arg) (MkD3Sym2 a0123456789876543210 arg) =>
+                                 MkD3Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (MkD3Sym1 a0123456789876543210) a0123456789876543210 = MkD3 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (MkD3Sym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd ((,) MkD3Sym1KindInference ())
+    type MkD3Sym2 :: forall j (a :: j) k (b :: k). Proxy a
+                                                   -> Proxy b -> D3 @j a @k b
+    type family MkD3Sym2 (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: D3 @j a @k b where
+      MkD3Sym2 a0123456789876543210 a0123456789876543210 = MkD3 a0123456789876543210 a0123456789876543210
+    type MkD4Sym0 :: forall a. (~>) a (D4 @a)
+    data MkD4Sym0 :: (~>) a (D4 @a)
+      where
+        MkD4Sym0KindInference :: SameKind (Apply MkD4Sym0 arg) (MkD4Sym1 arg) =>
+                                 MkD4Sym0 a0123456789876543210
+    type instance Apply MkD4Sym0 a0123456789876543210 = MkD4 a0123456789876543210
+    instance SuppressUnusedWarnings MkD4Sym0 where
+      suppressUnusedWarnings = snd ((,) MkD4Sym0KindInference ())
+    type MkD4Sym1 :: forall a. a -> D4 @a
+    type family MkD4Sym1 (a0123456789876543210 :: a) :: D4 @a where
+      MkD4Sym1 a0123456789876543210 = MkD4 a0123456789876543210
+    type Meth1Sym0 :: forall a b. (~>) (Proxy a) (Proxy b)
+    data Meth1Sym0 :: (~>) (Proxy a) (Proxy b)
+      where
+        Meth1Sym0KindInference :: SameKind (Apply Meth1Sym0 arg) (Meth1Sym1 arg) =>
+                                  Meth1Sym0 a0123456789876543210
+    type instance Apply Meth1Sym0 a0123456789876543210 = Meth1 a0123456789876543210
+    instance SuppressUnusedWarnings Meth1Sym0 where
+      suppressUnusedWarnings = snd ((,) Meth1Sym0KindInference ())
+    type Meth1Sym1 :: forall a b. Proxy a -> Proxy b
+    type family Meth1Sym1 (a0123456789876543210 :: Proxy a) :: Proxy b where
+      Meth1Sym1 a0123456789876543210 = Meth1 a0123456789876543210
+    type PC1 :: forall j k. j -> k -> Constraint
+    class PC1 @j @k (a :: j) (b :: k) where
+      type family Meth1 (arg :: Proxy a) :: Proxy b
+    type Meth2Sym0 :: forall a b. (~>) (Proxy a) (Proxy b)
+    data Meth2Sym0 :: (~>) (Proxy a) (Proxy b)
+      where
+        Meth2Sym0KindInference :: SameKind (Apply Meth2Sym0 arg) (Meth2Sym1 arg) =>
+                                  Meth2Sym0 a0123456789876543210
+    type instance Apply Meth2Sym0 a0123456789876543210 = Meth2 a0123456789876543210
+    instance SuppressUnusedWarnings Meth2Sym0 where
+      suppressUnusedWarnings = snd ((,) Meth2Sym0KindInference ())
+    type Meth2Sym1 :: forall a b. Proxy a -> Proxy b
+    type family Meth2Sym1 (a0123456789876543210 :: Proxy a) :: Proxy b where
+      Meth2Sym1 a0123456789876543210 = Meth2 a0123456789876543210
+    type PC2 :: forall j k. j -> k -> Constraint
+    class PC2 @x @y (a :: x) (b :: y) where
+      type family Meth2 (arg :: Proxy a) :: Proxy b
+    type Meth3Sym0 :: forall a b. (~>) (Proxy a) (Proxy b)
+    data Meth3Sym0 :: (~>) (Proxy a) (Proxy b)
+      where
+        Meth3Sym0KindInference :: SameKind (Apply Meth3Sym0 arg) (Meth3Sym1 arg) =>
+                                  Meth3Sym0 a0123456789876543210
+    type instance Apply Meth3Sym0 a0123456789876543210 = Meth3 a0123456789876543210
+    instance SuppressUnusedWarnings Meth3Sym0 where
+      suppressUnusedWarnings = snd ((,) Meth3Sym0KindInference ())
+    type Meth3Sym1 :: forall a b. Proxy a -> Proxy b
+    type family Meth3Sym1 (a0123456789876543210 :: Proxy a) :: Proxy b where
+      Meth3Sym1 a0123456789876543210 = Meth3 a0123456789876543210
+    type PC3 :: forall j. j -> forall k. k -> Constraint
+    class PC3 @j (a :: j) @k (b :: k) where
+      type family Meth3 (arg :: Proxy a) :: Proxy b
+    type Meth4Sym0 :: forall a. a
+    type family Meth4Sym0 :: a where
+      Meth4Sym0 = Meth4
+    type PC4 :: forall (a :: Type). Constraint
+    class PC4 @a where
+      type family Meth4 :: a
+    type SD1 :: forall j k (a :: j) (b :: k). D1 @j @k a b -> Type
+    data SD1 :: forall j k (a :: j) (b :: k). D1 @j @k a b -> Type
+      where
+        SMkD1 :: forall j
+                        k
+                        (a :: j)
+                        (b :: k)
+                        (n :: Proxy a)
+                        (n :: Proxy b).
+                 (Sing n) -> (Sing n) -> SD1 (MkD1 n n :: D1 @j @k a b)
+    type instance Sing @(D1 @j @k a b) = SD1
+    type SD2 :: forall x y (a :: x) (b :: y). D2 @x @y a b -> Type
+    data SD2 :: forall x y (a :: x) (b :: y). D2 @x @y a b -> Type
+      where
+        SMkD2 :: forall x
+                        y
+                        (a :: x)
+                        (b :: y)
+                        (n :: Proxy a)
+                        (n :: Proxy b).
+                 (Sing n) -> (Sing n) -> SD2 (MkD2 n n :: D2 @x @y a b)
+    type instance Sing @(D2 @x @y a b) = SD2
+    type SD3 :: forall j (a :: j) k (b :: k). D3 @j a @k b -> Type
+    data SD3 :: forall j (a :: j) k (b :: k). D3 @j a @k b -> Type
+      where
+        SMkD3 :: forall j
+                        (a :: j)
+                        k
+                        (b :: k)
+                        (n :: Proxy a)
+                        (n :: Proxy b).
+                 (Sing n) -> (Sing n) -> SD3 (MkD3 n n :: D3 @j a @k b)
+    type instance Sing @(D3 @j a @k b) = SD3
+    type SD4 :: forall (a :: Type). D4 @a -> Type
+    data SD4 :: forall (a :: Type). D4 @a -> Type
+      where SMkD4 :: forall a (n :: a). (Sing n) -> SD4 (MkD4 n :: D4 @a)
+    type instance Sing @(D4 @a) = SD4
+    class SC1 @j @k (a :: j) (b :: k) where
+      sMeth1 ::
+        (forall (t :: Proxy a).
+         Sing t -> Sing (Apply Meth1Sym0 t :: Proxy b) :: Type)
+    class SC2 @x @y (a :: x) (b :: y) where
+      sMeth2 ::
+        (forall (t :: Proxy a).
+         Sing t -> Sing (Apply Meth2Sym0 t :: Proxy b) :: Type)
+    class SC3 @j (a :: j) @k (b :: k) where
+      sMeth3 ::
+        (forall (t :: Proxy a).
+         Sing t -> Sing (Apply Meth3Sym0 t :: Proxy b) :: Type)
+    class SC4 @a where
+      sMeth4 :: (Sing (Meth4Sym0 :: a) :: Type)
+    instance (SingI n, SingI n) =>
+             SingI (MkD1 (n :: Proxy a) (n :: Proxy b)) where
+      sing = SMkD1 sing sing
+    instance SingI n => SingI1 (MkD1 (n :: Proxy a)) where
+      liftSing = SMkD1 sing
+    instance SingI2 MkD1 where
+      liftSing2 = SMkD1
+    instance SingI (MkD1Sym0 :: (~>) (Proxy a) ((~>) (Proxy b) (D1 @j @k a b))) where
+      sing = singFun2 @MkD1Sym0 SMkD1
+    instance SingI d =>
+             SingI (MkD1Sym1 (d :: Proxy a) :: (~>) (Proxy b) (D1 @j @k a b)) where
+      sing = singFun1 @(MkD1Sym1 (d :: Proxy a)) (SMkD1 (sing @d))
+    instance SingI1 (MkD1Sym1 :: Proxy a
+                                 -> (~>) (Proxy b) (D1 @j @k a b)) where
+      liftSing (s :: Sing (d :: Proxy a))
+        = singFun1 @(MkD1Sym1 (d :: Proxy a)) (SMkD1 s)
+    instance (SingI n, SingI n) =>
+             SingI (MkD2 (n :: Proxy a) (n :: Proxy b)) where
+      sing = SMkD2 sing sing
+    instance SingI n => SingI1 (MkD2 (n :: Proxy a)) where
+      liftSing = SMkD2 sing
+    instance SingI2 MkD2 where
+      liftSing2 = SMkD2
+    instance SingI (MkD2Sym0 :: (~>) (Proxy a) ((~>) (Proxy b) (D2 @x @y a b))) where
+      sing = singFun2 @MkD2Sym0 SMkD2
+    instance SingI d =>
+             SingI (MkD2Sym1 (d :: Proxy a) :: (~>) (Proxy b) (D2 @x @y a b)) where
+      sing = singFun1 @(MkD2Sym1 (d :: Proxy a)) (SMkD2 (sing @d))
+    instance SingI1 (MkD2Sym1 :: Proxy a
+                                 -> (~>) (Proxy b) (D2 @x @y a b)) where
+      liftSing (s :: Sing (d :: Proxy a))
+        = singFun1 @(MkD2Sym1 (d :: Proxy a)) (SMkD2 s)
+    instance (SingI n, SingI n) =>
+             SingI (MkD3 (n :: Proxy a) (n :: Proxy b)) where
+      sing = SMkD3 sing sing
+    instance SingI n => SingI1 (MkD3 (n :: Proxy a)) where
+      liftSing = SMkD3 sing
+    instance SingI2 MkD3 where
+      liftSing2 = SMkD3
+    instance SingI (MkD3Sym0 :: (~>) (Proxy a) ((~>) (Proxy b) (D3 @j a @k b))) where
+      sing = singFun2 @MkD3Sym0 SMkD3
+    instance SingI d =>
+             SingI (MkD3Sym1 (d :: Proxy a) :: (~>) (Proxy b) (D3 @j a @k b)) where
+      sing = singFun1 @(MkD3Sym1 (d :: Proxy a)) (SMkD3 (sing @d))
+    instance SingI1 (MkD3Sym1 :: Proxy a
+                                 -> (~>) (Proxy b) (D3 @j a @k b)) where
+      liftSing (s :: Sing (d :: Proxy a))
+        = singFun1 @(MkD3Sym1 (d :: Proxy a)) (SMkD3 s)
+    instance SingI n => SingI (MkD4 (n :: a)) where
+      sing = SMkD4 sing
+    instance SingI1 MkD4 where
+      liftSing = SMkD4
+    instance SingI (MkD4Sym0 :: (~>) a (D4 @a)) where
+      sing = singFun1 @MkD4Sym0 SMkD4
+    type SC1 :: forall j k. j -> k -> Constraint
+    instance SC1 @j @k a b =>
+             SingI (Meth1Sym0 :: (~>) (Proxy a) (Proxy b)) where
+      sing = singFun1 @Meth1Sym0 sMeth1
+    type SC2 :: forall j k. j -> k -> Constraint
+    instance SC2 @x @y a b =>
+             SingI (Meth2Sym0 :: (~>) (Proxy a) (Proxy b)) where
+      sing = singFun1 @Meth2Sym0 sMeth2
+    type SC3 :: forall j. j -> forall k. k -> Constraint
+    instance SC3 @j a @k b =>
+             SingI (Meth3Sym0 :: (~>) (Proxy a) (Proxy b)) where
+      sing = singFun1 @Meth3Sym0 sMeth3
+    type SC4 :: forall (a :: Type). Constraint

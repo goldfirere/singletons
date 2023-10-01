@@ -188,6 +188,11 @@ extractTvbName :: DTyVarBndr flag -> Name
 extractTvbName (DPlainTV n _)    = n
 extractTvbName (DKindedTV n _ _) = n
 
+-- extract the flag from a TyVarBndr.
+extractTvbFlag :: DTyVarBndr flag -> flag
+extractTvbFlag (DPlainTV _ f)    = f
+extractTvbFlag (DKindedTV _ f _) = f
+
 -- Map over the 'Name' of a 'DTyVarBndr'.
 mapDTVName :: (Name -> Name) -> DTyVarBndr flag -> DTyVarBndr flag
 mapDTVName f (DPlainTV name flag) = DPlainTV (f name) flag
@@ -382,6 +387,7 @@ noExactTyVars = everywhere go
     go :: Data a => a -> a
     go = mkT (fix_tvb @Specificity)
       `extT` fix_tvb @()
+      `extT` fix_tvb @BndrVis
       `extT` fix_ty
       `extT` fix_inj_ann
 
@@ -534,14 +540,15 @@ foldType :: DType -> [DType] -> DType
 foldType = foldl DAppT
 
 -- apply a type to a list of type variable binders
-foldTypeTvbs :: DType -> [DTyVarBndr flag] -> DType
-foldTypeTvbs ty = foldType ty . map tvbToType
+foldTypeTvbs :: DType -> [DTyVarBndrVis] -> DType
+foldTypeTvbs ty = applyDType ty . map dTyVarBndrVisToDTypeArg
 
 -- Construct a data type's variable binders, possibly using fresh variables
 -- from the data type's kind signature. This function is used when constructing
 -- a @DataDecl@ to ensure that it has a number of binders equal in length to the
--- number of visible quantifiers in the data type's kind.
-buildDataDTvbs :: DsMonad q => [DTyVarBndrUnit] -> Maybe DKind -> q [DTyVarBndrUnit]
+-- number of visible quantifiers (i.e., the number of function arrows plus the
+-- number of visible @forall@–bound variables) in the data type's kind.
+buildDataDTvbs :: DsMonad q => [DTyVarBndrVis] -> Maybe DKind -> q [DTyVarBndrVis]
 buildDataDTvbs tvbs mk = do
   extra_tvbs <- mkExtraDKindBinders $ fromMaybe (DConT typeKindName) mk
   pure $ tvbs ++ extra_tvbs

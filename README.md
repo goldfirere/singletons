@@ -89,6 +89,7 @@ includes, but is not necessarily limited to, the following:
 * `StandaloneDeriving`
 * `StandaloneKindSignatures`
 * `TemplateHaskell`
+* `TypeAbstractions`
 * `TypeApplications`
 * `TypeFamilies`
 * `TypeOperators`
@@ -834,6 +835,7 @@ The following constructs are fully supported:
 * signatures (e.g., `(x :: Maybe a)`) in expressions
 * `InstanceSigs`
 * `TypeData`
+* `TypeAbstractions`
 
 ## Partial support
 

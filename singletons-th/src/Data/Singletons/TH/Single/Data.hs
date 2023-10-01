@@ -32,10 +32,11 @@ import Control.Monad
 singDataD :: DataDecl -> SgM [DDec]
 singDataD (DataDecl df name tvbs ctors) = do
   opts <- getOptions
-  let tvbNames      = map extractTvbName tvbs
+  let reqTvbNames   = map extractTvbName $
+                      filter (\tvb -> extractTvbFlag tvb == BndrReq) tvbs
       ctor_names    = map extractName ctors
       rec_sel_names = concatMap extractRecSelNames ctors
-  k <- promoteType (foldType (DConT name) (map DVarT tvbNames))
+  k <- promoteType (foldTypeTvbs (DConT name) tvbs)
   mb_data_sak <- dsReifyType name
   ctors' <- mapM (singCtor name) ctors
   fixityDecs <- singReifiedInfixDecls $ ctor_names ++ rec_sel_names
@@ -46,12 +47,12 @@ singDataD (DataDecl df name tvbs ctors) = do
   emptyToSingClause   <- mkEmptyToSingClause
   let singKindInst =
         DInstanceD Nothing Nothing
-                   (map (singKindConstraint . DVarT) tvbNames)
+                   (map (singKindConstraint . DVarT) reqTvbNames)
                    (DAppT (DConT singKindClassName) k)
                    [ DTySynInstD $ DTySynEqn Nothing
                       (DConT demoteName `DAppT` k)
                       (foldType (DConT name)
-                        (map (DAppT demote . DVarT) tvbNames))
+                        (map (DAppT demote . DVarT) reqTvbNames))
                    , DLetDec $ DFunD fromSingName
                                (fromSingClauses `orIfEmpty` [emptyFromSingClause])
                    , DLetDec $ DFunD toSingName
@@ -260,21 +261,22 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
 --
 -- @
 -- type D :: forall j k. k -> j -> Type
--- data D (a :: l) b = ...
+-- data D @j @l (a :: l) b = ...
 -- @
 --
 -- We would produce the following standalone kind signature:
 --
 -- @
--- type SD :: forall j l (a :: l) (b :: j). D a b -> Type
+-- type SD :: forall j l (a :: l) (b :: j). D @j @l (a :: l) b -> Type
 -- @
 --
 -- Note that:
 --
 -- * This function has a precondition that the length of @data_bndrs@ must
---   always be equal to the number of visible quantifiers in @sak@.
---   @singletons-th@ maintains this invariant when constructing a 'DataDecl'
---   (see the 'buildDataDTvbs' function).
+--   always be equal to the number of visible quantifiers (i.e., the number of
+--   function arrows plus the number of visible @forall@–bound variables) in
+--   @sak@. @singletons-th@ maintains this invariant when constructing a
+--   'DataDecl' (see the 'buildDataDTvbs' function).
 --
 -- * The order of the invisible quantifiers is preserved, so both
 --   @D \@Bool \@Ordering@ and @SD \@Bool \@Ordering@ will work the way you would
@@ -292,16 +294,16 @@ singDataSAK ::
      MonadFail q
   => DKind
      -- ^ The standalone kind signature for the original data type
-  -> [DTyVarBndrUnit]
+  -> [DTyVarBndrVis]
      -- ^ The user-written binders for the original data type
   -> DKind
      -- ^ The original data type, promoted to a kind
   -> q DKind
      -- ^ The standalone kind signature for the singled data type
 singDataSAK data_sak data_bndrs data_k = do
-  -- (1) First, explicitly quantify any free kind variables in `data_sak`. This
-  -- is done to ensure that `matchUpSigWithDecl`'s precondition is upheld (see
-  -- the Haddocks for that function).
+  -- (1) First, explicitly quantify any free kind variables in `data_sak` using
+  -- an invisible @forall@. This is done to ensure that precondition (2) in
+  -- `matchUpSigWithDecl` is upheld. (See the Haddocks for that function).
   let data_sak_free_tvbs =
         changeDTVFlags SpecifiedSpec $ toposortTyVarsOf [data_sak]
       data_sak' = DForallT (DForallInvis data_sak_free_tvbs) data_sak
@@ -334,9 +336,17 @@ singDataSAK data_sak data_bndrs data_k = do
        $ DArrowT `DAppT` data_k `DAppT` DConT typeKindName
 
 -- Match the quantifiers in a data type's standalone kind signature with the
--- binders in the data type declaration. This function assumes the precondition
--- that the number of binders in the data type declaration is equal to the
--- number of visible quantifiers in the standalone kind signature.
+-- binders in the data type declaration. This function assumes the following
+-- preconditions:
+--
+-- 1. The number of required binders in the data type declaration is equal to
+--    the number of visible quantifiers (i.e., the number of function arrows
+--    plus the number of visible @forall@–bound variables) in the standalone
+--    kind signature.
+--
+-- 2. The number of invisible \@-binders in the data type declaration is less
+--    than or equal to the number of invisible quantifiers (i.e., the number of
+--    invisible @forall@–bound variables) in the standalone kind signature.
 --
 -- The implementation of this function is heavily based on a GHC function of
 -- the same name:
@@ -346,27 +356,29 @@ matchUpSigWithDecl ::
      MonadFail q
   => DFunArgs
      -- ^ The quantifiers in the data type's standalone kind signature
-  -> [DTyVarBndrUnit]
+  -> [DTyVarBndrVis]
      -- ^ The user-written binders in the data type declaration
   -> q [DTyVarBndrSpec]
 matchUpSigWithDecl = go_fun_args Map.empty
   where
     go_fun_args ::
          DSubst
-         -- ^ A substitution from visible, dependent binders in the standalone
-         -- kind signature to corresponding binders in the user-written binders.
-         -- (See the Haddocks for `singDataSAK` for an explanation of why we
-         -- perform this substitution.) For example:
+         -- ^ A substitution from the names of @forall@-bound variables in the
+         -- standalone kind signature to corresponding binder names in the
+         -- user-written binders. (See the Haddocks for `singDataSAK` for an
+         -- explanation of why we perform this substitution.) For example:
          --
          -- @
-         -- type T :: forall a -> Maybe a -> Type
-         -- data T x y
+         -- type T :: forall a. forall b -> Maybe (a, b) -> Type
+         -- data T @x y z
          -- @
          --
-         -- After matching up the @a@ in @forall a ->@ with @x@, this
-         -- substitution will be extended with @[a :-> x]@. This ensures that
-         -- we will produce @Maybe x@ instead of @Maybe a@ in the kind for @y@.
-      -> DFunArgs -> [DTyVarBndrUnit] -> q [DTyVarBndrSpec]
+         -- After matching up the @a@ in @forall a.@ with @x@ and
+         -- the @b@ in @forall b ->@ with @y@, this substitution will be
+         -- extended with @[a :-> x, b :-> y]@. This ensures that we will
+         -- produce @Maybe (x, y)@ instead of @Maybe (a, b)@ in
+         -- the kind for @z@.
+      -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
     go_fun_args _ DFANil [] =
       pure []
     -- This should not happen, per the function's precondition
@@ -393,46 +405,86 @@ matchUpSigWithDecl = go_fun_args Map.empty
                 maybe data_bndr_kind (`substType` data_bndr_kind) mb_match_subst
       sig_args' <- go_fun_args subst sig_args data_bndrs
       pure $ DKindedTV data_bndr_name SpecifiedSpec anon'' : sig_args'
-    -- This should not happen, per the function's precondition
+    -- This should not happen, per precondition (1).
     go_fun_args _ _ [] =
       fail "matchUpSigWithDecl.go_fun_args: Too few binders"
 
-    go_invis_tvbs :: DSubst -> [DTyVarBndrSpec] -> DFunArgs -> [DTyVarBndrUnit] -> q [DTyVarBndrSpec]
+    go_invis_tvbs :: DSubst -> [DTyVarBndrSpec] -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
     go_invis_tvbs subst [] sig_args data_bndrs =
       go_fun_args subst sig_args data_bndrs
-    go_invis_tvbs subst (invis_tvb:invis_tvbs) sig_args data_bndrs = do
-      let (subst', invis_tvb') = substTvb subst invis_tvb
-      sig_args' <- go_invis_tvbs subst' invis_tvbs sig_args data_bndrs
-      pure $ invis_tvb' : sig_args'
+    -- This should not happen, per precondition (2).
+    go_invis_tvbs _ (_:_) _ [] =
+      fail $ "matchUpSigWithDecl.go_invis_tvbs: Too few binders"
+    go_invis_tvbs subst (invis_tvb:invis_tvbs) sig_args data_bndrss@(data_bndr:data_bndrs) =
+      case extractTvbFlag data_bndr of
+        -- If the next data_bndr is required, then we have a invisible forall in
+        -- the kind without a corresponding invisible @-binder, which is
+        -- allowed. In this case, we simply apply the substitution and recurse.
+        BndrReq -> do
+          let (subst', invis_tvb') = substTvb subst invis_tvb
+          sig_args' <- go_invis_tvbs subst' invis_tvbs sig_args data_bndrss
+          pure $ invis_tvb' : sig_args'
+        -- If the next data_bndr is an invisible @-binder, then we must match it
+        -- against the invisible forall–bound variable in the kind.
+        BndrInvis -> do
+          let (subst', sig_tvb) = match_tvbs subst invis_tvb data_bndr
+          sig_args' <- go_invis_tvbs subst' invis_tvbs sig_args data_bndrs
+          pure (sig_tvb : sig_args')
 
-    go_vis_tvbs :: DSubst -> [DTyVarBndrUnit] -> DFunArgs -> [DTyVarBndrUnit] -> q [DTyVarBndrSpec]
+    go_vis_tvbs :: DSubst -> [DTyVarBndrUnit] -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
     go_vis_tvbs subst [] sig_args data_bndrs =
       go_fun_args subst sig_args data_bndrs
-    -- This should not happen, per the function's precondition
+    -- This should not happen, per precondition (1).
     go_vis_tvbs _ (_:_) _ [] =
       fail $ "matchUpSigWithDecl.go_vis_tvbs: Too few binders"
     go_vis_tvbs subst (vis_tvb:vis_tvbs) sig_args (data_bndr:data_bndrs) = do
+      case extractTvbFlag data_bndr of
+        -- If the next data_bndr is required, then we must match it against the
+        -- visible forall–bound variable in the kind.
+        BndrReq -> do
+          let (subst', sig_tvb) = match_tvbs subst vis_tvb data_bndr
+          sig_args' <- go_vis_tvbs subst' vis_tvbs sig_args data_bndrs
+          pure (sig_tvb : sig_args')
+        -- We have a visible forall in the kind, but an invisible @-binder as
+        -- the next data_bndr. This is ill kinded, so throw an error.
+        BndrInvis ->
+          fail $ "matchUpSigWithDecl.go_vis_tvbs: Expected visible binder, encountered invisible binder: "
+              ++ show data_bndr
+
+    -- @match_tvbs subst sig_tvb data_bndr@ will match the kind of @data_bndr@
+    -- against the kind of @sig_tvb@ to produce a new kind. This function
+    -- produces two values as output:
+    --
+    -- 1. A new @subst@ that has been extended such that the name of @sig_tvb@
+    --    maps to the name of @data_bndr@. (See the Haddocks for the 'DSubst'
+    --    argument to @go_fun_args@ for an explanation of why we do this.)
+    --
+    -- 2. A 'DTyVarBndrSpec' that has the name of @data_bndr@, but with the new
+    --    kind resulting from matching.
+    match_tvbs :: DSubst -> DTyVarBndr flag -> DTyVarBndrVis -> (DSubst, DTyVarBndrSpec)
+    match_tvbs subst sig_tvb data_bndr =
       let data_bndr_name = extractTvbName data_bndr
           mb_data_bndr_kind = extractTvbKind data_bndr
 
-          vis_tvb_name = extractTvbName vis_tvb
-          mb_vis_tvb_kind = substType subst <$> extractTvbKind vis_tvb
+          sig_tvb_name = extractTvbName sig_tvb
+          mb_sig_tvb_kind = substType subst <$> extractTvbKind sig_tvb
 
           mb_kind :: Maybe DKind
           mb_kind =
-            case (mb_data_bndr_kind, mb_vis_tvb_kind) of
+            case (mb_data_bndr_kind, mb_sig_tvb_kind) of
               (Nothing,             Nothing)           -> Nothing
               (Just data_bndr_kind, Nothing)           -> Just data_bndr_kind
-              (Nothing,             Just vis_tvb_kind) -> Just vis_tvb_kind
-              (Just data_bndr_kind, Just vis_tvb_kind) -> do
-                match_subst <- matchTy NoIgnore data_bndr_kind vis_tvb_kind
+              (Nothing,             Just sig_tvb_kind) -> Just sig_tvb_kind
+              (Just data_bndr_kind, Just sig_tvb_kind) -> do
+                match_subst <- matchTy NoIgnore data_bndr_kind sig_tvb_kind
                 Just $ substType match_subst data_bndr_kind
 
-          subst' = Map.insert vis_tvb_name (DVarT data_bndr_name) subst
-      sig_args' <- go_vis_tvbs subst' vis_tvbs sig_args data_bndrs
-      pure $ case mb_kind of
-        Nothing   -> DPlainTV  data_bndr_name SpecifiedSpec      : sig_args'
-        Just kind -> DKindedTV data_bndr_name SpecifiedSpec kind : sig_args'
+          subst' = Map.insert sig_tvb_name (DVarT data_bndr_name) subst
+          sig_tvb' = case mb_kind of
+            Nothing   -> DPlainTV  data_bndr_name SpecifiedSpec
+            Just kind -> DKindedTV data_bndr_name SpecifiedSpec kind in
+
+      (subst', sig_tvb')
 
 -- This is heavily inspired by the `swizzleTcb` function in GHC:
 -- https://gitlab.haskell.org/ghc/ghc/-/blob/cec903899234bf9e25ea404477ba846ac1e963bb/compiler/GHC/Tc/Gen/HsType.hs#L2741-2755
