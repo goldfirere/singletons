@@ -59,6 +59,7 @@ ghcOpts = ghcFlags ++ [
   , "-XCPP"
   , "-XNoStarIsType"
   , "-XNoNamedWildCards"
+  , "-XTypeAbstractions"
   ]
 
 -- Compile a test using specified GHC options. Save output to file, normalize

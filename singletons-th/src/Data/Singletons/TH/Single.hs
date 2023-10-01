@@ -147,7 +147,7 @@ singDecideInstances = concatMapM singDecideInstance
 singDecideInstance :: OptionsMonad q => Name -> q [Dec]
 singDecideInstance name = do
   (_df, tvbs, cons) <- getDataD ("I cannot make an instance of SDecide for it.") name
-  dtvbs <- mapM dsTvbUnit tvbs
+  dtvbs <- mapM dsTvbVis tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
   (scons, _) <- singM [] $ mapM (singCtor name) dcons
@@ -199,7 +199,7 @@ singShowInstances = concatMapM singShowInstance
 showSingInstance :: OptionsMonad q => Name -> q [Dec]
 showSingInstance name = do
   (df, tvbs, cons) <- getDataD ("I cannot make an instance of Show for it.") name
-  dtvbs <- mapM dsTvbUnit tvbs
+  dtvbs <- mapM dsTvbVis tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
   let tyvars    = map (DVarT . extractTvbName) dtvbs
@@ -271,7 +271,7 @@ singInstance :: OptionsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 singInstance mk_inst inst_name name = do
   (df, tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
                                 ++ " for it.") name
-  dtvbs <- mapM dsTvbUnit tvbs
+  dtvbs <- mapM dsTvbVis tvbs
   let data_ty = foldTypeTvbs (DConT name) dtvbs
   dcons <- concatMapM (dsCon dtvbs data_ty) cons
   let data_decl = DataDecl df name dtvbs dcons
