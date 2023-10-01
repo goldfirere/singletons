@@ -2,7 +2,7 @@
              DefaultSignatures, ScopedTypeVariables, InstanceSigs,
              MultiParamTypeClasses, FunctionalDependencies,
              UndecidableInstances, CPP #-}
-{-# OPTIONS_GHC -Wno-missing-signatures #-}
+{-# OPTIONS_GHC -Wno-missing-signatures -Wno-orphans #-}
 
 #if __GLASGOW_HASKELL__ < 806
 {-# LANGUAGE TypeInType #-}

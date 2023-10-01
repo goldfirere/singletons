@@ -175,7 +175,7 @@ liftA2Name = 'liftA2
 mkTyName :: Quasi q => Name -> q Name
 mkTyName tmName = do
   let nameStr  = nameBase tmName
-      symbolic = not (isHsLetter (head nameStr))
+      symbolic = not (isHsLetter (headNameStr nameStr))
   qNewName (if symbolic then "ty" else nameStr)
 
 mkTyConName :: Int -> Name

@@ -248,7 +248,7 @@ promoteTySym name sat
     default_case :: Name -> Name
     default_case name' =
       let capped = toUpcaseStr noPrefix name' in
-      if isHsLetter (head capped)
+      if isHsLetter (headNameStr capped)
       then mkName (capped ++ "Sym" ++ (show sat))
       else mkName (capped ++ "@#@" -- See Note [Defunctionalization symbol suffixes]
                           ++ (replicate (sat + 1) '$'))
