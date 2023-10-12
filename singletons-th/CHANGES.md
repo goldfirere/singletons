@@ -23,6 +23,8 @@ next [????.??.??]
   generate ill-scoped code when singled.
 * Fix a bug in which singling a local variable that shadows a top-level
   definition would fail to typecheck in some circumstances.
+* Fix a bug in which `singletons-th` would incorrectly promote/single records
+  to top-level field selectors when `NoFieldSelectors` was active.
 
 3.2 [2023.03.12]
 ----------------

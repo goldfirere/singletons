@@ -6,31 +6,38 @@ import Language.Haskell.TH.Syntax (NameSpace(..), Quasi(..))
 import Data.Singletons.TH.Options
 import Data.Singletons.TH.Util
 import Language.Haskell.TH.Desugar
+import qualified GHC.LanguageExtensions.Type as LangExt
 
 -- Single a fixity declaration.
 singInfixDecl :: forall q. OptionsMonad q => Name -> Fixity -> q (Maybe DLetDec)
 singInfixDecl name fixity = do
-  opts  <- getOptions
+  opts <- getOptions
+  fld_sels <- qIsExtEnabled LangExt.FieldSelectors
   mb_ns <- reifyNameSpace name
   case mb_ns of
     -- If we can't find the Name for some odd reason,
     -- fall back to singValName
     Nothing          -> finish $ singledValueName   opts name
     Just VarName     -> finish $ singledValueName   opts name
-    Just (FldName _) -> finish $ singledValueName   opts name
+    Just (FldName _)
+      | fld_sels     -> finish $ singledValueName   opts name
+      | otherwise    -> never_mind
     Just DataName    -> finish $ singledDataConName opts name
     Just TcClsName   -> do
       mb_info <- dsReify name
       case mb_info of
         Just (DTyConI DClassD{} _)
           -> finish $ singledClassName opts name
-        _ -> pure Nothing
+        _ -> never_mind
           -- Don't produce anything for other type constructors (type synonyms,
           -- type families, data types, etc.).
           -- See [singletons-th and fixity declarations], wrinkle 1.
   where
     finish :: Name -> q (Maybe DLetDec)
     finish = pure . Just . DInfixD fixity
+
+    never_mind :: q (Maybe DLetDec)
+    never_mind = pure Nothing
 
 -- Try producing singled fixity declarations for Names by reifying them
 -- /without/ consulting quoted declarations. If reification fails, recover and

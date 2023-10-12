@@ -341,22 +341,29 @@ singTopLevelDecs locals raw_decls = withLocalDeclarations locals $ do
 buildDataLets :: OptionsMonad q => DataDecl -> q [(Name, DExp)]
 buildDataLets (DataDecl _df _name _tvbs cons) = do
   opts <- getOptions
-  pure $ concatMap (con_num_args opts) cons
+  fld_sels <- qIsExtEnabled LangExt.FieldSelectors
+  pure $ concatMap (con_num_args opts fld_sels) cons
   where
-    con_num_args :: Options -> DCon -> [(Name, DExp)]
-    con_num_args opts (DCon _tvbs _cxt name fields _rty) =
+    con_num_args :: Options -> Bool -> DCon -> [(Name, DExp)]
+    con_num_args opts fld_sels (DCon _tvbs _cxt name fields _rty) =
       (name, wrapSingFun (length (tysOfConFields fields))
                          (DConT $ defunctionalizedName0 opts name)
                          (DConE $ singledDataConName opts name))
-      : rec_selectors opts fields
+      : rec_selectors opts fld_sels fields
 
-    rec_selectors :: Options -> DConFields -> [(Name, DExp)]
-    rec_selectors _    (DNormalC {}) = []
-    rec_selectors opts (DRecC fields) =
-      let names = map fstOf3 fields in
-      [ (name, wrapSingFun 1 (DConT $ defunctionalizedName0 opts name)
-                             (DVarE $ singledValueName opts name))
-      | name <- names ]
+    rec_selectors :: Options -> Bool -> DConFields -> [(Name, DExp)]
+    rec_selectors opts fld_sels con
+      | fld_sels
+      = case con of
+          DNormalC {} -> []
+          DRecC fields ->
+            let names = map fstOf3 fields in
+            [ (name, wrapSingFun 1 (DConT $ defunctionalizedName0 opts name)
+                                   (DVarE $ singledValueName opts name))
+            | name <- names ]
+
+      | otherwise
+      = []
 
 -- see comment at top of file
 buildMethLets :: OptionsMonad q => UClassDecl -> q [(Name, DExp)]

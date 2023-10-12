@@ -1,0 +1,71 @@
+Singletons/T563.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| infixr 6 `unFoo`
+          
+          data Foo = MkFoo {unFoo :: Bool} |]
+  ======>
+    infixr 6 `unFoo`
+    data Foo = MkFoo {unFoo :: Bool}
+    type MkFooSym0 :: (~>) Bool Foo
+    data MkFooSym0 :: (~>) Bool Foo
+      where
+        MkFooSym0KindInference :: SameKind (Apply MkFooSym0 arg) (MkFooSym1 arg) =>
+                                  MkFooSym0 a0123456789876543210
+    type instance Apply MkFooSym0 a0123456789876543210 = MkFoo a0123456789876543210
+    instance SuppressUnusedWarnings MkFooSym0 where
+      suppressUnusedWarnings = snd ((,) MkFooSym0KindInference ())
+    type MkFooSym1 :: Bool -> Foo
+    type family MkFooSym1 (a0123456789876543210 :: Bool) :: Foo where
+      MkFooSym1 a0123456789876543210 = MkFoo a0123456789876543210
+    data SFoo :: Foo -> Type
+      where
+        SMkFoo :: forall (n :: Bool). (Sing n) -> SFoo (MkFoo n :: Foo)
+    type instance Sing @Foo = SFoo
+    instance SingKind Foo where
+      type Demote Foo = Foo
+      fromSing (SMkFoo b) = MkFoo (fromSing b)
+      toSing (MkFoo (b :: Demote Bool))
+        = case toSing b :: SomeSing Bool of
+            SomeSing c -> SomeSing (SMkFoo c)
+    instance SingI n => SingI (MkFoo (n :: Bool)) where
+      sing = SMkFoo sing
+    instance SingI1 MkFoo where
+      liftSing = SMkFoo
+    instance SingI (MkFooSym0 :: (~>) Bool Foo) where
+      sing = singFun1 @MkFooSym0 SMkFoo
+Singletons/T563.hs:(0,0)-(0,0): Splicing declarations
+    singletonsOnly
+      [d| unFoo' :: Foo -> Bool
+          unFoo' = unFoo |]
+  ======>
+    type UnFoo'Sym0 :: (~>) Foo Bool
+    data UnFoo'Sym0 :: (~>) Foo Bool
+      where
+        UnFoo'Sym0KindInference :: SameKind (Apply UnFoo'Sym0 arg) (UnFoo'Sym1 arg) =>
+                                   UnFoo'Sym0 a0123456789876543210
+    type instance Apply UnFoo'Sym0 a0123456789876543210 = UnFoo' a0123456789876543210
+    instance SuppressUnusedWarnings UnFoo'Sym0 where
+      suppressUnusedWarnings = snd ((,) UnFoo'Sym0KindInference ())
+    type UnFoo'Sym1 :: Foo -> Bool
+    type family UnFoo'Sym1 (a0123456789876543210 :: Foo) :: Bool where
+      UnFoo'Sym1 a0123456789876543210 = UnFoo' a0123456789876543210
+    type UnFoo' :: Foo -> Bool
+    type family UnFoo' (a :: Foo) :: Bool where
+      UnFoo' a_0123456789876543210 = Apply UnFooSym0 a_0123456789876543210
+    sUnFoo' ::
+      (forall (t :: Foo).
+       Sing t -> Sing (Apply UnFoo'Sym0 t :: Bool) :: Type)
+    sUnFoo' (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      = applySing sUnFoo sA_0123456789876543210
+    instance SingI (UnFoo'Sym0 :: (~>) Foo Bool) where
+      sing = singFun1 @UnFoo'Sym0 sUnFoo'
+
+Singletons/T563.hs:0:0: error: [GHC-76037]
+    Not in scope: type constructor or class ‘UnFooSym0’
+    Suggested fix:
+      Perhaps use one of these:
+        ‘UnFoo'Sym0’ (line 13), ‘MkFooSym0’ (line 7),
+        ‘UnFoo'Sym1’ (line 13)
+   |
+13 | $(singletonsOnly [d|
+   |  ^^^^^^^^^^^^^^^^^^^...

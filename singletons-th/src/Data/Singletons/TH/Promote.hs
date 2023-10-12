@@ -236,13 +236,20 @@ promoteDataDecs = concatMapM promoteDataDec
 --    This greatly simplifies the plumbing, since this allows all DLetDecs to
 --    be promoted in a single location.
 --    See Note [singletons-th and record selectors] in D.S.TH.Single.Data.
+--
+-- Note that if @NoFieldSelectors@ is active, then neither steps (2) nor (3)
+-- will promote any records to top-level field selectors.
 promoteDataDec :: DataDecl -> PrM [DLetDec]
 promoteDataDec (DataDecl _ _ _ ctors) = do
   let rec_sel_names = nub $ concatMap extractRecSelNames ctors
                       -- Note the use of nub: the same record selector name can
                       -- be used in multiple constructors!
-  rec_sel_let_decs <- getRecordSelectors ctors
+  fld_sels         <- qIsExtEnabled LangExt.FieldSelectors
+  rec_sel_let_decs <- if fld_sels then getRecordSelectors ctors else pure []
   ctorSyms         <- buildDefunSymsDataD ctors
+  -- NB: If NoFieldSelectors is active, then promoteReifiedInfixDecls will not
+  -- promote any of `rec_sel_names` to field selectors, so there is no need to
+  -- check for it here.
   infix_decs       <- promoteReifiedInfixDecls rec_sel_names
   emitDecs $ ctorSyms ++ infix_decs
   pure rec_sel_let_decs
@@ -610,13 +617,16 @@ promoteLetDecEnv mb_let_uniq (LetDecEnv { lde_defns = value_env
 promoteInfixDecl :: forall q. OptionsMonad q
                  => Maybe Uniq -> Name -> Fixity -> q (Maybe DDec)
 promoteInfixDecl mb_let_uniq name fixity = do
-  opts  <- getOptions
+  opts <- getOptions
+  fld_sels <- qIsExtEnabled LangExt.FieldSelectors
   mb_ns <- reifyNameSpace name
   case mb_ns of
     -- If we can't find the Name for some odd reason, fall back to promote_val
     Nothing          -> promote_val
     Just VarName     -> promote_val
-    Just (FldName _) -> promote_val
+    Just (FldName _)
+      | fld_sels     -> promote_val
+      | otherwise    -> never_mind
     Just DataName    -> never_mind
     Just TcClsName   -> do
       mb_info <- dsReify name
@@ -629,10 +639,16 @@ promoteInfixDecl mb_let_uniq name fixity = do
     finish :: Name -> q (Maybe DDec)
     finish = pure . Just . DLetDec . DInfixD fixity
 
-    -- Don't produce a fixity declaration at all. This happens when promoting a
-    -- fixity declaration for a name whose promoted counterpart is the same as
-    -- the original name.
-    -- See Note [singletons-th and fixity declarations] in D.S.TH.Single.Fixity, wrinkle 1.
+    -- Don't produce a fixity declaration at all. This can happen in the
+    -- following circumstances:
+    --
+    -- - When promoting a fixity declaration for a name whose promoted
+    --   counterpart is the same as the original name.
+    --   See Note [singletons-th and fixity declarations] in
+    --   D.S.TH.Single.Fixity, wrinkle 1.
+    --
+    -- - A fixity declaration contains the name of a record selector when
+    --   NoFieldSelectors is active.
     never_mind :: q (Maybe DDec)
     never_mind = pure Nothing
 
