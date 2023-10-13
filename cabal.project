@@ -5,4 +5,4 @@ packages: ./singletons
 source-repository-package
   type: git
   location: https://github.com/goldfirere/th-desugar
-  tag: 47f6221088ac6185566066b4d45909b0cc704855
+  tag: ab301774cbe9837a9f62dceaf9ef50c76dc7c5c9
