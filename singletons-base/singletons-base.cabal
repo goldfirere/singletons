@@ -1,5 +1,5 @@
 name:           singletons-base
-version:        3.2
+version:        3.3
 cabal-version:  1.24
 synopsis:       A promoted and singled version of the base library
 homepage:       http://www.github.com/goldfirere/singletons
@@ -75,7 +75,7 @@ library
   build-depends:      base             >= 4.19 && < 4.20,
                       pretty,
                       singletons       == 3.0.*,
-                      singletons-th    >= 3.2  && < 3.3,
+                      singletons-th    >= 3.3  && < 3.4,
                       template-haskell >= 2.21 && < 2.22,
                       text >= 1.2,
                       th-desugar       >= 1.16 && < 1.17

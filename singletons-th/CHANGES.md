@@ -1,8 +1,8 @@
 Changelog for the `singletons-th` project
 =========================================
 
-next [????.??.??]
------------------
+3.3 [????.??.??]
+----------------
 * Require building with GHC 9.8.
 * Singled data types with derived `Eq` or `Ord` instances now generate `Eq` or
   `Ord` instances for the singleton type itself, e.g.,
