@@ -1,7 +1,7 @@
 Changelog for the `singletons-th` project
 =========================================
 
-3.3 [????.??.??]
+3.3 [2023.10.13]
 ----------------
 * Require building with GHC 9.8.
 * Singled data types with derived `Eq` or `Ord` instances now generate `Eq` or

@@ -1,7 +1,7 @@
 Changelog for the `singletons-base` project
 ===========================================
 
-3.3 [????.??.??]
+3.3 [2023.10.13]
 ----------------
 * Require building with GHC 9.8.
 * All singleton types with `SEq` or `SOrd` instances now have `Eq` or `Ord`
