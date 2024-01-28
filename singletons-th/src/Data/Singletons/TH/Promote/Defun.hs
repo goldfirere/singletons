@@ -183,26 +183,30 @@ defunctionalize :: Name
                 -> DefunKindInfo
                 -> PrM [DDec]
 defunctionalize name m_fixity defun_ki = do
-  case defun_ki of
-    DefunSAK sak ->
-      -- Even if a declaration has a SAK, its kind may not be vanilla.
-      case unravelVanillaDType_either sak of
-        -- If the kind isn't vanilla, use the fallback approach.
-        -- See Note [Defunctionalization game plan],
-        -- Wrinkle 2: Non-vanilla kinds.
-        Left _ -> defun_fallback [] (Just sak)
-        -- Otherwise, proceed with defun_vanilla_sak.
-        Right (sak_tvbs, _sak_cxt, sak_arg_kis, sak_res_ki)
-               -> defun_vanilla_sak sak_tvbs sak_arg_kis sak_res_ki
-    -- If a declaration lacks a SAK, it likely has a partial kind.
-    -- See Note [Defunctionalization game plan], Wrinkle 1: Partial kinds.
-    DefunNoSAK tvbs m_res -> defun_fallback tvbs m_res
+  opts <- getOptions
+  if genDefunSymsAndInsts opts
+    then
+      case defun_ki of
+        DefunSAK sak ->
+          -- Even if a declaration has a SAK, its kind may not be vanilla.
+          case unravelVanillaDType_either sak of
+            -- If the kind isn't vanilla, use the fallback approach.
+            -- See Note [Defunctionalization game plan],
+            -- Wrinkle 2: Non-vanilla kinds.
+            Left _ -> defun_fallback opts [] (Just sak)
+            -- Otherwise, proceed with defun_vanilla_sak.
+            Right (sak_tvbs, _sak_cxt, sak_arg_kis, sak_res_ki)
+                   -> defun_vanilla_sak opts sak_tvbs sak_arg_kis sak_res_ki
+        -- If a declaration lacks a SAK, it likely has a partial kind.
+        -- See Note [Defunctionalization game plan], Wrinkle 1: Partial kinds.
+        DefunNoSAK tvbs m_res -> defun_fallback opts tvbs m_res
+    else
+      pure []
   where
     -- Generate defunctionalization symbols for things with vanilla SAKs.
     -- The symbols themselves will also be given SAKs.
-    defun_vanilla_sak :: [DTyVarBndrSpec] -> [DKind] -> DKind -> PrM [DDec]
-    defun_vanilla_sak sak_tvbs sak_arg_kis sak_res_ki = do
-      opts <- getOptions
+    defun_vanilla_sak :: Options -> [DTyVarBndrSpec] -> [DKind] -> DKind -> PrM [DDec]
+    defun_vanilla_sak opts sak_tvbs sak_arg_kis sak_res_ki = do
       extra_name <- qNewName "arg"
       let sak_arg_n = length sak_arg_kis
       -- Use noExactName below to avoid GHC#17537.
@@ -282,9 +286,8 @@ defunctionalize name m_fixity defun_ki = do
     -- (see Note [Defunctionalization game plan], Wrinkle 1: Partial kinds)
     -- or a non-vanilla kind
     -- (see Note [Defunctionalization game plan], Wrinkle 2: Non-vanilla kinds).
-    defun_fallback :: [DTyVarBndrVis] -> Maybe DKind -> PrM [DDec]
-    defun_fallback tvbs' m_res' = do
-      opts <- getOptions
+    defun_fallback :: Options -> [DTyVarBndrVis] -> Maybe DKind -> PrM [DDec]
+    defun_fallback opts tvbs' m_res' = do
       extra_name <- qNewName "arg"
       -- Use noExactTyVars below to avoid GHC#11812.
       -- See also Note [Pitfalls of NameU/NameL] in Data.Singletons.TH.Util.

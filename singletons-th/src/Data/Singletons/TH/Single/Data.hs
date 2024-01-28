@@ -212,8 +212,9 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
         | otherwise
         = Nothing
 
-  -- SingI instance for data constructor
-  emitDecs $ mapMaybe mb_SingI_dec [0, 1, 2]
+  -- SingI instances for data constructor
+  when (genSingIInsts opts) $
+    emitDecs $ mapMaybe mb_SingI_dec [0, 1, 2]
   -- SingI instances for defunctionalization symbols. Note that we don't
   -- support contexts in constructors at the moment, so it's fine for now to
   -- just assume that the context is always ().

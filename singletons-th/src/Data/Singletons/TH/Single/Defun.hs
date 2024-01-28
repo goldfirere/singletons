@@ -66,12 +66,17 @@ singDefuns n ns ty_ctxt mb_ty_args mb_ty_res =
   case mb_ty_args of
     [] -> pure [] -- If a function has no arguments, then it has no
                   -- defunctionalization symbols, so there's nothing to be done.
-    _  -> do opts     <- getOptions
-             sty_ctxt <- mapM singPred ty_ctxt
-             names    <- replicateM (length mb_ty_args) $ qNewName "d"
-             let tvbs = zipWith inferMaybeKindTV names mb_ty_args
-             (_, insts) <- go opts 0 sty_ctxt [] tvbs
-             pure insts
+    _  -> do
+      opts     <- getOptions
+      if genDefunSymsAndInsts opts && genSingIInsts opts
+          then do
+            sty_ctxt <- mapM singPred ty_ctxt
+            names    <- replicateM (length mb_ty_args) $ qNewName "d"
+            let tvbs = zipWith inferMaybeKindTV names mb_ty_args
+            (_, insts) <- go opts 0 sty_ctxt [] tvbs
+            pure insts
+          else
+            pure []
   where
     num_ty_args :: Int
     num_ty_args = length mb_ty_args

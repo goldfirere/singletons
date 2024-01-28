@@ -18,6 +18,8 @@ module Data.Singletons.TH.Options
     Options, defaultOptions
     -- ** Options record selectors
   , genQuotedDecs
+  , genDefunSymsAndInsts
+  , genSingIInsts
   , genSingKindInsts
   , promotedDataTypeOrConName
   , promotedClassName
@@ -56,6 +58,10 @@ data Options = Options
     -- ^ If 'True', then quoted declarations will be generated alongside their
     --   promoted and singled counterparts. If 'False', then quoted
     --   declarations will be discarded.
+  , genDefunSymsAndInsts :: Bool
+    -- ^ TODO RGS: Docs
+  , genSingIInsts :: Bool
+    -- ^ TODO RGS: Docs
   , genSingKindInsts :: Bool
     -- ^ If 'True', then 'SingKind' instances will be generated. If 'False',
     --   they will be omitted entirely. This can be useful in scenarios where
@@ -133,6 +139,8 @@ data Options = Options
 defaultOptions :: Options
 defaultOptions = Options
   { genQuotedDecs             = True
+  , genDefunSymsAndInsts      = True
+  , genSingIInsts             = True
   , genSingKindInsts          = True
   , promotedDataTypeOrConName = promoteDataTypeOrConName
   , promotedClassName         = promoteClassName
