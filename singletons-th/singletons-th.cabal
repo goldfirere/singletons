@@ -26,7 +26,7 @@ description:
     .
     @singletons-th@ generates code that relies on bleeding-edge GHC language
     extensions. As such, @singletons-th@ only supports the latest major version
-    of GHC (currently GHC 9.8). For more information,
+    of GHC (currently GHC 9.10). For more information,
     consult the @singletons@
     @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
     .
@@ -52,13 +52,13 @@ source-repository head
 
 library
   hs-source-dirs:     src
-  build-depends:      base             >= 4.19 && < 4.20,
+  build-depends:      base             >= 4.20 && < 4.21,
                       containers       >= 0.5,
                       mtl              >= 2.2.1 && < 2.4,
                       ghc-boot-th,
                       singletons       == 3.0.*,
                       syb              >= 0.4,
-                      template-haskell >= 2.21 && < 2.22,
+                      template-haskell >= 2.22 && < 2.23,
                       th-desugar       >= 1.17 && < 1.18,
                       th-orphans       >= 0.13.11 && < 0.14,
                       transformers     >= 0.5.2

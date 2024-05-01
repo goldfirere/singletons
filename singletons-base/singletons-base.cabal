@@ -38,7 +38,7 @@ description:
     .
     @singletons-base@ uses code that relies on bleeding-edge GHC language
     extensions. As such, @singletons-base@ only supports the latest major version
-    of GHC (currently GHC 9.8). For more information,
+    of GHC (currently GHC 9.10). For more information,
     consult the @singletons@
     @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
     .
@@ -65,18 +65,18 @@ source-repository head
 
 custom-setup
   setup-depends:
-    base      >= 4.19 && < 4.20,
+    base      >= 4.19 && < 4.21,
     Cabal     >= 3.0 && < 3.13,
     directory >= 1,
     filepath  >= 1.3
 
 library
   hs-source-dirs:     src
-  build-depends:      base             >= 4.19 && < 4.20,
+  build-depends:      base             >= 4.20 && < 4.21,
                       pretty,
                       singletons       == 3.0.*,
                       singletons-th    >= 3.3  && < 3.4,
-                      template-haskell >= 2.21 && < 2.22,
+                      template-haskell >= 2.22 && < 2.23,
                       text >= 1.2,
                       th-desugar       >= 1.17 && < 1.18
   default-language:   GHC2021
@@ -155,7 +155,7 @@ test-suite singletons-base-test-suite
   main-is:            SingletonsBaseTestSuite.hs
   other-modules:      SingletonsBaseTestSuiteUtils
 
-  build-depends:      base >= 4.19 && < 4.20,
+  build-depends:      base >= 4.20 && < 4.21,
                       bytestring >= 0.10.9,
                       deepseq >= 1.4.4,
                       filepath >= 1.3,
