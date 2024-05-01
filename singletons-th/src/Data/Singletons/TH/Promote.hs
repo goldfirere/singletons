@@ -637,7 +637,7 @@ promoteInfixDecl mb_let_uniq name fixity = do
   where
     -- Produce the fixity declaration.
     finish :: Name -> q (Maybe DDec)
-    finish = pure . Just . DLetDec . DInfixD fixity
+    finish = pure . Just . DLetDec . DInfixD fixity NoNamespaceSpecifier
 
     -- Don't produce a fixity declaration at all. This can happen in the
     -- following circumstances:
@@ -1045,6 +1045,8 @@ promotePat (DSigP pat ty) = do
   tell $ PromDPatInfos [] (fvDType ki)
   return (DSigT promoted ki, ADSigP promoted pat' ki)
 promotePat DWildP = return (DWildCardT, ADWildP)
+promotePat p@(DTypeP _) = fail ("Embedded type patterns cannot be promoted: " ++ show p)
+promotePat p@(DInvisP _) = fail ("Invisible type patterns cannot be promoted: " ++ show p)
 
 promoteExp :: DExp -> PrM (DType, ADExp)
 promoteExp (DVarE name) = fmap (, ADVarE name) $ lookupVarE name
@@ -1106,6 +1108,7 @@ promoteExp (DSigE exp ty) = do
 promoteExp e@(DStaticE _) = fail ("Static expressions cannot be promoted: " ++ show e)
 promoteExp e@(DTypedBracketE _) = fail ("Typed bracket expressions cannot be promoted: " ++ show e)
 promoteExp e@(DTypedSpliceE _) = fail ("Typed splice expressions cannot be promoted: " ++ show e)
+promoteExp e@(DTypeE _) = fail ("Embedded type expressions cannot be promoted: " ++ show e)
 
 promoteLitExp :: OptionsMonad q => Lit -> q DType
 promoteLitExp (IntegerL n) = do
