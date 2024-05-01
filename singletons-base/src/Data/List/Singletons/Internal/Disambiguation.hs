@@ -20,7 +20,7 @@
 module Data.List.Singletons.Internal.Disambiguation where
 
 import Data.Eq.Singletons
-import Data.List ( foldl', inits, insert, intersperse, isPrefixOf
+import Data.List ( inits, insert, intersperse, isPrefixOf
                  , nubBy, partition, sort, sortBy, tails, transpose )
 import Data.List.Singletons.Internal
 import Data.Ord.Singletons
