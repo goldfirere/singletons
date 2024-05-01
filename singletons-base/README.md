@@ -18,7 +18,7 @@ that code with `singletons-base`.
 
 `singletons-base` uses code that relies on bleeding-edge GHC language
 extensions. As such, `singletons-base` only supports the latest major version
-of GHC (currently GHC 9.8). For more information,
+of GHC (currently GHC 9.10). For more information,
 consult the `singletons`
 [`README`](https://github.com/goldfirere/singletons/blob/master/README.md).
 

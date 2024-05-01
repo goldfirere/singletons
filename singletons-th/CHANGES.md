@@ -3,6 +3,7 @@ Changelog for the `singletons-th` project
 
 next [????.??.??]
 -----------------
+* Require building with GHC 9.10.
 * Fix a bug causing definitions with type signatures using inferred type
   variable binders (e.g., `forall a {b}. a -> b -> a`) to fail to promote.
 

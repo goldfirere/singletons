@@ -1,6 +1,10 @@
 Changelog for the `singletons` project
 ======================================
 
+next [????.??.??]
+-----------------
+* Allow building with GHC 9.10.
+
 3.0.2 [2022.08.23]
 ------------------
 * Allow building with GHC 9.4.
