@@ -27,6 +27,10 @@
 {-# LANGUAGE StandaloneKindSignatures #-}
 #endif
 
+#if __GLASGOW_HASKELL__ >= 910
+{-# LANGUAGE TypeAbstractions #-}
+#endif
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Singletons
@@ -149,7 +153,11 @@ type SameKind (a :: k) (b :: k) = (() :: Constraint)
 #if __GLASGOW_HASKELL__ >= 810
 type Sing :: k -> Type
 #endif
+#if __GLASGOW_HASKELL__ >= 910
+type family Sing @k :: k -> Type
+#else
 type family Sing :: k -> Type
+#endif
 
 {-
 Note [The kind of Sing]
@@ -552,7 +560,11 @@ data family TyCon :: (k1 -> k2) -> unmatchable_fun
 #if __GLASGOW_HASKELL__ >= 810
 type ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun)
 #endif
+#if __GLASGOW_HASKELL__ >= 910
+type family ApplyTyCon @k1 @k2 @unmatchable_fun :: (k1 -> k2) -> (k1 ~> unmatchable_fun) where
+#else
 type family ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun) where
+#endif
 #if __GLASGOW_HASKELL__ >= 808
   ApplyTyCon @k1 @(k2 -> k3) @unmatchable_fun = ApplyTyConAux2
   ApplyTyCon @k1 @k2         @k2              = ApplyTyConAux1
@@ -629,6 +641,29 @@ type TyCon8          :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9)
 -- We can write:
 --
 -- > Map (TyCon1 Succ) [Zero, Succ Zero]
+#if __GLASGOW_HASKELL__ >= 910
+type TyCon1 @k1 @k2 = (TyCon :: (k1 -> k2) -> (k1 ~> k2))
+
+-- | Similar to 'TyCon1', but for two-parameter type constructors.
+type TyCon2 @k1 @k2 @k3 =
+              (TyCon :: (k1 -> k2 -> k3) -> (k1 ~> k2 ~> k3))
+type TyCon3 @k1 @k2 @k3 @k4 =
+              (TyCon :: (k1 -> k2 -> k3 -> k4) -> (k1 ~> k2 ~> k3 ~> k4))
+type TyCon4 @k1 @k2 @k3 @k4 @k5 =
+              (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5) -> (k1 ~> k2 ~> k3 ~> k4 ~> k5))
+type TyCon5 @k1 @k2 @k3 @k4 @k5 @k6 =
+              (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6)
+                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6))
+type TyCon6 @k1 @k2 @k3 @k4 @k5 @k6 @k7 =
+              (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7)
+                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7))
+type TyCon7 @k1 @k2 @k3 @k4 @k5 @k6 @k7 @k8 =
+              (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8)
+                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8))
+type TyCon8 @k1 @k2 @k3 @k4 @k5 @k6 @k7 @k8 @k9 =
+              (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9)
+                     -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8 ~> k9))
+#else
 type TyCon1 = (TyCon :: (k1 -> k2) -> (k1 ~> k2))
 
 -- | Similar to 'TyCon1', but for two-parameter type constructors.
@@ -643,6 +678,7 @@ type TyCon7 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8)
                      -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8))
 type TyCon8 = (TyCon :: (k1 -> k2 -> k3 -> k4 -> k5 -> k6 -> k7 -> k8 -> k9)
                      -> (k1 ~> k2 ~> k3 ~> k4 ~> k5 ~> k6 ~> k7 ~> k8 ~> k9))
+#endif
 #else
 -- | Wrapper for converting the normal type-level arrow into a '~>'.
 -- For example, given:
