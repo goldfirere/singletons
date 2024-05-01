@@ -8,9 +8,9 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.17.20231010
+# version: 0.18.1
 #
-# REGENDATA ("0.17.20231010",["github","cabal.project"])
+# REGENDATA ("0.18.1",["github","cabal.project"])
 #
 name: Haskell-CI
 on:
@@ -109,10 +109,10 @@ jobs:
           apt-get install -y --no-install-recommends gnupg ca-certificates dirmngr curl git software-properties-common libtinfo5
           if [ "${{ matrix.setup-method }}" = ghcup ]; then
             mkdir -p "$HOME/.ghcup/bin"
-            curl -sL https://downloads.haskell.org/ghcup/0.1.19.5/x86_64-linux-ghcup-0.1.19.5 > "$HOME/.ghcup/bin/ghcup"
+            curl -sL https://downloads.haskell.org/ghcup/0.1.20.0/x86_64-linux-ghcup-0.1.20.0 > "$HOME/.ghcup/bin/ghcup"
             chmod a+x "$HOME/.ghcup/bin/ghcup"
             "$HOME/.ghcup/bin/ghcup" install ghc "$HCVER" || (cat "$HOME"/.ghcup/logs/*.* && false)
-            "$HOME/.ghcup/bin/ghcup" install cabal 3.10.1.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
+            "$HOME/.ghcup/bin/ghcup" install cabal 3.10.2.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
           else
             apt-add-repository -y 'ppa:hvr/ghc'
             if [ $((GHCJSARITH)) -ne 0 ] ; then apt-add-repository -y 'ppa:hvr/ghcjs' ; fi
@@ -121,9 +121,9 @@ jobs:
             apt-get update
             if [ $((GHCJSARITH)) -ne 0 ] ; then apt-get install -y "$HCNAME" ghc-8.4.4 nodejs ; else apt-get install -y "$HCNAME" ; fi
             mkdir -p "$HOME/.ghcup/bin"
-            curl -sL https://downloads.haskell.org/ghcup/0.1.19.5/x86_64-linux-ghcup-0.1.19.5 > "$HOME/.ghcup/bin/ghcup"
+            curl -sL https://downloads.haskell.org/ghcup/0.1.20.0/x86_64-linux-ghcup-0.1.20.0 > "$HOME/.ghcup/bin/ghcup"
             chmod a+x "$HOME/.ghcup/bin/ghcup"
-            "$HOME/.ghcup/bin/ghcup" install cabal 3.10.1.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
+            "$HOME/.ghcup/bin/ghcup" install cabal 3.10.2.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
           fi
         env:
           HCKIND: ${{ matrix.compilerKind }}
@@ -144,13 +144,13 @@ jobs:
             echo "HC=$HC" >> "$GITHUB_ENV"
             echo "HCPKG=$HCPKG" >> "$GITHUB_ENV"
             echo "HADDOCK=$HADDOCK" >> "$GITHUB_ENV"
-            echo "CABAL=$HOME/.ghcup/bin/cabal-3.10.1.0 -vnormal+nowrap" >> "$GITHUB_ENV"
+            echo "CABAL=$HOME/.ghcup/bin/cabal-3.10.2.0 -vnormal+nowrap" >> "$GITHUB_ENV"
           else
             HC=$HCDIR/bin/$HCKIND
             echo "HC=$HC" >> "$GITHUB_ENV"
             echo "HCPKG=$HCDIR/bin/$HCKIND-pkg" >> "$GITHUB_ENV"
             echo "HADDOCK=$HCDIR/bin/haddock" >> "$GITHUB_ENV"
-            echo "CABAL=$HOME/.ghcup/bin/cabal-3.10.1.0 -vnormal+nowrap" >> "$GITHUB_ENV"
+            echo "CABAL=$HOME/.ghcup/bin/cabal-3.10.2.0 -vnormal+nowrap" >> "$GITHUB_ENV"
           fi
 
           HCNUMVER=$(${HC} --numeric-version|perl -ne '/^(\d+)\.(\d+)\.(\d+)(\.(\d+))?$/; print(10000 * $1 + 100 * $2 + ($3 == 0 ? $5 != 1 : $3))')
@@ -264,7 +264,7 @@ jobs:
           source-repository-package
             type:     git
             location: https://github.com/goldfirere/th-desugar
-            tag:      ab301774cbe9837a9f62dceaf9ef50c76dc7c5c9
+            tag:      a910bb140d6f9d0c69077c32f70ff08286825dff
           EOF
           if $HEADHACKAGE; then
           echo "allow-newer: $($HCPKG list --simple-output | sed -E 's/([a-zA-Z-]+)-[0-9.]+/*:\1,/g')" >> cabal.project

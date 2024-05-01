@@ -196,7 +196,7 @@ buildLetDecEnv = go emptyLetDecEnv
       go acc (flattened ++ rest)
     go acc (DSigD name ty : rest) =
       go (typeBinding name ty <> acc) rest
-    go acc (DInfixD f n : rest) =
+    go acc (DInfixD f _ n : rest) =
       go (infixDecl f n <> acc) rest
     go acc (DPragmaD{} : rest) = go acc rest
 

@@ -421,7 +421,7 @@ defunctionalize name m_fixity defun_ki = do
                            (noExactName <$> qNewName "e")
 
     mk_fix_decl :: Name -> Fixity -> DDec
-    mk_fix_decl n f = DLetDec $ DInfixD f n
+    mk_fix_decl n f = DLetDec $ DInfixD f NoNamespaceSpecifier n
 
 -- Indicates whether the type being defunctionalized has a standalone kind
 -- signature. If it does, DefunSAK contains the kind. If not, DefunNoSAK

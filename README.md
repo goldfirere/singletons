@@ -1435,11 +1435,14 @@ The following constructs are either unsupported or almost never work:
 
 * datatypes that store arrows or `Symbol`
 * rank-n types
+* embedded type expressions and patterns
 * promoting `TypeRep`s
 * `TypeApplications`
 * Irrefutable patterns
 * `{-# UNPACK #-}` pragmas
 * partial application of the `(->)` type
+* namespace specifiers in fixity declarations
+* invisible type patterns
 
 See the following sections for more details.
 
@@ -1559,6 +1562,20 @@ _vanilla_ types,  where a vanilla function type is a type that:
 
 3. Contains no visible dependent quantification.
 
+### Embedded type expressions and patterns
+
+As a consequence of `singletons-th` not supporting types with visible dependent
+quantification (see the "Rank-n types" section above), `singletons-th` will not
+support embedded types in expressions or patterns. This means that
+`singletons-th` will reject the following examples:
+
+```hs
+idv :: forall a -> a -> a
+idv (type a) (x :: a) = x
+
+x = idv (type Bool) True
+```
+
 ### Promoting `TypeRep`s
 
 The built-in Haskell promotion mechanism does not yet have a full story around
@@ -1611,3 +1628,29 @@ quantification cannot be unpacked. See
 arguments. Attempting to promote `(->)` to zero or one argument will result in
 an error. As a consequence, it is impossible to promote instances like the
 `Functor ((->) r)` instance, so `singletons-base` does not provide them.
+
+### Namespace specifiers in fixity declarations
+
+`singletons-th` will currently ignore namespace specifiers attached to fixity
+declarations. For instance, if you attempt to promote this:
+
+```hs
+infixl 4 data `f`
+f :: a -> a -> a
+```
+
+Then it will be the same as if you had written `` infixl 4 `f` ``. See [this
+`singletons` issue](https://github.com/goldfirere/singletons/issues/582).
+
+### Invisible type patterns
+
+`singletons-th` currently does not support invisible type patterns, such as the
+use of `@t` in this example:
+
+```hs
+f :: a -> a
+f @t x = x :: t
+```
+
+See [this `singletons`
+issue](https://github.com/goldfirere/singletons/issues/583).

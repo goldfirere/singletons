@@ -34,7 +34,7 @@ singInfixDecl name fixity = do
           -- See [singletons-th and fixity declarations], wrinkle 1.
   where
     finish :: Name -> q (Maybe DLetDec)
-    finish = pure . Just . DInfixD fixity
+    finish = pure . Just . DInfixD fixity NoNamespaceSpecifier
 
     never_mind :: q (Maybe DLetDec)
     never_mind = pure Nothing

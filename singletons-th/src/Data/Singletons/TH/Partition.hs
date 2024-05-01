@@ -163,7 +163,7 @@ partitionClassDec (DLetDec (DValD (DVarP name) exp)) =
   pure (valueBinding name (UValue exp), mempty)
 partitionClassDec (DLetDec (DFunD name clauses)) =
   pure (valueBinding name (UFunction clauses), mempty)
-partitionClassDec (DLetDec (DInfixD fixity name)) =
+partitionClassDec (DLetDec (DInfixD fixity _ name)) =
   pure (infixDecl fixity name, mempty)
 partitionClassDec (DLetDec (DPragmaD {})) =
   pure (mempty, mempty)
