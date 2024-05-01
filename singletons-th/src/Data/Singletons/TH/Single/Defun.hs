@@ -14,7 +14,6 @@
 module Data.Singletons.TH.Single.Defun (singDefuns) where
 
 import Control.Monad
-import Data.Foldable
 import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
 import Data.Singletons.TH.Promote.Defun
