@@ -56,11 +56,9 @@ Compatibility
 windows for requirements on the compiler version needed to build each library:
 
 * `singletons` is a minimal library, and as such, it has a relatively
-   wide support window. `singletons` must be built with one of the following
-   compilers:
-
-   * GHC 8.0 or greater
-   * GHCJS
+   wide support window. `singletons` must be built with GHC 8.0 or later.
+   `singletons` aims to support cross-compilers as well (e.g., GHC's JavaScript
+   backend).
 * `singletons-th` and `singletons-base` require use of many bleeding-edge
   GHC language extensions, even more so than `singletons` itself. As such, it
   is difficult to maintain support for multiple GHC versions in any given

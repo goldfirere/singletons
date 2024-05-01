@@ -1,8 +1,9 @@
-distribution:           bionic
+distribution:           jammy
 no-tests-no-benchmarks: False
 unconstrained:          False
 jobs-selection:         any
 -- Needed to avoid https://github.com/haskell/cabal/issues/5423
 haddock-components:     libs
--- Temporarily use head.hackage for GHC 9.8 until the ecosystem catches up
-head-hackage:           >= 9.8
+-- Using `active-repositories: ..., head.hackage.ghc.haskell.org:override`
+-- tends not to work well with singletons-base's custom Setup script.
+head-hackage-override:  False
