@@ -16,7 +16,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MkFoo1Sym0 where
       suppressUnusedWarnings = snd ((,) MkFoo1Sym0KindInference ())
     type MkFoo1Sym1 :: forall a. a -> Foo1 a
-    type family MkFoo1Sym1 (a0123456789876543210 :: a) :: Foo1 a where
+    type family MkFoo1Sym1 @a (a0123456789876543210 :: a) :: Foo1 a where
       MkFoo1Sym1 a0123456789876543210 = MkFoo1 a0123456789876543210
     type MkFoo2Sym0 :: (~>) x (Foo2 x)
     data MkFoo2Sym0 :: (~>) x (Foo2 x)
@@ -27,7 +27,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MkFoo2Sym0 where
       suppressUnusedWarnings = snd ((,) MkFoo2Sym0KindInference ())
     type MkFoo2Sym1 :: x -> Foo2 x
-    type family MkFoo2Sym1 (a0123456789876543210 :: x) :: Foo2 x where
+    type family MkFoo2Sym1 @x (a0123456789876543210 :: x) :: Foo2 x where
       MkFoo2Sym1 a0123456789876543210 = MkFoo2 a0123456789876543210
     type MkFoo3Sym0 :: forall x. (~>) x (Foo3 x)
     data MkFoo3Sym0 :: (~>) x (Foo3 x)
@@ -38,7 +38,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MkFoo3Sym0 where
       suppressUnusedWarnings = snd ((,) MkFoo3Sym0KindInference ())
     type MkFoo3Sym1 :: forall x. x -> Foo3 x
-    type family MkFoo3Sym1 (a0123456789876543210 :: x) :: Foo3 x where
+    type family MkFoo3Sym1 @x (a0123456789876543210 :: x) :: Foo3 x where
       MkFoo3Sym1 a0123456789876543210 = MkFoo3 a0123456789876543210
     data SFoo1 :: forall a. Foo1 a -> Type
       where

@@ -26,7 +26,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ((:*:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (::*:@#@$$###) ())
     type (:*:@#@$$$) :: forall a b. a -> b -> (:*:) a b
-    type family (:*:@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (:*:) a b where
+    type family (:*:@#@$$$) @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (:*:) a b where
       (:*:@#@$$$) a0123456789876543210 a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
     type MkPairSym0 :: forall a b. (~>) a ((~>) b (Pair a b))
     data MkPairSym0 :: (~>) a ((~>) b (Pair a b))
@@ -47,7 +47,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd ((,) MkPairSym1KindInference ())
     infixr 9 `MkPairSym1`
     type MkPairSym2 :: forall a b. a -> b -> Pair a b
-    type family MkPairSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Pair a b where
+    type family MkPairSym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Pair a b where
       MkPairSym2 a0123456789876543210 a0123456789876543210 = MkPair a0123456789876543210 a0123456789876543210
     infixr 9 `MkPairSym2`
     infixr 9 `SMkPair`

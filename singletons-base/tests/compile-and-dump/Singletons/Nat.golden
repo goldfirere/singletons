@@ -304,12 +304,14 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
     instance Eq (SNat (z :: Nat)) where
       (==) _ _ = True
     instance SDecide Nat =>
-             Data.Type.Equality.TestEquality (SNat :: Nat -> Type) where
-      Data.Type.Equality.testEquality
+             GHC.Internal.Data.Type.Equality.TestEquality (SNat :: Nat
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance SDecide Nat =>
-             Data.Type.Coercion.TestCoercion (SNat :: Nat -> Type) where
-      Data.Type.Coercion.testCoercion
+             GHC.Internal.Data.Type.Coercion.TestCoercion (SNat :: Nat
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance Ord (SNat (z :: Nat)) where
       compare _ _ = EQ

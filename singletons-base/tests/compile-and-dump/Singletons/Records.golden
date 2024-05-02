@@ -20,7 +20,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (MkRecordSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) MkRecordSym1KindInference ())
     type MkRecordSym2 :: forall a. a -> Bool -> Record a
-    type family MkRecordSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Bool) :: Record a where
+    type family MkRecordSym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: Bool) :: Record a where
       MkRecordSym2 a0123456789876543210 a0123456789876543210 = MkRecord a0123456789876543210 a0123456789876543210
     type Field2Sym0 :: forall a. (~>) (Record a) Bool
     data Field2Sym0 :: (~>) (Record a) Bool
@@ -31,7 +31,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Field2Sym0 where
       suppressUnusedWarnings = snd ((,) Field2Sym0KindInference ())
     type Field2Sym1 :: forall a. Record a -> Bool
-    type family Field2Sym1 (a0123456789876543210 :: Record a) :: Bool where
+    type family Field2Sym1 @a (a0123456789876543210 :: Record a) :: Bool where
       Field2Sym1 a0123456789876543210 = Field2 a0123456789876543210
     type Field1Sym0 :: forall a. (~>) (Record a) a
     data Field1Sym0 :: (~>) (Record a) a
@@ -42,13 +42,13 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Field1Sym0 where
       suppressUnusedWarnings = snd ((,) Field1Sym0KindInference ())
     type Field1Sym1 :: forall a. Record a -> a
-    type family Field1Sym1 (a0123456789876543210 :: Record a) :: a where
+    type family Field1Sym1 @a (a0123456789876543210 :: Record a) :: a where
       Field1Sym1 a0123456789876543210 = Field1 a0123456789876543210
     type Field2 :: forall a. Record a -> Bool
-    type family Field2 (a :: Record a) :: Bool where
+    type family Field2 @a (a :: Record a) :: Bool where
       Field2 @a (MkRecord _ field :: Record a) = field
     type Field1 :: forall a. Record a -> a
-    type family Field1 (a :: Record a) :: a where
+    type family Field1 @a (a :: Record a) :: a where
       Field1 @a (MkRecord field _ :: Record a) = field
     sField2 ::
       forall a (t :: Record a). Sing t

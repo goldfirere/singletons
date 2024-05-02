@@ -23,7 +23,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
         = snd ((,) LiftMaybeSym1KindInference ())
     type LiftMaybeSym2 :: forall (a :: Type) (b :: Type). (~>) a b
                                                           -> Maybe a -> Maybe b
-    type family LiftMaybeSym2 (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: Maybe a) :: Maybe b where
+    type family LiftMaybeSym2 @(a :: Type) @(b :: Type) (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: Maybe a) :: Maybe b where
       LiftMaybeSym2 a0123456789876543210 a0123456789876543210 = LiftMaybe a0123456789876543210 a0123456789876543210
     type ZeroSym0 :: NatT
     type family ZeroSym0 :: NatT where

@@ -257,11 +257,13 @@ Singletons/Star.hs:0:0:: Splicing declarations
     instance Eq (SRep (z :: Type)) where
       (==) _ _ = True
     instance (SDecide Type, SDecide Nat) =>
-             Data.Type.Equality.TestEquality (SRep :: Type -> Type) where
-      Data.Type.Equality.testEquality = decideEquality
+             GHC.Internal.Data.Type.Equality.TestEquality (SRep :: Type
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Equality.testEquality = decideEquality
     instance (SDecide Type, SDecide Nat) =>
-             Data.Type.Coercion.TestCoercion (SRep :: Type -> Type) where
-      Data.Type.Coercion.testCoercion = decideCoercion
+             GHC.Internal.Data.Type.Coercion.TestCoercion (SRep :: Type
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Coercion.testCoercion = decideCoercion
     instance (SEq Type, SEq Nat) => SEq Type where
       (%==) ::
         forall (t1 :: Type) (t2 :: Type). Sing t1

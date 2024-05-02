@@ -146,12 +146,14 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance Eq (SNat (z :: Nat)) where
       (==) _ _ = True
     instance SDecide Nat =>
-             Data.Type.Equality.TestEquality (SNat :: Nat -> Type) where
-      Data.Type.Equality.testEquality
+             GHC.Internal.Data.Type.Equality.TestEquality (SNat :: Nat
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance SDecide Nat =>
-             Data.Type.Coercion.TestCoercion (SNat :: Nat -> Type) where
-      Data.Type.Coercion.testCoercion
+             GHC.Internal.Data.Type.Coercion.TestCoercion (SNat :: Nat
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance Ord (SNat (z :: Nat)) where
       compare _ _ = EQ
@@ -1448,7 +1450,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
           sScrutinee_0123456789876543210
             = applySing (applySing (singFun2 @(==@#@$) (%==)) sName) sName'
         in
-          GHC.Base.id
+          GHC.Internal.Base.id
             @(Sing (Case_0123456789876543210 name name' u attrs (Let0123456789876543210Scrutinee_0123456789876543210Sym4 name name' u attrs)))
             (case sScrutinee_0123456789876543210 of
                STrue -> sU
@@ -2694,12 +2696,14 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
     instance Eq (SU (z :: U)) where
       (==) _ _ = True
     instance (SDecide U, SDecide Nat) =>
-             Data.Type.Equality.TestEquality (SU :: U -> Type) where
-      Data.Type.Equality.testEquality
+             GHC.Internal.Data.Type.Equality.TestEquality (SU :: U
+                                                                 -> Type) where
+      GHC.Internal.Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance (SDecide U, SDecide Nat) =>
-             Data.Type.Coercion.TestCoercion (SU :: U -> Type) where
-      Data.Type.Coercion.testCoercion
+             GHC.Internal.Data.Type.Coercion.TestCoercion (SU :: U
+                                                                 -> Type) where
+      GHC.Internal.Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance SDecide AChar where
       (%~) SCA SCA = Proved Refl
@@ -3380,13 +3384,13 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       (%~) SCZ SCZ = Proved Refl
     instance Eq (SAChar (z :: AChar)) where
       (==) _ _ = True
-    instance Data.Type.Equality.TestEquality (SAChar :: AChar
-                                                        -> Type) where
-      Data.Type.Equality.testEquality
+    instance GHC.Internal.Data.Type.Equality.TestEquality (SAChar :: AChar
+                                                                     -> Type) where
+      GHC.Internal.Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
-    instance Data.Type.Coercion.TestCoercion (SAChar :: AChar
-                                                        -> Type) where
-      Data.Type.Coercion.testCoercion
+    instance GHC.Internal.Data.Type.Coercion.TestCoercion (SAChar :: AChar
+                                                                     -> Type) where
+      GHC.Internal.Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     deriving instance (Data.Singletons.ShowSing.ShowSing U,
                        Data.Singletons.ShowSing.ShowSing Nat) =>

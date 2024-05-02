@@ -49,7 +49,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings LeftSym0 where
       suppressUnusedWarnings = snd ((,) LeftSym0KindInference ())
     type LeftSym1 :: forall a b. a -> Either a b
-    type family LeftSym1 (a0123456789876543210 :: a) :: Either a b where
+    type family LeftSym1 @a @b (a0123456789876543210 :: a) :: Either a b where
       LeftSym1 a0123456789876543210 = Left a0123456789876543210
     type RightSym0 :: forall a b. (~>) b (Either a b)
     data RightSym0 :: (~>) b (Either a b)
@@ -60,7 +60,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings RightSym0 where
       suppressUnusedWarnings = snd ((,) RightSym0KindInference ())
     type RightSym1 :: forall a b. b -> Either a b
-    type family RightSym1 (a0123456789876543210 :: b) :: Either a b where
+    type family RightSym1 @a @b (a0123456789876543210 :: b) :: Either a b where
       RightSym1 a0123456789876543210 = Right a0123456789876543210
     type family Case_0123456789876543210 n0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 t where
       Case_0123456789876543210 n b a_0123456789876543210 a_0123456789876543210 'True = Apply SuccSym0 (Apply SuccSym0 n)
@@ -204,7 +204,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (FooSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FooSym2KindInference ())
     type FooSym3 :: (~>) ((~>) a b) ((~>) a b) -> (~>) a b -> a -> b
-    type family FooSym3 (a0123456789876543210 :: (~>) ((~>) a b) ((~>) a b)) (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: a) :: b where
+    type family FooSym3 @a @b (a0123456789876543210 :: (~>) ((~>) a b) ((~>) a b)) (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: a) :: b where
       FooSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = Foo a0123456789876543210 a0123456789876543210 a0123456789876543210
     type ZipWithSym0 :: (~>) ((~>) a ((~>) b c)) ((~>) [a] ((~>) [b] [c]))
     data ZipWithSym0 :: (~>) ((~>) a ((~>) b c)) ((~>) [a] ((~>) [b] [c]))
@@ -231,7 +231,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (ZipWithSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ZipWithSym2KindInference ())
     type ZipWithSym3 :: (~>) a ((~>) b c) -> [a] -> [b] -> [c]
-    type family ZipWithSym3 (a0123456789876543210 :: (~>) a ((~>) b c)) (a0123456789876543210 :: [a]) (a0123456789876543210 :: [b]) :: [c] where
+    type family ZipWithSym3 @a @b @c (a0123456789876543210 :: (~>) a ((~>) b c)) (a0123456789876543210 :: [a]) (a0123456789876543210 :: [b]) :: [c] where
       ZipWithSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ZipWith a0123456789876543210 a0123456789876543210 a0123456789876543210
     type LiftMaybeSym0 :: (~>) ((~>) a b) ((~>) (Maybe a) (Maybe b))
     data LiftMaybeSym0 :: (~>) ((~>) a b) ((~>) (Maybe a) (Maybe b))
@@ -250,7 +250,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (LiftMaybeSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) LiftMaybeSym1KindInference ())
     type LiftMaybeSym2 :: (~>) a b -> Maybe a -> Maybe b
-    type family LiftMaybeSym2 (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: Maybe a) :: Maybe b where
+    type family LiftMaybeSym2 @a @b (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: Maybe a) :: Maybe b where
       LiftMaybeSym2 a0123456789876543210 a0123456789876543210 = LiftMaybe a0123456789876543210 a0123456789876543210
     type MapSym0 :: (~>) ((~>) a b) ((~>) [a] [b])
     data MapSym0 :: (~>) ((~>) a b) ((~>) [a] [b])
@@ -269,7 +269,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (MapSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) MapSym1KindInference ())
     type MapSym2 :: (~>) a b -> [a] -> [b]
-    type family MapSym2 (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: [a]) :: [b] where
+    type family MapSym2 @a @b (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: [a]) :: [b] where
       MapSym2 a0123456789876543210 a0123456789876543210 = Map a0123456789876543210 a0123456789876543210
     type Etad :: [Nat] -> [Bool] -> [Nat]
     type family Etad (a :: [Nat]) (a :: [Bool]) :: [Nat] where
@@ -278,20 +278,20 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     type family Splunge (a :: [Nat]) (a :: [Bool]) :: [Nat] where
       Splunge ns bs = Apply (Apply (Apply ZipWithSym0 (Apply (Apply Lambda_0123456789876543210Sym0 ns) bs)) ns) bs
     type Foo :: (~>) ((~>) a b) ((~>) a b) -> (~>) a b -> a -> b
-    type family Foo (a :: (~>) ((~>) a b) ((~>) a b)) (a :: (~>) a b) (a :: a) :: b where
+    type family Foo @a @b (a :: (~>) ((~>) a b) ((~>) a b)) (a :: (~>) a b) (a :: a) :: b where
       Foo f g a = Apply (Apply f g) a
     type ZipWith :: (~>) a ((~>) b c) -> [a] -> [b] -> [c]
-    type family ZipWith (a :: (~>) a ((~>) b c)) (a :: [a]) (a :: [b]) :: [c] where
+    type family ZipWith @a @b @c (a :: (~>) a ((~>) b c)) (a :: [a]) (a :: [b]) :: [c] where
       ZipWith f ('(:) x xs) ('(:) y ys) = Apply (Apply (:@#@$) (Apply (Apply f x) y)) (Apply (Apply (Apply ZipWithSym0 f) xs) ys)
       ZipWith _ '[] '[] = NilSym0
       ZipWith _ ('(:) _ _) '[] = NilSym0
       ZipWith _ '[] ('(:) _ _) = NilSym0
     type LiftMaybe :: (~>) a b -> Maybe a -> Maybe b
-    type family LiftMaybe (a :: (~>) a b) (a :: Maybe a) :: Maybe b where
+    type family LiftMaybe @a @b (a :: (~>) a b) (a :: Maybe a) :: Maybe b where
       LiftMaybe f ('Just x) = Apply JustSym0 (Apply f x)
       LiftMaybe _ 'Nothing = NothingSym0
     type Map :: (~>) a b -> [a] -> [b]
-    type family Map (a :: (~>) a b) (a :: [a]) :: [b] where
+    type family Map @a @b (a :: (~>) a b) (a :: [a]) :: [b] where
       Map _ '[] = NilSym0
       Map f ('(:) h t) = Apply (Apply (:@#@$) (Apply f h)) (Apply (Apply MapSym0 f) t)
     sEtad ::

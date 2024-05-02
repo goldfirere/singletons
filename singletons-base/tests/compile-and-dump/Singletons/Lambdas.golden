@@ -57,7 +57,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (FooSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FooSym1KindInference ())
     type FooSym2 :: forall a b. a -> b -> Foo a b
-    type family FooSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Foo a b where
+    type family FooSym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Foo a b where
       FooSym2 a0123456789876543210 a0123456789876543210 = Foo a0123456789876543210 a0123456789876543210
     type family Case_0123456789876543210 arg_01234567898765432100123456789876543210 x0123456789876543210 t where
       Case_0123456789876543210 arg_0123456789876543210 x (Foo a _) = a
@@ -377,7 +377,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo8Sym0 where
       suppressUnusedWarnings = snd ((,) Foo8Sym0KindInference ())
     type Foo8Sym1 :: Foo a b -> a
-    type family Foo8Sym1 (a0123456789876543210 :: Foo a b) :: a where
+    type family Foo8Sym1 @a @b (a0123456789876543210 :: Foo a b) :: a where
       Foo8Sym1 a0123456789876543210 = Foo8 a0123456789876543210
     type Foo7Sym0 :: (~>) a ((~>) b b)
     data Foo7Sym0 :: (~>) a ((~>) b b)
@@ -396,7 +396,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Foo7Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Foo7Sym1KindInference ())
     type Foo7Sym2 :: a -> b -> b
-    type family Foo7Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
+    type family Foo7Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
       Foo7Sym2 a0123456789876543210 a0123456789876543210 = Foo7 a0123456789876543210 a0123456789876543210
     type Foo6Sym0 :: (~>) a ((~>) b a)
     data Foo6Sym0 :: (~>) a ((~>) b a)
@@ -415,7 +415,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Foo6Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Foo6Sym1KindInference ())
     type Foo6Sym2 :: a -> b -> a
-    type family Foo6Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
+    type family Foo6Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
       Foo6Sym2 a0123456789876543210 a0123456789876543210 = Foo6 a0123456789876543210 a0123456789876543210
     type Foo5Sym0 :: (~>) a ((~>) b b)
     data Foo5Sym0 :: (~>) a ((~>) b b)
@@ -434,7 +434,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Foo5Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Foo5Sym1KindInference ())
     type Foo5Sym2 :: a -> b -> b
-    type family Foo5Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
+    type family Foo5Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
       Foo5Sym2 a0123456789876543210 a0123456789876543210 = Foo5 a0123456789876543210 a0123456789876543210
     type Foo4Sym0 :: (~>) a ((~>) b ((~>) c a))
     data Foo4Sym0 :: (~>) a ((~>) b ((~>) c a))
@@ -461,7 +461,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Foo4Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Foo4Sym2KindInference ())
     type Foo4Sym3 :: a -> b -> c -> a
-    type family Foo4Sym3 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) :: a where
+    type family Foo4Sym3 @a @b @c (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) :: a where
       Foo4Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = Foo4 a0123456789876543210 a0123456789876543210 a0123456789876543210
     type Foo3Sym0 :: (~>) a a
     data Foo3Sym0 :: (~>) a a
@@ -472,7 +472,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo3Sym0 where
       suppressUnusedWarnings = snd ((,) Foo3Sym0KindInference ())
     type Foo3Sym1 :: a -> a
-    type family Foo3Sym1 (a0123456789876543210 :: a) :: a where
+    type family Foo3Sym1 @a (a0123456789876543210 :: a) :: a where
       Foo3Sym1 a0123456789876543210 = Foo3 a0123456789876543210
     type Foo2Sym0 :: (~>) a ((~>) b a)
     data Foo2Sym0 :: (~>) a ((~>) b a)
@@ -491,7 +491,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Foo2Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Foo2Sym1KindInference ())
     type Foo2Sym2 :: a -> b -> a
-    type family Foo2Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
+    type family Foo2Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
       Foo2Sym2 a0123456789876543210 a0123456789876543210 = Foo2 a0123456789876543210 a0123456789876543210
     type Foo1Sym0 :: (~>) a ((~>) b a)
     data Foo1Sym0 :: (~>) a ((~>) b a)
@@ -510,7 +510,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Foo1Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Foo1Sym1KindInference ())
     type Foo1Sym2 :: a -> b -> a
-    type family Foo1Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
+    type family Foo1Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
       Foo1Sym2 a0123456789876543210 a0123456789876543210 = Foo1 a0123456789876543210 a0123456789876543210
     type Foo0Sym0 :: (~>) a ((~>) b a)
     data Foo0Sym0 :: (~>) a ((~>) b a)
@@ -529,34 +529,34 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Foo0Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Foo0Sym1KindInference ())
     type Foo0Sym2 :: a -> b -> a
-    type family Foo0Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
+    type family Foo0Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
       Foo0Sym2 a0123456789876543210 a0123456789876543210 = Foo0 a0123456789876543210 a0123456789876543210
     type Foo8 :: Foo a b -> a
-    type family Foo8 (a :: Foo a b) :: a where
+    type family Foo8 @a @b (a :: Foo a b) :: a where
       Foo8 x = Apply (Apply Lambda_0123456789876543210Sym0 x) x
     type Foo7 :: a -> b -> b
-    type family Foo7 (a :: a) (a :: b) :: b where
+    type family Foo7 @a @b (a :: a) (a :: b) :: b where
       Foo7 x y = Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) (Apply (Apply Tuple2Sym0 x) y)
     type Foo6 :: a -> b -> a
-    type family Foo6 (a :: a) (a :: b) :: a where
+    type family Foo6 @a @b (a :: a) (a :: b) :: a where
       Foo6 a b = Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 a) b) a) b
     type Foo5 :: a -> b -> b
-    type family Foo5 (a :: a) (a :: b) :: b where
+    type family Foo5 @a @b (a :: a) (a :: b) :: b where
       Foo5 x y = Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) y
     type Foo4 :: a -> b -> c -> a
-    type family Foo4 (a :: a) (a :: b) (a :: c) :: a where
+    type family Foo4 @a @b @c (a :: a) (a :: b) (a :: c) :: a where
       Foo4 x y z = Apply (Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) z) y) z
     type Foo3 :: a -> a
-    type family Foo3 (a :: a) :: a where
+    type family Foo3 @a (a :: a) :: a where
       Foo3 x = Apply (Apply Lambda_0123456789876543210Sym0 x) x
     type Foo2 :: a -> b -> a
-    type family Foo2 (a :: a) (a :: b) :: a where
+    type family Foo2 @a @b (a :: a) (a :: b) :: a where
       Foo2 x y = Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) y) y
     type Foo1 :: a -> b -> a
-    type family Foo1 (a :: a) (a :: b) :: a where
+    type family Foo1 @a @b (a :: a) (a :: b) :: a where
       Foo1 x a_0123456789876543210 = Apply (Apply (Apply Lambda_0123456789876543210Sym0 x) a_0123456789876543210) a_0123456789876543210
     type Foo0 :: a -> b -> a
-    type family Foo0 (a :: a) (a :: b) :: a where
+    type family Foo0 @a @b (a :: a) (a :: b) :: a where
       Foo0 a_0123456789876543210 a_0123456789876543210 = Apply (Apply (Apply (Apply Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210) a_0123456789876543210) a_0123456789876543210
     sFoo8 ::
       (forall (t :: Foo a b).

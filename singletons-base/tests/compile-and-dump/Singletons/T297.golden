@@ -19,13 +19,13 @@ Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
               in z
         in x
     type MyProxySym0 :: forall (a :: Type). MyProxy a
-    type family MyProxySym0 :: MyProxy a where
+    type family MyProxySym0 @(a :: Type) :: MyProxy a where
       MyProxySym0 = MyProxy
     type Let0123456789876543210ZSym0 :: MyProxy a
-    type family Let0123456789876543210ZSym0 :: MyProxy a where
+    type family Let0123456789876543210ZSym0 @a :: MyProxy a where
       Let0123456789876543210ZSym0 = Let0123456789876543210Z
     type Let0123456789876543210Z :: MyProxy a
-    type family Let0123456789876543210Z :: MyProxy a where
+    type family Let0123456789876543210Z @a :: MyProxy a where
       Let0123456789876543210Z = MyProxySym0
     type family Let0123456789876543210XSym0 where
       Let0123456789876543210XSym0 = Let0123456789876543210X

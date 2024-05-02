@@ -224,11 +224,13 @@ Singletons/T190.hs:0:0:: Splicing declarations
       (%~) ST ST = Proved Refl
     instance Eq (ST (z :: T)) where
       (==) _ _ = True
-    instance Data.Type.Equality.TestEquality (ST :: T -> Type) where
-      Data.Type.Equality.testEquality
+    instance GHC.Internal.Data.Type.Equality.TestEquality (ST :: T
+                                                                 -> Type) where
+      GHC.Internal.Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
-    instance Data.Type.Coercion.TestCoercion (ST :: T -> Type) where
-      Data.Type.Coercion.testCoercion
+    instance GHC.Internal.Data.Type.Coercion.TestCoercion (ST :: T
+                                                                 -> Type) where
+      GHC.Internal.Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance Ord (ST (z :: T)) where
       compare _ _ = EQ

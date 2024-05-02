@@ -21,7 +21,7 @@ Singletons/T296.hs:(0,0)-(0,0): Splicing declarations
               in z
         in x
     type MyProxySym0 :: forall (a :: Type). MyProxy a
-    type family MyProxySym0 :: MyProxy a where
+    type family MyProxySym0 @(a :: Type) :: MyProxy a where
       MyProxySym0 = MyProxy
     data Let0123456789876543210ZSym0 a0123456789876543210
       where
@@ -56,10 +56,10 @@ Singletons/T296.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: forall a. MyProxy a -> MyProxy a
-    type family FSym1 (a0123456789876543210 :: MyProxy a) :: MyProxy a where
+    type family FSym1 @a (a0123456789876543210 :: MyProxy a) :: MyProxy a where
       FSym1 a0123456789876543210 = F a0123456789876543210
     type F :: forall a. MyProxy a -> MyProxy a
-    type family F (a :: MyProxy a) :: MyProxy a where
+    type family F @a (a :: MyProxy a) :: MyProxy a where
       F @a (MyProxy :: MyProxy a) = Let0123456789876543210XSym1 a
     sF ::
       forall a (t :: MyProxy a). Sing t

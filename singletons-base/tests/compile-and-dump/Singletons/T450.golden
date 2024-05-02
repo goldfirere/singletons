@@ -128,7 +128,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd ((,) PMkFunctionSym0KindInference ())
     type PMkFunctionSym1 :: forall (a :: Type) (b :: Type). (~>) a b
                                                             -> PFunction a b
-    type family PMkFunctionSym1 (a0123456789876543210 :: (~>) a b) :: PFunction a b where
+    type family PMkFunctionSym1 @(a :: Type) @(b :: Type) (a0123456789876543210 :: (~>) a b) :: PFunction a b where
       PMkFunctionSym1 a0123456789876543210 = 'PMkFunction a0123456789876543210
     type SFunction :: forall (a :: Type) (b :: Type). PFunction a b
                                                       -> Type
@@ -176,11 +176,11 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) ComposeFunctionSym1KindInference ())
     type ComposeFunctionSym2 :: PFunction b c
                                 -> PFunction a b -> PFunction a c
-    type family ComposeFunctionSym2 (a0123456789876543210 :: PFunction b c) (a0123456789876543210 :: PFunction a b) :: PFunction a c where
+    type family ComposeFunctionSym2 @b @c @a (a0123456789876543210 :: PFunction b c) (a0123456789876543210 :: PFunction a b) :: PFunction a c where
       ComposeFunctionSym2 a0123456789876543210 a0123456789876543210 = ComposeFunction a0123456789876543210 a0123456789876543210
     type ComposeFunction :: PFunction b c
                             -> PFunction a b -> PFunction a c
-    type family ComposeFunction (a :: PFunction b c) (a :: PFunction a b) :: PFunction a c where
+    type family ComposeFunction @b @c @a (a :: PFunction b c) (a :: PFunction a b) :: PFunction a c where
       ComposeFunction ('PMkFunction (f :: (~>) b c)) ('PMkFunction (g :: (~>) a b)) = Apply PMkFunctionSym0 (Apply (Apply (.@#@$) f) g :: (~>) a c)
     sComposeFunction ::
       (forall (t :: PFunction b c) (t :: PFunction a b).

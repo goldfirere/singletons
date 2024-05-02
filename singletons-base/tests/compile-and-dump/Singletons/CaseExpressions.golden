@@ -156,7 +156,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo5Sym0 where
       suppressUnusedWarnings = snd ((,) Foo5Sym0KindInference ())
     type Foo5Sym1 :: a -> a
-    type family Foo5Sym1 (a0123456789876543210 :: a) :: a where
+    type family Foo5Sym1 @a (a0123456789876543210 :: a) :: a where
       Foo5Sym1 a0123456789876543210 = Foo5 a0123456789876543210
     type Foo4Sym0 :: forall a. (~>) a a
     data Foo4Sym0 :: (~>) a a
@@ -167,7 +167,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo4Sym0 where
       suppressUnusedWarnings = snd ((,) Foo4Sym0KindInference ())
     type Foo4Sym1 :: forall a. a -> a
-    type family Foo4Sym1 (a0123456789876543210 :: a) :: a where
+    type family Foo4Sym1 @a (a0123456789876543210 :: a) :: a where
       Foo4Sym1 a0123456789876543210 = Foo4 a0123456789876543210
     type Foo3Sym0 :: (~>) a ((~>) b a)
     data Foo3Sym0 :: (~>) a ((~>) b a)
@@ -186,7 +186,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Foo3Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Foo3Sym1KindInference ())
     type Foo3Sym2 :: a -> b -> a
-    type family Foo3Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
+    type family Foo3Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
       Foo3Sym2 a0123456789876543210 a0123456789876543210 = Foo3 a0123456789876543210 a0123456789876543210
     type Foo2Sym0 :: (~>) a ((~>) (Maybe a) a)
     data Foo2Sym0 :: (~>) a ((~>) (Maybe a) a)
@@ -205,7 +205,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Foo2Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Foo2Sym1KindInference ())
     type Foo2Sym2 :: a -> Maybe a -> a
-    type family Foo2Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) :: a where
+    type family Foo2Sym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) :: a where
       Foo2Sym2 a0123456789876543210 a0123456789876543210 = Foo2 a0123456789876543210 a0123456789876543210
     type Foo1Sym0 :: (~>) a ((~>) (Maybe a) a)
     data Foo1Sym0 :: (~>) a ((~>) (Maybe a) a)
@@ -224,22 +224,22 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Foo1Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Foo1Sym1KindInference ())
     type Foo1Sym2 :: a -> Maybe a -> a
-    type family Foo1Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) :: a where
+    type family Foo1Sym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) :: a where
       Foo1Sym2 a0123456789876543210 a0123456789876543210 = Foo1 a0123456789876543210 a0123456789876543210
     type Foo5 :: a -> a
-    type family Foo5 (a :: a) :: a where
+    type family Foo5 @a (a :: a) :: a where
       Foo5 x = Case_0123456789876543210 x x
     type Foo4 :: forall a. a -> a
-    type family Foo4 (a :: a) :: a where
+    type family Foo4 @a (a :: a) :: a where
       Foo4 @a (x :: a) = Case_0123456789876543210 a x x
     type Foo3 :: a -> b -> a
-    type family Foo3 (a :: a) (a :: b) :: a where
+    type family Foo3 @a @b (a :: a) (a :: b) :: a where
       Foo3 a b = Case_0123456789876543210 a b (Let0123456789876543210Scrutinee_0123456789876543210Sym2 a b)
     type Foo2 :: a -> Maybe a -> a
-    type family Foo2 (a :: a) (a :: Maybe a) :: a where
+    type family Foo2 @a (a :: a) (a :: Maybe a) :: a where
       Foo2 d _ = Case_0123456789876543210 d (Let0123456789876543210Scrutinee_0123456789876543210Sym1 d)
     type Foo1 :: a -> Maybe a -> a
-    type family Foo1 (a :: a) (a :: Maybe a) :: a where
+    type family Foo1 @a (a :: a) (a :: Maybe a) :: a where
       Foo1 d x = Case_0123456789876543210 d x x
     sFoo5 ::
       (forall (t :: a). Sing t -> Sing (Apply Foo5Sym0 t :: a) :: Type)
