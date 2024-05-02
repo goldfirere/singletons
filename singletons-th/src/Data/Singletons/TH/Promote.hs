@@ -786,6 +786,15 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                     )
                   -- 2(b). We have a standalone kind signature.
                   Just sak ->
+                    -- Compute the type variable binders needed to give the type
+                    -- family the correct arity.
+                    -- See Note [Generating type families with the correct arity].
+                    let tvbs' | null tvbs
+                              = changeDTVFlags SpecifiedSpec $
+                                toposortTyVarsOf (argKs ++ [resK])
+                              | otherwise
+                              = tvbs
+                        arg_tvbs' = tvbSpecsToBndrVis tvbs' ++ arg_tvbs in
                     ( lde_kvs_to_bind'
                     , Just $ DKiSigD proName sak
                     , DefunSAK sak
@@ -793,7 +802,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                       -- the body of the type family declaration even if it is
                       -- given a standalone kind signature.
                       -- See Note [Keep redundant kind information for Haddocks].
-                    , mk_tf_head arg_tvbs (DKindSig resK)
+                    , mk_tf_head arg_tvbs' (DKindSig resK)
                     )
 
       defun_decs <- defunctionalize proName m_fixity defun_ki
@@ -957,6 +966,56 @@ information whatsoever. Until the aformentioned Haddock issue is resolved, we
 work around this limitation by generating the redundant argument and kind
 information anyway. Thankfully, this is simple to accomplish, as we already
 compute this information to begin with.
+
+Note [Generating type families with the correct arity]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+As of GHC 9.10, GHC no longer performs arity inference when kind-checking type
+family declarations with standalone kind signatures. This is an important
+consideration when promoting functions with top-level type signatures. For
+example, we would not want to take this definition:
+
+  f :: Either a Bool
+  f = Right True
+
+And promote it to this type family:
+
+  type F :: Either a Bool
+  type family F where
+    F = Right True
+
+GHC would reject this type family because it would expect F to have arity 0,
+but its definition requires arity 1. This is because the definition of F is
+tantamount to writing:
+
+  F @a = Right @a @Bool True -- This takes 1 argument, hence arity 1
+
+In order to make F kind-check, we need to generate a type family header that
+explicitly declares it to have arity 1, not arity 0:
+
+  type F :: Either a Bool
+  type family F @a where
+    F = Right True
+
+Note the @a binder after F in the type family header.
+
+If the standalone kind signature lacks an outermost forall, then we simply bind
+the type variables in left-to-right order, preserving dependencies (using
+`toposortTyVarsOf`). If the standalone kind signature does have an outermost
+`forall`, then we bind the type variables according to the order in which it
+appears in the `forall`, making sure to filter out any inferred type variable
+binders. For example, we would want to take this definition (from #585):
+
+  konst :: forall a {b}. a -> b -> a
+  konst x _ = x
+
+And promote it to this type family:
+
+  type Konst :: forall a {b}. a -> b -> a
+  type family Konst @a x y where
+    Konst @a (x :: a) (_ :: b) = x
+
+Note that we do not bind @b here. The `tvbSpecsToBndrVis` function is
+responsible for filtering out inferred type variable binders.
 -}
 
 promoteClause :: Maybe Uniq

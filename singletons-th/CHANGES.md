@@ -4,6 +4,14 @@ Changelog for the `singletons-th` project
 next [????.??.??]
 -----------------
 * Require building with GHC 9.10.
+* GHC 9.10 removes arity inference when kind-checking type families with
+  standalone kind signatures, persuant to [this GHC
+  proposal](https://github.com/ghc-proposals/ghc-proposals/blob/10290a668608d608c3f6c6010be265cf7a02e1fc/proposals/0425-decl-invis-binders.rst#breakage-2-arity-inference).
+  In order to promote functions to type families with correct arities,
+  `singletons-th` uses `TypeAbstractions` to bind type variable binders in the
+  headers of promoted type families. As such, it is quite likely that you will
+  need to enable `TypeAbstractions` in order to make GHC accept code that
+  `singletons-th` generates.
 * Fix a bug causing definitions with type signatures using inferred type
   variable binders (e.g., `forall a {b}. a -> b -> a`) to fail to promote.
 
