@@ -263,7 +263,16 @@ defunctionalize name m_fixity defun_ki = do
             case res_nkss of
               [] ->
                 let sat_sak_dec = mk_sak_dec sak_res_ki
-                    sat_decs    = mk_sat_decs opts n arg_tvbs (Just sak_res_ki)
+                    -- Compute the type variable binders needed to give the type
+                    -- family the correct arity.
+                    -- See Note [Generating type families with the correct arity]
+                    -- in D.S.TH.Promote.
+                    sak_tvbs' | null sak_tvbs
+                              = changeDTVFlags SpecifiedSpec $
+                                toposortTyVarsOf (sak_arg_kis ++ [sak_res_ki])
+                              | otherwise
+                              = sak_tvbs
+                    sat_decs = mk_sat_decs opts n sak_tvbs' arg_tvbs (Just sak_res_ki)
                 in (sak_res_ki, sat_sak_dec:sat_decs)
               res_nk:res_nks ->
                 let (res_ki, decs)   = go (n+1) (arg_nks ++ [res_nk]) res_nks
@@ -316,7 +325,7 @@ defunctionalize name m_fixity defun_ki = do
           go n arg_tvbs res_tvbss =
             case res_tvbss of
               [] ->
-                let sat_decs = mk_sat_decs opts n arg_tvbs m_res
+                let sat_decs = mk_sat_decs opts n [] arg_tvbs m_res
                 in (m_res, sat_decs)
               res_tvb:res_tvbs ->
                 let (m_res_ki, decs) = go (n+1) (arg_tvbs ++ [res_tvb]) res_tvbs
@@ -380,15 +389,28 @@ defunctionalize name m_fixity defun_ki = do
     -- Generate a "fully saturated" defunction symbol, along with a fixity
     -- declaration (if needed).
     -- See Note [Fully saturated defunctionalization symbols].
-    mk_sat_decs :: Options -> Int -> [DTyVarBndrVis] -> Maybe DKind -> [DDec]
-    mk_sat_decs opts n sat_tvbs m_sat_res =
+    mk_sat_decs ::
+         Options
+      -> Int
+      -> [DTyVarBndrSpec]
+         -- ^ The invisible type variable binders to put in the type family
+         -- head in order to give it the correct arity.
+         -- See Note [Generating type families with the correct arity] in
+         -- D.S.TH.Promote.
+      -> [DTyVarBndrVis]
+         -- ^ The visible kind arguments.
+      -> Maybe DKind
+         -- ^ The result kind (if known).
+      -> [DDec]
+    mk_sat_decs opts n sat_tvbs sat_args m_sat_res =
       let sat_name = defunctionalizedName opts name n
           sat_dec  = DClosedTypeFamilyD
-                       (DTypeFamilyHead sat_name sat_tvbs
+                       (DTypeFamilyHead sat_name
+                                        (tvbSpecsToBndrVis sat_tvbs ++ sat_args)
                                         (maybeKindToResultSig m_sat_res) Nothing)
                        [DTySynEqn Nothing
-                                  (foldTypeTvbs (DConT sat_name) sat_tvbs)
-                                  (foldTypeTvbs (DConT name)     sat_tvbs)]
+                                  (foldTypeTvbs (DConT sat_name) sat_args)
+                                  (foldTypeTvbs (DConT name)     sat_args)]
           sat_fixity_dec = maybeToList $ fmap (mk_fix_decl sat_name) m_fixity
       in sat_dec : sat_fixity_dec
 
