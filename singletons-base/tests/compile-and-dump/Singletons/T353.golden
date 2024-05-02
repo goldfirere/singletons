@@ -59,7 +59,8 @@ Singletons/T353.hs:0:0:: Splicing declarations
                               (f :: k -> Type)
                               (g :: k -> Type)
                               (p :: k). f p -> g p -> Prod f g p
-    type family MkProdSym2 (a0123456789876543210 :: f p) (a0123456789876543210 :: g p) :: Prod f g p where
+    type family MkProdSym2 @k @(f :: k -> Type) @(g :: k
+                                                       -> Type) @(p :: k) (a0123456789876543210 :: f p) (a0123456789876543210 :: g p) :: Prod f g p where
       MkProdSym2 a0123456789876543210 a0123456789876543210 = 'MkProd a0123456789876543210 a0123456789876543210
 Singletons/T353.hs:0:0:: Splicing declarations
     genDefunSymbols [''Foo]
@@ -86,5 +87,5 @@ Singletons/T353.hs:0:0:: Splicing declarations
       suppressUnusedWarnings = snd ((,) MkFooSym1KindInference ())
     type MkFooSym2 :: forall k k (a :: k) (b :: k). Proxy a
                                                     -> Proxy b -> Foo a b
-    type family MkFooSym2 (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: Foo a b where
+    type family MkFooSym2 @k @k @(a :: k) @(b :: k) (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: Foo a b where
       MkFooSym2 a0123456789876543210 a0123456789876543210 = 'MkFoo a0123456789876543210 a0123456789876543210

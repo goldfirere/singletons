@@ -192,7 +192,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Id8Sym0 where
       suppressUnusedWarnings = snd ((,) Id8Sym0KindInference ())
     type Id8Sym1 :: a -> a
-    type family Id8Sym1 (a0123456789876543210 :: a) :: a where
+    type family Id8Sym1 @a (a0123456789876543210 :: a) :: a where
       Id8Sym1 a0123456789876543210 = Id8 a0123456789876543210
     data Id7Sym0 a0123456789876543210
       where
@@ -212,7 +212,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Id6Sym0 where
       suppressUnusedWarnings = snd ((,) Id6Sym0KindInference ())
     type Id6Sym1 :: a -> a
-    type family Id6Sym1 (a0123456789876543210 :: a) :: a where
+    type family Id6Sym1 @a (a0123456789876543210 :: a) :: a where
       Id6Sym1 a0123456789876543210 = Id6 a0123456789876543210
     type Id5Sym0 :: forall a. (~>) a a
     data Id5Sym0 :: (~>) a a
@@ -223,7 +223,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Id5Sym0 where
       suppressUnusedWarnings = snd ((,) Id5Sym0KindInference ())
     type Id5Sym1 :: forall a. a -> a
-    type family Id5Sym1 (a0123456789876543210 :: a) :: a where
+    type family Id5Sym1 @a (a0123456789876543210 :: a) :: a where
       Id5Sym1 a0123456789876543210 = Id5 a0123456789876543210
     type Id4Sym0 :: forall a. (~>) a a
     data Id4Sym0 :: (~>) a a
@@ -234,7 +234,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Id4Sym0 where
       suppressUnusedWarnings = snd ((,) Id4Sym0KindInference ())
     type Id4Sym1 :: forall a. a -> a
-    type family Id4Sym1 (a0123456789876543210 :: a) :: a where
+    type family Id4Sym1 @a (a0123456789876543210 :: a) :: a where
       Id4Sym1 a0123456789876543210 = Id4 a0123456789876543210
     type Id3Sym0 :: (~>) a a
     data Id3Sym0 :: (~>) a a
@@ -245,7 +245,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Id3Sym0 where
       suppressUnusedWarnings = snd ((,) Id3Sym0KindInference ())
     type Id3Sym1 :: a -> a
-    type family Id3Sym1 (a0123456789876543210 :: a) :: a where
+    type family Id3Sym1 @a (a0123456789876543210 :: a) :: a where
       Id3Sym1 a0123456789876543210 = Id3 a0123456789876543210
     type Id2Sym0 :: forall a. (~>) a a
     data Id2Sym0 :: (~>) a a
@@ -256,7 +256,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Id2Sym0 where
       suppressUnusedWarnings = snd ((,) Id2Sym0KindInference ())
     type Id2Sym1 :: forall a. a -> a
-    type family Id2Sym1 (a0123456789876543210 :: a) :: a where
+    type family Id2Sym1 @a (a0123456789876543210 :: a) :: a where
       Id2Sym1 a0123456789876543210 = Id2 a0123456789876543210
     type FooSym0 :: forall a. (~>) a ()
     data FooSym0 :: (~>) a ()
@@ -267,7 +267,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: forall a. a -> ()
-    type family FooSym1 (a0123456789876543210 :: a) :: () where
+    type family FooSym1 @a (a0123456789876543210 :: a) :: () where
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
     data FSym0 a0123456789876543210
       where
@@ -295,7 +295,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Konst2Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Konst2Sym1KindInference ())
     type Konst2Sym2 :: a -> Maybe Bool -> a
-    type family Konst2Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe Bool) :: a where
+    type family Konst2Sym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe Bool) :: a where
       Konst2Sym2 a0123456789876543210 a0123456789876543210 = Konst2 a0123456789876543210 a0123456789876543210
     type Konst1Sym0 :: (~>) a ((~>) Bool a)
     data Konst1Sym0 :: (~>) a ((~>) Bool a)
@@ -314,36 +314,36 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Konst1Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Konst1Sym1KindInference ())
     type Konst1Sym2 :: a -> Bool -> a
-    type family Konst1Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: Bool) :: a where
+    type family Konst1Sym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: Bool) :: a where
       Konst1Sym2 a0123456789876543210 a0123456789876543210 = Konst1 a0123456789876543210 a0123456789876543210
     type Id8 :: a -> a
-    type family Id8 (a :: a) :: a where
+    type family Id8 @a (a :: a) :: a where
       Id8 x = Apply (Apply (Let0123456789876543210GSym1 x) x) TrueSym0
     type family Id7 a where
       Id7 (x :: b) = Let0123456789876543210GSym2 b x
     type Id6 :: a -> a
-    type family Id6 (a :: a) :: a where
+    type family Id6 @a (a :: a) :: a where
       Id6 (x :: b) = Let0123456789876543210GSym2 b x
     type Id5 :: forall a. a -> a
-    type family Id5 (a :: a) :: a where
+    type family Id5 @a (a :: a) :: a where
       Id5 @a (a_0123456789876543210 :: a) = Apply (Let0123456789876543210GSym2 a a_0123456789876543210) a_0123456789876543210
     type Id4 :: forall a. a -> a
-    type family Id4 (a :: a) :: a where
+    type family Id4 @a (a :: a) :: a where
       Id4 @a (x :: a :: a) = Apply IdSym0 (x :: a)
     type Id3 :: a -> a
-    type family Id3 (a :: a) :: a where
+    type family Id3 @a (a :: a) :: a where
       Id3 (x :: b) = Apply IdSym0 (x :: b)
     type Id2 :: forall a. a -> a
-    type family Id2 (a :: a) :: a where
+    type family Id2 @a (a :: a) :: a where
       Id2 @a (x :: a) = Apply IdSym0 (x :: a)
     type Foo :: forall a. a -> ()
-    type family Foo (a :: a) :: () where
+    type family Foo @a (a :: a) :: () where
       Foo @a (x :: a) = Apply (Apply ConstSym0 Tuple0Sym0) (NothingSym0 :: Maybe a)
     type family F a where
       F local = Let0123456789876543210GSym1 local
     type Konst2 :: a -> Maybe Bool -> a
-    type family Konst2 (a :: a) (a :: Maybe Bool) :: a where
+    type family Konst2 @a (a :: a) (a :: Maybe Bool) :: a where
       Konst2 x _ = x
     type Konst1 :: a -> Bool -> a
-    type family Konst1 (a :: a) (a :: Bool) :: a where
+    type family Konst1 @a (a :: a) (a :: Bool) :: a where
       Konst1 x _ = x

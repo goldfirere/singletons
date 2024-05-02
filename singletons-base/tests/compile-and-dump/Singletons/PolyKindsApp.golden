@@ -7,7 +7,8 @@ Singletons/PolyKindsApp.hs:(0,0)-(0,0): Splicing declarations
       fff :: (a :: k -> Type) (b :: k)
     type FffSym0 :: forall k (a :: k -> Type) (b :: k). (a :: k
                                                               -> Type) (b :: k)
-    type family FffSym0 :: (a :: k -> Type) (b :: k) where
+    type family FffSym0 @k @(a :: k -> Type) @(b :: k) :: (a :: k
+                                                                -> Type) (b :: k) where
       FffSym0 = Fff
     class PCls (a :: k -> Type) where
       type family Fff :: (a :: k -> Type) (b :: k)

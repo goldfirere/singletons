@@ -14,10 +14,10 @@ Singletons/T571.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: a -> a
-    type family FSym1 (a0123456789876543210 :: a) :: a where
+    type family FSym1 @a (a0123456789876543210 :: a) :: a where
       FSym1 a0123456789876543210 = F a0123456789876543210
     type F :: a -> a
-    type family F (a :: a) :: a where
+    type family F @a (a :: a) :: a where
       F x = x
     sF ::
       (forall (t :: a). Sing t -> Sing (Apply FSym0 t :: a) :: Type)
@@ -48,10 +48,10 @@ Singletons/T571.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (GSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) GSym1KindInference ())
     type GSym2 :: (~>) a a -> a -> a
-    type family GSym2 (a0123456789876543210 :: (~>) a a) (a0123456789876543210 :: a) :: a where
+    type family GSym2 @a (a0123456789876543210 :: (~>) a a) (a0123456789876543210 :: a) :: a where
       GSym2 a0123456789876543210 a0123456789876543210 = G a0123456789876543210 a0123456789876543210
     type G :: (~>) a a -> a -> a
-    type family G (a :: (~>) a a) (a :: a) :: a where
+    type family G @a (a :: (~>) a a) (a :: a) :: a where
       G f x = Apply f x
     sG ::
       (forall (t :: (~>) a a) (t :: a).

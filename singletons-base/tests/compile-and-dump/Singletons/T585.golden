@@ -22,10 +22,10 @@ Singletons/T585.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (KonstSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) KonstSym1KindInference ())
     type KonstSym2 :: forall a {b}. a -> b -> a
-    type family KonstSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
+    type family KonstSym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
       KonstSym2 a0123456789876543210 a0123456789876543210 = Konst a0123456789876543210 a0123456789876543210
     type Konst :: forall a {b}. a -> b -> a
-    type family Konst (a :: a) (a :: b) :: a where
+    type family Konst @a (a :: a) (a :: b) :: a where
       Konst @a (x :: a) (_ :: b) = x
     sKonst ::
       forall a {b} (t :: a) (t :: b). Sing t

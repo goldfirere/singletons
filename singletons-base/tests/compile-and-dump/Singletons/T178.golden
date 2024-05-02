@@ -244,13 +244,13 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       (%~) SMany SMany = Proved Refl
     instance Eq (SOcc (z :: Occ)) where
       (==) _ _ = True
-    instance Data.Type.Equality.TestEquality (SOcc :: Occ
-                                                      -> Type) where
-      Data.Type.Equality.testEquality
+    instance GHC.Internal.Data.Type.Equality.TestEquality (SOcc :: Occ
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
-    instance Data.Type.Coercion.TestCoercion (SOcc :: Occ
-                                                      -> Type) where
-      Data.Type.Coercion.testCoercion
+    instance GHC.Internal.Data.Type.Coercion.TestCoercion (SOcc :: Occ
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance Ord (SOcc (z :: Occ)) where
       compare _ _ = EQ

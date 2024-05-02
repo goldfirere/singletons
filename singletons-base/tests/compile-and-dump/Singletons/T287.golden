@@ -27,7 +27,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings ((<<>>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:<<>>@#@$$###) ())
     type (<<>>@#@$$$) :: forall a. a -> a -> a
-    type family (<<>>@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
+    type family (<<>>@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       (<<>>@#@$$$) a0123456789876543210 a0123456789876543210 = (<<>>) a0123456789876543210 a0123456789876543210
     class PS a where
       type family (<<>>) (arg :: a) (arg :: a) :: a
@@ -61,7 +61,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
       Lambda_0123456789876543210Sym3 f0123456789876543210 g0123456789876543210 x0123456789876543210 = Lambda_0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210
     type TFHelper_0123456789876543210 :: (~>) a b
                                          -> (~>) a b -> (~>) a b
-    type family TFHelper_0123456789876543210 (a :: (~>) a b) (a :: (~>) a b) :: (~>) a b where
+    type family TFHelper_0123456789876543210 @a @b (a :: (~>) a b) (a :: (~>) a b) :: (~>) a b where
       TFHelper_0123456789876543210 f g = Apply (Apply Lambda_0123456789876543210Sym0 f) g
     type TFHelper_0123456789876543210Sym0 :: (~>) ((~>) a b) ((~>) ((~>) a b) ((~>) a b))
     data TFHelper_0123456789876543210Sym0 :: (~>) ((~>) a b) ((~>) ((~>) a b) ((~>) a b))
@@ -84,7 +84,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
     type TFHelper_0123456789876543210Sym2 :: (~>) a b
                                              -> (~>) a b -> (~>) a b
-    type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: (~>) a b) :: (~>) a b where
+    type family TFHelper_0123456789876543210Sym2 @a @b (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: (~>) a b) :: (~>) a b where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PS ((~>) a b) where
       type (<<>>) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a

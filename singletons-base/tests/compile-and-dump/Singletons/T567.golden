@@ -20,16 +20,16 @@ Singletons/T567.hs:(0,0)-(0,0): Splicing declarations
     type D4 :: forall k. forall (a :: k) -> Proxy a -> Type
     data D4 (x :: j) (p :: Proxy x) = MkD4
     type MkD1Sym0 :: forall x p. D1 x p
-    type family MkD1Sym0 :: D1 x p where
+    type family MkD1Sym0 @x @p :: D1 x p where
       MkD1Sym0 = MkD1
     type MkD2Sym0 :: forall j (x :: j) p. D2 x p
-    type family MkD2Sym0 :: D2 x p where
+    type family MkD2Sym0 @j @(x :: j) @p :: D2 x p where
       MkD2Sym0 = MkD2
     type MkD3Sym0 :: forall x (p :: Proxy x). D3 x p
-    type family MkD3Sym0 :: D3 x p where
+    type family MkD3Sym0 @x @(p :: Proxy x) :: D3 x p where
       MkD3Sym0 = MkD3
     type MkD4Sym0 :: forall j (x :: j) (p :: Proxy x). D4 x p
-    type family MkD4Sym0 :: D4 x p where
+    type family MkD4Sym0 @j @(x :: j) @(p :: Proxy x) :: D4 x p where
       MkD4Sym0 = MkD4
     type SD1 :: forall k (x :: k) (p :: Proxy x). D1 x p -> Type
     data SD1 :: forall k (x :: k) (p :: Proxy x). D1 x p -> Type

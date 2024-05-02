@@ -589,7 +589,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo13_Sym0 where
       suppressUnusedWarnings = snd ((,) Foo13_Sym0KindInference ())
     type Foo13_Sym1 :: a -> a
-    type family Foo13_Sym1 (a0123456789876543210 :: a) :: a where
+    type family Foo13_Sym1 @a (a0123456789876543210 :: a) :: a where
       Foo13_Sym1 a0123456789876543210 = Foo13_ a0123456789876543210
     type Foo13Sym0 :: forall a. (~>) a a
     data Foo13Sym0 :: (~>) a a
@@ -600,7 +600,7 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo13Sym0 where
       suppressUnusedWarnings = snd ((,) Foo13Sym0KindInference ())
     type Foo13Sym1 :: forall a. a -> a
-    type family Foo13Sym1 (a0123456789876543210 :: a) :: a where
+    type family Foo13Sym1 @a (a0123456789876543210 :: a) :: a where
       Foo13Sym1 a0123456789876543210 = Foo13 a0123456789876543210
     type Foo12Sym0 :: (~>) Nat Nat
     data Foo12Sym0 :: (~>) Nat Nat
@@ -730,10 +730,10 @@ Singletons/LetStatements.hs:(0,0)-(0,0): Splicing declarations
     type family Foo14 (a :: Nat) :: (Nat, Nat) where
       Foo14 x = Apply (Apply Tuple2Sym0 (Let0123456789876543210ZSym1 x)) (Let0123456789876543210YSym1 x)
     type Foo13_ :: a -> a
-    type family Foo13_ (a :: a) :: a where
+    type family Foo13_ @a (a :: a) :: a where
       Foo13_ y = y
     type Foo13 :: forall a. a -> a
-    type family Foo13 (a :: a) :: a where
+    type family Foo13 @a (a :: a) :: a where
       Foo13 @a (x :: a) = Apply Foo13_Sym0 (Let0123456789876543210BarSym2 a x)
     type Foo12 :: Nat -> Nat
     type family Foo12 (a :: Nat) :: Nat where

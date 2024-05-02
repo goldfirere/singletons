@@ -29,7 +29,7 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) EqualsSym1KindInference ())
     type EqualsSym2 :: forall a. a -> a -> Bool
-    type family EqualsSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Bool where
+    type family EqualsSym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Bool where
       EqualsSym2 a0123456789876543210 a0123456789876543210 = Equals a0123456789876543210 a0123456789876543210
     class PEq a where
       type family Equals (arg :: a) (arg :: a) :: Bool

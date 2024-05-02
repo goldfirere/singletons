@@ -16,10 +16,10 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings HeadSym0 where
       suppressUnusedWarnings = snd ((,) HeadSym0KindInference ())
     type HeadSym1 :: [a] -> a
-    type family HeadSym1 (a0123456789876543210 :: [a]) :: a where
+    type family HeadSym1 @a (a0123456789876543210 :: [a]) :: a where
       HeadSym1 a0123456789876543210 = Head a0123456789876543210
     type Head :: [a] -> a
-    type family Head (a :: [a]) :: a where
+    type family Head @a (a :: [a]) :: a where
       Head ('(:) a _) = a
       Head '[] = Apply ErrorSym0 "head: empty list"
     sHead ::

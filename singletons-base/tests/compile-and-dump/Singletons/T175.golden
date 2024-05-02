@@ -19,24 +19,24 @@ Singletons/T175.hs:(0,0)-(0,0): Splicing declarations
     quux2 :: Bar2 a => a
     quux2 = baz
     type Quux2Sym0 :: a
-    type family Quux2Sym0 :: a where
+    type family Quux2Sym0 @a :: a where
       Quux2Sym0 = Quux2
     type Quux2 :: a
-    type family Quux2 :: a where
+    type family Quux2 @a :: a where
       Quux2 = BazSym0
     type BazSym0 :: forall a. a
-    type family BazSym0 :: a where
+    type family BazSym0 @a :: a where
       BazSym0 = Baz
     class PFoo a where
       type family Baz :: a
     type Quux1Sym0 :: forall a. a
-    type family Quux1Sym0 :: a where
+    type family Quux1Sym0 @a :: a where
       Quux1Sym0 = Quux1
     type Quux1_0123456789876543210 :: a
-    type family Quux1_0123456789876543210 :: a where
+    type family Quux1_0123456789876543210 @a :: a where
       Quux1_0123456789876543210 = BazSym0
     type Quux1_0123456789876543210Sym0 :: a
-    type family Quux1_0123456789876543210Sym0 :: a where
+    type family Quux1_0123456789876543210Sym0 @a :: a where
       Quux1_0123456789876543210Sym0 = Quux1_0123456789876543210
     class PBar1 a where
       type family Quux1 :: a

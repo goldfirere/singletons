@@ -23,7 +23,7 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MkT1Sym0 where
       suppressUnusedWarnings = snd ((,) MkT1Sym0KindInference ())
     type MkT1Sym1 :: a -> T a
-    type family MkT1Sym1 (a0123456789876543210 :: a) :: T a where
+    type family MkT1Sym1 @a (a0123456789876543210 :: a) :: T a where
       MkT1Sym1 a0123456789876543210 = MkT1 a0123456789876543210
     type MkT2Sym0 :: (~>) Void (T a)
     data MkT2Sym0 :: (~>) Void (T a)
@@ -34,7 +34,7 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MkT2Sym0 where
       suppressUnusedWarnings = snd ((,) MkT2Sym0KindInference ())
     type MkT2Sym1 :: Void -> T a
-    type family MkT2Sym1 (a0123456789876543210 :: Void) :: T a where
+    type family MkT2Sym1 @a (a0123456789876543210 :: Void) :: T a where
       MkT2Sym1 a0123456789876543210 = MkT2 a0123456789876543210
     type MkSSym0 :: (~>) Bool S
     data MkSSym0 :: (~>) Bool S
@@ -88,9 +88,9 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
       liftSing = SMkS
     instance SingI (MkSSym0 :: (~>) Bool S) where
       sing = singFun1 @MkSSym0 SMkS
-
 Singletons/T470.hs:0:0: warning: [GHC-39584]
     {-# UNPACK #-} pragmas are ignored by `singletons-th`.
   |
 6 | $(singletons [d|
   |  ^^^^^^^^^^^^^^^...
+

@@ -53,7 +53,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Quux2Sym0 where
       suppressUnusedWarnings = snd ((,) Quux2Sym0KindInference ())
     type Quux2Sym1 :: a -> a
-    type family Quux2Sym1 (a0123456789876543210 :: a) :: a where
+    type family Quux2Sym1 @a (a0123456789876543210 :: a) :: a where
       Quux2Sym1 a0123456789876543210 = Quux2 a0123456789876543210
     type Quux1Sym0 :: (~>) a a
     data Quux1Sym0 :: (~>) a a
@@ -64,13 +64,13 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Quux1Sym0 where
       suppressUnusedWarnings = snd ((,) Quux1Sym0KindInference ())
     type Quux1Sym1 :: a -> a
-    type family Quux1Sym1 (a0123456789876543210 :: a) :: a where
+    type family Quux1Sym1 @a (a0123456789876543210 :: a) :: a where
       Quux1Sym1 a0123456789876543210 = Quux1 a0123456789876543210
     type Quux2 :: a -> a
-    type family Quux2 (a :: a) :: a where
+    type family Quux2 @a (a :: a) :: a where
       Quux2 x = Apply (Apply Bar2Sym0 x) Baz2Sym0
     type Quux1 :: a -> a
-    type family Quux1 (a :: a) :: a where
+    type family Quux1 @a (a :: a) :: a where
       Quux1 x = Apply (Apply Bar1Sym0 x) (Apply Lambda_0123456789876543210Sym0 x)
     type Bar1Sym0 :: forall a b. (~>) a ((~>) ((~>) a b) b)
     data Bar1Sym0 :: (~>) a ((~>) ((~>) a b) b)
@@ -89,10 +89,10 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Bar1Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Bar1Sym1KindInference ())
     type Bar1Sym2 :: forall a b. a -> (~>) a b -> b
-    type family Bar1Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: (~>) a b) :: b where
+    type family Bar1Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: (~>) a b) :: b where
       Bar1Sym2 a0123456789876543210 a0123456789876543210 = Bar1 a0123456789876543210 a0123456789876543210
     type Baz1Sym0 :: forall a. a
-    type family Baz1Sym0 :: a where
+    type family Baz1Sym0 @a :: a where
       Baz1Sym0 = Baz1
     class PFoo1 a where
       type family Bar1 (arg :: a) (arg :: (~>) a b) :: b
@@ -114,10 +114,10 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Bar2Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Bar2Sym1KindInference ())
     type Bar2Sym2 :: forall a b. a -> b -> b
-    type family Bar2Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
+    type family Bar2Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
       Bar2Sym2 a0123456789876543210 a0123456789876543210 = Bar2 a0123456789876543210 a0123456789876543210
     type Baz2Sym0 :: forall a. a
-    type family Baz2Sym0 :: a where
+    type family Baz2Sym0 @a :: a where
       Baz2Sym0 = Baz2
     class PFoo2 a where
       type family Bar2 (arg :: a) (arg :: b) :: b

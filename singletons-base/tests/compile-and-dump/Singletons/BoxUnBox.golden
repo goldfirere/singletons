@@ -17,7 +17,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings FBoxSym0 where
       suppressUnusedWarnings = snd ((,) FBoxSym0KindInference ())
     type FBoxSym1 :: forall a. a -> Box a
-    type family FBoxSym1 (a0123456789876543210 :: a) :: Box a where
+    type family FBoxSym1 @a (a0123456789876543210 :: a) :: Box a where
       FBoxSym1 a0123456789876543210 = FBox a0123456789876543210
     type UnBoxSym0 :: (~>) (Box a) a
     data UnBoxSym0 :: (~>) (Box a) a
@@ -28,10 +28,10 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings UnBoxSym0 where
       suppressUnusedWarnings = snd ((,) UnBoxSym0KindInference ())
     type UnBoxSym1 :: Box a -> a
-    type family UnBoxSym1 (a0123456789876543210 :: Box a) :: a where
+    type family UnBoxSym1 @a (a0123456789876543210 :: Box a) :: a where
       UnBoxSym1 a0123456789876543210 = UnBox a0123456789876543210
     type UnBox :: Box a -> a
-    type family UnBox (a :: Box a) :: a where
+    type family UnBox @a (a :: Box a) :: a where
       UnBox (FBox a) = a
     sUnBox ::
       (forall (t :: Box a).
