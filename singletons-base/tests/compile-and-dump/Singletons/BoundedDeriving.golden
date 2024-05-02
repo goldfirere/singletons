@@ -58,13 +58,13 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo3Sym0 where
       suppressUnusedWarnings = snd ((,) Foo3Sym0KindInference ())
     type Foo3Sym1 :: forall a. a -> Foo3 a
-    type family Foo3Sym1 (a0123456789876543210 :: a) :: Foo3 a where
+    type family Foo3Sym1 @a (a0123456789876543210 :: a) :: Foo3 a where
       Foo3Sym1 a0123456789876543210 = Foo3 a0123456789876543210
     type Foo41Sym0 :: forall (a :: Type) (b :: Type). Foo4 a b
-    type family Foo41Sym0 :: Foo4 a b where
+    type family Foo41Sym0 @(a :: Type) @(b :: Type) :: Foo4 a b where
       Foo41Sym0 = Foo41
     type Foo42Sym0 :: forall (a :: Type) (b :: Type). Foo4 a b
-    type family Foo42Sym0 :: Foo4 a b where
+    type family Foo42Sym0 @(a :: Type) @(b :: Type) :: Foo4 a b where
       Foo42Sym0 = Foo42
     type PairSym0 :: (~>) Bool ((~>) Bool Pair)
     data PairSym0 :: (~>) Bool ((~>) Bool Pair)
@@ -116,31 +116,31 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       type MinBound = MinBound_0123456789876543210Sym0
       type MaxBound = MaxBound_0123456789876543210Sym0
     type MinBound_0123456789876543210 :: Foo3 a
-    type family MinBound_0123456789876543210 :: Foo3 a where
+    type family MinBound_0123456789876543210 @a :: Foo3 a where
       MinBound_0123456789876543210 = Apply Foo3Sym0 MinBoundSym0
     type MinBound_0123456789876543210Sym0 :: Foo3 a
-    type family MinBound_0123456789876543210Sym0 :: Foo3 a where
+    type family MinBound_0123456789876543210Sym0 @a :: Foo3 a where
       MinBound_0123456789876543210Sym0 = MinBound_0123456789876543210
     type MaxBound_0123456789876543210 :: Foo3 a
-    type family MaxBound_0123456789876543210 :: Foo3 a where
+    type family MaxBound_0123456789876543210 @a :: Foo3 a where
       MaxBound_0123456789876543210 = Apply Foo3Sym0 MaxBoundSym0
     type MaxBound_0123456789876543210Sym0 :: Foo3 a
-    type family MaxBound_0123456789876543210Sym0 :: Foo3 a where
+    type family MaxBound_0123456789876543210Sym0 @a :: Foo3 a where
       MaxBound_0123456789876543210Sym0 = MaxBound_0123456789876543210
     instance PBounded (Foo3 a) where
       type MinBound = MinBound_0123456789876543210Sym0
       type MaxBound = MaxBound_0123456789876543210Sym0
     type MinBound_0123456789876543210 :: Foo4 a b
-    type family MinBound_0123456789876543210 :: Foo4 a b where
+    type family MinBound_0123456789876543210 @a @b :: Foo4 a b where
       MinBound_0123456789876543210 = Foo41Sym0
     type MinBound_0123456789876543210Sym0 :: Foo4 a b
-    type family MinBound_0123456789876543210Sym0 :: Foo4 a b where
+    type family MinBound_0123456789876543210Sym0 @a @b :: Foo4 a b where
       MinBound_0123456789876543210Sym0 = MinBound_0123456789876543210
     type MaxBound_0123456789876543210 :: Foo4 a b
-    type family MaxBound_0123456789876543210 :: Foo4 a b where
+    type family MaxBound_0123456789876543210 @a @b :: Foo4 a b where
       MaxBound_0123456789876543210 = Foo42Sym0
     type MaxBound_0123456789876543210Sym0 :: Foo4 a b
-    type family MaxBound_0123456789876543210Sym0 :: Foo4 a b where
+    type family MaxBound_0123456789876543210Sym0 @a @b :: Foo4 a b where
       MaxBound_0123456789876543210Sym0 = MaxBound_0123456789876543210
     instance PBounded (Foo4 a b) where
       type MinBound = MinBound_0123456789876543210Sym0

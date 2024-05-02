@@ -33,14 +33,14 @@ Singletons/T489.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings BlahSym0 where
       suppressUnusedWarnings = snd ((,) BlahSym0KindInference ())
     type BlahSym1 :: Maybe a -> [a]
-    type family BlahSym1 (a0123456789876543210 :: Maybe a) :: [a] where
+    type family BlahSym1 @a (a0123456789876543210 :: Maybe a) :: [a] where
       BlahSym1 a0123456789876543210 = Blah a0123456789876543210
     type Flurmp :: Maybe () -> ()
     type family Flurmp (a :: Maybe ()) :: () where
       Flurmp ('Nothing @_) = Tuple0Sym0
       Flurmp ('Just '()) = Tuple0Sym0
     type Blah :: Maybe a -> [a]
-    type family Blah (a :: Maybe a) :: [a] where
+    type family Blah @a (a :: Maybe a) :: [a] where
       Blah ('Just @a x) = Apply (Apply (:@#@$) (x :: a)) NilSym0
       Blah ('Nothing @a) = NilSym0 :: [a]
     sFlurmp ::

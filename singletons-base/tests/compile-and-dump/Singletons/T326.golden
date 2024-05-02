@@ -20,7 +20,7 @@ Singletons/T326.hs:0:0:: Splicing declarations
       suppressUnusedWarnings = snd ((,) (:<%>@#@$$###) ())
     infixl 9 <%>@#@$$
     type (<%>@#@$$$) :: forall a. a -> a -> a
-    type family (<%>@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
+    type family (<%>@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       (<%>@#@$$$) a0123456789876543210 a0123456789876543210 = (<%>) a0123456789876543210 a0123456789876543210
     infixl 9 <%>@#@$$$
     type PC1 :: Type -> Constraint
@@ -49,7 +49,7 @@ Singletons/T326.hs:0:0:: Splicing declarations
       suppressUnusedWarnings = snd ((,) (:<%%>@#@$$###) ())
     infixl 9 <%%>@#@$$
     type (<%%>@#@$$$) :: forall a. a -> a -> a
-    type family (<%%>@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
+    type family (<%%>@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       (<%%>@#@$$$) a0123456789876543210 a0123456789876543210 = (<%%>) a0123456789876543210 a0123456789876543210
     infixl 9 <%%>@#@$$$
     type PC2 :: Type -> Constraint

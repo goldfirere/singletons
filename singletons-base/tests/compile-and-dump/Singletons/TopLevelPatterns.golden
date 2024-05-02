@@ -19,7 +19,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings
-        = Data.Tuple.snd ((,) BarSym0KindInference ())
+        = GHC.Internal.Data.Tuple.snd ((,) BarSym0KindInference ())
     type BarSym1 :: Bool -> (~>) Bool Foo
     data BarSym1 (a0123456789876543210 :: Bool) :: (~>) Bool Foo
       where
@@ -28,7 +28,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (BarSym1 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BarSym1 a0123456789876543210) where
       suppressUnusedWarnings
-        = Data.Tuple.snd ((,) BarSym1KindInference ())
+        = GHC.Internal.Data.Tuple.snd ((,) BarSym1KindInference ())
     type BarSym2 :: Bool -> Bool -> Foo
     type family BarSym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) :: Foo where
       BarSym2 a0123456789876543210 a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
@@ -159,7 +159,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                               ISym0 a0123456789876543210
     type instance Apply ISym0 a0123456789876543210 = I a0123456789876543210
     instance SuppressUnusedWarnings ISym0 where
-      suppressUnusedWarnings = Data.Tuple.snd ((,) ISym0KindInference ())
+      suppressUnusedWarnings
+        = GHC.Internal.Data.Tuple.snd ((,) ISym0KindInference ())
     type ISym1 :: Bool -> Bool
     type family ISym1 (a0123456789876543210 :: Bool) :: Bool where
       ISym1 a0123456789876543210 = I a0123456789876543210
@@ -170,7 +171,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                               HSym0 a0123456789876543210
     type instance Apply HSym0 a0123456789876543210 = H a0123456789876543210
     instance SuppressUnusedWarnings HSym0 where
-      suppressUnusedWarnings = Data.Tuple.snd ((,) HSym0KindInference ())
+      suppressUnusedWarnings
+        = GHC.Internal.Data.Tuple.snd ((,) HSym0KindInference ())
     type HSym1 :: Bool -> Bool
     type family HSym1 (a0123456789876543210 :: Bool) :: Bool where
       HSym1 a0123456789876543210 = H a0123456789876543210
@@ -183,7 +185,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                               GSym0 a0123456789876543210
     type instance Apply GSym0 a0123456789876543210 = G a0123456789876543210
     instance SuppressUnusedWarnings GSym0 where
-      suppressUnusedWarnings = Data.Tuple.snd ((,) GSym0KindInference ())
+      suppressUnusedWarnings
+        = GHC.Internal.Data.Tuple.snd ((,) GSym0KindInference ())
     type GSym1 :: Bool -> Bool
     type family GSym1 (a0123456789876543210 :: Bool) :: Bool where
       GSym1 a0123456789876543210 = G a0123456789876543210
@@ -194,7 +197,8 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                               FSym0 a0123456789876543210
     type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
-      suppressUnusedWarnings = Data.Tuple.snd ((,) FSym0KindInference ())
+      suppressUnusedWarnings
+        = GHC.Internal.Data.Tuple.snd ((,) FSym0KindInference ())
     type FSym1 :: Bool -> Bool
     type family FSym1 (a0123456789876543210 :: Bool) :: Bool where
       FSym1 a0123456789876543210 = F a0123456789876543210
@@ -210,7 +214,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply NotSym0 a0123456789876543210 = Not a0123456789876543210
     instance SuppressUnusedWarnings NotSym0 where
       suppressUnusedWarnings
-        = Data.Tuple.snd ((,) NotSym0KindInference ())
+        = GHC.Internal.Data.Tuple.snd ((,) NotSym0KindInference ())
     type NotSym1 :: Bool -> Bool
     type family NotSym1 (a0123456789876543210 :: Bool) :: Bool where
       NotSym1 a0123456789876543210 = Not a0123456789876543210
@@ -222,9 +226,9 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply IdSym0 a0123456789876543210 = Id a0123456789876543210
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings
-        = Data.Tuple.snd ((,) IdSym0KindInference ())
+        = GHC.Internal.Data.Tuple.snd ((,) IdSym0KindInference ())
     type IdSym1 :: a -> a
-    type family IdSym1 (a0123456789876543210 :: a) :: a where
+    type family IdSym1 @a (a0123456789876543210 :: a) :: a where
       IdSym1 a0123456789876543210 = Id a0123456789876543210
     type OtherwiseSym0 :: Bool
     type family OtherwiseSym0 :: Bool where
@@ -268,7 +272,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       Not 'True = FalseSym0
       Not 'False = TrueSym0
     type Id :: a -> a
-    type family Id (a :: a) :: a where
+    type family Id @a (a :: a) :: a where
       Id x = x
     type Otherwise :: Bool
     type family Otherwise :: Bool where
@@ -301,14 +305,14 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       (forall (t :: a). Sing t -> Sing (Apply IdSym0 t :: a) :: Type)
     sOtherwise :: (Sing (OtherwiseSym0 :: Bool) :: Type)
     sM
-      = GHC.Base.id
+      = GHC.Internal.Base.id
           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SCons _
                    (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210) SNil)
                -> sY_0123456789876543210)
     sL
-      = GHC.Base.id
+      = GHC.Internal.Base.id
           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
@@ -325,13 +329,13 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
                 (applySing (singFun1 @IdSym0 sId) SFalse))
              SNil)
     sK
-      = GHC.Base.id
+      = GHC.Internal.Base.id
           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SBar _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
                -> sY_0123456789876543210)
     sJ
-      = GHC.Base.id
+      = GHC.Internal.Base.id
           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))
           (case sX_0123456789876543210 of
              SBar (sY_0123456789876543210 :: Sing y_0123456789876543210) _
@@ -342,7 +346,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
           (applySing (singFun1 @HSym0 sH) SFalse)
     sI (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = applySing
-          (GHC.Base.id
+          (GHC.Internal.Base.id
              @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0))
              (case sX_0123456789876543210 of
                 STuple2 _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
@@ -350,7 +354,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
           sA_0123456789876543210
     sH (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = applySing
-          (GHC.Base.id
+          (GHC.Internal.Base.id
              @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0))
              (case sX_0123456789876543210 of
                 STuple2 (sY_0123456789876543210 :: Sing y_0123456789876543210) _
@@ -362,7 +366,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
           (singFun1 @GSym0 sG)
     sG (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = applySing
-          (GHC.Base.id
+          (GHC.Internal.Base.id
              @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0))
              (case sX_0123456789876543210 of
                 SCons _
@@ -371,7 +375,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
           sA_0123456789876543210
     sF (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = applySing
-          (GHC.Base.id
+          (GHC.Internal.Base.id
              @(Sing (Case_0123456789876543210 a_0123456789876543210 X_0123456789876543210Sym0))
              (case sX_0123456789876543210 of
                 SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)

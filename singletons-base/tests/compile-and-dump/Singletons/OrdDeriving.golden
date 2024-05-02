@@ -75,7 +75,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (ASym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ASym3KindInference ())
     type ASym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
-    type family ASym4 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
+    type family ASym4 @a @b @c @d (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
       ASym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = A a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     type BSym0 :: forall a
                          b
@@ -115,7 +115,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (BSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) BSym3KindInference ())
     type BSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
-    type family BSym4 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
+    type family BSym4 @a @b @c @d (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
       BSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = B a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     type CSym0 :: forall a
                          b
@@ -155,7 +155,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (CSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) CSym3KindInference ())
     type CSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
-    type family CSym4 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
+    type family CSym4 @a @b @c @d (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
       CSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = C a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     type DSym0 :: forall a
                          b
@@ -195,7 +195,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (DSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) DSym3KindInference ())
     type DSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
-    type family DSym4 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
+    type family DSym4 @a @b @c @d (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
       DSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = D a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     type ESym0 :: forall a
                          b
@@ -235,7 +235,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (ESym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ESym3KindInference ())
     type ESym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
-    type family ESym4 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
+    type family ESym4 @a @b @c @d (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
       ESym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = E a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     type FSym0 :: forall a
                          b
@@ -275,7 +275,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (FSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FSym3KindInference ())
     type FSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
-    type family FSym4 (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
+    type family FSym4 @a @b @c @d (a0123456789876543210 :: a) (a0123456789876543210 :: b) (a0123456789876543210 :: c) (a0123456789876543210 :: d) :: Foo a b c d where
       FSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = F a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     type TFHelper_0123456789876543210 :: Nat -> Nat -> Bool
     type family TFHelper_0123456789876543210 (a :: Nat) (a :: Nat) :: Bool where
@@ -337,7 +337,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
     type TFHelper_0123456789876543210 :: Foo a b c d
                                          -> Foo a b c d -> Bool
-    type family TFHelper_0123456789876543210 (a :: Foo a b c d) (a :: Foo a b c d) :: Bool where
+    type family TFHelper_0123456789876543210 @a @b @c @d (a :: Foo a b c d) (a :: Foo a b c d) :: Bool where
       TFHelper_0123456789876543210 (A a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (A b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
       TFHelper_0123456789876543210 (A _ _ _ _) (B _ _ _ _) = FalseSym0
       TFHelper_0123456789876543210 (A _ _ _ _) (C _ _ _ _) = FalseSym0
@@ -395,13 +395,13 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
     type TFHelper_0123456789876543210Sym2 :: Foo a b c d
                                              -> Foo a b c d -> Bool
-    type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: Foo a b c d) (a0123456789876543210 :: Foo a b c d) :: Bool where
+    type family TFHelper_0123456789876543210Sym2 @a @b @c @d (a0123456789876543210 :: Foo a b c d) (a0123456789876543210 :: Foo a b c d) :: Bool where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq (Foo a b c d) where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     type Compare_0123456789876543210 :: Foo a b c d
                                         -> Foo a b c d -> Ordering
-    type family Compare_0123456789876543210 (a :: Foo a b c d) (a :: Foo a b c d) :: Ordering where
+    type family Compare_0123456789876543210 @a @b @c @d (a :: Foo a b c d) (a :: Foo a b c d) :: Ordering where
       Compare_0123456789876543210 (A a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (A b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
       Compare_0123456789876543210 (B a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (B b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
       Compare_0123456789876543210 (C a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (C b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
@@ -459,7 +459,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
         = snd ((,) Compare_0123456789876543210Sym1KindInference ())
     type Compare_0123456789876543210Sym2 :: Foo a b c d
                                             -> Foo a b c d -> Ordering
-    type family Compare_0123456789876543210Sym2 (a0123456789876543210 :: Foo a b c d) (a0123456789876543210 :: Foo a b c d) :: Ordering where
+    type family Compare_0123456789876543210Sym2 @a @b @c @d (a0123456789876543210 :: Foo a b c d) (a0123456789876543210 :: Foo a b c d) :: Ordering where
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd (Foo a b c d) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
@@ -1119,12 +1119,14 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance Eq (SNat (z :: Nat)) where
       (==) _ _ = True
     instance SDecide Nat =>
-             Data.Type.Equality.TestEquality (SNat :: Nat -> Type) where
-      Data.Type.Equality.testEquality
+             GHC.Internal.Data.Type.Equality.TestEquality (SNat :: Nat
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance SDecide Nat =>
-             Data.Type.Coercion.TestCoercion (SNat :: Nat -> Type) where
-      Data.Type.Coercion.testCoercion
+             GHC.Internal.Data.Type.Coercion.TestCoercion (SNat :: Nat
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
              SDecide (Foo a b c d) where
@@ -1233,12 +1235,14 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance Eq (SFoo (z :: Foo a b c d)) where
       (==) _ _ = True
     instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
-             Data.Type.Equality.TestEquality (SFoo :: Foo a b c d -> Type) where
-      Data.Type.Equality.testEquality
+             GHC.Internal.Data.Type.Equality.TestEquality (SFoo :: Foo a b c d
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
     instance (SDecide a, SDecide b, SDecide c, SDecide d) =>
-             Data.Type.Coercion.TestCoercion (SFoo :: Foo a b c d -> Type) where
-      Data.Type.Coercion.testCoercion
+             GHC.Internal.Data.Type.Coercion.TestCoercion (SFoo :: Foo a b c d
+                                                                   -> Type) where
+      GHC.Internal.Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance Ord (SNat (z :: Nat)) where
       compare _ _ = EQ

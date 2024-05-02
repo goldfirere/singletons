@@ -289,8 +289,8 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (CartProdSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) CartProdSym1KindInference ())
     type CartProdSym2 :: [a] -> [b] -> [(a, b)]
-    type family CartProdSym2 (a0123456789876543210 :: [a]) (a0123456789876543210 :: [b]) :: [(a,
-                                                                                              b)] where
+    type family CartProdSym2 @a @b (a0123456789876543210 :: [a]) (a0123456789876543210 :: [b]) :: [(a,
+                                                                                                    b)] where
       CartProdSym2 a0123456789876543210 a0123456789876543210 = CartProd a0123456789876543210 a0123456789876543210
     type Zip'Sym0 :: (~>) [a] ((~>) [b] [(a, b)])
     data Zip'Sym0 :: (~>) [a] ((~>) [b] [(a, b)])
@@ -309,8 +309,8 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Zip'Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Zip'Sym1KindInference ())
     type Zip'Sym2 :: [a] -> [b] -> [(a, b)]
-    type family Zip'Sym2 (a0123456789876543210 :: [a]) (a0123456789876543210 :: [b]) :: [(a,
-                                                                                          b)] where
+    type family Zip'Sym2 @a @b (a0123456789876543210 :: [a]) (a0123456789876543210 :: [b]) :: [(a,
+                                                                                                b)] where
       Zip'Sym2 a0123456789876543210 a0123456789876543210 = Zip' a0123456789876543210 a0123456789876543210
     type BoogieSym0 :: (~>) (Maybe a) ((~>) (Maybe Bool) (Maybe a))
     data BoogieSym0 :: (~>) (Maybe a) ((~>) (Maybe Bool) (Maybe a))
@@ -329,19 +329,19 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (BoogieSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) BoogieSym1KindInference ())
     type BoogieSym2 :: Maybe a -> Maybe Bool -> Maybe a
-    type family BoogieSym2 (a0123456789876543210 :: Maybe a) (a0123456789876543210 :: Maybe Bool) :: Maybe a where
+    type family BoogieSym2 @a (a0123456789876543210 :: Maybe a) (a0123456789876543210 :: Maybe Bool) :: Maybe a where
       BoogieSym2 a0123456789876543210 a0123456789876543210 = Boogie a0123456789876543210 a0123456789876543210
     type Trues :: [Bool] -> [Bool]
     type family Trues (a :: [Bool]) :: [Bool] where
       Trues xs = Apply (Apply (>>=@#@$) xs) (Apply Lambda_0123456789876543210Sym0 xs)
     type CartProd :: [a] -> [b] -> [(a, b)]
-    type family CartProd (a :: [a]) (a :: [b]) :: [(a, b)] where
+    type family CartProd @a @b (a :: [a]) (a :: [b]) :: [(a, b)] where
       CartProd xs ys = Apply (Apply (>>=@#@$) xs) (Apply (Apply Lambda_0123456789876543210Sym0 xs) ys)
     type Zip' :: [a] -> [b] -> [(a, b)]
-    type family Zip' (a :: [a]) (a :: [b]) :: [(a, b)] where
+    type family Zip' @a @b (a :: [a]) (a :: [b]) :: [(a, b)] where
       Zip' xs ys = Apply (Apply (>>=@#@$) (Apply (Apply MzipSym0 (Apply (Apply (>>=@#@$) xs) (Apply (Apply Lambda_0123456789876543210Sym0 xs) ys))) (Apply (Apply (>>=@#@$) ys) (Apply (Apply Lambda_0123456789876543210Sym0 xs) ys)))) (Apply (Apply Lambda_0123456789876543210Sym0 xs) ys)
     type Boogie :: Maybe a -> Maybe Bool -> Maybe a
-    type family Boogie (a :: Maybe a) (a :: Maybe Bool) :: Maybe a where
+    type family Boogie @a (a :: Maybe a) (a :: Maybe Bool) :: Maybe a where
       Boogie ma mb = Apply (Apply (>>=@#@$) ma) (Apply (Apply Lambda_0123456789876543210Sym0 ma) mb)
     sTrues ::
       (forall (t :: [Bool]).

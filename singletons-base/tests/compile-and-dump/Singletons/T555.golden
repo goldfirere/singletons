@@ -190,13 +190,13 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
       (%~) SQuaternion SQuaternion = Proved Refl
     instance Eq (SMyPropKind (z :: MyPropKind)) where
       (==) _ _ = True
-    instance Data.Type.Equality.TestEquality (SMyPropKind :: MyPropKind
-                                                             -> Type) where
-      Data.Type.Equality.testEquality
+    instance GHC.Internal.Data.Type.Equality.TestEquality (SMyPropKind :: MyPropKind
+                                                                          -> Type) where
+      GHC.Internal.Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
-    instance Data.Type.Coercion.TestCoercion (SMyPropKind :: MyPropKind
-                                                             -> Type) where
-      Data.Type.Coercion.testCoercion
+    instance GHC.Internal.Data.Type.Coercion.TestCoercion (SMyPropKind :: MyPropKind
+                                                                          -> Type) where
+      GHC.Internal.Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance Ord (SMyPropKind (z :: MyPropKind)) where
       compare _ _ = EQ

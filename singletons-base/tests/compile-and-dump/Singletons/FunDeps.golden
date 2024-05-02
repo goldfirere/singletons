@@ -32,7 +32,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MethSym0 where
       suppressUnusedWarnings = snd ((,) MethSym0KindInference ())
     type MethSym1 :: forall a. a -> a
-    type family MethSym1 (a0123456789876543210 :: a) :: a where
+    type family MethSym1 @a (a0123456789876543210 :: a) :: a where
       MethSym1 a0123456789876543210 = Meth a0123456789876543210
     type L2rSym0 :: forall a b. (~>) a b
     data L2rSym0 :: (~>) a b
@@ -43,7 +43,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings L2rSym0 where
       suppressUnusedWarnings = snd ((,) L2rSym0KindInference ())
     type L2rSym1 :: forall a b. a -> b
-    type family L2rSym1 (a0123456789876543210 :: a) :: b where
+    type family L2rSym1 @a @b (a0123456789876543210 :: a) :: b where
       L2rSym1 a0123456789876543210 = L2r a0123456789876543210
     class PFD a b | a -> b where
       type family Meth (arg :: a) :: a

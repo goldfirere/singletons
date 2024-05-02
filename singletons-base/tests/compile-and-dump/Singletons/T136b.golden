@@ -14,7 +14,7 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings MethSym0 where
       suppressUnusedWarnings = snd ((,) MethSym0KindInference ())
     type MethSym1 :: forall a. a -> a
-    type family MethSym1 (a0123456789876543210 :: a) :: a where
+    type family MethSym1 @a (a0123456789876543210 :: a) :: a where
       MethSym1 a0123456789876543210 = Meth a0123456789876543210
     class PC a where
       type family Meth (arg :: a) :: a

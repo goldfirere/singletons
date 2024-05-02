@@ -85,13 +85,13 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
       (%~) x _ = Proved (case x of {})
     instance Eq (SEmpty (z :: Empty)) where
       (==) _ _ = True
-    instance Data.Type.Equality.TestEquality (SEmpty :: Empty
-                                                        -> Type) where
-      Data.Type.Equality.testEquality
+    instance GHC.Internal.Data.Type.Equality.TestEquality (SEmpty :: Empty
+                                                                     -> Type) where
+      GHC.Internal.Data.Type.Equality.testEquality
         = Data.Singletons.Decide.decideEquality
-    instance Data.Type.Coercion.TestCoercion (SEmpty :: Empty
-                                                        -> Type) where
-      Data.Type.Coercion.testCoercion
+    instance GHC.Internal.Data.Type.Coercion.TestCoercion (SEmpty :: Empty
+                                                                     -> Type) where
+      GHC.Internal.Data.Type.Coercion.testCoercion
         = Data.Singletons.Decide.decideCoercion
     instance Ord (SEmpty (z :: Empty)) where
       compare _ _ = EQ

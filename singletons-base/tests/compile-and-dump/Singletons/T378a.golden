@@ -19,16 +19,16 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
         Proxy3 :: forall a. Proxy a
         Proxy4 :: forall k (a :: k). Proxy a
     type Proxy1Sym0 :: Proxy a
-    type family Proxy1Sym0 :: Proxy a where
+    type family Proxy1Sym0 @a :: Proxy a where
       Proxy1Sym0 = Proxy1
     type Proxy2Sym0 :: Proxy (a :: k)
-    type family Proxy2Sym0 :: Proxy (a :: k) where
+    type family Proxy2Sym0 @k @(a :: k) :: Proxy (a :: k) where
       Proxy2Sym0 = Proxy2
     type Proxy3Sym0 :: forall a. Proxy a
-    type family Proxy3Sym0 :: Proxy a where
+    type family Proxy3Sym0 @a :: Proxy a where
       Proxy3Sym0 = Proxy3
     type Proxy4Sym0 :: forall k (a :: k). Proxy a
-    type family Proxy4Sym0 :: Proxy a where
+    type family Proxy4Sym0 @k @(a :: k) :: Proxy a where
       Proxy4Sym0 = Proxy4
     type ConstBASym0 :: forall b a. (~>) a ((~>) b a)
     data ConstBASym0 :: (~>) a ((~>) b a)
@@ -47,10 +47,10 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (ConstBASym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ConstBASym1KindInference ())
     type ConstBASym2 :: forall b a. a -> b -> a
-    type family ConstBASym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
+    type family ConstBASym2 @b @a (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
       ConstBASym2 a0123456789876543210 a0123456789876543210 = ConstBA a0123456789876543210 a0123456789876543210
     type ConstBA :: forall b a. a -> b -> a
-    type family ConstBA (a :: a) (a :: b) :: a where
+    type family ConstBA @b @a (a :: a) (a :: b) :: a where
       ConstBA @b @a (x :: a) (_ :: b) = x
     sConstBA ::
       forall b a (t :: a) (t :: b). Sing t

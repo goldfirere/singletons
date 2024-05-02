@@ -107,7 +107,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (ConstSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ConstSym1KindInference ())
     type ConstSym2 :: a -> b -> a
-    type family ConstSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
+    type family ConstSym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
       ConstSym2 a0123456789876543210 a0123456789876543210 = Const a0123456789876543210 a0123456789876543210
     type FooCompare :: Foo -> Foo -> Ordering
     type family FooCompare (a :: Foo) (a :: Foo) :: Ordering where
@@ -116,7 +116,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       FooCompare B B = GTSym0
       FooCompare B A = EQSym0
     type Const :: a -> b -> a
-    type family Const (a :: a) (a :: b) :: a where
+    type family Const @a @b (a :: a) (a :: b) :: a where
       Const x _ = x
     type MycompareSym0 :: forall a. (~>) a ((~>) a Ordering)
     data MycompareSym0 :: (~>) a ((~>) a Ordering)
@@ -135,7 +135,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (MycompareSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) MycompareSym1KindInference ())
     type MycompareSym2 :: forall a. a -> a -> Ordering
-    type family MycompareSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ordering where
+    type family MycompareSym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ordering where
       MycompareSym2 a0123456789876543210 a0123456789876543210 = Mycompare a0123456789876543210 a0123456789876543210
     type (<=>@#@$) :: forall a. (~>) a ((~>) a Ordering)
     data (<=>@#@$) :: (~>) a ((~>) a Ordering)
@@ -156,11 +156,11 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings = snd ((,) (:<=>@#@$$###) ())
     infix 4 <=>@#@$$
     type (<=>@#@$$$) :: forall a. a -> a -> Ordering
-    type family (<=>@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ordering where
+    type family (<=>@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ordering where
       (<=>@#@$$$) a0123456789876543210 a0123456789876543210 = (<=>) a0123456789876543210 a0123456789876543210
     infix 4 <=>@#@$$$
     type TFHelper_0123456789876543210 :: a -> a -> Ordering
-    type family TFHelper_0123456789876543210 (a :: a) (a :: a) :: Ordering where
+    type family TFHelper_0123456789876543210 @a (a :: a) (a :: a) :: Ordering where
       TFHelper_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply MycompareSym0 a_0123456789876543210) a_0123456789876543210
     type TFHelper_0123456789876543210Sym0 :: (~>) a ((~>) a Ordering)
     data TFHelper_0123456789876543210Sym0 :: (~>) a ((~>) a Ordering)
@@ -181,7 +181,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
     type TFHelper_0123456789876543210Sym2 :: a -> a -> Ordering
-    type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ordering where
+    type family TFHelper_0123456789876543210Sym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ordering where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     class PMyOrd a where
       type family Mycompare (arg :: a) (arg :: a) :: Ordering

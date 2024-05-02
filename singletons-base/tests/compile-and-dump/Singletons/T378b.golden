@@ -71,7 +71,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (FSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FSym1KindInference ())
     type FSym2 :: forall b a. a -> b -> ()
-    type family FSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: () where
+    type family FSym2 @b @a (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: () where
       FSym2 a0123456789876543210 a0123456789876543210 = F a0123456789876543210 a0123456789876543210
     type NatMinus :: Nat -> Nat -> Nat
     type family NatMinus (a :: Nat) (a :: Nat) :: Nat where
@@ -79,7 +79,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
       NatMinus ('Succ a) ('Succ b) = Apply (Apply NatMinusSym0 a) b
       NatMinus ('Succ wild_0123456789876543210) 'Zero = Let0123456789876543210ASym1 wild_0123456789876543210
     type F :: forall b a. a -> b -> ()
-    type family F (a :: a) (a :: b) :: () where
+    type family F @b @a (a :: a) (a :: b) :: () where
       F @b @a (_ :: a) (_ :: b) = Tuple0Sym0
     type PC :: forall b a. a -> b -> Constraint
     class PC x y

@@ -30,7 +30,7 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (IdFooSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) IdFooSym1KindInference ())
     type IdFooSym2 :: c -> a -> a
-    type family IdFooSym2 (a0123456789876543210 :: c) (a0123456789876543210 :: a) :: a where
+    type family IdFooSym2 @c @a (a0123456789876543210 :: c) (a0123456789876543210 :: a) :: a where
       IdFooSym2 a0123456789876543210 a0123456789876543210 = IdFoo a0123456789876543210 a0123456789876543210
     type IdSym0 :: (~>) a a
     data IdSym0 :: (~>) a a
@@ -41,7 +41,7 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings = snd ((,) IdSym0KindInference ())
     type IdSym1 :: a -> a
-    type family IdSym1 (a0123456789876543210 :: a) :: a where
+    type family IdSym1 @a (a0123456789876543210 :: a) :: a where
       IdSym1 a0123456789876543210 = Id a0123456789876543210
     type ReturnFuncSym0 :: (~>) Nat ((~>) Nat Nat)
     data ReturnFuncSym0 :: (~>) Nat ((~>) Nat Nat)
@@ -63,10 +63,10 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     type family ReturnFuncSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
       ReturnFuncSym2 a0123456789876543210 a0123456789876543210 = ReturnFunc a0123456789876543210 a0123456789876543210
     type IdFoo :: c -> a -> a
-    type family IdFoo (a :: c) (a :: a) :: a where
+    type family IdFoo @c @a (a :: c) (a :: a) :: a where
       IdFoo _ a_0123456789876543210 = Apply IdSym0 a_0123456789876543210
     type Id :: a -> a
-    type family Id (a :: a) :: a where
+    type family Id @a (a :: a) :: a where
       Id x = x
     type ReturnFunc :: Nat -> Nat -> Nat
     type family ReturnFunc (a :: Nat) (a :: Nat) :: Nat where
