@@ -848,6 +848,7 @@ The following constructs are partially supported:
 * type families
 * `TypeApplications`
 * wildcard types
+* inferred type variable binders
 
 See the following sections for more details.
 
@@ -1226,6 +1227,72 @@ bar (Just ())    = True
 any other context. Ultimately, this is due to a GHC restriction, as GHC itself
 will forbid using wildcards in most kind-level contexts. For example, GHC will
 permit `f :: _` but reject `type F :: _`.
+
+## Inferred type variable binders
+
+`singletons-th` supports promoting inferred type variable binders in most
+circumstances. For example, `singletons-th` can promote this definition:
+
+```hs
+konst :: forall a {b}. a -> b -> a
+konst x _ = x
+```
+
+To this type family:
+
+```hs
+type Konst :: forall a {b}. a -> b -> a
+type family Konst @a x y where
+  Konst @a (x :: a) (_ :: b) = x
+```
+
+There is one (somewhat obscure) corner case that `singletons-th` cannot handle,
+which requires both of the following criteria to be met:
+
+* A definition must not have any visible arguments.
+* A definition must have an inferred type variable binder as the last type
+  variable in an outermost `forall`.
+
+For instance, `singletons-th` cannot promote this definition:
+
+```hs
+bad :: forall {a}. Either a Bool
+bad = Right True
+```
+
+This is because `singletons-th` will attempt to generate this type family:
+
+```hs
+type Bad :: forall {a}. Either a Bool
+type family Bad where
+  Bad = Right True
+```
+
+GHC will not kind-check `Bad`, however. GHC will kind-check the standalone kind
+signature and conclude that `Bad` has arity 0, i.e., that it does not bind any
+arguments (visible or invisible). However, the definition of `Bad` requires an
+arity of 1, as it implicitly binds an argument:
+
+```hs
+Bad @{a} = Right @{a} @Bool True
+```
+
+In order to make this kind-check, we would need to be able to generate something
+like this:
+
+```hs
+type Bad :: forall {a}. Either a Bool
+type family Bad @{a} where
+  Bad = Right True
+```
+
+However, GHC does not allow users to things like `@{a}`, and this is by design.
+(See [this
+part](https://github.com/ghc-proposals/ghc-proposals/blob/10290a668608d608c3f6c6010be265cf7a02e1fc/proposals/0425-decl-invis-binders.rst#alternatives)
+of the relevant GHC proposal about invisible binders in type declarations.) As
+such, there is no way for `singletons-th` to promote this definition exactly as
+written. As a workaround, you can change the `forall {a}` to `forall a`, or you
+can remove the standalone kind signature.
 
 ## Support for promotion, but not singling
 
