@@ -264,7 +264,7 @@ jobs:
           source-repository-package
             type:     git
             location: https://github.com/goldfirere/th-desugar
-            tag:      a910bb140d6f9d0c69077c32f70ff08286825dff
+            tag:      5aa3585028b05b90e78ead54e4f5fda6ace13ac2
           EOF
           if $HEADHACKAGE; then
           echo "allow-newer: $($HCPKG list --simple-output | sed -E 's/([a-zA-Z-]+)-[0-9.]+/*:\1,/g')" >> cabal.project
