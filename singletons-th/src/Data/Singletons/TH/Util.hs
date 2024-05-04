@@ -613,8 +613,7 @@ orIfEmpty x  _ = x
 -- build a pattern match over several expressions, each with only one pattern
 multiCase :: [DExp] -> [DPat] -> DExp -> DExp
 multiCase [] [] body = body
-multiCase scruts pats body =
-  DCaseE (mkTupleDExp scruts) [DMatch (mkTupleDPat pats) body]
+multiCase scruts pats body = dCasesE scruts [DClause pats body]
 
 -- a monad transformer for writing a monoid alongside returning a Q
 newtype QWithAux m q a = QWA { runQWA :: WriterT m q a }

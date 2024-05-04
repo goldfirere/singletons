@@ -48,8 +48,8 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SSuccFoo b) = SuccFoo (fromSing b)
       toSing ZeroFoo = SomeSing SZeroFoo
       toSing (SuccFoo (b :: Demote NatFoo))
-        = case toSing b :: SomeSing NatFoo of
-            SomeSing c -> SomeSing (SSuccFoo c)
+        = (\cases (SomeSing c) -> SomeSing (SSuccFoo c))
+            (toSing b :: SomeSing NatFoo)
     instance SMyOrd NatFoo where
       sMycompare SZeroFoo SZeroFoo = SEQ
       sMycompare SZeroFoo (SSuccFoo _) = SLT

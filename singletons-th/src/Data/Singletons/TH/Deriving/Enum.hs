@@ -44,7 +44,7 @@ mkEnumInstance mb_ctxt ty (DataDecl _ _ _ cons) = do
   let to_enum = UFunction [DClause [DVarP n] (to_enum_rhs cons [0..])]
       to_enum_rhs [] _ = DVarE errorName `DAppE` DLitE (StringL "toEnum: bad argument")
       to_enum_rhs (DCon _ _ name _ _ : rest) (num:nums) =
-        DCaseE (DVarE equalsName `DAppE` DVarE n `DAppE` DLitE (IntegerL num))
+        dCaseE (DVarE equalsName `DAppE` DVarE n `DAppE` DLitE (IntegerL num))
           [ DMatch (DConP trueName  [] []) (DConE name)
           , DMatch (DConP falseName [] []) (to_enum_rhs rest nums) ]
       to_enum_rhs _ _ = error "Internal error: exhausted infinite list in to_enum_rhs"

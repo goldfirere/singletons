@@ -5,13 +5,19 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
   ======>
     foo :: (Num a, Eq a) => a -> a
     foo x = if (x == 0) then 1 else (typeError $ ShowType x)
-    type family Let0123456789876543210Scrutinee_0123456789876543210Sym0 x0123456789876543210 where
-      Let0123456789876543210Scrutinee_0123456789876543210Sym0 x0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210 x0123456789876543210
-    type family Let0123456789876543210Scrutinee_0123456789876543210 x0123456789876543210 where
-      Let0123456789876543210Scrutinee_0123456789876543210 x = Apply (Apply (==@#@$) x) (FromInteger 0)
-    type family Case_0123456789876543210 x0123456789876543210 t where
-      Case_0123456789876543210 x 'True = FromInteger 1
-      Case_0123456789876543210 x 'False = Apply (Apply ($@#@$) TypeErrorSym0) (Apply ShowTypeSym0 x)
+    type family LamCases_0123456789876543210 x0123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 x 'True = FromInteger 1
+      LamCases_0123456789876543210 x 'False = Apply (Apply ($@#@$) TypeErrorSym0) (Apply ShowTypeSym0 x)
+    data LamCases_0123456789876543210Sym0 x0123456789876543210 a_01234567898765432100123456789876543210
+      where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 x0123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 x0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
     type FooSym0 :: (~>) a a
     data FooSym0 :: (~>) a a
       where
@@ -25,28 +31,24 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
     type Foo :: a -> a
     type family Foo @a (a :: a) :: a where
-      Foo x = Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym0 x)
+      Foo x = Apply (LamCases_0123456789876543210Sym0 x) (Apply (Apply (==@#@$) x) (FromInteger 0))
     sFoo ::
       (forall (t :: a).
        (SNum a, SEq a) => Sing t -> Sing (Foo t :: a) :: Type)
     sFoo (sX :: Sing x)
-      = let
-          sScrutinee_0123456789876543210 ::
-            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210 x)
-          sScrutinee_0123456789876543210
-            = applySing
-                (applySing (singFun2 @(==@#@$) (%==)) sX)
-                (sFromInteger (sing :: Sing 0))
-        in
-          id
-            @(Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym0 x)))
-            (case sScrutinee_0123456789876543210 of
-               STrue -> sFromInteger (sing :: Sing 1)
-               SFalse
-                 -> applySing
-                      (applySing
-                         (singFun2 @($@#@$) (%$)) (singFun1 @TypeErrorSym0 sTypeError))
-                      (applySing (singFun1 @ShowTypeSym0 SShowType) sX))
+      = applySing
+          (singFun1
+             @(LamCases_0123456789876543210Sym0 x)
+             (\cases
+                STrue -> sFromInteger (sing :: Sing 1)
+                SFalse
+                  -> applySing
+                       (applySing
+                          (singFun2 @($@#@$) (%$)) (singFun1 @TypeErrorSym0 sTypeError))
+                       (applySing (singFun1 @ShowTypeSym0 SShowType) sX)))
+          (applySing
+             (applySing (singFun2 @(==@#@$) (%==)) sX)
+             (sFromInteger (sing :: Sing 0)))
     instance (SNum a, SEq a) => SingI (FooSym0 :: (~>) a a) where
       sing = singFun1 @FooSym0 sFoo
 Singletons/T160.hs:0:0: error: [GHC-64725]

@@ -165,7 +165,7 @@ buildCases :: DsMonad m
            -> m Exp  -- body
            -> m DExp
 buildCases ctor_infos expq bodyq =
-  DCaseE <$> (dsExp =<< expq) <*>
+  dCaseE <$> (dsExp =<< expq) <*>
              mapM (\con -> DMatch (conToPat con) <$> (dsExp =<< bodyq)) ctor_infos
   where
     conToPat :: (Name, Int) -> DPat

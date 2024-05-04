@@ -263,7 +263,7 @@ singITyConInstance n
                 [DLetDec $ DFunD singMethName
                            [DClause [] $
                             wrapSingFun 1 DWildCardT $
-                            DLamE [x] $
+                            dLamE [DVarP x] $
                             DVarE withSingIName `DAppE` DVarE x
                                                 `DAppE` DVarE singMethName]]
 
@@ -640,10 +640,8 @@ having a type signature. It's as if one had written this:
 This is too general, since `sX` will only typecheck if the return kind of
 `LetX` is `MyProxy a`, not `MyProxy a1`. In order to avoid this problem,
 we need to avoid kind generalization when kind-checking the type of `sX`.
-To accomplish this, we borrow a trick from
-Note [The id hack; or, how singletons-th learned to stop worrying and avoid kind generalization]
-and use TypeApplications plus a wildcard type. That is, we generate this code
-for `sF`:
+To accomplish this, we use TypeApplications plus a wildcard type. That is, we
+generate this code for `sF`:
 
   sF :: forall a (t :: MyProxy a). Sing t -> Sing (F t :: MyProxy a)
   sF SMyProxy =
@@ -754,28 +752,10 @@ singPat var_proms = go
 -- that brings singleton equality constraints into scope via pattern-matching.
 -- See @Note [Singling pattern signatures]@.
 mkSigPaCaseE :: SingDSigPaInfos -> DExp -> DExp
-mkSigPaCaseE exps_with_sigs exp
-  | null exps_with_sigs = exp
-  | otherwise =
-      let (exps, sigs) = unzip exps_with_sigs
-          scrutinee = mkTupleDExp exps
-          pats = map (DSigP DWildP . DAppT (DConT singFamilyName)) sigs
-      in DCaseE scrutinee [DMatch (mkTupleDPat pats) exp]
-
--- Note [Annotate case return type]
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
--- We're straining GHC's type inference here. One particular trouble area
--- is determining the return type of a GADT pattern match. In general, GHC
--- cannot infer return types of GADT pattern matches because the return type
--- becomes "untouchable" in the case matches. See the OutsideIn paper. But,
--- during singletonization, we *know* the return type. So, just add a type
--- annotation. See #54.
---
--- In particular, we add a type annotation in a somewhat unorthodox fashion.
--- Instead of the usual `(x :: t)`, we use `id @t x`. See
--- Note [The id hack; or, how singletons-th learned to stop worrying and avoid
--- kind generalization] for an explanation of why we do this.
+mkSigPaCaseE exps_with_sigs exp =
+  let (exps, sigs) = unzip exps_with_sigs
+      pats = map (DSigP DWildP . DAppT (DConT singFamilyName)) sigs
+  in multiCase exps pats exp
 
 -- Note [Singling pattern signatures]
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -861,25 +841,9 @@ singExp (ADAppE e1 e2) = do
   e1' <- singExp e1
   e2' <- singExp e2
   pure $ DVarE applySingName `DAppE` e1' `DAppE` e2'
-singExp (ADLamE ty_names prom_lam names exp) = do
-  opts <- getOptions
-  let sNames = map (singledValueName opts) names
-  exp' <- bindLambdas (zip names sNames) $ singExp exp
-  -- we need to bind the type variables... but DLamE doesn't allow SigT patterns.
-  -- So: build a case
-  let caseExp = DCaseE (mkTupleDExp (map DVarE sNames))
-                       [DMatch (mkTupleDPat
-                                (map ((DWildP `DSigP`) .
-                                      (singFamily `DAppT`) .
-                                      DVarT) ty_names)) exp']
-  return $ wrapSingFun (length names) prom_lam $ DLamE sNames caseExp
-singExp (ADCaseE exp matches ret_ty) =
-    -- See Note [Annotate case return type] and
-    --     Note [The id hack; or, how singletons-th learned to stop worrying and
-    --           avoid kind generalization]
-  DAppE (DAppTypeE (DVarE 'id)
-                   (singFamily `DAppT` ret_ty))
-    <$> (DCaseE <$> singExp exp <*> mapM singMatch matches)
+singExp (ADLamCasesE num_args prom_lam_cases clauses) = do
+  clauses' <- traverse singClause clauses
+  pure $ wrapSingFun num_args prom_lam_cases $ DLamCasesE clauses'
 singExp (ADLetE env exp) = do
   -- We intentionally discard the SingI instances for exp's defunctionalization
   -- symbols, as we also do not generate the declarations for the
@@ -951,14 +915,6 @@ singDerivedShowDecs (DerivedDecl { ded_mb_cxt     = mb_cxt
                       (DConT showName `DAppT` (DConT sty_tycon `DAppT` DSigT (DVarT z) ki))
     pure [show_inst]
 
-singMatch :: ADMatch -> SgM DMatch
-singMatch (ADMatch var_proms pat exp) = do
-  opts <- getOptions
-  (sPat, sigPaExpsSigs) <- evalForPair $ singPat (Map.fromList var_proms) pat
-  let lambda_binds = map (\(n,_) -> (n, singledValueName opts n)) var_proms
-  sExp <- bindLambdas lambda_binds $ singExp exp
-  return $ DMatch sPat $ mkSigPaCaseE sigPaExpsSigs sExp
-
 singLit :: Lit -> SgM DExp
 singLit (IntegerL n) = do
   opts <- getOptions
@@ -981,85 +937,3 @@ singLit (CharL c) =
   return $ DVarE singMethName `DSigE` (singFamily `DAppT` DLitT (CharTyLit c))
 singLit lit =
   fail ("Only string, natural number, and character literals can be singled: " ++ show lit)
-
-{-
-Note [The id hack; or, how singletons-th learned to stop worrying and avoid kind generalization]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-GHC 8.8 was a time of great change. In particular, 8.8 debuted a fix for
-Trac #15141 (decideKindGeneralisationPlan is too complicated). To fix this, a
-wily GHC developer—who shall remain unnamed, but whose username rhymes with
-schmoldfire—decided to make decideKindGeneralisationPlan less complicated by,
-well, removing the whole thing. One consequence of this is that local
-definitions are now kind-generalized (whereas they would not have been
-previously).
-
-While schmoldfire had the noblest of intentions when authoring his fix, he
-unintentionally made life much harder for singletons-th. Why? Consider the
-following program:
-
-  class Foo a where
-    bar :: a -> (a -> b) -> b
-    baz :: a
-
-  quux :: Foo a => a -> a
-  quux x = x `bar` \_ -> baz
-
-When singled, this program will turn into something like this:
-
-  type family Quux (x :: a) :: a where
-    Quux x = Bar x (LambdaSym1 x)
-
-  sQuux :: forall a (x :: a). SFoo a => Sing x -> Sing (Quux x :: a)
-  sQuux (sX :: Sing x)
-    = sBar sX
-        ((singFun1 @(LambdaSym1 x))
-           (\ sArg
-              -> case sArg of {
-                   (_ :: Sing arg)
-                     -> (case sArg of { _ -> sBaz }) ::
-                          Sing (Case x arg arg) }))
-
-  type family Case x arg t where
-    Case x arg _ = Baz
-  type family Lambda x t where
-    Lambda x arg = Case x arg arg
-  data LambdaSym1 x t
-  type instance Apply (LambdaSym1 x) t = Lambda x t
-
-The high-level bit is the explicit `Sing (Case x arg arg)` signature. Question:
-what is the kind of `Case x arg arg`? The answer depends on whether local
-definitions are kind-generalized or not!
-
-1. If local definitions are *not* kind-generalized (i.e., the status quo before
-   GHC 8.8), then `Case x arg arg :: a`.
-2. If local definitions *are* kind-generalized (i.e., the status quo in GHC 8.8
-   and later), then `Case x arg arg :: k` for some fresh kind variable `k`.
-
-Unfortunately, the kind of `Case x arg arg` *must* be `a` in order for `sQuux`
-to type-check. This means that the code above suddenly stopped working in GHC
-8.8. What's more, we can't just remove these explicit signatures, as there is
-code elsewhere in `singletons-th` that crucially relies on them to guide type
-inference along (e.g., `sShowParen` in `Text.Show.Singletons`).
-
-Luckily, there is an ingenious hack that lets us the benefits of explicit
-signatures without the pain of kind generalization: our old friend, the `id`
-function. The plan is as follows: instead of generating this code:
-
-  (case sArg of ...) :: Sing (Case x arg arg)
-
-We instead generate this code:
-
-  id @(Sing (Case x arg arg)) (case sArg of ...)
-
-That's it! This works because visible type arguments in terms do not get kind-
-generalized, unlike top-level or local signatures. Now `Case x arg arg`'s kind
-is not generalized, and all is well. We dub this: the `id` hack.
-
-One might wonder: will we need the `id` hack around forever? Perhaps not. While
-GHC 8.8 removed the decideKindGeneralisationPlan function, there have been
-rumblings that a future version of GHC may bring it back (in a limited form).
-If this happens, it is possibly that GHC's attitude towards kind-generalizing
-local definitions may change *again*, which could conceivably render the `id`
-hack unnecessary. This is all speculation, of course, so all we can do now is
-wait and revisit this design at a later date.
--}

@@ -107,8 +107,8 @@ Singletons/DataValues.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Pair a b) = Pair (Demote a) (Demote b)
       fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
       toSing (Pair (b :: Demote a) (b :: Demote b))
-        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing b) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (SPair c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SPair c c))
+            (toSing b :: SomeSing a) (toSing b :: SomeSing b)
     instance (SShow a, SShow b) => SShow (Pair a b) where
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)

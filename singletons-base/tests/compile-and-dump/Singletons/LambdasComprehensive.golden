@@ -11,18 +11,18 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
       = map (\ x -> either_ pred Succ x) [Left Zero, Right (Succ Zero)]
     bar :: [Nat]
     bar = map (either_ pred Succ) [Left Zero, Right (Succ Zero)]
-    type family Lambda_0123456789876543210 x where
-      Lambda_0123456789876543210 x = Apply (Apply (Apply Either_Sym0 PredSym0) SuccSym0) x
-    data Lambda_0123456789876543210Sym0 x0123456789876543210
+    type family LamCases_0123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 x = Apply (Apply (Apply Either_Sym0 PredSym0) SuccSym0) x
+    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
       where
-        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
-                                                       Lambda_0123456789876543210Sym0 x0123456789876543210
-    type instance Apply @_ @_ Lambda_0123456789876543210Sym0 x0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210
-    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
+                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
-    type family Lambda_0123456789876543210Sym1 x0123456789876543210 where
-      Lambda_0123456789876543210Sym1 x0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
     type BarSym0 :: [Nat]
     type family BarSym0 :: [Nat] where
       BarSym0 = Bar
@@ -34,7 +34,7 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
       Bar = Apply (Apply MapSym0 (Apply (Apply Either_Sym0 PredSym0) SuccSym0)) (Apply (Apply (:@#@$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))
     type Foo :: [Nat]
     type family Foo :: [Nat] where
-      Foo = Apply (Apply MapSym0 Lambda_0123456789876543210Sym0) (Apply (Apply (:@#@$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))
+      Foo = Apply (Apply MapSym0 LamCases_0123456789876543210Sym0) (Apply (Apply (:@#@$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))
     sBar :: (Sing (Bar :: [Nat]) :: Type)
     sFoo :: (Sing (Foo :: [Nat]) :: Type)
     sBar
@@ -61,16 +61,15 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
           (applySing
              (singFun2 @MapSym0 sMap)
              (singFun1
-                @Lambda_0123456789876543210Sym0
-                (\ sX
-                   -> case sX of
-                        (_ :: Sing x)
-                          -> applySing
-                               (applySing
-                                  (applySing
-                                     (singFun3 @Either_Sym0 sEither_) (singFun1 @PredSym0 sPred))
-                                  (singFun1 @SuccSym0 SSucc))
-                               sX)))
+                @LamCases_0123456789876543210Sym0
+                (\cases
+                   (sX :: Sing x)
+                     -> applySing
+                          (applySing
+                             (applySing
+                                (singFun3 @Either_Sym0 sEither_) (singFun1 @PredSym0 sPred))
+                             (singFun1 @SuccSym0 SSucc))
+                          sX)))
           (applySing
              (applySing
                 (singFun2 @(:@#@$) SCons)

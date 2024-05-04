@@ -103,15 +103,35 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance PBounded S where
       type MinBound = MinBound_0123456789876543210
       type MaxBound = MaxBound_0123456789876543210
-    type family Case_0123456789876543210 n0123456789876543210 t where
-      Case_0123456789876543210 n 'True = S2Sym0
-      Case_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
-    type family Case_0123456789876543210 n0123456789876543210 t where
-      Case_0123456789876543210 n 'True = S1Sym0
-      Case_0123456789876543210 n 'False = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 1))
+    type family LamCases_0123456789876543210 n0123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 n 'True = S2Sym0
+      LamCases_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
+    data LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
+      where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
+    type family LamCases_0123456789876543210 n0123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 n 'True = S1Sym0
+      LamCases_0123456789876543210 n 'False = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 1))
+    data LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
+      where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
     type ToEnum_0123456789876543210 :: GHC.Num.Natural.Natural -> S
     type family ToEnum_0123456789876543210 (a :: GHC.Num.Natural.Natural) :: S where
-      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))
+      ToEnum_0123456789876543210 n = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
     type FromEnum_0123456789876543210 :: S -> GHC.Num.Natural.Natural
     type family FromEnum_0123456789876543210 (a :: S) :: GHC.Num.Natural.Natural where
       FromEnum_0123456789876543210 S1 = FromInteger 0
@@ -129,8 +149,8 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       type Demote (T a b) = T (Demote a) (Demote b)
       fromSing ((:%*:) b b) = (:*:) (fromSing b) (fromSing b)
       toSing ((:*:) (b :: Demote a) (b :: Demote b))
-        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing b) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:%*:) c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:%*:) c c))
+            (toSing b :: SomeSing a) (toSing b :: SomeSing b)
     data SS :: S -> Type
       where
         SS1 :: SS (S1 :: S)
@@ -254,37 +274,36 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       sMaxBound = SS2
     instance SEnum S where
       sToEnum (sN :: Sing n)
-        = id
-            @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))))
-            (case
-                 applySing
-                   (applySing (singFun2 @(==@#@$) (%==)) sN)
-                   (sFromInteger (sing :: Sing 0))
-             of
-               STrue -> SS1
-               SFalse
-                 -> id
-                      @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 1))))
-                      (case
-                           applySing
-                             (applySing (singFun2 @(==@#@$) (%==)) sN)
-                             (sFromInteger (sing :: Sing 1))
-                       of
-                         STrue -> SS2
-                         SFalse
-                           -> applySing
-                                (singFun1 @ErrorSym0 sError)
-                                (sing :: Sing "toEnum: bad argument")))
+        = applySing
+            (singFun1
+               @(LamCases_0123456789876543210Sym0 n)
+               (\cases
+                  STrue -> SS1
+                  SFalse
+                    -> applySing
+                         (singFun1
+                            @(LamCases_0123456789876543210Sym0 n)
+                            (\cases
+                               STrue -> SS2
+                               SFalse
+                                 -> applySing
+                                      (singFun1 @ErrorSym0 sError)
+                                      (sing :: Sing "toEnum: bad argument")))
+                         (applySing
+                            (applySing (singFun2 @(==@#@$) (%==)) sN)
+                            (sFromInteger (sing :: Sing 1)))))
+            (applySing
+               (applySing (singFun2 @(==@#@$) (%==)) sN)
+               (sFromInteger (sing :: Sing 0)))
       sFromEnum SS1 = sFromInteger (sing :: Sing 0)
       sFromEnum SS2 = sFromInteger (sing :: Sing 1)
     instance SDecide a => SDecide (T a ()) where
       (%~) ((:%*:) a a) ((:%*:) b b)
-        = case (,) ((%~) a b) ((%~) a b) of
-            (,) (Proved Refl) (Proved Refl) -> Proved Refl
-            (,) (Disproved contra) _
-              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
-            (,) _ (Disproved contra)
-              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+        = (\cases
+             (Proved Refl) (Proved Refl) -> Proved Refl
+             (Disproved contra) _ -> Disproved (\cases Refl -> contra Refl)
+             _ (Disproved contra) -> Disproved (\cases Refl -> contra Refl))
+            ((%~) a b) ((%~) a b)
     instance Eq (ST (z :: T a ())) where
       (==) _ _ = True
     instance SDecide a =>
@@ -299,8 +318,8 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
         = Data.Singletons.Decide.decideCoercion
     instance SDecide S where
       (%~) SS1 SS1 = Proved Refl
-      (%~) SS1 SS2 = Disproved (\ x -> case x of {})
-      (%~) SS2 SS1 = Disproved (\ x -> case x of {})
+      (%~) SS1 SS2 = Disproved (\case)
+      (%~) SS2 SS1 = Disproved (\case)
       (%~) SS2 SS2 = Proved Refl
     instance Eq (SS (z :: S)) where
       (==) _ _ = True

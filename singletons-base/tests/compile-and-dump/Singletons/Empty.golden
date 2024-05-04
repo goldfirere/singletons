@@ -6,5 +6,5 @@ Singletons/Empty.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @Empty = SEmpty
     instance SingKind Empty where
       type Demote Empty = Empty
-      fromSing x = case x of {}
-      toSing x = SomeSing (case x of {})
+      fromSing x = (\case) x
+      toSing x = SomeSing ((\case) x)

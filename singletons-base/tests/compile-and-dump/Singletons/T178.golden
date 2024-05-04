@@ -143,13 +143,13 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
             sA_0123456789876543210
     instance SDecide Occ where
       (%~) SStr SStr = Proved Refl
-      (%~) SStr SOpt = Disproved (\ x -> case x of {})
-      (%~) SStr SMany = Disproved (\ x -> case x of {})
-      (%~) SOpt SStr = Disproved (\ x -> case x of {})
+      (%~) SStr SOpt = Disproved (\case)
+      (%~) SStr SMany = Disproved (\case)
+      (%~) SOpt SStr = Disproved (\case)
       (%~) SOpt SOpt = Proved Refl
-      (%~) SOpt SMany = Disproved (\ x -> case x of {})
-      (%~) SMany SStr = Disproved (\ x -> case x of {})
-      (%~) SMany SOpt = Disproved (\ x -> case x of {})
+      (%~) SOpt SMany = Disproved (\case)
+      (%~) SMany SStr = Disproved (\case)
+      (%~) SMany SOpt = Disproved (\case)
       (%~) SMany SMany = Proved Refl
     instance Eq (SOcc (z :: Occ)) where
       (==) _ _ = True

@@ -39,7 +39,7 @@ mkFunctorInstance mb_ctxt ty dd@(DataDecl _ _ _ cons) = do
       ft_replace :: FFoldType (q Replacer)
       ft_replace = FT { ft_triv = fmap Nested    $ mkSimpleLam pure
                         -- (p <$) = \x -> x
-                      , ft_var  = fmap Immediate $ mkSimpleLam $ \_ -> pure $ DVarE z
+                      , ft_var  = fmap Immediate $ mkSimpleWildLam $ pure $ DVarE z
                         -- (p <$) = const p
                       , ft_ty_app = \_ gm -> do
                           g <- gm
@@ -69,13 +69,13 @@ mkFunctorInstance mb_ctxt ty dd@(DataDecl _ _ _ cons) = do
       mk_fmap :: q [DClause]
       mk_fmap = case cons of
                   [] -> do v <- newUniqueName "v"
-                           pure [DClause [DWildP, DVarP v] (DCaseE (DVarE v) [])]
+                           pure [DClause [DWildP, DVarP v] (dCaseE (DVarE v) [])]
                   _  -> traverse mk_fmap_clause cons
 
       mk_replace :: q [DClause]
       mk_replace = case cons of
                      [] -> do v <- newUniqueName "v"
-                              pure [DClause [DWildP, DVarP v] (DCaseE (DVarE v) [])]
+                              pure [DClause [DWildP, DVarP v] (dCaseE (DVarE v) [])]
                      _  -> traverse mk_replace_clause cons
 
   fmap_clauses    <- mk_fmap

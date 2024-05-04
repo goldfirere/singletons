@@ -87,33 +87,43 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
       Let0123456789876543210XSym0 a0123456789876543210 = Let0123456789876543210X a0123456789876543210
     type family Let0123456789876543210X a0123456789876543210 where
       Let0123456789876543210X a = NothingSym0 :: Maybe a
-    type family Let0123456789876543210Scrutinee_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 where
-      Let0123456789876543210Scrutinee_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210 a0123456789876543210 x0123456789876543210
-    type family Let0123456789876543210Scrutinee_0123456789876543210 a0123456789876543210 x0123456789876543210 where
-      Let0123456789876543210Scrutinee_0123456789876543210 a x = x :: Maybe a
-    type family Case_0123456789876543210 a0123456789876543210 x0123456789876543210 t where
-      Case_0123456789876543210 a x ('Just (y :: a) :: Maybe a) = Apply JustSym0 (Apply JustSym0 (y :: a) :: Maybe a)
-    type family Case_0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 t where
-      Case_0123456789876543210 arg_0123456789876543210 a_0123456789876543210 '(x :: a,
-                                                                               y :: b) = Apply (Apply Tuple2Sym0 (y :: b)) (x :: a)
-    type family Lambda_0123456789876543210 a_01234567898765432100123456789876543210 arg_0123456789876543210 where
-      Lambda_0123456789876543210 a_0123456789876543210 arg_0123456789876543210 = Case_0123456789876543210 arg_0123456789876543210 a_0123456789876543210 arg_0123456789876543210
-    data Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210 arg_01234567898765432100123456789876543210
+    type family LamCases_0123456789876543210 a0123456789876543210 x0123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 a x ('Just (y :: a) :: Maybe a) = Apply JustSym0 (Apply JustSym0 (y :: a) :: Maybe a)
+    data LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
       where
-        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210) arg) (Lambda_0123456789876543210Sym1 a_01234567898765432100123456789876543210 arg) =>
-                                                       Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210 arg_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210) arg_01234567898765432100123456789876543210 = Lambda_0123456789876543210 a_01234567898765432100123456789876543210 arg_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210) where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) arg) (LamCases_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
-    type family Lambda_0123456789876543210Sym1 a_01234567898765432100123456789876543210 arg_01234567898765432100123456789876543210 where
-      Lambda_0123456789876543210Sym1 a_01234567898765432100123456789876543210 arg_01234567898765432100123456789876543210 = Lambda_0123456789876543210 a_01234567898765432100123456789876543210 arg_01234567898765432100123456789876543210
-    type family Let0123456789876543210Scrutinee_0123456789876543210Sym0 x0123456789876543210 where
-      Let0123456789876543210Scrutinee_0123456789876543210Sym0 x0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210 x0123456789876543210
-    type family Let0123456789876543210Scrutinee_0123456789876543210 x0123456789876543210 where
-      Let0123456789876543210Scrutinee_0123456789876543210 x = Apply JustSym0 x
-    type family Case_0123456789876543210 x0123456789876543210 t where
-      Case_0123456789876543210 x ('Just y :: Maybe Bool) = y :: Bool
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
+    type family LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 a_0123456789876543210 '(x :: a,
+                                                           y :: b) = Apply (Apply Tuple2Sym0 (y :: b)) (x :: a)
+    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+      where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    type family LamCases_0123456789876543210 x0123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 x ('Just y :: Maybe Bool) = y :: Bool
+    data LamCases_0123456789876543210Sym0 x0123456789876543210 a_01234567898765432100123456789876543210
+      where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 x0123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 x0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
     type Foo9Sym0 :: (~>) a a
     data Foo9Sym0 :: (~>) a a
       where
@@ -271,13 +281,13 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
       Foo7 (x :: a) (wild_0123456789876543210 :: b) = x :: a
     type Foo6 :: Maybe (Maybe a) -> Maybe (Maybe a)
     type family Foo6 @a (a :: Maybe (Maybe a)) :: Maybe (Maybe a) where
-      Foo6 ('Just x :: Maybe (Maybe a)) = Case_0123456789876543210 a x (Let0123456789876543210Scrutinee_0123456789876543210Sym0 a x)
+      Foo6 ('Just x :: Maybe (Maybe a)) = Apply (LamCases_0123456789876543210Sym0 a x) (x :: Maybe a)
     type Foo5 :: Maybe (Maybe a) -> Maybe (Maybe a)
     type family Foo5 @a (a :: Maybe (Maybe a)) :: Maybe (Maybe a) where
       Foo5 ('Just ('Just (x :: a) :: Maybe a) :: Maybe (Maybe a)) = Apply JustSym0 (Apply JustSym0 (x :: a) :: Maybe a) :: Maybe (Maybe a)
     type Foo4 :: (a, b) -> (b, a)
     type family Foo4 @a @b (a :: (a, b)) :: (b, a) where
-      Foo4 a_0123456789876543210 = Apply (Lambda_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210
+      Foo4 a_0123456789876543210 = Apply (LamCases_0123456789876543210Sym0 a_0123456789876543210) a_0123456789876543210
     type Foo3 :: forall a. Maybe a -> a
     type family Foo3 @a (a :: Maybe a) :: a where
       Foo3 @a ('Just x :: Maybe a) = x :: a
@@ -288,7 +298,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
     type family Foo1 @a (a :: Maybe a) :: a where
       Foo1 ('Just x :: Maybe a) = x :: a
     type family G a where
-      G x = Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym0 x)
+      G x = Apply (LamCases_0123456789876543210Sym0 x) (Apply JustSym0 x)
     type family F3 a where
       F3 ('Just a :: Maybe Bool) = "hi"
     type family F2 a where
@@ -318,134 +328,122 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
     sF2 :: forall arg. Sing arg -> Sing (F2 arg)
     sF1 :: forall arg. Sing arg -> Sing (F1 arg)
     sFoo9 (sX :: Sing x)
-      = case sX :: Sing x of
-          (_ :: Sing (x :: a))
-            -> let
-                 sG ::
-                   (forall (t :: a) (t :: b).
-                    Sing t
-                    -> Sing t -> Sing (Let0123456789876543210G a x t t :: a) :: Type)
-                 sG (sY :: Sing y) _ = sY
-               in
-                 applySing
-                   (applySing (singFun2 @(Let0123456789876543210GSym0 a x) sG) sX)
-                   STuple0
+      = (\cases
+           (_ :: Sing (x :: a))
+             -> let
+                  sG ::
+                    (forall (t :: a) (t :: b).
+                     Sing t
+                     -> Sing t -> Sing (Let0123456789876543210G a x t t :: a) :: Type)
+                  sG (sY :: Sing y) _ = sY
+                in
+                  applySing
+                    (applySing (singFun2 @(Let0123456789876543210GSym0 a x) sG) sX)
+                    STuple0)
+          (sX :: Sing x)
     sFoo8
       (SJust (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
-      = case
-            (,)
-              (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
-              (SJust
-                 (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
-        of
-          (,) (_ :: Sing (wild_0123456789876543210 :: a))
-              (_ :: Sing ('Just (wild_0123456789876543210 :: a) :: Maybe a))
-            -> let
-                 sX :: Sing @_ (Let0123456789876543210X a wild_0123456789876543210)
-                 sX
-                   = applySing
-                       (singFun1 @JustSym0 SJust)
-                       (sWild_0123456789876543210 ::
-                          Sing (wild_0123456789876543210 :: a)) ::
-                       Sing (Apply JustSym0 (wild_0123456789876543210 :: a) :: Maybe a)
-               in sX
+      = (\cases
+           (_ :: Sing (wild_0123456789876543210 :: a))
+             (_ :: Sing ('Just (wild_0123456789876543210 :: a) :: Maybe a))
+             -> let
+                  sX :: Sing @_ (Let0123456789876543210X a wild_0123456789876543210)
+                  sX
+                    = applySing
+                        (singFun1 @JustSym0 SJust)
+                        (sWild_0123456789876543210 ::
+                           Sing (wild_0123456789876543210 :: a)) ::
+                        Sing (Apply JustSym0 (wild_0123456789876543210 :: a) :: Maybe a)
+                in sX)
+          (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
+          (SJust
+             (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
     sFoo8 SNothing
-      = case SNothing of
-          (_ :: Sing ('Nothing :: Maybe a))
-            -> let
-                 sX :: Sing @_ (Let0123456789876543210X a)
-                 sX = SNothing :: Sing (NothingSym0 :: Maybe a)
-               in sX
+      = (\cases
+           (_ :: Sing ('Nothing :: Maybe a))
+             -> let
+                  sX :: Sing @_ (Let0123456789876543210X a)
+                  sX = SNothing :: Sing (NothingSym0 :: Maybe a)
+                in sX)
+          SNothing
     sFoo7
       (sX :: Sing x)
       (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
-      = case
-            (,)
-              (sX :: Sing x)
-              (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
-        of
-          (,) (_ :: Sing (x :: a))
-              (_ :: Sing (wild_0123456789876543210 :: b))
-            -> sX :: Sing (x :: a)
+      = (\cases
+           (_ :: Sing (x :: a)) (_ :: Sing (wild_0123456789876543210 :: b))
+             -> sX :: Sing (x :: a))
+          (sX :: Sing x)
+          (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
     sFoo6 (SJust (sX :: Sing x))
-      = case SJust (sX :: Sing x) of
-          (_ :: Sing ('Just x :: Maybe (Maybe a)))
-            -> let
-                 sScrutinee_0123456789876543210 ::
-                   Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210 a x)
-                 sScrutinee_0123456789876543210 = sX :: Sing (x :: Maybe a)
-               in
-                 id
-                   @(Sing (Case_0123456789876543210 a x (Let0123456789876543210Scrutinee_0123456789876543210Sym0 a x)))
-                   (case sScrutinee_0123456789876543210 of
-                      SJust (sY :: Sing y)
-                        -> case (,) (sY :: Sing y) (SJust (sY :: Sing y)) of
-                             (,) (_ :: Sing (y :: a)) (_ :: Sing ('Just (y :: a) :: Maybe a))
-                               -> applySing
-                                    (singFun1 @JustSym0 SJust)
-                                    (applySing (singFun1 @JustSym0 SJust) (sY :: Sing (y :: a)) ::
-                                       Sing (Apply JustSym0 (y :: a) :: Maybe a)))
+      = (\cases
+           (_ :: Sing ('Just x :: Maybe (Maybe a)))
+             -> applySing
+                  (singFun1
+                     @(LamCases_0123456789876543210Sym0 a x)
+                     (\cases
+                        (SJust (sY :: Sing y))
+                          -> (\cases
+                                (_ :: Sing (y :: a)) (_ :: Sing ('Just (y :: a) :: Maybe a))
+                                  -> applySing
+                                       (singFun1 @JustSym0 SJust)
+                                       (applySing
+                                          (singFun1 @JustSym0 SJust) (sY :: Sing (y :: a)) ::
+                                          Sing (Apply JustSym0 (y :: a) :: Maybe a)))
+                               (sY :: Sing y) (SJust (sY :: Sing y))))
+                  (sX :: Sing (x :: Maybe a)))
+          (SJust (sX :: Sing x))
     sFoo5 (SJust (SJust (sX :: Sing x)))
-      = case
-            (,,)
-              (sX :: Sing x) (SJust (sX :: Sing x))
-              (SJust (SJust (sX :: Sing x)))
-        of
-          (,,) (_ :: Sing (x :: a)) (_ :: Sing ('Just (x :: a) :: Maybe a))
-               (_ :: Sing ('Just ('Just (x :: a) :: Maybe a) :: Maybe (Maybe a)))
-            -> applySing
-                 (singFun1 @JustSym0 SJust)
-                 (applySing (singFun1 @JustSym0 SJust) (sX :: Sing (x :: a)) ::
-                    Sing (Apply JustSym0 (x :: a) :: Maybe a)) ::
-                 Sing (Apply JustSym0 (Apply JustSym0 (x :: a) :: Maybe a) :: Maybe (Maybe a))
+      = (\cases
+           (_ :: Sing (x :: a))
+             (_ :: Sing ('Just (x :: a) :: Maybe a))
+             (_ :: Sing ('Just ('Just (x :: a) :: Maybe a) :: Maybe (Maybe a)))
+             -> applySing
+                  (singFun1 @JustSym0 SJust)
+                  (applySing (singFun1 @JustSym0 SJust) (sX :: Sing (x :: a)) ::
+                     Sing (Apply JustSym0 (x :: a) :: Maybe a)) ::
+                  Sing (Apply JustSym0 (Apply JustSym0 (x :: a) :: Maybe a) :: Maybe (Maybe a)))
+          (sX :: Sing x) (SJust (sX :: Sing x))
+          (SJust (SJust (sX :: Sing x)))
     sFoo4 (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = applySing
           (singFun1
-             @(Lambda_0123456789876543210Sym0 a_0123456789876543210)
-             (\ sArg_0123456789876543210
-                -> case sArg_0123456789876543210 of
-                     (_ :: Sing arg_0123456789876543210)
-                       -> id
-                            @(Sing (Case_0123456789876543210 arg_0123456789876543210 a_0123456789876543210 arg_0123456789876543210))
-                            (case sArg_0123456789876543210 of
-                               STuple2 (sX :: Sing x) (sY :: Sing y)
-                                 -> case (,) (sX :: Sing x) (sY :: Sing y) of
-                                      (,) (_ :: Sing (x :: a)) (_ :: Sing (y :: b))
-                                        -> applySing
-                                             (applySing
-                                                (singFun2 @Tuple2Sym0 STuple2)
-                                                (sY :: Sing (y :: b)))
-                                             (sX :: Sing (x :: a)))))
+             @(LamCases_0123456789876543210Sym0 a_0123456789876543210)
+             (\cases
+                (STuple2 (sX :: Sing x) (sY :: Sing y))
+                  -> (\cases
+                        (_ :: Sing (x :: a)) (_ :: Sing (y :: b))
+                          -> applySing
+                               (applySing (singFun2 @Tuple2Sym0 STuple2) (sY :: Sing (y :: b)))
+                               (sX :: Sing (x :: a)))
+                       (sX :: Sing x) (sY :: Sing y)))
           sA_0123456789876543210
     sFoo3 (SJust (sX :: Sing x)) = sX :: Sing (x :: a)
     sFoo2 (SJust (sX :: Sing x))
-      = case SJust (sX :: Sing x) of
-          (_ :: Sing ('Just x :: Maybe a)) -> sX :: Sing (x :: a)
+      = (\cases (_ :: Sing ('Just x :: Maybe a)) -> sX :: Sing (x :: a))
+          (SJust (sX :: Sing x))
     sFoo1 (SJust (sX :: Sing x))
-      = case SJust (sX :: Sing x) of
-          (_ :: Sing ('Just x :: Maybe a)) -> sX :: Sing (x :: a)
+      = (\cases (_ :: Sing ('Just x :: Maybe a)) -> sX :: Sing (x :: a))
+          (SJust (sX :: Sing x))
     sG (sX :: Sing x)
-      = let
-          sScrutinee_0123456789876543210 ::
-            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210 x)
-          sScrutinee_0123456789876543210
-            = applySing (singFun1 @JustSym0 SJust) sX
-        in
-          id
-            @(Sing (Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym0 x)))
-            (case sScrutinee_0123456789876543210 of
-               SJust (sY :: Sing y)
-                 -> case SJust (sY :: Sing y) of
-                      (_ :: Sing ('Just y :: Maybe Bool)) -> sY :: Sing (y :: Bool))
+      = applySing
+          (singFun1
+             @(LamCases_0123456789876543210Sym0 x)
+             (\cases
+                (SJust (sY :: Sing y))
+                  -> (\cases
+                        (_ :: Sing ('Just y :: Maybe Bool)) -> sY :: Sing (y :: Bool))
+                       (SJust (sY :: Sing y))))
+          (applySing (singFun1 @JustSym0 SJust) sX)
     sF3 (SJust (sA :: Sing a))
-      = case SJust (sA :: Sing a) of
-          (_ :: Sing ('Just a :: Maybe Bool)) -> sing :: Sing "hi"
+      = (\cases (_ :: Sing ('Just a :: Maybe Bool)) -> sing :: Sing "hi")
+          (SJust (sA :: Sing a))
     sF2 (sX :: Sing x)
-      = case sX :: Sing x of
-          (_ :: Sing (x :: Maybe a)) -> sX :: Sing (x :: Maybe a)
+      = (\cases (_ :: Sing (x :: Maybe a)) -> sX :: Sing (x :: Maybe a))
+          (sX :: Sing x)
     sF1 (sX :: Sing x)
-      = case sX :: Sing x of
-          (_ :: Sing (x :: Maybe Bool)) -> sX :: Sing (x :: Maybe Bool)
+      = (\cases
+           (_ :: Sing (x :: Maybe Bool)) -> sX :: Sing (x :: Maybe Bool))
+          (sX :: Sing x)
     instance SingI (Foo9Sym0 :: (~>) a a) where
       sing = singFun1 @Foo9Sym0 sFoo9
     instance SingI (Foo8Sym0 :: (~>) (Maybe a) (Maybe a)) where

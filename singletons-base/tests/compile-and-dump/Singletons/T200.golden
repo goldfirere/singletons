@@ -157,23 +157,17 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SEM b) = EM (fromSing b)
       toSing
         ((:$$:) (b :: Demote ErrorMessage) (b :: Demote ErrorMessage))
-        = case
-              (,)
-                (toSing b :: SomeSing ErrorMessage)
-                (toSing b :: SomeSing ErrorMessage)
-          of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:%$$:) c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:%$$:) c c))
+            (toSing b :: SomeSing ErrorMessage)
+            (toSing b :: SomeSing ErrorMessage)
       toSing
         ((:<>:) (b :: Demote ErrorMessage) (b :: Demote ErrorMessage))
-        = case
-              (,)
-                (toSing b :: SomeSing ErrorMessage)
-                (toSing b :: SomeSing ErrorMessage)
-          of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:%<>:) c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:%<>:) c c))
+            (toSing b :: SomeSing ErrorMessage)
+            (toSing b :: SomeSing ErrorMessage)
       toSing (EM (b :: Demote [Bool]))
-        = case toSing b :: SomeSing [Bool] of
-            SomeSing c -> SomeSing (SEM c)
+        = (\cases (SomeSing c) -> SomeSing (SEM c))
+            (toSing b :: SomeSing [Bool])
     instance (SingI n, SingI n) =>
              SingI ((:$$:) (n :: ErrorMessage) (n :: ErrorMessage)) where
       sing = (:%$$:) sing sing

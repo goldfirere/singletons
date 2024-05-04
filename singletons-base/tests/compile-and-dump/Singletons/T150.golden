@@ -148,7 +148,17 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     type ObjSym1 :: a -> Obj
     type family ObjSym1 @a (a0123456789876543210 :: a) :: Obj where
       ObjSym1 a0123456789876543210 = Obj a0123456789876543210
-    type family Case_0123456789876543210 n0123456789876543210 t where
+    type family LamCases_0123456789876543210 n0123456789876543210 a_0123456789876543210 where
+    data LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
+      where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
     type TransitivitySym0 :: (~>) (Equal a b) ((~>) (Equal b c) (Equal a c))
     data TransitivitySym0 :: (~>) (Equal a b) ((~>) (Equal b c) (Equal a c))
       where
@@ -253,7 +263,7 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     type family (!) @n @a (a :: Vec n a) (a :: Fin n) :: a where
       (!) (VCons x _) FZ = x
       (!) (VCons _ xs) (FS n) = Apply (Apply (!@#@$) xs) n
-      (!) VNil n = Case_0123456789876543210 n n
+      (!) VNil n = Apply (LamCases_0123456789876543210Sym0 n) n
     type TailVec :: Vec ('Succ n) a -> Vec n a
     type family TailVec @n @a (a :: Vec ('Succ n) a) :: Vec n a where
       TailVec (VCons _ xs) = xs
@@ -289,7 +299,8 @@ Singletons/T150.hs:(0,0)-(0,0): Splicing declarations
     (%!) (SVCons _ (sXs :: Sing xs)) (SFS (sN :: Sing n))
       = applySing (applySing (singFun2 @(!@#@$) (%!)) sXs) sN
     (%!) SVNil (sN :: Sing n)
-      = id @(Sing (Case_0123456789876543210 n n)) (case sN of {})
+      = applySing
+          (singFun1 @(LamCases_0123456789876543210Sym0 n) (\case)) sN
     sTailVec (SVCons _ (sXs :: Sing xs)) = sXs
     sHeadVec (SVCons (sX :: Sing x) _) = sX
     instance SingI (TransitivitySym0 :: (~>) (Equal a b) ((~>) (Equal b c) (Equal a c))) where

@@ -62,8 +62,8 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Ratio1 a) = Ratio1 (Demote a)
       fromSing ((:^%) b b) = (:%) (fromSing b) (fromSing b)
       toSing ((:%) (b :: Demote a) (b :: Demote a))
-        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing a) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:^%) c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:^%) c c))
+            (toSing b :: SomeSing a) (toSing b :: SomeSing a)
     data SRatio2 :: forall a. Ratio2 a -> GHC.Types.Type
       where
         (:^%%) :: forall a (n :: a) (n :: a).
@@ -73,8 +73,8 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Ratio2 a) = Ratio2 (Demote a)
       fromSing ((:^%%) b b) = (:%%) (fromSing b) (fromSing b)
       toSing ((:%%) (b :: Demote a) (b :: Demote a))
-        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing a) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:^%%) c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:^%%) c c))
+            (toSing b :: SomeSing a) (toSing b :: SomeSing a)
     instance (SingI n, SingI n) => SingI ((:%) (n :: a) (n :: a)) where
       sing = (:^%) sing sing
     instance SingI n => SingI1 ((:%) (n :: a)) where

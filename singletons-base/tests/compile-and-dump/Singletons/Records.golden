@@ -68,8 +68,8 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Record a) = Record (Demote a)
       fromSing (SMkRecord b b) = MkRecord (fromSing b) (fromSing b)
       toSing (MkRecord (b :: Demote a) (b :: Demote Bool))
-        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing Bool) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (SMkRecord c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkRecord c c))
+            (toSing b :: SomeSing a) (toSing b :: SomeSing Bool)
     instance (SingI n, SingI n) =>
              SingI (MkRecord (n :: a) (n :: Bool)) where
       sing = SMkRecord sing sing

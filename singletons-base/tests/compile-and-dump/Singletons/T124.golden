@@ -30,6 +30,7 @@ Singletons/T124.hs:(0,0)-(0,0): Splicing declarations
 Singletons/T124.hs:0:0:: Splicing expression
     sCases ''Bool [| b |] [| STuple0 |]
   ======>
-    case b of
-      SFalse -> STuple0
-      STrue -> STuple0
+    (\cases
+       SFalse -> STuple0
+       STrue -> STuple0)
+      b

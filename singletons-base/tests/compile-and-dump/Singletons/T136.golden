@@ -39,18 +39,48 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
       Pred_0123456789876543210 '[] = Apply ErrorSym0 "pred 0"
       Pred_0123456789876543210 ('(:) 'False as) = Apply (Apply (:@#@$) TrueSym0) (Apply PredSym0 as)
       Pred_0123456789876543210 ('(:) 'True as) = Apply (Apply (:@#@$) FalseSym0) as
-    type family Case_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 t where
-      Case_0123456789876543210 i arg_0123456789876543210 'True = NilSym0
-      Case_0123456789876543210 i arg_0123456789876543210 'False = Apply SuccSym0 (Apply ToEnumSym0 (Apply PredSym0 i))
-    type family Case_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 t where
-      Case_0123456789876543210 i arg_0123456789876543210 'True = Apply ErrorSym0 "negative toEnum"
-      Case_0123456789876543210 i arg_0123456789876543210 'False = Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (==@#@$) i) (FromInteger 0))
-    type family Case_0123456789876543210 arg_01234567898765432100123456789876543210 t where
-      Case_0123456789876543210 arg_0123456789876543210 i = Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (<@#@$) i) (FromInteger 0))
+    type family LamCases_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 i arg_0123456789876543210 'True = NilSym0
+      LamCases_0123456789876543210 i arg_0123456789876543210 'False = Apply SuccSym0 (Apply ToEnumSym0 (Apply PredSym0 i))
+    data LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+      where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 i0123456789876543210 arg_01234567898765432100123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    type family LamCases_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 i arg_0123456789876543210 'True = Apply ErrorSym0 "negative toEnum"
+      LamCases_0123456789876543210 i arg_0123456789876543210 'False = Apply (LamCases_0123456789876543210Sym0 i arg_0123456789876543210) (Apply (Apply (==@#@$) i) (FromInteger 0))
+    data LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+      where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 i0123456789876543210 arg_01234567898765432100123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    type family LamCases_0123456789876543210 arg_01234567898765432100123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 arg_0123456789876543210 i = Apply (LamCases_0123456789876543210Sym0 i arg_0123456789876543210) (Apply (Apply (<@#@$) i) (FromInteger 0))
+    data LamCases_0123456789876543210Sym0 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+      where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 arg_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 arg_01234567898765432100123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 arg_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 arg_01234567898765432100123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
     type ToEnum_0123456789876543210 :: GHC.Num.Natural.Natural
                                        -> [Bool]
     type family ToEnum_0123456789876543210 (a :: GHC.Num.Natural.Natural) :: [Bool] where
-      ToEnum_0123456789876543210 arg_0123456789876543210 = Case_0123456789876543210 arg_0123456789876543210 arg_0123456789876543210
+      ToEnum_0123456789876543210 arg_0123456789876543210 = Apply (LamCases_0123456789876543210Sym0 arg_0123456789876543210) arg_0123456789876543210
     type FromEnum_0123456789876543210 :: [Bool]
                                          -> GHC.Num.Natural.Natural
     type family FromEnum_0123456789876543210 (a :: [Bool]) :: GHC.Num.Natural.Natural where
@@ -80,35 +110,37 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
       sPred (SCons STrue (sAs :: Sing as))
         = applySing (applySing (singFun2 @(:@#@$) SCons) SFalse) sAs
       sToEnum (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
-        = id
-            @(Sing (Case_0123456789876543210 arg_0123456789876543210 arg_0123456789876543210))
-            (case sArg_0123456789876543210 of
-               (sI :: Sing i)
-                 -> id
-                      @(Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (<@#@$) i) (FromInteger 0))))
-                      (case
-                           applySing
-                             (applySing (singFun2 @(<@#@$) (%<)) sI)
-                             (sFromInteger (sing :: Sing 0))
-                       of
-                         STrue
-                           -> applySing
-                                (singFun1 @ErrorSym0 sError) (sing :: Sing "negative toEnum")
-                         SFalse
-                           -> id
-                                @(Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (==@#@$) i) (FromInteger 0))))
-                                (case
-                                     applySing
-                                       (applySing (singFun2 @(==@#@$) (%==)) sI)
-                                       (sFromInteger (sing :: Sing 0))
-                                 of
-                                   STrue -> SNil
-                                   SFalse
-                                     -> applySing
-                                          (singFun1 @SuccSym0 sSucc)
-                                          (applySing
-                                             (singFun1 @ToEnumSym0 sToEnum)
-                                             (applySing (singFun1 @PredSym0 sPred) sI)))))
+        = applySing
+            (singFun1
+               @(LamCases_0123456789876543210Sym0 arg_0123456789876543210)
+               (\cases
+                  (sI :: Sing i)
+                    -> applySing
+                         (singFun1
+                            @(LamCases_0123456789876543210Sym0 i arg_0123456789876543210)
+                            (\cases
+                               STrue
+                                 -> applySing
+                                      (singFun1 @ErrorSym0 sError) (sing :: Sing "negative toEnum")
+                               SFalse
+                                 -> applySing
+                                      (singFun1
+                                         @(LamCases_0123456789876543210Sym0 i arg_0123456789876543210)
+                                         (\cases
+                                            STrue -> SNil
+                                            SFalse
+                                              -> applySing
+                                                   (singFun1 @SuccSym0 sSucc)
+                                                   (applySing
+                                                      (singFun1 @ToEnumSym0 sToEnum)
+                                                      (applySing (singFun1 @PredSym0 sPred) sI))))
+                                      (applySing
+                                         (applySing (singFun2 @(==@#@$) (%==)) sI)
+                                         (sFromInteger (sing :: Sing 0)))))
+                         (applySing
+                            (applySing (singFun2 @(<@#@$) (%<)) sI)
+                            (sFromInteger (sing :: Sing 0)))))
+            sArg_0123456789876543210
       sFromEnum SNil = sFromInteger (sing :: Sing 0)
       sFromEnum (SCons SFalse (sAs :: Sing as))
         = applySing

@@ -57,8 +57,8 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       type Demote PMessage = Message
       fromSing (SMkMessage b) = MkMessage (fromSing b)
       toSing (MkMessage (b :: Demote Symbol))
-        = case toSing b :: SomeSing Symbol of
-            SomeSing c -> SomeSing (SMkMessage c)
+        = (\cases (SomeSing c) -> SomeSing (SMkMessage c))
+            (toSing b :: SomeSing Symbol)
     instance SingI n => SingI ('PMkMessage (n :: Symbol)) where
       sing = SMkMessage sing
     instance SingI1 'PMkMessage where
@@ -98,12 +98,13 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     sAppendMessage
       (SMkMessage (sX :: Sing x))
       (SMkMessage (sY :: Sing y))
-      = case (,) (sX :: Sing x) (sY :: Sing y) of
-          (,) (_ :: Sing (x :: Symbol)) (_ :: Sing (y :: Symbol))
-            -> applySing
-                 (singFun1 @PMkMessageSym0 SMkMessage)
-                 (applySing (applySing (singFun2 @(<>@#@$) (%<>)) sX) sY ::
-                    Sing (Apply (Apply (<>@#@$) x) y :: Symbol))
+      = (\cases
+           (_ :: Sing (x :: Symbol)) (_ :: Sing (y :: Symbol))
+             -> applySing
+                  (singFun1 @PMkMessageSym0 SMkMessage)
+                  (applySing (applySing (singFun2 @(<>@#@$) (%<>)) sX) sY ::
+                     Sing (Apply (Apply (<>@#@$) x) y :: Symbol)))
+          (sX :: Sing x) (sY :: Sing y)
     instance SingI (AppendMessageSym0 :: (~>) PMessage ((~>) PMessage PMessage)) where
       sing = singFun2 @AppendMessageSym0 sAppendMessage
     instance SingI d =>
@@ -140,8 +141,8 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       type Demote (PFunction a b) = Function (Demote a) (Demote b)
       fromSing (SMkFunction b) = MkFunction (fromSing b)
       toSing (MkFunction (b :: Demote ((~>) a b)))
-        = case toSing b :: SomeSing ((~>) a b) of
-            SomeSing c -> SomeSing (SMkFunction c)
+        = (\cases (SomeSing c) -> SomeSing (SMkFunction c))
+            (toSing b :: SomeSing ((~>) a b))
     instance SingI n => SingI ('PMkFunction (n :: (~>) a b)) where
       sing = SMkFunction sing
     instance SingI1 'PMkFunction where
@@ -187,12 +188,13 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     sComposeFunction
       (SMkFunction (sF :: Sing f))
       (SMkFunction (sG :: Sing g))
-      = case (,) (sF :: Sing f) (sG :: Sing g) of
-          (,) (_ :: Sing (f :: (~>) b c)) (_ :: Sing (g :: (~>) a b))
-            -> applySing
-                 (singFun1 @PMkFunctionSym0 SMkFunction)
-                 (applySing (applySing (singFun3 @(.@#@$) (%.)) sF) sG ::
-                    Sing (Apply (Apply (.@#@$) f) g :: (~>) a c))
+      = (\cases
+           (_ :: Sing (f :: (~>) b c)) (_ :: Sing (g :: (~>) a b))
+             -> applySing
+                  (singFun1 @PMkFunctionSym0 SMkFunction)
+                  (applySing (applySing (singFun3 @(.@#@$) (%.)) sF) sG ::
+                     Sing (Apply (Apply (.@#@$) f) g :: (~>) a c)))
+          (sF :: Sing f) (sG :: Sing g)
     instance SingI (ComposeFunctionSym0 :: (~>) (PFunction b c) ((~>) (PFunction a b) (PFunction a c))) where
       sing = singFun2 @ComposeFunctionSym0 sComposeFunction
     instance SingI d =>

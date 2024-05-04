@@ -136,49 +136,46 @@ Singletons/Star.hs:0:0:: Splicing declarations
       toSing Singletons.Star.Int = SomeSing SInt
       toSing Singletons.Star.String = SomeSing SString
       toSing (Singletons.Star.Maybe (b :: Demote Type))
-        = case toSing b :: SomeSing Type of
-            SomeSing c -> SomeSing (SMaybe c)
+        = (\cases (SomeSing c) -> SomeSing (SMaybe c))
+            (toSing b :: SomeSing Type)
       toSing (Singletons.Star.Vec (b :: Demote Type) (b :: Demote Nat))
-        = case
-              (,) (toSing b :: SomeSing Type) (toSing b :: SomeSing Nat)
-          of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (SVec c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SVec c c))
+            (toSing b :: SomeSing Type) (toSing b :: SomeSing Nat)
     instance (SDecide Type, SDecide Nat) => SDecide Type where
       (%~) SNat SNat = Proved Refl
-      (%~) SNat SInt = Disproved (\ x -> case x of {})
-      (%~) SNat SString = Disproved (\ x -> case x of {})
-      (%~) SNat (SMaybe _) = Disproved (\ x -> case x of {})
-      (%~) SNat (SVec _ _) = Disproved (\ x -> case x of {})
-      (%~) SInt SNat = Disproved (\ x -> case x of {})
+      (%~) SNat SInt = Disproved (\case)
+      (%~) SNat SString = Disproved (\case)
+      (%~) SNat (SMaybe _) = Disproved (\case)
+      (%~) SNat (SVec _ _) = Disproved (\case)
+      (%~) SInt SNat = Disproved (\case)
       (%~) SInt SInt = Proved Refl
-      (%~) SInt SString = Disproved (\ x -> case x of {})
-      (%~) SInt (SMaybe _) = Disproved (\ x -> case x of {})
-      (%~) SInt (SVec _ _) = Disproved (\ x -> case x of {})
-      (%~) SString SNat = Disproved (\ x -> case x of {})
-      (%~) SString SInt = Disproved (\ x -> case x of {})
+      (%~) SInt SString = Disproved (\case)
+      (%~) SInt (SMaybe _) = Disproved (\case)
+      (%~) SInt (SVec _ _) = Disproved (\case)
+      (%~) SString SNat = Disproved (\case)
+      (%~) SString SInt = Disproved (\case)
       (%~) SString SString = Proved Refl
-      (%~) SString (SMaybe _) = Disproved (\ x -> case x of {})
-      (%~) SString (SVec _ _) = Disproved (\ x -> case x of {})
-      (%~) (SMaybe _) SNat = Disproved (\ x -> case x of {})
-      (%~) (SMaybe _) SInt = Disproved (\ x -> case x of {})
-      (%~) (SMaybe _) SString = Disproved (\ x -> case x of {})
+      (%~) SString (SMaybe _) = Disproved (\case)
+      (%~) SString (SVec _ _) = Disproved (\case)
+      (%~) (SMaybe _) SNat = Disproved (\case)
+      (%~) (SMaybe _) SInt = Disproved (\case)
+      (%~) (SMaybe _) SString = Disproved (\case)
       (%~) (SMaybe a) (SMaybe b)
-        = case (%~) a b of
-            Proved Refl -> Proved Refl
-            Disproved contra
-              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
-      (%~) (SMaybe _) (SVec _ _) = Disproved (\ x -> case x of {})
-      (%~) (SVec _ _) SNat = Disproved (\ x -> case x of {})
-      (%~) (SVec _ _) SInt = Disproved (\ x -> case x of {})
-      (%~) (SVec _ _) SString = Disproved (\ x -> case x of {})
-      (%~) (SVec _ _) (SMaybe _) = Disproved (\ x -> case x of {})
+        = (\cases
+             (Proved Refl) -> Proved Refl
+             (Disproved contra) -> Disproved (\cases Refl -> contra Refl))
+            ((%~) a b)
+      (%~) (SMaybe _) (SVec _ _) = Disproved (\case)
+      (%~) (SVec _ _) SNat = Disproved (\case)
+      (%~) (SVec _ _) SInt = Disproved (\case)
+      (%~) (SVec _ _) SString = Disproved (\case)
+      (%~) (SVec _ _) (SMaybe _) = Disproved (\case)
       (%~) (SVec a a) (SVec b b)
-        = case (,) ((%~) a b) ((%~) a b) of
-            (,) (Proved Refl) (Proved Refl) -> Proved Refl
-            (,) (Disproved contra) _
-              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
-            (,) _ (Disproved contra)
-              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+        = (\cases
+             (Proved Refl) (Proved Refl) -> Proved Refl
+             (Disproved contra) _ -> Disproved (\cases Refl -> contra Refl)
+             _ (Disproved contra) -> Disproved (\cases Refl -> contra Refl))
+            ((%~) a b) ((%~) a b)
     instance Eq (SRep (z :: Type)) where
       (==) _ _ = True
     instance (SDecide Type, SDecide Nat) =>

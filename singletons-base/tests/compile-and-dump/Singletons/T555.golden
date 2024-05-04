@@ -88,8 +88,8 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
             sA_0123456789876543210
     instance SDecide MyPropKind where
       (%~) SLocation SLocation = Proved Refl
-      (%~) SLocation SQuaternion = Disproved (\ x -> case x of {})
-      (%~) SQuaternion SLocation = Disproved (\ x -> case x of {})
+      (%~) SLocation SQuaternion = Disproved (\case)
+      (%~) SQuaternion SLocation = Disproved (\case)
       (%~) SQuaternion SQuaternion = Proved Refl
     instance Eq (SMyPropKind (z :: MyPropKind)) where
       (==) _ _ = True

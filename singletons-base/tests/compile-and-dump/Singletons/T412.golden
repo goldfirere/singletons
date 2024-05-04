@@ -167,8 +167,8 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       type Demote (D1 a b) = D1 (Demote a) (Demote b)
       fromSing (SMkD1 b b) = MkD1 (fromSing b) (fromSing b)
       toSing (MkD1 (b :: Demote a) (b :: Demote b))
-        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing b) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (SMkD1 c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkD1 c c))
+            (toSing b :: SomeSing a) (toSing b :: SomeSing b)
     class SC1 a b where
       sM1 ::
         (forall (t :: a) (t :: b).
@@ -359,8 +359,8 @@ Singletons/T412.hs:0:0:: Splicing declarations
       type Demote (D2 a b) = D2 (Demote a) (Demote b)
       fromSing (SMkD2 b b) = MkD2 (fromSing b) (fromSing b)
       toSing (MkD2 (b :: Demote a) (b :: Demote b))
-        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing b) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (SMkD2 c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkD2 c c))
+            (toSing b :: SomeSing a) (toSing b :: SomeSing b)
     infixr 5 `SMkD2`
     infixr 5 `sD2A`
     infixr 5 `sD2B`

@@ -258,7 +258,13 @@ mkSimpleLam :: Quasi q => (DExp -> q DExp) -> q DExp
 mkSimpleLam lam = do
   n <- newUniqueName "n"
   body <- lam (DVarE n)
-  return $ DLamE [n] body
+  return $ dLamE [DVarP n] body
+
+-- Make a 'DLamE' using a wildcard pattern.
+mkSimpleWildLam :: Quasi q => q DExp -> q DExp
+mkSimpleWildLam lam = do
+  body <- lam
+  return $ dLamE [DWildP] body
 
 -- Make a 'DLamE' using two fresh variables.
 mkSimpleLam2 :: Quasi q => (DExp -> DExp -> q DExp) -> q DExp
@@ -266,7 +272,15 @@ mkSimpleLam2 lam = do
   n1 <- newUniqueName "n1"
   n2 <- newUniqueName "n2"
   body <- lam (DVarE n1) (DVarE n2)
-  return $ DLamE [n1, n2] body
+  return $ dLamE [DVarP n1, DVarP n2] body
+
+-- Make a 'DLamE' where the first argument is a wildcard pattern and the second
+-- argument is a fresh variable.
+mkSimpleWildLam2 :: Quasi q => (DExp -> q DExp) -> q DExp
+mkSimpleWildLam2 lam = do
+  n <- newUniqueName "n"
+  body <- lam (DVarE n)
+  return $ dLamE [DWildP, DVarP n] body
 
 -- "Con a1 a2 a3 -> fold [x1 a1, x2 a2, x3 a3]"
 --

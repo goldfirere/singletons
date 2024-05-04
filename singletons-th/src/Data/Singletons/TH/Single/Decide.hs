@@ -96,32 +96,33 @@ mkDecideMethClause (c1, c2)
           rpats = map DVarP rnames
           lvars = map DVarE lnames
           rvars = map DVarE rnames
-      refl <- qNewName "refl"
       return $ DClause
         [DConP lname [] lpats, DConP rname [] rpats]
-        (DCaseE (mkTupleDExp $
-                 zipWith (\l r -> foldExp (DVarE sDecideMethName) [l, r])
-                         lvars rvars)
-                ((DMatch (mkTupleDPat (replicate lNumArgs
-                                        (DConP provedName [] [DConP reflName [] []])))
-                        (DAppE (DConE provedName) (DConE reflName))) :
-                 [DMatch (mkTupleDPat (replicate i DWildP ++
-                                       DConP disprovedName [] [DVarP contra] :
-                                       replicate (lNumArgs - i - 1) DWildP))
-                         (DAppE (DConE disprovedName)
-                                (DLamE [refl] $
-                                 DCaseE (DVarE refl)
-                                        [DMatch (DConP reflName [] []) $
-                                         (DAppE (DVarE contra)
-                                                (DConE reflName))]))
-                 | i <- [0..lNumArgs-1] ]))
+        (dCasesE
+          (zipWith (\l r -> foldExp (DVarE sDecideMethName) [l, r])
+                   lvars rvars)
+          ((DClause
+              (replicate
+                lNumArgs
+                (DConP provedName [] [DConP reflName [] []]))
+              (DAppE (DConE provedName) (DConE reflName))) :
+           [ DClause
+               (replicate i DWildP ++
+                  DConP disprovedName [] [DVarP contra] :
+                  replicate (lNumArgs - i - 1) DWildP)
+               (DAppE
+                  (DConE disprovedName)
+                  (dLamCaseE
+                     [DMatch (DConP reflName [] []) $
+                      (DAppE (DVarE contra)
+                             (DConE reflName))]))
+           | i <- [0..lNumArgs-1] ]))
 
-  | otherwise = do
-    x <- qNewName "x"
+  | otherwise =
     return $ DClause
       [DConP lname [] (replicate lNumArgs DWildP),
        DConP rname [] (replicate rNumArgs DWildP)]
-      (DAppE (DConE disprovedName) (DLamE [x] (DCaseE (DVarE x) [])))
+      (DAppE (DConE disprovedName) (dLamCaseE []))
 
   where
     (lname, lNumArgs) = extractNameArgs c1
@@ -131,4 +132,4 @@ mkEmptyDecideMethClause :: Quasi q => q DClause
 mkEmptyDecideMethClause = do
   x <- qNewName "x"
   pure $ DClause [DVarP x, DWildP]
-       $ DConE provedName `DAppE` DCaseE (DVarE x) []
+       $ DConE provedName `DAppE` dCaseE (DVarE x) []

@@ -49,7 +49,8 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SJust b) = Just (fromSing b)
       toSing Nothing = SomeSing SNothing
       toSing (Just (b :: Demote a))
-        = case toSing b :: SomeSing a of SomeSing c -> SomeSing (SJust c)
+        = (\cases (SomeSing c) -> SomeSing (SJust c))
+            (toSing b :: SomeSing a)
     instance SEq a => SEq (Maybe a) where
       (%==) SNothing SNothing = STrue
       (%==) SNothing (SJust _) = SFalse
@@ -93,13 +94,13 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
             sA_0123456789876543210
     instance SDecide a => SDecide (Maybe a) where
       (%~) SNothing SNothing = Proved Refl
-      (%~) SNothing (SJust _) = Disproved (\ x -> case x of {})
-      (%~) (SJust _) SNothing = Disproved (\ x -> case x of {})
+      (%~) SNothing (SJust _) = Disproved (\case)
+      (%~) (SJust _) SNothing = Disproved (\case)
       (%~) (SJust a) (SJust b)
-        = case (%~) a b of
-            Proved Refl -> Proved Refl
-            Disproved contra
-              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+        = (\cases
+             (Proved Refl) -> Proved Refl
+             (Disproved contra) -> Disproved (\cases Refl -> contra Refl))
+            ((%~) a b)
     instance Eq (SMaybe (z :: Maybe a)) where
       (==) _ _ = True
     instance SDecide a =>
