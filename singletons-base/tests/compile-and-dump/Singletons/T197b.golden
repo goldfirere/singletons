@@ -60,8 +60,8 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
       type Demote ((:*:) a b) = (:*:) (Demote a) (Demote b)
       fromSing ((:%*:) b b) = (:*:) (fromSing b) (fromSing b)
       toSing ((:*:) (b :: Demote a) (b :: Demote b))
-        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing b) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing ((:%*:) c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:%*:) c c))
+            (toSing b :: SomeSing a) (toSing b :: SomeSing b)
     data SPair :: forall a b. Pair a b -> Type
       where
         SMkPair :: forall a b (n :: a) (n :: b).
@@ -71,8 +71,8 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Pair a b) = Pair (Demote a) (Demote b)
       fromSing (SMkPair b b) = MkPair (fromSing b) (fromSing b)
       toSing (MkPair (b :: Demote a) (b :: Demote b))
-        = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing b) of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (SMkPair c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkPair c c))
+            (toSing b :: SomeSing a) (toSing b :: SomeSing b)
     instance (SingI n, SingI n) =>
              SingI ((:*:) (n :: a) (n :: b)) where
       sing = (:%*:) sing sing

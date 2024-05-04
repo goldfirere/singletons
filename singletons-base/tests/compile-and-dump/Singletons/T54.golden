@@ -5,12 +5,18 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
   ======>
     g :: Bool -> Bool
     g e = (case [not] of [_] -> not) e
-    type family Let0123456789876543210Scrutinee_0123456789876543210Sym0 e0123456789876543210 where
-      Let0123456789876543210Scrutinee_0123456789876543210Sym0 e0123456789876543210 = Let0123456789876543210Scrutinee_0123456789876543210 e0123456789876543210
-    type family Let0123456789876543210Scrutinee_0123456789876543210 e0123456789876543210 where
-      Let0123456789876543210Scrutinee_0123456789876543210 e = Apply (Apply (:@#@$) NotSym0) NilSym0
-    type family Case_0123456789876543210 e0123456789876543210 t where
-      Case_0123456789876543210 e '[_] = NotSym0
+    type family LamCases_0123456789876543210 e0123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 e '[_] = NotSym0
+    data LamCases_0123456789876543210Sym0 e0123456789876543210 a_01234567898765432100123456789876543210
+      where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 e0123456789876543210) arg) (LamCases_0123456789876543210Sym1 e0123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 e0123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 e0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 e0123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 e0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 e0123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 e0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 e0123456789876543210 a_01234567898765432100123456789876543210
     type GSym0 :: (~>) Bool Bool
     data GSym0 :: (~>) Bool Bool
       where
@@ -24,21 +30,17 @@ Singletons/T54.hs:(0,0)-(0,0): Splicing declarations
       GSym1 a0123456789876543210 = G a0123456789876543210
     type G :: Bool -> Bool
     type family G (a :: Bool) :: Bool where
-      G e = Apply (Case_0123456789876543210 e (Let0123456789876543210Scrutinee_0123456789876543210Sym0 e)) e
+      G e = Apply (Apply (LamCases_0123456789876543210Sym0 e) (Apply (Apply (:@#@$) NotSym0) NilSym0)) e
     sG :: (forall (t :: Bool). Sing t -> Sing (G t :: Bool) :: Type)
     sG (sE :: Sing e)
       = applySing
-          (let
-             sScrutinee_0123456789876543210 ::
-               Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210 e)
-             sScrutinee_0123456789876543210
-               = applySing
-                   (applySing (singFun2 @(:@#@$) SCons) (singFun1 @NotSym0 sNot)) SNil
-           in
-             id
-               @(Sing (Case_0123456789876543210 e (Let0123456789876543210Scrutinee_0123456789876543210Sym0 e)))
-               (case sScrutinee_0123456789876543210 of
-                  SCons _ SNil -> singFun1 @NotSym0 sNot))
+          (applySing
+             (singFun1
+                @(LamCases_0123456789876543210Sym0 e)
+                (\cases (SCons _ SNil) -> singFun1 @NotSym0 sNot))
+             (applySing
+                (applySing (singFun2 @(:@#@$) SCons) (singFun1 @NotSym0 sNot))
+                SNil))
           sE
     instance SingI (GSym0 :: (~>) Bool Bool) where
       sing = singFun1 @GSym0 sG

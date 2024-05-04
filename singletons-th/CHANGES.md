@@ -3,6 +3,17 @@ Changelog for the `singletons-th` project
 
 next [????.??.??]
 -----------------
+* Require building with `th-desugar-1.18` or later. Notably, `th-desugar-1.18`
+  now desugars all lambda, `case`, and `\case` expressions to `\cases`
+  expressions, and the same principle applies to the code that `singletons-th`
+  generates.
+
+  Generally speaking, most code should continue to work after this change. Note
+  that singled code might now generate `-Wunused-matches` warnings where it
+  didn't before. For example, previous versions of `singletons-th` would not
+  warn that the `x` in `map (\x -> ())` is unused after singling it, but this
+  `singletons-th` will now generate an `-Wunused-matches` warning for the
+  singled version of `x`.
 * Add support for promoting and singling type variables that scope over the
   bodies of class method defaults and instance methods.
 

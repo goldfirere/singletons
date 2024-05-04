@@ -25,7 +25,7 @@ mkFoldableInstance mb_ctxt ty dd@(DataDecl _ _ _ cons) = do
   f <- newUniqueName "_f"
   z <- newUniqueName "_z"
   let ft_foldMap :: FFoldType (q DExp)
-      ft_foldMap = FT { ft_triv = mkSimpleLam $ \_ -> pure $ DVarE memptyName
+      ft_foldMap = FT { ft_triv = mkSimpleWildLam $ pure $ DVarE memptyName
                         -- foldMap f = \x -> mempty
                       , ft_var = pure $ DVarE f
                         -- foldMap f = f
@@ -36,7 +36,7 @@ mkFoldableInstance mb_ctxt ty dd@(DataDecl _ _ _ cons) = do
                       }
 
       ft_foldr :: FFoldType (q DExp)
-      ft_foldr = FT { ft_triv = mkSimpleLam2 $ \_ z' -> pure z'
+      ft_foldr = FT { ft_triv = mkSimpleWildLam2 pure
                       -- foldr f = \x z -> z
                     , ft_var  = pure $ DVarE f
                       -- foldr f = f

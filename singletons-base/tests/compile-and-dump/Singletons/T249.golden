@@ -49,7 +49,8 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Foo1 a) = Foo1 (Demote a)
       fromSing (SMkFoo1 b) = MkFoo1 (fromSing b)
       toSing (MkFoo1 (b :: Demote a))
-        = case toSing b :: SomeSing a of SomeSing c -> SomeSing (SMkFoo1 c)
+        = (\cases (SomeSing c) -> SomeSing (SMkFoo1 c))
+            (toSing b :: SomeSing a)
     data SFoo2 :: forall a. Foo2 a -> Type
       where
         SMkFoo2 :: forall x (n :: x).
@@ -59,7 +60,8 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Foo2 a) = Foo2 (Demote a)
       fromSing (SMkFoo2 b) = MkFoo2 (fromSing b)
       toSing (MkFoo2 (b :: Demote x))
-        = case toSing b :: SomeSing x of SomeSing c -> SomeSing (SMkFoo2 c)
+        = (\cases (SomeSing c) -> SomeSing (SMkFoo2 c))
+            (toSing b :: SomeSing x)
     data SFoo3 :: forall a. Foo3 a -> Type
       where
         SMkFoo3 :: forall x (n :: x).
@@ -69,7 +71,8 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Foo3 a) = Foo3 (Demote a)
       fromSing (SMkFoo3 b) = MkFoo3 (fromSing b)
       toSing (MkFoo3 (b :: Demote x))
-        = case toSing b :: SomeSing x of SomeSing c -> SomeSing (SMkFoo3 c)
+        = (\cases (SomeSing c) -> SomeSing (SMkFoo3 c))
+            (toSing b :: SomeSing x)
     instance SingI n => SingI (MkFoo1 (n :: a)) where
       sing = SMkFoo1 sing
     instance SingI1 MkFoo1 where

@@ -22,14 +22,14 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @Empty = SEmpty
     instance SingKind Empty where
       type Demote Empty = Empty
-      fromSing x = case x of {}
-      toSing x = SomeSing (case x of {})
+      fromSing x = (\case) x
+      toSing x = SomeSing ((\case) x)
     instance SEq Empty where
       (%==) _ _ = STrue
     instance SOrd Empty where
       sCompare _ _ = SEQ
     instance SDecide Empty where
-      (%~) x _ = Proved (case x of {})
+      (%~) x _ = Proved ((\case) x)
     instance Eq (SEmpty (z :: Empty)) where
       (==) _ _ = True
     instance GHC.Internal.Data.Type.Equality.TestEquality (SEmpty :: Empty

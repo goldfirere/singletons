@@ -44,21 +44,21 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
     type FooSym1 :: forall a. a -> [Bool]
     type family FooSym1 @a (a0123456789876543210 :: a) :: [Bool] where
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
-    type family Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 s where
-      Lambda_0123456789876543210 a x s = Apply (Apply (Apply FoosPrecSym0 (FromInteger 0)) x) s
-    data Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 s0123456789876543210
+    type family LamCases_0123456789876543210 a0123456789876543210 x0123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 a x s = Apply (Apply (Apply FoosPrecSym0 (FromInteger 0)) x) s
+    data LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
       where
-        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) arg) (Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 arg) =>
-                                                       Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 s0123456789876543210
-    type instance Apply @_ @_ (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) s0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 s0123456789876543210
-    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) arg) (LamCases_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) where
       suppressUnusedWarnings
-        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
-    type family Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 s0123456789876543210 where
-      Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 s0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 s0123456789876543210
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
     type Foo_0123456789876543210 :: forall a. a -> [Bool]
     type family Foo_0123456789876543210 @a (a :: a) :: [Bool] where
-      Foo_0123456789876543210 @a (x :: a) = Lambda_0123456789876543210Sym0 a x
+      Foo_0123456789876543210 @a (x :: a) = LamCases_0123456789876543210Sym0 a x
     class PFoo a where
       type family FoosPrec (arg :: Natural) (arg :: a) (arg :: [Bool]) :: [Bool]
       type family Foo (arg :: a) :: [Bool]
@@ -75,16 +75,15 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
                  Sing t -> Sing (Foo t :: [Bool]) :: Type)
       sFoo (sX :: Sing x)
         = singFun1
-            @(Lambda_0123456789876543210Sym0 a x)
-            (\ sS
-               -> case sS of
-                    (_ :: Sing s)
-                      -> applySing
-                           (applySing
-                              (applySing
-                                 (singFun3 @FoosPrecSym0 sFoosPrec) (sFromInteger (sing :: Sing 0)))
-                              sX)
-                           sS)
+            @(LamCases_0123456789876543210Sym0 a x)
+            (\cases
+               (sS :: Sing s)
+                 -> applySing
+                      (applySing
+                         (applySing
+                            (singFun3 @FoosPrecSym0 sFoosPrec) (sFromInteger (sing :: Sing 0)))
+                         sX)
+                      sS)
     instance SFoo a =>
              SingI (FoosPrecSym0 :: (~>) Natural ((~>) a ((~>) [Bool] [Bool]))) where
       sing = singFun3 @FoosPrecSym0 sFoosPrec
@@ -116,12 +115,12 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
     instance SFoo a => SingI (FooSym0 :: (~>) a [Bool]) where
       sing = singFun1 @FooSym0 sFoo
 Singletons/T166.hs:0:0: error: [GHC-83865]
-    • Expecting one more argument to ‘Lambda_0123456789876543210Sym0 a x’
+    • Expecting one more argument to ‘LamCases_0123456789876543210Sym0 a x’
       Expected kind ‘[Bool]’,
-        but ‘Lambda_0123456789876543210Sym0 a x’ has kind ‘TyFun
-                                                             [Bool] [Bool]
-                                                           -> Type’
-    • In the type ‘Lambda_0123456789876543210Sym0 a x’
+        but ‘LamCases_0123456789876543210Sym0 a x’ has kind ‘TyFun
+                                                               [Bool] [Bool]
+                                                             -> Type’
+    • In the type ‘LamCases_0123456789876543210Sym0 a x’
       In the type family declaration for ‘Foo_0123456789876543210’
   |
 6 | $(singletonsOnly [d|

@@ -101,11 +101,16 @@ data ADExp = ADVarE Name
            | ADConE Name
            | ADLitE Lit
            | ADAppE ADExp ADExp
-           | ADLamE [Name]         -- type-level names corresponding to term-level ones
-                    DType          -- the promoted lambda
-                    [Name] ADExp
-           | ADCaseE ADExp [ADMatch] DType
-               -- the type is the return type
+           | ADLamCasesE
+               Int
+               -- ^ The number of arguments in each clause. Although this can be
+               -- computed from the list of ADClauses, this information is used
+               -- multiple times during promotion and singling, so we cache this
+               -- number here as a convenience.
+               DType
+               -- ^ The promoted lambda.
+               [ADClause]
+               -- ^ The list of clauses in the @\\cases@ expression.
            | ADLetE ALetDecEnv ADExp
            | ADSigE DType          -- the promoted expression
                     ADExp DType

@@ -66,7 +66,8 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SX2 b) = X2 (fromSing b)
       toSing X1 = SomeSing SX1
       toSing (X2 (b :: Demote (Y a)))
-        = case toSing b :: SomeSing (Y a) of SomeSing c -> SomeSing (SX2 c)
+        = (\cases (SomeSing c) -> SomeSing (SX2 c))
+            (toSing b :: SomeSing (Y a))
     data SY :: forall (a :: Type). Y a -> Type
       where
         SY1 :: forall (a :: Type). SY (Y1 :: Y a)
@@ -78,7 +79,8 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SY2 b) = Y2 (fromSing b)
       toSing Y1 = SomeSing SY1
       toSing (Y2 (b :: Demote (X a)))
-        = case toSing b :: SomeSing (X a) of SomeSing c -> SomeSing (SY2 c)
+        = (\cases (SomeSing c) -> SomeSing (SY2 c))
+            (toSing b :: SomeSing (X a))
     instance SShow (Y a) => SShow (X a) where
       sShowsPrec
         _

@@ -43,7 +43,7 @@ mk_showsPrec cons = do
     p <- newUniqueName "p" -- The precedence argument (not always used)
     if null cons
        then do v <- newUniqueName "v"
-               pure [DClause [DWildP, DVarP v] (DCaseE (DVarE v) [])]
+               pure [DClause [DWildP, DVarP v] (dCaseE (DVarE v) [])]
        else mapM (mk_showsPrec_clause p) cons
 
 mk_showsPrec_clause :: forall q. DsMonad q

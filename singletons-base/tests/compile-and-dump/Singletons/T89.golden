@@ -10,12 +10,22 @@ Singletons/T89.hs:0:0:: Splicing declarations
     type FooSym0 :: Foo
     type family FooSym0 :: Foo where
       FooSym0 = Foo
-    type family Case_0123456789876543210 n0123456789876543210 t where
-      Case_0123456789876543210 n 'True = FooSym0
-      Case_0123456789876543210 n 'False = Apply ErrorSym0 (FromString "toEnum: bad argument")
+    type family LamCases_0123456789876543210 n0123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 n 'True = FooSym0
+      LamCases_0123456789876543210 n 'False = Apply ErrorSym0 (FromString "toEnum: bad argument")
+    data LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
+      where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
+                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
     type ToEnum_0123456789876543210 :: GHC.Num.Natural.Natural -> Foo
     type family ToEnum_0123456789876543210 (a :: GHC.Num.Natural.Natural) :: Foo where
-      ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))
+      ToEnum_0123456789876543210 n = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
     type FromEnum_0123456789876543210 :: Foo -> GHC.Num.Natural.Natural
     type family FromEnum_0123456789876543210 (a :: Foo) :: GHC.Num.Natural.Natural where
       FromEnum_0123456789876543210 Foo = FromInteger 0
@@ -30,18 +40,18 @@ Singletons/T89.hs:0:0:: Splicing declarations
       toSing Foo = SomeSing SFoo
     instance SEnum Foo where
       sToEnum (sN :: Sing n)
-        = id
-            @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))))
-            (case
-                 applySing
-                   (applySing (singFun2 @(==@#@$) (%==)) sN)
-                   (sFromInteger (sing :: Sing 0))
-             of
-               STrue -> SFoo
-               SFalse
-                 -> applySing
-                      (singFun1 @ErrorSym0 sError)
-                      (sFromString (sing :: Sing "toEnum: bad argument")))
+        = applySing
+            (singFun1
+               @(LamCases_0123456789876543210Sym0 n)
+               (\cases
+                  STrue -> SFoo
+                  SFalse
+                    -> applySing
+                         (singFun1 @ErrorSym0 sError)
+                         (sFromString (sing :: Sing "toEnum: bad argument"))))
+            (applySing
+               (applySing (singFun2 @(==@#@$) (%==)) sN)
+               (sFromInteger (sing :: Sing 0)))
       sFromEnum SFoo = sFromInteger (sing :: Sing 0)
     instance SingI Foo where
       sing = SFoo

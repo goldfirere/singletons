@@ -55,7 +55,7 @@ mkTraversableInstance mb_ctxt ty dd@(DataDecl _ _ _ cons) = do
       mk_trav = case cons of
                   [] -> do v <- newUniqueName "v"
                            pure [DClause [DWildP, DVarP v]
-                                         (DVarE pureName `DAppE` DCaseE (DVarE v) [])]
+                                         (DVarE pureName `DAppE` dCaseE (DVarE v) [])]
                   _  -> traverse mk_trav_clause cons
 
   trav_clauses <- mk_trav

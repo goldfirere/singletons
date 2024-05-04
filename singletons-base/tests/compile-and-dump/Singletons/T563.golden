@@ -25,8 +25,8 @@ Singletons/T563.hs:(0,0)-(0,0): Splicing declarations
       type Demote Foo = Foo
       fromSing (SMkFoo b) = MkFoo (fromSing b)
       toSing (MkFoo (b :: Demote Bool))
-        = case toSing b :: SomeSing Bool of
-            SomeSing c -> SomeSing (SMkFoo c)
+        = (\cases (SomeSing c) -> SomeSing (SMkFoo c))
+            (toSing b :: SomeSing Bool)
     instance SingI n => SingI (MkFoo (n :: Bool)) where
       sing = SMkFoo sing
     instance SingI1 MkFoo where

@@ -393,8 +393,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       fromSing (SSucc' b) = Succ' (fromSing b)
       toSing Zero' = SomeSing SZero'
       toSing (Succ' (b :: Demote Nat'))
-        = case toSing b :: SomeSing Nat' of
-            SomeSing c -> SomeSing (SSucc' c)
+        = (\cases (SomeSing c) -> SomeSing (SSucc' c))
+            (toSing b :: SomeSing Nat')
     instance SMyOrd Nat' where
       sMycompare SZero' SZero' = SEQ
       sMycompare SZero' (SSucc' _) = SLT

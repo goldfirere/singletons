@@ -46,10 +46,10 @@ Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
         = MkMessage (Data.Singletons.fromSing b)
       Data.Singletons.toSing
         (MkMessage (b :: Data.Singletons.Demote Symbol))
-        = case  Data.Singletons.toSing b :: Data.Singletons.SomeSing Symbol
-          of
-            Data.Singletons.SomeSing c
-              -> Data.Singletons.SomeSing (SMkMessage c)
+        = (\cases
+             (Data.Singletons.SomeSing c)
+               -> Data.Singletons.SomeSing (SMkMessage c))
+            (Data.Singletons.toSing b :: Data.Singletons.SomeSing Symbol)
     instance Data.Singletons.SingI n =>
              Data.Singletons.SingI ('PMkMessage (n :: Symbol)) where
       Data.Singletons.sing = SMkMessage Data.Singletons.sing
@@ -75,16 +75,16 @@ Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
     instance Data.Singletons.Decide.SDecide Text =>
              Data.Singletons.Decide.SDecide PMessage where
       (Data.Singletons.Decide.%~) (SMkMessage a) (SMkMessage b)
-        = case (Data.Singletons.Decide.%~) a b of
-            Data.Singletons.Decide.Proved GHC.Internal.Data.Type.Equality.Refl
-              -> Data.Singletons.Decide.Proved
-                   GHC.Internal.Data.Type.Equality.Refl
-            Data.Singletons.Decide.Disproved contra
-              -> Data.Singletons.Decide.Disproved
-                   (\ refl
-                      -> case refl of
-                           GHC.Internal.Data.Type.Equality.Refl
-                             -> contra GHC.Internal.Data.Type.Equality.Refl)
+        = (\cases
+             (Data.Singletons.Decide.Proved GHC.Internal.Data.Type.Equality.Refl)
+               -> Data.Singletons.Decide.Proved
+                    GHC.Internal.Data.Type.Equality.Refl
+             (Data.Singletons.Decide.Disproved contra)
+               -> Data.Singletons.Decide.Disproved
+                    (\cases
+                       GHC.Internal.Data.Type.Equality.Refl
+                         -> contra GHC.Internal.Data.Type.Equality.Refl))
+            ((Data.Singletons.Decide.%~) a b)
     instance Eq (SMessage (z :: PMessage)) where
       (==) _ _ = True
     instance Data.Singletons.Decide.SDecide Text =>

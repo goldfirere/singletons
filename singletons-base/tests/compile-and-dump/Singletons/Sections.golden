@@ -19,18 +19,18 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
     foo2 = map (+ Succ Zero) [Zero, Succ Zero]
     foo3 :: [Nat]
     foo3 = zipWith (+) [Succ Zero, Succ Zero] [Zero, Succ Zero]
-    type family Lambda_0123456789876543210 lhs_0123456789876543210 where
-      Lambda_0123456789876543210 lhs_0123456789876543210 = Apply (Apply (+@#@$) lhs_0123456789876543210) (Apply SuccSym0 ZeroSym0)
-    data Lambda_0123456789876543210Sym0 lhs_01234567898765432100123456789876543210
+    type family LamCases_0123456789876543210 a_0123456789876543210 where
+      LamCases_0123456789876543210 lhs_0123456789876543210 = Apply (Apply (+@#@$) lhs_0123456789876543210) (Apply SuccSym0 ZeroSym0)
+    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
       where
-        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply Lambda_0123456789876543210Sym0 arg) (Lambda_0123456789876543210Sym1 arg) =>
-                                                       Lambda_0123456789876543210Sym0 lhs_01234567898765432100123456789876543210
-    type instance Apply @_ @_ Lambda_0123456789876543210Sym0 lhs_01234567898765432100123456789876543210 = Lambda_0123456789876543210 lhs_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings Lambda_0123456789876543210Sym0 where
+        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
+                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
+    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
       suppressUnusedWarnings
-        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
-    type family Lambda_0123456789876543210Sym1 lhs_01234567898765432100123456789876543210 where
-      Lambda_0123456789876543210Sym1 lhs_01234567898765432100123456789876543210 = Lambda_0123456789876543210 lhs_01234567898765432100123456789876543210
+        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
+    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
+      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
     type Foo3Sym0 :: [Nat]
     type family Foo3Sym0 :: [Nat] where
       Foo3Sym0 = Foo3
@@ -64,7 +64,7 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
       Foo3 = Apply (Apply (Apply ZipWithSym0 (+@#@$)) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) NilSym0))) (Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) NilSym0))
     type Foo2 :: [Nat]
     type family Foo2 :: [Nat] where
-      Foo2 = Apply (Apply MapSym0 Lambda_0123456789876543210Sym0) (Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) NilSym0))
+      Foo2 = Apply (Apply MapSym0 LamCases_0123456789876543210Sym0) (Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) NilSym0))
     type Foo1 :: [Nat]
     type family Foo1 :: [Nat] where
       Foo1 = Apply (Apply MapSym0 (Apply (+@#@$) (Apply SuccSym0 ZeroSym0))) (Apply (Apply (:@#@$) ZeroSym0) (Apply (Apply (:@#@$) (Apply SuccSym0 ZeroSym0)) NilSym0))
@@ -104,13 +104,12 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
           (applySing
              (singFun2 @MapSym0 sMap)
              (singFun1
-                @Lambda_0123456789876543210Sym0
-                (\ sLhs_0123456789876543210
-                   -> case sLhs_0123456789876543210 of
-                        (_ :: Sing lhs_0123456789876543210)
-                          -> applySing
-                               (applySing (singFun2 @(+@#@$) (%+)) sLhs_0123456789876543210)
-                               (applySing (singFun1 @SuccSym0 SSucc) SZero))))
+                @LamCases_0123456789876543210Sym0
+                (\cases
+                   (sLhs_0123456789876543210 :: Sing lhs_0123456789876543210)
+                     -> applySing
+                          (applySing (singFun2 @(+@#@$) (%+)) sLhs_0123456789876543210)
+                          (applySing (singFun1 @SuccSym0 SSucc) SZero))))
           (applySing
              (applySing (singFun2 @(:@#@$) SCons) SZero)
              (applySing

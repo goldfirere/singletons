@@ -47,12 +47,13 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
       (forall (t :: Age) (t :: Age).
        Sing t -> Sing t -> Sing (AddAge t t :: Age) :: Type)
     sAddAge (SMkAge (sX :: Sing x)) (SMkAge (sY :: Sing y))
-      = case (,) (sX :: Sing x) (sY :: Sing y) of
-          (,) (_ :: Sing (x :: Natural)) (_ :: Sing (y :: Natural))
-            -> applySing
-                 (singFun1 @MkAgeSym0 SMkAge)
-                 (applySing (applySing (singFun2 @(+@#@$) (%+)) sX) sY ::
-                    Sing (Apply (Apply (+@#@$) x) y :: Natural))
+      = (\cases
+           (_ :: Sing (x :: Natural)) (_ :: Sing (y :: Natural))
+             -> applySing
+                  (singFun1 @MkAgeSym0 SMkAge)
+                  (applySing (applySing (singFun2 @(+@#@$) (%+)) sX) sY ::
+                     Sing (Apply (Apply (+@#@$) x) y :: Natural)))
+          (sX :: Sing x) (sY :: Sing y)
     instance SingI (AddAgeSym0 :: (~>) Age ((~>) Age Age)) where
       sing = singFun2 @AddAgeSym0 sAddAge
     instance SingI d =>
@@ -69,8 +70,8 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
       type Demote Age = Age
       fromSing (SMkAge b) = MkAge (fromSing b)
       toSing (MkAge (b :: Demote Natural))
-        = case toSing b :: SomeSing Natural of
-            SomeSing c -> SomeSing (SMkAge c)
+        = (\cases (SomeSing c) -> SomeSing (SMkAge c))
+            (toSing b :: SomeSing Natural)
     instance SingI n => SingI (MkAge (n :: Natural)) where
       sing = SMkAge sing
     instance SingI1 MkAge where

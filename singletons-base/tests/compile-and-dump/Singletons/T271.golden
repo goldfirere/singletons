@@ -71,8 +71,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Constant a b) = Constant (Demote a) (Demote b)
       fromSing (SConstant b) = Constant (fromSing b)
       toSing (Constant (b :: Demote a))
-        = case toSing b :: SomeSing a of
-            SomeSing c -> SomeSing (SConstant c)
+        = (\cases (SomeSing c) -> SomeSing (SConstant c))
+            (toSing b :: SomeSing a)
     data SIdentity :: forall (a :: Type). Identity a -> Type
       where
         SIdentity :: forall a (n :: a).
@@ -82,8 +82,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Identity a) = Identity (Demote a)
       fromSing (SIdentity b) = Identity (fromSing b)
       toSing (Identity (b :: Demote a))
-        = case toSing b :: SomeSing a of
-            SomeSing c -> SomeSing (SIdentity c)
+        = (\cases (SomeSing c) -> SomeSing (SIdentity c))
+            (toSing b :: SomeSing a)
     instance SEq a => SEq (Constant a b) where
       (%==)
         (SConstant (sA_0123456789876543210 :: Sing a_0123456789876543210))
@@ -130,10 +130,10 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                SNil)
     instance SDecide a => SDecide (Constant a b) where
       (%~) (SConstant a) (SConstant b)
-        = case (%~) a b of
-            Proved Refl -> Proved Refl
-            Disproved contra
-              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+        = (\cases
+             (Proved Refl) -> Proved Refl
+             (Disproved contra) -> Disproved (\cases Refl -> contra Refl))
+            ((%~) a b)
     instance Eq (SConstant (z :: Constant a b)) where
       (==) _ _ = True
     instance SDecide a =>
@@ -148,10 +148,10 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
         = Data.Singletons.Decide.decideCoercion
     instance SDecide a => SDecide (Identity a) where
       (%~) (SIdentity a) (SIdentity b)
-        = case (%~) a b of
-            Proved Refl -> Proved Refl
-            Disproved contra
-              -> Disproved (\ refl -> case refl of Refl -> contra Refl)
+        = (\cases
+             (Proved Refl) -> Proved Refl
+             (Disproved contra) -> Disproved (\cases Refl -> contra Refl))
+            ((%~) a b)
     instance Eq (SIdentity (z :: Identity a)) where
       (==) _ _ = True
     instance SDecide a =>

@@ -215,7 +215,7 @@ jobs:
           source-repository-package
             type:     git
             location: https://github.com/goldfirere/th-desugar
-            tag:      ae6c075edb50175a99b35f0bdcf475b695a5ee78
+            tag:      1d17abf8add216424790f10bbb3e4c33d2d736f5
           EOF
           $HCPKG list --simple-output --names-only | perl -ne 'for (split /\s+/) { print "constraints: any.$_ installed\n" unless /^(Cabal|Cabal-syntax|singletons|singletons-base|singletons-th)$/; }' >> cabal.project.local
           cat cabal.project

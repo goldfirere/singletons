@@ -164,7 +164,8 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       type Demote (Foo3 a) = Foo3 (Demote a)
       fromSing (SFoo3 b) = Foo3 (fromSing b)
       toSing (Foo3 (b :: Demote a))
-        = case toSing b :: SomeSing a of SomeSing c -> SomeSing (SFoo3 c)
+        = (\cases (SomeSing c) -> SomeSing (SFoo3 c))
+            (toSing b :: SomeSing a)
     data SFoo4 :: forall (a :: Type) (b :: Type). Foo4 a b -> Type
       where
         SFoo41 :: forall (a :: Type) (b :: Type). SFoo4 (Foo41 :: Foo4 a b)
@@ -185,10 +186,8 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       type Demote Pair = Pair
       fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
       toSing (Pair (b :: Demote Bool) (b :: Demote Bool))
-        = case
-              (,) (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
-          of
-            (,) (SomeSing c) (SomeSing c) -> SomeSing (SPair c c)
+        = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SPair c c))
+            (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
     instance SBounded Foo1 where
       sMinBound = SFoo1
       sMaxBound = SFoo1

@@ -148,13 +148,13 @@ singDataD (DataDecl df name tvbs ctors) = do
         mkEmptyFromSingClause = do
           x <- qNewName "x"
           pure $ DClause [DVarP x]
-               $ DCaseE (DVarE x) []
+               $ dCaseE (DVarE x) []
 
         mkEmptyToSingClause :: SgM DClause
         mkEmptyToSingClause = do
           x <- qNewName "x"
           pure $ DClause [DVarP x]
-               $ DConE someSingDataName `DAppE` DCaseE (DVarE x) []
+               $ DConE someSingDataName `DAppE` dCaseE (DVarE x) []
 
 -- Single a constructor.
 singCtor :: Name -> DCon -> SgM DCon

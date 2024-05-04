@@ -34,9 +34,9 @@ Singletons/T163.hs:0:0:: Splicing declarations
       fromSing (SL b) = L (fromSing b)
       fromSing (SR b) = R (fromSing b)
       toSing (L (b :: Demote a))
-        = case toSing b :: SomeSing a of SomeSing c -> SomeSing (SL c)
+        = (\cases (SomeSing c) -> SomeSing (SL c)) (toSing b :: SomeSing a)
       toSing (R (b :: Demote b))
-        = case toSing b :: SomeSing b of SomeSing c -> SomeSing (SR c)
+        = (\cases (SomeSing c) -> SomeSing (SR c)) (toSing b :: SomeSing b)
     instance SingI n => SingI (L (n :: a)) where
       sing = SL sing
     instance SingI1 L where

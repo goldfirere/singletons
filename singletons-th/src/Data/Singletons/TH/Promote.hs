@@ -1118,7 +1118,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
           return $ DClause (pats ++ newPats) (foldExp exp newArgs)
       | otherwise = do -- Eta-contract
           let (clausePats, lamPats) = splitAt ty_num_args pats
-          lamExp <- mkDLamEFromDPats lamPats exp
+              lamExp = dLamE lamPats exp
           return $ DClause clausePats lamExp
       where
         n = ty_num_args - clause_num_args
@@ -1307,23 +1307,6 @@ promoteClause mb_let_uniq name m_ldrki all_locals (DClause pats exp) = do
   return ( DTySynEqn Nothing (foldType pro_clause_fun types_w_kinds) ty
          , ADClause new_vars pats' ann_exp )
 
-promoteMatch :: DType -- What to use as the LHS of the promoted type family
-                      -- equation. This should consist of the promoted name of
-                      -- the case expression to which the match belongs, applied
-                      -- to any local arguments (e.g., `Case x y z`).
-             -> DMatch -> PrM (DTySynEqn, ADMatch)
-promoteMatch pro_case_fun (DMatch pat exp) = do
-  -- promoting the patterns creates variable bindings. These are passed
-  -- to the function promoted the RHS
-  ((ty, pat'), prom_pat_infos) <- evalForPair $ promotePat pat
-  let PromDPatInfos { prom_dpat_vars    = new_vars
-                    , prom_dpat_sig_kvs = sig_kvs } = prom_pat_infos
-  (rhs, ann_exp) <- scopedBind sig_kvs $
-                    lambdaBind new_vars $
-                    promoteExp exp
-  return $ ( DTySynEqn Nothing (pro_case_fun `DAppT` ty) rhs
-           , ADMatch new_vars pat' ann_exp)
-
 -- promotes a term pattern into a type pattern, accumulating bound variable names
 promotePat :: DPat -> QWithAux PromDPatInfos PrM (DType, ADPat)
 promotePat (DLitP lit) = (, ADLitP lit) <$> promoteLitPat lit
@@ -1377,39 +1360,29 @@ promoteExp (DAppE exp1 exp2) = do
 promoteExp (DAppTypeE exp _) = do
   qReportWarning "Visible type applications are ignored by `singletons-th`."
   promoteExp exp
-promoteExp (DLamE names exp) = do
+promoteExp (DLamCasesE clauses) = do
   opts <- getOptions
-  lambdaName <- newUniqueName "Lambda"
-  tyNames <- mapM mkTyName names
-  let var_proms = zip names tyNames
-  (rhs, ann_exp) <- lambdaBind var_proms $ promoteExp exp
+  lam_cases_tf_name <- newUniqueName "LamCases"
   all_locals <- allLocals
-  let tvbs     = map (`DPlainTV` BndrReq) tyNames
-      all_args = all_locals ++ tyNames
-      tfh      = dTypeFamilyHead_with_locals lambdaName all_locals tvbs DNoSig
-  emitDecs [DClosedTypeFamilyD
-              tfh
-              [DTySynEqn Nothing
-                         (foldType (DConT lambdaName) (map DVarT all_args))
-                         rhs]]
-  emitDecsM $ defunctionalize lambdaName Nothing $ DefunNoSAK all_locals tvbs Nothing
-  let promLambda = foldType (DConT (defunctionalizedName opts lambdaName 0))
-                            (map DVarT all_locals)
-  return (promLambda, ADLamE tyNames promLambda names ann_exp)
-promoteExp (DCaseE exp matches) = do
-  caseTFName <- newUniqueName "Case"
-  all_locals <- allLocals
-  let prom_case = foldType (DConT caseTFName) (map DVarT all_locals)
-  (exp', ann_exp)     <- promoteExp exp
-  (eqns, ann_matches) <- mapAndUnzipM (promoteMatch prom_case) matches
-  tyvarName  <- qNewName "t"
-  let tvbs = [DPlainTV tyvarName BndrReq]
-      tfh  = dTypeFamilyHead_with_locals caseTFName all_locals tvbs DNoSig
+  (eqns, ann_clauses) <-
+    mapAndUnzipM (promoteClause Nothing lam_cases_tf_name Nothing all_locals) clauses
+  -- Per the Haddocks for DLamCasesE, an empty list of clauses indicates that
+  -- the overall `\cases` expression takes one argument. Otherwise, we look at
+  -- the first clause to see how many arguments the expression takes, as each
+  -- clause is required to have the same number of patterns.
+  let num_args =
+        case clauses of
+          [] -> 1
+          DClause pats _ : _ -> length pats
+  arg_tvb_names <- replicateM num_args (newUniqueName "a")
+  let arg_tvbs = map (`DPlainTV` BndrReq) arg_tvb_names
+      tfh      = dTypeFamilyHead_with_locals lam_cases_tf_name all_locals arg_tvbs DNoSig
   emitDecs [DClosedTypeFamilyD tfh eqns]
-    -- See Note [Annotate case return type] in Single
-  let applied_case = prom_case `DAppT` exp'
-  return ( applied_case
-         , ADCaseE ann_exp ann_matches applied_case )
+  emitDecsM $ defunctionalize lam_cases_tf_name Nothing $ DefunNoSAK all_locals arg_tvbs Nothing
+  let prom_lam_cases =
+        foldType (DConT (defunctionalizedName opts lam_cases_tf_name 0))
+                 (map DVarT all_locals)
+  pure (prom_lam_cases, ADLamCasesE num_args prom_lam_cases ann_clauses)
 promoteExp (DLetE decs exp) = do
   unique <- qNewUnique
   (binds, ann_env) <- promoteLetDecs (Just unique) decs
