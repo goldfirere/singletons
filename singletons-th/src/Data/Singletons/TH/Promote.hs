@@ -1165,9 +1165,23 @@ promoteLetDecName mb_let_uniq name m_ldrki all_locals = do
           Just (LDRKI m_sak tvbs _ _)
             |  isJust m_sak
                -- Per the comments on LetDecRHSKindInfo, `isJust m_sak` is only True
-               -- if there are no local variables. Return the scoped type variables
-               -- `tvbs` as invisible arguments using `DTyArg`...
-            -> map (DTyArg . DVarT . extractTvbName) tvbs
+               -- if there are no local variables. Convert the scoped type variables
+               -- `tvbs` to invisible arguments, making sure to use
+               -- `tvbSpecsToBndrVis` to filter out any inferred type variable
+               -- binders. For instance, we want to promote this example (from #585):
+               --
+               --   konst :: forall a {b}. a -> b -> a
+               --   konst x _ = x
+               --
+               -- To this type family:
+               --
+               --   type Konst :: forall a {b}. a -> b -> a
+               --   type family Konst @a x y where
+               --     Konst @a (x :: a) (_ :: b) = x
+               --
+               -- Note that we apply `a` in `Konst @a` but _not_ `b`, as `b` is
+               -- bound using an inferred type variable binder.
+            -> map dTyVarBndrVisToDTypeArg $ tvbSpecsToBndrVis tvbs
           _ -> -- ...otherwise, return the local variables as explicit arguments
                -- using DTANormal.
                map (DTANormal . DVarT) all_locals

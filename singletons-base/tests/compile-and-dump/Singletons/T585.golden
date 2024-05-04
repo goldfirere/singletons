@@ -1,0 +1,40 @@
+Singletons/T585.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| konst :: forall a {b}. a -> b -> a
+          konst x _ = x |]
+  ======>
+    konst :: forall a {b}. a -> b -> a
+    konst x _ = x
+    type KonstSym0 :: forall a {b}. (~>) a ((~>) b a)
+    data KonstSym0 :: (~>) a ((~>) b a)
+      where
+        KonstSym0KindInference :: SameKind (Apply KonstSym0 arg) (KonstSym1 arg) =>
+                                  KonstSym0 a0123456789876543210
+    type instance Apply KonstSym0 a0123456789876543210 = KonstSym1 a0123456789876543210
+    instance SuppressUnusedWarnings KonstSym0 where
+      suppressUnusedWarnings = snd ((,) KonstSym0KindInference ())
+    type KonstSym1 :: forall a {b}. a -> (~>) b a
+    data KonstSym1 (a0123456789876543210 :: a) :: (~>) b a
+      where
+        KonstSym1KindInference :: SameKind (Apply (KonstSym1 a0123456789876543210) arg) (KonstSym2 a0123456789876543210 arg) =>
+                                  KonstSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (KonstSym1 a0123456789876543210) a0123456789876543210 = Konst a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (KonstSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd ((,) KonstSym1KindInference ())
+    type KonstSym2 :: forall a {b}. a -> b -> a
+    type family KonstSym2 (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
+      KonstSym2 a0123456789876543210 a0123456789876543210 = Konst a0123456789876543210 a0123456789876543210
+    type Konst :: forall a {b}. a -> b -> a
+    type family Konst (a :: a) (a :: b) :: a where
+      Konst @a (x :: a) (_ :: b) = x
+    sKonst ::
+      forall a {b} (t :: a) (t :: b). Sing t
+                                      -> Sing t -> Sing (Apply (Apply KonstSym0 t) t :: a)
+    sKonst (sX :: Sing x) _ = sX
+    instance SingI (KonstSym0 :: (~>) a ((~>) b a)) where
+      sing = singFun2 @KonstSym0 sKonst
+    instance SingI d => SingI (KonstSym1 (d :: a) :: (~>) b a) where
+      sing = singFun1 @(KonstSym1 (d :: a)) (sKonst (sing @d))
+    instance SingI1 (KonstSym1 :: a -> (~>) b a) where
+      liftSing (s :: Sing (d :: a))
+        = singFun1 @(KonstSym1 (d :: a)) (sKonst s)

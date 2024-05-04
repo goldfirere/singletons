@@ -250,6 +250,30 @@ maybeSigT :: DType -> Maybe DKind -> DType
 maybeSigT ty Nothing   = ty
 maybeSigT ty (Just ki) = ty `DSigT` ki
 
+-- | Convert a list of 'DTyVarBndrSpec's to a list of 'DTyVarBndrVis'es. Type
+-- variable binders with a 'SpecifiedSpec' are converted to 'BndrInvis', and
+-- type variable binders with an 'InferredSpec' are dropped entirely.
+--
+-- As an example, if you have this list of 'DTyVarBndrSpec's:
+--
+-- @
+-- forall a {b} c {d e} f. <...>
+-- @
+--
+-- The corresponding list of 'DTyVarBndrVis'es would be:
+--
+-- @
+-- \@a \@b \@f
+-- @
+--
+-- Note that note of @b@, @d@, or @e@ appear in the list.
+tvbSpecsToBndrVis :: [DTyVarBndrSpec] -> [DTyVarBndrVis]
+tvbSpecsToBndrVis = mapMaybe (traverse specificityToBndrVis)
+  where
+    specificityToBndrVis :: Specificity -> Maybe BndrVis
+    specificityToBndrVis SpecifiedSpec = Just BndrInvis
+    specificityToBndrVis InferredSpec  = Nothing
+
 -- Reconstruct a vanilla function type from its individual type variable
 -- binders, constraints, argument types, and result type. (See
 -- Note [Vanilla-type validity checking during promotion] in
