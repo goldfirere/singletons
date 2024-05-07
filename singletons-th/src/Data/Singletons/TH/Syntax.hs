@@ -20,7 +20,13 @@ import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
 import Language.Haskell.TH.Desugar.OSet (OSet)
 
-type VarPromotions = [(Name, Name)] -- from term-level name to type-level name
+-- | Map from term-level pattern variable names to their corresponding
+-- type-level names. This is necessary to ensure that we can promote variable
+-- names consisting of symbolic characters (e.g., @(%%)@) to a type-level name
+-- without symbolic characters (e.g., @ty123@).
+-- See @Note [Tracking local variables]@ in
+-- "Data.Singletons.TH.Promote.Monad" for why we do this.
+type VarPromotions = [(Name, Name)]
 
 -- Information that is accumulated when promoting patterns.
 data PromDPatInfos = PromDPatInfos
@@ -121,9 +127,24 @@ data ADPat = ADLitP Lit
                     ADPat DType
            | ADWildP
 
-data ADMatch = ADMatch VarPromotions ADPat ADExp
-data ADClause = ADClause VarPromotions
-                         [ADPat] ADExp
+data ADMatch =
+  ADMatch
+    VarPromotions
+    -- ^ Map of term-level pattern variable names to their corresponding
+    -- type-level names.
+    ADPat
+    -- ^ The left-hand-side pattern.
+    ADExp
+    -- ^ The right-hand-side expression.
+data ADClause =
+  ADClause
+    VarPromotions
+    -- ^ Map of term-level pattern variable names to their corresponding
+    -- type-level names.
+    [ADPat]
+    -- ^ The left-hand-side patterns.
+    ADExp
+    -- ^ The right-hand-side expression.
 
 data AnnotationFlag = Annotated | Unannotated
 
